@@ -538,8 +538,8 @@ const PublicNetworkUpgradePage: React.FC<PublicNetworkUpgradePageProps> = ({
       ]
     },
     7732: {
-      laymanTitle: "Enshrined Proposer-Builder Separation (ePBS)",
-      laymanDescription: "This formally separates block proposers from block builders at the protocol level, reducing MEV extraction and centralizing forces. Instead of relying on external solutions, ePBS makes fair block production a core part of Ethereum.",
+      laymanTitle: "execution Payload-Block Separation (ePBS)",
+      laymanDescription: "It proposes a minimal set of changes to maximally decouple execution and consensus layer validation. This feature enables L1 scaling by changing the time required to execute a block from the current ~2 seconds to 8 seconds. And it changes the time required to broadcast blobs in the network from the current ~2 seconds to ~9 seconds.",
       inclusionStage: 'Proposed for Inclusion',
       northStars: ['Scale L1', 'Improve UX'],
       northStarAlignment: {
@@ -565,9 +565,41 @@ const PublicNetworkUpgradePage: React.FC<PublicNetworkUpgradePageProps> = ({
       ],
       isHeadliner: true
     },
-         7937: {
-       laymanTitle: "EVM64 Suite - 64-bit EVM Operations",
-       laymanDescription: "This is the core EIP of the EVM64 collection, introducing 64-bit arithmetic operations to the EVM. The full EVM64 suite includes multiple EIPs enabling much more efficient mathematical computations by adding 64-bit operations alongside existing 256-bit ones.",
+    7782: {
+      laymanTitle: "Reduce Block Latency",
+      laymanDescription: "This reduces Ethereum's slot time from 12 seconds to 6 seconds, making Ethereum a better confirmation engine for apps and rollups. Everyone benefits: users get faster confirmations with better censorship resistance, DeFi gets more efficient trading with lower fees, stakers get lower reward variability, and nodes get better resource utilization with smoother bandwidth usage.",
+      inclusionStage: 'Proposed for Inclusion',
+      northStars: ['Improve UX', 'Scale L1'],
+      northStarAlignment: {
+        scaleL1: { impact: 'High', description: 'Makes Ethereum a superior confirmation engine by doubling proposer frequency while maintaining throughput. Improves censorship resistance through 2x more proposers per unit time.' },
+        scaleL2: { impact: 'High', description: 'Layer 2 rollups receive L1 finality quicker with faster safe confirmations and block inclusion. Based rollups clock moves twice as fast, directly improving their performance.' },
+        improveUX: { impact: 'High', description: 'Wallets display fresher data with 6-second confirmations. DeFi exchanges become more efficient with frequent price updates, reducing arbitrage losses and attracting more liquidity.' }
+      },
+              stakeholderImpacts: {
+          endUsers: { impact: 'High', description: 'Transaction confirmations in 6 seconds instead of 12, with better censorship resistance from 2x more proposers per second. DeFi users enjoy lower trading fees and reduced slippage from more efficient exchanges with frequent price updates.' },
+          appDevs: { impact: 'High', description: 'Can build more responsive applications with frequent data triggers reducing staleness. DeFi protocols benefit from tighter spreads, reduced arbitrage losses, and flywheel effects attracting more liquidity and traders.' },
+          walletDevs: { impact: 'High', description: 'Can display fresher chain data following transaction inclusion with 6-second head updates. Need to update timing assumptions but deliver significantly improved user responsiveness.' },
+          toolingInfra: { impact: 'High', description: 'Block explorers and infrastructure need conditional logic for slot times to handle historical 12s blocks and new 6s blocks. Must implement millisecond-precision timing instead of seconds.' },
+          layer2s: { impact: 'High', description: 'Receive L1 finality, safe confirmations, and block inclusion all twice as fast. Based rollups see their sequencing clock move twice as fast. Interoperability protocols get quicker actionable signals.' },
+          stakersNodes: { impact: 'High', description: 'Lower reward variability from smaller, more frequent rewards reducing pooling incentives. Better resource utilization with smoother bandwidth usage, but must handle doubled message frequency and new subslot timing (3s/1.5s/1.5s).' },
+          clClients: { impact: 'High', description: 'Major implementation for conditional slot timing logic, new subslot schedules (3s block proposal, 1.5s attestations, 1.5s aggregation), and doubled consensus message processing while maintaining validator participation.' },
+          elClients: { impact: 'Medium', description: 'Gas limit votes halved to maintain "gas per 12 seconds" throughput semantics. Blob targets and limits halved. May need investigation of contracts assuming fixed 12-second slot times.' }
+        },
+              benefits: [
+          "Halves transaction confirmation time from 12s to 6s with better censorship resistance",
+          "Makes DeFi exchanges more efficient with frequent price updates and reduced arbitrage losses",
+          "Creates healthier block construction markets with more frequent, smaller auction opportunities",
+          "Improves interoperability with faster L1 finality for rollups and bridges",
+          "Reduces staking reward variability, benefiting solo stakers and home operators",
+          "Smooths bandwidth usage with better resource utilization for node operators",
+          "Enables flywheel effects attracting more liquidity and traders to Ethereum",
+          "Maintains current throughput while doubling proposer frequency per unit time"
+        ],
+      isHeadliner: true
+    },
+    7937: {
+      laymanTitle: "EVM64 Suite - 64-bit EVM Operations",
+      laymanDescription: "This is the core EIP of the EVM64 collection, introducing 64-bit arithmetic operations to the EVM. The full EVM64 suite includes multiple EIPs enabling much more efficient mathematical computations by adding 64-bit operations alongside existing 256-bit ones.",
       inclusionStage: 'Proposed for Inclusion',
       northStars: ['Scale L1', 'Improve UX'],
       northStarAlignment: {
@@ -618,37 +650,37 @@ const PublicNetworkUpgradePage: React.FC<PublicNetworkUpgradePageProps> = ({
         "Enables secure light clients for wallets and dApps",
         "Dramatically improves application decentralization",
         "Reduces infrastructure requirements for verified data access"
-             ],
-       isHeadliner: true
-     },
-     7942: {
-       laymanTitle: "Available Attestation - Reorg-Resilient Ethereum",
-       laymanDescription: "This is a comprehensive solution to eliminate all known reorganization attacks on Ethereum. Instead of fixing attacks one-by-one, Available Attestation redesigns how consensus works to make reorg attacks fundamentally impossible.",
-       inclusionStage: 'Proposed for Inclusion',
-       northStars: ['Scale L1', 'Improve UX'],
-       northStarAlignment: {
-         scaleL1: { impact: 'High', description: 'Eliminates all known reorg attacks, dramatically improving network security and enabling more aggressive scaling optimizations without security trade-offs.' },
-         scaleL2: { impact: 'Medium', description: 'More secure and predictable L1 settlement eliminates reorg risks for Layer 2 bridge security and settlement finality.' },
-         improveUX: { impact: 'High', description: 'Eliminates transaction reordering attacks, provides guaranteed inclusion properties, and dramatically improves user confidence in transaction finality.' }
-       },
-       stakeholderImpacts: {
-         endUsers: { impact: 'High', description: 'Eliminates the possibility of transaction censorship and reorg attacks, providing guaranteed transaction inclusion and much stronger finality guarantees.' },
-         appDevs: { impact: 'High', description: 'Can build applications with stronger security assumptions, eliminate MEV-related edge cases, and provide users with guaranteed transaction execution properties.' },
-         walletDevs: { impact: 'Medium', description: 'Can provide stronger transaction finality guarantees and eliminate concerns about transaction reordering after inclusion.' },
-         toolingInfra: { impact: 'High', description: 'Major updates needed for consensus monitoring, reorg detection systems, and fork choice analysis tools to handle the new attestation mechanisms.' },
-         layer2s: { impact: 'High', description: 'Dramatically improves bridge security by eliminating L1 reorg risks and enables more aggressive optimization of settlement mechanisms.' },
-         stakersNodes: { impact: 'High', description: 'Fundamental changes to attestation behavior and fork choice logic, but eliminates complex reorg-related edge cases in validator operations.' },
-         clClients: { impact: 'High', description: 'Major implementation work required for new attestation mechanisms, modified fork choice logic, and consensus layer protocol changes.' },
-         elClients: { impact: 'Medium', description: 'Need to coordinate with new consensus mechanisms but most changes are in the consensus layer attestation logic.' }
-       },
-       benefits: [
-         "Eliminates all known reorganization attacks permanently",
-         "Provides formal security guarantees with mathematical proofs",
-         "Strengthens transaction inclusion and finality properties",
-         "Enables more aggressive scaling without security trade-offs"
-       ],
-       isHeadliner: true
-     },
+      ],
+      isHeadliner: true
+    },
+    7942: {
+      laymanTitle: "Available Attestation - Reorg-Resilient Ethereum",
+      laymanDescription: "This is a comprehensive solution to eliminate all known reorganization attacks on Ethereum. Instead of fixing attacks one-by-one, Available Attestation redesigns how consensus works to make reorg attacks fundamentally impossible.",
+      inclusionStage: 'Proposed for Inclusion',
+      northStars: ['Scale L1', 'Improve UX'],
+      northStarAlignment: {
+        scaleL1: { impact: 'High', description: 'Eliminates all known reorg attacks, dramatically improving network security and enabling more aggressive scaling optimizations without security trade-offs.' },
+        scaleL2: { impact: 'Medium', description: 'More secure and predictable L1 settlement eliminates reorg risks for Layer 2 bridge security and settlement finality.' },
+        improveUX: { impact: 'High', description: 'Eliminates transaction reordering attacks, provides guaranteed inclusion properties, and dramatically improves user confidence in transaction finality.' }
+      },
+      stakeholderImpacts: {
+        endUsers: { impact: 'High', description: 'Eliminates the possibility of transaction censorship and reorg attacks, providing guaranteed transaction inclusion and much stronger finality guarantees.' },
+        appDevs: { impact: 'High', description: 'Can build applications with stronger security assumptions, eliminate MEV-related edge cases, and provide users with guaranteed transaction execution properties.' },
+        walletDevs: { impact: 'Medium', description: 'Can provide stronger transaction finality guarantees and eliminate concerns about transaction reordering after inclusion.' },
+        toolingInfra: { impact: 'High', description: 'Major updates needed for consensus monitoring, reorg detection systems, and fork choice analysis tools to handle the new attestation mechanisms.' },
+        layer2s: { impact: 'High', description: 'Dramatically improves bridge security by eliminating L1 reorg risks and enables more aggressive optimization of settlement mechanisms.' },
+        stakersNodes: { impact: 'High', description: 'Fundamental changes to attestation behavior and fork choice logic, but eliminates complex reorg-related edge cases in validator operations.' },
+        clClients: { impact: 'High', description: 'Major implementation work required for new attestation mechanisms, modified fork choice logic, and consensus layer protocol changes.' },
+        elClients: { impact: 'Medium', description: 'Need to coordinate with new consensus mechanisms but most changes are in the consensus layer attestation logic.' }
+      },
+      benefits: [
+        "Eliminates all known reorganization attacks permanently",
+        "Provides formal security guarantees with mathematical proofs",
+        "Strengthens transaction inclusion and finality properties",
+        "Enables more aggressive scaling without security trade-offs"
+      ],
+      isHeadliner: true
+    },
      7886: {
        laymanTitle: "Delayed Execution",
        laymanDescription: "This introduces a delay between when transactions are committed and when they're executed, reducing MEV extraction and front-running while improving transaction ordering fairness.",
@@ -730,6 +762,38 @@ const PublicNetworkUpgradePage: React.FC<PublicNetworkUpgradePageProps> = ({
          "Ensures fair access to block space for all users",
          "Strengthens Ethereum's credible neutrality",
          "Reduces validator centralization pressures"
+       ],
+       isHeadliner: true
+     },
+     7692: {
+       laymanTitle: "EVM Object Format (EOFv1) - Mega EOF",
+       laymanDescription: "This introduces a new container format for EVM bytecode that enables code versioning, removes complex jump analysis, and paves the way for new execution environments like RISC-V and EVM64 within the same contract. Originally declined from Fusaka due to controversy, it's being reproposed with multiple variants to address community concerns.",
+       inclusionStage: 'Proposed for Inclusion',
+       northStars: ['Scale L1', 'Improve UX'],
+       northStarAlignment: {
+         scaleL1: { impact: 'High', description: 'Enables incremental deployment of more efficient execution environments like RISC-V and EVM64 for computationally intensive tasks while maintaining EVM compatibility. Removes JUMPDEST analysis overhead.' },
+         scaleL2: { impact: 'Medium', description: 'Better code analysis and performance improvements benefit Layer 2 execution and proof generation systems. Enables more efficient rollup implementations.' },
+         improveUX: { impact: 'Medium', description: 'Provides better developer tools through improved code analysis, versioning capabilities, and performance improvements for computationally intensive applications.' }
+       },
+       stakeholderImpacts: {
+         endUsers: { impact: 'Medium', description: 'Indirect benefits from improved contract performance and reduced gas costs for computationally intensive operations. Better reliability from enhanced code validation.' },
+         appDevs: { impact: 'High', description: 'Can use multiple execution environments within same contract - write normal logic in EVM and intensive computations in EVM64/RISC-V. Better code analysis tools and function support improve development experience.' },
+         walletDevs: { impact: 'Low', description: 'Minimal direct impact on wallet development, though improved contract reliability and performance benefit user experience indirectly.' },
+         toolingInfra: { impact: 'High', description: 'Major updates needed for debuggers, analyzers, and development tools to support EOF containers, multiple execution environments, and new bytecode format. Better analysis capabilities once implemented.' },
+         layer2s: { impact: 'Medium', description: 'Can leverage more efficient execution environments for proof generation and validation. Better code analysis aids in rollup optimization and security verification.' },
+         stakersNodes: { impact: 'Medium', description: 'Reduced computational overhead from eliminating JUMPDEST analysis. Potential increased complexity from supporting multiple execution environments within contracts.' },
+         clClients: { impact: 'Low', description: 'Minimal direct impact on consensus layer operations as this primarily affects execution layer bytecode processing and validation.' },
+         elClients: { impact: 'High', description: 'Major implementation work for new bytecode container format, multiple execution environments, enhanced validation, and maintaining backwards compatibility with legacy bytecode.' }
+       },
+       benefits: [
+         "Enables incremental adoption of RISC-V and EVM64 within existing contracts",
+         "Removes complex JUMPDEST analysis improving execution efficiency",
+         "Provides code versioning for backward-incompatible protocol changes",
+         "Enables better code analysis and development tooling",
+         "Introduces first-class function support improving analysis opportunities",
+         "Addresses multiple EVM pain points through container format",
+         "Paves the way for maintaining existing toolchain while adding new capabilities",
+         "Enables 'both EVM and RISC-V' rather than 'either EVM or RISC-V' approach"
        ],
        isHeadliner: true
      }

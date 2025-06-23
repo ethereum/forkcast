@@ -536,7 +536,7 @@ const PublicNetworkUpgradePage: React.FC<PublicNetworkUpgradePageProps> = ({
     },
     7732: {
       laymanTitle: "execution Payload-Block Separation (ePBS)",
-      laymanDescription: "It proposes a minimal set of changes to maximally decouple execution and consensus layer validation. This feature enables L1 scaling by changing the time required to execute a block from the current ~2 seconds to 8 seconds. And it changes the time required to broadcast blobs in the network from the current ~2 seconds to ~9 seconds.",
+      laymanDescription: "This proposes a minimal set of changes to maximally decouple execution and consensus layer validation. This feature enables L1 scaling by changing the time required to execute a block from the current ~2 seconds to 8 seconds. And it changes the time required to broadcast blobs in the network from the current ~2 seconds to ~9 seconds.",
       inclusionStage: 'Proposed for Inclusion',
       northStars: ['Scale L1', 'Improve UX'],
       northStarAlignment: {
@@ -563,7 +563,7 @@ const PublicNetworkUpgradePage: React.FC<PublicNetworkUpgradePageProps> = ({
       isHeadliner: true
     },
     7782: {
-      laymanTitle: "Reduce Block Latency",
+      laymanTitle: "Reduce Block Latency (6-second slots)",
       laymanDescription: "This reduces Ethereum's slot time from 12 seconds to 6 seconds, making Ethereum a better confirmation engine for apps and rollups. Everyone benefits: users get faster confirmations with better censorship resistance, DeFi gets more efficient trading with lower fees, stakers get lower reward variability, and nodes get better resource utilization with smoother bandwidth usage.",
       inclusionStage: 'Proposed for Inclusion',
       northStars: ['Improve UX', 'Scale L1'],
@@ -680,7 +680,7 @@ const PublicNetworkUpgradePage: React.FC<PublicNetworkUpgradePageProps> = ({
     },
      7886: {
        laymanTitle: "Delayed Execution",
-       laymanDescription: "This introduces a delay between when transactions are committed and when they're executed, reducing MEV extraction and front-running while improving transaction ordering fairness.",
+       laymanDescription: "This introduces a delay between when transactions are committed and when they're executed, reducing MEV extraction and front-running while improving transaction ordering fairness. ",
        inclusionStage: 'Proposed for Inclusion',
        northStars: ['Improve UX', 'Scale L1'],
        northStarAlignment: {
@@ -736,7 +736,7 @@ const PublicNetworkUpgradePage: React.FC<PublicNetworkUpgradePageProps> = ({
      },
      7805: {
        laymanTitle: "Fork-Choice Inclusion Lists (FOCIL)",
-       laymanDescription: "This enforces transaction inclusion at the fork choice level, making censorship much more difficult by requiring validators to include specific transactions or face consensus penalties.",
+       laymanDescription: "FOCIL improves Ethereum’s censorship resistance by enabling multiple validators to ensure that any transaction valid under protocol rules is included in blocks. Censorship resistance, permissionlessness, and credible neutrality are core Ethereum values. FOCIL fixes the fact that a small, centralized builder set can choose to censor by empowering the decentralized set of validators to enforce inclusion constraints on builders’ blocks.",
        inclusionStage: 'Proposed for Inclusion',
        northStars: ['Improve UX', 'Scale L1'],
        northStarAlignment: {
@@ -764,7 +764,7 @@ const PublicNetworkUpgradePage: React.FC<PublicNetworkUpgradePageProps> = ({
      },
      7692: {
        laymanTitle: "EVM Object Format (EOFv1) - Mega EOF",
-       laymanDescription: "This introduces a new container format for EVM bytecode that enables code versioning, removes complex jump analysis, and paves the way for new execution environments like RISC-V and EVM64 within the same contract. Originally declined from Fusaka due to controversy, it's being reproposed with multiple variants to address community concerns.",
+       laymanDescription: "This introduces a new container format for EVM bytecode that enables code versioning, removes complex jump analysis, and paves the way for new execution environments like RISC-V and EVM64 within the same contract. It was declined from Fusaka due to low consensus on implementation strategy, and is being reproposed with multiple variants to address community concerns.",
        inclusionStage: 'Proposed for Inclusion',
        northStars: ['Scale L1', 'Improve UX'],
        northStarAlignment: {

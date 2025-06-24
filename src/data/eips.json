@@ -1044,17 +1044,17 @@
       "improveUX": { "impact": "High", "description": "Wallets display fresher data with 6-second confirmations. DeFi exchanges become more efficient with frequent price updates, reducing arbitrage losses and attracting more liquidity." }
     },
     "stakeholderImpacts": {
-      "endUsers": { "impact": "High", "description": "Transaction confirmations in 6 seconds instead of 12, with better censorship resistance from 2x more proposers per second. DeFi users enjoy lower trading fees and reduced slippage from more efficient exchanges with frequent price updates." },
+      "endUsers": { "impact": "High", "description": "Transaction confirmations in 3 seconds (on average) instead of 6, with better censorship resistance from 2x more proposers per second. DeFi users enjoy lower trading fees and reduced slippage from more efficient exchanges with frequent price updates." },
       "appDevs": { "impact": "High", "description": "Can build more responsive applications with frequent data triggers reducing staleness. DeFi protocols benefit from tighter spreads, reduced arbitrage losses, and flywheel effects attracting more liquidity and traders." },
       "walletDevs": { "impact": "High", "description": "Can display fresher chain data following transaction inclusion with 6-second head updates. Need to update timing assumptions but deliver significantly improved user responsiveness." },
       "toolingInfra": { "impact": "High", "description": "Block explorers and infrastructure need conditional logic for slot times to handle historical 12s blocks and new 6s blocks. Must implement millisecond-precision timing instead of seconds." },
       "layer2s": { "impact": "High", "description": "Receive L1 finality, safe confirmations, and block inclusion all twice as fast. Based rollups see their sequencing clock move twice as fast. Interoperability protocols get quicker actionable signals." },
-      "stakersNodes": { "impact": "High", "description": "Lower reward variability from smaller, more frequent rewards reducing pooling incentives. Better resource utilization with smoother bandwidth usage, but must handle doubled message frequency and new subslot timing (3s/1.5s/1.5s)." },
+      "stakersNodes": { "impact": "High", "description": "Lower reward variability from smaller, more frequent rewards reducing pooling incentives. Better resource utilization with smoother bandwidth usage, but must handle doubled consensus message frequency and new subslot timing (3s/1.5s/1.5s)." },
       "clClients": { "impact": "High", "description": "Major implementation for conditional slot timing logic, new subslot schedules (3s block proposal, 1.5s attestations, 1.5s aggregation), and doubled consensus message processing while maintaining validator participation." },
       "elClients": { "impact": "Medium", "description": "Gas limit votes halved to maintain \"gas per 12 seconds\" throughput semantics. Blob targets and limits halved. May need investigation of contracts assuming fixed 12-second slot times." }
     },
     "benefits": [
-      "Halves transaction confirmation time from 12s to 6s with better censorship resistance",
+      "Halves transaction confirmation time from maximum 12s to maximum 6s with better censorship resistance",
       "Makes DeFi exchanges more efficient with frequent price updates and reduced arbitrage losses",
       "Creates healthier block construction markets with more frequent, smaller auction opportunities",
       "Improves interoperability with faster L1 finality for rollups and bridges",

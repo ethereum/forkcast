@@ -35,7 +35,7 @@ export const networkUpgrades: NetworkUpgrade[] = [
     id: 'glamsterdam',
     path: '/upgrade/glamsterdam',
     name: 'Glamsterdam Upgrade',
-    description: 'Major network upgrade with many competing headliner proposals including ePBS, EVM64, Pureth, Delayed Execution, Block-level Access Lists, and FOCIL. Named after the combination of "Amsterdam" (execution layer upgrade, named after the previous Devconnect location) and "Gloas" (consensus layer upgrade, named after a star).',
+    description: 'Major network upgrade whose "headliner feature" is currently being decided. Named after the combination of "Amsterdam" (execution layer upgrade, named after the previous Devconnect location) and "Gloas" (consensus layer upgrade, named after a star).',
     tagline: 'Multiple major features competing for inclusion including ePBS for MEV resistance, EVM64 for computational efficiency, Pureth for trustless data access, and several other proposals for improved UX and scaling.',
     status: 'Planning',
     activationDate: 'TBD',

@@ -17,7 +17,7 @@ This is a standalone client-side application that provides public access to info
   - Layman-friendly explanations
   - Inclusion stage (Proposed, Considered, Scheduled, Declined)
   - Impact on different stakeholders (developers, users, validators, etc.)
-  - Alignment with Ethereum's North Star goals (Scale L1, Scale L2, Improve UX)
+  - Alignment with Ethereum's North Star goals (Scale L1, Scale blobs, Improve UX)
   - Benefits, trade-offs, and timeline information
 
 ## Development

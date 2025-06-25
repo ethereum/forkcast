@@ -26,7 +26,7 @@ interface EIP {
   northStars?: string[];
   northStarAlignment?: {
     scaleL1?: { impact: string, description: string };
-    scaleL2?: { impact: string, description: string };
+    scaleBlobs?: { impact: string, description: string };
     improveUX?: { impact: string, description: string };
   };
   stakeholderImpacts?: {
@@ -791,10 +791,10 @@ const PublicNetworkUpgradePage: React.FC<PublicNetworkUpgradePageProps> = ({
                                       <p className="text-slate-700 text-xs leading-relaxed">{eip.northStarAlignment.scaleL1.description}</p>
                                     </div>
                                   )}
-                                  {eip.northStarAlignment?.scaleL2 && (
+                                  {eip.northStarAlignment?.scaleBlobs && (
                                     <div className="bg-white border border-slate-200 rounded p-4">
                                       <h5 className="font-semibold text-slate-900 text-xs mb-3 border-b border-purple-200 pb-2">Scale Blobs</h5>
-                                      <p className="text-slate-700 text-xs leading-relaxed">{eip.northStarAlignment.scaleL2.description}</p>
+                                      <p className="text-slate-700 text-xs leading-relaxed">{eip.northStarAlignment.scaleBlobs.description}</p>
                                     </div>
                                   )}
                                   {eip.northStarAlignment?.improveUX && (
@@ -1013,10 +1013,10 @@ const PublicNetworkUpgradePage: React.FC<PublicNetworkUpgradePageProps> = ({
                                       <p className="text-slate-700 text-xs leading-relaxed">{eip.northStarAlignment.scaleL1.description}</p>
                                     </div>
                                   )}
-                                  {eip.northStarAlignment?.scaleL2 && (
+                                  {eip.northStarAlignment?.scaleBlobs && (
                                     <div className="bg-white border border-slate-200 rounded p-4">
                                       <h5 className="font-semibold text-slate-900 text-xs mb-3 border-b border-purple-200 pb-2">Scale Blobs</h5>
-                                      <p className="text-slate-700 text-xs leading-relaxed">{eip.northStarAlignment.scaleL2.description}</p>
+                                      <p className="text-slate-700 text-xs leading-relaxed">{eip.northStarAlignment.scaleBlobs.description}</p>
                                     </div>
                                   )}
                                   {eip.northStarAlignment?.improveUX && (

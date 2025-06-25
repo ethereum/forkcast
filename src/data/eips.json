@@ -999,23 +999,23 @@
     "northStarAlignment": {
       "scaleL1": { "impact": "High", "description": "Enables for much larger payloads by removing the broadcast and the execution from the hot path of block validation." },
       "scaleBlobs": { "impact": "Medium", "description": "Enables for much larger number of blobs by removing the broadcast and data availability sampling from the hot path of block validation." },
-      "improveUX": { "impact": "High", "description": "Reduces transaction censorship, provides more predictable inclusion times, and makes block production more democratic and accessible." }
+      "improveUX": { "impact": "High", "description": "Second order effect of lower prices and higher tx throughput. Slight delay in minimal tx iclusion time from 0 to ~2 seconds." }
     },
     "stakeholderImpacts": {
-      "endUsers": { "impact": "High", "description": "Dramatically reduced transaction censorship, more predictable transaction inclusion, and protection from MEV extraction that currently inflates transaction costs." },
-      "appDevs": { "impact": "Medium", "description": "More predictable transaction ordering and reduced MEV impact on application logic, enabling more reliable automated trading and DeFi strategies." },
-      "walletDevs": { "impact": "Medium", "description": "Can provide better transaction inclusion predictions and reduced exposure to MEV-driven front-running attacks." },
-      "toolingInfra": { "impact": "High", "description": "Major updates needed for block production monitoring, MEV analysis tools, and validator infrastructure to handle the new proposer-builder separation model." },
-      "layer2s": { "impact": "Medium", "description": "More predictable L1 settlement environment and reduced MEV impact on Layer 2 to Layer 1 transactions." },
-      "stakersNodes": { "impact": "High", "description": "Fundamentally changes validator responsibilities - proposers focus on consensus while builders handle transaction ordering, reducing hardware and expertise requirements." },
-      "clClients": { "impact": "High", "description": "Major implementation work required for the new proposer-builder coordination mechanisms and consensus layer protocol changes." },
-      "elClients": { "impact": "High", "description": "Significant changes needed for block construction separation, new transaction ordering mechanisms, and coordination with consensus layer proposer selection." }
+      "endUsers": { "impact": "High", "description": "Second order effect of lower prices and higher tx throughput." },
+      "appDevs": { "impact": "Medium", "description": "No direct impact. It enables applications to leverage previous builder information, something that is not currently available. It enables trustless preconfirmation schemes." },
+      "walletDevs": { "impact": "Medium", "description": "No direct impact. It enables wallets to send encrypted txs to anonymous builders." },
+      "toolingInfra": { "impact": "High", "description": "Explorers and block monitors need updates to handle the separation of the beacon block from the payload." },
+      "layer2s": { "impact": "Medium", "description": "Second order effect of higher blob count being possible." },
+      "stakersNodes": { "impact": "High", "description": "Major changes and updates are needed for trustless monitoring in staking pools. Staking UX is improved by a refined builder picking and monitoring." },
+      "clClients": { "impact": "High", "description": "Major changes for CL clients" },
+      "elClients": { "impact": "High", "description": "No changes for EL clients." }
     },
     "benefits": [
-      "Reduces transaction censorship and MEV extraction",
-      "Democratizes block production by lowering barriers",
-      "Improves transaction inclusion predictability", 
-      "Makes Ethereum more resistant to centralization pressures"
+      "Better slot utilization getting close to 100% utilization for broadcasting + execution",
+      "Removal of most of the heavy work from the hot path of block validation.",
+      "Removal of trust assumptions for proposers and builders.", 
+      "Removal of trust assumptions on off-protocol closed source software."
     ]
   },
   {
@@ -1278,8 +1278,8 @@
     "id": 7805,
     "title": "EIP-7805: Fork-Choice Inclusion Lists (FOCIL)",
     "status": "Draft",
-    "description": "Implements fork-choice enforced inclusion lists to improve censorship resistance and transaction inclusion guarantees.",
-    "author": "TBD",
+    "description": "Fork-Choice enforced Inclusion Lists improve improve censorship resistance by enable multiple proposer to force-include transactions in Ethereum blocks.",
+    "author": "Thomas Thiery (@soispoke) <thomas.thiery@ethereum.org>, Francesco D'Amato <francesco.damato@ethereum.org>, Julian Ma <julian.ma@ethereum.org>, BarnabÃ© Monnot <barnabe.monnot@ethereum.org>, Terence Tsao <ttsao@offchainlabs.com>, Jacob Kaufmann <jacob.kaufmann@ethereum.org>, Jihoon Song <jihoonsong.dev@gmail.com>",
     "type": "Standards Track",
     "category": "Core",
     "createdDate": "2024-05-15",
@@ -1292,28 +1292,27 @@
         "headlinerDiscussionLink": "https://ethereum-magicians.org/t/eip-7805-fork-choice-inclusion-lists-focil-as-a-candidate-for-glamsterdam/24342"
       }
     ],
-    "laymanDescription": "This enforces transaction inclusion at the fork choice level, making censorship much more difficult by requiring validators to include specific transactions or face consensus penalties.",
-    "northStars": ["Improve UX", "Scale L1"],
+    "laymanDescription": "FOCIL empowers multiple validators to mandate the inclusion of specific transactions in each block, thereby improving the network's censorship resistance properties.",
+    "northStars": ["Improve UX", "Scale L1", "Scale blobs"],
     "northStarAlignment": {
-      "scaleL1": { "impact": "Medium", "description": "Improves network censorship resistance and ensures more democratic transaction inclusion, strengthening Ethereum's credible neutrality." },
-      "scaleBlobs": { "impact": "Low", "description": "More censorship-resistant L1 provides better foundation for Layer 2 operations and settlement guarantees." },
+      "scaleL1": { "impact": "Medium", "description": "Ethereum currently relies on local block builders to preserve censorship resistance. However, depending on local block builders comes at a cost to performance and incentives, which may conflict with scaling throughput. FOCIL is crucial in L1 scaling because it helps decouple local block building from censorship resistance." },
+      "scaleBlobs": { "impact": "Low", "description": "A more censorship-resistant L1 provides better foundation for Layer 2 settlement guarantees, and allows to shorten the exit time window for optimistic rollups." },
       "improveUX": { "impact": "High", "description": "Provides strong guarantees against transaction censorship and ensures fair access to block space for all users regardless of transaction content." }
     },
     "stakeholderImpacts": {
-      "endUsers": { "impact": "High", "description": "Strong protection against transaction censorship, guaranteed inclusion for valid transactions, and improved confidence in transaction processing." },
+      "endUsers": { "impact": "High", "description": "Strong protection against transaction censorship for all end users, guaranteed inclusion for valid transactions, and improved confidence in Ethereum's credible neutrality." },
       "appDevs": { "impact": "Medium", "description": "Can build applications with stronger inclusion guarantees and reduced concerns about application-specific censorship." },
       "walletDevs": { "impact": "Medium", "description": "Can provide users with stronger transaction inclusion guarantees and better protection against selective censorship." },
-      "toolingInfra": { "impact": "High", "description": "Censorship monitoring tools, inclusion list analysis, and validator behavior tracking systems need major updates for FOCIL mechanisms." },
-      "layer2s": { "impact": "Medium", "description": "More censorship-resistant L1 settlement provides stronger guarantees for Layer 2 transaction processing and bridge operations." },
-      "stakersNodes": { "impact": "High", "description": "Validators must comply with inclusion list requirements or face consensus penalties, fundamentally changing block production responsibilities." },
-      "clClients": { "impact": "High", "description": "Major implementation work required for inclusion list enforcement, fork choice modifications, and consensus layer penalty mechanisms." },
-      "elClients": { "impact": "Medium", "description": "Need to coordinate with consensus layer inclusion list requirements and implement transaction inclusion validation mechanisms." }
+      "toolingInfra": { "impact": "High", "description": "Censorship monitoring tools, inclusion list analysis, and validator behavior tracking systems need major updates after FOCIL implementation." },
+      "layer2s": { "impact": "Medium", "description": "More censorship-resistant L1 settlement provides stronger guarantees for Layer 2 transaction processing, bridge operations, and reduces rollup challenge period risks." },
+      "stakersNodes": { "impact": "High", "description": "Validators must now build inclusion lists according to the protocol rules, and attesters must enforce inclusion lists conditions are satisfied before voting for a block." },
+      "clClients": { "impact": "High", "description": "Major implementation work required for inclusion lists propagation and enforcement, including fork-choice modifications." },
+      "elClients": { "impact": "Medium", "description": "Need build inclusion lists, to update the execution payload with inclusion list transactions, and communicate with the consensus layer." }
     },
     "benefits": [
       "Provides strong censorship resistance guarantees",
       "Ensures fair access to block space for all users",
-      "Strengthens Ethereum's credible neutrality",
-      "Reduces validator centralization pressures"
+      "Strengthens Ethereum's credible neutrality"
     ]
   },
   {

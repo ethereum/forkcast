@@ -995,7 +995,7 @@
       }
     ],
     "laymanDescription": "Proposes the decoupling of the consensus block from the execution payload, both in broadcast and validation. This feature enables L1 scaling by significantly changing the time required to both broadcast and executing the payload together with all the blob data, from the current ~2 seconds to aproximately ~9 seconds. It allows for a maximum portion of the slot to be spent in propagation large data.",
-    "northStars": ["Scale L1", "Improve UX"],
+    "northStars": ["Scale L1", "Scale blobs", "Improve UX"],
     "northStarAlignment": {
       "scaleL1": { "impact": "High", "description": "Enables for much larger payloads by removing the broadcast and the execution from the hot path of block validation." },
       "scaleBlobs": { "impact": "Medium", "description": "Enables for much larger number of blobs by removing the broadcast and data availability sampling from the hot path of block validation." },
@@ -1209,10 +1209,10 @@
       }
     ],
     "laymanDescription": "This introduces a delay between when transactions are committed and when they're executed, reducing MEV extraction and front-running while improving transaction ordering fairness.",
-    "northStars": ["Improve UX", "Scale L1"],
+    "northStars": ["Scale L1"],
     "northStarAlignment": {
       "scaleL1": { "impact": "Medium", "description": "Improves transaction ordering efficiency and reduces MEV-driven congestion, enabling more predictable block space utilization." },
-      "scaleBlobs": { "impact": "Low", "description": "More predictable L1 transaction ordering benefits Layer 2 settlement patterns and bridge operations." },
+      "scaleBlobs": { "impact": "Low", "description": "Low impact" },
       "improveUX": { "impact": "High", "description": "Dramatically reduces front-running and MEV extraction, providing fairer transaction ordering and more predictable execution for users." }
     },
     "stakeholderImpacts": {

@@ -139,8 +139,7 @@
     "northStars": ["Scale L1", "Scale blobs"],
     "northStarAlignment": {
       "scaleL1": { "impact": "High", "description": "Essential foundation for scaling Ethereum's data capacity. Builds the infrastructure needed for full Danksharding, potentially increasing data throughput from ~375KB/s to several MB/s in future upgrades." },
-      "scaleBlobs": { "impact": "High", "description": "Directly enables Layer 2 scaling by allowing nodes to efficiently handle much more data without overwhelming individual participants." },
-      "improveUX": { "impact": "Low", "description": "Infrastructure improvement that indirectly benefits users through significantly cheaper Layer 2 transactions and higher throughput applications." }
+      "scaleBlobs": { "impact": "High", "description": "Directly enables Layer 2 scaling by allowing nodes to efficiently handle much more data without overwhelming individual participants." }
     },
     "stakeholderImpacts": {
       "endUsers": { "impact": "Medium", "description": "Benefits through much cheaper Layer 2 transactions and access to applications that need more data throughput." },
@@ -234,9 +233,7 @@
     "laymanDescription": "This networking upgrade removes outdated data from node synchronization, saving approximately 530GB of bandwidth per sync. It also prepares for removing old blockchain history from new nodes starting in May 2025.",
     "northStars": ["Scale L1"],
     "northStarAlignment": {
-      "scaleL1": { "impact": "Medium", "description": "Significant bandwidth reduction (530GB+ per sync) and improved networking efficiency through bloom filter removal and better historical data coordination." },
-      "scaleBlobs": { "impact": "Low", "description": "More efficient networking foundation benefits Layer 2 operations indirectly." },
-      "improveUX": { "impact": "Low", "description": "Faster node synchronization due to reduced bandwidth requirements and better peer discovery for historical data." }
+      "scaleL1": { "impact": "Medium", "description": "Significant bandwidth reduction (530GB+ per sync) and improved networking efficiency through bloom filter removal and better historical data coordination." }
     },
     "stakeholderImpacts": {
       "endUsers": { "impact": "Low", "description": "Indirect benefits through faster node sync times and reduced bandwidth usage during initial sync." },
@@ -325,8 +322,7 @@
     "laymanDescription": "This introduces a 8192-bit (1024 byte) limit on each input to the MODEXP cryptographic precompile. MODEXP has been a source of consensus bugs due to unbounded inputs. By setting practical limits that cover all real-world use cases (like RSA verification), this reduces the testing surface area and paves the way for future replacement with more efficient EVM code.",
     "northStars": ["Scale L1"],
     "northStarAlignment": {
-      "scaleL1": { "impact": "Low", "description": "Improves network reliability by preventing consensus bugs and reducing testing complexity for a critical precompile." },
-      "improveUX": { "impact": "Low", "description": "More predictable execution behavior for cryptographic operations, enabling future optimizations." }
+      "scaleL1": { "impact": "Low", "description": "Improves network reliability by preventing consensus bugs and reducing testing complexity for a critical precompile." }
     },
     "stakeholderImpacts": {
       "endUsers": { "impact": "None", "description": "No impact - analysis shows no historical transactions would be affected by these limits." },
@@ -365,7 +361,6 @@
     "northStars": ["Scale L1", "Improve UX"],
     "northStarAlignment": {
       "scaleL1": { "impact": "Medium", "description": "Improves network stability and resilience against DoS attacks by preventing individual transactions from consuming excessive block space, enabling more predictable block validation times." },
-      "scaleBlobs": { "impact": "Low", "description": "More predictable block space availability could benefit Layer 2 settlement transactions, but may limit future L2 bundling strategies." },
       "improveUX": { "impact": "Medium", "description": "More predictable transaction inclusion and fairer access to block space, though may require some large applications to restructure their operations." }
     },
     "stakeholderImpacts": {
@@ -421,8 +416,7 @@
     "laymanDescription": "This increases the gas cost of the ModExp cryptographic precompile to address underpriced operations. It raises the minimum cost from 200 to 500 gas and doubles costs for large inputs over 32 bytes.",
     "northStars": ["Scale L1"],
     "northStarAlignment": {
-      "scaleL1": { "impact": "Low", "description": "Improves network economic sustainability by ensuring cryptographic precompiles are properly priced, preventing potential DoS vectors from underpriced operations." },
-      "improveUX": { "impact": "Low", "description": "More accurate pricing for cryptographic operations, though may increase costs for some RSA and modular exponentiation use cases." }
+      "scaleL1": { "impact": "Low", "description": "Improves network economic sustainability by ensuring cryptographic precompiles are properly priced, preventing potential DoS vectors from underpriced operations." }
     },
     "stakeholderImpacts": {
       "endUsers": { "impact": "Low", "description": "Most users unaffected. Applications using ModExp with large inputs (>32 bytes) will see increased gas costs." },
@@ -460,7 +454,6 @@
     "laymanDescription": "This creates a new lightweight process to adjust blob storage parameters. Instead of waiting for a major upgrade, Ethereum can make smaller, more frequent adjustments to blob capacity to accommodate changing demand from Layer 2s.",
     "northStars": ["Scale blobs", "Improve UX"],
     "northStarAlignment": {
-      "scaleL1": { "impact": "Low", "description": "Low impact" },
       "scaleBlobs": { "impact": "High", "description": "Directly addresses the rapid growth in L2 data availability demand by enabling more frequent, incremental blob capacity increases to prevent sustained saturation." },
       "improveUX": { "impact": "Medium", "description": "Provides predictable scaling framework that gives L2 builders confidence to commit to Ethereum over alternative DA solutions." }
     },
@@ -500,9 +493,7 @@
     "laymanDescription": "This addresses blob fee market problems by introducing a reserve price tied to execution costs. When Layer 2 execution costs dominate blob costs, this prevents the blob fee market from becoming ineffective at 1 wei. See a storybook-style explanation [here](https://notes.ethereum.org/@anderselowsson/AIG)!",
     "northStars": ["Scale blobs"],
     "northStarAlignment": {
-      "scaleL1": { "impact": "Low", "description": "Improves economic sustainability of blob operations and prevents potential inefficiencies in the fee market mechanism." },
-      "scaleBlobs": { "impact": "High", "description": "Critical for L2 economics - ensures sustainable blob pricing that reflects true costs and maintains effective price discovery as L2 usage scales." },
-      "improveUX": { "impact": "Medium", "description": "Prevents dramatic fee spikes and provides more stable, predictable blob pricing for Layer 2 users by maintaining market elasticity." }
+      "scaleBlobs": { "impact": "High", "description": "Critical for L2 economics - ensures sustainable blob pricing that reflects true costs and maintains effective price discovery as L2 usage scales." }
     },
     "stakeholderImpacts": {
       "endUsers": { "impact": "Medium", "description": "More stable and predictable Layer 2 transaction costs, avoiding dramatic fee spikes when blob market becomes inelastic." },
@@ -540,9 +531,7 @@
     "laymanDescription": "This proposes increasing the gas limit from 36M to a higher value (specific amount TBD) to scale L1 execution capacity. While this change does not require a hard fork (gas limit is a validator-chosen parameter), it requires extensive testing to ensure network stability at higher computational loads and so inclusion of the EIP in the hard fork ensures that this work is prioritized and ongoing.",
     "northStars": ["Scale L1"],
     "northStarAlignment": {
-      "scaleL1": { "impact": "High", "description": "Directly increases overall network throughput by allowing more computation per block, the most straightforward way to scale L1 execution capacity." },
-      "scaleBlobs": { "impact": "Low", "description": "More block space available for Layer 2 settlement transactions, though L2s primarily benefit from blob scaling." },
-      "improveUX": { "impact": "Medium", "description": "Enables more complex smart contracts, reduces transaction queuing during high demand, and improves confirmation times." }
+      "scaleL1": { "impact": "High", "description": "Directly increases overall network throughput by allowing more computation per block, the most straightforward way to scale L1 execution capacity." }
     },
     "stakeholderImpacts": {
       "endUsers": { "impact": "Medium", "description": "Benefits from higher throughput and faster transaction processing, but potential risks if inadequately tested or if RPC infrastructure can't keep up." },
@@ -581,7 +570,6 @@
     "northStars": ["Improve UX", "Scale L1"],
     "northStarAlignment": {
       "scaleL1": { "impact": "Low", "description": "Minor gas efficiency improvements for ETH transfers by avoiding unnecessary code execution and removing security overhead." },
-      "scaleBlobs": { "impact": "Low", "description": "More efficient ETH transfers in Layer 2 smart contracts and protocols." },
       "improveUX": { "impact": "Medium", "description": "Significantly improves smart contract security by eliminating reentrancy vectors and DoS attacks from ETH transfers, enabling safer application development." }
     },
     "stakeholderImpacts": {
@@ -621,7 +609,6 @@
     "northStars": ["Improve UX", "Scale L1"],
     "northStarAlignment": {
       "scaleL1": { "impact": "Low", "description": "Better resource management and gas metering for large contracts while maintaining network efficiency and preventing DoS attacks." },
-      "scaleBlobs": { "impact": "Low", "description": "Enables deployment of more sophisticated Layer 2 infrastructure contracts without size constraints." },
       "improveUX": { "impact": "High", "description": "Major developer experience improvement - eliminates need for complex architectural patterns like Diamond Standard, reduces deployment complexity, and enables single-contract solutions." }
     },
     "stakeholderImpacts": {
@@ -699,8 +686,6 @@
     "laymanDescription": "This makes Ethereum's block proposer schedule completely predictable ahead of time. Currently, validators can't know who will propose blocks in the next epoch until it starts, which creates uncertainty for MEV mitigation and preconfirmation protocols. This change pre-calculates and stores the proposer schedule for future epochs, making it deterministic and accessible to applications.",
     "northStars": ["Improve UX"],
     "northStarAlignment": {
-      "scaleL1": { "impact": "Low", "description": "Enables more sophisticated MEV mitigation strategies and preconfirmation protocols by providing predictable proposer schedules, improving overall network efficiency and reducing coordination overhead." },
-      "scaleBlobs": { "impact": "Low", "description": "More predictable block production timing benefits Layer 2 settlement coordination and blob transaction scheduling." },
       "improveUX": { "impact": "High", "description": "Enables reliable preconfirmation services and improved transaction ordering predictability." }
     },
     "stakeholderImpacts": {
@@ -737,7 +722,6 @@
     "laymanDescription": "This adds a maximum size limit of 10MB to Ethereum blocks to prevent network instability and denial-of-service attacks. Currently, blocks can grow very large, which slows down network propagation and increases the risk of temporary forks. This limit ensures blocks stay within a reasonable size that the network can efficiently process and propagate.",
     "northStars": ["Scale L1"],
     "northStarAlignment": {
-      "scaleL1": { "impact": "Medium", "description": "Improves network stability and prevents DoS attacks by limiting block sizes, ensuring consistent block propagation and reducing the risk of network fragmentation." },
       "improveUX": { "impact": "Low", "description": "Improves network reliability and reduces the risk of temporary forks, leading to more consistent transaction confirmation times." }
     },
     "stakeholderImpacts": {
@@ -776,8 +760,7 @@
     "laymanDescription": "This restructures how gas costs work to prepare for stateless clients - nodes that can validate blocks without storing the entire blockchain state. The changes ensure gas costs accurately reflect the new computational model.",
     "northStars": ["Scale L1"],
     "northStarAlignment": {
-      "scaleL1": { "impact": "High", "description": "Essential foundation for stateless clients, which enable massive improvements in node syncing speed and storage requirements. Enables nodes to validate without storing full state." },
-      "improveUX": { "impact": "Medium", "description": "Enables much faster node syncing and reduces hardware requirements for running Ethereum nodes, improving decentralization." }
+      "scaleL1": { "impact": "High", "description": "Essential foundation for stateless clients, which enable massive improvements in node syncing speed and storage requirements. Enables nodes to validate without storing full state." }
     },
     "stakeholderImpacts": {
       "endUsers": { "impact": "Low", "description": "Indirect benefits through improved network decentralization and faster node syncing, but gas cost changes may affect some transaction patterns." },
@@ -816,7 +799,6 @@
     "northStars": ["Scale L1", "Improve UX"],
     "northStarAlignment": {
       "scaleL1": { "impact": "High", "description": "Revolutionary improvement to state management enabling stateless clients, faster state access, and much more efficient proof sizes. This is foundational infrastructure for long-term scaling." },
-      "scaleBlobs": { "impact": "Medium", "description": "More efficient state proofs benefit Layer 2 state commitments and cross-chain verification mechanisms." },
       "improveUX": { "impact": "High", "description": "Enables instant node syncing through stateless operation, dramatically reducing barriers to running Ethereum infrastructure and improving decentralization." }
     },
     "stakeholderImpacts": {
@@ -857,8 +839,7 @@
     "laymanDescription": "This ensures that the data needed to reconstruct Verkle tree proofs is properly preserved during the transition. It's a crucial technical requirement that maintains data availability while migrating to the new tree structure.",
     "northStars": ["Scale L1"],
     "northStarAlignment": {
-      "scaleL1": { "impact": "Medium", "description": "Essential infrastructure component for Verkle tree transition, ensuring data integrity and availability during the state system migration." },
-      "improveUX": { "impact": "Low", "description": "Invisible infrastructure improvement that ensures reliable access to historical state data during transition." }
+      "scaleL1": { "impact": "Medium", "description": "Essential infrastructure component for Verkle tree transition, ensuring data integrity and availability during the state system migration." }
     },
     "stakeholderImpacts": {
       "endUsers": { "impact": "None", "description": "No direct user-facing impact - this is purely infrastructure maintenance during the Verkle transition." },
@@ -897,7 +878,6 @@
     "northStars": ["Scale L1", "Improve UX"],
     "northStarAlignment": {
       "scaleL1": { "impact": "High", "description": "Essential for efficient Verkle tree proof verification within smart contracts, enabling advanced stateless applications and cross-chain verification." },
-      "scaleBlobs": { "impact": "Medium", "description": "Enables efficient verification of L1 state proofs in Layer 2 systems and improved cross-chain bridge security." },
       "improveUX": { "impact": "Medium", "description": "Enables new applications requiring state proof verification at much lower gas costs than pure smart contract implementations." }
     },
     "stakeholderImpacts": {
@@ -936,8 +916,7 @@
     "laymanDescription": "This increases gas costs for hash operations to better reflect their computational cost in the Verkle tree environment. The adjustment ensures fair pricing as the protocol transitions to new cryptographic primitives.",
     "northStars": ["Scale L1"],
     "northStarAlignment": {
-      "scaleL1": { "impact": "Low", "description": "Ensures sustainable economics for hash operations in the Verkle tree environment and prevents potential DoS vectors from underpriced operations." },
-      "improveUX": { "impact": "Low", "description": "More accurate pricing for cryptographic operations, though may increase costs for some hash-intensive applications." }
+      "scaleL1": { "impact": "Low", "description": "Ensures sustainable economics for hash operations in the Verkle tree environment and prevents potential DoS vectors from underpriced operations." }
     },
     "stakeholderImpacts": {
       "endUsers": { "impact": "Low", "description": "Most users unaffected, but hash-intensive applications may see slightly increased transaction costs." },
@@ -976,7 +955,6 @@
     "northStars": ["Improve UX", "Scale L1"],
     "northStarAlignment": {
       "scaleL1": { "impact": "Medium", "description": "Reduces wasted computation from failed transactions and enables more efficient transaction patterns that only execute when conditions are optimal." },
-      "scaleBlobs": { "impact": "Low", "description": "More efficient transaction patterns could benefit Layer 2 systems with conditional execution logic." },
       "improveUX": { "impact": "High", "description": "Dramatically improves user experience by eliminating failed transactions that waste gas, enabling more sophisticated automation and better transaction success rates." }
     },
     "stakeholderImpacts": {
@@ -1015,7 +993,6 @@
     "laymanDescription": "This adds a simple but powerful new opcode that lets smart contracts know the current slot number (Ethereum's 12-second time unit). This enables precise time-based logic without relying on block timestamps.",
     "northStars": ["Improve UX"],
     "northStarAlignment": {
-      "scaleL1": { "impact": "None", "description": "No direct scaling benefits, though more precise timing could enable more efficient protocol designs." },
       "improveUX": { "impact": "Medium", "description": "Enables more reliable time-based smart contracts and better coordination between consensus and execution layers." }
     },
     "stakeholderImpacts": {
@@ -1099,7 +1076,6 @@
     "northStars": ["Improve UX", "Scale L1"],
     "northStarAlignment": {
       "scaleL1": { "impact": "High", "description": "Makes Ethereum a superior confirmation engine by doubling proposer frequency while maintaining throughput. Improves censorship resistance through 2x more proposers per unit time." },
-      "scaleBlobs": { "impact": "High", "description": "Layer 2 rollups receive L1 finality quicker with faster safe confirmations and block inclusion. Based rollups clock moves twice as fast, directly improving their performance." },
       "improveUX": { "impact": "High", "description": "Wallets display fresher data with 6-second confirmations. DeFi exchanges become more efficient with frequent price updates, reducing arbitrage losses and attracting more liquidity." }
     },
     "stakeholderImpacts": {
@@ -1145,7 +1121,6 @@
     "northStars": ["Scale L1", "Improve UX"],
     "northStarAlignment": {
       "scaleL1": { "impact": "Medium", "description": "Significantly improves computational efficiency for mathematical operations, reducing gas costs and enabling more complex on-chain calculations." },
-      "scaleBlobs": { "impact": "Low", "description": "More efficient computations benefit Layer 2 proving systems and rollup verification mechanisms." },
       "improveUX": { "impact": "Medium", "description": "Cheaper and faster mathematical operations enable more sophisticated on-chain applications and reduce gas costs for computation-heavy smart contracts." }
     },
     "stakeholderImpacts": {
@@ -1187,7 +1162,6 @@
     "northStars": ["Improve UX", "Scale L1"],
     "northStarAlignment": {
       "scaleL1": { "impact": "Medium", "description": "Improves network decentralization by reducing reliance on trusted RPC providers and enabling more efficient light client verification." },
-      "scaleBlobs": { "impact": "Low", "description": "More trustless data access benefits Layer 2 light clients and cross-chain verification mechanisms." },
       "improveUX": { "impact": "High", "description": "Eliminates trust requirements for data access, enables secure light clients, and dramatically improves decentralization of the application ecosystem." }
     },
     "stakeholderImpacts": {
@@ -1229,7 +1203,6 @@
     "northStars": ["Scale L1", "Improve UX"],
     "northStarAlignment": {
       "scaleL1": { "impact": "High", "description": "Eliminates all known reorg attacks, dramatically improving network security and enabling more aggressive scaling optimizations without security trade-offs." },
-      "scaleBlobs": { "impact": "Medium", "description": "More secure and predictable L1 settlement eliminates reorg risks for Layer 2 bridge security and settlement finality." },
       "improveUX": { "impact": "High", "description": "Eliminates transaction reordering attacks, provides guaranteed inclusion properties, and dramatically improves user confidence in transaction finality." }
     },
     "stakeholderImpacts": {
@@ -1270,9 +1243,7 @@
     "laymanDescription": "This introduces a delay between when transactions are committed and when they're executed, reducing MEV extraction and front-running while improving transaction ordering fairness.",
     "northStars": ["Scale L1"],
     "northStarAlignment": {
-      "scaleL1": { "impact": "Medium", "description": "Improves transaction ordering efficiency and reduces MEV-driven congestion, enabling more predictable block space utilization." },
-      "scaleBlobs": { "impact": "Low", "description": "Low impact" },
-      "improveUX": { "impact": "High", "description": "Dramatically reduces front-running and MEV extraction, providing fairer transaction ordering and more predictable execution for users." }
+      "scaleL1": { "impact": "Medium", "description": "Improves transaction ordering efficiency and reduces MEV-driven congestion, enabling more predictable block space utilization." }
     },
     "stakeholderImpacts": {
       "endUsers": { "impact": "High", "description": "Protection from front-running attacks, more fair transaction ordering, and reduced MEV tax on transactions leading to better execution prices." },
@@ -1313,7 +1284,6 @@
     "northStars": ["Scale L1", "Improve UX"],
     "northStarAlignment": {
       "scaleL1": { "impact": "Medium", "description": "Significantly reduces gas costs for state access through block-level optimization, improving overall network efficiency and throughput." },
-      "scaleBlobs": { "impact": "Low", "description": "More efficient state access patterns benefit Layer 2 settlement transactions and bridge operations." },
       "improveUX": { "impact": "Medium", "description": "Lower gas costs for complex applications and improved predictability for applications with similar state access patterns." }
     },
     "stakeholderImpacts": {
@@ -1400,7 +1370,6 @@
     "northStars": ["Scale L1", "Improve UX"],
     "northStarAlignment": {
       "scaleL1": { "impact": "High", "description": "Enables incremental deployment of more efficient execution environments like RISC-V and EVM64 for computationally intensive tasks while maintaining EVM compatibility. Removes JUMPDEST analysis overhead." },
-      "scaleBlobs": { "impact": "Medium", "description": "Better code analysis and performance improvements benefit Layer 2 execution and proof generation systems. Enables more efficient rollup implementations." },
       "improveUX": { "impact": "Medium", "description": "Provides better developer tools through improved code analysis, versioning capabilities, and performance improvements for computationally intensive applications." }
     },
     "stakeholderImpacts": {

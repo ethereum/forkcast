@@ -443,9 +443,9 @@
   },
   {
     "id": 7892,
-    "title": "EIP-7892: Blob Parameter Only Hardforks",
+    "title": "EIP-7892: Blob Parameter Only ('BPO') Hardforks",
     "status": "Draft",
-    "description": "Enables hardforks that only modify blob-related parameters without requiring full consensus changes.",
+    "description": "Enables hardforks that only modify blob-related parameters without requiring a new fork-version or changing any other consensus rules.",
     "author": "TBD",
     "type": "Standards Track",
     "category": "Core",
@@ -457,10 +457,10 @@
         "status": "Scheduled"
       }
     ],
-    "laymanDescription": "This creates a new lightweight upgrade system specifically for adjusting blob storage parameters. Instead of waiting for major upgrades, Ethereum can make smaller, more frequent adjustments to blob capacity as Layer 2 demand grows.",
+    "laymanDescription": "This creates a new lightweight process to adjust blob storage parameters. Instead of waiting for a major upgrade, Ethereum can make smaller, more frequent adjustments to blob capacity to accommodate changing demand from Layer 2s.",
     "northStars": ["Scale blobs", "Improve UX"],
     "northStarAlignment": {
-      "scaleL1": { "impact": "Medium", "description": "Enables more agile scaling of blob capacity as foundational data availability infrastructure, supporting continuous growth rather than large infrequent jumps." },
+      "scaleL1": { "impact": "Low", "description": "Low impact" },
       "scaleBlobs": { "impact": "High", "description": "Directly addresses the rapid growth in L2 data availability demand by enabling more frequent, incremental blob capacity increases to prevent sustained saturation." },
       "improveUX": { "impact": "Medium", "description": "Provides predictable scaling framework that gives L2 builders confidence to commit to Ethereum over alternative DA solutions." }
     },
@@ -497,7 +497,7 @@
         "status": "Scheduled"
       }
     ],
-    "laymanDescription": "This addresses blob fee market problems by introducing a reserve price tied to execution costs. When Layer 2 execution costs dominate blob costs, this prevents the blob fee market from becoming ineffective at 1 wei.",
+    "laymanDescription": "This addresses blob fee market problems by introducing a reserve price tied to execution costs. When Layer 2 execution costs dominate blob costs, this prevents the blob fee market from becoming ineffective at 1 wei. See a storybook-style explanation [here](https://notes.ethereum.org/@anderselowsson/AIG)!",
     "northStars": ["Scale blobs"],
     "northStarAlignment": {
       "scaleL1": { "impact": "Low", "description": "Improves economic sustainability of blob operations and prevents potential inefficiencies in the fee market mechanism." },
@@ -517,7 +517,7 @@
     "benefits": [
       "Prevents blob fee market collapse",
       "Maintains effective price discovery",
-      "Ensures fair compensation for node work",
+      "Ensures blob consumers pay fair market price for compute",
       "Reduces dramatic fee spikes"
     ]
   },
@@ -537,12 +537,12 @@
         "status": "Scheduled"
       }
     ],
-    "laymanDescription": "This proposes increasing the gas limit from 36M to a higher value (specific amount TBD) to scale L1 execution capacity. The change requires extensive testing to ensure network stability at higher computational loads.",
-    "northStars": ["Scale L1", "Improve UX"],
+    "laymanDescription": "This proposes increasing the gas limit from 36M to a higher value (specific amount TBD) to scale L1 execution capacity. While this change does not require a hard fork (gas limit is a validator-chosen parameter), it requires extensive testing to ensure network stability at higher computational loads and so inclusion of the EIP in the hard fork ensures that this work is prioritized and ongoing.",
+    "northStars": ["Scale L1"],
     "northStarAlignment": {
       "scaleL1": { "impact": "High", "description": "Directly increases overall network throughput by allowing more computation per block, the most straightforward way to scale L1 execution capacity." },
       "scaleBlobs": { "impact": "Low", "description": "More block space available for Layer 2 settlement transactions, though L2s primarily benefit from blob scaling." },
-      "improveUX": { "impact": "High", "description": "Enables more complex smart contracts, reduces transaction queuing during high demand, and improves confirmation times." }
+      "improveUX": { "impact": "Medium", "description": "Enables more complex smart contracts, reduces transaction queuing during high demand, and improves confirmation times." }
     },
     "stakeholderImpacts": {
       "endUsers": { "impact": "Medium", "description": "Benefits from higher throughput and faster transaction processing, but potential risks if inadequately tested or if RPC infrastructure can't keep up." },
@@ -642,22 +642,22 @@
     ]
   },
   {
-    "id": 7212,
-    "title": "RIP-7212: Precompile for secp256r1 Curve Support",
-    "status": "Final", 
-    "description": "Adds precompiled contract support for secp256r1 curve operations to enable efficient signature verification for modern cryptographic standards.",
-    "author": "Ulaş Erdoğan, et al.",
+    "id": 7951,
+    "title": "EIP-7951: Precompile for secp256r1 Curve Support",
+    "status": "Draft", 
+    "description": "Add precompiled contract for secp256r1 ECDSA signature verification with proper security checks",
+    "author": "Carl Beekhuizen (@carlbeek), Ulaş Erdoğan (@ulerdogan), Doğan Alpaslan (@doganalpaslan)",
     "type": "Standards Track",
     "category": "Core",
-    "createdDate": "2023-06-28",
-    "discussionLink": "https://ethereum-magicians.org/t/rip-7212-precompile-for-secp256r1-curve-support/14789",
+    "createdDate": "2025-05-27",
+    "discussionLink": "https://ethereum-magicians.org/t/eip-7951-precompile-for-secp256r1-curve-support/24360",
     "forkRelationships": [
       {
         "forkName": "Fusaka",
         "status": "Considered"
       }
     ],
-    "laymanDescription": "This adds support for a widely-used cryptographic curve called secp256r1 (also known as P-256) to Ethereum. Currently, Ethereum only supports the secp256k1 curve for signatures, but many devices and systems use secp256r1. This change allows Ethereum to verify signatures from devices like iPhones, Android phones, hardware wallets, and other systems that use this standard curve, making it easier to integrate with existing infrastructure.",
+    "laymanDescription": "This adds support for a widely-used cryptographic curve called secp256r1 (also known as P-256) to Ethereum. Currently, Ethereum only supports the secp256k1 curve for signatures, but many devices and systems use secp256r1. This change allows Ethereum to verify signatures from devices like iPhones, Android phones, hardware wallets, and other systems that use this standard curve, making it easier to integrate with existing infrastructure. Note: This EIP supercedes [RIP-7212](https://github.com/ethereum/RIPs/blob/master/RIPS/rip-7212.md).",
     "northStars": ["Improve UX"],
     "northStarAlignment": {
       "improveUX": { "impact": "High", "description": "Dramatically improves user experience by enabling native integration with billions of devices that use secp256r1, eliminating the need for complex signature conversion or additional infrastructure." }
@@ -697,11 +697,11 @@
       }
     ],
     "laymanDescription": "This makes Ethereum's block proposer schedule completely predictable ahead of time. Currently, validators can't know who will propose blocks in the next epoch until it starts, which creates uncertainty for MEV mitigation and preconfirmation protocols. This change pre-calculates and stores the proposer schedule for future epochs, making it deterministic and accessible to applications.",
-    "northStars": ["Scale L1", "Improve UX"],
+    "northStars": ["Improve UX"],
     "northStarAlignment": {
-      "scaleL1": { "impact": "Medium", "description": "Enables more sophisticated MEV mitigation strategies and preconfirmation protocols by providing predictable proposer schedules, improving overall network efficiency and reducing coordination overhead." },
+      "scaleL1": { "impact": "Low", "description": "Enables more sophisticated MEV mitigation strategies and preconfirmation protocols by providing predictable proposer schedules, improving overall network efficiency and reducing coordination overhead." },
       "scaleBlobs": { "impact": "Low", "description": "More predictable block production timing benefits Layer 2 settlement coordination and blob transaction scheduling." },
-      "improveUX": { "impact": "High", "description": "Enables better MEV protection for users, more reliable preconfirmation services, and improved transaction ordering predictability." }
+      "improveUX": { "impact": "High", "description": "Enables reliable preconfirmation services and improved transaction ordering predictability." }
     },
     "stakeholderImpacts": {
       "endUsers": { "impact": "Medium", "description": "Better protection from MEV extraction through improved preconfirmation services and more predictable transaction ordering." },
@@ -714,11 +714,8 @@
       "elClients": { "impact": "Low", "description": "Minimal impact as this primarily affects consensus layer proposer scheduling and beacon state management." }
     },
     "benefits": [
-      "Enables sophisticated MEV mitigation strategies",
-      "Improves preconfirmation protocol reliability",
-      "Makes block proposer schedule deterministic",
-      "Simplifies on-chain preconfirmation components",
-      "Prevents validator manipulation of proposer schedules"
+      "Improves predictability for based preconfirmation protocols",
+      "Makes block proposer schedule deterministic"
     ]
   },
   {
@@ -1399,7 +1396,7 @@
         "headlinerDiscussionLink": "https://ethereum-magicians.org/t/glamsterdam-headliner-proposal-eof/24464"
       }
     ],
-    "laymanDescription": "This introduces a new container format for EVM bytecode that enables code versioning, removes complex jump analysis, and paves the way for new execution environments like RISC-V and EVM64 within the same contract. Originally declined from Fusaka due to controversy, it's being reproposed with multiple variants to address community concerns.",
+    "laymanDescription": "This introduces a new container format for EVM bytecode that enables code versioning, removes complex jump analysis, and paves the way for new execution environments like RISC-V and EVM64 within the same contract. This EIP was Declined for Inclusion from Fusaka on [April 28th](https://blog.ethereum.org/2025/04/29/checkpoint-2#eof) due to a lack of consensus on implementation details and the resulting potential slowdown of shipping PeerDAS. It has been re-proposed as a headlining feature in Glamsterdam with multiple variants to address community concerns.",
     "northStars": ["Scale L1", "Improve UX"],
     "northStarAlignment": {
       "scaleL1": { "impact": "High", "description": "Enables incremental deployment of more efficient execution environments like RISC-V and EVM64 for computationally intensive tasks while maintaining EVM compatibility. Removes JUMPDEST analysis overhead." },

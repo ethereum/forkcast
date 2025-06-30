@@ -1392,5 +1392,46 @@
       "Paves the way for maintaining existing toolchain while adding new capabilities",
       "Enables 'both EVM and RISC-V' rather than 'either EVM or RISC-V' approach"
     ]
+  },
+  {
+    "id": 7939,
+    "title": "EIP-7939: Count leading zeros (CLZ) opcode",
+    "status": "Draft",
+    "description": "Opcode to count the number of leading zero bits in a 256-bit word",
+    "author": "Vectorized (@Vectorized), Georgios Konstantopoulos (@gakonst), Jochem Brouwer (@jochem-brouwer), Ben Adams (@benaadams), Giulio Rebuffo (@Giulio2002)",
+    "type": "Standards Track",
+    "category": "Core",
+    "createdDate": "2025-04-28",
+    "discussionLink": "https://ethereum-magicians.org/t/create-a-new-opcode-for-counting-leading-zeros-clz/10805",
+    "forkRelationships": [
+      {
+        "forkName": "Fusaka",
+        "status": "Scheduled"
+      }
+    ],
+    "laymanDescription": "This adds a new CLZ (Count Leading Zeros) opcode to the EVM that efficiently counts the number of zero bits at the start of a 256-bit number. This is a fundamental mathematical operation used in many algorithms, especially for mathematical computations, data compression, and cryptographic operations. Currently, implementing this operation in Solidity requires complex and expensive code - this opcode makes it much cheaper and faster.",
+    "northStars": ["Scale L1", "Improve UX"],
+    "northStarAlignment": {
+      "scaleL1": { "impact": "Medium", "description": "Significantly reduces gas costs for mathematical operations that require bit manipulation, improving computational efficiency and enabling more complex on-chain calculations." },
+      "improveUX": { "impact": "Medium", "description": "Enables cheaper and more efficient mathematical operations, benefiting DeFi protocols, gaming applications, and any contracts requiring complex mathematical computations." }
+    },
+    "stakeholderImpacts": {
+      "endUsers": { "impact": "Low", "description": "Indirect benefits through lower gas costs for applications using mathematical operations, compression algorithms, and advanced cryptographic schemes." },
+      "appDevs": { "impact": "High", "description": "Can implement much more efficient mathematical algorithms, compression schemes, and bitmap operations. Particularly beneficial for DeFi protocols requiring complex mathematical operations and ZK-proving applications." },
+      "walletDevs": { "impact": "Low", "description": "Minimal direct impact, though benefits indirectly from more efficient mathematical operations in smart contracts." },
+      "toolingInfra": { "impact": "Low", "description": "Development tools and debuggers need to support the new CLZ opcode, but this is a straightforward addition." },
+      "layer2s": { "impact": "Medium", "description": "More efficient mathematical operations benefit ZK-proof generation and verification systems, reducing proving costs especially for RISC-V based proving systems." },
+      "stakersNodes": { "impact": "Low", "description": "More efficient computation reduces overall network computational load for mathematical operations." },
+      "clClients": { "impact": "None", "description": "No direct impact on consensus layer operations as this affects execution layer computational capabilities." },
+      "elClients": { "impact": "Low", "description": "Simple implementation - just need to add the CLZ opcode (0x1e) with proper gas accounting. Benchmarked to have similar computational cost to ADD." }
+    },
+    "benefits": [
+      "Dramatically reduces gas costs for bit manipulation operations",
+      "Enables more efficient mathematical algorithms on-chain",
+      "Particularly beneficial for ZK-proving applications",
+      "Reduces bytecode size for mathematical operations",
+      "Enables efficient compression and decompression algorithms",
+      "Essential building block for advanced cryptographic schemes"
+    ]
   }
 ] 

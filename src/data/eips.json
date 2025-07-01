@@ -554,11 +554,11 @@
     "id": 5920,
     "title": "EIP-5920: PAY opcode",
     "status": "Review",
-    "description": "Introduces a new PAY opcode for more efficient native token transfers within smart contracts.",
-    "author": "Gavin Wood, et al.",
+    "description": "Introduces a new opcode, PAY, to send ether to an address without calling any of its functions",
+    "author": "Gavin John (@Pandapip1), Zainan Victor Zhou (@xinbenlv), Sam Wilson (@SamWilsn), Jochem Brouwer (@jochem-brouwer), Charles Cooper (@charles-cooper)",
     "type": "Standards Track",
     "category": "Core",
-    "createdDate": "2022-11-15",
+    "createdDate": "2022-03-14",
     "discussionLink": "https://ethereum-magicians.org/t/eip-5920-pay-opcode/11717",
     "forkRelationships": [
       {
@@ -947,6 +947,10 @@
     "discussionLink": "https://ethereum-magicians.org/t/eip-7793-conditional-transactions/21080",
     "forkRelationships": [
       {
+        "forkName": "Fusaka",
+        "status": "Declined"
+      },
+      {
         "forkName": "Glamsterdam",
         "status": "Proposed"
       }
@@ -986,6 +990,10 @@
     "discussionLink": "https://ethereum-magicians.org/t/eip-7843-slotnum-opcode/20900",
     "forkRelationships": [
       {
+        "forkName": "Fusaka",
+        "status": "Declined"
+      },
+      {
         "forkName": "Glamsterdam",
         "status": "Proposed"
       }
@@ -1023,6 +1031,10 @@
     "createdDate": "2024-07-15",
     "discussionLink": "https://ethereum-magicians.org/t/eip-7732-enshrined-proposer-builder-separation-epbs/20329",
     "forkRelationships": [
+      {
+        "forkName": "Fusaka",
+        "status": "Declined"
+      },
       {
         "forkName": "Glamsterdam",
         "status": "Proposed",
@@ -1151,6 +1163,10 @@
     "createdDate": "2024-09-01",
     "discussionLink": "https://ethereum-magicians.org/t/eip-7919-pureth-provable-rpc-responses/21180",
     "forkRelationships": [
+      {
+        "forkName": "Fusaka",
+        "status": "Declined"
+      },
       {
         "forkName": "Glamsterdam",
         "status": "Proposed",
@@ -1315,6 +1331,10 @@
     "discussionLink": "https://ethereum-magicians.org/t/eip-7805-committee-based-fork-choice-enforced-inclusion-lists-focil/21578",
     "forkRelationships": [
       {
+        "forkName": "Fusaka",
+        "status": "Declined"
+      },
+      {
         "forkName": "Glamsterdam",
         "status": "Proposed",
         "isHeadliner": true,
@@ -1438,8 +1458,8 @@
     "id": 663,
     "title": "EIP-663: SWAPN, DUPN and EXCHANGE instructions",
     "status": "Review",
-    "description": "Pending",
-    "author": "Alex Beregszaszi",
+    "description": "Introduce additional instructions for manipulating the stack which allow accessing the stack at higher depths",
+    "author": "Alex Beregszaszi (@axic), Charles Cooper (@charles-cooper), Danno Ferrin (@shemnon)",
     "type": "Standards Track",
     "category": "Core",
     "createdDate": "2017-07-03",
@@ -1450,14 +1470,14 @@
         "status": "Declined"
       }
     ],
-    "laymanDescription": "Pending"
+    "laymanDescription": "This adds three new EVM instructions (DUPN, SWAPN, and EXCHANGE) that allow smart contracts to access and manipulate stack items beyond the current 16-item limit, reaching up to 256 items deep. Currently, the EVM stack can hold 1024 items but only the top 16 are easily accessible. These new instructions help compilers write more efficient code for complex functions with many variables by providing better stack management capabilities. The feature only works with the new EOF bytecode format, not legacy contracts."
   },
   {
     "id": 3540,
     "title": "EIP-3540: EOF - EVM Object Format v1",
     "status": "Review",
-    "description": "Pending",
-    "author": "Alex Beregszaszi, Paweł Bylica, Andrei Maiboroda, Matt Garnett",
+    "description": "EOF is an extensible and versioned container format for EVM bytecode with a once-off validation at deploy time.",
+    "author": "Alex Beregszaszi (@axic), Paweł Bylica (@chfast), Andrei Maiboroda (@gumb0), Matt Garnett (@lightclient), Piotr Dobaczewski (@pdobacz)",
     "type": "Standards Track",
     "category": "Core",
     "createdDate": "2021-03-16",
@@ -1468,14 +1488,14 @@
         "status": "Declined"
       }
     ],
-    "laymanDescription": "Pending"
+    "laymanDescription": "This introduces EVM Object Format (EOF), a new standardized container for smart contract bytecode that gets validated once when deployed rather than every time it runs. EOF separates code from data, making contracts more structured and analyzable. It enables future EVM improvements like better jump instructions, multibyte opcodes, and function representations. The format is extensible and versioned, allowing gradual introduction of new features. Only new contracts can use EOF - existing contracts remain unchanged. This is the foundation that makes other EOF-related improvements possible."
   },
   {
     "id": 3670,
     "title": "EIP-3670: EOF - Code Validation",
     "status": "Review",
-    "description": "Pending",
-    "author": "Alex Beregszaszi, Andrei Maiboroda, Paweł Bylica",
+    "description": "Validate EOF bytecode for correctness at the time of deployment.",
+    "author": "Alex Beregszaszi (@axic), Andrei Maiboroda (@gumb0), Paweł Bylica (@chfast)",
     "type": "Standards Track",
     "category": "Core",
     "createdDate": "2021-06-23",
@@ -1486,14 +1506,14 @@
         "status": "Declined"
       }
     ],
-    "laymanDescription": "Pending"
+    "laymanDescription": "This adds strict validation rules for EOF smart contracts when they're deployed. It rejects contracts with invalid bytecode, such as incomplete PUSH instructions or undefined opcodes. It also removes deprecated instructions like CALLCODE and SELFDESTRUCT from EOF contracts. This validation only happens once at deployment time and only affects new EOF contracts - existing legacy contracts remain unchanged. The goal is to make bytecode more predictable and easier to reason about, while ensuring all EVM implementations handle code the same way."
   },
   {
     "id": 4200,
     "title": "EIP-4200: EOF - Static relative jumps",
     "status": "Review",
-    "description": "Pending",
-    "author": "Alex Beregszaszi, Andrei Maiboroda, Paweł Bylica",
+    "description": "RJUMP, RJUMPI and RJUMPV instructions with a signed immediate encoding the jump destination",
+    "author": "Alex Beregszaszi (@axic), Andrei Maiboroda (@gumb0), Paweł Bylica (@chfast)",
     "type": "Standards Track",
     "category": "Core",
     "createdDate": "2021-07-16",
@@ -1504,14 +1524,14 @@
         "status": "Declined"
       }
     ],
-    "laymanDescription": "Pending"
+    "laymanDescription": "This introduces three new jump instructions (RJUMP, RJUMPI, and RJUMPV) for EOF contracts that use relative addressing instead of absolute addressing. These instructions are more gas-efficient than traditional JUMP/JUMPI instructions, don't require JUMPDEST markers, and make code analysis easier. RJUMP does unconditional jumps, RJUMPI does conditional jumps, and RJUMPV provides jump tables for switch-case scenarios. The relative addressing means code can be moved around without breaking, and the static nature allows for better optimization and validation at deployment time."
   },
   {
     "id": 4750,
     "title": "EIP-4750: EOF - Functions",
     "status": "Review",
-    "description": "Pending",
-    "author": "Andrei Maiboroda, Alex Beregszaszi, Paweł Bylica",
+    "description": "Individual sections for functions with `CALLF` and `RETF` instructions",
+    "author": "Andrei Maiboroda (@gumb0), Alex Beregszaszi (@axic), Paweł Bylica (@chfast)",
     "type": "Standards Track",
     "category": "Core",
     "createdDate": "2022-01-10",
@@ -1522,14 +1542,14 @@
         "status": "Declined"
       }
     ],
-    "laymanDescription": "Pending"
+    "laymanDescription": "This introduces proper function support to EOF contracts by allowing multiple code sections, each representing a separate function. It adds two new instructions: CALLF to call functions and RETF to return from them. Functions have defined input/output parameters and their own isolated stack, improving code organization and analysis. Dynamic jumps (JUMP/JUMPI) are completely removed in favor of static function calls, making contracts more predictable and easier to optimize. A return stack tracks function call history, and JUMPDEST becomes a simple NOP instruction since jump analysis is no longer needed."
   },
   {
     "id": 5450,
     "title": "EIP-5450: EOF - Stack Validation",
     "status": "Review",
-    "description": "Pending",
-    "author": "Andrei Maiboroda, Paweł Bylica, Alex Beregszaszi, Danno Ferrin",
+    "description": "Deploy-time validation of stack usage for EOF functions.",
+    "author": "Andrei Maiboroda (@gumb0), Paweł Bylica (@chfast), Alex Beregszaszi (@axic), Danno Ferrin (@shemnon)",
     "type": "Standards Track",
     "category": "Core",
     "createdDate": "2022-08-12",
@@ -1540,14 +1560,14 @@
         "status": "Declined"
       }
     ],
-    "laymanDescription": "Pending"
+    "laymanDescription": "This adds comprehensive stack validation to EOF contracts at deployment time, ensuring that stack underflow and overflow cannot happen during execution. By analyzing all possible code paths and tracking stack heights, it eliminates the need for most runtime stack checks, making execution faster and more predictable. Only CALLF and JUMPF instructions need runtime stack overflow checks. The validation also prevents deployment of unreachable code and ensures proper function termination. This creates guarantees that enable better compiler optimizations and ahead-of-time compilation while maintaining linear validation complexity."
   },
   {
     "id": 6206,
     "title": "EIP-6206: EOF - JUMPF and non-returning functions",
     "status": "Review",
-    "description": "Pending",
-    "author": "Andrei Maiboroda, Alex Beregszaszi, Paweł Bylica, Matt Garnett",
+    "description": "Introduces instruction for chaining function calls.",
+    "author": "Andrei Maiboroda (@gumb0), Alex Beregszaszi (@axic), Paweł Bylica (@chfast), Matt Garnett (@lightclient)",
     "type": "Standards Track",
     "category": "Core",
     "createdDate": "2022-12-21",
@@ -1558,17 +1578,17 @@
         "status": "Declined"
       }
     ],
-    "laymanDescription": "Pending"
+    "laymanDescription": "This introduces the JUMPF instruction for EOF contracts, enabling tail call optimization by jumping to code sections without adding return stack frames. It also introduces non-returning functions - sections that never return control to their caller. This is particularly efficient for error handling helpers that end with REVERT, allowing compilers to generate more optimal code with reduced gas costs and smaller bytecode size. Functions can jump to other functions with fewer outputs, and non-returning functions don't need to clean up extra stack items before terminating."
   },
   {
     "id": 7069,
     "title": "EIP-7069: Revamped CALL instructions",
     "status": "Draft",
-    "description": "Pending",
-    "author": "Alex Beregszaszi, Paweł Bylica, Danno Ferrin, Andrei Maiboroda, Jan Penciak",
+    "description": "Introduce EXTCALL, EXTDELEGATECALL and EXTSTATICCALL with simplified semantics",
+    "author": "Alex Beregszaszi (@axic), Paweł Bylica (@chfast), Danno Ferrin (@shemnon), Andrei Maiboroda (@gumb0), Charles Cooper (@charles-cooper)",
     "type": "Standards Track",
     "category": "Core",
-    "createdDate": "2023-05-19",
+    "createdDate": "2023-05-05",
     "discussionLink": "https://ethereum-magicians.org/t/eip-7069-revamped-call-instructions/14432",
     "forkRelationships": [
       {
@@ -1576,17 +1596,17 @@
         "status": "Declined"
       }
     ],
-    "laymanDescription": "Pending"
+    "laymanDescription": "This introduces three new call instructions (EXTCALL, EXTDELEGATECALL, EXTSTATICCALL) for EOF contracts that remove gas observability and simplify call semantics. Unlike legacy CALL instructions, these don't allow specifying gas limits - they use the 63/64th rule automatically. They return extensible status codes (0=success, 1=revert, 2=failure) instead of boolean values, remove output buffer complexity in favor of RETURNDATACOPY, and add RETURNDATALOAD for efficient return data access. This makes contracts more resilient to future gas repricing and eliminates many gas-related attack vectors while simplifying the calling mechanism."
   },
   {
     "id": 7480,
     "title": "EIP-7480: EOF - Data section access instructions",
     "status": "Draft",
-    "description": "Pending",
-    "author": "Alex Beregszaszi, Andrei Maiboroda, Paweł Bylica, Piotr Dobaczewski, Danno Ferrin",
+    "description": "Instructions to read data section of EOF container",
+    "author": "Andrei Maiboroda (@gumb0), Alex Beregszaszi (@axic), Paweł Bylica (@chfast)",
     "type": "Standards Track",
     "category": "Core",
-    "createdDate": "2023-08-17",
+    "createdDate": "2023-08-11",
     "discussionLink": "https://ethereum-magicians.org/t/eip-7480-eof-data-section-access-instructions/15414",
     "forkRelationships": [
       {
@@ -1594,14 +1614,14 @@
         "status": "Declined"
       }
     ],
-    "laymanDescription": "Pending"
+    "laymanDescription": "This introduces four new instructions for EOF contracts to access their data section: DATALOAD (loads 32-byte word), DATALOADN (optimized version with compile-time offset), DATASIZE (returns data section size), and DATACOPY (copies data to memory). These replace the deprecated CODECOPY instruction for data access in EOF contracts, enabling proper separation between code and data. The instructions follow the same pattern as existing data access instructions like those for calldata and returndata, with zero-padding for out-of-bounds access and validation to ensure safe operation."
   },
   {
     "id": 7620,
     "title": "EIP-7620: EOF Contract Creation",
     "status": "Draft",
-    "description": "Pending",
-    "author": "Alex Beregszaszi, Paweł Bylica, Piotr Dobaczewski, Andrei Maiboroda, Danno Ferrin",
+    "description": "Introduce `EOFCREATE` and `RETURNCODE` instructions",
+    "author": "Alex Beregszaszi (@axic), Paweł Bylica (@chfast), Andrei Maiboroda (@gumb0), Piotr Dobaczewski (@pdobacz)",
     "type": "Standards Track",
     "category": "Core",
     "createdDate": "2024-02-12",
@@ -1612,17 +1632,17 @@
         "status": "Declined"
       }
     ],
-    "laymanDescription": "Pending"
+    "laymanDescription": "This introduces new contract creation instructions for EOF contracts: EOFCREATE and RETURNCODE, which replace the legacy CREATE/CREATE2 instructions. Since EOF removes code observability (the ability to inspect and manipulate code), the old creation methods don't work. EOFCREATE creates contracts using pre-validated subcontainers within the factory contract, maintaining security while enabling factory patterns. RETURNCODE allows the initialization code to specify which subcontainer becomes the deployed contract and append additional data. This preserves the factory contract use case while maintaining EOF's code non-observability guarantees."
   },
   {
     "id": 7698,
     "title": "EIP-7698: EOF - Creation transaction",
-    "status": "Draft",
-    "description": "Pending",
-    "author": "Piotr Dobaczewski, Andrei Maiboroda, Paweł Bylica, Alex Beregszaszi, Danno Ferrin",
+    "status": "Review",
+    "description": "Deploy EOF contracts using creation transactions",
+    "author": "Piotr Dobaczewski (@pdobacz), Andrei Maiboroda (@gumb0), Paweł Bylica (@chfast), Alex Beregszaszi (@axic)",
     "type": "Standards Track",
     "category": "Core",
-    "createdDate": "2024-04-18",
+    "createdDate": "2024-04-24",
     "discussionLink": "https://ethereum-magicians.org/t/eip-7698-eof-creation-transaction/19717",
     "forkRelationships": [
       {
@@ -1630,53 +1650,53 @@
         "status": "Declined"
       }
     ],
-    "laymanDescription": "Pending"
+    "laymanDescription": "This enables deploying EOF contracts using regular creation transactions (transactions with empty 'to' field). Since legacy CREATE and CREATE2 instructions cannot deploy EOF code, creation transactions are the only way to get the first EOF contracts on-chain. The transaction data contains an EOF initcontainer followed by calldata for constructor arguments. This approach allows existing deployment tooling to work without modification - developers can deploy EOF contracts the same way they deploy legacy contracts, just by concatenating constructor arguments with the initcontainer. The execution ends with a RETURNCODE instruction that specifies which subcontainer becomes the deployed contract."
   },
   {
     "id": 7873,
     "title": "EIP-7873: EOF - TXCREATE and InitcodeTransaction type",
-    "status": "Draft",
-    "description": "Pending",
-    "author": "Piotr Dobaczewski, Andrei Maiboroda, Paweł Bylica, Alex Beregszaszi, Danno Ferrin",
+    "status": "Review",
+    "description": "Adds a `TXCREATE` instruction to EOF and an accompanying transaction type allowing to create EOF contracts from transaction data",
+    "author": "Piotr Dobaczewski (@pdobacz), Andrei Maiboroda (@gumb0), Paweł Bylica (@chfast), Alex Beregszaszi (@axic), Danno Ferrin (@shemnon)",
     "type": "Standards Track",
     "category": "Core",
-    "createdDate": "2024-12-01",
-    "discussionLink": "https://ethereum-magicians.org/t/eip-7873-eof-txcreate-and-initcodetransaction-type/21700",
+    "createdDate": "2025-01-31",
+    "discussionLink": "https://ethereum-magicians.org/t/eip-7873-eof-txcreate-instruction-and-initcodetransaction-type/22765",
     "forkRelationships": [
       {
         "forkName": "Fusaka",
         "status": "Declined"
       }
     ],
-    "laymanDescription": "Pending"
+    "laymanDescription": "This introduces a new way to deploy EOF contracts by adding a TXCREATE instruction and a special InitcodeTransaction type. The problem it solves is that EOF removes the traditional CREATE and CREATE2 instructions used to deploy contracts. With this EIP, both regular users (EOAs) and smart contracts can deploy EOF contracts by including the contract code directly in transaction data and using TXCREATE to deploy it. This works alongside the existing EOFCREATE instruction, giving developers all the contract creation capabilities they had before EOF. The TXCREATE instruction can also deploy legacy contracts, making it a universal bootstrapping mechanism for getting EOF contracts onto the blockchain."
   },
   {
     "id": 7834,
     "title": "EIP-7834: Separate Metadata Section for EOF",
-    "status": "Draft",
-    "description": "Pending",
-    "author": "Danno Ferrin, Alex Beregszaszi, Paweł Bylica, Andrei Maiboroda",
+    "status": "Review",
+    "description": "Introduce a new separate metadata section to the EOF",
+    "author": "Kaan Uzdogan (@kuzdogan), Marco Castignoli (@marcocastignoli), Manuel Wedler (@manuelwedler)",
     "type": "Standards Track",
     "category": "Core",
-    "createdDate": "2024-11-15",
-    "discussionLink": "https://ethereum-magicians.org/t/eip-7834-separate-metadata-section-for-eof/21450",
+    "createdDate": "2024-12-06",
+    "discussionLink": "https://ethereum-magicians.org/t/eip-7834-separate-metadata-section-for-eof/22138",
     "forkRelationships": [
       {
         "forkName": "Fusaka",
         "status": "Declined"
       }
     ],
-    "laymanDescription": "Pending"
+    "laymanDescription": "This adds a dedicated metadata section to EOF contracts that is completely separate from executable code and data. Currently, compilers include metadata (like compiler versions, IPFS hashes of source files) by mixing it with contract data, which creates problems for source code verification and causes different bytecode when metadata changes. The new metadata section solves these issues by being unreachable by contract execution, unchanging after deployment, and clearly separated from functional code. This makes source code verification much easier and ensures that contracts with identical logic but different metadata will have the same executable bytecode."
   },
   {
     "id": 7761,
     "title": "EIP-7761: EXTCODETYPE instruction",
-    "status": "Draft",
-    "description": "Pending",
-    "author": "Danno Ferrin, Andrei Maiboroda",
+    "status": "Review",
+    "description": "Add EXTCODETYPE instruction to EOF to address common uses of EXTCODE* instructions",
+    "author": "Andrei Maiboroda (@gumb0), Piotr Dobaczewski (@pdobacz), Danno Ferrin (@shemnon)",
     "type": "Standards Track",
     "category": "Core",
-    "createdDate": "2024-09-25",
+    "createdDate": "2024-09-01",
     "discussionLink": "https://ethereum-magicians.org/t/eip-7761-extcodetype-instruction/21200",
     "forkRelationships": [
       {
@@ -1684,222 +1704,222 @@
         "status": "Declined"
       }
     ],
-    "laymanDescription": "Pending"
+    "laymanDescription": "This adds an EXTCODETYPE instruction to EOF contracts to distinguish between different account types. EOF removes code introspection capabilities like EXTCODESIZE, but this creates problems for ERC-721 and ERC-1155 tokens that need to know whether a recipient is an EOA (externally owned account) or a contract to implement safe transfers correctly. EXTCODETYPE returns 0 for no code (EOA), 1 for legacy contracts, and 2 for EOF contracts. This enables proper implementation of token standards in EOF while also helping proxy contracts verify that their upgrade targets are safe to call with EXTDELEGATECALL."
   },
   {
     "id": 7880,
     "title": "EIP-7880: EOF - EXTCODEADDRESS instruction",
-    "status": "Draft",
-    "description": "Pending",
-    "author": "Danno Ferrin, Alex Beregszaszi, Andrei Maiboroda",
+    "status": "Review",
+    "description": "Add EXTCODEADDRESS instruction to EOF to address code delegation use cases",
+    "author": "Danno Ferrin (@shemnon)",
     "type": "Standards Track",
     "category": "Core",
-    "createdDate": "2024-12-05",
-    "discussionLink": "https://ethereum-magicians.org/t/eip-7880-eof-extcodeaddress-instruction/21750",
+    "createdDate": "2025-02-08",
+    "discussionLink": "https://ethereum-magicians.org/t/eip-7880-eof-extcodeaddress-instruction/22845",
     "forkRelationships": [
       {
         "forkName": "Fusaka",
         "status": "Declined"
       }
     ],
-    "laymanDescription": "Pending"
+    "laymanDescription": "This adds a new EXTCODEADDRESS instruction to EOF contracts that helps them work with EIP-7702 delegation accounts without breaking EOF's no-code-introspection rule. The problem it solves is that EOF removes the ability to read raw contract code, but contracts still need to know when an account is delegating execution to another address. This instruction takes an address and returns the actual address that will execute the code - for regular accounts it returns the same address, but for delegated accounts it returns the address they're delegating to. This enables important use cases like managed proxy contracts ensuring they don't delegate to unsafe addresses, sponsorship contracts verifying delegation hasn't changed during a transaction, and security-conscious contracts that only accept specific delegation targets."
   },
   {
     "id": 7762,
     "title": "EIP-7762: Increase MIN_BASE_FEE_PER_BLOB_GAS",
-    "status": "Draft",
-    "description": "Pending",
-    "author": "TBD",
+    "status": "Review",
+    "description": "Adjust the MIN_BASE_FEE_PER_BLOB_GAS to speed up price discovery on blob space",
+    "author": "Max Resnick (@MaxResnick), Davide Crapis (@dcrapis), Ansgar Dietrichs (@adietrichs)",
     "type": "Standards Track",
     "category": "Core",
-    "createdDate": "2024-09-20",
-    "discussionLink": "https://ethereum-magicians.org/t/eip-7762-increase-min-base-fee-per-blob-gas/21150",
+    "createdDate": "2024-08-31",
+    "discussionLink": "https://ethereum-magicians.org/t/eip-7762-increase-min-base-fee-per-blob-gas/20949",
     "forkRelationships": [
       {
         "forkName": "Fusaka",
         "status": "Declined"
       }
     ],
-    "laymanDescription": "Pending"
+    "laymanDescription": "This increases the minimum blob base fee from 1 wei to 2^25 wei (about 33 million times higher) to speed up blob price discovery. Currently, when blob demand exceeds supply, it takes too long for prices to climb from the extremely low minimum to actual market rates. The new minimum corresponds to about 1 cent at current ETH prices, similar to the cost of a simple transaction when gas fees are low. The change also resets excess blob gas to zero to prevent a sudden price spike when the upgrade activates. This helps blob-based rollups reach appropriate pricing faster during high-demand periods."
   },
   {
     "id": 7666,
     "title": "EIP-7666: EVM-ify the identity precompile",
-    "status": "Draft",
-    "description": "Pending",
-    "author": "TBD",
+    "status": "Stagnant",
+    "description": "Remove the identity precompile, and put into place a piece of EVM code that has equivalent functionality",
+    "author": "Vitalik Buterin (@vbuterin)",
     "type": "Standards Track",
     "category": "Core",
-    "createdDate": "2024-03-15",
-    "discussionLink": "https://ethereum-magicians.org/t/eip-7666-evm-ify-the-identity-precompile/18900",
+    "createdDate": "2024-03-31",
+    "discussionLink": "https://ethereum-magicians.org/t/eip-7561-evm-ify-the-identity-precompile/19445",
     "forkRelationships": [
       {
         "forkName": "Fusaka",
         "status": "Declined"
       }
     ],
-    "laymanDescription": "Pending"
+    "laymanDescription": "This removes the identity precompile (at address 0x04) and replaces it with actual EVM code that does the same thing - simply copying input data to output data. The identity precompile was originally needed because there was no direct way to copy memory, but since the MCOPY opcode was introduced, this precompile is no longer necessary. Removing it reduces maintenance burden and complexity for Ethereum clients, including ZK-EVMs. This serves as a template for potentially removing other underused precompiles in the future, like certain hash functions."
   },
   {
     "id": 7668,
     "title": "EIP-7668: Remove bloom filters",
-    "status": "Draft",
-    "description": "Pending",
-    "author": "TBD",
+    "status": "Stagnant",
+    "description": "Remove bloom filters from the execution block",
+    "author": "Vitalik Buterin (@vbuterin)",
     "type": "Standards Track",
     "category": "Core",
-    "createdDate": "2024-03-20",
-    "discussionLink": "https://ethereum-magicians.org/t/eip-7668-remove-bloom-filters/18950",
+    "createdDate": "2024-03-31",
+    "discussionLink": "https://ethereum-magicians.org/t/eip-7653-remove-bloom-filters/19447",
     "forkRelationships": [
       {
         "forkName": "Fusaka",
         "status": "Declined"
       }
     ],
-    "laymanDescription": "Pending"
+    "laymanDescription": "This removes bloom filters from Ethereum blocks and transaction receipts by requiring them to be empty. Bloom filters were originally designed to help applications quickly find relevant log events in blockchain history, but in practice they're too slow and have high false positive rates. Most applications now use centralized indexing services instead. Removing bloom filters simplifies the protocol and reduces client complexity, while encouraging development of decentralized alternatives using ZK-SNARKs for provable log indexing."
   },
   {
     "id": 7688,
     "title": "EIP-7688: Forward compatible consensus data structures",
     "status": "Draft",
-    "description": "Pending",
-    "author": "TBD",
+    "description": "Transition consensus SSZ data structures to ProgressiveContainer",
+    "author": "Etan Kissling (@etan-status), Cayman (@wemeetagain)",
     "type": "Standards Track",
     "category": "Core",
-    "createdDate": "2024-04-10",
-    "discussionLink": "https://ethereum-magicians.org/t/eip-7688-forward-compatible-consensus-data-structures/19600",
+    "createdDate": "2024-04-15",
+    "discussionLink": "https://ethereum-magicians.org/t/eip-7688-forward-compatible-consensus-data-structures/19673",
     "forkRelationships": [
       {
         "forkName": "Fusaka",
         "status": "Declined"
       }
     ],
-    "laymanDescription": "Pending"
+    "laymanDescription": "This makes Ethereum's consensus data structures forward compatible by transitioning to ProgressiveContainer, which maintains stable merkleization schemes across forks. Currently, when Ethereum adds or removes features in forks, existing verifier implementations (like smart contracts that check validator slashing) break because the merkleization changes. With ProgressiveContainer, these verifiers will continue working even when unrelated features are modified, eliminating the need to update smart contracts, hardware wallets, and other systems in lockstep with every Ethereum fork. This is particularly valuable for decentralized staking pools and off-chain verification systems."
   },
   {
     "id": 7791,
     "title": "EIP-7791: GAS2ETH opcode",
     "status": "Draft",
-    "description": "Pending",
-    "author": "TBD",
+    "description": "Introduces a new opcode, `GAS2ETH`, to convert gas to ETH",
+    "author": "Charles Cooper (@charles-cooper), Pascal Caversaccio (@pcaversaccio)",
     "type": "Standards Track",
     "category": "Core",
-    "createdDate": "2024-09-05",
-    "discussionLink": "https://ethereum-magicians.org/t/eip-7791-gas2eth-opcode/21050",
+    "createdDate": "2024-08-13",
+    "discussionLink": "https://ethereum-magicians.org/t/eip-7791-gas2eth-opcode/21418",
     "forkRelationships": [
       {
         "forkName": "Fusaka",
         "status": "Declined"
       }
     ],
-    "laymanDescription": "Pending"
+    "laymanDescription": "This introduces a new GAS2ETH opcode that allows smart contracts to convert gas directly into ETH and send it to a specified address. It provides a new monetization mechanism for smart contract authors and public goods projects that scales with network usage. Instead of complex fee structures or token schemes, developers can charge gas (which users already understand) and receive proportional compensation during high network activity periods. The opcode takes a target address and gas amount, deducts the gas from the transaction, calculates the ETH value using the current gas price, and transfers that ETH to the specified address."
   },
   {
     "id": 7819,
-    "title": "EIP-7819: CREATE DELEGATE opcode",
+    "title": "EIP-7819: SETDELEGATE instruction",
     "status": "Draft",
-    "description": "Pending",
-    "author": "TBD",
+    "description": "Introduce a new instruction allowing contracts to create clones using EIP-7702 delegation designations",
+    "author": "Hadrien Croubois (@amxx), Danno Ferrin (@shemnon)",
     "type": "Standards Track",
     "category": "Core",
-    "createdDate": "2024-10-20",
-    "discussionLink": "https://ethereum-magicians.org/t/eip-7819-create-delegate-opcode/21300",
+    "createdDate": "2024-11-18",
+    "discussionLink": "https://ethereum-magicians.org/t/eip-7819-create-delegate/21763",
     "forkRelationships": [
       {
         "forkName": "Fusaka",
         "status": "Declined"
       }
     ],
-    "laymanDescription": "Pending"
+    "laymanDescription": "This introduces a new SETDELEGATE instruction that allows smart contracts to create delegation accounts using EIP-7702's design. These work like ERC-1167 clones but with significant advantages: they delegate execution at the protocol level rather than through EVM code, avoiding calldata copying costs and EOF/legacy compatibility issues. The instruction takes a target address and salt, creates a delegation account at a computed address, and makes it delegate all calls to the target. This provides upgradeability without storage lookups, better efficiency than traditional proxies, and seamless compatibility between code versions."
   },
   {
     "id": 7783,
-    "title": "EIP-7783: Controlled gas limit increase strategy",
+    "title": "EIP-7783: Add Controlled Gas Limit Increase Strategy",
     "status": "Draft",
-    "description": "Pending",
-    "author": "TBD",
-    "type": "Standards Track",
+    "description": "Adds a controlled gas limit increase strategy.",
+    "author": "Giulio Rebuffo (@Giulio2002)",
+    "type": "Informational",
     "category": "Core",
-    "createdDate": "2024-09-30",
-    "discussionLink": "https://ethereum-magicians.org/t/eip-7783-controlled-gas-limit-increase-strategy/21250",
+    "createdDate": "2024-10-06",
+    "discussionLink": "https://ethereum-magicians.org/t/eip-7783-add-controlled-gas-limit-increase-strategy/21282",
     "forkRelationships": [
       {
         "forkName": "Fusaka",
         "status": "Declined"
       }
     ],
-    "laymanDescription": "Pending"
+    "laymanDescription": "This proposes automatic, controlled gas limit increases over time instead of relying on manual adjustments by validators. Currently, gas limits change unpredictably based on individual validator decisions, which can cause network performance issues. The EIP offers three strategies: linear (fixed increase per block), stepwise (increases in steps), and exponential (doubling over intervals). Each includes safeguards like deactivation blocks to prevent indefinite growth. This provides predictable network scaling while giving the ecosystem time to adapt to larger block sizes, and validators retain the ability to halt increases if problems arise."
   },
   {
     "id": 7889,
     "title": "EIP-7889: Emit log on revert",
     "status": "Draft",
-    "description": "Pending",
-    "author": "TBD",
+    "description": "Top level reverts emit a log with revert message",
+    "author": "Shoham Chakraborty (@shohamc1), Alex Forshtat (@forshtat)",
     "type": "Standards Track",
     "category": "Core",
-    "createdDate": "2024-12-10",
-    "discussionLink": "https://ethereum-magicians.org/t/eip-7889-emit-log-on-revert/21800",
+    "createdDate": "2025-02-20",
+    "discussionLink": "https://ethereum-magicians.org/t/eip-7889-emit-log-on-revert/22918",
     "forkRelationships": [
       {
         "forkName": "Fusaka",
         "status": "Declined"
       }
     ],
-    "laymanDescription": "Pending"
+    "laymanDescription": "This automatically makes error messages from failed transactions easily accessible by emitting them as logs. Currently, when a transaction fails (reverts), the error message explaining why it failed is hard to get - you need to request expensive transaction tracing to access it. This creates overhead for users who want to understand why their transaction failed and for nodes that have to replay entire transactions just to extract small error messages. This EIP solves the problem by automatically emitting a log containing the revert message whenever the REVERT opcode is called. This makes error messages accessible through standard RPC calls without any tracing, helping wallets, block explorers, and other tools display helpful error messages to users. It's completely backward compatible and doesn't require any new opcodes or RPC methods."
   },
   {
     "id": 7898,
     "title": "EIP-7898: Uncouple execution payload from beacon block",
     "status": "Draft",
-    "description": "Pending",
-    "author": "TBD",
+    "description": "Separates the execution payload from beacon block to independently transmit them",
+    "author": "Gajinder Singh (@g11tech)",
     "type": "Standards Track",
     "category": "Core",
-    "createdDate": "2024-12-15",
-    "discussionLink": "https://ethereum-magicians.org/t/eip-7898-uncouple-execution-payload-from-beacon-block/21850",
+    "createdDate": "2025-03-01",
+    "discussionLink": "https://ethereum-magicians.org/t/uncouple-execution-payload-from-beacon-block/23029",
     "forkRelationships": [
       {
         "forkName": "Fusaka",
         "status": "Declined"
       }
     ],
-    "laymanDescription": "Pending"
+    "laymanDescription": "This addresses a fundamental scalability bottleneck by separating transaction data from consensus data in Ethereum blocks. Currently, beacon blocks contain all transaction data embedded within them, but as Ethereum aims to increase block sizes (potentially by 10x), this creates serious networking and processing problems. Larger transaction payloads cause higher latencies for block transmission, increased bandwidth requirements, and longer block processing times that hurt validator performance. This EIP solves these issues by replacing the full transaction data in beacon blocks with just a header, while transmitting the actual transaction data separately. This allows the consensus layer to process blocks quickly while handling much larger transaction payloads independently. Additional benefits include reduced storage requirements for beacon nodes, more efficient proposer-builder separation, and laying groundwork for future innovations like ZK-proof-based execution validation where transaction data could be handled similarly to blobs with data availability sampling."
   },
   {
     "id": 7903,
     "title": "EIP-7903: Remove Initcode Size Limit",
     "status": "Draft",
-    "description": "Pending",
-    "author": "TBD",
+    "description": "Removes the initcode size limit introduced in EIP-3860",
+    "author": "Charles Cooper (@charles-cooper)",
     "type": "Standards Track",
     "category": "Core",
-    "createdDate": "2024-12-20",
-    "discussionLink": "https://ethereum-magicians.org/t/eip-7903-remove-initcode-size-limit/21900",
+    "createdDate": "2025-03-05",
+    "discussionLink": "https://ethereum-magicians.org/t/remove-initcode-size-limit/23066",
     "forkRelationships": [
       {
         "forkName": "Fusaka",
         "status": "Declined"
       }
     ],
-    "laymanDescription": "Pending"
+    "laymanDescription": "This removes the 49,152-byte limit on initialization code (initcode) that was introduced by EIP-3860. The problem this solves is that the current limit makes it unnecessarily difficult to deploy large, complex smart contracts that need to create multiple sub-contracts in a single transaction. For example, if you want to deploy a sophisticated DeFi protocol that consists of several interconnected contracts, you might hit the initcode limit even though each final contract stays under the 24KB deployed code limit (EIP-170). This forces developers to split deployments across multiple transactions, which is more expensive, less efficient, and breaks the clean abstractions that high-level programming languages try to provide. By removing this artificial limit, the EIP allows for more flexible deployment patterns while still maintaining security through existing gas costs that scale with initcode size. The per-block gas limit already naturally restricts initcode to reasonable sizes (around 16MB at current gas limits), making the 49KB cap redundant. This change is fully backward compatible and only removes restrictions without changing how contracts work."
   },
   {
     "id": 7912,
     "title": "EIP-7912: Pragmatic stack manipulation tools",
     "status": "Draft",
-    "description": "Pending",
-    "author": "TBD",
+    "description": "Add additional SWAP and DUP operations for deeper stack access",
+    "author": "lightclient (@lightclient)",
     "type": "Standards Track",
     "category": "Core",
-    "createdDate": "2024-12-25",
-    "discussionLink": "https://ethereum-magicians.org/t/eip-7912-pragmatic-stack-manipulation-tools/21950",
+    "createdDate": "2025-03-25",
+    "discussionLink": "https://ethereum-magicians.org/t/eip-7912-pragmatic-expansion-of-stack-manipulation-tools/23826",
     "forkRelationships": [
       {
         "forkName": "Fusaka",
         "status": "Declined"
       }
     ],
-    "laymanDescription": "Pending"
+    "laymanDescription": "This adds practical stack manipulation tools to the EVM without requiring the complex EOF format. It extends the existing SWAP and DUP instructions to reach deeper stack positions (up to 24 positions), adds dynamic SWAPN and DUPN instructions for variable depth access, and introduces an EXCHANGE instruction that can swap any two arbitrary stack positions. These tools help compilers generate more efficient code when dealing with complex functions that have many local variables, reducing gas costs and bytecode size. Unlike previous attempts that required new code formats, this proposal works with existing legacy contracts by requiring specific PUSH instructions before the dynamic operations, making it a pragmatic solution that provides better stack access without breaking backward compatibility."
   }
 ] 

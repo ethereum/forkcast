@@ -28,7 +28,7 @@ export const networkUpgrades: NetworkUpgrade[] = [
     description: 'Major improvements to Ethereum\'s scalability and user experience, including PeerDAS for enhanced data availability. Named after the combination of "Fulu" (consensus layer upgrade, named after a star) and "Osaka" (execution layer upgrade, named after a Devcon location).',
     tagline: 'PeerDAS enables nodes to specialize in storing different data pieces while maintaining security, dramatically increasing data capacity for Layer 2 networks and improving overall scalability.',
     status: 'Upcoming',
-    activationDate: 'TBD',
+    activationDate: '~Q3\'25-Q1\'26',
     disabled: false
   },
   {

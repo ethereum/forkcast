@@ -212,14 +212,14 @@
   },
   {
     "id": 7642,
-    "title": "EIP-7642: eth/69 - Drop pre-merge fields",
+    "title": "EIP-7642: eth/69 - history expiry and simpler receipts",
     "status": "Draft",
-    "description": "Removes pre-merge fields from the eth protocol to simplify the networking layer post-merge.",
-    "author": "TBD",
+    "description": "Adds history serving window and removes bloom filter in receipt",
+    "author": "Marius van der Wijden (@MariusVanDerWijden), Felix Lange <fjl@ethereum.org>, Ahmad Bitar (@smartprogrammer93) <smartprogrammer@windowslive.com>",
     "type": "Standards Track",
     "category": "Networking",
-    "createdDate": "2024-01-10",
-    "discussionLink": "https://ethereum-magicians.org/t/eip-7642-eth-69-drop-pre-merge-fields/18200",
+    "createdDate": "2024-02-29",
+    "discussionLink": "https://ethereum-magicians.org/t/eth-70-drop-pre-merge-fields-from-eth-protocol/19005",
     "forkRelationships": [
       {
         "forkName": "Pectra",
@@ -306,13 +306,13 @@
   {
     "id": 7823,
     "title": "EIP-7823: Set upper bounds for MODEXP",
-    "status": "Draft",
-    "description": "Sets upper bounds for the MODEXP precompile to prevent potential DoS attacks and improve gas estimation.",
-    "author": "TBD",
+    "status": "Review",
+    "description": "Each input field is restricted to a maximum of 8192 bits",
+    "author": "Alex Beregszaszi (@axic), Radoslaw Zagorowicz (@rodiazet)",
     "type": "Standards Track",
     "category": "Core",
-    "createdDate": "2024-01-20",
-    "discussionLink": "https://ethereum-magicians.org/t/eip-7823-set-upper-bounds-for-modexp/18500",
+    "createdDate": "2024-11-11",
+    "discussionLink": "https://ethereum-magicians.org/t/eip-7823-set-upper-bounds-for-modexp/21798",
     "forkRelationships": [
       {
         "forkName": "Fusaka",
@@ -344,13 +344,13 @@
   {
     "id": 7825,
     "title": "EIP-7825: Transaction Gas Limit Cap",
-    "status": "Draft",
-    "description": "Introduces a cap on transaction gas limits to improve network stability and predictability.",
-    "author": "TBD",
+    "status": "Stagnant",
+    "description": "Introduce a protocol-level cap on the maximum gas used by a transaction to 30 million.",
+    "author": "Giulio Rebuffo (@Giulio2002)",
     "type": "Standards Track",
     "category": "Core",
-    "createdDate": "2024-01-22",
-    "discussionLink": "https://ethereum-magicians.org/t/eip-7825-transaction-gas-limit-cap/18520",
+    "createdDate": "2024-11-23",
+    "discussionLink": "https://ethereum-magicians.org/t/eip-7825-transaction-gas-limit-cap/21848",
     "forkRelationships": [
       {
         "forkName": "Fusaka",
@@ -401,12 +401,12 @@
     "id": 7883,
     "title": "EIP-7883: ModExp Gas Cost Increase",
     "status": "Draft",
-    "description": "Increases the gas cost for the MODEXP precompile to better reflect its computational cost.",
-    "author": "TBD",
+    "description": "Increases cost of ModExp precompile",
+    "author": "Marcin Sobczak (@marcindsobczak), Marek Moraczyński (@MarekM25), Marcos Maceo (@stdevMac)",
     "type": "Standards Track",
     "category": "Core",
-    "createdDate": "2024-01-25",
-    "discussionLink": "https://ethereum-magicians.org/t/eip-7883-modexp-gas-cost-increase/18600",
+    "createdDate": "2025-02-11",
+    "discussionLink": "https://ethereum-magicians.org/t/eip-7883-modexp-gas-cost-increase/22841",
     "forkRelationships": [
       {
         "forkName": "Fusaka",
@@ -440,11 +440,10 @@
     "title": "EIP-7892: Blob Parameter Only ('BPO') Hardforks",
     "status": "Draft",
     "description": "Enables hardforks that only modify blob-related parameters without requiring a new fork-version or changing any other consensus rules.",
-    "author": "TBD",
-    "type": "Standards Track",
-    "category": "Core",
-    "createdDate": "2024-01-28",
-    "discussionLink": "https://ethereum-magicians.org/t/eip-7892-blob-parameter-only-hardforks/18650",
+    "author": "Mark Mackey (@ethDreamer), Raúl Kripalani (@raulk)",
+    "type": "Informational",
+    "createdDate": "2025-02-28",
+    "discussionLink": "https://ethereum-magicians.org/t/eip-7892-blob-parameter-only-hardforks/23018",
     "forkRelationships": [
       {
         "forkName": "Fusaka",
@@ -477,13 +476,13 @@
   {
     "id": 7918,
     "title": "EIP-7918: Blob base fee bounded by execution cost",
-    "status": "Draft",
-    "description": "Bounds the blob base fee by execution cost to ensure economic sustainability of blob transactions.",
-    "author": "TBD",
+    "status": "Review",
+    "description": "Imposes that the price for GAS_PER_BLOB is greater than the price for BLOB_BASE_COST",
+    "author": "Anders Elowsson (@anderselowsson), Ben Adams (@benaadams), Francesco D'Amato (@fradamt)",
     "type": "Standards Track",
     "category": "Core",
-    "createdDate": "2024-02-02",
-    "discussionLink": "https://ethereum-magicians.org/t/eip-7918-blob-base-fee-bounded-by-execution-cost/18700",
+    "createdDate": "2025-03-25",
+    "discussionLink": "https://ethereum-magicians.org/t/eip-blob-base-fee-bounded-by-price-of-blob-carrying-transaction/23271",
     "forkRelationships": [
       {
         "forkName": "Fusaka",
@@ -516,12 +515,11 @@
     "id": 7935,
     "title": "EIP-7935: Set default gas limit to XX0M",
     "status": "Draft",
-    "description": "Sets a new default gas limit to improve network throughput and user experience.",
-    "author": "TBD",
-    "type": "Standards Track",
-    "category": "Core",
-    "createdDate": "2024-02-05",
-    "discussionLink": "https://ethereum-magicians.org/t/eip-7935-set-default-gas-limit-to-xx0m/18750",
+    "description": "Recommend a new gas limit value for Fusaka and update execution layer client default configs",
+    "author": "Sophia Gold (@sophia-gold), Parithosh Jayanthi (@parithoshj), Toni Wahrstätter (@nerolation), Carl Beekhuizen (@CarlBeek), Ansgar Dietrichs (@adietrichs), Dankrad Feist (@dankrad), Alex Stokes (@ralexstokes), Josh Rudolph (@jrudolph), Giulio Rebuffo (@Giulio2002), Storm Slivkoff (@sslivkoff)",
+    "type": "Informational",
+    "createdDate": "2025-04-22",
+    "discussionLink": "https://ethereum-magicians.org/t/eip-7935-set-default-gas-limit-to-xx0m/23789",
     "forkRelationships": [
       {
         "forkName": "Fusaka",
@@ -592,13 +590,13 @@
   {
     "id": 7907,
     "title": "EIP-7907: Meter Contract Code Size And Increase Limit",
-    "status": "Review",
-    "description": "Introduces metering for contract code size and increases the current limit to support larger contracts.",
-    "author": "TBD",
+    "status": "Draft",
+    "description": "Increases the contract code size limit introduced in EIP-170 and adds a gas metering to code loading",
+    "author": "Charles Cooper (@charles-cooper), Qi Zhou (@qizhou)",
     "type": "Standards Track",
     "category": "Core",
-    "createdDate": "2024-01-30",
-    "discussionLink": "https://ethereum-magicians.org/t/eip-7907-meter-contract-code-size-and-increase-limit/18680",
+    "createdDate": "2025-03-14",
+    "discussionLink": "https://ethereum-magicians.org/t/eip-remove-contract-size-limit/23156",
     "forkRelationships": [
       {
         "forkName": "Fusaka",
@@ -671,12 +669,12 @@
     "id": 7917,
     "title": "EIP-7917: Deterministic proposer lookahead",
     "status": "Draft",
-    "description": "Provides deterministic lookahead for block proposers to improve MEV mitigation and validator scheduling predictability.",
-    "author": "TBD",
+    "description": "Pre-calculate and store a deterministic proposer lookahead in the beacon state at the start of every epoch",
+    "author": "Lin Oshitani (@linoscope) <lin@nethermind.io>, Justin Drake (@JustinDrake) <justin@ethereum.org>",
     "type": "Standards Track", 
     "category": "Core",
-    "createdDate": "2024-02-10",
-    "discussionLink": "https://ethereum-magicians.org/t/eip-7917-deterministic-proposer-lookahead/18800",
+    "createdDate": "2025-03-24",
+    "discussionLink": "https://ethereum-magicians.org/t/eip-7917-deterministic-proposer-lookahead/23259",
     "forkRelationships": [
       {
         "forkName": "Fusaka", 
@@ -707,12 +705,12 @@
     "id": 7934,
     "title": "EIP-7934: RLP Execution Block Size Limit",
     "status": "Draft",
-    "description": "Introduces limits on RLP-encoded execution block size to improve network efficiency and prevent potential DoS vectors.",
-    "author": "TBD",
+    "description": "Introduce a protocol-level cap on the maximum RLP-encoded block size to 10 MiB, including a 2 MiB margin for beacon block size.",
+    "author": "Giulio Rebuffo (@Giulio2002), Ben Adams (@benaadams), Storm Slivkoff (@sslivkoff)",
     "type": "Standards Track",
     "category": "Core", 
-    "createdDate": "2024-02-08",
-    "discussionLink": "https://ethereum-magicians.org/t/eip-7934-rlp-execution-block-size-limit/18750",
+    "createdDate": "2025-04-16",
+    "discussionLink": "https://ethereum-magicians.org/t/eip-7934-add-bytesize-limit-to-blocks/23589",
     "forkRelationships": [
       {
         "forkName": "Fusaka",
@@ -939,12 +937,12 @@
     "id": 7793,
     "title": "EIP-7793: Conditional Transactions",
     "status": "Draft",
-    "description": "Enables transactions that execute conditionally based on blockchain state, improving automation and reducing failed transactions.",
-    "author": "TBD",
+    "description": "Transactions that only executes at a specific index and slot.",
+    "author": "Marc Harvey-Hill (@Marchhill), Ahmad Bitar (@smartprogrammer93)",
     "type": "Standards Track",
     "category": "Core",
-    "createdDate": "2024-09-10",
-    "discussionLink": "https://ethereum-magicians.org/t/eip-7793-conditional-transactions/21080",
+    "createdDate": "2024-10-17",
+    "discussionLink": "https://ethereum-magicians.org/t/eip-7793-asserttxindex-opcode/21513",
     "forkRelationships": [
       {
         "forkName": "Fusaka",
@@ -981,13 +979,13 @@
   {
     "id": 7843,
     "title": "EIP-7843: SLOTNUM opcode",
-    "status": "Draft",
-    "description": "Adds a new opcode that returns the current slot number, enabling time-based smart contract logic.",
-    "author": "TBD",
+    "status": "Review",
+    "description": "Opcode to get the current slot number.",
+    "author": "Marc Harvey-Hill (@Marchhill)",
     "type": "Standards Track",
     "category": "Core",
-    "createdDate": "2024-08-15",
-    "discussionLink": "https://ethereum-magicians.org/t/eip-7843-slotnum-opcode/20900",
+    "createdDate": "2024-12-06",
+    "discussionLink": "https://ethereum-magicians.org/t/eip-7843-slotnum-opcode/22234",
     "forkRelationships": [
       {
         "forkName": "Fusaka",
@@ -1242,11 +1240,11 @@
     "id": 7886,
     "title": "EIP-7886: Delayed Execution",
     "status": "Draft",
-    "description": "Introduces delayed execution mechanisms to improve transaction ordering and MEV resistance.",
-    "author": "TBD",
+    "description": "Separate block validation from execution.",
+    "author": "Francesco D'Amato (@fradamt), Toni Wahrstätter (@nerolation)",
     "type": "Standards Track",
     "category": "Core",
-    "createdDate": "2024-06-01",
+    "createdDate": "2025-02-18",
     "discussionLink": "https://ethereum-magicians.org/t/eip-7886-delayed-execution/22890",
     "forkRelationships": [
       {
@@ -1282,11 +1280,11 @@
     "id": 7928,
     "title": "EIP-7928: Block-level Access Lists",
     "status": "Draft",
-    "description": "Introduces block-level access lists to improve gas efficiency and enable new optimization patterns.",
-    "author": "TBD",
+    "description": "Enforced block access lists with storage locations and state diffs.",
+    "author": "Toni Wahrstätter (@nerolation), Dankrad Feist (@dankrad), Francesco D'Amato (@fradamt), Jochem Brouwer (@jochem-brouwer), Ignacio Hagopian (@jsign)",
     "type": "Standards Track",
     "category": "Core",
-    "createdDate": "2024-05-20",
+    "createdDate": "2025-03-31",
     "discussionLink": "https://ethereum-magicians.org/t/eip-7928-block-level-access-lists/23337",
     "forkRelationships": [
       {
@@ -1481,7 +1479,7 @@
     "type": "Standards Track",
     "category": "Core",
     "createdDate": "2021-03-16",
-    "discussionLink": "https://ethereum-magicians.org/t/eip-3540-eof-evm-object-format-v1/5914",
+    "discussionLink": "https://ethereum-magicians.org/t/evm-object-format-eof/5727",
     "forkRelationships": [
       {
         "forkName": "Fusaka",
@@ -1571,7 +1569,7 @@
     "type": "Standards Track",
     "category": "Core",
     "createdDate": "2022-12-21",
-    "discussionLink": "https://ethereum-magicians.org/t/eip-6206-eof-jumpf-and-non-returning-functions/12132",
+    "discussionLink": "https://ethereum-magicians.org/t/eip-4750-eof-functions/8195",
     "forkRelationships": [
       {
         "forkName": "Fusaka",
@@ -1643,7 +1641,7 @@
     "type": "Standards Track",
     "category": "Core",
     "createdDate": "2024-04-24",
-    "discussionLink": "https://ethereum-magicians.org/t/eip-7698-eof-creation-transaction/19717",
+    "discussionLink": "https://ethereum-magicians.org/t/eip-7698-eof-creation-transaction/19784",
     "forkRelationships": [
       {
         "forkName": "Fusaka",
@@ -1697,7 +1695,7 @@
     "type": "Standards Track",
     "category": "Core",
     "createdDate": "2024-09-01",
-    "discussionLink": "https://ethereum-magicians.org/t/eip-7761-extcodetype-instruction/21200",
+    "discussionLink": "https://ethereum-magicians.org/t/eip-7761-is-contract-instruction/20936",
     "forkRelationships": [
       {
         "forkName": "Fusaka",

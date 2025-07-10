@@ -124,6 +124,18 @@ const HomePage = () => {
               @wolovim
             </a>
           </p>
+          <p className="text-xs">
+             {'Contribute: '}
+             <a
+              href="https://github.com/wolovim/forkcast"
+              target="_blank"
+              rel="noopener noreferrer"
+              onClick={() => handleExternalLinkClick('source_code', 'https://github.com/wolovim/forkcast')}
+              className="text-slate-500 hover:text-slate-700 underline decoration-1 underline-offset-2"
+            >
+              wolovim/forkcast
+            </a>
+            </p>
         </div>
       </div>
     </div>

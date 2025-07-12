@@ -1,6 +1,7 @@
 import { Link } from 'react-router-dom';
 import { networkUpgrades } from '../data/upgrades';
 import { useAnalytics } from '../hooks/useAnalytics';
+import ThemeToggle from './ui/ThemeToggle';
 
 const HomePage = () => {
   const upgrades = networkUpgrades;
@@ -30,9 +31,13 @@ const HomePage = () => {
       <div className="max-w-4xl mx-auto">
         {/* Header */}
         <div className="mb-12 text-center">
-          <Link to="/" className="text-4xl font-serif bg-gradient-to-r from-purple-600 via-blue-600 to-purple-800 bg-clip-text text-transparent hover:from-purple-700 hover:via-blue-700 hover:to-purple-900 transition-all duration-200 mb-3 tracking-tight inline-block">
-            Forkcast
-          </Link>
+          <div className="flex flex-row justify-between items-center">
+            <div />
+            <Link to="/" className="text-4xl font-serif bg-gradient-to-r from-purple-600 via-blue-600 to-purple-800 bg-clip-text text-transparent hover:from-purple-700 hover:via-blue-700 hover:to-purple-900 transition-all duration-200 mb-3 tracking-tight inline-block">
+              Forkcast
+            </Link>
+            <ThemeToggle />
+          </div>
           <h2 className="text-xl font-light text-slate-700 tracking-tight mb-2">
             Ethereum Upgrade Tracker
           </h2>
@@ -61,15 +66,15 @@ const HomePage = () => {
                     )}
                   </div>
                 </div>
-                
+
                 <p className={`text-sm leading-relaxed mb-4 ${upgrade.disabled ? 'text-slate-400' : 'text-slate-600'}`}>
                   {upgrade.tagline}
                 </p>
-                
+
                 <div className={`text-xs ${upgrade.disabled ? 'text-slate-400' : 'text-slate-500'}`}>
                   <span className="font-medium">
-                    {upgrade.status === 'Active' ? 'Activated:' : 
-                     upgrade.status === 'Upcoming' ? 'Target:' : 
+                    {upgrade.status === 'Active' ? 'Activated:' :
+                     upgrade.status === 'Upcoming' ? 'Target:' :
                      upgrade.status === 'Planning' ? 'Target:' : 'Date:'}
                   </span> {upgrade.activationDate}
                 </div>

@@ -29,25 +29,25 @@ export const OverviewSection: React.FC<OverviewSectionProps> = ({
   };
 
   const stageStats = [
-    { 
-      stage: 'Proposed for Inclusion', 
-      count: eips.filter(eip => getInclusionStage(eip, forkName) === 'Proposed for Inclusion').length, 
-      color: 'bg-slate-100 text-slate-700' 
+    {
+      stage: 'Proposed for Inclusion',
+      count: eips.filter(eip => getInclusionStage(eip, forkName) === 'Proposed for Inclusion').length,
+      color: 'bg-slate-100 text-slate-700'
     },
-    { 
-      stage: 'Considered for Inclusion', 
-      count: eips.filter(eip => getInclusionStage(eip, forkName) === 'Considered for Inclusion').length, 
-      color: 'bg-slate-200 text-slate-700' 
+    {
+      stage: 'Considered for Inclusion',
+      count: eips.filter(eip => getInclusionStage(eip, forkName) === 'Considered for Inclusion').length,
+      color: 'bg-slate-200 text-slate-700'
     },
-    { 
-      stage: 'Scheduled for Inclusion', 
-      count: eips.filter(eip => getInclusionStage(eip, forkName) === 'Scheduled for Inclusion').length, 
-      color: 'bg-yellow-50 text-yellow-700' 
+    {
+      stage: 'Scheduled for Inclusion',
+      count: eips.filter(eip => getInclusionStage(eip, forkName) === 'Scheduled for Inclusion').length,
+      color: 'bg-yellow-50 text-yellow-700'
     },
-    { 
-      stage: 'Declined for Inclusion', 
-      count: eips.filter(eip => getInclusionStage(eip, forkName) === 'Declined for Inclusion').length, 
-      color: 'bg-red-50 text-red-800' 
+    {
+      stage: 'Declined for Inclusion',
+      count: eips.filter(eip => getInclusionStage(eip, forkName) === 'Declined for Inclusion').length,
+      color: 'bg-red-50 text-red-800'
     }
   ];
 
@@ -55,8 +55,8 @@ export const OverviewSection: React.FC<OverviewSectionProps> = ({
     <div className="bg-white border border-slate-200 rounded p-6" id="overview" data-section>
       <div className="flex items-center gap-3 mb-4">
         <h2 className="text-lg font-semibold text-slate-900">Upgrade Overview</h2>
-        <CopyLinkButton 
-          sectionId="overview" 
+        <CopyLinkButton
+          sectionId="overview"
           title="Copy link to overview"
           size="sm"
         />
@@ -74,9 +74,9 @@ export const OverviewSection: React.FC<OverviewSectionProps> = ({
                 <h4 className="font-medium text-amber-900 text-sm mb-1">Headliner Selection in Progress</h4>
                 <p className="text-amber-800 text-xs leading-relaxed">
                   Headliners are the largest and most impactful features of an upgrade and may be permissionlessly proposed by anyone. The community is actively deciding which direction to prioritize in this network upgrade.
-                  <a 
-                    href="https://ethereum-magicians.org/t/eip-7773-glamsterdam-network-upgrade-meta-thread/21195" 
-                    target="_blank" 
+                  <a
+                    href="https://ethereum-magicians.org/t/eip-7773-glamsterdam-network-upgrade-meta-thread/21195"
+                    target="_blank"
                     rel="noopener noreferrer"
                     onClick={() => handleExternalLinkClick('headliner_discussion', 'https://ethereum-magicians.org/t/eip-7773-glamsterdam-network-upgrade-meta-thread/21195')}
                     className="text-amber-700 hover:text-amber-900 underline decoration-1 underline-offset-2 ml-1"
@@ -110,9 +110,9 @@ export const OverviewSection: React.FC<OverviewSectionProps> = ({
                 })
                 .map(eip => {
                   if (!eip.laymanDescription) return null;
-                  
+
                   const layer = getHeadlinerLayer(eip, forkName);
-                  
+
                   return (
                     <button
                       key={eip.id}
@@ -144,7 +144,7 @@ export const OverviewSection: React.FC<OverviewSectionProps> = ({
                           </svg>
                         </div>
                       <p className="text-xs text-slate-600 leading-relaxed line-clamp-3">
-                        {eip.laymanDescription.length > 120 
+                        {eip.laymanDescription.length > 120
                           ? parseMarkdownLinks(eip.laymanDescription.substring(0, 120) + '...')
                           : parseMarkdownLinks(eip.laymanDescription)
                         }
@@ -159,22 +159,22 @@ export const OverviewSection: React.FC<OverviewSectionProps> = ({
           </div>
         </>
       )}
-      
+
       {/* Stage stats - only show for non-Glamsterdam forks */}
       {forkName.toLowerCase() !== 'glamsterdam' && (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
           {stageStats.map(({ stage, count, color }) => {
             const stageId = stage.toLowerCase().replace(/\s+/g, '-');
             const hasEips = count > 0;
-            
+
             return (
               <button
                 key={stage}
                 onClick={() => hasEips && onStageClick(stageId)}
                 disabled={!hasEips}
                 className={`text-center p-4 rounded transition-all duration-200 ${
-                  hasEips 
-                    ? 'bg-slate-50 hover:bg-slate-100 hover:shadow-sm cursor-pointer' 
+                  hasEips
+                    ? 'bg-slate-50 hover:bg-slate-100 hover:shadow-sm cursor-pointer'
                     : 'bg-slate-50 opacity-50 cursor-not-allowed'
                 }`}
               >
@@ -190,4 +190,4 @@ export const OverviewSection: React.FC<OverviewSectionProps> = ({
       )}
     </div>
   );
-}; 
+};

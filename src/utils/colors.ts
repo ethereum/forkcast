@@ -12,7 +12,7 @@ export const getInclusionStageColor = (stage: InclusionStage): string => {
     case 'Scheduled for Inclusion':
       return 'bg-yellow-50 text-yellow-700';
     case 'Declined for Inclusion':
-      return 'bg-red-50 text-red-700';
+      return 'bg-red-50 text-red-700 dark:text-black';
     case 'Included':
       return 'bg-emerald-50 text-emerald-800';
     default:
@@ -52,4 +52,4 @@ export const getPhaseStatusColor = (status: string): string => {
     default:
       return 'bg-slate-100 text-slate-600 border-slate-200';
   }
-}; 
+};

@@ -19,12 +19,13 @@ import {
   getUpgradeStatusColor
 } from '../utils/colors';
 import { Tooltip, CopyLinkButton } from './ui';
-import { 
-  NetworkUpgradeTimeline, 
-  GlamsterdamTimeline, 
-  TableOfContents, 
-  OverviewSection 
+import {
+  NetworkUpgradeTimeline,
+  GlamsterdamTimeline,
+  TableOfContents,
+  OverviewSection
 } from './network-upgrade';
+import ThemeToggle from './ui/ThemeToggle';
 
 interface PublicNetworkUpgradePageProps {
   forkName: string;
@@ -56,8 +57,8 @@ const PublicNetworkUpgradePage: React.FC<PublicNetworkUpgradePageProps> = ({
 
   // Filter EIPs that have relationships with this fork
   useEffect(() => {
-    const filteredEips = eipsData.filter(eip => 
-      eip.forkRelationships.some(fork => 
+    const filteredEips = eipsData.filter(eip =>
+      eip.forkRelationships.some(fork =>
         fork.forkName.toLowerCase() === forkName.toLowerCase()
       )
     );
@@ -94,7 +95,7 @@ const PublicNetworkUpgradePage: React.FC<PublicNetworkUpgradePageProps> = ({
           }
         });
       },
-      { 
+      {
         threshold: 0.3,
         rootMargin: '0px'
       }
@@ -159,41 +160,41 @@ const PublicNetworkUpgradePage: React.FC<PublicNetworkUpgradePageProps> = ({
             }
             return matchesStage;
           });
-          
+
           if (stageEips.length === 0) return [];
-          
+
           // Sort EIPs: headliners first, then by EIP number
           const sortedEips = stageEips.sort((a, b) => {
             const aIsHeadliner = isHeadliner(a, forkName);
             const bIsHeadliner = isHeadliner(b, forkName);
-            
+
             // If one is headliner and other isn't, headliner comes first
             if (aIsHeadliner && !bIsHeadliner) return -1;
             if (!aIsHeadliner && bIsHeadliner) return 1;
-            
+
             // If both are same type (both headliner or both not), sort by EIP number
             return a.id - b.id;
           });
-          
+
           const stageItem = {
             id: stage.toLowerCase().replace(/\s+/g, '-'),
             label: stage,
             type: 'section' as const,
             count: stageEips.length
           };
-          
+
           // For Declined for Inclusion, only show the section header, not individual EIPs
           if (stage === 'Declined for Inclusion') {
             return [stageItem];
           }
-          
+
           // For all other stages, show individual EIPs
           const eipItems = sortedEips.map(eip => {
             const isHeadlinerEip = isHeadliner(eip, forkName);
             const starSymbol = forkName.toLowerCase() === 'glamsterdam' ? '☆' : '★';
             const proposalPrefix = getProposalPrefix(eip);
             const layer = isHeadlinerEip ? getHeadlinerLayer(eip, forkName) : null;
-            
+
             return {
               id: `eip-${eip.id}`,
               label: `${isHeadlinerEip ? `${starSymbol} ` : ''}${proposalPrefix}-${eip.id}: ${getLaymanTitle(eip)}${layer ? ` (${layer})` : ''}`,
@@ -201,7 +202,7 @@ const PublicNetworkUpgradePage: React.FC<PublicNetworkUpgradePageProps> = ({
               count: null as number | null
             };
           });
-          
+
           return [stageItem, ...eipItems];
         })
     ] : [])
@@ -226,10 +227,12 @@ const PublicNetworkUpgradePage: React.FC<PublicNetworkUpgradePageProps> = ({
       <div className="max-w-4xl mx-auto">
         {/* Header */}
         <div className="mb-8">
-          <div className="mb-6">
+          <div className="mb-6 flex flex-row justify-between items-center">
             <Link to="/" className="text-3xl font-serif bg-gradient-to-r from-purple-600 via-blue-600 to-purple-800 bg-clip-text text-transparent hover:from-purple-700 hover:via-blue-700 hover:to-purple-900 transition-all duration-200 tracking-tight">
               Forkcast
             </Link>
+
+            <ThemeToggle />
           </div>
           <Link to="/" className="text-slate-600 hover:text-slate-800 mb-6 inline-block text-sm font-medium">
             ← All Network Upgrades
@@ -240,15 +243,15 @@ const PublicNetworkUpgradePage: React.FC<PublicNetworkUpgradePageProps> = ({
               <div className="flex-1">
                 <div className="flex items-center gap-3 mb-3">
                   <h1 className="text-3xl font-light text-slate-900 tracking-tight">{displayName}</h1>
-                  <CopyLinkButton 
-                    sectionId="upgrade" 
+                  <CopyLinkButton
+                    sectionId="upgrade"
                     title="Copy link to this upgrade"
                   />
                 </div>
                 <p className="text-base text-slate-600 mb-2 leading-relaxed max-w-2xl">{description}</p>
                 {metaEipLink && (
                   <div className="mb-4">
-                    <a 
+                    <a
                       href={metaEipLink}
                       target="_blank"
                       rel="noopener noreferrer"
@@ -269,7 +272,7 @@ const PublicNetworkUpgradePage: React.FC<PublicNetworkUpgradePageProps> = ({
                 </span>
               </div>
             </div>
-            
+
             {/* Discrete experiment notice */}
             <div className="mt-2">
               <p className="text-xs text-slate-400 italic max-w-xl">
@@ -303,7 +306,7 @@ const PublicNetworkUpgradePage: React.FC<PublicNetworkUpgradePageProps> = ({
         {/* Main Content with TOC */}
         <div className="flex gap-8">
           {/* Table of Contents */}
-          <TableOfContents 
+          <TableOfContents
             items={tocItems}
             activeSection={activeSection}
             onSectionClick={scrollToSection}
@@ -314,7 +317,7 @@ const PublicNetworkUpgradePage: React.FC<PublicNetworkUpgradePageProps> = ({
             {/* EIPs */}
             <div className="space-y-8">
               {/* Overview Section */}
-              <OverviewSection 
+              <OverviewSection
                 eips={eips}
                 forkName={forkName}
                 onStageClick={scrollToSection}
@@ -389,15 +392,15 @@ const PublicNetworkUpgradePage: React.FC<PublicNetworkUpgradePageProps> = ({
                                   <div className="flex items-center gap-3">
                                     <h3 className="text-xl font-medium text-slate-900 leading-tight">
                                       {isHeadliner(eip, forkName) && (
-                                        <Tooltip 
-                                          text={forkName.toLowerCase() === 'glamsterdam' 
-                                            ? "Competing headliner proposal for this network upgrade" 
+                                        <Tooltip
+                                          text={forkName.toLowerCase() === 'glamsterdam'
+                                            ? "Competing headliner proposal for this network upgrade"
                                             : "Headliner feature of this network upgrade"
-                                          } 
+                                          }
                                           className="inline-block cursor-pointer"
                                         >
-                                          <span 
-                                            className="text-purple-400 hover:text-purple-600 mr-2 transition-colors cursor-help" 
+                                          <span
+                                            className="text-purple-400 hover:text-purple-600 mr-2 transition-colors cursor-help"
                                           >
                                             {forkName.toLowerCase() === 'glamsterdam' ? '☆' : '★'}
                                           </span>
@@ -422,7 +425,7 @@ const PublicNetworkUpgradePage: React.FC<PublicNetworkUpgradePageProps> = ({
                                     </h3>
                                     <div className="flex items-center gap-2 relative top-0.5">
                                       <Tooltip text={`View ${getProposalPrefix(eip)}-${eip.id} specification`}>
-                                        <a 
+                                        <a
                                           href={getSpecificationUrl(eip)}
                                           target="_blank"
                                           rel="noopener noreferrer"
@@ -434,8 +437,8 @@ const PublicNetworkUpgradePage: React.FC<PublicNetworkUpgradePageProps> = ({
                                           </svg>
                                         </a>
                                       </Tooltip>
-                                      <CopyLinkButton 
-                                        sectionId={eipId} 
+                                      <CopyLinkButton
+                                        sectionId={eipId}
                                         title={`Copy link to this section`}
                                         size="sm"
                                       />
@@ -457,7 +460,7 @@ const PublicNetworkUpgradePage: React.FC<PublicNetworkUpgradePageProps> = ({
                                 const discussionLink = getHeadlinerDiscussionLink(eip, forkName);
                                 return isHeadlinerEip && discussionLink && (
                                   <div className="mt-3">
-                                    <a 
+                                    <a
                                       href={discussionLink}
                                       target="_blank"
                                       rel="noopener noreferrer"
@@ -573,7 +576,7 @@ const PublicNetworkUpgradePage: React.FC<PublicNetworkUpgradePageProps> = ({
                 { stage: 'Declined for Inclusion', description: 'EIPs that were proposed, but ultimately declined for inclusion in the upgrade for various reasons. They may be reconsidered for future upgrades.' }
               ].map(({ stage, description }) => {
                 let stageEips = eips.filter(eip => getInclusionStage(eip, forkName) === stage);
-                
+
                 if (stageEips.length === 0) return null;
 
                 // For Glamsterdam, hide all regular EIP sections since we only want to show headliner proposals
@@ -585,11 +588,11 @@ const PublicNetworkUpgradePage: React.FC<PublicNetworkUpgradePageProps> = ({
                 const sortedStageEips = stageEips.sort((a, b) => {
                   const aIsHeadliner = isHeadliner(a, forkName);
                   const bIsHeadliner = isHeadliner(b, forkName);
-                  
+
                   // If one is headliner and other isn't, headliner comes first
                   if (aIsHeadliner && !bIsHeadliner) return -1;
                   if (!aIsHeadliner && bIsHeadliner) return 1;
-                  
+
                   // If both are same type (both headliner or both not), sort by EIP number
                   return a.id - b.id;
                 });
@@ -611,18 +614,18 @@ const PublicNetworkUpgradePage: React.FC<PublicNetworkUpgradePageProps> = ({
                             className="flex items-center gap-1.5 text-xs text-slate-600 hover:text-slate-800 transition-colors"
                           >
                             {isDeclinedExpanded ? 'Collapse' : 'Expand'}
-                            <svg 
-                              className={`w-3.5 h-3.5 transition-transform ${isDeclinedExpanded ? 'rotate-180' : ''}`} 
-                              fill="none" 
-                              stroke="currentColor" 
+                            <svg
+                              className={`w-3.5 h-3.5 transition-transform ${isDeclinedExpanded ? 'rotate-180' : ''}`}
+                              fill="none"
+                              stroke="currentColor"
                               viewBox="0 0 24 24"
                             >
                               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
                             </svg>
                           </button>
                         )}
-                        <CopyLinkButton 
-                          sectionId={stageId} 
+                        <CopyLinkButton
+                          sectionId={stageId}
                           title={`Copy link to ${stage}`}
                           size="sm"
                         />
@@ -633,7 +636,7 @@ const PublicNetworkUpgradePage: React.FC<PublicNetworkUpgradePageProps> = ({
                     {isDeclinedStage && !isDeclinedExpanded ? (
                       <div className="bg-slate-50 border border-slate-200 rounded p-4">
                         <p className="text-sm text-slate-600">
-                          {stageEips.length} EIP{stageEips.length !== 1 ? 's' : ''} declined for inclusion in this upgrade. 
+                          {stageEips.length} EIP{stageEips.length !== 1 ? 's' : ''} declined for inclusion in this upgrade.
                           <button
                             onClick={() => setIsDeclinedExpanded(true)}
                             className="ml-1 text-slate-700 hover:text-slate-900 underline decoration-1 underline-offset-2 transition-colors"
@@ -665,7 +668,7 @@ const PublicNetworkUpgradePage: React.FC<PublicNetworkUpgradePageProps> = ({
                                   </div>
                                   <div className="flex items-center gap-2 ml-4">
                                     <Tooltip text={`View ${getProposalPrefix(eip)}-${eip.id} specification`}>
-                                      <a 
+                                      <a
                                         href={getSpecificationUrl(eip)}
                                         target="_blank"
                                         rel="noopener noreferrer"
@@ -679,7 +682,7 @@ const PublicNetworkUpgradePage: React.FC<PublicNetworkUpgradePageProps> = ({
                                     </Tooltip>
                                     {eip.discussionLink && (
                                       <Tooltip text={`View ${getProposalPrefix(eip)}-${eip.id} discussion`}>
-                                        <a 
+                                        <a
                                           href={eip.discussionLink}
                                           target="_blank"
                                           rel="noopener noreferrer"
@@ -692,8 +695,8 @@ const PublicNetworkUpgradePage: React.FC<PublicNetworkUpgradePageProps> = ({
                                         </a>
                                       </Tooltip>
                                     )}
-                                    <CopyLinkButton 
-                                      sectionId={eipId} 
+                                    <CopyLinkButton
+                                      sectionId={eipId}
                                       title={`Copy link to this section`}
                                       size="sm"
                                     />
@@ -706,8 +709,8 @@ const PublicNetworkUpgradePage: React.FC<PublicNetworkUpgradePageProps> = ({
                           // Full view for non-declined EIPs
                           return (
                             <article key={eip.id} className={`bg-white border rounded p-8 ${
-                              isHeadliner(eip, forkName) 
-                                ? 'border-purple-200 shadow-sm ring-1 ring-purple-100' 
+                              isHeadliner(eip, forkName)
+                                ? 'border-purple-200 shadow-sm ring-1 ring-purple-100'
                                 : 'border-slate-200'
                             }`} id={eipId} data-section>
                               {/* Header */}
@@ -717,15 +720,15 @@ const PublicNetworkUpgradePage: React.FC<PublicNetworkUpgradePageProps> = ({
                                     <div className="flex items-center gap-3">
                                       <h3 className="text-xl font-medium text-slate-900 leading-tight">
                                         {isHeadliner(eip, forkName) && (
-                                          <Tooltip 
-                                            text={forkName.toLowerCase() === 'glamsterdam' 
-                                              ? "Competing headliner proposal for this network upgrade" 
+                                          <Tooltip
+                                            text={forkName.toLowerCase() === 'glamsterdam'
+                                              ? "Competing headliner proposal for this network upgrade"
                                               : "Headliner feature of this network upgrade"
-                                            } 
+                                            }
                                             className="inline-block cursor-pointer"
                                           >
-                                            <span 
-                                              className="text-purple-400 hover:text-purple-600 mr-2 transition-colors cursor-help" 
+                                            <span
+                                              className="text-purple-400 hover:text-purple-600 mr-2 transition-colors cursor-help"
                                             >
                                               {forkName.toLowerCase() === 'glamsterdam' ? '☆' : '★'}
                                             </span>
@@ -750,7 +753,7 @@ const PublicNetworkUpgradePage: React.FC<PublicNetworkUpgradePageProps> = ({
                                       )}
                                       <div className="flex items-center gap-2 relative top-0.5">
                                         <Tooltip text={`View ${getProposalPrefix(eip)}-${eip.id} specification`}>
-                                          <a 
+                                          <a
                                             href={getSpecificationUrl(eip)}
                                             target="_blank"
                                             rel="noopener noreferrer"
@@ -762,8 +765,8 @@ const PublicNetworkUpgradePage: React.FC<PublicNetworkUpgradePageProps> = ({
                                             </svg>
                                           </a>
                                         </Tooltip>
-                                        <CopyLinkButton 
-                                          sectionId={eipId} 
+                                        <CopyLinkButton
+                                          sectionId={eipId}
                                           title={`Copy link to this section`}
                                           size="sm"
                                         />
@@ -785,7 +788,7 @@ const PublicNetworkUpgradePage: React.FC<PublicNetworkUpgradePageProps> = ({
                                   const discussionLink = getHeadlinerDiscussionLink(eip, forkName);
                                   return isHeadlinerEip && discussionLink && (
                                     <div className="mt-3">
-                                      <a 
+                                      <a
                                         href={discussionLink}
                                         target="_blank"
                                         rel="noopener noreferrer"
@@ -831,7 +834,7 @@ const PublicNetworkUpgradePage: React.FC<PublicNetworkUpgradePageProps> = ({
                                         clClients: 'Client Developers (Consensus Layer)',
                                         elClients: 'Client Developers (Execution Layer)'
                                       };
-                                      
+
                                       return (
                                         <div key={stakeholder} className="bg-white border border-slate-200 rounded p-4">
                                           <h5 className="font-semibold text-slate-900 text-xs mb-3 border-b border-slate-100 pb-2">
@@ -908,4 +911,4 @@ const PublicNetworkUpgradePage: React.FC<PublicNetworkUpgradePageProps> = ({
   );
 };
 
-export default PublicNetworkUpgradePage; 
+export default PublicNetworkUpgradePage;

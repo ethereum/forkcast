@@ -175,9 +175,9 @@ const TiermakerPage: React.FC = () => {
     });
 
     // Canvas dimensions
-    const canvasWidth = 900;
-    const cardHeight = 60;
-    const cardGap = 10;
+    const canvasWidth = 540;
+    const cardHeight = 36;
+    const cardGap = 6;
     const canvasHeight =
       60 +
       TIERS.reduce((acc, tier) => {

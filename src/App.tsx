@@ -2,6 +2,7 @@ import { BrowserRouter as Router, Routes, Route, Navigate, useNavigate, useLocat
 import { useEffect } from 'react';
 import PublicNetworkUpgradePage from './components/PublicNetworkUpgradePage';
 import HomePage from './components/HomePage';
+import RankPage from './components/RankPage';
 import { getUpgradeById } from './data/upgrades';
 import { useAnalytics } from './hooks/useAnalytics';
 
@@ -72,6 +73,7 @@ function App() {
             metaEipLink={glamsterdamUpgrade.metaEipLink}
           />
         } />
+        <Route path="/rank" element={<RankPage />} />
         {/* <Route path="/upgrade/pectra" element={
           <PublicNetworkUpgradePage 
             forkName="Pectra"

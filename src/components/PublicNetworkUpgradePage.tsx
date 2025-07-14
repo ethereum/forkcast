@@ -355,9 +355,17 @@ const PublicNetworkUpgradePage: React.FC<PublicNetworkUpgradePageProps> = ({
                         size="sm"
                       />
                     </div>
+                    <div className="flex items-center justify-between gap-4">
                     <p className="text-sm text-slate-600 max-w-3xl">
                       Multiple major features are competing for inclusion as the headliner of this network upgrade. The community is actively deciding which direction to prioritize.
                     </p>
+                      <Link
+                        to="/rank"
+                        className="inline-flex items-center gap-2 px-4 py-2 text-sm font-medium bg-purple-600 text-white rounded-md hover:bg-purple-700 transition-colors whitespace-nowrap"
+                      >
+                        Rank Proposals
+                      </Link>
+                    </div>
                   </div>
 
                   <div className="space-y-6">

@@ -1,6 +1,6 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import { EIP } from '../../types';
+import { EIP, ClientTeamPerspective } from '../../types';
 import {
   getInclusionStage,
   isHeadliner,
@@ -16,12 +16,31 @@ interface OverviewSectionProps {
   eips: EIP[];
   forkName: string;
   onStageClick: (stageId: string) => void;
+  clientTeamPerspectives?: ClientTeamPerspective[];
 }
+
+const ALL_CLIENT_TEAMS = [
+  // Execution Layer teams (alphabetized)
+  { name: 'Besu', type: 'EL' as const },
+  { name: 'Geth', type: 'EL' as const },
+  { name: 'Nethermind', type: 'EL' as const },
+  { name: 'Reth', type: 'EL' as const },
+  // Both EL & CL teams
+  { name: 'Erigon', type: 'Both' as const },
+  // Consensus Layer teams (alphabetized)
+  { name: 'Grandine', type: 'CL' as const },
+  { name: 'Lighthouse', type: 'CL' as const },
+  { name: 'Lodestar', type: 'CL' as const },
+  { name: 'Nimbus', type: 'CL' as const },
+  { name: 'Prysm', type: 'CL' as const },
+  { name: 'Teku', type: 'CL' as const }
+];
 
 export const OverviewSection: React.FC<OverviewSectionProps> = ({
   eips,
   forkName,
-  onStageClick
+  onStageClick,
+  clientTeamPerspectives = []
 }) => {
   const { trackLinkClick } = useAnalytics();
 
@@ -52,15 +71,18 @@ export const OverviewSection: React.FC<OverviewSectionProps> = ({
     }
   ];
 
+
   return (
     <div className="bg-white border border-slate-200 rounded p-6" id="overview" data-section>
       <div className="flex items-center gap-3 mb-4">
         <h2 className="text-lg font-semibold text-slate-900">Upgrade Overview</h2>
-        <CopyLinkButton 
-          sectionId="overview" 
-          title="Copy link to overview"
-          size="sm"
-        />
+        <div className="flex items-center relative top-0.5">
+          <CopyLinkButton 
+            sectionId="overview" 
+            title="Copy link to overview"
+            size="sm"
+          />
+        </div>
       </div>
 
       {/* Special note for Glamsterdam's competitive headliner process */}
@@ -98,10 +120,17 @@ export const OverviewSection: React.FC<OverviewSectionProps> = ({
           </div>
 
           {/* Headliner Options Overview */}
-          <div className={`p-6 bg-gradient-to-r from-purple-50 to-blue-50 border border-purple-200 rounded ${forkName.toLowerCase() === 'glamsterdam' ? '' : 'mb-6'}`}>
+          <div className={`p-6 bg-gradient-to-r from-purple-50 to-blue-50 border border-purple-200 rounded ${forkName.toLowerCase() === 'glamsterdam' ? '' : 'mb-6'}`} id="headliner-options" data-section>
             <h4 className="font-medium text-purple-900 text-sm mb-4 flex items-center gap-2">
               <span className="text-purple-600">★</span>
               Competing Headliner Options
+              <div className="flex items-center relative top-0.5">
+                <CopyLinkButton
+                  sectionId="headliner-options"
+                  title="Copy link to headliner options"
+                  size="sm"
+                />
+              </div>
             </h4>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               {eips
@@ -165,6 +194,53 @@ export const OverviewSection: React.FC<OverviewSectionProps> = ({
             <p className="text-xs text-purple-700 mt-4 italic">
               Click any option above to jump to its detailed analysis below.
             </p>
+          </div>
+
+          {/* Client Team Perspectives */}
+          <div className="mt-6 p-4 bg-indigo-50 border border-indigo-200 rounded" id="client-team-perspectives" data-section>
+            <h4 className="font-medium text-indigo-900 text-sm mb-3 flex items-center gap-2">
+              Client Team Perspectives
+              <div className="flex items-center relative top-0.5">
+                <CopyLinkButton
+                  sectionId="client-team-perspectives"
+                  title="Copy link to client team perspectives"
+                  size="sm"
+                />
+              </div>
+            </h4>
+            <p className="text-indigo-800 text-xs leading-relaxed mb-3">
+              Client teams publish their perspectives on headliner selection. These viewpoints are crucial as these teams will implement and maintain the chosen features.
+            </p>
+            <div className="flex flex-wrap gap-2">
+              {ALL_CLIENT_TEAMS.map((team) => {
+                const perspective = clientTeamPerspectives.find(p => p.teamName === team.name);
+                const hasPerspective = !!perspective;
+                
+                return (
+                  <div
+                    key={team.name}
+                    className={`inline-flex items-center gap-1.5 px-2 py-1 rounded text-xs ${
+                      hasPerspective
+                        ? 'bg-white border border-indigo-200 hover:bg-indigo-50 cursor-pointer'
+                        : 'bg-indigo-100 border border-indigo-200 opacity-60'
+                    }`}
+                    onClick={() => hasPerspective && window.open(perspective!.blogPostUrl, '_blank')}
+                  >
+                    <span className={`px-1 py-0.5 rounded text-xs font-medium ${
+                      team.type === 'EL' ? 'bg-blue-100 text-blue-700' :
+                      team.type === 'CL' ? 'bg-green-100 text-green-700' :
+                      'bg-purple-100 text-purple-700'
+                    }`}>
+                      {team.type}
+                    </span>
+                    <span className="font-medium text-indigo-900">{team.name}</span>
+                    {hasPerspective && (
+                      <span className="text-indigo-600">→</span>
+                    )}
+                  </div>
+                );
+              })}
+            </div>
           </div>
         </>
       )}

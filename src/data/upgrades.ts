@@ -1,3 +1,5 @@
+import { ClientTeamPerspective } from '../types/eip';
+
 export interface NetworkUpgrade {
   id: string;
   path: string;
@@ -8,6 +10,7 @@ export interface NetworkUpgrade {
   activationDate: string;
   disabled: boolean;
   metaEipLink?: string;
+  clientTeamPerspectives?: ClientTeamPerspective[];
 }
 
 export const networkUpgrades: NetworkUpgrade[] = [
@@ -40,7 +43,34 @@ export const networkUpgrades: NetworkUpgrade[] = [
     status: 'Planning',
     activationDate: '2026',
     disabled: false,
-    metaEipLink: 'https://ethereum-magicians.org/t/eip-7773-glamsterdam-network-upgrade-meta-thread/21195'
+    metaEipLink: 'https://ethereum-magicians.org/t/eip-7773-glamsterdam-network-upgrade-meta-thread/21195',
+    clientTeamPerspectives: [
+      {
+        teamName: 'Geth',
+        teamType: 'EL',
+        blogPostUrl: 'https://github.com/ethereum/pm/issues/1610#issuecomment-3073521193'
+      },
+      {
+        teamName: 'Lighthouse',
+        teamType: 'CL',
+        blogPostUrl: 'https://blog.sigmaprime.io/glamsterdam-headliner.html'
+      },
+      {
+        teamName: 'Lodestar',
+        teamType: 'CL',
+        blogPostUrl: 'https://blog.chainsafe.io/lodestars-glamsterdam-headliner-vision/'
+      },
+      {
+        teamName: 'Prysm',
+        teamType: 'CL',
+        blogPostUrl: 'https://hackmd.io/@tchain/prysm-glamsterdam-headliner'
+      },
+      {
+        teamName: 'Reth',
+        teamType: 'EL',
+        blogPostUrl: 'https://hackmd.io/@ZPrq5kalQqSX-138YNSJUQ/H1JafRXLle'
+      }
+    ]
   }
 ];
 

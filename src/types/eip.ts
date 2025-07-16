@@ -1,3 +1,9 @@
+export interface ClientTeamPerspective {
+  teamName: string;
+  teamType: 'EL' | 'CL' | 'Both'; // Execution Layer, Consensus Layer, or both
+  blogPostUrl: string;
+}
+
 export interface ForkRelationship {
   forkName: string;
   status: string;

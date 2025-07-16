@@ -3,7 +3,7 @@ import { Link, useLocation } from 'react-router-dom';
 import eipsData from '../data/eips.json';
 import { useMetaTags } from '../hooks/useMetaTags';
 import { useAnalytics } from '../hooks/useAnalytics';
-import { EIP } from '../types';
+import { EIP, ClientTeamPerspective } from '../types';
 import {
   getInclusionStage,
   getHeadlinerDiscussionLink,
@@ -23,7 +23,7 @@ import {
   NetworkUpgradeTimeline, 
   GlamsterdamTimeline, 
   TableOfContents, 
-  OverviewSection 
+  OverviewSection
 } from './network-upgrade';
 
 interface PublicNetworkUpgradePageProps {
@@ -32,6 +32,7 @@ interface PublicNetworkUpgradePageProps {
   description: string;
   status: string;
   metaEipLink?: string;
+  clientTeamPerspectives?: ClientTeamPerspective[];
 }
 
 const PublicNetworkUpgradePage: React.FC<PublicNetworkUpgradePageProps> = ({
@@ -39,7 +40,8 @@ const PublicNetworkUpgradePage: React.FC<PublicNetworkUpgradePageProps> = ({
   displayName,
   description,
   status,
-  metaEipLink
+  metaEipLink,
+  clientTeamPerspectives
 }) => {
   const [eips, setEips] = useState<EIP[]>([]);
   const [activeSection, setActiveSection] = useState<string>('overview');
@@ -318,6 +320,7 @@ const PublicNetworkUpgradePage: React.FC<PublicNetworkUpgradePageProps> = ({
                 eips={eips}
                 forkName={forkName}
                 onStageClick={scrollToSection}
+                clientTeamPerspectives={clientTeamPerspectives}
               />
 
               {/* Glamsterdam Timeline Section */}

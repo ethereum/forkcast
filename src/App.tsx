@@ -71,6 +71,7 @@ function App() {
             description={glamsterdamUpgrade.description}
             status={glamsterdamUpgrade.status}
             metaEipLink={glamsterdamUpgrade.metaEipLink}
+            clientTeamPerspectives={glamsterdamUpgrade.clientTeamPerspectives}
           />
         } />
         <Route path="/rank" element={<RankPage />} />

@@ -79,16 +79,6 @@ export const networkUpgrades: NetworkUpgrade[] = [
         teamName: 'Reth',
         teamType: 'EL',
         blogPostUrl: 'https://hackmd.io/@ZPrq5kalQqSX-138YNSJUQ/H1JafRXLle'
-      },
-      {
-        teamName: 'Erigon',
-        teamType: 'EL',
-        blogPostUrl: 'https://hackmd.io/@erigon/Glamsterdam_Headliners_View'
-      },
-      {
-        teamName: 'Grandine',
-        teamType: 'EL',
-        blogPostUrl: 'https://github.com/ethereum/pm/issues/1610#issuecomment-3078680887'
       }
     ]
   }

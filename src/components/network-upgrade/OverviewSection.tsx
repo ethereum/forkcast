@@ -84,6 +84,18 @@ export const OverviewSection: React.FC<OverviewSectionProps> = ({
                     Follow the discussion →
                   </a>
                 </p>
+                <br></br>
+                <p className="text-amber-800 text-xs leading-relaxed">
+                <a 
+                    href="https://forkcast.org/rank" 
+                    target="_blank" 
+                    rel="noopener noreferrer"
+                    onClick={() => handleExternalLinkClick('headliner_discussion', 'https://forkcast.org/rank')}
+                    className="text-amber-700 hover:text-amber-900 underline decoration-1 underline-offset-2"
+                  >
+                    Create your own tier list of headliners and share your priorities →
+                  </a>
+                </p>
               </div>
             </div>
           </div>

@@ -1,6 +1,6 @@
 # Forkcast - Ethereum Network Upgrades
 
-An experiment by the Protocol & Application Support team to provide public-facing information about Ethereum network upgrades.
+An experiment by the Protocol Support team to provide public-facing information about Ethereum network upgrades.
 
 ## Live Site
 

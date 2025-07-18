@@ -106,7 +106,7 @@ const HomePage = () => {
         {/* Footer */}
         <div className="mt-16 text-center text-sm text-slate-500 dark:text-slate-400">
           <p className="italic mb-2">
-            An experiment by the Protocol & Application Support team.
+            An experiment by the Protocol Support team.
           </p>
           <p className="text-xs mb-4">
             Have feedback? Contact{' '}

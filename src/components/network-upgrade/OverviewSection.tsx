@@ -108,12 +108,30 @@ export const OverviewSection: React.FC<OverviewSectionProps> = ({
                   </a>
                 </p>
                 <p className="text-amber-800 dark:text-amber-200 text-xs leading-relaxed mt-2">
-                  <Link
-                    to="/rank"
-                    className="text-amber-700 hover:text-amber-900 dark:text-amber-300 dark:hover:text-amber-100 underline decoration-1 underline-offset-2"
-                  >
-                    Create your own tier list of headliners and share your priorities →
-                  </Link>
+                  Your input can help shape the direction of the Glamsterdam upgrade. Stakeholder feedback is crucial for surfacing priorities and concerns from across the ecosystem. Get involved:
+                  <ul className="list-disc pl-5 mt-2 space-y-1">
+                    <li>
+                      <Link
+                        to="/rank"
+                        className="text-purple-700 hover:text-purple-900 dark:text-purple-300 dark:hover:text-purple-100 underline decoration-1 underline-offset-2"
+                      >
+                        Create your own tier list of headliner proposals
+                      </Link>
+                      {" "}to share which features you think should be prioritized.
+                    </li>
+                    <li>
+                      <a
+                        href="https://ethereum-magicians.org/t/soliciting-stakeholder-feedback-on-glamsterdam-headliners/24885"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        onClick={() => handleExternalLinkClick('community_feedback', 'https://ethereum-magicians.org/t/soliciting-stakeholder-feedback-on-glamsterdam-headliners/24885')}
+                        className="text-purple-700 hover:text-purple-900 dark:text-purple-300 dark:hover:text-purple-100 underline decoration-1 underline-offset-2"
+                      >
+                        Submit stakeholder feedback
+                      </a>
+                      {" "}to explain how your community or project would be affected by different headliner choices.
+                    </li>
+                  </ul>
                 </p>
               </div>
             </div>
@@ -209,7 +227,7 @@ export const OverviewSection: React.FC<OverviewSectionProps> = ({
               </div>
             </h4>
             <p className="text-indigo-800 dark:text-indigo-200 text-xs leading-relaxed mb-3">
-              Client teams publish their perspectives on headliner selection. These viewpoints are crucial as these teams will implement and maintain the chosen features.
+              Client teams publish their perspectives on headliner selection. These viewpoints are especially important as these teams will implement and maintain the chosen features.
             </p>
             <div className="flex flex-wrap gap-2">
               {ALL_CLIENT_TEAMS.map((team) => {

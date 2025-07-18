@@ -364,12 +364,23 @@ const PublicNetworkUpgradePage: React.FC<PublicNetworkUpgradePageProps> = ({
                     <p className="text-sm text-slate-600 dark:text-slate-300 max-w-3xl">
                       Multiple major features are competing for inclusion as the headliner of this network upgrade. The community is actively deciding which direction to prioritize.
                     </p>
-                      <Link
-                        to="/rank"
-                        className="inline-flex items-center gap-2 px-4 py-2 text-sm font-medium bg-purple-600 text-white rounded-md hover:bg-purple-700 transition-colors whitespace-nowrap"
-                      >
-                        Rank Proposals
-                      </Link>
+                      <div className="flex flex-col gap-2">
+                        <Link
+                          to="/rank"
+                          className="inline-flex items-center justify-center px-3 py-1.5 text-xs font-medium border border-purple-600 text-purple-700 bg-purple-50 dark:bg-purple-900/20 hover:bg-purple-100 dark:hover:bg-purple-800/40 rounded-md transition-colors whitespace-nowrap"
+                        >
+                          Rank Proposals
+                        </Link>
+                        <a
+                          href="https://ethereum-magicians.org/t/soliciting-stakeholder-feedback-on-glamsterdam-headliners/24885"
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          onClick={() => handleExternalLinkClick('community_feedback', 'https://ethereum-magicians.org/t/soliciting-stakeholder-feedback-on-glamsterdam-headliners/24885')}
+                          className="inline-flex items-center justify-center px-3 py-1.5 text-xs font-medium border border-emerald-600 text-emerald-700 bg-emerald-50 dark:bg-emerald-900/20 hover:bg-emerald-100 dark:hover:bg-emerald-800/40 rounded-md transition-colors whitespace-nowrap"
+                        >
+                          Submit Feedback
+                        </a>
+                      </div>
                     </div>
                   </div>
 

@@ -20,6 +20,10 @@ This is a standalone client-side application that provides public access to info
   - Alignment with Ethereum's North Star goals (Scale L1, Scale blobs, Improve UX)
   - Benefits, trade-offs, and timeline information
 
+## Contributing
+
+If you see incorrect information about an EIP's impacts or benefits, content-only pull requests are very welcome. Structural changes or feature requests should open issues.
+
 ## Development
 
 ```bash

@@ -1260,26 +1260,27 @@
         "layer": "EL"
       }
     ],
-    "laymanDescription": "This introduces a delay between when transactions are committed and when they're executed, reducing MEV extraction and front-running while improving transaction ordering fairness.",
+    "laymanDescription": "Lets validators attest before execution by deferring execution outputs, improving throughput headroom.",
     "northStars": ["Scale L1"],
     "northStarAlignment": {
-      "scaleL1": { "impact": "Medium", "description": "Improves transaction ordering efficiency and reduces MEV-driven congestion, enabling more predictable block space utilization." }
+      "scaleL1": { "impact": "Medium", "description": "Reduces validation latency and can enable higher block gas limits, contributing to L1 throughput." }
     },
     "stakeholderImpacts": {
-      "endUsers": { "impact": "High", "description": "Protection from front-running attacks, more fair transaction ordering, and reduced MEV tax on transactions leading to better execution prices." },
-      "appDevs": { "impact": "High", "description": "Can build applications with stronger ordering guarantees, reduced MEV concerns, and more predictable execution environments." },
-      "walletDevs": { "impact": "Medium", "description": "Need to handle delayed execution in transaction flow but can provide better protection from front-running for users." },
-      "toolingInfra": { "impact": "High", "description": "MEV analysis tools, transaction simulation, and ordering analysis systems need major updates to handle delayed execution patterns." },
-      "layer2s": { "impact": "Medium", "description": "More predictable L1 execution environment benefits Layer 2 settlement and reduces MEV impact on cross-layer transactions." },
-      "stakersNodes": { "impact": "Medium", "description": "Need to handle the new delayed execution model in block production and transaction ordering mechanisms." },
-      "clClients": { "impact": "Low", "description": "Minimal impact as this primarily affects execution layer transaction processing and ordering." },
-      "elClients": { "impact": "High", "description": "Major implementation work required for delayed execution mechanisms, new transaction lifecycle management, and ordering protocols." }
+      "endUsers": { "impact": "Medium", "description": "Largely transparent; faster attestations possible, but no guaranteed MEV/fairness changes. Same-block funding patterns may fail due to pre-checks." },
+      "appDevs": { "impact": "Medium", "description": "Must handle deferred receipts/logs in the child header and possible payload reversion; core application semantics and APIs remain unchanged." },
+      "walletDevs": { "impact": "Medium", "description": "Adapt UX for attestation-before-execution, surfacing pending states; enforce nonce/balance prechecks and warn about same-block funding limitations." },
+      "toolingInfra": { "impact": "High", "description": "Indexers, explorers, and RPCs must track deferred execution outputs, the execution_reverted flag, and updated base-fee behavior for reverted parents." },
+      "layer2s": { "impact": "Medium", "description": "Bridges and settlement relying on L1 receipts should accommodate one-block deferral and detect reverted-parent semantics; data availability rules remain unchanged." },
+      "stakersNodes": { "impact": "Medium", "description": "Validators/proposers attest earlier after static checks; need new header validation, deferred-output tracking, and off-critical-path execution scheduling." },
+      "clClients": { "impact": "Medium", "description": "Must process new header fields and parent flags, manage EL request deferrals, and integrate with EL without changing fork-choice rules." },
+      "elClients": { "impact": "High", "description": "Significant work: split static validation from execution, implement sender pre-charging, snapshots/reversion, new chain-state tracking, and base-fee handling for reverts." }
     },
     "benefits": [
-      "Reduces front-running and MEV extraction significantly",
-      "Provides fairer transaction ordering for all users",
-      "Enables more predictable execution environments",
-      "Improves overall transaction execution quality"
+      "Asynchronous attestation before execution reduces the critical path, enabling higher gas limits and overall network throughput.",
+      "Minimal checks using previous state and parent outputs let validators deem blocks valid without executing transactions.",
+      "Senders are pre-charged maximum fees and balances/nonces verified, significantly reducing execution-time failures and fragile same-block dependencies.",
+      "Snapshot-and-revert preserves liveness: mismatched gas used resets receipts, logs, and execution outputs without discarding blocks from the chain.",
+      "Base-fee dynamics remain fair: reverted parents count as zero gas used, preventing fee-market manipulation via overdeclared usage."
     ]
   },
   {

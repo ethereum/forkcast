@@ -344,9 +344,9 @@
   {
     "id": 7825,
     "title": "EIP-7825: Transaction Gas Limit Cap",
-    "status": "Stagnant",
-    "description": "Introduce a protocol-level cap on the maximum gas used by a transaction to 30 million.",
-    "author": "Giulio Rebuffo (@Giulio2002)",
+    "status": "Draft",
+    "description": "Introduce a protocol-level cap on the maximum gas used by a transaction to 16,777,216 (2^24).",
+    "author": "Giulio Rebuffo (@Giulio2002), Toni Wahrstätter (@nerolation)",
     "type": "Standards Track",
     "category": "Core",
     "createdDate": "2024-11-23",
@@ -357,17 +357,17 @@
         "status": "Scheduled"
       }
     ],
-    "laymanDescription": "This introduces a 30 million gas cap for individual transactions, preventing any single transaction from consuming most of a block. The goal is to ensure fairer access to block space and improve network stability.",
+    "laymanDescription": "This introduces a 16,777,216 gas (2^24) cap for individual transactions, preventing any single transaction from consuming most of a block. The goal is to ensure fairer access to block space and improve network stability.",
     "northStars": ["Scale L1", "Improve UX"],
     "northStarAlignment": {
       "scaleL1": { "impact": "Medium", "description": "Improves network stability and resilience against DoS attacks by preventing individual transactions from consuming excessive block space, enabling more predictable block validation times." },
       "improveUX": { "impact": "Medium", "description": "More predictable transaction inclusion and fairer access to block space, though may require some large applications to restructure their operations." }
     },
     "stakeholderImpacts": {
-      "endUsers": { "impact": "Low", "description": "Most users unaffected as typical transactions use far less than 30M gas. Edge cases with very complex operations may need to restructure." },
+      "endUsers": { "impact": "Low", "description": "Most users unaffected as typical transactions use far less than 16.8M gas. Edge cases with very complex operations may need to restructure." },
       "appDevs": { "impact": "High", "description": "Applications with very large transactions (complex DeFi, large contract deployments) may need to split operations or redesign architecture to stay under the cap." },
       "walletDevs": { "impact": "Low", "description": "Need to enforce the gas cap in transaction creation, but most wallet operations are well below the limit." },
-      "toolingInfra": { "impact": "Medium", "description": "Gas estimation tools, transaction builders, and deployment scripts need updates to enforce the 30M gas cap." },
+      "toolingInfra": { "impact": "Medium", "description": "Gas estimation tools, transaction builders, and deployment scripts need updates to enforce the 16.8M gas cap." },
       "layer2s": { "impact": "Medium", "description": "Could impact future L2 bundling strategies and settlement transaction designs. May conflict with efficient batch processing approaches." },
       "stakersNodes": { "impact": "Low", "description": "More predictable block processing times and reduced risk of validation bottlenecks from extremely large transactions." },
       "clClients": { "impact": "None", "description": "No direct impact on consensus layer operations as this affects execution layer transaction validation." },

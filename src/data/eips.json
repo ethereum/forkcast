@@ -25,7 +25,7 @@
     "type": "Standards Track",
     "category": "Core",
     "createdDate": "2020-08-25",
-    "discussionLink": "https://ethereum-magicians.org/t/eip-2926-chunk-based-code-merkleization/4555",
+    "discussionLink": "https://ethereum-magicians.org/t/the-case-for-including-code-chunking-eip-2926-in-glamsterdam/25089",
     "forkRelationships": [
       {
         "forkName": "",
@@ -871,12 +871,12 @@
     "id": 6873,
     "title": "EIP-6873: Preimage retention",
     "status": "Draft",
-    "description": "Specifies preimage retention requirements for Verkle tree state transitions and stateless execution.",
+    "description": "Execution clients must retain the preimages of addresses and slots accessed between the fork preceding the verge, and the verge itself.",
     "author": "Guillaume Ballet",
     "type": "Standards Track",
     "category": "Core",
-    "createdDate": "2023-04-11",
-    "discussionLink": "https://ethereum-magicians.org/t/eip-6873-preimage-retention/13766",
+    "createdDate": "2023-04-14",
+    "discussionLink": "https://ethereum-magicians.org/t/eip-6873-preimage-retention-in-the-fork-preceding-the-verge/15830",
     "forkRelationships": [
       {
         "forkName": "",
@@ -884,7 +884,7 @@
         "layer": "EL"
       }
     ],
-    "laymanDescription": "This ensures that the data needed to reconstruct Verkle tree proofs is properly preserved during the transition. It's a crucial technical requirement that maintains data availability while migrating to the new tree structure.",
+    "laymanDescription": "Have nodes temporarily keep the original addresses and storage keys used before the Verge, so Ethereum can switch to Verkle trees smoothly.",
     "northStars": ["Scale L1"],
     "northStarAlignment": {
       "scaleL1": { "impact": "Medium", "description": "Essential infrastructure component for Verkle tree transition, ensuring data integrity and availability during the state system migration." }
@@ -954,7 +954,7 @@
     "type": "Standards Track",
     "category": "Core",
     "createdDate": "2024-03-26",
-    "discussionLink": "https://ethereum-magicians.org/t/eip-7667-raise-gas-costs-of-hash-functions/19123",
+    "discussionLink": "https://ethereum-magicians.org/t/eip-7667-raise-gas-costs-of-hash-functions/19446",
     "forkRelationships": [
       {
         "forkName": "",
@@ -962,26 +962,26 @@
         "layer": "EL"
       }
     ],
-    "laymanDescription": "This increases gas costs for hash operations to better reflect their computational cost in the Verkle tree environment. The adjustment ensures fair pricing as the protocol transitions to new cryptographic primitives.",
+    "laymanDescription": "Increase gas for hashing to better match real costs, prevent hash-heavy block abuse, and keep Ethereum verification practical and decentralized.",
     "northStars": ["Scale L1"],
     "northStarAlignment": {
       "scaleL1": { "impact": "Low", "description": "Ensures sustainable economics for hash operations in the Verkle tree environment and prevents potential DoS vectors from underpriced operations." }
     },
     "stakeholderImpacts": {
-      "endUsers": { "impact": "Low", "description": "Most users unaffected, but hash-intensive applications may see slightly increased transaction costs." },
-      "appDevs": { "impact": "Medium", "description": "Applications using extensive hash operations (like Merkle tree verification) may need to optimize or budget for higher gas costs." },
-      "walletDevs": { "impact": "None", "description": "Minimal impact as wallets typically don't perform extensive hash operations directly." },
-      "toolingInfra": { "impact": "Low", "description": "Gas estimation tools need updates for the new hash function pricing, but changes are straightforward." },
-      "layer2s": { "impact": "Low", "description": "Layer 2 systems using hash-intensive operations may see increased costs for certain proof verification patterns." },
-      "stakersNodes": { "impact": "Low", "description": "Better compensation alignment for computational work performed during hash operations in the new environment." },
-      "clClients": { "impact": "None", "description": "No direct impact on consensus layer operations as this affects execution layer gas pricing." },
-      "elClients": { "impact": "Medium", "description": "Need to implement updated gas costs for hash functions with proper metering for the Verkle tree computational model." }
+      "endUsers": { "impact": "Low", "description": "Most transactions unchanged; hash-heavy operations may cost slightly more gas, modestly increasing fees in specific dapps only occasionally." },
+      "appDevs": { "impact": "Medium", "description": "Contracts relying on hashing (proof verification, logging) see higher gas; developers may optimize or reduce on-chain hashing to control costs." },
+      "walletDevs": { "impact": "None", "description": "No functional changes; gas estimation sourced from nodes reflects new pricing, but UI fee projections may rise for hash-heavy calls." },
+      "toolingInfra": { "impact": "Low", "description": "Off-chain analyzers or gas simulators using custom cost tables must update constants; otherwise, node-backed tooling continues working without changes required." },
+      "layer2s": { "impact": "Low", "description": "Indirect benefit aligning L1 costs with ZK proving realities; no mandatory changes to rollup protocols, though pricing strategies may adjust." },
+      "stakersNodes": { "impact": "Low", "description": "Minimal operational effect; block production logic unchanged beyond adopting clients with updated gas schedule if activated during network upgrades only." },
+      "clClients": { "impact": "None", "description": "Consensus-layer functionality unaffected; coordination for any network upgrade only, with no EVM pricing logic implemented here within this client layer." },
+      "elClients": { "impact": "Medium", "description": "Must implement updated opcode and precompile gas constants; affects transaction validation, simulation, and gas accounting across execution clients implementations universally." }
     },
     "benefits": [
-      "Ensures fair pricing for hash operations",
-      "Prevents DoS attacks through underpriced computation",
-      "Aligns gas costs with Verkle tree computational model",
-      "Maintains network economic sustainability"
+      "Aligns gas pricing with ZK proving costs, reducing worst-case proof time outliers.",
+      "Discourages hash-heavy blocks that strain provers and increase centralization risks.",
+      "Reduces reliance on ad-hoc sequencer limits and centralized rollup workarounds.",
+      "Prepares Ethereum for eventual L1 SNARK verification with predictable proving bounds."
     ]
   },
   {
@@ -1005,27 +1005,27 @@
         "layer": "EL"
       }
     ],
-    "laymanDescription": "This introduces smart transactions that only execute when specific conditions are met on-chain. Instead of failed transactions wasting gas, these transactions wait for the right conditions or don't execute at all.",
+    "laymanDescription": "Adds a way to make a transaction only valid at a chosen spot in a block, blocking reordering and front-running in encrypted mempools.",
     "northStars": ["Improve UX", "Scale L1"],
     "northStarAlignment": {
       "scaleL1": { "impact": "Medium", "description": "Reduces wasted computation from failed transactions and enables more efficient transaction patterns that only execute when conditions are optimal." },
       "improveUX": { "impact": "High", "description": "Dramatically improves user experience by eliminating failed transactions that waste gas, enabling more sophisticated automation and better transaction success rates." }
     },
     "stakeholderImpacts": {
-      "endUsers": { "impact": "High", "description": "Major improvement - no more paying gas for failed transactions. Enables setting up automated transactions that wait for optimal conditions." },
-      "appDevs": { "impact": "High", "description": "Enables building much more sophisticated automated applications with conditional logic, reducing complexity in smart contracts and improving reliability." },
-      "walletDevs": { "impact": "High", "description": "Can implement smart transaction features like \"execute when price reaches X\" or \"submit when gas is low\" improving user experience significantly." },
-      "toolingInfra": { "impact": "High", "description": "Transaction monitoring, mempool analysis, and automation tools need major updates to handle conditional transaction logic and execution patterns." },
-      "layer2s": { "impact": "Medium", "description": "Can implement more efficient settlement patterns and conditional execution logic in Layer 2 protocols." },
-      "stakersNodes": { "impact": "Medium", "description": "Reduced computational waste from failed transactions, though need to handle conditional transaction evaluation and storage." },
-      "clClients": { "impact": "None", "description": "No direct impact on consensus layer operations as this affects execution layer transaction processing." },
-      "elClients": { "impact": "High", "description": "Major implementation work required for conditional transaction evaluation, mempool management, and new transaction types with condition checking." }
+      "endUsers": { "impact": "High", "description": "Potentially fairer execution for services using encrypted mempools; otherwise no changes to sending or receiving transactions." },
+      "appDevs": { "impact": "High", "description": "Optional tooling to mark transactions valid at slot/index; useful for encrypted-mempool flows and bundle verification, otherwise no required changes." },
+      "walletDevs": { "impact": "High", "description": "Must support new conditional transaction type fields, signing domain, and user controls for slot/index; integrate with bundlers where applicable." },
+      "toolingInfra": { "impact": "High", "description": "May add decoding/display for conditional fields and type, and support opcode traces in debuggers; otherwise minimal pipeline changes." },
+      "layer2s": { "impact": "Medium", "description": "Optional adoption. L2s without matching consensus can ignore; compatibility unaffected unless they choose to implement equivalent semantics." },
+      "stakersNodes": { "impact": "Medium", "description": "Operationally transparent; validators simply run upgraded clients. No new configuration or monitoring beyond standard client upgrades." },
+      "clClients": { "impact": "None", "description": "Indirectly affected via EIP-7843 (if included) dependency exposing slot in headers; otherwise no consensus changes specific to conditional transactions." },
+      "elClients": { "impact": "High", "description": "Must implement new transaction type parsing/validation and TXINDEX opcode semantics, including sentinel handling and header slot checks." }
     },
     "benefits": [
-      "Eliminates wasted gas from failed transactions",
-      "Enables sophisticated transaction automation",
-      "Improves transaction success rates",
-      "Reduces user frustration with failed transactions"
+      "Enforces encrypted-mempool ordering, preventing builder reordering and related frontrunning.",
+      "Enables transactions valid only at specified slot and index, supporting top-of-block bundles.",
+      "Provides TXINDEX opcode for onchain verification of declared conditional transaction index.",
+      "Pairs with EIP-7843 slot header field to verify conditional_slot."
     ]
   },
   {
@@ -1901,7 +1901,7 @@
         "layer": "EL"
       }
     ],
-    "laymanDescription": "This introduces a new SETDELEGATE instruction that allows smart contracts to create delegation accounts using EIP-7702's design. These work like ERC-1167 clones but with significant advantages: they delegate execution at the protocol level rather than through EVM code, avoiding calldata copying costs and EOF/legacy compatibility issues. The instruction takes a target address and salt, creates a delegation account at a computed address, and makes it delegate all calls to the target. This provides upgradeability without storage lookups, better efficiency than traditional proxies, and seamless compatibility between code versions."
+    "laymanDescription": "Adds a new instruction for upgradeable, lightweight contract clones via EIP-7702 delegation—cutting gas and complexity; updates apply instantly, with optional locking."
   },
   {
     "id": 7783,

@@ -1049,26 +1049,26 @@
         "layer": "EL"
       }
     ],
-    "laymanDescription": "This adds a simple but powerful new opcode that lets smart contracts know the current slot number (Ethereum's 12-second time unit). This enables precise time-based logic without relying on block timestamps.",
+    "laymanDescription": "Let contracts directly read the current slot number cheaply, removing timestamp math and reducing breakage if Ethereum’s slot duration changes later.",
     "northStars": ["Improve UX"],
     "northStarAlignment": {
       "improveUX": { "impact": "Medium", "description": "Enables more reliable time-based smart contracts and better coordination between consensus and execution layers." }
     },
     "stakeholderImpacts": {
-      "endUsers": { "impact": "Low", "description": "Indirect benefits through more reliable time-based applications like vesting contracts, auctions, and time-locked features." },
-      "appDevs": { "impact": "High", "description": "Provides precise, reliable timing mechanism for smart contracts, enabling better auction systems, vesting schedules, and time-dependent logic." },
-      "walletDevs": { "impact": "Low", "description": "Can implement more accurate time-based features and better estimation of when time-locked transactions will execute." },
-      "toolingInfra": { "impact": "Low", "description": "Development tools and debuggers need to support the new SLOTNUM opcode for smart contract development and testing." },
-      "layer2s": { "impact": "Low", "description": "Layer 2 systems can use more precise timing coordination with L1 consensus through slot number access." },
-      "stakersNodes": { "impact": "None", "description": "No impact on node operation as this is a simple opcode addition that returns existing consensus layer information." },
-      "clClients": { "impact": "Low", "description": "May need to expose slot number information to execution layer, but this is minimal coordination work." },
-      "elClients": { "impact": "Low", "description": "Simple implementation - just need to add the SLOTNUM opcode that returns the current consensus layer slot number." }
+      "endUsers": { "impact": "Low", "description": "Indirectly benefits from more reliable app timing if slot duration changes in future networks." },
+      "appDevs": { "impact": "High", "description": "Simplifies reading beacon time onchain, avoiding timestamp math and EIP-4788 proofs; fewer assumptions about the slot schedule." },
+      "walletDevs": { "impact": "Low", "description": "Little to no impact; wallets typically don’t consume slot numbers. Optional UI or simulation support could display it." },
+      "toolingInfra": { "impact": "Low", "description": "Block explorers, RPC simulators, and debuggers may add opcode support and parse the new header slot_number field." },
+      "layer2s": { "impact": "Low", "description": "Optional support; helpful if mirroring L1 semantics. Not required unless chains want SLOTNUM compatibility and header field parity." },
+      "stakersNodes": { "impact": "None", "description": "No operational changes expected; clients handle computation and propagation. Node operators shouldn’t need configuration or workflow updates." },
+      "clClients": { "impact": "Low", "description": "Must compute slot_number and include it in headers and engine API payloads; aligns with existing consensus-layer slot calculations." },
+      "elClients": { "impact": "Low", "description": "Implement new opcode, validate header field, expose via RPC, and price gas; updates required across execution clients." }
     },
     "benefits": [
-      "Enables precise time-based smart contract logic",
-      "Better coordination between consensus and execution layers",
-      "More reliable auction and vesting mechanisms",
-      "Simpler implementation than timestamp-based alternatives"
+      "Removes hardcoded slot assumptions; apps remain correct if slot duration changes.",
+      "Cheaper than proving slot via EIP-4788; simple 2-gas opcode call.",
+      "Slot number available directly in block header and engine API.",
+      "No added proving complexity; similar to TIMESTAMP for ZK-VMs."
     ]
   },
   {
@@ -1901,7 +1901,23 @@
         "layer": "EL"
       }
     ],
-    "laymanDescription": "Adds a new instruction for upgradeable, lightweight contract clones via EIP-7702 delegation—cutting gas and complexity; updates apply instantly, with optional locking."
+    "laymanDescription": "Adds a new instruction for upgradeable, lightweight contract clones via EIP-7702 delegation—cutting gas and complexity; updates apply instantly, with optional locking.",
+    "stakeholderImpacts": {
+      "endUsers": { "impact": "Low", "description": "Most users see unchanged behavior; some smart accounts may become cheaper and smoother, with minor upgrade-related risk managed by factories." },
+      "appDevs": { "impact": "Medium", "description": "Contract developers get a way to create upgradeable clones, reducing gas and complexity; must guard against chaining and immediate delegation changes." },
+      "walletDevs": { "impact": "High", "description": "Smart-account wallets may benefit from cheaper verification and operations; minimal code changes expected, aside from supporting delegation-aware introspection and risk messaging." },
+      "toolingInfra": { "impact": "Low", "description": "Explorers, indexers, and debuggers should recognize delegation indicators and mid-transaction updates; otherwise limited changes beyond existing EIP-7702 handling." },
+      "layer2s": { "impact": "Low", "description": "EVM-equivalent L2s implementing this opcode mirror mainnet behavior; optional adoption otherwise. Expect routine client updates, testing, and gas schedule alignment." },
+      "stakersNodes": { "impact": "Low", "description": "Node operators simply upgrade clients at fork; runtime behavior unchanged. Increased use of delegations may slightly affect tracing tools, not validation." },
+      "clClients": { "impact": "Low", "description": "No consensus changes expected for CL; only standard fork coordination. No new serialization, gossip, or signature rules introduced by this opcode." },
+      "elClients": { "impact": "Low", "description": "Must implement SETDELEGATE semantics, gas accounting, refunds, and EIP-2929 touches; ensure compatibility with EIP-7702 delegation indicators and immediate-effect code updates." }
+    },
+    "benefits": [
+      "Upgradeable clones without storage lookups, using EIP-7702 delegation indicators.",
+      "Lower gas by moving call redirection from EVM bytecode to protocol.",
+      "Smaller state footprint than proxies; delegation objects are only 23 bytes.",
+      "Immediate, factory-controlled upgrades or locking, reducing complexity in account factories."
+    ]
   },
   {
     "id": 7783,

@@ -39,14 +39,14 @@
       "scaleL1": { "impact": "High", "description": "Ensures real-time proving can be achieved safely with higher gas limits." }
     },
     "stakeholderImpacts": {
-      "endUsers": { "impact": "Low", "description": "End users are unaffected as code transition occur at protocol layer." },
-      "appDevs": { "impact": "Medium", "description": "Developers need to adapt to the new gas costs model." },
-      "walletDevs": { "impact": "Low", "description": "Wallet functionality remains unchanged." },
-      "toolingInfra": { "impact": "Medium", "description": "Infrastructure tools need updates to handle chunk-based proofs and codeRoot fields." },
-      "layer2s": { "impact": "Low", "description": "Layer 2s remain unaffected." },
-      "stakersNodes": { "impact": "Medium", "description": "A transition period has to happen, during which  resource consumption increases slightly." },
-      "clClients": { "impact": "Low", "description": "Core consensus rules remain unchanged." },
-      "elClients": { "impact": "High", "description": "Requires the implementation of code transition and the new storage format for accounts." }
+      "endUsers": { "impact": "", "description": "End users are unaffected as code transition occur at protocol layer." },
+      "appDevs": { "impact": "", "description": "Developers need to adapt to the new gas costs model." },
+      "walletDevs": { "impact": "", "description": "Wallet functionality remains unchanged." },
+      "toolingInfra": { "impact": "", "description": "Infrastructure tools need updates to handle chunk-based proofs and codeRoot fields." },
+      "layer2s": { "impact": "", "description": "Layer 2s remain unaffected." },
+      "stakersNodes": { "impact": "", "description": "A transition period has to happen, during which  resource consumption increases slightly." },
+      "clClients": { "impact": "", "description": "Core consensus rules remain unchanged." },
+      "elClients": { "impact": "", "description": "Requires the implementation of code transition and the new storage format for accounts." }
     },
     "benefits": [
       "Reduces resource consumption for real-time provers and avoids worst case attacks.",
@@ -615,14 +615,14 @@
       "improveUX": { "impact": "Medium", "description": "Significantly improves smart contract security by eliminating reentrancy vectors and DoS attacks from ETH transfers, enabling safer application development." }
     },
     "stakeholderImpacts": {
-      "endUsers": { "impact": "Low", "description": "Indirect benefits through safer smart contract interactions and potentially lower gas costs for ETH transfers." },
-      "appDevs": { "impact": "High", "description": "Major security improvement - eliminates reentrancy attack vectors from ETH transfers and enables new safe transfer patterns, but need to understand bypass of fallback functions." },
-      "walletDevs": { "impact": "Medium", "description": "Can implement more efficient withdrawal and transfer mechanisms, especially for smart contract wallets avoiding reentrancy concerns." },
-      "toolingInfra": { "impact": "Medium", "description": "Transaction analysis tools, debuggers, and smart contract libraries need updates to support the new PAY opcode." },
-      "layer2s": { "impact": "Low", "description": "More efficient and secure ETH handling in Layer 2 smart contracts and bridge protocols." },
-      "stakersNodes": { "impact": "Low", "description": "Slightly more efficient transaction processing due to reduced code execution for simple ETH transfers." },
-      "clClients": { "impact": "None", "description": "No direct impact on consensus layer operations as this affects execution layer opcodes." },
-      "elClients": { "impact": "Medium", "description": "Need to implement new PAY opcode (0xfc) with proper gas accounting using EIP-2929 warm/cold access patterns and new account creation costs." }
+      "endUsers": { "impact": "", "description": "Indirect benefits through safer smart contract interactions and potentially lower gas costs for ETH transfers." },
+      "appDevs": { "impact": "", "description": "Major security improvement - eliminates reentrancy attack vectors from ETH transfers and enables new safe transfer patterns, but need to understand bypass of fallback functions." },
+      "walletDevs": { "impact": "", "description": "Can implement more efficient withdrawal and transfer mechanisms, especially for smart contract wallets avoiding reentrancy concerns." },
+      "toolingInfra": { "impact": "", "description": "Transaction analysis tools, debuggers, and smart contract libraries need updates to support the new PAY opcode." },
+      "layer2s": { "impact": "", "description": "More efficient and secure ETH handling in Layer 2 smart contracts and bridge protocols." },
+      "stakersNodes": { "impact": "", "description": "Slightly more efficient transaction processing due to reduced code execution for simple ETH transfers." },
+      "clClients": { "impact": "", "description": "No direct impact on consensus layer operations as this affects execution layer opcodes." },
+      "elClients": { "impact": "", "description": "Need to implement new PAY opcode (0xfc) with proper gas accounting using EIP-2929 warm/cold access patterns and new account creation costs." }
     },
     "benefits": [
       "Eliminates reentrancy attacks from ETH transfers",
@@ -659,14 +659,14 @@
       "improveUX": { "impact": "High", "description": "Major developer experience improvement - eliminates need for complex architectural patterns like Diamond Standard, reduces deployment complexity, and enables single-contract solutions." }
     },
     "stakeholderImpacts": {
-      "endUsers": { "impact": "Low", "description": "Indirect benefits through access to more sophisticated single-contract applications and potentially lower gas costs from reduced cross-contract calls." },
-      "appDevs": { "impact": "High", "description": "Eliminates major architectural constraints - can build larger, more complex contracts without splitting logic across multiple contracts or using proxy patterns." },
-      "walletDevs": { "impact": "Low", "description": "Can interact with more sophisticated single-contract applications, but need to handle higher gas costs for large contract interactions." },
-      "toolingInfra": { "impact": "Medium", "description": "Contract verification tools, static analysis, and deployment infrastructure need updates to handle larger contracts and new gas metering." },
-      "layer2s": { "impact": "Low", "description": "Can deploy larger, more sophisticated infrastructure contracts without hitting size limits." },
-      "stakersNodes": { "impact": "Medium", "description": "Need updated client implementations with proper gas metering and efficient codesize indexing. Larger contracts may increase storage and processing requirements." },
-      "clClients": { "impact": "None", "description": "No direct impact on consensus layer operations as this affects execution layer contract deployment and metering." },
-      "elClients": { "impact": "Medium", "description": "Need to implement new gas metering for code-loading operations, warm/cold code access tracking, and efficient codesize indexing to avoid DoS attacks from large contract loads." }
+      "endUsers": { "impact": "", "description": "Indirect benefits through access to more sophisticated single-contract applications and potentially lower gas costs from reduced cross-contract calls." },
+      "appDevs": { "impact": "", "description": "Eliminates major architectural constraints - can build larger, more complex contracts without splitting logic across multiple contracts or using proxy patterns." },
+      "walletDevs": { "impact": "", "description": "Can interact with more sophisticated single-contract applications, but need to handle higher gas costs for large contract interactions." },
+      "toolingInfra": { "impact": "", "description": "Contract verification tools, static analysis, and deployment infrastructure need updates to handle larger contracts and new gas metering." },
+      "layer2s": { "impact": "", "description": "Can deploy larger, more sophisticated infrastructure contracts without hitting size limits." },
+      "stakersNodes": { "impact": "", "description": "Need updated client implementations with proper gas metering and efficient codesize indexing. Larger contracts may increase storage and processing requirements." },
+      "clClients": { "impact": "", "description": "No direct impact on consensus layer operations as this affects execution layer contract deployment and metering." },
+      "elClients": { "impact": "", "description": "Need to implement new gas metering for code-loading operations, warm/cold code access tracking, and efficient codesize indexing to avoid DoS attacks from large contract loads." }
     },
     "benefits": [
       "Enables much larger smart contracts (10x size increase)",
@@ -890,14 +890,14 @@
       "scaleL1": { "impact": "Medium", "description": "Essential infrastructure component for Verkle tree transition, ensuring data integrity and availability during the state system migration." }
     },
     "stakeholderImpacts": {
-      "endUsers": { "impact": "None", "description": "No direct user-facing impact - this is purely infrastructure maintenance during the Verkle transition." },
-      "appDevs": { "impact": "None", "description": "No impact on smart contract development as this handles backend state management during migration." },
-      "walletDevs": { "impact": "None", "description": "No impact on wallet development as preimage retention is handled transparently by the protocol." },
-      "toolingInfra": { "impact": "Medium", "description": "Infrastructure providers need to understand preimage retention requirements for proper state reconstruction and proof generation." },
-      "layer2s": { "impact": "None", "description": "No direct impact on Layer 2 operations as this manages execution layer state transition details." },
-      "stakersNodes": { "impact": "Medium", "description": "Need to properly handle preimage data during the Verkle tree migration to maintain state verification capabilities." },
-      "clClients": { "impact": "None", "description": "No direct impact on consensus layer operations as this affects execution layer state management." },
-      "elClients": { "impact": "High", "description": "Must implement proper preimage retention mechanisms during state tree migration to ensure continuity of state verification." }
+      "endUsers": { "impact": "", "description": "No direct user-facing impact - this is purely infrastructure maintenance during the Verkle transition." },
+      "appDevs": { "impact": "", "description": "No impact on smart contract development as this handles backend state management during migration." },
+      "walletDevs": { "impact": "", "description": "No impact on wallet development as preimage retention is handled transparently by the protocol." },
+      "toolingInfra": { "impact": "", "description": "Infrastructure providers need to understand preimage retention requirements for proper state reconstruction and proof generation." },
+      "layer2s": { "impact": "", "description": "No direct impact on Layer 2 operations as this manages execution layer state transition details." },
+      "stakersNodes": { "impact": "", "description": "Need to properly handle preimage data during the Verkle tree migration to maintain state verification capabilities." },
+      "clClients": { "impact": "", "description": "No direct impact on consensus layer operations as this affects execution layer state management." },
+      "elClients": { "impact": "", "description": "Must implement proper preimage retention mechanisms during state tree migration to ensure continuity of state verification." }
     },
     "benefits": [
       "Ensures data integrity during Verkle tree transition",
@@ -968,14 +968,14 @@
       "scaleL1": { "impact": "Low", "description": "Ensures sustainable economics for hash operations in the Verkle tree environment and prevents potential DoS vectors from underpriced operations." }
     },
     "stakeholderImpacts": {
-      "endUsers": { "impact": "Low", "description": "Most transactions unchanged; hash-heavy operations may cost slightly more gas, modestly increasing fees in specific dapps only occasionally." },
-      "appDevs": { "impact": "Medium", "description": "Contracts relying on hashing (proof verification, logging) see higher gas; developers may optimize or reduce on-chain hashing to control costs." },
-      "walletDevs": { "impact": "None", "description": "No functional changes; gas estimation sourced from nodes reflects new pricing, but UI fee projections may rise for hash-heavy calls." },
-      "toolingInfra": { "impact": "Low", "description": "Off-chain analyzers or gas simulators using custom cost tables must update constants; otherwise, node-backed tooling continues working without changes required." },
-      "layer2s": { "impact": "Low", "description": "Indirect benefit aligning L1 costs with ZK proving realities; no mandatory changes to rollup protocols, though pricing strategies may adjust." },
-      "stakersNodes": { "impact": "Low", "description": "Minimal operational effect; block production logic unchanged beyond adopting clients with updated gas schedule if activated during network upgrades only." },
-      "clClients": { "impact": "None", "description": "Consensus-layer functionality unaffected; coordination for any network upgrade only, with no EVM pricing logic implemented here within this client layer." },
-      "elClients": { "impact": "Medium", "description": "Must implement updated opcode and precompile gas constants; affects transaction validation, simulation, and gas accounting across execution clients implementations universally." }
+      "endUsers": { "impact": "", "description": "Most transactions unchanged; hash-heavy operations may cost slightly more gas, modestly increasing fees in specific dapps only occasionally." },
+      "appDevs": { "impact": "", "description": "Contracts relying on hashing (proof verification, logging) see higher gas; developers may optimize or reduce on-chain hashing to control costs." },
+      "walletDevs": { "impact": "", "description": "No functional changes; gas estimation sourced from nodes reflects new pricing, but UI fee projections may rise for hash-heavy calls." },
+      "toolingInfra": { "impact": "", "description": "Off-chain analyzers or gas simulators using custom cost tables must update constants; otherwise, node-backed tooling continues working without changes required." },
+      "layer2s": { "impact": "", "description": "Indirect benefit aligning L1 costs with ZK proving realities; no mandatory changes to rollup protocols, though pricing strategies may adjust." },
+      "stakersNodes": { "impact": "", "description": "Minimal operational effect; block production logic unchanged beyond adopting clients with updated gas schedule if activated during network upgrades only." },
+      "clClients": { "impact": "", "description": "Consensus-layer functionality unaffected; coordination for any network upgrade only, with no EVM pricing logic implemented here within this client layer." },
+      "elClients": { "impact": "", "description": "Must implement updated opcode and precompile gas constants; affects transaction validation, simulation, and gas accounting across execution clients implementations universally." }
     },
     "benefits": [
       "Aligns gas pricing with ZK proving costs, reducing worst-case proof time outliers.",
@@ -1012,14 +1012,14 @@
       "improveUX": { "impact": "High", "description": "Dramatically improves user experience by eliminating failed transactions that waste gas, enabling more sophisticated automation and better transaction success rates." }
     },
     "stakeholderImpacts": {
-      "endUsers": { "impact": "High", "description": "Potentially fairer execution for services using encrypted mempools; otherwise no changes to sending or receiving transactions." },
-      "appDevs": { "impact": "High", "description": "Optional tooling to mark transactions valid at slot/index; useful for encrypted-mempool flows and bundle verification, otherwise no required changes." },
-      "walletDevs": { "impact": "High", "description": "Must support new conditional transaction type fields, signing domain, and user controls for slot/index; integrate with bundlers where applicable." },
-      "toolingInfra": { "impact": "High", "description": "May add decoding/display for conditional fields and type, and support opcode traces in debuggers; otherwise minimal pipeline changes." },
-      "layer2s": { "impact": "Medium", "description": "Optional adoption. L2s without matching consensus can ignore; compatibility unaffected unless they choose to implement equivalent semantics." },
-      "stakersNodes": { "impact": "Medium", "description": "Operationally transparent; validators simply run upgraded clients. No new configuration or monitoring beyond standard client upgrades." },
-      "clClients": { "impact": "None", "description": "Indirectly affected via EIP-7843 (if included) dependency exposing slot in headers; otherwise no consensus changes specific to conditional transactions." },
-      "elClients": { "impact": "High", "description": "Must implement new transaction type parsing/validation and TXINDEX opcode semantics, including sentinel handling and header slot checks." }
+      "endUsers": { "impact": "", "description": "Potentially fairer execution for services using encrypted mempools; otherwise no changes to sending or receiving transactions." },
+      "appDevs": { "impact": "", "description": "Optional tooling to mark transactions valid at slot/index; useful for encrypted-mempool flows and bundle verification, otherwise no required changes." },
+      "walletDevs": { "impact": "", "description": "Must support new conditional transaction type fields, signing domain, and user controls for slot/index; integrate with bundlers where applicable." },
+      "toolingInfra": { "impact": "", "description": "May add decoding/display for conditional fields and type, and support opcode traces in debuggers; otherwise minimal pipeline changes." },
+      "layer2s": { "impact": "", "description": "Optional adoption. L2s without matching consensus can ignore; compatibility unaffected unless they choose to implement equivalent semantics." },
+      "stakersNodes": { "impact": "", "description": "Operationally transparent; validators simply run upgraded clients. No new configuration or monitoring beyond standard client upgrades." },
+      "clClients": { "impact": "", "description": "Indirectly affected via EIP-7843 (if included) dependency exposing slot in headers; otherwise no consensus changes specific to conditional transactions." },
+      "elClients": { "impact": "", "description": "Must implement new transaction type parsing/validation and TXINDEX opcode semantics, including sentinel handling and header slot checks." }
     },
     "benefits": [
       "Enforces encrypted-mempool ordering, preventing builder reordering and related frontrunning.",
@@ -1055,14 +1055,14 @@
       "improveUX": { "impact": "Medium", "description": "Enables more reliable time-based smart contracts and better coordination between consensus and execution layers." }
     },
     "stakeholderImpacts": {
-      "endUsers": { "impact": "Low", "description": "Indirectly benefits from more reliable app timing if slot duration changes in future networks." },
-      "appDevs": { "impact": "High", "description": "Simplifies reading beacon time onchain, avoiding timestamp math and EIP-4788 proofs; fewer assumptions about the slot schedule." },
-      "walletDevs": { "impact": "Low", "description": "Little to no impact; wallets typically don’t consume slot numbers. Optional UI or simulation support could display it." },
-      "toolingInfra": { "impact": "Low", "description": "Block explorers, RPC simulators, and debuggers may add opcode support and parse the new header slot_number field." },
-      "layer2s": { "impact": "Low", "description": "Optional support; helpful if mirroring L1 semantics. Not required unless chains want SLOTNUM compatibility and header field parity." },
-      "stakersNodes": { "impact": "None", "description": "No operational changes expected; clients handle computation and propagation. Node operators shouldn’t need configuration or workflow updates." },
-      "clClients": { "impact": "Low", "description": "Must compute slot_number and include it in headers and engine API payloads; aligns with existing consensus-layer slot calculations." },
-      "elClients": { "impact": "Low", "description": "Implement new opcode, validate header field, expose via RPC, and price gas; updates required across execution clients." }
+      "endUsers": { "impact": "", "description": "Indirectly benefits from more reliable app timing if slot duration changes in future networks." },
+      "appDevs": { "impact": "", "description": "Simplifies reading beacon time onchain, avoiding timestamp math and EIP-4788 proofs; fewer assumptions about the slot schedule." },
+      "walletDevs": { "impact": "", "description": "Little to no impact; wallets typically don’t consume slot numbers. Optional UI or simulation support could display it." },
+      "toolingInfra": { "impact": "", "description": "Block explorers, RPC simulators, and debuggers may add opcode support and parse the new header slot_number field." },
+      "layer2s": { "impact": "", "description": "Optional support; helpful if mirroring L1 semantics. Not required unless chains want SLOTNUM compatibility and header field parity." },
+      "stakersNodes": { "impact": "", "description": "No operational changes expected; clients handle computation and propagation. Node operators shouldn’t need configuration or workflow updates." },
+      "clClients": { "impact": "", "description": "Must compute slot_number and include it in headers and engine API payloads; aligns with existing consensus-layer slot calculations." },
+      "elClients": { "impact": "", "description": "Implement new opcode, validate header field, expose via RPC, and price gas; updates required across execution clients." }
     },
     "benefits": [
       "Removes hardcoded slot assumptions; apps remain correct if slot duration changes.",
@@ -1236,14 +1236,14 @@
       "improveUX": { "impact": "High", "description": "Eliminates trust requirements for data access, enables secure light clients, and dramatically improves decentralization of the application ecosystem." }
     },
     "stakeholderImpacts": {
-      "endUsers": { "impact": "High", "description": "Can use any RPC provider securely without trust, access verified blockchain data from lightweight applications, and reduced dependence on centralized services." },
-      "appDevs": { "impact": "High", "description": "Can build truly decentralized applications without requiring users to run full nodes, implement secure light clients, and verify data from any source." },
-      "walletDevs": { "impact": "High", "description": "Can implement secure light wallets that verify all data cryptographically, reducing infrastructure costs while maintaining security guarantees." },
-      "toolingInfra": { "impact": "High", "description": "RPC providers need major updates to support proof generation, block explorers can provide verifiable data, and new verification tooling needs development." },
-      "layer2s": { "impact": "Medium", "description": "Can implement more secure light clients for Layer 2 networks and improve cross-chain data verification mechanisms." },
-      "stakersNodes": { "impact": "Medium", "description": "Need to generate cryptographic proofs for data responses, though this enables lighter infrastructure for many use cases." },
-      "clClients": { "impact": "Low", "description": "May need some coordination for proof generation, but this primarily affects execution layer data structures." },
-      "elClients": { "impact": "High", "description": "Major implementation work required for proof generation systems, new data structures, and RPC response verification mechanisms." }
+      "endUsers": { "impact": "", "description": "Can use any RPC provider securely without trust, access verified blockchain data from lightweight applications, and reduced dependence on centralized services." },
+      "appDevs": { "impact": "", "description": "Can build truly decentralized applications without requiring users to run full nodes, implement secure light clients, and verify data from any source." },
+      "walletDevs": { "impact": "", "description": "Can implement secure light wallets that verify all data cryptographically, reducing infrastructure costs while maintaining security guarantees." },
+      "toolingInfra": { "impact": "", "description": "RPC providers need major updates to support proof generation, block explorers can provide verifiable data, and new verification tooling needs development." },
+      "layer2s": { "impact": "", "description": "Can implement more secure light clients for Layer 2 networks and improve cross-chain data verification mechanisms." },
+      "stakersNodes": { "impact": "", "description": "Need to generate cryptographic proofs for data responses, though this enables lighter infrastructure for many use cases." },
+      "clClients": { "impact": "", "description": "May need some coordination for proof generation, but this primarily affects execution layer data structures." },
+      "elClients": { "impact": "", "description": "Major implementation work required for proof generation systems, new data structures, and RPC response verification mechanisms." }
     },
     "benefits": [
       "Eliminates need to trust RPC providers",
@@ -1903,14 +1903,14 @@
     ],
     "laymanDescription": "Adds a new instruction for upgradeable, lightweight contract clones via EIP-7702 delegation—cutting gas and complexity; updates apply instantly, with optional locking.",
     "stakeholderImpacts": {
-      "endUsers": { "impact": "Low", "description": "Most users see unchanged behavior; some smart accounts may become cheaper and smoother, with minor upgrade-related risk managed by factories." },
-      "appDevs": { "impact": "Medium", "description": "Contract developers get a way to create upgradeable clones, reducing gas and complexity; must guard against chaining and immediate delegation changes." },
-      "walletDevs": { "impact": "High", "description": "Smart-account wallets may benefit from cheaper verification and operations; minimal code changes expected, aside from supporting delegation-aware introspection and risk messaging." },
-      "toolingInfra": { "impact": "Low", "description": "Explorers, indexers, and debuggers should recognize delegation indicators and mid-transaction updates; otherwise limited changes beyond existing EIP-7702 handling." },
-      "layer2s": { "impact": "Low", "description": "EVM-equivalent L2s implementing this opcode mirror mainnet behavior; optional adoption otherwise. Expect routine client updates, testing, and gas schedule alignment." },
-      "stakersNodes": { "impact": "Low", "description": "Node operators simply upgrade clients at fork; runtime behavior unchanged. Increased use of delegations may slightly affect tracing tools, not validation." },
-      "clClients": { "impact": "Low", "description": "No consensus changes expected for CL; only standard fork coordination. No new serialization, gossip, or signature rules introduced by this opcode." },
-      "elClients": { "impact": "Low", "description": "Must implement SETDELEGATE semantics, gas accounting, refunds, and EIP-2929 touches; ensure compatibility with EIP-7702 delegation indicators and immediate-effect code updates." }
+      "endUsers": { "impact": "", "description": "Most users see unchanged behavior; some smart accounts may become cheaper and smoother, with minor upgrade-related risk managed by factories." },
+      "appDevs": { "impact": "", "description": "Contract developers get a way to create upgradeable clones, reducing gas and complexity; must guard against chaining and immediate delegation changes." },
+      "walletDevs": { "impact": "", "description": "Smart-account wallets may benefit from cheaper verification and operations; minimal code changes expected, aside from supporting delegation-aware introspection and risk messaging." },
+      "toolingInfra": { "impact": "", "description": "Explorers, indexers, and debuggers should recognize delegation indicators and mid-transaction updates; otherwise limited changes beyond existing EIP-7702 handling." },
+      "layer2s": { "impact": "", "description": "EVM-equivalent L2s implementing this opcode mirror mainnet behavior; optional adoption otherwise. Expect routine client updates, testing, and gas schedule alignment." },
+      "stakersNodes": { "impact": "", "description": "Node operators simply upgrade clients at fork; runtime behavior unchanged. Increased use of delegations may slightly affect tracing tools, not validation." },
+      "clClients": { "impact": "", "description": "No consensus changes expected for CL; only standard fork coordination. No new serialization, gossip, or signature rules introduced by this opcode." },
+      "elClients": { "impact": "", "description": "Must implement SETDELEGATE semantics, gas accounting, refunds, and EIP-2929 touches; ensure compatibility with EIP-7702 delegation indicators and immediate-effect code updates." }
     },
     "benefits": [
       "Upgradeable clones without storage lookups, using EIP-7702 delegation indicators.",

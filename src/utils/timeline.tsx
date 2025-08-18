@@ -12,7 +12,7 @@ export const calculateTimelineMarkerPosition = (upgrades: Array<{ status: string
 
   // Default position
   let markerPercent = 50;
-  
+
   if (activeIdx !== -1 && upcomingIdx !== -1) {
     // Calculate position between the last active and first upcoming upgrade
     const totalUpgrades = upgrades.length;
@@ -39,7 +39,7 @@ export const getPhaseStatusIcon = (status: TimelinePhase['status']): React.React
     case 'current':
       return (
         <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 7l5 5m0 0l-5 5m5-5H6" />
         </svg>
       );
     case 'upcoming':
@@ -51,4 +51,4 @@ export const getPhaseStatusIcon = (status: TimelinePhase['status']): React.React
     default:
       return null;
   }
-}; 
+};

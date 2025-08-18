@@ -29,7 +29,7 @@
     "forkRelationships": [
       {
         "forkName": "",
-        "status": "",
+        "status": "Proposed",
         "layer": "EL"
       }
     ],
@@ -601,6 +601,11 @@
       {
         "forkName": "Fusaka",
         "status": "Declined"
+      },
+      {
+        "forkName": "",
+        "status": "Proposed",
+        "layer": "EL"
       }
     ],
     "laymanDescription": "This introduces a new PAY opcode that transfers ETH without executing recipient code, solving critical security issues with current transfer methods. It prevents reentrancy attacks and eliminates DoS vectors from malicious recipient contracts.",
@@ -640,6 +645,11 @@
       {
         "forkName": "Fusaka",
         "status": "Declined"
+      },
+      {
+        "forkName": "",
+        "status": "Proposed",
+        "layer": "EL"
       }
     ],
     "laymanDescription": "This increases the contract code size limit from 24KB to 256KB and introduces gas metering for larger contracts. The change eliminates the need for complex architectural workarounds and enables more sophisticated single-contract applications.",
@@ -869,8 +879,9 @@
     "discussionLink": "https://ethereum-magicians.org/t/eip-6873-preimage-retention/13766",
     "forkRelationships": [
       {
-        "forkName": "Glamsterdam",
-        "status": "Considered"
+        "forkName": "",
+        "status": "Proposed",
+        "layer": "EL"
       }
     ],
     "laymanDescription": "This ensures that the data needed to reconstruct Verkle tree proofs is properly preserved during the transition. It's a crucial technical requirement that maintains data availability while migrating to the new tree structure.",
@@ -946,8 +957,9 @@
     "discussionLink": "https://ethereum-magicians.org/t/eip-7667-raise-gas-costs-of-hash-functions/19123",
     "forkRelationships": [
       {
-        "forkName": "Glamsterdam",
-        "status": "Considered"
+        "forkName": "",
+        "status": "Proposed",
+        "layer": "EL"
       }
     ],
     "laymanDescription": "This increases gas costs for hash operations to better reflect their computational cost in the Verkle tree environment. The adjustment ensures fair pricing as the protocol transitions to new cryptographic primitives.",
@@ -988,8 +1000,9 @@
         "status": "Declined"
       },
       {
-        "forkName": "Glamsterdam",
-        "status": "Proposed"
+        "forkName": "",
+        "status": "Proposed",
+        "layer": "EL"
       }
     ],
     "laymanDescription": "This introduces smart transactions that only execute when specific conditions are met on-chain. Instead of failed transactions wasting gas, these transactions wait for the right conditions or don't execute at all.",
@@ -1031,8 +1044,9 @@
         "status": "Declined"
       },
       {
-        "forkName": "Glamsterdam",
-        "status": "Proposed"
+        "forkName": "",
+        "status": "Proposed",
+        "layer": "EL"
       }
     ],
     "laymanDescription": "This adds a simple but powerful new opcode that lets smart contracts know the current slot number (Ethereum's 12-second time unit). This enables precise time-based logic without relying on block timestamps.",
@@ -1857,6 +1871,11 @@
       {
         "forkName": "Fusaka",
         "status": "Declined"
+      },
+      {
+        "forkName": "",
+        "status": "Proposed",
+        "layer": "EL"
       }
     ],
     "laymanDescription": "This introduces a new GAS2ETH opcode that allows smart contracts to convert gas directly into ETH and send it to a specified address. It provides a new monetization mechanism for smart contract authors and public goods projects that scales with network usage. Instead of complex fee structures or token schemes, developers can charge gas (which users already understand) and receive proportional compensation during high network activity periods. The opcode takes a target address and gas amount, deducts the gas from the transaction, calculates the ETH value using the current gas price, and transfers that ETH to the specified address."
@@ -1875,6 +1894,11 @@
       {
         "forkName": "Fusaka",
         "status": "Declined"
+      },
+      {
+        "forkName": "",
+        "status": "Proposed",
+        "layer": "EL"
       }
     ],
     "laymanDescription": "This introduces a new SETDELEGATE instruction that allows smart contracts to create delegation accounts using EIP-7702's design. These work like ERC-1167 clones but with significant advantages: they delegate execution at the protocol level rather than through EVM code, avoiding calldata copying costs and EOF/legacy compatibility issues. The instruction takes a target address and salt, creates a delegation account at a computed address, and makes it delegate all calls to the target. This provides upgradeability without storage lookups, better efficiency than traditional proxies, and seamless compatibility between code versions."
@@ -1947,6 +1971,11 @@
       {
         "forkName": "Fusaka",
         "status": "Declined"
+      },
+      {
+        "forkName": "",
+        "status": "Proposed",
+        "layer": "EL"
       }
     ],
     "laymanDescription": "This removes the 49,152-byte limit on initialization code (initcode) that was introduced by EIP-3860. The problem this solves is that the current limit makes it unnecessarily difficult to deploy large, complex smart contracts that need to create multiple sub-contracts in a single transaction. For example, if you want to deploy a sophisticated DeFi protocol that consists of several interconnected contracts, you might hit the initcode limit even though each final contract stays under the 24KB deployed code limit (EIP-170). This forces developers to split deployments across multiple transactions, which is more expensive, less efficient, and breaks the clean abstractions that high-level programming languages try to provide. By removing this artificial limit, the EIP allows for more flexible deployment patterns while still maintaining security through existing gas costs that scale with initcode size. The per-block gas limit already naturally restricts initcode to reasonable sizes (around 16MB at current gas limits), making the 49KB cap redundant. This change is fully backward compatible and only removes restrictions without changing how contracts work."
@@ -1968,5 +1997,40 @@
       }
     ],
     "laymanDescription": "This adds practical stack manipulation tools to the EVM without requiring the complex EOF format. It extends the existing SWAP and DUP instructions to reach deeper stack positions (up to 24 positions), adds dynamic SWAPN and DUPN instructions for variable depth access, and introduces an EXCHANGE instruction that can swap any two arbitrary stack positions. These tools help compilers generate more efficient code when dealing with complex functions that have many local variables, reducing gas costs and bytecode size. Unlike previous attempts that required new code formats, this proposal works with existing legacy contracts by requiring specific PUSH instructions before the dynamic operations, making it a pragmatic solution that provides better stack access without breaking backward compatibility."
+  },
+  {
+    "id": 7923,
+    "title": "EIP-7923: Linear, Page-Based Memory Costing",
+    "status": "Draft",
+    "description": "Linearize memory pricing and replace the current quadratic formula with a page-based cost model.",
+    "author": "Charles Cooper (@charles-cooper), Qi Zhou (@qizhou)",
+    "type": "Standards Track",
+    "category": "Core",
+    "createdDate": "2025-03-27",
+    "discussionLink": "https://ethereum-magicians.org/t/eip-linearize-memory-costing/23290",
+    "forkRelationships": [
+      {
+        "forkName": "",
+        "status": "Proposed",
+        "layer": ""
+      }
+    ],
+    "laymanDescription": "Linearizes EVM memory with 4KB pages: 100-gas allocation, 6-gas thrash, 64MB cap. Contracts that hit quadratic expansion limits finish with the same logic but steadier gas usage.",
+    "stakeholderImpacts": {
+      "endUsers": { "impact": "", "description": "Transaction gas for memory-heavy calls may change; semantics largely unchanged, potential fee reductions." },
+      "appDevs": { "impact": "", "description": "Account for page allocation (4096 B) and thrash costs; 32-bit addresses; 64 MiB tx memory cap; MSIZE unchanged." },
+      "walletDevs": { "impact": "", "description": "Update simulators/estimators to model page allocation and thrash costs; surface OOM exceptional halts." },
+      "toolingInfra": { "impact": "", "description": "Clients, tracers, profilers need LRU(512) page tracking and new gas accounting; optional mmap-style backing." },
+      "layer2s": { "impact": "", "description": "EVM-equivalent chains must adopt new costing/limits; reassess proving and sequencer cost models for compatibility." },
+      "stakersNodes": { "impact": "", "description": "More predictable resource bounds via transaction-global memory limit; revise eth_call policies and DoS assumptions." },
+      "clClients": { "impact": "", "description": "Primarily fork coordination and validity boundary changes; no direct EVM implementation changes expected." },
+      "elClients": { "impact": "", "description": "Implement linear, page-based costing, LRU thrash checks, and OOM halts while preserving MSIZE semantics." }
+    },
+    "benefits": [
+      "Replaces quadratic memory expansion with linear, page-based costing for predictable gas.",
+      "Supports virtual addressing, unlocking heap/stack separation in high-level smart contract languages.",
+      "Adds transaction-global memory limit, invariant to call stack state and recursion.",
+      "Models hot versus cold memory via thrash surcharge, discouraging pathological access patterns."
+]
   }
 ]

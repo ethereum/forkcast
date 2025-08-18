@@ -1,5 +1,4 @@
 import React from 'react';
-import { Link } from 'react-router-dom';
 import { EIP, ClientTeamPerspective } from '../../types';
 import {
   getInclusionStage,
@@ -9,8 +8,6 @@ import {
   parseMarkdownLinks
 } from '../../utils';
 import { CopyLinkButton } from '../ui/CopyLinkButton';
-import { useAnalytics } from '../../hooks/useAnalytics';
-import { Tooltip } from '../ui/Tooltip';
 
 interface OverviewSectionProps {
   eips: EIP[];
@@ -42,11 +39,7 @@ export const OverviewSection: React.FC<OverviewSectionProps> = ({
   onStageClick,
   clientTeamPerspectives = []
 }) => {
-  const { trackLinkClick } = useAnalytics();
 
-  const handleExternalLinkClick = (linkType: string, url: string) => {
-    trackLinkClick(linkType, url);
-  };
 
   const stageStats = [
     {
@@ -88,50 +81,18 @@ export const OverviewSection: React.FC<OverviewSectionProps> = ({
       {/* Special note for Glamsterdam's competitive headliner process */}
       {forkName.toLowerCase() === 'glamsterdam' && (
         <>
-          <div className="mb-6 p-4 bg-amber-50 dark:bg-amber-900/20 border border-amber-200 dark:border-amber-700 rounded">
+          <div className="mb-6 p-4 bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-700 rounded">
             <div className="flex items-start gap-3">
-              <svg className="w-5 h-5 text-amber-600 dark:text-amber-400 mt-0.5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+              <svg className="w-5 h-5 text-green-600 dark:text-green-400 mt-0.5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
               </svg>
               <div>
-                <h4 className="font-medium text-amber-900 dark:text-amber-100 text-sm mb-1">Headliner Selection in Progress</h4>
-                <p className="text-amber-800 dark:text-amber-200 text-xs leading-relaxed">
-                  Headliners are the largest and most impactful features of an upgrade and may be permissionlessly proposed by anyone. The community is actively deciding which direction to prioritize in this network upgrade.
-                  <a
-                    href="https://ethereum-magicians.org/t/eip-7773-glamsterdam-network-upgrade-meta-thread/21195"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    onClick={() => handleExternalLinkClick('headliner_discussion', 'https://ethereum-magicians.org/t/eip-7773-glamsterdam-network-upgrade-meta-thread/21195')}
-                    className="text-amber-700 hover:text-amber-900 dark:text-amber-300 dark:hover:text-amber-100 underline decoration-1 underline-offset-2 ml-1"
-                  >
-                    Follow the discussion →
-                  </a>
+                <h4 className="font-medium text-green-900 dark:text-green-100 text-sm mb-1">Headliner Selection Complete</h4>
+                <p className="text-green-800 dark:text-green-200 text-xs leading-relaxed">
+                  The Glamsterdam headliner selection process has concluded. <strong>EIP-7732 (ePBS)</strong> and <strong>EIP-7928 (Block-level Access Lists)</strong> moved to <strong>Scheduled </strong> status. <strong>EIP-7805 (FOCIL)</strong> has also moved to <strong>Considered</strong> status. Smaller, non-headliner EIPs are now being proposed and discussed.
                 </p>
-                <p className="text-amber-800 dark:text-amber-200 text-xs leading-relaxed mt-2">
-                  Your input can help shape the direction of the Glamsterdam upgrade. Stakeholder feedback is crucial for surfacing priorities and concerns from across the ecosystem. Get involved:
-                  <ul className="list-disc pl-5 mt-2 space-y-1">
-                    <li>
-                      <Link
-                        to="/rank"
-                        className="text-purple-700 hover:text-purple-900 dark:text-purple-300 dark:hover:text-purple-100 underline decoration-1 underline-offset-2"
-                      >
-                        Create your own tier list of headliner proposals
-                      </Link>
-                      {" "}to share which features you think should be prioritized.
-                    </li>
-                    <li>
-                      <a
-                        href="https://ethereum-magicians.org/t/soliciting-stakeholder-feedback-on-glamsterdam-headliners/24885"
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        onClick={() => handleExternalLinkClick('community_feedback', 'https://ethereum-magicians.org/t/soliciting-stakeholder-feedback-on-glamsterdam-headliners/24885')}
-                        className="text-purple-700 hover:text-purple-900 dark:text-purple-300 dark:hover:text-purple-100 underline decoration-1 underline-offset-2"
-                      >
-                        Submit stakeholder feedback
-                      </a>
-                      {" "}to explain how your community or project would be affected by different headliner choices.
-                    </li>
-                  </ul>
+                <p className="text-green-800 dark:text-green-200 text-xs leading-relaxed mt-2">
+                  The community-driven selection process evaluated multiple proposals based on technical merit, stakeholder feedback, and ecosystem impact. View the detailed analysis for each proposed headliner below.
                 </p>
               </div>
             </div>
@@ -154,50 +115,89 @@ export const OverviewSection: React.FC<OverviewSectionProps> = ({
               {eips
                 .filter(eip => isHeadliner(eip, forkName))
                 .sort((a, b) => {
+                  const stageA = getInclusionStage(a, forkName);
+                  const stageB = getInclusionStage(b, forkName);
+
+                  // Sort by inclusion status first (SFI, then CFI, then others)
+                  const statusOrder: Record<string, number> = {
+                    'Scheduled for Inclusion': 0,
+                    'Considered for Inclusion': 1,
+                    'Proposed for Inclusion': 2
+                  };
+                  const orderA = statusOrder[stageA] ?? 3;
+                  const orderB = statusOrder[stageB] ?? 3;
+
+                  if (orderA !== orderB) return orderA - orderB;
+
+                  // Then sort by layer (EL before CL)
                   const layerA = getHeadlinerLayer(a, forkName);
                   const layerB = getHeadlinerLayer(b, forkName);
-
-                  // Sort by layer first (EL before CL)
                   if (layerA === 'EL' && layerB === 'CL') return -1;
                   if (layerA === 'CL' && layerB === 'EL') return 1;
 
-                  // Then sort by EIP number within each layer
+                  // Finally sort by EIP number
                   return a.id - b.id;
                 })
                 .map(eip => {
                   if (!eip.laymanDescription) return null;
 
                   const layer = getHeadlinerLayer(eip, forkName);
+                  const inclusionStage = getInclusionStage(eip, forkName);
+
+                  // Determine SFI/CFI status
+                  const statusLabel = inclusionStage === 'Scheduled for Inclusion' ? 'Scheduled'
+                    : inclusionStage === 'Considered for Inclusion' ? 'Considered'
+                    : null;
+
+                  // Enhanced styling hierarchy: Scheduled gets full treatment, Considered gets moderate, others minimal
+                  const isMainHeadliner = statusLabel === 'Scheduled';
+                  const isConsidered = statusLabel === 'Considered';
+
+                  const cardClass = isMainHeadliner
+                    ? "text-left p-4 bg-gradient-to-br from-white to-green-50 dark:from-slate-700 dark:to-green-900/20 border-2 border-green-300 dark:border-green-500 rounded-lg shadow-md hover:shadow-lg transition-all duration-200 group ring-1 ring-green-100 dark:ring-green-800"
+                    : isConsidered
+                      ? "text-left p-3 bg-white dark:bg-slate-700 border border-amber-300 dark:border-amber-600 rounded hover:border-amber-400 dark:hover:border-amber-500 hover:shadow-sm transition-all duration-200 group"
+                      : "text-left p-3 bg-white dark:bg-slate-700 border border-slate-300 dark:border-slate-600 rounded hover:border-slate-400 dark:hover:border-slate-500 hover:shadow-sm transition-all duration-200 group opacity-75 hover:opacity-100";
 
                   return (
                     <button
                       key={eip.id}
                       onClick={() => onStageClick(`eip-${eip.id}`)}
-                      className="text-left p-3 bg-white dark:bg-slate-700 border border-purple-200 dark:border-purple-600 rounded hover:border-purple-300 dark:hover:border-purple-500 hover:shadow-sm transition-all duration-200 group"
+                      className={`${cardClass} relative cursor-pointer overflow-hidden`}
                     >
+                        {/* Status Corner Flag */}
+                        {statusLabel && (
+                          <div className={`absolute px-3 py-1 text-xs font-bold text-white rounded-tr-lg rounded-bl-lg shadow-sm ${
+                            statusLabel === 'Scheduled'
+                              ? '-top-px -right-px bg-green-500 dark:bg-green-500'
+                              : '-top-0.5 -right-0.5 bg-amber-500 dark:bg-amber-500'
+                          }`}>
+                            {statusLabel}
+                          </div>
+                        )}
                         <div className="flex items-start justify-between mb-2">
-                          <div className="flex items-center gap-2">
-                            <h5 className="font-medium text-purple-900 dark:text-purple-100 text-sm group-hover:text-purple-700 dark:group-hover:text-purple-300 transition-colors">
-                              EIP-{eip.id}: {getLaymanTitle(eip)}
-                            </h5>
-                            {layer && (
-                              <Tooltip
-                                text={layer === 'EL' ? 'Primarily impacts Execution Layer' : 'Primarily impacts Consensus Layer'}
-                                className="inline-block"
-                              >
-                                <span className={`px-2 py-0.5 text-xs font-medium rounded ${
+                          <div className="flex-1 mr-4">
+                            <div className="flex items-center gap-2 mb-1">
+                              {layer && (
+                                <span className={`px-2 py-0.5 text-xs font-medium rounded border h-5 flex items-center ${
                                   layer === 'EL'
-                                    ? 'bg-blue-100 text-blue-700 dark:bg-blue-900/20 dark:text-blue-300 border border-blue-200 dark:border-blue-600'
-                                    : 'bg-green-100 text-green-700 dark:bg-green-900/20 dark:text-green-300 border border-green-200 dark:border-green-600'
+                                    ? 'bg-blue-100 text-blue-700 dark:bg-blue-900/20 dark:text-blue-300 border-blue-200 dark:border-blue-600'
+                                    : 'bg-green-100 text-green-700 dark:bg-green-900/20 dark:text-green-300 border-green-200 dark:border-green-600'
                                 }`}>
                                   {layer}
                                 </span>
-                              </Tooltip>
-                            )}
+                              )}
+                            </div>
+                            <h5 className={`font-medium text-sm transition-colors ${
+                              isMainHeadliner
+                                ? 'text-green-900 dark:text-green-100 group-hover:text-green-700 dark:group-hover:text-green-300 font-semibold'
+                                : isConsidered
+                                ? 'text-slate-800 dark:text-slate-200 group-hover:text-slate-700 dark:group-hover:text-slate-100'
+                                : 'text-slate-700 dark:text-slate-300 group-hover:text-slate-900 dark:group-hover:text-slate-100'
+                            }`}>
+                              EIP-{eip.id}: {getLaymanTitle(eip)}
+                            </h5>
                           </div>
-                          <svg className="w-4 h-4 text-purple-400 dark:text-purple-500 mt-0.5 opacity-0 group-hover:opacity-100 transition-opacity" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
-                          </svg>
                         </div>
                       <p className="text-xs text-slate-600 dark:text-slate-300 leading-relaxed line-clamp-3">
                         {eip.laymanDescription.length > 120

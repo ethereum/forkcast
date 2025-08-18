@@ -19,14 +19,14 @@ export const GLAMSTERDAM_TIMELINE_PHASES: TimelinePhase[] = [
     title: 'Headliner Discussion & Finalization',
     dateRange: 'June 23 - July 17',
     description: 'ACD evaluates candidate headliners, solicits community feedback, and finalizes decisions.',
-    status: 'current'
+    status: 'completed'
   },
   {
     id: 'non-headliner-proposals',
     title: 'Non-Headliner EIP Proposals',
     dateRange: 'July 21 - Aug 21',
     description: 'ACD begins reviewing other EIPs Proposed for Inclusion in Glamsterdam.',
-    status: 'upcoming'
+    status: 'current'
   },
   {
     id: 'cfi-decisions',

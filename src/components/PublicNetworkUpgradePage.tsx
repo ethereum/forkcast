@@ -142,9 +142,13 @@ const PublicNetworkUpgradePage: React.FC<PublicNetworkUpgradePageProps> = ({
         })
         .map(eip => {
           const layer = getHeadlinerLayer(eip, forkName);
+          const inclusionStage = getInclusionStage(eip, forkName);
+          const isSFI = inclusionStage === 'Scheduled for Inclusion';
+          const starSymbol = isSFI ? '★' : '☆';
+
           return {
             id: `eip-${eip.id}`,
-            label: `☆ ${getProposalPrefix(eip)}-${eip.id}: ${getLaymanTitle(eip)}${layer ? ` (${layer})` : ''}`,
+            label: `${starSymbol} ${getProposalPrefix(eip)}-${eip.id}: ${getLaymanTitle(eip)}${layer ? ` (${layer})` : ''}`,
             type: 'eip' as const,
             count: null as number | null
           };
@@ -193,7 +197,14 @@ const PublicNetworkUpgradePage: React.FC<PublicNetworkUpgradePageProps> = ({
           // For all other stages, show individual EIPs
           const eipItems = sortedEips.map(eip => {
             const isHeadlinerEip = isHeadliner(eip, forkName);
-            const starSymbol = forkName.toLowerCase() === 'glamsterdam' ? '☆' : '★';
+            const inclusionStage = getInclusionStage(eip, forkName);
+            const isSFI = inclusionStage === 'Scheduled for Inclusion';
+
+            // Use filled star for SFI EIPs, empty star for other headliners in Glamsterdam
+            const starSymbol = forkName.toLowerCase() === 'glamsterdam'
+              ? (isSFI ? '★' : '☆')
+              : '★';
+
             const proposalPrefix = getProposalPrefix(eip);
             const layer = isHeadlinerEip ? getHeadlinerLayer(eip, forkName) : null;
 
@@ -414,16 +425,28 @@ const PublicNetworkUpgradePage: React.FC<PublicNetworkUpgradePageProps> = ({
                                     <h3 className="text-xl font-medium text-slate-900 dark:text-slate-100 leading-tight">
                                       {isHeadliner(eip, forkName) && (
                                         <Tooltip
-                                          text={forkName.toLowerCase() === 'glamsterdam'
-                                            ? "Competing headliner proposal for this network upgrade"
-                                            : "Headliner feature of this network upgrade"
-                                          }
+                                          text={(() => {
+                                            const inclusionStage = getInclusionStage(eip, forkName);
+                                            const isSFI = inclusionStage === 'Scheduled for Inclusion';
+                                            if (forkName.toLowerCase() === 'glamsterdam') {
+                                              return isSFI
+                                                ? "Selected headliner feature of this network upgrade"
+                                                : "Proposed headliner feature of this network upgrade";
+                                            }
+                                            return "Headliner feature of this network upgrade";
+                                          })()}
                                           className="inline-block cursor-pointer"
                                         >
                                           <span
                                             className="text-purple-400 hover:text-purple-600 dark:text-purple-500 dark:hover:text-purple-400 mr-2 transition-colors cursor-help"
                                           >
-                                            {forkName.toLowerCase() === 'glamsterdam' ? '☆' : '★'}
+                                            {(() => {
+                                              const inclusionStage = getInclusionStage(eip, forkName);
+                                              const isSFI = inclusionStage === 'Scheduled for Inclusion';
+                                              return forkName.toLowerCase() === 'glamsterdam'
+                                                ? (isSFI ? '★' : '☆')
+                                                : '★';
+                                            })()}
                                           </span>
                                         </Tooltip>
                                       )}
@@ -742,16 +765,28 @@ const PublicNetworkUpgradePage: React.FC<PublicNetworkUpgradePageProps> = ({
                                       <h3 className="text-xl font-medium text-slate-900 dark:text-slate-100 leading-tight">
                                         {isHeadliner(eip, forkName) && (
                                           <Tooltip
-                                            text={forkName.toLowerCase() === 'glamsterdam'
-                                              ? "Competing headliner proposal for this network upgrade"
-                                              : "Headliner feature of this network upgrade"
-                                            }
+                                            text={(() => {
+                                              const inclusionStage = getInclusionStage(eip, forkName);
+                                              const isSFI = inclusionStage === 'Scheduled for Inclusion';
+                                              if (forkName.toLowerCase() === 'glamsterdam') {
+                                                return isSFI
+                                                  ? "Confirmed headliner scheduled for inclusion in this network upgrade"
+                                                  : "Competing headliner proposal under consideration for this network upgrade";
+                                              }
+                                              return "Headliner feature of this network upgrade";
+                                            })()}
                                             className="inline-block cursor-pointer"
                                           >
                                             <span
                                               className="text-purple-400 hover:text-purple-600 dark:text-purple-500 dark:hover:text-purple-400 mr-2 transition-colors cursor-help"
                                             >
-                                              {forkName.toLowerCase() === 'glamsterdam' ? '☆' : '★'}
+                                              {(() => {
+                                                const inclusionStage = getInclusionStage(eip, forkName);
+                                                const isSFI = inclusionStage === 'Scheduled for Inclusion';
+                                                return forkName.toLowerCase() === 'glamsterdam'
+                                                  ? (isSFI ? '★' : '☆')
+                                                  : '★';
+                                              })()}
                                             </span>
                                           </Tooltip>
                                         )}

@@ -8,8 +8,9 @@ export interface ForkRelationship {
   forkName: string;
   status: string;
   isHeadliner?: boolean;
+  wasHeadlinerCandidate?: boolean;
   headlinerDiscussionLink?: string;
-  layer?: string; // Indicates whether the headliner primarily affects Execution Layer or Consensus Layer
+  layer?: string;
 }
 
 export interface EIP {
@@ -44,7 +45,7 @@ export interface EIP {
   tradeoffs?: string[];
 }
 
-export type InclusionStage = 
+export type InclusionStage =
   | 'Proposed for Inclusion'
   | 'Considered for Inclusion'
   | 'Scheduled for Inclusion'
@@ -52,4 +53,4 @@ export type InclusionStage =
   | 'Included'
   | 'Unknown';
 
-export type ProposalType = 'EIP' | 'RIP'; 
+export type ProposalType = 'EIP' | 'RIP';

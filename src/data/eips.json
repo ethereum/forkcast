@@ -17,6 +17,45 @@
     ]
   },
   {
+    "id": 2926,
+    "title": "EIP-2926: Chunk-Based Code Merkleization",
+    "status": "Draft",
+    "description": "Specifies a fixed-sized chunk-based Merkleization of contract code to reduce block witness sizes and enable stateless clients",
+    "author": "Sina Mahmoodi (@s1na), Alex Beregszaszi (@axic), Guillaume Ballet (@gballet), Jochem Brouwer (@jochem-brouwer), Ignacio Hagopian (@jsign)",
+    "type": "Standards Track",
+    "category": "Core",
+    "createdDate": "2020-08-25",
+    "discussionLink": "https://ethereum-magicians.org/t/eip-2926-chunk-based-code-merkleization/4555",
+    "forkRelationships": [
+      {
+        "forkName": "",
+        "status": "",
+        "layer": "EL"
+      }
+    ],
+    "laymanDescription": "Breaks smart contract bytecode into fixed-size chunks stored in a Merkle Patricia Trie, reducing network bandwidth for block proof and resource consumption for real-time proving.",
+    "northStars": ["Scale L1"],
+    "northStarAlignment": {
+      "scaleL1": { "impact": "High", "description": "Ensures real-time proving can be achieved safely with higher gas limits." }
+    },
+    "stakeholderImpacts": {
+      "endUsers": { "impact": "Low", "description": "End users are unaffected as code transition occur at protocol layer." },
+      "appDevs": { "impact": "Medium", "description": "Developers need to adapt to the new gas costs model." },
+      "walletDevs": { "impact": "Low", "description": "Wallet functionality remains unchanged." },
+      "toolingInfra": { "impact": "Medium", "description": "Infrastructure tools need updates to handle chunk-based proofs and codeRoot fields." },
+      "layer2s": { "impact": "Low", "description": "Layer 2s remain unaffected." },
+      "stakersNodes": { "impact": "Medium", "description": "A transition period has to happen, during which  resource consumption increases slightly." },
+      "clClients": { "impact": "Low", "description": "Core consensus rules remain unchanged." },
+      "elClients": { "impact": "High", "description": "Requires the implementation of code transition and the new storage format for accounts." }
+    },
+    "benefits": [
+      "Reduces resource consumption for real-time provers and avoids worst case attacks.",
+      "Enable stateless clients to fetch only accessed code chunks, reducing network bandwidth.",
+      "Allow for the removal of the code size limit.",
+      "Reduction in size for any proof containing partial code reads",
+    ]
+  },
+  {
     "id": 2935,
     "title": "EIP-2935: Save historical block hashes in state",
     "status": "Final",

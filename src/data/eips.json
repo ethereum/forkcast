@@ -2068,22 +2068,26 @@
         "layer": ""
       }
     ],
-    "laymanDescription": "Linearizes EVM memory with 4KB pages: 100-gas allocation, 6-gas thrash, 64MB cap. Contracts that hit quadratic expansion limits finish with the same logic but steadier gas usage.",
+    "laymanDescription": "Linearizes EVM memory with 4KB pages: 100-gas allocation, 6-gas thrash, 64MB cap. Contracts that hit quadratic expansion limits finish with the same logic but steadier gas usage, allowing for more efficient memory management and predicatble gas costs.",
+    "northStars": ["Scale L1", "Improve UX"],
+    "northStarAlignment": {
+      "scaleL1": { "impact": "Low", "description": "The more efficient memory management in contracts will lower the gas limit and allow for more operations onchain" },
+      "improveUX": { "impact": "Low", "description": "The gas cost estimation by user wallets can be more straightforward, resulting in less overpaying and avoiding out of gas transaction fails." }
+    },
     "stakeholderImpacts": {
-      "endUsers": { "impact": "", "description": "Transaction gas for memory-heavy calls may change; semantics largely unchanged, potential fee reductions." },
-      "appDevs": { "impact": "", "description": "Account for page allocation (4096 B) and thrash costs; 32-bit addresses; 64 MiB tx memory cap; MSIZE unchanged." },
+      "endUsers": { "impact": "", "description": "Transaction gas for memory-heavy calls may be lower, wallets are better at estimating gas to spend." },
+      "appDevs": { "impact": "", "description": "Account for page allocation (4096 B) and thrash costs; 32-bit addresses; 64 MiB tx memory cap; MSIZE unchanged. Better ways to address memory with new optimizations. The changes are backwards compatible." },
       "walletDevs": { "impact": "", "description": "Update simulators/estimators to model page allocation and thrash costs; surface OOM exceptional halts." },
       "toolingInfra": { "impact": "", "description": "Clients, tracers, profilers need LRU(512) page tracking and new gas accounting; optional mmap-style backing." },
       "layer2s": { "impact": "", "description": "EVM-equivalent chains must adopt new costing/limits; reassess proving and sequencer cost models for compatibility." },
-      "stakersNodes": { "impact": "", "description": "More predictable resource bounds via transaction-global memory limit; revise eth_call policies and DoS assumptions." },
-      "clClients": { "impact": "", "description": "Primarily fork coordination and validity boundary changes; no direct EVM implementation changes expected." },
-      "elClients": { "impact": "", "description": "Implement linear, page-based costing, LRU thrash checks, and OOM halts while preserving MSIZE semantics." }
+      "stakersNodes": { "impact": "", "description": "More predictable resource bounds via transaction-global memory limit, RPC providers can revise eth_call policies and DoS assumptions." },
+      "clClients": { "impact": "", "description": "This change doesn't touch the consensus layer." },
+      "elClients": { "impact": "", "description": "Implementation of new linear, page-based costing, LRU thrash checks, and OOM halts while preserving MSIZE semantics while maintaining compatibility with the old model." }
     },
     "benefits": [
       "Replaces quadratic memory expansion with linear, page-based costing for predictable gas.",
-      "Supports virtual addressing, unlocking heap/stack separation in high-level smart contract languages.",
-      "Adds transaction-global memory limit, invariant to call stack state and recursion.",
-      "Models hot versus cold memory via thrash surcharge, discouraging pathological access patterns."
+      "Provides support for virtual memory addressing, unlocking heap/stack separation in high-level smart contract languages.",
+      "Providing developers with better ways to manage memory, similar to other architectures."
     ]
   },
    {

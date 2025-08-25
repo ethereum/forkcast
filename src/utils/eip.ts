@@ -5,8 +5,8 @@ import { EIP, ForkRelationship, InclusionStage, ProposalType } from '../types/ei
  */
 export const getInclusionStage = (eip: EIP, forkName?: string): InclusionStage => {
   if (!forkName) return 'Unknown';
-  
-  const forkRelationship = eip.forkRelationships.find(fork => 
+
+  const forkRelationship = eip.forkRelationships.find(fork =>
     fork.forkName.toLowerCase() === forkName.toLowerCase()
   );
 
@@ -33,8 +33,8 @@ export const getInclusionStage = (eip: EIP, forkName?: string): InclusionStage =
  */
 export const getHeadlinerDiscussionLink = (eip: EIP, forkName?: string): string | null => {
   if (!forkName) return null;
-  
-  const forkRelationship = eip.forkRelationships.find(fork => 
+
+  const forkRelationship = eip.forkRelationships.find(fork =>
     fork.forkName.toLowerCase() === forkName.toLowerCase()
   );
   return forkRelationship?.headlinerDiscussionLink || null;
@@ -45,8 +45,8 @@ export const getHeadlinerDiscussionLink = (eip: EIP, forkName?: string): string 
  */
 export const isHeadliner = (eip: EIP, forkName?: string): boolean => {
   if (!forkName) return false;
-  
-  const forkRelationship = eip.forkRelationships.find(fork => 
+
+  const forkRelationship = eip.forkRelationships.find(fork =>
     fork.forkName.toLowerCase() === forkName.toLowerCase()
   );
   return forkRelationship?.isHeadliner || false;
@@ -92,12 +92,24 @@ export const getSpecificationUrl = (eip: EIP): string => {
 };
 
 /**
+ * Check if an EIP was a headliner candidate for a specific fork
+ */
+export const wasHeadlinerCandidate = (eip: EIP, forkName?: string): boolean => {
+  if (!forkName) return false;
+
+  const forkRelationship = eip.forkRelationships.find(fork =>
+    fork.forkName.toLowerCase() === forkName.toLowerCase()
+  );
+  return forkRelationship?.wasHeadlinerCandidate || false;
+};
+
+/**
  * Get the fork relationship for an EIP in a specific fork
  */
 export const getForkRelationship = (eip: EIP, forkName?: string): ForkRelationship | undefined => {
   if (!forkName) return undefined;
 
-  return eip.forkRelationships.find(fork => 
+  return eip.forkRelationships.find(fork =>
     fork.forkName.toLowerCase() === forkName.toLowerCase()
   );
-}; 
+};

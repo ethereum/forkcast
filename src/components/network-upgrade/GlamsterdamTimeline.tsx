@@ -15,38 +15,44 @@ export const GlamsterdamTimeline: React.FC = () => {
   return (
     <div className="mb-4">
       <div className="bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg p-6">
-        <div className="space-y-2">
-          {phases.map((phase, index) => (
-            <div key={phase.id} className="relative">
-              {/* Timeline connector */}
-              {index < phases.length - 1 && (
-                <div className="absolute left-5 top-10 w-0.5 h-16 bg-slate-200 dark:bg-slate-600"></div>
-              )}
+        <div className="relative">
+          {/* Vertical line */}
+          {phases.length > 1 && (
+            <div className="absolute left-5 top-5 bottom-12 w-0.5 bg-slate-200 dark:bg-slate-600" />
+          )}
 
-              <div className="flex gap-3">
+          <div className="space-y-8">
+            {phases.map((phase) => (
+              <div key={phase.id} className="flex items-start gap-4">
                 {/* Status icon */}
-                <div className={`flex-shrink-0 w-10 h-10 rounded-full border-2 flex items-center justify-center ${getPhaseStatusColor(phase.status)}`}>
-                  {getPhaseStatusIcon(phase.status)}
+                <div
+                  className={`relative z-10 flex-shrink-0 w-10 h-10 rounded-full border-2 flex items-center justify-center ${
+                    getPhaseStatusColor(phase.status)
+                  }`}
+                >
+                  {/* Opaque base background (masks the timeline line) */}
+                  <div className="absolute inset-0 rounded-full bg-white dark:bg-slate-800" />
+                  {/* Subtle colored background (restores the desired color) */}
+                  <div className={`absolute inset-0 rounded-full ${
+                    getPhaseStatusColor(phase.status).match(/(bg-\S+)|(dark:bg-\S+)/g)?.join(' ')
+                  }`} />
+                  <div className="relative">
+                    {getPhaseStatusIcon(phase.status)}
+                  </div>
                 </div>
 
                 {/* Content */}
-                <div className={`flex-1 ${index === phases.length - 1 ? 'pb-2' : 'pb-6'}`}>
-                  <div className="flex items-start justify-between mb-1">
-                    <h4 className="font-medium text-slate-900 dark:text-slate-100 text-sm">{phase.title}</h4>
-                    {/* Hidden dateRange for Glamsterdam timeline */}
-                    {/* <span className="text-xs text-slate-500 font-mono bg-slate-50 px-2 py-0.5 rounded">
-                      {phase.dateRange}
-                    </span> */}
-                  </div>
+                <div className="flex-1">
+                  <h4 className="font-medium text-slate-900 dark:text-slate-100 text-sm mb-1">{phase.title}</h4>
                   <p className="text-xs text-slate-600 dark:text-slate-300 mb-2">{phase.description}</p>
                 </div>
               </div>
-            </div>
-          ))}
+            ))}
+          </div>
         </div>
 
         {/* Source link */}
-        <div className="mt-3 pt-3 border-t border-slate-200 dark:border-slate-600">
+        <div className="mt-4 pt-4 border-t border-slate-200 dark:border-slate-600">
           <div className="flex items-start justify-between">
             <a
               href="https://ethereum-magicians.org/t/eip-7773-glamsterdam-network-upgrade-meta-thread/21195"

@@ -24,9 +24,9 @@ export const ClientTeamPerspectives: React.FC<ClientTeamPerspectivesProps> = ({
   const getTeamTypeColor = (teamType: string) => {
     switch (teamType) {
       case 'EL':
-        return 'bg-blue-100 text-blue-700 border-blue-200';
+        return 'bg-indigo-100 text-indigo-700 border-indigo-200';
       case 'CL':
-        return 'bg-green-100 text-green-700 border-green-200';
+        return 'bg-teal-100 text-teal-700 border-teal-200';
       case 'Both':
         return 'bg-purple-100 text-purple-700 border-purple-200';
       default:

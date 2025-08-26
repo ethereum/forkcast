@@ -2084,6 +2084,146 @@
       "Providing developers with better ways to manage memory, similar to other architectures."
     ]
   },
+  {
+    "id": 7932,
+    "title": "EIP-7932: Secondary Signature Algorithms",
+    "status": "Draft",
+    "description": "Introduces new algorithms for signing transactions on Ethereum, enabling the use of alternative signature methods.",
+    "author": "James Kempton (@SirSpudlington)",
+    "type": "Standards Track",
+    "category": "Core",
+    "createdDate": "2025-04-12",
+    "discussionLink": "https://ethereum-magicians.org/t/eip-7932-secondary-signature-algorithms/23514",
+    "forkRelationships": [
+      {
+        "forkName": "Glamsterdam",
+        "status": "Proposed",
+        "layer": "Execution Layer"
+      }
+    ],
+    "laymanDescription": "Allows the use of alternative signature algorithms, improving security and flexibility in transactions.",
+    "stakeholderImpacts": {
+      "endUsers": { "description": "Improves security through advanced signing methods." },
+      "appDevs": { "description": "Enables integration of various algorithms, enhancing transaction capabilities." },
+      "walletDevs": { "description": "Facilitates the incorporation of alternative signatures, boosting wallet flexibility." },
+      "toolingInfra": { "description": "Requires updates to support new signature algorithms and transaction types." },
+      "layer2s": { "description": "Increases transaction variety, potentially enhancing compatibility with rollups." },
+      "stakersNodes": { "description": "Optimizes validation processes with newer signing algorithms." },
+      "clClients": { "description": "Enhances client functionalities by adapting to different signing methods." },
+      "elClients": { "description": "Supports efficient execution of transactions with varied signature algorithms." }
+    },
+    "benefits": [
+      "Standardizes the representation of alternative algorithms, increasing flexibility in transaction signing.",
+      "Improves security against future threats, especially from quantum computing advancements.",
+      "Aids in the transition to new cryptographic methods essential for maintaining network integrity.",
+      "Enhances usability by allowing a broader range of signing algorithms, attracting diverse applications."
+    ]
+  },
+  {
+    "id": 7979,
+    "title": "EIP-7979: Call and Return Opcodes for the EVM",
+    "status": "Draft",
+    "description": "Introduction of new opcodes in the EVM to enhance function calls and returns, improving security and efficiency.",
+    "author": "Greg Colvin (@gcolvin)",
+    "type": "Standards Track",
+    "category": "Core",
+    "createdDate": "2025-12-17",
+    "discussionLink": "https://ethereum-magicians.org/t/eip-7951-call-and-return-opcodes-for-the-evm/24615",
+    "forkRelationships": [
+      {
+        "forkName": "Glamsterdam",
+        "status": "Proposed",
+        "layer": "Execution Layer"
+      }
+    ],
+    "laymanDescription": "Improves EVM performance and security by allowing smart contracts to call and return functions more effectively.",
+    "stakeholderImpacts": {
+      "endUsers": { "description": "Increased security in smart contract executions." },
+      "appDevs": { "description": "Streamlined development process for contract interoperability." },
+      "walletDevs": { "description": "Enhanced wallet capabilities for managing calls and returns." },
+      "toolingInfra": { "description": "Tooling updates required to support new opcode functionalities." },
+      "layer2s": { "description": "Improved interaction efficiency for Layer 2 solutions." },
+      "stakersNodes": { "description": "Reduced complexity in managing transaction flows." },
+      "clClients": { "description": "Better performance optimizations across clients." },
+      "elClients": { "description": "Improved execution efficiency for contract interactions." }
+    },
+    "benefits": [
+      "Enables more efficient smart contract interactions, enhancing overall network performance.",
+      "Reduces potential for code vulnerabilities with improved call and return mechanics.",
+      "Allows for better static analysis and validation of smart contracts.",
+      "Maintains backward compatibility, enabling a smoother transition for developers."
+    ]
+  },
+  {
+  "id": 7980,
+  "title": "EIP-7980: Ed25519 transaction support",
+  "status": "Draft",
+  "description": "Introduces Ed25519 digital signature support in Ethereum transactions to enhance security and interoperability.",
+  "author": "James Kempton (@SirSpudlington)",
+  "type": "Standards Track",
+  "category": "Core",
+  "createdDate": "2025-06-25",
+  "discussionLink": "https://ethereum-magicians.org/t/eip-7980-adding-ed25519-as-a-signature-scheme-to-test-eip-7932/24663",
+  "forkRelationships": [
+    {
+      "forkName": "Glamsterdam",
+      "status": "Proposed",
+      "layer": "Execution Layer"
+    }
+  ],
+  "laymanDescription": "Adds Ed25519 signatures to Ethereum transactions, improving security and compatibility with other technologies.",
+  "stakeholderImpacts": {
+    "endUsers": { "description": "Improves transaction security and options for users." },
+    "appDevs": { "description": "Facilitates testing and enhances security for applications." },
+    "walletDevs": { "description": "Expands wallet capabilities to support new signature types." },
+    "toolingInfra": { "description": "Requires updates to support Ed25519 signature verification." },
+    "layer2s": { "description": "Can utilize Ed25519 for improved cross-platform interactions." },
+    "stakersNodes": { "description": "May require adjustments to accommodate new signature processing." },
+    "clClients": { "description": "Encourages updates to handle diverse signature schemes." },
+    "elClients": { "description": "Enhances the efficiency of contract execution with new signature types." }
+  },
+  "benefits": [
+    "Increases security and flexibility in Ethereum transactions with Ed25519 signatures.",
+    "Provides developers with new tools to enhance compatibility with modern cryptographic methods.",
+    "Facilitates smoother interoperability with other blockchain technologies supporting Ed25519.",
+    "Helps maintain Ethereum's competitive edge by adapting to popular cryptographic standards."
+  ]
+},
+  {
+    "id": 7981,
+    "title": "EIP-7981: Increase access list cost",
+    "status": "Draft",
+    "description": "This EIP charges additional gas for non-zero and zero bytes in access lists to prevent circumvention of gas pricing rules and ensure fair costs.",
+    "author": "Toni Wahrstätter (@nerolation)",
+    "type": "Standards Track",
+    "category": "Core",
+    "createdDate": "2024-12-27",
+    "discussionLink": "https://ethereum-magicians.org/t/eip-7981-increase-access-list-cost/24680",
+    "forkRelationships": [
+      {
+        "forkName": "Glamsterdam",
+        "status": "Proposed",
+        "layer": "Execution Layer"
+      }
+    ],
+    "laymanDescription": "Adjusts transaction costs for access lists to balance gas fees and prevent block size inflation.",
+    "stakeholderImpacts": {
+      "endUsers": { "impact": "Medium", "description": "Improves transaction fairness by standardizing costs based on data usage." },
+      "appDevs": { "impact": "High", "description": "Encourages efficient transaction design due to higher costs for larger access lists." },
+      "walletDevs": { "impact": "Medium", "description": "Could require updates to handle new cost structures in gas estimation." },
+      "toolingInfra": { "impact": "High", "description": "Need to adapt estimation tools for new access list pricing." },
+      "layer2s": { "impact": "Medium", "description": "Reduces potential for block size inflation leading to enhanced scalability." },
+      "stakersNodes": { "impact": "Low", "description": "Minimal direct impact, but improved network health benefits all participants." },
+      "clClients": { "impact": "Medium", "description": "Adjustments required for gas cost calculations influencing consensus protocols." },
+      "elClients": { "impact": "High", "description": "Optimizes execution efficiency under new pricing impacting overall gas usage." }
+    },
+    "benefits": [
+      "Enhances economic model by charging based on resource usage, which promotes efficient transaction design.",
+      "Increases network stability by reducing maximum block size through reduced incentive to use large access lists.",
+      "Encourages fairer transaction costs across users by preventing underutilization of pricing structures.",
+      "Maintains compatibility with existing EIP-2930 while introducing necessary changes to the access list gas calculations."
+    ]
+  },
    {
     "id": 7997,
     "title": "EIP-7997: Deterministic Factory Predeploy",
@@ -2121,6 +2261,41 @@
       "Reduces the complexity of user interfaces and SDKs, creating a better developer experience and user engagement.",
       "Enhances account abstraction by allowing smart contracts to be effectively utilized across multiple chains.",
       "Provides a standardized method for deterministic contract creation, improving security and reliability in deployment processes."
+    ]
+  },
+  {
+    "id": 7999,
+    "title": "EIP-7999: Unified Multidimensional Fee Market",
+    "status": "Draft",
+    "description": "Proposes a unified fee market for Ethereum transactions enabling users to manage fees more efficiently with a single `max_fee` for various resources.",
+    "author": "Anders Elowsson (@anderselowsson), Vitalik Buterin (@vbuterin)",
+    "type": "Standards Track",
+    "category": "Core",
+    "createdDate": "2025-08-04",
+    "discussionLink": "https://ethereum-magicians.org/t/eip-7999-unified-multidimensional-fee-market/25010",
+    "forkRelationships": [
+      {
+        "forkName": "Glamsterdam",
+        "status": "Proposed",
+        "layer": "Execution Layer"
+      }
+    ],
+    "laymanDescription": "Simplifies fee management for transactions by allowing users to set one budget for various resources like storage and computation.",
+    "stakeholderImpacts": {
+      "endUsers": { "description": "Improves transaction clarity and fee management." },
+      "appDevs": { "description": "Enables easier budgeting for transaction costs, enhancing user experience." },
+      "walletDevs": { "description": "Simplifies fee calculation in wallets, reducing development overhead." },
+      "toolingInfra": { "description": "Integrates new fee structures into existing tools and infrastructure." },
+      "layer2s": { "description": "Facilitates cross-chain transactions through a unified fee structure." },
+      "stakersNodes": { "description": "Streamlines transaction validation processes with consistent fee mechanisms." },
+      "clClients": { "description": "Enhances consensus algorithm efficiency by standardizing transaction fees." },
+      "elClients": { "description": "Optimizes resource allocation and execution efficiency for transactions." }
+    },
+    "benefits": [
+      "Standardizes fee management across various resources, promoting economic efficiency.",
+      "Reduces user confusion by simplifying the process of setting transaction fees.",
+      "Enhances resource allocation flexibility for developers, improving overall system efficiency.",
+      "Facilitates future expansion into multiple resource dimensions seamlessly."
     ]
   }
 ]

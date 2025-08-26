@@ -190,7 +190,7 @@ const PublicNetworkUpgradePage: React.FC<PublicNetworkUpgradePageProps> = ({
 
       // Add headliner candidates section for Glamsterdam if there are any
       ...(forkName.toLowerCase() === 'glamsterdam' ? (() => {
-        const headlinerProposals = eips.filter(eip => wasHeadlinerCandidate(eip, forkName) && !isHeadliner(eip, forkName));
+        const headlinerProposals = eips.filter(eip => wasHeadlinerCandidate(eip, forkName));
         return headlinerProposals.length > 0 ? [{
           id: 'headliner-proposals',
           label: 'Headliner Proposals',
@@ -292,23 +292,17 @@ const PublicNetworkUpgradePage: React.FC<PublicNetworkUpgradePageProps> = ({
           </div>
         </div>
 
-        {/* Network Upgrade Timeline */}
         <NetworkUpgradeTimeline currentForkName={forkName} />
 
-        {/* Main Content with TOC */}
         <div className="flex gap-8">
-          {/* Table of Contents */}
           <TableOfContents
             items={tocItems}
             activeSection={activeSection}
             onSectionClick={scrollToSection}
           />
 
-          {/* Main Content */}
           <div className="flex-1 min-w-0">
-            {/* EIPs */}
             <div className="space-y-8">
-              {/* Overview Section */}
               <OverviewSection
                 eips={eips}
                 forkName={forkName}
@@ -737,7 +731,7 @@ const PublicNetworkUpgradePage: React.FC<PublicNetworkUpgradePageProps> = ({
                       />
 
                       {eips
-                        .filter(eip => isHeadliner(eip, forkName))
+                        .filter(eip => wasHeadlinerCandidate(eip, forkName))
                         .sort((a, b) => {
                           const layerA = getHeadlinerLayer(a, forkName);
                           const layerB = getHeadlinerLayer(b, forkName);

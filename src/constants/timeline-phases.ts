@@ -25,7 +25,7 @@ export const GLAMSTERDAM_TIMELINE_PHASES: TimelinePhase[] = [
     id: 'non-headliner-proposals',
     title: 'Non-Headliner EIP Proposals',
     dateRange: 'July 21 - Aug 21',
-    description: 'ACD begins reviewing other EIPs Proposed for Inclusion in Glamsterdam.',
+    description: 'Non-headliner EIPs can now be proposed for inclusion in Glamsterdam.',
     status: 'current'
   },
   {

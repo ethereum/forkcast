@@ -75,7 +75,7 @@ export const OverviewSection: React.FC<OverviewSectionProps> = ({
                   >EIP-7928 (Block-level Access Lists)</button></strong> moved to <strong>Scheduled </strong> status. <strong><button
                     onClick={() => onStageClick('eip-7805')}
                     className="bg-transparent border-none p-0 m-0 font-inherit text-emerald-900 dark:text-emerald-100 hover:text-emerald-700 dark:hover:text-emerald-300 underline decoration-1 underline-offset-2 transition-colors cursor-pointer"
-                  >EIP-7805 (FOCIL)</button></strong> has also moved to <strong>Considered</strong> status. Smaller, non-headliner EIPs are now being proposed and discussed.
+                  >EIP-7805 (FOCIL)</button></strong> has also moved to <strong>Considered</strong> status. Non-headliner EIPs can now be proposed.
                 </p>
               </div>
             </div>

@@ -483,16 +483,7 @@ const PublicNetworkUpgradePage: React.FC<PublicNetworkUpgradePageProps> = ({
                                       <h3 className="text-xl font-medium text-slate-900 dark:text-slate-100 leading-tight">
                                         {isHeadliner(eip, forkName) && (
                                           <Tooltip
-                                            text={(() => {
-                                              const inclusionStage = getInclusionStage(eip, forkName);
-                                              const isSFI = inclusionStage === 'Scheduled for Inclusion';
-                                              if (forkName.toLowerCase() === 'glamsterdam') {
-                                                return isSFI
-                                                  ? "Confirmed headliner scheduled for inclusion in this network upgrade"
-                                                  : "Competing headliner proposal under consideration for this network upgrade";
-                                              }
-                                              return "Headliner feature of this network upgrade";
-                                            })()}
+                                            text="Headliner feature of this network upgrade"
                                             className="inline-block cursor-pointer"
                                           >
                                             <span

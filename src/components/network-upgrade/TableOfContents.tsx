@@ -20,7 +20,7 @@ export const TableOfContents: React.FC<TableOfContentsProps> = ({
 }) => {
   return (
     <div className="hidden lg:block w-64 flex-shrink-0">
-      <div className="sticky top-6">
+      <div className="sticky top-6 overflow-y-auto max-h-[calc(100vh-3rem)]">
         <h3 className="text-sm font-semibold text-slate-900 dark:text-slate-100 mb-4 uppercase tracking-wide">Contents</h3>
         <nav className="space-y-1">
           {items.map((item) => (

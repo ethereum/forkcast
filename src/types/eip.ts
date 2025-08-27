@@ -27,19 +27,19 @@ export interface EIP {
   laymanDescription?: string;
   northStars?: string[];
   northStarAlignment?: {
-    scaleL1?: { impact: string, description: string };
-    scaleBlobs?: { impact: string, description: string };
-    improveUX?: { impact: string, description: string };
+    scaleL1?: { impact?: string, description: string };
+    scaleBlobs?: { impact?: string, description: string };
+    improveUX?: { impact?: string, description: string };
   };
   stakeholderImpacts?: {
-    endUsers: { impact: string, description: string };
-    appDevs: { impact: string, description: string };
-    walletDevs: { impact: string, description: string };
-    toolingInfra: { impact: string, description: string };
-    layer2s: { impact: string, description: string };
-    stakersNodes: { impact: string, description: string };
-    clClients: { impact: string, description: string };
-    elClients: { impact: string, description: string };
+    endUsers: { impact?: string, description: string };
+    appDevs: { impact?: string, description: string };
+    walletDevs: { impact?: string, description: string };
+    toolingInfra: { impact?: string, description: string };
+    layer2s: { impact?: string, description: string };
+    stakersNodes: { impact?: string, description: string };
+    clClients: { impact?: string, description: string };
+    elClients: { impact?: string, description: string };
   };
   benefits?: string[];
   tradeoffs?: string[];

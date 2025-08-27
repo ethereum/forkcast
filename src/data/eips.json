@@ -991,15 +991,14 @@
       }
     ],
     "laymanDescription": "Adds a way to make a transaction only valid at a chosen spot in a block, blocking reordering and front-running in encrypted mempools.",
-    "northStars": ["Improve UX", "Scale L1"],
+    "northStars": ["Improve UX"],
     "northStarAlignment": {
-      "scaleL1": { "impact": "Medium", "description": "Reduces wasted computation from failed transactions and enables more efficient transaction patterns that only execute when conditions are optimal." },
-      "improveUX": { "impact": "High", "description": "Dramatically improves user experience by eliminating failed transactions that waste gas, enabling more sophisticated automation and better transaction success rates." }
+      "improveUX": { "impact": "High", "description": "Provides users going through encrypted mempools with stronger guarantees against frontrunning." }
     },
     "stakeholderImpacts": {
       "endUsers": { "impact": "", "description": "Potentially fairer execution for services using encrypted mempools; otherwise no changes to sending or receiving transactions." },
       "appDevs": { "impact": "", "description": "Optional tooling to mark transactions valid at slot/index; useful for encrypted-mempool flows and bundle verification, otherwise no required changes." },
-      "walletDevs": { "impact": "", "description": "Must support new conditional transaction type fields, signing domain, and user controls for slot/index; integrate with bundlers where applicable." },
+      "walletDevs": { "impact": "", "description": "Wallets that support encrypted mempools should support new conditional transaction type fields, signing domain, etc; integrate with bundlers where applicable." },
       "toolingInfra": { "impact": "", "description": "May add decoding/display for conditional fields and type, and support opcode traces in debuggers; otherwise minimal pipeline changes." },
       "layer2s": { "impact": "", "description": "Optional adoption. L2s without matching consensus can ignore; compatibility unaffected unless they choose to implement equivalent semantics." },
       "stakersNodes": { "impact": "", "description": "Operationally transparent; validators simply run upgraded clients. No new configuration or monitoring beyond standard client upgrades." },

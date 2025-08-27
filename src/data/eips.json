@@ -2123,7 +2123,7 @@
     "id": 7979,
     "title": "EIP-7979: Call and Return Opcodes for the EVM",
     "status": "Draft",
-    "description": "Introduction of new opcodes in the EVM to enhance function calls and returns, improving security and efficiency.",
+    "description": "The smallest possible change to the EVM to support subroutine calls and returns.",
     "author": "Greg Colvin (@gcolvin)",
     "type": "Standards Track",
     "category": "Core",
@@ -2136,7 +2136,7 @@
         "layer": "EL"
       }
     ],
-    "laymanDescription": "Improves EVM performance and security by allowing smart contracts to call and return functions more effectively.",
+    "laymanDescription": "Introduces instructions to call and return from subroutines, which are currently missing from the EVM.",
     "stakeholderImpacts": {
       "endUsers": { "description": "Increased security in smart contract executions." },
       "appDevs": { "description": "Streamlined development process for contract interoperability." },
@@ -2148,10 +2148,11 @@
       "elClients": { "description": "Improved execution efficiency for contract interactions." }
     },
     "benefits": [
-      "Enables more efficient smart contract interactions, enhancing overall network performance.",
-      "Reduces potential for code vulnerabilities with improved call and return mechanics.",
-      "Allows for better static analysis and validation of smart contracts.",
-      "Maintains backward compatibility, enabling a smoother transition for developers."
+      "Makes linear-time static analysis and transformation of EVM code possible."
+      "Can make formal verification of EVM code radically more efficient."
+      "Can make linear-time compilers of EVM code possible, including one-pass JITs and compilers to RISC-V."
+      "Can validate that deployed code cannot execute invalid instructions, jump to invalid locations, or misuse the stack."
+      "Maintains backward compatibility, enabling a smoother transition for tools and developers."
     ]
   },
   {

@@ -2135,23 +2135,23 @@
         "layer": "EL"
       }
     ],
-    "laymanDescription": "Introduces instructions to call and return from subroutines, which are currently missing from the EVM.",
+    "laymanDescription": "Introduces instructions to call and return from subroutines, which are missing from the EVM.  This lets compilers generate code with static control flow, which allows for more performant clients and quadradictally more efficient static analysis tools",
     "stakeholderImpacts": {
-      "endUsers": { "description": "Increased security in smart contract executions." },
-      "appDevs": { "description": "Streamlined development process for contract interoperability." },
-      "walletDevs": { "description": "Enhanced wallet capabilities for managing calls and returns." },
-      "toolingInfra": { "description": "Tooling updates required to support new opcode functionalities." },
-      "layer2s": { "description": "Improved interaction efficiency for Layer 2 solutions." },
-      "stakersNodes": { "description": "Reduced complexity in managing transaction flows." },
-      "clClients": { "description": "Better performance optimizations across clients." },
-      "elClients": { "description": "Improved execution efficiency for contract interactions." }
+      "endUsers": { "description": "Increased security and more performant smart contract execution." },
+      "appDevs": { "description": "Better tools.  Especially, better static analysis and formal verification." },
+      "walletDevs": { "description": "No direct impact" },
+      "toolingInfra": { "description": "Compilers must produce static, validated EVM code." },
+      "layer2s": { "description": "Some Layer 2 and EVM-compatible chains could benefit from more performant client." },
+      "stakersNodes": { "description": "No direct impact, but enables more clients to implement performance gains" },
+      "clClients": { "description": "No changes required for consensus layer implementations." },
+      "elClients": { "description": "Implementation of the instructions and validation is straightforward, and clients can better optimize their execution of validated code." }
     },
     "benefits": [
-      "Makes linear-time static analysis and transformation of EVM code possible.",
-      "Can make formal verification of EVM code radically more efficient.",
-      "Can make linear-time compilers of EVM code possible, including one-pass JITs and compilers to RISC-V.",
-      "Can validate that deployed code cannot execute invalid instructions, jump to invalid locations, or misuse the stack.",
-      "Maintains backward compatibility, enabling a smoother transition for tools and developers."
+      "Makes static EVM control flow possible, which static analysis people have been requesting for many years.",
+      "Static control flow can make static analysis and formal verification of EVM code quadratically more efficient.",
+      "Static control flow makes linear-time translators of EVM code possible, including one-pass compilers to machine code and RISC-V.",
+      "Clients can validate that deployed code cannot execute invalid instructions, jump to invalid locations, or misuse the stack.",
+      "Maintains backwards compatibility, enabling a smooth transition.  Tools and developers can take up the new features as they become available."
     ]
   },
   {

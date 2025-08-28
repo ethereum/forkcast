@@ -63,7 +63,7 @@ const TIERS: Tier[] = [
   },
 ];
 
-const TiermakerPage: React.FC = () => {
+const RankPage: React.FC = () => {
   const navigate = useNavigate();
   const { trackLinkClick, trackEvent } = useAnalytics();
   const [items, setItems] = useState<TierItem[]>([]);
@@ -79,7 +79,8 @@ const TiermakerPage: React.FC = () => {
   // Initialize with Glamsterdam headliner EIPs
   useEffect(() => {
     const glamsterdamHeadliners = eipsData
-      .filter((eip) => isHeadliner(eip, "glamsterdam"))
+      .filter((eip) => eip.forkRelationships.some((fork) => fork.forkName.toLowerCase() === "glamsterdam" && fork.status === "Proposed"))
+      .filter((eip) => !isHeadliner(eip, "glamsterdam"))
       .map((eip) => ({
         id: `eip-${eip.id}`,
         eip,
@@ -170,17 +171,19 @@ const TiermakerPage: React.FC = () => {
       return;
     }
 
+    const scale = 2;
+
     // Track the image download event
     trackEvent("Tier Maker Download Image", {
       rankedCount: rankedItems.length,
     });
 
     // Canvas dimensions
-    const canvasWidth = 540;
-    const cardHeight = 36;
-    const cardGap = 6;
+    const canvasWidth = 540 * scale;
+    const cardHeight = 36 * scale;
+    const cardGap = 6 * scale;
     const canvasHeight =
-      60 +
+      60 * scale +
       TIERS.reduce((acc, tier) => {
         const count = getItemsInTier(tier.id).length;
         return acc + Math.max(1, count) * (cardHeight + cardGap);
@@ -196,7 +199,7 @@ const TiermakerPage: React.FC = () => {
     ctx.fillStyle = "#1e293b";
     ctx.fillRect(0, 0, canvas.width, canvas.height);
 
-    const bandWidth = 50;
+    const bandWidth = 50 * scale;
     // Tier band and row background color config
     const bandColors: { [key: string]: string } = {
       S: "#f87171", // red-350ish
@@ -212,13 +215,13 @@ const TiermakerPage: React.FC = () => {
       C: "#d1fae5", // green-100
       D: "#e0f2fe", // sky-100
     };
-    const blockPadX = 4;
-    const blockRadius = 12;
-    const leftPad = bandWidth + 8;
-    const cardWidth = canvasWidth - leftPad - 8;
+    const blockPadX = 4 * scale;
+    const blockRadius = 12 * scale;
+    const leftPad = bandWidth + 8 * scale;
+    const cardWidth = canvasWidth - leftPad - 4 * scale;
 
     // Draw tiers and cards
-    let y = 6;
+    let y = 6 * scale;
     TIERS.forEach((tier) => {
       const itemsInTier = getItemsInTier(tier.id);
       const tierHeight =
@@ -226,7 +229,7 @@ const TiermakerPage: React.FC = () => {
       // Draw background block for the tier
       ctx.save();
       ctx.beginPath();
-      ctx.rect(blockPadX, y, cardWidth + leftPad, tierHeight);
+      ctx.rect(blockPadX, y, canvasWidth - blockPadX, tierHeight);
       ctx.closePath();
       ctx.fillStyle = rowColors[tier.id] || "#f1f5f9";
       ctx.fill();
@@ -239,8 +242,9 @@ const TiermakerPage: React.FC = () => {
       // Draw tier letter centered in band
       ctx.save();
       ctx.fillStyle = "#18181b";
-      ctx.font =
-        '24px -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif';
+      ctx.font = `${
+        24 * scale
+      }px -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif`;
       ctx.textAlign = "center";
       ctx.textBaseline = "middle";
       ctx.fillText(tier.id, bandWidth / 2, y + tierHeight / 2);
@@ -256,7 +260,8 @@ const TiermakerPage: React.FC = () => {
             cardWidth,
             cardHeight,
             blockRadius,
-            item.eip
+            item.eip,
+            scale
           );
         });
       }
@@ -264,22 +269,54 @@ const TiermakerPage: React.FC = () => {
     });
 
     // Add footer: two lines
-    const footerY1 = canvas.height - 36;
-    const footerY2 = canvas.height - 18;
+    const footerY1 = canvas.height - 36 * scale;
+    const footerY2 = canvas.height - 18 * scale;
     ctx.save();
+
+    const today = new Date();
+    const dateStamp = today.toLocaleDateString("en-US", {
+      year: "numeric",
+      month: "short",
+      day: "numeric",
+    });
+
     // Line 1: very light
-    ctx.font =
-      '13px -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif';
-    ctx.textAlign = "center";
+    ctx.font = `${
+      13 * scale
+    }px -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif`;
     ctx.textBaseline = "middle";
+
+    // Title in the center with date
+    const titleText = "Glamsterdam EIP Rankings";
+    const titleFont = `${13 * scale}px -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif`;
+    const dateFont = `${13 * scale}px -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif`;
+
+    ctx.font = titleFont;
+    const titleWidth = ctx.measureText(titleText).width;
+    ctx.font = dateFont;
+    const dateWidth = ctx.measureText(` • ${dateStamp}`).width;
+    const titleTotalWidth = titleWidth + dateWidth;
+
+    let titleStartX = canvas.width / 2 - titleTotalWidth / 2;
+
+    // Draw title
+    ctx.font = titleFont;
+    ctx.textAlign = "left";
     ctx.fillStyle = "#f1f5f9"; // very light
-    ctx.fillText("Glamsterdam Headliner Rankings", canvas.width / 2, footerY1);
-    // Line 2: 'Make your own at forkcast.org' with 'forkcast' in bold purple
+    ctx.fillText(titleText, titleStartX, footerY1);
+
+    // Draw date
+    ctx.font = dateFont;
+    ctx.fillStyle = "#f1f5f9";
+    ctx.fillText(` • ${dateStamp}`, titleStartX + titleWidth, footerY1);
+
+    // Line 2: 'Make your own at forkcast.org/rank'
     const prefix = "Make your own at ";
     const logo = "forkcast";
     const suffix = ".org/rank";
-    ctx.font =
-      '13px -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif';
+    ctx.font = `${
+      13 * scale
+    }px -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif`;
     const prefixWidth = ctx.measureText(prefix).width;
     const logoWidth = ctx.measureText(logo).width;
     const suffixWidth = ctx.measureText(suffix).width;
@@ -287,23 +324,14 @@ const TiermakerPage: React.FC = () => {
     let startX = canvas.width / 2 - totalWidth / 2;
     // Draw prefix
     ctx.fillStyle = "#94a3b8"; // darker gray
-    ctx.font =
-      '13px -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif';
-    ctx.fillText(prefix, startX + prefixWidth / 2, footerY2);
+    ctx.textAlign = "left";
+    ctx.fillText(prefix, startX, footerY2);
     // Draw logo
-    ctx.font =
-      '13px -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif';
     ctx.fillStyle = "#94a3b8"; // same gray
-    ctx.fillText(logo, startX + prefixWidth + logoWidth / 2, footerY2);
+    ctx.fillText(logo, startX + prefixWidth, footerY2);
     // Draw suffix
-    ctx.font =
-      '13px -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif';
     ctx.fillStyle = "#94a3b8"; // same gray
-    ctx.fillText(
-      suffix,
-      startX + prefixWidth + logoWidth + suffixWidth / 2,
-      footerY2
-    );
+    ctx.fillText(suffix, startX + prefixWidth + logoWidth, footerY2);
     ctx.restore();
 
     canvas.toBlob((blob) => {
@@ -311,7 +339,7 @@ const TiermakerPage: React.FC = () => {
         const url = URL.createObjectURL(blob);
         const a = document.createElement("a");
         a.href = url;
-        a.download = "glamsterdam-headliner-rankings.png";
+        a.download = "glamsterdam-eip-rankings.png";
         document.body.appendChild(a);
         a.click();
         document.body.removeChild(a);
@@ -328,7 +356,8 @@ const TiermakerPage: React.FC = () => {
     w: number,
     h: number,
     r: number,
-    eip: EIP | null
+    eip: EIP | null,
+    scale: number
   ) {
     // Card background
     ctx.save();
@@ -345,14 +374,14 @@ const TiermakerPage: React.FC = () => {
     ctx.closePath();
     ctx.fillStyle = "#fff";
     ctx.shadowColor = "rgba(0,0,0,0.10)";
-    ctx.shadowBlur = 3;
-    ctx.shadowOffsetY = 1;
+    ctx.shadowBlur = 3 * scale;
+    ctx.shadowOffsetY = 1 * scale;
     ctx.fill();
     ctx.restore();
     // Card border
     ctx.save();
     ctx.strokeStyle = "#e5e7eb";
-    ctx.lineWidth = 1;
+    ctx.lineWidth = 1 * scale;
     ctx.beginPath();
     ctx.moveTo(x + r, y);
     ctx.lineTo(x + w - r, y);
@@ -370,55 +399,58 @@ const TiermakerPage: React.FC = () => {
     // Vertically center content
     const centerY = y + h / 2;
     // Compact padding
-    const padLeft = 8;
+    const padLeft = 8 * scale;
     let cursorX = x + padLeft;
     // EIP number
     ctx.save();
-    ctx.font =
-      'bold 13px "SF Mono", Monaco, "Cascadia Code", "Roboto Mono", Consolas, "Courier New", monospace';
+    ctx.font = `bold ${
+      13 * scale
+    }px "SF Mono", Monaco, "Cascadia Code", "Roboto Mono", Consolas, "Courier New", monospace`;
     ctx.fillStyle = "#64748b";
     ctx.textAlign = "left";
     ctx.textBaseline = "middle";
     ctx.fillText(`EIP-${eip.id}`, cursorX, centerY);
-    cursorX += ctx.measureText(`EIP-${eip.id}`).width + 6;
+    cursorX += ctx.measureText(`EIP-${eip.id}`).width + 6 * scale;
     ctx.restore();
     // Layer badge
     const layer = getHeadlinerLayer(eip, "glamsterdam");
     if (layer) {
       ctx.save();
-      ctx.font =
-        'bold 11px -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif';
+      ctx.font = `bold ${
+        11 * scale
+      }px -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif`;
       ctx.textAlign = "left";
       ctx.textBaseline = "middle";
       // Badge background
-      const badgeW = 28;
-      const badgeH = 18;
+      const badgeW = 28 * scale;
+      const badgeH = 18 * scale;
       if (layer === "EL") {
-        ctx.fillStyle = "#dbeafe"; // bg-blue-100
+        ctx.fillStyle = "#e0e7ff"; // bg-indigo-100
         ctx.fillRect(cursorX, centerY - badgeH / 2, badgeW, badgeH);
-        ctx.fillStyle = "#2563eb"; // text-blue-700
+        ctx.fillStyle = "#4338ca"; // text-indigo-700
       } else {
-        ctx.fillStyle = "#dcfce7"; // bg-green-100
+        ctx.fillStyle = "#ccfbf1"; // bg-teal-100
         ctx.fillRect(cursorX, centerY - badgeH / 2, badgeW, badgeH);
-        ctx.fillStyle = "#059669"; // text-green-700
+        ctx.fillStyle = "#0f766e"; // text-teal-700
       }
       // Center text in badge
       const textWidth = ctx.measureText(layer).width;
       ctx.fillText(layer, cursorX + (badgeW - textWidth) / 2, centerY);
       ctx.restore();
-      cursorX += badgeW + 8;
+      cursorX += badgeW + 8 * scale;
     } else {
-      cursorX += 8;
+      cursorX += 8 * scale;
     }
     // Title
     ctx.save();
-    ctx.font =
-      'bold 15px -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif';
+    ctx.font = `bold ${
+      15 * scale
+    }px -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif`;
     ctx.fillStyle = "#18181b";
     ctx.textAlign = "left";
     ctx.textBaseline = "middle";
     let title = getLaymanTitle(eip);
-    const maxWidth = w - (cursorX - x) - 8;
+    const maxWidth = w - (cursorX - x) - 8 * scale;
     while (ctx.measureText(title).width > maxWidth) {
       title = title.slice(0, -1);
     }
@@ -449,7 +481,7 @@ const TiermakerPage: React.FC = () => {
               ← Back to Glamsterdam
             </button>
             <h1 className="font-semibold text-slate-900 dark:text-slate-100 text-center truncate max-w-full overflow-hidden text-base sm:text-xl">
-              Glamsterdam Headliner Tier Maker
+              Glamsterdam EIP Tier Maker
             </h1>
             <div className="sm:absolute sm:right-0 sm:top-1/2 sm:-translate-y-1/2">
               <ThemeToggle />
@@ -466,19 +498,20 @@ const TiermakerPage: React.FC = () => {
               <h3 className="text-sm font-medium text-slate-900 dark:text-slate-100 mb-2">
                 What is this?
               </h3>
-              <p className="text-xs text-slate-600 dark:text-slate-300 leading-relaxed mb-2">
-                Ethereum's Glamsterdam network upgrade aims to include one
-                consensus layer (CL) EIP and one execution layer (EL) EIP as its
-                main features. Users, app developers, core developers, and any
-                other stakeholders are invited to voice their support for their
-                preferences.
+              <p className="text-xs text-slate-600 dark:text-slate-300 leading-relaxed mb-4">
+                Glamsterdam headliner proposals have been agreed upon and
+                non-headliner EIPs can now be proposed. Users, app developers,
+                core developers, and any other stakeholders are invited to
+                voice their support for their preferences.
+              </p>
+              <p className="text-xs text-slate-600 dark:text-slate-300 leading-relaxed mb-4">
+                Drag and drop (desktop) or tap-to-assign (mobile) the EIP proposals
+                into tiers. S-tier represents your highest priority proposals,
+                while D-tier represents your lowest priority. The list of proposals
+                is long; rank as many or as few as you like.
               </p>
               <p className="text-xs text-slate-600 dark:text-slate-300 leading-relaxed">
-                Drag and drop (desktop) or tap-to-assign (mobile) the
-                Glamsterdam headliner proposals into tiers. S-tier represents
-                your highest priority proposals, while D-tier represents your
-                lowest priority. Download the image to share your rankings and
-                start a conversation.{" "}
+                Download the image to share your rankings and start a conversation.{" "}
                 <a
                   href="https://forkcast.org/upgrade/glamsterdam"
                   className="text-purple-600 hover:text-purple-700 dark:text-purple-400 dark:hover:text-purple-300"
@@ -487,11 +520,36 @@ const TiermakerPage: React.FC = () => {
                 </a>
                 .
               </p>
+              <div className="mt-4 flex items-start gap-2.5 rounded-lg border border-slate-200 bg-slate-100 p-3 dark:border-slate-700 dark:bg-slate-800">
+                <div className="flex-shrink-0 pt-0.5">
+                  <svg
+                    className="h-4 w-4 text-slate-500 dark:text-slate-400"
+                    xmlns="http://www.w3.org/2000/svg"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    strokeWidth={2}
+                    stroke="currentColor"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      d="M11.25 11.25l.041-.02a.75.75 0 011.063.852l-.708 2.836a.75.75 0 001.063.852l.041-.021M21 12a9 9 0 11-18 0 9 9 0 0118 0zm-9-3.75h.008v.008H12v-.008z"
+                    />
+                  </svg>
+                </div>
+                <p className="text-xs leading-relaxed text-slate-600 dark:text-slate-300">
+                  The deadline for submissions has not yet been set, so more
+                  EIPs may be proposed.
+                </p>
+              </div>
             </div>
             <div className="rounded-lg bg-white shadow border border-slate-200 dark:bg-slate-800 dark:border-slate-700 flex flex-col overflow-hidden p-0">
               {/* Meme-style header */}
-              <div className="bg-slate-800 px-4 py-3">
+              <div className="bg-slate-800 px-4 py-3 flex items-center justify-between">
                 <h3 className="text-lg font-bold text-white">Your Rankings</h3>
+                <span className="text-sm font-mono text-slate-400">
+                  forkcast.org/rank
+                </span>
               </div>
               {/* Tier rows, flush, no spacing */}
               {TIERS.map((tier) => (
@@ -570,8 +628,8 @@ const TiermakerPage: React.FC = () => {
                                       item.eip,
                                       "glamsterdam"
                                     ) === "EL"
-                                      ? "bg-blue-100 text-blue-700 dark:bg-blue-900/20 dark:text-blue-300"
-                                      : "bg-green-100 text-green-700 dark:bg-green-900/20 dark:text-green-300"
+                                      ? "bg-indigo-100 text-indigo-700 dark:bg-indigo-900/20 dark:text-indigo-300"
+                                      : "bg-teal-100 text-teal-700 dark:bg-teal-900/20 dark:text-teal-300"
                                   }`}
                                 >
                                   {getHeadlinerLayer(item.eip, "glamsterdam")}
@@ -630,7 +688,7 @@ const TiermakerPage: React.FC = () => {
           <div>
             <div className="flex items-center justify-between mb-4">
               <h3 className="text-lg font-medium text-slate-900 dark:text-slate-100">
-                Unassigned Proposals
+                EIPs Proposed for Inclusion (PFI)
               </h3>
               {items.filter((item) => item.tier !== null).length > 0 && (
                 <div className="text-xs text-slate-500 dark:text-slate-400 bg-slate-100 dark:bg-slate-700 px-2 py-1 rounded">
@@ -689,8 +747,8 @@ const TiermakerPage: React.FC = () => {
                       <span
                         className={`px-1 py-0.5 text-xs font-medium rounded ${
                           getHeadlinerLayer(item.eip, "glamsterdam") === "EL"
-                            ? "bg-blue-100 text-blue-700 dark:bg-blue-900/20 dark:text-blue-300"
-                            : "bg-green-100 text-green-700 dark:bg-green-900/20 dark:text-green-300"
+                            ? "bg-indigo-100 text-indigo-700 dark:bg-indigo-900/20 dark:text-indigo-300"
+                            : "bg-teal-100 text-teal-700 dark:bg-teal-900/20 dark:text-teal-300"
                         }`}
                       >
                         {getHeadlinerLayer(item.eip, "glamsterdam")}
@@ -760,4 +818,4 @@ const TiermakerPage: React.FC = () => {
   );
 };
 
-export default TiermakerPage;
+export default RankPage;

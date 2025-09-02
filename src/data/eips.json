@@ -27,7 +27,7 @@
     "category": "Core",
     "createdDate": "2020-08-25",
     "discussionLink": "https://ethereum-magicians.org/t/the-case-for-including-code-chunking-eip-2926-in-glamsterdam/25089",
-    "reviewer": "bot",
+    "reviewer": "expert",
     "forkRelationships": [
       {
         "forkName": "Glamsterdam",
@@ -897,7 +897,7 @@
     "category": "Core",
     "createdDate": "2023-04-14",
     "discussionLink": "https://ethereum-magicians.org/t/eip-6873-preimage-retention-in-the-fork-preceding-the-verge/15830",
-    "reviewer": "bot",
+    "reviewer": "staff",
     "forkRelationships": [
       {
         "forkName": "Glamsterdam",
@@ -972,7 +972,7 @@
     "category": "Core",
     "createdDate": "2024-03-26",
     "discussionLink": "https://ethereum-magicians.org/t/eip-7667-raise-gas-costs-of-hash-functions/19446",
-    "reviewer": "bot",
+    "reviewer": "staff",
     "forkRelationships": [
       {
         "forkName": "Glamsterdam",
@@ -1056,7 +1056,7 @@
     "category": "Core",
     "createdDate": "2024-12-06",
     "discussionLink": "https://ethereum-magicians.org/t/eip-7843-slotnum-opcode/22234",
-    "reviewer": "bot",
+    "reviewer": "staff",
     "forkRelationships": [
       {
         "forkName": "Fusaka",
@@ -1068,7 +1068,7 @@
         "layer": "EL"
       }
     ],
-    "laymanDescription": "Let contracts directly read the current slot number cheaply, removing timestamp math and reducing breakage if Ethereum’s slot duration changes later.",
+    "laymanDescription": "Let contracts directly read the current slot number cheaply, removing timestamp math and reducing breakage if Ethereum's slot duration changes later.",
     "northStars": ["Improve UX"],
     "northStarAlignment": {
       "improveUX": { "description": "Enables more reliable time-based smart contracts and better coordination between consensus and execution layers." }
@@ -1076,10 +1076,10 @@
     "stakeholderImpacts": {
       "endUsers": { "description": "Indirectly benefits from more reliable app timing if slot duration changes in future networks." },
       "appDevs": { "description": "Simplifies reading beacon time onchain, avoiding timestamp math and EIP-4788 proofs; fewer assumptions about the slot schedule." },
-      "walletDevs": { "description": "Little to no impact; wallets typically don’t consume slot numbers. Optional UI or simulation support could display it." },
+      "walletDevs": { "description": "Little to no impact; wallets typically don't consume slot numbers. Optional UI or simulation support could display it." },
       "toolingInfra": { "description": "Block explorers, RPC simulators, and debuggers may add opcode support and parse the new header slot_number field." },
       "layer2s": { "description": "Optional support; helpful if mirroring L1 semantics. Not required unless chains want SLOTNUM compatibility and header field parity." },
-      "stakersNodes": { "description": "No operational changes expected; clients handle computation and propagation. Node operators shouldn’t need configuration or workflow updates." },
+      "stakersNodes": { "description": "No operational changes expected; clients handle computation and propagation. Node operators shouldn't need configuration or workflow updates." },
       "clClients": { "description": "Must compute slot_number and include it in headers and engine API payloads; aligns with existing consensus-layer slot calculations." },
       "elClients": { "description": "Implement new opcode, validate header field, expose via RPC, and price gas; updates required across execution clients." }
     },
@@ -1139,6 +1139,42 @@
       "Removal of trust assumptions on off-protocol closed source software."
     ]
   },
+  {
+    "id": 7778,
+    "title": "EIP-7778: Block Gas Limit Accounting without Refunds",
+    "status": "Draft",
+    "description": "Prevents block gas limit circumvention by excluding refunds from block accounting; preserves user transaction incentives semantics.",
+    "author": "Ben Adams (@benaadams), Toni Wahrstätter (@nerolation)",
+    "type": "Standards Track",
+    "category": "Core",
+    "createdDate": "2024-10-01",
+    "discussionLink": "https://ethereum-magicians.org/t/eip-7778-prevent-block-gas-smuggling/21234",
+    "reviewer": "staff",
+    "forkRelationships": [
+
+    ],
+    "laymanDescription": "Closes a loophole where gas refunds let blocks pack extra work. Refunds still reduce user costs, but don't shrink the block's counted gas. Aligns block size with real EVM work and reduces worst-case block-size variance.",
+    "northStars": ["Scale L1"],
+    "northStarAlignment": {
+      "scaleL1": { "description": "Reduces worst-case block size and variance, improving throughput predictability; does not increase average capacity or lower fees network-wide." }
+    },
+    "stakeholderImpacts": {
+      "endUsers": { "description": "No substantial direct impact; transactions execute as before. Refunds still discount user costs but no longer shrink counted block gas." },
+      "appDevs": { "description": "Contracts generally unchanged. Only strategies exploiting large refunds lose ability to help pack extra computation into blocks via accounting quirks." },
+      "walletDevs": { "description": "No changes required. Gas estimation, fee math, and refund display remain the same at the transaction level for users today." },
+      "toolingInfra": { "description": "Block builders, simulators, and analyzers should enforce and reflect gross block-gas accounting; update tests and dashboards to avoid refund-based variance." },
+      "layer2s": { "description": "Minimal direct impact. Sequencers mirroring L1 semantics may adopt same accounting; otherwise, no changes to rollup fee or capacity models." },
+      "stakersNodes": { "description": "Lower variance in execution work per block improves predictability and reduces pathological worst-case loads; efficiency gains from smoother resource usage." },
+      "clClients": { "description": "No consensus-layer changes expected; negligible impact beyond observing more consistent block execution times on the execution layer during validation overhead." },
+      "elClients": { "description": "Must implement block accounting change and tests; ensure refunds don't reduce block-gas used. Otherwise limited complexity and compatibility concerns overall." }
+    },
+    "benefits": [
+      "Aligns block gas with actual EVM work.",
+      "Prevents refund-based circumvention of block limits.",
+      "Reduces worst-case block size variance.",
+      "Improves node execution predictability and safety."
+    ]
+  },    
   {
     "id": 7782,
     "title": "EIP-7782: Reduce Block Latency (6-second slots)",
@@ -1241,7 +1277,7 @@
     "category": "Core",
     "createdDate": "2024-09-01",
     "discussionLink": "https://ethereum-magicians.org/t/eip-7919-pureth-provable-rpc-responses/21180",
-    "reviewer": "bot",
+    "reviewer": "staff",
     "forkRelationships": [
       {
         "forkName": "Fusaka",
@@ -1924,7 +1960,7 @@
     "category": "Core",
     "createdDate": "2024-08-13",
     "discussionLink": "https://ethereum-magicians.org/t/eip-7791-gas2eth-opcode/21418",
-    "reviewer": "bot",
+    "reviewer": "staff",
     "forkRelationships": [
       {
         "forkName": "Fusaka",
@@ -1963,7 +1999,7 @@
     "category": "Core",
     "createdDate": "2024-11-18",
     "discussionLink": "https://ethereum-magicians.org/t/eip-7819-create-delegate/21763",
-    "reviewer": "bot",
+    "reviewer": "expert",
     "forkRelationships": [
       {
         "forkName": "Fusaka",
@@ -2064,7 +2100,7 @@
     "category": "Core",
     "createdDate": "2025-03-05",
     "discussionLink": "https://ethereum-magicians.org/t/remove-initcode-size-limit/23066",
-    "reviewer": "bot",
+    "reviewer": "staff",
     "forkRelationships": [
       {
         "forkName": "Fusaka",
@@ -2125,7 +2161,7 @@
     "category": "Core",
     "createdDate": "2025-03-27",
     "discussionLink": "https://ethereum-magicians.org/t/eip-linearize-memory-costing/23290",
-    "reviewer": "bot",
+    "reviewer": "staff",
     "forkRelationships": [
       {
         "forkName": "Glamsterdam",

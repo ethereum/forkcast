@@ -1174,7 +1174,7 @@
       "Reduces worst-case block size variance.",
       "Improves node execution predictability and safety."
     ]
-  },    
+  },
   {
     "id": 7782,
     "title": "EIP-7782: Reduce Block Latency (6-second slots)",
@@ -2340,7 +2340,7 @@
     "id": 7997,
     "title": "EIP-7997: Deterministic Factory Predeploy",
     "status": "Draft",
-    "description": "A minimal `CREATE2` factory usable across EVM chains.",
+    "description": "A minimal `CREATE2` factory shared by EVM chains.",
     "author": "Francisco Giordano (@frangio)",
     "type": "Standards Track",
     "category": "Core",
@@ -2354,26 +2354,26 @@
         "layer": "EL"
       }
     ],
-    "laymanDescription": "Enables developers to create smart contracts at the same address across different Ethereum-compatible blockchains",
+    "laymanDescription": "Enables developers to deploy smart contracts at identical addresses across EVM chains.",
     "northStars": ["Improve UX"],
     "northStarAlignment": {
-      "improveUX": { "description": "Directly supports projects building on Ethereum without any external mechanisms." }
+      "improveUX": { "description": "Complements the rollup-centric roadmap with a native and reliable mechanism for deployment of multi-chain contracts, including smart contract accounts." }
     },
     "stakeholderImpacts": {
-      "endUsers": { "description": "Enhance multi-chain interoperability" },
-      "appDevs": { "description": "Simplifies wallet integration and user experience" },
-      "walletDevs": { "description": "Reduces complexity in managing addresses." },
-      "toolingInfra": { "description": "Will need to support streamlining the deployment process." },
-      "layer2s": { "description": "Leverage deterministic contract addresses will enable more seamless cross-chain interaction" },
-      "stakersNodes": { "description": "Reduced workload from managing distinct contract addresses" },
-      "clClients": { "description": "Better optimization of consensus rules across chains." },
-      "elClients": { "description": "More effecient contract execution." }
+      "endUsers": { "description": "Consistent addresses across chains reduce cognitive load and potential for error." },
+      "appDevs": { "description": "Simplifies deployment of apps to multiple chains and development of apps that use cross-chain interop." },
+      "walletDevs": { "description": "Provides a native solution to the problem of deploying multi-chain smart contract accounts" },
+      "toolingInfra": { "description": "Tools will be able to replace its default CREATE2 factory with the canonical one, or one deployed from it." },
+      "layer2s": { "description": "Need to adopt the EIP to make the factory widely available and materialize benefits for developers." },
+      "stakersNodes": { "description": "No impact." },
+      "clClients": { "description": "No consensus changes expected." },
+      "elClients": { "description": "Need to implement a new kind of system contract that is not deployed via transaction but is not a precompile either. Conceptually simple but new in the EL." }
     },
     "benefits": [
-      "Simplifies multi-chain contract deployment by ensuring consistency in contract addresses across different blockchains.",
-      "Reduces the complexity of user interfaces and SDKs, creating a better developer experience and user engagement.",
-      "Enhances account abstraction by allowing smart contracts to be effectively utilized across multiple chains.",
-      "Provides a standardized method for deterministic contract creation, improving security and reliability in deployment processes."
+      "Improves UX and mitigates risk of loss of funds for users of smart contract accounts.",
+      "Simplifies multi-chain and cross-chain smart contracts by removing the need for per-chain parameterization or mappings.",
+      "Reduces the number of addresses that multi-chain applications have to distribute.",
+      "Addresses limitations of fragile workarounds currently in use by developers for this need, providing a native solution instead."
     ]
   },
   {

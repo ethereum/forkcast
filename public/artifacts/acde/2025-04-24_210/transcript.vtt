@@ -1,0 +1,2638 @@
+WEBVTT
+
+1
+00:03:27.240 --> 00:03:30.330
+Justin Florentine (Besu): Good morning. Ethereum.
+
+2
+00:03:37.060 --> 00:03:38.410
+Tim Beiko: Good morning!
+
+3
+00:04:15.210 --> 00:04:16.209
+Maksim | Nethermind: Okay, you guys.
+
+4
+00:04:29.520 --> 00:04:30.150
+Saulius Grigaitis | Grandine: No.
+
+5
+00:04:46.490 --> 00:04:51.190
+Tim Beiko: Oh, let's move over in like a minute or so we'll get started.
+
+6
+00:05:30.140 --> 00:05:32.680
+Tim Beiko: Okay, Josh, you want to move us to the stream.
+
+7
+00:05:39.680 --> 00:05:40.770
+Josh Davis: You're live.
+
+8
+00:05:41.500 --> 00:05:42.660
+Tim Beiko: Thank you very much.
+
+9
+00:05:43.333 --> 00:06:03.370
+Tim Beiko: Welcome everyone to Acde number 2 10. Briefly touch on Petra's day. Hopefully. Nothing has come up since the announcement, and then a lot of final Fusaka discussions. Around some some tweaks to the scope.
+
+10
+00:06:04.780 --> 00:06:11.529
+Tim Beiko: And to wrap up we have some stuff on the history expiry to discuss.
+
+11
+00:06:12.270 --> 00:06:26.660
+Tim Beiko: but yeah, to kick us off. So we announced the Petra client releases yesterday on the Theory foundation blog. If you haven't seen the announcement, I'll post it in the chat. It's also linked in the agenda.
+
+12
+00:06:26.770 --> 00:06:37.019
+Tim Beiko: Spectra will be forking at Mainnet on May 7th at 10 0, 5 utc, this is at the start of epoch
+
+13
+00:06:37.020 --> 00:06:59.450
+Tim Beiko: 3, 6, 4, 0 3, 2, so if you are listening to this, and you have not. Updated your client yet. You should go to this blog post and do so. Yeah, it has all the latest releases. There's also some overview of the different features. And then there's a watch party that is scheduled for the fork that's listed in the blog post.
+
+14
+00:07:00.730 --> 00:07:06.920
+Tim Beiko: Anyone have any updates or concerns, or anything around Petra.
+
+15
+00:07:11.010 --> 00:07:11.990
+Tim Beiko: Oh, yeah, part of this.
+
+16
+00:07:11.990 --> 00:07:13.799
+Parithosh Jayanthi: We're yeah. Go ahead.
+
+17
+00:07:14.540 --> 00:07:28.011
+Barnabas: Yeah. So in the past couple of weeks I've been testing the Mev workflow for Petra. And there has been quite some bugs and fixes coming to the relay, the Mev. Boost and to the or builder as well.
+
+18
+00:07:28.530 --> 00:07:35.450
+Barnabas: And so far it has gained a bunch of improvements in the past couple of weeks, and
+
+19
+00:07:35.610 --> 00:07:40.250
+Barnabas: we have solid blood production now through Mv. Boost.
+
+20
+00:07:42.160 --> 00:07:47.029
+Tim Beiko: Amazing. Thank you very much, Perry. Is that what you were gonna share as well.
+
+21
+00:07:48.591 --> 00:07:55.549
+Parithosh Jayanthi: No. Independently, we're also just using all the client releases the latest ones to make sure that all the
+
+22
+00:07:55.850 --> 00:08:10.159
+Parithosh Jayanthi: typical code paths, including East as well as validator lifecycle tests are passing. So far they seem good. The only test left is Yale triggered exits and a few other ones. We're still adding.
+
+23
+00:08:10.810 --> 00:08:18.420
+Parithosh Jayanthi: and once that's done, I think early next week we'll plan a Shadow fork, so we should have some information on that by Acd next week.
+
+24
+00:08:19.690 --> 00:08:21.130
+Tim Beiko: Awesome. Thanks.
+
+25
+00:08:24.580 --> 00:08:27.170
+Tim Beiko: Anything else on Petro.
+
+26
+00:08:32.070 --> 00:08:33.150
+Tim Beiko: Cool. Well.
+
+27
+00:08:33.270 --> 00:08:41.939
+Tim Beiko: yeah. Great work. Everyone getting the releases out. Hopefully, things go smoothly for the next 2 weeks, and on the actual upgrade.
+
+28
+00:08:41.940 --> 00:08:45.740
+Gary Schulte: But right here.
+
+29
+00:08:46.060 --> 00:08:46.600
+Tim Beiko: Cool.
+
+30
+00:08:47.050 --> 00:08:49.412
+Tim Beiko: Oh, sorry. I just muted you. Gary.
+
+31
+00:08:50.190 --> 00:08:54.526
+Tim Beiko: okay, sweet. Next up on the agenda. So Fusaka.
+
+32
+00:08:55.080 --> 00:09:07.140
+Tim Beiko: yeah. 1st of all, there was something to figure out on the Bpo forks configurations. So let's maybe start there. I don't know if Alex is on the call to
+
+33
+00:09:08.760 --> 00:09:10.589
+Tim Beiko: discuss this.
+
+34
+00:09:10.590 --> 00:09:12.690
+stokes: Yeah, I am.
+
+35
+00:09:13.452 --> 00:09:21.820
+stokes: It was mainly just a reminder to sort out the el configuration format for the Vpo eip.
+
+36
+00:09:22.140 --> 00:09:26.759
+stokes: I believe we have a configuration we like on the Cl. Side.
+
+37
+00:09:27.150 --> 00:09:32.930
+stokes: and I'm not sure if we've decided yet on the El side, what we want to do.
+
+38
+00:09:35.870 --> 00:09:38.830
+Tim Beiko: I haven't seen anything.
+
+39
+00:09:39.690 --> 00:09:51.190
+Tim Beiko: and so this is basically what we would add in the El to say at time, slot X, we raise the block counts to a time. Slot y. We raise the block counts to to be.
+
+40
+00:09:51.380 --> 00:09:52.240
+stokes: Right?
+
+41
+00:09:53.550 --> 00:09:58.820
+stokes: Yeah. There was a proposal somewhere. I'd have to go find it on discord.
+
+42
+00:09:59.150 --> 00:10:14.880
+Tim Beiko: And is there a reason why we shouldn't? So I know that on the Cl side, doing like quote, real hard forks is is quite complicated, and therefore we have this Ppo schedule. But is there a reason why the El shouldn't just treat these as like hard forks, and
+
+43
+00:10:15.010 --> 00:10:19.422
+Tim Beiko: use the Genesis or the the like. Yeah, for config files.
+
+44
+00:10:19.910 --> 00:10:22.630
+Tim Beiko: Oh, Marius, so you had your hand up.
+
+45
+00:10:25.130 --> 00:10:27.400
+MariusVanDerWijden: I think Felix also wanted to say something.
+
+46
+00:10:31.330 --> 00:10:35.910
+Tim Beiko: Oh, I think, Felix, we just hear you typing, but we can't hear you speaking.
+
+47
+00:10:35.910 --> 00:10:37.990
+MariusVanDerWijden: Okay, maybe he doesn't.
+
+48
+00:10:38.230 --> 00:10:42.605
+MariusVanDerWijden: But you guys can hear me. Right? Yeah, yeah. So
+
+49
+00:10:43.520 --> 00:10:53.730
+MariusVanDerWijden: From my point of view, it should definitely be scheduled like a normal fork on the El side. It makes no sense to invent another
+
+50
+00:10:53.850 --> 00:10:56.210
+MariusVanDerWijden: mechanism that can have
+
+51
+00:10:56.370 --> 00:11:04.829
+MariusVanDerWijden: other bugs. And and and it can have weird, like interplays with our normal fog timeline.
+
+52
+00:11:05.210 --> 00:11:07.750
+MariusVanDerWijden: I understand why the Ecl
+
+53
+00:11:07.930 --> 00:11:17.349
+MariusVanDerWijden: kind of needs to do it, but I would propose for the El to have them as normal folks that are normally scheduled with a new folk. Id. So we.
+
+54
+00:11:18.340 --> 00:11:21.940
+MariusVanDerWijden: similar to what we did with the with the glacier stuff.
+
+55
+00:11:23.360 --> 00:11:24.020
+Tim Beiko: Okay.
+
+56
+00:11:30.880 --> 00:11:38.380
+Tim Beiko: yes. Okay. So what? I guess what? Alex posted in the chat. I don't know how standard this is across clients, but it it gives a
+
+57
+00:11:39.050 --> 00:11:43.550
+Tim Beiko: overall picture like is that something el clients would be fine with?
+
+58
+00:11:44.910 --> 00:11:50.860
+Tim Beiko: Or if if any el client would have an issue, just adding this as a hard fork.
+
+59
+00:11:51.340 --> 00:11:56.140
+Tim Beiko: like like a like a difficulty bomb hard fork, and that's the time. Yeah, then.
+
+60
+00:11:56.875 --> 00:12:02.970
+Ben Adams: Yeah, I'm I'm sympathetic to Myris's point of view, but maybe it's just
+
+61
+00:12:03.070 --> 00:12:05.919
+Ben Adams: better not to invent something new when we already have.
+
+62
+00:12:06.560 --> 00:12:07.940
+Ben Adams: We're working to sit.
+
+63
+00:12:11.580 --> 00:12:12.850
+MariusVanDerWijden: Hello!
+
+64
+00:12:13.360 --> 00:12:17.439
+MariusVanDerWijden: Regarding regarding the proposal from that Alex posted.
+
+65
+00:12:18.196 --> 00:12:24.020
+MariusVanDerWijden: Yeah. The only thing I would change is to remove the timestamp, because this
+
+66
+00:12:24.120 --> 00:12:29.549
+MariusVanDerWijden: no real need to have the timestamp in the blob schedule because we have the timestamp for the
+
+67
+00:12:29.990 --> 00:12:31.790
+MariusVanDerWijden: for the normal folk already.
+
+68
+00:12:33.590 --> 00:12:44.095
+Tim Beiko: And I guess one thing that might be relevant here is after the Holeski stuff. We discussed this way to verify pair
+
+69
+00:12:44.720 --> 00:13:02.572
+Tim Beiko: parameterization of the clients for different forks. So this feels like it would be especially helpful here, like we should have a way to make sure that you know all the El Clients have the same set of configs for all of the Vpl forks. And that they are. They will all activate at the same time.
+
+70
+00:13:03.770 --> 00:13:04.460
+Tim Beiko: yeah.
+
+71
+00:13:06.220 --> 00:13:06.990
+Tim Beiko: Ahmad.
+
+72
+00:13:08.890 --> 00:13:28.539
+Ahmad Bitar | Nethermind: Yeah, I I think this was mentioned before, but like not, all clients have the same like kind of way of activating forks. We particularly activate aip per aip. So if the schedule is named by fork, we will have to basically add a field for specific to say, Hey, fork.
+
+73
+00:13:29.200 --> 00:13:34.729
+Ahmad Bitar | Nethermind: Whatever is actually like it. It's it's it is a big like.
+
+74
+00:13:35.070 --> 00:13:46.500
+Ahmad Bitar | Nethermind: It will be ugly in the code. It will be ugly in the configs. It will be a hassle for the 8 Pando Ops team to deal with as well, in my opinion. I would just include the timestamp in the
+
+75
+00:13:47.470 --> 00:13:52.480
+Ahmad Bitar | Nethermind: in the yeah, in the like. Bpo in the schedule, is there.
+
+76
+00:13:52.760 --> 00:13:53.899
+Tim Beiko: Yeah. So I guess
+
+77
+00:13:54.130 --> 00:14:06.839
+Tim Beiko: there is a Bpo eip, right? Like, it's 7, 8, 9, 2. If I've got it correctly, so should we just specify this in the eip directly to avoid any confusion
+
+78
+00:14:12.180 --> 00:14:18.550
+Tim Beiko: like, it doesn't seem to matter too much what we do on the El. And like, yeah, maybe. Oh, like, oh, there is actually something.
+
+79
+00:14:22.870 --> 00:14:27.033
+Tim Beiko: Yeah, there, there is actually something in the eip. So
+
+80
+00:14:29.850 --> 00:14:35.279
+Tim Beiko: and yeah, okay, so the eip does not have the timestamp. It just has a target, the Max and the
+
+81
+00:14:36.030 --> 00:14:41.769
+Tim Beiko: base fee of big fraction. So and maybe the one change.
+
+82
+00:14:44.020 --> 00:14:55.390
+Tim Beiko: Yeah, the one change from the eip is. I don't know if these numbers that it uses, for the Bpo forks are actually like the timestamp. That's the name of the fork?
+
+83
+00:14:55.560 --> 00:15:01.639
+Tim Beiko: If so, that seems maybe a bit weird and maybe a bit bug prone. So I would maybe just change
+
+84
+00:15:01.750 --> 00:15:06.479
+Tim Beiko: the like config name to be something like vp, o, 1, vpl. 2, or whatever. But
+
+85
+00:15:06.880 --> 00:15:08.530
+Tim Beiko: would that work for everyone
+
+86
+00:15:14.850 --> 00:15:19.170
+Tim Beiko: and yeah for clarity? So what I just posted in the chat which is copied from the eip.
+
+87
+00:15:19.490 --> 00:15:22.459
+Tim Beiko: Basically keep that, and then just use
+
+88
+00:15:22.620 --> 00:15:26.760
+Tim Beiko: like some generic Bpo and a number naming
+
+89
+00:15:31.830 --> 00:15:38.040
+Tim Beiko: no fun names. Look, if we want to change it to fund names. We can hash this out, Async, but
+
+90
+00:15:38.330 --> 00:15:40.330
+Tim Beiko: we could at least use the
+
+91
+00:15:40.730 --> 00:15:46.920
+Tim Beiko: or if someone wants to come up with a nice convention of like easily incrementable fun names.
+
+92
+00:15:47.180 --> 00:15:49.290
+Tim Beiko: We can do that. But
+
+93
+00:15:50.160 --> 00:15:56.420
+Tim Beiko: I would just not use the timestamp as a name, because that feels like the thing that will cause an issue on some network. Someday.
+
+94
+00:15:57.243 --> 00:15:58.270
+Tim Beiko: yeah, some.
+
+95
+00:16:09.970 --> 00:16:19.404
+Tim Beiko: Okay. So it seems like, people are okay with this. Maybe, like, yeah, let's just do a quick pr to the eip to change to change this
+
+96
+00:16:20.810 --> 00:16:26.719
+Tim Beiko: to change this, to like some some generic name, and then move on from there. Yeah. Some.
+
+97
+00:16:27.000 --> 00:16:30.640
+Som - Erigon: Sorry about that. I just wanted to say that
+
+98
+00:16:30.820 --> 00:16:44.639
+Som - Erigon: a hard fork is like a drag on operations. So you have to release and like, make sure it goes into time, and others have to like pull the images and sort of update.
+
+99
+00:16:45.160 --> 00:16:46.199
+Som - Erigon: It's no to be.
+
+100
+00:16:46.200 --> 00:16:52.169
+Tim Beiko: To be clear. Yes, to be clear, these would all be scheduled at once. The idea is that we only
+
+101
+00:16:52.380 --> 00:16:54.480
+Tim Beiko: we only schedule
+
+102
+00:16:54.600 --> 00:17:09.195
+Tim Beiko: like we have a single client release. Say that we do this like in in September, or whatever the Aragon client release already has baked in like the next 4 Bpo forks, or however many we decide to do.
+
+103
+00:17:11.220 --> 00:17:25.899
+Tim Beiko: So so like, yeah, we we yeah, if we can call that 4 hard forks a year if we want. But the idea is that on the Cl side there's like some high fixed cost to setting up a quote real hard fork, and I don't know
+
+104
+00:17:25.900 --> 00:17:55.590
+Tim Beiko: what exactly that entails, but someone shared the diff on a previous call, and it was about 94 90 files changing in the clients, whereas on the El side. The fixed cost in terms of like code to do. Fork seems to be pretty minimal. So the idea was that on the El they are sorry on the consensus layer. They can have this setup where they don't need to have this entire fork scaffolding every time, which is what the Bpo's bring, but on the El. Because we don't have much fork scaffolding, we can just
+
+105
+00:17:55.590 --> 00:17:59.155
+Tim Beiko: rescheduled a bunch of forks and put them all in the same release.
+
+106
+00:18:00.100 --> 00:18:13.840
+Tim Beiko: and yes, to Perry's point. The other idea here is that even though they're all included by default, and we expect them all to activate on Mainnet. If you know the Bpo's are like a month apart, or whatever we can obviously
+
+107
+00:18:14.130 --> 00:18:20.410
+Tim Beiko: have, like an emergency, hard fork that delays them or that removes the future ones. If something comes up.
+
+108
+00:18:32.130 --> 00:18:33.330
+Tim Beiko: Does that make sense.
+
+109
+00:18:34.670 --> 00:18:36.630
+Som - Erigon: So, yeah, thank you.
+
+110
+00:18:42.080 --> 00:18:45.446
+Tim Beiko: Okay? Okay, so let's do that. Then let's
+
+111
+00:18:47.610 --> 00:18:54.830
+Tim Beiko: Okay, we'll find a better word than emergency. Hard fork to delay the Bpos. But like, yeah, high level, it would be an
+
+112
+00:18:56.090 --> 00:19:01.070
+Tim Beiko: like a way for us to help us. Yeah.
+
+113
+00:19:03.010 --> 00:19:09.245
+Tim Beiko: Bpo, intervention. I like this. Okay, so
+
+114
+00:19:10.760 --> 00:19:25.110
+Tim Beiko: yeah, like, let's just change the the name in in the eip to something like Bpo, one bpo, 2, whatever, and then at least we'll have something to work with. And if people want to come up with a better naming scheme we can make another change.
+
+115
+00:19:26.083 --> 00:19:27.849
+Tim Beiko: Anything else on the Vpo.
+
+116
+00:19:34.780 --> 00:19:36.800
+Tim Beiko: okay? Thanks. Everyone.
+
+117
+00:19:38.040 --> 00:20:00.410
+Tim Beiko: Okay, next up. Eof. So there's a couple of different threads here. Originally, the main thing I wanted was just the status updates to make sure we're all on the same page around where Eos is at and and and what the next steps are. I think we should still do this to make sure we yeah, we all have the same context. Then
+
+118
+00:20:00.990 --> 00:20:24.780
+Tim Beiko: then some concern came up in in the past the past day or so around compiling legacy contracts and importing them as dependencies in like a post eof world. That's made at least some of the client teams reconsider which version of Eof we should do so. We should discuss this.
+
+119
+00:20:24.820 --> 00:20:31.511
+Tim Beiko: And then another set of concerns came from a vitalik's proposal around risk 5 where?
+
+120
+00:20:32.475 --> 00:20:59.474
+Tim Beiko: yeah. The way, I kind of phrase it was that it's kind of concerning that. We have a proposal to replace the Evm with something, even though we haven't already shipped it shipped eof and you know, therefore we're gonna ask the entire ecosystem to migrate to something new, and then potentially, you know, a few years after that migrate again. And you know whether that should make us question kind of the the overall approach we have here. So I guess. Yeah, maybe to start. So we all have the same context.
+
+121
+00:20:59.750 --> 00:21:06.110
+Tim Beiko: I don't. Yeah, Daniel, do you want to give just a quick overview of like where eof is at right now? And
+
+122
+00:21:08.760 --> 00:21:09.080
+Danno Ferrin | Ipsilon: Sure.
+
+123
+00:21:09.080 --> 00:21:19.290
+Tim Beiko: And yeah, and then, yeah, actually, like, yeah, if you have some context around around this compiler or or so, yeah, you could do the status, and then maybe Ben can talk about the compiler issue. Yeah.
+
+124
+00:21:19.480 --> 00:21:33.519
+Danno Ferrin | Ipsilon: Yeah, so as far as the tests, we have. The 1st path of tests for one that includes all the container changes and support for Tx creates those are actually in the main the version. 4.3. I think
+
+125
+00:21:33.680 --> 00:21:38.769
+Danno Ferrin | Ipsilon: of of the of the eest ethereum execution spec test
+
+126
+00:21:39.393 --> 00:21:41.819
+Danno Ferrin | Ipsilon: as far as clients that pass those tests.
+
+127
+00:21:42.667 --> 00:21:47.900
+Danno Ferrin | Ipsilon: We have 2 full clients, Baysu and Geth, and as far as
+
+128
+00:21:48.620 --> 00:21:58.919
+Danno Ferrin | Ipsilon: libraries evm, one passes it, and I also have a patch out for yields to pass the test. So we have multiple clients that are passing the test as written
+
+129
+00:21:59.306 --> 00:22:12.889
+Danno Ferrin | Ipsilon: and that, you know again, the tests were pretty good at spotting every possible place where we had any of those container changes. So I'm a high confidence that we've got the changes with the tests that will be covered by that. If you can pass all the tests, you probably fixed all the places.
+
+130
+00:22:13.070 --> 00:22:37.810
+Danno Ferrin | Ipsilon: That being said, we still need to do fuzzing. I got my fuzzing library updated to the new container changes and I'm starting working on fuzzing between Geth and Bay. Su. Fuzzing 2 differentially is not necessarily the best thing, because when there's a difference, how do you decide who's right? So we'll get the best feedback when we get a 3rd client, whether that's another mind, or ref to be determined, be best if we could have all 4.
+
+131
+00:22:37.910 --> 00:22:48.139
+Danno Ferrin | Ipsilon: But as far as the schedule I put out for the Eof testnet plan. A few months ago I'd say we're still on schedule to launch the Devnet one the week that we released Petra.
+
+132
+00:22:48.686 --> 00:22:57.553
+Danno Ferrin | Ipsilon: So we're still there. I mean, there's still a chance that if if clients were later, if bugs are discovered that we might have to slip it out. As is the case with everything but
+
+133
+00:22:58.240 --> 00:23:00.730
+Danno Ferrin | Ipsilon: It looks like we're still on schedule right now. With that.
+
+134
+00:23:03.630 --> 00:23:08.299
+Tim Beiko: Okay, thank you. And yeah, Ben, do you want to talk about the compilation issue?
+
+135
+00:23:08.560 --> 00:23:18.949
+Ben Adams: Yeah, so this is about the developer experience and upstream. I don't think
+
+136
+00:23:20.040 --> 00:23:22.631
+Ben Adams: we're ready to depreciate the
+
+137
+00:23:25.313 --> 00:23:35.900
+Ben Adams: the introspection OP codes because you can't compile uniswap contracts. You can't compile open Zeppelin. You can't compile. So, lady, I mean, this may be
+
+138
+00:23:36.370 --> 00:23:44.040
+Ben Adams: perhaps a compiler thing. Maybe it's pulling in too much of the libraries.
+
+139
+00:23:44.640 --> 00:23:52.829
+Ben Adams: But nevertheless, the developer experience isn't, isn't there yet for these updates to be depreciated.
+
+140
+00:23:53.340 --> 00:24:01.044
+Ben Adams: So the suggestion is, we bring back those up codes, and at a later stage we could do
+
+141
+00:24:01.740 --> 00:24:13.210
+Ben Adams: eof supports versioning so we could do a eof 2 second version that depreciates them. But that would be an eip that would, you know, stand on its own, have to be
+
+142
+00:24:13.520 --> 00:24:15.389
+Ben Adams: rejustified at that point.
+
+143
+00:24:16.860 --> 00:24:21.009
+Ben Adams: But I I don't think the developer experience is ready right now.
+
+144
+00:24:21.010 --> 00:24:23.990
+Tim Beiko: And can you expand on the compilation? This is
+
+145
+00:24:24.100 --> 00:24:32.519
+Tim Beiko: not my area of expertise at all, but, as I understand it, the issue is, if you try to recompile a legacy contract
+
+146
+00:24:33.130 --> 00:24:38.410
+Tim Beiko: as eof that obviously breaks in many cases, but also some.
+
+147
+00:24:38.410 --> 00:24:45.509
+Ben Adams: Yeah. So it'd be like, you know, testing whether contract length is this greater than 0? All that sort of stuff.
+
+148
+00:24:49.766 --> 00:24:51.750
+Tim Beiko: And then, yeah, I.
+
+149
+00:24:52.590 --> 00:25:10.600
+Tim Beiko: The other issue was something around like even legacy contracts had some concerns like bringing in or or yeah. Sorry the issue that you couldn't bring in many popular libraries like, say, open Zeppelin to eof contracts, because these would not compile right. And that's.
+
+150
+00:25:10.980 --> 00:25:16.669
+Ben Adams: Yeah, because because they use some of the some of the depreciated features.
+
+151
+00:25:16.800 --> 00:25:20.510
+Ben Adams: So the idea is, if you just bring those back for now.
+
+152
+00:25:21.870 --> 00:25:25.159
+Ben Adams: then, then they'll continue to work so it'd be fine.
+
+153
+00:25:26.130 --> 00:25:27.100
+Tim Beiko: So I guess
+
+154
+00:25:29.860 --> 00:25:35.359
+Ben Adams: I mean, we'd we'd still have the one of the important things of
+
+155
+00:25:35.860 --> 00:25:44.170
+Ben Adams: Eof, which is you can't. You can't introspect the Uf. Contracts, you know you'll get. Oh, it's 2 Byte long. It's but you know they'll
+
+156
+00:25:44.690 --> 00:25:50.819
+Ben Adams: how how they present to legacy contracts, if that makes sense.
+
+157
+00:25:57.450 --> 00:25:58.070
+Tim Beiko: Okay.
+
+158
+00:25:58.860 --> 00:26:00.450
+Tim Beiko: Yeah. Kev.
+
+159
+00:26:02.080 --> 00:26:12.949
+Kevaundray Wedderburn: Yeah, I guess I'm a bit confused. So did we try to. Did we take an Eof compiler and try to compile non eof contracts? And that broke.
+
+160
+00:26:13.900 --> 00:26:14.640
+Ben Adams: Yes.
+
+161
+00:26:16.546 --> 00:26:19.133
+Kevaundray Wedderburn: Isn't that expected? Because
+
+162
+00:26:19.780 --> 00:26:34.570
+Ben Adams: Well, yeah, I mean, it's sort of expected. But because essentially pretty much everything breaks. Then if that is the developer experience that we go out with. It's it's immediately very poor.
+
+163
+00:26:35.197 --> 00:26:38.239
+Ben Adams: So I don't. I'm just saying that it's not.
+
+164
+00:26:39.860 --> 00:26:53.040
+Ben Adams: We're not quite ready with, you know. Here's here's open Zeppelin that doesn't use depreciated up codes. Here's a lady that's doesn't use it. Here's uniswap that doesn't use it, etc.
+
+165
+00:26:55.350 --> 00:27:01.473
+Tim Beiko: And so, yeah, so in practice, it would mean, like, all of these major libraries would have to be rewritten.
+
+166
+00:27:02.080 --> 00:27:02.800
+Tim Beiko: yeah.
+
+167
+00:27:04.000 --> 00:27:05.230
+Tim Beiko: And then.
+
+168
+00:27:06.540 --> 00:27:10.940
+Dan Cline: Yeah. So from the rep point of view, I think,
+
+169
+00:27:11.730 --> 00:27:16.520
+Dan Cline: like this, this is like a super super important point, like
+
+170
+00:27:16.830 --> 00:27:19.570
+Dan Cline: the developer experience needs to be good.
+
+171
+00:27:21.360 --> 00:27:25.879
+Dan Cline: And if we can't do this, then
+
+172
+00:27:26.270 --> 00:27:35.719
+Dan Cline: maybe we should just like consider the alternate proposals for like fixing stack to be too deep, and you know, swap 1732
+
+173
+00:27:37.400 --> 00:27:40.749
+Dan Cline: and just do that for now
+
+174
+00:27:44.950 --> 00:27:47.490
+Tim Beiko: Thanks. Yeah, it's Dano. And then Ahmad.
+
+175
+00:27:48.770 --> 00:28:16.260
+Danno Ferrin | Ipsilon: So one of the proposals. I don't think too much, but he mentioned it in the comment in the Github thread is when we a couple of meetings ago, when we did the introspection options, there was an option called Option D, where we would return all of these opcodes that were related to gas introspection and ext code introspections with the restriction that you wouldn't be able to introspect into Eof contracts which preserve the key band code introspection for the Eof Code, which was the most critical piece
+
+176
+00:28:16.808 --> 00:28:30.530
+Danno Ferrin | Ipsilon: so the Opcodes would would then be enabled inside of Eof. And if you tried to introspect and you have contract, you get the Ef 0 0, the legacy we get you get the same behavior on the plain Byte code and the container Bytecode experiences.
+
+177
+00:28:31.500 --> 00:28:32.240
+Danno Ferrin | Ipsilon: So
+
+178
+00:28:32.540 --> 00:28:41.983
+Danno Ferrin | Ipsilon: what that would what that would do is that would then allow the contracts to be compiled directly. All these assembly blocks that depend on call gas ext code, copy ext code,
+
+179
+00:28:42.390 --> 00:28:43.900
+Danno Ferrin | Ipsilon: 60 code.
+
+180
+00:28:44.290 --> 00:28:54.899
+Danno Ferrin | Ipsilon: length and size and stuff like that. Those would all then work but when we went with the the band gas introspection. That the gas would be broken in these contracts was the design intent?
+
+181
+00:28:55.517 --> 00:29:09.282
+Danno Ferrin | Ipsilon: So that this is the outcome of it is not terribly surprising. That is having as much friction on the developer. Experience is the new signal. That would allow us to then go with option d and and
+
+182
+00:29:09.730 --> 00:29:22.519
+Danno Ferrin | Ipsilon: and bringing those back in. And the impact of this is we would get rid of at least 2 vips from the call, possibly a 3.rd We may or may not do pay, so going with option. D. Would actually reduce some of the scope changes for Fusaka.
+
+183
+00:29:25.050 --> 00:29:30.110
+Danno Ferrin | Ipsilon: If Frangio raised it in October, and it if we we
+
+184
+00:29:30.590 --> 00:29:33.520
+Danno Ferrin | Ipsilon: we didn't hear it loud enough, I guess, is is the mistake. There.
+
+185
+00:29:33.940 --> 00:30:00.540
+Tim Beiko: Yeah, and maybe yeah, to answer, comment around, like, you know, rehashing this discussion again, I agree that like, it felt like we did make a final decision. And I think this, the reason to bring it up again is even though this concern was like potentially raised in the past. It doesn't feel like we actually understood the implications. And so if we want to proceed, we should just
+
+186
+00:30:00.740 --> 00:30:06.540
+Tim Beiko: be okay with this or potentially adjust. Yeah.
+
+187
+00:30:12.040 --> 00:30:41.830
+Danno Ferrin | Ipsilon: So what this would change from Uof is the Uf. Devnet. One would stay as is as shipped uf Devnet 2. We would get rid of most of the features, and instead just enable the OP. Codes, and for most of the clients that should be a really small lift, because they just need to go into their tables and change a few values. And for the testing, it's actually, surprisingly another small lift, because all the code that we brought in from the old tests. We just have, you know, flags. Table has this OP. Code. Don't convert it into a Uf container test. We just change that table as well, and we then get the same
+
+188
+00:30:41.850 --> 00:30:46.919
+Danno Ferrin | Ipsilon: test that we have in the that pre east test, also again, testing eof.
+
+189
+00:30:46.950 --> 00:30:53.720
+Danno Ferrin | Ipsilon: So this going with this option does result in in less scope and less work that needs to be done.
+
+190
+00:30:56.702 --> 00:30:58.879
+Tim Beiko: Ahmad, do you have your hand up at all?
+
+191
+00:31:00.060 --> 00:31:19.980
+Ahmad Bitar | Nethermind: Yeah. So like my perspective is a little bit different than the voices that I've been hearing right now. So any upgrade that actually depreciate, deprecates some. A certain feature in the Abm or removes a certain feature is always problematic. The fact that we all we will, we will only
+
+192
+00:31:20.170 --> 00:31:32.460
+Ahmad Bitar | Nethermind: disable these features, for Eos is very interesting, though, because if the developers still want to use those legacy contracts that are not Eos based, they can always use the legacy contracts
+
+193
+00:31:32.660 --> 00:31:57.649
+Ahmad Bitar | Nethermind: and the libraries will always upgrade to Eof to get the new features, to get the gas optimizations that Uof brings, etc. So all like that worry that the current, like we haven't shipped until we ship the libraries are not going to be updated to the Uf. Version. I don't think any company that, or any entity that works on these contracts is willing to spend time to upgrade these libraries and
+
+194
+00:31:57.650 --> 00:32:08.600
+Ahmad Bitar | Nethermind: contracts and tooling before actually we ship aof, and the fact that we're still having a compatibility mode where the legacy contracts are still working, still, deployable
+
+195
+00:32:08.970 --> 00:32:21.439
+Ahmad Bitar | Nethermind: plays the role here that we don't really need to care about. If if eof if these legacy contracts can be compiled to aof or not but yeah, that's that's just my perspective.
+
+196
+00:32:23.190 --> 00:32:49.759
+Ahmad Bitar | Nethermind: Yeah. But one more thing I would say is that the important thing here is to to think about like, why did we remove that introspection is is removing that introspection here actually a net positive in the future. And if so, then we should continue with the removal, regardless of the development experience quote unquote that will affect how you deploy your contracts.
+
+197
+00:32:50.380 --> 00:32:50.920
+Ahmad Bitar | Nethermind: yeah.
+
+198
+00:32:54.020 --> 00:32:56.499
+Tim Beiko: Thanks. Let's do, Dan, and then Anskar.
+
+199
+00:32:58.190 --> 00:33:04.150
+Dan Cline: Yeah. So I think, like for us, it's very important that, like we
+
+200
+00:33:04.270 --> 00:33:10.369
+Dan Cline: set the timeline for the fork and what we decide to ship around like pure desk and
+
+201
+00:33:11.510 --> 00:33:13.020
+Dan Cline: very little else.
+
+202
+00:33:13.765 --> 00:33:19.110
+Dan Cline: Like, I think it's okay to descope things like, I get that.
+
+203
+00:33:19.420 --> 00:33:22.909
+Dan Cline: You know, we want to stick to things. But like.
+
+204
+00:33:24.460 --> 00:33:29.020
+Dan Cline: I think I think we want to stick to things in that like if we frozen
+
+205
+00:33:29.470 --> 00:33:40.989
+Dan Cline: a certain set of features, we shouldn't add stuff on top like, because that could extend timelines for things. But like, if we notice that like, okay, we want to change this thing in Uf, like.
+
+206
+00:33:41.760 --> 00:33:48.930
+Dan Cline: we're going to like descope it, but I think that's fine. But like
+
+207
+00:33:49.320 --> 00:33:51.300
+Dan Cline: and the north stars peer to us
+
+208
+00:33:54.280 --> 00:34:00.670
+Dan Cline: And like whatever we have, we should be happy with, otherwise remove.
+
+209
+00:34:02.030 --> 00:34:17.749
+Tim Beiko: Yeah, I would. I would strongly plus one. This, like, I think at this point we should only make substractive changes in a way like. I I think we don't want to reopen the entire can of worms around the design space of like potential evm changes. If
+
+210
+00:34:17.929 --> 00:34:20.770
+Tim Beiko: if people want to tweak eof
+
+211
+00:34:21.179 --> 00:34:41.059
+Tim Beiko: like, you know, maybe we can reconsider that. But I think if people want to do something completely different with the Evm. I would almost, you know. Discuss that for Amsterdam. And like, yeah, have a much smaller smaller scope for for Fusaka on the El side. Yeah, on the car.
+
+212
+00:34:42.780 --> 00:34:46.167
+Ansgar Dietrichs: Yeah, I I just wanted to say, also put it in chat.
+
+213
+00:34:46.620 --> 00:34:51.920
+Ansgar Dietrichs: I. So I'm relatively unopinionated on the kind of the the content of this change.
+
+214
+00:34:52.130 --> 00:35:18.290
+Ansgar Dietrichs: This might be right. This might maybe would be the better version of Uf. But I think process wise. I think we really should have a pretty high bar to changes here, and in particular, with these types of features in Uf. We talked about this in the past. There's this huge asymmetry, where like, if we get something wrong by adding a feature that afterwards we wish we didn't have, we wouldn't have added, now we're stuck with it forever. Whereas if we
+
+215
+00:35:18.290 --> 00:35:42.559
+Ansgar Dietrichs: determine later that a feature is missing, and it really hampers the adoption of Uf. Or something, we can always add that back the next fork, and yes, worst case, we do lose a few months of Uf adoption, and that is bad. I'm not saying that's not bad, obviously like, but it's a very asymmetric risk situation. And so taking those 2 in combination, I think, basically especially given that, like most people on this call, now like
+
+216
+00:35:42.590 --> 00:35:51.619
+Ansgar Dietrichs: don't have the context for for this decision. The people that like used to pay attention to ef they don't know that we are now reopening the decision, I would argue, we should
+
+217
+00:35:51.740 --> 00:35:56.719
+Ansgar Dietrichs: like not not change anything for Fusaka, and then reconsider this question for Glam Sita.
+
+218
+00:35:58.360 --> 00:36:02.619
+Tim Beiko: And this is because, like, yeah, we can always add introspection. Again, we cannot
+
+219
+00:36:02.980 --> 00:36:07.716
+Tim Beiko: remove it. If we have it in eof one.
+
+220
+00:36:15.615 --> 00:36:24.220
+Tim Beiko: okay? And then Giorgio's just added, something in the chat. So.
+
+221
+00:36:26.310 --> 00:36:27.760
+Tim Beiko: okay, so I guess, like, yeah, on this.
+
+222
+00:36:27.820 --> 00:36:30.290
+gakonst: Sorry. Sorry I'm late at the end. No, no, go ahead.
+
+223
+00:36:30.960 --> 00:36:58.340
+gakonst: Oh, I think Dan maybe maybe shared our sense. But like, just want, like really drive the point home that the point of Osaka should be scaling with period, as that's the top top priority of it. I was really hopeful for Eof as a general like improvement. It seems to me that we can still get the benefits of it if we get rid of the cold gas introspection bands. But I think it's totally fine if we don't have the testing budget or time allocation to get things done.
+
+224
+00:36:58.670 --> 00:37:10.989
+gakonst: But if anything like ends up compromising period. I think it's going to be gigantic failure. So it's just so so important to like, make sure that, like whatever we ship doesn't compromise that goal.
+
+225
+00:37:14.850 --> 00:37:20.659
+Tim Beiko: Yeah, okay, so I think everyone seems to agree with that. I think then the question is.
+
+226
+00:37:21.260 --> 00:37:26.859
+Tim Beiko: what's the value of shipping eof without code introspection. If
+
+227
+00:37:28.430 --> 00:37:35.080
+Tim Beiko: like. Yeah, if we might be shipping a version with code introspective in the future, that just seems like it's adding more complexity,
+
+228
+00:37:35.860 --> 00:37:41.610
+Tim Beiko: like, and then the other part of this is, if the main blocker.
+
+229
+00:37:41.610 --> 00:37:42.590
+gakonst: The complexity.
+
+230
+00:37:42.930 --> 00:37:43.880
+Tim Beiko: Oh, sorry go ahead!
+
+231
+00:37:46.240 --> 00:37:55.599
+gakonst: Oh, just gonna say that the complexity part, I don't think is like the important thing. The important thing is like contracts need to work and compile. And there's too much code that uses all of this stuff right?
+
+232
+00:37:56.100 --> 00:38:08.378
+Tim Beiko: Yeah, and so and so this, yes. Then the question is like, if we ban introspection, you know, it was always going to be clear that some contracts would have to be rewritten to support that
+
+233
+00:38:08.970 --> 00:38:16.452
+Tim Beiko: And is it not okay for them legacy contracts to keep using, you know, the legacy code paths.
+
+234
+00:38:17.500 --> 00:38:23.410
+Tim Beiko: and you know, on day one things like open Zeppelin will not support Eof. But then, potentially, you know.
+
+235
+00:38:23.550 --> 00:38:28.949
+Tim Beiko: 6 months in the future they will have a version that opens upland that supports eof so there'll be like
+
+236
+00:38:29.090 --> 00:38:32.561
+Tim Beiko: a a lag between the time.
+
+237
+00:38:33.680 --> 00:38:38.780
+Tim Beiko: yeah, between the time that, like eof goes live and you know, the full developer experience is there.
+
+238
+00:38:56.500 --> 00:38:58.980
+Tim Beiko: I guess. Maybe. Oh, yeah, Lukash.
+
+239
+00:39:00.020 --> 00:39:03.270
+Łukasz Rozmej: So it would be good to get
+
+240
+00:39:03.920 --> 00:39:10.650
+Łukasz Rozmej: some opinions from the developers. How hard would it be to amend those contracts to.
+
+241
+00:39:10.800 --> 00:39:13.310
+Tim Beiko: To compile to uf right, for example.
+
+242
+00:39:14.130 --> 00:39:16.620
+Łukasz Rozmej: But I don't have this data.
+
+243
+00:39:16.620 --> 00:39:17.570
+gakonst: I look.
+
+244
+00:39:19.230 --> 00:39:37.790
+gakonst: yeah, Lucas, I looked into that. We've had the of support, like in foundry for a long time. So I've looked into it multiple times. It's not that hard. But ultimately there's just every library in the ecosystem uses assembly, because for call related stuff just
+
+245
+00:39:38.270 --> 00:39:48.559
+gakonst: for Erc 20, for example, because the l. 1 like just demanded that to happen. So I agree it might not be a lot of work, but it's still
+
+246
+00:39:48.880 --> 00:39:56.879
+gakonst: you just cannot expect to do this like clone any repository that you want. Like every devil, run into this. It's going to.
+
+247
+00:39:58.810 --> 00:40:04.500
+Tim Beiko: And we say, because the l 1 required it. This is like the cap. The gas cost optimizations.
+
+248
+00:40:04.710 --> 00:40:05.600
+Tim Beiko: Is that correct?
+
+249
+00:40:07.350 --> 00:40:07.980
+gakonst: Yeah.
+
+250
+00:40:08.190 --> 00:40:11.490
+Tim Beiko: Yeah, okay, yeah. Yeah. Let's do. Alex. And then Charles.
+
+251
+00:40:14.281 --> 00:40:26.219
+Alex (axic): Just wanted to highlight that in epsilon internally, we actually did change the solely the implementation. Like most of the the pieces. To prove that it can be compiled with us.
+
+252
+00:40:27.720 --> 00:40:41.560
+Alex (axic): not talking about the the gas parameter, but rather the create 2 style cases which look a bit more complex to to be accomplished, and those can also be accomplished with the Uf. And those are the pieces we have rewritten.
+
+253
+00:40:43.100 --> 00:40:46.019
+Alex (axic): So so far, you know, haven't really found
+
+254
+00:40:46.460 --> 00:40:53.249
+Alex (axic): a feature which cannot be accomplished with Uf installation. But obviously it has to be changed in the source code.
+
+255
+00:40:55.760 --> 00:40:58.490
+Tim Beiko: And then the assembly, I assume the assembly stuff just like
+
+256
+00:40:59.620 --> 00:41:03.070
+Tim Beiko: cannot be solved like it seems fundamentally impossible.
+
+257
+00:41:03.070 --> 00:41:05.865
+Alex (axic): No, I mean, these are the. These are the assembly parts.
+
+258
+00:41:07.210 --> 00:41:14.770
+Alex (axic): obviously, you cannot like automatically translate the assembly, part in solidity, because the commitment of solidity is that the assembly part
+
+259
+00:41:14.950 --> 00:41:26.679
+Alex (axic): is left intact. That's controlled by the the author. So that's why, you know, we manually have to change it. But all of these changes I mentioned have been done in the assembly parts. None of the other parts have to be adjusted.
+
+260
+00:41:29.040 --> 00:41:29.650
+Tim Beiko: Okay.
+
+261
+00:41:30.555 --> 00:41:31.280
+Tim Beiko: Charles.
+
+262
+00:41:32.459 --> 00:41:49.620
+Charles C (vyper): Yeah. Sorry if I have background. But I think it's also going to be a problem when people need to maintain 2 different con source codes for like l twos that don't have uf and uf main
+
+263
+00:41:50.800 --> 00:42:16.840
+Charles C (vyper): like. I already have people complaining to me about like push 0, because they like try to deploy, push 0 to like in L 2. And it doesn't have it. It's gonna be much bigger deal when people are maintaining 2 source codes for every single project, and needed to like, have 2 different audit maintenance and deployment paths for those.
+
+264
+00:42:18.910 --> 00:42:28.429
+Tim Beiko: Right, and I think that would be an issue, regardless of the Eof version we do, though so the code introspection is kind of orthogonal to that
+
+265
+00:42:29.700 --> 00:42:30.429
+Tim Beiko: I mean.
+
+266
+00:42:31.510 --> 00:42:37.039
+Charles C (vyper): No, because the Eof breaks semantic compatibility with the EU.
+
+267
+00:42:42.790 --> 00:42:48.639
+Tim Beiko: Oh, be okay. And then because you can bring in. So if we have code infrastructure in Eos, you can bring in these libraries, and then
+
+268
+00:42:48.850 --> 00:42:54.089
+Tim Beiko: all of the tooling should work. So I guess maybe this is the the other question is.
+
+269
+00:42:54.510 --> 00:43:02.579
+Tim Beiko: how confident are we that by doing the I believe, was version D of eof. The introspective one.
+
+270
+00:43:03.570 --> 00:43:06.600
+Tim Beiko: like the developer experience, will actually be
+
+271
+00:43:07.000 --> 00:43:13.459
+Tim Beiko: unaffected or good. It does seem like it took us quite some time to
+
+272
+00:43:14.854 --> 00:43:18.665
+Tim Beiko: Yeah, figure out the implications of this.
+
+273
+00:43:20.460 --> 00:43:29.430
+Tim Beiko: so yeah, I, I'm I'm pretty concerned that if we just say today, after like thinking about this for a day or 2 like, Oh, yeah, let's just do this other version. It solves our problem.
+
+274
+00:43:30.030 --> 00:43:33.007
+Tim Beiko: in 3 months we're in the same situation.
+
+275
+00:43:48.830 --> 00:43:51.660
+Tim Beiko: yeah. And then I guess, yeah, maybe to answer point like.
+
+276
+00:43:52.930 --> 00:43:57.290
+Tim Beiko: how bad it is. How bad is it if we
+
+277
+00:43:57.450 --> 00:44:05.000
+Tim Beiko: only have Eos support in the developer experience, you know, sometime after Amsterdam.
+
+278
+00:44:07.140 --> 00:44:16.167
+Tim Beiko: like, if there is actually a lag or sorry sometimes after after a few second, like, if there is a lag between eof being live and being adopted.
+
+279
+00:44:18.180 --> 00:44:21.680
+Tim Beiko: yeah, how bad is this? An issue? Ben.
+
+280
+00:44:22.760 --> 00:44:28.000
+Ben Adams: I mean it would. It would be a forcing function in a way to get people to upgrade this stuff.
+
+281
+00:44:29.960 --> 00:44:35.779
+Ben Adams: But you know we have to accept that the developer experience would be not necessarily great.
+
+282
+00:44:36.630 --> 00:44:41.209
+Tim Beiko: So, and and then to be curious is the Eof developer. Experience will be not great@firstst
+
+283
+00:44:41.590 --> 00:44:42.200
+Ben Adams: Yeah.
+
+284
+00:44:42.530 --> 00:44:45.688
+Tim Beiko: Yeah, and then legacy will remain unchanged.
+
+285
+00:44:46.140 --> 00:44:50.250
+Ben Adams: Yeah. So I mean, the tooling would probably have to prefer legacy
+
+286
+00:44:50.900 --> 00:44:52.960
+Ben Adams: at the start. If you know what I mean. Right?
+
+287
+00:44:52.960 --> 00:45:04.069
+Tim Beiko: So the yeah. So the tooling would, yeah, would default to legacy. And then and I think this is how forge works. Like, obviously today it's like default to legacy. You have an Eof flag.
+
+288
+00:45:04.180 --> 00:45:06.690
+Tim Beiko: and then that would probably be the case, for, like.
+
+289
+00:45:06.690 --> 00:45:07.200
+Francis Li: I've seen.
+
+290
+00:45:07.200 --> 00:45:07.970
+Tim Beiko: Future!
+
+291
+00:45:09.540 --> 00:45:10.670
+Tim Beiko: Oh, sorry!
+
+292
+00:45:11.990 --> 00:45:12.860
+Francis Li: One second.
+
+293
+00:45:13.220 --> 00:45:15.157
+Tim Beiko: Oh, okay, I think you just got off
+
+294
+00:45:19.490 --> 00:45:22.040
+Tim Beiko: what? And I guess, okay, maybe the other thing is.
+
+295
+00:45:22.640 --> 00:45:33.043
+Tim Beiko: what's the cost of like waiting an extra week or 2 to make a final call on this. I know that. We are like progressing on the def nets.
+
+296
+00:45:34.750 --> 00:45:38.470
+Tim Beiko: but it yeah, is there
+
+297
+00:45:39.900 --> 00:45:46.580
+Tim Beiko: is there something that like in the next week or 2 will make a major difference if we if we choose one or another? Yeah, I know.
+
+298
+00:45:47.660 --> 00:46:01.339
+Danno Ferrin | Ipsilon: So this affects the Eof devnet. 2. Plan, the 2 main OP. Code, one of the 2 main opcodes, the xt code type and xt code address are completely moot. If we restore the opcodes and keep them in the container as well as in plain byte code.
+
+299
+00:46:01.965 --> 00:46:09.649
+Danno Ferrin | Ipsilon: And the payoff code. Is a separate discussion, but it no longer becomes essential if we have access to the old call series, OP codes
+
+300
+00:46:10.217 --> 00:46:18.259
+Danno Ferrin | Ipsilon: so that we would need to know before we start Internet. Uf, devnet 2. But since we're not planning on launching Uf devnet one until pector ships.
+
+301
+00:46:18.420 --> 00:46:20.289
+Danno Ferrin | Ipsilon: it's a discussion we have time to have.
+
+302
+00:46:22.910 --> 00:46:23.560
+Tim Beiko: Okay,
+
+303
+00:46:29.020 --> 00:46:30.079
+Tim Beiko: I guess, like, yeah.
+
+304
+00:46:30.080 --> 00:46:30.700
+gakonst: From there.
+
+305
+00:46:30.900 --> 00:46:31.890
+Tim Beiko: So yeah, go ahead.
+
+306
+00:46:32.210 --> 00:46:49.200
+gakonst: Sorry team. Yeah, from from our side. I basically like took over the conversation from the red team, didn't have a huge conversation with the team and made the call, for us. If I have like a day, I can collect the team's opinion and like, have a formative updated view on
+
+307
+00:46:49.910 --> 00:46:57.920
+gakonst: basically what the 2 paths look like for us is either eof without the introspection bands.
+
+308
+00:46:58.080 --> 00:47:06.100
+gakonst: or given that we have the Charles Ap. Like, do swap, do? 17 to 32, and call it a day.
+
+309
+00:47:07.572 --> 00:47:18.200
+gakonst: I think these are the 2 most credible paths, and that's what I would invite every team to slip on and like have a response, not in one or 2 weeks, but, like.
+
+310
+00:47:18.410 --> 00:47:20.390
+gakonst: you know, by tomorrow, probably.
+
+311
+00:47:21.180 --> 00:47:23.799
+Tim Beiko: Or I mean, okay. So if you think that's reasonable, then, like
+
+312
+00:47:24.310 --> 00:47:28.686
+Tim Beiko: on the testing call on Monday, we could be able to make a call on this
+
+313
+00:47:29.120 --> 00:47:32.169
+gakonst: Yeah, yeah, 2 weeks is like, too slow.
+
+314
+00:47:32.170 --> 00:47:37.670
+Tim Beiko: Yeah, yeah, I agree, 2 weeks feels like a really long time. But okay, that's.
+
+315
+00:47:40.270 --> 00:47:44.570
+Tim Beiko: And then, I guess, does any team disagree with that. Does any team feel like they would need
+
+316
+00:47:45.260 --> 00:47:47.539
+Tim Beiko: one more time to research this, or
+
+317
+00:47:47.960 --> 00:47:53.110
+Tim Beiko: or already has, like a very strong opinion today that until it's the right path.
+
+318
+00:47:58.580 --> 00:48:04.989
+Tim Beiko: Okay? If that's the case, then let's move to the risk. 5 conversation. And then
+
+319
+00:48:06.680 --> 00:48:10.825
+Tim Beiko: and then, yeah, tentatively. Try to resolve this by Monday.
+
+320
+00:48:14.630 --> 00:48:31.919
+Tim Beiko: yeah. And okay, sorry. And before we do that, just question the best resource on the exact proposed change. So the specific eof change that's being proposed is going from the current version to what is listing listed in option. D on the doc. I just shared
+
+321
+00:48:32.780 --> 00:48:38.829
+Tim Beiko: And then, do you know the number for Charles's eip Georgios off the top of your head.
+
+322
+00:48:39.340 --> 00:48:44.439
+Tim Beiko: or I guess we have Charles here. Oh, 7, 9 0, 7
+
+323
+00:48:44.570 --> 00:48:49.260
+Tim Beiko: seems to be something that the rest team would consider as an an alternative.
+
+324
+00:48:54.280 --> 00:48:54.990
+Tim Beiko: yeah.
+
+325
+00:48:55.610 --> 00:49:03.861
+Tim Beiko: so yeah, do client teams feel comfortable to like review this. And the impact on the developer experience and have a form view.
+
+326
+00:49:05.282 --> 00:49:07.059
+Tim Beiko: yeah, by Monday.
+
+327
+00:49:18.650 --> 00:49:23.360
+Ben Adams: I mean since somebody brought up push 0 the this
+
+328
+00:49:23.500 --> 00:49:27.177
+Ben Adams: an advantage of of eof over
+
+329
+00:49:28.160 --> 00:49:33.940
+Ben Adams: just a raw change to the evm is eof contracts will fail to deploy
+
+330
+00:49:34.538 --> 00:49:41.640
+Ben Adams: on like an L. 2 that hasn't got eof, whereas the
+
+331
+00:49:42.070 --> 00:49:47.109
+Ben Adams: adding the opcodes, the evm will deploy on L. 2, and then fail at Runtime.
+
+332
+00:49:51.290 --> 00:50:20.430
+Charles C (vyper): Yeah, the issue is that if you have 2 different versions of the source code, the difference between the Euf and the non uf code is going to be more subtle than just faulty or not. For example, if pay ships with euf, but not with non. Uf, there's going to be 2 different kinds of send idioms, and they're going to behave differently, and the fault scenarios are going to like it's going to be like reentrancy versus non reentrancy.
+
+333
+00:50:20.440 --> 00:50:21.440
+Charles C (vyper): Awesome.
+
+334
+00:50:25.770 --> 00:50:32.879
+Danno Ferrin | Ipsilon: And option. D remove that subtlety because you'd be using the same call operations as you would in blame by code.
+
+335
+00:50:42.500 --> 00:50:43.140
+Tim Beiko: Okay.
+
+336
+00:50:45.938 --> 00:50:57.200
+Tim Beiko: and yeah, someone posted the issue in the chat for the testing for the testing call. I think it would be good if either Dan or Ben, you want to just write up a quick
+
+337
+00:50:57.410 --> 00:51:15.930
+Tim Beiko: summary of like, yeah, the different options. And then links for the specs for people to review. And then on Monday we make a final decision on this which hopefully doesn't affect. Yeah, the next. I mean, it'll affect the next couple of days. But we won't lose a 2 week testing cycle over it.
+
+338
+00:51:22.770 --> 00:51:27.790
+Tim Beiko: okay, anything else on this specific issue before we move to risk 5.
+
+339
+00:51:31.660 --> 00:51:37.760
+Tim Beiko: Okay? Yeah, thanks. Everyone. I realize this is kind of a last minute curveball. But
+
+340
+00:51:37.870 --> 00:51:38.949
+Tim Beiko: it is what it is.
+
+341
+00:51:39.766 --> 00:51:48.300
+Tim Beiko: So yes. Next up like, client you wanted. You wanted to. Yeah, bring up the response issue.
+
+342
+00:51:50.730 --> 00:51:57.829
+lightclient: Yeah, I mean, I was just trying to gauge the sentiment from other client teams. Basically, there was a post from Vitalik
+
+343
+00:51:58.460 --> 00:52:05.060
+lightclient: talking about what we could imagine. The farther future of execution in ethereum looks like, and I think.
+
+344
+00:52:05.260 --> 00:52:25.520
+lightclient: for the most part, if we think about what we want to accomplish in the next 5 or 10 years with execution clearly having 0 knowledge, proofs of the execution is important, and it seems like from his post and a lot of other Zkp teams. They want to rely more and more on risk 5 or something of that shape.
+
+345
+00:52:25.520 --> 00:52:45.079
+lightclient: And in the past we've said Eof is better for Zk proving, and that seems true. But we're talking about marginal improvements over legacy, 1020, 30% improvements. And they're talking about risk 5 being orders of magnitude faster. So if we're already talking about.
+
+346
+00:52:45.480 --> 00:52:50.160
+lightclient: you know, switching to a different execution substrate.
+
+347
+00:52:50.640 --> 00:53:09.170
+lightclient: and we haven't even shipped eof. I worry about the amount of work that client teams are putting in. I worry about the work the community is going to have to put in just to support Eof when in a few years we're going to say we really want to do risk 5 now, because we need to support 0 knowledge proving. And we deprecate all of that work.
+
+348
+00:53:14.925 --> 00:53:15.540
+Tim Beiko: Lucas.
+
+349
+00:53:16.150 --> 00:53:17.403
+Łukasz Rozmej: Yeah, so
+
+350
+00:53:18.640 --> 00:53:29.950
+Łukasz Rozmej: I think, like, potentially risk 5 would give us 2 benefits. Right? One is the the potential performance improvements that that we're talking about.
+
+351
+00:53:30.440 --> 00:53:35.519
+Łukasz Rozmej: And the second one is potentially tapping to some
+
+352
+00:53:36.610 --> 00:53:43.720
+Łukasz Rozmej: broader tooling that we could use right. And and in ethereum.
+
+353
+00:53:44.100 --> 00:53:51.949
+Łukasz Rozmej: So, addressing those one by one performance improvements. I think we can get
+
+354
+00:53:52.150 --> 00:54:07.479
+Łukasz Rozmej: close to those numbers if we stop interpreting evm bytecode in those key provers which I think that is currently being done. So it's being interpreted
+
+355
+00:54:07.710 --> 00:54:13.050
+Łukasz Rozmej: there and do some kind of ahead of time compilation potentially.
+
+356
+00:54:13.240 --> 00:54:36.610
+Łukasz Rozmej: And there are already attempts of doing that right. There is Avmc. There is Ilevm in. Never mind that. We're working on the big problem here is that the classical bytecode, the current bytecode is not really friendly to this kind of solutions.
+
+357
+00:54:36.820 --> 00:54:43.739
+Łukasz Rozmej: The problem is that it's just one big bytecode, and you emit tens of thousands of opcodes.
+
+358
+00:54:44.060 --> 00:54:50.780
+Łukasz Rozmej: And this is really like any compiler will just
+
+359
+00:54:51.210 --> 00:55:11.349
+Łukasz Rozmej: stop optimizing it like, say, it's too big, it cannot optimize it. Oh, Eof solves it in a way, because it can provide a structure. It could provide different subroutines, and those subroutines will be a lot smaller. So there's a potential benefit of Eof with this approach.
+
+360
+00:55:11.710 --> 00:55:20.940
+Łukasz Rozmej: So that's 1 way of solving the performance thing that we can use. But it doesn't
+
+361
+00:55:21.390 --> 00:55:29.920
+Łukasz Rozmej: probably solve the tooling question. So the tooling actually goes the other way around. It makes the tooling away more complex
+
+362
+00:55:30.130 --> 00:55:36.950
+Łukasz Rozmej: rather than simpler, because we need to support this tooling.
+
+363
+00:55:38.000 --> 00:55:55.319
+Łukasz Rozmej: That's a downside and an upside right. For now I think the ethereum core developers had a lot control over what's going on ethereum, and if we like, just go with external tooling, we somewhat lose this control. But this might be a good thing or a bad thing. So
+
+364
+00:55:55.560 --> 00:56:07.569
+Łukasz Rozmej: yeah, that's kind of I see an alternative. I just don't know which one would be better. And that do we want to go to a very, let's say, low level
+
+365
+00:56:08.180 --> 00:56:12.260
+Łukasz Rozmej: risk v bytecode. Or do we want to stay on a
+
+366
+00:56:12.620 --> 00:56:19.009
+Łukasz Rozmej: quite high, level, abstract domain focus, bytecode that we that we have full control of?
+
+367
+00:56:19.170 --> 00:56:20.780
+Łukasz Rozmej: That's that's the question for me.
+
+368
+00:56:22.650 --> 00:56:23.260
+Tim Beiko: Thanks.
+
+369
+00:56:23.756 --> 00:56:26.040
+Tim Beiko: Let's do on Andrew, and then Guillaume.
+
+370
+00:56:27.550 --> 00:56:44.639
+Andrew Ashikhmin: Yeah, maybe it's a stupid question. But why don't we turn the entire Evm into kind of a Turing universal risk? 5 machine? We we have evm one. So we can compile that into risk 5 and enshrine that as the Evm.
+
+371
+00:56:45.540 --> 00:56:47.260
+Andrew Ashikhmin: I don't know just an idea.
+
+372
+00:56:47.990 --> 00:57:00.330
+lightclient: I mean my understanding is that the I mean we'll have to see if if what Lukash is saying is true, and we can have Evm executed at, you know, some
+
+373
+00:57:00.330 --> 00:57:28.480
+lightclient: small multiple of the cost of Risc-v native. Then maybe that's okay. But in general, people will want to deploy to the lowest cost environment. And if we're going to use Risc-v or something else like Risc-v as the basis for 0 knowledge proofs, it's hard to imagine that people are going to pay extra to deploy to interpreted, or a compiled version of a higher level system, when they could simply deploy to Risc-v.
+
+374
+00:57:32.890 --> 00:57:33.750
+Andrew Ashikhmin: I see.
+
+375
+00:57:37.770 --> 00:57:39.000
+Tim Beiko: I'm Guillaume.
+
+376
+00:57:40.537 --> 00:57:52.819
+Guillaume: Yeah. So for having tried to compile the that's not my main point, but just wanted to add, having tried to compile evm, one to always 5. This is, this is more difficult than than you imagine.
+
+377
+00:57:53.300 --> 00:58:15.409
+Guillaume: There's a lot of C plus plus dependency. Okay? Actually, the problem was with 5, 32. There's a lot of lacking headers and and things that make it very difficult. Yeah. So I don't think it's that easy. But the main point I wanted to make is I I think everybody will agree. I'm hardly the the defender of the Us.
+
+378
+00:58:16.183 --> 00:58:20.080
+Guillaume: But I think it's the wrong reason to
+
+379
+00:58:20.290 --> 00:58:30.939
+Guillaume: to not do Eos, because risk 5 I see Zkvms, there's a lot of people in Zkvms that are actually considering switching to wasm.
+
+380
+00:58:31.428 --> 00:58:35.260
+Guillaume: Okay, a lot might be exaggerated, but at least a couple
+
+381
+00:58:36.657 --> 00:58:41.690
+Guillaume: I don't know if risk 5 is really the perfect Isa for
+
+382
+00:58:42.000 --> 00:58:49.580
+Guillaume: for zk, zk applications. And I fear that doing.
+
+383
+00:58:49.910 --> 00:58:58.109
+Guillaume: You know, it's this. It's the same problem like we we want to. There's this new shiny thing on the horizon. And we would.
+
+384
+00:58:58.720 --> 00:59:01.929
+Guillaume: you know, give up on doing something that we could do now
+
+385
+00:59:02.477 --> 00:59:14.549
+Guillaume: so that we potentially get something in the future. But there are so many moving parameters that that yeah, we we don't know which future we'll we'll get to. So
+
+386
+00:59:14.975 --> 00:59:22.060
+Guillaume: once again. Not not a big euf fan, but but I don't think this is why we should. We should not have euf.
+
+387
+00:59:22.970 --> 00:59:37.540
+lightclient: Just to. Yeah, respond to that very quickly. I think, in general, I agree with you on that point that we shouldn't let the shiny things in the future always dictate what we can do now. But I think, unlike
+
+388
+00:59:37.740 --> 00:59:54.229
+lightclient: many protocol changes. When you change the user space, you put a massive burden on the entire user base and community. And we need to hold those types of changes to a higher standard than changing a database or changing the way the consensus protocol works.
+
+389
+00:59:54.650 --> 00:59:55.830
+Guillaume: Hmm. Fair point.
+
+390
+00:59:56.920 --> 00:59:58.932
+Tim Beiko: I guess, to that point, though, like
+
+391
+00:59:59.670 --> 01:00:04.720
+Tim Beiko: what's the timeline on which this would happen? Because, like, you know.
+
+392
+01:00:04.820 --> 01:00:13.954
+Tim Beiko: ethereum is 10 years old now give or take, we're gonna change the the Vm. For like the 1st time significantly.
+
+393
+01:00:15.410 --> 01:00:24.077
+Tim Beiko: like. Do we expect this to ship risk 5 in like 3 years or 5 years, or farther than that.
+
+394
+01:00:24.710 --> 01:00:25.700
+Tim Beiko: And
+
+395
+01:00:27.410 --> 01:00:37.242
+Tim Beiko: yeah, I'm my, I'm my skepticism would be like if we think we're ready to do this is in in 3 years. Realistically, it means we're probably shipping it in like 5 years.
+
+396
+01:00:37.750 --> 01:00:43.745
+Tim Beiko: and that feels really hard to weigh again. Something we can ship in like 6 months.
+
+397
+01:00:44.390 --> 01:00:50.489
+Tim Beiko: as there'll probably be many other problems we have to deal between with between like now and when we do this. But.
+
+398
+01:00:51.450 --> 01:01:02.310
+lightclient: Sure. But then you just have the overhang for every formal verification engineer who wants to build a tool or every static analysis engineer that wants to build a tool or compiler developers that want to build
+
+399
+01:01:02.460 --> 01:01:06.669
+lightclient: compilers only focus on eof that there might have this
+
+400
+01:01:07.070 --> 01:01:15.690
+lightclient: end of life of the virtual machine, and just a few years down the line. It makes no sense to invest the time and energy into building it.
+
+401
+01:01:19.260 --> 01:01:23.649
+Tim Beiko: Yeah, I see that like, like in Vitalik posted 2 to 5 years in the chat.
+
+402
+01:01:23.820 --> 01:01:28.916
+Tim Beiko: If it was like much closer to 2, I feel like I would agree.
+
+403
+01:01:30.750 --> 01:01:35.530
+Tim Beiko: if it's like much closer to 5. I feel like there's probably still value in doing this. But
+
+404
+01:01:35.850 --> 01:01:38.190
+Tim Beiko: yeah, I know you've had your hand up.
+
+405
+01:01:38.900 --> 01:01:39.970
+Danno Ferrin | Ipsilon: Yeah, so.
+
+406
+01:01:39.970 --> 01:01:40.490
+Tim Beiko: That's it.
+
+407
+01:01:40.490 --> 01:01:49.459
+Danno Ferrin | Ipsilon: This isn't the 1st time that an architecture switch has been proposed for Evm. He was almost proposed at Devcon, in Frog, of all places with current. Hard fork. We're shipping
+
+408
+01:01:49.950 --> 01:01:55.550
+Danno Ferrin | Ipsilon: the name of the current Hard Fork, and there's a lot of lessons that we should look and see why
+
+409
+01:01:55.938 --> 01:02:00.240
+Danno Ferrin | Ipsilon: you want them? Didn't ship and make sure that we don't repeat those same problems with Risk 5.
+
+410
+01:02:00.852 --> 01:02:29.410
+Danno Ferrin | Ipsilon: There's you know we talk about when we don't want to rewrite contracts for eof we're going to have to rewrite even more contracts for risk 5. You know. There's a lot of things that are the same. A lot of things that are different. Performance was an issue. And we wasm, is that unique to Ewasm? Or is that going to be a general problem with the 256 bit registers there's a lot of before we really dive into this. We really should take some time to to do a postmortem on Ewasm, and make sure that if we do move forward with risk 5 that we could learn from what's been tried before.
+
+411
+01:02:32.050 --> 01:02:33.650
+Tim Beiko: Thanks. Dongrat.
+
+412
+01:02:35.660 --> 01:02:45.260
+Dankrad Feist: I mean, I just want to comment as well like right now, the way that the prover market develops. I generally don't see proving
+
+413
+01:02:45.500 --> 01:02:59.099
+Dankrad Feist: costs as like a big argument in the future. I think it will be a trivial part of transaction costs. So I just think like it's neither going to be a good argument for Uf. Nor risk 5.
+
+414
+01:03:00.150 --> 01:03:01.119
+Dankrad Feist: Can you hear me.
+
+415
+01:03:05.190 --> 01:03:08.180
+Tim Beiko: And is the implication that like.
+
+416
+01:03:08.340 --> 01:03:15.990
+Tim Beiko: even if we have Eof, we can just create cheap proofs for this, as we.
+
+417
+01:03:15.990 --> 01:03:31.190
+Dankrad Feist: I mean either way, like, I don't think I just don't think we should use it as an important argument right now. Obviously risk 5 is a very long term. Research direction, I think uof is a different decision. I think the prover cause should have just no bearings on this.
+
+418
+01:03:31.560 --> 01:03:32.210
+Tim Beiko: Got it.
+
+419
+01:03:41.860 --> 01:03:50.450
+Tim Beiko: Yeah, I guess. Like, yeah, I was gonna ask, is actually Richard's question, yeah, if we adopt the of now is the only cost
+
+420
+01:03:50.780 --> 01:03:54.870
+Tim Beiko: to risk 5 that, like some people, may have built tooling for it.
+
+421
+01:03:55.000 --> 01:04:00.989
+Tim Beiko: That then gets deprecated. But then, if metallic has this other comment, saying that we can
+
+422
+01:04:01.210 --> 01:04:09.380
+Tim Beiko: turn the Evm into a smart contract on Risk 5. I assume. That's also true of Eos versions of the Evm.
+
+423
+01:04:11.350 --> 01:04:13.460
+Tim Beiko: so that we would keep supporting that. So
+
+424
+01:04:16.740 --> 01:04:22.129
+Guillaume: I mean, it's gonna be a maintenance burden, right? Because we would have 3 versions of like 3
+
+425
+01:04:22.610 --> 01:04:24.100
+Guillaume: 3 systems to maintain.
+
+426
+01:04:25.300 --> 01:04:32.549
+Tim Beiko: Correct. So we have to keep supporting everything we ship forever all the time. I think this is true for eof
+
+427
+01:04:32.850 --> 01:04:42.194
+Tim Beiko: and legacy Evm. Regardless of which path we take. It seems like that decision was like broadly made.
+
+428
+01:04:45.200 --> 01:04:46.790
+Tim Beiko: But yeah, there will. Like.
+
+429
+01:04:46.960 --> 01:04:55.930
+Tim Beiko: I think over time. It's realistic that there will be different versions of the Vm. That we will need to support. And then, if we go down this path, I guess that
+
+430
+01:04:56.420 --> 01:05:02.272
+Tim Beiko: the alternative path is, you just keep updating the legacy? Vm, forever. And then,
+
+431
+01:05:03.150 --> 01:05:08.390
+Tim Beiko: yeah, it seems like we were fine with 2 adding a 3rd
+
+432
+01:05:08.630 --> 01:05:11.429
+Tim Beiko: on a 5 year. Timeframe doesn't seem like
+
+433
+01:05:11.790 --> 01:05:14.399
+Tim Beiko: qualitatively different. But maybe that's wrong.
+
+434
+01:05:27.220 --> 01:05:31.899
+Tim Beiko: Yeah, I'm I don't. I guess.
+
+435
+01:05:33.340 --> 01:05:34.790
+Tim Beiko: Yeah, not to like
+
+436
+01:05:35.470 --> 01:05:48.483
+Tim Beiko: extend this discussion forever. It doesn't seem like there's like a major short term concern with this, like, there are concerns around long term tooling support potentially additional complexity in the clients.
+
+437
+01:05:50.030 --> 01:05:59.159
+Tim Beiko: I feel like if we are going to make a decision about Eof on Monday. This is like maybe a secondary thing that should be waited. But it doesn't feel like the primary
+
+438
+01:05:59.700 --> 01:06:06.389
+Tim Beiko: thing we should base the Eof decision on especially given the amount of certain uncertainty around. Risk 5.
+
+439
+01:06:11.321 --> 01:06:15.839
+Tim Beiko: yeah, I know. Vitalik, do you have a mic to maybe voice that later.
+
+440
+01:06:15.840 --> 01:06:24.684
+Vitalik Buterin: Yeah, sorry I I do. I was just that. I could not find the raise hands button, and so I was. Being polite and not circumventing it.
+
+441
+01:06:26.180 --> 01:06:34.272
+Vitalik Buterin: yeah, again, I get no. So the the thing that I was just types typing is
+
+442
+01:06:35.920 --> 01:06:42.890
+Vitalik Buterin: right? So the way that I think about risk 5 is I mean a couple of things right? So
+
+443
+01:06:43.040 --> 01:07:02.219
+Vitalik Buterin: one of them is like, one really big thing about risk 5 is, the fact is, the like, actually sort of the fact that we don't control it. And or I mean, obviously like we'd like, there's many versions of our risk 5. And we'd have to pick one. But we sort of most we don't control it, and
+
+444
+01:07:02.540 --> 01:07:15.700
+Vitalik Buterin: that I I actually think that's a benefit in a couple of ways. Right? So one is that it means that there's this other ecosystem of a whole bunch of other things that have. Yeah.
+
+445
+01:07:16.440 --> 01:07:23.139
+Vitalik Buterin: that have switched to it right? And you know, one interesting arguments that I heard actually is that there are
+
+446
+01:07:23.270 --> 01:07:53.200
+Vitalik Buterin: some developers who are not ethereum developers right now who might be interested in being ethereum developers who would love to use the same language on chain and off chain, so kind of like a Nodejs type of dev X arguments like, it's just much easier when you use the same. The same code on the clients in the server and their off chain. Logic is in some traditional language, basically, all of which compiles to risk 5. And so having risk 5 just be available is good is good in that way.
+
+447
+01:07:53.240 --> 01:08:00.515
+Vitalik Buterin: and then the other thing is like it does sort of discipline us into ossification, which,
+
+448
+01:08:01.630 --> 01:08:08.240
+Vitalik Buterin: I think is a good thing in a lot of ways right? Like, I think if we arrest realistically, choose
+
+449
+01:08:09.568 --> 01:08:11.661
+Vitalik Buterin: risk 5 then like there would
+
+450
+01:08:12.160 --> 01:08:34.579
+Vitalik Buterin: like the things already gone through mo more than 10 years of people evaluating what OP. Codes to add and what OP. Codes not to add. And so it just like it becomes a commitment, so that you know, if we do it, then that's the thing. And then just from a complexity perspective, like basically
+
+451
+01:08:35.350 --> 01:08:41.337
+Vitalik Buterin: like, I think if you add to, I know I saw, like python 2 and python 3 get brought up right. And
+
+452
+01:08:42.130 --> 01:09:05.770
+Vitalik Buterin: if you have to ask the question like, Do you expose the developers? Python 2 and python python 3. Or do you expose python 2 and c plus plus? Then, like the the second feels more attractive, right? And I think one of the reasons why Ian said, if you expose c plus plus, then developers would still be able to code in python. 3.
+
+453
+01:09:07.160 --> 01:09:09.143
+Vitalik Buterin: so those are some arguments.
+
+454
+01:09:09.939 --> 01:09:14.389
+Vitalik Buterin: I guess I'm I'm just reading through questions. Will there be lots of precompiled
+
+455
+01:09:15.020 --> 01:09:19.850
+Vitalik Buterin: Cisco's? Add to with risk 5? I mean, I think
+
+456
+01:09:20.370 --> 01:09:41.301
+Vitalik Buterin: the yeah answer is probably, yeah. Well, so there's like 2 kinds of Cisco's right. So there's like Cisco to represent system operations so like sload external call balance whatever whatever. And those would be turned into Cisco's, because that's how risk 5 handles everything. And
+
+457
+01:09:43.229 --> 01:09:47.629
+Vitalik Buterin: the yeah. And then the other type of like, Cisco would be
+
+458
+01:09:47.770 --> 01:10:06.481
+Vitalik Buterin: actual precompiles. Right? And I mean, we can. I would say we should just do precompiles in the same way that we do precompiles. Now, we would probably need fewer of them, because risk 5 is natively much more efficient than the Evm is. But
+
+459
+01:10:07.030 --> 01:10:11.229
+Vitalik Buterin: like, in general, a big part of the yeah ideas to try to
+
+460
+01:10:11.720 --> 01:10:15.040
+Vitalik Buterin: minimize the need like, or is to try to
+
+461
+01:10:15.310 --> 01:10:19.320
+Vitalik Buterin: basically change the Vm without changing everything else.
+
+462
+01:10:19.430 --> 01:10:28.660
+Vitalik Buterin: And so the yeah, like, you'd be able to interact with other contracts and based in exactly, yeah.
+
+463
+01:10:29.050 --> 01:10:50.740
+Vitalik Buterin: exactly the same way right? And so in that case, like, we probably don't even need like a new feature for new type of precompiles we just like, if we have precompiles like, they're a list of addresses that are like from one to 10 or one to 15 or whatever. And for those pre compiles. So we? Yeah, like, if you want to use a breakout, and you just call into that right? So
+
+464
+01:10:52.240 --> 01:10:58.023
+Vitalik Buterin: alright that that's probably the most natural way to do it.
+
+465
+01:10:58.660 --> 01:11:01.690
+Vitalik Buterin: is risk 5 more efficient. So
+
+466
+01:11:02.160 --> 01:11:06.810
+Vitalik Buterin: I think this is one other thing that, like, we need to start thinking about right, which is that
+
+467
+01:11:06.920 --> 01:11:23.720
+Vitalik Buterin: there's been a lot of discussion around l 1 scaling and increasing the l 1 gas limit. And a big part of that for me is that if we're gonna increase the l 1 gas limit. And like, especially go to crazier levels. So like, I, yeah.
+
+468
+01:11:24.660 --> 01:11:44.210
+Vitalik Buterin: like, I think, like, I think I've given the number of couple of times of like 10 x in the 2026. Given sort of some of the relatively basic stuff, like delayed execution and double lock access list. But if we go beyond that, then, like, we really need to be clear. What are the limiting principles that we have? Like, what are the yeah things that we're not willing to
+
+469
+01:11:44.310 --> 01:11:48.040
+Vitalik Buterin: sacrifice. And one of the
+
+470
+01:11:48.760 --> 01:12:18.340
+Vitalik Buterin: things that's come up is like some limit to like dollars or Watts, or whatever for how much, how long it takes to Ck proof. And like, if zk, proving becomes the bottleneck, then basically the thing that matters in terms of like, how high the l 1 gas limit can go just becomes prover efficiency right? And if prover efficiency actually becomes more important than
+
+471
+01:12:18.370 --> 01:12:23.720
+Vitalik Buterin: regular execution efficiency, which seems
+
+472
+01:12:24.920 --> 01:12:32.870
+Vitalik Buterin: they're like. Likely, though I think that's something that we should explicitly evaluate. Then, that's like
+
+473
+01:12:32.990 --> 01:12:38.380
+Vitalik Buterin: something that we should take we should take into account.
+
+474
+01:12:39.940 --> 01:12:43.650
+Vitalik Buterin: I know I feel like I've I've burned through the questions where.
+
+475
+01:12:44.090 --> 01:12:46.049
+Tim Beiko: I think. Get Kev had a couple more.
+
+476
+01:12:47.570 --> 01:12:49.970
+Vitalik Buterin: Yeah, sorry. Yeah.
+
+477
+01:12:49.970 --> 01:12:51.999
+Kevaundray Wedderburn: Was mainly about is
+
+478
+01:12:52.110 --> 01:13:00.099
+Kevaundray Wedderburn: is the main argument that we need to switch from evm to a more traditional architecture? Or is this even more specific to risk 5.
+
+479
+01:13:01.050 --> 01:13:14.010
+Vitalik Buterin: I think I I personally feel more confident in the 1st than the second, like my big picture argument is that it seems like basically, all of these Ek, evms are written are done by
+
+480
+01:13:14.850 --> 01:13:25.150
+Vitalik Buterin: creating a Zk Vm for a much simpler vm than the Evm, and then like, basically just taking an ethereum client and sticking it into that vm.
+
+481
+01:13:25.260 --> 01:13:40.000
+Vitalik Buterin: and like the like. From what I can tell, they're like almost all done done that way. Right? And so if a yeah approver is done that way, then, like almost for free we
+
+482
+01:13:40.410 --> 01:13:56.940
+Vitalik Buterin: get the ability to just directly expose that underlying vm, to smart contract developers. Because as long as we yeah do it, right? We get the sandboxing right? Like, we, yeah, would we just go and expose that directly. And that's just like a massive
+
+483
+01:13:57.470 --> 01:14:02.280
+Vitalik Buterin: efficiency increase. So like. That's the part that I feel
+
+484
+01:14:02.950 --> 01:14:18.661
+Vitalik Buterin: relatively more confident in. I mean the choice of like risk. 5 versus something else, I mean, I know other people like Zolo have, or Ellie from a start. Where have suggested
+
+485
+01:14:19.440 --> 01:14:33.449
+Vitalik Buterin: arithmetic, friendly vms like Cairo, and like, I think it's good that to have a group of people seriously exploring that hypothesis. And I think,
+
+486
+01:14:34.340 --> 01:14:53.799
+Vitalik Buterin: like my like. My own impression after reading people's feedback for a few days is basically that it's either risk 5 or it's something specifically arithmetic, friendly, because outside of the specifically arithmetic, friendly domain. There just isn't anything worth remotely close to
+
+487
+01:14:54.270 --> 01:15:13.339
+Vitalik Buterin: the level of adoption and like level of working at the risk 5 has had. But obviously, if it is specifically ck, friendly, then like, there's a good argument that that could give significantly higher efficiency or simplicities, and it seems valuable to explore.
+
+488
+01:15:14.383 --> 01:15:21.650
+Kevaundray Wedderburn: I guess one thing to just focus this a bit more is, how does this weigh in on Eof? Because.
+
+489
+01:15:21.990 --> 01:15:22.330
+Vitalik Buterin: Okay.
+
+490
+01:15:22.330 --> 01:15:25.470
+Kevaundray Wedderburn: There is 5 switch later on.
+
+491
+01:15:25.470 --> 01:15:26.040
+Vitalik Buterin: Yep.
+
+492
+01:15:26.220 --> 01:15:28.260
+Kevaundray Wedderburn: Is this also to like? Not do? Eof.
+
+493
+01:15:30.389 --> 01:15:31.039
+Vitalik Buterin: Right?
+
+494
+01:15:31.230 --> 01:15:57.060
+Vitalik Buterin: So I think right. So the way that I think about it is that there's like a couple of aspects to sort of quote dof right. One of them is specific features that we want to introduce, and then the other is there is this underlying philosophy of future proofness? So that covers not things like versioning. It covers things like code sections, and
+
+495
+01:15:57.950 --> 01:16:06.650
+Vitalik Buterin: it, it covers like even just the underlying idea that we make a new Vm where things are much more locked down, and so on, and so on.
+
+496
+01:16:06.770 --> 01:16:10.729
+Vitalik Buterin: And the yeah, like
+
+497
+01:16:11.320 --> 01:16:23.160
+Vitalik Buterin: a lot of the underlying philosophy behind some of those decisions, I feel was made with the idea in mind that, like this would be the end game for ethereum.
+
+498
+01:16:23.160 --> 01:16:43.820
+Vitalik Buterin: But then, if the end game for ethereum that we think makes sense ends up just being. Let's like switch from the evm entirely to some like much simpler either risk 5 or like prove prover oriented. Vm, then that's like a different
+
+499
+01:16:43.840 --> 01:16:56.770
+Vitalik Buterin: endgame. And so we should reevaluate how we how we try to extract some of the like dev accent and efficiency benefits that we wanted to get out of out of you off for the
+
+500
+01:16:57.010 --> 01:17:00.820
+Vitalik Buterin: in the short term, right? So like, I think there are.
+
+501
+01:17:01.070 --> 01:17:14.539
+Vitalik Buterin: But like the whole like contract code, size, increase thing is and the the extra swap dupes is like a good example of that right like. There could be other examples as well.
+
+502
+01:17:17.680 --> 01:17:18.490
+Tim Beiko: Thanks.
+
+503
+01:17:19.740 --> 01:17:21.729
+Tim Beiko: Lucas has hung up.
+
+504
+01:17:22.170 --> 01:17:33.239
+Łukasz Rozmej: Yeah. So for me, it's hard to wrap my head around. How this, how the ethereum in this post risk 5 world with all these etik knowledge proofs will work
+
+505
+01:17:33.420 --> 01:17:50.599
+Łukasz Rozmej: so in. Maybe we will get, for example, also risk hardware. But for now this, this, the hardware of this, is not the case. So this still needs to the 3 C. Code still needs to be interpreted. It still needs to be
+
+506
+01:17:51.110 --> 01:18:02.959
+Łukasz Rozmej: gated or ahead of time compiled. So what's the benefit here, except, okay, it's more native to the Z. The current vms.
+
+507
+01:18:08.210 --> 01:18:14.080
+Ben Adams: Mean the builder. The builders would still have to run interpreters.
+
+508
+01:18:16.740 --> 01:18:24.290
+Vitalik Buterin: Right? Well, builders and nodes that kind of re execute fully for analytics reasons. But
+
+509
+01:18:24.430 --> 01:18:46.460
+Vitalik Buterin: and I think a couple of arguments right one is that like the the provers are a big deal. And like they yeah, might. And like, I think there's a good argument that they will be the primary bottleneck on like, how how high we can safely raise the raise the gasoline in the future. So that's 1 2. Is that like, there's
+
+510
+01:18:46.770 --> 01:18:53.930
+Vitalik Buterin: benefits that are to risk 5 that are not just speed, but rather devx. And
+
+511
+01:18:54.620 --> 01:18:58.880
+Vitalik Buterin: 3 is that.
+
+512
+01:18:59.330 --> 01:19:00.879
+Vitalik Buterin: The yeah. Like.
+
+513
+01:19:01.200 --> 01:19:13.909
+Vitalik Buterin: there is a large set of Co. Of contracts, where, if you in like, compile them down into risk 5, they still become much more efficient. And the way to think about this is that
+
+514
+01:19:13.910 --> 01:19:40.590
+Vitalik Buterin: a lot of for like, for almost the the average computation, like the average number that the average computation manipulates is going is a very small number. Right? It's like an index. It's 0. It's 1. It's like a program counter, like basically stuff that fits in 32 bit right? And so the evm ends up wasting a lot of space by using 256 bit for those. And I just the computation ends up being
+
+515
+01:19:40.940 --> 01:19:51.509
+Vitalik Buterin: more efficient because in risk 5 would be able to take all of those like index type variables and just treat them as a 32 bit value instead of a 2 56 bit value.
+
+516
+01:19:54.540 --> 01:20:03.430
+Tim Beiko: Okay, maybe just to zoom out a little bit. So if had bunch of comments in the chat around the process, I think a lot of people echoed this. So
+
+517
+01:20:03.810 --> 01:20:21.079
+Tim Beiko: with regards to how this impacts eof, there's kind of 2 paths we can take. One is, we assume it broadly doesn't, and there's too high of uncertainty to choose now. So we make a kind of local decision about Eof on Monday. Maybe this is like descoping eof, or.
+
+518
+01:20:21.080 --> 01:20:34.805
+Tim Beiko: you know, keeping it as is. But we just assume that we will not know much more about risk 5 in the short term, and we should be aware that, you know, there's like this pending potential like other other execution environment.
+
+519
+01:20:35.210 --> 01:20:53.570
+Tim Beiko: The other path that I was proposing is, should we have some sort of research sprint around this, where we kind of assume we move forward with whatever version of eof we choose on Monday. But then we have kind of a concern concerted effort over the next month to like. Answer some of these questions.
+
+520
+01:20:53.890 --> 01:20:58.310
+Tim Beiko: I guess, with that second path I'm not sure, like, what is the thing
+
+521
+01:20:58.570 --> 01:21:01.949
+Tim Beiko: that we could learn in the next, say 4 weeks.
+
+522
+01:21:02.590 --> 01:21:07.589
+Tim Beiko: and give us confidence about this decision like it seems like there's many of these
+
+523
+01:21:08.230 --> 01:21:15.300
+Tim Beiko: uncertainties that are kind of evolving over like months to year timeframes. But are there specific questions that
+
+524
+01:21:15.950 --> 01:21:21.880
+Tim Beiko: you know? People feel that if we spend 4 weeks, you know, focusing on this, we would actually.
+
+525
+01:21:22.210 --> 01:21:24.040
+Tim Beiko: we would actually learn that.
+
+526
+01:21:33.090 --> 01:21:43.948
+Tim Beiko: Yeah. Yeah. And my sense is like, yeah, 4 weeks if I had to bet. This is more like 4 months than 4 weeks, and then at that point the cost of waiting for eof is
+
+527
+01:21:44.370 --> 01:21:47.036
+Tim Beiko: is is is quite high.
+
+528
+01:21:51.890 --> 01:22:00.125
+Tim Beiko: yeah. So look, there's benefits to to to studying this for 4 weeks, like Onsgar says. But I I think here, I really want to focus on
+
+529
+01:22:01.430 --> 01:22:05.450
+Tim Beiko: yeah, Eof, specifically, not just the entire risk. 5 thing like
+
+530
+01:22:05.710 --> 01:22:10.489
+Tim Beiko: we need to make this decision. I think we could probably delay it
+
+531
+01:22:10.760 --> 01:22:18.619
+Tim Beiko: a few weeks. If it was, if we would like learn something quite important in that process. And
+
+532
+01:22:19.660 --> 01:22:32.520
+Tim Beiko: like, yeah, if if we're not going to learn that much relevant in the next 4 weeks, specifically regarding Eof. Then sure, maybe we can also investigate this. But we shouldn't block our Fusaka scoping decision based on it?
+
+533
+01:22:38.500 --> 01:22:42.700
+Tim Beiko: yeah, okay, okay, so it seems like,
+
+534
+01:22:50.030 --> 01:22:58.620
+Tim Beiko: okay, so it seems like, we effectively don't want a couple of those decisions. If that's
+
+535
+01:22:58.840 --> 01:23:01.150
+Tim Beiko: the case that I would still say.
+
+536
+01:23:02.060 --> 01:23:08.810
+lightclient: I think we should. I think we should consider that in the discussion they're totally related.
+
+537
+01:23:09.070 --> 01:23:11.700
+lightclient: It's not possible to think about them in isolation.
+
+538
+01:23:12.140 --> 01:23:17.539
+Charles C (vyper): Yeah, it. It's like not free to ship either of these.
+
+539
+01:23:20.070 --> 01:23:21.950
+Tim Beiko: Correct. So I guess. Okay. But then.
+
+540
+01:23:23.090 --> 01:23:25.470
+Tim Beiko: independent of risk, 5 like, you know.
+
+541
+01:23:25.850 --> 01:23:35.739
+Tim Beiko: if we assume there probably will be some changes to the Evm in the future, or to like, you know, ethereum's execution environment in the future.
+
+542
+01:23:36.310 --> 01:23:54.709
+Tim Beiko: that is something we can like wait as an abstract consideration in the Eof decision like, do we want to maintain N equals to Evms today, and then have some 3rd thing in the future that's independent from like the specifics of risk. 5 specific like, and and how that would work, you know. Maybe we end up moving to something else.
+
+543
+01:23:55.000 --> 01:24:01.880
+Tim Beiko: But I don't know that there's much more we'll learn on that topic in like a couple of weeks. I feel like by Monday.
+
+544
+01:24:02.270 --> 01:24:08.542
+Tim Beiko: People will have their opinions set on this at a high level
+
+545
+01:24:09.330 --> 01:24:14.610
+Tim Beiko: And then, like I would lean towards making a call on Monday about
+
+546
+01:24:15.200 --> 01:24:29.202
+Tim Beiko: the scope of Eof in Fussaka or not. And this is either we this, either. We ship eof as it currently is, and we're okay with libraries having to update
+
+547
+01:24:29.840 --> 01:24:31.053
+Tim Beiko: and then
+
+548
+01:24:31.830 --> 01:24:40.946
+Tim Beiko: and and then the other option is some different version of Eof. And then, you know, there's another option that's like we remove eof, and we potentially do some piecemeal
+
+549
+01:24:41.360 --> 01:24:43.693
+Tim Beiko: evm improvements in this fork.
+
+550
+01:24:44.410 --> 01:24:48.129
+Tim Beiko: but I don't think we need to couple this with risk. 5. Beyond saying
+
+551
+01:24:49.150 --> 01:25:03.370
+Tim Beiko: Eof is unlikely to be ethereum's final execution environment endgame and we should work on getting the final execution environment and game. But that's going to take months to years. Yeah.
+
+552
+01:25:07.590 --> 01:25:15.260
+lightclient: Yeah, I mean, I feel like, with this layered onto the last conversation about whether or not to have introspection. We just were not ready.
+
+553
+01:25:15.690 --> 01:25:17.570
+lightclient: We're not ready to make this decision.
+
+554
+01:25:18.210 --> 01:25:30.840
+Tim Beiko: And then, yeah, so if we're not look, we can choose to not do eof because we're not ready. And, you know, potentially just delay it, quote forever. And it, I think, short term, though we should.
+
+555
+01:25:31.390 --> 01:25:33.290
+Tim Beiko: we should be mindful that
+
+556
+01:25:34.010 --> 01:25:57.300
+Tim Beiko: it doesn't seem like there's much desire to do this in, say Glamsterdam. So if we don't do eof in in Fusaka, then we should just assume like for the next couple of years. We're not going to be doing this, and maybe there is like some version of Eof we do in 2 years, when we have a way. Better understanding of the Evm endgame or like the eln game.
+
+557
+01:25:57.460 --> 01:26:05.320
+Tim Beiko: But yeah, if we, if we think like, the general uncertainty independent of risk, 5
+
+558
+01:26:06.620 --> 01:26:11.210
+Tim Beiko: is is is too big. Then we can decide to not change anything. And
+
+559
+01:26:11.390 --> 01:26:14.310
+Tim Beiko: but that should be the thing we we decide. Yeah.
+
+560
+01:26:19.620 --> 01:26:22.720
+Dan Cline: Yeah, I think. Well, like risk 5 like is.
+
+561
+01:26:22.920 --> 01:26:28.050
+Dan Cline: you know, relevant to to the conversation like it's it's very possible we don't learn much
+
+562
+01:26:28.230 --> 01:26:34.219
+Dan Cline: in the short term to the point where we have to make a decision on eof anyways.
+
+563
+01:26:39.880 --> 01:26:42.240
+Tim Beiko: Okay. So I think by Monday
+
+564
+01:26:42.520 --> 01:26:48.709
+Tim Beiko: we should make it. Oh, sorry. On Monday's testing call we make a final call about the Fussaka scope for eof
+
+565
+01:26:49.100 --> 01:27:02.979
+Tim Beiko: people can have different estimates of uncertainty, and we should wait that into the decision. But I don't think we should over index on risk 5 specifically but we can imagine that something of that magnitude
+
+566
+01:27:03.080 --> 01:27:09.189
+Tim Beiko: is likely to happen at some point, and that might change whether or not we want to do eof at all. Does that make sense?
+
+567
+01:27:11.540 --> 01:27:14.019
+Tim Beiko: And yeah, Justin, just to be really clear, like I,
+
+568
+01:27:14.980 --> 01:27:17.489
+Tim Beiko: there is a pure research idea.
+
+569
+01:27:18.070 --> 01:27:20.689
+Tim Beiko: you know, there's some chance that it actually happens.
+
+570
+01:27:20.920 --> 01:27:27.909
+Tim Beiko: There's some chance that some version of it happens, or some chance that something completely different happens in 5 years. And then
+
+571
+01:27:28.530 --> 01:27:32.432
+Tim Beiko: assuming something were to happen like, Is that
+
+572
+01:27:34.050 --> 01:27:36.672
+Tim Beiko: yeah, it it. Does that change your decision?
+
+573
+01:27:39.780 --> 01:27:43.810
+Justin Florentine (Besu): Yeah, I think what I'm trying to say is like, I don't even know how to compare those 2 things.
+
+574
+01:27:44.660 --> 01:27:45.710
+Tim Beiko: Well, it's more.
+
+575
+01:27:46.940 --> 01:27:49.910
+Tim Beiko: If if you know that you're gonna have to add this.
+
+576
+01:27:50.170 --> 01:27:57.959
+Tim Beiko: call it risk. 5. Ask thing in 5 years does do an Eof today make a difference.
+
+577
+01:28:04.630 --> 01:28:05.300
+Tim Beiko: Yeah?
+
+578
+01:28:07.140 --> 01:28:10.370
+Tim Beiko: And if not, that's fine, like, I think one argument is like it
+
+579
+01:28:10.550 --> 01:28:20.294
+Tim Beiko: kind of doesn't. And like to the extent we need backwards compatibility with the evm. We're gonna need it with Eof. And we're gonna need to write all that tooling, anyway. And then
+
+580
+01:28:21.800 --> 01:28:24.008
+Tim Beiko: to the extent it does.
+
+581
+01:28:24.930 --> 01:28:28.478
+Tim Beiko: Then, yeah, maybe having like less.
+
+582
+01:28:29.750 --> 01:28:33.169
+Tim Beiko: like, yeah, maybe you want to keep a separate evm. Now, yeah.
+
+583
+01:28:33.952 --> 01:28:56.867
+Tim Beiko: I do want to wrap this up. Yeah, there is one other important thing we need to talk about today. Again, I think we can continue this discussion offline. But I think I want to talk about the gas limit execution, and then maybe the block limit. But on the last awkward devs we we said that the other thing we wanted to prioritize for for Fusaka is
+
+584
+01:28:57.500 --> 01:29:18.200
+Tim Beiko: focusing on raising the gas limit. And obviously the gas limit is not part of like the Hard fork. People can raise it whenever whatever but there is value in coordinating towards actually improving and and scaling the gas limit and figuring out what is a safe value that we can update defaults, for
+
+585
+01:29:18.270 --> 01:29:28.439
+Tim Beiko: when the fork goes, live again we don't need to wait until the fork to raise the gas limit. If we feel like it's it's kind of safe to improve to increase it. But,
+
+586
+01:29:28.980 --> 01:29:53.449
+Tim Beiko: The idea is that this eip that I showed in the chat would be like our final backstop, where by the time we ship Fusaka, maybe we realize 80 million gas is fine, and so all the clients ship with 80 million gas, and maybe Mainnet is already at like 60 or whatever by by that point and it's been kind of a weird eip to draft in that. It's it's kind of drafting this
+
+587
+01:29:53.900 --> 01:30:12.513
+Tim Beiko: most almost like an idea that we want to focus on this. But it does feel important to have something like that, because otherwise we will just add a bunch of stuff in the fork, and then no one will have time to work on the gas limit and the gas limit will be the same a year from now than it is today.
+
+588
+01:30:13.260 --> 01:30:20.380
+Tim Beiko: so I know that, like, yeah, there's still a bunch of comments on the eip. But at a high level are people generally happy with
+
+589
+01:30:20.640 --> 01:30:23.734
+Tim Beiko: moving something like this into Fusaka.
+
+590
+01:30:26.990 --> 01:30:33.129
+Tim Beiko: and okay, that's just into the point. Specifically, the thing that the eip is saying, like, we don't need one.
+
+591
+01:30:33.400 --> 01:30:42.618
+Tim Beiko: In theory, there's value in the eip specifying the default. And there's value of the eip as like a reminder that we need to do this work.
+
+592
+01:30:43.160 --> 01:30:53.879
+Tim Beiko: yeah. And we have had an utter eip about the defaults, for, like the blob counts on the El side. So it's not like this completely unprecedented thing. Yeah, then.
+
+593
+01:30:55.995 --> 01:31:01.634
+Ben Adams: Yeah, I'm good with it, because if you look at the gas limit, picks
+
+594
+01:31:02.680 --> 01:31:10.799
+Ben Adams: after the after the after the chain moved to 36 million. Basically
+
+595
+01:31:11.930 --> 01:31:15.490
+Ben Adams: 45% of it, hasn't we moved
+
+596
+01:31:15.750 --> 01:31:20.360
+Ben Adams: past 30 million. So it'd be good to get people a commitment from
+
+597
+01:31:20.870 --> 01:31:24.729
+Ben Adams: Cls and Els that they will change their defaults
+
+598
+01:31:28.390 --> 01:31:30.420
+Ben Adams: to to be the new hire level.
+
+599
+01:31:31.100 --> 01:31:36.480
+MariusVanDerWijden: Yes, we will change our defaults at some point.
+
+600
+01:31:38.310 --> 01:31:40.000
+Tim Beiko: And, Dan, you had your hand up.
+
+601
+01:31:40.170 --> 01:31:44.329
+Dan Cline: Yeah, I like it. I
+
+602
+01:31:44.740 --> 01:31:47.630
+Dan Cline: yeah, I mean it. Like, I agree that it's like,
+
+603
+01:31:49.530 --> 01:31:54.179
+Dan Cline: I mean doesn't really specify much right now. But like, I think that's okay.
+
+604
+01:31:54.958 --> 01:31:57.150
+Dan Cline: Can serve as like a
+
+605
+01:31:57.450 --> 01:32:04.160
+Dan Cline: important process document. For now, if anything having a vip like
+
+606
+01:32:04.460 --> 01:32:07.849
+Dan Cline: not actually specify things is kind of nice, because it
+
+607
+01:32:08.270 --> 01:32:13.170
+Dan Cline: don't really have to do anything. So oh, yeah.
+
+608
+01:32:17.250 --> 01:32:24.622
+Tim Beiko: Okay. So then I think the next point. So obviously, we, we didn't get this merged and and like done today. But
+
+609
+01:32:25.230 --> 01:32:41.779
+Tim Beiko: we should get it merged in the next week or so, and then, assuming there's no major objections, we can ssify it. On the last call, but it does feel like we've talked about this general concept for the past 2 calls so like I would move forward with it as soon as we have something merged that we're generally happy with.
+
+610
+01:32:43.030 --> 01:32:46.409
+Tim Beiko: Related to this one other proposal. That's
+
+611
+01:32:48.370 --> 01:33:06.075
+Tim Beiko: yeah, that we should review, and then potentially also do to towards increasing the gas limit. Is this idea of adding a cap to the block size at the Rlp level, because there is one already on the Cl. Gossip side, and this would help kind of cap things.
+
+612
+01:33:06.820 --> 01:33:11.129
+Tim Beiko: I don't know if Julio is on the call to give like a 1 min pitch.
+
+613
+01:33:11.767 --> 01:33:15.212
+Ben Adams: He's yeah. He's not on the call. I can give it
+
+614
+01:33:15.810 --> 01:33:23.790
+Ben Adams: So the Cls went gossip a block larger than including the Cl. Part larger than 10 MB.
+
+615
+01:33:24.722 --> 01:33:32.350
+Ben Adams: So, since you can do a block 0, even with the change in Petra
+
+616
+01:33:32.650 --> 01:33:38.999
+Ben Adams: of all Zeros that would put the cap safe cap at a hundred mega gas.
+
+617
+01:33:40.024 --> 01:33:44.010
+Ben Adams: The inverse. If it's not zeros
+
+618
+01:33:44.200 --> 01:33:48.170
+Ben Adams: these. The cap is like 400 million gas.
+
+619
+01:33:48.729 --> 01:33:56.650
+Ben Adams: Just based on the bite size. So if we put a cap of 10 MB minus some margin
+
+620
+01:33:56.780 --> 01:34:01.690
+Ben Adams: on block building and say, it's an invalid block if it goes over that size.
+
+621
+01:34:01.810 --> 01:34:06.129
+Ben Adams: Then we no longer have to consider cool data.
+
+622
+01:34:07.080 --> 01:34:11.329
+Ben Adams: going over that size when building blocks, so we can put more execution.
+
+623
+01:34:12.106 --> 01:34:16.690
+Ben Adams: And have a higher gas limit than a hundred 1 million. So, for instance, we could do
+
+624
+01:34:16.870 --> 01:34:22.980
+Ben Adams: the 150, which was the original suggestion for the default change to investigate.
+
+625
+01:34:23.280 --> 01:34:26.520
+Ben Adams: We can do that if we put a cap on the byte side.
+
+626
+01:34:30.531 --> 01:34:33.750
+Ben Adams: But it it's unsafe if we don't cap by type.
+
+627
+01:34:34.120 --> 01:34:37.130
+Ben Adams: because there is an inherent cap in the Cl.
+
+628
+01:34:37.530 --> 01:34:38.160
+Tim Beiko: Great
+
+629
+01:34:41.150 --> 01:34:53.149
+Tim Beiko: thanks. And so, okay, I I know we're already at time. So I think people should also review this. But we can make a final call on the next call. And I think for this gas limit one again. It's kind of weird because we said the scope for
+
+630
+01:34:53.230 --> 01:35:15.060
+Tim Beiko: Fusaka should be finalized. But then, if we agree in the abstract increasing the gas limit, then I expect we will maybe see some minor eips like this come in that like actually allow us to do it. So my proposal here would be, by the next call we merge. And we sfi, the actual gas limit eip, and then maybe this one as well. But we should be open to
+
+631
+01:35:15.090 --> 01:35:25.368
+Tim Beiko: small incremental eips that actually help us get 100 million gas being added in Fusaka, even if they don't exist today because we don't know what the actual bottlenecks are.
+
+632
+01:35:28.040 --> 01:35:28.710
+Tim Beiko: yeah,
+
+633
+01:35:31.080 --> 01:35:43.839
+Tim Beiko: okay, we're already at time. The last thing on the agenda. So there's some quick updates on history expiry. If people want to stay for an extra minute or 2, I think it's probably worth getting on the same page about that, and then we can wrap up.
+
+634
+01:35:44.345 --> 01:35:46.359
+Tim Beiko: Piper, are you on the call?
+
+635
+01:35:46.640 --> 01:35:57.330
+Piper Merriam: I am the Meta eap for history. Expiry is 7, 9, 2, 7. Take a look at it. Sepulia activation happens on May. 1st
+
+636
+01:35:57.560 --> 01:36:13.924
+Piper Merriam: you're an execution layer client team, please, get some documentation on any changes to your client behavior published, and send me a link to that, so that we can aggregate that stuff together to make it easier for node operators to know
+
+637
+01:36:14.410 --> 01:36:24.709
+Piper Merriam: what is changing in their clients. And there's a link on the Pm. Repo for the meeting today. Of the
+
+638
+01:36:24.990 --> 01:36:40.149
+Piper Merriam: each clients repository. That shows where all of the error files are for sepulia data for mainnet data. Things like that. Take a look at that stuff and get documentation out for how your client is changing, based on history drop. That's it.
+
+639
+01:36:41.310 --> 01:36:45.849
+Tim Beiko: Thank you. Perry has a question which Els have is history
+
+640
+01:36:46.120 --> 01:36:49.219
+Tim Beiko: drop for sepulia in their main net, releases.
+
+641
+01:36:58.240 --> 01:37:06.500
+Piper Merriam: Believe I'm aware of Geth and Baysu. But client team should con we shouldn't take my word for that.
+
+642
+01:37:11.184 --> 01:37:14.109
+Tim Beiko: For guest. This is not turned on by default.
+
+643
+01:37:17.890 --> 01:37:22.299
+Tim Beiko: Okay, so no base suit. No, never mind. No guests.
+
+644
+01:37:31.280 --> 01:37:32.060
+Tim Beiko: Okay.
+
+645
+01:37:34.300 --> 01:37:42.090
+Tim Beiko: We already have time. When is the net? Is there like a next touch point for history, expiry that clients should join to discuss this?
+
+646
+01:37:42.730 --> 01:37:46.000
+Tim Beiko: If we are doing it in the next 2 weeks.
+
+647
+01:37:46.240 --> 01:37:56.320
+Piper Merriam: I'm not aware of any further decisions that need to be made. I believe that all of please correct me if I'm wrong. I believe that clients should have everything that they need to act on this.
+
+648
+01:37:58.550 --> 01:38:08.839
+Tim Beiko: Well, I guess they need a client release. We would need to test this. It would be good to have some like coordination. But what is like the best place for? Yeah. Just people to follow up on this?
+
+649
+01:38:09.020 --> 01:38:10.970
+Tim Beiko: Is it the discord.
+
+650
+01:38:10.970 --> 01:38:19.681
+Piper Merriam: Yep, the discord, history, exprey channel. If there's something that you guys need. With respect to to moving this forward, let me know.
+
+651
+01:38:21.600 --> 01:38:30.340
+Piper Merriam: I I. To the best of my knowledge, everything about history expree has been defined and and finalized, and client team should be able to act on it.
+
+652
+01:38:33.110 --> 01:38:40.730
+Tim Beiko: Okay? Okay, let's follow up on the history expiry channel. I know we're already a bit over time. So any final thing
+
+653
+01:38:41.580 --> 01:38:42.760
+Tim Beiko: people want to cover.
+
+654
+01:38:46.230 --> 01:39:00.929
+Tim Beiko: Okay? If not, well, thanks everyone. So yes, reminder. Monday's call. We will make a final decision about eof and then go from there. And please review these gas limit eips as well. In the next few days we'll try to get them merged next week.
+
+655
+01:39:01.594 --> 01:39:03.570
+Tim Beiko: Yeah, thanks a lot. Everyone.
+
+656
+01:39:04.480 --> 01:39:05.510
+stokes: Thank you.
+
+657
+01:39:06.370 --> 01:39:07.330
+Julian Sutherland (Nethermind): Thank you.
+
+658
+01:39:08.140 --> 01:39:10.010
+MariusVanDerWijden: Bye, everyone thanks you, but.
+
+659
+01:39:10.210 --> 01:39:11.579
+Orest Tarasiuk (t1): Thank you. Bye, guys.
+

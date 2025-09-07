@@ -1,0 +1,2610 @@
+WEBVTT
+
+1
+00:08:04.750 --> 00:08:06.760
+Justin Florentine (Besu): Good morning, Eth. O'clock.
+
+2
+00:08:09.680 --> 00:08:11.110
+Pooja Ranjan: Morning, everyone.
+
+3
+00:10:01.010 --> 00:10:02.310
+lightclient: Don't hear you, Tim.
+
+4
+00:10:14.745 --> 00:10:16.970
+Tim Beiko: Does anyone hear me now?
+
+5
+00:10:17.740 --> 00:10:18.410
+Josh Davis: Yep. Yep.
+
+6
+00:10:19.280 --> 00:10:19.940
+Tim Beiko: Great.
+
+7
+00:10:22.980 --> 00:10:23.849
+Tim Beiko: I don't.
+
+8
+00:10:23.990 --> 00:10:28.410
+Tim Beiko: But we'll move over in a minute or so. Let's people come in
+
+9
+00:11:15.020 --> 00:11:18.580
+Tim Beiko: one more minute and we'll get started. I'll just make final teeth to the agenda.
+
+10
+00:11:44.490 --> 00:11:48.140
+Tim Beiko: Okay, Josh, do you wanna move us over.
+
+11
+00:11:50.200 --> 00:11:51.129
+Josh Davis: Your life.
+
+12
+00:11:52.400 --> 00:12:02.470
+Tim Beiko: Okay, welcome everyone to acde number 212
+
+13
+00:12:03.060 --> 00:12:16.059
+Tim Beiko: bunch of different things on the agenda today. But 1st thing will be to finalize the list of Fusaka vips for def net one we'll also get some updates on implementation from teams.
+
+14
+00:12:16.210 --> 00:12:28.684
+Tim Beiko: Then Alan had written a good post about how we should approach test deployments after we had these issues with Petra. So we should discuss this a bit.
+
+15
+00:12:29.350 --> 00:12:52.189
+Tim Beiko: then, after that I want to discuss with how we should approach Glamsterdam scoping under this new process. We've been discussing these past couple of weeks. Couple of other things related to that around just how we should approach reviewing breakouts. Input collection. And then, if we have time, there's a couple of different proposals. I wanted a quick review. But otherwise we can move that Async
+
+16
+00:12:52.640 --> 00:13:02.260
+Tim Beiko: before we jump into the Fussaka planning discussion. Perry, do you want to give us an update on the current state of implementations.
+
+17
+00:13:03.620 --> 00:13:06.129
+Barnabas: Yes, I can. I'm not sorry, but
+
+18
+00:13:07.238 --> 00:13:35.909
+Barnabas: close enough. So we have a few dozen currently running. We do not have too much fuzzing going on here. We just basically do a stable spamming of blobs and different clients are testing whether they are able to sync up and whether they can do backfill. I think, as of right now, most of the clients are unable to backfill anything, and we're going to be
+
+19
+00:13:36.100 --> 00:13:43.130
+Barnabas: probably request our clients to have backfill working by like Devnet one or Devnet 2.
+
+20
+00:13:43.440 --> 00:13:53.680
+Barnabas: You also do not yet have valid custody implemented by many clients, so we don't really does that because that would just cause unnecessary chaos when
+
+21
+00:13:53.890 --> 00:14:02.400
+Barnabas: we we know that it's not supposed to work just yet. But other than that we have on boarded almost all the different clients
+
+22
+00:14:02.550 --> 00:14:08.160
+Barnabas: we recently as well, and they were also able to sync up to head. And
+
+23
+00:14:08.410 --> 00:14:14.069
+Barnabas: I made some deposits, and they have some index returning, and we have 100% participation.
+
+24
+00:14:17.180 --> 00:14:24.000
+Barnabas: So that is, regarding Devnet 7. And on Monday we plan to launch physical devnet 0.
+
+25
+00:14:24.140 --> 00:14:33.459
+Barnabas: And I am actively testing now the different client combos we have grandin prism load start deku working on the cl side
+
+26
+00:14:33.580 --> 00:14:36.440
+Barnabas: and get on the yeah. 3, rd as of now.
+
+27
+00:14:36.740 --> 00:14:47.370
+Barnabas: we're still waiting for nimbus and lighthouse to have the branches published for this year, and pretty much all the other ears to.
+
+28
+00:14:47.910 --> 00:14:50.979
+Barnabas: Oh, publish working branches.
+
+29
+00:14:54.030 --> 00:14:54.700
+Parithosh Jayanthi: Yeah.
+
+30
+00:14:54.700 --> 00:14:55.080
+Tim Beiko: Too.
+
+31
+00:14:55.408 --> 00:15:12.491
+Parithosh Jayanthi: Follow up. We have the East tests that were released yesterday, I think, and now there's a hive instance for it already. We have only one result so far from Geth, so if other emails give us an image, we're happy to start running them against East tests.
+
+32
+00:15:13.380 --> 00:15:35.850
+Parithosh Jayanthi: And for us testing the security team has a tool that allows us to create network partitions. And I've been playing around a little bit with it. There's a lot more features coming in over the next days, but it seems like the partition test is already failing, and might have caught something. So I'll try to dig in a bit more and figure out what's going on there.
+
+33
+00:15:41.390 --> 00:15:47.980
+Tim Beiko: Thank you. Yeah. Question by various in the chat that we tried it. That's without super nodes. Is that something we should test.
+
+34
+00:15:49.390 --> 00:15:50.580
+Barnabas: Eventually, yes.
+
+35
+00:15:51.640 --> 00:15:54.360
+Tim Beiko: So we we have not yet, but we we will.
+
+36
+00:15:54.360 --> 00:16:03.820
+Barnabas: We? We haven't yet. We have a critic test for basically creating a perfect pure desk network where we have 16
+
+37
+00:16:04.950 --> 00:16:10.660
+Barnabas: 16 nodes. And each node is basically just
+
+38
+00:16:10.870 --> 00:16:19.440
+Barnabas: taking 8 columns for themselves. So no super notes. And we will have 100% coverage of all, 1, 28 columns that way.
+
+39
+00:16:21.940 --> 00:16:22.730
+Tim Beiko: Got it.
+
+40
+00:16:23.270 --> 00:16:30.169
+Barnabas: So in technically, we could, we could test this perfect good desk. And see if it's working fine that way.
+
+41
+00:16:37.750 --> 00:16:45.459
+Tim Beiko: Okay, anything else on the peer dos devnets or devnet 0 0 that we're about to launch.
+
+42
+00:16:50.420 --> 00:16:54.150
+Tim Beiko: Oh, new consensus specs releases nice.
+
+43
+00:16:54.810 --> 00:17:08.630
+Barnabas: So we have reached out to every single client, and everyone got back to us. Everyone is still working on implementation. Hopefully. By Monday we can have a pretty stable, and then we're gonna be shutting off.
+
+44
+00:17:12.530 --> 00:17:13.349
+Tim Beiko: Sounds good.
+
+45
+00:17:14.950 --> 00:17:18.230
+Tim Beiko: Does any team think they will not be able to make it on Monday?
+
+46
+00:17:21.726 --> 00:17:34.877
+Andrew Ashikhmin: Well, we might not be able to make it on Monday, because we we've implemented like the, but we haven't implemented the Ps.
+
+47
+00:17:36.070 --> 00:17:39.309
+Andrew Ashikhmin: once, like the engine Api changes and the
+
+48
+00:17:39.730 --> 00:17:48.889
+Andrew Ashikhmin: Tx pools, the expos changes. So maybe like, I think so, someone's working on it. So maybe some. You can comment on the status.
+
+49
+00:17:56.904 --> 00:18:02.419
+Som | Erigon: Sorry. Yeah. So well, I think we might be able to publish. A branch
+
+50
+00:18:02.750 --> 00:18:08.430
+Som | Erigon: may not be merged into main yet, but oh, we can do that.
+
+51
+00:18:13.740 --> 00:18:14.400
+Tim Beiko: Okay.
+
+52
+00:18:21.060 --> 00:18:23.890
+Tim Beiko: okay, anything else on this academics?
+
+53
+00:18:29.500 --> 00:18:32.129
+Tim Beiko: If not, then. Yeah. So
+
+54
+00:18:32.260 --> 00:18:44.200
+Tim Beiko: last week we we discussed finalizing the scope for devnet one on this call and potentially trying to get the full set of vips for Fusaka sorted.
+
+55
+00:18:44.380 --> 00:19:07.560
+Tim Beiko: I think there's value in in kind of breaking down which Ips we want, in which Devnet, so that we don't have a like set of 6 new vips coming in, and all the clients working on different ones and and making it harder to kind of move, move forward as a group. So I asked if people could share their preferences for Devnet, one devnet 2, and then
+
+56
+00:19:08.000 --> 00:19:15.769
+Tim Beiko: potentially making devnet to the last devnet, where we accept new vips for Fussaka. So this gives us kind of 2 more rounds, and then.
+
+57
+00:19:16.260 --> 00:19:25.810
+Tim Beiko: I guess, related to that is, whether we should remove some things from the Cfi list. Because, you know, at this point we we don't think we're gonna make them
+
+58
+00:19:26.860 --> 00:19:39.150
+Tim Beiko: So 3 teams, I think. Never mind Aragon, and basically shared their views before this call. The the one thing that seemed like all of them are
+
+59
+00:19:39.730 --> 00:20:01.399
+Tim Beiko: sorry. The the there were 2 eips that seem like both of them agreed should go into the next devnet devnet. One was eip, 7, 8, 2, 5 transaction gas limit cap, and then eip 7, 9, 3, 4, the Rlp block size limit, and both of these seem
+
+60
+00:20:01.780 --> 00:20:05.459
+Tim Beiko: like this 3 teams, one of them in Devnet one.
+
+61
+00:20:05.630 --> 00:20:11.969
+Tim Beiko: I'm yeah. I'm curious. Guess, Russ, how do you feel about those.
+
+62
+00:20:18.480 --> 00:20:25.729
+lightclient: I'm honestly still trying to understand what the transaction gas cap is trying to target.
+
+63
+00:20:25.990 --> 00:20:30.159
+lightclient: Because I think most of the motivation doesn't really make sense in the eap.
+
+64
+00:20:37.530 --> 00:20:49.989
+Roman: We are. We're for that in the transaction desktop, just to try to transfer that's point
+
+65
+00:20:50.870 --> 00:20:52.759
+Roman: like it. It really helps
+
+66
+00:20:53.080 --> 00:21:03.059
+Roman: with prevailization and not not having to care about this worst case. One transaction that you cannot like, execute in preval or pre-worm.
+
+67
+00:21:03.310 --> 00:21:06.350
+Roman: or do anything with it, is it how to do it sequentially.
+
+68
+00:21:07.950 --> 00:21:17.950
+lightclient: Yeah. But I think that this is kind of missing the point of where we're going, which is large transactions that are batching many user operations together.
+
+69
+00:21:18.470 --> 00:21:26.759
+lightclient: you know, with 7,702, we're almost certainly going to see an increase in the average transaction size over the next 12 months.
+
+70
+00:21:26.880 --> 00:21:31.140
+lightclient: and it's going to have big implications on things like this.
+
+71
+00:21:35.130 --> 00:21:39.220
+Tim Beiko: I'm yeah. No, Andrew, did you want to answer that.
+
+72
+00:21:39.440 --> 00:21:43.630
+Andrew Ashikhmin: So, yeah, we we are working on parallel execution. And
+
+73
+00:21:44.767 --> 00:21:47.629
+Andrew Ashikhmin: we'd like to avoid massive transactions.
+
+74
+00:21:48.230 --> 00:21:53.409
+Andrew Ashikhmin: So yeah, this this cap will help with the with the throughput.
+
+75
+00:21:58.640 --> 00:22:00.279
+Tim Beiko: Thanks. Roman, yeah.
+
+76
+00:22:00.280 --> 00:22:17.789
+Roman: Yeah. Well, one more follow up. Comment is, I don't think it is fair to the protocol. If the the user or like the badger combines all the operations into a single transaction, and bypasses paying the base transaction cost.
+
+77
+00:22:20.320 --> 00:22:22.770
+lightclient: Why is it not fair to the protocol?
+
+78
+00:22:23.150 --> 00:22:28.389
+lightclient: The protocol's resource pricing is transparent and fair and equal.
+
+79
+00:22:31.600 --> 00:22:37.239
+Tim Beiko: So I guess what's the argument for having a no cap
+
+80
+00:22:38.350 --> 00:22:58.019
+Tim Beiko: like if we if we have a cap now, that's effectively close to the block size limit. Couldn't we raise it in the future? Is it just that? Then it becomes bottlenecked on all core devs? And if we have a hundred 1 million gas, and we don't want to raise the cap to 100 million gas. Then people have to pay for 3 transactions instead of one.
+
+81
+00:22:58.770 --> 00:23:01.270
+Ben Adams: You can, you can only run
+
+82
+00:23:01.590 --> 00:23:07.069
+Ben Adams: a transaction that's the size of a block. So as if it's
+
+83
+00:23:07.460 --> 00:23:12.249
+Ben Adams: if you've got 4 transactions that are quarter of the block, you can run them all at once.
+
+84
+00:23:16.330 --> 00:23:18.780
+Tim Beiko: I'm yeah, junior.
+
+85
+00:23:20.010 --> 00:23:22.610
+Giulio: Yeah, I just wanted to say that
+
+86
+00:23:23.600 --> 00:23:53.360
+Giulio: the limit is is kind of a 30 million. And it's basically an entire block. The main reason just to the main rational action is that if we increase the gas limit we don't want to have to think about with the worst case transaction cases so limiting, it makes sense for the future. That's the main rational just to clarify that. But even in the context of a of a big of one block transactions. Even if you have the overhead of sending
+
+87
+00:23:53.760 --> 00:23:58.790
+Giulio: 2 transactions per block instead of one. It's it's just 21,000 gas.
+
+88
+00:23:59.200 --> 00:24:02.160
+Giulio: It's not that much? Really?
+
+89
+00:24:03.490 --> 00:24:04.170
+Giulio: Yeah.
+
+90
+00:24:07.090 --> 00:24:08.760
+Tim Beiko: Yeah, dunkrat.
+
+91
+00:24:11.330 --> 00:24:21.440
+Dankrad Feist: Yeah, I was wondering like it with the bundles. Do we actually have to apply the limit to the bundle, or can't we just apply the limit to the individual transactions in the bundle.
+
+92
+00:24:22.650 --> 00:24:28.040
+lightclient: Well to do that, we would have to have the individual operations in the bundle exposed.
+
+93
+00:24:28.440 --> 00:24:32.570
+lightclient: What their limits are, and that's kind of native account obstruction which.
+
+94
+00:24:33.170 --> 00:24:39.569
+Dankrad Feist: Don't have yet right. Oh, so we cannot know what the gas limit for the transactions in the bundle.
+
+95
+00:24:39.990 --> 00:24:40.850
+lightclient: Correct.
+
+96
+00:24:41.215 --> 00:24:42.310
+Dankrad Feist: Right? Right? Right?
+
+97
+00:24:43.380 --> 00:24:44.110
+Dankrad Feist: Okay.
+
+98
+00:24:44.480 --> 00:24:45.460
+lightclient: Yeah, I mean, I don't think.
+
+99
+00:24:45.460 --> 00:25:00.580
+Dankrad Feist: Otherwise, like the main reason for the whole thing is like a transaction is kind of a nice object, with very clear in and outputs right? But splitting up one. Transactions can have like very complex state and a big memory and stuff like that.
+
+100
+00:25:00.700 --> 00:25:12.440
+Dankrad Feist: So it feels like for the bundles. That's not actually true, like, you don't actually transfer a complex state between the transactions in the bundle. So it feels like you could do something more there if you wanted to.
+
+101
+00:25:17.340 --> 00:25:18.740
+Tim Beiko: Yeah, I'm Anzgar.
+
+102
+00:25:20.030 --> 00:25:24.509
+Ansgar Dietrichs: Yeah, I just wanted to say, I think, whether to ship this now in
+
+103
+00:25:25.193 --> 00:25:51.709
+Ansgar Dietrichs: Fusaka or not is not so so important, maybe necessarily yet, but I think medium term we will need this anyway. Or there's several reasons, I think. Also, for example, I mean zk evm proving but then there's also, for example, something that we recently came across, which is that for capping individual types of consumption. So, for example, if you want to like, have a maximum amount of S stores that you have in a block or something
+
+104
+00:25:51.710 --> 00:26:11.509
+Ansgar Dietrichs: that in principle is something very desirable. So we can basically like handle worst cases more easily without making the entire operation more expensive. And the problem is that that opens you up to this like really bad dos issues where basically, you just don't see in advance how many stores a transaction will want to consume. So if you basically just have an upper gas limit
+
+105
+00:26:11.630 --> 00:26:41.000
+Ansgar Dietrichs: per transaction. That means, for example, if you have a 10 million gas limit per transaction and you have a hundred 1 million block gas limit, then you just know that you can always set that cap at 10% of what the worst case could be for block. And you never run into these dos issues. So basically meaning, I think, at the latest in Amsterdam. We want this, anyway, and I think, introducing it in Fuzaka already with a not so punishing limit like maybe more. 30 million like it's proposed, I think, would be just a very elegant way of of doing it now, while we have the resources. So I'd be in favor of doing it.
+
+106
+00:26:43.340 --> 00:26:45.190
+Tim Beiko: Thanks. Lukash.
+
+107
+00:26:45.390 --> 00:26:50.870
+Łukasz Rozmej: Yeah. So one of the proposed changes for the future are block access lists.
+
+108
+00:26:51.040 --> 00:27:09.760
+Łukasz Rozmej: and one of the flavor of block classes list allows for perfect parallelization, so parallelizing even the transactions that are dependent on each other on the State because of block abscess list, intermediate data, let's say so here, having a
+
+109
+00:27:10.610 --> 00:27:23.110
+Łukasz Rozmej: cap on the transaction. So basically guaranteeing that there are at least as many transactions in the block is would be directly connected to throughput
+
+110
+00:27:23.340 --> 00:27:32.580
+Łukasz Rozmej: and in terms of when to introduce this kind of cap, the sooner the better, because this is hard to retroactively change.
+
+111
+00:27:33.252 --> 00:27:37.260
+Łukasz Rozmej: I think 30 million is, you know
+
+112
+00:27:37.430 --> 00:27:47.470
+Łukasz Rozmej: the minimum, the like minimum maximum. We should aim for. Even the Ben kind of convinced me, with his latest stats that we should. We could aim for something lower like 15.
+
+113
+00:27:48.330 --> 00:28:04.159
+lightclient: But the latest stats are not useful, because with eap 7,702, it totally changes the structure of how people are submitting transactions onto Mainnet. So looking at Pre, 7,702 doesn't give you good data on what could be post.
+
+114
+00:28:04.660 --> 00:28:26.009
+Łukasz Rozmej: Yeah, that's a point. So I'm happy to also go with like 30, or if you want 36 million. But whatever I would like to have something. Then, if we go to, for example, in a year of to I don't know 100 200 300 million gas that we will guarantee that there are multiple transactions there.
+
+115
+00:28:26.850 --> 00:28:43.849
+Ben Adams: I mean, okay, even even for Aa. If the A. Bundler sent 2 transactions, they could be run with block access list that could be run in parallel and complete in half the time, whereas if they sent one transaction that consumed the block it would.
+
+116
+00:28:44.010 --> 00:28:45.849
+Ben Adams: they would have to run serially.
+
+117
+00:28:46.010 --> 00:28:50.039
+Ben Adams: and it would take double the time. So I mean, it's even better that way.
+
+118
+00:28:54.900 --> 00:28:56.799
+lightclient: We don't have block access lists.
+
+119
+00:28:56.970 --> 00:28:57.590
+lightclient: So.
+
+120
+00:29:03.790 --> 00:29:07.410
+Ben Adams: Yeah, but it's proposed for lunch today.
+
+121
+00:29:08.240 --> 00:29:11.039
+Barnabas: Isn't this like a security
+
+122
+00:29:11.190 --> 00:29:26.469
+Barnabas: vip? Basically because we don't necessarily know what such big transactions would do to the network. So like, I think it's better to go the same way rather than just kind of, and let whatever size transactions through.
+
+123
+00:29:27.100 --> 00:29:35.280
+Ben Adams: So at at the moment. The transaction pool, I think in most clients limits you to 128 kB.
+
+124
+00:29:35.280 --> 00:29:35.840
+Dankrad Feist: Okay.
+
+125
+00:29:38.060 --> 00:29:45.710
+Ben Adams: Op stack can upgrade an entire L two's contracts in under 9 million gas
+
+126
+00:29:46.100 --> 00:29:49.239
+Ben Adams: and of the last.
+
+127
+00:29:50.040 --> 00:29:51.850
+Ben Adams: Was it last 30 days.
+
+128
+00:29:51.990 --> 00:30:03.570
+Ben Adams: The only transaction above 5 million guests were scam, scam, token sense, and Zen contract mining.
+
+129
+00:30:04.370 --> 00:30:08.279
+Ben Adams: which can easily be batched in smaller amounts.
+
+130
+00:30:10.740 --> 00:30:13.169
+Ben Adams: They're they're just massive batch transactions.
+
+131
+00:30:13.420 --> 00:30:15.690
+Ben Adams: and they could be bachelors. A smaller level.
+
+132
+00:30:18.770 --> 00:30:20.070
+Tim Beiko: Right? So the
+
+133
+00:30:20.910 --> 00:30:35.640
+Tim Beiko: only argument I guess I guess this limit is that if we move to a future where there's huge a batches, and they're somehow cost prohibitive because they're not amortized.
+
+134
+00:30:35.980 --> 00:30:40.083
+Tim Beiko: They're amortized across 2 or 3 transactions versus one.
+
+135
+00:30:40.640 --> 00:30:46.120
+Tim Beiko: So it seems like given that the potential risks.
+
+136
+00:30:47.640 --> 00:30:52.059
+Tim Beiko: Yeah, of of not having this and raising the gas limit, we should probably move forward with it.
+
+137
+00:30:54.430 --> 00:30:57.560
+Tim Beiko: Yeah, any other objections.
+
+138
+00:30:58.120 --> 00:31:02.009
+Tim Beiko: And yeah, in Amsterdam. We can always revisit if if we want to.
+
+139
+00:31:08.930 --> 00:31:15.110
+Tim Beiko: Okay. So let's move eip 7, 8, 2, 5 to Sfi. Add it to the devnet, one spec.
+
+140
+00:31:16.920 --> 00:31:31.379
+Tim Beiko: the other eip that people that based in the mind Aragon, all felt was should be included in indefinite one is 7, 9, 3, 4. Which is this? Rlp execution block size limit?
+
+141
+00:31:33.660 --> 00:31:41.639
+Tim Beiko: so yeah, the idea there is to add a cap to the Rlp payload to match the Cl. Gossip, cap.
+
+142
+00:31:42.325 --> 00:31:46.940
+Tim Beiko: I don't know if Guest breast 2 of you had opinions on this.
+
+143
+00:31:51.490 --> 00:31:52.440
+Roman: For him.
+
+144
+00:31:55.280 --> 00:32:01.470
+Marius: I like the idea of capping the the size of the block.
+
+145
+00:32:03.096 --> 00:32:15.480
+Marius: I've not really looked into into the eap, so I cannot say if I if I really like the idea of capping the size of the Rlp encoded block. Because European
+
+146
+00:32:16.140 --> 00:32:19.869
+Marius: coding can be quite weird.
+
+147
+00:32:21.340 --> 00:32:27.631
+Marius: But yeah, I think in general, this this idea of
+
+148
+00:32:28.340 --> 00:32:35.430
+Marius: of limiting the the worst size of block that we accept seems good to me.
+
+149
+00:32:40.720 --> 00:32:47.120
+Łukasz Rozmej: So if I can add something, I would say the cap is already there. It's just not explicit, and this just makes the cap explicit.
+
+150
+00:32:54.970 --> 00:33:01.650
+Tim Beiko: Okay? So yeah, and I assume it seems pretty small in terms of change, just like the transaction cap. So
+
+151
+00:33:02.100 --> 00:33:04.660
+Tim Beiko: any objection to including that one too.
+
+152
+00:33:07.379 --> 00:33:19.230
+Ben Adams: Again. There's a question. Do we want to cap it lower, like 7.5 MB rather than just the network one, because it's there. It's a direct impact on our recommended bandwidth
+
+153
+00:33:21.180 --> 00:33:22.700
+Ben Adams: cause. It's it's quite large.
+
+154
+00:33:28.300 --> 00:33:30.730
+Tim Beiko: And Howell, do you have thoughts on this.
+
+155
+00:33:31.378 --> 00:33:37.349
+Paweł Bylica: No. I just wanted to ask is this like cl change or El change?
+
+156
+00:33:38.090 --> 00:33:39.530
+Paweł Bylica: I mean, who?
+
+157
+00:33:39.530 --> 00:33:40.770
+Paweł Bylica: Yeah, I'll change.
+
+158
+00:33:40.880 --> 00:33:48.759
+Tim Beiko: This is the point 7 9 3 4 is adding it on, adding a cap on the El block size.
+
+159
+00:33:49.450 --> 00:33:52.050
+Paweł Bylica: Yeah, yeah, that's true. But Cl
+
+160
+00:33:52.370 --> 00:33:57.890
+Paweł Bylica: delivers this block to the yeah. Right? So it knows already that it's too big. So
+
+161
+00:33:58.560 --> 00:34:01.320
+Paweł Bylica: I mean, who will actually implement this check.
+
+162
+00:34:03.400 --> 00:34:05.579
+Kamil Chodoła: It's the check on block building.
+
+163
+00:34:07.400 --> 00:34:10.940
+Ben Adams: The the Al would have to check perfect.
+
+164
+00:34:12.350 --> 00:34:15.368
+Ben Adams: not build blocks too large, and also
+
+165
+00:34:16.159 --> 00:34:19.570
+Ben Adams: prevent it. The Cl. Could also do it if they wanted to.
+
+166
+00:34:19.840 --> 00:34:23.550
+Paweł Bylica: But most of the blocks are coming from the network, right? So
+
+167
+00:34:23.679 --> 00:34:25.470
+Paweł Bylica: you need to check there as well.
+
+168
+00:34:25.730 --> 00:34:35.330
+Łukasz Rozmej: So El will check it on peer to peer goes like thinking, maybe era files importing. For example, if VR files are not
+
+169
+00:34:36.010 --> 00:34:53.360
+Łukasz Rozmej: weird in that way. It could also check the blocks that it is building, that they are beneath this value, because if it El doesn't know about this value and builds a too big block, and then the slot will be missed right? So there are this kind of situations.
+
+170
+00:34:54.409 --> 00:35:06.309
+lightclient: Has anyone implemented this check in building and determine, like what the impact on building will be, because if you need to Rlp encode the block after every transaction.
+
+171
+00:35:06.979 --> 00:35:11.289
+lightclient: Then that's going to add a lot of extra compute to build in.
+
+172
+00:35:12.270 --> 00:35:16.819
+Ben Adams: I mean, it's fairly minimal, because you have all the Rlp.
+
+173
+00:35:17.330 --> 00:35:19.700
+Ben Adams: For the every transaction or anything.
+
+174
+00:35:22.100 --> 00:35:27.209
+Paweł Bylica: But they don't necessarily add up to the to the like, the the results
+
+175
+00:35:27.460 --> 00:35:33.090
+Paweł Bylica: until you actually encode it right online, we need to predict what the encoding will be on the fly.
+
+176
+00:35:33.090 --> 00:35:36.470
+Ahmad Bitar | Nethermind: Receipts, though. No, only the receipts
+
+177
+00:35:37.100 --> 00:35:40.239
+Ahmad Bitar | Nethermind: like. If that transaction is Rlp. Encoded already.
+
+178
+00:35:40.460 --> 00:35:46.330
+Ahmad Bitar | Nethermind: you can just add that number and then see if there is any receipts also, and.
+
+179
+00:35:46.330 --> 00:35:54.380
+lightclient: They already? Why are the transactions already? Rlp encoded? If you're building a block like the transactions are represented in just your native runtime.
+
+180
+00:35:56.410 --> 00:35:58.099
+Ben Adams: That's how you get them off the network.
+
+181
+00:36:00.810 --> 00:36:02.560
+lightclient: And if they don't come from the network.
+
+182
+00:36:03.030 --> 00:36:04.979
+lightclient: if they come from Json, Rpc.
+
+183
+00:36:05.310 --> 00:36:08.450
+Ahmad Bitar | Nethermind: Most likely you use central transaction.
+
+184
+00:36:09.170 --> 00:36:14.569
+Łukasz Rozmej: You probably sent the transaction to the network, so you already encoded it so we can know the length.
+
+185
+00:36:16.950 --> 00:36:24.730
+lightclient: I just think that we're saying that we can add this check during building no problem, but no one's implemented it in building. And
+
+186
+00:36:25.340 --> 00:36:29.430
+lightclient: it seems like it would be useful to actually see what the impact is on.
+
+187
+00:36:29.430 --> 00:36:30.200
+Łukasz Rozmej: So.
+
+188
+00:36:30.200 --> 00:36:32.649
+lightclient: People who are building Mev blocks.
+
+189
+00:36:39.530 --> 00:36:42.429
+Ben Adams: Either either that or the blocks fail.
+
+190
+00:36:44.680 --> 00:37:00.400
+lightclient: I mean, sure. But if you make it really expensive for them, if you make it expensive for Mev builders to build blocks like, sure, you know, we can impose these protocol constraints, but it's kind of pointless to impose a bunch of compute for them that is not really useful in any way.
+
+191
+00:37:01.110 --> 00:37:03.009
+Ben Adams: Okay. But then.
+
+192
+00:37:03.010 --> 00:37:03.490
+Giulio: No.
+
+193
+00:37:04.000 --> 00:37:07.329
+Ben Adams: That's that cannot be gossiped. So
+
+194
+00:37:07.490 --> 00:37:13.700
+Ben Adams: it's essentially an invalid block, so either they check it or they don't. But the blocks can be invalid regardless.
+
+195
+00:37:18.680 --> 00:37:28.969
+Tim Beiko: I guess. How hard is it to get the numbers around the like relative time to encode the block and Rlp.
+
+196
+00:37:29.620 --> 00:37:32.149
+Giulio: But like, you guys need to encode it
+
+197
+00:37:32.470 --> 00:37:42.559
+Giulio: like, I think it's kind of easy to predict what it is like based summing just the transactionalp which we already have, anyway from the Cl.
+
+198
+00:37:43.050 --> 00:37:52.960
+Giulio: and, like the other, is always also fixed size. You know the size of the other 2. You don't have receipts. So actually, it's just kind of a bunch of additions which
+
+199
+00:37:53.220 --> 00:38:00.999
+Giulio: or it's not computationally expensive. You don't need to to re-encode it all the time while being the block, either, if you do it in a smart way.
+
+200
+00:38:01.860 --> 00:38:03.040
+Giulio: right like.
+
+201
+00:38:03.650 --> 00:38:05.540
+Ben Adams: Yeah, it's just it's just the calendar.
+
+202
+00:38:05.540 --> 00:38:06.760
+Giulio: Canceled additions.
+
+203
+00:38:07.200 --> 00:38:11.680
+Ben Adams: It's just the bytes at the front of the block with of the count of transaction.
+
+204
+00:38:11.980 --> 00:38:17.869
+Giulio: I mean you don't. You don't need to even encode the block. The the thing is that you don't even need to encode. You just need
+
+205
+00:38:18.100 --> 00:38:20.070
+Giulio: to sum a bunch of numbers.
+
+206
+00:38:23.791 --> 00:38:29.590
+Ben Adams: We. We have already implemented this another mountain. It's not very hard.
+
+207
+00:38:29.760 --> 00:38:37.200
+Ben Adams: So we re when we're picking transactions, we reject transactions. If it if it will cause the block to become too big.
+
+208
+00:38:37.350 --> 00:38:42.820
+Ben Adams: which we had to do for perfnet. And it's 5 gig of gas limit.
+
+209
+00:38:43.100 --> 00:38:45.509
+Ben Adams: because we were building blocks that were too big.
+
+210
+00:38:50.640 --> 00:38:53.189
+Tim Beiko: Okay. How old is that? What you want?
+
+211
+00:38:53.190 --> 00:39:00.110
+Paweł Bylica: Yeah, I wanted. I wanted to ask if we can see a prototype implementation, but Ben, already mentioned, there is one.
+
+212
+00:39:00.220 --> 00:39:03.339
+Paweł Bylica: but maybe it's time to present it. So
+
+213
+00:39:03.470 --> 00:39:12.010
+Paweł Bylica: because we're kind of discussing, this is easy or not easy. But if if you can present a prototype implementation, that is simple, I think that's fine.
+
+214
+00:39:12.230 --> 00:39:17.039
+Paweł Bylica: I'm I'm slightly concerned about how we're actually going to test this, because
+
+215
+00:39:17.470 --> 00:39:20.760
+Paweł Bylica: I'm sure I want to see like 10 plus
+
+216
+00:39:21.510 --> 00:39:27.040
+Paweł Bylica: a Mega Json files with the text. But okay, that's maybe the other concern.
+
+217
+00:39:31.650 --> 00:39:39.649
+Mario Vega: The the tests are compressed. So if we fill the the test with zeros, it's not gonna be a big burden. I think.
+
+218
+00:39:41.990 --> 00:39:45.310
+Giulio: The check on the Cl is on the uncompressed size, though.
+
+219
+00:39:45.440 --> 00:39:48.660
+Giulio: So you're actually gonna see the burden, even even if it's zeros.
+
+220
+00:39:50.750 --> 00:39:53.579
+Mario Vega: I just meant for the Json files in the tests.
+
+221
+00:39:54.150 --> 00:39:54.810
+Giulio: Okay.
+
+222
+00:39:55.480 --> 00:39:56.220
+Mario Vega: Yep.
+
+223
+00:40:00.030 --> 00:40:05.819
+Tim Beiko: Okay. So if we have an implementation, the testing to work, and it seems relatively easy to
+
+224
+00:40:06.450 --> 00:40:09.459
+Tim Beiko: calculate this as you're rebuilding the block.
+
+225
+00:40:09.580 --> 00:40:13.670
+Tim Beiko: Does it make sense to move forward with it? And that's on the test net.
+
+226
+00:40:16.310 --> 00:40:22.042
+Tim Beiko: Yeah. And Marius has a question about where we actually enforce this in the engine. Api
+
+227
+00:40:25.220 --> 00:40:26.929
+Ben Adams: It's part of part of it.
+
+228
+00:40:26.930 --> 00:40:27.310
+Tim Beiko: I guess.
+
+229
+00:40:27.780 --> 00:40:29.050
+Ben Adams: Tracks on the block.
+
+230
+00:40:30.130 --> 00:40:35.050
+Ben Adams: So before you do anything, just check the the size of the the message.
+
+231
+00:40:39.720 --> 00:40:46.100
+Marius: But the size of the mess, like the messages Jason encoder right.
+
+232
+00:40:50.060 --> 00:40:57.019
+Ben Adams: Yeah, you you you decode the Json to get the Rlp. Which then you decode to get the block.
+
+233
+00:41:08.667 --> 00:41:10.819
+Tim Beiko: Under the question around, can we do
+
+234
+00:41:11.020 --> 00:41:14.730
+Tim Beiko: a cap on the total size of the transactions instead.
+
+235
+00:41:16.680 --> 00:41:26.329
+Roman: Yeah, I think Paris is right, like you would have to encode your Json block to only European code just to check.
+
+236
+00:41:27.510 --> 00:41:31.210
+Roman: And then you can proceed. I think this is not ideal.
+
+237
+00:41:37.675 --> 00:41:38.000
+Tim Beiko: Julia.
+
+238
+00:41:38.000 --> 00:41:39.579
+Marius: That's kind of what I'm.
+
+239
+00:41:39.600 --> 00:41:40.660
+Giulio: Sorry.
+
+240
+00:41:40.700 --> 00:41:42.220
+Giulio: Yeah, it's kind of.
+
+241
+00:41:42.760 --> 00:41:45.870
+Marius: Sorry you kind of what I'm saying with the
+
+242
+00:41:46.010 --> 00:41:50.570
+Marius: the I I do like this eip. I just don't know if
+
+243
+00:41:51.050 --> 00:42:00.670
+Marius: doing this check on the total, like on the Rp. Encoder block is the right way to go, or whether we should do something like Roman, said.
+
+244
+00:42:01.590 --> 00:42:07.020
+Ben Adams: Well, I mean, either either you can do the check on the message you've got from the Cl.
+
+245
+00:42:07.430 --> 00:42:20.359
+Ben Adams: Or you have to decode it. Decode everything. Then get the transactions out, and then you can measure it. So it's whether you want to measure it. Immediately the Cl. Sent you a block, or you got it from the network.
+
+246
+00:42:20.770 --> 00:42:23.680
+Ben Adams: you can just check its size before trying to decode it.
+
+247
+00:42:24.920 --> 00:42:31.100
+Ben Adams: or if you want to do it on transactions, then you have to start decoding the block in order to get to the transactions.
+
+248
+00:42:33.760 --> 00:42:37.590
+Tim Beiko: So I guess yeah, for this vip does feel like we maybe
+
+249
+00:42:38.190 --> 00:42:41.219
+Tim Beiko: don't have a great understanding if the designs
+
+250
+00:42:41.640 --> 00:42:44.717
+Tim Beiko: space. So should we just
+
+251
+00:42:45.670 --> 00:42:52.400
+Tim Beiko: yeah, should we just take the next 2 weeks to figure this out and try to make a final call about it on the next Acd.
+
+252
+00:42:56.380 --> 00:42:57.060
+Tim Beiko: okay.
+
+253
+00:42:58.890 --> 00:42:59.800
+Tim Beiko: Yeah. Judo.
+
+254
+00:42:59.990 --> 00:43:11.030
+Giulio: Yeah, I just wanted to say that regarding the alternative design, I kind of already thought about it. But the thing is that it kind of makes no sense to just use, like
+
+255
+00:43:11.270 --> 00:43:18.750
+Giulio: the some of the transactionalp, and not the rest of the block, because you are actually forwarding the adder.
+
+256
+00:43:18.900 --> 00:43:38.309
+Giulio: Oh, and like also the adder with the block in the Cl. It so it doesn't make any sense not to include it. And also it's not, you know. So it's really not significant difficulty, because the other size is capped like you know it ahead of time. It's not like the only thing you don't know state time is the state truth, but you know that the state root is 32 Byte.
+
+257
+00:43:38.460 --> 00:43:43.560
+Giulio: so you know the size of the other. So you there is no need to keep it out just
+
+258
+00:43:43.850 --> 00:43:48.149
+Giulio: to have a slightly simpler way like it's equally simple.
+
+259
+00:43:49.250 --> 00:43:54.799
+Giulio: essentially. So. That's why I didn't really like the design. When I 1st it was 1st proposed.
+
+260
+00:43:59.490 --> 00:44:00.120
+Tim Beiko: Got it?
+
+261
+00:44:02.040 --> 00:44:17.269
+Tim Beiko: yeah, I do think, like, yeah, we're 3rd into the call yet. Then there's this other things to discuss. So I would hold this one for the next 2 weeks. Try to align on a design. And then, yeah, make a call about it for yeah, on the next operatives.
+
+262
+00:44:17.660 --> 00:44:23.535
+Tim Beiko: I'm and then, okay, so of the other eips
+
+263
+00:44:25.450 --> 00:44:29.962
+Tim Beiko: the sorry. Let me just look at the list real quick.
+
+264
+00:44:31.360 --> 00:44:50.699
+Tim Beiko: the other vips that people wanted to signal for either devnet, one or devnet 2 were 7, 9 0, 7, increasing the code size. The code size limit basically wanted in Devnet 2, I think. Never mind, was against it. And Aragon also wanted it in Devnet 2,
+
+265
+00:44:50.720 --> 00:45:20.100
+Tim Beiko: then eap 7, 9, 1 8, the Blob base fee being bounded by the execution cost. It seemed like, basically, Never mind. Argon wanted this, and Devnet 2 7, 2, 1, 2, the r 1 curve pre compile. There was a mix between Devnet one and Devnet 2, and it seemed like people generally wanted this and then payop code was maybe the most contentious where Argon just wanted it removed, and then, basically wanted it in the next devnet. And never mind Devnet 2.
+
+266
+00:45:21.820 --> 00:45:26.160
+Tim Beiko: These are kind of the other all the other vips that are that are being
+
+267
+00:45:26.600 --> 00:45:30.450
+Tim Beiko: that we're already cfi'd in without them. We still.
+
+268
+00:45:31.000 --> 00:45:53.409
+Tim Beiko: I haven't heard from. I guess Reth and geth on those already. So I don't know if yeah breath or Geth, you have some thoughts on on this list. So 7, 9, 0, 7, 7, 9, 1, 8, 7, 2, 1, 2 and 5, 9, 20 contract code size the blob, basically change our one precompile and the pay. OP. Code.
+
+269
+00:46:03.940 --> 00:46:05.060
+Tim Beiko: Okay, so
+
+270
+00:46:05.180 --> 00:46:13.239
+Tim Beiko: live client, saying he thinks we should have 7, 2, 1, 2, and 7, 9 0, 7. So sorry, Roman, you were just coming off mute.
+
+271
+00:46:15.073 --> 00:46:15.756
+Roman: Yeah.
+
+272
+00:46:17.530 --> 00:46:30.539
+Roman: I believe we posted this in in the original Cfi prioritization list. But basically no strong opinions on 5, 9, 20 and 7, 9, 18
+
+273
+00:46:31.667 --> 00:46:40.340
+Roman: and then supportive of 7, 9, 0, 7, did I miss something.
+
+274
+00:46:43.110 --> 00:46:45.699
+Tim Beiko: The the r. 1 precompile, I think, for us.
+
+275
+00:46:45.700 --> 00:46:50.560
+Roman: Oh, yeah, it's yes, this is supportive of it as well. 7, 2, 1, 2.
+
+276
+00:46:51.980 --> 00:46:53.690
+Tim Beiko: Okay. And so
+
+277
+00:46:54.090 --> 00:47:03.540
+Tim Beiko: so for 7, 9, 0 7, it seems like everyone supports it except for another mind. So I don't know. Nethermind, you wanna maybe share your
+
+278
+00:47:04.290 --> 00:47:05.689
+Tim Beiko: rationale here.
+
+279
+00:47:08.680 --> 00:47:10.110
+Ben Adams: Sorry which one's this one.
+
+280
+00:47:10.510 --> 00:47:13.680
+Tim Beiko: It's the contract code size.
+
+281
+00:47:14.940 --> 00:47:22.889
+Ben Adams: Yeah. So there's not been a huge in depth analysis done on it. And if we're increasing the
+
+282
+00:47:23.040 --> 00:47:28.629
+Ben Adams: if, our if our goal for free soccer, I believe, is performance.
+
+283
+00:47:30.990 --> 00:47:33.800
+Ben Adams: And we're increasing the gas limit. And we're
+
+284
+00:47:35.180 --> 00:47:38.205
+Ben Adams: potentially increasing the slot times.
+
+285
+00:47:38.930 --> 00:47:45.390
+Ben Adams: next to it, there's a there's a lot of moving pieces. If we then increase the contracts to 256
+
+286
+00:47:45.870 --> 00:47:50.229
+Ben Adams: Kilobytes and the init code to half a Meg.
+
+287
+00:47:53.230 --> 00:47:57.519
+Ben Adams: So it feels like there's too many unknowns with it.
+
+288
+00:48:01.090 --> 00:48:04.190
+lightclient: I mean, that's why we meter it, though, so you can
+
+289
+00:48:04.760 --> 00:48:07.980
+lightclient: appropriately charge for loading the code.
+
+290
+00:48:10.180 --> 00:48:11.639
+Ben Adams: Yeah. But as a
+
+291
+00:48:12.490 --> 00:48:19.410
+Ben Adams: I don't feel the analysis on the the metering doesn't feel properly looked into at the moment.
+
+292
+00:48:22.010 --> 00:48:24.970
+Ben Adams: I agree that it is me, too. Yeah, but
+
+293
+00:48:28.700 --> 00:48:31.470
+Ben Adams: I'd like some more research around it.
+
+294
+00:48:32.950 --> 00:48:34.470
+lightclient: Like, what kind of research
+
+295
+00:48:37.170 --> 00:48:41.619
+lightclient: like? What things would you want to see? To be confident that we should do this.
+
+296
+00:48:44.812 --> 00:48:47.210
+Ben Adams: So I mean not not. There's not.
+
+297
+00:48:47.760 --> 00:48:53.630
+Ben Adams: We've done a lot of study on the state database. But the code database.
+
+298
+00:48:53.880 --> 00:48:57.900
+Ben Adams: I don't think we know much performance characteristics of it
+
+299
+00:49:02.830 --> 00:49:04.100
+Ben Adams: across plants.
+
+300
+00:49:09.190 --> 00:49:14.300
+Ben Adams: I mean, for example, the amount of work that's being put into.
+
+301
+00:49:15.220 --> 00:49:18.769
+Ben Adams: you know, can we increase the gas limit to 60 million
+
+302
+00:49:18.880 --> 00:49:22.530
+Ben Adams: is is quite extreme, whereas the amount of
+
+303
+00:49:22.830 --> 00:49:29.769
+Ben Adams: analysis that's done, you know. Let's try it on the test map. That's you know. Let's see what the impact of
+
+304
+00:49:30.560 --> 00:49:39.349
+Ben Adams: if we did increase this limit. And then we started stuffing loads of contracts with this, what would the performance be? What would the State like be that kind of thing?
+
+305
+00:49:40.130 --> 00:49:42.559
+lightclient: Why would state bloat have anything to do with this.
+
+306
+00:49:43.020 --> 00:49:44.759
+Ben Adams: Okay? Code, code blue.
+
+307
+00:49:45.050 --> 00:49:46.269
+Ben Adams: Because why does code.
+
+308
+00:49:46.270 --> 00:49:51.600
+lightclient: Upload, have anything to do with this, like? The only thing that should matter really is like, how long does it take to load the code from the database.
+
+309
+00:49:52.120 --> 00:49:55.800
+lightclient: And because we can meter based on how long it takes.
+
+310
+00:49:56.030 --> 00:50:01.080
+lightclient: it's really just a matter of figuring out what the correct cost for that load is.
+
+311
+00:50:01.510 --> 00:50:09.020
+Ben Adams: Yeah, but your your code, code, like state, is a permanent thing, and you're now saying you can.
+
+312
+00:50:09.620 --> 00:50:12.119
+Ben Adams: You can add in a single transaction.
+
+313
+00:50:13.470 --> 00:50:18.160
+Ben Adams: Quarter of a megabyte of permanent storage.
+
+314
+00:50:19.360 --> 00:50:23.130
+lightclient: I mean, you can already do that today. You just have to split it across multiple contracts.
+
+315
+00:50:33.280 --> 00:50:44.909
+lightclient: I think this is one of the most important things that the community has been asking for. And if we're trying to signal that we're listening to them and improving them, improving the things about the Evm. Then this is one of the best things we can do in Fusaka.
+
+316
+00:50:44.910 --> 00:51:04.670
+lightclient: I agree, like the exact metering calculations are probably not near as robust as the work that's gone into the gas limit increase. But at some point like to get the robust numbers we have to kind of like commit that we want to do this thing. It's hard to get a lot of those numbers when we're doing a lot of other stuff, and we haven't really committed to doing the code size increase.
+
+317
+00:51:05.300 --> 00:51:17.439
+lightclient: And it feels to me that there's only like this one moving variable about exactly how much we need to charge for loading the additional code, and that seems like very reasonable part of the implementation process of the IP.
+
+318
+00:51:25.890 --> 00:51:38.480
+Tim Beiko: I guess. Yeah. So to Ongar's comment, like, is there actually anything we can figure out in the next 2 weeks? Or should we just implement it. To what we learn most by actually implementing it in that net.
+
+319
+00:51:41.056 --> 00:51:42.110
+Tim Beiko: Yeah, Powell.
+
+320
+00:51:43.955 --> 00:51:46.330
+Paweł Bylica: The one off of the cost
+
+321
+00:51:46.580 --> 00:51:53.760
+Paweł Bylica: factors is jump this analysis to my understanding of the IP. And I think to my understanding of Vm as well.
+
+322
+00:51:54.894 --> 00:52:02.590
+Paweł Bylica: For that I I plan to do benchmarking, anyway, in some other context, but I think I can commit to
+
+323
+00:52:04.200 --> 00:52:09.850
+Paweł Bylica: prepare some report about this this kind of performance.
+
+324
+00:52:10.520 --> 00:52:12.939
+Paweł Bylica: and for for the next call
+
+325
+00:52:13.848 --> 00:52:19.429
+Paweł Bylica: in terms of floating from database, I'm probably not the best person to to do so.
+
+326
+00:52:24.470 --> 00:52:34.380
+Tim Beiko: And so the thing we're concerned about this like, if jump desk analysis is super linear in coat size.
+
+327
+00:52:35.488 --> 00:52:39.000
+Paweł Bylica: Yeah, I mean, I'm not really concerned. But
+
+328
+00:52:39.260 --> 00:52:44.960
+Paweł Bylica: we definitely need to track it. So I will do some.
+
+329
+00:52:45.460 --> 00:52:47.919
+Paweł Bylica: Yeah, we'll propose some benchmarks that
+
+330
+00:52:48.610 --> 00:53:06.340
+Paweł Bylica: let's say we'll do the same scenario, but with different code size limits, and we can check the current performance with the current limit. The performance of the proposed limit. And this one more limits that comes from the other IP, which is around 2 MB of code.
+
+331
+00:53:06.730 --> 00:53:09.590
+Paweł Bylica: It's the one from that cups. The
+
+332
+00:53:10.280 --> 00:53:13.479
+Paweł Bylica: wow. Okay, I'm kind of mixing 2 2 dimensions here. But
+
+333
+00:53:14.500 --> 00:53:25.720
+Paweł Bylica: yeah, I can. I can. If you want. I can describe like benchmarking scenarios in the next day, and
+
+334
+00:53:25.940 --> 00:53:33.129
+Paweł Bylica: if that's accepted, I can then work on this to get the number so, or we can prepare the
+
+335
+00:53:33.280 --> 00:53:37.550
+Paweł Bylica: the benchmark in some format that anyone can try later.
+
+336
+00:53:41.650 --> 00:53:43.863
+Tim Beiko: Okay? And I guess so for the cip,
+
+337
+00:53:45.020 --> 00:54:00.820
+Tim Beiko: all of the teams that have voiced their opinions before kind of supported it for the basement Aragon basically supported for Devnet 2. I think, given that, there's other stuff for Devnet one, and we might
+
+338
+00:54:00.930 --> 00:54:14.059
+Tim Beiko: kind of know more in the next couple of weeks I would maybe make this call 2 weeks from now, so leave it as Cf. 5, and then 2 weeks from now get the final set of vips that go into definit 2,
+
+339
+00:54:15.240 --> 00:54:21.079
+Tim Beiko: and yeah, try to at least get definite one done today. Because, yeah, there's other Vip that big people
+
+340
+00:54:21.350 --> 00:54:29.420
+Tim Beiko: we're we're considering for that. So I guess, just like 7, 9, 3, 4, and let's aim to make a final call on this one in the next 2 weeks.
+
+341
+00:54:31.810 --> 00:54:33.530
+Tim Beiko: And then okay. So the other.
+
+342
+00:54:33.910 --> 00:54:59.260
+Tim Beiko: The other one on the list that I think was was mentioned by basically, never mind, Aragon, and then, I think both guest and and Reth was 7, 2, 1, 2. There's a bunch of comments in the chat about that eip having some potential issues and maybe needing a bigger rewrite. I know that when the testing team looked into it they also said that it had some
+
+343
+00:54:59.492 --> 00:55:07.149
+Tim Beiko: some work. And it was kind of the the biggest. Yeah, if you could test. So yeah, I don't. Nico, do you want to maybe give some background on 7, 2, 1, 2.
+
+344
+00:55:09.156 --> 00:55:10.410
+Nicolas Consigny: Yeah. So
+
+345
+00:55:10.620 --> 00:55:18.181
+Nicolas Consigny: unlucky us there is like a slight issue with the existing rip. It's not a big big issue, but
+
+346
+00:55:18.810 --> 00:55:24.540
+Nicolas Consigny: with crypto precompied. You can't really allow any type of uncertainty.
+
+347
+00:55:24.800 --> 00:55:31.870
+Nicolas Consigny: so we should just either rewrite the vip with a small fix and discuss with the
+
+348
+00:55:32.000 --> 00:55:40.308
+Nicolas Consigny: roll-ups that have already implemented it so they can maybe fork out and go to the new version.
+
+349
+00:55:41.380 --> 00:56:00.699
+Nicolas Consigny: should be doable doesn't seem like a huge work to be honest. Then the question is just always the same like about like putting the precompiler in the in the clients. And for this I don't really have the the answer, but it seems like client teams are okay with it.
+
+350
+00:56:01.362 --> 00:56:09.010
+Nicolas Consigny: So just rewriting the Vip should be, or I mean writing a new IP, I think should be the best.
+
+351
+00:56:09.230 --> 00:56:15.496
+Nicolas Consigny: Pass forward. And yeah, and
+
+352
+00:56:16.660 --> 00:56:24.379
+Nicolas Consigny: working out of the air. IP. 7 to 12 for existing for existing roll-ups.
+
+353
+00:56:25.431 --> 00:56:33.730
+Nicolas Consigny: I will contact the others to see if they want to champion this or I. We can probably
+
+354
+00:56:34.020 --> 00:56:35.889
+Nicolas Consigny: to it ourselves. It could be.
+
+355
+00:56:39.350 --> 00:56:43.650
+Tim Beiko: Yeah, this is a pretty big vip. So I think, like, yeah, is there anyone.
+
+356
+00:56:44.530 --> 00:56:45.030
+Nicolas Consigny: And
+
+357
+00:56:45.030 --> 00:56:53.820
+Nicolas Consigny: Antonio, I I guess. Yeah, I guess probably having Antonio from the cryptography team, and maybe
+
+358
+00:56:54.020 --> 00:57:02.530
+Nicolas Consigny: Renault from the Kennox who wrote one verifier would be great I would, if
+
+359
+00:57:02.790 --> 00:57:05.349
+Nicolas Consigny: if I could force them to do it, I would.
+
+360
+00:57:08.540 --> 00:57:12.550
+Tim Beiko: Is there anyone else on this call who can like?
+
+361
+00:57:13.280 --> 00:57:17.530
+Tim Beiko: And the next 2 weeks looking into this
+
+362
+00:57:18.510 --> 00:57:27.150
+Tim Beiko: because I agree, like, I think, a lot of people keep saying that this is really important. But if if we.
+
+363
+00:57:27.980 --> 00:57:39.970
+Nicolas Consigny: I? Yeah, I can take the burden, but not like to. I can champion this thing. But I on the mass side I would refer to defer to Antonio or
+
+364
+00:57:40.908 --> 00:57:44.050
+Nicolas Consigny: cryptographers with a lot of experience. Yeah.
+
+365
+00:57:51.194 --> 00:58:10.769
+Andrew Ashikhmin: So I'd like to suggest, because we're going to make a change. And then this this IP is already deployed on polygon, so probably the safest route is to deploy it on ethereum in the standard precompile range of ethereum, and
+
+366
+00:58:10.940 --> 00:58:18.429
+Andrew Ashikhmin: keep the original contract at the at the Rip address unchanged.
+
+367
+00:58:18.640 --> 00:58:28.849
+Andrew Ashikhmin: and then say, smart contracts on polygon. If they want to use the newer version, they just use the ethereum address.
+
+368
+00:58:31.721 --> 00:58:42.418
+Nicolas Consigny: This is the difficult part. I'm not sure. You want to be in a situation where like one signature can produce 2 different outcomes
+
+369
+00:58:43.190 --> 00:58:46.550
+Tim Beiko: Right? So the yeah. Different code should be at different addresses.
+
+370
+00:58:46.980 --> 00:58:47.610
+Nicolas Consigny: Yeah.
+
+371
+00:58:48.970 --> 00:58:50.780
+Andrew Ashikhmin: Yeah, that's what I'm saying.
+
+372
+00:58:50.780 --> 00:58:55.480
+Tim Beiko: Yeah, yeah, that's that. Yeah, that feels like, a, yeah, yeah.
+
+373
+00:58:55.590 --> 00:59:00.139
+Tim Beiko: like, yeah, that feels like a no brainer. Yeah. Adrian.
+
+374
+00:59:01.250 --> 00:59:09.599
+Hadrien Croubois (OpenZeppelin): Yeah. I just wanted to say that I don't think it's just about Rip 7, 2, 12,
+
+375
+00:59:11.360 --> 00:59:13.930
+Hadrien Croubois (OpenZeppelin): Adrian, your mic is cutting.
+
+376
+00:59:13.930 --> 00:59:32.449
+Hadrien Croubois (OpenZeppelin): We don't not know where the precompile is, and have to guess like, if Openzeplin or Soladi, or any other library, wants to make something that is scp 256 r. 1 compliant. We don't want to have to check the chain id, and then go to which precompile it is that we want to use.
+
+377
+00:59:33.950 --> 00:59:37.399
+Hadrien Croubois (OpenZeppelin): and I don't think solidity wants that either, like nobody wants that.
+
+378
+00:59:37.900 --> 00:59:46.329
+lightclient: I mean, solidity is going to have to do this, though, because we're not going to end up in a world where everything on mainnet is going to perfectly match the L. 2 s. Or vice versa.
+
+379
+00:59:47.310 --> 00:59:49.529
+lightclient: like we have to have compile targets.
+
+380
+00:59:50.540 --> 00:59:55.083
+Tim Beiko: And also, like there's an issue. It's like, if there's a bug with it.
+
+381
+00:59:58.560 --> 01:00:02.769
+Tim Beiko: yeah, it's it seems impossible to to avoid.
+
+382
+01:00:05.660 --> 01:00:17.740
+Andrew Ashikhmin: Well, I think in this case it's not a big problem, because for polygon, it's deployed on a different address starting with like hex 100 or something
+
+383
+01:00:18.175 --> 01:00:37.860
+Andrew Ashikhmin: so, for when if we if we deploy it for ethereum on the standard like range of addresses, then it can be ported to Aragon, and it will be like all the L. Twos can simply like enable ethereum's version at Ethereum's address, and it will be the same.
+
+384
+01:00:43.430 --> 01:00:44.940
+Hadrien Croubois (OpenZeppelin): That would be great. Yes.
+
+385
+01:00:45.210 --> 01:00:47.960
+Tim Beiko: Yeah, they can obviously redeploy it. Yeah.
+
+386
+01:00:48.340 --> 01:01:02.099
+Tim Beiko: okay. So it seems like, Nico and Stokes. I can look into this over the next 2 weeks, but that there's broad support. So should obviously leave it. Cfi, and then have it as a candidate for definite, too.
+
+387
+01:01:05.240 --> 01:01:06.949
+Tim Beiko: Does it make sense to people.
+
+388
+01:01:08.700 --> 01:01:10.010
+stokes: Yeah, let's do it.
+
+389
+01:01:10.010 --> 01:01:13.259
+Tim Beiko: Yeah, and so to, I guess to recap. So right now
+
+390
+01:01:14.008 --> 01:01:37.590
+Tim Beiko: we, we had the we already had the MoD xp eips that are going into devnet 0 along with obviously pure das and the Bpo forks. We said we wanted to include the transaction gaps limit cap in Devnet one as well. We're looking at metering the code size limit
+
+391
+01:01:38.014 --> 01:01:45.235
+Tim Beiko: and increasing that for Devnet 2 potentially looking at 7, 2, 1, 2 for devnet 2 potentially
+
+392
+01:01:45.970 --> 01:01:55.210
+Tim Beiko: so the other the other vip that oh, sorry. The other one. Sorry we're looking for them to. Is this Rlp increase. So we already kind of have 3
+
+393
+01:01:55.520 --> 01:01:57.880
+Tim Beiko: in flight that we need to figure out for that bit, too.
+
+394
+01:01:58.050 --> 01:02:09.160
+Tim Beiko: The other vip that seemed to to have broad support is 7, 9, 1 8, which is the which is the blob based. View one.
+
+395
+01:02:10.190 --> 01:02:13.238
+Tim Beiko: And I think, let me check real quick.
+
+396
+01:02:13.780 --> 01:02:21.289
+Tim Beiko: so basically, never mind. Aragon all wanted it in Devnet, too. I don't know, Geth and rest how you feel about it, but
+
+397
+01:02:21.830 --> 01:02:30.080
+Tim Beiko: if we like it, I would maybe push to have it in definite one rather than definite. 2 given. It's simple, and we already have a bunch of stuff pending for definite 2.
+
+398
+01:02:37.620 --> 01:02:38.660
+lightclient: Sorry, which one.
+
+399
+01:02:38.840 --> 01:02:42.280
+Tim Beiko: S. 7, 9, 1, 8. The blood base fee change.
+
+400
+01:02:42.930 --> 01:02:53.930
+lightclient: Right? Yeah, I mean, I think it's simple to implement. But like strategically, it's very complicated. And I honestly don't know if we've really had the time to
+
+401
+01:02:54.130 --> 01:03:02.350
+lightclient: make sure that this is the type of thing that we want to do increase the cost of blobs to L. 2 s. That seems like a major decision.
+
+402
+01:03:03.520 --> 01:03:07.609
+lightclient: and it shouldn't just be sort of wrapped up into the Devnet.
+
+403
+01:03:10.850 --> 01:03:12.650
+Tim Beiko: Okay, on to go.
+
+404
+01:03:13.590 --> 01:03:28.959
+Ansgar Dietrichs: Yeah, just to briefly report from from that side. So, and us has been kind of continued to work on this quite a bit, I think Anders might also be on the call and could get there. But basically high level summaries, just that like, while looking at this.
+
+405
+01:03:28.980 --> 01:03:46.879
+Ansgar Dietrichs: there were some people people noticed that even today, basically, blob transactions are to some extent underpriced because they have this compute overhead. Of of these, of the proof verification that's not accurately priced in the normal gas right now. And the
+
+406
+01:03:46.880 --> 01:04:10.940
+Ansgar Dietrichs: leading proposal right now is to just basically use that as a baseline for the, for the basically for the minimum price for for blobs. But the nice thing is basically in terms of like definite. As long as we are certain that we want to ship this at all. We can just go ahead with implementing this because the only potential change like that that is contingency, or where we might still want to change our mind over the next few weeks would be the exact level of this minimum
+
+407
+01:04:10.940 --> 01:04:27.850
+Ansgar Dietrichs: price. And that's literally just a constant in that eap. So that is a that is a constant value that is just used once in an if clause. So basically like that, that's just at the very top of the Ap. And if in 2 weeks or so we say, Hey, actually, that's a bit too high for L. 2 s. And we don't like that. We reduce it by half or something.
+
+408
+01:04:27.970 --> 01:04:45.219
+Ansgar Dietrichs: If that, if that's already implemented in the definite by then, that's 1 constant change. So I think it would be safe to go ahead with implementing this now already. But when we're on that, I think my understanding is that there would be one more update to the eap that I think Anders would have ready
+
+409
+01:04:45.420 --> 01:04:54.429
+Ansgar Dietrichs: like by whenever it has to be ready, like by Monday by default, but also like by the end of today or tomorrow, if if necessary. With some small spec clarification.
+
+410
+01:04:56.540 --> 01:04:57.929
+Anders Elowsson: Yeah, do you hear? Me? Yeah.
+
+411
+01:04:59.810 --> 01:05:00.999
+Anders Elowsson: yeah, yeah. So I can use.
+
+412
+01:05:02.090 --> 01:05:16.313
+Anders Elowsson: Yeah, yeah, I can just mention that. Yeah. So there was this recent analysis I posted in the chat, and if we we expand the rationale a bit by by accounting for you know the the compute cost that globes actually impose on our notes.
+
+413
+01:05:16.830 --> 01:05:17.860
+Anders Elowsson: And
+
+414
+01:05:18.260 --> 01:05:35.800
+Anders Elowsson: yeah, we can use this to consider different constants. And and anyway, I will just update the eip with these reflections during the weekend. So we could. We could then have have some exact specification on Monday for the testing call, for example.
+
+415
+01:05:36.790 --> 01:05:46.430
+Anders Elowsson: But it's essentially that we would go with the if clause that looks more like the one in the in the in that text that I
+
+416
+01:05:46.930 --> 01:05:49.699
+Anders Elowsson: posted. But it's just a change of constant, actually.
+
+417
+01:05:54.210 --> 01:05:57.979
+Anders Elowsson: yeah. So the implementation is very simple, as Oscar says.
+
+418
+01:06:09.790 --> 01:06:22.050
+Tim Beiko: Okay, so and then there's some comments about maybe moving it to Glamsterdam. So I guess, yeah.
+
+419
+01:06:22.740 --> 01:06:27.280
+Tim Beiko: does anyone feel strongly? We should include in Devnet one. Otherwise
+
+420
+01:06:27.490 --> 01:06:33.220
+Tim Beiko: we can discuss this in the next 2 weeks and then see if we want to include it in Devnet, too. But I
+
+421
+01:06:33.680 --> 01:06:39.270
+Tim Beiko: I will flag that we. We're starting to have a bunch of stuff that's like Tbd for Devnet 2.
+
+422
+01:06:40.290 --> 01:06:40.990
+Tim Beiko: no.
+
+423
+01:06:48.710 --> 01:06:53.438
+Tim Beiko: yeah. Okay. So no strong support for devnet one.
+
+424
+01:06:55.770 --> 01:06:56.820
+Tim Beiko: Then.
+
+425
+01:06:57.120 --> 01:06:59.930
+Tim Beiko: Okay. The last one we we haven't discussed yet.
+
+426
+01:07:00.180 --> 01:07:04.960
+Tim Beiko: Well, I guess. Why not the net one? I don't. I don't think any team has signaled towards that, and then
+
+427
+01:07:05.910 --> 01:07:10.420
+Tim Beiko: some of the teams think we should move it to another fork, so.
+
+428
+01:07:11.130 --> 01:07:15.690
+Ben Adams: Happy, happy for definite one. It's much simpler than they. Basically.
+
+429
+01:07:18.840 --> 01:07:21.560
+Ben Adams: we already have a Pr for it.
+
+430
+01:07:22.900 --> 01:07:24.289
+Tim Beiko: Okay. So never mind.
+
+431
+01:07:28.360 --> 01:07:34.129
+Tim Beiko: I mean, okay. So under in the chat, saying, Why move it to different fork, like like Roman and like kind. We're both saying
+
+432
+01:07:34.290 --> 01:07:38.420
+Tim Beiko: we could push it to a different fork. It's not a priority. So.
+
+433
+01:07:40.960 --> 01:07:47.779
+Ben Adams: I mean, what one of the issues is. We're massively altering the blob
+
+434
+01:07:48.390 --> 01:07:55.409
+Ben Adams: and then we're having Bpos. So we're we're messing in the Blob market massively in terms of supply.
+
+435
+01:07:55.940 --> 01:07:59.040
+Ben Adams: So it's better to have it in before that.
+
+436
+01:08:08.700 --> 01:08:11.590
+Tim Beiko: Yeah, there's a question on unders. Do you know.
+
+437
+01:08:11.780 --> 01:08:16.840
+Tim Beiko: what? What do we expect the change on fees to be? And I know there's many different
+
+438
+01:08:17.720 --> 01:08:19.370
+Tim Beiko: moving parts here. But yeah.
+
+439
+01:08:20.689 --> 01:08:33.344
+Anders Elowsson: Maybe I can. Yeah. So I mean, this is this is the conversation we can have when we tune that that constant, essentially depending on how we want to sort of
+
+440
+01:08:34.729 --> 01:08:53.169
+Anders Elowsson: balance between. On on one side, we we might want to to actually charge blobs for the compute that they impose on on notes, or or we would like to ensure that the fee market functions, and on the other side, we want to keep blobs very cheap. And we can. Just
+
+441
+01:08:53.199 --> 01:09:08.709
+Anders Elowsson: the point is that we can just set this constant, rather low, and by doing so we we ensure that we are not imposing, like a race to the fee that is substantial when we, when we compare it with the cost of the blob current transaction itself.
+
+442
+01:09:12.660 --> 01:09:16.950
+stokes: And maybe just to reiterate, how exactly, then, does it improve the functioning of the fee market
+
+443
+01:09:17.439 --> 01:09:28.000
+stokes: like that sounds interesting to me. We have the cip, and there's a parameter we can tune so that the fees end up in like a nice place. But then it sounds like we also get this other benefit of
+
+444
+01:09:28.330 --> 01:09:30.109
+stokes: better functioning fee market.
+
+445
+01:09:30.899 --> 01:09:31.269
+Anders Elowsson: Yeah, that's.
+
+446
+01:09:31.270 --> 01:09:31.619
+stokes: Such as.
+
+447
+01:09:31.620 --> 01:09:37.839
+Anders Elowsson: Well, so essentially blob consumers are affected by the the execution base fee
+
+448
+01:09:37.950 --> 01:09:46.880
+Anders Elowsson: because they have to pay for the for you know the block kind transaction, anyway. So if you want to set some low limit to the, to the, to the blue
+
+449
+01:09:47.720 --> 01:10:05.410
+Anders Elowsson: base fee, then, if we have that limit, reflect the execution base fee. Then we can. We can. We can sort of assign a limit that will adjust correctly, dynamically, with with how the demand for global consumers are shifts.
+
+450
+01:10:05.780 --> 01:10:06.570
+Anders Elowsson: sounds good.
+
+451
+01:10:14.877 --> 01:10:19.879
+Tim Beiko: In the chat. Terrence said that the L twos actually want this. So, Terrence, do you want to give some context on this.
+
+452
+01:10:20.290 --> 01:10:47.000
+terence: Yeah, so I can speak on behalf of option labs. We've done like a bunch of research over blog feed market over the fast, over the past few years. Right? And one deficiency that we have seen before. It's just that when the block base fee is very, very low, essentially becomes a priority gas option. So people start bidding heavily on tip. And that's not very nice, because that's not something that's predictable. So we want something that's more predictable in a way that like.
+
+453
+01:10:47.000 --> 01:10:55.649
+terence: And then it also varies a lot because of like blob men, pools has have different set versus transaction. So basically, you know it's more strict.
+
+454
+01:10:55.710 --> 01:11:20.380
+terence: you know, way that you have one blob that has a higher tip. Then you kind of crowd out the like 6, like, for example, like a 6 blob. So there's no like a small and mix and match. It becomes like a PA. If you have some very hard problem to solve. And that's why builders started opening up their costume like basically their costume endpoint. And people start using that because this allows more flexibility.
+
+455
+01:11:20.380 --> 01:11:38.950
+terence: And that's not very nice. And one way to solve this is just have a basically like, like a very predictable, like base fee in a way that like when it essentially rises up so much. It's like the basically the like. Basically, the curve is more smooth. So in a way, in a way, this actually helps
+
+456
+01:11:38.950 --> 01:11:45.750
+terence: a layer 2 like, basically because I, because of the base speed, wouldn't suddenly just spike.
+
+457
+01:11:50.680 --> 01:11:53.500
+Tim Beiko: Okay. Thanks. Undergar.
+
+458
+01:11:54.740 --> 01:12:09.820
+Ansgar Dietrichs: Yeah, I mean, I just wanted to say, because if we if there's still uncertainty whether we want to ship this in Fusaka at all. I think we just need to have the discussion today, because we won't have any new information in 2 weeks. And so, like the more we push these like, the the more we we end up having to make the discussion rushed. So
+
+459
+01:12:09.820 --> 01:12:27.779
+Ansgar Dietrichs: yeah, I would just argue for that. We should today decide to include this. That doesn't mean we can still wait for Devnet 2 to actually like have it in the Devnets. If that's preferable. I think there's no reason to not do it in devnet one. But yeah. And then we can still, for example, like, I do think the one consent that is reasonable is this question of
+
+460
+01:12:28.347 --> 01:12:41.890
+Ansgar Dietrichs: whether that that basically that constant parameter should be so high that it at least like somewhat meaningfully now, is, is a portion of the overall cost of of a blob transaction, even even if the the it's at at the floor level.
+
+461
+01:12:42.155 --> 01:13:04.209
+Ansgar Dietrichs: But that we can. Then we can decide. In 2 weeks we can do in 2 weeks. We can have, like a proposal comparing, like, say, 2 different values for this parameter, one very conservatively low one a bit like this, this higher proposal. See just concrete numbers of like in terms of dollars, dollar terms like, what? What would the percentage change be for for sending a blood consection in either of these scenarios, and then just choose one of the 2.
+
+462
+01:13:04.230 --> 01:13:05.170
+Ansgar Dietrichs: And
+
+463
+01:13:05.220 --> 01:13:11.949
+Ansgar Dietrichs: and so, if that means that we would want to like. Wait until Devnet 2 to even just include it in the Devnet. That's fine. I think it could already be implemented as of today.
+
+464
+01:13:16.530 --> 01:13:29.186
+Tim Beiko: Yeah, it would be towards if if we think we want to do this, and it's a question of what the fee is, then I would move it to Devnet one, because we have less stuff for devnet one right now. And this is a fairly simple addition.
+
+465
+01:13:32.440 --> 01:13:34.210
+Tim Beiko: yeah. So I guess.
+
+466
+01:13:34.210 --> 01:13:42.970
+Ben Adams: I I would be very for being in that one's fine. It's a it's an easy implementation.
+
+467
+01:13:43.600 --> 01:13:51.180
+Ben Adams: And since in Fusaka we're including Bpo forks, and you know we're constantly changing.
+
+468
+01:13:51.360 --> 01:13:55.660
+Ben Adams: We're messing with the blob supply continuously after Fusaka.
+
+469
+01:13:57.200 --> 01:14:01.450
+Ben Adams: I think it's quite important to to stabilize the market.
+
+470
+01:14:06.950 --> 01:14:08.120
+Tim Beiko: Okay, so
+
+471
+01:14:08.810 --> 01:14:23.405
+Tim Beiko: any objections to moving it into devnet one, and we can obviously tweak the constant as we as we learn more about the impact. But at least we'll have this implemented in clients and and tested
+
+472
+01:14:32.480 --> 01:14:36.569
+Tim Beiko: okay, so let's do that. Let's move this one to devnet one
+
+473
+01:14:37.410 --> 01:14:53.790
+Tim Beiko: and then the last vip on our list was the pay up code this one was the one that had the most, I guess uncertainty around. So Aragon was against it. Basically another mind maybe disagreed on when we should do it. So I don't know.
+
+474
+01:14:54.060 --> 01:14:59.420
+Tim Beiko: Yeah. Geth and Ruth, do. The 2 of you have opinions about it.
+
+475
+01:15:07.220 --> 01:15:08.779
+lightclient: Sorry, which one again.
+
+476
+01:15:08.780 --> 01:15:11.110
+Tim Beiko: At pay OP. Code 5, 9, 2 0.
+
+477
+01:15:20.950 --> 01:15:28.710
+lightclient: Yeah, Millie, and I'll just some comments on the East magicians thread. But I understand that a lot of people really think pay is important.
+
+478
+01:15:29.530 --> 01:15:35.720
+lightclient: I'm a bit worried about the implications on our compute model because
+
+479
+01:15:36.310 --> 01:15:41.869
+lightclient: sending yeth without execution makes it difficult to do accounting nicely.
+
+480
+01:15:43.310 --> 01:15:50.079
+lightclient: But obviously we can already do this today with self-destruct. So it's not really like, it's adding new functionality.
+
+481
+01:15:51.510 --> 01:15:54.210
+lightclient: I'm kind of indifferent.
+
+482
+01:15:54.480 --> 01:16:00.120
+lightclient: But we have a lot of vips that we are considering to include. So maybe it doesn't make as much sense.
+
+483
+01:16:05.630 --> 01:16:13.009
+Tim Beiko: Any thoughts from Russ, I would break the current mev boost flow.
+
+484
+01:16:14.050 --> 01:16:18.270
+Roman: Yeah, in a way that currently delays validations.
+
+485
+01:16:20.470 --> 01:16:21.590
+Roman: That that
+
+486
+01:16:22.510 --> 01:16:34.429
+Roman: that the sender is the I guess maybe you cannot trigger the payoff code in the payout transaction. It just proposes the
+
+487
+01:16:34.550 --> 01:16:41.009
+Roman: often that the tier recipient to
+
+488
+01:16:41.790 --> 01:16:48.409
+Roman: to like a contract address, and they do different kind of stuff with the East that they receive.
+
+489
+01:16:52.390 --> 01:17:00.650
+Tim Beiko: Okay. So I just because we're also kind of getting no on time. And this one was kind of contentious. I would
+
+490
+01:17:00.820 --> 01:17:20.140
+Tim Beiko: maybe not remove it now. But I think in the next 2 weeks, like, yeah, if client teams want to review that one alongside the 3 other ones we're considering for Devnet 2, which is 7, 2, 1, 2, 7, 9, 0, 7 and 7, 9, 3, 4. And we can make a call about which ones we include is that
+
+491
+01:17:20.400 --> 01:17:21.469
+Tim Beiko: make sense?
+
+492
+01:17:28.520 --> 01:17:36.599
+Tim Beiko: yeah, so, and and I'll update my message here that I had in the chat. But so in practice, it means that for today we
+
+493
+01:17:37.040 --> 01:17:39.222
+Tim Beiko: we would have
+
+494
+01:17:40.260 --> 01:18:05.639
+Tim Beiko: 7, 8, 2, 5 and 7, 9, 1, 8 indefinite one we review 7, 2, 1, 2, 7, 9 0, 7, 7, 9, 3, 4, 5, 9, 2 0 over the next 2 weeks. We've removed 7, 7, 6, 2, and then on the Cl call this next week we should review the proposal. Look ahead. Vip 7, 9, 1, 7.
+
+495
+01:18:07.640 --> 01:18:08.330
+Tim Beiko: Yeah.
+
+496
+01:18:11.700 --> 01:18:12.650
+Tim Beiko: And
+
+497
+01:18:20.740 --> 01:18:24.870
+Tim Beiko: okay. Anything else on Fusaka. Scope.
+
+498
+01:18:30.435 --> 01:18:36.834
+Tim Beiko: Yeah. So only 2 new vips for definite one. Yeah. And the goal is, we launched one before
+
+499
+01:18:37.300 --> 01:18:41.909
+Tim Beiko: on on June 9, th at the latest.
+
+500
+01:18:46.830 --> 01:18:57.708
+Tim Beiko: Okay, testnet deployments. Alan wrote this post on. If they are magicians a couple months ago.
+
+501
+01:18:58.750 --> 01:19:01.010
+Tim Beiko: Alan, are you on the call?
+
+502
+01:19:05.220 --> 01:19:09.689
+Tim Beiko: Oh, I'm not sure.
+
+503
+01:19:16.000 --> 01:19:18.417
+Tim Beiko: Oh, I don't think she's on the call.
+
+504
+01:19:18.830 --> 01:19:23.580
+Tim Beiko: So basically, okay, the idea was that we should
+
+505
+01:19:23.880 --> 01:19:29.795
+Tim Beiko: really avoid breaking test nets for application developers, and
+
+506
+01:19:31.160 --> 01:19:42.429
+Tim Beiko: and and basically try to get a commitment that Hoodie should be that Hoodie should be the kind of long term application testnet.
+
+507
+01:19:43.175 --> 01:19:53.324
+Tim Beiko: Meaning that at the very least we should fork it only only like when, as the last testnet, when we're when we're sure.
+
+508
+01:19:55.780 --> 01:20:02.930
+Tim Beiko: yeah. So I guess, do people feel strongly about like trying to
+
+509
+01:20:03.480 --> 01:20:08.440
+Tim Beiko: keep Hoodie the last testnet that we fork one
+
+510
+01:20:09.850 --> 01:20:12.110
+Tim Beiko: one concern is that we'll never have.
+
+511
+01:20:12.972 --> 01:20:20.517
+Tim Beiko: So okay, so supportives. Yeah, so sorry. So one concern is that we'll never have like a perfect staging environment unless we
+
+512
+01:20:21.523 --> 01:20:38.876
+Tim Beiko: unless we effectively fork it after after magnet. Because there's always a risk of bugs but then sepolia is not sufficient to deploy complex lst protocols. So they they kind of need Hoodie for that. And therefore, like,
+
+513
+01:20:39.530 --> 01:20:44.410
+Tim Beiko: yeah, we would want to make Hoodie more of a a hey?
+
+514
+01:20:44.510 --> 01:20:48.240
+Tim Beiko: A app like stage environment.
+
+515
+01:20:48.370 --> 01:20:52.440
+Tim Beiko: And oh, and I think Alan just joined.
+
+516
+01:20:53.010 --> 01:20:54.610
+Alon Muroch | SSVLabs: Hi, everyone! Thank you for having me.
+
+517
+01:20:56.300 --> 01:21:02.590
+Tim Beiko: Yeah, do you want to give a quick context on your proposal? I was just trying to to summarize it, but doing a poor job of it.
+
+518
+01:21:04.470 --> 01:21:09.702
+Alon Muroch | SSVLabs: Yeah, I would love to. So my name is Alan. I'm from the Ssb network.
+
+519
+01:21:11.950 --> 01:21:22.099
+Alon Muroch | SSVLabs: they're running a DVD network. We've kind of went through the entire kind of prices quote unquote with the with the last fork
+
+520
+01:21:24.231 --> 01:21:34.418
+Alon Muroch | SSVLabs: it became obvious that stability and test. This is something that is, has has a lot of value for developers both in terms of not needing to
+
+521
+01:21:35.880 --> 01:21:49.070
+Alon Muroch | SSVLabs: or test nets, integration testing and also in general stability, gives a lot of value to just developing and and kind of predictability and development. And so, after the latest works for
+
+522
+01:21:52.360 --> 01:22:18.710
+Alon Muroch | SSVLabs: that came up with the idea of maybe proposing at least one testnet that will be stable long term, and also as close to Mainnet as possible in terms of its in terms of our risk appetite, meaning that we fork it last, and we don't quote unquote experiment with it, but rather it's quite literally a a minute from gonna be forked a minute before maintenance.
+
+523
+01:22:18.800 --> 01:22:37.259
+Alon Muroch | SSVLabs: And so I wrote about it in iter magicians, and then Tim and others, suggested I. I open it up to this conversation where the proposal is really to take Hoodie and try to make it after develop a testnet
+
+524
+01:22:37.390 --> 01:22:44.030
+Alon Muroch | SSVLabs: long term encourage a lot of developers to treat it as their stage environment, meaning
+
+525
+01:22:44.170 --> 01:22:56.549
+Alon Muroch | SSVLabs: for them to deploy their contracts. That's really important for integration testing and and so on. And maybe, more importantly, is to try to work with the
+
+526
+01:22:56.890 --> 01:23:20.634
+Alon Muroch | SSVLabs: with mainnet, or as close as possible to Mainnet, and not as a a testing for, but rather just a fork that needs to happen both on Mainnet and Hoodie the result of that will be signaling to the developers and in general signaling to everyone that Hoodie is really here as a really really stable testing for everyone to deploy their contract
+
+527
+01:23:21.060 --> 01:23:44.210
+Alon Muroch | SSVLabs: and make sure that make sure that we don't have those issues like we had before, where either test nets forked out. Not in a good way. And then we kind of got stuck without test nets or every 6 months, maybe 12 months changing tests, which in of itself is quite difficult for developers
+
+528
+01:23:44.661 --> 01:23:48.040
+Alon Muroch | SSVLabs: to do so. That's kind of my my summary of of everything.
+
+529
+01:23:51.850 --> 01:23:57.030
+Tim Beiko: Okay, thanks for sharing. So there's a couple of comments in the chats around.
+
+530
+01:23:59.780 --> 01:24:05.440
+Tim Beiko: yeah, like that. It's it's kind of hard to have forever running test nets. But I don't know. Like, yeah, Barnabas.
+
+531
+01:24:06.270 --> 01:24:08.050
+Tim Beiko: yeah. Like clients.
+
+532
+01:24:09.720 --> 01:24:10.959
+Tim Beiko: You want to add more.
+
+533
+01:24:13.500 --> 01:24:18.770
+Alon Muroch | SSVLabs: I. I know that I spoke with a a bunch of people from the FI think there is a kind of a
+
+534
+01:24:19.540 --> 01:24:35.649
+Alon Muroch | SSVLabs: people don't really want a a forever going testnet. I would actually, maybe challenge that. And I'm not entirely sure. Why, why, it's a bad thing. We have a forever going mainnet. So why not have like a forever going stage environment?
+
+535
+01:24:36.043 --> 01:25:03.990
+Alon Muroch | SSVLabs: But but even a a very, very long term best net, which is there is as minimal risk as possible in terms of forks and also actively encouraging developers to treat it as their stage environment. So we can have a lot of different projects having their contracts there in a stable manner will really help with a lot of the integration testing and in general, just the stability and predictability of developers.
+
+536
+01:25:07.610 --> 01:25:15.170
+Tim Beiko: Right? And I think, okay. So the the challenge with these long term test nets is always just the state like, they become harder and harder to
+
+537
+01:25:15.570 --> 01:25:19.599
+Tim Beiko: to maintain and there's kind of no incentive
+
+538
+01:25:20.130 --> 01:25:47.652
+Tim Beiko: for anyone to run nodes there. So historically, you know, most of the nodes on these test notes are run by client teams and and the Ef devops teams so you could imagine. So I guess what Barnabas is suggesting now in the chat is, we could also imagine just having a community run test nets. That's long running. That even forks after mainnet the challenge is actually finding people to run those nodes and do so over the long term.
+
+539
+01:25:49.080 --> 01:26:15.029
+Alon Muroch | SSVLabs: Maybe I have. Maybe I have a suggestion there. So most of the staking intra and applications already have a substantial amount of nodes running just because of the nature of what they, what they're building. And so potentially, we can harness them. For that, a, basically them taking the the bulk of the work of running those test nets. It's it's gonna be favorable with them as well, I know.
+
+540
+01:26:15.510 --> 01:26:34.600
+Alon Muroch | SSVLabs: projects like Lido and us. And others really really want that stability. And we also obviously run tested nodes. Because because we're doing a lot of testing around staking and infrastructure we're building. And so potentially, there is a way for guaranteeing a kind of a community driven where the base of it is
+
+541
+01:26:34.950 --> 01:26:46.159
+Alon Muroch | SSVLabs: those types of projects which anyhow, need to run a lot of infrastructure for testing because of the nature of their of their products. And also we can harness others. Maybe
+
+542
+01:26:46.160 --> 01:27:11.429
+Alon Muroch | SSVLabs: I don't know from the top of my head. Maybe a project like gnosis really needs nodes as well, because that that's something that you know, they constantly need to make sure their their development is going correctly and also their users have a lot of integrations to know. So maybe that's beneficial for them as well. So maybe we can, we can find this set of of community projects of of community members that willing to to run it long term
+
+543
+01:27:14.970 --> 01:27:30.219
+Alon Muroch | SSVLabs: 6 years is amazing. but realistically, if I look at different networks for different things realistically, we are finding ourselves jumping from Tesla to test quite more frequently than I would love to.
+
+544
+01:27:30.220 --> 01:27:40.859
+lightclient: I feel like you're conflating tests, testnets, and devnets here, though, like you've listed these Yolo devnets, and they're not really intended to be used by developers
+
+545
+01:27:41.700 --> 01:27:47.630
+lightclient: since the launch of Sepolio. We've kind of had this plan of having minimum 5 years per testnet.
+
+546
+01:27:47.750 --> 01:27:50.190
+lightclient: for, like many of the reasons that you're describing.
+
+547
+01:27:51.000 --> 01:27:57.210
+lightclient: So I think it's important to disambiguate the fact that there are pretty long running testnets.
+
+548
+01:27:57.460 --> 01:28:05.600
+lightclient: The main issue that we've run into is that there was a hard forking bug recently on Hawashi.
+
+549
+01:28:06.230 --> 01:28:06.720
+lightclient: and had we not.
+
+550
+01:28:06.720 --> 01:28:08.710
+Alon Muroch | SSVLabs: Not only that. Sorry. Go ahead.
+
+551
+01:28:09.010 --> 01:28:12.659
+lightclient: I'm just saying, had we not had that, I don't think that we would be having this conversation.
+
+552
+01:28:13.280 --> 01:28:27.970
+Alon Muroch | SSVLabs: We, we definitely felt test. Let's we're jumping from Tesla to test it. More rapidly, more frequently than we would have wanted, maybe. Sepholia, for example, is is long running, but not everyone is on sepulia
+
+553
+01:28:28.494 --> 01:28:35.129
+Alon Muroch | SSVLabs: and and we did like going back to Prader and others. We did find ourselves
+
+554
+01:28:35.580 --> 01:28:44.430
+Alon Muroch | SSVLabs: much more frequently than 6 years changing pending tests for various reasons. So it's not always the intent. But that's realistic.
+
+555
+01:28:44.430 --> 01:28:45.269
+lightclient: I mean sure.
+
+556
+01:28:45.270 --> 01:28:47.219
+Alon Muroch | SSVLabs: At least this is our experience.
+
+557
+01:28:47.460 --> 01:29:03.899
+lightclient: Sure I mean I totally get it, especially when the merge was sort of happening and the testing was happening. Then it totally makes sense the timelines were far shorter, but I think now we are in a much more solid position, and we have made a pretty strong commitment to having test nets 5 to 6 years.
+
+558
+01:29:04.210 --> 01:29:28.920
+lightclient: And so like you can definitely expect that there is an issue with Haleshki that we have to fix, and we should have a higher standard for what we put onto test nuts at the end of the day. We have a good track record for forking test nuts, and we've only had one hard forking bug in like the last 5 or 6 years, we should continue to minimize that. But sometimes it happens, and it's devastating for
+
+559
+01:29:29.220 --> 01:29:31.409
+lightclient: the whole testing ecosystem.
+
+560
+01:29:32.170 --> 01:29:34.849
+Alon Muroch | SSVLabs: I just don't really know if there's a way around that
+
+561
+01:29:35.410 --> 01:29:56.819
+Alon Muroch | SSVLabs: I think it's it's a it may be a matter of just defining, you know, in a way that is is much more communicated, much better to to developers, and also kind of enforcing those. So if if we do say, okay, this particular test is for 6 years maybe a decision to minimize the risk in terms of the force it it goes by.
+
+562
+01:29:57.176 --> 01:30:12.169
+Alon Muroch | SSVLabs: Again very close to Mainnet, or even after Mainnet, or with Mainnet even those small decisions will will greatly affect the stability of it. So it's it's less about having a dedicated test net more about like setting a a few.
+
+563
+01:30:12.670 --> 01:30:20.980
+Alon Muroch | SSVLabs: I don't know. I don't want to say rule, but, like, put a few conditions of how we treat those tests. It can get really go a long way. Instability.
+
+564
+01:30:21.280 --> 01:30:27.350
+Tim Beiko: So I think I I think one thing we we can do is commit to forking sepulia first.st
+
+565
+01:30:27.710 --> 01:30:29.060
+Tim Beiko: and that
+
+566
+01:30:29.710 --> 01:30:47.510
+Tim Beiko: historically, we kind of didn't want to do this. We thought Hoodie would be kind of the more chaotic test net. But then we we kind of realized that because of the open validator set. There's a bunch of stuff that can only be tested on Hoodie, I think, generally forking support. Your 1st is is a good approach there
+
+567
+01:30:47.510 --> 01:31:02.027
+Tim Beiko: in terms of forking after Mainnet, or at the same time as Mainnet. Then, like, yeah, that feels like a whole new test net. We'd have to stand up, because realistically, we generally only have 2, and there's value in getting 2 kind of dry runs before mainnet
+
+568
+01:31:02.470 --> 01:31:13.052
+Tim Beiko: But then, yeah, that's maybe something that the community could stand up, which is like effectively a main net staging environment that only forks after.
+
+569
+01:31:14.820 --> 01:31:15.630
+Tim Beiko: yeah.
+
+570
+01:31:15.750 --> 01:31:42.239
+Alon Muroch | SSVLabs: After. It's maybe too aggressive, but very, very shortly before or right with the mainnet will be, will be great. And and again, I think it's it's about risk. Right? So if if there, if we're forking in order to test something, then we're carrying more risk on that test net, and that's fine. It's a staging environment that's fine. But I think that that's kind of there's a trade off between that right? So so maybe.
+
+571
+01:31:42.240 --> 01:31:51.719
+Tim Beiko: There is, and realistically, like we, the thing, the thing like we do try to minimize that risk as much as we can through devnets. But there are some things that end up
+
+572
+01:31:51.880 --> 01:32:04.259
+Tim Beiko: only being possible to test in like semi production environments like test nets. So like we'll never get the risk to 0. I think we can more clearly communicate that like, okay. Well, for Kaleshki
+
+573
+01:32:04.740 --> 01:32:14.932
+Tim Beiko: first, st and then Hoodie, or sorry we're for sepulia first, st and then Hoodie, meaning that, like Hoodie, should be least risky to be forked.
+
+574
+01:32:15.630 --> 01:32:19.874
+Tim Beiko: But yeah, realistically, that risk is not 0. And we.
+
+575
+01:32:20.720 --> 01:32:29.290
+Tim Beiko: you know, barring having another test net that only forks after mainnet. I don't think that there's a solution that brings your risk to like
+
+576
+01:32:29.500 --> 01:32:31.791
+Tim Beiko: equal or less than Mainnet.
+
+577
+01:32:33.260 --> 01:32:43.230
+Tim Beiko: And yeah, potentially like, yeah, we could have just done this slower for for Petra. Yeah, I'm
+
+578
+01:32:43.390 --> 01:32:54.583
+Tim Beiko: and and I guess on the comms, too. Like, I think we can. We can definitely make that clear. Like as we're working on the fork, like, okay? Which test notes are forking. And when and and why?
+
+579
+01:32:55.510 --> 01:32:56.220
+Tim Beiko: yeah.
+
+580
+01:32:57.480 --> 01:33:16.150
+Alon Muroch | SSVLabs: What about encouraging? Or, you know, gently pushing more developers to really have a a stable instance of their contracts on whatever testing. It's gonna be to really improve integration testing. And in general, the kind of between.
+
+581
+01:33:16.150 --> 01:33:19.179
+Tim Beiko: Yes, we do this, but they they don't listen to us.
+
+582
+01:33:19.430 --> 01:33:20.100
+Tim Beiko: Yeah.
+
+583
+01:33:20.100 --> 01:33:22.550
+Barnabas: So can I raise a point here.
+
+584
+01:33:22.550 --> 01:33:23.280
+Alon Muroch | SSVLabs: Yeah, well.
+
+585
+01:33:23.280 --> 01:33:28.249
+Barnabas: So I really wish everyone would deploy everything as soon as possible on that.
+
+586
+01:33:28.700 --> 01:33:32.429
+Barnabas: And it's just not realistic, because that nets will break a lot.
+
+587
+01:33:32.550 --> 01:33:36.385
+Barnabas: So this is why we have testnets. And this is why we have.
+
+588
+01:33:38.010 --> 01:33:42.010
+Barnabas: the the longer equipment runs, basically
+
+589
+01:33:42.220 --> 01:34:02.180
+Barnabas: the less it's going to be deployed on the on the future, that not because everyone that deployed on, for example, might have left the company, and whoever they hired have no idea how to deploy on the new testnet. So this is why I think it would be actually better to have more, not less. That's not.
+
+590
+01:34:02.180 --> 01:34:02.730
+Alon Muroch | SSVLabs: So.
+
+591
+01:34:02.730 --> 01:34:09.380
+Barnabas: We want everyone to deploy everything on the test net and make deployment basically
+
+592
+01:34:10.000 --> 01:34:13.449
+Barnabas: as easy as possible and as automated as possible.
+
+593
+01:34:13.950 --> 01:34:19.770
+Barnabas: So if anything, we should probably aim for left. That's not not more more. That's not left.
+
+594
+01:34:19.770 --> 01:34:22.419
+Alon Muroch | SSVLabs: I can. I can only kind of speak from our experience.
+
+595
+01:34:23.680 --> 01:34:29.520
+Alon Muroch | SSVLabs: Right? I can only speak from our experience. But there's definitely more than one test that people are referring.
+
+596
+01:34:30.850 --> 01:34:41.599
+Alon Muroch | SSVLabs: We, for example, find ourselves booked on sepulia and and and Hoodie, for some reason for the same set of contracts. And so I can only kind of.
+
+597
+01:34:43.030 --> 01:34:45.990
+Alon Muroch | SSVLabs: you know. Reflect what what we've experienced. So
+
+598
+01:34:49.270 --> 01:35:09.859
+Alon Muroch | SSVLabs: Every much less than 6 years trying to kind of page test nets definitely using more than one for the same set of contracts. And and and I think that kind of if I need to put like a goal in mind about how an amazing test it should look like it's it's something along the lines of. I don't know if anyone ever interacted with the stripe
+
+599
+01:35:11.058 --> 01:35:21.849
+Alon Muroch | SSVLabs: stage environment. It's it's amazing, the developer experience. There is amazing that that's kind of my my beacon of hope where tested can be and should be
+
+600
+01:35:22.190 --> 01:35:25.590
+Alon Muroch | SSVLabs: and I think we're quite a long way from there.
+
+601
+01:35:25.930 --> 01:35:31.650
+Alon Muroch | SSVLabs: yeah, that that's kind of from my experience. And what we've been been through the past couple of years, maybe 3 years.
+
+602
+01:35:32.550 --> 01:35:37.490
+Tim Beiko: And I think, like, yes, this is kind of a qualitatively different thing almost, which is
+
+603
+01:35:37.780 --> 01:35:49.379
+Tim Beiko: like we having a staging environment that forks after Mainnet might look different than having a test set that we test upgrades on and
+
+604
+01:35:51.300 --> 01:36:19.560
+Tim Beiko: and in practice, like, you know, if you're if you're like a company like or a project like Ssv or Obol, or like any other liquid staking provider you gonna kinda have to be on all of them because you're working. You're not just like writing contracts. You're you're working on like core staking infrastructure. But then, if you're just, you know, say, like a uniswap, or like a you know, any kind of defi or nft contract that that doesn't
+
+605
+01:36:19.610 --> 01:36:32.309
+Tim Beiko: actually interact with the validator set in like a a complex way. And you can imagine having, like a pretty good stage environment that's just based on that that just forks after Mainnet, and and that that
+
+606
+01:36:32.700 --> 01:36:34.800
+Tim Beiko: brings the risks to basically 0.
+
+607
+01:36:35.543 --> 01:36:38.819
+Tim Beiko: But it still be harder to do for something like staking pools.
+
+608
+01:36:39.900 --> 01:36:52.589
+Alon Muroch | SSVLabs: I can. I I don't wanna name names, but it's it's not. It's from our. It's not just you know the the types of apps which are going for the info taking in front and and the user user facing
+
+609
+01:36:53.179 --> 01:37:18.669
+Alon Muroch | SSVLabs: size. A lot of kind of core, not core, but like very, very common types of applications. It's it's a lot of a lot of work to get them to work on on stage environments, and I think a lot of that is is because of that ambiguity. Where? Where should I deploy? How? How stable it is, and so on. And and and again it, it goes back to
+
+610
+01:37:19.531 --> 01:37:31.599
+Alon Muroch | SSVLabs: the developer experience, and how easy it is to build something mo-. Most applications are not standalone. Most application interaction with other types of contracts. I think from ens to nurses, to oracles to anything right? Other than that.
+
+611
+01:37:32.365 --> 01:37:32.830
+Alon Muroch | SSVLabs: Yeah.
+
+612
+01:37:33.130 --> 01:37:33.710
+Tim Beiko: Yeah.
+
+613
+01:37:34.290 --> 01:37:34.910
+Alon Muroch | SSVLabs: And.
+
+614
+01:37:34.910 --> 01:37:38.334
+Tim Beiko: Okay, I just wanna be mindful of time here, like, I think,
+
+615
+01:37:40.650 --> 01:37:58.059
+Tim Beiko: yeah, I I think we should. We should table this for now. But I agree that there's probably something around application development that we can build. That's better. But the current, like core dev test nuts beyond just moving to Houdi being the last one and reducing risk. I I don't think we can.
+
+616
+01:37:58.760 --> 01:38:00.910
+Tim Beiko: We can significantly change.
+
+617
+01:38:02.990 --> 01:38:06.959
+Tim Beiko: Yeah, like client. You want to discuss the Rpc proposals.
+
+618
+01:38:12.530 --> 01:38:14.699
+lightclient: I think I saw Zane on the call.
+
+619
+01:38:15.320 --> 01:38:17.289
+lightclient: saying, Did you want to mention.
+
+620
+01:38:17.650 --> 01:38:36.420
+Zane Starr: Hey? Yeah, thanks. Hey? Zane. Here from Openrpc, we actually do a lot of the documentation work for the Apis and things like that. And so recently, what we've done is we've
+
+621
+01:38:37.160 --> 01:38:55.669
+Zane Starr: overhauled Openrpc the ecosystem. So they're kind of new major version bumps so like for 2 XI did see a change coming in for like docusource, because people were having a hard time running locally. But actually the newer version, which is like on 2 X for the generator.
+
+622
+01:38:56.382 --> 01:39:10.520
+Zane Starr: Generates things like sort of locally. It allows you to run everything with the modern nodejs ecosystem things like that. There's other things like spac extensions. Which we just added. So there's now a roadmap to add
+
+623
+01:39:11.250 --> 01:39:13.820
+Zane Starr: new items into
+
+624
+01:39:14.320 --> 01:39:26.380
+Zane Starr: the spec and to support things like error groups which I'm gonna pass this over to Raj very shortly to talk about the error groups. Proposal I'm gonna link drop real quick.
+
+625
+01:39:26.840 --> 01:39:30.220
+Zane Starr: But boom!
+
+626
+01:39:31.215 --> 01:39:47.240
+Zane Starr: So yeah, basically, there's a lot of cool things that we can do in the spec now that we weren't able to do before. And we've been working with chain link to like allow clients to be able to specify
+
+627
+01:39:47.678 --> 01:40:00.821
+Zane Starr: Error codes and a more sustainable way, because currently within the spec, there's only like one error code. But there's a lot more error codes that are out there. And it's a question of like, how do we organize things?
+
+628
+01:40:01.300 --> 01:40:07.880
+Zane Starr: and get that going. So I'm just gonna pass this over to Raj because he's done a lot of the implementation work.
+
+629
+01:40:08.040 --> 01:40:22.669
+Zane Starr: And from the open Rc side. We've just been updating the ecosystem to do more awesome things, and I recommend you check out the tools repo because, like again, we've started overhauling things. So
+
+630
+01:40:23.020 --> 01:40:31.980
+Zane Starr: use no. Js, 20 whatever, and you'll be good to go. Okay, Raj, you wanna take.
+
+631
+01:40:31.980 --> 01:40:43.499
+Tim Beiko: Thanks. Sorry. So we are kind of at time. Yes, sorry about that. But I asked in the chat like, where can people kind of discuss this, and I think there's a
+
+632
+01:40:44.080 --> 01:40:50.769
+Tim Beiko: and so there's a chat on the discord. But is there also, like a Rpc. Standardization called next week. Is that right?
+
+633
+01:40:51.060 --> 01:40:52.909
+Tim Beiko: That might be like a better place.
+
+634
+01:40:53.110 --> 01:40:53.610
+Justin Florentine (Besu): That's right.
+
+635
+01:40:53.610 --> 01:40:55.440
+Justin Florentine (Besu): That'll be 8 o'clock on Monday.
+
+636
+01:40:56.090 --> 01:41:07.129
+Tim Beiko: Yeah. So I think that might be a better place to have like a longer, deep dive discussion. Because I we're already at time. And there's a couple other things that we need to draw people' attention to. Sorry about that.
+
+637
+01:41:07.430 --> 01:41:08.190
+Zane Starr: Okay.
+
+638
+01:41:09.223 --> 01:41:11.790
+Tim Beiko: Do you have access to the discord and all of that.
+
+639
+01:41:13.525 --> 01:41:20.230
+Zane Starr: Yeah, I can drop this in the Rpc. Channel and discord which discord you've already.
+
+640
+01:41:20.760 --> 01:41:21.850
+Tim Beiko: Yes. Correct.
+
+641
+01:41:21.980 --> 01:41:22.670
+Zane Starr: Okay.
+
+642
+01:41:23.900 --> 01:41:24.930
+Tim Beiko: Okay. Thanks.
+
+643
+01:41:25.570 --> 01:41:25.970
+Zane Starr: Thanks.
+
+644
+01:41:25.970 --> 01:41:26.640
+Tim Beiko: I'm
+
+645
+01:41:27.270 --> 01:41:36.012
+Tim Beiko: okay. And so we didn't have time to get to the Glam Saddam stuff today. I think it's just fine. We can discuss it in 2 weeks. Obviously, we shouldn't we? We should.
+
+646
+01:41:36.840 --> 01:41:55.400
+Tim Beiko: we should basically figure out Fusaka before before we do that and then, in addition to this Rpc proposal, there were 2 other proposals that people wanted to get feedback on. So I'll just post these in the chat. And yeah, people can can review those Async
+
+647
+01:41:55.877 --> 01:42:09.539
+Tim Beiko: and then in terms of next steps. So next week let's make a decision about the proposal. Look ahead, the IP on the Cl call, and in the next 2 weeks finalize the decisions for a definite 2, and by definition, what
+
+648
+01:42:09.730 --> 01:42:13.970
+Tim Beiko: kind of exclude everything else from Fusaka. So we have at least a full scope.
+
+649
+01:42:14.544 --> 01:42:17.089
+Tim Beiko: Anything else before we wrap up.
+
+650
+01:42:26.840 --> 01:42:27.680
+Tim Beiko: Okay?
+
+651
+01:42:27.790 --> 01:42:30.729
+Tim Beiko: Well, yeah, thanks everyone and talk to you all soon.
+
+652
+01:42:33.130 --> 01:42:34.160
+Pooja Ranjan: Thank you.
+

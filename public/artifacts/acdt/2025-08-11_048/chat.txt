@@ -1,0 +1,78 @@
+00:00:38	Minhyuk Kim:	gm!
+00:01:37	Gabriel Trintinalia | Besu:	hey all!
+00:01:58	Justin Florentine (Besu):	gm
+00:02:13	Justin Traglia:	Gm
+00:02:33	Louis:	gn
+00:02:36	Mehdi Aouadi:	gm gn
+00:02:44	Antoine James:	gmm
+00:03:24	Justin Traglia:	Reacted to "gm gn" with 😄
+00:07:35	Parithosh Jayanthi:	https://discord.com/channels/595666850260713488/892088344438255616/1404441330062463086
+00:08:57	Parithosh Jayanthi:	https://discord.com/channels/595666850260713488/892088344438255616/1402650822285856788
+00:09:46	Justin Traglia:	Max is 72, no?
+00:10:25	Parithosh Jayanthi:	[https://grafana.observability.ethpandaops.io/d/sunnyside_network_monitor/network-monitor?orgId=1&from=now-3h&to=now&timezone=utc&var-network=fusaka-devnet-4&var-consensus=$__all&var-execution=$__all&var-group_by=instance](https://grafana.observability.ethpandaops.io/d/sunnyside_network_monitor/network-monitor?orgId=1&from=now-3h&to=now&timezone=utc&var-network=fusaka-devnet-4&var-consensus=$__all&var-execution=$__all&var-group_by=instance)
+00:10:43	samcm:	Replying to "Max is 72, no?"
+
+Yeah max 72 at the final BPO
+00:10:48	Justin Traglia:	Reacted to "Yeah max 72 at the f..." with ❤️
+00:12:44	James He:	From Preston 
+>Releasing to holesky off develop isn't difficult, but it messes with normal flow for releases
+00:14:04	pawan:	How long would the non-finality last?
+00:15:26	Parithosh Jayanthi:	https://github.com/ethereum/execution-apis/pull/678
+00:16:26	Parithosh Jayanthi:	https://syncoor.fusaka-devnet-3.ethpandaops.io/
+00:21:10	Ansgar Dietrichs:	I do think getting to a combined ePBS + BALs (+ repricing) devnet would be very valuable
+00:21:34	Ansgar Dietrichs:	Replying to "I do think getting t..."
+
+basically the “scaling” devnet
+00:21:49	Toni Wahrstätter:	BALs is already speced on top of fusaka
+00:22:46	Justin Traglia:	FYI I’m planning to merge this PR soon: https://github.com/ethereum/consensus-specs/pull/4476
+00:23:00	Mario Vega:	Replying to "I do think getting t..."
+
+sorry what is it that we are repricing?
+00:23:20	Louis:	Replying to "I do think getting t..."
+
+Is it gas repricing?
+00:23:33	Justin Traglia:	Sounds good 👍
+00:23:57	Mario Vega:	Replying to "I do think getting t..."
+
+Is there an EIP?
+00:24:45	Toni Wahrstätter:	Replying to "I do think getting t..." 
+
+ Things like 7904, 7778, multi dim metering,
+00:25:06	Alexey:	you mean we need meta eip?
+00:25:33	Marius van der Wijden:	Can you quickly talk about the consensus issues found with fusaka @Mario Vega
+00:26:58	Tim Beiko:	For repricings
+00:27:02	Tim Beiko:	Like we had for EOF
+00:27:13	Toni Wahrstätter:	I had this one too:
+https://eips.ethereum.org/EIPS/eip-7981
+00:29:04	Mario Vega:	Replying to "Can you quickly talk..."
+
+For EIP-7823?
+00:30:05	Louis:	Replying to "Can you quickly talk..."
+
+Base & Modulus len is zero but exponent exceeds the upper bound
+00:30:05	Justin Traglia:	https://github.com/ethereum/execution-spec-tests/pull/1993
+00:30:08	Justin Traglia:	Yeah this one ^
+00:30:10	Mario Vega:	Reacted to "Base & Modulus len i..." with 👍🏼
+00:30:52	Parithosh Jayanthi:	@pk910 do you want to talk about 16M on eth_call?
+00:31:21	spencer:	Replying to "Can you quickly talk…"
+Test is merged!
+00:31:28	Mario Vega:	Reacted to "Test is merged!" with 👍🏼
+00:31:59	pk910:	uh, yea,  can quickly ask,  but I still don't know which client implemented it :D
+so noone to blame yet
+00:33:19	Mario Vega:	Replying to "Can you quickly talk..."
+
+https://github.com/ethereum/execution-spec-tests/pull/2005
+00:33:36	Ansgar Dietrichs:	seems better to keep eth_call unbounded, no?
+00:34:03	Ben Adams:	Reacted to "seems better to keep..." with 👍
+00:34:12	Ben Adams:	Reacted to "seems better to keep..." with 💯
+00:34:17	Ansgar Dietrichs:	sounds like just a bug then
+00:34:26	Marius van der Wijden:	We have a configurable limit in geth iirc
+00:34:35	lightclient:	Reacted to "We have a configurab..." with 👍
+00:34:40	Ben Adams:	Well not unbounded, but high 🙂
+00:35:54	Marius van der Wijden:	Defaulted to 50M in geth
+00:36:04	pk910:	geth when used as lib sends a 50M gas limit by default.   we should keep this to maintain compatibility with existing tools :)
+00:36:22	pk910:	Reacted to "Defaulted to 50M in ..." with 👍
+00:37:40	Ansgar Dietrichs:	someone should just check with them whether that was really meant as a design decision
+00:37:46	Marius van der Wijden:	Reacted to someone should just ... with "👍"
+00:37:49	Parithosh Jayanthi:	Reacted to "someone should just ..." with 👍
+00:37:51	pk910:	Reacted to "someone should just ..." with 👍

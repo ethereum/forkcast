@@ -1,0 +1,2574 @@
+WEBVTT
+
+1
+00:03:59.420 --> 00:04:00.450
+Akash | ECH: Hit him.
+
+2
+00:04:03.280 --> 00:04:04.200
+Tim Beiko: Good morning!
+
+3
+00:04:05.754 --> 00:04:09.880
+Akash | ECH: I'm helping with the stream today. So let me know whenever you are ready.
+
+4
+00:04:10.850 --> 00:04:12.199
+Tim Beiko: Sounds, great thanks.
+
+5
+00:04:12.870 --> 00:04:13.410
+Akash | ECH: Okay.
+
+6
+00:04:16.950 --> 00:04:23.340
+Tim Beiko: Oh, and Akash! How how early in advance! Do you know the Twitter Stream links.
+
+7
+00:04:25.485 --> 00:04:30.450
+Akash | ECH: We can set like anytime before this.
+
+8
+00:04:30.450 --> 00:04:39.010
+Tim Beiko: I was. Gonna say you you should probably post them on the Github agenda so people who go to the Github can see them there.
+
+9
+00:04:39.180 --> 00:04:41.730
+Tim Beiko: So if you, if you get them like 24 h
+
+10
+00:04:41.850 --> 00:04:45.769
+Tim Beiko: earlier or something. Yeah, it might help more people be aware of them.
+
+11
+00:04:46.830 --> 00:04:47.540
+Akash | ECH: Okay.
+
+12
+00:04:47.730 --> 00:04:48.660
+Akash | ECH: Sounds good.
+
+13
+00:05:04.770 --> 00:05:05.280
+Guillaume: Hello!
+
+14
+00:06:34.700 --> 00:06:35.859
+Ahmad Bitar | Nethermind: No. Have you.
+
+15
+00:08:26.290 --> 00:08:30.550
+Tim Beiko: Okay, cash in 1 min we can move this stream over.
+
+16
+00:08:31.860 --> 00:08:32.500
+Akash | ECH: Okay.
+
+17
+00:09:14.700 --> 00:09:17.019
+Tim Beiko: Okay, yeah, we can get started.
+
+18
+00:09:17.600 --> 00:09:18.970
+Tim Beiko: Let me know when we're up.
+
+19
+00:09:19.720 --> 00:09:20.850
+Akash | ECH: Yeah, you are live.
+
+20
+00:09:24.420 --> 00:09:36.736
+Tim Beiko: Okay, thanks. Everyone. Welcome to acde number 2, 1, 5, have a couple of things on the agenda today. So a bunch of
+
+21
+00:09:37.957 --> 00:09:52.449
+Tim Beiko: Fusaka scope finalizations questions to go through specifically around 7, 9 0, 7 the Max Blob for transactions. And then the MoD exp pre compile re pricing
+
+22
+00:09:54.170 --> 00:10:15.140
+Tim Beiko: Once we get to that, I wanted to chat a bit about the Amsterdam. So specifically, we have these headliners that have been proposed. We were hoping to finalize that in 2 weeks. But given, we have not yet finalized the few psychoscope that feels unrealistic. So yeah, we should probably revise that. And then finally,
+
+23
+00:10:15.690 --> 00:10:21.684
+Tim Beiko: Finally, Matt had a couple of things around the history expiry that he wanted to get feedback from teams on
+
+24
+00:10:22.416 --> 00:10:30.910
+Tim Beiko: but I guess to kick us off. Does Perry or Barnabas want to give us an update on Devnet 2. And how things are going there.
+
+25
+00:10:32.230 --> 00:10:40.310
+Barnabas: Yeah, sure so definitely not looking too great. We have on finalization for about 3 days now.
+
+26
+00:10:41.380 --> 00:10:44.889
+Barnabas: we had a bunch of peering issues. And
+
+27
+00:10:45.820 --> 00:10:55.260
+Barnabas: some fork id issues bezel had a forecast, had had some peering issue.
+
+28
+00:10:55.930 --> 00:11:02.606
+Barnabas: Nimbus and Nimbus El. Both are having issues. They are unable to sync,
+
+29
+00:11:04.020 --> 00:11:10.790
+Barnabas: we are about 56% right now. And yes, it's not looking too great
+
+30
+00:11:12.250 --> 00:11:20.830
+Barnabas: and tech. We also had some issues, and in the beginning be before we even hit Hulu, during full transition prison, had a bug as well.
+
+31
+00:11:23.170 --> 00:11:29.549
+Tim Beiko: Okay, do any of the client teams want to chime in about the issues they've encountered and
+
+32
+00:11:29.800 --> 00:11:31.230
+Tim Beiko: what the next steps are.
+
+33
+00:11:38.450 --> 00:11:39.649
+Tim Beiko: Yeah, Roman.
+
+34
+00:11:40.310 --> 00:11:52.820
+Roman: Yeah. We added some more logs to see what the parent issues are. Exactly. And the it seems to be work. Id related as well we we should fix it by the end of the day.
+
+35
+00:11:53.150 --> 00:11:57.083
+Tim Beiko: Okay, what did anything change in the fork? Id
+
+36
+00:11:58.790 --> 00:12:02.230
+Roman: It. It is more likely that we're
+
+37
+00:12:02.540 --> 00:12:06.680
+Roman: we're not initially treating videos as regular hard works.
+
+38
+00:12:06.680 --> 00:12:09.019
+Tim Beiko: Oh, okay. I see that. Okay.
+
+39
+00:12:09.190 --> 00:12:10.849
+Roman: Most likely. Video related.
+
+40
+00:12:11.240 --> 00:12:11.990
+Tim Beiko: I see it.
+
+41
+00:12:12.779 --> 00:12:18.089
+Tim Beiko: And Gabriel, when you say Basic was not calculating the forecast correctly. Is that also the the source.
+
+42
+00:12:18.180 --> 00:12:19.980
+Gabriel Trintinalia | Besu: Yeah. Exactly the same thing.
+
+43
+00:12:20.160 --> 00:12:22.990
+Tim Beiko: Okay, got it?
+
+44
+00:12:23.727 --> 00:12:40.260
+Tim Beiko: I know that. When we run into this issue or on the test nets for Petra, we said we would create some test suites to actually test these like static configs for clients. I don't know if we ever did it.
+
+45
+00:12:42.360 --> 00:12:48.130
+Tim Beiko: yeah, I think Daniel or and or Mario, we're working on this. I don't know if either of them has
+
+46
+00:12:48.990 --> 00:12:51.569
+Tim Beiko: context on it, but it it does seem like
+
+47
+00:12:51.710 --> 00:12:58.960
+Tim Beiko: this is also hitting us. Now, we should probably figure out a way to test it. Especially in the context of Vpos
+
+48
+00:13:08.820 --> 00:13:09.590
+Tim Beiko: easy.
+
+49
+00:13:10.060 --> 00:13:11.260
+Tim Beiko: Yeah. So I don't. Maybe.
+
+50
+00:13:11.260 --> 00:13:15.609
+Mario Vega: The in the East Repository. We can okay, work something out. Yeah.
+
+51
+00:13:15.890 --> 00:13:20.155
+Tim Beiko: Yeah, we yeah. And we can discuss this, I think, around the call Monday. But it does feel like,
+
+52
+00:13:20.870 --> 00:13:22.060
+Carson | STEEL (EELS): If this.
+
+53
+00:13:24.090 --> 00:13:36.689
+Tim Beiko: Oh, yeah, it does like, if you have a growing number of just parameters that clients need to align on in Genesis, we should have a way to just test that side. Oh, and yeah, thanks, Spencer.
+
+54
+00:13:38.863 --> 00:13:42.860
+Tim Beiko: yeah. Oh, I'm I'm not sure that
+
+55
+00:13:43.510 --> 00:13:46.459
+Tim Beiko: the thing you, link Spencer was the actual
+
+56
+00:13:47.140 --> 00:13:52.487
+Tim Beiko: was Diana's proposal. I I think he wanted to like extend this or something.
+
+57
+00:13:55.930 --> 00:14:00.840
+Tim Beiko: but yeah, can follow up Async about this.
+
+58
+00:14:07.130 --> 00:14:09.979
+Tim Beiko: Any other issue people wanted to discuss.
+
+59
+00:14:16.240 --> 00:14:30.010
+Tim Beiko: Oh, yes, okay. Sorry. That second link that Gabriel shared is what Daniel's proposal was. So I don't know if this would actually support Bpo's if not, we should probably extend it and
+
+60
+00:14:30.620 --> 00:14:33.309
+Tim Beiko: make sure we have some tests around this.
+
+61
+00:14:36.830 --> 00:14:43.999
+Barnabas: Is this something you could actually ask for next? Would it be hard to as another vip.
+
+62
+00:14:45.200 --> 00:14:48.999
+Barnabas: because this is just a Json Rp. Sequel, so it should be fairly easy to add.
+
+63
+00:14:57.440 --> 00:15:00.080
+Tim Beiko: Has have any clients actually implemented this.
+
+64
+00:15:03.190 --> 00:15:04.850
+Felix (geth): So we have nothing yet.
+
+65
+00:15:06.930 --> 00:15:08.740
+Tim Beiko: Do you have a sense of how
+
+66
+00:15:08.970 --> 00:15:11.630
+Tim Beiko: big of a lift it is to implement like.
+
+67
+00:15:12.450 --> 00:15:25.869
+Felix (geth): So one thing about this proposal for sure is that it requires basically a custom implementation of this method. So it's not something that just falls out of the genesis, for example. So we do have to write.
+
+68
+00:15:25.870 --> 00:15:27.040
+Felix (geth): okay.
+
+69
+00:15:27.720 --> 00:15:30.469
+Felix (geth): But there's we can. Yeah.
+
+70
+00:15:30.640 --> 00:15:31.150
+Tim Beiko: Yeah.
+
+71
+00:15:34.110 --> 00:15:37.629
+Tim Beiko: Yeah. And there's a Pr for base 2. Yeah. Oh, sorry. Some.
+
+72
+00:15:38.070 --> 00:15:48.980
+Barnabas: I I would really want this to be included. To be honest. And because we need to verify if the config is correct, and I just don't understand how this was not
+
+73
+00:15:49.730 --> 00:15:51.120
+Barnabas: there yet before.
+
+74
+00:15:56.900 --> 00:16:02.470
+Barnabas: Yeah. So I think all, all clients should use the same format. That would be very nice.
+
+75
+00:16:03.310 --> 00:16:07.769
+Tim Beiko: Yeah, like, all the clients will probably have to implement it a bit differently. But exposing.
+
+76
+00:16:07.920 --> 00:16:12.510
+Tim Beiko: yeah, like, yeah, exposing the the call in the same format would be really helpful.
+
+77
+00:16:15.620 --> 00:16:26.940
+Tim Beiko: I guess I maybe one thing that could be helpful is if teams have time before Monday's testing calls to get like a a rough sense of what the implementation lift would be.
+
+78
+00:16:27.437 --> 00:16:33.779
+Tim Beiko: We can make a call then about having it be a prerequisite for definite 3. Does that make sense?
+
+79
+00:16:39.950 --> 00:16:44.635
+Tim Beiko: And I think, okay, if if we chat about it as well on Monday,
+
+80
+00:16:45.520 --> 00:16:58.989
+Tim Beiko: the other thing that we should probably consider is, is there some version of this for the cl clients? Because, if the El clients are running into issue issues, then
+
+81
+00:17:00.520 --> 00:17:04.579
+Tim Beiko: yeah, we? We probably want to wait for cl clients to also make sure they're like
+
+82
+00:17:04.680 --> 00:17:07.750
+Tim Beiko: set up with the same configs. But that might be a bigger lift.
+
+83
+00:17:08.579 --> 00:17:12.379
+Barnabas: Yes, here's already have this Api exposed beginning. Api.
+
+84
+00:17:12.630 --> 00:17:13.989
+Tim Beiko: Okay, amazing.
+
+85
+00:17:14.510 --> 00:17:19.215
+Tim Beiko: Okay? Then, yeah, it feels like we, we should definitely
+
+86
+00:17:19.819 --> 00:17:22.077
+Tim Beiko: should definitely do it on the El
+
+87
+00:17:22.710 --> 00:17:32.820
+Tim Beiko: And yeah, like, I guess, to Lucas's comment, like, it's not like a consensus change. So it's not like something we would add to definite, free formally. But I think it's maybe something we can just date
+
+88
+00:17:33.230 --> 00:17:40.631
+Tim Beiko: like we agreed to like not launch Devnet 3 until we have this.
+
+89
+00:17:43.850 --> 00:17:45.560
+Tim Beiko: But yeah, I I
+
+90
+00:17:46.570 --> 00:17:53.000
+Tim Beiko: I think we should give teams like maybe a couple of days to look into this and and finalize that decision on Monday. Does that make sense?
+
+91
+00:18:01.540 --> 00:18:03.719
+Tim Beiko: Okay, let's do that
+
+92
+00:18:06.420 --> 00:18:12.950
+Tim Beiko: any other. Yeah. Test. Definite issue. Sorry that people feel we should bring up here and discuss.
+
+93
+00:18:24.590 --> 00:18:25.470
+Tim Beiko: Okay.
+
+94
+00:18:26.224 --> 00:18:41.595
+Tim Beiko: then, next up we need to make a call around the Eip. 7, 9 0, 7 so there was a pretty big thread about this this week. I mean, it's been going for many weeks. But
+
+95
+00:18:42.550 --> 00:18:44.624
+Tim Beiko: yeah, I I don't know if
+
+96
+00:18:45.270 --> 00:18:51.639
+Tim Beiko: drag on, you want to give a context on your latest proposed change or
+
+97
+00:18:51.760 --> 00:18:55.980
+Tim Beiko: yeah, life science, either of you. Wanna give us some money.
+
+98
+00:18:59.508 --> 00:19:01.100
+draganrakita: Sure I can do it.
+
+99
+00:19:01.866 --> 00:19:23.130
+draganrakita: After interrupt. We have discussion, but changes need to be made on 7, 9, 0 7, and likely made Pr, that reduces code size to basically doubling it, whereas it was 10 times it introduced slightly more gas fee from
+
+100
+00:19:24.000 --> 00:19:27.320
+draganrakita: 2 per board to 4 per board.
+
+101
+00:19:28.050 --> 00:19:35.340
+draganrakita: And the last thing was it basically introduced the case with the xt code size.
+
+102
+00:19:36.000 --> 00:19:50.140
+draganrakita: I think all clients are fine, was fine. With that change. Yesterday we had discussion how to implement the warming of the code size in the end. I think all clients are fine to remove it
+
+103
+00:19:50.270 --> 00:19:53.830
+draganrakita: for that thing to be permutation detail.
+
+104
+00:19:55.080 --> 00:19:57.330
+draganrakita: In general.
+
+105
+00:19:57.470 --> 00:20:24.189
+draganrakita: There are 3 Prs that needs to be merged. One is clarification of light, like client Pr, the patch that removes code, size load warming, and the last one is most clarification from Mario is to include the loading of the initial targeted by code when it is hit by transaction.
+
+106
+00:20:24.380 --> 00:20:29.110
+draganrakita: This was not where indefinite. 2. This this was not done.
+
+107
+00:20:38.060 --> 00:20:39.219
+Tim Beiko: Thank you.
+
+108
+00:20:41.160 --> 00:20:43.430
+Tim Beiko: Mike signed anything to add on that, or
+
+109
+00:20:50.270 --> 00:20:56.680
+Tim Beiko: it's okay. If not, then I guess there's yeah. 2 questions the 1st is.
+
+110
+00:20:57.050 --> 00:21:17.789
+Tim Beiko: are all the teams okay with the 3 Prs that Gabriel from basically posted in chat. So this, pr, 9, 9, 1 0. Then the addition that dragon made to it and then Mario's pr around large contracts. So if we went forward with this.
+
+111
+00:21:19.140 --> 00:21:23.580
+Tim Beiko: does anyone oppose, merging these 3 prs, and then having that be the final spec.
+
+112
+00:21:23.740 --> 00:21:29.080
+Tim Beiko: And then the second question is, should we make the code size, index, optional or mandatory.
+
+113
+00:21:30.170 --> 00:21:34.382
+Tim Beiko: I think optional was where
+
+114
+00:21:35.736 --> 00:21:41.619
+Tim Beiko: soft consensus was last time I I checked. But yeah, we should definitely get explicit agreement on this.
+
+115
+00:21:42.450 --> 00:21:49.960
+draganrakita: A Pr assumes that code size index is optional or basically implementation detail.
+
+116
+00:21:50.390 --> 00:21:53.339
+Tim Beiko: Right? Oh, yeah, yeah. And so, yeah, by, I guess by optional like.
+
+117
+00:21:53.750 --> 00:22:00.620
+Tim Beiko: not not in consensus, like, I think there's no design where we are actually making this like a
+
+118
+00:22:00.790 --> 00:22:04.425
+Tim Beiko: like a a part of the consensus. But
+
+119
+00:22:06.310 --> 00:22:08.529
+Tim Beiko: When we say the implementation detail, it's like
+
+120
+00:22:08.910 --> 00:22:16.290
+Tim Beiko: we still expect all of the teams to have something or so.
+
+121
+00:22:22.445 --> 00:22:22.780
+Allan | Offchain Labs: Yes.
+
+122
+00:22:22.780 --> 00:22:34.100
+Allan | Offchain Labs: help catch me up. On the rationale for reducing the contract code size limit to 48 kb. Representing arbitrum and also catching up on all the different threads, so I'm sorry if I missed it.
+
+123
+00:22:40.850 --> 00:22:44.030
+draganrakita: I think it's mostly to side with caution.
+
+124
+00:22:44.450 --> 00:22:51.060
+draganrakita: 10 times increasing. The contract size seems too much, and with this aip
+
+125
+00:22:51.240 --> 00:22:57.390
+draganrakita: we are doubling it and preparing the work for further increase in the future. Hard folks
+
+126
+00:22:58.000 --> 00:23:06.710
+draganrakita: in future, hard Fork. We could just change the constant, and in the end we will have the bigger, bigger
+
+127
+00:23:06.950 --> 00:23:07.850
+draganrakita: contracts.
+
+128
+00:23:10.000 --> 00:23:30.249
+Allan | Offchain Labs: That's helpful. Thanks. So there's a path to scaling over time. But we want to start slow. I mean, doubling is not necessarily slow, but we very much would prefer the the full 256 kb, but understand that that's maybe not the safest, most scalable thing to do today, but very much in favor of it being included for socket, even at the 48 kb. Limit.
+
+129
+00:23:33.290 --> 00:23:37.400
+Tim Beiko: And I guess maybe just a bit of a sidetrack. But on this question, like.
+
+130
+00:23:37.860 --> 00:23:40.029
+Tim Beiko: Do you have a sense of the
+
+131
+00:23:40.490 --> 00:24:01.159
+Tim Beiko: distribution of usefulness like you know how many. When you say you want the 256 like, I assume this means, maybe I don't. Arbitrum can run everything in like a single contract. But then, like, yeah, what benefit do you get from? Like, you know? 48 versus, you know. Say, we doubled it to get the 96 like, are there some?
+
+132
+00:24:01.630 --> 00:24:09.650
+Tim Beiko: Some yeah, some some numbers, or some like sizes that are just like disproportionately useful.
+
+133
+00:24:10.921 --> 00:24:24.468
+Allan | Offchain Labs: Yeah. So so one of the big benefits to us is, that a lot of the the rest and C and C plus plus binaries that we run with stylus or the laws mentioned is just naturally larger. So we we would like to.
+
+134
+00:24:25.630 --> 00:24:27.579
+Allan | Offchain Labs: you know, add, you know.
+
+135
+00:24:28.120 --> 00:24:51.670
+Allan | Offchain Labs: certain crates that can blow past 24 kb, once they're optimized. So it would be ideal for us to be able to import more crates like that that, you know. Aren't, you know? Just hand rolled maths. There's also yeah. Other rest elements for the rest contracts on the arbitr stack that we would be able to move
+
+136
+00:24:51.690 --> 00:25:00.979
+Allan | Offchain Labs: on chain more and have a lot of performance benefits, too. So we're we're sort of capped right now. On how much of that we can
+
+137
+00:25:01.580 --> 00:25:05.940
+Allan | Offchain Labs: deploy on chain without having to, you know, spread it out or scattered across many contracts.
+
+138
+00:25:07.020 --> 00:25:07.950
+Tim Beiko: Got it.
+
+139
+00:25:08.580 --> 00:25:15.790
+Tim Beiko: Okay, I'm okay. So I guess I yeah, back to the
+
+140
+00:25:16.688 --> 00:25:19.340
+Tim Beiko: actual spec changes. So like, I think.
+
+141
+00:25:19.560 --> 00:25:32.779
+Tim Beiko: it seems like there's no objections on those 3 Prs. Then the question is, about the index. If we do leave it as an implementation detail to clients. As Oscar said.
+
+142
+00:25:33.430 --> 00:25:47.401
+Tim Beiko: we, we want to have we want to make sure we're not introducing new bottlenecks or or new issues. Even in the case where the gas limit increases. We haven't quite benchmarked this extensively.
+
+143
+00:25:48.570 --> 00:25:55.310
+Tim Beiko: but yes, Lucas, and seem to have an intuition, for, like what kind of bottlenecks would this cause. And
+
+144
+00:25:56.003 --> 00:25:59.139
+Tim Beiko: yeah, do you wanna maybe give more context on this.
+
+145
+00:26:03.507 --> 00:26:12.980
+draganrakita: Maybe I can respond. We will still have additional gas that if the bytecode gets code loaded
+
+146
+00:26:13.170 --> 00:26:16.539
+draganrakita: you will still have that initial gas that you need to spend
+
+147
+00:26:17.440 --> 00:26:27.360
+draganrakita: the while we why, we say the code size in this is optional is because this will not apply for the external code size
+
+148
+00:26:28.400 --> 00:26:30.230
+draganrakita: for external code size.
+
+149
+00:26:30.780 --> 00:26:36.279
+draganrakita: The bytecode is not going to be made warm.
+
+150
+00:26:36.710 --> 00:26:46.569
+draganrakita: It will be always cold. It will be cold after the call. That means that if the bycode is not warm somehow from other opcodes.
+
+151
+00:26:46.750 --> 00:26:51.569
+draganrakita: you will still have need. You still need to account for additional gas.
+
+152
+00:26:53.260 --> 00:26:55.840
+draganrakita: So worst case in this sense is covered.
+
+153
+00:27:12.450 --> 00:27:13.210
+Tim Beiko: Okay.
+
+154
+00:27:13.640 --> 00:27:34.279
+Tim Beiko: any other thoughts on this. Otherwise I would lean towards including it in Devnet 3. With these changes, I think. We will benefit from actually getting clients to try and implement this. We can also run, you know, large blocks and spammers on definite 3 or the definite. 3.
+
+155
+00:27:36.740 --> 00:27:37.860
+Tim Beiko: Version,
+
+156
+00:27:40.530 --> 00:27:51.780
+Tim Beiko: so, and to on, guys point like by optional, I guess we would leave it at the clients how they implement it. But then we should actually test these implementations and like.
+
+157
+00:27:53.322 --> 00:28:00.620
+Tim Beiko: large scale devnets. Yeah, I'm sorry.
+
+158
+00:28:01.430 --> 00:28:24.869
+Ansgar Dietrichs: Yeah, I mean to be clear. I didn't mean we should like. I don't think there's an option where at least not for Fusaka, where we would have an enshrined index in any sense meaning like an actual like state object that would be had a specified structure, and would be committed to or anything, because that's just too big of a lift. So the question really is, just, do we want to mandate that all clients have a version of a kind of
+
+159
+00:28:25.230 --> 00:28:33.030
+Ansgar Dietrichs: of a way to to always get the the contract size that is never worse than, say, loading a 24 kB contract?
+
+160
+00:28:33.200 --> 00:28:54.330
+Ansgar Dietrichs: Or do we basically even leave that choice up to the clients? Because that, I think, impacts quite heavily what what kinds of things we like performance? We're testing and and whatnot. So so I just I was really most asking for that decision. Like, do we do we? Do? We make it mandatory that there is some way of efficiently accessing code size or not.
+
+161
+00:28:56.790 --> 00:28:57.590
+Tim Beiko: Lucas.
+
+162
+00:28:57.860 --> 00:29:17.219
+Łukasz Rozmej: So, in my opinion, this is the other way around. We should firstly create some worst case scenarios, benchmark and target some kind of performance, and then see if a client can live without those index, the ones that don't have it, and if they don't, they need to implement it.
+
+163
+00:29:19.100 --> 00:29:21.699
+Tim Beiko: Yeah. So I guess that would be making it optional.
+
+164
+00:29:25.080 --> 00:29:37.138
+Ansgar Dietrichs: Right. But then maybe just one more point there, like I I do think then just the the point would be that normally all of. I agree with that process. But all of that would have to happen before I final inclusion decision into the hard phone. Because
+
+165
+00:29:37.390 --> 00:30:01.000
+Ansgar Dietrichs: basically, first, st you get some benchmarks. And then you decide, okay, do you need to have a man index or not to basically then hit the performance targets, but only once you hit the performance targets. Can you make the inclusion decision? We want to make the inclusion decision today. So that means we have to basically already be at basically 100% confidence that we will hit the benchmark requirements that we will eventually have. And the problems right now, we just don't have the data for that yet.
+
+166
+00:30:01.020 --> 00:30:09.969
+Ansgar Dietrichs: if we are also optimistic that we that we are very confident that we will hit them, we can do that, and then just worst case pull the eap, but it just feels very opinionated.
+
+167
+00:30:10.170 --> 00:30:26.420
+Łukasz Rozmej: Yes, that was my initial reservation against the Ap. And that we don't have any benchmarks for it, and that's why we were not happy with the next thing, the target with 2 xing. We are pretty sure we will hit
+
+168
+00:30:26.590 --> 00:30:28.230
+Łukasz Rozmej: decent numbers.
+
+169
+00:30:31.640 --> 00:30:45.700
+Tim Beiko: I would treat this like, basically any other dos vector in a way like we should, we should include it. And then, if we find in testing that there's like a dos issue or like a performance issue, then we can always remove it. But that's
+
+170
+00:30:45.880 --> 00:30:51.020
+Tim Beiko: that's true of every IP. And I think at this point, like the main thing we're bottlenecked on is
+
+171
+00:30:51.130 --> 00:30:58.850
+Tim Beiko: actually getting the clients to implement it and and seeing how that works. So like, if we want any chance of shipping this into Saka.
+
+172
+00:30:59.090 --> 00:31:04.073
+Tim Beiko: I I think we we basically have to include it. Leave the index optional.
+
+173
+00:31:05.040 --> 00:31:14.494
+Tim Beiko: and then, yeah, make a call based on the performance numbers and worst case, we will remove it if we if we don't feel that we we can actually
+
+174
+00:31:15.160 --> 00:31:17.293
+Tim Beiko: like, yeah, address those issues,
+
+175
+00:31:27.580 --> 00:31:35.030
+draganrakita: Just say we added new gas to mitigate that potential Ddos.
+
+176
+00:31:36.200 --> 00:31:37.230
+draganrakita: So.
+
+177
+00:31:37.230 --> 00:31:37.840
+Tim Beiko: Great.
+
+178
+00:31:38.420 --> 00:31:40.110
+draganrakita: Yeah, it's there.
+
+179
+00:31:40.740 --> 00:31:45.178
+Tim Beiko: Okay, and then when we'll need to see these new benchmarks.
+
+180
+00:31:45.640 --> 00:31:52.789
+Tim Beiko: I think once we have Devnet 3 up and running, and it works. In the happy case, then our priority should be to actually
+
+181
+00:31:52.920 --> 00:31:57.779
+Tim Beiko: do the stress testing. If we can do it in parallel, then great. But it does seem like
+
+182
+00:31:58.140 --> 00:32:08.239
+Tim Beiko: Devnet 2 is still struggling with some issues. So we we 1st need to get it implemented. Get it, live on Devnet 3, and then we should stress. Test it shortly after.
+
+183
+00:32:10.630 --> 00:32:14.820
+Tim Beiko: And okay, so
+
+184
+00:32:15.700 --> 00:32:24.359
+Tim Beiko: any objection to move forward with 7, 9 0, 7 indefinite 3. It's already specified, I believe, since the since the last call.
+
+185
+00:32:24.910 --> 00:32:28.319
+Tim Beiko: let me just actually double check that real quick, but
+
+186
+00:32:28.550 --> 00:32:44.850
+Tim Beiko: almost certain. Yeah. So it was specified on the last call. So I would just add it to definite 3 and flag that we are merging the 3 the 3 prs that that were at the agenda. So
+
+187
+00:32:45.210 --> 00:32:46.830
+Tim Beiko: that will be the final spec.
+
+188
+00:32:52.380 --> 00:32:54.250
+Tim Beiko: Yeah, Millen.
+
+189
+00:32:54.780 --> 00:33:05.639
+milen | Erigon: Yeah, hey? I just have a quick question. Every everything so far sounds good to me. But I was just wondering, do you guys think that there would be a definite 4 and a definite 5?
+
+190
+00:33:05.940 --> 00:33:08.609
+milen | Erigon: And if there is, I'm wondering.
+
+191
+00:33:09.139 --> 00:33:14.729
+milen | Erigon: and if we're gonna do all these performance tests and benchmarking. I'm wondering if it's worth
+
+192
+00:33:15.030 --> 00:33:18.419
+milen | Erigon: leaving the 256 kB
+
+193
+00:33:19.059 --> 00:33:22.920
+milen | Erigon: unchanged for Devnet 3, so that we can gather.
+
+194
+00:33:23.190 --> 00:33:25.599
+Tim Beiko: Right I would lean against.
+
+195
+00:33:25.750 --> 00:33:41.580
+Tim Beiko: I think we should do. 48. And we tried to have definite 3. Be the last def net, and to the extent, there's a definite 4. It's because there's a bug on definite 3 that requires like restarting the definite. But I think we should consider this like the final
+
+196
+00:33:42.000 --> 00:33:50.749
+Tim Beiko: final spec, and given the concerns around benchmarking and whatnot, I think. I think we do. 48 now and then.
+
+197
+00:33:51.600 --> 00:33:59.089
+Tim Beiko: and yeah, potentially for the next work, we consider some different design to get us to 56, or making the index mandatory, or something like that.
+
+198
+00:33:59.360 --> 00:34:00.090
+Tim Beiko: Yeah.
+
+199
+00:34:00.680 --> 00:34:01.520
+milen | Erigon: Okay. Cool.
+
+200
+00:34:08.530 --> 00:34:11.500
+Tim Beiko: okay, anything else on 7, 9 0, 7.
+
+201
+00:34:14.610 --> 00:34:23.779
+Tim Beiko: If not, then. Yeah, let's try to get these Prs merged in the next couple of days. So that we have this the final spec. And we can implement it.
+
+202
+00:34:25.960 --> 00:34:39.769
+Tim Beiko: Next up we had. We discussed this, I think, on the last couple of calls, but I want to finalize the the Max blobs for transactions in Bpos.
+
+203
+00:34:40.679 --> 00:34:53.319
+Tim Beiko: So right now they were set they were set up 12, and there was there was set at 12, starting at Bpo. One, and there was conversations about moving it back to 2.
+
+204
+00:34:59.490 --> 00:35:06.159
+Tim Beiko: yeah, I guess. Do we want to limit this back to 6 again? Move it to 9.
+
+205
+00:35:09.110 --> 00:35:12.000
+Tim Beiko: yeah. It would be nice to get to a final decision on this today.
+
+206
+00:35:30.266 --> 00:35:40.730
+FLCL: Yeah. I guess. The current proposal is to have it pn 6, right? But.
+
+207
+00:35:41.580 --> 00:35:48.340
+Tim Beiko: So which proposal? There was no Pr, I guess I know we discussed it. But like, yeah, I couldn't find like Apr or anything. So I guess
+
+208
+00:35:48.630 --> 00:35:51.139
+Tim Beiko: that's kind of why I wanted to bring it up again. Yeah.
+
+209
+00:35:52.390 --> 00:36:02.120
+FLCL: It would be cool to have a inform of Pr, I was asking about this in chat. Maybe it will appear later. This meeting
+
+210
+00:36:03.190 --> 00:36:03.690
+FLCL: but
+
+211
+00:36:05.060 --> 00:36:11.761
+FLCL: I guess another cause of not having this pair is because it's in kind of discussion.
+
+212
+00:36:12.370 --> 00:36:18.009
+FLCL: because we can go even 3 ways. 1st way is to
+
+213
+00:36:18.722 --> 00:36:25.530
+FLCL: keep for what we already implemented in the current form, and.
+
+214
+00:36:25.530 --> 00:36:30.639
+Tim Beiko: That's that's the 6, and then 12 for the vpos, as the eip States. Correct
+
+215
+00:36:33.181 --> 00:36:37.060
+Tim Beiko: by 12. What number do you mean like
+
+216
+00:36:37.060 --> 00:36:47.820
+Tim Beiko: per transaction. So when you say what's currently implemented, the Eip currently says sticks up to Osaka, and then Bpo, one Bpo, 2 have 12. So is that what the clients already have.
+
+217
+00:36:50.310 --> 00:36:56.470
+Barnabas: The Erp states that we're gonna use the Max value by default. If you don't re specify.
+
+218
+00:36:57.550 --> 00:36:58.500
+Tim Beiko: Okay, I see.
+
+219
+00:36:59.470 --> 00:37:03.700
+Tim Beiko: And so what the clients already have is they use this Max value by default
+
+220
+00:37:05.730 --> 00:37:08.890
+Tim Beiko: which is which goes from 6 to 12 in the 1st vpo.
+
+221
+00:37:10.766 --> 00:37:20.240
+FLCL: Yeah, I guess. this can be split into 2 discussions. 1st one is, how
+
+222
+00:37:20.410 --> 00:37:26.180
+FLCL: do we actually define this value. Is it a constant in a
+
+223
+00:37:26.731 --> 00:37:35.110
+FLCL: pure desk eap, and we will not change it in schedule.
+
+224
+00:37:35.270 --> 00:37:43.980
+FLCL: and whether it is a consensus, a value that affects consensus or just at the expo value.
+
+225
+00:37:44.720 --> 00:37:51.720
+FLCL: And after that we can decide about specific value. As far as a
+
+226
+00:37:51.880 --> 00:37:57.650
+FLCL: remember, answer post 6 for Vpr. I guess.
+
+227
+00:37:57.940 --> 00:38:02.200
+FLCL: But this is seems to me like the second part of discussion.
+
+228
+00:38:03.430 --> 00:38:04.279
+FLCL: So
+
+229
+00:38:06.330 --> 00:38:21.559
+FLCL: let me say a couple of parts about the 1st part I still think that it is quite convenient to have this video in both schedule, and to gradually increase it through the forks
+
+230
+00:38:22.240 --> 00:38:25.910
+FLCL: Should it affect consensus or not?
+
+231
+00:38:26.627 --> 00:38:35.800
+FLCL: Right now it it does not affect consensus. Everybody can build blocks with without with limit.
+
+232
+00:38:36.240 --> 00:38:41.660
+FLCL: defining just by how much blobs we can include in the block and
+
+233
+00:38:42.980 --> 00:38:49.229
+FLCL: the the initial idea was to limit how much one transaction can
+
+234
+00:38:49.340 --> 00:38:55.330
+FLCL: includable transition can contain blobs like single transaction.
+
+235
+00:38:55.940 --> 00:39:06.120
+FLCL: and I see that some clients support the idea is to have it as a text pool limit only.
+
+236
+00:39:06.520 --> 00:39:11.130
+FLCL: and the I wanted to hear more opinions about that.
+
+237
+00:39:11.360 --> 00:39:14.230
+FLCL: You guys have anything to say.
+
+238
+00:39:14.930 --> 00:39:23.739
+FLCL: Is it a taxable limitation for propagation, or we cannot include huge transactions into a block too.
+
+239
+00:39:32.620 --> 00:39:34.150
+Tim Beiko: Oh, yeah. Francesco.
+
+240
+00:39:36.252 --> 00:39:44.379
+Francesco: Yeah. Personally, I don't really see the point of making it a blood pool. Only thing I I think it should. We should make it.
+
+241
+00:39:44.670 --> 00:40:10.739
+Francesco: we should have in consensus as well. And the reason is, that if you're not going through the map pool like you're sending directly to to builder. I don't think this is much of any limitation like you can just split. Add multiple transactions, and split them that way. I I don't think it really like. The only thing that it does is that you cannot amortize more. But that's kind of a negligible thing that I don't think we should care about like beyond a certain point, it just doesn't matter. And yeah, and for.
+
+242
+00:40:10.830 --> 00:40:24.240
+Francesco: And you do get benefits from. I have any consensus that it's impossible to to kind of send a really large transaction that makes packing much harder. So I I just really don't see the benefits of having it only in the pool, and not in consensus.
+
+243
+00:40:32.910 --> 00:40:43.170
+FLCL: Okay, if you guys, anyone wants it to be textual. Only or could you raise your oh.
+
+244
+00:40:44.280 --> 00:40:49.790
+FLCL: opinion and otherwise. Zone, the question, yeah. Sorry
+
+245
+00:40:53.740 --> 00:41:08.080
+FLCL: no one. If so. The second question of whether we should place it in blob schedule or just in the product. Api. I right now, I have no strong opinion, because we always can switch back to
+
+246
+00:41:10.030 --> 00:41:17.169
+FLCL: what schedule settings if we decide to use them.
+
+247
+00:41:17.280 --> 00:41:19.700
+FLCL: Oh, we're changing this video
+
+248
+00:41:20.635 --> 00:41:32.710
+FLCL: but for me it seemed that it would be nicer, because it would prioritize, takes full changes towards scalability. And if we could
+
+249
+00:41:32.870 --> 00:41:47.249
+FLCL: like, keep in mind that we could increase it. Value from fork to fork, and spend some time on it. It would be better for text pool scalability with which we can.
+
+250
+00:41:47.400 --> 00:41:51.829
+FLCL: If we have this just as a constant, we can then
+
+251
+00:41:52.060 --> 00:42:02.719
+FLCL: like deprioritize in some sense this like improvements, potential improvements
+
+252
+00:42:03.540 --> 00:42:15.399
+FLCL: otherwise it would be very easy and flexible to change it in the future. If we will. Figure out that we can do this, we can make it 1224,
+
+253
+00:42:15.710 --> 00:42:18.210
+FLCL: 72 in other value.
+
+254
+00:42:18.430 --> 00:42:23.973
+FLCL: So but the concern that it looks ugly in the blob schedule
+
+255
+00:42:24.620 --> 00:42:29.740
+FLCL: right, because you need to set value if you don't want to make it. No.
+
+256
+00:42:30.240 --> 00:42:42.060
+FLCL: I don't think. Yeah. I don't think the concern is just. It looks ugly. It's like we were literally talking about consensus issues based on fork id, because the blob schedule is a bit weird now. So I.
+
+257
+00:42:43.580 --> 00:42:53.059
+Tim Beiko: I I might be a bit low context on this, but like I really don't see a strong rationale towards making raising that number like I
+
+258
+00:42:53.320 --> 00:43:05.710
+Tim Beiko: I don't know if 6 or 9 is the right number. I I don't have a strong opinion on that, but I I don't see why we don't just like hard code it. And then, if people feel like it's insufficient, we just change it in the next real hard fork.
+
+259
+00:43:06.020 --> 00:43:13.914
+Tim Beiko: I I don't think the cost of amortizing beyond, like 6 blobs, is is crazy to ask of of roll ups.
+
+260
+00:43:15.770 --> 00:43:25.320
+FLCL: 10 is like 10 times more than what base now uses. They use like one, and point.
+
+261
+00:43:25.320 --> 00:43:27.659
+Barnabas: Not in a single transaction.
+
+262
+00:43:27.990 --> 00:43:30.559
+Barnabas: They they don't care if it's in a single transaction or in.
+
+263
+00:43:30.560 --> 00:43:39.800
+Tim Beiko: Yeah, exactly. They have to pay what it's like, 21,000 gas difference, basically. Maybe a bit more, because they have to call like the contract. But like, I,
+
+264
+00:43:41.890 --> 00:43:45.350
+Tim Beiko: yeah, and.
+
+265
+00:43:49.470 --> 00:43:49.890
+FLCL: Oh!
+
+266
+00:43:50.310 --> 00:44:02.880
+Tim Beiko: And like, yeah, if the if the limit is, if the limit is 9 today, then like, yeah, maybe we just leave it at 9. We don't necessarily need to like we don't necessarily need to to lower it. I I don't have a super strong view there, but I guess
+
+267
+00:44:03.020 --> 00:44:08.220
+Tim Beiko: I do have a relatively strong view that we
+
+268
+00:44:10.050 --> 00:44:15.320
+Tim Beiko: this doesn't seem like we're a worthwhile place to introduce complexity.
+
+269
+00:44:17.420 --> 00:44:21.080
+FLCL: We don't need a lot of blocks in one transaction.
+
+270
+00:44:23.140 --> 00:44:25.349
+Tim Beiko: I guess, to your point about the specs
+
+271
+00:44:25.470 --> 00:44:38.539
+Tim Beiko: where this is maybe a dumb question. But, like, where is this value currently specified? Like? Is it in the? Is it in the blob extension eip from Petra that specifies the cap?
+
+272
+00:44:42.220 --> 00:44:42.960
+Tim Beiko: Sorry.
+
+273
+00:44:43.120 --> 00:44:44.309
+Barnabas: It's gonna be Po yet.
+
+274
+00:44:44.310 --> 00:44:46.240
+Tim Beiko: No, I mean but on my net now.
+
+275
+00:44:47.190 --> 00:44:55.760
+FLCL: And I I think it's just specified as a text pool limit in some implementations.
+
+276
+00:44:56.060 --> 00:44:57.550
+FLCL: And and the.
+
+277
+00:44:57.550 --> 00:45:00.509
+Tim Beiko: No, there is no limit on Mainnet today. Okay.
+
+278
+00:45:00.876 --> 00:45:06.000
+Roman: There is a limit which is the maximum you can have per block. Technically.
+
+279
+00:45:06.000 --> 00:45:06.500
+Tim Beiko: Could.
+
+280
+00:45:06.790 --> 00:45:08.440
+Tim Beiko: Oh, right? Right?
+
+281
+00:45:08.650 --> 00:45:15.520
+Tim Beiko: Yeah, yeah. Okay. So there's no transaction limit. Vip, only block. I see.
+
+282
+00:45:15.810 --> 00:45:33.205
+FLCL: Yeah. And I just wanted to mention about 9 which is another topic. Why, 9 is better, because, you know, do not need to take care of eviction of such transactions when Osaka happens. Because
+
+283
+00:45:33.800 --> 00:45:47.609
+FLCL: we had limit 9 before then it became 6, and you need to remove it from a transaction pool and take care of block building for this specific block, you know. Because
+
+284
+00:45:48.010 --> 00:46:03.570
+FLCL: we we had such case when we could build a block, we fixed it, but we could build a block with a big number of blocks in transaction, because we did not evict it.
+
+285
+00:46:03.920 --> 00:46:05.260
+FLCL: And yeah.
+
+286
+00:46:07.710 --> 00:46:12.830
+Tim Beiko: Yeah. So I guess the question then is like, yeah, do we?
+
+287
+00:46:13.130 --> 00:46:19.557
+Tim Beiko: It seems like, we probably do want a limit in consensus now. So we're gonna have to add this, no matter what
+
+288
+00:46:23.720 --> 00:46:27.730
+Tim Beiko: I guess I don't know on guard. What is the decision we made 2 weeks ago.
+
+289
+00:46:28.560 --> 00:46:29.110
+Ansgar Dietrichs: Well, I mean.
+
+290
+00:46:29.110 --> 00:46:33.460
+Tim Beiko: On Monday. It didn't seem it didn't seem super clear to people. Yeah.
+
+291
+00:46:33.460 --> 00:46:47.820
+Ansgar Dietrichs: No. 2 weeks ago, we said we moved the per transaction limit out of the Bpo specification just into the and set it to 6. And I mean again, that's just an arbitrary choice. We can totally make a different choice. But like I don't know, it's like.
+
+292
+00:46:47.820 --> 00:46:56.109
+Tim Beiko: Yeah, I guess I'm yeah. I'm fine with that. If we agree to that, then there's no objection. It just seemed on Monday people were still discussing off this call. But
+
+293
+00:46:57.370 --> 00:46:59.699
+Tim Beiko: yes, does anyone oppose this? And if
+
+294
+00:47:00.270 --> 00:47:04.679
+Tim Beiko: if not like, can we just open the Pr after this call?
+
+295
+00:47:06.530 --> 00:47:09.620
+Tim Beiko: Okay. The issue was that nobody actually made the change.
+
+296
+00:47:12.240 --> 00:47:16.350
+Tim Beiko: so does anyone want to volunteer to open those Cprs.
+
+297
+00:47:32.740 --> 00:47:36.219
+Tim Beiko: I guess anyone who's implemented peer peered us
+
+298
+00:47:39.420 --> 00:47:41.010
+Tim Beiko: on the El side.
+
+299
+00:47:41.130 --> 00:47:43.559
+Tim Beiko: Get someone do that. Pr.
+
+300
+00:47:51.260 --> 00:47:55.469
+FLCL: Let's ask in the chat, probably to to agree.
+
+301
+00:47:55.470 --> 00:47:56.030
+Tim Beiko: 10 years.
+
+302
+00:47:56.030 --> 00:47:58.600
+FLCL: This and you do it 3 or 2
+
+303
+00:48:00.156 --> 00:48:05.830
+FLCL: yeah, I can. But I already did this. And maybe it.
+
+304
+00:48:06.410 --> 00:48:10.791
+FLCL: The details were not not obvious enough to decline it.
+
+305
+00:48:12.380 --> 00:48:15.920
+Tim Beiko: I'm sorry. Did did you actually have an open Pr, because I could not find one.
+
+306
+00:48:16.760 --> 00:48:22.060
+FLCL: No, no, I might block schedule changes. Okay, let me do this simply.
+
+307
+00:48:22.060 --> 00:48:29.747
+Tim Beiko: Okay, amazing. So yeah, so the Pr would be to remove this Max blob per transaction.
+
+308
+00:48:30.410 --> 00:48:38.490
+Tim Beiko: constant from the eip. 7, 8, 9 2 to add a cap in the pier. Peer cip for 6
+
+309
+00:48:43.190 --> 00:48:48.480
+Tim Beiko: and yes, sorry if this is not your favorite choice, but thank you in advance for
+
+310
+00:48:51.220 --> 00:48:52.640
+Tim Beiko: for making the Pr.
+
+311
+00:48:56.720 --> 00:49:03.453
+Tim Beiko: There was an other comment in the chat that came up by Lewis. Or sorry. No,
+
+312
+00:49:04.060 --> 00:49:15.822
+Tim Beiko: I forget who but as we were talking about keeping the specs simple for the vpo sorry, Gabriel said, that we should consider removing base fee update fraction from Vpos
+
+313
+00:49:16.420 --> 00:49:29.190
+Tim Beiko: and only have the target. And Max, because effectively, from Osaka, it's it's like a stable. So this would mean that if we want to change the base fee update fraction. We need another real hard fork.
+
+314
+00:49:29.390 --> 00:49:35.930
+Tim Beiko: The people think we should also do that change to make ppos simpler.
+
+315
+00:49:44.400 --> 00:49:46.710
+Tim Beiko: Barnabas says, yes, Gabriel says yes.
+
+316
+00:49:47.790 --> 00:49:55.090
+Tim Beiko: Is there some reason to remove the feature when we already have it? I guess it's just to limit the risks of consensus changes and consensus issues.
+
+317
+00:50:02.520 --> 00:50:05.600
+Tim Beiko: where is that specified? Here.
+
+318
+00:50:22.210 --> 00:50:30.058
+Parithosh Jayanthi: Well, the only kind of question is, if we ship Fusa, and we do the analysis, and we decide that we want
+
+319
+00:50:30.620 --> 00:50:36.249
+Parithosh Jayanthi: Ppo value that doesn't have the same ratio. Then we won't be able to right. So we kind of limit what.
+
+320
+00:50:36.250 --> 00:50:36.860
+Tim Beiko: Well, what?
+
+321
+00:50:36.860 --> 00:50:38.260
+Parithosh Jayanthi: We can choose in the future.
+
+322
+00:50:38.900 --> 00:50:42.319
+Tim Beiko: Well, when we ship from Saka we have to choose that value
+
+323
+00:50:43.260 --> 00:50:49.979
+Tim Beiko: right? And then what we're saying is that we would not change that value before the next quote real unfold.
+
+324
+00:50:50.500 --> 00:50:52.850
+Tim Beiko: Hard fork. Sorry. So
+
+325
+00:50:54.020 --> 00:51:09.320
+Tim Beiko: so we could ship. You know, Fusaka, we're Gonna say, these are all the Bpos. They all have the same ratio, and then for a future fork. Either we choose to change that ratio for all of the Bpos, or we choose to reintroduce this.
+
+326
+00:51:10.220 --> 00:51:11.360
+Tim Beiko: it's fine.
+
+327
+00:51:13.420 --> 00:51:19.449
+Tim Beiko: It it's fine to to leave it in. But like, yeah, it's just like another source of complexity. Yeah, on scar.
+
+328
+00:51:20.510 --> 00:51:46.889
+Ansgar Dietrichs: Yeah, I would. I would personally prefer to leave it in unless clients have that as a pain point specifically, that this this specific extra value has caused issues because it is very convenient to be able to to basically have that extra lever where, if we feel like, we want to get a little bit more throughput. But we, we are already at the maximum. The network can handle that. We can basically in principle, if if the data support supports that that we have a little bit more room to go, and just squeezing that ratio a bit more.
+
+329
+00:51:46.950 --> 00:51:53.400
+Ansgar Dietrichs: It just yeah. It feels like in the spirit of of of Bpos to to be able to have that configurable but.
+
+330
+00:51:53.400 --> 00:51:58.250
+Tim Beiko: Do we want this in the 1st iteration of Vp, like, do we think we're gonna well, I mean.
+
+331
+00:51:58.250 --> 00:51:58.840
+Tim Beiko: yeah.
+
+332
+00:51:59.070 --> 00:52:16.269
+Ansgar Dietrichs: Meaning. Do we want to use this Pre Amsterdam? Right? But because it could be that like, it's not in the 1st Bpo that comes with Fusaka, but it could be that we we then have a later client release. That's basically Bpo, 2, 3, 4, that that still comes. Pre Amsterdam, and I do think there's a chance we might want to do it in there. No.
+
+333
+00:52:18.860 --> 00:52:44.359
+Parithosh Jayanthi: Yeah, and also just adding onto that, we might run into this weird situation in the future when we do change it. Where clients then need to have extra logic that says, for Bpo, 1, 2, 3, use the base fee, update fraction from Prague, but for 5, 6, 7, use it from Amsterdam. And at that point you basically come back to just defining it in the blob schedule because you need that mapping between Bpo and Blob schedule. Anyway.
+
+334
+00:52:45.480 --> 00:52:47.959
+Tim Beiko: Okay, okay, I think this convinces me. So
+
+335
+00:52:48.080 --> 00:52:53.090
+Tim Beiko: I think we leave this as is. And if it does become a pain point, we can reconsider removing it.
+
+336
+00:52:53.820 --> 00:52:54.740
+Tim Beiko: And
+
+337
+00:52:56.670 --> 00:53:08.140
+Tim Beiko: so for now, okay, let's just stick with the previous decision. We remove the Max Blobs per transaction from the Bpo config, and we add a cap of 6 per transaction in the pure desk. Spec.
+
+338
+00:53:12.230 --> 00:53:16.989
+Tim Beiko: Anything else on peer to us or Bpo's?
+
+339
+00:53:24.200 --> 00:53:53.899
+Tim Beiko: Okay. Next up. Then there was an update on MoD. Exp, where Marson said that it still poses some issue performance wise at higher gas limits. And there's 2 paths to dealing with this. Either we do a bunch of client optimizations or we potentially just radically increase the price where we where we triple the price of MoD exp. So there was a pr for this.
+
+340
+00:53:54.142 --> 00:53:59.959
+Tim Beiko: I don't know if Marcin is on the call, and so do you want to give some more context, on on the work you've done.
+
+341
+00:54:00.560 --> 00:54:27.219
+Marcin Sobczak: Yeah, yes, sure. So. I think like our target after Fusaka is to be ready for 100 million cost limit. And unfortunately, with 8, 7, 8, 8, 3 in current shape and with current clients implementations that we can't do this. Because you can take a look at the graph. I I posted it it in issue of this meeting.
+
+342
+00:54:27.730 --> 00:54:52.569
+Marcin Sobczak: and Ref, never mind and bezel are per performing good enough but we have, and argon with worst modex cases. After repricing at 26 mega gas per second, when 33 is the minimum requirement for for going to 100 million gas limit.
+
+343
+00:54:52.610 --> 00:55:05.550
+Marcin Sobczak: And at this point we can, we have to try. We have a we have a choice to try to improve clients, or to increase modex pricing even more.
+
+344
+00:55:05.700 --> 00:55:06.535
+Marcin Sobczak: And
+
+345
+00:55:07.920 --> 00:55:30.909
+Marcin Sobczak: if we exclude modex and look at other bottlenecks, and then there are, of course, some clients, specific bottlenecks, but on protocol level the next blocker is easy recovery and easy mall, and they are performing at about 50 to 55 megabits per second, and we would like to avoid the situation when we reprise Modex, and it will become
+
+346
+00:55:31.610 --> 00:55:49.989
+Marcin Sobczak: a bottleneck again after Fussaka. So if you want to avoid it, we need it to perform at least at this level of 50 to 55 megabits per second. And right now we have 2 clients at 26, so they would need to double the performance.
+
+347
+00:55:50.190 --> 00:55:51.020
+Marcin Sobczak: And
+
+348
+00:55:53.197 --> 00:56:09.439
+Marcin Sobczak: why, there are so big differences between clients so in Ref. And never mind this, this client are using very fast library in Gmp. And it is because they are so fast and it might not be
+
+349
+00:56:09.570 --> 00:56:33.120
+Marcin Sobczak: not be a good idea to force our clients to to move to to the same library, and probably it's better for protocol in general to have it more diversified. But then the the question is, if it is possible to to move performance to be twice faster.
+
+350
+00:56:33.250 --> 00:56:39.000
+Marcin Sobczak: And if it is possible it's great, but if not, we need to increase
+
+351
+00:56:39.110 --> 00:56:42.380
+Marcin Sobczak: the the prices again. And
+
+352
+00:56:43.325 --> 00:56:55.179
+Marcin Sobczak: I pass 7, 8, 8, 3 in current shape, and it. It was designed to have the lowest possible impact on the calls. So in current form.
+
+353
+00:56:55.633 --> 00:57:13.330
+Marcin Sobczak: it's affecting only 38% of calls. And we already know the addresses which are affected. There is a great report made by Tony about the impact of of this, and all the edge cases are already already addressed.
+
+354
+00:57:13.330 --> 00:57:26.490
+Marcin Sobczak: So if we want to increase prices more, then we just need to do like a general price increase. So then, 100% of calls and 100% of users will be affected.
+
+355
+00:57:26.840 --> 00:57:34.770
+Marcin Sobczak: And if we will affect all users, then we can probably go pricey and just triple the price, because
+
+356
+00:57:34.890 --> 00:57:36.980
+Marcin Sobczak: everyone will be affected in a way.
+
+357
+00:57:37.120 --> 00:57:39.590
+Marcin Sobczak: So at the end.
+
+358
+00:57:39.880 --> 00:57:42.860
+Marcin Sobczak: Hmm, that
+
+359
+00:57:43.190 --> 00:58:10.139
+Marcin Sobczak: I left everyone with the question, what we want to do we can try to to improve gaff and argon, but it will require doubling the perf the speed of the worst case of modex, or we need to reprice modex more. But then all the users will be affected.
+
+360
+00:58:11.120 --> 00:58:12.149
+Marcin Sobczak: Yeah, thank you.
+
+361
+00:58:14.600 --> 00:58:17.670
+Tim Beiko: Thanks for sharing Milan.
+
+362
+00:58:18.320 --> 00:58:23.260
+milen | Erigon: Yeah. Hi, I just wanted to mention quickly on that note that we are
+
+363
+00:58:23.540 --> 00:58:30.240
+milen | Erigon: experimenting with improving the performance. For modex at the moment.
+
+364
+00:58:31.068 --> 00:58:33.220
+milen | Erigon: And it's without gmp.
+
+365
+00:58:33.799 --> 00:58:40.420
+milen | Erigon: but we probably need, like maybe a few more days, to actually see the outcome of this.
+
+366
+00:58:42.580 --> 00:58:47.470
+milen | Erigon: So if if, if, like, a few more days is is okay, then
+
+367
+00:58:47.830 --> 00:58:51.039
+milen | Erigon: we can provide some, input then on this.
+
+368
+00:58:57.960 --> 00:58:58.710
+Tim Beiko: Okay,
+
+369
+00:59:04.000 --> 00:59:09.593
+Tim Beiko: And then, yeah, I asked who would be most affected if we could.
+
+370
+00:59:10.130 --> 00:59:16.800
+Tim Beiko: if we were to reprice this and it seems like it's been hard to get some numbers out of
+
+371
+00:59:16.950 --> 00:59:23.820
+Tim Beiko: out of dune for like, what are the biggest users of this free compile.
+
+372
+00:59:26.110 --> 00:59:29.340
+Tim Beiko: Oh, matter! Labs seems to be one of them.
+
+373
+00:59:30.283 --> 00:59:31.310
+Tim Beiko: I guess.
+
+374
+00:59:31.910 --> 00:59:34.609
+Tim Beiko: Given. This is like a relatively
+
+375
+00:59:34.880 --> 00:59:55.230
+Tim Beiko: small change spec wise, and I expect we still probably have a couple of weeks before launching definite 3. Does it make sense to spend the next 2 weeks actually investigating this more deeply? And then making a final call before the definite 3, the definite 3 launch.
+
+376
+01:00:10.350 --> 01:00:15.279
+Tim Beiko: I guess. Okay. On guard. As a question like, are we certain we're gonna have another
+
+377
+01:00:15.700 --> 01:00:23.310
+Tim Beiko: acde before launching Devnet 3. I guess. Based on
+
+378
+01:00:23.570 --> 01:00:27.749
+Tim Beiko: the the reports of W. 2 today. I expect
+
+379
+01:00:28.940 --> 01:00:32.140
+Tim Beiko: we're probably not going to launch Devnet 3 this week
+
+380
+01:00:32.430 --> 01:00:36.670
+Tim Beiko: or next week. But I don't know is that is that potentially off?
+
+381
+01:00:38.280 --> 01:00:39.730
+Tim Beiko: Yeah, Felix.
+
+382
+01:00:40.760 --> 01:00:43.022
+Felix (geth): No, I just sorry, maybe. But
+
+383
+01:00:43.760 --> 01:00:50.090
+Felix (geth): off topic, I just want to say that, like within Geth, we are definitely investigating the performance increase
+
+384
+01:00:50.619 --> 01:01:05.349
+Felix (geth): in terms of just like improving the performance of the implementation. But I also think that it would be wise to just like slightly overprice the MoD. Xp, anyways, because, yeah, maybe we missed something or
+
+385
+01:01:05.680 --> 01:01:10.580
+Felix (geth): so might actually be a good idea to just go with the
+
+386
+01:01:10.750 --> 01:01:21.399
+Felix (geth): higher price if it makes no difference, after all. I mean, we have to see it can't be unreasonably like can't be priced unreasonably high, but if it doesn't make that much of a difference. We might as well just do it.
+
+387
+01:01:25.620 --> 01:01:26.929
+Tim Beiko: Yeah. And I guess
+
+388
+01:01:27.210 --> 01:01:38.245
+Tim Beiko: what we would want to figure out is, is there any application that breaks at a 3 x price from odd. Xp are there any applications that become kind of cost? Prohibitive?
+
+389
+01:01:40.070 --> 01:01:52.528
+Tim Beiko: And so it seems like Maris listed a few like matter labs coinbase smart wallet Eigenda. So maybe we can reach out to those in the next week.
+
+390
+01:01:53.590 --> 01:02:02.588
+Tim Beiko: yeah, get their thoughts. And potentially, we could also just finalize this on Acdc next week, even though it's not a Cl. Topic. But if we want to move fast and not
+
+391
+01:02:03.350 --> 01:02:06.260
+Tim Beiko: not worth delaying. Demo 3
+
+392
+01:02:06.500 --> 01:02:09.130
+Tim Beiko: That seems like a reasonable path forward.
+
+393
+01:02:14.870 --> 01:02:20.250
+Parithosh Jayanthi: Could we make a plan as to what the open questions are? And who's gonna be investigating them?
+
+394
+01:02:21.840 --> 01:02:37.920
+Tim Beiko: So I guess the one question I would have on the pricing is just if we if we reach out to like, you know, say, these 3 and potentially other large users that precompile asking them with a 3 x with a 3 x price increase
+
+395
+01:02:38.359 --> 01:02:46.980
+Tim Beiko: of this precompile. If it let if it led us to being able to raise a gas so that significantly make a difference for you.
+
+396
+01:02:47.620 --> 01:02:48.759
+Tim Beiko: I think that's like
+
+397
+01:02:49.410 --> 01:02:59.590
+Tim Beiko: something we can ask those 3. I'm happy to own that, I guess, on the library benchmarking. I'm less sure what the actual next steps would be.
+
+398
+01:03:02.510 --> 01:03:06.369
+Felix (geth): We were on it with the, with the with the library stuff like. That's the thing we.
+
+399
+01:03:06.370 --> 01:03:06.950
+Tim Beiko: Yeah.
+
+400
+01:03:06.950 --> 01:03:10.389
+Felix (geth): There's like changes being investigated. And I mean.
+
+401
+01:03:10.760 --> 01:03:40.139
+Felix (geth): yeah, we can in the other thing to know is that we only ever really worry about MoD exp in the context of like worst cases. So like worst case attacks, we're not really seeing that like blocks are being filled with the MoD exp right now. So the other thing we could do is kind of just like implement gmp, as a kind of optional back end or something like that. But it will. It will have some technical downsides. But it's something that we could do where basically, we will have the option of activating it at
+
+402
+01:03:40.170 --> 01:03:47.760
+Felix (geth): if we need to, or something like that. But I would strongly prefer to try to have at least like 2 implementations of this function
+
+403
+01:03:48.180 --> 01:03:53.650
+Felix (geth): somehow, like, if it's fine if it's Gmp. And one other one, I think that would be good enough.
+
+404
+01:03:56.650 --> 01:03:57.740
+Tim Beiko: I'm Anskar.
+
+405
+01:03:58.520 --> 01:04:03.350
+Ansgar Dietrichs: Yeah, on the on the question of like, basically reaching out to people or what to investigate. I
+
+406
+01:04:03.500 --> 01:04:08.119
+Ansgar Dietrichs: personally think if we are serious about scaling, which I think we are then
+
+407
+01:04:08.310 --> 01:04:16.500
+Ansgar Dietrichs: coming up like in Glamsterdam, at the latest, and then the fox. Afterwards we will probably have to make very
+
+408
+01:04:16.640 --> 01:04:22.830
+Ansgar Dietrichs: at least we will have to be comfortable with starting to make decisions that are a bit more breaking.
+
+409
+01:04:22.940 --> 01:04:46.600
+Ansgar Dietrichs: Some use cases, or basically just in general, a bit more disruptive, because that just comes with the territory like we will have to change the evm a bit more in general, and the execution system. I feel like this is a very mild case. If we already have concerns here, I feel like that. The entire kind of project seems doubtful. So I, personally would actually say, we should just go ahead and make this decision as a bit of a just
+
+410
+01:04:46.600 --> 01:04:57.690
+Ansgar Dietrichs: getting used to settling the tone that basically people have to expect that occasionally prices change and prices change in like mildly disruptive ways, and there's no way around it. And that's just the cost of
+
+411
+01:04:57.690 --> 01:05:02.630
+Ansgar Dietrichs: actually going to higher throughput. So I would personally just prefer to make make that decision today.
+
+412
+01:05:06.220 --> 01:05:06.955
+Tim Beiko: Okay,
+
+413
+01:05:08.000 --> 01:05:14.049
+Tim Beiko: let's do some. And then, yeah, we can see if we want to do this and commit to it now. But yeah, some.
+
+414
+01:05:15.575 --> 01:05:21.570
+Som | Erigon: Question to get actually, have you guys shipped the
+
+415
+01:05:21.790 --> 01:05:26.675
+Som | Erigon: improvements in a release? Or are you planning to move
+
+416
+01:05:27.320 --> 01:05:31.170
+Som | Erigon: Release it, because Arizon and I think
+
+417
+01:05:31.310 --> 01:05:41.940
+Som | Erigon: get had initially gotten some improvements with knock. But the latest libraries for Ec. Stuff isn't really audited fully.
+
+418
+01:05:44.740 --> 01:05:51.019
+Felix (geth): Hmm, so yeah, there was a problem with the. So we disabled it again. But I think it's
+
+419
+01:05:51.270 --> 01:05:54.969
+Felix (geth): I have to actually check if we if we chipped.
+
+420
+01:05:55.780 --> 01:06:01.589
+Felix (geth): enabling it again. So basically, we enabled it for a short time. Then we disabled it because of some like bug
+
+421
+01:06:02.130 --> 01:06:05.479
+Felix (geth): and then. So now we have to check it back. If it's like.
+
+422
+01:06:06.740 --> 01:06:12.899
+Som | Erigon: Yeah. So the issue was, some kind of encoding on the 1st bite or something. But.
+
+423
+01:06:12.900 --> 01:06:13.390
+Felix (geth): Yeah. Yes.
+
+424
+01:06:13.940 --> 01:06:14.700
+Felix (geth): Okay.
+
+425
+01:06:15.090 --> 01:06:17.872
+Som | Erigon: Yes, the point I'm trying to make is
+
+426
+01:06:19.260 --> 01:06:33.930
+Som | Erigon: enabling that because you disabled it, you know you had one reason to. There might be more reasons to disable it. If you don't go for the audit. So chasing performance may have security issues just like this. And
+
+427
+01:06:34.400 --> 01:06:49.559
+Som | Erigon: it's only that we saw in the perf net that we were able to get these performance gains with the switched library that we are now discussing modex but otherwise would we would be discussing
+
+428
+01:06:50.341 --> 01:06:54.589
+Som | Erigon: the Ec. Precompiles on this call.
+
+429
+01:06:54.790 --> 01:06:59.765
+Som | Erigon: So maybe it's worth revisiting that as well. Which would mean,
+
+430
+01:07:01.061 --> 01:07:07.750
+Som | Erigon: repricing may just be the way to go if you want to bank on the battle tested.
+
+431
+01:07:08.307 --> 01:07:14.659
+Som | Erigon: Libraries we've been using in the Evm for for so many years, and not really
+
+432
+01:07:14.780 --> 01:07:22.090
+Som | Erigon: be enthusiastic about switching them all just to fit the same cost for those.
+
+433
+01:07:22.750 --> 01:07:30.500
+Felix (geth): That's actually a good point, especially with Canarq. So basically, your point is that all the clients use Canarq. Now for this, for these preconfers or.
+
+434
+01:07:30.880 --> 01:07:34.678
+Som | Erigon: I just get an arrogant. But the point is,
+
+435
+01:07:35.690 --> 01:07:42.519
+Som | Erigon: Ju, just because we saw the performance improvements. I don't think we're in a position to
+
+436
+01:07:42.810 --> 01:07:49.639
+Som | Erigon: make releases in the next 2 weeks on that. And that would mean that it's
+
+437
+01:07:50.010 --> 01:07:58.779
+Som | Erigon: not battle tested. Even if we do you know, even if we take the risk, which is kind of big? So I would say.
+
+438
+01:07:59.559 --> 01:08:05.190
+Som | Erigon: If you want a higher limit just raise the prices. Assuming
+
+439
+01:08:05.650 --> 01:08:15.649
+Som | Erigon: the bad performance of the libraries we have been using over the years which you know, for easy add. The performance, I remember, was like
+
+440
+01:08:15.860 --> 01:08:18.390
+Som | Erigon: 13 mega gas.
+
+441
+01:08:18.810 --> 01:08:37.299
+Som | Erigon: So if we are not comfortable, say by the next devnet that we want, which you know. By the way, I'm not because, you know, we have to do some internal analysis on our side as well. We have made some releases since then, but none of them have this connect switch
+
+442
+01:08:38.047 --> 01:08:43.760
+Som | Erigon: and even if we are able to get some performance gains with more decks.
+
+443
+01:08:44.452 --> 01:08:47.197
+Som | Erigon: I'm not sure we should just
+
+444
+01:08:48.270 --> 01:08:57.730
+Som | Erigon: not reprice anything and just claim that you know the performance is great. So now we are good to go. So repricing should be the way to go
+
+445
+01:08:59.010 --> 01:09:00.580
+Som | Erigon: for Fussaka.
+
+446
+01:09:06.560 --> 01:09:09.939
+Tim Beiko: But I don't know who iphone is, but.
+
+447
+01:09:11.979 --> 01:09:17.609
+Kev: Oh, sorry I forgot to rename. Yeah, I was just gonna say that I think that
+
+448
+01:09:18.390 --> 01:09:25.899
+Kev: Gaff and probably Aragon rely on Ganak already, just because of the Kg precompile.
+
+449
+01:09:29.430 --> 01:09:36.110
+Som | Erigon: It's the audit covering those. And the easy stuff was different.
+
+450
+01:09:41.840 --> 01:09:47.749
+Kev: well, to do the Kg precompile, you need sort of a curve underneath, right? Like Bls. 12 freight one.
+
+451
+01:09:50.260 --> 01:09:53.649
+Kev: So like it's it's the same like,
+
+452
+01:09:54.810 --> 01:09:56.440
+Kev: yeah, it's like the same code.
+
+453
+01:09:57.340 --> 01:10:00.880
+Kev: It's just that we have a library on top of it for Kg, precompile.
+
+454
+01:10:08.590 --> 01:10:09.689
+Tim Beiko: Okay, so.
+
+455
+01:10:09.870 --> 01:10:18.806
+Tim Beiko: but I guess yeah, based just on the previous comments. Like, if if we don't feel confident in in relying on the libraries, at least. Now,
+
+456
+01:10:21.360 --> 01:10:29.100
+Tim Beiko: like, I guess. Yeah, is there any downside? Is there any significant downside to accepting the the.
+
+457
+01:10:29.780 --> 01:10:33.270
+Tim Beiko: the the price increase now and
+
+458
+01:10:33.980 --> 01:10:40.799
+Tim Beiko: again, if our if our confidence really increases that we don't need to do this, we can always walk it back. But just
+
+459
+01:10:40.910 --> 01:10:44.937
+Tim Beiko: in terms of finalizing the specs for Fusaka, I would.
+
+460
+01:10:46.350 --> 01:10:48.741
+Tim Beiko: I would probably lead towards
+
+461
+01:10:49.520 --> 01:10:54.919
+Tim Beiko: I would probably need towards moving forward with the repricing and having that indemnant 3.
+
+462
+01:11:02.550 --> 01:11:10.480
+Tim Beiko: Yeah. So I guess any objections to including that. Pr to 3 x MoD, dxp gas price.
+
+463
+01:11:18.310 --> 01:11:31.839
+Tim Beiko: Okay, then, let's get this merged. I'll also reach out to the 3 projects we listed to. Just see if they have any kind of concerns that come up. After this. But let's assume we're moving forward with this. And we'd include this change for Defnet 3.
+
+464
+01:11:38.360 --> 01:11:44.820
+Tim Beiko: Okay, I think this was the last Fussaka issue to cover today. Anything else before we move on.
+
+465
+01:11:51.050 --> 01:12:00.688
+Tim Beiko: Oh, Spencer actually had 2. So okay, we agreed to change the Blob base cost in 7 9, 18 on the last acde,
+
+466
+01:12:02.200 --> 01:12:04.920
+Tim Beiko: 7, 9, 18.
+
+467
+01:12:09.640 --> 01:12:12.840
+Tim Beiko: did anyone open that pr.
+
+468
+01:12:18.960 --> 01:12:27.429
+Tim Beiko: if not, is anyone. Can anyone just make that change? Okay, Francesco is, gonna do the the
+
+469
+01:12:27.600 --> 01:12:30.454
+Tim Beiko: 7 9 18? Pr, thank you.
+
+470
+01:12:31.840 --> 01:12:37.460
+Tim Beiko: and then, for 7, 9, 5, 1 repricings.
+
+471
+01:12:38.270 --> 01:12:43.620
+Tim Beiko: Does anyone have context on this one? I actually don't quite remember this one.
+
+472
+01:12:52.950 --> 01:12:59.890
+Tim Beiko: Yeah, does anyone have context on the 7, 9, 5, 1, the 7, 2, 1, the the r, 1 curve repricing.
+
+473
+01:13:11.700 --> 01:13:16.619
+Marius: I don't have much contact. No one is picking up. I can.
+
+474
+01:13:17.160 --> 01:13:21.799
+Marius: I can say that I think the last benchmark we did.
+
+475
+01:13:21.940 --> 01:13:31.339
+Marius: It felt like it was also underpriced compared to other pre compiles, and we should also consider repricing it.
+
+476
+01:13:31.770 --> 01:13:35.670
+Marius: Think the number we kind of
+
+477
+01:13:36.010 --> 01:13:38.679
+Marius: look that was 2 x price.
+
+478
+01:13:41.300 --> 01:13:47.310
+Marius: But yeah, I've kind of low contacts on this as well.
+
+479
+01:13:48.870 --> 01:13:49.550
+Tim Beiko: Okay?
+
+480
+01:14:00.900 --> 01:14:07.629
+Tim Beiko: So yeah, I was, gonna say, if we don't have more data to prove it's safe lower, we should just 2 x the price.
+
+481
+01:14:13.130 --> 01:14:13.960
+Tim Beiko: this.
+
+482
+01:14:14.120 --> 01:14:16.259
+Tim Beiko: Does anyone have an objection to that?
+
+483
+01:14:19.580 --> 01:14:26.429
+Tim Beiko: If not that thing, then yes, we should just move forward and and hopefully get to a final pricing scheme today.
+
+484
+01:14:30.900 --> 01:14:33.580
+Tim Beiko: so does anyone want to open a Pr
+
+485
+01:14:33.990 --> 01:14:35.920
+Tim Beiko: to 2 x the price of that one.
+
+486
+01:14:37.150 --> 01:14:38.470
+Marius: Let's do it.
+
+487
+01:14:39.460 --> 01:14:41.449
+Tim Beiko: Okay, thank you.
+
+488
+01:14:47.660 --> 01:14:48.460
+Tim Beiko: Okay.
+
+489
+01:14:49.410 --> 01:14:53.880
+Tim Beiko: Any other Fusaka related issues people want to bring up.
+
+490
+01:15:04.300 --> 01:15:23.043
+Tim Beiko: Okay? Then, moving on to Glamsterdam, so we've had many different headliners being proposed for for Glamsterdam. The deadline for the proposals was June 20, th and I don't think that we've seen any new proposals since then, at least, I I haven't
+
+491
+01:15:23.890 --> 01:15:25.399
+Tim Beiko: so I think we've
+
+492
+01:15:25.610 --> 01:15:32.910
+Tim Beiko: we're pretty good in terms of freezing the like proposals for to Amsterdam headliners. But
+
+493
+01:15:33.060 --> 01:15:41.539
+Tim Beiko: originally we said that we would make a final decision 2 weeks from now. That does seem quite premature. So I I want to ask client teams like.
+
+494
+01:15:41.730 --> 01:15:56.305
+Tim Beiko: what's the amount of time you think we need to actually review this have, like a proper discussion around the different candidates, headliners? My senses. We need at least a month potentially more. But
+
+495
+01:15:57.060 --> 01:15:59.490
+Tim Beiko: yeah, how the client teams feel about this?
+
+496
+01:16:08.930 --> 01:16:10.400
+Tim Beiko: Yeah, Andrew.
+
+497
+01:16:11.010 --> 01:16:34.020
+Andrew Ashikhmin: Yeah, I don't speak for Aragon. I don't think we've collected Aragon's point of view, but personally, I think we should go for the block access list. It helps a lot with parallelization, especially in the worst case, and I think parallelization is crucial for achieving a scalability of ethereum.
+
+498
+01:16:36.780 --> 01:16:45.330
+Tim Beiko: Got it? And yeah, I guess to Luke's comment, like, yeah, I think we should consider the the proposals being closed. And it's more a question of like.
+
+499
+01:16:45.430 --> 01:16:53.690
+Tim Beiko: how much time do people need to actually review this? And how many discussions we want to have on on Acd about it?
+
+500
+01:16:54.790 --> 01:16:58.859
+Tim Beiko: and my instinct is like we probably need at least like
+
+501
+01:16:59.240 --> 01:17:05.100
+Tim Beiko: 2 calls or something like and
+
+502
+01:17:05.340 --> 01:17:11.307
+Tim Beiko: and I expect we could probably spend a big chunk of the next call on this.
+
+503
+01:17:13.670 --> 01:17:19.799
+Tim Beiko: but I, yeah, I this, this assumes that client team actually have time to start looking into this.
+
+504
+01:17:20.710 --> 01:17:24.017
+Tim Beiko: yeah, before the next. The next calls.
+
+505
+01:17:25.200 --> 01:17:29.959
+Tim Beiko: and yeah, it's possible that the next 2 weeks are spent on like Devnet 3. So I,
+
+506
+01:17:31.090 --> 01:17:45.803
+Tim Beiko: if if we, if we assume that that it meant, you know, like July 17, we finalized them at 3. Then, like on the 31st of July and the 15th of August. We would like spend time looking into these headliners, at least for the for the
+
+507
+01:17:47.100 --> 01:17:52.529
+Tim Beiko: for the el side, and I think this also gives us
+
+508
+01:17:52.800 --> 01:18:00.264
+Tim Beiko: enough heads up to like reach out to the rest of the community. And get their thoughts on this.
+
+509
+01:18:04.340 --> 01:18:08.590
+Tim Beiko: so yeah, I guess maybe. Yeah. This is my proposal is that we we kind of
+
+510
+01:18:09.230 --> 01:18:23.479
+Tim Beiko: focus on them the 3 in the next call. So July 17.th And then the 2 calls after that. We. We try to sort through at least the El side of the headliners, and then teams can start start reviewing them.
+
+511
+01:18:23.590 --> 01:18:31.649
+Tim Beiko: you know. In the meantime. We can obviously discuss them on these magicians. And if there's stuff that comes up we can do so on these calls. But we can kind of
+
+512
+01:18:32.060 --> 01:18:42.309
+Tim Beiko: proactively mark these 2 calls as as when we would discuss it, when we would want community input to come in by and and whatnot
+
+513
+01:18:50.170 --> 01:19:04.360
+Tim Beiko: And then the okay, miss question. I think we would want to only sort out all the other eips once we've actually chosen the the headliner. Because otherwise. Yeah, it's kind of hard to make decisions about the small features if we don't know what the big feature is already.
+
+514
+01:19:10.520 --> 01:19:11.390
+Tim Beiko: And
+
+515
+01:19:11.640 --> 01:19:28.876
+Tim Beiko: yeah. So just to be like, really explicit. So in terms of the schedule like July 17, th in 2 weeks, we would just focus on them the 3 in Fusaka, wrapping that up and then, like the 2 main calls we would use to discuss the El Headliners would be August 31st and
+
+516
+01:19:29.410 --> 01:19:34.440
+Tim Beiko: oh, sorry. July 31st and August 14, th
+
+517
+01:19:36.940 --> 01:19:42.140
+Tim Beiko: And yeah, on that note. And Nick, so you had a comment about forecast, do you? Wanna
+
+518
+01:19:42.350 --> 01:19:45.070
+Tim Beiko: you want to give a quick overview of it.
+
+519
+01:19:45.630 --> 01:19:58.979
+nixo: Sure happy to. So Mark and I have been working on this resource. It's forecast.org and basically it just shows the main benefits of every eip, and also how stakeholders are affected. And we would love
+
+520
+01:19:59.290 --> 01:20:09.390
+nixo: input from any any interested parties in the Eip. We already got most of the Eip authors to look over, except, I think, except for
+
+521
+01:20:09.570 --> 01:20:30.889
+nixo: one eip. But yeah, we would love feedback on that. Or if anybody has ideas for additional features that might be useful to help compare across these. There's also a Fusaka page, but we would like to focus on Glamsterdam just to be a good resource for people to look at the headliners and really understand
+
+522
+01:20:31.160 --> 01:20:33.790
+nixo: what those headliners are.
+
+523
+01:20:35.210 --> 01:20:35.750
+Tim Beiko: Yeah.
+
+524
+01:20:35.920 --> 01:20:50.289
+Tim Beiko: thanks. And yeah, this is a really cool tool. So if you have feedback on it, please reach out to Mixo or mark, and they will keep improving it. But they already have all the different headliners for the that have been proposed listed there.
+
+525
+01:20:54.890 --> 01:20:57.282
+Tim Beiko: Okay. And so the
+
+526
+01:20:58.760 --> 01:21:19.443
+Tim Beiko: for the other eips in Amsterdam. I think we should wait, like, I said, to to have a headliner before we make a call on them. So Guillaume had proposed this, adding a code chunking eip to Amsterdam but then we also have Cfi, a bunch of eips for Amsterdam really early on
+
+527
+01:21:19.840 --> 01:21:46.370
+Tim Beiko: that were mostly vertical, related. So my proposal would be that we move both those vertical related eips, and also the code chunking eip and any other eip that wants to be proposed as a not headliner just to the Pfi list, so anyone can open a Pr. We can start tracking them. But we don't quite make a decision about them yet. And then, once we actually have the decision on the headliner, then we review this like long.
+
+528
+01:21:46.420 --> 01:21:51.301
+Tim Beiko: long tail of of smaller vips, and and decide which ones can fill in.
+
+529
+01:21:52.160 --> 01:21:56.710
+Tim Beiko: I guess. First, st the people generally agree. This makes sense, and then second.
+
+530
+01:21:57.930 --> 01:22:10.940
+Tim Beiko: second, like, is it okay to move the previously Cfi vips from like the old process back to Pfi, because I I don't think we actually add pfi. When we move those to Cfi.
+
+531
+01:22:11.610 --> 01:22:14.009
+Guillaume: Which which Ips are we talking about like the the.
+
+532
+01:22:14.370 --> 01:22:15.110
+Guillaume: Ones.
+
+533
+01:22:15.250 --> 01:22:23.680
+Tim Beiko: I posted the Pr. It's more than 2. It was state 4, 7, 6, 2. The statelessness gas cost changes
+
+534
+01:22:23.820 --> 01:22:40.539
+Tim Beiko: 6,800 the vertical, 1, 6, 8, 7, 3. Pre image, retention, 7, 5, 4, 5, vertical proof, verification, precompile, and 7, 6, 6, 7 raised the cost of hash functions. So all of these were like Cfi before we actually had
+
+535
+01:22:41.401 --> 01:22:44.209
+Tim Beiko: efi kind of status and
+
+536
+01:22:46.220 --> 01:23:10.160
+Guillaume: The pre compile one. I think it should be withdrawn or abandoned because I thought it was actually 4, 7, 6, 2. Yeah. Makes no sense in Glamsterdam, 6,800 should be withdrawn, so no need to move them anywhere the Hashing one. I don't think it's mine or mine or my teams?
+
+537
+01:23:10.915 --> 01:23:13.409
+Guillaume: Yeah. Did we cover them all.
+
+538
+01:23:13.832 --> 01:23:23.307
+Tim Beiko: So yeah, stateless gas cost change. I mean, if you wanna just look at the Pr, if you if you think it's fine to just remove them all. Just leave a comment on the Pr. And I'll do that.
+
+539
+01:23:23.803 --> 01:23:32.160
+Guillaume: Okay, yeah. I just saw you here. Okay, I can leave a comment. But yeah, most of them are need to be gone. And one of them, like the 4, 7, 6, 2
+
+540
+01:23:32.410 --> 01:23:34.539
+Guillaume: needs to be saved for later.
+
+541
+01:23:35.240 --> 01:23:36.949
+Tim Beiko: Yeah, okay, perfect. Yeah.
+
+542
+01:23:40.440 --> 01:23:59.890
+Tim Beiko: And then, yeah. So for guille for your next eip. Then I would just, I would just open a Pr. Against the Amsterdam Meta eip. Add it to the Pfi list, and then once we're ready to discuss those after the the headliners, we'll discuss it then, and I'll be the others people can obviously start discussing it Async in the meantime. But
+
+543
+01:24:00.460 --> 01:24:01.890
+Tim Beiko: yeah, this allows us.
+
+544
+01:24:02.380 --> 01:24:04.689
+Guillaume: Sorry you mean 2029, 26.
+
+545
+01:24:04.690 --> 01:24:05.740
+Tim Beiko: Correct. Yeah.
+
+546
+01:24:05.950 --> 01:24:06.550
+Guillaume: Okay.
+
+547
+01:24:07.720 --> 01:24:08.230
+Tim Beiko: Yep,
+
+548
+01:24:11.870 --> 01:24:19.639
+Tim Beiko: And then yes, there was one last question about the deadline for pfi and small vips. We also had a deadline for this, but I think
+
+549
+01:24:20.050 --> 01:24:33.160
+Tim Beiko: I I didn't. Wanna set this given this revised date. I think it's fine to discuss this in the next 2 weeks or Async. But I we should have a deadline, it should be after we've chosen the headliner. So
+
+550
+01:24:35.760 --> 01:24:41.089
+Tim Beiko: so so yeah, like, I don't. I know when we want to have this. But I
+
+551
+01:24:43.180 --> 01:24:46.919
+Tim Beiko: yeah, I think a month or 2 after the headliners were chosen.
+
+552
+01:24:50.400 --> 01:24:58.690
+Tim Beiko: and so I don't. I think it's fine to wait for the Pfi deadline for the next call. We've agreed on like when the headliners should come.
+
+553
+01:24:59.110 --> 01:25:02.399
+Tim Beiko: And then on the point of multiple headliners. Historically.
+
+554
+01:25:02.960 --> 01:25:24.539
+Tim Beiko: we've never succeeded at that. So I would have a very strong bias against it. But it's possible that, like there's exceptions here. But the whole point is saying, like, what is the most important thing we wanted to fork. And what would you want to like? Build the fork around? And the only time we ever tried to do this with 2 things was the original version of Petra, and I went pretty porty, so I
+
+555
+01:25:25.790 --> 01:25:29.110
+Tim Beiko: I I think we should try to stick to one as as much as we can.
+
+556
+01:25:31.190 --> 01:25:38.460
+Tim Beiko: Yes, if we aim for a quick, small fork, we'll get a regular sized medium time fork.
+
+557
+01:25:44.020 --> 01:25:57.130
+Tim Beiko: Okay? So just to recap. Yeah, headliner discussions focused on or focused on the July 31st and August 14th call. We'll figure out the deadlines for the
+
+558
+01:25:57.660 --> 01:26:03.009
+Tim Beiko: for for the other the other stage of the process after
+
+559
+01:26:03.425 --> 01:26:09.040
+Tim Beiko: and then we can move these other vips to either pfi or remove them if they're no longer relevant.
+
+560
+01:26:12.180 --> 01:26:13.810
+Tim Beiko: Anything else on capsdam.
+
+561
+01:26:21.420 --> 01:26:26.643
+Tim Beiko: Okay? Then Matt had some history. Ex fiery updates.
+
+562
+01:26:28.550 --> 01:26:32.489
+Tim Beiko: yes. Do you want to give some context on the error file.
+
+563
+01:26:35.450 --> 01:26:47.050
+lightclient: Yeah, sure. So there's 2 quick things I want to touch on. The 1st is this error, e-file format, which I linked to on the Pm. Repo.
+
+564
+01:26:47.450 --> 01:26:50.019
+lightclient: I will share a link here as well.
+
+565
+01:26:53.980 --> 01:27:16.200
+lightclient: Basically the motivation for this is the error. One file format. We sort of designed this several years ago, with the intention that arrow one would always and only be for the information that was before the merge, and we had thought that we would go for the post merge data, using this file format that already existed on the consensus layer, which was just error.
+
+566
+01:27:16.640 --> 01:27:21.570
+lightclient: And over time of the last year or so. We've kind of realized that
+
+567
+01:27:22.000 --> 01:27:27.619
+lightclient: maybe it makes sense for execution layer and consensus layer to have different file formats.
+
+568
+01:27:28.120 --> 01:27:51.959
+lightclient: If you're an execution layer, and you were trying to bootstrap an archive node. You don't necessarily want to download all of the Beacon state data, and whatever else that the error file might have that, you know, the consistent layer file might have that allows them to do debugging. And so when we were in Berlin a few weeks ago, we sat down with some of the people, and we talked about what an execution! Only error file would look like.
+
+569
+01:27:51.960 --> 01:28:14.369
+lightclient: and it looks very similar to how era one looks like. With a couple notable exceptions, I'll just give you the footnotes of it. But the specification will go over in detail the things that changed the most important things that changed is that instead of storing the values per block sequentially meaning storing the header, followed by the body, followed by the receipts
+
+570
+01:28:14.370 --> 01:28:22.530
+lightclient: we now store all of the headers, all of the bodies, all of the receipts. This allows for us to do to respond to range queries
+
+571
+01:28:22.530 --> 01:28:25.750
+lightclient: more efficiently for syncing.
+
+572
+01:28:26.170 --> 01:28:35.770
+lightclient: We also changed the receipt format because most people don't actually store the 2718 receipt format. And so we've stored it in like a more optimal way.
+
+573
+01:28:36.080 --> 01:28:43.319
+lightclient: And then we've added a proof format which is kind of optional for error E, but allows.
+
+574
+01:28:43.510 --> 01:28:57.080
+lightclient: if included, for anyone, to verify any block within the error E file against some historical root in the consensus layer. So it still kind of gives this like good verifiable property.
+
+575
+01:28:59.240 --> 01:29:15.470
+lightclient: So the area E file. This is kind of like my proposed specification. I would love to get some feedback on this over the next couple weeks. Basically, what we want to do now is that we've we've kind of done this pre-merge history, expiry and clients support this.
+
+576
+01:29:15.470 --> 01:29:29.879
+lightclient: and we'll talk about like defaults in a second. But we also want to continue expiring history, and we're working towards rolling history. Expire. This is kind of the golden standard, the thing that we, you know, once we achieve this, and we can say that like history expires.
+
+577
+01:29:30.334 --> 01:29:42.160
+lightclient: kind of finished. But before then there's still a lot of data between the pre-merge history and the moment when Rollops began to use blobs. So
+
+578
+01:29:42.200 --> 01:29:43.690
+lightclient: Eric E.
+
+579
+01:29:43.800 --> 01:29:47.500
+lightclient: Is kind of the the one thing in our way from really
+
+580
+01:29:47.630 --> 01:29:53.379
+lightclient: going from pre-merge history expiry to expiring up to the Cancun hard Fork.
+
+581
+01:29:53.610 --> 01:30:13.820
+lightclient: So that's kind of why I'm like trying to get feedback on this and iterate on this pretty quickly is because the faster that we can get sorted out, the faster we can generate the files the faster we can start having people serve and store these files, and the faster we can begin expiring history post merge up to Cancun
+
+582
+01:30:13.840 --> 01:30:34.170
+lightclient: and potentially before. But basically, I just want to get agreements on this file format. And then once we agree and we generate the files for the history it's up to clients to kind of decide what they're comfortable with. If clients don't feel comfortable pruning history beyond the merge. That's fine. I know some clients are really
+
+583
+01:30:34.610 --> 01:30:52.070
+lightclient: are really hoping to do this sooner than later, so we want to make sure that it is going to be possible for them to do that as soon as possible. So my goal is by the end of July. We agree on this area e format. And in parallel, we're kind of working on implementation. But
+
+584
+01:30:52.580 --> 01:31:06.720
+lightclient: the expectation is that once we agree on this file format, it shouldn't take more than a few weeks to complete the implementation. Generate the files, share the files, and we could kind of say, All right, if clients want to start expiring up to Cancun. Then that's okay. It's their decision.
+
+585
+01:31:07.630 --> 01:31:11.419
+lightclient: So that's era E files. Are there any questions or comments on that?
+
+586
+01:31:14.850 --> 01:31:21.290
+lightclient: See? Storm asked if receipts are optional right now, receipts are not optional in the error. E file format.
+
+587
+01:31:36.070 --> 01:31:37.000
+lightclient: Okay.
+
+588
+01:31:38.840 --> 01:31:39.330
+Tim Beiko: White.
+
+589
+01:31:39.330 --> 01:31:41.370
+Tim Beiko: We have so many error formats.
+
+590
+01:31:41.960 --> 01:31:52.069
+lightclient: This is the yeah. Maybe I kind of like glossed over this. But this error format is the one to rule them all for the execution layer. So arrow one
+
+591
+01:31:52.440 --> 01:31:58.049
+lightclient: we I mean we we. It came up with Era one when we were in Austria several years ago.
+
+592
+01:31:58.050 --> 01:32:22.969
+lightclient: and, like I said at the time we felt that error. One was just this one thing we needed to do to then unlock execution clients to use error files. But over time we realized that the error file just wasn't quite the right fit for what the execution layer needed. It's not the execution layer can't even generate the error file itself by itself because it needs the consensus layer data as well. So what we want to do is we want to migrate to era E over a period of time.
+
+593
+01:32:22.970 --> 01:32:26.160
+lightclient: So eventually, when clients are.
+
+594
+01:32:26.390 --> 01:32:32.680
+lightclient: you know, implemented error E, they can begin to deprecate area one, and move off of that file format.
+
+595
+01:32:36.220 --> 01:32:38.489
+lightclient: Well, arrow one
+
+596
+01:32:38.600 --> 01:32:43.169
+lightclient: kind of refer to Eth one. And so it's sort of weird that it would also refer to
+
+597
+01:32:43.880 --> 01:32:46.519
+lightclient: era post merge, too.
+
+598
+01:32:52.130 --> 01:32:57.240
+Tim Beiko: Oh, yeah, aside from the naming convention.
+
+599
+01:33:01.430 --> 01:33:03.130
+Tim Beiko: any other questions.
+
+600
+01:33:12.410 --> 01:33:13.810
+Tim Beiko: Okay, so
+
+601
+01:33:14.160 --> 01:33:20.840
+Tim Beiko: yeah, questions around the receipts. We can probably discuss that, I think where's the best place to talk about this?
+
+602
+01:33:22.110 --> 01:33:23.080
+Tim Beiko: Do you think.
+
+603
+01:33:23.940 --> 01:33:28.129
+lightclient: I think there's a channel called History Expiry in the R. And D. Discord.
+
+604
+01:33:28.380 --> 01:33:29.170
+Tim Beiko: Okay.
+
+605
+01:33:29.170 --> 01:33:29.680
+lightclient: That would.
+
+606
+01:33:29.680 --> 01:33:30.184
+Tim Beiko: So.
+
+607
+01:33:30.995 --> 01:33:37.409
+lightclient: Yeah, there is. So I think that's a good place. Also. Execution. Dev, I read that channel just tag me anywhere.
+
+608
+01:33:38.150 --> 01:33:42.027
+Tim Beiko: Okay, so let's at least have the conversation around the receipts
+
+609
+01:33:42.540 --> 01:33:45.209
+Tim Beiko: being optional or not. And
+
+610
+01:33:46.990 --> 01:33:49.580
+Tim Beiko: yeah, when would we need to make a final call on this.
+
+611
+01:33:52.250 --> 01:33:57.049
+lightclient: I think we have 2 more execution layers of meetings
+
+612
+01:33:57.570 --> 01:34:06.220
+lightclient: Acds before we should, so not the next one but the one after we should probably be wrapping up any discussion and kind of say, this is the format.
+
+613
+01:34:08.720 --> 01:34:09.470
+Tim Beiko: Okay?
+
+614
+01:34:10.580 --> 01:34:18.633
+Tim Beiko: And I guess this kind of brings us to our your last point around like dropping pre merge history by default.
+
+615
+01:34:20.920 --> 01:34:29.600
+Tim Beiko: when should we do that? Do we want to couple this with Fusaka? Before that? Or, yeah.
+
+616
+01:34:30.600 --> 01:34:32.010
+lightclient: Yeah. So
+
+617
+01:34:32.640 --> 01:35:01.969
+lightclient: there's a blog post going out this this week or early next week. I've been in touch with all the client teams about this, so most are aware. But we're going to kind of announce that this partial history, expiry, aspect of history. Expiry is is possible now, and in Berlin a couple weeks ago. I mentioned that because of the work that everyone's done around implementing E. 69 implementing the era, one format that
+
+618
+01:35:02.140 --> 01:35:08.659
+lightclient: I felt comfortable, saying, it's okay for clients to start making it a default to not download the history.
+
+619
+01:35:09.650 --> 01:35:14.409
+lightclient: I think Baysu, in the latest release, now makes a default
+
+620
+01:35:15.720 --> 01:35:19.500
+lightclient: for snap guns. Yeah. So I think some clients are beginning to do this.
+
+621
+01:35:20.161 --> 01:35:25.940
+lightclient: I just wanted to get a temperature check on if people still feel it's okay, or
+
+622
+01:35:26.200 --> 01:35:33.440
+lightclient: and also here, like which clients are doing this or intend to do it, and just getting a rough idea of what people's timelines are.
+
+623
+01:35:45.420 --> 01:35:48.900
+Tim Beiko: I'm rest, Aragon. Never mind anyone.
+
+624
+01:35:50.510 --> 01:35:51.749
+Tim Beiko: Some topics on this.
+
+625
+01:35:52.300 --> 01:36:05.990
+Andrew Ashikhmin: Yes, so we are making a release tomorrow that supports it, and that I be. I think it's enabled by default. Please correct me if I'm wrong. But yeah, I think we are dropping them by default.
+
+626
+01:36:13.290 --> 01:36:15.839
+Tim Beiko: Great, neither mind. And Russ.
+
+627
+01:36:28.650 --> 01:36:31.449
+Tim Beiko: And then the lines ready. Okay? Awesome.
+
+628
+01:36:32.900 --> 01:36:37.539
+Tim Beiko: And yeah, that. But oh.
+
+629
+01:36:37.920 --> 01:36:47.598
+Tim Beiko: okay. Roman checking, but should be able to support it. So great. That's if people could just confirm that on the history expiry channel as well in the next day or so, that'd be great.
+
+630
+01:36:48.220 --> 01:36:53.060
+Tim Beiko: but yeah, it seems like we should be able to make this a default across all the clients quite soon.
+
+631
+01:36:55.990 --> 01:36:57.990
+Tim Beiko: Sorry. Do you have anything else at times.
+
+632
+01:37:00.720 --> 01:37:06.859
+lightclient: I was just gonna say that it is kind of clients decision. I think it is okay to do this. But
+
+633
+01:37:07.460 --> 01:37:14.880
+lightclient: we're fortunately past the point where we need to move in lockstep. And that was kind of a big goal that I mentioned in Berlin is that we're trying to
+
+634
+01:37:15.500 --> 01:37:38.890
+lightclient: figure out the things that require group agreement and moving together, and that was doing a 69 waiting until after we stopped relying on receipts for generating the merge genesis. So that is all complete. And then for the error E, we all need to sort of agree on this file format. But once these types of things get done, then it's
+
+635
+01:37:38.990 --> 01:37:53.290
+lightclient: on the clients to implement it at their convenience, and I know that, like not, every client has the same bandwidth at the same time. And so that's kind of why it's okay for you to make a release, to drop the history when it makes sense for your client.
+
+636
+01:38:01.050 --> 01:38:06.140
+Tim Beiko: Okay, I think we could wrap up here anything else before that?
+
+637
+01:38:13.720 --> 01:38:25.779
+Tim Beiko: Well, thank you. Everyone. Yeah, we'll talk to you all on Monday's testing call. And I'll share a summary of of all of this call and the action items in the chat a bit later today.
+
+638
+01:38:26.350 --> 01:38:27.030
+Tim Beiko: Yeah.
+
+639
+01:38:27.200 --> 01:38:28.409
+lightclient: All right, thanks, all.
+
+640
+01:38:28.770 --> 01:38:30.460
+Andrew Ashikhmin: Thank you. Bye-bye.
+
+641
+01:38:30.460 --> 01:38:31.310
+jochem-brouwer: Bye, guys.
+
+642
+01:38:32.100 --> 01:38:32.560
+Łukasz Rozmej: Bye.
+
+643
+01:38:32.560 --> 01:38:32.960
+Marius: Nice.
+

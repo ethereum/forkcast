@@ -1,0 +1,1806 @@
+WEBVTT
+
+1
+00:06:02.620 --> 00:06:07.640
+stokes: Hello, everyone! Let's give people another minute or 2 to join, and we'll get started.
+
+2
+00:07:27.550 --> 00:07:33.180
+stokes: Okay, Josh, if you're helping with the stream, I'm ready to go when you are.
+
+3
+00:07:35.930 --> 00:07:37.420
+Josh Davis: Cool you are, live.
+
+4
+00:07:38.420 --> 00:07:40.330
+stokes: Okay, everyone.
+
+5
+00:07:40.640 --> 00:07:47.419
+stokes: Welcome to Acdc, number 160. I'll drop the agenda here in the chat.
+
+6
+00:07:48.050 --> 00:07:56.300
+stokes: It's Pm, issue 1598. And yeah, I guess really quickly, thanks again to Onsbar for falling in last time
+
+7
+00:07:56.700 --> 00:08:01.739
+stokes: I was away. And yeah, still getting caught up on some things while I was out.
+
+8
+00:08:02.120 --> 00:08:05.260
+stokes: But yeah, let's go ahead and get into it. So
+
+9
+00:08:05.560 --> 00:08:15.430
+stokes: 1st off, I think this should be short, so I just wanted to go ahead and knock it out perry wanted to bring up Cl releases with updated gas limit values.
+
+10
+00:08:19.020 --> 00:08:40.070
+Parithosh Jayanthi: Yeah. So we've made a blog post and done the analyses as well as ship the fixes on the El side for updated gas limits. The updated gas limit recommendation, at least, according to most, Els is 45 million however, the Cl also sets the gas limit. If you're using the Meb workflow.
+
+11
+00:08:40.070 --> 00:08:51.270
+Parithosh Jayanthi: and I know some clients have already started making releases with with the default gas limit increased, and I wanted to know if there's any client that doesn't plan on doing so in the near short term.
+
+12
+00:09:01.390 --> 00:09:09.329
+Parithosh Jayanthi: Okay, I guess that means all the Cls will have it in the in in either their current release or the next release right.
+
+13
+00:09:12.020 --> 00:09:15.770
+stokes: Yeah, do we want to set some kind of date as a deadline?
+
+14
+00:09:19.690 --> 00:09:26.130
+stokes: Not necessarily to like, accelerate releases, but more. Just so people would know then to update when it's ready.
+
+15
+00:09:29.280 --> 00:09:38.389
+Parithosh Jayanthi: Yeah, I'm not sure when clients plan on making their releases. I know the lighthouse just made theirs yesterday or today.
+
+16
+00:09:38.760 --> 00:09:39.800
+stokes: Yeah.
+
+17
+00:09:39.930 --> 00:09:44.610
+stokes: I guess more like we could say, Okay, this will be ready by the end of the month, and then
+
+18
+00:09:44.900 --> 00:09:48.959
+stokes: we can then go and coordinate with everyone else to actually update.
+
+19
+00:09:53.630 --> 00:09:59.179
+stokes: Okay, I guess this is also something we can just keep bringing up on Acd until it's live.
+
+20
+00:10:00.360 --> 00:10:04.740
+stokes: Okay, yeah, there's a bunch of comments in the chat here around release schedules.
+
+21
+00:10:05.250 --> 00:10:10.219
+stokes: So it looks like most people have it pretty soon. Here, cool. Thank you.
+
+22
+00:10:10.950 --> 00:10:15.229
+stokes: Okay. So now let's get into Fusaka. So
+
+23
+00:10:15.510 --> 00:10:19.499
+stokes: 1st off, I wanted to start with the status update on Pisaka Devnet 2
+
+24
+00:10:19.989 --> 00:10:28.729
+stokes: I've been checking pretty much every day this week, and it was getting better and better by the day. Are there any open issues? We're still aware of that we should address right now.
+
+25
+00:10:31.010 --> 00:10:37.730
+Barnabas: Yes, loadstar had some p. 2 p. Bug, that they might want to give an update on.
+
+26
+00:10:42.260 --> 00:10:47.519
+MatthewKeil: So we identified some issues appearing with Nimbus. They did a good.
+
+27
+00:10:50.730 --> 00:10:52.580
+MatthewKeil: Oh, can you hear me? Okay.
+
+28
+00:10:52.940 --> 00:10:58.039
+stokes: Yeah, you're good, I think, somehow someone stopped the recording. But you're good.
+
+29
+00:10:58.510 --> 00:11:18.269
+MatthewKeil: Sorry. So we were having some issues with the protocol negotiation. We have on our side as well having a problem, but it only seems to be buggy with Nimbus and there was a lot of churn because we were disconnecting and connecting and disconnecting and connecting
+
+30
+00:11:18.743 --> 00:11:29.636
+MatthewKeil: and I think there's some other issues as well with some of the other clients doing requested columns getting empty arrays back, which we also were finding.
+
+31
+00:11:30.360 --> 00:11:35.039
+MatthewKeil: So there's a few things. But Agnes has done a good job of responding to everything.
+
+32
+00:11:40.910 --> 00:11:44.739
+stokes: Okay, cool. So yeah, I mean, I guess we'll just keep debugging all of that.
+
+33
+00:11:46.650 --> 00:11:54.169
+stokes: The proposals were like much spottier earlier in the week. They look pretty good now just looking at it looks like there's boot no to one
+
+34
+00:11:54.530 --> 00:11:57.669
+stokes: which I'm not sure. Why, that's a note here, but it is
+
+35
+00:11:58.329 --> 00:12:03.869
+stokes: otherwise, yeah, proposals look pretty good. Participation is only around like 87%. Let's say
+
+36
+00:12:04.170 --> 00:12:06.369
+stokes: hopefully, that could get a bit higher.
+
+37
+00:12:06.970 --> 00:12:07.460
+Barnabas: To.
+
+38
+00:12:07.460 --> 00:12:07.850
+stokes: Bye.
+
+39
+00:12:07.850 --> 00:12:20.280
+Barnabas: Some of the super nodes had some memory issues that tech. We had identified the bug in their code, and it should lead to less. Om issues.
+
+40
+00:12:21.500 --> 00:12:30.619
+Barnabas: So also, I think Glostar have some memory issues and grinding as well only on this product. So
+
+41
+00:12:30.760 --> 00:12:36.059
+Barnabas: this issue seems to be only be presented during the super nodes.
+
+42
+00:12:38.220 --> 00:12:40.470
+stokes: Alright. That's helpful. Context.
+
+43
+00:12:43.040 --> 00:12:50.379
+stokes: Okay? So then, yeah, it sounds like there are a number of issues, but essentially people on top of them. And we'll just get those resolved.
+
+44
+00:12:51.550 --> 00:13:02.020
+stokes: So anything else on Devnet 2. I assume we want to get Devnet to a bit in a more healthy state before thinking about Devnet 3. But that's the next topic.
+
+45
+00:13:02.970 --> 00:13:15.080
+Barnabas: Yeah, so definitely, 2 will probably run till the end of next week, and then we can probably think about launching Devnet 3 around the 21st or 20 second of July.
+
+46
+00:13:17.160 --> 00:13:17.740
+stokes: Okay.
+
+47
+00:13:20.910 --> 00:13:27.690
+stokes: cool. If we're good on Devnet 2, then then let's go ahead and move to Devnet 3. There are a few things here.
+
+48
+00:13:28.250 --> 00:13:29.610
+stokes: So
+
+49
+00:13:30.390 --> 00:13:38.069
+stokes: yeah. Again. I was trying to catch up from the last call. It sounds like the core pierdos. Things are fairly stable.
+
+50
+00:13:38.450 --> 00:13:40.750
+stokes: Dare I even say a spec freeze
+
+51
+00:13:41.597 --> 00:13:47.170
+stokes: from there, though a few other things have come up on Devnet 3 actually let me grab.
+
+52
+00:13:47.540 --> 00:13:52.339
+stokes: Let's see, I'm trying to grab the devnet through specs.
+
+53
+00:13:53.680 --> 00:13:56.169
+stokes: Just so people have them handy.
+
+54
+00:13:57.050 --> 00:14:01.840
+stokes: I'll put them there. Just yeah. Thank you. Just in case people want to refer to them here. So
+
+55
+00:14:02.040 --> 00:14:15.089
+stokes: either way, a few things just from the agenda right now. So there was a comment from Ben here who wanted to ask about some El eips clear 0. And the transaction gas cap changes.
+
+56
+00:14:16.070 --> 00:14:18.869
+stokes: Or, yeah, respond, okay, yeah, I don't know.
+
+57
+00:14:18.870 --> 00:14:20.460
+stokes: Yeah, I did not. But.
+
+58
+00:14:20.520 --> 00:14:28.199
+Ben Adams: I I just wanted to confirm they were in devnet 3, because we discussed in an old
+
+59
+00:14:29.000 --> 00:14:36.510
+Ben Adams: all testing. But yeah, it didn't seem like it was a hard confirm, that was all.
+
+60
+00:14:38.690 --> 00:14:41.399
+stokes: Okay? And to be clear, I think it is a hard confirm.
+
+61
+00:14:42.090 --> 00:14:45.240
+stokes: Maybe someone else can help confirm my heart. Confirm.
+
+62
+00:14:52.970 --> 00:14:58.580
+stokes: Yeah, there's a comment here that I linked from Barnabas that essentially says this cool.
+
+63
+00:14:59.250 --> 00:15:03.929
+stokes: Okay. So then we can get back to some Cl things.
+
+64
+00:15:04.330 --> 00:15:12.269
+stokes: So I guess the 1st one to kick us off here on this list would be a proposal to change get blobs so
+
+65
+00:15:12.410 --> 00:15:21.709
+stokes: essentially over the last few weeks we changed the semantics of give blobs v. 2, so that it allows what we're calling partial responses
+
+66
+00:15:22.241 --> 00:15:28.559
+stokes: role here has a proposal to basically revert back the v. 2 semantics and then move this partial
+
+67
+00:15:29.250 --> 00:15:31.120
+stokes: idea. And to A. V. 3
+
+68
+00:15:31.520 --> 00:15:34.260
+stokes: real. Would you like to say anything else about this.
+
+69
+00:15:34.260 --> 00:16:03.639
+Raúl Kripalani: Yeah, I think the operative point is that the way that this v. 2 spec is currently worded in main, it does not guarantee that Els are gonna be implementing partial responses now for for Fusaka, which means that we're setting ourselves up for more coordination later. And basically what we're doing here is making the support mandatory by moving it to a v. 3. That that Els would implement.
+
+70
+00:16:03.640 --> 00:16:29.370
+Raúl Kripalani: But the Cl. Would not use until a little bit later before Glamsterdam, between Fussaka and Glamsterdam. So the idea is that we're working on a set of gossip sub changes that will enable partial dissemination of columns at the cell level and cell level reconciliation. And for that we need access to partial blobs, and we can roll out. The idea is to roll out this optimization
+
+71
+00:16:29.741 --> 00:16:44.870
+Raúl Kripalani: without a fork. Because it's set up as a as a gossip sub extension which is optional. So the idea would be that at that point. That's when the Cl would start consuming v, 3 to to get partial responses.
+
+72
+00:16:45.342 --> 00:16:53.189
+Raúl Kripalani: But we don't wanna rehash this whole topic, then, so that's why this this proposal has been made.
+
+73
+00:16:55.520 --> 00:17:10.490
+stokes: Yeah, the the goal makes sense. I guess another option here. So I think the way I understand it is that v, 2 right now is essentially May, and, like canonical spec language, as in like yells, may provide partial responses, and you want it to be a must.
+
+74
+00:17:10.750 --> 00:17:14.590
+stokes: So we could just update the V 2 to say that rather than add a v. 2.
+
+75
+00:17:14.599 --> 00:17:26.529
+Raúl Kripalani: Yeah, but but the but the trade off we're trying to hit here is that the the Cl is not actually gonna utilize partial responses now. So we don't want to be incurring in the survey cost of actually delivering them.
+
+76
+00:17:27.129 --> 00:17:42.839
+Raúl Kripalani: So that's why we constrain v. 2 to be all or nothing, and v. 3 would be the one with partial responses. That's clearly signal that there is a behavior change between one and the other. Right now, the current interface does not make any of this exclusive.
+
+77
+00:17:45.570 --> 00:17:46.500
+stokes: Right?
+
+78
+00:17:47.970 --> 00:17:59.319
+stokes: Interesting. I mean, I guess even another option here is just leave the current v, 2 alone, and just add v, 3. That's mandatory. But yeah, I would want to hear from steel clients if they have a view on this.
+
+79
+00:18:06.620 --> 00:18:13.320
+Dustin: Yeah. So for for Nimbus the all or nothing was was pretty good, and
+
+80
+00:18:13.440 --> 00:18:24.299
+Dustin: the partial responses are not that useful? And and the thing is, I don't think they ever were claimed to be in the absence of a full ecosystem support.
+
+81
+00:18:24.460 --> 00:18:27.549
+Dustin: That's a full and tested and etc. So
+
+82
+00:18:27.730 --> 00:18:43.798
+Dustin: I I would say, if and I would actually agree with Raul's general points about the lack of clarity, about what is and is not supported by the Els at any given point as well, makes this kind of a low roi thing in general to implement
+
+83
+00:18:44.300 --> 00:18:48.050
+Dustin: so. And at this late date, and and for saka.
+
+84
+00:18:52.530 --> 00:19:00.669
+stokes: Yeah, I mean, the idea is, it will be useful, and it lets us do some things to help without a hard work. So this is kind of like, team us up.
+
+85
+00:19:01.170 --> 00:19:04.999
+stokes: Yeah, launch to then do something better before the Amsterdam.
+
+86
+00:19:05.730 --> 00:19:06.630
+Raúl Kripalani: And just to just to be.
+
+87
+00:19:06.630 --> 00:19:07.620
+stokes: Like, yeah.
+
+88
+00:19:08.380 --> 00:19:22.420
+Raúl Kripalani: Alright, just just to just to add a point there. We think that the lift the implementation lift is really low. Because v. 1 was anyway returning partial responses. So I believe the code parts exist to rehash
+
+89
+00:19:22.420 --> 00:19:39.199
+Raúl Kripalani: this logic in in Els, and in fact implemented this in a in a matter of minutes. So this, this would really help for the optimizations that we're planning and we're testing because we do. We do expect to consume partial responses before Glamsterdam.
+
+90
+00:19:40.390 --> 00:19:45.480
+Raúl Kripalani: and, like the the whole point, is to alleviate, to to avoid any extra coordination at that point in time.
+
+91
+00:19:49.930 --> 00:19:53.760
+stokes: Yeah, I mean, are people. Okay? Then, reverting the V 2 changes.
+
+92
+00:19:55.860 --> 00:20:03.630
+stokes: Cause, I think, if so, then we just do that, then, yeah, we do what this Pr is proposing, and one thing is like.
+
+93
+00:20:05.020 --> 00:20:09.080
+stokes: well, we'd still ideally want to get v. 3 into Fusaka
+
+94
+00:20:10.760 --> 00:20:13.209
+stokes: but it could be somewhat of an optional thing.
+
+95
+00:20:16.060 --> 00:20:25.819
+Dustin: Barnabas posted on the issue for this call. That there would be no Fusaka devnet.
+
+96
+00:20:26.190 --> 00:20:32.549
+Dustin: for if so, I would say, that's, let's say, an extremely aggressive schedule for introducing a a core
+
+97
+00:20:32.690 --> 00:20:34.439
+Dustin: engine. Api change.
+
+98
+00:20:39.490 --> 00:20:40.710
+stokes: Yeah, I would.
+
+99
+00:20:40.710 --> 00:20:42.499
+Barnabas: It's an optional change, right?
+
+100
+00:20:42.500 --> 00:20:44.319
+stokes: Yeah, well.
+
+101
+00:20:44.920 --> 00:20:54.389
+stokes: it's better if it's not optional, like ideally like the the reason we want in Fusaka. So we know that everyone has it after Fusaka, like as of Fusaka on Mainnet.
+
+102
+00:20:55.220 --> 00:20:57.100
+stokes: so ideally it's done.
+
+103
+00:20:57.280 --> 00:21:00.939
+stokes: But it wouldn't be anything blocking like core R. And D
+
+104
+00:21:01.260 --> 00:21:06.300
+stokes: as we go to may not. So it's something that could be done, you know, over, say, the next couple of months.
+
+105
+00:21:22.400 --> 00:21:30.080
+stokes: and then, in terms of Dustin's point about this being a port change like it's, you know, if you've implemented the latest v. 2, it's just renaming that to v. 3
+
+106
+00:21:30.270 --> 00:21:36.550
+stokes: and then restoring the other. You know the original logic is v. 2, so it doesn't seem
+
+107
+00:21:38.170 --> 00:21:39.790
+stokes: like that much.
+
+108
+00:21:42.100 --> 00:21:46.600
+stokes: I don't know if there was a commentary about a Boolean flag, and v. 2.
+
+109
+00:21:47.740 --> 00:21:51.630
+stokes: I don't know if we want to reopen that part of the design space.
+
+110
+00:21:54.010 --> 00:21:58.380
+Raúl Kripalani: I mean that that was the original proposal. But I think it was it was rejected back then.
+
+111
+00:21:58.380 --> 00:22:01.020
+stokes: Okay, that one's just that. Okay.
+
+112
+00:22:01.940 --> 00:22:02.460
+Raúl Kripalani: Yeah.
+
+113
+00:22:02.460 --> 00:22:03.170
+stokes: Fair enough.
+
+114
+00:22:07.270 --> 00:22:14.400
+Raúl Kripalani: I mean, the whole point is that v. 2, as it's currently worded does not even like it has. The May is extremely lax.
+
+115
+00:22:14.530 --> 00:22:33.249
+Raúl Kripalani: So nobody is able to tell from the outside what the el is actually gonna do, which is bad, especially when we have an exchange capability. Sorry. A a a capability, negotiation or exchange mechanism, we should just be using it. So that's why v, 3 seems to seems to be the right approach. And
+
+116
+00:22:33.900 --> 00:22:56.580
+Raúl Kripalani: I think the point here is that is it pretty easy to implement it's not gonna be in the critical path for Fusaka right now. We can still test it. But it's not actually gonna be utilized by Fusaka right now. But if if Els would just el teams would just go and implement it. I think it would save them extra overhead in the future. When this is actually gonna be needed.
+
+117
+00:22:58.040 --> 00:22:58.710
+stokes: Yeah.
+
+118
+00:22:59.490 --> 00:23:06.259
+stokes: would it be easier just to again change v. 2, so that it's must like the the partial responses are mandated.
+
+119
+00:23:08.090 --> 00:23:14.875
+Raúl Kripalani: So the the problem with that is that we wouldn't right now we wouldn't be using those partial responses. So would be incurring.
+
+120
+00:23:15.170 --> 00:23:15.909
+Raúl Kripalani: Yeah, you're worried about.
+
+121
+00:23:16.330 --> 00:23:22.219
+Raúl Kripalani: And that was why that solution was deemed. That's why the optionality was included.
+
+122
+00:23:29.580 --> 00:23:30.330
+stokes: Okay?
+
+123
+00:23:32.600 --> 00:23:33.330
+stokes: Oh.
+
+124
+00:23:34.190 --> 00:23:41.870
+stokes: no one's saying no, except for the fact that it just is changing the spec. And yeah, I was just gonna add a little more thrash kind of late in the process.
+
+125
+00:23:42.780 --> 00:23:51.459
+stokes: but that being said, I think it will give us pretty good gains, at least, you know, set us up for that with cell level messaging
+
+126
+00:23:52.020 --> 00:23:53.460
+stokes: even before Glamsterdam.
+
+127
+00:23:53.990 --> 00:23:55.130
+stokes: So
+
+128
+00:23:55.300 --> 00:24:01.850
+stokes: yeah, Barnabas, ask overhead on the Cl side. I think it's it would essentially just be adding this new endpoint to be able to call v. 3.
+
+129
+00:24:02.260 --> 00:24:07.069
+stokes: And then from there it's more a question of well, I think the limitation is bigger on the Yale side.
+
+130
+00:24:14.160 --> 00:24:17.059
+Barnabas: Well, we not gonna be able to test it unless
+
+131
+00:24:17.470 --> 00:24:19.790
+Barnabas: we do an actual partial response right?
+
+132
+00:24:24.050 --> 00:24:26.760
+stokes: Yeah. But I mean, this is something we can test. Whenever
+
+133
+00:24:35.900 --> 00:24:39.070
+stokes: are there any El Devs here who have an opinion.
+
+134
+00:24:42.960 --> 00:24:47.113
+Marius van der Wijden: Since I've implemented it in in get I I do have an opinion it's
+
+135
+00:24:48.540 --> 00:24:51.048
+Marius van der Wijden: is very easy to implement
+
+136
+00:24:51.740 --> 00:25:02.049
+Marius van der Wijden: and kind of the like. We kind of spec the engine. IP Api this way, so that we allow for these kind of
+
+137
+00:25:02.340 --> 00:25:11.850
+Marius van der Wijden: soft forks and and changes to the engine in between forks.
+
+138
+00:25:12.250 --> 00:25:13.959
+Marius van der Wijden: So I don't.
+
+139
+00:25:14.120 --> 00:25:21.860
+Marius van der Wijden: Yeah, I think this like, there's not much that we need to test there. And basically the testing
+
+140
+00:25:23.380 --> 00:25:31.639
+Marius van der Wijden: can happen like El only the only thing that we
+
+141
+00:25:33.090 --> 00:25:42.619
+Marius van der Wijden: that we really need to test in a in a definite stand like, once we have set up a messaging, but we would need to test that anyway. So.
+
+142
+00:25:43.360 --> 00:25:50.419
+Marius van der Wijden: hey, I don't know. This kind of sets us up to do cell level messaging before before Glamsterdam.
+
+143
+00:25:51.016 --> 00:25:56.250
+Marius van der Wijden: In the software, which I think is very easy very good.
+
+144
+00:25:59.430 --> 00:26:00.140
+stokes: Yeah.
+
+145
+00:26:00.820 --> 00:26:11.979
+stokes: So yeah, I mean, I think the only real downside then is just changing the spec. But that being said the way I was thinking about it is, I was at least expecting there to be like some minor changes today.
+
+146
+00:26:12.860 --> 00:26:13.750
+stokes: So
+
+147
+00:26:13.920 --> 00:26:21.459
+stokes: in that case I think I would lean towards go ahead, going ahead and making this change. Anyone feel
+
+148
+00:26:21.670 --> 00:26:23.250
+stokes: we really should not do this.
+
+149
+00:26:26.130 --> 00:26:41.589
+Barnabas: I just don't understand. Why do we have to have this? By Fussaka? If nobody is gonna implement it, nobody is. Gonna have a way to call it and know, and we would not have a way to test it like, why can't you just call this for grand and
+
+150
+00:26:42.260 --> 00:26:45.599
+Barnabas: basically just go ship it v. 2,
+
+151
+00:26:45.930 --> 00:26:50.239
+Barnabas: and be able to test that, and then we will scope this for.
+
+152
+00:26:50.240 --> 00:26:50.590
+Raúl Kripalani: Yeah.
+
+153
+00:26:51.520 --> 00:26:52.770
+Raúl Kripalani: So the
+
+154
+00:26:53.100 --> 00:27:15.060
+Raúl Kripalani: yeah. So the changes, the changes that we're planning do not require a fork. So we don't. We want to roll out these changes between Fussaka and Glamsterdam, and we think they're gonna be necessary to push the Bpo confidently over specific levels. So that's why we don't. We don't wanna wait for Glam Stam. And we want to introduce that change. Now.
+
+155
+00:27:17.640 --> 00:27:42.270
+Raúl Kripalani: I mean, technically speaking, as as Marius said, the engine Api is prepared to introduce these capabilities at any point in time. But we just don't have a process for that. We always discuss the engine Api and the context of specific forks. And the evolution is done in the context of specific forks. So we just don't have a process to modify it export. That's why we kind of like forcing to get this trying to rally, to get it into a center.
+
+156
+00:27:43.660 --> 00:28:00.020
+stokes: Yeah, okay, I don't know if I want to open this can of worms. But we will have a process, because, assuming we do sort of like a staged Bpo rollout. We essentially would have another opportunity with, say, the second Bpo deployment
+
+157
+00:28:00.390 --> 00:28:01.930
+stokes: to do this.
+
+158
+00:28:02.760 --> 00:28:08.899
+stokes: but then, at that point it's no longer sort of this pure Vpo idea, and it becomes more just another hard fork.
+
+159
+00:28:11.100 --> 00:28:12.740
+stokes: But that would give people more time.
+
+160
+00:28:21.219 --> 00:28:25.769
+stokes: Flc, us, can we just roll back to partial responses. So I believe that's what we have right now
+
+161
+00:28:26.030 --> 00:28:27.089
+stokes: with V, 2.
+
+162
+00:28:34.830 --> 00:28:43.120
+Raúl Kripalani: No, so partial, partial. So basically partial responses in v. 2, right, like original original V, 2,
+
+163
+00:28:43.671 --> 00:28:46.479
+Raúl Kripalani: were not supported. It was all or nothing.
+
+164
+00:28:46.720 --> 00:28:53.040
+Raúl Kripalani: Then what's currently in master is very relaxed, and it basically
+
+165
+00:28:53.530 --> 00:29:00.260
+Raúl Kripalani: introduce at the May may return partial responses. Maybe not. Maybe it's on or nothing. Nobody knows.
+
+166
+00:29:01.950 --> 00:29:11.330
+Raúl Kripalani: and B. 3, and and the current spec change. What proposes is to restore v. 2 to all or nothing, and to move partial responses to v. 3.
+
+167
+00:29:12.110 --> 00:29:12.700
+stokes: Right.
+
+168
+00:29:12.700 --> 00:29:27.659
+Raúl Kripalani: So I, yeah. So I'm not. I'm not sure what else have implemented so far. Maybe that's a good question. If they've already implemented the May version that's sitting on Main right now. I don't know. Maybe they can give us some signal.
+
+169
+00:29:28.910 --> 00:29:33.290
+Roman: As of there. Now, too, we have or or not in responses.
+
+170
+00:29:36.890 --> 00:29:40.240
+Raúl Kripalani: Got it is that the case for the rest of yields.
+
+171
+00:29:42.370 --> 00:29:43.750
+Marius van der Wijden: Yeah, it's the same for us.
+
+172
+00:29:51.220 --> 00:29:58.179
+stokes: Okay, so that's compatible with our rules proposing here. Basically, we just leave that as v, 2, and then have a v 3 for this.
+
+173
+00:29:58.460 --> 00:29:58.870
+Raúl Kripalani: Exactly.
+
+174
+00:29:58.870 --> 00:30:03.829
+stokes: And yeah, like, I think we should stretch to ship it in Frisaka. But
+
+175
+00:30:04.010 --> 00:30:07.640
+stokes: again, it can be a lower priority, I would say.
+
+176
+00:30:07.950 --> 00:30:15.769
+stokes: and if you know, as we get closer to test nets, it becomes a case that this isn't looking like we have time for it. Then we can cross that bridge when I get there.
+
+177
+00:30:22.900 --> 00:30:24.659
+stokes: Yeah, Barnabas. So
+
+178
+00:30:25.060 --> 00:30:40.550
+stokes: if it's in Fusaka, then we know everyone updates at the Hard Fork, and so we can rely on it. If we don't do this, then we're kind of back in the status quo where it's like the El. Maybe has it? Maybe doesn't. It just gives us stronger confidence that we know we can rely on this and use it productively.
+
+179
+00:30:46.290 --> 00:30:51.400
+stokes: Yeah, I mean, yes, like, this thing would be tested before it goes to Mainnet.
+
+180
+00:30:56.760 --> 00:30:58.290
+Marius van der Wijden: It's the testing for this.
+
+181
+00:30:58.290 --> 00:30:58.949
+stokes: Don't know.
+
+182
+00:30:59.330 --> 00:31:03.310
+Marius van der Wijden: The testing for this is literally like 2 lines.
+
+183
+00:31:03.510 --> 00:31:06.000
+Marius van der Wijden: I I don't. I don't understand why.
+
+184
+00:31:06.300 --> 00:31:11.610
+Marius van der Wijden: where people are like, basically we like we have the testing for this already. We're we're testing it with
+
+185
+00:31:12.992 --> 00:31:19.800
+Marius van der Wijden: we can test it with eels and and hive like the
+
+186
+00:31:20.110 --> 00:31:26.010
+Marius van der Wijden: there's nothing to be tested there. It's basically, does this method return partial responses or not?
+
+187
+00:31:26.250 --> 00:31:30.090
+Marius van der Wijden: And then we have the same test corpus that we have for v. 2 as well.
+
+188
+00:31:33.390 --> 00:31:38.050
+stokes: Yeah, I don't think the testing load is that heavy and
+
+189
+00:31:38.210 --> 00:31:45.900
+stokes: also dustin to your point, I think, Perry responded. But you know the idea is essentially of Devnet 3. Be the like frozen specs.
+
+190
+00:31:46.300 --> 00:31:54.439
+stokes: From there there will be many Dev notes, I expect, perhaps more ephemerable to test like different load and block counts. And all this. So
+
+191
+00:31:54.820 --> 00:31:58.219
+stokes: it's not that there's only devnet 3 full stop.
+
+192
+00:32:01.220 --> 00:32:02.080
+stokes: Okay.
+
+193
+00:32:02.380 --> 00:32:18.400
+stokes: it sounds like we should go ahead and merge in this change from role. And yeah, so v, 2 will be as is I think, as people have implemented, we'd revert the changes to the repo there and then just have this functionality in this new v, 3.
+
+194
+00:32:19.410 --> 00:32:21.279
+stokes: So let's go ahead and do that.
+
+195
+00:32:25.710 --> 00:32:26.550
+stokes: Okay.
+
+196
+00:32:27.970 --> 00:32:36.880
+stokes: let me find the agenda. Okay, another spec issue, or at least open points with Devnet 3
+
+197
+00:32:37.290 --> 00:32:42.390
+stokes: we have. Let me just grab this draft Pr here.
+
+198
+00:32:42.880 --> 00:32:53.969
+stokes: This is not necessarily a or point to peer to us, but it's adjacent, and something that I think we want to do. So we should go ahead and get this.
+
+199
+00:32:54.280 --> 00:32:55.480
+stokes: Get this moving.
+
+200
+00:32:55.750 --> 00:33:07.519
+stokes: We had discussed this on a previous call, I forget which one. But basically, there was this proposal to change the builder Api endpoint of get payload so that it actually just returns nothing
+
+201
+00:33:07.770 --> 00:33:15.770
+stokes: right now. The proposer gives the sign blinded beacon block to say the relay, the relay returns. Then the unblinded
+
+202
+00:33:15.920 --> 00:33:19.370
+stokes: data. Here the execution payload and the blobs.
+
+203
+00:33:19.650 --> 00:33:30.559
+stokes: The issue is as we scale the bobs. This now becomes like a lot of data potentially over this, like one synchronous endpoint. And yeah, we expect that will cause issues. So
+
+204
+00:33:30.800 --> 00:33:34.079
+stokes: there's a number of things to do here or like things that could be done.
+
+205
+00:33:34.200 --> 00:33:43.810
+stokes: The leading solution at the time was, Yeah, this is an issue, and we should do something. And I think there were generally as weak support for
+
+206
+00:33:44.204 --> 00:33:49.790
+stokes: just changing this endpoint so that it returns nothing at all. And just having this responsibility beyond the relay
+
+207
+00:33:50.460 --> 00:34:00.390
+stokes: from there. Yeah, there's like things you could imagine the relays do in terms of the blobs, and how they expose the blobs to proposers and anyone else who wants them.
+
+208
+00:34:01.060 --> 00:34:12.060
+stokes: But I think what's simplest to move forward here is just actually make this change as given in the Pr which drops the return data from this Api endpoint. So
+
+209
+00:34:12.810 --> 00:34:16.830
+stokes: does anyone have any thoughts on this or questions
+
+210
+00:34:17.909 --> 00:34:19.539
+stokes: to follow up to the idea?
+
+211
+00:34:23.060 --> 00:34:28.900
+stokes: Okay, thumbs up from Terrence, and I'll assume that's a thumbs up on dropping their the return.
+
+212
+00:34:31.389 --> 00:34:35.689
+stokes: Okay, okay, cool scene.
+
+213
+00:34:36.050 --> 00:34:37.390
+stokes: A lot of thumbs up.
+
+214
+00:34:37.900 --> 00:34:39.030
+stokes: So let's do that.
+
+215
+00:34:39.936 --> 00:34:41.360
+stokes: Cool. That was easy.
+
+216
+00:34:42.760 --> 00:34:50.842
+stokes: I guess. One question. Since we're here like there is a design space, or you can imagine relays do expose the bobs
+
+217
+00:34:51.520 --> 00:34:54.999
+stokes: almost as like a archival service or something like this.
+
+218
+00:34:55.790 --> 00:34:58.749
+stokes: Does anyone feel like that's interesting or valuable?
+
+219
+00:35:03.260 --> 00:35:10.040
+stokes: The reason I'm asking is, this, is again kind of a separate conversation to have with the relays. But it's something I could bring up with them.
+
+220
+00:35:10.754 --> 00:35:14.729
+stokes: So I'm just wondering if anyone has any thoughts either way on this right now.
+
+221
+00:35:17.820 --> 00:35:22.929
+stokes: when can we test it? I think we can get this implemented pretty quickly. It's a pretty straightforward change.
+
+222
+00:35:23.200 --> 00:35:26.179
+stokes: although I guess cl clients would need to also update.
+
+223
+00:35:26.890 --> 00:35:33.429
+terence: This we would require the builder and the relayer changes on the def net right? And I think.
+
+224
+00:35:33.430 --> 00:35:35.840
+stokes: It's really, there's 30 relay. Yeah.
+
+225
+00:35:35.840 --> 00:35:36.610
+terence: Okay.
+
+226
+00:35:37.310 --> 00:35:41.669
+terence: And I mean, we can test this on kurtosis as well. I think.
+
+227
+00:35:41.960 --> 00:35:53.700
+Barnabas: Yeah, yeah, exactly. Yeah. The main issue right now is our builder. So our builder is still using an older version of rest. With some dependency issues that have not been updated from fleshbox.
+
+228
+00:35:54.080 --> 00:35:59.220
+Barnabas: We are working on it, and hopefully, we'll have something next week.
+
+229
+00:36:04.710 --> 00:36:06.070
+stokes: Very cool.
+
+230
+00:36:08.300 --> 00:36:18.420
+stokes: Let's see. So that was that, okay, yeah. We touched then on a potential launch date for Devnet 3 Barnabas. I think you said something like 2 weeks from now.
+
+231
+00:36:19.290 --> 00:36:22.110
+stokes: maybe like, yeah, that would go the 21.st Okay.
+
+232
+00:36:23.010 --> 00:36:43.970
+stokes: that sounds good. And then otherwise, yeah, the last time. Yeah, let's just say before I was out we were talking quite a bit about Bpos and how to implement them with this fork digest change also about your custody. There are like a number of things here at pure dos. I just wanted to check in like, are we feeling good about these things. Now.
+
+233
+00:36:44.500 --> 00:36:51.020
+stokes: I think we've mostly handled all the spec issues in the devnet to spec. So then, it's just a question of implementation.
+
+234
+00:36:51.520 --> 00:36:55.819
+stokes: But yeah, any anything to surface here before we move forward.
+
+235
+00:37:09.210 --> 00:37:11.895
+stokes: Okay, cool.
+
+236
+00:37:12.900 --> 00:37:19.640
+stokes: Then I did want to briefly touch from there. Yeah, the plan on actually getting this to Mainnet. So
+
+237
+00:37:20.395 --> 00:37:28.429
+stokes: I'll call out this blog post from Sigma Prime that I thought was really good. So Jimmy wrote this blog post here
+
+238
+00:37:28.620 --> 00:37:33.489
+stokes: with their view on essentially getting peer dos to Mainnet this year.
+
+239
+00:37:33.910 --> 00:37:42.900
+stokes: I think, like some key information, here would be this planning section towards the end, where basically it says something like a mid October Mainnet launch.
+
+240
+00:37:43.230 --> 00:37:50.410
+stokes: That implies, then test nuts something like Heleshke in September something like Sepholia in August.
+
+241
+00:37:50.760 --> 00:37:54.529
+stokes: which doesn't give us much time to get to that point.
+
+242
+00:37:55.280 --> 00:38:05.360
+stokes: The so that's sort of the second half. And the 1st half, then, is where we are today, where we basically would then say, Okay, let's go ahead and iron out any issues with Devnet 2.
+
+243
+00:38:05.590 --> 00:38:12.819
+stokes: We'd have Devnet 3 stable or not. Stables. Wrong word. But we'd have devnet 3, you know, defined, let's say.
+
+244
+00:38:13.391 --> 00:38:19.120
+stokes: hopefully, there aren't too many things in terms of implementation difficulties from 2 to 3,
+
+245
+00:38:19.460 --> 00:38:26.180
+stokes: and we could then hope that Devnet 3 is like this happy path, stable paradise implementation.
+
+246
+00:38:26.690 --> 00:38:28.750
+stokes: From there we want to turn to do.
+
+247
+00:38:29.352 --> 00:38:43.130
+stokes: You know, many different sorts of testing around, you know, actually loaded these things at different blob counts testing different vpo parameters. How that affects syncing. And yeah, all the different things that we have. So
+
+248
+00:38:44.394 --> 00:38:49.989
+stokes: I think the main point for today is just to get this sort of rough schedule in everyone's minds.
+
+249
+00:38:50.130 --> 00:38:53.000
+stokes: Yeah.
+
+250
+00:38:53.500 --> 00:39:00.239
+stokes: I did want to touch on the Bpo bit here. But I wonder if anyone has any comments about what I've said so far.
+
+251
+00:39:13.340 --> 00:39:17.169
+stokes: Okay, Justin says he likes to schedule. Very good.
+
+252
+00:39:18.910 --> 00:39:25.789
+stokes: Yeah. I would kind of consider this to be a strong man at the moment. But I think it's a nice, strong man. I think it's something we should
+
+253
+00:39:26.070 --> 00:39:33.710
+stokes: reach for Perry brings up. We need at least a non finality network. Right? Yeah, exactly.
+
+254
+00:39:34.510 --> 00:39:41.289
+stokes: So, yeah, yeah, non finality. Different failure. Scenarios on networks. Syncing is another big
+
+255
+00:39:41.600 --> 00:39:43.870
+stokes: feature set to to verify.
+
+256
+00:39:44.130 --> 00:39:47.519
+stokes: But then from there we can decide these different Bpo parameters.
+
+257
+00:39:49.560 --> 00:39:59.669
+stokes: and then I guess that tease us up to the next point that I wanted to talk about, which is, yeah. Thinking about how we actually want to do this.
+
+258
+00:39:59.950 --> 00:40:11.379
+stokes: I think there was some discussion either on last Acdc. Or even Acd this week around what we'd actually want here. It seems like, from what I could catch up on that. There's
+
+259
+00:40:11.510 --> 00:40:14.360
+stokes: pretty broad support for having
+
+260
+00:40:15.990 --> 00:40:25.339
+stokes: a more conservative rollout with Fusaka, where basically, we just schedule like maybe one substantial increase at launch.
+
+261
+00:40:25.560 --> 00:40:31.240
+stokes: Then that would imply we have a Bpo update early next year to get us to like a higher number.
+
+262
+00:40:32.110 --> 00:40:34.150
+stokes: Do people generally feel good about this?
+
+263
+00:40:35.450 --> 00:40:42.189
+stokes: The alternative would be honestly a more aggressive option where we just try to have like more. Pbo scheduled with Osaka.
+
+264
+00:40:50.640 --> 00:40:56.400
+stokes: Yeah. Okay, reading the chat here, people are talking about syncing. So
+
+265
+00:40:57.850 --> 00:41:05.280
+stokes: yeah, I'm not trying to get too ahead of ourselves, but more just pipelining all the things we need to do to get to the sock on Maine
+
+266
+00:41:05.620 --> 00:41:06.480
+stokes: sounds great.
+
+267
+00:41:07.880 --> 00:41:17.859
+Ansgar Dietrichs: Yeah, just just to very briefly, kind of recap from from, like, I think 2 weeks ago on Acdc, we just briefly touched on different potential variations of this. So basically like.
+
+268
+00:41:18.100 --> 00:41:44.119
+Ansgar Dietrichs: would we want Fussaka directly to bump up blobs or basically have one or several Bpos bundled with it. And then, if we have Bpos bundled with it, basically, there's the idea to either do something like very quick after the fork, so like, say, a week after the fork, or something that just does a bump or something that's a bit farther away, so that we could already collect some data before the bump. And then, after the bump.
+
+269
+00:41:44.120 --> 00:42:11.469
+Ansgar Dietrichs: so say, like a month after, or we could do both, so, for example, say, like Fusac itself, rolls out without any changes in throughput just switch over to Pdas. Then one week later, we have a small 1st kind of increase in throughput and then like another month later. So we basically get to whatever we think is the actual safe limit. And that way, we would basically like be able to monitor the network at different levels. So that's kind of like, I think, roughly, the design space kind of like 0, 1 or 2
+
+270
+00:42:11.490 --> 00:42:17.010
+Ansgar Dietrichs: bundled Bpos, together with the Fusaka rollout. If I remember from 2 weeks ago.
+
+271
+00:42:18.360 --> 00:42:23.479
+stokes: Yeah, that makes sense. And I guess you know, the point I want to kind of get to is like, if we had one.
+
+272
+00:42:23.720 --> 00:42:32.939
+stokes: if we. If we have the strategy that we want for main ads, then we can kind of include that in like Devnet 3, you know, sort of the like.
+
+273
+00:42:33.170 --> 00:42:34.579
+stokes: there'll be almost
+
+274
+00:42:34.700 --> 00:42:39.420
+stokes: well. There's like a core line of development here which is like driving a series of devnets to Mainnets.
+
+275
+00:42:40.040 --> 00:42:53.189
+stokes: The closer we get to Mainnet, the more that should look like the actual mainnet configuration. There will be parallel streams of testing more aggressive Bpo schedules, and we should also have those. But I'm trying to dial in on what we actually want. Mainnet to look like.
+
+276
+00:43:02.100 --> 00:43:03.160
+stokes: yeah.
+
+277
+00:43:03.710 --> 00:43:09.299
+stokes: okay, I mean, I guess I have a question. Then when we say, Bpo, one and Bpo, 2. Here like, what? What does that mean?
+
+278
+00:43:10.350 --> 00:43:12.100
+stokes: Like, what specific numbers.
+
+279
+00:43:13.770 --> 00:43:17.200
+Barnabas: We are thinking a mild increase in Bpo one.
+
+280
+00:43:17.540 --> 00:43:24.390
+Barnabas: So something like 8 and 12 in Bp, one or 9 and 12, I'm not sure what the
+
+281
+00:43:24.980 --> 00:43:26.619
+Barnabas: correct ratio would be.
+
+282
+00:43:26.620 --> 00:43:50.630
+Parithosh Jayanthi: I think part of the issue is that we haven't had network stable enough for long enough to actually do any analysis. Most of the networks we've had are like 5,000 nodes. We would at least want to do the non finality network as well as the really large network. So about a thousand nodes, and then collect the data from that before we can even decide what Bpo, one and Bpo 2 value should be. Otherwise, we're just kind of guessing.
+
+283
+00:43:51.200 --> 00:43:53.370
+stokes: Yeah, okay, that makes sense.
+
+284
+00:43:53.850 --> 00:44:00.770
+stokes: But then what we can, I think, agree to today is just the shape of having only 2 Bpo scheduled with Osaka.
+
+285
+00:44:03.790 --> 00:44:07.709
+stokes: And of course, you know, that's all. Pending further development that we do.
+
+286
+00:44:14.710 --> 00:44:15.550
+stokes: Okay?
+
+287
+00:44:17.893 --> 00:44:23.400
+stokes: Great. And Oscar has a comment in the chat that yeah, he likes that.
+
+288
+00:44:24.040 --> 00:44:27.629
+stokes: Yeah, that seems seems to be what most people prefer at the moment.
+
+289
+00:44:29.370 --> 00:44:39.579
+stokes: Okay, so I believe, let me see if there are any last minute items here on the post. Nope, okay, so I think that's what we have for for soccer.
+
+290
+00:44:39.730 --> 00:44:42.319
+stokes: Anything else before we move to Glamsterdam.
+
+291
+00:44:52.470 --> 00:45:03.309
+stokes: Okay, so happy, Osaka in, and then we'll now shift to Glamsterdam and think about the future.
+
+292
+00:45:04.070 --> 00:45:06.060
+stokes: And for Glamsterdam.
+
+293
+00:45:06.500 --> 00:45:08.190
+stokes: Yeah. So
+
+294
+00:45:08.470 --> 00:45:15.429
+stokes: some of this, I think we're doing this process for the 1st time, so I think we will kind of figure out. Live the right way to do it.
+
+295
+00:45:15.907 --> 00:45:22.850
+stokes: One thing I did want to call out today is that there have been a number of these headliner proposals
+
+296
+00:45:23.250 --> 00:45:35.530
+stokes: and going off of the schedule that Tim had posted some some time ago. We're kind of nearing this end of the headliner proposal section. We would then shift to deciding on a headliner.
+
+297
+00:45:35.650 --> 00:45:48.170
+stokes: and you know, keyword, there is a single headliner per layer, right? So there's a number of headliners. The idea here is that the headliner is, you know, there's 1 of them. And it's like this core sort of feature
+
+298
+00:45:48.310 --> 00:45:49.949
+stokes: that carries the fork.
+
+299
+00:45:50.290 --> 00:46:00.910
+stokes: And so what that means, then, is that we would actually pick one seal headliner on this call you know as well as one El headliner on the acde call.
+
+300
+00:46:01.300 --> 00:46:08.850
+stokes: and my sense is that with the socca and everything, it's a bit early to go ahead and make that Helena call today.
+
+301
+00:46:09.611 --> 00:46:13.790
+stokes: But I did want to go ahead and just say we should focus on picking one.
+
+302
+00:46:14.850 --> 00:46:26.249
+stokes: I will note, because we're here mark from Lighthouse had a comment on the agenda that they would like to propose 7, 7, 3, 2 as that headliner.
+
+303
+00:46:26.890 --> 00:46:31.810
+stokes: I will just mention that for now. Just so, it's on the record.
+
+304
+00:46:32.030 --> 00:46:52.449
+stokes: But what I wanted to do instead today was just go through the set of headliners and try to narrow down the set to things that we know we don't want, or rather things that we do want by pointing out the things we know we don't want. So this is kind of like this Dfi status that we have for IP selection, but for the headliners.
+
+305
+00:46:53.110 --> 00:46:57.070
+stokes: So if that sounds good to everyone.
+
+306
+00:46:57.520 --> 00:47:03.530
+stokes: Then, actually, let me read this chat here from Onsgar.
+
+307
+00:47:04.730 --> 00:47:07.009
+stokes: Okay. So they're gonna wait until devoted 3,
+
+308
+00:47:07.350 --> 00:47:10.069
+stokes: and then perhaps we should do the same thing on the cl.
+
+309
+00:47:12.390 --> 00:47:17.130
+stokes: so yeah, I mean, I'm open to opinions on this, what people think the right processes. But
+
+310
+00:47:17.680 --> 00:47:20.716
+stokes: it's possible we kind of want to pick them together.
+
+311
+00:47:21.230 --> 00:47:25.829
+stokes: so it might wait, might make sense to wait. Wait even then.
+
+312
+00:47:27.920 --> 00:47:41.240
+stokes: Okay, also, just to add context to what I just said about Lighthouse Post. It sounds like there's still some discriminant there. But there was this one opinion from Jay King.
+
+313
+00:47:41.980 --> 00:47:43.720
+stokes: But I'll just copy here
+
+314
+00:47:45.470 --> 00:47:51.589
+stokes: and point being is, I think this is highlighted is a bit early to pick the headliner. But yeah, okay, on score.
+
+315
+00:47:52.800 --> 00:48:21.319
+Ansgar Dietrichs: Yeah, I think I mean, I agree that I'd probably try to align roughly, kind of between Acdc and Acde, and basically like, wait a little bit longer for the full discussion, but I do think maybe if we already have it on the agenda for today, anyway, we could at least briefly have a look of like which of the headliners are even kind of Cl side. So how many do we have you, for example, also on the agenda made the point of that. You don't think that we could combine more than one headliner, at least on the Cl side. So basically like at least briefly kind of like.
+
+316
+00:48:21.320 --> 00:48:26.339
+Ansgar Dietrichs: or you talk about the kind of parameters of what? What the goal here is in terms of headliners.
+
+317
+00:48:26.680 --> 00:48:30.749
+stokes: Yeah, yeah, exactly. So yeah, let's get into it. Then. So
+
+318
+00:48:31.610 --> 00:48:41.979
+stokes: let's see, I'm actually gonna go off of this website forecast. I'm not sure if people have seen this. But they should all be here. And
+
+319
+00:48:42.590 --> 00:48:44.140
+stokes: it's a nice little ui.
+
+320
+00:48:44.490 --> 00:48:53.050
+stokes: So okay, let's just focus on see all things today. And that means, so yeah, we have 7, 7, 3, 2 Epps
+
+321
+00:48:53.711 --> 00:48:59.649
+stokes: very much than 7, 7, 8, 2, which is reducing the slot times to 6 seconds.
+
+322
+00:48:59.820 --> 00:49:02.840
+stokes: They're 7, 8 0 5, which is fossil.
+
+323
+00:49:04.420 --> 00:49:16.769
+stokes: Delayed. Execution, I would say, is mostly an El concern. So we'll leave that out unless someone wants to touch on it. One thing there is like it does kind of touch on many of the same design concerns as Epps
+
+324
+00:49:18.068 --> 00:49:25.830
+stokes: period is here which this one would touch on some Cl things because there's a number of Sfz changes.
+
+325
+00:49:26.260 --> 00:49:35.319
+stokes: Sorry. I just clicked the wrong button block level access list. We can put to the side evm, 64. And this available attestation one. So
+
+326
+00:49:35.710 --> 00:49:42.239
+stokes: okay, out of the set here, then, yeah, we have Eps 6 second slots.
+
+327
+00:49:42.360 --> 00:49:46.170
+stokes: fossil period and available attestation.
+
+328
+00:49:47.370 --> 00:49:52.870
+stokes: So from there, I guess, yeah, maybe following them from Oscar's point, like, you know.
+
+329
+00:49:53.020 --> 00:49:55.179
+stokes: how do we want to go about this like
+
+330
+00:49:55.500 --> 00:50:04.350
+stokes: one idea I had for today was essentially to say, like, we can dfi particular headliners that we know we don't want, and that will then narrow down
+
+331
+00:50:04.620 --> 00:50:09.860
+stokes: the decision set for people to then go and make their selections for future calls.
+
+332
+00:50:10.480 --> 00:50:14.510
+stokes: So hmm!
+
+333
+00:50:15.760 --> 00:50:19.810
+stokes: I guess I'm open to anyone who wants to speak up and
+
+334
+00:50:20.200 --> 00:50:23.320
+stokes: propose a particular efi for a headliner.
+
+335
+00:50:23.510 --> 00:50:29.359
+stokes: and what I mean there, it's kind of a shorthand, but essentially like things we think we don't want as the single headliner
+
+336
+00:50:31.650 --> 00:50:34.120
+stokes: and maybe to make this a little easier.
+
+337
+00:50:36.480 --> 00:50:45.320
+stokes: Well, yeah, it's a little tricky without just editorializing some eips.
+
+338
+00:50:45.450 --> 00:50:49.999
+stokes: So anyone have any thoughts.
+
+339
+00:50:58.200 --> 00:51:01.020
+stokes: I guess I could start it this way. Do
+
+340
+00:51:04.680 --> 00:51:12.672
+stokes: do people feel that? Okay, this is tricky.
+
+341
+00:51:14.562 --> 00:51:20.690
+stokes: Because I don't wanna really bias the discussion here? Hmm.
+
+342
+00:51:25.650 --> 00:51:33.440
+Marius van der Wijden: I. So I would just go through all of the all of the different proposals and see if there's someone, some client team who's
+
+343
+00:51:33.980 --> 00:51:40.389
+Marius van der Wijden: who's who says that this is something that they categorically, categorically do not want.
+
+344
+00:51:42.690 --> 00:51:43.460
+stokes: Okay?
+
+345
+00:51:43.610 --> 00:51:49.229
+stokes: Well, then, we can just start here with your comment, Marius, where it says you don't think we should do this available attestation thing.
+
+346
+00:51:54.150 --> 00:51:56.939
+stokes: So yeah, does anyone feel like we should have that as a headliner.
+
+347
+00:52:09.550 --> 00:52:24.719
+stokes: So yeah, maybe just a process note with. And see, are all these proposal? Eip Cfi. So I believe none of them are Cfid for Amsterdam. Right? We're still at the point, I think, of selecting someone. Correct me if I'm wrong on that. But I think essentially
+
+348
+00:52:25.040 --> 00:52:38.369
+stokes: we would have these selected and then, I guess, like, for example, when once we select the headliner that would be Cfi, and then there'll be a second stage where we Cfi other things and proceed that way.
+
+349
+00:52:45.550 --> 00:52:55.520
+stokes: So okay, going back to this available attestation eip, it seems like that should not be a outliner.
+
+350
+00:52:56.750 --> 00:52:58.969
+stokes: So I think we have agreement there.
+
+351
+00:52:59.270 --> 00:53:03.050
+stokes: And please someone, speak up. If you feel differently.
+
+352
+00:53:06.480 --> 00:53:07.340
+stokes: Okay.
+
+353
+00:53:08.270 --> 00:53:16.989
+stokes: I guess then I'll just kind of go in reverse order here on this list. So then, period like, do we feel like periods should be? Oh, so yes.
+
+354
+00:53:18.020 --> 00:53:18.490
+saulius: Yeah.
+
+355
+00:53:18.490 --> 00:53:19.730
+stokes: Did you have a comment? Yeah.
+
+356
+00:53:19.730 --> 00:53:22.510
+saulius: Yes, so so my comment would be.
+
+357
+00:53:22.930 --> 00:53:44.640
+saulius: maybe we, instead of trying to pick a particular eip, maybe we should try to pick a particular theme that is most important for the next upgrade, for example, the the Peerdas was quite good thing, because the
+
+358
+00:53:45.410 --> 00:54:10.709
+saulius: the actual theme was that we want to scale blobs. So so my proposal would be, maybe we should 1st try to figure out what is the most important thing that we want to improve instead of trying to to pick a particular eip. Because when when we are focusing on particular eip, we kind of
+
+359
+00:54:11.040 --> 00:54:26.229
+saulius: slightly to the to decide the the main thing what? Exactly we want to improve in theory. So so that would be my proposal how to proceed with with this.
+
+360
+00:54:26.770 --> 00:54:27.430
+stokes: -
+
+361
+00:54:27.890 --> 00:54:33.859
+stokes: yeah, no, I think that's a good way to go about it. And we had discussed this some maybe like
+
+362
+00:54:34.570 --> 00:54:48.250
+stokes: 3 or 4, maybe even 5. When once we had 1st opened the like landstream discussion on Acdc. We had spent some time talking about this, and at the time at least we had said, scalability was this theme?
+
+363
+00:54:49.219 --> 00:54:54.649
+stokes: Then the question is like, okay, like, does epbs scale? And you can make an argument there.
+
+364
+00:54:55.246 --> 00:55:13.439
+stokes: There is even an argument that fossil in some sense falls under the scaling theme. But yeah. So I would say, generally, there's agreement on scaling being this theme. And maybe we need to like, decide exactly what scaling means here. But then, ultimately, yeah, you know, I think.
+
+365
+00:55:13.620 --> 00:55:18.620
+stokes: assuming we all kind of understand a little bit what we mean when we say that
+
+366
+00:55:18.780 --> 00:55:26.339
+stokes: then I would say that would rule out things like available attestation. Things like period.
+
+367
+00:55:27.370 --> 00:55:38.949
+stokes: Also, I think is an open question. And then from there there's just this ongoing conversation of epbs 6 seconds, slash late execution, and how we want all that to fit together.
+
+368
+00:55:40.050 --> 00:55:47.250
+stokes: So with that being said, do we feel like that's a reasonable assessment of the headliners. So far.
+
+369
+00:55:48.270 --> 00:55:51.740
+stokes: Oscar. I don't know. If you had a comment to that or something else.
+
+370
+00:55:52.480 --> 00:56:02.130
+Ansgar Dietrichs: Yeah, specifically to that point. I just wanted to say that in principle, I think having some sort of general direction of the folk makes a lot of sense to me, and I agree with.
+
+371
+00:56:02.330 --> 00:56:26.710
+Ansgar Dietrichs: But you know you you said about making it about scaling the l. 1. But I just wanted to say that to me that is less clear on the Cl. Side than on the El side. So I think, on the El side, once we have that conversation, that that's something that I will push for very actively, I think, on the El side, like all of the main features that I find attractive are around scaling block level access lists.
+
+372
+00:56:26.750 --> 00:56:35.899
+Ansgar Dietrichs: And then on the non-headliner side, basically like pretty severe repricings. And so that will basically give us a lot of headroom for scaling
+
+373
+00:56:35.900 --> 00:57:05.550
+Ansgar Dietrichs: to me, then that makes it much more optional on the Cl. Side to also follow the same theme, because, if we, for example, prioritize delayed execution, which we very well might do. And then we just get like a very big one time scaling bump out of Glam Saddam, and then basically plateau afterwards, whereas, given that we already get this bump out of the El. It would also be totally fine to say on the Cl. We focus for one more fork on something else like say, for example, shorter, slot times, I think, is the main contender that I've heard for people that don't like
+
+374
+00:57:05.580 --> 00:57:11.829
+Ansgar Dietrichs: epbs in Glamsterdam. And then we would basically only do these Cl side scaling improvements in Hstar.
+
+375
+00:57:12.331 --> 00:57:19.739
+Ansgar Dietrichs: So so I was just. I just want to say that, like the the general theme of scaling, I think, is more binding on the El side than on the Cl. Side.
+
+376
+00:57:23.530 --> 00:57:33.309
+stokes: Fair. And then, you know, like, you could imagine when you scale in a more or less sense, right like you could start to make the argument that shorter slot times does scale things. Or.
+
+377
+00:57:34.260 --> 00:57:42.669
+stokes: well, yeah, it's actually hard to make the argument. But yeah, okay, but yeah, fair point.
+
+378
+00:57:44.580 --> 00:57:48.279
+stokes: Yeah. Also from here. There's like a bunch of discussion in the chat now.
+
+379
+00:57:48.720 --> 00:57:54.979
+stokes: And I think, let me read Phil's message here makes sense that within.
+
+380
+00:57:55.790 --> 00:57:56.710
+stokes: Right?
+
+381
+00:57:57.330 --> 00:58:02.830
+stokes: Yeah, so yeah, Bill, to your point, this is kind of what I wanted to do today. Just make the claim that.
+
+382
+00:58:03.160 --> 00:58:08.379
+stokes: Well, okay, what I had said is that we would make the headliner selection on the next Acdc.
+
+383
+00:58:08.820 --> 00:58:16.960
+stokes: Given the pacing of Acde. I think I'm gonna at least I would propose to push that back to be more aligned with acde.
+
+384
+00:58:17.780 --> 00:58:20.770
+stokes: So what that means for today is that we're still kind of in.
+
+385
+00:58:20.980 --> 00:58:30.869
+stokes: We're not quite at the point yet where we can actually decide headliners. Which I also think is good, because, again, just referencing the chat, I think there's still pretty active discussion around all these different things fit together.
+
+386
+00:58:41.230 --> 00:58:47.899
+stokes: So on that point, I'm not sure we're going to make much progress on this further today.
+
+387
+00:58:49.860 --> 00:58:57.780
+stokes: yeah, Barnabas, I'll echo what you have here in the chat making a statement about preferences would be really good. Because, yeah. Otherwise we'll just kind of.
+
+388
+00:58:58.540 --> 00:59:07.680
+stokes: we could easily go in circles synchronously on, you know, some given Acdc. So, having some thoughts written down, is really useful.
+
+389
+00:59:08.000 --> 00:59:14.709
+stokes: And again, timeline wise, then I would say, we probably have more than 2 weeks.
+
+390
+00:59:15.050 --> 00:59:20.440
+stokes: I'll circle back with Tim to see exactly what he's thinking on acde side.
+
+391
+00:59:20.570 --> 00:59:24.120
+stokes: but I would like to kind of have them happen concurrently.
+
+392
+00:59:24.560 --> 00:59:33.979
+stokes: So yeah, I think that's probably on this point for today. And takeaway being keep thinking about that liners that you'd want.
+
+393
+00:59:34.460 --> 00:59:45.669
+stokes: It does sound like, there's preference for some combination of epbs or 6 second slots or fossil
+
+394
+00:59:46.230 --> 00:59:48.349
+stokes: as headliners today.
+
+395
+00:59:49.168 --> 00:59:52.600
+stokes: But yeah, again, the conversation will keep evolving.
+
+396
+00:59:56.930 --> 00:59:57.750
+stokes: Okay?
+
+397
+00:59:59.600 --> 01:00:02.220
+stokes: So then, in that case.
+
+398
+01:00:02.570 --> 01:00:08.110
+stokes: I think that's all we had on the agenda. Are there any other comments or points someone would like to bring up today?
+
+399
+01:00:19.260 --> 01:00:22.329
+stokes: Okay? If not, then we'll go ahead and wrap up.
+
+400
+01:00:22.620 --> 01:00:23.670
+stokes: Thanks, everyone.
+
+401
+01:00:28.530 --> 01:00:29.510
+stokes: Bye. Everyone.
+
+402
+01:00:29.510 --> 01:00:34.939
+stokes: Well, okay, there's still some discussion in the chat. I don't know if we want to keep this going somewhere.
+
+403
+01:00:35.560 --> 01:00:37.249
+stokes: or if people would like to speak up.
+
+404
+01:00:38.270 --> 01:00:40.449
+stokes: but otherwise we'll go ahead and wrap up the call.
+
+405
+01:00:42.160 --> 01:00:50.340
+potuz: Can we make a deadline? Perhaps? I mean, we had a deadline for like 2 weeks from now. And it seems that we're not gonna get there. Not even close.
+
+406
+01:00:50.910 --> 01:00:51.640
+stokes: Yeah.
+
+407
+01:00:52.340 --> 01:01:00.629
+stokes: So I think it's kind of hard to say. Onsgar, do you want to speak to the comment you had? I'd have to go find it. But you had a comment in the chat.
+
+408
+01:01:01.660 --> 01:01:08.960
+Ansgar Dietrichs: Oh, you mean on the on the time? Timeline? Yeah. So I think basically on on the Acde side. The decision was to basically 1st wait until
+
+409
+01:01:09.430 --> 01:01:29.250
+Ansgar Dietrichs: the basically, the immediate attention on Fusaka is kind of lower meaning that, like Devnet 3 is out, and there's no like emergencies around Devnet 3 non-finalization or something anymore, to take up most of the attention of the call. And so once we have a call to start focusing on headliner discussion that we would then have one call for discussion, and then the call after for
+
+410
+01:01:29.250 --> 01:01:40.250
+Ansgar Dietrichs: for decision, basically. So it's a 2 week, 2 like a 2 week span for making that decision so effectively. That would mean that probably next week's acde at least, would still be Fusaka related. And then
+
+411
+01:01:40.250 --> 01:01:41.110
+Ansgar Dietrichs: either
+
+412
+01:01:41.110 --> 01:01:51.300
+Ansgar Dietrichs: the 2 weeks and then 4 weeks after would be the ones for the decision. So 5 weeks from now, or if there's any hiccups or something with definite 3, then that would be delayed by another 2 weeks. Basically.
+
+413
+01:01:53.220 --> 01:02:01.520
+stokes: Yeah. So to play that back to put us this question around deadline, I think I I like that like, basically, let's focus on Devnet. 3, for now
+
+414
+01:02:01.850 --> 01:02:12.339
+stokes: once. Devnet 3 is healthy. Then we would then engage the headliner discussion. And yeah, having a call for a discussion, and then another call after that to make the decision seems pretty reasonable.
+
+415
+01:02:13.860 --> 01:02:15.360
+stokes: Does that work for everyone here?
+
+416
+01:02:32.060 --> 01:02:33.069
+stokes: Yeah, let's go.
+
+417
+01:02:33.770 --> 01:02:42.989
+Ansgar Dietrichs: Yeah, not on the timeline. Just one last general comment. I do think it would be healthy if we all could also like then already like over the next 2 weeks. Think about how we could ideally
+
+418
+01:02:43.180 --> 01:03:02.400
+Ansgar Dietrichs: service some some kind of opinions from kind of ethereum stakeholders that don't usually participate in Acd, so that we don't end up in a situation where we make the headliner choice, and then everyone else is like, Oh, you didn't listen to us, or something, I think, in this like fork. The risk of this is lower. But still, yeah.
+
+419
+01:03:02.620 --> 01:03:03.470
+Ansgar Dietrichs: just want to mention.
+
+420
+01:03:03.470 --> 01:03:05.870
+stokes: Yeah, which is
+
+421
+01:03:05.990 --> 01:03:13.310
+stokes: just like thinking about it. It seems a little tight, because if we have, say one call to do discussion, and then another call to do decision.
+
+422
+01:03:13.440 --> 01:03:17.919
+stokes: That kind of implies you'd want all these different stakeholders on the one discussion call
+
+423
+01:03:18.150 --> 01:03:23.690
+stokes: which we can do. At least we could try. But yeah, it's might be a little tricky to coordinate everything.
+
+424
+01:03:27.850 --> 01:03:33.759
+stokes: The alternative is, we just take the time between now and then to just try and get these different voices on Acd.
+
+425
+01:03:35.460 --> 01:03:38.219
+stokes: or, yeah, I guess other forums as well would be nice.
+
+426
+01:03:58.610 --> 01:04:04.049
+stokes: Okay, I think we go ahead and wrap it up unless anyone has anything else.
+
+427
+01:04:05.450 --> 01:04:10.379
+Barnabas: Could you not schedule that stakeholder meeting for that next Ecd.
+
+428
+01:04:11.940 --> 01:04:13.119
+stokes: You mean like next week.
+
+429
+01:04:13.340 --> 01:04:13.680
+Barnabas: Yeah.
+
+430
+01:04:15.820 --> 01:04:16.630
+stokes: I think, sounds good.
+
+431
+01:04:16.630 --> 01:04:24.649
+stokes: tricky, because there's probably many different types of people we want to get involved, and it would only be like a week to get them there.
+
+432
+01:04:25.915 --> 01:04:30.749
+stokes: There's also, like, I think, a different set of people across Acdc and Acd.
+
+433
+01:04:31.470 --> 01:04:37.360
+stokes: So in general, I think we should try to do this, but I think doing it by next Thursday will be tricky.
+
+434
+01:04:39.130 --> 01:04:48.399
+Barnabas: I mean getting everyone there like PE- people that care about. The next update will show up, and people that don't will not.
+
+435
+01:04:48.720 --> 01:04:49.809
+Barnabas: That's my take.
+
+436
+01:04:50.170 --> 01:05:01.790
+stokes: Yeah, but it's more fine grained than the next update. Right? Because it's like, okay, let's say, we want to talk about epbs. There's, you know many people here. There are other people who are in like the Meb ecosystem. There are other people
+
+437
+01:05:02.200 --> 01:05:12.989
+stokes: been thinking about shorter slots, and like the ecosystem in different places. So that's just like all on the Cl side. And then I imagine there's slightly different concerns on the El side.
+
+438
+01:05:25.300 --> 01:05:32.570
+stokes: Yeah, Onsgar asked. Like, what does schedule stakeholder meetings mean? And like really what we mean here. So I think Botus gives a really nice example of what I was talking about
+
+439
+01:05:33.041 --> 01:05:38.159
+stokes: free pps where it's like, you know, this feature would touch the concerns of all these different
+
+440
+01:05:38.780 --> 01:05:46.110
+stokes: ecosystem players. And again, for each IP, you can imagine, like slightly different sets, or in some cases very different sets.
+
+441
+01:05:46.840 --> 01:05:48.760
+stokes: So yeah, it just kind of
+
+442
+01:05:49.010 --> 01:05:57.020
+stokes: tricky to pull off. And then then from there, you know, it's like, do we need them all in Acd, you know, see? Or C, or d
+
+443
+01:05:57.390 --> 01:06:06.430
+stokes: sorry cre, maybe not. Because it might be more convenient to get like Async Inputs say, on 8th magicians or different places like that.
+
+444
+01:06:10.470 --> 01:06:12.740
+stokes: I was laughing about Francesca's comment. Here.
+
+445
+01:06:17.850 --> 01:06:26.990
+stokes: okay, let's go and wrap up. Thank you all. And yeah, we'll continue the conversation both Async and on the next calls.
+
+446
+01:06:27.420 --> 01:06:28.380
+stokes: Thank you all.
+
+447
+01:06:30.610 --> 01:06:31.500
+potuz: Bye-bye.
+
+448
+01:06:31.740 --> 01:06:32.700
+Lion dapplion: Thank you.
+
+449
+01:06:32.950 --> 01:06:34.129
+Kolby ML: Thank you for the call.
+
+450
+01:06:35.760 --> 01:06:36.699
+Ansgar Dietrichs: We have one.
+
+451
+01:06:38.350 --> 01:06:39.136
+Marius van der Wijden: Thanks, but.
+

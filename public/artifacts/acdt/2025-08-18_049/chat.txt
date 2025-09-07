@@ -1,0 +1,62 @@
+00:04:43	felipe:	gm
+00:09:21	Pooja Ranjan:	We are Live!
+00:11:26	Barnabas:	devnet 5 would be also pretty big
+00:11:35	Marius van der Wijden:	All good on our side
+00:11:35	Barnabas:	similar to devnet 4
+00:17:04	Tim Beiko:	@Besu, given ecrecover prices aren’t changing in Fusaka, is that a blocker for you post-fork, too?
+00:18:47	Justin Florentine (Besu):	at the moment, yes it is
+00:18:51	Mario Vega:	Reacted to "at the moment, yes i..." with 👍🏼
+00:19:54	Marius van der Wijden:	Could you write up all the things you are looking into
+00:20:10	Tim Beiko:	Reacted to "Could you write up a..." with ➕
+00:20:12	Mario Vega:	Reacted to "Could you write up a..." with ➕
+00:20:37	Justin Florentine (Besu):	details on our benchmark approach: https://github.com/hyperledger/besu/blob/main/BENCHMARKING.md
+00:21:20	Roman:	no concern re going to 60m
+00:21:27	Marius van der Wijden:	I think we need more benchmarking re state
+00:21:33	milen | Erigon:	No concern
+00:21:40	Kamil Chodoła:	Marius any inof od any potential modexp Geth improvements?
+00:21:43	Marius van der Wijden:	All clients failed snap sync on perf/devnet4
+00:21:50	Marius van der Wijden:	not at the moment
+00:22:32	Ansgar Dietrichs:	question: how much is benchmarking unified across clients yet, vs requires specific per-client context knowledge? e.g. my understanding is the ecrecover besu performance concerns didn’t show up in the cross-client benchmarks we did coming out of interop? why is that
+00:22:49	Barnabas:	test run that failed: https://github.com/ethpandaops/perf-devnets/actions/runs/16961730639
+00:22:49	Ansgar Dietrichs:	Replying to "question: how much i..."
+
+seems like there would be a lot of value in getting to reliable cross-client benchmarks
+00:25:07	Ben Adams:	No issue with 60M for Nethermind, just to complete the record 🙂
+00:25:13	Mario Vega:	Reacted to "No issue with 60M fo..." with 👍🏼
+00:25:23	Louis:	Replying to "question: how much i..."
+
+I think the problem is that in interop we use gas-benchmarks repo for benchmarking, but we also have benchmarking in EEST using by zkEVM at that time. The testing approach for them are different, I think the reason might be we use zkEVM test for measurement now
+00:25:28	draganrakita:	Btw block gas limit is not hardcoded and does not require hard fork, on standpoint of risks if there is a problem with 60m we can always reduce it
+00:26:55	Louis:	This is the benchmark in EEST for ecrecover: https://github.com/ethereum/execution-spec-tests/blob/9765b9110689ab3f25ba8d46bd223d9553e746f6/tests/benchmark/test_worst_compute.py#L1688
+00:30:21	Marius van der Wijden:	Can we get client teams to compile a list what is preventing them from going to 100M post fusaka
+00:30:23	Mario Vega:	https://github.com/ethereum/consensus-specs/pull/4508
+00:31:39	pawan:	Looks good to me
+00:31:44	jochem-brouwer:	Antwoord verzenden naar "Can we get client ..."
+
+devp2p receipts over 10 MiB is a problem at some point post 60M due to the logs > 10 MB. So would then need the devp2p partial messages https://eips.ethereum.org/EIPS/eip-7975 or log repricing to ensure Receipts response does not exceed the 10 MB
+00:32:19	Barnabas:	Reacted to "Looks good to me" with 🔥
+00:32:22	Marius van der Wijden:	Reacted to "devp2p receipts ov..." with 👍
+00:32:39	Minhyuk Kim:	https://www.notion.so/testinprod/Sunnyside-Devnet-Updates-08-13-24e8fc57f54680088514eccdca62c560?source=copy_link
+00:33:41	Mario Vega:	https://github.com/ethereum/pm/issues/1624#issuecomment-3088955383
+00:33:55	Justin Florentine (Besu):	i'm basing our concerns on these results:  https://grafana.observability.ethpandaops.io/d/feo4ronhsqv40h/opcodes-benchmarking-github-action?orgId=1&from=2025-08-07T17:09:45.517Z&to=2025-08-07T19:29:44.050Z&timezone=browser&var-posgreSQL=benuragv7iuwwb&var-ClientName=$__all&var-TestTitle=$__all&var-BenchmarkClient=besu&refresh=auto
+00:34:21	Mario Vega:	Reacted to "i'm basing our conce..." with ❤️
+00:35:08	nixo:	v efficient
+00:35:27	Mario Vega:	Reacted to "v efficient" with 🚀
+00:35:33	spencer-tb:	Reacted to "v efficient" with 🚀
+00:35:48	Barnabas:	Reacted to "v efficient" with 🚀
+00:36:02	Tim Beiko:	Reacted to "i'm basing our conce..." with ❤️
+00:39:07	Ansgar Dietrichs:	Replying to "question: how much i..."
+
+interesting - but if the results are different, we should understand why that is, no?
+00:39:26	Kamil Chodoła:	Replying to "i'm basing our con..."
+
+Thuis is exactly what we raised on Besu Nethermind TG group :)
+00:39:43	Kamil Chodoła:	Replying to "i'm basing our con..."
+
+So will work with you guys on testing of that :)
+00:39:47	Ansgar Dietrichs:	Replying to "question: how much i..."
+
+ultimately “how many iterations of precompile X can you execute in 1s” should have a deterministic answer per client (and on set hardware)
+00:40:31	Louis:	Replying to "question: how much i..."
+
+Yes I agree

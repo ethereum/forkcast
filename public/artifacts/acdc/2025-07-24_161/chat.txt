@@ -1,0 +1,939 @@
+00:01:42	Lean F | Lambda:	Hi
+00:04:34	Justin Traglia:	Gm
+00:04:43	kev:	Reacted to "Gm" with 👋
+00:04:47	bbuchbauer:	Reacted to "Gm" with 👋
+00:05:02	felix (eest):	Reacted to "Gm" with 👋
+00:05:13	Potuz:	GM
+00:05:35	stokes:	https://github.com/ethereum/pm/issues/1614
+00:08:28	Justin Traglia:	When we decide to shutdown devnet-2, we should try to kill it first.
+00:08:34	Potuz:	Reacted to "When we decide to sh..." with 👍
+00:08:55	Potuz:	Replying to "When we decide to sh..."
+
+Could we try disabling tx3 txs from the mempool?
+00:10:06	Justin Traglia:	Reacted to "Could we try disabli..." with 👀
+00:10:45	Parithosh Jayanthi:	This is per: https://eips.ethereum.org/EIPS/eip-7870
+00:10:54	Potuz:	I think it’s doable, with the caveat that mainnet releases shouldn’t be expected by end of August but rather 1month before mainnet right?
+00:11:00	Parithosh Jayanthi:	Reacted to "I think it’s doable,..." with 👍🏽
+00:12:16	Barnabas:	Reacted to "I think it’s doable,..." with 👍🏽
+00:12:40	Barnabas:	Replying to "This is per: https:/..."
+
+I think we should also update 7870 to require gigabit for supernodes
+00:13:09	Ben Adams:	🍿
+00:13:17	Potuz:	Replying to "This is per: https:/..."
+
+Goodbye home CSM and RP operators
+00:13:29	bbuchbauer:	Reacted to "🍿" with 🍿
+00:13:32	donnoh | L2BEAT:	Reacted to "🍿" with 🍿
+00:13:51	Barnabas:	Reacted to "🍿" with 🍿
+00:13:52	Potuz:	Replying to "This is per: https:/..."
+
+I would advocate then to raise the limit of keys that are needed to become a supernode
+00:14:12	Pooja Ranjan:	Reacted to "🍿" with 🍿
+00:14:12	Parithosh Jayanthi:	Reacted to "🍿" with 🍿
+00:14:25	DA | Flashbots:	Reacted to "🍿" with 🍿
+00:17:36	ethDreamer (Mark):	FOUR SECONDS for attestation propagation and aggregation - this is what the PTC enables you to parallelize with block and blob broadcast and execution
+00:18:53	Potuz:	From the charts I gather US may be very much skewed since they tighten maximally for timing games https://discord.com/channels/595666850260713488/874767108809031740/1394340226238775337 
+
+What’s 0.4 seconds for US is 1.6 seconds for Titan
+00:19:21	Raúl Kripalani:	do we know how connected relays are to the mesh? we assume they're hyperconnected
+00:19:23	Radek:	go Poland
+00:19:28	Barnabé Monnot:	Replying to "FOUR SECONDS for att..."
+
+on a 6s slot time?
+00:19:32	Potuz:	Reacted to "go Poland" with 😂
+00:19:34	Bastin:	Reacted to "go Poland" with 😂
+00:19:37	Parithosh Jayanthi:	Reacted to "go Poland" with 😂
+00:19:41	donnoh | L2BEAT:	Reacted to "go Poland" with 🥟
+00:19:41	Raúl Kripalani:	Reacted to "go Poland" with 😂
+00:19:43	ethDreamer (Mark):	Replying to "FOUR SECONDS for att..."
+
+That’s independent of slot time
+00:19:44	Anna Thieser:	Reacted to "go Poland" with 😂
+00:19:49	Francesco:	Replying to "FOUR SECONDS for att..."
+
+The PTC votes also need to propagate, so that’s not entirely true
+00:19:53	Mario Vega:	Reacted to "go Poland" with 😂
+00:20:08	ethDreamer (Mark):	Reacted to "The PTC votes also n..." with 👍
+00:21:05	Potuz:	This are strictly single attestations?
+00:21:15	Dustin:	p95 isn't enough
+00:21:22	Barnabé Monnot:	Reacted to "That’s independent o..." with 👍
+00:21:27	Potuz:	From just 0 and 1 committees right?
+00:21:34	Toni Wahrstätter:	Reacted to From just 0 and 1 co... with "👍"
+00:21:35	Dustin:	p95 means risking a block every epoch
+00:21:36	Bastin:	Reacted to "From just 0 and 1 ..." with 👍
+00:21:43	soispoke:	Reacted to "From just 0 and 1 co..." with 👍
+00:21:51	Dankrad Feist:	no
+00:22:13	Dankrad Feist:	Replying to "p95 means risking a ..." 
+
+ it's 95% of attestations. so no
+00:22:21	Potuz:	Wait I didn’t understand how 4413ms supports the 6 slot times here?
+00:22:26	Barnabé Monnot:	Replying to "p95 means risking a ..."
+
+not sure that’s true, but could argue p95 is not enough on different grounds
+00:22:29	Dustin:	Replying to "p95 means risking ..."
+
+it's als for blocks
+00:22:32	stokes:	Replying to "p95 means risking a ..."
+
+I assume he means if we try to fit to p95 for blocks
+00:22:35	Potuz:	Aren’t we moving the attestation deadline to 3 seconds?
+00:22:35	Dustin:	Replying to "p95 means risking ..."
+
+yes
+00:22:43	Dankrad Feist:	Replying to "p95 means risking a ..." 
+
+ yes but we are not doing that
+00:22:49	Dustin:	Replying to "p95 means risking ..."
+
+yes the presentation does
+00:22:54	Dustin:	Replying to "p95 means risking ..."
+
+I don't know what "we" are doing
+00:22:58	Dankrad Feist:	Replying to "p95 means risking a ..." 
+
+ it just measures
+00:23:00	Barnabas:	could someone mute caleb please?
+00:23:10	Louis:	Reacted to "🍿" with 🍿
+00:23:18	Dustin:	Replying to "p95 means risking ..."
+
+ok, well, the slides are about p95 for block distribution aleady being 3s
+00:23:27	Dustin:	Replying to "p95 means risking ..."
+
+(one dataset)
+00:24:01	Dankrad Feist:	Replying to "p95 means risking a ..." 
+
+ but this is not stake weighted
+00:24:08	Mingfei Zhang:	How many validators are in a committee in the test
+00:24:24	Potuz:	Yeah also another bias is that nodes tend to be more stressed at the beginning of the epoch where you should have a higher bias to these missed blocks
+00:24:30	Trent:	@Tuyen please stay muted =)
+00:24:31	Dankrad Feist:	Replying to "p95 means risking a ..." 
+
+ so it definitely does not mean risking 5% of all slots as you are suggesting
+00:24:32	Caleb:	Reacted to Yeah also another bi... with "👍"
+00:24:37	Dustin:	Replying to "p95 means risking ..."
+
+ok
+00:24:44	Potuz:	Replying to "How many validators ..."
+
+Active / 32 / 128
+00:25:18	Dustin:	Replying to "p95 means risking ..."
+
+it's sampling by nodes-with-valiators only?
+00:25:22	Potuz:	Can anyone please tell me how the 4.1 seconds is within the proposal?
+00:25:26	Potuz:	This is pre aggregation too
+00:25:28	ethDreamer (Mark):	Replying to "FOUR SECONDS for att..."
+
+Wait this isn’t true because I didn’t include aggregate propagation
+00:25:29	Potuz:	I am completely lost
+00:25:31	Ben Edgington:	Replying to "How many validators ..."
+
+*Active / 32 / 64 (I think)
+00:25:40	ethDreamer (Mark):	Replying to "FOUR SECONDS for att..."
+
+@Francesco
+00:25:42	Barnabé Monnot:	Replying to "Wait I didn’t unders..."
+
+showing preliminary measurements, wouldn’t say it supports or does not support 6s. also 4413ms is based on current partition and means some clients fire off their attestations at 4s only
+00:25:46	Tuyen:	Reacted to "@Tuyen please stay m…" with 🙏
+00:25:49	Mikhail Kalinin:	Reacted to "*Active / 32 / 64 (I..." with 👍
+00:25:51	Barnabas:	fusaka-devnet-3 bandwidth rate limiters are now active.
+
+supernodes: 1000Mbps/1000Mbps
+fullnodes: 100Mpbs/50Mbps
+00:25:57	stokes:	Reacted to "fusaka-devnet-3 band..." with 🎉
+00:25:59	Parithosh Jayanthi:	Reacted to "fusaka-devnet-3 band..." with 🎉
+00:26:02	Justin Traglia:	Reacted to "fusaka-devnet-3 band..." with 🎉
+00:26:03	donnoh | L2BEAT:	Reacted to "fusaka-devnet-3 band..." with 🎉
+00:26:04	Francesco:	Reacted to "fusaka-devnet-3 band..." with 🎉
+00:26:06	Toni Wahrstätter:	Reacted to *Active / 32 / 64 (I... with "👍"
+00:26:09	Barnabé Monnot:	Replying to "Can anyone please te..."
+
+answered above
+00:26:50	Potuz:	Replying to "Wait I didn’t unders..."
+
+Concentration is not a bias for shorter slot times though
+00:26:53	Barnabas:	Do we have a working prototype of any clients of shorter slot times?
+00:26:54	Potuz:	Replying to "Wait I didn’t unders..."
+
+It will be concentrated
+00:27:11	Barnabé Monnot:	Replying to "Wait I didn’t unders..."
+
+what do you mean by concentration?
+00:27:30	stokes:	Replying to "Do we have a working..."
+
+I think there was a PoC in lighthouse
+00:27:33	Toni Wahrstätter:	Replying to "FOUR SECONDS for att..." 
+
+ Attestations are not aggregated neither here. It's looking into attestations in subnets
+00:27:36	Potuz:	Replying to "Wait I didn’t unders..."
+
+Concentration of all attestations being at the same time (because that’s a bias in this test by looking at missed blocks)
+00:27:40	stokes:	Replying to "Do we have a working..."
+
+Also feel like I saw a tweet about a shorter slot testnet
+00:27:47	Potuz:	Replying to "Wait I didn’t unders..."
+
+But on shorter slot times, attestations will be more concentrated than today
+00:27:55	Parithosh Jayanthi:	The prysm fork doesn’t add the delays now 😄
+00:28:03	Parithosh Jayanthi:	But yes the community data would have it indeed
+00:28:07	Raúl Kripalani:	Reacted to "The prysm fork doesn..." with 👍
+00:28:41	Potuz:	Replying to "Do we have a working..."
+
+Preston may not be here but he has a working Poc now
+00:28:55	Toni Wahrstätter:	Replying to "FOUR SECONDS for att..." 
+
+ If a bls verify takes ~1ms, then ptc validation will add some more additional latency
+00:28:56	Potuz:	Replying to "Do we have a working..."
+
+Of course without any of the changes that aren’t specified
+00:29:21	terence:	Replying to "The prysm fork doesn..."
+
+ahh i see, can you show me the fork, will love to study that
+00:29:37	Barnabé Monnot:	Replying to "Wait I didn’t unders..."
+
+well they have less room to spread around, so we want them to be more concentrated. shorter slots without any other intervention don’t just concentrate attestations by themselves
+00:29:59	Francesco:	Replying to "How many validators ..."
+
+In other words it’s about ~500
+00:30:05	Parithosh Jayanthi:	Replying to "The prysm fork doesn..."
+
+You gotta ask sam 😄
+00:31:13	Parithosh Jayanthi:	Reacted to "*Active / 32 / 64 (I..." with 👍
+00:32:48	Potuz:	Propagation of blocks should not affect attestation propagation
+00:33:10	Potuz:	They should be independent since they should be latency bound not bandwidth bound
+00:33:21	Mikhail Kalinin:	+1 to Mark. We need pipelining and potentially BAL (to speed up the execution) in G* and then introduce block latency reduction in H* with more confidence in it
+00:33:23	Raúl Kripalani:	libp2p attestation propagation timing from Xatu was incorrect the last time we looked at it
+00:33:33	Potuz:	Reacted to "libp2p attestation p..." with 👍
+00:33:34	Raúl Kripalani:	due to Hermes backlog / misconfiguration
+00:33:50	Parithosh Jayanthi:	Reacted to "libp2p attestation p..." with 👍
+00:33:50	Potuz:	@Raúl Kripalani do you think there could be p2p changes to improve single attestation propagation?
+00:33:51	Raúl Kripalani:	so i'd like to dig deeper into the data / methodology
+00:34:16	Trent:	This was mentioned on a call yesterday as well - if the 6s slot proposal also includes halving the gas limit to keep throughput stable - this was new to me (though I may be in the minority) and worth surfacing as a key part of the proposal
+00:34:17	Potuz:	These numbers are horrible and don’t match up with the ones I had from Terence in my head for the last few months already
+00:34:39	Potuz:	Replying to "This was mentioned o..."
+
+It is assumed, same with issuance
+00:34:39	Raúl Kripalani:	Replying to "@Raúl Kripalani do y..."
+
+yeah, i think there's quite a bit of headroom here
+00:34:43	Potuz:	Replying to "This was mentioned o..."
+
+Which hasn’t been spaced yet
+00:34:47	Trent:	Reacted to "It is assumed, same ..." with 👍
+00:34:50	donnoh | L2BEAT:	Reacted to "It is assumed, same ..." with 👍
+00:34:54	Potuz:	Replying to "This was mentioned o..."
+
+Speced, Hate autocorrection
+00:35:01	Sophia Gold:	Reacted to "It is assumed, sam..." with 👍
+00:35:15	Marius van der Wijden:	Replying to "This was mentioned..."
+
+(but gas limit increases would put it at roughly the current time again)
+00:35:40	Toni Wahrstätter:	Replying to "These numbers are ho..." 
+
+ Note that it's a long range: beginning of block propagation -> 95% attestations seen. There's much latency in between and not that much happening afterwards.
+00:35:41	DA | Flashbots:	Replying to "This was mentioned o..."
+
+Part of the issue is that there are fixed things in a slot, like the commit-reveal scheme. So it’s not clear to me how linear cuts of different sections are to me with gas limit
+00:35:45	Potuz:	Replying to "This was mentioned o..."
+
+Yeah… these numbers presented here are horrible, I’m hoping it’s a measurement issue and not that reality is this
+00:35:53	Ahmad Bitar | Nethermind:	Dont we already know that home staker s are probably the ones with the worst internet. Doesn't this mean that most likely, those are the validators most likely will be affected?
+00:36:03	DA | Flashbots:	Replying to "This was mentioned o..."
+
+Like this analysis just ignores the first 1.5 seconds on commit-reveal in PBS
+00:36:46	Justin Traglia:	Reacted to "Speced, Hate autocor..." with 😂
+00:36:50	Marius van der Wijden:	Hey we get something for free, thats great!
+00:36:50	Parithosh Jayanthi:	Reacted to "Speced, Hate autocor..." with 😂
+00:36:57	Potuz:	Reacted to "Hey we get something..." with 😂
+00:37:01	Justin Traglia:	Reacted to "Hey we get something..." with 😂
+00:37:02	Chris Haug:	Reacted to "Speced, Hate autocor..." with 😂
+00:37:03	donnoh | L2BEAT:	Reacted to "Hey we get something..." with 😂
+00:37:03	soispoke:	Reacted to "Hey we get something..." with 😂
+00:37:04	Parithosh Jayanthi:	Reacted to "Hey we get something..." with 😂
+00:37:07	Pooja Ranjan:	Reacted to "Hey we get something..." with 😂
+00:37:10	DA | Flashbots:	Replying to "Hey we get something..."
+
+Actually you’re giving it away for free to us :p
+00:37:11	Francesco:	Replying to "Hey we get something..."
+
+Bad name, you actually pay for it
+00:37:19	donnoh | L2BEAT:	Reacted to "Bad name, you actual..." with 👍
+00:37:25	Barnabé Monnot:	Replying to "This was mentioned o..."
+
+you can extrapolate some results for the ePBS world, after 1.5s you’d have both the exec payload propagating + blobs and the attestations etc. mixed effects then, attestations are not in the “hot path” but they may compete for bandwidth more than today
+00:37:28	Bruno Mazorra:	Replying to "Hey we get something..."
+
+Is a sunk cost
+00:37:29	Alexey:	Reacted to "fusaka-devnet-3 band..." with 🎉
+00:37:30	Trent:	@Gary Schulte please stay muted =) (im only sending these after I mute someone)
+00:37:44	Bruno Mazorra:	Replying to "Hey we get something..."
+
+So the option is free
+00:37:49	Gary Schulte:	Reacted to "@Gary Schulte please..." with 😆
+00:38:23	Barnabé Monnot:	Reacted to "yeah, i think there'..." with 🔥
+00:38:28	DA | Flashbots:	Replying to "This was mentioned o..."
+
+Agreed. I just think there’s a lot of layers of nuance. Even like separating ultrasoun-us v.s. ultrasound-eu in the data.
+00:38:29	Potuz:	Reacted to "So the option is fre..." with 👍
+00:38:57	Parithosh Jayanthi:	Reacted to "@Gary Schulte please..." with 😆
+00:39:12	Raúl Kripalani:	ranging from gossipsub parameter fine-tuning  per-topic, transport optimizations, dedicated topology / routing policies for attestations, etc. to more drastic changes
+00:39:18	Barnabé Monnot:	Reacted to "Agreed. I just think..." with 💯
+00:39:22	Potuz:	Reacted to "yeah, i think there'..." with 🔥
+00:39:35	Sophia Gold:	EL only DE is pipelining and doesn't have this problem, right?
+00:39:47	Ansgar Dietrichs:	This is a fundamental problem with the propagation window, even today: between winning the auction and propagation finishing, you can always abort propagation (but still pay the proposer).
+
+So the thing is just that we now want to use a larger portion of the slot for propagation, so the problem gets worse.
+
+also means best solution is shorter slot times
+00:39:51	Potuz:	Replying to "@Raúl Kripalani do y..."
+
+I think this is becoming a bottleneck soon if these numbers are right
+00:39:54	ethDreamer (Mark):	Any proposal where there is a time delta between transaction selection and the deadline for all components of the block must be available will be vulnerable to this option problem
+00:40:42	Raúl Kripalani:	the network load placed by attestations is radically different to everything else (many tiny fragments in a bursty way), so i'm sure we're incurring more overhead than we should (e.g. we could even batch attestations to amortize validation time and MTU utilization)
+00:40:42	Toni Wahrstätter:	Replying to "Any proposal where t..." 
+
+ It's more every proposal that allows post-attestation payload invalidation
+00:40:50	Sophia Gold:	Reacted to "It's more every pr..." with 👍
+00:41:02	Potuz:	Replying to "This is a fundamenta..."
+
+The particular problem though according to the computation by Christoph et. al. is proportional to MEV and therefore to the slot time so making the slot shorter doesn’t substantially help
+00:41:05	Francesco:	Replying to "@Raúl Kripalani do y..."
+
+Another dumb thing is, I don’t think the current number of committees is optimal (more committees => each single attestation topic is smaller but the global aggregates topic has more messages)
+00:41:09	Potuz:	Replying to "This is a fundamenta..."
+
+Ahh what he is saying now
+00:41:27	Raúl Kripalani:	i.e. if we decouple "unit of work" from "message/attestation", i think several clever optimizations open up
+00:41:42	ethDreamer (Mark):	Replying to "Any proposal where t..."
+
+Wait what? That does’t make sense. You can’t retroactively invalidate a payload if it was valid from the start and all components are available
+00:41:56	Ansgar Dietrichs:	Replying to "This is a fundamenta..."
+
+ah, hm right
+00:41:59	ethDreamer (Mark):	Replying to "Any proposal where t..."
+
+If it was invalid from the start, you have no option
+00:42:09	Hasu:	btw the post for reading along https://collective.flashbots.net/t/the-free-option-problem-in-epbs/5115
+00:42:18	Potuz:	Reacted to "btw the post for rea..." with 👍
+00:42:20	Barnabé Monnot:	Replying to "This is a fundamenta..."
+
+right but all else equal shorter slot times help no? you’d have half the MEV per slot, but twice the slots?
+00:42:25	Toni Wahrstätter:	Replying to "Any proposal where t..." 
+
+ Here you "invalidate" your payload by not publishing >50% of the blobs
+00:42:38	Potuz:	Replying to "This is a fundamenta..."
+
+No, this is explicitly the statement they make
+00:42:46	Potuz:	Replying to "This is a fundamenta..."
+
+It’s the time relative to the slot
+00:42:55	ethDreamer (Mark):	Replying to "Any proposal where t..."
+
+I said “deadline where all components are available”
+00:42:56	Marius van der Wijden:	So we need to make the penalties for builders more severe?
+00:43:00	Francesco:	Replying to "EL only DE is pipeli..."
+
+Yes but fwiw this not a CL-DE problem either, it’s specifically a commit/reveal problem. It is in principle possible to do CL-DE with full pipelining (including PTC) but no commit/reveal, but what has to be given up for that is trustless payments (not clear how to do them without commit/reveal)
+00:43:13	Trent:	Reacted to "btw the post for rea..." with 👍
+00:43:34	Toni Wahrstätter:	Replying to "Any proposal where t..." 
+
+ So, you publish your valid el payload early and the whole el payload turns "invalid" at the ptc deadline if the blobs are not revealed
+00:43:40	Raúl Kripalani:	do we think having a confident answer here is blocking us from choosing the headliner? (ie. what priority should we (p2p) give to this?)
+00:44:04	Ansgar Dietrichs:	Replying to "This is a fundamenta..."
+
+right, at least with perfect slot usage, shorter slot times would no longer help.
+
+currently they would help, because we can’t use full slot for propagation, so ratio gets better
+00:44:19	Potuz:	Replying to "EL only DE is pipeli..."
+
+Not a commit reveal for the payload but for blobs is the main issue. ePBS with a single short PTC deadline doesn’t have this problem as per these guys computations
+00:44:27	Raúl Kripalani:	Replying to "These numbers are ho..."
+
+they're probably affected by the same Hermes issue as my attestation CDF chart from Berlinterop
+00:44:31	Potuz:	Replying to "EL only DE is pipeli..."
+
+And it’s still commit-reveal
+00:44:37	Ansgar Dietrichs:	Replying to "This is a fundamenta..."
+
+which also means that this effect is directly proportional to throughput - we can make it better by artificially throttling throughput
+00:44:39	Potuz:	Replying to "EL only DE is pipeli..."
+
+But loses blob propagation scaling
+00:44:40	Francesco:	Replying to "This is a fundamenta..."
+
+I think there’s a fundamental difference between having commit/reveal and not having it, because having commit/reveal means that the entire allocated propagation window fuels the option’s value, whereas without commit/reveal the end of the auction is close to the latest time when you can propagate the data
+00:44:51	ethDreamer (Mark):	Replying to "Any proposal where t..."
+
+I guess if you include publishing early.. but why would you do that?
+00:44:57	Potuz:	Replying to "This is a fundamenta..."
+
+I’m replying to this in a different thread so I’ll copy there
+00:45:27	ethDreamer (Mark):	Replying to "Any proposal where t..."
+
+You created an option you already had by publishing on time. It’s more expensive publish early and waste the block rather than just publishing on time
+00:45:38	Potuz:	Replying to "This is a fundamenta..."
+
+Not a commit reveal for the payload but for blobs is the main issue. ePBS with a single short PTC deadline doesn’t have this problem as per these guys computations
+And it’s still commit-reveal
+But loses blob propagation scaling
+00:45:39	Barnabé Monnot:	Reacted to "It’s the time relati..." with 👍
+00:46:32	NC:	If this option is valuable, wouldn’t it be reflected in the bid price? ie. builders are willing to pay a premium for it and they will lose more when they decide to withhold
+00:46:36	soispoke:	Replying to "So we need to make t..."
+
+It’s not clear yet we would need to do that I think it all depends on results from empirical data. If what builders bid (and always lose) is a lot greater than their profits then the dominant strategy is already to reveal and not withhold the block: https://collective.flashbots.net/t/the-free-option-problem-in-epbs/5115/9?u=soispoke
+00:46:59	ethDreamer (Mark):	Replying to "So we need to make t..."
+
+Yes a penalty for not revealing is a trivial way to negate this attack
+00:47:19	DA | Flashbots:	Replying to "If this option is va..."
+
+Yes. But that also makes their bids more competitive and creates this vicious circle where proposer blacklisting will never make sense.
+00:47:21	ethDreamer (Mark):	Replying to "So we need to make t..."
+
+But the real problem is if solo stakers build off-chain infrastructure
+00:47:22	Sophia Gold:	Replying to "EL only DE is pipe..."
+
+Tbh I don't think trustless payments give us much. The benefits of ePBS are pipelining
+00:47:23	stokes:	Replying to "So we need to make t..."
+
+Couldn’t the PTC collude to grief the builder then?
+00:47:34	Toni Wahrstätter:	Reacted to Tbh I don't think tr... with "👍"
+00:47:38	ethDreamer (Mark):	Replying to "So we need to make t..."
+
+Good luck getting the PTC to collude
+00:47:44	stokes:	Replying to "So we need to make t..."
+
+fair
+00:47:44	Ansgar Dietrichs:	PTC can already grief builder in existing design, the effect with a penalty would just get worse
+00:48:09	Barnabé Monnot:	Replying to "@Raúl Kripalani do y..."
+
+depends what your other priorities are of course 🙂 but even if we assume we want 6s asap, before or after restructuring, then imo we should be paying attention to these things asap too
+00:48:39	Potuz:	Reacted to "depends what your ot..." with 👍
+00:48:46	DA | Flashbots:	Replying to "EL only DE is pipeli..."
+
+Saying trustless payments doesn’t give you much just means that you aren’t paying attention to the trends in the MEV ecosystem.
+00:48:49	Hasu:	Reacted to "It’s not clear yet w..." with 👍
+00:49:07	Potuz:	Reacted to "Saying trustless pay..." with ❤️
+00:49:12	stokes:	Replying to "EL only DE is pipeli..."
+
+You mean re: relay centralization?
+00:49:21	Francesco:	Replying to "So we need to make t..."
+
+It also just means that any network failure can become very costly. Would you build locally if you can lose 1 ETH?
+00:49:40	Francesco:	Replying to "So we need to make t..."
+
+(And there’s obviously no way for the network to distinguish between local building and professional building)
+00:49:45	Sophia Gold:	Replying to "So we need to make..."
+
+Iiuc the point is that the option is so valuable given high liquidity that the capital requirements to penalize builders for exercising it would not be feasible
+00:50:22	Barnabé Monnot:	Replying to "So we need to make t..."
+
+Yeah usually people were not comfortable with missed slot penalties because of local building
+00:50:23	Hasu:	Reacted to "Saying trustless pay..." with ❤️
+00:50:25	DA | Flashbots:	Replying to "EL only DE is pipeli..."
+
+death of minority relays, relays trying to monetize, moving towards sealed bid, vertical integration, etc.
+00:50:41	ethDreamer (Mark):	Reacted to "Saying trustless pay..." with ❤️
+00:50:56	Francesco:	Replying to "EL only DE is pipeli..."
+
+In the post you’re saying that a sealed bid auction is a good thing. Why are you listing it here as a bad trend?
+00:51:20	DA | Flashbots:	Replying to "EL only DE is pipeli..."
+
+It’s a bad thing if there’s a relay in the middle. Because you can’t monitor it.
+00:51:30	terence:	Reacted to "Saying trustless pay..." with ❤️
+00:51:43	soispoke:	Replying to "So we need to make t..."
+
+Fwiw FOCIL helps relying less on local builders and would be useful if we want to have missed slot penalties
+00:51:54	DA | Flashbots:	Replying to "EL only DE is pipeli..."
+
++ encourages vertical integration
+00:52:45	Barnabé Monnot:	Reacted to "Fwiw FOCIL helps rel..." with 💯
+00:53:20	ethDreamer (Mark):	Shortening the window just reduces propagation time
+00:53:29	ethDreamer (Mark):	So negative impact on scaling
+00:53:37	Ansgar Dietrichs:	without new innovations, the free option time window is directly proportional to throughput, no?
+
+so that is a very important downside
+00:53:39	Ahmad Bitar | Nethermind:	Reacted to So negative impact o... with "➕"
+00:54:14	Ansgar Dietrichs:	Replying to "without new innovati..."
+
+both blob and calldata throughput
+00:54:24	Toni Wahrstätter:	Shortening the window takes pipelining and at some point we are back at attestation deadline = payload availability deadline = blob deadline. Then, we took the pipelining from ePBS.
+00:54:34	Potuz:	Yes, the point that this is mostly interesting to searcher-builders without serving other searchers is important to understand perhaps or modeling.
+00:54:47	Potuz:	No need for that
+00:54:55	Potuz:	You can do a refund to the builder
+00:54:56	donnoh | L2BEAT:	Reacted to "Fwiw FOCIL helps rel..." with 👍
+00:54:58	Potuz:	Instead of a penalty
+00:55:01	DA | Flashbots:	Replying to "Yes, the point that ..."
+
+Or only serving searchers bidding the same direction as them.
+00:55:17	Toni Wahrstätter:	Replying to "without new innovati..." 
+
+ Yesh, agree, later deadlines that impact what was attested on impacts how we think about pipelining.
+00:55:19	Potuz:	Replying to "Yes, the point that ..."
+
+Exactly, but then searchers would stop sending txs to them
+00:55:31	Ben Adams:	Can't do a penality high enough to (that anyone would pay) to cover trading gains?
+00:55:37	Potuz:	Replying to "Yes, the point that ..."
+
+The PoF point of view I think it’s important
+00:55:37	soispoke:	Replying to "Yes, the point that ..."
+
+I think there is an incentive for non integrated builders to reveal to searchers generally speaking no? If they don’t searchers would shade their bids and builders profit less
+00:55:54	Toni Wahrstätter:	Replying to "Can't do a penality ..." 
+
+ They are uncapped
+00:56:01	Ben Adams:	Reacted to "They are uncapped" with 👀
+00:56:04	Ansgar Dietrichs:	“seems like there are potential paths” - which ones?
+00:56:07	donnoh | L2BEAT:	Reacted to "They are uncapped" with 👍
+00:56:10	Francesco:	Reacted to "“seems like there ar..." with 😄
+00:56:12	Potuz:	Reacted to "“seems like there ar..." with 😄
+00:56:19	donnoh | L2BEAT:	Reacted to "“seems like there ar..." with 😄
+00:56:24	stokes:	https://blog.sigmaprime.io/glamsterdam-eip7732.html
+00:56:30	Christoph Schlegel:	Replying to "“seems like there ar..."
+
+Left as exercise to you Ansgar
+00:56:30	Ben Adams:	Replying to "Can't do a penality ..."
+
+then "that anyone would pay"?
+00:56:36	Hasu:	Reacted to "Left as exercise to ..." with 😂
+00:56:38	Ansgar Dietrichs:	Replying to "“seems like there ar..."
+
+or was that just some optimistic placeholder?
+
+like I am sure we will eventually find solutions, but I didn’t hear any mentioned
+00:56:45	DA | Flashbots:	Replying to "Can't do a penality ..."
+
+I’m curious to how much other builders would stop wanting to include private (mostly based rollup) blobs. Since they’re already hardly paying for liveness
+00:56:51	Ben Adams:	Replying to "Can't do a penality ..."
+
+why would you propose a block if risk is so high?
+00:56:53	Parithosh Jayanthi:	Reacted to "“seems like there ar..." with 😄
+00:56:55	Parithosh Jayanthi:	Reacted to "Left as exercise to ..." with 😂
+00:57:00	ethDreamer (Mark):	I just think that proposal is strictly worse
+00:57:01	Potuz:	Replying to "“seems like there ar..."
+
+I don’t see any solution really it’s fundamental to have the blob deadline late
+00:57:06	Justin Traglia:	Reacted to "I just think that pr..." with 👍
+00:57:12	stokes:	Replying to "“seems like there ar..."
+
+Penalty for builder not revealing
+00:57:14	ethDreamer (Mark):	Replying to "I just think that pr..."
+
+It still suffers free option problem
+00:57:14	Potuz:	Replying to "“seems like there ar..."
+
+This affects APS, mev boost anything
+00:57:15	DA | Flashbots:	Reacted to "Left as exercise to ..." with 😂
+00:57:25	Ansgar Dietrichs:	Replying to "“seems like there ar..."
+
+ah, right, penalties are an option.
+00:57:26	Bruno Mazorra:	Reacted to "Left as exercise to ..." with 😂
+00:57:32	soispoke:	Replying to "“seems like there ar..."
+
+@stokes missed slot penalties hurt local builders
+00:57:52	stokes:	https://discord.com/channels/595666850260713488/745077610685661265/1397620790798581834
+00:57:57	Potuz:	Replying to "“seems like there ar..."
+
+Instead of penalties (that are hard to do) I think it’s trivial to return a percentage of the bid to the builder when the payload is processed
+00:58:00	Francesco:	Replying to "“seems like there ar..."
+
+Seems to me that the realistic choices are:
+Accept this problem and move on with 7732 (with current knowledge of the free option problem I find this really uncomfortable)
+Remove trustless payments and commit/reveal for now, do everything else that epbs does to keep maximal compatibility with it (maybe we change how things work with blobs later/gain new insights and can revisit)
+Go back to some other delayed execution proposal (not sure why)
+00:58:17	Lion dapplion:	I think it’s deceiving to force ePBS on the slot restructuring effort. Core devs should be able to signal support to both or either
+00:58:26	nixo:	Lido, Flashbots, Snowbridge, & QuickNode also left feedback here: https://ethereum-magicians.org/t/soliciting-stakeholder-feedback-on-glamsterdam-headliners/24885
+00:58:27	ethDreamer (Mark):	Replying to "“seems like there ar..."
+
+Wait potuz
+00:58:30	Etan (Nimbus):	Reacted to "I think it’s deceivi..." with 👍
+00:58:36	ethDreamer (Mark):	Replying to "“seems like there ar..."
+
+What you mean by refund Is what I mean by penalty
+00:58:37	Chris Haug:	Reacted to "I think it’s deceivi..." with 👍
+00:58:41	Potuz:	Replying to "“seems like there ar..."
+
+Removing trustless payments does not solve this at all
+00:58:46	ethDreamer (Mark):	Replying to "“seems like there ar..."
+
+Of course the penalty isn’t applied when they reveal
+00:58:56	Ansgar Dietrichs:	Replying to "I think it’s deceivi..."
+
+can you clarify?
+00:59:02	ethDreamer (Mark):	Replying to "“seems like there ar..."
+
+Only applied when they don’t reveal
+00:59:02	Potuz:	Replying to "“seems like there ar..."
+
+Yes I understand, I’m only talking about implementation details
+00:59:32	donnoh | L2BEAT:	Reacted to "I think it’s deceivi..." with 👍
+00:59:43	Francesco:	Replying to "“seems like there ar..."
+
+@Potuz removing commit/reveal does solve the problem afaiu
+00:59:44	Potuz:	Replying to "“seems like there ar..."
+
+When we schedule the withdrawal we schedule for less than the total amount
+00:59:53	Ansgar Dietrichs:	would we then explore having e.g. builder penalties already in the initial ePBS version in Glamsterdam? seems like we could still add that
+00:59:53	Barnabas:	so we SFI epbs?
+00:59:58	wolovim:	Replying to "Lido, Flashbots, S..."
+
++ client team perspectives aggregated here: https://forkcast.org/upgrade/glamsterdam#client-team-perspectives
+01:00:10	Ansgar Dietrichs:	Replying to "so we SFI epbs?"
+
+well not today though
+01:00:11	nixo:	CFI seems more appropriate
+01:00:11	Potuz:	Replying to "“seems like there ar..."
+
+No, the problem is the difference between payload reveal and blob reveal
+01:00:21	Toni Wahrstätter:	Nothing on the EL SFI'd yet
+01:00:21	Francesco:	How can we SFI something where we have such a big unresolved question?
+01:00:31	Potuz:	Replying to "“seems like there ar..."
+
+If you do ePBS as is, with since PTC early it does not have this problem
+01:00:46	Parithosh Jayanthi:	Can we DFI anything?
+01:00:57	Francesco:	Replying to "“seems like there ar..."
+
+If you have a single deadline, it can be late
+01:01:02	Ben Adams:	Reacted to "Can we DFI anything?" with 👍
+01:01:06	Lion dapplion:	Replying to "I think it’s deceivi..."
+
+The slot restructuring contained on its own can be implemented without rustless payments, let’s call that feature EIP-7732A. Now let’s call the trustless payment feature EIP-7732B which depends on EIP-7732A. Now you can signal support to either EIP-7732A or EIP-7732B.
+
+I wonder if the majority want as headliner EIP-7732A or EIP-7732B
+01:01:15	stokes:	Replying to "Can we DFI anything?"
+
+I think we DFI other headliners on the next call
+01:01:20	Barnabas:	Replying to "Can we DFI anything?"
+
+dfi - 7942
+01:01:30	stokes:	Replying to "How can we SFI somet..."
+
+Yeah, CFI feels better
+01:01:52	Tim Beiko:	Maybe we CFI EPBS today, SFI on next call if we still think it’s the right headliner?
+01:02:02	Toni Wahrstätter:	If we cannot agree on any specific slot restructuring (and do shorter slots instead), we shouldn't SFI it. There's great progress happening around slot restructuring right now and we still need more community input.
+01:02:04	Barnabas:	Reacted to "Maybe we CFI EPBS to..." with 👍
+01:02:06	Ansgar Dietrichs:	I think basically any CL Glamsterdam headliner choice would have the same free option problem, right? It’s not specific to ePBS at all.
+
+So say even with 6s slots, we would want to increase the propagation portion of the slot, so same problem
+01:02:08	Toni Wahrstätter:	Reacted to Maybe we CFI EPBS to... with "👍"
+01:02:08	Sophia Gold:	Reacted to "I think it’s dece..." with 👍
+01:02:09	Justin Traglia:	Reacted to "Maybe we CFI EPBS to..." with 👍
+01:02:16	Pooja Ranjan:	Reacted to "Maybe we CFI EPBS to..." with 👍
+01:02:33	Barnabas:	what do we wanna do about FOCIL for glamsterdam?
+01:02:53	soispoke:	Replying to "what do we wanna do ..."
+
+Thanks for asking 🙂
+01:02:57	Francesco:	Replying to "I think basically an..."
+
+I don’t see how it’s the same problem with or without commit/reveal (e.g. a single deadline for payload and blobs late in the slot)
+01:02:59	stokes:	Replying to "Maybe we CFI EPBS to..."
+
+Yeah I was going to invent a “headliner CFI” as a “conditional acknowledgment” today, but if everyone agrees CFI seems fine
+01:03:01	Toni Wahrstätter:	Replying to "I think basically an..." 
+
+ Right but we could still have execution being done after the attestation deadline. But yeah, it limits propagation.
+01:03:03	Sophia Gold:	Reacted to "Seems to me that t..." with 👍
+01:03:10	Ansgar Dietrichs:	Replying to "what do we wanna do ..."
+
+I am not yet convinced that combining it with ePBS wouldn’t be insane scope wise
+01:03:23	Potuz:	Correctly, it removes bandwidth scaling which is the main thng
+01:03:23	stokes:	Replying to "what do we wanna do ..."
+
+Yeah I think its a lot in terms of scope
+01:03:25	Francesco:	Replying to "I think basically an..."
+
+With commit/reveal you always have the worst case amount of “free option time”
+01:03:36	Bruno Mazorra:	Reacted to "Correctly, it remove..." with 👍
+01:03:39	stokes:	Replying to "what do we wanna do ..."
+
+But also why I don’t want to DFI anything today
+01:03:53	stokes:	Replying to "what do we wanna do ..."
+
+I think we should have the convo to have FOCIL in glamsterdam
+01:04:04	Ansgar Dietrichs:	Replying to "what do we wanna do ..."
+
+as in, timing needs to be we have the final glamsterdam devnet in february, if we want to ship glamsterdam 6 months after fusaka
+01:04:13	Mingfei Zhang:	How about improving the security of the protocol in the headline
+01:04:23	Christoph Schlegel:	Yes having PTC deadlines earlier makes it much better
+01:04:25	terence:	Replying to "what do we wanna do ..."
+
+why cant we do epbs + focil together?
+01:04:51	Potuz:	Replying to "what do we wanna do ..."
+
+Officially I do not want to DFI FOCIL at all
+01:05:18	Potuz:	forkcast?
+01:05:24	Justin Traglia:	Reacted to "forkcast?" with 👍
+01:05:30	nixo:	Lido favored 7886 (delayed exec) first then ePBS. Flashbots BALs, then ePBS
+01:05:39	Barnabas:	How do you ask community about something like epbs? 
+Asking about 6s slot time is super easy, because everyone can super easily grasp the idea of halving the slot time. While if you know what epbs is, then you are probably a core dev, or should be one.
+01:05:40	soispoke:	Replying to "what do we wanna do ..."
+
+Would be good to have client’s perspective on this tbh, most clients have indicated they would want FOCIL as a stretch goal
+
+Maybe it’s a discussion to have after making a decision about ePBS
+01:05:48	DA | Flashbots:	Reacted to "How do you ask commu..." with 👍
+01:05:50	felix (eest):	Reacted to "How do you ask com..." with 👍
+01:05:50	Justin Traglia:	Reacted to "How do you ask commu..." with 👍
+01:05:53	Mikhail Kalinin:	Replying to "Lido favored 7886 (d..."
+
+BAL is on EL side
+01:05:54	Christoph Schlegel:	Reacted to "It’s the time relati..." with 👍
+01:05:54	Hasu:	Reacted to "How do you ask commu..." with 👍
+01:05:57	soispoke:	I think tier lists on twitter is also biased
+01:05:58	Ansgar Dietrichs:	Replying to "Lido favored 7886 (d..."
+
+important to note that these are infrastructure providers, so the opposite of users :-)
+01:06:00	Marius van der Wijden:	Reacted to "How do you ask com..." with 👍
+01:06:00	Ahmad Bitar | Nethermind:	Reacted to How do you ask commu... with "👍"
+01:06:01	Ben Edgington:	Reacted to "How do you ask commu..." with 👍
+01:06:07	James He:	Reacted to "I think tier lists o..." with 💯
+01:06:08	soispoke:	I’ve seen a lot of FOCIL as top tier on my timeline 😃
+01:06:14	Lion dapplion:	Authors of EIP-7732 can I create a new EIP that deletes the trustless payment and add you as authors?
+01:06:14	mpaulucci | ethrex:	Reacted to "How do you ask commu..." with 👍
+01:06:18	donnoh | L2BEAT:	Reacted to "I think tier lists o..." with 💯
+01:06:19	Dustin:	Reacted to "How do you ask com..." with 👍
+01:06:19	nixo:	Replying to "Lido favored 7886 (d..."
+
+ah right, just ePBS then
+01:06:19	Ansgar Dietrichs:	Replying to "Lido favored 7886 (d..."
+
+still useful to note, but I think we are trying to make Ethereum listen more to users
+01:06:21	Justin Traglia:	Reacted to "I think tier lists o..." with 💯
+01:06:27	Barnabas:	Replying to "I think tier lists o..."
+
+maybe twitter itself is biased? 😄
+01:06:35	soispoke:	Replying to "I think tier lists o..."
+
+Yeah exactly
+01:06:40	donnoh | L2BEAT:	Reacted to "I’ve seen a lot of F..." with 👍
+01:06:41	terence:	I dont think we can take it seriously, I've seen ppl put DE and EPBS on the same tier. (S tier)
+01:06:54	Parithosh Jayanthi:	Reacted to "I think tier lists o..." with 💯
+01:06:55	spencer-tb:	Replying to "I think tier lists o..."
+
+“Prepares bots to vote for epbs”
+01:06:56	Ansgar Dietrichs:	Replying to "How do you ask commu..."
+
+simplest:
+shorter slots = latency
+ePBS = throughput
+01:06:59	Parithosh Jayanthi:	Reacted to "maybe twitter itself..." with 👍🏽
+01:07:03	Potuz:	Replying to "what do we wanna do ..."
+
+Yes, and I think as soon as we manage to get rid of the problem here of deciding the easier will be how to rebase FOCIL
+01:07:06	donnoh | L2BEAT:	Reacted to "How do you ask commu..." with 👍
+01:07:07	Phil Ngo:	Reacted to "How do you ask commu..." with 👍
+01:07:12	Parithosh Jayanthi:	Reacted to "How do you ask commu..." with 👍
+01:07:21	Tim Beiko:	We could also CFI a handful of Headliners: EPBS, 6SS, FOCIL?
+01:07:29	Caleb:	Reacted to I think tier lists o... with "💯"
+01:07:34	bbuchbauer:	X is infested with bots. I don' think relying on it for community input is a good idea
+01:07:35	Potuz:	Replying to "How do you ask commu..."
+
+My twitter poll with this exact 2 options had more return than forkcast
+01:07:41	Potuz:	Replying to "How do you ask commu..."
+
+🤣
+01:07:51	Dustin:	Replying to "I think tier lists..."
+
+terence: I'd view that as "slot restructuring"/pipelining/etc generically as being grouped
+01:08:01	Dustin:	Replying to "I think tier lists..."
+
+not that they think they'd both happen
+01:08:03	bbuchbauer:	Reacted to "I think tier lists o..." with 💯
+01:08:11	ethDreamer (Mark):	Reacted to "How do you ask commu..." with 👍
+01:08:11	Barnabas:	Wasn’t one of the pre-requisites of having something CFI-ed is to have at least 1 working prototype implementation?
+01:08:12	saen:	gonna be honest I think both proposals made me think we should do both in glamsterdam 😏
+01:08:30	Ansgar Dietrichs:	ePBS improves throughput
+6s slots improve latency
+
+Glamsterdam will already have other throughput increases, so to me latency would be more valuable.
+01:08:35	Barnabé Monnot:	Replying to "How do you ask commu..."
+
+ePBS obviously has value to the community, imo it should be a prompt to find out good ways to communicate it, rather than bemoan other proposals are easier to communicate
+01:08:36	Tim Beiko:	Replying to "Wasn’t one of the pr…"
+Yeah it’s a bit weird but it’s the tool we have
+01:08:48	terence:	DE and Epbs are competing proposals though. I'd understand if Epbs + reduce slot time together
+01:08:53	Tim Beiko:	To be clear, I’m saying we should do only one of those 3 😄
+01:08:55	Ansgar Dietrichs:	Replying to "Wasn’t one of the pr..."
+
+I assume headliners have different rules
+01:09:07	stokes:	Reacted to "To be clear, I’m say..." with 👍
+01:09:17	Tim Beiko:	Replying to "Wasn’t one of the pr…"
+First time doing this, so yes, we need to figure out the kinks
+01:09:19	Barnabas:	Replying to "Wasn’t one of the pr..."
+
+I don’t think 6s slot time has any prototypes yet?
+01:09:26	ethDreamer (Mark):	Reacted to "gonna be honest I th..." with 👍
+01:09:41	Caleb:	Reacted to How do you ask commu... with "👍"
+01:09:46	ethDreamer (Mark):	Replying to "gonna be honest I th..."
+
+I’d be fine SFI ePBS and CFI FOCIL if we can.. or CFI both
+01:09:53	Trent:	Replying to "Wasn’t one of the pr..."
+
+Did nethermind do some experiments on ePBS + lower slot times
+01:09:55	Chris Haug:	Reacted to "To be clear, I’m say..." with 👍
+01:10:08	Lion dapplion:	6SS conflicts with three slot finality? Sounds like it will further reduce the max count of signers per slot we can support
+01:10:18	Parithosh Jayanthi:	Replying to "Wasn’t one of the pr..."
+
+Yes but they did a fresh network, the hard part is not a new network with lower slot time. Its an existing network that reduces slot time at a fork epoch
+01:10:19	Caleb:	Replying to "How do you ask commu..." 
+
+ Exactly
+01:10:38	Christoph Schlegel:	Reacted to "Seems to me that the..." with 👍
+01:10:42	Chris Haug:	Reacted to "ePBS obviously has v..." with 👍
+01:11:20	Dustin:	Replying to "I think tier lists..."
+
+right, it's IMO a way of expressing a desire for either of them to happen, not having a strong preference
+01:11:20	ethDreamer (Mark):	There’s also just the fact that the data we saw today indicated that 6 second slots without pipelining is gonna be a heavy lift - maybe doable but not certain
+01:11:30	nixo:	Reacted to "I think tier lists o..." with 💯
+01:11:52	Francesco:	Reacted to "right, it's IMO a wa..." with 👍
+01:11:53	nixo:	Replying to "I think tier lists o..."
+
+yea i don’t think we should tally these one to one at all
+01:12:15	Dustin:	Replying to "I’ve seen a lot o..."
+
+it's almost like everyone's timelines are different
+01:12:47	Barnabé Monnot:	Replying to "6SS conflicts with t..."
+
+not clear what we do with it today is indicative of what will constrain 3SF
+01:13:03	James He:	It would be very sad if the majority of core devs voiced opinion on the fork headliners, and community overrules based on some arbitrary metric of collection of handpicked twitter posts
+01:13:11	bbuchbauer:	Replying to "I’ve seen a lot of F..."
+
+yea, twitter shouldn't be taken too serious
+01:13:18	Parithosh Jayanthi:	Reacted to "it's almost like eve..." with 👍🏽
+01:13:23	Justin Traglia:	Reacted to "It would be very sad..." with 👍
+01:13:25	Marius van der Wijden:	Reacted to "There’s also just..." with 👍
+01:13:26	Barnabas:	Reacted to "It would be very sad..." with 👍
+01:13:27	Bastin:	Reacted to "It would be very s..." with 👍
+01:13:28	ethDreamer (Mark):	Replying to "I’ve seen a lot of F..."
+
+I saw this one.. because I just made it.. but I also saw it
+01:13:35	Josh Davis:	Reacted to "It would be very sad..." with 👍
+01:13:40	stokes:	I’d suggest eth-magicians as a “record of truth"
+01:13:53	bbuchbauer:	Reacted to "It would be very sad..." with 👍
+01:13:57	stokes:	So champions should try to get written data there
+01:14:00	Potuz:	Reacted to "I’d suggest eth-magi..." with 👍
+01:14:04	Trent:	Reacted to "Yes but they did a f..." with 👍
+01:14:06	stokes:	e.g. from various community members
+01:14:14	Phil Ngo:	Reacted to "I’d suggest eth-magi..." with 👍
+01:14:20	Dustin:	Reacted to "There’s also just..." with 👍
+01:14:26	Dustin:	Reacted to "It would be very s..." with 👍
+01:14:30	Phil Ngo:	Reacted to "It would be very sad..." with 👍
+01:14:54	Barnabas:	we have nodes in 3rd world countries
+01:14:59	Barnabas:	with lots of hops
+01:15:10	Raúl Kripalani:	agree with @Dankrad Feist, we need to dig into the data
+01:15:15	soispoke:	Replying to "I’d suggest eth-magi..."
+
+I think making one venue the “record of truth” is a bit tricky to start with tbh
+01:15:15	Potuz:	Fully support investigating these numbers
+01:15:20	Toni Wahrstätter:	Right, but more likely it's slow remote signers and similar
+01:15:25	Sam Jernigan:	Reacted to "agree with @Dankrad ..." with 👍
+01:15:27	Barnabas:	Reacted to "agree with @Dankrad ..." with 👍
+01:15:28	manas:	Reacted to "agree with @Dankra..." with 👍
+01:15:30	Chris Haug:	Reacted to "agree with @Dankrad ..." with 👍
+01:15:32	DA | Flashbots:	Reacted to "agree with @Dankrad ..." with 👍
+01:15:38	ethDreamer (Mark):	I don’t see how we can argue we shouldn’t do pipelining without better understood data - and not also argue that we shouldn’t do slot shortening without better data
+01:16:18	Ansgar Dietrichs:	I think we should get better at making decisions that have immediate impacts.
+
+ePBS is mostly a long term feature. Short term it gives more throughput, but we get that anyway from Glamsterdam.
+
+shorter slots would be a much more noticeable immediate feature for users.
+01:16:19	Mikhail Kalinin:	+1 (to Potuz)
+01:16:22	Barnabas:	Question is, can we do deep investigation of this data in the next few weeks, in order to have 6s slot time still deliver in reasonable amount of time? Or will it take months of investigation?
+01:16:26	Justin Traglia:	Reacted to "+1" with 👍
+01:16:31	Marius van der Wijden:	Reacted to "Question is, can w..." with 👍
+01:16:34	Parithosh Jayanthi:	Reacted to "Question is, can we ..." with 👍
+01:16:50	Barnabé Monnot:	my view:
+obviously would be best if we had 100% confidence that 6s is a no-brainer technically
+numbers today don’t prove unequivocally that it’s impossible however
+if we committed to doing 6s for glamsterdam, I believe we’d likely be able to pull it off
+ePBS doesn’t give us much more room either, so anyways P1 to understand the data and think about optimisations
+01:16:57	Sam Jernigan:	Reacted to "+1 (to Potuz)" with 👍
+01:17:01	Phil Ngo:	Replying to "I’d suggest eth-magi..."
+
+It’s hard to aggregate so many different venues. Even eth magicians doesn’t have a canonical thread for this AFAIK, there’s a few related to Glamsterdam topic
+01:17:06	Raúl Kripalani:	Reacted to "Question is, can we ..." with 👍
+01:17:07	Potuz:	Replying to "I think we should ge..."
+
+This is false: ePBS makes Fusaka possible right now
+01:17:11	Sophia Gold:	Replying to "I think we should ..."
+
+If we don't ship any form of pipelining in Glamsterdam it will set back zkEVMs by a year
+01:17:14	Potuz:	Replying to "I think we should ge..."
+
+Without it Fusaka is useless
+01:17:32	Josh Davis:	Replying to "I’d suggest eth-magi..."
+
+@Phil Ngo https://ethereum-magicians.org/t/soliciting-stakeholder-feedback-on-glamsterdam-headliners/24885
+01:17:58	manas:	Reacted to "If we don't ship a..." with 👍
+01:18:14	Potuz:	What are the three EIPs?
+01:18:22	Barnabé Monnot:	Reacted to "Without it Fusaka is..." with 🤔
+01:18:28	Katya Riazantseva:	7805
+01:18:29	soispoke:	7805
+01:18:36	nixo:	again pushing here for community input: https://ethereum-magicians.org/t/soliciting-stakeholder-feedback-on-glamsterdam-headliners/24885 
+
+also redirects from http://forkcast.org/feedback
+01:18:41	Potuz:	7886 is not 6 seconds slots right?
+01:18:46	Dustin:	thats  DE
+01:18:49	soispoke:	Replying to "7886 is not 6 second..."
+
+That’s DE
+01:18:53	Phil Ngo:	Replying to "I’d suggest eth-magi..."
+
+So not the meta thread anymore
+01:18:57	Barnabé Monnot:	7782
+01:19:02	Ansgar Dietrichs:	Replying to "I think we should ge..."
+
+wait what’s the fusaka argument?
+01:19:27	nixo:	Replying to "I’d suggest eth-magi..."
+
+that thread is highly discussed based, looking to standardize opinions in some format
+01:19:29	Potuz:	Replying to "I think we should ge..."
+
+Fusaka sets the ground to increase blob count substantially, but it can’t achieve much with 2 seconds to broadcast
+01:19:42	Potuz:	Replying to "I think we should ge..."
+
+With ePBS you multiply this by 4-5
+01:19:52	nixo:	Replying to "I’d suggest eth-magi..."
+
+it just makes it clearer to sort through
+01:20:02	Potuz:	Replying to "I think we should ge..."
+
+Actually scaling immediately giving infinite gas to rollups (and also allowing late execution)
+01:20:08	Potuz:	Replying to "I think we should ge..."
+
+This impacts users immediately
+01:20:26	Justin Traglia:	Etan’s PR: https://github.com/ethereum/consensus-specs/pull/4445
+01:20:31	Ansgar Dietrichs:	Replying to "I think we should ge..."
+
+any version of Glamsterdam would increase the propagation ratio of the slot
+01:20:33	Francesco:	Replying to "I think we should ge..."
+
+Not with the second deadline shortly after the attestation deadline 😄
+01:20:33	Lion dapplion:	Replying to "I think we should ge..."
+
+*with payload decoupling
+01:20:51	Potuz:	Replying to "I think we should ge..."
+
+Sure, I am advocating for the scaling version
+01:21:06	Lion dapplion:	Replying to "I think we should ge..."
+
+Such version doesn’t exist yet right?
+01:21:12	Potuz:	Replying to "I think we should ge..."
+
+what?
+01:21:13	Ansgar Dietrichs:	Replying to "I think we should ge..."
+
+ePBS does add delayed execution over pure slot restructuring, but that only helps to further scale execution, not propagation
+01:21:33	Potuz:	Replying to "I think we should ge..."
+
+Yes it scales propagation more than execution!
+01:21:43	Potuz:	Replying to "I think we should ge..."
+
+The deadlines are about 4 seconds for the payload and 10 for the blobs
+01:21:47	Barnabas:	I think we need to find a better way to handle feature forks
+01:22:07	Trent:	Replying to "I’d suggest eth-magi..."
+
+FWIW I don’t see the problem with pushing people to collect responses in a single venue
+01:22:11	Potuz:	Replying to "I think we should ge..."
+
+This was the whole point of the early discussion on free options
+01:23:05	Etan (Nimbus):	Reacted to "I think we need to f..." with 😃

@@ -1,0 +1,891 @@
+00:05:24	Justin Traglia:	Gm
+00:05:32	Tim Beiko:	Gm!
+00:05:38	nixo:	gm
+00:05:39	Orest Tarasiuk (t1):	Gm
+00:05:40	iPhone - Radek:	Gm
+00:05:42	donnoh | L2BEAT:	Reacted to "Gm!" with 👋
+00:05:43	spencer-tb:	Ga
+00:06:10	nixo:	Reacted to "Ga" with 🌞
+00:06:13	Justin Traglia:	Reacted to "Ga" with 🌞
+00:11:12	Marius van der Wijden:	How far away are we from a fixed LH image?
+00:13:35	FLCL:	yep Nethermind can't handle such reorgs, need resync ig
+00:13:43	Tim Beiko:	BASE_FEE_UPDATE_FRACTION = round((MAX_BLOBS * GAS_PER_BLOB) / (2 * math.log(1.125)))
+use max/target fractions that are exactly 3/2
+00:13:56	Barnabas:	Replying to "BASE_FEE_UPDATE_FRAC..."
+
+thats a different discussion
+00:14:54	Francesco:	Just speaking strictly from the perspective of the 7918 check, this inconsistency doesn’t matter (it’s not important whether the reserve price used is the base fee of an actual block)
+00:15:17	lightclient:	can 7918 use the current block’s excess blob gas field?
+00:15:38	Anders Elowsson:	Yes. The effect is very minimal. And most of the time there will be no difference.
+00:15:56	Felix (Geth):	Replying to "can 7918 use the c..."
+
+no because this is a part of the excess computation itself?
+00:16:00	lightclient:	i feel like we should use the current block instead of parent block then? is anyone against that?
+00:16:18	Ansgar Dietrichs:	Sorry is the question whether the floor calculation should use the fee schedule of current or parent block?
+00:16:23	Anders Elowsson:	No sorry. I meant the effect of doing it the two different ways that led to a fork
+00:16:24	Francesco:	Reacted to "no because this is a..." with 👍
+00:16:24	Roman:	Reacted to "i feel like we shoul..." with 👍
+00:16:31	stokes:	Replying to "Sorry is the questio..."
+
+yes
+00:17:50	Anders Elowsson:	Replying to "Sorry is the questio..."
+
+It can use the update fraction of either. There will be no issues
+00:19:23	Francesco:	Like Felix said, we can’t do that because the 7918 computation is how you compute the excess blob gas
+00:19:42	Roman:	Reacted to "Like Felix said, we ..." with 👍
+00:19:46	Roman:	Reacted to "Like Felix said, we ..." with 💯
+00:20:25	Tim Beiko:	Replying to "Like Felix said, we ..."
+
+Can’t do what sorry? Using the current block?
+00:20:36	Anders Elowsson:	Replying to "Like Felix said, we ..."
+
+Yes
+00:20:42	Francesco:	Replying to "Like Felix said, we ..."
+
+Using current block’s excess blob gas
+00:20:46	Roman:	Reacted to "Using current block’..." with 👍
+00:20:46	Ansgar Dietrichs:	I really think we should use the latest parameters, but there is no reason to care about whether that’s a "natural basefee", that’s a meaningless concept
+00:20:51	Anders Elowsson:	Replying to "Like Felix said, we ..."
+
+The calculation of the excess_gas is determined by the if statement
+00:20:53	Francesco:	Replying to "Like Felix said, we ..."
+
+It’s fine to use the current block’s update fraction
+00:21:00	lightclient:	Replying to "Like Felix said, we ..."
+
+i see
+00:21:30	Mario Vega:	Reacted to "I really think we sh..." with 👍🏼
+00:21:36	lightclient:	Replying to "Like Felix said, we ..."
+
+okay well i suppose we will have 1 weird block where the base fee computed by 7918 doesnt match any known blob base fee
+00:21:42	Roman:	Reacted to "I really think we sh..." with 👍🏼
+00:22:36	Barnabas:	we need to align today
+00:22:39	Roman:	Reacted to "we need to align tod..." with 👍
+00:22:40	Francesco:	Reacted to "we need to align tod..." with 👍
+00:22:40	spencer-tb:	Reacted to "we need to align tod..." with ➕
+00:22:41	Mario Vega:	Reacted to "we need to align tod..." with 👍
+00:22:42	Mario Vega:	Reacted to "we need to align tod..." with ➕
+00:22:42	lightclient:	Reacted to "we need to align tod..." with 👍
+00:22:42	Roman:	Reacted to "we need to align tod..." with ➕
+00:22:45	felix (eest):	Reacted to "we need to align t..." with 👍
+00:22:46	donnoh | L2BEAT:	Reacted to "we need to align tod..." with 👍
+00:22:46	donnoh | L2BEAT:	Reacted to "we need to align tod..." with ➕
+00:22:47	Guru:	Reacted to "we need to align tod..." with ➕
+00:23:03	Ansgar Dietrichs:	Yes it seems super silly
+00:23:04	lightclient:	let’s just use the current block’s fork parameters?
+00:23:05	stokes:	Use current?
+00:23:07	felipe:	Reacted to "we need to align t..." with ➕
+00:23:08	Mario Vega:	Reacted to "let’s just use the c..." with 👍🏼
+00:23:10	Roman:	Reacted to "let’s just use the c..." with 👍🏼
+00:23:15	Guru:	Reacted to "let’s just use the c..." with 👍🏼
+00:23:18	draganrakita:	Reacted to "let’s just use the c..." with 👍🏼
+00:23:22	Francesco:	In this case it’s fine either way, but fwiw the consensus-specs have a  get_blob_parameters  function that takes  epoch  as an input and can access the whole schedule. Regardless of what we decide now, I could see it being useful in the future for the execution-specs to have this ability as well
+00:23:25	felipe:	Reacted to "let’s just use th..." with 👍🏼
+00:23:28	felix (eest):	Reacted to "let’s just use th..." with 👍🏼
+00:23:32	Francesco:	Reacted to "let’s just use the c..." with 👍🏼
+00:23:41	Gabriel Trintinalia | Besu:	Reacted to "let’s just use the c..." with 👍🏼
+00:23:47	Guru:	Reacted to "In this case it’s fi..." with 👍
+00:23:51	spencer-tb:	Replying to "let’s just use the c..."
+
+Parent.max, parent.target & current.update?
+
+Or current all?
+00:24:11	lightclient:	Replying to "let’s just use the c..."
+
+current for all
+00:24:15	spencer-tb:	Reacted to "current for all" with 🙏
+00:24:20	lightclient:	Replying to "let’s just use the c..."
+
+it’s already current for max / target yeah?
+00:24:30	lightclient:	Replying to "let’s just use the c..."
+
+we’re only debating the update fraction?
+00:24:35	Ansgar Dietrichs:	It should not be specified in 7918 though, but in the BPO EIP
+00:25:13	draganrakita:	It will not hurt to add clarification to EIP
+00:25:14	Francesco:	Replying to "It should not be spe..."
+
+I am not sure about this, you could imagine wanting to do something different in a different case (e.g. you actually want the parent’s basefee for something else)
+00:25:21	felix (eest):	Reacted to "It will not hurt t..." with 👍
+00:25:25	Francesco:	+1 on it not being clear
+00:25:32	lightclient:	Reacted to "It will not hurt to ..." with 👍
+00:25:33	Ansgar Dietrichs:	I don’t think it’s clear right now, I think geth’s interpretation was valid
+00:25:38	Francesco:	Reacted to "I don’t think it’s c..." with 👍
+00:25:40	Anders Elowsson:	We can fix it today
+00:25:41	Milos:	Reacted to "+1 on it not being..." with ➕
+00:25:45	Gabriel Trintinalia | Besu:	Reacted to "I don’t think it’s c..." with 👍
+00:25:53	Anders Elowsson:	One of the authors, we will add a clarification, if this is the decision
+00:25:59	lightclient:	Reacted to "We can fix it today" with 🚀
+00:26:01	Ben Adams:	Reacted to "We can fix it today" with 👍
+00:26:02	Gabriel Trintinalia | Besu:	Reacted to "We can fix it today" with 🚀
+00:26:04	donnoh | L2BEAT:	Reacted to "We can fix it today" with 🚀
+00:26:40	Ansgar Dietrichs:	Replying to "It should not be spe…"
+Yes the BPO EIP should explicitly specify how this affects each part of the protocol that uses any of the values being changed
+00:26:58	Francesco:	Replying to "It should not be spe..."
+
+And be modified every time something new comes up?
+00:27:18	Roman:	Replying to "I don’t think it’s c..."
+
+i agree that interpretation is valid
+00:27:28	spencer-tb:	Reacted to "we’re only debating ..." with 🙏
+00:27:34	Roman:	Replying to "I don’t think it’s c..."
+
+i think it comes from how original calculation was implemented
+00:27:42	Ansgar Dietrichs:	No the precedent is that it needs to always be explicitly specified. Precedent shouldn’t be to start assuming spec behavior implicitly
+00:27:58	Mario Vega:	If you need to do  parentHeader.value  that’s ok, if you need to do  parentHeader.fork.value  that seems unnatural to me IMO
+00:28:02	Tim Beiko:	Reacted to "No the precedent is ..." with 👍
+00:28:12	Csaba Kiraly:	I also think it was not clear … and we even have empirical proof now. So it is better specified explicitly.
+00:28:32	FLCL:	Replying to "If you need to do  p..."
+
+or ` fork(parentHeader).value`
+00:28:37	Mario Vega:	Reacted to "or ` fork(parentHead..." with 👍🏼
+00:28:56	Guru:	Reacted to "or ` fork(parentHead..." with 👍🏼
+00:29:23	Marius van der Wijden:	How will blobbasefee work now?
+00:29:39	lightclient:	Replying to "How will blobbasefee..."
+
+should be unchanged?
+00:29:45	Roman:	Reacted to "should be unchanged?" with ➕
+00:29:53	Guru:	Reacted to "should be unchanged?" with ➕
+00:29:58	lightclient:	Replying to "How will blobbasefee..."
+
+use the current header’s fork config and excess when computing
+00:30:09	Ben Adams:	Replying to "No the precedent is ..."
+
+gas repricing, do we use prior blocks prices as that's where estimate_gas would have been done on? ;)
+00:30:20	lightclient:	Reacted to "gas repricing, do we..." with 😆
+00:30:20	ethDreamer (Mark):	We are so spoiled on the consensus side with the spec lol
+00:30:28	lightclient:	Reacted to "We are so spoiled on..." with 😆
+00:31:10	Hsiao-Wei Wang:	Reacted to "We are so spoiled on..." with 😆
+00:31:44	Anders Elowsson:	It essentially comes down to `get_base_fee_per_blob_gas
+` referring the `BLOB_BASE_FEE_UPDATE_FRACTION
+` without referring to the parent.. In Roman’s interpretation
+00:31:54	Mario Vega:	Reacted to "We are so spoiled on..." with 😆
+00:32:17	Mega | Lambda:	Reacted to "We are so spoiled on..." with 😆
+00:32:20	draganrakita:	modexp when base/mod is zero was a similar issue, reth/base assumed min gas is spend as no calculation is done, and geth/nethermind would add additional gas depending on exp.
+00:32:30	Csaba Kiraly:	+1 on pure functions as the longer term solution.
+00:32:55	Roman:	Replying to "It essentially comes..."
+
+this interpretation stems from EIP-7691 which says
+
+The value BLOB_BASE_FEE_UPDATE_FRACTION_PRAGUE replaces its previous equivalent when processing the activation block. These changes imply that get_base_fee_per_blob_gas and calc_excess_blob_gas functions defined in EIP-4844 use the new values for the first block of the fork (and for all subsequent blocks).
+00:33:24	Anders Elowsson:	Replying to "It essentially comes..."
+
+Yep. So it is very consistent with the spec in this regard.
+00:33:27	Ansgar Dietrichs:	I think that was not the case here though, right?
+00:33:29	lightclient:	I think we should also encourage client teams to contributing to testing
+00:33:31	Roman:	Reacted to "Yep. So it is very c..." with 👍
+00:33:34	Tim Beiko:	Reacted to "I think we should al..." with 👍
+00:33:38	FLCL:	TFIed
+00:33:39	draganrakita:	EIP versioning and changelog of changes would help 🙂
+00:34:02	Hsiao-Wei Wang:	Reacted to "I think we should al..." with 👍
+00:34:05	Will Corcoran:	Reacted to "I think we should al..." with 👍
+00:34:22	felix (eest):	Reacted to "I think we should ..." with 👍
+00:34:44	lightclient:	Replying to "I think we should al..."
+
+i definitely am at fault for this too where i will just implement the spec as i understand it, do some basic testing, then expect the testing team will do a lot of the heavy lifting
+00:34:58	Ansgar Dietrichs:	I think such process questions should be discussed async though.
+
+But agree on value of having testing earlier in the loop
+00:34:58	lightclient:	Replying to "I think we should al..."
+
+i think this is becoming a pretty common mode of operation
+00:35:11	Roman:	Reacted to "I think we should al..." with 👍
+00:35:16	Mario Vega:	Reacted to "I think such process..." with 👍🏼
+00:35:36	Mario Vega:	Reacted to "I think we should al..." with 👍
+00:35:46	stokes:	Im assuming we don’t need to chat about the CL side of things at all
+00:35:47	danceratopz:	Reacted to "EIP versioning and c..." with ❤️
+00:35:52	stokes:	(Just to pipeline a bit)
+00:35:56	Tim Beiko:	Replying to "Im assuming we don’t..."
+
+The
+00:36:00	Tim Beiko:	Replying to "Im assuming we don’t..."
+
+CL sync issues?
+00:36:05	stokes:	Replying to "Im assuming we don’t..."
+
+Yea w/ LH
+00:36:13	stokes:	Replying to "Im assuming we don’t..."
+
+Also may have missed in the very first minutes of call
+00:36:16	Tim Beiko:	Replying to "Im assuming we don’t..."
+
+Pawan said they were working on a fix, but IDK if there are more updates?
+00:36:19	Tim Beiko:	Reacted to "Also may have missed..." with 👍
+00:36:22	stokes:	Replying to "Im assuming we don’t..."
+
+Yeah, just asking
+00:36:26	raxhvl:	We're experimenting a format for BAL test cases before we implement them here: https://github.com/ethereum/execution-spec-tests/blob/feat/eip-7928/checklist/tests/unscheduled/eip7928_block_level_access_lists/checklist.md
+00:36:30	danceratopz:	Replying to "EIP versioning and c..."
+
+Appreciate the input.
+00:36:36	raxhvl:	Reacted to EIP versioning and c... with "❤️"
+00:36:44	Adrian (Lighthouse):	Replying to "Im assuming we don’t..."
+
+its not spec related, just internal issues, not sure its useful to discuss
+00:36:46	Potuz:	I would rather have more flexibility and the sticking to 3/2 can be offchain without making it to consensus nor clients
+00:36:47	Toni Wahrstätter:	this depends a bit if we want to stay with that ratio
+00:36:48	Anders Elowsson:	https://discord.com/channels/595666850260713488/1402683134406955008/1403433219185053716
+00:37:09	Barnabas:	formula: BASE_FEE_UPDATE_FRACTION = round((MAX_BLOBS * GAS_PER_BLOB) / (2 * math.log(1.125)))
+00:37:23	Marius van der Wijden:	Replying to "I would rather hav..."
+
+yes
+00:37:30	stokes:	Replying to "I would rather have ..."
+
+It can be informal but could be nice to have an agreement here
+00:37:33	stokes:	Replying to "I would rather have ..."
+
+“Social layer"
+00:37:42	pawan:	Replying to "Im assuming we don’t..."
+
+Yeah basically that, We need time to figure out the sync issues and sync reliably
+00:37:48	Marius van der Wijden:	Replying to "I would rather hav..."
+
+yes social agreement, not enforced in code
+00:37:54	stokes:	Replying to "I would rather have ..."
+
+yep
+00:37:57	Potuz:	Replying to "I would rather have ..."
+
+exactly my point yues
+00:38:04	Csaba Kiraly:	Replying to "I would rather have ..."
+
++1
+00:38:20	Ansgar Dietrichs:	Like pragmatically 2:3 is reasonable, but not sure what we gain from precommitting to that
+00:38:32	Anders Elowsson:	The point of this formula is 
+ BASE_FEE_UPDATE_FRACTION = round((MAX_BLOBS * GAS_PER_BLOB) / (2 * math.log(1.125)))
+
+Is that it is general. It works for any ratio
+00:38:48	Csaba Kiraly:	Replying to "I would rather have ..."
+
+I don’t think we have a good justification for the ratio at the moment, hence fixing it would be premature.
+00:39:05	Francesco:	What is the benefit?
+00:39:09	Anders Elowsson:	Replying to "The point of this fo..."
+
+It generalizes both 4844 and 7691
+00:39:19	stokes:	Replying to "What is the benefit?"
+
+Simpler to orchestrate devnets etc
+00:39:38	stokes:	I think we can say we generally follow this pattern, but reserve the right to deviate
+00:39:47	Justin Traglia:	Reacted to "I think we can say w..." with 👍
+00:39:48	Tim Beiko:	Reacted to "I think we can say w..." with 👍
+00:39:51	Anders Elowsson:	The formula is a generalization!
+00:39:51	stokes:	Yeah +1 to ansgar
+00:39:54	Carl Beekhuizen:	Reacted to "I think we can say w..." with 👍
+00:40:06	Marius van der Wijden:	Reacted to "I think we can say..." with 👍
+00:40:38	Anders Elowsson:	What is the formula you are discussing right now?
+00:40:55	Csaba Kiraly:	I would say it is a dimension we had no time to explore yet fully, or to understand how it changes system properties.
+00:41:08	stokes:	Reacted to "I would say it is a ..." with 👍
+00:41:11	Barnabas:	enshrined in testing
+00:41:16	stokes:	Reacted to "enshrined in testing" with 🔥
+00:41:16	pk910:	the question comes from the genesis generator.  we need the value there  and have been statically setting it there.
+we've switched to the formula by default now,  but it can be overridden via custom params
+00:41:20	spencer-tb:	Reacted to "enshrined in testing" with 🔥
+00:41:38	Ansgar Dietrichs:	We can consider enshrining it, but then we should do that as a function of the target and max, and choose what behavior it should have for different ratios
+00:41:50	Ansgar Dietrichs:	Replying to "We can consider ensh…"
+And that’s not trivial to do
+00:41:53	Anders Elowsson:	Hi can someone answer. What formula are we discussing?
+00:41:56	Potuz:	Anders I think there has been a confusion between your proposal and Barnabas  since your proposal would accept any ratio
+00:42:02	Csaba Kiraly:	As usual, we could do test where we just explore this dimension. However, we don’t need to this, because we are in control of this parameter.
+00:42:23	stokes:	Replying to "Hi can someone answe..."
+
+Can we rely on this invariant that max : target is 3:2
+00:42:37	stokes:	Replying to "Hi can someone answe..."
+
+And if so that gives us a formula to compute the base fee update fraction as well
+00:42:52	Ansgar Dietrichs:	I think it’s fine to exclusively use that for testing. No need to test things we won’t actually do
+00:42:57	stokes:	Reacted to "I think it’s fine to..." with 👍
+00:43:21	Anders Elowsson:	Replying to "Hi can someone answe..."
+
+The formula that was specified in the discussion was for any ratio, it will not matter. But yeah, the exact ratio might be changed after Fusaka
+00:43:23	Csaba Kiraly:	BTW, I think we will change this later on. It is just not at the level of optimizations we need now.
+00:43:43	stokes:	Let me try to paste here
+00:43:45	stokes:	8th Sep: client releases for sepolia (and holesky if needed); bug bounty begins
+15th Sep: Holesky fork (can provide branch, no releases needed)
+29th Sep: Sepolia fork
+1st Oct: Hoodi and mainnet releases
+8th Oct: Hoodi fork
+5th Nov: Mainnet
+00:43:52	Csaba Kiraly:	Reacted to "I think it’s fine to..." with 👍
+00:43:56	Ansgar Dietrichs:	Replying to "Hi can someone answe…"
+Oh I see, I wasn’t aware
+00:44:21	Anders Elowsson:	Replying to "Hi can someone answe..."
+
+It’s a generalisation of 4844 and 7691
+00:44:22	pawan:	Replying to "8th Sep: client rele..."
+
+We are not comfortable with this timeline at least until we figure out and  fix our sync issues
+00:44:30	lightclient:	Reacted to "We are not comfortab..." with 👍
+00:44:34	stokes:	Replying to "8th Sep: client rele..."
+
+roger
+00:44:46	Dustin:	the Holesky fork is explicitly specified in Alex's comment about not necessarily being a regular release
+00:44:52	Anders Elowsson:	Replying to "Hi can someone answe..."
+
+It will give satisfactory output for the update_fraction whatever ratio we input
+00:45:00	Dustin:	contra Tim's summary
+00:45:09	Tim Beiko:	Replying to "contra Tim's summary"
+
+Sorry yes, good catch
+00:45:45	Tim Beiko:	Is there a big overhead to making proper releases?
+00:46:46	Anders Elowsson:	I think Barnabas just reposted mine? Or does “formula” specifically refer to 3:2 ratio. That’s not a formulae that’s a ratio
+00:46:57	Ansgar Dietrichs:	Replying to "Hi can someone answe…"
+Interesting. I do think that can be a good idea. I don’t think there is a rush to enshrine this though
+00:47:13	stokes:	Replying to "Is there a big overh..."
+
+I think not so much, but the process of getting there can be bigger
+00:47:23	Potuz:	Replying to "Anders I think there..."
+
+I think Barnabas posted your formula but stated specificallty the 2/3 ratio which is what prompted our rage
+00:47:34	Ansgar Dietrichs:	Reacted to "I think Barnabas pos…" with 😂
+00:47:45	Justin Florentine (Besu):	do we need a Devnet 5 or no?
+00:47:51	Dustin:	testing/confidence in stability/etc.
+ 
+it's not just how hard it is to press the button
+00:47:55	kingy_sigp:	Replying to "8th Sep: client rele..."
+
+We were tracking fine until the sync issues. As soon as we iron those out we would be better able to set a firm date.
+00:47:59	Phil Ngo:	Likewise still dealing with handling forky conditions discovered with devnet-4 non-finality which is really good
+00:48:02	Ansgar Dietrichs:	Replying to "Anders I think there…"
+Ah yes it confused me at least, then I think my comments were not fully applicable actually
+00:49:00	Marius van der Wijden:	I think that depends on if devnet-4 is resurrected cleanly
+00:49:01	Anders Elowsson:	Replying to "Anders I think there..."
+
+We do not need to enshrine 3:2, but it is rather likely that we will wish to use this formula. For sure we might change it but it is a very general way to approach the whole system. And having this as a agreed-upon formula can therefore be very useful
+00:49:04	Barnabas:	I have a feeling that we gonna need devnet-5
+00:49:09	Tim Beiko:	Reacted to "I have a feeling tha..." with 👍
+00:49:12	Marius van der Wijden:	Reacted to "I have a feeling t..." with 👍
+00:49:15	Francesco:	What is going to happen to devnet-4? Is it going to continue past Friday if it is resurrected?
+00:49:16	lightclient:	Reacted to "I have a feeling tha..." with 👍
+00:49:17	Mehdi Aouadi:	Reacted to "I have a feeling tha..." with 👍
+00:49:18	Phil Ngo:	Reacted to "I have a feeling tha..." with 👍
+00:49:22	ethDreamer (Mark):	Need to keep the focus and urgency on Fusaka but at the same time we’re not gonna ship something broken
+00:49:28	Gabriel Trintinalia | Besu:	Reacted to "I have a feeling tha..." with 👍
+00:49:35	lightclient:	Reacted to "Need to keep the foc..." with 👍
+00:49:38	Mario Vega:	Reacted to "I have a feeling tha..." with 👍
+00:49:48	Francesco:	And if there is a devnet-5, will it be as big as devnet-4?
+00:49:51	ethDreamer (Mark):	Treat every devnet like it’s your last 😂
+00:49:57	pawan:	Reacted to "And if there is a de..." with 👍
+00:50:01	pawan:	Reacted to "Need to keep the foc..." with 👍
+00:50:15	Anders Elowsson:	Replying to "Hi can someone answe..."
+
+Perhaps I would say, it can can be useful to have it as a default going forward, but we can still be open to changing it.
+00:50:22	felipe:	Reacted to "I have a feeling t..." with 👍
+00:50:24	Ansgar Dietrichs:	Dumb question, if we have to delay for an extra week, would a mainnet fork during devconnect be a dumb idea? Given that devconnect this year will be so light on protocol/ infrastructure events, and many core devs won’t even be there.
+00:50:30	pawan:	Replying to "What is going to hap..."
+
+We want to keep it around, its super valuable for testing the sync scenarios
+00:50:33	Barnabas:	Replying to "Dumb question, if we..."
+
+yes
+00:50:34	James He:	We still have a good amount of stuff to get done I think, we might be able to make it  but it’s going to be very close I think
+00:50:39	marek:	Reacted to "yes" with 👍
+00:50:41	Adrian (Lighthouse):	sprry
+00:50:42	Csaba Kiraly:	Replying to "Anders I think there..."
+
+Ah, that’s confusing. Can you paste a link to the formula?
+00:50:45	Adrian (Lighthouse):	let me fix mic
+00:50:54	stokes:	Replying to "Dumb question, if we..."
+
+Its possible but we have learned w/ pectra to not schedule forks during events
+00:50:55	Anders Elowsson:	Replying to "Anders I think there..."
+
+https://discord.com/channels/595666850260713488/1402683134406955008/1403433219185053716
+00:51:12	J Sunnyside Labs:	Reacted to "And if there is a de..." with 👍
+00:51:12	Anders Elowsson:	Replying to "Anders I think there..."
+
+`BASE_FEE_UPDATE_FRACTION = round((MAX_BLOBS * GAS_PER_BLOB) / (2 * math.log(1.125)))`
+00:51:28	Ansgar Dietrichs:	Replying to "Dumb question, if we…"
+Right. I meant more it looks like devconnect really isn’t much of a core dev event this year anyway
+00:51:38	stokes:	Replying to "Dumb question, if we..."
+
+Yeah, that’s where the idea is more reasonable
+00:51:41	Ansgar Dietrichs:	Replying to "Dumb question, if we…"
+But still, fair point. Just wanted to check
+00:51:45	J Sunnyside Labs:	Replying to "And if there is a de..."
+
+Sunnyside Labs will be also launching as big as devnet-4
+00:51:47	stokes:	Replying to "Dumb question, if we..."
+
+But still, I at least have PTSD from pectra 😅
+00:51:59	Csaba Kiraly:	Reacted to "https://discord.com/..." with 🙏
+00:52:16	Anders Elowsson:	Replying to "Anders I think there..."
+
+@Csaba Kiraly it’s just a generalisation of what we have done every fork from the beginning, without expressing it mathematically
+00:52:22	Ansgar Dietrichs:	Replying to "Hi can someone answe…"
+Right, but that doesn’t motivate enshrining it into protocol logic, with all the overhead that comes with
+00:52:47	Ansgar Dietrichs:	Replying to "Hi can someone answe…"
+It was presented as a proposal for enshrining, not just as a standard for defaults going forward
+00:53:06	Fredrik:	Reacted to "Need to keep the foc…" with 👍
+00:53:07	Barnabas:	we used https://clientdiversity.org
+00:53:11	Anders Elowsson:	Replying to "Hi can someone answe..."
+
+Sure, it seems reasonable to wait a bit
+00:53:28	Marius van der Wijden:	Replying to "Dumb question, if ..."
+
+We would like to have people update their nodes if anything goes really wrong, so having everyone in person, away from their nodes is a bit yank imo
+00:53:57	Marius van der Wijden:	Can you just allocate keys to them and let the teams run their own nodes?
+00:54:09	Potuz:	I think for staking those sites have bad data, for full nodes it may be fine
+00:54:21	Anders Elowsson:	Reacted to "I think Barnabas pos..." with 😂
+00:54:23	Potuz:	I think relays will have better data on staking nodes
+00:54:36	Barnabas:	Replying to "Can you just allocat..."
+
+too much coordination overhead
+00:54:43	Minhyuk Kim:	Sunnyside has been also running more non-validating nodes for minor clients as well - like 5-6 nodes per client combination
+00:54:52	marek:	Reacted to "We would like to hav..." with 👍
+00:54:57	DA | Flashbots:	Reacted to "I think relays will ..." with 🫡
+00:55:11	Anders Elowsson:	Reacted to "Interesting. I do th..." with 👍
+00:55:12	Barnabas:	Replying to "I think for staking ..."
+
+again, they are not perfect, but its the best we have available today
+00:55:31	Barnabas:	Replying to "I think relays will ..."
+
+if you have better sources of this, then feel free to share, happy to take a look
+00:55:34	stokes:	Sounds good to me
+00:56:26	DA | Flashbots:	Replying to "I think relays will ..."
+
+We see 38% of registered validators using lighthouse, 27% prysm. But 12% as vouch that don’t get CL user agents from.
+00:56:48	DA | Flashbots:	Replying to "I think relays will ..."
+
+That should cover 90%+ of validators
+00:56:57	Ben Adams:	Block Level Access Lists has a good website for an EIP https://blockaccesslist.xyz/
+00:57:04	Ansgar Dietrichs:	BALs 🎉 BALs 🎉BALs
+00:57:13	Mario Vega:	Reacted to "BALs 🎉 BALs 🎉BALs" with 🚀
+00:57:18	Roman:	Reacted to "BALs 🎉 BALs 🎉BALs" with 🚀
+00:57:21	Justin Traglia:	Reacted to "BALs 🎉 BALs 🎉BALs" with 🚀
+00:57:26	Ben Adams:	Reacted to "BALs 🎉 BALs 🎉BALs" with 🚀
+00:57:26	Toni Wahrstätter:	Reacted to "BALs 🎉 BALs 🎉BALs" with 🚀
+00:57:29	marek:	Reacted to "BALs 🎉 BALs 🎉BALs" with 🚀
+00:57:32	felipe:	Reacted to "BALs 🎉 BALs �..." with 🚀
+00:57:34	Guru:	Reacted to "BALs 🎉 BALs 🎉BALs" with 🚀
+00:57:34	Justin Florentine (Besu):	BALs + FOCIL lfg
+00:57:36	Ansgar Dietrichs:	But I do think the most important will be repricings. But that will be more a basket of EIPs, doesn’t make for a good headliner
+00:57:44	Barnabas:	Reacted to "BALs 🎉 BALs 🎉BALs" with 🚀
+00:57:44	Karim T.:	Reacted to "BALs + FOCIL lfg" with ➕
+00:57:49	stokes:	Just FYI: https://github.com/ethereum/EIPs/pull/10117
+00:57:50	soispoke:	Reacted to "BALs + FOCIL lfg" with ➕
+00:57:53	Will Corcoran:	Reacted to "BALs + FOCIL lfg" with ➕
+00:58:06	felix (eest):	Reacted to "BALs 🎉 BALs �..." with 🚀
+00:58:15	Jihoon:	Reacted to "BALs + FOCIL lfg" with ➕
+00:58:17	Mario Vega:	Replying to "But I do think the m..."
+
+Could someone that is championing gas repricing EIPs reach out to the testing team so we can coordinate pls?
+00:58:22	Ben Adams:	Replying to "But I do think the m..."
+
+Do they take effect based on parent block or current block 😉
+00:58:27	Hsiao-Wei Wang:	Reacted to "Block Level Access L..." with 🔥
+00:58:38	Potuz:	setting a timeline target will really help in making it easier to agree on the scope. However I suspect that agreeing on the timeline may be equal to agreeing on focil inclusion
+00:58:41	Tim Beiko:	Reacted to "Could someone that i..." with 👍
+00:58:48	Ansgar Dietrichs:	In terms of fork delivery, I think we should aim for
+
+Mar - Interop
+Apr - releases
+Jun - mainnet
+00:58:51	soispoke:	I’d love to have a discussion around committing to including FOCIL if it doesn’t delay the fork by N months 
+
+So people don’t have to deal with two branch logistics and having a feature that is "not fully committed" to the fork.
+00:59:10	felix (eest):	Reacted to "Do they take effec..." with 😂
+00:59:10	stokes:	Reacted to "setting a timeline t..." with 👍
+00:59:12	soispoke:	Reacted to "setting a timeline t..." with 👍
+00:59:15	Mario Vega:	Reacted to "Do they take effect ..." with 😂
+00:59:21	draganrakita:	Reacted to "Block Level Access L..." with 🔥
+00:59:22	draganrakita:	Reacted to "BALs 🎉 BALs 🎉BALs" with 🚀
+00:59:24	Barnabé Monnot:	Reacted to "In terms of fork del..." with 👍
+00:59:27	Will Corcoran:	Reacted to "In terms of fork del..." with 👍
+00:59:28	Toni Wahrstätter:	Reacted to "In terms of fork del..." with 👍
+00:59:42	lightclient:	what is the status of the hardening effort?
+00:59:49	DA | Flashbots:	Replying to "I think relays will ..."
+
+So it’s very likely 70%+
+01:00:20	terence:	Replying to "I think relays will ..."
+
+interesting, 12% as vouch feels a lot
+01:00:33	Potuz:	Replying to "I think relays will ..."
+
+I'm very surprised of the difference between flashbots numbers and Bloxroutes
+01:00:44	Ansgar Dietrichs:	For process, would we discuss FOCIL here or on acdc or both?
+01:00:52	stokes:	Replying to "For process, would w..."
+
+It is cross layer
+01:00:55	terence:	Replying to "For process, would w..."
+
+FOCIL is both
+01:01:02	Potuz:	it touches deeply both I think
+01:01:03	DA | Flashbots:	Replying to "I think relays will ..."
+
+What are bloxroutes numbers?
+01:01:12	Potuz:	but it's more invasive on the CL as far as I can guess
+01:01:25	terence:	Replying to "For process, would w..."
+
+I'd say it's 65% on CL and 35% on EL
+01:01:26	Roman:	Reacted to "but it's more invasi..." with 👍
+01:01:30	Ansgar Dietrichs:	Replying to "For process, would w…"
+Right, but we primarily discuss it in context of ePBS
+01:01:52	Potuz:	Replying to "I think relays will ..."
+
+I'll DM you later after all these calls
+01:01:53	Roman:	Replying to "but it's more invasi..."
+
+i think so too, EL implementation is much smaller than introducing new validator role
+01:02:06	DA | Flashbots:	Reacted to "I'll DM you later af..." with 👍
+01:02:22	draganrakita:	Maybe we can delay not headliner EIPs inclusion for few months so we can check headliners first and have better grasp how much time we will have for other EIPs.
+01:02:32	Tim Beiko:	Reacted to "Maybe we can delay n..." with 👍
+01:02:52	stokes:	FOCIL already CFI
+01:02:56	Justin Florentine (Besu):	Reacted to "FOCIL already CFI" with ➕
+01:02:57	soispoke:	I thought it was already CFIed
+01:03:02	Jihoon:	Replying to "but it's more invasi..."
+
+FYI, an EPF fellow already shared a Reth prototype that looks like near interop today
+01:03:03	stokes:	But, to tim’s point — we should only work on SFI for now
+01:03:12	Roman:	Reacted to "FYI, an EPF fellow a..." with 👍
+01:03:30	stokes:	FOCIL champions can look at complexity to layer on top of epbs
+01:03:36	Toni Wahrstätter:	Reacted to "But, to tim’s point ..." with 👍
+01:03:41	stokes:	But should not IMO be the bulk of anyone’s attention
+01:03:45	soispoke:	Replying to "FOCIL champions can ..."
+
+Yeah doing this now
+01:04:12	Barnabas:	Replying to "I think relays will ..."
+
+could we have them as a public convo and not a dm?
+01:04:26	Carl Beekhuizen:	Reacted to "But, to tim’s point ..." with 👍
+01:04:27	Roman:	Replying to "but it's more invasi..."
+
+got a link?
+01:04:53	terence:	Replying to "but it's more invasi..."
+
+https://github.com/PelleKrab/reth/tree/focil_impl
+01:04:59	Roman:	Replying to "but it's more invasi..."
+
+ty ty
+01:05:30	Jihoon:	Replying to "FOCIL champions can ..."
+
+On top of this, FOCIL is already in contact with testing team. A document that lay outs test cases thoroughly will be published later, which will facilitate testing a lot.
+01:05:33	Tim Beiko:	Glamderstam-devnet-1: EPBS & BALs
+01:06:03	DA | Flashbots:	Replying to "I think relays will ..."
+
+We can post something publicly for stats / discussion. But I’m on vacation for three weeks after tomorrow, so timeline is probably slow.
+01:06:41	Barnabas:	I’d have separate devnets first, so we can reduce the breaking surface.
+
+I would propose to have epbs-devnet-0 and bal-devnet-0 on last week of sep latest.
+01:06:54	Barnabas:	and then maybe in november we can have glamsterdam-devnet-0
+01:07:34	stokes:	Fusaka mainnet
+01:07:40	stokes:	Lets defer the rest of the glam convo for now
+01:07:42	Francesco:	Later than August 21 definitely
+01:07:55	Potuz:	Replying to "I’d have separate de..."
+
+BALS and ePBS are completely orhogonal so I'd just target one devnet 0 with a minimal spec
+01:07:57	terence:	Replying to "and then maybe in no..."
+
+i think we can do it in oct but just speaking on behave of prysm
+01:07:58	Potuz:	Replying to "I’d have separate de..."
+
+that has both
+01:08:26	Barnabas:	Replying to "I’d have separate de..."
+
+having them separate allows us to launch them independently
+01:08:30	Ansgar Dietrichs:	Hard stop or soft stop? Usually we still have a time where you can propose eips with special justification why they should still be considered
+01:08:37	Barnabas:	Replying to "I’d have separate de..."
+
+without having one wait for the other
+01:08:38	Ansgar Dietrichs:	Replying to "Hard stop or soft st…"
+Just flips the default
+01:08:50	Milos:	Does ePBS changes and how much based on whether FOCIL is included as well?
+01:08:56	Potuz:	Replying to "and then maybe in no..."
+
+I think late Oct or November for devnet 0 is a good target
+01:09:03	Potuz:	Replying to "and then maybe in no..."
+
+if we have two clients is already good enough
+01:09:14	Ansgar Dietrichs:	Reacted to "and then maybe in no…" with 🔥
+01:09:20	Potuz:	yes, ePBS changes a bit
+01:09:24	Tim Beiko:	Replying to "Hard stop or soft st..."
+
+We can always make exceptions, but I think we should be clear that the Fusaka mainnet releases are the deadline to everyone.
+01:09:33	Tim Beiko:	Replying to "Hard stop or soft st..."
+
+Should be a very high bar to add things after that
+01:09:38	Potuz:	Focil makes it change even how we communicate with the engine
+01:10:23	Jared Wasinger:	State locations means accounts and storage that aren’t modified here
+01:10:57	Jihoon:	Replying to "Does ePBS changes an..."
+
+You might want to take a look into this one to get the sense: https://github.com/ethereum/consensus-specs/pull/4493
+01:11:03	Potuz:	Replying to "I’d have separate de..."
+
+if the extra money and coordination of having to check 2 devnets in parallel is not a problem then that's fine by me, I would have assumed that having only one would be simpler for you
+01:11:22	Ansgar Dietrichs:	It’s not just about batch loads (as in more efficient i/o), it’s also about not having to block when reaching a state load during execution
+01:11:34	Potuz:	Replying to "Does ePBS changes an..."
+
+I think this will change a bit once we fully rebase ePBS on top of Fulu
+01:11:36	Jihoon:	Reacted to "https://github.com/P..." with 👍
+01:12:48	FLCL:	locations !=changes?
+01:13:02	Marius van der Wijden:	This is just for reads, right?
+01:13:04	Gary Schulte:	Reacted to "locations !=changes?" with 👍
+01:13:06	Csaba Kiraly:	These are the addresses read only, but not written, right?
+01:13:35	Jared Wasinger:	Replying to "It’s not just about ..."
+
+It doesn’t have to block necessarily.  It can yield the CPU to another transaction while being IO blocked
+01:13:47	Jared Wasinger:	Replying to "These are the addres..."
+
+yes
+01:13:51	Ansgar Dietrichs:	I don’t think we should make a decision today, but we should agree that the state diff part of BALs is the only part already fully guaranteed to be included. The state locations part is tbd
+01:13:59	Tim Beiko:	Reacted to "I don’t think we sho..." with 👍
+01:14:00	Jared Wasinger:	Reacted to "I don’t think we sho..." with 👍
+01:14:02	Jihoon:	Replying to "Does ePBS changes an..."
+
+Yes I'm not using this one as a source-of-truth but it could give the sense how the changes would look like
+01:14:24	Ansgar Dietrichs:	Replying to "I don’t think we sho…"
+Question is just, should we pull that part out into a separate EIP then and only CFI it?
+01:14:39	Francesco:	Reacted to "I don’t think we sho..." with 👍
+01:14:41	Gary Schulte:	adding reads allows for i/o improvements without parallelizing transactions.  It would be beneficial in worst case block execution when no txs are parallelizable
+01:15:33	Francesco:	Replying to "adding reads allows ..."
+
+With BAL there is no such worst case, txs are always parallelizable
+01:15:41	Ansgar Dietrichs:	Replying to "It’s not just about …"
+Right but a worst case block would align transactions to minimize useful parallel execution
+01:15:46	Gary Schulte:	Replying to "adding reads allows ..."
+
+they can’t parallelize if they mutate the same state
+01:15:47	Potuz:	SSZ will be much better for the CL, it enables a lot of things like committing to different parts of the payload independently on the ePBS bid.
+01:15:59	Jared Wasinger:	I vote postpone.  It’s so much simpler if we go with RLP
+01:16:00	Ansgar Dietrichs:	Replying to "It’s not just about …"
+It makes it hard to reason about worst case throughput
+01:16:01	Roman:	Reacted to "SSZ will be much bet..." with 👎
+01:16:04	Karim T.:	Replying to "adding reads allows ..."
+
+If you have the write you can do parallelization
+01:16:04	Roman:	Reacted to "I vote postpone.  It..." with 👍
+01:16:04	Tim Beiko:	Reacted to "I vote postpone.  It..." with 👍
+01:16:08	Francesco:	Replying to "adding reads allows ..."
+
+You are given the writes, so you can execute them independently
+01:16:13	Tim Beiko:	Replying to "SSZ will be much bet..."
+
+Why does the CL care about BALs?
+01:16:18	Roman:	Reacted to "Why does the CL care..." with 👍
+01:16:24	Ben Adams:	Reacted to "Why does the CL care..." with 👍
+01:16:27	Potuz:	Replying to "SSZ will be much bet..."
+
+not BALs, but having SSZ on the EL eventuallyu
+01:16:33	Roman:	Reacted to "not BALs, but having..." with 👍
+01:16:39	Toni Wahrstätter:	Replying to "This is just for rea..."
+
+right yeah
+01:16:52	Cayman Nava:	Pureth H-Star Headliner 🕊️
+01:17:01	Csaba Kiraly:	Replying to "adding reads allows ..."
+
+Only if you have the write at the transaction level
+01:17:14	Roman:	heavy +1 to Justin
+01:17:17	Sophia Gold:	We will never have the dev capacity to convert everything to SSZ. Better to commit to not adding new RLP encodings
+01:17:20	Dustin:	There are lots of Go SSZ libraries
+01:17:21	Francesco:	Replying to "adding reads allows ..."
+
+You do
+01:17:30	Dustin:	At some what, what makes one happy?
+01:17:35	Som - Erigon:	Golang is history, we embrace Zig
+01:17:36	Csaba Kiraly:	Replying to "adding reads allows ..."
+
+And the read here is just location, but the write is data, right? If so, we should clear our terminology :-)
+01:17:40	Potuz:	Peter's influence :)
+01:17:41	Marius van der Wijden:	Replying to "There are lots of ..."
+
+His comment is about "good" ssz libraries
+01:17:48	Tim Beiko:	Reacted to "His comment is about..." with 😂
+01:17:49	Ansgar Dietrichs:	On state locations - probably not in time for Glamsterdam, but we could consider prioritizing propagating them ahead of main payload, so clients can start prefetching all state and have it loaded by the time they start main execution
+01:17:56	Potuz:	I'm pretty sure Claude can write a good SSZ library in Go in less than a day
+01:17:59	James He:	Stable containers
+01:18:02	stokes:	Reacted to "I'm pretty sure Clau..." with 😂
+01:18:03	Dustin:	"stablecontainer", etc
+01:18:04	Toni Wahrstätter:	Replying to "I don’t think we sho..."
+
+yeah I'd do that if we take it out. I think removing it will be easier than adding it
+01:18:10	Karim T.:	Replying to "adding reads allows ..."
+
+Yes we have write in the transaction level
+01:18:20	Roman:	Replying to "I'm pretty sure Clau..."
+
+can claude be a core dev?
+01:18:21	Karim T.:	Write is data 
+read only location
+01:18:30	Csaba Kiraly:	Replying to "adding reads allows ..."
+
+OK, so if it is written multiple times, we have all data changes in, right?
+01:18:33	Tim Beiko:	Replying to "I'm pretty sure Clau..."
+
+Already is
+01:18:33	Mario Vega:	Reacted to "I'm pretty sure Clau..." with 😂
+01:18:38	Potuz:	Reacted to "Already is" with 👍🏼
+01:18:42	Roman:	Reacted to "Already is" with 🎤
+01:18:47	Csaba Kiraly:	Reacted to "Yes we have write in..." with 👍
+01:18:50	Karim T.:	Replying to "adding reads allows ..."
+
+Yes for each transaction
+01:18:59	Csaba Kiraly:	Reacted to "Yes for each transac..." with 👍
+01:19:03	Karim T.:	Replying to "adding reads allows ..."
+
+It’s the only way to have 100% //
+01:19:28	ignacio:	Replying to "I'm pretty sure Clau..."
+
+You’re absolutely right!
+01:19:30	Josh Davis:	Replying to "I'm pretty sure Clau..."
+
+Claude for PG
+01:19:34	felix (eest):	Reacted to "You’re absolutely..." with 😂
+01:19:41	pk910:	stablecontainers are deprecated anyway.  progressive containers are the hot stuff now :D
+01:19:42	spencer-tb:	Reacted to "Already is" with 🎤
+01:19:45	spencer-tb:	Reacted to "Claude for PG" with ➕
+01:19:46	Guillaume:	Replying to "I'm pretty sure Clau..."
+
+show us
+01:19:50	stokes:	Reacted to "You’re absolutely ri..." with 😂
+01:19:53	Mario Vega:	Reacted to "stablecontainers are..." with 👀
+01:19:56	spencer-tb:	Reacted to "show us" with 😆
+01:20:12	Cayman Nava:	Reacted to "stablecontainers are..." with 👍
+01:20:14	Gary Schulte:	Reacted to "Already is" with 😆
+01:20:19	Csaba Kiraly:	Replying to "adding reads allows ..."
+
+Clear, I just wasn’t sure we’ve made that selection (simply not aware of the datails)
+01:20:35	FLCL:	Reacted to "stablecontainers are..." with 🤯
+01:20:39	frangio:	is this the new EOF?
+01:20:45	Jihoon:	Replying to "I'm pretty sure Clau..."
+
+https://x.com/josephdelong/status/1235979765879844864
+01:21:05	Potuz:	It's been more than 3 years, surely someone could have written that library by now...
+01:21:44	felipe:	Reacted to "I'm pretty sure Cl..." with 😂
+01:21:53	felipe:	Reacted to "Already is" with 💯
+01:22:14	Dustin:	Reacted to "stablecontainers a..." with 👍
+01:23:08	felipe:	Reacted to "show us" with 😆
+01:23:08	pk910:	we have several go ssz libraries  for different use cases.
+if looking at performance, you can use the very fast code generatosrs,  if performance is not the highest prio I have a dynamic-ssz lib too.
+
+both are feature complete and work fine..  Not even talking about the other go ssz libs..
+Btw, all json parsing is WAAAY slower in go..  so what are we comparing against to find a good ssz lib?
+01:23:23	Jared Wasinger:	Replying to "It’s not just about ..."
+
+The state reads are not currently specced to specify which transactions they occur in.
+01:23:26	Roman:	the nasty thing is that w/o history expiry we cannot remove RLP even in full nodes, let alone never removing in archive nodes
+01:23:38	Tim Beiko:	Reacted to "the nasty thing is t..." with 👍
+01:24:24	Potuz:	Reacted to "the nasty thing is t..." with 👍
+01:24:33	Tim Beiko:	In this specific case, do we want to delay BALs/Glamsterdam because of SSZ?
+01:24:42	Justin Florentine (Besu):	hard no
+01:24:44	Marius van der Wijden:	Also we have not prioritized building a good library
+01:24:46	Roman:	Reacted to "hard no" with 👍
+01:24:52	Marius van der Wijden:	Reacted to "hard no" with 👍
+01:24:59	Guillaume:	Replying to "Also we have not pri..."
+
+yes we have
+01:25:07	Csaba Kiraly:	Replying to "I don’t think we sho..."
+
+I’m wondering whether that’s an actual throughput improvement on the long run.
+It uses up bandwidth at a critical time, while it does not save CPU time (just improves parallelisation).
+01:25:22	Dustin:	Replying to "We will never have..."
+
+this is the key point for me
+01:25:50	Dustin:	Replying to "We will never have..."
+
+IMO the wait-for-big-SSZ-headliner is likely to run into the not-scaling/etc objections
+01:26:00	Potuz:	I do not think there will ever be a "good library". SSZ is not something that can be plugged easily on any client, a good library for geth may not be good for Prysm and viceversa. I think that geth needs is to write their own library. There used to be a joint effort among Marius and Kasey, don
+01:26:11	Potuz:	don't know where that ended up
+01:26:11	Cayman Nava:	Pureth meta-EIP dealing with provability of the chain in general (Includes ssz-ing all the things)
+
+https://eips.ethereum.org/EIPS/eip-7919
+01:26:11	Tim Beiko:	Replying to "We will never have t..."
+
+But maybe that just means we actually don’t value moving to SSZ above those things?
+01:26:31	Tim Beiko:	Reacted to "Pureth meta-EIP deal..." with 👍
+01:26:48	Karim T.:	Replying to "adding reads allows ..."
+
+More thinking more for me read location is not really important
+01:27:02	Dustin:	Replying to "We will never have..."
+
+I mean, on the EL side, that's demonstrably true, in terms of revealed preferences
+01:27:03	Tim Beiko:	Replying to "Pureth meta-EIP deal..."
+
+I think ACD agreeing on Puerth inclusion would be right signal for us to move to SSZ on the EL, rather than adding it bit by bit.
+01:27:08	Tim Beiko:	Reacted to "I mean, on the EL si..." with 👍
+01:27:34	Dustin:	Replying to "We will never have..."
+
+There's ust this kabuki thing about it, the objections are perpetually insubstantial, procedural, and yet it keeps not happening
+01:27:55	Dustin:	Replying to "We will never have..."
+
+And yes, I count the Go SSZ library objection as at this point borderline farcical
+01:28:00	Tim Beiko:	Reacted to "And yes, I count the..." with 👍
+01:28:27	Karim T.:	I think index of the transaction in the block and in BAL should be the same
+01:28:33	Justin Florentine (Besu):	Replying to "We will never have t..."
+
+it's purely capacity, not technical.
+01:28:36	Cayman Nava:	Reacted to "I think ACD agreeing..." with 👍
+01:28:50	Justin Florentine (Besu):	Replying to "We will never have t..."
+
+we aren't good at making hard decisions/sacrifices
+01:29:28	Guillaume:	Reacted to "And yes, I count the..." with 🧻
+01:29:30	Potuz:	Replying to "We will never have t..."
+
+I tend agree with Tim, this will only happen if we make it a headliner, but the problem is that I hardly see ACD ever making it a headliner
+01:29:53	Mario Vega:	But then the tooling would have to be updated each time we add a systemcontract at the start of block execution
+01:29:55	Tim Beiko:	Replying to "We will never have t..."
+
+the problem is that I hardly see ACD ever making it a headliner
+
+But maybe that’s not actually a problem?
+01:30:00	Guillaume:	Replying to "We will never have t..."
+
+somehow we have the capacity to write a good ssz lib but not the capacity to convert from one format to the next? gimme a break
+01:30:13	Felix (Geth):	Replying to "But then the tooli..."
+
+no it's just one index for all the calls
+01:30:13	Karim T.:	List(pre, list(trx), post) Not possible something like that ?
+01:30:25	Guillaume:	Replying to "We will never have t..."
+
+@Dustin ok we're watching you write one then
+01:30:38	Mario Vega:	Reacted to "no it's just one ind..." with 👍🏼
+01:30:57	Toni Wahrstätter:	Replying to "But then the tooling..."
+
+right now it's one index but 2 might make sense
+01:31:06	Potuz:	Replying to "We will never have t..."
+
+Guillaume: as I wrote above, you guys need to do this, because no one will ever write a "generic" SSZ library that will adapt to whatever geth type system uses
+01:31:09	Dustin:	Replying to "We will never have..."
+
+Guillaume: in general, yeah, dealig with legacy data is a different kind of problem than dealing with a serde in a standalone way
+01:31:59	Cayman Nava:	Replying to "We will never have t..."
+
+imo poor chain provability is a big problem... for privacy and for UX of integrating ethereum into the real world
+01:32:42	Dustin:	Replying to "We will never have..."
+
+@Cayman the basic argument I put forward in Nimbus's pushing for Pureth as an EL headliner was that the alternative has been pointing people to untrustworthy RPCs yeah
+01:33:05	Potuz:	Reacted to "imo poor chain prova..." with 👍🏼
+01:33:10	Dustin:	Reacted to "imo poor chain pro..." with 👍🏼
+01:33:18	Dustin:	Replying to "We will never have..."
+
+And, right now it's easy-ish to follow full consensus/execution chain. But with the scaling people want it will become less easy
+01:33:22	Roman:	let’s not call it transaction index!
+01:33:35	Roman:	state transition index
+01:33:40	Marius van der Wijden:	I think there should be a BAL breakout
+01:33:44	Ben Adams:	Reacted to "state transition ind..." with 👍
+01:33:47	Dustin:	Replying to "We will never have..."
+
+So this enables scaling by decoupling trustless/minimized chain access from scaling
+01:33:49	Mario Vega:	Reacted to "I think there should..." with 👍🏼
+01:33:51	Ahmad Bitar | Nethermind:	Reacted to "I think there should..." with ➕
+01:33:53	Mario Vega:	Reacted to "I think there should..." with ➕
+01:33:55	Gary Schulte:	Reacted to "I think there should..." with 👍🏼
+01:34:03	Cayman Nava:	Reacted to "So this enables scal..." with 👍
+01:34:14	Csaba Kiraly:	One things read locations give is to tell whether a block is dependent on a previous block. I listed that property in my block level acesss filter proposal.
+
+Not sure it is useful here :-)
+01:34:15	Francesco:	Reacted to "I think there should..." with 🏐
+01:34:26	Toni Wahrstätter:	Reacted to "One things read loca..." with 👍
+01:34:34	Toni Wahrstätter:	Reacted to "I think there should..." with 👍🏼
+01:34:39	Toni Wahrstätter:	Reacted to "I think there should..." with 🏐
+01:34:54	Potuz:	it can be done on ACDC as well right
+01:35:02	felipe:	Reacted to "His comment is abo..." with 😂
+01:35:11	felipe:	Reacted to "I think there shou..." with 👍🏼
+01:35:11	terence:	i think the question is more on engine API and how EL uses safe head field other than RPC
+01:35:38	Potuz:	Reacted to "i think the question..." with 👍🏼
+01:35:48	Potuz:	we do not use justified FWIW
+01:35:52	Potuz:	haven't for years
+01:35:59	terence:	Ya, I already talked about this in ACDT
+01:36:02	Marius van der Wijden:	I don't know anyone that relies on safe block being justified
+01:36:27	Ansgar Dietrichs:	Without much context, reusing safe block seems fine
+01:36:34	Marius van der Wijden:	Reacted to "Without much conte..." with 👍
+01:36:48	Potuz:	It can be dangerous
+01:36:59	Mikhail Kalinin:	Reacted to "I don't know anyone ..." with 👍
+01:37:04	Potuz:	Arbitrum uses safe now, not sure if they'll be happy going to fast confirmed

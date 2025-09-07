@@ -1,0 +1,199 @@
+00:03:49	Mario Vega:	gm
+00:04:04	Parithosh Jayanthi:	Gm gm
+00:04:20	Louis:	GM
+00:08:48	Barnabas:	https://dora.fusaka-devnet-2.ethpandaops.io/clients/consensus
+00:08:50	Justin Traglia:	There was a small nimbus issue that was fixed this week. Some new consensus spec tests found it. The result of verifyCellKzgProofBatch wasn’t checked properly.
+00:08:54	Barnabas:	this page has eth-das-guardian enabled already
+00:09:13	Parithosh Jayanthi:	https://github.com/ethereum/consensus-specs/pull/4439
+00:09:22	Barnabas:	Teku and nimbus are having issues with eth-das-guardian still .
+00:10:20	Parithosh Jayanthi:	https://github.com/ethpandaops/kurtosis-sync-test/actions
+00:11:49	Barnabas:	sounds like something we can yolo roll on devnet 2 tho
+00:12:03	Justin Traglia:	Reacted to "sounds like somethin..." with 😅
+00:12:49	Bharath:	Reacted to "sounds like somethin..." with 😅
+00:14:02	Barnabas:	could we add new metrics to http://github.com/ethereum/execution-metrics   ?
+00:14:18	J Sunnyside Labs:	Reacted to "could we add new met..." with 👍
+00:14:19	James He:	We are working on release soon
+00:14:20	Phil Ngo:	Should be out tomorrow without issues for Lodestar
+00:14:37	saulius:	Grandine should have release this/next week.
+00:15:12	Parithosh Jayanthi:	https://github.com/ethereum/EIPs/pull/9981
+00:15:32	Francesco:	Seems good as is
+00:16:17	Raúl Kripalani:	I can take a look
+00:16:23	Barnabas:	Reacted to "I can take a look" with 🔥
+00:16:26	Barnabas:	Reacted to "Seems good as is" with 👍
+00:16:36	FLCL:	Reacted to "I can take a look" with 🔥
+00:18:16	Raúl Kripalani:	Replying to "I can take a look"
+Approved
+00:19:03	FLCL:	Replying to "I can take a look"
+
+Thanks!
+00:19:11	Mario Vega:	Reacted to "I can take a look" with 🔥
+00:19:12	Parithosh Jayanthi:	Reacted to "I can take a look" with 🔥
+00:22:09	Barnabas:	Could you not just charge for worst case scenario, and give a refund later?
+00:22:40	Ansgar Dietrichs:	Replying to "Could you not just c..."
+
+the worry there is that it would break existing contracts that hard code gas only for a 24kb access
+00:23:17	Roman:	Reacted to "the worry there is t..." with 👍
+00:23:24	Ansgar Dietrichs:	Replying to "Could you not just c..."
+
+otherwise yes, that would be the cleanest way. doesn’t even have to be a refund, just throw if they could not pay for the largest code possible. then you can still only charge the actual amount
+00:23:48	Charles:	there is quite a large overhead to call another contract. so it is a tradeoff, but it's left to the developer to optimize it
+00:23:55	lightclient:	Reacted to "there is quite a lar..." with 👍
+00:24:10	draganrakita:	Reacted to "there is quite a lar..." with 👍
+00:25:02	Charles:	"easy" splitting also assumes there is no shared code between the code paths that are split. if transfer() and transferFrom() both use the same internal function, that shared code must be duplicated across the two physical contracts
+00:25:14	Barnabas:	Replying to "Could you not just c..."
+
+can’t we just have static cost? 
+
+2100 for 24kb
+4200 for anything 24kb+ ?
+00:25:30	Ansgar Dietrichs:	Replying to "Could you not just c..."
+
+yes but again, you only know afterwards
+00:25:43	Ansgar Dietrichs:	Replying to "Could you not just c..."
+
+so what do you do if someone asks to access code, but they only have 2100 gas left?
+00:27:12	Ansgar Dietrichs:	Replying to "Could you not just c..."
+
+you either throw (just in case that target is too large), but that might break existing contracts
+
+or you allow it, but then if that triggered full code load and it was 48kb, now you got that for cheap
+00:27:25	Charles:	like for certain kinds of contracts it is not even possible to split them up
+00:28:27	FLCL:	Btw cold code is not unique code to be loaded first time, but potentially the same code for different accounts loaded twice (second time is easier)
+00:31:05	Raúl Kripalani:	Replying to "I can take a look"
+Merged
+00:31:16	Ansgar Dietrichs:	it’s fine to make the codeSize data structure an implementation detail, but we do have to make sure every client has some version of it by Fusaka
+00:31:29	draganrakita:	Reacted to "it’s fine to make th..." with 👍
+00:31:38	Parithosh Jayanthi:	Replying to "it’s fine to make th..."
+
+Which clients need to have it done? And what timeline would they have?
+00:31:47	Parithosh Jayanthi:	Replying to "it’s fine to make th..."
+
+Ie what does this add to our fusaka timeline
+00:31:57	draganrakita:	Replying to "it’s fine to make th..."
+
+I think all clients will have it in Fusaka,
+00:32:00	Francesco:	Replying to "it’s fine to make th..."
+
+What does “by Fusaka” mean?
+00:32:07	Francesco:	Replying to "it’s fine to make th..."
+
+Does this not need to exist in devnets?
+00:32:11	Parithosh Jayanthi:	Replying to "it’s fine to make th..."
+
+Lets say this needs to be at fusaka-devnet-3
+00:32:19	milen | Erigon:	Reacted to "it’s fine to make th..." with 👍
+00:33:10	Marius van der Wijden:	My take is that 7907 and its consequences still feels underexplored/underspecified and I don't think we should ship a half baked solution before that
+00:33:23	Ansgar Dietrichs:	I still think 7907 was the wrong way to go for Fusaka. It’s clearly designed to be forward compatible with later larger limit raises, otherwise it’s unnecessarily complex. But it is highly questionable whether we will want to use this logic to ever go beyond 48kb.
+
+we could have gotten a one-time bump just via Giulio’s EIP (keep cost as-is, bump limit to 32KB), then figured out the proper way for Glamsterdam
+00:33:25	Ansgar Dietrichs:	Reacted to "My take is that 7907..." with 👍
+00:33:28	spencer-tb:	Reacted to "My take is that 7907..." with 👍
+00:34:24	Francesco:	Replying to "it’s fine to make th..."
+
+Can we explicitly (on the call) decide if that’s the case? (what exactly is the requirement here and what that means for this EIP)
+00:34:46	Parithosh Jayanthi:	Reacted to "Can we explicitly (o..." with 👍🏽
+00:35:04	iPhone:	If this is dependent on zkEVMs, then I think we should benchmark it to see what the difference will be
+00:36:23	Ansgar Dietrichs:	do we have proper benchmarks on pre and post 7907 code load performance at 100M yet?
+00:36:42	Ansgar Dietrichs:	Replying to "do we have proper be..."
+
+it feels like we should make that a hard requirement for shipping 7907 in Fusaka
+00:36:55	Marius van der Wijden:	Reacted to it feels like we sho... with "👍"
+00:37:01	Carson | STEEL:	Reacted to "it feels like we sho..." with 👍
+00:39:46	Ben Adams:	None of the Shanghai DoS contracts were above 24kB?
+00:39:54	Marius van der Wijden:	Not quite true with snap sync @Ansgar Dietrichs
+00:41:58	Ansgar Dietrichs:	Marius is concerned and a client dev
+00:42:42	Ansgar Dietrichs:	Replying to "Not quite true with ..."
+
+say more?
+00:45:38	jochem-brouwer:	Yes
+00:45:40	jochem-brouwer:	100%
+00:45:48	Ansgar Dietrichs:	there is the precautionary principle though: if we already think at 24k this could potentially be a bottleneck at 100M, we should not make it even worse by 2x
+00:46:02	jochem-brouwer:	Before EIP-170 the block gas limit was too low to deploy 24 KiB+ contracts
+00:46:13	Mario Vega:	Reacted to "Before EIP-170 the b..." with 👍🏼
+00:46:18	Charles:	Replying to "there is the preca..."
+
+the cost is marginal though
+00:46:19	Ansgar Dietrichs:	Replying to "there is the precaut..."
+
+fwiw I actually think it is *ptobably* fine, but that’s why we should go and get good benchmarks
+00:46:39	Marius van der Wijden:	Replying to "Not quite true with ..." 
+
+ If you snap sync, you don't know if there are contracts that go beyond 24k after snap syncing
+00:46:45	Charles:	Replying to "there is the preca..."
+
+like the figure that matters for marius's concern is gas per word, not contract size limit
+00:48:05	Ansgar Dietrichs:	in the attack we discussed (load code without enough gas to pay for 48kb), the contract would remain cold.
+
+But is there also a different edge case, where keeping a lot of warm code in memory would be an issue? say at 100M max code loads, would be big issue if that would force the oldest code to be discarded from memory again, while still warm. then you can load it again super cheaply, but it would trigger another disk lookup
+00:48:33	Charles:	Replying to "in the attack we d..."
+
+that is more related to tx gas limit than block gas limit
+00:48:40	Ben Adams:	16M is in devnet3
+00:48:42	Charles:	Replying to "in the attack we d..."
+
+but yea
+00:48:46	Guillaume:	@Ansgar Dietrichs you misunderstood what I said: you described building the index, I said that's what every client will have to do if they don't want to have to go over their code. An alternative would be to only have an extra field for contracts > 24kb, but that won't work to place it with the bytecode, as it's not possible to tell the difference between an index and bytecode. In the account, it's possible to have an extra rlp field, but you need to make sure it's not hashed - not very practical
+00:49:03	Ansgar Dietrichs:	Replying to "in the attack we dis..."
+
+ah, good point. also this might not get worse with 7907 at least, given that you would charge proportionally to actually make the code warm
+00:50:02	Ansgar Dietrichs:	Replying to "@Ansgar Dietrichs yo..."
+
+right, so some implementation variants would require you to update all existing contracts
+00:50:33	Ansgar Dietrichs:	but then can’t we just solve all of this by trying to get reliable benchmarks asap? ideally we see that there is no issue here at all
+00:50:54	Charles:	Reacted to "but then can’t we..." with 👍
+00:51:07	Parithosh Jayanthi:	Reacted to "but then can’t we ju..." with 👍
+00:51:17	jochem-brouwer:	Antwoord verzenden naar "but then can’t we..."
+
+Can we assign someone to this and also what benchmarks need to be done specifically?
+00:51:22	Barnabas:	whats the max contract size you can deploy with 16M gas?
+00:51:23	Parithosh Jayanthi:	Replying to "but then can’t we ju..."
+
+@jochem-brouwer would you have some time to get these benchmarks?
+00:51:27	jochem-brouwer:	Antwoord verzenden naar "but then can’t we..."
+
+Yes :)
+00:51:32	Parithosh Jayanthi:	Replying to "but then can’t we ju..."
+
+Thank you!
+00:51:42	jochem-brouwer:	Antwoord verzenden naar "whats the max cont..."
+
+limit / 200 theoretical hard cap
+00:52:49	Ansgar Dietrichs:	I think the most critical one is the code reads with insufficient gas
+00:52:53	Mario Vega:	Regarding the concerns that Marius mentions which require benchmarking, I think this file already contains the tests required to benchmark this: https://github.com/ethereum/execution-spec-tests/blob/main/tests/benchmark/test_worst_bytecode.py @jochem-brouwer
+00:53:01	jochem-brouwer:	Heeft gereageerd op "Regarding the conc..." met 👍
+00:53:07	Ansgar Dietrichs:	Replying to "I think the most cri..."
+
+because none of the others are worse under 7907 than today, right?
+00:53:49	jochem-brouwer:	100M / 2600 theoretical max accounts
+00:53:56	jochem-brouwer:	30M / 2600 per tx
+00:54:40	Ansgar Dietrichs:	but jumpdest analysis only runs if the load was successful, right? so at that point you were already charged double for a large contract, so then it’s fine to take twice as long for jumpdest, no?
+00:54:48	draganrakita:	Reacted to "but jumpdest analysi..." with 👍
+00:54:58	Barnabas:	Replying to "30M / 2600 per tx"
+
+why 30M?
+00:55:18	Barnabas:	Replying to "30M / 2600 per tx"
+
+the new proposed tx max was 16,777,216
+00:55:34	jochem-brouwer:	Antwoord verzenden naar "30M / 2600 per tx"
+
+Yes sorry in that case the 16m :)
+00:56:00	Marius van der Wijden:	Also reverting in the call
+00:57:49	Gabriel Trintinalia | Besu:	Besu on track, pending 7907
+00:58:10	Ben Adams:	When devnet3?
+00:58:22	Marius van der Wijden:	Oh and jumpdest analysis on initcode that reverts
+00:58:24	Barnabas:	https://github.com/ethereum/execution-apis/pull/674
+00:58:27	Barnabas:	can we discuss this?
+00:59:19	Barnabas:	Anyone opposed this change ?
+00:59:43	Barnabas:	also builder spec stil open: https://github.com/ethereum/builder-specs/pull/123
+00:59:44	J Sunnyside Labs:	https://testinprod.notion.site/Sunnyside-Devnet-Updates-07-14-2308fc57f5468054b18fcbff31cc032c?source=copy_link
+00:59:50	jochem-brouwer:	Heeft gereageerd op "Oh and jumpdest an..." met 👍
+01:00:14	Charles C:	Reacted to Oh and jumpdest anal... with "👍"
+01:00:53	Roman:	one caveat re reth, the tag that was used was just before the peering fix
+01:01:22	Charles C:	Hopping off, thanks everyone
+01:01:26	Parithosh Jayanthi:	Reacted to "Hopping off, thanks ..." with ❤️
+01:01:34	draganrakita:	Reacted to "Hopping off, thanks ..." with ❤️
+01:01:34	Trent:	Reacted to "Hopping off, thanks ..." with ❤️
+01:01:53	milen | Erigon:	Reacted to "but jumpdest analysi..." with 👍
+01:03:40	Marius van der Wijden:	Csaba also had some scenarios that he would like to have tested
+01:05:28	Francesco:	If we constrain the mesh parameter, that will skew the bandwidth findings though, right?
+01:05:55	nixo:	hiccup

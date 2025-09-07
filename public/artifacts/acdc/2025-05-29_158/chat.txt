@@ -1,0 +1,772 @@
+00:06:27	Pooja Ranjan:	Gm
+00:06:35	potuz:	GM
+00:07:44	Lean F | Lambda:	gm
+00:07:59	nixo:	gm
+00:08:04	Ladislaus:	Reacted to "gm" with 👋
+00:08:52	Ansgar Dietrichs:	gm gm
+00:09:04	stokes:	https://github.com/ethereum/pm/issues/1548
+00:09:08	Ansgar Dietrichs:	Replying to "gm gm"
+
+last may acd
+00:09:16	Ansgar Dietrichs:	Replying to "gm gm"
+
+(hopefully only for this year)
+00:11:51	Parithosh Jayanthi:	I had a peerdas-7 update on sync testing if we have time for it later
+00:12:20	Justin Traglia:	Regarding blob schedule confusion, we made this spec change: https://github.com/ethereum/consensus-specs/pull/4341
+00:12:50	Parithosh Jayanthi:	Reacted to "Regarding blob sched..." with 🔥
+00:13:01	Ansgar Dietrichs:	what’s the clients’ take on how much of a lift this is?
+00:13:23	Ansgar Dietrichs:	Replying to "what’s the clients’ ..."
+
+preconfs seem like important for UX medium term, so if it is small, I’d include it
+00:13:29	ethDreamer (Mark):	Replying to "what’s the clients’ ..."
+
+Seems highly dependent on the client
+00:13:33	ethDreamer (Mark):	Replying to "what’s the clients’ ..."
+
+It’s easy in lighthouse
+00:13:34	Ansgar Dietrichs:	Replying to "what’s the clients’ ..."
+
+of course less clear if it adds significant load to fusaka
+00:13:42	ethDreamer (Mark):	Replying to "what’s the clients’ ..."
+
+Prysm may be different
+00:13:45	NC:	Replying to "what’s the clients’ ..."
+
+For lodestar, it’s not hard
+00:13:51	Ansgar Dietrichs:	Replying to "what’s the clients’ ..."
+
+@ethDreamer (Mark) oh interesting, any client that knows it would be a headache?
+00:14:01	stokes:	Replying to "what’s the clients’ ..."
+
+Big thing imo is that it touches the beacon state, whereas today we don’t do that in fusaka
+00:14:29	lightclient:	but you can do base rollups today?
+00:14:29	ethDreamer (Mark):	Replying to "what’s the clients’ ..."
+
+So some clients may not have a new object for the fusaka beacon state since it’s the same
+00:14:34	Gustavo Gonzalez:	At OZ we are very supportive of including EIP-7917 in Fusaka. It will help building based rollups and preconfs easier. It would certainly help our work in the minimal-rollup stack.
+00:14:45	ethDreamer (Mark):	Replying to "what’s the clients’ ..."
+
+In lighthouse, adding a new variant is a 1 line change. It might not be in other clients
+00:15:01	Storm Slivkoff:	Even if all L2 sequencers were decentralized, the L1+L2 doesn’t feel like a single unified chain. Centralization is different than the UX problem
+00:15:13	Ahmad Bitar | Nethermind:	centralized sequencers today have 200ms confirmation time. Based rollups cant compete with that now
+00:15:24	Gustavo Gonzalez:	Reacted to "centralized sequence..." with 👍
+00:15:28	Ansgar Dietrichs:	but preconfs seem like a UX win, no?
+00:15:46	Stefan Bratanov:	Replying to "what’s the clients’ ..."
+
+for Teku, it's not hard on first look, but have to check with the team member who is looking at it
+00:16:21	Lean F | Lambda:	You can still do based but having this will improve the UX and enable preconfs very easily
+00:16:23	Storm Slivkoff:	Replying to "Even if all L2 seque..."
+
+Definitely!
+00:17:06	Ansgar Dietrichs:	so overall it seems like it is a relatively small change in most (all?) CL clients, and our users really seem to want this.
+
+Maybe we can use this as an exercise in shipping things people actually want?
+00:17:40	Ansgar Dietrichs:	Replying to "so overall it seems ..."
+
+(some nuance around “our users” with this L2 context, but if we zoom out, still holds)
+00:17:59	Gustavo Gonzalez:	Not having this introduces the need for some trust assumptions or central actors as Jason is mentioning. It also increases risks for proposers to be slashed since the lookahead might change
+00:18:19	Ahmad Bitar | Nethermind:	Reacted to "Not having this intr..." with 👍
+00:18:24	Gustavo Gonzalez:	Reacted to "so overall it seems ..." with 👍
+00:18:39	Jason Vranek:	prepped this in case butchered it!
+
+Prior to EIP-7917, the space has arrived at three potential solutions, each with negative tradeoffs:
+1. Optimistic Lookaheads (https://github.com/taikoxyz/taiko-mono/blob/b7ecfcfc80a82412d7beb960e40a4fd2c8004f8a/packages/protocol/contracts/layer1/preconf/iface/ILookaheadStore.sol#L43): Optimistically post the lookahead and slash with EIP-4788 after the fact if incorrect, *requiring complex incentives or trust* 
+2. Raid (https://eth-fabric.github.io/website/research/raid): use EIP-4788 to derive the canonical L2 head ≥ 1 slot after the blob publication, *sacrificing real-time settlement and L1 composability*
+3. Dido (https://eth-fabric.github.io/website/research/dido): import the logic to derive the lookahead from the beacon state *into your rollup’s state transition function*
+
+EIP-7917 trivializes this problem making based rollups simpler to implement and cheaper to use with the added bonus of increased L1 stability. Please consider it for inclusion!
+00:18:58	Marc:	Replying to "At OZ we are very su…"
+who are OZ, do you guys make based rollups?
+00:19:08	Rodrigo | Lambda:	Reacted to "prepped this in ca..." with 👍
+00:19:30	Ladislaus:	Reacted to "prepped this in case..." with 👍
+00:19:49	Ahmad Bitar | Nethermind:	Replying to "At OZ we are very su..."
+
+OpenZipplin, and yes. they are working on minimal based rollup implemmentation
+00:20:06	Ahmad Bitar | Nethermind:	Replying to "At OZ we are very su..."
+
+https://github.com/OpenZeppelin/minimal-rollup/
+00:20:10	Gustavo Gonzalez:	Replying to "At OZ we are very su..."
+
+OpenZeppelin. We are working on this reference stack for people to extend
+https://github.com/OpenZeppelin/minimal-rollup
+00:20:11	kasey:	Healthy to talk about:
+Benefits
+Scope
+
+But we should also talk about what our criteria is for adding last minute EIPs, and whether this proposal satisfies that criteria.
+00:20:13	Ansgar Dietrichs:	if we include it, would it be for devnet-1 or devnet-2?
+00:20:13	Gustavo Gonzalez:	Reacted to "OpenZipplin, and yes..." with 👍
+00:20:27	Gustavo Gonzalez:	Replying to "At OZ we are very su..."
+
+we’ve been working with taiko and nethermind
+00:20:29	Jason Vranek:	Replying to "Even if all L2 seque..."
+
+based rollups are the most obvious way to get L1<>L2 synchronous composability to make the chains feel unified. But without preconfs their UX is terrible and will prevent this goal from happening!
+00:20:33	Marc:	Replying to "At OZ we are very su…"
+ah ofc, didn’t recognise from the abbreviation
+00:20:34	Ansgar Dietrichs:	lighthouse and loadstar said it’s small lift
+00:20:38	Gustavo Gonzalez:	Reacted to "ah ofc, didn’t recog..." with 👍
+00:20:42	Ahmad Bitar | Nethermind:	Reacted to "based rollups are th..." with ➕
+00:20:50	Sam Jernigan:	Reacted to "based rollups are th..." with 🔥
+00:20:58	Gustavo Gonzalez:	Reacted to "based rollups are th..." with 🔥
+00:20:58	Marc:	Reacted to "OpenZipplin, and yes…" with 👍
+00:21:05	Sam Jernigan:	Reacted to "but preconfs seem li..." with 💯
+00:21:11	Stefan Bratanov:	Replying to "lighthouse and loads..."
+
+similar for Teku, just some boilerplate code
+00:21:17	Ahmad Bitar | Nethermind:	Reacted to "we’ve been working w..." with ❤️
+00:21:19	NC:	Replying to "lighthouse and loads..."
+
+Implementing it is a small lift. But not sure from the testing perspective
+00:22:05	potuz:	Replying to "lighthouse and loads..."
+
+For Prysm is also not a big lift, a lot of boilerplate and then testing the hashing paths and Trie cache
+00:22:20	Ansgar Dietrichs:	maybe we could ask - any people strongly opposed to including this?
+00:22:21	Parithosh Jayanthi:	Are there any unknown unknowns that could bite us? (Estimated ones atleast)
+00:22:35	Justin Florentine (Besu):	Reacted to "Are there any unknow..." with 🤷
+00:22:37	saulius:	Replying to "lighthouse and loads..."
+
+for grandine should not be a big change too.
+00:22:53	Ansgar Dietrichs:	Replying to "maybe we could ask -..."
+
+(not saying that should be the bar for inclusion, but the absence of such a voice would still be a good data point)
+00:23:11	Justin Traglia:	Reacted to "Are there any unknow..." with 🤷
+00:23:40	Ansgar Dietrichs:	we also added a few EL EIPs that have *some* risk of causing minor delays, because they are worth it
+00:24:13	Ansgar Dietrichs:	Replying to "we also added a few ..."
+
+the point is to avoid multi-week delays for nice-to-have features
+00:24:18	Phil Ngo:	Replying to "Are there any unknow..."
+
+I believe things can still be DFI’ed if we run into these, but because the lift is not huge on the code implementation, the burden then becomes if we find testing it to not actually be trivial, we could remove it if encountered or issues are discovered?
+00:24:19	DA | Flashbots:	Is not having this going to hold back based rollups in the next 12 months? Like what is holding them back today?
+00:24:42	Barnabas:	We plan to launch devnet 1 on 9th of June. Lets just keep this in mind. And by the 13th of June we want to absolutely freeze all spec changes.
+00:24:50	Gustavo Gonzalez:	Replying to "Is not having this g..."
+
+yes IMO. It makes it harder to implement preconfs and riskier for proposers to opt in
+00:24:58	chanderprakash sharma:	HI GM GM everyone
+00:25:17	Ansgar Dietrichs:	agree we can be trigger happy with pushing it to Glamsterdam if there are issues
+00:25:34	Parithosh Jayanthi:	Replying to "Are there any unknow..."
+
+Adding and removing also delays Fusaka
+00:25:35	df:	I think security is a very remote concern here
+00:25:39	DA | Flashbots:	Replying to "Is not having this g..."
+
+Okay. Pro inclusion then.
+00:25:42	Parithosh Jayanthi:	Replying to "Are there any unknow..."
+
+So we have to be ready to pay this cost
+00:25:53	Ansgar Dietrichs:	Replying to "Are there any unknow..."
+
+agreed! just saying, that limits the downside
+00:25:54	Gustavo Gonzalez:	Reacted to "Okay. Pro inclusion ..." with ❤️
+00:25:57	Parithosh Jayanthi:	Reacted to "agreed! just saying,..." with 👍🏽
+00:25:57	stokes:	Replying to "We plan to launch de..."
+
+I would lean towards devnet-2 for this if we include it
+00:25:58	Ansgar Dietrichs:	Replying to "Are there any unknow..."
+
+seems like overall people want this
+00:26:04	Sam Jernigan:	Reacted to "seems like overall p..." with 💯
+00:26:06	Gustavo Gonzalez:	Reacted to "seems like overall p..." with 💯
+00:26:34	Drew Van der Werff:	Reacted to "seems like overall p..." with 💯
+00:26:42	Will Corcoran:	Improve UX
+00:26:47	Ansgar Dietrichs:	Reacted to "Improve UX" with 🔥
+00:26:48	Sam Jernigan:	Reacted to "Improve UX" with 💯
+00:26:49	Marc:	Reacted to "Improve UX" with 🔥
+00:26:50	Drew Van der Werff:	Reacted to "Improve UX" with 🔥
+00:26:50	Ahmad Bitar | Nethermind:	Reacted to "Improve UX" with 🔥
+00:26:52	Ladislaus:	Reacted to "seems like overall p..." with 👍
+00:26:54	Barnabas:	Reacted to "Improve UX" with 🔥
+00:26:55	Barnabas:	Reacted to "Improve UX" with 💯
+00:27:01	Parithosh Jayanthi:	Reacted to "Improve UX" with 💯
+00:27:02	Ansgar Dietrichs:	Replying to "Improve UX"
+
+let’s keep the 7702 streak going
+00:27:05	Ladislaus:	Reacted to "Improve UX" with 🔥
+00:27:06	Lean F | Lambda:	Reacted to "Improve UX" with 🔥
+00:27:07	Roman:	when did preconfs become our priority?
+00:27:12	Jason Vranek:	Reacted to "Improve UX" with 🔥
+00:27:13	df:	Reacted to "Improve UX" with 🔥
+00:27:15	kasey:	Since this is small, what if we get everything else done and tested, and then if we have a successful devent where everything else is working, add this at the end?
+00:27:16	df:	Reacted to "Improve UX" with 💯
+00:27:23	Parithosh Jayanthi:	Isn’t the process that we CFI -> deploy on testnet and then SFI?
+00:27:24	Ahmad Bitar | Nethermind:	For devnet-2
+00:27:26	Marc:	Replying to "when did preconfs be…"
+preconfs come under good UX
+00:27:28	potuz:	Replying to "when did preconfs be..."
+
+God only knows
+00:27:29	Roman:	Replying to "when did preconfs be..."
+
+not talking about the end goal, but the mechanism itself
+00:27:30	Parithosh Jayanthi:	Not SFI first and then deploy on testnet
+00:27:34	ethDreamer (Mark):	Replying to "Since this is small,..."
+
+We have devnet-0
+00:27:37	kasey:	Replying to "Since this is small,..."
+
+The idea of CFI is we should be able to add it at any point if there is no downside to doing so.
+00:27:39	ethDreamer (Mark):	Replying to "Since this is small,..."
+
+That was the original thinking
+00:27:57	Tim Beiko:	SFI should be “next devnet"
+00:28:04	Gustavo Gonzalez:	Replying to "Since this is small,..."
+
+I believe it would be helpful for projects building based rollups and preconfs to have predictability that this will be included soon
+00:28:12	Ansgar Dietrichs:	Replying to "when did preconfs be..."
+
+point is that this is not something we are the best people to be opinionated about
+
+clearly people are asking for this to help UX
+00:28:25	Tim Beiko:	So if this is going to be devnet-1, we should SFI. If we want to wait until devnet-2, can just leave SFI for now
+00:30:34	Ansgar Dietrichs:	Replying to "So if this is going ..."
+
+is there no value in “this is included, start working on it now”?
+00:30:48	Barnabas:	Lets do june 9 then
+00:30:52	Barnabas:	nobody opposing it
+00:30:56	Ansgar Dietrichs:	Replying to "So if this is going ..."
+
+because clearly before today, it was not yet time to start working on it
+00:30:57	NC:	Reacted to "nobody opposing it" with 👍
+00:30:59	Phil Ngo:	🚢
+00:31:00	Ansgar Dietrichs:	Replying to "So if this is going ..."
+
+seems like an important status change
+00:31:03	Drew Van der Werff:	Reacted to "🚢" with ❤️
+00:31:04	Will Corcoran:	Reacted to "🚢" with ❤️
+00:31:04	Sam Jernigan:	Reacted to "🚢" with 🔥
+00:31:07	Justin Traglia:	Reacted to "🚢" with 🔥
+00:31:11	Lin Oshitani | Nethermind:	Reacted to "🚢" with ❤️
+00:31:19	Brecht Devos:	Reacted to "🚢" with ❤️
+00:31:33	Lean F | Lambda:	Reacted to "🚢" with ❤️
+00:31:34	Lean F | Lambda:	Reacted to "🚢" with 🔥
+00:31:49	NC:	Reacted to "🚢" with ❤️
+00:32:49	Ladislaus:	Reacted to "🚢" with ❤️
+00:34:19	mpaulucci | ethrex:	Reacted to "🚢" with ❤️
+00:34:19	mpaulucci | ethrex:	Reacted to "🚢" with 🔥
+00:34:54	Toni Wahrstätter:	Reacted to "🚢" with ❤️
+00:36:31	terence:	same with prysm
+00:37:50	Parithosh Jayanthi:	Reacted to "🚢" with ❤️
+00:38:52	nflaig:	Reacted to "🚢" with ❤️
+00:38:56	nflaig:	Reacted to "🚢" with 🔥
+00:39:32	Ansgar Dietrichs:	Francesco is OOO today, seems tricky to decide without him
+00:40:40	Ansgar Dietrichs:	testing call monday might be good place to discuss?
+00:40:47	Barnabas:	Reacted to "testing call monday ..." with 👍
+00:40:57	Ansgar Dietrichs:	Replying to "testing call monday ..."
+
+confirmed Francesco will be joining :-)
+00:42:09	Ansgar Dietrichs:	curious, what’s the general feeling from CL side around fork readiness?
+
+mostly still some work until peerdas stability?
+00:43:17	terence:	Replying to "curious, what’s the ..."
+
+I think after devnet1, its just testing test testing
+00:43:25	Ansgar Dietrichs:	Reacted to "I think after devnet..." with 👍
+00:43:30	Justin Traglia:	Reacted to "I think after devnet..." with 👍
+00:43:31	Parithosh Jayanthi:	Reacted to "I think after devnet..." with 👍
+00:43:41	Ansgar Dietrichs:	Replying to "curious, what’s the ..."
+
+makes sense. sorry for the open ended question
+00:43:41	chanderprakash sharma:	Reacted to "I think after devn..." with 👍
+00:43:51	Barnabas:	Reacted to "I think after devnet..." with 👍
+00:44:41	Ansgar Dietrichs:	what are the timelines again for headliner proposals?
+00:45:22	Barnabas:	Are we ok with not shipping any forks in 2026?
+00:45:25	soispoke:	[May 26 - June 20] Fork Focus Discussion & Headliner Proposals
+
+[June 23 - July 17] Headliner Discussion & Finalization
+
+[July 21 - Aug 21] Non-Headliner EIP Proposals
+
+[Sep 4 & 11] Non-Headliner EIP CFI Decisions
+00:45:28	Ansgar Dietrichs:	Replying to "Are we ok with not s..."
+
+??
+00:45:32	potuz:	Reacted to "Are we ok with not s..." with 😁
+00:45:51	df:	Replying to "Are we ok with not s..."
+
+Hopefully not, why?
+00:46:45	lightclient:	Reacted to "Are we ok with not s…" with 😁
+00:47:01	df:	IMO focus Glamsterdam on scaling+UX
+ - shorter block times
+ - delayed execution
+ - anything else that is ready and deemed highest priority for EL scaling (e.g. block level access list or an alternative like tx state diffs)
+00:47:07	potuz:	ePBS does not need EL at all
+00:47:27	Toni Wahrstätter:	Reacted to "IMO focus Glamsterda..." with 👍
+00:47:37	terence:	Reacted to "ePBS does not need E..." with 👍
+00:48:55	Ansgar Dietrichs:	ah I though we wanted to have general discussion first, then headliners
+00:48:55	soispoke:	Will talk about it during the presentation but FOCIL helps with both scaling and UX (which are two priorities)
+00:49:01	Ansgar Dietrichs:	Replying to "ah I though we wante..."
+
+sorry about that
+00:49:17	Ansgar Dietrichs:	Replying to "ePBS does not need E..."
+
+but it does help EL scaling
+00:49:39	stokes:	Replying to "ah I though we wante..."
+
+Mix of both
+00:49:42	Ansgar Dietrichs:	Replying to "IMO focus Glamsterda..."
+
+ah right I forgot shorter slot times, +1 to that
+00:49:44	stokes:	Replying to "ah I though we wante..."
+
+I think your comment was a good intro
+00:49:50	NC:	Is censorship resistance not one of the focuses? Rather than frame it as UX
+00:49:51	Ansgar Dietrichs:	Replying to "IMO focus Glamsterda..."
+
+to me that's "scaling" in a broad sense
+00:51:02	df:	Replying to "Is censorship resist..."
+
+CR is important but do you mean specific things to increase CR like FOCIL?
+00:51:10	Anders Elowsson:	Replying to "IMO focus Glamsterda..."
+
+BALs are cool
+00:51:23	mpaulucci | ethrex:	Anywhere I can read opinions against ePBS? I’ve heard it’s controversial but it seems like a no brainer for me
+00:51:36	NC:	Replying to "Is censorship resist..."
+
+Yea I meant to say focil
+00:51:40	soispoke:	Replying to "Is censorship resist..."
+
+FOCIL’s focus is definitely CR, but it does have an impact on UX
+00:51:43	nixo:	Reacted to "Anywhere I can read ..." with ➕
+00:51:57	Carl Beekhuizen:	Replying to "IMO focus Glamsterda..."
+
+BALs are indeed cool, but imo might not be worth the bandwidth cost
+00:51:58	df:	Replying to "Is censorship resist..."
+
+shorter slot times also halve the time to censorship resistance :)
+00:52:23	soispoke:	Replying to "Is censorship resist..."
+
+But you still rely on the same 2 centralized builders so not really
+00:52:40	Carl Beekhuizen:	Replying to "IMO focus Glamsterda..."
+
+That said, if we’re going stateless then it doesn’t add much overhead
+00:52:47	Jihoon:	Reacted to "But you still rely o..." with 👍
+00:53:17	Ansgar Dietrichs:	just a general word of caution: we should be somewhat careful with champion-led proposals, because people usually end up personally invested, which makes it harder to get neutral assessments.
+
+This has been causing issues on the EL several times (e.g. Verkle)
+00:53:18	sean:	Reacted to "just a general word ..." with 😄
+00:53:18	Toni Wahrstätter:	Replying to "IMO focus Glamsterda..."
+
+I think they are. This is off-topic here but having full state diffs is also nice for other purposes other than just speeding up execution such as partially stateless nodes or full nodes under zkEVMs
+00:53:20	Justin Florentine (Besu):	Replying to "IMO focus Glamsterda..."
+
+also fan of BAL, also concerned about bandwidth increase
+00:53:23	df:	Replying to "IMO focus Glamsterda..."
+
+feeling is that tx state diffs might be the best tradeoff in terms of:
+ - parallel execution
+ - getting "almost" perfect prefetching via parallel execution
+ - syncing
+ - at more moderate bandwidth cost
+00:53:40	Tomasz Stańczak:	It sounds like an advertisement.
+00:53:59	Barnabas:	Reacted to "It sounds like an ad..." with 😂
+00:54:17	Tomasz Stańczak:	Reacted to "just a general word ..." with 👍
+00:54:21	Sam Jernigan:	Reacted to "just a general word ..." with 👍
+00:54:33	Barnabas:	Replying to "It sounds like an ad..."
+
+is that a good or a bad thing?
+00:54:33	Carl Beekhuizen:	Reacted to "just a general word ..." with 👍
+00:54:53	df:	Replying to "Is censorship resist..."
+
+not really. If you assume any percentage of non-censoring proposers, then halving slot times halve the time until you get a non-censoring proposer
+00:55:08	lightclient:	Reacted to "It sounds like an ad…" with 😂
+00:55:16	Barnabas:	Would be really good to get the cons of epbs too now.
+00:55:25	Tomasz Stańczak:	Replying to "It sounds like an ad..."
+
+Not sure. If it is encouraging people to look into it more then good.
+00:55:40	Tomasz Stańczak:	Replying to "It sounds like an ad..."
+
+If encourages people to just include it because it is great and solves all the problems then not.
+00:55:46	Justin Traglia:	Reacted to "It sounds like an ad..." with 😂
+00:55:53	Parithosh Jayanthi:	Are there any fork choice implications? That tends to be a security sensitive layer and we should make sure there are no dragons there
+00:55:57	df:	Replying to "Anywhere I can read ..."
+
+It is quite a complex proposal and delayed execution gives even better pipelining (scaling) properties
+00:55:59	Caleb:	Reacted to Anywhere I can read ... with "➕"
+00:56:10	Caleb:	Reacted to ePBS does not need E... with "👍"
+00:56:18	Storm Slivkoff:	Replying to "Is censorship resist..."
+
+the effect of slot times on CR is very underrated
+00:56:25	Ansgar Dietrichs:	process clarification question: I assume the next 4 weeks are for headliner proposals, then we would get into evaluating / discussing them afterwards, right?
+
+I assume the people critical of ePBS would then prepare arguments to present for such a discussion
+00:56:29	Tomasz Stańczak:	Replying to "Would be really good..."
+
+Last time I was looking at it, the main concern was that there was no incentive for anyone to use it and that it would be dead on arrival but now it seems it has changed significantly since then.
+00:56:34	Marc:	how does it compare to other APS proposals?
+00:56:35	Justin Florentine (Besu):	Replying to "Anywhere I can read ..."
+
+delayed execution in general is a big pre-cursor for encrypted mempool designs
+00:56:36	terence:	I think it’s much less complex than delayed execution. epbs doesnt have any EL change
+00:56:50	soispoke:	Replying to "Is censorship resist..."
+
+non censoring proposers that happen to be local block builders then, that’s very limited (6%)?
+00:57:02	kasey:	I think an undersold benefit of epbs is that it could be extended to allow the builder to show what blobs it would include (via eg commitment root), enabling L2-aligned proposers to pick blocks that include blobs they need to get on-chain. Keeping builders aligned with blob inclusion is going to get harder as we crank the blob limit and fragment the EL mempool.
+00:57:07	stokes:	Replying to "process clarificatio..."
+
+Roughly yes
+00:57:14	Ahmad Bitar | Nethermind:	Replying to "Would be really good..."
+
+This argument was discussed and debunked in a breakout room in thailand
+00:57:15	terence:	Replying to "Anywhere I can read ..."
+
+but I agree epbs has fork choice change, which is the biggest part
+00:57:18	Tomasz Stańczak:	Replying to "Would be really good..."
+
+Also staking related teams believe it would require significant amount of time for them to integrate it while they are still implementing MaxEB
+00:57:19	stokes:	Replying to "process clarificatio..."
+
+Just wanted to prime the pump today
+00:57:32	Ansgar Dietrichs:	Replying to "process clarificatio..."
+
+yes it makes sense
+00:57:36	Barnabé Monnot:	Replying to "how does it compare ..."
+
+It does not remove the responsibility of assigning the builder of the execution payload from the validator
+00:57:41	Barnabas:	Replying to "Would be really good..."
+
+that shouldn’t be a blocker tho...
+00:57:59	Tomasz Stańczak:	Replying to "Would be really good..."
+
+@Ahmad Bitar | Nethermind - would love to learn more
+00:57:59	Marc:	Replying to "how does it compare …"
+could that be done on top of ePBS?
+00:58:07	Ansgar Dietrichs:	Replying to "process clarificatio..."
+
+just would want to clarify that the next 4 weeks are more about champion presentations and ad hoc q&a, so people should reserve judgement
+00:58:25	Tomasz Stańczak:	Replying to "Would be really good..."
+
+Barnabas, I think that taking into account all the apps on the protocol should rather be an important aspect of planning forks.
+00:58:29	Ahmad Bitar | Nethermind:	Replying to "Would be really good..."
+
+For sure @potuz and @terence can say it way better than I.
+00:58:43	Barnabas:	which cl are ready? Prysm I assume and?
+00:58:44	Barnabé Monnot:	Replying to "how does it compare ..."
+
+if you added something like mev-burn to it, it would look more like it (JIT APS)
+00:58:58	Justin Traglia:	Replying to "which cl are ready? ..."
+
+Prysm & teku, I believe.
+00:59:10	terence:	Replying to "how does it compare ..."
+
+we believe eip7732 is fully extensible to APS
+00:59:23	Marc:	Reacted to "if you added somethi…" with 👍🏾
+00:59:23	Stefan Bratanov:	Replying to "which cl are ready? ..."
+
+Teku yes
+00:59:25	Parithosh Jayanthi:	Replying to "Would be really good..."
+
+@Tomasz Stańczak what do you mean staking teams need to implement things? Afaik epbs doesn’t require them to partake in some change right? Or is it just that it is more load for them to keep up with?
+00:59:25	Marc:	Reacted to "we believe eip7732 i…" with 👍🏾
+00:59:48	Tomasz Stańczak:	Replying to "Would be really good..."
+
+@Ahmad Bitar | Nethermind - around mid year last year the general feeling was that many researchers on the MEV side just pointed out that it had broken incentive (at that time) and were ignored and stopped participating so you may have them activating much more if it gets closer to inclusion. Similar to what happened around EOF.
+01:00:14	Barnabé Monnot:	Replying to "Anywhere I can read ..."
+
+It is also not perfectly clear that separating the beacon block from the execution payload is what we want to do, if other things are desired such as short slot times (in some limit)
+01:00:17	soispoke:	FOCIL for Glamsterdam presentation: https://docs.google.com/presentation/d/1BYZQOmNkv-nLe25NmPOowhBLPVa76kDDibR_nR0-RGU/edit?usp=sharing
+01:00:26	Tomasz Stańczak:	Replying to "Would be really good..."
+
+But I was not tracking the updates since last April so definitely looking forward to reading much more on all the latest updates.
+01:00:26	Ahmad Bitar | Nethermind:	Reacted to "@Ahmad Bitar | Nethe..." with 👍
+01:00:40	Parithosh Jayanthi:	Reacted to "But I was not tracki..." with 👍🏽
+01:00:47	NC:	Replying to "Would be really good..."
+
+I am more interested in what doors are shut if we adopt ePBS. Like what other potential eips cannot be adopted because of ePBS
+01:01:06	potuz:	Replying to "Would be really good..."
+
+I can speak volumes to the bipasseability argument if you want Tomasz, it's abosuletly bogus
+01:01:14	potuz:	Replying to "Would be really good..."
+
+but not in this chat
+01:01:28	Barnabas:	Replying to "Would be really good..."
+
+I’m not suggesting that we shouldn’t consider the aspect of staking teams, I’m just saying that I don’t think just because a team hasn’t yet implemented maxEB we shouldn’t be considering new updates that touches staking pools. Just because some dev teams work slower, it shouldn’t slow down protocol changes.
+01:01:30	Barnabé Monnot:	Replying to "Would be really good..."
+
+To ePBS credit, even if MEV people decide not to use it, it still offers the pipelining of delivering the execution payload later
+01:02:16	Ahmad Bitar | Nethermind:	Reacted to "To ePBS credit, even..." with ➕
+01:02:18	potuz:	Replying to "Would be really good..."
+
+@NC no doors get closed, it' s the  exact same opposite, 7886 would close doors by interwining the consensus from the execution. By separating their logic you allow for much more flexible protocol
+01:02:28	Jihoon:	Reacted to "To ePBS credit, even..." with ➕
+01:02:59	Parithosh Jayanthi:	Reacted to "To ePBS credit, even..." with ➕
+01:03:39	df:	Reacted to "the effect of slot t..." with 👍
+01:03:51	Ansgar Dietrichs:	just want to say, I think the team working on this (especially Thomas and Julian) have done a phenomenal job, and it’s because of their work we finally have a concrete feature ready for getting to a principled solution for CR on mainnet.
+
+I feel like a bit of a bad guy for always saying we should be pragmatic about waiting to ship this if it’s not yet necessary for scaling. To be clear, I think this is absolutely crucial for Ethereum in the medium term!
+01:04:13	potuz:	Replying to "Would be really good..."
+
+@Tomasz Stańczak Staking teams were generally very favorable to ePBS: it removes the problem of MEV stealing for them. I mostly got feedback from Lido but for them it was a very good UX benefit
+01:04:24	terence:	Replying to "Anywhere I can read ..."
+
+I dont think epbs contradicts much short slot time: https://hackmd.io/@potuz/B1pWLb0-ll
+01:04:37	df:	Replying to "Is censorship resist..."
+
+Currently that give you an expected 200s to censorship resistance, with 6s slots it would be 100s
+01:04:49	Ahmad Bitar | Nethermind:	btw, @Drew Van der Werff i think it is very important to start looking into the ePBS spec and its impact on Preconfirmations. I do still think the benefits of ePBS (especially on L1 scaling for both blobs and execution) outweighs the benefits of preconfs
+01:04:50	Marc:	I think FOCIL in glamsterdam would be great, just important to consider how it will interact with other things like ePBS / delayed execution and block access lists
+01:05:12	potuz:	Replying to "how does it compare ..."
+
+I tried to prepare an actual implementation of APS on top of 7732 but I can't solve some problems of incentives on how to choose the builder 32 slots in advance.
+01:05:30	potuz:	Replying to "how does it compare ..."
+
+but that problem is completely independent of 7732, any mechanism for APS will have to deal with this
+01:05:53	Barnabé Monnot:	Replying to "how does it compare ..."
+
+@potuz you could do it not 32 slots in advance, using mev-burn for instance
+01:06:17	Barnabé Monnot:	Replying to "how does it compare ..."
+
+but this is not the preferred APS mechanism atm aiui
+01:06:34	Toni Wahrstätter:	Replying to "Would be really good..."
+
+My main argument against ePBS is complexity and potential incompatibility with other features we might want in the future (shorter slots and SSF). 
+
+We'd enshrine two new entities (PTC and builders) and radically change the fork-choice function. The latter is the real issue because it touches such a sentitive part of the protocol and changes the inputs to fork choice for the proposers (PTC vote becomes input to fork choice, which is something entirely new).
+Also, the simulations done claiming block propagation of 1s are just optimistic benchmarks but far away from propagation times on mainnet today. Assuming attestations propagate in 1s but one can see them arriving at the 0.5 quantile of the network at second 6.5 in the slot for missed slots, so after 2.5s.
+01:06:35	Marc:	Replying to "how does it compare …"
+makes sense, does this close the design space somewhat for what kind of APS we could do on top though?
+01:06:38	potuz:	Replying to "Anywhere I can read ..."
+
+@df what you say about delayed execution givin gbetter pipelining is just false. Broadcast is the biggest benefit and delayed execution does not change that at all
+01:06:53	Drew Van der Werff:	Replying to "btw, @Drew Van der W..."
+
+Noted! We still will need faster transaction confirmation than likely can be offered even in ePBS / L1. But faster block times are critical.
+01:07:05	potuz:	Replying to "Anywhere I can read ..."
+
+@Justin Florentine (Besu) ePBS gives you better delayed execution than delayed execution
+01:07:30	Ahmad Bitar | Nethermind:	Reacted to "Noted! We still will..." with 💯
+01:07:32	df:	I don't think FOCIL should be considered a UX benefit. That stretches UX too far!
+01:07:53	Barnabé Monnot:	Replying to "btw, @Drew Van der W..."
+
+afaict there is no direct impact of ePBS on preconfs, ePBS is only a secure line to make the remote call to builders, but you can still make the call and the builders/their relays can still offer you preconfs?
+01:07:58	stokes:	Replying to "I don't think FOCIL ..."
+
+Would you say it is a scaling benefit?
+01:08:03	Ben Edgington:	Replying to "I don't think FOCIL ..."
+
+Better UX for people who are getting censored.
+01:08:04	Ansgar Dietrichs:	Replying to "I don't think FOCIL ..."
+
+also almost trivializes FOCIL. Censorship resistance is one of the key values of Ethereum!
+01:08:08	stokes:	Replying to "I don't think FOCIL ..."
+
+Or just CR as a category separate from UX?
+01:08:19	Drew Van der Werff:	Reacted to "afaict there is no d..." with 👍
+01:08:33	NC:	Reacted to "Or just CR as a cate..." with ➕
+01:08:33	terence:	Replying to "btw, @Drew Van der W..."
+
+in the current eip7732 spec, builder is staked, its validator index is on the beacon state, this enables pre conf to do more things like trustless slashing
+01:08:45	Toni Wahrstätter:	Replying to "Is censorship resist..."
+
+We should note that even if there are 99% builders censoring, only non-censoring builder get the prio fees from censored tx and thus, from time to time, accumlate enough to win the block. This is why it was so easy to get censored transactions on chain = non-censoring builders are ready to win the block auction using censored transaction. If a big app gets censored, only non-censoring builders would win and censorship would be at ~0.
+01:08:55	Drew Van der Werff:	Reacted to "in the current eip77..." with 🔥
+01:08:59	Ahmad Bitar | Nethermind:	Reacted to "in the current eip77..." with 🔥
+01:09:26	Barnabé Monnot:	Replying to "how does it compare ..."
+
+there is a large design space, i am not sure if all of it looks like an iteration from ePBS, some of it looks more fundamentally different. best resource atm https://docs.google.com/presentation/d/1WVVcHsFcg92zB77vgzG4fsdpCR2Jxzx8XfuTCbCqWjM/edit?slide=id.p#slide=id.p
+01:09:40	Toni Wahrstätter:	I don't fully buy the scaling argument: As long as we need local builders as a fallback for mevboost, we cannot just scale both gas limit and the IL size since at somepoint you would need to include more txs than you can.
+01:10:13	Jihoon:	Reacted to "in the current eip77..." with 🔥
+01:10:51	DA | Flashbots:	Replying to "Would be really good..."
+
+Personally neutral epbs, but suspect that it encourages the builder market to collapse towards one single builder. Still looking into it.
+01:10:59	Marc:	Replying to "how does it compare …"
+I guess if we ship ePBS soon then we can still do something different for beam chain
+01:11:16	Jihoon:	Reacted to "We should note that ..." with 👍
+01:11:20	Storm Slivkoff:	Replying to "I don't fully buy th..."
+
+Can you explain more about why the fallback is needed post FOCIL
+01:11:21	potuz:	Replying to "how does it compare ..."
+
+@Barnabé Monnot I do not know how to do it, I tried to actually fully specify it and I couldn't. Neither with mev-burn type mechanisms where the protocol runs the auction, or assigning an auctioneer (for example the CL proposer). I can't plug all holes. I think people tend to think at a higher level without actually sitting down to specify the full thing.
+01:11:29	Barnabé Monnot:	Reacted to "the effect of slot t..." with 👍
+01:11:56	Toni Wahrstätter:	Replying to "Would be really good..."
+
+to compete for large blocks you need large stakes, so yeah, might further increase centralization on the builder front
+01:12:28	potuz:	Replying to "btw, @Drew Van der W..."
+
+I already argued in a few places that ePBS enables easier mechanisms for preconfirmations
+01:12:34	Ahmad Bitar | Nethermind:	Replying to "Would be really good..."
+
+@Toni Wahrstätter can you elaborate on this
+01:12:38	terence:	Replying to "Would be really good..."
+
+how does epbs change the builder market?
+01:12:51	Sam Jernigan:	Reacted to "there is a large des..." with 👍
+01:12:58	Barnabé Monnot:	Replying to "I don't fully buy th..."
+
+discussed this question in bullet point #5 of this section https://ethresear.ch/t/decoupling-throughput-from-local-building/22004#p-53517-block-production-liveness-7
+01:13:14	Toni Wahrstätter:	Replying to "Would be really good..."
+
+you need to stake right? and if I want to compete for a block with 10 ETH mev, I'd need to stake at least 10 ETH?
+01:13:17	potuz:	I think it's a nobrainer that FOCIL should be included in the protocol
+01:13:32	Marc:	Reacted to "I think it's a nobra…" with ➕
+01:13:36	Ahmad Bitar | Nethermind:	Reacted to "I think it's a nobra..." with ➕
+01:13:38	DA | Flashbots:	Replying to "Would be really good..."
+
+Either relays become more powerful or you see a giant shift in order flow dynamics that strongly benefit a single builder.
+01:13:39	soispoke:	Reacted to "I think it's a nobra..." with ❤️
+01:13:44	Drew Van der Werff:	Replying to "btw, @Drew Van der W..."
+
+Links we can read / learn more? Can dm you if easier.
+01:13:53	Drew Van der Werff:	Reacted to "I already argued in ..." with 👀
+01:14:24	Toni Wahrstätter:	Replying to "I don't fully buy th..."
+
+The proposal is great for other reasons but I won't say it's scaling, at least not as long as it cannot scale with the gas limit while relying on builders to be online.
+01:14:34	Parithosh Jayanthi:	Reacted to "I think it's a nobra..." with ➕
+01:15:04	potuz:	Replying to "btw, @Drew Van der W..."
+
+The only written thing I can find is this old thing where I propose to use staked builders as preconfers. https://ethresear.ch/t/the-contention-between-preconfs-and-epbs/19770
+01:15:06	Toni Wahrstätter:	Replying to "I don't fully buy th..."
+
+imagine you're forced to include tx of 30m gas but you thought you could always rely on builders and won't ever have to fall-back from mevboost (bc of a bug) and build blocks locally again.
+01:15:17	Drew Van der Werff:	Reacted to "The only written thi..." with 🙏
+01:15:32	Jihoon:	Reacted to "I think it's a nobra..." with ➕
+01:15:50	Drew Van der Werff:	Replying to "btw, @Drew Van der W..."
+
+Think a lot has changed since then, but we’ll take a close look and be back!
+01:15:51	Storm Slivkoff:	Replying to "I don't fully buy th..."
+
+It seems like this only becomes an issue if the IL length is too long
+
+Otherwise FOCIL helps scaling by allowing for higher validator hw req’s without sacrificing CR
+01:16:03	DA | Flashbots:	Reacted to "imagine you're force..." with 🤔
+01:16:32	NC:	Replying to "Would be really good..."
+
+@DA | Flashbots how will epbs affect flashbot’s builder net?
+01:17:11	Barnabas:	Are there any other CL headliners that could make it into glamsterdam?
+01:17:22	Tim Beiko:	I think we should assume there will be more
+01:17:32	DA | Flashbots:	Replying to "Would be really good..."
+
+Unsure. Would say neutral.
+01:17:35	nixo:	+ solo stakers for ePBS
+01:17:38	Francesco:	Replying to "Are there any other ..."
+
+There’s a lot of work to do on networking
+01:17:49	potuz:	Reacted to "I think we should as..." with 👍
+01:17:53	Barnabas:	Replying to "Are there any other ..."
+
+are networking changes going to be headliners?
+01:17:54	Francesco:	Replying to "Are there any other ..."
+
+Possibly big changes to how peerdas works
+01:18:09	Francesco:	Replying to "Are there any other ..."
+
+Don’t see why they couldn’t be
+01:18:12	Barnabé Monnot:	Replying to "I don't fully buy th..."
+
+@Toni Wahrstätter you're describing a liveness failure and assuming that there is no other way to make a block other than from your local node, imo this is a strong assumption and maybe too strong to justify FOCIL not replacing local building
+01:18:34	Storm Slivkoff:	Replying to "I think we should as..."
+
+delayed execution 💪
+01:18:37	soispoke:	Reacted to "@Toni Wahrstätter yo..." with 👍
+01:19:13	df:	Reacted to "delayed execution 💪" with 👍
+01:19:23	Toni Wahrstätter:	Replying to "I don't fully buy th..."
+
+but this is how it works today. mevboost breaks, everyone falls back. If we'd get into such a situation today, we'd see many reorgs, I'm sure
+01:19:27	Ansgar Dietrichs:	Somewhat contrarian take:
+
+I think being more user / stakeholder centric should be more of a focus for EL than CL.
+
+CL is more about high level properties of the protocol, EL is the direct interface to users.
+
+Exception is DA (we need to talk to blob consumers about what they need!), and to some extent staking (but as I said before, I think we overly focused on this in the past)
+01:19:46	Toni Wahrstätter:	Replying to "I don't fully buy th..."
+
+what would be the other way that is not mevboost or locally?
+01:19:48	nixo:	are these “official proposals” for headliners? or better put - what’s the threshold for the proposed rule that declined headliners can’t be added in as non-headlining features?
+01:19:57	DA | Flashbots:	Replying to "I don't fully buy th..."
+
+Can we just cap the gas used by a IL transaction? And add a proposer flag for max gas in a block so that local builders can keep liveness?
+01:20:24	Justin Florentine (Besu):	I FEEL TARGETED
+01:20:28	Parithosh Jayanthi:	Reacted to "I FEEL TARGETED" with 😂
+01:20:30	nixo:	Reacted to "I FEEL TARGETED" with 😂
+01:20:42	Storm Slivkoff:	Replying to "Somewhat contrarian ..."
+
+Another exception is slot time
+01:20:46	Toni Wahrstätter:	Replying to "are these “official ..."
+
+I think those are the one "officially" proposed on ethmag under #glamsterdam
+01:20:48	Justin Traglia:	Reacted to "I FEEL TARGETED" with 😂
+01:20:51	potuz:	Reacted to "I FEEL TARGETED" with 😂
+01:20:54	soispoke:	Reacted to "I think those are th..." with 👍
+01:20:56	nixo:	Reacted to "I think those are th..." with 👍
+01:21:13	Barnabas:	+1 potuz, by far the biggest problem is always going to be networking. We can always buy a faster CPU/ more ram. But realistically we can’t always buy faster internet.
+01:21:26	Ansgar Dietrichs:	agreed the CL can help with scaling, but that’s still more high level. we already know we want to scale. EL needs to go talk to people about how the EVM should evolve. Much more direct user interface
+01:21:48	potuz:	that' s my point: and that' s why I want to scale that @Barnabas 
+01:21:53	Barnabas:	Reacted to "that' s my point: an..." with 🎉
+01:22:03	Ansgar Dietrichs:	Replying to "agreed the CL can he..."
+
+also with EVM equivalence, EL changes affect all EVM chains, not just L1.
+
+CL changes only affect L1.
+01:22:11	Parithosh Jayanthi:	Reacted to "that' s my point: an..." with 🎉
+01:22:13	Tim Beiko:	Can you post your question on the chat?
+01:22:19	Tim Beiko:	Ahh audio is better now
+01:22:25	Tim Beiko:	The meeting link is in the Discord
+01:22:27	mpaulucci | ethrex:	Reacted to "that' s my point: an..." with 🎉
+01:22:42	Ansgar Dietrichs:	Replying to "agreed the CL can he..."
+
+so overall I do think there is a pretty strong asymmetry between EL and CL here
+01:22:44	Barnabas:	@chanderprakash sharma this is all on Eth R&D
+01:22:52	potuz:	Replying to "agreed the CL can he..."
+
+I do not think these are high level changes. Changing the way blocks are distributed for example is definitely not high level
+01:22:55	Pooja Ranjan:	https://calendar.google.com/calendar/u/0?cid=Y191cGFvZm9uZzhtZ3JtcmtlZ243aWM3aGs1c0Bncm91cC5jYWxlbmRhci5nb29nbGUuY29t
+01:22:58	Francesco:	Can you please ask something like offline? It’s a call with 70 people, don’t really have time for this (no offence)
+01:22:59	Tim Beiko:	I don’t think we should put the zoom link in the cal invite, because it’s too suceptible to spam
+01:22:59	Roman:	can u ask about it separately pls?
+01:23:04	Roman:	Reacted to "Can you please ask s..." with 👍
+01:23:06	Parithosh Jayanthi:	Reacted to "Can you please ask s..." with 👍
+01:23:07	nixo:	Reacted to "Can you please ask s..." with 👍
+01:23:20	kev:	Reacted to "Can you please ask s..." with 👍
+01:23:21	Ansgar Dietrichs:	Replying to "agreed the CL can he..."
+
+but the number of stakeholders to talk to about this is still small
+01:23:21	potuz:	Replying to "agreed the CL can he..."
+
+and if I were to proposose an RLNC broadcast mechanism, it would be here, not in the ACDE.
+01:23:37	Ansgar Dietrichs:	Replying to "agreed the CL can he..."
+
+of course! but the discussion was about bringing in more external stakeholders
+01:23:45	Carl Beekhuizen:	Reacted to "I don’t think we sho..." with 👍
+01:24:01	Ansgar Dietrichs:	Replying to "agreed the CL can he..."
+
+and I think these are still much more internal topics. there will be some people to invite, but at much lower scale than for many EL topics
+01:24:05	potuz:	Replying to "agreed the CL can he..."
+
+ah yeah, but that can get into either call fine, for ePBS we should bring builders, Lido, homestakers etces
+01:24:10	potuz:	Replying to "agreed the CL can he..."
+
+and those can come anyone
+01:24:14	Carl Beekhuizen:	Reacted to "Can you please ask s..." with 👍
+01:24:16	Jihoon:	Reacted to "Can you please ask s..." with 👍
+01:24:50	Ansgar Dietrichs:	Replying to "agreed the CL can he..."
+
+but these are the people helping us make the changes happen, not the people the changes are for
+01:24:57	potuz:	LIDO, RocketPool, homestakers, Builders, etc should be input for ePBS. But I also would want client devs to actually look into the impl so that they get an actual feeling on complexity
+01:25:05	Ansgar Dietrichs:	Replying to "agreed the CL can he..."
+
+I think we need to start focusing more on the actual users, not the infrastructure layer
+01:25:10	potuz:	I urge people that work on both sides to look into it
+01:25:17	stokes:	https://ethereum-magicians.org/t/h-star-name-for-consensus-layer-upgrade-after-glamsterdam/24298
+01:25:22	Sam Jernigan:	Reacted to "I think we need to s..." with 👍
+01:25:25	Ansgar Dietrichs:	Replying to "agreed the CL can he..."
+
+of course always important to go talk to infra layer about what is feasible
+01:25:57	Storm Slivkoff:	Replying to "LIDO, RocketPool, ho..."
+
+There are impacts throughout the protocol. Stakes are not the only relevant audience
+01:25:59	potuz:	Replying to "agreed the CL can he..."
+
+yeah, but actual users won't really be much affected by ePBS. FOCIL is more nuanced
+01:26:09	potuz:	Replying to "agreed the CL can he..."
+
+except the scaling properties I guess
+01:26:12	terence:	Replying to "LIDO, RocketPool, ho..."
+
+Pref conf gateway as well
+01:26:27	potuz:	Replying to "LIDO, RocketPool, ho..."
+
+I barely mentioned stakers
+01:26:28	Sam Jernigan:	bye

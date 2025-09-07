@@ -1,0 +1,145 @@
+00:03:30	CPerezz:	Hello!
+00:03:37	Pooja Ranjan:	Reacted to "Hello!" with 👋
+00:04:04	Justin Traglia:	Gm
+00:04:12	Mario Vega:	Gm all
+00:04:15	Antoine James:	Gm all
+00:04:20	Fredrik:	hola
+00:04:32	spencer:	👋
+00:04:50	Justin Traglia:	Reacted to "hola" with 😎
+00:04:53	danceratopz:	Reacted to "👋" with 🌊
+00:05:01	Mario Vega:	Reacted to "hola" with 😎
+00:05:09	danceratopz:	Reacted to "hola" with 😎
+00:05:09	nixo:	gm
+00:07:10	Parithosh Jayanthi:	https://dora.fusaka-devnet-3.ethpandaops.io/
+00:09:48	Manu:	Asking because Prysm orphaned a block and noticed that all columns were received very late (>7s) into the slot
+00:10:45	pawan:	Are the orphaned blocks from a specific CL/EL ?
+00:11:28	Manu:	Replying to "Are the orphaned blo..."
+
+no
+00:11:35	Manu:	Replying to "Are the orphaned blo..."
+
+No clear pattern.
+00:11:47	Manu:	Replying to "Are the orphaned blo..."
+
+No clear pattern for the parent block as well
+00:12:51	Parithosh Jayanthi:	35776
+00:13:35	Justin Traglia:	http://mev-relay-1.fusaka-devnet-3.ethpandaops.io:9060
+00:17:54	Parithosh Jayanthi:	@pk910 could you look into that with the testing team?
+00:18:04	Marius van der Wijden:	Is lightclient not here?
+00:18:14	pk910:	Replying to "@pk910 could you loo..."
+
+yea :)
+00:18:19	Mario Vega:	Reacted to "yea :)" with 👍🏼
+00:18:48	Parithosh Jayanthi:	Reacted to "yea :)" with 👍🏼
+00:19:32	Roman:	the EIP does specify that, but i agree that it’s kinda brittle
+00:19:54	nixo:	Replying to "Is lightclient not h..."
+
+he’s ooo
+00:20:21	Tim Beiko:	Why are we not supposed to use RLP?
+00:21:21	Marius van der Wijden:	But again, I'm a bit low context on this
+00:22:10	Mario Vega:	The EIP does specify a json standardisation https://www.rfc-editor.org/rfc/rfc8785
+00:23:10	Mario Vega:	I liked the hash btw 🙁
+00:25:03	Marius van der Wijden:	I think either way is fine
+00:25:15	Marius van der Wijden:	but they should be the same
+00:25:45	Parithosh Jayanthi:	https://notes.ethereum.org/@ethpandaops/fusaka-devnet-3
+00:26:49	stokes:	As soon as we can
+00:26:58	stokes:	This week if we can get the other stuff sorted
+00:26:59	Justin Traglia:	Reacted to "As soon as we can" with 👍
+00:27:01	Alexey:	we will check secp256r1 real gas price I hope this week. Doubt we have time to update price in case of interesting findings though
+00:27:02	pawan:	Reacted to "As soon as we can" with 👍
+00:29:46	Roman:	what’s the change again?
+00:31:08	Ben Adams:	Kamil says "Gogogogogo 60M"
+00:31:13	Roman:	can u link the PR pls?
+00:31:31	Marius van der Wijden:	We have a PR here to add some more debug logs here https://github.com/ethereum/go-ethereum/pull/32287/files
+00:32:27	Alexey:	we started noticing it like 5 days ago
+00:32:51	Louis:	Replying to "we will check secp25..."
+
+What’s your approach, are you creating some benchmarks for this?
+00:32:55	Trent:	Catching up, the nethermind and geth issues are related or not related to 45mm?
+00:33:01	Parithosh Jayanthi:	Replying to "Catching up, the net..."
+
+unrelated
+00:33:05	Trent:	Reacted to "unrelated" with 👍
+00:33:07	Roman:	Reacted to "unrelated" with 👍
+00:33:33	Marius van der Wijden:	Replying to "can u link the PR ..."
+
+https://github.com/ethereum/go-ethereum/pull/31944/files#diff-5ad3eda22c65151285dcc5c2b67964cf633636bf5cc80e86773da555c5150fa8R178
+00:33:48	Raúl Kripalani:	Maybe if you have peer IDs we can investigate if there’s a common pattern
+00:34:51	CPerezz:	https://hackmd.io/WUe1KgwSS3iT8xoIbDg3Ng
+00:35:11	CPerezz:	https://hackmd.io/9icZeLN7R0Sk5mIjKlZAHQ?both
+00:35:50	CPerezz:	https://github.com/ethereum/go-ethereum/issues/32290
+00:36:04	Parithosh Jayanthi:	Reacted to "https://hackmd.io/WU..." with 🔥
+00:36:07	Parithosh Jayanthi:	Reacted to "https://hackmd.io/9i..." with 🔥
+00:40:16	CPerezz:	https://github.com/ethereum/execution-spec-tests/issues/1926
+00:40:17	Marius van der Wijden:	Interesting tidbits, we allocated ~10TB because of tracing and < 1TB of RAM because of the other chain operations
+00:40:36	CPerezz:	https://github.com/ethereum/execution-spec-tests/issues/1923
+00:40:42	Ben Adams:	Reacted to "Interesting tidbits,..." with 👀
+00:43:00	Ansgar Dietrichs:	Reacted to "Interesting tidbits,..." with 🔬
+00:43:15	Marius van der Wijden:	It would be ideal to write the tests in a way so that they can be replayed on arbitrary networks
+00:44:17	Marius van der Wijden:	How much do these file system tricks impact performance?
+00:44:58	Mario Vega:	https://github.com/ethereum/execution-spec-tests/releases/tag/benchmark%40v0.0.3
+00:45:05	Parithosh Jayanthi:	Replying to "How much do these fi..."
+
+Yet to check tbh, we’re learning about this fs ability as we go
+00:45:13	Parithosh Jayanthi:	Replying to "How much do these fi..."
+
+But its sort of the only realistic way to do state tests at scale
+00:45:26	Parithosh Jayanthi:	Replying to "How much do these fi..."
+
+Moving tbs of state around will kill SSDs otherwise
+00:45:38	Parithosh Jayanthi:	Replying to "How much do these fi..."
+
+Eth price isn’t high enough for that
+00:47:37	Ben Adams:	Replying to "How much do these fi..."
+
+Yet
+00:48:32	Ben Adams:	Replying to "How much do these fi..."
+
+@Marius van der Wijden sounds like low to none
+00:50:28	Marius van der Wijden:	Reacted to "@Marius van der Wi..." with 👍
+00:51:00	danceratopz:	Louis' slides:
+https://docs.google.com/presentation/d/1jjLM4cWQghMpiyPcQzZ_3di-Euz65idgZ45BUPndKBs/edit?slide=id.g373c3cf0dc8_0_69#slide=id.g373c3cf0dc8_0_69
+00:51:25	Ben Adams:	So looks like we are fine with CLZ
+00:51:59	CPerezz:	Reacted to "So looks like we are..." with 👍
+00:52:06	spencer:	Reacted to "So looks like we are…" with 👍
+00:52:09	danceratopz:	Replying to "So looks like we are..."
+
+if anything a gas cost of 5 is slightly conserative
+00:52:14	Mario Vega:	Reacted to "So looks like we are..." with 👍
+00:52:14	danceratopz:	Reacted to "So looks like we are..." with 👍
+00:52:14	Parithosh Jayanthi:	Reacted to "if anything a gas co..." with 👍🏽
+00:52:16	felipe:	Reacted to "So looks like we a..." with 👍
+00:52:18	Parithosh Jayanthi:	Reacted to "So looks like we are..." with 👍
+00:52:24	Ben Adams:	Reacted to "if anything a gas co..." with 💯
+00:52:39	Roman:	are we dropping to 3?)
+00:52:43	felipe:	Reacted to "if anything a gas ..." with 💯
+00:52:50	Marius van der Wijden:	Replying to "are we dropping to..."
+
+I don't think we should
+00:52:58	Ben Adams:	Ok with status quo; but should be considered to be repriced in next fork
+00:53:04	spencer:	Reacted to "Ok with status quo; …" with ❤️
+00:53:07	felipe:	Reacted to "Ok with status quo..." with 👍
+00:53:10	felix (eest):	Reacted to "Ok with status quo..." with 👍
+00:53:18	Mario Vega:	Reacted to "Ok with status quo; ..." with ❤️
+00:53:21	Ansgar Dietrichs:	Replying to "Ok with status quo; ..."
+
+I think next fork we’ll reprice most opcodes
+00:53:21	Marius van der Wijden:	Replying to "Ok with status quo..."
+
+already on the list 🚀
+00:53:31	danceratopz:	Reacted to "Ok with status quo; ..." with 👍
+00:53:58	Ben Adams:	Replying to "Ok with status quo; ..."
+
+Calibrated Opcode Costs?
+00:54:37	Roman:	@Louis can you remind pls how to interpret the y axis on your charts?
+00:55:00	Louis:	Replying to "@Louis can you remin..."
+
+It is the time spent on the benchmark test! In second
+00:55:39	Roman:	Replying to "@Louis can you remin..."
+
+is it in seconds?
+00:55:58	Mario Vega:	Reacted to "is it in seconds?" with 👍🏼
+00:56:10	Parithosh Jayanthi:	Reacted to "is it in seconds?" with 👍🏼
+00:57:08	danceratopz:	Replying to "@Louis can you remin..."
+
+Yes, seconds. It's the time to execute the payload - a block that has been filled (to the specified gas limit) with the opcode being benchmarked.

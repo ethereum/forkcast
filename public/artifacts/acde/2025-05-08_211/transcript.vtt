@@ -1,0 +1,2286 @@
+WEBVTT
+
+1
+00:04:22.490 --> 00:04:23.500
+lightclient: Hello!
+
+2
+00:04:26.190 --> 00:04:27.260
+Gary Schulte: Good morning!
+
+3
+00:04:58.630 --> 00:05:02.210
+Justin Florentine (Besu): Good morning. Ethereum.
+
+4
+00:05:05.460 --> 00:05:06.550
+Pooja Ranjan: Morning.
+
+5
+00:05:42.480 --> 00:05:43.789
+Tim Beiko: Good morning!
+
+6
+00:05:58.930 --> 00:06:04.040
+Pooja Ranjan: I suppose Josh is not here, so, Tim, do let me know whenever you want me to transition.
+
+7
+00:06:04.770 --> 00:06:14.310
+Tim Beiko: Okay, great, thank you. Yeah. Let's take a minute or 2. I saw a bunch of people added last minute stuff to the agenda as well. So I'm gonna refactor that while we wait.
+
+8
+00:08:32.929 --> 00:08:35.850
+Tim Beiko: okay, I think we could probably move over Pooja.
+
+9
+00:08:37.710 --> 00:08:38.760
+Pooja Ranjan: We are, live.
+
+10
+00:08:39.480 --> 00:08:40.726
+Tim Beiko: Thank you.
+
+11
+00:08:41.490 --> 00:08:54.163
+Tim Beiko: Welcome everyone to Acde at number 211. Lots of people added stuff on the agenda in the last few hours. So
+
+12
+00:08:54.800 --> 00:09:08.850
+Tim Beiko: yeah, I just I just re scrambled it together. But 1st off we'll discuss Petra, which obviously went live on on Mainnet yesterday. Then a bunch of stuff related to Fusaka. There were also some
+
+13
+00:09:09.320 --> 00:09:29.419
+Tim Beiko: spread about measuring State growth and getting better metrics for that. And then, if we have time. I shared my thoughts yesterday around how we should potentially improve the awkward Devs process, and someone else also, had that post about building better tooling for that
+
+14
+00:09:30.234 --> 00:09:37.345
+Tim Beiko: and if we have time, after all that there is also another eip that someone wanted feedback on
+
+15
+00:09:38.020 --> 00:09:59.229
+Tim Beiko: But to start yeah, Petro went live yesterday. Congratulations. Everyone. It seems like the fork went smoothly, and there weren't any major issues. This is huge. It was the biggest work in terms of eips that we've shipped. I don't know if anyone has any like status update or or yeah observations they want to share about the fork. But it.
+
+16
+00:09:59.410 --> 00:10:02.109
+Tim Beiko: yeah, from what I could tell, it went pretty clean.
+
+17
+00:10:10.370 --> 00:10:14.224
+Tim Beiko: Okay, well, yes. Guess we can leave it at that.
+
+18
+00:10:14.730 --> 00:10:21.539
+Tim Beiko: again. Yeah. Congrats everyone on getting this shipped. It was a lot of work. And yeah, it is live.
+
+19
+00:10:21.920 --> 00:10:43.655
+Tim Beiko: Yes, onto the next one. And then, if you're listening, you can try out all the new features like Max, TV, 7,002, and the Bls precompile on mainnet I'll also give a shout out to the testing team for a new thing they did for this fork. So we obviously have all these execution spec tests. We tried to identify which subset
+
+20
+00:10:44.080 --> 00:10:55.780
+Tim Beiko: which subsets we should actually run on Mainnet. And then we ran like some of the actual spec tests on Mainnet to test the eips and prod as well. Yeah, to
+
+21
+00:10:55.890 --> 00:10:58.944
+Tim Beiko: sanity check that. There were no issues on my net.
+
+22
+00:10:59.430 --> 00:11:02.609
+Tim Beiko: so yeah, new thing we've done when testing this fork.
+
+23
+00:11:04.082 --> 00:11:08.460
+Tim Beiko: and yes, we could also pick it up today if people feel like.
+
+24
+00:11:10.610 --> 00:11:13.689
+Tim Beiko: But yeah, okay, moving on to Fusaka. So
+
+25
+00:11:14.060 --> 00:11:39.419
+Tim Beiko: like we'd discussed a few weeks ago. Going forward. We wanna kind of use awkward devs execution, and Cl. Calls to work on scoping and and debating the next forks. And and with Petra done this means the Fusaka kind of implementation. Conversation should move to should move to the Acd calls that we have on the Mondays.
+
+26
+00:11:39.600 --> 00:11:57.129
+Tim Beiko: And so going forward especially for pure dos, we will be using those calls. So there's currently appeared as breakout scheduled on Tuesdays, and I believe, starting next week, it will move to the Monday call. Is that correct?
+
+27
+00:11:57.230 --> 00:11:58.619
+Tim Beiko: In terms of dates?
+
+28
+00:12:02.470 --> 00:12:03.109
+Will Corcoran: That's correct.
+
+29
+00:12:03.910 --> 00:12:20.650
+Tim Beiko: Okay, great. I cause I just look at the calendar to. There's still the period as breakouts on the Tuesday in the calendar. So we should delete those. But yeah, Fusaka is now the next fork and yeah, we can. We can continue the conversation there in a Cdt
+
+30
+00:12:23.680 --> 00:12:25.470
+Tim Beiko: on the El side. So
+
+31
+00:12:25.710 --> 00:12:29.280
+Tim Beiko: what we spoke about the last
+
+32
+00:12:29.310 --> 00:12:42.244
+Tim Beiko: 2 calls was this idea that we wanted to focus on increasing the gas limit. And it's kind of a weird thing to put in the fork, because the hard forks or sorry the gas limit is is not set
+
+33
+00:12:42.951 --> 00:13:04.098
+Tim Beiko: in consensus. It's set by the the block proposers we still wanted to have, you know, some sort of forcing function or reminder to prioritize this during the fork. And so we came up with this eip to increase the defaults at the Fusaka Fork. The idea being that we would
+
+34
+00:13:04.600 --> 00:13:15.761
+Tim Beiko: we we would effectively work on, you know, getting through the bottlenecks that that prevent us from from raising the gas limit. And then we
+
+35
+00:13:16.170 --> 00:13:40.299
+Tim Beiko: And then once we get to to Fusaka and and ready to deploy that we would change the placeholder there for an actual number. So it's kind of a weird vip, because it just says, like we should do stuff to increase the gas limit. But then, the actual, like semantic change, is just a constant in the clients, but it does feel like the best way to encapsulate that we actually want to do this work.
+
+36
+00:13:41.490 --> 00:13:48.933
+Tim Beiko: so I know, like it. I think this was either the last call or the call. Before that we said we would specify something like this.
+
+37
+00:13:50.170 --> 00:13:55.850
+Tim Beiko: yeah. Wanted to give people like a last chance to comment.
+
+38
+00:14:00.430 --> 00:14:01.800
+Tim Beiko: yeah, Micah.
+
+39
+00:14:02.630 --> 00:14:20.499
+Micah Zoltu: So I feel like the arguments against this differ greatly, depending on what the increase is to like. If the increase is to 36 million as a default. That's probably not really contentious. If the default is changing to like a hundred 1 million or 500 million or a billion. The arguments are very different. And so I'm curious.
+
+40
+00:14:20.500 --> 00:14:21.870
+Tim Beiko: I think how we can approach.
+
+41
+00:14:21.870 --> 00:14:22.930
+Micah Zoltu: Are debating.
+
+42
+00:14:23.460 --> 00:14:27.930
+Tim Beiko: I think the rough target is something in the 100
+
+43
+00:14:28.090 --> 00:14:34.066
+Tim Beiko: ish millions and it's hard to know but like, and the eip has like a
+
+44
+00:14:34.740 --> 00:14:39.329
+Tim Beiko: you know, 3 figure 1 million placeholder. But yeah.
+
+45
+00:14:39.740 --> 00:15:04.271
+Tim Beiko: and and yeah, a hundred 50 is like a number we've used. But the idea is like, maybe by the time Fusaka ships we realize, like, you know, we can't actually run 115 the clients comfortably and like, maybe you know, the clients are able to run at like 95 million. And perhaps we want to recommend some value before that below that. So we might say, like, okay, we're comfortable. With 95. We'll set the default. So like 85 or something like that.
+
+46
+00:15:08.180 --> 00:15:36.590
+Micah Zoltu: So I think my main concern, after talking to people about this, that I think I would like to see more work on is in all the discussions around the gas limit that's increased. I've seen the discussions focus around what a validator or a builder can handle. I see very little discussion around what an Rpc. Provider can handle and what they should have to handle, the idea being Rpc. Providers right now are people like infura and alchemy, but ideally they would be end users running ethereum on their local machine or at home.
+
+47
+00:15:36.590 --> 00:15:44.580
+Micah Zoltu: And these people are a very different demographic than the people who hold 32 Eth. And have, you know, dedicated servers and operations, budgets, etc.
+
+48
+00:15:44.720 --> 00:16:03.150
+Micah Zoltu: And so I would like to see sometime before we make a decision. I'd like to see much more discussion on how a gas limit will impact these people. Something to keep in mind is that pure Das and statelessness and history deletion. Don't help Rpc. Providers at all. Rpc. Providers already delete most of their history. They prune their state
+
+49
+00:16:03.150 --> 00:16:14.889
+Micah Zoltu: like they're running as slim as they can, and state growth is like the only thing that increases their disk significantly. And these, you know again, just would like to see more discussion around them and less discussion around the people who
+
+50
+00:16:14.910 --> 00:16:18.719
+Micah Zoltu: have giant machines that are beefy and able to do lots of stuff.
+
+51
+00:16:21.190 --> 00:16:23.100
+Tim Beiko: Thanks. Anzgar.
+
+52
+00:16:23.910 --> 00:16:33.640
+Ansgar Dietrichs: Yeah, I just wanted to say, I think these concerns are very valid by Micah. I think it's good that they're being brought up. I think we should kind of have the clear separation, though, like
+
+53
+00:16:34.200 --> 00:16:53.590
+Ansgar Dietrichs: for me today, is much more about deciding that directionally. We want to basically keep pushing, keep keep exploring what the kind of safe throughput numbers are, and then what the bottlenecks are and keep working on those. So it's really much more about like agreeing on the direction and on the process, and then within that, I think
+
+54
+00:16:54.580 --> 00:17:13.669
+Ansgar Dietrichs: this this is exactly the type of question we should ask right, like, once. Once we actually are serious about having that continuous loop getting more sophisticated about like, what are the different node types that we aim for? What are the different bottlenecks we pay attention to. I think that makes a lot of sense. But like I would, I would separate that out right today is much more about like saying the direction is to try to scale.
+
+55
+00:17:16.520 --> 00:17:18.369
+Tim Beiko: Thanks. Francis.
+
+56
+00:17:19.029 --> 00:17:40.799
+Francis Li: Yeah, Hi, I'm not sure if it's like, completely, a hundred percent like exactly you can imagine. But for example, for base, we're at like 140 million gas per block right now, at 2 second block time. And Rpcs are fine. So just a data point this, obviously a little bit different on hardware spec and different stuff. But yeah, just a data point. There.
+
+57
+00:17:43.870 --> 00:17:47.873
+Tim Beiko: Right? And I guess, like, yeah, maybe you might get to your Rpc point is,
+
+58
+00:17:48.610 --> 00:18:03.539
+Tim Beiko: is your is your concern like if I'm running a node on my computer. And I want to serve an Rpc. To others, or just to process my own transactions through my own Rpc. Endpoint.
+
+59
+00:18:04.160 --> 00:18:23.829
+Micah Zoltu: I think those are 2 different users. Both of them should be considered. Certainly, for example, a Rpc. Provider probably runs by far the most like CPU burn of anybody, because people are constantly doing Eth calls, and that includes also, you know, doing lots of state lookups like someone like Infera. They have to have a, you know, be able to deal with
+
+60
+00:18:23.850 --> 00:18:38.029
+Micah Zoltu: huge amounts of random access on their disks versus someone who's just running on their local computer. They're doing very little work like the actual work is very little. But they also don't have the benefit of having petabyte drives. They can scale across. And
+
+61
+00:18:38.030 --> 00:18:38.840
+Micah Zoltu: right that yeah.
+
+62
+00:18:38.840 --> 00:18:43.389
+Micah Zoltu: So 2 different 2 different classes of users, I think both are important, and both should be discussed.
+
+63
+00:18:43.930 --> 00:18:59.069
+Tim Beiko: Right, but I think like I guess the Francis Point, like, you know, infer will be fine. Like they run other chains, they already, you know, like, do that. And then the question of the likes, you know, local user is more, what is
+
+64
+00:18:59.910 --> 00:19:07.979
+Tim Beiko: what is like the performance degradation of their local Rpc. Access with a larger state. It's probably the question to answer.
+
+65
+00:19:07.980 --> 00:19:36.849
+Micah Zoltu: But I don't think so. I think the performance of a local machine, I don't think is going to be the bottleneck. I think the bottleneck is going to be the size of a hard drive. Your average user has the average user, you know, even a gaming rig. You get a 2 TB drive, maybe. And it's 50% full of games. And so you've got another 25% for your OS and your music and your videos. And you're down to like 512 GB. And so the question is, how fast is that going to fill up? And whereas someone like inferior, they probably don't care much about the disks at all. They care a lot about the CPU burn and the disk. I/O.
+
+66
+00:19:37.170 --> 00:19:41.580
+Tim Beiko: Correct. But do you think that? Okay, so do you think that for home users
+
+67
+00:19:41.980 --> 00:19:47.599
+Tim Beiko: this size is effectively the biggest constraint for State growth.
+
+68
+00:19:48.250 --> 00:20:03.559
+Micah Zoltu: For the people I talk to who try to run ethereum clients on their home machines. Disk size is the number one bottleneck. These people usually have gaming rigs. So the processing power is not a problem. RAM is usually not a problem. It's always the disk, like the disk is the thing that they just don't have, and they have to go out of their way to buy.
+
+69
+00:20:04.370 --> 00:20:06.310
+Tim Beiko: Okay? So I think, okay, this is
+
+70
+00:20:06.410 --> 00:20:15.677
+Tim Beiko: a tractable thing. So I I would separate those things, though, and I don't think that we're like anywhere near the
+
+71
+00:20:16.560 --> 00:20:25.939
+Tim Beiko: performance. Bottlenecks of, you know, infra not being able to serve Rpc access. But like, yes, this, the disk size is a concern.
+
+72
+00:20:26.500 --> 00:20:28.239
+Tim Beiko: I think Marius was next.
+
+73
+00:20:33.286 --> 00:20:49.270
+MariusVanDerWijden: Yes, so I am kind of against this eap, because I think it would. It would not be wise to push for a higher gas limit as long as we don't have the state growth
+
+74
+00:20:50.343 --> 00:20:53.059
+MariusVanDerWijden: solved. Right now, we're status
+
+75
+00:20:53.480 --> 00:20:58.910
+MariusVanDerWijden: roughly growing by 5 GB a month, and so going to 60,
+
+76
+00:20:59.260 --> 00:21:07.480
+MariusVanDerWijden: a million gas will grow the State by 10 GB a month, which is 120 GB a year.
+
+77
+00:21:09.710 --> 00:21:13.489
+MariusVanDerWijden: Yes, there are other chains that are
+
+78
+00:21:15.640 --> 00:21:27.759
+MariusVanDerWijden: doing, having a way larger state, but they also engineered their stuff in a way that they can handle it. And the way they engineer. It is.
+
+79
+00:21:28.657 --> 00:21:46.069
+MariusVanDerWijden: Everything kind of becomes trusted like they're getting a lot of trusted. They're getting a trusted snapshot from some trusted party, and they're not verifying transactions anymore. They just apply the state updates.
+
+80
+00:21:47.175 --> 00:21:49.510
+MariusVanDerWijden: And so
+
+81
+00:21:50.200 --> 00:21:58.310
+MariusVanDerWijden: yeah, we should be. We should. Only I think we should only really increase the gas limit. Once we have
+
+82
+00:21:59.200 --> 00:22:09.730
+MariusVanDerWijden: a way of once, we once we also decide to increase the cost of storing stuff. Which
+
+83
+00:22:11.780 --> 00:22:17.679
+MariusVanDerWijden: in turn would make would make execution cheaper.
+
+84
+00:22:18.735 --> 00:22:22.610
+MariusVanDerWijden: and and and storing more expensive.
+
+85
+00:22:23.230 --> 00:22:39.529
+MariusVanDerWijden: or we could introduce some new mechanism of of State expiry or something. But we we aren't really there yet, because the the workaround State expiry
+
+86
+00:22:40.410 --> 00:22:50.080
+MariusVanDerWijden: is not great, so the problem so so as Dom just mentioned in the chat, 120 GB a year is not is not too bad.
+
+87
+00:22:50.590 --> 00:22:52.150
+MariusVanDerWijden: or it's not a problem.
+
+88
+00:22:53.144 --> 00:22:57.390
+MariusVanDerWijden: Yes, it's true, but size wise. It's not a problem.
+
+89
+00:22:57.930 --> 00:23:06.299
+MariusVanDerWijden: And the problem is that random accesses in this in this data will get much worse.
+
+90
+00:23:07.310 --> 00:23:08.030
+MariusVanDerWijden: So
+
+91
+00:23:08.290 --> 00:23:28.800
+MariusVanDerWijden: we kind of saw, we kind of had some benchmarks recently that we're currently the way, the way our database is architecture with pebble. We we kind of hit a wall at a data set of like 500 GB. So random accesses in a data set of 500 GB.
+
+92
+00:23:28.990 --> 00:23:37.609
+MariusVanDerWijden: It's kind of where we where we kind of hit the wall where state access get extremely slow.
+
+93
+00:23:37.810 --> 00:23:39.219
+MariusVanDerWijden: So yeah.
+
+94
+00:23:42.470 --> 00:23:46.580
+Tim Beiko: Thanks. Let's do, Dunkrat, and then Sophia.
+
+95
+00:23:49.670 --> 00:23:56.510
+Dankrad Feist: Yeah. So I think on the Rpc notes, I think my my opinion is that
+
+96
+00:23:57.254 --> 00:24:03.799
+Dankrad Feist: the reality is like, I think it's just time to look at what's actually happening, and that is that
+
+97
+00:24:04.020 --> 00:24:12.669
+Dankrad Feist: the number of ethereum users who run their own nodes and like use it directly through that
+
+98
+00:24:12.940 --> 00:24:21.020
+Dankrad Feist: is already extremely low, and like continuing to double down on a strategy that hasn't worked in the past is just.
+
+99
+00:24:21.620 --> 00:24:27.610
+Dankrad Feist: I think it just doesn't make sense to me like, I think, like our our real
+
+100
+00:24:27.800 --> 00:24:42.019
+Dankrad Feist: like, our real strategy around like running your own node has to become like something around verifying a zk chain and using some other way of like
+
+101
+00:24:42.250 --> 00:24:46.830
+Dankrad Feist: like retrieving the State trustlessly for that. And
+
+102
+00:24:47.260 --> 00:25:16.530
+Dankrad Feist: I don't think we should continue optimizing. Oh, users should run their own Rpc notes that keep the full state. So I think, like it's it's just like it just doesn't make sense to keep doubling down on something that hasn't worked, and we've already like now sufficiently increased, like the cost of running notes that I think, like the number of users who like on the side run like a node without being very dedicated to it, is already like dwindling.
+
+103
+00:25:19.439 --> 00:25:23.111
+Tim Beiko: Thanks. Let's do, Sofia, and then answer again.
+
+104
+00:25:23.875 --> 00:25:39.289
+Sophia Gold: Yeah, I agree with Ankara that we shouldn't optimize for a use case that essentially no one is doing. For reasons that have nothing to do, I think, with hardware requirements, but mainly I wanted to say that I don't think that we need to block on block increasing the gas limit on
+
+105
+00:25:39.330 --> 00:25:55.230
+Sophia Gold: concerns about state growth. Because we one, I mean, we do have time. For example, in Glamsterdam we could increase the cost of fresh storage rates. And we do have, I think, a credible
+
+106
+00:25:55.380 --> 00:25:58.630
+Sophia Gold: medium term, stateless plan.
+
+107
+00:25:59.480 --> 00:26:18.303
+Sophia Gold: maybe not in time for the State reaching half a terabyte, which is, I think, is what Maria said. It slows down significantly. But I think we could have zk clients on Mainnet next year. And you know we we could make them required, probably a couple of years after that. So,
+
+108
+00:26:18.930 --> 00:26:26.489
+Sophia Gold: you know, we do have a plan to deal with this. I think as long as it as the the pace of State growth matches that timeline.
+
+109
+00:26:30.010 --> 00:26:43.250
+Tim Beiko: Right? And I guess one question I'd have like following up on what Marius said. Here is obviously, random access on a larger state becomes more problematic. So yes, if we make, like new State access.
+
+110
+00:26:44.130 --> 00:26:51.359
+Tim Beiko: extremely expensive, but then accessing the existing state constant and grow the state?
+
+111
+00:26:51.660 --> 00:27:00.469
+Tim Beiko: Is it a problem is like more access across a smaller state within a given block size as problematic.
+
+112
+00:27:00.880 --> 00:27:04.949
+Tim Beiko: Yeah, I don't know if anyone has an intuition for that.
+
+113
+00:27:09.260 --> 00:27:16.290
+Tim Beiko: If not, this feels like something practical. We should test like, yeah.
+
+114
+00:27:17.252 --> 00:27:18.370
+Tim Beiko: How's it going.
+
+115
+00:27:19.260 --> 00:27:22.899
+Ansgar Dietrichs: Yeah, then, maybe on that point, just very briefly, like, I think we
+
+116
+00:27:23.410 --> 00:27:26.660
+Ansgar Dietrichs: as we start scaling the gas limit. Probably we should
+
+117
+00:27:26.840 --> 00:27:44.250
+Ansgar Dietrichs: more regularly. Just do rebalancing of guest cost right? Where basically, like we if we say we are comfortable, that we have a lot of headroom in, I don't know. Call data, or we have a lot of headroom in state access but not state growth. Right? Then we should just like, be okay with in a hard fork.
+
+118
+00:27:44.350 --> 00:28:08.220
+Ansgar Dietrichs: literally just 5 xing, 10 xing. The cost of state of one specific kind of type of usage, so that we can just scale everything else in the meantime. And then, as we unblock these things, we can then later on, make them cheaper again. And you know so like, I think that should just be a continuous loop rerun on every hard fog. The kind of point is just that these things, of course, then, have a pretty long lead time, whereas, like a lot of other things we can do.
+
+119
+00:28:08.220 --> 00:28:29.949
+Ansgar Dietrichs: I don't know changing the database or things like that. Of course, that also takes time, but we can do that whenever pricing we can only change at the Hard Fork, and of course it has to be locked in like many months in advance. So, for example, right now, it's probably already too late to do that for Fusaka, and we also don't yet know exactly what we would need to make more expensive. What the immediate bottleneck is, unless, of course, if we today decide that we want, we are especially worried about state
+
+120
+00:28:29.960 --> 00:28:42.499
+Ansgar Dietrichs: growth, we could make that more expensive, so that we can scale everything else. But it's just important to keep that in mind that, like on these things, we basically, we should try to be as forward-looking as possible, because hard folks have such a longer lead time than just client changes.
+
+121
+00:28:43.620 --> 00:29:00.879
+Tim Beiko: Right. And I guess this gets back to the original point of like, why do we want an eip that says, change the defaults in the Hard fork. I think to me this is kind of the main reason where there's a lot of work that needs to be done here, and if we don't have something in the hard fork that's saying
+
+122
+00:29:00.880 --> 00:29:15.959
+Tim Beiko: we should work on all of the bottlenecks, then we will just do other things. I think we should also be fine with saying, like, if we have this eip that says, we increase the gas limit, and then we realize that increasing the cost of new state is the main bottleneck.
+
+123
+00:29:16.234 --> 00:29:37.915
+Tim Beiko: We could add another eip to the hard fork that does this because it's like getting us towards that. But I I don't think it's realistic to say in advance, like, Oh, these are the 5 changes we're gonna wanna do that help us increase the gas limit, like, if we kind of like by definition, if we knew, we would have already done them. So like, yeah, the expectation would be that if we do have this, this
+
+124
+00:29:38.240 --> 00:29:43.730
+Tim Beiko: this eip in the fork. There might be other eips around pricing or around.
+
+125
+00:29:44.170 --> 00:30:09.990
+Tim Beiko: Sorry, like other other parts of the clients that we we include through the like Fussaka development process that that help raise the gas limit. And it was already one of those on the agenda, for example, capping the Max, the Max block size, because there is a limit on the consensus layer. There's nothing really in terms of actual like storage, or like bandwidth size on the el. And so this is the thing we could do to like
+
+126
+00:30:10.010 --> 00:30:15.301
+Tim Beiko: improve or I don't get us closer towards towards increasing the gas limit.
+
+127
+00:30:16.190 --> 00:30:23.741
+Tim Beiko: but yeah, like, we, we could like do this because we've said, we want to increase the the guesstimate on l 1, basically
+
+128
+00:30:24.220 --> 00:30:25.240
+Tim Beiko: yeah, Ben.
+
+129
+00:30:26.120 --> 00:30:28.854
+Ben Adams: I just follow up on the
+
+130
+00:30:29.670 --> 00:30:38.419
+Ben Adams: block size limit on consensus layer. It's also a block size limit on Els in their gossip protocol.
+
+131
+00:30:42.610 --> 00:30:43.500
+Tim Beiko: Right correct.
+
+132
+00:30:52.918 --> 00:31:07.849
+Tim Beiko: Can we come up with a way to vet that gas limit to state growth is linear proportional. It's reasonable. But it's an assumption. Actually, since 4 4, it's no longer proportional. I don't know. Storm is on the call. I think you're the one who's probably run the most
+
+133
+00:31:08.370 --> 00:31:09.800
+Tim Beiko: analysis on this.
+
+134
+00:31:12.732 --> 00:31:23.160
+Storm Slivkoff: I have not actually investigated in detail whether it's linear, sublinear, super linear. I would expect it to be a little bit sublinear, but not totally sure.
+
+135
+00:31:24.120 --> 00:31:24.680
+Tim Beiko: Okay?
+
+136
+00:31:26.210 --> 00:31:36.570
+Tim Beiko: and yeah, maybe if you want to post your your dashboards in the chat for people to review. But I think that's 1 of the the few things that we have in terms of hard data on this.
+
+137
+00:31:42.140 --> 00:32:08.520
+Justin Florentine (Besu): So just to clarify, I think. Excuse me if maybe testing in our shadow forking technologies could be explored in such a way that we could compress actual mainnet traffic into larger blocks with larger limits. I think that might be a little bit less of an assumption as to how that relationship works. I don't know that that's a thing. I don't know that that's possible, but it might be neat to explore.
+
+138
+00:32:12.060 --> 00:32:12.590
+Tim Beiko: Yep.
+
+139
+00:32:14.560 --> 00:32:18.210
+Tim Beiko: And so yes, I guess maybe zooming out like I think the
+
+140
+00:32:18.830 --> 00:32:31.909
+Tim Beiko: the Meta point is, there's a lot of work to do here to actually do this in a like intelligent way. There's a lot of different bottlenecks to consider doing. All this work is like
+
+141
+00:32:32.180 --> 00:32:55.048
+Tim Beiko: takes away from obviously working on other eips for a hard fork, and therefore, if we want to prioritize it, we should like be explicit about this. We can't say like, oh, we're just gonna work on the gas limit on the side. Realistically, this means a year from now. We will not have done We will not have done anything or or that much.
+
+142
+00:32:55.840 --> 00:32:56.970
+Tim Beiko: yeah, Micah.
+
+143
+00:32:57.890 --> 00:33:19.200
+Micah Zoltu: For generating test data. Could we maybe look at one of these other chains that has a ridiculously high gas limit and look at the types of transactions that people do on there just to get an idea of when gas prices are extremely low, presumably because gas limits are high. What are people using the chains for? Because the behavior patterns of usage may change significantly as the price declines.
+
+144
+00:33:19.440 --> 00:33:26.350
+Micah Zoltu: And so look at Suwana, look at base and see you know, what are people doing on those blockchains? Is it storage heavy, or is it compute heavy.
+
+145
+00:33:28.460 --> 00:33:35.962
+Tim Beiko: Yes, and I think, the get team has actually looked at binance chain a bunch in the past. But yes, we should compare with other chains.
+
+146
+00:33:37.020 --> 00:33:38.360
+Tim Beiko: and again, yeah.
+
+147
+00:33:38.960 --> 00:33:52.492
+Tim Beiko: like, there's a lot of stuff that we would need to look into to do this. Well, the question is, do we want to prioritize this over other things? And we should agree to that ideally today, because,
+
+148
+00:33:53.200 --> 00:33:59.699
+Tim Beiko: yeah, if we just say there's a bunch of other stuff we're gonna work in. Then we are not gonna do all of this.
+
+149
+00:34:02.420 --> 00:34:03.070
+Tim Beiko: yeah.
+
+150
+00:34:03.070 --> 00:34:09.939
+Micah Zoltu: Yeah, on that, I think the the thing that I think is might be useful or important is figure out what we think.
+
+151
+00:34:10.380 --> 00:34:29.769
+Micah Zoltu: The bottleneck is going to be like, what is the thing most likely to stop us from raising the gas limits and focus the research on that. As I mentioned previously. I feel like all the research is focused on validators and what they can handle. But if the bottleneck is Rpc. Providers, then it doesn't matter how great the how much you can crank it up for
+
+152
+00:34:29.889 --> 00:34:40.210
+Micah Zoltu: the validators, because your bottleneck's somewhere else so deciding and agreeing on where that bottleneck is, maybe, is the 1st step to reducing the scope of work that we need to do to figure out. Can we increase.
+
+153
+00:34:41.590 --> 00:34:42.179
+Tim Beiko: Yeah.
+
+154
+00:34:42.400 --> 00:34:49.829
+Tim Beiko: yeah, I agree, we should basically figure out what all the bottlenecks are, and then kind of go through them one by one, as we raise the gas limit. Yeah.
+
+155
+00:34:50.320 --> 00:34:53.801
+Tim Beiko: And that's again, that's kind of what the eip says.
+
+156
+00:34:57.240 --> 00:34:58.110
+Tim Beiko: and
+
+157
+00:34:58.320 --> 00:35:05.539
+Tim Beiko: maybe like, yeah. Another thing to surface. As we discussed this Dunkrat, you had a different proposal that we should
+
+158
+00:35:06.450 --> 00:35:13.379
+Tim Beiko: that we should consider around instead of saying, like, we're gonna try our best and find a number you would
+
+159
+00:35:13.610 --> 00:35:21.240
+Tim Beiko: you were proposing we should actually set a schedule and then use that as a forcing function. Do you want to maybe give some context on this.
+
+160
+00:35:22.720 --> 00:35:23.380
+Dankrad Feist: Okay.
+
+161
+00:35:24.410 --> 00:35:28.369
+Dankrad Feist: Yeah. I mean, I already wrote a little bit about the different
+
+162
+00:35:28.660 --> 00:35:38.750
+Dankrad Feist: factors. Motivating this on eth magicians, I think. For me. It's just the
+
+163
+00:35:39.730 --> 00:35:51.330
+Dankrad Feist: there are 2 things coming together, right like one is, I think if if we do want to do this like scale the l. 1. It only makes sense when there's actually
+
+164
+00:35:51.660 --> 00:35:56.640
+Dankrad Feist: some amount of reliability involved, like we'd need to tell
+
+165
+00:35:56.850 --> 00:36:07.279
+Dankrad Feist: applications developers where it is going to be in a few years like, if we just do this ad hoc, then maybe like they will decide now that
+
+166
+00:36:07.390 --> 00:36:16.999
+Dankrad Feist: well, I mean, sure, they're going to do a 1 time raise 250 million, and then we're back to how it was before, and that's all done. So
+
+167
+00:36:17.300 --> 00:36:40.429
+Dankrad Feist: I think it's good to be more ambitious and actually enshrine some goals, I said. Why, I do think like something like 100 X is achievable. It's like a very gradual, exponential increase that's very manageable in the sense that, like for the 1st 2 years to 10 XI think we are very confident that, like
+
+168
+00:36:41.090 --> 00:36:43.640
+Dankrad Feist: all the problems are like
+
+169
+00:36:44.480 --> 00:36:50.159
+Dankrad Feist: at the very least known, and can be relatively quickly implemented. And
+
+170
+00:36:50.340 --> 00:36:58.350
+Dankrad Feist: and after that it becomes maybe more speculative. In terms of like how we can roll out zk, vms.
+
+171
+00:36:58.540 --> 00:37:06.920
+Dankrad Feist: that we can also start. We will very likely start within this year, and next year, so we will have plenty of data by then. But yeah, like to me, like.
+
+172
+00:37:07.320 --> 00:37:21.399
+Dankrad Feist: it also involves a different kind of engineering. Like, if you know, you want to go to a hundred X, you make different decisions now than if you're like, Oh, yeah, like, we make some small improvements now. So I think to me it's just
+
+173
+00:37:21.410 --> 00:37:37.440
+Dankrad Feist: the better way in many ways to like, try to commit to something more ambitious. Now I don't think it's crazy. It's achievable, and and then plan backwards from there for the next 4 years. What research and implementation has to be done.
+
+174
+00:37:42.980 --> 00:37:46.825
+Tim Beiko: Okay, thanks. There are dumb
+
+175
+00:37:47.800 --> 00:37:53.500
+Tim Beiko: comments in the chats about this. Yeah, anyone wants to share on the call.
+
+176
+00:38:00.720 --> 00:38:05.690
+MariusVanDerWijden: I don't know this. Both of these proposals to me feel like
+
+177
+00:38:05.920 --> 00:38:12.820
+MariusVanDerWijden: we're trying to like. Everyone is trying to change something that everyone is trying to push
+
+178
+00:38:13.110 --> 00:38:24.629
+MariusVanDerWijden: for the air want to increase the gas limit, but they don't know where to start. And so the way they think is, or the only way that they can think of is to write an eap.
+
+179
+00:38:25.070 --> 00:38:35.499
+MariusVanDerWijden: From my point of view, it's just way too early to write any eap about this we should do the work to, or we're doing the work to, to figure out where the
+
+180
+00:38:35.640 --> 00:38:52.109
+MariusVanDerWijden: where the issues are, where the where the edge cases are where the worst cases are, so that we can safely increase the gas limit. It makes no sense to me that people are writing Eaps, especially
+
+181
+00:38:52.330 --> 00:38:58.340
+MariusVanDerWijden: like people that are not really involved in in actually the investigation in the software.
+
+182
+00:39:00.020 --> 00:39:05.510
+Tim Beiko: Okay. And so you think we should just not have any IP and do the work. And that's it.
+
+183
+00:39:08.430 --> 00:39:08.900
+MariusVanDerWijden: Yeah.
+
+184
+00:39:08.900 --> 00:39:16.640
+Tim Beiko: And I guess. And then do you think that there's like a resource allocation question?
+
+185
+00:39:18.580 --> 00:39:22.919
+Tim Beiko: around like, okay. So if we have no eip for this, do we just say.
+
+186
+00:39:23.130 --> 00:39:27.320
+Tim Beiko: you know, there's like nothing else, or very little, in Fusaka, and
+
+187
+00:39:28.480 --> 00:39:46.667
+Tim Beiko: you know we kind of all work on the gas in it on the side. This is the part that just feels very weird, like, if this is actually something we want to do seriously, we should make it clear to ourselves in the community like this is the priority vips are like the tool we have for that. I'm if there's something else we can do. That's fine as well. But
+
+188
+00:39:47.750 --> 00:39:48.979
+Tim Beiko: yeah, hey.
+
+189
+00:39:51.000 --> 00:39:56.000
+Tim Beiko: yeah. Otherwise, like, I guess the risk is just we, we say, we're gonna do that. And then
+
+190
+00:39:56.330 --> 00:39:59.070
+Tim Beiko: other stuff just gets prioritized above it.
+
+191
+00:39:59.440 --> 00:40:03.010
+Tim Beiko: Button, yeah. Lukash. Maybe.
+
+192
+00:40:04.115 --> 00:40:04.920
+Łukasz Rozmej: So
+
+193
+00:40:05.180 --> 00:40:33.449
+Łukasz Rozmej: yeah, this is an unusual eap, because it's not really technical. But it's a goal rather than improvement, right? So kind of way that doesn't specify how. But it specifies where we want to be. So it's different than the other. Ap, so in that way it doesn't really fit to Eaps, but based on the I think a bit of a joke in the chat team. You said to treat it as a Jira ticket. Then
+
+194
+00:40:33.690 --> 00:40:35.159
+Łukasz Rozmej: I'm fine with that.
+
+195
+00:40:35.340 --> 00:40:42.149
+Łukasz Rozmej: So I'm fine with having this first, st the IP as a like, the signal to the community that we are
+
+196
+00:40:42.280 --> 00:40:51.879
+Łukasz Rozmej: working on that actively, and this is one of our priorities. As for Dankrat, second dap, I'm more
+
+197
+00:40:52.120 --> 00:40:57.620
+Łukasz Rozmej: reluctant to to to include something like that, because
+
+198
+00:40:57.880 --> 00:41:02.530
+Łukasz Rozmej: we don't know where we think the safe limit is.
+
+199
+00:41:02.940 --> 00:41:14.490
+Łukasz Rozmej: and I'm not convinced. Maybe we can. We can achieve these goals. But maybe we'll find a roadblock during that. And
+
+200
+00:41:15.000 --> 00:41:15.730
+Łukasz Rozmej: well.
+
+201
+00:41:16.040 --> 00:41:23.640
+Łukasz Rozmej: the point more. Maybe it's more than hype generation, or like conviction that we can achieve it or not.
+
+202
+00:41:23.770 --> 00:41:34.999
+Łukasz Rozmej: But I myself, I'm always under promise over delivered, and the other way around. So I like I don't feel comfortable to committing to something that
+
+203
+00:41:35.110 --> 00:41:43.790
+Łukasz Rozmej: I couldn't with. Let's say, minimal changes run now on at least my code.
+
+204
+00:41:43.950 --> 00:41:51.859
+Łukasz Rozmej: and I don't think I'm confident in that. We could run with such aggressive limits now, so
+
+205
+00:41:52.270 --> 00:42:05.320
+Łukasz Rozmej: I'm not convinced for that. That one like it can be like a goal more even like a vague goal. But I wouldn't commit to it as a, as a, as a roadmap like
+
+206
+00:42:05.840 --> 00:42:10.009
+Łukasz Rozmej: that. We, we are confident in achieving that in this time scale.
+
+207
+00:42:12.240 --> 00:42:13.229
+Tim Beiko: Got it. Thanks.
+
+208
+00:42:14.082 --> 00:42:35.980
+Tim Beiko: Yeah, I just want to address something like this is a weird eip. And Osgar had a comment in the chat like, should we be okay? Having small repricing eips in Fusaka. To me this is kind of the point of having this informational eip like, yes, this informational eip is kind of useless in a way like it doesn't propose any changes except eventually agreeing to a default.
+
+209
+00:42:35.980 --> 00:42:53.210
+Tim Beiko: But the idea should be that if we have this, and then we work and prioritize improving the gas, and we realize that some repricing is the main bottleneck. We should be okay having your repricing that goes in in 3 months in the Fusaka Hard Fork.
+
+210
+00:42:53.210 --> 00:43:12.109
+Tim Beiko: I I just don't think we can predict in advance today, like, Oh, here are like the 7 things we need to actually do to increase the gas limit. And there's kind of a chicken and egg problem here, where like, until we actually do the research and do the work and find what the bottlenecks are. We're not going to know what the repricing or other things we need to change are so
+
+211
+00:43:12.210 --> 00:43:15.470
+Tim Beiko: if we add the cip in, we should be okay saying
+
+212
+00:43:15.580 --> 00:43:27.860
+Tim Beiko: other eips like. And specifically, protocol changes related to it that help us unlock a higher gas limit like may be added to Fusaka, even though we're like passive line
+
+213
+00:43:28.390 --> 00:43:34.860
+Tim Beiko: But yeah, because we don't know what those vips are. Then we can't really add them today.
+
+214
+00:43:36.950 --> 00:43:45.320
+Tim Beiko: and I, yeah. And maybe we can reflect this more explicitly in in the text. But yeah, that would be like a the thing we kind of commit to
+
+215
+00:43:46.170 --> 00:43:46.990
+Tim Beiko: Yup.
+
+216
+00:43:48.330 --> 00:44:16.129
+Guillaume: Yeah, that's something that echoes a bit with, Marius was saying. But this is the second time I hear people saying in this call that we'll have next year. No, that's not happening, none of that work to to to assess, like the the work, to assess whether or not those big claims are holding water have barely started, and there's a lot of fine print coming with it.
+
+217
+00:44:16.620 --> 00:44:44.040
+Guillaume: If what I mean is, if your way out for passing your eip is counting on zk vms being delivered next year, like we should not consider the eip at all, because there's so much uncertainty about those things when they will be available if they're going to work at all. I mean, of course, they're working. But if they're going to work for our specific use case. Yeah, for me. That's a big red flag.
+
+218
+00:45:01.910 --> 00:45:02.705
+Tim Beiko: Okay?
+
+219
+00:45:07.460 --> 00:45:12.609
+Tim Beiko: yeah. So anyone else have other thoughts on this. Otherwise, I think you should make a decision about.
+
+220
+00:45:13.460 --> 00:45:24.777
+Tim Beiko: do we want to prioritize either of those things for Fusaka. And then there was a comment earlier in the chat about other Cfi eips which I think should also agree to today. But
+
+221
+00:45:25.520 --> 00:45:31.440
+Tim Beiko: yeah, this one kind of feels like the most consequential. So yeah, I think we should
+
+222
+00:45:31.720 --> 00:45:32.970
+Tim Beiko: make that call first.st
+
+223
+00:45:34.995 --> 00:45:40.194
+Tim Beiko: Okay, Lucas shares like some context on how gas increase is being tested to be safe.
+
+224
+00:45:41.210 --> 00:45:47.548
+Tim Beiko: do you want to cover that? I know another mind has actually been doing some really cool work there. So
+
+225
+00:45:48.867 --> 00:45:57.500
+Łukasz Rozmej: So I'm not the main person working on that. So I not sure if you have Camille. But I see Martin in the chat. Maybe he wants to join in.
+
+226
+00:46:00.950 --> 00:46:11.600
+Marcin Sobczak: Bye, so hmm, what we can achieve here, is hmm.
+
+227
+00:46:12.240 --> 00:46:31.230
+Marcin Sobczak: like, we have some test cases which can be optimized or potentially one or 2 repris. We can do one or 2 repricing to achieve like everything on ethereum being, at least as fast as easy, recover, compile.
+
+228
+00:46:31.320 --> 00:46:46.742
+Marcin Sobczak: and going above it would be more challenging as like you see, recovery is a reference for for many other of codes and and precompiles so
+
+229
+00:46:47.300 --> 00:47:05.320
+Marcin Sobczak: we can have some estimation how far we can go without like a bigger refactors in interior by simply checking on some reference machine how easy recovery is performing on all execution clients
+
+230
+00:47:05.850 --> 00:47:19.639
+Marcin Sobczak: and then, probably we need to to optimize some things like client specific things, and maybe some repricing. And we'll get there.
+
+231
+00:47:20.520 --> 00:47:28.409
+Łukasz Rozmej: So maybe if I can chime in. So never mind, team is like dedicated to to
+
+232
+00:47:28.640 --> 00:47:33.190
+Łukasz Rozmej: ensuring that gas limit increases are safe.
+
+233
+00:47:33.430 --> 00:47:35.484
+Łukasz Rozmej: So, for example.
+
+234
+00:47:37.540 --> 00:48:03.290
+Łukasz Rozmej: we are especially testing like edge cases for that, that if you fill the block with different edge cases, you still have reasonable block time on on, and we are testing it on all clients, and we have tooling for that. We build it over the years, and we will be. We'll be continuing on that.
+
+235
+00:48:03.580 --> 00:48:10.790
+Łukasz Rozmej: So we what we want to do is kind of at least from the execution standpoint
+
+236
+00:48:10.980 --> 00:48:20.156
+Łukasz Rozmej: we can discuss about the state growth and different things are another angle, right? Or or
+
+237
+00:48:20.850 --> 00:48:35.520
+Łukasz Rozmej: snap sync, and Jason, Rpc, though I don't. I think Jason, Rpc. To be honest, currently at the least of our problems because it's horizontally scalable. But okay, but at least from the execution standpoint, the core protocol that
+
+238
+00:48:35.970 --> 00:48:46.109
+Łukasz Rozmej: yeah, that's the main thing. And up to some point, we, we think probably it will be relatively easy to scale, and
+
+239
+00:48:46.200 --> 00:49:06.179
+Łukasz Rozmej: then we probably hit some precompiles that could potentially be used to attack ethereum and causing potential issues. If you fail, block with those precompiled calls. But then we might at this point suggest some repricing. If we want to go above some gas limits
+
+240
+00:49:06.320 --> 00:49:18.700
+Łukasz Rozmej: for those precompiles. So that's that's it. So we will be trying to guard those a lot of those edge cases and advice on where the safe limits. Here and there.
+
+241
+00:49:22.020 --> 00:49:39.229
+Tim Beiko: Thanks. And then, yeah, there's a good comment from Justin in the chat as well that like, we should also solicit, like input, from the community in terms of tests and and things that they want. Yeah, to make sure, we we validate against which I expect we we should be able to do through this.
+
+242
+00:49:40.495 --> 00:49:41.180
+Tim Beiko: Ben.
+
+243
+00:49:42.384 --> 00:49:51.279
+Ben Adams: Yeah. And I'm sympathetic to this gas defaults eip as going. From what you've recently written.
+
+244
+00:49:51.840 --> 00:49:59.920
+Ben Adams: as the defining feature of the of the 2 soccer folk on the El side.
+
+245
+00:50:00.820 --> 00:50:08.169
+Ben Adams: Even though it's more more like a visionary eip than a concrete implementation.
+
+246
+00:50:08.691 --> 00:50:15.320
+Ben Adams: It. It gives us a goal, whereas otherwise we don't have anything written down. As this is what we're targeting.
+
+247
+00:50:21.380 --> 00:50:36.089
+Tim Beiko: Right? And yeah, again, I realize it is like a a weird vip. But I think the thing that's come out of this conversation so far is just the amount of work that it will require to do this. Well. And so,
+
+248
+00:50:37.370 --> 00:50:39.869
+Tim Beiko: yeah, we should ideally prioritize it.
+
+249
+00:50:43.130 --> 00:50:51.370
+Tim Beiko: I feel like we've kind of covered all angles of this. So at this point it probably makes sense to just like hear from crime teams like, do you think we should
+
+250
+00:50:51.730 --> 00:50:53.090
+Tim Beiko: sfi
+
+251
+00:50:53.680 --> 00:51:03.145
+Tim Beiko: either of the the 2 gas limit the Ips. And then if there's other things in the Cfi list that people feel more strongly about
+
+252
+00:51:03.830 --> 00:51:06.638
+Tim Beiko: yeah, we can also discuss those. But
+
+253
+00:51:07.530 --> 00:51:13.559
+Tim Beiko: ideally making a decision around the gas limit being, the priority today would be good.
+
+254
+00:51:17.770 --> 00:51:27.930
+MariusVanDerWijden: I think that kind of misrepresents the debate. Like we're not. We're not really making a decision about whether the gas limit is a priority. Right now we're making a decision whether
+
+255
+00:51:28.110 --> 00:51:38.180
+MariusVanDerWijden: this specific eap should be sfied, I think we should make gas limit increases a priority.
+
+256
+00:51:38.870 --> 00:51:42.249
+MariusVanDerWijden: Still, don't think we need an eip for that.
+
+257
+00:51:42.670 --> 00:51:48.380
+MariusVanDerWijden: But I, personally, not speaking for the guest team, I personally would be of
+
+258
+00:51:49.260 --> 00:51:54.789
+MariusVanDerWijden: yeah, neither against nor for sifying the cip.
+
+259
+00:51:56.660 --> 00:52:08.659
+MariusVanDerWijden: the the one. The one thing that I that I want to stress, though, is like, if we sfi this eip, it doesn't mean that we will increase the gas limit by the by, the Fusaka Fork.
+
+260
+00:52:09.260 --> 00:52:18.239
+MariusVanDerWijden: If this work turns out to need bigger refactors, bigger repricings that we cannot
+
+261
+00:52:18.860 --> 00:52:27.849
+MariusVanDerWijden: move into the Fusaka fog, and we have to ship in a Glamsterdam. Then I would be against raising the gas limit for Fusaka.
+
+262
+00:52:30.480 --> 00:52:33.689
+Tim Beiko: Yeah, I think that's fair. I would personally consider that, like, you know.
+
+263
+00:52:34.990 --> 00:52:39.660
+Tim Beiko: not ideal. But I think we should not delay peer to us
+
+264
+00:52:39.910 --> 00:52:49.760
+Tim Beiko: on this. And so if if it turns out that there's literally 0 improvements we can do after spending months on it that can ship by Fusaka, we should not raise it.
+
+265
+00:52:50.650 --> 00:52:59.959
+Tim Beiko: I'm but yeah, the ideally we we are able to find something.
+
+266
+00:53:00.890 --> 00:53:01.590
+Tim Beiko: Yeah.
+
+267
+00:53:04.050 --> 00:53:21.490
+Marcin Sobczak: Yes, so for Fussaka we already proposed the repricing of modex precompile. And right now, like edge cases of modex precompile are like the the biggest bottleneck, and it's
+
+268
+00:53:21.520 --> 00:53:39.260
+Marcin Sobczak: like twice slower than than the next one. So, having modex repricing in Fusaka will unblock potential gas limit, increases a lot, and all the others can be shipped later if we find found something else.
+
+269
+00:53:48.535 --> 00:53:49.040
+Tim Beiko: Andrew.
+
+270
+00:53:50.543 --> 00:54:03.776
+Andrew Ashikhmin: Yeah. So I think we should assify the the gas limit increase aip to just signal to the community that we are working on it. And it's
+
+271
+00:54:04.240 --> 00:54:16.779
+Andrew Ashikhmin: it's in focus for Fusaka. And I would for Fusaka. I would cfi the less ambitious. 1, 79, 35, because the exponential one we can
+
+272
+00:54:16.780 --> 00:54:46.780
+Andrew Ashikhmin: consider as a finance for for later hard forks. And this one is just very kind of vague. It's just basically says, says, the limit to XX, 0, m. Right? And basically that Xx can be can stay 36. If, like Marius concerns are valid. And we find out that basically we cannot do anything material in this timeframe. But I think it does send a signal that it is an important focus for us.
+
+273
+00:54:50.500 --> 00:54:51.180
+Tim Beiko: Thanks.
+
+274
+00:54:51.943 --> 00:54:52.989
+Tim Beiko: Yeah. Justin.
+
+275
+00:54:53.550 --> 00:55:17.090
+Justin Florentine (Besu): Sort of agree here. I do definitely prefer 7,935 over the exponential one. I would like to see the backwards Compatibility section of that eip fleshed out and to include a little bit more rigor on what exactly we test for with regard to determining its safety bonus points for making that
+
+276
+00:55:17.090 --> 00:55:33.070
+Justin Florentine (Besu): a reusable suite of tools that the community can go over vet contribute to. And I think eventually I'd love to get us to a world where we're either committed to networks and community operators really having more control over the gas limit
+
+277
+00:55:33.070 --> 00:55:34.410
+Justin Florentine (Besu): safely.
+
+278
+00:55:34.560 --> 00:56:04.429
+Justin Florentine (Besu): Right now, it's an ambiguous thing where we say, Yeah, anybody can adjust it, but nobody really should until we have determined that it's safe. So we're in kind of a split brain mode here, and I'd also like to see that. Resolved. I don't know if that's realistic to be in scope for this eip, but I think it's doable. So that's a long way of me saying, I think the debate around gas limit needs to be reframed, and we need to decide one way or another who's making that call.
+
+279
+00:56:06.370 --> 00:56:07.949
+Tim Beiko: Right. And I think yes.
+
+280
+00:56:08.050 --> 00:56:21.909
+Tim Beiko: my biggest concern about the gas limit today is our approach to raising it is we do absolutely nothing. And then there's enough noise on Twitter that we realize like, oh, we should actually look into this. And then we kind of scramble together to like.
+
+281
+00:56:22.330 --> 00:56:37.118
+Tim Beiko: do a bunch of analysis last minute. It would be a much healthier place if we always had a sense of like. These are all the bottlenecks. This is where we're working on. These are what we hope to unlock. And we can kind of suggest a gas limit.
+
+282
+00:56:37.820 --> 00:56:38.640
+Tim Beiko: yeah.
+
+283
+00:56:38.640 --> 00:56:45.459
+Justin Florentine (Besu): Yeah. And I'd like to see a world where the community comes to us with that, with a lot of data and not just complaints, and I think that's doable.
+
+284
+00:56:46.360 --> 00:56:46.900
+Tim Beiko: Yes.
+
+285
+00:56:50.320 --> 00:56:53.330
+Tim Beiko: Anyone from Ref on the call.
+
+286
+00:57:08.670 --> 00:57:13.619
+Tim Beiko: Okay. So I guess if I have to recap now, it seems like various from Geth is
+
+287
+00:57:14.410 --> 00:57:27.232
+Tim Beiko: likely against, but not too strongly opinionated. Never mind, Aragon based you seem on board with the 1st sip. So 7, 9, 3, 5 that has this vague goal?
+
+288
+00:57:30.610 --> 00:57:35.650
+Tim Beiko: any other client teams have thoughts, or, you know, perspectives on this?
+
+289
+00:57:41.710 --> 00:57:49.299
+Tim Beiko: Okay, I guess I would leave like, we have discussed this for the past. I think 3 calls at this point like I would lean towards estifying the
+
+290
+00:57:49.480 --> 00:57:51.170
+Tim Beiko: info eip.
+
+291
+00:57:51.960 --> 00:58:08.130
+Tim Beiko: This is I again like a weird thing. So I think going with the less the like, more under specified one, for now is probably better than trying to commit to the more ambitious one proposed by Dancrat right out the box.
+
+292
+00:58:09.340 --> 00:58:11.759
+Tim Beiko: yeah. If someone from Ref could
+
+293
+00:58:11.890 --> 00:58:17.829
+Tim Beiko: plus one or raise an objection, that would be that'd be good.
+
+294
+00:58:26.430 --> 00:58:31.440
+Tim Beiko: Okay, Roman said in the chat, they're supportive of including it. So okay.
+
+295
+00:58:31.800 --> 00:58:36.380
+Tim Beiko: let's move forward. Then, with 7, 9, 3, 5,
+
+296
+00:58:37.460 --> 00:58:46.681
+Tim Beiko: yeah, for Fussaka. And again, this this implies that there probably will be other vips that get added as we identify some bottlenecks.
+
+297
+00:58:48.640 --> 00:59:10.219
+Tim Beiko: And then on that front, actually, there was already a 1st one for people to review. I don't think we should add any more about the gas limit today, but at least people should be aware of. Of this? One. 7, 9, 3, 4 by Julio Ben, and storm do either of you want to give a quick overview of the eip.
+
+298
+00:59:12.820 --> 00:59:15.840
+Ben Adams: I can depending, if Julia's on call.
+
+299
+00:59:18.240 --> 00:59:19.210
+Tim Beiko: Yeah, go for it.
+
+300
+00:59:19.530 --> 00:59:22.620
+Ben Adams: Okay? So in the Cl.
+
+301
+00:59:23.551 --> 00:59:26.499
+Ben Adams: There is a limit on the gossip
+
+302
+00:59:26.870 --> 00:59:30.970
+Ben Adams: of 10 MB. Also in the El
+
+303
+00:59:32.930 --> 00:59:35.379
+Ben Adams: Gossip is a 10 MB limit.
+
+304
+00:59:35.500 --> 00:59:38.610
+Ben Adams: So this is saying that blocks
+
+305
+00:59:39.371 --> 00:59:46.248
+Ben Adams: to recognize that and say that blocks cannot be larger than 10 MB minus
+
+306
+00:59:46.970 --> 00:59:50.069
+Ben Adams: like a safety margin for the Cl wrapper.
+
+307
+00:59:50.590 --> 00:59:57.180
+Ben Adams: Otherwise, if blocks are larger than that, you know they they can't be propagated.
+
+308
+00:59:57.410 --> 00:59:59.520
+Ben Adams: So you know, in
+
+309
+00:59:59.900 --> 01:00:05.620
+Ben Adams: in actuality they can't be larger than that, whereas if we commit to this, then we don't have to worry about like
+
+310
+01:00:06.340 --> 01:00:13.519
+Ben Adams: you know, what happens with call data getting too large or anything the blocks just will be invalid if they're too large.
+
+311
+01:00:14.200 --> 01:00:20.130
+Ben Adams: So it's just recognizing that as a side effect. This is a a question
+
+312
+01:00:20.300 --> 01:00:25.759
+Ben Adams: we can actually control the bandwidth requirements if it was set lower.
+
+313
+01:00:26.300 --> 01:00:28.059
+Ben Adams: But that's that's an aside.
+
+314
+01:00:33.746 --> 01:00:38.950
+Tim Beiko: And then the question, yes, is this for Fusaka? Yes, potentially so. The idea is like this could be one of the things
+
+315
+01:00:39.120 --> 01:00:42.279
+Tim Beiko: we include related to the gas limit
+
+316
+01:00:48.010 --> 01:00:49.200
+Tim Beiko: Micah.
+
+317
+01:00:49.910 --> 01:00:54.660
+Micah Zoltu: Correct understanding. This is basically just being explicit about a requirement that we already have today.
+
+318
+01:00:56.260 --> 01:01:08.530
+Ben Adams: Yeah, that's correct. But if if blocks were larger than 10 MB uncompressed, it would just fail. But it's just saying, if you try and build a block larger than that market is invalid.
+
+319
+01:01:11.300 --> 01:01:15.750
+Micah Zoltu: Currently all clients have this problem. So it would be a a consensus.
+
+320
+01:01:16.110 --> 01:01:24.010
+Micah Zoltu: They would be in consensus if you somehow managed to get a 10 MB block in today, or would some of the clients succeed, some not maybe, fall out of consensus.
+
+321
+01:01:24.657 --> 01:01:36.890
+Ben Adams: It's specified in both the Ptp. And the consensus spec to drop any periods that try and send you that a block. Epic. Well, a message. Epic.
+
+322
+01:01:42.250 --> 01:01:50.000
+Justin Florentine (Besu): Wait. So you're saying that it's a propagation protection like it's being. It's being protected from Micah's concern at propagation time.
+
+323
+01:01:51.040 --> 01:01:54.288
+Ben Adams: Yeah, so it's enforced at the
+
+324
+01:01:55.290 --> 01:02:02.359
+Ben Adams: yeah, the network player. If you send a message that when it decompresses it's larger than 10 MB, you will be dropped as a pair.
+
+325
+01:02:03.380 --> 01:02:12.710
+Ben Adams: so therefore we cannot create blocks larger than 10 MB and have them part of consensus.
+
+326
+01:02:13.490 --> 01:02:19.159
+Ben Adams: So it's just recognizing that and saying, Well, if you try and build a block larger than that, it's an invalid block.
+
+327
+01:02:27.000 --> 01:02:27.420
+Tim Beiko: Alan.
+
+328
+01:02:27.840 --> 01:02:34.299
+Ahmad Bitar | Nethermind: Just to make things clear like the propagation protection is already in like
+
+329
+01:02:34.770 --> 01:02:39.270
+Ahmad Bitar | Nethermind: currently Cls and Els do not propagate any blocks bigger than this.
+
+330
+01:02:39.550 --> 01:02:50.929
+Ahmad Bitar | Nethermind: But previously we used to not have blocks bigger than this limit, because the gas limit is limited. Now, if we want to increase the gas limit.
+
+331
+01:02:50.970 --> 01:03:20.199
+Ahmad Bitar | Nethermind: then we will hit that wall if we don't put another condition on built blocks, that they should not exceed this specific size when built. So this just adds, as I said, a condition, or like a constraint on the builder, to build a block not bigger than this, so when it finds that there is some transactions that have some really large amount of call data. For example.
+
+332
+01:03:20.580 --> 01:03:43.480
+Ahmad Bitar | Nethermind: it might drop these in favor of smaller, more paying transactions, just so that it does not exceed the block size, that is, that constraint. The constraint, yes, is already exists, but this makes it explicit for the builder to say, Hey, like, if your block is bigger than this, it won't be accepted, won't be part of consensus.
+
+333
+01:03:47.860 --> 01:03:56.079
+Ben Adams: Yeah, rather than I mean, potentially have a weird error condition. If somebody has a bug in hearing, and they don't actually reject it, then.
+
+334
+01:03:56.200 --> 01:03:57.269
+Ben Adams: without having a problem.
+
+335
+01:04:00.170 --> 01:04:10.100
+Ahmad Bitar | Nethermind: Yeah. Previously we had, like tested something with spolia, I think, where some clients had limits
+
+336
+01:04:10.220 --> 01:04:27.999
+Ahmad Bitar | Nethermind: configured different than other clients. So some blocks became canonical for some clients and other clients didn't even see those blocks because of the propagation protection or something like that. My memory is fuzzy on this. So if someone who knows maybe can, can.
+
+337
+01:04:28.940 --> 01:04:29.640
+Ahmad Bitar | Nethermind: yeah.
+
+338
+01:04:42.250 --> 01:04:48.936
+Tim Beiko: Okay? And yeah, I think even though this seems promising, we should give people a couple of weeks to review it.
+
+339
+01:04:49.750 --> 01:04:56.230
+Tim Beiko: before we actually included and say, like the 1st Osaka devnets. But should we consider
+
+340
+01:04:56.420 --> 01:05:02.870
+Tim Beiko: effectively like Cfi ing it for Fusaka? And then, yeah, potentially.
+
+341
+01:05:02.870 --> 01:05:21.729
+Ben Adams: I mean, follow up. Clarity on this is you can only achieve blocks this size by sending. Say, say, we're 110 mega gas blocks. You can only achieve a block this size by sending a single transaction that fills the block within zeros.
+
+342
+01:05:21.840 --> 01:05:24.530
+Ben Adams: So it's not like a productive block.
+
+343
+01:05:25.690 --> 01:05:32.299
+Ben Adams: It's just like an attack block. So it's saying, Well, that's that's not allow them to exist.
+
+344
+01:05:38.150 --> 01:05:38.950
+Tim Beiko: Got it.
+
+345
+01:05:44.560 --> 01:05:46.899
+Tim Beiko: Anyone else have thoughts on eap.
+
+346
+01:05:54.720 --> 01:05:59.729
+Andrew Ashikhmin: Seems like a good one, and we should include it especially given that we want to increase the gas limit.
+
+347
+01:06:12.360 --> 01:06:24.200
+Tim Beiko: Okay, so it seems like, there's some desire to include it by the team. So I I would push for us to cfi it still have some time to review before we we decide whatever we want in the 1st devnet.
+
+348
+01:06:24.983 --> 01:06:30.450
+Tim Beiko: So that's a 7, 9, 3, 8, and then
+
+349
+01:06:30.580 --> 01:06:43.110
+Tim Beiko: the other thing. So for Fusaka we have all these Cfid Ips I posted in the chat we should determine what we want to move to our 1st Fusaka devnet. So what we want to actually, sfi
+
+350
+01:06:44.130 --> 01:06:55.399
+Tim Beiko: I think a light client had eip 7, 9 0, 7 in the chat as one that he wanted. But yeah, curious to hear from client teams like, what do we think should be
+
+351
+01:06:55.670 --> 01:06:58.679
+Tim Beiko: specified for the 1st Fusaka devnet.
+
+352
+01:07:07.910 --> 01:07:12.120
+Tim Beiko: So yes, pure desk is already sfi, do we want anything else?
+
+353
+01:07:12.899 --> 01:07:16.289
+Tim Beiko: Because I believe we do have peered us def nets.
+
+354
+01:07:16.410 --> 01:07:24.599
+Tim Beiko: So if if we don't feel okay. MoD. Xp repricing.
+
+355
+01:07:38.150 --> 01:07:43.220
+Tim Beiko: Yeah. I guess, Maris, do you wanna make the case for audits? Be repricing or.
+
+356
+01:07:45.904 --> 01:07:52.119
+MariusVanDerWijden: No, I think Netherman should make the case for it, because it's it's the eap.
+
+357
+01:07:52.690 --> 01:07:55.850
+Tim Beiko: Okay, so, and this is a 7, 8, 8, 3, right?
+
+358
+01:08:01.978 --> 01:08:06.150
+Tim Beiko: Yeah. Okay. It seems like, Besu is up.
+
+359
+01:08:07.890 --> 01:08:14.350
+Ben Adams: Yeah, the the modex piece, because modex piece pricing is degenerate.
+
+360
+01:08:15.600 --> 01:08:19.789
+Ben Adams: It's it's not correctly priced compared to any other operation.
+
+361
+01:08:20.670 --> 01:08:22.539
+Ben Adams: So you can create.
+
+362
+01:08:23.790 --> 01:08:25.789
+Ben Adams: Prior to that blocks. Lucas.
+
+363
+01:08:25.950 --> 01:08:29.190
+Łukasz Rozmej: Yeah, exactly. Modex has edge cases that
+
+364
+01:08:29.380 --> 01:08:40.569
+Łukasz Rozmej: could allow for fairly long processing time. With 36 million limit. We are still, let's say, in in fine window here, but if we go
+
+365
+01:08:40.689 --> 01:08:44.589
+Łukasz Rozmej: not like 2, 60, or 100 etc.
+
+366
+01:08:44.740 --> 01:08:48.799
+Łukasz Rozmej: it will probably could could be seen as
+
+367
+01:08:51.160 --> 01:08:56.339
+Łukasz Rozmej: Worst case scenario should could be too too bad with the current pricing.
+
+368
+01:08:58.740 --> 01:09:04.169
+Marcin Sobczak: Yes, it's a big, because blocker with a big margin for potential increases in cost limit.
+
+369
+01:09:05.399 --> 01:09:12.699
+Łukasz Rozmej: And we do have some test cases that we were sharing in the past. I think we can share them again.
+
+370
+01:09:12.869 --> 01:09:16.169
+Łukasz Rozmej: But I will leave that to Martin with our core devs.
+
+371
+01:09:20.859 --> 01:09:28.059
+Tim Beiko: Okay, thanks. So okay, so it seems like, 7, 8, 2, 3 is pretty unanimously.
+
+372
+01:09:29.999 --> 01:09:41.629
+Tim Beiko: oh, sorry. Okay. There's actually 2 monitors. Pep. So I wanna make sure which one I'm talking about is this, 7, 8, 2, 3. To set upper bounds, or 7, 8, 8, 3. The gas cost increase, or both.
+
+373
+01:09:42.350 --> 01:09:49.679
+Łukasz Rozmej: We are mostly focusing on 7, 8, 8, 3, but I think both can be viewed as as
+
+374
+01:09:51.060 --> 01:09:53.859
+Łukasz Rozmej: making contribution to to the goal.
+
+375
+01:09:54.780 --> 01:10:11.440
+Marcin Sobczak: Yes, 7, 8, 8, 3 are reprising like the the slowest scenarios, worst worst case scenarios, and the other one is setting that like upper bound for for size of
+
+376
+01:10:12.041 --> 01:10:38.498
+Marcin Sobczak: of of call to modex. And it's limiting like such a big cases that were never never happened on on my, not like the the biggest size of of any parameter was 513, and it's setting up about on 1,024. So it's just eliminating potential
+
+377
+01:10:39.770 --> 01:10:43.370
+Marcin Sobczak: future cases which which never happened.
+
+378
+01:10:44.550 --> 01:10:51.209
+Ben Adams: And I think there's been potential consensus issues with, they're all in the like, larger
+
+379
+01:10:51.650 --> 01:10:56.740
+Ben Adams: areas as well. So it sort of limits the the scope.
+
+380
+01:11:03.410 --> 01:11:10.990
+Tim Beiko: Okay. And Mario raised in the chat as well that none of the eips have proper tests for them yet, and
+
+381
+01:11:11.240 --> 01:11:17.839
+Tim Beiko: ideally they should before Sfi. So I think, whatever we sfi, we should also be
+
+382
+01:11:18.190 --> 01:11:31.239
+Tim Beiko: okay, or have someone who's like willing to break the test and and help move that forward in the next couple of weeks. So if we move forward with the 2 MoD. Xp eips, is there anyone who
+
+383
+01:11:31.530 --> 01:11:37.579
+Tim Beiko: can commit to actually helping with the testing support for those dad, Mario.
+
+384
+01:11:38.200 --> 01:11:50.750
+Mario Vega: Yeah, it wasn't meant like to be like a a blocker, which is a reminder of the process that we said, we want tests before Sfi. And and it's not a problem we can. We can start the effort on on it.
+
+385
+01:11:50.910 --> 01:12:10.140
+Mario Vega: And we can update maybe on the following couple of weeks. The reason there there's no tests be right now is because of the switch of the Eof, no aof effort. So yeah. But basically, we can. We can implement them? Just it's gonna take a couple of weeks. May maybe.
+
+386
+01:12:14.830 --> 01:12:18.400
+Tim Beiko: Okay, and Lucas, you say there's a.
+
+387
+01:12:20.310 --> 01:12:21.050
+Łukasz Rozmej: Well, I'm not
+
+388
+01:12:21.050 --> 01:12:33.339
+Łukasz Rozmej: if they are implemented, but they are. There are like test cases with the previous previous price and new price in in the eap. 8, 7, 83 eap. So
+
+389
+01:12:33.580 --> 01:12:35.680
+Łukasz Rozmej: just changing a price. And
+
+390
+01:12:35.810 --> 01:12:41.030
+Łukasz Rozmej: and it's easy to get a test. But we we have, like test cases in mind at least.
+
+391
+01:12:41.940 --> 01:12:50.425
+Marcin Sobczak: Yes. So we had some potential vectors from the the last models for pricing. So it was
+
+392
+01:12:50.960 --> 01:13:19.950
+Marcin Sobczak: too far. La! Last time when this this equation was changed, and I added 9 test cases which are slow, too. And I I already shared it on on many groups. So if anyone is interested, I can just share this this file again. It's like the test cases from from the last repricing plus new cases.
+
+393
+01:13:28.220 --> 01:13:29.830
+Tim Beiko: Okay. So
+
+394
+01:13:31.720 --> 01:13:38.530
+Tim Beiko: I guess if we were to move with these 2 forward for Fusaka devnet one, do we feel confident, like
+
+395
+01:13:38.670 --> 01:13:44.150
+Tim Beiko: we would be able to get sufficient desk coverage quickly enough, and.
+
+396
+01:13:48.820 --> 01:13:56.920
+Mario Vega: I think a same thing to do would be which ones of this service and the highest priority. And then we can focus on testing those.
+
+397
+01:13:57.690 --> 01:14:01.110
+Mario Vega: and then Cfi in those or.
+
+398
+01:14:01.110 --> 01:14:04.160
+Tim Beiko: Okay, sfying those. Okay? And I guess.
+
+399
+01:14:04.690 --> 01:14:18.899
+Tim Beiko: yeah, Matt has a point like saying, like, we should maybe just agree on what we want. The Sfi here, and then make a final call in 2 weeks. Have the 1st definite with just pure das? I guess my question there would be like, don't. We already have pure das definites? And
+
+400
+01:14:19.180 --> 01:14:22.855
+Tim Beiko: it's fine if we want to just have that. But yeah,
+
+401
+01:14:29.280 --> 01:14:32.950
+lightclient: Yeah, I mean, what is the state of the periodic evidence for people?
+
+402
+01:14:34.470 --> 01:14:36.970
+lightclient: Is it based on Master.
+
+403
+01:14:42.750 --> 01:14:46.079
+Barnabas: I think every single client is still in there.
+
+404
+01:14:46.400 --> 01:14:47.870
+Barnabas: Custom branches.
+
+405
+01:14:50.970 --> 01:14:53.960
+Barnabas: It's it's still highly work in progress.
+
+406
+01:14:54.860 --> 01:15:06.090
+Tim Beiko: Okay? So we could. I think it's it's also reasonable to say, Fusaka def net. One is just pure das, and then what we would want to aim for by next acde is
+
+407
+01:15:06.460 --> 01:15:11.630
+Tim Beiko: the list of eips. We want to sfi
+
+408
+01:15:11.850 --> 01:15:19.869
+Tim Beiko: and include in the 1st devnets and then try to get tests written for them. In in that period. Does that seem reasonable?
+
+409
+01:15:20.560 --> 01:15:50.180
+lightclient: Yeah, I think I'm just trying to de-risk spending a week or 2 writing tests for something that clients aren't going to Sfi like. It's 1 thing to write the test and find that there are things that we didn't anticipate, and that's the reason why it doesn't get Sfi, or it doesn't go on a devnet, but like for 7, 9, 0 7, like, I can work on the tests. I just don't want to spend a week doing this. And then a client saying, Yeah, well, we didn't want to do this, anyways. So that's just a waste of everyone's time.
+
+410
+01:15:51.340 --> 01:15:56.380
+Tim Beiko: Agreed. So okay, so can we get maybe like A, I don't
+
+411
+01:15:56.850 --> 01:16:17.519
+Tim Beiko: check from the clients of this of today like what they would want to move forward in a devnet, so never mind, posted their list in the chat. It was 7, 2, 1, 2, 7, 2, 8, 3, 7, 8, 8, 3 and then, I think, one of 7, 9, 17 and 7, 9, 18 or sorry. No, both 7, 9
+
+412
+01:16:17.650 --> 01:16:21.930
+Tim Beiko: 17 and 7, 9, 18,
+
+413
+01:16:22.770 --> 01:16:24.820
+Tim Beiko: and then, yeah. My client
+
+414
+01:16:27.570 --> 01:16:31.990
+Tim Beiko: 7, 2, 1, 2, the 2 MoD xps and 7, 9 0, 7.
+
+415
+01:16:36.260 --> 01:16:39.270
+Tim Beiko: Justin, I mean, I'm reading what's within in the chat.
+
+416
+01:16:42.460 --> 01:16:51.419
+Justin Florentine (Besu): Right. But amongst which teams I'm seeing a combination of eips from both Nethermind and Gath. And I'm not sure what overlaps and is
+
+417
+01:16:52.150 --> 01:16:56.549
+Justin Florentine (Besu): okay? And that's all right. That's a personal list. Got it so like, what.
+
+418
+01:16:58.070 --> 01:17:04.026
+Tim Beiko: Okay. So I guess if teams haven't had time to review this, which seems to be the case,
+
+419
+01:17:05.900 --> 01:17:12.869
+Tim Beiko: what is like the timeline on which we want to make this decision. Like, if we wait.
+
+420
+01:17:13.830 --> 01:17:19.089
+Tim Beiko: do we want to wait the whole 2 week cycle to review the current Cfi vips
+
+421
+01:17:19.990 --> 01:17:27.520
+Tim Beiko: and then make decisions. Do we want to just decide this next Monday? Is that enough time for people?
+
+422
+01:17:32.310 --> 01:17:37.440
+Tim Beiko: I think it's hard to do Async, because, like, it's usually a bit more subtle than just
+
+423
+01:17:37.670 --> 01:17:43.329
+Tim Beiko: team A wants these vips, and then team B wants these cips, and you just get like the intersection.
+
+424
+01:17:43.500 --> 01:17:46.650
+Tim Beiko: But I think if, if yeah, by Monday
+
+425
+01:17:46.790 --> 01:18:03.382
+Tim Beiko: the different teams could agree to which of the Cfi eips we should prioritize for Fusaka devnet 2, that would be ideal. We can have Fusaka devnet one be just pure das, and
+
+426
+01:18:04.040 --> 01:18:16.554
+Tim Beiko: yeah, I can make sure to update the list today. But basically the only addition we'd have in the list to what is already. There is 7, 9, 3, 8, this one about the 10 Meg the 10 Meg,
+
+427
+01:18:17.260 --> 01:18:18.600
+Tim Beiko: Max, watch sites.
+
+428
+01:18:19.360 --> 01:18:20.060
+Tim Beiko: But
+
+429
+01:18:20.410 --> 01:18:33.851
+Tim Beiko: yeah, I think it's reasonable to just wait until Monday. If if people haven't had time to properly review this and then, once we know that on Monday we or I guess once we decide that on Monday we should take like the testing
+
+430
+01:18:34.640 --> 01:18:39.610
+Tim Beiko: like the the cost of testing into consideration as well. So we should just like
+
+431
+01:18:40.090 --> 01:18:46.430
+Tim Beiko: Sfi, the things we think we can reasonably test by the definite after the pure. That's only definite.
+
+432
+01:18:48.220 --> 01:18:49.409
+Tim Beiko: Does that make sense?
+
+433
+01:18:55.300 --> 01:19:07.770
+Tim Beiko: Oh, yeah, sorry. I don't know why I said, the 7, 9, 3, 8, yeah, 7, 9, 3, 4 is the one I meant. With regards to the the cap on the block size. Yeah.
+
+434
+01:19:10.940 --> 01:19:17.139
+lightclient: I mean, is there a reason that we can't just kind of decide what we want to target for the next? For the testing.
+
+435
+01:19:17.140 --> 01:19:21.389
+Tim Beiko: People just people seem very uncertain.
+
+436
+01:19:22.440 --> 01:19:26.449
+lightclient: I mean, these eips have been cfi'd for a month.
+
+437
+01:19:31.380 --> 01:19:33.580
+Trent: A month leading up to Pector.
+
+438
+01:19:34.840 --> 01:19:38.029
+Tim Beiko: Yeah, we've there's been a lot to do, and
+
+439
+01:19:39.390 --> 01:19:43.729
+Tim Beiko: I do think it'll be like, I. I don't think that we lose much by taking a couple of days
+
+440
+01:19:44.267 --> 01:19:55.352
+Tim Beiko: staff teams. Property. Yeah, property review this. And then Mario also says that by tomorrow they could share an overview of like what they expect the testing to be.
+
+441
+01:19:59.020 --> 01:20:13.854
+Tim Beiko: And yeah, I don't know if people want to make the call for just MoD. Xp, like that. One feels like the one that has the most consensus consensus around. So we could say that definit one is just pure das, and these 2 MoD xp, Ips?
+
+442
+01:20:23.580 --> 01:20:25.920
+Tim Beiko: I guess. Yeah, maybe. Is there a preference towards?
+
+443
+01:20:28.300 --> 01:20:32.396
+Tim Beiko: So I guess, Daniel like, why would we, Cfi something not consider it the Sfi
+
+444
+01:20:33.930 --> 01:20:57.515
+Tim Beiko: we need to cap how much stuff we put in the next step that so like we should not realistically end up doing everything. That's Cfid. So we need to figure out like which of these are the highest priority? And which ones do we want to move forward with now? It's much harder to like implement 10 different things in parallel than it is to say, like, here are the 2 things we're working on right now.
+
+445
+01:20:58.060 --> 01:20:59.759
+Tim Beiko: so that's what we're trying to get at.
+
+446
+01:21:00.350 --> 01:21:12.339
+Daniel Lehrner (Besu): Just just maybe one thing I'm I'm not really sure if it's the original goal to ship peers as soon as possible. You know if if it really fits. If now we consider.
+
+447
+01:21:13.370 --> 01:21:18.079
+Daniel Lehrner (Besu): I don't know to to add a lot of other eips, or even to add any other eips.
+
+448
+01:21:18.500 --> 01:21:24.809
+Daniel Lehrner (Besu): So I'm not. I'm not sure where people feel comfortable that they say this does not.
+
+449
+01:21:25.442 --> 01:21:31.570
+Daniel Lehrner (Besu): Delay peer does, because I think every single eip potentially delays peer does that. We had.
+
+450
+01:21:34.430 --> 01:21:43.420
+Tim Beiko: I don't know that this is true, because we have a lot of work on the Cl. Side for pure das, and say something like repricing. MoD. Xp is
+
+451
+01:21:43.970 --> 01:21:49.800
+Tim Beiko: pretty straightforward, so like, I don't expect that we're pricing MoD. Xp would be the thing that
+
+452
+01:21:50.030 --> 01:21:56.400
+Tim Beiko: delays pure das, and there's probably a bunch of others like that. But I do think we need to like incrementally, add them
+
+453
+01:21:57.400 --> 01:22:05.370
+Tim Beiko: to to the definites, because if we just add everything at once, then it becomes much harder to test.
+
+454
+01:22:05.590 --> 01:22:06.670
+Tim Beiko: Yeah, Marston.
+
+455
+01:22:07.610 --> 01:22:35.039
+Marcin Sobczak: Yes, I I agree with team modex at least 7, 8, 8, 3. It's like a free license, free lines to be changed in client implementations, and if we don't do it, we will like block increases until the next car, for so we just need need to do it in the next one to to unblock gas limit increases.
+
+456
+01:22:43.470 --> 01:22:55.539
+Tim Beiko: And yeah, just I think we want to. Also, maybe, like, think of scope sizing there like we don't necessarily want to blindly. If everything in see if in, see if I had test tomorrow, I don't know that we would add them all into the second devnet.
+
+457
+01:22:56.970 --> 01:23:05.390
+Tim Beiko: So we should balance like, okay, what's the amount of things we want to realistically implement the new devnets which ones are the highest priority and kind of iteratively go from there.
+
+458
+01:23:06.430 --> 01:23:17.901
+Tim Beiko: I do think, like, I know, based on this conversation like it feels like there's a lot of uncertainty. Not a huge rush to make this decision. So I think it's worth waiting until Monday.
+
+459
+01:23:19.210 --> 01:23:35.867
+Tim Beiko: it would be really helpful if, like, yeah, there is a doc from the testing team that kind of evaluates what's like the expected testing burden of of these different eips. We can use that in in the decision. And I think on Monday we can also make the call of around whether we actually want
+
+460
+01:23:36.410 --> 01:23:43.430
+Tim Beiko: whether we actually want the MoD Xp eips in the 1st peer desktop net or not? Yeah.
+
+461
+01:23:49.100 --> 01:24:03.940
+Tim Beiko: I guess. Okay, point like, yes, we're talking about the ordering of when we bring them in. And I do think this is important, because if we bring everything at once, then it all gets coupled, and it becomes much messier to remove and undo. So we should be like judicious in
+
+462
+01:24:04.680 --> 01:24:07.679
+Tim Beiko: what we choose to bring, and when and then
+
+463
+01:24:08.230 --> 01:24:17.349
+Tim Beiko: it's possible that we don't get through the entire list because there's just other stuff, or because we're ready to ship pure Nas, or because something a little more complex than we expected.
+
+464
+01:24:22.360 --> 01:24:36.729
+Tim Beiko: Okay, so yeah, to recap, I think let's make this call on Monday. So client teams should review what's in the Cfi list including this new 1, 7, 9, 3, 4 about the the limit on the block size.
+
+465
+01:24:36.900 --> 01:24:52.990
+Tim Beiko: And then we can decide what we actually want in definite one, along with pure das, if anything. And if we want to wait beyond that, or if we're on definite one to just be pure. Das, that's fine, too. But we can still prioritize the ordering. Yeah.
+
+466
+01:24:57.300 --> 01:25:10.390
+Tim Beiko: And I think, anyways, I think what I could also do on Mondays right now the the list is sorted by eip number, but we could also just like sort it by priority or something at some point. So that it's it's a bit clearer going forward like, what's the order in which we pick from
+
+467
+01:25:10.730 --> 01:25:14.250
+Tim Beiko: to include stuff button?
+
+468
+01:25:19.210 --> 01:25:25.099
+Tim Beiko: Yeah, I actually, maybe, yeah, this is okay. To make it even more concrete. I think this is probably like the most helpful thing is like
+
+469
+01:25:25.530 --> 01:25:30.589
+Tim Beiko: getting an ordered list from every client team of the stuff in Cfi. And
+
+470
+01:25:31.130 --> 01:25:40.316
+Tim Beiko: in what order would you prioritize? Pulling it into Fusaka is probably the most helpful data point, and we can use that to make our decisions.
+
+471
+01:25:43.340 --> 01:25:49.540
+Tim Beiko: and then yes, we can kind of merge these ordered lists on Monday and determine which subset. We want to include right now.
+
+472
+01:25:49.930 --> 01:25:53.450
+Tim Beiko: Does that make sense sorry? I know this was confusing. But I think
+
+473
+01:25:53.910 --> 01:25:55.349
+Tim Beiko: we have a clear next step.
+
+474
+01:26:00.330 --> 01:26:08.100
+Tim Beiko: Okay, perfect. So like. Yes. Again, the list that's there, plus 7, 9, 3, 4 is what we are trying to sort before Monday.
+
+475
+01:26:12.980 --> 01:26:16.616
+Tim Beiko: okay. So I think this covers the Fusaka stuff.
+
+476
+01:26:19.140 --> 01:26:44.570
+Tim Beiko: There was. So Greg had a comment following the Eof removal around, whether we would ever get the removal of dynamic jumps in the Evm. We only have 10 min here. I don't think it's like the right time to make a decision on this, but I don't know what is the right forum that people feel we should use to discuss this and what the path forward for the Evm should be.
+
+477
+01:26:45.060 --> 01:26:47.309
+Tim Beiko: does anyone have a suggestion here where.
+
+478
+01:26:51.790 --> 01:26:55.749
+Greg: It's just important, because we've been at it for 10 years.
+
+479
+01:26:56.090 --> 01:26:59.090
+Greg: And it's it is the key to unlock
+
+480
+01:26:59.260 --> 01:27:04.049
+Greg: almost any progress in any area of the Vm.
+
+481
+01:27:08.775 --> 01:27:09.299
+Tim Beiko: Marius.
+
+482
+01:27:11.617 --> 01:27:20.389
+MariusVanDerWijden: Yes. So I think we should do this on Acd, especially when we're once we're moving to this
+
+483
+01:27:20.890 --> 01:27:30.300
+MariusVanDerWijden: new model of discussing like higher level ideas on acd acde, and then discussing the more
+
+484
+01:27:30.640 --> 01:27:38.249
+MariusVanDerWijden: current stuff on scd tea. So I think this this would be the right venue for it.
+
+485
+01:27:39.379 --> 01:27:43.570
+MariusVanDerWijden: I can also give my opinion on it right now.
+
+486
+01:27:43.690 --> 01:27:48.680
+MariusVanDerWijden: I don't see removal of static jumps a priority.
+
+487
+01:27:49.545 --> 01:27:51.969
+MariusVanDerWijden: I just I don't.
+
+488
+01:27:52.460 --> 01:28:02.960
+MariusVanDerWijden: I don't see the the use cases that it it unlocks. I know there are some, but I don't see this as a priority over other things that we could prioritize.
+
+489
+01:28:03.670 --> 01:28:21.829
+Greg: Every formal analyst and auditor I have talked to for 10 years have told me. Please get rid of this. It is in the way totally in the way all of the research I want to do I cannot do, because it's in the way any attempt.
+
+490
+01:28:21.830 --> 01:28:24.170
+Tim Beiko: Like. But okay, just to like.
+
+491
+01:28:24.170 --> 01:28:24.680
+Greg: We went from.
+
+492
+01:28:24.680 --> 01:28:25.240
+Tim Beiko: Full of.
+
+493
+01:28:25.240 --> 01:28:27.320
+Greg: The goddamn thing is broken.
+
+494
+01:28:28.270 --> 01:28:29.209
+Tim Beiko: Sure. But
+
+495
+01:28:29.440 --> 01:28:33.759
+Tim Beiko: there are many things that are broken with ethereum. There's a lot of things we need to do. So
+
+496
+01:28:34.070 --> 01:28:43.470
+Tim Beiko: I guess Tamaris's point is like, yes, it's like a relative prioritization thing. If we had infinite resources in infinite time, we would do all the things.
+
+497
+01:28:43.480 --> 01:28:48.580
+Greg: We're not going fucking. Do this, I will go away and quit bothering you.
+
+498
+01:28:49.790 --> 01:28:54.279
+Tim Beiko: Like. I guess I do think the way to address this would be
+
+499
+01:28:54.710 --> 01:28:59.220
+Tim Beiko: either. Yes, there needs to be like a longer term effort around
+
+500
+01:28:59.440 --> 01:29:05.620
+Tim Beiko: the Vm. Or if there's a specific proposal for the next fork, like we should consider it, and you know.
+
+501
+01:29:06.100 --> 01:29:12.780
+Tim Beiko: weight it against the different like relative prioritizations. But yeah.
+
+502
+01:29:15.700 --> 01:29:24.160
+MariusVanDerWijden: So from my point of view, we've we have considered it many times. I have considered it many times myself. I don't think ethereum is broken.
+
+503
+01:29:24.890 --> 01:29:26.500
+MariusVanDerWijden: Yes, I.
+
+504
+01:29:26.500 --> 01:29:28.510
+Greg: As this program.
+
+505
+01:29:28.700 --> 01:29:33.500
+MariusVanDerWijden: As as as Tim said I, I would like to have this.
+
+506
+01:29:33.710 --> 01:29:38.659
+MariusVanDerWijden: I think it's a it's a nice feature to have only static jumps.
+
+507
+01:29:39.080 --> 01:29:45.370
+MariusVanDerWijden: I also I see the problem with the dynamic jumps. I dislike the jump, desk analysis, and all of this.
+
+508
+01:29:45.590 --> 01:29:51.069
+MariusVanDerWijden: but I don't see this as a priority over other features.
+
+509
+01:29:54.690 --> 01:29:58.940
+Greg: The main thing is a forum, because we won't resolve it. Now.
+
+510
+01:29:59.210 --> 01:30:07.110
+Tim Beiko: Yeah. But so I guess. And yeah, this is like skipping ahead Forum and a commitment.
+
+511
+01:30:07.240 --> 01:30:14.810
+Greg: A commitment to either do this or not, because if we're not going to do it literally, I I should go away. I'm wasting my time.
+
+512
+01:30:15.460 --> 01:30:21.620
+Tim Beiko: Right? Okay, so this is skipping ahead a bit. But yes, I think it's fair.
+
+513
+01:30:21.740 --> 01:30:33.192
+Tim Beiko: That's like, yeah, we try to give commitments. There's 2 challenges there. One is. I don't think all core devs can actually commit to anything beyond like the next fork in the future.
+
+514
+01:30:33.640 --> 01:30:36.999
+Tim Beiko: we've tried this in the past, and it's horrible, because we
+
+515
+01:30:37.110 --> 01:30:57.119
+Tim Beiko: then have priority shift, and the people who thought they had their thing committed to are even more disappointed than if we had not made any commitments at all. That said a lot of the stuff that we need to do takes more than one hard fork to develop and implement and whatnot. We have had a bunch of working groups and breakouts to do this. And
+
+516
+01:30:57.430 --> 01:31:04.889
+Tim Beiko: we I think the the mistake we've made there is that we haven't had like a way for these breakouts to like.
+
+517
+01:31:05.030 --> 01:31:25.283
+Tim Beiko: I don't check in with all core devs about is their thing still a priority, and should they keep investing time on it, this is something I would like us to start doing and ideally, we can catch things, you know, that become less of a priority earlier in the pro, in in the, in, in the in the process. But
+
+518
+01:31:26.500 --> 01:31:40.650
+Tim Beiko: but but yes, like I. I don't think we can give you an assurance like this will never happen. We keep all Cornez can give you an assurance like whether or not. This will happen in the next fork. If we want to start an Evm working group, I think we should be better at
+
+519
+01:31:41.090 --> 01:31:48.050
+Tim Beiko: every fork, at least looking at every existing working group, then assessing like, does this thing still make sense or not?
+
+520
+01:31:48.950 --> 01:31:55.164
+Tim Beiko: But yeah, I I just don't think it's possible to give you a commitment that's like better or stronger than that.
+
+521
+01:31:55.980 --> 01:32:04.190
+Tim Beiko: And then, you know, based on that, obviously, you should make a call of whether it's worth it to invest your time on on these efforts. But I I
+
+522
+01:32:05.130 --> 01:32:09.230
+Tim Beiko: like, Yeah, I I'm very weary of just giving people the impression of.
+
+523
+01:32:09.670 --> 01:32:11.220
+Greg: When they're just there, isn't
+
+524
+01:32:11.220 --> 01:32:19.740
+Greg: it just took years of work by a lot of people and shit candid to the last minute. Why should people put in this kind of work.
+
+525
+01:32:20.950 --> 01:32:22.450
+Tim Beiko: Correct. And look I I mean.
+
+526
+01:32:22.930 --> 01:32:34.459
+Tim Beiko: I think the signal like Marius shared. And is that like, yeah, right now, this is not a priority. I think the signal from Eof was like this is also not a priority. Now.
+
+527
+01:32:35.030 --> 01:32:46.800
+Tim Beiko: again, like no one can stop you from putting in the work, but I I think if you want, like an explicit like thumbs up from all core devs, the best we can do is whether we want to consider this in the next hard fork.
+
+528
+01:32:47.410 --> 01:32:51.009
+Tim Beiko: And you know you're free to make a proposal for.
+
+529
+01:32:51.280 --> 01:32:52.230
+Greg: For that system.
+
+530
+01:32:52.230 --> 01:32:52.670
+Tim Beiko: But yeah.
+
+531
+01:32:52.670 --> 01:32:55.089
+Greg: The work. The work is ready to go in.
+
+532
+01:32:57.510 --> 01:33:08.769
+Tim Beiko: Yeah. So okay, so then, when we start planning Amsterdam, then I think we should have a Clamsterdam proposal about this. But yeah, we only have 3 min. So I do want to move us forward. But to answer your original question, I think
+
+533
+01:33:08.890 --> 01:33:10.720
+Tim Beiko: either we should start and
+
+534
+01:33:11.250 --> 01:33:23.509
+Tim Beiko: working group around the Evm. And if it's already done, then I think we should have a standardized process to consider different things for hard forks, and this can be one of them. Yeah.
+
+535
+01:33:25.485 --> 01:33:37.519
+Tim Beiko: but yeah, I do want to make sure we cover. There was a point around state growth metrics. So I'm I forget who put this on the agenda. But it's 1 of the important topics we
+
+536
+01:33:38.110 --> 01:33:40.590
+Tim Beiko: discussed earlier. Cpres.
+
+537
+01:33:41.860 --> 01:33:42.610
+Tim Beiko: And yeah.
+
+538
+01:33:44.150 --> 01:34:12.290
+CPerezz: So together with never mind, and following what they did with Perfnet, and seeing that there's a great initiatives to bump up the gas limits. One of the things that we wanted to make sure is that we we can at least know which will be the consequences on state growth. Maybe not for the short term, but certainly for the medium term. So in regards of that, the idea was to start creating some kind of testnet
+
+539
+01:34:12.290 --> 01:34:21.580
+CPerezz: where we can actually have gas limits from I don't know between 60 million 300 million gas per block and just
+
+540
+01:34:21.690 --> 01:34:31.459
+CPerezz: bloat the test net as much as possible and see what breaks and what useful data can we get? So in regards the second one,
+
+541
+01:34:31.970 --> 01:34:55.820
+CPerezz: I wanted to make some Co, some kind of call to participation, or whatever, because there's a bunch of data that you can just retrieve from traces and blocks. But there's a lot of other data. That is just the female. So I don't know RAM metrics catch a misses or stuff like that, which, if you don't get it at the time. We will never get that information so I wanted to share the 2 links and invite everyone to
+
+542
+01:34:55.820 --> 01:35:25.510
+CPerezz: collaborate or give any initiatives or any data points that they would be interested on having. Because we're doing this for sure, with the collaboration of Nethermind and any funds. And it will be really nice if we can get worse test cases, things that people want to trample with, like mess up with caches and see how this affects the performance on I/O, especially on breeds. And this kind of stuff, especially when we have terabytes of state, which is the the goal here. So yeah, just wanted to
+
+543
+01:35:25.740 --> 01:35:30.430
+CPerezz: to briefly mention it and and ask anyone to to help and collaborate if they want.
+
+544
+01:35:31.590 --> 01:35:37.720
+Tim Beiko: Thank you. Where's the best place for people to to follow up.
+
+545
+01:35:38.610 --> 01:36:04.570
+CPerezz: So at this time I would say, the gas limit. Testing discord channel is the place probably we will be creating something new or separate, so that we don't blow down the channel for things that are not completely related. But this should be the 1st place, and aside from that you can. Just DM, probably Camille, or anyone in stateless consensus and we will be happy to to help.
+
+546
+01:36:06.180 --> 01:36:07.160
+Tim Beiko: Awesome. Thanks.
+
+547
+01:36:07.856 --> 01:36:18.283
+Tim Beiko: And okay, we're at time. And there was a bunch more announcements. So I'll just like run through them. And people can review those Async. But
+
+548
+01:36:18.800 --> 01:36:24.402
+Tim Beiko: basically, I, I wrote a post published yesterday on
+
+549
+01:36:25.520 --> 01:36:30.066
+Tim Beiko: on, like what I think the next step should be to
+
+550
+01:36:30.660 --> 01:36:35.659
+Tim Beiko: implement kind of the process we discussed for all core devs. We briefly discussed it already.
+
+551
+01:36:35.880 --> 01:36:49.720
+Tim Beiko: Someone also wrote a post about building some tooling for this so it would be good to review those before the next acde, so we can have like an informed conversation about it.
+
+552
+01:36:50.438 --> 01:36:53.481
+Tim Beiko: There was also an eip
+
+553
+01:36:54.380 --> 01:37:01.139
+Tim Beiko: where the author was asking for some feedback from guests, I believe in the agenda, so I'll post it here
+
+554
+01:37:02.079 --> 01:37:05.850
+Tim Beiko: and then, aside from this, there's 3 more things.
+
+555
+01:37:06.390 --> 01:37:15.679
+Tim Beiko: Anskar. Do you want to give a quick shout out to the research call and then trend Petra pages, and if anyone can give an history expiry update, we can wrap up with that.
+
+556
+01:37:16.440 --> 01:37:17.842
+Ansgar Dietrichs: Yeah, sure. Thanks.
+
+557
+01:37:18.430 --> 01:37:37.129
+Ansgar Dietrichs: There's the second summit of the research calls that we recently started. That will be next Wednesday at ether clock, and this time the topic will be especially relevant for people here, because it will be about the short term El scaling features. So not just the gas scaling, but the actual features that would improve that with the focus on the Glam Saddam feature set, but also
+
+558
+01:37:37.130 --> 01:37:54.700
+Ansgar Dietrichs: a little bit beyond that we're still assembling the agenda once that I have, that I'll put that into the Acd channel as well for people, and I'll also reach out to some of you all to ask if maybe you'd be available for like a 5 min presentation on specific subtopics. So yeah, seeing many of you all there next week would be really good.
+
+559
+01:37:55.950 --> 01:37:58.500
+Tim Beiko: Thank you. Do, Trent.
+
+560
+01:37:59.520 --> 01:38:11.879
+Trent: Sure I've DM'd. I think most of the people on this call with a final reminder for submissions. But a pector pages is a individual perspective on the the last network upgrade
+
+561
+01:38:12.198 --> 01:38:31.011
+Trent: to complement the team perspective. So we've got about 40 responses right now. But there's 80 people on this call, and you know, couple of 100 people that were involved in Pector in some ways, and we'd love to feature what you think about it any nasty bugs you uncovered something you're particularly proud of, or like.
+
+562
+01:38:31.590 --> 01:38:54.230
+Trent: a way for you to shout out people you thought went above and beyond. So check your DM. Or just reach out to me directly if I miss you in my reach out this week, or Nixo may have DM'd you? So we're we're planning to publish early next week. So this is the final call for submission. So if you're interested, please do reach out and fill it out, it's only about 1015 min to do. Thanks.
+
+563
+01:38:56.140 --> 01:38:56.970
+Tim Beiko: Thank you.
+
+564
+01:38:57.722 --> 01:39:00.920
+Tim Beiko: Anyone on the history expiry side.
+
+565
+01:39:08.700 --> 01:39:21.859
+Tim Beiko: Okay, and then, yeah, I'll reiterate the last action item. So before Acd on Monday. Client teams. Just look at the Cfi list. Try to sort it by priority.
+
+566
+01:39:22.100 --> 01:39:30.090
+Tim Beiko: And yeah, we're already over time. We should discuss history expiry as well. But I don't think this call is the right.
+
+567
+01:39:31.180 --> 01:39:33.400
+Tim Beiko: Yeah, the the right time left to do it.
+
+568
+01:39:36.570 --> 01:39:47.529
+Tim Beiko: yeah, thanks. Everyone. And again, congrats on shipping. Petra. Yeah, it's live. It's still working. No one's paid me during this call to tell me there was a consensus bug. So yeah.
+
+569
+01:39:47.670 --> 01:39:50.250
+Tim Beiko: great work, everyone, and talk to you all soon.
+
+570
+01:39:52.960 --> 01:39:54.180
+stokes: Thank you. Bye.
+
+571
+01:39:54.180 --> 01:39:55.160
+Łukasz Rozmej: Bye.
+

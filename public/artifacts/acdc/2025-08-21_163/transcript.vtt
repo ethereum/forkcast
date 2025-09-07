@@ -1,0 +1,866 @@
+WEBVTT
+
+1
+00:09:50.110 --> 00:09:51.380
+stokes: Hello, everyone.
+
+2
+00:09:52.210 --> 00:09:55.390
+stokes: Let's wait about another minute, and we'll get started.
+
+3
+00:10:44.780 --> 00:10:49.049
+stokes: Okay, Josh, if you're helping with the stream, we are ready.
+
+4
+00:10:51.060 --> 00:10:52.569
+Josh Davis: Alright, you're live.
+
+5
+00:10:53.370 --> 00:11:00.060
+stokes: Okay, thanks. Hi, everyone. Welcome to ACDC. This is number 163.
+
+6
+00:11:00.280 --> 00:11:06.920
+stokes: It is issue 1673 in the PM repo. There's a link to the agenda here.
+
+7
+00:11:07.390 --> 00:11:13.500
+stokes: And, yeah, the agenda's a bit lighter today, mainly just as we're all working on Fusaka.
+
+8
+00:11:13.650 --> 00:11:18.980
+stokes: And then there's a few announcements for Glamsterdam, but I don't think we'll get too much into that today.
+
+9
+00:11:19.910 --> 00:11:26.489
+stokes: So, let's go ahead and get started. So, first up with Fusaka, we have the DevNuts.
+
+10
+00:11:26.790 --> 00:11:28.090
+stokes: So…
+
+11
+00:11:28.230 --> 00:11:38.970
+stokes: We have DevNet 3 that's been going. I believe there was just a non-finality test over the last day there, and we could reflect on DevNet 4 and see if there's anything…
+
+12
+00:11:39.350 --> 00:11:46.479
+stokes: To touch on there. So, let's see, Perry or Barnabas, would one of you like to touch on either of those topics?
+
+13
+00:11:46.880 --> 00:11:56.320
+Barnabas: Yeah, I can. So, definitely, has regained finality in the past couple of hours, and we have turned on all the validators.
+
+14
+00:11:56.520 --> 00:12:10.480
+Barnabas: EL had some bug that, they pushed out and should be merged very soon. And some clients, like Lighthouse and Gaff, is still having, issues syncing up to head.
+
+15
+00:12:11.950 --> 00:12:19.819
+Barnabas: The syncing bug is supposed to be fixed quite soon in the trunk branch, and that is what we are using now on that ministry.
+
+16
+00:12:20.370 --> 00:12:40.080
+Barnabas: So, for now, I will just have to roll out a custom branch that, the Lighthouse team has been working on. There has been a memory leak that I have detected in REST. I have reported it to them, and there's a few more notes that are, still… I haven't been able to catch up to. They had an
+
+17
+00:12:40.390 --> 00:12:52.960
+Barnabas: We'll be looking into those, and ideally, you can also take a look and see which nodes are offline, and if it's one of your nodes, then just take a look and see if you can debug it.
+
+18
+00:12:54.630 --> 00:12:57.069
+Barnabas: We have about 80% participation now.
+
+19
+00:13:00.970 --> 00:13:02.740
+stokes: Okay, thanks for the update.
+
+20
+00:13:03.730 --> 00:13:14.989
+stokes: Yeah, anything on DevNet 4? So just as a refresher, we launched DevNet 4, and yeah, ran into some bugs, there was an ambiguity in the PPO spec.
+
+21
+00:13:15.320 --> 00:13:22.669
+stokes: Which led to some confusion, and then, yeah, kicked off some of these other issues, with the sinking things that Barnabas mentioned. So…
+
+22
+00:13:23.310 --> 00:13:26.940
+stokes: … Yeah, we've taken the dead net down.
+
+23
+00:13:27.120 --> 00:13:32.779
+stokes: The plan is to launch 7.5, which we'll get into next. I don't know if there's anything else to touch on.
+
+24
+00:13:32.970 --> 00:13:34.430
+stokes: DevNet4 at the moment.
+
+25
+00:13:37.720 --> 00:13:47.950
+Barnabas: Yeah, so the scope for Design 5 should be pretty much exactly the same as DevNet 4, and the spec did not change from Desident 3, so…
+
+26
+00:13:48.600 --> 00:13:53.840
+Barnabas: The only difference is that we really would like to get every client to…
+
+27
+00:13:54.100 --> 00:13:58.150
+Barnabas: have their trunk branches ready, so hopefully…
+
+28
+00:13:58.860 --> 00:14:08.669
+Barnabas: hopefully sometime next week, everyone will have all their PRS changes merged into their trunk branches, and then, we can launch this at 5.
+
+29
+00:14:10.190 --> 00:14:13.389
+stokes: And DevNet 5 is also a large DevNet, like DevNet 4, right?
+
+30
+00:14:13.730 --> 00:14:15.880
+Barnabas: That's exactly… That's the pleasure.
+
+31
+00:14:17.440 --> 00:14:27.029
+stokes: Okay, yeah, I'd love to hear from CL teams here, and honestly, even EL teams, if you're present, about, yeah, the timing there, so…
+
+32
+00:14:27.180 --> 00:14:32.640
+stokes: Ideally, yeah, we can get everything into the default trunk, …
+
+33
+00:14:32.740 --> 00:14:38.169
+stokes: End of next week, sooner the better, because then that sets us up to have it done at 5.
+
+34
+00:14:38.480 --> 00:14:44.670
+stokes: That should look, you know, pretty close to what we'd want from ANET, so… Anyone…
+
+35
+00:14:45.070 --> 00:14:48.950
+stokes: Have any issues with that, or any complications we should discuss?
+
+36
+00:14:49.660 --> 00:14:50.650
+stokes: Dave Trimmer.
+
+37
+00:14:51.040 --> 00:15:01.039
+ethDreamer (Mark): Yeah, just a comment, like, some of the chaos on DevNet 5 had revealed to us that the changes to our sync algorithm needed to be,
+
+38
+00:15:01.330 --> 00:15:20.879
+ethDreamer (Mark): a little bit more extensive than we had originally thought, than just… compared to finding bugs, we had to do a bit of a redesign. The code for that, my understanding is written. We're just trying to test it, but we're fine with, like, launching DevNet 5, before that's necessarily fully tested.
+
+39
+00:15:21.190 --> 00:15:30.739
+ethDreamer (Mark): You know, we would want that to block the launch of DevNet 5, is what we're trying to say. But, yeah, we're just in the testing stage for those changes.
+
+40
+00:15:31.830 --> 00:15:39.340
+stokes: Makes sense. Yeah, and I think just to kind of pipeline things towards mainnet, it'd be nice to have that in, say, like, the Unstable branch for Lighthouse.
+
+41
+00:15:39.790 --> 00:15:43.500
+stokes: Do you feel like that's reasonable, to have something together next week?
+
+42
+00:15:46.230 --> 00:15:46.760
+Barnabas: Yeah.
+
+43
+00:15:47.620 --> 00:15:48.179
+Barnabas: I've been working.
+
+44
+00:15:48.180 --> 00:15:48.640
+pawan: run the….
+
+45
+00:15:49.910 --> 00:16:05.869
+Barnabas: The main reason we would want this, all of this in trunk branches, because this is a very, very expensive DevNet, and if you're gonna need to have another one down the line, later on, anyway, then, like, if it's just gonna break, then there's no point of running the DevNet, so we ideally.
+
+46
+00:16:05.980 --> 00:16:09.690
+Barnabas: Want to have it, nicely tested in .NET3.
+
+47
+00:16:09.800 --> 00:16:18.099
+Barnabas: Do unfinity test and, test if everything is working with the trunk branches before we launch the expensive 10Net file.
+
+48
+00:16:21.750 --> 00:16:23.319
+pawan: Yeah, so, …
+
+49
+00:16:23.690 --> 00:16:43.070
+pawan: I have a branch that is working now, and sync, like, was syncing on DevNet 3, with the non-finality and stuff, so I think it is working, I just need to, like, iron out a few more corner cases. So, I think, like, I should be able to get a PR
+
+50
+00:16:43.160 --> 00:16:50.730
+pawan: up against unstable, like, pretty soon now. So, yeah, I think we should be ready for DevNet 5 as well.
+
+51
+00:16:54.860 --> 00:16:55.820
+stokes: Okay, great.
+
+52
+00:16:56.190 --> 00:16:57.210
+stokes: Anyone else?
+
+53
+00:16:58.130 --> 00:16:59.080
+stokes: Yeah, Matthew?
+
+54
+00:17:00.170 --> 00:17:12.069
+Matthew Keil: Yep, we're also merged to, Trunk Branch. We're doing a refactor and trying to get that unit tested, but, you know, by mid-end of next week, that'll be real close.
+
+55
+00:17:20.479 --> 00:17:23.249
+stokes: You don't feel like that timeline doesn't make sense?
+
+56
+00:17:34.749 --> 00:17:44.279
+stokes: Okay, I'll assume everyone agrees then. And, yeah, not sure how things look on the EL side, but yeah, if you're listening.
+
+57
+00:17:44.609 --> 00:17:45.929
+stokes: Keep this in mind.
+
+58
+00:17:46.199 --> 00:17:50.239
+stokes: It'd be nice to have .NE5Up as soon as we can, and yeah.
+
+59
+00:17:50.609 --> 00:17:55.739
+stokes: I guess, if anything, we can touch on the next ACDE for that.
+
+60
+00:17:56.889 --> 00:17:58.089
+stokes: So…
+
+61
+00:17:58.559 --> 00:18:10.939
+stokes: Okay, and I think from there, we see how DevNet5 goes, and at that point, assuming it goes well, I think we can, you know, start to seriously think about testnet timelines, which then would give us a mainnet date, so…
+
+62
+00:18:11.769 --> 00:18:20.139
+stokes: I know we've talked quite a bit about timelines in the past, … yeah, I think we're more or less on track to keep things moving, so…
+
+63
+00:18:20.329 --> 00:18:22.589
+stokes: I think for now, we'll just focus on….
+
+64
+00:18:22.590 --> 00:18:22.970
+gottfried: Good.
+
+65
+00:18:22.970 --> 00:18:27.749
+stokes: everything into trunk And, yeah, look for the launch of .NET 5.
+
+66
+00:18:31.190 --> 00:18:37.579
+stokes: Anything else on DevNets? Otherwise, there are a few other items for Saka to touch on.
+
+67
+00:18:41.720 --> 00:18:46.509
+stokes: Okay, Prism says here in the chat, we'll need about a week to get things ready, yeah.
+
+68
+00:18:50.650 --> 00:18:54.120
+stokes: Yeah, James, do you know if that's, like, a week from today, or…?
+
+69
+00:19:01.580 --> 00:19:05.580
+James He: Optimistically, I think, a week from today.
+
+70
+00:19:06.240 --> 00:19:06.730
+stokes: Okay.
+
+71
+00:19:06.730 --> 00:19:11.800
+James He: But more likely, maybe by…
+
+72
+00:19:12.490 --> 00:19:16.120
+James He: the following Monday or so, hopefully.
+
+73
+00:19:18.210 --> 00:19:18.970
+stokes: Got it.
+
+74
+00:19:19.120 --> 00:19:19.880
+stokes: Okay.
+
+75
+00:19:20.930 --> 00:19:25.469
+stokes: Cool. Well, yeah, … Good to know.
+
+76
+00:19:26.880 --> 00:19:30.690
+stokes: And otherwise, then, we will see how things progress.
+
+77
+00:19:33.760 --> 00:19:43.109
+stokes: Okay, … There was a quick FYI here. We covered this on the last call.
+
+78
+00:19:43.480 --> 00:19:57.570
+stokes: But essentially, it was just adjusting, this parameter, for minimal. This will help with testing, because then we can run larger blob counts, in the minimal preset, which is just a lighter sort of way to run DevNets and things.
+
+79
+00:19:57.950 --> 00:20:08.800
+stokes: That's been merged, and as far as I know, Justin Traglio was planning to release an Alpha 5 version of the specs, today, so it will include that change, and yeah, maybe a few other things.
+
+80
+00:20:09.170 --> 00:20:11.390
+stokes: But something to get on your radar.
+
+81
+00:20:12.710 --> 00:20:19.950
+stokes: And, yeah, hopefully this change to the ball parameter here that I linked isn't too invasive.
+
+82
+00:20:21.230 --> 00:20:34.169
+stokes: Of course, you know, the… I think the focus should be getting towards the mainnet. That being said, this will help with testing, so yeah, just try to find the right balance between, getting this done and everything else.
+
+83
+00:20:37.500 --> 00:20:41.850
+stokes: Okay. Justin, anything else on the spec release?
+
+84
+00:20:44.930 --> 00:20:46.329
+Justin Traglia: Nope, that's it.
+
+85
+00:20:47.040 --> 00:20:48.120
+stokes: Okay, cool.
+
+86
+00:20:50.780 --> 00:20:53.320
+stokes: Then, okay, the last Fusaka item here.
+
+87
+00:20:53.440 --> 00:21:00.190
+stokes: This came up in a few different forums this week with, some different async conversations.
+
+88
+00:21:00.420 --> 00:21:07.760
+stokes: I figured we'd touch on it. It sounds like, I think we've resolved it, again, in the different places this has been discussed.
+
+89
+00:21:08.050 --> 00:21:13.799
+stokes: But, Etan raised a question about, sort of, how BPOs work, …
+
+90
+00:21:14.210 --> 00:21:17.059
+stokes: We partitioned them with Fork Digest.
+
+91
+00:21:17.160 --> 00:21:18.580
+stokes: we decided…
+
+92
+00:21:18.680 --> 00:21:26.880
+stokes: Many calls ago to not include the fork version, and there's been some active discussion around how this kind of works.
+
+93
+00:21:27.290 --> 00:21:32.800
+stokes: And if there was a potential, you know, dust factor here, or some security concern, I think…
+
+94
+00:21:33.260 --> 00:21:43.129
+stokes: After analysis done, this week by many of you, we've kind of agreed that this is okay, but I did want to open the floor to have this conversation in case there was something to discuss.
+
+95
+00:21:43.900 --> 00:21:47.940
+stokes: Yeah. Anyone have anything to say here?
+
+96
+00:21:49.440 --> 00:21:58.139
+stokes: I mean, I guess what one TLDR is just that it sounds like this is more of a theoretical attack vector, it would require quite a bit of the network to not upgrade, and…
+
+97
+00:21:58.330 --> 00:22:08.780
+stokes: be a pretty, yeah, pretty, involved attack, so it seems like most of us think that it's not realistic, so we can kind of move ahead as planned.
+
+98
+00:22:09.860 --> 00:22:21.130
+Raúl Kripalani: Yeah, just to maybe kind of, like, add a little bit more detail, so it's… the three areas of impact that we potentially… that we analyzed were, first, can we make nodes engage in
+
+99
+00:22:21.130 --> 00:22:31.280
+Raúl Kripalani: Can an attacker make nodes in the majority partition, engage in wasteful work by fetching blocks that were produced in the…
+
+100
+00:22:31.280 --> 00:22:53.729
+Raúl Kripalani: in the minority fork, and… and their parents, and so on, because they don't know the parents, can they… would they go on a chase, on a hunt, trying to look for the parents, and this would lead to… to wasteful work. That was concern one. The other concern was, can this then, in turn, because the potential attacker, theoretical attacker here, would be the only party that's able to actually serve the data for those blocks.
+
+101
+00:22:53.730 --> 00:23:08.739
+Raúl Kripalani: Would they be able to get an advantageous position in the mesh by boosting their peer scores, given that they're the only ones that are able to satisfy the data availability of that block? And that is implementation… very implementation dependent, and …
+
+102
+00:23:08.990 --> 00:23:19.989
+Raúl Kripalani: And yeah, we determined that it really, really wasn't, wasn't a concern here. And then, at last, the third point is, can, is it possible to…
+
+103
+00:23:19.990 --> 00:23:26.960
+Raúl Kripalani: Use to cross-feed the attestations from the majority chain into the minority fork.
+
+104
+00:23:26.960 --> 00:23:45.299
+Raúl Kripalani: to boost, the weight of that chain, and eventually reach a sufficient level that would allow that chain to be justified, and that could, like, that is an extremely, extremely, theoretical, like, scenario, and the probabilities are, like, 1 in
+
+105
+00:23:45.320 --> 00:23:53.889
+Raúl Kripalani: 129 million, or something like that, and it requires a ton of sophistication from the attacker, and it can only be performed in a tiny
+
+106
+00:23:53.890 --> 00:24:09.190
+Raúl Kripalani: window, of time, so we… ultimately, I think, Alex, like, I concur with Alex, the… the consensus here is it's really not relevant. Like, it's… it's not… it's not gonna be… it's… it's not something that we should worry about.
+
+107
+00:24:09.530 --> 00:24:28.610
+Raúl Kripalani: What we plan to do, maybe, is update the EIP, just to elaborate on the trade-off between the… between having chosen the fork digest solution versus the fork version solution, and maybe some, like, brief security implications, but… but yeah, this is definitely not a cause for… for concern, at least that's my view.
+
+108
+00:24:31.670 --> 00:24:33.609
+stokes: Great, yeah, thanks for the extra color.
+
+109
+00:24:34.200 --> 00:24:36.740
+stokes: Anyone else have anything to add here?
+
+110
+00:24:41.950 --> 00:24:42.969
+stokes: We got photos?
+
+111
+00:24:43.660 --> 00:24:55.519
+potuz: I have a question more than something to add, but I just don't really understand why this is even an attack. I mean, if we are in such a situation, it sounds to me like just a normal fork.
+
+112
+00:24:55.850 --> 00:25:11.620
+potuz: I understand that we typically, across a fork boundary, we would just, like, unpeer from peers that are not following the chain, but if I just forget that the fact that there was a BPO, there was no fork, this would just be, just like a normal fork.
+
+113
+00:25:11.620 --> 00:25:19.609
+potuz: It's just that people following one of the branches will not never accept blocks from the other branch, because it has more than the maximum number of blocks.
+
+114
+00:25:19.820 --> 00:25:22.620
+potuz: But it's just, from the point of view of the ones that are actually updated.
+
+115
+00:25:23.080 --> 00:25:26.549
+potuz: It's just a normal fork, so it should be just resolved.
+
+116
+00:25:26.550 --> 00:25:26.950
+Raúl Kripalani: Oh my god.
+
+117
+00:25:26.950 --> 00:25:28.180
+potuz: usual fork choice.
+
+118
+00:25:28.450 --> 00:25:29.970
+Raúl Kripalani: Yeah, the difference, I think.
+
+119
+00:25:29.970 --> 00:25:30.430
+potuz: a little bit.
+
+120
+00:25:30.430 --> 00:25:43.990
+Raúl Kripalani: Yeah, I think kind of, like, the unique scenario here is that because the network… because we chose the fork digest solution, where the network is partitioned, but the state… but there's no… the state is not…
+
+121
+00:25:43.990 --> 00:25:58.870
+Raúl Kripalani: partition, so to speak, because there is no change to the beacon state, and as well, the domain… the signature domain separation tag is also not namespaced. So basically, the vector, kind of like.
+
+122
+00:25:59.020 --> 00:26:01.409
+Raúl Kripalani: The potential, …
+
+123
+00:26:01.530 --> 00:26:08.929
+Raúl Kripalani: like, yeah, a potential vector here that could be used would be, like, cross-feeding information between one chain and another. That's basically it.
+
+124
+00:26:08.930 --> 00:26:09.430
+ethDreamer (Mark): I understand.
+
+125
+00:26:09.430 --> 00:26:28.099
+potuz: but the thing is that I still don't understand what is… what's… why is this even an attack? This is a difference between the normal branch and this kind of branch. But I don't see why, from the point of view of the chain, this is just not resolved in the exact same way as just a normal branching situation, unfortunately.
+
+126
+00:26:28.100 --> 00:26:51.730
+ethDreamer (Mark): I think the idea is that the attacker would technically require a bit less stake than they normally would, because you have a couple more people who are on the attacker's fork, because we induced a fork in the chain at the BPO boundary. So, like, it's not just the attacker's nodes that are engaging in this, but it's the people that forgot to update that would be engaging, or, like… Sure.
+
+127
+00:26:51.730 --> 00:26:55.320
+potuz: And as long as those guys are not a majority of the chain.
+
+128
+00:26:55.570 --> 00:26:59.109
+potuz: It's just a normal four-choice branching.
+
+129
+00:26:59.110 --> 00:27:00.400
+ethDreamer (Mark): That is correct.
+
+130
+00:27:03.170 --> 00:27:06.820
+stokes: Yeah, I think we're in agreement there, so… Yeah
+
+131
+00:27:08.040 --> 00:27:17.219
+stokes: Sounds like we're good to move forward. Again, yeah, thank you everyone who contributed to the conversation. I know there's quite a lot of analysis, that went into this.
+
+132
+00:27:18.140 --> 00:27:21.660
+stokes: So… Okay.
+
+133
+00:27:22.320 --> 00:27:24.670
+stokes: What else is on the agenda here?
+
+134
+00:27:25.380 --> 00:27:35.740
+stokes: If we're good with that, then… yeah, that was really all we had for Fusaka. Anything else we'd like to bring up, before we move to Glamsterdam?
+
+135
+00:27:36.180 --> 00:27:38.770
+stokes: Where I'll just have a few announcements, really.
+
+136
+00:27:47.080 --> 00:27:48.080
+stokes: Okay.
+
+137
+00:27:49.180 --> 00:27:56.970
+stokes: So, then… okay, Tony wanted to give an update, on a breakout for block-level access list.
+
+138
+00:27:57.620 --> 00:28:01.869
+stokes: Tony… there you go, there you are. Yeah, would you like to say anything?
+
+139
+00:28:02.680 --> 00:28:04.790
+Toni Wahrstaetter: Yeah, there will be a…
+
+140
+00:28:04.890 --> 00:28:18.330
+Toni Wahrstaetter: First breakout call next week on Wednesday, 2 p.m. UTC, usual time, about block lab access lists, so if you're interested, feel free to show up or watch the stream.
+
+141
+00:28:20.000 --> 00:28:21.290
+stokes: Okay, cool.
+
+142
+00:28:21.580 --> 00:28:23.530
+stokes: Exciting to see that being spun up.
+
+143
+00:28:25.940 --> 00:28:32.029
+stokes: And then… let's see, there was a last-minute addition here. Let me read Osgar's comment.
+
+144
+00:28:32.200 --> 00:28:37.950
+stokes: Meta-eip for the pricing proposals. Yep, Osgar, would you like to say anything more?
+
+145
+00:28:39.570 --> 00:28:53.490
+Ansgar Dietrichs: Yeah, I mean, it's really just a quick mention, obviously it's more of an EL-side topic, so the idea was just to mention briefly now, so that people can have a look, and then next week we can discuss it on ACDE. There was some desire to basically
+
+146
+00:28:53.550 --> 00:29:03.970
+Ansgar Dietrichs: aggregate the individual repricing efforts into some sort of meta-EIP, and then next week we could talk about, like, does that make sense? What role would the meta-EIP, …
+
+147
+00:29:04.390 --> 00:29:13.920
+Ansgar Dietrichs: have? Would we still want to discuss all the APs individually for the governance process, or in some sort of patched form? All these kind of questions. Again, just…
+
+148
+00:29:14.230 --> 00:29:19.440
+Ansgar Dietrichs: people, have a look. That's all, that's, …
+
+149
+00:29:19.750 --> 00:29:25.999
+Ansgar Dietrichs: That EIP is by Maria, and me, so reach out to either of us, with feedback. Awesome.
+
+150
+00:29:28.280 --> 00:29:29.380
+stokes: Okay, thanks.
+
+151
+00:29:29.380 --> 00:29:30.779
+lightclient: Reserve Amsterdam.
+
+152
+00:29:32.210 --> 00:29:48.660
+Ansgar Dietrichs: Oh yeah, sorry, that's specifically for Glamsterdam, so those are basically the… that's just tracking all the potential EIPs that could be relevant for Glamsterdam that are centered around repricings of one sort or another.
+
+153
+00:29:55.330 --> 00:29:56.010
+stokes: Cool.
+
+154
+00:29:56.460 --> 00:30:05.120
+stokes: So, take a look there. And, yeah, just to call out Terrence's comment, there's also a 7732 breakout next Friday. The link is here in the chat.
+
+155
+00:30:05.550 --> 00:30:18.100
+stokes: So, yeah, I mean, again, part of our strategy here is to parallelize our fork development process, so yeah, we have a bunch of breakouts spinning up, to start making headway on Glamsterdam.
+
+156
+00:30:20.310 --> 00:30:25.780
+stokes: And… let's see, I think that was it for announcements there.
+
+157
+00:30:26.040 --> 00:30:30.069
+stokes: And… yeah, the last…
+
+158
+00:30:30.240 --> 00:30:39.090
+stokes: Oh, actually, let's circle back to this. So there's a question, again, I'm probably going to pronounce this wrong, but, A.B. Kutap,
+
+159
+00:30:39.210 --> 00:30:43.949
+stokes: He was asking if there's a way to track, again, this, you know.
+
+160
+00:30:44.190 --> 00:30:56.120
+stokes: task of getting everything ready for DevNet5, essentially, where the main thing right now is getting, code merged from our experimental branches into, default chunks.
+
+161
+00:30:56.660 --> 00:31:03.609
+stokes: And… Yeah, Barnabas, you posted a comment here. Would this be, sort of, the canonical resource right now?
+
+162
+00:31:05.300 --> 00:31:14.710
+Barnabas: Yeah, we don't really have any better way, because this is, like, the repo that we use to roll out the images, so, like.
+
+163
+00:31:15.310 --> 00:31:21.329
+Barnabas: whenever we try to keep up with the images, there's gonna be a config drift, so I would just reference this.
+
+164
+00:31:23.680 --> 00:31:28.469
+stokes: Alright, thanks. I'll make sure that ends up in the notes, so people can refer to that.
+
+165
+00:31:30.340 --> 00:31:37.969
+stokes: And, yeah, okay. So, jumping back to livestream then, yeah, Ongar's point leads to…
+
+166
+00:31:38.220 --> 00:31:44.670
+stokes: final thing I had today, which is just a reminder, so, we've decided headliners for Amsterdam.
+
+167
+00:31:44.820 --> 00:31:52.459
+stokes: other EIP proposals we want to have made by Forsaka mainnet releases. So, you know, again.
+
+168
+00:31:52.610 --> 00:32:00.399
+stokes: We'll see exactly when that is, given how things go with development, but let's say roughly October, so, you know, in a couple months here.
+
+169
+00:32:00.730 --> 00:32:16.600
+stokes: And this would be things that are not headliners, but other things we want to put into Glamsterdam. And yeah, I don't think we should get into what those proposals are today, but just as a heads up, please keep that timing in mind so that we can keep moving forward on Glamsterdam.
+
+170
+00:32:16.890 --> 00:32:19.899
+stokes: Once Osaka is closer to midnight.
+
+171
+00:32:21.280 --> 00:32:26.570
+stokes: So… I think that's all we had today, actually.
+
+172
+00:32:26.860 --> 00:32:32.459
+stokes: Anything else? Otherwise, we'll wrap up, and… okay. Yeah, Barnabas?
+
+173
+00:32:33.120 --> 00:32:45.169
+Barnabas: Yeah, just one more thing, so everybody is on the same page. Ideally, we should have Office 6, ready with all the EPBS changes on top of, Hulu.
+
+174
+00:32:45.360 --> 00:32:51.090
+Barnabas: And we could probably target, late October for APB as a net zero.
+
+175
+00:32:53.410 --> 00:32:53.990
+stokes: Okay.
+
+176
+00:32:54.490 --> 00:32:55.340
+stokes: Photos?
+
+177
+00:32:56.070 --> 00:33:03.679
+potuz: Yeah, I was gonna say the same. Probably it's a good time to start giving short updates on Glamsterdam, on what we're doing. The, …
+
+178
+00:33:03.690 --> 00:33:22.169
+potuz: tests, I mean, the spec is going fast, we're adding tests, or Terrence is adding a bunch of tests, and Justin is, rebasing. There are a couple of things that are still missing in the spec, like the dual deadlines, and… but that's essentially… that's it. And some changes on… some changes on,
+
+179
+00:33:22.170 --> 00:33:34.059
+potuz: proposer… proposer head, get proposer head, and some changes for the proposer boost that can be actually backported to Phase 0. These are security changes that Francesco proposed.
+
+180
+00:33:34.370 --> 00:33:51.099
+potuz: There are other people that are starting to look at the spec, and as always, when you get new people looking at the spec, we are finding edge cases. This is mostly coming from the Lido guys that are, that are looking deeply into how they're gonna be approving withdrawals and these kind of things.
+
+181
+00:33:51.160 --> 00:33:56.869
+potuz: And there are, already some edge cases that could be interesting to look into. For example,
+
+182
+00:33:57.200 --> 00:34:03.930
+potuz: I think, so, EIP4788 currently gives the PICOM block route.
+
+183
+00:34:03.980 --> 00:34:22.669
+potuz: And it has to give the parent become block root, because it cannot give you the current become block root, because it hasn't been constructed. But after EPBS, that EIP correct, for example, could give the current become block root, and it seems that that would be more interesting for people that are actually using that EIP, so it's probably good to start looking into that.
+
+184
+00:34:25.060 --> 00:34:26.760
+lightclient: Why is it that much more interesting?
+
+185
+00:34:27.679 --> 00:34:33.769
+potuz: Because then you have something about the current payload. You can actually use something about the current payload.
+
+186
+00:34:34.149 --> 00:34:38.399
+potuz: Information about the current payload, like the withdrawals that are included in the current payload.
+
+187
+00:34:39.139 --> 00:34:41.769
+potuz: That were already paid in the CL.
+
+188
+00:34:44.699 --> 00:34:47.039
+stokes: You know, I still have the same circular dependency.
+
+189
+00:34:47.800 --> 00:34:55.690
+potuz: No, the Beacon block route does not commit, … … So how does it go?
+
+190
+00:34:55.699 --> 00:34:56.609
+stokes: I think it does.
+
+191
+00:34:56.610 --> 00:34:58.639
+potuz: Yeah, I think it still does.
+
+192
+00:34:59.190 --> 00:35:04.719
+potuz: Yeah, that's right. So, the become log root can only be the parent. Oh, that's crazy.
+
+193
+00:35:05.700 --> 00:35:08.930
+stokes: It cannot be used. Well, it's just… yeah, I mean, until we do something more invasive.
+
+194
+00:35:08.930 --> 00:35:15.980
+potuz: Yeah, so the biggest problem here is that there is no way of proving against the post state of the payload.
+
+195
+00:35:17.460 --> 00:35:25.859
+potuz: Because once you have a beacon block route, you only have the state root of the post state of the consensus block, and not the payload.
+
+196
+00:35:28.720 --> 00:35:32.610
+stokes: Right, and then I also wonder how that works with execution requests?
+
+197
+00:35:33.750 --> 00:35:38.229
+potuz: Oh, for… for execution requests, that's… that's… that is fine, right? Because the…
+
+198
+00:35:38.510 --> 00:35:42.660
+potuz: So the beacon block route, I mean, everything is commuted.
+
+199
+00:35:42.830 --> 00:35:48.810
+potuz: And the payload… the payload sends the request in the… in the… well, in the envelope.
+
+200
+00:35:49.090 --> 00:36:01.260
+potuz: And they're just only… that state route is modified, so there are two state transitions. One is on the beacon block, and then the other one on the payload, and the payload is the one that includes the execution requests.
+
+201
+00:36:02.570 --> 00:36:11.439
+potuz: So if you want to prove against what happens after the payload, and what happened after those execution requests, you need to have that post state.
+
+202
+00:36:11.580 --> 00:36:17.920
+potuz: The envelope commits to that post state, but that post state is not included currently in the beacon state.
+
+203
+00:36:18.290 --> 00:36:20.440
+potuz: And not in the PICOM block, of course.
+
+204
+00:36:23.120 --> 00:36:23.770
+stokes: Okay.
+
+205
+00:36:25.430 --> 00:36:31.509
+stokes: In any case, thanks for the update. So, yeah, development on 7732 is ongoing.
+
+206
+00:36:31.640 --> 00:36:35.490
+stokes: I'll direct people to the next breakout if you want to take a closer look.
+
+207
+00:36:36.090 --> 00:36:44.699
+stokes: And… yeah, I would suggest, just for time today, we move to another topic, if there is one.
+
+208
+00:36:47.330 --> 00:36:49.060
+stokes: So, anything else?
+
+209
+00:36:49.800 --> 00:36:55.160
+stokes: Otherwise, we can wrap up and use the time to work on Fusaka releases.
+
+210
+00:37:08.260 --> 00:37:09.070
+stokes: Okay.
+
+211
+00:37:09.410 --> 00:37:14.830
+stokes: then let's call it short crawl today. Thanks, everyone, for joining, and I'll see you next time.
+
+212
+00:37:18.280 --> 00:37:18.910
+Justin Traglia: everyone.
+
+213
+00:37:18.910 --> 00:37:19.800
+potuz: Bye.
+
+214
+00:37:20.150 --> 00:37:20.480
+Marius van der Wijden: I bet.
+
+215
+00:37:20.480 --> 00:37:21.570
+Orest Tarasiuk (t1): You're right.
+
+216
+00:37:21.570 --> 00:37:22.170
+Ansgar Dietrichs: That one.
+

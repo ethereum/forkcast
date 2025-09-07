@@ -1,0 +1,2022 @@
+WEBVTT
+
+1
+00:02:21.370 --> 00:02:24.200
+Greg Colvin: Good morning, if my audio is working.
+
+2
+00:02:25.860 --> 00:02:27.270
+Pooja Ranjan: Good morning, Greg.
+
+3
+00:02:29.530 --> 00:02:30.880
+Pooja Ranjan: Good to see you.
+
+4
+00:05:12.780 --> 00:05:14.240
+Tim Beiko: Good morning, Matt.
+
+5
+00:05:32.940 --> 00:05:34.899
+Justin Florentine (Besu): Good morning, y'all.
+
+6
+00:05:50.750 --> 00:05:52.600
+Tim Beiko: Okay,
+
+7
+00:05:52.890 --> 00:05:58.449
+Tim Beiko: I think we're probably good to get started. Josh, do you want to move us over to the livestream?
+
+8
+00:06:00.420 --> 00:06:03.460
+Akash | ECH: Hey team, I'm helping with this team today.
+
+9
+00:06:03.820 --> 00:06:05.419
+Tim Beiko: Oh, thanks. Hey, Akash.
+
+10
+00:06:06.470 --> 00:06:07.220
+Akash | ECH: Hello.
+
+11
+00:06:07.760 --> 00:06:09.640
+Tim Beiko: Let me know when we're live on YouTube.
+
+12
+00:06:10.380 --> 00:06:13.579
+Akash | ECH: Yeah, I'm ready to go live.
+
+13
+00:06:13.720 --> 00:06:15.339
+Akash | ECH: Give me a final…
+
+14
+00:06:15.730 --> 00:06:17.060
+Tim Beiko: Yep, we can do it.
+
+15
+00:06:24.720 --> 00:06:27.110
+Tim Beiko: Okay. Are we good, Akash?
+
+16
+00:06:30.720 --> 00:06:31.809
+Akash | ECH: Yeah, we are live.
+
+17
+00:06:32.080 --> 00:06:42.740
+Tim Beiko: Okay, awesome, thanks. Welcome, everyone, to ACDE number 219. I have a bunch of things on the agenda, as always today.
+
+18
+00:06:42.940 --> 00:06:50.649
+Tim Beiko: We'll chat about Fusaka, how the nuts are going, especially the non-finality testing we've done this week.
+
+19
+00:06:50.810 --> 00:07:01.090
+Tim Beiko: Then, there's some configuration PRs, for, yeah, that the PentOps wanted to review, and we can chat about what the next steps should be from here.
+
+20
+00:07:01.470 --> 00:07:08.540
+Tim Beiko: After that, I wanted to check in on, Holeshky, so we discussed shutting down the testnet.
+
+21
+00:07:08.540 --> 00:07:21.480
+Tim Beiko: at the end of September, so I want to make sure that this still works for everyone. We can chat a bit, about some EL gas limit bottlenecks, continuing the conversation for Monday, and then discuss
+
+22
+00:07:21.480 --> 00:07:28.640
+Tim Beiko: some, updates around Glamsterdams and how we should approach, EIP discussions for the fork.
+
+23
+00:07:29.270 --> 00:07:37.440
+Tim Beiko: But to kick us off this PandaOps, I want to give an update on, the current DevNets, where we're at, and how the testing has been going this week.
+
+24
+00:07:38.230 --> 00:07:39.819
+Barnabas: Sure.
+
+25
+00:07:40.710 --> 00:07:51.670
+Barnabas: Dentistry has been going through a non-frenalty period for a little bit longer than we anticipated. We wanted to do approximately 2 days first, and now we're hitting day 5.
+
+26
+00:07:51.940 --> 00:08:06.850
+Barnabas: We've been trying to recover the chain, and we have encountered a bunch of syncing issues that a different client had. There are lots of fixes coming in, and we've been rolling those out as they come.
+
+27
+00:08:07.330 --> 00:08:20.459
+Barnabas: We are approximately at 50% to 55% participation now. I have triggered a few exits from Nimbusia to try to gain back the final tea. Those are being processed slowly.
+
+28
+00:08:20.460 --> 00:08:30.809
+Barnabas: Nimbustia have been struggling to keep up with the non-frenalty period, and there has been quite some memory issues there. That's why, we decided to…
+
+29
+00:08:31.090 --> 00:08:34.159
+Barnabas: Kick some, ventilators off.
+
+30
+00:08:35.580 --> 00:08:39.130
+Barnabas: Regarding notes that are,
+
+31
+00:08:39.340 --> 00:08:54.589
+Barnabas: struggling to sync up. Lighthouse, seemed to be stuck syncing, made many different ELs, Lodestar seems to be stuck syncing as well. Brandon seems to have an issue, and a few technical nodes as well.
+
+32
+00:08:54.780 --> 00:08:59.770
+Barnabas: Most of the Prism nodes are, pine, and,
+
+33
+00:08:59.960 --> 00:09:04.459
+Barnabas: Most of the technicals are also fine, but a few of them seem to have some,
+
+34
+00:09:05.000 --> 00:09:07.000
+Barnabas: No more issues.
+
+35
+00:09:07.740 --> 00:09:15.080
+Barnabas: Regarding the EA, there also seems to be a few bugs reported by Eragon and Bezu.
+
+36
+00:09:15.500 --> 00:09:17.689
+Barnabas: That they are investigating.
+
+37
+00:09:23.870 --> 00:09:24.770
+Tim Beiko: Thank you.
+
+38
+00:09:26.000 --> 00:09:30.369
+Tim Beiko: Any of the client teams want to chime in or share more context?
+
+39
+00:09:35.850 --> 00:09:52.719
+Barnabas: there would be another update, so we did a non-finity test on NFT demo.9, which was basically, pre-FULU, with using all the latest, stable releases from each EL and CL, and we tried to replicate the same,
+
+40
+00:09:52.890 --> 00:10:04.279
+Barnabas: non-funately, we were offline for, I think, a day and a half, and we brought the notes back online, and the chain has recovered within,
+
+41
+00:10:04.470 --> 00:10:05.770
+Barnabas: I think 2 hours.
+
+42
+00:10:07.340 --> 00:10:07.990
+Tim Beiko: Nice.
+
+43
+00:10:18.200 --> 00:10:22.439
+Tim Beiko: Yeah, any client teams, or anyone else have…
+
+44
+00:10:23.020 --> 00:10:24.919
+Tim Beiko: context I want to share on the cognuts?
+
+45
+00:10:25.810 --> 00:10:29.720
+Barnabas: One of the main differences that could be,
+
+46
+00:10:30.000 --> 00:10:35.190
+Barnabas: I just want to make sure that this is set up. I used the… on the…
+
+47
+00:10:35.420 --> 00:10:41.829
+Barnabas: Photoko.net 3, the initial way, how we try to recover the chain is just,
+
+48
+00:10:42.170 --> 00:10:55.390
+Barnabas: removing the EL database and resync using the CL database, without checkpoint syncing, and hoping that all the CR clients would just reorg, back to the
+
+49
+00:10:55.540 --> 00:10:57.290
+Barnabas: Back to the inbound block.
+
+50
+00:10:57.560 --> 00:11:06.980
+Barnabas: And on NFT.NET9, we have actually wiped the database of the EL and the CL, and the recovery was very fast there.
+
+51
+00:11:07.420 --> 00:11:14.120
+Barnabas: And on NFT DevNet9, we seem to have, about 80% participation.
+
+52
+00:11:15.090 --> 00:11:23.369
+Barnabas: Yeah, I think we also had 80% participation before, and there seemed to be a few Ergon nodes,
+
+53
+00:11:23.890 --> 00:11:24.960
+Barnabas: I'll find her.
+
+54
+00:11:32.360 --> 00:11:50.420
+Parithosh Jayanthi: Yeah, the main reason we made the change for NFT DevNet 9 was that there was none left on the network to provide the invalid state, because we did the resync in kind of all at once. So there was just no one… no peers to get the invalid chain to then claim it was invalid.
+
+55
+00:12:02.450 --> 00:12:03.200
+Tim Beiko: Got it.
+
+56
+00:12:06.340 --> 00:12:16.220
+Tim Beiko: So in terms of next steps for the DevNets, obviously we want to fix, the issues that we found, and the CL teams are working on that.
+
+57
+00:12:17.490 --> 00:12:21.550
+Tim Beiko: Do we… do we think we want to have another DevNet after this?
+
+58
+00:12:21.760 --> 00:12:28.580
+Tim Beiko: I assume we at least want to get this, non-finalized DevNet back to finalizing, but yes.
+
+59
+00:12:29.430 --> 00:12:38.129
+Tim Beiko: After that, would we… would we move forward and, launch… launch DevNet 5? Do we want to do that in parallel? .
+
+60
+00:12:38.130 --> 00:12:51.179
+Barnabas: So, ideally, DevNet3 should recover to close to 100%, and then we would want to do another non-finity test, and see if we can actually recover within a reasonable period of time.
+
+61
+00:12:51.370 --> 00:12:54.190
+Barnabas: Just to make sure that we have actually ironed out all the bugs.
+
+62
+00:12:54.440 --> 00:13:00.130
+Barnabas: Launching DevNet 5 with known syncing issues,
+
+63
+00:13:00.660 --> 00:13:02.049
+Barnabas: Probably not worth it.
+
+64
+00:13:04.160 --> 00:13:05.609
+Tim Beiko: Yeah, that makes sense.
+
+65
+00:13:08.600 --> 00:13:17.269
+Tim Beiko: And do we think, most thinking issues should be, like, at least have tentative fixes this week?
+
+66
+00:13:17.520 --> 00:13:27.859
+Tim Beiko: Is that something we think we can, like, yeah, get live on the DevNets today or tomorrow and see it progress over the weekend, or do teams feel like they're going to need more time to address those?
+
+67
+00:13:34.340 --> 00:13:38.959
+Manu: I can speak for PRISAM, it should be okay for this week.
+
+68
+00:13:47.460 --> 00:13:52.490
+Tim Beiko: Okay, Lighthouse is saying goodbye mid-next week. Any other teams?
+
+69
+00:13:55.440 --> 00:14:10.770
+Parithosh Jayanthi: Maybe one thing also worth mentioning is, now that we have our… we have, like, a malicious getth image, as well as another manned image, that we can trigger this fork very easily, and cause non-finality and everything on DevNet 3.
+
+70
+00:14:10.770 --> 00:14:23.899
+Parithosh Jayanthi: We should be able to reproduce this as often as clients want, so if we have one client with a fix, we can already deploy it and already try out their fix, and we don't have to wait for all clients to be ready before we do.
+
+71
+00:14:24.220 --> 00:14:39.410
+Parithosh Jayanthi: Before we do another test. And same thing goes for, DevNet 5. We've sped up, we've sped up our Ansible stack significantly, so it should reduce the amount of time we take to spin up, like, larger networks now.
+
+72
+00:14:41.900 --> 00:14:42.900
+Tim Beiko: Awesome, thanks.
+
+73
+00:14:46.180 --> 00:14:53.739
+Tim Beiko: And yeah, so Lifehouse is saying they should probably have a fix by mid-next week. I'm curious how the other CL teams are looking, like,
+
+74
+00:14:54.670 --> 00:14:56.720
+Tim Beiko: So I guess this would mean we probably…
+
+75
+00:14:57.810 --> 00:15:05.860
+Tim Beiko: don't launch DevNet 5 until, like, at least a week from now, once we've had time to actually deploy these fixes and potentially see the network recover.
+
+76
+00:15:06.830 --> 00:15:09.239
+Tim Beiko: Is that relatively the timeline that
+
+77
+00:15:09.780 --> 00:15:17.930
+Tim Beiko: themes think makes sense, and also, can we handle the DevNet 3 being non-finalized for another week? And will that…
+
+78
+00:15:18.170 --> 00:15:20.310
+Tim Beiko: Compound problems somewhere or another.
+
+79
+00:15:42.730 --> 00:15:51.559
+Tim Beiko: Okay, so Taeku… Okay, so it seems like Tegu, Lodestar as well,
+
+80
+00:15:51.720 --> 00:16:01.089
+Tim Beiko: are gonna have fixes for next week, so, like, realistically, we're not gonna have all the CL fixes to get DevNet 3 finalizing by this week.
+
+81
+00:16:01.350 --> 00:16:16.250
+Tim Beiko: Yeah, the only concern I could see is if things get significantly worse on the DevNet, because it's not finalizing, for what will be, yeah, probably, like, 10 days by the time we have the fix,
+
+82
+00:16:17.080 --> 00:16:29.880
+Tim Beiko: then we may want to think about other ways of testing these… these fixes, or, like, yeah, whether or not it's worth, recovering DevNet 3 if it's… if it's, if it's fully degraded.
+
+83
+00:16:30.010 --> 00:16:35.880
+Tim Beiko: But we can discuss this further, I think, on the testing call Monday and, on Thursday, if,
+
+84
+00:16:37.340 --> 00:16:45.970
+Tim Beiko: Yeah, if we need. Barbara, let's say we can finalize the 3 today, how would that work? Would you just make all the, or, like, two-thirds of the steak PRISM?
+
+85
+00:16:50.990 --> 00:17:09.760
+Barnabas: So maybe, like, we have a bunch of nodes that are syncing, but the sync times are just so long, especially during non-finance period. Forward syncing takes a bunch of time. So, we can see that some nodes are still making progress, and the participation is growing.
+
+86
+00:17:09.770 --> 00:17:17.079
+Barnabas: So, hopefully by the end of today, we're gonna have a lot more nodes that are synced ahead, and we're gonna be able to reach 66%.
+
+87
+00:17:17.550 --> 00:17:23.089
+Barnabas: And I think that we could possibly get back to 100% participation by
+
+88
+00:17:23.480 --> 00:17:34.489
+Barnabas: End of day tomorrow, hopefully, or very close to 100%, with just, checkpoint syncing and, removing the databases and forcing them that way.
+
+89
+00:17:34.690 --> 00:17:38.719
+Barnabas: And ideally, yes, the thinking,
+
+90
+00:17:38.880 --> 00:17:58.390
+Barnabas: the thinking fixes should be tested again, and if everybody says that they can be done by next week, by mid-next week, then maybe we can trigger another non-finality, next week, and in the end of, next week, we can then, schedule DevNet 5, if everything goes smoothly on DevNet 3.
+
+91
+00:18:00.470 --> 00:18:02.500
+Tim Beiko: Yeah, that sounds like a plan.
+
+92
+00:18:02.790 --> 00:18:06.510
+Tim Beiko: Alex has a question asking, do we have any theories on why sync is slow?
+
+93
+00:18:14.340 --> 00:18:19.369
+stokes: Yeah, this might be a bit of a parallel thread to the present topic, but I am curious.
+
+94
+00:18:37.660 --> 00:18:45.760
+Tim Beiko: Okay, guess not. We can maybe discuss this when we, have had more time to look into it on Monday or next Thursday.
+
+95
+00:18:48.450 --> 00:18:51.290
+Tim Beiko: Anything else on the non-finality testing?
+
+96
+00:18:58.660 --> 00:19:03.430
+Tim Beiko: Otherwise, Barnabas, you had the four PRs that you flagged,
+
+97
+00:19:03.960 --> 00:19:13.229
+Tim Beiko: Yeah, to, to update the blob schedules on, a bunch of, the testnets. Yeah, do you want to give…
+
+98
+00:19:13.380 --> 00:19:14.230
+Tim Beiko: Reach out to those?
+
+99
+00:19:14.660 --> 00:19:21.509
+Barnabas: So, that, mainly Nethermind, is the one that have a big change in how the blob scheduling is handled.
+
+100
+00:19:21.580 --> 00:19:35.370
+Barnabas: And ideally, we want to merge all these in by end of day tomorrow, and this is required for us to be able to do shallow forks on OSCI, Sepolion, Mainnut, and UDI.
+
+101
+00:19:40.860 --> 00:19:44.509
+Tim Beiko: Anyone from Nethermine had a chance to look?
+
+102
+00:19:45.700 --> 00:19:49.469
+Tim Beiko: Can potentially give a quick… 1 or minus one?
+
+103
+00:19:49.470 --> 00:20:00.509
+Barnabas: Nevermind already approved it, but I would just like to have a few more approvals from different EL teams, because I know that some clients might rely on these files.
+
+104
+00:20:00.800 --> 00:20:04.039
+Barnabas: So I just want to make sure that they are aware of this change.
+
+105
+00:20:07.810 --> 00:20:14.759
+Tim Beiko: Okay, so yeah, people can have a look, and I think if in 24 hours you haven't heard any complaints, we can go ahead and merge them.
+
+106
+00:20:16.910 --> 00:20:17.780
+Barnabas: Sounds good.
+
+107
+00:20:19.990 --> 00:20:20.700
+Tim Beiko: Okay.
+
+108
+00:20:20.930 --> 00:20:21.770
+Tim Beiko: Bye.
+
+109
+00:20:23.810 --> 00:20:32.370
+Tim Beiko: Okay, next up, so Alex had posted an updated timeline for Fusaka,
+
+110
+00:20:33.240 --> 00:20:42.979
+Tim Beiko: obviously, you know, based on the current state of DevNets, this might be a bit delayed, but yeah, Alex, do you want to give a bit more context on that?
+
+111
+00:20:43.260 --> 00:20:43.930
+Tim Beiko: Curse, also…
+
+112
+00:20:43.930 --> 00:20:44.690
+stokes: Thursday, sometime.
+
+113
+00:20:44.690 --> 00:20:46.060
+Tim Beiko: type to review, yeah.
+
+114
+00:20:47.150 --> 00:20:49.629
+stokes: Yeah, I mean, I can walk through it,
+
+115
+00:20:50.750 --> 00:20:59.220
+stokes: So, essentially, just trying to track everything so that we can hit a pre-dev Connect launch date for Fusaka.
+
+116
+00:20:59.830 --> 00:21:11.049
+stokes: Basically, what we had discussed kind of before the past few days with the sinking issues, we would have, trunk branches together by the end of this week.
+
+117
+00:21:11.440 --> 00:21:17.860
+stokes: Demet 5 next week, do some analysis, use that to figure out how to set up Pulaski and Sepolia.
+
+118
+00:21:18.010 --> 00:21:23.539
+stokes: We'd do those forks mid-September, or we'd have releases mid-September, do the forks later in the month.
+
+119
+00:21:24.020 --> 00:21:28.560
+stokes: That would then set us up to do releases beginning of October for Hoodie and Mainnet.
+
+120
+00:21:28.830 --> 00:21:35.429
+stokes: do hoodie, do mainnet. You can look at the dates here, and yeah, I mean, the thing is,
+
+121
+00:21:35.940 --> 00:21:40.439
+stokes: this is all kind of on hold with the present issues with DevNet3, so yeah.
+
+122
+00:21:40.940 --> 00:21:45.830
+stokes: I think what we want to do is focus on DevNet 3,
+
+123
+00:21:45.930 --> 00:21:53.650
+stokes: If we get DevNet5 up next week, that'd be amazing, because then these dates don't change too much, and we can kind of stick to the schedule.
+
+124
+00:21:55.230 --> 00:22:03.060
+stokes: But, yeah, it's… Slightly premature, just given… given the current status, so…
+
+125
+00:22:03.580 --> 00:22:06.869
+stokes: I think we all know what we need to do to keep moving forward.
+
+126
+00:22:11.950 --> 00:22:12.530
+Tim Beiko: Yeah.
+
+127
+00:22:12.900 --> 00:22:17.549
+Tim Beiko: Thanks. Anyone else have comments on that?
+
+128
+00:22:17.690 --> 00:22:18.480
+Tim Beiko: this.
+
+129
+00:22:21.060 --> 00:22:25.449
+Manu: Yeah, so basically on Prism, we have…
+
+130
+00:22:25.950 --> 00:22:30.820
+Manu: Yes, almost everything in the developer branch.
+
+131
+00:22:30.950 --> 00:22:39.679
+Manu: Which is our untappable branch, but we continue to run the DevNet tree on the PRDAS branch, because it's quite simpler.
+
+132
+00:22:39.820 --> 00:22:43.170
+Manu: When you have a new bug detected, we just…
+
+133
+00:22:43.680 --> 00:23:03.310
+Manu: push the fix on the PureDust branch, which does not require any review, and when it works, we do a real code review when we push it in develop branch. So basically, develop branch and PureDAS branch differs only on the new bug fix seen in the DevNet. But, yes,
+
+134
+00:23:03.460 --> 00:23:08.080
+Manu: We have the backfield, which is not yet merged in develop.
+
+135
+00:23:08.410 --> 00:23:12.269
+Manu: But, so else is… Every… everything else is… is matching.
+
+136
+00:23:18.470 --> 00:23:19.470
+Tim Beiko: Nice fix.
+
+137
+00:23:35.490 --> 00:23:44.260
+Tim Beiko: Yeah, so there's a comment saying we don't have one month between the first release and the test sets, and
+
+138
+00:23:44.710 --> 00:23:54.270
+Tim Beiko: Yeah, so we would have… the plan is to have one month between the mainnet releases and mainnet forking, but then we would have shorter,
+
+139
+00:23:54.270 --> 00:24:04.929
+Tim Beiko: shorter timeframes for the testnet forks, and notably, Haleszhki would be kind of the shortest, because we also plan to deprecate it shortly after the fork.
+
+140
+00:24:07.540 --> 00:24:12.199
+lightclient: I mean, isn't that what we agreed, though? That we would have one month before the DevNet forks?
+
+141
+00:24:12.200 --> 00:24:14.720
+Tim Beiko: After a picture? You mean testnet?
+
+142
+00:24:15.060 --> 00:24:16.950
+lightclient: Or sorry, testnets. Yeah.
+
+143
+00:24:18.560 --> 00:24:26.299
+lightclient: Like, the complaint before was that we were making the Sepolia release, and then Sepolia happened, like, a week or two after, and same thing with Koleski.
+
+144
+00:24:26.610 --> 00:24:28.329
+lightclient: And we kind of told the…
+
+145
+00:24:28.740 --> 00:24:32.309
+lightclient: The application companies, that we would give them extra time.
+
+146
+00:24:32.990 --> 00:24:35.280
+Tim Beiko: I thought this was about maintenance?
+
+147
+00:24:35.500 --> 00:24:37.480
+lightclient: I mean, it meant that we always have one month.
+
+148
+00:24:37.480 --> 00:24:38.050
+Tim Beiko: Yeah.
+
+149
+00:24:39.130 --> 00:24:42.790
+lightclient: Like, the complaint last time was not about Mainnet, it was about Sepolia.
+
+150
+00:24:43.120 --> 00:24:58.359
+lightclient: I mean, I specifically remember Optimism being frustrated that they need to do a lot of work now, based on… they're waiting for the client releases to update their software, and then we fork the Sepoliad network one or two weeks after we make those releases.
+
+151
+00:24:59.040 --> 00:24:59.550
+Tim Beiko: Yeah.
+
+152
+00:24:59.650 --> 00:25:05.789
+Tim Beiko: And yeah, Frederick has this, linked it, and, like, yeah, this did say 30 days before the first test set.
+
+153
+00:25:05.790 --> 00:25:09.909
+Fredrik: Yeah, yeah, it sets in the process there that we should have
+
+154
+00:25:10.420 --> 00:25:16.130
+Fredrik: 30 days between the first testnet and when the client's release is ready.
+
+155
+00:25:17.610 --> 00:25:20.869
+Tim Beiko: Okay, so I guess if we wanted to do that,
+
+156
+00:25:21.880 --> 00:25:27.830
+Tim Beiko: then yes, we would obviously have to modify, the schedule quite a bit.
+
+157
+00:25:30.150 --> 00:25:34.379
+Tim Beiko: It is something, yeah, we can do. We should probably get input from
+
+158
+00:25:34.600 --> 00:25:42.660
+Tim Beiko: all of these L2s specifically as well, because, they're also the main consumer of the blobs, so…
+
+159
+00:25:42.950 --> 00:25:43.680
+Tim Beiko: Yeah.
+
+160
+00:25:43.980 --> 00:25:45.000
+Tim Beiko: They may…
+
+161
+00:25:45.460 --> 00:25:58.950
+lightclient: It's just like, how many times can we ask them, you know? It's like, we just keep asking them until they don't respond, or they are tired of us asking. Because they kind of came, and they told us what they wanted, and we haven't even had a hard fork since they told us what they wanted.
+
+162
+00:26:01.150 --> 00:26:11.069
+stokes: I will point out one difference is Pectra had many things that, like, impacted them directly, and that they needed to, like, actually change, whereas Fusaka doesn't have things like this.
+
+163
+00:26:14.520 --> 00:26:21.130
+Barnabas: I mean, they have to… Calculate the proofs, so that is a… That's gonna fall on them.
+
+164
+00:26:21.130 --> 00:26:21.720
+stokes: roofs.
+
+165
+00:26:23.360 --> 00:26:24.450
+Barnabas: the blot proofs?
+
+166
+00:26:25.880 --> 00:26:28.570
+stokes: Doesn't the EO handle this when you submit the blobs?
+
+167
+00:26:31.380 --> 00:26:35.019
+lightclient: Do ELs handle this when people submit the blobs?
+
+168
+00:26:35.410 --> 00:26:41.559
+stokes: Yeah, like, if I give you a blob over RPC, then the ELs handle this stuff, right? So my point is just that
+
+169
+00:26:42.200 --> 00:26:58.599
+stokes: the things that we change at Fusaka are, like, fairly transparent to all the people we were just talking about, whereas with Pectra, that was not the case, so I could see how, you know, I think it makes sense for them to be like, okay, with something like Pectra, this makes sense. We need time to update, you know, our code.
+
+170
+00:26:59.030 --> 00:27:01.839
+stokes: Whereas, there's not that much here.
+
+171
+00:27:02.430 --> 00:27:05.659
+stokes: So there's less To have so much time.
+
+172
+00:27:06.410 --> 00:27:15.900
+lightclient: I just don't think that because we decide that there's less things for them to do, that we get to change what the agreement was before.
+
+173
+00:27:20.780 --> 00:27:22.160
+Tim Beiko: grab pullers…
+
+174
+00:27:22.920 --> 00:27:40.740
+potuz: Rollups typically base their main node on the… as a fork of Geth, or as a fork of whatever L1 client is. And this is the main reason why they required a lot of time between having a release and they themselves having a release that supports the same features of the fork.
+
+175
+00:27:41.130 --> 00:27:49.170
+potuz: I think this is the… one of the reasons why they requested this extra time, and this is going to be independent of what kind of features they want to ship or not.
+
+176
+00:27:52.500 --> 00:27:54.169
+Tim Beiko: Thanks, Oscar.
+
+177
+00:27:55.020 --> 00:28:00.609
+Ansgar Dietrichs: Yeah, I just wanted to say that, like, I think we have to make… be careful, though, to not make this mistake of, like.
+
+178
+00:28:01.010 --> 00:28:15.100
+Ansgar Dietrichs: weighing the cost imposed onto a few very visible, entities higher than, basically, the cost distributed more across, like, a larger set of people. I think there's costs both to a two-accelerated rollout, like.
+
+179
+00:28:15.100 --> 00:28:21.959
+Ansgar Dietrichs: we just are discussing right now, for L2s, mostly. And then there's, of course, also a cost, for example, if, say.
+
+180
+00:28:22.090 --> 00:28:29.570
+Ansgar Dietrichs: the outcome here would be, can we still ship the fork by the end of the year, or slip into next year? That's, like, an extra month of delay, that also delays
+
+181
+00:28:29.570 --> 00:28:46.820
+Ansgar Dietrichs: kind of, like, Lamsterdam and the follow-on work. I think the problem is just that the people affected there is a much more diffuse set, it's basically, like, everyone in Ethereum, but only a little bit. And it's hard to weigh, like, a few people, like, strongly affected, whereas, like, a lot of people a little bit affected, but I think it's important that we don't
+
+182
+00:28:46.820 --> 00:28:50.779
+Ansgar Dietrichs: Only focus on one side of that, of the picture.
+
+183
+00:28:51.890 --> 00:29:04.910
+lightclient: I mean, we made a very unambiguous agreement with Rollups and other participants at the time with Pectra that we were going to give them 30 days from a client release to a testnet.
+
+184
+00:29:05.210 --> 00:29:12.540
+lightclient: I don't understand why. This is about the third time for Fusaka we've had to come back and, like, re-agree with this.
+
+185
+00:29:12.720 --> 00:29:13.080
+Ansgar Dietrichs: Can you…
+
+186
+00:29:13.080 --> 00:29:13.569
+lightclient: And a week ago.
+
+187
+00:29:13.570 --> 00:29:18.630
+Ansgar Dietrichs: Maybe in the governance process where we did that? Like, the meta-EIP for that, that was on Universal.
+
+188
+00:29:18.630 --> 00:29:18.950
+lightclient: spreadsheet.
+
+189
+00:29:18.950 --> 00:29:20.549
+Ansgar Dietrichs: I think it was mostly…
+
+190
+00:29:20.730 --> 00:29:21.429
+Tim Beiko: Yeah, Frederick's…
+
+191
+00:29:21.430 --> 00:29:21.910
+lightclient: lifted it.
+
+192
+00:29:22.380 --> 00:29:23.739
+Tim Beiko: Doug, yeah.
+
+193
+00:29:24.080 --> 00:29:27.680
+Ansgar Dietrichs: Yeah, like, you talk, I understand, but… but, like, it was never, there was no…
+
+194
+00:29:27.680 --> 00:29:30.600
+lightclient: It's in a folder called Processes.
+
+195
+00:29:30.600 --> 00:29:48.929
+Ansgar Dietrichs: I understand, I understand, but what I'm saying is, like, this is a best-effort type of commitment, and, like, if there are costs, the circumstances arising, like, I don't think it's a guarantee, that's… I agree with you, like, we should try to stick to this as much as possible, but we should also try to, like, not let the Ethereum community down. Like, it's… there's a trade-off here.
+
+196
+00:29:49.400 --> 00:30:08.650
+lightclient: The Ethereum community wants all these systems to work, and they don't want all the applications and the Layer 2s to roll out half-baked updates. And they… L2s and apps asked for 30 days to give them the appropriate amount of time to securely upgrade their software.
+
+197
+00:30:12.500 --> 00:30:14.159
+Tim Beiko: I'm Zoop Podus.
+
+198
+00:30:14.610 --> 00:30:31.110
+potuz: I'm just stating the obvious here, but if we do have fixed 30 days for testnets, fixed 30 days at least for mainnet, and at least 30 days for DevNets, it's really not realistic to have a 6-month work cadence.
+
+199
+00:30:32.050 --> 00:30:48.280
+Tim Beiko: I don't think the definite thing is correct, but yes, like it… like, yes, if we have even 30 days for those two, and obviously they have to fork and go and, you know, go smoothly, that's probably 3 months you add to the process, between, like, putting out the first release and,
+
+200
+00:30:48.400 --> 00:30:54.980
+Tim Beiko: And, and having Mainnets go live. Death.
+
+201
+00:31:03.360 --> 00:31:13.710
+lightclient: This says… it does say 30 days before the first testnet, so, like, we can pipeline the testnets a bit. It doesn't have to be one month between each testnet.
+
+202
+00:31:13.920 --> 00:31:21.910
+Tim Beiko: Oh, yeah, yeah, for sure. And then… but then I think we also want at least a week between each of these testnets, and even that, you know, if there is an issue, a week is…
+
+203
+00:31:22.480 --> 00:31:29.190
+Tim Beiko: not… like, you know, it's doable to fix the issue within a week, but it's kind of a rushed timeline.
+
+204
+00:31:29.530 --> 00:31:30.270
+Tim Beiko: Yep.
+
+205
+00:31:30.640 --> 00:31:34.049
+Fredrik: I think we… we decided that it should be 14 days.
+
+206
+00:31:35.140 --> 00:31:37.609
+Fredrik: Apart from each upgrade.
+
+207
+00:31:38.740 --> 00:31:47.570
+lightclient: Alright. So, fastest possible is two and a half months? Or I guess the two 14 days add together.
+
+208
+00:31:47.570 --> 00:31:48.980
+Tim Beiko: Before mainland?
+
+209
+00:31:49.670 --> 00:31:52.030
+Fredrik: I think it's gone 37 days.
+
+210
+00:31:52.130 --> 00:31:55.999
+Fredrik: Don't matter if the process is followed by the book.
+
+211
+00:32:01.480 --> 00:32:17.600
+Parithosh Jayanthi: I think one of the differences between earlier folks is also we're requiring almost every client, if not all clients, to have all of their changes in their trunk branches before we start talking about testnet releases. I don't necessarily think this was always the case.
+
+212
+00:32:18.120 --> 00:32:23.350
+Parithosh Jayanthi: That's also another location where we're adding, like, a few weeks, which in the past we wouldn't have.
+
+213
+00:32:27.480 --> 00:32:29.560
+lightclient: Sorry, I don't know if I might follow that.
+
+214
+00:32:29.710 --> 00:32:33.589
+lightclient: You're saying we didn't require in… for a testnet release?
+
+215
+00:32:33.590 --> 00:32:39.399
+Parithosh Jayanthi: Exactly, for a test methodologies. In the past, it was very often that you'd get an RC release from a branch.
+
+216
+00:32:40.670 --> 00:32:49.399
+lightclient: Okay. I feel like for, at least for us, we've always… for a testnet release, we've made an actual GoEthereum release, and so at that point, the…
+
+217
+00:32:49.590 --> 00:32:53.549
+lightclient: New code is available for people to begin integrating with?
+
+218
+00:32:53.710 --> 00:32:55.900
+lightclient: I guess some other clients did that differently?
+
+219
+00:33:09.680 --> 00:33:14.460
+Tim Beiko: Okay, so I think… there's… I guess…
+
+220
+00:33:14.670 --> 00:33:17.650
+Tim Beiko: two paths forward. One is we kind of base
+
+221
+00:33:17.770 --> 00:33:37.170
+Tim Beiko: the, release schedule just on this process doc, and, you know, based on the previous discussion around DevNet 5, if we assume DevNet 5 goes well, we fix these finality bugs, we could set the dates for the first testnet, and kind of, you know, just schedule it out from there. I think if we want to have a shorter,
+
+222
+00:33:37.960 --> 00:33:54.199
+Tim Beiko: I think if we want to have a shorter schedule, then, like, yeah, maybe it's worth trying to get explicit feedback from, these L2s and other info providers again, potentially opening up a PR to Frederick's doc and trying to get,
+
+223
+00:33:54.360 --> 00:33:57.100
+Tim Beiko: Yeah, trying to get, like, some…
+
+224
+00:33:57.600 --> 00:34:01.449
+Tim Beiko: I guess, input from the community there.
+
+225
+00:34:02.010 --> 00:34:10.130
+Tim Beiko: realistically, we don't have to make this call today, like, we… we still have time, because we're still fixing DevNet 5, but I think over the next week, if,
+
+226
+00:34:10.750 --> 00:34:14.169
+Tim Beiko: If we… if we could actually get,
+
+227
+00:34:14.380 --> 00:34:20.600
+Tim Beiko: If we could actually get, like, some roll-ups to share their preferences, even though we've asked them in the past.
+
+228
+00:34:21.050 --> 00:34:29.880
+Tim Beiko: I think it's probably valuable, and they are kind of the main stakeholder, being, affected here.
+
+229
+00:34:30.330 --> 00:34:31.020
+Tim Beiko: Yeah.
+
+230
+00:34:35.090 --> 00:34:43.649
+stokes: Yeah, so I can make a version following the stock to the letter. I will also reach out to some roll-ups and try to understand if they care.
+
+231
+00:34:44.310 --> 00:34:46.329
+stokes: Let's see…
+
+232
+00:34:46.330 --> 00:34:47.840
+Tim Beiko: And I think if we can get, like.
+
+233
+00:34:47.840 --> 00:34:50.920
+stokes: into other parties beyond roll-ups?
+
+234
+00:34:53.290 --> 00:34:59.469
+potuz: Staking pools would be affected by the KCG proofs on the… on the sidecar, perhaps? I don't know.
+
+235
+00:35:00.190 --> 00:35:01.040
+stokes: Meh…
+
+236
+00:35:01.750 --> 00:35:05.399
+potuz: I don't know. Like, restaking tools, perhaps, I don't know.
+
+237
+00:35:05.600 --> 00:35:07.590
+stokes: Yeah, I'll reach out to some people.
+
+238
+00:35:12.020 --> 00:35:20.540
+Tim Beiko: Okay, yeah, I think if we do change it, we should just open a… we should, like, actually open a PR to this process doc and make it clear what the change is.
+
+239
+00:35:20.840 --> 00:35:29.800
+Tim Beiko: Yeah, and that's also, like, a concrete place we can send folks to, like, voice their… Preferences.
+
+240
+00:35:33.840 --> 00:35:36.220
+lightclient: I just think it's a really bad precedent to…
+
+241
+00:35:36.480 --> 00:35:51.859
+lightclient: keep letting decisions change. Like, we've talked about this in many different contexts. We even talked about this exact situation about a month ago, when we started putting out the timelines for Fusaka, because we had forgotten and then remembered about the agreement we made.
+
+242
+00:35:51.960 --> 00:36:09.989
+lightclient: And we said, okay, we really need to think about this, and, you know, we need to get the releases out mid-August as the only possible way to get a pre-DevConnect Lusaka. And now it seems like we just keep kind of changing what our agreement is to fit to this arbitrary deadline that we've imposed upon ourselves.
+
+243
+00:36:09.990 --> 00:36:19.139
+lightclient: And I just don't think that's fair for the people who are not full-time people part of this process, to have to again and again come and say what their preferences are.
+
+244
+00:36:23.070 --> 00:36:28.069
+Tim Beiko: I think that's true, but I also think that there is, like, a…
+
+245
+00:36:28.660 --> 00:36:35.580
+Tim Beiko: a big part of the community that does want Fusaka at the ship, and, you know, they don't come and
+
+246
+00:36:35.710 --> 00:36:40.309
+Tim Beiko: Say, like, oh, we want the fork to happen in, you know.
+
+247
+00:36:40.550 --> 00:36:46.570
+Tim Beiko: one week after the testnet release, or something like that. So… Yeah.
+
+248
+00:36:56.850 --> 00:37:10.139
+lightclient: I don't think we should choose timelines based on what the community necessarily wants. Like, the people who are shipping the software said they want 30 days to deliver high-quality software that the community is going to use. So…
+
+249
+00:37:10.460 --> 00:37:19.079
+lightclient: Until that… until we, like, revisit that decision with all of the people involved, there's really not that much point of arguing about it.
+
+250
+00:37:21.680 --> 00:37:24.660
+Tim Beiko: Yeah, okay, that makes sense, but I think we should at least…
+
+251
+00:37:25.600 --> 00:37:30.269
+Tim Beiko: Double-check with these, like, roll-ups and infra providers that
+
+252
+00:37:31.040 --> 00:37:41.939
+Tim Beiko: This is still their preference, because the same way we had forgotten about it until it came time to do the releases, it's not clear to me that they all have this expectation, and
+
+253
+00:37:42.570 --> 00:37:48.030
+Tim Beiko: Yeah, like, I think if this is what everyone wants, then great, we can stick with it, but we…
+
+254
+00:37:49.890 --> 00:37:56.850
+Tim Beiko: yeah, we should make sure that this is actually what they want, and I'm not 100% convinced that they…
+
+255
+00:37:57.010 --> 00:37:59.210
+Tim Beiko: they would still stand by this.
+
+256
+00:37:59.810 --> 00:38:04.680
+Tim Beiko: Yeah, so I don't think it's, like, a super high cost to check this in the next week or so.
+
+257
+00:38:05.230 --> 00:38:08.980
+Tim Beiko: And we can follow up with, like, yeah, who was involved in the original discussion.
+
+258
+00:38:13.250 --> 00:38:22.190
+Justin Florentine (Besu): But just to be clear, the decision is to stick to what we have already agreed upon, meaning the 30 days outlined in the document, right?
+
+259
+00:38:22.410 --> 00:38:28.359
+Justin Florentine (Besu): We assume that what we currently know is still true until we hear otherwise. Is that right?
+
+260
+00:38:31.010 --> 00:38:42.260
+Tim Beiko: Yeah, I mean, we can prep the schedule, like, we haven't chosen either way yet, but, like, yes, we should prep the schedule with what's in the document, and then in parallel, check with, like, the stakeholders that are affected.
+
+261
+00:38:43.000 --> 00:38:46.200
+Tim Beiko: If this is, like, still their preference, and…
+
+262
+00:38:46.310 --> 00:39:02.529
+Tim Beiko: If so, then we would stick there, but I think if we get other signals, we should also propose, like, some alternate schedule, and do that also by, like, changing the process doc to kind of reflect these updated preferences.
+
+263
+00:39:18.880 --> 00:39:22.989
+Tim Beiko: Okay, I think, yeah, we can follow this up async,
+
+264
+00:39:23.140 --> 00:39:27.010
+Tim Beiko: Anything else on the timelines people wanted to… Discuss.
+
+265
+00:39:38.780 --> 00:39:48.839
+Tim Beiko: Okay, related to this, so we did say we were gonna deprecate Poleski, after going live with this fork, and…
+
+266
+00:39:49.150 --> 00:39:55.389
+Tim Beiko: that would mean, you know, probably shut it down sometime, at the end of September.
+
+267
+00:39:55.400 --> 00:40:07.849
+Tim Beiko: We want to put an announcement up for this, but before doing so, just wanted to check in here if anyone has any reasons why they would need the testnets longer, or think that we should
+
+268
+00:40:07.850 --> 00:40:19.740
+Tim Beiko: yeah, somehow push that out. Otherwise, in the next week or so, we'll just put up an announcement saying that, Holeshky will just be shut down a couple weeks after, Fusaka goes live on it.
+
+269
+00:40:33.560 --> 00:40:41.060
+Tim Beiko: Okay, no one fighting to keep Holeshky longer. So yeah, expect a blog post in the next, week or so with, an update on that.
+
+270
+00:40:41.990 --> 00:40:47.450
+Tim Beiko: Anything else around Fusaka people wanted to discuss before we move on?
+
+271
+00:40:54.380 --> 00:41:02.009
+Tim Beiko: Okay, next up, so on Monday, we discussed, some of the gas limit work,
+
+272
+00:41:02.160 --> 00:41:20.699
+Tim Beiko: we were… we were, trying to see whether we could raise to $60 million before Fusaka would go live. Some of the EL clients were looking into, some performance bottlenecks, and… and trying to see what potential paths were to addressing those.
+
+273
+00:41:20.700 --> 00:41:24.119
+Tim Beiko: So I just wanted to check in and see if anyone had updates,
+
+274
+00:41:24.340 --> 00:41:27.589
+Tim Beiko: Yeah, on that work generally, in terms of just…
+
+275
+00:41:28.090 --> 00:41:34.119
+Tim Beiko: Yeah, potentially moving to 60 million before, before Fuseka. Or at least, yeah.
+
+276
+00:41:34.440 --> 00:41:35.960
+Tim Beiko: Getting somewhere there.
+
+277
+00:41:52.410 --> 00:41:58.619
+Luis Pinto | Besu: I can add a few words for Basu. So we were a bit hammered with,
+
+278
+00:41:58.840 --> 00:42:14.090
+Luis Pinto | Besu: the mods and division, and so we are looking at those, opcodes, and we have a working implementation for mods and DIF.
+
+279
+00:42:14.330 --> 00:42:19.710
+Luis Pinto | Besu: That we will most likely want to test in a few days.
+
+280
+00:42:19.990 --> 00:42:23.309
+Luis Pinto | Besu: Which is much more performant than the previous one.
+
+281
+00:42:24.700 --> 00:42:27.540
+Luis Pinto | Besu: So yeah, we're making progress on that.
+
+282
+00:42:28.770 --> 00:42:29.910
+Luis Pinto | Besu: On that front.
+
+283
+00:42:31.310 --> 00:42:32.619
+Tim Beiko: Awesome. Thanks for sharing.
+
+284
+00:42:37.640 --> 00:42:40.019
+Tim Beiko: Anyone else have updates on this?
+
+285
+00:42:49.500 --> 00:42:56.840
+Ben Adams: Question around signaling, because it does take a while between signaling and the gas going up.
+
+286
+00:42:57.010 --> 00:43:03.590
+Ben Adams: What would be the, I suppose, the process or the timeline? We…
+
+287
+00:43:04.640 --> 00:43:10.840
+Ben Adams: Do we wait until everything's happy and confirmed, or do we… Signal a bit sooner.
+
+288
+00:43:11.430 --> 00:43:12.600
+Ben Adams: Everything inside.
+
+289
+00:43:13.110 --> 00:43:21.819
+Tim Beiko: I think we should wait until no client has, like, major concerns, because going from 45 to 60
+
+290
+00:43:22.630 --> 00:43:31.630
+Tim Beiko: like, in terms of actual block updates, happens pretty quickly. I think… if we…
+
+291
+00:43:32.230 --> 00:43:45.199
+Tim Beiko: what helps also with the signaling and just the adoption is if it's actually included in a release. So, one thing that could be nice is if, you know, if we're confident in going to 60 before Fusaka goes live on Mainnet,
+
+292
+00:43:45.330 --> 00:43:59.519
+Tim Beiko: then, we could potentially just have the clients default to 60 in, say, the first testnet release, so that the first testnet release, you know, if people run that on mainnet, it defaults to 60 million gas,
+
+293
+00:43:59.860 --> 00:44:15.960
+Tim Beiko: So I think that's an option, but I wouldn't want to just… I don't know, if Besu is… if Besu still hasn't, tested, like, their improvements, I don't think we should, like, soft signal and kind of force Basu to catch up that way. Yeah.
+
+294
+00:44:21.320 --> 00:44:22.650
+Tim Beiko: Yeah, on to go?
+
+295
+00:44:23.930 --> 00:44:37.249
+Ansgar Dietrichs: Yeah, I think, maybe, concretely, I think it's good if our process basically, as you said, right, that, like, the threshold should be that every client has a release out that we are comfortable can handle, the kind of the new…
+
+296
+00:44:37.250 --> 00:44:46.419
+Ansgar Dietrichs: gas limit that we are signaling, but I think there's no need for us to wait for any specific adoption metric on that, on those new client releases, because I think…
+
+297
+00:44:46.540 --> 00:45:04.539
+Ansgar Dietrichs: If there ever were any hiccups, basically the important thing is that people can quickly upgrade to the version that can handle it. As Ben was saying, it will take some while for this to be rolled out anyway. In the meantime, people are upgrading, so I think, basically, like, that seems like to strike a good balance. Client releases out, but no specific threshold for adoption.
+
+298
+00:45:04.850 --> 00:45:16.450
+Tim Beiko: Oh yeah, yeah, exactly. And this is why I think if we can couple it to releases that more people are gonna be using anyways, then that's good. Like, at the very latest, if we say we want this before Fusaka.
+
+299
+00:45:16.620 --> 00:45:24.779
+Tim Beiko: all the Fusaka mainnet releases should default to 60 million, right? Like, but yeah, I think the testnet releases…
+
+300
+00:45:25.010 --> 00:45:27.520
+Tim Beiko: On the way there are just, like.
+
+301
+00:45:28.150 --> 00:45:36.980
+Tim Beiko: Yeah, also a good opportunity to put this as a default, and as long as every client team has a release that could handle this, then we're generally in a good spot.
+
+302
+00:45:38.250 --> 00:45:48.290
+Tim Beiko: And this, yeah, Terrence has a comment, like, this also includes CL releases, because the CL releases kind of set the values for, for boost, which is where most of the blocks get built.
+
+303
+00:45:53.170 --> 00:46:01.580
+Tim Beiko: Lewis has a question about Zen. Does anyone have more topics around, like, yeah, the specific bottlenecks around Zen?
+
+304
+00:46:02.310 --> 00:46:04.780
+Tim Beiko: And how that's blocking for $60 million.
+
+305
+00:46:20.650 --> 00:46:22.639
+Tim Beiko: Sorry, Ben, you were gonna say something?
+
+306
+00:46:24.280 --> 00:46:29.729
+Ben Adams: Yeah, just more related to the, ELs and CLs that…
+
+307
+00:46:31.070 --> 00:46:36.440
+Ben Adams: the ELs sort of determine whether they can handle it, but we have to wait for the CLs to
+
+308
+00:46:36.630 --> 00:46:37.840
+Ben Adams: Update there.
+
+309
+00:46:38.770 --> 00:46:39.790
+Ben Adams: defaults.
+
+310
+00:46:40.050 --> 00:46:47.169
+Ben Adams: I was just wondering if it'd be better to have a mechanism where the CL could query the EL, but the gas limit.
+
+311
+00:46:47.360 --> 00:46:49.859
+Ben Adams: They should be… Registering with us.
+
+312
+00:46:53.940 --> 00:47:02.840
+Tim Beiko: And to be clear, we don't… we don't need to wait, though, right? Like, operators can update themselves, it's just not the default, but… yeah. Terrence?
+
+313
+00:47:04.660 --> 00:47:11.810
+terence: No, I was gonna say it's possible to do that, but that's, like, an engine API change, and Engine API is typically, like,
+
+314
+00:47:11.980 --> 00:47:18.270
+terence: we only changed that during, like, the network upgrades, so for Fusaka, it's probably too late.
+
+315
+00:47:23.200 --> 00:47:23.750
+Tim Beiko: Yeah.
+
+316
+00:47:24.050 --> 00:47:30.180
+Tim Beiko: Yeah, we probably shouldn't be changing the engine API design this far late in the process, yeah. Felix?
+
+317
+00:47:31.600 --> 00:47:41.150
+Felix: Just as a quick comment, so I don't think that is technically true, that we can only change the engine API on a fork boundary, especially for this kind of thing, which would be a new feature anyways.
+
+318
+00:47:41.410 --> 00:47:50.530
+Felix: But also, I think it is totally possible, even now, with the existing RPC API, for the CL to query the EL and then adjust itself based on that.
+
+319
+00:47:50.780 --> 00:47:58.049
+Felix: Like, I don't think this is technically, like, an engine API change that requires a fork or an EIP, we can just kind of do this.
+
+320
+00:48:05.380 --> 00:48:09.840
+Tim Beiko: Yeah, I guess it requires, yeah, it requires the CLs changing how they pass that value through.
+
+321
+00:48:14.890 --> 00:48:27.079
+Tim Beiko: And yeah, Perry on the Zen comment said, that, it wasn't their focus yet, but they have a benchmarking, and they can gather data on any issues with that.
+
+322
+00:48:30.870 --> 00:48:34.259
+Tim Beiko: Any other updates or thoughts on the 60 million?
+
+323
+00:48:42.450 --> 00:48:43.250
+Tim Beiko: Okay.
+
+324
+00:48:43.510 --> 00:48:54.409
+Tim Beiko: Then I guess we can move on to Glamsterdam. So, first off, we had a, block access list breakout this week, the first, the first one.
+
+325
+00:48:54.850 --> 00:48:58.650
+Tim Beiko: Yeah, is there anything from there that people wanted to bring up or discuss?
+
+326
+00:49:02.870 --> 00:49:06.509
+Toni Wahrstaetter: Yeah, I can give, a quick summary.
+
+327
+00:49:06.750 --> 00:49:09.210
+Toni Wahrstaetter: Basically, the…
+
+328
+00:49:09.430 --> 00:49:22.619
+Toni Wahrstaetter: EAP7928. Breakout call is now happening every two weeks, so if you want to join, feel free to do so. Clients are quite busy at the moment in implementing the EAP.
+
+329
+00:49:22.750 --> 00:49:31.849
+Toni Wahrstaetter: Right now, every client team has started implementing, and I think, got the feeling that we're getting closer to a first step now.
+
+330
+00:49:38.340 --> 00:49:39.550
+Tim Beiko: Thanks, thanks.
+
+331
+00:49:40.420 --> 00:49:43.159
+Tim Beiko: Anything else on block exorcists?
+
+332
+00:49:49.790 --> 00:50:09.449
+Tim Beiko: Okay, then I had a couple things for just the rest of the EIPs, being proposed for Amsterdam. So first off, there's a lot of gas price or repricing EIPs that are being proposed, so, Maria and Ansgar put together a meta-EIP to try and keep track of them, but it's…
+
+333
+00:50:09.450 --> 00:50:15.400
+Tim Beiko: kind of a unique thing, to have, like, a nested nita EIP, so they had questions about, yeah.
+
+334
+00:50:15.510 --> 00:50:21.020
+Tim Beiko: how do people think we should, approach this? Anskar, yeah, you want to give some context on it?
+
+335
+00:50:21.990 --> 00:50:34.550
+Ansgar Dietrichs: Yeah, perfect. So basically, Maria and I, were talking with people, and in general, the need came up, or, like, the idea came up that it would be nice to have a document in general to basically collect.
+
+336
+00:50:34.650 --> 00:50:47.239
+Ansgar Dietrichs: And outline, kind of, all the peace and flight around repricing, because we also expect that that will still, kind of, quite actively, be a topic of iteration for the next few months, or next two months, at least, or something.
+
+337
+00:50:47.380 --> 00:50:54.699
+Ansgar Dietrichs: The… we were basically… we chose to do it as a meta-EIP, at least.
+
+338
+00:50:54.770 --> 00:51:12.609
+Ansgar Dietrichs: as of now, and then wanted to get a little bit of feedback on whether MetaEP is the right format, and whether people think that's useful. The idea specifically would be that the MetaEP does not have any specific role in the governance process, so include, like, being listed on the MetaEP would not directly correlate to
+
+339
+00:51:12.670 --> 00:51:15.160
+Ansgar Dietrichs: Inclusion decisions in…
+
+340
+00:51:15.160 --> 00:51:33.839
+Ansgar Dietrichs: glam stamp, we would, in the MetaAP, kind of basically just list the status of this is kind of where it's at in the governance process as well, just for convenience. But the MetaAP would be more like a document that then could be useful also, for example, in, like, early DevNets, and basically just, like, as some sort of specifying some sort of just, like, recommended set of EIPs.
+
+341
+00:51:35.800 --> 00:51:50.900
+Ansgar Dietrichs: we… after some talking with people, we think that Meta EIP might be the most useful kind of version of that kind of document, but we'd also be happy to kind of change it to just some other thing, I think.
+
+342
+00:51:50.900 --> 00:51:57.560
+Ansgar Dietrichs: Pari had the point that it would be nice to be version controlled, so we can just, like, target specific versions for definites or something like this, so…
+
+343
+00:51:57.610 --> 00:52:15.069
+Ansgar Dietrichs: Yeah, but basically just looking for feedback, and maybe one more point there, the reason why it's kind of Maria and I is that, at David and I used to kind of lead the research on this topic from the EF side, in the past. David is now moving to other topics.
+
+344
+00:52:15.070 --> 00:52:34.399
+Ansgar Dietrichs: And Maria is now taking over from him, so going forward, it will be kind of Maria from our side as the domain experts, and then kind of me in collaboration, so any kind of more research side topics you have around repricing, I think would be best discussed with Maria going forward.
+
+345
+00:52:42.920 --> 00:52:44.779
+Tim Beiko: Thanks, Eddie. Comments?
+
+346
+00:52:54.570 --> 00:52:55.390
+Tim Beiko: Okay.
+
+347
+00:52:56.000 --> 00:52:58.700
+Tim Beiko: Like, it's like, think we can give this a try?
+
+348
+00:52:58.830 --> 00:53:03.980
+Tim Beiko: And yeah, it is also… like, yeah, version control on the IPs is something we've…
+
+349
+00:53:04.300 --> 00:53:07.790
+Tim Beiko: Talked about in a bunch of contexts, and never really…
+
+350
+00:53:08.450 --> 00:53:15.129
+Tim Beiko: adopted, so this might actually be a good place, yeah, to justice.
+
+351
+00:53:19.380 --> 00:53:25.629
+Tim Beiko: Roman, are you asking about, in general, on the gas limit testing efforts, or,
+
+352
+00:53:25.770 --> 00:53:28.620
+Tim Beiko: Just for the CIP, like, which repricings we want to do.
+
+353
+00:53:29.430 --> 00:53:35.649
+Roman: Yeah, in general, but I'm asking this now, babe, because both are kind of intertwined.
+
+354
+00:53:38.070 --> 00:53:39.979
+Tim Beiko: Yeah, so we have this,
+
+355
+00:53:40.150 --> 00:53:49.729
+Tim Beiko: Yeah, so I guess we have these two Telegram channels that are, like, quite high activity, and then the Nethermine team has just been keeping, like, the high-level,
+
+356
+00:53:49.980 --> 00:53:56.800
+Tim Beiko: yeah, the high-level, bottlenecks, in this sparkdown that I shared.
+
+357
+00:53:57.230 --> 00:54:10.399
+Tim Beiko: I don't know that we have any kind of intermediate resolutions that you either have, like, the, you know, 10 bullet points skim, or the two groups with hundreds of messages.
+
+358
+00:54:11.080 --> 00:54:24.700
+Parithosh Jayanthi: Yeah, we do some summaries on ACDT, so I guess that might be the second best approach, but yeah, I mean, TLDR, the limits for 60 million gas are listed there.
+
+359
+00:54:24.700 --> 00:54:33.650
+Parithosh Jayanthi: Most of the work right now is on state bottlenecks, and we're focusing on sync-related state bottlenecks, and we have 2x mainnet state already to test with.
+
+360
+00:54:41.540 --> 00:54:51.220
+Tim Beiko: Okay, and yes, Maria shared. Actually, yeah, it might actually be a good idea to just share the… if we could link the Grafana dashboards. I don't know if these are actually public.
+
+361
+00:54:52.610 --> 00:55:03.910
+Parithosh Jayanthi: Yeah, so Docs has been a bit lacking, and we wanted to wait to finish rebasing the benchmarking tool on top of East, and I think Camille has…
+
+362
+00:55:04.020 --> 00:55:16.220
+Parithosh Jayanthi: basically achieved that over the last day, two days this week. So I would assume soon we would focus on documentation, we'll make sure all the links are in one place, and yeah, make it a bit easier, I guess.
+
+363
+00:55:19.770 --> 00:55:20.680
+Tim Beiko: Awesome, thanks.
+
+364
+00:55:22.620 --> 00:55:33.600
+Tim Beiko: And yeah, on the state side, Carlos, said… shared, the, BlockNet page with also… which also has a ton of, of, status updates.
+
+365
+00:55:37.080 --> 00:55:40.069
+Tim Beiko: Yeah, hopefully we can start to,
+
+366
+00:55:40.270 --> 00:55:43.630
+Tim Beiko: To align all these different resources, but, yeah.
+
+367
+00:55:43.740 --> 00:55:45.980
+Tim Beiko: For now, it's a bit of a mess.
+
+368
+00:55:54.970 --> 00:56:06.059
+Tim Beiko: Okay, so, yeah, back to repricing, so we can, keep the EIP, experiment with it, and, and, yeah, see how useful it is through the process.
+
+369
+00:56:06.410 --> 00:56:19.430
+Tim Beiko: The other thing, I want to discuss, so now that we have set the headliners for the fork, we should eventually review and at some point decide which EIPs to include.
+
+370
+00:56:19.910 --> 00:56:30.720
+Tim Beiko: we said that the deadline to propose the IPs for the fork would be when the Fusaka mainnet releases go live, which is still, you know, at least a month or a couple months away.
+
+371
+00:56:30.720 --> 00:56:40.170
+Tim Beiko: there's already 18 proposed EIPs, and I think there's a couple more that just haven't been merged in yet, so I can expect we'll get 20 or 30 of them.
+
+372
+00:56:40.870 --> 00:57:00.499
+Tim Beiko: I wanted to check in with teams about, like, how should we go about reviewing these? Not even, like, making decisions about them, but just, you know, when and how do we want to discuss or ask questions about them. Besu shared their preferences, and I think historically what we've done is kind of
+
+373
+00:57:01.040 --> 00:57:08.749
+Tim Beiko: have people semi-randomly show up on this call and pitch their EIPs and not be super systematic about it.
+
+374
+00:57:08.960 --> 00:57:21.590
+Tim Beiko: And it just gets harder as the number of EIPs scale. Like, if we have 30 EIPs and we give them each 10 minutes, that's 300 minutes of call time. So, yeah, curious how people think we can do this. Yeah, Justin?
+
+375
+00:57:21.830 --> 00:57:46.789
+Justin Florentine (Besu): Yeah, I just wanted to clarify real quick. I wanted to be very explicit that these are the EIPs that we listed that we would like to hear more about, so that might be a mechanic that we can leverage. You know, we're gonna get this list, like you said, it's gonna be 30 long, it might be the point where we have to schedule people and say, hey, you made it to, you know, you have this much interest from the core devs, please show up on X date and present this one, and we might
+
+376
+00:57:46.790 --> 00:57:49.710
+Justin Florentine (Besu): We might just have to actually, coordinate this.
+
+377
+00:57:49.710 --> 00:58:04.970
+Justin Florentine (Besu): I think that the important part of this is that the core devs reach out and say, hey, the following, you know, EIPs have questions that need to be answered, these are the questions, and proactively set an agenda for them to come in and discuss.
+
+378
+00:58:15.980 --> 00:58:21.309
+Tim Beiko: And, yeah, Tony, sorry, I didn't mean, like, a full-on presentation, but I think, like, yeah, each of them
+
+379
+00:58:21.470 --> 00:58:36.310
+Tim Beiko: itch that we actually want to consider probably takes some time on the call to discuss the trade-offs, and it's not clear that we… there's probably 70 IPs we don't even want to bring up on the call, because no one thinks they're, like, a serious candidate.
+
+380
+00:58:38.490 --> 00:58:40.109
+Tim Beiko: Yeah, so I…
+
+381
+00:58:40.330 --> 00:58:57.409
+Tim Beiko: I think it would be good to have some sort of, like, pre-filtering, and I think a requirement for this is, like, that teams actually have the time to look through the list, and I know that there's already a lot of things going on, and, like, we're asking people to focus on, like,
+
+382
+00:58:57.920 --> 00:59:01.120
+Tim Beiko: Yeah, on many things in parallel, so,
+
+383
+00:59:02.020 --> 00:59:08.139
+Tim Beiko: Like, if teams feel like they have the bandwidth to actually at least look through the list and, like, flag the, you know.
+
+384
+00:59:08.450 --> 00:59:17.229
+Tim Beiko: 5-ish, or whatever most interesting ones they want to discuss, like base U. That seems pretty straightforward, like, you know, starting on the next call, we could…
+
+385
+00:59:17.430 --> 00:59:26.339
+Tim Beiko: we could try to have, like, yeah, more conversations about the ones Basie listed, or if there's ones other teams want to discuss, too.
+
+386
+00:59:26.560 --> 00:59:37.619
+Tim Beiko: But is that realistic? Like, do people think in the next week or two weeks they can even open the list of 20 IPs and figure out which 5 or 6 are most, most important?
+
+387
+00:59:47.850 --> 00:59:56.899
+Tim Beiko: And yes, obviously we have beat the magicians, like Greg says, so we can do this async. I think we… we should try to do as much of that as we can, but realistically.
+
+388
+00:59:57.410 --> 01:00:00.790
+Tim Beiko: Yeah, we do end up discussing a bunch on the call, and
+
+389
+01:00:02.860 --> 01:00:05.639
+Tim Beiko: Yeah, we can potentially improve the curation there.
+
+390
+01:00:13.690 --> 01:00:21.980
+Tim Beiko: if… I mean, if no one else have… have… has thoughts, then I think I'm happy to, reach out to the…
+
+391
+01:00:22.440 --> 01:00:34.380
+Tim Beiko: EIPs that BASU listed, or potentially, I don't give people a couple more days to share their preferences, and then for the next ACDE, we can have a set of them present.
+
+392
+01:00:34.500 --> 01:00:48.309
+Tim Beiko: There were a couple people who wanted to present today, and we have some time left, so if there's nothing else people want to discuss, we can also do that, and if folks don't want to sift through the presentations, you can obviously hop off a bit early, but…
+
+393
+01:00:48.440 --> 01:00:52.480
+Tim Beiko: Before we do that, Benny, Other thoughts on just how we approach this?
+
+394
+01:00:58.680 --> 01:01:00.020
+Tim Beiko: Okay, so…
+
+395
+01:01:00.230 --> 01:01:15.210
+Tim Beiko: yeah, let's do, let's see if client teams share more EIPs. I'll follow up with the one space you mentioned, and then, yeah, we can spend the rest of the call trying to go over the ones, I think there were five that people wanted to discuss.
+
+396
+01:01:15.550 --> 01:01:20.079
+Tim Beiko: First one being, EIP2926 by Guillaume.
+
+397
+01:01:21.460 --> 01:01:22.190
+Guillaume: Yep.
+
+398
+01:01:22.460 --> 01:01:32.340
+Guillaume: It's a short presentation, so you don't have to worry. I just need to find how I can share my screen, here we go.
+
+399
+01:01:33.050 --> 01:01:35.349
+Guillaume: Can you guys see it?
+
+400
+01:01:38.290 --> 01:01:38.650
+Tim Beiko: Yes?
+
+401
+01:01:38.650 --> 01:01:39.400
+potuz: Yes?
+
+402
+01:01:39.930 --> 01:01:42.829
+Guillaume: Wow, that was the fastest I ever…
+
+403
+01:01:42.860 --> 01:01:56.200
+Guillaume: was able to do it. Yeah, so EIP2926 is actually a very old EIP. It's starting to be a tradition at this point, but it's an EIP that was resurrected.
+
+404
+01:01:56.200 --> 01:02:04.539
+Guillaume: It's an EIP that dates from 2020, and introduced code, trunking in the MPT.
+
+405
+01:02:04.860 --> 01:02:20.060
+Guillaume: And the reason for this to be resurrected, was a discussion we had at the interop with, well, first that was a suggestion by Tomas, and then we talked about it with Ignacio and Jocham, and I think that's it.
+
+406
+01:02:20.160 --> 01:02:39.859
+Guillaume: To introduce code chunking, because coaching brings some advantages, immediately, and we don't have to wait for, binary trees, and… and or vertical trees, but in all likelihood, binary trees, to be implemented and tested, in mainnet.
+
+407
+01:02:40.070 --> 01:03:03.579
+Guillaume: So what does that… what does that do? Like I said, it's, miraculization in the MPT. What we changed from, from the initial EIP is that we bring in some of the learnings that we did, while working on vertical and binary trees. So we have 31 byte chunks with one byte of push data. We have…
+
+408
+01:03:03.580 --> 01:03:17.180
+Guillaume: EIP4762, or at least the code access part of it. This is still an open question, but I don't think it's gonna be a very complex one. The question is just how much,
+
+409
+01:03:17.180 --> 01:03:23.300
+Guillaume: how much do we pay for code chunk accesses? There's a very well thought out,
+
+410
+01:03:23.300 --> 01:03:38.729
+Guillaume: gas price for, for Verco that we could reuse. There seemed to be, some, thinking when, during the interrupt, we were considering 7903 or 7909, I don't remember the…
+
+411
+01:03:38.730 --> 01:03:48.019
+Guillaume: the number just now, that the code access should be much cheaper, so that's why it's still an open question, but I don't think it's a very complex one.
+
+412
+01:03:48.020 --> 01:04:01.420
+Guillaume: And, yes, it requires a transition, like an overlay… actually, not an overlay tree transition, but something a bit similar, something that is, that is, defined in EIP7612.
+
+413
+01:04:01.420 --> 01:04:17.569
+Guillaume: But because we're only changing, we're only trunking the code and inserting it in the tree, it will take less than one day, probably an hour, to be honest, but, yeah, it needs to be implemented and tested to know for sure.
+
+414
+01:04:18.250 --> 01:04:24.790
+Guillaume: Okay, I don't know why I can't go to the next slide. Yeah, so… the TLDR?
+
+415
+01:04:24.880 --> 01:04:31.070
+Guillaume: Nothing changes in the EOAs. You still have the nonce, the balance, the code hash, and the storage route.
+
+416
+01:04:31.070 --> 01:04:55.860
+Guillaume: But for contracts, you add two extra fields, the code size, so that you can just access X, like, you can serve X code size immediately. And then, the code root, which is another NPT, just like the storage tree, that is where chunks are just, added sequentially, except for the last, field, which is the last,
+
+417
+01:04:55.860 --> 01:04:57.420
+Guillaume: addressable.
+
+418
+01:04:57.420 --> 01:05:14.990
+Guillaume: integer, which gives you the version. And the version is probably going to be RLP, so if we encode it as, 0x, as 0 and not 0x80, we could, we could just not have the version until we start
+
+419
+01:05:14.990 --> 01:05:17.560
+Guillaume: Using different versions for accounts.
+
+420
+01:05:17.990 --> 01:05:20.590
+Guillaume: The transition…
+
+421
+01:05:20.840 --> 01:05:27.040
+Guillaume: This is just a quick explainer. You have an iterator, Ed, that goes over all the…
+
+422
+01:05:27.040 --> 01:05:41.979
+Guillaume: all the accounts in the state, so, like, the black squares are just the nons, the balance, everything. And then, the green squares are the code hash, so if the code hash is the non-empty hash, represented by the empty set symbol here.
+
+423
+01:05:41.980 --> 01:05:52.850
+Guillaume: Then there's a contract, and the contract is represented by a scroll, and so at every block, the iterator moves by n values.
+
+424
+01:05:52.850 --> 01:06:07.730
+Guillaume: and just sees if the contract is a, sorry, if the account is a contract, and if it's a contract, they will go get the code, chunk it, insert it, and add the extra fields.
+
+425
+01:06:07.780 --> 01:06:21.530
+Guillaume: This is much simpler than the overlay tree, because you can check if the conversion has happened for a given account, by the presence of this storage root, sorry, this code root,
+
+426
+01:06:21.540 --> 01:06:33.000
+Guillaume: field, but if you know that this is a… you can easily know whether an account is a contract or not. So, for example, here, if it doesn't have
+
+427
+01:06:33.000 --> 01:06:45.769
+Guillaume: If it has a non-empty hash, but doesn't have a code root and a code size, you know this hasn't been converted, so you can fall back to the old behavior.
+
+428
+01:06:46.210 --> 01:07:04.149
+Guillaume: Yeah, so just a quick summary, the difference with binary trees and vertical, well, it's… we are using the MPT, we're not using a unified tree, we're just, using, like, we're just doing the same thing as we do with the, with the storage, storage tree.
+
+429
+01:07:04.150 --> 01:07:13.039
+Guillaume: And, sorry, this is wrong, I meant, well, we could potentially get rid of the account version, so this is, my slide is wrong here.
+
+430
+01:07:14.450 --> 01:07:30.990
+Guillaume: Yeah, why do we need this now? Because it solves some, or at least it helps mitigate some attacks against the KVMs that we know of. And it's a simple fix for increasing the code size, because
+
+431
+01:07:31.020 --> 01:07:49.889
+Guillaume: If, you make the code, as large as you want, each chunk access will, will cost money, or cost gas, so, you can, you can disincentivize executing too much code this way. And, yeah, you get the code size field.
+
+432
+01:07:49.890 --> 01:07:56.950
+Guillaume: In the account, so you can serve that, without, without having to load the entire code and,
+
+433
+01:07:56.950 --> 01:08:03.539
+Guillaume: and computed size. And yeah, that's pretty much it. If there are questions, I'm happy to answer them.
+
+434
+01:08:07.720 --> 01:08:08.470
+Tim Beiko: Thanks.
+
+435
+01:08:08.780 --> 01:08:25.739
+Tim Beiko: I guess, yeah, I had a question around what the, you know, end-user benefits are, which, then sort the cheaper proving times for… or cheaper proving for certain worst cases and smaller proofs. Dragon is asking what the downsides of the CIP are.
+
+436
+01:08:26.279 --> 01:08:35.079
+Guillaume: I mean, I can't think of any, to be honest, except that the conversion might scare people off.
+
+437
+01:08:35.210 --> 01:08:52.559
+Guillaume: And, but it's, like I said, it's a much simpler one. The other downside is that it feels like this is settling down, like we could have the better model with a unified tree and everything, and people might say, well, look, this is good enough, let's stop there. So,
+
+438
+01:08:52.560 --> 01:08:59.490
+Guillaume: The, the other downsides… well, okay, actually, I should have, I should have, answered that better.
+
+439
+01:08:59.649 --> 01:09:03.170
+Guillaume: The other downside, of course, is that,
+
+440
+01:09:03.550 --> 01:09:09.769
+Guillaume: people… like, there will be an increase in gas costs, but I don't think you can, you can go around that.
+
+441
+01:09:09.819 --> 01:09:29.050
+Guillaume: And, that, if you need to pass proofs, you will find yourself with extra, extra chunks in your proofs, so some tooling will need to be updated, which is still an open question. I don't know who will be affected by this in the short term.
+
+442
+01:09:30.950 --> 01:09:31.640
+Tim Beiko: Thank you.
+
+443
+01:09:32.090 --> 01:09:37.110
+Tim Beiko: Any other questions? Otherwise, we can move on to the other EIPs?
+
+444
+01:09:40.029 --> 01:09:44.799
+Tim Beiko: Okay, Kevin's asking, could we benchmark the performance increase for ZK Proofers?
+
+445
+01:09:48.310 --> 01:10:06.620
+Guillaume: Sorry, I didn't quite get the question. Kev. I know it's Kev, but that was too fast for me to read. Could we benchmark the performance increase for ZK approvers? Yeah, we can. I mean, someone needs a proof of concept first. I don't really want to make the mistake of writing a ton of code for,
+
+446
+01:10:06.620 --> 01:10:25.190
+Guillaume: for something that's gonna end up in the garbage. But if, yeah, if it's, if it gets, included, I will gladly, re… you know, I would gladly take the code that already exists, adapt it, and, you could have that in, in a week, in less than a week.
+
+447
+01:10:31.880 --> 01:10:32.580
+Tim Beiko: Okay.
+
+448
+01:10:33.100 --> 01:10:34.059
+Tim Beiko: Thank you.
+
+449
+01:10:38.090 --> 01:10:40.959
+Tim Beiko: Okay, then, anything else on these?
+
+450
+01:10:42.120 --> 01:10:45.620
+Tim Beiko: Sorry, on this one, otherwise we can move on,
+
+451
+01:10:45.820 --> 01:10:54.919
+Tim Beiko: Mark had two EIPs that he wanted to bring you up, 7793 and 7843. Mark, are you on the call?
+
+452
+01:10:55.660 --> 01:11:07.789
+Marc: Yeah. Hello. Yeah, I don't have a presentation, but I just wanted to kind of give a quick pitch so that, maybe people can review async, or maybe I can kind of speak a bit more about it if there's interest.
+
+453
+01:11:07.870 --> 01:11:27.050
+Marc: So the first one is EIP7843, and this is the slot num op code. So this is, like, a very simple IP that just, returns a slot number on-chain, and the motivation for this is, kind of making it easier to change the slot length in future.
+
+454
+01:11:27.050 --> 01:11:41.810
+Marc: So currently, you can calculate the current slot by doing some, like, basic maths with a timestamp, but this would break if we change the timestamp in future. And there are other ways that you could potentially do it, like,
+
+455
+01:11:41.830 --> 01:11:53.469
+Marc: kind of proving against the beacon block route and stuff, but then these other ways are quite, kind of, gas expensive, so I think that in reality, people would likely fall back to the kind of seek way that would break.
+
+456
+01:11:53.570 --> 01:12:08.389
+Marc: So the way I see it, this EIP is, like, very simple, kind of low-hanging fruit, that will just kind of give us one less thing to worry about if we're gonna, change the slot length, you know, in maybe in a few hard forks' time.
+
+457
+01:12:08.440 --> 01:12:18.129
+Marc: So yeah, that's quite a small one. And then, so the other one is EIP7793, which is called, Conditional Transactions.
+
+458
+01:12:18.250 --> 01:12:31.929
+Marc: And the motivation behind this is improving support for encrypted mempools. So these are kind of like a cryptographic mechanism, if you don't know, that can give users protection against front-running. So to kind of
+
+459
+01:12:31.930 --> 01:12:45.539
+Marc: quickly most, like, explain how this would work. So, slot X, user submits an encrypted transaction. All of these, encrypted transactions, along with other users, they're all ordered.
+
+460
+01:12:45.600 --> 01:12:57.449
+Marc: And then in slot X plus 1, then the unencrypted transactions are put at the top of the block, and the order should match, the ordering that was kind of determined before.
+
+461
+01:12:57.530 --> 01:13:10.440
+Marc: And so the motivation here is, currently, there's not really a good way of actually enforcing this ordering, so we… we unencrypt it, we have the ordering, but there's not really a good way of actually, you know,
+
+462
+01:13:10.570 --> 01:13:28.419
+Marc: knowing for sure that these transactions actually were placed in the correct order. So what this EIP does is add a new transaction type called a conditional transaction, and essentially this just adds a field where you can specify the index of a transaction where you want it to land in the block.
+
+463
+01:13:28.420 --> 01:13:38.409
+Marc: So I can send my transaction and say, I want this to be at index 1, and it will only be valid, it will only execute if it's actually included at that point.
+
+464
+01:13:38.640 --> 01:13:56.539
+Marc: And so, between that, and also doing some kind of smart contract logic on-chain, then you can enforce the logic of the encrypted mempool. So the one other part of this EIP is there's the new transaction type, conditional transactions, and then there's one new opcode to go along with it, which allows you to actually
+
+465
+01:13:56.560 --> 01:14:16.209
+Marc: if this is a conditional transaction that's being executed, then you can check what the actual index is on-chain in order to enforce it. And so, as I say, this kind of allows encrypted mempools to actually have a lot stronger guarantees against front-running, and allows this logic to actually be enforced.
+
+466
+01:14:16.450 --> 01:14:24.450
+Marc: But yeah, that's what I wanted to talk about, but with this second one, if there's interest, then I can prepare something a little bit more in detail.
+
+467
+01:14:29.320 --> 01:14:36.829
+Tim Beiko: Yeah, Marius has a comment about the amount of work that the conditional transactions would add to the mempool. Do you have a sense for the
+
+468
+01:14:36.950 --> 01:14:39.310
+Tim Beiko: Yeah, implementation complexity there.
+
+469
+01:14:43.720 --> 01:14:47.449
+Marc: I mean, I'll have a think more about that, and kind of…
+
+470
+01:14:47.900 --> 01:14:54.970
+Marc: maybe just discuss with Maris, kind of what he thinks the problem with is there.
+
+471
+01:14:57.160 --> 01:14:57.980
+Tim Beiko: Substant.
+
+472
+01:14:58.780 --> 01:15:00.779
+Tim Beiko: Any other questions or comments?
+
+473
+01:15:08.050 --> 01:15:17.560
+Tim Beiko: Okay, then, last step, POTUS also had two EIPs, which I think are still, waiting to be merged. I'll put the PRs in the chat, but yeah, POTUS, do you want to…
+
+474
+01:15:18.100 --> 01:15:29.489
+potuz: Yeah, this is gonna be really fast, faster than Mark. Hopefully, I… I also won't have a presentation, and I just wanted to keep the ball running, to have the ball rolling. The…
+
+475
+01:15:29.650 --> 01:15:44.720
+potuz: the idea would be to try to separate a little bit more execution from consensus. Today, we have this mechanism to send requests from the execution layer to the consensus layer, and every time that we need to add a new request type.
+
+476
+01:15:44.950 --> 01:16:03.100
+potuz: because we just want to have some new feature being provided on the consensus layer, we need a hard fork that would involve both layers, the EL and the CL. We would need to have a new contract deployed on-chain, we'll need to, like, have a bunch of things, like the EL would need to do different things, and add a new list
+
+477
+01:16:03.100 --> 01:16:06.019
+potuz: In the payload, or in the payload envelope in the future?
+
+478
+01:16:06.340 --> 01:16:17.420
+potuz: When we actually… today, we have this consolidations contract that is already quite generic. The consolidations request, the EL sends us
+
+479
+01:16:17.420 --> 01:16:30.819
+potuz: a signature verified from the withdrawal credential of a public key for a validator, and then a second public key, which is 48 bytes that can be actually interpreted anyways on the CL.
+
+480
+01:16:30.940 --> 01:16:35.839
+potuz: So what this idea of DCIP is, is to just reuse that contract
+
+481
+01:16:36.050 --> 01:16:47.340
+potuz: to pass on the second public key from the same contract, to pass on the last 48 bytes, arbitrary data to the CL to interpret however the CL wants to.
+
+482
+01:16:47.640 --> 01:17:03.489
+potuz: This way, for example, we can just add a feature. I mean, this came from discussions into adding a feature to convert your validator into a builder after EPBS, and to overload already the consolidation request contract. There's tons of trade-offs.
+
+483
+01:17:03.490 --> 01:17:09.330
+potuz: I mean, the good one is that it allows the CL to do a hard work without ever involving the EL.
+
+484
+01:17:09.450 --> 01:17:19.519
+potuz: On the other hand, it would reuse a contract that is expected to be for something with a particular cadence, with a particular number of requests.
+
+485
+01:17:19.520 --> 01:17:32.550
+potuz: per block, and then we might add some new request type that might require many more, for example. There's issues about pricing, there's… there's a bunch of reasons why not to do this, and a bunch of reasons why
+
+486
+01:17:32.950 --> 01:17:38.300
+potuz: we should do this, and I just wanted to have the right people involved in the discussions.
+
+487
+01:17:45.260 --> 01:17:46.840
+Tim Beiko: Thanks. Felix?
+
+488
+01:17:47.420 --> 01:18:00.900
+Felix: Yeah, just as a quick note, so definitely I'm interested in this stuff. I was very interested also in the execution layer requests, and, I think from my end, yeah, it sounds pretty great to make it more generic. At the same time, the,
+
+489
+01:18:01.910 --> 01:18:21.019
+Felix: the mechanism is already very generic, so it's not a… we actually made sure that it's not a lot of work to add in the ELs, like new request types, and also I want to mention that the consolidation contract is not extensible in any way, and neither are any of the other system contracts that we use right now, so…
+
+490
+01:18:21.310 --> 01:18:23.310
+Felix: It will have to be a new contract anyways.
+
+491
+01:18:23.310 --> 01:18:39.139
+potuz: No, no, no, I want to reuse the same contract, actually. So, that's the whole point. Like, if you look at the second PR to actually use it for builder changes, it uses the exact same construct. And on the CL, we process them in the same place, in process consolidation requests.
+
+492
+01:18:39.140 --> 01:18:44.239
+potuz: It's just that we interpret the second 48 bytes in an arbitrary way.
+
+493
+01:18:45.480 --> 01:19:00.809
+Felix: Oh, well, I mean, as long as it's 48 bytes, it's totally fine. I mean, you guys can interpret it however you like, but definitely, like, if you ever want to store a different number of bytes, then it will have to be another contract. That's really my whole point.
+
+494
+01:19:05.270 --> 01:19:08.989
+potuz: Yeah, more than 48 bytes of data would be pretty bad.
+
+495
+01:19:09.460 --> 01:19:10.490
+potuz: For that contract.
+
+496
+01:19:23.130 --> 01:19:26.669
+Tim Beiko: Okay, anything else on, POTUS's VIPs?
+
+497
+01:19:32.340 --> 01:19:35.960
+Tim Beiko: Okay, thanks, Boris. I think this covers everything.
+
+498
+01:19:36.320 --> 01:19:41.859
+Tim Beiko: we… Had on the agenda. Anything else people wanted to discuss before we wrap up?
+
+499
+01:19:47.640 --> 01:19:52.969
+Tim Beiko: Okay, great. Well, we can wrap up here, Jen. Thanks, everyone, and we'll talk to you all soon.
+
+500
+01:19:54.350 --> 01:19:56.000
+Tim Beiko: Have a good… have a good day.
+
+501
+01:19:56.000 --> 01:19:56.720
+potuz: Bye-bye.
+
+502
+01:19:57.190 --> 01:19:58.550
+Marius van der Wijden: Thank you, bye.
+
+503
+01:19:58.550 --> 01:19:59.160
+stokes: Thanks.
+
+504
+01:19:59.730 --> 01:20:00.750
+Fredrik: Thanks, buddy.
+
+505
+01:20:02.370 --> 01:20:03.220
+Carson | STEEL: Thanks, bud.
+

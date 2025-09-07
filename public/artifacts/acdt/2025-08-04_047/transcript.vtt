@@ -1,0 +1,1882 @@
+WEBVTT
+
+1
+00:01:22.500 --> 00:01:23.840
+Justin Traglia: Good morning!
+
+2
+00:01:26.340 --> 00:01:28.230
+Mario Vega: Hello, morning.
+
+3
+00:05:10.390 --> 00:05:18.200
+Mario Vega: Hello, everyone! Let's keep people a couple more minutes before we start. Thank you.
+
+4
+00:06:31.530 --> 00:06:35.069
+Mario Vega: Thinking we can move this room over and get started.
+
+5
+00:06:36.440 --> 00:06:37.459
+Pooja Ranjan: We are, live.
+
+6
+00:06:38.320 --> 00:06:45.190
+Mario Vega: Thank you so much. Hello, everyone. Welcome to Acdt number 47. Today's August 4.th
+
+7
+00:06:45.360 --> 00:06:57.269
+Mario Vega: We have a couple of items in the agenda starting by Fussaka. So yeah, let's just get started. I'm gonna ask, is Barnabas online?
+
+8
+00:06:57.580 --> 00:06:59.080
+Mario Vega: I think so. Hey? Yes.
+
+9
+00:06:59.080 --> 00:06:59.630
+Barnabas: Okay.
+
+10
+00:06:59.940 --> 00:07:02.510
+Mario Vega: Updates on Fuzaka. Devnet 3.
+
+11
+00:07:03.070 --> 00:07:11.120
+Barnabas: Yeah, currently, we have 2 that are struggling on business, 3 nimbus and roadstar.
+
+12
+00:07:11.680 --> 00:07:15.676
+Barnabas: And also captain, seems to be offline right now,
+
+13
+00:07:17.260 --> 00:07:39.700
+Barnabas: we have 90% participation. So every other client seems to be doing pretty well the all the initial issues with the suggested values seem to have been resolved. There's only one more issue on Low Star, where, right after the startup, the values are not set according to the finalized epoch
+
+14
+00:07:40.340 --> 00:07:44.770
+Barnabas: in the Genesis State. But I've notified them about this issue.
+
+15
+00:07:45.965 --> 00:07:49.515
+Barnabas: Maybe someone from Losar can give us an update in.
+
+16
+00:07:49.870 --> 00:08:18.889
+Matthew Keil: We're looking at getting the update for going off the genesis validator set. We're looking at how we can actually implement that. And then the Sync bug, I am still actively working on it. It's been proven to be pretty difficult. We're doing some refactoring in order to just improve the code base, because, it's what's making it challenging in order to actually get it resolved. But we are actively working on it. And we have a good plan to going forward, so we should be should be there soon.
+
+17
+00:08:21.280 --> 00:08:33.209
+Barnabas: Right, and on the number side we seem to have some super nodes that are having hard time getting peers. So most likely they got rate limited or banned by others.
+
+18
+00:08:33.880 --> 00:08:37.059
+Barnabas: Maybe someone from the nimbus team can also speak up.
+
+19
+00:08:52.540 --> 00:08:55.739
+Mario Vega: I don't think it's anyone from from nimus team at the moment.
+
+20
+00:08:55.840 --> 00:09:00.529
+Mario Vega: Maybe you can get back to this after they join.
+
+21
+00:09:01.440 --> 00:09:02.470
+Mario Vega: If they do
+
+22
+00:09:11.320 --> 00:09:18.279
+Mario Vega: anything else on the my, my question is, is vpo activated. Any Vpo activated on the.
+
+23
+00:09:18.280 --> 00:09:30.069
+Barnabas: Yeah, all all 5 have been activated. And we are currently hitting the 20 blobs. Usually, we had some issues regarding the mev relay.
+
+24
+00:09:30.230 --> 00:09:36.210
+Barnabas: There's some transaction propagation issues. And hopefully, we can get sorted.
+
+25
+00:09:36.580 --> 00:09:42.180
+Barnabas: But also the builder workflow seem to be working on every single client fair, which is very good.
+
+26
+00:09:46.720 --> 00:09:49.951
+Mario Vega: Anything that we need to test on the Meb
+
+27
+00:09:50.860 --> 00:09:57.329
+Mario Vega: workflow for Bpo. My, I mean, I guess it was fine on this. But is there any
+
+28
+00:09:57.700 --> 00:10:02.650
+Mario Vega: lesson learned, I guess, from activate the Mepo on on the Mev side?
+
+29
+00:10:02.790 --> 00:10:04.359
+Mario Vega: Or was it like smooth.
+
+30
+00:10:04.810 --> 00:10:13.261
+Barnabas: No, that's that's pretty smooth right now. The major issue on the Mev side is we're trying to create a private pool. And
+
+31
+00:10:13.640 --> 00:10:35.630
+Barnabas: we send the transactions the spammers, sending all the transactions to just the mev relay machine that is running the rest node. And this ras node is unable to share transaction with the R builder. And that's where we are struggling to basically rebroadcast these transactions and include them.
+
+32
+00:10:35.980 --> 00:10:49.020
+Bharath: Yeah, I have a, I like, basically an update on that. I think so, yeah, so basically, like, the our builder uses Eth new pending transactions, the subscription Api to get transactions from the Red Mempool
+
+33
+00:10:49.657 --> 00:10:53.142
+Bharath: and so we've disabled transaction pool
+
+34
+00:10:54.405 --> 00:11:03.284
+Bharath: like local transaction propagation in the red node and be. And you know, today I was just talking to the red team. And it's because of that flag
+
+35
+00:11:03.710 --> 00:11:12.079
+Bharath: transactions are not being streamed. So we currently have like, 2 ways to get around this right now. One is
+
+36
+00:11:12.704 --> 00:11:24.400
+Bharath: yeah. Our builder has implements et Ross and transaction. It implements its own Json. Rpc, server. I. We are like, we can try like sending transactions from spam or to that
+
+37
+00:11:25.090 --> 00:11:37.829
+Bharath: Rpc, to that Rpc server, and that doesn't go through the Red Mem pool. So that's an that's our bill. Their own transaction pool, if we can. That's 1 way yeah. So and the other way is like,
+
+38
+00:11:38.260 --> 00:11:46.060
+Bharath: like, I'm seeing I'm just talking to the red folks like, if they can probably like, just like, remove that flag. And
+
+39
+00:11:46.539 --> 00:12:12.400
+Bharath: we can implement. So that currently doesn't have a flag to disable transaction. Gossip can somehow get that flag and could probably remove the local transaction propagation flag and things should work. So we currently have, like a couple of ways forward. There's some complications with spam, or, I guess, with directly sending it to the builder. But but yeah, like, we've identified like, why, transactions are not getting included in the block with
+
+40
+00:12:13.040 --> 00:12:17.269
+Bharath: when we send only to the Mev relay machine as Barnabas mentioned.
+
+41
+00:12:17.644 --> 00:12:27.049
+Bharath: Yeah, I'm currently like exploring, like, what are the best ways forward? I think we have like 2 ways, and I'll I'll I'll see like I'll give an update like when it when we finalized on something.
+
+42
+00:12:29.030 --> 00:12:29.710
+Mario Vega: Everyone.
+
+43
+00:12:29.710 --> 00:12:39.629
+Roman: Yeah, quick question. You said that rath has a flag to disable the expo local propagation. You said that it's not working.
+
+44
+00:12:40.030 --> 00:12:42.121
+Bharath: No, no, that's working that's working
+
+45
+00:12:42.470 --> 00:12:43.040
+Roman: Okay.
+
+46
+00:12:43.280 --> 00:12:47.157
+Bharath: I've put in the Devnet. Mav. Tg, chat. There's another
+
+47
+00:12:48.420 --> 00:12:54.650
+Bharath: there's a flag for which you there's implemented for optimism to disable transaction gossip
+
+48
+00:12:55.418 --> 00:12:59.809
+Bharath: in the peer to peer network, which is not, which is not there for the red.
+
+49
+00:13:00.311 --> 00:13:11.890
+Bharath: Like the ethereum. l. 1 el that flag. Maybe, like you can have that flag. But yeah, the transaction pool flag to disable local transaction propagation that was working fine like.
+
+50
+00:13:11.890 --> 00:13:12.620
+Roman: Okay.
+
+51
+00:13:13.358 --> 00:13:21.450
+Bharath: You, we can follow like Roman, you can follow the the chat in the Devnet Mab testing. Tg, I think you have context there, like.
+
+52
+00:13:30.100 --> 00:13:30.930
+Mario Vega: Thank you.
+
+53
+00:13:31.522 --> 00:13:35.950
+Mario Vega: Any other findings on Defnet 3. From any other clients.
+
+54
+00:13:39.300 --> 00:13:42.750
+Mario Vega: debugging issues or or similar?
+
+55
+00:13:55.800 --> 00:14:01.130
+Mario Vega: Alright, was was that everything that you wanted to share Barnabas, or was there anything else that you want to touch upon?
+
+56
+00:14:01.613 --> 00:14:05.869
+Barnabas: May. Maybe Agnes can give us an update now from Nimbus as well.
+
+57
+00:14:06.180 --> 00:14:07.459
+Barnabas: cause he was just joining.
+
+58
+00:14:07.940 --> 00:14:08.530
+Mario Vega: Thank you.
+
+59
+00:14:09.720 --> 00:14:14.249
+Agnish Ghosh: Hi, so we had a couple of issues. Last week.
+
+60
+00:14:14.420 --> 00:14:19.806
+Agnish Ghosh: One was, I think, each das guardian
+
+61
+00:14:20.640 --> 00:14:24.999
+Agnish Ghosh: we were having a custody column mismatch.
+
+62
+00:14:25.150 --> 00:14:32.770
+Agnish Ghosh: So whenever it does guardian requested us with all columns, if we were a full node, we would return with
+
+63
+00:14:33.120 --> 00:14:35.180
+Agnish Ghosh: our custody.
+
+64
+00:14:35.310 --> 00:14:41.039
+Agnish Ghosh: The columns we would custody. But surprisingly, somehow, the column indices don't match.
+
+65
+00:14:42.070 --> 00:14:48.299
+Agnish Ghosh: I think the indices don't match after a couple of validator custody updates.
+
+66
+00:14:49.147 --> 00:14:59.660
+Agnish Ghosh: We'll just check into our code. If there is some hash function stuff going on such that the indices are being inaccurate after
+
+67
+00:14:59.860 --> 00:15:05.730
+Agnish Ghosh: couple of epochs, because I think we do pass ef test vectors. So
+
+68
+00:15:06.020 --> 00:15:15.979
+Agnish Ghosh: so I'm trying to looking, I'm trying to look into that apart from that. Yes, yeah. The the earliest available slot
+
+69
+00:15:16.742 --> 00:15:21.567
+Agnish Ghosh: it was was not moving. So right now that thing
+
+70
+00:15:22.460 --> 00:15:26.050
+Agnish Ghosh: looks fixed to me. We have a build
+
+71
+00:15:26.360 --> 00:15:30.999
+Agnish Ghosh: triggered. I think it should be picked up in Devnet 3 in a while
+
+72
+00:15:31.750 --> 00:15:49.769
+Agnish Ghosh: and general updates. We had mev issues they are fixed now. So we, I think Bharat can confirm, or somebody maybe Barnabas can confirm. Nimbus is. I think it. They are proposing Mev Block.
+
+73
+00:15:51.760 --> 00:15:53.752
+Agnish Ghosh: Yeah. So what else?
+
+74
+00:15:55.640 --> 00:16:01.469
+Agnish Ghosh: I don't think anything else I mean whatever. Oh, yeah, okay. So
+
+75
+00:16:02.040 --> 00:16:07.467
+Agnish Ghosh: there's been an issue being raised in discord where
+
+76
+00:16:08.190 --> 00:16:16.505
+Agnish Ghosh: members aragon one and get one are having a tough time to sync and and of course,
+
+77
+00:16:17.330 --> 00:16:24.369
+Agnish Ghosh: we are. We are basically being asked, why are we proposing? Even
+
+78
+00:16:24.640 --> 00:16:27.099
+Agnish Ghosh: when we are not caught up to the head.
+
+79
+00:16:27.540 --> 00:16:33.549
+Agnish Ghosh: But I think that's like that's something we have by design. If we are short range thinking, and we are like not
+
+80
+00:16:33.750 --> 00:16:37.290
+Agnish Ghosh: 2 to 3 parks away. We don't turn off validator duties.
+
+81
+00:16:39.180 --> 00:16:40.170
+Agnish Ghosh: Yeah.
+
+82
+00:16:41.050 --> 00:16:52.790
+Agnish Ghosh: So if we are unable to sync, it's definitely a da or a peering issue, either, we are not getting all the required columns on time, or we are not being able to peer. Well. So
+
+83
+00:16:53.030 --> 00:17:01.980
+Agnish Ghosh: I'm currently looking into that numbers. Aragon one get one. They have some sort of peering issues. Yeah.
+
+84
+00:17:02.890 --> 00:17:09.110
+Agnish Ghosh: so yeah, nothing else. Nothing else from our side. Yeah. Overall. I think there were a couple
+
+85
+00:17:09.270 --> 00:17:15.580
+Agnish Ghosh: couple of peering issues. Mev issues indefinite 3. They're all fixed now.
+
+86
+00:17:15.930 --> 00:17:19.697
+Agnish Ghosh: And yeah, hopefully, I'll fix
+
+87
+00:17:20.319 --> 00:17:27.980
+Agnish Ghosh: the das guardian thing. By next couple of days, and what else?
+
+88
+00:17:28.770 --> 00:17:31.910
+Agnish Ghosh: I think there is a there is a crash Barnabas sent me
+
+89
+00:17:32.467 --> 00:17:37.901
+Agnish Ghosh: it was a seg fault. It's happening in a very specific scenario.
+
+90
+00:17:38.760 --> 00:17:41.329
+Agnish Ghosh: I suspect it's happening because of
+
+91
+00:17:41.570 --> 00:17:51.109
+Agnish Ghosh: indicating the earliest available slot incorrectly or something of that thought. I'm currently looking into that. So yeah, nothing else from us. Yeah, that's it.
+
+92
+00:17:52.140 --> 00:17:53.959
+Mario Vega: Thank you. Mark.
+
+93
+00:17:54.830 --> 00:17:55.420
+marek: Yeah.
+
+94
+00:17:55.530 --> 00:18:14.519
+marek: I just want to mention that. Never mind has an early integration with our builders. So it would be great if we can try this as well. And by early, I mean, of course, it does require more testing, and so on. And it is not being run on production.
+
+95
+00:18:15.223 --> 00:18:38.839
+marek: And also it's like integration with State. So never mind, can work with our builder as a State provider, but it still uses our evm. Us. For execution. So it's it's only replaces the state. Yeah. But just wanted to mention, because I heard some discussion about
+
+96
+00:18:39.424 --> 00:18:44.549
+marek: our builder and this kind of stuff let me share the link.
+
+97
+00:19:06.180 --> 00:19:08.299
+marek: Alright, that's all from my side.
+
+98
+00:19:09.240 --> 00:19:21.410
+marek: Is it fully ready? So, as I, as I mentioned the state is is ready, of course. We would appreciate more testing here and then that would be great here.
+
+99
+00:19:21.810 --> 00:19:25.590
+marek: And but Evm part is not being done.
+
+100
+00:19:29.140 --> 00:19:29.910
+Mario Vega: Thank you.
+
+101
+00:19:31.790 --> 00:19:36.300
+Mario Vega: Yeah. Any other updates from anyone else on any any team?
+
+102
+00:19:45.150 --> 00:19:51.619
+Mario Vega: If not. Yeah. Thanks. Thanks for the updates. And it seems like we're doing fine on the military. Then.
+
+103
+00:19:54.230 --> 00:20:02.570
+Mario Vega: What's the follow up plan here? Do you know, Barnabas, do we plan to keep definitely running? And what's the next steps? Or
+
+104
+00:20:04.990 --> 00:20:08.544
+Barnabas: So ideally, we want to have Nimbus and North Star.
+
+105
+00:20:09.120 --> 00:20:19.090
+Barnabas: basically bug free before we go on to the next step. And we have 2 more decisions to make today. And based on that, we're gonna decide. If you want them at 4 or not.
+
+106
+00:20:22.790 --> 00:20:33.900
+Mario Vega: Perfect awesome. Yeah? All right. Yeah, then, let's just move on to the next discussion topic, which is related to Eip 7,825, the transaction gas limit gap
+
+107
+00:20:34.586 --> 00:20:37.120
+Mario Vega: there was a discussion on
+
+108
+00:20:37.220 --> 00:20:58.529
+Mario Vega: last Thursday about rolling back the gap well up, rolling up the limit to 30 million instead of the 16 million that we have. Currently, I think there was an update from the person that shared this on act, and whose major concern was raised on Acd. Sorry on icde last week.
+
+109
+00:20:58.930 --> 00:21:03.330
+Mario Vega: and I can share that response here. If this person is is in the call. Currently
+
+110
+00:21:04.860 --> 00:21:13.619
+Mario Vega: but otherwise it seems like the main concern is not really concerned from from the read of the text.
+
+111
+00:21:14.610 --> 00:21:17.519
+Mario Vega: is there anyone here that can elaborate on this?
+
+112
+00:21:19.210 --> 00:21:21.330
+Mario Vega: I don't think I don't think this person is on the call.
+
+113
+00:21:23.360 --> 00:21:26.520
+Toni Wahrstätter: Yeah, maybe I can. I can stay a little.
+
+114
+00:21:26.520 --> 00:21:26.900
+Mario Vega: Okay.
+
+115
+00:21:28.342 --> 00:21:38.949
+Toni Wahrstätter: Yeah, it was a concern that there might be some apps that might be affected. For example, very complex defi transactions that go through many different pools.
+
+116
+00:21:39.240 --> 00:21:42.259
+Toni Wahrstätter: and Duncan brought it up, and that of course, it's
+
+117
+00:21:42.520 --> 00:21:50.080
+Toni Wahrstätter: it could be a backwards compatibility issues. But it seems like, after waiting. Yeah, the trade-offs.
+
+118
+00:21:50.180 --> 00:21:55.090
+Toni Wahrstätter: We can just keep it as is as we have it on Defnet 3.
+
+119
+00:21:58.630 --> 00:21:59.955
+Mario Vega: Sounds perfect.
+
+120
+00:22:01.470 --> 00:22:07.719
+Mario Vega: Any other opinion on on this matter, or this is gonna be like a very short discussion?
+
+121
+00:22:14.160 --> 00:22:20.040
+Mario Vega: Alright, yeah, if nothing else. I think this is the way to go. We keep the limit in 16 million.
+
+122
+00:22:20.750 --> 00:22:25.589
+Mario Vega: and which is great news for testing, because we don't have to perform. The analysis of the testing
+
+123
+00:22:25.700 --> 00:22:29.960
+Mario Vega: back doors are breaking again. So yeah, great thanks.
+
+124
+00:22:32.370 --> 00:22:39.710
+Mario Vega: All right. Next topic is, this is a recurring topic on gas limit testing updates.
+
+125
+00:22:42.750 --> 00:22:51.520
+Mario Vega: I think Barry is the main person to reach out to this. Or do you have any updates, Barnabas, that you want to share about Gatlin testing, or there's nothing to discuss. Maybe today.
+
+126
+00:22:52.108 --> 00:22:57.179
+Barnabas: Not from my point of view. No. And I think part is available today.
+
+127
+00:22:57.560 --> 00:22:58.870
+Mario Vega: Alright, no worries.
+
+128
+00:22:58.870 --> 00:22:59.489
+Kamil Chodoła: Only thing.
+
+129
+00:22:59.490 --> 00:23:00.030
+Mario Vega: Come in. Yeah.
+
+130
+00:23:00.030 --> 00:23:25.859
+Kamil Chodoła: I can chime in, yeah. Hi, Albert, Hi, everyone. So yeah, basically, we are still trying to achieve the stateful testing being capable. But we are tackling that from various perspectives, and we still need to verify few things. Marching also is trying to do some work around our test. Generators in gas benchmarks to see if this will be any more helpful and will speed up the development.
+
+131
+00:23:26.120 --> 00:23:41.679
+Kamil Chodoła: In meantime, esta integration working with you guys to to make it to runnable on our infrastructure, and I I believe I am almost done with that, like I need maybe one or 2 more days just facing some unexpected issues with that.
+
+132
+00:23:42.140 --> 00:23:53.469
+Kamil Chodoła: And in the meantime Pari was discussing with with all of the teams, checking our readiness, maybe for any other gas limit upgrade in future.
+
+133
+00:23:53.600 --> 00:23:59.850
+Kamil Chodoła: So we have another version of gaff checking. If modex scenarios are being improved.
+
+134
+00:24:00.280 --> 00:24:12.949
+Kamil Chodoła: and in general I would say yes. A lot of modex scenarios are even twice or 3 times better than it was before, but still the worst cases are not being properly attacked. Maybe there is some
+
+135
+00:24:13.330 --> 00:24:28.309
+Kamil Chodoła: some tweaks which need to be added on the, on the adjustment made on Gef. Plus there are some regressions. So there are scenarios which are performing 50% worse. Comparing to the to the previous results. So, yeah.
+
+136
+00:24:28.700 --> 00:24:29.470
+Kamil Chodoła: so
+
+137
+00:24:29.680 --> 00:24:44.450
+Kamil Chodoła: this would be like the major concern about any further increase. But if this will came up, being good, which is, looks like it is right now, but just needs few more tweaks. Then we can consider doing kind of thing forward.
+
+138
+00:24:44.750 --> 00:24:50.689
+Kamil Chodoła: But still, also, the stateful scenarios are really really needed. And also we have a bloatnet which
+
+139
+00:24:50.870 --> 00:24:58.040
+Kamil Chodoła: have already stayed on 2 x 2 x size, and we are preparing for some test cases for some testing.
+
+140
+00:24:58.320 --> 00:25:01.130
+Kamil Chodoła: Yeah, so hopefully, some results will be this week.
+
+141
+00:25:02.380 --> 00:25:17.169
+Mario Vega: I can also update on the East side. So what we propose on doing there on the stateful testing is so we have the execute command that we use to run our test in in in running devnets.
+
+142
+00:25:17.230 --> 00:25:40.220
+Mario Vega: And the idea here is that we prepare some test cases where we rely on a contract that has a very large storage or state size to be already present in the chain, which I think is the case for Blotnet, and a lot of the contracts are in there. So basically, it's just a matter of updating our repository to receive some flag.
+
+143
+00:25:40.220 --> 00:25:41.530
+milen | Erigon: To point.
+
+144
+00:25:41.530 --> 00:25:53.999
+Mario Vega: To point it to to the contracts that are already existing there. So it's gonna be. It's not a trivial change, but it's also not not not breaking. But yeah, we'll continue working on that. And and we can keep you updated.
+
+145
+00:25:54.130 --> 00:25:55.660
+Mario Vega: Marshine brick. Yeah.
+
+146
+00:25:57.668 --> 00:26:17.411
+Marcin Sobczak: Hi, I would like to say that we are developing one more tour tool to to check the potential issues with modex repricing. It's Rpc. Endpoint price block. But with custom spec. So what we are doing
+
+147
+00:26:18.410 --> 00:26:34.019
+Marcin Sobczak: we have a script which is getting a trace from like current chain. So on, Petra and another one doing the same tries, but with Fussaka spec.
+
+148
+00:26:34.100 --> 00:26:53.429
+Marcin Sobczak: and we are comparing receipts like. The difference in gas usage is expected but we are trying to to check if there will be some other changes like broken contracts, etc.
+
+149
+00:26:53.880 --> 00:27:10.999
+Marcin Sobczak: for now it's I think, like proof of concept. It's it's working. But we didn't perform the actual test yet. But yes, we are planning to do it soon. So we'll keep you updated.
+
+150
+00:27:13.350 --> 00:27:14.580
+Mario Vega: Thank you. Men.
+
+151
+00:27:15.513 --> 00:27:19.619
+Ben Adams: Would it be 60 million? The next level that we'd consider.
+
+152
+00:27:24.140 --> 00:27:33.419
+Kamil Chodoła: I believe if we'll consider anything like 60 should be the next step. But we need to perform a lot of testing around that. But yeah.
+
+153
+00:27:34.710 --> 00:27:37.409
+Kamil Chodoła: small but still significant. Jump.
+
+154
+00:27:42.150 --> 00:27:52.760
+Mario Vega: Yeah, I think we can prepare testing for next couple of weeks and gather some benchmarks before continuing our decision.
+
+155
+00:27:53.956 --> 00:27:56.983
+Mario Vega: Is there anything that you need from the tests
+
+156
+00:27:58.190 --> 00:28:02.730
+Mario Vega: side, Camille, a new release? Or how are you looking? There.
+
+157
+00:28:03.210 --> 00:28:23.029
+Kamil Chodoła: As I mentioned on some of the Tg channels, is like new release with new tests. Which you you added Louis added, around modex as well, plus change of the gas limits. But this is also like being discussed right now on on how many of those we need. But yeah, to unify the it a little bit more.
+
+158
+00:28:23.640 --> 00:28:37.720
+Kamil Chodoła: And yeah, basically the recording stuff around genesis files which I'm fighting right now. But yeah, after after being able to run those tests on our infra. I will let you know if there is anything else to be improved.
+
+159
+00:28:37.830 --> 00:28:41.640
+Kamil Chodoła: And then from the statefuls perspective. Yeah, we need to
+
+160
+00:28:41.750 --> 00:28:56.349
+Kamil Chodoła: think a little bit more around that, and hope to help to make it. The workaround, like execute the capability, is a good workaround, for now, which probably we can use, but will be very time consuming to to execute everything properly.
+
+161
+00:28:56.920 --> 00:28:58.080
+Kamil Chodoła: But yeah.
+
+162
+00:28:58.620 --> 00:29:12.700
+Kamil Chodoła: we just need to figure out we, and also the tool which Martin is trying to revive and adjust, to, to be able to generate on top of existing state and the custom Genesis files would be also helpful there. But yeah, we we are
+
+163
+00:29:13.300 --> 00:29:14.640
+Kamil Chodoła: fighting with that right now.
+
+164
+00:29:15.290 --> 00:29:19.759
+Kamil Chodoła: So whenever there will be anything to to to help us with, I will let you know.
+
+165
+00:29:20.810 --> 00:29:34.420
+Mario Vega: Excellent. Thank you so much. Great and just bringing this up, surfacing this this message from Barry. He kind of speed right now, but it seems like the get team
+
+166
+00:29:34.590 --> 00:29:39.530
+Mario Vega: would take some time to upspring any of the changes if they decide.
+
+167
+00:29:43.700 --> 00:29:47.679
+Mario Vega: Is there anyone from the get team here that can
+
+168
+00:29:48.000 --> 00:29:50.090
+Mario Vega: a little bit more context to that. Or
+
+169
+00:29:50.470 --> 00:29:52.549
+Mario Vega: if not, that's not a problem.
+
+170
+00:29:57.690 --> 00:29:59.310
+Mario Vega: I don't see anyone from Geth.
+
+171
+00:29:59.450 --> 00:30:02.590
+Mario Vega: All right. I think we can just follow this Async.
+
+172
+00:30:02.920 --> 00:30:03.930
+Mario Vega: Alright cool.
+
+173
+00:30:06.210 --> 00:30:11.600
+Mario Vega: All right. I think. We can just pass until on on the next
+
+174
+00:30:12.360 --> 00:30:32.909
+Mario Vega: Next discussion topic, I'll leave the intervals per slot discussion topic at the end. We can just jump into right into the eips, 79, 51 benchmarking results. These were shared from the Bessu team. Anyone from the Bessu team that would like to expand on this
+
+175
+00:30:33.400 --> 00:30:34.450
+Mario Vega: this topic.
+
+176
+00:30:37.890 --> 00:30:46.110
+Justin Florentine (Besu): Hey there! Unfortunately, the folks that are curious about that are in the aus time time zone.
+
+177
+00:30:48.040 --> 00:30:55.670
+Justin Florentine (Besu): This is in reference to the gas improvement that we found with the r. 1 curve. Is that correct?
+
+178
+00:30:55.840 --> 00:30:57.220
+Mario Vega: Yeah. Exactly. Yep.
+
+179
+00:30:57.960 --> 00:30:58.650
+Justin Florentine (Besu): Yeah,
+
+180
+00:31:00.550 --> 00:31:06.299
+Justin Florentine (Besu): I don't really have anything in addition to add other than the notes that have been posted. Sorry for that.
+
+181
+00:31:07.610 --> 00:31:13.699
+Mario Vega: Yeah, no worries, but it seems to me I I've read through the comment, and it seems to me that it's
+
+182
+00:31:14.140 --> 00:31:20.000
+Mario Vega: It is not a concern of how the the new precompile is.
+
+183
+00:31:21.139 --> 00:31:28.490
+Mario Vega: Is is what's the cost on it? So it is not. It doesn't seem that it's a concern. Actually, it seems like the
+
+184
+00:31:30.250 --> 00:31:39.539
+Mario Vega: The cost is is too high, maybe from the new precompile. But I think that's not something that we're willing to discuss today. Maybe.
+
+185
+00:31:41.467 --> 00:31:44.729
+Mario Vega: Yeah, if there's nothing else on this topic.
+
+186
+00:31:45.497 --> 00:31:47.460
+Mario Vega: Maybe we can continue to sync.
+
+187
+00:31:49.210 --> 00:31:51.259
+Justin Florentine (Besu): I think that would be fine. Thank you.
+
+188
+00:31:52.090 --> 00:32:02.939
+Mario Vega: Yeah, alright. Thank you so much. Yeah. With that, I think we can just jump into the intervals per slot. Justin, do you want to. Take it up.
+
+189
+00:32:02.940 --> 00:32:09.730
+Justin Traglia: Sure. Hello, everyone. I would just like to raise awareness for this. Pr, I just shared the link.
+
+190
+00:32:10.729 --> 00:32:25.569
+Justin Traglia: It essentially defines explicit slot component times in milliseconds as a percentage of the slot duration time and as a configuration variable instead of a preset like youth, Panda Ops requested, and potus
+
+191
+00:32:26.372 --> 00:32:30.610
+Justin Traglia: I'm not asking for us to decide on this today, but I would like to
+
+192
+00:32:31.000 --> 00:32:36.969
+Justin Traglia: make a decision, maybe at Acdc. Whether or not to merge it sooner than
+
+193
+00:32:37.730 --> 00:32:51.710
+Justin Traglia: like 3 months, 3 or 4 months from now. So that we can start working on other specifications. It would be beneficial for epbs like Efp, 7, 7, 3, 2, and 7, 7, 8, 2 shorter slot times.
+
+194
+00:32:54.440 --> 00:33:02.800
+Justin Traglia: it wouldn't actually change anything. It would just add additional configuration values or sorry. Yeah, additional configuration values.
+
+195
+00:33:03.210 --> 00:33:08.429
+Justin Traglia: but no substantial changes. It would deprecate intervals per slot.
+
+196
+00:33:08.630 --> 00:33:13.340
+Justin Traglia: But once again, you don't have to stop using that immediately, so
+
+197
+00:33:13.520 --> 00:33:16.280
+Justin Traglia: I see no reason why we couldn't merge it now.
+
+198
+00:33:17.410 --> 00:33:18.260
+Justin Traglia: Fucking down.
+
+199
+00:33:20.830 --> 00:33:26.440
+Mario Vega: I think the main question here is whether this breaks Fussaka or changes anything in Fussaka.
+
+200
+00:33:27.430 --> 00:33:33.130
+Justin Traglia: It really shouldn't. No, I mean, clients might have to update
+
+201
+00:33:33.350 --> 00:33:39.759
+Justin Traglia: code to handle the new configuration values, but they could essentially ignore them until Clamsterdam.
+
+202
+00:33:39.900 --> 00:33:42.060
+Justin Traglia: or until we start working on claim studio.
+
+203
+00:33:43.690 --> 00:33:45.103
+Justin Traglia: Yeah. Shouldn't
+
+204
+00:33:51.843 --> 00:33:54.907
+Justin Traglia: do clients have any opinions on this or
+
+205
+00:33:55.610 --> 00:33:58.369
+Justin Traglia: maybe just look into it and discuss it later.
+
+206
+00:33:58.680 --> 00:34:00.300
+Justin Traglia: Please leave reviews.
+
+207
+00:34:03.535 --> 00:34:11.199
+Barnabas: There was another question regarding possibly moving some values from config to presets especially the number of columns. I think.
+
+208
+00:34:12.780 --> 00:34:14.679
+Barnabas: Yeah, this is.
+
+209
+00:34:15.400 --> 00:34:16.399
+Justin Traglia: That is a separate issue.
+
+210
+00:34:16.400 --> 00:34:30.649
+Barnabas: But yeah, yeah, it's a separate issue. But I'm I'm just curious. If we should actually take a look at all the different config values. And consider moving some of them to preset, because I feel like there's more than just one.
+
+211
+00:34:31.050 --> 00:34:32.170
+Barnabas: Something in the.
+
+212
+00:34:33.760 --> 00:34:38.870
+Justin Traglia: Yeah, a number of columns could be a preset, probably should be.
+
+213
+00:34:39.090 --> 00:34:44.073
+Justin Traglia: It also doesn't actually have to exist, since it will be all it'll always be the same as
+
+214
+00:34:44.730 --> 00:34:49.600
+Justin Traglia: Salisberg's, tended Bob, but it is a nicer, variable name.
+
+215
+00:34:52.460 --> 00:34:55.929
+Barnabas: Yeah, then maybe we can just get rid of the unused variables.
+
+216
+00:34:56.310 --> 00:34:58.729
+Barnabas: It would also just clear things up a bit.
+
+217
+00:34:59.400 --> 00:35:00.060
+Justin Traglia: Yep.
+
+218
+00:35:06.490 --> 00:35:09.690
+Mario Vega: And Pawan mentions in the chat that he will review it soon.
+
+219
+00:35:09.890 --> 00:35:11.570
+Mario Vega: but it looks good at 1st glance.
+
+220
+00:35:12.240 --> 00:35:12.899
+Justin Traglia: Thank you.
+
+221
+00:35:12.900 --> 00:35:21.319
+Mario Vega: Yeah, if the rest of the teams can just give it a look. And I guess Acdc is the way to continue this conversation and see if it gets merged.
+
+222
+00:35:21.730 --> 00:35:22.770
+Justin Traglia: Yes, that's right.
+
+223
+00:35:24.900 --> 00:35:25.640
+Mario Vega: Cool.
+
+224
+00:35:26.380 --> 00:35:28.246
+Mario Vega: Yeah, thank you very much.
+
+225
+00:35:29.880 --> 00:35:38.618
+Mario Vega: alright. I think that's all of the topics we had to today. So I can open up the floor to any other points or discussions that we have.
+
+226
+00:35:39.250 --> 00:35:40.532
+Barnabas: There's 1 more
+
+227
+00:35:40.960 --> 00:35:41.420
+Mario Vega: Yeah.
+
+228
+00:35:41.420 --> 00:35:42.120
+Justin Traglia: Yeah.
+
+229
+00:35:42.120 --> 00:35:44.610
+Barnabas: Regarding 4, 4, 7, 7.
+
+230
+00:35:50.160 --> 00:35:52.850
+Mario Vega: Is this related to sorry.
+
+231
+00:35:53.600 --> 00:36:03.010
+Barnabas: This is related to Futaka. Basically the the proposal was from Lido to increase the balance for additional custody groups.
+
+232
+00:36:03.120 --> 00:36:11.770
+Barnabas: So basically, every single 128 Eth. Would increase the number of columns that the validator would need to custody, and
+
+233
+00:36:12.010 --> 00:36:19.340
+Barnabas: they push the decision making to today, instead of making a decision on Thursday, because it was very last minute on Thursday.
+
+234
+00:36:26.490 --> 00:36:29.090
+Ben Adams: And this would need a new devnet.
+
+235
+00:36:40.765 --> 00:36:44.900
+Justin Traglia: Personally, I'm against this change. I think we just keep it. How it is currently.
+
+236
+00:36:52.480 --> 00:37:04.259
+Mario Vega: Yeah, I think this is the only feature that requires a new right. It was before this call. It was this, and also 78, 25. But now it's just reduced to this only change for a new.
+
+237
+00:37:04.420 --> 00:37:08.429
+Mario Vega: So with that in mind, with that in mind, do we?
+
+238
+00:37:09.310 --> 00:37:11.229
+Mario Vega: Is anybody Bro.
+
+239
+00:37:11.420 --> 00:37:15.280
+Mario Vega: Doing this at this call the ones to raise the the point.
+
+240
+00:37:25.870 --> 00:37:31.470
+Barnabas: There was lots of support from different cl devs. So that's why I thought
+
+241
+00:37:31.700 --> 00:37:33.609
+Barnabas: this should probably bring it up again.
+
+242
+00:37:36.670 --> 00:37:37.823
+Mario Vega: I see
+
+243
+00:37:39.730 --> 00:37:51.199
+Mario Vega: I think the moment is now, because otherwise, if we delay this further, I don't think it's gonna be any any good to the development processing. It's already too late. So either we.
+
+244
+00:37:52.230 --> 00:37:55.820
+Mario Vega: either someone from the Cl that is supporting this
+
+245
+00:37:56.000 --> 00:37:59.650
+Mario Vega: speaks up now, or we simply just reject it?
+
+246
+00:38:00.860 --> 00:38:05.110
+Mario Vega: If so, if there's anyone in this call that wants to support this, please speak up now.
+
+247
+00:38:17.710 --> 00:38:19.919
+Csaba Kiraly: I just just wanted to say the time
+
+248
+00:38:20.170 --> 00:38:23.930
+Csaba Kiraly: I'm against the change, because it's so. The this is last minute.
+
+249
+00:38:24.660 --> 00:38:35.360
+Csaba Kiraly: because it we might with Bpo scale to a high number, and we think that with the Bpos we will not have a chance to do it later, so we would have to do it. Now.
+
+250
+00:38:36.410 --> 00:38:40.590
+Csaba Kiraly: my take on. This is that if if we, if we will need these kind of changes.
+
+251
+00:38:40.920 --> 00:38:46.300
+Csaba Kiraly: then we should do this together with the Bpos, and not quickly now.
+
+252
+00:38:46.900 --> 00:38:50.810
+Csaba Kiraly: So that's why I would, I would say, don't do it now, and.
+
+253
+00:38:51.920 --> 00:38:56.890
+Barnabas: I'm actually super against doing that. I wouldn't want to include anything else in Bps.
+
+254
+00:39:02.260 --> 00:39:09.059
+Mario Vega: Yeah, if we add this, it would be like a new fork. Actually, I don't. I don't see how it could be. Only vpo.
+
+255
+00:39:10.180 --> 00:39:15.059
+Csaba Kiraly: Yeah, it wouldn't be proposed, because not. It's not not a broad parameter. So by definition, it's not a Bpo. Then
+
+256
+00:39:15.570 --> 00:39:19.649
+Csaba Kiraly: I'm just saying I'm I'm skeptical about Bpos being Bpos.
+
+257
+00:39:21.680 --> 00:39:27.109
+Csaba Kiraly: For because of these and and and the other things that will come up similar to this.
+
+258
+00:39:28.480 --> 00:39:37.699
+Barnabas: I think if we say that we're gonna reject this from Saka, we might consider it for Amsterdam, but not before that.
+
+259
+00:39:39.050 --> 00:39:43.760
+Barnabas: I wouldn't consider any substantial code change for any Bpos.
+
+260
+00:39:46.070 --> 00:39:50.157
+Mario Vega: Yeah, I think that's the general sentiment right now. I don't see anyone pro
+
+261
+00:39:50.610 --> 00:39:51.590
+Mario Vega: Agnish.
+
+262
+00:39:51.840 --> 00:39:53.329
+Mario Vega: First, st Anisha nico.
+
+263
+00:39:53.730 --> 00:40:14.259
+Agnish Ghosh: Yeah. So I'm against the change. Simply because I think if we raise it to 1, 28, the number of super nodes decrease, and the number of nodes with a variable dynamic da of sorts which would keep swaying based on attached validators. That thing is tricky, usually like
+
+264
+00:40:14.850 --> 00:40:21.513
+Agnish Ghosh: on on a Cl implementation level. I have discussed this with multiple people, Jimmy. Manu
+
+265
+00:40:22.120 --> 00:40:26.920
+Agnish Ghosh: It's tricky for all of us to sort of
+
+266
+00:40:27.030 --> 00:40:38.219
+Agnish Ghosh: declare da and keep blocks resolved unresolved across various stores. Based on the dynamic da. I have. I have probably raised concerns about this
+
+267
+00:40:38.320 --> 00:40:49.780
+Agnish Ghosh: with Francesco and a lot of other people over the last couple of weeks. I know that. Okay, we have this design and this design is there for a reason. But
+
+268
+00:40:50.460 --> 00:40:53.669
+Agnish Ghosh: I would definitely want to see more super nods.
+
+269
+00:40:53.960 --> 00:40:56.140
+Agnish Ghosh: Hence I'm against this change.
+
+270
+00:40:56.250 --> 00:41:03.650
+Agnish Ghosh: I I just don't want more nodes with this swaying, dynamic da condition.
+
+271
+00:41:07.610 --> 00:41:08.939
+Mario Vega: Got it. Nico.
+
+272
+00:41:10.286 --> 00:41:21.399
+nflaig: Yeah. Just want to bring up that. Because I saw in Glamsterdam we could change the value. But I think, since we cannot reduce the Cgc. I think this would not be possible right.
+
+273
+00:41:21.960 --> 00:41:27.099
+nflaig: because the existing notes would just keep the previous custody they had.
+
+274
+00:41:28.173 --> 00:41:36.080
+nflaig: But I'm also not strongly for this change. I think it's a bit late, and I guess, too, too little analysis is done
+
+275
+00:41:36.580 --> 00:41:38.140
+nflaig: to do this. Now I think.
+
+276
+00:41:43.700 --> 00:41:44.490
+Mario Vega: Thank you.
+
+277
+00:41:45.170 --> 00:41:55.319
+Mario Vega: Alright. Yeah. It seems like the general consensus is that we do not go forward this change so that would mean that we wouldn't have them before.
+
+278
+00:41:55.870 --> 00:42:08.750
+Mario Vega: That means that just going back to the point that was raised earlier by Barnabas, we only need nimburs and load. Start to be bug free before continuing. So I guess instead of any changes, we just focus on fixing
+
+279
+00:42:09.010 --> 00:42:17.069
+Mario Vega: box this week, and we follow up next week with the next steps on this.
+
+280
+00:42:17.870 --> 00:42:18.740
+Mario Vega: All right.
+
+281
+00:42:20.077 --> 00:42:22.522
+Mario Vega: Yeah, thank you. Thank you. Everyone.
+
+282
+00:42:24.091 --> 00:42:28.160
+Mario Vega: Sunnyside lives. They wanted to share something.
+
+283
+00:42:29.630 --> 00:42:33.340
+Mario Vega: Is anyone from Sunnyside lives here that wants to present.
+
+284
+00:42:33.830 --> 00:42:40.009
+Jae Hee Lee: Yeah. Hi, so I think I shared the link a while ago. So I will just reshare it.
+
+285
+00:42:40.836 --> 00:42:47.073
+Jae Hee Lee: Yeah, we've just released a new report, which contains mainly on
+
+286
+00:42:49.601 --> 00:42:57.440
+Jae Hee Lee: high block loads, plus regular transactions, and perfect perfect pdos.
+
+287
+00:42:57.720 --> 00:43:00.589
+Jae Hee Lee: So for the 1st one, we sent
+
+288
+00:43:02.530 --> 00:43:07.540
+Jae Hee Lee: high block Britwood on the around 22 million gas.
+
+289
+00:43:08.770 --> 00:43:22.260
+Jae Hee Lee: and we were able to find find that we could reach up to around 60 blocks per block with that load, and there wasn't big impact on bandwidth usage.
+
+290
+00:43:22.760 --> 00:43:25.120
+Jae Hee Lee: So it was going quite well.
+
+291
+00:43:25.750 --> 00:43:29.430
+Jae Hee Lee: And then we further limited the bandwidth
+
+292
+00:43:29.980 --> 00:43:39.969
+Jae Hee Lee: of each node for both shipper node and full nodes as per eip. 7, 8, 7 0 hardware requirements.
+
+293
+00:43:40.280 --> 00:43:44.430
+Jae Hee Lee: and it the network
+
+294
+00:43:45.043 --> 00:43:54.849
+Jae Hee Lee: performed poorly that it only got 20 blocks per block, but later Francesco suggested that
+
+295
+00:43:56.260 --> 00:44:00.979
+Jae Hee Lee: maybe we should be less restrictive on supernodes, that
+
+296
+00:44:01.190 --> 00:44:09.190
+Jae Hee Lee: 100 mega megabits per second for download and 50 for upload is too low, so
+
+297
+00:44:09.986 --> 00:44:17.780
+Jae Hee Lee: from next round we will retest this with unrestricted bounds for sugar notes.
+
+298
+00:44:19.784 --> 00:44:24.780
+Jae Hee Lee: Assuming supernodes will be available for one Gigabit
+
+299
+00:44:25.020 --> 00:44:27.810
+Jae Hee Lee: network will be available for Schmutz
+
+300
+00:44:28.690 --> 00:44:37.769
+Jae Hee Lee: and for the second network for the perfect periods which is having 16 8 validator nodes
+
+301
+00:44:37.930 --> 00:44:42.430
+Jae Hee Lee: uniquely custoding one each column.
+
+302
+00:44:42.930 --> 00:44:56.540
+Jae Hee Lee: and we were also able to achieve 60 blocks per block on the 22 million gas usage, and also 30 about 30 blocks per block with bandwidth limits.
+
+303
+00:44:56.930 --> 00:45:07.240
+Jae Hee Lee: However, we found that Genesis sync was failing from full app books on perfect theaters network. So
+
+304
+00:45:10.030 --> 00:45:13.630
+Jae Hee Lee: We are looking into it, but it seems like
+
+305
+00:45:14.420 --> 00:45:19.669
+Jae Hee Lee: There are only 8 peers on sync nodes, and
+
+306
+00:45:20.240 --> 00:45:23.460
+Jae Hee Lee: the sync nodes are trying to find
+
+307
+00:45:23.720 --> 00:45:27.324
+Jae Hee Lee: the columns their peers don't have, and
+
+308
+00:45:28.790 --> 00:45:33.449
+Jae Hee Lee: it just fails at the very early stage at full
+
+309
+00:45:34.884 --> 00:45:38.209
+Jae Hee Lee: we also did backfill test on Teku
+
+310
+00:45:38.789 --> 00:45:49.800
+Jae Hee Lee: we found an issue reported to tech team, and they are now fixing it. We also would like to test other sales backfill once they are ready.
+
+311
+00:45:50.710 --> 00:45:52.884
+Jae Hee Lee: and very lastly,
+
+312
+00:45:53.820 --> 00:46:00.138
+Jae Hee Lee: for nimbus and load star. Please let us know when you guys are ready for
+
+313
+00:46:00.970 --> 00:46:03.720
+Jae Hee Lee: block group protesting, and other
+
+314
+00:46:05.530 --> 00:46:14.056
+Jae Hee Lee: validate validate the cost of the test tests that we have, because for numbers I heard that
+
+315
+00:46:15.070 --> 00:46:19.497
+Jae Hee Lee: in versus having pending optimizations so that
+
+316
+00:46:20.550 --> 00:46:25.960
+Jae Hee Lee: hype high block triplet isn't available yet, and for loadstar.
+
+317
+00:46:26.755 --> 00:46:32.300
+Jae Hee Lee: Full notes are subscribing to more than
+
+318
+00:46:32.510 --> 00:46:39.510
+Jae Hee Lee: 8 validators. Nearly as same as super nodes. So please let us know when it's not ready?
+
+319
+00:46:41.470 --> 00:46:44.990
+Jae Hee Lee: Yeah. Oh, sorry. I say, hands up. So.
+
+320
+00:46:45.260 --> 00:46:46.400
+Mario Vega: Yeah, not. Just.
+
+321
+00:46:46.400 --> 00:46:47.200
+Jae Hee Lee: First, st yeah.
+
+322
+00:46:47.200 --> 00:46:49.860
+Mario Vega: Yeah. Manu Manu was 1st and then Agnesh. Thank you.
+
+323
+00:46:50.600 --> 00:46:58.300
+Manu: Hi, I can quickly give an explanation about perfect pureness, about syncing in perfect pureness.
+
+324
+00:46:58.550 --> 00:47:05.149
+Manu: why it fails, and why at least, prism fails. So by the definition of perfect, peerless
+
+325
+00:47:06.051 --> 00:47:09.660
+Manu: another has absolutely 0 peer
+
+326
+00:47:09.780 --> 00:47:15.900
+Manu: clustering the same command than the node. So if you start from Genesis, or even from from
+
+327
+00:47:16.180 --> 00:47:24.890
+Manu: even from a checkpoint. Then you want to fetch some some columns. And yeah, you don't find any peer. So the only
+
+328
+00:47:25.260 --> 00:47:27.650
+Manu: possibility you have the knowledge to
+
+329
+00:47:28.060 --> 00:47:36.620
+Manu: is to retrieve any 64 Coltons, you know any one of them from from your peers and then reconstruct the colon. You you need
+
+330
+00:47:37.523 --> 00:47:41.990
+Manu: yeah, prism doesn't do that. Currently, I'm I'm we are working on it.
+
+331
+00:47:42.330 --> 00:47:45.630
+Manu: Target is this week and end of this week.
+
+332
+00:47:46.700 --> 00:47:57.460
+Manu: And I'm not sure that a lot of other clients already implemented. This this feature, sinking in perfect purdues.
+
+333
+00:47:59.350 --> 00:48:03.870
+Jae Hee Lee: Yeah. We also tested lighthouse, and Granddyne and
+
+334
+00:48:04.865 --> 00:48:16.319
+Jae Hee Lee: lighthouse doesn't seem to sync any fully slots, while Grandine, I think Granddyne also stops at very early
+
+335
+00:48:16.610 --> 00:48:18.270
+Jae Hee Lee: fully. Epoke.
+
+336
+00:48:19.944 --> 00:48:28.910
+Manu: Actually, I think everybody can can sync flu, but without any blob. So the the connection, which is not okay now is post flu with blobs.
+
+337
+00:48:30.280 --> 00:48:31.199
+Jae Hee Lee: Right, right, right.
+
+338
+00:48:35.840 --> 00:48:36.570
+Mario Vega: Yeah, thank, you.
+
+339
+00:48:36.570 --> 00:48:37.230
+Jae Hee Lee: I'm.
+
+340
+00:48:38.100 --> 00:48:47.014
+Agnish Ghosh: Yeah. So currently, members, supports up to 50, I think 52 blobs from the last
+
+341
+00:48:47.830 --> 00:48:51.800
+Agnish Ghosh: from the last of test that Sunnyside labs ran,
+
+342
+00:48:53.740 --> 00:48:56.690
+Agnish Ghosh: so is there. Is there an actual priority to
+
+343
+00:48:56.930 --> 00:49:08.479
+Agnish Ghosh: actually work on optimization that can raise up like upwards of 50 right now, like for Fusaka. I I just wanted some clarity on that, because.
+
+344
+00:49:09.390 --> 00:49:11.580
+Agnish Ghosh: Yeah. Yeah. Okay, go ahead.
+
+345
+00:49:12.595 --> 00:49:17.250
+Jae Hee Lee: Yeah. But I wouldn't say that was a stable achievement.
+
+346
+00:49:17.750 --> 00:49:22.189
+Jae Hee Lee: that the changes failed after that flow right.
+
+347
+00:49:22.190 --> 00:49:22.770
+Agnish Ghosh: Right, right.
+
+348
+00:49:22.770 --> 00:49:27.920
+Jae Hee Lee: I'd say 40 plus is a safe margin for Nimbus when we test it.
+
+349
+00:49:27.920 --> 00:49:28.360
+Agnish Ghosh: Okay.
+
+350
+00:49:28.360 --> 00:49:42.310
+Jae Hee Lee: At that time. But yeah, are we targeting something higher, at least for in-in the idea that not seen scenarios, I think we should get something higher.
+
+351
+00:49:42.720 --> 00:49:46.979
+Agnish Ghosh: Do we actually need something above 40 for Fusaka mainnet
+
+352
+00:49:47.100 --> 00:49:49.880
+Agnish Ghosh: like? That's the open question. I'm not.
+
+353
+00:49:50.180 --> 00:49:51.349
+Agnish Ghosh: I'm not sure.
+
+354
+00:49:54.170 --> 00:49:57.969
+Jae Hee Lee: I I think someone else could clarify.
+
+355
+00:49:57.970 --> 00:50:06.320
+Agnish Ghosh: Yeah, exactly. If someone else can let me know, because, this work can be done. It's just not on priority. So
+
+356
+00:50:06.660 --> 00:50:07.530
+Agnish Ghosh: oh, yeah.
+
+357
+00:50:09.270 --> 00:50:16.960
+Mario Vega: I'm gonna pick on you, Barnabas. Do you feel like this is a requirement for next devnets or main shadow forks, or
+
+358
+00:50:18.940 --> 00:50:23.640
+Barnabas: That really depends on what kind of Bpo values we expect to do before Amsterdam.
+
+359
+00:50:24.911 --> 00:50:30.129
+Barnabas: We haven't really been down the rabbit hole of deciding Bpo values. Yet
+
+360
+00:50:32.090 --> 00:50:40.180
+Barnabas: I think it's gonna be a totally different question. But I would expect that we want to be able to do 72 blots before transgender them.
+
+361
+00:50:43.520 --> 00:50:52.629
+Mario Vega: So it feels like right now. It would not be a blocker, because we have not decided on Bpo. But before deciding on Bpo's we have to have this working right?
+
+362
+00:50:55.360 --> 00:51:02.319
+Barnabas: Yeah, I mean, we don't need to ship right now. 72 blob support. But technically,
+
+363
+00:51:03.540 --> 00:51:09.300
+Barnabas: without any physical hard work, we should be able to scale up to 72.
+
+364
+00:51:14.090 --> 00:51:16.109
+Mario Vega: Okay. Manu.
+
+365
+00:51:18.160 --> 00:51:19.106
+Manu: Yeah. Sorry.
+
+366
+00:51:23.700 --> 00:51:24.399
+Mario Vega: Yes.
+
+367
+00:51:24.777 --> 00:51:28.172
+Manu: It was because it was before. So, thank you.
+
+368
+00:51:29.100 --> 00:51:33.379
+Manu: Actually, yeah, there's a question. There is some question in chat about syncing, in
+
+369
+00:51:34.580 --> 00:51:38.409
+Manu: thinking, in perfect paradise. Francesco is asking if it is.
+
+370
+00:51:39.080 --> 00:51:44.900
+Manu: If do we really need this thinking in perfect, careless mode?
+
+371
+00:51:45.290 --> 00:51:48.944
+Manu: I think we need? I mean, I will be more
+
+372
+00:51:49.890 --> 00:51:53.510
+Manu: comfortable launching flu with this feature.
+
+373
+00:51:54.850 --> 00:52:00.990
+Manu: Because I think that Evan is superno that are really helpful.
+
+374
+00:52:02.550 --> 00:52:05.980
+Manu: I think a nod should be able to think.
+
+375
+00:52:07.060 --> 00:52:17.600
+Manu: even without any super node in its peer. Maybe because not enough supernode will be in the network. Maybe so, maybe super node will reject incoming peers.
+
+376
+00:52:18.370 --> 00:52:23.250
+Manu: And so that's why I think that we should be able to think in perfect parallel mode.
+
+377
+00:52:27.640 --> 00:52:39.083
+Jae Hee Lee: Yeah. Adding some data that I got which which is also mentioned in the report. But what what I saw was
+
+378
+00:52:39.860 --> 00:52:46.050
+Jae Hee Lee: what we could guarantee so far was that with the tested Ceos
+
+379
+00:52:46.380 --> 00:52:49.140
+Jae Hee Lee: for the 1st 1,000 slots.
+
+380
+00:52:49.755 --> 00:52:53.940
+Jae Hee Lee: Every node seems to have their columns correctly so.
+
+381
+00:52:55.229 --> 00:53:04.420
+Jae Hee Lee: But it would be definitely much more feeling, much more safer to have this feature and imperfect theaters think available.
+
+382
+00:53:15.630 --> 00:53:16.280
+Mario Vega: Okay?
+
+383
+00:53:17.260 --> 00:53:23.790
+Mario Vega: And there's another comment from Francesco. Francesco, do you want to raise this comment or.
+
+384
+00:53:25.292 --> 00:53:32.320
+Francesco: Yeah, I mean, basically, I was just saying that I'm not saying that you necessarily need to have or like, I wouldn't expect that.
+
+385
+00:53:33.640 --> 00:53:42.960
+Francesco: Okay, let me backtrack a second. Yeah, I I wouldn't want the requirement that you need a super node in your peers that that's not what I'm saying more just. I'm wondering
+
+386
+00:53:43.480 --> 00:53:57.680
+Francesco: if it is reasonable to expect things to work when you don't have anyone in your peers that has the columns that you want, and not only you don't have in your peers, but you cannot find someone in the network to be your peer that has those columns
+
+387
+00:53:57.750 --> 00:54:20.930
+Francesco: like. I just don't understand how you would even exist in the network afterwards. Like you want columns, you know, 1, 7 and 8, and you can find anyone that wants those columns that look like also kind of has those columns, and generally wants those columns like you could maybe get the other ones and and sync by doing this trick of getting more of them and reconstructing. But eventually you'd just not be able to
+
+388
+00:54:21.020 --> 00:54:23.049
+Francesco: keep going on the network.
+
+389
+00:54:26.790 --> 00:54:33.300
+Barnabas: So you're basically saying that a full node shouldn't be required to reconstruct in order to sync.
+
+390
+00:54:35.280 --> 00:54:37.170
+Francesco: I just unclear to me that
+
+391
+00:54:37.320 --> 00:54:40.830
+Francesco: there is necessarily that much value to it like I
+
+392
+00:54:41.160 --> 00:54:47.260
+Francesco: seems to me that if you cannot find anyone that is willing to give you the Comms that you have. You have a much bigger problem.
+
+393
+00:54:47.704 --> 00:55:09.650
+Francesco: Like. You're just even if you manage to to solve the kind of immediate problem by doing this reconstruction thing that doesn't. That still doesn't seem like it leaves you in any kind of a good position like in in this perfect beard. Us? Setting. That's maybe okay. Because yeah, by by design, there isn't anyone that has your columns, and I don't know the only you know you have, like.
+
+394
+00:55:09.650 --> 00:55:27.280
+Francesco: yeah, you'll you'll be like, alone in your topic. And you, basically, I guess you just receive the columns directly from the block proposer every time, but like in a realistic setting that doesn't really make sense for you to just like exist independently without anyone that you connect with in the topics that you care about.
+
+395
+00:55:33.330 --> 00:55:42.920
+Mario Vega: Alright just for some out a little bit. It seems like we don't have the capability right now to go up to
+
+396
+00:55:43.080 --> 00:55:45.830
+Mario Vega: 30 plus blobs for Fussaka
+
+397
+00:55:47.730 --> 00:55:57.679
+Mario Vega: So we don't need this feature right now. But we do need to ensure right now that we are gonna perform this testing again the moment that we want to.
+
+398
+00:55:58.411 --> 00:56:00.870
+Mario Vega: Increase the Vpo limit right.
+
+399
+00:56:00.870 --> 00:56:02.919
+Barnabas: This has nothing to do with that.
+
+400
+00:56:04.020 --> 00:56:16.794
+Barnabas: as far as I understand. Like, it doesn't matter if you have 4 blobs, or 30 blobs, or 300 blobs. If you if your full node cannot reconstruct and sync up using columns
+
+401
+00:56:17.580 --> 00:56:24.870
+Barnabas: with the user co-coding, then that's yeah. That's that's a totally different topic. That's a perfect topic. Now.
+
+402
+00:56:25.110 --> 00:56:31.499
+Mario Vega: Alright. Then do we have any other opinions on other sales about this matter?
+
+403
+00:56:32.153 --> 00:56:37.360
+Mario Vega: How do they fill chicken, Fussaka without this without this salt?
+
+404
+00:56:38.310 --> 00:56:39.320
+Mario Vega: Yeah. Agnesh.
+
+405
+00:56:40.090 --> 00:56:48.300
+Agnish Ghosh: So if a full node chooses to reconstruct because it doesn't find the accurate peers.
+
+406
+00:56:48.740 --> 00:56:59.029
+Agnish Ghosh: I don't know. How is that a problem? Because if it catches up to head, then it just again progresses normally right from like by getting columns from either
+
+407
+00:56:59.280 --> 00:57:15.120
+Agnish Ghosh: the blob pool or the proposal. No, I mean, I mean, it's a it's a it's a problem when it's sinking, of course, but reconstruction has several sort of guarantees to end.
+
+408
+00:57:16.250 --> 00:57:20.279
+Agnish Ghosh: Let's say the da of a slot within a given timeframe.
+
+409
+00:57:21.024 --> 00:57:30.869
+Agnish Ghosh: So I would. I would obviously prefer reconstructing than actually actively going and trying to find peers, because I think the latter would take me more time.
+
+410
+00:57:36.390 --> 00:57:38.220
+Agnish Ghosh: Yeah, I agree with Manu.
+
+411
+00:57:38.600 --> 00:57:39.590
+Agnish Ghosh: Actually.
+
+412
+00:57:45.810 --> 00:57:51.759
+Mario Vega: Alright. It feels like the sentiment right now is that we do need this feature. Is that is my reading correct?
+
+413
+00:57:52.850 --> 00:57:53.960
+Agnish Ghosh: Yes, yes.
+
+414
+00:57:54.320 --> 00:57:55.030
+Mario Vega: Okay?
+
+415
+00:57:56.623 --> 00:58:06.720
+Mario Vega: So yeah, I would. Like the Cls to speak up and and say, how much time do they need to to get this implemented.
+
+416
+00:58:08.490 --> 00:58:11.380
+Mario Vega: It seems like it's a blocker issue for Fuseka.
+
+417
+00:58:19.190 --> 00:58:24.009
+Mario Vega: Any other Cls that have not expressed anything today about this issue.
+
+418
+00:58:26.700 --> 00:58:28.430
+Mario Vega: No, we don't, Jacob.
+
+419
+00:58:28.780 --> 00:58:35.579
+pawan: We don't have this feature right now, but I think, like we have the mechanism to implement this.
+
+420
+00:58:35.760 --> 00:58:44.284
+pawan: so I'll have to look into. I'll have to look into it. Maybe I'll take a look this week, and
+
+421
+00:58:45.000 --> 00:58:50.689
+pawan: by next week I'll have something ready, or like at least know how long it'll take.
+
+422
+00:59:00.230 --> 00:59:02.360
+Mario Vega: Thank you anybody else.
+
+423
+00:59:14.920 --> 00:59:18.590
+Mario Vega: Alright! I feel like this is pressing enough that we have to
+
+424
+00:59:19.990 --> 00:59:22.839
+Mario Vega: Talk about it again on Thursday.
+
+425
+00:59:23.613 --> 00:59:35.549
+Mario Vega: Please to the rest of the Cl teams. Please look into how much time it would take to implement this, because it seems like it's a blocker issue, and we need to talk about this on on Thursday, so we can. We can touch upon the topic yet. There!
+
+426
+00:59:36.115 --> 00:59:42.040
+Mario Vega: Again, and see the raise the status. Does that sound? Okay for everyone.
+
+427
+00:59:52.910 --> 00:59:58.000
+Jae Hee Lee: Yeah. And if you guys need testing, we can just launch new Dev notes
+
+428
+00:59:58.320 --> 01:00:02.780
+Jae Hee Lee: at any time. Or just please let us know.
+
+429
+01:00:05.960 --> 01:00:09.176
+Mario Vega: Thank you. Excellent, all right.
+
+430
+01:00:13.160 --> 01:00:18.479
+Mario Vega: thank you. Is there anything else that we need to talk about? Right now? Any other.
+
+431
+01:00:18.660 --> 01:00:19.829
+Barnabas: Did you choose?
+
+432
+01:00:21.790 --> 01:00:23.119
+Mario Vega: Sorry. Backfield. Okay.
+
+433
+01:00:23.120 --> 01:00:29.300
+Barnabas: Backfill. Yeah, I'm curious. If any clients have implemented backfill for lapse.
+
+434
+01:00:39.940 --> 01:00:45.290
+Mario Vega: Manu says, prism is in progress, same from lighthouse.
+
+435
+01:00:45.870 --> 01:00:50.850
+Matthew Keil: Lowestar is actively working on it, but it's a pretty big body of work, like everybody else.
+
+436
+01:00:55.363 --> 01:01:03.590
+Barnabas: Do we want to actually wait for backfield implementations to be done before we launch them at 4, in case we do want to launch them at 4.
+
+437
+01:01:14.510 --> 01:01:16.340
+Mario Vega: It seems so at.
+
+438
+01:01:16.340 --> 01:01:26.300
+Barnabas: It would. It would be good if we had at least 2 clients that have done it, and then we could test those at least. And then we can actually go on the Shadow Fork and whatnot
+
+439
+01:01:27.037 --> 01:01:32.700
+Barnabas: could we get like an eta on when clients think they would have backfill implemented.
+
+440
+01:01:40.570 --> 01:01:42.670
+Mario Vega: Any of the clients. Is this
+
+441
+01:01:43.992 --> 01:01:52.000
+Mario Vega: bandwidth issue? Or is it like something intrinsically complex about the the feature that anyone wants to share.
+
+442
+01:01:53.912 --> 01:01:59.730
+Agnish Ghosh: I would like to go ahead. So the issue with backfill is
+
+443
+01:01:59.910 --> 01:02:02.430
+Agnish Ghosh: more of a CPU usage thing.
+
+444
+01:02:03.040 --> 01:02:11.030
+Agnish Ghosh: I would say, like it really depends on how quick do we want to get this backfill done
+
+445
+01:02:11.370 --> 01:02:17.940
+Agnish Ghosh: like, if we want to get it quick enough, then we are basically allocating
+
+446
+01:02:18.180 --> 01:02:24.459
+Agnish Ghosh: a significant amount of the CPU to do this thing rather than focus on.
+
+447
+01:02:24.670 --> 01:02:26.150
+Agnish Ghosh: Let's say, increasing.
+
+448
+01:02:27.140 --> 01:02:39.340
+Agnish Ghosh: yeah, it doesn't. Yeah. Okay, so rather than focus on let's say, higher block count or a bit more stressed environment when full is actively running.
+
+449
+01:02:40.570 --> 01:02:45.259
+Agnish Ghosh: So yeah, that is, that is one second is
+
+450
+01:02:45.750 --> 01:02:49.216
+Agnish Ghosh: while the backfilling do we really want to
+
+451
+01:02:49.760 --> 01:03:05.380
+Agnish Ghosh: advertise earliest available slot in a really very granular way? Or are people just doing it? Something like, let's say, when backfilling is in progress. I just keep it at local head slot, and then, when backfilling is done, I again
+
+452
+01:03:05.490 --> 01:03:09.010
+Agnish Ghosh: push it back to the slots behind. I
+
+453
+01:03:09.450 --> 01:03:15.939
+Agnish Ghosh: I was really curious about this. The current crashes. Some of the current crashes in members is
+
+454
+01:03:16.130 --> 01:03:27.810
+Agnish Ghosh: because we are trying to sandal, the earliest available slot in a very granular way. Like every slot we complete backfilling, we want to update the earliest available slot
+
+455
+01:03:28.070 --> 01:03:32.339
+Agnish Ghosh: that way. It's just more helpful for the network. I know there's no incentive. But
+
+456
+01:03:32.560 --> 01:03:36.220
+Agnish Ghosh: yeah, so I was really curious about that as well.
+
+457
+01:03:37.090 --> 01:03:38.110
+Mario Vega: Yes, pawan.
+
+458
+01:03:38.660 --> 01:04:07.549
+pawan: Yeah for us, like, we fetch the earliest available slot from our database. So every time backfill updates the earliest available slot in a backfill. Basically what we advertise also updates simultaneously. So at least for us, like we, we basically had to change a dB a little bit to add that particular earliest available slot point.
+
+459
+01:04:08.050 --> 01:04:16.279
+pawan: So right now, it isn't a problem for us to keep updating it after every backfill batch is processed.
+
+460
+01:04:22.630 --> 01:04:27.759
+Mario Vega: Thank you. We have less than a minute left. Ainish. Do you want the response or.
+
+461
+01:04:28.454 --> 01:04:33.800
+Agnish Ghosh: Yeah, just a question for pawan. What is an average backfill bat size? I'm just curious.
+
+462
+01:04:34.210 --> 01:04:35.910
+pawan: It's 1 epoch for us.
+
+463
+01:04:36.580 --> 01:04:38.000
+Agnish Ghosh: Okay. Okay.
+
+464
+01:04:41.400 --> 01:04:59.129
+Mario Vega: All right. We are out of time. I think we're going to close it now and thanks everyone for joining, please, on Acdc. This Thursday, we need updates on perfect beer desk syncing. So please, teams focus on that. And thank you. Everyone for joining. And yeah, have a good week.
+
+465
+01:05:00.760 --> 01:05:01.719
+pawan: Call queue.
+
+466
+01:05:01.720 --> 01:05:02.540
+Mario Vega: Thank you. Everyone.
+
+467
+01:05:02.540 --> 01:05:03.400
+Agnish Ghosh: Thank you.
+
+468
+01:05:03.400 --> 01:05:03.880
+Agnish Ghosh: Bye, bye.
+
+469
+01:05:03.880 --> 01:05:05.020
+Justin Traglia: Bye, bye, everyone.
+
+470
+01:05:05.020 --> 01:05:05.560
+Fredrik: Well.
+

@@ -1,0 +1,376 @@
+00:05:21	nixo:	gm
+00:05:22	potuz:	GM
+00:09:05	potuz:	Go Prysm!
+00:09:07	potuz:	:)
+00:09:13	Tim Beiko:	Reacted to "Go Prysm!" with 🔥
+00:10:14	Manu:	The 2 remaining prysm non synced nodes are now syncing. (Should be OK in a few hours)
+00:10:23	Barnabas:	https://dora.nft-devnet-9.ethpandaops.io
+00:12:16	Barnabas:	some erigon/besu teku nodes seem to struggle on nft-devnet-9
+00:12:20	Barnabas:	might worth investigating
+00:12:26	stokes:	Devnet-5!
+00:12:34	stokes:	I would suggest doing both in parallel
+00:13:17	kingy_sigp:	we have fixes for our syncing issues under review
+00:13:36	kingy_sigp:	lighthouse should be good by mid next week
+00:15:41	Enrico Del Fante (tbenr):	We are looking into a couple of things too.  Still working on them. But should be fine next week
+00:15:44	Phil Ngo:	We’re working on some additional issues but we’ll prioritize syncing for next week
+00:15:45	Barnabas:	I think not enough CL devs here to comment?
+00:16:26	Saulius Grigaitis | Grandine:	Grandine will try to fix until mid next week
+00:16:35	Barnabas:	Ideally we can finalize devnet 3 today
+00:17:25	stokes:	Do we have any theories on why sync is slow?
+00:18:41	Barnabas:	columns go brrr
+00:19:02	stokes:	Replying to "columns go brrr"
+
+Right, is it in the network layer?
+00:19:07	Mario Vega:	Maybe we try to gather some info on syncing for next ACDT ?
+00:19:08	stokes:	Replying to "columns go brrr"
+
+Assuming there aren’t any compute issues
+00:19:08	Parithosh Jayanthi:	I’d be interested to see if its network rate limits being hit
+00:19:15	Parithosh Jayanthi:	Ie too many blobs to sync them fast enough
+00:19:18	Tim Beiko:	feat: update osaka style blob schedule eth-clients/holesky#129
+feat: update osaka style blob schedule eth-clients/sepolia#110
+feat: update osaka style blob schedule eth-clients/hoodi#19
+feat: update osaka style blob schedule eth-clients/mainnet#10
+00:19:23	Tim Beiko:	Reacted to "Maybe we try to gath..." with 👍
+00:20:45	Tim Beiko:	https://github.com/ethereum/pm/issues/1687#issuecomment-3221657564
+00:20:54	Tim Beiko:	29 Aug: working fusaka trunk branches
+3 Sep: fusaka-devnet-5 launch
+10 Sep: fusaka-devnet-5 done -> use analysis to confirm (target, max) values here
+15 Sep: Holesky/Sepolia releases; bug bounty begins
+22 Sep: Holesky forks
+29 Sep: Sepolia forks
+1-3 Oct: Hoodi and mainnet releases
+8 Oct: Hoodi fork
+5 Nov: mainnet
+00:22:11	kingy_sigp:	Replying to "29 Aug: working fusa..."
+
+our unstable/trunk works but wont survive non-finality or chaos testing until our sync fixes are merged. As soon as we get those in we're ok with the other dates.
+00:22:25	stokes:	Replying to "29 Aug: working fusa..."
+
+Yep, makes sense
+00:23:23	lightclient:	Replying to "29 Aug: working fusa..."
+
+seems like we don’t have the 1 month between release and devnet fork? 2 weeks for sepolia, 1 week for hoodi?
+00:23:43	stokes:	Replying to "29 Aug: working fusa..."
+
+We only really said the 1 mo is for mainnet
+00:24:37	Justin Florentine (Besu):	and L2s
+00:24:38	Fredrik:	This is what was agreed on previously: https://github.com/ethereum/pm/blob/master/processes/protocol-upgrade.md
+00:25:09	potuz:	I remember something similar for Lido
+00:25:28	Barnabas:	we can do mainnet beginning of dec then.
+00:25:49	Ansgar Dietrichs:	it’s tradeoffs though, there are also many people frustrated when the fork is delayed
+00:26:11	Barnabas:	L2s are the main consumers of blobs tho
+00:26:41	Ansgar Dietrichs:	Replying to "it’s tradeoffs thoug..."
+
+as in, I think the cost to have the fork slip into 2026 would be very high imo, likely higher than any rollout process frustrations that might arise from a more compressed rollout
+00:26:51	Parithosh Jayanthi:	Yes Els handle this
+00:26:56	Tim Beiko:	Reacted to "Yes Els handle this" with 👍
+00:27:18	kasey:	Is that also true for L2 <> builder integration? re proof computation for blobs
+00:28:36	Justin Florentine (Besu):	cost != risk
+00:28:47	Tim Beiko:	Replying to "cost != risk"
+
+There is no real risk to L2s though
+00:28:53	Tim Beiko:	Replying to "cost != risk"
+
+It’s just that they want to support the fork on Day 1
+00:29:08	potuz:	FWIW, I think Matt is absolutely right
+00:29:15	potuz:	last time this was a big issue
+00:29:19	donnoh | L2BEAT:	Reacted to "FWIW, I think Matt i..." with 👍
+00:29:20	potuz:	and we did a mea culpa over this
+00:29:23	samcm:	Reacted to "FWIW, I think Matt i..." with 👍
+00:29:26	Justin Florentine (Besu):	Replying to "cost != risk"
+
+i think thats a pretty bold assertion, since they asked for 30 days
+00:29:29	stokes:	Replying to "last time this was a..."
+
+And I think this time is different 🙂
+00:30:03	federicocarrone:	processes processes
+00:30:04	Ansgar Dietrichs:	the Ethereum community wants Fusaka by EOY
+00:30:08	nixo:	it makes the upgrade process unpredictable for those building on top of it if we don’t stick to it
+00:30:15	Fredrik:	Personally I’m quite neutral about the timeline itself, but I feel it makes sense for us to have something that consumers can know about in advance and not need to check for each upgrade etc
+00:30:20	lightclient:	Reacted to "it makes the upgrade..." with 👍
+00:30:25	nixo:	Replying to "it makes the upgrade..."
+
+“best effort” isn’t sufficient
+00:30:48	potuz:	we never tested devnets less than 30 days
+00:31:00	Barnabas:	+1 potuz
+00:31:21	Ansgar Dietrichs:	in principle of course the rollout time should not affect fork cadence, because by the time we have testnet releases, client attention should be able to move on to the next fork, no matter how long the rollout process then takes
+00:31:32	Christine Kim:	Process also says, "If multiple upgrades are scheduled in advance, each testnet upgrade but must be at least 14 days apart."
+00:31:43	Ansgar Dietrichs:	Replying to "in principle of cour..."
+
+6 months is very ambitious either way, I don’t think it’s currenty realistic
+00:33:35	stokes:	I do think getting fusaka this year is worth a few parties grumbling
+00:33:52	Trent:	Reacted to "I do think getting f..." with 👍
+00:33:54	Justin Florentine (Besu):	I don't.
+00:33:58	lightclient:	Reacted to "I don't." with 👍
+00:34:10	stokes:	All the rollups I talk to would rather have more blobs, so I think they are fine w/ the tradeoff
+00:34:11	Justin Florentine (Besu):	whats the urgency for 1/1/2026 vs 1/15/2026?
+00:34:16	potuz:	Replying to "+1 potuz"
+
+are you agreeing with me again!??!@ I'm leaving
+00:34:22	Parithosh Jayanthi:	Reacted to "are you agreeing wit..." with 😂
+00:34:24	Ansgar Dietrichs:	meta point, given that this proces doc is a unique type of doc, we should going forward clarify how “binding” / reliable it is for participants. I personally considered it more a “this is what we are aiming for”, but clearly others see it as more binding
+00:34:27	Toni Wahrstaetter:	Reacted to "are you agreeing wit..." with 😂
+00:34:30	Enrico Del Fante (tbenr):	Reacted to "are you agreeing wit..." with 😂
+00:34:31	Ansgar Dietrichs:	Reacted to "are you agreeing wit..." with 😂
+00:34:35	lightclient:	the rollups should use the blobs the have available 😂
+00:34:44	Ansgar Dietrichs:	very concerning (barnabas agreeing with you)
+00:34:47	Justin Florentine (Besu):	Reacted to "the rollups should u..." with 💯
+00:34:53	Barnabas:	Reacted to "are you agreeing wit..." with 😂
+00:34:58	donnoh | L2BEAT:	Reacted to "the rollups should u..." with 💯
+00:36:04	potuz:	Preconfirmation teams pressured for the Proposer Lookahead feature, they may be affected perhaps as well
+00:36:09	Justin Florentine (Besu):	there is no point in building these processes if we can't be disciplined
+00:36:10	Ansgar Dietrichs:	Replying to "+1 potuz"
+
+we have a strict “no agreeing with potuz” rule, but people keep not sticking to the policy :-)
+00:36:10	Tim Beiko:	Reacted to "Preconfirmation team..." with 👍
+00:36:19	potuz:	Reacted to "we have a strict “no..." with 😁
+00:36:27	Barnabas:	if the timelines in the docs are wrong, it needs to be changed.
+00:36:33	kingy_sigp:	Reacted to "I do think getting f..." with 👍
+00:36:39	Parithosh Jayanthi:	Reacted to "Preconfirmation team..." with 👍
+00:36:55	Enrico Del Fante (tbenr):	Reacted to "there is no point in..." with 👍
+00:36:59	Barnabas:	Reacted to "there is no point in..." with 👍
+00:37:37	potuz:	Replying to "in principle of cour..."
+
+nah this is not the way it works though, we only really focus and open main feature branches with the right review process after the mainnet release is up in our main trunk branch
+00:38:03	potuz:	Reacted to "there is no point in..." with 👍
+00:38:47	stokes:	I think we need more info
+00:39:08	lightclient:	Replying to "in principle of cour..."
+
+lmao
+00:39:14	Dustin:	Reacted to "there is no point ..." with 👍
+00:39:22	Dustin:	Reacted to "Preconfirmation te..." with 👍
+00:39:46	Ansgar Dietrichs:	process wise, we should treat the schedule from the doc as default, and require acd decision (like for any EIP inclusion) for override. maybe the doc should explicitly reflect that such an override is possible?
+00:40:19	Caleb:	Reacted to "process wise, we s..." with 👍
+00:40:26	Enrico Del Fante (tbenr):	If processes are there, we should stick to them. The more the ecosystem grows the less we can coordinate with everyone. So processes must e clear and respected.
+00:40:32	Marius van der Wijden:	Holesky shafted me at a hackathon, good riddance
+00:40:48	Parithosh Jayanthi:	Reacted to "Holesky shafted me a..." with 😂
+00:41:05	Ben Adams:	Holesky made me loose lots of sleep
+00:41:17	potuz:	Reacted to "process wise, we sho..." with 👍
+00:41:22	Barnabas:	Replying to "Holesky made me loos..."
+
+its cursed from the start
+00:41:31	felipe:	Reacted to "Holesky shafted me..." with 😂
+00:41:33	Caleb:	Reacted to "Holesky made me lo..." with 😂
+00:41:35	Enrico Del Fante (tbenr):	Replying to "Holesky made me loos..."
+
+respect
+00:41:48	lightclient:	Reacted to "Holesky shafted me a..." with 😂
+00:42:02	Tim Beiko:	https://github.com/NethermindEth/eth-perf-research/blob/main/README.md#60-mgas
+00:42:13	Tim Beiko:	This is the tracker for the current blockers
+00:43:44	potuz:	can we wait until I get a new NVME?
+00:43:59	Barnabas:	Reacted to "can we wait until I ..." with 😂
+00:44:05	Luis Pinto | Besu:	What was the story with the XEN contracts? Wasn’t that kind of blocking 60M?
+00:44:06	Mario Vega:	Reacted to "can we wait until I ..." with 😂
+00:44:13	Barnabas:	Replying to "can we wait until I ..."
+
+I’m still rocking a SATA SSD
+00:44:24	terence:	just stating the obvious, EL client release is not enough, we would need CL client releases. 98% of the block is through mev-boost these days
+00:44:25	Justin Florentine (Besu):	THANKS
+00:44:32	Tim Beiko:	Reacted to "just stating the obv..." with 👍
+00:44:46	potuz:	Replying to "can we wait until I ..."
+
+I suck and can't set up NFS correctly to send my geth ancient to my NAS yet
+00:44:56	potuz:	Replying to "can we wait until I ..."
+
+will try dealing with it this weekend
+00:45:42	Parithosh Jayanthi:	Reacted to "just stating the obv..." with 👍
+00:45:51	Barnabas:	we are targeting trunk branches for all mev stack by end of this week too
+00:46:02	Barnabas:	Reacted to "just stating the obv..." with 👍
+00:46:08	Justin Florentine (Besu):	idk, if my signal that i need to upgrade is a missed proposal I couldn't handle because we're at 60Mgas, i'm not happy 🤷
+00:46:10	Ben Adams:	Replying to "just stating the obv..."
+
+should we change something so CLs get the gaslimit data from ELs?
+00:46:10	Dustin:	Reacted to "just stating the o..." with 👍
+00:47:13	Ansgar Dietrichs:	Replying to "idk, if my signal th..."
+
+that would require someone specifically attacking mainnet though, just with the intention to grief people that haven’t updated yet. and because their txs could still be included by up-to-date proposers, that is very costly
+00:47:14	Parithosh Jayanthi:	Re: Xen: we have a benchmarking suite for it, we’re focussed on 2x state sync related benchmarks for now. But we can gather Xen data asap.
+00:47:19	Tim Beiko:	Reacted to "Re: Xen: we have a b..." with 🔥
+00:47:55	potuz:	Reacted to "just stating the obv..." with 👍
+00:47:57	Ansgar Dietrichs:	Replying to "idk, if my signal th..."
+
+so I agree it would be bad ofc, but point is it is not realistic to happen
+00:47:58	terence:	ya, just use exchange capability
+00:48:07	potuz:	Replying to "just stating the obv..."
+
+please no
+00:48:36	Ben Adams:	Replying to "just stating the obv..."
+
+release faster ;)
+00:48:42	kasey:	Replying to "in principle of cour..."
+
+We can take turns - assign each client a “team” (0|1) and each team releases every other fork. Node operators just need to change clients every ~6 months.
+00:48:58	Barnabas:	Reacted to "We can take turns - ..." with 🔥
+00:49:00	Justin Florentine (Besu):	Replying to "idk, if my signal th..."
+
+maybe, i'll think on it. allowing that doesn't feel like i'm developing for worst cases.
+00:49:08	Raúl Kripalani:	During the getBlobsV3 discussion we agreed that the Engine API can evolve independent of forks. That’s why we withdrew that proposal for Fusaka
+00:49:11	potuz:	Reacted to "We can take turns - ..." with 🔥
+00:49:19	Ansgar Dietrichs:	Reacted to "We can take turns - ..." with 😂
+00:49:22	terence:	there's an eip7732 breakout tomorrow
+00:49:23	Parithosh Jayanthi:	Reacted to "We can take turns - ..." with 🔥
+00:49:31	Will Corcoran:	Reacted to "there's an eip7732 b..." with 🔥
+00:49:39	Ansgar Dietrichs:	Replying to "in principle of cour..."
+
+why only binary switching? let’s do one client per fork
+00:50:05	Parithosh Jayanthi:	Replying to "in principle of cour..."
+
+I do think if we’re serious about 6 month forks, we need bigger client teams and some of them need to change their processes. The current setup isn’t really conducive to it.
+00:50:19	kasey:	Reacted to "I do think if we’re ..." with 👍
+00:50:20	Mario Vega:	Reacted to "I do think if we’re ..." with 👍
+00:50:23	Barnabas:	Reacted to "I do think if we’re ..." with 👍
+00:50:30	Tim Beiko:	https://github.com/ethereum/EIPs/pull/10206
+00:50:57	kasey:	Reacted to "why only binary swit..." with 🧠
+00:51:02	Will Corcoran:	Replying to "there's an eip7732 b..."
+
+Agenda: https://github.com/ethereum/pm/issues/1696
+00:51:39	terence:	Replying to "During the getBlobsV..."
+
+Yeah that’s fair, I just wasn’t sure if client code supports this today. For ex, Prysm currently only treats engine API methods as hard fork changes, but that can be adjusted using exchange capability. We still have some work to do here
+00:51:52	Barnabas:	So glammy meta EIP gonna be renamed to Meta EIP Ultra?
+00:52:39	Marius van der Wijden:	Ansgar as the process expert :D
+00:52:45	Parithosh Jayanthi:	Reacted to "why only binary swit..." with 🧠
+00:52:51	Tim Beiko:	Reacted to "So glammy meta EIP g..." with 😂
+00:52:59	Pooja Ranjan:	Version control will be good.
+00:53:11	Roman:	what’s the best place to get the status on the current state of gas limit testing efforts?
+00:53:19	Raúl Kripalani:	Reacted to "Yeah that’s fair, I …" with 👍
+00:53:37	Tim Beiko:	Replying to "what’s the best plac..."
+
+https://github.com/NethermindEth/eth-perf-research/blob/main/README.md#60-mgas
+00:53:39	Parithosh Jayanthi:	Replying to "what’s the best plac..."
+
+Gas-limit-testing group + state bloat group
+00:53:42	Caleb:	Reacted to "I do think if we’..." with 👍
+00:53:45	Jen (Reth):	Reacted to "what’s the best plac..." with 👍
+00:53:45	Parithosh Jayanthi:	Replying to "what’s the best plac..."
+
+You should be in both
+00:53:59	Roman:	Replying to "what’s the best plac..."
+
+yes, but there are so many messages
+00:54:23	Roman:	Replying to "what’s the best plac..."
+
+the gh page seems good too
+00:54:26	Ansgar Dietrichs:	also happy to take comments on the repricing meta EIP async, best would be in the EIP PR
+
+I think there is no urgency to sort this out, we could always switch to a different format at a later point
+00:54:33	Tim Beiko:	Reacted to "also happy to take c..." with 👍
+00:54:39	Marius van der Wijden:	Replying to "what’s the best p..."
+
+https://grafana.observability.ethpandaops.io/d/feo4ronhsqv40d/opcodes-benchmarking?orgId=1&from=now-24h&to=now&timezone=browser&var-posgreSQL=benuragv7iuwwb&var-ClientName=$__all&var-TestTitle=$__all&refresh=auto
+00:54:44	Marius van der Wijden:	Replying to "what’s the best p..."
+
+Also this^
+00:55:10	CPerezz:	For updates in state bottlenecks project: https://cperezz.github.io/bloatnet-website/logbook.html 
+
+This gets updated every day
+00:55:35	Pooja Ranjan:	Reacted to "also happy to take c..." with 👍
+00:55:41	Parithosh Jayanthi:	Reacted to "For updates in state..." with 🔥
+00:55:41	Mario Vega:	Reacted to "also happy to take c..." with 👍
+00:56:49	Ansgar Dietrichs:	Reacted to "there's an eip7732 b..." with 🔥
+00:56:57	Guillaume:	Reacted to "For updates in state..." with 🔥
+00:56:59	Ansgar Dietrichs:	Reacted to "For updates in state..." with 🔥
+00:57:05	lightclient:	Reacted to "So glammy meta EIP g…" with 😂
+00:57:59	donnoh | L2BEAT:	Reacted to "For updates in state..." with 🔥
+00:58:00	Toni Wahrstaetter:	Not every EIP needs a presentation, like 80% of them. We can discuss them all but presenting takes too much time.
+00:58:09	Csaba:	If the deadline seems too late, we could do a pre-registration deadline, with at least some details, so that we don’t have EIPs popping up the last day.
+00:58:32	Justin Florentine (Besu):	Reacted to "Not every EIP needs ..." with 💯
+00:58:35	Dustin:	As a process point, how does this interact with random last-minute, oh, let's wave that EIP in, EIPs which happened in Fusaka?
+00:58:38	Ansgar Dietrichs:	Replying to "in principle of cour..."
+
+my personal feeling is that with the current client situation, ideal outcome would be one fork every 8 months (so 3 forks every 2 years). still quite the stretch goal, but not unrealistic like 6 months
+00:58:56	Dustin:	At least 2 or 3 were just straightforwardly past stated deadlines
+00:58:57	potuz:	Reacted to "Not every EIP needs ..." with 💯
+00:58:58	Ansgar Dietrichs:	Replying to "in principle of cour..."
+
+(client situation as in resources, team sizes etc.)
+00:59:35	potuz:	Replying to "As a process point, ..."
+
++!
+00:59:37	potuz:	Replying to "As a process point, ..."
+
++2
+00:59:45	Greg Colvin:	The discussions threads on the Magicians is a good place to ask the EIP authors your questions.
+01:00:01	donnoh | L2BEAT:	Reacted to "The discussions thre..." with 👍
+01:00:05	marc|wolovim:	Forkcast will introduce the tier ranking feature again for signal gathering. Open to other experiments/ideas.
+01:00:13	Justin Florentine (Besu):	Reacted to "The discussions thre..." with 👍
+01:00:16	Greg Colvin:	Every EIP has a thread.
+01:00:17	Ben Adams:	Reacted to "The discussions thre..." with 👍
+01:00:20	donnoh | L2BEAT:	Reacted to "Forkcast will introd..." with ❤️
+01:01:04	Parithosh Jayanthi:	Replying to "in principle of cour..."
+
+IMO this is a discussion we should realistically have in person and everyone can sort their teams accordingly
+01:01:33	Parithosh Jayanthi:	Reacted to "Not every EIP needs ..." with 💯
+01:02:00	Ansgar Dietrichs:	Reacted to "IMO this is a discus..." with 👍
+01:02:15	Kevaundray Wedderburn:	https://eips.ethereum.org/EIPS/eip-2926
+01:02:34	Tim Beiko:	Reacted to "https://eips.ethereu..." with ❤️
+01:02:37	Kevaundray Wedderburn:	Replying to "https://eips.ethereu..."
+
+https://eips.ethereum.org/EIPS/eip-4762
+01:04:26	Tim Beiko:	What is the main benefit of this?
+01:04:37	donnoh | L2BEAT:	Reacted to "What is the main ben..." with ➕
+01:05:19	CPerezz:	Replying to "What is the main ben..."
+
+Infinitely cheaper proving for certain worse-cases. Also much smaller proofs when code is needed (MPT proofs)
+
+IIUC
+01:05:42	Ansgar Dietrichs:	in terms of EIPs deadline rigidity, I think there are two cases:
+completely new EIP, on a topic not previously discussed
+EIP that was “pre announced”, i.e. comes out of a known workstream
+
+I think a completely new EIP addition past deadline should be a rare exception.
+
+It should be okay though for us to agree that we would be open to additional EIPs for specific topics (say e.g. state operation repricing) that are important to make the fork useful
+01:05:54	Trent:	Replying to "What is the main ben..."
+
+Larger contract sizes?
+01:06:05	Tim Beiko:	Reacted to "in terms of EIPs dea..." with 👍
+01:06:19	Tim Beiko:	Reacted to "Infinitely cheaper p..." with ❤️
+01:07:04	draganrakita:	Replying to "What is the main ben..."
+
+What are downsides?
+01:07:52	CPerezz:	Replying to "What is the main ben..."
+
+@Trent Doesn’t matter. But ofc if they are bigger, the savings are bigger potentially
+01:08:03	CPerezz:	Replying to "What is the main ben..."
+
+@draganrakita Complexity probably?
+01:09:30	Wei Han Ng:	Replying to "What is the main ben..."
+
+One more upside - adding code size to the account fields will make  EXTCODESIZE  more performant (at least in geth AFAIK)
+01:09:38	Kevaundray Wedderburn:	Could we benchmark the performance increase for zk provers?
+01:09:42	Trent:	Replying to "What is the main ben..."
+
+@CPerezz I meant it unlocks larger contracts in a forward compatible way, given we couldn’t figure it out for fusaka
+01:09:54	Kevaundray Wedderburn:	Replying to "Could we benchmark t..."
+
+I think we would mainly need a POC
+01:10:17	potuz:	we feel you
+01:10:29	Justin Traglia:	Reacted to "we feel you" with 😄
+01:10:31	draganrakita:	Reacted to "we feel you" with ❤️
+01:10:37	Guillaume:	Reacted to "we feel you" with ❤️
+01:10:40	Enrico Del Fante (tbenr):	Reacted to "we feel you" with ❤️
+01:10:57	CPerezz:	Reacted to "@CPerezz I meant it ..." with 🙏
+01:11:19	Parithosh Jayanthi:	Reacted to "we feel you" with ❤️
+01:11:34	marc|wolovim:	Reacted to "we feel you" with ❤️
+01:11:40	Wei Han Ng:	https://hackmd.io/RfHgXDnBSW2CZkWhANjeHw?view 
+If anyone wants more data point regarding bytecode utilization, please check out this doc.
+
+TLDR - only small chunks of bytecodes are touch
+01:11:51	Wei Han Ng:	Reacted to "we feel you" with ❤️
+01:12:07	Tim Beiko:	https://eips.ethereum.org/EIPS/eip-7843
+01:12:19	Tim Beiko:	https://eips.ethereum.org/EIPS/eip-7793
+01:12:30	CPerezz:	Reacted to "https://hackmd.io/Rf..." with ❤️
+01:14:21	Marius van der Wijden:	Conditional transactions sound like a LOT of work in the mempool
+01:14:44	Csaba:	That enforced fixed position sounds something that needs lots of coordination.
+01:14:50	donnoh | L2BEAT:	Reacted to "That enforced fixed ..." with 👍
+01:15:23	Tim Beiko:	https://github.com/ethereum/EIPs/pull/10218
+01:15:29	Tim Beiko:	https://github.com/ethereum/EIPs/pull/10220
+01:17:11	Marc:	Replying to "That enforced fixed …"
+why is that? only the builder needs to decide where to include the transaction
+01:19:20	Marc:	Replying to "Conditional transact…"
+I don’t think it necessarily would be, the desired position of the transaction is static and given up front
+01:19:32	Marc:	Replying to "Conditional transact…"
+would be good to discuss more later
+01:19:33	Marius van der Wijden:	I think its pretty unclean and the benefit is only to go around the overhead of discussing with the el devs?

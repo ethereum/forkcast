@@ -1,0 +1,854 @@
+00:09:33	Ansgar Dietrichs:	gm gm
+00:09:48	Zane Starr:	gm gm
+00:09:56	Tim Beiko:	Does anyone hear me?
+00:09:59	stokes:	no
+00:10:31	Tim Beiko:	https://github.com/ethereum/pm/issues/1533
+00:13:11	Tim Beiko:	We’ll take it 😄
+00:15:00	Parithosh Jayanthi:	https://hive.ethpandaops.io/#/?group=fusaka-devnet-0
+00:15:09	Mario Vega:	Reacted to "https://hive.ethpand..." with ❤️
+00:15:27	Barnabas:	Reacted to "https://hive.ethpand..." with ❤️
+00:15:38	Marius:	Have we ever had a devnet without any supernodes? Is that something that we should test?
+00:15:47	Barnabas:	Replying to "Have we ever had a d..."
+
+soon
+00:15:53	Csaba Kiraly:	Replying to "Have we ever had a d..."
+
+absolutely
+00:16:21	Mario Vega:	@geth the failing tests in hive is due to EIP-7823
+00:16:49	Justin Traglia:	We’ve also made a new consensus-specs v1.6.0-alpha.0 release for fusaka-devnet-0: https://github.com/ethereum/consensus-specs/releases/tag/v1.6.0-alpha.0
+00:16:58	Will Corcoran:	Reacted to "We’ve also made a ne..." with 🎉
+00:17:00	Tim Beiko:	Reacted to "We’ve also made a ne..." with 🎉
+00:17:05	Mario Vega:	Reacted to "We’ve also made a ne..." with 🎉
+00:17:33	Parithosh Jayanthi:	Maybe the EEST/Consensus specs teams can tell us what the coverage status is and what’s coming up?
+00:17:36	Marius:	We haven't merged 7823 into that branch yet, will do during the call
+00:17:45	Mario Vega:	Reacted to "We haven't merged 78..." with ❤️
+00:17:53	Barnabas:	Reacted to "We haven't merged 78..." with ❤️
+00:17:53	Kamil Chodoła:	Nethermind should be ready by tomorrow
+00:18:00	Tim Beiko:	Reacted to "Nethermind should be..." with 🚀
+00:18:06	Barnabas:	Reacted to "Nethermind should be..." with 🚀
+00:18:21	Parithosh Jayanthi:	Reacted to "Nethermind should be..." with 🚀
+00:19:57	lightclient:	we should put in EIP-7212
+00:20:09	Sophia Gold:	Reacted to "we should put in E..." with ➕
+00:20:25	Roman:	Reacted to "we should put in EIP..." with ➕
+00:20:43	Tim Beiko:	7212 was +1’d by all 3 teams across devnet 1 + 2
+00:21:08	Dankrad Feist:	tx gas target achieves both execution and prover parallelization
+would be really good to have it
+00:21:33	Francesco:	But what’s the problem with having 10 large ones instead of 1 huge one?
+00:21:38	Marc:	Reacted to "But what’s the probl…" with ➕
+00:21:38	Ansgar Dietrichs:	you can always split a 4337 bundle into several txs, no harm in that
+00:21:45	Roman:	Reacted to "you can always split..." with 👍
+00:21:45	Tim Beiko:	Reacted to "you can always split..." with 👍
+00:21:46	Francesco:	Reacted to "you can always split..." with 👍
+00:21:53	Marc:	Reacted to "you can always split…" with 👍
+00:22:03	Łukasz Rozmej:	Reacted to "you can always split..." with 👍
+00:22:13	lightclient:	well it’s more expensive to split it out
+00:22:17	Kamil Chodoła:	Based on Ben data in last 30 days we hadonly 500txs bigger than 5Mgas and only single ones around 30
+00:22:20	Ansgar Dietrichs:	Replying to "you can always split..."
+
+and in principle 4337 is only supposed to be a temporary situation anyway, if we ever get to native AA that would be resolved
+00:22:24	Ahmad Bitar | Nethermind:	Reacted to "you can always split..." with 👍
+00:22:24	Marius:	I also like this because of the fairness aspect of it
+00:22:28	Dankrad Feist:	can the bundles apply the limit to individual transactions?
+
+because that would still achieve the same goal
+00:22:44	Ansgar Dietrichs:	Replying to "well it’s more expen..."
+
+right, so start with a reasonable cap
+00:23:17	Jason Vranek:	Proposals like Ultra TXs from Gwyneth use batched transactions to help with L1<>L2 composability. They rely on very very large txs for atomicity  https://ethresear.ch/t/ultra-tx-programmable-blocks-one-transaction-is-all-you-need-for-a-unified-and-extendable-ethereum/21673
+00:23:23	Sophia Gold:	If we don't cap it now, we potentially break more thiings if we cap it in the future when the gas limit is higher
+00:23:32	Tim Beiko:	Reacted to "If we don't cap it n..." with 👍
+00:23:40	Kamil Chodoła:	Reacted to "If we don't cap it..." with 👍
+00:23:47	Maintainer.eth:	Reacted to "If we don't cap it n..." with 💯
+00:23:51	Tim Beiko:	Is there a CR risk to have a txn == to max block size be the norm?
+00:23:52	Francesco:	If we’re talking about 30M gas txs, the 21k overhead is irrelevant anyway
+00:24:01	Toni Wahrstaetter:	We should even go to 5m or 10m. The additional costs are negligible
+00:24:01	Francesco:	Reacted to "If we don't cap it n..." with 👍
+00:24:20	Ansgar Dietrichs:	overhead is more than 21k to be fair, have to run the entire bundle processing logic twice
+00:24:21	Toni Wahrstaetter:	of course, might be problematic with backwards compatibility. 30m is safer
+00:24:23	Ahmad Bitar | Nethermind:	Replying to "Proposals like Ultra..."
+
+IIUC, ultra TXs aren't that large
+00:24:36	Ansgar Dietrichs:	“bundles” are not an enshrined concept
+00:24:40	Roman:	what’s a bundle today?)
+00:24:41	Łukasz Rozmej:	Replying to "overhead is more tha..."
+
+can be done in parallel?
+00:24:44	Roman:	Reacted to "“bundles” are not an..." with 👍
+00:24:46	Ahmad Bitar | Nethermind:	Reacted to "“bundles” are not an..." with 👍
+00:24:50	Guru:	Reacted to "“bundles” are not an..." with 👍
+00:25:10	Giulio:	Replying to "overhead is more tha..."
+
+Still not significant
+00:25:52	Marius:	I think its important to ship it now, before we increase the gas limit
+00:26:00	Ben Adams:	Reacted to "I think its importan..." with 💯
+00:26:03	Andrew Ashikhmin:	Reacted to "I think its importan..." with 💯
+00:26:03	Marc:	Reacted to "I think its importan…" with 👍🏾
+00:26:03	Roman:	Reacted to "I think its importan..." with 👍
+00:26:04	Ben Adams:	Reacted to "I think its importan..." with 👍
+00:26:05	Ameziane Hamlat:	Reacted to "I think its importan..." with 💯
+00:26:05	lightclient:	i think we can include it, i just don’t want to paper over issues with resource pricing by capping the tx limit
+00:26:10	Toni Wahrstaetter:	Reacted to "I think its importan..." with 👍
+00:26:11	Barnabas:	Reacted to "I think its importan..." with 💯
+00:26:12	Tim Beiko:	Reacted to "i think we can inclu..." with 👍
+00:26:19	Marius:	Replying to "I think its importan..." 
+
+ Otherwise users will demand it to match the max gas limit
+00:26:28	Francesco:	Reacted to "I think its importan..." with 👍
+00:26:39	Ben Adams:	Replying to "i think we can inclu..."
+
+Don't let the perfect be the enemy of the good
+00:26:41	Csaba Kiraly:	I would also limit transaction size in bytes, so that the required settings in the network stack stay clean.
+ Implementations have limits, a size limit could also be derived from gas, yet it is cleaner to have an explicit size limit as well.
+00:26:45	thomasthiery:	Replying to "Is there a CR risk t..."
+
+I don’t think so, it still needs to pay more fees than all other txns combined to be prioritized. And if you keep filling up blocks with single large txns it becomes very expensive (base fees will increase by 12.5% every full block)
+00:26:49	Kamil Chodoła:	Replying to "I think its import..."
+
+you mean wat with another gas increase until this is implemented and released?
+00:27:08	Marius:	Replying to "I think its importan..." 
+
+ Yes
+00:27:18	Barnabas:	30M gas limit per tx will be more than enough for non malicious transactions. 
+
+If someone can bring up a valid non malicious use case, we should consider raising it further.
+00:27:19	Ansgar Dietrichs:	Replying to "I think its importan..."
+
+didn’t want to say it’s not urgent, more wanted to say we need it anyway
+00:27:33	Tim Beiko:	Replying to "30M gas limit per tx..."
+
+Large AA bundle is what ligthclient was alluding to
+00:27:55	Luis Pinto | Besu:	Reacted to "30M gas limit per tx..." with 👍
+00:27:57	Ansgar Dietrichs:	to be clear with 30M, we should communicate that it can go lower in the future
+00:27:59	Sophia Gold:	Reacted to "I think its import..." with 💯
+00:28:00	Marius:	Reacted to 30M gas limit per tx... with "👍"
+00:28:06	Francesco:	Replying to "30M gas limit per tx..."
+
+Amortizing things from ~0 to even closer to ~0 isn’t really a use case though
+00:28:17	Marc:	Replying to "to be clear with 30M…"
+it seems easier to go lower and raise than the other way around
+00:28:22	Tim Beiko:	Reacted to "it seems easier to g..." with 👍
+00:28:26	Francesco:	Reacted to "it seems easier to g..." with 👍
+00:28:28	Justin Florentine (Besu):	these numbers seem like guesses
+00:28:32	Ansgar Dietrichs:	Replying to "to be clear with 30M..."
+
+I don’t think that’s right? why is that right?
+00:28:44	Tim Beiko:	Replying to "these numbers seem l..."
+
+They are — 30m was the block gas limit
+00:28:50	Ansgar Dietrichs:	Replying to "to be clear with 30M..."
+
+we are already going down from whatever we are at right before Fusaka (say 60M) to 30M
+00:28:56	Marius:	I think 30m is the easiest and most  uncontroversial
+00:29:03	Ansgar Dietrichs:	Replying to "to be clear with 30M..."
+
+so why not go down again later?
+00:29:04	Tim Beiko:	Replying to "these numbers seem l..."
+
+When the EIP was drafted
+00:29:09	Łukasz Rozmej:	Reacted to "to be clear with 30M..." with 👍
+00:29:09	Marc:	Replying to "to be clear with 30M…"
+because raising it can’t break anything, people won’t get used to sending bigger transactions
+00:29:13	Luis Pinto | Besu:	The only DOS concern that make sense are if tx is above the block gas limit
+00:29:14	Łukasz Rozmej:	Reacted to "it seems easier to g..." with 👍
+00:29:16	Ansgar Dietrichs:	Reacted to "I think 30m is the e..." with 👍
+00:29:25	Łukasz Rozmej:	Reacted to "I think 30m is the e..." with 👍
+00:29:26	Marc:	Replying to "to be clear with 30M…"
+if we find that it’s safe to allow larger txs and we need to we can always raise it
+00:29:29	Ansgar Dietrichs:	Replying to "I think 30m is the e..."
+
+seems like 30M has broad support, let’s just agree and ship it
+00:29:29	Ahmad Bitar | Nethermind:	not all 7702 users will use bundlers. they can submit their own transactions/batches
+00:29:32	felix (eest):	Reacted to "I think 30m is the..." with 👍
+00:29:57	Luis Pinto | Besu:	For parallelisation lets discuss when that is implemented
+00:30:07	lightclient:	last 30 days not a useful metric due to bundling in the future
+00:30:14	lightclient:	Reacted to "For parallelisation ..." with 👍
+00:30:20	lightclient:	the limit seems fine though, we can do 30m
+00:30:27	Barnabas:	Reacted to "the limit seems fine..." with 👍
+00:30:29	Łukasz Rozmej:	Replying to "For parallelisation ..."
+
+and have one user whining because they implemented they solution that uses 100mgas transactions?
+00:30:35	Łukasz Rozmej:	Replying to "For parallelisation ..."
+
+self destruct all over again
+00:30:46	Barnabas:	Lets circle back and raise it further when we have legit AA batches?
+00:30:49	Łukasz Rozmej:	Replying to "For parallelisation ..."
+
+btw we have parallelization now
+00:30:50	Sophia Gold:	It's more important for zk proving than traditional parallelization because they can checkpoint the trace and start proving it without waiting to execute a entire block, which is CPU-bound
+00:30:50	Barnabas:	Sounds like a pretty easy number to bump
+00:30:51	Francesco:	Replying to "For parallelisation ..."
+
+Parallelisation is implemented in besu already I thought?
+00:30:56	Ansgar Dietrichs:	let’s ship 30M now, and then by glamsterdam we can have precise metrics on how much of an efficiency penalty for bundled use cases a reduction would be
+00:30:59	lightclient:	Reacted to "Lets circle back and..." with 👍
+00:31:01	Luis Pinto | Besu:	Replying to "For parallelisation ..."
+
+It is but not full parallelisation
+00:31:04	Łukasz Rozmej:	Reacted to "Parallelisation is i..." with 👍
+00:31:05	Luis Pinto | Besu:	Replying to "For parallelisation ..."
+
+Like BAL
+00:31:06	Francesco:	Replying to "For parallelisation ..."
+
+still
+00:31:20	yoav:	In EIP-7701 (native AA) there's no notion of bundles.
+00:31:20	Luis Pinto | Besu:	Replying to "For parallelisation ..."
+
+It is around 60% right now
+00:31:27	Łukasz Rozmej:	Reacted to "It is around 60% rig..." with 👍
+00:31:31	yoav:	Each AA transaction is a separate trandaction
+00:31:33	Ameziane Hamlat:	Here is an interesting use case for capping transaction gas limit , if we would to have high gas limits, more than ~105 mgas : without capping the transaction gas limit, we can create a transaction that is bigger than 10 MiB size, so there would need a way for dapps to evaluate the size of transactions in the same way as they estimate gas with eth_estimateGas before sending them.
+00:31:47	Ben Adams:	Reacted to "Here is an interesti..." with 👍
+00:31:52	Łukasz Rozmej:	Cap is still there this is just formalizing it
+00:32:20	Karim T.:	Replying to "For parallelisation ..."
+
+Yeah intermediate values in BAL will help to have 100% of parallelization
+00:32:20	Roman:	Reacted to "Cap is still there t..." with 💯
+00:32:28	Roman:	Replying to "Cap is still there t..."
+
+exactly
+00:32:33	Guillaume:	SSZ-encoded block? :P
+00:32:48	Karim T.:	Only last values of the block will not help to increase this number we have in besu
+00:33:45	Ansgar Dietrichs:	capping it lower could be problematic as we start raising the gas limit
+00:34:08	Justin Florentine (Besu):	then we need to raise the upstream bandwidth reqs
+00:34:09	Ansgar Dietrichs:	Replying to "capping it lower cou..."
+
+it should really only ever be binding for maliciously crafted blocks
+00:34:17	Francesco:	Replying to "capping it lower cou..."
+
+We could always increase the cap
+00:34:18	Mario Vega:	CL doesn’t know because it doesn’t encode to RLP
+00:35:52	Łukasz Rozmej:	receipts are not a part of a block
+00:35:53	Roman:	Receipts are not in the block
+00:35:56	Roman:	Reacted to "receipts are not a p..." with 👍
+00:36:29	Ansgar Dietrichs:	can buidling not just err on the safe side? stop adding txs way under that limit, have a way to “estimate” rlp size without ever fully calculating it?
+00:36:44	Ansgar Dietrichs:	Replying to "can buidling not jus..."
+
+like even if you are over cautious by a factor of 2, nbd
+00:36:57	Justin Florentine (Besu):	i don't see any issue building this in besu, idk about mev
+00:37:04	Łukasz Rozmej:	Reacted to "i don't see any issu..." with 👍
+00:37:08	Marc:	If it turns out to be complicated for building could drop the EIP later
+00:37:13	Ansgar Dietrichs:	why is it pointless to make the MEV people dance a bit for us? :-)
+00:37:14	Csaba Kiraly:	Replying to "can buidling not jus..."
+
+I’m sure you can make the heuristics.
+00:37:23	Justin Florentine (Besu):	Reacted to "why is it pointless ..." with 👍
+00:37:42	Justin Florentine (Besu):	Replying to "why is it pointless ..."
+
+this is not a compute starved userbase
+00:38:27	Justin Florentine (Besu):	its an accumulator, nbd
+00:38:30	Ansgar Dietrichs:	you don’t need to be precise, just ensure you stay under the cap
+00:39:09	Marius:	Where is it verified in the engine api?
+00:39:29	lightclient:	if you guys have implemented and it seems good, then let’s do it
+00:40:12	Kamil Chodoła:	We tested it out on perfnet where we were reaching cap commonly and stopped missing slots
+00:40:12	Ansgar Dietrichs:	I do think getting the “where is it enforced” right is super important though, so we should be certain that the rlp encoded block is the best place
+00:40:13	Marius:	Replying to "if you guys have imp..." 
+
+ We have the tx size in our transaction implementation already, so building should not be a big problem for us
+00:40:19	lightclient:	Reacted to "I do think getting t..." with 👍
+00:40:24	Csaba Kiraly:	Replying to "Where is it verified..."
+
+Best on both sides
+00:40:41	Paweł Bylica:	We haven't seen the implementation yet :)
+00:41:02	Roman:	Can we do a cap on total size of txs instead?
+00:41:06	Csaba Kiraly:	Replying to "Where is it verified..."
+
+Like passing it on to the other side if you know its wrong is stupid, but receiver side must check.
+00:41:19	Ansgar Dietrichs:	Replying to "I do think getting t..."
+
+would be nice if that check would e.g. not have to be replicated in many places, so that it would be easy to modify / remove in the future
+00:41:33	Justin Florentine (Besu):	i think that breaks down significantly if BAL hits
+00:41:46	Roman:	Tx total + BAL
+00:42:17	Kamil Chodoła:	Replying to "We haven't seen th..."
+
+Cap block build size in bytes by benaadams · Pull Request #8486 · NethermindEth/nethermind
+00:42:34	lightclient:	Reacted to "Cap block build size..." with 👍
+00:42:39	Justin Florentine (Besu):	CL should decide this, it's their limit no?
+00:42:41	Ansgar Dietrichs:	given that there is still uncertainty about how to do it, is the goal to resolve right now? or look into it more and make a more informed decision?
+
+is main difference devnet-1 readiness?
+00:42:49	Roman:	Reacted to "given that there is ..." with 👍
+00:43:24	Ansgar Dietrichs:	we can already decide now that we will have some variant of this EIP that equals a rough ~10MB cap in fusaka, and ready for devnet-2
+00:43:29	Francesco:	Reacted to "I do think getting t..." with 👍
+00:44:04	Ben Adams:	Reacted to "we can already decid..." with 👍
+00:44:05	Marius:	I would cap it to 9mb and only count the txs
+00:44:12	Marius:	Reacted to we can already decid... with "👍"
+00:44:19	Barnabas:	Reacted to "I would cap it to 9m..." with 👍
+00:44:22	Nicolas Consigny:	Reacted to "I would cap it to 9m..." with 👍
+00:44:23	Csaba Kiraly:	Reacted to "we can already decid..." with 👍
+00:44:35	Ahmad Bitar | Nethermind:	cant receipts exceed 1 mb?
+00:44:35	Ansgar Dietrichs:	how many other EIPs are there?
+00:44:45	Ameziane Hamlat:	Reacted to "Cap block build size..." with 👍
+00:44:48	CPerezz:	Reacted to "I would cap it to 9m..." with 👍
+00:45:06	lightclient:	Replying to "cant receipts exceed..."
+
+receipts aren’t in the block RLP for purposes of the EIP though right?
+00:45:16	Ahmad Bitar | Nethermind:	Replying to "cant receipts exceed..."
+
+ah, right
+00:45:17	lightclient:	Replying to "cant receipts exceed..."
+
+since CL doesn’t propagate receipts
+00:45:20	Francesco:	Reacted to "since CL doesn’t pro..." with 👍
+00:45:23	Vectorized (Solady):	i propose EIP-7939 (CLZ) a pretty easy opcode.
+00:45:29	Luis Pinto | Besu:	Reacted to "i propose EIP-7939 (..." with 👍
+00:45:31	Łukasz Rozmej:	Reacted to "i propose EIP-7939 (..." with 👍
+00:45:46	lightclient:	I really think we should add 7212 and 7907
+00:45:57	Tim Beiko:	Reacted to "I really think we sh..." with 👍
+00:45:58	Ahmad Bitar | Nethermind:	Reacted to "I really think we sh..." with ➕
+00:46:00	lightclient:	Replying to "I really think we sh..."
+
+we want to signal to devs we are listing and making things better for them
+00:46:12	Ansgar Dietrichs:	what exactly are we deciding? add to fusaka but not devnet-1?
+00:46:25	Peter:	Reacted to "I really think we sh..." with 👍
+00:46:29	Nicolas Consigny:	We need to solve a few things with 7212 first
+00:46:31	Justin Florentine (Besu):	Replying to "I really think we sh..."
+
+strong opinion on which particular devnet?
+00:46:38	Ansgar Dietrichs:	Replying to "We need to solve a f..."
+
+does this have a champion?
+00:46:38	Nicolas Consigny:	The current specification of RIP-7212 compares the x coordinate with the signature r value directly (as integers, presumably), which may return false when the standard result should be true
+00:46:42	stokes:	Reacted to "I really think we sh..." with 👍
+00:46:42	stokes:	Reacted to "I really think we sh..." with ➕
+00:46:43	Ansgar Dietrichs:	Replying to "We need to solve a f..."
+
+seems like zero progress in a year
+00:47:08	stokes:	Replying to "The current specific..."
+
+Can we just write an EIP-7212 that fixes this?
+00:47:08	Marius:	No strong feelings for any of these from me
+00:47:16	lightclient:	Replying to "I really think we sh..."
+
+depends on how much there is for devnet 1
+00:47:33	lightclient:	Replying to "I really think we sh..."
+
+i think we are targeting devnet 1 for berlin
+00:47:59	Nicolas Consigny:	Replying to "The current specific..."
+
+Hmmm yes kind of but then we would have some conflict with existing 7212 on rollups 🤷
+00:48:04	Nicolas Consigny:	Replying to "The current specific..."
+
+So I would say yes
+00:48:08	Nicolas Consigny:	Replying to "The current specific..."
+
+if they fork out
+00:49:10	Barnabas:	Replying to "I really think we sh..."
+
+yes devnet 1 is targeting to launch on monday 9th of June
+00:50:03	Ansgar Dietrichs:	@Tim Beiko which 4 did you mention just now? I see 5 open EIPs on the CFI list, which one was the one out?
+00:50:10	CPerezz:	Replying to "I really think we sh..."
+
+REG: r1 support. We have some L2s supporting it which will like to be “Based”/“Native”.
+
+If L1 doesn’t have the precompile they won’t be able to.
+Also, r1 is mostly interesting for keystone interactions no?
+
+(Not that ‘m in favor or against though).
+00:50:29	Ansgar Dietrichs:	Replying to "@Tim Beiko which 4 d..."
+
+(already ignoring EIP-7762 in favor of EIP-7918 in that count)
+00:50:52	Tim Beiko:	Replying to "@Tim Beiko which 4 d..."
+
+EIP-5920: PAY opcode
+RIP-7212: Precompile for secp256r1 Curve Support
+EIP-7907: Meter Contract Code Size And Increase Limit
+EIP-7918: Blob base fee bounded by execution cost
+00:51:02	Barnabas:	Reacted to "I really think we sh..." with ➕
+00:51:13	Ansgar Dietrichs:	if there are concerns, can we push this to devnet-2 and make sure we have confidence in 2 weeks?
+00:51:19	Marc:	Reacted to "if there are concern…" with 👍🏾
+00:51:39	Łukasz Rozmej:	any bottleneck on jumpdest analysis?
+00:51:59	lightclient:	jumpiest analysis has been shown to be linear cost per code size
+00:52:46	Łukasz Rozmej:	do clients persist jumpdest analysis or do it always on the fly?
+00:52:59	lightclient:	https://github.com/charles-cooper/eip-3860-benchmarks/blob/master/benchmark_results/summary_report.md
+00:52:59	Marius:	Replying to "do clients persist j..." 
+
+ We compute it on the fly
+00:53:11	lightclient:	^ jumpdest analysis limit
+00:53:11	Nicolas Consigny:	Replying to "The current specific..."
+
+RIP-7212’s verifier should reduce the affine x-coordinate of the reconstructed point modulo n before it is compared with r, and it must explicitly reject the point-at-infinity.Without these two rules different EVM chains can accept or reject exactly the same P-256 Schnorr signature, because an attacker can pick a nonce whose x-coordinate lies in [n, p) or that reconstructs to ∞
+00:53:14	Sophia Gold:	If you're concerned about the effect of code size, we should add the new SWAPs and DUPs in glamsterdam
+00:53:16	Łukasz Rozmej:	Replying to "do clients persist j..."
+
+we to, I consider saving it with the code directly
+00:53:18	Barnabas:	Replying to "I really think we sh..."
+
+how much impl are these eips require?
+00:53:26	Ansgar Dietrichs:	Replying to "@Tim Beiko which 4 d..."
+
+that seems to only leave
+
+EIP-7917: Deterministic proposer lookahead
+
+Is the idea to reject this for Fusaka today, or make a decision for devnet-2 later?
+00:53:50	Nicolas Consigny:	Replying to "The current specific..."
+
+Can probably fix
+00:53:53	stokes:	Replying to "@Tim Beiko which 4 d..."
+
+7917 is more of a CL call
+00:54:08	Ansgar Dietrichs:	Replying to "@Tim Beiko which 4 d..."
+
+aah, I realized that just as you wrote that. never mind then
+00:54:24	stokes:	Reacted to "RIP-7212’s verifier ..." with 👍
+00:54:39	CPerezz:	Replying to "I really think we sh..."
+
+r1 is just a copy-paste of k1 impls right? So should not be crazy. Just changing a few constants and not much more work.
+00:54:46	lightclient:	Reacted to "r1 is just a copy-pa..." with 👍
+00:54:55	stokes:	Replying to "I really think we sh..."
+
+My understanding is that impl is quite low
+00:55:00	Roman:	Reacted to "I really think we sh..." with 👍
+00:55:01	Roman:	Reacted to "I really think we sh..." with ➕
+00:55:05	stokes:	Replying to "I really think we sh..."
+
+Many langs have a library that is more or less 1:1 to EIP ready
+00:55:06	Peter:	Reacted to "I really think we sh..." with ➕
+00:55:12	stokes:	Replying to "I really think we sh..."
+
+And much smaller surface area than say 2537
+00:55:27	Ansgar Dietrichs:	context: that RIP is already live on some L2s
+00:55:54	CPerezz:	Replying to "I really think we sh..."
+
+I still think the most important part is considering the Based/Native rollup idea.
+
+As if we don’t support this, they’ll need to remove it if they want to be based/native.
+00:56:08	Ansgar Dietrichs:	7212 seems to really urgently need a champion then if it still wants to have a shot for Fusaka
+00:56:14	CPerezz:	Replying to "I really think we sh..."
+
+Unsure how clear this is. But can be a concern if this whole concept moves forward
+00:56:21	Tim Beiko:	Reacted to "7212 seems to really..." with 👍
+00:56:33	Ansgar Dietrichs:	Replying to "7212 seems to really..."
+
+needing changes and being flagged as significant testing overhead
+00:56:38	Barnabas:	Reacted to "7212 seems to really..." with 👍
+00:56:38	CPerezz:	Replying to "7212 seems to really..."
+
+Antonio is an expert on championing EC precompile additions ^^
+00:56:46	Nicolas Consigny:	Reacted to "Antonio is an expert..." with 👍
+00:56:54	Justin Florentine (Besu):	7212 is not an eng challenge, it's a research one
+00:57:04	Barnabas:	Replying to "7212 seems to really..."
+
+Its a huge UX + , I think we should include it in fusaka.
+00:57:09	stokes:	Replying to "7212 is not an eng c..."
+
+What is there to research?
+00:57:11	CPerezz:	Replying to "7212 seems to really..."
+
+Agree
+00:57:18	Hadrien Croubois (OpenZeppelin):	Replying to "7212 seems to really…"
+What does it take to be a champion ? I don’t like the current format of the RIP, but I think it’s better than nothing
+00:57:24	CPerezz:	Reacted to "What is there to res..." with 👍
+00:57:36	Justin Florentine (Besu):	Replying to "7212 is not an eng c..."
+
+safety, just need a signoff that it's good to go.
+00:57:53	Barnabas:	what changes need to be made to make it viable by devnet 2?
+00:58:17	stokes:	@Nicolas Consigny im interested in helping, will dm
+00:58:31	Tim Beiko:	Strong +1 on not having different code at the same address
+00:58:40	CPerezz:	Replying to "7212 is not an eng c..."
+
+R1 is in safe curves already no? https://safecurves.cr.yp.to/
+00:59:01	Nicolas Consigny:	Reacted to "@Nicolas Consigny im..." with 👍
+00:59:07	Tim Beiko:	Reacted to "@Nicolas Consigny im..." with 🔥
+00:59:16	Marius:	@Mario Vega updated our fusaka branch for 7823
+00:59:26	Ansgar Dietrichs:	sounds more like internet issues
+00:59:32	Mario Vega:	Reacted to "@Mario Vega updated ..." with 🚀
+01:00:06	Barnabas:	we shouldn’t roll out a feature that has a known bug lmao
+01:00:21	Barnabas:	just because we don’t want compilers to target diff address based on chainid
+01:00:22	stokes:	Replying to "we shouldn’t roll ou..."
+
+We would deploy the right thing to l1
+01:00:28	Barnabas:	Reacted to "We would deploy the ..." with 👍
+01:00:34	Vectorized (Solady):	agree with Hadrien. the point of making the precompile is so that existing code that use 7212’s 0x100 address will simply get speed up. if it’s on a different address, it’s pretty much pointless imo.
+01:01:38	Barnabas:	how much time would the modified version of this EIP take to get security audited tho? Would it delay shipping peerdas?
+01:02:19	Nicolas Consigny:	Replying to "how much time would ..."
+
+Less than 3 month imo
+01:02:48	Tim Beiko:	https://eips.ethereum.org/EIPS/eip-7918
+01:02:57	Nicolas Consigny:	Replying to "how much time would ..."
+
+If you meant 7212 😅
+01:03:07	Roman:	Agree with @lightclient , idt it’s a prio / smth we wanna rush
+01:03:09	CPerezz:	Replying to "how much time would ..."
+
+It’s a NIST curve.  So there’s formal specs and lots of references.
+
+Also it’s a clone of k1 mostly but changing constants.
+So should be quite easy to both implement and audit.
+01:03:23	lightclient:	Reacted to "Agree with @lightcli..." with 👍
+01:03:24	Barnabas:	Replying to "Agree with @lightcli..."
+
+shove it to Glamsterdam?
+01:03:32	lightclient:	sgtm
+01:03:32	Roman:	Replying to "Agree with @lightcli..."
+
+What’s after?
+01:03:46	Barnabas:	Replying to "Agree with @lightcli..."
+
+something Bogota
+01:03:49	lightclient:	how can zero be underpriced?
+01:03:55	Roman:	Replying to "Agree with @lightcli..."
+
+smth bogota sg
+01:03:56	CPerezz:	Reacted to "how can zero be unde..." with 😂
+01:03:57	Barnabas:	Reacted to "how can zero be unde..." with 😂
+01:03:59	Ahmad Bitar | Nethermind:	Reacted to "how can zero be unde..." with 😂
+01:04:00	Roman:	Reacted to "how can zero be unde..." with 😂
+01:04:05	terence:	I thought this has been brought up to a RollUp call last November and L2s in presence all seemed ok with it, we didnt include it because of testing delay
+01:04:09	Guru:	Reacted to "how can zero be unde..." with 😂
+01:04:09	Anders Elowsson:	On EIP-7918. There has been this recent analysis: https://notes.ethereum.org/@anderselowsson/EIP-7918E
+It essentially just expands the rationale, but would could then warrant another constant selection.
+01:04:13	Łukasz Rozmej:	Replying to "how can zero be unde..."
+
+infinitely
+01:04:16	stokes:	I call it hogota
+01:04:16	Ben Adams:	Replying to "how can zero be unde..."
+
+every number is over; so its under
+01:04:22	Parithosh Jayanthi:	Reacted to "how can zero be unde..." with 😂
+01:04:24	stokes:	Replying to "Agree with @lightcli..."
+
+H-star + bogota
+01:04:43	Justin Florentine (Besu):	Replying to "Agree with @lightcli..."
+
+BogotHa
+01:04:58	Barnabas:	Replying to "Agree with @lightcli..."
+
+Hydra + Bogota?
+01:05:12	Francesco:	Replying to "Agree with @lightcli..."
+
+Hog
+01:05:42	Tim Beiko:	So right now we have
+
+Devnet-0:
+EIP-7594: PeerDAS - Peer Data Availability Sampling
+EIP-7823: Set upper bounds for MODEXP
+EIP-7883: ModExp Gas Cost Increase
+EIP-7892: Blob Parameter Only Hardforks
+
+Devnet-1:
+EIP-7825: Transaction Gas Limit Cap
+EIP-7918: Blob base fee bounded by execution cost
+
+CFI — maybe for devnet-2:
+RIP-7212: Precompile for secp256r1 Curve Support
+EIP-7907: Meter Contract Code Size And Increase Limit
+EIP-7934: RLP Execution BlockSize Limit
+EIP-5920: PAY opcode
+
+
+DFI
+EIP-7762: Increase MIN_BASE_FEE_PER_BLOB_GAS
+01:05:44	Tim Beiko:	Still TBD
+EIP-7917: Deterministic proposer lookahead
+01:05:46	CPerezz:	Replying to "Agree with @lightcli..."
+
+I think this is an example of something we can definitely speed up a bit in ACD.
+
+It has no blockers nor anything and it’s quite similar to k1.
+
+Can’t we ship for Fusaka or Glamsterdam at worst?
+
+Why don’t we see this landing in Fusaka? What’s the exact blocker?
+01:05:48	Ansgar Dietrichs:	but to be clear, all of that EIP-7918 complexity is just on the rationale side, so no issues for implementation
+01:05:54	lightclient:	Reacted to "but to be clear, all..." with 👍
+01:06:00	Trent:	EL naming sequence with 2/yr
+
+'25 H1/H2 : Prague/Osaka
+'26 H1/H2 : Amsterdam/Bogota
+'27 H1/H2 : Istanbul/Bangkok
+'28 H1/H2 : Buenos Aires/'26 city
+'29 H1/H2 : '27 city/'28 city
+'30 H1/H2 : '29 city/'30 event
+
+https://x.com/trent_vanepps/status/1923069488880091406
+01:06:05	Anders Elowsson:	Reacted to "but to be clear, all..." with 👍
+01:06:33	Marc:	Replying to "but to be clear, all…"
+from implementing this and the other min blob base fee proposal, this one was actually much simper
+01:06:57	Ahmad Bitar | Nethermind:	why is there always fear from making L2 pay a bit for blobs? blobs are the most underpriced compute that Ethereum is providing while being the most valuable resource for L2s
+01:06:59	Trent:	Replying to "but to be clear, all..."
+
+Interesting, wouldn’t have guessed that!
+01:06:59	Ansgar Dietrichs:	why not devnet-1?
+01:07:04	Ansgar Dietrichs:	Replying to "why not devnet-1?"
+
+if it’s ready
+01:07:12	CPerezz:	Reacted to "why is there always ..." with 👍
+01:07:12	Trent:	Reacted to "why is there always ..." with 👍
+01:07:23	Marius:	Reacted to why is there always ... with "👍"
+01:07:24	Ansgar Dietrichs:	Replying to "why not devnet-1?"
+
+wait who wants to move it to a different fork? I think that’s not an option
+01:07:26	Ansgar Dietrichs:	Replying to "why not devnet-1?"
+
+we need this for fusaka
+01:07:36	terence:	Reacted to "we need this for fus..." with 👍
+01:07:37	Trent:	Replying to "why is there always ..."
+
+Are there other people with this view besides light client?
+01:07:37	Anders Elowsson:	Reacted to "we need this for fus..." with 👍
+01:07:38	Caspar Schwarz-Schilling:	Reacted to "we need this for fus..." with 👍
+01:07:39	lightclient:	Replying to "why is there always ..."
+
+i mean the fear is we push L2s away from ethereum
+01:07:40	Mario Vega:	Which EIP?
+01:07:46	Tim Beiko:	Replying to "Which EIP?"
+
+7918
+01:07:48	Nicolas Consigny:	Reacted to "It’s a NIST curve.  ..." with 💯
+01:07:49	Łukasz Rozmej:	Reacted to "why is there always ..." with 👍
+01:07:49	Ahmad Bitar | Nethermind:	Reacted to "we need this for fus..." with 👍
+01:07:52	Marc:	Reacted to "we need this for fus…" with 👍
+01:07:57	Mario Vega:	Reacted to "7918" with 👍🏼
+01:07:59	stokes:	Do we know how much 7918 would raise fees?
+01:08:02	Phil Ngo:	Reacted to "we need this for fus..." with 👍
+01:08:03	Nicolas Consigny:	Reacted to "how can zero be unde..." with 😂
+01:08:06	stokes:	I feel like that would help ground the convo
+01:08:08	Marc:	Replying to "why not devnet-1?"
+could do devnet-2 to have a bit longer to finalise spec details
+01:08:31	Nicolas Consigny:	Replying to "how can zero be unde..."
+
+Ask the Move language based apps 🥲
+01:08:35	terence:	Replying to "why is there always ..."
+
+This is good for L2, they actually want this EIP
+01:08:40	Ansgar Dietrichs:	if we need one more round of “should we even ship this in Fusaka at all”, we should do that now. we won’t have any new info in 2 weeks
+01:08:47	Trent:	Replying to "how can zero be unde..."
+
+Too niche Nico lol
+01:08:47	Ben Adams:	Reacted to "This is good for L2,..." with 👍
+01:08:49	Ahmad Bitar | Nethermind:	Reacted to "This is good for L2,..." with 👍
+01:08:52	FLCL:	add this constant to schedule 😁?
+01:08:57	Trent:	Reacted to "This is good for L2,..." with 👍
+01:09:05	Trent:	Replying to "why is there always ..."
+
+I think this is worth surfacing terence!
+01:09:38	Justin Florentine (Besu):	Reacted to "why is there always ..." with 👍
+01:09:47	Tim Beiko:	Replying to "why is there always ..."
+
+Yes @terence can you expand on it on the call?
+01:10:10	Ahmad Bitar | Nethermind:	if we dont raise the base fee, L2s then need to pay extra priority fee to the builders to compete with other L2s on inclusion. Builders dont really want to include a lot of blobs
+01:11:59	lightclient:	won’t the curve become more smooth when demand levels out in line with supply?
+01:12:04	Francesco:	One way to think about this is there’s two separate goals:
+Solve the ramp-up problem by keeping the blob fee always at least in the ballpark of the execution fee
+Charge blobs something that’s more related to the actual compute cost
+
+We can solve 1. regardless, and then depending on the parameter setting we might go more or less towards 2. (e.g. we can decide to still keep blob-related computation more or less underpriced)
+01:12:36	lightclient:	Reacted to "One way to think abo..." with 👍
+01:12:42	Trent:	Reacted to "if we dont raise the..." with 👍
+01:12:43	Anders Elowsson:	Replying to "One way to think abo..."
+
+Right so that is the great thing by shipping EIP-7918 and starting at a lower range
+01:12:49	stokes:	Replying to "One way to think abo..."
+
+Doesn’t “keep blob fee in ballpark of execution fee” imply raising the blob fee substantially?
+01:13:12	Francesco:	Replying to "One way to think abo..."
+
+Ballpark could mean 1/10, 1/100, not necessarily even the same order of magnitude
+01:13:12	Ben Adams:	Replying to "One way to think abo..."
+
+Only when no blobs are being posted
+01:13:27	Anders Elowsson:	Replying to "One way to think abo..."
+
+It would be at 10% as per recent discussion
+01:13:31	stokes:	Replying to "One way to think abo..."
+
+Ok then I think im on board
+01:13:52	Caspar Schwarz-Schilling:	Reacted to "One way to think abo..." with 👍
+01:14:14	Francesco:	Replying to "One way to think abo..."
+
+Then there’s a separate strategic discussion around actually charging “the fair price” for computation, but we don’t need to do that for the EIP to be useful
+01:14:26	stokes:	summary: makes fee more predictable and we can agree later on the exact fee level
+
+So this sounds good
+01:14:29	Ansgar Dietrichs:	how to think about this EIP in general:
+
+The “effective control floor” for the blob basefee varies when the normal gas basefee goes up and down.
+
+If gas on mainnet is cheap, already a relatively cheap blob basefee allows for price discovery. But if the mainnet gas is high, the blob basefee floor also needs to be a bit higher, otherwise the normal gas cost of a blob tx just completely dominates the total cost
+01:14:46	Anders Elowsson:	Reacted to "Then there’s a separ..." with 👍
+01:14:54	stokes:	Reacted to "Then there’s a separ..." with 👍
+01:14:54	Caspar Schwarz-Schilling:	Reacted to "Then there’s a separ..." with 👍
+01:14:56	Francesco:	Reacted to "summary: makes fee m..." with 👍
+01:14:58	Caspar Schwarz-Schilling:	Reacted to "summary: makes fee m..." with 👍
+01:15:05	Anders Elowsson:	Reacted to "how to think about t..." with 👍
+01:15:15	Trent:	Reacted to "how to think about t..." with 👍
+01:15:27	Justin Florentine (Besu):	to me this falls in the category of servicing app devs
+01:15:36	Luis Pinto | Besu:	Reacted to "to me this falls in ..." with ➕
+01:16:06	Vectorized (Solady):	imo, its not adding new functionality.
+01:16:07	Roman:	It would break current men boost flow
+01:16:56	Marc:	Nethermind would support in devnet 1 or 2
+01:17:06	Ben Adams:	Reacted to "Nethermind would sup..." with 👍
+01:17:26	Vectorized (Solady):	i propose replacing PAY with CLZ.
+01:17:26	lightclient:	why not remove? if we’re going to do 6 months forks lets just revisit later
+01:17:56	Marius:	Replying to "i propose replacing ..." 
+
+ Very similar features tbh
+01:17:58	Luis Pinto | Besu:	Replying to "i propose replacing ..."
+
+Why not both?
+01:18:08	lightclient:	Reacted to "Very similar feature..." with 🧑‍🎓
+01:18:11	Vectorized (Solady):	Replying to "i propose replacing …"
+if we are ambitious, both is good
+01:18:12	lightclient:	Reacted to "Why not both?" with 🚀
+01:18:16	lightclient:	Reacted to "if we are ambitious,..." with 🚀
+01:18:16	Justin Florentine (Besu):	i'd like to hear stronger case for not breaking mev with PAY, i don't understand it enough to sympathize yet
+01:18:28	Barnabas:	so only 2 eip for devnet 1 ?
+01:18:37	lightclient:	Reacted to "so only 2 eip for de..." with 🚀
+01:18:37	Barnabas:	are we gonna let the devs slack off?
+01:18:41	lightclient:	Reacted to "are we gonna let the..." with 😦
+01:18:51	Ben Adams:	Reacted to "are we gonna let the..." with 🥱
+01:18:52	lightclient:	Replying to "are we gonna let the..."
+
+we have so many eips to review though ;)
+01:18:52	Maintainer.eth:	Reacted to "are we gonna let the..." with 🤣
+01:18:52	stokes:	Replying to "are we gonna let the..."
+
+Lets not bite off more than we can chew
+01:19:06	Tim Beiko:	https://ethereum-magicians.org/t/methodology-for-ethereum-testnet-networks/23164
+01:20:11	Sophia Gold:	I thought Sepolia was for app devs?
+01:20:18	Barnabas:	we had holesky as the last devnet to fork 😂
+01:20:21	Anders Elowsson:	Reacted to "One way to think abo..." with 👍
+01:20:23	Parithosh Jayanthi:	Reacted to "we had holesky as th..." with 😂
+01:20:31	lightclient:	Replying to "I thought Sepolia wa..."
+
+we realized that some apps need to use staking features
+01:20:42	nixo:	alon is here now
+01:20:44	Alon Muroch | SSVLabs:	Hi everyone!
+01:20:47	Marius:	Should be community driven imo
+01:20:53	Sophia Gold:	Reacted to "we realized that s..." with 👍
+01:21:09	Maintainer.eth:	Reacted to "Hi everyone!" with 👋
+01:21:10	Parithosh Jayanthi:	Replying to "Should be community ..."
+
+Didn’t work out so well when it was tried with holesky originally
+01:21:12	Barnabas:	I think the idea is to have devnet - x forks then sepolia/hoodi/mainnet
+01:21:39	Marius:	Replying to "Should be community ..." 
+
+ Welll...
+01:21:55	Marius:	Replying to "Should be community ..." 
+
+ That was maybe because of the team behind it
+01:22:04	Justin Florentine (Besu):	eternal mainnet shadow fork?
+01:22:58	Barnabas:	I don’t think we should have a “forever running testnet”
+01:23:20	lightclient:	i think we just rushed the deployment of pectra
+01:23:37	Barnabas:	Dev teams should have automated tools to deploy their stuff on testnets, if we have a very long running very stable testnet, then their tooling will get old, and become untested.
+01:23:46	stokes:	Reacted to "Dev teams should hav..." with 👍
+01:23:48	lightclient:	Replying to "i think we just rush..."
+
+we still need to test on the testnets, we just need to be more confident that we won’t break them
+01:23:54	lightclient:	Reacted to "Dev teams should hav..." with 👍
+01:23:56	Marius:	Replying to "I don’t think we sho..." 
+
+ I don't care, as long as its community driven and we don't need to do anything for it. Means apps using it should also run the nodes etc
+01:24:01	Roman:	We didn’t intentionally break holesky, promise
+01:24:03	Marc:	we could fork hoodi last and still have a bit of a gap to observe before mainnet
+01:24:42	Hadrien Croubois (OpenZeppelin):	Would state expiry make such a testnet viable ?
+01:24:51	lightclient:	Replying to "Would state expiry m..."
+
+it would help a lot
+01:24:54	Tim Beiko:	Replying to "Would state expiry m..."
+
+I think that would solve most issues
+01:24:57	lightclient:	Replying to "Would state expiry m..."
+
+but we still have some issues with eth supply
+01:25:10	Barnabas:	The community can launch a long running testnet if they want. But I don’t think we should do that.
+01:25:19	Marius:	Reacted to The community can la... with "👍"
+01:25:22	Parithosh Jayanthi:	Reacted to "The community can la..." with 👍
+01:26:11	lightclient:	holesky is designed to last 6 years, is that not enough?
+01:26:36	Barnabas:	Replying to "holesky is designed ..."
+
+was designed **
+01:26:43	lightclient:	Replying to "holesky is designed ..."
+
+yeah that is a different issue
+01:26:47	stokes:	Replying to "holesky is designed ..."
+
+Yeah aren’t we dropping in a few months
+01:27:14	lightclient:	we’ve only had 1 bug like this in modern history on testnets
+01:30:25	Francesco:	After mainnet would be very weird 😄We’d rather anything but mainnet breaks first
+01:31:00	Barnabas:	I’m really against running anything over 6years.
+01:31:07	Barnabas:	even 3yrs is too much imho.
+01:31:08	lightclient:	Reacted to "I’m really against r..." with 👍
+01:31:12	lightclient:	Replying to "After mainnet would ..."
+
+this ^^^^
+01:31:43	Csaba Kiraly:	Agree. The right question is: if one fails, which one your would choose? Obviously best if none, but if something is slipping through, I would prefer catching it on the one where apps are only tested.
+01:31:50	lightclient:	i think we’re over indexing on the bug on holesky
+01:31:55	Parithosh Jayanthi:	Reacted to "i think we’re over i..." with 👍🏽
+01:32:01	Marius:	Reacted to i think we’re over i... with "👍🏽"
+01:32:30	lightclient:	i think pectra was a mess and we were rushing to get the testnets launched when we should have relaxed a little more
+01:32:54	Csaba Kiraly:	Reacted to "i think we’re over i..." with 👍🏽
+01:33:08	Barnabas:	Replying to "i think pectra was a..."
+
+I still think it was good idea to launch hoodi tbh
+01:33:14	Tim Beiko:	Reacted to "I still think it was..." with 👍
+01:33:19	lightclient:	Replying to "i think pectra was a..."
+
+as opposed to?
+01:33:29	Csaba Kiraly:	Reacted to "I still think it was..." with 👍
+01:34:30	Vectorized (Solady):	Base Sepolia is now our preferred testnet ;)
+01:34:51	Justin Florentine (Besu):	app devs unite and re-use panda tech to shadow fork mainnet?
+01:36:05	Marius:	Hahaha rope in devs with a great testnet experience, dissapoint them on mainnet
+01:36:26	Barnabas:	Reacted to "Hahaha rope in devs ..." with 😂
+01:37:06	Barnabas:	You should push those applications to deploy on testnets
+01:37:21	Barnabas:	They should practice deploying on kurtosis
+01:37:37	lightclient:	can we talk about the RPC proposals?
+01:37:59	Parithosh Jayanthi:	Yeah we can work on pushing more people to deploy on hoodi
+01:38:12	Justin Florentine (Besu):	RPC call next monday if not
+01:38:17	Alon Muroch | SSVLabs:	Thank you everyone!
+01:38:23	Tim Beiko:	https://github.com/ethereum/execution-apis/issues/658
+01:38:26	Parithosh Jayanthi:	Reacted to "Thank you everyone!" with ❤️
+01:38:28	Tim Beiko:	Reacted to "Thank you everyone!" with ❤️
+01:38:35	nixo:	Reacted to "Thank you everyone!" with ❤️
+01:38:55	Barnabas:	I think its time to just yeet JSON-RPC altogether. 
+Lets just do REST.
+01:38:59	felix (eest):	Reacted to "Thank you everyone!" with ❤️
+01:39:08	Marius:	Rpc error codes, what a great idea :D
+01:39:19	Maintainer.eth:	Reacted to "Rpc error codes, wha..." with 😅
+01:39:20	Parithosh Jayanthi:	Reacted to "I think its time to ..." with 👍🏽
+01:39:25	Parithosh Jayanthi:	Reacted to "Rpc error codes, wha..." with 😅
+01:39:27	Karlos Zurutuza:	Reacted to "I think its time to ..." with 👍🏽
+01:39:30	Zane Starr:	👋 Hey Zane here from Open-RPC helping with error standardization in conjunction
+
+Execution-APIs issue:
+https://github.com/ethereum/execution-apis/issues/658
+
+
+Standardized Code Proposal:
+https://github.com/user-attachments/files/20363196/ENG-ERC_.Standardized.JSON-RPC.Error.Codes.and.Messages-210525-082426.pdf
+PR for execution Apis:
+https://github.com/ethereum/execution-apis/pull/653
+PR for rpctestgen:
+https://github.com/lightclient/rpctestgen/pull/42
+
+OpenRPC
+https://open-rpc.org
+OpenRPC Error groups Extension
+https://github.com/open-rpc/tools/tree/main/packages/extensions/src/x-error-groups
+OpenRPC - New Repo
+https://github.com/open-rpc/tools
+OpenRPC- Generator
+https://github.com/open-rpc/generator
+01:39:33	Barnabas:	Replying to "I think its time to ..."
+
+maybe something for glamsterdam?
+01:39:36	Luis Pinto | Besu:	Why do we have a standard around error codes AND messages?
+01:39:49	Justin Florentine (Besu):	Reacted to "Why do we have a sta..." with ➕
+01:39:49	Maintainer.eth:	Reacted to "👋 Hey Zane here fro..." with 🔥
+01:39:51	Parithosh Jayanthi:	Reacted to "👋 Hey Zane here fro..." with 🔥
+01:39:56	Marius:	Reacted to 👋 Hey Zane here fro... with "🔥"
+01:39:57	Tim Beiko:	What’s the best place to discuss this async, given we’re out of time?
+01:40:05	Simsonraj Easvarasakthi:	Reacted to "👋 Hey Zane here fro..." with 🔥
+01:40:06	Mercy Boma Naps-Nkari:	Reacted to "👋 Hey Zane here fro..." with 🔥
+01:40:11	Justin Florentine (Besu):	rpc channel in discord
+01:40:23	Barnabas:	#json-rpc-api
+01:40:25	felix (eest):	Reacted to "👋 Hey Zane here..." with 🔥
+01:40:27	Maintainer.eth:	Thank you all, GM!
+01:40:31	Luis Pinto | Besu:	Replying to "Why do we have a sta..."
+
+It feels like clients can already work with error codes but maybe I’m missing something
+01:41:35	Justin Florentine (Besu):	sorry, not ythoclock its on the calendar, and eth/pm repo
+01:41:53	Tim Beiko:	https://eips.ethereum.org/EIPS/eip-7939
+01:41:58	Tim Beiko:	https://github.com/ethereum/EIPs/pull/9792

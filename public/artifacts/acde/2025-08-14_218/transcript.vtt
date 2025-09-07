@@ -1,0 +1,2706 @@
+WEBVTT
+
+1
+00:06:25.910 --> 00:06:30.169
+Tim Beiko: Welcome, everyone. We'll get started in a minute or so.
+
+2
+00:07:13.570 --> 00:07:16.619
+Tim Beiko: Okay, Josh, do you want to put us on the livestream?
+
+3
+00:07:25.500 --> 00:07:26.339
+Josh Davis: your life.
+
+4
+00:07:27.050 --> 00:07:34.510
+Tim Beiko: Thank you. Welcome, everyone, to ACDE number 218.
+
+5
+00:07:34.610 --> 00:07:52.960
+Tim Beiko: Couple things on the agenda today. So, on the Fusaka side, I will discuss, what, is the latest with DevNet4, and, yeah, how the issue has been diagnosed, and where to go from here. Can also discuss the timelines, going forward.
+
+6
+00:07:53.290 --> 00:08:05.299
+Tim Beiko: And then on Glamsterdam, we wanted to finalize the discussion around the headliners, that, we, been having over the past couple weeks. And I think,
+
+7
+00:08:05.580 --> 00:08:22.650
+Tim Beiko: after that, it's probably worth discussing what we expect as the, the scope for the fork, or potential timelines, and how we want to think about that. And then, Tony had some updates on block access lists, and I think Jared had some, questions to discuss as well.
+
+8
+00:08:22.990 --> 00:08:31.520
+Tim Beiko: If we have time beyond that, Mikael had an update on Safe Head, and then there were two, EIPs that people wanted to bring up.
+
+9
+00:08:31.670 --> 00:08:32.450
+Tim Beiko: …
+
+10
+00:08:33.110 --> 00:08:40.500
+Tim Beiko: But to kick us off, I don't know if Barnabas is on the call, do you want to give an update on DevNet 4 and what happened there?
+
+11
+00:08:41.120 --> 00:09:00.659
+Barnabas: Sure. So, demo for, launched last week, Friday, and, we went through a successful full transition. We went through successful BP01, BPO2, and then once we hit, BPO3, we started seeing some, issues, regarding gas and aragon.
+
+12
+00:09:01.190 --> 00:09:02.829
+Barnabas: their, …
+
+13
+00:09:03.510 --> 00:09:14.369
+Barnabas: basically calculation, for the blood fee, was, different than every other EL, and therefore they, decided to fork off.
+
+14
+00:09:15.580 --> 00:09:16.550
+Barnabas: Gaff?
+
+15
+00:09:16.660 --> 00:09:27.600
+Barnabas: issue has been resolved since. Aragon, as far as I know, they are still looking into it, and we still need to discuss exactly how we want to process this.
+
+16
+00:09:28.150 --> 00:09:45.590
+Barnabas: And in the meantime, we also saw some issues on the CS side, especially Lighthouse. Lighthouse had a hard time finding peers and finding valid peers, and they, had issues, blocking invalid peers.
+
+17
+00:09:46.060 --> 00:09:49.870
+Barnabas: … They're currently still investigating, …
+
+18
+00:09:50.090 --> 00:09:53.389
+Barnabas: They're just unable to sync up to head at this point.
+
+19
+00:09:54.090 --> 00:09:54.940
+Barnabas: …
+
+20
+00:09:55.980 --> 00:10:07.470
+Barnabas: That is the two main factors. Unfortunately, all of our boot nodes were Lighthouse and GAT pairs, and this also caused some issues in initial peering.
+
+21
+00:10:07.800 --> 00:10:15.059
+Barnabas: in finding valid peers. Since then, we have changed half of our book nodes into, Prism and GAF.
+
+22
+00:10:15.210 --> 00:10:22.439
+Barnabas: And, but we still have some issues, regarding, filling up the boot nodes with, peer list.
+
+23
+00:10:24.970 --> 00:10:33.820
+Barnabas: Hopefully, we can get into a finalized train by maybe end of today, and … do BPO5, tomorrow.
+
+24
+00:10:36.500 --> 00:10:40.239
+Tim Beiko: Thanks, and I guess to get back to a finalized chain, do we expect, like.
+
+25
+00:10:40.450 --> 00:10:45.350
+Tim Beiko: A lot of the validators that get slashed, or what will be the process?
+
+26
+00:10:45.520 --> 00:10:55.040
+Barnabas: No, so ideally we want to have a fixed lighthouse image, because a pretty big portion of the network is lighthouse.
+
+27
+00:10:55.230 --> 00:11:10.680
+Barnabas: We also have some issues with Nimbus SuperNodes, unable to fetch any valid peers. Once either Nimbus or Lighthouse manage to get the SuperNodes back up and running, then we should be able to finalize.
+
+28
+00:11:13.800 --> 00:11:20.349
+Barnabas: A huge portion of the network is controlled by supernodes, just like main net would, basically.
+
+29
+00:11:21.220 --> 00:11:27.379
+Barnabas: So, even if none of the full nodes are working, only disappearance should be able to finalize it.
+
+30
+00:11:29.580 --> 00:11:37.270
+Tim Beiko: Got it. There's a question by Marius asking me how far away we are from a lighthouse image. I don't know if anyone from Lighthouse is on the call.
+
+31
+00:11:38.040 --> 00:11:44.800
+pawan: Yeah, like, we have tested out a bunch of fixes, but we still haven't, …
+
+32
+00:11:44.980 --> 00:12:00.010
+pawan: like, we haven't been able to reliably sync yet, so, yeah, we have a few more ideas now that we are going to test, and yeah, hopefully we have something out by… in a couple of hours that at least,
+
+33
+00:12:00.170 --> 00:12:04.920
+pawan: Like, syncs given, like, certain conditions or something like that.
+
+34
+00:12:05.680 --> 00:12:07.370
+pawan: Of having super nodes.
+
+35
+00:12:09.660 --> 00:12:10.340
+Tim Beiko: Thanks.
+
+36
+00:12:10.630 --> 00:12:15.500
+Tim Beiko: And was Lighthouse the only CL client that had issues after the bug, or…?
+
+37
+00:12:16.990 --> 00:12:19.410
+Tim Beiko: Were there other… were there other teams with issues?
+
+38
+00:12:19.740 --> 00:12:31.110
+Barnabas: So Nimbus also is having issues right now, still. They, as I mentioned, they don't have many peers, and also, quite some super nodes are offline.
+
+39
+00:12:33.560 --> 00:12:39.170
+Tim Beiko: Okay, and are we waiting or expecting a fix from Nimbus as well for this?
+
+40
+00:12:41.820 --> 00:12:44.259
+Barnabas: Yeah, I have also reached out to them.
+
+41
+00:12:49.740 --> 00:12:54.960
+Barnabas: Also, there was quite some, very deep reorgs, and, never mind.
+
+42
+00:12:55.080 --> 00:13:00.340
+Barnabas: Got stuck in a weird loop for, some client pairs.
+
+43
+00:13:03.310 --> 00:13:09.759
+Barnabas: But they were also investigating, but they said that it's most likely caused by a debugging Lighthouse.
+
+44
+00:13:12.070 --> 00:13:12.770
+Tim Beiko: I see.
+
+45
+00:13:17.600 --> 00:13:23.410
+Tim Beiko: And then, on the EL side, so, Barnabas, you had a,
+
+46
+00:13:23.970 --> 00:13:33.060
+Tim Beiko: the proposal, at least a summary of the discussion in terms of what to do about the update fraction calculation.
+
+47
+00:13:34.310 --> 00:13:42.590
+Tim Beiko: Does everyone agree with what you proposed? Then I'll post it in the chat, but… … Yeah, Andrew?
+
+48
+00:13:44.170 --> 00:13:55.900
+Andrew Ashikhmin: Well, as I mentioned in the chat, I think, that, we should, actually, make a different choice. We should,
+
+49
+00:13:56.370 --> 00:14:08.829
+Andrew Ashikhmin: Like, at the moment, it seems to me that we want to prioritize implementation, simplicity of our protocol consistency, but I think that's the wrong decision.
+
+50
+00:14:09.000 --> 00:14:13.619
+Andrew Ashikhmin: Because if we… for, …
+
+51
+00:14:13.770 --> 00:14:22.410
+Andrew Ashikhmin: go to the current implementation in Nethermind and Wrath and Bezu. The problem is that it's just inconsistent. It uses…
+
+52
+00:14:23.090 --> 00:14:37.690
+Andrew Ashikhmin: a blob-based fee that is not an actual blob-based fee of any block, and I understand that it is slightly more difficult to implement the consistent version, but I think
+
+53
+00:14:38.160 --> 00:14:44.019
+Andrew Ashikhmin: Again, it's just, to me, it sounds… Like, well, we, we…
+
+54
+00:14:44.180 --> 00:14:54.129
+Andrew Ashikhmin: We haven't made any hard fork on a public testnet yet, so we still have time to do it properly.
+
+55
+00:14:54.370 --> 00:14:59.030
+Andrew Ashikhmin: And, to my mind, like, to do it properly is to make the…
+
+56
+00:14:59.510 --> 00:15:06.039
+Andrew Ashikhmin: Things, easy on the pro… and, like, consistent on the protocol side.
+
+57
+00:15:06.330 --> 00:15:11.259
+Andrew Ashikhmin: Rather than prioritize implementation over protocol consistency.
+
+58
+00:15:22.210 --> 00:15:27.440
+Tim Beiko: Okay, there's some comments by Francesco and LaScience in the chat.
+
+59
+00:15:38.810 --> 00:15:43.480
+Tim Beiko: Yeah, I don't know if… Anyone else has opinions on this?
+
+60
+00:15:43.770 --> 00:15:53.790
+Tim Beiko: And sorry, like, yeah, okay, I got confused with Barnabas' message, so, the message I posted is not the same thing, but on the fix for the current DevNet4 bug.
+
+61
+00:15:53.960 --> 00:15:55.420
+Tim Beiko: Yeah, dead?
+
+62
+00:15:56.590 --> 00:16:02.210
+Ben Adams: Yeah, so… The two ways of doing it are using the
+
+63
+00:16:02.600 --> 00:16:08.169
+Ben Adams: the blob parameters from the current block, or the blob parameters from the parent block. And…
+
+64
+00:16:09.610 --> 00:16:20.599
+Ben Adams: If you use the one from the current block, then when a fork happens, the parameters change, whereas if you use it from the parent block, you have to wait 2 blocks after a fork for the
+
+65
+00:16:21.070 --> 00:16:23.800
+Ben Adams: All the changes to have occurred, so…
+
+66
+00:16:26.940 --> 00:16:28.650
+Ben Adams: Yeah, it seems better to…
+
+67
+00:16:29.110 --> 00:16:36.249
+Ben Adams: alter the parameters. Otherwise, we need to change the spec to be parameter-based rather than constant-based.
+
+68
+00:16:40.360 --> 00:16:42.240
+Tim Beiko: Thanks, Felix.
+
+69
+00:16:42.630 --> 00:16:54.270
+Felix (Geth): Yeah, I'm just wondering, I mean, you… this is directed at Ben, so you have brought this up, this argument, like, multiple times, that, like, you know, it takes an additional block for the fork to, like, take effect.
+
+70
+00:16:54.520 --> 00:17:01.499
+Felix (Geth): But I don't really see that as… like, I don't fully understand this argument, like, what's the… what's the issue with it, or what's the….
+
+71
+00:17:04.060 --> 00:17:05.200
+Ben Adams: Right, because you're, you're buying.
+
+72
+00:17:05.200 --> 00:17:05.640
+Felix (Geth): your brother.
+
+73
+00:17:05.640 --> 00:17:06.390
+Ben Adams: You're both holding the.
+
+74
+00:17:06.390 --> 00:17:07.109
+Felix (Geth): on the….
+
+75
+00:17:07.980 --> 00:17:12.609
+Ben Adams: current fork, and also the prior fork for some of the parameters on.
+
+76
+00:17:17.780 --> 00:17:25.359
+Felix (Geth): So it's basically that what the argument is that the client has to be aware of both fork's parameters, or….
+
+77
+00:17:28.210 --> 00:17:33.529
+Ben Adams: Yeah, I mean, I don't know if it's a huge… Issue, either way.
+
+78
+00:17:33.660 --> 00:17:38.320
+Ben Adams: But, … But, you know, we have to decide one way of doing it.
+
+79
+00:17:40.240 --> 00:17:42.570
+Tim Beiko: Right. Let's see, yeah, bye.
+
+80
+00:17:43.620 --> 00:17:49.259
+lightclient: Yeah, I just want to say, I feel like, after looking into this a bit more, I also kind of agree with…
+
+81
+00:17:49.480 --> 00:17:51.250
+lightclient: with Ben, and …
+
+82
+00:17:51.670 --> 00:18:05.530
+lightclient: the choice to have the parameters come into effect on the fork block. I think I recall we actually discussed something extremely similar to this during Pectra with the block throughput increase.
+
+83
+00:18:05.730 --> 00:18:14.830
+lightclient: Because the update fraction did… did also change there, and I think what we ended up doing is we changed it on the fork block, which is why…
+
+84
+00:18:15.120 --> 00:18:19.510
+lightclient: You know, everybody has access to the head block time.
+
+85
+00:18:19.800 --> 00:18:23.519
+lightclient: … To, to make that change.
+
+86
+00:18:23.660 --> 00:18:27.080
+lightclient: So, I think it's actually more consistent to…
+
+87
+00:18:27.340 --> 00:18:36.420
+lightclient: to do what Ben is saying here. The question… that I have is that… Yes, it's an unnatural…
+
+88
+00:18:36.870 --> 00:18:40.500
+lightclient: It's not a natural block base fee.
+
+89
+00:18:40.860 --> 00:18:58.839
+lightclient: But we could resolve that by changing 7918 to calculate its value based on the current header's excess blob gas instead of the parent. Because this is how blob base fee is computed for the EVM.
+
+90
+00:18:59.060 --> 00:19:09.370
+lightclient: And I feel like if we do that, then we're consistent and correct with everything across the… every different, potential place where a blob-based fee exists.
+
+91
+00:19:12.180 --> 00:19:14.650
+Tim Beiko: Is there any downside of doing that?
+
+92
+00:19:15.030 --> 00:19:20.699
+Tim Beiko: Aside from some teams will have to change their code, and, like, we might have to write… well, we'll have to write some tests with.
+
+93
+00:19:22.440 --> 00:19:28.810
+lightclient: Yeah, I'm not sure. I would like to know from Anders, or anyone else who's more familiar with 7918.
+
+94
+00:19:32.550 --> 00:19:34.569
+Tim Beiko: I mean, Mario, I don't know.
+
+95
+00:19:35.660 --> 00:19:53.670
+Mario Vega: Yeah, I'm not sure what the… I really cannot read the sentiment of one option against the other, but from the testing and execution spec side, I think it's much easier if we don't need to have to access the parent block, the parent fork.
+
+96
+00:19:53.810 --> 00:20:08.710
+Mario Vega: block parameters, because we don't have a mechanism to do that in execution specs. It's not impossible, but I think that highlights the complexity, right? So, I would heavily lean towards
+
+97
+00:20:08.790 --> 00:20:21.730
+Mario Vega: only using the current block… the current block forks parameters. So BP01, it's enabled at fork N, and we use that, those parameters only, not… nothing… nothing to do with Osaka.
+
+98
+00:20:21.840 --> 00:20:24.440
+Mario Vega: Parameters, if that makes sense, yeah.
+
+99
+00:20:27.800 --> 00:20:29.180
+Tim Beiko: Thanks, Minos.
+
+100
+00:20:31.100 --> 00:20:43.250
+Milos: Yeah, I wrote on a Discord, I just want to mention it here, if people didn't see it. The similar problem will arise with the 6-second slot. I started prototyping that, and
+
+101
+00:20:43.740 --> 00:20:53.319
+Milos: You also have, like, several parameters are going to change there, and the gas limit will have to be basically halved at the fork boundary.
+
+102
+00:20:53.480 --> 00:21:11.459
+Milos: And the way that it makes sense… now, I'm not saying maybe implementation-wise is the easiest way to do it, but the way that it makes sense to do it is to do all the calculation of the base fee and the gas limit and everything based on the
+
+103
+00:21:11.630 --> 00:21:13.350
+Milos: parent values.
+
+104
+00:21:13.480 --> 00:21:30.299
+Milos: And then, if you have to do some post-modification, like, for example, in the case of 6 plus finality, to divide the gas limit by 2, you would do that after all the calculation is done for the parent. Otherwise, you can get into some… a bit tricky and ecosystem behaviors, but
+
+105
+00:21:30.470 --> 00:21:41.230
+Milos: I can understand that, for example, implementing one way or the other might make… might make things easier, either on the spec or on the clients, and it's probably not going to…
+
+106
+00:21:41.230 --> 00:21:55.779
+Milos: like, disrupt anything if one block is not calculated based on the, let's say, logical form or anything like that, but I just want to highlight that for the 6 seconds block, we will have the same issue, and there, the parameters matter maybe a bit more of how you
+
+107
+00:21:55.830 --> 00:22:00.010
+Milos: do the things, but we can do it one way or the other there as well, so…
+
+108
+00:22:00.110 --> 00:22:02.929
+Milos: I just wanted to highlight that that's another thing.
+
+109
+00:22:07.330 --> 00:22:14.120
+Tim Beiko: Got it, thank you. There's the side conversation in the chat that basically says we…
+
+110
+00:22:14.440 --> 00:22:17.830
+Tim Beiko: Also, yeah, can't use the current block.
+
+111
+00:22:18.110 --> 00:22:25.859
+Tim Beiko: … Excess blood gas, … So, yes.
+
+112
+00:22:27.000 --> 00:22:36.659
+Tim Beiko: Is this something we should align on right now, or do we want to discuss this further async and make a final decision on Monday's testing call?
+
+113
+00:22:36.660 --> 00:22:39.350
+Felix (Geth): I think we should definitely decide it now.
+
+114
+00:22:39.600 --> 00:22:39.990
+Tim Beiko: Okay.
+
+115
+00:22:39.990 --> 00:22:40.540
+Felix (Geth): forget.
+
+116
+00:22:40.650 --> 00:22:49.309
+Felix (Geth): just because, like, this issue is pretty silly. I mean, we all agree the impact is, like, it doesn't matter, so this is just splitting hairs at a, like.
+
+117
+00:22:49.740 --> 00:22:56.840
+Felix (Geth): very high level here, so… We could… we just take it to a vote, or like…
+
+118
+00:22:56.950 --> 00:22:58.710
+Felix (Geth): Whatever, but we just… we have to go.
+
+119
+00:22:58.710 --> 00:22:59.059
+Tim Beiko: So I guess.
+
+120
+00:22:59.060 --> 00:22:59.490
+Felix (Geth): Yes, it's….
+
+121
+00:23:00.440 --> 00:23:02.810
+Tim Beiko: what… …
+
+122
+00:23:06.650 --> 00:23:07.470
+Tim Beiko: Yeah.
+
+123
+00:23:07.630 --> 00:23:11.559
+Tim Beiko: Can we use the current parameters? I guess my understanding is….
+
+124
+00:23:11.940 --> 00:23:19.479
+Roman: Yeah, sorry, this is the reason why the fork happened, because half of the clients are using, like, current update.
+
+125
+00:23:23.930 --> 00:23:29.220
+Tim Beiko: Okay, so… Anyone opposed to using the current parameters.
+
+126
+00:23:29.440 --> 00:23:35.829
+Tim Beiko: … The current block's parameters, on the fork block.
+
+127
+00:23:36.110 --> 00:23:37.439
+Tim Beiko: Rather than the parent.
+
+128
+00:23:39.860 --> 00:23:45.580
+Andrew Ashikhmin: Well, I'm opposed, but, I mean, if… if I'm overrude, that's fine.
+
+129
+00:23:47.490 --> 00:23:52.200
+Tim Beiko: Okay, then yes, I think we should move forward for that, just to… oh, sorry, Felix, you were gonna say something?
+
+130
+00:23:52.330 --> 00:24:07.749
+Felix (Geth): Sorry, yeah, I just really wanted to say that, like, this decision is great, but we should also figure out a way to specify this, like, how are we gonna explain this in the EAP, or in the specs, or whatever, and I think this is something we can do async.
+
+131
+00:24:08.380 --> 00:24:11.840
+Tim Beiko: Yeah, I was gonna ask who wants to own that.
+
+132
+00:24:11.960 --> 00:24:16.089
+Tim Beiko: It would be good to have someone who can put a PR up,
+
+133
+00:24:16.360 --> 00:24:19.960
+Tim Beiko: on the EIP, and ideally the specs or tests today.
+
+134
+00:24:20.640 --> 00:24:23.470
+Tim Beiko: Or tomorrow? Yeah, Roman, and then Ben?
+
+135
+00:24:24.010 --> 00:24:30.419
+Roman: Yeah, I think that the fork happened exactly because, like, people treat the…
+
+136
+00:24:30.540 --> 00:24:39.130
+Roman: the spec differently? Because in my mind, it's already clear that the, …
+
+137
+00:24:39.800 --> 00:24:54.660
+Roman: the calculation function is defined within the fork, it uses the fork constant, and it does not resolve the parameters based on the header timestamp. It just takes header as an input.
+
+138
+00:24:55.660 --> 00:24:56.720
+Roman: So….
+
+139
+00:24:56.720 --> 00:24:58.699
+lightclient: The header is the parent header.
+
+140
+00:24:59.890 --> 00:25:05.810
+Roman: Yeah, the print header, but the function is defined by the hard fork.
+
+141
+00:25:05.980 --> 00:25:08.660
+Roman: And the function uses the constant.
+
+142
+00:25:09.740 --> 00:25:11.759
+lightclient: I think it's not that clear.
+
+143
+00:25:12.190 --> 00:25:15.129
+lightclient: I think we need to make it clear in the youth.
+
+144
+00:25:19.850 --> 00:25:25.769
+Tim Beiko: So I guess, who wants to own updating the EIP and ideally the test cases?
+
+145
+00:25:34.850 --> 00:25:52.060
+Mario Vega: I want to speak on behalf of execution specs. I think… I mean, as far as I can see now, there's nothing to update in the execution specs, because basically what Roman exactly said. So, the fork is…
+
+146
+00:25:52.200 --> 00:26:09.549
+Mario Vega: you already decided which logic to use. If you look at the header timestamp, you then decide, okay, I'm gonna go into this fork in the execution specs, and that's what I'm gonna use. And inside of that, you will find every constant that you need, you will find everything that you need. So I don't think…
+
+147
+00:26:09.620 --> 00:26:12.989
+Mario Vega: It's unclear on the specs, maybe it is unclear in the EAB.
+
+148
+00:26:13.120 --> 00:26:16.839
+Mario Vega: For the specs, of course, we can take care of that.
+
+149
+00:26:16.840 --> 00:26:17.200
+Tim Beiko: And then….
+
+150
+00:26:17.200 --> 00:26:19.730
+Mario Vega: The EIP, I'm not sure how to make it better, to be honest.
+
+151
+00:26:20.310 --> 00:26:29.970
+Tim Beiko: Okay, And they're saying he can fix the EIPs today. One thing that I guess we should probably also have is, can we have, like, a static test somewhere
+
+152
+00:26:30.300 --> 00:26:36.679
+Tim Beiko: For this, so that, … Yeah, we test the spec behavior explicitly.
+
+153
+00:26:36.680 --> 00:26:44.280
+Mario Vega: We'll make, we'll make a release. If not a full release, we'll try to make, make sure that we have the side effects,
+
+154
+00:26:44.580 --> 00:26:47.720
+Mario Vega: Static tests out, by today or tomorrow, yeah.
+
+155
+00:26:48.840 --> 00:26:49.690
+Tim Beiko: Some links.
+
+156
+00:26:51.140 --> 00:26:52.430
+Tim Beiko: Ben?
+
+157
+00:26:52.940 --> 00:26:59.629
+Ben Adams: Should this be, like, an assumed precedent? And if we…
+
+158
+00:27:00.040 --> 00:27:03.180
+Ben Adams: If it needs to, like, reach into the parent.
+
+159
+00:27:03.390 --> 00:27:06.190
+Ben Adams: There, then that's, like, the exception.
+
+160
+00:27:07.500 --> 00:27:09.410
+Ben Adams: We got prior fork parameters.
+
+161
+00:27:12.860 --> 00:27:21.649
+Ben Adams: Because I've heard that this has been a question on a number of VIPs before, whether to use, like, the prior fork or the current fork.
+
+162
+00:27:25.900 --> 00:27:35.800
+Tim Beiko: … Yeah, it might be worth asking that in the chat and seeing It's… Anyone disagrees?
+
+163
+00:27:37.280 --> 00:27:37.920
+Felix (Geth): Sorry.
+
+164
+00:27:37.920 --> 00:27:39.500
+lightclient: What was the proposal?
+
+165
+00:27:39.500 --> 00:27:48.440
+Tim Beiko: Should this behavior of using the current block to calculate things at port boundaries be our… basically our default for all the IPs?
+
+166
+00:27:55.400 --> 00:27:55.880
+lightclient: Probably?
+
+167
+00:27:55.880 --> 00:28:00.650
+Felix (Geth): It's not possible to answer this, yeah? Like, we cannot answer this in a general way. Okay, okay.
+
+168
+00:28:00.650 --> 00:28:02.190
+Tim Beiko: So, yeah, yeah.
+
+169
+00:28:02.280 --> 00:28:05.269
+Felix (Geth): Ansgar has a comment saying that we should….
+
+170
+00:28:06.130 --> 00:28:13.150
+Tim Beiko: Oh, sorry, I've got the comment saying that we should just have the pressing do we explicitly specify it in the EAP every time?
+
+171
+00:28:15.890 --> 00:28:17.230
+Tim Beiko: That sounds reasonable.
+
+172
+00:28:18.820 --> 00:28:24.439
+Felix (Geth): I just want to quickly say that, and then I'm gonna… I'll be done. So, the… the…
+
+173
+00:28:25.020 --> 00:28:32.859
+Felix (Geth): the problem with this whole thing is just that I think this is more an issue of, like, people just having a different model of these EIP
+
+174
+00:28:32.900 --> 00:28:51.300
+Felix (Geth): constants and parameters, and it is always going to be the question, like, now that we have all these eaps, which are, you know, which basically try to update the values of certain parameters, we're going to be running into this more often, because within the clients, it's not always… we don't all handle it the same way.
+
+175
+00:28:51.330 --> 00:29:08.429
+Felix (Geth): basically how the values of these concepts are resolved, or how this whole system even works, and it totally doesn't match the spec. And in the past, these things kind of just didn't happen, because we always just introduce new features with new parameters, but we never really modified the parameters, so now that we're kind of doing that.
+
+176
+00:29:08.460 --> 00:29:12.320
+Felix (Geth): I think this is why we're seeing this And…
+
+177
+00:29:12.910 --> 00:29:15.639
+Felix (Geth): we do have to figure out a way, I think.
+
+178
+00:29:16.390 --> 00:29:35.120
+Felix (Geth): in general… I mean, in the specs, it's pretty clear, because the executable spec is just code, so obviously you can run it, and that defines the behavior. So either this will be the point now where we just say, you know what, guys? Instead of always looking at the EAP and trying to guess it from the text, we can just look at the spec. I mean, to be honest, we should have done it in this case. Like, the spec is clear now.
+
+179
+00:29:35.570 --> 00:29:41.630
+Felix (Geth): But, … Also, within the EAP, it's maybe pretty important to figure out some way
+
+180
+00:29:42.070 --> 00:29:44.880
+Felix (Geth): Just making it very clear for all of us.
+
+181
+00:29:45.360 --> 00:29:57.309
+Felix (Geth): how these parameters work, and, like, what is the value… like, which value of the parameter is assumed in every context? Like, at the moment, it's just basically, like, when you're processing block X, then you're using the
+
+182
+00:29:57.540 --> 00:30:03.220
+Felix (Geth): parameters, which are defined by the fork which is active at block X, but this is…
+
+183
+00:30:03.800 --> 00:30:06.039
+Felix (Geth): I don't think this was so clear before.
+
+184
+00:30:06.490 --> 00:30:07.530
+Felix (Geth): Honestly.
+
+185
+00:30:08.950 --> 00:30:18.489
+Tim Beiko: Yeah, and I guess this was also my point, that I raised in the Discord around, like, you know, where and how we should test this. Like, we found this on the DevNet, and… but yes, it…
+
+186
+00:30:19.110 --> 00:30:26.109
+Tim Beiko: It feels like these are the types of things where we should have, like, a static reference that we're, you know, high
+
+187
+00:30:26.440 --> 00:30:28.960
+Tim Beiko: High confidence that the clients,
+
+188
+00:30:29.170 --> 00:30:31.679
+Tim Beiko: All have the same behavior, so….
+
+189
+00:30:32.210 --> 00:30:39.719
+Felix (Geth): I mean, we would have gotten to the stat test sooner or later. I think it's just more the question of, like, it just wasn't really done yet, but it would have been done.
+
+190
+00:30:40.040 --> 00:30:43.160
+Felix (Geth): Soon, like, this is not, like, we wouldn't…
+
+191
+00:30:44.940 --> 00:30:49.929
+Felix (Geth): It was just a matter of, like, basically the testing team not getting to this area, like….
+
+192
+00:30:51.680 --> 00:30:53.180
+Tim Beiko: Andrew?
+
+193
+00:30:53.880 --> 00:31:13.879
+Andrew Ashikhmin: Yeah, I wanted to comment on Roman's point. So, to me, it was clear, like, when I was reading this spec, it was clear… the other interpretation was clear in my head, because my assumption was that this spec used pure mathematical functions.
+
+194
+00:31:14.300 --> 00:31:20.720
+Andrew Ashikhmin: And, like, in Roman's interpretation, it uses global variables.
+
+195
+00:31:20.740 --> 00:31:37.360
+Andrew Ashikhmin: And, we all know that global variables is actually… they are error-prone, so my suggestion would be to actually to strive to have pure mathematical functions in… in the specs. So, like, in now.
+
+196
+00:31:37.550 --> 00:31:46.440
+Andrew Ashikhmin: It turns out this, getBaseFIPAA blobGas function, it actually doesn't take one parameter, it takes two parameters.
+
+197
+00:31:47.070 --> 00:31:55.929
+Andrew Ashikhmin: And we should make it clear so that it's, like, mathematically, it now becomes a function of two variables, rather than a single variable.
+
+198
+00:31:56.100 --> 00:32:02.320
+Andrew Ashikhmin: And, yeah, if we, I think if we use pure mathematical functions, then there will be less room for confusion.
+
+199
+00:32:08.500 --> 00:32:14.679
+Tim Beiko: Okay, I think… Yeah, we can probably continue this conversation, I think, but at the very least, we should…
+
+200
+00:32:14.950 --> 00:32:22.069
+Tim Beiko: try and define these things more explicitly. And yeah, perhaps, like, have a standard with how we,
+
+201
+00:32:22.510 --> 00:32:28.380
+Tim Beiko: we, treat, like, the different functions of the spec, but, I know we have other things to cover, so…
+
+202
+00:32:28.980 --> 00:32:32.159
+Tim Beiko: Anything else on this specific issue?
+
+203
+00:32:36.010 --> 00:32:37.320
+Tim Beiko: Oh, yeah, Mario?
+
+204
+00:32:37.980 --> 00:32:46.780
+Mario Vega: Yeah, I mean, I don't want to, like, take too much time here to discuss, like, our current approaches, but I just want to highlight that
+
+205
+00:32:46.950 --> 00:32:59.569
+Mario Vega: Most of the time, the reason why we struggle to keep up with testing something is because it's normal that a change or an EAP comes out of nowhere.
+
+206
+00:32:59.860 --> 00:33:11.499
+Mario Vega: And it's just, like, suggested for CFI in all code devs with a prior notice to us. I think we should change that. I think we should, like, …
+
+207
+00:33:11.880 --> 00:33:15.560
+Mario Vega: Encourage EIP writers to reach out to us.
+
+208
+00:33:15.610 --> 00:33:34.179
+Mario Vega: And we should, together, come up with a document or something that explicitly details all of the testing complexities that we are going to find when we are testing DCIP. It's already happening in Amsterdam, which is good. The block-level access guys already reached out to us, and we're working together on that.
+
+209
+00:33:34.180 --> 00:33:49.689
+Mario Vega: But I think it should happen for every single EIP, even the ones that look, like, super simple, because that's always the case. It's, like, a super simple EIP comes to ACD, and it gets CFI'd, without us even taking a look yet on testing side.
+
+210
+00:33:49.690 --> 00:33:55.409
+Mario Vega: So, my point is that we have to encourage EIP writers to come to us.
+
+211
+00:33:55.470 --> 00:34:06.690
+Mario Vega: And we have to have… to sit down and have a discussion about the complexity of the EIP, and we cannot come to ACD without having that discussion prior, even if the EIP is super simple.
+
+212
+00:34:09.909 --> 00:34:25.159
+Tim Beiko: I think that sounds reasonable, and, maybe, yeah, this is something we can, apply for Glamsterdam, so we have already, like, these, I think there's been 11 proposed VIPs beyond the headliners, so, …
+
+213
+00:34:25.609 --> 00:34:33.189
+Tim Beiko: yeah, it's probably worth it to have, actually, these 11 EIPs chat with the testing team, …
+
+214
+00:34:34.039 --> 00:34:36.729
+Tim Beiko: Yeah, as we're going into Amsterdam planning.
+
+215
+00:34:39.879 --> 00:34:52.639
+Tim Beiko: And then, ideally, you know, EIP champions and client teams can also eventually just write their own tests, but yeah, I think if we have this set of EIPs already, we can,
+
+216
+00:34:52.759 --> 00:34:56.489
+Tim Beiko: Yeah, we can make sure that we're looking at them from the testing perspective.
+
+217
+00:35:10.449 --> 00:35:11.259
+Tim Beiko: Okay.
+
+218
+00:35:11.649 --> 00:35:15.529
+Tim Beiko: I'm… Anything else on the DevNet4 issue?
+
+219
+00:35:27.709 --> 00:35:32.729
+Tim Beiko: Barnabas, you had this other point about the BPO fraction update.
+
+220
+00:35:34.689 --> 00:35:35.419
+Tim Beiko: Right.
+
+221
+00:35:35.420 --> 00:35:45.380
+Barnabas: So… we had this proposal, from Anders, saying that we should probably use,
+
+222
+00:35:45.880 --> 00:35:51.550
+Barnabas: Max and target 3 to 2, properties, and use,
+
+223
+00:35:51.960 --> 00:35:55.520
+Barnabas: Static, function to calculate the fraction values.
+
+224
+00:35:57.750 --> 00:36:08.399
+Barnabas: We have posted it somewhere, but it would be just good, whether we want to enforce this, like in future deadnets, and also on public testnets.
+
+225
+00:36:08.750 --> 00:36:13.710
+Barnabas: Or whether we want to basically set target and max at random values.
+
+226
+00:36:27.500 --> 00:36:28.620
+Tim Beiko: Antigar?
+
+227
+00:36:30.220 --> 00:36:40.529
+Ansgar Dietrichs: Yeah, so the… the kind of sticking… sticking to the… the formula for the… for the, for the update fraction, I think, I mean, that makes sense, at least, for ratio of, …
+
+228
+00:36:40.850 --> 00:36:42.450
+Ansgar Dietrichs: Physically, …
+
+229
+00:36:42.740 --> 00:36:50.100
+Ansgar Dietrichs: 3 to 2. If we ever were to want to go to a different ratio, then we would have to kind of make a more new pragmatic assessment.
+
+230
+00:36:50.210 --> 00:37:00.769
+Ansgar Dietrichs: I don't think there's any specific reason to always stick to 3 to 2. I think, in general, it should be pretty much the upper limit, though, so we've already heard that
+
+231
+00:37:00.830 --> 00:37:19.050
+Ansgar Dietrichs: sometimes there are issues where builders temporarily kind of have some issues with blob inclusion, and temporarily stop including blobs, and then we just can't hit the target. Like, then we're just staying under the average of 6 right now, and then the base feed drops down and everything, so it causes issues. So I think we should be very hesitant to do a
+
+232
+00:37:19.050 --> 00:37:21.969
+Ansgar Dietrichs: Ship something where we are above the…
+
+233
+00:37:22.120 --> 00:37:25.239
+Ansgar Dietrichs: that ratio. But if there's ever, like, a…
+
+234
+00:37:25.900 --> 00:37:34.179
+Ansgar Dietrichs: civic reason in the future to basically go to, like, a ratio that's closer to 50-50, to, like, basically 2 to 1 again, I don't see why we should pre-commit to not doing that.
+
+235
+00:37:44.470 --> 00:37:45.760
+Tim Beiko: Anyone else?
+
+236
+00:37:46.370 --> 00:37:47.450
+Tim Beiko: Thoughts on this?
+
+237
+00:37:57.490 --> 00:38:01.829
+stokes: So it sounds like we want to generally have this as, like, a, you know.
+
+238
+00:38:02.320 --> 00:38:08.940
+stokes: Design… well, not design goal, but something we aim for, but still retain the flexibility, in case we need to change it later.
+
+239
+00:38:12.500 --> 00:38:17.690
+stokes: I believe that's what Barnas was asking for, is just if we could agree to this, like, you know, this structure.
+
+240
+00:38:18.010 --> 00:38:19.859
+stokes: These relative ratios and everything.
+
+241
+00:38:20.830 --> 00:38:30.279
+Barnabas: So the ratio… so this, update fraction formula would expect that, we have 3 to 2, fractions.
+
+242
+00:38:33.580 --> 00:38:36.220
+Marius van der Wijden: Yeah, but… What do you want to do with that?
+
+243
+00:38:36.420 --> 00:38:37.629
+Marius van der Wijden: Was that formula?
+
+244
+00:38:38.710 --> 00:38:46.849
+Barnabas: So we're gonna be using this, for, like, all… we're gonna be enforcing this on all future dead nodes, basically, and we're gonna be… calculate them.
+
+245
+00:38:47.300 --> 00:38:53.230
+Barnabas: On the fly. So, like, we're not gonna be using, like, random, BPO values anymore.
+
+246
+00:38:55.570 --> 00:38:58.950
+Barnabas: Question is if we want to enforce it going forward or not.
+
+247
+00:39:01.320 --> 00:39:03.669
+Tim Beiko: I'm… To Anskar and Polish?
+
+248
+00:39:04.530 --> 00:39:10.160
+Ansgar Dietrichs: Yes, I think we can't enforce it in protocol, unless…
+
+249
+00:39:10.480 --> 00:39:25.870
+Ansgar Dietrichs: we, like, that then would have to come with a pre-commitment to also always sticking with the 2 to 3 ratio, because that update ratio only makes sense in that context of the 2 to 3 ratio, so if we ever were to ship something that has a meaningful different ratio, so I don't know, we have a ship.
+
+250
+00:39:26.640 --> 00:39:40.460
+Ansgar Dietrichs: 2040 or something, for some reason, because we get feedback from the L2s that they prefer that or whatever, then we would specifically want to no longer use that formula. So, so I don't, like, I don't think we can enshrine that
+
+251
+00:39:40.530 --> 00:39:47.819
+Ansgar Dietrichs: derivation. I do think we should always just use it whenever setting the BPO parameters, but it should not be in protocol logic.
+
+252
+00:39:50.470 --> 00:39:51.770
+Tim Beiko: Photos?
+
+253
+00:39:52.140 --> 00:40:01.809
+Potuz: Yeah, I was gonna say the same thing as Sanskar, but perhaps I can actually guess why Barnabas is trying to ask for this, and I assume that some tooling in testing
+
+254
+00:40:01.820 --> 00:40:11.399
+Potuz: I don't know, perhaps spamware or, like, blob spam uses a particular formula so that to update how many blocks they're sending, or something like this.
+
+255
+00:40:11.400 --> 00:40:24.530
+Potuz: And I would encourage not to use this formula enshrined, and just keep the flexibility. And we agree that we're generally going to use this ratio, but we're not going to enforce it in protocol, and we're not going to make it part of consensus.
+
+256
+00:40:27.220 --> 00:40:29.689
+stokes: Yeah, I think we agree on that point. So…
+
+257
+00:40:29.960 --> 00:40:35.699
+stokes: I don't know, I'll just say what I say in the chat. Like, I think it's fine to have this pattern, like, if we want to, you know…
+
+258
+00:40:35.860 --> 00:40:47.109
+stokes: if Barnabas is working on DevNet and, you know, wants to use this pattern to project out for, like, a PPO schedule, I think that's fine, but we should also all understand that it could change in the future.
+
+259
+00:40:52.550 --> 00:40:57.230
+stokes: Like, it's not enough of a rule that it, you know, for example, could be enshrined in consensus.
+
+260
+00:41:05.960 --> 00:41:14.500
+Tim Beiko: Okay, so I think no agreement to, like, enshrine this in consensus now, and we can discuss, async…
+
+261
+00:41:14.750 --> 00:41:23.239
+Tim Beiko: Yeah, to what extent we want to enshrine it in testing, at least for this work, and how hard it would be to change in the future.
+
+262
+00:41:29.740 --> 00:41:31.960
+stokes: It shouldn't really be something where we're locked in.
+
+263
+00:41:31.960 --> 00:41:32.550
+Tim Beiko: Yeah.
+
+264
+00:41:32.860 --> 00:41:44.570
+stokes: In terms of, like, yeah, feature compatibility. The only thing here is if we, quote, enshrine it in testing, it means we're not looking at other values, and there could be bugs there, just given present issues.
+
+265
+00:41:48.970 --> 00:41:52.660
+stokes: Yeah. But that's not a reason not to do this, I'm just calling that out. Yeah, yeah.
+
+266
+00:41:52.660 --> 00:41:55.599
+Tim Beiko: Yeah, we can, yeah, I think we can discuss this more, ….
+
+267
+00:41:56.310 --> 00:42:00.640
+Barnabas: I mean, I wouldn't pick values that have never been tested, so, like.
+
+268
+00:42:00.850 --> 00:42:05.029
+Barnabas: Ideally, we want to be testing the values that we're gonna be using in mainnet.
+
+269
+00:42:05.290 --> 00:42:13.859
+Barnabas: So, picking values that we realistically want to use in mainnet, and if we say we're going to be using this 2-3 fraction for, like, the next
+
+270
+00:42:14.070 --> 00:42:16.999
+Barnabas: a few BPOs, at least, for sure.
+
+271
+00:42:17.190 --> 00:42:23.210
+Barnabas: then I would say that we're going to be using this base 3 update fraction as well.
+
+272
+00:42:23.340 --> 00:42:27.099
+Barnabas: Just if we want to use some other function.
+
+273
+00:42:42.300 --> 00:42:49.029
+Tim Beiko: Okay, well, I guess, yeah, we agreed we're not gonna try this in protocol. I think we can discuss, like.
+
+274
+00:42:49.260 --> 00:42:55.360
+Tim Beiko: how to best support this in testing, either async or on ACDT, …
+
+275
+00:42:57.560 --> 00:43:00.839
+Tim Beiko: But yeah, want to be mindful of time here.
+
+276
+00:43:06.910 --> 00:43:11.660
+Tim Beiko: I guess, anything else on the DevNet4 BPO activations?
+
+277
+00:43:20.690 --> 00:43:23.039
+Tim Beiko: If not, next step…
+
+278
+00:43:23.800 --> 00:43:41.250
+Tim Beiko: Alex, had proposals, for dates, following from last week's ACDC, so I know there were some concerns raised about the dates, on AquaDevs then, and, since then, Alex has followed up with, the CL teams, which were,
+
+279
+00:43:41.250 --> 00:43:44.180
+Tim Beiko: Mostly the ones that raise his concerns. …
+
+280
+00:43:44.340 --> 00:43:51.530
+Tim Beiko: Proposing that, we have the client releases for the first, testnet,
+
+281
+00:43:51.870 --> 00:44:01.610
+Tim Beiko: for the first, testnet on… the first two testnets, sorry, on September 8th, so we would have Sepolia and Holeshki releases then.
+
+282
+00:44:01.610 --> 00:44:12.300
+Tim Beiko: And then, for Koleshki on September 15, then for Acepolia on September 29th, and then on…
+
+283
+00:44:12.680 --> 00:44:23.269
+Tim Beiko: after we see the Sepolia fork being successful, put out releases for HUDI, which hopefully would be the same as for Mainnet, so assuming that Houdi is just a,
+
+284
+00:44:23.740 --> 00:44:27.370
+Tim Beiko: A clean, … yeah, like, a clean fork.
+
+285
+00:44:27.870 --> 00:44:28.690
+Tim Beiko: I'm…
+
+286
+00:44:29.140 --> 00:44:36.930
+Tim Beiko: And so in the chat, Pauline said Lighthouse has concerns with this, given, yeah, we haven't figured out the sync issues yet.
+
+287
+00:44:40.420 --> 00:44:44.839
+Tim Beiko: Yeah. Any other… Thoughts or comments? Yeah, Alex?
+
+288
+00:44:46.330 --> 00:44:52.569
+stokes: Yeah, maybe I'll just rock… walk through these dates for a little more context. So…
+
+289
+00:44:52.970 --> 00:45:03.189
+stokes: Yeah, I've talked to a number of people since last week just to follow up on this and try to, you know, dial something in so we can still target, pre-defConnect for Fushaka.
+
+290
+00:45:03.640 --> 00:45:17.369
+stokes: One thing that came up, and it would probably be, like, the first event, so it's worth calling out, is with Haleschi, there doesn't seem to be an issue with having, sort of, non-mononical or, like, non, …
+
+291
+00:45:18.320 --> 00:45:20.830
+stokes: You know, it's not having formal releases.
+
+292
+00:45:21.000 --> 00:45:33.860
+stokes: We did this before with Heleshky, where, you know, operators are in, like, various branches, and they have some way to do this. So, that gives people a little more time to make formal releases, which I think will be nice.
+
+293
+00:45:34.340 --> 00:45:39.889
+stokes: We'd start the bug bounty, so yeah, ideally, there's just a pulley release on the 8th.
+
+294
+00:45:40.160 --> 00:45:48.470
+stokes: So that we can fork to pull you on the 29th. That's, that pushed the fork there back one week from what we had last week in the schedule.
+
+295
+00:45:48.820 --> 00:45:50.370
+stokes: Or at least the proposal.
+
+296
+00:45:50.600 --> 00:46:01.920
+stokes: And the bug bounty would also begin then. And otherwise, yeah, it kind of proceeds like we had it. So, yeah, I generally was just curious how people feel about this.
+
+297
+00:46:02.230 --> 00:46:07.620
+stokes: Again, as we see, things are kind of day by day on the status, …
+
+298
+00:46:07.870 --> 00:46:13.549
+stokes: But yeah, so… yeah, I hear porn here on the Lighthouse thing, makes sense.
+
+299
+00:46:13.770 --> 00:46:21.000
+stokes: And otherwise, yeah, I'd be curious what other… Clients feel about this. …
+
+300
+00:46:21.430 --> 00:46:29.689
+stokes: Especially on the EL side, because we're here, and if any CL teams can chime in as well, that'd be great, just so we can get a view of what's going on.
+
+301
+00:46:31.750 --> 00:46:32.390
+Tim Beiko: Thanks.
+
+302
+00:46:32.540 --> 00:46:33.630
+Tim Beiko: Matt?
+
+303
+00:46:36.400 --> 00:46:50.030
+lightclient: I just wanted to say, I feel a little worried that we're discussing timelines when we… we are running into issues that we don't even have static tests for, and these are, like, pretty basic stuff, like verifying…
+
+304
+00:46:50.030 --> 00:46:56.680
+lightclient: All of the clients are doing the right computation for one of the EIPs at the fork boundary.
+
+305
+00:46:57.040 --> 00:47:02.030
+lightclient: And… You know, we're getting close to having that stuff, but…
+
+306
+00:47:02.730 --> 00:47:12.000
+lightclient: it just feels like we're rushing this a little bit. And that's just, you know, on the EL side, like, obviously the CLs are having their own issues that it's causing the DevNet to…
+
+307
+00:47:12.300 --> 00:47:18.060
+lightclient: To not really work. So, it feels… it doesn't really feel appropriate to talk about the timelines right now.
+
+308
+00:47:21.210 --> 00:47:27.769
+Tim Beiko: And so you'd rather, basically, we spend the next week or two focused on, yeah, getting these tests up,
+
+309
+00:47:28.570 --> 00:47:36.389
+Tim Beiko: ensuring that DevNets are, like, running smoothly, and then set a date. I know this came up also in the context of the CL side, like, you know, should we…
+
+310
+00:47:37.270 --> 00:47:43.259
+Tim Beiko: should we wait to have, like, kind of a clean DevNet and then set a date? ….
+
+311
+00:47:43.860 --> 00:47:48.770
+lightclient: Yeah, I mean, in the past, it's kind of how we've done it, right? Like, once we see a good DevNet.
+
+312
+00:47:49.060 --> 00:48:02.750
+lightclient: and we're happy with it, then we start setting the dates. And, like, you know, we can talk about ideal worlds and try to think about when these things are gonna be happening, and, like, make targets. That's fine, but…
+
+313
+00:48:03.880 --> 00:48:16.150
+lightclient: we keep making targets, and we keep… you know, we're on DevNet 4, and we said DevNet 2 might be the last DevNet, right? Like, at some point, we just have to be realistic, and like, let's just do it right, rather than continually try to…
+
+314
+00:48:16.930 --> 00:48:19.200
+lightclient: Push this fork out as fast as we can.
+
+315
+00:48:21.200 --> 00:48:22.779
+Tim Beiko: Thanks. Ben?
+
+316
+00:48:23.230 --> 00:48:32.190
+Ben Adams: On the last call, the… I'm not sure if it was testing or consensus, there was a concern that not everything had been merged.
+
+317
+00:48:32.480 --> 00:48:36.549
+Ben Adams: … And, potential delay from that? Was that…
+
+318
+00:48:36.810 --> 00:48:38.979
+Ben Adams: Would that mean we need another DevNet?
+
+319
+00:48:45.840 --> 00:48:52.810
+Tim Beiko: Right, so the, yeah, the concern was that a lot of the CL, the CL code was running off, like, a non-master branch.
+
+320
+00:48:53.160 --> 00:48:54.309
+Tim Beiko: I believe.
+
+321
+00:48:54.840 --> 00:49:00.799
+Ben Adams: Yeah, so they were in, like, a feature fork, rather than the mainline code.
+
+322
+00:49:03.390 --> 00:49:10.049
+stokes: Yeah, my understanding is that, people have kind of put in quite a bit of a lift, to resolve that.
+
+323
+00:49:10.770 --> 00:49:13.180
+stokes: So… Yeah.
+
+324
+00:49:13.790 --> 00:49:14.910
+stokes: …
+
+325
+00:49:15.110 --> 00:49:22.570
+stokes: DevNet5, I think, would be useful, and the question is, like, how much can we interleave that with the schedule that we have?
+
+326
+00:49:26.790 --> 00:49:34.980
+Tim Beiko: Yeah, and I guess to DevNet5, are we saying we would just want to apply the fixes, to the BPO schedule that we discussed?
+
+327
+00:49:35.540 --> 00:49:39.630
+Tim Beiko: and obviously the fix is on the CL side in terms of syncing, but there would be…
+
+328
+00:49:39.800 --> 00:49:41.289
+Tim Beiko: No other changes.
+
+329
+00:49:46.430 --> 00:49:51.230
+Barnabas: Yep, so basically we want to make sure, I think we're gonna be running another big…
+
+330
+00:49:51.380 --> 00:49:55.320
+Barnabas: Devnot. And we're gonna need to make sure that,
+
+331
+00:49:55.820 --> 00:50:02.609
+Barnabas: all the BPO changes are working as expected, and without any extra noise.
+
+332
+00:50:02.700 --> 00:50:16.610
+Barnabas: we made this… we wanted to make the measurements for BPO numbers in this DevNet, but it's just so noisy that I think we're not going to have enough useful information, unfortunately.
+
+333
+00:50:20.000 --> 00:50:20.750
+Tim Beiko: Got it.
+
+334
+00:50:20.900 --> 00:50:22.010
+Tim Beiko: Adrian?
+
+335
+00:50:32.190 --> 00:50:34.260
+Tim Beiko: We can't hear you, Adrian.
+
+336
+00:50:40.610 --> 00:50:41.270
+Tim Beiko: Oh.
+
+337
+00:50:48.280 --> 00:50:52.710
+Tim Beiko: Okay, so… In terms of, …
+
+338
+00:50:52.910 --> 00:51:00.219
+Tim Beiko: moving forward with a dead net 5, I assume we'd want it, you know, at the earliest next week. …
+
+339
+00:51:01.650 --> 00:51:07.779
+Tim Beiko: The blockers would be… Effectively, the Lighthouse issue, the Nimbus issue, and then
+
+340
+00:51:07.960 --> 00:51:17.799
+Tim Beiko: making sure that all the clients pass some static tests, on the EL side, in terms of calculating these, these blob parameter values.
+
+341
+00:51:18.300 --> 00:51:19.529
+Tim Beiko: Anything else?
+
+342
+00:51:20.380 --> 00:51:23.629
+Tim Beiko: That we would want to, see before launching DevNet 5.
+
+343
+00:51:31.520 --> 00:51:39.120
+Saulius Grigaitis | Grandine: Yeah, so for them at 5, I would suggest to increase a share of minority clients, so…
+
+344
+00:51:39.240 --> 00:51:55.039
+Saulius Grigaitis | Grandine: So, like, Grandinian Lighthouse is maybe 1% or 2%, and if we could increase to, let's say, 4 or 5% of share, I think it would not make any harm, and the same… at the same time would help a bit for us to test more things.
+
+345
+00:51:55.560 --> 00:51:57.480
+Saulius Grigaitis | Grandine: So that's for DevNet File.
+
+346
+00:52:01.060 --> 00:52:06.020
+Tim Beiko: What specifically would you test more? … In that scenario?
+
+347
+00:52:06.420 --> 00:52:24.409
+Saulius Grigaitis | Grandine: I mean, it's, at least from… from my experience, so… so we… we get, like, way less block proposals, and we have way less combinations with other ELs and so on, so it's, it's a bit tricky to…
+
+348
+00:52:24.590 --> 00:52:32.249
+Saulius Grigaitis | Grandine: To get, fast, a good response of what is wrong with our clients.
+
+349
+00:52:35.000 --> 00:52:37.130
+Saulius Grigaitis | Grandine: It's a bit hard to explain that.
+
+350
+00:52:37.130 --> 00:52:46.999
+Tim Beiko: Yeah, no, yeah, I think that makes sense. I think, yeah, you get less. I think there's a trend… tension here between we do want the DevNets to somewhat, mimic mainnet.
+
+351
+00:52:47.140 --> 00:52:59.829
+Tim Beiko: I would defer to PandaOps in terms of, like, what's the right ratio here? Like, if, you know, if Grandine is 1% on mainnet, like, what's the max we should put on a DevNet? …
+
+352
+00:53:02.830 --> 00:53:08.409
+Tim Beiko: I don't know, Barnabas, if you have opinions now, otherwise we can discuss this on the second call.
+
+353
+00:53:08.870 --> 00:53:14.549
+Barnabas: We use the clientdiversity.org numbers in order to determine how many
+
+354
+00:53:14.660 --> 00:53:22.040
+Barnabas: validators each TL and EL should have. These are approximations, but these are the best we have.
+
+355
+00:53:24.660 --> 00:53:27.210
+Barnabas: We can… And would there be, yeah….
+
+356
+00:53:27.210 --> 00:53:44.910
+Tim Beiko: Yeah, would there be downsides to, like, for the smaller clients, you know, like, Lodestar, Grandine, even Aragon and REST, that have, like, you know, somewhere between 1% to 3%, like, doubling or tripling that so that there's, like, you know, 3% of Grandine nodes, or, like, you know.
+
+357
+00:53:45.340 --> 00:53:50.090
+Tim Beiko: 5% of breath, or something like that, so we get more data, or… Yeah.
+
+358
+00:53:51.010 --> 00:53:59.950
+Barnabas: Yeah, I mean, we can… we can increase it, for sure. We're gonna need to then reduce, you know, the share of Lighthouse and Prism, for example.
+
+359
+00:54:00.100 --> 00:54:08.619
+Barnabas: And the same way as, for RAS and Aragon, we can increase those as well, and remove, some gas and other minor nodes.
+
+360
+00:54:08.940 --> 00:54:21.919
+Barnabas: Yeah, and for example, for DevNet4, it would have been actually beneficial to have a bit less share of Lighthouse, because right now we see a non-finity, mainly because, Lighthouse.
+
+361
+00:54:22.260 --> 00:54:32.450
+Tim Beiko: I do think we should probably keep those thresholds, though, because, if on mainnet it's true, you know, that, like, Lighthouse and Prism represent more than, than two-thirds.
+
+362
+00:54:32.750 --> 00:54:39.560
+Tim Beiko: We should make sure that the DevNets mimic that, but then within these, like, bounds of, you know, how much we need to finalize.
+
+363
+00:54:40.490 --> 00:54:44.050
+Tim Beiko: like, we… I think we can have some… some flexibility. …
+
+364
+00:54:53.570 --> 00:54:55.180
+Tim Beiko: Okay, …
+
+365
+00:54:55.340 --> 00:55:07.220
+Tim Beiko: So yeah, so I guess we could move forward with DevNet 5. Again, have these CL syncing fixes, have the ELs changes, based on the new specs.
+
+366
+00:55:08.250 --> 00:55:23.390
+Tim Beiko: And, yeah, we can discuss on Monday how the bug fixing is going on the CL side to see when's a realistic time to launch this. If things go well, then potentially we can launch DevNev5 before ACDC next week.
+
+367
+00:55:23.390 --> 00:55:28.339
+Tim Beiko: And yeah, test all the fixes, see how we're feeling about,
+
+368
+00:55:28.560 --> 00:55:33.410
+Tim Beiko: Yeah, about the fork, and discuss state stem, if appropriate.
+
+369
+00:55:39.610 --> 00:55:41.800
+Tim Beiko: Okay, anything else on Fusaka?
+
+370
+00:55:48.980 --> 00:55:50.470
+Tim Beiko: Okay, …
+
+371
+00:55:50.800 --> 00:56:08.249
+Tim Beiko: Moving to Glamsterdam now, so we've been discussing the headliner selection for the past few weeks, and on the CL side, we've landed on EPBS, and then we had previously said we would, like, conditionally do block access lists.
+
+372
+00:56:08.250 --> 00:56:23.169
+Tim Beiko: If we did the PBS on the CL side. So I wanted to do one last check there, and I think also highlight, like, one other thing that's come up in the past couple weeks of discussing headliners is, you know, with the discussion around fossil or around repricings,
+
+373
+00:56:23.320 --> 00:56:25.440
+Tim Beiko: I think there's been, like, some…
+
+374
+00:56:26.270 --> 00:56:29.749
+Tim Beiko: I don't know, potentially, like, lack of clarity between,
+
+375
+00:56:30.220 --> 00:56:43.929
+Tim Beiko: you know, should the headliner be, like, the biggest thing in the fork, or should it be the most important one? I think on the CL side, those two things are quite, aligned. Like, everyone seems to agree that, EPVS, or there's a strong consensus that EPVS
+
+376
+00:56:44.120 --> 00:56:58.180
+Tim Beiko: should be the most important thing in the fork, and it's obviously the biggest one. But on the EL side, I know we've had, like, these discussions around, like, okay, you know, is Fossil the most important, this block access list, or is, is potentially something like repricing? …
+
+377
+00:56:59.370 --> 00:57:03.530
+Tim Beiko: Yeah, not to say that we shouldn't do either of those, but wanted to at least raise it.
+
+378
+00:57:05.610 --> 00:57:11.860
+Tim Beiko: Any concerns, thoughts? Otherwise, I think we just move forward with block access lists and EPVS.
+
+379
+00:57:17.290 --> 00:57:32.779
+Tim Beiko: Okay, we have some block access list support in the chat. So we'll merge, we'll merge the PR that Alex had opened, so this means we've set both, EPBS and Block Access List as the, two headliners for Amsterdam.
+
+380
+00:57:33.100 --> 00:57:38.099
+Tim Beiko: I think, one thing that would be helpful to discuss Now is,
+
+381
+00:57:39.250 --> 00:57:51.659
+Tim Beiko: how do we actually, want to think about the scope for Amsterdam and timelines? I think, obviously, we can't set dates from the very beginning, but
+
+382
+00:57:52.020 --> 00:58:05.780
+Tim Beiko: it is helpful when we're thinking about, yeah, what else to consider, how many other EIPs, whether to do, you know, another, like, big thing like Fossil, or, to add a bunch of repricing EIPs, like, what's the rough…
+
+383
+00:58:06.550 --> 00:58:12.620
+Tim Beiko: Target we'd want to aim for, and how do we… How do we, like, Yeah, roughly…
+
+384
+00:58:13.190 --> 00:58:19.880
+Tim Beiko: go towards that. … My proposal would be that we should be fairly strict in terms of just,
+
+385
+00:58:20.260 --> 00:58:29.560
+Tim Beiko: getting EPBS and block access lists implemented and fairly far along before we consider other things.
+
+386
+00:58:30.030 --> 00:58:35.380
+Tim Beiko: But yes, curious how other people feel about that, and how they think we should approach the process.
+
+387
+00:58:46.170 --> 00:58:54.110
+Tim Beiko: And yeah, to Totas' point, setting your timeline target, would make scoping easier, and yeah, OnScar.
+
+388
+00:58:54.490 --> 00:59:00.859
+Tim Beiko: has this, rough timeline around, like, okay, should we try to aim for June for releases? …
+
+389
+00:59:01.740 --> 00:59:08.890
+Tim Beiko: So imagine we did want to aim for June, which is kind of in line with what people have been saying around 6 months forks.
+
+390
+00:59:09.510 --> 00:59:11.809
+Tim Beiko: You know, how does that affect our scope?
+
+391
+00:59:14.240 --> 00:59:17.979
+Tim Beiko: I guess, yeah, maybe it's a good point to start. Does anyone think we should not try to at least
+
+392
+00:59:18.450 --> 00:59:21.790
+Tim Beiko: roughly target June for a hard fork.
+
+393
+00:59:21.900 --> 00:59:22.770
+Tim Beiko: …
+
+394
+00:59:26.490 --> 00:59:37.310
+Tim Beiko: And if we're forking mainnet in June, it means that we should have releases ready for, like, testnets and whatnot in April to give us the time to fork these testnets and move forward, yeah.
+
+395
+00:59:37.540 --> 00:59:38.989
+Tim Beiko: Yeah, Ben?
+
+396
+00:59:41.450 --> 00:59:43.169
+Ben Adams: I think, …
+
+397
+00:59:43.690 --> 00:59:53.230
+Ben Adams: Yeah, trying to maintain a 6-month cadence is good, because then it does relieve that pressure of people trying to get everything crammed into a fork.
+
+398
+00:59:53.620 --> 00:59:56.030
+Ben Adams: Because you only have to wait
+
+399
+00:59:56.460 --> 01:00:00.120
+Ben Adams: you know, 6 months. It's not, like, a year plus.
+
+400
+01:00:00.810 --> 01:00:04.379
+Ben Adams: So, hopefully the small forks can be smaller.
+
+401
+01:00:04.950 --> 01:00:06.840
+Ben Adams: Although, that didn't really happen before.
+
+402
+01:00:13.610 --> 01:00:17.180
+Tim Beiko: I'm… There's a question about, like, can we get some…
+
+403
+01:00:17.560 --> 01:00:21.700
+Tim Beiko: commitment to fossil if it doesn't delay the fork by more than n months.
+
+404
+01:00:22.050 --> 01:00:36.590
+Tim Beiko: I think, realistically, the only way to do this would be that we say block access list and EPBS are the two first things, and we don't include anything else until those are pretty ready, and then we include fossil, and we don't include anything else.
+
+405
+01:00:36.760 --> 01:00:37.790
+Tim Beiko: …
+
+406
+01:00:38.110 --> 01:00:47.639
+Tim Beiko: I think it's very hard… if we commit to doing, like, fossil or anything else significant now, the code kind of gets intertwined, …
+
+407
+01:00:48.340 --> 01:00:51.599
+Tim Beiko: So, like, yeah, I would strongly prefer, like, we…
+
+408
+01:00:52.100 --> 01:00:54.129
+Tim Beiko: We make a call once we're…
+
+409
+01:00:54.600 --> 01:01:04.830
+Tim Beiko: farther along on the, on the implementation of the two headliners. This means, you know, if we want a CFI fossil, we can CFI fossil, but we
+
+410
+01:01:05.470 --> 01:01:17.810
+Tim Beiko: we then need to decide, like, okay, is there anything else that we're doing before Fossil in this work? And, you know, ideally have, like, both block access lists and EPBS running on DevNets before we make the call of
+
+411
+01:01:18.320 --> 01:01:19.900
+Tim Beiko: adding something.
+
+412
+01:01:28.050 --> 01:01:29.210
+Tim Beiko: Yeah.
+
+413
+01:01:29.460 --> 01:01:30.830
+Tim Beiko: Draw?
+
+414
+01:01:31.450 --> 01:01:35.190
+soispoke: Yeah, no, I… I mean, I think I agree, but just…
+
+415
+01:01:35.840 --> 01:01:43.659
+soispoke: Still, it's a bit of a hard thing to wrap my head around, because having this sort of, like, conditional inclusion
+
+416
+01:01:43.930 --> 01:01:55.739
+soispoke: up until, maybe after we have, like, some more certainty on, like, EPBS and BALS, makes it quite hard to deal with how we proceed in the meantime with Fossil.
+
+417
+01:01:55.900 --> 01:01:57.250
+soispoke: And I do want to…
+
+418
+01:01:57.520 --> 01:02:05.939
+soispoke: insist that it was, like, basically the most supported EIP, by the community. It was, like, 14 out of, like, 21.
+
+419
+01:02:06.060 --> 01:02:12.200
+soispoke: I guess, like, suggestions, … And… yeah, so I'm just saying, like.
+
+420
+01:02:12.540 --> 01:02:24.989
+soispoke: And it was also proposed as a headliner, and the community actually voted on it being proposed as a headliner, so now, basically saying, yes, we sort of, like, CFI it, and put it
+
+421
+01:02:25.170 --> 01:02:32.770
+soispoke: as a vanilla EIP and conditional inclusion need before we… it's just, like, a bit of a weird in-between that is….
+
+422
+01:02:33.010 --> 01:02:33.760
+Tim Beiko: So, I guess….
+
+423
+01:02:33.760 --> 01:02:34.630
+soispoke: to deal with.
+
+424
+01:02:34.870 --> 01:02:49.109
+Tim Beiko: Yeah, so I guess, like, yeah, clearly we want to do block access lists and EPBS, that's a priority, so we should schedule those for inclusion and start working on a DevNet with them. I think it would be reasonable to move Fossil to CFI, if people agree, and then…
+
+425
+01:02:49.110 --> 01:02:57.129
+Tim Beiko: like, any other CFI, the EIP, like, when they… when it gets… oh, fossil is already CFI'd. So, like, yeah, when… in that case.
+
+426
+01:02:57.890 --> 01:03:16.160
+Tim Beiko: Yeah, in that case, when we're ready to actually start implementing it, we'll have to make a call between whether or not we want to move that one from CFI to SFI, or anything else. I don't think we can actually make this call today, like, there is some uncertainty.
+
+427
+01:03:18.030 --> 01:03:32.740
+Tim Beiko: Yeah, so I… but I think, like, yes, if it's actually true that people want to keep fossil as the highest priority and put it in the fork, then I think the way we reflect that preference is by, implementing the two headliners, and then,
+
+428
+01:03:33.080 --> 01:03:38.290
+Tim Beiko: And then making the call to implement fossil NEX, if we think we have the capacity for it.
+
+429
+01:03:39.210 --> 01:03:40.390
+Tim Beiko: Mark?
+
+430
+01:03:41.540 --> 01:03:52.140
+ethDreamer (Mark): Yeah, I mean, this was brought up in the last call, that there was a concern that the CL side and the EL side might not take the same amount of time to…
+
+431
+01:03:52.560 --> 01:03:58.439
+ethDreamer (Mark): basically, … finished developing the EIPs slated for the fork, and that…
+
+432
+01:03:58.620 --> 01:04:11.010
+ethDreamer (Mark): you know, that it might be possible that the EL is ready sooner, and if that were the case, then possibly decoupling these forks, …
+
+433
+01:04:11.320 --> 01:04:24.009
+ethDreamer (Mark): And I would say that leaving Fossil in CFI status basically enables us to continue with that strategy. Like, if it looks to be that the CL will
+
+434
+01:04:24.630 --> 01:04:31.219
+ethDreamer (Mark): take longer anyway, then it would make sense to leave fossil out of that fork, but then do it in the next…
+
+435
+01:04:31.590 --> 01:04:35.940
+ethDreamer (Mark): fork, which will come at the same time as EPBS, …
+
+436
+01:04:36.110 --> 01:04:41.669
+ethDreamer (Mark): And vice versa. Like, if they're gonna be the same time, then you can put it in, but yeah.
+
+437
+01:04:42.030 --> 01:04:47.430
+Tim Beiko: Yeah, it's true that, like, yeah, we can still split the forks. I think that quickly becomes…
+
+438
+01:04:47.690 --> 01:04:52.459
+Tim Beiko: Less true as we move farther with the testing, but, …
+
+439
+01:04:52.970 --> 01:04:57.569
+Tim Beiko: It's definitely easier to split things if there's no cross-layer, feature, yeah.
+
+440
+01:04:58.010 --> 01:04:58.910
+Tim Beiko: Polis?
+
+441
+01:04:59.660 --> 01:05:13.610
+Potuz: Yeah, so once we specified something and we more or less have some clarity on the fork, I think this enables clients to allocate resources better. We are now in a better shape to start working. My proposal would be
+
+442
+01:05:13.610 --> 01:05:20.269
+Potuz: to try to arrange, not here, but probably ACDT, or even, like, informally with PandaOps.
+
+443
+01:05:20.270 --> 01:05:32.739
+Potuz: on a zero-dev net that… on the CL side, that would have a PPS. Minimal… I mean, the minimal implementation without builders, self-building, but the separation, which is the hard part.
+
+444
+01:05:32.740 --> 01:05:44.209
+Potuz: I believe we can do this in one to two months, all clients. Once we have this, it's very easy to try to add fossil on top of this and get an idea of how long it would take.
+
+445
+01:05:44.250 --> 01:05:52.870
+Potuz: But without… without having a full implementation of neural appliance, it's gonna be very hard to even gauge, how long it would take to add fossil on top.
+
+446
+01:05:53.120 --> 01:05:56.740
+Tim Beiko: Yeah, I agree with that, and I think we… the DevNet should be…
+
+447
+01:05:56.910 --> 01:06:00.400
+Tim Beiko: Also, including block access lists, …
+
+448
+01:06:00.640 --> 01:06:07.059
+Tim Beiko: And then, yes, once we have this clamster down .NET1, we can determine what we want to add on top of it.
+
+449
+01:06:08.190 --> 01:06:10.169
+Tim Beiko: Yeah. Karen's?
+
+450
+01:06:10.740 --> 01:06:22.599
+terence: Yeah, I can just pause on this comment. I would say, like, EPB… sorry, Fossil on top of EPBS will look much different than Fossil on top of, like, Fulu, for example, so, like.
+
+451
+01:06:22.600 --> 01:06:35.380
+terence: Currently, our estimate on how much fossil work really is may, like, basically, basically may be completely off, because we're not looking at fossil on top of EPBS. So, so definitely makes sense.
+
+452
+01:06:35.380 --> 01:06:40.300
+terence: to get EPBS in some fundamental stage, and then add Fossil on top.
+
+453
+01:06:45.390 --> 01:06:47.830
+Tim Beiko: Okay, so I think…
+
+454
+01:06:48.510 --> 01:06:57.110
+Tim Beiko: That all makes sense, so we move forward with EPBS and block access lists being SFI'd, get DevNets with those, and…
+
+455
+01:06:57.530 --> 01:07:05.240
+Tim Beiko: and then make decisions about, SFI and the other things. We do fossil, CFI'd for now. …
+
+456
+01:07:05.720 --> 01:07:08.350
+Tim Beiko: We also had this 6-second slot
+
+457
+01:07:08.560 --> 01:07:20.640
+Tim Beiko: headliner as CFI'd, but I think if we're accepting APBS, then it means we, like, by default, are not accepting, this EIP7782, so I would remove that one.
+
+458
+01:07:20.980 --> 01:07:22.779
+Tim Beiko: And then, …
+
+459
+01:07:23.370 --> 01:07:35.090
+Tim Beiko: The other thing I want to discuss is when should our deadline be for proposals for just regular non-headliner EIPs? We've had a few already, I think there's 10 or 11.
+
+460
+01:07:35.230 --> 01:07:37.860
+Tim Beiko: My, yeah, my suggestion would be
+
+461
+01:07:37.990 --> 01:07:52.390
+Tim Beiko: the Fusaka Mainnet releases, not necessarily the fork, but I think whenever we have the Fusaka mainnet releases should be when we stop accepting new proposals, and we can start actually reviewing what's there.
+
+462
+01:07:52.950 --> 01:07:54.490
+Tim Beiko: Does that seem reasonable?
+
+463
+01:08:00.340 --> 01:08:01.199
+stokes: I think so.
+
+464
+01:08:01.970 --> 01:08:02.500
+Tim Beiko: Yep.
+
+465
+01:08:03.190 --> 01:08:03.930
+Tim Beiko: Okay.
+
+466
+01:08:04.810 --> 01:08:15.239
+Tim Beiko: … Okay, so… Yeah, we confirmed the headliners, we're gonna remove, the 6-second slots proposal.
+
+467
+01:08:15.320 --> 01:08:32.810
+Tim Beiko: keep Fossil as the only CFI proposal for now, and then if anyone wants to propose other EIPs for the fork, you can open a PR to the Meta EIP, and, we'll have the deadline for that be, the mainnet, releases for Fusaka, and not have to,
+
+468
+01:08:32.840 --> 01:08:35.950
+Tim Beiko: Yeah, not have to, review them by then.
+
+469
+01:08:36.800 --> 01:08:37.740
+Tim Beiko: …
+
+470
+01:08:41.080 --> 01:08:44.240
+Tim Beiko: Okay, on… …
+
+471
+01:08:44.510 --> 01:08:56.920
+Tim Beiko: on, Amsterdam Headliners, I know Tony had a couple things about block accesses that he wanted to discuss, so that probably makes sense to go, yeah, moving forward with that.
+
+472
+01:08:59.370 --> 01:09:03.049
+Toni Wahrstätter: Thank you very much. Let me share my screen very quickly.
+
+473
+01:09:04.160 --> 01:09:05.120
+Toni Wahrstätter: …
+
+474
+01:09:13.189 --> 01:09:14.050
+Toni Wahrstätter: Right.
+
+475
+01:09:14.710 --> 01:09:29.030
+Toni Wahrstätter: Yeah, I basically wanted to quickly discuss, three open points that we still have with block lab access lists, and now that we SFI'd the EIP, it makes sense, to discuss those, because more people had an opportunity to look into it.
+
+476
+01:09:29.399 --> 01:09:32.160
+Toni Wahrstätter: Essentially, the three points are…
+
+477
+01:09:32.450 --> 01:09:50.979
+Toni Wahrstätter: First, should we include the state locations into the block lab access lists or not? So, state location is basically everything that comes with an S load, or a balance opcode, calls, static calls, and so on. It's basically everything that isn't modified, so everything that is not in the state div.
+
+478
+01:09:51.550 --> 01:09:59.669
+Toni Wahrstätter: The second point is RLP versus SSC, and the last thing is how to handle system contracts, because Jared brought it up in the…
+
+479
+01:09:59.920 --> 01:10:10.890
+Toni Wahrstätter: in the, Discord, and yeah, makes sense to discuss it. So first, yeah, would love to hear people's input, especially clients' input, about state locations.
+
+480
+01:10:11.060 --> 01:10:22.429
+Toni Wahrstätter: The thing is, originally it was planned that it can be used for parallel batch I.O, so before even starting executing, you would do all the disk reads up front in parallel.
+
+481
+01:10:22.760 --> 01:10:26.499
+Toni Wahrstätter: And the question is, would clients actually use it?
+
+482
+01:10:26.880 --> 01:10:36.529
+Toni Wahrstätter: Or would going, parallelizing transactions, and in this way also doing somehow parallel discrete, would that be already enough?
+
+483
+01:10:37.170 --> 01:10:50.369
+Toni Wahrstätter: Another point is more info. Of course, if we keep all the state locations, this means we include more info, and then that's the question, is that info actually useful? And it might be useful. So I've talked with,
+
+484
+01:10:51.100 --> 01:11:00.530
+Toni Wahrstätter: People working in auditing, and they said it might be useful to know, exactly in which transactions, which contracts were touched.
+
+485
+01:11:00.980 --> 01:11:16.790
+Toni Wahrstätter: The con on the right-hand side is, of course, the size. It adds, like, 50 kilobytes, this is, like, 22 kilobytes, on average today, at 40 million gas limit. This is, like, at the target, so it would double if we are really at the limit.
+
+486
+01:11:16.950 --> 01:11:24.529
+Toni Wahrstätter: So, of course, this is, like, the problem. It adds quite significant size, and I would be curious what EL clients think about
+
+487
+01:11:25.050 --> 01:11:26.320
+Toni Wahrstätter: Yeah.
+
+488
+01:11:26.500 --> 01:11:29.209
+Toni Wahrstätter: Should we include them, or should we drop them?
+
+489
+01:11:38.150 --> 01:11:48.950
+Jared Wasinger: I feel like without having a performant implementation that shows that there's tangible benefits from including them, it's…
+
+490
+01:11:49.800 --> 01:12:01.780
+Jared Wasinger: hard to argue for them. I don't quite understand the auditing perspective, but I mean, I'm not an auditor, I'm a core dev, so maybe that has merit, but…
+
+491
+01:12:01.920 --> 01:12:07.990
+Jared Wasinger: … Yeah, so like, like I've said before.
+
+492
+01:12:08.590 --> 01:12:15.800
+Jared Wasinger: The more we parallelize the transaction throughput, the less this, including these, gives us.
+
+493
+01:12:16.630 --> 01:12:19.940
+Jared Wasinger: So… There we go.
+
+494
+01:12:21.630 --> 01:12:25.450
+Karim T.: I, I think also, having this state location.
+
+495
+01:12:25.560 --> 01:12:31.920
+Karim T.: will not only help to have parallel batch I.O, but it will also help to do real parallelization, so…
+
+496
+01:12:32.230 --> 01:12:41.569
+Karim T.: Execute all of the transactions in the same time, and after merge the modification, so it will help to have more improvements in the future, so…
+
+497
+01:12:43.970 --> 01:12:45.959
+Karim T.: I think it would be nice to have it, yeah.
+
+498
+01:12:52.320 --> 01:12:53.460
+Tim Beiko: apples.
+
+499
+01:12:54.040 --> 01:13:06.569
+Potuz: Something that I haven't seen discussed, and I think Anders is the only one that is pushing this forward, is to have a more formal approach. If we are going with the PBS, then the worth
+
+500
+01:13:06.630 --> 01:13:22.730
+Potuz: the cost of broadcasting and of executing the blog changes. We have resources in a different way than what we have now, so I think all of these considerations of bandwidth versus execution should be taken into account
+
+501
+01:13:22.730 --> 01:13:29.529
+Potuz: On what is the time that we're gonna have to both of them, and what's gonna be useful, and how we want to optimize those.
+
+502
+01:13:29.530 --> 01:13:37.290
+Potuz: So it's not a discussion that should be had with, like, today's parameters, but with tomorrow's parameters, when we're going to include this.
+
+503
+01:13:49.130 --> 01:13:57.740
+Toni Wahrstätter: Yeah, I think it's fair to say that, we don't really know how much clients get without actually having client implementations on that.
+
+504
+01:13:58.550 --> 01:14:09.170
+Toni Wahrstätter: at least from the specs, it's not much work to add them or to remove them, but I guess in client implementations, this might be different. Maybe, Jared, could you elaborate more on…
+
+505
+01:14:09.880 --> 01:14:20.100
+Toni Wahrstätter: How much work is it if we don't decide on… we don't take a decision today, and for now we keep them inside, and then we figure out along the path to remove them?
+
+506
+01:14:22.960 --> 01:14:27.719
+Jared Wasinger: … Adding them to the BAL is trivial.
+
+507
+01:14:27.830 --> 01:14:32.189
+Jared Wasinger: … I think, I think it's, I think it's trivial to keep them in.
+
+508
+01:14:32.370 --> 01:14:35.270
+Jared Wasinger: As far as the complexity goes.
+
+509
+01:14:37.940 --> 01:14:39.770
+Toni Wahrstätter: Okay, yeah.
+
+510
+01:14:39.900 --> 01:14:59.600
+Toni Wahrstätter: then I would say, let's just keep them in and move on with the second item, which is SSAT versus RLP. So there were, people pushed for SSD because it allows for more compact proofs, and the blocks have access list, including the post balance of every account that, was included in the block.
+
+511
+01:14:59.960 --> 01:15:05.579
+Toni Wahrstätter: There were some use cases brought up where SSS might be useful. The thing is.
+
+512
+01:15:05.740 --> 01:15:12.860
+Toni Wahrstätter: Oh, someone is drawing, or it wasn't me? The thing is, RLP is smaller. I mean, this is, like.
+
+513
+01:15:13.050 --> 01:15:22.880
+Toni Wahrstätter: almost negligible, but it's smaller, and of course it's known and tested, so I would be curious if there is appetite on the EL side to start into getting SSS.
+
+514
+01:15:22.990 --> 01:15:26.270
+Toni Wahrstätter: Or if we kind of want to further postpone that.
+
+515
+01:15:28.980 --> 01:15:35.060
+Toni Wahrstätter: I personally don't have a strong opinion, and right now it's an SSD. I think it's quite nice because of the compact proofs.
+
+516
+01:15:37.050 --> 01:15:40.879
+Tim Beiko: I think Justin, Yelm, and Roman have opinions on this.
+
+517
+01:15:42.090 --> 01:15:52.470
+Justin Florentine (Besu): Yeah, real quick, I appreciate our interest in getting SSZ onto the EL, I'm very much for it as well. This pops up a lot, and we…
+
+518
+01:15:52.610 --> 01:15:59.049
+Justin Florentine (Besu): you know, always avoid it. We always kick the can down the road. I think there's good reason for that.
+
+519
+01:15:59.130 --> 01:16:15.859
+Justin Florentine (Besu): I think… technically, I think there's a good reason, as stated on the slide, to adopt SSZ. I want to make sure that everybody is aware and mindful that we will be adopting a sort of hybrid serialization mechanic on the L1.
+
+520
+01:16:15.970 --> 01:16:26.099
+Justin Florentine (Besu): And it will likely stick around for a while, short of us having a headliner release that focuses entirely on a full conversion from RLP to SSZ.
+
+521
+01:16:26.100 --> 01:16:48.499
+Justin Florentine (Besu): I think continuing the process of migrating from RLP to SSC will be a, you know, gradual one, and so that means that maybe a ride-along EIP every hard fork. So, you know, I think it's realistic to say that if we do this in an incremental fashion, you're looking about, you know, 2-3 years before it's, like, fully adopted. So, …
+
+522
+01:16:48.540 --> 01:16:56.190
+Justin Florentine (Besu): I want to raise that as a concern from a project management perspective, more so than a technical one. So, thanks.
+
+523
+01:17:02.290 --> 01:17:03.250
+Tim Beiko: Yeah, Guillaume?
+
+524
+01:17:03.790 --> 01:17:22.899
+Guillaume: Yeah, two questions. Okay, actually, one remark, one question. The problem with SSD is that in Go, there's not really a good library. There are some that do the work, do the job, sorry, but, but there's none that really makes us happy. So that's the first thing to consider.
+
+525
+01:17:23.200 --> 01:17:46.989
+Guillaume: The second issue, or at least the second question I have, is if we pick RLP, one of the advantages of SSE over RLP is the extensibility. I think it's easier to extend an SSE container than an RLP container, especially if we get Ethan's favorite topic, the
+
+526
+01:17:47.480 --> 01:18:01.320
+Guillaume: I can't remember the name now, but the extensible object… sorry, I forgot the name. If we go for RLP, and, you know, there's, like, 5 flavors of BALs.
+
+527
+01:18:01.390 --> 01:18:20.440
+Guillaume: do we have the flexibility to add more fields later? Like, if we decide, okay, we start with BALs with only the locations, and then we want to add the post values later, is it going to be a headache to add those… to change the format, basically?
+
+528
+01:18:24.260 --> 01:18:26.750
+Toni Wahrstätter: No, shouldn't be, shouldn't be a problem.
+
+529
+01:18:27.340 --> 01:18:34.339
+Toni Wahrstätter: I mean, we always have, like, the versioning through the fork, so basically, by having the slot number or the timestamp, you have a versioning.
+
+530
+01:18:35.080 --> 01:18:52.579
+Guillaume: Yeah, I'm really talking about just in terms of fields in the, you know, in the structure. If you add a new field, this is going to be a nightmare to handle, so it's not a spec-level question, it's more like a coding question. So I guess that would be more like for Jared.
+
+531
+01:18:52.960 --> 01:19:07.699
+Toni Wahrstätter: there could be… there could be a problem if you kinda, if your Merkle tree for Merklization expands by one, tree level, by one depth, then, the proof would also change. We had that problem on the CL with the stable containers tried to solve.
+
+532
+01:19:07.880 --> 01:19:11.679
+Toni Wahrstätter: I guess introducing stable containers here would be, not worth it.
+
+533
+01:19:11.800 --> 01:19:16.389
+Toni Wahrstätter: But… yeah, so it's not super trivial to just add a new field.
+
+534
+01:19:37.980 --> 01:19:40.420
+Toni Wahrstätter: Yeah, it feels like right now, ….
+
+535
+01:19:40.420 --> 01:19:40.969
+Dustin: I… I….
+
+536
+01:19:40.970 --> 01:19:41.460
+Toni Wahrstätter: molded.
+
+537
+01:19:41.460 --> 01:19:42.619
+Dustin: I have a….
+
+538
+01:19:42.910 --> 01:19:44.290
+Toni Wahrstätter: Not gone. No gone.
+
+539
+01:19:44.290 --> 01:19:51.040
+Dustin: I have a question about the Go SSC. SA has a structural point about this. So, …
+
+540
+01:19:51.320 --> 01:19:56.600
+Dustin: specifically the GoSSC library, thing. Putting aside some of the…
+
+541
+01:19:56.900 --> 01:20:05.399
+Dustin: snarkier comments or whatever, and, you know, the discussion, or including them, either way in the chat, but the idea of
+
+542
+01:20:06.310 --> 01:20:08.230
+Dustin: this… …
+
+543
+01:20:08.350 --> 01:20:16.370
+Dustin: concern, objection, I don't know, has been raised from the beginning, and there's a sort of a…
+
+544
+01:20:16.720 --> 01:20:19.860
+Dustin: a circularity to it. It's that…
+
+545
+01:20:20.450 --> 01:20:32.960
+Dustin: there's a… there's a reticence, that has been expressed by at least 2 or 3 different people on… on EL's side to say, oh, to add any SSC feature, whether it's the
+
+546
+01:20:32.960 --> 01:20:53.160
+Dustin: you know, the first of an anticipated, sort of, two to three year transition, or one kind of Big Bang EIP, or the whole, yes, as, people were referring to, alluding to Ethan's, so the stable containers, more broadly, the pure ETH is kind of the current push there, which includes stable, containers, essentially. But…
+
+547
+01:20:53.160 --> 01:21:01.530
+Dustin: But the idea of the Go SSE Y Bridge, this was to a year ago, this was to 2 years ago, is there, an ambition? Is this a…
+
+548
+01:21:01.530 --> 01:21:10.460
+Dustin: essentially a way of just deciding not to do it by refusing to implement a quote-unquote good GoSSE library, or,
+
+549
+01:21:10.470 --> 01:21:21.850
+Dustin: refusing to define a library as good. I mean, I'm a little bit snarky here, but I'm also semi-serious, because it's… it seems like, at some level, sort of insubstantial objection.
+
+550
+01:21:22.500 --> 01:21:22.920
+Tim Beiko: I guess.
+
+551
+01:21:22.920 --> 01:21:23.490
+Guillaume: foot.
+
+552
+01:21:23.840 --> 01:21:28.990
+Tim Beiko: I'm not a Go expert, but my perspective on SSD from someone who has
+
+553
+01:21:29.300 --> 01:21:33.189
+Tim Beiko: zero skin in the game, I don't maintain the client, is, …
+
+554
+01:21:33.690 --> 01:21:40.120
+Tim Beiko: It sounds like the type of thing we always say we want to do, but then the revealed preference is we…
+
+555
+01:21:40.460 --> 01:21:48.720
+Tim Beiko: don't actually prioritize it, because there's higher impact things that we agree to do in the protocol. My…
+
+556
+01:21:48.930 --> 01:21:52.130
+Tim Beiko: Personal preference at this point is, like, we should…
+
+557
+01:21:52.790 --> 01:22:06.429
+Tim Beiko: consider it only as a standalone thing. Like, you know, if we… if we add one more RLP object today, then it's one more RLP object to migrate in the future, you know, in addition to all the ones we already have.
+
+558
+01:22:06.620 --> 01:22:13.590
+Tim Beiko: like, you know, there's not much incremental damage in a way, and I… Yeah, my sense is, like.
+
+559
+01:22:14.360 --> 01:22:25.559
+Tim Beiko: unless there's, like, an explicit stated preference from the EL to say, now we're moving to SOZ, we should just assume the EL is using RLP. Maybe the best
+
+560
+01:22:25.880 --> 01:22:33.029
+Tim Beiko: like, proposal I've seen on the SSD, on the EL side, was, I think, from Peter from Guest a few years ago, where his view was, like.
+
+561
+01:22:33.030 --> 01:22:51.159
+Tim Beiko: we should probably start by moving the peer-to-peer layer of the EL to SSD, because this is something clients can do at their own rhythm. We don't need to coordinate on it, and then it would force all the clients to use the library. And then, you know, once all these clients have integrated the library, maybe a year or two after,
+
+562
+01:22:51.160 --> 01:23:00.270
+Tim Beiko: you know, we can drop the RLP on the peer-to-peer layer and assume that we're transitioning to consensus, part of the clients, or…
+
+563
+01:23:00.290 --> 01:23:03.099
+Tim Beiko: consensus-critical part of the clients. …
+
+564
+01:23:03.150 --> 01:23:14.720
+Tim Beiko: But it does feel like, yeah, it keeps coming up as, like, this side, like, topic every time, and it somewhat gets shut down, or, like, has, like, I don't know, lukewarm enthusiasm, so I…
+
+565
+01:23:15.770 --> 01:23:21.779
+Tim Beiko: Yeah, I… I feel like it's probably better if we just assume that EL is in RLP, but, …
+
+566
+01:23:22.450 --> 01:23:25.410
+Tim Beiko: Yeah, go to that, or Sig, Guillaume, and Tony?
+
+567
+01:23:25.980 --> 01:23:40.560
+Guillaume: Yeah, I just wanted to address what Justin has been saying. It's not like we haven't tried to make SSD work. Peter spent a good chunk of last year trying to get it to work. It's… I mean, we do have libraries, they're just not good.
+
+568
+01:23:40.870 --> 01:23:43.429
+Guillaume: They come up with a lot of, …
+
+569
+01:23:43.530 --> 01:24:00.439
+Guillaume: of issues that we have to go around. They all have their trouble, and it's not like we're not trying to… to block it on grounds that we feel it's going to be difficult. We have tried, we know that, and so, yeah, when we say we…
+
+570
+01:24:00.440 --> 01:24:11.449
+Guillaume: Okay, it's me, but when I say I don't want SSD because I think it's, it's going to be a lot of trouble for what it brings, it's, it's what it is. It's, like, we know it's a fact.
+
+571
+01:24:11.490 --> 01:24:13.340
+Guillaume: So…
+
+572
+01:24:13.630 --> 01:24:33.899
+Guillaume: I think RLP works, and sure, when it comes to… if we ever move to SSE later, we'll have to do a conversion, but then that assumes we will have a good, a good library by then, and we'll… the transition will be a breeze. It's just one more object to transition. The thing is.
+
+573
+01:24:33.900 --> 01:24:38.039
+Guillaume: We… yeah, we don't know how to handle that efficiently.
+
+574
+01:24:40.630 --> 01:24:41.180
+Toni Wahrstätter: Yup.
+
+575
+01:24:41.850 --> 01:24:44.309
+Toni Wahrstätter: Yeah, thanks for the input, …
+
+576
+01:24:44.740 --> 01:24:53.959
+Toni Wahrstätter: Feels like I got the feeling that, ELDFs are most… more leaning towards RLP, so I will update the EAP to have RLP as the default for now, and…
+
+577
+01:24:54.280 --> 01:25:02.590
+Toni Wahrstätter: It should be as soon as the library exists, it should be an easy change in the end, so we can theoretically still switch to ROP.
+
+578
+01:25:02.720 --> 01:25:06.960
+Toni Wahrstätter: But let… R2SSC, but let's keep it, for RLP.
+
+579
+01:25:07.260 --> 01:25:08.140
+Toni Wahrstätter: For now.
+
+580
+01:25:08.450 --> 01:25:16.399
+Toni Wahrstätter: And the last thing that will be a very quick thing, it's basically, there was a discussion around how to handle system calls.
+
+581
+01:25:16.600 --> 01:25:30.099
+Toni Wahrstätter: Basically, we have two system contracts that cause state changes pre-execution, so pre-transaction execution, and three system contracts that cause state changes post-execution.
+
+582
+01:25:30.660 --> 01:25:50.149
+Toni Wahrstätter: Basically, we have those ring buffers where we write the parent hash and the beacon block root into, and then withdrawals cause a balance diff, and the EL-triggered withdrawals plus maxiB, they both have a queue that is then dequeued at the end, and you need to update those four.
+
+583
+01:25:50.250 --> 01:25:59.039
+Toni Wahrstätter: First slots, please correct me if I'm wrong, and look at the EAP if you were involved in those EAPs, but I think I got the edge cases, right there.
+
+584
+01:25:59.170 --> 01:26:05.219
+Toni Wahrstätter: And then the proposal would be to encode those state changes into the block club access lists by doing…
+
+585
+01:26:05.280 --> 01:26:24.060
+Toni Wahrstätter: All… everything that occurs pre-execution is mapped to transaction index length of transactions, which is, like, pretending it's the last transaction, and everything that is state system contract related that occurs post-execution will just be, yeah, incremented by once.
+
+586
+01:26:24.130 --> 01:26:34.819
+Toni Wahrstätter: The cool thing is, like, this maintains that the block level access list, transaction indices are the same as the block transaction indices, and this was kind of important to me.
+
+587
+01:26:35.870 --> 01:26:39.190
+Toni Wahrstätter: Yeah, I think… I'm not sure, Jared, if you, …
+
+588
+01:26:39.320 --> 01:26:43.860
+Toni Wahrstätter: If we find consensus on that point already, and if others have an opinion.
+
+589
+01:26:44.390 --> 01:26:57.930
+Jared Wasinger: Yeah, so I guess my original point of contention here… I know we've now agreed to separate the pre- and post-execution system contract changes, and that's…
+
+590
+01:26:58.490 --> 01:27:02.029
+Jared Wasinger: I think that's really what is…
+
+591
+01:27:02.160 --> 01:27:06.080
+Jared Wasinger: Important for simplifying the client implementation.
+
+592
+01:27:06.260 --> 01:27:15.480
+Jared Wasinger: So my preference, which I've stated before on the Discord, is that the index in the… in the… in the access list should
+
+593
+01:27:15.480 --> 01:27:27.609
+Jared Wasinger: Like, if you take the index of all state changes in the access list, it should reflect the order in which they would be sequentially applied to execute the block.
+
+594
+01:27:27.990 --> 01:27:30.629
+Jared Wasinger: So essentially, like, what I would…
+
+595
+01:27:31.150 --> 01:27:37.960
+Jared Wasinger: prefer is that the index 0 be the… the pre-execution
+
+596
+01:27:38.100 --> 01:27:47.879
+Jared Wasinger: And then proceeding, … and then after that, the transactions, and then the last index would be any post…
+
+597
+01:27:47.990 --> 01:27:58.829
+Jared Wasinger: state changes. And so I think that your pushback against this has been that this does not…
+
+598
+01:27:59.280 --> 01:28:08.129
+Jared Wasinger: So this would mean that the index of the BAL state changes does not… for transactions, doesn't reflect
+
+599
+01:28:08.630 --> 01:28:11.640
+Jared Wasinger: Their zero… their index within the block.
+
+600
+01:28:12.100 --> 01:28:15.249
+Jared Wasinger: … And I would say that…
+
+601
+01:28:15.660 --> 01:28:19.180
+Jared Wasinger: From the implementation perspective, this is, …
+
+602
+01:28:20.390 --> 01:28:31.300
+Jared Wasinger: pretty… a pretty trivial issue, it's not… I mean, if you're implementing it for the first time, it is bug-prone, but there… it… like, basic test coverage can catch this.
+
+603
+01:28:31.490 --> 01:28:32.070
+Toni Wahrstätter: Yeah.
+
+604
+01:28:33.100 --> 01:28:43.650
+Toni Wahrstätter: I don't think it's a problem for client devs. It's more like, imagine you're a user that uses an RPC, you query a block, and then you look at the block level access list, and suddenly.
+
+605
+01:28:43.890 --> 01:28:47.750
+Toni Wahrstätter: Transaction Index 1 in the block level access list is actually…
+
+606
+01:28:47.920 --> 01:28:52.570
+Toni Wahrstätter: transaction zero in the block, right? This is like….
+
+607
+01:28:52.570 --> 01:29:00.810
+Jared Wasinger: But you can imagine that people will build tooling that accounts for this, right? I think… I mean…
+
+608
+01:29:01.250 --> 01:29:09.980
+Jared Wasinger: having just, like, looked at the JSON encoding of some of these blocks access lists, they're not exactly, like, amenable to being able to…
+
+609
+01:29:10.180 --> 01:29:16.200
+Jared Wasinger: some of the bigger ones aren't really… I mean, it's hard to manually parse through these, right? Like…
+
+610
+01:29:16.600 --> 01:29:18.680
+Jared Wasinger: I don't think that users…
+
+611
+01:29:20.750 --> 01:29:25.400
+Jared Wasinger: Yeah, I think there will be tooling developed around this, and that it won't be an issue.
+
+612
+01:29:31.000 --> 01:29:46.410
+Andrew Ashikhmin: I wanted to say that I agree with Jared. We implemented something similar in Aragon for… we also have virtual pre-execution and post-execution transactions, and it's logical, like, to arrange them.
+
+613
+01:29:46.640 --> 01:29:51.219
+Andrew Ashikhmin: Orderly, so 0 corresponds to the pre, like.
+
+614
+01:29:51.360 --> 01:29:53.810
+Andrew Ashikhmin: Beginning of the block, and …
+
+615
+01:29:54.110 --> 01:30:03.379
+Andrew Ashikhmin: Yeah, the last one corresponds to the end of the block. Otherwise, I think if they are not ordered, it will be very confusing.
+
+616
+01:30:03.780 --> 01:30:10.829
+Andrew Ashikhmin: for developers, I think… Like, having them ordered will be less confusing to the user, because if… even, like.
+
+617
+01:30:11.150 --> 01:30:18.440
+Andrew Ashikhmin: Like, otherwise they say… they see, oh, okay, there are two extra transactions, like, transactions at the end, what does it mean?
+
+618
+01:30:19.660 --> 01:30:24.839
+Andrew Ashikhmin: So it's better to just do it… in the sorted order.
+
+619
+01:30:28.570 --> 01:30:42.729
+Roman: I think it's a little bit of a semantical question as well. So, my suggestion, since both transactions and pre- and post-block executions, there are just state transitions, let's just…
+
+620
+01:30:42.800 --> 01:30:50.609
+Roman: call this index the State Transition Index in the AP itself, and then go with the…
+
+621
+01:30:50.690 --> 01:30:57.940
+Roman: with what Jared said were… Like, all of the items are in their chronological order.
+
+622
+01:30:58.070 --> 01:30:59.559
+Roman: And the block level access.
+
+623
+01:31:04.100 --> 01:31:12.529
+Som - Erigon: I would suggest, keeping it different from the transactions list, and… Perhaps, arranging it in
+
+624
+01:31:13.010 --> 01:31:17.299
+Som - Erigon: A separate section, because they are not actual transactions.
+
+625
+01:31:17.940 --> 01:31:23.059
+Som - Erigon: I think that's the most confusing thing, to mingle it with.
+
+626
+01:31:23.290 --> 01:31:30.490
+Som - Erigon: The transactions, because… they're not going to go through EVM in some cases, and are applied
+
+627
+01:31:30.930 --> 01:31:34.059
+Som - Erigon: Sort of in a different fashion.
+
+628
+01:31:34.520 --> 01:31:42.670
+Som - Erigon: So, there is… if there were to be benefits of parallelization, on those, …
+
+629
+01:31:43.090 --> 01:31:48.289
+Som - Erigon: I firstly doubt there would be, but if there were, I think they're going to be processed.
+
+630
+01:31:48.430 --> 01:31:51.600
+Som - Erigon: Differently, so it doesn't harm to…
+
+631
+01:31:52.950 --> 01:31:57.400
+Som - Erigon: Just have a system contract section in the list, and, like.
+
+632
+01:31:57.720 --> 01:32:02.360
+Som - Erigon: Put your, transactions order, over there.
+
+633
+01:32:03.060 --> 01:32:08.059
+Som - Erigon: And, it would be up to client teams to figure out what to do with this.
+
+634
+01:32:08.220 --> 01:32:12.110
+Som - Erigon: If they want to warm it up, before, they're free to do it.
+
+635
+01:32:12.320 --> 01:32:19.309
+Som - Erigon: Or if they want to go in how it is right now, which is just, let the transactions happen, and then
+
+636
+01:32:20.060 --> 01:32:23.190
+Som - Erigon: Apply, the system contracts.
+
+637
+01:32:23.550 --> 01:32:33.090
+Som - Erigon: Afterwards and check if everything is okay. If they want to do that parallelly, which is kind of risky, they can do it. If they want to do it sequentially, they can do it.
+
+638
+01:32:33.850 --> 01:32:35.600
+Som - Erigon: Maybe just keep it separate.
+
+639
+01:32:37.140 --> 01:32:44.110
+Toni Wahrstätter: Okay, thanks. Yeah, this is super helpful. So just to summarize it, it feels like we definitely want to keep
+
+640
+01:32:44.390 --> 01:33:00.789
+Toni Wahrstätter: pre- and post, different, so that we in the future allow for system contracts to have, for example, balance changes pre- and post-execution, and then we don't like, the way I proposed it, with having two additional transactions, but instead we only have
+
+641
+01:33:01.070 --> 01:33:07.620
+Toni Wahrstätter: one additional transaction for the post state, and instead shift every transaction index by one, and
+
+642
+01:33:08.140 --> 01:33:15.230
+Toni Wahrstätter: I have, the pre… the pre-execution changes, as transaction index 0.
+
+643
+01:33:15.450 --> 01:33:20.769
+Toni Wahrstätter: I will update the EAP on that, and we can… we can still further discuss it in the Discord.
+
+644
+01:33:21.450 --> 01:33:27.390
+Jared Wasinger: I think if we do that, we should probably move away from calling them transaction indices.
+
+645
+01:33:27.690 --> 01:33:29.740
+Toni Wahrstätter: Right, yeah, I can call it, …
+
+646
+01:33:30.100 --> 01:33:31.920
+Toni Wahrstätter: block level access list index, or something.
+
+647
+01:33:33.330 --> 01:33:34.699
+Jared Wasinger: Yeah, sure.
+
+648
+01:33:36.990 --> 01:33:41.320
+Tim Beiko: We can, by check the name, I think, … But yeah.
+
+649
+01:33:41.910 --> 01:33:45.960
+Tim Beiko: Oh, Marius is saying, yeah, there should be a block access list breakout,
+
+650
+01:33:46.390 --> 01:33:55.679
+Tim Beiko: Do we maybe want to do a first pass of modifications on the EIP, and then discuss those in a breakout once Tony has them?
+
+651
+01:33:57.040 --> 01:33:58.499
+Toni Wahrstätter: I'm happy with you.
+
+652
+01:33:58.740 --> 01:34:06.979
+Tim Beiko: Yeah, so yeah, people have a bit of time to review async, so yeah, just let us know when you have the changes to the EAP, and then, yeah, we'll schedule a breakout.
+
+653
+01:34:09.560 --> 01:34:18.249
+Tim Beiko: Yeah, okay, so we only have 2 minutes left, and we had a couple more things on the agenda, but I don't think we'll quite have the time to
+
+654
+01:34:18.680 --> 01:34:20.849
+Tim Beiko: Get to them. …
+
+655
+01:34:22.150 --> 01:34:31.720
+Tim Beiko: there's two EIPs, so people can review those async, and then Mikael, you had, the Safe Head, proposal. I don't know if… yeah.
+
+656
+01:34:31.840 --> 01:34:37.629
+Tim Beiko: Two minutes is enough, or if you'd want to point people as well towards an async place to discuss.
+
+657
+01:34:39.670 --> 01:34:44.140
+Mikhail Kalinin: I can do a very short, overview.
+
+658
+01:34:44.830 --> 01:34:51.410
+Mikhail Kalinin: Yeah, and then we can move to a singing discussion. So, yeah, we have, … …
+
+659
+01:34:51.590 --> 01:35:00.370
+Mikhail Kalinin: the, work in progress on the prototype of the fast confirmation rule in a couple of CL clients, so now is the time to decide how we will
+
+660
+01:35:00.370 --> 01:35:13.380
+Mikhail Kalinin: expose the fast confirmed block to the blockchain data consumers, and there are basically several options to do that. First one is to repurpose the save block for the fast confirmed block
+
+661
+01:35:13.410 --> 01:35:29.149
+Mikhail Kalinin: This is the easiest one, because we will not need to change the engine API, we will need to change the GSNRPIS API, and just to recall, to remind everyone that the save block was introduced for the purpose of fast confirmations.
+
+662
+01:35:29.150 --> 01:35:37.669
+Mikhail Kalinin: But it's been a long time ago, and yeah, it's been a justified block for almost 3 years, so some data consumers can
+
+663
+01:35:37.670 --> 01:35:44.510
+Mikhail Kalinin: basically rely on that safe block means justified. And yeah, that might impact them.
+
+664
+01:35:44.700 --> 01:36:04.269
+Mikhail Kalinin: And yeah, this is basically the default option. The other one will be to introduce the fast confirm block hash to the engine API and fast-confirmed block tag to JSON RPC API, which is more intrusive from the API standpoint. And the third… the third option would be to
+
+665
+01:36:04.270 --> 01:36:14.740
+Mikhail Kalinin: To make the save block, the semantics of the save block, depending on the runtime configuration of the CO client. So this has some implications.
+
+666
+01:36:14.980 --> 01:36:26.000
+Mikhail Kalinin: Because the basically safe block, semantics will depend on, on the node operator and on the, node's configuration, which might be a…
+
+667
+01:36:26.140 --> 01:36:32.120
+Mikhail Kalinin: prone to misconfiguration and other things, so, yeah. But if you're a
+
+668
+01:36:32.480 --> 01:36:43.939
+Mikhail Kalinin: Say block consumer, and you're listening to us, please reach out to us in the EtherMD Discord in the 3 Star PC API channel, because this change might affect you. Thank you.
+
+669
+01:36:49.030 --> 01:36:57.710
+Tim Beiko: Okay, thank you. Let's wrap up here, and yeah, we can discuss the DevNet 5 progress on Monday's testing call.
+
+670
+01:36:58.150 --> 01:37:00.320
+Tim Beiko: But yeah. Thanks, everyone.
+
+671
+01:37:03.540 --> 01:37:04.310
+stokes: Thank you.
+
+672
+01:37:05.020 --> 01:37:05.730
+Toni Wahrstätter: Me too.
+
+673
+01:37:05.990 --> 01:37:07.179
+Potuz: Hi, thank you.
+
+674
+01:37:09.490 --> 01:37:10.710
+Fredrik: Thanks, Mike.
+
+675
+01:37:10.710 --> 01:37:12.059
+Marius van der Wijden: Okay, thanks, bud.
+
+676
+01:37:13.080 --> 01:37:13.930
+ethDreamer (Mark): Hey, guys.
+

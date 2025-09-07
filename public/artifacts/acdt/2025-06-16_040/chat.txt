@@ -1,0 +1,27 @@
+00:06:04	felix (eest):	hello chat
+00:06:56	Louis:	Hi felix
+00:11:10	Ansgar Dietrichs:	did pari just confirm we can hear marius, even though the two of them are in the same room?
+00:11:20	Ben Adams:	Reacted to "did pari just confir..." with 😂
+00:11:21	Ansgar Dietrichs:	Replying to "did pari just confir..."
+
+(we can indeed hear marius)
+00:11:24	ef berlin office:	Reacted to "did pari just confir..." with 😂
+00:11:27	milen | Erigon:	Reacted to "did pari just confir..." with 😂
+00:15:14	Jared Wasinger:	Reacted to "did pari just confir..." with 😂
+00:17:06	jochem-brouwer:	LMK if we need any specific benchmarks, can craft them as state test :)
+00:21:16	Ansgar Dietrichs:	dumb question, could a more targeted approach not also work, where we just artificially throttle the state access, even when testing on small state?
+00:21:37	Ansgar Dietrichs:	Replying to "dumb question, could..."
+
+as in, benchmark worst case access performance on mainnet, and then just use that for testing
+00:21:49	jochem-brouwer:	Antwoord verzenden naar "dumb question, cou..."
+
+this is actually a great idea :)
+00:22:15	jochem-brouwer:	Antwoord verzenden naar "dumb question, cou..."
+
+we could likely check the trie depth on the state test vs mainnet tree depth and multiply the read time with that ratio
+00:23:16	Ansgar Dietrichs:	Replying to "dumb question, could..."
+
+right. would be worth empirically validating that that ratio roughly matches real world slowdown on mainnet, otherwise that assumption could skew the results
+00:24:18	jochem-brouwer:	Antwoord verzenden naar "dumb question, cou..."
+
+yes good point, this assumption might indeed be too simple and cutting corners 😅

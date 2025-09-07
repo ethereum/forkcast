@@ -1,0 +1,148 @@
+00:03:15	Gabriel Trintinalia | Besu:	gn gn
+00:08:00	Justin Traglia:	There was also a little Prysm bug, which Lin made a spec test for (thanks!)
+https://github.com/ethereum/consensus-specs/pull/4413
+00:08:05	Parithosh Jayanthi:	Reacted to "There was also a lit..." with 🔥
+00:08:41	nflaig:	Reacted to "There was also a lit..." with 🔥
+00:09:20	Barnabas:	too much cleanup :D
+00:09:38	Barnabas:	Watchtower for the win :D
+00:09:57	Enrico Del Fante (tbenr):	Reacted to "too much cleanup :D" with ❤️
+00:10:16	Enrico Del Fante (tbenr):	Reacted to "Watchtower for the w..." with 💯
+00:10:59	Barnabas:	I don’t recall any changes
+00:11:52	Barnabas:	Reacted to "There was also a lit..." with 🔥
+00:12:13	Barnabas:	Replying to "There was also a lit..."
+
+Right that was one of the first bugs triggered right after FULU with deposits. This was already on friday, totally forgot about that.
+00:17:06	pk910:	I think spamoor had a problem with that unfinality.
+I'm working on it..
+00:17:18	Barnabas:	Reacted to "I think spamoor had ..." with 👍
+00:17:24	Bharath:	Reacted to "I think spamoor had ..." with 👍
+00:17:31	Parithosh Jayanthi:	Reacted to "I think spamoor had ..." with 👍
+00:18:34	jochem-brouwer:	Heeft gereageerd op "I think spamoor ha..." met 👍
+00:18:34	Barnabas:	no pressure 😂 - we are all looking at you
+00:19:13	kasey:	The prysm bug was that we had stale validator indices in our proposer lookahead code. Previous spec test and kurtosis setups did not change active validator set.
+00:19:26	Parithosh Jayanthi:	Reacted to "The prysm bug was th..." with 🔥
+00:20:08	Justin Traglia:	Replying to "There was also a lit..."
+
+Regarding standard tests for other forks, I’ve made this issue. This won’t be done in time for the next release (initiating this process in a couple hours). But we’ll be sure to get these tests into the next (beta.0) release.
+00:20:17	Justin Traglia:	Reacted to "The prysm bug was th..." with 👍
+00:20:45	Bharath:	Reacted to "no pressure 😂 - we ..." with 😂
+00:21:17	Barnabas:	any update on backfill?
+00:21:56	pawan:	Nice!
+00:22:18	Mario Vega:	Reacted to "The prysm bug was th..." with 🔥
+00:22:18	Mario Vega:	Reacted to "The prysm bug was th..." with 👍
+00:22:38	Justin Traglia:	Reacted to "Screenshot2025_06_30_161854.jpg" with 😂
+00:22:40	Parithosh Jayanthi:	Reacted to "Screenshot2025_06_30_161854.jpg" with 😂
+00:22:43	pawan:	Reacted to "Screenshot2025_06_30_161854.jpg" with 😂
+00:23:04	nixo:	Reacted to "Screenshot2025_06_30_161854.jpg" with 😂
+00:23:23	felix (eest):	Reacted to "Screenshot2025_06_..." with 😂
+00:23:32	nflaig:	Reacted to "Barnabas has sent yo..." with 😂
+00:23:44	Mario Vega:	Reacted to "Screenshot2025_06_30_161854.jpg" with 😂
+00:24:48	Ameziane Hamlat:	Replying to "I think spamoor had ..."
+
+FYI, last week I could run spamoor tests shared by Jochem on a besu performance devnet. So I could run the factorydeploytx scenario to deploy the ~ 12k contracts and then calltx scenario. I built spamoor from sources so the issue could be not related to the sources as I could make it run correctly.
+00:25:21	Ameziane Hamlat:	Replying to "I think spamoor had ..."
+
+https://discord.com/channels/595666850260713488/1386773806407749743/1388068741597757492
+00:25:23	Ansgar Dietrichs:	I agree with Marius’ assessment, out-of-protocol index seems very dangerous
+00:25:27	jochem-brouwer:	Heeft gereageerd op "I agree with Marius..." met 👍
+00:25:36	J Sunnyside Labs:	A quick update from Sunnyside Labs: We’ve started testing with devnet-2 spec. We will share general details in a Discord thread  and communicate with each team individually.
+00:25:40	Parithosh Jayanthi:	Reacted to "I agree with Marius’..." with 👍
+00:25:56	Parithosh Jayanthi:	Replying to "A quick update from ..."
+
+Do you guys want to give a brief update after the devnet-3 topic?
+00:26:04	Felix:	we should not do it now
+00:26:10	J Sunnyside Labs:	Replying to "A quick update from ..."
+
+Sure 🙂
+00:26:13	Ansgar Dietrichs:	doing it now seems insane timeline-wise
+00:28:08	Ansgar Dietrichs:	well you’ll have to merkelize it for zk / stateless
+00:30:19	Ansgar Dietrichs:	the fact that we are 3 days from wanting to freeze the spec and we still have these conceptual questions really makes me believe that pulling 7907 completely is the only responsible choice
+00:30:25	Mario Vega:	Small comment worth looking in the EIP: https://github.com/ethereum/EIPs/pull/9910#issuecomment-2997357062
+00:32:58	Roman:	reth agrees
+00:35:46	Ansgar Dietrichs:	Replying to "reth agrees"
+
+with pulling 7907? or something else?
+00:35:58	Parithosh Jayanthi:	A question about EIP-7934. Are blocks supposed to be RLP-serialized as `[header, transactions, ommers, withdrawals]`
+00:37:08	Parithosh Jayanthi:	https://github.com/ethereum/execution-apis/pull/671
+00:39:33	Marius:	I think we should do this
+00:39:58	kasey:	The context here is execution engine api correct?
+00:40:14	Gabriel Trintinalia | Besu:	Reacted to "The context here is ..." with 👍
+00:40:19	Parithosh Jayanthi:	Reacted to "The context here is ..." with 👍
+00:40:30	Marius:	The drawback is just a bit of processing time on the engine api, the advantage is that we can ship this before glamsterdam
+00:40:30	FLCL:	is this pubsub change documented somewhere?
+00:40:39	Marius:	Reacted to The context here is ... with "👍"
+00:41:11	marco:	In draft: https://github.com/libp2p/specs/pull/685
+00:42:16	kasey:	I had the same thought as Pawan - we have exchange capabilities which would enable us to add new execution engine apis between forks, but having this at fusaka would streamline things quite a bit and make the optimization CL only.
+00:42:47	FLCL:	If CLs agree to bring this optimisation, let's just switch to partial
+00:43:28	Francesco:	If we decide to go ahead with this, can we soften the language in a way that allows returning [null, …, null] even if you have some of the blobs? (e.g. rather than [A, null, B]). Basically just leaving it up to the EL whether to return partial responses or not
+00:43:34	kasey:	I am in support of Marco’s proposal actually
+00:43:56	kasey:	(But most of prysm hasn’t reviewed it yet so I don’t want to speak for team)
+00:45:28	pawan:	Yeah to be clear, I like the optimization as well. Just don’t want to spend more cycles on changing the spec, testing etc
+00:48:50	Barnabas:	I’d do it on devnet 3
+00:48:54	Gabriel Trintinalia | Besu:	Reacted to "I’d do it on devnet ..." with ➕
+00:48:56	pawan:	Reacted to "I’d do it on devnet ..." with 👍
+00:48:57	Mario Vega:	Reacted to "I’d do it on devnet ..." with ➕
+00:49:04	Bharath:	Reacted to "I’d do it on devnet ..." with ➕
+00:49:06	Barnabas:	We really need to freeze the spec and no more changes
+00:49:14	Gabriel Trintinalia | Besu:	Reacted to "We really need to fr..." with ➕
+00:49:17	Barnabas:	otherwise we might test something that is gonna give us misinformation
+00:49:23	Mario Vega:	Reacted to "otherwise we might t..." with 👍🏼
+00:49:47	Justin Traglia:	Reacted to "We really need to fr..." with ➕
+00:49:53	Marius:	I think we need to start ramping up testing in parallel, so we have the infra in place fir devnet-3 specs
+00:50:46	Ansgar Dietrichs:	I thought we decided to move the per-tx blob limit to the peerdas EIP, out of BPO parameters, no?
+00:50:58	spencer-tb:	Reacted to "I thought we decided..." with ➕
+00:51:18	Barnabas:	Replying to "I thought we decided..."
+
+yes but FLCL is arguing that it should not be removed
+00:51:33	Ansgar Dietrichs:	Replying to "I thought we decided..."
+
+ah okay sorry, understood it the other way around
+00:53:38	Marius:	I thought we wanted max at 6?
+00:53:49	Ben Adams:	Reacted to "I thought we wanted ..." with 👍
+00:53:51	Justin Traglia:	Reacted to "I thought we wanted ..." with 👍
+00:53:53	Francesco:	Reacted to "I thought we wanted ..." with 👍
+00:54:19	Barnabas:	Reacted to "I thought we wanted ..." with 👍
+00:55:32	Marius:	We only allow 6 in our txpool
+00:55:39	Ansgar Dietrichs:	I think we made that decision on acde two weeks ago (the one I filled in for Tim): move max out of BPO and set it to 6.
+
+So if we want to revisit, we should do that on acde. but might be too late to change for Fusaka.
+00:55:51	Marius:	Also you need to go through the txpool anyway for the proof changes
+00:58:48	Barnabas:	Replying to "I think we made that..."
+
+we still don’t have a modification for this in eip-7892
+00:58:51	Ansgar Dietrichs:	I think we discussed the in-protocol vs pure in-mempool restriction for quite a while. I personally liked the in-mempool only approach, but overall most people preferred in-protocol
+00:58:56	Barnabas:	Replying to "I think we made that..."
+
+unless i missed that?
+00:59:45	Parithosh Jayanthi:	https://ethpandaops.io/posts/gaslimit-scaling/
+00:59:47	Ansgar Dietrichs:	Replying to "I think we made that..."
+
+should I have followed up on this? I stopped thinking about these topics when the call was over
+00:59:56	Justin Traglia:	Reacted to "https://ethpandaops...." with 🔥
+01:00:00	Ben Adams:	wen CLs gaslimit
+01:00:02	Barnabas:	Replying to "I think we made that..."
+
+https://github.com/ethereum/EIPs/blob/master/EIPS/eip-7892.md#L124
+01:00:24	Barnabas:	Replying to "I think we made that..."
+
+yeah EIP changes need to be tracked, otherwise its gonna be lost in the echo
+01:00:25	Barnabas:	Replying to "I think we made that..."
+
+lol
+01:00:33	Enrico Del Fante (tbenr):	We will merge it soon
+01:00:36	Ben Adams:	Reacted to "https://ethpandaops...." with 🔥
+01:00:37	Ansgar Dietrichs:	Reacted to "https://ethpandaops...." with 🔥
+01:00:39	nflaig:	will get it in our next release (1-2 weeks)
+01:00:42	Ameziane Hamlat:	On besu, we should have a release out on Wednesday. We’re in the process of testing the new release : sync, performance regression, ..etct
+01:01:05	Barnabas:	Reacted to "https://ethpandaops...." with 🔥
+01:01:32	Ansgar Dietrichs:	Replying to "I think we made that..."
+
+and that’s something Tim normally does?
+01:01:47	Ansgar Dietrichs:	Replying to "I think we made that..."
+
+anyway I guess now he is back, how convenient :-)
+01:02:28	Barnabas:	Replying to "I think we made that..."
+
+he makes sure someone is assigned to change the spec yes
+01:02:35	Ansgar Dietrichs:	Reacted to "he makes sure someon..." with 👍
+01:02:37	Justin Traglia:	Reacted to "he makes sure someon..." with 👍

@@ -1,0 +1,740 @@
+00:08:36	Lucas:	Transaction receipt change
+PR:
+https://github.com/ethereum/execution-apis/pull/640 
+
+Ethereum-magician:
+https://ethereum-magicians.org/t/eip-7702-set-eoa-account-code/19923/383 
+
+HackMD:
+https://hackmd.io/@cU7QMf4cQE-bqaR_VenOTw/HyCKM3531e
+00:09:32	Danno Ferrin | Ipsilon:	Replying to "Transaction receipt ..."
+
+Is this is RPC only, not impacting any on-chain executions?
+00:09:35	Ben Adams:	eth69 drops Bloom and includes block ranges for history https://eips.ethereum.org/EIPS/eip-7642
+00:10:01	lightclient:	ah right, it depends on the current nonce of the authorizer
+00:12:48	Mario Vega:	Wouldn’t querying the code of the account be better anyway? Because even if you store the success of a delegation on a particular tx, a subsequent tx could re-delegate
+00:13:02	Ansgar Dietrichs:	could this not be added to clients at a later time? does this require a hard fork?
+00:13:39	Felix:	Replying to "Wouldn’t querying..."
+
+I think same. In the end you want to know if the account is delegated correctly, you can get that by matching on the response to getCode being 0xef01<address>
+00:13:42	felipe:	Reacted to "Wouldn’t querying th..." with 👍🏼
+00:13:45	Anders Kristansen:	Replying to "could this not be ad..."
+
+Doesnt require a hardfork
+00:14:46	Hadrien Croubois (OpenZeppelin):	It feels like the workaround to this proposal, which is using getCode, also requires an archive node to get historical results. The delegation might have change since that Tx
+00:16:14	frangio:	another note here is that the delegation can be inspected in the EVM so the entrypoint of the transaction can do the confirmation that the delegation was set
+00:17:24	Roman:	that‘s also a good point
+00:19:02	Trent:	🚢
+00:20:52	lightclient:	Reacted to "another note here is..." with 👍
+00:20:53	Marius:	Lets gooo
+00:21:29	Tim Beiko:	https://eips.ethereum.org/EIPS/eip-7607
+00:22:43	Tim Beiko:	https://eips.ethereum.org/EIPS/eip-7823
+00:22:45	lightclient:	EIP-7907: Meter Contract Code Size And Increase Limit
+00:22:56	Dankrad Feist:	Should we CFI a target gas limit increase to 100m?
+00:23:06	Carl Beekhuizen:	Reacted to "Should we CFI a targ..." with 👍
+00:23:12	Tim Beiko:	Reacted to "Should we CFI a targ..." with ➕
+00:23:18	Tim Beiko:	Replying to "Should we CFI a targ..."
+
+I would like this 😄
+00:23:30	frangio:	Reacted to "Should we CFI a targ..." with 👍
+00:23:46	Dankrad Feist:	Replying to "Should we CFI a targ..." 
+
+ is this an EIP? how do we fix this as a priority?
+00:24:03	Martin | ethrex:	Reacted to "Should we CFI a targ..." with 👍
+00:24:08	Barnabas Busa:	eth69 should be done way before fusaka gets activated
+00:24:12	Toni Wahrstätter:	Replying to "Should we CFI a targ..."
+
+Get it on a testnet asap, I'd say
+00:24:17	Marius:	Replying to "Should we CFI a ta..."
+
+Geth nodes can't even handle 60m at the moment. Running oom
+00:24:45	Marius:	Yes
+00:24:59	Dankrad Feist:	Replying to "Should we CFI a targ..." 
+
+ Yes. I'm saying let's try to ensure that we reserve capacity to get there
+00:25:00	Marius:	Lets get eth/69 in the next week
+00:25:51	Toni Wahrstätter:	Replying to "Should we CFI a targ..."
+
+When will we be able to bump sepolia to 60m? What timelines are we talking?
+00:25:51	Ben Adams:	My main point is should eth/69 then be moved up in status?
+00:26:03	Ben Adams:	Rather than PFI
+00:26:11	Marius:	I don't think it needs to be in this list at all
+00:27:32	Gajinder Singh:	Reacted to "Should we CFI a targ..." with 👍
+00:27:35	Ansgar Dietrichs:	so quick process question: what exactly are we freezing today? anything that’s not CFI after today will not be in the fork?
+00:27:43	Gajinder Singh:	Replying to "Should we CFI a targ..."
+
++1
+00:28:03	Toni Wahrstätter:	Replying to "so quick process que..."
+
+I think so yeah. Today is deadline
+00:28:30	Gajinder Singh:	info EIP
+00:28:35	Ben Adams:	Reacted to "info EIP" with 👍
+00:28:43	Dragan Rakita:	Reacted to "info EIP" with 👍
+00:28:45	Tim Beiko:	Replying to "so quick process que..."
+
+anything that’s not CFI after today will not be in the fork?
+
+yes
+00:28:46	Marius:	Replying to "so quick process q..."
+
+Should we just go through the PFI and reject them?
+00:28:48	nixo:	Reacted to "so quick process que..." with 👍
+00:29:27	FLCL:	Reacted to "info EIP" with 👍
+00:29:27	nixo:	Reacted to "info EIP" with 👍
+00:29:36	stokes:	Replying to "so quick process que..."
+
+Easier to just raise things we should CFI
+00:29:38	Pooja Ranjan:	Reacted to "info EIP" with 👍
+00:29:45	Andrew Ashikhmin:	https://eips.ethereum.org/EIPS/eip-7783
+00:29:52	Gajinder Singh:	or the hardware spec EIP can specify the target
+00:30:18	Andrew Ashikhmin:	Or https://eips.ethereum.org/EIPS/eip-7790
+00:30:29	Ansgar Dietrichs:	clearly we don’t need to freeze gas limit decision today, right?
+00:30:31	Marius:	Replying to "so quick process q..."
+
+I think the best would be to quickly go through an reject all where two or more client teams are against
+00:30:42	Ansgar Dietrichs:	Replying to "clearly we don’t nee..."
+
+so we should focus on the decisions we actually have to make today
+00:30:50	Marius:	Reacted to "so we should focus..." with 👍
+00:31:06	Toni Wahrstätter:	An info eip to communicate tested numbers to validators might be the right approach
+00:31:07	Tim Beiko:	Replying to "clearly we don’t nee..."
+
+Sure, but this does affect the scope. If we CFI a bunch of EIPs and eat up all our bandwidth, that’s not great
+00:31:20	Łukasz Rozmej:	I thought we wanted to go to 60mln post Pectra and we will see then whats next
+00:31:24	Ansgar Dietrichs:	agree though, ideally we should aim for something like
+
+Fusaka - 60M
+EOY - 100M
+00:31:25	nixo:	Reacted to "An info ei to commun..." with ➕
+00:31:29	Ben Adams:	Related to gaslimit; don't think we want 100M gas txs?EIP-7825: Transaction Gas Limit Cap https://eips.ethereum.org/EIPS/eip-7825
+00:31:30	Tim Beiko:	Yeah, I think an info EIP that says “we’re trying to reach X gas and fill fix the bugs until there"
+00:31:39	Łukasz Rozmej:	Reacted to "Related to gaslimit;..." with 👍
+00:31:41	Francesco:	Reacted to "Related to gaslimit;..." with 👍
+00:31:41	Kevaundray Wedderburn:	Replying to "or the hardware spec..."
+
+I’d prefer not to overload that EIP tbh
+00:31:55	Ameziane Hamlat:	Reacted to "Related to gaslimit;..." with 👍
+00:31:57	FLCL:	Reacted to "Related to gaslimit;..." with 👍
+00:32:08	Gajinder Singh:	Replying to "Yeah, I think an inf..."
+
+yea that specifies the schedule of bumping it
+00:32:19	Gajinder Singh:	Replying to "or the hardware spec..."
+
+makes sense
+00:32:56	Pooja Ranjan:	Reacted to "I’d prefer not to ov..." with ➕
+00:33:29	Dankrad Feist:	Reacted to Related to gaslimit;... with "👍"
+00:33:35	Andrew Ashikhmin:	EIP-7825: Transaction Gas Limit Cap
+00:33:38	Dankrad Feist:	agree with transaction gas limit
+00:33:44	lightclient:	limiting the size of the tx per block is not good for AA through
+00:33:51	Dankrad Feist:	this also improves worst case parallelization
+00:34:07	Ansgar Dietrichs:	cap seems reasonable - also worth noting that we can always remove / modify the cap later. doesn’t lock us in permanently
+00:34:13	Marius:	Reacted to "cap seems reasonab..." with 👍
+00:34:13	Łukasz Rozmej:	30 was before we went to 36
+00:34:18	Mario Vega:	Replying to "Should we CFI a targ..."
+
+We currently hard-code 30 million in many of our tests, but we could make this value parametrizable in our test-generating framework to make our tests adjust dynamically to these continuous gas increments to mainnet. Created issue here: https://github.com/ethereum/execution-spec-tests/issues/1434
+00:34:40	Toni Wahrstätter:	Replying to "limiting the size of..."
+
+but would that be that bad going to 30m. Are there many 30m AA transactions today? If it's only saving 21k then I don't see a big problem
+00:34:57	Ansgar Dietrichs:	even then, 30M is just not restrictive
+00:35:05	Sophia Gold:	Likely 60m gas limit by the time Fusaka is on mainnet
+00:35:06	Francesco:	Reacted to "even then, 30M is ju..." with 👍
+00:35:11	Ansgar Dietrichs:	we can always lift that once we are at gigagas on mainnet :-)
+00:35:13	Danno Ferrin | Ipsilon:	Replying to "limiting the size of..."
+
+4337-style AA with a bundled entrypoint, but native AA will have no problem
+00:35:19	Marius:	Reacted to "even then, 30M is ..." with 👍
+00:35:43	Danno Ferrin | Ipsilon:	Replying to "limiting the size of..."
+
+4337 style bundling is a barrier to parallelization.
+00:35:51	Ameziane Hamlat:	I have already seen 30 mags transactions on Ethereum mainnet. The closer we do transaction gas limit, the better it is.
+00:36:48	Ansgar Dietrichs:	can we just CFI the cap and then have the discussion async for whether to move it to SFI? clearly there is a lot of support
+00:37:07	Ben Adams:	Reacted to "can we just CFI the ..." with 👍
+00:37:14	Parithosh Jayanthi:	Also CFI doesn’t mean we have to ship it (SFI it)
+00:37:34	Andrew Ashikhmin:	Erigon is in favour of EIP-7825
+00:37:47	Sophia Gold:	We want to continuously pump the gas so the longer we wait the more likley this breaks things
+00:37:57	Carl Beekhuizen:	Re: RIP-7212, we’ll need a new RIP/EIP due to a bug in the 7217 spec: https://github.com/ethereum/RIPs/pull/62/files
+
+I’d like to talk about this briefly re: its CFI status
+00:39:36	Marius:	I would like this as an EIP anyway
+00:40:10	Tim Beiko:	This is the list of PFI’d EIPs
+00:40:32	Ansgar Dietrichs:	I would argue for CFI-ing EIP-7762, the blob basefee floor.
+
+to reiterate, this floor is still in the “practically free” range, so this is not about fee revenue, just efficiency.
+
+It’s a 4-line spec change, and with peerdas the blob supply will increase enough to otherwise make the fee market quite annoying
+00:40:46	lightclient:	increase contract size
+00:40:57	Carl Beekhuizen:	Reacted to "I would argue for CF…" with 👀
+00:41:06	Ansgar Dietrichs:	Replying to "I would argue for CF..."
+
+happy to let client teams go first :-)
+00:41:38	Mario Vega:	Replying to "Re: RIP-7212, we’ll ..."
+
+We could have found this through testing, I would encourage RIP implementers to use EEST (execution-spec-tests) to write the tests, core protocol also benefits from this because if the RIP makes into mainnet, then we already have tests
+00:41:42	Anders Elowsson:	I would like to argue for EIP-7918 instead of EIP-7762. It is a neutral change to fix the fee market
+00:41:49	Tim Beiko:	https://eips.ethereum.org/EIPS/eip-7907
+00:42:03	Tim Beiko:	Reacted to "I would like to argu..." with 👍
+00:42:47	Ansgar Dietrichs:	Replying to "I would argue for CF..."
+
+to note: Anders had an alternative EIP proposal for this recently that is more sophisticated, but I worry it might be too short notice to CFI today.
+00:43:18	Anders Elowsson:	Replying to "I would argue for CF..."
+
+I would argue it is just as simple, and also more neutral
+00:43:20	Tim Beiko:	Replying to "I would argue for CF..."
+
+Ok, then I think we should do @Hadrien Croubois (OpenZeppelin), then @Anders Elowsson and you 😄
+00:43:41	Anders Elowsson:	Replying to "I would like to argu..."
+
+https://ethereum-magicians.org/t/eip-7918-blob-base-fee-bounded-by-execution-cost/23271
+00:43:48	Marius:	He's busy celebrating his birthday
+00:44:08	Łukasz Rozmej:	btw if clients persisted jumpdest analysis bitmap it wouldn't be a problem?
+00:44:32	lightclient:	Reacted to "He's busy celebratin..." with 🚀
+00:44:45	Dragan Rakita:	Reacted to "btw if clients persi..." with 👍
+00:45:01	Gary Schulte:	Reacted to "He's busy celebratin..." with 🥒
+00:45:12	Tim Beiko:	No one else had mentioned 7903/7907 as a preference and ~everyone wants to keep the scope small, so I’d lean again CFIing it.
+00:45:28	spencer-tb:	Reacted to "We could have found ..." with 🙌
+00:45:29	lightclient:	are any clients against increasing code size in principle? details can be totally agreed on for SFI
+00:45:38	Marius:	Replying to "btw if clients per..."
+
+yes it is, because you are doing it in initcode and you can change initcode
+00:45:40	Ansgar Dietrichs:	why don’t we just charge proportional to code size in EOF?
+00:45:41	Kevaundray Wedderburn:	7903 seems problematic for zkEVMs if you can have arbitrary contract sizes
+00:45:46	lightclient:	this is one of the most requested EVM improvements
+00:45:50	Ansgar Dietrichs:	Replying to "why don’t we just ch..."
+
+that way we can remove any hard limit
+00:45:57	lightclient:	Replying to "7903 seems problemat..."
+
+it isn’t going to be arbitrary
+00:46:06	Alex (axic):	Here’s an encoding of jumpdest analysis as done part of the verkle work: https://github.com/ipsilon/eof/blob/main/spec/eofv0_verkle.md#jumpdest-section-encoding
+00:46:41	lightclient:	Replying to "why don’t we just ch..."
+
+still need an efficient look up for code size, EOF doesn’t grant this by default AFAIK
+00:47:04	Ansgar Dietrichs:	sounds reasonable to charge for size and so effectively bound by tx gas limit, instead of having arbitrary code size limit
+00:47:26	Ansgar Dietrichs:	Replying to "why don’t we just ch..."
+
+ah, I remember. what’s the plan for this @Danno Ferrin | Ipsilon ?
+00:47:28	frangio:	Reacted to "sounds reasonable to..." with 👍
+00:47:30	lightclient:	it’s easier to reason about if there is an explicit bound separate of tx
+00:47:44	Gary Schulte:	Replying to "7903 seems problemat..."
+
+functional code size limit will be one of those unintended consequences of an otherwise innocuous change (block gas limit)
+00:48:05	Marius:	same here
+00:48:18	Daniel Lehrner (Besu):	Seems reasonable
+00:48:19	lightclient:	Reacted to "functional code size..." with 👍
+00:48:38	Ansgar Dietrichs:	Replying to "why don’t we just ch..."
+
+and it’s probably impractical to pass the gas limit into the code load, and abort that load once it is too large?
+00:48:51	Danno Ferrin | Ipsilon:	Have 7907 update the initcode limit
+00:48:58	lightclient:	Reacted to "Have 7907 update the..." with 👍
+00:48:59	Tim Beiko:	Reacted to "Have 7907 update the..." with 👍
+00:49:40	Gary Schulte:	Reacted to "Seems reasonable" with ➕
+00:50:06	Danno Ferrin | Ipsilon:	24k limit was larger than the gas limit at the time.
+00:50:07	Ansgar Dietrichs:	any issues with forward compatibility here? we could still completely remove the limit in the future, right?
+00:50:17	Marius:	Replying to "any issues with fo..."
+
+yes
+00:51:10	Danno Ferrin | Ipsilon:	There’s a code size field in the verkle account proposal.
+00:51:19	Charles C:	Reacted to "There’s a code si..." with 👍
+00:51:19	FLCL:	may be superficial idea: can code be encoded so length is always dividable by 32 or 1024, so you can store bigger x32/x1024 length
+00:51:27	lightclient:	Reacted to "There’s a code size ..." with 👍
+00:52:19	Charles C:	i'd like to discuss EIP-7923 -- just got merged today (so maybe it's too late for fusaka) but i'd like to get some discussion going around it anyway
+00:52:49	Tim Beiko:	https://eips.ethereum.org/EIPS/eip-7918
+00:53:45	Marius:	Replying to "i'd like to discus..."
+
+This and EOF will be very annoying to test together imo. Not against this proposal, but I don'think we should do it in osaka
+00:53:58	Hadrien Croubois (OpenZeppelin):	@Tim Beiko got to somewhere where I can speak :)
+00:54:18	Francesco:	My summary: it's also a one line change in the spec, it increases the blob base fee until the blob portion of the cost matches the base execution cost
+00:54:32	Tim Beiko:	Reacted to "My summary: it's als..." with 🙌
+00:54:37	Anders Elowsson:	Reacted to "My summary: it's als..." with 👍
+00:54:40	Toni Wahrstätter:	Reacted to "My summary: it's als..." with 👍
+00:54:41	Ahmad Bitar | Nethermind:	I think this is a needed addition alongside PeerDAS
+00:54:48	soispoke:	Reacted to "My summary: it's als..." with 👍
+00:54:50	Ben Adams:	Reacted to "My summary: it's als..." with 👍
+00:54:51	Potuz:	I like this idea
+00:54:54	Mario Vega:	Reacted to "My summary: it's als..." with 👍
+00:54:55	Parithosh Jayanthi:	Reacted to "My summary: it's als..." with 👍
+00:55:11	Ahmad Bitar | Nethermind:	Reacted to "My summary: it's als..." with 👍
+00:55:26	Tim Beiko:	This is the original EIP by Max that Ansgar referenced:  https://eips.ethereum.org/EIPS/eip-7762
+00:55:42	Charles C:	Reacted to "24k limit was larg..." with 👍
+00:56:05	Marius:	We have a constant floor for min-tip in geth, since there is some cost to distributing, verifying, mining the transactions. So I am not opposed to some sort of minimum floor price
+00:56:44	Gajinder Singh:	Reacted to "My summary: it's als..." with 👍
+00:57:50	Ansgar Dietrichs:	the only caution with the newer proposal is that it is so recent that it didn’t have full review yet. so I would still want to keep the old proposal as fallback
+00:57:53	stokes:	Does CFI give us time to investigate further?
+00:57:59	Charles C:	Replying to "why don’t we just..."
+
+i originally proposed eip-7907 as having no limit. but it was pointed out that there are limits in the p2p network that we don't want to break (like devp2p has a soft limit of 512kb per packet or somethin
+00:58:05	Ahmad Bitar | Nethermind:	CFIing 7918 makes sense
+00:58:50	Ansgar Dietrichs:	Replying to "the only caution wit..."
+
+so I think the important part would be to decide today to introduce any version of this, and then go with Anders’ as the candidate version for now
+00:58:51	Marius:	CFI 7918 and modify it how we need it
+00:58:54	Toni Wahrstätter:	Get 7918 more reviewed and have 7762 as a backup
+00:59:07	stokes:	Replying to "CFI 7918 and modify ..."
+
+Lets do it
+00:59:14	Kevaundray Wedderburn:	Reacted to "CFI 7918 and modify ..." with 👍
+00:59:30	Ansgar Dietrichs:	happy to not CFI 7762, as long as we agree that it could still be swapped in for 7918 if there are issues
+00:59:37	Ahmad Bitar | Nethermind:	Reacted to "happy to not CFI 776..." with 👍
+00:59:38	Marius:	Reacted to "happy to not CFI 7..." with 👍
+00:59:39	Pooja Ranjan:	Reacted to "happy to not CFI 776..." with 👍
+00:59:56	Danno Ferrin | Ipsilon:	Replying to "why don’t we just ch..."
+
+You can calculate the container size from the full header, but it wasn’t designed as a quick lookup.  Storing in a side table or a revised account tuple (in verkle) I feel is the better path.
+01:00:23	stokes:	CFI both today, and commit to only shipping one?
+01:00:28	Trent:	Reacted to "CFI both today, and ..." with 👍
+01:00:30	stokes:	(Pending further analysis of 7918)
+01:00:42	Mario Vega:	Reacted to "CFI both today, and ..." with 👍
+01:00:44	Parithosh Jayanthi:	Reacted to "CFI both today, and ..." with 👍
+01:00:53	Charles C:	Replying to "i'd like to discus..."
+
+what is annoying about it? just the matrix of gas changes?
+01:00:55	Potuz:	It wasn't said explicitly but I assume both of these don't cause any delays whatsoever, they are both trivial to implement right? it'd be nice to say it explicitly in the call
+01:01:12	Tim Beiko:	Replying to "It wasn't said expli..."
+
+Anders said it for 7918 but I’ll ask one last time 😄
+01:01:22	Ansgar Dietrichs:	the call doesn’t seem like the right place for this research debate
+01:01:23	Danno Ferrin | Ipsilon:	Replying to "why don’t we just ch..."
+
+But “charge proportional to code size” is in reference to calling a contract or deploying a contract?
+01:01:29	Potuz:	Replying to "It wasn't said expli..."
+
+Oh I missed it, should chat less :)
+01:01:39	Francesco:	Reacted to "the call doesn’t see..." with 👍
+01:02:25	Danno Ferrin | Ipsilon:	Replying to "i'd like to discuss ..."
+
+My preference is that this is part of the “gaspocalypse” where we do all the gas schedule changes.  Weakly held.
+01:02:30	Barnabas Busa:	whats the deadline for SFI for fusaka?
+01:02:57	nixo:	Hadrien, your audio is terrible
+01:02:59	Marius:	Whats the number?
+01:03:03	Pooja Ranjan:	echo
+01:03:04	Kevaundray Wedderburn:	Reacted to "Hadrien, your audio ..." with 👍
+01:03:07	Tim Beiko:	https://eips.ethereum.org/EIPS/eip-7819
+01:03:08	Danno Ferrin | Ipsilon:	Replying to "whats the deadline f..."
+
+when we schedule testnet forks?
+01:03:13	stokes:	Replying to "whats the deadline f..."
+
+yeah
+01:03:14	Tim Beiko:	Replying to "whats the deadline f..."
+
+I think it should be far befroe
+01:03:21	stokes:	Replying to "whats the deadline f..."
+
+I would suggest we only SFI very carefully
+01:03:25	Gary Schulte:	DEDICATION!  congrats
+01:03:26	terence:	congrats!
+01:03:26	Pooja Ranjan:	Congratulations!!
+01:03:28	Tim Beiko:	congrats!!
+01:03:29	Ahmad Bitar | Nethermind:	Congrats!
+01:03:32	Kolby ML:	congrats!
+01:03:32	Manu:	Congrats!
+01:03:33	stokes:	Replying to "whats the deadline f..."
+
+So it would be clear to everyone when something should move from CFI to SFI
+01:03:36	James He:	Congrats!
+01:03:37	Barnabas Busa:	Priorities 😂
+01:03:37	terence:	that’s some dedication
+01:03:43	nixo:	Reacted to "Priorities 😂" with 😅
+01:03:45	Potuz:	Wow! that's really being committed to Ethereum!
+01:03:47	Ahmad Bitar | Nethermind:	Reacted to "Priorities 😂" with 😅
+01:03:48	James He:	Reacted to "Priorities 😂" with 😅
+01:03:50	stokes:	Replying to "whats the deadline f..."
+
+And it should be settled around halfway in the fusaka devnet series
+01:03:50	Anna Thieser:	Reacted to "Priorities 😂" with 😅
+01:03:52	pmmiranda:	Reacted to "Priorities 😂" with 😅
+01:03:53	ethDreamer (Mark):	While making a proposal about “delivery experience” lol
+01:03:53	felipe:	Reacted to "Priorities 😂" with 😅
+01:03:53	Gary Schulte:	Reacted to "Wow! that's really b..." with 💯
+01:03:55	Phil Ngo:	Reacted to "Priorities 😂" with 😅
+01:03:56	nixo:	Reacted to "Wow! that's really b..." with 💯
+01:03:57	Pooja Ranjan:	Reacted to "Wow! that's really b..." with 💯
+01:03:58	Ahmad Bitar | Nethermind:	Reacted to "Wow! that's really b..." with 💯
+01:03:59	felix (eest):	Reacted to "Wow! that's really..." with 💯
+01:04:04	Barnabas Busa:	Replying to "whats the deadline f..."
+
+Could we deadline SFI by end of this month?
+01:04:06	Luis Pinto | Besu:	Reacted to "Wow! that's really b..." with 💯
+01:04:07	Marius:	Reacted to "Wow! that's really..." with 💯
+01:04:07	Ansgar Dietrichs:	I think the rule is that we owe him a celebratory EIP inclusion now
+01:04:11	Parithosh Jayanthi:	Reacted to "Wow! that's really b..." with 💯
+01:04:12	Parithosh Jayanthi:	Reacted to "Priorities 😂" with 😅
+01:04:13	Barnabas Busa:	Replying to "whats the deadline f..."
+
+So we can have may for stable devnets already?
+01:04:14	ethDreamer (Mark):	Reacted to "I think the rule is ..." with 🎉
+01:04:16	Mario Vega:	Reacted to "I think the rule is ..." with 🎉
+01:04:20	Gary Schulte:	Reacted to "I think the rule is ..." with 🎉
+01:04:23	Bastin:	Reacted to "While making a propo..." with 😆
+01:04:27	Barnabas Busa:	Reacted to "While making a propo..." with 😆
+01:04:27	Marius:	Replying to "I think the rule i..."
+
+Yep, just not in Fusaka :P
+01:04:28	frangio:	Reacted to "Wow! that's really b..." with 💯
+01:04:31	felipe:	Reacted to "Wow! that's really b..." with 💯
+01:04:33	Tim Beiko:	Reacted to "Yep, just not in Fus..." with 😂
+01:04:35	Guillaume:	Replying to "I think the rule is ..."
+
+I also have an EIP to include and a baby if that helps
+01:04:37	Barnabas Busa:	Replying to "I think the rule is ..."
+
+in pectra
+01:04:37	Ansgar Dietrichs:	Reacted to "Yep, just not in Fus..." with 😂
+01:04:40	George Kadianakis:	Reacted to Wow! that's really b... with "💯"
+01:04:40	Parithosh Jayanthi:	Replying to "whats the deadline f..."
+
+Doubt implementations would be done by then tbh
+01:04:45	George Kadianakis:	Reacted to Priorities 😂 with "😅"
+01:04:47	ethDreamer (Mark):	Reacted to "Wow! that's really b..." with 💯
+01:04:47	Ameziane Hamlat:	Reacted to "Wow! that's really b..." with 💯
+01:04:47	felipe:	Reacted to "Yep, just not in Fus..." with 😂
+01:04:51	pmmiranda:	Reacted to "Yep, just not in Fus..." with 😂
+01:04:56	Barnabas Busa:	Replying to "whats the deadline f..."
+
+I’m not talking about implementations
+01:04:56	Trent:	Reacted to "I also have an EIP t..." with ❤️
+01:04:57	Ansgar Dietrichs:	Reacted to "I also have an EIP t..." with 😂
+01:04:59	Ansgar Dietrichs:	Reacted to "I also have an EIP t..." with ❤️
+01:05:02	ethDreamer (Mark):	Reacted to "Priorities 😂" with 😅
+01:05:02	Pooja Ranjan:	Reacted to "I also have an EIP t..." with 😂
+01:05:04	Luis Pinto | Besu:	Reacted to "I also have an EIP t..." with 😂
+01:05:07	Rodrigo | Lambda:	Reacted to "Yep, just not in F..." with 😂
+01:05:07	Damian:	Reacted to "I also have an EIP t..." with 😂
+01:05:09	Barnabas Busa:	Replying to "whats the deadline f..."
+
+I’m talking about having a strict list of things that we will or will not include
+01:05:12	nixo:	Reacted to "I also have an EIP t..." with 😂
+01:05:16	stokes:	Replying to "whats the deadline f..."
+
+Impl progress will inform what makes sense to SFI tho
+01:05:16	Ahmad Bitar | Nethermind:	Reacted to "I also have an EIP t..." with 😂
+01:05:21	Tim Beiko:	Reacted to "Impl progress will i..." with ➕
+01:05:28	Toni Wahrstätter:	Reacted to "I also have an EIP t..." with 😂
+01:05:39	stokes:	Replying to "whats the deadline f..."
+
+t having a strict list of things that we will or will not include
+This is SFI
+01:05:47	Barnabas Busa:	Replying to "whats the deadline f..."
+
+if its a small thing to implement then it shouldn’t be hard to do by end of the month
+01:05:49	stokes:	Replying to "whats the deadline f..."
+
+And then we must be very careful moving things from CFI to SFI
+01:05:57	Danno Ferrin | Ipsilon:	I like it, but of course that may be because I’m a co-author.
+01:05:58	Barnabas Busa:	Replying to "whats the deadline f..."
+
+if its a complicated thing to implement it shouldn’t be in fusaka
+01:06:20	stokes:	Replying to "whats the deadline f..."
+
+Id rather everyone focus on peerdas/eof in stable devnet-0 before thinking about other EIPs
+01:06:24	Ameziane Hamlat:	Reacted to "I like it, but of co..." with 😂
+01:06:25	Guillaume:	small fork
+01:06:29	Parithosh Jayanthi:	Replying to "whats the deadline f..."
+
+More than complicated, its just bandwidth to work on another thing
+01:06:30	Lin Oshitani | Nethermind:	I'd like to discuss EIP-7917, we didn't reach a conclusion in the last CL call: https://eips.ethereum.org/EIPS/eip-7917
+01:06:31	lightclient:	Reacted to "small fork" with 🧑‍🎓
+01:06:37	Parithosh Jayanthi:	Replying to "whats the deadline f..."
+
+If teams have time, they should work on eof/peerdas first
+01:06:40	rodiazet | Ipsilon:	Next one will be small….
+01:06:44	Gajinder Singh:	Reacted to "small fork" with 🧑‍🎓
+01:06:45	Hadrien Croubois (OpenZeppelin):	Reacted to "Next one will be sma…" with 😂
+01:06:47	Parithosh Jayanthi:	Reacted to "Yep, just not in Fus..." with 😂
+01:06:51	Potuz:	@Anders Elowsson   when you imlpement this I'd set it differently though, set a new function `F` instead of `TX_BASE_COST`, that can be just the identity `F = TX_BASE_COST` but so that we can trivially update this in the spec to any higher function if this limit is too small, same as with Max's PR, it can trivially be adjusted in the future if the limits become trivial.
+01:06:55	Parithosh Jayanthi:	Reacted to "I also have an EIP t..." with 😂
+01:06:58	Potuz:	Reacted to "small fork" with 🧑‍🎓
+01:07:03	Mario Vega:	Can be added to EOF later ?
+01:07:12	Gajinder Singh:	Reacted to "Next one will be sma..." with 😂
+01:07:14	Potuz:	Replying to "small fork"
+
+yeah WTF, I really want 7732
+01:07:17	Charles C:	Replying to "I think the rule i..."
+
+am i understand that we can get EIPs included by having babies?
+01:07:27	Gajinder Singh:	Reacted to "I also have an EIP t..." with 😂
+01:07:33	Dragan Rakita:	Reacted to "am i understand that..." with 😂
+01:07:47	Parithosh Jayanthi:	Reacted to "am i understand that..." with 😂
+01:08:00	Potuz:	Reacted to "I also have an EIP t..." with ❤️
+01:08:04	Mikhail Kalinin:	Reacted to "I also have an EIP t..." with ❤️
+01:08:07	Piotr | Ipsilon:	EIP-7819 sounds like it can be added to EOFv1 later (new opcode). No need to bump version
+01:08:10	felipe:	Reacted to "I also have an EIP t..." with 😂
+01:08:27	George Kadianakis:	Reacted to I also have an EIP t... with "😂"
+01:08:34	Mikhail Kalinin:	Reacted to "I also have an EIP t..." with 😂
+01:09:04	Potuz:	+1 for Tim's point, this is starting to look again like Pectra v2, and then I'll want 7732 since all these additions will delay the fork anyway
+01:09:27	stokes:	Peerdas EOF
+01:09:30	stokes:	Focus on these
+01:09:36	Potuz:	Reacted to "Peerdas EOF" with 👍🏼
+01:09:41	Luis Pinto | Besu:	Reacted to "Peerdas EOF" with 👍🏼
+01:09:41	rodiazet | Ipsilon:	Reacted to "Focus on these" with ❤️
+01:09:44	rodiazet | Ipsilon:	Reacted to "Peerdas EOF" with 👍🏼
+01:09:58	Trent:	Reacted to "Peerdas EOF" with 👍🏼
+01:10:00	Trent:	Reacted to "Focus on these" with ❤️
+01:10:22	Parithosh Jayanthi:	^ by then teams should have a handle of the other CFI-ed EIPs are manageable to implement quickly or not. If not, we really shouldn’t SFI anything beyond peerdas + eof
+01:10:49	Toni Wahrstätter:	Gas limit Info EIP like the hardware specs
+01:10:52	Mario Vega:	Reacted to "^ by then teams shou..." with ❤️
+01:10:53	ethDreamer (Mark):	Did we already CFI BPO forks on the execution side?
+https://eips.ethereum.org/EIPS/eip-7892
+01:11:11	stokes:	Replying to "Did we already CFI B..."
+
+It was CFI’d last call
+01:11:21	ethDreamer (Mark):	Reacted to "It was CFI’d last ca..." with 👍
+01:11:22	Barnabas Busa:	Reacted to "It was CFI’d last ca..." with 👍
+01:11:24	stokes:	Replying to "Did we already CFI B..."
+
+You could raise here
+01:11:33	stokes:	Replying to "Did we already CFI B..."
+
+But I don’t think there are issues w/ that one
+01:11:38	Marius:	Blob per tx limit: yes
+01:11:54	Tim Beiko:	Replying to "Did we already CFI B..."
+
+Oh it was! Sorry, didn’t see the draft PR!
+01:11:56	Justin Traglia:	I’d also like a limit
+01:11:56	Marius:	yes
+01:11:58	stokes:	Replying to "Blob per tx limit: y..."
+
+Does it need to be in-protocol?
+01:12:04	Ansgar Dietrichs:	happy to have a limit, if so we should have it in fusaka though
+01:12:11	Ansgar Dietrichs:	Replying to "happy to have a limi..."
+
+can always be removed later
+01:12:12	Francesco:	Reacted to "Blob per tx limit: y..." with 👍
+01:12:22	Ansgar Dietrichs:	Replying to "happy to have a limi..."
+
+could be part of peerdas eip
+01:12:28	stokes:	Replying to "Did we already CFI B..."
+
+https://github.com/ethereum/EIPs/pull/9603
+01:12:33	Mario Vega:	Reacted to "Blob per tx limit: y..." with 👍
+01:12:36	Justin Traglia:	Reacted to "Blob per tx limit: y..." with 👍
+01:12:38	Anders Elowsson:	Is it possible to have a limit that adjusts with the target, I.e., max(8, target // 8) ?
+01:12:38	Potuz:	Reacted to "Blob per tx limit: y..." with 👍
+01:12:39	Kevaundray Wedderburn:	@Anders Elowsson Will your EIP need to changed if we add blobs per tx limit?
+01:12:48	Potuz:	yeah this was just an omission in PeerDAS
+01:12:55	Carl Beekhuizen:	in case we want to change the limit later, i think it’s cleaner to have a limit in its own EIP
+01:13:01	Anders Elowsson:	Replying to "@Anders Elowsson Wil..."
+
+Yes, I mention this in a twitter thread today
+01:13:04	ethDreamer (Mark):	Replying to "I think the rule is ..."
+
+Only if ACD gets to name it
+01:13:18	Tim Beiko:	Replying to "in case we want to c..."
+
+Agreed
+01:13:25	ethDreamer (Mark):	Reacted to "am i understand that..." with 😂
+01:13:29	Potuz:	Replying to "in case we want to c..."
+
+Why so? we can simply change a parameter in the spec?
+01:13:41	Charles C:	Reacted to "Only if ACD gets t..." with 🔥
+01:13:44	Tim Beiko:	Replying to "in case we want to c..."
+
+“Change a parameter in the spec” should require an EIP IMO
+01:13:49	Toni Wahrstätter:	This is the equivalent of what we just CFI'd with the tx gas limit max
+01:13:49	Tim Beiko:	Replying to "in case we want to c..."
+
+The issuance is “a parameter in the spec"
+01:13:51	Tim Beiko:	Replying to "in case we want to c..."
+
+😄
+01:13:58	Francesco:	I think it’s more critical to have it be a mempool restriction, but would also favour a general restriction to simplify packing
+01:14:00	Anders Elowsson:	Replying to "@Anders Elowsson Wil..."
+
+https://x.com/weboftrees/status/1910313154392817971
+01:14:10	Marius:	Reacted to "I think it’s more..." with 👍
+01:14:20	Potuz:	Replying to "in case we want to c..."
+
+yeah changing in a subsequent fork will need an EIP, but not in this one cause can be (and should have been) part of PeerDAS
+01:14:27	Tim Beiko:	Reacted to "yeah changing in a s..." with 👍
+01:14:45	Marius:	Reacted to "yeah changing in a..." with 👍
+01:14:59	Potuz:	That's not a blob only update then
+01:15:35	stokes:	Are we talking about the (target, max) limits or a per-txn blob limit?
+01:16:14	Kevaundray Wedderburn:	Replying to "Are we talking about..."
+
+This is per transaction
+01:16:30	FLCL:	you can increase it and decrease, omit when it fully scalable
+01:17:08	Carl Beekhuizen:	Replying to "in case we want to c…"
+if we do change the limit, we can have a nice clean EIP that says this supersedes (and deprecates) this other one. i also think it’s easier to reason about as it doesn’t look like we have PeerDAS except for this one constant which is now no longer true
+01:17:21	Marius:	Replying to "i'd like to discus..."
+
+Charles said: i would disagree since it doesn't just change the relative pricing of the opcode, it fundamentally changes how memory is used (he got kicked off)
+01:17:21	stokes:	Replying to "Did we already CFI B..."
+
+Left as draft bc we may add another CL EIP to CFI on next ACDC
+01:17:33	Charles C:	Reacted to "Charles said: i wo..." with 👍
+01:19:16	lightclient:	didn’t v post this idea before?
+01:19:29	Potuz:	It would be nice to have a presentation *before* we get to the Glamsterdam discussions
+01:19:31	lightclient:	so not like it’s completely new
+01:19:56	Carl Beekhuizen:	Reacted to "I think it’s more cr…" with 👍
+01:20:47	Charles C:	Reacted to "didn’t v post thi..." with 👍
+01:21:08	Charles C:	Replying to "didn’t v post thi..."
+
+there's been a couple EIPs in the same vein
+01:21:15	Tim Beiko:	Reacted to "It would be nice to ..." with 👍
+01:21:16	Ansgar Dietrichs:	also to be clear, we should not have any strong pre-commitments about what should be in Glamsterdam. I know we have many people with strong opinions about what should be in there (me included), but it’s important that the understanding is that that is tbd
+01:21:26	Tim Beiko:	Reacted to "also to be clear, we..." with 👍
+01:21:28	Andrew Ashikhmin:	Reacted to "also to be clear, we..." with 👍
+01:22:08	Marius:	Etan not here?
+01:22:09	Potuz:	There isn't any strong precommitment to anything here, ask @Guillaume  otherwise
+01:22:21	Potuz:	Danno could write a thesis about this
+01:22:27	Marius:	Replying to "Etan not here?"
+
+Haven't heard ssz mentioned yet
+01:22:42	Potuz:	Reacted to "Haven't heard ssz me..." with 👍🏼
+01:22:53	Guillaume:	yeah, promises are to be forgotten the next day
+01:22:55	Carl Beekhuizen:	Reacted to "also to be clear, we…" with 👍
+01:23:31	Ansgar Dietrichs:	Replying to "There isn't any stro..."
+
+well, peerDAS and EOF were kind of decided for Fusaka before the main Fusaka inclusion discussion
+01:23:41	Ansgar Dietrichs:	Replying to "There isn't any stro..."
+
+(ofc we then decided to revisit that EOF decision)
+01:23:49	Marius:	I thought we did both modexp eips?
+01:23:57	Potuz:	Replying to "There isn't any stro..."
+
+They were decided for Pectra
+01:24:11	Ansgar Dietrichs:	Replying to "There isn't any stro..."
+
+well yes, but then grandfathered into Fusaka when we did that split
+01:24:18	Tim Beiko:	https://eips.ethereum.org/EIPS/eip-7823
+01:24:31	stokes:	Replying to "Etan not here?"
+
+There wasn’t much interest from last week’s ACDC
+01:24:36	Ahmad Bitar | Nethermind:	Agreed, we are in support of this
+01:24:39	stokes:	Replying to "Etan not here?"
+
+Have next week to finalize CFI list
+01:24:47	Marius:	üIn support as well
+01:25:10	Marius:	Damn it can be so efficient! Well done Tim
+01:25:19	nixo:	Reacted to "Damn it can be so ef..." with 👏
+01:25:22	Barnabas Busa:	Reacted to "Damn it can be so ef..." with 👏
+01:25:24	terence:	Reacted to "Damn it can be so ef..." with 👏
+01:25:27	Tim Beiko:	https://ethereum-magicians.org/t/reconfiguring-allcoredevs/23370
+01:25:30	Trent:	Reacted to "Damn it can be so ef..." with 👏
+01:25:35	Trent:	Reacted to "Damn it can be so ef..." with ❤️
+01:25:37	Kevaundray Wedderburn:	Reacted to "Damn it can be so ef..." with 👏
+01:25:39	Kevaundray Wedderburn:	Reacted to "Damn it can be so ef..." with ❤️
+01:25:41	Ahmad Bitar | Nethermind:	Reacted to "Damn it can be so ef..." with 👏
+01:25:49	Monkey:	Reacted to "Damn it can be so ..." with ❤️
+01:25:49	Will Corcoran:	Reacted to "Damn it can be so ef..." with ❤️
+01:25:50	Will Corcoran:	Reacted to "Damn it can be so ef..." with 👏
+01:25:51	Barnabas Busa:	glamsterdam planning wen?
+01:25:57	rodiazet | Ipsilon:	Reacted to "Damn it can be so ef..." with 👏
+01:25:57	Monkey:	Reacted to "Damn it can be so ..." with 👏
+01:26:03	nixo:	Reacted to "Damn it can be so ef..." with ❤️
+01:26:25	felix (eest):	Reacted to "Damn it can be so ..." with 👏
+01:26:28	Marius:	Reacted to "Damn it can be so ..." with 👏
+01:26:29	Marius:	Reacted to "Damn it can be so ..." with ❤️
+01:26:40	Guillaume:	Replying to "glamsterdam planning..."
+
+when you have shipped Pectra 😁
+01:26:55	Parithosh Jayanthi:	Reacted to "Damn it can be so ef..." with 👏
+01:27:00	felipe:	Reacted to "Damn it can be so ef..." with 👏
+01:27:11	felipe:	Reacted to "Damn it can be so ef..." with ❤️
+01:27:33	Danno Ferrin | Ipsilon:	Replying to "glamsterdam planning..."
+
+When we understand the path to 100M gas, then we will know our available capacity.
+01:28:07	Parithosh Jayanthi:	Any big contentious decisions would still be brought to ACDC/ACDE since more people attend them atm
+01:28:08	Potuz:	We should CFI less EIPs then
+01:28:27	Potuz:	It'll be impossible to avoid Fusaka's calls here
+01:28:41	Kolby ML:	Reacted to "Haven't heard ssz me..." with 👍🏼
+01:28:48	stokes:	We can streamline better on the margin though
+01:29:04	Anders Elowsson:	Reacted to "@Anders Elowsson   w..." with 👍
+01:29:22	Kolby ML:	Aren't Etan's SSZ EIP's mostly on the EL side?
+01:29:23	Danno Ferrin | Ipsilon:	Replying to "glamsterdam planning..."
+
+My quick analysis is there will be some glamsterdam changes needed for gigagas, so that will drive some of glamsterdam.
+01:30:13	Potuz:	oh why not?
+01:30:19	Ben Adams:	Reacted to "oh why not?" with 😂
+01:30:35	Marius:	(if we find that an EIP is broken on the testing call, we will still discuss it in ACDE/ACDC)
+01:30:37	Kolby ML:	Replying to "Etan not here?"
+
+So they are more applicable to ACDE
+01:30:44	Parithosh Jayanthi:	Imagine stuff like PRs that make a decision about a CFI/SFI-ed topic, its mostly the type of PRs people want to raise before merging
+01:30:47	Tim Beiko:	Replying to "(if we find that an ..."
+
+Majorly broken yes 😄
+01:31:36	Potuz:	I like the idea, and I think it'll streamline better the forks
+01:31:45	stokes:	Replying to "Etan not here?"
+
+AFAIK it is just adding minimal stable container functionality
+01:31:48	Ben Adams:	Are also breakouts for features
+01:31:56	stokes:	Replying to "Etan not here?"
+
+There’s no push for the ssz-ification of the EL AFAIK
+01:32:07	Potuz:	I don't expect 80 people in that call, it'll be implementers mostly
+01:32:20	Danno Ferrin | Ipsilon:	My take: we need to pipeline ACD to ship faster, that’s what this plan starts doing.  ACDT is what is shipping, ACD{E|C} is planing what may be shipping.
+01:32:25	Marius:	Replying to "Are also breakouts..."
+
+Breakouts will continue until morale improves
+01:32:26	Parithosh Jayanthi:	Yes, like 30-50 people would need to attend ACDT, its probably noise for the rest
+01:32:36	Tim Beiko:	Replying to "Yes, like 30-50 peop..."
+
+But how many would want 😄 ?
+01:32:41	stokes:	Reacted to "I like the idea, and..." with 👍
+01:32:49	stokes:	Reacted to "My take: we need to ..." with 👍
+01:32:56	Parithosh Jayanthi:	Reacted to "Breakouts will conti..." with 😂
+01:32:59	Potuz:	Reacted to "My take: we need to ..." with 👍
+01:33:10	felipe:	Reacted to "My take: we need to ..." with 👍
+01:33:19	Trent:	I can go right at the end
+01:33:25	Łukasz Rozmej:	We need to hire someone to attend all the calls :P
+01:33:33	ethDreamer (Mark):	<3
+01:33:38	ethDreamer (Mark):	Love that
+01:33:40	lightclient:	too many calls
+01:33:41	Potuz:	Reacted to "We need to hire some..." with 🤣
+01:33:49	Charles C:	Reacted to "We need to hire so..." with 😂
+01:33:52	Pooja Ranjan:	Reacted to "We need to hire some..." with 😂
+01:33:53	Łukasz Rozmej:	CallOverflowException ;)
+01:33:56	stokes:	Replying to "too many calls"
+
+Have you heard about agents? ;)
+01:33:57	Danno Ferrin | Ipsilon:	Replying to "We need to hire some..."
+
+Middle managers are created, not born.
+01:34:02	stokes:	Reacted to "CallOverflowExceptio..." with 😂
+01:34:08	Ahmad Bitar | Nethermind:	Reacted to "Have you heard about..." with 😅
+01:34:12	Josh Davis:	Reacted to "Have you heard about..." with 😅
+01:34:12	Parithosh Jayanthi:	Replying to "too many calls"
+
+Skip acd, they have more time to bikeshed
+01:34:13	Barnabas Busa:	Reacted to "We need to hire some..." with 🤣
+01:34:14	Ansgar Dietrichs:	Replying to "too many calls"
+
+isn’t it the other way around? more specialized, not everyone having to attend everyhting
+01:34:16	Parithosh Jayanthi:	Replying to "too many calls"
+
+Join the trenches call
+01:34:55	Łukasz Rozmej:	Replying to "too many calls"
+
+AI drived core dev calls trained on team posiotions?
+01:35:12	Phil Ngo:	Replying to "too many calls"
+
+ACD(T) = ACD Trenches?
+01:35:22	Parithosh Jayanthi:	Replying to "too many calls"
+
+Yessir, non-canonical name 😛
+01:35:25	Ivan Metrikin:	Great initiative, Tim
+01:35:40	Tim Beiko:	Reacted to "ACD(T) = ACD Trenche..." with 🎖️
+01:36:12	Ansgar Dietrichs:	“the deadline is April 28” - I still have a tab open for filling out the merge retrospective...
+01:36:24	Caleb:	Reacted to CallOverflowExceptio... with "😂"
+01:36:26	nixo:	Reacted to "“the deadline is Apr..." with 😂
+01:36:28	Barnabas Busa:	Reacted to "“the deadline is Apr..." with 😂
+01:36:29	Parithosh Jayanthi:	Reacted to "ACD(T) = ACD Trenche..." with 🎖️
+01:36:33	Gary Schulte:	Reacted to "“the deadline is Apr..." with 😂
+01:36:35	Parithosh Jayanthi:	Reacted to "“the deadline is Apr..." with 😂
+01:36:36	nixo:	Replying to "“the deadline is Apr..."
+
+will make sure to bug Ansgar specifically
+01:36:46	Barnabas Busa:	Replying to "“the deadline is Apr..."
+
+good thing he didn’t mention which year april 28
+01:36:51	Phil Ngo:	Reacted to "“the deadline is Apr..." with 😂
+01:36:51	stokes:	Reacted to "good thing he didn’t..." with 😂
+01:36:54	nixo:	Reacted to "good thing he didn’t..." with 🤪
+01:36:56	Ansgar Dietrichs:	Replying to "“the deadline is Apr..."
+
+ah wait no that’s the “Dencun Diary”
+01:36:59	Łukasz Rozmej:	Reacted to "“the deadline is Apr..." with 😂
+01:37:00	Trent:	Reacted to "“the deadline is Apr..." with 😂
+01:38:07	Caleb:	Reacted to ACD(T) = ACD Trenche... with "🎖️"

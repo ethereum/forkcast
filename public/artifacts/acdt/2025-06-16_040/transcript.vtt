@@ -1,0 +1,686 @@
+WEBVTT
+
+1
+00:02:46.270 --> 00:02:48.699
+Josh Davis: Quick sound, check, please.
+
+2
+00:02:50.190 --> 00:02:52.139
+ef berlin office: Hey? Can you hear me? Okay.
+
+3
+00:02:53.570 --> 00:02:54.440
+Josh Davis: Thank you.
+
+4
+00:05:52.890 --> 00:05:59.780
+ef berlin office: Hey, everyone? Let's wait another few another minute or so to see who else joins us, and then we can get started.
+
+5
+00:07:46.140 --> 00:08:12.279
+ef berlin office: Okay, I guess we can start the call now, and people will slowly trickle in. I'd like to start off with interop updates. So we had an interrupt event. Last week a large amount of time was spent on scaling the gas limit as well as Fusaka. But we did have multiple other tasks, tracks with history. Expiry peer to peer changes, Cl. Hardening.
+
+6
+00:08:12.280 --> 00:08:35.430
+ef berlin office: Zk, avms L. 2 s. And quite a lot of other tracks, I think over the next week or 2 weeks, actually, sometime this week before Acd, we should have a summary of everything that happened last week. But for now I think we'd go into a bit more detail on 2 of the tracks with Fusaka being the 1st one.
+
+7
+00:08:35.830 --> 00:08:42.879
+ef berlin office: We had all the specs and open Prs from last week merged into Belinterop devnet 2
+
+8
+00:08:43.377 --> 00:09:03.599
+ef berlin office: this is a devnet that's gonna be up until next Monday or Tuesday, and the reason we use the bull interrupt name is such that so that we could make faster decisions without needing to go through the Acd process while we were in person. However, those changes will now go through the Acd process and will eventually end up on the Fussaka Devnet 2. Once they've been
+
+9
+00:09:03.700 --> 00:09:25.659
+ef berlin office: cleared by Acd. That being said, Fusaka Devnet, one is still live and will go down over the next day or 2 unless anyone specifically needs it. So if you do need it, then please speak up, if not, please, move all of your testing to Berlinterop. Devnet 2 and Fusaka Devnet 2 should come up sometime around next week.
+
+10
+00:09:26.560 --> 00:09:29.779
+ef berlin office: Any questions regarding Fusaka in itself.
+
+11
+00:09:34.610 --> 00:09:35.610
+ef berlin office: Okay.
+
+12
+00:09:36.714 --> 00:09:41.280
+ef berlin office: The second track that we spent a lot of time on was gas limit testing.
+
+13
+00:09:41.500 --> 00:09:53.210
+ef berlin office: I think most of the time was spent on benchmarking clients as well as optimizing performance. I think the outcome was great. We should have a deeper write up. Come out later today.
+
+14
+00:09:53.628 --> 00:10:14.290
+ef berlin office: However, one of the things we soft agreed to on Friday was to raise the glass limit to 45 million. However, client teams would need to push in the fixes that they have in the performance branch as well as make releases. For this is this something that we can have clients agree to do over the next week?
+
+15
+00:10:14.882 --> 00:10:18.900
+ef berlin office: Could we maybe get someone from each client team to speak up on this
+
+16
+00:10:26.187 --> 00:10:35.710
+ef berlin office: in the same room as Harry. So the no. Yeah, yes.
+
+17
+00:10:37.990 --> 00:10:46.899
+ef berlin office: maybe it's better this way. Yeah. So forget we need at least one fix to get into master until we
+
+18
+00:10:47.520 --> 00:10:49.226
+ef berlin office: feel like
+
+19
+00:10:50.830 --> 00:10:53.790
+ef berlin office: We don't feel feel super vulnerable.
+
+20
+00:10:54.572 --> 00:11:02.620
+ef berlin office: There's a bunch of things where we think like going above 45 is not possible right now without changes to
+
+21
+00:11:03.216 --> 00:11:12.489
+ef berlin office: without repricings. But I think that, like the biggest point, is like the modex stuff that we are already addressing in in Fusaka.
+
+22
+00:11:13.475 --> 00:11:20.039
+ef berlin office: So like, from my personal point of view, 45 would be would be okay. But I'm I'm not speaking for the team.
+
+23
+00:11:26.151 --> 00:11:30.170
+Ben Adams: Now that mine's okay. With 45
+
+24
+00:11:31.250 --> 00:11:37.839
+Ben Adams: we would like to put out a new release. But I think we're comfortable with the the current release
+
+25
+00:11:38.780 --> 00:11:40.200
+Ben Adams: and signaling.
+
+26
+00:11:40.370 --> 00:11:43.789
+Ben Adams: I assume it won't be immediate, anyway.
+
+27
+00:11:44.150 --> 00:11:46.290
+Ben Adams: and we have a release similar.
+
+28
+00:11:49.750 --> 00:11:55.079
+ef berlin office: Thank you. Could we have maybe Roman? And then Milan from Aragon.
+
+29
+00:11:55.830 --> 00:11:59.519
+Roman: Yup or comfortable doing the 45 visits.
+
+30
+00:12:01.959 --> 00:12:04.919
+milen | Erigon: Yeah. Aragon is ready for 45 as well.
+
+31
+00:12:08.420 --> 00:12:21.910
+ef berlin office: Awesome. Thank you. Then. I guess we'll share some more info on the benchmarks. We did as well as what bottlenecks we found over the next week, and once the client teams are have all changed their defaults. We
+
+32
+00:12:23.190 --> 00:12:26.070
+ef berlin office: should the network signal to a higher gas limit.
+
+33
+00:12:27.810 --> 00:12:28.690
+ef berlin office: Awesome.
+
+34
+00:12:29.476 --> 00:12:39.190
+ef berlin office: Marcin. I know you've been working a bit more on benchmarks as well as yeah. Exploring gas limits a bit more. Do you wanna talk about it?
+
+35
+00:12:40.603 --> 00:12:41.710
+Marcin Sobczak: Yes, sure.
+
+36
+00:12:41.860 --> 00:12:59.534
+Marcin Sobczak: So like, we know like for for the clients, the the worst case is the modex, and it will be repriced in Fussaka. So before Fussaka we have, like
+
+37
+00:13:00.260 --> 00:13:06.911
+Marcin Sobczak: the we know what is our bottleneck and
+
+38
+00:13:09.440 --> 00:13:15.440
+Marcin Sobczak: if when modex will be addressed, then probably the next bottleneck is is yet
+
+39
+00:13:15.932 --> 00:13:27.709
+Marcin Sobczak: so it's it's performing good enough to go for 60 million. But if we aim to, if you want to aim in 100 million between Posaka and the next Harfolk.
+
+40
+00:13:27.710 --> 00:13:49.870
+Marcin Sobczak: and then we probably need to reprice in in Fussaka, too. And right now I'm crafting more test cases for easy pairing and easy mall to check if it is performing good enough to to keep the pricing as it is, or we need to
+
+41
+00:13:49.870 --> 00:14:01.979
+Marcin Sobczak: to replace it, too. So far, I I didn't find the test case, which is performing like badly. So
+
+42
+00:14:01.990 --> 00:14:09.720
+Marcin Sobczak: so so it doesn't look like there will be a need to to touch it in Fussaka.
+
+43
+00:14:09.920 --> 00:14:20.879
+Marcin Sobczak: Oh, and yes. Do you want Barry to talk about some specific topic about benchmarking or.
+
+44
+00:14:21.178 --> 00:14:34.601
+ef berlin office: No, I think that I think that's a good update for now. So is, I think, for easy add, we should also have an eip up for that later this week. There is a proposal for what we want to reprice it to.
+
+45
+00:14:34.940 --> 00:14:56.240
+ef berlin office: And yeah, today and tomorrow, I guess Marcin and a few others would be figuring out. If we do actually need to reprice Ec. Mole or Ec. Pairing going forward. This should help us get to 60 million and further and prepare for post architis. The other topic that came up was log
+
+46
+00:14:56.240 --> 00:15:10.280
+ef berlin office: logs in themselves, either the pricing or changing the Dev. P. 2, p. Limit. I'm not sure if anyone has thoughts on that, or has time to look into it. I know that there's a proposal from Julio.
+
+47
+00:15:11.300 --> 00:15:13.960
+ef berlin office: but I don't know if there's any more work being put into it.
+
+48
+00:15:16.230 --> 00:15:25.400
+Ben Adams: I mean, this sort of kicks in more around 85 million. So we'd still be fine at 60. There's something we potentially wanna
+
+49
+00:15:27.765 --> 00:15:33.950
+Ben Adams: well, probably definitely want to fix in some way for Usaka. But I I don't think we've come to
+
+50
+00:15:34.220 --> 00:15:36.340
+Ben Adams: a conclusion on what the right way is. Yeah.
+
+51
+00:15:37.890 --> 00:15:47.960
+ef berlin office: Is there some specific data point or something we should look at that would help us get to that conclusion, or is it just? We need to discuss this on Acd and come to a solution. There.
+
+52
+00:15:50.530 --> 00:15:58.380
+Ben Adams: Well, I I think we we need to discuss on Acd. Probably a helpful data point would be to
+
+53
+00:15:59.280 --> 00:16:12.639
+Ben Adams: actually emit an entire block of logs and then see if there are any performance implications, and then maybe that would help us decide whether we want to
+
+54
+00:16:13.200 --> 00:16:18.040
+Ben Adams: reprice or increase the peer to peer.
+
+55
+00:16:18.960 --> 00:16:38.239
+ef berlin office: Okay, got it. I think Pk has a reproducible test for this already. He was able to break snap sync locally, and I'm not sure if he looked at it from a performance perspective. I think he purely looked at it from does this break snap sync perspective? But we should have a test for this that we can reuse.
+
+56
+00:16:38.700 --> 00:16:46.650
+Ben Adams: Yeah, I I mean, I think there's 2. At the moment there's 2 obvious ways. We can go, and having some benchmarks, would
+
+57
+00:16:47.060 --> 00:16:50.250
+Ben Adams: probably inform which direction would be better.
+
+58
+00:16:50.960 --> 00:16:54.280
+ef berlin office: Okay, we can clean that up and get it up to people.
+
+59
+00:16:56.570 --> 00:17:15.939
+ef berlin office: I think the other topic was Estor with large tree depths. I think this is something we noticed on blocks with Zen contract transactions. It, again doesn't seem to be a major issue, at least for 45 million. However, as we move to 60 and forward, we'll
+
+60
+00:17:16.200 --> 00:17:18.671
+ef berlin office: definitely be an issue.
+
+61
+00:17:19.829 --> 00:17:32.209
+ef berlin office: I know. Last week Joachim was working on this a bit. Do you maybe want to go more into what the current status is. Do we have a reproducible test? Were clients able to trace what was going on on? Their clients.
+
+62
+00:17:34.180 --> 00:17:37.449
+jochem-brouwer: Yes. So this is about the send contracts right?
+
+63
+00:17:38.380 --> 00:17:39.609
+ef berlin office: Exactly. Yeah.
+
+64
+00:17:39.610 --> 00:17:42.380
+jochem-brouwer: Yes, yes, So
+
+65
+00:17:43.000 --> 00:17:52.459
+jochem-brouwer: what it looks like is that it's a. It creates a lot of small contracts. These contracts which are being created are actually proxy contracts, so very small ones
+
+66
+00:17:52.580 --> 00:17:54.839
+jochem-brouwer: which delegates call into something else.
+
+67
+00:17:54.980 --> 00:18:02.760
+jochem-brouwer: And what happens is that during this transaction it's a transaction with a gas limit of 28 million.
+
+68
+00:18:02.940 --> 00:18:11.139
+jochem-brouwer: and it creates 167 small contracts, and it also does a lot of storage. It stores a lot of values. There.
+
+69
+00:18:11.954 --> 00:18:18.149
+jochem-brouwer: I'm looking a little bit in. If there is something else, something else. Very fancy going on there.
+
+70
+00:18:18.630 --> 00:18:27.340
+jochem-brouwer: It doesn't really look like it. It really looks like it's a lot of create 2 or create fact, create small great contracts.
+
+71
+00:18:27.590 --> 00:18:30.389
+jochem-brouwer: and that there's a lot of storage being dumped in there.
+
+72
+00:18:30.740 --> 00:18:39.629
+jochem-brouwer: and my hunch will be that the caching mechanism of clients that yeah, these, these key values, these are these are like a code.
+
+73
+00:18:39.850 --> 00:18:45.850
+jochem-brouwer: because you can't really predict before, and that that yeah, in what
+
+74
+00:18:46.010 --> 00:18:49.519
+jochem-brouwer: what addresses and what key values, we are going to read or write.
+
+75
+00:18:50.000 --> 00:18:54.260
+jochem-brouwer: And I think that might be one of the problems where we have seen like very slow blocks.
+
+76
+00:18:54.690 --> 00:19:01.160
+jochem-brouwer: There is a status, or I'm not sure if it was a status or a blockchain test. I think, a state test
+
+77
+00:19:01.310 --> 00:19:05.770
+jochem-brouwer: which does exactly that. It creates a lot of small contacts.
+
+78
+00:19:05.900 --> 00:19:14.089
+jochem-brouwer: and it dumps random storage of not random, but it creates a random storage fee there.
+
+79
+00:19:14.610 --> 00:19:20.310
+jochem-brouwer: and I think what we have seen in clients is that the execution time of this
+
+80
+00:19:20.570 --> 00:19:24.579
+jochem-brouwer: state test is actually not. Well, it's it's not very alarming.
+
+81
+00:19:24.840 --> 00:19:31.640
+jochem-brouwer: but on the definite no, no, not the definite. On Mainnet. We saw that it was very slow for some clients.
+
+82
+00:19:31.860 --> 00:19:41.619
+jochem-brouwer: and this might be because it's like a very huge well, of course, the state database is very big, much bigger than if you would just run a state test
+
+83
+00:19:41.980 --> 00:19:44.939
+jochem-brouwer: like an empty, or an almost empty database.
+
+84
+00:19:45.420 --> 00:19:53.399
+jochem-brouwer: and therefore likely on Mainnet, because the storage slots not the storage slots, but the database reads they are. They are cold.
+
+85
+00:19:54.070 --> 00:19:59.270
+jochem-brouwer: This, then likely takes much longer, and this might be the bottleneck for mainnet.
+
+86
+00:19:59.560 --> 00:20:05.979
+jochem-brouwer: So what we should likely do is we should run this state test on not a small state.
+
+87
+00:20:06.130 --> 00:20:10.680
+jochem-brouwer: but actually on a very big state, and then see if we can reproduce
+
+88
+00:20:11.370 --> 00:20:16.550
+jochem-brouwer: the well. Well, how slow this is on on Mainnet.
+
+89
+00:20:16.690 --> 00:20:26.140
+jochem-brouwer: and what I'm doing in the meantime is figuring out if there is something else going on. For instance, like we have some locks, maybe there's some extra lock data which might also be a bottleneck.
+
+90
+00:20:26.390 --> 00:20:33.479
+jochem-brouwer: But in the end I want to create, like a status that we can either completely rerun this entire transaction
+
+91
+00:20:33.660 --> 00:20:50.170
+jochem-brouwer: isolated or to figure out, okay, if there's something else, something very weird going on, something very exotic in the Evm that I create an even more compact version of this test that you can really squeeze out well, the worst case behavior of the of the Evm.
+
+92
+00:20:54.300 --> 00:21:05.769
+ef berlin office: That's great. Thank you for that. But okay, that sounds like we are still in the reproducing the issue phase, and not necessarily in a proposal of solution phase, right?
+
+93
+00:21:07.730 --> 00:21:09.420
+ef berlin office: Yeah, Ben, do you wanna go.
+
+94
+00:21:11.335 --> 00:21:19.620
+Ben Adams: Yeah. So I I lost Internet at home while I was at the other conference.
+
+95
+00:21:19.920 --> 00:21:26.420
+Ben Adams: And so when I came back, I I restarted it, and I did run this block.
+
+96
+00:21:27.140 --> 00:21:29.814
+Ben Adams: Unfortunately, I didn't trace it. But
+
+97
+00:21:32.740 --> 00:21:35.640
+Ben Adams: I I process 23 blocks.
+
+98
+00:21:35.960 --> 00:21:48.249
+Ben Adams: which included the problematic one in 600 ms. So I'm not sure exactly what the problem is.
+
+99
+00:21:49.510 --> 00:21:54.213
+Ben Adams: I mean. Obviously, we we did see a lot of valid. They just struggle with it, but
+
+100
+00:21:54.970 --> 00:21:56.970
+Ben Adams: might need to look into it a little bit more
+
+101
+00:21:58.810 --> 00:22:01.960
+Ben Adams: to, you know fully fully drill down on what's happening.
+
+102
+00:22:02.700 --> 00:22:08.439
+ef berlin office: So I can. I can talk to what the issue was on. Gas.
+
+103
+00:22:09.018 --> 00:22:19.229
+ef berlin office: Basically, we have a we have a buffer that. We flash to the disk whenever it fills up. After 256 MB
+
+104
+00:22:19.600 --> 00:22:28.440
+ef berlin office: and this was done synchronously with the the block processing.
+
+105
+00:22:28.560 --> 00:22:31.870
+ef berlin office: and so often on these blocks
+
+106
+00:22:32.150 --> 00:22:44.479
+ef berlin office: the buffer would just overflow, because we put a bunch of like the the likelihood to to overflow this buffer to go over the 256 MB is very high.
+
+107
+00:22:45.697 --> 00:22:55.350
+ef berlin office: And so what what happened? Geth is, we would just spend 2 and a half seconds, flushing this
+
+108
+00:22:56.740 --> 00:22:59.289
+ef berlin office: flashing this block to the disk
+
+109
+00:23:01.130 --> 00:23:11.130
+ef berlin office: and our fix, for it is to only flush the basically use a double buffering mechanism. Only flush the inactive buffer to the disk. And
+
+110
+00:23:12.240 --> 00:23:17.449
+ef berlin office: yeah, and and and switch to the to the to the active buffer.
+
+111
+00:23:18.359 --> 00:23:22.940
+ef berlin office: Yeah, so that should also take care of this.
+
+112
+00:23:26.020 --> 00:23:32.729
+ef berlin office: Regardless of what we're doing, like, of how clients actually behave on this block, we should
+
+113
+00:23:32.900 --> 00:23:42.320
+ef berlin office: be making sure that yeah, this is that we that we have good benchmarks for
+
+114
+00:23:42.600 --> 00:23:47.190
+ef berlin office: these scenarios where we
+
+115
+00:23:47.350 --> 00:23:55.369
+ef berlin office: touch a bunch of stuff in the try all over the try and need to recalculate the state root
+
+116
+00:23:56.150 --> 00:24:01.649
+ef berlin office: and cannot necessarily parallelize it, because it's all in the same storage trap.
+
+117
+00:24:02.596 --> 00:24:05.969
+ef berlin office: But yeah, we will. We will be working on this and
+
+118
+00:24:06.480 --> 00:24:20.189
+ef berlin office: and try it out on the perfnet to see if there. Sorry not, maybe also on the perfnet, but mainly on the Shadow fork to see to see how the cans behave.
+
+119
+00:24:24.750 --> 00:24:33.480
+Ben Adams: So was it bad timing, or would it have always flush the by cash.
+
+120
+00:24:34.180 --> 00:24:46.040
+ef berlin office: It's it's bad timing, but because it it like normally blocks, don't add that much to the buffer, but these blocks they do so. The
+
+121
+00:24:46.630 --> 00:24:50.830
+ef berlin office: the chance of them flushing. The buffer is
+
+122
+00:24:51.200 --> 00:24:54.429
+ef berlin office: much bigger than like a random, normal block.
+
+123
+00:24:55.170 --> 00:25:01.020
+ef berlin office: but that also means higher the gas limit the worse this gets right unless you make your buffer significantly larger.
+
+124
+00:25:01.310 --> 00:25:02.790
+ef berlin office: No, we we kind of
+
+125
+00:25:02.940 --> 00:25:08.529
+ef berlin office: well, when the the way we change it is, we will just flush this buffer
+
+126
+00:25:10.091 --> 00:25:17.780
+ef berlin office: asynchronously. And so we don't stop the main processing threat on it anymore.
+
+127
+00:25:22.340 --> 00:25:29.110
+jochem-brouwer: Yes. So this this birth of fish. That's the state tree. Both are right.
+
+128
+00:25:31.816 --> 00:25:34.880
+ef berlin office: Yes, yes, that is.
+
+129
+00:25:35.100 --> 00:25:36.210
+jochem-brouwer: Yeah. Okay, cool.
+
+130
+00:25:40.550 --> 00:25:50.570
+ef berlin office: Okay, I guess we should have some more insights on this by Acd on Thursday. So I guess we continue the conversation there.
+
+131
+00:25:55.670 --> 00:26:05.239
+jochem-brouwer: Yes, I will make sure that I will check if there are like other weird things happening. But I think also from Mari's point just now that it is indeed
+
+132
+00:26:05.460 --> 00:26:13.940
+jochem-brouwer: the well, a lot of State rights. And in these random contracts or not, random contracts. But like, yeah, there's like a very big state growth here.
+
+133
+00:26:14.280 --> 00:26:15.700
+jochem-brouwer: And so, yeah.
+
+134
+00:26:15.970 --> 00:26:17.679
+ef berlin office: Yeah. Thank you.
+
+135
+00:26:20.327 --> 00:26:24.950
+ef berlin office: Cool anything else on the gas limit. Topic.
+
+136
+00:26:26.210 --> 00:26:26.980
+ef berlin office: Cool?
+
+137
+00:26:32.340 --> 00:26:41.190
+ef berlin office: Okay. If not, then let's move on to peerless testing. I guess we did fusap earlier. That's mainly Prs testing.
+
+138
+00:26:44.500 --> 00:26:50.760
+ef berlin office: I actually think that was the entire agenda. Do we have any other topics we want to bring up today.
+
+139
+00:26:55.000 --> 00:27:00.869
+ef berlin office: Yeah. I think we might have an update on history expiry one second on that.
+
+140
+00:27:02.640 --> 00:27:16.150
+ef berlin office: Yeah, here's Matt with latest on history expiry. Hello, I just want to share some of the things that we talked about last week at interop, just in case anyone who wasn't there was hoping to get caught up.
+
+141
+00:27:16.340 --> 00:27:31.949
+ef berlin office: Basically, we've talked about what the path forward for the pre merge history expiry is essentially all the clients have implemented what's necessary to do pre-merge history. There's like various things that each client is implemented, and maybe there's not like perfect
+
+142
+00:27:32.628 --> 00:27:42.839
+ef berlin office: alignment on every feature that every client has. But ultimately, like every client, can run without the pre merge history in one way or another. So we.
+
+143
+00:27:42.940 --> 00:27:46.976
+ef berlin office: you know, have a path to having all the clients
+
+144
+00:27:47.560 --> 00:27:59.350
+ef berlin office: choose to run without that history. So basically, now, what we've said as of last week is that clients are free to begin making it the default mode to run without the prune history.
+
+145
+00:28:00.320 --> 00:28:22.360
+ef berlin office: They can release this at their convenience. In the next week or 2 we'll have a blog post for on the ethereum foundation blog, just sharing that it's possible to run clients without the pre merge history and sharing how to run on the clients that we typically release information with for the the Fork blog posts.
+
+146
+00:28:22.710 --> 00:28:28.510
+ef berlin office: So we'll publish that in the next couple of weeks. I think most clients have implemented E. 69. This is
+
+147
+00:28:28.970 --> 00:28:57.329
+ef berlin office: a kind of nice thing to have with respect to starting to drop the history, because now you're not potentially asking a lot of your peers who just don't have the history. You can know ahead of time whether or not your queries are going to succeed. But this is not a requirement for us, you know, having everyone drop the pre merge history. So that's kind of all that we agreed on for how to sort of close a pre-merge. Then post merge. We talked a little bit about what we wanted to happen there, and we kind of agreed that
+
+148
+00:28:57.500 --> 00:28:58.580
+ef berlin office: we wouldn't
+
+149
+00:28:59.670 --> 00:29:27.500
+ef berlin office: modify the way the approach with the error file file slightly. There was a thought that with error one, this would be the pre merge, and then we would use the error files as the post merge, and after talking about it a bit more, we kind of realized that it might just make sense to have separate error files for each layer. So the execution layer will have a file that's storing all of the historical data related to it, and the consensus layer will have a file, an error file with all of its historical data necessary.
+
+150
+00:29:27.730 --> 00:29:55.329
+ef berlin office: So we're kind of recalling these, the Era E and Rsc files. We have a rough idea of what this will look like on the execution layer. Yasik is kind of the person who's been looking at this for the consistently, and I think he has a rough idea, too. So over the next, like one and a half months, we really want to settle on what that specification is, because that's going to unlock the ability of clients to start pruning more history. Basically, we want to move to this place where
+
+151
+00:29:55.600 --> 00:30:10.989
+ef berlin office: we have a backstop to access the history for whatever reason, and it's been sort of in. It's sort of up to clients to decide. How do they individually want to handle history? Do they want to do rolling history expiry first, st
+
+152
+00:30:10.990 --> 00:30:33.289
+ef berlin office: or do they want to just support pruning up to suppose cancun? Because, you know, before Cancun, we were using call data for L twos. And there's kind of a lot of call data in that period of time. So we just want to give it to clients to have the ability to make those decisions. And the thing that's on the critical path is just agreeing on what is this like shared format? We're going to have
+
+153
+00:30:33.360 --> 00:30:35.749
+ef berlin office: to import and export that data
+
+154
+00:30:36.140 --> 00:30:43.960
+ef berlin office: so hopefully, that is something that will be settled on in the next month and a half by the end of July. And then clients can really
+
+155
+00:30:44.190 --> 00:30:47.799
+ef berlin office: start to do whatever they want in terms of history. Expiry
+
+156
+00:30:48.560 --> 00:30:58.240
+ef berlin office: era itself is not like the only long term solution that we want to have. We do want to have some more decentralized and robust way of accessing the history.
+
+157
+00:30:58.350 --> 00:31:01.359
+ef berlin office: And this is kind of like what the portal network has
+
+158
+00:31:01.760 --> 00:31:20.799
+ef berlin office: been designed to provide us for a long time, and talking with clients throughout the week, and trying to understand where their portal implementations are, and what some sort needs to be done to get it into a place where it can be relied on by execution. Layers has sort of made us feel like we need to
+
+159
+00:31:21.150 --> 00:31:23.629
+ef berlin office: from 1st principles. Think a little bit about
+
+160
+00:31:24.080 --> 00:31:45.760
+ef berlin office: what exactly is Portal trying to provide, because Portal has a long list of features that's very useful for individual like independent portal clients. But there's a very small subset that's useful for execution clients, and some things like serving range queries was not, even, you know, supported by like out of the box given just like how the distribution of blocks are put on the network.
+
+161
+00:31:45.880 --> 00:31:56.640
+ef berlin office: So we want to make some changes to exactly these, like very this, like small subset of portal features that are extremely useful for the execution clients.
+
+162
+00:31:56.700 --> 00:32:19.359
+ef berlin office: and then integrate this more tightly into the execution layer. So we want to try and modify portal so that it doesn't rely on an external like client system, and it doesn't share the header proofs for every block. Just to focus on giving value to the execution layer. And then, at a later point, we'll start to like slowly add back these features in as they become necessary.
+
+163
+00:32:19.440 --> 00:32:34.439
+ef berlin office: So we're having planning to have a public community call about Portal either later this week or early next week to discuss these types of changes. But this is kind of like the types of conversations that we had throughout the week last week.
+
+164
+00:32:34.800 --> 00:32:39.819
+ef berlin office: And yeah, I think that's pretty much where the history expiry project is right now.
+
+165
+00:32:42.900 --> 00:32:49.050
+ef berlin office: Thank you. Does anyone have any questions for Matt on the history expiry topic?
+
+166
+00:32:54.310 --> 00:33:00.559
+ef berlin office: Okay? Then I guess we'd wait for the community call, and in case you had any
+
+167
+00:33:00.810 --> 00:33:05.239
+ef berlin office: questions until then, please reach out to Matt. If not, bring them up at the community, call
+
+168
+00:33:07.055 --> 00:33:17.400
+ef berlin office: that being said, I think that's all the topics we had for today. So if there's nothing else people wanted to talk about, then we can end the call a bit early this week.
+
+169
+00:33:19.510 --> 00:33:20.920
+ef berlin office: Thank you. Everyone.
+
+170
+00:33:22.950 --> 00:33:26.982
+ef berlin office: Oh, Yup, yeah, okay, that's a buy perfect.
+
+171
+00:33:28.060 --> 00:33:30.140
+Ansgar Dietrichs: See you bye.
+

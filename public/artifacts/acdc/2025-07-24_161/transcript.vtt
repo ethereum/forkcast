@@ -1,0 +1,2222 @@
+WEBVTT
+
+1
+00:03:47.460 --> 00:03:53.340
+stokes: Hello, everybody. Let's see, let's give people a few more minutes to join, and we'll kick things off.
+
+2
+00:05:08.180 --> 00:05:12.290
+stokes: Okay, let's see, Josh, are you helping with the stream?
+
+3
+00:05:12.500 --> 00:05:13.940
+stokes: You can go ahead and get started.
+
+4
+00:05:15.860 --> 00:05:16.930
+Josh Davis: Cool, you're live.
+
+5
+00:05:17.980 --> 00:05:20.060
+stokes: Okay, thanks. Everyone.
+
+6
+00:05:20.360 --> 00:05:25.790
+stokes: Welcome to Acdc. This is call number 1, 6, 1.
+
+7
+00:05:26.130 --> 00:05:32.959
+stokes: It is issue 1614, and the consensus as well. Sorry. The Pm repo.
+
+8
+00:05:33.530 --> 00:05:34.360
+stokes: So
+
+9
+00:05:34.850 --> 00:05:45.799
+stokes: let's go ahead and get started today we'll cover Fusaka some glam things. And then there was a spec question that we can get to at the end of the call. So
+
+10
+00:05:46.330 --> 00:05:48.879
+stokes: 1st up with Fusaka.
+
+11
+00:05:49.500 --> 00:05:59.899
+stokes: I think. Devnet 2 is pretty much done at this point. Are there any open points there that we need to discuss. We've pretty much moved on to Devnet 3.
+
+12
+00:06:02.740 --> 00:06:16.479
+Barnabas: Yeah, maybe 1 point to mention that we are running different kind of think test scenarios. And we saw that load star is having issues syncing up and never mind to have some issues syncing up
+
+13
+00:06:16.970 --> 00:06:25.679
+Barnabas: multiple times multiple different days when we tested, never mind, was always struggling to sync up in like 2 h.
+
+14
+00:06:25.830 --> 00:06:29.989
+Barnabas: The head of the chain and loads are seem to get rate limited.
+
+15
+00:06:32.360 --> 00:06:36.019
+stokes: Okay, interesting. And you suspect this is because of the higher block. Count.
+
+16
+00:06:39.630 --> 00:06:45.076
+Barnabas: I think lots are is already aware of the issue of getting really limited.
+
+17
+00:06:46.370 --> 00:06:51.260
+Barnabas: because they don't do backfilling. I don't see that this would be an issue.
+
+18
+00:06:51.400 --> 00:06:54.879
+Barnabas: I'm not really sure what the issues on the domain side.
+
+19
+00:06:55.060 --> 00:06:56.860
+Barnabas: I would have to investigate that further.
+
+20
+00:06:58.500 --> 00:06:59.130
+stokes: Right.
+
+21
+00:06:59.310 --> 00:07:00.120
+stokes: Thanks.
+
+22
+00:07:01.780 --> 00:07:10.770
+stokes: Cool then. If that's it for Devnet 2, we'll move to Devnet 3 which had Genesis yesterday about 24 h ago.
+
+23
+00:07:11.190 --> 00:07:13.739
+stokes: and let me see.
+
+24
+00:07:14.520 --> 00:07:20.118
+stokes: we haven't quite worked to full yet. But yeah, it says here in just under 4 h.
+
+25
+00:07:20.620 --> 00:07:23.510
+stokes: So yeah, anything to report on Devnet 3. Then
+
+26
+00:07:23.870 --> 00:07:26.909
+stokes: I think the fun will begin. Once we've worked with Hulu.
+
+27
+00:07:27.460 --> 00:07:37.527
+Barnabas: Right in interrupt. I have basically the quick update the Cgc value seem to be all right now on this side and on the side
+
+28
+00:07:38.010 --> 00:07:44.549
+Barnabas: basically, the only thing we could check is the did config
+
+29
+00:07:44.970 --> 00:07:52.780
+Barnabas: the new vip that we have decided to add. And there are some issues there. But I've pinged everyone regarding that.
+
+30
+00:07:54.740 --> 00:07:55.970
+stokes: Okay, thanks.
+
+31
+00:07:56.580 --> 00:08:06.220
+stokes: So yeah. Then, Devnet 3 will fork to furloo soon. And yeah, I expect. Then by next Monday, with acdt, we'll have plenty to discuss
+
+32
+00:08:07.650 --> 00:08:14.310
+stokes: anything else on Devnet 3 for the moment, or any Osaka things generally.
+
+33
+00:08:16.510 --> 00:08:19.759
+Barnabas: Now we are working on the Mev workflow. Hopefully.
+
+34
+00:08:20.680 --> 00:08:23.690
+Barnabas: either today or tomorrow, we can figure it out.
+
+35
+00:08:26.320 --> 00:08:28.459
+stokes: And that's just using.
+
+36
+00:08:29.070 --> 00:08:31.790
+stokes: You wouldn't know if that's using this new V 2 endpoint. Do you.
+
+37
+00:08:33.789 --> 00:08:34.519
+Barnabas: Good.
+
+38
+00:08:35.915 --> 00:08:40.190
+stokes: There is a spec change in Devnet 3. To have this v. 2. Endpoint.
+
+39
+00:08:40.190 --> 00:08:43.520
+Barnabas: Yeah, yeah, so that that is there already.
+
+40
+00:08:44.440 --> 00:08:45.579
+stokes: Alright, cool.
+
+41
+00:08:48.030 --> 00:08:53.790
+Barnabas: Also, I'm not sure which. Cl, we support that on 3, right after the phone.
+
+42
+00:08:54.290 --> 00:08:55.819
+stokes: Yeah, it might take some time.
+
+43
+00:08:55.820 --> 00:08:57.800
+stokes: Yeah, I'm not sure implemented.
+
+44
+00:08:58.070 --> 00:09:05.780
+Barnabas: Right now. We are still trying to test the lecture with the latest trenches, and that seems to be breaking at this point also.
+
+45
+00:09:06.440 --> 00:09:11.902
+stokes: Oh, interesting. Okay, well, that's that's exciting.
+
+46
+00:09:13.476 --> 00:09:14.830
+stokes: Cool. Okay.
+
+47
+00:09:15.810 --> 00:09:22.308
+stokes: then, yeah, there's nothing else. Simply soccer, then. So I did want to kind of just reassert this
+
+48
+00:09:23.070 --> 00:09:30.276
+stokes: We had looked a bit at timelines on Acde last week, and you know, one way to think about this is
+
+49
+00:09:30.830 --> 00:09:32.830
+stokes: having Devnet 3 up this week.
+
+50
+00:09:33.150 --> 00:09:38.459
+stokes: Hopefully, things are stable and good assuming they are, we can then turn to hardening everything.
+
+51
+00:09:38.710 --> 00:09:50.179
+stokes: There was a timeline that basically gave us end of August to do all of that work, and then we could start having release candidates out by the end of August. To then think about moving, to test nuts and then ultimately, Mainnet.
+
+52
+00:09:50.890 --> 00:09:51.840
+stokes: So
+
+53
+00:09:52.050 --> 00:09:57.879
+stokes: I kind of just wanted to bring this up again. Just, you know, the more time is repeated, I think the better. So it's on every in everyone's mind.
+
+54
+00:09:58.070 --> 00:10:08.369
+stokes: And I believe the outcome of this last week was, yeah. People thought this was perhaps an ambitious timeline, but generally, you know, it wasn't impossible. So
+
+55
+00:10:09.310 --> 00:10:13.250
+stokes: let's I'll try to work under that framework.
+
+56
+00:10:13.630 --> 00:10:14.930
+stokes: And
+
+57
+00:10:15.040 --> 00:10:19.839
+stokes: okay, if that's it on Fusaka, I guess we're just kind of waiting on that 3 at this point.
+
+58
+00:10:21.303 --> 00:10:22.530
+stokes: Yeah. Barnabas.
+
+59
+00:10:23.520 --> 00:10:25.319
+Barnabas: Yeah, just one more thing that
+
+60
+00:10:26.190 --> 00:10:39.659
+Barnabas: In the next few hours I will enable a rate limiter on all the full nodes. And we gonna have, basically a hundred megabits down and 50 megabits up on every single full node.
+
+61
+00:10:39.910 --> 00:10:42.249
+Barnabas: We have about 70%
+
+62
+00:10:43.060 --> 00:10:47.540
+Barnabas: full nodes and 30% super nodes. Super nodes will not have any rate limiting.
+
+63
+00:10:49.790 --> 00:10:50.355
+stokes: Okay.
+
+64
+00:10:50.920 --> 00:10:57.450
+Barnabas: And this will not have 10 gig connection. So maybe we can
+
+65
+00:10:57.740 --> 00:11:01.700
+Barnabas: really limited to one gig to be a bit more realistic.
+
+66
+00:11:02.940 --> 00:11:03.826
+stokes: Okay, interesting.
+
+67
+00:11:04.660 --> 00:11:10.210
+stokes: And this is the new profile from previous sorry devnets.
+
+68
+00:11:10.210 --> 00:11:12.819
+Barnabas: Yeah, previous devots didn't have any rate limiting.
+
+69
+00:11:15.590 --> 00:11:21.409
+stokes: Okay, we'll see what that does to things. Hopefully, it doesn't break anything.
+
+70
+00:11:23.180 --> 00:11:24.250
+stokes: Okay?
+
+71
+00:11:24.430 --> 00:11:25.720
+stokes: So
+
+72
+00:11:26.070 --> 00:11:33.879
+stokes: yeah, just to touch on post this comment here in the chat. Yeah. So when I said, release candidates, I mean, more like things we go for test nuts.
+
+73
+00:11:34.120 --> 00:11:42.929
+stokes: Mainnet, would. Yeah, you know, assuming there's like minor things we see in the test nets, you know. Obviously, we'd fix those in those releases
+
+74
+00:11:43.430 --> 00:11:50.539
+stokes: hopefully, we can get to, you know, one test nut fork, where nothing needs to change. That then becomes the main net
+
+75
+00:11:50.940 --> 00:11:59.849
+stokes: release. And yeah, per, the security sort of procedure that we had. Ultimately, yeah, we want 30 days in between
+
+76
+00:12:00.060 --> 00:12:03.429
+stokes: that and the actual main net date. So
+
+77
+00:12:03.720 --> 00:12:10.270
+stokes: that is the rubric we're working under. And again, timelines will be tight but let's try to make it happen.
+
+78
+00:12:11.530 --> 00:12:22.380
+stokes: and maybe just to reiterate, if we do this according to this sketch of a plan, then you know we can hit Usaka Mainnet before death connect, which would be very good.
+
+79
+00:12:22.960 --> 00:12:27.280
+stokes: So I think that's all I have to say about that.
+
+80
+00:12:29.880 --> 00:12:41.800
+stokes: And if that's the case. Then, yeah, I think that wraps up Fusaka. Then. So again, just everyone be watching Devnet 3. And I'm sure once the fork happens, there'll be more to discuss
+
+81
+00:12:42.860 --> 00:12:44.020
+stokes: in that case.
+
+82
+00:12:44.591 --> 00:12:53.638
+stokes: We'll turn to Glamsterdam. And yeah, it might be a short call today, we'll see. So the main thing here is talking about headliners.
+
+83
+00:12:54.200 --> 00:13:01.589
+stokes: So what we had said is essentially, you know, picking one eip per layer that is the headliner for the fork
+
+84
+00:13:01.956 --> 00:13:06.060
+stokes: we've moved ahead with the scoping discussions now, so that we can kind of paralyze things.
+
+85
+00:13:06.440 --> 00:13:13.460
+stokes: Yes, we're working on Pisaka. But also, you know, we can work on Glenstream in parallel, and this should give us a faster sort of shipping velocity overall.
+
+86
+00:13:14.210 --> 00:13:15.040
+stokes: So
+
+87
+00:13:15.490 --> 00:13:22.850
+stokes: in that case, we're currently in the phase of Glamster, Glamsterdam, scoping where we need to select a headliner. So
+
+88
+00:13:23.000 --> 00:13:27.780
+stokes: we touched on someone in the last call. You know, there are some obvious
+
+89
+00:13:27.880 --> 00:13:33.980
+stokes: candidates here again, I think Eps is essentially a crowd favorite, at least among core developers.
+
+90
+00:13:34.370 --> 00:13:45.900
+stokes: So before we get into that, there were a few updates that people wanted to give on different eips. So let's look at those, and then we can turn to discussing selection
+
+91
+00:13:46.470 --> 00:13:52.720
+stokes: so to kick off that first, st I think, Maria, I wanted to give a quick update on shorter slot times.
+
+92
+00:13:54.720 --> 00:13:56.670
+stokes: I think, yeah, you're here, Maria.
+
+93
+00:13:56.950 --> 00:14:02.329
+Maria: Yes, I'm here, so I will just quickly share my screen. Then we can start.
+
+94
+00:14:02.910 --> 00:14:03.490
+stokes: Okay.
+
+95
+00:14:06.260 --> 00:14:07.660
+Maria: Be sorry.
+
+96
+00:14:09.050 --> 00:14:09.880
+Maria: Okay.
+
+97
+00:14:12.280 --> 00:14:24.140
+Maria: okay, so I'll try to quickly go through this. So we have some time for comments and discussions. So this is just some initial results on slot timings.
+
+98
+00:14:24.600 --> 00:14:39.320
+Maria: And I need to highlight that. There's no report yet. So this is just early results and early plots, and we do still have a lot to look into, but I think it's already valuable to to share on this venue.
+
+99
+00:14:40.820 --> 00:14:54.589
+Maria: and just so we know what we are talking about. I just want to highlight exactly what we are measuring here. So the 1st thing is, one of the metrics we are looking at is lock arrivals
+
+100
+00:14:54.650 --> 00:15:21.110
+Maria: minus the publishing time from relays. So here we are essentially trying to estimate the block propagation excluding timing games, so we don't assume from 0 seconds, because then again, we would be exposing or taking into consideration the timing games. But we are trying to kind of exclude that part by looking at the difference between. And when the block arrived and the publish time by the relay.
+
+101
+00:15:22.110 --> 00:15:39.649
+Maria: the second thing we are looking at. Is the attestation arrival minus the same relay publishing time. And so here this will include both the block propagation, block execution and validation, and then the attestation propagation. Okay?
+
+102
+00:15:41.580 --> 00:16:02.979
+Maria: again excluding the the timing games, and then, just for the attestation propagation, we will be looking at the attestation arrivals for me slots, because for those we know that they only start propagation at second 4, and so we can do the times in second 4. And so we can have a sense of just the
+
+103
+00:16:03.250 --> 00:16:09.780
+Maria: attestation propagation. So excluding the block propagation and execution and validation.
+
+104
+00:16:10.880 --> 00:16:33.290
+Maria: Okay, so in terms of data sources, we are using data from Chatu which is a data set maintained by the and the Ops team. And they did a recent update on their data set where they did a fork on the on the prize client. And this allows us to collect data from the P. 2 P. Layer.
+
+105
+00:16:33.410 --> 00:16:50.530
+Maria: and they deployed 3 nodes per location. So we have San Francisco, Amsterdam, Bangalo, Bangalore, and Chile and these nodes are only subscribed to 2 subnets or 2 committees. And the reason for this is that we noticed that when we were
+
+106
+00:16:50.670 --> 00:17:08.880
+Maria: seeing the data from the older notes that were subscribed to all committees, and their timings were actually much slower than just the ones that were subscribed to just 2 committees. And so this is a much more realistic view on what the normal validator would observe.
+
+107
+00:17:10.227 --> 00:17:30.380
+Maria: We also look at block events. And so for the attestations, we only have the sleep data set. But for the block events, we also look into. An additional data set that chateau has that is contributed by the community. So this allows us to get a much wider view on different locations and also different.
+
+108
+00:17:31.550 --> 00:17:45.589
+Maria: And also we got the block publishing times by ultrasound relay. So our data is only looking at the blocks that were provided by ultrasound which is already a sort of a
+
+109
+00:17:45.760 --> 00:17:53.659
+Maria: you can say that is a sort of biased sample. But we are working also to get more information from other relays.
+
+110
+00:17:54.470 --> 00:18:11.010
+Maria: Okay, so very quickly showing some initial plots. So this is the block propagation for the Li. P, 2 P data set, though. So it's those 3 nodes per location that are maintained by the Ops team.
+
+111
+00:18:11.120 --> 00:18:32.769
+Maria: And here, I'm showing the distribution for the different locations and also the 95 percentiles. And so we can see that they are all under one second. The I mean the 95 percentiles. And Australia is the the slowest location.
+
+112
+00:18:34.745 --> 00:18:37.354
+Maria: I need to highlight here that
+
+113
+00:18:37.920 --> 00:18:44.310
+Maria: these are nodes that have high bandwidth. And so we should
+
+114
+00:18:45.590 --> 00:19:01.259
+Maria: most likely seen other nodes that they have a lower bandwidth. The timings might be different, and and also this is just that that sample from blocks that were distributed by the ultrasound relay. So there will be already some skew there.
+
+115
+00:19:02.580 --> 00:19:14.890
+Maria: and this is the the same metric. So block propagation. Since the publishing by the relay. But now using the community notes.
+
+116
+00:19:15.407 --> 00:19:38.940
+Maria: So here you see much more wider selection of locations, and this we do see some variation between different locations. Some of them are really big outliers, so this could be some issues in the data and we can see that the 95 percentile is is significantly higher. So this is something that we want to investigate more and understand what, what.
+
+117
+00:19:39.550 --> 00:20:01.450
+Maria: why we have or what is leading to these slower numbers. But again, I should highlight that this is just a data set that is contributed by the community. We are not collecting any data on who the validators are, nor if this data is collective with high feasibility. So
+
+118
+00:20:01.570 --> 00:20:06.630
+Maria: it's more prone to errors than the previous data set.
+
+119
+00:20:08.460 --> 00:20:13.759
+Maria: And now we are moving to the attestation. So again, this is the So
+
+120
+00:20:13.990 --> 00:20:24.250
+Maria: here. What I'm what I'm what I'm showing is for each committee. Okay? So for each subnet I'm looking at when the attestation arrive.
+
+121
+00:20:25.458 --> 00:20:31.550
+Maria: So we are receiving at stations. Right? We are observing the at stations arriving from that subcommittee.
+
+122
+00:20:32.161 --> 00:20:51.840
+Maria: And I, I'm recording the percentile of at station. So on the 1st plot. I'm showing the percentile 65. So you could think of this as like a super majority within the within the committee. And then the 95 percentile. So 95% of the attestations that would be shared within that committee
+
+123
+00:20:51.930 --> 00:21:01.637
+Maria: within that community. Arrived at that time. And here we see the full distribution across the various slots and the various
+
+124
+00:21:02.190 --> 00:21:03.710
+Maria: committees and notes.
+
+125
+00:21:04.250 --> 00:21:08.196
+Maria: And I'm also showing here the percentiles.
+
+126
+00:21:09.000 --> 00:21:20.919
+Maria: So this is the 95 percentiles of the 2 metrics, which is the metric for the p. 65, which is the 65 percentile within the committee and the 95 percentile within the committee.
+
+127
+00:21:21.493 --> 00:21:30.180
+Maria: And an interesting thing here is that the for the 95 percentile. This is right below what? The
+
+128
+00:21:30.350 --> 00:21:34.799
+Maria: what the new proposal for shorter slot times would require.
+
+129
+00:21:35.232 --> 00:21:40.229
+Maria: And this is already you could say, like an extreme metric, because we are taking
+
+130
+00:21:40.350 --> 00:21:44.499
+Maria: the 95%. I love the 95%.
+
+131
+00:21:45.117 --> 00:22:00.170
+Maria: So yeah, it's, I think it's. It's interesting. Also, we can see sort of like 2 modes in the distribution where we see some at stations kind of arriving much earlier, and then you have a second sale of of the stations arriving a bit later.
+
+132
+00:22:01.657 --> 00:22:18.270
+Maria: Again, I should highlight. This has the same issues that as the as the data sets from the blocks that I showed before, so we do are seeing these from high bandwidth nodes. And also this is already blocks that are distributed by a relay. So there there will be some some bias there.
+
+133
+00:22:19.913 --> 00:22:28.390
+Maria: Then, for the pure attestation propagation. So this is the the the metric where we are looking at just missed slots.
+
+134
+00:22:29.092 --> 00:22:47.310
+Maria: Here. I'm showing the full attestation. Cdf function. So this is for each nose when they are seeing each level, each percentage of attestations. Within their committee.
+
+135
+00:22:49.900 --> 00:22:53.899
+Maria: And here I'm also highlighting the point where the.
+
+136
+00:22:53.900 --> 00:22:54.910
+Caleb: Where we.
+
+137
+00:22:54.910 --> 00:23:01.380
+Maria: Can see sort of a shift in the in the distribution. So we do see that some
+
+138
+00:23:01.924 --> 00:23:19.999
+Maria: until second 1.5 we see a big majority of attestations coming in. And then after that, the last 10% is actually taking a bit longer. And this is also another point that we want to investigate next and understand what is causing these arrivals.
+
+139
+00:23:20.750 --> 00:23:35.120
+Maria: And again, I should highlight. This is still a small sample. And we might see. So the fact that we are using Miss Slots may actually lead to these numbers looking a bit worse than a normal
+
+140
+00:23:36.680 --> 00:24:00.630
+Maria: slot, let's say because all that stations are coming at second, or we do have a a sort of a bigger pressure on the bandwidth side than if there was a normal slot, where at the stations would come a bit slower throughout the the 4 second mark and so there there might be here some delays related to concentration of of the
+
+141
+00:24:00.630 --> 00:24:02.230
+Maria: at the stations.
+
+142
+00:24:03.247 --> 00:24:26.519
+Maria: And so just to give you an overview. So going back to that image of the slot that I was showing you. So we do see that for the block propagation, for the for the nodes that are maintained by Pendops. We do see a good a good 95 percentile which would if
+
+143
+00:24:26.630 --> 00:24:27.650
+Maria: time
+
+144
+00:24:28.070 --> 00:24:47.949
+Maria: to implement this, this change for the communities nodes, we are seeing larger percentiles. But I think this is something we also want to investigate more. Understand? Why is that and also is something we can tweak because we can this block propagation is something we can control with the with the block size
+
+145
+00:24:48.563 --> 00:25:07.486
+Maria: and then for the full time that connects propagation execution and at station we do see that the the 95 percentile of the 95 percentile within the committee is perfectly within the the proposal. So this is already
+
+146
+00:25:08.590 --> 00:25:16.530
+Maria: let's say, like a a positive sign. And for just the attestation is
+
+147
+00:25:17.070 --> 00:25:32.770
+Maria: I I think it's still something we need to analyze a bit further. So first, st because we are using the Miss Slots. There, there will be some some noise there. And also we want to understand what is happening to those last 10% that are coming a bit slower.
+
+148
+00:25:34.519 --> 00:25:53.080
+Maria: In terms of next steps. So we will collect more data again, this is just preliminary results. So we want to collect more data from other relays. it's been, the Ops team is also working on collecting community data for attestation. So we can have a sense of the difference between analyzing their nodes that are
+
+149
+00:25:53.310 --> 00:26:12.219
+Maria: well connected to a more varied sample of notes and also gathering bigger samples in terms of additional analysis. We will look also at Blobs because we haven't. We were just focusing on on block arrivals. Also, we want to look at aggregations.
+
+150
+00:26:12.641 --> 00:26:37.909
+Maria: and then investigate arrivals for locally built blocks. And also investigate arrivals for small blocks. So the idea here is to understand how block size and gas use affect both the block propagation and execution times, and finally also investigate the late arrivals and understand what factors are. Con are contributing to that. Maybe it's something that we can fix or is something that is
+
+151
+00:26:40.210 --> 00:26:47.510
+Maria: that depends on on the network itself. And it's not something we can change. So it's it's 1 thing that we we want to look at.
+
+152
+00:26:49.034 --> 00:26:58.670
+Maria: So I know this was very fast, so I was trying to to keep within time. But if there are any questions or comments I'm happy to
+
+153
+00:26:59.250 --> 00:27:00.710
+Maria: to go through them.
+
+154
+00:27:00.900 --> 00:27:04.800
+Maria: I'm not sure if we have time. But thank you.
+
+155
+00:27:06.030 --> 00:27:09.140
+stokes: Cool. Thanks. Maria Terrence has had his hand up.
+
+156
+00:27:09.620 --> 00:27:27.590
+terence: Yeah, I just had a comment. And the question, I guess the comment I had was like something I zoom from Zato or just from personal experience is that like when we, I can speak for prison when we send data to Zato, those data are already validated on the Ptp layer, even though, like
+
+157
+00:27:27.740 --> 00:27:52.350
+terence: there is an inherent like a small delay there. So you'll be worth to measure what that delay is when we verify something, and then send to Zato, and also the latency. How much like it? By what like? Basically, what is the delay for the, for the, for the, for the transmission? As well, for the data is, send it to Zato. I think those 2 have a small delay there. You'll be good to
+
+158
+00:27:52.350 --> 00:27:58.840
+terence: have those numbers, I guess. And then the question I had is on the the decision slide.
+
+159
+00:27:58.840 --> 00:28:12.359
+terence: We have p. 95, and there was something about like 4 seconds, and that is when the block is arrived. Right? Versus. So so, yeah, so for this slide.
+
+160
+00:28:12.734 --> 00:28:21.959
+terence: The 4, yeah, the 4. So the 4 seconds. So that is calculated. When the block is arrived versus the star of the slot, right.
+
+161
+00:28:22.800 --> 00:28:48.579
+Maria: Right? Right? So it's not when the block arrives is mostly on. So let let me just get get back to that image which is so, we are getting the time from when the block is published by the relay. Okay, and this is the time that we are discounting. So we essentially are considering the yellow, the pink, and the blue in those 4 seconds.
+
+162
+00:28:50.660 --> 00:29:00.509
+Maria: So it is like, you are sort of excluding the timing games. But you are still including the block, propagation, execution, and validation, and then the attestation, propagation.
+
+163
+00:29:00.510 --> 00:29:09.009
+terence: And that is, and that, and that is not a steep slot, and that is the slot that has a block of of the current slot right.
+
+164
+00:29:09.560 --> 00:29:22.390
+Maria: Exactly so. The for for the Miss Slots is this plot here, for these distributions is just all this, like the sample of slots we had that were relay, ultrasound relay
+
+165
+00:29:23.100 --> 00:29:24.070
+Maria: blocks.
+
+166
+00:29:25.080 --> 00:29:44.019
+terence: Okay, that's something that's interesting is in prison in the next release will actually attest timely by default, meaning that we will not wait for the 4 second to set up the station, so the number may be slightly better using the prison for the next release. So something to monitor again. Maybe in the next few weeks. Yeah.
+
+167
+00:29:44.190 --> 00:29:47.060
+Maria: Yeah, yeah, 100%. That's that's a good point.
+
+168
+00:29:51.490 --> 00:29:51.885
+stokes: Cool
+
+169
+00:29:52.280 --> 00:29:58.329
+Toni Wahrstätter: Maybe even then, even then we would rely on on notes updating. So I think from next time we should
+
+170
+00:29:58.480 --> 00:30:03.950
+Toni Wahrstätter: stick to getting data from relays might be more reliable than
+
+171
+00:30:04.430 --> 00:30:07.930
+Toni Wahrstätter: assuming everyone. Updates and people are testing in time.
+
+172
+00:30:12.030 --> 00:30:13.259
+stokes: Mark, you have your hand up.
+
+173
+00:30:18.300 --> 00:30:24.404
+ethDreamer (Mark): Oh, sorry I was unmuted. Yeah. So based on the I, someone correct me. If I'm wrong, it's just
+
+174
+00:30:25.597 --> 00:30:28.270
+ethDreamer (Mark): based on the numbers you had here. It doesn't
+
+175
+00:30:28.390 --> 00:30:39.869
+ethDreamer (Mark): feel like there's a lot of slack left in the slot. Honestly, you've got. It looks like over 6 seconds is just being used for attestation, propagation aggregation and propagating the aggregates so
+
+176
+00:30:40.030 --> 00:30:43.319
+ethDreamer (Mark): like, I don't know this to me, would suggest that we
+
+177
+00:30:43.890 --> 00:30:54.199
+ethDreamer (Mark): we couldn't get the slot time down to 6 seconds without some kind of pipelining. But am I interpreting these numbers wrong like? How would we do this?
+
+178
+00:30:56.420 --> 00:30:57.230
+Maria: Doesn't
+
+179
+00:30:57.700 --> 00:31:09.109
+Maria: doesn't seem to me that is not possible. So we we so in the new proposal, the deadline for the aggregations would be 4.5 seconds.
+
+180
+00:31:10.440 --> 00:31:23.020
+Maria: And, as I was saying, like this is already a sort of ex extreme metric, because it's a 95 percentile of a 95 percentile. So probably you don't need like the 95,
+
+181
+00:31:23.270 --> 00:31:27.980
+Maria: you don't need 95% of the notes within your committee to see
+
+182
+00:31:28.100 --> 00:31:31.979
+Maria: 95% of authorizations. Maybe you just need like
+
+183
+00:31:32.200 --> 00:31:37.069
+Maria: for aggregators to see it. And so
+
+184
+00:31:37.940 --> 00:31:41.129
+Maria: yeah, so I, this to me is actually like a
+
+185
+00:31:41.720 --> 00:31:54.199
+Maria: something that seems exciting is like even in an extreme metric. This already seems really nice. I think now, is a is A is a point of collecting more data, making sure that these numbers are correct.
+
+186
+00:31:54.644 --> 00:32:11.990
+Maria: And yeah, then look also at the at the station aggregation part that we haven't looked into to make sure that it fits and also to understand the factors that may be causing delays because there are some things that we could change. So, for instance, if we
+
+187
+00:32:12.170 --> 00:32:26.432
+Maria: reduce slot times by half. Maybe it makes sense to also reduce the the gas limit by half, and then this means that the ex, both execution and propagation might also reduce a little bit.
+
+188
+00:32:27.630 --> 00:32:31.529
+Maria: so yeah, does this make sense or or or not?
+
+189
+00:32:34.900 --> 00:32:45.090
+ethDreamer (Mark): Well, are you saying that maybe we could cut? Okay. So let's say, we cut propagation execution both in half. And then you're saying we we might be able to cut down
+
+190
+00:32:45.490 --> 00:32:51.089
+ethDreamer (Mark): the attestation aggregation by maybe. How much like it it seems like a
+
+191
+00:32:51.280 --> 00:33:00.330
+ethDreamer (Mark): and then you have. You still have at statistic propagation it which I can't see being any faster. Really, I don't know how you'd make that faster, but.
+
+192
+00:33:00.690 --> 00:33:16.969
+Maria: Yeah. So what I'm saying is like for the at the station aggregation, we still need to look into it. So I'm I don't know the timings yet, but for the 1st part, which is the part that should fit within the 4.5 seconds, it seems to be pretty.
+
+193
+00:33:17.350 --> 00:33:25.649
+Maria: seems to be looking in a good way. We just need to dig a bit deeper there and and make sure that the that the numbers make sense.
+
+194
+00:33:29.340 --> 00:33:34.029
+ethDreamer (Mark): Okay. So you are still hopeful that we could get it down to 6 seconds. Then.
+
+195
+00:33:35.190 --> 00:33:39.110
+Maria: From the daytime scene. Yes, we might discover
+
+196
+00:33:39.220 --> 00:33:43.630
+Maria: new things down the line, but so far yes.
+
+197
+00:33:47.200 --> 00:33:49.129
+Maria: again I I think to
+
+198
+00:33:49.280 --> 00:33:59.804
+Maria: to me. The most compelling thing is like this, p. 95, of the p. 95, below the 4.5 seconds. I think it's pretty compelling.
+
+199
+00:34:02.080 --> 00:34:08.839
+Maria: and then again, we need to look at the aggregation part that we haven't yet. But yeah, I'm I think I'm optimistic.
+
+200
+00:34:11.630 --> 00:34:12.960
+stokes: Barnaba, you've had your hand up.
+
+201
+00:34:14.343 --> 00:34:26.340
+Barnabé Monnot: Yeah, I guess this is more my interpretation, and possibly different from Maya's own. But looking at these numbers, I don't think it proves that we can't do 6 seconds. But it
+
+202
+00:34:26.389 --> 00:34:46.150
+Barnabé Monnot: maybe says that. Yeah, it's first, st we need better ways to measure all these things like to increase our confidence on these numbers. And, second, we should also be looking into optimizations as they are available, and I will also say that if we buy the story of
+
+203
+00:34:46.230 --> 00:35:14.379
+Barnabé Monnot: restructuring the slot first, st and then we can easily do 6 seconds. I actually don't think it's still easy, like, even if we do epbs putting the attestation deadline. I think the number I saw was 1.5 seconds means we have 4.5 seconds to do attestation and aggregation. It's a bit better than 6 seconds with the current slot architecture. But it's still yeah, probably challenging.
+
+204
+00:35:14.590 --> 00:35:30.439
+Barnabé Monnot: I share with my optimism that I think the numbers are are not like ruling out that it's possible. But I do think we need to do more work on validating them 1st and then figuring out optimizations to increase our confidence.
+
+205
+00:35:36.680 --> 00:35:37.380
+stokes: Okay.
+
+206
+00:35:37.910 --> 00:35:39.790
+stokes: Any other questions or comments?
+
+207
+00:35:41.410 --> 00:35:42.959
+stokes: If not, thank you, Maria.
+
+208
+00:35:43.820 --> 00:35:52.059
+stokes: and we can go to the next bit here. So that was shorter slot times. Which was one of the headliner proposals.
+
+209
+00:35:52.210 --> 00:35:56.030
+stokes: and another one that we're all familiar with is egps
+
+210
+00:35:56.440 --> 00:36:07.529
+stokes: on this Christoph and Bruno from flashbots wanted to give an update on their work. They're calling this particular part of the design the free option problem in epbs.
+
+211
+00:36:08.320 --> 00:36:10.810
+stokes: I assume one of them is on the call.
+
+212
+00:36:11.950 --> 00:36:13.080
+Christoph Schlegel: Most of them. Yeah.
+
+213
+00:36:13.080 --> 00:36:14.130
+stokes: Oh! Hey!
+
+214
+00:36:21.010 --> 00:36:21.880
+Christoph Schlegel: Okay?
+
+215
+00:36:23.780 --> 00:36:31.607
+Christoph Schlegel: right? So epbs, free option problems. So what is a free option problem? And why should you care?
+
+216
+00:36:32.680 --> 00:36:36.425
+Christoph Schlegel: has to do with basically this?
+
+217
+00:36:38.310 --> 00:36:41.670
+Christoph Schlegel: this optionality of of a winning builder in
+
+218
+00:36:42.660 --> 00:36:47.609
+Christoph Schlegel: in block building, auction to invalidate their block if they're not happy
+
+219
+00:36:47.830 --> 00:36:57.110
+Christoph Schlegel: with sort of how the world evolved in the meantime, and there is a difference between difference in time between when they commit to a block. And
+
+220
+00:36:57.330 --> 00:37:00.750
+Christoph Schlegel: so you have a time window after that to invalidate
+
+221
+00:37:01.070 --> 00:37:08.890
+Christoph Schlegel: the block if if they wish to do so, and they would forego sort of the gains that's in the bit that they made and the
+
+222
+00:37:09.160 --> 00:37:12.249
+Christoph Schlegel: maybe also option. But otherwise they would. Yeah.
+
+223
+00:37:13.360 --> 00:37:16.050
+Christoph Schlegel: post. Basically, it's equivalent to posting an empty block.
+
+224
+00:37:16.820 --> 00:37:18.945
+Christoph Schlegel: So how how is this
+
+225
+00:37:19.620 --> 00:37:28.010
+Christoph Schlegel: turning out in reality. So epbs has 2 payload timeliness committee deadlines
+
+226
+00:37:28.500 --> 00:37:35.440
+Christoph Schlegel: which you could put use both actually to to invalidate the block. So you have, you could fail to
+
+227
+00:37:35.900 --> 00:37:38.869
+Christoph Schlegel: send the payload in time as as a builder.
+
+228
+00:37:39.070 --> 00:37:47.049
+Christoph Schlegel: or, what is actually the more valuable option is to you, could fail to to send some blob.
+
+229
+00:37:47.440 --> 00:37:54.829
+Christoph Schlegel: and that is the second deadline, and since the entire design is sort of meant as a pipelining
+
+230
+00:37:55.550 --> 00:38:03.370
+Christoph Schlegel: sort of architecture where we postpone blobs to the end of the slot. Right? That gives you
+
+231
+00:38:03.550 --> 00:38:08.980
+Christoph Schlegel: a bunch of time to actually wait for this last deadline for the blobs.
+
+232
+00:38:09.270 --> 00:38:22.200
+Christoph Schlegel: Wait whether something happens that is informative to you, and that usually is about trading financial information. And then you could sort of choose to to not send a blob.
+
+233
+00:38:22.510 --> 00:38:29.710
+Christoph Schlegel: it's about 8 seconds. And so if you want to take away one thing from from this presentation, 8 seconds is a lot.
+
+234
+00:38:29.980 --> 00:38:35.560
+Christoph Schlegel: 8 seconds is a lot, and that gives you possibly a lot of value to this option.
+
+235
+00:38:35.960 --> 00:38:59.839
+Christoph Schlegel: Aside, as I think, or Spurtus made this point to me, and I now agree with him philosophically. So it's a problem, not not about it's a problem of epbs, but it's more like the feature of pipelining right? So that the fact that you give ample room for propagation of blobs and see if there's a different timelines, so that the fact that you can basically trigger invalidation of the block
+
+236
+00:39:00.140 --> 00:39:10.079
+Christoph Schlegel: by failing to to submit a blob right, and that would probably be true for sort of other other designs that would have this pipeline feature.
+
+237
+00:39:10.940 --> 00:39:21.430
+Christoph Schlegel: So what we did in this thing, and that is ongoing research. But so we want to do more on that. But we tried to figure out how valuable. This option is
+
+238
+00:39:21.610 --> 00:39:44.070
+Christoph Schlegel: so, and sort of the Tldr is okay, probably very valuable in some some sense. And it creates a bad form of Mev, right? So you basically create the form of Mev, where, if you exploit the Mev, in some cases you produce empty blocks, and that has a negative externality on everybody else wanted to put the transactions in in the block.
+
+239
+00:39:45.850 --> 00:40:14.309
+Christoph Schlegel: so it's potentially substantial. It is also the value of the option is increasing in volatility and increasing in liquidity on chain. So what does it mean? In plain English, so increasing in volatility means that sort of the option is triggered asymmetrically so. There might be some days where a lot of things happen in the world. And then, basically, you have a lot of empty blocks suddenly in these days, because there's a lot of volatility. Some some days nothing.
+
+240
+00:40:14.580 --> 00:40:18.840
+Christoph Schlegel: Nothing important happens. And so he was observed less frequently.
+
+241
+00:40:19.270 --> 00:40:21.980
+Christoph Schlegel: and increasing in liquidity means, if
+
+242
+00:40:22.470 --> 00:40:35.620
+Christoph Schlegel: ethereum is able to attract a lot of, you know, financial activity more so than the current. It currently does. Actually, the problem becomes worse, right? So it becomes worse with with scaling financial activity.
+
+243
+00:40:35.950 --> 00:40:50.099
+Christoph Schlegel: And yeah, volatility is increasing in in the time window as well. And that is sort of the reason why the longer you have the pre auction window, the worse it becomes. And well, as I said, the punchline is 8 seconds is probably bad.
+
+244
+00:40:51.430 --> 00:40:53.990
+Christoph Schlegel: And actually bad. Why? Because it's sort of
+
+245
+00:40:54.310 --> 00:41:17.969
+Christoph Schlegel: the mental model that you could have is sort of this length of this free option value relative to the slot length that matters right. If if sort of the free option window is sort of as here, it's 3 quarters of the slot length. That is a lot right. It would be less of a problem, it would be one half, it would be less of a problem. It would be 1 3.rd The point is sort of it doesn't disappear when you mix
+
+246
+00:41:18.170 --> 00:41:23.240
+Christoph Schlegel: slots shorter if sort of the relative fractions remain the same.
+
+247
+00:41:23.860 --> 00:41:27.378
+Christoph Schlegel: Okay, so that's that's the thing. We try to
+
+248
+00:41:27.940 --> 00:41:38.089
+Christoph Schlegel: bit. Do a bit of like mix of theoretical analysis and empirical analysis. That is sort of very preliminary. We want to do it
+
+249
+00:41:38.220 --> 00:41:49.609
+Christoph Schlegel: because empirical analysis is mostly on on binance data. So because on chain trading data is messy, we want to extend it to that. But I can tell you what is is going on with that.
+
+250
+00:41:49.730 --> 00:42:06.800
+Christoph Schlegel: We also have some potential mitigations that I think Bruno wants to tell you about. One other sort of interesting punchline is, so I think for me, at least, it's an interesting punchline. So the problem also becomes worse if we make on-chain trading better in some sense, right? If we reduce the Mev.
+
+251
+00:42:07.050 --> 00:42:16.880
+Christoph Schlegel: On, on chain per unit of liquidity deployed on chain. So if sort of it makes the trading leak less mev right, we solve sandwiching, or we we solve.
+
+252
+00:42:17.070 --> 00:42:41.539
+Christoph Schlegel: So this this problem of basically stale liquidity being or liquidity being placed at stale prices right to better Amm design. So if he makes the on-chain trading experience. Better sort of weirdly, the option becomes more attractive. That is basically because you give up. If you exercise the option you give up on mev right in in a time. Window
+
+253
+00:42:41.894 --> 00:42:53.660
+Christoph Schlegel: in order to, you know, exercise the option right? So you give up sort of the block values that that you would otherwise have captured or part of the block value. That's 1 of the way of thinking about it.
+
+254
+00:42:54.270 --> 00:42:55.050
+Christoph Schlegel: Okay.
+
+255
+00:42:55.400 --> 00:43:08.140
+Christoph Schlegel: that's a deal. Yeah. I want to explain. It was a mental model of poker that was taken, or this is from Eccan. So there was a casino which was conveniently located next to the Con convention center for Ecc.
+
+256
+00:43:08.746 --> 00:43:23.379
+Christoph Schlegel: So here's 1 mental model that you could have. So suppose you would play roulette right? Usually, that's not a good idea because you lose. But now you have the options that you can sort of
+
+257
+00:43:23.560 --> 00:43:35.720
+Christoph Schlegel: revert the spin of the roulette wheel if you don't like the outcome. Right? So that's that's that's the option the kind of option that you would have right. So you spin the roulette wheel, and then it's black, and you bet on red, then
+
+258
+00:43:36.090 --> 00:43:57.180
+Christoph Schlegel: you revert it. Suppose you have that option? Right? So what is the value of that option? And basically it depends on the maximal bet you can take in the Casino. So whatever allows you, the the Casino allows you to bet on this roulette wheel that is sort of the value of the option. Right? Half of that is the value of the option. Okay? So you can take
+
+259
+00:43:57.720 --> 00:44:01.469
+Christoph Schlegel: and that bounce, bounce, bounce the value of that option. That
+
+260
+00:44:01.590 --> 00:44:18.019
+Christoph Schlegel: sort of the interesting thing is, if you translate it into finance is basically the option scales with liquidity. Right? So the more liquidity you can place in the market there is in the market, so that you can place larger bets in the market. So where the option problem becomes.
+
+261
+00:44:18.060 --> 00:44:33.019
+Christoph Schlegel: And we looked into binance data as a. As I said, so we looked into what happens. For example, if you trade 1 1 million notional on on binance in 8 seconds intervals, and you would would have the
+
+262
+00:44:34.680 --> 00:44:42.090
+Christoph Schlegel: It's the option to reverse a trade if you don't don't like the outcome. So that is the return distribution. So you get somewhere between
+
+263
+00:44:42.250 --> 00:44:47.896
+Christoph Schlegel: a thousand and a minus 1,000 on those on those
+
+264
+00:44:50.500 --> 00:44:55.479
+Christoph Schlegel: on those bets right? Betting 1 million on ethereum going up or down.
+
+265
+00:44:56.013 --> 00:45:10.109
+Christoph Schlegel: So it's much much lower AV per unit of of of liquidity than in the Casino. Right there. It's coin flip, basically. So you get 50% in the Casino. But here in binance, because the price of East does move
+
+266
+00:45:10.630 --> 00:45:26.380
+Christoph Schlegel: that much, it moves maybe one basis point per 8 8 seconds approximately. So you get on 1 million bed size. You get about. We have between a thousand and minus 1,000. And on average, you get
+
+267
+00:45:27.750 --> 00:45:28.660
+Christoph Schlegel: what was it?
+
+268
+00:45:29.130 --> 00:45:31.149
+Christoph Schlegel: 200 300, something like this?
+
+269
+00:45:31.600 --> 00:45:51.349
+Christoph Schlegel: But the interesting thing is with the option, you can basically eliminate the bad cases right? So you don't get the minus 1,000. You don't get the minus 500. You don't get the minus 250. You only get everything to the right of 0, or if you want to bet on East going down, it's sort of almost symmetric. You can also get the left hand side and then multiply by minus one.
+
+270
+00:45:51.680 --> 00:45:53.180
+Christoph Schlegel: So that's that's sort of
+
+271
+00:45:53.350 --> 00:46:00.680
+Christoph Schlegel: binance is a casino, just with a lower, you know. Return on each each spin. But
+
+272
+00:46:00.790 --> 00:46:05.230
+Christoph Schlegel: and the amount of liquidity that you can bet is basically
+
+273
+00:46:05.610 --> 00:46:15.520
+Christoph Schlegel: how much you should value the option. Okay? Then we looked into how? How would that look like if we would have binance level liquidity on ecusdc pair.
+
+274
+00:46:15.790 --> 00:46:29.319
+Christoph Schlegel: and then you get something like this. So you get upward sloping curve. So the longest sort of this option window is the more value that you can make. So the right hand side curve, I think, is more interesting. So that's the absolute.
+
+275
+00:46:29.640 --> 00:46:38.469
+Christoph Schlegel: absolute value of the return. So you get half of that right. If if it's a coin flip, whether it goes up or down
+
+276
+00:46:38.700 --> 00:46:42.350
+Christoph Schlegel: right, and then you see, with 8 seconds. For example, a bit above
+
+277
+00:46:42.770 --> 00:46:48.220
+Christoph Schlegel: 200. You get half of that. So you get 118 Us. Dollar per spin on average.
+
+278
+00:46:48.400 --> 00:47:05.050
+Christoph Schlegel: on on binance. That's 1.2 million per day, approximately 1.3 million. Okay, so that's that's the order of magnitude. If you would have binance size, liquidity on ethereum. l. 1 which you don't have right? I think it's off by a factor, 10 or whatever.
+
+279
+00:47:05.520 --> 00:47:27.830
+Christoph Schlegel: But then also that is only 1 1 pair. Right? So you can also, I mean, if you have this option, you can trade many roulette wheels at the same time. Right? You can bet on on ease. You can bet on on Bitcoin. You can bet on everything. You have many correlated bets, right? So you can pump it up so the mental model that you should have is right.
+
+280
+00:47:27.960 --> 00:47:33.230
+Christoph Schlegel: Everything that you can trade, basically with good liquidity. Where you have very low slippage.
+
+281
+00:47:33.340 --> 00:47:37.459
+Christoph Schlegel: put put a bet, put a bet in there and then. Yeah.
+
+282
+00:47:37.800 --> 00:47:49.940
+Christoph Schlegel: takes a chance. And if you lose out on on the value, if this is the other way, then you can revert it right right, and that gives you the sort of magnitude of of gains which I think is substantial.
+
+283
+00:47:51.240 --> 00:48:10.759
+Christoph Schlegel: And so in theory, value is higher. If there's more liquidity. Right? I think that is clear. So if I can trade not only 1 million notional on binance with almost 0 slippage, but 2 million notional, with almost 0 slippage. Then I just double my gains right in ethereum world. If you could.
+
+284
+00:48:10.940 --> 00:48:15.529
+Christoph Schlegel: we attract twice as much liquidity. You make this problem.
+
+285
+00:48:15.930 --> 00:48:16.860
+Christoph Schlegel: Maybe
+
+286
+00:48:17.110 --> 00:48:23.792
+Christoph Schlegel: so the value of the option you make double, but then you also maybe increase the cost of exercising the option. Right? So that's that's
+
+287
+00:48:24.330 --> 00:48:29.950
+Christoph Schlegel: it's a mixed bag. But I would say, if you increase liquidity directionally, it would increase a problem.
+
+288
+00:48:30.070 --> 00:48:48.970
+Christoph Schlegel: and it's a function of volatility, right? So if you can trade meme coins. Maybe you get lower liquidity on those, but get per spin. You get more right. You can bet less on the roulette wheel, but you get get more per spin right? And that that scales it as well.
+
+289
+00:48:49.560 --> 00:49:00.789
+Christoph Schlegel: And one sort of very crude way of approximating how bad the problem is. You could say, okay, this free option gives you about half of the arbitrage that a builder could make
+
+290
+00:49:01.050 --> 00:49:04.139
+Christoph Schlegel: if he would be able to
+
+291
+00:49:05.600 --> 00:49:10.690
+Christoph Schlegel: place the bed top of block the the order top of block
+
+292
+00:49:12.276 --> 00:49:21.669
+Christoph Schlegel: over 8 second slot time blocks in this kind of actual world, so you can get about half half of the value, not quite half of the value, but approximately half of that value.
+
+293
+00:49:21.880 --> 00:49:23.013
+Christoph Schlegel: And then
+
+294
+00:49:23.870 --> 00:49:37.109
+Christoph Schlegel: then that gives you a sort of a very crude way of approximate approximating it would look like, don't, don't you know? Don't take the takeaway of this slide is not. Don't take those probabilities literally. But I mean,
+
+295
+00:49:37.800 --> 00:49:52.549
+Christoph Schlegel: philosophically, those are the kind of effects that you should expect. Right? So you you have increasing probability of option exercise, and if you have increasing
+
+296
+00:49:52.830 --> 00:49:54.829
+Christoph Schlegel: exercise window, right?
+
+297
+00:49:55.010 --> 00:49:58.019
+Christoph Schlegel: And that is basically, if you have it.
+
+298
+00:49:58.190 --> 00:50:01.149
+Christoph Schlegel: do it with this heuristic that you say, okay.
+
+299
+00:50:01.520 --> 00:50:24.250
+Christoph Schlegel: you can capture approximately half of the arbitrage gains that you could capture. In the conventional Mev way you can capture with the option. Then you get this kind of competitive settings. On the other hand, this is normal, normally distributed returns. So if they're fat tails, actually, this becomes more extreme, right? So you get high probabilities. And then the 2 curves tell you. Okay, it makes a difference whether
+
+300
+00:50:24.250 --> 00:50:31.699
+Christoph Schlegel: actually sort of the Mev scales linearly with time, probably less than linearly with slot time. Or
+
+301
+00:50:31.870 --> 00:50:34.690
+Christoph Schlegel: it probably scales a bit more than square root
+
+302
+00:50:34.840 --> 00:50:39.720
+Christoph Schlegel: block time. But you get substantial probabilities with this napkin map
+
+303
+00:50:40.210 --> 00:50:49.479
+Christoph Schlegel: model right? And sort of the other other thing to highlight. This is, of course, a very stupid. It's very straightforward and stupid strategy. Right? You just
+
+304
+00:50:49.610 --> 00:50:55.559
+Christoph Schlegel: take a bet, and then if the bet doesn't turn out well, you you
+
+305
+00:50:56.070 --> 00:51:07.909
+Christoph Schlegel: where you basically exercise the option. So you could run more sophisticated strategies probably make more. But sort of you you get these numbers. Right? So you get anywhere between 5 and 10%
+
+306
+00:51:08.560 --> 00:51:11.869
+Christoph Schlegel: exercise probability on these things.
+
+307
+00:51:11.990 --> 00:51:36.700
+Christoph Schlegel: Right? So we need would need to calibrate this more with actual data. Another data point, which is more like anecdotal. So we we also ask a searcher from from scp. I mean how he would think about this option, he says, Okay, that's very valuable. You could expect at least 10% of blocks where where this option is exercised. Assuming right? All of these, you know.
+
+308
+00:51:36.800 --> 00:51:38.980
+Christoph Schlegel: and assuming away. All of
+
+309
+00:51:39.350 --> 00:51:48.909
+Christoph Schlegel: builders, want or builders, of course, want to be well behaved right. They might not exercise that option because of social slash, slashing reason, or because they are
+
+310
+00:51:49.190 --> 00:51:57.609
+Christoph Schlegel: block listed by by validators if they do that so often. But assuming away all of those things north of 10%
+
+311
+00:51:57.890 --> 00:52:01.189
+Christoph Schlegel: probability of exercising option when we have this
+
+312
+00:52:01.350 --> 00:52:13.449
+Christoph Schlegel: this kind of 8 8 seconds option time window. So it's substantial. And we should be aware of that. And it scales very badly. Right? If ethereum becomes more successful, the problem gets worse.
+
+313
+00:52:14.460 --> 00:52:18.579
+Christoph Schlegel: Okay, Brunan, do you want to talk a bit about potential solutions.
+
+314
+00:52:21.360 --> 00:52:25.140
+Bruno Mazorra: Yeah, sure. So, okay, potential solutions. I'm.
+
+315
+00:52:25.140 --> 00:52:35.210
+stokes: Sorry. Just one sort of orchestration point. Let's try to move through these slides faster rather than slower.
+
+316
+00:52:39.060 --> 00:52:40.120
+Bruno Mazorra: Sorry, what.
+
+317
+00:52:41.137 --> 00:52:44.890
+stokes: Let's just try to get to these slides so we can get to other things on the agenda today.
+
+318
+00:52:45.600 --> 00:52:47.810
+Bruno Mazorra: Okay, essentially, yeah, we have
+
+319
+00:52:48.000 --> 00:52:53.940
+Bruno Mazorra: 3 sets of solutions. So slashing. Shortening the free option window and block listing.
+
+320
+00:52:54.350 --> 00:53:06.299
+Bruno Mazorra: I think the most reasonable one is shorting free option window. But that could have other effects that we don't know of. Additional slashing, of course.
+
+321
+00:53:06.810 --> 00:53:13.119
+Bruno Mazorra: essentially like can increase the barriers of entries. And so that's not good, but also like, will decrease
+
+322
+00:53:13.594 --> 00:53:17.680
+Bruno Mazorra: the optional value, and of course, also the the probability of exercising it.
+
+323
+00:53:18.340 --> 00:53:24.110
+Bruno Mazorra: Also, we think, like block listing is not the right solution. Because, yeah, we want a permissionless
+
+324
+00:53:24.750 --> 00:53:33.919
+Bruno Mazorra: boulder market. And either we will have civils or we will make it permission it when we are block listing, because we think these opportunities will be exercised more by
+
+325
+00:53:34.526 --> 00:53:40.870
+Bruno Mazorra: solo searchers, building blocks and actually like blog builders that try to acquire order, flow.
+
+326
+00:53:41.260 --> 00:53:45.829
+Bruno Mazorra: And then there is like a potential 4th solution that I am.
+
+327
+00:53:46.190 --> 00:53:52.410
+Bruno Mazorra: We should be thinking more about. It is essentially making blobs totally separated objects from transactions.
+
+328
+00:53:52.510 --> 00:53:56.158
+Bruno Mazorra: and essentially having completely independent inclusion and
+
+329
+00:53:56.830 --> 00:54:00.889
+Bruno Mazorra: free markets process so that could be some ideas.
+
+330
+00:54:02.187 --> 00:54:04.329
+Bruno Mazorra: I don't know if we have more time.
+
+331
+00:54:07.500 --> 00:54:08.899
+stokes: Were there more slides?
+
+332
+00:54:09.480 --> 00:54:10.909
+stokes: Yeah, it seems like it stopped.
+
+333
+00:54:15.097 --> 00:54:24.860
+stokes: Yeah. In that case, I guess, are there? Maybe one or 2 follow up questions. There are a lot of conversations in the chat. It's gonna be hard to summarize them all.
+
+334
+00:54:25.380 --> 00:54:26.290
+stokes: Yeah, Mark.
+
+335
+00:54:27.360 --> 00:54:30.063
+ethDreamer (Mark): Yeah, I would say, with regard to
+
+336
+00:54:30.580 --> 00:54:45.200
+ethDreamer (Mark): the like increasing the penalty like the only that that seems like a fine solution. But the the worry that we would have here is that people go and they try to do this with solo staking and off train relays, and if that was ha happened. Then we would have to impose this on
+
+337
+00:54:45.310 --> 00:55:13.479
+ethDreamer (Mark): solo stakers, and that would only impact like solo staking self building validators. But we could even they would only get that penalty in like an unfair way, if basically, their node dies between publishing the beacon block and the execution payload, and we could presumably mitigate that by allowing them to publish the execution payload first.st They don't have to worry about the blob since they're self building, and they're already building publicly available blobs, anyway. So
+
+338
+00:55:14.190 --> 00:55:17.319
+ethDreamer (Mark): yeah, that was just a nuance. I wanted to point out that
+
+339
+00:55:17.570 --> 00:55:23.050
+ethDreamer (Mark): we could increase this penalty, and we could do things to try to make it so that no
+
+340
+00:55:23.160 --> 00:55:26.630
+ethDreamer (Mark): self-building solo staker would suffer this. That was honest.
+
+341
+00:55:29.250 --> 00:55:30.030
+ethDreamer (Mark): Yeah.
+
+342
+00:55:31.660 --> 00:55:37.530
+stokes: Okay, thanks. So yeah, maybe just summarize. There's this notion of the free option problem.
+
+343
+00:55:38.060 --> 00:55:47.220
+stokes: There are some solutions. It sounds like it might take a little more work to figure out the right way to frame 7, 7, 3, 2, which is the Pps IP. To mitigate them.
+
+344
+00:55:47.760 --> 00:55:50.840
+stokes: but it seems like there are some potential paths there.
+
+345
+00:55:54.050 --> 00:56:04.449
+stokes: Cool. Let's see one other point on this eap dap. Lion had a post that was relevant. Let's see, is he on the call.
+
+346
+00:56:06.360 --> 00:56:12.449
+stokes: I think? Oh, yeah, there you are. I don't know if you'd like to say anything definitely. If not, I can just grab a link to your post.
+
+347
+00:56:16.170 --> 00:56:24.259
+Lion dapplion: Yeah, I just, I agree with the slot restructuring part for the sake of scaling. And I was just
+
+348
+00:56:24.480 --> 00:56:28.120
+Lion dapplion: questioning the need to do the trust and trustless payment.
+
+349
+00:56:28.250 --> 00:56:31.729
+Lion dapplion: So at least I wanted to add the option
+
+350
+00:56:31.900 --> 00:56:36.030
+Lion dapplion: to the fore planning and to everyone that if we want to, we can do.
+
+351
+00:56:36.190 --> 00:56:42.349
+Lion dapplion: Eip. 7, 7, 3, 2, without the trustless payment, and I haven't found any obstacle to that path.
+
+352
+00:56:49.340 --> 00:56:51.020
+stokes: Okay, cool.
+
+353
+00:56:52.970 --> 00:57:04.112
+stokes: Sorry. I just responded in the chat. Just around like potential paths for mitigation. 3 option problem. I mean, it sounds like. There's, you know, for example, you could penalize the builder.
+
+354
+00:57:04.640 --> 00:57:06.610
+stokes: for not revealing something like this.
+
+355
+00:57:11.975 --> 00:57:18.749
+stokes: Yeah, rather than going further into that. Let's just leave that alone for now.
+
+356
+00:57:20.340 --> 00:57:21.050
+stokes: Okay.
+
+357
+00:57:21.460 --> 00:57:22.870
+stokes: So
+
+358
+00:57:23.460 --> 00:57:30.750
+stokes: if there were no other questions about that for the moment one other thing that came up so Christine Kim
+
+359
+00:57:30.890 --> 00:57:38.620
+stokes: had a community space yesterday, and she had some input from different community members.
+
+360
+00:57:39.070 --> 00:57:42.829
+stokes: I also am not sure if she's on the call. But let me grab a link to
+
+361
+00:57:44.350 --> 00:57:49.249
+stokes: her message. It was on the awkward as channel, so you probably saw it.
+
+362
+00:57:49.980 --> 00:57:54.799
+stokes: But, in short, why don't I just give a summary.
+
+363
+00:57:56.100 --> 00:57:59.290
+stokes: So sorry I lost the top. Okay?
+
+364
+00:58:00.245 --> 00:58:07.559
+stokes: Yeah. Support for some sort of pipeline in you know, Epbs could be a solution here.
+
+365
+00:58:08.000 --> 00:58:13.529
+stokes: Another support for 6 second slots just to improve ux.
+
+366
+00:58:14.200 --> 00:58:21.480
+stokes: and otherwise. Yeah, those are the main things there. So just consider that as plus ones for these proposals from the community.
+
+367
+00:58:22.499 --> 00:58:30.630
+stokes: There are some shout outs to forecast. And yeah, Christine will continue this process just to get input from different community members.
+
+368
+00:58:31.190 --> 00:58:38.190
+stokes: So I did want to bring that up. And from there. Okay, so
+
+369
+00:58:38.880 --> 00:58:42.432
+stokes: I think the way to proceed here.
+
+370
+00:58:43.560 --> 00:58:58.020
+stokes: yeah. And maybe we'll need to have a conversation about this. However, my read is given, yeah, different community inputs that we've gotten both core developer sentiment and also the relative progress of R&D on these different proposals.
+
+371
+00:58:58.230 --> 00:59:03.380
+stokes: It seems like Epbs is sort of the leading headliner candidates right now.
+
+372
+00:59:04.130 --> 00:59:10.079
+stokes: the way I propose to proceed is that we essentially like conditionally acknowledge this on today's call.
+
+373
+00:59:10.500 --> 00:59:13.830
+stokes: That, then, can be an input to acde next week.
+
+374
+00:59:14.140 --> 00:59:22.805
+stokes: And the reason we want to do that is because the headliners we pick here might also impact the of the headliners they pick on the Yale side. So we kind of have this
+
+375
+00:59:23.210 --> 00:59:27.370
+stokes: circular dependency, and seems like this is the right path forward.
+
+376
+00:59:28.410 --> 00:59:30.090
+stokes: Does that sound okay to everyone?
+
+377
+00:59:35.650 --> 00:59:45.889
+stokes: And maybe then, just to like round out the timing, say, we do this now, you know, given sort of another conditional act from Acd next week. Then we can go ahead and make the headliner decision
+
+378
+00:59:46.130 --> 00:59:48.950
+stokes: on the next Acdc. In 2 weeks.
+
+379
+00:59:57.380 --> 01:00:01.303
+stokes: Alright. Just ask, what do we sfy epbs? Let's see.
+
+380
+01:00:02.640 --> 01:00:07.790
+stokes: I'd want to think if we want to. Cfi versus Sfi just process wise. But essentially, yeah, like, we would say
+
+381
+01:00:07.970 --> 01:00:15.430
+stokes: that this would be the headliner selection for Glensterham on the Cl. Side.
+
+382
+01:00:19.790 --> 01:00:27.998
+stokes: Osgar asked a question. Would we explore Bill builder penalties. So yeah, at least, the way I see this shaping up is that
+
+383
+01:00:28.540 --> 01:00:31.920
+stokes: the selection for this process today and say over next call
+
+384
+01:00:32.060 --> 01:00:34.290
+stokes: would just be saying, this is what we intend to do.
+
+385
+01:00:34.480 --> 01:00:44.420
+stokes: I think, then, that lets people focus very precisely on just 7, 7, 3, 2. And there's a number of open questions there around. Yeah, things we want to improve or fix.
+
+386
+01:00:44.690 --> 01:00:54.760
+stokes: I think the IP can still evolve. But this is just again narrowing the scope rather than having this entire set of vips. We can then move to focus on just this one
+
+387
+01:00:56.340 --> 01:00:57.130
+stokes: mark.
+
+388
+01:00:59.552 --> 01:01:01.490
+ethDreamer (Mark): I'll let us go first.st Actually.
+
+389
+01:01:01.850 --> 01:01:02.480
+stokes: Okay.
+
+390
+01:01:04.040 --> 01:01:26.719
+Potuz: I just want to make a comment because I wrote it like 3 times on the chat. If you go on the computations of the free option problem lowering the size relative to the slot actually minimizes this issue. Like what it was like, it appears in a percentage of slots that this searcher builder would actually find it beneficial to exercise the option
+
+391
+01:01:28.260 --> 01:01:32.989
+Potuz: reduces that dramatically. If you make this this size window minimal.
+
+392
+01:01:33.250 --> 01:01:37.710
+Potuz: and it's not a feature of the commit reveal process of of
+
+393
+01:01:38.030 --> 01:01:43.359
+Potuz: of epbs. But it is a feature of the difference between the payload
+
+394
+01:01:43.760 --> 01:02:00.109
+Potuz: deadline and the blob deadline. If you make those too early, very early enough, so that the builder only has time to just reveal immediately the block. This problem disappears from Epbs, of course, at the cost of scaling, which is, which is the essential trade-off here.
+
+395
+01:02:00.150 --> 01:02:14.700
+Potuz: The deadline for blobs being late, is as late as we want is what we want on anything. This, this will happen on Aps. This will happen on any system that has a different deadline for execution and data.
+
+396
+01:02:14.830 --> 01:02:26.240
+Potuz: And we want these different deadlines for execution and data, because we need the end of the slot to execute the block or to prove the block in Zk, and we don't need this for broadcasting the data.
+
+397
+01:02:26.700 --> 01:02:45.999
+Potuz: So so that's that's what I meant. I mean, there's a way of making this disappear according to the computations themselves of Christops and company, which is just put those 2 deadlines together, and put them as immediately after the at station deadline. This makes the problem disappear, but then it also makes the scaling disappear. And this is the kind of things that we need to think about.
+
+398
+01:02:51.360 --> 01:02:56.869
+ethDreamer (Mark): Yeah, well, I guess I was next yeah. And
+
+399
+01:02:57.220 --> 01:03:14.880
+ethDreamer (Mark): I would say, like, maybe more precisely, it doesn't make the scaling disappear because you still have the ability to execute after the things are propagated? But it that we can't scale as much as we could, and wanted to point out that we are intending to shorten slots as soon as we can as well. And so
+
+400
+01:03:15.180 --> 01:03:20.329
+ethDreamer (Mark): if you actually shorten the slot, then if you're I mean.
+
+401
+01:03:21.460 --> 01:03:24.509
+ethDreamer (Mark): it sounds like the problem gets not less
+
+402
+01:03:24.890 --> 01:03:31.770
+ethDreamer (Mark): or harder to pull off or or not as bad. If you should. If you have a a smaller deadline, so like.
+
+403
+01:03:32.260 --> 01:03:39.640
+ethDreamer (Mark): If we if we are shortening the slots later, then we're gonna make this attack harder. But, as
+
+404
+01:03:39.820 --> 01:03:46.099
+ethDreamer (Mark): was pointed out, like, if things like liquidity and ethereum go up. This could be an issue. But
+
+405
+01:03:46.380 --> 01:03:49.569
+ethDreamer (Mark): yeah, I guess I just wanted to to point out that
+
+406
+01:03:49.840 --> 01:04:04.609
+ethDreamer (Mark): we are naturally going to lower these deadlines, and if if this is such a problem in Glamsterdam, we could set the Ptc. Deadline quite early to mitigate it. And then, later, when we shorten the slots, you know it won't have. We'll we'll still get a lot of these scaling
+
+407
+01:04:05.030 --> 01:04:06.010
+ethDreamer (Mark): benefits.
+
+408
+01:04:11.010 --> 01:04:11.729
+stokes: Thank God!
+
+409
+01:04:15.614 --> 01:04:24.120
+Dankrad Feist: Yeah, I wanted to quickly check that. You mentioned that both from community and core devs like, you see, the most support for epbs.
+
+410
+01:04:24.880 --> 01:04:30.799
+Dankrad Feist: I mean, I definitely see the core devs part. But I don't see the community part, I think, like in most
+
+411
+01:04:31.260 --> 01:04:41.030
+Dankrad Feist: most of what I've seen from the community clearly has 6 second slots ahead of Epbs. Can you clarify that where this impression comes from.
+
+412
+01:04:42.230 --> 01:04:53.739
+stokes: Yeah. So this is where it's kind of tricky mainly just different conversations, even on like Twitter that I've seen. So something that would help here is having like, yeah, more like.
+
+413
+01:04:54.540 --> 01:05:00.799
+stokes: I don't know if official is the right word. But having, like more written records that are easier to like index would be useful.
+
+414
+01:05:01.000 --> 01:05:16.230
+Dankrad Feist: Yeah, I mean, we we do have that right like, I mean, there was. They were the I don't know who made this like the headliner tier list, and I think, like I saw in the majority slot time slot times being at the top.
+
+415
+01:05:18.141 --> 01:05:21.390
+stokes: I saw something different. So
+
+416
+01:05:21.680 --> 01:05:30.720
+stokes: yeah, I think the way to proceed then would just be to again conditionally say, Pbs, looks like the favorite today.
+
+417
+01:05:31.230 --> 01:05:40.870
+stokes: We can take more time, even, you know, as of next Acd or or even the next Acdc call, we can revisit that and make another assessment.
+
+418
+01:05:41.110 --> 01:05:47.440
+Dankrad Feist: Okay, I mean, I would object to that based on like saying that this is the community opinion. This is not what I see.
+
+419
+01:05:49.960 --> 01:05:50.640
+stokes: Okay.
+
+420
+01:05:52.630 --> 01:05:57.758
+stokes: Hmm, okay, I will take a look. Try to compile some stuff. And yeah, if
+
+421
+01:05:58.820 --> 01:06:03.040
+stokes: if that's not the case, then definitely, I'll bring this up and we will incorporate that.
+
+422
+01:06:17.010 --> 01:06:22.570
+stokes: Okay, there's a lot of commentary in the chat. I don't know if anyone wants to speak up.
+
+423
+01:06:24.020 --> 01:06:30.790
+stokes: but essentially, I think, the next point. Then, there was a process suggestion here from Tim. So
+
+424
+01:06:31.390 --> 01:06:40.050
+stokes: I was trying to basically say, like, you know, give some positive signal of narrowing the scope, which again in my assessment, is Epps right now
+
+425
+01:06:40.654 --> 01:06:45.780
+stokes: one way we could do that is actually cfi it today and then move to Sfi on the next call.
+
+426
+01:06:45.960 --> 01:06:57.709
+stokes: I mean one thing with that is, you know, I think the Cfi gives people more confidence to be more fine grained with the different issues we see, there could be some problem where it's like, oh, actually, this is a bigger problem than we thought.
+
+427
+01:06:57.850 --> 01:07:00.230
+stokes: For example, more work on this reoption problem.
+
+428
+01:07:00.780 --> 01:07:06.559
+stokes: then it would be kind of weird, I think, to see if I or like essentially undo the sfi. So
+
+429
+01:07:07.660 --> 01:07:10.379
+stokes: again. If people want to do one or the other, we can.
+
+430
+01:07:11.140 --> 01:07:14.920
+stokes: It feels like we're a bit early to make that exact call today.
+
+431
+01:07:19.130 --> 01:07:21.060
+stokes: I don't know if you had more thoughts on that, Tim.
+
+432
+01:07:25.950 --> 01:07:29.036
+Tim Beiko: Yeah, I was literally just typing in the chat.
+
+433
+01:07:29.600 --> 01:07:56.609
+Tim Beiko: one other option today is like, it seems pretty apparent that the 3 main cl headliners that are like being considered, or epbs, 6 second slot times and fossil. So we could also just like, say that we cfi these 3. And then, yeah, on the next call, we're sort of making a decision. And if we went down that path it might be worth spending some time today getting some
+
+434
+01:07:56.650 --> 01:08:09.560
+Tim Beiko: some insight from Cordez on, like what they would like to see from these other proposals, especially given that like, there's a strong bias, at least on the court upside towards moving forward with epbs, like.
+
+435
+01:08:09.790 --> 01:08:15.309
+Tim Beiko: are there things that would change their mind? And what are those? So we get basically 2 weeks. Yeah.
+
+436
+01:08:17.300 --> 01:08:18.929
+Tim Beiko: yeah, 2 weeks to to address those things.
+
+437
+01:08:19.370 --> 01:08:20.750
+stokes: That's fair.
+
+438
+01:08:21.050 --> 01:08:31.689
+stokes: I mean, I guess a couple of things so Eps is, I think, relatively large in scope. Then from there I personally would have concerns about also doing fossil. But I think that's a conversation we should have.
+
+439
+01:08:32.109 --> 01:08:38.130
+stokes: 6 second slots. Yeah, is interesting. And again, I'd love to hear any opinions from people here today.
+
+440
+01:08:38.510 --> 01:08:53.090
+stokes: My read is that you know, it's a compelling proposal. But the research and developments like, actually pretty early. But then, yeah, to Tim's point, you know, if any core dev would like to chime in here and say, what would help change your mind. That would be really useful, because then
+
+441
+01:08:53.270 --> 01:08:57.400
+stokes: we can go and do that work and bring it back to the next. You know, set of calls.
+
+442
+01:09:13.090 --> 01:09:14.970
+stokes: So does anyone have, like a concrete
+
+443
+01:09:15.510 --> 01:09:19.650
+stokes: set of data or analysis they like to see on 6 second slots
+
+444
+01:09:25.300 --> 01:09:26.140
+stokes: Grotus.
+
+445
+01:09:28.049 --> 01:09:52.599
+Potuz: Preston, I don't think he's here. I think he's busy, so I'll speak for him. I asked him how he's doing. Hopefully, he's gonna correct me if I said something wrong here. But Preston already has a proof of concept of a prison node that actually changes in a fork, and it manages to run even in cortosis up to one seconds block, of course, locally.
+
+446
+01:09:53.388 --> 01:09:55.959
+Potuz: So the the hard part of
+
+447
+01:09:56.149 --> 01:09:59.999
+Potuz: changing the slot duration is done.
+
+448
+01:10:00.739 --> 01:10:07.449
+Potuz: But of course it's not. I mean, it's a lot of work, but it's doable. He did it in a couple of months, I think.
+
+449
+01:10:07.469 --> 01:10:36.739
+Potuz: and still a lot of things are missing. A lot of things are broken like reorgan late blocks, a bunch of things that are like tied to the engine. Api are broken, or he has still some to do's in the list. But I think the major blocker for that Pr. Is the fact that it's not not even specified we are going to need to touch issuance, and that it I mean, he hasn't even looked into how hard that part would even be.
+
+450
+01:10:36.839 --> 01:10:49.969
+Potuz: We need to touch like at least the base reward. Make sure that just scaling the base reward is enough, and it's not really clear how invasive that change would be on top of the already working branch from Preston.
+
+451
+01:10:50.659 --> 01:10:59.939
+Potuz: but prison is has a prototype, and I think we can. We can easily add it later on on a later fork.
+
+452
+01:11:04.510 --> 01:11:05.270
+stokes: Ben.
+
+453
+01:11:06.730 --> 01:11:13.519
+Ben Adams: And so the the vibe I get is that both slot restructuring and
+
+454
+01:11:14.135 --> 01:11:20.360
+Ben Adams: shorter slots are desirable. And it's it's more of a sequencing question which goes first.st
+
+455
+01:11:21.150 --> 01:11:30.539
+Ben Adams: So my question for Epbf is, if that goes first, st
+
+456
+01:11:30.660 --> 01:11:35.310
+Ben Adams: what would be the slot? Time target as in? If we can do 6, if
+
+457
+01:11:35.670 --> 01:11:38.790
+Ben Adams: it's possible to do 6 seconds. Now.
+
+458
+01:11:38.790 --> 01:11:53.759
+Potuz: The numbers we got today of attestations are the bottleneck. I think it's probably not have to do with the Pbs itself. We need to figure out what to do with attestations and aggregation. I was counting with one second
+
+459
+01:11:54.030 --> 01:12:03.990
+Potuz: to get most attestations, and today we heard 4 seconds, so that changes dramatically my view of what the slot the shortest slot can be.
+
+460
+01:12:04.130 --> 01:12:05.460
+Potuz: I mean, I feel like, get those numbers.
+
+461
+01:12:05.460 --> 01:12:05.789
+Dankrad Feist: 1st of all.
+
+462
+01:12:05.790 --> 01:12:06.829
+Potuz: Correct. It's strange.
+
+463
+01:12:07.230 --> 01:12:12.060
+Dankrad Feist: 4 4 seconds is block propagation, execution plus attestation.
+
+464
+01:12:12.570 --> 01:12:15.230
+Dankrad Feist: Just so that you don't like misunderstand that.
+
+465
+01:12:15.550 --> 01:12:20.909
+Potuz: I thought it was A. P. 95, to get attestations from from Committee 0 and one. And it was p. 90.
+
+466
+01:12:20.910 --> 01:12:21.840
+Dankrad Feist: 9, 1 9.
+
+467
+01:12:21.840 --> 01:12:23.140
+Potuz: 4,100!
+
+468
+01:12:23.935 --> 01:12:24.600
+Potuz: Maria!
+
+469
+01:12:24.600 --> 01:12:25.109
+Maria: It is.
+
+470
+01:12:25.110 --> 01:12:25.460
+Potuz: You've.
+
+471
+01:12:25.460 --> 01:12:36.679
+Maria: Yeah, yeah, it is counted since the block was published by the relay. So it does include block propagation, execution, and validation. And then the at the stations itself.
+
+472
+01:12:37.550 --> 01:12:38.820
+Maria: So it's it's like.
+
+473
+01:12:38.820 --> 01:12:39.160
+Potuz: I see.
+
+474
+01:12:39.160 --> 01:12:41.500
+Maria: Were to do the 6 second slot, you would have.
+
+475
+01:12:41.500 --> 01:12:42.550
+Potuz: Okay, so I need to add.
+
+476
+01:12:42.550 --> 01:12:42.930
+Maria: For that.
+
+477
+01:12:42.930 --> 01:12:44.010
+Potuz: Yeah, so I need to
+
+478
+01:12:45.170 --> 01:12:50.289
+Potuz: kind of hard. Yeah. So then, it's kind of hard to measure. So in epbs, we were hoping to do this
+
+479
+01:12:50.510 --> 01:13:01.180
+Potuz: because the block propagation will become much shorter, so that number kind of is irrelevant for epbs, because the block in Epbs would be very, very small. It's only the consensus block and not the payload.
+
+480
+01:13:02.020 --> 01:13:07.500
+Ben Adams: Yeah. So would epbs. Would the slot time target
+
+481
+01:13:07.830 --> 01:13:12.339
+Ben Adams: be even shorter after Epps is my question, or would it be the same? The 6th
+
+482
+01:13:13.260 --> 01:13:15.969
+Ben Adams: doesn't, doesn't get us anything other than safety.
+
+483
+01:13:15.970 --> 01:13:20.730
+Potuz: I don't. I think the answer to that question is very simple. Whatever we do.
+
+484
+01:13:20.870 --> 01:13:26.289
+Potuz: we want to be in a situation in which the full slot is used, entire slot is used.
+
+485
+01:13:26.620 --> 01:13:34.710
+Potuz: and the minimum size of the slot that we can actually use is determined by broadcast and not by how you pipeline it.
+
+486
+01:13:35.780 --> 01:13:41.469
+Potuz: So I would suspect that any system more or less, arrives to about the same kind of minimal slot time.
+
+487
+01:13:42.640 --> 01:13:46.794
+Dankrad Feist: But and I think, like my argument would be that
+
+488
+01:13:47.410 --> 01:13:56.799
+Dankrad Feist: Currently, a lot of things are not very well optimized because we did have so much slack in the slot. We had to just allow 4 seconds for propagation.
+
+489
+01:13:56.990 --> 01:14:08.409
+Dankrad Feist: and we will learn a lot from doing the work on reducing slot times, and it will also improve our like. How informed our choices will be on pipelining.
+
+490
+01:14:10.830 --> 01:14:22.040
+Dankrad Feist: and it's better to do it when fully understanding what like the hardest constraints are rather than doing it now with like, yeah, like, not even knowing exactly.
+
+491
+01:14:22.220 --> 01:14:25.380
+Potuz: No, no, we we do know what are the Chinese bandwidth.
+
+492
+01:14:27.330 --> 01:14:46.130
+Dankrad Feist: Well, I mean right now, there's something else. Right? For example, we see that 10% of the attestations somehow arrive very slowly. I mean, I think, like, this is like something that we really need to investigate what is happening there. There's something strange there when like 90% arrive very quickly. And then there's like a slow, long tail like what's happening there
+
+493
+01:14:46.150 --> 01:14:59.860
+Dankrad Feist: like stuff like that is really important to analyze and like, is it the art constraint is this because some validators are in the middle of nowhere and really slow? And we really want to allow that time, like all these things, are important questions, I think.
+
+494
+01:15:02.180 --> 01:15:11.620
+Dankrad Feist: or is it just random? And it's like a some something we can improve by having some improvement in the Pops ups like, I don't know, like this is, yeah.
+
+495
+01:15:15.960 --> 01:15:19.859
+Dankrad Feist: this is really important to investigate. And I feel like it's also
+
+496
+01:15:20.340 --> 01:15:35.949
+Dankrad Feist: it helps like actually working on reducing the slow time to actually get there, because otherwise we will never have the actual full pressure to like, optimize these things as much as we can. And I think it will allow us to make better choices on pipelining.
+
+497
+01:15:40.560 --> 01:15:41.540
+stokes: Yeah, put us.
+
+498
+01:15:42.110 --> 01:15:46.940
+Potuz: I think it's actually the opposite. I mean this the attestation. So for the current slot, time.
+
+499
+01:15:47.170 --> 01:15:57.750
+Potuz: attestation, propagation, aggregation, all of these things are completely relevant for epbs. They happen in the background while you're doing useful stuff like propagating the block and executing it.
+
+500
+01:15:57.940 --> 01:16:18.199
+Potuz: So how long, how many attestations are coming late or not doesn't change at all the pipelining benefits of epbs while they do change. How short the slot we can actually make. So that's more of a reason to actually choose some pipelining. Now deliver pipelining, and then adjust the timing so that they are actually possible.
+
+501
+01:16:28.150 --> 01:16:36.369
+stokes: Okay, are there a number of comments in the chat around? Yeah, supporting these investigations? I would highlight that. This will take time.
+
+502
+01:16:36.500 --> 01:16:41.900
+stokes: And if we want to make a call in Amsterdam and say the next couple of weeks, it might be hard to get that data.
+
+503
+01:16:42.630 --> 01:16:46.460
+stokes: which again, is just another input to consider.
+
+504
+01:16:49.550 --> 01:16:53.240
+stokes: So okay, I think to move forward. Then.
+
+505
+01:16:54.400 --> 01:17:04.310
+stokes: probably what's best today. Tim's suggestion here was to Cfi 6 second slots, epbs and fossil, and essentially, then just take this to the next call.
+
+506
+01:17:04.826 --> 01:17:10.639
+stokes: This helps reduce the scope of what you know the Cl. Is thinking about in terms of Amsterdam headliners
+
+507
+01:17:10.830 --> 01:17:18.949
+stokes: that will then help refine the El headliners, and presumably then it'd be nice to make a call on the actual headliner on the next? Acdc.
+
+508
+01:17:19.720 --> 01:17:22.610
+stokes: so that's how I would propose to move forward.
+
+509
+01:17:22.770 --> 01:17:28.250
+stokes: In the meantime, yeah, there are some comments around like, yeah, what does it actually mean to get community input.
+
+510
+01:17:28.350 --> 01:17:34.500
+stokes: I think, trying to have like a canonical source of truth, would be good. And I'd propose each magicians for this.
+
+511
+01:17:35.116 --> 01:17:46.749
+stokes: There have been comments around Twitter and these forecast polls and everything, you know. I think if eip champions would like to even just copying that, you know, into the conditions post, just to put it in one place would be useful.
+
+512
+01:17:47.454 --> 01:17:56.300
+stokes: Because, yeah, I think some of what we're seeing right now is different. People are seeing different data, and it leads to split views which is tricky to navigate. So
+
+513
+01:17:57.420 --> 01:18:04.689
+stokes: I think we do that today. Cfi, those 3 eips with the idea being that one of them will be the seal headliner.
+
+514
+01:18:05.180 --> 01:18:11.920
+stokes: Then do what we can to. Then, you know, we're again really refine this notion of community input to help
+
+515
+01:18:12.030 --> 01:18:14.020
+stokes: make the decision on the next call.
+
+516
+01:18:16.270 --> 01:18:19.599
+stokes: So the 3 Aps, 7, 7, 3, 2 with epbs.
+
+517
+01:18:20.060 --> 01:18:25.950
+stokes: I think it's 7, 8, 8, 6 for the 6 second slots, and I forget the fossil. Number
+
+518
+01:18:30.820 --> 01:18:32.480
+stokes: 7, 8. 0, 5. Thank you.
+
+519
+01:18:44.170 --> 01:18:46.770
+stokes: I might have the number off on 6 second slots as well.
+
+520
+01:18:46.770 --> 01:18:50.140
+stokes: right. 7, 8, 8, 6 was still in execution.
+
+521
+01:18:50.470 --> 01:18:56.750
+stokes: Okay, sorry. I'm getting them mixed up. I can go find the 6 second slots number unless someone has it
+
+522
+01:19:03.980 --> 01:19:06.850
+stokes: is this 7, 7, 8, 2. That's what came up.
+
+523
+01:19:11.510 --> 01:19:17.459
+stokes: Yeah, okay, thanks. Part of it. So yeah, either way. I'll get that sorted in the summary and make that clear.
+
+524
+01:19:18.090 --> 01:19:24.650
+stokes: and from there I think we're good on the Amsterdam conversation, for right now.
+
+525
+01:19:26.910 --> 01:19:30.689
+stokes: in that case we will turn to the last agenda item here.
+
+526
+01:19:31.515 --> 01:19:37.619
+stokes: There was a spec question from Etan again. I'm not sure if he's on the call, but I think.
+
+527
+01:19:37.620 --> 01:19:38.300
+Etan (Nimbus): Anyhow.
+
+528
+01:19:38.300 --> 01:19:41.549
+stokes: Context. Oh, yeah, would you like to ask this question? You had.
+
+529
+01:19:43.192 --> 01:19:45.180
+Etan (Nimbus): Yeah, right now.
+
+530
+01:19:45.980 --> 01:20:03.590
+Etan (Nimbus): I have a problem when I wanna get my specs for pure into the consensus specs repo, because I need a couple extra Ssc types, namely, that's like the lists and
+
+531
+01:20:03.910 --> 01:20:12.778
+Etan (Nimbus): progressive containers. The problem is because the Ssc specs are part of consensus specs repo. But
+
+532
+01:20:13.350 --> 01:20:35.179
+Etan (Nimbus): There is no way to make like a fork specific type there, because there is only like a master spec there, like the other infrastructure where it's like, where you can make like a features folder and create your own folder there, and put all the pre-release stuff there. It doesn't work for the Ssc. Specs.
+
+533
+01:20:36.100 --> 01:20:50.410
+Etan (Nimbus): There is a precedent with the Union, which is also a type that is not used by ethereum itself. It's only used by a portal network, and that one is also there. So
+
+534
+01:20:50.410 --> 01:21:09.519
+Etan (Nimbus): I made a Pr to make it like similar, where I add my type and just put like a comment, hey, this is from this eip. It's currently unused just to get it in there at the tests to unblock me. And I was wondering if that's fine. Justin just pasted the Pr. There in the chat.
+
+535
+01:21:14.210 --> 01:21:22.399
+stokes: Yeah, I mean one comment here we do have a precedent here with other SSD features from a long time ago, like unions is one?
+
+536
+01:21:23.058 --> 01:21:26.489
+stokes: So yeah, this wouldn't be anything super new.
+
+537
+01:21:27.060 --> 01:21:33.349
+stokes: I guess. The question then is, would anyone have problems with this being in the spec? Again, it would be clearly labeled that it's
+
+538
+01:21:33.860 --> 01:21:35.510
+stokes: essentially a placeholder.
+
+539
+01:21:36.540 --> 01:21:43.760
+Etan (Nimbus): Yeah. And it adds extra test folders to consensus backtests that can be ignored because it's unused. Right?
+
+540
+01:21:46.770 --> 01:21:47.390
+stokes: Right.
+
+541
+01:21:51.660 --> 01:22:01.689
+stokes: So if no one disagrees sort of at a high level I think we can take this from we can take the conversation to the Pr, and yeah, there might be ways to
+
+542
+01:22:02.040 --> 01:22:08.880
+stokes: restructure things that make more sense. Barnabas has this comment here about handling feature forks better. And yeah, I agree.
+
+543
+01:22:09.360 --> 01:22:17.099
+stokes: it would be nice to have a clear way to handle this in the actual artifact. But I think that's something we can sort out on the Pr.
+
+544
+01:22:26.950 --> 01:22:32.839
+stokes: okay, yeah, seems like, no disagreements in principle. So yeah, Etang will. Justin. And I can work with you on that. Pr.
+
+545
+01:22:39.440 --> 01:22:46.980
+stokes: okay, let me do one more check. But I think that's all we had on the agenda today.
+
+546
+01:22:47.150 --> 01:22:52.800
+stokes: And yep, so yeah, we can wrap up a little bit early
+
+547
+01:22:53.130 --> 01:22:55.520
+stokes: unless someone else has any closing comments.
+
+548
+01:23:08.390 --> 01:23:09.220
+stokes: Okay.
+
+549
+01:23:09.460 --> 01:23:21.579
+stokes: well, then, I'll see you all next week on Acd. We'll continue the Glamsterdam discussion there, and hopefully by then we'll also have more data on how Devnet 3 is going with Osaka, so we can keep that moving as well.
+
+550
+01:23:22.100 --> 01:23:24.030
+stokes: Thanks everyone. I'll see you next time.
+
+551
+01:23:25.360 --> 01:23:26.090
+Potuz: Bye.
+
+552
+01:23:26.610 --> 01:23:27.360
+Dankrad Feist: I'm.
+
+553
+01:23:27.820 --> 01:23:28.510
+ethDreamer (Mark): See you guys.
+
+554
+01:23:28.510 --> 01:23:29.100
+Pooja Ranjan: And.
+
+555
+01:23:32.270 --> 01:23:33.230
+Marius van der Wijden: Bye-bye.
+

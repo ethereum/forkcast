@@ -1,0 +1,89 @@
+00:09:59	Justin Florentine (Besu):	GM
+00:10:25	stokes:	gm
+00:10:48	Ansgar Dietrichs:	@stokes I added a last minute agenda item (just quick mention of a new draft meta EIP by Maria and me)
+00:11:04	stokes:	https://github.com/ethereum/pm/issues/1673
+00:13:22	Barnabas:	Offline nodes on devnet 3
+00:17:25	Barnabas:	can we roll unstable on devnet 3 for lodestar ?
+00:18:36	James He:	I think we need a week to get things into trunk(develop) at least.
+00:18:45	Barnabas:	Replying to "I think we need a we..."
+
+week from today?
+00:18:59	Barnabas:	Replying to "I think we need a we..."
+
+target should be next friday latest if possible?
+00:19:37	James He:	Replying to "I think we need a we..."
+
+Optimistically targeting that
+00:19:46	stokes:	https://github.com/ethereum/consensus-specs/pull/4508
+00:19:51	Phil Ngo:	Reacted to "can we roll unstable..." with 👍
+00:19:52	Barnabas:	Reacted to "Optimistically targe..." with 🔥
+00:20:18	Justin Traglia:	Yes, the alpha.5 release is in progress
+00:20:18	Barnabas:	release is rolling out https://github.com/ethereum/consensus-specs/actions/runs/17115285278/job/48544846439
+00:20:19	Phil Ngo:	Replying to "can we roll unstable..."
+
+Yes, but we’re also actively merging new stuff to test on that so if you find it broken, please ping
+00:20:25	Justin Traglia:	Reacted to "release is rolling o..." with 👍
+00:21:05	Barnabas:	does alpha 5 has epbs rebase in it already?
+00:21:12	Barnabas:	should we target alpha 5 for epbs-devnet-0?
+00:21:27	stokes:	https://ethereum-magicians.org/t/eip-7892-blob-parameter-only-hardforks/23018/5?u=ralexstokes
+00:21:32	Justin Traglia:	Replying to "does alpha 5 has epb..."
+
+ePBS has been rebased from electra to fulu
+00:21:39	potuz:	Replying to "should we target alp..."
+
+no, it' s missing a bunch of tests and the spec is not fully ready yet
+00:21:52	potuz:	Replying to "should we target alp..."
+
+Hopefully alpha 6
+00:21:59	Barnabas:	Replying to "should we target alp..."
+
+sounds good!
+00:22:07	Etan (Nimbus):	ideally, the people familiar with fork choice should take a look at it, so that we know that security is safe
+00:22:11	Justin Traglia:	Reacted to "no, it' s missing a ..." with 👍
+00:22:40	Barnabas:	Reacted to "ePBS has been rebase..." with 🔥
+00:24:07	ethDreamer (Mark):	Also requires attacker to have 1/3 stake
+00:24:22	stokes:	Replying to "Also requires attack..."
+
+And we likely have bigger issues at that point
+00:24:36	ethDreamer (Mark):	Replying to "Also requires attack..."
+
+exactly
+00:24:44	Etan (Nimbus):	Replying to "Also requires attack..."
+
+could the security level be emphasized somewhere that ethereum supports? isn’t it 1/3 anymore?
+00:25:22	Barnabas:	Replying to "can we roll unstable..."
+
+ok rolling
+00:27:03	Etan (Nimbus):	peers don’t see the blocks from the other partition by default. they are not gossiped, attackers just send them to you via req/resp and can collect their attestations that way
+00:28:19	stokes:	https://github.com/ethereum/pm/issues/1691
+00:28:32	terence:	there's also an eip7732 breakout next friday as well if anyone is interested: https://github.com/ethereum/pm/issues/1696
+00:28:45	stokes:	Reacted to "there's also an eip7..." with 👍
+00:28:58	stokes:	https://github.com/ethereum/EIPs/pull/10206
+00:29:04	stokes:	Replying to "https://github.com/e..."
+
+Repricing metaeip
+00:29:09	Toni Wahrstaetter:	This is the breakout call:
+https://github.com/ethereum/pm/issues/1691
+00:29:13	Bharath:	Reacted to "This is the breakout..." with 👍
+00:29:44	Csaba:	Reacted to "This is the breakout..." with 👍
+00:30:14	Will Corcoran:	Reacted to "This is the breakout..." with 👍
+00:30:23	Will Corcoran:	Reacted to "there's also an eip7..." with 👍
+00:30:51	Barnabas:	Image tracker: https://github.com/ethpandaops/fusaka-devnets/blob/master/ansible/inventories/devnet-3/group_vars/all/images.yaml#L1-L19
+00:32:34	Marius van der Wijden:	quick call lfg
+00:32:44	stokes:	Replying to "quick call lfg"
+
+Time to work on fusaka 🙂
+00:32:52	Marius van der Wijden:	Reacted to "Time to work on fu..." with 😢
+00:32:59	Parithosh Jayanthi:	Reacted to "Time to work on fusa..." with 😢
+00:33:31	Justin Traglia:	Reacted to "Time to work on fusa..." with 😄
+00:35:21	Marius van der Wijden:	It would've been very nice
+00:36:52	Ansgar Dietrichs:	seems natural you can’t access current beacon block root, because they are still *constructed* EL payload first, beacon block after, no?
+
+they are only verified the other way around, CL block first, EL payload delayed later
+00:37:12	potuz:	Replying to "seems natural you ca..."
+
+the main problem is the post-state for the payload
+00:37:16	potuz:	Replying to "seems natural you ca..."
+
+which is not accessible today
+00:37:19	Orest Tarasiuk (t1):	bye

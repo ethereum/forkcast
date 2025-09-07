@@ -1,0 +1,847 @@
+00:16:05	Justin Traglia:	Gm
+00:16:09	stokes:	gm
+00:16:15	Caleb:	Gm
+00:18:39	stokes:	https://github.com/ethereum/pm/issues/1638
+00:21:54	Parithosh Jayanthi:	https://discord.com/channels/595666850260713488/892088344438255616/1402246314187690217
+00:24:11	nixo:	https://notes.ethereum.org/@jtraglia/fusaka_scheduling
+00:28:02	Ahmad Bitar | Nethermind:	I would not push the blobs higher before we have slot restructuring
+00:28:14	Barnabas:	Devnet 4: 
+BPO_1_MAX_BLOBS=14
+BPO_1_TARGET_BLOBS=9
+BPO_2_MAX_BLOBS=21
+BPO_2_TARGET_BLOBS=14
+BPO_3_MAX_BLOBS=32
+BPO_3_TARGET_BLOBS=21
+BPO_4_MAX_BLOBS=48
+BPO_4_TARGET_BLOBS=32
+BPO_5_MAX_BLOBS=72
+BPO_5_TARGET_BLOBS=48
+00:28:23	Francesco:	Replying to "I would not push the..."
+
+Higher than?
+00:28:29	Ben Edgington:	More compressed = less time to observe, and less time to respond. Need to allow time for hf/deployment in case of trouble.
+00:28:38	Tim Beiko:	Reacted to "More compressed = le…" with 👍
+00:28:41	Caleb:	Reacted to "More compressed = ..." with 👍
+00:28:43	Justin Traglia:	Reacted to "More compressed = le..." with 👍
+00:28:50	Tim Beiko:	Replying to "More compressed = le…"
+3 weeks feels like the minimum we should have them apart
+00:28:57	donnoh | L2BEAT:	Reacted to "More compressed = le..." with 👍
+00:29:10	Anders Elowsson:	Maybe we should consider targets that when multiplied with (3/2) gives an integer limit?
+00:29:22	Anders Elowsson:	i.e., 10/15, etc
+00:29:42	Ahmad Bitar | Nethermind:	Replying to "I would not push the..."
+
+I mean, i would space them out more so that the high numbers only ship after slot restructuring
+00:29:49	potuz:	Replying to "More compressed = le..."
+
+I think in addition to these we need to account for the usual delay in actually blob space and usage catching up. It hasn't been immediate in the past
+00:30:17	Ahmad Bitar | Nethermind:	Replying to "I would not push the..."
+
+Is the bandwidth requirement for validators taken into account here when we are pushing those?
+00:30:46	Barnabas:	I’d like to add that scheduling an extra BPO fork should be very easy.
+00:30:51	Francesco:	Replying to "More compressed = le..."
+
+We can spam mainnet to see high blob throughput regardless of real usage (as long as the 21k fee isn’t prohibitively high)
+00:31:10	Parithosh Jayanthi:	For p2p stuff, mainnet data is kind of the only data that really matters. Any testing data just helps us derisk.
+00:31:15	potuz:	Replying to "More compressed = le..."
+
++1
+00:32:01	Parithosh Jayanthi:	Replying to "More compressed = le..."
+
+This is the plan
+00:32:01	ethDreamer (Mark):	Reacted to "For p2p stuff, mainn..." with 👍
+00:32:09	Parithosh Jayanthi:	Replying to "More compressed = le..."
+
+I’ve been told “budget approved” 😄
+00:32:48	potuz:	Reacted to "For p2p stuff, mainn..." with 👍
+00:32:57	pk910:	Replying to "More compressed = le..."
+
+rly?  we gonna do mainnet blob spmming?? lol
+00:33:08	potuz:	Reacted to "I’ve been told “budg..." with 👍
+00:33:16	stokes:	Replying to "More compressed = le..."
+
+yes
+00:34:29	Phil Ngo:	I’d like to add that we’re also currently reviewing >10,000 lines of code to merge this onto our unstable.
+00:34:57	Manu:	Prysm has also >4k lines of code yet to merge into our unstable branch
+00:35:11	Ansgar Dietrichs:	There should obviously never be hesitancy to voice concerns on here
+00:35:19	Dustin:	Replying to "I’d like to add t..."
+
+Nimbus has also not fully reviewed the code being merged from the fusaka-devnet-3 branch, yeah
+00:35:26	Barnabas:	Can you guys propose an alternative  timeline?
+00:35:27	Justin Traglia:	Reacted to "I’ve been told “budg..." with 😄
+00:35:35	Manu:	Reacted to "There should obvious..." with 👏
+00:35:35	ethDreamer (Mark):	Reacted to "There should obvious..." with 👍
+00:35:37	Ansgar Dietrichs:	Is this mostly about CL peerdas implementations?
+00:35:42	Mario Vega:	Reacted to "There should obvious..." with 👏
+00:35:43	Justin Traglia:	Reacted to "yes" with 🔥
+00:35:44	potuz:	can we split the discussion instead of delay/no delay to perhaps an option of forking Holesky without master branch releases?
+00:35:47	Chris:	Reacted to "There should obvio..." with 👏
+00:35:48	Chris:	Reacted to "There should obvio..." with 👍
+00:35:50	Tim Beiko:	Reacted to "There should obvious…" with 👏
+00:35:52	Fredrik:	Reacted to "There should obvious..." with 💯
+00:36:00	ethDreamer (Mark):	PR CONGA LINE
+00:36:04	potuz:	Reacted to "There should obvious..." with 👍
+00:36:05	ethDreamer (Mark):	You guys have to try it
+00:36:16	Parithosh Jayanthi:	Reacted to "There should obvious..." with 👏
+00:36:18	Parithosh Jayanthi:	Reacted to "There should obvious..." with 👍
+00:36:19	Parithosh Jayanthi:	Reacted to "There should obvious..." with 💯
+00:36:20	ethDreamer (Mark):	Split forks up into multiple PRs on top of each other
+00:36:27	donnoh | L2BEAT:	Reacted to "There should obvious..." with 👍
+00:36:28	donnoh | L2BEAT:	Reacted to "There should obvious..." with 👏
+00:36:28	donnoh | L2BEAT:	Reacted to "There should obvious..." with 💯
+00:36:29	Tim Beiko:	Replying to "Prysm has also >4k l…"
+Does Prysm also need +4 weeks or so for this?
+00:36:36	kingy_sigp:	Lighthouse are fine with a four week delay if that gets everyone aligned and stable
+00:36:39	ethDreamer (Mark):	Then merge into unstable one piece at a time
+00:36:44	Manu:	One solid devnet with >90% private mempool (so without getBlobsv2)
+00:36:50	Barnabas:	we have been doing private mempool testing
+00:36:55	Stefan Bratanov:	Teku has been on master for a while now, but we have been through a pain of merging, so I understand the proposed delay
+00:36:56	Manu:	Replying to "we have been doing p..."
+
+What’s the percentage?
+00:36:58	Parithosh Jayanthi:	Note: fusaka-devnet-3 has private mempool testing
+00:37:07	Barnabas:	Replying to "we have been doing p..."
+
+100%
+00:37:17	Barnabas:	Replying to "we have been doing p..."
+
+there are bugs with the private mempool propagation
+00:37:19	Barnabas:	Replying to "we have been doing p..."
+
+but thats another topic
+00:37:25	Manu:	Replying to "we have been doing p..."
+
+https://dora.fusaka-devnet-3.ethpandaops.io/mev/blocks
+00:37:31	Justin Traglia:	If we delay by ~1 month, it’s likely going to be delayed by 3 months because of holidays.
+00:37:36	Barnabas:	Replying to "we have been doing p..."
+
+its not running now
+00:37:40	Parithosh Jayanthi:	Replying to "we have been doing p..."
+
+Yeah non finality since the morning
+00:37:40	Tim Beiko:	Would be good to hear from Prysm + Nimbus a bit more!
+00:37:41	Barnabas:	Replying to "we have been doing p..."
+
+But we had days of spamming
+00:37:44	Parithosh Jayanthi:	Replying to "we have been doing p..."
+
+Check data from ~2d ago 😄
+00:38:49	Matthew Keil:	Reacted to "There should obvious..." with 💯
+00:38:49	Matthew Keil:	Reacted to "There should obvious..." with 👏
+00:38:50	Matthew Keil:	Reacted to "There should obvious..." with 👍
+00:39:01	Matthew Keil:	Replying to "Is this mostly about..."
+
+Yes
+00:39:10	James He:	Reacted to "Is this mostly about..." with 👍
+00:39:46	Parithosh Jayanthi:	E.g: https://dora.fusaka-devnet-3.ethpandaops.io/slot/106243
+00:40:37	potuz:	Blobs were comming regularly on all blocks with the expected throghput @Parithosh Jayanthi ? or some were with zero regularly
+00:40:41	Ansgar Dietrichs:	I am a bit surprised, two speakers raising need for testing without getBlobsv2, sounds like that has been happening for weeks already, so is this more a case of lack of communication?
+00:40:55	Ansgar Dietrichs:	Replying to "I am a bit surprised…"
+Or is this about different tests?
+00:41:00	potuz:	no, this was a request for a long time Ansgar
+00:41:14	J Sunnyside Labs:	Sunnyside Labs, we also tested without getblobsv2 and saw about ~15% less blob throughput (though it has been a while)
+00:41:28	potuz:	this was already specified as a hard requirement to set a timeline before the previous ACDC
+00:41:31	Parithosh Jayanthi:	Replying to "Blobs were comming r..."
+
+We did random checks and they were stably included, but we can come back with an inclusion analysis to see how much worse it gets without getblobsV2
+00:41:47	Ansgar Dietrichs:	So main concern is more about code readiness for releases? Makes sense
+00:41:51	Phil Ngo:	Replying to "I am a bit surprised..."
+
+I think we also need to take into account the engineer’s confidence in their code. Otherwise tech debt gets merged in with it. We’re doing a lot of cleanup on hacky code that was done to make things work for devotes.
+00:42:02	Parithosh Jayanthi:	Reacted to "I think we also need..." with 👍🏽
+00:42:04	Phil Ngo:	Replying to "I am a bit surprised..."
+
+*devnets
+00:42:08	Mario Vega:	Reacted to "I think we also need..." with 👍🏽
+00:42:16	J Sunnyside Labs:	Reacted to "I think we also need..." with 👍🏽
+00:42:17	Manu:	Reacted to "I think we also need..." with 👍🏽
+00:42:22	Tim Beiko:	Reacted to "I think we also need…" with 👍🏽
+00:42:26	potuz:	Replying to "Blobs were comming r..."
+
+If they were relatively regular that's alredy good enough. The mempool being purely private is not reallistic anyway
+00:42:40	potuz:	Reacted to "I think we also need..." with 👍🏽
+00:42:51	potuz:	Reacted to "So main concern is m..." with 👍
+00:43:09	Parithosh Jayanthi:	Replying to "Blobs were comming r..."
+
+Yeh, there’s a tx propagation bug in reth/rbuilder - but it’s unrelated to blobs or peerDAS in itself. Just makes the data messier. We’ll get back with proper data once bugs are patched.
+00:44:05	Parithosh Jayanthi:	Reacted to "So main concern is m..." with 👍
+00:45:07	Barnabas:	There was more time, which means that pectra was also delayed by like 3 months compared to initial target
+00:45:42	Ansgar Dietrichs:	Okay, right, it is what it is, if these concerns exist, we can’t ignore them.
+
+Of course "Fusaka pre Devconnect" has been a big goal - is there any world to allow for more time while still keeping the possibility of that alive? Say 2-4 weeks delay, and cutting out some weeks somewhere in our timeline from first releases to mainnet fork?
+
+Just asking, not pushing for that
+00:45:45	Tim Beiko:	If we delayed by 4 weeks, we could still ship in December, but we should consider what our go/no-go criteria are
+00:46:51	potuz:	I think delays for master releases can be made semi-independent of releases for testnests. Specially Holesky for example
+00:46:58	Parithosh Jayanthi:	Reacted to "I think delays for m..." with 👍🏽
+00:47:01	potuz:	so that the final delay is not so bad as the proposed 4 weeks
+00:47:03	Barnabas:	I personally think the main issue is that we didn’t have enough engineering time allocated to fusaka, especially in smaller client teams. 
+
+Ideally we need main senior engineers working on fork + 1, and allocate less resources on fork + 2 or fork + ?. 
+
+If we had more engineers working on fusaka full time, we could have shipped 1st of Sep.
+00:47:08	Manu:	Reacted to "I think delays for m..." with 👍🏽
+00:47:14	Tim Beiko:	Replying to "I think delays for m…"
+Maybe for Holesly, but IMO live testnets should get proper releases
+00:47:16	Caleb:	Reacted to "I think we also ne..." with 👍🏽
+00:47:50	Tim Beiko:	Yes, would be curious to understand this better, esp. given it shows up across multiple teams
+00:47:52	Parithosh Jayanthi:	Could we do Holesky in September so it isn’t on the critical path? With non trunk releases
+00:48:09	potuz:	Reacted to "Could we do Holesky ..." with 👍
+00:48:52	Dustin:	Replying to "Could we do Holesk..."
+
+non-trunk releases are a challenge for Nimbus. I mean, sure, we can point to a non-canonical release, but typically Nimbus doesn't do "testnet-only" releases
+00:49:14	potuz:	Replying to "Could we do Holesky ..."
+
+how are you running on devnet-3?
+00:49:19	potuz:	Replying to "Could we do Holesky ..."
+
+is it master?
+00:49:25	Dustin:	Replying to "Could we do Holesk..."
+
+it's a branch
+00:49:35	potuz:	Replying to "Could we do Holesky ..."
+
+yeah that's what I mean for Holesky
+00:50:47	Chris:	Replying to "Could we do Holesk..."
+
+I think this could end up being a pointless exercise. If we don't get full participation any bugs could get hidden in the noise. I have low confidence of getting full participation from all node operators if the releases are all on branches.
+00:51:15	Barnabas:	we can aim to do a devnet 5 for 2nd sep
+00:51:19	Barnabas:	that runs a week
+00:51:24	Ansgar Dietrichs:	Can we get individual weeks from different places? Say 2 weeks by cutting down the delay between last testnet and mainnet, 2 weeks for not using master for Holesky, etc? Maybe we atill had a week of buffer pre devconnect as well?
+
+So not just push everything back a month
+00:51:29	potuz:	Reacted to "I think this could e..." with 👍
+00:51:50	potuz:	Replying to "Could we do Holesky ..."
+
+yeah my impression is that Holesky will be a non-finality test on the current code
+00:52:07	Ansgar Dietrichs:	Reacted to "Could we do Holesky …" with 👍
+00:52:16	Adrian (Lighthouse):	Reacted to "yeah my impression i..." with 😁
+00:52:42	Justin Florentine (Besu):	sounds pectraey
+00:52:49	Justin Traglia:	Reacted to "sounds pectraey" with 👍
+00:53:04	Chris:	Reacted to "sounds pectraey" with 😬
+00:53:07	potuz:	Reacted to "sounds pectraey" with 😬
+00:53:34	Dustin:	Pectra got oops-delayed by another 1.5 months or so, maybe 1 month, by insufficient testing, as it happened
+00:53:44	Dustin:	it was not a case of moving too slowly
+00:54:42	Ansgar Dietrichs:	We could explore different timeline adjustments and make a decision on ACDT?
+00:54:54	Justin Florentine (Besu):	was referring to the suggestion of testing early nets from non-merged-to-trunk clients. sounds like a good way to mis config opts, such as what complicated pectra
+00:54:57	Francesco:	One thing is readiness, testing etc… but let’s not create requirements that don’t need to be there, e.g. syncing in perfect peerdas when there’s literally no peers you could even theoretically get your data from
+00:55:00	Manu:	Holesky in September: Prysm ok
+00:55:08	Justin Traglia:	Reacted to "One thing is readine..." with 👍
+00:55:10	Dustin:	Nimbus ok too
+00:55:21	Matthew Keil:	Hole sky sept: lodestar is ok
+00:55:27	kingy_sigp:	Lighthouse are OK
+00:55:43	pawan:	Reacted to "One thing is readine..." with 👍
+00:55:46	potuz:	Reacted to "One thing is readine..." with 👍
+00:55:49	Ansgar Dietrichs:	But of course, even with the latent eth/acc vibes this year, safety always comes first
+00:55:58	pawan:	Replying to "One thing is readine..."
+
+Strong agree. Its a very contrived scenario
+00:56:10	felix (eest):	Reacted to "But of course, eve..." with 👍
+00:56:12	kingy_sigp:	Reacted to "One thing is readine..." with 👍
+00:56:14	Gabriel Trintinalia | Besu:	Reacted to "But of course, even ..." with 👍
+00:56:15	donnoh | L2BEAT:	Reacted to "But of course, even ..." with 👍
+00:56:19	Chris:	I think it would be worth getting a temp check on Holesky validators TG that participants are happy to run non-releases on Holesky in September.
+00:56:20	Parithosh Jayanthi:	Reacted to "One thing is readine..." with 👍
+00:56:20	nixo:	Reacted to "But of course, even ..." with 👍
+00:56:21	Phil Ngo:	Reacted to "But of course, even ..." with 👍
+00:56:25	potuz:	Replying to "One thing is readine..."
+
+I think the testing on perfect peerdas is not so much about syncing but just gossiping working
+00:56:28	Parithosh Jayanthi:	Reacted to "But of course, even ..." with 👍
+00:56:44	Parithosh Jayanthi:	Reacted to "I think it would be ..." with 👍🏽
+00:56:50	Justin Traglia:	Reacted to "But of course, even ..." with 👍
+00:56:50	Mario Vega:	Reacted to "But of course, even ..." with 👍
+00:56:59	Fredrik:	Regarding the audit competition then, should we do that earlier on the holesky code or wait until later?
+00:57:03	Ansgar Dietrichs:	Then I would propose not having Glamsterdam headliner discussion today. Premature. All focus Fusaka.
+00:57:06	potuz:	Replying to "One thing is readine..."
+
+because smaller testsnets don't have the bandwitdh issue of propagating blobs when the mempool is slower and is fully propagated
+00:57:16	stokes:	https://github.com/ethereum/pm/issues/1638#issuecomment-3161024180
+00:57:18	Francesco:	Yeah testing is fine, just referencing the discussion on Monday about genesis syncing, which would need full nodes to go and try to grab 64 columns to reconstruct
+00:57:21	potuz:	Replying to "One thing is readine..."
+
+so it's imperative to test in a scenario where nodes can't get all blobs from the EL
+00:57:21	pawan:	Replying to "One thing is readine..."
+
+I agree gossip should work. Syncing is crazy given it takes 2 seconds to reconstruct blobs for a single block
+00:57:26	Tim Beiko:	More of a process thing, but IMO it would have been more productive for each team to individually voice this async ahead of the call. We should minimize the element of surprise in these things as much as we can.
+00:57:26	Barnabas:	Replying to "Regarding the audit ..."
+
+maybe we can gate it to clients that have releases?
+00:57:47	Tim Beiko:	Reacted to "But of course, even …" with 👍
+00:57:54	terence:	has the api been discussed in the RollCall?
+00:58:20	potuz:	Replying to "One thing is readine..."
+
+Problem is that if we get a bug in which an entire client needs to restart and sync, this starts to be critical
+00:58:32	nflaig:	https://github.com/ethereum/beacon-APIs/pull/546
+00:59:09	Fredrik:	Replying to "Regarding the audit ..."
+
+I’ve been thinking the same, but then the issue is that we will have clients which devs/users may not feel as confident about
+00:59:09	James He:	Reacted to "Problem is that if w..." with 💯
+00:59:18	terence:	ah ok, at least mention in the eth R&D discord then, RollCall channel
+00:59:28	Carl Beekhuizen:	Replying to "ah ok, at least ment..."
+
+Yeah, exactly
+00:59:48	nflaig:	Replying to "ah ok, at least ment..."
+
+there is a thread in api channel in R&D discord
+01:00:04	nflaig:	Replying to "ah ok, at least ment..."
+
+https://discord.com/channels/595666850260713488/1399322034273521797
+01:00:50	terence:	Replying to "ah ok, at least ment..."
+
+for sure, but RollCall channel is bridged via telegram with the L2 devs, just not sure if they pay attention to the api channel
+01:00:54	Raúl Kripalani:	Reacted to "One thing is readine…" with 👍
+01:01:11	nixo:	+1
+01:01:40	Justin Florentine (Besu):	EL devs already CFId BAL for Glamsterdam taps watch
+01:01:57	nflaig:	Replying to "ah ok, at least ment..."
+
+let me share it there as well
+01:02:04	Barnabas:	I’m really not in favor of pushing decision making on headliners by another 2 weeks
+01:02:09	potuz:	In two weeks we will have about 10 different proposals as alternatives for ePBS
+01:02:12	Justin Traglia:	I think now is the time to decide
+01:02:15	Justin Florentine (Besu):	same. not sure what we'd do the time?
+01:02:17	Chris Haug:	Reacted to "In two weeks we will..." with 😂
+01:02:19	potuz:	we are getting one more per day
+01:02:20	Felix (Geth):	I don't think we have 'conditionally' CFId BALs.
+01:02:21	Parithosh Jayanthi:	Reacted to "In two weeks we will..." with 😂
+01:02:22	Justin Florentine (Besu):	Reacted to "In two weeks we will..." with 😂
+01:02:24	potuz:	this is becoming ridiculous
+01:02:26	Leo:	Reacted to "In two weeks we wi..." with 😂
+01:02:32	Mario Vega:	Reacted to "In two weeks we will..." with 😂
+01:02:33	Adrian (Lighthouse):	Reacted to "In two weeks we will..." with 😂
+01:02:36	Felix (Geth):	We have CFId it period
+01:02:36	Eitan:	Reacted to "In two weeks we will…" with 😂
+01:02:48	felix (eest):	Reacted to "In two weeks we wi..." with 😂
+01:02:52	Caleb:	Reacted to "In two weeks we wi..." with 😂
+01:02:58	Barnabas:	Ansgar is in holiday mood?
+01:02:59	Barnabas:	😂
+01:03:00	Matthew Keil:	Reacted to "In two weeks we will..." with 😂
+01:03:02	Justin Traglia:	https://github.com/ethereum/consensus-specs/pull/4476
+01:03:03	stokes:	https://github.com/ethereum/consensus-specs/pull/4476
+01:03:10	Ansgar Dietrichs:	Reacted to "Ansgar is in holiday…" with 😂
+01:03:19	pawan:	Reacted to "In two weeks we will..." with 😂
+01:03:21	Ansgar Dietrichs:	Replying to "Ansgar is in holiday…"
+I’m in Fusaka shipping mood
+01:03:29	Caleb:	Reacted to "I’m in Fusaka shi..." with 😂
+01:03:32	Parithosh Jayanthi:	Reacted to "I’m in Fusaka shippi..." with 😂
+01:03:33	terence:	Reacted to "let me share it ther..." with ❤️
+01:04:20	terence:	Lgtm
+01:04:28	Barnabas:	Replying to "Ansgar is in holiday..."
+
+the two are independent of each other
+01:04:31	pawan:	Lighthouse in favour too
+01:04:37	Barnabas:	Replying to "Ansgar is in holiday..."
+
+and we realistically need to start testing epbs this month
+01:04:50	Barnabas:	Could you guys thumbs up the PR then?
+01:05:05	pawan:	Reacted to "Could you guys thumb..." with 👍
+01:05:06	Radek:	Reacted to "In two weeks we wi..." with 😂
+01:05:21	Justin Traglia:	Yes, maybe within a week or two?
+01:05:34	potuz:	7805
+01:05:54	Barnabas:	Replying to "Yes, maybe within a ..."
+
+lets aim to merge it by next acd?
+01:05:55	Trent:	In case anyone hasn’t seen, FB followed up with part II of their free option problem in ePBS
+
+https://collective.flashbots.net/t/the-free-option-problem-in-epbs-part-ii/5145
+01:05:56	potuz:	7732+7805+7782 depend on it
+01:06:05	nixo:	https://efdn.notion.site/Stakeholder-feedback-synthesized-247d9895554180048a8bd279a28798a1
+01:06:11	Stefan Bratanov:	Replying to "Lighthouse in favour..."
+
+likewise for Teku!
+01:06:18	Parithosh Jayanthi:	Reacted to "https://efdn.notion...." with 🔥
+01:06:21	Justin Traglia:	Reacted to "7732+7805+7782 depen..." with 👍
+01:07:04	donnoh | L2BEAT:	Reacted to "https://efdn.notion...." with 🔥
+01:07:07	potuz:	This is a short summary of that thread's direct voting
+01:07:40	Bastin:	Reacted to "potuz has sent you a..." with 👍
+01:07:50	soispoke:	Reacted to "fo.jpg" with 👍
+01:08:28	terence:	Saw...  protocol research & design (Nethermind)  had a vote... Could protocol research & design (Prysm) add a vote too? : )
+01:08:44	Anders Elowsson:	Reacted to "Saw...  protocol res..." with 😃
+01:08:55	Barnabas:	Replying to "Saw...  protocol res..."
+
+prysm already had a “vote“
+01:08:59	potuz:	Reacted to "Saw...  protocol res..." with 😃
+01:09:07	ethDreamer (Mark):	Replying to "Saw...  protocol res..."
+
+Only if lighthouse research and design can vote too :p
+01:09:09	potuz:	Replying to "Saw...  protocol res..."
+
+so did Nethermind, that's the point
+01:09:29	Toni Wahrstätter:	Reacted to https://efdn.notion.... with "🔥"
+01:09:35	Barnabé Monnot:	Reacted to "https://efdn.notion...." with 🔥
+01:09:41	Matthew Keil:	Reacted to "Problem is that if w..." with 💯
+01:09:50	Parithosh Jayanthi:	Reacted to "Saw...  protocol res..." with 😃
+01:10:00	Lin Oshitani | Nethermind:	Replying to "Saw...  protocol res..."
+
+Note that Nethermind research is independent from Nethermind client team (we are 300ppl company), and that post was written independently too.
+01:10:01	Justin Florentine (Besu):	thanks nixo, and thanks for capturing the nuance about FOCIL prefs
+01:10:11	Justin Traglia:	Reacted to "thanks nixo, and tha..." with 👍
+01:10:12	Parithosh Jayanthi:	Reacted to "Note that Nethermind..." with 🔥
+01:10:16	potuz:	Replying to "Saw...  protocol res..."
+
+Terence was obviously joking
+01:10:20	nixo:	Reacted to "thanks nixo, and tha..." with 💙
+01:10:29	Parithosh Jayanthi:	Reacted to "Terence was obviousl..." with 🔥
+01:10:31	Lin Oshitani | Nethermind:	Reacted to "Terence was obviousl..." with 🔥
+01:10:33	Parithosh Jayanthi:	Reacted to "thanks nixo, and tha..." with 💙
+01:10:39	soispoke:	Reacted to "thanks nixo, and tha..." with 💙
+01:10:57	donnoh | L2BEAT:	Reacted to "Note that Nethermind..." with 💯
+01:10:58	Ansgar Dietrichs:	I personally think the EL features in Glamsterdam are the most important (BALs plus repricing). I would personally want us to have a clear decision that we ship whatever is ready by March, even if that would e.g. mean kicking the CL headliner back out.
+01:10:58	Lin Oshitani | Nethermind:	Replying to "Saw...  protocol res..."
+
+Ah, ok 😅
+01:11:00	wolovim:	Reacted to "thanks nixo, and t..." with 💙
+01:11:00	Barnabas:	Reacted to "Note that Nethermind..." with 💯
+01:11:02	Barnabas:	Reacted to "Terence was obviousl..." with 🔥
+01:11:15	Barnabé Monnot:	Reacted to "thanks nixo, and tha..." with 💙
+01:11:31	potuz:	BALs become much more of a tradeoff without ePBS
+01:11:41	potuz:	with 30% larger blocks
+01:11:49	Ansgar Dietrichs:	Replying to "I personally think t…"
+Basically, have an interop in March, and kick out anything that is not clearly within weeks of RC readiness by the end of interop.
+01:11:53	Chris Haug:	Reacted to "Saw...  protocol res..." with 😃
+01:12:13	Justin Florentine (Besu):	Replying to "I personally think t..."
+
+or just decouple the forks
+01:12:23	Ben Adams:	Reacted to "or just decouple the..." with 🍿
+01:12:37	Parithosh Jayanthi:	Reacted to "or just decouple the..." with 🍿
+01:12:37	Bastin:	Reacted to "or just decouple the..." with 🍿
+01:12:40	Chris Haug:	Reacted to "In case anyone hasn’..." with 👍
+01:12:42	nixo:	Reacted to "or just decouple the..." with 🍿
+01:12:43	potuz:	Replying to "I personally think t..."
+
+that's how Verkle never happened, exactly this way
+01:13:26	Sophia Gold:	IIUC ePBS increases execution throughput more than BALs so I would say the CL is much more important for Glamsterdam and we should not delay it
+01:13:28	Matthew Keil:	Reacted to "Maybe for Holesly, b..." with 👍
+01:13:35	Justin Florentine (Besu):	Replying to "I personally think t..."
+
+idk why March is significant?
+01:13:35	donnoh | L2BEAT:	Reacted to "or just decouple the..." with 🍿
+01:14:11	Caleb:	Reacted to "IIUC ePBS increase..." with 👍
+01:14:13	Justin Florentine (Besu):	Reacted to "IIUC ePBS increases ..." with ➕
+01:14:15	Ahmad Bitar | Nethermind:	Reacted to "IIUC ePBS increases ..." with ➕
+01:15:08	Bastin:	Reacted to "IIUC ePBS increases ..." with 👍
+01:16:47	Anders Elowsson:	Just a note that we do not wish to add the IL bitfield to the bid unless attesters are going to vote on it. If the PTC votes on it, the builder need not include the bitfield in the bid. 
+But I do think we should pursue the ABB design.
+01:16:52	Justin Florentine (Besu):	the notion of "would have fit" is interesting
+01:17:26	Justin Florentine (Besu):	Replying to "the notion of "would..."
+
+does that imply re-execution?
+01:17:28	Ansgar Dietrichs:	Wait we are only making headliner decision today, right? Is it not obvious that we will not make FOCIL a solo headliner already?
+
+Even if we want to consider combining it with ePBS, process would be only selecting ePBS as headliner today, and then consider FOCIL in the "normal EIP" stage in the next calls, no?
+01:17:42	terence:	it's not clear to me where this is going, are we deciding glamsterdam CL headliner today?
+01:17:48	Carl Beekhuizen:	Reacted to "Wait we are only mak..." with 👍
+01:17:48	stokes:	Replying to "it's not clear to me..."
+
+yes
+01:17:54	stokes:	Replying to "it's not clear to me..."
+
+But some requests for input
+01:17:57	soispoke:	Here’s also a high level write up about ePBS and FOCIL compatibility if people are interested: https://ethereum-magicians.org/t/epbs-focil-compatibility/24777 
+
+And there was also a discussion + presentation on the last FOCIL breakout session: https://www.youtube.com/watch?v=gjWReOSaT-o
+01:18:16	Ansgar Dietrichs:	Replying to "Wait we are only mak…"
+As in, we should make decision against FOCIL as headliner asap, and then put it put of scope for today.
+01:18:25	DA | Flashbots:	Reacted to "Wait we are only mak..." with 👍
+01:18:36	stokes:	Replying to "Wait we are only mak..."
+
+I think its part of the epbs decision
+01:18:43	stokes:	Replying to "Wait we are only mak..."
+
+And if we want FOCIL as a non-headliner it is also relevant
+01:18:58	Tim Beiko:	Reacted to "Wait we are only mak…" with 👍
+01:18:59	ethDreamer (Mark):	This is a (premature) PR of FOCIL on top of 7732:
+https://github.com/ethereum/consensus-specs/pull/4493
+01:18:59	Justin Traglia:	Reacted to "lets aim to merge it..." with 👍
+01:19:03	Parithosh Jayanthi:	Reacted to "Wait we are only mak..." with 👍
+01:19:04	potuz:	can we move on to headliner decision that was what we have agreed to do many weeks ago, and then have these discussions? I am a bit mind blown by the ordering of this meeting
+01:19:19	terence:	I feel like FOCIL technical discussions is better suited in ACDT or bi weekly FOCIL breakout
+01:19:23	ethDreamer (Mark):	Replying to "This is a (premature..."
+
+^ consensus-specs
+01:19:37	Tim Beiko:	Reacted to "thanks nixo, and tha…" with 💙
+01:19:42	Ansgar Dietrichs:	Replying to "Wait we are only mak…"
+non-headliners are not today though
+01:19:43	Tim Beiko:	Reacted to "In case anyone hasn’…" with 👍
+01:19:50	Caleb:	Reacted to "can we move on to ..." with 👍
+01:19:56	donnoh | L2BEAT:	Reacted to "can we move on to he..." with 👍
+01:20:03	Jihoon:	Slides: https://docs.google.com/presentation/d/1KmRsdpDNQpxOlWF0ThqZNRTBDWMV8RuCNLsMjDf9XRo/edit?usp=sharing
+FOCIL for CL: https://hackmd.io/@jihoonsong/rJX-fxADxl
+FOCIL for EL: https://hackmd.io/@jihoonsong/BJpcaudvex
+01:20:18	Caleb:	Reacted to "Slides: https://do..." with 👍
+01:20:53	Harry | Sunnyside:	Reacted to "Slides: https://docs..." with 👍
+01:20:58	Ansgar Dietrichs:	Replying to "I personally think t…"
+Just throwing out a date, point is more, I personally would not want to delay the fork for a headliner
+01:20:59	potuz:	ohhh that's much better
+01:21:26	terence:	yay
+01:21:39	soispoke:	Replying to "Wait we are only mak..."
+
+But FOCIL is in a bit of a weird place because it has received broad support from the community as a headliner already
+01:21:41	potuz:	yeah that's the number we were using internally too, it's good news
+01:21:59	donnoh | L2BEAT:	Reacted to "But FOCIL is in a bi..." with 👍
+01:22:02	soispoke:	Replying to "Wait we are only mak..."
+
+So it has a bit of an in between status I think it’s worth discussing
+01:22:07	donnoh | L2BEAT:	Reacted to "So it has a bit of a..." with 👍
+01:22:09	Ansgar Dietrichs:	Replying to "Wait we are only mak…"
+I am open to considering it instead of ePBS still
+01:22:21	Ansgar Dietrichs:	Replying to "Wait we are only mak…"
+Just doesn’t seem like a realistic outcome
+01:22:56	Hsiao-Wei Wang:	Reacted to "Slides: https://docs..." with 👍
+01:23:02	Justin Florentine (Besu):	Replying to "Wait we are only mak..."
+
+FOCIL + ePBS is more realistic than FOCIL instead of ePBS
+01:23:04	soispoke:	Replying to "Wait we are only mak..."
+
+I mean this is a discussion that can also happen (but I also think it’s unlikely) 
+
+I would say these are two separate conversations to have
+01:23:09	soispoke:	Reacted to "FOCIL + ePBS is more..." with 👍
+01:23:12	soispoke:	Reacted to "Just doesn’t seem li..." with 👍
+01:23:19	Bastin:	Reacted to "FOCIL + ePBS is more..." with 👍
+01:23:21	Tim Beiko:	Reacted to "FOCIL + ePBS is more…" with 👍
+01:23:24	soispoke:	Reacted to "Slides: https://docs..." with 👍
+01:23:26	potuz:	Reacted to "FOCIL + ePBS is more..." with 👍
+01:24:01	pawan:	Reacted to "FOCIL + ePBS is more..." with 👍
+01:25:06	Francesco:	🥁🥁
+01:25:08	Sophia Gold:	If we're potentially SFIing ePBS today, I think it would be good to have a discussion of the dual deadline and impact of changing it. Including a tldr of how much execution time is added, how much blob propagation time is added with the current design, how much if the blob deadline is moved, and extrapolation to additional blob throughput
+01:25:11	Caleb:	Reacted to "🥁🥁" with 😂
+01:25:13	potuz:	Reacted to "🥁🥁" with 😁
+01:25:15	Parithosh Jayanthi:	Reacted to "🥁🥁" with 😂
+01:25:16	soispoke:	Reacted to "🥁🥁" with 😂
+01:25:16	Parithosh Jayanthi:	Reacted to "🥁🥁" with 😁
+01:25:17	felix (eest):	Reacted to "🥁🥁" with 😂
+01:25:20	Leo:	Reacted to "🥁🥁" with 😂
+01:25:23	Jihoon:	Replying to "I feel like FOCIL te..."
+
+I think it could be useful information for people who couldn't afford to take a look into it.
+01:25:24	Toni Wahrstätter:	I think no big CL feature should be added on top of ePBS. It alone touches enough major parts of the protocol and should be shipped in isolation to other changes, especially those affecting fork choice.
+Max., have focil as a strech goal but kick it if it would delay the fork.
+01:25:27	donnoh | L2BEAT:	Reacted to "🥁🥁" with 😂
+01:25:42	Parithosh Jayanthi:	Reacted to "I think no big CL fe..." with 🔥
+01:25:51	Caleb:	If we're potentially SFIing ePBS today, I think it would be good to have a discussion of the dual deadline and impact of changing it. Including a tldr of how much execution time is added, how much blob propagation time is added with the current design, how much if the blob deadline is moved, and extrapolation to additional blob throughput
+probably bst suited for the testing call
+01:25:57	donnoh | L2BEAT:	Reacted to "I think no big CL fe..." with 👍
+01:25:58	Justin Florentine (Besu):	Reacted to "I think no big CL fe..." with 🤔
+01:26:05	potuz:	Replying to "If we're potentially..."
+
+I do think these timelines need to be computed and benchmarked precisely to be set
+01:26:06	soispoke:	Replying to "I think no big CL fe..."
+
+That was basically what I wanted to propose, just waiting for the sort of ePBS verdict first
+01:26:17	stokes:	Reacted to "🥁🥁" with 😁
+01:26:23	potuz:	Replying to "If we're potentially..."
+
+and as the flashbots guys pointed, it's imperative to have a way to adjust them at runtime specially with BPOs
+01:26:51	Jihoon:	Replying to "If we're potentially..."
+
+Does T stand for technical? 😂
+01:26:52	potuz:	Replying to "If we're potentially..."
+
+but those are technical details of adjusting a single constant in the spec riather than something to be discussed in ACD at this stage I believe
+01:26:54	Toni Wahrstätter:	Replying to "I think no big CL fe..." 
+
+ The default should then be to include in on a devnet as late in the process as possible to not risk big work from removing it
+01:27:01	Carl Beekhuizen:	Reacted to "I think no big CL fe..." with 👍
+01:27:08	potuz:	+1 from me, not discussed with PRysm
+01:27:15	Caleb:	Reacted to "Does T stand for t..." with 😂
+01:27:23	potuz:	I was like Barnabas 4 weeks ago, SFI ePBS CFI FOCIL
+01:27:23	Sophia Gold:	Replying to "If we're potential..."
+
+Can you estimate the additional execution time? This shouldn't be changing and I feel like I should already know it
+01:27:28	Justin Florentine (Besu):	love it, and would be open to trying FOCIL and boot if it threatens ePBS
+01:27:36	Parithosh Jayanthi:	Reacted to "I was like Barnabas ..." with 😅
+01:27:41	Ansgar Dietrichs:	I would strongly request we stick to process and do not CFI any non-headliners today
+01:27:46	Toni Wahrstätter:	How realistic is it that we realize focil and epbs are too big and suddenly removing focil would impact epbs and the "pulling out" turns more complex as thought
+01:28:07	potuz:	Replying to "If we're potentially..."
+
+I think with current numbers of propagation we should get at the very least 8 seconds execution for proposers and 10 seconds exectuion for attesters
+01:28:08	Ansgar Dietrichs:	Replying to "I would strongly req..."
+
+but I do think having FOCIL as a stretch goal EIP is a reasonable idea
+01:28:10	Justin Florentine (Besu):	FOCIL is kind of a co-headliner in this case.
+01:28:14	stokes:	Reacted to "I would strongly req..." with 👍
+01:28:29	Sophia Gold:	Reacted to "I think with curre..." with 🔥
+01:28:40	Barnabas:	FOCIL was proposed as a headliner. Making a decision about it today is the right place imo.
+01:28:42	Anders Elowsson:	If the PTC_P point stays the same, there is no additional execution time added. Removing the dual deadine would only put some optimisation pressure toward reducing execution time
+01:28:43	stokes:	I think we should derisk this before putting it in
+01:28:48	potuz:	Replying to "If we're potentially..."
+
+this is assuming that we keep the current design and not trade off on the free option problem
+01:28:49	Carl Beekhuizen:	Reacted to "How realistic is it ..." with 👍
+01:28:51	donnoh | L2BEAT:	Reacted to "How realistic is it ..." with 👍
+01:28:56	stokes:	Replying to "FOCIL was proposed a..."
+
+It is not a headliner
+01:28:57	Ansgar Dietrichs:	Replying to "FOCIL was proposed a..."
+
+well then the decision is no
+01:29:01	stokes:	Replying to "FOCIL was proposed a..."
+
+But can still be in glamsterdam
+01:29:11	terence:	Replying to "FOCIL was proposed a..."
+
+when do we decide that?
+01:29:16	donnoh | L2BEAT:	Reacted to "FOCIL was proposed a..." with 👍
+01:29:24	donnoh | L2BEAT:	Reacted to "when do we decide th..." with 💯
+01:29:25	Sophia Gold:	Replying to "If we're potential..."
+
+@Anders Elowsson I mean vs. current execution time
+01:29:41	stokes:	Replying to "FOCIL was proposed a..."
+
+Soon (tm)
+01:29:41	Ansgar Dietrichs:	“slows down the fork” - that must include slowing down the EL side of the fork though, otherwise ePBS and FOCIL as a batch will just delay and slow down the EL
+01:29:47	Barnabas:	Replying to "FOCIL was proposed a..."
+
+how is it not a headliner? Its a huge change on its own.
+01:29:49	donnoh | L2BEAT:	Reacted to "It is not a headline..." with 🤔
+01:29:55	Tim Beiko:	How about we SFI EPBS + BALs, CFI FOCIL, and make a SFI decision for FOCIL once we are further in the development process and know what we are comparing FOCIL with?
+01:30:05	Justin Florentine (Besu):	Reacted to "How about we SFI EPB..." with ➕
+01:30:09	soispoke:	Reacted to "How about we SFI EPB..." with ➕
+01:30:09	terence:	Replying to "How about we SFI EPB..."
+
+makes sense to me
+01:30:11	Phil Ngo:	Reacted to "How about we SFI EPB..." with ➕
+01:30:12	ethDreamer (Mark):	Reacted to "How about we SFI EPB..." with ❤️
+01:30:13	donnoh | L2BEAT:	Reacted to "how is it not a head..." with ➕
+01:30:14	soispoke:	Reacted to "How about we SFI EPB..." with ❤️
+01:30:17	Caleb:	Reacted to "How about we SFI E..." with ➕
+01:30:44	kingy_sigp:	Reacted to "How about we SFI EPB..." with ❤️
+01:30:45	kingy_sigp:	Reacted to "How about we SFI EPB..." with ➕
+01:30:53	nixo:	Reacted to "How about we SFI EPB..." with ➕
+01:31:13	felix (eest):	Reacted to "How about we SFI E..." with ➕
+01:31:20	Justin Traglia:	Reacted to "How about we SFI EPB..." with ➕
+01:31:30	Bastin:	Reacted to "How about we SFI EPB..." with 👍
+01:31:39	Tim Beiko:	^ this means glamsterdam-devnet-1 is EPBS + BALs, then devnet-2 could include FOCIL
+01:31:51	potuz:	I agree, semanthics are irrelevant
+01:31:54	Francesco:	How are we saying this after talking about delaying Fusaka an hour ago 😅
+01:32:00	Eitan:	FOCIL changes are along similar code paths that ePBS is already changing. There is some development synergy here
+01:32:04	Carl Beekhuizen:	Reacted to "How are we saying th..." with 👀
+01:32:04	pawan:	Reacted to "I agree, semanthics ..." with 👍
+01:32:05	Toni Wahrstätter:	Reacted to How are we saying th... with "👍"
+01:32:05	soispoke:	The broader point is not to exclude EIPs with broad support based on semantics or strict process
+01:32:06	donnoh | L2BEAT:	Reacted to "How are we saying th..." with 👀
+01:32:13	Chris Haug:	Reacted to "How are we saying th..." with 👍
+01:32:16	Josh Davis:	Headliner means not kicked out for fork delay
+01:32:25	potuz:	Reacted to "How are we saying th..." with 😀
+01:32:32	Toni Wahrstätter:	Reacted to Headliner means not ... with "👍"
+01:32:33	Justin Florentine (Besu):	there is EL work for FOCIL, and capacity considering BAL
+01:32:38	potuz:	Replying to "How are we saying th..."
+
+Good thing is that Glamsterdam doesn't have a timeline
+01:32:42	Sophia Gold:	The reason to not call FOCIL a headliner is that we don't want to block on it if it's not done when ePBS is. It's okay for it to be bumped one fork, but not more than that
+01:32:50	Sophia Gold:	Reacted to "Headliner means no..." with 👍
+01:32:51	Tim Beiko:	Reacted to "The reason to not ca…" with 👍
+01:32:55	Justin Florentine (Besu):	Reacted to "The reason to not ca..." with 👍
+01:33:06	potuz:	Replying to "How are we saying th..."
+
+I think it's worth to have FOCIL at the cost of having a larger fork, if it was any other feature I'd be happy to have ePBS and nothing else
+01:33:17	Justin Florentine (Besu):	Replying to "How are we saying th..."
+
+because crypto twitter rips on us for not being "ambitious" enough.
+01:33:21	potuz:	Replying to "How are we saying th..."
+
+FOCIL is really at risk to be now or never
+01:33:21	Francesco:	+1, if we start with epbs + focil it will never be separated without huge pain
+01:33:32	donnoh | L2BEAT:	Reacted to "FOCIL is really at r..." with 💯
+01:33:35	Justin Florentine (Besu):	Reacted to "FOCIL is really at r..." with 💯
+01:33:48	Parithosh Jayanthi:	Replying to "How are we saying th..."
+
+Isn’t focil or something similar to it basically a MUST before zk-enshrining?
+01:33:52	soispoke:	Replying to "+1, if we start with..."
+
+Devs that have worked on both said code changes are actually most orthogonal
+01:33:57	Carl Beekhuizen:	Reacted to "+1, if we start with..." with 👍
+01:33:59	Toni Wahrstätter:	Reacted to +1, if we start with... with "👍"
+01:34:05	stokes:	Replying to "How about we SFI EPB..."
+
+I would lean to not CFI just following the original post
+01:34:12	Dustin:	Replying to "How are we saying ..."
+
+that's years from now, by usual timelines from lean
+01:34:12	stokes:	Replying to "How about we SFI EPB..."
+
+But also seems fine
+01:34:18	stokes:	Replying to "How about we SFI EPB..."
+
+To CFI today
+01:34:23	Francesco:	Replying to "How are we saying th..."
+
+Why? Either way, we won’t enshrine zk in 2026
+01:34:27	Chris Haug:	Reacted to "+1, if we start with..." with 👍
+01:34:30	Jihoon:	Replying to "+1, if we start with..."
+
+I would like to learn what devs think about this
+01:34:31	Dustin:	Replying to "How are we saying ..."
+
+3 years is the smallest credible number I've seen
+01:34:33	Caleb:	ePBS headlines while FOCIL supports, it's all about who you sync with
+01:34:37	George Kadianakis:	Reacted to +1, if we start with... with "👍"
+01:34:39	Sophia Gold:	Replying to "How are we saying ..."
+
+Not just for enshrining, for scaling with zk at all...
+01:34:44	potuz:	Replying to "+1, if we start with..."
+
+I don't understand thje comment Francesco, if ePBS is already SFI, then we never are in a situation of needing to separate
+01:34:44	Parithosh Jayanthi:	Reacted to "Not just for enshrin..." with 👍🏽
+01:34:50	Anders Elowsson:	Replying to "If we're potentially..."
+
+@Sophia Gold Aha sorry. Yes, as potuz mentioned then. We get S-PTC_P in execution time. So if we set PTC_P early, we gain more.
+01:34:57	Parithosh Jayanthi:	Replying to "How are we saying th..."
+
+Which seems like we might start doing next year onwards
+01:35:05	potuz:	Replying to "+1, if we start with..."
+
+there is no future of FOCIL without ePBS if it's actually SFId
+01:35:36	Francesco:	Replying to "+1, if we start with..."
+
+The opposite, “if we are not managing to ship the fork in time we take focil out"
+01:35:47	Sophia Gold:	Replying to "How are we saying ..."
+
+I think it's fine for it to be in H fork but not later. I'm sympathetic to arguments that deprioritizing it now means it won't happen in time
+01:35:48	Trent:	Replying to "How are we saying th..."
+
+Any links about FOCIL <> zk?
+01:35:50	Toni Wahrstätter:	Replying to "+1, if we start with..." 
+
+ The specs for both are still in progress, so, I wouldn't underestimate the complexity.
+They interact, thus, removing one will be complex.
+01:35:52	potuz:	Replying to "How about we SFI EPB..."
+
+Echoing this, Tim's comment is exactly my favorite fork
+01:36:00	soispoke:	Reacted to "How about we SFI EPB..." with 👍
+01:36:02	Harry | Sunnyside:	Reacted to "How about we SFI EPB..." with ➕
+01:36:03	Ansgar Dietrichs:	1-2 months delay over April would make me strongly oppose FOCIL fwiw
+01:36:08	Barnabas:	Reacted to "How about we SFI EPB..." with ➕
+01:36:15	Sophia Gold:	Replying to "How are we saying ..."
+
+I touched on it in the RTP blog post
+01:36:18	Justin Florentine (Besu):	Replying to "How are we saying th..."
+
+i actually think getting both in would be worth delaying (within reason)
+01:37:03	Ansgar Dietrichs:	if we accept FOCIL, we need to have super explicit agreement on process though.
+
+“if it delays ePBS, we will kick it out” - that is not good enough, who makes that call, and when?
+
+If we say we don’t wait for the CL headliner(s), then it is easy, then it is in the best interest of the ePBS champions to honestly track FOCIL delay concerns and act on them.
+01:37:08	Francesco:	Feels like everyone is being delusional again with the timelines because otherwise the EIP will not get included
+01:37:27	Justin Florentine (Besu):	Replying to "1-2 months delay ove..."
+
+I would be fine with delaying to include both, up to about August
+01:37:27	terence:	i see no reason not to CFI focil today, we are not SFI'ing focil
+01:37:36	Barnabas:	Replying to "Feels like everyone ..."
+
+good thing we are not talking about deadlines
+01:37:45	potuz:	Replying to "Feels like everyone ..."
+
+what timelines?
+01:37:56	felix (eest):	Reacted to "i see no reason no..." with 👍
+01:37:59	potuz:	Replying to "Feels like everyone ..."
+
+there has been no talk on Glamsterdam timelines as we did for Fusaka
+01:38:07	soispoke:	Replying to "1-2 months delay ove..."
+
+I think not considering broad community input and devs for a month delay would not be a good decision tbh
+01:38:07	Ansgar Dietrichs:	so would we get a strong commitment from all CL clients to not dedicate any work to FOCIL until ePBS is stable?
+
+sounds like that is what Alex just proposed
+01:38:17	potuz:	Replying to "Feels like everyone ..."
+
+I see Ansgar saying MArch, but ePBS will not be ready for March
+01:38:21	potuz:	Replying to "Feels like everyone ..."
+
+not at all
+01:38:24	soispoke:	Replying to "so would we get a st..."
+
+4 CL clients have already worked on FOCIL
+01:38:27	donnoh | L2BEAT:	Reacted to "I would be fine with..." with 👍
+01:38:29	Ansgar Dietrichs:	Replying to "so would we get a st..."
+
+that’s what I mean
+01:38:30	potuz:	Replying to "Feels like everyone ..."
+
+with or without FOCIL
+01:38:30	Dustin:	Replying to "Feels like everyon..."
+
+Francesco just talked about March/Apr
+01:38:31	donnoh | L2BEAT:	Reacted to "I think not consider..." with 👍
+01:38:32	Justin Traglia:	Reacted to "4 CL clients have al..." with 😂
+01:38:33	terence:	Replying to "so would we get a st..."
+
+prysm has working branch for both
+01:38:38	Justin Traglia:	Reacted to "prysm has working br..." with ❤️
+01:38:40	potuz:	Replying to "Feels like everyone ..."
+
+no freaking way
+01:38:43	felipe:	Reacted to "prysm has working ..." with ❤️
+01:38:46	Jihoon:	Replying to "so would we get a st..."
+
+Depends on CL client team I think. Some team can working on both in parallel like Lodestar
+01:38:47	Dustin:	Replying to "Feels like everyon..."
+
+or Ansgar yeah
+01:38:51	Francesco:	Replying to "Feels like everyone ..."
+
+I didn't?
+01:38:54	Barnabas:	Could I ask for dedicated CL engineers for glamsterdam scope? Same way as we did with peerdas.
+01:38:55	Dustin:	Replying to "Feels like everyon..."
+
+oops
+01:38:58	Jihoon:	Replying to "so would we get a st..."
+
+That's one of feedback I've gathered
+01:39:02	Dustin:	Replying to "Feels like everyon..."
+
+Anyway, timelines are being discussed
+01:39:18	Sophia Gold:	Replying to "so would we get a ..."
+
+You can't accelerate something just by putting more devs on it
+01:39:24	potuz:	Replying to "Feels like everyone ..."
+
+no, there's no discussion, it's only Ansgar
+01:39:43	Jihoon:	Replying to "so would we get a st..."
+
+Not talking about man month myth. I'm talking about 0 or not 0
+01:40:04	Justin Florentine (Besu):	idk why we're talking more about dates than fork composition
+01:40:15	Josh Davis:	Reacted to "idk why we're talkin..." with ➕
+01:40:17	Justin Traglia:	Reacted to "idk why we're talkin..." with ➕
+01:40:19	soispoke:	Reacted to "idk why we're talkin..." with 👍
+01:40:19	Sophia Gold:	Replying to "so would we get a ..."
+
+I was responding to Ansgar. They should have as many as necessary for ePBS, but there's a limit. Presumably not the whole team
+01:40:20	soispoke:	Reacted to "idk why we're talkin..." with ➕
+01:40:21	Francesco:	Replying to "so would we get a st..."
+
+CL clients worked on PeerDAS for a year before Pectra shipped as well
+01:40:21	Kalo | Obol:	Reacted to "idk why we're talkin..." with ➕
+01:40:22	Barnabas:	if we doing EL only fork then why are we even talking about glamsterdam? That would be just Amsterdam.
+01:40:26	Jihoon:	Reacted to "I was responding to ..." with ❤️
+01:40:30	James He:	Reacted to "idk why we're talkin..." with 👍
+01:40:32	James He:	Reacted to "idk why we're talkin..." with ➕
+01:40:33	potuz:	Reacted to "idk why we're talkin..." with 👍
+01:40:36	Barnabas:	Reacted to "idk why we're talkin..." with ➕
+01:40:42	pawan:	Reacted to "no, there's no discu..." with 😂
+01:40:48	Jihoon:	Replying to "so would we get a st..."
+
+PeerDAS had no stable spec back then. FOCIL has stable specs in any regard
+01:40:51	Parithosh Jayanthi:	Reacted to "if we doing EL only ..." with 😂
+01:40:52	Ansgar Dietrichs:	okay so we would not wait for say 2+ months for the CL headliner(s)?
+01:41:08	Jihoon:	Replying to "so would we get a st..."
+
+Sorry any regard is too much. I meant in CL, EL, engine API, rebase onto ePBS
+01:41:16	Eitan:	Replying to "so would we get a st…"
+I don’t think peerdas is even a fair comparison it’s a much more complex change than FOCIL
+01:41:26	donnoh | L2BEAT:	Reacted to "idk why we're talkin..." with ➕
+01:41:26	donnoh | L2BEAT:	Reacted to "idk why we're talkin..." with 👍
+01:41:34	Barnabas:	There are plenty of work on ELs that can also delay a fork, if those repricing EIPs get included.
+01:41:38	Ahmad Bitar | Nethermind:	Reacted to "idk why we're talkin..." with ➕
+01:41:50	Jihoon:	Reacted to "idk why we're talkin..." with ➕
+01:41:55	Barnabas:	I’d not worry that EL would be ready so quick that they would be just sitting around .
+01:42:06	nixo:	Reacted to "if we doing EL only ..." with 😂
+01:42:13	Ansgar Dietrichs:	Replying to "There are plenty of ..."
+
+of course, good chance the EL is the one causing the delays.
+
+Just talking about what if it’s the CL, and it’s a long delay
+01:42:30	Justin Florentine (Besu):	good work y'all
+01:42:38	Toni Wahrstätter:	Reacted to good work y'all with "❤️"

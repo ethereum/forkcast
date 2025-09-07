@@ -1,0 +1,1046 @@
+WEBVTT
+
+1
+00:03:31.530 --> 00:03:32.700
+Parithosh Jayanthi: Hello?
+
+2
+00:03:35.790 --> 00:03:36.310
+Pooja Ranjan: Hello, huh.
+
+3
+00:03:36.310 --> 00:03:37.260
+Justin Traglia: Hello.
+
+4
+00:03:39.650 --> 00:03:40.730
+Enrico Del Fante (tbenr): Hello?
+
+5
+00:04:37.930 --> 00:04:38.730
+spencer-tb: Hello.
+
+6
+00:06:29.650 --> 00:06:33.590
+Parithosh Jayanthi: Hey everyone, let's give it another minute for people to join before we start.
+
+7
+00:07:18.600 --> 00:07:21.160
+Parithosh Jayanthi: Okay, let's get started.
+
+8
+00:07:21.380 --> 00:07:30.509
+Parithosh Jayanthi: So, the first item on the agenda today, is Fusaka updates. So, do we have Barnabas on the call for DevNet updates?
+
+9
+00:07:31.830 --> 00:07:45.289
+Barnabas: Yes, we did a non-finality event on WN3 throughout the weekend, and this morning I have restarted all the machines that were producing bell blocks, and they're slowly syncing up back to head.
+
+10
+00:07:45.560 --> 00:07:51.029
+Barnabas: Currently, we see a lower participation than before, which is quite interesting.
+
+11
+00:07:51.680 --> 00:07:52.910
+Barnabas: …
+
+12
+00:07:53.130 --> 00:08:12.559
+Barnabas: Right now, the major nodes that are offline still are, I guess, another mined ones, because those were pretty, in the images before. I have, here their database, and they should be able to sync back to HUD. Currently, we see about 36% participation on the network, though.
+
+13
+00:08:13.190 --> 00:08:20.630
+Barnabas: Which is rather low, and it's a bit surprising that, about 20% of extra nodes have decided to
+
+14
+00:08:21.340 --> 00:08:23.970
+Barnabas: Also, stop thinking.
+
+15
+00:08:23.970 --> 00:08:34.679
+Parithosh Jayanthi: So, does this mean that during the non-finality period, we had about 50-ish percent participation, and then once you started all of the nodes back on, we reduced participation again?
+
+16
+00:08:34.929 --> 00:08:35.749
+Barnabas: Yes.
+
+17
+00:08:38.720 --> 00:08:44.869
+Parithosh Jayanthi: Okay, that sounds like they're not able to keep up with the sync load, right? Or is there some other prevailing theory?
+
+18
+00:08:45.210 --> 00:08:47.730
+Barnabas: Mmm, yeah, that's exactly what I'm thinking.
+
+19
+00:08:48.410 --> 00:08:54.230
+Barnabas: We have rate limiting enabled on all the machines, and I think, some of them are hitting that.
+
+20
+00:08:54.600 --> 00:08:55.899
+Barnabas: Especially for notes.
+
+21
+00:08:57.270 --> 00:09:02.119
+Parithosh Jayanthi: What's very interesting is, none of the R machines are out of sync.
+
+22
+00:09:02.240 --> 00:09:10.340
+Barnabas: So, basically, right now, the network is, held up by mostly our machines, so it might also be some cloud-related issue.
+
+23
+00:09:13.500 --> 00:09:21.860
+Parithosh Jayanthi: And at least according to logs, how does it look like it's going? Are the nodes progressing, or are they just struggling to find healthy peels?
+
+24
+00:09:22.410 --> 00:09:30.550
+Barnabas: So, there's a bunch of nodes that are progressing still. Most of them have caught up, especially in the ES side.
+
+25
+00:09:30.630 --> 00:09:45.790
+Barnabas: there's a few nodes, like Lighthouse GAF1 that have not able to get started thinking, and I think it's still the same syncing bug that Lighthouse previously reported. I'm not sure if anyone from Lighthouse is around.
+
+26
+00:09:48.410 --> 00:09:54.049
+pawan: Yeah, I'm here. Yeah, I think it's the… I'm not sure if you're using the…
+
+27
+00:09:54.420 --> 00:10:03.800
+pawan: other brands that I gave you on Friday, but, like, that… we found, like, a couple of issues over the weekend on that one as well, which was related to…
+
+28
+00:10:04.520 --> 00:10:16.419
+pawan: like, a few bugs on our unstable branch, so we have a few fixes on unstable that we are going to merge into that branch today, and again, test if
+
+29
+00:10:16.590 --> 00:10:22.560
+pawan: … stuff should work as expected, and yeah, I'll keep you in the loop.
+
+30
+00:10:22.690 --> 00:10:25.280
+pawan: To… as to which branch to use.
+
+31
+00:10:25.980 --> 00:10:35.569
+Barnabas: Yeah, okay. So, right now we have the blocks and columns on Lighthouse Gas 1, which is… which has stopped syncing, and we have Unstable on everything else.
+
+32
+00:10:40.290 --> 00:10:43.150
+Barnabas: But you can update it to whatever you want.
+
+33
+00:10:45.480 --> 00:11:03.279
+Barnabas: Yeah, so slowly the CLs are, forward syncing, but because we had a quite long non-finity, and because the forward sync is very, very slow on every single CL, it might take another few hours before we see any improvement.
+
+34
+00:11:04.320 --> 00:11:17.060
+Barnabas: I… I would actually like to keep it as is right now, not really touch anything, unless we see something definitely wrong, and see if we can recover back to finally in, like, a day or two.
+
+35
+00:11:19.570 --> 00:11:26.880
+Parithosh Jayanthi: Yeah, that sounds like a good plan, and yeah, if there's any fixed images, then we should roll those out, but otherwise, I agree, I think we should…
+
+36
+00:11:27.290 --> 00:11:33.290
+Parithosh Jayanthi: monitor how the nodes are going and take that data into account. What blob count are we at right now?
+
+37
+00:11:35.680 --> 00:11:39.499
+Barnabas: We are on 20, I think?
+
+38
+00:11:40.460 --> 00:11:45.640
+Barnabas: whatever BPO5 was, it's max blobs per block 20.
+
+39
+00:11:45.960 --> 00:11:52.859
+Barnabas: But Spammer had a bug, and we are not spamming block transactions right now, but because debugging.
+
+40
+00:11:55.610 --> 00:12:00.200
+Parithosh Jayanthi: Yeah, but during the non-finality event, were we able to hit 20 blobs?
+
+41
+00:12:05.340 --> 00:12:07.590
+Barnabas: I mean, we are still at the non-finity event.
+
+42
+00:12:07.930 --> 00:12:08.670
+Barnabas: Yeah.
+
+43
+00:12:08.670 --> 00:12:13.009
+Parithosh Jayanthi: I meant the core non-finalty went over the weekend, at least.
+
+44
+00:12:14.320 --> 00:12:16.850
+Barnabas: Yeah, we can check that, but I think so.
+
+45
+00:12:16.980 --> 00:12:23.130
+Parithosh Jayanthi: Okay, cool. Because those are the blobs that everyone would need… would sort of be struggling to fetch columns for.
+
+46
+00:12:23.130 --> 00:12:30.579
+Barnabas: Yeah, so, like, even an hour ago, we had, consistent 20 blocks in the blocks that were proposed.
+
+47
+00:12:31.410 --> 00:12:34.720
+Parithosh Jayanthi: Okay, that's a really nice test. Thank you.
+
+48
+00:12:36.110 --> 00:12:42.540
+Parithosh Jayanthi: Anything else you wanted to add on that, or anything the client teams wanna talk about? Yeah, Enrico?
+
+49
+00:12:43.920 --> 00:12:48.309
+Enrico Del Fante (tbenr): Yeah, I just want to mention that,
+
+50
+00:12:49.090 --> 00:12:58.169
+Enrico Del Fante (tbenr): Couple of hours ago, we've discovered a bug in our, state upgrade from Elektra to Fulu.
+
+51
+00:12:58.410 --> 00:13:04.489
+Enrico Del Fante (tbenr): And, I share the link of the PR that fixes this.
+
+52
+00:13:04.940 --> 00:13:12.400
+Enrico Del Fante (tbenr): It contains a couple of things, but this is the main thing. So, essentially, we missed, the…
+
+53
+00:13:12.940 --> 00:13:19.310
+Enrico Del Fante (tbenr): The, porting of the pending consolidation from the state of, from the later state to
+
+54
+00:13:19.520 --> 00:13:21.660
+Enrico Del Fante (tbenr): the Fulu State.
+
+55
+00:13:22.110 --> 00:13:23.060
+Enrico Del Fante (tbenr): So…
+
+56
+00:13:23.300 --> 00:13:33.179
+Enrico Del Fante (tbenr): I think that we never tested on any testnet that across the FARC, there was actually a consolidation pending.
+
+57
+00:13:33.620 --> 00:13:39.110
+Enrico Del Fante (tbenr): So we always started with an empty consolidation, set.
+
+58
+00:13:39.370 --> 00:13:46.160
+Enrico Del Fante (tbenr): So maybe there is something on the spec test that needs to be addressed, or…
+
+59
+00:13:46.650 --> 00:13:49.940
+Enrico Del Fante (tbenr): But seems, like, serious, so we fixed it there.
+
+60
+00:13:51.210 --> 00:13:55.449
+Parithosh Jayanthi: Yeah, this definitely sounds like a spec test, right?
+
+61
+00:13:55.450 --> 00:13:57.559
+Justin Traglia: Yeah, I can… I can look into this.
+
+62
+00:13:59.130 --> 00:14:05.609
+Enrico Del Fante (tbenr): Yeah, let me know if you need more context on that, but the link should be enough.
+
+63
+00:14:08.480 --> 00:14:08.949
+Parithosh Jayanthi: And I guess….
+
+64
+00:14:08.950 --> 00:14:09.700
+Barnabas: So we have….
+
+65
+00:14:09.950 --> 00:14:14.999
+Parithosh Jayanthi: make sure that we have at least one spec test for every one of these special requests.
+
+66
+00:14:15.270 --> 00:14:34.400
+Enrico Del Fante (tbenr): I was thinking, like, we should constantly… whenever there is something that moves from the status, from a state to another state, we have to always constantly testing it. Even previous introduced
+
+67
+00:14:34.480 --> 00:14:46.990
+Enrico Del Fante (tbenr): stuff. So not just testing what the new status is introduced in by the fork, but also all the regression possible from the previous forks.
+
+68
+00:14:47.710 --> 00:14:58.109
+Justin Traglia: So, we do have fork, like, at fork testing. I'm thinking of, like, deposit requests and consolidation requests, but I'm not sure if we have, like, pending consolidation.
+
+69
+00:14:58.590 --> 00:15:01.770
+Justin Traglia: At the fork, so that would be good for me to look into.
+
+70
+00:15:02.040 --> 00:15:03.849
+Enrico Del Fante (tbenr): Probably the missing thing.
+
+71
+00:15:05.050 --> 00:15:05.810
+Enrico Del Fante (tbenr): Yep.
+
+72
+00:15:09.320 --> 00:15:11.070
+Parithosh Jayanthi: Awesome. Thank you.
+
+73
+00:15:12.370 --> 00:15:17.120
+Parithosh Jayanthi: Any other updates for DevNet 3 or Spec?
+
+74
+00:15:18.720 --> 00:15:22.550
+Parithosh Jayanthi: And I'm assuming there'd be another spec release, right, Justin?
+
+75
+00:15:23.770 --> 00:15:24.610
+Justin Traglia: Yeah, those.
+
+76
+00:15:24.870 --> 00:15:27.559
+Justin Traglia: There'll be another spec release, probably.
+
+77
+00:15:27.690 --> 00:15:29.409
+Justin Traglia: I don't know, a week or so.
+
+78
+00:15:30.860 --> 00:15:32.570
+Barnabas: Is that gonna be an offer fix?
+
+79
+00:15:34.260 --> 00:15:37.449
+Justin Traglia: I was actually thinking of doing Beta Zero.
+
+80
+00:15:37.650 --> 00:15:42.550
+Justin Traglia: If this would be the one that lines up with the first testnet, … Release.
+
+81
+00:15:43.780 --> 00:15:48.300
+Barnabas: Is the idea that the EPBS and net zero is gonna be based on that, too?
+
+82
+00:15:51.610 --> 00:15:52.700
+Justin Traglia: Say it again?
+
+83
+00:15:53.500 --> 00:15:57.670
+Barnabas: Is… is, APB as then at zero also going to be based on top of that?
+
+84
+00:15:58.320 --> 00:15:59.249
+Justin Traglia: Oh, I don't know.
+
+85
+00:15:59.640 --> 00:16:01.440
+Justin Traglia: I mean, could be.
+
+86
+00:16:04.940 --> 00:16:15.020
+Parithosh Jayanthi: I guess it doesn't matter too much, because this is just adding tests, right? So, from a specification perspective, alpha 5 and beta 0 would be the same.
+
+87
+00:16:16.130 --> 00:16:18.619
+Justin Traglia: Yeah, it doesn't really matter much.
+
+88
+00:16:18.930 --> 00:16:19.490
+Parithosh Jayanthi: Yep.
+
+89
+00:16:22.990 --> 00:16:35.530
+Parithosh Jayanthi: Any other updates relating to DevNets? We do have the MEV workflow working? Is there anything to report over there? Anything we're investigating?
+
+90
+00:16:36.150 --> 00:16:40.439
+Bharath: Yeah, so, in terms of the workflow, yeah, last week, we were able to get the
+
+91
+00:16:40.580 --> 00:16:45.940
+Bharath: Private order flow thing, we, just kind of… we have… we're able to get a resolution with that, like…
+
+92
+00:16:46.070 --> 00:16:48.939
+Bharath: Basically on a high level, it looks like our builder was…
+
+93
+00:16:49.060 --> 00:16:57.820
+Bharath: only retaining, like, transactions for, like, 5 blocks by default. We somehow bumped that up to, like, 10,000 blocks, and things seem to generally be fine.
+
+94
+00:16:58.810 --> 00:17:02.560
+Bharath: I think the RBuilder folks also made that a configuration parameter, so…
+
+95
+00:17:02.660 --> 00:17:05.089
+Bharath: Future, we don't have to modify code for that.
+
+96
+00:17:05.869 --> 00:17:16.319
+Bharath: And yeah, the other good thing is, like, the RBuilder folks have launched their own builder, too, like, so we have, like, two builders submitting to the MethBoost Relay, which is nice, and generally, that's good testing.
+
+97
+00:17:16.430 --> 00:17:24.690
+Bharath: Yeah, outside that, there's one thing which, Fahil from the PBS Foundation is looking into, is that,
+
+98
+00:17:24.800 --> 00:17:42.079
+Bharath: So there's one issue, again, you know, it's probably worth… it's not a very serious issue, it's just that when we transition from Elektra to Fusaka, it… we are… I think there are cases where a block simulation fails with the relay. That's because I think our builder is including some…
+
+99
+00:17:42.370 --> 00:17:49.419
+Bharath: pre-EIP, pre, Fusaka transactions without cell proofs,
+
+100
+00:17:49.510 --> 00:18:03.440
+Bharath: This is basically an issue with the logic, like, it's filtering out blobs for certain transactions, but including the transaction… the IP4844 transactions. So, that is something, like, I think Fayel is looking into. It's not a really critical issue, because that
+
+101
+00:18:03.970 --> 00:18:08.020
+Bharath: The mempool, kind of slowly, like, drains itself out of, like.
+
+102
+00:18:08.260 --> 00:18:12.710
+Bharath: the, pre-Fusaka transactions without cell proofs.
+
+103
+00:18:12.890 --> 00:18:31.569
+Bharath: But yeah, I think File is looking to that. Maybe I'll also spend some time later on that. But outside of that, there's not much, with the MV workflow we release, like, builder specs. We merge, like, MevBoost to main. We're looking to merge MevBoost Relay to main, but we're waiting on, like, the attestant IOPRs, like.
+
+104
+00:18:31.740 --> 00:18:33.549
+Bharath: For GoBuilder Client.
+
+105
+00:18:33.970 --> 00:18:42.540
+Bharath: To get merged. I think somebody from Attestant.io has started looking into it and has raised some review comments, which I've addressed. So, I think…
+
+106
+00:18:42.680 --> 00:18:52.570
+Bharath: Yeah, we're looking to, like, merge everything to main, and there is that one issue which we'll… we'll see, like, how we can resolve it, or if that's even a problem at all, like, that's also not clear.
+
+107
+00:18:53.210 --> 00:18:55.620
+Parithosh Jayanthi: Okay, perfect. Thank you.
+
+108
+00:18:57.600 --> 00:19:08.720
+Parithosh Jayanthi: Besides this, what is the DevNet 5 plan? Do you… maybe you want to tell us what the blockers are there, Barnabas, and we can get an update from clients as to where they are?
+
+109
+00:19:10.280 --> 00:19:28.290
+Barnabas: Yeah, so the main blocker would be, trunk branches and, all major features merging today trunk branches. Ideally, we wanted to do that this week, but I think, giving an extra week would make the most sense for all, design teams.
+
+110
+00:19:28.990 --> 00:19:39.660
+Barnabas: And in this case, we would aim for, all major features merged into the trunk branches by this week, Friday, and then maybe we can do
+
+111
+00:19:39.890 --> 00:19:43.569
+Barnabas: Devnet launch on next week, Wednesday.
+
+112
+00:19:46.690 --> 00:19:58.239
+Parithosh Jayanthi: Do client teams want to chime in? Does this timeline work for you guys? Are we… do we have to change around dates? What is the… what's the general consensus?
+
+113
+00:20:08.330 --> 00:20:11.450
+pawan: Sorry, did you say next week, Wednesday?
+
+114
+00:20:12.270 --> 00:20:12.700
+Barnabas: Yeah, of course.
+
+115
+00:20:13.530 --> 00:20:16.039
+pawan: Yeah, that's… that seems good for us.
+
+116
+00:20:22.480 --> 00:20:25.020
+Parithosh Jayanthi: Yes, this is for DevNet 5.
+
+117
+00:20:29.940 --> 00:20:34.680
+Parithosh Jayanthi: Okay, it seems like most, if not all, clients have
+
+118
+00:20:34.850 --> 00:20:40.160
+Parithosh Jayanthi: agreed to that. If for any reason you guys feel like we're missing something, then…
+
+119
+00:20:40.440 --> 00:20:50.499
+Parithosh Jayanthi: Please reach out to us, and then we can still modify the timelines, but it takes a few days' worth of preparation to get these networks up, especially if it's over a couple thousand nodes.
+
+120
+00:20:50.640 --> 00:20:54.499
+Parithosh Jayanthi: So it would be nice if we know well in advance of time,
+
+121
+00:20:55.080 --> 00:20:56.969
+Parithosh Jayanthi: If we have to change our plans.
+
+122
+00:21:00.720 --> 00:21:09.540
+Parithosh Jayanthi: Okay, the next agenda item is, one from Alex. Do you want to talk about the temp check?
+
+123
+00:21:11.060 --> 00:21:13.220
+stokes: Yeah, sure. …
+
+124
+00:21:13.760 --> 00:21:28.539
+stokes: This ties in a bit with timing, for Sokka, and yeah, I guess one thing we could do here is couple the hoodie release with the mainnet release, and I just wanted to make sure that was okay with everyone.
+
+125
+00:21:29.000 --> 00:21:31.559
+stokes: Rather than have, like, a distinct mainnet release.
+
+126
+00:21:31.850 --> 00:21:35.829
+stokes: It would just help us pipeline things a bit, and compress.
+
+127
+00:21:36.120 --> 00:21:38.319
+stokes: Otherwise, what would just be some downtime?
+
+128
+00:21:40.710 --> 00:21:42.469
+stokes: Anyone have any issues with that?
+
+129
+00:21:44.370 --> 00:21:49.950
+stokes: like, we have precedent for having test next coupled, and I feel like we've done this before, where it's…
+
+130
+00:21:50.090 --> 00:21:53.179
+stokes: say a testnet and mainnet, but I just wanted to make sure.
+
+131
+00:21:56.350 --> 00:22:03.470
+pawan: what would be the gap between the actual hoodie folk time and mainnet folk time? Is that the same, or like.
+
+132
+00:22:03.470 --> 00:22:07.619
+stokes: Yeah, that's a good question. So…
+
+133
+00:22:07.880 --> 00:22:13.220
+stokes: I think the exact dates are gonna depend a bit on how, like, the next few weeks go with the DevNets and…
+
+134
+00:22:13.630 --> 00:22:16.500
+stokes: say, Sepulia and Holushki?
+
+135
+00:22:16.880 --> 00:22:21.219
+stokes: But yeah, I think I was thinking something…
+
+136
+00:22:21.850 --> 00:22:26.849
+stokes: Okay, so we have this invariant of having a month between the release and mainnet.
+
+137
+00:22:27.090 --> 00:22:30.209
+stokes: I think we could have hoodie somewhere in between that month.
+
+138
+00:22:30.610 --> 00:22:34.269
+stokes: So then, to answer your question, yeah, something like 2-3 weeks.
+
+139
+00:22:39.740 --> 00:22:46.089
+pawan: I think in that case, like… like you said, it would depend on how the other testnet folks go, like, if…
+
+140
+00:22:46.880 --> 00:22:55.559
+pawan: Yeah, if the other testnet folks go pretty smoothly, then I think we'd be a little more confident to have, like, a smaller gap, otherwise…
+
+141
+00:22:55.960 --> 00:22:58.440
+pawan: Yeah, we would maybe want to have a bigger gap.
+
+142
+00:23:05.510 --> 00:23:06.760
+stokes: Yeah. Okay.
+
+143
+00:23:10.920 --> 00:23:19.519
+Parithosh Jayanthi: Okay, yeah, I guess we're going to be discussing this more and more over the next couple of weeks and months, so… yeah, this was a September check.
+
+144
+00:23:20.350 --> 00:23:23.460
+Parithosh Jayanthi: Any other Fusaka topics?
+
+145
+00:23:26.170 --> 00:23:39.369
+Parithosh Jayanthi: Yeah, I think Roman's asking, do we have a tentative target date on when we decide testnet timestamps? Do we do this after DevNet 5, or do we want to do so, earlier than DevNet 5? What is our blocker here?
+
+146
+00:23:45.060 --> 00:23:47.690
+stokes: To me, it's mainly DevNet 5, so…
+
+147
+00:23:47.830 --> 00:23:53.100
+stokes: If DevNet5 goes well, we can also do this, like, BPO analysis. We wanted to do it with DevNet4.
+
+148
+00:23:53.490 --> 00:24:04.450
+stokes: That should give us numbers we feel comfortable with for mainnet, which we would then also use for all the testnets. So, assuming DevNet 5 goes well, then we can look to schedule Holushki and Sepolia.
+
+149
+00:24:04.860 --> 00:24:06.439
+stokes: I think pretty soon after that.
+
+150
+00:24:08.630 --> 00:24:15.910
+Parithosh Jayanthi: Okay, that sounds reasonable. I think we'll try and have the DevNet 5 analysis up as soon as possible after.
+
+151
+00:24:16.100 --> 00:24:18.969
+Parithosh Jayanthi: I think Sam's already working on a lot of the…
+
+152
+00:24:19.220 --> 00:24:28.650
+Parithosh Jayanthi: the Jupyter notebooks, etc, so that once the data is there, it should be quite straightforward to plug in the data and then get an analysis out.
+
+153
+00:24:32.640 --> 00:24:41.619
+Parithosh Jayanthi: Yeah, and we were also talking about reducing the amount of time between BPOs for DevNet 5, so it won't take a week-long testnet, but it might be a bit shorter.
+
+154
+00:24:41.830 --> 00:24:47.549
+Parithosh Jayanthi: But yeah, I'm… I think we'll release a full spec for DevNet 5 and so on over the course of the week.
+
+155
+00:24:50.590 --> 00:24:55.349
+Justin Traglia: Do you have an idea of what the time between BPO work should be? Like, 12 hours?
+
+156
+00:24:55.350 --> 00:25:09.660
+Parithosh Jayanthi: 8 hours. I think about 12-ish hours, sounds reasonable, and then we do want to collect some data with MEV as well, so maybe 12 hours plus another few hours of MEV worth of data, MEV-style data, and then so on.
+
+157
+00:25:10.400 --> 00:25:12.289
+Justin Traglia: Sure. Yep, that sounds good.
+
+158
+00:25:19.310 --> 00:25:33.089
+Parithosh Jayanthi: Yeah, I think Casey's asking for potentially a written, DevNet and release timeline, but maybe that can be, for all core devs on ETH R&D, or somewhere where we can discuss it a bit more async?
+
+159
+00:25:34.650 --> 00:25:43.680
+stokes: Yeah, I can put something in the next few days somewhere, and definitely, yeah, we'll discuss by this week's ACD.
+
+160
+00:25:44.370 --> 00:25:47.689
+stokes: Well, yeah, let's discuss there. But I'll get something async before that.
+
+161
+00:25:49.140 --> 00:25:50.850
+Parithosh Jayanthi: Okay, thank you.
+
+162
+00:25:51.510 --> 00:25:54.100
+Parithosh Jayanthi: Any other Fusaka-related topics?
+
+163
+00:25:57.120 --> 00:26:03.520
+Parithosh Jayanthi: Were there any other bugs on the DevNet last spec clarifications we needed to get checked out?
+
+164
+00:26:08.860 --> 00:26:20.030
+Justin Traglia: There was a typo in the most recent release, one of the new configuration variable names. I posted a comment about it on Discord, but just know it'll be fixed in the next release.
+
+165
+00:26:23.300 --> 00:26:25.609
+Parithosh Jayanthi: Okay, perfect. Thank you.
+
+166
+00:26:27.290 --> 00:26:34.459
+Parithosh Jayanthi: Next topic on the agenda is, gas limit and bloatnet slash Performance DevNet updates.
+
+167
+00:26:35.270 --> 00:26:51.589
+Parithosh Jayanthi: So we have an update from the sync test. We're able to get sync tests running well on Geth as well as Bezu. Both of these clients also offer a flag similar to a required block, which has been very helpful on these smaller shadow folks in terms of finding peers.
+
+168
+00:26:52.620 --> 00:27:11.360
+Parithosh Jayanthi: The others are struggling to either find peers or maintain their peers, so it would be great if Nethermine, Wrath, and Aragon could provide us with a similar flag. We flagged this in the state floor channel as well, but if for some reason you're not on the channel, or you want to discuss this, then, …
+
+169
+00:27:11.480 --> 00:27:16.860
+Parithosh Jayanthi: yeah, please DM someone from the PandaOps team, and we'll put you in the right channels.
+
+170
+00:27:20.520 --> 00:27:30.340
+Parithosh Jayanthi: And is someone on the Bezu team here who wants to talk about 60 million gas update? I see that they had a comment on the PM repo about it.
+
+171
+00:27:34.400 --> 00:27:50.229
+Luis Pinto | Besu: Yeah, I can share some updates. So, we've noticed that we are highly impacted by the divisions, so Maude, Steve, and we are working on that. We've tried, …
+
+172
+00:27:50.360 --> 00:28:08.640
+Luis Pinto | Besu: couple things, to avoid, a big overhaul, but I think we are gonna have to, do the NUTS implementation from scratch in Java, avoiding all the libraries, so, yeah, we're working on it, right now.
+
+173
+00:28:09.570 --> 00:28:16.389
+Luis Pinto | Besu: And… I had some more updates from Simon.
+
+174
+00:28:16.580 --> 00:28:20.910
+Parithosh Jayanthi: Could you clarify which, library you're talking about?
+
+175
+00:28:20.910 --> 00:28:23.790
+Luis Pinto | Besu: The big integers, Java library.
+
+176
+00:28:24.110 --> 00:28:25.220
+Parithosh Jayanthi: Got it, okay.
+
+177
+00:28:25.410 --> 00:28:26.030
+Luis Pinto | Besu: Yep.
+
+178
+00:28:26.280 --> 00:28:29.630
+Luis Pinto | Besu: We… we have some kind of… we have a bit of, …
+
+179
+00:28:29.760 --> 00:28:47.920
+Luis Pinto | Besu: memory churn, object churn, because of the big integer, which we would like to avoid to… to make things faster. So we… we need to do, arithmetics directly on the… on the, on the bytes, or, or primitive arrays, basically.
+
+180
+00:28:50.680 --> 00:28:56.039
+Luis Pinto | Besu: N… Just give me a second, I have a… I had an update from Simon.
+
+181
+00:28:57.150 --> 00:28:59.640
+Luis Pinto | Besu: which I'm trying to… look for…
+
+182
+00:29:04.070 --> 00:29:08.120
+Luis Pinto | Besu: Yeah, so he says also that there's no EC recovery issues.
+
+183
+00:29:09.310 --> 00:29:13.630
+Luis Pinto | Besu: … Yeah, and so we're working on this, …
+
+184
+00:29:13.800 --> 00:29:20.310
+Luis Pinto | Besu: on these benchmarks that now run EAST opcodes, or, test cases.
+
+185
+00:29:20.620 --> 00:29:25.220
+Luis Pinto | Besu: Which we hadn't had a chance to run on our benchmarking.
+
+186
+00:29:26.060 --> 00:29:32.389
+Luis Pinto | Besu: … And next, unblocking 6 million gas, by improving EC ads.
+
+187
+00:29:32.560 --> 00:29:46.410
+Luis Pinto | Besu: We also need to work on that, but it's now less urgent given the other problems that we have with more basic opcodes, like division, and so on.
+
+188
+00:29:47.230 --> 00:29:50.850
+Luis Pinto | Besu: Yeah, that's pretty much it, what he passed along.
+
+189
+00:29:51.450 --> 00:30:01.859
+Parithosh Jayanthi: Okay, perfect. Thank you. And do we have someone from the Geth team who wants to talk about maybe their bottlenecks, or would they prefer to do that async later?
+
+190
+00:30:05.400 --> 00:30:12.329
+Marius van der Wijden: I can quickly talk about it. We haven't… like, the big one, the only big one is Modex.
+
+191
+00:30:12.680 --> 00:30:18.050
+Marius van der Wijden: And we haven't, resolved our strategy, how to move forward with it.
+
+192
+00:30:18.170 --> 00:30:26.800
+Marius van der Wijden: We have 3 different ideas. Either we go with, with, GMP, Or we, …
+
+193
+00:30:27.000 --> 00:30:31.429
+Marius van der Wijden: We make a proposal to update the standard library.
+
+194
+00:30:31.610 --> 00:30:36.740
+Marius van der Wijden: Or we pick some of the edge cases in our own code.
+
+195
+00:30:37.640 --> 00:30:45.880
+Marius van der Wijden: All of these three different ideas have different drawbacks, and we are still debating, how to go forward with it.
+
+196
+00:30:46.730 --> 00:30:49.840
+Marius van der Wijden: But it should… We should at least…
+
+197
+00:30:49.980 --> 00:30:57.860
+Marius van der Wijden: resolve which way to go forward, this week, and then we're… depending on the strategy chosen.
+
+198
+00:30:57.980 --> 00:31:04.469
+Marius van der Wijden: It would take, us a bit to… to get there. But it's also…
+
+199
+00:31:05.580 --> 00:31:10.029
+Marius van der Wijden: I think the general consensus is we don't feel like…
+
+200
+00:31:10.480 --> 00:31:14.750
+Marius van der Wijden: ModeX is something that will keep us from reaching 60 million.
+
+201
+00:31:15.520 --> 00:31:16.690
+Marius van der Wijden: At this point.
+
+202
+00:31:19.760 --> 00:31:22.940
+Parithosh Jayanthi: Yeah, thank you for the update.
+
+203
+00:31:23.920 --> 00:31:35.510
+Parithosh Jayanthi: And next on the list is, Carlos, do you have any updates or anything you want to talk about, relating to state growth? Or would you prefer to do that next week?
+
+204
+00:31:37.910 --> 00:31:50.260
+CPerezz: Yeah, not much to that from my… I just came back from out of office today, so yeah, not much to say now. Working on all of the test cases we already defined, and waiting on…
+
+205
+00:31:50.410 --> 00:32:01.390
+CPerezz: Ref to… to get back to us on the questions we have for client teams, such that we can complete all of the test cases, and we can move forward with implementing as much as possible.
+
+206
+00:32:02.610 --> 00:32:04.500
+Parithosh Jayanthi: Perfect. Thank you.
+
+207
+00:32:07.470 --> 00:32:10.890
+Parithosh Jayanthi: Okay, the next topic was, …
+
+208
+00:32:11.200 --> 00:32:17.959
+Parithosh Jayanthi: I wanted to get a temp check on clients' opinions on tools like OpenTelemetry.
+
+209
+00:32:18.070 --> 00:32:31.410
+Parithosh Jayanthi: So, one of the things we've been noticing is it's getting extremely hard to, sort of, deduce data just from pure Prometheus metrics, or from logs. Both of those are not very easy to do any data-driven analysis.
+
+210
+00:32:31.500 --> 00:32:45.049
+Parithosh Jayanthi: Especially if you're going down more on the performance optimization route, it might make sense for us to have a standard system, something similar to OpenTelemetry that clients implement, and we can ingest and use that as a comparison point.
+
+211
+00:32:45.170 --> 00:33:00.060
+Parithosh Jayanthi: It's completely opt-in. I would assume that it's even disabled by default, and we just run them on the performance images, as and when required, but it could also be something that's never merged into master, but lies in the performance branches of clients.
+
+212
+00:33:00.620 --> 00:33:11.359
+Parithosh Jayanthi: Yeah, we just wanted to get a temp check on how this is, how plants feel about this. It could also be very useful for the future when we're talking about gas repricing.
+
+213
+00:33:11.750 --> 00:33:13.919
+Parithosh Jayanthi: In terms of, …
+
+214
+00:33:14.090 --> 00:33:27.920
+Parithosh Jayanthi: Yeah, figuring out if we've actually priced the gas correctly according to all the clients. Like, benchmarks are sort of treating it like a black box, but OpenTelemetry would give us actual data from each client as to how the performance is.
+
+215
+00:33:29.240 --> 00:33:38.239
+Parithosh Jayanthi: Yeah, I know that Prism has OpenTelemetry already, and wanted to know if, yeah, other clients have opinions on this.
+
+216
+00:33:45.440 --> 00:33:52.250
+Parithosh Jayanthi: To Alexi's point, we can maybe compile some examples, or do you have something? Yeah.
+
+217
+00:33:52.760 --> 00:33:59.519
+Parithosh Jayanthi: Okay, I don't think we have an example directly right now, but we can share some on OrcoDevs and maybe…
+
+218
+00:33:59.740 --> 00:34:01.990
+Parithosh Jayanthi: Yeah, see how clients feel about it there.
+
+219
+00:34:09.100 --> 00:34:09.900
+Parithosh Jayanthi: Okay.
+
+220
+00:34:10.790 --> 00:34:18.599
+Parithosh Jayanthi: Yeah, we'll talk about that async then. The next topic on the agenda was, …
+
+221
+00:34:18.929 --> 00:34:26.130
+Parithosh Jayanthi: EPBS update? Do we have someone from the EPBS working group who can give us an update on how things are going?
+
+222
+00:34:30.239 --> 00:34:36.020
+terence: POTUS is not here. I guess I can give a quick update. So, …
+
+223
+00:34:36.139 --> 00:34:47.470
+terence: Let's see, so this Friday, first of all, this Friday, there's a breakout call, so highly encourage you people to join the breakout call if you're working on EPBS, or looking at Glemson Day in general.
+
+224
+00:34:47.620 --> 00:34:50.079
+terence: Other than that, …
+
+225
+00:34:50.210 --> 00:34:59.880
+terence: I have been mostly focused on, consensus spec tests and consensus spec update on EPBS side.
+
+226
+00:34:59.910 --> 00:35:03.989
+terence: And, the… currently, the SPAT tests have pretty good
+
+227
+00:35:03.990 --> 00:35:20.239
+terence: not pretty good coverage, but struggling to have coverage on just basic, like, SSC structures, so you can run SSE spat tests. There are a few, like, open questions where I'm still resolving that it's just, like, some of the renaming things.
+
+228
+00:35:20.240 --> 00:35:24.109
+terence: Making sure the fields are in the right position and stuff like that.
+
+229
+00:35:24.110 --> 00:35:39.099
+terence: I don't want to, like, go over them so much in detail, because, like, it's still relatively early-ish, but then I do think, like, this will be brought up in the EPBS breakout code, if you want to pay attention to… if you… if you want to follow those.
+
+230
+00:35:39.100 --> 00:35:59.519
+terence: But yeah, but currently, I think most of the focus on just getting this back in the right stage that, like, a client can start implementing it, and, which I do believe client can start experimenting it already and give feedback, because, like, Tagu and Prism already had a finalized DevNet earlier this year, and then, other than that, yeah, it's basically just fact changes, so yeah.
+
+231
+00:35:59.920 --> 00:36:02.059
+terence: Happy to take any questions, feedback.
+
+232
+00:36:06.150 --> 00:36:13.639
+Parithosh Jayanthi: Cool. Is there anything you guys feel like you need from a testing or tooling point of view, or is everything okay there?
+
+233
+00:36:14.550 --> 00:36:34.130
+terence: In terms of tuting, I think once we have some prototy stuff then running, we definitely need tooling just making sure DORA can show, like, the right page, making sure, like, for example, like, 4K, the four choice, also can consider, like, the notions of, like, an empty slot, for example.
+
+234
+00:36:34.130 --> 00:36:52.309
+terence: And I think there will be a lot of tuning, like, a lot of tuning, like, needs to be updated. I think it may be good to start thinking about this, like, what type of tooling may be affected in the EPBS land. But yeah, definitely a lot.
+
+235
+00:36:52.310 --> 00:36:56.739
+terence: And, yeah, I think it's probably good to start sooner or later.
+
+236
+00:36:58.290 --> 00:37:02.509
+Parithosh Jayanthi: Okay, cool. I think we can put that on our plate for once.
+
+237
+00:37:02.960 --> 00:37:06.870
+Parithosh Jayanthi: Yeah, probably in the next month, we should be able to start looking into it.
+
+238
+00:37:08.490 --> 00:37:13.979
+Parithosh Jayanthi: Do we have Tony or someone else for an update for block-level access lists?
+
+239
+00:37:16.030 --> 00:37:17.399
+Toni Wahrstaetter: Yes, I'm here.
+
+240
+00:37:18.400 --> 00:37:25.729
+Toni Wahrstaetter: Yeah, quick update, we have a breakout call on Wednesday, 2PM UTC, so…
+
+241
+00:37:26.150 --> 00:37:30.430
+Toni Wahrstaetter: For everyone interested, please show up. The main topics will be
+
+242
+00:37:30.630 --> 00:37:34.839
+Toni Wahrstaetter: some final discussions about the scope of the EAP, and also then getting into
+
+243
+00:37:35.000 --> 00:37:41.099
+Toni Wahrstaetter: testing, specs, and yeah, how to get to a definite.
+
+244
+00:37:43.620 --> 00:37:57.180
+Parithosh Jayanthi: Cool. I think we merged in support slash have support for Glamsterdam fork activation on our Genesis tools, so it should work on Kurtosis as well, in case you guys are ready for local testing.
+
+245
+00:38:03.690 --> 00:38:04.920
+Toni Wahrstaetter: Perfect, yakra.
+
+246
+00:38:06.680 --> 00:38:12.419
+Parithosh Jayanthi: Okay, Sunnyside Labs, do you guys have an update? Do you want to share anything?
+
+247
+00:38:14.180 --> 00:38:28.420
+Minhyuk Kim: Now, we don't have any reports this week, but we, our current work is, analyzing some issues with Perfect PureDesk Network, so we have a few issues that we have identified in a few clients and are communicating
+
+248
+00:38:28.570 --> 00:38:40.159
+Minhyuk Kim: directly with the client teams. And another thing that we are working on is we are building a chaos testing tool to try to stress the network in a more aggressive way, so…
+
+249
+00:38:40.220 --> 00:38:49.740
+Minhyuk Kim: Like, in addition to applying stress to, like, RAM or CPU, you're also adding features like, splitting the network into half.
+
+250
+00:38:49.990 --> 00:38:57.699
+Minhyuk Kim: And Trying to see if the network progresses as usual after merging the network back in.
+
+251
+00:38:57.840 --> 00:39:05.450
+Minhyuk Kim: So if you guys have any specific chaos testing scenarios or things you guys would like to test, you can
+
+252
+00:39:05.640 --> 00:39:08.860
+Minhyuk Kim: try to simulate it in our DevNets.
+
+253
+00:39:12.520 --> 00:39:18.240
+Parithosh Jayanthi: Awesome. Thank you, really looking forward to those PRs and awesome job with the chaos testing stuff.
+
+254
+00:39:19.940 --> 00:39:27.110
+Parithosh Jayanthi: We have an open floor now in some time, so are there still any open topics that people want to bring out?
+
+255
+00:39:36.120 --> 00:39:45.850
+Parithosh Jayanthi: Okay, last call… And… if not, then that's it for today. Thank you all for joining.
+
+256
+00:39:47.440 --> 00:39:48.230
+Justin Traglia: Bye, everyone.
+
+257
+00:39:50.830 --> 00:39:51.569
+Andrew Ashikhmin: Thank you.
+
+258
+00:39:53.010 --> 00:39:53.569
+Fredrik: Thanks, bud.
+
+259
+00:39:53.570 --> 00:39:54.000
+Mario Vega: Thank you so much.
+
+260
+00:39:54.000 --> 00:39:54.969
+Marius van der Wijden: Gosh, bye.
+
+261
+00:39:55.720 --> 00:39:56.260
+lightclient: too.
+

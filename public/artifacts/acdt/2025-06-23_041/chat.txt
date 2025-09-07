@@ -1,0 +1,267 @@
+00:08:16	spencer-tb:	Gm! Ga!
+00:08:24	Mario Vega:	gm
+00:09:37	Mario Vega:	https://github.com/ethereum/pm/issues/1583
+00:13:22	Barnabas:	CL devs, whats the issue?
+00:13:27	Barnabas:	everyone seems to have peering issues
+00:13:53	Gabriel Trintinalia | Besu:	Is this the link for the hive tests? https://hive.ethpandaops.io/#/group/fusaka-devnet-2
+00:14:10	Enrico Del Fante (tbenr):	Replying to "everyone seems to ha..."
+
+BPO effect?
+00:14:43	Raúl Kripalani:	Reacted to "everyone seems to ha..." with 👀
+00:14:44	spencer-tb:	Replying to "Is this the link for..."
+
+Yeh! Just waiting for it to finish running
+00:14:51	Barnabas:	Replying to "everyone seems to ha..."
+
+I’m guessing its fork digest related issue?
+00:15:02	Łukasz Rozmej:	Does it makes sense to include 7907 in devnet 2 without it final spec?We have to now do 7907 just to modify it afterwards. Also benchmarks ect. are not representantive of final form.
+00:15:28	Gabriel Trintinalia | Besu:	Reacted to "Yeh! Just waiting fo..." with 👍
+00:15:40	Enrico Del Fante (tbenr):	Replying to "everyone seems to ha..."
+
+We are having issues around that area due to BPO fork digest changes. Still WIP
+00:16:20	jochem-brouwer:	I want to present something about 7907 benchmarks :)
+00:16:25	Roman:	Replying to "Does it makes sense ..."
+
+would’ve been a good point on ACDT last week or ACDE, but we already decided to go forward with the current spec
+00:16:43	Łukasz Rozmej:	Replying to "Does it makes sense ..."
+
+yeah I raised it on ACDE but was ingorred/speedrun
+00:17:04	Łukasz Rozmej:	Replying to "Does it makes sense ..."
+
+also lack of tests => increased chance of devnet 2 issues
+00:17:36	Ansgar Dietrichs:	Replying to "Does it makes sense ..."
+
+I proposed on acde to ship devnet-2 without 7907, but was told that “we had already added 7907 to devnet-2 on the previous acde, would be more work now to remove it again”
+00:17:49	Ansgar Dietrichs:	Replying to "Does it makes sense ..."
+
+seems late to revisit now
+00:17:57	Roman:	Reacted to "seems late to revisi..." with 👍
+00:18:01	Ansgar Dietrichs:	Replying to "Does it makes sense ..."
+
+but in principle I do agree, seems weird to have it in the devnet
+00:18:21	Roman:	Replying to "Does it makes sense ..."
+
+but i agree with your concern @Łukasz Rozmej in general and i do think there will be 7907 issues on devnet 2
+00:18:52	kasey:	Prysm is ready
+00:18:58	Gabriel Trintinalia | Besu:	Reacted to "I want to present so..." with 👍
+00:19:00	Łukasz Rozmej:	Replying to "Does it makes sense ..."
+
+all sounds like:https://i.pinimg.com/1200x/95/4e/0d/954e0db28bbc0a2d8cf6ce15212a26a6.jpg
+00:19:18	Roman:	Reacted to "all sounds like:
+htt..." with 😂
+00:19:37	Barnabas:	Please use  fusaka-devnet-2  branch name
+00:19:44	spencer-tb:	Replying to "Does it makes sense ..."
+
+Looks like Reth/Besu/Nimbus/Erigon basically passing all EEST tests (initial 7907 tests).
+Haven’t checked Geth/Nethermind on the EL side yet.
+
+Tmo feels good. But yeah we need more tests for 7907! So could be issues.
+00:19:50	Barnabas:	We want to start using unified branch names for all future devnets
+00:19:58	Will Corcoran:	Reacted to "We want to start usi..." with ❤️
+00:19:59	Gabriel Trintinalia | Besu:	Reacted to "We want to start usi..." with 👍
+00:20:03	Roman:	Reacted to "We want to start usi..." with 👍
+00:20:08	Łukasz Rozmej:	Replying to "Does it makes sense ..."
+
+Nethermind doens't pass as the implementation isn't finished yet
+00:20:20	Ansgar Dietrichs:	Replying to "Does it makes sense ..."
+
+well devnet-2 could definitely be brought down with adversarial 7907 blocks
+00:20:36	J Sunnyside Labs:	Can I present our report from Berlin interpos from Sunnyside Labs?
+00:21:02	J Sunnyside Labs:	https://testinprod.notion.site/Sunnyside-Devnet-Updates-06-23-Internal-21b8fc57f54680639103d8b54c5f1500?pvs=143
+00:21:14	spencer-tb:	Reacted to "We want to start usi..." with ❤️
+00:21:14	Łukasz Rozmej:	Reacted to "I want to present so..." with 👍
+00:21:16	Ansgar Dietrichs:	what’s the general state of peerdas? how close are we to stability under realistic networking?
+00:21:56	felix (eest):	Reacted to "We want to start u..." with ❤️
+00:24:03	Mario Vega:	Reacted to "We want to start usi..." with ❤️
+00:24:10	Mario Vega:	Reacted to "We want to start usi..." with 👍
+00:26:49	Csaba Kiraly:	What did you mention was linearly scaling with blobs?
+00:27:24	Roman:	on `engine_getBlobsV2` is this PR smth we want in? why not just go back to the `engine_getBlobsV1` behaviour where the EL returns all available blobs (blob or null per versioned hash) 
+https://github.com/ethereum/execution-apis/pull/669
+00:27:42	Raúl Kripalani:	Replying to "on `engine_getBlobsV..."
+
+i can talk about this
+00:27:46	Roman:	Reacted to "i can talk about thi..." with 👍
+00:27:51	Mario Vega:	Reacted to "i can talk about thi..." with 👍
+00:30:53	Francesco:	@Minhyuk Kim here, is the number upload + download?
+00:31:37	Ansgar Dietrichs:	do we have anything like a “development timeline” for peerdas? like what are the remaining milestones between now and locking in the BPO numbers and forking the first testnet?
+
+and what would the (approximate) timelines for these milestones be?
+00:31:38	J Sunnyside Labs:	Replying to "Screenshot2025_06_23_162215.jpg"
+
+The upload/download not combined. Upload and download didn’t differ much
+00:31:47	Francesco:	Reacted to "The upload/download ..." with 👍
+00:31:59	Ansgar Dietrichs:	Replying to "do we have anything ..."
+
+are we on track for september testnet rollout? october? january?
+00:32:16	Minhyuk Kim:	Reacted to "The upload/download ..." with 👍
+00:32:20	Marius:	Why don't we just return partial responses always
+00:32:44	Marius:	It's a weird optimization anyway (not returning partial responses)
+00:33:26	Csaba Kiraly:	We first need the partial messaging (cell level messaging) in the CL
+00:33:30	Roman:	Reacted to "Why don't we just re..." with 👍
+00:33:36	Som | Erigon:	Reacted to Why don't we just re... with "👍"
+00:34:22	Mikhail Kalinin:	+1 to Marius
+00:34:33	Roman:	Reacted to "+1 to Marius" with 👍
+00:34:41	Barnabas:	Replying to "Screenshot2025_06_23_162215.jpg"
+
+how many validators did the full nodes have?
+00:35:02	FLCL:	it's weird to return useless result
+00:35:40	Mikhail Kalinin:	can we introduce getBlobsV3 with a new semantics later on?
+00:35:42	Csaba Kiraly:	I still think some kind of notification interface, and then a get blobs that fetches them, would be much better on the mid-term.
+00:35:54	Francesco:	Can we just agree to something here?
+00:36:06	Marius:	Replying to "it's weird to retu..."
+
+Its weird to make GetBlobs have an additional parameter imo
+00:36:27	spencer-tb:	Reacted to "can we introduce get..." with ➕
+00:36:41	FLCL:	Replying to "it's weird to return..."
+
+Yes
+00:36:54	Gabriel Trintinalia | Besu:	Reacted to "can we introduce get..." with ➕
+00:37:19	Minhyuk Kim:	Replying to "Screenshot2025_06_23_162215.jpg"
+
+@Barnabas we had 5000 validators with 100 validators in each node (50 total)
+00:37:21	Raúl Kripalani:	Thank you folks, this is very helpful to us.
+00:37:25	Mario Vega:	Reacted to "Thank you folks, thi..." with 👍🏼
+00:37:36	Minhyuk Kim:	Reacted to "Thank you folks, thi..." with 👍🏼
+00:37:52	Barnabas:	Replying to "Screenshot2025_06_23_162215.jpg"
+
+thats too many
+00:38:04	Barnabas:	Replying to "Screenshot2025_06_23_162215.jpg"
+
+full nodes should be around 8 validators not 50
+00:38:15	Barnabas:	at 50 validators you are almost custoding half of the columns
+00:38:35	Justin Traglia:	This is relevant: https://github.com/ethereum/pm/blob/master/processes/protocol-upgrade.md
+00:39:34	J Sunnyside Labs:	Reacted to "Thank you folks, thi..." with 👍🏼
+00:41:14	Phil Ngo:	@Minhyuk Kim For your future updates, would you be able to also post the version hash of the clients you’re using for the tests? That will help us know whether or not some optimizations were included or not with your test results
+00:41:47	felix (eest):	Reacted to "@Minhyuk Kim For y..." with 💡
+00:42:00	Minhyuk Kim:	Replying to "Screenshot2025_06_23_162215.jpg"
+
+that’s right.. I remember having some flag to fix 8 validators for full node before, but I probably have mixed them up.
+00:42:12	Barnabas:	Replying to "Screenshot2025_06_23_162215.jpg"
+
+you probably just want to have 8 validators
+00:42:13	J Sunnyside Labs:	Replying to "@Minhyuk Kim For you..."
+
+You can find our configs here: https://github.com/testinprod-io/fusaka-devnets
+00:42:20	Minhyuk Kim:	Replying to "Screenshot2025_06_23_162215.jpg"
+
+Yea will change that in the future tests
+00:42:20	J Sunnyside Labs:	Replying to "@Minhyuk Kim For you..."
+
+Same structure as EthPandaOps’
+00:42:20	Phil Ngo:	Reacted to "You can find our con..." with 🙏
+00:42:41	Francesco:	Reacted to "You can find our con..." with 🙏
+00:43:15	Minhyuk Kim:	Replying to "Screenshot2025_06_23_162215.jpg"
+
+but with more validators and custody, the network would be the more performant view of peerdas (a more really happy case), right?
+00:43:18	Gabriel Trintinalia | Besu:	Reacted to "You can find our con..." with 🙏
+00:45:16	Francesco:	Yes, it shouldn’t impact the overall performance. But it would mean that the fullnode bandwidth measurements might be much higher than they should be for a min custody node
+00:45:41	Andrés:	yes!
+00:46:25	Raúl Kripalani:	Reacted to "You can find our con..." with 🙏
+00:46:54	Minhyuk Kim:	Replying to "Screenshot2025_06_23_162215.jpg"
+
+Right, we will run a new devnet with proper validator count, and see how the bandwidth usage / other metrics compare with our previous tests
+00:46:59	Minhyuk Kim:	Replying to "Screenshot2025_06_23_162215.jpg"
+
+thank you guys!
+00:48:49	Roman:	is there a link to the pres pls?
+00:48:49	Ameziane Hamlat:	How are the tests executed ?
+00:49:29	Francesco:	Reacted to "Right, we will run a..." with 🙏
+00:49:36	Marius:	Tests are run on perfnet, transactions are send with a script, 1 30M tx at a time
+00:49:57	Francesco:	Replying to "Screenshot2025_06_23_162215.jpg"
+
+Still it’s very curious that lighthouse and grandine are using so much less bandwidth
+00:52:07	Raúl Kripalani:	Replying to "can we introduce get..."
+
+yes, but the convention is to upgrade at forks, right? so if we find say 48 blobs (~6MiB) to add a noticeable base64 serde-related penalty, we'd have to wait til Glamsterdam to roll out a new version -- that's what i was trying to hedge against (even though it's technically possible to roll out new versions without fork coordination)
+00:52:19	Ameziane Hamlat:	Ok thanks, we found a performance issue on ExtCodeSize on besu, will push the fix, if we can trigger them again
+00:57:33	Ansgar Dietrichs:	if we want to do it inside the state tree, we can’t possibly do it in Fusaka though
+00:57:40	Łukasz Rozmej:	verkle fixed this :D
+00:57:54	Ansgar Dietrichs:	Replying to "if we want to do it ..."
+
+in general, I would argue any index is just too last minute for Fusaka
+00:58:13	Ansgar Dietrichs:	Replying to "if we want to do it ..."
+
+I think we need to benchmark whether it is robust enough even without index. if not, I don’t see a responsible way to ship this in fusaka
+01:01:46	Ansgar Dietrichs:	how many EL clients looked into the code size index at all so far? how confident are we that we will have everything we need to make a final decision on that by acde in 10 days?
+01:02:17	Barnabas:	devnet 3 should only have repricing EIPs
+01:02:21	jochem-brouwer:	To be clear: you need this cache/index, otherwise you have this disk read DoS vector for current spec of EIP
+01:02:25	Gabriel Trintinalia | Besu:	Replying to "how many EL clients ..."
+
+wip yet
+01:02:33	Mario Vega:	Reacted to "devnet 3 should only..." with 👍🏼
+01:02:34	Ansgar Dietrichs:	Replying to "devnet 3 should only..."
+
+well there is already the agreed upon 7907 PR
+01:02:35	jochem-brouwer:	(esp. if code size is 256 KiB then you can read > 3GB of data if you dont have this index)
+01:02:37	Roman:	Replying to "devnet 3 should only..."
+
+and lightclient’s 7907 PR?
+01:02:42	Ansgar Dietrichs:	Reacted to "and lightclient’s 79..." with 👍
+01:02:43	Roman:	Replying to "devnet 3 should only..."
+
+well there is already the agreed upon 7907 PR
+this
+01:02:58	Łukasz Rozmej:	Reacted to "(esp. if code size i..." with 👍
+01:03:03	spencer-tb:	Replying to "devnet 3 should only..."
+
+Repricing plus eip tweaks!
+01:03:12	Łukasz Rozmej:	Replying to "(esp. if code size i..."
+
+we agreed on 48KB though
+01:03:12	spencer-tb:	Replying to "devnet 3 should only..."
+
+7918 param change too
+01:03:42	jochem-brouwer:	Antwoord verzenden naar "(esp. if code size..."
+
+then eip has to be updated, it now points to 256 kib
+01:03:49	Łukasz Rozmej:	Replying to "(esp. if code size i..."
+
+yes
+01:03:54	jochem-brouwer:	Heeft gereageerd op "yes" met 👍
+01:03:54	Łukasz Rozmej:	Replying to "(esp. if code size i..."
+
+there is an unmerged PR
+01:04:07	jochem-brouwer:	Antwoord verzenden naar "(esp. if code size..."
+
+right but that is spec for devnet-3, right? not devnet-2
+01:04:24	Łukasz Rozmej:	Replying to "(esp. if code size i..."
+
+https://github.com/ethereum/EIPs/pull/9910
+01:04:25	Ansgar Dietrichs:	what if we get to conclusion that even at 48kb this is not safe for mainnet at 100M without the code size index? then we need to be ready to make a full decision on the index by next week
+01:04:28	Roman:	Reacted to "https://github.com/e..." with 👍
+01:04:36	Mario Vega:	Reacted to "what if we get to co..." with 👍🏼
+01:04:46	Łukasz Rozmej:	Replying to "(esp. if code size i..."
+
+yes I was complaining above that it doesn't make any sense to do devnet-2 with current spec
+01:04:53	Marius:	Reacted to "what if we get to ..." with 👍🏼
+01:04:53	Roman:	Reacted to "what if we get to co..." with 👍🏼
+01:05:09	Gabriel Trintinalia | Besu:	Reacted to "what if we get to co..." with 👍🏼
+01:05:10	Ansgar Dietrichs:	Replying to "what if we get to co..."
+
+as I was saying, I don’t think the index is a responsible thing to do, so if we need it to be safe, I will argue for pulling the EIP completely
+01:05:45	Gabriel Trintinalia | Besu:	it is too late for devnet 2
+01:05:49	jochem-brouwer:	Heeft gereageerd op "it is too late for..." met 👍
+01:05:56	Barnabas:	we already agreed that we won’t change this for devnet 2
+01:06:00	Ansgar Dietrichs:	right, we made the decision to go with the old 7907 spec for devnet-2, should stick to it now
+01:06:05	jochem-brouwer:	Heeft gereageerd op "right, we made the..." met 👍
+01:06:06	Gabriel Trintinalia | Besu:	Reacted to "right, we made the d..." with 👍
+01:06:07	Łukasz Rozmej:	Reacted to "what if we get to co..." with 👍🏼
+01:06:07	jochem-brouwer:	Heeft gereageerd op "we already agreed ..." met 👍
+01:06:08	Barnabas:	PR needs to be merged in and devnet 3 will target it
+01:06:11	Will Corcoran:	Reacted to "right, we made the d..." with 👍
+01:06:13	Barnabas:	Reacted to "right, we made the d..." with 👍
+01:06:15	spencer-tb:	Reacted to "PR needs to be merge..." with 🙏
+01:06:15	Ansgar Dietrichs:	Reacted to "PR needs to be merge..." with 👍
+01:06:18	felix (eest):	Reacted to "it is too late for..." with 👍
+01:06:19	felix (eest):	Reacted to "we already agreed ..." with 👍
+01:06:19	jochem-brouwer:	Ok sounds good :)
+01:06:19	felix (eest):	Reacted to "right, we made the..." with 👍
+01:06:26	Barnabas:	he is flying now
+01:06:26	Łukasz Rozmej:	Replying to "what if we get to co..."
+
+why index is not good?
+01:06:33	Francesco:	He’s in flight afaik
+01:06:40	Ansgar Dietrichs:	Replying to "he is flying now"
+
+sounds like dangerously close to the sun
+01:07:39	Gabriel Trintinalia | Besu:	byeee

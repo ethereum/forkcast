@@ -1,0 +1,114 @@
+00:04:57	Mario Vega:	gm
+00:05:03	lightclient:	gm
+00:05:14	Parithosh Jayanthi:	Gm
+00:05:56	nixo:	gm 🌞
+00:06:01	Alexey:	gm
+00:08:27	Trent:	Morning all
+00:09:28	pk910:	watchtower restarted a a few nodes due to image updates.  might be related, but not sure
+00:10:25	Barnabas:	ethpandaops/lighthouse:pawanjay176-blocks-then-columns  - lighthouse-geth-1 
+
+rest unstable
+00:10:48	pawan:	Sounds good, thanks
+00:11:18	pawan:	Yes please
+00:11:32	Barnabas:	https://grafana.observability.ethpandaops.io/d/MRfYwus7k/nodes?orgId=1&from=now-3h&to=now&timezone=browser&var-consensus_client=$__all&var-execution_client=$__all&var-network=fusaka-devnet-3&var-supernode=$__all&var-filter=ingress_user%7C%21~%7Csynctest.%2A&viewPanel=panel-34
+00:11:52	pk910:	blob spamming will resume shortly :)
+00:13:08	Enrico Del Fante (tbenr):	https://github.com/Consensys/teku/pull/9801/files#diff-2ccac92189e8015a51f5f55587e09706eaffa4ca949cbecae26e091f03eb5cdc
+00:13:25	Justin Traglia:	Reacted to "https://github.com/C..." with 👀
+00:13:28	pk910:	Reacted to "https://github.com/C..." with 👀
+00:13:30	Barnabas:	Reacted to "https://github.com/C..." with 👀
+00:13:31	James He:	Web3signer master branch has fulu changes ( even though the remote signer repo pr hasn’t been updated) so we can make sure to do some kurtosis testing with that soon. On remote signer support
+00:13:35	Barnabas:	ufff
+00:13:39	Barnabas:	yes we should have tested this
+00:13:40	terence:	can we add this to spec test please?
+00:13:41	felix (eest):	Reacted to "https://github.com..." with 👀
+00:13:49	Barnabas:	💯
+00:14:13	pk910:	we can fill up all the queues on devnet5 before fulu activation
+00:14:22	Barnabas:	Replying to "we can fill up all t..."
+
+assertoor test?
+00:14:24	Parithosh Jayanthi:	Reacted to "we can fill up all t..." with 👍🏽
+00:14:59	Barnabas:	we did consolidations before, but it wasn’t done during the fork boundry
+00:15:23	pk910:	Reacted to "assertoor test?" with 👍
+00:15:37	Enrico Del Fante (tbenr):	Reacted to "we did consolidation..." with 👍
+00:16:49	Parithosh Jayanthi:	Reacted to "we did consolidation..." with 👍
+00:17:52	Barnabas:	https://grafana.observability.ethpandaops.io/d/MRfYwus7k/nodes?orgId=1&from=now-3h&to=now&timezone=browser&var-consensus_client=$__all&var-execution_client=$__all&var-network=fusaka-devnet-3&var-supernode=$__all&var-filter=ingress_user%7C%21~%7Csynctest.%2A&viewPanel=panel-39 
+
+Head slot not advancing for a while on some nodes. Client teams. Please take a look at your client pairs and let us know if you wanna do something about it.
+00:20:20	stokes:	For devnet-5?
+00:20:22	Barnabas:	assuming we find nothing crazy on devnet 3 non finality
+00:20:25	Barnabas:	Reacted to "For devnet-5?" with 👍
+00:20:38	stokes:	Earlier the better 🙂
+00:20:45	stokes:	Reacted to "assuming we find not..." with 👍
+00:21:17	Mario Vega:	Reacted to "we did consolidation..." with 👍
+00:21:23	Barnabas:	Replying to "https://grafana.obse..."
+
+mainly lodestar/prysm nodes seem to be stuck
+00:23:00	Fredrik:	Three weeks sounds late in case something goes bad with hoodi
+00:23:21	Roman:	do we have a tentative target date when we’ll decide on testnet timestamps? or is it just after devnet 5?
+00:25:06	kasey:	@stokes  could you please write out a concrete devnet and release timeline if you are proposing a change? We previously talked about mainnet release on 10/1, and presumably moving things back by a week would also move that date to 10/8.
+00:25:36	kasey:	Yup for ACD would be great
+00:26:26	stokes:	Replying to "@stokes  could you p..."
+
+I’ve always proposed mainnet for 5 Nov
+00:26:41	stokes:	Replying to "@stokes  could you p..."
+
+Oh, you are talking about releases
+00:27:02	kasey:	Replying to "@stokes  could you p..."
+
+Yeah so were you thinking mainnnet releases 3 weeks before 11/5?
+00:27:09	stokes:	Replying to "@stokes  could you p..."
+
+Yeah, I think assuming everything goes well along the way there 10/1 would be good for mainnet (and hood) release
+00:27:33	Roman:	can the same not be achieved with trusted peers only flag?
+00:27:36	stokes:	Replying to "@stokes  could you p..."
+
+Yeah, we have this constraint that we want a month before the fork for mainnet releases
+00:27:49	Parithosh Jayanthi:	Replying to "can the same not be ..."
+
+Responded on the telegram chat why that’s hard
+00:27:56	stokes:	Replying to "@stokes  could you p..."
+
+So if we do 5 Nov for mainnet, we could do releases around 1-3 October
+00:28:26	CPerezz:	Replying to "can the same not be ..."
+
+Yep. TLDR: Enodes change between CI runs. Thus need to be updated upfront every single time
+00:29:01	kasey:	Replying to "@stokes  could you p..."
+
+Understood, ty
+00:29:14	Roman:	Replying to "can the same not be ..."
+
+let’s continue on tg
+00:29:34	CPerezz:	Replying to "can the same not be ..."
+
+kk
+00:31:21	CPerezz:	Replying to "can the same not be ..."
+
+Also @Roman . Would appreciate if you could reply a bit more exhaustively in: https://hackmd.io/WUe1KgwSS3iT8xoIbDg3Ng#Questions-for-Reth. Would be really useful and is the last client team missing. 
+
+If nothing to add, just LMK.
+00:32:42	Justin Traglia:	Opt-in or opt-out?
+00:32:59	Roman:	Replying to "can the same not be ..."
+
+ammending
+00:33:11	Preston Van Loon:	prysm has support for opentelemetry today
+00:33:33	James He:	I think we are using open telemetry already for tracing needs , would be cool to see an option in kurtosis for tracing etc without the external setup
+00:33:39	Alexey:	specific examples of tracking using ot?
+00:34:49	Parithosh Jayanthi:	Reacted to "I think we are using..." with 👍🏽
+00:35:02	Parithosh Jayanthi:	Replying to "I think we are using..."
+
+Yeah it should be relatively straightforward for us to add support on kurtosis
+00:36:40	Justin Florentine (Besu):	Besu supports OTEL today also
+00:37:22	pk910:	dora should already be prepared :)
+just need to update to latest gloas specs
+00:37:29	terence:	Reacted to "dora should already ..." with ❤️
+00:37:36	terence:	Replying to "dora should already ..."
+
+that's awesome!!
+00:37:42	Justin Traglia:	Reacted to "dora should already ..." with ❤️
+00:37:50	Barnabas:	Reacted to "dora should already ..." with ❤️
+00:38:08	Barnabas:	Can confirm gloas is already in latest main for ethereum package
+00:38:13	Mario Vega:	Could you share the date/time of the BAL breakout here pls?
+00:38:18	Toni Wahrstaetter:	yes one sec
+00:38:34	Toni Wahrstaetter:	https://github.com/ethereum/pm/issues/1691
+00:38:39	Toni Wahrstaetter:	This is the BAL breakout
+00:38:43	felipe:	Reacted to "https://github.com..." with 💯

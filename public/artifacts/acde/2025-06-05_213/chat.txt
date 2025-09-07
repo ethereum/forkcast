@@ -1,0 +1,1189 @@
+00:02:18	Gabriel Trintinalia | Besu:	gn gn
+00:02:40	Ansgar Dietrichs:	Reacted to "gn gn" with 🌇
+00:03:00	Ansgar Dietrichs:	gm (with the intention to scale the chain)
+00:03:08	Nicolas Consigny:	Reacted to "gm (with the intenti..." with 🚀
+00:03:27	Marius:	Can we have 2 min to talk about modexp the eips for devnet 1?
+00:04:13	Tim Beiko:	https://github.com/ethereum/EIPs/pull/9855
+00:04:35	Ahmad Bitar | Nethermind:	Hmmm, doesnt such discussion belong to ACDT?
+00:05:09	Tim Beiko:	Replying to "Hmmm, doesnt such di..."
+
+If urgent I think it’s fine to spend a couple mins on it here?
+00:05:11	nixo:	Reacted to "Hmmm, doesnt such di..." with ➕
+00:05:22	Ahmad Bitar | Nethermind:	Reacted to If urgent I think it... with "💯"
+00:05:28	Tim Beiko:	https://github.com/ethereum/pm/issues/1565
+00:06:59	Barnabas:	Do we still care about current devnet updates?
+00:07:50	Marius:	@tim nvm don't need any time for the modexp anyway
+00:08:09	Ansgar Dietrichs:	I could not make the acdt call, so the intention is to do an immediate jump to 60M?
+
+any specific reason to not do a step-wise increase?
+00:08:26	Justin Florentine (Besu):	he said "berlinterop" and i will never unhear that
+00:08:38	Parithosh Jayanthi:	Reacted to "he said "berlinterop..." with 😂
+00:08:45	Toni Wahrstaetter:	Reacted to "he said "berlinterop..." with 😂
+00:08:48	Luis Pinto | Besu:	Reacted to "he said "berlinterop..." with 😂
+00:08:49	milen:	Reacted to "he said "berlinterop..." with 😂
+00:09:01	Toni Wahrstaetter:	60m is safe with regards to the 10mib limit
+00:09:02	Marcin Sobczak:	Reacted to "he said "berlinterop..." with 😂
+00:09:05	Josh Davis:	Replying to "he said "berlinterop..."
+
+Glad its catching on
+00:09:06	felipe:	Reacted to "he said "berlinterop..." with 💯
+00:09:09	Barnabas:	Replying to "he said "berlinterop..."
+
+He should have said Forschungsingenieurtagung
+00:09:11	nixo:	Reacted to "he said "berlinterop..." with 💯
+00:09:14	nixo:	Reacted to "He should have said ..." with 😅
+00:09:15	Ameziane Hamlat:	Reacted to "60m is safe with reg..." with 👍
+00:09:18	Parithosh Jayanthi:	Reacted to "He should have said ..." with 😅
+00:09:20	Marcin Sobczak:	Reacted to "He should have said ..." with 😅
+00:09:22	Parithosh Jayanthi:	Reacted to "60m is safe with reg..." with 👍
+00:09:29	felix (eest):	Reacted to "He should have sai..." with 😅
+00:09:30	felipe:	Reacted to "He should have said ..." with 😂
+00:09:35	felipe:	Reacted to "He should have said ..." with 😅
+00:09:35	Amelia Bruno:	Reacted to "He should have said …" with 😅
+00:09:41	Sophia Gold:	Reacted to "60m is safe with r..." with 👍
+00:10:09	Marius:	60m is not safe with regards to execution times imo
+00:10:50	Justin Florentine (Besu):	when previously discussed, we're ok with 60, but past that,  not so much.
+00:10:56	Ansgar Dietrichs:	on one big vs multiple small steps: in my opinion it would be worth the one-time pain of going through the effort of getting node operators used to frequent changes of the recommended target gas level. yes, initially it will make each small step slower than a single one-time big step, but after that we will be in a much better spot
+00:10:56	Marius:	I modified one of the Nethermind test cases and it takes 2.7 seconds to execute as a statetest on geth
+00:11:07	Barnabas:	As a group there is not single answer.
+00:11:09	Francesco:	It’s very much possible to run at home at 60M
+00:11:14	Luis Pinto | Besu:	Besu tested a full node on Sepolia that’s not a validator and 60M was fine regarding attesting.
+That was a 4CPU on the cloud (don’t know the clock)
+00:11:17	Gary Schulte:	Reacted to "he said "berlinterop..." with 💯
+00:11:24	Łukasz Rozmej:	I (and few other in Nethermind) run Ethereum on home computer.
+00:11:37	Ansgar Dietrichs:	Micah, how does this in your mind relate to EIP-7870?
+00:12:04	Ansgar Dietrichs:	Replying to "Micah, how does this..."
+
+or is the idea that you think any node fulfilling these constraints should be able to run a high usage RPC node?
+00:12:26	Dankrad Feist:	99%+ of Ethereum users don't run a node at home today
+Even of those that do, most still use a public RPC
+
+I think these discussions are disconnected from reality
+00:13:10	Gary Schulte:	Reacted to "I (and few other in ..." with ➕
+00:13:35	Sophia Gold:	I think we're commited to provers outside of data centers, although it will likely require more expensive hardware than current validators
+00:13:44	Ansgar Dietrichs:	the “super high end datacenter builder” is a bit of a misrepresentation. yes, it is a *research direection* how much we can lean into an asymmetry between building and verifying the chain, especially once we have CR that doesn’t rely on builders
+00:13:54	Gary Schulte:	Replying to "99%+ of Ethereum use..."
+
+99.999% of internet users do not run an httpd server at home.
+00:13:54	Justin Florentine (Besu):	he's referring to our "fleet mode"
+00:14:03	Marius:	we don't have any numbers for state bloat etc yet. Bloatnet is a few weeks out afaik. So we shouldn't make any decisions on gas limit now
+00:14:11	Ansgar Dietrichs:	Replying to "the “super high end ..."
+
+nothing locked in roadmap wise
+00:14:17	FLCL:	Reacted to "99.999% of internet ..." with 👍
+00:14:18	Carl Beekhuizen:	Reacted to "we don't have any nu..." with 👍
+00:14:31	Barnabé Monnot:	Replying to "the “super high end ..."
+
+arguments for/against: https://ethresear.ch/t/decoupling-throughput-from-local-building/22004
+00:14:53	Barnabas:	Reacted to "we don't have any nu..." with 👍
+00:14:54	Micah Zoltu:	Anyone have a link to 7870?  Not coming up for me.
+00:15:03	Kamil Chodoła:	EIP-7870: Hardware and Bandwidth Recommendations
+00:15:07	mrabino1:	Curious… doesnt the zkevm verification narrative solve this? Wouldn’t a pragmatic path be to keep the course of at home users as the priority until zkevm verification is everywhere? My $0.02
+00:15:16	Tim Beiko:	https://eips.ethereum.org/EIPS/eip-7870
+00:15:20	Micah Zoltu:	Replying to "Curious… doesnt t..."
+
+It does not, you still need full head state.
+00:15:20	Fabio Di Fabio:	Reacted to "he's referring to ou..." with ❤️‍🔥
+00:15:26	Sina Mahmoodi:	IMO heavy workloads such as a 30Tb archive node which is processing tons of rpc requests should be integrated into the tests. Hearing reports that they are under strain even at beefy hardware. Note that the “full archive” nodes are required for serving historical eth_getProof requests so many entities still need them.
+00:15:32	Barnabas:	I think this should be discussed offline.
+00:15:32	mrabino1:	Reacted to "It does not, you sti..." with 👍
+00:15:34	Łukasz Rozmej:	Minimum in Nethermind is about 200+GB, without storing receipts and blocks. With proper 4444 and storing a bit, we can reasonably get to 300GB for a proper node.If you want history, pay for 4TB SSD and be done with it
+00:15:46	Justin Florentine (Besu):	off lining it is why we never talk about it
+00:15:54	Preston Van Loon:	There is also a diff between $2k device running on a fiber line at home vs a $10k machine that has to be in a colo data center. We can and should increase the requirements, but not so much that it isn't possible at all at home
+00:16:03	Łukasz Rozmej:	Replying to "IMO heavy workloads ..."
+
+Can Erigon 3 serve them with low disk footprint?
+00:16:04	Justin Florentine (Besu):	our values are changing, we should be explicit about it
+00:16:09	Micah Zoltu:	Reacted to "off lining it is w..." with 👍
+00:16:12	Justin Traglia:	Reacted to "There is also a diff..." with 👍
+00:16:14	Parithosh Jayanthi:	Reacted to "There is also a diff..." with 👍
+00:16:18	Francesco:	Reacted to "There is also a diff..." with 👍
+00:16:19	DA | Flashbots:	Reacted to "There is also a diff..." with 👍
+00:16:21	Tim Beiko:	@Marius can you expand a bit on what you’d want to see w.r.t. state?
+00:16:26	Micah Zoltu:	Reacted to "our values are cha..." with ☝️
+00:16:31	Gary Schulte:	Reacted to "There is also a diff..." with 👍
+00:16:31	Barnabas:	Replying to "off lining it is why..."
+
+then we should schedule time for this discussion
+00:16:35	Tim Beiko:	Reacted to "There is also a diff..." with 👍
+00:16:37	mrabino1:	Reacted to "There is also a diff..." with 👍
+00:16:45	Sina Mahmoodi:	Replying to "IMO heavy workloads ..."
+
+Can it serve ancient state proofs?
+00:17:06	ethDreamer (Mark):	Doesn’t verkle / L1-zkevm both address this concern?
+00:17:16	Micah Zoltu:	Replying to "off lining it is w..."
+
+That was what this was supposed to be I was told.
+00:17:18	Sina Mahmoodi:	Reacted to "we don't have any nu..." with 👍
+00:17:18	Łukasz Rozmej:	Replying to "our values are chang..."
+
+Are they though? Requirements are rising a bit, but it is due technical resons mostly.
+00:17:20	Tim Beiko:	Replying to "off lining it is why..."
+
+Ser
+00:17:25	Justin Florentine (Besu):	Replying to "off lining it is why..."
+
+no. this is literally where we plan the future of ethereum, if our values are not relevant here, then they are fake.
+
+your values are what you DO, not what you say.
+00:17:33	Łukasz Rozmej:	Replying to "IMO heavy workloads ..."
+
+no idea, I heard somewhere it can
+00:17:41	Łukasz Rozmej:	Replying to "IMO heavy workloads ..."
+
+would like to confirm
+00:17:42	Micah Zoltu:	Replying to "Doesn’t verkle / ..."
+
+No, you still need head state to use ethereum.
+00:17:51	Marius:	Replying to "@Marius can you ex..."
+
+I would like to see the results from bloatnet etc
+00:17:51	Ben Edgington:	Reacted to "no. this is literall..." with ❤️
+00:17:52	Justin Florentine (Besu):	Replying to "off lining it is why..."
+
+this is where we plan ACTION, material action.
+00:18:01	Gary Schulte:	conflating ethereum user with ethereum staker is a mistake
+00:18:11	Toni Wahrstaetter:	Reacted to "There is also a diff..." with 👍
+00:18:17	Sina Mahmoodi:	Replying to "IMO heavy workloads ..."
+
+The thing is if you have to store all trie nodes that ever existed it kind of takes space. So I doubt it. But will check!
+00:18:24	Ahmad Bitar | Nethermind:	Reacted to I (and few other in ... with "➕"
+00:18:25	Kamil Chodoła:	Reacted to "conflating ethereu..." with 👍
+00:18:25	Sina Mahmoodi:	Reacted to "conflating ethereum ..." with 👍
+00:18:34	Marius:	Median Ethereum users don't need decntralization, don't need censorship, they need a fast cheap casino
+00:18:43	Marius:	Not what we should be optimizing for imo
+00:18:55	felipe:	Reacted to "There is also a diff..." with 👍
+00:18:56	Marius:	Or we need to redesign ethereum from the ground up
+00:18:59	Ansgar Dietrichs:	Replying to "Median Ethereum user..."
+
+that’s a very cynical take on your users
+00:19:30	Bastin:	Replying to "Median Ethereum user..."
+
+it's not. it's a connected take to reality.
+00:19:39	Ben Edgington:	Replying to "Median Ethereum user..."
+
+Not cynical - we have a responsibility to plan for the worst case, not the average case.
+00:19:44	Barnabas:	I don’t want ethereum to become solana2. 
+
+I wanna be able to verify the chain at home.
+I think higher consumer hardware is acceptable up to about $5k range.
+I think bandwidth up to 100Mbps is acceptable. 
+Higher hardware could make sense, higher bandwidth probably not.
+00:19:45	Parithosh Jayanthi:	Replying to "off lining it is why..."
+
+@Justin Florentine (Besu) what value do you feel is being compromised? It’s been unrealistic to run a node on a low end non-dedicated machine for about ~5-6y now. You could always run ethereum on low end hardware dedicated for the purpose 6y ago, you can today and you likely can even at 60M or 100M gas. Beyond that, I agree it degrades, but we aren’t talking about those numbers yet.
+00:19:52	Kamil Chodoła:	Replying to "There is also a di..."
+
+7870 ones are far from datacenter ones - is like 100 usd/month machine ovh which we use for perf tests now.
+00:19:54	Gary Schulte:	Reacted to "Not cynical - we hav..." with 💯
+00:19:55	Josh Davis:	Reacted to "Not cynical - we hav..." with ➕
+00:19:58	Marius:	Reacted to "Not cynical - we h..." with 💯
+00:20:00	Marius:	Reacted to "Not cynical - we h..." with ➕
+00:20:11	Dustin:	incidentally, can the future of Portal-based 4444 be clarified?
+00:20:11	Marc:	Reacted to "There is also a diff…" with 👍
+00:20:11	Micah Zoltu:	Re https://eips.ethereum.org/EIPS/eip-7870, I have comments on the discussion thread for it, and I think a PR as well.
+00:20:15	Łukasz Rozmej:	Replying to "IMO heavy workloads ..."
+
+@Andrew Ashikhmin?
+00:20:30	Ansgar Dietrichs:	Replying to "conflating ethereum ..."
+
+That’s why EIP-7870 makes that distinction! I think we need to go further though, and also distinguish between simple full nodes and nodes that need the state, nodes that serve a high number of parallel rpc requests, etc
+00:20:30	Jared Wasinger:	Reacted to "Not cynical - we hav..." with 💯
+00:20:31	Marius:	Replying to "Median Ethereum us..."
+
+Maybe cynically phrased, sorry for that.
+00:20:31	Jared Wasinger:	Reacted to "Not cynical - we hav..." with ➕
+00:20:38	Francesco:	Replying to "I don’t want ethereu..."
+
+5k buys you a lot of ssds 😄 I don’t think almost anyone here is advocating for even this kind of requirements?
+00:20:50	Justin Florentine (Besu):	Replying to "Median Ethereum user..."
+
+not cynical, accurate indictment of recent changes in Ethereum direction tbh
+00:20:52	Francesco:	Replying to "I don’t want ethereu..."
+
+Let alone for datacenter chain
+00:20:54	FLCL:	light clients can cover rpc argumentwhat specific UX issues does Dankrad mean?
+00:20:57	Kamil Chodoła:	Replying to "I don’t want ethe..."
+
+5k you can get ryzen 9 with very very decent ram and disk and you will still have some to go for quite a few good lunches :D
+00:21:05	Som - Erigon:	Replying to "I don’t want ethe..."
+
+100mbps still a bit too high on average. 10mbps.
+An 8TB SSD is around $1000
+00:21:14	Micah Zoltu:	Replying to "off lining it is w..."
+
+Vitalik has a forum post that describes a path that could get us back to running on end-user hardware, so it isn't out of our reach.
+00:21:19	Gary Schulte:	Replying to "off lining it is why..."
+
+I have to disagree.  my $600 computer at home is not even breathing hard to keep up with mainnet and produce bespoke non-mev blocks.  I would call that low end
+00:21:28	Barnabas:	Replying to "I don’t want ethereu..."
+
+Exactly. So we have headroom in my books. We just have limited bandwidth. 
+
+Bandwidth is always going to be blocker.
+00:21:39	Sina Mahmoodi:	Replying to "light clients can co..."
+
+Which light client?
+00:21:42	Micah Zoltu:	Replying to "off lining it is w..."
+
+The issue is primarily storage, next bandwidth, not CPU.
+00:21:45	ethDreamer (Mark):	Replying to "Doesn’t verkle / L1-..."
+
+Your concern was state growth pricing out normal hardware? I’m not sure I understand why verkle or l1-zkevn would prevent you from having the head state?
+00:22:05	FLCL:	Replying to "light clients can co..."
+
+ones we need to develop
+00:22:05	Łukasz Rozmej:	Replying to "IMO heavy workloads ..."
+
+https://github.com/erigontech/erigon/issues/12984#issuecomment-2708213147 ah it is limited in time
+00:22:09	Parithosh Jayanthi:	Replying to "off lining it is why..."
+
+Happy to help debug that, but my $500 node from 2019 is still sitting at 20% CPU usage while being a full node.
+00:22:26	Ahmad Bitar | Nethermind:	Replying to "light clients can co..." 
+
+ Portal is dead, lightclient roadmap more dead
+00:22:27	Parithosh Jayanthi:	Replying to "off lining it is why..."
+
+And re:storage, I agree. This is why history expiry is really important to ship
+00:22:27	Tim Beiko:	https://github.com/ethereum/EIPs/pull/9855
+00:22:51	Micah Zoltu:	Replying to "Micah, how does th..."
+
+See my comments in the discussion thread, and/or my PR (I think I opened one) proposing some changes to it.
+00:22:53	Sina Mahmoodi:	Replying to "light clients can co..."
+
+Very hard to do log filtering in a light rpc
+00:22:53	Parithosh Jayanthi:	Replying to "off lining it is why..."
+
+We would gain ~500GB of space back on the node. Also history doesn’t need to be on SSD even today, HDD are ~8x cheaper than SSDs.
+00:22:57	Preston Van Loon:	Reacted to "7870 ones are far fr..." with 👍
+00:23:07	Sina Mahmoodi:	Reacted to "Portal is dead, ligh..." with 👍
+00:23:18	Justin Florentine (Besu):	Replying to "off lining it is why..."
+
+@Parithosh Jayanthi  i'm more concerned with the opacity around the changing ethereum values, less wrt to gas limit. i'm actually fine with 60M, and more opposed around 100M.
+
+mev builders and poor upstream bandwidth are far bigger threats than raw compute.
+00:23:41	Gary Schulte:	Reacted to "Happy to help debug ..." with ➕
+00:23:42	FLCL:	Replying to "light clients can co..."
+
+Portal is dead, lightclient roadmap more deadWhich means it's a direction we need to prioritize
+00:23:42	Barnabas:	Reacted to "@Parithosh Jayanthi ..." with 💯
+00:24:07	Gary Schulte:	Replying to "off lining it is why..."
+
+agreed.  can't build decentralized blocks with an empty tx pool
+00:24:20	Parithosh Jayanthi:	Replying to "off lining it is why..."
+
+Yup, hence the data collection from home stakers and only suggesting gas limits we know the network can handle
+00:24:25	Micah Zoltu:	Replying to "the “super high e..."
+
+To be clear, I'm not opposed to DC builders in general, though I do worry about resiliency when you start depending on too few actors.  See power outage in Spain vs power outage in Africa.  When outages are common, people have backups.  When outages are rare, people don't have backups.  When you have a small number of operators you can run into problems with there being no backups when they do go down.
+00:24:27	Preston Van Loon:	Replying to "There is also a diff..."
+
+Seems like a mac mini would work with 7870. Cost around 1 ETH too
+00:24:29	Parithosh Jayanthi:	Replying to "off lining it is why..."
+
+60M is possible on p99 of mainnet home stakers
+00:24:46	Sina Mahmoodi:	Replying to "IMO heavy workloads ..."
+
+Yes a full archive node is a huge pain that some entities will need to endure and it will only get worse.
+00:24:47	Justin Florentine (Besu):	Reacted to "60M is possible on p..." with 💯
+00:24:57	Parithosh Jayanthi:	Replying to "off lining it is why..."
+
+This is data that has actually been collected. The question is if we expose ourselves to security issues. That is what we’d like to spend the next tweek.
+00:25:12	Sina Mahmoodi:	Reacted to "Portal is dead, ligh..." with 💯
+00:25:22	Tim Beiko:	https://github.com/ethereum/EIPs/pull/9833
+00:25:38	Parithosh Jayanthi:	Replying to "off lining it is why..."
+
+We’d never stand behind a gas limit change that affects the home stakers we actively gather data from, or that would be pointed out explicitly for ACD to decide
+00:25:51	Kamil Chodoła:	Replying to "There is also a di..."
+
+We have perfnets, opcodes analysis etc - if we want we can put some "low-end" spec machine and run everything here and see how it is working out there.
+00:25:53	stokes:	Huge UX unlock
+00:26:05	Barnabas:	Reacted to "Huge UX unlock" with 💯
+00:26:07	Gary Schulte:	Replying to "off lining it is why..."
+
+it seems unreasonable to stake 6-7 figures worth of eth on low end hardware.  I’d expect the specs published recently (by Kev et al) should be future-proof for at least a couple hard forks
+00:26:07	Barnabas:	Reacted to "Huge UX unlock" with 🎉
+00:26:13	Ulaş Erdoğan | Clave:	Reacted to "Huge UX unlock" with ❤️
+00:26:27	Barnabas:	Replying to "Huge UX unlock"
+
+don’t think anyone opposed it before
+00:26:50	Tim Beiko:	Reacted to "We have perfnets, op..." with 👍
+00:27:00	Parithosh Jayanthi:	Replying to "off lining it is why..."
+
+Yup, but I guess this is Micah’s point. How do we showcase the full node perspective, not just home stakes perspective.
+00:27:04	Micah Zoltu:	Replying to "off lining it is w..."
+
+@Paritosh The few remaining people who casually run Ethereum on their consumer hardware already drop history and prune state.  The lowest you can get right now is under 100GB, and 4444 won't change this at all because those people already have locally implemented the equivalent.  The increase in gas limit will increase state growth and those people are the ones most impacted, not people who are storing all of history and disabling pruning.
+00:27:41	Łukasz Rozmej:	Replying to "IMO heavy workloads ..."
+
+do you know what are the use cases for full one?
+00:28:36	Parithosh Jayanthi:	Replying to "off lining it is why..."
+
+Sure, and what is the upper limit such a user is comfortable with? 500GB SSDs are 32 eur right now.
+00:28:40	Micah Zoltu:	Replying to "our values are cha..."
+
+I believe they are.  Bitcoin originally normalized it, and then Ethereum picked up on the ethos that people can do things from home, be it running your own Bitcoin node, or running totally private dapps.  This used to be a big focus of a lot of things, but it no longer seems to be.
+00:28:46	Barnabas:	Lets ship 7951 ✅
+00:28:52	Ansgar Dietrichs:	context: difference between recover and verify is that recover returns the signer address, but verify takes signer address as extra input and only returns true / false
+00:28:54	Ulaş Erdoğan | Clave:	Reacted to "Lets ship 7951 ✅" with 🔥
+00:29:00	Parithosh Jayanthi:	At 60gb/year, we have plenty of head room. Realistically no different of a headroom compared to 30gb/year.
+00:29:11	Marius:	yes
+00:29:26	Parithosh Jayanthi:	Reacted to "Lets ship 7951 ✅" with 🔥
+00:29:31	Gary Schulte:	Reacted to "Lets ship 7951 ✅" with 🔥
+00:29:37	Marius:	We have not started testing eips on the devnets yet
+00:29:39	FLCL:	Reacted to "don’t think anyone o..." with 😏
+00:29:47	Micah Zoltu:	Replying to "Doesn’t verkle / ..."
+
+It isn't a "pricing out" concern, it is a concern over how much free hard drive space people have on computers they have purchased for general usage at home.  >60% of gamers (as a demographic) for example have <500GB of free space.
+00:29:55	Ansgar Dietrichs:	Reacted to "Lets ship 7951 ✅" with 🔥
+00:30:00	Gary Schulte:	is the only 7951/7212 diff the security considerations?
+00:30:20	Tim Beiko:	EIP-5920: PAY opcode
+RIP-7212: Precompile for secp256r1 Curve Support
+EIP-7907: Meter Contract Code Size And Increase Limit
+EIP-7934: RLP Execution Block Size Limit
+00:30:31	Łukasz Rozmej:	Replying to "our values are chang..."
+
+but you can do it at home, at worst you have to buy a 4TB SSD, with Erigon3 you can have archive in 2TBthe only problematic thing is full-forest archive for eth_getproofs, but home-users don't really need it
+00:30:38	Gary Schulte:	Reacted to "our values are chang..." with ☝️
+00:30:47	Gabriel Trintinalia | Besu:	is eip-7907 making devnet 2?
+00:30:58	Barnabas:	Replying to "is eip-7907 making d..."
+
+thats what we are discussing now
+00:31:09	Gary Schulte:	Reacted to "but you can do it at..." with 👍
+00:31:17	Tim Beiko:	EIP-7594: PeerDAS - Peer Data Availability Sampling
+EIP-7823: Set upper bounds for MODEXP
+EIP-7825: Transaction Gas Limit Cap
+EIP-7883: ModExp Gas Cost Increase
+EIP-7892: Blob Parameter Only Hardforks
+EIP-7917: Deterministic proposer lookahead
+EIP-7918: Blob base fee bounded by execution cost
+EIP-7935: Set default gas limit to XX0M
+00:31:21	Ansgar Dietrichs:	Replying to "Doesn’t verkle / L1-..."
+
+right, zkEVM in itself only helps create very light weight stateless nodes.
+
+It also enables cpu-light stateful nodes (if they don’t need tracing / only selective tracing), but then ofc they still need to be able to handle the state at whatever larger size it will be
+00:31:22	Marius:	7212, 7934 don't care about the other two
+00:31:25	Barnabas:	ideally we wont have any more eips for devnet 3 btw. So whatever makes it in devnet2 will ship to fusaka
+00:31:31	Tim Beiko:	Reacted to "ideally we wont have..." with 👍
+00:31:57	spencer-tb:	Reacted to "ideally we wont have..." with 👍
+00:31:57	Roman:	Reth is for including RIP-7212 & EIP 7934. Was generally was supportive of 7907 but there is a long thread that I haven’t caught up on yet
+00:32:00	Łukasz Rozmej:	Replying to "our values are chang..."
+
+I will be the first to protest if I cannot profile Nethermind locally on my rig!
+00:32:03	Carl Beekhuizen:	Replying to "is the only 7951/721..."
+
+Effectively, yes.
+
+Bug patch
+Much higher quality spec
+Extensive tests (including all edge cases for possible internal cryptographic optimizations)
+00:32:19	Micah Zoltu:	Replying to "our values are cha..."
+
+"You can buy hardware that can be powered by standard 2kW residential circuits" is different from the original ethos of "you can run this on hardware you already have".
+00:32:29	Kamil Chodoła:	Reacted to "ideally we wont ha..." with 👍
+00:32:40	Parithosh Jayanthi:	Replying to "Doesn’t verkle / L1-..."
+
+I actually think this is a bad dataset to start with. If I decide to download Call of Duty, that’s about 500GB that’s used right there. So now the user has barely any free space. Is the ethereum node more important than call of duty?
+00:32:47	Parithosh Jayanthi:	Replying to "Doesn’t verkle / L1-..."
+
+And why can’t the user decide this for themselves?
+00:32:55	Hadrien Croubois (OpenZeppelin):	Replying to "is the only 7951/721..."
+
+7951 still behaves poorly when signature are wrong
+00:32:56	stokes:	Reacted to "ideally we wont have..." with 🫡
+00:33:04	Kamil Chodoła:	Reacted to "I actually think t..." with 👍
+00:33:28	Hadrien Croubois (OpenZeppelin):	Replying to "is the only 7951/721..."
+
+empty output for invalid signatures or invalid inputs is sooo bad
+00:33:38	Łukasz Rozmej:	Replying to "our values are chang..."
+
+but it is fine to make people buy hardware as long as it is cheap, buying $200 drive to run Ethereum is fine. People buy $500+ GPU's to just play games.
+00:34:02	Justin Florentine (Besu):	@Gabriel Trintinalia | Besu  is our point person for Fusaka
+00:34:12	Łukasz Rozmej:	Replying to "our values are chang..."
+
+most laptops come with miserable 1TB as default
+00:34:17	Nicolas Consigny:	Replying to "is the only 7951/721..."
+
+7212 you meant ?
+00:34:23	Nicolas Consigny:	Replying to "is the only 7951/721..."
+
+@Hadrien Croubois (OpenZeppelin)
+00:34:25	Łukasz Rozmej:	Replying to "our values are chang..."
+
+Apple's probably 256GB :D
+00:34:34	Parithosh Jayanthi:	Replying to "our values are chang..."
+
+Let’s not conflate numbers. The testing machines we use cost ~1k, are NUCs and were bought ~3y ago. We run a fleet of them. These machines are worth ~200 if bought second hand now. The SSD is worth more than the machine. Its a very far world away from 2kW residential machines.
+00:34:39	nixo:	justin’s in a bird sanctuary? 😍
+00:34:46	Nicolas Consigny:	Replying to "is the only 7951/721..."
+
+What is wrong in the new spec
+00:34:46	Barnabas:	Replying to "justin’s in a bird s..."
+
+always
+00:34:50	Ansgar Dietrichs:	@Micah Zoltu we already accepted EIP-7870 though, so the agreed upon min disk space is 4TB NVMe. you can specifically ask for acd to revisit that decision - ideally you should have voiced your concerns while we were discussing the EIP (for several months)
+00:34:51	nixo:	Reacted to "always" with 😁
+00:34:51	Łukasz Rozmej:	Reacted to "Let’s not conflate n..." with 👍
+00:35:08	Justin Florentine (Besu):	Replying to "justin’s in a bird s..."
+
+It's Always Sunny in Philadelphia, Nix
+00:35:12	Carl Beekhuizen:	Replying to "is the only 7951/721..."
+
+So to be clear, it behaves correctly & constantly, but I hear that you don’t love the empty return vs 0.
+00:35:14	Francesco:	Reacted to "Let’s not conflate n..." with 👍
+00:35:20	Łukasz Rozmej:	Replying to "our values are chang..."
+
+In terms os wattage, you can easily run on 30W machine
+00:35:39	nixo:	Reacted to "It's Always Sunny in..." with 💙
+00:35:44	Micah Zoltu:	Replying to "off lining it is w..."
+
+The smaller the footprint, the more people who can run.  We do have to make a call and I think it is safe to say that 10GB is out of the question at this point (though see Vitalik's post where he poses some solutions that may allow us to get down into that range by storing a subset of state).  My primary concern is that these users seem to be an afterthought, rather than a primary concern (which is what it should be IMO).  Doubling the rate of state growth without dedicating any R&D effort (and in fact cutting R&D resources) towards making home operation on limited disk hardware is problematic IMO, given that state growth is what got us into this situation in the first place.
+00:35:54	Łukasz Rozmej:	Replying to "our values are chang..."
+
+the only reasonable issues could be SSD and internet connection
+00:35:54	Marius:	could you post the link to the discussion?
+00:36:05	Tim Beiko:	http://ethereum-magicians.org/t/eip-7907-meter-contract-code-size-and-increase-limit/23156/36
+00:36:08	Carl Beekhuizen:	Replying to "is the only 7951/721..."
+
+But there is nothing wrong from a safety standpoint, it just looks a bit ugly.
+00:36:14	Hadrien Croubois (OpenZeppelin):	Replying to "is the only 7951/721..."
+
+see my comment in the PR
+00:36:35	Gabriel Trintinalia | Besu:	same, prefence would be 7212, 7934 and 5920
+00:36:45	Carl Beekhuizen:	Replying to "is the only 7951/721..."
+
+I think it is very important to keep the same interface as 7212 as that is already in use across many L2s (and wallets) etc
+00:36:48	Roman:	@Ben Adams okay, so we still need an index, right?
+00:36:56	Hadrien Croubois (OpenZeppelin):	Replying to "is the only 7951/721..."
+
+safety is one thing, usability is another. Saying stafety is fine so lets ship it while usability is not fine ...
+00:37:02	Barnabas:	sounds like fusaka-devnet-2 will be: 
+7934+7951
+
+Glamsterdam:
+7907 + 5920 (maybe)
+00:37:04	Łukasz Rozmej:	Replying to "our values are chang..."
+
+And if you want heavy querying of local RPC, invest couple houndred bucks in better CPU and bit more RAM, but nothing one wouldn't buy to play some modern video games
+00:37:08	Hadrien Croubois (OpenZeppelin):	Replying to "is the only 7951/721..."
+
+tipically the mindset that got us in the EOF drama
+00:37:18	Luis Pinto | Besu:	I think that if we want to show we listen community we should eip-5920
+00:37:26	Micah Zoltu:	Replying to "Doesn’t verkle / ..."
+
+I did voice my concerns and I was told that 7870 was only meant to be a retrospective accounting of what was required to run "full" nodes and not meant to be representative on what we were targeting or why.  Then lines were added after I reviewed it and it was merged without me realizing those changes until I found a bunch of people on Twitter telling me that anything less than 4TB was "officially unsupported for anyone running an Ethereum client".
+00:37:29	Hadrien Croubois (OpenZeppelin):	Replying to "is the only 7951/721..."
+
+almost like core devs don't care about users
+00:37:42	Gabriel Trintinalia | Besu:	Reacted to "I think that if we w..." with 👍
+00:38:04	Ansgar Dietrichs:	Replying to "our values are chang..."
+
+@Justin Florentine (Besu) were we not explicit about that in the discussion on EIP-7870 a few months ago? E.g. a 4TB NVMe drive for full nodes (not stakers!) was a clear change. What we are doing now is just making use of this new headroom that EIP gave us.
+00:38:07	Gary Schulte:	Reacted to "safety is one thing,..." with 👍
+00:38:07	Carl Beekhuizen:	Usability is essentially the same, it can be checked in ~ the same amount of gas
+00:38:11	Mario H:	Reacted to "I did voice my con..." with 👍
+00:38:25	Marius:	Let them deploy libraries
+00:38:36	Hadrien Croubois (OpenZeppelin):	Replying to "is the only 7951/721..."
+
+>Usability is essentially the same
+
+Yes, both are bad
+00:38:36	Kamil Chodoła:	How come you can have a 100GB DB now after so many years on 30 and now on 36 and increasing to 60Mgas so almost 2x will now casue it to grow 60GB/year? Am I missing something?
+00:38:48	Parithosh Jayanthi:	Reacted to "And if you want heav..." with 👍🏽
+00:38:55	Marius:	Replying to "Let them deploy li..."
+
+-Marius Antoinette
+00:39:05	nixo:	Reacted to "-Marius Antoinette" with 😂
+00:39:11	Micah Zoltu:	Replying to "Doesn’t verkle / ..."
+
+This is why I said on Twitter that we need someone who hasn't drunk the kool-aid who is "in the room" consistently when these decisions get made by some subset of people making such decisions.
+00:39:30	Kamil Chodoła:	Replying to "off lining it is w..."
+
+Still you have more space on decent smartphones now :D
+00:39:45	Mario H:	Replying to "Message sent befor..."
+
+7870 is supposed to be the recommended hardware spec but it misses the minimum viable. Now it feels like the minimum moved to the recomended level
+00:39:45	Sina Mahmoodi:	Replying to "off lining it is why..."
+
+Hm geth state size is around 350gb tho
+00:39:46	Micah Zoltu:	Reacted to "the only reasonabl..." with 👍
+00:40:05	Sophia Gold:	Reacted to "-Marius Antoinette" with 😂
+00:40:14	Kamil Chodoła:	Replying to "off lining it is w..."
+
+It is probably abotu the fleet mode from besu (the 100)
+00:40:25	Barnabas:	we can give it one extra week if its needed
+00:40:47	Micah Zoltu:	Replying to "our values are cha..."
+
+People running nodes at home already prune state and drop history.  Those people don't have 4TB disks, and when they do they are generally full (of things ilke Call of Duty!).
+00:40:52	Łukasz Rozmej:	INCLUDING is very hard wording here, we can experiment, but won't commit before bencharks
+00:41:16	Roman:	Can we tentatively include then?
+00:41:19	Justin Florentine (Besu):	does it need to be investigated on a devnet?
+00:41:44	Micah Zoltu:	Replying to "our values are cha..."
+
+Several clients have fully pruned modes that are well under 500GB today, some are trustless, and we could make trustless under 100GB possible, but cranking up the gas limit because "it is insignificant compared to the 4TB assumption" is just ignoring those users.
+00:41:49	Kamil Chodoła:	Replying to "Doesn’t verkle / ..."
+
+Recommended is a reference for testing.
+I was also suggesting actually specifying "minimal" but I got the point that we had none and now we have something to refer to but this doesn;t mean we will optimize to work only on recommended.
+00:42:16	Parithosh Jayanthi:	Replying to "our values are chang..."
+
+Sure, but they have to prioritise what they want to run then. In an ideal world we take up 100mb of space, but that isn’t a realistic outcome. IMO it’s worth more to focus on proofs rather than optimising for increasing competition on local multipurpose machines.
+00:42:44	Marius:	Matt will have to implement it though
+00:42:53	Barnabas:	Replying to "Matt will have to im..."
+
+he is happy to do so
+00:42:55	Parithosh Jayanthi:	The users who really need this feature can and should always be able to run a node at home. We should keep numbers at realistic sizes. IMO we currently aren’t in a territory where it’s unreasonable.
+00:42:56	Barnabas:	Replying to "Matt will have to im..."
+
+he just told me
+00:43:02	Tim Beiko:	Replying to "Matt will have to im..."
+
+He just told all of us
+00:43:07	Barnabas:	Reacted to "He just told all of ..." with 💯
+00:43:08	Gabriel Trintinalia | Besu:	Happy yo try as well
+00:43:13	Luis Pinto | Besu:	I missed the question
+00:43:21	Tim Beiko:	7907 in devnet-2
+00:43:22	Justin Florentine (Besu):	7907 for devnet2
+00:43:23	Marius:	Replying to "Matt will have to ..."
+
+I thought he needs to work on 4444 now
+00:43:47	Gabriel Trintinalia | Besu:	Reacted to "7907 for devnet2" with 👍
+00:43:48	Mario H:	Reacted to "Recommended is a r..." with 👍
+00:43:48	Francesco:	Replying to "our values are chang..."
+
+I’d rather ignore the users with an SSD full of games than users that are trying to use the chain or build things on it…
+00:43:48	Gabriel Trintinalia | Besu:	Reacted to "7907 in devnet-2" with 👍
+00:43:58	Ben Adams:	We have the perfnet infra to test effects
+00:44:01	Barnabé Monnot:	Reacted to "-Marius Antoinette" with 😂
+00:44:02	Barnabas:	spec sheet: https://notes.ethereum.org/@ethpandaops/fusaka-devnet-2
+00:44:07	Luis Pinto | Besu:	Reacted to "7907 in devnet-2" with 👍
+00:44:17	Gary Schulte:	Replying to "our values are chang..."
+
+sounds very strawman
+00:44:21	Micah Zoltu:	Replying to "off lining it is w..."
+
+30M gas -> 60M gas is a 2x increase in state growth assuming no change in behavior.  I personally expect a behavior change that will result in more storage, but that is speculation on my part so not part of my argument.  My main argument is that we should be focusing effort on keeping growth low and seriously thinking anytime we raise it.  Right now there is no principaled approach to keeping state growth down, it is just "2x growth doesn't seem so bad" with no actual analysis on how it will impact the home operator demographic.
+00:44:35	Roman:	Scoping glamsterdam next ACDE!
+00:44:40	Micah Zoltu:	Reacted to "7870 is supposed t..." with 👍
+00:44:53	Łukasz Rozmej:	Replying to "Scoping glamsterdam ..."
+
+why not this one? :D
+00:45:03	Roman:	Replying to "Scoping glamsterdam ..."
+
+Fair point
+00:45:06	Barnabas:	Replying to "Scoping glamsterdam ..."
+
+PAY opcode for glamsterdam?
+00:45:08	Luis Pinto | Besu:	And there’s no devnet-3 right?
+00:45:25	Barnabas:	Replying to "And there’s no devne..."
+
+not spec wise different, unless we have some big problems.
+00:45:26	Luis Pinto | Besu:	Replying to "And there’s no devne..."
+
+right
+00:45:29	Justin Florentine (Besu):	idk why PAY was so controversial
+00:46:20	Ben Adams:	Replying to "idk why PAY was so c..."
+
+don't think anyone complained
+00:46:21	Barnabas:	Replying to "idk why PAY was so c..."
+
+it wasn’t controversial, it just didn’t seem to get enough people excited.
+00:46:31	Tim Beiko:	FOCIL 
+EVM64
+Available Attestations
+00:46:44	Luis Pinto | Besu:	Replying to "idk why PAY was so c..."
+
+I wonder if we are in the same place as before, where app devs are not following
+00:46:46	Ben Adams:	Repricing?
+00:47:02	Tim Beiko:	Propose it 😄
+00:47:19	Justin Florentine (Besu):	Replying to "idk why PAY was so c..."
+
+honestly, this is a great example of what frustrates me about us. this is a basic, cleanup of some techdebt that gets punted another month because it isn't interesting to people.
+00:47:28	Parithosh Jayanthi:	Replying to "our values are chang..."
+
+I am only arguing against the steam stats that were brought up. IMO it isn’t a valid datapoint to start with. The claim that more state growth is bad is one I can standby. 
+
+The question will always be what level of state growth can we handle.
+00:47:29	stokes:	Replying to "FOCIL 
+EVM64
+Availab..."
+
+Not sure if my audio was working
+
+But we covered FOCIL last week if anyone wants to see an overview there
+
+There are some EL-specific concerns so worth having folks here take a look
+00:47:33	Ben Adams:	Reacted to "Propose it 😄" with 🤔
+00:47:40	Derek Lee:	As a side comment (was late to the call) & speaking on behalf of Offchain Labs (at least for Arbitrum), we would love to see EIP7907 included. Sounds like it made it the cut but wanted to toss our support behind it as well
+00:47:58	Justin Florentine (Besu):	Replying to "idk why PAY was so c..."
+
+s/month/year
+00:48:04	Łukasz Rozmej:	FOCIL has big interactions with Delayed Execution and Block Access Lists, I think we shouldn't decide in vacuum, rather than having a broader plan.
+00:48:20	Tim Beiko:	Reacted to "FOCIL has big intera..." with 👍
+00:48:25	Micah Zoltu:	Replying to "our values are cha..."
+
+The target I would like to see is that people who buy a computer recommended to them by the sales rep at Best Buy or Walmart can run Ethereum in the background.  I think it is achievable, but only if we actually try.
+00:48:35	thomasthiery:	I can present FOCIL (although I didn’t know there was going to be any presentation planned for this call)
+00:48:37	Tim Beiko:	Replying to "FOCIL has big intera..."
+
+Do you think DE or BAL are big enough to be "headliners"?
+00:49:00	Toni Wahrstaetter:	Replying to "FOCIL has big intera..."
+
+only with delayed exec, not really with BALs
+00:49:13	Micah Zoltu:	Replying to "our values are cha..."
+
+These are computers with maybe 512GB SSDs these days, standard home internet for their area, and their drive is probably 50%-75% full.
+00:49:16	Justin Florentine (Besu):	Replying to "FOCIL has big intera..."
+
+BAL is a tough one... maybe not big enough to headline, but too big to followon
+00:49:30	Tim Beiko:	Replying to "I can present FOCIL ..."
+
+It doesn’t have to be super formal, but I think it’d be good to take a few mins to give a quick overview and then answer some of the questinons like above
+00:49:39	Parithosh Jayanthi:	Replying to "our values are chang..."
+
+Will such a user ever run ethereum at home? Should we not prioritise for access patterns they might actually use? I.e, prioritise RPCs with proofs that you can validate. Make it such that you cannot be lied to.
+00:49:56	Barnabas:	Replying to "idk why PAY was so c..."
+
+Justin, Even you didn’t sound too enthusiastic about it. You generally sound very enthusiastic about everything 😄
+00:49:56	Łukasz Rozmej:	Replying to "FOCIL has big intera..."
+
+@Toni Wahrstaetter well if you want DE+FOCIL then you need some concreate flavor of BAL, so they are interconnected (not conflicting)
+00:49:59	thomasthiery:	Replying to "I can present FOCIL ..."
+
+Ok sg
+00:50:05	Sophia Gold:	Replying to "FOCIL has big inte..."
+
+We need delayed execution for zkEL clients, which we expect to roll out immediately after Glamsterdam. So it should be a a headliner at least in terms of importance
+00:50:24	Łukasz Rozmej:	Replying to "FOCIL has big intera..."
+
+why we need it?
+00:50:32	Łukasz Rozmej:	Replying to "FOCIL has big intera..."
+
+and why not ePBS? :)
+00:50:41	Roman:	Replying to "FOCIL 
+EVM64
+Availab..."
+
+Don’t see Delayed Execution on the list
+00:50:43	kev:	Has this been prototyped to measure the possible performance increase?
+00:50:51	Roman:	Reacted to "FOCIL has big intera..." with 👍
+00:51:20	Tim Beiko:	Replying to "FOCIL 
+EVM64
+Availab..."
+
+@Roman see the thread above 😄
+00:51:29	Sophia Gold:	Replying to "FOCIL has big inte..."
+
+We need the extra time for proving!
+00:51:30	Kamil Chodoła:	Replying to "our values are cha..."
+
+Will there be a person who will go to Walmart and ask "I want a machine to run Ethereum on" or rather will be asking about other things and will run Ethereum as a fun exploratory for them? And whenever you want to really start doing something you should have dedicated machine for that.
+00:51:31	Gary Schulte:	Replying to "our values are chang..."
+
+stateless solves the ‘background use cases’ imo.  We need to engineer our way into the broader use cases, while keeping full node specs achievable by consumer grade hardware.  proving roles notwithstanding
+00:51:38	Łukasz Rozmej:	Replying to "idk why PAY was so c..."
+
+TBH: I am not entusiastic either, but not sure why it was dismissed without proper conversation
+00:51:45	Kamil Chodoła:	Reacted to "stateless solves t..." with 👍
+00:51:54	Parithosh Jayanthi:	Replying to "our values are chang..."
+
+^ Yup, agreed with this use case for sure
+00:52:14	Justin Florentine (Besu):	Replying to "idk why PAY was so c..."
+
+long lived, durable institutions are built by people doing the boring shit, not hoping that the heroes happen to find the right thing interesting
+00:52:18	Barnabas:	Replying to "idk why PAY was so c..."
+
+how many weeks of impl does pay opcode takes?
+00:52:40	Ben Adams:	Replying to "idk why PAY was so c..."
+
+20 mins (not including testing)
+00:52:49	Justin Florentine (Besu):	Reacted to "20 mins (not includi..." with 💯
+00:52:52	Gabriel Trintinalia | Besu:	Reacted to "20 mins (not includi..." with 💯
+00:52:55	Luis Pinto | Besu:	Replying to "idk why PAY was so c..."
+
+It’s similar to CALL but without the new context frames
+00:52:56	Roman:	Reacted to "@Roman see the threa..." with 👍
+00:52:58	Josh Davis:	Reacted to "long lived, durable ..." with 🔥
+00:53:01	Ben Adams:	Reacted to "It’s similar to CALL..." with 💯
+00:53:02	Parithosh Jayanthi:	Replying to "our values are chang..."
+
+I have, do and will continue to run my node at home. I think there are enough core devs that would ensure we can continue to run nodes at home. I don’t think 60M gets us even close to the territory where this isn’t possible anymore.
+00:53:13	Gary Schulte:	Reacted to "I have, do and will ..." with ➕
+00:53:17	Parithosh Jayanthi:	Reacted to "stateless solves the..." with 👍
+00:53:21	Ben Adams:	Replying to "idk why PAY was so c..."
+
+Already have a PR in Nethermind for it 🙂
+00:53:24	Roman:	Reacted to "it wasn’t controvers..." with 👍
+00:53:53	Luis Pinto | Besu:	Replying to "idk why PAY was so c..."
+
+There were benefits around security presented in this call I believe, while EOF was still around
+00:53:55	Wei Tang:	Replying to "Has this been prot..."
+
+I've done a small prototype here: https://github.com/rust-ethereum/evm/tree/master/features/evm64
+But benchmarking is still ongoing.
+00:54:22	Francesco:	Last week’s presentation time: https://youtu.be/cIHtUaIev4M?list=PLJqWcTqh_zKHU6gjnA6ZcFPU5Pr0xT0io&t=3378
+00:54:24	Ben Adams:	Reacted to "I have, do and will ..." with ➕
+00:54:36	Łukasz Rozmej:	Replying to "idk why PAY was so c..."
+
+@Tim Beiko maybe revisit decision?
+00:54:38	DA | Flashbots:	Less than 70% of blocks are now built by Titan + beaver currently fwiw
+00:54:49	Gabriel Trintinalia | Besu:	Replying to "idk why PAY was so c..."
+
+Besu has an implementation for it as well
+00:55:00	Micah Zoltu:	Replying to "our values are cha..."
+
+@Paritosh Such users used to run Ethereum.  All that I used to know no longer do because of disk requirements.  Arguably more important than that though, is people need to be able to run at home as a fallback for when their country gets censored by the RPC providers.  Right now if you are someone in Venezuala getting censored, you can't install Ethereum on your computer and be back to uncensored in 16 hours.  You have to go buy new hardware, get it installed (which probably means giving your computer to a tech specialist who installs the drive for you, maybe migrates data off old drive because you only have one nVME slot, etc.), then finally sync Ethereum and use it.  I don't think we should expect everyone in Venezuala to do this.
+00:55:12	Toni Wahrstaetter:	Saying that builders are the problem is not super fair bc even during the sanctions, builders included relatively more TC transactions than local builders
+00:55:54	Toni Wahrstaetter:	Replying to "Saying that builders..."
+
+FOCIL definitely gives you faster inclusion but it's not like you have no inclusion guarantees today
+00:55:57	Micah Zoltu:	Replying to "our values are cha..."
+
+@Kamil The latter, the idea is that users already have computers, we shouldn't be asking them to buy another one or upgrade their existing one if they want to use Ethereum trustlessly/privately/CR.
+00:56:02	Justin Florentine (Besu):	Replying to "Less than 70% of blo..."
+
+how full are the remainder?  local builders can't even hit gas targets because the public mempool is starved.
+00:56:34	Łukasz Rozmej:	@Micah Zoltu on the other hand that means they don't care much about running ethereum locally? If 2TB is a dealbreaker for them
+00:56:35	Sophia Gold:	We need to do FOCIL before zkEL clients are made mandatory, but I would not say it's urgent vs. being sure we can ship Glamsterdam early next year
+00:56:40	Micah Zoltu:	Replying to "our values are cha..."
+
+@Gary Schulte Stateless definitely helps with the CPU utilization, doesn't solve the state growth or network utilization problems though.
+00:56:43	Luis Pinto | Besu:	Replying to "idk why PAY was so c..."
+
+https://docs.google.com/presentation/d/1pZgbr5yLaSNxpwRdixgkAV9mfo_gql448_iSOVKlyvA/edit?slide=id.p#slide=id.p
+00:57:05	Ansgar Dietrichs:	I agree that FOCIL is very important
+
+I think (not fully formed opinion yet) I disagree on urgency. I think it would be fine for this to be shipped one or two forks after Glamsterdam
+00:57:27	Dustin:	Replying to "Saying that builde..."
+
+It's a structural concern. There's a builer duopoly. Relying on Titan/Beaver to remain aligned with Ethereum overall is risky
+00:57:32	Barnabas:	Replying to "idk why PAY was so c..."
+
+How would you’ll feel about having devnet 3 with pay opcode?
+00:57:52	Micah Zoltu:	@Lukasz Or they just can't afford to spend the money/time to access Ethereum trustlessly/privately.  They may still need or benefit from those properties, but they are out of reach when it doesn't run on their existing hardware.
+ 
+Essentially, there is a big gap between "double click installer" and "research and purchase hardware, operate multiple computers, double click installer."
+00:58:03	Sophia Gold:	Reacted to "I agree that FOCIL..." with 👍
+00:58:08	Łukasz Rozmej:	Replying to "our values are chang..."
+
+and btw for people really restricted Nethermind can run on 200+GB's
+00:58:17	Parithosh Jayanthi:	Replying to "our values are chang..."
+
+We actually aren’t even talking about 2tb yet, with history expiry we’re talking about 300-600GB. Which steam stats claims ~90% of users have. So if they are actively being censored, and Ethereum is important to them - id expect them to delete some data and setup their node.
+00:58:23	Justin Florentine (Besu):	Replying to "idk why PAY was so c..."
+
+love it
+00:58:28	Luis Pinto | Besu:	Reacted to "How would you’ll fee..." with ➕
+00:58:33	Tim Beiko:	https://ethereum-magicians.org/t/glamsterdam-headliner-proposal-available-attestation/24377
+00:58:40	Łukasz Rozmej:	Reacted to "We actually aren’t e..." with 👍
+00:58:44	Gabriel Trintinalia | Besu:	Replying to "idk why PAY was so c..."
+
+yeah, same
+00:58:47	Gabriel Trintinalia | Besu:	Reacted to "How would you’ll fee..." with ➕
+00:58:50	thomasthiery:	Here are the slides to the FOCIL presentation I made last week: https://docs.google.com/presentation/d/1BYZQOmNkv-nLe25NmPOowhBLPVa76kDDibR_nR0-RGU/edit?usp=sharing
+00:58:50	Parithosh Jayanthi:	Replying to "our values are chang..."
+
+The total hard drive space of over 500GB on steam stats is ~75%.
+00:58:57	Ansgar Dietrichs:	Reacted to "Here are the slides ..." with 👍
+00:59:04	Parithosh Jayanthi:	Replying to "our values are chang..."
+
+With 52% over 1TB
+00:59:05	Micah Zoltu:	Replying to "our values are cha..."
+
+@Lukasz Doesn't state pruning still require ~250GB?  Last I checked you needed 250GB free on top of the actual storage used, unless you wanted to wipe your DB and resync every few days.
+00:59:18	spencer-tb:	Replying to "idk why PAY was so c..."
+
+Would be okay with pay if its in a future devnet as there are a lot of edge cases to test, including it with devnet 2 might be too much with 7907 on testing side
+00:59:32	Łukasz Rozmej:	Replying to "our values are chang..."
+
+you could just drop and resync every few months
+00:59:46	Micah Zoltu:	Replying to "our values are cha..."
+
+You are looking at total disk size, not free space.  >60% have less than 500GB free.
+00:59:56	kev:	Isn’t this meant to be for ACDC?
+00:59:58	DA | Flashbots:	Replying to "Less than 70% of blo..."
+
+Local average is like 40% of target. BuilderNet I haven’t looked, but probably 90%+. Rsync is probably 75%. Not that FOCIL helps with this at all.
+01:00:03	Parithosh Jayanthi:	Replying to "our values are chang..."
+
+If you’re being censored, your money is worth more than your call of duty download
+01:00:05	Justin Florentine (Besu):	Reacted to "Isn’t this meant to ..." with ➕
+01:00:07	Marius:	Reacted to "Isn’t this meant ..." with ➕
+01:00:07	thomasthiery:	Reacted to "@Toni Wahrstaetter w..." with 👍
+01:00:20	Francesco:	Replying to "our values are chang..."
+
+What I don’t understand is how this hypothetical user that cannot afford to buy a 1 TB SSD is going to meaningfully *and reliably* benefit from Ethereum’s guarantees, in a world where we leave everything as is. Just 2-3 years ago fees were tens to hundreds of dollars for basic txs
+01:00:24	Ansgar Dietrichs:	is this an acde topic? seems pretty CL only
+01:00:33	Barnabas:	Reacted to "Isn’t this meant to ..." with ➕
+01:00:35	Micah Zoltu:	Replying to "our values are cha..."
+
+Would be nice if Nethermind automated this.  Only reason I don't turn it on is beacuse I usually don't notice the growth until I'm at 0 bytes free and my computer stops booting reliably.  😖
+01:00:38	Łukasz Rozmej:	Reacted to "What I don’t underst..." with 👍
+01:00:42	Parithosh Jayanthi:	Reacted to "What I don’t underst..." with 👍
+01:00:44	Barnabé Monnot:	Reacted to "Local average is lik..." with 👍
+01:00:49	thomasthiery:	Reacted to "It's a structural co..." with 👍
+01:00:57	Justin Florentine (Besu):	Reacted to "is this an acde topi..." with ➕
+01:01:05	Roman:	Reacted to "is this an acde topi..." with ➕
+01:01:20	Barnabas:	Reacted to "is this an acde topi..." with ➕
+01:01:20	Łukasz Rozmej:	Reacted to "is this an acde topi..." with ➕
+01:01:23	Mario H:	Replying to "I agree that FOCIL..."
+
+Censorship resistance is a dependency for future privacy improvements and neutrality in general. With builder centralization and past attempts on censoring privacy tools, I sense the urgency
+01:01:54	Łukasz Rozmej:	Reacted to "I agree that FOCIL i..." with 👍
+01:02:02	Micah Zoltu:	Replying to "our values are cha..."
+
+(we should move this conversation to Discord, Zoom chat is horrible and painful, plus I have another meeting to get to)
+01:02:18	Łukasz Rozmej:	Reacted to "Isn’t this meant to ..." with ➕
+01:02:31	Łukasz Rozmej:	Reacted to "How would you’ll fee..." with ➕
+01:02:36	Parithosh Jayanthi:	Reacted to "(we should move this..." with 👍🏽
+01:02:40	Sina Mahmoodi:	Reacted to "Censorship resistanc..." with 👍
+01:02:42	thomasthiery:	Reacted to "Censorship resistanc..." with 👍
+01:03:02	Toni Wahrstaetter:	Replying to "Saying that builders..."
+
+Not directly. If it was a bigger app that was censored then only non-censoring builders would win the block auction.
+Since it was only a small app (TC) we had longer inclusion times but builders (not only the big ones but also the small ones) included most sanctioned TC, not the local builders (relatively speaking since we only have 8% local builders).
+01:03:05	Sina Mahmoodi:	Replying to "I agree that FOCIL i..."
+
+We need focil today
+01:03:13	thomasthiery:	Replying to "I agree that FOCIL i..."
+
+The sense I have around urgency is mainly around the fact that pricing tail risks is difficult, but we shouldn’t wait for potentially massive censorship on the network before shipping an EIP to address its structural problems
+01:03:35	Dustin:	Reacted to "Isn’t this meant ..." with ➕
+01:03:44	Mehdi Aouadi:	Reacted to "Censorship resistanc..." with 👍
+01:04:01	Justin Florentine (Besu):	Replying to "Saying that builders..."
+
+wait, are you implying that local builders had TC blacklists in place?
+01:04:28	Sina Mahmoodi:	Replying to "Saying that builders..."
+
+Maybe because builders include more txes in general?
+01:04:28	Toni Wahrstaetter:	Replying to "Saying that builders..."
+
+nope, but there were builders that only won by including TC transaction that censoring builders couldn't include
+01:04:29	Marc:	Reacted to "Isn’t this meant to …" with ➕
+01:04:32	thomasthiery:	Replying to "Saying that builders..."
+
+builders are making a lot more profit from private order flow (e.g., TG bots) and CEX-DEX arbs than any other app
+01:04:42	Justin Florentine (Besu):	Reacted to "Maybe because builde..." with ➕
+01:04:48	Justin Florentine (Besu):	Reacted to "nope, but there were..." with 👍
+01:04:53	Anders Elowsson:	Reacted to "Screenshot2025_06_05_170158.jpg" with 😍
+01:04:55	Gabriel Trintinalia | Besu:	Reacted to "Screenshot2025_06_05_170158.jpg" with 😅
+01:05:00	Parithosh Jayanthi:	Reacted to "Screenshot2025_06_05_170158.jpg" with 😅
+01:05:03	Toni Wahrstaetter:	Replying to "Saying that builders..."
+
+@Sina Mahmoodi but why would you submit your TC transaction privatly?
+01:05:12	Marius:	Can we move on, please?
+01:05:50	Justin Florentine (Besu):	Marius is actually very nice.
+01:06:02	Barnabas:	Reacted to "Marius is actually v..." with 😮‍💨
+01:06:19	Mario H:	Reacted to "We need focil today" with ❤️
+01:06:29	Mario H:	Reacted to "The sense I have a..." with 👍
+01:06:42	Marius:	Replying to "Marius is actually..."
+
+Sorry, the last couple of days have been very busy
+01:06:57	Justin Florentine (Besu):	Replying to "Marius is actually v..."
+
+you're fine fren
+01:07:07	Roman:	@Toni Wahrstaetter talk about DE instead!
+01:07:20	Ansgar Dietrichs:	Replying to "our values are chang..."
+
+but zoomed out, I agree with the OP comment, to the extent that our values are indeed changing (doesn’t have to be a bad thing), we need to be explicit about it
+01:07:27	Marius:	Reacted to "you're fine fren" with ❤️
+01:07:33	Gary Schulte:	Reacted to "Marius is actually v..." with 😂
+01:07:45	Gary Schulte:	Reacted to "you're fine fren" with ❤️
+01:07:45	Luis Pinto | Besu:	Reacted to "Screenshot2025_06_05_170158.jpg" with 😆
+01:08:21	Łukasz Rozmej:	I would prefer FOCIL to go with/after BAL, not before as it will need to be reworked otherwise. (If we plan to include BAL's in the first place)
+01:08:32	Tim Beiko:	BAL EthMag thread: https://ethereum-magicians.org/t/eip-7928-block-level-access-lists-the-case-for-glamsterdam/24343/7
+01:09:00	Parithosh Jayanthi:	Reacted to "Marius is actually v..." with 😮‍💨
+01:09:04	Justin Florentine (Besu):	Replying to "our values are chang..."
+
+it's not to late to re-align what we are saying with what we are doing
+01:09:20	Ansgar Dietrichs:	I think the current BAL EIP should really be understood as a combination of two changes:
+
+per-transaction post-execution access lists, so just the location of all state reads of all transactions
+per-transaction post-execution state diffs, so the location and values of all state writes of all transactions
+01:10:12	Francis:	+1 for block level access list
+01:10:26	Francis:	good for scaling, fits the overall priority imho
+01:11:20	Łukasz Rozmej:	Writes OR Both for me
+01:11:32	Parithosh Jayanthi:	Reacted to "it's not to late to ..." with 👍🏽
+01:11:42	Justin Florentine (Besu):	interesting - because one can unlock parallel ex broadly, and another is adding on the witness based use cases?
+01:12:27	Ameziane Hamlat:	Replying to "Writes OR Both for m..."
+
+Writes for besu would be the best direction
+01:12:39	Justin Florentine (Besu):	Replying to "Writes OR Both for m..."
+
+bonsai ftw
+01:13:01	Karim T.:	Replying to "Writes OR Both for m..."
+
+Yes I will prefer to have write
+01:13:39	Luis Pinto | Besu:	Reacted to "Writes for besu woul..." with ➕
+01:13:43	Łukasz Rozmej:	focus was witnesses in verkle, which would achieve that
+01:13:47	Tim Beiko:	re: 5920 for devnet-3, I’d suggest making it clear in the Meta EIP but keeping all 4 currently CFI’d EIPs as CFI’d. 
+
+If something goes wrong with devnet-1, then we reevaluate whether to trim devnet-2+3 scope, and if something goes wrong with devnet-2, we re-evalute devnet-3?
+01:13:48	thomasthiery:	It also interestingly might serve as a basis/requisite for zkEVM, so there are some interactions there as well to consider
+01:14:29	Sophia Gold:	Long term, BALs with state diffs are good for state providers in a zk word, which is what we started this call discussing wrt node requirements
+01:15:50	Ahmad Bitar | Nethermind:	Personally against block access list, just wait for binary trees and witness 
+01:15:55	Francesco:	Reacted to "I think the current ..." with 👍
+01:16:03	Justin Florentine (Besu):	the only aspect of this I am apprehensive about is in a future of rising gas/block, BAL acts as a block size multiplier and I remain concerned about home stakers with crappy upstream.  Otherwise i love BAL.
+01:16:05	Barnabas:	Replying to "re: 5920 for devnet-..."
+
+nothing will go wrong.
+01:16:10	Tim Beiko:	Reacted to "nothing will go wron..." with 🫡
+01:16:18	Łukasz Rozmej:	Reacted to "the only aspect of t..." with 👍
+01:16:21	spencer-tb:	Reacted to "nothing will go wron..." with 🌶️
+01:16:41	stokes:	Reacted to "nothing will go wron..." with 🫡
+01:16:49	Łukasz Rozmej:	Reacted to "nothing will go wron..." with 🫡
+01:17:17	Justin Florentine (Besu):	wait, why are call data/ bal mutually exclusive?
+01:17:50	Gabriel Trintinalia | Besu:	Reacted to "nothing will go wron..." with 🫡
+01:18:12	Toni Wahrstaetter:	Replying to "wait, why are call d..."
+
+you have to touch as many accounts as possible possible, thus spend your gas on writes
+01:18:49	Toni Wahrstaetter:	Replying to "wait, why are call d..."
+
+so no gas left for calldata and at this point you get a bigger block by investing all your available gas into calldata
+01:18:50	Francesco:	Replying to "the only aspect of t..."
+
+Like Ansgar said, there’s two orthogonal features in the current EIP, one involving reads and one involving writes (the per-tx diffs). When it comes to the state diff part of it, one aspect of it that imo mitigates these concerns is that this might be a cost that we have to pay long term. At least, at the moment I don’t see a long term architecture where we don’t want to have state diffs in the block, to be able to support stateful nodes that don’t do re-execution and partially stateful nodes (in both cases, where verification is through proofs)
+01:18:56	Łukasz Rozmej:	with big increases to gas limit we might need to increase price for  SLOAD/SSTORE?
+01:19:00	Justin Florentine (Besu):	Replying to "wait, why are call d..."
+
+thanks!
+01:19:20	Francesco:	Replying to "the only aspect of t..."
+
+So at least for the state diff part of the EIP, I wouldn’t be too concerned about this bandwidth cost because I think it’s a must long term
+01:19:20	Roman:	Reacted to "with big increases t..." with 💯
+01:19:26	Ameziane Hamlat:	Reacted to "with big increases t..." with 💯
+01:19:38	Marius:	Reacted to "with big increases..." with 💯
+01:19:45	Ansgar Dietrichs:	Replying to "with big increases t..."
+
+because of BALs, or in general?
+01:20:16	FLCL:	can we include https://github.com/ethereum/EIPs/pull/9623 in a devnet?
+01:20:23	Łukasz Rozmej:	Replying to "with big increases t..."
+
+both
+01:20:35	Francesco:	Replying to "Personally against b..."
+
+Why? We can get a lot of benefits independently of witnesses. And it’s not even clear that we’ll ever have witnesses (if statelessness is through zkEVM)
+01:20:43	Marius:	Replying to "can we include htt..."
+
+we should
+01:20:54	Francis:	Reacted to "with big increases t…" with 💯
+01:20:56	Gabriel Trintinalia | Besu:	Happy with pay in devnet-3
+01:21:00	Łukasz Rozmej:	Reacted to "can we include https..." with 👍
+01:21:01	Tim Beiko:	Reacted to "Happy with pay in de..." with 👍
+01:21:03	Justin Florentine (Besu):	i'd put it in 2, happy with it in 3
+01:21:05	Justin Florentine (Besu):	Reacted to "Happy with pay in de..." with 👍
+01:21:08	felix (eest):	Reacted to "Happy with pay in ..." with 👍
+01:21:19	Gabriel Trintinalia | Besu:	Reacted to "i'd put it in 2, hap..." with 🚀
+01:21:25	Łukasz Rozmej:	Reacted to "i'd put it in 2, hap..." with 🚀
+01:21:30	lightclient:	easy implementation, big implications
+01:21:31	Ansgar Dietrichs:	Replying to "with big increases t..."
+
+I agree with the concern with regards to BALs
+01:21:37	spencer-tb:	Testing biggest bottleneck for pay. Not against dvnt3
+01:21:50	Barnabas:	Reacted to "Testing biggest bott..." with 💯
+01:21:51	Marius:	Replying to "easy implementatio..."
+
+lol bug implications
+01:21:53	Łukasz Rozmej:	Reacted to "Testing biggest bott..." with 💯
+01:22:30	Ahmad Bitar | Nethermind:	Replying to "Personally against b..." 
+
+ Then why binary tree if not for statelessness?
+01:23:27	Luis Pinto | Besu:	Reacted to "Testing biggest bott..." with 💯
+01:23:36	Luis Pinto | Besu:	Yeah agree with the testing non-trivialness
+01:24:21	Marius:	I think the geth team leans toward removing it
+01:24:49	Luis Pinto | Besu:	+1
+01:24:58	Barnabas:	@Justin Florentine (Besu) your time to shine :D
+01:25:22	Justin Florentine (Besu):	Replying to "@Justin Florentine (..."
+
+lol app devs don't talk to me, nobody does.
+01:25:28	Parithosh Jayanthi:	Reacted to "lol app devs don't t..." with ❤️
+01:25:57	Guillaume:	Replying to "Personally against b..."
+
+if we don't have witnesses in zkvms, BALs are instant technical debt.
+01:26:02	Barnabas:	Replying to "@Justin Florentine (..."
+
+just curious about your main point for pushing for this eip
+01:26:05	Marius:	Replying to "@Justin Florentine..."
+
+I will talk to you!
+01:26:06	Justin Florentine (Besu):	Replying to "@Justin Florentine (..."
+
+unless you want someone to complain (again) about or lack of market understanding, I can do that all day
+01:26:12	Barnabas:	Replying to "@Justin Florentine (..."
+
+but haven’t heard your voice at all when it was time to chime in
+01:26:17	Tim Beiko:	https://eips.ethereum.org/EIPS/eip-7577
+01:26:30	Parithosh Jayanthi:	Replying to "@Justin Florentine (..."
+
+Yessir, what made you be pro? that might even be enough reason
+01:26:40	Toni Wahrstaetter:	just for my understanding, at which size (in kib) does it become a concern?
+01:26:44	Barnabas:	Replying to "can we include https..."
+
+devnet 2?
+01:27:26	Toni Wahrstaetter:	Replying to "with big increases t..."
+
+And is the concern that we might not be able to execute that many SSTORE/SLOADs or the size of the BAL?
+01:27:29	FLCL:	Reacted to "devnet 2?" with ❤️
+01:28:00	Ben Adams:	Reacted to "can we include https..." with 👍
+01:28:07	Justin Florentine (Besu):	Replying to "@Justin Florentine (..."
+
+i am pro because the current means of transferring eth is an embarrassing hack. i'll re-review the args against, maybe my understanding isn't deep enough
+01:28:18	Parithosh Jayanthi:	Reacted to "i am pro because the..." with ❤️
+01:28:37	stokes:	Can we use the git hash per network spec?
+01:28:39	Tim Beiko:	yes
+01:28:41	Tim Beiko:	please
+01:28:43	Łukasz Rozmej:	Replying to "with big increases t..."
+
+just for my understanding, at which size (in kib) does it become a concern?that would have to be tested, I expect somewhere 10x+ current gas?
+01:28:48	Ben Adams:	Reacted to "can we include https..." with 💯
+01:28:52	Gary Schulte:	EIP versioning generally would clarify inclusion/devnet spec confusion we have experienced in the past.  It also can show at a glance whether a current implementation needs to be revisited
+01:28:55	Daniel Lehrner (Besu):	Replying to "with big increases t…"
+Let’s make the SSTORE gas price flat at the same time. Independently what is written, it’s the same price. Saves us the disk lookup for every SSTORE.
+01:29:03	Parithosh Jayanthi:	Don’t we already use the git hash in the devnet spec page?
+01:29:05	spencer-tb:	Reacted to "EIP versioning gener..." with ➕
+01:29:08	Toni Wahrstaetter:	As an RPC provider, I just need the state diff to serve users. Why would it be instant technical debt?
+BALs are not supposed to replace statelessness for stateless validators
+01:29:13	stokes:	Replying to "Don’t we already use..."
+
+I feel like we sometimes do
+01:29:23	Parithosh Jayanthi:	Replying to "Don’t we already use..."
+
+We can make that to always
+01:29:33	stokes:	Replying to "Don’t we already use..."
+
+Personal opinion but semantic versioning can be a rabbit hole of bikeshedding
+01:29:39	Parithosh Jayanthi:	Reacted to "Personal opinion but..." with 👍🏽
+01:29:48	Marius:	Reacted to "Personal opinion b..." with 👍🏽
+01:30:01	Francesco:	@Guillaume I really don’t see why. Proof + state diff seems like exactly what you’d want in that world, so you can still run a stateful node without doing any execution. 
+
+(Here with BALs I am actually only referring to the post-tx state diffs part, which is quite similar to just block level state diff)
+01:30:02	Justin Florentine (Besu):	Replying to "Don’t we already use..."
+
+srsly, just calver
+01:30:08	Francesco:	Replying to "Personally against b..."
+
+(Or a partially stateful node)
+01:30:18	Francesco:	Replying to "Personally against b..."
+
+Witnesses are just subsumed in the proof
+01:30:21	Parithosh Jayanthi:	Reacted to "srsly, just calver" with 🔥
+01:30:26	Barnabas:	Replying to "Don’t we already use..."
+
+getting hashes for each is pretty high manual task
+01:30:31	Gary Schulte:	Replying to "Don’t we already use..."
+
+git hash is deterministic but doesn’t convey meaning-at-a-glance like semantic version
+01:30:33	Barnabas:	Replying to "Don’t we already use..."
+
+we might need to ask mr claude to setup an automation for this
+01:30:40	stokes:	Replying to "Don’t we already use..."
+
+Can push the work to the author/champions
+01:30:47	stokes:	Replying to "Don’t we already use..."
+
+Ill even do it for CL stuff if I need to
+01:30:50	Barnabas:	Replying to "Don’t we already use..."
+
+They wont do it lol
+01:30:59	Barnabas:	Replying to "Don’t we already use..."
+
+they might do it 1x
+01:31:03	Barnabas:	Replying to "Don’t we already use..."
+
+but not the 10x time
+01:31:11	stokes:	Replying to "Don’t we already use..."
+
+Yeah fair point
+01:31:21	Barnabas:	Replying to "Don’t we already use..."
+
+I’m pro versioning!
+01:31:27	Barnabas:	Replying to "Don’t we already use..."
+
+I think the bot should be able to do it
+01:31:30	Tim Beiko:	Replying to "Don’t we already use..."
+
+git hash is deterministic but doesn’t convey meaning-at-a-glance like semantic version
+You will never get this fwiw
+01:31:37	Gary Schulte:	Reacted to "I think the bot shou..." with 🚀
+01:31:41	Tim Beiko:	Replying to "Don’t we already use..."
+
+We can barely agree on Draft/review/ or CFI/SFI
+01:32:00	spencer-tb:	Reacted to "I think the bot shou..." with 🚀
+01:32:11	Barnabas:	Replying to "Don’t we already use..."
+
+can’t we just setup a semver versioning ?
+01:32:14	Barnabas:	Replying to "Don’t we already use..."
+
+bot would do that
+01:32:17	Wei Tang:	If we're talking about protocol specifications then there's really not "minor" version change. Every change to the specification is backward incompatible and it's always "major" version change.
+01:32:23	Tim Beiko:	Replying to "Don’t we already use..."
+
+How chooses what is minor/major/etc.
+01:32:27	Gary Schulte:	Replying to "Don’t we already use..."
+
+yeah but a PR can implement 8.0.1, whereas a hash just implies there was a change.  
+
+Updating the verbiage can cause a new hash
+01:32:28	Tim Beiko:	Replying to "Don’t we already use..."
+
+Will bikeshed forever
+01:32:28	stokes:	Replying to "Don’t we already use..."
+
+How does the bot resolve the semantics?
+01:32:40	Barnabas:	Replying to "Don’t we already use..."
+
+feat major
+fix minor
+chore minor
+01:32:45	Barnabas:	Replying to "Don’t we already use..."
+
+semver already does this
+01:32:50	Tim Beiko:	Replying to "Don’t we already use..."
+
+What’s a “feat"
+01:32:54	Barnabas:	Replying to "Don’t we already use..."
+
+new feature
+01:32:59	stokes:	Replying to "Don’t we already use..."
+
+And each tag is labeled in each PR?
+01:33:03	Barnabas:	Replying to "Don’t we already use..."
+
+yes
+01:33:04	Tim Beiko:	Replying to "Don’t we already use..."
+
+Yes, but what I mean is how do you define this in EIPs?
+01:33:12	stokes:	Replying to "Don’t we already use..."
+
+You’d still have conformance problems
+01:33:15	Barnabas:	Replying to "Don’t we already use..."
+
+each EIP starts with 1.0.0
+01:33:22	stokes:	Replying to "Don’t we already use..."
+
+I guess walidator could demand it
+01:33:23	Tim Beiko:	Replying to "Don’t we already use..."
+
+100x more conformance changes
+01:33:28	Marc:	Replying to "If we're talking abo…"
+could just be rewording, fixing typos etc.
+01:33:30	stokes:	Replying to "Don’t we already use..."
+
+But honestly I’d rather just use the commit hash
+01:33:36	Anders Elowsson:	Replying to "If we're talking abo..."
+
+Seems reasonable to clearly distinguish between changes to an EIP that affects logic and that does not, in whatever implementation we have.
+01:33:41	Wei Tang:	Replying to "If we're talking a..."
+
+In that case it's "patch".
+01:34:03	felix (eest):	Reacted to "Seems reasonable t..." with 👍
+01:34:03	Gary Schulte:	Replying to "Don’t we already use..."
+
+very bike-shreddable.  however lets not make the perfect the enemy of the good.
+01:34:16	Marc:	Replying to "If we're talking abo…"
+that would still change the hash though
+01:35:03	Ben Adams:	https://github.com/ethereum/EIPs/pull/9623
+01:35:09	Justin Traglia:	Reacted to "https://github.com/e..." with 👍
+01:35:18	Roman:	Reacted to "https://github.com/e..." with 👍
+01:35:26	Zane Starr | OpenRPC:	thanks folks

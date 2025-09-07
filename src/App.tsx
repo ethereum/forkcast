@@ -3,6 +3,8 @@ import { useEffect } from 'react';
 import PublicNetworkUpgradePage from './components/PublicNetworkUpgradePage';
 import HomePage from './components/HomePage';
 import RankPage from './components/RankPage';
+import CallsIndexPage from './components/CallsIndexPage';
+import CallPage from './components/call/CallPage';
 import { getUpgradeById } from './data/upgrades';
 import { useAnalytics } from './hooks/useAnalytics';
 import { ThemeProvider } from './contexts/ThemeContext';
@@ -78,6 +80,8 @@ function App() {
             />
           } />
           <Route path="/rank" element={<RankPage />} />
+          <Route path="/calls" element={<CallsIndexPage />} />
+          <Route path="/calls/*" element={<CallPage />} />
           <Route path="/feedback" element={<ExternalRedirect />} />
           {/* <Route path="/upgrade/pectra" element={
             <PublicNetworkUpgradePage

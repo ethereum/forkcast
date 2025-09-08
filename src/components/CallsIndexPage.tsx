@@ -170,14 +170,14 @@ const CallsIndexPage: React.FC = () => {
                   acde: 'bg-blue-500 dark:bg-blue-400 text-white dark:text-blue-950',
                   acdt: 'bg-green-500 dark:bg-green-400 text-white dark:text-green-950'
                 };
-                
+
                 const inactiveColors = {
                   all: 'bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-400 hover:bg-slate-200 dark:hover:bg-slate-700',
                   acdc: 'bg-purple-50 dark:bg-purple-950/30 text-purple-600 dark:text-purple-400 hover:bg-purple-100 dark:hover:bg-purple-900/30',
                   acde: 'bg-blue-50 dark:bg-blue-950/30 text-blue-600 dark:text-blue-400 hover:bg-blue-100 dark:hover:bg-blue-900/30',
                   acdt: 'bg-green-50 dark:bg-green-950/30 text-green-600 dark:text-green-400 hover:bg-green-100 dark:hover:bg-green-900/30'
                 };
-                
+
                 return (
                   <button
                     key={option.value}
@@ -204,7 +204,7 @@ const CallsIndexPage: React.FC = () => {
               }`}
             >
               <div className={`w-1.5 h-1.5 rounded-full ${showEvents ? 'bg-white dark:bg-slate-900' : 'bg-slate-500 dark:bg-slate-400'}`}></div>
-              <span>Events</span>
+              <span>{showEvents ? 'Hide Events' : 'Show Events'}</span>
             </button>
           </div>
         </div>
@@ -213,21 +213,21 @@ const CallsIndexPage: React.FC = () => {
           {(() => {
             // Group items by month
             const monthGroups = new Map<string, (Call | TimelineEvent)[]>();
-            
+
             sortedItems.forEach((item) => {
               // Parse date as local time, not UTC
               const [year, month, day] = item.date.split('-').map(Number);
               const itemDate = new Date(year, month - 1, day);
               const monthYear = itemDate.toLocaleDateString('en-US', { month: 'long', year: 'numeric' });
-              
+
               if (!monthGroups.has(monthYear)) {
                 monthGroups.set(monthYear, []);
               }
               monthGroups.get(monthYear)!.push(item);
             });
-            
+
             const monthEntries = Array.from(monthGroups.entries());
-            
+
             // Render each month group
             return monthEntries.map(([monthYear, items], monthIndex) => (
               <div key={`month-${monthYear}`} className="relative">
@@ -235,7 +235,7 @@ const CallsIndexPage: React.FC = () => {
                 {monthIndex < monthEntries.length - 1 && (
                   <div className="absolute left-1/2 bottom-0 translate-y-full w-px h-4 bg-slate-200 dark:bg-slate-700" />
                 )}
-                
+
                 <div className="bg-white dark:bg-slate-800/50 rounded-xl overflow-hidden border border-slate-200/50 dark:border-slate-700/50 hover:border-slate-300 dark:hover:border-slate-600 transition-colors">
                   {/* Month header with gradient accent */}
                   <div className="px-4 py-2 bg-gradient-to-r from-slate-50 to-slate-100 dark:from-slate-800 dark:to-slate-700 border-b border-slate-200/50 dark:border-slate-700/50">
@@ -276,20 +276,20 @@ const CallsIndexPage: React.FC = () => {
 
                         // Render call
                         const call = item as Call;
-                        
+
                         // Define colors for each call type
                         const callTypeColors = {
                           acdc: 'border-l-purple-500 dark:border-l-purple-400',
                           acde: 'border-l-blue-500 dark:border-l-blue-400',
                           acdt: 'border-l-green-500 dark:border-l-green-400'
                         };
-                        
+
                         const callTypeBadgeColors = {
                           acdc: 'bg-purple-100 dark:bg-purple-900/30 text-purple-700 dark:text-purple-300',
                           acde: 'bg-blue-100 dark:bg-blue-900/30 text-blue-700 dark:text-blue-300',
                           acdt: 'bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-300'
                         };
-                        
+
                         return (
                           <Link
                             key={call.path}

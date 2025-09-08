@@ -30,7 +30,11 @@ const CallPage: React.FC = () => {
   const transcriptRef = useRef<HTMLDivElement>(null);
   const chatLogRef = useRef<HTMLDivElement>(null);
   const [isUserScrolling, setIsUserScrolling] = useState(false);
+  const [isUserScrollingTranscript, setIsUserScrollingTranscript] = useState(false);
   const scrollTimeoutRef = useRef<ReturnType<typeof setTimeout> | undefined>(undefined);
+  const transcriptScrollTimeoutRef = useRef<ReturnType<typeof setTimeout> | undefined>(undefined);
+  const isProgrammaticScrollRef = useRef(false);
+  const lastHighlightedTimestampRef = useRef<string | null>(null);
   const [player, setPlayer] = useState<any>(null);
   const [currentVideoTime, setCurrentVideoTime] = useState(0);
   const [isPlaying, setIsPlaying] = useState(false);
@@ -77,7 +81,6 @@ const CallPage: React.FC = () => {
     for (const pattern of patterns) {
       const match = url.match(pattern);
       if (match) {
-        console.log('Extracted YouTube ID:', match[1]);
         return match[1];
       }
     }
@@ -143,10 +146,22 @@ const CallPage: React.FC = () => {
         }
       });
 
-      if (closestMessage && 'scrollIntoView' in closestMessage) {
-        // Scroll chat to show the closest message
+      if (closestMessage && chatContainer) {
+        // Scroll chat to show the closest message within its container only
         setIsUserScrolling(true);
-        (closestMessage as HTMLElement).scrollIntoView({ behavior: 'smooth', block: 'center' });
+
+        const messageElement = closestMessage as HTMLElement;
+        const messageOffsetTop = messageElement.offsetTop;
+        const messageHeight = messageElement.offsetHeight;
+        const containerHeight = chatContainer.clientHeight;
+
+        // Center the message in the container
+        const targetScrollTop = messageOffsetTop - (containerHeight / 2) + (messageHeight / 2);
+
+        chatContainer.scrollTo({
+          top: targetScrollTop,
+          behavior: 'smooth'
+        });
 
         // Reset flag after animation
         if (scrollTimeoutRef.current) clearTimeout(scrollTimeoutRef.current);
@@ -260,22 +275,106 @@ const CallPage: React.FC = () => {
     };
   }, [isPlaying, player, callConfig]);
 
+  // Detect manual scrolling on transcript
+  useEffect(() => {
+    if (!transcriptRef.current) return;
+
+    const handleTranscriptScroll = () => {
+      // Ignore programmatic scrolls
+      if (isProgrammaticScrollRef.current) {
+        return;
+      }
+
+      setIsUserScrollingTranscript(true);
+
+      // Clear any existing timeout
+      if (transcriptScrollTimeoutRef.current) {
+        clearTimeout(transcriptScrollTimeoutRef.current);
+      }
+
+      // Reset after user stops scrolling for 3 seconds
+      transcriptScrollTimeoutRef.current = setTimeout(() => {
+        setIsUserScrollingTranscript(false);
+      }, 3000);
+    };
+
+    const container = transcriptRef.current;
+    container.addEventListener('scroll', handleTranscriptScroll);
+
+    return () => {
+      container.removeEventListener('scroll', handleTranscriptScroll);
+      if (transcriptScrollTimeoutRef.current) {
+        clearTimeout(transcriptScrollTimeoutRef.current);
+      }
+    };
+  }, [callData]);
+
   // Auto-scroll transcript to highlighted entry
   useEffect(() => {
-    if (!isPlaying || !transcriptRef.current || !callConfig?.sync?.transcriptStartTime || !callConfig?.sync?.videoStartTime) return;
+    // Skip if user is manually scrolling, not playing, or no sync config
+    if (isUserScrollingTranscript || !isPlaying || !transcriptRef.current || !callConfig?.sync?.transcriptStartTime || !callConfig?.sync?.videoStartTime) return;
 
-    const highlightedEntry = transcriptRef.current.querySelector('.bg-blue-50, .dark\\:bg-blue-900\\/30');
-    if (highlightedEntry) {
+    // Find all highlighted entries and pick the first one (there should only be one)
+    const highlightedEntries = transcriptRef.current.querySelectorAll('.bg-blue-50, .dark\\:bg-blue-900\\/30');
+
+    if (highlightedEntries.length > 0) {
+      // Get the first highlighted entry
+      const highlightedEntry = highlightedEntries[0];
       const container = transcriptRef.current;
-      const containerRect = container.getBoundingClientRect();
-      const entryRect = highlightedEntry.getBoundingClientRect();
 
-      // Only scroll if entry is not fully visible
-      if (entryRect.top < containerRect.top || entryRect.bottom > containerRect.bottom) {
-        highlightedEntry.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      // Get the parent entry div (contains timestamp and text)
+      const entryParent = highlightedEntry.closest('[data-timestamp]') as HTMLElement || highlightedEntry as HTMLElement;
+
+      // Get the timestamp to check if it's a new highlight
+      const currentTimestamp = entryParent.getAttribute('data-timestamp');
+
+      // Only scroll if this is a different entry than last time
+      if (currentTimestamp === lastHighlightedTimestampRef.current) {
+        return;
+      }
+      lastHighlightedTimestampRef.current = currentTimestamp;
+
+      // Get positions relative to the container, not the document
+      const containerHeight = container.clientHeight;
+      const containerRect = container.getBoundingClientRect();
+      const entryRect = entryParent.getBoundingClientRect();
+      
+      // Calculate entry position relative to container's scroll area
+      const entryOffsetFromContainerTop = entryRect.top - containerRect.top + container.scrollTop;
+      const entryHeight = entryParent.offsetHeight;
+
+      // Calculate where the entry currently is in the viewport
+      const entryRelativeTop = entryOffsetFromContainerTop - container.scrollTop;
+      const entryRelativeBottom = entryRelativeTop + entryHeight;
+
+      // Check if the entry is visible in a good position (20% to 70% of viewport)
+      const isInGoodPosition = entryRelativeTop >= (containerHeight * 0.2) &&
+                               entryRelativeBottom <= (containerHeight * 0.7);
+
+      if (!isInGoodPosition) {
+        // Minimal scroll - put entry near the top of viewport
+        const targetScrollTop = entryOffsetFromContainerTop - (containerHeight * 0.1);
+
+        // Ensure we don't scroll past boundaries
+        const maxScroll = Math.max(0, container.scrollHeight - containerHeight);
+        const finalScrollTop = Math.max(0, Math.min(targetScrollTop, maxScroll));
+
+        // Mark as programmatic scroll
+        isProgrammaticScrollRef.current = true;
+
+        // Smooth scroll within container only
+        container.scrollTo({
+          top: finalScrollTop,
+          behavior: 'smooth'
+        });
+
+        // Reset flag after scroll completes
+        setTimeout(() => {
+          isProgrammaticScrollRef.current = false;
+        }, 500);
       }
     }
-  }, [currentVideoTime, isPlaying, callConfig]);
+  }, [currentVideoTime, isPlaying, callConfig, isUserScrollingTranscript]);
 
   // YouTube player handlers
   const onPlayerReady: YouTubeProps['onReady'] = (event) => {
@@ -305,12 +404,6 @@ const CallPage: React.FC = () => {
       : Infinity;
 
     const isHighlighted = currentVideoTime >= entryVideoTime && currentVideoTime < nextEntryVideoTime;
-
-    // Debug logging for first few entries
-    if (index < 3 && isHighlighted) {
-      console.log(`Highlighting entry ${index}: transcript ${entryTimestamp} -> video ${entryVideoTime.toFixed(1)}s (current: ${currentVideoTime.toFixed(1)}s)`);
-    }
-
     return isHighlighted;
   };
 
@@ -430,7 +523,7 @@ const CallPage: React.FC = () => {
               <ThemeToggle />
             </div>
           </div>
-          
+
           {/* Desktop Layout */}
           <div className="hidden sm:flex items-center justify-between">
             <div className="flex items-center gap-3">

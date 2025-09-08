@@ -1,0 +1,910 @@
+WEBVTT
+
+1
+00:01:25.560 --> 00:01:26.650
+Barnabas: Hello, hello?
+
+2
+00:01:27.190 --> 00:01:28.809
+Barnabas: Can you guys hear me well?
+
+3
+00:01:29.490 --> 00:01:30.580
+Pooja Ranjan: Yes, Barnabis.
+
+4
+00:01:32.840 --> 00:01:37.909
+Pooja Ranjan: So I will start the pre-streaming in, like, couple of minutes, and whenever you are, just let me know.
+
+5
+00:01:38.250 --> 00:01:38.850
+Barnabas: Okay.
+
+6
+00:01:39.150 --> 00:01:40.000
+Barnabas: Thank you.
+
+7
+00:04:25.920 --> 00:04:27.050
+Barnabas: Pardon me interpret it.
+
+8
+00:04:27.520 --> 00:04:30.160
+Barnabas: Give it another minute, and then we can get started.
+
+9
+00:05:13.150 --> 00:05:17.040
+Barnabas: I think we should be good to go. Pooja, can you please start the call?
+
+10
+00:05:19.560 --> 00:05:20.250
+Barnabas: Thank you.
+
+11
+00:05:20.870 --> 00:05:27.670
+Barnabas: Welcome, everybody, to all core devs, testing call number 52. Fahil, could you please mute?
+
+12
+00:05:34.250 --> 00:05:35.100
+Barnabas: Thank you.
+
+13
+00:05:35.490 --> 00:05:42.360
+Barnabas: We're going to go into, physical right away. Physical.net status updates,
+
+14
+00:05:42.870 --> 00:05:51.560
+Barnabas: Definitely has a pretty high participation rate right now. We are sitting at about 80… 82%, which is not…
+
+15
+00:05:51.740 --> 00:05:53.809
+Barnabas: Great, but not horrible.
+
+16
+00:05:54.090 --> 00:06:01.180
+Barnabas: re… seem to have a few issues with a few specific clients, especially Nimbus and Aragon.
+
+17
+00:06:01.310 --> 00:06:08.570
+Barnabas: And, we have a couple of issues with, decorath and Nimbus EL and grandine.
+
+18
+00:06:09.580 --> 00:06:15.349
+Barnabas: Ideally, we want to see some fixes from Nimbus and Ergon before we…
+
+19
+00:06:15.460 --> 00:06:25.110
+Barnabas: going to the next unfinity period, we want to launch that, later today, or latest, by tomorrow.
+
+20
+00:06:25.710 --> 00:06:34.699
+Barnabas: So, first of all, we would like to get some information from these two clients, what are the issues, and if there's any fixes coming in.
+
+21
+00:06:40.030 --> 00:06:42.600
+Barnabas: Is anyone from Nimbus on the call?
+
+22
+00:06:51.070 --> 00:06:53.520
+Barnabas: Or is anyone from Eragon?
+
+23
+00:06:54.360 --> 00:07:00.649
+Andrew Ashikhmin: Yes, I'm here, so… We don't have a…
+
+24
+00:07:00.650 --> 00:07:19.540
+Andrew Ashikhmin: fix yet, and probably the issue will take some time to investigate. I think what's happening is that there is a flaw in Aragon's logic on long unwinds, and we sometimes deem a block invalid while it's
+
+25
+00:07:19.570 --> 00:07:36.139
+Andrew Ashikhmin: still valid, but we need more time to investigate and debug the issue. Probably will first add some more logging, things like that, but it's a tricky issue to debug, so don't expect a fix today, unfortunately.
+
+26
+00:07:38.930 --> 00:07:39.630
+Barnabas: Okay.
+
+27
+00:07:41.380 --> 00:07:49.449
+Andrew Ashikhmin: On the upside, I've made a patch to fix the last remaining,
+
+28
+00:07:50.130 --> 00:07:56.320
+Andrew Ashikhmin: Test failure on the Fusaka DevNet 5, Hive dashboard.
+
+29
+00:07:56.610 --> 00:07:58.619
+Andrew Ashikhmin: There is at least that.
+
+30
+00:08:00.850 --> 00:08:07.789
+Barnabas: Yeah, that's… that's great. We also want to make sure that Hive tests are 100% covered by every single EL.
+
+31
+00:08:13.660 --> 00:08:23.279
+Barnabas: I guess, nobody from Nimbus is around to discuss their box. Anyone from TECU could comment on, the red box?
+
+32
+00:08:27.960 --> 00:08:29.630
+Enrico Del Fante (tbenr): Oh, so harrowing it.
+
+33
+00:08:30.650 --> 00:08:34.189
+Enrico Del Fante (tbenr): So, we are still, working on…
+
+34
+00:08:34.309 --> 00:08:46.660
+Enrico Del Fante (tbenr): One sinking issue, one of the errors that has been reported in the… in one of the issues that is part of that document summary.
+
+35
+00:08:47.330 --> 00:09:02.739
+Enrico Del Fante (tbenr): So we lately, found a couple of things to improve and bug fixes around the way we were throttling requests from RPC that was causing a lot of issues with this.
+
+36
+00:09:03.480 --> 00:09:16.120
+Enrico Del Fante (tbenr): peer that was asking for 512 columns. We also fixed the validation of that, because by spec, that thing should have been rejected.
+
+37
+00:09:16.400 --> 00:09:35.479
+Enrico Del Fante (tbenr): We have already merged the PR for that. So, at the moment, the TECO boxes, even if they are… there are a couple of PR needs to go in to improve a situation, they're actually looking good, except for one that is…
+
+38
+00:09:35.730 --> 00:09:41.400
+Enrico Del Fante (tbenr): Seems like he's having memory issues, and this is REF2.
+
+39
+00:09:41.650 --> 00:09:48.700
+Enrico Del Fante (tbenr): It was… It's been in sync for 4 days, and waiting for us to keep up.
+
+40
+00:09:48.840 --> 00:09:53.139
+Enrico Del Fante (tbenr): Apparently, Ref never… Keep up, and
+
+41
+00:09:53.490 --> 00:10:04.549
+Enrico Del Fante (tbenr): Suddenly, while waiting, we had some additional memory issues. It seems, like, unrelated to the previous memory issues that we had, so I'm investigating.
+
+42
+00:10:04.790 --> 00:10:09.329
+Enrico Del Fante (tbenr): At the moment, dumping and downloading and checking.
+
+43
+00:10:10.370 --> 00:10:12.359
+Enrico Del Fante (tbenr): Yeah, that's it.
+
+44
+00:10:13.680 --> 00:10:16.380
+Barnabas: Thank you. Anyone from REST?
+
+45
+00:10:16.740 --> 00:10:18.760
+Barnabas: Could you give us an update?
+
+46
+00:10:21.530 --> 00:10:29.280
+Roman: On the document itself, The document, mentions the…
+
+47
+00:10:29.680 --> 00:10:35.610
+Roman: main net sinking bug, and we're gonna have the release for it, pretty soon.
+
+48
+00:10:35.800 --> 00:10:40.839
+Roman: The only thing that I can say is that it is reorg-related.
+
+49
+00:10:41.560 --> 00:10:46.999
+Roman: It never occurred on… on DevNets.
+
+50
+00:10:47.290 --> 00:10:54.060
+Roman: So, hopefully, it should not be a blocker, but it would be better to include the new police version
+
+51
+00:10:54.530 --> 00:10:56.149
+Roman: In DevNet 5.
+
+52
+00:10:56.700 --> 00:11:00.490
+Roman: And, regarding the… rough.
+
+53
+00:11:00.590 --> 00:11:06.990
+Roman: a cool client perp, Barnabas plugged it to me, I'm also gonna take a look today.
+
+54
+00:11:09.940 --> 00:11:16.089
+Barnabas: Thanks. And, everything is already fixed in, the main branch, in the trunk branch of graph, right?
+
+55
+00:11:16.940 --> 00:11:17.320
+Roman: Yeah.
+
+56
+00:11:17.320 --> 00:11:23.440
+Barnabas: If they go, I have the DevNet5 with the trunk branch, then that should be all good. We don't need to wait for a release.
+
+57
+00:11:23.990 --> 00:11:24.630
+Roman: Definitely.
+
+58
+00:11:27.180 --> 00:11:32.379
+Barnabas: Alright, I think that's all the known bugs, at this point.
+
+59
+00:11:34.290 --> 00:11:38.519
+Barnabas: What we need to discuss next is, possible timelines for .NET 5.
+
+60
+00:11:39.200 --> 00:11:50.660
+Barnabas: We wanted to do another non-finity on .NET 3, and see how quickly we can recover from that first, and then we were gonna go into, .NET 5 planning.
+
+61
+00:11:50.980 --> 00:12:02.330
+Barnabas: But I think, we're gonna need to start parallelizing these two, so ideally, I would like to get a thumbs up from every single client if they think that their trunk branch is ready for, DevNet 5.
+
+62
+00:12:03.730 --> 00:12:04.880
+Barnabas: Gundine?
+
+63
+00:12:13.350 --> 00:12:15.159
+Barnabas: Is anyone from Grandin? Grand?
+
+64
+00:12:15.160 --> 00:12:27.609
+Saulius Grigaitis | Grandine: Yeah, yeah, so we think that we fixed all the things, all the issues we had with syncing, and everything is merged to develop a branch, so I think we are ready now.
+
+65
+00:12:27.850 --> 00:12:33.720
+Saulius Grigaitis | Grandine: And, I think all the nodlings now in the DevNet 3 is sync them.
+
+66
+00:12:36.620 --> 00:12:38.710
+Barnabas: Thank you. Prism?
+
+67
+00:12:40.900 --> 00:12:48.610
+Manu: Yeah, so, the only… big missing feature right now in Develop is the backfill.
+
+68
+00:12:48.860 --> 00:13:01.929
+Manu: A part of that, we are still continuing to merge some performance improvement into the develop branch, but yeah, we are ready for DevNet 5 in our develop branch.
+
+69
+00:13:05.760 --> 00:13:07.690
+Barnabas: Thank you. Taeku?
+
+70
+00:13:13.970 --> 00:13:23.209
+Enrico Del Fante (tbenr): I think we're fine within the current state. We can have… so the bug that we were talking about before, I think it is not a blocker.
+
+71
+00:13:23.970 --> 00:13:25.669
+Enrico Del Fante (tbenr): Running it.
+
+72
+00:13:28.370 --> 00:13:30.029
+Barnabas: Thank you. Lighthouse?
+
+73
+00:13:31.230 --> 00:13:45.309
+pawan: We should be good, too. We currently have, like, the custody backfill thing as a PR, and we'll be reviewing it this week, and hopefully merging it soon, but like you said, that shouldn't be a blocker.
+
+74
+00:13:45.450 --> 00:14:01.159
+pawan: We also have another peer with a different sync strategy, and that is under review right now, but yeah, that one should also not be a blocker. We basically want to run our unstable branch and the other sync strategy
+
+75
+00:14:01.160 --> 00:14:12.679
+pawan: branch at this, like, half of our… half of the lighthouse notes with each. When you do the non-finality event, we want to observe how, like, unstable
+
+76
+00:14:13.680 --> 00:14:15.250
+pawan: Catch us back, and…
+
+77
+00:14:15.520 --> 00:14:25.720
+pawan: up to head, and the other sync strategy also catches to head, so we don't want to merge that PR yet until we see how it works out.
+
+78
+00:14:26.340 --> 00:14:32.220
+Barnabas: Yeah, that sounds good. We can organize, that… probably later this week.
+
+79
+00:14:34.590 --> 00:14:36.249
+Barnabas: Thank you, Doctor.
+
+80
+00:14:37.460 --> 00:14:54.489
+Matthew Keil: Oh, we identified a memory leak in some of the DB work that we did last week. We've got it figured out, we're in the process of testing it, hoping to get that merged tonight. Shouldn't stop us from getting onto the,
+
+81
+00:14:54.560 --> 00:15:05.770
+Matthew Keil: DevNet, though, with our trunk branch. We do have a pretty substantial refactor, to clean up some technical debt, that we're also trying to get merged, tonight.
+
+82
+00:15:05.770 --> 00:15:16.270
+Matthew Keil: So we can be ready for DevNet 5, but again, that also is not a blocker for… for DevNet 5. We can run locally, with some of our nodes if,
+
+83
+00:15:16.270 --> 00:15:20.350
+Matthew Keil: you know, push comes to shove, but we'll try to get it, merged ASAP.
+
+84
+00:15:21.820 --> 00:15:22.670
+Barnabas: Sounds good.
+
+85
+00:15:22.900 --> 00:15:25.929
+Barnabas: Anyone from Nimbus, managed to join?
+
+86
+00:15:26.880 --> 00:15:33.809
+Agnish Ghosh: Yeah. So… We have a blocking issue, that's happening…
+
+87
+00:15:34.050 --> 00:15:43.740
+Agnish Ghosh: because of, the way GetBlobs works in our codebase, so… It's… it's sort of,
+
+88
+00:15:44.160 --> 00:15:47.149
+Agnish Ghosh: A bug in the block validation pipeline?
+
+89
+00:15:47.290 --> 00:15:51.790
+Agnish Ghosh: Happens only for super nodes for now.
+
+90
+00:15:52.040 --> 00:15:56.549
+Agnish Ghosh: We are trying to resolve that issue by tonight. I have actually pushed
+
+91
+00:15:56.720 --> 00:16:02.990
+Agnish Ghosh: some of the fixes, so… in a couple of hours, I think the Watchtower should be picking it up.
+
+92
+00:16:03.290 --> 00:16:08.749
+Agnish Ghosh: Apart from that, we are yet to ship our final version for the sinker.
+
+93
+00:16:09.080 --> 00:16:13.000
+Agnish Ghosh: However, I think we should be fine.
+
+94
+00:16:13.190 --> 00:16:19.040
+Agnish Ghosh: If we are planning to do another non-finality test, in DevNet 3.
+
+95
+00:16:19.770 --> 00:16:24.280
+Agnish Ghosh: about DevNet 5,
+
+96
+00:16:24.740 --> 00:16:37.790
+Agnish Ghosh: we are ready, but I… I'm not super sure about the blob count. Where do we tip over? So yeah, like, unless and until that happens,
+
+97
+00:16:38.220 --> 00:16:42.349
+Agnish Ghosh: We… it's kind of a blind spot for us.
+
+98
+00:16:42.740 --> 00:16:43.780
+Agnish Ghosh: Right now.
+
+99
+00:16:45.240 --> 00:16:51.799
+Barnabas: Is there any update regarding your trunk branch readiness? Is everything still in HR branch?
+
+100
+00:16:51.800 --> 00:16:58.629
+Agnish Ghosh: Oh, right. So, for the trunk branch readiness, the update that I pushed
+
+101
+00:16:58.950 --> 00:17:11.819
+Agnish Ghosh: couple of, minutes ago, it should be picked up by Watchtower, and soon after, we would be merging that into our trunk branch. Once that is done, our trunk branch must be ready, so let's say by tonight.
+
+102
+00:17:12.069 --> 00:17:16.419
+Agnish Ghosh: Or maybe tomorrow early morning, the trunk branch should be ready.
+
+103
+00:17:18.020 --> 00:17:18.770
+Barnabas: Sounds good.
+
+104
+00:17:19.359 --> 00:17:21.399
+Barnabas: Anyone from Gaff around?
+
+105
+00:17:25.400 --> 00:17:28.829
+lightclient: I… yeah, I think we're good for definite 5.
+
+106
+00:17:29.390 --> 00:17:37.119
+lightclient: The main thing we're working on at this point is just handling blob conversion around the migration, but that's not really a blocking issue.
+
+107
+00:17:39.210 --> 00:17:40.730
+Barnabas: Sounds good. Breath?
+
+108
+00:17:45.910 --> 00:17:47.610
+Roman: Yeah.
+
+109
+00:17:47.810 --> 00:17:50.880
+Roman: Wave received ready from the mainfront.
+
+110
+00:17:51.870 --> 00:17:53.239
+Barnabas: Thank you. Never mind.
+
+111
+00:17:57.330 --> 00:17:58.830
+Łukasz Rozmej: I think we should be fine.
+
+112
+00:18:00.040 --> 00:18:01.220
+Barnabas: Thank you. Aragon.
+
+113
+00:18:02.620 --> 00:18:20.909
+Andrew Ashikhmin: Well, as I mentioned in the beginning, we still have this bug that, we, like, probably mishandle along reorgs, but it'll take us some time to investigate it. Other than that, I think our main branch is ready.
+
+114
+00:18:22.000 --> 00:18:23.220
+Barnabas: Thank you. Nazu?
+
+115
+00:18:24.530 --> 00:18:26.000
+Justin Florentine (Besu): Yep, we're on Main.
+
+116
+00:18:27.090 --> 00:18:28.020
+Justin Florentine (Besu): Thank you.
+
+117
+00:18:29.140 --> 00:18:33.829
+Barnabas: Okay, so it sounds like, we should be good to go with the non-finals event,
+
+118
+00:18:34.860 --> 00:18:48.350
+Barnabas: Maybe by end of today, and then we're gonna try to do it for at least one day, and try to recover, and then we can probably schedule Debnet 5 on the second half of this week. As soon as we have,
+
+119
+00:18:49.560 --> 00:18:52.109
+Barnabas: The time set, then we're gonna announce it.
+
+120
+00:18:52.390 --> 00:18:59.320
+Barnabas: it's gonna be a very big network in order to DevNet 4, and hopefully things will go smoothly there.
+
+121
+00:19:02.340 --> 00:19:13.349
+Barnabas: Next topic will be shadow fork testing. So, parallel to doing .NET 5, we are planning to look into doing Shadow Forks for
+
+122
+00:19:13.780 --> 00:19:22.889
+Barnabas: all the different testnets. Currently, we have two main blockers from gas and ergon, due to the fact that,
+
+123
+00:19:23.010 --> 00:19:31.519
+Barnabas: then they don't have a way to override the blob schedule values. Therefore, scheduling a shadow fork is currently not possible.
+
+124
+00:19:31.930 --> 00:19:33.650
+Barnabas: on Eragon and Geth.
+
+125
+00:19:34.410 --> 00:19:38.089
+Barnabas: I know that, Matt is working on the graphics,
+
+126
+00:19:38.800 --> 00:19:43.010
+Barnabas: Is there gonna be a fix for this in Ergon as well?
+
+127
+00:19:47.600 --> 00:19:52.640
+Andrew Ashikhmin: Well, no one is working on it yet, but…
+
+128
+00:19:53.040 --> 00:19:57.420
+Andrew Ashikhmin: Probably be a quick change. Okay, so when do you need it?
+
+129
+00:19:58.320 --> 00:20:01.499
+Barnabas: Probably by the second half of this week, ideally.
+
+130
+00:20:02.230 --> 00:20:05.090
+Andrew Ashikhmin: Yeah, okay, yeah, we'll try to do it, yeah.
+
+131
+00:20:06.610 --> 00:20:07.520
+Barnabas: Sounds good.
+
+132
+00:20:08.280 --> 00:20:17.480
+Barnabas: And regarding, releases, do client teams feel like they would be ready to do,
+
+133
+00:20:18.410 --> 00:20:26.310
+Barnabas: releases for Hosky, or technically, we don't need an actual release for Hosky, but it would be nice if
+
+134
+00:20:26.560 --> 00:20:33.060
+Barnabas: We could have, like, a pre-release… Maybe by next week, Monday?
+
+135
+00:20:37.760 --> 00:20:40.610
+Barnabas: Because, Hosky wasn't part of the…
+
+136
+00:20:40.710 --> 00:20:45.460
+Barnabas: all testing schedule, that's why I'm pushing for such accelerated timeline.
+
+137
+00:20:52.870 --> 00:20:55.859
+Barnabas: I don't think we have decided on timestamp yet.
+
+138
+00:20:56.660 --> 00:21:06.079
+Barnabas: I think, we can discuss timestamps async, and maybe make a decision on the call on Thursday.
+
+139
+00:21:09.340 --> 00:21:25.719
+Andrew Ashikhmin: For Aragon, it's problematic, because we are trying to wrap up our 3.1 release, and we'll need to cut another release, 3.2 for Holesky, because 3.1 doesn't have all the Fusaka changes, and it's basically,
+
+140
+00:21:25.890 --> 00:21:34.110
+Andrew Ashikhmin: we… we're constrained on the testing side, and so on. So, yeah, a week from now is too soon.
+
+141
+00:21:35.400 --> 00:21:37.360
+Barnabas: Okay, what would be the preferred date?
+
+142
+00:21:38.840 --> 00:21:42.130
+Andrew Ashikhmin: In two weeks would be better.
+
+143
+00:21:48.130 --> 00:21:48.850
+Barnabas: Correct.
+
+144
+00:21:52.940 --> 00:21:56.079
+Barnabas: What about other, like, how do CL teams feel about it?
+
+145
+00:22:22.280 --> 00:22:29.590
+Barnabas: Yeah, so we're gonna be trying to accelerate DevNet5 as soon as possible to be able to determine the BPO values.
+
+146
+00:22:29.690 --> 00:22:36.559
+Barnabas: Hopefully by next week, then we're gonna have that, and then a week after that, we should…
+
+147
+00:22:36.960 --> 00:22:43.189
+Barnabas: be able to make, current releases, that should fit also the schedule of Aragon.
+
+148
+00:22:43.540 --> 00:22:51.030
+Barnabas: So I think if we can aim for, plant releases by the 22nd of September, then,
+
+149
+00:22:51.240 --> 00:22:57.640
+Barnabas: We should have all the BPO values determined by them, and, should be all set.
+
+150
+00:23:07.690 --> 00:23:20.950
+Barnabas: Again, and if we don't have, like, a full-blown release, I don't think that's gonna be such a big deal, because Holzky has a pre-known validator set, so we can accelerate the deployment and have custom deployments as well.
+
+151
+00:23:21.350 --> 00:23:26.210
+Barnabas: We can just build a… tagged, locker image as well.
+
+152
+00:23:29.850 --> 00:23:35.009
+Barnabas: Alright, so I think we discussed, demo 5, we discussed the non-finalty.
+
+153
+00:23:35.250 --> 00:23:43.489
+Barnabas: timeline, maybe we can move on to gas limit testing. Anyone from Netherland could give us an update? How is that going?
+
+154
+00:24:01.340 --> 00:24:06.309
+Łukasz Rozmej: I don't see Camille on the call. Martin, do you have anything to update?
+
+155
+00:24:08.800 --> 00:24:19.510
+Marcin Sobczak: Yeah, so we are running EST test, and right now, we have a tooling to run it,
+
+156
+00:24:19.510 --> 00:24:34.079
+Marcin Sobczak: stateful, we did some experiments in Hudi, and, right now, I'm trying to, to run it on, on MyNet, and, one of my,
+
+157
+00:24:34.080 --> 00:24:50.600
+Marcin Sobczak: next, next steps is to, run, Zen, test, prepared by, Johim, and, try it on, on, top of MyNetDB.
+
+158
+00:25:01.390 --> 00:25:02.399
+Barnabas: Okay, thank you.
+
+159
+00:25:04.110 --> 00:25:13.829
+Barnabas: Regarding, Glamstone testing updates, is anyone, Tony is around, maybe? Or, look, level access?
+
+160
+00:25:19.450 --> 00:25:20.930
+Barnabas: Or anyone else?
+
+161
+00:25:21.170 --> 00:25:29.530
+Barnabas: Could you give us an update, how's that going? How's the specs coming along, and if we could be ready to have the first,
+
+162
+00:25:30.730 --> 00:25:34.119
+Barnabas: Well, 7.0 launch by the end of the month, maybe?
+
+163
+00:25:35.150 --> 00:25:50.530
+Jared Wasinger: Yeah, so I can't really comment on that, but I can say that regarding testing, I know that the testing team, recently made an initial release of blockchain tests for block-level access lists, and…
+
+164
+00:25:50.840 --> 00:25:54.319
+Jared Wasinger: In testing them against Geth, we found…
+
+165
+00:25:54.730 --> 00:26:02.380
+Jared Wasinger: a few ish… well, I think two issues with the… EALS implementation of the spec.
+
+166
+00:26:03.100 --> 00:26:08.479
+Jared Wasinger: So I guess those are being… Currently being addressed.
+
+167
+00:26:08.610 --> 00:26:16.219
+Jared Wasinger: But, like, regarding, A timeline for DevNet.
+
+168
+00:26:16.700 --> 00:26:21.399
+Jared Wasinger: I… from the… from the… from my…
+
+169
+00:26:21.650 --> 00:26:27.549
+Jared Wasinger: from my point of view, writing this for Geth, I think we could be ready,
+
+170
+00:26:28.940 --> 00:26:33.080
+Jared Wasinger: potent, very soon, but I don't know…
+
+171
+00:26:33.300 --> 00:26:35.459
+Jared Wasinger: If other people are on the same page.
+
+172
+00:26:38.610 --> 00:26:43.650
+Barnabas: Any other ELs have any updates regarding… Dr. Alexis List?
+
+173
+00:26:44.630 --> 00:26:58.769
+Łukasz Rozmej: So, Nevermind has a prototype of block-level access list. I'm not sure what the testing status, Mark, Harvey Hill is handling it. I don't… also don't see him in this call, but I know, we have,
+
+174
+00:26:59.030 --> 00:27:03.050
+Łukasz Rozmej: Something that he said it was working.
+
+175
+00:27:08.160 --> 00:27:11.999
+felipe: Yeah, I… I can give an update from the testing side.
+
+176
+00:27:12.290 --> 00:27:19.040
+felipe: Yeah, we did release a pre-release for block-level access lists, and as, Jared mentioned.
+
+177
+00:27:19.320 --> 00:27:21.889
+felipe: The specs, need some updates.
+
+178
+00:27:22.380 --> 00:27:30.139
+felipe: And, we are… we're getting a proper review on the spec side right now, and I… I assume once it's merged.
+
+179
+00:27:30.900 --> 00:27:36.109
+felipe: We can figure out those issues, and then we'll get another release out this week as well.
+
+180
+00:27:41.900 --> 00:27:48.140
+Barnabas: That sounds good. Have any other EL teams managed to take a look at… Implementation?
+
+181
+00:28:02.080 --> 00:28:06.560
+spencer-tb: Hey, this is not, block-level access list related, but,
+
+182
+00:28:07.020 --> 00:28:13.510
+spencer-tb: Just wanted to jump in from the east side, just to say that we've… Just released our…
+
+183
+00:28:13.920 --> 00:28:18.249
+spencer-tb: V5 full release. It's been a long time coming for this one, and
+
+184
+00:28:18.540 --> 00:28:22.070
+spencer-tb: I think I've already messaged all the EL teams specifically.
+
+185
+00:28:22.530 --> 00:28:27.070
+spencer-tb: but it's worth taking a look at the release notes.
+
+186
+00:28:27.590 --> 00:28:38.279
+spencer-tb: and… We essentially are announcing here that we're planning to merge execution spec tests with eels, execution specs.
+
+187
+00:28:40.850 --> 00:28:48.260
+spencer-tb: What that means for test releases, so in the future, when we do finally merge the two repos, test releases will still…
+
+188
+00:28:48.390 --> 00:28:49.890
+spencer-tb: come from East?
+
+189
+00:28:50.310 --> 00:28:54.939
+spencer-tb: So that will still be the main place to get tests, but the actual Python tests…
+
+190
+00:28:55.060 --> 00:28:57.760
+spencer-tb: And the East Framework will move to eels.
+
+191
+00:28:57.990 --> 00:29:03.139
+spencer-tb: For now, if you're working on East, PR should still go there, but we'll,
+
+192
+00:29:03.880 --> 00:29:09.610
+spencer-tb: communicate accordingly for when people need to start moving the PRs to ELS.
+
+193
+00:29:10.790 --> 00:29:18.259
+spencer-tb: I guess I can also mention a bit about the test fixtures, so we have, 3 tarballs here, so we've got
+
+194
+00:29:18.460 --> 00:29:20.550
+spencer-tb: The latest benchmark fixtures?
+
+195
+00:29:21.030 --> 00:29:29.710
+spencer-tb: We also have fixtures stable and fixtures developed, so fixtures stable, contain all the tests, filled until Prague.
+
+196
+00:29:29.980 --> 00:29:34.350
+spencer-tb: And Fixtures Develop contains all the tests, filled into Osaka.
+
+197
+00:29:34.620 --> 00:29:41.720
+spencer-tb: And within these two tarballs now, we have refilled general state tests from Ethereum tests.
+
+198
+00:29:41.970 --> 00:29:47.829
+spencer-tb: So… Yeah, I recommend running the fixtures Develop Powerball, because they have…
+
+199
+00:29:48.180 --> 00:29:56.690
+spencer-tb: the general state tests refilled for Osaka, and obviously we had the… Transaction gas limit cap, so…
+
+200
+00:29:57.030 --> 00:30:03.840
+spencer-tb: Just to make sure you guys are passing those tests, too, because we changed, we changed a lot of the tests,
+
+201
+00:30:03.940 --> 00:30:05.790
+spencer-tb: Or the transaction gas limit cap.
+
+202
+00:30:06.280 --> 00:30:14.960
+spencer-tb: A quick note on the actual general state tests, that they're only filled… From Cancun.
+
+203
+00:30:15.250 --> 00:30:18.569
+spencer-tb: So, if you want to still run
+
+204
+00:30:18.740 --> 00:30:23.280
+spencer-tb: the general state tests from Ethereum tests for forks before Cancun.
+
+205
+00:30:23.720 --> 00:30:30.300
+spencer-tb: like Shanghai, backwards, you'll want to still get these from Ethereum tests. But if you're only concerned with
+
+206
+00:30:30.850 --> 00:30:36.560
+spencer-tb: Prague and Osaka, for the general state test from Ethereum tests.
+
+207
+00:30:37.170 --> 00:30:43.419
+spencer-tb: then, the… tarballs in this release should be perfect for you.
+
+208
+00:30:43.680 --> 00:30:48.399
+spencer-tb: Yeah, more information's in the release notes, and if there are any questions, please…
+
+209
+00:30:48.940 --> 00:30:51.130
+spencer-tb: Fire them to us. Yeah.
+
+210
+00:30:55.270 --> 00:30:56.289
+Barnabas: Thank you, Spencer.
+
+211
+00:31:01.690 --> 00:31:08.369
+Barnabas: So if nobody else has any updates regarding whatever access list, then maybe we can jump into EPBS.
+
+212
+00:31:08.600 --> 00:31:12.910
+Barnabas: Anyone on the call? That's…
+
+213
+00:31:13.720 --> 00:31:15.750
+Barnabas: the most up-to-date with the PBS?
+
+214
+00:31:16.710 --> 00:31:18.429
+Barnabas: Any photos, or…
+
+215
+00:31:19.380 --> 00:31:20.230
+Barnabas: Terrence?
+
+216
+00:31:35.990 --> 00:31:42.549
+Barnabas: I guess the instant suspects are still under review, and I'm not sure how the…
+
+217
+00:31:42.650 --> 00:31:44.920
+Barnabas: Testing of it is everywhere, but…
+
+218
+00:31:45.200 --> 00:31:49.059
+Barnabas: Yeah, I think we can circle back to that next week, or week after that.
+
+219
+00:31:51.250 --> 00:31:57.580
+Barnabas: That was the agenda for today. Anyone else has anything else that they would like to discuss?
+
+220
+00:32:13.850 --> 00:32:19.110
+Barnabas: Sounds like everybody's happy, so maybe you can end the call a bit sooner.
+
+221
+00:32:22.370 --> 00:32:25.440
+Barnabas: Thanks for coming, and see you all on Thursday.
+
+222
+00:32:26.610 --> 00:32:27.480
+pawan: Okay.
+
+223
+00:32:28.630 --> 00:32:29.270
+Agnish Ghosh: Right.
+
+224
+00:32:29.270 --> 00:32:30.010
+Pooja Ranjan: Yeah.
+
+225
+00:32:30.340 --> 00:32:31.569
+Antoine James: Thank you. Thanks. Bye-bye.
+
+226
+00:32:31.570 --> 00:32:32.820
+Andrew Ashikhmin: Okay, bye-bye.
+
+227
+00:32:33.220 --> 00:32:33.920
+Dmitrii Shmatko: Aye.
+

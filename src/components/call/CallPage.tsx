@@ -15,6 +15,7 @@ interface CallData {
 
 interface CallConfig {
   videoUrl?: string;
+  issue?: number;
   sync?: {
     transcriptStartTime: string;
     videoStartTime: string;
@@ -601,6 +602,20 @@ const CallPage: React.FC = () => {
                       <span className="text-slate-600 dark:text-slate-300">Meeting:</span>
                       <span className="text-slate-700 dark:text-slate-200 font-medium">#{callData.number}</span>
                     </div>
+                    {callConfig?.issue && (
+                      <div className="flex items-center gap-2">
+                        <span className="text-slate-500 dark:text-slate-400">🔗</span>
+                        <span className="text-slate-600 dark:text-slate-300">Issue:</span>
+                        <a 
+                          href={`https://github.com/ethereum/pm/issues/${callConfig.issue}`}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="text-blue-600 hover:text-blue-800 dark:text-blue-400 dark:hover:text-blue-200 font-medium underline decoration-1 underline-offset-2"
+                        >
+                          #{callConfig.issue}
+                        </a>
+                      </div>
+                    )}
                   </div>
                   <div className="mt-4 pt-4 border-t border-slate-200 dark:border-slate-700">
                     <a

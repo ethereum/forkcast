@@ -62,6 +62,8 @@ const CallsIndexPage: React.FC = () => {
     { type: 'acdt', date: '2025-08-11', number: '048', path: 'acdt/2025-08-11_048' },
     { type: 'acdt', date: '2025-08-18', number: '049', path: 'acdt/2025-08-18_049' },
     { type: 'acdt', date: '2025-08-25', number: '050', path: 'acdt/2025-08-25_050' },
+    { type: 'acdt', date: '2025-09-01', number: '051', path: 'acdt/2025-09-01_051' },
+    { type: 'acdt', date: '2025-09-08', number: '052', path: 'acdt/2025-09-08_052' },
   ];
 
   // Timeline events for context

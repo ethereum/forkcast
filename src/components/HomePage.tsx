@@ -1,14 +1,29 @@
 import { Link } from 'react-router-dom';
 import { networkUpgrades } from '../data/upgrades';
+import { getRecentCalls } from '../data/calls';
 import { useAnalytics } from '../hooks/useAnalytics';
 import ThemeToggle from './ui/ThemeToggle';
 
 const HomePage = () => {
   const upgrades = networkUpgrades;
+  const recentCalls = getRecentCalls(5);
   const { trackLinkClick } = useAnalytics();
 
   const handleExternalLinkClick = (linkType: string, url: string) => {
     trackLinkClick(linkType, url);
+  };
+  
+  // Colors for call types
+  const callTypeColors = {
+    acdc: 'border-l-purple-500 dark:border-l-purple-400',
+    acde: 'border-l-blue-500 dark:border-l-blue-400',
+    acdt: 'border-l-green-500 dark:border-l-green-400'
+  };
+  
+  const callTypeBadgeColors = {
+    acdc: 'bg-purple-100 dark:bg-purple-900/30 text-purple-700 dark:text-purple-300',
+    acde: 'bg-blue-100 dark:bg-blue-900/30 text-blue-700 dark:text-blue-300',
+    acdt: 'bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-300'
   };
 
   const getStatusColor = (status: string) => {
@@ -101,6 +116,50 @@ const HomePage = () => {
               );
             }
           })}
+        </div>
+
+        {/* Recent Protocol Calls Section */}
+        <div className="mt-12">
+          <div className="flex items-center justify-between mb-4">
+            <h2 className="text-xl font-medium text-slate-900 dark:text-slate-100">
+              Recent Protocol Calls
+            </h2>
+            <Link 
+              to="/calls" 
+              className="text-sm text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-200 transition-colors"
+            >
+              View all calls →
+            </Link>
+          </div>
+          
+          <div className="bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg overflow-hidden">
+            <div className="divide-y divide-slate-200 dark:divide-slate-700">
+              {recentCalls.map((call) => (
+                <Link
+                  key={call.path}
+                  to={`/calls/${call.path}`}
+                  className={`block px-4 py-3 hover:bg-slate-50 dark:hover:bg-slate-700/50 transition-colors border-l-4 ${callTypeColors[call.type]}`}
+                >
+                  <div className="flex items-center justify-between">
+                    <div className="flex items-center gap-3">
+                      <span className={`text-xs font-medium px-2 py-0.5 rounded-full ${callTypeBadgeColors[call.type]}`}>
+                        {call.type.toUpperCase()}
+                      </span>
+                      <span className="text-sm font-medium text-slate-900 dark:text-slate-100">
+                        Meeting #{call.number}
+                      </span>
+                      <span className="text-sm text-slate-600 dark:text-slate-400">
+                        {call.date}
+                      </span>
+                    </div>
+                    <div className="text-slate-400 dark:text-slate-500">
+                      →
+                    </div>
+                  </div>
+                </Link>
+              ))}
+            </div>
+          </div>
         </div>
 
         {/* Footer */}

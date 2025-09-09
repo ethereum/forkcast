@@ -181,20 +181,36 @@ const CallPage: React.FC = () => {
       }
 
       try {
-        // Parse the call path (e.g., "acdc/2025-04-03_154")
-        const [type, dateAndNumber] = callPath.split('/');
-        const [date, number] = dateAndNumber?.split('_') || [];
+        // Parse the call path (e.g., "acdc/154")
+        const [type, number] = callPath.split('/');
+        
+        // Map from simplified URL to artifact folder path
+        // We need to find the matching call from our data to get the date
+        const callsModule = await import('../../data/calls');
+        const matchingCall = callsModule.protocolCalls.find(
+          call => call.type === type && call.number === number
+        );
+        
+        if (!matchingCall) {
+          console.error('Call not found:', callPath);
+          setLoading(false);
+          return;
+        }
+        
+        // Construct the artifact path with date_number format
+        const artifactPath = `${type}/${matchingCall.date}_${number}`;
+        const date = matchingCall.date;
 
         // Load chat logs
-        const chatResponse = await fetch(`/artifacts/${callPath}/chat.txt`);
+        const chatResponse = await fetch(`/artifacts/${artifactPath}/chat.txt`);
         const chatContent = chatResponse.ok ? await chatResponse.text() : undefined;
 
         // Load transcript
-        const transcriptResponse = await fetch(`/artifacts/${callPath}/transcript.vtt`);
+        const transcriptResponse = await fetch(`/artifacts/${artifactPath}/transcript.vtt`);
         const transcriptContent = transcriptResponse.ok ? await transcriptResponse.text() : undefined;
 
         // Load config file if it exists
-        const configResponse = await fetch(`/artifacts/${callPath}/config.json`);
+        const configResponse = await fetch(`/artifacts/${artifactPath}/config.json`);
         let config: CallConfig | null = null;
         if (configResponse.ok) {
           try {
@@ -217,7 +233,7 @@ const CallPage: React.FC = () => {
         if (config?.videoUrl) {
           videoUrl = config.videoUrl;
         } else {
-          const videoResponse = await fetch(`/artifacts/${callPath}/video.txt`);
+          const videoResponse = await fetch(`/artifacts/${artifactPath}/video.txt`);
           videoUrl = videoResponse.ok ? (await videoResponse.text()).trim() : undefined;
         }
 
@@ -339,7 +355,7 @@ const CallPage: React.FC = () => {
       const containerHeight = container.clientHeight;
       const containerRect = container.getBoundingClientRect();
       const entryRect = entryParent.getBoundingClientRect();
-      
+
       // Calculate entry position relative to container's scroll area
       const entryOffsetFromContainerTop = entryRect.top - containerRect.top + container.scrollTop;
       const entryHeight = entryParent.offsetHeight;
@@ -597,16 +613,11 @@ const CallPage: React.FC = () => {
                       <span className="text-slate-600 dark:text-slate-300">Series:</span>
                       <span className="text-slate-700 dark:text-slate-200 font-medium">{getCallTypeLabel()}</span>
                     </div>
-                    <div className="flex items-center gap-2">
-                      <span className="text-slate-500 dark:text-slate-400">🔢</span>
-                      <span className="text-slate-600 dark:text-slate-300">Meeting:</span>
-                      <span className="text-slate-700 dark:text-slate-200 font-medium">#{callData.number}</span>
-                    </div>
                     {callConfig?.issue && (
                       <div className="flex items-center gap-2">
                         <span className="text-slate-500 dark:text-slate-400">🔗</span>
                         <span className="text-slate-600 dark:text-slate-300">Issue:</span>
-                        <a 
+                        <a
                           href={`https://github.com/ethereum/pm/issues/${callConfig.issue}`}
                           target="_blank"
                           rel="noopener noreferrer"

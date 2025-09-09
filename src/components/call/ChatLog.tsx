@@ -93,17 +93,18 @@ const ChatLog: React.FC<ChatLogProps> = ({ content, syncConfig }) => {
         if (message.startsWith('Replying to')) {
           if (i + 1 < lines.length) {
             const nextLine = lines[i + 1];
+            // Check if next line is NOT a new timestamped message
             if (!nextLine.match(/^\d{2}:\d{2}:\d{2}\t/)) {
               const actualMessage = nextLine.trim();
-              if (actualMessage && actualMessage.length >= 2) {
+              if (actualMessage) {
                 messages.push({
                   timestamp,
                   speaker,
-                  message: `${message} ${actualMessage}`
+                  message: `${message} → ${actualMessage}`
                 });
+                i++; // Skip the next line since we've consumed it
+                continue;
               }
-              i++;
-              continue;
             }
           }
         }
@@ -138,7 +139,18 @@ const ChatLog: React.FC<ChatLogProps> = ({ content, syncConfig }) => {
     const match = reply.message.match(/Replying to "([^"]+)"/);
     if (match) {
       const quotedText = match[1];
-      const realParent = parentMessages.find(parent => parent.message.toLowerCase().includes(quotedText.toLowerCase()));
+      // Handle abbreviated quotes (ending with "...")
+      const isAbbreviated = quotedText.endsWith('...');
+      const searchText = isAbbreviated ? quotedText.slice(0, -3).trim() : quotedText;
+
+      const realParent = parentMessages.find(parent => {
+        const parentLower = parent.message.toLowerCase();
+        const searchLower = searchText.toLowerCase();
+        // For abbreviated quotes, check if parent starts with the search text
+        // For full quotes, check if parent contains the search text
+        return isAbbreviated ? parentLower.startsWith(searchLower) : parentLower.includes(searchLower);
+      });
+
       if (!realParent && !virtualParents.has(quotedText)) {
         virtualParents.set(quotedText, {
           timestamp: '00:00:00',
@@ -157,7 +169,18 @@ const ChatLog: React.FC<ChatLogProps> = ({ content, syncConfig }) => {
       const match = reply.message.match(/Replying to "([^"]+)"/);
       if (match) {
         const quotedText = match[1];
-        if (parent.message.toLowerCase().includes(quotedText.toLowerCase())) {
+        // Handle abbreviated quotes (ending with "...")
+        const isAbbreviated = quotedText.endsWith('...');
+        const searchText = isAbbreviated ? quotedText.slice(0, -3).trim() : quotedText;
+
+        const parentLower = parent.message.toLowerCase();
+        const searchLower = searchText.toLowerCase();
+
+        // For abbreviated quotes, check if parent starts with the search text
+        // For full quotes, check if parent contains the search text
+        const isMatch = isAbbreviated ? parentLower.startsWith(searchLower) : parentLower.includes(searchLower);
+
+        if (isMatch) {
           replies.push(reply);
           matchedReplies.add(reply);
         }
@@ -254,8 +277,10 @@ const ChatLog: React.FC<ChatLogProps> = ({ content, syncConfig }) => {
             })()}
             {/* Reply Messages */}
             {isParentWithReplies && replies!.map((reply, replyIndex) => {
-              // Extract just the actual message content, removing "Replying to..." prefix
-              const actualMessage = reply.message.replace(/^Replying to "[^"]+"\s*/, '');
+              // Extract just the actual message content after "Replying to..."
+              // The message format is: "Replying to "quoted" → actual message"
+              const replyMatch = reply.message.match(/^Replying to "[^"]+"\s*→\s*(.+)$/);
+              const actualMessage = replyMatch ? replyMatch[1] : reply.message;
               return (
                 <div
                   key={replyIndex}

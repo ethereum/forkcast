@@ -183,20 +183,20 @@ const CallPage: React.FC = () => {
       try {
         // Parse the call path (e.g., "acdc/154")
         const [type, number] = callPath.split('/');
-        
+
         // Map from simplified URL to artifact folder path
         // We need to find the matching call from our data to get the date
         const callsModule = await import('../../data/calls');
         const matchingCall = callsModule.protocolCalls.find(
           call => call.type === type && call.number === number
         );
-        
+
         if (!matchingCall) {
           console.error('Call not found:', callPath);
           setLoading(false);
           return;
         }
-        
+
         // Construct the artifact path with date_number format
         const artifactPath = `${type}/${matchingCall.date}_${number}`;
         const date = matchingCall.date;
@@ -326,6 +326,39 @@ const CallPage: React.FC = () => {
     };
   }, [callData]);
 
+  const scrollTranscriptToEntry = (entryElement: HTMLElement) => {
+    if (!transcriptRef.current) return;
+
+    const container = transcriptRef.current;
+    const containerHeight = container.clientHeight;
+    const containerRect = container.getBoundingClientRect();
+    const entryRect = entryElement.getBoundingClientRect();
+
+    // Calculate entry position relative to container's scroll area
+    const entryOffsetFromContainerTop = entryRect.top - containerRect.top + container.scrollTop;
+
+    // Position entry at 10% from top of viewport
+    const targetScrollTop = entryOffsetFromContainerTop - (containerHeight * 0.1);
+
+    // Ensure we don't scroll past boundaries
+    const maxScroll = Math.max(0, container.scrollHeight - containerHeight);
+    const finalScrollTop = Math.max(0, Math.min(targetScrollTop, maxScroll));
+
+    // Mark as programmatic scroll
+    isProgrammaticScrollRef.current = true;
+
+    // Smooth scroll within container only
+    container.scrollTo({
+      top: finalScrollTop,
+      behavior: 'smooth'
+    });
+
+    // Reset flag after scroll completes
+    setTimeout(() => {
+      isProgrammaticScrollRef.current = false;
+    }, 500);
+  };
+
   // Auto-scroll transcript to highlighted entry
   useEffect(() => {
     // Skip if user is manually scrolling, not playing, or no sync config
@@ -369,26 +402,7 @@ const CallPage: React.FC = () => {
                                entryRelativeBottom <= (containerHeight * 0.7);
 
       if (!isInGoodPosition) {
-        // Minimal scroll - put entry near the top of viewport
-        const targetScrollTop = entryOffsetFromContainerTop - (containerHeight * 0.1);
-
-        // Ensure we don't scroll past boundaries
-        const maxScroll = Math.max(0, container.scrollHeight - containerHeight);
-        const finalScrollTop = Math.max(0, Math.min(targetScrollTop, maxScroll));
-
-        // Mark as programmatic scroll
-        isProgrammaticScrollRef.current = true;
-
-        // Smooth scroll within container only
-        container.scrollTo({
-          top: finalScrollTop,
-          behavior: 'smooth'
-        });
-
-        // Reset flag after scroll completes
-        setTimeout(() => {
-          isProgrammaticScrollRef.current = false;
-        }, 500);
+        scrollTranscriptToEntry(entryParent);
       }
     }
   }, [currentVideoTime, isPlaying, callConfig, isUserScrollingTranscript]);
@@ -396,6 +410,57 @@ const CallPage: React.FC = () => {
   // YouTube player handlers
   const onPlayerReady: YouTubeProps['onReady'] = (event) => {
     setPlayer(event.target);
+
+    // Check for timestamp in URL hash (e.g., #t=123 or #00:02:03)
+    const hash = window.location.hash;
+    if (hash) {
+      const timeMatch = hash.match(/#t=(\d+)|#(\d{2}:\d{2}:\d{2})/);
+      if (timeMatch) {
+        let seekTime = 0;
+        if (timeMatch[1]) {
+          // Format: #t=123 (seconds)
+          seekTime = parseInt(timeMatch[1]);
+        } else if (timeMatch[2]) {
+          // Format: #00:02:03 (HH:MM:SS)
+          seekTime = timestampToSeconds(timeMatch[2]);
+        }
+
+        if (seekTime > 0) {
+          setTimeout(() => {
+            event.target.seekTo(seekTime);
+            event.target.playVideo();
+
+            // Also update currentVideoTime to trigger transcript highlighting
+            setCurrentVideoTime(seekTime);
+
+            // Scroll transcript to the appropriate position after a delay
+            setTimeout(() => {
+              if (transcriptRef.current && callConfig?.sync) {
+                // Find the transcript entry that matches this video time
+                const entries = transcriptRef.current.querySelectorAll('[data-timestamp]');
+                let targetEntry = null;
+
+                for (const entry of entries) {
+                  const timestamp = entry.getAttribute('data-timestamp');
+                  if (timestamp) {
+                    const entryVideoTime = getAdjustedVideoTime(timestamp);
+                    if (entryVideoTime <= seekTime) {
+                      targetEntry = entry;
+                    } else {
+                      break;
+                    }
+                  }
+                }
+
+                if (targetEntry) {
+                  scrollTranscriptToEntry(targetEntry as HTMLElement);
+                }
+              }
+            }, 1000);
+          }, 500);
+        }
+      }
+    }
   };
 
   const onPlayerStateChange: YouTubeProps['onStateChange'] = (event) => {
@@ -408,6 +473,10 @@ const CallPage: React.FC = () => {
       console.log(`Clicking transcript ${timestamp} -> seeking to video time ${adjustedTime}s`);
       player.seekTo(adjustedTime);
       player.playVideo();
+
+      // Update URL with timestamp for sharing
+      const newHash = `#t=${Math.floor(adjustedTime)}`;
+      window.history.replaceState(null, '', newHash);
     }
   };
 

@@ -728,7 +728,17 @@ const CallPage: React.FC = () => {
                   className="space-y-1 max-h-[400px] overflow-y-auto pr-2"
                   onScroll={handleTranscriptScroll}
                 >
-                  {parseVTTTranscript(callData.transcriptContent).map((entry, index, entries) => {
+                  {parseVTTTranscript(callData.transcriptContent)
+                    .filter(entry => {
+                      // Hide entries before transcriptStartTime if sync config exists
+                      if (callConfig?.sync?.transcriptStartTime) {
+                        const entrySeconds = timestampToSeconds(entry.timestamp);
+                        const startSeconds = timestampToSeconds(callConfig.sync.transcriptStartTime);
+                        return entrySeconds >= startSeconds;
+                      }
+                      return true;
+                    })
+                    .map((entry, index, entries) => {
                     const isHighlighted = isCurrentEntry(entry.timestamp, index, entries);
                     return (
                       <div

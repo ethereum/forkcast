@@ -482,6 +482,9 @@ const CallPage: React.FC = () => {
       player.seekTo(adjustedTime);
       player.playVideo();
 
+      // Update currentVideoTime immediately to ensure highlighting updates
+      setCurrentVideoTime(adjustedTime);
+
       // Update URL with timestamp for sharing
       const newHash = `#t=${Math.floor(adjustedTime)}`;
       window.history.replaceState(null, '', newHash);

@@ -122,7 +122,18 @@ const ChatLog: React.FC<ChatLogProps> = ({ content, syncConfig }) => {
   };
 
   // --- Threading and rendering logic (from TranscriptModal) ---
-  const { messages, reactions } = parseChatTranscript(content);
+  const { messages: allMessages, reactions } = parseChatTranscript(content);
+
+  // Filter out messages before transcriptStartTime if sync config exists
+  const messages = allMessages.filter(msg => {
+    if (syncConfig?.transcriptStartTime) {
+      const msgSeconds = timestampToSeconds(msg.timestamp);
+      const startSeconds = timestampToSeconds(syncConfig.transcriptStartTime);
+      return msgSeconds >= startSeconds;
+    }
+    return true;
+  });
+
   const parentMessages: ChatMessage[] = [];
   const replyMessages: ChatMessage[] = [];
   messages.forEach((msg) => {

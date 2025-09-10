@@ -93,6 +93,14 @@ const CallPage: React.FC = () => {
   // Apply sync offset to convert transcript time to video time
   const getAdjustedVideoTime = (transcriptTimestamp: string): number => {
     const transcriptSeconds = timestampToSeconds(formatTimestamp(transcriptTimestamp));
+
+    // Calculate offset from current config state
+    if (callConfig?.sync?.transcriptStartTime && callConfig?.sync?.videoStartTime) {
+      const offset = timestampToSeconds(callConfig.sync.transcriptStartTime) - timestampToSeconds(callConfig.sync.videoStartTime);
+      return transcriptSeconds - offset;
+    }
+
+    // Fallback to pre-calculated offset if config not available
     return transcriptSeconds - syncOffsetSeconds;
   };
 

@@ -1,0 +1,42 @@
+{
+  "meeting_topic": "All Core Devs - Testing (ACDT) #53 | Sep 15 2025",
+  "meeting_start_time": "2025-09-15T13:56:36Z",
+  "meeting_end_time": "2025-09-15T14:29:41Z",
+  "summary_start_time": "2025-09-15T13:58:34Z",
+  "summary_end_time": "2025-09-15T14:29:38Z",
+  "summary_created_time": "2025-09-15T13:56:36Z",
+  "summary_last_modified_time": "2025-09-15T16:04:59Z",
+  "summary_overview": "The meeting, marked as ACDT 53 and coinciding with \"The Merge\" anniversary, began with updates on devnet-5 including recent fork upgrades and ongoing issues with block validation across different clients. The team discussed various technical challenges including re-org problems affecting multiple nodes, issues with the ckzg library, and concerns about devnet-3 experiencing unplanned non-finality. Updates were also shared on testing frameworks, gas-limit testing, and block-level access lists, with plans for upcoming breaker calls and continued focus on devnet-5 development.",
+  "summary_details": [
+    {
+      "label": "Fusaka devnet-5 Updates Discussion",
+      "summary": "The team discussed updates on Fusaka devnet-5, including recent fork upgrades and increasing block counts. Barnabas reported issues with orphan blocks and MEV machine rate limiting, which was recently fixed. Dustin explained ongoing problems with the KSG library affecting different clients, particularly Nimbus, though this was confirmed to be a separate issue from Nethermind's reorg problems. The team also noted that different clients are running various versions of the ckzg library, which may be contributing to the validation inconsistencies."
+    },
+    {
+      "label": "Node Reorg and Consensus Issues",
+      "summary": "The team discussed issues with re-orgs causing errors in Lighthouse and Nimbus nodes, which Alexey attributed to incorrect parent block selection when handling consensus client payloads from different forks. Justin Traglia mentioned a separate bug affecting Nimbus's ability to run Alpha-6 reference tests without version 2.1.2, and committed to fixing this in the ckzg library. Enrico reported that Teku had also experienced similar issues and reverted their ckzg library update. The team also provided updates on devnet-5, which launched last Wednesday with three BPOs completed so far, and noted that Watchtower updates would not be automatic for this network."
+    },
+    {
+      "label": "devnet-3 Non-Finality Issues",
+      "summary": "The team discussed issues with devnet-3, which experienced unplanned non-finality. Barnabas and Parithosh noted that the network had been at around 70-78% completion before dropping to 62-63% due to a client push and Watchtower update causing a restart loop. The team agreed to investigate the cause of this unplanned event, while maintaining focus on devnet-5 as the current priority."
+    },
+    {
+      "label": "ConsumeSync and Execution Layer Updates",
+      "summary": "Felipe introduced a new simulator called ConsumeSync, which was added to Hive to verify client sync after certain tests, specifically for the block RLP limit in Osaka. Spencer provided an update on Execution layer consensus tests, reporting that the Ethereum general state tests have been successfully migrated to the new Execution-spec test framework and are now running in Hive with mostly non-critical fails that can be easily addressed."
+    },
+    {
+      "label": "Gas Limit Testing Updates Discussion",
+      "summary": "The team discussed updates on gas-limit testing and block-level access lists. Jochem reported setting up a test network to research the impact of raising the gas limit to 60 million, particularly focusing on state-heavy contracts like Zen. Toni mentioned that the next breaker call is scheduled for Wednesday next week, with plans to test the first CL implementation once it's available. PK raised a concern about ETH calls, noting that while the new gas limit applies to transactions, some clients (Geth, Erigon, and Reth) are enforcing a 50 million limit even when none is specified, which affects UIs and should be addressed before any release."
+    }
+  ],
+  "next_steps": [
+    "Justin Traglia to fix the issue in ckzg library and publish a new release.",
+    "Nethermind team to test and deploy the fix for the re-org issue.",
+    "Barnabas and Parithosh to investigate the unplanned non-finality issue on devnet-3.",
+    "Felipe to address the timeout issues in the new ConsumeSync simulator on Hive.",
+    "Spencer-tb to add more BPO tests and EIP7918 tests to the EL test suite.",
+    "Execution-spec tests team to complete the new test wrapper format for improving test developer experience.",
+    "Jochem to continue setting up the test network for researching 60 million gas limit behavior with Xen contract.",
+    "Geth, Erigon, and Reth teams to fix the ETH calls regression issue where they enforce a limit on read-only methods."
+  ]
+}

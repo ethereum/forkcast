@@ -2,6 +2,7 @@ import React, { useState, useEffect, useRef, useCallback } from 'react';
 import { Link, useParams } from 'react-router-dom';
 import YouTube, { YouTubeProps } from 'react-youtube';
 import ChatLog from './ChatLog';
+import Summary from './Summary';
 import ThemeToggle from '../ui/ThemeToggle';
 
 interface CallData {
@@ -11,6 +12,7 @@ interface CallData {
   chatContent?: string;
   transcriptContent?: string;
   videoUrl?: string;
+  summaryData?: any;
 }
 
 interface CallConfig {
@@ -28,6 +30,7 @@ const CallPage: React.FC = () => {
   const [callData, setCallData] = useState<CallData | null>(null);
   const [callConfig, setCallConfig] = useState<CallConfig | null>(null);
   const [loading, setLoading] = useState(true);
+  const [summaryExpanded, setSummaryExpanded] = useState(false);
   const transcriptRef = useRef<HTMLDivElement>(null);
   const chatLogRef = useRef<HTMLDivElement>(null);
   const [isUserScrolling, setIsUserScrolling] = useState(false);
@@ -217,6 +220,18 @@ const CallPage: React.FC = () => {
         const transcriptResponse = await fetch(`/artifacts/${artifactPath}/transcript.vtt`);
         const transcriptContent = transcriptResponse.ok ? await transcriptResponse.text() : undefined;
 
+        // Load summary if it exists
+        const summaryResponse = await fetch(`/artifacts/${artifactPath}/summary.json`);
+        let summaryData = undefined;
+        if (summaryResponse.ok) {
+          try {
+            summaryData = await summaryResponse.json();
+            console.log('Loaded summary:', summaryData);
+          } catch (e) {
+            console.warn('Failed to parse summary.json:', e);
+          }
+        }
+
         // Load config file if it exists
         const configResponse = await fetch(`/artifacts/${artifactPath}/config.json`);
         let config: CallConfig | null = null;
@@ -256,8 +271,10 @@ const CallPage: React.FC = () => {
           number: number || '',
           chatContent,
           transcriptContent,
-          videoUrl
+          videoUrl,
+          summaryData
         });
+
       } catch (error) {
         console.error('Failed to load call data:', error);
       } finally {
@@ -279,6 +296,32 @@ const CallPage: React.FC = () => {
       }
     };
   }, []);
+
+  // Listen for timestamp seek events from Summary component
+  useEffect(() => {
+    const handleSeekToTimestamp = (event: CustomEvent) => {
+      const timestamp = event.detail.timestamp;
+      if (player && timestamp) {
+        const adjustedTime = getAdjustedVideoTime(timestamp);
+        console.log(`Summary timestamp ${timestamp} -> seeking to video time ${adjustedTime}s`);
+        player.seekTo(adjustedTime);
+        player.playVideo();
+
+        // Update currentVideoTime immediately to ensure highlighting updates
+        setCurrentVideoTime(adjustedTime);
+
+        // Update URL with timestamp for sharing
+        const newHash = `#t=${Math.floor(adjustedTime)}`;
+        window.history.replaceState(null, '', newHash);
+      }
+    };
+
+    window.addEventListener('seekToTimestamp', handleSeekToTimestamp as EventListener);
+
+    return () => {
+      window.removeEventListener('seekToTimestamp', handleSeekToTimestamp as EventListener);
+    };
+  }, [player, callConfig]);
 
   // Poll for video time when playing
   useEffect(() => {
@@ -723,6 +766,47 @@ const CallPage: React.FC = () => {
                   </div>
                 </div>
               </div>
+            </div>
+          </div>
+        )}
+
+        {/* Meeting Summary Section */}
+        {callData.summaryData && (
+          <div className="mb-4">
+            <div className="bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg shadow-sm hover:shadow-md transition-shadow">
+              <button
+                onClick={() => setSummaryExpanded(!summaryExpanded)}
+                className="w-full px-4 py-3 flex items-center justify-between text-left hover:bg-slate-50 dark:hover:bg-slate-700/30 transition-colors rounded-t-lg cursor-pointer"
+              >
+                <div className="flex items-center gap-2">
+                  <h2 className="text-sm font-semibold text-slate-900 dark:text-slate-100">
+                    Summary
+                  </h2>
+                  <div className="flex items-center gap-2">
+                    <span className="text-xs text-slate-500 dark:text-slate-400">
+                      {callData.summaryData.summary_details?.length || 0} topics • {callData.summaryData.next_steps?.length || 0} action items
+                    </span>
+                    <span className="text-xs bg-slate-100 dark:bg-slate-700 text-slate-500 dark:text-slate-300 px-2 py-0.5 rounded-full font-normal border border-slate-200 dark:border-slate-600">
+                      Experimental
+                    </span>
+                  </div>
+                </div>
+                <svg
+                  className={`w-4 h-4 text-slate-400 transition-transform duration-200 ${summaryExpanded ? 'rotate-180' : ''}`}
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+                </svg>
+              </button>
+              {summaryExpanded && (
+                <div className="border-t border-slate-200 dark:border-slate-700 transition-opacity duration-500 ease-out opacity-0 animate-[fadeIn_0.5s_ease-out_forwards]">
+                  <div className="p-6">
+                    <Summary data={callData.summaryData} />
+                  </div>
+                </div>
+              )}
             </div>
           </div>
         )}

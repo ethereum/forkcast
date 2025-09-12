@@ -1,0 +1,149 @@
+import React, { useState } from 'react';
+
+interface ZoomSummaryData {
+  summary_overview: string;
+  summary_details: Array<{
+    label: string;
+    summary: string;
+  }>;
+  next_steps: string[];
+  summary_title?: string;
+  meeting_topic?: string;
+}
+
+interface SummaryProps {
+  data: ZoomSummaryData;
+}
+
+const Summary: React.FC<SummaryProps> = ({ data }) => {
+  const [expandedSections, setExpandedSections] = useState<Set<number>>(new Set());
+
+  const toggleSection = (index: number) => {
+    const newExpanded = new Set(expandedSections);
+    if (newExpanded.has(index)) {
+      newExpanded.delete(index);
+    } else {
+      newExpanded.add(index);
+    }
+    setExpandedSections(newExpanded);
+  };
+
+  const toggleAllSections = () => {
+    if (expandedSections.size === data.summary_details.length) {
+      // All are expanded, collapse all
+      setExpandedSections(new Set());
+    } else {
+      // Some or none are expanded, expand all
+      const allIndices = new Set(data.summary_details.map((_, index) => index));
+      setExpandedSections(allIndices);
+    }
+  };
+
+  return (
+    <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+      {/* Left Column: Overview + Discussion Details - Takes up 2/3 of the width */}
+      <div className="lg:col-span-2 space-y-6">
+        {/* Overview Section */}
+        <div>
+          <h3 className="text-sm font-semibold text-slate-600 dark:text-slate-400 mb-3">
+            Overview
+          </h3>
+          <div className="bg-slate-50 dark:bg-slate-800/50 rounded-lg p-4">
+            <p className="text-sm text-slate-700 dark:text-slate-300 leading-relaxed">
+              {data.summary_overview}
+            </p>
+          </div>
+        </div>
+
+        {/* Discussion Details */}
+        {data.summary_details && data.summary_details.length > 0 && (
+          <div>
+            <div className="flex items-center justify-between mb-4">
+              <h3 className="text-sm font-semibold text-slate-600 dark:text-slate-400">
+                Discussion Details ({data.summary_details.length} topics)
+              </h3>
+              <button
+                onClick={toggleAllSections}
+                className={`text-xs font-medium px-2 py-1 rounded transition-colors ${
+                  expandedSections.size === data.summary_details.length
+                    ? 'text-slate-700 dark:text-slate-200 bg-slate-200 dark:bg-slate-700 hover:bg-slate-300 dark:hover:bg-slate-600'
+                    : 'text-slate-600 dark:text-slate-400 bg-slate-100 dark:bg-slate-800 hover:text-slate-800 dark:hover:text-slate-200 hover:bg-slate-200 dark:hover:bg-slate-700'
+                }`}
+              >
+                {expandedSections.size === data.summary_details.length ? 'Collapse All' : 'Expand All'}
+              </button>
+            </div>
+            <div className="space-y-2">
+              {data.summary_details.map((detail, index) => {
+                const isExpanded = expandedSections.has(index);
+                return (
+                  <div key={index} className="border border-slate-200 dark:border-slate-700 border-l-3 border-l-blue-200 dark:border-l-blue-700/50 rounded-lg overflow-hidden">
+                    <button
+                      onClick={() => toggleSection(index)}
+                      className="w-full px-4 py-3 text-left bg-blue-50/30 dark:bg-blue-950/10 hover:bg-blue-50/50 dark:hover:bg-blue-950/15 transition-colors flex items-center justify-between cursor-pointer"
+                    >
+                      <h4 className="text-sm font-medium text-slate-900 dark:text-slate-100 pr-4">
+                        {detail.label}
+                      </h4>
+                      <svg
+                        className={`w-4 h-4 transition-all duration-200 flex-shrink-0 ${
+                          isExpanded
+                            ? 'rotate-180 text-slate-700 dark:text-slate-300'
+                            : 'text-slate-500 dark:text-slate-400'
+                        }`}
+                        fill="none"
+                        stroke="currentColor"
+                        viewBox="0 0 24 24"
+                      >
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+                      </svg>
+                    </button>
+                    {isExpanded && (
+                      <div className="px-4 py-3 bg-white dark:bg-slate-800 border-t border-slate-200 dark:border-slate-700 transition-opacity duration-300 ease-out opacity-0 animate-[fadeIn_0.3s_ease-out_forwards]">
+                        <p className="text-sm text-slate-600 dark:text-slate-400 leading-relaxed">
+                          {detail.summary}
+                        </p>
+                      </div>
+                    )}
+                  </div>
+                );
+              })}
+            </div>
+          </div>
+        )}
+      </div>
+
+       {/* Next Steps - Takes up 1/3 of the width */}
+       {data.next_steps && data.next_steps.length > 0 && (
+         <div className="lg:col-span-1">
+           <h3 className="text-sm font-semibold text-slate-600 dark:text-slate-400 mb-3">
+             Next Steps ({data.next_steps.length})
+           </h3>
+          <div className="space-y-3">
+            {data.next_steps.map((step, index) => (
+              <div key={index} className="bg-green-50/30 dark:bg-green-950/10 border border-green-200 dark:border-green-800/30 rounded-lg p-3">
+                <div className="flex items-start gap-3">
+                  <span className="inline-flex items-center justify-center w-5 h-5 rounded-full bg-green-200 dark:bg-green-800/50 text-green-800 dark:text-green-200 text-xs font-semibold flex-shrink-0 mt-1">
+                    {index + 1}
+                  </span>
+                  <p className="text-sm text-slate-700 dark:text-slate-300 leading-relaxed">
+                    {step}
+                  </p>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
+
+      {/* Show message if no content */}
+      {!data.summary_overview && (!data.summary_details || data.summary_details.length === 0) && (!data.next_steps || data.next_steps.length === 0) && (
+        <div className="text-center py-8">
+          <p className="text-slate-500 dark:text-slate-400 text-sm">No summary data available</p>
+        </div>
+      )}
+    </div>
+  );
+};
+
+export default Summary;

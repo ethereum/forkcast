@@ -7,7 +7,6 @@ interface TimelineEvent {
   type: 'event';
   date: string;
   title: string;
-  description: string;
   category: 'upgrade' | 'milestone' | 'announcement' | 'devnet';
 }
 
@@ -22,49 +21,48 @@ const CallsIndexPage: React.FC = () => {
       type: 'event',
       date: '2025-05-07',
       title: 'Pectra Upgrade Goes Live',
-      description: 'The Pectra upgrade successfully activates on Ethereum mainnet',
       category: 'upgrade'
     },
     {
       type: 'event',
       date: '2025-05-26',
       title: 'Fusaka Devnet-0 Launches',
-      description: 'First Fusaka testnet launched for testing upcoming features',
       category: 'devnet'
     },
     {
       type: 'event',
       date: '2025-06-09',
       title: 'Fusaka Devnet-1 Launches',
-      description: 'Second iteration of Fusaka testnet with improvements',
       category: 'devnet'
     },
     {
       type: 'event',
       date: '2025-06-26',
       title: 'Fusaka Devnet-2 Launches',
-      description: 'Third Fusaka testnet deployment with additional fixes',
       category: 'devnet'
     },
     {
       type: 'event',
       date: '2025-07-23',
       title: 'Fusaka Devnet-3 Launches',
-      description: 'Fourth Fusaka testnet iteration for stability testing',
       category: 'devnet'
     },
     {
       type: 'event',
       date: '2025-07-30',
       title: 'Ethereum Turns 10! 🎉',
-      description: 'The community celebrates the 10th anniversary of Ethereum Mainnet.',
       category: 'milestone'
     },
     {
       type: 'event',
       date: '2025-08-08',
       title: 'Fusaka Devnet-4 Launches',
-      description: 'Fifth and latest Fusaka testnet deployment',
+      category: 'devnet'
+    },
+    {
+      type: 'event',
+      date: '2025-09-10',
+      title: 'Fusaka Devnet-5 Launches',
       category: 'devnet'
     }
   ];

@@ -1,0 +1,370 @@
+00:07:00	potuz:	GM
+00:08:47	stokes:	Excited for Ansgar 🎉
+00:08:54	Tim Beiko:	add 🔥
+00:08:58	Toni Wahrstätter:	Reacted to Excited for Ansgar ?... with "🔥"
+00:09:00	Gabriel Trintinalia | Besu:	add 🔥
+00:09:03	Radek | zkevm:	add 🔥
+00:09:08	Antonio Sanso:	add 🔥
+00:09:52	lightclient:	We have a PR with fix
+00:10:03	lightclient:	it’s due to another PR for eth_config :(
+00:10:03	Tim Beiko:	Reacted to "We have a PR with fi..." with 🚀
+00:10:22	Parithosh Jayanthi:	https://dora.fusaka-devnet-5.ethpandaops.io/
+00:11:05	felipe:	Reacted to "We have a PR with ..." with 🚀
+00:11:55	Parithosh Jayanthi:	https://notes.ethereum.org/@samcm/fusaka-devnet-5-analysis
+00:12:43	lightclient:	i feel like we skipped over waiting for devnet 3 to getting back to finality
+00:13:35	lightclient:	so it should take more than a day to restore finality?
+00:15:07	stokes:	sgtm
+00:15:13	Justin Traglia:	Reacted to "sgtm" with 👍
+00:15:41	lightclient:	lighthouse was also getting bad response for get blobs around the transition for a few clients i think?
+00:15:56	Tim Beiko:	Replying to "lighthouse was also ..."
+
+Anyone from LH on the call to give context?
+00:16:11	lightclient:	Replying to "lighthouse was also …"
+i know geth was incorrectly returning v0 and v1 sidecars
+00:16:31	lightclient:	Replying to "lighthouse was also …"
+i’m not sure how other ELs deal with conversion at the fork boundary
+00:17:26	Roman:	reth does not convert
+00:17:30	Gabriel Trintinalia | Besu:	we just don’t return
+00:17:30	Alexey:	we agreed to not convert
+00:17:48	Mario Vega:	Replying to "lighthouse was also ..."
+
+We have hive tests for get blobs, but not at the fork boundary, it might be a good idea to try to add some
+00:18:16	potuz:	yeah, +1
+00:18:22	felipe:	Reacted to "We have hive tests..." with 👍
+00:18:32	Alexey:	both
+00:18:37	Roman:	we filter them out on the block building level
+00:18:39	Mario Vega:	Reacted to "reth does not conver..." with 👍🏼
+00:18:44	Gabriel Trintinalia | Besu:	Reacted to "we filter them out o..." with ➕
+00:18:51	Alexey:	we clear txpool from old ones on fork
+00:18:51	Gabriel Trintinalia | Besu:	we filter them out on the block building level
+Besu as well
+00:19:25	spencer-tb:	Reacted to "We have hive tests f..." with 👍
+00:20:22	pk910:	devnet-5 fulu activation is in 3h :D  probably too short
+00:20:41	Ansgar Dietrichs:	given the very limited one-time relevance, seems like dropping is the pragmatic path
+00:20:50	Mario Vega:	Reacted to "given the very limit..." with 👍🏼
+00:20:55	spencer-tb:	Legacy means blobs at Prague?
+00:21:02	Lumi | Offchain Labs:	Are we ready to set a new tentative timeline  (assuming devnet 5 goes well) for Fusaka rollout today ->
+
+22 Sep - RC client releases
+?? - Sepolia
+?? - Hoodi
+?? - Mainnet
+00:21:10	stokes:	Replying to "Legacy means blobs a..."
+
+yep
+00:21:18	stokes:	Replying to "Legacy means blobs a..."
+
+New proof format in fusaka
+00:21:20	Tim Beiko:	https://github.com/ethereum/pm/pull/1715
+00:21:27	spencer-tb:	Reacted to "New proof format in ..." with 🙏
+00:21:51	stokes:	Replying to "Legacy means blobs a..."
+
+The blobs are still fine, but either need to convert to this new format at the fork boundary, or just do nothing
+00:22:45	stokes:	Replying to "Legacy means blobs a..."
+
+Most clients just doing nothing 
+
+(And this only applies to transactions in mempool)
+00:22:52	Gabriel Trintinalia | Besu:	for getBlobsV2, spec says: if the request is [A_versioned_hash_for_blob_with_blob_proof], the response MUST be null as well.
+00:23:55	stokes:	I think we need minimal time b/t releases and holesky
+00:24:21	Roman:	Reacted to "I think we need mini..." with 👍
+00:24:50	Fredrik:	I agree with stokes on Holesky
+00:24:51	Lumi | Offchain Labs:	Reacted to "I think we need mini..." with 👍
+00:24:57	Lumi | Offchain Labs:	Reacted to "I agree with stokes ..." with ➕
+00:25:01	Parithosh Jayanthi:	Reacted to "I agree with stokes ..." with ➕
+00:25:07	Jen:	Reacted to "I think we need mini..." with 👍
+00:25:10	stokes:	Ill assume silence is yes ;)
+00:25:17	James He:	How long until client releases?
+00:25:34	Lumi | Offchain Labs:	Replying to "How long until clien..."
+
+Last call 22 Sep was mentioned
+00:25:42	lightclient:	Reacted to "I think we need mini…" with 👍
+00:26:03	Matt B:	Reacted to "I think we need mi..." with 👍
+00:26:06	Enrico Del Fante (tbenr):	👍
+00:27:42	stokes:	I’d say 1 week b/t Holesky and Sepolia
+00:27:48	stokes:	Unless there’s a good reason for more time
+00:28:32	Lumi | Offchain Labs:	Reacted to "I’d say 1 week b/t H..." with 👍
+00:28:36	Alexey:	Reacted to "I’d say 1 week b/t H..." with 👍
+00:28:37	James He:	We want a few days soak before release but after release 1 week sounds reasonable for holesky . I think 1 week might be short if we find any reason to rerelease .
+00:28:54	stokes:	Replying to "We want a few days s..."
+
+Fair, I think we can re-evaluate then
+00:28:54	Justin Florentine (Besu):	i think 1 week is fine as long as we're not doing non-finalization testing
+00:28:56	stokes:	Replying to "We want a few days s..."
+
+If that happens
+00:29:06	stokes:	Replying to "i think 1 week is fi..."
+
+Hopefully we are not on the testnets
+00:29:07	Phil Ngo:	1 week is enough lead time for Lodestar to push a release
+00:29:43	Justin Florentine (Besu):	same release pls
+00:29:57	stokes:	I can have proposed fork epochs by next ACDC
+00:29:58	Alexey:	all testnets dates at a time
+00:30:06	Justin Florentine (Besu):	Reacted to "all testnets dates a..." with ➕
+00:30:56	Justin Florentine (Besu):	does the commiunity?
+00:31:02	saulius:	Replying to "i think 1 week is fi..."
+
+My guess is that we may have non intentional non-finality on Holesky.
+00:31:12	Tim Beiko:	https://github.com/ethereum/pm/pull/1715
+00:31:15	stokes:	Replying to "i think 1 week is fi..."
+
+Yeah, and I’d propose to not try to hard to recover
+00:31:19	stokes:	Replying to "i think 1 week is fi..."
+
+Learn what we can and move on
+00:31:23	Alexey:	hoodi?
+00:31:37	Gabriel Trintinalia | Besu:	In Besu, we usually have a burn-in period before releasing. The burn in itself takes two days usually. I would like to have at least 4 days
+00:31:40	Lumi | Offchain Labs:	Replying to "hoodi?"
+
+Week of 20th?
+00:32:02	Lumi | Offchain Labs:	Replying to "hoodi?"
+
+Assuming holeski is 1 week
+00:32:11	Justin Florentine (Besu):	Reacted to "In Besu, we usually ..." with 🫡
+00:33:19	saulius:	Replying to "i think 1 week is fi..."
+
+well, client teams should try to make their clients work if non-finality happens on Holesky, but yea, likely we don't want to drop everything and focus on recovering it because of time/resources constrains.
+00:33:30	lightclient:	2 weeks
+00:33:43	Fredrik:	Reacted to "2 weeks" with ➕
+00:33:56	Justin Florentine (Besu):	more is better, loosely held
+00:34:03	Alexey:	Reacted to "more is better, loos..." with 👍
+00:34:25	stokes:	My gut does say 2 weeks
+00:34:36	Mario H:	Reacted to "more is better, lo..." with 👍
+00:34:38	Mario H:	Reacted to "2 weeks" with ➕
+00:34:40	Phil Ngo:	Reacted to "2 weeks" with ➕
+00:35:11	Mario H:	Ephemery will fork monthly after Sep 25
+00:35:17	lightclient:	i think arbitrum said they preferred more time between releases and first testnet
+00:35:36	Alexey:	Reacted to "i think arbitrum sai..." with 👍
+00:36:21	Lumi | Offchain Labs:	Replying to "i think arbitrum sai..."
+
+For Fusaka we are goo to go with shorter timelines, we started margining pre-release geth
+00:36:44	stokes:	Good plan for now
+00:37:39	Lumi | Offchain Labs:	So to summarize timelines?
+22 Sep - RC client releases
+Week of 29th - Holeski (1 week after client releases)
+Week of 13th - Sepolia (2 weeks from Holeski)
+Week of 27th - Hoodi (2 weeks from Sepolia)
+?? - Mainnet (min 30 days from RC, don’t want to propose mainnet timeline yet)
+00:38:00	Tim Beiko:	Replying to "So to summarize time..."
+
+Yes, if devnet-5 has no issues
+00:38:07	terence:	there's an epbs breakout this friday: https://github.com/ethereum/pm/issues/1714
+00:38:07	Lumi | Offchain Labs:	Reacted to "Yes, if devnet-5 has..." with 👍
+00:38:19	stokes:	Replying to "So to summarize time..."
+
+Didn’t we say we were ok w/ 1 week b/t Holesky and Sepolia?
+00:38:25	Tim Beiko:	Replying to "So to summarize time..."
+
+No, 2 weeks
+00:38:44	Tim Beiko:	Replying to "So to summarize time..."
+
+Didn’t you explicitly say that too 😅? 
+
+My gut does say 2 weeks
+00:38:52	stokes:	Replying to "So to summarize time..."
+
+Hm I thought that was 2 weeks b/t client releases and sepolia
+
+But I’ll review after the call
+00:39:01	stokes:	Replying to "So to summarize time..."
+
+That was b/t sepolia and hoodi
+00:39:28	Tim Beiko:	Replying to "So to summarize time..."
+
+Let’s align now 😄
+00:39:50	Justin Traglia:	Reacted to "there's an epbs brea..." with 👍
+00:40:13	Justin Florentine (Besu):	2 weeks
+00:40:32	Mario Vega:	Reacted to "2 weeks" with ➕
+00:40:36	Tim Beiko:	EOL Testnet → 1 week
+Live testnet → 2 weeks
+00:40:52	Fredrik:	Reacted to "EOL Testnet → 1 week..." with ➕
+00:42:24	Justin Florentine (Besu):	understood, works for us
+00:42:38	Fredrik:	1 week between EOL -> Live testate would imo feel very short to find issues and then get a new release out if something does go wrong (and if we fail to get fixes out in time etc then the whole chain of upgrades will go out of sync), so I support the 2 weeks
+00:43:04	stokes:	Replying to "1 week between EOL -..."
+
+Fredrik agreeing w/ what Lumi wrote
+00:43:17	lightclient:	Replying to "1 week between EOL -…"
+so 2 weeks after holesky?
+00:43:20	lightclient:	Replying to "1 week between EOL -…"
+or no?
+00:43:31	stokes:	Replying to "1 week between EOL -..."
+
+Lumi’s msg
+00:43:33	Enrico Del Fante (tbenr):	Replying to "1 week between EOL -..."
+
+Yes
+00:43:34	stokes:	Replying to "1 week between EOL -..."
+
+Is our agreement
+00:43:35	lightclient:	Replying to "1 week between EOL -…"
+👍
+00:44:00	lightclient:	the merge 2.0
+00:44:04	spencer-tb:	Reacted to "the merge 2.0" with 😆
+00:44:11	felipe:	Reacted to "the merge 2.0" with 😆
+00:44:17	Fredrik:	Reacted to "Fredrik agreeing w/ ..." with 👍
+00:44:17	Tim Beiko:	Replying to "the merge 2.0"
+
+Merge Phase 2
+00:45:00	panaw:	Reacted to "the merge 2.0" with 😆
+00:45:05	panaw:	Reacted to "the merge 2.0" with 👏
+00:45:11	Guru:	Reacted to "the merge 2.0" with 😆
+00:45:13	Trent:	Reacted to "the merge 2.0" with 👏
+00:45:17	Mario Vega:	Reacted to "the merge 2.0" with 😆
+00:45:21	Ansgar Dietrichs:	I love the WELD framing, very cinematic
+00:45:25	Felix:	the generated tests will remain in execution-spec-tests?
+00:45:25	Trent:	We have been missing merges in our lives. I can get behind this =)
+00:45:31	Mario Vega:	Reacted to "the generated tests ..." with 👍🏼
+00:45:34	spencer-tb:	Reacted to "the generated tests ..." with 👍🏼
+00:45:38	felipe:	Reacted to "the generated test..." with 👍🏼
+00:45:46	Justin Traglia:	Reacted to "the generated tests ..." with 👍🏼
+00:45:53	felix (eest):	Reacted to "the generated test..." with 👍🏼
+00:45:59	Ansgar Dietrichs:	Reacted to "the merge 2.0" with 😆
+00:46:11	Mario Vega:	Replying to "the generated tests ..."
+
+Yes, we are making fixture releases still in EEST
+00:46:32	Carson | STEEL:	Reacted to "I love the WELD fram..." with 🩵
+00:46:41	Parithosh Jayanthi:	Reacted to "the merge 2.0" with 😆
+00:46:42	Parithosh Jayanthi:	Reacted to "the generated tests ..." with 👍🏼
+00:47:27	nixo:	Reacted to "I love the WELD fram..." with 🩵
+00:48:07	danceratopz:	Weld Blog Post:
+https://steel.ethereum.foundation/blog/blog_posts/2025-09-11_weld-announcement/
+
+Slides:
+https://notes.ethereum.org/@danceratopz/weld-announcement#/
+00:48:12	Jihoon:	Reacted to "Weld Blog Post:
+http..." with ❤️
+00:48:12	Toni Wahrstätter:	Reacted to Weld Blog Post:
+http... with "🔥"
+00:48:13	Carson | STEEL:	Reacted to "Weld Blog Post:
+http..." with 🩵
+00:48:14	Tim Beiko:	Reacted to "Weld Blog Post:
+http..." with 🔥
+00:48:17	spencer-tb:	Reacted to "Weld Blog Post:
+http..." with ❤️
+00:48:20	spencer-tb:	Reacted to "Weld Blog Post:
+http..." with 🔥
+00:48:22	Guru:	Reacted to "Weld Blog Post:
+http..." with 🔥
+00:48:24	felipe:	Reacted to "Weld Blog Post:
+ht..." with 🔥
+00:48:26	felix (eest):	Reacted to "Weld Blog Post:
+ht..." with 🔥
+00:48:30	Tim Beiko:	Reacted to "Weld Blog Post:
+http..." with 🩵
+00:48:32	Tim Beiko:	Reacted to "Weld Blog Post:
+http..." with ❤️
+00:48:49	terence:	Replying to "Weld Blog Post:
+http..."
+
+403 for the slides : )
+00:49:05	spencer-tb:	Reacted to "403 for the slides :..." with 🪦
+00:49:10	felix (eest):	Reacted to "403 for the slides..." with 🪦
+00:49:38	Tim Beiko:	https://ethereum-magicians.org/t/the-case-for-eip-7932-eip-7980-inclusion-in-glamsterdam/25293
+00:49:43	danceratopz:	Replying to "Weld Blog Post:
+http..."
+
+Thanks! Fixed;
+https://notes.ethereum.org/@danceratopz/weld-announcement
+00:52:52	Justin Florentine (Besu):	it's accomadating decoupling sig types
+00:54:00	Trent:	Reacted to "Weld Blog Post:
+http..." with ❤️
+00:54:05	Gary Schulte:	it would be unfortunate if p256verify became a special snowflake, if we were to adopt a signature framework
+00:54:41	Tim Beiko:	Will time box this convo after Felix so we can move to the next EIPs 😄
+00:56:30	Tim Beiko:	Next up, @Toni Wahrstätter with EIP-7976 and EIP-7981.
+00:56:48	nixo:	Replying to "https://ethereum-mag..."
+
+fyi this author confirmed that he’s listening but can’t attend - so any CTAs for him can be called out
+00:57:59	Antonio Sanso:	https://ethresear.ch/t/falcon-as-an-ethereum-transaction-signature-the-good-the-bad-and-the-gnarly/21512/5
+00:58:06	Radek | zkevm:	Reacted to "https://ethresear.ch..." with 👍
+00:58:17	Antonio Sanso:	https://ethresear.ch/t/so-you-wanna-post-quantum-ethereum-transaction-signature/21291
+00:58:27	Danno Ferrin:	No PQ signatures have NIST supported key recovery
+00:58:42	Justin Florentine (Besu):	Reacted to "No PQ signatures hav..." with ➕
+00:58:49	Toni Wahrstätter:	https://eips.ethereum.org/EIPS/eip-7981 and https://eips.ethereum.org/EIPS/eip-7976
+00:58:50	Gary Schulte:	Reacted to "No PQ signatures hav..." with 👀
+00:58:51	potuz:	you can always have an ECRecover from any signature scheme
+00:58:52	Antonio Sanso:	https://ethresear.ch/t/the-road-to-post-quantum-ethereum-transaction-is-paved-with-account-abstraction-aa/21783
+00:59:04	Alexey:	if new pq sig is compromised, it might be cool to have a quick way to intro new one
+00:59:14	Antonio Sanso:	Replying to "you can always have ..."
+
+Not from any 🙂
+00:59:29	potuz:	Replying to "you can always have ..."
+
+yes, you just add the public key to the signature
+00:59:31	Justin Florentine (Besu):	Replying to "No PQ signatures hav..."
+
+so thats a whole thing that needs redesign - the ability to ecrecover from a sig does a lot of heavy lifting for us
+00:59:45	Antonio Sanso:	Replying to "No PQ signatures hav..."
+
+Falcon has a key recovery mode
+00:59:49	Danno Ferrin:	Replying to "you can always have ..."
+
+Put the pubkey in the signature then it’s recoverable. I think that’s probably the best path forward on non-recoverable algorithms
+01:00:24	Danno Ferrin:	Replying to "No PQ signatures hav..."
+
+NIST supported key recovery? They explicitly passed on it for falcon
+01:01:42	Antonio Sanso:	Replying to "No PQ signatures hav..."
+
+However, as Renaud Dubois pointed out, Section 3.12 of the Falcon paper introduces a key recovery model.
+01:02:11	Antonio Sanso:	Replying to "No PQ signatures hav..."
+
+Not NIST supported but in the falcon paper
+01:02:16	potuz:	Replying to "No PQ signatures hav..."
+
+reposting in this thread cause it seems to repeat the above: any signature scheme has a recovery method: just append the pubkey to the signature
+01:02:48	Justin Florentine (Besu):	Replying to "No PQ signatures hav..."
+
+yes, this is my point, we just need to design for that in the sig abstraction mechanic. we should do that asap.
+01:03:13	Tim Beiko:	EIP-2780
+01:03:47	Justin Florentine (Besu):	i like 2780 seems like pretty good return for low risk
+01:04:03	Marc:	Reacted to "i like 2780 seems li…" with ➕
+01:04:22	Mario Vega:	Reacted to "i like 2780 seems li..." with ➕
+01:04:34	lightclient:	that’s a little different. i think the state growth concern is more about the newly available gas due to the reduction that can now be generally used to increase state size
+01:04:43	donnoh | L2BEAT:	Reacted to "i like 2780 seems li..." with ➕
+01:04:46	jochem-brouwer:	Heeft gereageerd op "that’s a little d..." met ➕
+01:06:33	Ahmad Bitar | Nethermind:	Reacted to i like 2780 seems li... with "➕"
+01:06:53	Mario Vega:	The intrinsic gas cost calculation seems weird to me in this EIP, do we have to check the state now to determine the intrinsic gas cost now?
+It’s a very minor concern and I’m sure it can be addressed
+01:06:58	Luis Pinto | Besu:	Reacted to "i like 2780 seems li..." with ➕
+01:07:31	Alexey:	2 * WARM_ACCOUNT_ACCESS_COSTyou meant cold?
+01:07:55	Ben Adams:	Replying to "2 * WARM_ACCOUNT_ACC..."
+
+no :)
+01:08:04	Alexey:	Replying to "2 * WARM_ACCOUNT_ACC..."
+
+why?
+01:08:14	Ben Adams:	Replying to "2 * WARM_ACCOUNT_ACC..."
+
+because are all in header
+01:08:42	Ben Adams:	Replying to "2 * WARM_ACCOUNT_ACC..."
+
+isn't discovered as part of tx
+01:08:50	Alexey:	Replying to "2 * WARM_ACCOUNT_ACC..."
+
+does not mean we don't need to load it
+01:09:06	Ben Adams:	Replying to "2 * WARM_ACCOUNT_ACC..."
+
+perfectly parallizable
+01:09:16	Alexey:	Replying to "2 * WARM_ACCOUNT_ACC..."
+
+as all access with BALs
+01:09:34	Justin Florentine (Besu):	Ansgar needs a safeword
+01:09:39	Ben Adams:	Replying to "2 * WARM_ACCOUNT_ACC..."
+
+BALs aren't parallelizable to builder
+01:09:42	Parithosh Jayanthi:	Reacted to "Ansgar needs a safew..." with 😂
+01:09:45	Alexey:	Replying to "2 * WARM_ACCOUNT_ACC..."
+
+disk access is still disk access, parallelisation is not an arguement
+01:09:50	CPerezz:	Reacted to "that’s a little diff..." with ➕
+01:09:51	Tim Beiko:	Reacted to "Ansgar needs a safew..." with 😂
+01:10:01	wolovim:	Reacted to "Ansgar needs a saf..." with 😂
+01:10:05	Ben Adams:	Replying to "2 * WARM_ACCOUNT_ACC..."
+
+2 for free then :)
+01:10:10	donnoh | L2BEAT:	Reacted to "Ansgar needs a safew..." with 😂
+01:10:17	nixo:	Reacted to "Ansgar needs a safew..." with 😂
+01:10:18	Marc:	Reacted to "Ansgar needs a safew…" with 😂
+01:10:19	Alexey:	Reacted to "2 for free then :)" with 😂
+01:10:19	Ansgar Dietrichs:	Reacted to "Ansgar needs a safew..." with 😂
+01:10:22	Justin Traglia:	Reacted to "Ansgar needs a safew..." with 😂
+01:10:24	Carson | STEEL:	Reacted to "Ansgar needs a safew..." with 😂

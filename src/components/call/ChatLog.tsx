@@ -42,11 +42,33 @@ const ChatLog: React.FC<ChatLogProps> = ({ content, syncConfig }) => {
     return chatSeconds - syncOffsetSeconds;
   };
 
-  // --- Parsing logic (from TranscriptModal) ---
   const parseChatTranscript = (text: string): { messages: ChatMessage[]; reactions: Map<string, { speaker: string; emoji: string }[]> } => {
-    const lines = text.split('\n').filter(line => line.trim());
+    // Pre-process lines to merge multi-line messages, except for "Replying to" content
+    const rawLines = text.split('\n');
+    const processedLines: string[] = [];
+    if (rawLines.length > 0) {
+      for (const line of rawLines) {
+        if (processedLines.length === 0) {
+          processedLines.push(line);
+          continue;
+        }
+
+        const lastNonEmptyLine = [...processedLines].reverse().find(l => l.trim());
+
+        // A line without a timestamp is a continuation of the previous line,
+        // unless the last non-empty line is a "Replying to" message header.
+        if (line.trim() && !/^\d{2}:\d{2}:\d{2}\t/.test(line) && (!lastNonEmptyLine || !/:\tReplying to/.test(lastNonEmptyLine))) {
+          // Merge with the *actual* previous line, which might be empty
+          processedLines[processedLines.length - 1] = `${processedLines[processedLines.length - 1].trimEnd()} ${line.trim()}`;
+        } else {
+          processedLines.push(line);
+        }
+      }
+    }
+    const lines = processedLines.filter(line => line.trim());
     const messages: ChatMessage[] = [];
-    const reactions = new Map<string, { speaker: string; emoji: string }[]>();
+    const reactions = new Map<string, { speaker:string; emoji: string }[]>();
+    let lastMessageForReaction: ChatMessage | null = null;
     for (let i = 0; i < lines.length; i++) {
       const line = lines[i].trimEnd();
       const match = line.match(/^(\d{2}:\d{2}:\d{2})\t(.+?):\t(.*)$/);
@@ -54,6 +76,20 @@ const ChatLog: React.FC<ChatLogProps> = ({ content, syncConfig }) => {
         const timestamp = match[1];
         const speaker = match[2].trim();
         const message = match[3].trim();
+
+        // Handle "add emoji" shorthand
+        const addReactionMatch = message.match(/^add\s(.+)$/);
+        if (addReactionMatch && lastMessageForReaction) {
+          const emoji = addReactionMatch[1].trim();
+          const targetMessage = lastMessageForReaction.message;
+
+          if (!reactions.has(targetMessage)) {
+            reactions.set(targetMessage, []);
+          }
+          reactions.get(targetMessage)!.push({ speaker, emoji });
+          continue;
+        }
+
         // Parse reactions for later display
         if (message.startsWith('Reacted to')) {
           // Handle multiple formats:
@@ -73,10 +109,17 @@ const ChatLog: React.FC<ChatLogProps> = ({ content, syncConfig }) => {
             if (reactionMatch) {
               // Normalize the target message - handle ellipsis for truncated messages
               let targetMessage = reactionMatch[1].replace(/[""]/g, '').trim();
-              if (targetMessage.endsWith('...')) {
-                targetMessage = targetMessage.slice(0, -3).trim();
-              }
               const emoji = reactionMatch[2].replace(/[""]/g, '').trim();
+
+              // Attempt to find the full message text if the reaction is on a truncated message
+              const isTruncated = targetMessage.endsWith('...');
+              if (isTruncated) {
+                const searchText = targetMessage.slice(0, -3).trim();
+                const parentMessage = messages.find(m => m.message.startsWith(searchText));
+                if (parentMessage) {
+                  targetMessage = parentMessage.message;
+                }
+              }
 
               if (!reactions.has(targetMessage)) {
                 reactions.set(targetMessage, []);
@@ -110,11 +153,13 @@ const ChatLog: React.FC<ChatLogProps> = ({ content, syncConfig }) => {
         }
         // Regular messages
         if (message) {
-          messages.push({
+          const chatMessage = {
             timestamp,
             speaker,
             message
-          });
+          };
+          messages.push(chatMessage);
+          lastMessageForReaction = chatMessage;
         }
       }
     }
@@ -254,7 +299,10 @@ const ChatLog: React.FC<ChatLogProps> = ({ content, syncConfig }) => {
                 .filter(([reactionText, _]) => {
                   // Both the reaction text and the message text should be compared without ellipsis
                   const normalizedMessage = message.message.replace(/\.\.\.$/, '').trim();
-                  return normalizedMessage.startsWith(reactionText) || reactionText === normalizedMessage.substring(0, reactionText.length);
+                  if (reactionText.endsWith('...')) {
+                    return normalizedMessage.startsWith(reactionText.slice(0, -3).trim());
+                  }
+                  return reactionText === message.message;
                 })
                 .flatMap(([_, reactionList]) => reactionList);
 

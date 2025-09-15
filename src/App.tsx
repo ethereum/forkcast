@@ -9,6 +9,7 @@ import { getUpgradeById } from './data/upgrades';
 import { useAnalytics } from './hooks/useAnalytics';
 import { ThemeProvider } from './contexts/ThemeContext';
 import ExternalRedirect from './components/ExternalRedirect';
+import AnnouncementBanner from './components/ui/AnnouncementBanner';
 
 function RedirectHandler() {
   const navigate = useNavigate();
@@ -58,6 +59,18 @@ function App() {
       <Router basename="">
         <RedirectHandler />
         <AnalyticsTracker />
+        <AnnouncementBanner
+          storageKey="fusaka-audit-banner-dismissed"
+          title="Fusaka $2M Audit Contest"
+          fullTitle="Fusaka $2M Audit Contest Now Live"
+          badge="2x Multiplier Week 1"
+          linkUrl="https://blog.ethereum.org/en/2025/09/15/fusaka-audit-content"
+          linkText="Learn More"
+          linkTextMobile="Info"
+          gradientClasses="bg-gradient-to-r from-cyan-600 via-lime-600 to-amber-600 dark:from-cyan-700 dark:via-lime-700 dark:to-amber-700"
+          borderClasses="border-lime-600"
+          showIcon={true}
+        />
         <Routes>
           <Route path="/" element={<HomePage />} />
           <Route path="/upgrade/fusaka" element={

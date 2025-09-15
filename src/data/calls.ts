@@ -48,6 +48,7 @@ export const protocolCalls: Call[] = [
   { type: 'acdt', date: '2025-08-25', number: '050', path: 'acdt/050' },
   { type: 'acdt', date: '2025-09-01', number: '051', path: 'acdt/051' },
   { type: 'acdt', date: '2025-09-08', number: '052', path: 'acdt/052' },
+  { type: 'acdt', date: '2025-09-15', number: '053', path: 'acdt/053' },
 ];
 
 // Helper to get recent calls

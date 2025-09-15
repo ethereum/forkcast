@@ -67,8 +67,8 @@ function App() {
           linkUrl="https://blog.ethereum.org/en/2025/09/15/fusaka-audit-content"
           linkText="Learn More"
           linkTextMobile="Info"
-          gradientClasses="bg-gradient-to-r from-cyan-600 via-lime-600 to-amber-600 dark:from-cyan-700 dark:via-lime-700 dark:to-amber-700"
-          borderClasses="border-lime-600"
+          gradientClasses="bg-gradient-to-r from-cyan-600 via-lime-600 to-amber-600 dark:from-cyan-800 dark:via-lime-800 dark:to-amber-800"
+          borderClasses="border-lime-600 dark:border-lime-800"
           showIcon={true}
         />
         <Routes>

@@ -963,6 +963,47 @@
       },
       {
         "forkName": "Glamsterdam",
+        "status": "Proposed"
+      }
+    ],
+    "laymanDescription": "This makes Ethereum's consensus data structures forward compatible by transitioning to ProgressiveContainer, which maintains stable merkleization schemes across forks. Currently, when Ethereum adds or removes features in forks, existing verifier implementations (like smart contracts that check validator slashing) break because the merkleization changes. With ProgressiveContainer, these verifiers will continue working even when unrelated features are modified, eliminating the need to update smart contracts, hardware wallets, and other systems in lockstep with every Ethereum fork. This is particularly valuable for decentralized staking pools and off-chain verification systems."
+  },
+  {
+    "id": 7691,
+    "title": "EIP-7691: Blob throughput increase",
+    "status": "Final",
+    "description": "Increases blob throughput to improve data availability for Layer 2 solutions.",
+    "author": "Ansgar Dietrichs, Dankrad Feist",
+    "type": "Standards Track",
+    "category": "Core",
+    "createdDate": "2024-04-17",
+    "discussionLink": "https://ethereum-magicians.org/t/eip-7691-blob-throughput-increase/19724",
+    "reviewer": "bot",
+    "forkRelationships": [
+      {
+        "forkName": "Pectra",
+        "status": "Scheduled"
+      }
+    ]
+  },
+  {
+    "id": 7692,
+    "title": "EIP-7692: EVM Object Format (EOFv1) Meta",
+    "status": "Review",
+    "description": "Meta EIP listing the EIPs belonging to the EVM Object Format (EOF) proposal in its first version, enabling code versioning and paving the way for RISC-V execution environments.",
+    "author": "Alex Beregszaszi (@axic), Paweł Bylica (@chfast), Andrei Maiboroda (@gumb0), Piotr Dobaczewski (@pdobacz), Danno Ferrin (@shemnon)",
+    "type": "Meta",
+    "category": "Core",
+    "createdDate": "2024-04-17",
+    "discussionLink": "https://ethereum-magicians.org/t/glamsterdam-headliner-proposal-eof/21271",
+    "reviewer": "bot",
+    "forkRelationships": [
+      {
+        "forkName": "Fusaka",
+        "status": "Declined"
+      },
+      {
+        "forkName": "Glamsterdam",
         "status": "",
         "isHeadliner": false,
         "wasHeadlinerCandidate": true,
@@ -1309,8 +1350,7 @@
       "Enables transactions valid only at specified slot and index, supporting top-of-block bundles.",
       "Provides TXINDEX opcode for onchain verification of declared conditional transaction index.",
       "Pairs with EIP-7843 slot header field to verify conditional_slot."
-    ],
-    "champion": { "name": "Marc Harvey-Hill", "discord": "marchhill" }
+    ]
   },
   {
     "id": 7805,
@@ -1562,8 +1602,7 @@
       "Cheaper than proving slot via EIP-4788; simple 2-gas opcode call.",
       "Slot number available directly in block header and engine API.",
       "No added proving complexity; similar to TIMESTAMP for ZK-VMs."
-    ],
-    "champion": { "name": "Marc Harvey-Hill", "discord": "marchhill" }
+    ]
   },
   {
     "id": 7873,
@@ -1685,659 +1724,6 @@
       "Snapshot-and-revert preserves liveness: mismatched gas used resets receipts, logs, and execution outputs without discarding blocks from the chain.",
       "Base-fee dynamics remain fair: reverted parents count as zero gas used, preventing fee-market manipulation via overdeclared usage."
     ]
-  },
-  {
-    "id": 7928,
-    "title": "EIP-7928: Block-level Access Lists",
-    "status": "Draft",
-    "description": "Enforced block access lists with storage locations and state diffs.",
-    "author": "Toni Wahrstätter (@nerolation), Dankrad Feist (@dankrad), Francesco D'Amato (@fradamt), Jochem Brouwer (@jochem-brouwer), Ignacio Hagopian (@jsign)",
-    "type": "Standards Track",
-    "category": "Core",
-    "createdDate": "2025-03-31",
-    "discussionLink": "https://ethereum-magicians.org/t/eip-7928-block-level-access-lists/23337",
-    "reviewer": "bot",
-    "forkRelationships": [
-      {
-        "forkName": "Glamsterdam",
-        "status": "Scheduled",
-        "isHeadliner": true,
-        "wasHeadlinerCandidate": true,
-        "headlinerDiscussionLink": "https://ethereum-magicians.org/t/eip-7928-block-level-access-lists-the-case-for-glamsterdam/24343",
-        "layer": "EL"
-      }
-    ],
-    "laymanDescription": "This introduces access lists at the block level rather than individual transactions, dramatically reducing gas costs for applications that access similar state and enabling new optimization patterns.",
-    "northStars": ["Scale L1", "Improve UX"],
-    "northStarAlignment": {
-      "scaleL1": { "description": "Significantly reduces gas costs for state access through block-level optimization, improving overall network efficiency and throughput." },
-      "improveUX": { "description": "Lower gas costs for complex applications and improved predictability for applications with similar state access patterns." }
-    },
-    "stakeholderImpacts": {
-      "endUsers": { "description": "Lower gas costs for complex applications, especially DeFi protocols and applications that access similar state across multiple transactions." },
-      "appDevs": { "description": "Can optimize applications for block-level access patterns, significantly reduce gas costs for state-heavy applications, and enable new design patterns." },
-      "walletDevs": { "description": "Indirect benefits through lower gas costs for applications, but minimal direct impact on wallet development." },
-      "toolingInfra": { "description": "Gas estimation tools, transaction simulation, and optimization analysis need updates to handle block-level access list patterns." },
-      "layer2s": { "description": "More efficient state access in Layer 2 settlement transactions and optimized bridge operations." },
-      "stakersNodes": { "description": "More efficient block processing due to optimized state access patterns, reducing computational overhead." },
-      "clClients": { "description": "No direct impact on consensus layer operations as this affects execution layer state access optimization." },
-      "elClients": { "description": "Significant implementation work required for block-level access list management, state access optimization, and gas accounting updates." }
-    },
-    "benefits": [
-      "Dramatically reduces gas costs for state-heavy applications",
-      "Enables new optimization patterns for developers",
-      "Improves block processing efficiency",
-      "Provides more predictable gas costs for complex applications"
-    ]
-  },
-  {
-    "id": 7805,
-    "title": "EIP-7805: Fork-Choice Inclusion Lists (FOCIL)",
-    "status": "Draft",
-    "description": "Fork-Choice enforced Inclusion Lists improve improve censorship resistance by enable multiple proposer to force-include transactions in Ethereum blocks.",
-    "author": "Thomas Thiery (@soispoke) <thomas.thiery@ethereum.org>, Francesco D'Amato <francesco.damato@ethereum.org>, Julian Ma <julian.ma@ethereum.org>, BarnabÃ© Monnot <barnabe.monnot@ethereum.org>, Terence Tsao <ttsao@offchainlabs.com>, Jacob Kaufmann <jacob.kaufmann@ethereum.org>, Jihoon Song <jihoonsong.dev@gmail.com>",
-    "type": "Standards Track",
-    "category": "Core",
-    "createdDate": "2024-05-15",
-    "discussionLink": "https://ethereum-magicians.org/t/eip-7805-committee-based-fork-choice-enforced-inclusion-lists-focil/21578",
-    "reviewer": "bot",
-    "forkRelationships": [
-      {
-        "forkName": "Fusaka",
-        "status": "Declined"
-      },
-      {
-        "forkName": "Glamsterdam",
-        "status": "Considered",
-        "isHeadliner": false,
-        "wasHeadlinerCandidate": true,
-        "headlinerDiscussionLink": "https://ethereum-magicians.org/t/eip-7805-fork-choice-inclusion-lists-focil-as-a-candidate-for-glamsterdam/24342",
-        "layer": "CL"
-      }
-    ],
-    "laymanDescription": "FOCIL empowers multiple validators to mandate the inclusion of specific transactions in each block, thereby improving the network's censorship resistance properties.",
-    "northStars": ["Improve UX", "Scale L1", "Scale blobs"],
-    "northStarAlignment": {
-      "scaleL1": { "description": "Ethereum currently relies on local block builders to preserve censorship resistance. However, depending on local block builders comes at a cost to performance and incentives, which may conflict with scaling throughput. FOCIL is crucial in L1 scaling because it helps decouple local block building from censorship resistance." },
-      "scaleBlobs": { "description": "A more censorship-resistant L1 provides better foundation for Layer 2 settlement guarantees, and allows to shorten the exit time window for optimistic rollups." },
-      "improveUX": { "description": "Provides strong guarantees against transaction censorship and ensures fair access to block space for all users regardless of transaction content." }
-    },
-    "stakeholderImpacts": {
-      "endUsers": { "description": "Strong protection against transaction censorship for all end users, guaranteed inclusion for valid transactions, and improved confidence in Ethereum's credible neutrality." },
-      "appDevs": { "description": "Can build applications with stronger inclusion guarantees and reduced concerns about application-specific censorship." },
-      "walletDevs": { "description": "Can provide users with stronger transaction inclusion guarantees and better protection against selective censorship." },
-      "toolingInfra": { "description": "Censorship monitoring tools, inclusion list analysis, and validator behavior tracking systems need major updates after FOCIL implementation." },
-      "layer2s": { "description": "More censorship-resistant L1 settlement provides stronger guarantees for Layer 2 transaction processing, bridge operations, and reduces rollup challenge period risks." },
-      "stakersNodes": { "description": "Validators must now build inclusion lists according to the protocol rules, and attesters must enforce inclusion lists conditions are satisfied before voting for a block." },
-      "clClients": { "description": "Major implementation work required for inclusion lists propagation and enforcement, including fork-choice modifications." },
-      "elClients": { "description": "Need build inclusion lists, to update the execution payload with inclusion list transactions, and communicate with the consensus layer." }
-    },
-    "benefits": [
-      "Provides strong censorship resistance guarantees",
-      "Ensures fair access to block space for all users",
-      "Strengthens Ethereum's credible neutrality"
-    ]
-  },
-  {
-    "id": 7692,
-    "title": "EIP-7692: EVM Object Format (EOFv1) Meta",
-    "status": "Review",
-    "description": "Meta EIP listing the EIPs belonging to the EVM Object Format (EOF) proposal in its first version, enabling code versioning and paving the way for RISC-V execution environments.",
-    "author": "Alex Beregszaszi (@axic), Paweł Bylica (@chfast), Andrei Maiboroda (@gumb0), Piotr Dobaczewski (@pdobacz), Danno Ferrin (@shemnon)",
-    "type": "Meta",
-    "category": "Core",
-    "createdDate": "2024-04-17",
-    "discussionLink": "https://ethereum-magicians.org/t/glamsterdam-headliner-proposal-eof/21271",
-    "reviewer": "bot",
-    "forkRelationships": [
-      {
-        "forkName": "Fusaka",
-        "status": "Declined"
-      },
-      {
-        "forkName": "Glamsterdam",
-        "status": "",
-        "isHeadliner": false,
-        "wasHeadlinerCandidate": true,
-        "headlinerDiscussionLink": "https://ethereum-magicians.org/t/glamsterdam-headliner-proposal-eof/24464",
-        "layer": "EL"
-      }
-    ],
-    "laymanDescription": "This introduces a new container format for EVM bytecode that enables code versioning, removes complex jump analysis, and paves the way for new execution environments like RISC-V and EVM64 within the same contract. This EIP was Declined for Inclusion from Fusaka on [April 28th](https://blog.ethereum.org/2025/04/29/checkpoint-2#eof) due to a lack of consensus on implementation details and the resulting potential slowdown of shipping PeerDAS. It has been re-proposed as a headlining feature in Glamsterdam with multiple variants to address community concerns.",
-    "northStars": ["Scale L1", "Improve UX"],
-    "northStarAlignment": {
-      "scaleL1": { "description": "Enables incremental deployment of more efficient execution environments like RISC-V and EVM64 for computationally intensive tasks while maintaining EVM compatibility. Removes JUMPDEST analysis overhead." },
-      "improveUX": { "description": "Provides better developer tools through improved code analysis, versioning capabilities, and performance improvements for computationally intensive applications." }
-    },
-    "stakeholderImpacts": {
-      "endUsers": { "description": "Indirect benefits from improved contract performance and reduced gas costs for computationally intensive operations. Better reliability from enhanced code validation." },
-      "appDevs": { "description": "Can use multiple execution environments within same contract - write normal logic in EVM and intensive computations in EVM64/RISC-V. Better code analysis tools and function support improve development experience." },
-      "walletDevs": { "description": "Minimal direct impact on wallet development, though improved contract reliability and performance benefit user experience indirectly." },
-      "toolingInfra": { "description": "Major updates needed for debuggers, analyzers, and development tools to support EOF containers, multiple execution environments, and new bytecode format. Better analysis capabilities once implemented." },
-      "layer2s": { "description": "Can leverage more efficient execution environments for proof generation and validation. Better code analysis aids in rollup optimization and security verification." },
-      "stakersNodes": { "description": "Reduced computational overhead from eliminating JUMPDEST analysis. Potential increased complexity from supporting multiple execution environments within contracts." },
-      "clClients": { "description": "Minimal direct impact on consensus layer operations as this primarily affects execution layer bytecode processing and validation." },
-      "elClients": { "description": "Major implementation work for new bytecode container format, multiple execution environments, enhanced validation, and maintaining backwards compatibility with legacy bytecode." }
-    },
-    "benefits": [
-      "Enables incremental adoption of RISC-V and EVM64 within existing contracts",
-      "Removes complex JUMPDEST analysis improving execution efficiency",
-      "Provides code versioning for backward-incompatible protocol changes",
-      "Enables better code analysis and development tooling",
-      "Introduces first-class function support improving analysis opportunities",
-      "Addresses multiple EVM pain points through container format",
-      "Paves the way for maintaining existing toolchain while adding new capabilities",
-      "Enables 'both EVM and RISC-V' rather than 'either EVM or RISC-V' approach"
-    ]
-  },
-  {
-    "id": 7939,
-    "title": "EIP-7939: Count leading zeros (CLZ) opcode",
-    "status": "Draft",
-    "description": "Opcode to count the number of leading zero bits in a 256-bit word",
-    "author": "Vectorized (@Vectorized), Georgios Konstantopoulos (@gakonst), Jochem Brouwer (@jochem-brouwer), Ben Adams (@benaadams), Giulio Rebuffo (@Giulio2002)",
-    "type": "Standards Track",
-    "category": "Core",
-    "createdDate": "2025-04-28",
-    "discussionLink": "https://ethereum-magicians.org/t/create-a-new-opcode-for-counting-leading-zeros-clz/10805",
-    "reviewer": "bot",
-    "forkRelationships": [
-      {
-        "forkName": "Fusaka",
-        "status": "Scheduled"
-      }
-    ],
-    "laymanDescription": "This adds a new CLZ (Count Leading Zeros) opcode to the EVM that efficiently counts the number of zero bits at the start of a 256-bit number. This is a fundamental mathematical operation used in many algorithms, especially for mathematical computations, data compression, and cryptographic operations. Currently, implementing this operation in Solidity requires complex and expensive code - this opcode makes it much cheaper and faster.",
-    "northStars": ["Scale L1", "Improve UX"],
-    "northStarAlignment": {
-      "scaleL1": { "description": "Significantly reduces gas costs for mathematical operations that require bit manipulation, improving computational efficiency and enabling more complex on-chain calculations." },
-      "improveUX": { "description": "Enables cheaper and more efficient mathematical operations, benefiting DeFi protocols, gaming applications, and any contracts requiring complex mathematical computations." }
-    },
-    "stakeholderImpacts": {
-      "endUsers": { "description": "Indirect benefits through lower gas costs for applications using mathematical operations, compression algorithms, and advanced cryptographic schemes." },
-      "appDevs": { "description": "Can implement much more efficient mathematical algorithms, compression schemes, and bitmap operations. Particularly beneficial for DeFi protocols requiring complex mathematical operations and ZK-proving applications." },
-      "walletDevs": { "description": "Minimal direct impact, though benefits indirectly from more efficient mathematical operations in smart contracts." },
-      "toolingInfra": { "description": "Development tools and debuggers need to support the new CLZ opcode, but this is a straightforward addition." },
-      "layer2s": { "description": "More efficient mathematical operations benefit ZK-proof generation and verification systems, reducing proving costs especially for RISC-V based proving systems." },
-      "stakersNodes": { "description": "More efficient computation reduces overall network computational load for mathematical operations." },
-      "clClients": { "description": "No direct impact on consensus layer operations as this affects execution layer computational capabilities." },
-      "elClients": { "description": "Simple implementation - just need to add the CLZ opcode (0x1e) with proper gas accounting. Benchmarked to have similar computational cost to ADD." }
-    },
-    "benefits": [
-      "Dramatically reduces gas costs for bit manipulation operations",
-      "Enables more efficient mathematical algorithms on-chain",
-      "Particularly beneficial for ZK-proving applications",
-      "Reduces bytecode size for mathematical operations",
-      "Enables efficient compression and decompression algorithms",
-      "Essential building block for advanced cryptographic schemes"
-    ]
-  },
-  {
-    "id": 663,
-    "title": "EIP-663: SWAPN, DUPN and EXCHANGE instructions",
-    "status": "Review",
-    "description": "Introduce additional instructions for manipulating the stack which allow accessing the stack at higher depths",
-    "author": "Alex Beregszaszi (@axic), Charles Cooper (@charles-cooper), Danno Ferrin (@shemnon)",
-    "type": "Standards Track",
-    "category": "Core",
-    "createdDate": "2017-07-03",
-    "discussionLink": "https://ethereum-magicians.org/t/eip-663-swapn-dupn-and-exchange-instructions/3346",
-    "reviewer": "bot",
-    "forkRelationships": [
-      {
-        "forkName": "Fusaka",
-        "status": "Declined"
-      }
-    ],
-    "laymanDescription": "This adds three new EVM instructions (DUPN, SWAPN, and EXCHANGE) that allow smart contracts to access and manipulate stack items beyond the current 16-item limit, reaching up to 256 items deep. Currently, the EVM stack can hold 1024 items but only the top 16 are easily accessible. These new instructions help compilers write more efficient code for complex functions with many variables by providing better stack management capabilities. The feature only works with the new EOF bytecode format, not legacy contracts."
-  },
-  {
-    "id": 3540,
-    "title": "EIP-3540: EOF - EVM Object Format v1",
-    "status": "Review",
-    "description": "EOF is an extensible and versioned container format for EVM bytecode with a once-off validation at deploy time.",
-    "author": "Alex Beregszaszi (@axic), Paweł Bylica (@chfast), Andrei Maiboroda (@gumb0), Matt Garnett (@lightclient), Piotr Dobaczewski (@pdobacz)",
-    "type": "Standards Track",
-    "category": "Core",
-    "createdDate": "2021-03-16",
-    "discussionLink": "https://ethereum-magicians.org/t/evm-object-format-eof/5727",
-    "reviewer": "bot",
-    "forkRelationships": [
-      {
-        "forkName": "Fusaka",
-        "status": "Declined"
-      }
-    ],
-    "laymanDescription": "This introduces EVM Object Format (EOF), a new standardized container for smart contract bytecode that gets validated once when deployed rather than every time it runs. EOF separates code from data, making contracts more structured and analyzable. It enables future EVM improvements like better jump instructions, multibyte opcodes, and function representations. The format is extensible and versioned, allowing gradual introduction of new features. Only new contracts can use EOF - existing contracts remain unchanged. This is the foundation that makes other EOF-related improvements possible."
-  },
-  {
-    "id": 3670,
-    "title": "EIP-3670: EOF - Code Validation",
-    "status": "Review",
-    "description": "Validate EOF bytecode for correctness at the time of deployment.",
-    "author": "Alex Beregszaszi (@axic), Andrei Maiboroda (@gumb0), Paweł Bylica (@chfast)",
-    "type": "Standards Track",
-    "category": "Core",
-    "createdDate": "2021-06-23",
-    "discussionLink": "https://ethereum-magicians.org/t/eip-3670-eof-code-validation/6693",
-    "reviewer": "bot",
-    "forkRelationships": [
-      {
-        "forkName": "Fusaka",
-        "status": "Declined"
-      }
-    ],
-    "laymanDescription": "This adds strict validation rules for EOF smart contracts when they're deployed. It rejects contracts with invalid bytecode, such as incomplete PUSH instructions or undefined opcodes. It also removes deprecated instructions like CALLCODE and SELFDESTRUCT from EOF contracts. This validation only happens once at deployment time and only affects new EOF contracts - existing legacy contracts remain unchanged. The goal is to make bytecode more predictable and easier to reason about, while ensuring all EVM implementations handle code the same way."
-  },
-  {
-    "id": 4200,
-    "title": "EIP-4200: EOF - Static relative jumps",
-    "status": "Review",
-    "description": "RJUMP, RJUMPI and RJUMPV instructions with a signed immediate encoding the jump destination",
-    "author": "Alex Beregszaszi (@axic), Andrei Maiboroda (@gumb0), Paweł Bylica (@chfast)",
-    "type": "Standards Track",
-    "category": "Core",
-    "createdDate": "2021-07-16",
-    "discussionLink": "https://ethereum-magicians.org/t/eip-4200-eof-static-relative-jumps/7108",
-    "reviewer": "bot",
-    "forkRelationships": [
-      {
-        "forkName": "Fusaka",
-        "status": "Declined"
-      }
-    ],
-    "laymanDescription": "This introduces three new jump instructions (RJUMP, RJUMPI, and RJUMPV) for EOF contracts that use relative addressing instead of absolute addressing. These instructions are more gas-efficient than traditional JUMP/JUMPI instructions, don't require JUMPDEST markers, and make code analysis easier. RJUMP does unconditional jumps, RJUMPI does conditional jumps, and RJUMPV provides jump tables for switch-case scenarios. The relative addressing means code can be moved around without breaking, and the static nature allows for better optimization and validation at deployment time."
-  },
-  {
-    "id": 4750,
-    "title": "EIP-4750: EOF - Functions",
-    "status": "Review",
-    "description": "Individual sections for functions with `CALLF` and `RETF` instructions",
-    "author": "Andrei Maiboroda (@gumb0), Alex Beregszaszi (@axic), Paweł Bylica (@chfast)",
-    "type": "Standards Track",
-    "category": "Core",
-    "createdDate": "2022-01-10",
-    "discussionLink": "https://ethereum-magicians.org/t/eip-4750-eof-functions/8195",
-    "reviewer": "bot",
-    "forkRelationships": [
-      {
-        "forkName": "Fusaka",
-        "status": "Declined"
-      }
-    ],
-    "laymanDescription": "This introduces proper function support to EOF contracts by allowing multiple code sections, each representing a separate function. It adds two new instructions: CALLF to call functions and RETF to return from them. Functions have defined input/output parameters and their own isolated stack, improving code organization and analysis. Dynamic jumps (JUMP/JUMPI) are completely removed in favor of static function calls, making contracts more predictable and easier to optimize. A return stack tracks function call history, and JUMPDEST becomes a simple NOP instruction since jump analysis is no longer needed."
-  },
-  {
-    "id": 5450,
-    "title": "EIP-5450: EOF - Stack Validation",
-    "status": "Review",
-    "description": "Deploy-time validation of stack usage for EOF functions.",
-    "author": "Andrei Maiboroda (@gumb0), Paweł Bylica (@chfast), Alex Beregszaszi (@axic), Danno Ferrin (@shemnon)",
-    "type": "Standards Track",
-    "category": "Core",
-    "createdDate": "2022-08-12",
-    "discussionLink": "https://ethereum-magicians.org/t/eip-5450-eof-stack-validation/10410",
-    "reviewer": "bot",
-    "forkRelationships": [
-      {
-        "forkName": "Fusaka",
-        "status": "Declined"
-      }
-    ],
-    "laymanDescription": "This adds comprehensive stack validation to EOF contracts at deployment time, ensuring that stack underflow and overflow cannot happen during execution. By analyzing all possible code paths and tracking stack heights, it eliminates the need for most runtime stack checks, making execution faster and more predictable. Only CALLF and JUMPF instructions need runtime stack overflow checks. The validation also prevents deployment of unreachable code and ensures proper function termination. This creates guarantees that enable better compiler optimizations and ahead-of-time compilation while maintaining linear validation complexity."
-  },
-  {
-    "id": 6206,
-    "title": "EIP-6206: EOF - JUMPF and non-returning functions",
-    "status": "Review",
-    "description": "Introduces instruction for chaining function calls.",
-    "author": "Andrei Maiboroda (@gumb0), Alex Beregszaszi (@axic), Paweł Bylica (@chfast), Matt Garnett (@lightclient)",
-    "type": "Standards Track",
-    "category": "Core",
-    "createdDate": "2022-12-21",
-    "discussionLink": "https://ethereum-magicians.org/t/eip-4750-eof-functions/8195",
-    "reviewer": "bot",
-    "forkRelationships": [
-      {
-        "forkName": "Fusaka",
-        "status": "Declined"
-      }
-    ],
-    "laymanDescription": "This introduces the JUMPF instruction for EOF contracts, enabling tail call optimization by jumping to code sections without adding return stack frames. It also introduces non-returning functions - sections that never return control to their caller. This is particularly efficient for error handling helpers that end with REVERT, allowing compilers to generate more optimal code with reduced gas costs and smaller bytecode size. Functions can jump to other functions with fewer outputs, and non-returning functions don't need to clean up extra stack items before terminating."
-  },
-  {
-    "id": 7069,
-    "title": "EIP-7069: Revamped CALL instructions",
-    "status": "Draft",
-    "description": "Introduce EXTCALL, EXTDELEGATECALL and EXTSTATICCALL with simplified semantics",
-    "author": "Alex Beregszaszi (@axic), Paweł Bylica (@chfast), Danno Ferrin (@shemnon), Andrei Maiboroda (@gumb0), Charles Cooper (@charles-cooper)",
-    "type": "Standards Track",
-    "category": "Core",
-    "createdDate": "2023-05-05",
-    "discussionLink": "https://ethereum-magicians.org/t/eip-7069-revamped-call-instructions/14432",
-    "reviewer": "bot",
-    "forkRelationships": [
-      {
-        "forkName": "Fusaka",
-        "status": "Declined"
-      }
-    ],
-    "laymanDescription": "This introduces three new call instructions (EXTCALL, EXTDELEGATECALL, EXTSTATICCALL) for EOF contracts that remove gas observability and simplify call semantics. Unlike legacy CALL instructions, these don't allow specifying gas limits - they use the 63/64th rule automatically. They return extensible status codes (0=success, 1=revert, 2=failure) instead of boolean values, remove output buffer complexity in favor of RETURNDATACOPY, and add RETURNDATALOAD for efficient return data access. This makes contracts more resilient to future gas repricing and eliminates many gas-related attack vectors while simplifying the calling mechanism."
-  },
-  {
-    "id": 7480,
-    "title": "EIP-7480: EOF - Data section access instructions",
-    "status": "Draft",
-    "description": "Instructions to read data section of EOF container",
-    "author": "Andrei Maiboroda (@gumb0), Alex Beregszaszi (@axic), Paweł Bylica (@chfast)",
-    "type": "Standards Track",
-    "category": "Core",
-    "createdDate": "2023-08-11",
-    "discussionLink": "https://ethereum-magicians.org/t/eip-7480-eof-data-section-access-instructions/15414",
-    "reviewer": "bot",
-    "forkRelationships": [
-      {
-        "forkName": "Fusaka",
-        "status": "Declined"
-      }
-    ],
-    "laymanDescription": "This introduces four new instructions for EOF contracts to access their data section: DATALOAD (loads 32-byte word), DATALOADN (optimized version with compile-time offset), DATASIZE (returns data section size), and DATACOPY (copies data to memory). These replace the deprecated CODECOPY instruction for data access in EOF contracts, enabling proper separation between code and data. The instructions follow the same pattern as existing data access instructions like those for calldata and returndata, with zero-padding for out-of-bounds access and validation to ensure safe operation."
-  },
-  {
-    "id": 7620,
-    "title": "EIP-7620: EOF Contract Creation",
-    "status": "Draft",
-    "description": "Introduce `EOFCREATE` and `RETURNCODE` instructions",
-    "author": "Alex Beregszaszi (@axic), Paweł Bylica (@chfast), Andrei Maiboroda (@gumb0), Piotr Dobaczewski (@pdobacz)",
-    "type": "Standards Track",
-    "category": "Core",
-    "createdDate": "2024-02-12",
-    "discussionLink": "https://ethereum-magicians.org/t/eip-7620-eof-contract-creation/18590",
-    "reviewer": "bot",
-    "forkRelationships": [
-      {
-        "forkName": "Fusaka",
-        "status": "Declined"
-      }
-    ],
-    "laymanDescription": "This introduces new contract creation instructions for EOF contracts: EOFCREATE and RETURNCODE, which replace the legacy CREATE/CREATE2 instructions. Since EOF removes code observability (the ability to inspect and manipulate code), the old creation methods don't work. EOFCREATE creates contracts using pre-validated subcontainers within the factory contract, maintaining security while enabling factory patterns. RETURNCODE allows the initialization code to specify which subcontainer becomes the deployed contract and append additional data. This preserves the factory contract use case while maintaining EOF's code non-observability guarantees."
-  },
-  {
-    "id": 7698,
-    "title": "EIP-7698: EOF - Creation transaction",
-    "status": "Review",
-    "description": "Deploy EOF contracts using creation transactions",
-    "author": "Piotr Dobaczewski (@pdobacz), Andrei Maiboroda (@gumb0), Paweł Bylica (@chfast), Alex Beregszaszi (@axic)",
-    "type": "Standards Track",
-    "category": "Core",
-    "createdDate": "2024-04-24",
-    "discussionLink": "https://ethereum-magicians.org/t/eip-7698-eof-creation-transaction/19784",
-    "reviewer": "bot",
-    "forkRelationships": [
-      {
-        "forkName": "Fusaka",
-        "status": "Declined"
-      }
-    ],
-    "laymanDescription": "This enables deploying EOF contracts using regular creation transactions (transactions with empty 'to' field). Since legacy CREATE and CREATE2 instructions cannot deploy EOF code, creation transactions are the only way to get the first EOF contracts on-chain. The transaction data contains an EOF initcontainer followed by calldata for constructor arguments. This approach allows existing deployment tooling to work without modification - developers can deploy EOF contracts the same way they deploy legacy contracts, just by concatenating constructor arguments with the initcontainer. The execution ends with a RETURNCODE instruction that specifies which subcontainer becomes the deployed contract."
-  },
-  {
-    "id": 7873,
-    "title": "EIP-7873: EOF - TXCREATE and InitcodeTransaction type",
-    "status": "Review",
-    "description": "Adds a `TXCREATE` instruction to EOF and an accompanying transaction type allowing to create EOF contracts from transaction data",
-    "author": "Piotr Dobaczewski (@pdobacz), Andrei Maiboroda (@gumb0), Paweł Bylica (@chfast), Alex Beregszaszi (@axic), Danno Ferrin (@shemnon)",
-    "type": "Standards Track",
-    "category": "Core",
-    "createdDate": "2025-01-31",
-    "discussionLink": "https://ethereum-magicians.org/t/eip-7873-eof-txcreate-instruction-and-initcodetransaction-type/22765",
-    "reviewer": "bot",
-    "forkRelationships": [
-      {
-        "forkName": "Fusaka",
-        "status": "Declined"
-      }
-    ],
-    "laymanDescription": "This introduces a new way to deploy EOF contracts by adding a TXCREATE instruction and a special InitcodeTransaction type. The problem it solves is that EOF removes the traditional CREATE and CREATE2 instructions used to deploy contracts. With this EIP, both regular users (EOAs) and smart contracts can deploy EOF contracts by including the contract code directly in transaction data and using TXCREATE to deploy it. This works alongside the existing EOFCREATE instruction, giving developers all the contract creation capabilities they had before EOF. The TXCREATE instruction can also deploy legacy contracts, making it a universal bootstrapping mechanism for getting EOF contracts onto the blockchain."
-  },
-  {
-    "id": 7834,
-    "title": "EIP-7834: Separate Metadata Section for EOF",
-    "status": "Review",
-    "description": "Introduce a new separate metadata section to the EOF",
-    "author": "Kaan Uzdogan (@kuzdogan), Marco Castignoli (@marcocastignoli), Manuel Wedler (@manuelwedler)",
-    "type": "Standards Track",
-    "category": "Core",
-    "createdDate": "2024-12-06",
-    "discussionLink": "https://ethereum-magicians.org/t/eip-7834-separate-metadata-section-for-eof/22138",
-    "reviewer": "bot",
-    "forkRelationships": [
-      {
-        "forkName": "Fusaka",
-        "status": "Declined"
-      }
-    ],
-    "laymanDescription": "This adds a dedicated metadata section to EOF contracts that is completely separate from executable code and data. Currently, compilers include metadata (like compiler versions, IPFS hashes of source files) by mixing it with contract data, which creates problems for source code verification and causes different bytecode when metadata changes. The new metadata section solves these issues by being unreachable by contract execution, unchanging after deployment, and clearly separated from functional code. This makes source code verification much easier and ensures that contracts with identical logic but different metadata will have the same executable bytecode."
-  },
-  {
-    "id": 7761,
-    "title": "EIP-7761: EXTCODETYPE instruction",
-    "status": "Review",
-    "description": "Add EXTCODETYPE instruction to EOF to address common uses of EXTCODE* instructions",
-    "author": "Andrei Maiboroda (@gumb0), Piotr Dobaczewski (@pdobacz), Danno Ferrin (@shemnon)",
-    "type": "Standards Track",
-    "category": "Core",
-    "createdDate": "2024-09-01",
-    "discussionLink": "https://ethereum-magicians.org/t/eip-7761-is-contract-instruction/20936",
-    "reviewer": "bot",
-    "forkRelationships": [
-      {
-        "forkName": "Fusaka",
-        "status": "Declined"
-      }
-    ],
-    "laymanDescription": "This adds an EXTCODETYPE instruction to EOF contracts to distinguish between different account types. EOF removes code introspection capabilities like EXTCODESIZE, but this creates problems for ERC-721 and ERC-1155 tokens that need to know whether a recipient is an EOA (externally owned account) or a contract to implement safe transfers correctly. EXTCODETYPE returns 0 for no code (EOA), 1 for legacy contracts, and 2 for EOF contracts. This enables proper implementation of token standards in EOF while also helping proxy contracts verify that their upgrade targets are safe to call with EXTDELEGATECALL."
-  },
-  {
-    "id": 7880,
-    "title": "EIP-7880: EOF - EXTCODEADDRESS instruction",
-    "status": "Review",
-    "description": "Add EXTCODEADDRESS instruction to EOF to address code delegation use cases",
-    "author": "Danno Ferrin (@shemnon)",
-    "type": "Standards Track",
-    "category": "Core",
-    "createdDate": "2025-02-08",
-    "discussionLink": "https://ethereum-magicians.org/t/eip-7880-eof-extcodeaddress-instruction/22845",
-    "reviewer": "bot",
-    "forkRelationships": [
-      {
-        "forkName": "Fusaka",
-        "status": "Declined"
-      }
-    ],
-    "laymanDescription": "This adds a new EXTCODEADDRESS instruction to EOF contracts that helps them work with EIP-7702 delegation accounts without breaking EOF's no-code-introspection rule. The problem it solves is that EOF removes the ability to read raw contract code, but contracts still need to know when an account is delegating execution to another address. This instruction takes an address and returns the actual address that will execute the code - for regular accounts it returns the same address, but for delegated accounts it returns the address they're delegating to. This enables important use cases like managed proxy contracts ensuring they don't delegate to unsafe addresses, sponsorship contracts verifying delegation hasn't changed during a transaction, and security-conscious contracts that only accept specific delegation targets."
-  },
-  {
-    "id": 7762,
-    "title": "EIP-7762: Increase MIN_BASE_FEE_PER_BLOB_GAS",
-    "status": "Review",
-    "description": "Adjust the MIN_BASE_FEE_PER_BLOB_GAS to speed up price discovery on blob space",
-    "author": "Max Resnick (@MaxResnick), Davide Crapis (@dcrapis), Ansgar Dietrichs (@adietrichs)",
-    "type": "Standards Track",
-    "category": "Core",
-    "createdDate": "2024-08-31",
-    "discussionLink": "https://ethereum-magicians.org/t/eip-7762-increase-min-base-fee-per-blob-gas/20949",
-    "reviewer": "bot",
-    "forkRelationships": [
-      {
-        "forkName": "Fusaka",
-        "status": "Declined"
-      }
-    ],
-    "laymanDescription": "This increases the minimum blob base fee from 1 wei to 2^25 wei (about 33 million times higher) to speed up blob price discovery. Currently, when blob demand exceeds supply, it takes too long for prices to climb from the extremely low minimum to actual market rates. The new minimum corresponds to about 1 cent at current ETH prices, similar to the cost of a simple transaction when gas fees are low. The change also resets excess blob gas to zero to prevent a sudden price spike when the upgrade activates. This helps blob-based rollups reach appropriate pricing faster during high-demand periods."
-  },
-  {
-    "id": 7666,
-    "title": "EIP-7666: EVM-ify the identity precompile",
-    "status": "Stagnant",
-    "description": "Remove the identity precompile, and put into place a piece of EVM code that has equivalent functionality",
-    "author": "Vitalik Buterin (@vbuterin)",
-    "type": "Standards Track",
-    "category": "Core",
-    "createdDate": "2024-03-31",
-    "discussionLink": "https://ethereum-magicians.org/t/eip-7561-evm-ify-the-identity-precompile/19445",
-    "reviewer": "bot",
-    "forkRelationships": [
-      {
-        "forkName": "Fusaka",
-        "status": "Declined"
-      }
-    ],
-    "laymanDescription": "This removes the identity precompile (at address 0x04) and replaces it with actual EVM code that does the same thing - simply copying input data to output data. The identity precompile was originally needed because there was no direct way to copy memory, but since the MCOPY opcode was introduced, this precompile is no longer necessary. Removing it reduces maintenance burden and complexity for Ethereum clients, including ZK-EVMs. This serves as a template for potentially removing other underused precompiles in the future, like certain hash functions."
-  },
-  {
-    "id": 7668,
-    "title": "EIP-7668: Remove bloom filters",
-    "status": "Stagnant",
-    "description": "Remove bloom filters from the execution block",
-    "author": "Vitalik Buterin (@vbuterin)",
-    "type": "Standards Track",
-    "category": "Core",
-    "createdDate": "2024-03-31",
-    "discussionLink": "https://ethereum-magicians.org/t/eip-7653-remove-bloom-filters/19447",
-    "reviewer": "bot",
-    "forkRelationships": [
-      {
-        "forkName": "Fusaka",
-        "status": "Declined"
-      }
-    ],
-    "laymanDescription": "This removes bloom filters from Ethereum blocks and transaction receipts by requiring them to be empty. Bloom filters were originally designed to help applications quickly find relevant log events in blockchain history, but in practice they're too slow and have high false positive rates. Most applications now use centralized indexing services instead. Removing bloom filters simplifies the protocol and reduces client complexity, while encouraging development of decentralized alternatives using ZK-SNARKs for provable log indexing."
-  },
-  {
-    "id": 7688,
-    "title": "EIP-7688: Forward compatible consensus data structures",
-    "status": "Draft",
-    "description": "Transition consensus SSZ data structures to ProgressiveContainer",
-    "author": "Etan Kissling (@etan-status), Cayman (@wemeetagain)",
-    "type": "Standards Track",
-    "category": "Core",
-    "createdDate": "2024-04-15",
-    "discussionLink": "https://ethereum-magicians.org/t/eip-7688-forward-compatible-consensus-data-structures/19673",
-    "reviewer": "bot",
-    "forkRelationships": [
-      {
-        "forkName": "Fusaka",
-        "status": "Declined"
-      },
-      {
-        "forkName": "Glamsterdam",
-        "status": "Proposed"
-      }
-    ],
-    "laymanDescription": "This makes Ethereum's consensus data structures forward compatible by transitioning to ProgressiveContainer, which maintains stable merkleization schemes across forks. Currently, when Ethereum adds or removes features in forks, existing verifier implementations (like smart contracts that check validator slashing) break because the merkleization changes. With ProgressiveContainer, these verifiers will continue working even when unrelated features are modified, eliminating the need to update smart contracts, hardware wallets, and other systems in lockstep with every Ethereum fork. This is particularly valuable for decentralized staking pools and off-chain verification systems."
-  },
-  {
-    "id": 7791,
-    "title": "EIP-7791: GAS2ETH opcode",
-    "status": "Draft",
-    "description": "Introduces a new opcode, `GAS2ETH`, to convert gas to ETH",
-    "author": "Charles Cooper (@charles-cooper), Pascal Caversaccio (@pcaversaccio)",
-    "type": "Standards Track",
-    "category": "Core",
-    "createdDate": "2024-08-13",
-    "discussionLink": "https://ethereum-magicians.org/t/eip-7791-gas2eth-opcode/21418",
-    "reviewer": "staff",
-    "forkRelationships": [
-      {
-        "forkName": "Fusaka",
-        "status": "Declined"
-      },
-      {
-        "forkName": "Glamsterdam",
-        "status": "Proposed",
-        "layer": "EL"
-      }
-    ],
-    "laymanDescription": "EIP-7791 creates native fee mechanism for decentralized application by introducing a new GAS2ETH opcode that allows smart contracts to convert gas directly into ETH and send it to a specified address. It provides a new monetization mechanism for smart contract authors and public goods projects that scales with network usage. Instead of complex fee structures or token schemes, developers can charge gas (which users already understand) and receive proportional compensation during high network activity periods. The opcode takes a target address and gas amount, deducts the gas from the transaction, calculates the ETH value using the current gas price, and transfers that ETH to the specified address.",
-    "stakeholderImpacts": {
-      "endUsers": { "description": "Users can automatically support developers of dapps they are using without using any third party tokens or tools." },
-      "appDevs": { "description": "Contract developers can receive fees propotional to usage of their contract and benefit from its success without building any external mechanism." },
-      "walletDevs": { "description": "Wallets are estimating gas fees as always but when interacting with contracts using this opcode, the estimated fee will include the regular network fee and portion paid to the contract beneficiary address." },
-      "toolingInfra": { "description": "Compilers will have to implement the new opcode and provide new tooling for developers to use it. Explorers should recognize the new fee structure and display the new fee structure. " },
-      "layer2s": { "description": "EVM-equivalent L2s implementing this opcode mirror mainnet behavior; optional adoption otherwise. Expect routine client updates, testing, and gas schedule alignment." },
-      "stakersNodes": { "description": "Node operators simply upgrade clients at fork; runtime behavior unchanged." },
-      "clClients": { "description": "This is EVM only change, consensus changes expected for CL; only standard fork coordination." },
-      "elClients": { "description": "Execution clients need to modify their EVM implementation, gas estimation and metering functions which introduces new complexity." }
-    },
-    "benefits": [
-      "Native way for dapp developers to benefit from success of their work without relying on tokens, DAOs or external profit/public goods mechanisms",
-      "Fair distribution of fees proportional to contract usage.",
-      "Simple and clear UX for dapp users who can continue using their wallets with regular gas fee estimates as before."
-    ]
-  },
-  {
-    "id": 7819,
-    "title": "EIP-7819: SETDELEGATE instruction",
-    "status": "Draft",
-    "description": "Introduce a new instruction allowing contracts to create clones using EIP-7702 delegation designations",
-    "author": "Hadrien Croubois (@amxx)",
-    "type": "Standards Track",
-    "category": "Core",
-    "createdDate": "2024-11-18",
-    "discussionLink": "https://ethereum-magicians.org/t/eip-7819-create-delegate/21763",
-    "reviewer": "expert",
-    "forkRelationships": [
-      {
-        "forkName": "Fusaka",
-        "status": "Declined"
-      },
-      {
-        "forkName": "Glamsterdam",
-        "status": "Proposed",
-        "layer": "EL"
-      }
-    ],
-    "laymanDescription": "Adds a new instruction for upgradeable, lightweight contract clones via EIP-7702 delegation. This is similar to upgradable proxy contracts but enabled natively on protocol level, therfore cutting gas and complexity.",
-    "northStars": ["Improve UX"],
-    "northStarAlignment": {
-      "improveUX": { "description": "Native delegation provides upgradeability without the need for storage lookups and removes any issue related to code version incompatibilities. Development of contracts using proxies becomes easier and users benefit from additional security." }
-    },
-    "stakeholderImpacts": {
-      "endUsers": { "description": "Most users see unchanged behavior; some smart accounts may become cheaper and smoother, with minor upgrade-related risk managed by factories." },
-      "appDevs": { "description": "Contract developers get a way to create upgradeable clones, reducing gas and complexity; must guard against chaining and immediate delegation changes." },
-      "walletDevs": { "description": "Smart-account wallets may benefit from cheaper verification and operations; minimal code changes expected, aside from supporting delegation-aware introspection and risk messaging." },
-      "toolingInfra": { "description": "Explorers, indexers, and debuggers should recognize delegation indicators and mid-transaction updates; otherwise limited changes beyond existing EIP-7702 handling." },
-      "layer2s": { "description": "EVM-equivalent L2s implementing this opcode mirror mainnet behavior; optional adoption otherwise. Expect routine client updates, testing, and gas schedule alignment." },
-      "stakersNodes": { "description": "Node operators simply upgrade clients at fork; runtime behavior unchanged. Increased use of delegations may slightly affect tracing tools, not validation." },
-      "clClients": { "description": "No consensus changes expected for CL; only standard fork coordination. No new serialization, gossip, or signature rules introduced by this opcode." },
-      "elClients": { "description": "Must implement SETDELEGATE semantics, gas accounting, refunds, and EIP-2929 touches; ensure compatibility with EIP-7702 delegation indicators and immediate-effect code updates." }
-    },
-    "benefits": [
-      "Upgradeable clones without storage lookups, using EIP-7702 delegation indicators.",
-      "Lower gas by moving call redirection from EVM bytecode to protocol.",
-      "Smaller state footprint than proxies; delegation objects are only 23 bytes.",
-      "Immediate, factory-controlled upgrades or locking, reducing complexity in account factories."
-    ]
-  },
-  {
-    "id": 7783,
-    "title": "EIP-7783: Add Controlled Gas Limit Increase Strategy",
-    "status": "Draft",
-    "description": "Adds a controlled gas limit increase strategy.",
-    "author": "Giulio Rebuffo (@Giulio2002)",
-    "type": "Informational",
-    "category": "Core",
-    "createdDate": "2024-10-06",
-    "discussionLink": "https://ethereum-magicians.org/t/eip-7783-add-controlled-gas-limit-increase-strategy/21282",
-    "reviewer": "bot",
-    "forkRelationships": [
-      {
-        "forkName": "Fusaka",
-        "status": "Declined"
-      }
-    ],
-    "laymanDescription": "This proposes automatic, controlled gas limit increases over time instead of relying on manual adjustments by validators. Currently, gas limits change unpredictably based on individual validator decisions, which can cause network performance issues. The EIP offers three strategies: linear (fixed increase per block), stepwise (increases in steps), and exponential (doubling over intervals). Each includes safeguards like deactivation blocks to prevent indefinite growth. This provides predictable network scaling while giving the ecosystem time to adapt to larger block sizes, and validators retain the ability to halt increases if problems arise."
   },
   {
     "id": 7889,
@@ -2546,6 +1932,51 @@
     "champion": { "name": "Charles Cooper", "telegram": "big_tech_sux" }
   },
   {
+    "id": 7907,
+    "title": "EIP-7907: Meter Contract Code Size And Increase Limit",
+    "status": "Draft",
+    "description": "Increases the contract code size limit introduced in EIP-170 and adds a gas metering to code loading",
+    "author": "Charles Cooper (@charles-cooper), Qi Zhou (@qizhou)",
+    "type": "Standards Track",
+    "category": "Core",
+    "createdDate": "2025-03-14",
+    "discussionLink": "https://ethereum-magicians.org/t/eip-remove-contract-size-limit/23156",
+    "reviewer": "bot",
+    "forkRelationships": [
+      {
+        "forkName": "Fusaka",
+        "status": "Declined"
+      },
+      {
+        "forkName": "Glamsterdam",
+        "status": "Proposed",
+        "layer": "EL"
+      }
+    ],
+    "laymanDescription": "This increases the contract code size limit from 24KB to 256KB and introduces gas metering for larger contracts. The change eliminates the need for complex architectural workarounds and enables more sophisticated single-contract applications.",
+    "northStars": ["Improve UX", "Scale L1"],
+    "northStarAlignment": {
+      "scaleL1": { "description": "Better resource management and gas metering for large contracts while maintaining network efficiency and preventing DoS attacks." },
+      "improveUX": { "description": "Major developer experience improvement - eliminates need for complex architectural patterns like Diamond Standard, reduces deployment complexity, and enables single-contract solutions." }
+    },
+    "stakeholderImpacts": {
+      "endUsers": { "description": "Indirect benefits through access to more sophisticated single-contract applications and potentially lower gas costs from reduced cross-contract calls." },
+      "appDevs": { "description": "Eliminates major architectural constraints - can build larger, more complex contracts without splitting logic across multiple contracts or using proxy patterns." },
+      "walletDevs": { "description": "Can interact with more sophisticated single-contract applications, but need to handle higher gas costs for large contract interactions." },
+      "toolingInfra": { "description": "Contract verification tools, static analysis, and deployment infrastructure need updates to handle larger contracts and new gas metering." },
+      "layer2s": { "description": "Can deploy larger, more sophisticated infrastructure contracts without hitting size limits." },
+      "stakersNodes": { "description": "Need updated client implementations with proper gas metering and efficient codesize indexing. Larger contracts may increase storage and processing requirements." },
+      "clClients": { "description": "No direct impact on consensus layer operations as this affects execution layer contract deployment and metering." },
+      "elClients": { "description": "Need to implement new gas metering for code-loading operations, warm/cold code access tracking, and efficient codesize indexing to avoid DoS attacks from large contract loads." }
+    },
+    "benefits": [
+      "Enables much larger smart contracts (10x size increase)",
+      "Eliminates complex multi-contract workarounds",
+      "Reduces gas costs from cross-contract calls",
+      "Makes development more accessible"
+    ]
+  },
+  {
     "id": 7912,
     "title": "EIP-7912: Pragmatic stack manipulation tools",
     "status": "Draft",
@@ -2728,6 +2159,50 @@
       "Providing developers with better ways to manage memory, similar to other architectures."
     ],
     "champion": { "name": "Charles Cooper", "telegram": "big_tech_sux" }
+  },
+  {
+    "id": 7928,
+    "title": "EIP-7928: Block-level Access Lists",
+    "status": "Draft",
+    "description": "Enforced block access lists with storage locations and state diffs.",
+    "author": "Toni Wahrstätter (@nerolation), Dankrad Feist (@dankrad), Francesco D'Amato (@fradamt), Jochem Brouwer (@jochem-brouwer), Ignacio Hagopian (@jsign)",
+    "type": "Standards Track",
+    "category": "Core",
+    "createdDate": "2025-03-31",
+    "discussionLink": "https://ethereum-magicians.org/t/eip-7928-block-level-access-lists/23337",
+    "reviewer": "bot",
+    "forkRelationships": [
+      {
+        "forkName": "Glamsterdam",
+        "status": "Scheduled",
+        "isHeadliner": true,
+        "wasHeadlinerCandidate": true,
+        "headlinerDiscussionLink": "https://ethereum-magicians.org/t/eip-7928-block-level-access-lists-the-case-for-glamsterdam/24343",
+        "layer": "EL"
+      }
+    ],
+    "laymanDescription": "This introduces access lists at the block level rather than individual transactions, dramatically reducing gas costs for applications that access similar state and enabling new optimization patterns.",
+    "northStars": ["Scale L1", "Improve UX"],
+    "northStarAlignment": {
+      "scaleL1": { "description": "Significantly reduces gas costs for state access through block-level optimization, improving overall network efficiency and throughput." },
+      "improveUX": { "description": "Lower gas costs for complex applications and improved predictability for applications with similar state access patterns." }
+    },
+    "stakeholderImpacts": {
+      "endUsers": { "description": "Lower gas costs for complex applications, especially DeFi protocols and applications that access similar state across multiple transactions." },
+      "appDevs": { "description": "Can optimize applications for block-level access patterns, significantly reduce gas costs for state-heavy applications, and enable new design patterns." },
+      "walletDevs": { "description": "Indirect benefits through lower gas costs for applications, but minimal direct impact on wallet development." },
+      "toolingInfra": { "description": "Gas estimation tools, transaction simulation, and optimization analysis need updates to handle block-level access list patterns." },
+      "layer2s": { "description": "More efficient state access in Layer 2 settlement transactions and optimized bridge operations." },
+      "stakersNodes": { "description": "More efficient block processing due to optimized state access patterns, reducing computational overhead." },
+      "clClients": { "description": "No direct impact on consensus layer operations as this affects execution layer state access optimization." },
+      "elClients": { "description": "Significant implementation work required for block-level access list management, state access optimization, and gas accounting updates." }
+    },
+    "benefits": [
+      "Dramatically reduces gas costs for state-heavy applications",
+      "Enables new optimization patterns for developers",
+      "Improves block processing efficiency",
+      "Provides more predictable gas costs for complex applications"
+    ]
   },
   {
     "id": 7928,

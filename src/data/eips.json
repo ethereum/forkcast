@@ -18,6 +18,42 @@
     ]
   },
   {
+    "id": 2780,
+    "title": "EIP-2780: Reduce intrinsic transaction gas",
+    "status": "Draft",
+    "description": "EIP-2780 proposes reducing the basic gas cost for transactions on the Ethereum network from 21,000 to 6,000 units, aiming to improve efficiency and capacity.",
+    "author": "Matt Garnett (@lightclient), Uri Klarman (@uriklarman), Ben Adams (@benaadams)",
+    "type": "Standards Track",
+    "category": "Core",
+    "createdDate": "2020-07-11",
+    "discussionLink": "https://ethereum-magicians.org/t/eip-2780-reduce-intrinsic-cost-of-transactions/4413",
+    "reviewer": "staff",
+    "forkRelationships": [
+      {
+        "forkName": "Glamsterdam",
+        "status": "Proposed",
+        "layer": "EL"
+      }
+    ],
+    "laymanDescription": "Reduces gas costs for transactions to make the network more efficient.",
+    "stakeholderImpacts": {
+      "endUsers": { "description": "Lower transaction fees enhance user experience." },
+      "appDevs": { "description": "Increased transaction throughput simplifies app functionality." },
+      "walletDevs": { "description": "Lower costs improve wallet performance." },
+      "toolingInfra": { "description": "Requires updates for estimating transaction costs accurately." },
+      "layer2s": { "description": "Boosted efficiency supports greater Layer 2 scalability." },
+      "stakersNodes": { "description": "Streamlined transactions reduce resource overhead." },
+      "clClients": { "description": "Improved consensus efficiency with more transactions per block." },
+      "elClients": { "description": "More efficient execution of transactions enhances overall performance." }
+    },
+    "benefits": [
+      "Reduces the gas cost barrier for transactions, promoting more frequent usage.",
+      "Increases the number of transactions that can be processed per block, improving network scalability.",
+      "Aligns transaction pricing with actual computational costs, enhancing fairness.",
+      "Facilitates lower-cost ETH transfers, improving engagement and activity on the network."
+    ]
+  },
+  {
     "id": 2926,
     "title": "EIP-2926: Chunk-Based Code Merkleization",
     "status": "Draft",
@@ -1151,7 +1187,10 @@
     "discussionLink": "https://ethereum-magicians.org/t/eip-7778-prevent-block-gas-smuggling/21234",
     "reviewer": "staff",
     "forkRelationships": [
-
+      {
+        "forkName": "Glamsterdam",
+        "status": "Proposed"
+      }
     ],
     "laymanDescription": "Closes a loophole where gas refunds let blocks pack extra work. Refunds still reduce user costs, but don't shrink the block's counted gas. Aligns block size with real EVM work and reduces worst-case block-size variance.",
     "northStars": ["Scale L1"],
@@ -1946,6 +1985,10 @@
       {
         "forkName": "Fusaka",
         "status": "Declined"
+      },
+      {
+        "forkName": "Glamsterdam",
+        "status": "Proposed"
       }
     ],
     "laymanDescription": "This makes Ethereum's consensus data structures forward compatible by transitioning to ProgressiveContainer, which maintains stable merkleization schemes across forks. Currently, when Ethereum adds or removes features in forks, existing verifier implementations (like smart contracts that check validator slashing) break because the merkleization changes. With ProgressiveContainer, these verifiers will continue working even when unrelated features are modified, eliminating the need to update smart contracts, hardware wallets, and other systems in lockstep with every Ethereum fork. This is particularly valuable for decentralized staking pools and off-chain verification systems."
@@ -2225,6 +2268,42 @@
       "Improves security against future threats, especially from quantum computing advancements.",
       "Aids in the transition to new cryptographic methods essential for maintaining network integrity.",
       "Enhances usability by allowing a broader range of signing algorithms, attracting diverse applications."
+    ]
+  },
+  {
+    "id": 7976,
+    "title": "EIP-7976: Increase Calldata Floor Cost",
+    "status": "Draft",
+    "description": "This proposal suggests increasing the cost of storing data in Ethereum transactions to manage block size more effectively.",
+    "author": "Toni Wahrstätter (@nerolation)",
+    "type": "Standards Track",
+    "category": "Core",
+    "createdDate": "2025-06-18",
+    "discussionLink": "https://ethereum-magicians.org/t/eip-7976-further-increase-calldata-cost/24597",
+    "reviewer": "bot",
+    "forkRelationships": [
+      {
+        "forkName": "Glamsterdam",
+        "status": "Proposed",
+        "layer": "EL"
+      }
+    ],
+    "laymanDescription": "Increases the cost for data storage in transactions to help ensure Ethereum runs smoothly.",
+    "stakeholderImpacts": {
+      "endUsers": { "impact": "Medium", "description": "Ensures stable transaction speeds as network demands grow." },
+      "appDevs": { "impact": "High", "description": "May require adjustments in gas estimation for data-heavy applications." },
+      "walletDevs": { "impact": "Medium", "description": "Need to update gas estimation to reflect increased calldata costs." },
+      "toolingInfra": { "impact": "Medium", "description": "Must adapt to account for changes in gas pricing rules." },
+      "layer2s": { "impact": "Low", "description": "Improves interaction with Ethereum mainnet through efficient gas management." },
+      "stakersNodes": { "impact": "Low", "description": "Minimal impact on operations, but potential for increased transaction throughput." },
+      "clClients": { "impact": "Medium", "description": "May require updates to ensure efficient handling of calldata estimation." },
+      "elClients": { "impact": "High", "description": "Must be updated to accommodate changes in calldata pricing for optimal performance." }
+    },
+    "benefits": [
+      "Reduces maximum block size by approximately 33%, improving network efficiency.",
+      "Maintains a good user experience for regular transactions while optimizing for data-heavy applications.",
+      "Encourages better practices for data availability within the Ethereum ecosystem.",
+      "Ensures that transactions involving heavy computational requirements are not adversely affected."
     ]
   },
   {

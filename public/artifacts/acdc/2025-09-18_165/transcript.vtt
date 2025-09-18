@@ -1,0 +1,1514 @@
+WEBVTT
+
+1
+00:05:33.540 --> 00:05:34.810
+stokes: Hello, everybody.
+
+2
+00:05:35.090 --> 00:05:38.619
+stokes: Let's give it one more minute, and we'll kick things off.
+
+3
+00:06:43.900 --> 00:06:46.920
+stokes: Okay, Josh, are you helping with the stream today?
+
+4
+00:06:49.320 --> 00:06:50.360
+Josh Davis: Yep, you're alive.
+
+5
+00:06:51.210 --> 00:07:01.400
+stokes: Okay, thank you. Hi, everyone. Welcome to ACDC 165. This is issue 1716 in the PM repo.
+
+6
+00:07:02.260 --> 00:07:11.169
+stokes: And the main topic for today will be Fusaka, with a few other minor notes for Amsterdam, but yeah, let's go ahead and get into it.
+
+7
+00:07:11.750 --> 00:07:13.250
+stokes: So, to kick us off.
+
+8
+00:07:13.790 --> 00:07:20.530
+stokes: It'd be good to touch on Fusaka, DevNet 3, and DevNet 5, and yeah, kind of where we're at there.
+
+9
+00:07:20.920 --> 00:07:23.490
+stokes: I wonder if, Perry or Barnard,
+
+10
+00:07:24.110 --> 00:07:29.000
+stokes: Barnabas or Perry have any, updates there, or anything they'd like to call out?
+
+11
+00:07:30.460 --> 00:07:35.059
+Barnabas: Sure. Let's start with DevNet 3. DevNet3 has been,
+
+12
+00:07:35.250 --> 00:07:48.729
+Barnabas: mostly very stable during this past week. We are over 96% participation now. Teams are still pushing out fixes into their trunk branches, and they get automatically deployed onto this network.
+
+13
+00:07:49.030 --> 00:07:52.380
+Barnabas: We haven't been doing any kind of…
+
+14
+00:07:52.730 --> 00:08:01.469
+Barnabas: attacks or any splits in this past week, because we have been mainly focusing on Cosaca.net 5, in this, past week.
+
+15
+00:08:01.900 --> 00:08:03.239
+Barnabas: 7 at 5?
+
+16
+00:08:03.420 --> 00:08:07.080
+Barnabas: Started out with,
+
+17
+00:08:07.370 --> 00:08:15.699
+Barnabas: 1,500 nodes, and we did a fulloo last week's Thursday, then we did a BPO a day after the birds.
+
+18
+00:08:16.130 --> 00:08:24.449
+Barnabas: the… Went up all the way to 72 max blobs, and we did 48 on the day before.
+
+19
+00:08:26.020 --> 00:08:27.960
+Barnabas: Unfortunately, we had a…
+
+20
+00:08:28.430 --> 00:08:39.139
+Barnabas: bug in the configuration, which led to the full node getting a super node flag, which basically meant that our full nodes were
+
+21
+00:08:39.400 --> 00:08:43.089
+Barnabas: At 100% bandwidth utilization pretty much all the time.
+
+22
+00:08:43.260 --> 00:08:45.250
+Barnabas: Which led to quite some issues.
+
+23
+00:08:45.730 --> 00:08:56.890
+Barnabas: Yesterday, we fixed this by wiping all the full nodes and re-initializing their databases and their… and this also reset their, CGC value.
+
+24
+00:08:57.470 --> 00:09:13.970
+Barnabas: And we ran an analysis with, 15 max blobs, 21 max blobs, and then 33 max blobs, one more time. But, because of the time window, it's so short between, that time and ACD,
+
+25
+00:09:14.590 --> 00:09:21.529
+Barnabas: The numbers are not really, representative of, Of many, many slots.
+
+26
+00:09:21.750 --> 00:09:30.500
+Barnabas: Full nodes are representing 90% of the number of nodes, but only 10% of the validators on DevNet 5.
+
+27
+00:09:32.160 --> 00:09:43.359
+Barnabas: Nevertheless, some from our team did an analysis. Pari just linked it in the chat. Hopefully, most of you had the time to take a look before the call.
+
+28
+00:09:43.670 --> 00:09:53.230
+Barnabas: And the conclusion of our, analysis was that, max values of 15 and 21,
+
+29
+00:09:53.490 --> 00:09:57.740
+Barnabas: seem to be reasonable for BPO1 and 2.
+
+30
+00:09:57.940 --> 00:10:09.210
+Barnabas: And next value of 32, might lead to struggles into publishing blobs without any V-release or full nodes, with limited bandwidth.
+
+31
+00:10:10.580 --> 00:10:26.759
+Barnabas: We certainly will have to do another analysis. It's probably going to be physical.net 6, maybe a couple of weeks from now, but, we feel like we should be good to go with Holosky and with these, BPO numbers.
+
+32
+00:10:30.340 --> 00:10:37.940
+stokes: Okay. Yeah, thanks for the update. Yeah, this analysis, looks pretty good. I'm just looking at it now, but…
+
+33
+00:10:38.420 --> 00:10:47.709
+stokes: everyone definitely take a look there, and… yeah, at least I think that will then confirm, these first two EPOs, which I think was the main thing we wanted.
+
+34
+00:10:48.180 --> 00:10:50.350
+stokes: So… yeah.
+
+35
+00:10:50.660 --> 00:10:57.909
+stokes: Any other known bugs, with any of the clients, or any issues we should touch on with the DevNets?
+
+36
+00:10:58.800 --> 00:11:06.249
+Barnabas: Yes, Prism has a known bug that they are investigating right now, that leads to a bunch of, often, blocks.
+
+37
+00:11:06.390 --> 00:11:14.030
+Barnabas: We are rolling out a fix, or a potential fix right now. I'm not sure if they have anything more to share.
+
+38
+00:11:14.320 --> 00:11:27.879
+Manu: Yeah, I can share something. So yes, we have a bug in prison with a lot of orphan blocks. It seems to be only the case with high blood count and locally
+
+39
+00:11:28.290 --> 00:11:33.700
+Manu: build block, so there is no issue if it is… if there is MEV, or no issue with low block count.
+
+40
+00:11:34.330 --> 00:11:41.120
+Manu: We are still in the process of narrowing down the root cause. What just we know right now is
+
+41
+00:11:41.190 --> 00:12:00.699
+Manu: When we produce the blog, the blog is produced in very well fashion, like a few hundred milliseconds after the start of the slot. And what we see at the end is when we broadcast, the columns, the tech columns are broadcast very late, into the slot, like 6 or 7 seconds.
+
+42
+00:12:01.360 --> 00:12:09.520
+Manu: So there is something fishy between… after the end of the blog bidding and before the start of the data collection broadcasting.
+
+43
+00:12:10.640 --> 00:12:16.250
+Manu: And yes, we are in the process of finding the root cause in this process.
+
+44
+00:12:17.200 --> 00:12:20.089
+Manu: That's all I have to say.
+
+45
+00:12:22.110 --> 00:12:33.239
+stokes: It seems like this is a regression. Does that track with your understanding? Or do you think something… do you think something new was introduced that caused this, or is this a regression from what we had in the past?
+
+46
+00:12:33.240 --> 00:12:41.979
+Manu: Actually, possibly, it's not a regression possibility, it's an issue which is here for a long time. However, if I'm not wrong, we…
+
+47
+00:12:42.210 --> 00:12:47.140
+Manu: the best… We mainly tested,
+
+48
+00:12:47.510 --> 00:12:58.730
+Manu: high blood count with MEV, which does not cause any issue, and I think we really started to see the issue when we… when, you know, MEV was deactivated on the…
+
+49
+00:12:59.790 --> 00:13:08.010
+Manu: On the… on the DevNet 5, with high blood… high blood count. So, possibly, it's not so… it's maybe something totally unrelated to pureness.
+
+50
+00:13:10.600 --> 00:13:17.810
+Manu: A bug which was here from, you know, a long time, but which was not visible with a low, low blood count.
+
+51
+00:13:20.550 --> 00:13:21.220
+Manu: Yep.
+
+52
+00:13:22.290 --> 00:13:23.620
+stokes: Yeah, frozen period?
+
+53
+00:13:25.130 --> 00:13:44.410
+Raúl Kripalani: Yeah, so I think this could be, just kind of like a potential lead here, could be the fan-out mechanism. So basically, when you're a builder, you are forced to publish to 128 subnets, simultaneously, which means that you need to have peers in all those subnets that are peering… that you're peering with, that are part of your mesh.
+
+54
+00:13:44.500 --> 00:13:56.939
+Raúl Kripalani: And this usually requires a little bit of preparation ahead of time to make sure that, you know, given a particular peer count, active peer count, you have sufficient density of peers in each of those subnets.
+
+55
+00:13:56.940 --> 00:14:04.560
+Raúl Kripalani: I am aware, I think we've been looking into the Prism codebase as well, and the peer-to-peer networking team, and we did find out some events in which
+
+56
+00:14:04.560 --> 00:14:16.440
+Raúl Kripalani: Prism can, like, spend 5 to 6 seconds or something like that, discovering peers when it doesn't have sufficient peers, and if this is part of the critical path, that could justify the delay that you're seeing here.
+
+57
+00:14:16.510 --> 00:14:26.340
+Raúl Kripalani: And this goes, like, in general, as an advice, I think, to all CL clients, is ensuring that, you're correctly
+
+58
+00:14:26.370 --> 00:14:43.330
+Raúl Kripalani: Predicting when you're gonna be up for builder duty, for proposal duty, and if you're gonna… if you're a local builder, then ensuring ahead of time that you have sufficient peers in your meshes, so that when the time comes, you don't spend any time actually conducting the discovery during the critical path.
+
+59
+00:14:44.250 --> 00:14:48.839
+Manu: Yeah. So, so for information in a presumably, as soon as
+
+60
+00:14:49.080 --> 00:14:59.500
+Manu: We… we have one active validator. We ensure to have, at least 6 peers, in our fanhood for our data collection subnets.
+
+61
+00:14:59.700 --> 00:15:03.189
+Manu: So we don't compute, nor are we going to…
+
+62
+00:15:03.340 --> 00:15:10.610
+Manu: Are we going to propose a block in one way? Just, yes, if we know we have validators, we always make sure that we have peers in all the technical subnets.
+
+63
+00:15:11.080 --> 00:15:14.610
+Manu: Paramount.
+
+64
+00:15:14.800 --> 00:15:16.129
+Manu: Yeah.
+
+65
+00:15:17.440 --> 00:15:21.760
+Manu: So normally, I mean, we don't have to search for a new peer when proposing a block.
+
+66
+00:15:21.920 --> 00:15:28.810
+Manu: And if we do, we have luck for that, and it doesn't seem to be the case. But, yeah, I will double-checked, for sure.
+
+67
+00:15:33.280 --> 00:15:50.859
+Parithosh Jayanthi: Yeah, one of the things I wanted to mention was, in the past, we would either have MEV completely running throughout the lifespan of the network, or we would have it turned off. We didn't really have a fine-grained mechanism to change this, mid-BPO, for example.
+
+68
+00:15:50.860 --> 00:16:14.040
+Parithosh Jayanthi: But now we've added a scripting approach, so if a BPO lasts for one day, then 12 hours of the day is gonna be with MEV and 12 hours without MEV. So just in case any client dev is looking at a DevNet and wondering why there are no MEV proposals, it's probably because we've disabled it, so that we can test both local block building as well as MEV workflows for all blob numbers.
+
+69
+00:16:16.780 --> 00:16:26.910
+Manu: And, yeah, and additionally, and from additional information, currently, I know that I checked one hour ago, DevNet3 had LED on.
+
+70
+00:16:27.340 --> 00:16:32.130
+Manu: And DevNetri has no issue about offhand blocks for poison.
+
+71
+00:16:32.590 --> 00:16:37.340
+Manu: And, yeah, the next 5 had MED off, and there was a lot of orphan issue.
+
+72
+00:16:41.700 --> 00:16:53.529
+Barnabas: DevNet3 has a significantly more share of super nodes, though, and also much less blobs. They have a next blob count of 20 at most, and I think 50% of the network is super nodes.
+
+73
+00:16:53.950 --> 00:17:03.720
+Barnabas: I'm… on DevNet5, it's also possible that some of your peers will be only peering with other non-super nodes.
+
+74
+00:17:04.270 --> 00:17:11.689
+Barnabas: So, peering will be significantly more difficult to… to find enough peers on…
+
+75
+00:17:11.800 --> 00:17:15.649
+Barnabas: enough columns. That has all the columns that you need, basically.
+
+76
+00:17:17.640 --> 00:17:19.479
+Manu: Okay, I will double-check that.
+
+77
+00:17:19.640 --> 00:17:22.599
+Manu: Should not be the issue, but yes, worth to check again.
+
+78
+00:17:22.609 --> 00:17:31.379
+Barnabas: We might need to increase the default peer count on some of the CLs, but I think Lighthouse also increased from 100 to 200.
+
+79
+00:17:36.000 --> 00:17:36.630
+Manu: Yeah.
+
+80
+00:17:43.280 --> 00:17:44.090
+stokes: Okay.
+
+81
+00:17:44.330 --> 00:17:46.100
+stokes: Anything else on the DevNets?
+
+82
+00:17:53.580 --> 00:17:54.290
+stokes: Okay.
+
+83
+00:17:54.690 --> 00:18:06.249
+stokes: If not, then, next on the agenda, so there was an issue that came up with CKZG. Justin had a note here in the chat, I don't know if you want to add anything to that, Justin, otherwise I can,
+
+84
+00:18:06.850 --> 00:18:08.050
+stokes: Give a summary.
+
+85
+00:18:08.380 --> 00:18:10.639
+Justin Traglia: Nothing really to add, just that…
+
+86
+00:18:10.780 --> 00:18:21.340
+Justin Traglia: there was a misunderstanding of how, Blast used points at infinity, or… yeah. Pretty much we fixed it with a new release, shouldn't be an issue anymore.
+
+87
+00:18:25.330 --> 00:18:27.180
+stokes: New release of CKTG.
+
+88
+00:18:28.430 --> 00:18:32.069
+Justin Traglia: That's correct. Version 2.1.3.
+
+89
+00:18:32.540 --> 00:18:33.770
+stokes: Okay, gotcha.
+
+90
+00:18:34.420 --> 00:18:39.649
+stokes: And… The understanding is that everyone should be using 2 and 3.
+
+91
+00:18:40.440 --> 00:18:42.359
+stokes: Or at least not using 2-12.
+
+92
+00:18:42.860 --> 00:18:43.680
+Justin Traglia: Correct.
+
+93
+00:18:45.040 --> 00:18:45.650
+stokes: Okay.
+
+94
+00:18:48.690 --> 00:18:58.200
+stokes: I don't remember if there's a way to link this in the specs, but there either should be, or… yeah, I think we should make this clear somehow.
+
+95
+00:18:59.470 --> 00:19:02.369
+stokes: How have people handled this in the past?
+
+96
+00:19:04.170 --> 00:19:05.359
+stokes: What was that, Felix?
+
+97
+00:19:05.680 --> 00:19:10.370
+Felix (Geth): Sorry, I don't think it's necessary to, like, link specific library versions in the spec.
+
+98
+00:19:13.140 --> 00:19:16.799
+stokes: Fair. So then we should just remove 212 from the repo?
+
+99
+00:19:22.390 --> 00:19:24.550
+Justin Traglia: You mean, like… or what do you mean, exactly?
+
+100
+00:19:25.990 --> 00:19:28.490
+stokes: Well, it sounds like 2 and 2 is just broken, right?
+
+101
+00:19:29.360 --> 00:19:31.780
+Justin Traglia: Yeah, sure. You wanted me to, like… Okay.
+
+102
+00:19:32.000 --> 00:19:34.980
+Justin Traglia: Remove it as a release from TKZG?
+
+103
+00:19:35.410 --> 00:19:42.289
+stokes: Yeah, I mean, I want to prevent what happened, where I think some clients upgraded to it, because there was a new release, and then it caused some issues.
+
+104
+00:19:45.280 --> 00:19:50.110
+Justin Traglia: Yeah, I mean, we can discuss it. Personally, I don't think that's necessary, but .
+
+105
+00:19:50.850 --> 00:19:51.470
+stokes: Right.
+
+106
+00:19:51.860 --> 00:19:53.409
+stokes: I'll follow up with you later, then.
+
+107
+00:19:55.060 --> 00:20:01.270
+stokes: Then… I guess that's everything there. Just be aware of that.
+
+108
+00:20:04.370 --> 00:20:05.490
+stokes: Okay.
+
+109
+00:20:05.970 --> 00:20:13.620
+stokes: Let's see here, let me look at the agenda. Okay, so, yeah, if that's everything we need to talk about in the DevNuts,
+
+110
+00:20:13.870 --> 00:20:17.180
+stokes: The next thing I wanted to bring up was the testnet schedule.
+
+111
+00:20:17.430 --> 00:20:20.059
+stokes: So, I have a proposal here.
+
+112
+00:20:20.180 --> 00:20:23.520
+stokes: And… let me just run through it, and then we can discuss.
+
+113
+00:20:23.970 --> 00:20:32.040
+stokes: So… The proposal would be next Monday, which is the 22nd of September, effectively code freeze.
+
+114
+00:20:32.400 --> 00:20:42.919
+stokes: This could be, like, a branch or some commit on, say, you know, a trunk branch, but ultimately, you know, this would be the code that would go into releases for testnets.
+
+115
+00:20:43.520 --> 00:20:49.119
+stokes: If we have code freeze then, I believe the PandaOps team is willing to do some validation on this code.
+
+116
+00:20:49.340 --> 00:20:51.870
+stokes: Just to make sure things, you know.
+
+117
+00:20:51.980 --> 00:20:58.109
+stokes: look okay, and yeah, maybe once I'm done talking, they'll have something to add here. On that point.
+
+118
+00:20:58.440 --> 00:21:01.050
+stokes: But essentially, aim for Code Freeze next Monday.
+
+119
+00:21:01.440 --> 00:21:11.549
+stokes: Then if we aim for testnet releases for all 3 testnets on the 25th, which I believe is next Thursday… let me just double check that…
+
+120
+00:21:12.030 --> 00:21:13.260
+stokes: It is…
+
+121
+00:21:14.450 --> 00:21:21.369
+stokes: Then from there, we would aim, following sort of the process stuck that we had, at something like 2 weeks,
+
+122
+00:21:21.760 --> 00:21:23.780
+stokes: For every testnet from there.
+
+123
+00:21:24.160 --> 00:21:38.619
+stokes: So then, Heleshky would be on 2nd of October, Sepoli on 16th of October, Hudi on 30th of October, and there are fork epochs that align with all the different parameters we need, here on the repo.
+
+124
+00:21:39.560 --> 00:21:50.820
+stokes: And… I guess one thing to note is the Sepolia fork that would work on the 16th of October is during ACD, so I'm not sure if we want to move that.
+
+125
+00:21:51.080 --> 00:21:54.619
+stokes: Even assuming we can, you know, agree to the schedule here.
+
+126
+00:21:54.950 --> 00:21:56.949
+stokes: But that was something to flag.
+
+127
+00:21:57.190 --> 00:22:09.289
+stokes: And, yeah, one other note, we would use the BPO schedule from .NEF5. Again, it sounds like from the analysis we had, we can at least validate these first two BPOs with the numbers that were given.
+
+128
+00:22:10.440 --> 00:22:16.030
+stokes: From there, I think everyone knows the deal. You know, if there's a test network and it doesn't go well.
+
+129
+00:22:16.240 --> 00:22:28.089
+stokes: This is basically, you know, everything after that's on pause. If everything does go well, then even when we get to the last testnet with Hoodie, mainnet would be, you know, 30 days after that, so…
+
+130
+00:22:29.220 --> 00:22:38.829
+stokes: That's a proposal, it keeps things moving, and yeah, also generally follows this process document that we've been discussing over the last few ACDs.
+
+131
+00:22:39.580 --> 00:22:45.549
+stokes: So… I see… yeah, Christine here put this in the chat, thank you for that.
+
+132
+00:22:46.310 --> 00:22:52.379
+stokes: And, okay, yeah, Barnabas, do you want to discuss your adjustments?
+
+133
+00:22:53.150 --> 00:23:08.499
+Barnabas: Right, so my adjustments would be that we don't do a fork on a non-Wednesday, basically. Okay. Wednesdays are probably the best, most suitable days for a fork, because it allows us to debug before and afterwards as well.
+
+134
+00:23:08.940 --> 00:23:16.389
+Barnabas: And it doesn't clash with ACD as well. My proposal would be we would do Holsky.
+
+135
+00:23:16.580 --> 00:23:19.800
+Barnabas: Fusaka on the 1st of October.
+
+136
+00:23:20.000 --> 00:23:28.519
+Barnabas: Then, a week after that, we do the first BPO, then a week after that, we do the second BPO. Then, a day after that, we do Sepoya Fusaka.
+
+137
+00:23:28.730 --> 00:23:44.439
+Barnabas: And, we basically just keep repeating this pattern, throughout all the different testnets. So we wait one week for each BPOs, and, we're gonna ship all the BPOs before we proceed for the next testnet,
+
+138
+00:23:44.670 --> 00:23:45.470
+Barnabas: book.
+
+139
+00:23:46.190 --> 00:23:55.369
+Barnabas: So this allows us to run analysis on the different testnets, just to make sure that everything is still looking good before we, pull the trigger.
+
+140
+00:24:01.100 --> 00:24:01.730
+stokes: Yeah.
+
+141
+00:24:02.810 --> 00:24:10.370
+stokes: Okay, I mean, yeah, I'll validate the numbers you have here, but… That seems reasonable.
+
+142
+00:24:10.790 --> 00:24:15.999
+stokes: I think, most importantly, I would like to hear from the clients what they think.
+
+143
+00:24:16.200 --> 00:24:28.520
+stokes: I reached out to a number of different, I think I reached out to every client team over the last couple days, and I think generally they're okay with this. I think the main thing to figure out for now is just really next week, in terms of code freeze and releases.
+
+144
+00:24:29.020 --> 00:24:32.160
+stokes: But yeah, I'd love to hear, if anyone
+
+145
+00:24:32.670 --> 00:24:37.040
+stokes: Has an issue with this, or thinks we should make adjustments somewhere.
+
+146
+00:24:51.720 --> 00:24:58.240
+stokes: So, I've gotten thumbs up from all the client teams before, so if no one says anything, I will just assume it's still thumbs up.
+
+147
+00:25:03.480 --> 00:25:07.249
+stokes: Okay, now there's a lot of thumbs up on the Zoom screen.
+
+148
+00:25:07.670 --> 00:25:11.470
+stokes: So… Okay, that's very exciting.
+
+149
+00:25:11.820 --> 00:25:15.250
+stokes: Does anyone…
+
+150
+00:25:16.690 --> 00:25:22.779
+stokes: I guess one question here is… yeah, like, do we just go with Barnab as a schedule?
+
+151
+00:25:23.560 --> 00:25:29.669
+stokes: I'd have to look and see… But it seems good.
+
+152
+00:25:30.560 --> 00:25:33.700
+Barnabas: All the epochs are on the boundaries.
+
+153
+00:25:34.650 --> 00:25:35.470
+Barnabas: So…
+
+154
+00:25:36.360 --> 00:25:37.250
+stokes: Okay, yeah, that's mine.
+
+155
+00:25:37.250 --> 00:25:42.960
+Barnabas: The official room fight, also, I made sure that the BPOs are on the boundaries as well.
+
+156
+00:25:43.960 --> 00:25:44.590
+stokes: Okay.
+
+157
+00:25:45.910 --> 00:25:53.330
+stokes: Yeah, I guess what we could do, because this might take a little double-checking async, is just also have this finalized by…
+
+158
+00:25:53.450 --> 00:25:55.620
+stokes: Monday, along with Code Freeze.
+
+159
+00:25:56.070 --> 00:26:03.540
+stokes: And… I would say lean towards go with this, unless someone wants to say otherwise.
+
+160
+00:26:04.690 --> 00:26:05.490
+stokes: But yeah, I just…
+
+161
+00:26:05.490 --> 00:26:17.440
+Parithosh Jayanthi: The next step needs to be a PR to the ETH clients repository, updating and setting the forks, and then we can make sure that all the clients have, looked at that before we merge it in.
+
+162
+00:26:18.790 --> 00:26:19.450
+stokes: Yeah.
+
+163
+00:26:20.690 --> 00:26:22.379
+stokes: Okay, yeah.
+
+164
+00:26:22.590 --> 00:26:24.659
+stokes: Oh, Barnabas says you can do that. Great.
+
+165
+00:26:25.610 --> 00:26:29.810
+Barnabas: So, cool, yeah. One more thing that,
+
+166
+00:26:30.500 --> 00:26:41.769
+Barnabas: I suggested that we're gonna have different release deadlines, instead of trying to get everyone to include all the timelines in the release. I'm not sure if they want to.
+
+167
+00:26:42.070 --> 00:26:44.080
+Barnabas: But, like, we could have a…
+
+168
+00:26:44.830 --> 00:26:54.300
+Barnabas: you could basically have all three raised deadline by the 24th, then Sepolia raised deadline a week after that, and two weeks after that, the Holy One.
+
+169
+00:26:54.440 --> 00:26:56.889
+Barnabas: I'm not sure if it's really needed.
+
+170
+00:26:57.110 --> 00:27:02.610
+Barnabas: Or whether we just want to pre-schedule everything in one release.
+
+171
+00:27:04.410 --> 00:27:11.960
+stokes: Yeah, I think it's simpler for everyone if there's just one release, but… Yeah, I guess so.
+
+172
+00:27:12.810 --> 00:27:14.910
+stokes: I'd love to hear from clients how they feel.
+
+173
+00:27:17.940 --> 00:27:19.430
+stokes: Is that helpful for anyone?
+
+174
+00:27:21.650 --> 00:27:32.379
+Ameziane Hamlat: So, for Basic side, it would be helpful, because we are working on some performance improvements that we would like to include for Fuseka.
+
+175
+00:27:32.830 --> 00:27:40.009
+Ameziane Hamlat: So we may need to have a different release between the one for Holesky and…
+
+176
+00:27:40.380 --> 00:27:42.899
+Ameziane Hamlat: Let's say the one for a hotel, for example.
+
+177
+00:27:48.440 --> 00:27:55.760
+Łukasz Rozmej: So, I think, like, we can definitely do one for all, but we might,
+
+178
+00:27:55.950 --> 00:28:00.109
+Łukasz Rozmej: Also, like, do some service releases after that,
+
+179
+00:28:00.470 --> 00:28:06.320
+Łukasz Rozmej: But I think that's fine, and that should also be fine for Bess, so I don't really see this being a conflict.
+
+180
+00:28:08.250 --> 00:28:19.720
+Łukasz Rozmej: I think if we can agree that it's probably fine to have a release that supports… as a baseline that supports all testnets, but then have subsequent releases after that. That shouldn't be a problem.
+
+181
+00:28:24.640 --> 00:28:30.359
+stokes: Okay, so, well, everyone will aim to have one release, but then, yeah, if things update, then that's all perfectly fine.
+
+182
+00:28:33.990 --> 00:28:34.880
+stokes: Okay.
+
+183
+00:28:36.270 --> 00:28:38.779
+stokes: Cool. Does everyone feel good about this?
+
+184
+00:28:39.200 --> 00:28:48.529
+Matthew Keil: Yeah, I can second that sentiment, that, we're ready for a release, and, but the flexibility in case something comes up during test sets.
+
+185
+00:28:49.490 --> 00:28:52.109
+Matthew Keil: To be able to put one more out before mainnet.
+
+186
+00:28:55.230 --> 00:28:58.809
+stokes: Yeah, I mean, you can always, I think, Cut a release.
+
+187
+00:29:00.740 --> 00:29:05.940
+stokes: But just for the test nights, given there's so many, sometimes it's simpler just to aim for one, but…
+
+188
+00:29:06.140 --> 00:29:12.480
+stokes: Yeah, definitely, we should be able to accommodate, At least 3.
+
+189
+00:29:13.750 --> 00:29:14.310
+Dustin: I mean…
+
+190
+00:29:14.900 --> 00:29:33.719
+Dustin: Practically, this means that there's… unless there's a… things go catastrophically wrong, there will not be a schedule delay. That's not necessarily good or not necessarily bad, but… but once those releases are out there, and now…
+
+191
+00:29:34.360 --> 00:29:49.889
+Dustin: Essentially, the dynamic that happens is it becomes partly as risky to delay the release, even if you think it might go wrong, than it is to… the fork schedule, than it is to keep it going and just make it a…
+
+192
+00:29:50.030 --> 00:29:59.890
+Dustin: an emergency fix, if all of the releases are scheduled at the same time, and this has happened before. So, I mean, as long as people go into that knowingly, that's…
+
+193
+00:30:00.260 --> 00:30:02.849
+Dustin: Fine. I don't know. It's a choice.
+
+194
+00:30:03.940 --> 00:30:05.429
+Dustin: But…
+
+195
+00:30:05.770 --> 00:30:11.330
+Dustin: And this is… but this is one reason why I know the… in other discussions, this has been…
+
+196
+00:30:11.460 --> 00:30:13.529
+Dustin: Yeah, a trade-off discussed.
+
+197
+00:30:19.930 --> 00:30:25.390
+Marius van der Wijden: Yeah, I would say it's fine. I think,
+
+198
+00:30:25.890 --> 00:30:30.690
+Marius van der Wijden: Because these testnets are only run by a very small
+
+199
+00:30:30.870 --> 00:30:44.779
+Marius van der Wijden: group of people, we can always ask them to just use the newest release. Yeah, and the important thing is that we don't bake in the mainnet release into the tested release, so that the mainnet release will be
+
+200
+00:30:44.910 --> 00:30:49.740
+Marius van der Wijden: must be a different release. And I think that's… that's it.
+
+201
+00:30:55.360 --> 00:30:56.630
+stokes: Yeah, sounds good to me.
+
+202
+00:31:00.440 --> 00:31:01.380
+stokes: Okay.
+
+203
+00:31:02.610 --> 00:31:08.100
+stokes: Again, I know this has been a huge lift to get here, so, I guess congrats, everyone.
+
+204
+00:31:08.420 --> 00:31:10.549
+stokes: And let's hope the test notes go well.
+
+205
+00:31:12.870 --> 00:31:19.100
+stokes: So… Cool, we'll get this PR up for the schedule…
+
+206
+00:31:19.330 --> 00:31:23.520
+Barnabas: Should I make the schedule then based on the timelines that I've suggested?
+
+207
+00:31:24.190 --> 00:31:30.959
+stokes: Yeah, I think so. I'll double check, just to make sure, you know, things are aligned to these boundaries and stuff, but yeah, let's go ahead and go with what you had.
+
+208
+00:31:33.880 --> 00:31:35.230
+stokes: It looks good.
+
+209
+00:31:36.930 --> 00:31:44.320
+stokes: Cool, okay. Anything else on Fusaka? I think this is pretty much…
+
+210
+00:31:44.480 --> 00:31:48.970
+stokes: what we have today, on Fusaka, just because, yeah, we're in the process.
+
+211
+00:31:49.330 --> 00:31:50.449
+stokes: Anything else?
+
+212
+00:31:54.830 --> 00:31:58.499
+Parithosh Jayanthi: The audit went live, do we wanna maybe mention that?
+
+213
+00:32:00.700 --> 00:32:05.989
+stokes: That would be good. Frederick, I don't know if you have something to say there, otherwise…
+
+214
+00:32:06.220 --> 00:32:08.629
+stokes: I can go try to find a link to it.
+
+215
+00:32:09.380 --> 00:32:10.979
+stokes: I don't have one handy.
+
+216
+00:32:21.940 --> 00:32:27.169
+stokes: Here, I'll just… oh yeah, thanks, Justin. Okay, so yeah, I was looking at this blog post here. So…
+
+217
+00:32:27.460 --> 00:32:34.720
+stokes: Yeah, you know, every upgrade, we usually do one of these security competitions, we have one live for Fusaka.
+
+218
+00:32:35.180 --> 00:32:37.850
+stokes: There's a $2 million bounty here.
+
+219
+00:32:38.210 --> 00:32:45.979
+stokes: And, yeah, check out the post, especially if you are in the security space and listening to this recording, or watching it live.
+
+220
+00:32:46.200 --> 00:32:53.300
+stokes: This is super useful. We've found things in the past that, you know, are direct impacts to mainnet security, so…
+
+221
+00:32:53.650 --> 00:32:58.419
+stokes: This is a super good program, just to find any lost bugs lingering.
+
+222
+00:32:59.000 --> 00:33:04.140
+stokes: And… yeah, I think that's all I have to say. I don't know if anyone wants to add anything else.
+
+223
+00:33:10.290 --> 00:33:13.720
+stokes: Mario says it projects 20,000 submissions by the end of the contest.
+
+224
+00:33:15.160 --> 00:33:16.869
+stokes: I don't know where that number's coming from.
+
+225
+00:33:17.130 --> 00:33:18.830
+Marius van der Wijden: Yeah, that… I don't know that…
+
+226
+00:33:18.830 --> 00:33:19.260
+stokes: odds.
+
+227
+00:33:19.260 --> 00:33:32.779
+Marius van der Wijden: Yeah, the algorithm is kind of weird, but there have been some submissions, and the security team is looking at them, but we also want to encourage all the client teams to look at them as often as possible.
+
+228
+00:33:33.120 --> 00:33:43.369
+Marius van der Wijden: So, yeah, these things don't go stale, and we don't receive, like, duplicate submissions because the code hasn't been updated.
+
+229
+00:33:45.210 --> 00:33:45.980
+stokes: Okay.
+
+230
+00:33:50.850 --> 00:33:51.530
+stokes: Cool.
+
+231
+00:33:52.780 --> 00:33:54.220
+stokes: Anything else on Fusaka?
+
+232
+00:34:05.730 --> 00:34:16.290
+Barnabas: One more thing, like, it would be very good to get an update on, backfill from different clients, because I think this was one of the main points that we, still have to ship.
+
+233
+00:34:16.449 --> 00:34:22.599
+Barnabas: I think Lighthouse now has working backfill, but I'm not sure about any other client teams that have,
+
+234
+00:34:22.889 --> 00:34:24.960
+Barnabas: finished implementing Backflow.
+
+235
+00:34:30.120 --> 00:34:31.770
+stokes: Okay, Bota says Prism has it.
+
+236
+00:34:32.380 --> 00:34:34.519
+stokes: Yeah, there's an implementation they're working on.
+
+237
+00:34:39.900 --> 00:34:47.010
+Fredrik: I can say something more about the competition quickly. There is, for the client teams, so they're aware,
+
+238
+00:34:47.400 --> 00:34:50.159
+Fredrik: There's a bit of an issue right now with the…
+
+239
+00:34:50.870 --> 00:34:54.289
+Fredrik: Judging aspect, but that's gonna be fixed.
+
+240
+00:34:54.570 --> 00:35:01.070
+Fredrik: Tomorrow, most likely, so that's… Brian teams can provide comments, and
+
+241
+00:35:01.730 --> 00:35:16.700
+Fredrik: yeah, feedback on the severity levels, etc. And then, yeah, if you need any more people from your team to have access to the competition, to provide this feedback, then you can just reach out, and we will get everyone added.
+
+242
+00:35:21.540 --> 00:35:22.640
+stokes: Alright, thanks.
+
+243
+00:35:27.250 --> 00:35:32.710
+stokes: Yeah, Barnabas, back on the backfilt topic, do you just want to follow up async?
+
+244
+00:35:33.590 --> 00:35:34.149
+Barnabas: Yeah, sure.
+
+245
+00:35:34.150 --> 00:35:36.209
+stokes: Do you have any other questions right now? Okay.
+
+246
+00:35:36.590 --> 00:35:41.230
+stokes: Did we want to touch on this earliest available slot thing? Because that also did come up.
+
+247
+00:35:51.700 --> 00:35:55.260
+Barnabas: I'm happy to bring it up, but I think that can also be discussed.
+
+248
+00:35:55.420 --> 00:35:56.610
+Barnabas: Oh, awesome.
+
+249
+00:35:57.920 --> 00:35:58.500
+stokes: Okay.
+
+250
+00:36:00.700 --> 00:36:06.119
+stokes: Another comment here in the chat from Solus, Grandine also has backfill, merged very soon.
+
+251
+00:36:07.930 --> 00:36:08.650
+stokes: Cool.
+
+252
+00:36:11.100 --> 00:36:19.589
+stokes: Then with that… Glamsterdam, and then, yeah, a few announcements from A.B. Kotap.
+
+253
+00:36:20.220 --> 00:36:22.529
+stokes: Let's make sure I say that correctly.
+
+254
+00:36:24.070 --> 00:36:32.220
+stokes: So yeah, with Amsterdam, I think the main thing to keep in mind for now is that we said we want to have non-headliner EIPs proposed.
+
+255
+00:36:32.440 --> 00:36:39.299
+stokes: by Fusaka Midnight Releases, which, with the schedule today, gives you some more clarity on when that would be.
+
+256
+00:36:41.920 --> 00:36:50.269
+stokes: So that's good. Otherwise, yeah, I don't think we really need to get into it, just because I think we should all stay focused on Fusaka for the time being.
+
+257
+00:36:50.730 --> 00:36:54.400
+stokes: Yeah, if there's, like, very brief…
+
+258
+00:36:55.040 --> 00:37:00.709
+stokes: announcements or something anyone would like to provide around breakouts or something, I think that's admissible, but…
+
+259
+00:37:01.270 --> 00:37:04.659
+stokes: Otherwise, I think that's all we really need to say there.
+
+260
+00:37:06.070 --> 00:37:13.670
+stokes: Then, on the announcements I mentioned, so… we do have an ETH Magicians post here.
+
+261
+00:37:14.030 --> 00:37:18.739
+stokes: for the name for H-star, Which, yeah, I forget…
+
+262
+00:37:18.860 --> 00:37:22.210
+stokes: Okay, there was a poll… here, let me grab the link here.
+
+263
+00:37:24.850 --> 00:37:30.849
+stokes: There was a poll here, and I guess, yeah, we just need to actually make the decision at some point.
+
+264
+00:37:31.270 --> 00:37:35.310
+stokes: So yeah, take a look there if you want to chime in.
+
+265
+00:37:35.920 --> 00:37:43.340
+stokes: And there's another request here for a name for the replacement testnet for Sepolia.
+
+266
+00:37:43.880 --> 00:37:48.869
+stokes: I will… Share this, because it was added to the agenda.
+
+267
+00:37:51.270 --> 00:37:52.350
+stokes: I…
+
+268
+00:37:52.550 --> 00:38:01.039
+stokes: Myself, I'm not convinced we need to replace Apolia, even though I know that was sort of what was written down with, this LTS situation.
+
+269
+00:38:01.560 --> 00:38:04.160
+stokes: But I think that might be a conversation for a different day.
+
+270
+00:38:04.900 --> 00:38:12.389
+stokes: So, in any case… Following the schedule, yeah, we would basically sunset Sepolia,
+
+271
+00:38:12.680 --> 00:38:18.460
+stokes: Soon-ish, and then there would be some replacement, and this post is just asking for a name for the replacement.
+
+272
+00:38:19.260 --> 00:38:37.389
+Parithosh Jayanthi: I do want to maybe make a point here, we're still helping a lot of people migrate to… from Holsky to Houdi, so we don't want to add to the chaos and immediately have everyone also migrate from Sepolia. So, even though Sepolia is supposed to be end-of-the-year
+
+273
+00:38:37.390 --> 00:38:54.980
+Parithosh Jayanthi: terminated, I think we will add, like, a decent grace period. We'll probably update wording, and even if there is a replacement test for support here, we'll make sure that both are running at least for a considerable time, so that no one's, overburdened with having to migrate their entire stack.
+
+274
+00:38:54.980 --> 00:38:56.490
+Parithosh Jayanthi: Multiple times in a year.
+
+275
+00:38:59.690 --> 00:39:02.629
+stokes: Yeah, that sounds good to me. I mean…
+
+276
+00:39:03.100 --> 00:39:09.840
+stokes: Yeah, again, maybe a topic for a different day, but I am not sure why we need to actually tear down Sepolia at this moment.
+
+277
+00:39:10.530 --> 00:39:14.170
+stokes: But yeah, again, different, conversation.
+
+278
+00:39:15.360 --> 00:39:23.650
+stokes: In any case, yeah, I think what Perry said stands, so there'd be plenty of grace period, just so there's not, yeah, more pressure there.
+
+279
+00:39:28.210 --> 00:39:33.740
+stokes: Okay, with that, this was everything we had on the agenda today.
+
+280
+00:39:34.030 --> 00:39:35.610
+stokes: Anything else?
+
+281
+00:39:37.040 --> 00:39:49.459
+Barnabas: I would like to discuss, Glamsterdam testing, and, possibly splitting up, all DevNet 0 and EPPS DevNet 0, and keeping them
+
+282
+00:39:49.880 --> 00:40:00.999
+Barnabas: separate as long as we basically can, and we want to. Personal has a 90% done implementation that would support,
+
+283
+00:40:01.750 --> 00:40:08.500
+Barnabas: the block access stuff, and I think, we can just basically do a prism-only,
+
+284
+00:40:08.760 --> 00:40:16.330
+Barnabas: DevNet for all the ELs that would be supporting it, and that way we don't have to burden any of the other CR devs with this.
+
+285
+00:40:17.030 --> 00:40:19.919
+Barnabas: And they can implement it whenever they want.
+
+286
+00:40:20.470 --> 00:40:28.540
+Barnabas: So, at least for the first couple of iterations of, while DevNets, I think we can just have it with Prism.
+
+287
+00:40:31.530 --> 00:40:33.599
+Barnabas: And then, on the other side…
+
+288
+00:40:34.760 --> 00:40:43.739
+Barnabas: So that would not trigger any EPPS testing, and then we could have the EPPS testing without the ball testing, basically.
+
+289
+00:40:44.180 --> 00:40:55.000
+Barnabas: I just want to make sure that all the CR teams are focused on EPBS testing and writing EPBS stuff, and so we can start testing in parallel as soon as possible.
+
+290
+00:40:56.110 --> 00:41:02.049
+stokes: Yeah, that part makes sense. I was gonna ask, is this okay with the Prism devs? Like, are…
+
+291
+00:41:02.900 --> 00:41:05.539
+stokes: Can they produce something that's good for BLs?
+
+292
+00:41:07.120 --> 00:41:09.970
+Barnabas: It's already done. Like, it's 90% done.
+
+293
+00:41:09.970 --> 00:41:10.540
+stokes: Okay.
+
+294
+00:41:11.030 --> 00:41:11.850
+stokes: Okay.
+
+295
+00:41:16.440 --> 00:41:24.430
+stokes: Okay, and yeah, just to be clear, that would have the EPPS features in it, and they would do BLs on top of that with EPPS?
+
+296
+00:41:25.880 --> 00:41:27.610
+Barnabas: No, it's without the PPS.
+
+297
+00:41:28.120 --> 00:41:29.529
+stokes: Okay, interesting.
+
+298
+00:41:34.030 --> 00:41:34.860
+stokes: Cutters?
+
+299
+00:41:35.470 --> 00:41:48.220
+potuz: Yeah, so the issue is that, block access lists, without EPBS requires a change in the beacon state, and this is the problem, and why we were petitioned on having different branches.
+
+300
+00:41:48.310 --> 00:42:03.269
+potuz: With DPBS, block access list doesn't require any changes on the beacon state, because we've removed the header, the execution payload header from the state. So now, in the future forks, whenever we change the payload, we do not need to change the beacon state anymore.
+
+301
+00:42:12.330 --> 00:42:17.480
+stokes: Okay, Francesca's also asking in the chat here, we might not need CL changes?
+
+302
+00:42:17.640 --> 00:42:18.170
+stokes: For BL.
+
+303
+00:42:18.170 --> 00:42:20.850
+Francesco: Yeah, it's just what was just said by Purdus.
+
+304
+00:42:21.820 --> 00:42:23.240
+stokes: Oh, sorry, okay.
+
+305
+00:42:23.640 --> 00:42:24.420
+stokes: My bad.
+
+306
+00:42:28.020 --> 00:42:36.919
+Barnabas: Yeah, but the question is, can we… can we check, ER functionality without… like, testing any EPBS functionality.
+
+307
+00:42:44.230 --> 00:42:48.830
+stokes: So what would that look like? It would be a Fusaka release with no PPS on top?
+
+308
+00:42:52.120 --> 00:42:54.649
+Barnabas: Yeah, so the PR that I linked is that.
+
+309
+00:42:55.200 --> 00:43:01.319
+Barnabas: It's basically implement EIP7928 as gloss fork without concentrating.
+
+310
+00:43:06.250 --> 00:43:12.800
+stokes: Okay. Does this work for the AL teams, then? Because then, yeah, they can use this for the CL, and then we can move ahead on VL DevNets.
+
+311
+00:43:19.850 --> 00:43:22.030
+stokes: Podos, did you raise your hand again?
+
+312
+00:43:22.290 --> 00:43:31.930
+potuz: Yeah, so I was… I wanted to suggest, I mean, it's absolutely fine to use this branch now, but I would suggest that as soon as we have some minimal implementation of EPBS,
+
+313
+00:43:31.940 --> 00:43:47.229
+potuz: that we can… if we could, switch to doing this on top of EPBS, because maintaining this branch, even though it's mostly generated code, it's going to be a mess. It's… I mean, it's… it changes everywhere. Whenever you change the beacon state, it changes everywhere.
+
+314
+00:43:47.280 --> 00:43:58.839
+potuz: So I think it would be better if we switched to doing block access lists on top of EPBS so that we maintain a single… and we actually start merging into our main branches these changes.
+
+315
+00:43:59.270 --> 00:44:07.870
+Parithosh Jayanthi: Yeah, we just need it for now, so that we can unblock stuff. We don't need to maintain this long term. The moment EPBS has minimum viable
+
+316
+00:44:07.870 --> 00:44:26.539
+Parithosh Jayanthi: client support, we're gonna switch over to that. We just want to ASAP start with block-level access lists, and also just for the other CL teams, you guys don't have to do anything. We just need one CL team to take on the topic, because that will unblock us, and the rest of you can continue work on EPBS, and
+
+317
+00:44:26.540 --> 00:44:28.619
+Parithosh Jayanthi: Mudge everything later.
+
+318
+00:44:38.260 --> 00:44:38.940
+stokes: Right.
+
+319
+00:44:39.100 --> 00:44:44.739
+stokes: So it sounds like we have a plan, then. We can use this PR here, 15712.
+
+320
+00:44:45.890 --> 00:44:54.980
+stokes: And move ahead with BLs, and then, yeah, I guess another sort of point here is not having this become, like, a persistent branch.
+
+321
+00:44:55.460 --> 00:44:59.660
+stokes: Plan being to get things merged sooner rather than later.
+
+322
+00:45:01.360 --> 00:45:03.699
+stokes: And… yeah, okay.
+
+323
+00:45:04.930 --> 00:45:05.979
+stokes: Are we good there?
+
+324
+00:45:10.460 --> 00:45:11.440
+stokes: Marvis?
+
+325
+00:45:11.440 --> 00:45:22.910
+Barnabas: Yeah, I have just one more thing. So, if we can have, client releases, done by maybe next week, Monday or Tuesday or something like that, and we plan to do a shallow fork.
+
+326
+00:45:23.290 --> 00:45:28.749
+Barnabas: And this shadow fork is going to be for Hudi, one for Sepulia, and one for, Koski.
+
+327
+00:45:29.060 --> 00:45:44.189
+Barnabas: And then… probably we can also do a mainnet shadow fork, but maybe not next week. So ideally, as soon as the client teams are ready, please let us know, because we would like to have this shadow fork up and running as soon as possible.
+
+328
+00:45:48.020 --> 00:45:52.210
+stokes: Yeah, there was also a question here from James, about this, so…
+
+329
+00:45:52.470 --> 00:45:59.250
+stokes: I don't think it matters to you, but would you prefer a release, or, you know, is, like, a commit okay?
+
+330
+00:45:59.720 --> 00:46:01.760
+stokes: Or is it more up to the team?
+
+331
+00:46:03.070 --> 00:46:05.440
+Barnabas: I would personally prefer a release, yeah.
+
+332
+00:46:06.430 --> 00:46:10.679
+stokes: Okay. That might take a few more days, though. And is that okay?
+
+333
+00:46:11.760 --> 00:46:18.239
+Barnabas: When do client teams plan to have OSCI releases, if we plan to roll it out by the 1st of October?
+
+334
+00:46:22.070 --> 00:46:26.290
+stokes: So, I think, generally, we're aiming for Thursday next week.
+
+335
+00:46:27.850 --> 00:46:28.490
+Barnabas: Okay.
+
+336
+00:46:28.590 --> 00:46:35.340
+Barnabas: Yeah, I mean, we can do… we can do that. If we have, releases by next Thursday, we can do host t-shadow work next week, Friday.
+
+337
+00:46:35.530 --> 00:46:52.040
+Parithosh Jayanthi: Yeah, so maybe some, context on that. We already have all of our Shadow Fork, playbooks up and running. I'll run them through a mock version tomorrow, so that when the client releases are done, it should take us a matter of, let's say, hours before we'll have the Shadow Fork update.
+
+338
+00:47:01.100 --> 00:47:04.570
+stokes: Okay, so I guess the point is that…
+
+339
+00:47:05.420 --> 00:47:13.470
+stokes: Pandops will do some validation here with shadow forks and things, as soon as they have, you know, something from your client team,
+
+340
+00:47:13.870 --> 00:47:17.940
+stokes: Yeah, I think from there, like, if we can hit Monday, that's great.
+
+341
+00:47:18.660 --> 00:47:27.470
+stokes: the reason to separate, like, code freeze on Monday from, say, a release on Thursday was just as… was just because some of the clients, I think, have a few days to, like, soak the code before they make a release.
+
+342
+00:47:28.210 --> 00:47:33.019
+stokes: So… Yeah, but then I guess you're also saying it's fine if you don't get that…
+
+343
+00:47:33.550 --> 00:47:36.789
+stokes: And implementation until Thursday, right, Barnabas?
+
+344
+00:47:39.630 --> 00:47:40.440
+Barnabas: Yeah, that's fine.
+
+345
+00:47:40.440 --> 00:47:41.809
+stokes: Your thumb is still up.
+
+346
+00:47:42.530 --> 00:47:43.530
+stokes: Okay, cool.
+
+347
+00:47:45.640 --> 00:47:47.070
+stokes: Everyone clear on that?
+
+348
+00:47:47.370 --> 00:47:48.710
+stokes: Any questions?
+
+349
+00:47:49.960 --> 00:48:00.110
+Dustin: I'm wondering on Guido, I mean, has this been tested at scale? I mean, I say as Nimbus was what Nimbus and Techu were a couple of the clients who discovered this, Nimbus was…
+
+350
+00:48:00.130 --> 00:48:13.010
+Dustin: exposed to this in the DevNets for a while, and we were performing worse because of this. This was fine-ish on the DevNets, that's what they're for. We don't… but typically, we would not want to do a release with…
+
+351
+00:48:13.810 --> 00:48:24.460
+Dustin: who knows? I mean, especially if it's BLAST and CKCG at the same time. I would say, except for emergency situations, this is precisely the kind of
+
+352
+00:48:25.830 --> 00:48:44.419
+Dustin: dependency bumps that I would wait till just after a release like this to do, so we had not just two days, but weeks, or at least a couple of weeks, which is clearly not going to happen in this case, for this to, soak, to use the verb people are using here.
+
+353
+00:48:44.910 --> 00:48:48.720
+Dustin: So, that… there's some wariness on my end from that, I'll say.
+
+354
+00:48:52.500 --> 00:48:57.220
+stokes: Yeah, because you're concerned with an issue in the newest CK, did you release?
+
+355
+00:48:57.740 --> 00:48:59.380
+stokes: Or just simply doesn't that time?
+
+356
+00:49:00.000 --> 00:49:01.140
+Dustin: Become Lindy. Yeah.
+
+357
+00:49:02.010 --> 00:49:15.590
+Dustin: Yeah, that… well, if it were only the CKZ Geo, it actually wouldn't be as bad, because, if it… that only really affects Fusakra to begin with, then that's a lower stakes thing for now. That's test ad only.
+
+358
+00:49:15.780 --> 00:49:33.349
+Dustin: But we don't do test and only releases if we don't have to, and we won't have to otherwise here. And so this will also be a mainnet release, not the Fusaka fork mainnet release, but the mainnet release. And BLAST is a absolutely critical dependency.
+
+359
+00:49:34.960 --> 00:49:41.500
+Dustin: we don't update with P2P, like, 3 days before a release either. That's… Stupid high risk.
+
+360
+00:49:43.570 --> 00:49:56.400
+Dustin: why… I don't know that we would update Blast, and that's why I asked before, and got the answer from, Justin, saying, well, no, like, they go together. And they don't… Blast doesn't have a release out yet.
+
+361
+00:49:57.460 --> 00:49:59.790
+Justin Traglia: That's true. This is just hybrid from my end.
+
+362
+00:50:00.380 --> 00:50:10.229
+Justin Traglia: Would you prefer if we make a new CKG release that adds back the pointed infinity filtering to CKZG, so that you do not have to update BLAST?
+
+363
+00:50:11.550 --> 00:50:12.250
+Dustin: Yes.
+
+364
+00:50:13.370 --> 00:50:13.990
+Justin Traglia: Okay.
+
+365
+00:50:14.890 --> 00:50:19.710
+Justin Traglia: We'll do that. I think that'd make… Everyone felt better, so…
+
+366
+00:50:19.820 --> 00:50:22.320
+Justin Traglia: Yeah, consider that done. I'll do it today.
+
+367
+00:50:23.110 --> 00:50:24.240
+Dustin: Okay, great.
+
+368
+00:50:32.380 --> 00:50:33.030
+stokes: Okay.
+
+369
+00:50:37.750 --> 00:50:39.050
+stokes: Anything else?
+
+370
+00:50:47.250 --> 00:50:50.710
+stokes: Okay, if not, then let's go ahead and wrap up today.
+
+371
+00:50:51.550 --> 00:50:53.380
+stokes: Good luck with MSACA, everyone.
+
+372
+00:50:53.500 --> 00:50:55.940
+stokes: And I will see you next time.
+
+373
+00:50:57.440 --> 00:51:01.170
+stokes: Oh, this is a fun question from Perry. Did anyone do anything cool to celebrate March Day?
+
+374
+00:51:03.050 --> 00:51:05.789
+stokes: I imagine we were all working off Osaka. I did.
+
+375
+00:51:09.730 --> 00:51:10.480
+stokes: Yeah.
+
+376
+00:51:11.380 --> 00:51:13.650
+stokes: Okay, I'll see y'all next time. Thank you.
+
+377
+00:51:15.720 --> 00:51:16.430
+potuz: Bye, guys.
+
+378
+00:51:16.430 --> 00:51:17.570
+Justin Traglia: Bye, Ron.
+

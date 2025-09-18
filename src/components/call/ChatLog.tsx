@@ -192,7 +192,8 @@ const ChatLog: React.FC<ChatLogProps> = ({ content, syncConfig }) => {
   const virtualParents = new Map<string, ChatMessage>();
   const matchedReplies = new Set<ChatMessage>();
   replyMessages.forEach((reply) => {
-    const match = reply.message.match(/Replying to "([^"]+)"/);
+    // Handle quotes in the replied-to text by looking for the pattern more flexibly
+    const match = reply.message.match(/^Replying to "(.+?)"(?:\s|$)/);
     if (match) {
       const quotedText = match[1];
       // Handle abbreviated quotes (ending with "...")
@@ -222,7 +223,8 @@ const ChatLog: React.FC<ChatLogProps> = ({ content, syncConfig }) => {
     const replies: ChatMessage[] = [];
     replyMessages.forEach((reply) => {
       if (matchedReplies.has(reply)) return;
-      const match = reply.message.match(/Replying to "([^"]+)"/);
+      // Handle quotes in the replied-to text by looking for the pattern more flexibly
+      const match = reply.message.match(/^Replying to "(.+?)"(?:\s|$)/);
       if (match) {
         const quotedText = match[1];
         // Handle abbreviated quotes (ending with "...")
@@ -338,8 +340,9 @@ const ChatLog: React.FC<ChatLogProps> = ({ content, syncConfig }) => {
             {isParentWithReplies && replies!.map((reply, replyIndex) => {
               // Extract just the actual message content after "Replying to..."
               // The message format is: "Replying to "quoted" → actual message"
-              const replyMatch = reply.message.match(/^Replying to "[^"]+"\s*→\s*(.+)$/);
-              const actualMessage = replyMatch ? replyMatch[1] : reply.message;
+              // Handle quotes in the replied-to text by using a more flexible pattern
+              const replyMatch = reply.message.match(/^Replying to "(.+?)"\s*→\s*(.+)$/);
+              const actualMessage = replyMatch ? replyMatch[2] : reply.message;
               return (
                 <div
                   key={replyIndex}

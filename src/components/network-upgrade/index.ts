@@ -1,6 +1,7 @@
 export * from './ClientPerspectives';
 export * from './ClientTeamPerspectives';
 export * from './EipCard';
+export * from './FusakaTimeline';
 export * from './GlamsterdamTimeline';
 export * from './HeadlinerOptions';
 export * from './NetworkUpgradeTimeline';

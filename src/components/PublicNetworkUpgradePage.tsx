@@ -21,6 +21,7 @@ import { Tooltip, CopyLinkButton } from './ui';
 import ThemeToggle from './ui/ThemeToggle';
 import {
   NetworkUpgradeTimeline,
+  FusakaTimeline,
   GlamsterdamTimeline,
   TableOfContents,
   OverviewSection,
@@ -117,9 +118,12 @@ const PublicNetworkUpgradePage: React.FC<PublicNetworkUpgradePageProps> = ({
   // Generate TOC items
   const tocItems = [
     { id: 'overview', label: 'Overview', type: 'section' as const, count: null as number | null },
-    // Add Glamsterdam timeline section
+    // Add timeline sections for specific forks
     ...(forkName.toLowerCase() === 'glamsterdam' ? [
       { id: 'glamsterdam-timeline', label: 'Timeline', type: 'section' as const, count: null as number | null }
+    ] : []),
+    ...(forkName.toLowerCase() === 'fusaka' ? [
+      { id: 'fusaka-timeline', label: 'Timeline', type: 'section' as const, count: null as number | null }
     ] : []),
 
     // Show EIP sections for all forks (including Glamsterdam)
@@ -324,6 +328,26 @@ const PublicNetworkUpgradePage: React.FC<PublicNetworkUpgradePageProps> = ({
                     </p>
                   </div>
                   <GlamsterdamTimeline />
+                </div>
+              )}
+
+              {/* Fusaka Timeline Section */}
+              {forkName.toLowerCase() === 'fusaka' && (
+                <div className="space-y-6" id="fusaka-timeline" data-section>
+                  <div className="border-b border-slate-200 dark:border-slate-700 pb-4">
+                    <div className="flex items-center gap-3 mb-2">
+                      <h2 className="text-xl font-medium text-slate-900 dark:text-slate-100">Timeline</h2>
+                      <CopyLinkButton
+                        sectionId="fusaka-timeline"
+                        title="Copy link to timeline"
+                        size="sm"
+                      />
+                    </div>
+                    <p className="text-sm text-slate-600 dark:text-slate-300 max-w-3xl">
+                      The deployment timeline for Fusaka, showing the progression from devnets through testnet deployments to mainnet.
+                    </p>
+                  </div>
+                  <FusakaTimeline />
                 </div>
               )}
 

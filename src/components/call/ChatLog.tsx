@@ -17,6 +17,29 @@ interface ChatLogProps {
 }
 
 const ChatLog: React.FC<ChatLogProps> = ({ content, syncConfig }) => {
+  // --- Helper function to render text with links ---
+  const renderTextWithLinks = (text: string) => {
+    const urlRegex = /(https?:\/\/[^\s]+)/g;
+    const parts = text.split(urlRegex);
+
+    return parts.map((part, index) => {
+      if (part.match(urlRegex)) {
+        return (
+          <a
+            key={index}
+            href={part}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="text-blue-600 dark:text-blue-400 hover:underline"
+          >
+            {part}
+          </a>
+        );
+      }
+      return part;
+    });
+  };
+
   // --- Timestamp conversion helpers ---
   const timestampToSeconds = (timestamp: string): number => {
     const parts = timestamp.split(':');
@@ -308,7 +331,7 @@ const ChatLog: React.FC<ChatLogProps> = ({ content, syncConfig }) => {
                     {message.message.split(/\r\n|\r|\n/).map((line, index) => (
                       <React.Fragment key={index}>
                         {index > 0 && <br />}
-                        {line}
+                        {renderTextWithLinks(line)}
                       </React.Fragment>
                     ))}
                   </span>
@@ -385,7 +408,7 @@ const ChatLog: React.FC<ChatLogProps> = ({ content, syncConfig }) => {
                         {actualMessage.split(/\r\n|\r|\n/).map((line, index) => (
                           <React.Fragment key={index}>
                             {index > 0 && <br />}
-                            {line}
+                            {renderTextWithLinks(line)}
                           </React.Fragment>
                         ))}
                       </span>

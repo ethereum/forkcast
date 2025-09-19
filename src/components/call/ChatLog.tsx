@@ -43,35 +43,51 @@ const ChatLog: React.FC<ChatLogProps> = ({ content, syncConfig }) => {
   };
 
   const parseChatTranscript = (text: string): { messages: ChatMessage[]; reactions: Map<string, { speaker: string; emoji: string }[]> } => {
-    // Pre-process lines to merge multi-line messages, except for "Replying to" content
+    // Pre-process lines to merge multi-line messages
     const rawLines = text.split('\n');
     const processedLines: string[] = [];
-    if (rawLines.length > 0) {
-      for (const line of rawLines) {
-        if (processedLines.length === 0) {
-          processedLines.push(line);
-          continue;
+
+    for (let i = 0; i < rawLines.length; i++) {
+      const line = rawLines[i];
+
+      // If this line has a timestamp, it's a new message
+      if (/^\d{2}:\d{2}:\d{2}\t/.test(line)) {
+        processedLines.push(line);
+      } else if (line.trim()) {
+        // This line doesn't have a timestamp, so it's a continuation
+        // Find the last line with content to merge with
+        let targetIndex = processedLines.length - 1;
+        while (targetIndex >= 0 && !processedLines[targetIndex].trim()) {
+          targetIndex--;
         }
 
-        const lastNonEmptyLine = [...processedLines].reverse().find(l => l.trim());
-
-        // A line without a timestamp is a continuation of the previous line,
-        // unless the last non-empty line is a "Replying to" message header.
-        if (line.trim() && !/^\d{2}:\d{2}:\d{2}\t/.test(line) && (!lastNonEmptyLine || !/:\tReplying to/.test(lastNonEmptyLine))) {
-          // Merge with the *actual* previous line, which might be empty
-          processedLines[processedLines.length - 1] = `${processedLines[processedLines.length - 1].trimEnd()} ${line.trim()}`;
+        if (targetIndex >= 0) {
+          const lastNonEmptyLine = processedLines[targetIndex];
+          // Don't merge if the last line is a "Replying to" header - treat the next line as the reply content
+          if (/:\tReplying to/.test(lastNonEmptyLine)) {
+            // This is the actual reply content, merge it with the "Replying to" line
+            processedLines[targetIndex] = `${lastNonEmptyLine.trimEnd()} → ${line.trim()}`;
+          } else {
+            // Regular multi-line content, use newline to preserve formatting
+            processedLines[targetIndex] = `${processedLines[targetIndex].trimEnd()}\n${line.trim()}`;
+          }
         } else {
+          // No previous message found, add as new line
           processedLines.push(line);
         }
+      } else {
+        // Empty line - preserve it for now
+        processedLines.push(line);
       }
     }
+
     const lines = processedLines.filter(line => line.trim());
     const messages: ChatMessage[] = [];
     const reactions = new Map<string, { speaker:string; emoji: string }[]>();
     let lastMessageForReaction: ChatMessage | null = null;
     for (let i = 0; i < lines.length; i++) {
       const line = lines[i].trimEnd();
-      const match = line.match(/^(\d{2}:\d{2}:\d{2})\t(.+?):\t(.*)$/);
+      const match = line.match(/^(\d{2}:\d{2}:\d{2})\t(.+?):\t([\s\S]*)$/);
       if (match) {
         const timestamp = match[1];
         const speaker = match[2].trim();
@@ -289,7 +305,12 @@ const ChatLog: React.FC<ChatLogProps> = ({ content, syncConfig }) => {
                     {message.speaker === 'Unknown' ? 'Context' : message.speaker}:
                   </span>
                   <span className={`${message.speaker === 'Unknown' ? 'text-slate-500 dark:text-slate-400 italic' : 'text-slate-600 dark:text-slate-400'} break-words`}>
-                    {message.message}
+                    {message.message.split(/\r\n|\r|\n/).map((line, index) => (
+                      <React.Fragment key={index}>
+                        {index > 0 && <br />}
+                        {line}
+                      </React.Fragment>
+                    ))}
                   </span>
                 </div>
               </div>
@@ -361,7 +382,12 @@ const ChatLog: React.FC<ChatLogProps> = ({ content, syncConfig }) => {
                         {reply.speaker}:
                       </span>
                       <span className="text-slate-600 dark:text-slate-400 break-words">
-                        {actualMessage}
+                        {actualMessage.split(/\r\n|\r|\n/).map((line, index) => (
+                          <React.Fragment key={index}>
+                            {index > 0 && <br />}
+                            {line}
+                          </React.Fragment>
+                        ))}
                       </span>
                     </div>
                   </div>

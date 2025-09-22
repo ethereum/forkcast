@@ -1,0 +1,1058 @@
+WEBVTT
+
+1
+00:01:06.470 --> 00:01:08.140
+Akash | ECH: Hello.
+
+2
+00:01:11.290 --> 00:01:12.120
+Barnabas: No.
+
+3
+00:01:13.010 --> 00:01:17.430
+Akash | ECH: Hey, Barnabas, I'm helping with the stream today, so let me know whenever you are ready.
+
+4
+00:01:18.260 --> 00:01:19.040
+Barnabas: Sounds good.
+
+5
+00:01:19.600 --> 00:01:20.320
+Akash | ECH: chemical.
+
+6
+00:04:21.089 --> 00:04:25.689
+Barnabas: Hi, everyone. Let's give it another minute or two, and then we can get started.
+
+7
+00:05:01.129 --> 00:05:04.379
+Barnabas: Okay, let's get started. Josh, can you please start us through?
+
+8
+00:05:06.520 --> 00:05:07.930
+Akash | ECH: Yeah, we are live.
+
+9
+00:05:09.270 --> 00:05:13.520
+Barnabas: Hi, everyone. Welcome to Accord Devs Testing Quad, number 54.
+
+10
+00:05:13.970 --> 00:05:24.550
+Barnabas: Let's get right into it. Last week, in the end of the week, we shut up, physical.net 5. We had a successful,
+
+11
+00:05:24.940 --> 00:05:27.949
+Barnabas: Devnap, we were able to…
+
+12
+00:05:28.380 --> 00:05:34.230
+Barnabas: come up with the BPO numbers that we would like to use in the future testnets.
+
+13
+00:05:34.520 --> 00:05:39.020
+Barnabas: And, the following PRs were also raised.
+
+14
+00:05:39.290 --> 00:05:43.449
+Barnabas: Let me just… Put them in the chat here.
+
+15
+00:05:44.140 --> 00:05:51.939
+Barnabas: So we have, both key scheduled for next week, then the first BPO a week after that, second BPO a week after that.
+
+16
+00:05:52.090 --> 00:05:54.099
+Barnabas: And then a week after that,
+
+17
+00:05:54.510 --> 00:05:57.970
+Barnabas: And the day after that, we have, Separia.
+
+18
+00:05:58.610 --> 00:06:00.290
+Barnabas: After the second BPO.
+
+19
+00:06:00.770 --> 00:06:12.120
+Barnabas: I saw that some client teams already started making, PRs into their client code, so I guess the config values that I've come up with are correct.
+
+20
+00:06:14.250 --> 00:06:18.199
+Barnabas: Anyone has any comments regarding any of the config values?
+
+21
+00:06:28.170 --> 00:06:35.800
+Barnabas: There's also the fork IDs that have been, proposed by Bezu, and, Netherlands seem to have agreed on those.
+
+22
+00:06:36.720 --> 00:06:38.190
+Barnabas: Oh, that's also good.
+
+23
+00:06:49.600 --> 00:06:53.729
+Barnabas: Yep, regarding, isn't that tree?
+
+24
+00:06:53.870 --> 00:06:59.770
+Barnabas: Demetri is currently at 97% participation. We have a couple of,
+
+25
+00:07:00.080 --> 00:07:05.639
+Barnabas: peers that are struggling, Deku, Aragon, Deku Nethermind, and Lighthouse and Busia.
+
+26
+00:07:05.920 --> 00:07:11.700
+Barnabas: Deku, Aragon, there seems to be possibly an ER bug.
+
+27
+00:07:11.880 --> 00:07:16.970
+Barnabas: Wait, never mind, there was also… seemed to be an ER bug,
+
+28
+00:07:17.530 --> 00:07:21.380
+Barnabas: Maybe someone from the measurement team can give us an update?
+
+29
+00:07:24.360 --> 00:07:31.310
+FLCL: Yep, hello. So… We have some… Gas mismatch?
+
+30
+00:07:31.600 --> 00:07:35.949
+FLCL: For some reason, we are still trying to figure out it.
+
+31
+00:07:37.700 --> 00:07:46.410
+FLCL: we ran some even older blocks and found another TX with the same problem, so… Well…
+
+32
+00:07:47.100 --> 00:07:49.760
+FLCL: I hope it will be resolved in a day or two.
+
+33
+00:07:50.950 --> 00:07:57.819
+Barnabas: Is there a reason that other, NetherMind nodes are not stuck with the same, block?
+
+34
+00:07:59.970 --> 00:08:03.289
+FLCL: No idea about it.
+
+35
+00:08:11.420 --> 00:08:16.050
+Barnabas: Yeah, that's very interesting. Anyone from the Ergon team can also chime in?
+
+36
+00:08:16.870 --> 00:08:19.469
+milen | Erigon: Yeah, hi, do you hear me okay?
+
+37
+00:08:20.480 --> 00:08:21.150
+Barnabas: Yep.
+
+38
+00:08:21.400 --> 00:08:27.100
+milen | Erigon: Yeah, hey, so, yeah, it seems like this node… I had a look, it seems like this…
+
+39
+00:08:27.160 --> 00:08:44.519
+milen | Erigon: node go in some weird state, and it's taking a very long time to do database commits. So I'm not… I haven't narrowed down why yet, but it could be due to, like, some disk issues on the server, or…
+
+40
+00:08:44.590 --> 00:08:52.460
+milen | Erigon: Maybe just the node itself, has been struggling, and it's finding it hard to come out of this bad state.
+
+41
+00:08:52.610 --> 00:08:54.910
+milen | Erigon: But yeah, it seems like it's just behind…
+
+42
+00:08:55.350 --> 00:09:03.209
+milen | Erigon: like, 20 seconds or something. I've not seen this before, and I've not seen this on other… any of the other nodes.
+
+43
+00:09:03.910 --> 00:09:08.219
+milen | Erigon: On Saka DevNet 3 yet, so yeah, I'm just gonna…
+
+44
+00:09:08.480 --> 00:09:12.280
+milen | Erigon: Spend another hour or two trying to see what's happening.
+
+45
+00:09:12.540 --> 00:09:16.710
+milen | Erigon: But it's not something that I'm necessarily worried about.
+
+46
+00:09:17.410 --> 00:09:24.979
+milen | Erigon: In terms of Fusaka releases. It's, it's not looking like a, like a bug related to Fusaka.
+
+47
+00:09:25.430 --> 00:09:32.530
+Barnabas: We could take a look at the physical, properties of that one machine and find out if there's something wrong with the disk on that node.
+
+48
+00:09:33.090 --> 00:09:41.110
+milen | Erigon: Yeah, yeah, yeah, I'll… I'll talk to you offline, after this, yeah, with further info.
+
+49
+00:09:42.820 --> 00:09:43.830
+Barnabas: Yeah, sounds good.
+
+50
+00:09:46.520 --> 00:09:52.780
+Barnabas: Anyone else has anything, regarding Postaka or Dublin Street?
+
+51
+00:09:58.290 --> 00:10:05.630
+Ben Adams: Yeah, we're… if we… if we don't resolve this issue with the… the blocks… Soon, we're considering
+
+52
+00:10:06.200 --> 00:10:12.519
+Ben Adams: It's an issue… instability in master, so we're considering, releasing
+
+53
+00:10:14.580 --> 00:10:18.589
+Ben Adams: the Fusaka change on top of our previous release.
+
+54
+00:10:19.970 --> 00:10:20.959
+Barnabas: Yeah, the food out.
+
+55
+00:10:20.960 --> 00:10:21.590
+Ben Adams: result.
+
+56
+00:10:23.730 --> 00:10:25.010
+Ben Adams: True.
+
+57
+00:10:25.620 --> 00:10:33.859
+Barnabas: Yeah, ideally we should have the client releases and out by Thursday, and hopefully a code freeze by end of today.
+
+58
+00:10:33.990 --> 00:10:44.929
+Barnabas: Obviously, if you still have a known bug, then that code freeze is probably not gonna work out for NetherMind, for example, but for the other client things.
+
+59
+00:10:51.960 --> 00:11:00.390
+Barnabas: Regarding, Shadow Forks, we still have a pending, PR that hasn't been merged. This is,
+
+60
+00:11:01.090 --> 00:11:06.610
+Barnabas: Updating the Osakusta blob schedule for the Chainspack for Nethermind.
+
+61
+00:11:07.970 --> 00:11:14.280
+Barnabas: And, we would like to merge this in, in order to be able to do a Shadow Fork
+
+62
+00:11:14.720 --> 00:11:16.280
+Barnabas: forming that as well.
+
+63
+00:11:18.160 --> 00:11:26.239
+Barnabas: Could, some EL client teams please, give some more thumbs up, because this report requires, more approvals.
+
+64
+00:11:42.130 --> 00:11:48.829
+Barnabas: Okay, so maybe after Thursday we can take a look at doing a sheet of work?
+
+65
+00:11:48.980 --> 00:11:52.990
+Barnabas: For Hosky, ideally, we would want to do that on Friday.
+
+66
+00:11:53.120 --> 00:12:02.050
+Barnabas: It's probably gonna be a rather small network, nothing crazy, because of the big machines that we would need for the database sizes.
+
+67
+00:12:02.170 --> 00:12:08.059
+Barnabas: We just want to validate that, we're not going to have a similar situation what we had with Petra.
+
+68
+00:12:09.660 --> 00:12:17.350
+Barnabas: And, should be good to go for next week's ACDT to discuss the results of the shadow clock.
+
+69
+00:12:20.460 --> 00:12:29.989
+Barnabas: So if there's no more, Future-related topics, then we could probably go into the guesstimate testing updates?
+
+70
+00:12:34.650 --> 00:12:36.080
+Barnabas: Yep, awesome.
+
+71
+00:12:36.770 --> 00:12:41.339
+jochem-brouwer: Yeah, I wanted to bring up, I'm writing a test for Xen.
+
+72
+00:12:41.540 --> 00:12:46.269
+jochem-brouwer: So Xen is, like, a very, like, the biggest, I think one of the biggest state contacts on mainnet.
+
+73
+00:12:46.350 --> 00:13:02.000
+jochem-brouwer: And, I want to test there, like, the gas limit updates which we… well, we might want to do soon. So, I want to test against 45 million gas, but also against 60 million gas and 100 million gas. And for this, I'm using Nevermind's gas benchmark tool.
+
+74
+00:13:02.180 --> 00:13:12.359
+jochem-brouwer: But, I'm running into issues, actually, running these tests against other clients, and I'm running the tooling in this
+
+75
+00:13:13.550 --> 00:13:14.410
+jochem-brouwer: VR?
+
+76
+00:13:15.100 --> 00:13:30.649
+jochem-brouwer: And yeah, I have some questions I also asked them on Discord, which I hope that someone from Nevermind can help me out. One of the things is, there is this Nevermind GP hacked image, which is being used as an hacked engine API image.
+
+77
+00:13:31.010 --> 00:13:50.229
+jochem-brouwer: But I would need to change that even further, because I need to change also the timestamps there, and I cannot find the source code of this. So, I would really like to know if this code is actually closed source, that could, of course, also be, or that I just did not find it, so maybe someone from that of mind knows where this is.
+
+78
+00:13:50.340 --> 00:13:53.159
+jochem-brouwer: So it's… it's this image. Let me copy that.
+
+79
+00:14:04.430 --> 00:14:08.959
+Barnabas: Is anyone from the NetherMind team able to comment on this GP hacked?
+
+80
+00:14:09.310 --> 00:14:10.120
+Barnabas: source?
+
+81
+00:14:19.430 --> 00:14:24.099
+Barnabas: If not, then maybe this could be taken offline and, discussed in the…
+
+82
+00:14:24.100 --> 00:14:25.790
+jochem-brouwer: Yes, okay.
+
+83
+00:14:26.240 --> 00:14:34.770
+jochem-brouwer: Yeah, okay, yeah, then I will also ask, because I had some other questions also about, this, gas benchmark tool, but I think, yeah, I will just, keep,
+
+84
+00:14:35.080 --> 00:14:36.490
+jochem-brouwer: Porting people were.
+
+85
+00:14:36.810 --> 00:14:37.890
+jochem-brouwer: For this, yeah.
+
+86
+00:14:38.020 --> 00:14:52.450
+jochem-brouwer: I think Martin from the NetherMind team is working on this, I don't know if he's here, but I would really like some help, because I would really like to generate a report before this Thursday. But, yeah, I think this tool is perfect for it, but I cannot run the test on top of that.
+
+87
+00:14:52.450 --> 00:14:58.679
+jochem-brouwer: And otherwise, I have to write, I think, exactly the same as this tool does myself, but that would, of course, be a little bit of an overkill.
+
+88
+00:14:59.050 --> 00:15:01.889
+jochem-brouwer: So it would be great if someone could help. Yeah, thanks.
+
+89
+00:15:03.680 --> 00:15:04.200
+Barnabas: Yes.
+
+90
+00:15:04.750 --> 00:15:09.030
+Marcin Sobczak: Hi. Yes, I'm here, I'm, checking it right now.
+
+91
+00:15:10.740 --> 00:15:19.539
+jochem-brouwer: Cool, cool, yeah, you can contact me on Discord, on Telegram, but that would be really helpful, yeah, thanks. I've also commented on the issues, yeah, thank you, thank you.
+
+92
+00:15:23.710 --> 00:15:28.099
+Barnabas: Okay, is there any other updates regarding the gas limit testing?
+
+93
+00:15:30.720 --> 00:15:31.560
+Barnabas: Yes.
+
+94
+00:15:32.260 --> 00:15:33.270
+Barnabas: I'm coming.
+
+95
+00:15:33.440 --> 00:15:45.289
+Ameziane Hamlat: Yeah, so, related to the IEP17935, so Sophia was asking, on Bayside if, we are
+
+96
+00:15:45.340 --> 00:15:59.260
+Ameziane Hamlat: Okay, for, $60 million. So, unfortunately, we haven't reached consensus inside the team, so we are still discussing. So, some folks are, in favor, others against.
+
+97
+00:16:00.120 --> 00:16:03.660
+Ameziane Hamlat: Yeah, so we are still, trying to find,
+
+98
+00:16:04.940 --> 00:16:15.500
+Ameziane Hamlat: like, the way to go, at least from our side. But related to the work on the arithmetic operations,
+
+99
+00:16:15.850 --> 00:16:21.149
+Ameziane Hamlat: We have a few PRs that are… that are passing all the reference tests.
+
+100
+00:16:22.530 --> 00:16:30.460
+Ameziane Hamlat: Yeah, so we… we are… we are basically testing, but it's in a very, very good, stage at… at this moment.
+
+101
+00:16:32.320 --> 00:16:38.750
+Barnabas: Would you consider bumping the default gas limit on, for example, Holoski to 60 million?
+
+102
+00:16:42.520 --> 00:16:45.129
+Barnabas: Or, or all the different snaps?
+
+103
+00:16:45.480 --> 00:16:50.770
+Barnabas: Because I think the only open question right now is, gas and Bazoo.
+
+104
+00:16:52.210 --> 00:16:57.460
+Ameziane Hamlat: So, what do you mean? Because Holisky and, they are already at 60 million.
+
+105
+00:16:57.460 --> 00:16:59.489
+Barnabas: Oh, dear. Okay. Sorry.
+
+106
+00:16:59.950 --> 00:17:17.880
+Ameziane Hamlat: So, Sepolia and Holieski are already at 60 million, so there should… no issue, because they are already there. I mean, we are, like, testing heavily, like, the 60 million guys. So, we… like, the remaining issue on Bayou side are some arithmetic operations,
+
+107
+00:17:18.069 --> 00:17:22.469
+Ameziane Hamlat: So, my proposal was to, basically go
+
+108
+00:17:22.760 --> 00:17:38.089
+Ameziane Hamlat: with the current state, to, with Sepolia and Holosky, and have another release, like, with the performance improvement, like, the increment that is only performance improvement on Hodi and Mainnet.
+
+109
+00:17:39.480 --> 00:17:43.320
+Ameziane Hamlat: But yeah, but we haven't reached any consensus yet.
+
+110
+00:17:44.670 --> 00:17:51.470
+Ameziane Hamlat: Because, I mean, it's too risky. I can understand, like, the… Yeah, the…
+
+111
+00:17:52.040 --> 00:17:59.920
+Ameziane Hamlat: like, the other opinion to… to say, like, it's too risky, to… to have, like, a new algorithm, like.
+
+112
+00:18:00.130 --> 00:18:02.450
+Ameziane Hamlat: Few, a few weeks before Mainnet.
+
+113
+00:18:07.130 --> 00:18:11.920
+Ameziane Hamlat: But, yeah, I will update anyway on what we decide.
+
+114
+00:18:13.640 --> 00:18:18.610
+Barnabas: Okay, thank you. Is anyone from GAST in this call that…
+
+115
+00:18:18.770 --> 00:18:24.010
+Barnabas: that could comment on Perry's recent comment about the library change.
+
+116
+00:18:24.810 --> 00:18:30.729
+Marius van der Wijden: Yeah, I can comment on that. We changed, our library for ModeX,
+
+117
+00:18:31.270 --> 00:18:41.740
+Marius van der Wijden: Well, no, we pulled in some improvements for Modex into a fork, that we're using now for, the short term, and for the medium term, we…
+
+118
+00:18:41.840 --> 00:18:54.290
+Marius van der Wijden: are working with the Go Standard Library to upstream our changes, and we also switched to GNARC for the BN256 stuff.
+
+119
+00:18:55.400 --> 00:18:58.079
+Marius van der Wijden: Sorry, BN254 for…
+
+120
+00:18:58.860 --> 00:19:09.329
+Marius van der Wijden: For… for the smart people in the back. And yeah, it's, with this, we are good for 60 million.
+
+121
+00:19:18.930 --> 00:19:22.760
+Barnabas: That's great. So, right now, the only open,
+
+122
+00:19:22.950 --> 00:19:26.179
+Barnabas: Question is pesos at $6 million, right?
+
+123
+00:19:26.500 --> 00:19:28.539
+Barnabas: Do we have any other ERC line?
+
+124
+00:19:28.690 --> 00:19:30.320
+Barnabas: Is that questionable?
+
+125
+00:19:32.300 --> 00:19:33.070
+Marius van der Wijden: Nope.
+
+126
+00:19:33.280 --> 00:19:38.469
+Marius van der Wijden: It's, just Bisu. There are things that…
+
+127
+00:19:38.610 --> 00:19:54.610
+Marius van der Wijden: we are looking into in order to get, to be really sure about 60, and especially to be sure about, like, everything beyond 60. So, the thing that Jocham is doing with, with, Zen and the…
+
+128
+00:19:54.910 --> 00:19:58.459
+Marius van der Wijden: The, the, the worst case blocks.
+
+129
+00:19:58.610 --> 00:20:10.300
+Marius van der Wijden: for state access. It's one of the things that will, de-risk this, hopefully, and so I hope we will have, some early analysis, soon on that.
+
+130
+00:20:11.090 --> 00:20:25.050
+Marius van der Wijden: And then the next, the next bigger issue, the bigger issues, after 60, and the, the big one is, at roughly 70.
+
+131
+00:20:25.180 --> 00:20:29.150
+Marius van der Wijden: is, the receipt size,
+
+132
+00:20:29.460 --> 00:20:34.000
+Marius van der Wijden: And for that, we would need ETH, the ETH70 protocol.
+
+133
+00:20:34.340 --> 00:20:43.890
+Marius van der Wijden: But the problem is that it's quite hard, because basically you split up the receipts, on the sending side, when you…
+
+134
+00:20:44.380 --> 00:20:56.160
+Marius van der Wijden: When you connect to a node, or when you, when you request the receipts, the receipts are split up on the sending side, and they must be, must be reconstructed on the receiving side.
+
+135
+00:20:56.480 --> 00:21:03.069
+Marius van der Wijden: And that is a bigger change, so no client yet has implemented ETH70.
+
+136
+00:21:03.690 --> 00:21:06.370
+Marius van der Wijden: And, then there are other…
+
+137
+00:21:06.680 --> 00:21:16.879
+Marius van der Wijden: other things preventing us from going further, but, all of this is being worked on, and, yeah. So, for now, Besu…
+
+138
+00:21:17.100 --> 00:21:23.959
+Marius van der Wijden: Seems to be the one holding… the thing holding us back from moving to 260 and beyond.
+
+139
+00:21:24.160 --> 00:21:29.999
+Marius van der Wijden: But yeah, the next step then would already P70, so, yeah.
+
+140
+00:21:30.290 --> 00:21:41.210
+Marius van der Wijden: I think there's value in going to 60 soon, but we will need some time afterwards to figure out some stuff before we go beyond 60.
+
+141
+00:21:43.520 --> 00:21:50.470
+Barnabas: Could, Bezo increase to something lower, something like, 55 or $50 million, comfortably?
+
+142
+00:21:51.710 --> 00:21:58.939
+Barnabas: Or 60 is, like, the absolute minimum that everyone's targeting, because currently we are at, 45 million.
+
+143
+00:21:59.130 --> 00:22:00.450
+Barnabas: I recall correctly.
+
+144
+00:22:02.170 --> 00:22:18.439
+Ameziane Hamlat: Yeah, so from… from the current numbers, like, just, maybe, a bit of history. So, before East tests, there was no issue at 60 million. That's why currently we have, like, Sipolia and Holoscuran in at 6 million, because
+
+145
+00:22:18.670 --> 00:22:24.350
+Ameziane Hamlat: We thought that there is, like, no worst case, that, like, has this,
+
+146
+00:22:24.460 --> 00:22:40.159
+Ameziane Hamlat: that has less than, like, 15 MGAS per second, like, 20 mgas per second, which is, like, the bar to have, like, 60 million. But, with EAST, tests, like, the new test from the testing team.
+
+147
+00:22:40.340 --> 00:22:45.250
+Ameziane Hamlat: So we have, like, these new use cases where Besu is,
+
+148
+00:22:45.360 --> 00:22:48.049
+Ameziane Hamlat: Has, like, a throughput around 15,
+
+149
+00:22:48.920 --> 00:22:59.010
+Ameziane Hamlat: 15 MGAS per second, which is basically the bar for the 45. So either we go to 60, because we have an improvement.
+
+150
+00:22:59.380 --> 00:23:11.909
+Ameziane Hamlat: like, we ship it, then I'm pretty sure that it would be above 60 million. But, like, if we go with only version, 45 is the one to go.
+
+151
+00:23:15.550 --> 00:23:16.240
+Barnabas: Okay.
+
+152
+00:23:20.890 --> 00:23:25.179
+Tim Beiko: And so the… The worst case scenario here is…
+
+153
+00:23:25.620 --> 00:23:28.560
+Tim Beiko: if we went to 60 with Fusaka.
+
+154
+00:23:28.940 --> 00:23:43.150
+Tim Beiko: and there's an issue in Baisu's new implementation, and there were these worst-case, blocks, then BESU… do we know exactly how long it would take Baesu to process a block?
+
+155
+00:23:46.760 --> 00:23:48.550
+Ameziane Hamlat: Yeah, so…
+
+156
+00:23:48.970 --> 00:23:57.450
+Ameziane Hamlat: So, I mean, it's very simple math, so if we have, like, 60 million blocks, with,
+
+157
+00:23:58.030 --> 00:24:14.249
+Ameziane Hamlat: like, full of mode, for example, where, like, we have 15 amb gas per second. So that block would be, processed in around 3.5 seconds. It's, it's roughly. So, basically, above, 3 seconds.
+
+158
+00:24:15.480 --> 00:24:20.840
+Ameziane Hamlat: And, like, the main issue, would be, basically missing,
+
+159
+00:24:20.960 --> 00:24:29.150
+Ameziane Hamlat: attestations, as I would not attest in the right head, in terms of block building, maybe build, smaller blocks.
+
+160
+00:24:30.650 --> 00:24:43.480
+Ameziane Hamlat: But, I mean, that… that would be very specific for basu notes, maybe fall behind the head for some blocks. Yeah, but… but in general,
+
+161
+00:24:43.840 --> 00:24:51.269
+Ameziane Hamlat: Yeah, in general, the risk is not that high, but the other risk is actually having a consensus bag.
+
+162
+00:24:52.970 --> 00:24:58.400
+Ameziane Hamlat: I mean, if we ship it, so if, like, we go with the new implementation, the…
+
+163
+00:24:58.570 --> 00:25:08.370
+Ameziane Hamlat: So we, yeah, we can have a bug in that implementation, so we need to roll back to the old one, and yeah, and basically have, like, the current performance issue.
+
+164
+00:25:20.630 --> 00:25:22.550
+Tim Beiko: Right.
+
+165
+00:25:25.750 --> 00:25:35.840
+Tim Beiko: Yeah, I know, I'm curious… how others feel, but I… I think… being…
+
+166
+00:25:36.490 --> 00:25:41.820
+Tim Beiko: I don't know, I think we're kind of trading off, like, 25%.
+
+167
+00:25:42.100 --> 00:25:46.080
+Tim Beiko: increase… Yeah, so I… yeah.
+
+168
+00:25:48.500 --> 00:25:55.969
+Barnabas: Are we talking about now just one… basically one slot, or, like, as long as the potential attack lost, right?
+
+169
+00:25:56.300 --> 00:26:04.460
+Barnabas: So if you have, maybe 10 or 15 consecutive blocks, then… or that half an epoch, basically would lag behind.
+
+170
+00:26:05.350 --> 00:26:07.229
+Barnabas: One or two slots, always.
+
+171
+00:26:07.230 --> 00:26:09.859
+Tim Beiko: Yeah, well, also if this is a proposal, right?
+
+172
+00:26:14.060 --> 00:26:21.519
+Ameziane Hamlat: I don't know. So, if Bezo is a proposer, the only issue is basically produce a smaller block.
+
+173
+00:26:22.080 --> 00:26:36.539
+Ameziane Hamlat: Because… because the selection, the way that we select transactions is, like, time-limited, so we, we select, like, transactions together in the next block, up to, like, some percentage of the time that we allow for
+
+174
+00:26:36.650 --> 00:26:42.650
+Ameziane Hamlat: block building, like, local block buildings, so that's not an issue. But if we,
+
+175
+00:26:42.770 --> 00:26:50.099
+Ameziane Hamlat: like, if, BESU… like, for other full nodes, like, that need to process the block, especially for validators.
+
+176
+00:26:50.230 --> 00:26:58.260
+Ameziane Hamlat: The only issue I see is basically missing, like, the attestations, but…
+
+177
+00:26:58.280 --> 00:27:14.200
+Ameziane Hamlat: that's not, like, the whole… the whole base of notes, because, you have, like, like, some percentage of the… of the… of the full notes on some specific, slots. So, like, the attack, I think, to, like, to…
+
+178
+00:27:14.370 --> 00:27:28.250
+Ameziane Hamlat: to be, to… to have, like, all the basel nodes, impacted, we need to have, like, multiple blocks, full of, like, mod operations, for example, to be,
+
+179
+00:27:30.000 --> 00:27:31.939
+Ameziane Hamlat: Not only one block, basically.
+
+180
+00:27:43.600 --> 00:27:46.760
+Barnabas: Do we want to be this… To be a blocker?
+
+181
+00:27:47.380 --> 00:27:49.290
+Barnabas: Going to 60 million.
+
+182
+00:27:53.270 --> 00:27:55.719
+Tim Beiko: Oh, I guess one more question.
+
+183
+00:27:56.230 --> 00:28:04.689
+Tim Beiko: Yeah, we can maybe decide this on Thursday, but it's good for people to think about. But one more question is just the impact on the,
+
+184
+00:28:05.070 --> 00:28:13.330
+Tim Beiko: on the hardware, like, if people are running base 2 on better hardware than the standard one, are they…
+
+185
+00:28:13.720 --> 00:28:20.650
+Tim Beiko: Also affected by this, or does, like, yeah, better hardware, helps.
+
+186
+00:28:23.090 --> 00:28:35.579
+Ameziane Hamlat: Yeah, that's a good question. I would… I would say hard to… I think it will help, for sure, because, like, when we profile a big integer implementation, most of the time.
+
+187
+00:28:35.610 --> 00:28:48.580
+Ameziane Hamlat: is on CPU, but it would help only if the clock, like, the clock speed is, basically better, because we are not doing any parallel execution with,
+
+188
+00:28:48.690 --> 00:28:53.159
+Ameziane Hamlat: With, with that algorithm, so the number of cores, will,
+
+189
+00:28:53.290 --> 00:28:59.449
+Ameziane Hamlat: Will not help, but if it has a better clock, it will help, yes, for sure.
+
+190
+00:29:08.860 --> 00:29:14.400
+Tim Beiko: Got it. Yeah, so I think we don't necessarily have to make a call about this today, but,
+
+191
+00:29:14.640 --> 00:29:23.090
+Tim Beiko: I think, ideally, this Thursday, we would, because, yeah, we have the CIP specifying what the default is, and,
+
+192
+00:29:23.390 --> 00:29:30.710
+Tim Beiko: Obviously, if we, are moving mainnet to 60 million, it'd be good to start signaling that.
+
+193
+00:29:31.840 --> 00:29:35.969
+Tim Beiko: But yeah, I think it's reasonable for people to take a couple more days to think about,
+
+194
+00:29:36.410 --> 00:29:38.269
+Tim Beiko: How to… how to move forward.
+
+195
+00:29:39.910 --> 00:29:44.899
+Barnabas: Yeah, ideally, we want to make a decision about this, I think, on… by the end of this week.
+
+196
+00:29:45.930 --> 00:29:46.480
+Tim Beiko: Yeah.
+
+197
+00:29:48.270 --> 00:29:59.120
+Ameziane Hamlat: Yeah, I agree. I will update anyway, so we have been, like, discussing, like, almost a week yet, so we need to, yeah, to make a decision.
+
+198
+00:30:05.120 --> 00:30:05.940
+Barnabas: Okay.
+
+199
+00:30:06.290 --> 00:30:10.420
+Barnabas: Is there any other topics to discuss regarding death limit testing?
+
+200
+00:30:13.650 --> 00:30:16.990
+Barnabas: If not, then we can move on to glance program testing updates.
+
+201
+00:30:17.930 --> 00:30:20.680
+Barnabas: Anyone from EPBS?
+
+202
+00:30:21.460 --> 00:30:23.740
+Barnabas: Would like to discuss EPBS progress?
+
+203
+00:30:35.060 --> 00:30:40.109
+Barnabas: Otherwise, we could move on to… Doctor Access List Testing.
+
+204
+00:30:41.030 --> 00:30:44.610
+Barnabas: Anyone from… Both teams are here.
+
+205
+00:30:45.500 --> 00:30:47.920
+Toni Wahrstätter: I can give a quick update.
+
+206
+00:30:47.920 --> 00:30:48.250
+Barnabas: Sure.
+
+207
+00:30:48.250 --> 00:30:56.149
+Toni Wahrstätter: So on Wednesday, there is the third Block Live Access List breakout call, and we're going to discuss if we should move from
+
+208
+00:30:56.290 --> 00:31:00.390
+Toni Wahrstätter: A block-level access list hash that is currently in the execution header.
+
+209
+00:31:00.560 --> 00:31:18.339
+Toni Wahrstätter: to, try, and this will be discussed on… on the next breakout call. It would be a rather small change, and currently default is no, but, if you have an opinion on that, then please do show up to the breakout call on Wednesday, 2PM UTC.
+
+210
+00:31:18.660 --> 00:31:26.870
+Toni Wahrstätter: And regarding testing, let's see if someone else, like Philippe or Rahu is on the call, who are better at that.
+
+211
+00:31:31.680 --> 00:31:34.280
+felipe: Yeah, I can give a quick update.
+
+212
+00:31:34.760 --> 00:31:41.640
+felipe: We've been sort of refactoring some of the absence checks on the testing side.
+
+213
+00:31:42.430 --> 00:31:50.210
+felipe: And there's a PR that should be up, and ready, and Rahul has been adding some test cases there.
+
+214
+00:31:50.750 --> 00:31:55.240
+felipe: And we need a couple updates on the spec side as well.
+
+215
+00:32:01.090 --> 00:32:04.430
+felipe: But these should be, these should be coming in as well this week.
+
+216
+00:32:15.550 --> 00:32:30.449
+Toni Wahrstätter: All right, and just to add, to that, last week we were discussing about the CL implementation. Yeah, thanks to Nico, Terrence, and Jihoon, we now have, Lodestar and Prism implementations, and now we are about to…
+
+217
+00:32:30.640 --> 00:32:32.840
+Toni Wahrstätter: Start testing everything locally.
+
+218
+00:32:37.720 --> 00:32:43.479
+Barnabas: Yeah, that sounds good. And maybe we can aim for a first-det launch in a couple of weeks.
+
+219
+00:32:47.040 --> 00:32:48.919
+Toni Wahrstätter: Yeah, sounds realistic, I think.
+
+220
+00:32:57.420 --> 00:33:01.760
+Barnabas: Yes, nobody from EPBS is here to give us an update.
+
+221
+00:33:02.720 --> 00:33:06.160
+Barnabas: Regarding specs, maybe, Justin?
+
+222
+00:33:06.390 --> 00:33:09.829
+Barnabas: Give us an update. How… how is the spec coming along?
+
+223
+00:33:10.700 --> 00:33:14.290
+Justin Traglia: I would say the spec is coming along pretty well.
+
+224
+00:33:14.740 --> 00:33:21.719
+Justin Traglia: Last week, we merged a bunch of tests and a few minor spec changes, like, not related to testing.
+
+225
+00:33:22.050 --> 00:33:26.379
+Justin Traglia: And we are currently working on a release. So,
+
+226
+00:33:26.580 --> 00:33:35.639
+Justin Traglia: I believe, EPBS DevNet 0 will be based off of, instances specs V, like, beta.0.
+
+227
+00:33:36.910 --> 00:33:41.459
+Barnabas: Right, so Beta.0 will be also the one that's targeting for data sets.
+
+228
+00:33:43.850 --> 00:33:46.359
+Justin Traglia: Correct, and you can expect that.
+
+229
+00:33:46.600 --> 00:33:50.200
+Justin Traglia: 24 hours from right now, I just restarted the action.
+
+230
+00:33:55.030 --> 00:33:55.930
+Barnabas: Sounds good.
+
+231
+00:34:00.080 --> 00:34:05.539
+Barnabas: Terrence also said that he's about to join in to give us an update.
+
+232
+00:34:06.260 --> 00:34:08.010
+Barnabas: Oh, looks like he's here now.
+
+233
+00:34:08.139 --> 00:34:09.039
+terence: Hello?
+
+234
+00:34:10.620 --> 00:34:17.580
+Barnabas: Hi, Terence. Could you give us an update on EPBS testing and, how… how are things looking?
+
+235
+00:34:17.580 --> 00:34:30.060
+terence: Yeah, for sure. Yeah, yeah. Thanks for, calling me. So, so we are at the point that, like, all the containers on the EPBS side is finalized.
+
+236
+00:34:30.409 --> 00:34:40.070
+terence: for the current DefNet Zero spec. So, since last Friday, the priority was to cut the spec release for EPBS, or for Gloise,
+
+237
+00:34:40.239 --> 00:34:58.280
+terence: for EIP7732, and they have a consensus spec test. So once we have a consensus bet test, we can start, like, do more implementation, because, like, now we can actually ensure correctness. And, so we're at the point that we're waiting for a spec release. I know Justin's working on it.
+
+238
+00:34:58.420 --> 00:35:14.270
+terence: So I think, in the EPBS channel, the latest progress was there was some problem generating spat tests, and Justin is working on that. So once we have that, yeah, we can start,
+
+239
+00:35:14.730 --> 00:35:25.029
+terence: putting more… a lot more efforts into implementation, because we know the spec test is there. And, there's the EPPS breakout room this Friday.
+
+240
+00:35:25.030 --> 00:35:36.210
+terence: And Justin will be hosting that, and that's typically very organized, and Justin is doing a very good job of that. So I encourage all the clients that is implementing that will implement
+
+241
+00:35:36.210 --> 00:35:56.120
+terence: gloves, on for the consistent layer during that call. But, otherwise, yeah, it's going mostly on this… mostly the last few weeks, we have been just mostly focusing on the SPAC, getting the SPAC into, like, a definite zero readiness stage, and now we'll do more implementation.
+
+242
+00:35:57.160 --> 00:35:58.939
+terence: Questions, feedback, welcome.
+
+243
+00:35:59.560 --> 00:36:06.159
+Justin Traglia: Yep, and Terrence, the issue has been fixed, and I have restarted the release action, so we can expect
+
+244
+00:36:06.360 --> 00:36:09.909
+Justin Traglia: Hopefully, it is complete in 24 hours.
+
+245
+00:36:11.130 --> 00:36:12.659
+terence: Yeah, sounds… thank you.
+
+246
+00:36:19.220 --> 00:36:20.530
+Barnabas: Thanks for the update.
+
+247
+00:36:21.260 --> 00:36:24.849
+Barnabas: Anyone else has anything else to add to clumpster, then?
+
+248
+00:36:30.420 --> 00:36:34.169
+Justin Traglia: We did make a small PR merch,
+
+249
+00:36:34.500 --> 00:36:40.850
+Justin Traglia: End of last week regarding, like, helper functions for the… Like, slot.
+
+250
+00:36:41.090 --> 00:36:45.440
+Justin Traglia: timing functions or whatever. I can find a link here in a second.
+
+251
+00:36:46.020 --> 00:36:50.079
+Justin Traglia: It's pretty minor, but it was a suggestion from
+
+252
+00:36:50.350 --> 00:36:53.540
+Justin Traglia: Don Cradd and, Paul Harris.
+
+253
+00:36:55.100 --> 00:36:56.880
+Justin Traglia: I'll share, like, it's minor.
+
+254
+00:37:13.290 --> 00:37:14.380
+Barnabas: Alright.
+
+255
+00:37:16.690 --> 00:37:22.739
+Barnabas: Well, that is basically all the topics that we wanted to discuss today.
+
+256
+00:37:24.890 --> 00:37:27.529
+Barnabas: Maybe someone else has anything else to add?
+
+257
+00:37:34.420 --> 00:37:36.630
+Barnabas: Otherwise, we can call it early today.
+
+258
+00:37:43.470 --> 00:37:46.009
+Barnabas: Alright, then. See you all on Thursday.
+
+259
+00:37:46.760 --> 00:37:47.860
+Barnabas: Thanks for coming.
+
+260
+00:37:48.970 --> 00:37:49.790
+Justin Traglia: Bye, everyone.
+
+261
+00:37:49.990 --> 00:37:50.440
+Marius van der Wijden: Thank you.
+
+262
+00:37:50.440 --> 00:37:52.630
+Toni Wahrstätter: I guess. Thank you, bye-bye.
+
+263
+00:37:53.080 --> 00:37:53.990
+Tim Beiko: Thank you!
+
+264
+00:37:55.590 --> 00:37:56.210
+felipe: Right?
+

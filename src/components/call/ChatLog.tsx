@@ -87,9 +87,15 @@ const ChatLog: React.FC<ChatLogProps> = ({ content, syncConfig }) => {
         if (targetIndex >= 0) {
           const lastNonEmptyLine = processedLines[targetIndex];
           // Don't merge if the last line is a "Replying to" header - treat the next line as the reply content
-          if (/:\tReplying to/.test(lastNonEmptyLine)) {
+          // Handle both English and Dutch formats
+          if (/:\tReplying to/.test(lastNonEmptyLine) || /:\tAntwoord verzenden naar/.test(lastNonEmptyLine)) {
             // This is the actual reply content, merge it with the "Replying to" line
-            processedLines[targetIndex] = `${lastNonEmptyLine.trimEnd()} → ${line.trim()}`;
+            // Normalize Dutch format to English
+            let normalizedLine = lastNonEmptyLine;
+            if (/:\tAntwoord verzenden naar/.test(lastNonEmptyLine)) {
+              normalizedLine = lastNonEmptyLine.replace(':\tAntwoord verzenden naar', ':\tReplying to');
+            }
+            processedLines[targetIndex] = `${normalizedLine.trimEnd()} → ${line.trim()}`;
           } else {
             // Regular multi-line content, use newline to preserve formatting
             processedLines[targetIndex] = `${processedLines[targetIndex].trimEnd()}\n${line.trim()}`;
@@ -130,16 +136,20 @@ const ChatLog: React.FC<ChatLogProps> = ({ content, syncConfig }) => {
         }
 
         // Parse reactions for later display
-        if (message.startsWith('Reacted to')) {
+        if (message.startsWith('Reacted to') || message.startsWith('Heeft gereageerd op')) {
           // Handle multiple formats:
+          // English:
           // 1. Reacted to "message" with emoji
           // 2. Reacted to message with "emoji"
           // 3. Reacted to "message" with "emoji"
+          // Dutch:
+          // 4. Heeft gereageerd op "message" met emoji
           // Also handle curly quotes - be more specific to avoid multiple matches
           const reactionPatterns = [
-            /Reacted to [""]([^""]+)[""] with [""](.+?)[""]/,  // Both quoted
-            /Reacted to [""]([^""]+)[""] with ([^""\s]+)$/,  // Quoted message, unquoted emoji (must be at end of line)
-            /Reacted to ([^""]+?) with [""](.+?)[""]/,  // Unquoted message, quoted emoji
+            /Reacted to [""]([^""]+)[""] with [""](.+?)[""]/,  // Both quoted (English)
+            /Reacted to [""]([^""]+)[""] with ([^""\s]+)$/,  // Quoted message, unquoted emoji (English)
+            /Reacted to ([^""]+?) with [""](.+?)[""]/,  // Unquoted message, quoted emoji (English)
+            /Heeft gereageerd op [""]([^""]+)[""] met (.+)$/,  // Dutch format
           ];
 
           let matched = false;
@@ -171,18 +181,23 @@ const ChatLog: React.FC<ChatLogProps> = ({ content, syncConfig }) => {
 
           if (matched) continue;
         }
-        // Handle "Replying to" messages
-        if (message.startsWith('Replying to')) {
+        // Handle "Replying to" messages (English and Dutch)
+        if (message.startsWith('Replying to') || message.startsWith('Antwoord verzenden naar')) {
           if (i + 1 < lines.length) {
             const nextLine = lines[i + 1];
             // Check if next line is NOT a new timestamped message
             if (!nextLine.match(/^\d{2}:\d{2}:\d{2}\t/)) {
               const actualMessage = nextLine.trim();
               if (actualMessage) {
+                // Convert Dutch format to English format for consistency
+                let normalizedMessage = message;
+                if (message.startsWith('Antwoord verzenden naar')) {
+                  normalizedMessage = message.replace('Antwoord verzenden naar', 'Replying to');
+                }
                 messages.push({
                   timestamp,
                   speaker,
-                  message: `${message} → ${actualMessage}`
+                  message: `${normalizedMessage} → ${actualMessage}`
                 });
                 i++; // Skip the next line since we've consumed it
                 continue;
@@ -221,7 +236,7 @@ const ChatLog: React.FC<ChatLogProps> = ({ content, syncConfig }) => {
   const parentMessages: ChatMessage[] = [];
   const replyMessages: ChatMessage[] = [];
   messages.forEach((msg) => {
-    if (msg.message.startsWith('Replying to')) {
+    if (msg.message.startsWith('Replying to') || msg.message.startsWith('Antwoord verzenden naar')) {
       replyMessages.push(msg);
     } else {
       parentMessages.push(msg);
@@ -232,7 +247,11 @@ const ChatLog: React.FC<ChatLogProps> = ({ content, syncConfig }) => {
   const matchedReplies = new Set<ChatMessage>();
   replyMessages.forEach((reply) => {
     // Handle quotes in the replied-to text by looking for the pattern more flexibly
-    const match = reply.message.match(/^Replying to "(.+?)"(?:\s|$)/);
+    // Support both English and Dutch formats
+    const englishMatch = reply.message.match(/^Replying to "(.+?)"(?:\s|$)/);
+    const dutchMatch = reply.message.match(/^Antwoord verzenden naar "(.+?)"(?:\s|$)/);
+    const match = englishMatch || dutchMatch;
+
     if (match) {
       const quotedText = match[1];
       // Handle abbreviated quotes (ending with "...")
@@ -263,7 +282,11 @@ const ChatLog: React.FC<ChatLogProps> = ({ content, syncConfig }) => {
     replyMessages.forEach((reply) => {
       if (matchedReplies.has(reply)) return;
       // Handle quotes in the replied-to text by looking for the pattern more flexibly
-      const match = reply.message.match(/^Replying to "(.+?)"(?:\s|$)/);
+      // Support both English and Dutch formats
+      const englishMatch = reply.message.match(/^Replying to "(.+?)"(?:\s|$)/);
+      const dutchMatch = reply.message.match(/^Antwoord verzenden naar "(.+?)"(?:\s|$)/);
+      const match = englishMatch || dutchMatch;
+
       if (match) {
         const quotedText = match[1];
         // Handle abbreviated quotes (ending with "...")
@@ -382,10 +405,12 @@ const ChatLog: React.FC<ChatLogProps> = ({ content, syncConfig }) => {
             })()}
             {/* Reply Messages */}
             {isParentWithReplies && replies!.map((reply, replyIndex) => {
-              // Extract just the actual message content after "Replying to..."
-              // The message format is: "Replying to "quoted" → actual message"
+              // Extract just the actual message content after "Replying to..." or "Antwoord verzenden naar..."
+              // The message format is: "Replying to "quoted" → actual message" or "Antwoord verzenden naar "quoted" → actual message"
               // Handle quotes in the replied-to text by using a more flexible pattern
-              const replyMatch = reply.message.match(/^Replying to "(.+?)"\s*→\s*(.+)$/);
+              const englishReplyMatch = reply.message.match(/^Replying to "(.+?)"\s*→\s*(.+)$/);
+              const dutchReplyMatch = reply.message.match(/^Antwoord verzenden naar "(.+?)"\s*→\s*(.+)$/);
+              const replyMatch = englishReplyMatch || dutchReplyMatch;
               const actualMessage = replyMatch ? replyMatch[2] : reply.message;
               return (
                 <div

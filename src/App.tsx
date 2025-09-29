@@ -63,7 +63,7 @@ function App() {
           storageKey="fusaka-audit-banner-dismissed"
           title="Fusaka $2M Audit Contest"
           fullTitle="Fusaka $2M Audit Contest Now Live"
-          badge="2x Multiplier Week 1"
+          badge="Ends Oct 13"
           linkUrl="https://blog.ethereum.org/en/2025/09/15/fusaka-audit-content"
           linkText="Learn More"
           linkTextMobile="Info"

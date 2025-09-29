@@ -738,8 +738,8 @@ const CallPage: React.FC = () => {
                     </div>
                     {callConfig?.issue && (
                       <div className="flex items-center gap-2">
-                        <span className="text-slate-500 dark:text-slate-400">🔗</span>
-                        <span className="text-slate-600 dark:text-slate-300">Issue:</span>
+                        <span className="text-slate-500 dark:text-slate-400">📌</span>
+                        <span className="text-slate-600 dark:text-slate-300">Agenda:</span>
                         <a
                           href={`https://github.com/ethereum/pm/issues/${callConfig.issue}`}
                           target="_blank"

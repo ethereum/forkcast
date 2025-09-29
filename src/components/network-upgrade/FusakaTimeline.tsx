@@ -42,18 +42,27 @@ export const FusakaTimeline: React.FC = () => {
                 </div>
 
                 {/* Content */}
-                <div className="flex-1">
-                  <h4 className="font-medium text-slate-900 dark:text-slate-100 text-sm mb-1">{phase.title}</h4>
-                  <p className="text-xs text-slate-600 dark:text-slate-300 mb-2">{phase.description}</p>
+                <div className="flex-1 flex items-start justify-between gap-4">
+                  <div className="flex-1 min-w-0">
+                    <h4 className="font-medium text-slate-900 dark:text-slate-100 text-sm mb-1">{phase.title}</h4>
+                    <p className="text-xs text-slate-600 dark:text-slate-300 mb-2 leading-relaxed">{phase.description}</p>
+                  </div>
+
+                  {/* Date on the right */}
+                  <div className="flex-shrink-0">
+                    <span className="text-xs text-slate-500 dark:text-slate-400 font-medium">
+                      {phase.dateRange}
+                    </span>
+                  </div>
                 </div>
               </div>
             ))}
           </div>
         </div>
 
-        {/* Source link */}
+        {/* Source link and dates disclaimer */}
         <div className="mt-4 pt-4 border-t border-slate-200 dark:border-slate-600">
-          <div className="flex items-start justify-between">
+          <div className="flex items-center justify-between">
             <a
               href="https://eips.ethereum.org/EIPS/eip-7607"
               target="_blank"
@@ -66,6 +75,9 @@ export const FusakaTimeline: React.FC = () => {
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
               </svg>
             </a>
+            <p className="text-xs text-slate-500 dark:text-slate-400 italic">
+              Dates subject to change
+            </p>
           </div>
         </div>
       </div>

@@ -1,7 +1,8 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import ThemeToggle from './ui/ThemeToggle';
 import { protocolCalls, type Call } from '../data/calls';
+import { fetchUpcomingCalls, type UpcomingCall } from '../utils/github';
 
 interface TimelineEvent {
   type: 'event';
@@ -13,6 +14,7 @@ interface TimelineEvent {
 const CallsIndexPage: React.FC = () => {
   const [selectedFilter, setSelectedFilter] = useState<string>('all');
   const [showEvents, setShowEvents] = useState<boolean>(true);
+  const [upcomingCalls, setUpcomingCalls] = useState<UpcomingCall[]>([]);
 
   const calls = protocolCalls;
 
@@ -67,16 +69,35 @@ const CallsIndexPage: React.FC = () => {
     }
   ];
 
+  // Fetch upcoming calls on component mount
+  useEffect(() => {
+    const loadUpcomingCalls = async () => {
+      try {
+        const upcoming = await fetchUpcomingCalls();
+        setUpcomingCalls(upcoming);
+      } catch (error) {
+        console.error('Failed to load upcoming calls:', error);
+      }
+    };
+
+    loadUpcomingCalls();
+  }, []);
 
   // Filter and sort calls and events
   const filteredCalls = selectedFilter === 'all'
     ? calls
     : calls.filter(call => call.type === selectedFilter);
 
-  // Combine calls and events into timeline items
-  type TimelineItem = Call | TimelineEvent;
+  // Filter upcoming calls based on selected filter
+  const filteredUpcomingCalls = selectedFilter === 'all'
+    ? upcomingCalls
+    : upcomingCalls.filter(call => call.type === selectedFilter);
+
+  // Combine calls, upcoming calls, and events into timeline items
+  type TimelineItem = Call | TimelineEvent | UpcomingCall;
   const timelineItems: TimelineItem[] = [
     ...filteredCalls,
+    ...filteredUpcomingCalls, // Add filtered upcoming calls to timeline
     ...(showEvents ? timelineEvents : []) // Show events based on toggle
   ];
 
@@ -103,6 +124,9 @@ const CallsIndexPage: React.FC = () => {
             <h1 className="text-xl font-semibold text-slate-900 dark:text-slate-100">Protocol Calls</h1>
             <div className="text-sm text-slate-500 dark:text-slate-400">
               {filteredCalls.length} calls
+              {filteredUpcomingCalls.length > 0 && (
+                <span> • {filteredUpcomingCalls.length} upcoming</span>
+              )}
               {showEvents && timelineEvents.length > 0 && (
                 <span> • {timelineEvents.length} events</span>
               )}
@@ -162,7 +186,7 @@ const CallsIndexPage: React.FC = () => {
         <div className="space-y-4">
           {(() => {
             // Group items by month
-            const monthGroups = new Map<string, (Call | TimelineEvent)[]>();
+            const monthGroups = new Map<string, (Call | TimelineEvent | UpcomingCall)[]>();
 
             sortedItems.forEach((item) => {
               // Parse date as local time, not UTC
@@ -224,7 +248,57 @@ const CallsIndexPage: React.FC = () => {
                           );
                         }
 
-                        // Render call
+                        // Check if it's an upcoming call
+                        if ('githubUrl' in item) {
+                          const upcomingCall = item as UpcomingCall;
+
+                          // Define colors for upcoming calls - same colors as completed but with dashed border
+                          const upcomingCallTypeColors = {
+                            acdc: 'border-l-purple-500 dark:border-l-purple-400',
+                            acde: 'border-l-blue-500 dark:border-l-blue-400',
+                            acdt: 'border-l-green-500 dark:border-l-green-400'
+                          };
+
+                          const upcomingCallTypeBadgeColors = {
+                            acdc: 'bg-purple-100 dark:bg-purple-900/30 text-purple-700 dark:text-purple-300',
+                            acde: 'bg-blue-100 dark:bg-blue-900/30 text-blue-700 dark:text-blue-300',
+                            acdt: 'bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-300'
+                          };
+
+                          return (
+                            <a
+                              key={`upcoming-${upcomingCall.type}-${upcomingCall.number}`}
+                              href={upcomingCall.githubUrl}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              className={`block bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg p-3 hover:shadow-md dark:hover:shadow-slate-700/20 transition-all hover:border-slate-300 dark:hover:border-slate-600 group border-l-3 ${upcomingCallTypeColors[upcomingCall.type]}`}
+                              style={{ borderLeftStyle: 'dashed' }}
+                            >
+                              <div className="flex items-center justify-between">
+                                <div className="flex items-center gap-3">
+                                  <span className={`text-xs font-medium px-2 py-0.5 rounded-full ${upcomingCallTypeBadgeColors[upcomingCall.type]}`}>
+                                    {upcomingCall.type.toUpperCase()}
+                                  </span>
+                                  <div className="text-sm font-medium text-slate-900 dark:text-slate-100">
+                                    Meeting #{upcomingCall.number}
+                                  </div>
+                                  <div className="text-sm text-slate-600 dark:text-slate-400">
+                                    {upcomingCall.date}
+                                  </div>
+                                  <div className="hidden sm:flex items-center gap-1.5 ml-2">
+                                    <div className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse"></div>
+                                    <span className="text-xs text-emerald-600 dark:text-emerald-400 font-medium">Upcoming</span>
+                                  </div>
+                                </div>
+                                <div className="text-slate-400 dark:text-slate-500 group-hover:text-slate-600 dark:group-hover:text-slate-300 transition-colors">
+                                  ↗
+                                </div>
+                              </div>
+                            </a>
+                          );
+                        }
+
+                        // Render completed call
                         const call = item as Call;
 
                         // Define colors for each call type

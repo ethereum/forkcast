@@ -8,7 +8,7 @@ interface TimelineEvent {
   type: 'event';
   date: string;
   title: string;
-  category: 'upgrade' | 'milestone' | 'announcement' | 'devnet';
+  category: 'mainnet' | 'testnet' | 'milestone' | 'announcement' | 'devnet';
 }
 
 const CallsIndexPage: React.FC = () => {
@@ -22,8 +22,8 @@ const CallsIndexPage: React.FC = () => {
     {
       type: 'event',
       date: '2025-05-07',
-      title: 'Pectra Upgrade Goes Live',
-      category: 'upgrade'
+      title: 'Pectra Live on Mainnet',
+      category: 'mainnet'
     },
     {
       type: 'event',
@@ -66,6 +66,12 @@ const CallsIndexPage: React.FC = () => {
       date: '2025-09-10',
       title: 'Fusaka Devnet-5 Launches',
       category: 'devnet'
+    },
+    {
+      type: 'event',
+      date: '2025-10-01',
+      title: 'Fusaka Live on Holesky Testnet',
+      category: 'testnet'
     }
   ];
 
@@ -224,7 +230,8 @@ const CallsIndexPage: React.FC = () => {
                         if (item.type === 'event') {
                           const event = item as TimelineEvent;
                           const eventColors = {
-                            upgrade: 'from-green-500 to-emerald-600',
+                            'mainnet': 'from-emerald-500 to-green-600',
+                            'testnet': 'from-teal-500 to-cyan-600',
                             milestone: 'from-blue-500 to-indigo-600',
                             announcement: 'from-purple-500 to-violet-600',
                             devnet: 'from-orange-500 to-amber-600'

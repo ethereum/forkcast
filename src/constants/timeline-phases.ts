@@ -50,21 +50,21 @@ export const FUSAKA_TIMELINE_PHASES: TimelinePhase[] = [
     title: 'Devnets',
     dateRange: 'In Progress',
     description: 'Client teams implement and test Fusaka changes on internal development networks.',
-    status: 'current'
+    status: 'completed'
   },
   {
     id: 'holesky',
     title: 'Holešky Testnet Deployment',
     dateRange: 'Oct 1',
     description: 'Deploy Fusaka to a soon-to-be deprecated testnet for initial testing.',
-    status: 'upcoming'
+    status: 'completed'
   },
   {
     id: 'sepolia',
     title: 'Sepolia Testnet Deployment',
     dateRange: 'Oct 14',
     description: 'Deploy Fusaka to the permissioned validator testnet.',
-    status: 'upcoming'
+    status: 'current'
   },
   {
     id: 'hoodi',

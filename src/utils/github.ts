@@ -76,6 +76,14 @@ export async function fetchUpcomingCalls(): Promise<UpcomingCall[]> {
     const upcomingCalls: UpcomingCall[] = [];
     const today = new Date().toISOString().split('T')[0];
 
+    // Import completed calls to check for duplicates
+    const { protocolCalls } = await import('../data/calls');
+    
+    // Create a set of completed call identifiers (type + number)
+    const completedCallIds = new Set(
+      protocolCalls.map(call => `${call.type}-${call.number}`)
+    );
+
     // Track one call per type
     const foundTypes = new Set<string>();
 
@@ -83,11 +91,15 @@ export async function fetchUpcomingCalls(): Promise<UpcomingCall[]> {
       const call = parseCallFromTitle(issue.title, issue.html_url);
 
       if (call && call.date >= today && !foundTypes.has(call.type)) {
-        upcomingCalls.push(call);
-        foundTypes.add(call.type);
+        // Check if this call already exists in completed calls
+        const callId = `${call.type}-${call.number}`;
+        if (!completedCallIds.has(callId)) {
+          upcomingCalls.push(call);
+          foundTypes.add(call.type);
 
-        // Stop once we have one of each type
-        if (foundTypes.size === 3) break;
+          // Stop once we have one of each type
+          if (foundTypes.size === 3) break;
+        }
       }
     }
 

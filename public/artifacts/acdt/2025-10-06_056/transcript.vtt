@@ -1,0 +1,934 @@
+WEBVTT
+
+1
+00:08:48.560 --> 00:08:52.020
+Parithosh Jayanthi: Hey, sorry about that, I was on the wrong color link.
+
+2
+00:08:55.570 --> 00:08:57.930
+Pooja Ranjan: No problem, just let us know when you're ready.
+
+3
+00:09:02.270 --> 00:09:05.429
+Parithosh Jayanthi: Yeah, I think we should be good to start.
+
+4
+00:09:08.450 --> 00:09:09.369
+Pooja Ranjan: We are live.
+
+5
+00:09:10.210 --> 00:09:11.190
+Parithosh Jayanthi: Thank you.
+
+6
+00:09:16.310 --> 00:09:19.980
+Parithosh Jayanthi: Yeah, welcome everyone to ACDT.
+
+7
+00:09:20.380 --> 00:09:26.019
+Parithosh Jayanthi: We're gonna be starting off with, Holsky updates today.
+
+8
+00:09:26.480 --> 00:09:30.240
+Parithosh Jayanthi: So, we had the Hosky fork last week, Wednesday.
+
+9
+00:09:30.660 --> 00:09:46.919
+Parithosh Jayanthi: Other than one hiccup that we noticed, on the first day, where it seems very likely that it was related to, operator error, or having too many validator keys on one node, we haven't necessarily noticed anything else on hold scheme.
+
+10
+00:09:47.470 --> 00:09:59.100
+Parithosh Jayanthi: We should have BP01 go live tomorrow, but in the meantime, there were still two points I wanted to sort of dig a bit deeper into.
+
+11
+00:09:59.180 --> 00:10:09.160
+Parithosh Jayanthi: We did notice a slightly higher reorg rate on Lighthouse nodes. Has the team looked into this already? Is there anything to report?
+
+12
+00:10:10.720 --> 00:10:12.599
+Parithosh Jayanthi: Or a pre-release we can try?
+
+13
+00:10:13.430 --> 00:10:20.149
+pawan: I think we have looked into it, and in the subsequent release, we will be
+
+14
+00:10:20.250 --> 00:10:28.450
+pawan: releasing a fix for that as well. We had, like, a bunch of Issues where we were… processing…
+
+15
+00:10:28.640 --> 00:10:34.610
+pawan: more, attestation slashings than we needed to.
+
+16
+00:10:34.840 --> 00:10:38.410
+pawan: So we have fixed that in…
+
+17
+00:10:38.770 --> 00:10:43.270
+pawan: And that latest unstable code, and we should be cutting another release.
+
+18
+00:10:43.710 --> 00:10:46.850
+pawan: Sometime, this week or the next?
+
+19
+00:10:50.150 --> 00:10:54.840
+Parithosh Jayanthi: Awesome, that sounds good. Thank you for the update.
+
+20
+00:10:55.120 --> 00:11:05.469
+Parithosh Jayanthi: There was another, I guess, unrelated incident, but still a testnet incident, about a nethermine bug. Does someone want to go through
+
+21
+00:11:05.830 --> 00:11:08.199
+Parithosh Jayanthi: What happened, as well as…
+
+22
+00:11:08.330 --> 00:11:11.289
+Parithosh Jayanthi: If the patch is ready to be tested by more people.
+
+23
+00:11:17.990 --> 00:11:20.730
+Parithosh Jayanthi: I see Lucas on the call, do you want to talk?
+
+24
+00:11:27.830 --> 00:11:36.200
+Parithosh Jayanthi: Okay, I guess… not. If that's the case, then the information can be found on the
+
+25
+00:11:37.000 --> 00:11:41.239
+Parithosh Jayanthi: Testnets channel that I'm linking here, it's on Discord.
+
+26
+00:11:41.690 --> 00:11:48.840
+Parithosh Jayanthi: Both the bug as well as the potential patch and the plan forward are all listed in the chat tab.
+
+27
+00:11:51.060 --> 00:11:58.220
+Parithosh Jayanthi: Anything else related to Fusaka and Polsky that client teams want to talk about?
+
+28
+00:12:01.160 --> 00:12:08.570
+Parithosh Jayanthi: Is everyone feeling ready with BP001? It should be roughly a day from today, right?
+
+29
+00:12:13.540 --> 00:12:17.480
+Parithosh Jayanthi: I had to… Go ahead.
+
+30
+00:12:17.800 --> 00:12:30.099
+pawan: I had a question about, something that the OP stack team brought up regarding the get blob side… the blob sidecar endpoint. So, with Fusaka, we have…
+
+31
+00:12:30.390 --> 00:12:39.580
+pawan: basically the KZG proof that we used to give along with the blob sidecarb pre-Fusaka.
+
+32
+00:12:39.860 --> 00:12:47.610
+pawan: post-Fusaka, we just dub out the KZG proof field, and… That…
+
+33
+00:12:48.170 --> 00:12:55.899
+pawan: the OP stack team, I think they created an issue on our repo saying that The proof wasn't verifying.
+
+34
+00:12:56.230 --> 00:12:59.720
+pawan: And I think there was a Discord thread about it.
+
+35
+00:13:00.220 --> 00:13:03.649
+pawan: where I think, like.
+
+36
+00:13:05.210 --> 00:13:10.889
+pawan: Yeah, like, if I check the thread now, the OP stack team said that they don't need the KZG proof.
+
+37
+00:13:11.200 --> 00:13:14.079
+pawan: To be there, On the…
+
+38
+00:13:14.250 --> 00:13:23.990
+pawan: on that specific endpoint anymore, but I'm not sure if other, roll-up teams agree as well, so maybe we can check…
+
+39
+00:13:24.250 --> 00:13:31.339
+pawan: If other teams need it, or if we need to update the… HTTP endpoint as well.
+
+40
+00:13:33.890 --> 00:13:36.220
+pawan: I can link the Discord.
+
+41
+00:13:36.220 --> 00:13:47.699
+Parithosh Jayanthi: Yeah, could you link the thread? And just to clarify, is this for super nodes, or is this for a full node? Because the get blob behavior for full nodes kind of fundamentally changes, right?
+
+42
+00:13:47.840 --> 00:13:50.600
+pawan: Yeah, I think this is for SuperNotes, so…
+
+43
+00:13:50.730 --> 00:14:06.340
+pawan: We basically… when anybody calls that HTTP endpoint, we reconstruct the full blob sidecar and return the blob sidecar, but we did not also compute the KZG proof, because we thought it wasn't needed.
+
+44
+00:14:06.650 --> 00:14:10.250
+pawan: But, since…
+
+45
+00:14:10.620 --> 00:14:18.380
+pawan: Pierre, like, since the roll-up teams brought it up, maybe we need to just check with other teams as well?
+
+46
+00:14:20.300 --> 00:14:22.829
+pawan: Oh yeah, sorry, Jay just.
+
+47
+00:14:23.550 --> 00:14:25.310
+Parithosh Jayanthi: Mano, do you want to go?
+
+48
+00:14:25.630 --> 00:14:30.240
+Manu: Yeah, so I briefly talked with Nitro team and Arbitron.
+
+49
+00:14:30.360 --> 00:14:35.779
+Manu: And they are going to switch from, get blob size car to get blobs.
+
+50
+00:14:35.880 --> 00:14:37.300
+Manu: To the new endpoint.
+
+51
+00:14:41.910 --> 00:14:53.790
+Parithosh Jayanthi: Got it. But then, there was also a comment about updating the attestant library, right, to support the new endpoint. Has this already been taken care of, or is this something we should do soon?
+
+52
+00:15:04.510 --> 00:15:07.759
+Parithosh Jayanthi: Okay, I think we'll check up…
+
+53
+00:15:07.870 --> 00:15:13.199
+Parithosh Jayanthi: With the testing team to add support for this, so that, yeah, everyone should be ready.
+
+54
+00:15:13.400 --> 00:15:17.390
+Parithosh Jayanthi: Are there any other air tools we should be reaching out to?
+
+55
+00:15:22.950 --> 00:15:29.449
+Parithosh Jayanthi: Okay, I guess the least we should do is put out a statement saying that this is the change that's going to happen.
+
+56
+00:15:29.560 --> 00:15:35.449
+Parithosh Jayanthi: And then see if anyone pushes back against the change. Since it is an API change, we can still,
+
+57
+00:15:36.310 --> 00:15:39.260
+Parithosh Jayanthi: Yeah, fix it if… if someone's depending on it.
+
+58
+00:15:44.260 --> 00:15:55.549
+Parithosh Jayanthi: Okay, anything else related to the API topic, or for Holsky? Blackline did ask about, had target vote rates dropping.
+
+59
+00:15:56.040 --> 00:16:04.289
+Parithosh Jayanthi: Yeah, most of the thesis is just that the amount of work that supernodes have to do is significantly more than before.
+
+60
+00:16:05.300 --> 00:16:09.620
+Parithosh Jayanthi: And once we have the Lighthouse patch as well, it should be better.
+
+61
+00:16:10.160 --> 00:16:14.580
+Parithosh Jayanthi: Especially because, yeah, everyone's processing a lot of slashing right now.
+
+62
+00:16:24.960 --> 00:16:28.980
+Parithosh Jayanthi: Okay, the last call for Rapolsky. Any other topics?
+
+63
+00:16:30.360 --> 00:16:39.880
+pawan: I just wanted to confirm another point regarding the MEV flow, so… I think we…
+
+64
+00:16:40.060 --> 00:16:49.619
+pawan: the GET payload API, like, we were supposed to, like, at least we were… Using the,
+
+65
+00:16:49.890 --> 00:16:56.570
+pawan: the Get Payload V2 version, even before Fusaka was activated.
+
+66
+00:16:57.040 --> 00:17:03.740
+pawan: And we were doing that just to ensure that, like, if there was anything wrong,
+
+67
+00:17:04.240 --> 00:17:09.799
+pawan: with the API, then, like, we can figure it out pre-fusaka instead of…
+
+68
+00:17:10.700 --> 00:17:15.930
+pawan: switching to the V2 endpoint post-Fusaka, and then finding out just then.
+
+69
+00:17:16.450 --> 00:17:22.829
+pawan: I was just curious, like, I, know that Nimbus replied, saying that…
+
+70
+00:17:23.329 --> 00:17:33.330
+pawan: like, I don't know, some clients replied saying that they switched during the fork. I'm not sure if the behavior is consistent across all CL clients, or…
+
+71
+00:17:33.880 --> 00:17:40.330
+pawan: how other CL clients handle it. Do they have switched to the V2 version right at the fourth boundary, or do they…
+
+72
+00:17:40.470 --> 00:17:44.380
+pawan: use the V2 version before as well.
+
+73
+00:17:57.650 --> 00:18:07.860
+Parithosh Jayanthi: Prism thinks that a switch at the fork, but, they will cross-check this. Do we have anyone else? Lodestar? Yeah, fork boundary?
+
+74
+00:18:08.960 --> 00:18:11.029
+Parithosh Jayanthi: Anyone from TECU?
+
+75
+00:18:14.390 --> 00:18:20.789
+pawan: Lighthouse basically uses the V2 endpoint now, like, even before Fusaka.
+
+76
+00:18:21.310 --> 00:18:26.980
+pawan: Because, like, we… Yeah, like, that's the sort of… the…
+
+77
+00:18:27.460 --> 00:18:32.619
+pawan: The relays don't actually return the blobs today as well, so we just don't…
+
+78
+00:18:32.900 --> 00:18:38.630
+pawan: expect the blobs at all, we just expect the relays to… Propagate the blobs themselves.
+
+79
+00:18:51.860 --> 00:18:55.409
+Parithosh Jayanthi: Should we make a thread for this on EtherMD?
+
+80
+00:18:56.380 --> 00:19:00.170
+pawan: I think there was a thread, I was trying to find it on the…
+
+81
+00:19:00.660 --> 00:19:05.460
+pawan: Chat. I'll paste it when I find it, somewhere.
+
+82
+00:19:05.460 --> 00:19:17.069
+Parithosh Jayanthi: Sounds good. I also don't see Bharat on the call, but I think he's mostly taking care of the MEV workflow, so he might have a better overview.
+
+83
+00:19:17.920 --> 00:19:20.379
+Parithosh Jayanthi: But we can ask them to chime in on the chat then.
+
+84
+00:19:31.950 --> 00:19:41.589
+Parithosh Jayanthi: Anything else? Oh yeah, just to raise Barnabas' point, most relays or… and or builders have stopped support for Holsky.
+
+85
+00:19:41.850 --> 00:19:44.969
+Parithosh Jayanthi: So, we don't have, any…
+
+86
+00:19:45.170 --> 00:19:59.950
+Parithosh Jayanthi: or many, map blocks flowing on Holsky, but this shouldn't be the case on Sepolia and Hudi. There was a brief, issue with the builders on Sepolia and Hoodie that has now been fixed, and we should have steady MEV blocks again.
+
+87
+00:20:04.730 --> 00:20:15.169
+Parithosh Jayanthi: Yeah, and another reminder that, OSCI will officially be end of life at the end of the month, unless announced otherwise, or if we notice any issues we want to keep it around for.
+
+88
+00:20:22.020 --> 00:20:28.380
+Parithosh Jayanthi: Okay, anything else regarding… Regarding Hosky?
+
+89
+00:20:32.510 --> 00:20:39.689
+Parithosh Jayanthi: Okay. Panelists, do you want to give an update for Fusepa DevNet 3 and the non-finality testing last week?
+
+90
+00:20:47.390 --> 00:20:55.410
+Parithosh Jayanthi: Okay, he's unable to talk, but yeah, we had non-finality testing for two, I think between two or three days.
+
+91
+00:20:55.750 --> 00:21:07.460
+Parithosh Jayanthi: And since then, we have recovered, so if for some reason, your client is not, up to head, then please reach out to us and we can debug it, but I think we should be mostly fine.
+
+92
+00:21:07.600 --> 00:21:18.110
+Parithosh Jayanthi: We did have plans to do another round of a split network tests this week, with the chaos testing framework that the Sunnyside Lab team has.
+
+93
+00:21:18.370 --> 00:21:25.250
+Parithosh Jayanthi: And we'll let you know how that goes, but yeah, I don't expect that we find anything because it is a similar approach.
+
+94
+00:21:30.620 --> 00:21:33.090
+Parithosh Jayanthi: Okay, anything else for Full Circa?
+
+95
+00:21:42.470 --> 00:21:52.419
+Parithosh Jayanthi: And just to have it logged, we have a lot of data, being showcased also for Holsky on the PandaOps website.
+
+96
+00:21:52.780 --> 00:22:02.019
+Parithosh Jayanthi: So, if you want to have a look at how the network is performing once BPO1 goes live, then please have a look there, it should be working through the BPO.
+
+97
+00:22:07.720 --> 00:22:20.019
+Parithosh Jayanthi: Okay, next topic is, gas limits and scaling L1 in general. Do we have any updates about 60 million gas from Bezu?
+
+98
+00:22:23.430 --> 00:22:32.370
+Ameziane Hamlat: Yes, so the, the implementation is, is almost done. We expect to,
+
+99
+00:22:32.870 --> 00:22:35.839
+Ameziane Hamlat: To freeze the implementation by tomorrow.
+
+100
+00:22:36.100 --> 00:22:43.129
+Ameziane Hamlat: And then we can start, fazin, and, and, and testing.
+
+101
+00:22:43.600 --> 00:22:53.320
+Ameziane Hamlat: But, yeah, big progress. We have seen, like, around twice performance improvement.
+
+102
+00:22:53.830 --> 00:22:59.839
+Ameziane Hamlat: on almost all the, arithmetic opcodes on top of mod.
+
+103
+00:23:01.120 --> 00:23:01.850
+Ameziane Hamlat: Yeah.
+
+104
+00:23:03.270 --> 00:23:04.719
+Ameziane Hamlat: That's it for now.
+
+105
+00:23:07.020 --> 00:23:07.860
+Parithosh Jayanthi: Awesome.
+
+106
+00:23:07.990 --> 00:23:16.450
+Parithosh Jayanthi: Thank you. Is there anything you need from any other plan team or security team for the fuzzing? Or are you guys all set?
+
+107
+00:23:16.900 --> 00:23:20.279
+Ameziane Hamlat: Yes, so we already reached out to them.
+
+108
+00:23:20.760 --> 00:23:27.270
+Ameziane Hamlat: So we have, we have… Prevade discussion on… on Telegram,
+
+109
+00:23:28.730 --> 00:23:32.170
+Ameziane Hamlat: Yeah, so we should start working on it on Wednesday.
+
+110
+00:23:33.700 --> 00:23:34.390
+Parithosh Jayanthi: Perfect.
+
+111
+00:23:34.780 --> 00:23:42.139
+Parithosh Jayanthi: Thank you. Yeah, Camille is off today, but he did leave a message about
+
+112
+00:23:42.410 --> 00:23:48.259
+Parithosh Jayanthi: Getting the first version of Zantas on top of BloatNet working at the end of last week.
+
+113
+00:23:48.670 --> 00:23:57.500
+Parithosh Jayanthi: I see Carlos and Joachim on the call. Perhaps you guys have a bit more context, and you want to talk about these tests?
+
+114
+00:24:00.780 --> 00:24:06.979
+Marcin Sobczak: Yes, we have, progressed into generally in,
+
+115
+00:24:07.120 --> 00:24:26.460
+Marcin Sobczak: stateful test on top of the Blownet, and there are first sent tests, like, Camille will have a great cooperation with Johim on this. And, in parallel, we are working on extended analysis, of Modex repricing,
+
+116
+00:24:26.460 --> 00:24:37.070
+Marcin Sobczak: on the network, and especially on the application layer, we collected a lot of data, and right now analyzing it,
+
+117
+00:24:37.570 --> 00:24:39.490
+Marcin Sobczak: And, yeah, that's it.
+
+118
+00:24:44.380 --> 00:24:57.070
+Parithosh Jayanthi: Okay, perfect. Is there any active item you guys need help on, or is the next step just continuing with the test, trying to break things, and then see if we need to fix something that's broken?
+
+119
+00:24:58.680 --> 00:25:03.459
+Marcin Sobczak: Yes, that's, like, like you said, we need to continue what we are doing right now.
+
+120
+00:25:07.730 --> 00:25:09.070
+Parithosh Jayanthi: Okay, perfect.
+
+121
+00:25:09.910 --> 00:25:17.910
+Parithosh Jayanthi: Is that… do you have anything to add to that, Carlos, for status, or is that mostly the…
+
+122
+00:25:18.390 --> 00:25:20.240
+Parithosh Jayanthi: Meat of the work over the last week.
+
+123
+00:25:21.240 --> 00:25:33.899
+CPerezz: So we have done quite some progress. The work of this week is to agree with East, in order of which is the best way to orchestrate all of that, because we need to adapt, let's say.
+
+124
+00:25:33.900 --> 00:25:45.139
+CPerezz: how the framework from NetherMind works, and how it executes stateful tests. So that will probably be the work of this week, and let's see what we can get at.
+
+125
+00:25:47.250 --> 00:25:52.479
+Parithosh Jayanthi: Yep, I know we already have a scheduled call for that, so we should be able to sort that out this week.
+
+126
+00:25:52.990 --> 00:26:01.120
+Parithosh Jayanthi: Cool. And… is there anything else for, the scaling topic that we have to talk about?
+
+127
+00:26:01.730 --> 00:26:02.790
+Parithosh Jayanthi: gas scaling.
+
+128
+00:26:08.160 --> 00:26:13.610
+Parithosh Jayanthi: Okay, the next topic is in, Amsterdam.
+
+129
+00:26:13.980 --> 00:26:20.430
+Parithosh Jayanthi: Could we get an update from block-level access lists? How's… how's everything going? Local testing?
+
+130
+00:26:21.530 --> 00:26:29.669
+Toni Wahrstätter: I can… I can provide a quick update, around specs stuff. So, today we just merged the execution API specs.
+
+131
+00:26:29.870 --> 00:26:33.719
+Toni Wahrstätter: Thanks to Mikhail for reviewing that. Let me…
+
+132
+00:26:34.120 --> 00:26:36.360
+Toni Wahrstätter: Post a link into the chat.
+
+133
+00:26:36.770 --> 00:26:46.470
+Toni Wahrstätter: From the execution, spec side, everything is done, so we have been ironing out some bugs, last week.
+
+134
+00:26:46.660 --> 00:27:00.470
+Toni Wahrstätter: Mainly around complicated edge cases such as 7702 or reverted transactions. But so far, it looks quite good. So, from the spec side, we're done. Maybe someone…
+
+135
+00:27:00.770 --> 00:27:13.530
+Toni Wahrstätter: who is more involved in testing, maybe Rahul or Felipe can provide an update on testing later. There is the block of Access list up, breakout call happening on Wednesday this week.
+
+136
+00:27:13.880 --> 00:27:24.929
+Toni Wahrstätter: Yeah, feel free to show up. We will discuss client updates, and also finalizing a decision on block-level access list HUD versus block-level access list route.
+
+137
+00:27:31.390 --> 00:27:38.909
+Parithosh Jayanthi: Thank you. Rahul, are you on the call? Do you want to speak? I don't see you right now.
+
+138
+00:27:41.340 --> 00:27:44.940
+felipe: I can… I can add an update here as well.
+
+139
+00:27:45.110 --> 00:27:48.569
+felipe: The testing side's looking good. We… we had a…
+
+140
+00:27:48.910 --> 00:27:52.530
+felipe: One test that was reported, to have been
+
+141
+00:27:52.910 --> 00:27:59.179
+felipe: Not correct that we fixed. And then we have had a few more that were added last week.
+
+142
+00:27:59.440 --> 00:28:01.519
+felipe: And we have an open PR.
+
+143
+00:28:01.830 --> 00:28:04.279
+felipe: To add a few more,
+
+144
+00:28:04.420 --> 00:28:10.280
+felipe: That should be ready, early this week as well, and we plan to get another release out.
+
+145
+00:28:10.590 --> 00:28:17.230
+felipe: And I wanted to say, Reth was added to the tracker as well, and it looks like
+
+146
+00:28:17.410 --> 00:28:22.459
+felipe: Breath and Geth are passing most of the tests that we have currently, so it's looking good.
+
+147
+00:28:29.810 --> 00:28:38.720
+Parithosh Jayanthi: Awesome, thank you. I do notice that… so we have a Cordosis config also, on the spec sheet.
+
+148
+00:28:38.840 --> 00:28:45.370
+Parithosh Jayanthi: For the DevNet, has anyone already tried interop between Geth and Wrath, or is that the next milestone?
+
+149
+00:28:55.270 --> 00:29:01.209
+Parithosh Jayanthi: I'm gonna assume that's then the next milestone, and then… Yeah, we can…
+
+150
+00:29:01.860 --> 00:29:12.459
+Parithosh Jayanthi: we can go from there. And just to also say that out loud, once we have 3, ELs working, then we're ready to launch a block-level access, let's start that, so…
+
+151
+00:29:13.280 --> 00:29:17.139
+Parithosh Jayanthi: hopefully that's incentive for the next EL to join in.
+
+152
+00:29:18.520 --> 00:29:23.959
+felipe: Yeah, I… I also think Nethermind is pretty close, as far as I know.
+
+153
+00:29:24.310 --> 00:29:28.440
+felipe: Locally, they were running tests and passing a lot of them.
+
+154
+00:29:28.780 --> 00:29:34.519
+felipe: But we haven't been able to get the right config for another bind on Hive yet, and…
+
+155
+00:29:35.130 --> 00:29:40.660
+felipe: I do believe… Somebody's looking into it.
+
+156
+00:29:40.800 --> 00:29:46.180
+felipe: But I need a little bit more context. I don't… I haven't had the right config to be able to run it.
+
+157
+00:29:47.360 --> 00:29:54.129
+Marc: Yeah, I'm having a look into this now, so yeah, it might be, like, a Hive config issue or something with our…
+
+158
+00:29:54.520 --> 00:29:57.569
+Marc: Hive test runner, potentially, but yeah, hopefully it'll be resolved soon.
+
+159
+00:30:00.540 --> 00:30:01.990
+felipe: Awesome, sounds great.
+
+160
+00:30:02.620 --> 00:30:07.200
+Parithosh Jayanthi: There was also an ask from Barnabas that would really help with,
+
+161
+00:30:07.330 --> 00:30:26.419
+Parithosh Jayanthi: with our automation tools, on all of your client repositories on your main repository, so ideally not a fork, could you guys push the code onto a branch called BAL DevNet0, so that we can set up all of our auto builders, and Hype will pick up the changes, and…
+
+162
+00:30:26.550 --> 00:30:35.860
+Parithosh Jayanthi: Kurtosis will pick up the changes and so on. It becomes a lot easier for us to automate testing if we have a standardized naming scheme and a standard place on where to look for changes.
+
+163
+00:30:42.420 --> 00:30:49.740
+Parithosh Jayanthi: Okay, cool, I guess we'll follow up on that one later, and… yeah, one of the…
+
+164
+00:30:50.220 --> 00:31:01.939
+Parithosh Jayanthi: Easiest things for us to also do would be to have Asserta run the execution spec tests against the running local block-level access list DevNet, and that should already knock out a few bugs.
+
+165
+00:31:02.740 --> 00:31:04.919
+Parithosh Jayanthi: That sounds all vague.
+
+166
+00:31:05.100 --> 00:31:06.260
+Parithosh Jayanthi: Nice work, everyone.
+
+167
+00:31:08.300 --> 00:31:14.169
+Parithosh Jayanthi: The… anything else for block-level access lists? Anything that we should discuss today that might help?
+
+168
+00:31:15.060 --> 00:31:17.429
+Parithosh Jayanthi: Are there any immediate blockers?
+
+169
+00:31:26.200 --> 00:31:34.020
+Parithosh Jayanthi: Okay, the next topic we have is, EPBS. Can we get an update from anyone on EPBS?
+
+170
+00:31:38.230 --> 00:31:46.699
+Justin Traglia: I think it would be better if client teams gave an update. I'm not sure what the implementation status for DevNet Zero is, but I just know that they're working on that.
+
+171
+00:31:47.120 --> 00:31:50.999
+Justin Traglia: And we will have a breakout call this Friday.
+
+172
+00:31:51.290 --> 00:31:56.290
+Justin Traglia: Please comment if there's anything you'd like to discuss. There were some things at Awkward of…
+
+173
+00:31:56.630 --> 00:31:58.730
+Justin Traglia: That we talked about.
+
+174
+00:31:59.210 --> 00:32:01.539
+Justin Traglia: What was it?
+
+175
+00:32:01.680 --> 00:32:11.699
+Justin Traglia: whether or not to allow, like, trusted payments and all that kind of stuff. It's a bit undecided, but I feel like we're sort of working… or we're sort of on the same page now.
+
+176
+00:32:12.240 --> 00:32:14.250
+Justin Traglia: But we do need to hash out details.
+
+177
+00:32:15.810 --> 00:32:20.480
+Parithosh Jayanthi: Perfect. Is this Friday, this week?
+
+178
+00:32:20.980 --> 00:32:21.810
+Justin Traglia: Yes.
+
+179
+00:32:22.340 --> 00:32:28.589
+Parithosh Jayanthi: Okay, and is this call meant just for client teams, or also external teams that we should make sure to invite?
+
+180
+00:32:29.110 --> 00:32:32.239
+Justin Traglia: Whoever wants to join, external is fine.
+
+181
+00:32:33.410 --> 00:32:39.899
+Parithosh Jayanthi: Okay, cool. Then, if anyone's listening in and has an opinion on trusted payments, then please chime in.
+
+182
+00:32:42.130 --> 00:32:46.279
+Parithosh Jayanthi: I'm not sure if any client teams have implementation updates, though.
+
+183
+00:32:46.790 --> 00:32:52.119
+Parithosh Jayanthi: Or is the idea that we work on the spec first, and then there'll be alpha implementations?
+
+184
+00:32:53.060 --> 00:32:55.819
+Justin Traglia: The spec is ready, I think. They're just…
+
+185
+00:32:56.200 --> 00:32:58.450
+Justin Traglia: Yeah, just working on the implementations.
+
+186
+00:33:00.240 --> 00:33:02.449
+Justin Traglia: Or are you talking about for trusted payments?
+
+187
+00:33:02.940 --> 00:33:05.850
+Parithosh Jayanthi: No, just for, in general, EPBS.
+
+188
+00:33:06.500 --> 00:33:07.230
+Justin Traglia: Okay.
+
+189
+00:33:08.110 --> 00:33:10.429
+Justin Traglia: Yep, spec for DevNet 0 is ready.
+
+190
+00:33:11.640 --> 00:33:12.250
+Parithosh Jayanthi: Okay.
+
+191
+00:33:20.410 --> 00:33:30.260
+Parithosh Jayanthi: Then we probably have a spec sheet for… okay, cool. We have a spec sheet for EPBS. I would assume we just have to update the values there.
+
+192
+00:33:31.760 --> 00:33:43.549
+Parithosh Jayanthi: Cool, and, ideally, same rules, so, please have a branch on your main repository called EPBS2.0, so that we can automate some building and image pulling.
+
+193
+00:33:48.040 --> 00:34:00.409
+Parithosh Jayanthi: There was one other topic on the agenda relating to, RPCs. It's more of an info task, so web posting, Hive RPC,
+
+194
+00:34:00.770 --> 00:34:12.889
+Parithosh Jayanthi: pass fail rates on Discord now. So there's a weekly post. We're gonna update it to also showcase if your client has done better or worse with RPC tests over the last week.
+
+195
+00:34:13.880 --> 00:34:29.489
+Parithosh Jayanthi: In case you want to be notified when an update is pushed here, then please let us know. We have a new role that we can add people, and you'd get a bit, yeah, you'd get a notification when there's something.
+
+196
+00:34:29.920 --> 00:34:43.880
+Parithosh Jayanthi: And there's, also an ETH Research post about, having a lot more tests and a lot more focus on application-focused tests for the RPC, so please engage with, with both of the topics.
+
+197
+00:34:50.340 --> 00:34:52.610
+Parithosh Jayanthi: Okay, anything else for the call today?
+
+198
+00:34:59.580 --> 00:35:00.989
+Parithosh Jayanthi: If not, then…
+
+199
+00:35:01.020 --> 00:35:05.680
+Justin Traglia: We could bring up the math questions again. Brad is in the call now.
+
+200
+00:35:07.130 --> 00:35:14.079
+Parithosh Jayanthi: Yeah, cool. Yeah, Pawan, do you wanna bring up the topic again, so that Bharat has context?
+
+201
+00:35:15.880 --> 00:35:23.249
+pawan: I think I've linked the… linked Bharat's reply there, for, basically.
+
+202
+00:35:23.530 --> 00:35:34.880
+pawan: for the get payload V2 endpoint, Lighthouse starts using it before the Fusaka fork, but some other clients also,
+
+203
+00:35:36.180 --> 00:35:43.229
+pawan: basically switch at the fork boundary, so… I was wondering if, like, the spec…
+
+204
+00:35:43.910 --> 00:36:00.850
+pawan: clearly specifies what is the right thing to do there. We do… we do it before the fork, because we wanted to see if there was anything… if there was an issue with the endpoint, then we figured out before Fusaka, instead of just at the fork boundary.
+
+205
+00:36:01.270 --> 00:36:15.210
+pawan: So, like, if there is a right way to do it, then, like, we'd rather switch to it, but we just wanted to check if there is a spec-mandated way of doing it. Should we switch at the fork boundary, or…
+
+206
+00:36:15.580 --> 00:36:17.660
+pawan: Before is fine as well.
+
+207
+00:36:18.190 --> 00:36:24.589
+Bharath: Yeah, so I can chip into this. So, ideally, it is not fork-dependent at all, this API, like…
+
+208
+00:36:24.670 --> 00:36:27.939
+Bharath: You can use it in Electra, you can use it in…
+
+209
+00:36:27.980 --> 00:36:47.039
+Bharath: any four, it doesn't matter. The only issue here is that we do… when we hit mainnet, we need to ensure that all relays, like, have implemented it. And that is generally, like, because the thing is, like, the EF, like, we don't control… the relays are closed source, we don't… we have informed them, like, multiple times on the criticality of
+
+210
+00:36:47.240 --> 00:36:50.790
+Bharath: implementing, like, Get Payload API, GetPayloadv2.
+
+211
+00:36:50.920 --> 00:36:57.509
+Bharath: So, that's probably the only thing, right? It is… yeah, it's in their best interest to implement it.
+
+212
+00:36:57.760 --> 00:37:01.879
+Bharath: But again, so, I personally would recommend to, like.
+
+213
+00:37:02.100 --> 00:37:13.400
+Bharath: use it, like, after Fusaka. It… and it's not Ford-dependent, but I would recommend to use it out of Fusaka, so that… because we have informed them that, okay, you have to get it implemented by Fusaka.
+
+214
+00:37:13.860 --> 00:37:19.559
+Bharath: So, right, the worst thing that'll happen is, like, yeah, the API will… Fail, but, yeah, like…
+
+215
+00:37:19.820 --> 00:37:25.480
+Bharath: I would recommend to, like, use it, like, after Fusaka. It'll probably be safer, like…
+
+216
+00:37:25.620 --> 00:37:30.750
+Bharath: Because I'm unsure, right, if you… let's say you do it on Electra, like,
+
+217
+00:37:30.970 --> 00:37:36.700
+Bharath: It should be fine, but maybe if you, like, release that quote, like, before,
+
+218
+00:37:37.120 --> 00:37:41.859
+Bharath: if you have a release before this thing, what is that? Fusaka and,
+
+219
+00:37:42.060 --> 00:37:53.130
+Bharath: and, like, and the relay has not implemented it, it might impact that. So that's probably my only concern, like, outside that, that API is not really fork-dependent. My only concern is, like.
+
+220
+00:37:53.280 --> 00:38:02.070
+Bharath: whether the relays have implemented it or not, and we have given them, like, a… like, information that you have to at least implement this by Fusaka.
+
+221
+00:38:02.390 --> 00:38:09.520
+Bharath: So, that is, like, So, just like using that post-Whusaka, it just seems like the safest way, like…
+
+222
+00:38:13.450 --> 00:38:25.679
+Parithosh Jayanthi: Yeah, okay, and yeah, Pawan's argument also makes sense, just to keep it easier to debug. Could we just have a list on Discord for how every client's implementing it, so that we can just do it consistently?
+
+223
+00:38:32.160 --> 00:38:36.389
+Parithosh Jayanthi: Could you maybe make a list, Parath, and then we can do from there?
+
+224
+00:38:36.390 --> 00:38:38.429
+Bharath: I can do that. I can do that, yeah, sounds good.
+
+225
+00:38:39.490 --> 00:38:40.069
+Parithosh Jayanthi: I would…
+
+226
+00:38:43.200 --> 00:38:47.499
+Parithosh Jayanthi: Anything else we want to discuss today?
+
+227
+00:38:52.950 --> 00:38:56.390
+Parithosh Jayanthi: Okay, then thank you everyone for coming, and see you next week.
+
+228
+00:39:00.050 --> 00:39:00.910
+pawan: Thank you.
+
+229
+00:39:01.180 --> 00:39:01.690
+jochem-brouwer: Thank you.
+
+230
+00:39:01.690 --> 00:39:02.220
+Jen: Thank you!
+
+231
+00:39:02.220 --> 00:39:03.340
+Justin Traglia: Thanks. Bye, Ron.
+
+232
+00:39:03.340 --> 00:39:04.060
+Toni Wahrstätter: Bye-bye.
+
+233
+00:39:04.480 --> 00:39:05.330
+Ameziane Hamlat: Thank you.
+

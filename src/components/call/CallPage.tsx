@@ -3,6 +3,7 @@ import { Link, useParams } from 'react-router-dom';
 import YouTube, { YouTubeProps } from 'react-youtube';
 import ChatLog from './ChatLog';
 import Summary from './Summary';
+import AgendaSummary from './AgendaSummary';
 import ThemeToggle from '../ui/ThemeToggle';
 
 interface CallData {
@@ -13,6 +14,7 @@ interface CallData {
   transcriptContent?: string;
   videoUrl?: string;
   summaryData?: any;
+  agendaData?: any;
 }
 
 interface CallConfig {
@@ -232,6 +234,18 @@ const CallPage: React.FC = () => {
           }
         }
 
+        // Load agenda if it exists
+        const agendaResponse = await fetch(`/artifacts/${artifactPath}/agenda.json`);
+        let agendaData = undefined;
+        if (agendaResponse.ok) {
+          try {
+            agendaData = await agendaResponse.json();
+            console.log('Loaded agenda:', agendaData);
+          } catch (e) {
+            console.warn('Failed to parse agenda.json:', e);
+          }
+        }
+
         // Load config file if it exists
         const configResponse = await fetch(`/artifacts/${artifactPath}/config.json`);
         let config: CallConfig | null = null;
@@ -272,7 +286,8 @@ const CallPage: React.FC = () => {
           chatContent,
           transcriptContent,
           videoUrl,
-          summaryData
+          summaryData,
+          agendaData
         });
 
       } catch (error) {
@@ -771,7 +786,7 @@ const CallPage: React.FC = () => {
         )}
 
         {/* Meeting Summary Section */}
-        {callData.summaryData && (
+        {(callData.agendaData || callData.summaryData) && (
           <div className="mb-4">
             <div className="bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg shadow-sm hover:shadow-md transition-shadow">
               <button
@@ -780,12 +795,18 @@ const CallPage: React.FC = () => {
               >
                 <div className="flex items-center gap-2">
                   <h2 className="text-sm font-semibold text-slate-900 dark:text-slate-100">
-                    Summary
+                    {callData.agendaData ? 'Agenda' : 'Summary'}
                   </h2>
                   <div className="flex items-center gap-2">
-                    <span className="text-xs text-slate-500 dark:text-slate-400">
-                      {callData.summaryData.summary_details?.length || 0} topics • {callData.summaryData.next_steps?.length || 0} action items
-                    </span>
+                    {callData.agendaData ? (
+                      <span className="text-xs text-slate-500 dark:text-slate-400">
+                        {callData.agendaData.agenda.flatMap((section: any) => section.items).length} topics • {callData.agendaData.agenda.flatMap((section: any) => section.items).reduce((sum: number, item: any) => sum + (item.action_items?.length || 0), 0)} action items
+                      </span>
+                    ) : (
+                      <span className="text-xs text-slate-500 dark:text-slate-400">
+                        {callData.summaryData.summary_details?.length || 0} topics • {callData.summaryData.next_steps?.length || 0} action items
+                      </span>
+                    )}
                     <span className="text-xs bg-slate-100 dark:bg-slate-700 text-slate-500 dark:text-slate-300 px-2 py-0.5 rounded-full font-normal border border-slate-200 dark:border-slate-600">
                       Experimental
                     </span>
@@ -803,7 +824,16 @@ const CallPage: React.FC = () => {
               {summaryExpanded && (
                 <div className="border-t border-slate-200 dark:border-slate-700 transition-opacity duration-500 ease-out opacity-0 animate-[fadeIn_0.5s_ease-out_forwards]">
                   <div className="p-6">
-                    <Summary data={callData.summaryData} />
+                    {callData.agendaData ? (
+                      <AgendaSummary
+                        data={callData.agendaData}
+                        onTimestampClick={handleTranscriptClick}
+                        syncConfig={callConfig?.sync}
+                        currentVideoTime={currentVideoTime}
+                      />
+                    ) : (
+                      <Summary data={callData.summaryData} />
+                    )}
                   </div>
                 </div>
               )}

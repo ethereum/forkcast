@@ -70,7 +70,7 @@ const CallsIndexPage: React.FC = () => {
     {
       type: 'event',
       date: '2025-10-01',
-      title: 'Fusaka Live on Holesky Testnet',
+      title: 'Fusaka Live on Holešky Testnet',
       category: 'testnet'
     }
   ];

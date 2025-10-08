@@ -36,6 +36,11 @@
       }
     ],
     "laymanDescription": "A new precompile for the BLS12-381 curve, a native function built in clients that smart contracts can use to verify signatures and perform certain operation more cheaply and securely.",
+    "northStars": ["Scale L1", "Improve UX"],
+    "northStarAlignment": {
+      "scaleL1": { "description": "More efficient perations for cryptography-heavy apps and enable more complex protocols at L1 capacity." },
+      "improveUX": { "description": "Lower fees and better security users relying on apps using BLS signatures." }
+    },
     "stakeholderImpacts": {
       "endUsers": { "impact": "Low", "description": "Lower gas and better security for apps that use BLS signatures (e.g., staking, bridges)." },
       "appDevs": { "impact": "Medium", "description": "Can rely on a standard, efficient precompile for BLS operations instead of custom Solidity code." },
@@ -144,7 +149,11 @@
         "forkName": "Pectra",
         "status": "Scheduled"
       }
-    ]
+    ],
+    "northStars": ["Improve UX"],
+    "northStarAlignment": {
+      "improveUX": { "description": "Easier access to historical data improves features and security for dapps." }
+    }
   },
   {
     "id": 3540,
@@ -356,6 +365,11 @@
       }
     ],
     "laymanDescription": "New way how validator deposits are processed between CL and EL, more simple and native to merged Ethereum enabling better UX and features.",
+    "northStars": ["Improve UX", "Scale L1"],
+    "northStarAlignment": {
+      "improveUX": { "description": "Improves validator operations by removing legacy EL to CL communication, reducing friction and enabling for better features." },
+      "scaleL1": { "description": "Reduces complexity and improves speed of deposit processing, improving robustness of staking infrastructure." }
+    },
     "stakeholderImpacts": {
       "endUsers": { "impact": "Low", "description": "No impact on normal transactions, only improved the process of becoming a validator" },
       "appDevs": { "impact": "Low", "description": "Contracts are not affected" },
@@ -485,6 +499,10 @@
       }
     ],
     "laymanDescription": "A new system contract that lets the withdrawal credential owner trigger a validator exit onchain without the need for BLS validator key on CL.",
+    "northStars": ["Improve UX"],
+    "northStarAlignment": {
+      "improveUX": { "description": "Provides a safer, more direct exit mechanism from the execution layer, reducing operational risk and simplifying validator management." }
+    },
     "stakeholderImpacts": {
       "endUsers": { "impact": "Low", "description": "Improves safety and UX of staking services that users interact with." },
       "appDevs": { "impact": "Low", "description": "Staking protocols gain a safer, onchain way to coordinate exits." },
@@ -538,6 +556,11 @@
       }
     ],
     "laymanDescription": "Introduces new validator maximum effective balance of 2048 ETH, instead of exactly 32 ETH, allowing compounding into larger individual validators that reward on each extra ETH above 32.",
+    "northStars": ["Scale L1", "Improve UX"],
+    "northStarAlignment": {
+      "scaleL1": { "description": "Reduces Beacon Chain overhead by consolidating validators, improving scalability of the consensus layer." },
+      "improveUX": { "description": "Simplifies operations for large stakers and staking providers, improves experience for compounding stake." }
+    },
     "stakeholderImpacts": {
       "endUsers": { "impact": "Low", "description": "No direct impact on regular users." },
       "appDevs": { "impact": "None", "description": "No changes for smart contracts." },
@@ -626,6 +649,10 @@
       }
     ],
     "laymanDescription": "Simplifies the structure of validator attestations by moving the committee index field outside the signed message, making verification and aggregation cheaper.",
+    "northStars": ["Scale L1"],
+    "northStarAlignment": {
+      "scaleL1": { "description": "Reduces consensus layer overhead for attestation validation and aggregation, improving performance and paving the way for higher throughput." }
+    },
     "stakeholderImpacts": {
       "endUsers": { "impact": "Low", "description": "No direct impact" },
       "appDevs": { "impact": "None", "description": "No changes to applications." },
@@ -945,6 +972,11 @@
       }
     ],
     "laymanDescription": "Creates a standard way to communicate messages from EL contracts to CL, providing space to various request types in the future.",
+    "northStars": ["Improve UX", "Scale L1"],
+    "northStarAlignment": {
+      "improveUX": { "description": "Simplifies EL to CL feature development, enabling safer, more native operations for users and validators." },
+      "scaleL1": { "description": "Standardizes messaging from the execution layer, reducing complexity as the protocol evolves and enabling more efficiency." }
+    },
     "stakeholderImpacts": {
       "endUsers": { "impact": "Low", "description": "No changes for users." },
       "appDevs": { "impact": "Low", "description": "Smart contract developers can now utilize new features to communicate with Beacon chain" },
@@ -1001,6 +1033,10 @@
       }
     ],
     "laymanDescription": "Doubles the target number of blobs per block (and raises the max) to increase L2 data capacity until future upgrades enable even more blobs.",
+    "northStars": ["Scale blobs"],
+    "northStarAlignment": {
+      "scaleBlobs": { "description": "Directly increases data availability for rollups by raising blob capacity, improving throughput." }
+    },
     "stakeholderImpacts": {
       "endUsers": { "impact": "Medium", "description": "Lower fees on L2s as more blob space becomes available." },
       "appDevs": { "impact": "Low", "description": "Rollup apps benefit from cheaper data availability." },
@@ -1106,6 +1142,10 @@
       }
     ],
     "laymanDescription": "Enables an address to delegate its control to an existing smart contract, creating an account abstracted wallet with new programmable features.",
+    "northStars": ["Improve UX"],
+    "northStarAlignment": {
+      "improveUX": { "description": "Brings account abstraction benefits to EOAs, creating new smart wallets with features allowing for better security, batching, recovery, and gassless transactions." }
+    },
     "stakeholderImpacts": {
       "endUsers": { "impact": "High", "description": "Better wallet UX with new features without migrating to a new address." },
       "appDevs": { "impact": "Medium", "description": "Dapps can levarage new smart wallet features and enables users to do more complex operations easily." },
@@ -1606,6 +1646,10 @@
       }
     ],
     "laymanDescription": "Adds a new blob related parameters to client config so targets, maximums, and fee adjustments can be easily configured.",
+    "northStars": ["Scale blobs"],
+    "northStarAlignment": {
+      "scaleBlobs": { "description": "Enables easier configuration for blob target value and its scaling in the future." }
+    },
     "stakeholderImpacts": {
       "endUsers": { "impact": "Low", "description": "No direct impact." },
       "appDevs": { "impact": "Low", "description": "No changes for contract developers." },

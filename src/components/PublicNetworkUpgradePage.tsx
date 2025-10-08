@@ -143,7 +143,7 @@ const PublicNetworkUpgradePage: React.FC<PublicNetworkUpgradePageProps> = ({
         .map(eip => {
           const layer = getHeadlinerLayer(eip, forkName);
           const inclusionStage = getInclusionStage(eip, forkName);
-          const isSFI = inclusionStage === 'Scheduled for Inclusion';
+          const isSFI = inclusionStage === 'Scheduled for Inclusion' || inclusionStage === 'Included';
           const starSymbol = isSFI ? '★' : '☆';
 
           return {
@@ -156,7 +156,7 @@ const PublicNetworkUpgradePage: React.FC<PublicNetworkUpgradePageProps> = ({
     ] : []),
     // For non-Glamsterdam forks, show all EIP sections
     ...(forkName.toLowerCase() !== 'glamsterdam' ? [
-      ...['Scheduled for Inclusion', 'Considered for Inclusion', 'Proposed for Inclusion', 'Declined for Inclusion']
+      ...['Included', 'Scheduled for Inclusion', 'Considered for Inclusion', 'Proposed for Inclusion', 'Declined for Inclusion']
         .flatMap(stage => {
           // For Glamsterdam, exclude headliners from "Proposed for Inclusion" since they have their own section
           const stageEips = eips.filter(eip => {
@@ -198,7 +198,7 @@ const PublicNetworkUpgradePage: React.FC<PublicNetworkUpgradePageProps> = ({
           const eipItems = sortedEips.map(eip => {
             const isHeadlinerEip = isHeadliner(eip, forkName);
             const inclusionStage = getInclusionStage(eip, forkName);
-            const isSFI = inclusionStage === 'Scheduled for Inclusion';
+            const isSFI = inclusionStage === 'Scheduled for Inclusion' || inclusionStage === 'Included';
 
             // Use filled star for SFI EIPs, empty star for other headliners in Glamsterdam
             const starSymbol = forkName.toLowerCase() === 'glamsterdam'
@@ -597,6 +597,7 @@ const PublicNetworkUpgradePage: React.FC<PublicNetworkUpgradePageProps> = ({
 
               {/* EIPs Grouped by Stage */}
               {[
+                { stage: 'Included', description: 'EIPs that were included in this network upgrade.' },
                 { stage: 'Scheduled for Inclusion', description: 'EIPs that client teams have agreed to implement in the next upgrade devnet. These are very likely to be included in the final upgrade.' },
                 { stage: 'Considered for Inclusion', description: 'EIPs that client teams are positive towards. Implementation may begin, but inclusion is not yet guaranteed.' },
                 { stage: 'Proposed for Inclusion', description: 'EIPs that have been proposed for this upgrade but are still under initial review by client teams.' },
@@ -749,8 +750,8 @@ const PublicNetworkUpgradePage: React.FC<PublicNetworkUpgradePageProps> = ({
                                         {isHeadliner(eip, forkName) && (
                                           <Tooltip
                                             text={(() => {
-                                              const inclusionStage = getInclusionStage(eip, forkName);
-                                              const isSFI = inclusionStage === 'Scheduled for Inclusion';
+                                            const inclusionStage = getInclusionStage(eip, forkName);
+                                            const isSFI = inclusionStage === 'Scheduled for Inclusion' || inclusionStage === 'Included';
                                               if (forkName.toLowerCase() === 'glamsterdam') {
                                                 return isSFI
                                                   ? "Confirmed headliner scheduled for inclusion in this network upgrade"
@@ -764,8 +765,8 @@ const PublicNetworkUpgradePage: React.FC<PublicNetworkUpgradePageProps> = ({
                                               className="text-purple-400 hover:text-purple-600 dark:text-purple-500 dark:hover:text-purple-400 mr-2 transition-colors cursor-help"
                                             >
                                               {(() => {
-                                                const inclusionStage = getInclusionStage(eip, forkName);
-                                                const isSFI = inclusionStage === 'Scheduled for Inclusion';
+                                              const inclusionStage = getInclusionStage(eip, forkName);
+                                              const isSFI = inclusionStage === 'Scheduled for Inclusion' || inclusionStage === 'Included';
                                                 return forkName.toLowerCase() === 'glamsterdam'
                                                   ? (isSFI ? '★' : '☆')
                                                   : '★';

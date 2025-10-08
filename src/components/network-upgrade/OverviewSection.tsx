@@ -43,6 +43,11 @@ export const OverviewSection: React.FC<OverviewSectionProps> = ({
 
   const stageStats = [
     {
+      stage: 'Included',
+      count: eips.filter(eip => getInclusionStage(eip, forkName) === 'Included').length,
+      color: 'bg-emerald-50 text-emerald-800 dark:bg-emerald-900/20 dark:text-emerald-300'
+    },
+    {
       stage: 'Proposed for Inclusion',
       count: eips.filter(eip => getInclusionStage(eip, forkName) === 'Proposed for Inclusion').length,
       color: 'bg-slate-100 text-slate-700 dark:bg-slate-700 dark:text-slate-300'

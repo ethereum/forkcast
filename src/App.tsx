@@ -49,7 +49,7 @@ function AnalyticsTracker() {
 function App() {
   const fusakaUpgrade = getUpgradeById('fusaka')!;
   const glamsterdamUpgrade = getUpgradeById('glamsterdam')!;
-  // const pectraUpgrade = getUpgradeById('pectra')!;
+  const pectraUpgrade = getUpgradeById('pectra')!;
 
   return (
     <ThemeProvider>
@@ -79,15 +79,14 @@ function App() {
           } />
           <Route path="/rank" element={<RankPage />} />
           <Route path="/feedback" element={<ExternalRedirect />} />
-          {/* <Route path="/upgrade/pectra" element={
+          <Route path="/upgrade/pectra" element={
             <PublicNetworkUpgradePage
               forkName="Pectra"
               displayName={pectraUpgrade.name}
               description={pectraUpgrade.description}
-              activationDate={pectraUpgrade.activationDate}
               status={pectraUpgrade.status}
             />
-          } /> */}
+          } />
           {/* Catch-all route that redirects to home page */}
           <Route path="*" element={<Navigate to="/" replace />} />
         </Routes>

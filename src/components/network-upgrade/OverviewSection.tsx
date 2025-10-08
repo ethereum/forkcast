@@ -30,6 +30,11 @@ export const OverviewSection: React.FC<OverviewSectionProps> = ({
       color: 'bg-amber-50 text-amber-700 dark:bg-amber-900/20 dark:text-amber-300'
     },
     {
+      stage: 'Included',
+      count: eips.filter(eip => getInclusionStage(eip, forkName) === 'Included').length,
+      color: 'bg-emerald-50 text-emerald-800 dark:bg-emerald-900/20 dark:text-emerald-300'
+    },
+    {
       stage: 'Scheduled for Inclusion',
       count: eips.filter(eip => getInclusionStage(eip, forkName) === 'Scheduled for Inclusion').length,
       color: 'bg-green-50 text-green-700 dark:bg-green-900/20 dark:text-green-300'
@@ -76,6 +81,24 @@ export const OverviewSection: React.FC<OverviewSectionProps> = ({
                     onClick={() => onStageClick('eip-7805')}
                     className="bg-transparent border-none p-0 m-0 font-inherit text-emerald-900 dark:text-emerald-100 hover:text-emerald-700 dark:hover:text-emerald-300 underline decoration-1 underline-offset-2 transition-colors cursor-pointer"
                   >EIP-7805 (FOCIL)</button></strong> has also moved to <strong>Considered</strong> status. Non-headliner EIPs can now be proposed.
+                </p>
+              </div>
+            </div>
+          </div>
+        </>
+      )}
+
+      {forkName.toLowerCase() === 'pectra' && (
+        <>
+          <div className="mb-6 p-4 bg-emerald-50 dark:bg-emerald-900/20 border border-emerald-200 dark:border-emerald-700 rounded">
+            <div className="flex items-start gap-3">
+              <svg className="w-5 h-5 text-emerald-600 dark:text-emerald-400 mt-0.5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+              </svg>
+              <div>
+                <h4 className="font-medium text-emerald-900 dark:text-emerald-100 text-sm mb-1">Pectra is activated!</h4>
+                <p className="text-emerald-800 dark:text-emerald-200 text-xs leading-relaxed">
+                  The Pectra upgrade went live mainnet on May 7 2025, at epoch 364032. EIPs listed below are now active on Ethereum.
                 </p>
               </div>
             </div>

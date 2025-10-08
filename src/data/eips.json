@@ -14,6 +14,10 @@
       {
         "forkName": "Fusaka",
         "status": "Declined"
+      },
+      {
+        "forkName": "Pectra",
+        "status": "Considered"
       }
     ],
     "laymanDescription": "This adds three new EVM instructions (DUPN, SWAPN, and EXCHANGE) that allow smart contracts to access and manipulate stack items beyond the current 16-item limit, reaching up to 256 items deep. Currently, the EVM stack can hold 1024 items but only the top 16 are easily accessible. These new instructions help compilers write more efficient code for complex functions with many variables by providing better stack management capabilities. The feature only works with the new EOF bytecode format, not legacy contracts."
@@ -172,6 +176,10 @@
       {
         "forkName": "Fusaka",
         "status": "Declined"
+      },
+      {
+        "forkName": "Pectra",
+        "status": "Considered"
       }
     ],
     "laymanDescription": "This introduces EVM Object Format (EOF), a new standardized container for smart contract bytecode that gets validated once when deployed rather than every time it runs. EOF separates code from data, making contracts more structured and analyzable. It enables future EVM improvements like better jump instructions, multibyte opcodes, and function representations. The format is extensible and versioned, allowing gradual introduction of new features. Only new contracts can use EOF - existing contracts remain unchanged. This is the foundation that makes other EOF-related improvements possible."
@@ -191,6 +199,10 @@
       {
         "forkName": "Fusaka",
         "status": "Declined"
+      },
+      {
+        "forkName": "Pectra",
+        "status": "Considered"
       }
     ],
     "laymanDescription": "This adds strict validation rules for EOF smart contracts when they're deployed. It rejects contracts with invalid bytecode, such as incomplete PUSH instructions or undefined opcodes. It also removes deprecated instructions like CALLCODE and SELFDESTRUCT from EOF contracts. This validation only happens once at deployment time and only affects new EOF contracts - existing legacy contracts remain unchanged. The goal is to make bytecode more predictable and easier to reason about, while ensuring all EVM implementations handle code the same way."
@@ -210,6 +222,10 @@
       {
         "forkName": "Fusaka",
         "status": "Declined"
+      },
+      {
+        "forkName": "Pectra",
+        "status": "Considered"
       }
     ],
     "laymanDescription": "This introduces three new jump instructions (RJUMP, RJUMPI, and RJUMPV) for EOF contracts that use relative addressing instead of absolute addressing. These instructions are more gas-efficient than traditional JUMP/JUMPI instructions, don't require JUMPDEST markers, and make code analysis easier. RJUMP does unconditional jumps, RJUMPI does conditional jumps, and RJUMPV provides jump tables for switch-case scenarios. The relative addressing means code can be moved around without breaking, and the static nature allows for better optimization and validation at deployment time."
@@ -229,6 +245,10 @@
       {
         "forkName": "Fusaka",
         "status": "Declined"
+      },
+      {
+        "forkName": "Pectra",
+        "status": "Considered"
       }
     ],
     "laymanDescription": "This introduces proper function support to EOF contracts by allowing multiple code sections, each representing a separate function. It adds two new instructions: CALLF to call functions and RETF to return from them. Functions have defined input/output parameters and their own isolated stack, improving code organization and analysis. Dynamic jumps (JUMP/JUMPI) are completely removed in favor of static function calls, making contracts more predictable and easier to optimize. A return stack tracks function call history, and JUMPDEST becomes a simple NOP instruction since jump analysis is no longer needed."
@@ -300,6 +320,10 @@
       {
         "forkName": "Fusaka",
         "status": "Declined"
+      },
+      {
+        "forkName": "Pectra",
+        "status": "Considered"
       }
     ],
     "laymanDescription": "This adds comprehensive stack validation to EOF contracts at deployment time, ensuring that stack underflow and overflow cannot happen during execution. By analyzing all possible code paths and tracking stack heights, it eliminates the need for most runtime stack checks, making execution faster and more predictable. Only CALLF and JUMPF instructions need runtime stack overflow checks. The validation also prevents deployment of unreachable code and ensures proper function termination. This creates guarantees that enable better compiler optimizations and ahead-of-time compilation while maintaining linear validation complexity."
@@ -403,6 +427,10 @@
       {
         "forkName": "Fusaka",
         "status": "Declined"
+      },
+      {
+        "forkName": "Pectra",
+        "status": "Considered"
       }
     ],
     "laymanDescription": "This introduces the JUMPF instruction for EOF contracts, enabling tail call optimization by jumping to code sections without adding return stack frames. It also introduces non-returning functions - sections that never return control to their caller. This is particularly efficient for error handling helpers that end with REVERT, allowing compilers to generate more optimal code with reduced gas costs and smaller bytecode size. Functions can jump to other functions with fewer outputs, and non-returning functions don't need to clean up extra stack items before terminating."
@@ -596,6 +624,10 @@
       {
         "forkName": "Fusaka",
         "status": "Declined"
+      }, 
+      {
+        "forkName": "Pectra",
+        "status": "Considered"
       }
     ],
     "laymanDescription": "This introduces four new instructions for EOF contracts to access their data section: DATALOAD (loads 32-byte word), DATALOADN (optimized version with compile-time offset), DATASIZE (returns data section size), and DATACOPY (copies data to memory). These replace the deprecated CODECOPY instruction for data access in EOF contracts, enabling proper separation between code and data. The instructions follow the same pattern as existing data access instructions like those for calldata and returndata, with zero-padding for out-of-bounds access and validation to ensure safe operation."
@@ -633,6 +665,43 @@
       "Unlocks new cross-chain application possibilities",
       "Reduces gas costs for state proof verification",
       "Essential infrastructure for stateless applications"
+    ]
+  },
+  {
+    "id": 7547,
+    "title": "EIP-7547: Inclusion lists",
+    "status": "Stagnant",
+    "description": "Add an inclusion list mechanism to allow forced transaction inclusion.",
+    "author": "mike (@michaelneuder), Vitalik (@vbuterin), Francesco (@fradamt), Terence (@terencechain), potuz (@potuz), Manav (@manav2401)",
+    "type": "Standards Track",
+    "category": "Core",
+    "createdDate": "2023-10-24",
+    "discussionLink": "https://ethereum-magicians.org/t/eip-7547-inclusion-lists/17474",
+    "reviewer": "bot",
+    "forkRelationships": [
+      {
+        "forkName": "Pectra",
+        "status": "Considered"
+      }
+    ],
+    "laymanDescription": "Introduces inclusion lists so proposers can require that specific transactions be included promptly, improving censorship resistance.",
+    "northStars": ["Improve UX"],
+    "northStarAlignment": {
+      "improveUX": { "description": "Ensures users' transactions are included in a timely manner, reducing censorship uncertainty and improving user experience." }
+    },
+    "stakeholderImpacts": {
+      "endUsers": { "description": "Greater assurance that their transactions will not be censored and will be included quickly." },
+      "appDevs": { "description": "Can build applications with stronger guarantees around transaction inclusion, e.g. privacy perserving protocols." },
+      "walletDevs": { "description": "No direct changes in regular user wallets." },
+      "toolingInfra": { "description": "Analytic tools for censored transactions can follow changes introduced by ILs" },
+      "layer2s": { "description": "L2s relying on timely L1 inclusion benefit from improved censorship resistance and liveness." },
+      "stakersNodes": { "description": "Validators will have to comply with commitment to supplied inclusion lists when creating blocks." },
+      "clClients": { "description": "Consensus and validator clients must support inclusion list rules and validation." },
+      "elClients": { "description": "Execution clients may need to validate inclusion list commitments." }
+    },
+    "benefits": [
+      "Improves censorship resistance by enabling forced transaction inclusion",
+      "Strengthens neutrality, makes it easier to use potentially censored protocols"
     ]
   },
   {

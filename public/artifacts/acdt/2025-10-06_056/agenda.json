@@ -1,33 +1,32 @@
 {
+    "executive_summary": "The call primarily focused on post-Holesky observations, readiness for the upcoming BPO-1 activation, and coordination around new devnets. Holesky was confirmed to have forked successfully but revealed participation and disk-space issues requiring maintenance. Teams discussed the sunset of Holesky at the end of the month. Preparations for BPO-1 were nearly complete, with client releases out and monitoring active. In parallel, testing updates centered on 60M gas limit experiments and state test progress. Glamsterdam-related discussions emphasized coordination for BAL and ePBS devnet-0, including ensuring branches exist in main repos and updating tools like blob spammers. The overall tone was confident and collaborative, with continued emphasis on operational readiness and test coordination.",
     "agenda": [
       {
         "section": "Fusaka",
         "items": [
           {
-            "start_timestamp": "00:13:22",
-            "title": "Holesky fork post-mortem and participation drop",
-            "summary": "The Fusaka Holesky fork completed recently; participation rates dropped from 95% to about 75% due to underpowered or over-provisioned supernodes and increased validator duties.",
-            "decision": null
-          },
-          {
-            "start_timestamp": "00:17:55",
-            "title": "Client behavior at fork boundary",
-            "summary": "Teams confirmed clients switch at the fork boundary as expected, with no major inconsistencies reported.",
-            "decision": null
+            "start_timestamp": "00:12:34",
+            "title": "Holesky fork outcome and BPO-1 countdown",
+            "summary": "Participants noted the successful Holesky fork and upcoming BPO-1 activation within roughly 12 hours. Client releases were confirmed, and readiness checks were ongoing. Minor stability and disk issues were mentioned but no major blocking incidents.",
+            "decision": null,
+            "action_items": []
           },
           {
             "start_timestamp": "00:19:25",
-            "title": "Relay and builder unavailability on Holesky",
-            "summary": "Builders and relays are currently not functioning on Holesky, though they are expected to work properly on Sepolia and Hoodi.",
-            "decision": null
+            "title": "Relay/builder status and Holesky maintenance",
+            "summary": "Teams reported missing relay/builder functionality on Holesky while confirming expected coverage on Sepolia and Hoodi. Some nodes experienced disk exhaustion, prompting plans for maintenance before the network’s end-of-life at month end.",
+            "decision": "Holesky will reach end-of-life at the end of the month.",
+            "action_items": [
+              { "what": "Perform node maintenance to recover from disk exhaustion", "who": "Client and Infra teams", "timestamp": "00:21:24" }
+            ]
           },
           {
-            "start_timestamp": "00:20:03",
-            "title": "Holesky end-of-life and maintenance needs",
-            "summary": "Holesky is scheduled for end-of-life at the end of the month; teams observed nodes running out of disk space and will conduct maintenance to recover affected nodes.",
+            "start_timestamp": "00:22:34",
+            "title": "Blob spammer update for new blob limits",
+            "summary": "Testing teams discussed updating the blob spammer tool to align with new blob limit parameters in upcoming forks. Confirmation was given that the modification will be implemented.",
             "decision": null,
             "action_items": [
-              { "what": "Perform node maintenance to address disk exhaustion", "who": "Testing teams" }
+              { "what": "Modify blob spammer to use new blob limits", "who": "Testing Team", "timestamp": "00:23:05" }
             ]
           }
         ]
@@ -36,25 +35,18 @@
         "section": "Gas limit testing update",
         "items": [
           {
-            "start_timestamp": "00:22:34",
-            "title": "Blob spammer update for new blob limits",
-            "summary": "The blob spammer will be modified to support updated blob limits in ongoing tests.",
+            "start_timestamp": "00:08:55",
+            "title": "Devnet-3 non-finality test duration",
+            "summary": "Discussion clarified the non-finality period tested on devnet-3 was approximately two days, not three. This helped set parameters for continued gas limit and state testing efforts.",
             "decision": null,
-            "action_items": [
-              { "what": "Update blob spammer to reflect new blob limits", "who": "Testing teams" }
-            ]
-          },
-          {
-            "start_timestamp": "00:23:47",
-            "title": "Client fuzz testing active",
-            "summary": "Fuzz testing continues under the EF testing initiative to validate client behavior under new conditions.",
-            "decision": null
+            "action_items": []
           },
           {
             "start_timestamp": "00:26:34",
-            "title": "Execution API updates",
-            "summary": "Execution API PR #691 was highlighted as relevant to current testing efforts.",
-            "decision": null
+            "title": "Execution API proposal reference",
+            "summary": "Reference shared to an Execution API pull request, suggesting incremental alignment with upcoming fork behavior. No direct decisions were made but it was noted as part of gas limit and testing context.",
+            "decision": null,
+            "action_items": []
           }
         ]
       },
@@ -63,30 +55,39 @@
         "items": [
           {
             "start_timestamp": "00:28:21",
-            "title": "BAL devnet 0 progress",
-            "summary": "Links shared for BAL devnet 0 tracking; teams requested that BAL branches be hosted in main client repositories for easier discovery.",
+            "title": "BAL devnet-0 coordination",
+            "summary": "Links were shared for BAL devnet-0 dashboards and notes. Teams discussed simplifying branch discovery by publishing BAL-related branches directly under main repositories.",
             "decision": null,
             "action_items": [
-              { "what": "Publish bal-devnet-0 branches in main repos", "who": "Client teams" }
+              { "what": "Publish BAL devnet-0 branches in main client repositories", "who": "Client teams", "timestamp": "00:29:29" }
             ]
           },
           {
             "start_timestamp": "00:30:56",
-            "title": "ePBS devnet coordination",
-            "summary": "The same main-repo branch rule will apply to epbs-devnet-0; an upcoming ePBS breakout call agenda was shared along with the devnet 0 notes link.",
+            "title": "ePBS devnet-0 setup",
+            "summary": "Teams confirmed ePBS devnet-0 initialization and discussed alignment on branch organization. A link to ePBS devnet-0 documentation was shared along with the ePBS breakout agenda for follow-up.",
             "decision": null,
             "action_items": [
-              { "what": "Apply main-branch rule to epbs-devnet-0", "who": "Client teams" }
+              { "what": "Apply same main-branch rule for ePBS devnet-0", "who": "Client teams", "timestamp": "00:30:56" }
             ]
           },
           {
             "start_timestamp": "00:33:18",
-            "title": "ePBS devnet 0 beta and follow-up",
-            "summary": "ePBS devnet 0 entered beta phase; following the upcoming payments decision, additional spec updates may occur.",
-            "decision": null
+            "title": "Beta release and upcoming spec updates",
+            "summary": "The beta0 tag for devnet-0 was confirmed. Participants briefly discussed potential additional spec updates following an upcoming payments decision.",
+            "decision": null,
+            "action_items": []
+          },
+          {
+            "start_timestamp": "00:37:13",
+            "title": "Relay fallback behavior and consistency check",
+            "summary": "Discussion covered relay behavior in block signing and fallback logic. Consensus was that all clients should review and align on common implementation to maintain consistency.",
+            "decision": null,
+            "action_items": [
+              { "what": "Check all client implementations for relay fallback behavior consistency", "who": "Client teams", "timestamp": "00:38:10" }
+            ]
           }
         ]
       }
     ]
   }
-  

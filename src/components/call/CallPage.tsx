@@ -795,7 +795,7 @@ const CallPage: React.FC = () => {
               >
                 <div className="flex items-center gap-2">
                   <h2 className="text-sm font-semibold text-slate-900 dark:text-slate-100">
-                    {callData.agendaData ? 'Agenda' : 'Summary'}
+                    Summary
                   </h2>
                   <div className="flex items-center gap-2">
                     {callData.agendaData ? (

@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 
 interface ActionItem {
   what: string;
@@ -37,10 +37,13 @@ interface AgendaSummaryProps {
   onTimestampClick?: (timestamp: string) => void;
   syncConfig?: SyncConfig;
   currentVideoTime?: number;
+  selectedSearchResult?: {timestamp: string, text: string, type: string} | null;
 }
 
-const AgendaSummary: React.FC<AgendaSummaryProps> = ({ data, onTimestampClick, syncConfig, currentVideoTime = 0 }) => {
+const AgendaSummary: React.FC<AgendaSummaryProps> = ({ data, onTimestampClick, syncConfig, currentVideoTime = 0, selectedSearchResult }) => {
   const [expandedItems, setExpandedItems] = useState<Set<number>>(new Set());
+  const containerRef = useRef<HTMLDivElement>(null);
+  const lastScrolledSearchResult = useRef<string | null>(null);
   const formatTimestamp = (timestamp: string): string => {
     // Convert "00:08:55" to "8:55" for display
     const [hours, minutes, seconds] = timestamp.split(':');
@@ -127,8 +130,96 @@ const AgendaSummary: React.FC<AgendaSummaryProps> = ({ data, onTimestampClick, s
     return currentVideoTime >= itemVideoTime && currentVideoTime < nextItemVideoTime;
   };
 
+  // Check if an agenda item is selected from search
+  const isSelectedFromSearch = (item: AgendaItem, type: 'agenda' | 'action'): boolean => {
+    if (!selectedSearchResult) return false;
+    if (selectedSearchResult.type !== type) return false;
+
+    if (type === 'agenda') {
+      return selectedSearchResult.timestamp === item.start_timestamp &&
+             selectedSearchResult.text === item.title;
+    }
+
+    return false; // For action items, we'll check individually
+  };
+
+  // Check if an action item is selected from search
+  const isActionSelectedFromSearch = (actionItem: ActionItem): boolean => {
+    if (!selectedSearchResult || selectedSearchResult.type !== 'action') return false;
+    return selectedSearchResult.text === actionItem.what;
+  };
+
+  // Auto-expand and scroll to selected search result
+  useEffect(() => {
+    if (!selectedSearchResult) {
+      lastScrolledSearchResult.current = null;
+      return;
+    }
+
+    // Create a unique key for this search result to prevent duplicate scrolling
+    const searchResultKey = `${selectedSearchResult.type}-${selectedSearchResult.timestamp}-${selectedSearchResult.text}`;
+
+    // Skip if we've already scrolled to this exact search result
+    if (lastScrolledSearchResult.current === searchResultKey) {
+      return;
+    }
+
+    lastScrolledSearchResult.current = searchResultKey;
+
+    if (selectedSearchResult.type === 'agenda') {
+      // Find and expand the selected agenda item
+      const selectedIndex = allItems.findIndex(item =>
+        item.start_timestamp === selectedSearchResult.timestamp &&
+        item.title === selectedSearchResult.text
+      );
+
+      if (selectedIndex !== -1) {
+        setExpandedItems(prev => new Set([...prev, selectedIndex]));
+
+        // Scroll to the selected item after a brief delay
+        setTimeout(() => {
+          if (containerRef.current) {
+            const selectedElement = containerRef.current.querySelector(`[data-agenda-index="${selectedIndex}"]`) as HTMLElement;
+            if (selectedElement) {
+              selectedElement.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            }
+          }
+        }, 100);
+      }
+    } else if (selectedSearchResult.type === 'action') {
+      // Find and expand the agenda item containing the selected action
+      let foundIndex = -1;
+      allItems.forEach((item, index) => {
+        if (item.action_items?.some(action => action.what === selectedSearchResult.text)) {
+          foundIndex = index;
+        }
+      });
+
+      if (foundIndex !== -1) {
+        setExpandedItems(prev => new Set([...prev, foundIndex]));
+
+        // Scroll to the action item after a brief delay
+        setTimeout(() => {
+          if (containerRef.current) {
+            // Try to find the specific action item in right column first
+            let targetElement = containerRef.current.querySelector(`[data-action-text="${selectedSearchResult.text}"]`) as HTMLElement;
+
+            // If not found, try in the expanded agenda section
+            if (!targetElement) {
+              targetElement = containerRef.current.querySelector(`[data-agenda-index="${foundIndex}"]`) as HTMLElement;
+            }
+
+            if (targetElement) {
+              targetElement.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            }
+          }
+        }, 300); // Longer delay to allow expansion animation
+      }
+    }
+  }, [selectedSearchResult, allItems]);
+
   return (
-    <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+    <div ref={containerRef} className="grid grid-cols-1 lg:grid-cols-3 gap-6">
       {/* Left Column: Executive Summary + Agenda Details - Takes up 2/3 of the width */}
       <div className="lg:col-span-2 space-y-6">
         {/* Executive Summary Section */}
@@ -156,13 +247,17 @@ const AgendaSummary: React.FC<AgendaSummaryProps> = ({ data, onTimestampClick, s
                 globalItem.title === item.title
               );
               const isHighlighted = isCurrentItem(item.start_timestamp, globalIndex);
+              const isSelectedSearch = isSelectedFromSearch(item, 'agenda');
               const isExpanded = expandedItems.has(index);
 
               return (
                 <div
                   key={index}
+                  data-agenda-index={index}
                   className={`border border-slate-200 dark:border-slate-700 border-l-3 border-l-blue-200 dark:border-l-blue-700/50 rounded-lg overflow-hidden transition-all duration-200 ${
-                    isHighlighted
+                    isSelectedSearch
+                      ? 'bg-yellow-50 dark:bg-yellow-900/20 border-l-yellow-500'
+                      : isHighlighted
                       ? 'bg-blue-50 dark:bg-blue-900/30 border-l-blue-500'
                       : item.decision === true
                       ? 'border-l-green-500 bg-green-50/30 dark:bg-green-900/10'
@@ -172,7 +267,9 @@ const AgendaSummary: React.FC<AgendaSummaryProps> = ({ data, onTimestampClick, s
                   <button
                     onClick={() => toggleItem(index)}
                     className={`w-full px-4 py-3 text-left hover:bg-blue-50/50 dark:hover:bg-blue-950/15 transition-colors flex items-center justify-between cursor-pointer ${
-                      isHighlighted
+                      isSelectedSearch
+                        ? 'bg-yellow-50/30 dark:bg-yellow-950/10'
+                        : isHighlighted
                         ? 'bg-blue-50/30 dark:bg-blue-950/10'
                         : item.decision === true
                         ? 'bg-green-50/30 dark:bg-green-950/10'
@@ -184,7 +281,9 @@ const AgendaSummary: React.FC<AgendaSummaryProps> = ({ data, onTimestampClick, s
                       <button
                         onClick={(e) => handleTimestampClick(item.start_timestamp, e)}
                         className={`text-xs w-16 flex-shrink-0 font-mono mt-0.5 transition-colors hover:underline cursor-pointer ${
-                          isHighlighted
+                          isSelectedSearch
+                            ? 'text-yellow-600 dark:text-yellow-400'
+                            : isHighlighted
                             ? 'text-blue-600 dark:text-blue-400'
                             : 'text-slate-500 dark:text-slate-400 hover:text-blue-600 dark:hover:text-blue-400'
                         }`}
@@ -199,7 +298,11 @@ const AgendaSummary: React.FC<AgendaSummaryProps> = ({ data, onTimestampClick, s
                       {/* Content */}
                       <div className="flex-1 min-w-0">
                         <div className="flex items-center gap-2 mb-1">
-                          <h4 className="text-sm font-medium text-slate-900 dark:text-slate-100 leading-tight">
+                          <h4 className={`text-sm font-medium leading-tight ${
+                            isSelectedSearch
+                              ? 'text-yellow-900 dark:text-yellow-100'
+                              : 'text-slate-900 dark:text-slate-100'
+                          }`}>
                             {item.title}
                           </h4>
                           {item.decision === true && (
@@ -236,13 +339,19 @@ const AgendaSummary: React.FC<AgendaSummaryProps> = ({ data, onTimestampClick, s
                             Actions
                           </h5>
                           <div className="space-y-3">
-                            {item.action_items.map((step, stepIndex) => (
+                            {item.action_items.map((step, stepIndex) => {
+                              const isActionSelected = isActionSelectedFromSearch(step);
+                              return (
                               <div key={stepIndex} className="text-sm">
                                 <div className="flex items-start gap-2">
                                   {step.timestamp && (
                                     <button
                                       onClick={(e) => handleTimestampClick(step.timestamp!, e)}
-                                      className="text-xs font-mono text-blue-600 dark:text-blue-400 hover:underline cursor-pointer flex-shrink-0 mt-0.5"
+                                      className={`text-xs font-mono hover:underline cursor-pointer flex-shrink-0 mt-0.5 ${
+                                        isActionSelected
+                                          ? 'text-yellow-600 dark:text-yellow-400'
+                                          : 'text-blue-600 dark:text-blue-400'
+                                      }`}
                                       title="Click to jump to this time in the video"
                                     >
                                       {syncConfig?.transcriptStartTime && syncConfig?.videoStartTime
@@ -254,22 +363,35 @@ const AgendaSummary: React.FC<AgendaSummaryProps> = ({ data, onTimestampClick, s
                                   <div className="flex-1 min-w-0">
                                     {step.who ? (
                                       <>
-                                        <div className="font-medium text-slate-600 dark:text-slate-400 mb-1">
+                                        <div className={`font-medium mb-1 ${
+                                          isActionSelected
+                                            ? 'text-yellow-900 dark:text-yellow-100'
+                                            : 'text-slate-600 dark:text-slate-400'
+                                        }`}>
                                           {step.who}
                                         </div>
-                                        <div className="text-slate-500 dark:text-slate-500 leading-snug">
+                                        <div className={`leading-snug ${
+                                          isActionSelected
+                                            ? 'text-slate-900 dark:text-slate-100'
+                                            : 'text-slate-500 dark:text-slate-500'
+                                        }`}>
                                           {step.what}
                                         </div>
                                       </>
                                     ) : (
-                                      <div className="text-slate-500 dark:text-slate-500 leading-snug">
+                                      <div className={`leading-snug ${
+                                        isActionSelected
+                                          ? 'text-slate-900 dark:text-slate-100'
+                                          : 'text-slate-500 dark:text-slate-500'
+                                      }`}>
                                         {step.what}
                                       </div>
                                     )}
                                   </div>
                                 </div>
                               </div>
-                            ))}
+                              );
+                            })}
                           </div>
                         </div>
                       )}
@@ -291,18 +413,35 @@ const AgendaSummary: React.FC<AgendaSummaryProps> = ({ data, onTimestampClick, s
           {allItems.map((item, itemIndex) => {
             if (!item.action_items || item.action_items.length === 0) return null;
 
-            return item.action_items.map((step, stepIndex) => (
-              <div key={`${itemIndex}-${stepIndex}`} className="bg-green-50/30 dark:bg-green-950/10 border border-green-200 dark:border-green-800/30 rounded-lg p-3">
+            return item.action_items.map((step, stepIndex) => {
+              const isActionSelected = isActionSelectedFromSearch(step);
+              return (
+              <div
+                key={`${itemIndex}-${stepIndex}`}
+                data-action-text={step.what}
+                className={`rounded-lg p-3 border ${
+                  isActionSelected
+                    ? 'bg-yellow-50/30 dark:bg-yellow-950/10 border-yellow-200 dark:border-yellow-800/30'
+                    : 'bg-green-50/30 dark:bg-green-950/10 border-green-200 dark:border-green-800/30'
+                }`}>
                 <div className="space-y-2">
                   {/* Header with number and timestamp */}
                   <div className="flex items-center justify-between">
-                    <span className="inline-flex items-center justify-center w-5 h-5 rounded-full bg-green-200 dark:bg-green-800/50 text-green-800 dark:text-green-200 text-xs font-semibold">
+                    <span className={`inline-flex items-center justify-center w-5 h-5 rounded-full text-xs font-semibold ${
+                      isActionSelected
+                        ? 'bg-yellow-200 dark:bg-yellow-800/50 text-yellow-800 dark:text-yellow-200'
+                        : 'bg-green-200 dark:bg-green-800/50 text-green-800 dark:text-green-200'
+                    }`}>
                       {allItems.slice(0, itemIndex).reduce((sum, prevItem) => sum + (prevItem.action_items?.length || 0), 0) + stepIndex + 1}
                     </span>
                     {step.timestamp && (
                       <button
                         onClick={(e) => handleTimestampClick(step.timestamp!, e)}
-                        className="text-xs font-mono text-blue-600 dark:text-blue-400 hover:underline cursor-pointer"
+                        className={`text-xs font-mono hover:underline cursor-pointer ${
+                          isActionSelected
+                            ? 'text-yellow-600 dark:text-yellow-400'
+                            : 'text-blue-600 dark:text-blue-400'
+                        }`}
                         title="Click to jump to this time in the video"
                       >
                         {syncConfig?.transcriptStartTime && syncConfig?.videoStartTime
@@ -316,24 +455,37 @@ const AgendaSummary: React.FC<AgendaSummaryProps> = ({ data, onTimestampClick, s
                   {/* Action content */}
                   <div className="space-y-1">
                     {step.who && (
-                      <div className="text-xs font-medium text-slate-600 dark:text-slate-400">
+                      <div className={`text-xs font-medium ${
+                        isActionSelected
+                          ? 'text-yellow-900 dark:text-yellow-100'
+                          : 'text-slate-600 dark:text-slate-400'
+                      }`}>
                         {step.who}
                       </div>
                     )}
-                    <p className="text-sm text-slate-700 dark:text-slate-300 leading-snug">
+                    <p className={`text-sm leading-snug ${
+                      isActionSelected
+                        ? 'text-slate-900 dark:text-slate-100'
+                        : 'text-slate-700 dark:text-slate-300'
+                    }`}>
                       {step.what}
                     </p>
                   </div>
 
                   {/* Source context */}
-                  <div className="pt-1 border-t border-green-200/50 dark:border-green-800/30">
+                  <div className={`pt-1 border-t ${
+                    isActionSelected
+                      ? 'border-yellow-200/50 dark:border-yellow-800/30'
+                      : 'border-green-200/50 dark:border-green-800/30'
+                  }`}>
                     <p className="text-xs text-slate-500 dark:text-slate-400">
                       From: <span className="font-medium">{item.title}</span>
                     </p>
                   </div>
                 </div>
               </div>
-            ));
+              );
+            });
           })}
         </div>
       </div>

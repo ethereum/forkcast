@@ -88,19 +88,63 @@ export const EipCard: React.FC<EipCardProps> = ({ eip, forkName, handleExternalL
                 )}
               </h3>
               
-              {/* External link - always visible on the right */}
+              {/* External links - always visible on the right */}
               <div className="flex items-center gap-2 relative top-0.5 ml-auto">
+                {/* Discussion link */}
+                {eip.discussionLink && (
+                  <Tooltip text={`View ${getProposalPrefix(eip)}-${eip.id} discussion`}>
+                    <a
+                      href={eip.discussionLink}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      onClick={() => handleExternalLinkClick('discussion', eip.discussionLink)}
+                      className="text-slate-400 hover:text-slate-600 dark:text-slate-500 dark:hover:text-slate-300 transition-colors cursor-pointer relative"
+                    >
+                      <div className="relative w-7.5 h-7.5">
+                        <img 
+                          src="/eth-mag.png" 
+                          alt="Ethereum Magicians" 
+                          className="w-7.5 h-7.5 opacity-90 dark:opacity-70"
+                        />
+                        <svg 
+                          className="absolute -bottom-1 -right-1 w-4 h-4" 
+                          fill="none" 
+                          stroke="currentColor" 
+                          strokeWidth="2"
+                          viewBox="0 0 24 24"
+                        >
+                          <path strokeLinecap="round" strokeLinejoin="round" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
+                        </svg>
+                      </div>
+                    </a>
+                  </Tooltip>
+                )}
+                
+                {/* Specification link */}
                 <Tooltip text={`View ${getProposalPrefix(eip)}-${eip.id} specification`}>
                   <a
                     href={getSpecificationUrl(eip)}
                     target="_blank"
                     rel="noopener noreferrer"
                     onClick={() => handleExternalLinkClick('specification', getSpecificationUrl(eip))}
-                    className="text-slate-400 hover:text-slate-600 dark:text-slate-500 dark:hover:text-slate-300 transition-colors cursor-pointer"
+                    className="text-slate-400 hover:text-slate-600 dark:text-slate-500 dark:hover:text-slate-300 transition-colors cursor-pointer relative"
                   >
-                    <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
-                    </svg>
+                    <div className="relative w-7.5 h-7.5">
+                      <img 
+                        src="/eth-diamond-black.png" 
+                        alt="Ethereum" 
+                        className="w-7.5 h-7.5 opacity-90 dark:opacity-70"
+                      />
+                      <svg 
+                        className="absolute -bottom-1 -right-1 w-4 h-4" 
+                        fill="none" 
+                        stroke="currentColor" 
+                        strokeWidth="2"
+                        viewBox="0 0 24 24"
+                      >
+                        <path strokeLinecap="round" strokeLinejoin="round" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
+                      </svg>
+                    </div>
                   </a>
                 </Tooltip>
               </div>

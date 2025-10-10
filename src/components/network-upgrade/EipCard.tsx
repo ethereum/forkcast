@@ -32,8 +32,17 @@ export const EipCard: React.FC<EipCardProps> = ({ eip, forkName, handleExternalL
       <header className="border-b border-slate-100 dark:border-slate-700 pb-6 mb-6">
         <div className="flex flex-col lg:flex-row lg:items-start lg:justify-between">
           <div className="flex-1">
-            <div className="flex items-center gap-3">
-              <h3 className="text-xl font-medium text-slate-900 dark:text-slate-100 leading-tight">
+            <div className="flex items-center gap-3 group relative">
+              {/* Anchor link - positioned absolutely in the left margin */}
+              <div className="absolute -left-6 top-1/2 -translate-y-1/2 opacity-0 group-hover:opacity-100 transition-opacity duration-200">
+                <CopyLinkButton
+                  sectionId={eipId}
+                  title={`Copy link to this section`}
+                  size="md"
+                />
+              </div>
+              
+              <h3 className="text-xl font-medium text-slate-900 dark:text-slate-100 leading-tight flex-1">
                 {isHeadliner(eip, forkName) && (
                   <Tooltip
                     text={(() => {
@@ -78,7 +87,9 @@ export const EipCard: React.FC<EipCardProps> = ({ eip, forkName, handleExternalL
                   </Tooltip>
                 )}
               </h3>
-              <div className="flex items-center gap-2 relative top-0.5">
+              
+              {/* External link - always visible on the right */}
+              <div className="flex items-center gap-2 relative top-0.5 ml-auto">
                 <Tooltip text={`View ${getProposalPrefix(eip)}-${eip.id} specification`}>
                   <a
                     href={getSpecificationUrl(eip)}
@@ -92,11 +103,6 @@ export const EipCard: React.FC<EipCardProps> = ({ eip, forkName, handleExternalL
                     </svg>
                   </a>
                 </Tooltip>
-                <CopyLinkButton
-                  sectionId={eipId}
-                  title={`Copy link to this section`}
-                  size="sm"
-                />
               </div>
             </div>
           </div>

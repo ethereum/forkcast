@@ -863,13 +863,13 @@
     "id": 7688,
     "title": "EIP-7688: Forward compatible consensus data structures",
     "status": "Draft",
-    "description": "Transition consensus SSZ data structures to ProgressiveContainer",
+    "description": "This EIP defines the changes needed to adopt ProgressiveContainer from EIP-7495 and ProgressiveList from EIP-7916 in consensus data structures.",
     "author": "Etan Kissling (@etan-status), Cayman (@wemeetagain)",
     "type": "Standards Track",
     "category": "Core",
     "createdDate": "2024-04-15",
     "discussionLink": "https://ethereum-magicians.org/t/eip-7688-forward-compatible-consensus-data-structures/19673",
-    "reviewer": "bot",
+    "reviewer": "expert",
     "forkRelationships": [
       {
         "forkName": "Fusaka",
@@ -877,10 +877,30 @@
       },
       {
         "forkName": "Glamsterdam",
-        "status": "Proposed"
+        "status": "Proposed",
+        "layer": "CL"
       }
     ],
-    "laymanDescription": "This makes Ethereum's consensus data structures forward compatible by transitioning to ProgressiveContainer, which maintains stable merkleization schemes across forks. Currently, when Ethereum adds or removes features in forks, existing verifier implementations (like smart contracts that check validator slashing) break because the merkleization changes. With ProgressiveContainer, these verifiers will continue working even when unrelated features are modified, eliminating the need to update smart contracts, hardware wallets, and other systems in lockstep with every Ethereum fork. This is particularly valuable for decentralized staking pools and off-chain verification systems.",
+    "laymanDescription": "This EIP stabilizes Merkle tree indices for all consensus data, preventing coincidental verifier breakage when fields are added, removed, or list capacities change during Ethereum upgrades.",
+    "northStars": ["Improve UX"],
+    "northStarAlignment": {
+      "improveUX": { "description": "Reduces breaking changes during Ethereum upgrades." }
+    },
+    "stakeholderImpacts": {
+      "endUsers": { "description": "No direct impact" },
+      "appDevs": { "description": "Less maintenance for EIP-4788 based projects." },
+      "walletDevs": { "description": "No direct impact." },
+      "toolingInfra": { "description": "Less maintenance for consensus light client components." },
+      "layer2s": { "description": "Less maintenance for light client based bridges." },
+      "stakersNodes": { "description": "Fewer required upgrades of staking pool delegate contracts." },
+      "clClients": { "description": "Greater flexibility for future consensus design changes." },
+      "elClients": { "description": "No direct impact." }
+    },
+    "benefits": [
+      "EIP-4788 projects no longer need upgrades or security council involvement for forks outside their data scope.",
+      "CL developers can modify fields, list capacities, or cost functions without affecting verifiers.",
+      "Bundling with ePBS avoids a second re-indexing in the future."
+    ],
     "champion": { "name": "Etan Kissling", "discord": "etan_status" }
   },
   {

@@ -34,14 +34,14 @@ export const EipCard: React.FC<EipCardProps> = ({ eip, forkName, handleExternalL
           <div className="flex-1">
             <div className="flex items-center gap-3 group relative">
               {/* Anchor link - positioned absolutely in the left margin */}
-              <div className="absolute -left-6 top-1/2 -translate-y-1/2 opacity-0 group-hover:opacity-100 transition-opacity duration-200">
+              <div className="absolute -left-5 top-1/2 -translate-y-1/2 opacity-0 group-hover:opacity-100 transition-opacity duration-200">
                 <CopyLinkButton
                   sectionId={eipId}
                   title={`Copy link to this section`}
-                  size="md"
+                  size="sm"
                 />
               </div>
-              
+
               <h3 className="text-xl font-medium text-slate-900 dark:text-slate-100 leading-tight flex-1">
                 {isHeadliner(eip, forkName) && (
                   <Tooltip
@@ -50,10 +50,10 @@ export const EipCard: React.FC<EipCardProps> = ({ eip, forkName, handleExternalL
                       const isSFI = inclusionStage === 'Scheduled for Inclusion';
                       if (forkName.toLowerCase() === 'glamsterdam') {
                         return isSFI
-                          ? "Selected headliner feature of this network upgrade"
-                          : "Proposed headliner feature of this network upgrade";
+                          ? "Selected headliner feature"
+                          : "Proposed headliner feature";
                       }
-                      return "Headliner feature of this network upgrade";
+                      return "Headliner feature";
                     })()}
                     className="inline-block cursor-pointer"
                   >
@@ -87,29 +87,29 @@ export const EipCard: React.FC<EipCardProps> = ({ eip, forkName, handleExternalL
                   </Tooltip>
                 )}
               </h3>
-              
+
               {/* External links - always visible on the right */}
               <div className="flex items-center gap-2 relative top-0.5 ml-auto">
                 {/* Discussion link */}
                 {eip.discussionLink && (
-                  <Tooltip text={`View ${getProposalPrefix(eip)}-${eip.id} discussion`}>
+                  <Tooltip text="View discussion">
                     <a
                       href={eip.discussionLink}
                       target="_blank"
                       rel="noopener noreferrer"
                       onClick={() => handleExternalLinkClick('discussion', eip.discussionLink)}
-                      className="text-slate-400 hover:text-slate-600 dark:text-slate-500 dark:hover:text-slate-300 transition-colors cursor-pointer relative"
+                      className="text-slate-400 hover:text-slate-600 dark:text-slate-500 dark:hover:text-slate-300 transition-colors cursor-pointer relative group"
                     >
-                      <div className="relative w-7.5 h-7.5">
-                        <img 
-                          src="/eth-mag.png" 
-                          alt="Ethereum Magicians" 
-                          className="w-7.5 h-7.5 opacity-90 dark:opacity-70"
+                      <div className="relative w-7 h-7">
+                        <img
+                          src="/eth-mag.png"
+                          alt="Ethereum Magicians"
+                          className="w-7 h-7 opacity-90 dark:opacity-70"
                         />
-                        <svg 
-                          className="absolute -bottom-1 -right-1 w-4 h-4" 
-                          fill="none" 
-                          stroke="currentColor" 
+                        <svg
+                          className="absolute -bottom-0.5 -right-0.5 w-4 h-4 opacity-0 group-hover:opacity-100 transition-opacity"
+                          fill="none"
+                          stroke="currentColor"
                           strokeWidth="2"
                           viewBox="0 0 24 24"
                         >
@@ -119,26 +119,26 @@ export const EipCard: React.FC<EipCardProps> = ({ eip, forkName, handleExternalL
                     </a>
                   </Tooltip>
                 )}
-                
+
                 {/* Specification link */}
-                <Tooltip text={`View ${getProposalPrefix(eip)}-${eip.id} specification`}>
+                <Tooltip text="View specification">
                   <a
                     href={getSpecificationUrl(eip)}
                     target="_blank"
                     rel="noopener noreferrer"
                     onClick={() => handleExternalLinkClick('specification', getSpecificationUrl(eip))}
-                    className="text-slate-400 hover:text-slate-600 dark:text-slate-500 dark:hover:text-slate-300 transition-colors cursor-pointer relative"
+                    className="text-slate-400 hover:text-slate-600 dark:text-slate-500 dark:hover:text-slate-300 transition-colors cursor-pointer relative group"
                   >
-                    <div className="relative w-7.5 h-7.5">
-                      <img 
-                        src="/eth-diamond-black.png" 
-                        alt="Ethereum" 
-                        className="w-7.5 h-7.5 opacity-90 dark:opacity-70"
+                    <div className="relative w-7 h-7">
+                      <img
+                        src="/eth-diamond-black.png"
+                        alt="Ethereum"
+                        className="w-7 h-7 opacity-90 dark:opacity-100 dark:invert"
                       />
-                      <svg 
-                        className="absolute -bottom-1 -right-1 w-4 h-4" 
-                        fill="none" 
-                        stroke="currentColor" 
+                      <svg
+                        className="absolute -bottom-0.5 -right-0.5 w-4 h-4 opacity-0 group-hover:opacity-100 transition-opacity"
+                        fill="none"
+                        stroke="currentColor"
                         strokeWidth="2"
                         viewBox="0 0 24 24"
                       >

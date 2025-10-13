@@ -3,6 +3,8 @@ import { Link, useParams } from 'react-router-dom';
 import YouTube, { YouTubeProps } from 'react-youtube';
 import ChatLog from './ChatLog';
 import Summary from './Summary';
+import AgendaSummary from './AgendaSummary';
+import CallSearch from './CallSearch';
 import ThemeToggle from '../ui/ThemeToggle';
 
 interface CallData {
@@ -13,6 +15,7 @@ interface CallData {
   transcriptContent?: string;
   videoUrl?: string;
   summaryData?: any;
+  agendaData?: any;
 }
 
 interface CallConfig {
@@ -42,6 +45,7 @@ const CallPage: React.FC = () => {
   const [player, setPlayer] = useState<any>(null);
   const [currentVideoTime, setCurrentVideoTime] = useState(0);
   const [isPlaying, setIsPlaying] = useState(false);
+  const [selectedSearchResult, setSelectedSearchResult] = useState<{timestamp: string, text: string, type: string} | null>(null);
   const pollingIntervalRef = useRef<ReturnType<typeof setInterval> | undefined>(undefined);
 
   // Convert timestamp string to seconds for comparison
@@ -179,7 +183,7 @@ const CallPage: React.FC = () => {
         if (scrollTimeoutRef.current) clearTimeout(scrollTimeoutRef.current);
         scrollTimeoutRef.current = setTimeout(() => {
           setIsUserScrolling(false);
-        }, 1000);
+        }, 300);
       }
     }
   }, [callData, isUserScrolling]);
@@ -232,6 +236,18 @@ const CallPage: React.FC = () => {
           }
         }
 
+        // Load agenda if it exists
+        const agendaResponse = await fetch(`/artifacts/${artifactPath}/agenda.json`);
+        let agendaData = undefined;
+        if (agendaResponse.ok) {
+          try {
+            agendaData = await agendaResponse.json();
+            console.log('Loaded agenda:', agendaData);
+          } catch (e) {
+            console.warn('Failed to parse agenda.json:', e);
+          }
+        }
+
         // Load config file if it exists
         const configResponse = await fetch(`/artifacts/${artifactPath}/config.json`);
         let config: CallConfig | null = null;
@@ -272,7 +288,8 @@ const CallPage: React.FC = () => {
           chatContent,
           transcriptContent,
           videoUrl,
-          summaryData
+          summaryData,
+          agendaData
         });
 
       } catch (error) {
@@ -410,6 +427,31 @@ const CallPage: React.FC = () => {
     }, 500);
   };
 
+  const scrollChatToEntry = (entryElement: HTMLElement) => {
+    if (!chatLogRef.current) return;
+
+    const container = chatLogRef.current;
+    const containerHeight = container.clientHeight;
+    const containerRect = container.getBoundingClientRect();
+    const entryRect = entryElement.getBoundingClientRect();
+
+    // Calculate entry position relative to container's scroll area
+    const entryOffsetFromContainerTop = entryRect.top - containerRect.top + container.scrollTop;
+
+    // Position entry at 10% from top of viewport
+    const targetScrollTop = entryOffsetFromContainerTop - (containerHeight * 0.1);
+
+    // Ensure we don't scroll past boundaries
+    const maxScroll = Math.max(0, container.scrollHeight - containerHeight);
+    const finalScrollTop = Math.max(0, Math.min(targetScrollTop, maxScroll));
+
+    // Smooth scroll within container only
+    container.scrollTo({
+      top: finalScrollTop,
+      behavior: 'smooth'
+    });
+  };
+
   // Auto-scroll transcript to highlighted entry
   useEffect(() => {
     // Skip if user is manually scrolling, not playing, or no sync config
@@ -518,15 +560,49 @@ const CallPage: React.FC = () => {
     setIsPlaying(event.data === 1); // 1 = playing
   };
 
-  const handleTranscriptClick = (timestamp: string) => {
+  const handlePauseVideo = () => {
+    if (player && isPlaying) {
+      player.pauseVideo();
+    }
+  };
+
+  const handleTranscriptClick = (timestamp: string, searchResult?: any) => {
     if (player) {
       const adjustedTime = getAdjustedVideoTime(timestamp);
-      console.log(`Clicking transcript ${timestamp} -> seeking to video time ${adjustedTime}s`);
       player.seekTo(adjustedTime);
-      player.playVideo();
 
       // Update currentVideoTime immediately to ensure highlighting updates
       setCurrentVideoTime(adjustedTime);
+
+      // Store search result for highlighting if it came from search
+      if (searchResult) {
+        setSelectedSearchResult({
+          timestamp: timestamp,
+          text: searchResult.text,
+          type: searchResult.type
+        });
+
+        // Auto-expand summary if agenda or action item is selected
+        if (searchResult.type === 'agenda' || searchResult.type === 'action') {
+          setSummaryExpanded(true);
+        }
+      } else {
+        // Clear search highlighting when clicking directly on transcript or chat
+        setSelectedSearchResult(null);
+      }
+
+      // Scroll to the corresponding entry based on search result type
+      if (searchResult?.type === 'transcript' && transcriptRef.current) {
+        const targetEntry = transcriptRef.current.querySelector(`[data-timestamp="${timestamp}"]`) as HTMLElement;
+        if (targetEntry) {
+          scrollTranscriptToEntry(targetEntry);
+        }
+      } else if (searchResult?.type === 'chat' && chatLogRef.current) {
+        const targetEntry = chatLogRef.current.querySelector(`[data-chat-timestamp="${timestamp}"]`) as HTMLElement;
+        if (targetEntry) {
+          scrollChatToEntry(targetEntry);
+        }
+      }
 
       // Update URL with timestamp for sharing
       const newHash = `#t=${Math.floor(adjustedTime)}`;
@@ -691,6 +767,18 @@ const CallPage: React.FC = () => {
         </div>
       </div>
 
+      {/* Search Component */}
+      <CallSearch
+        transcriptContent={callData.transcriptContent}
+        chatContent={callData.chatContent}
+        agendaData={callData.agendaData}
+        summaryData={callData.summaryData}
+        onResultClick={handleTranscriptClick}
+        syncConfig={callConfig?.sync}
+        currentVideoTime={currentVideoTime}
+        onPauseVideo={handlePauseVideo}
+      />
+
       {/* Content */}
       <div className="max-w-7xl mx-auto px-6 py-4">
         {/* Video Section */}
@@ -738,8 +826,8 @@ const CallPage: React.FC = () => {
                     </div>
                     {callConfig?.issue && (
                       <div className="flex items-center gap-2">
-                        <span className="text-slate-500 dark:text-slate-400">🔗</span>
-                        <span className="text-slate-600 dark:text-slate-300">Issue:</span>
+                        <span className="text-slate-500 dark:text-slate-400">📌</span>
+                        <span className="text-slate-600 dark:text-slate-300">Agenda:</span>
                         <a
                           href={`https://github.com/ethereum/pm/issues/${callConfig.issue}`}
                           target="_blank"
@@ -771,7 +859,7 @@ const CallPage: React.FC = () => {
         )}
 
         {/* Meeting Summary Section */}
-        {callData.summaryData && (
+        {(callData.agendaData || callData.summaryData) && (
           <div className="mb-4">
             <div className="bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg shadow-sm hover:shadow-md transition-shadow">
               <button
@@ -783,9 +871,15 @@ const CallPage: React.FC = () => {
                     Summary
                   </h2>
                   <div className="flex items-center gap-2">
-                    <span className="text-xs text-slate-500 dark:text-slate-400">
-                      {callData.summaryData.summary_details?.length || 0} topics • {callData.summaryData.next_steps?.length || 0} action items
-                    </span>
+                    {callData.agendaData ? (
+                      <span className="text-xs text-slate-500 dark:text-slate-400">
+                        {callData.agendaData.agenda.flatMap((section: any) => section.items).length} topics • {callData.agendaData.agenda.flatMap((section: any) => section.items).reduce((sum: number, item: any) => sum + (item.action_items?.length || 0), 0)} action items
+                      </span>
+                    ) : (
+                      <span className="text-xs text-slate-500 dark:text-slate-400">
+                        {callData.summaryData.summary_details?.length || 0} topics • {callData.summaryData.next_steps?.length || 0} action items
+                      </span>
+                    )}
                     <span className="text-xs bg-slate-100 dark:bg-slate-700 text-slate-500 dark:text-slate-300 px-2 py-0.5 rounded-full font-normal border border-slate-200 dark:border-slate-600">
                       Experimental
                     </span>
@@ -803,7 +897,17 @@ const CallPage: React.FC = () => {
               {summaryExpanded && (
                 <div className="border-t border-slate-200 dark:border-slate-700 transition-opacity duration-500 ease-out opacity-0 animate-[fadeIn_0.5s_ease-out_forwards]">
                   <div className="p-6">
-                    <Summary data={callData.summaryData} />
+                    {callData.agendaData ? (
+                      <AgendaSummary
+                        data={callData.agendaData}
+                        onTimestampClick={handleTranscriptClick}
+                        syncConfig={callConfig?.sync}
+                        currentVideoTime={currentVideoTime}
+                        selectedSearchResult={selectedSearchResult}
+                      />
+                    ) : (
+                      <Summary data={callData.summaryData} />
+                    )}
                   </div>
                 </div>
               )}
@@ -835,31 +939,40 @@ const CallPage: React.FC = () => {
                     })
                     .map((entry, index, entries) => {
                     const isHighlighted = isCurrentEntry(entry.timestamp, index, entries);
+                    const isSelectedSearch = selectedSearchResult?.timestamp === entry.timestamp && selectedSearchResult?.type === 'transcript';
                     return (
                       <div
                         key={index}
                         data-timestamp={entry.timestamp}
                         onClick={() => handleTranscriptClick(entry.timestamp)}
-                        className={`flex gap-2 text-sm group hover:bg-slate-50 dark:hover:bg-slate-700/30 py-1 px-2 -mx-2 rounded transition-colors cursor-pointer
-                          ${isHighlighted ? 'bg-blue-50 dark:bg-blue-900/30 border-l-2 border-blue-500 rounded-r-md' : ''}
+                        className={`flex gap-3 text-sm group hover:bg-slate-50 dark:hover:bg-slate-700/30 py-1 px-2 -mx-2 rounded transition-colors cursor-pointer border-l-2
+                          ${isSelectedSearch ? 'bg-yellow-50 dark:bg-yellow-900/20 border-yellow-500 rounded-r-md' :
+                            isHighlighted ? 'bg-blue-50 dark:bg-blue-900/30 border-blue-500 rounded-r-md' :
+                            'border-transparent'}
                         `}
                       >
-                        <span className={`text-xs w-16 flex-shrink-0 font-mono mt-0.5
-                          ${isHighlighted ? 'text-blue-600 dark:text-blue-400' : 'text-slate-500 dark:text-slate-400'}
-                        `}>
+                        <span className={`text-xs flex-shrink-0 font-mono mt-0.5
+                          ${isSelectedSearch ? 'text-yellow-600 dark:text-yellow-400' :
+                            isHighlighted ? 'text-blue-600 dark:text-blue-400' :
+                            'text-slate-500 dark:text-slate-400'}
+                        `} style={{ minWidth: '64px' }}>
                           {callConfig?.sync?.transcriptStartTime && callConfig?.sync?.videoStartTime
                             ? secondsToTimestamp(getAdjustedVideoTime(entry.timestamp))
                             : formatTimestamp(entry.timestamp)
                           }
                         </span>
-                        <div className="flex-1">
-                          <span className={`font-medium text-sm
-                            ${isHighlighted ? 'text-blue-900 dark:text-blue-100' : 'text-slate-700 dark:text-slate-300'}
+                        <div className="flex-1 min-w-0">
+                          <span className={`font-medium mr-2
+                            ${isSelectedSearch ? 'text-yellow-900 dark:text-yellow-100' :
+                              isHighlighted ? 'text-blue-900 dark:text-blue-100' :
+                              'text-slate-700 dark:text-slate-300'}
                           `}>
                             {entry.speaker}:
                           </span>
-                          <span className={`text-sm ml-1
-                            ${isHighlighted ? 'text-slate-900 dark:text-slate-100' : 'text-slate-600 dark:text-slate-400'}
+                          <span className={`break-words
+                            ${isSelectedSearch ? 'text-slate-900 dark:text-slate-100' :
+                              isHighlighted ? 'text-slate-900 dark:text-slate-100' :
+                              'text-slate-600 dark:text-slate-400'}
                           `}>{entry.text}</span>
                         </div>
                       </div>
@@ -876,7 +989,7 @@ const CallPage: React.FC = () => {
               <div className="bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg p-4 shadow-sm hover:shadow-md transition-shadow">
                 <h2 className="text-sm font-semibold text-slate-900 dark:text-slate-100 mb-3">Chat Logs</h2>
                 <div ref={chatLogRef} className="max-h-[400px] overflow-y-auto pr-2">
-                  <ChatLog content={callData.chatContent} syncConfig={callConfig?.sync} />
+                  <ChatLog content={callData.chatContent} syncConfig={callConfig?.sync} selectedSearchResult={selectedSearchResult} onTimestampClick={handleTranscriptClick} />
                 </div>
               </div>
             )}

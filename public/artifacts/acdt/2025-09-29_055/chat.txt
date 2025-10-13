@@ -1,0 +1,134 @@
+00:04:44	Kamil Chodoła:	Hi!
+00:04:51	Antoine James:	Gm
+00:05:08	Mario Vega:	@Antoine James you’re unmuted 🙂
+00:05:17	jochem-brouwer:	gm
+00:05:22	Justin Traglia:	Gm
+00:05:22	nixo:	gm
+00:05:24	James He:	gm
+00:05:26	Martin | ethrex:	gm
+00:05:29	danceratopz:	gm
+00:05:31	Ben Adams:	gm
+00:06:18	Mario Vega:	https://github.com/ethereum/pm/issues/1736
+00:06:59	Justin Traglia:	yeah it’s expected. Doing more non-finality testing.
+00:07:08	Mario Vega:	Reacted to "yeah it’s expected. ..." with 👍🏼
+00:07:11	danceratopz:	Reacted to "yeah it’s expected. ..." with 👍🏼
+00:07:38	Justin Traglia:	https://discord.com/channels/595666850260713488/892088344438255616/1422209211391283260
+00:07:44	Mario Vega:	Reacted to "https://discord.com/..." with 👍🏼
+00:08:29	Parithosh Jayanthi:	Sorry just got on the call
+00:08:48	Parithosh Jayanthi:	Did we miss devnet updates?
+00:09:43	pawan:	Did we transition to fusaka on that netwwork?
+00:09:51	Barnabas:	not yet
+00:09:57	Barnabas:	https://dora.fusaka-holsf-1.ethpandaops.io
+00:10:03	Gabriel Trintinalia | Besu:	teku-besu, correct?
+00:10:04	Barnabas:	1h 17min to go
+00:10:06	pawan:	thanks
+00:10:07	Barnabas:	Reacted to "teku-besu, correct?" with 👍
+00:10:12	Barnabas:	Replying to "teku-besu, correct?"
+
+check interop please
+00:11:17	Jae Hee Lee:	Can we also get to test chaos testing Minhyuk implemented on devnet-3?
+00:11:26	Parithosh Jayanthi:	Replying to "Can we also get to t..."
+
+Oh yes! That’s a good idea too
+00:11:35	Parithosh Jayanthi:	Cc @Barnabas we should merge it in and try
+00:11:58	Barnabas:	Replying to "Can we also get to t..."
+
+Yeah we can do this in the second half of the week once we recovered the current non finality
+00:11:58	Jae Hee Lee:	Reacted to "Oh yes! That’s a goo..." with 👍
+00:12:00	Fredrik:	It’s being merged to the blog soon
+00:12:02	felix (eest):	https://blog.ethereum.org/2025/09/26/fusaka-testnet-announcement#execution-layer-holesky-sepolia--hoodi-releases
+00:12:12	Jae Hee Lee:	Replying to "Can we also get to t..."
+
+Thanks!
+00:12:16	James He:	We have released a version to support fusaka, there are ongoing issues, from a team perspective it should be fine for testate
+00:12:20	James He:	testnet
+00:12:29	James He:	But for some users there are issues
+00:12:33	Gabriel Trintinalia | Besu:	Reacted to "check interop please" with 👍
+00:13:40	Parithosh Jayanthi:	Our todo list for holesky in case we miss something:
+client releases
+shadowfork
+roll our holesky nodes
+validate holesky snapshots
+spin up one of every client on our stack
+tracoor for holesky, forky, dora
+dugtrio should be updated and running
+update checkpointz
+00:15:19	Fredrik:	Perhaps creating a Fusaka dir on the pm repo?
+00:15:25	Parithosh Jayanthi:	Reacted to "Perhaps creating a F..." with 👍🏽
+00:16:07	Pooja Ranjan:	Reacted to "Perhaps creating a F..." with 👍🏽
+00:16:28	Pooja Ranjan:	https://github.com/ethereum/pm/tree/master/Fusaka
+00:17:13	stokes:	i can
+00:17:20	Mario Vega:	Reacted to "i can" with 👍🏼
+00:17:22	Fredrik:	Reacted to "i can" with 👍🏼
+00:17:28	Marius van der Wijden:	Reacted to i can with "👍🏼"
+00:17:46	Pooja Ranjan:	Reacted to "i can" with 👍🏼
+00:18:33	Parithosh Jayanthi:	Reacted to "i can" with 👍🏼
+00:18:37	lightclient:	Geth has
+00:18:48	lightclient:	yes
+00:18:53	Ansgar Dietrichs:	Reacted to "Geth has" with 🔥
+00:20:06	Ameziane Hamlat:	In besu, it is not included in the testnets  release
+00:21:32	Mario Vega:	https://github.com/ethereum/execution-spec-tests/issues/1926#issuecomment-3333544495
+00:22:44	Mario Vega:	https://github.com/ethereum/execution-spec-tests/pull/2160
+00:22:58	Louis:	Update to apply eip7825 for Osaka
+00:24:00	Mario Vega:	Reacted to "Update to apply eip7..." with 👍🏼
+00:29:33	jochem-brouwer:	XEN tests mainnet: https://github.com/ethereum/execution-spec-tests/pull/2101 (currently hardcoded addresses not using stubs yet)
+00:30:42	Parithosh Jayanthi:	https://ethpandaops.io/data/snapshots/
+00:30:44	Parithosh Jayanthi:	This 😄
+00:34:39	Maria Silva:	Any idea if the bad performance on load for best is only for Xen? Or is it also for other smaller contracts?
+00:34:45	Maria Silva:	*sload
+00:35:13	Marius van der Wijden:	Sload performance should be pretty independent of contract
+00:35:30	Ameziane Hamlat:	Reacted to "Sload performance sh..." with 💯
+00:35:34	Marius van der Wijden:	Sstores are dependent on contract size
+00:36:29	Maria Silva:	Right, so for Besu are there any changes in optimizations that may make this different from other clients?
+00:36:30	Ameziane Hamlat:	Replying to "Sload performance sh..."
+
+Agreed, it is more related to the pattern, accessing non existing slot keys.
+00:36:37	Maria Silva:	Reacted to "Agreed, it is more r..." with 👍
+00:36:41	Marius van der Wijden:	Reacted to Agreed, it is more r... with "👍"
+00:39:27	jochem-brouwer:	For these optimizations or specific situations which are good/bad in clients I want to craft specific tests to signal areas where certain clients need (or need not) to spend some focus on 😃👍
+00:39:29	CPerezz:	Any LSM-based client should have an issue with non-existing leaves right?
+00:39:38	Justin Florentine (Besu):	i'd be surrised if that wasn't the case for everyone
+00:39:43	Ben Adams:	Could change Sstore not to check current value for pricing 🤔
+00:40:19	Maria Silva:	Reacted to "Could change Sstore ..." with 🤔
+00:40:25	Marius van der Wijden:	Replying to "Could change Sstore ..." 
+
+ I would kinda like that
+00:40:44	Mario Vega:	Reacted to "Could change Sstore ..." with 🤔
+00:40:46	Ben Adams:	Replying to "Could change Sstore ..."
+
+Is the most expensive (short term) part of sstore
+00:41:01	jochem-brouwer:	Heeft gereageerd op "Could change Sstor..." met 🚀
+00:41:48	CPerezz:	FYI, all of the cases in https://hackmd.io/9icZeLN7R0Sk5mIjKlZAHQ  will eventually land in EEST. So make sure that whatever you propose isn’t already there.
+00:42:01	Justin Florentine (Besu):	Replying to "Could change Sstore ..."
+
+we'd be giving up a brake on state growth but...
+00:42:05	jochem-brouwer:	Antwoord verzenden naar "Could change Sstor..."
+
+I'd also like to explore this a bit
+00:42:21	CPerezz:	Bloatnet scenarios being coded basically
+00:42:28	danceratopz:	Reacted to "FYI, all of the case..." with 🚀
+00:42:32	Justin Florentine (Besu):	Reacted to "we'd be giving up a ..." with 🤔
+00:42:39	Ben Adams:	Replying to "Could change Sstore ..."
+
+Idk what right answer would be; but maybe something to look into
+00:42:43	Mario Vega:	Reacted to "FYI, all of the case..." with 🚀
+00:42:47	Justin Florentine (Besu):	Reacted to "Idk what right answe..." with ➕
+00:42:48	CPerezz:	Anything works. Just reach out Jochem me or whatever is easier!
+00:42:49	Jen:	Reacted to "FYI, all of the case..." with 🚀
+00:43:21	Maria Silva:	Replying to "Could change Sstore ..."
+
+Any idea of the speedup we would have if we took it out of the cost formula?
+00:43:22	felix (eest):	Reacted to "FYI, all of the ca..." with 🚀
+00:43:33	jochem-brouwer:	Heeft gereageerd op "Idk what right ans..." met ➕
+00:45:19	Mario Vega:	Reacted to "Anything works. Just..." with 💯
+00:46:55	Karim T.:	@raxhvl if you can check my message on discord I think we found one missing test on Besu related to BAL .
+00:48:04	Mario Vega:	https://notes.ethereum.org/@ethpandaops/bal-devnet-0
+00:49:06	Mario Vega:	https://notes.ethereum.org/@ethpandaops/epbs-devnet-0
+00:49:20	Justin Traglia:	Here’s a short recap of our breakout call this week: https://x.com/JustinTraglia/status/1971589863280402721
+00:49:26	Karim T.:	Replying to "https://notes.ethere..."
+
+We will be able to share a besu image of Besu for BAL
+00:50:14	Katya:	Any metrics needed for EPBS?
+00:50:29	danceratopz:	Reacted to "Any metrics needed f..." with 💙
+00:50:36	danceratopz:	Reacted to "Here’s a short recap..." with 💙
+00:50:51	Mario Vega:	Reacted to "Any metrics needed f..." with 💙

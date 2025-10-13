@@ -18,6 +18,8 @@ export const protocolCalls: Call[] = [
   { type: 'acdc', date: '2025-08-07', number: '162', path: 'acdc/162' },
   { type: 'acdc', date: '2025-08-21', number: '163', path: 'acdc/163' },
   { type: 'acdc', date: '2025-09-04', number: '164', path: 'acdc/164' },
+  { type: 'acdc', date: '2025-09-18', number: '165', path: 'acdc/165' },
+  { type: 'acdc', date: '2025-10-02', number: '166', path: 'acdc/166' },
 
   // ACDE calls
   { type: 'acde', date: '2025-03-27', number: '208', path: 'acde/208' },
@@ -33,6 +35,8 @@ export const protocolCalls: Call[] = [
   { type: 'acde', date: '2025-08-14', number: '218', path: 'acde/218' },
   { type: 'acde', date: '2025-08-28', number: '219', path: 'acde/219' },
   { type: 'acde', date: '2025-09-11', number: '220', path: 'acde/220' },
+  { type: 'acde', date: '2025-09-25', number: '221', path: 'acde/221' },
+  { type: 'acde', date: '2025-10-09', number: '222', path: 'acde/222' },
 
   // ACDT calls
   { type: 'acdt', date: '2025-06-16', number: '040', path: 'acdt/040' },
@@ -49,6 +53,10 @@ export const protocolCalls: Call[] = [
   { type: 'acdt', date: '2025-09-01', number: '051', path: 'acdt/051' },
   { type: 'acdt', date: '2025-09-08', number: '052', path: 'acdt/052' },
   { type: 'acdt', date: '2025-09-15', number: '053', path: 'acdt/053' },
+  { type: 'acdt', date: '2025-09-22', number: '054', path: 'acdt/054' },
+  { type: 'acdt', date: '2025-09-29', number: '055', path: 'acdt/055' },
+  { type: 'acdt', date: '2025-10-06', number: '056', path: 'acdt/056' },
+  { type: 'acdt', date: '2025-10-13', number: '057', path: 'acdt/057' },
 ];
 
 // Helper to get recent calls

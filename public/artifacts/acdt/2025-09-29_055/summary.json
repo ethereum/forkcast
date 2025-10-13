@@ -1,0 +1,46 @@
+{
+  "meeting_topic": "All Core Devs - Testing (ACDT) #48 | Aug 11 2025",
+  "meeting_start_time": "2025-09-29T13:56:15Z",
+  "meeting_end_time": "2025-09-29T14:48:10Z",
+  "summary_start_time": "2025-09-29T13:56:32Z",
+  "summary_end_time": "2025-09-29T14:48:09Z",
+  "summary_created_time": "2025-09-29T13:56:15Z",
+  "summary_last_modified_time": "2025-09-29T14:48:59Z",
+  "summary_overview": "The team discussed updates on the Ethereum development network (DevNet) and its unfinality test, as well as the upcoming transition to Fusaka on the Holesky testnet. They reviewed progress on various projects including the Ethereum Execution Specification Tests (EEST) repository, state benchmarks, and the structure of their testing framework. The conversation ended with discussions on Block-level Access List (BAL) and Ethereum Proof of Stake (ePBS) specifications, including updates on testing and implementation plans.",
+  "summary_details": [
+    {
+      "label": "Holesky Testnet Transition Planning",
+      "summary": "The team discussed the upcoming transition to Fusaka on the Holesky testnet, scheduled for Wednesday. Parithosh reported that Holesky Shadow Fork was up and running, with some issues related to node peering. The team agreed to delay the mainnet Shadow Fork until mainnet releases are available. They also discussed client releases, with Pawan mentioning a new Lighthouse release. The team planned to verify the EEST client testnet configuration and update the blog post with the latest information. Parithosh provided a todo list for Holesky, including client releases, shadow fork, and node validation."
+    },
+    {
+      "label": "Fusaka Project and Gas Limit Updates",
+      "summary": "The team discussed updates on the Fusaka project, including the ongoing audit contest with two weeks remaining. They agreed to create a Fusaka directory in the PM repository, similar to what was done for Pectra, with Stokes volunteering to handle this task. The group also reviewed the status of 60 million gas limit activation across different clients, with Geth, Nethermind, Besu, and Riff confirming readiness for mainnet release, while testnets were already at this limit."
+    },
+    {
+      "label": "Ethereum State Benchmark Testing Updates",
+      "summary": "The team discussed updates to the Ethereum Execution Specification Tests (EEST) repository, focusing on restructuring benchmark tests into compute-intensive and state-intensive categories. Jochem presented progress on state benchmarks, explaining that new tooling is being developed with Kamil from Nethermind to test clients against large states, including mainnet state. The team is seeking input from clients about worst-case state management scenarios to create relevant tests, with the goal of updating gas limits and identifying optimization opportunities. Jochem clarified that these state benchmarks will be written in EEST and will use the ADDSTIP to target specific networks, with tests running on a mock chain that generates payloads for client performance testing."
+    },
+    {
+      "label": "Testing Framework Structure and Snapshots",
+      "summary": "The team discussed the structure of their testing framework, where EEST will handle test definitions while separate tooling (initially GAS Benchmarks) will manage test execution using custom VMs. Parithosh suggested making the tooling fully independent to allow integration with other tools, particularly for mock CL capabilities. The team clarified that test execution will use snapshots of the blockchain state, with the ability to revert to initial states after testing. Andrew inquired about the nature of snapshots, which jochem-brouwer explained involves specific block numbers and testnets. Ameziane raised a question about the similarity between SLOAD operations in mainnet transactions and the testing environment, noting that many SLOAD operations in the mainnet were zero reads, which the team acknowledged as something to consider in their testing framework."
+    },
+    {
+      "label": "SLOAD Performance Optimization Discussion",
+      "summary": "The team discussed SLOAD performance issues, particularly on the Mainnet, with Jochem explaining that the problem is related to accessing non-existing slot keys and not dependent on contract size. Ameziane shared that Besu has optimizations for root hash calculation by preloading storage slots during transaction execution, and mentioned a pending PR to address a LuxDB bug related to zero reads. The team also explored the possibility of changing SSTORE to not check the current value for pricing, which Ben suggested could improve performance by reducing the most expensive part of SSTORE operations, though this would require an EIP and might affect state growth tracking."
+    },
+    {
+      "label": "Block Access and Ethereum Updates",
+      "summary": "The meeting focused on updates and discussions around Block-level Access List (BAL) and Ethereum Proof of Stake (ePBS) specifications. Rahul provided an update on BAL, highlighting the addition of complex test cases and the need for clients to share DevB branches for testing. Toni raised a discussion about potentially switching from a hash to a root-based BAL, which clients were encouraged to provide input on. Justin Traglia mentioned that ePBS DevNet Zero is scheduled for the end of October, pending client implementations and testing. The team also discussed the need for metrics in ePBS, with Katya raising the question. The conversation ended with a reminder about the upcoming activation in Holesky and a call for any additional topics."
+    }
+  ],
+  "next_steps": [
+    "All client teams to ensure their Fusaka releases include 60 million gas limit support for mainnet.",
+    "Client teams to provide ePBS devnet-0 branches to EthPandaOps for testing.",
+    "Client teams to share Block-level access list dev branches with Rahul/Felipe for proactive testing.",
+    "Alex to start the PR for moving Fusaka-related files to the appropriate folder in the Ethereum/PM repository.",
+    "Client teams to review the list of test cases for state benchmarking and provide feedback if any scenarios are missing.",
+    "Client teams to reach out to Jochem with ideas for additional state benchmarking tests, especially for worst-case scenarios.",
+    "Besu team to address the missing test related to Block-level access list mentioned in Discord.",
+    "Client teams to consider what metrics might be needed for ePBS testing."
+  ]
+}

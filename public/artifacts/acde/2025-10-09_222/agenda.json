@@ -1,0 +1,114 @@
+{
+    "executive_summary": "All Core Devs #222 focused on the upcoming Fusaka fork and Glamsterdam preparations. The Sepolia shadow fork launched successfully with BPO-1 and BPO-2 activating without issues, though Holesky revealed CPU resource constraints for supernodes under BPO-1. Client teams confirmed varying approaches to handling legacy blob proofs post-fork. For Glamsterdam, BAL devnet-0 preparations are progressing with 4 clients nearing interop readiness and 80% test pass rates. The repricing EIP bundle was presented covering compute, state, and data cost adjustments aimed at enabling higher gas limits while constraining state growth. The proposal window for non-headliner EIPs will close one week after Fusaka's mainnet date is set.",
+    "agenda": [
+      {
+        "section": "Fusaka",
+        "items": [
+          {
+            "start_timestamp": "00:07:26",
+            "title": "Sepolia Shadow Fork and BPO Schedule Updates",
+            "summary": "A Sepolia shadow fork launched successfully earlier, passing through Fulu and BPO-1 without missed blocks, with BPO-2 expected within 30 minutes. A configuration issue was discovered where named forks in the blob schedule complicate genesis file generation since CL clients cannot adjust blob values on named forks. The proposal to exclude named fork fields from the blob schedule configuration was discussed with mixed reactions.",
+            "decision": null,
+            "action_items": []
+          },
+          {
+            "start_timestamp": "00:16:00",
+            "title": "Holesky BPO-1 Status",
+            "summary": "BPO-1 activated on Holesky two days ago with a Lighthouse peer connectivity issue being triaged. Nimbus reported severe CPU resource constraints on low-core machines running supernodes, with reconstruction taking 4+ seconds on 1.5 cores available per CL, making BPO-2 potentially unviable for such setups.",
+            "decision": null,
+            "action_items": []
+          },
+          {
+            "start_timestamp": "00:18:31",
+            "title": "Blob Submission API Compatibility",
+            "summary": "Discussion of how different clients handle legacy blob proof formats post-fork. Geth will convert legacy proofs to cell proofs indefinitely via RPC while continuing network acceptance briefly post-fork. Erigon and Nethermind will immediately drop support for legacy formats. Roll-ups were advised to update their blob submission code to use cell proofs directly for faster transaction inclusion.",
+            "decision": null,
+            "action_items": []
+          }
+        ]
+      },
+      {
+        "section": "Scaling Updates",
+        "items": [
+          {
+            "start_timestamp": "00:26:42",
+            "title": "State Access Benchmarking Research",
+            "summary": "Research on running execution spec tests against mainnet snapshots to identify performance bottlenecks is ongoing. Initial tests of XEN contract storage operations in isolation don't reproduce the slow block performance observed on mainnet, suggesting additional factors beyond pure execution may be involved. The team is working to understand why blocks with XEN transactions show as slow on mainnet monitoring but not in isolated testing.",
+            "decision": null,
+            "action_items": [
+              {
+                "what": "Get EL client data from database for slow block analysis",
+                "who": "jochem-brouwer",
+                "timestamp": "00:34:10"
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "section": "Glamsterdam",
+        "items": [
+          {
+            "start_timestamp": "00:35:13",
+            "title": "BAL Devnet-0 Progress",
+            "summary": "Besu, Geth, Reth, and Nethermind are approaching interop readiness for block-level access lists, with Erigon also making progress. Individual client testnets work but multi-client interop still has issues. Testing shows approximately 80% pass rate across 26 tests for three clients, with 154 total test scenarios prepared.",
+            "decision": null,
+            "action_items": []
+          },
+          {
+            "start_timestamp": "00:40:57",
+            "title": "Non-headliner EIP Proposal Window",
+            "summary": "The proposal window for non-headliner EIPs will remain open until one week after Fusaka's mainnet date is set. The next ACDE call in two weeks will begin discussions on priorities and room for inclusion in Glamsterdam before client teams assemble their preferences.",
+            "decision": "Proposal deadline set for one week after Fusaka mainnet date announcement",
+            "action_items": []
+          },
+          {
+            "start_timestamp": "00:42:30",
+            "title": "Repricing EIP Bundle Overview",
+            "summary": "A comprehensive set of repricing EIPs was presented targeting compute operations, state growth, and data costs. Key proposals include harmonizing operation costs, increasing state creation costs by ~10x, introducing contract size-based storage pricing, and removing refunds from block limit accounting. The bundle aims to enable higher gas limits while constraining state growth, with backwards compatibility analysis still ongoing.",
+            "decision": null,
+            "action_items": [
+              {
+                "what": "Share Telegram handle in chat for repricing feedback",
+                "who": "Maria Silva",
+                "timestamp": "00:52:17"
+              }
+            ]
+          },
+          {
+            "start_timestamp": "00:59:26",
+            "title": "EIP-8032 Storage Depth Pricing",
+            "summary": "Proposal to make storage operations progressively more expensive based on contract storage tree depth, targeting primarily the XEN contract which has grown exceptionally large. The mechanism tracks maximum depth per account and applies exponential cost increases above a threshold, with costs updating at block boundaries to avoid impacting parallel execution.",
+            "decision": null,
+            "action_items": []
+          },
+          {
+            "start_timestamp": "01:10:36",
+            "title": "Gas2ETH and Additional EIPs",
+            "summary": "Four EIPs were presented including contract size limit increases, a Pay opcode for direct ETH transfers, paging-based memory pricing, and the Gas2ETH opcode enabling gas-based micropayments. Gas2ETH generated significant discussion around its separate gas budget, transaction format implications, and potential griefing vectors, with mixed reactions on its protocol-level implications.",
+            "decision": null,
+            "action_items": [
+              {
+                "what": "Create a Telegram group for Gas2ETH discussion",
+                "who": "Charles",
+                "timestamp": "01:31:43"
+              }
+            ]
+          },
+          {
+            "start_timestamp": "01:32:34",
+            "title": "PFI EIP Contact Collection",
+            "summary": "Protocol support team will collect primary points of contact for PFI'd EIPs going into Glamsterdam, defaulting to whoever opened the PR but confirming with each party. Names and Discord handles will be displayed on Forecast for testing teams and EthPandaOps.",
+            "decision": null,
+            "action_items": [
+              {
+                "what": "Ping PFI EIP parties for confirmation of contact details",
+                "who": "Protocol support team",
+                "timestamp": "01:32:49"
+              }
+            ]
+          }
+        ]
+      }
+    ]
+  }

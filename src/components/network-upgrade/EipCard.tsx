@@ -32,8 +32,17 @@ export const EipCard: React.FC<EipCardProps> = ({ eip, forkName, handleExternalL
       <header className="border-b border-slate-100 dark:border-slate-700 pb-6 mb-6">
         <div className="flex flex-col lg:flex-row lg:items-start lg:justify-between">
           <div className="flex-1">
-            <div className="flex items-center gap-3">
-              <h3 className="text-xl font-medium text-slate-900 dark:text-slate-100 leading-tight">
+            <div className="flex items-center gap-3 group relative">
+              {/* Anchor link - positioned absolutely in the left margin */}
+              <div className="absolute -left-5 top-1/2 -translate-y-1/2 opacity-0 group-hover:opacity-100 transition-opacity duration-200">
+                <CopyLinkButton
+                  sectionId={eipId}
+                  title={`Copy link to this section`}
+                  size="sm"
+                />
+              </div>
+
+              <h3 className="text-xl font-medium text-slate-900 dark:text-slate-100 leading-tight flex-1">
                 {isHeadliner(eip, forkName) && (
                   <Tooltip
                     text={(() => {
@@ -41,10 +50,10 @@ export const EipCard: React.FC<EipCardProps> = ({ eip, forkName, handleExternalL
                       const isSFI = inclusionStage === 'Scheduled for Inclusion';
                       if (forkName.toLowerCase() === 'glamsterdam') {
                         return isSFI
-                          ? "Selected headliner feature of this network upgrade"
-                          : "Proposed headliner feature of this network upgrade";
+                          ? "Selected headliner feature"
+                          : "Proposed headliner feature";
                       }
-                      return "Headliner feature of this network upgrade";
+                      return "Headliner feature";
                     })()}
                     className="inline-block cursor-pointer"
                   >
@@ -78,25 +87,66 @@ export const EipCard: React.FC<EipCardProps> = ({ eip, forkName, handleExternalL
                   </Tooltip>
                 )}
               </h3>
-              <div className="flex items-center gap-2 relative top-0.5">
-                <Tooltip text={`View ${getProposalPrefix(eip)}-${eip.id} specification`}>
+
+              {/* External links - always visible on the right */}
+              <div className="flex items-center gap-2 relative top-0.5 ml-auto">
+                {/* Discussion link */}
+                {eip.discussionLink && (
+                  <Tooltip text="View discussion">
+                    <a
+                      href={eip.discussionLink}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      onClick={() => handleExternalLinkClick('discussion', eip.discussionLink)}
+                      className="text-slate-400 hover:text-slate-600 dark:text-slate-500 dark:hover:text-slate-300 transition-colors cursor-pointer relative group"
+                    >
+                      <div className="relative w-7 h-7">
+                        <img
+                          src="/eth-mag.png"
+                          alt="Ethereum Magicians"
+                          className="w-7 h-7 opacity-90 dark:opacity-70"
+                        />
+                        <svg
+                          className="absolute -bottom-0.5 -right-0.5 w-4 h-4 opacity-0 group-hover:opacity-100 transition-opacity"
+                          fill="none"
+                          stroke="currentColor"
+                          strokeWidth="2"
+                          viewBox="0 0 24 24"
+                        >
+                          <path strokeLinecap="round" strokeLinejoin="round" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
+                        </svg>
+                      </div>
+                    </a>
+                  </Tooltip>
+                )}
+
+                {/* Specification link */}
+                <Tooltip text="View specification">
                   <a
                     href={getSpecificationUrl(eip)}
                     target="_blank"
                     rel="noopener noreferrer"
                     onClick={() => handleExternalLinkClick('specification', getSpecificationUrl(eip))}
-                    className="text-slate-400 hover:text-slate-600 dark:text-slate-500 dark:hover:text-slate-300 transition-colors cursor-pointer"
+                    className="text-slate-400 hover:text-slate-600 dark:text-slate-500 dark:hover:text-slate-300 transition-colors cursor-pointer relative group"
                   >
-                    <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
-                    </svg>
+                    <div className="relative w-7 h-7">
+                      <img
+                        src="/eth-diamond-black.png"
+                        alt="Ethereum"
+                        className="w-7 h-7 opacity-90 dark:opacity-100 dark:invert"
+                      />
+                      <svg
+                        className="absolute -bottom-0.5 -right-0.5 w-4 h-4 opacity-0 group-hover:opacity-100 transition-opacity"
+                        fill="none"
+                        stroke="currentColor"
+                        strokeWidth="2"
+                        viewBox="0 0 24 24"
+                      >
+                        <path strokeLinecap="round" strokeLinejoin="round" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
+                      </svg>
+                    </div>
                   </a>
                 </Tooltip>
-                <CopyLinkButton
-                  sectionId={eipId}
-                  title={`Copy link to this section`}
-                  size="sm"
-                />
               </div>
             </div>
           </div>

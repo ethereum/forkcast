@@ -14,9 +14,47 @@ interface ChatLogProps {
     videoStartTime: string;
     description?: string;
   } | null;
+  selectedSearchResult?: {timestamp: string, text: string, type: string} | null;
+  onTimestampClick?: (timestamp: string) => void;
 }
 
-const ChatLog: React.FC<ChatLogProps> = ({ content, syncConfig }) => {
+const ChatLog: React.FC<ChatLogProps> = ({ content, syncConfig, selectedSearchResult, onTimestampClick }) => {
+  // --- Handle clicking on chat entries (but not links) ---
+  const handleChatEntryClick = (event: React.MouseEvent, timestamp: string) => {
+    // Don't trigger video jump if clicking on a link
+    const target = event.target as HTMLElement;
+    if (target.tagName.toLowerCase() === 'a' || target.closest('a')) {
+      return;
+    }
+
+    if (onTimestampClick && timestamp !== '00:00:00') {
+      onTimestampClick(timestamp);
+    }
+  };
+
+  // --- Helper function to render text with links ---
+  const renderTextWithLinks = (text: string) => {
+    const urlRegex = /(https?:\/\/[^\s]+)/g;
+    const parts = text.split(urlRegex);
+
+    return parts.map((part, index) => {
+      if (part.match(urlRegex)) {
+        return (
+          <a
+            key={index}
+            href={part}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="text-blue-600 dark:text-blue-400 hover:underline"
+          >
+            {part}
+          </a>
+        );
+      }
+      return part;
+    });
+  };
+
   // --- Timestamp conversion helpers ---
   const timestampToSeconds = (timestamp: string): number => {
     const parts = timestamp.split(':');
@@ -43,35 +81,57 @@ const ChatLog: React.FC<ChatLogProps> = ({ content, syncConfig }) => {
   };
 
   const parseChatTranscript = (text: string): { messages: ChatMessage[]; reactions: Map<string, { speaker: string; emoji: string }[]> } => {
-    // Pre-process lines to merge multi-line messages, except for "Replying to" content
+    // Pre-process lines to merge multi-line messages
     const rawLines = text.split('\n');
     const processedLines: string[] = [];
-    if (rawLines.length > 0) {
-      for (const line of rawLines) {
-        if (processedLines.length === 0) {
-          processedLines.push(line);
-          continue;
+
+    for (let i = 0; i < rawLines.length; i++) {
+      const line = rawLines[i];
+
+      // If this line has a timestamp, it's a new message
+      if (/^\d{2}:\d{2}:\d{2}\t/.test(line)) {
+        processedLines.push(line);
+      } else if (line.trim()) {
+        // This line doesn't have a timestamp, so it's a continuation
+        // Find the last line with content to merge with
+        let targetIndex = processedLines.length - 1;
+        while (targetIndex >= 0 && !processedLines[targetIndex].trim()) {
+          targetIndex--;
         }
 
-        const lastNonEmptyLine = [...processedLines].reverse().find(l => l.trim());
-
-        // A line without a timestamp is a continuation of the previous line,
-        // unless the last non-empty line is a "Replying to" message header.
-        if (line.trim() && !/^\d{2}:\d{2}:\d{2}\t/.test(line) && (!lastNonEmptyLine || !/:\tReplying to/.test(lastNonEmptyLine))) {
-          // Merge with the *actual* previous line, which might be empty
-          processedLines[processedLines.length - 1] = `${processedLines[processedLines.length - 1].trimEnd()} ${line.trim()}`;
+        if (targetIndex >= 0) {
+          const lastNonEmptyLine = processedLines[targetIndex];
+          // Don't merge if the last line is a "Replying to" header - treat the next line as the reply content
+          // Handle both English and Dutch formats
+          if (/:\tReplying to/.test(lastNonEmptyLine) || /:\tAntwoord verzenden naar/.test(lastNonEmptyLine)) {
+            // This is the actual reply content, merge it with the "Replying to" line
+            // Normalize Dutch format to English
+            let normalizedLine = lastNonEmptyLine;
+            if (/:\tAntwoord verzenden naar/.test(lastNonEmptyLine)) {
+              normalizedLine = lastNonEmptyLine.replace(':\tAntwoord verzenden naar', ':\tReplying to');
+            }
+            processedLines[targetIndex] = `${normalizedLine.trimEnd()} → ${line.trim()}`;
+          } else {
+            // Regular multi-line content, use newline to preserve formatting
+            processedLines[targetIndex] = `${processedLines[targetIndex].trimEnd()}\n${line.trim()}`;
+          }
         } else {
+          // No previous message found, add as new line
           processedLines.push(line);
         }
+      } else {
+        // Empty line - preserve it for now
+        processedLines.push(line);
       }
     }
+
     const lines = processedLines.filter(line => line.trim());
     const messages: ChatMessage[] = [];
     const reactions = new Map<string, { speaker:string; emoji: string }[]>();
     let lastMessageForReaction: ChatMessage | null = null;
     for (let i = 0; i < lines.length; i++) {
       const line = lines[i].trimEnd();
-      const match = line.match(/^(\d{2}:\d{2}:\d{2})\t(.+?):\t(.*)$/);
+      const match = line.match(/^(\d{2}:\d{2}:\d{2})\t(.+?):\t([\s\S]*)$/);
       if (match) {
         const timestamp = match[1];
         const speaker = match[2].trim();
@@ -91,16 +151,20 @@ const ChatLog: React.FC<ChatLogProps> = ({ content, syncConfig }) => {
         }
 
         // Parse reactions for later display
-        if (message.startsWith('Reacted to')) {
+        if (message.startsWith('Reacted to') || message.startsWith('Heeft gereageerd op')) {
           // Handle multiple formats:
+          // English:
           // 1. Reacted to "message" with emoji
           // 2. Reacted to message with "emoji"
           // 3. Reacted to "message" with "emoji"
+          // Dutch:
+          // 4. Heeft gereageerd op "message" met emoji
           // Also handle curly quotes - be more specific to avoid multiple matches
           const reactionPatterns = [
-            /Reacted to [""]([^""]+)[""] with [""](.+?)[""]/,  // Both quoted
-            /Reacted to [""]([^""]+)[""] with ([^""\s]+)$/,  // Quoted message, unquoted emoji (must be at end of line)
-            /Reacted to ([^""]+?) with [""](.+?)[""]/,  // Unquoted message, quoted emoji
+            /Reacted to [""]([^""]+)[""] with [""](.+?)[""]/,  // Both quoted (English)
+            /Reacted to [""]([^""]+)[""] with ([^""\s]+)$/,  // Quoted message, unquoted emoji (English)
+            /Reacted to ([^""]+?) with [""](.+?)[""]/,  // Unquoted message, quoted emoji (English)
+            /Heeft gereageerd op [""]([^""]+)[""] met (.+)$/,  // Dutch format
           ];
 
           let matched = false;
@@ -132,18 +196,23 @@ const ChatLog: React.FC<ChatLogProps> = ({ content, syncConfig }) => {
 
           if (matched) continue;
         }
-        // Handle "Replying to" messages
-        if (message.startsWith('Replying to')) {
+        // Handle "Replying to" messages (English and Dutch)
+        if (message.startsWith('Replying to') || message.startsWith('Antwoord verzenden naar')) {
           if (i + 1 < lines.length) {
             const nextLine = lines[i + 1];
             // Check if next line is NOT a new timestamped message
             if (!nextLine.match(/^\d{2}:\d{2}:\d{2}\t/)) {
               const actualMessage = nextLine.trim();
               if (actualMessage) {
+                // Convert Dutch format to English format for consistency
+                let normalizedMessage = message;
+                if (message.startsWith('Antwoord verzenden naar')) {
+                  normalizedMessage = message.replace('Antwoord verzenden naar', 'Replying to');
+                }
                 messages.push({
                   timestamp,
                   speaker,
-                  message: `${message} → ${actualMessage}`
+                  message: `${normalizedMessage} → ${actualMessage}`
                 });
                 i++; // Skip the next line since we've consumed it
                 continue;
@@ -182,7 +251,7 @@ const ChatLog: React.FC<ChatLogProps> = ({ content, syncConfig }) => {
   const parentMessages: ChatMessage[] = [];
   const replyMessages: ChatMessage[] = [];
   messages.forEach((msg) => {
-    if (msg.message.startsWith('Replying to')) {
+    if (msg.message.startsWith('Replying to') || msg.message.startsWith('Antwoord verzenden naar')) {
       replyMessages.push(msg);
     } else {
       parentMessages.push(msg);
@@ -192,7 +261,12 @@ const ChatLog: React.FC<ChatLogProps> = ({ content, syncConfig }) => {
   const virtualParents = new Map<string, ChatMessage>();
   const matchedReplies = new Set<ChatMessage>();
   replyMessages.forEach((reply) => {
-    const match = reply.message.match(/Replying to "([^"]+)"/);
+    // Handle quotes in the replied-to text by looking for the pattern more flexibly
+    // Support both English and Dutch formats
+    const englishMatch = reply.message.match(/^Replying to "(.+?)"(?:\s|$)/);
+    const dutchMatch = reply.message.match(/^Antwoord verzenden naar "(.+?)"(?:\s|$)/);
+    const match = englishMatch || dutchMatch;
+
     if (match) {
       const quotedText = match[1];
       // Handle abbreviated quotes (ending with "...")
@@ -222,7 +296,12 @@ const ChatLog: React.FC<ChatLogProps> = ({ content, syncConfig }) => {
     const replies: ChatMessage[] = [];
     replyMessages.forEach((reply) => {
       if (matchedReplies.has(reply)) return;
-      const match = reply.message.match(/Replying to "([^"]+)"/);
+      // Handle quotes in the replied-to text by looking for the pattern more flexibly
+      // Support both English and Dutch formats
+      const englishMatch = reply.message.match(/^Replying to "(.+?)"(?:\s|$)/);
+      const dutchMatch = reply.message.match(/^Antwoord verzenden naar "(.+?)"(?:\s|$)/);
+      const match = englishMatch || dutchMatch;
+
       if (match) {
         const quotedText = match[1];
         // Handle abbreviated quotes (ending with "...")
@@ -266,15 +345,19 @@ const ChatLog: React.FC<ChatLogProps> = ({ content, syncConfig }) => {
         const key = `${message.timestamp}|${message.speaker}|${message.message}`;
         const replies = parentToReplies.get(key);
         const isParentWithReplies = replies && replies.length > 0;
+        const isSelectedSearch = selectedSearchResult?.timestamp === message.timestamp && selectedSearchResult?.type === 'chat';
         return (
           <div key={index} className="space-y-1">
             {/* Message */}
             <div
               data-chat-timestamp={message.timestamp}
-              className="group hover:bg-slate-50 dark:hover:bg-slate-700/30 py-1 px-2 -mx-2 rounded transition-colors"
+              onClick={(e) => handleChatEntryClick(e, message.timestamp)}
+              className={`group hover:bg-slate-50 dark:hover:bg-slate-700/30 py-1 px-2 -mx-2 rounded transition-colors cursor-pointer
+                ${isSelectedSearch ? 'bg-yellow-50 dark:bg-yellow-900/20 border-l-2 border-yellow-500 rounded-r-md' : ''}
+              `}
             >
               <div className="flex gap-3 text-sm">
-                <span className="text-slate-500 dark:text-slate-400 text-xs flex-shrink-0 font-mono mt-0.5" style={{ minWidth: '64px' }}>
+                <span className={`text-xs flex-shrink-0 font-mono mt-0.5 ${isSelectedSearch ? 'text-yellow-600 dark:text-yellow-400' : 'text-slate-500 dark:text-slate-400'}`} style={{ minWidth: '64px' }}>
                   {message.timestamp === '00:00:00'
                     ? '--:--:--'
                     : syncConfig?.transcriptStartTime && syncConfig?.videoStartTime
@@ -283,11 +366,20 @@ const ChatLog: React.FC<ChatLogProps> = ({ content, syncConfig }) => {
                   }
                 </span>
                 <div className="flex-1 min-w-0">
-                  <span className="font-medium text-slate-700 dark:text-slate-300 mr-2">
+                  <span className={`font-medium mr-2 ${isSelectedSearch ? 'text-yellow-900 dark:text-yellow-100' : 'text-slate-700 dark:text-slate-300'}`}>
                     {message.speaker === 'Unknown' ? 'Context' : message.speaker}:
                   </span>
-                  <span className={`${message.speaker === 'Unknown' ? 'text-slate-500 dark:text-slate-400 italic' : 'text-slate-600 dark:text-slate-400'} break-words`}>
-                    {message.message}
+                  <span className={`break-words ${
+                    message.speaker === 'Unknown' 
+                      ? (isSelectedSearch ? 'text-yellow-600 dark:text-yellow-400 italic' : 'text-slate-500 dark:text-slate-400 italic')
+                      : (isSelectedSearch ? 'text-slate-900 dark:text-slate-100' : 'text-slate-600 dark:text-slate-400')
+                  }`}>
+                    {message.message.split(/\r\n|\r|\n/).map((line, index) => (
+                      <React.Fragment key={index}>
+                        {index > 0 && <br />}
+                        {renderTextWithLinks(line)}
+                      </React.Fragment>
+                    ))}
                   </span>
                 </div>
               </div>
@@ -336,29 +428,39 @@ const ChatLog: React.FC<ChatLogProps> = ({ content, syncConfig }) => {
             })()}
             {/* Reply Messages */}
             {isParentWithReplies && replies!.map((reply, replyIndex) => {
-              // Extract just the actual message content after "Replying to..."
-              // The message format is: "Replying to "quoted" → actual message"
-              const replyMatch = reply.message.match(/^Replying to "[^"]+"\s*→\s*(.+)$/);
-              const actualMessage = replyMatch ? replyMatch[1] : reply.message;
+              // Extract just the actual message content after "Replying to..." or "Antwoord verzenden naar..."
+              // The message format is: "Replying to "quoted" → actual message" or "Antwoord verzenden naar "quoted" → actual message"
+              // Handle quotes in the replied-to text by using a more flexible pattern
+              const englishReplyMatch = reply.message.match(/^Replying to "(.+?)"\s*→\s*(.+)$/);
+              const dutchReplyMatch = reply.message.match(/^Antwoord verzenden naar "(.+?)"\s*→\s*(.+)$/);
+              const replyMatch = englishReplyMatch || dutchReplyMatch;
+              const actualMessage = replyMatch ? replyMatch[2] : reply.message;
+              const isSelectedReply = selectedSearchResult?.timestamp === reply.timestamp && selectedSearchResult?.type === 'chat';
               return (
                 <div
                   key={replyIndex}
                   data-chat-timestamp={reply.timestamp}
-                  className="ml-20 mt-1 pl-4 border-l-2 border-slate-200 dark:border-slate-600"
+                  onClick={(e) => handleChatEntryClick(e, reply.timestamp)}
+                  className={`ml-20 mt-1 pl-4 border-l-2 cursor-pointer hover:bg-slate-50 dark:hover:bg-slate-700/30 rounded transition-colors ${isSelectedReply ? 'border-yellow-500 bg-yellow-50 dark:bg-yellow-900/20' : 'border-slate-200 dark:border-slate-600'}`}
                 >
                   <div className="flex gap-3 text-sm">
-                    <span className="text-slate-500 dark:text-slate-400 text-xs flex-shrink-0 font-mono" style={{ minWidth: '64px' }}>
+                    <span className={`text-xs flex-shrink-0 font-mono mt-0.5 ${isSelectedReply ? 'text-yellow-600 dark:text-yellow-400' : 'text-slate-500 dark:text-slate-400'}`} style={{ minWidth: '64px' }}>
                       {syncConfig?.transcriptStartTime && syncConfig?.videoStartTime
                         ? secondsToTimestamp(getAdjustedVideoTime(reply.timestamp))
                         : reply.timestamp
                       }
                     </span>
                     <div className="flex-1 min-w-0">
-                      <span className="font-medium text-slate-700 dark:text-slate-300 mr-2">
+                      <span className={`font-medium mr-2 ${isSelectedReply ? 'text-yellow-900 dark:text-yellow-100' : 'text-slate-700 dark:text-slate-300'}`}>
                         {reply.speaker}:
                       </span>
-                      <span className="text-slate-600 dark:text-slate-400 break-words">
-                        {actualMessage}
+                      <span className={`break-words ${isSelectedReply ? 'text-slate-900 dark:text-slate-100' : 'text-slate-600 dark:text-slate-400'}`}>
+                        {actualMessage.split(/\r\n|\r|\n/).map((line, index) => (
+                          <React.Fragment key={index}>
+                            {index > 0 && <br />}
+                            {renderTextWithLinks(line)}
+                          </React.Fragment>
+                        ))}
                       </span>
                     </div>
                   </div>

@@ -1,0 +1,132 @@
+00:04:27	Justin Traglia:	Gm
+00:04:48	Stefan Starflinger:	Gm
+00:04:51	Parithosh Jayanthi:	Gm
+00:05:32	Barnabas:	https://ethpandaops.io/posts/fusaka-devnet-5-bpo-analysis/
+00:05:43	Barnabas:	https://github.com/eth-clients/holesky/pull/132
+00:05:50	Barnabas:	https://github.com/eth-clients/sepolia/pull/111
+00:05:58	Barnabas:	https://github.com/eth-clients/hoodi/pull/21
+00:06:37	FLCL:	looks good
+00:06:39	Parithosh Jayanthi:	Note that two Els have already checked forkIDs
+00:06:44	Barnabas:	https://notes.ethereum.org/@bbusa/fusaka-bpo-timeline
+00:06:51	Parithosh Jayanthi:	Can the others also please check?
+00:10:57	Barnabas:	https://github.com/eth-clients/mainnet/pull/10
+00:13:14	jochem-brouwer:	https://github.com/NethermindEth/gas-benchmarks/pull/57
+00:13:55	jochem-brouwer:	`nethermindeth/nethermind:gp-hacked`
+00:13:59	Parithosh Jayanthi:	Geth team has an approach they like with a lib change they are planning on getting upstreamed into the go official release. So they have a short term plan as well as long term one for unblocking us on gas limit increase. 
+
+Besu is currently working on some optimisations as well, would be good to hear an update there
+00:14:01	Toni Wahrstätter:	Is it testing XEN or the operations that XEN uses, but max'ed out with re to gaslimit?
+00:14:17	jochem-brouwer:	Antwoord verzenden naar "Is it testing XEN ..."
+
+testing directly XEN contract on top of mainnet state
+00:14:27	FLCL:	yup
+00:14:30	Parithosh Jayanthi:	Client changes + Xen contract work from Jochem are the blockers for gas limit increase rn, so hopefully we can start discussing it in a future ACD
+00:15:03	Toni Wahrstätter:	Wouldn't it make even more sense going even further than XEN, testing the actual worst-cases?
+00:16:58	jochem-brouwer:	Antwoord verzenden naar "Is it testing XEN ..."
+
+I think that would be part of statebloat network with twice the state? So this indeed tests the current worst situation (also with raised gas limit so we can hit more trie nodes). But bigger state likely even worse.
+What you might be getting at is a contract without execution and just SSTORE spam, that is indeed even worse. But currently calling approve() on XEN is ~7k gas for changed trie nodes, so somewhat close to the SSTORE spam contract
+00:17:05	Parithosh Jayanthi:	Yeah the testnets are already at 60M
+00:17:10	Parithosh Jayanthi:	Its a question about when we do this for mainnet
+00:17:11	Barnabas:	Reacted to "Yeah the testnets ar..." with 👍
+00:17:22	Barnabas:	Replying to "Yeah the testnets ar..."
+
+ok ok
+00:17:27	Toni Wahrstätter:	Reacted to I think that would b... with "👍"
+00:17:52	jochem-brouwer:	Antwoord verzenden naar "Is it testing XEN ..."
+
+But if you have even worse ideas than SSTORE spam contract let me know of course 😍🚀
+00:19:14	Toni Wahrstätter:	Reacted to But if you have even... with "😎"
+00:19:29	Parithosh Jayanthi:	Besu + Xen
+00:19:33	Parithosh Jayanthi:	Are open questions
+00:19:34	Luis Pinto | Besu:	From Besu: the main gist for disfavouring it is that if something goes bad it could delay Fusaka. And we discussed that if PeerDas is ready we should ship it regardless. AFAIK this gas limit increase does not need a hard fork
+00:19:43	jochem-brouwer:	Heeft gereageerd op "Besu + Xen" met 👍
+00:20:19	Parithosh Jayanthi:	Reacted to "From Besu: the main ..." with 👍🏽
+00:20:20	Luis Pinto | Besu:	It would be nice to achieve this milestone at the fork, but it is risky
+00:20:55	jochem-brouwer:	Do we have an EEST test for this? (Receipt logs size > 10 MiB)
+00:21:10	jochem-brouwer:	Antwoord verzenden naar "Do we have an EEST..."
+
+(to also show when this behavior hits at X gas limit)
+00:21:29	CPerezz:	Reacted to "Do we have an EEST t..." with 👀
+00:21:44	Louis:	Replying to "Do we have an EEST t..."
+
+Does this help? https://github.com/ethereum/execution-spec-tests/blob/main/tests/benchmark/test_worst_opcode.py 
+It is for LOG tho
+00:22:06	Parithosh Jayanthi:	Tradeoff for coordination in scaling won’t really make sense
+00:22:23	Parithosh Jayanthi:	55M to 60M is too minor a diff for eg
+00:22:28	Tim Beiko:	Reacted to "55M to 60M is too mi…" with 👍
+00:22:49	Barnabas:	Replying to "Tradeoff for coordin..."
+
+we have fusaka anyways planning to come, so we could just push the defaults there
+00:23:00	Parithosh Jayanthi:	Replying to "Tradeoff for coordin..."
+
+Yup that’s the plan
+00:23:03	jochem-brouwer:	Antwoord verzenden naar "Do we have an EEST..."
+
+Yes it is indeed related to LOGs. Test would look like that one 😃👍 For LOG it is likely better to not create one big LOG (due to quadratic memory gas costs) but in some smaller ones to hit the "lowest" gas limit we could hit the 10 MiB+ receipt size
+00:23:05	Tim Beiko:	Replying to "Tradeoff for coordin…"
+Yes, I think we should focus on the Fusaka defaults now
+00:24:22	Ansgar Dietrichs:	Worst worst case (only if there is a specific attack) besu nodes would lag one slot behind with their attestations
+00:25:06	Justin Florentine (Besu):	Replying to "Worst worst case (on..."
+
+block proposal impact as well. nobody likes missing their proposal.
+00:25:10	Ansgar Dietrichs:	Replying to "Worst worst case (on…"
+I don’t see who would have any incentive for such an attack, given that it would be quite costly
+00:25:33	Ansgar Dietrichs:	Replying to "Worst worst case (on…"
+Right, block proposal is another one
+00:25:33	lightclient:	Replying to "Worst worst case (on…"
+reduce client diversity
+00:25:44	Louis:	Replying to "Do we have an EEST t..."
+
+Contact later for more details! I am happy to help add new cases
+00:25:47	Justin Florentine (Besu):	Reacted to "reduce client divers..." with ➕
+00:25:55	Phil Ngo:	Reacted to "reduce client divers..." with ➕
+00:26:01	jochem-brouwer:	Heeft gereageerd op "reduce client dive..." met 🙀
+00:26:07	Ansgar Dietrichs:	Replying to "Worst worst case (on…"
+Could besu not just build with a max gas of 45m? That would make it safe
+00:26:28	lightclient:	Replying to "Worst worst case (on…"
+still less profitable
+00:26:38	Ansgar Dietrichs:	Replying to "Worst worst case (on…"
+Only in an attack scenario
+00:26:50	Ben Adams:	Replying to "Worst worst case (on..."
+
+when does a local block builder make a 45m block?
+00:27:13	lightclient:	Replying to "Worst worst case (on…"
+i assume when it “detects” an attack?
+00:27:13	Ansgar Dietrichs:	Replying to "Worst worst case (on…"
+Right, my 45m comment was wrong
+00:27:14	Justin Florentine (Besu):	Replying to "Worst worst case (on..."
+
+in ansgars scenario, always.
+00:27:36	Marius van der Wijden:	Also it would only impact besu nodes on the standard hardware
+00:27:39	Parithosh Jayanthi:	Replying to "Worst worst case (on..."
+
+Even during the attack, the attacker would need to pay more than everyone else - it would mostly affect attestations
+00:27:54	Parithosh Jayanthi:	Id prefer not deciding this today
+00:28:00	jochem-brouwer:	Heeft gereageerd op "Id prefer not deci..." met 👍
+00:28:01	Justin Florentine (Besu):	Reacted to "Also it would only i..." with ➕
+00:28:01	Barnabas:	Reacted to "Id prefer not decidi..." with 👍
+00:28:04	lightclient:	Replying to "Worst worst case (on…"
+why more than everyone else?
+00:28:11	Parithosh Jayanthi:	Acd will get some details from Xen contract tests that jochem is working on as well
+00:28:11	Marius van der Wijden:	Reacted to Id prefer not decidi... with "👍"
+00:28:15	lightclient:	Replying to "Worst worst case (on…"
+target is 50% full, they just pay base fee?
+00:28:22	CPerezz:	Reacted to "Id prefer not decidi..." with 👍
+00:28:35	CPerezz:	Need to drop. If there are any questions reg. Bloatnet, feel free to ping via TG or State Bloat Research TG channel.
+00:29:03	Tim Beiko:	Reacted to "Acd will get some de…" with 👍
+00:29:08	jochem-brouwer:	Heeft gereageerd op "Acd will get some ..." met 🚀
+00:29:29	Parithosh Jayanthi:	At target blocks there’s no attack, they can process at 10-15M/s. target would be 30M, so 2s to process the block.
+00:29:43	Parithosh Jayanthi:	Replying to "Worst worst case (on..."
+
+The issue is at 60M fully used blocks
+00:31:39	jochem-brouwer:	Heeft gereageerd op "Contact later for ..." met 👍
+00:32:10	jochem-brouwer:	Antwoord verzenden naar "Do we have an EEST..."
+
+Yes will do, think I have some napkin math about this laying somewhere 😂
+00:36:06	Francesco:	Should we just rename it to gloas breakout?
+00:36:18	terence:	makes sense to me
+00:37:20	Justin Traglia:	https://github.com/ethereum/consensus-specs/pull/4589
+00:37:37	Toni Wahrstätter:	Replying to "Should we just renam..." 
+
+ And put both, bals and epbs, into one call?

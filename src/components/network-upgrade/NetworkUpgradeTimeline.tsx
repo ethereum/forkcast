@@ -47,7 +47,13 @@ export const NetworkUpgradeTimeline: React.FC<NetworkUpgradeTimelineProps> = ({ 
             }
 
             const boxContent = (
-              <div className={`px-3 py-1.5 rounded ${boxClass} mb-1 truncate max-w-[180px] text-center leading-tight flex flex-col items-center transition-all duration-200 ${!isCurrent ? 'hover:border-slate-300 dark:hover:border-slate-500 hover:shadow-sm' : ''}`} style={{ position: 'relative', zIndex: 2 }}>
+              <div className={`px-3 py-1.5 rounded ${boxClass} mb-1 truncate max-w-[180px] text-center leading-tight flex flex-col items-center transition-all duration-200 ${
+                !isCurrent
+                  ? upgrade.disabled
+                    ? 'cursor-not-allowed'
+                    : 'hover:border-slate-300 dark:hover:border-slate-500 hover:shadow-sm cursor-pointer'
+                  : ''
+              }`} style={{ position: 'relative', zIndex: 2 }}>
                   <span className={`${labelClass} text-xs mb-0.5 leading-tight`}>
                     {upgrade.name.replace(/ Upgrade$/, '')}
                   </span>
@@ -57,8 +63,8 @@ export const NetworkUpgradeTimeline: React.FC<NetworkUpgradeTimelineProps> = ({ 
 
             return (
               <div key={upgrade.id} className="flex flex-col items-center flex-1 min-w-0" style={{ position: 'relative' }}>
-                {/* Make non-current upgrades clickable */}
-                {!isCurrent && upgrade.path ? (
+                {/* Make non-current upgrades clickable only if not disabled */}
+                {!isCurrent && upgrade.path && !upgrade.disabled ? (
                   <Link to={upgrade.path} className="block">
                     {boxContent}
                   </Link>

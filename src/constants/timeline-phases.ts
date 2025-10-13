@@ -43,3 +43,41 @@ export const GLAMSTERDAM_TIMELINE_PHASES: TimelinePhase[] = [
     status: 'upcoming'
   }
 ];
+
+export const FUSAKA_TIMELINE_PHASES: TimelinePhase[] = [
+  {
+    id: 'devnets',
+    title: 'Devnets',
+    dateRange: 'In Progress',
+    description: 'Client teams implement and test Fusaka changes on internal development networks.',
+    status: 'completed'
+  },
+  {
+    id: 'holesky',
+    title: 'Holešky Testnet Deployment',
+    dateRange: 'Oct 1',
+    description: 'Deploy Fusaka to a soon-to-be deprecated testnet for initial testing.',
+    status: 'completed'
+  },
+  {
+    id: 'sepolia',
+    title: 'Sepolia Testnet Deployment',
+    dateRange: 'Oct 14',
+    description: 'Deploy Fusaka to the permissioned validator testnet.',
+    status: 'current'
+  },
+  {
+    id: 'hoodi',
+    title: 'Hoodi Testnet Deployment',
+    dateRange: 'Oct 28',
+    description: 'Deploy Fusaka to the permissionless validator testnet for final testing.',
+    status: 'upcoming'
+  },
+  {
+    id: 'mainnet',
+    title: 'Mainnet Deployment',
+    dateRange: 'TBD',
+    description: 'Final deployment of Fusaka to Ethereum mainnet after successful testnet validation.',
+    status: 'upcoming'
+  }
+];

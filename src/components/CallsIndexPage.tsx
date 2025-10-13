@@ -1,18 +1,20 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import ThemeToggle from './ui/ThemeToggle';
 import { protocolCalls, type Call } from '../data/calls';
+import { fetchUpcomingCalls, type UpcomingCall } from '../utils/github';
 
 interface TimelineEvent {
   type: 'event';
   date: string;
   title: string;
-  category: 'upgrade' | 'milestone' | 'announcement' | 'devnet';
+  category: 'mainnet' | 'testnet' | 'milestone' | 'announcement' | 'devnet';
 }
 
 const CallsIndexPage: React.FC = () => {
   const [selectedFilter, setSelectedFilter] = useState<string>('all');
   const [showEvents, setShowEvents] = useState<boolean>(true);
+  const [upcomingCalls, setUpcomingCalls] = useState<UpcomingCall[]>([]);
 
   const calls = protocolCalls;
 
@@ -20,8 +22,8 @@ const CallsIndexPage: React.FC = () => {
     {
       type: 'event',
       date: '2025-05-07',
-      title: 'Pectra Upgrade Goes Live',
-      category: 'upgrade'
+      title: 'Pectra Live on Mainnet',
+      category: 'mainnet'
     },
     {
       type: 'event',
@@ -64,19 +66,92 @@ const CallsIndexPage: React.FC = () => {
       date: '2025-09-10',
       title: 'Fusaka Devnet-5 Launches',
       category: 'devnet'
+    },
+    {
+      type: 'event',
+      date: '2025-10-01',
+      title: 'Fusaka Live on Holešky Testnet',
+      category: 'testnet'
+    },
+    {
+      type: 'event',
+      date: '2025-10-07',
+      title: 'Fusaka BPO1 on Holešky (10/15 blobs)',
+      category: 'testnet'
+    },
+    {
+      type: 'event',
+      date: '2025-10-13',
+      title: 'Fusaka BPO2 on Holešky (14/21 blobs)',
+      category: 'testnet'
+    },
+    {
+      type: 'event',
+      date: '2025-10-14',
+      title: 'Fusaka Live on Sepolia Testnet',
+      category: 'testnet'
+    },
+    {
+      type: 'event',
+      date: '2025-10-21',
+      title: 'Fusaka BPO1 on Sepolia (10/15 blobs)',
+      category: 'testnet'
+    },
+    {
+      type: 'event',
+      date: '2025-10-27',
+      title: 'Fusaka BPO2 on Sepolia (14/21 blobs)',
+      category: 'testnet'
+    },
+    {
+      type: 'event',
+      date: '2025-10-28',
+      title: 'Fusaka Live on Hoodi Testnet',
+      category: 'testnet'
+    },
+    {
+      type: 'event',
+      date: '2025-11-05',
+      title: 'Fusaka BPO1 on Hoodi (10/15 blobs)',
+      category: 'testnet'
+    },
+    {
+      type: 'event',
+      date: '2025-11-12',
+      title: 'Fusaka BPO2 on Hoodi (14/21 blobs)',
+      category: 'testnet'
     }
   ];
 
+  // Fetch upcoming calls on component mount
+  useEffect(() => {
+    const loadUpcomingCalls = async () => {
+      try {
+        const upcoming = await fetchUpcomingCalls();
+        setUpcomingCalls(upcoming);
+      } catch (error) {
+        console.error('Failed to load upcoming calls:', error);
+      }
+    };
+
+    loadUpcomingCalls();
+  }, []);
 
   // Filter and sort calls and events
   const filteredCalls = selectedFilter === 'all'
     ? calls
     : calls.filter(call => call.type === selectedFilter);
 
-  // Combine calls and events into timeline items
-  type TimelineItem = Call | TimelineEvent;
+  // Filter upcoming calls based on selected filter
+  const filteredUpcomingCalls = selectedFilter === 'all'
+    ? upcomingCalls
+    : upcomingCalls.filter(call => call.type === selectedFilter);
+
+  // Combine calls, upcoming calls, and events into timeline items
+  type TimelineItem = Call | TimelineEvent | UpcomingCall;
   const timelineItems: TimelineItem[] = [
     ...filteredCalls,
+    ...filteredUpcomingCalls, // Add filtered upcoming calls to timeline
     ...(showEvents ? timelineEvents : []) // Show events based on toggle
   ];
 
@@ -100,9 +175,12 @@ const CallsIndexPage: React.FC = () => {
             Forkcast
           </Link>
           <div className="flex items-center justify-between">
-            <h1 className="text-xl font-semibold text-slate-900 dark:text-slate-100">Protocol Calls</h1>
+            <h1 className="text-xl font-semibold text-slate-900 dark:text-slate-100">Protocol Calendar</h1>
             <div className="text-sm text-slate-500 dark:text-slate-400">
               {filteredCalls.length} calls
+              {filteredUpcomingCalls.length > 0 && (
+                <span> • {filteredUpcomingCalls.length} upcoming</span>
+              )}
               {showEvents && timelineEvents.length > 0 && (
                 <span> • {timelineEvents.length} events</span>
               )}
@@ -162,7 +240,7 @@ const CallsIndexPage: React.FC = () => {
         <div className="space-y-4">
           {(() => {
             // Group items by month
-            const monthGroups = new Map<string, (Call | TimelineEvent)[]>();
+            const monthGroups = new Map<string, (Call | TimelineEvent | UpcomingCall)[]>();
 
             sortedItems.forEach((item) => {
               // Parse date as local time, not UTC
@@ -200,22 +278,61 @@ const CallsIndexPage: React.FC = () => {
                         if (item.type === 'event') {
                           const event = item as TimelineEvent;
                           const eventColors = {
-                            upgrade: 'from-green-500 to-emerald-600',
+                            'mainnet': 'from-emerald-500 to-green-600',
+                            'testnet': 'from-teal-500 to-cyan-600',
                             milestone: 'from-blue-500 to-indigo-600',
                             announcement: 'from-purple-500 to-violet-600',
                             devnet: 'from-orange-500 to-amber-600'
                           };
+
+                          const eventBorderColors = {
+                            'mainnet': 'border-emerald-500',
+                            'testnet': 'border-teal-500',
+                            milestone: 'border-blue-500',
+                            announcement: 'border-purple-500',
+                            devnet: 'border-orange-500'
+                          };
+
+                          // Check if event is upcoming
+                          const today = new Date();
+                          today.setHours(0, 0, 0, 0);
+                          const [year, month, day] = event.date.split('-').map(Number);
+                          const eventDate = new Date(year, month - 1, day);
+                          eventDate.setHours(0, 0, 0, 0);
+                          const isUpcoming = eventDate > today;
 
                           return (
                             <div
                               key={`event-${event.date}-${event.title}`}
                               className="relative pl-8 py-2.5 opacity-75 hover:opacity-90 transition-opacity"
                             >
-                              <div className={`absolute left-3 top-1/2 -translate-y-1/2 w-2 h-2 rounded-full bg-gradient-to-r ${eventColors[event.category]}`}></div>
+                              {/* Mainnet events get a double-circle effect */}
+                              {event.category === 'mainnet' && (
+                                <div className={`absolute left-2 top-1/2 -translate-y-1/2 w-4 h-4 rounded-full border-2 ${
+                                  isUpcoming ? 'border-emerald-400' : 'border-emerald-500'
+                                }`}></div>
+                              )}
+                              <div className={`absolute left-3 top-1/2 -translate-y-1/2 rounded-full ${
+                                isUpcoming
+                                  ? `w-2 h-2 border-2 ${eventBorderColors[event.category]}`
+                                  : `w-2 h-2 bg-gradient-to-r ${eventColors[event.category]}`
+                              }`}></div>
                               <div className="flex items-center justify-between">
-                                <span className="text-sm font-medium text-slate-700 dark:text-slate-300">
-                                  {event.title}
-                                </span>
+                                <div className="flex items-center gap-2">
+                                  <span className={`text-sm font-medium ${
+                                    event.category === 'mainnet'
+                                      ? 'text-slate-800 dark:text-slate-200'
+                                      : 'text-slate-700 dark:text-slate-300'
+                                  }`}>
+                                    {event.title}
+                                  </span>
+                                  {isUpcoming && (
+                                    <div className="hidden sm:flex items-center gap-1.5">
+                                      <div className="w-1.5 h-1.5 rounded-full bg-slate-400 dark:bg-slate-500"></div>
+                                      <span className="text-xs text-slate-500 dark:text-slate-400">Upcoming</span>
+                                    </div>
+                                  )}
+                                </div>
                                 <div className="text-xs text-slate-500 dark:text-slate-400 font-medium">
                                   {event.date}
                                 </div>
@@ -224,7 +341,57 @@ const CallsIndexPage: React.FC = () => {
                           );
                         }
 
-                        // Render call
+                        // Check if it's an upcoming call
+                        if ('githubUrl' in item) {
+                          const upcomingCall = item as UpcomingCall;
+
+                          // Define colors for upcoming calls - same colors as completed but with dashed border
+                          const upcomingCallTypeColors = {
+                            acdc: 'border-l-purple-500 dark:border-l-purple-400',
+                            acde: 'border-l-blue-500 dark:border-l-blue-400',
+                            acdt: 'border-l-green-500 dark:border-l-green-400'
+                          };
+
+                          const upcomingCallTypeBadgeColors = {
+                            acdc: 'bg-purple-100 dark:bg-purple-900/30 text-purple-700 dark:text-purple-300',
+                            acde: 'bg-blue-100 dark:bg-blue-900/30 text-blue-700 dark:text-blue-300',
+                            acdt: 'bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-300'
+                          };
+
+                          return (
+                            <a
+                              key={`upcoming-${upcomingCall.type}-${upcomingCall.number}`}
+                              href={upcomingCall.githubUrl}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              className={`block bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg p-3 hover:shadow-md dark:hover:shadow-slate-700/20 transition-all hover:border-slate-300 dark:hover:border-slate-600 group border-l-3 ${upcomingCallTypeColors[upcomingCall.type]}`}
+                              style={{ borderLeftStyle: 'dashed' }}
+                            >
+                              <div className="flex items-center justify-between">
+                                <div className="flex items-center gap-3">
+                                  <span className={`text-xs font-medium px-2 py-0.5 rounded-full ${upcomingCallTypeBadgeColors[upcomingCall.type]}`}>
+                                    {upcomingCall.type.toUpperCase()}
+                                  </span>
+                                  <div className="text-sm font-medium text-slate-900 dark:text-slate-100">
+                                    Meeting #{upcomingCall.number}
+                                  </div>
+                                  <div className="text-sm text-slate-600 dark:text-slate-400">
+                                    {upcomingCall.date}
+                                  </div>
+                                  <div className="hidden sm:flex items-center gap-1.5 ml-2">
+                                    <div className="w-1.5 h-1.5 rounded-full bg-emerald-500"></div>
+                                    <span className="text-xs text-emerald-600 dark:text-emerald-400 font-medium">Upcoming</span>
+                                  </div>
+                                </div>
+                                <div className="text-slate-400 dark:text-slate-500 group-hover:text-slate-600 dark:group-hover:text-slate-300 transition-colors">
+                                  ↗
+                                </div>
+                              </div>
+                            </a>
+                          );
+                        }
+
+                        // Render completed call
                         const call = item as Call;
 
                         // Define colors for each call type

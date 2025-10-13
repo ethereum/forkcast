@@ -83,6 +83,30 @@ export const OverviewSection: React.FC<OverviewSectionProps> = ({
         </>
       )}
 
+      {/* Special note for Fusaka testnet rollout */}
+      {forkName.toLowerCase() === 'fusaka' && (
+        <>
+          <div className="mb-6 p-4 bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-700 rounded">
+            <div className="flex items-start gap-3">
+              <svg className="w-5 h-5 text-blue-600 dark:text-blue-400 mt-0.5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+              </svg>
+              <div>
+                <h4 className="font-medium text-blue-900 dark:text-blue-100 text-sm mb-1">Testnet Rollout Announced</h4>
+                <p className="text-blue-800 dark:text-blue-200 text-xs leading-relaxed">
+                  Fusaka testnet deployments begin October 1st with Holešky, followed by Sepolia (Oct 14) and Hoodi (Oct 28). <a
+                    href="https://blog.ethereum.org/2025/09/26/fusaka-testnet-announcement"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="text-blue-900 dark:text-blue-100 hover:text-blue-700 dark:hover:text-blue-300 underline decoration-1 underline-offset-2 transition-colors font-medium"
+                  >Read the full announcement</a> for technical details and client release information.
+                </p>
+              </div>
+            </div>
+          </div>
+        </>
+      )}
+
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
         {stageStats.map(({ stage, count, color }) => {
           const stageId = stage.toLowerCase().replace(/\s+/g, '-');

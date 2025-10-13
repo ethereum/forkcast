@@ -1,0 +1,317 @@
+00:04:40	potuz:	GM
+00:04:47	Orest Tarasiuk (t1):	hi
+00:06:54	stokes:	https://github.com/ethereum/pm/issues/1716
+00:07:45	Justin Traglia:	Gm
+00:09:20	Parithosh Jayanthi:	https://ethpandaops.io/posts/fusaka-devnet-5-bpo-analysis/
+00:09:43	stokes:	Reacted to "https://ethpandaops...." with 🔥
+00:10:29	Justin Traglia:	Reacted to "https://ethpandaops...." with 🔥
+00:10:34	Trent:	Reacted to "https://ethpandaops...." with 🔥
+00:10:36	J Sunnyside Labs:	Reacted to "https://ethpandaops...." with 🔥
+00:10:41	felix (eest):	Reacted to "https://ethpandaop..." with 🔥
+00:10:47	Barnabas:	Reacted to "https://ethpandaops...." with 🔥
+00:11:08	felipe:	Reacted to "https://ethpandaop..." with 🔥
+00:12:06	Fredrik:	Reacted to "https://ethpandaops...." with 🔥
+00:12:19	Barnabas:	https://notes.ethereum.org/@ethpandaops/fusaka-syncing-bugs
+00:12:25	Barnabas:	known current bug list ^
+00:12:40	Raúl Kripalani:	This could be related to the fanout/discovery mechanism
+00:12:43	Justin Traglia:	Worth mentioning that there was a bug in ckzg v2.1.2 due to a misunderstanding of how blst handled points-at-infinity in their pippenger msm function. We’ve fixed this with a v2.1.3 release. Existing spec tests didn’t find this because there was a different code path for higher blob counts. We’ve added a new test for this too.
+00:12:54	stokes:	Replying to "Worth mentioning tha..."
+
+Yeah this is next on the agenda
+00:13:01	Justin Traglia:	Reacted to "Yeah this is next on..." with 👍
+00:13:07	Barnabas:	Reacted to "Yeah this is next on..." with 👍
+00:13:08	Dustin:	Replying to "Worth mentioning t..."
+
+Can this be used with existing BLST 0.3.15?
+00:13:08	Ameziane Hamlat:	Reacted to "https://ethpandaops...." with 🔥
+00:13:37	Justin Traglia:	Replying to "Worth mentioning tha..."
+
+Nope. Needs the latest commit of blst. We’ve been asking them to make a new release.
+00:13:42	Dustin:	Replying to "Worth mentioning t..."
+
+ok
+00:14:16	Ansgar Dietrichs:	Replying to "https://ethpandaops...."
+
+amazing analyis, love the formatting
+00:14:24	Enrico Del Fante (tbenr):	Reacted to "https://ethpandaops...." with 🔥
+00:15:23	nflaig:	Reacted to "https://ethpandaops...." with 🔥
+00:15:24	potuz:	yeah I doubt fannouts peers is the issue here
+00:15:44	Ansgar Dietrichs:	Replying to "https://ethpandaops...."
+
+question though, for test 1: I am pretty sure we already knew that local building for low-bw nodes (so 50 Mbit) would have feasibility limits, but that we would be okay with locally set caps on max included blobs.
+
+So that should specifically not be a bottleneck to go to 32 blobs or beyond
+00:17:41	Parithosh Jayanthi:	Replying to "https://ethpandaops...."
+
+Yup, I think we had a few other issues that made 32 and beyond hard to quantify. I think we’re missing a few optimisations that clients haven’t had time for.
+00:17:59	Raúl Kripalani:	Replying to "https://ethpandaops.…"
+Yeah this what I meant with “not enough topic density amongst your peers”
+00:18:07	Parithosh Jayanthi:	Reacted to "Yeah this what I mea..." with 🔥
+00:18:11	Raúl Kripalani:	Replying to "https://ethpandaops.…"
+Generally CLs should be reserving some quota to peer with supernodes
+00:18:36	Ansgar Dietrichs:	Replying to "https://ethpandaops...."
+
+yes totally fair, and I don’t think we need to get there for BPOs 1 & 2.
+
+just wanted to point out that local building specifically should not be considered a bottleneck for 32 or beyond.
+00:18:54	Dustin:	hmmm, we'd prefer not to update to a non-release of BLST
+00:19:29	felipe:	Should v2.1.2 be yanked?
+00:19:31	Barnabas:	Replying to "hmmm, we'd prefer no..."
+
+I think thats in the works
+00:19:36	Felix (Geth):	we can all just upgrade
+00:19:48	Felix (Geth):	to the latest
+00:19:56	Felix (Geth):	it's a normal procedure
+00:20:00	Dustin:	Replying to "hmmm, we'd prefer ..."
+
+ok but until then that's a soft-blocker for updating to 2.1.3
+00:20:01	felipe:	Reacted to "we can all just up..." with 👍
+00:20:16	Justin Traglia:	Reacted to "we can all just upgr..." with 👍
+00:20:37	Parithosh Jayanthi:	Replying to "https://notes.ethere..."
+
+Could all CLs please help us keep this up to date? It would help people conducting audits
+00:20:55	J Sunnyside Labs:	Replying to "https://ethpandaops...."
+
+Just to add: we ran LH and Teku fullnodes which capped at 50/25Mbps instead. I think they can perform local block building better with higher caps.
+00:20:57	Fredrik:	< 2.1.2 also does not have the security fixes from the audit: https://github.com/ethereum/c-kzg-4844/blob/main/audits/2025_zksec.pdf  , so 2.1.3 would be recommended
+00:21:09	felipe:	Reacted to "< 2.1.2 also does ..." with 👍
+00:21:10	Justin Traglia:	Replying to "hmmm, we'd prefer no..."
+
+Yeah it’s an annoying situation. We could make another release which just adds back point-at-infinity filtering in ckzg if you all want this.
+00:21:13	Justin Traglia:	Reacted to "< 2.1.2 also does no..." with 👍
+00:21:15	Ansgar Dietrichs:	Reacted to "Just to add: we ran ..." with 👍
+00:21:26	Marius van der Wijden:	Could you put the dates here?
+00:21:42	Christine Kim:	proposal:22 Sep: code freezePandaOps team can run some validation on frozen code that would serve as release candidate; can discuss best strategy here given devnet-5 outcomes25 Sep: testnet releases for (holesky, sepolia, hoodi)2 Oct: Holesky fork at epoch 165376 (2025-10-02 12:06:24 UTC)16 Oct: Sepolia fork at epoch 273152 (2025-10-16 14:12:48 UTC); note: during ACD30 Oct: Hoodi fork at epoch 50944 (2025-10-29 22:11:36 UTC)mainnet would be 30 days after Hoodi fork at the earliest
+00:21:54	Barnabas:	I have a slight adjustment recommendation (include forks only on wed) 
+
+https://notes.ethereum.org/@bbusa/fusaka-bpo-timeline
+00:22:01	Barnabas:	Also I have included all BPOs in it too
+00:22:30	Dustin:	"You don't have permission to access this resource.Sign in or head back to home."
+00:22:44	Barnabas:	Replying to ""You don't have perm..."
+
+try now
+00:22:50	Marius van der Wijden:	Reacted to "proposal:
+22 Sep: ..." with 👍
+00:23:51	Dustin:	General note, whatever is chosen, Nimbus needs the holesky/sepolia/hoodi repos in eth-clients actually updated, they're the sole source of truth Nimbus uses, we don't copy/paste the numbers in
+00:24:01	Dustin:	in time for this code freeze
+00:24:13	Christine Kim:	Holesky Release deadline:2025-09-24Sepolia Release deadline:2025-10-01Hoodi Release deadline:2025-10-14Mainnet Release deadline:2025-11-03BPO 1 - target/max 10/15BPO 2 - target/max 14/21
+00:24:22	Parithosh Jayanthi:	Replying to "General note, whatev..."
+
+We can do that as soon as the dates are decided
+00:24:54	kingy_sigp:	we're ok with that timeline at lighthouse
+00:25:25	Parithosh Jayanthi:	Decided for Barnabas’ dates or the original?
+00:25:36	Marius van der Wijden:	Does it align to the boundaries
+00:25:38	Marius van der Wijden:	Ah perfect
+00:25:41	Parithosh Jayanthi:	yes
+00:25:41	felix (eest):	Reacted to "< 2.1.2 also does ..." with 👍
+00:25:43	Marius van der Wijden:	then yeah sgtm
+00:25:49	Parithosh Jayanthi:	We used the symphonious website for it
+00:26:14	Tim Beiko:	🛳️
+00:26:14	Barnabas:	I can prep that
+00:26:19	Tim Beiko:	Reacted to "I can prep that" with ❤️
+00:26:21	Trent:	Reacted to "🛳️" with 🛳️
+00:26:23	Parithosh Jayanthi:	Reacted to "🛳️" with 🛳️
+00:26:24	Parithosh Jayanthi:	Reacted to "I can prep that" with ❤️
+00:26:28	felipe:	Reacted to "🛳️" with 🛳️
+00:26:55	Tim Beiko:	I would prefer a single release for all testnets, but weak view
+00:26:57	Justin Traglia:	Replying to "Holesky Release dead..."
+
+Where do the 10/15 numbers come from? I think this should be 9/14
+00:27:18	Dustin:	tradeoff is if anything goes wrong, then oops
+00:27:20	Dustin:	now it's emergency
+00:27:25	Barnabas:	Replying to "Holesky Release dead..."
+
+9/14 is not 2/3
+00:27:35	Dustin:	with single release
+00:27:48	Dustin:	(i.e. if Holesky goes badly, and a pause is needed)
+00:27:55	Justin Traglia:	Replying to "Holesky Release dead..."
+
+I mean not exactly but that’s fine.
+00:28:09	Barnabas:	Replying to "Holesky Release dead..."
+
+We want exactly 2/3s
+00:28:17	Parithosh Jayanthi:	Replying to "Holesky Release dead..."
+
+Well we can modify the update fraction if needed
+00:28:20	Parithosh Jayanthi:	Replying to "Holesky Release dead..."
+
+But yes we should test it
+00:28:22	Barnabas:	Replying to "Holesky Release dead..."
+
+Ideally not.
+00:28:32	Barnabas:	Replying to "Holesky Release dead..."
+
+Update fraction works nicely with 2/3s ratios
+00:28:33	Parithosh Jayanthi:	Replying to "Holesky Release dead..."
+
+(We have tested in the past, prefer not changing)
+00:28:35	Barnabas:	Replying to "Holesky Release dead..."
+
+thats why we chose these numbers
+00:28:41	Barnabas:	Reacted to "(We have tested in t..." with 👍
+00:28:41	Justin Traglia:	Replying to "Holesky Release dead..."
+
+Ah okay got it.
+00:29:55	Trent:	Updated the BPO graph based on barnabas’ doc 
+
+https://dune.com/queries/5603580/9115224
+00:29:57	Justin Traglia:	Reacted to "🛳️" with 🛳️
+00:30:53	Barnabas:	💯
+00:30:57	Parithosh Jayanthi:	Yeah we can do mainnet releases in oct and allow us to gain confidence
+00:31:27	Marius van der Wijden:	Excited, lets go 🚀
+00:31:34	Enrico Del Fante (tbenr):	Reacted to "Excited, lets go 🚀" with 💯
+00:31:36	Barnabas:	Reacted to "Excited, lets go 🚀" with 💯
+00:31:40	Marius van der Wijden:	Reacted to "Excited, lets go �..." with 💯
+00:31:44	Parithosh Jayanthi:	Reacted to "Excited, lets go 🚀" with 💯
+00:31:52	Syed Mehran:	Reacted to Excited, lets go 🚀 with "💯"
+00:31:56	felipe:	Reacted to "Excited, lets go �..." with 🚀
+00:32:17	Justin Traglia:	https://blog.ethereum.org/2025/09/15/fusaka-audit-content
+00:32:29	Marius van der Wijden:	The website projects 20k submissions by the end of the contest :D
+00:32:32	felipe:	Reacted to "Updated the BPO gr..." with ❤️
+00:33:04	Barnabas:	Reacted to "Excited, lets go 🚀" with 🚀
+00:33:08	wolovim:	Reacted to "Excited, lets go 🚀" with 🚀
+00:33:21	Parithosh Jayanthi:	10k from Marius right?
+00:33:25	Justin Traglia:	Reacted to "10k from Marius righ..." with 😂
+00:33:26	Christine Kim:	Reacted to "10k from Marius righ..." with 😂
+00:33:29	Trent:	All typo fixes
+00:33:29	Barnabas:	Reacted to "10k from Marius righ..." with 😂
+00:33:32	felix (eest):	19.9k use em dashes
+00:33:33	spencer-tb:	Reacted to "10k from Marius righ..." with 😂
+00:33:46	Barnabas:	Replying to "19.9k use em dashes"
+
+—
+00:33:49	felipe:	Reacted to "10k from Marius ri..." with 😂
+00:33:51	Parithosh Jayanthi:	Reacted to "19.9k use em dashes" with 😂
+00:33:53	Christine Kim:	Reacted to "19.9k use em dashes" with 😂
+00:33:54	Yann Vonlanthen:	Reacted to "19.9k use em dashes" with 😂
+00:33:57	spencer-tb:	Reacted to "19.9k use em dashes" with 😂
+00:34:01	pk910:	Reacted to "19.9k use em dashes" with 😂
+00:34:01	felipe:	Reacted to "19.9k use em dashes" with 😂
+00:34:04	Marius van der Wijden:	Reacted to "10k from Marius ri..." with 😂
+00:34:15	Łukasz Rozmej:	We got sumbission for estimateGas and tx limit, not sure if we should or not enforce it there
+00:34:21	Syed Mehran:	Reacted to 10k from Marius righ... with "😂"
+00:34:22	felix (eest):	Reacted to "—" with 🤖
+00:34:26	Łukasz Rozmej:	Reacted to "10k from Marius righ..." with 😂
+00:34:27	Parithosh Jayanthi:	Replying to "We got sumbission fo..."
+
+Yeah pk brought it up on ACDT too
+00:34:27	potuz:	Prysm has it
+00:34:30	kasey:	We have an implementation that we are testing and code reviewing.
+00:34:31	Parithosh Jayanthi:	Replying to "We got sumbission fo..."
+
+There’s a thread on discord for discusion
+00:34:39	kasey:	*Prysm
+00:34:41	kingy_sigp:	we've finished it -- will be in unstable by end of week
+00:34:42	Justin Traglia:	Reacted to "We have an implement..." with 🔥
+00:34:51	Barnabas:	Fredrik uses internet explorer :D
+00:35:06	Barnabas:	Reacted to "we've finished it --..." with 🎉
+00:35:09	Barnabas:	Reacted to "We have an implement..." with 🎉
+00:35:12	Enrico Del Fante (tbenr):	Reacted to "We have an implement..." with 🎉
+00:35:19	Justin Traglia:	Reacted to "Fredrik uses interne..." with 😂
+00:35:24	Parithosh Jayanthi:	Reacted to "Fredrik uses interne..." with 😂
+00:35:40	Łukasz Rozmej:	Replying to "We got sumbission fo..."
+
+where? :D
+00:35:45	saulius:	Grandine also has backfill, it will be merged very soon.
+00:36:19	Fredrik:	Sorry if I missed something in the comp stuff, had to take a call 🙂
+00:36:25	Christine Kim:	Replying to "We got sumbission fo..."
+
+https://discord.com/channels/595666850260713488/688075293562503241/1416131247251521556
+00:37:13	Łukasz Rozmej:	Replying to "We got sumbission fo..."
+
+nah thats eth_call
+00:37:18	Łukasz Rozmej:	Replying to "We got sumbission fo..."
+
+that shouldn't have this cap
+00:37:25	stokes:	https://ethereum-magicians.org/t/h-star-name-for-consensus-layer-upgrade-after-glamsterdam/24298
+00:37:46	stokes:	https://ethereum-magicians.org/t/testnet-name-needed-for-sepolia-replacement/23221
+00:38:29	Christine Kim:	Replying to "We got sumbission fo..."
+
+ah gotcha, my bad
+00:40:03	Fredrik:	Reacted to "Fredrik uses interne..." with 🧖
+00:40:21	James He:	question, why do we need code freeze if we are expected to release next Thursday 🤔 is the commit needed for something else?
+00:40:48	stokes:	Replying to "question, why do we ..."
+
+I think pandaops wants to run some validation on the code
+00:40:51	stokes:	Replying to "question, why do we ..."
+
+Ahead of releases
+00:41:33	Parithosh Jayanthi:	Replying to "question, why do we ..."
+
+We can run it on releases if you prefer
+00:41:37	Francesco:	The CL changes needed for BALs might not be needed after all, correct? @potuz
+00:41:38	Parithosh Jayanthi:	Replying to "question, why do we ..."
+
+Depends on client team confidence tbh
+00:42:21	Barnabas:	https://github.com/OffchainLabs/prysm/pull/15712
+00:42:22	potuz:	correct
+00:42:25	James He:	Replying to "question, why do we ..."
+
+Yeah I think on the releases makes more sense to us
+00:42:33	potuz:	we need changes in the engine API
+00:42:38	Ansgar Dietrichs:	it does seem desirable to only merge epbs and bal devnets once they are both stable - how much extra effort would these one-time changes for bals be on CL side?
+00:43:18	Barnabas:	Replying to "it does seem desirab..."
+
+we only need a single CL impl.
+00:43:36	Parithosh Jayanthi:	Reacted to "Yeah I think on the ..." with 👍🏽
+00:43:45	Dustin:	Replying to "it does seem desir..."
+
+for Nimbus: nontrivial
+00:44:00	Dustin:	Replying to "it does seem desir..."
+
+Much, much better to sequence things linearly
+00:44:10	Barnabas:	We plan to launch bal devnets next week.
+00:44:14	Barnabas:	I don’t think epbs will be ready
+00:44:25	Justin Traglia:	Reacted to "I don’t think epbs w..." with 👍
+00:44:31	spencer-tb:	Reacted to "We plan to launch ba..." with ❤️
+00:44:45	Łukasz Rozmej:	Replying to "question, why do we ..."
+
+run on release makes more sense for us too
+00:46:24	Ansgar Dietrichs:	Replying to "it does seem desirab..."
+
+ah, right, makes sense we only need one CL client for the devnets
+00:46:26	James He:	I thought we wanted release by next thursday
+00:46:29	Ansgar Dietrichs:	Reacted to "for Nimbus: nontrivi..." with 👍
+00:46:30	Ansgar Dietrichs:	Reacted to "we only need a singl..." with 👍
+00:46:41	Ansgar Dietrichs:	Reacted to "We plan to launch ba..." with 🔥
+00:50:12	Toni Wahrstätter:	Replying to "it does seem desirab..." 
+
+ Those changes have been started by terence and are continued by jihoon now
+00:50:38	Parithosh Jayanthi:	Reacted to "Those changes have b..." with 🔥
+00:50:51	Francesco:	Replying to "it does seem desirab..."
+
+been started by terence
+
+Many such cases
+00:50:54	Parithosh Jayanthi:	Did anyone do anything cool to celebrate merge day? 😄
+00:51:07	Barnabas:	Replying to "Did anyone do anythi..."
+
+work on fusaka
+00:51:10	Justin Traglia:	Replying to "Did anyone do anythi..."
+
+same
+00:51:10	Toni Wahrstätter:	Reacted to been started by tere... with "💯"
+00:51:13	Toni Wahrstätter:	Reacted to been started by tere... with "🔥"
+00:51:14	Parithosh Jayanthi:	Replying to "Did anyone do anythi..."
+
+lmfao
+00:51:18	Enrico Del Fante (tbenr):	Reacted to "work on fusaka" with 😂
+00:51:18	spencer-tb:	Replying to "Did anyone do anythi..."
+
+Whats the merge?
+00:51:18	Barnabas:	Replying to "Did anyone do anythi..."
+
+lame
+00:51:19	Francesco:	Reacted to "Did anyone do anythi..." with 🦓
+00:51:21	Łukasz Rozmej:	Replying to "Did anyone do anythi..."
+
+sleep
+00:51:23	Parithosh Jayanthi:	Replying to "Did anyone do anythi..."
+
+weld
+00:51:25	Louis:	Replying to "Did anyone do anythi..."
+
+The weld
+00:51:27	Parithosh Jayanthi:	Replying to "Did anyone do anythi..."
+
+@steel

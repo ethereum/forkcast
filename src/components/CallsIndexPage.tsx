@@ -72,6 +72,54 @@ const CallsIndexPage: React.FC = () => {
       date: '2025-10-01',
       title: 'Fusaka Live on Holešky Testnet',
       category: 'testnet'
+    },
+    {
+      type: 'event',
+      date: '2025-10-07',
+      title: 'Fusaka BPO1 on Holešky (10/15 blobs)',
+      category: 'testnet'
+    },
+    {
+      type: 'event',
+      date: '2025-10-13',
+      title: 'Fusaka BPO2 on Holešky (14/21 blobs)',
+      category: 'testnet'
+    },
+    {
+      type: 'event',
+      date: '2025-10-14',
+      title: 'Fusaka Live on Sepolia Testnet',
+      category: 'testnet'
+    },
+    {
+      type: 'event',
+      date: '2025-10-21',
+      title: 'Fusaka BPO1 on Sepolia (10/15 blobs)',
+      category: 'testnet'
+    },
+    {
+      type: 'event',
+      date: '2025-10-27',
+      title: 'Fusaka BPO2 on Sepolia (14/21 blobs)',
+      category: 'testnet'
+    },
+    {
+      type: 'event',
+      date: '2025-10-28',
+      title: 'Fusaka Live on Hoodi Testnet',
+      category: 'testnet'
+    },
+    {
+      type: 'event',
+      date: '2025-11-05',
+      title: 'Fusaka BPO1 on Hoodi (10/15 blobs)',
+      category: 'testnet'
+    },
+    {
+      type: 'event',
+      date: '2025-11-12',
+      title: 'Fusaka BPO2 on Hoodi (14/21 blobs)',
+      category: 'testnet'
     }
   ];
 
@@ -127,7 +175,7 @@ const CallsIndexPage: React.FC = () => {
             Forkcast
           </Link>
           <div className="flex items-center justify-between">
-            <h1 className="text-xl font-semibold text-slate-900 dark:text-slate-100">Protocol Calls</h1>
+            <h1 className="text-xl font-semibold text-slate-900 dark:text-slate-100">Protocol Calendar</h1>
             <div className="text-sm text-slate-500 dark:text-slate-400">
               {filteredCalls.length} calls
               {filteredUpcomingCalls.length > 0 && (
@@ -237,16 +285,54 @@ const CallsIndexPage: React.FC = () => {
                             devnet: 'from-orange-500 to-amber-600'
                           };
 
+                          const eventBorderColors = {
+                            'mainnet': 'border-emerald-500',
+                            'testnet': 'border-teal-500',
+                            milestone: 'border-blue-500',
+                            announcement: 'border-purple-500',
+                            devnet: 'border-orange-500'
+                          };
+
+                          // Check if event is upcoming
+                          const today = new Date();
+                          today.setHours(0, 0, 0, 0);
+                          const [year, month, day] = event.date.split('-').map(Number);
+                          const eventDate = new Date(year, month - 1, day);
+                          eventDate.setHours(0, 0, 0, 0);
+                          const isUpcoming = eventDate > today;
+
                           return (
                             <div
                               key={`event-${event.date}-${event.title}`}
                               className="relative pl-8 py-2.5 opacity-75 hover:opacity-90 transition-opacity"
                             >
-                              <div className={`absolute left-3 top-1/2 -translate-y-1/2 w-2 h-2 rounded-full bg-gradient-to-r ${eventColors[event.category]}`}></div>
+                              {/* Mainnet events get a double-circle effect */}
+                              {event.category === 'mainnet' && (
+                                <div className={`absolute left-2 top-1/2 -translate-y-1/2 w-4 h-4 rounded-full border-2 ${
+                                  isUpcoming ? 'border-emerald-400' : 'border-emerald-500'
+                                }`}></div>
+                              )}
+                              <div className={`absolute left-3 top-1/2 -translate-y-1/2 rounded-full ${
+                                isUpcoming
+                                  ? `w-2 h-2 border-2 ${eventBorderColors[event.category]}`
+                                  : `w-2 h-2 bg-gradient-to-r ${eventColors[event.category]}`
+                              }`}></div>
                               <div className="flex items-center justify-between">
-                                <span className="text-sm font-medium text-slate-700 dark:text-slate-300">
-                                  {event.title}
-                                </span>
+                                <div className="flex items-center gap-2">
+                                  <span className={`text-sm font-medium ${
+                                    event.category === 'mainnet'
+                                      ? 'text-slate-800 dark:text-slate-200'
+                                      : 'text-slate-700 dark:text-slate-300'
+                                  }`}>
+                                    {event.title}
+                                  </span>
+                                  {isUpcoming && (
+                                    <div className="hidden sm:flex items-center gap-1.5">
+                                      <div className="w-1.5 h-1.5 rounded-full bg-slate-400 dark:bg-slate-500"></div>
+                                      <span className="text-xs text-slate-500 dark:text-slate-400">Upcoming</span>
+                                    </div>
+                                  )}
+                                </div>
                                 <div className="text-xs text-slate-500 dark:text-slate-400 font-medium">
                                   {event.date}
                                 </div>
@@ -293,7 +379,7 @@ const CallsIndexPage: React.FC = () => {
                                     {upcomingCall.date}
                                   </div>
                                   <div className="hidden sm:flex items-center gap-1.5 ml-2">
-                                    <div className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse"></div>
+                                    <div className="w-1.5 h-1.5 rounded-full bg-emerald-500"></div>
                                     <span className="text-xs text-emerald-600 dark:text-emerald-400 font-medium">Upcoming</span>
                                   </div>
                                 </div>

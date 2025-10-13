@@ -781,24 +781,49 @@
     ]
   },
   {
-    "id": 7668,
-    "title": "EIP-7668: Remove bloom filters",
-    "status": "Stagnant",
-    "description": "Remove bloom filters from the execution block",
-    "author": "Vitalik Buterin (@vbuterin)",
-    "type": "Standards Track",
-    "category": "Core",
-    "createdDate": "2024-03-31",
-    "discussionLink": "https://ethereum-magicians.org/t/eip-7653-remove-bloom-filters/19447",
-    "reviewer": "bot",
-    "forkRelationships": [
-      {
-        "forkName": "Fusaka",
-        "status": "Declined"
-      }
-    ],
-    "laymanDescription": "This removes bloom filters from Ethereum blocks and transaction receipts by requiring them to be empty. Bloom filters were originally designed to help applications quickly find relevant log events in blockchain history, but in practice they're too slow and have high false positive rates. Most applications now use centralized indexing services instead. Removing bloom filters simplifies the protocol and reduces client complexity, while encouraging development of decentralized alternatives using ZK-SNARKs for provable log indexing."
+  "id": 7668,
+  "title": "EIP-7668: Remove bloom filters",
+  "status": "Draft",
+  "description": "Proposes to remove bloom filters from Ethereum's execution blocks to simplify querying mechanisms.",
+  "author": "Vitalik Buterin (@vbuterin)",
+  "type": "Standards Track",
+  "category": "Core",
+  "createdDate": "2024-03-31",
+  "discussionLink": "https://ethereum-magicians.org/t/eip-7653-remove-bloom-filters/19447",
+  "reviewer": "bot",
+  "champion": {
+    "name": "Jochem Brouwer",
+    "discord": "@jochembrouwer"
   },
+  "forkRelationships": [
+    {
+      "forkName": "Fusaka",
+      "status": "Declined"
+    },
+    {
+      "forkName": "Glamsterdam",
+      "status": "Proposed",
+      "layer": "EL"
+    }
+  ],
+  "laymanDescription": "Focuses on eliminating bloom filters to streamline the querying of transaction logs, promoting more efficient, decentralized solutions.",
+  "stakeholderImpacts": {
+    "endUsers": { "description": "Users will experience improved querying efficiency as decentralized methods replace the current reliance on bloom filters." },
+    "appDevs": { "description": "Developers can leverage new decentralized log querying protocols, reducing dependency on bloom filter performance." },
+    "walletDevs": { "description": "Wallet developers are encouraged to enhance log retrieval methods, fostering more efficient transaction histories." },
+    "toolingInfra": { "description": "Indexers and explorers will adapt to new log retrieval processes, requiring updates to support decentralized protocols." },
+    "layer2s": { "description": "Layer 2 solutions will align with the removal of bloom filters, streamlining cross-layer query integration." },
+    "stakersNodes": { "description": "Node operators will need to upgrade clients for compliance, but core functionality remains unchanged." },
+    "clClients": { "description": "Minimal complexity as no consensus changes occur; just standard fork coordination needed." },
+    "elClients": { "description": "Clients must adjust to the requirement of empty bloom filters in transactions and execution blocks, accounting for the change in log retrieval mechanisms." }
+  },
+  "benefits": [
+    "Simplified Ethereum protocol by removing outdated bloom filters.",
+    "Encourages development of efficient decentralized querying solutions.",
+    "Reduces the overhead of maintaining bloom filters in execution blocks.",
+    "Improves performance and efficiency in transaction log access."
+  ]
+},
   {
     "id": 7685,
     "title": "EIP-7685: General purpose execution layer requests",
@@ -1716,6 +1741,46 @@
     ]
   },
   {
+  "id": 7904,
+  "title": "EIP-7904: General Repricing",
+  "status": "Draft",
+  "description": "Proposal for adjusting gas costs to better reflect computational complexity of operations.",
+  "author": "Jacek Glen (@JacekGlen), Lukasz Glen (@lukasz-glen), Maria Silva (@misilva73)",
+  "type": "Standards Track",
+  "category": "Core",
+  "createdDate": "2025-02-05",
+  "discussionLink": "https://ethereum-magicians.org/t/gas-cost-repricing-to-reflect-computational-complexity/23067",
+  "reviewer": "bot",
+  "champion": {
+    "name": "Maria Silva",
+    "discord": "@misilva73"
+  },
+  "forkRelationships": [
+    {
+      "forkName": "Glamsterdam",
+      "status": "Proposed",
+      "layer": "EL"
+    }
+  ],
+  "laymanDescription": "Rebalances gas costs to ensure they accurately reflect the computational workload of operations, enhancing network efficiency.",
+  "stakeholderImpacts": {
+    "endUsers": { "description": "Users may see cost changes for certain transactions." },
+    "appDevs": { "description": "Developers can optimize smart contracts with more accurate gas costs, greatly enhancing efficiency." },
+    "walletDevs": { "description": "Wallet developers may need to adjust fee estimation mechanisms based on new gas pricing." },
+    "toolingInfra": { "description": "Tools must adapt to new gas cost structures to ensure accurate reporting and estimation." },
+    "layer2s": { "description": "L2 solutions will need to align their gas pricing with changes introduced to maintain compatibility." },
+    "stakersNodes": { "description": "Node operators will upgrade clients to manage new gas structures but should expect minimal disruption." },
+    "clClients": { "description": "No consensus changes expected; focus on routine fork coordination with existing protocols." },
+    "elClients": { "description": "Must adapt gas accounting and refunds, ensuring compatibility with existing EIP metrics and updates." }
+  },
+  "benefits": [
+    "Aligns gas pricing with empirical computational complexity.",
+    "Improves network throughput by optimizing pricing schemes.",
+    "Enhances the security of the network against token abuse.",
+    "Simplifies cost estimation for developers and users alike."
+  ]
+  },
+  {
     "id": 7907,
     "title": "EIP-7907: Meter Contract Code Size And Increase Limit",
     "status": "Draft",
@@ -2231,6 +2296,50 @@
     ]
   },
   {
+  "id": 7949,
+  "title": "EIP-7949: Genesis File Format",
+  "status": "Draft",
+  "description": "Outlines a standardized format for Ethereum's genesis files to ensure consistency across implementations.",
+  "author": "Justin Florentine (@jflo)",
+  "type": "Standards Track",
+  "category": "Core",
+  "createdDate": "2025-05-19",
+  "discussionLink": "https://ethereum-magicians.org/t/eip-xxxx-genesis-json-standardization/24271",
+  "reviewer": "bot",
+  "champion": {
+    "name": "Justin Florentine",
+    "discord": "@robocopsgonemad"
+  },
+  "forkRelationships": [
+    {
+      "forkName": "Fusaka",
+      "status": "Declined"
+    },
+    {
+      "forkName": "Glamsterdam",
+      "status": "Proposed",
+      "layer": "EL"
+    }
+  ],
+  "laymanDescription": "Standardizes genesis file structure to streamline compatibility across Ethereum clients, aiding smoother network launches.",
+  "stakeholderImpacts": {
+    "endUsers": { "description": "Improved reliability and consistency when launching new networks, reducing user frustration." },
+    "appDevs": { "description": "Easier creation and validation of genesis files, leading to fewer errors and smoother deployments." },
+    "walletDevs": { "description": "Better stability and compatibility for wallets reliant on genesis data, simplifying integration." },
+    "toolingInfra": { "description": "Tools like explorers and validators will format and interpret genesis files uniformly, improving robustness." },
+    "layer2s": { "description": "Consistency at the genesis level helps L2s to more easily align with mainnet configurations." },
+    "stakersNodes": { "description": "Node operators will benefit from standardized configurations, potentially easing network upgrades." },
+    "clClients": { "description": "No consensus changes expected for CL; only standard fork coordination with established serialization rules." },
+    "elClients": { "description": "Must handle new JSON schema and validation requirements, ensuring compatibility across various implementation details." }
+  },
+  "benefits": [
+    "Promotes compatibility across diverse clients, easing development and validation.",
+    "Reduces launch errors by providing a clear structure for genesis files.",
+    "Facilitates easier onboarding for developers and users new to Ethereum.",
+    "Encourages best practices in genesis file management and deployment."
+  ]
+},
+  {
     "id": 7951,
     "title": "EIP-7951: Precompile for secp256r1 Curve Support",
     "status": "Draft",
@@ -2490,5 +2599,197 @@
       "Enhances resource allocation flexibility for developers, improving overall system efficiency.",
       "Facilitates future expansion into multiple resource dimensions seamlessly."
     ]
+  },
+  {
+  "id": 8011,
+  "title": "EIP-8011: Multidimensional Gas Metering",
+  "status": "Draft",
+  "description": "Proposal to measure gas usage across multiple resource dimensions, improving efficiency and control.",
+  "author": "Maria Silva (@misilva73)",
+  "type": "Standards Track",
+  "category": "Core",
+  "createdDate": "2025-08-22",
+  "discussionLink": "https://ethereum-magicians.org/t/eip-8011-multidimensional-gas-metering/25260",
+  "reviewer": "bot",
+  "champion": {
+    "name": "Maria Silva",
+    "discord": "@misilva73"
+  },
+  "forkRelationships": [
+    {
+      "forkName": "Glamsterdam",
+      "status": "Proposed",
+      "layer": "EL"
+    }
+  ],
+  "laymanDescription": "Improves transaction handling by allowing separate metering for computation, data access, and storage, enhancing Ethereum's ability to handle transactions effectively.",
+  "stakeholderImpacts": {
+    "endUsers": {
+      "description": "Users experience no change in transaction behavior while enjoying improved efficiency in resource management."
+    },
+    "appDevs": {
+      "description": "Developers can optimize contracts with resource-specific gas costs, needing to ensure compatibility with existing fee systems."
+    },
+    "walletDevs": {
+      "description": "Minimal adjustments required; focus on ensuring wallets correctly reflect gas costs along different resource dimensions."
+    },
+    "toolingInfra": {
+      "description": "Existing tools may need updates to accurately account for multidimensional gas metrics; mainly impacts monitoring tools."
+    },
+    "layer2s": {
+      "description": "EVM-compatible L2s will need to adopt these changes, with routine updates and testing expected for gas accounting consistency."
+    },
+    "stakersNodes": {
+      "description": "Node operators upgrade clients at the fork; normal operational behavior remains consistent with revised gas metrics."
+    },
+    "clClients": {
+      "description": "No major consensus changes expected; only standard fork coordination without new serialization or signature rules."
+    },
+    "elClients": {
+      "description": "Complex updates required to implement resource-specific gas accounting and compatibility with previous gas-related EIPs."
+    }
+  },
+  "benefits": [
+    "Enhances efficiency by decoupling resource metering from block congestion.",
+    "Improved transaction handling without altering user experience.",
+    "Finer control over excessive resource usage leads to fewer network overloads.",
+    "Paves the way for advanced pricing models without major protocol disruptions."
+  ]
+  },
+  {
+     "id": 8032,
+    "title": "EIP-8032: Tree-Depth-Based Storage Gas Pricing",
+    "status": "Draft",
+    "description": "Proposes dynamic pricing for SSTORE operations based on contract storage size, aimed at reducing state bloat.",
+    "author": "Guillaume Ballet (@gballet)",
+    "type": "Standards Track",
+    "category": "Core",
+    "createdDate": "2025-09-29",
+    "discussionLink": "https://ethereum-magicians.org/t/the-case-for-eip-8032-in-glamsterdam-tree-depth-based-storage-gas-pricing/25619",
+    "reviewer": "bot",
+    "champion": {
+        "name": "Guillaume Ballet",
+        "discord": "@gballet"
+    },
+    "forkRelationships": [
+        {
+            "forkName": "Glamsterdam",
+            "status": "Proposed",
+            "layer": "EL"
+        }
+    ],
+    "laymanDescription": "Adjusts gas costs for SSTORE operations based on how much data a contract holds, incentivizing efficient storage management.",
+    "stakeholderImpacts": {
+        "endUsers": { "description": "Users experience potentially lower costs as inefficient contracts incur higher fees." },
+        "appDevs": { "description": "Developers are motivated to optimize storage usage, leading to better resource management." },
+        "walletDevs": { "description": "Wallets may see changes in cost calculations for contract interactions; minimal updates required." },
+        "toolingInfra": { "description": "Tools need to adapt to new gas price calculations related to storage; ensures users are informed." },
+        "layer2s": { "description": "L2s adopting this will align with mainnet behavior; expect similar updates and testing." },
+        "stakersNodes": { "description": "Node operators update clients for enhanced gas calculations; no major disruptions expected." },
+        "clClients": { "description": "No new consensus mechanisms; standard fork coordination suffices without serialization changes." },
+        "elClients": { "description": "Implement updated gas calculations for SSTORE, ensuring compatibility with dynamic pricing changes." }
+    },
+    "benefits": [
+        "Encourages efficient contract design and reduces state bloat.",
+        "Aligns storage costs with actual usage, promoting healthier network sustainability.",
+        "Facilitates better resource allocation across the Ethereum ecosystem.",
+        "Simplifies decision-making for contract storage management."
+    ]
+  },
+  {
+  "id": 8037,
+  "title": "EIP-8037: State Creation Gas Cost Increase",
+  "status": "Draft",
+  "description": "Proposes to increase gas costs for state creation to manage growth and improve Ethereum's scalability.",
+  "author": "Maria Silva (@misilva73), Carlos Perez (@CPerezz), Jochem Brouwer (@jochem-brouwer), Ansgar Dietrichs (@adietrichs)",
+  "type": "Standards Track",
+  "category": "Core",
+  "createdDate": "2025-10-01",
+  "discussionLink": "https://ethereum-magicians.org/t/eip-8037-state-creation-gas-cost-increase/25694",
+  "reviewer": "bot",
+  "champion": {
+    "name": "Maria Silva",
+    "discord": "@misilva73"
+  },
+  "forkRelationships": [
+    {
+      "forkName": "Glamsterdam",
+      "status": "Proposed",
+      "layer": "EL"
+    }
+  ],
+  "laymanDescription": "Increases costs associated with creating new states, aiming to reduce excessive state growth and enhance scalability.",
+  "stakeholderImpacts": {
+    "endUsers": { "description": "Users may experience higher transaction fees for creating new accounts and contracts, but improved scalability benefits all." },
+    "appDevs": { "description": "Developers should anticipate increased deployment costs, necessitating adjustments to gas estimation tools and budget projections." },
+    "walletDevs": { "description": "Wallet developers need to update gas estimations to reflect new costs; otherwise, minimal code changes are needed." },
+    "toolingInfra": { "description": "Tooling and infrastructure must accommodate new pricing models for transaction estimates, with only minor changes to existing tools." },
+    "layer2s": { "description": "L2s adopting this EIP will align with mainnet behaviors, requiring thorough testing and client updates for accurate operations." },
+    "stakersNodes": { "description": "Node operators will need to update their clients for new gas parameters; otherwise, operations and validation remain unchanged." },
+    "clClients": { "description": "Minimal changes expected for CL clients; primarily involves standard fork coordination with minimal complexity." },
+    "elClients": { "description": "Must integrate new gas costs into transaction handling, requiring updates to gas accounting and ensuring compatibility with existing EIP standards." }
+  },
+  "benefits": [
+    "Standardizes costs across all state creation operations, promoting fairness.",
+    "Reduces excessive state growth, enhancing Ethereum's overall scalability.",
+    "Improved user experience as scalability bottlenecks are addressed.",
+    "Encourages developers to optimize contract designs due to increased costs."
+  ]
+  },
+  {
+  "id": 8038,
+  "title": "EIP-8038: State-access gas cost increase",
+  "status": "Draft",
+  "description": "Proposes an increase in gas costs for state-access operations to reflect Ethereum's expanded state and performance needs.",
+  "author": "Maria Silva (@misilva73), Wei Han Ng (@weiihann), Ansgar Dietrichs (@adietrichs)",
+  "type": "Standards Track",
+  "category": "Core",
+  "createdDate": "2025-10-03",
+  "discussionLink": "https://ethereum-magicians.org/t/eip-8038-further-increase-in-state-access-costs/25693",
+  "reviewer": "bot",
+  "champion": {
+    "name": "Maria Silva",
+    "discord": "@misilva73"
+  },
+  "forkRelationships": [
+    {
+      "forkName": "Glamsterdam",
+      "status": "Proposed",
+      "layer": "EL"
+    }
+  ],
+  "laymanDescription": "Increases gas costs for accessing state data to ensure alignment with current performance and resource needs, crucial for optimal network functionality.",
+  "stakeholderImpacts": {
+    "endUsers": {
+      "description": "Users may experience minor cost adjustments for transactions related to state access, ensuring smoother network performance."
+    },
+    "appDevs": {
+      "description": "Developers must account for higher state access costs, potentially leading to adjustments in gas estimations during deployment."
+    },
+    "walletDevs": {
+      "description": "Wallets need to update gas estimation logic to incorporate the new parameters, affecting the transaction success rate."
+    },
+    "toolingInfra": {
+      "description": "Tools must adapt to new gas cost models to ensure accurate reporting and analysis of transaction behaviors."
+    },
+    "layer2s": {
+      "description": "L2 implementations need to align with the updated state access costs; anticipate necessary updates to ensure compatibility."
+    },
+    "stakersNodes": {
+      "description": "Node operators must upgrade to new client versions to accommodate updated gas pricing; minimal impact on runtime behavior."
+    },
+    "clClients": {
+      "description": "No consensus changes expected for CL; only standard fork coordination. No new serialization or gossip rules necessitated by this proposal."
+    },
+    "elClients": {
+      "description": "Adaptations required in gas accounting for state access operations; must ensure compatibility with previous gas models and EIP-2929."
+    }
+  },
+  "benefits": [
+    "Improved alignment of gas costs with actual state access performance.",
+    "Enhanced network performance while maintaining optimal resource usage.",
+    "Encourages more efficient smart contract design by reflecting true operational costs.",
+    "Incentivizes developers to optimize state access patterns for better efficiency."
+  ]
   }
 ]

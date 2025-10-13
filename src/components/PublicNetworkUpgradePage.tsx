@@ -451,39 +451,60 @@ const PublicNetworkUpgradePage: React.FC<PublicNetworkUpgradePageProps> = ({
                                     </p>
                                   </div>
                                   <div className="flex items-center gap-2 ml-4">
-                                    <Tooltip text={`View ${getProposalPrefix(eip)}-${eip.id} specification`}>
-                                      <a
-                                        href={getSpecificationUrl(eip)}
-                                        target="_blank"
-                                        rel="noopener noreferrer"
-                                        onClick={() => handleExternalLinkClick('specification', getSpecificationUrl(eip))}
-                                        className="text-slate-400 hover:text-slate-600 dark:text-slate-500 dark:hover:text-slate-300 transition-colors cursor-pointer"
-                                      >
-                                        <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
-                                        </svg>
-                                      </a>
-                                    </Tooltip>
                                     {eip.discussionLink && (
-                                      <Tooltip text={`View ${getProposalPrefix(eip)}-${eip.id} discussion`}>
+                                      <Tooltip text="View discussion">
                                         <a
                                           href={eip.discussionLink}
                                           target="_blank"
                                           rel="noopener noreferrer"
                                           onClick={() => handleExternalLinkClick('discussion', eip.discussionLink)}
-                                          className="text-slate-400 hover:text-slate-600 dark:text-slate-500 dark:hover:text-slate-300 transition-colors cursor-pointer"
+                                          className="text-slate-400 hover:text-slate-600 dark:text-slate-500 dark:hover:text-slate-300 transition-colors cursor-pointer relative group"
                                         >
-                                          <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 12h.01M12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" />
-                                          </svg>
+                                          <div className="relative w-7 h-7">
+                                            <img
+                                              src="/eth-mag.png"
+                                              alt="Ethereum Magicians"
+                                              className="w-7 h-7 opacity-90 dark:opacity-70"
+                                            />
+                                            <svg
+                                              className="absolute -bottom-0.5 -right-0.5 w-4 h-4 opacity-0 group-hover:opacity-100 transition-opacity"
+                                              fill="none"
+                                              stroke="currentColor"
+                                              strokeWidth="2"
+                                              viewBox="0 0 24 24"
+                                            >
+                                              <path strokeLinecap="round" strokeLinejoin="round" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
+                                            </svg>
+                                          </div>
                                         </a>
                                       </Tooltip>
                                     )}
-                                    <CopyLinkButton
-                                      sectionId={eipId}
-                                      title={`Copy link to this section`}
-                                      size="sm"
-                                    />
+                                    <Tooltip text="View specification">
+                                      <a
+                                        href={getSpecificationUrl(eip)}
+                                        target="_blank"
+                                        rel="noopener noreferrer"
+                                        onClick={() => handleExternalLinkClick('specification', getSpecificationUrl(eip))}
+                                        className="text-slate-400 hover:text-slate-600 dark:text-slate-500 dark:hover:text-slate-300 transition-colors cursor-pointer relative group"
+                                      >
+                                        <div className="relative w-7 h-7">
+                                          <img
+                                            src="/eth-diamond-black.png"
+                                            alt="Ethereum"
+                                            className="w-7 h-7 opacity-90 dark:opacity-100 dark:invert"
+                                          />
+                                          <svg
+                                            className="absolute -bottom-0.5 -right-0.5 w-4 h-4 opacity-0 group-hover:opacity-100 transition-opacity"
+                                            fill="none"
+                                            stroke="currentColor"
+                                            strokeWidth="2"
+                                            viewBox="0 0 24 24"
+                                          >
+                                            <path strokeLinecap="round" strokeLinejoin="round" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
+                                          </svg>
+                                        </div>
+                                      </a>
+                                    </Tooltip>
                                   </div>
                                 </div>
                               </article>

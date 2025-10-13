@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { EIP } from '../../types';
 import {
   getInclusionStage,
@@ -21,6 +21,7 @@ interface EipCardProps {
 export const EipCard: React.FC<EipCardProps> = ({ eip, forkName, handleExternalLinkClick }) => {
   const eipId = `eip-${eip.id}`;
   const layer = getHeadlinerLayer(eip, forkName);
+  const [showChampionDetails, setShowChampionDetails] = useState(false);
 
   return (
     <article key={eip.id} className={`bg-white dark:bg-slate-800 border rounded p-8 ${
@@ -177,6 +178,73 @@ export const EipCard: React.FC<EipCardProps> = ({ eip, forkName, handleExternalL
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
                 </svg>
               </a>
+            </div>
+          );
+        })()}
+
+        {/* Champion Information */}
+        {forkName.toLowerCase() === 'glamsterdam' && (() => {
+          const forkRelationship = eip.forkRelationships.find(fr => fr.forkName.toLowerCase() === forkName.toLowerCase());
+          const champion = forkRelationship?.champion;
+
+          return (
+            <div className="mt-4">
+              {champion ? (
+                <>
+                  <div className="inline-flex items-center gap-2">
+                    <span className="text-xs text-slate-500 dark:text-slate-400 font-medium">Champion:</span>
+                    <button
+                      onClick={() => setShowChampionDetails(!showChampionDetails)}
+                      className="inline-flex items-center gap-1.5 text-xs text-slate-700 dark:text-slate-300 hover:text-slate-900 dark:hover:text-slate-100 transition-colors group"
+                    >
+                      <span className="font-medium">{champion.name}</span>
+                      {(champion.discord || champion.telegram || champion.email) && (
+                        <svg
+                          className={`w-3.5 h-3.5 text-slate-400 group-hover:text-slate-600 dark:group-hover:text-slate-200 transition-all ${showChampionDetails ? 'rotate-180' : ''}`}
+                          fill="none"
+                          stroke="currentColor"
+                          viewBox="0 0 24 24"
+                        >
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+                        </svg>
+                      )}
+                    </button>
+                  </div>
+
+                  {showChampionDetails && (champion.discord || champion.telegram || champion.email) && (
+                    <div className="mt-2 ml-4 space-y-1.5 bg-slate-50 dark:bg-slate-700/50 rounded px-3 py-2">
+                      {champion.discord && (
+                        <div className="flex items-center gap-2 text-xs">
+                          <span className="text-slate-500 dark:text-slate-400">Discord:</span>
+                          <span className="font-mono text-slate-700 dark:text-slate-300">{champion.discord}</span>
+                        </div>
+                      )}
+                      {champion.telegram && (
+                        <div className="flex items-center gap-2 text-xs">
+                          <span className="text-slate-500 dark:text-slate-400">Telegram:</span>
+                          <span className="font-mono text-slate-700 dark:text-slate-300">{champion.telegram}</span>
+                        </div>
+                      )}
+                      {champion.email && (
+                        <div className="flex items-center gap-2 text-xs">
+                          <span className="text-slate-500 dark:text-slate-400">Email:</span>
+                          <a
+                            href={`mailto:${champion.email}`}
+                            className="font-mono text-blue-600 dark:text-blue-400 hover:underline"
+                          >
+                            {champion.email}
+                          </a>
+                        </div>
+                      )}
+                    </div>
+                  )}
+                </>
+              ) : (
+                <div className="inline-flex items-center gap-2 bg-amber-50/80 dark:bg-amber-900/10 border border-amber-200/60 dark:border-amber-700/30 rounded px-2.5 py-1.5">
+                  <span className="text-xs text-slate-500 dark:text-slate-400 font-medium">Champion:</span>
+                  <span className="text-xs text-amber-700 dark:text-amber-400/90 italic">Not yet assigned</span>
+                </div>
+              )}
             </div>
           );
         })()}

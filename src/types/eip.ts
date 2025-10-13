@@ -11,6 +11,14 @@ export interface ForkRelationship {
   wasHeadlinerCandidate?: boolean;
   headlinerDiscussionLink?: string;
   layer?: string;
+  champion?: Champion;
+}
+
+export interface Champion {
+  name: string;
+  discord?: string;
+  telegram?: string;
+  email?: string;
 }
 
 export interface EIP {

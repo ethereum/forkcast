@@ -1,0 +1,116 @@
+{
+    "executive_summary": "The Holesky BPO fork proceeded smoothly with minimal participation drops, with the Sepolia fork scheduled within 17 hours. The meeting revealed that while clients are technically ready for the 60M gas limit increase on mainnet, stateful testing showed unexpected performance characteristics that don't fully align with mainnet observations, requiring further investigation. A critical discussion emerged about the deteriorating state of Ethereum's RPC layer testing and standardization, with only 190 tests covering the entire RPC surface and persistent failures across clients, highlighting the urgent need for comprehensive test coverage expansion and consensus on standardized behavior.",
+    "agenda": [
+      {
+        "section": "Fusaka",
+        "items": [
+          {
+            "start_timestamp": "00:09:17",
+            "title": "Holesky and Sepolia BPO Fork Status",
+            "summary": "The next Holesky BPO is scheduled in 7 hours with minor participation drops observed but stable overall. Sepolia fork occurs in 17.5 hours following a successful shadow fork last week. No client teams raised concerns about either fork.",
+            "decision": null,
+            "action_items": []
+          },
+          {
+            "start_timestamp": "00:10:46",
+            "title": "MEVBoost V1.10 Alpha 6 Release",
+            "summary": "New MEVBoost release adds fallback support to V1 Blinded Blocks API if V2 is not implemented by relays. The feature was tested on devnet-3 and major relays are expected to be ready with V2 API for Sepolia.",
+            "decision": null,
+            "action_items": [
+              {
+                "what": "Update all Sepolia validators to use this release of MEVBoost",
+                "who": "Sepolia validators",
+                "timestamp": "00:12:02"
+              }
+            ]
+          },
+          {
+            "start_timestamp": "00:15:44",
+            "title": "Remove Named Forks from Blob Schedule",
+            "summary": "Proposal to drop named forks from the blob schedule in genesis.json files since named forks cannot update values on the CL side after Cancun. Besu and Nethermind already implemented this change, with Reth and Erigon supportive.",
+            "decision": "Remove Fusaka from blob schedule and exclude Glamsterdam in future",
+            "action_items": [
+              {
+                "what": "Make a new release to ensure clients can run with static tests",
+                "who": "Testing team",
+                "timestamp": "00:18:24"
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "section": "Gas limit testing update",
+        "items": [
+          {
+            "start_timestamp": "00:19:08",
+            "title": "60M Gas Limit Stateful Testing Progress",
+            "summary": "Testing infrastructure now runs Nethermind, Besu, and Geth on BloatNet reproducibly, with Erigon and Reth integration pending. Performance results show inconsistent behavior especially for Nethermind, with execution speeds varying between 35-250 Mgas/s, not aligning with mainnet observations.",
+            "decision": null,
+            "action_items": [
+              {
+                "what": "Help with profiling blocks and suggesting interesting stateful scenarios",
+                "who": "Client teams",
+                "timestamp": "00:25:58"
+              }
+            ]
+          },
+          {
+            "start_timestamp": "00:27:20",
+            "title": "Modexp Usage Analysis Under Fusaka",
+            "summary": "Analysis found approximately one transaction per hour failing post-Fusaka due to account abstraction interactions with entry point 0.6.0. Failures occur because transaction gas limits increase but user operations within don't adjust accordingly.",
+            "decision": null,
+            "action_items": []
+          }
+        ]
+      },
+      {
+        "section": "Glamsterdam Testing Updates",
+        "items": [
+          {
+            "start_timestamp": "00:31:18",
+            "title": "Block-Level Access List Test Results",
+            "summary": "Test vectors required fixes over the weekend which have been merged. Current passing rates show Besu at 89%, Reth at 74%, Geth at 71%, and Nethermind at 70%. Teams agreed to achieve near 100% test passing before starting a devnet.",
+            "decision": null,
+            "action_items": [
+              {
+                "what": "Get a release out early this week for block-level access lists",
+                "who": "Testing team",
+                "timestamp": "00:31:43"
+              },
+              {
+                "what": "Reach out to Felipe and Rahul if there are any unknowns on the Block-level access list tests",
+                "who": "Client teams",
+                "timestamp": "00:35:19"
+              }
+            ]
+          },
+          {
+            "start_timestamp": "00:36:10",
+            "title": "ePBS DevNet Zero Delayed",
+            "summary": "Client teams continue working on implementations but DevNet Zero by end of October appears unlikely. Progress has slowed due to ongoing off-protocol payments discussions, with hopes for resolution at the upcoming ACDC call.",
+            "decision": null,
+            "action_items": []
+          }
+        ]
+      },
+      {
+        "section": "Other Topics",
+        "items": [
+          {
+            "start_timestamp": "00:37:22",
+            "title": "RPC Test Failures and Standardization Crisis",
+            "summary": "Only 190 tests cover the entire Ethereum RPC layer with over 50% failures persisting for months across clients. Clients lack consensus on behavior for edge cases like large eth_getLogs ranges, with individual implementations diverging. The testing methodology faces challenges with optional fields and error code standardization.",
+            "decision": null,
+            "action_items": [
+              {
+                "what": "Attend the RPC standardization calls to reach consensus",
+                "who": "Client developers",
+                "timestamp": "00:59:54"
+              }
+            ]
+          }
+        ]
+      }
+    ]
+  }

@@ -14,9 +14,24 @@ interface ChatLogProps {
     videoStartTime: string;
     description?: string;
   } | null;
+  selectedSearchResult?: {timestamp: string, text: string, type: string} | null;
+  onTimestampClick?: (timestamp: string) => void;
 }
 
-const ChatLog: React.FC<ChatLogProps> = ({ content, syncConfig }) => {
+const ChatLog: React.FC<ChatLogProps> = ({ content, syncConfig, selectedSearchResult, onTimestampClick }) => {
+  // --- Handle clicking on chat entries (but not links) ---
+  const handleChatEntryClick = (event: React.MouseEvent, timestamp: string) => {
+    // Don't trigger video jump if clicking on a link
+    const target = event.target as HTMLElement;
+    if (target.tagName.toLowerCase() === 'a' || target.closest('a')) {
+      return;
+    }
+
+    if (onTimestampClick && timestamp !== '00:00:00') {
+      onTimestampClick(timestamp);
+    }
+  };
+
   // --- Helper function to render text with links ---
   const renderTextWithLinks = (text: string) => {
     const urlRegex = /(https?:\/\/[^\s]+)/g;
@@ -330,15 +345,19 @@ const ChatLog: React.FC<ChatLogProps> = ({ content, syncConfig }) => {
         const key = `${message.timestamp}|${message.speaker}|${message.message}`;
         const replies = parentToReplies.get(key);
         const isParentWithReplies = replies && replies.length > 0;
+        const isSelectedSearch = selectedSearchResult?.timestamp === message.timestamp && selectedSearchResult?.type === 'chat';
         return (
           <div key={index} className="space-y-1">
             {/* Message */}
             <div
               data-chat-timestamp={message.timestamp}
-              className="group hover:bg-slate-50 dark:hover:bg-slate-700/30 py-1 px-2 -mx-2 rounded transition-colors"
+              onClick={(e) => handleChatEntryClick(e, message.timestamp)}
+              className={`group hover:bg-slate-50 dark:hover:bg-slate-700/30 py-1 px-2 -mx-2 rounded transition-colors cursor-pointer
+                ${isSelectedSearch ? 'bg-yellow-50 dark:bg-yellow-900/20 border-l-2 border-yellow-500 rounded-r-md' : ''}
+              `}
             >
               <div className="flex gap-3 text-sm">
-                <span className="text-slate-500 dark:text-slate-400 text-xs flex-shrink-0 font-mono mt-0.5" style={{ minWidth: '64px' }}>
+                <span className={`text-xs flex-shrink-0 font-mono mt-0.5 ${isSelectedSearch ? 'text-yellow-600 dark:text-yellow-400' : 'text-slate-500 dark:text-slate-400'}`} style={{ minWidth: '64px' }}>
                   {message.timestamp === '00:00:00'
                     ? '--:--:--'
                     : syncConfig?.transcriptStartTime && syncConfig?.videoStartTime
@@ -347,10 +366,14 @@ const ChatLog: React.FC<ChatLogProps> = ({ content, syncConfig }) => {
                   }
                 </span>
                 <div className="flex-1 min-w-0">
-                  <span className="font-medium text-slate-700 dark:text-slate-300 mr-2">
+                  <span className={`font-medium mr-2 ${isSelectedSearch ? 'text-yellow-900 dark:text-yellow-100' : 'text-slate-700 dark:text-slate-300'}`}>
                     {message.speaker === 'Unknown' ? 'Context' : message.speaker}:
                   </span>
-                  <span className={`${message.speaker === 'Unknown' ? 'text-slate-500 dark:text-slate-400 italic' : 'text-slate-600 dark:text-slate-400'} break-words`}>
+                  <span className={`break-words ${
+                    message.speaker === 'Unknown' 
+                      ? (isSelectedSearch ? 'text-yellow-600 dark:text-yellow-400 italic' : 'text-slate-500 dark:text-slate-400 italic')
+                      : (isSelectedSearch ? 'text-slate-900 dark:text-slate-100' : 'text-slate-600 dark:text-slate-400')
+                  }`}>
                     {message.message.split(/\r\n|\r|\n/).map((line, index) => (
                       <React.Fragment key={index}>
                         {index > 0 && <br />}
@@ -412,24 +435,26 @@ const ChatLog: React.FC<ChatLogProps> = ({ content, syncConfig }) => {
               const dutchReplyMatch = reply.message.match(/^Antwoord verzenden naar "(.+?)"\s*→\s*(.+)$/);
               const replyMatch = englishReplyMatch || dutchReplyMatch;
               const actualMessage = replyMatch ? replyMatch[2] : reply.message;
+              const isSelectedReply = selectedSearchResult?.timestamp === reply.timestamp && selectedSearchResult?.type === 'chat';
               return (
                 <div
                   key={replyIndex}
                   data-chat-timestamp={reply.timestamp}
-                  className="ml-20 mt-1 pl-4 border-l-2 border-slate-200 dark:border-slate-600"
+                  onClick={(e) => handleChatEntryClick(e, reply.timestamp)}
+                  className={`ml-20 mt-1 pl-4 border-l-2 cursor-pointer hover:bg-slate-50 dark:hover:bg-slate-700/30 rounded transition-colors ${isSelectedReply ? 'border-yellow-500 bg-yellow-50 dark:bg-yellow-900/20' : 'border-slate-200 dark:border-slate-600'}`}
                 >
                   <div className="flex gap-3 text-sm">
-                    <span className="text-slate-500 dark:text-slate-400 text-xs flex-shrink-0 font-mono" style={{ minWidth: '64px' }}>
+                    <span className={`text-xs flex-shrink-0 font-mono mt-0.5 ${isSelectedReply ? 'text-yellow-600 dark:text-yellow-400' : 'text-slate-500 dark:text-slate-400'}`} style={{ minWidth: '64px' }}>
                       {syncConfig?.transcriptStartTime && syncConfig?.videoStartTime
                         ? secondsToTimestamp(getAdjustedVideoTime(reply.timestamp))
                         : reply.timestamp
                       }
                     </span>
                     <div className="flex-1 min-w-0">
-                      <span className="font-medium text-slate-700 dark:text-slate-300 mr-2">
+                      <span className={`font-medium mr-2 ${isSelectedReply ? 'text-yellow-900 dark:text-yellow-100' : 'text-slate-700 dark:text-slate-300'}`}>
                         {reply.speaker}:
                       </span>
-                      <span className="text-slate-600 dark:text-slate-400 break-words">
+                      <span className={`break-words ${isSelectedReply ? 'text-slate-900 dark:text-slate-100' : 'text-slate-600 dark:text-slate-400'}`}>
                         {actualMessage.split(/\r\n|\r|\n/).map((line, index) => (
                           <React.Fragment key={index}>
                             {index > 0 && <br />}

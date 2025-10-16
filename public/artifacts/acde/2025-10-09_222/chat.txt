@@ -1,0 +1,449 @@
+00:06:03	nixo:	gm
+00:06:10	terence:	gm
+00:07:36	Parithosh Jayanthi:	https://dora.fusaka-sepsf-0.ethpandaops.io/
+00:09:32	Marius van der Wijden:	Why can they not adjust blobs onf named forks anymore?
+00:09:40	Marius van der Wijden:	That seems like a weird decision
+00:09:42	Barnabas:	https://discord.com/channels/595666850260713488/688075293562503241/1425748011438575719
+00:10:13	Raúl Kripalani:	agree with Marius
+00:10:38	Raúl Kripalani:	the bpo schedule should be the only place where blob parameters are managed
+00:10:58	Raúl Kripalani:	otherwise implementations get really dirty
+00:10:59	Parithosh Jayanthi:	^ that’s disagreeing with Marius tho, its agreeing with pandaops 🙂
+00:11:06	Justin Traglia:	Reacted to "^ that’s disagreeing..." with 👍
+00:11:06	Parithosh Jayanthi:	He’s saying the oposite
+00:11:13	Justin Traglia:	Reacted to "He’s saying the opos..." with 👍
+00:11:35	Raúl Kripalani:	oh right, apologies
+00:11:52	Dustin:	this would need to be tested specifically
+00:12:29	Dustin:	(same epoch for non-BPO and BPO)
+00:13:04	FLCL:	it's simpler
+00:13:09	Raúl Kripalani:	right, agree with Pari, that was the original intention
+00:13:11	Mario Vega:	Reacted to "this would need to b..." with 👍🏼
+00:13:35	Dustin:	Nimbus does some sanity checking because usually, forks cannot be on the same epochs (technically, yes, but the protocol breaks re attestation stuff, I raised an issue years ago on cl-specs on this, anyway, Nimbus prohibits this)
+00:13:44	Justin Florentine (Besu):	is there a pr with the proposed new el genesis file?
+00:13:52	Arsenii Kulikov:	Reacted to "is there a pr with t..." with 👍
+00:13:57	Parithosh Jayanthi:	Reacted to "is there a pr with t..." with 👍
+00:13:58	Dustin:	I'm not certain what it does with same BPO + non-BPO though
+00:13:59	Jen:	Reacted to "is there a pr with t..." with 👍
+00:14:01	Raúl Kripalani:	the EIP already states:
+
+There exists one entry per fork that changes blob parameters, whether it is a regular or a Blob-Parameter-Only fork.
+00:15:14	Justin Traglia:	Reacted to "the EIP already stat..." with 👍
+00:15:21	Mario Vega:	Reacted to "the EIP already stat..." with 👍
+00:15:21	Enrico Del Fante (tbenr):	I think we should have some config examples we should support, with various combination across forks so that we can be sure all CLs support that
+00:15:41	Parithosh Jayanthi:	Reacted to "I think we should ha..." with 👍🏽
+00:15:42	Parithosh Jayanthi:	Reacted to "the EIP already stat..." with 👍
+00:16:11	Justin Florentine (Besu):	i proposed an EIP ages ago to standardize el genesis, might be worth revisiting
+00:16:25	Raúl Kripalani:	Replying to "the EIP already stat..."
+
+also in an earlier section:
+
+To ensure consistency, when a regular hardfork changes any of these parameters, it MUST do so by adding an entry to the blob schedule configuration.
+00:16:44	Parithosh Jayanthi:	Reacted to "i proposed an EIP ag..." with 🔥
+00:16:46	Ahmad Bitar | Nethermind:	Reacted to "i proposed an EIP ag..." with 🔥
+00:16:48	Mario Vega:	Reacted to "i proposed an EIP ag..." with 🔥
+00:16:49	Marcos A. Maceo:	Replying to "i proposed an EIP ag..."
+
+that would simplify a lot of things
+00:16:51	Barnabas:	reminder: we plan to deprecate holesky by end of the month
+00:16:52	Justin Traglia:	Reacted to "i proposed an EIP ag..." with 🔥
+00:16:56	Parithosh Jayanthi:	Reacted to "reminder: we plan to..." with 👍🏽
+00:16:57	felix (eest):	Reacted to "i proposed an EIP ..." with 🔥
+00:16:59	Marcos A. Maceo:	Reacted to "reminder: we plan to..." with 👍🏽
+00:16:59	Marc:	Reacted to "i proposed an EIP ag…" with 🔥
+00:17:00	Justin Traglia:	Reacted to "that would simplify ..." with 👍
+00:17:01	Barnabas:	Reacted to "i proposed an EIP ag..." with 🔥
+00:17:08	Justin Traglia:	Reacted to "reminder: we plan to..." with 👍🏽
+00:17:16	Justin Florentine (Besu):	Replying to "i proposed an EIP ag..."
+
+https://eips.ethereum.org/EIPS/eip-7949
+00:17:34	nixo:	Reacted to "https://eips.ethereu..." with 👀
+00:17:51	nixo:	Reacted to "reminder: we plan to..." with 👍🏽
+00:18:29	Martin | ethrex:	Reacted to "i proposed an EIP ag..." with 🔥
+00:18:36	Justin Traglia:	How many cores do the holesky nodes have?
+00:18:42	Jen:	Reacted to "reminder: we plan to..." with 👍🏽
+00:19:00	Ansgar Dietrichs:	did I move on from Holesky too quickly? can return if there was more to discuss
+00:19:16	Justin Traglia:	Replying to "did I move on from H..."
+
+No, not necessary.
+00:19:29	Justin Florentine (Besu):	Replying to "did I move on from H..."
+
+you're doin terrific bud
+00:19:34	Lumi | Offchain Labs:	GETH will
+00:19:47	Barnabas:	Replying to "i proposed an EIP ag..."
+
+Could we not do “decimal or hex” but rather do one or the other. And stick to one. That way we can compare chickens with chickens
+00:19:53	Jen:	Reacted to "i proposed an EIP ag..." with 🔥
+00:19:54	Dustin:	Replying to "How many cores do ..."
+
+8 but each runs 4CL/EL pairs
+00:19:55	Ansgar Dietrichs:	Reacted to "you're doin terrific..." with ❤️
+00:20:09	Dustin:	Replying to "How many cores do ..."
+
+so effectively each CL has maybe 1.5 cores to work with
+00:20:49	Barnabas:	Replying to "i proposed an EIP ag..."
+
+also I’d really like if all fields would specify what data type the values supposed to be. Like the blob schedule should be in int
+00:21:12	Justin Traglia:	Replying to "How many cores do th..."
+
+Hmm I see. Yeah reconstruction on those nodes will be quite slow.
+00:21:37	Dustin:	Replying to "How many cores do ..."
+
+it's quite a big change, and quite serious for us. Nimbus has never needed even really 2 cores
+00:21:53	lightclient:	Reacted to "you're doin terrific..." with ❤️
+00:22:19	Dustin:	Replying to "How many cores do ..."
+
+it scales up linearly, using recover_matrix, etc, so BPO2 should push this up to 6+ seconds in those conditions
+00:22:30	Marcos A. Maceo:	Reacted to "Could we not do “dec..." with ❤️
+00:22:55	Dustin:	Replying to "How many cores do ..."
+
+we of course have parallel reconstruction but it can't be that useful without multiple available cores
+00:23:06	Justin Traglia:	Replying to "How many cores do th..."
+
+This is for supernodes only though. But yes, it will. Is it possible for ethpandaops to bump system resources?
+00:23:35	Dustin:	Replying to "How many cores do ..."
+
+it's fine on ethpandaops-run systems,  they're not packing CL/EL pairs this tightly
+00:23:53	Dustin:	Replying to "How many cores do ..."
+
+this is our own testnet deployment setup
+00:24:08	Toni Wahrstätter:	Felix had a comment about this here: https://discord.com/channels/595666850260713488/688075293562503241/1425142956737695755
+00:24:40	Justin Traglia:	Replying to "How many cores do th..."
+
+Ah okay. Yeah y'all might need to make some changes then 😅
+00:24:54	Dustin:	Replying to "How many cores do ..."
+
+exactly, yeah, it's something we're discussing
+00:24:58	Justin Traglia:	Reacted to "exactly, yeah, it's ..." with 👍
+00:26:07	Dustin:	Replying to "How many cores do ..."
+
+but I thought it was worth noting publicly as a Fusaka novelty, that it really just does rule out certain setups or systems as being viable from a CPU perspective. There's some optimization scope here but limited -- at some point even if one spreads this out across an entire slot, etc, it's just not possible to run a supernode with less than about 4 cores free
+00:26:27	Dustin:	Replying to "How many cores do ..."
+
+exactly because this is mostly a function of how the kzg libraries work
+00:27:51	Parithosh Jayanthi:	Replying to "How many cores do th..."
+
+But is there value in running a super node on such few resources? A super node represents ~18M USD as of today
+00:28:05	Barnabas:	Replying to "How many cores do th..."
+
+just consolidate all your validators? That way you total system load would reduce and you could run less El/CL pairs
+00:28:06	Dustin:	Replying to "How many cores do ..."
+
+for a testnet it represents ~0 USD
+00:28:13	Parithosh Jayanthi:	Reacted to "for a testnet it rep..." with 👍🏽
+00:28:30	Dustin:	Replying to "How many cores do ..."
+
+but I take the point, on mainnet it wouldn't make sense
+00:29:09	Dustin:	Replying to "How many cores do ..."
+
+Barnabus: part of the point is to test large numbers of validators
+00:30:23	Ameziane Hamlat:	Are you running the block on the same hardware specs, especially disk ?
+00:36:08	Parithosh Jayanthi:	Stefan is the newest member of ethPandaOps 🙂 expect to see him around glamsterdam topics!
+00:36:16	Toni Wahrstätter:	Reacted to Stefan is the newest... with "🔥"
+00:36:20	Ansgar Dietrichs:	Reacted to "Stefan is the newest..." with 🔥
+00:36:22	Guillaume:	Reacted to "Stefan is the newe..." with ❤️
+00:36:22	Justin Traglia:	Reacted to "But is there value i..." with 👍
+00:36:23	felix (eest):	Reacted to "Stefan is the newe..." with 🔥
+00:36:27	Leo:	Reacted to "Stefan is the newe..." with ❤️
+00:36:27	draganrakita:	Reacted to "Stefan is the newest..." with ❤️
+00:36:32	Mario Vega:	Reacted to "Stefan is the newest..." with 🔥
+00:36:32	Mario Vega:	Reacted to "Stefan is the newest..." with ❤️
+00:36:33	Csaba:	Reacted to "Stefan is the newest..." with 🔥
+00:36:34	Josh Davis:	Reacted to "Stefan is the newest..." with 🔥
+00:36:34	Josh Davis:	Reacted to "Stefan is the newest..." with ❤️
+00:36:38	Ameziane Hamlat:	Reacted to "Stefan is the newest..." with 🔥
+00:36:39	felipe:	Reacted to "Stefan is the newe..." with 🔥
+00:36:39	potuz:	Wellcome Stefan, a loss to Beaconcha.in
+00:36:41	felipe:	Reacted to "Stefan is the newe..." with ❤️
+00:36:45	potuz:	Welcome
+00:36:53	Parithosh Jayanthi:	Shh, butta is already asking for a HR fee
+00:36:55	Stefan Starflinger:	Thanks and hello :)
+00:36:59	Justin Traglia:	Reacted to "you're doin terrific..." with ❤️
+00:37:04	potuz:	Reacted to "Shh, butta is alread..." with 😁
+00:37:06	Justin Traglia:	Reacted to "Stefan is the newest..." with 🔥
+00:37:07	Leo:	Reacted to "Shh, butta is alre..." with 😁
+00:37:07	Justin Traglia:	Reacted to "Stefan is the newest..." with ❤️
+00:37:17	Justin Traglia:	Reacted to "Shh, butta is alread..." with 😁
+00:37:18	Trent:	Reacted to "Shh, butta is alread..." with 😁
+00:37:30	Jen:	Reacted to "Stefan is the newest..." with 🔥
+00:37:40	Ansgar Dietrichs:	Reacted to "Thanks and hello :)" with 👋
+00:37:46	Justin Florentine (Besu):	Reacted to "Thanks and hello :)" with 👋
+00:37:47	Mario Havel:	Reacted to "Stefan is the newe..." with 🔥
+00:37:53	Ben Edgington:	Reacted to "Stefan is the newest..." with ❤️
+00:38:05	Justin Traglia:	Reacted to "Thanks and hello :)" with 👋
+00:38:51	spencer-tb:	Reacted to "Thanks and hello :)" with 👋
+00:39:30	stokes:	breakout tomorrow
+00:39:37	terence:	Reacted to "breakout tomorrow" with 👍
+00:39:39	Justin Traglia:	Nothing EL side that I’m aware of
+00:39:46	Justin Florentine (Besu):	we kinda rock for moving this fast on BALs, great work all
+00:39:49	Mario Vega:	Reacted to "Shh, butta is alread..." with 😁
+00:39:52	Barnabas:	Reacted to "Stefan is the newest..." with 🔥
+00:39:55	Parithosh Jayanthi:	Reacted to "we kinda rock for mo..." with 🔥
+00:39:57	Justin Traglia:	Reacted to "we kinda rock for mo..." with 🔥
+00:39:58	Mario Vega:	Reacted to "we kinda rock for mo..." with 🔥
+00:40:00	Toni Wahrstätter:	Reacted to we kinda rock for mo... with "🔥"
+00:40:10	Parithosh Jayanthi:	"BAL-er dev work”
+00:40:30	Josh Davis:	Reacted to ""BAL-er dev work”" with 🥂
+00:40:33	Toni Wahrstätter:	BAL implementers, please check out katya's message on the metrics here: https://discord.com/channels/595666850260713488/1364000387195076608/1425488151451013150
+00:40:35	felipe:	Reacted to "we kinda rock for ..." with 🔥
+00:40:40	Toni Wahrstätter:	Reacted to "BAL-er dev work” with "🥂"
+00:40:52	felipe:	Reacted to ""BAL-er dev work”" with 🥂
+00:41:24	raxhvl:	Reacted to "Stefan is the newest..." with 🔥
+00:45:18	Guillaume:	8007 is missing 2926
+00:45:54	wolovim:	https://eips.ethereum.org/EIPS/eip-8007
+00:47:00	Ansgar Dietrichs:	Replying to "8007 is missing 2926"
+
+ah, do you consider that a reprlcing EIP? I feel like it is more than that, given the tree changes
+00:47:17	Guillaume:	Replying to "8007 is missing 29..."
+
+it does a lot, but yes it's a repricing eip
+00:47:23	jochem-brouwer:	Heeft gereageerd op "https://eips.ether..." met 👍
+00:48:10	Ansgar Dietrichs:	Replying to "8007 is missing 2926"
+
+to me “repricing EIPs” are more EIPs that mostly only do repricings. But we can discuss adding 2926 with Maria!
+00:48:58	lightclient:	have you looked into how these EIPs affect existing txs / contracts?
+00:49:52	Ansgar Dietrichs:	Reacted to "https://eips.ethereu..." with 👍
+00:50:11	Toni Wahrstätter:	Replying to "have you looked into..." 
+
+ I did for 7976 and 7981. It's negligible and compared to the block size reduction a quite good trade-off
+00:50:30	Charles:	maria what is the best way to reach out to you?
+00:50:58	Marius van der Wijden:	Replying to "have you looked in..."
+
+Some of the others have not yet, since the numbers are not final yet, but we are looking into doing more analysis and outreach
+00:51:37	Stefan Starflinger:	Reacted to "we kinda rock for mo..." with 🔥
+00:51:42	Ben Adams:	Replying to "have you looked into..."
+
+This one seems very heavy https://eips.ethereum.org/EIPS/eip-8037
+00:52:06	Toni Wahrstätter:	Replying to "have you looked into..." 
+
+ For calldata it's a 33% block size reduction for 1.5% of txs affected (of which most were already affected by 7623)
+00:53:27	lightclient:	Replying to "have you looked into..."
+
+yeah 8037 is 6-8x’ing everything
+00:54:04	Toni Wahrstätter:	When would we go through each and decide which ones to ship and which ones not?
+00:54:14	Mario Vega:	Reacted to "When would we go thr..." with 👍🏼
+00:54:17	lightclient:	Reacted to "When would we go thr..." with 👍🏼
+00:54:35	Derek Lee:	@Maria Silva how can we get in touch with you again? I don’t see you in some of the EF<>Arbitrum chats on telegram. Mind dropping your telegram handle?
+00:55:01	Katya:	Or Discord
+00:55:41	Ameziane Hamlat:	Replying to "have you looked into..."
+
+This EIP https://eips.ethereum.org/EIPS/eip-7904  looks also heavy. I wonder how this will work with existing gas limit, as it reduces the cost of most of the opcodes.
+00:56:33	Ansgar Dietrichs:	note on EIP-8037: The pricing is currently based on very conservative assumptions. That’s a good starting point, but I would expect significant pricing adjustments to the EIP before inclusion (e.g. I would favor lesser pricing increases)
+00:56:39	Maria Silva:	Replying to "@Maria Silva how can..."
+
+@misilva73
+00:57:00	Marius van der Wijden:	Replying to "have you looked in..."
+
+Gas will not really mean the same thing after these repricings, but yeah in general compute will get cheaper and persistent state more expensive
+00:57:16	Ben Adams:	Replying to "note on EIP-8037: Th..."
+
+It would reduce the number of tx per block very significantly
+00:57:45	Justin Florentine (Besu):	attention everyone interested in genesis.json from earlier:  https://github.com/ethereum/EIPs/pull/10502 
+
+I can present next ACDE.
+00:57:52	jochem-brouwer:	Antwoord verzenden naar "@Maria Silva how c..."
+
+@Charles ^ 😃👍
+00:58:12	Charles:	Reacted to "@Charles ^ 😃👍" with 👍
+00:59:20	jochem-brouwer:	Heeft gereageerd op "attention everyone..." met 🚀
+01:00:14	Parithosh Jayanthi:	Reacted to "attention everyone i..." with 🚀
+01:01:05	Ansgar Dietrichs:	Replying to "note on EIP-8037: Th..."
+
+well it is meant to eventually enable say ~300M gas, which would get us back to the same state growth rate, so at least same tx count
+01:01:41	Ansgar Dietrichs:	Replying to "note on EIP-8037: Th..."
+
+plus then significantly (up to 10x) more room for any use cases that don’t grow the state
+01:01:57	Ahmad Bitar | Nethermind:	what if contracts start fractionalizing their storage into multiple deployed contracts just for storage facilitation?
+01:02:12	Justin Florentine (Besu):	Replying to "what if contracts st..."
+
+might be a feature, not a bug
+01:02:17	Ansgar Dietrichs:	Replying to "note on EIP-8037: Th..."
+
+but yes, I think already pricing with a 300M throughput level in mind is a bit too cautious imo
+01:02:26	Ahmad Bitar | Nethermind:	Replying to "what if contracts st..."
+
+yeah, asking if this is a desired outcome
+01:02:29	jochem-brouwer:	Heeft gereageerd op "might be a feature..." met 😃
+01:02:35	Ansgar Dietrichs:	Reacted to "might be a feature, ..." with 👍
+01:02:46	Ameziane Hamlat:	Reacted to "yeah, asking if this..." with 👍
+01:02:47	Justin Florentine (Besu):	Replying to "what if contracts st..."
+
+i interpreted it as desired
+01:02:51	ignacio:	Using the worst-case depth of a storage trie means somebody can attack a storage trie to create a long branch and make all writes very expensive? (even if the contract is somewhat empty)
+01:02:51	Ansgar Dietrichs:	Replying to "what if contracts st..."
+
+yes, that would mean that any state access would be more shallow, so more efficient
+01:03:00	Ahmad Bitar | Nethermind:	Reacted to "yes, that would mean..." with 👍
+01:03:19	jochem-brouwer:	Antwoord verzenden naar "Using the worst-ca..."
+
+the keys in the storage trie are hashed, so this needs a lot of trail-and-error (and is thus not trivial)
+01:03:23	potuz:	Was there an explanation why 1 contract of size 2S is worse than 2 contracts of size S?
+01:03:43	ignacio:	Replying to "Using the worst-case..."
+
+Yes, but sounds practically doable since you have time
+01:03:58	Marius van der Wijden:	Replying to "Was there an expla..."
+
+contract tries can be computed in parallel during state root computation
+01:04:38	Ansgar Dietrichs:	Replying to "Using the worst-case..."
+
+we could also consider variants, where for the block gas limit (and tx gas limit) we consider the worst case, but for pricing we have a more forgiving logic (e.g. just based on total storage item count)
+01:05:51	jochem-brouwer:	Antwoord verzenden naar "Using the worst-ca..."
+
+right it is indeed practically doable, not sure here. also if it is solved once (for a set of storage keys to write to) it is thus solved for other contracts also (just write to those keys, given there is thus an exectution path to do so - for ERC20 contracts which have approvals laid out at the same slot one could "mine" a generic set to attack the depth)
+01:06:08	jochem-brouwer:	Antwoord verzenden naar "Using the worst-ca..."
+
+(and thus could attack all erc20s with that storage layout to increase depth)
+01:06:41	Mario Vega:	The gamma variant of this EIP seems to me that would hurt the parallism gains that BAL would introduce or am I missing something?
+01:07:21	Ben Adams:	Wouldn't be able to do async Sstore; as prior sstores would effect cost of next?
+01:07:42	Marius van der Wijden:	Replying to "Wouldn't be able t..."
+
+Updates only happen at the end of the block
+01:07:44	Wei Han Ng:	Replying to "Wouldn't be able to ..."
+
+the cost of new sstore is determined in the next block
+01:07:52	Mario Vega:	Reacted to "the cost of new ssto..." with 👍🏼
+01:07:56	Ben Adams:	Reacted to "the cost of new ssto..." with 👍🏼
+01:08:15	Mario Vega:	Replying to "Wouldn't be able to ..."
+
+That makes a lot of sense, thanks
+01:08:15	lightclient:	how does this EIP relate to unification of state tree?
+01:08:30	Toni Wahrstätter:	Replying to "The gamma variant of..." 
+
+ I was thinking the same but the pricing i uupdated on the block-level I think
+01:08:35	Mario Vega:	Reacted to "I was thinking the s..." with 👍🏼
+01:08:50	potuz:	Still didn't get it lol
+01:09:51	Guillaume:	Replying to "Still didn't get i..."
+
+write me :)
+01:10:02	Wei Han Ng:	Replying to "Still didn't get it ..."
+
+basically:
+accounts add new  depth  field
+at the end of block, calculate the deepest depth, update if needed
+sstore cost changes
+01:10:34	Karim T.:	Replying to "Still didn't get it ..."
+
+Next sstore in a future block. Not the current one
+01:11:37	Guillaume:	Replying to "The gamma variant ..."
+
+yes it's orthogonal because any update to the costs is only activated at the start of the following block
+01:11:40	Marius van der Wijden:	can someone link the eips
+01:12:10	Toni Wahrstätter:	Replying to "Still didn't get it ..." 
+
+ I guess we wouldn't need the depth in the BAL as it's not changing during the block. Just thinking out loud..
+01:12:15	jochem-brouwer:	https://eips.ethereum.org/EIPS/eip-7907
+https://eips.ethereum.org/EIPS/eip-7903
+https://eips.ethereum.org/EIPS/eip-5920
+https://eips.ethereum.org/EIPS/eip-7923
+https://eips.ethereum.org/EIPS/eip-7791
+01:12:29	nixo:	Reacted to "https://eips.ethereu..." with 🙏
+01:12:32	Marius van der Wijden:	Reacted to "https://eips.ether..." with 🙏
+01:12:34	draganrakita:	Replying to "Wouldn't be able to ..."
+
+Am I saying correctly that depth for storage would depend on 16^N, that means that barriers for sstore bump are, 16, 256, 4096, 65536, 1048576 items
+01:12:41	Guillaume:	Replying to "Still didn't get i..."
+
+it's part of the account, so if you have account data in the bal, you need to have that as well
+01:12:55	Ansgar Dietrichs:	Replying to "Still didn't get it ..."
+
+I do think this discussion hinted at an aspect that should be studied more:
+
+For a single access, state split across several shallow contracts instead of one deep is indeed more efficient.
+
+but for multiple accesses, that is not so clear, because we are now losing the amortization effect of shared partial branches of the deep tree of the single contract
+01:13:16	Guillaume:	Replying to "Still didn't get i..."
+
+but yeah, you don't need diffs because it only updates for the next block
+01:14:09	Wei Han Ng:	Replying to "Still didn't get it ..."
+
+we wouldn't need the depth in the BAL
+for parallel execution maybe not, but something else that relies on the state diffs from BALs then yes
+01:14:10	draganrakita:	Replying to "Still didn't get it ..."
+
+Depth of 4 would have  65536  items, trie is not that deep
+01:15:09	potuz:	Replying to "Still didn't get it ..."
+
+@Guillaume What I don't understand is the justification of the change, not the change itself, that was clear. What's not clear to me is why would it make it better to force people to spread large amounts of data across different contracts. I kinda buy the argument that expiring parts would be easier, but that can't solely be the reason right?
+01:17:23	potuz:	Replying to "Wouldn't be able to ..."
+
+multiplied by K, wasn't clear if K was forced to be integer
+01:17:39	Ansgar Dietrichs:	I haven’t thought the implications of gas2eth through yet, but it seems very opinionated / possibly dangerous
+01:17:47	Toni Wahrstätter:	Replying to "Still didn't get it ..." 
+
+ Right yeah, we'd still need it in the BAL to maintain a conplete state diff
+01:17:47	Ansgar Dietrichs:	Replying to "I haven’t thought th..."
+
+to ship it to an existing chain
+01:17:58	Toni Wahrstätter:	Replying to "Still didn't get it ..." 
+
+ Would be an easy add though.
+01:18:00	potuz:	Replying to "Wouldn't be able to ..."
+
+just that the behavior be exponential
+01:18:17	Ansgar Dietrichs:	Replying to "I haven’t thought th..."
+
+not saying that it’s necessarily a bad idea, I would just really want to be certain it’s a good idea
+01:18:25	Marius van der Wijden:	Replying to "I haven’t thought..."
+
+Also would like to hear more about the interaction with current AA flavors
+01:19:01	Guillaume:	Replying to "Still didn't get i..."
+
+@potuz the reason is that when a contract's storage becomes deep enough, that becomes a bottleneck. There's only one contract in the state that this is a problem for, but we want to disincentivize that.
+01:20:19	potuz:	Replying to "Still didn't get it ..."
+
+ok so assuming you are referring about the XEN issue, am I reading correctly that the issue is only depth and it's independent of the contract logic?
+01:20:51	Ansgar Dietrichs:	I have minor audio issues, not sure if on my end or Charles’
+01:20:56	Justin Florentine (Besu):	same
+01:20:59	Ansgar Dietrichs:	Replying to "I have minor audio i..."
+
+mostly fine though
+01:21:02	Josh Davis:	Reacted to "I have minor audio i..." with ➕
+01:21:03	Mario Vega:	Reacted to "I have minor audio i..." with ➕
+01:21:05	Enrico Del Fante (tbenr):	Reacted to "I have minor audio i..." with ➕
+01:21:11	potuz:	Replying to "Still didn't get it ..."
+
+This sounds to me that it's an implementation issue and not a fundamental issue of resource utilization which is what gas should account for
+01:22:05	Trent:	Reacted to "I have minor audio i..." with ➕
+01:23:22	Luis Pinto | Besu:	Reacted to "I have minor audio i..." with ➕
+01:23:22	Ben Adams:	Replying to "I haven’t thought th..."
+
+Is interesting; as people try to do it in practice but very hacky and with undesirable side effects
+01:24:46	jochem-brouwer:	the eth from this payment comes from the eth what would normally get burned if i understand it correctly.
+a problem i would see here is that one can now fill a block for free? so you dont burn eth, you pay yourself back, but you would fill the block against the gas limit. even though this would not change base fee (?) it would immediately fill the block? so no other txs can hop in?
+01:25:17	Luis Pinto | Besu:	How would GAS2ETH differ from the PAY opcode? What advantages are there? Maybe I didn’t understand it fully
+01:25:29	Wei Han Ng:	Replying to "Still didn't get it ..."
+
+If trie depth of a contract storage increases, then resource utilization (disk IO) will also increase, so the gas cost changes does account for that
+01:25:50	Marius van der Wijden:	Whats the change to the transaction format look like? do we need a new transaction type?
+01:26:34	Charles:	Replying to "How would GAS2ETH ..."
+
+gas2eth uses gas, it also spends from tx.origin
+01:26:43	Charles:	Replying to "Whats the change t..."
+
+it's not needed, can be added in the future
+01:26:43	potuz:	Replying to "Still didn't get it ..."
+
+yes, but I fail to see why storage split across contracts is better than the same data in a single one from this perspective. The node is not forced to have a disk representation that mimics what the state has in a paper representation
+01:26:59	potuz:	Replying to "Still didn't get it ..."
+
+That's what I mean by an "implementation detail" and not a resource allocation issue
+01:28:55	Guillaume:	Replying to "Using the worst-ca..."
+
+it's not practically doable. For one thing, you'd have to do a 9 byte collision, which is still hugely expensive, and for a 2nd thing, you attack would be thwarted at the next fork by increasing the max depth.
+01:29:13	jochem-brouwer:	Antwoord verzenden naar "the eth from this ..."
+
+nvm, should read the eip better first
+01:30:00	Marius van der Wijden:	Would break all gas estimation :(
+01:31:10	Guillaume:	Replying to "Still didn't get i..."
+
+it's independent of the contract logic, yes. It is a resource utilization issue though, because more depths means more hashes, and these are sequential operations (per branch).
+01:31:24	Charles:	Replying to "Would break all ga..."
+
+it doesn't
+01:32:08	Charles:	https://ethereum-magicians.org/t/eip-7791-gas2eth-opcode/21418
+01:32:09	potuz:	Replying to "Still didn't get it ..."
+
+ah thanks, this explains it to me
+01:32:31	jochem-brouwer:	Can this PR which PFI's an EIP for Glamsterdam be merged? https://github.com/ethereum/EIPs/pull/10452
+And these also :) (also PFI PRs)
+https://github.com/ethereum/EIPs/pull/10453
+https://github.com/ethereum/EIPs/pull/10494
+01:33:51	Christine Kim:	woo!

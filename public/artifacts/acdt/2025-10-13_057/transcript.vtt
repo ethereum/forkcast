@@ -1,0 +1,1658 @@
+WEBVTT
+
+1
+00:05:24.060 --> 00:05:25.350
+Mario Vega: Good morning.
+
+2
+00:05:28.400 --> 00:05:29.420
+Sebastian Bürgel [Gnosis/HOPR]: Ayo!
+
+3
+00:07:27.790 --> 00:07:31.400
+Mario Vega: We'll just give another minute until people join, and we can start.
+
+4
+00:08:30.770 --> 00:08:33.169
+Mario Vega: I think we can get started.
+
+5
+00:08:35.409 --> 00:08:36.259
+Pooja Ranjan: We are live.
+
+6
+00:08:37.520 --> 00:08:38.759
+Mario Vega: Thank you so much.
+
+7
+00:08:39.330 --> 00:08:46.429
+Mario Vega: Welcome, everybody. This is ACDT number 57, today is October 13th.
+
+8
+00:08:46.660 --> 00:08:57.729
+Mario Vega: And we have a light agenda today, so basically we'll go over, some Fusaka, status, then we'll pass on to discuss the gas limit.
+
+9
+00:08:57.940 --> 00:09:01.339
+Mario Vega: updates, and then, Glamsterdam.
+
+10
+00:09:01.590 --> 00:09:08.090
+Mario Vega: And we also have another topic that we want to discuss in this meeting about the RPC testing failures.
+
+11
+00:09:08.370 --> 00:09:17.609
+Mario Vega: So yeah, let's just get started. Alright, on Fusaka, regarding the BPO fork updates, do we have any…
+
+12
+00:09:17.710 --> 00:09:22.009
+Mario Vega: Incidents, updates, or status that we want to bring up?
+
+13
+00:09:23.330 --> 00:09:28.350
+Barnabas: Not really. We have the next BPO scheduled for tonight.
+
+14
+00:09:28.500 --> 00:09:31.599
+Barnabas: I think it's in a couple of hours,
+
+15
+00:09:33.790 --> 00:09:36.560
+Barnabas: Yeah, and we have Sapoya tomorrow.
+
+16
+00:09:36.830 --> 00:09:40.699
+Barnabas: Yeah, it's in 7 hours, for the next BPO on Holsky.
+
+17
+00:09:42.060 --> 00:09:52.050
+Barnabas: be duty, Bit of a drop in participation, but it's minor at this point.
+
+18
+00:09:53.170 --> 00:09:58.569
+Barnabas: We expect a smooth sailing for tomorrow's park, and
+
+19
+00:09:58.830 --> 00:10:03.250
+Barnabas: And the fork is on Sepolia is in 17 and a half hours.
+
+20
+00:10:03.420 --> 00:10:08.610
+Barnabas: Last week, we did a Sapolia shadow fork, and everything was okay there.
+
+21
+00:10:13.300 --> 00:10:18.609
+Mario Vega: Alright, yeah, sounds like we're moving along. Any…
+
+22
+00:10:18.910 --> 00:10:22.089
+Mario Vega: Insights from the client teams.
+
+23
+00:10:22.440 --> 00:10:28.359
+Mario Vega: Any concerns regarding either… sorry, regarding either Holeshki or Sepolia?
+
+24
+00:10:28.660 --> 00:10:30.000
+Mario Vega: Happening tomorrow?
+
+25
+00:10:43.920 --> 00:10:45.709
+Mario Vega: Alright, seems like not.
+
+26
+00:10:45.710 --> 00:10:46.960
+Bharath: Yeah, I have one.
+
+27
+00:10:47.660 --> 00:10:48.790
+Bharath: Sorry, sorry, I missed you.
+
+28
+00:10:49.720 --> 00:11:02.360
+Bharath: I… one… one thing I want to, like, inform all the client teams is, we have a new release of MevBoost, V1.10 Alpha 6. The difference is that, at this point.
+
+29
+00:11:02.480 --> 00:11:16.340
+Bharath: we've chosen to add, support to fall back to the V1 Blinded Blocks API if the V2 Blinded Blocks API is not implemented by the relay. We initially chose not to do that because we wanted MevBoost just to be a proxy.
+
+30
+00:11:16.340 --> 00:11:27.950
+Bharath: But I think on further discussions and thought, we just saw this as a much better idea. So, yeah, so MepBoost now supports, like, falling back to the V1 API, if the V2 API is not supported, but for…
+
+31
+00:11:27.950 --> 00:11:38.139
+Bharath: For whatever reason by the relays. We've been checking with the major relays, they have added it, they should be ready. For Sepolia, the flashbots ideally should be ready with the V2 API.
+
+32
+00:11:38.140 --> 00:11:50.769
+Bharath: So, yeah, this has been tested on DevNet 3, we've, like, tested by disabling, like, the V2 API on DevNet 3, and I generally think seem fine with the relays, with the clients.
+
+33
+00:11:50.890 --> 00:12:06.309
+Bharath: So, yeah, just wanted to, like, inform all the client teams about it, and all the support… please, like, do update all the Sepolia validators to use this release of MavBoost. I have put that in the Sepolia Validators Telegram channel, too, with all the information about the release.
+
+34
+00:12:06.560 --> 00:12:07.630
+Bharath: So yeah.
+
+35
+00:12:08.870 --> 00:12:10.709
+Bharath: Yeah, I just wanted to mention that.
+
+36
+00:12:11.820 --> 00:12:13.050
+Mario Vega: Perfect, thank you.
+
+37
+00:12:13.460 --> 00:12:20.019
+Mario Vega: Just one question out of curiosity, how do you detect that B2 is not supported?
+
+38
+00:12:20.430 --> 00:12:27.560
+Bharath: Yeah, for now, we've just, like, have a situation where if the return status code is greater than just, like, 4XX,
+
+39
+00:12:27.720 --> 00:12:46.909
+Bharath: like, we fall back to the V1 API, right? So, usually, if the API is not there, we get a HTTP status, like, 4.4 not found, and we fall back to the V1, right? But just for safety, we… what we just did was, if the HTTP status code is, like, greater than 4XX, we fall back to, like, the V1 API.
+
+40
+00:12:47.090 --> 00:12:55.109
+Bharath: So… but, like, the relay itself is, like, booked, like, then, like, even the V1 will fail, and there'll be a miss slot, so that's… that we can't do anything about.
+
+41
+00:12:56.700 --> 00:13:01.930
+Mario Vega: Alright. Yeah, thanks, thanks for the context. Anybody,
+
+42
+00:13:02.390 --> 00:13:05.769
+Mario Vega: Any opinion on this, from client teams? Are we okay?
+
+43
+00:13:08.070 --> 00:13:13.190
+Bharath: Yeah, so one thing is, like, client teams can choose… so, I know some client teams
+
+44
+00:13:13.230 --> 00:13:31.100
+Bharath: have fall… like, Lighthouse have supported, like, fallback, and some client teams are calling the V2 API from Fulu. Generally, like, client teams can, with this new change, client teams can ideally just stick to however, like, they're calling the V2 API. Like, ideally, like, MevBoost will handle all the fallback, like.
+
+45
+00:13:31.230 --> 00:13:32.400
+Bharath: So, yeah.
+
+46
+00:13:35.950 --> 00:13:37.290
+Mario Vega: Excellent. Thanks.
+
+47
+00:13:38.750 --> 00:13:47.349
+Mario Vega: Alright, and also, there was one comment from Prism, they have a new release out, 6.1.2,
+
+48
+00:13:47.350 --> 00:14:00.040
+Mario Vega: And the blog has been updated. But also, Barnabas shared a list of the versions that we have in the blog post, so please take a look. If the version that you have here is outdated, please reach out so we can update it.
+
+49
+00:14:01.660 --> 00:14:09.780
+Mario Vega: And one another comment is, Lighthouse, be so organizing, do we expect a stable release before Hoodie?
+
+50
+00:14:10.950 --> 00:14:14.750
+Mario Vega: Anybody from Lighthouse, Vesu, or Grandin in the call?
+
+51
+00:14:21.640 --> 00:14:25.409
+Ameziane Hamlat: Yeah, so, as I said, for, for Bessru,
+
+52
+00:14:25.650 --> 00:14:35.680
+Ameziane Hamlat: We are going to have a new release for, for Hodi and, and mainnet related to, to 60 million gas.
+
+53
+00:14:37.410 --> 00:14:42.760
+Ameziane Hamlat: Yeah, so, the release is expected to be, out this week.
+
+54
+00:14:43.180 --> 00:14:47.449
+Ameziane Hamlat: And we'll share, we'll share it as soon as we have it.
+
+55
+00:14:50.480 --> 00:14:54.129
+Mario Vega: Got it. Thank you. Anyone from Lighthouse?
+
+56
+00:15:02.320 --> 00:15:05.839
+Mario Vega: Anyone from Grandin who wants to make a comment?
+
+57
+00:15:08.240 --> 00:15:09.959
+Mario Vega: Are we do… are we good there?
+
+58
+00:15:15.790 --> 00:15:18.590
+Mario Vega: Alright, I think we can follow async, if not.
+
+59
+00:15:19.140 --> 00:15:26.850
+Mario Vega: Okay, any other updates regarding, Holeshki or Sepolia that we want to bring up?
+
+60
+00:15:36.660 --> 00:15:39.529
+Mario Vega: If not, I think we can move to the next topic.
+
+61
+00:15:39.720 --> 00:15:44.360
+Mario Vega: Yeah, so the next topic is regarding…
+
+62
+00:15:44.920 --> 00:15:50.420
+Mario Vega: this message on Discord via Barnabas.
+
+63
+00:15:50.920 --> 00:15:56.470
+Mario Vega: And basically, it's the idea that we want to remove the named forks from the BPO schedule.
+
+64
+00:15:56.750 --> 00:16:06.440
+Mario Vega: If the values are not affected. But yeah, Barnabas, do you want to keep more context to this, and just begin the discussion?
+
+65
+00:16:07.620 --> 00:16:14.879
+Barnabas: Yes, so the idea is that we will be dropping the named folks from the blob schedule in the genesys.json file.
+
+66
+00:16:15.120 --> 00:16:19.950
+Barnabas: We have already done this for Bezu and Nethermind, and
+
+67
+00:16:20.120 --> 00:16:28.890
+Barnabas: Breath and Eragon also seems to be fond of it, and right now the only question is the Nimbus EL and, Geth.
+
+68
+00:16:31.210 --> 00:16:43.570
+Barnabas: So the… the few PRs that are open are to remove Osaka, and also in the future, we just don't plan to include Amsterdam in the block schedule either.
+
+69
+00:16:48.500 --> 00:16:54.500
+Mario Vega: And just for clarification, this is only if the name fork does not update the values, right?
+
+70
+00:16:54.880 --> 00:16:55.590
+Mario Vega: If it doesn't…
+
+71
+00:16:55.590 --> 00:16:59.029
+Barnabas: The name, the name fork cannot update the values anymore.
+
+72
+00:17:00.040 --> 00:17:01.340
+Bumblefudge: on the CR side.
+
+73
+00:17:02.540 --> 00:17:02.940
+Mario Vega: I sucked.
+
+74
+00:17:02.940 --> 00:17:03.510
+Barnabas: conclude.
+
+75
+00:17:04.720 --> 00:17:05.260
+Mario Vega: I see.
+
+76
+00:17:05.869 --> 00:17:11.129
+Barnabas: And that's why I'm proposing to remove this, because this is a redundant tag at this point.
+
+77
+00:17:18.569 --> 00:17:19.519
+Mario Vega: Makes sense.
+
+78
+00:17:21.739 --> 00:17:36.309
+Mario Vega: Any comments on this? Should we move on with this? I think it makes sense. On the east side, I think we have to make a new release to make sure that we are not including the name of Forks, but I think it should be an easy change, and we can have a release in the following days.
+
+79
+00:17:37.709 --> 00:17:41.869
+Mario Vega: On the client side, is there any concerns regarding this update?
+
+80
+00:17:55.349 --> 00:18:03.329
+Mario Vega: And one comment from Barnabas Marius. Is this okay to you? I think that you're only the one, missing to comment on this.
+
+81
+00:18:03.600 --> 00:18:08.050
+Marius van der Wijden: Yes, we have not implemented it in guest yet, but, yeah.
+
+82
+00:18:08.170 --> 00:18:09.299
+Marius van der Wijden: This is fine.
+
+83
+00:18:14.610 --> 00:18:24.869
+Mario Vega: Alright. Then I think what we'll do on the east side is also we're gonna make a new release, just to make sure that we can run the clients with static tests, and then we can move on to…
+
+84
+00:18:25.570 --> 00:18:32.889
+Mario Vega: Blessing granted. Yeah, and we can move on to updating the notes on the dev notes, I guess.
+
+85
+00:18:33.140 --> 00:18:33.970
+Mario Vega: Alright.
+
+86
+00:18:34.480 --> 00:18:36.939
+Mario Vega: Barnavas, any other comments, or is this okay?
+
+87
+00:18:37.640 --> 00:18:38.639
+Barnabas: Yeah, that's okay.
+
+88
+00:18:39.760 --> 00:18:40.610
+Mario Vega: Thanks.
+
+89
+00:18:41.610 --> 00:18:43.360
+Bumblefudge: Alright, I think that's…
+
+90
+00:18:43.360 --> 00:18:45.819
+Mario Vega: That was everything for Fusaka.
+
+91
+00:18:47.720 --> 00:19:05.020
+Mario Vega: And I guess we can move on to the next, topic, which is the gas limit testing that we've been doing. I think Camille is in the call, or also anyone else who wants to chime in, but Camille, do you want to begin the discussion?
+
+92
+00:19:05.460 --> 00:19:07.690
+Mario Vega: On the updates on this topic.
+
+93
+00:19:08.320 --> 00:19:18.109
+Kamil Chodoła: Sure. So, as you heard already from Bezo and other clients, everyone is kind of ready for 60 million, for mainnet releases.
+
+94
+00:19:18.410 --> 00:19:26.040
+Kamil Chodoła: And in the meantime, we are focusing on stageful testing, which is the biggest, maybe not unknown, but the hardest thing to test right now.
+
+95
+00:19:26.120 --> 00:19:39.820
+Kamil Chodoła: But I think that, actually today I have a good milestone met, is that I'm running free EL clients on top of BloatNet in a reproducible way, so in the same way as gas benchmarks are doing.
+
+96
+00:19:40.020 --> 00:19:44.089
+Kamil Chodoła: So, for now, we're running Nethermine, Bezu, and GEF.
+
+97
+00:19:44.290 --> 00:19:51.539
+Kamil Chodoła: having still issues with, Aragon and Ref, so waiting for some help here on State Blood Research Channel.
+
+98
+00:19:51.760 --> 00:19:55.819
+Kamil Chodoła: So I can make all 5 major EL clients being tested this way.
+
+99
+00:19:56.110 --> 00:20:04.079
+Kamil Chodoła: And Joel had prepared some scenarios, actually forks and scenarios, and for now, we do not see any huge bottleneck.
+
+100
+00:20:04.100 --> 00:20:23.649
+Kamil Chodoła: And those scenarios are not for sure the most performant ones out there, and for now, Netarmine is having the biggest struggles, but not, like, consistently. So, just to give you an example, once some of the extent scenarios are performing at more or less 250 megabits per second.
+
+101
+00:20:23.650 --> 00:20:27.200
+Kamil Chodoła: And sometimes they are dropping significantly to something like 35.
+
+102
+00:20:27.350 --> 00:20:43.869
+Kamil Chodoła: Which is still relatively good, and not putting any risk on 60 medium gas increase for now. But I believe that we need to still spend much more time investigating that, because it doesn't align really well with what we've observed on Mainnet.
+
+103
+00:20:43.990 --> 00:21:00.319
+Kamil Chodoła: So, there's still some work to be done out there. But anyways, dashboard is set, 3 clients are running right now, I'm just doing some final fine-tunes, and we'll… the only thing which is left is work on more stateful scenarios on top of mainnet.
+
+104
+00:21:00.680 --> 00:21:03.619
+Kamil Chodoła: So, at least the entire mechanism there is running.
+
+105
+00:21:09.910 --> 00:21:16.020
+Mario Vega: Thank you. Yeah, great work on this,
+
+106
+00:21:16.370 --> 00:21:19.609
+Mario Vega: Any comments from clients on this?
+
+107
+00:21:20.310 --> 00:21:25.410
+Mario Vega: Do you have, like, a theory on why are we not seeing, like, the same…
+
+108
+00:21:26.290 --> 00:21:30.040
+Mario Vega: benchmarks that we are… that we're seeing on mainnet.
+
+109
+00:21:31.560 --> 00:21:48.269
+Kamil Chodoła: So, I have a few theories for now. One will be that we are preparing some sense preparation blocks, then trying to spam with different contracts to fill the caches, and later on we are doing the actual attack.
+
+110
+00:21:48.340 --> 00:22:08.160
+Kamil Chodoła: And one client might cache more while the other is caching less, and for some reason, the actual send path is warmer than expected, and maybe that's one of the things, but it's pretty hard to say, and trying plenty of things, like including restarts, right, without the attack.
+
+111
+00:22:08.160 --> 00:22:10.679
+Kamil Chodoła: Or, doing…
+
+112
+00:22:10.680 --> 00:22:22.669
+Kamil Chodoła: few thousand of the spamming blocks, which are doing completely unrelated work, and then attacking XAM, but it's pretty time-consuming, and taking some time to… to narrow it down together with Johan.
+
+113
+00:22:22.770 --> 00:22:36.909
+Kamil Chodoła: plus the hardware. I mean, we are using hardware which is below the recommendations, but I need to compare with the notes which were reporting pretty slow times on Xen to see if this is somewhat in common.
+
+114
+00:22:37.350 --> 00:22:43.849
+Kamil Chodoła: So, suspecting that maybe my hardware is a little bit better than from the notes which were reported to quite slow times.
+
+115
+00:22:46.360 --> 00:22:52.970
+Kamil Chodoła: And maybe we still need to spend more time to see if we can do something worse using some contract.
+
+116
+00:22:56.470 --> 00:22:58.640
+Mario Vega: Got it, thank you. Makes a lot of sense.
+
+117
+00:22:58.940 --> 00:23:04.610
+Mario Vega: Any comments from other teams on this?
+
+118
+00:23:12.280 --> 00:23:13.790
+Mario Vega: Amazon?
+
+119
+00:23:13.900 --> 00:23:14.570
+Mario Vega: Yep.
+
+120
+00:23:15.010 --> 00:23:23.249
+Ameziane Hamlat: Yeah, I have a question. Are those con… are those blocks, like, exam blocks, part of the…
+
+121
+00:23:23.720 --> 00:23:31.380
+Ameziane Hamlat: performance DevNet 2, like, they are really important as canonical blocks on that DevNet.
+
+122
+00:23:32.620 --> 00:23:35.080
+Kamil Chodoła: The ones which I'm using for testing.
+
+123
+00:23:35.080 --> 00:23:35.830
+Ameziane Hamlat: Yes.
+
+124
+00:23:36.210 --> 00:23:39.129
+Kamil Chodoła: No, these are crafted by us.
+
+125
+00:23:39.480 --> 00:23:54.489
+Kamil Chodoła: So, we use the same contract, like the real one. The baseline is BloatNet, not mainnet, so we use 2x8, but we craft all of the preparation blocks, and then the actual attack block.
+
+126
+00:23:56.280 --> 00:24:04.039
+Ameziane Hamlat: Okay. Yeah, I was asking just to, to see if we can help, you know, in, in profiling those blocks.
+
+127
+00:24:04.360 --> 00:24:11.240
+Ameziane Hamlat: From our side as well, to see if there is anything to… to find from the profiling.
+
+128
+00:24:11.810 --> 00:24:19.019
+Kamil Chodoła: I can work with you to maybe hook up some profiling tools to see how… how…
+
+129
+00:24:19.330 --> 00:24:33.110
+Kamil Chodoła: what we can get from there. For example, trying right now to see if I can hook profiling tools from Nethermind to see how it will be doing. Because it's not that easy just to take that block from mainnet and just recall it once more.
+
+130
+00:24:33.110 --> 00:24:45.949
+Kamil Chodoła: Because actual send needs a few blocks to prep… to prepare, some hacking around timestamps of the blocks, because some of the functions from SEND are being able to be called after, right, 24 hours.
+
+131
+00:24:46.040 --> 00:24:57.599
+Kamil Chodoła: So, once some block will be called on mainnet, you can just recall some functions, and the result will be the same. We just need to do quite a few of the preparation steps to call it.
+
+132
+00:24:58.240 --> 00:25:01.339
+Kamil Chodoła: More details are from Jochen, probably, here.
+
+133
+00:25:03.010 --> 00:25:06.129
+Ameziane Hamlat: I see. Yeah, we can… we can do it, I think.
+
+134
+00:25:06.640 --> 00:25:07.400
+Ameziane Hamlat: Thanks.
+
+135
+00:25:10.790 --> 00:25:14.290
+Mario Vega: Thank you. Any other comments?
+
+136
+00:25:21.740 --> 00:25:25.019
+Mario Vega: There was one comment in the chat that the…
+
+137
+00:25:25.670 --> 00:25:31.210
+Mario Vega: Same content is already bigger in Bloodnet, so, I think…
+
+138
+00:25:31.470 --> 00:25:34.209
+Mario Vega: We are on a good path to trying to reproduce this thing.
+
+139
+00:25:34.630 --> 00:25:36.690
+Mario Vega: The same as mainnet.
+
+140
+00:25:39.050 --> 00:25:58.200
+Kamil Chodoła: Very important note for me to EL clients will be, like, if you see any interesting stateful scenarios which we can implement right now, because actually what is left right now is implementation, so you can just reach out to us and tell what bottlenecks you see in your clients, and what interesting things we can do to
+
+141
+00:25:58.200 --> 00:26:15.150
+Kamil Chodoła: to attack some specific clients in a worse way, which might not be that bad for the other clients to try to stress that as much as possible. And also, the warming up part for me is a little bit more tricky than on normal compute scenarios, because here.
+
+142
+00:26:15.190 --> 00:26:27.290
+Kamil Chodoła: what gets warmed is not only EVM, but then we have also loading of the data from disk to memory, and then also there is some kind of hardware warm-up, which affects the results pretty much.
+
+143
+00:26:27.560 --> 00:26:34.879
+Kamil Chodoła: So… yeah, there are quite a few things which need to be considered comparing two compute scenarios where just simple
+
+144
+00:26:34.990 --> 00:26:40.789
+Kamil Chodoła: block with invalid state would give you improper warm-up, like…
+
+145
+00:26:40.890 --> 00:26:43.110
+Kamil Chodoła: Which would… which would be good enough.
+
+146
+00:26:43.210 --> 00:26:48.120
+Kamil Chodoła: So here we have a few levels of issues, which we need to solve, so if you see any…
+
+147
+00:26:48.330 --> 00:26:51.709
+Kamil Chodoła: Possible solutions, how to tackle that, just let me know.
+
+148
+00:26:55.750 --> 00:27:04.599
+Mario Vega: Thank you. Yes, so please reach out to Camille, I'm guessing R&D Discord is the best way to approach. Yeah.
+
+149
+00:27:04.930 --> 00:27:08.710
+Mario Vega: We'll keep an eye on the… on the scenarios that we can implement.
+
+150
+00:27:10.180 --> 00:27:11.080
+Mario Vega: Alright.
+
+151
+00:27:11.920 --> 00:27:16.089
+Mario Vega: If nothing else, we can move on to Glansterdam.
+
+152
+00:27:16.250 --> 00:27:20.879
+Mario Vega: Oh, sorry, Marcin, there was, please, go ahead.
+
+153
+00:27:20.880 --> 00:27:32.899
+Marcin Sobczak: Hi, I have one more thing which has sense to discuss before going to Glamsterdam. We are doing analysis of Modex usages.
+
+154
+00:27:32.990 --> 00:27:42.659
+Marcin Sobczak: Like, as a peak introduction, we are… we are doing traces of blocks under…
+
+155
+00:27:42.720 --> 00:27:48.750
+Marcin Sobczak: PECTRA consensus rules and Fusaka Consensus rules.
+
+156
+00:27:48.810 --> 00:28:00.809
+Marcin Sobczak: We are artificially increasing gas limit of transactions before purchasing to… because, like, modex gas prices increased, and,
+
+157
+00:28:00.810 --> 00:28:09.850
+Marcin Sobczak: We think that everyone will take it into account before sending transactions… transactions post
+
+158
+00:28:09.850 --> 00:28:20.660
+Marcin Sobczak: hard fork. So, with these assumptions, we are looking for differences, basing on, debug traces.
+
+159
+00:28:20.720 --> 00:28:27.150
+Marcin Sobczak: And we found a few hundred transactions which are failing.
+
+160
+00:28:27.180 --> 00:28:38.049
+Marcin Sobczak: after Fusaka, but it's, all of them are, have one pattern, the same pattern, and the same, error message.
+
+161
+00:28:38.080 --> 00:28:51.789
+Marcin Sobczak: It's, approximately one transaction per hour, which is failing because of that. And I pasted that, error message is from account abstractions.
+
+162
+00:28:51.940 --> 00:29:07.080
+Marcin Sobczak: And all these transactions are interacting with the same contract. It's entry point 0.6.0. I pasted one transaction as an example.
+
+163
+00:29:07.200 --> 00:29:09.049
+Marcin Sobczak: And
+
+164
+00:29:09.570 --> 00:29:22.729
+Marcin Sobczak: We suspect that it is because we are increasing the general gas limit of transaction, but inside of account abstraction transactions, there are user operations.
+
+165
+00:29:22.800 --> 00:29:42.450
+Marcin Sobczak: which we suspect that after hard fork, we have new estimates with higher gas limits, and then it shouldn't fail, but it's, like, we suspect this. So, we would like to confirm that this is the issue.
+
+166
+00:29:42.490 --> 00:29:49.379
+Marcin Sobczak: And generally, share the progress, from this, area. So,
+
+167
+00:29:49.770 --> 00:30:01.979
+Marcin Sobczak: Yeah, it is our finding, and we need to confirm that it will be fine after Fusaka. We suspect that it will be, but we are not sure at this point about it.
+
+168
+00:30:08.560 --> 00:30:15.870
+Mario Vega: Okay, do you know, Marcin, if there's already a reference test for this?
+
+169
+00:30:16.040 --> 00:30:17.809
+Mario Vega: Scenario, or similar?
+
+170
+00:30:18.330 --> 00:30:21.299
+Mario Vega: If not, we can investigate that for you, but if you know…
+
+171
+00:30:22.590 --> 00:30:25.639
+Marcin Sobczak: I don't think so, I don't know.
+
+172
+00:30:27.200 --> 00:30:34.089
+Mario Vega: Alright. Yeah, I think… I think we need to investigate whether this… there's a reference, test implementation for this.
+
+173
+00:30:34.380 --> 00:30:36.129
+Mario Vega: Or something similar.
+
+174
+00:30:36.480 --> 00:30:41.830
+Mario Vega: Anyway… Any comments on this?
+
+175
+00:30:51.490 --> 00:30:54.959
+Mario Vega: Now that we can move to Amsterdam.
+
+176
+00:30:55.560 --> 00:31:01.820
+Mario Vega: Alright, thanks, Dr. Martin, for the, for the comment. We can start with, block-level access list,
+
+177
+00:31:01.950 --> 00:31:10.940
+Mario Vega: I see… Who's in the call? Felipe? Whilst…
+
+178
+00:31:11.630 --> 00:31:16.000
+Mario Vega: And Rahul, do you guys want to kick off the discussion?
+
+179
+00:31:18.240 --> 00:31:20.720
+felipe: Yeah, I can mention,
+
+180
+00:31:20.990 --> 00:31:26.019
+felipe: Over the weekend, the… there were some of the test vectors from our release last week.
+
+181
+00:31:26.600 --> 00:31:30.059
+felipe: That were flagged for a couple changes needed.
+
+182
+00:31:30.520 --> 00:31:34.909
+felipe: But those have already been fixed and merged as of this morning.
+
+183
+00:31:35.400 --> 00:31:40.389
+felipe: So, I'm gonna triple check… If there's anything missing.
+
+184
+00:31:40.610 --> 00:31:43.049
+felipe: And try to get a release out early this week.
+
+185
+00:31:43.890 --> 00:31:46.539
+felipe: For… for block-level access lists.
+
+186
+00:31:51.310 --> 00:31:58.600
+Mario Vega: Thank you. And also, Raul shared the results of the tests that are running and passing on each of the clients.
+
+187
+00:32:00.720 --> 00:32:09.479
+Mario Vega: On the DevNet side of this, Barnabas, do we want to wait for 100% passing of the tests, and then schedule
+
+188
+00:32:09.780 --> 00:32:12.760
+Mario Vega: The block level access list definite.
+
+189
+00:32:13.250 --> 00:32:15.459
+Mario Vega: Or what would be the next steps?
+
+190
+00:32:18.710 --> 00:32:22.739
+Barnabas: The BL testnets are taking over by Stefan.
+
+191
+00:32:22.880 --> 00:32:24.430
+Barnabas: Maybe Stefan can comment?
+
+192
+00:32:25.570 --> 00:32:41.070
+Stefan Starflinger: They're still working on, like, revamping their implementation. There seem to be some improvements that they want to make.
+
+193
+00:32:41.310 --> 00:32:46.769
+Stefan Starflinger: So I think we should have at least 3 clients working pretty well before we start the definite.
+
+194
+00:32:49.800 --> 00:32:56.819
+Stefan Starflinger: And I think, to your question, I think it would be good to have as many tests passing as possible before we start the DevNet, of course.
+
+195
+00:32:58.920 --> 00:33:04.659
+Mario Vega: Absolutely. Alright, so I think the next steps on this is trying to get this…
+
+196
+00:33:04.930 --> 00:33:09.270
+Mario Vega: The number of dust passing to at least
+
+197
+00:33:09.970 --> 00:33:19.889
+Mario Vega: I would say 100%, before continuing. Do we know the nature of the tests that are failing, Rahul? Like, are these consensus tests, or are these, like.
+
+198
+00:33:20.260 --> 00:33:21.970
+Mario Vega: Other kind of tests.
+
+199
+00:33:22.270 --> 00:33:23.289
+Mario Vega: That are failing.
+
+200
+00:33:28.090 --> 00:33:29.560
+Mario Vega: Raul or Felipe?
+
+201
+00:33:34.820 --> 00:33:37.229
+felipe: the… for the DevNet tests?
+
+202
+00:33:37.610 --> 00:33:39.899
+Mario Vega: For the spec tests.
+
+203
+00:33:40.420 --> 00:33:45.730
+felipe: For the spec tests, the ones that were flagged were, out of gas issues that…
+
+204
+00:33:45.930 --> 00:33:52.160
+felipe: On the spec side, we had made some changes that needed to… Be returned.
+
+205
+00:33:53.030 --> 00:34:00.700
+felipe: The specs got updated over the weekend, and the tests got updated over the weekend. So they were generating, some factors that were…
+
+206
+00:34:00.910 --> 00:34:07.950
+felipe: Not correct. And then we weren't… Properly validating on the, test side?
+
+207
+00:34:08.530 --> 00:34:14.709
+felipe: And so, I made sure that we could… we were using the right markers there, so that we could catch it.
+
+208
+00:34:16.850 --> 00:34:21.989
+Mario Vega: Yeah, and on the client side, do you know what's the… the reason why they're failing?
+
+209
+00:34:22.190 --> 00:34:23.649
+Mario Vega: I mean, rather than…
+
+210
+00:34:24.370 --> 00:34:27.029
+felipe: The vectors that were being generated were not correct.
+
+211
+00:34:27.030 --> 00:34:28.170
+Mario Vega: Oh, I see, I see.
+
+212
+00:34:28.179 --> 00:34:34.549
+felipe: But for the tests that I looked at, I'm not sure if this is the same as the ones being run on the DevNet.
+
+213
+00:34:36.780 --> 00:34:37.630
+Mario Vega: Thanks.
+
+214
+00:34:42.290 --> 00:34:50.149
+Mario Vega: Rahul, do we have, like, a link where we can see the results for each client on this?
+
+215
+00:35:01.090 --> 00:35:02.460
+Mario Vega: I think I got it here.
+
+216
+00:35:03.380 --> 00:35:10.790
+Mario Vega: Thank you. I already shared. Great. Thanks. I think, please take a look, clients, on this.
+
+217
+00:35:11.160 --> 00:35:19.539
+Mario Vega: To see if there's any outstanding tasks that are failing on your side that we need to… that you guys need to fix.
+
+218
+00:35:19.790 --> 00:35:24.070
+Mario Vega: And please reach out to Felipe and Rahul also, if there's…
+
+219
+00:35:24.520 --> 00:35:33.759
+Mario Vega: Any unknowns on the tests that are currently running, so we can get this to 100%, and then we can schedule the…
+
+220
+00:35:33.920 --> 00:35:35.789
+Mario Vega: Local access to this Devna.
+
+221
+00:35:40.800 --> 00:35:46.400
+Mario Vega: All right, any other comments or topics on block-level access list?
+
+222
+00:35:59.220 --> 00:36:04.540
+Mario Vega: If not, we can move on to, EPBS side of things.
+
+223
+00:36:04.730 --> 00:36:08.780
+Mario Vega: Alright, who's, the person.
+
+224
+00:36:08.780 --> 00:36:10.320
+Justin Traglia: I can try.
+
+225
+00:36:10.500 --> 00:36:16.919
+Justin Traglia: Alright. I mean, not much of an update, just the client teams are still working on DevNet Zero implementations.
+
+226
+00:36:17.390 --> 00:36:24.400
+Justin Traglia: It appears that DevNet Zero by the end of October is unlikely, just in my opinion.
+
+227
+00:36:25.030 --> 00:36:36.270
+Justin Traglia: Progress has slowed a bit by, like, the off… off-protocol payments discussion debate that's going on. I'm hoping that we can make a decision on this at the upcoming ACDC call.
+
+228
+00:36:37.230 --> 00:36:40.910
+Justin Traglia: Small stuff, not a whole lot to talk about here.
+
+229
+00:36:41.500 --> 00:36:42.590
+Justin Traglia: That's pretty much it.
+
+230
+00:36:47.080 --> 00:36:48.229
+Mario Vega: Alright, thank you.
+
+231
+00:36:50.320 --> 00:36:53.480
+Mario Vega: Okay, yeah, thanks for the updates on this.
+
+232
+00:36:55.360 --> 00:37:01.829
+Mario Vega: Anything else on Glaston that is not related to Blackload Access List or EPBS that we need to discuss today?
+
+233
+00:37:10.660 --> 00:37:22.130
+Mario Vega: Alright, if nothing else, we can jump onto the last topic for today, which is the RPC test failures. There's a blog post in the EATH research site.
+
+234
+00:37:22.500 --> 00:37:26.540
+Mario Vega: That was raised by, S.C. Burkel.
+
+235
+00:37:26.850 --> 00:37:32.709
+Mario Vega: Regarding failures on the RPC test suite that we have in Hive.
+
+236
+00:37:32.970 --> 00:37:40.389
+Mario Vega: I see Sebastian on the call right now, do you want to kick us off with this conversation?
+
+237
+00:37:42.080 --> 00:37:50.419
+Sebastian Bürgel [Gnosis/HOPR]: Sure, yeah. Thanks for supplement for having me here, Mario. I'm Sebastian, from Gnosis slash Hopper.
+
+238
+00:37:50.840 --> 00:37:59.630
+Sebastian Bürgel [Gnosis/HOPR]: And, yeah, I think we're all aware that Ethereum is trying to onboard a huge number of individual users.
+
+239
+00:37:59.840 --> 00:38:12.829
+Sebastian Bürgel [Gnosis/HOPR]: And, yeah, that's… in that regard, we're quite aligned with what we do at Gnosis to build products that actually use an Ethereum chain. Currently, Gnosis L1.
+
+240
+00:38:13.360 --> 00:38:21.429
+Sebastian Bürgel [Gnosis/HOPR]: And, in doing that, we kind of see, and that's why I'm here, to kind of sound the alarm bells, kind of a…
+
+241
+00:38:21.810 --> 00:38:28.860
+Sebastian Bürgel [Gnosis/HOPR]: increasing number of issues around, specifically, the Ethereum RPC layer.
+
+242
+00:38:29.180 --> 00:38:44.039
+Sebastian Bürgel [Gnosis/HOPR]: And, I mean, just to take for a second a step back, right? How do we get, actually, many people to use Ethereum? Well, by Ethereum-based apps, right? And these app developers, unfortunately, they don't touch the network layer, they don't touch the consensus layer.
+
+243
+00:38:44.200 --> 00:39:03.489
+Sebastian Bürgel [Gnosis/HOPR]: And as a networking guy, I kind of hate to say that, but that is the reality. They only touch the Ethereum RPC layer. So if that one is kind of critically broken, then Ethereum is in a pretty rough position, and that is, as I outlined in more details in the post, the situation right now.
+
+244
+00:39:03.850 --> 00:39:15.099
+Sebastian Bürgel [Gnosis/HOPR]: So, I think we made pretty cool progress to get us into a better, space, so shout out, obviously, to ETH PandaOps for the Hive test suite and so on.
+
+245
+00:39:15.560 --> 00:39:23.329
+Sebastian Bürgel [Gnosis/HOPR]: But we need more than that, right? So if we look at the IF test right now, there's around 190
+
+246
+00:39:23.450 --> 00:39:32.010
+Sebastian Bürgel [Gnosis/HOPR]: only on the entire Ethereum RPC layer, which is basically spinning up kind of a fake blockchain of only a few blocks length, and then do, like.
+
+247
+00:39:32.150 --> 00:39:34.330
+Sebastian Bürgel [Gnosis/HOPR]: Like, 4 or 5 tests on them.
+
+248
+00:39:34.870 --> 00:39:46.640
+Sebastian Bürgel [Gnosis/HOPR]: for ETHAT logs, for example, specifically, which is the example that I picked here, but I really only mean it to serve as an example of just how dire the situation around the RPC layer is.
+
+249
+00:39:47.380 --> 00:39:50.109
+Sebastian Bürgel [Gnosis/HOPR]: And… so specifically.
+
+250
+00:39:50.500 --> 00:40:06.539
+Sebastian Bürgel [Gnosis/HOPR]: We see clients where, logs just get swallowed and omitted. So, you know, you as a user don't even know that you're missing state, which is a kind of catastrophic failure case for an Ethereum-based application that doesn't have any additional information.
+
+251
+00:40:07.370 --> 00:40:18.509
+Sebastian Bürgel [Gnosis/HOPR]: And, yeah, on the one hand, you could say, well, okay, that's a client bug, just let clients sort that out. But I find it more interesting, and that's why I posted this blog here.
+
+252
+00:40:18.640 --> 00:40:26.529
+Sebastian Bürgel [Gnosis/HOPR]: Because in the process of trying to get to the bottom of that, a few things were sticking out. So the first one is, this was not caught by any hive tests.
+
+253
+00:40:26.800 --> 00:40:36.849
+Sebastian Bürgel [Gnosis/HOPR]: Because they kind of test for very basic things. Again, which is helpful, but we need to grow by many orders of magnitude beyond that.
+
+254
+00:40:37.370 --> 00:40:47.709
+Sebastian Bürgel [Gnosis/HOPR]: And the second is, Hive tests are failing. I think it is fair to say that client teams, in many ways, don't care too much if they fail.
+
+255
+00:40:47.840 --> 00:40:52.979
+Sebastian Bürgel [Gnosis/HOPR]: Because otherwise, they wouldn't have been over 50% red for several months at this point.
+
+256
+00:40:53.480 --> 00:41:05.429
+Sebastian Bürgel [Gnosis/HOPR]: And the third thing is, when engaging, like, I talked to several client teams, and the interesting thing was, there isn't even consensus. We do not have consensus on how Ethereum is exactly supposed to work.
+
+257
+00:41:05.540 --> 00:41:17.029
+Sebastian Bürgel [Gnosis/HOPR]: Meaning, we're missing standardization, and yes, I'm aware that we have the ETH execution specs, which is… has been helpful in finding, kind of, tight mismatches and so on.
+
+258
+00:41:17.320 --> 00:41:25.210
+Sebastian Bürgel [Gnosis/HOPR]: But what I mean when I say that we don't have specs how Ethereum is exactly supposed to work, again, just as an example.
+
+259
+00:41:25.370 --> 00:41:33.620
+Sebastian Bürgel [Gnosis/HOPR]: from the ETHGetLogs front, it is currently unclear, and clients have in the past made individual decisions on
+
+260
+00:41:33.620 --> 00:41:51.389
+Sebastian Bürgel [Gnosis/HOPR]: what happens if somebody tries to, obtain locks, let's say ETH get locks, on the wrapped ETH contract from Genesis until tip of the chain, right? That's obviously labor-intensive, I guess, computationally expensive, and the response size might be huge.
+
+261
+00:41:51.890 --> 00:42:01.640
+Sebastian Bürgel [Gnosis/HOPR]: So individual clients made individual implementation choices, such as cropping the results, erroring, just taking a whole long time.
+
+262
+00:42:01.640 --> 00:42:12.020
+Sebastian Bürgel [Gnosis/HOPR]: or building kind of bespoke indexing solutions on top of it, which has not undergone any VIP, and it's kind of individual innovation, which happens in parallel for every client team.
+
+263
+00:42:12.190 --> 00:42:14.500
+Sebastian Bürgel [Gnosis/HOPR]: Which is clearly kind of suboptimal.
+
+264
+00:42:14.970 --> 00:42:16.030
+Sebastian Bürgel [Gnosis/HOPR]: So…
+
+265
+00:42:16.440 --> 00:42:31.920
+Sebastian Bürgel [Gnosis/HOPR]: Yeah, basically, what I'm saying here is, from my perspective, looking at this, we are lacking two things. One is, in orders of magnitude, growth of what Hive is today.
+
+266
+00:42:32.020 --> 00:42:45.869
+Sebastian Bürgel [Gnosis/HOPR]: to kind of bring it up to… in parallel, I see it somewhat similar to how the web platform tests work. So the browsers that many of you are using right now has undergone over 2 million tests, right?
+
+267
+00:42:46.040 --> 00:42:50.040
+Sebastian Bürgel [Gnosis/HOPR]: So Ethereum is certainly not much less complex, so we need
+
+268
+00:42:50.360 --> 00:42:54.140
+Sebastian Bürgel [Gnosis/HOPR]: Multiple orders of magnitude growth in these test cases.
+
+269
+00:42:54.370 --> 00:43:00.049
+Sebastian Bürgel [Gnosis/HOPR]: we need focus on the basic stuff, so if I look at what we discussed in this call.
+
+270
+00:43:00.250 --> 00:43:07.269
+Sebastian Bürgel [Gnosis/HOPR]: And if I look at the Hive test results, the cutting-edge stuff is kind of okay, right? So the Fusaka tests are kind of all okay.
+
+271
+00:43:07.610 --> 00:43:13.850
+Sebastian Bürgel [Gnosis/HOPR]: it is the basic, kind of, for example, RPC layer that is not okay.
+
+272
+00:43:14.620 --> 00:43:24.990
+Sebastian Bürgel [Gnosis/HOPR]: So, that is focus, and then I think we need additional focus on, well, getting to consensus of how Ethereum is actually supposed to work.
+
+273
+00:43:24.990 --> 00:43:38.460
+Sebastian Bürgel [Gnosis/HOPR]: Because when I do talk to client teams, I also hear, well, you know, Hive tests were basically just the test suite, so of course, NetherMind or, you know, any of the others is not one-to-one following that, and we have our reasons for that.
+
+274
+00:43:38.970 --> 00:43:48.929
+Sebastian Bürgel [Gnosis/HOPR]: Which is fine, right? I think many of these reasons are fine, but it just shows me we need to go through a consensus-finding exercise of how Ethereum is actually supposed to work on that layer.
+
+275
+00:43:49.840 --> 00:43:57.620
+Sebastian Bürgel [Gnosis/HOPR]: And yeah, that's, that's what I see here right now. Yeah.
+
+276
+00:43:57.620 --> 00:43:58.230
+Mario Vega: Thank you.
+
+277
+00:43:58.230 --> 00:43:59.719
+Sebastian Bürgel [Gnosis/HOPR]: Happy to take it forward.
+
+278
+00:44:00.330 --> 00:44:04.599
+Mario Vega: Thank you, thank you. So yeah, a lot of hands up, we can start with Marius.
+
+279
+00:44:05.480 --> 00:44:16.289
+Marius van der Wijden: Sure, yeah, I think this is a… this is a problem that we know about for a really long time, and, we…
+
+280
+00:44:16.600 --> 00:44:25.869
+Marius van der Wijden: We at the Ethereum Foundation have also started hiring, hiring someone for exactly this purpose.
+
+281
+00:44:26.210 --> 00:44:33.099
+Marius van der Wijden: But there have already also been a few proposals, from, for example, Jules.
+
+282
+00:44:33.300 --> 00:44:39.379
+Marius van der Wijden: On how to, how to, create a new…
+
+283
+00:44:39.490 --> 00:44:44.259
+Marius van der Wijden: REST-based API, in order to,
+
+284
+00:44:44.650 --> 00:44:49.589
+Marius van der Wijden: kind of, yeah, bring the RPC into the…
+
+285
+00:44:49.980 --> 00:44:54.919
+Marius van der Wijden: 21st century, I would say. So basically.
+
+286
+00:44:55.370 --> 00:44:59.439
+Marius van der Wijden: when the RPC was created,
+
+287
+00:44:59.780 --> 00:45:04.560
+Marius van der Wijden: the… it was… it was basically created for something like Mist.
+
+288
+00:45:04.820 --> 00:45:08.029
+Marius van der Wijden: And, the problem is that it…
+
+289
+00:45:08.200 --> 00:45:16.770
+Marius van der Wijden: It's very hard to evolve it, because it impacts so many people in the ecosystem. And,
+
+290
+00:45:17.180 --> 00:45:21.029
+Marius van der Wijden: Yes, and also the standardization process is very…
+
+291
+00:45:21.100 --> 00:45:38.079
+Marius van der Wijden: difficult, because you kind of… like, RPC is just a second, smaller cousin, to the normal consensus, and so client teams are not prioritizing it as much as the normal consensus.
+
+292
+00:45:38.260 --> 00:45:44.819
+Marius van der Wijden: But as I said, I think… I personally think it's a big problem, and
+
+293
+00:45:45.190 --> 00:45:47.069
+Marius van der Wijden: I know people have been, kind of.
+
+294
+00:45:47.320 --> 00:45:57.940
+Marius van der Wijden: A lot of people have tried to make this a priority, and tried to make the standards, and have been burnt out doing that.
+
+295
+00:45:58.030 --> 00:46:07.400
+Marius van der Wijden: for example, like, I don't know, I think ETH Simulate is one of the… one of the examples where it worked, where we found,
+
+296
+00:46:07.920 --> 00:46:17.419
+Marius van der Wijden: found a way to find consensus between clients and create a good spec, but a lot of the other things are not.
+
+297
+00:46:17.950 --> 00:46:22.710
+Marius van der Wijden: I also want to go, like, a step further in this.
+
+298
+00:46:22.940 --> 00:46:30.070
+Marius van der Wijden: I think it would be good, because, like, as we all know.
+
+299
+00:46:30.830 --> 00:46:45.860
+Marius van der Wijden: nodes are not the same thing as they were 10 years ago. A lot of people are not running full nodes, or, like, archive nodes anymore. A lot of people are running with, with, history expiry.
+
+300
+00:46:46.090 --> 00:46:51.230
+Marius van der Wijden: and in the future, what a node…
+
+301
+00:46:51.460 --> 00:46:54.280
+Marius van der Wijden: Stores is going to be,
+
+302
+00:46:54.890 --> 00:47:02.340
+Marius van der Wijden: very different, so we will see more specialized nodes. And I think the RPC
+
+303
+00:47:02.760 --> 00:47:12.239
+Marius van der Wijden: Needs to reflect that, in order to make it clear that these are calls that happen on the head of the chain.
+
+304
+00:47:12.240 --> 00:47:22.899
+Marius van der Wijden: These are calls that require, access to the history, and so on. And the last point that I wanted to make regarding the log indexing.
+
+305
+00:47:22.900 --> 00:47:27.950
+Marius van der Wijden: So old has, also written an EAP,
+
+306
+00:47:28.160 --> 00:47:33.460
+Marius van der Wijden: About that, in order to get the…
+
+307
+00:47:33.700 --> 00:47:45.880
+Marius van der Wijden: log indexing that we built internally in Geth, to get it into the protocol. The problem here, again, is prioritization of, of that,
+
+308
+00:47:46.050 --> 00:48:06.030
+Marius van der Wijden: against other features, and I think that is, like, dev time is very finite, and, so, yeah. It's definitely an issue that is on top of mind for me, and, I hope to bring some resources from the Ethereum Foundation, in order to
+
+309
+00:48:06.300 --> 00:48:15.760
+Marius van der Wijden: In order to get that going, but in the end, it's clients who, who kind of need to implement it, and, yeah.
+
+310
+00:48:15.900 --> 00:48:18.560
+Marius van der Wijden: I think client teams are stretched already.
+
+311
+00:48:20.310 --> 00:48:22.200
+Mario Vega: Thank you, Maurice. Lukash?
+
+312
+00:48:22.200 --> 00:48:25.690
+Łukasz Rozmej: Yeah, I have quite a few comments, so…
+
+313
+00:48:26.220 --> 00:48:45.640
+Łukasz Rozmej: One, I joined the, JSON RPC call, actually, recently, and the temperature check I got there that the… they're working on a very, very small and basic RPC spec, that won't handle everything mentioned here, most of the things mentioned here.
+
+314
+00:48:45.640 --> 00:48:58.120
+Łukasz Rozmej: And actually, compared… comparing that to the correct node-deep limitations, nodes would be mostly already in that spec. Maybe there would be a very small,
+
+315
+00:48:58.120 --> 00:49:17.080
+Łukasz Rozmej: changes in the nodes, and the bigger problems they are actually focusing on is the, like, RPC providers are, like, general EVM compatibility of a train. So, for example, some L2s that have very custom and very,
+
+316
+00:49:17.120 --> 00:49:19.849
+Łukasz Rozmej: Not standard things doing. So that's one thing.
+
+317
+00:49:20.410 --> 00:49:30.899
+Łukasz Rozmej: So, to make this extremely well standardized on each client level.
+
+318
+00:49:31.200 --> 00:49:37.409
+Łukasz Rozmej: Yeah, that's probably what is the problem, to actually build the… the…
+
+319
+00:49:37.950 --> 00:49:46.940
+Łukasz Rozmej: money and motivation, because it's very boring work to build the whole spec, and then execute on it, and create tests for everything.
+
+320
+00:49:48.370 --> 00:49:56.269
+Łukasz Rozmej: Moreover, some things I disagree that should be the specs. So, for example, Marius mentioned the AT GetLogs index they built.
+
+321
+00:49:56.270 --> 00:50:10.350
+Łukasz Rozmej: We built a different one, we will be releasing it soon, but our is not provable, and… but our is faster, right? So, it has some upsides and downsides compared to other things, and I don't think everything should be standardized.
+
+322
+00:50:10.350 --> 00:50:13.489
+Łukasz Rozmej: I think some figs would be better to…
+
+323
+00:50:13.850 --> 00:50:22.330
+Łukasz Rozmej: Be left to implementation details, because, different nodes can then, have different advantages and disadvantages.
+
+324
+00:50:22.500 --> 00:50:30.569
+Łukasz Rozmej: Another thing, a bit of problem with the Hive test is, for us, is that,
+
+325
+00:50:30.900 --> 00:50:46.170
+Łukasz Rozmej: they are basically generated through GEF, so GEF is the spec, and while we agree that something between 95% to 99% of what GEF does is the best, and even if we don't agree, we most often align with what GEF does.
+
+326
+00:50:46.560 --> 00:50:56.720
+Łukasz Rozmej: There are very rare exceptions that it would be good to actually define the spec and potentially change something would get us to be better.
+
+327
+00:50:57.160 --> 00:51:15.969
+Łukasz Rozmej: And this is especially sometimes problematic for us if we return… the last thing is about the tests themselves being very basic. So, for example, in some rare cases, we want to return additional fields, because, for example, some of our users or customers requested it.
+
+328
+00:51:16.450 --> 00:51:31.389
+Łukasz Rozmej: But the test doesn't allow us to fail the test at that point, because the test says this should be the list of fields, and you cannot return anything else, which in JSON RPC, it would be fine to return something optional or something extra, but the test fails.
+
+329
+00:51:31.560 --> 00:51:37.280
+Łukasz Rozmej: So we have this kind of false, negative in terms of testing.
+
+330
+00:51:37.910 --> 00:51:41.220
+Łukasz Rozmej: And… okay, I had one more thing.
+
+331
+00:51:41.770 --> 00:51:57.550
+Łukasz Rozmej: But I think I lost it. Yeah, I know. So we have a list of failing Hive tests, and we actually are trying to, kick down some of them, and I'm seeing it, decreasing every week by a few.
+
+332
+00:51:57.550 --> 00:52:04.400
+Łukasz Rozmej: instances, so… this is something that Netherbyte is working on and is prioritizing, but…
+
+333
+00:52:04.700 --> 00:52:10.420
+Łukasz Rozmej: It is not as high a priority as, for example, all the consensus level.
+
+334
+00:52:11.010 --> 00:52:20.360
+Łukasz Rozmej: changes. So, yeah, it is lacking, and it will be lacking, compared to the core protocol of Ethereum.
+
+335
+00:52:20.590 --> 00:52:36.679
+Łukasz Rozmej: And yeah, one last thing. ETH Simulate was actually pretty well tested, and while still we failed some tests there, we are working on it. Maybe there will be some changes to the test here and there, if we decide on that. I don't think we found
+
+336
+00:52:37.410 --> 00:52:54.129
+Łukasz Rozmej: that examples, we had one or two questions about if the chest should be changed, but we decided to go with what GEF did, because both versions were fine, but, yeah, this is, again, circling back that GEF is the specs at the moment, which is…
+
+337
+00:52:54.500 --> 00:53:00.080
+Łukasz Rozmej: Sometimes not the best thing to have, and that's it for me.
+
+338
+00:53:01.260 --> 00:53:03.390
+Mario Vega: Thank you, Lukash. Felix?
+
+339
+00:53:04.260 --> 00:53:13.139
+Felix (Geth): Yeah, I mean, I strong… I want to respond, first of all, by strongly disagreeing that Gethis is back here, so the… the,
+
+340
+00:53:13.270 --> 00:53:15.680
+Felix (Geth): The official specs are the…
+
+341
+00:53:15.870 --> 00:53:32.659
+Felix (Geth): YAML files, which are contained in the execution APIs repository. And when it comes to the tests, it's very critical to say that, yes, we generate the test vectors using Geth, but the tests are not the spec. The spec is the spec.
+
+342
+00:53:32.750 --> 00:53:40.240
+Felix (Geth): And the SPAC is independent from… from the client. We… we use GATH because
+
+343
+00:53:40.430 --> 00:53:46.039
+Felix (Geth): For us, it was the easiest to set it up like this, and also because for most calls.
+
+344
+00:53:46.190 --> 00:53:55.869
+Felix (Geth): the, the, so the testing methodology that is used for RPC tests is that the, the,
+
+345
+00:53:56.320 --> 00:54:09.489
+Felix (Geth): Some RPC requests are performed, and the interactions between the test and the client are recorded. And then, we replay these interactions against another client, and compare the result.
+
+346
+00:54:10.490 --> 00:54:27.859
+Felix (Geth): the comparison of the results has some special cases. For example, for the errors, we do not match on the error message, but we do expect the error code to be the same. And I feel like this is kind of critical, because for the users, the message does not matter as much as the code.
+
+347
+00:54:27.860 --> 00:54:34.699
+Felix (Geth): So, but even most of the differences in the clients is in cases where, the…
+
+348
+00:54:34.790 --> 00:54:41.129
+Felix (Geth): requests submitted by the test is containing something invalid. So basically, we are testing the, like.
+
+349
+00:54:42.050 --> 00:54:49.090
+Felix (Geth): the, like, limits of the spec in the… in as few of the tests we have. So all of the tests where you are just, like, requesting
+
+350
+00:54:49.260 --> 00:55:06.459
+Felix (Geth): something in the normal way, they are passing. It's mostly about… like, with some exceptions, of course. But then, for the… for the… for example, with NetherMite, most of the differences are in cases where, for example, the request performs… has an invalid argument value.
+
+351
+00:55:06.520 --> 00:55:21.160
+Felix (Geth): And then, we expect the client to react with a certain error code, or we expect the client to detect this invalid argument, and instead, it either accepts it because the parsing is too lenient, or it returns a different error code.
+
+352
+00:55:21.390 --> 00:55:22.640
+Felix (Geth): And I feel like…
+
+353
+00:55:23.160 --> 00:55:28.520
+Felix (Geth): These failures, in some way, are less important than if it returned, like, a totally wrong value.
+
+354
+00:55:28.550 --> 00:55:31.160
+Felix (Geth): But, obviously, it would be good to align.
+
+355
+00:55:31.180 --> 00:55:49.059
+Felix (Geth): And for these things, I feel it's just a matter of agreeing on the correct error code. It's not so much, like, there isn't gonna be a deep discussion. There are some other differences, specifically between Geth and Nethermind, when it comes to the optional fields. For example, things like the total difficulty, we discussed it also recently.
+
+356
+00:55:49.170 --> 00:55:50.820
+Felix (Geth): And I have to say that
+
+357
+00:55:51.300 --> 00:56:10.889
+Felix (Geth): We have to… we still have to find a solution for that that works in the testing. I am not against, return… never mind returning the total difficulty, it's just that it's kind of hard to make it work with our current testing method, because the testing method is just to compare, the outputs, literally.
+
+358
+00:56:10.970 --> 00:56:23.349
+Felix (Geth): For some calls, we do not compare the outputs. Literally, we have another method that is about checking, basically type-checking the response only, and for some responses, this can work. For example, for estimateGas.
+
+359
+00:56:23.350 --> 00:56:39.120
+Felix (Geth): We do not require all clients to agree on the algorithm for estimating the gas usage of a transaction. The clients can actually each have their own method for that, so we only check that the result is a correctly encoded number, as is required by the spec.
+
+360
+00:56:39.130 --> 00:56:42.680
+Felix (Geth): So, It's,
+
+361
+00:56:42.960 --> 00:56:55.649
+Felix (Geth): I feel like the discussion is quite nuanced. Like, I personally am the author of most of the existing RPC Compet tests, and I try to choose them very carefully to exercise the behavior of the clients as
+
+362
+00:56:55.710 --> 00:57:09.630
+Felix (Geth): at the same time, I didn't want to introduce, like, hundreds of tests that would all fail, because when we got started, to be more serious about specifying the RPC with the execution APIs, and then also with the test suit.
+
+363
+00:57:10.460 --> 00:57:12.220
+Felix (Geth): It became clear that
+
+364
+00:57:12.350 --> 00:57:29.029
+Felix (Geth): is gonna be very demotivating for clients if they face, like, 300 failing tests, and they will just never get fixed. So we have been very careful about slowly expanding the range of behavior that we are testing. We started very small, tried to make a test suit that just contains, like.
+
+365
+00:57:29.030 --> 00:57:42.680
+Felix (Geth): 50 or 60 tests that really, you know, are pretty much guaranteed to pass, and now we are at this point where, like, every so often, I will just add a couple more tests, just to see what's the behavioral difference in the client.
+
+366
+00:57:42.680 --> 00:57:49.010
+Felix (Geth): And then we can, you know, try to get them fixed. I did report over time also many of the failures to the clients, but
+
+367
+00:57:49.030 --> 00:57:50.010
+Felix (Geth): It just…
+
+368
+00:57:50.540 --> 00:58:06.649
+Felix (Geth): at some point, also, I gave up on that, because it just seemed like it's not exactly a priority, and some of the things just turned out to be very hard to resolve, or something. That said, there are some constructive things we could do, so we could try to…
+
+369
+00:58:06.880 --> 00:58:14.399
+Felix (Geth): Improve the testing methodology by allowing, for example, certain optional fields for certain responses, or things like that.
+
+370
+00:58:14.560 --> 00:58:25.269
+Felix (Geth): Or we could simply have multiple test vectors, which are allowable responses. The difference then is that we kind of have to manually check
+
+371
+00:58:25.670 --> 00:58:29.270
+Felix (Geth): The responses to see if they are actually correct.
+
+372
+00:58:29.940 --> 00:58:33.149
+Felix (Geth): And, this is not easy. So…
+
+373
+00:58:33.600 --> 00:58:46.719
+Felix (Geth): I don't yet know what's gonna be the answer, definitely we need to make some improvements, but yeah, it's been an uphill battle, and I'm actually pretty happy that, for now, for the basic, calls, we have,
+
+374
+00:58:47.330 --> 00:58:58.830
+Felix (Geth): quite some good coverage, also, of the edge cases. Forget logs, it would actually be good to add… introduce more tests, so Sebastian, if you have suggestions for that.
+
+375
+00:58:58.830 --> 00:59:09.419
+Felix (Geth): we have the repository where the tests are generated. It is very easy to actually add tests for this, and we could then very easily also verify the behavior.
+
+376
+00:59:09.990 --> 00:59:14.510
+Felix (Geth): Maybe as a final note, some of the clients are currently not even…
+
+377
+00:59:15.060 --> 00:59:24.410
+Felix (Geth): I guess for the RPC, all of the clients are somewhat able to load the test chain, but I see that, especially, for example, for RETH, we have a lot of failing tests, and…
+
+378
+00:59:25.790 --> 00:59:27.659
+Felix (Geth): I don't actually really know…
+
+379
+00:59:29.140 --> 00:59:42.119
+Felix (Geth): Yeah, I mean, we would really have to see, like, the client that's failing the most right now is Nimbus, actually, and I don't really fully know why, for example. Like, there are… some of these differences are, like, kind of hard to debug, so…
+
+380
+00:59:42.530 --> 00:59:46.290
+Felix (Geth): I guess we would have to… Yeah.
+
+381
+00:59:46.780 --> 00:59:54.759
+Felix (Geth): Again, I can only say that, like, the clients should really attend the RPC standardization calls, and then we can see, what kind of…
+
+382
+00:59:55.670 --> 00:59:57.760
+Felix (Geth): What kind of progress can be made on that?
+
+383
+00:59:59.930 --> 01:00:01.350
+Mario Vega: Thank you. Justin?
+
+384
+01:00:03.440 --> 01:00:09.140
+Justin Florentine (Besu): The next RPC call is in 6 minutes. So… get excited.
+
+385
+01:00:14.140 --> 01:00:19.399
+Mario Vega: Thank you. Alright, I see who had the…
+
+386
+01:00:19.590 --> 01:00:25.840
+Mario Vega: Lukash, do you want to go? We only have 5 minutes, though, but we can keep discussing this on the RPC call, so I think it's a great…
+
+387
+01:00:25.840 --> 01:00:26.420
+Łukasz Rozmej: Great thing that we…
+
+388
+01:00:26.420 --> 01:00:27.090
+Mario Vega: discussing this year.
+
+389
+01:00:27.090 --> 01:00:29.479
+Łukasz Rozmej: Fine, I added some things into the chat.
+
+390
+01:00:30.860 --> 01:00:31.970
+Mario Vega: Perfect, thanks.
+
+391
+01:00:32.150 --> 01:00:37.159
+Mario Vega: Felix, that was the hand up from the last time, or do you have something else to comment?
+
+392
+01:00:39.210 --> 01:00:41.399
+Felix (Geth): Sorry, yeah, I didn't lower, I'm sorry.
+
+393
+01:00:42.600 --> 01:00:44.690
+Mario Vega: Alright, thanks.
+
+394
+01:00:45.570 --> 01:00:53.989
+Mario Vega: Yeah, I think it would be nice if someone can share the link to the next call. It's gonna be happening in 5 minutes, we can keep the discussion running in there.
+
+395
+01:00:54.160 --> 01:01:03.140
+Mario Vega: So I don't think we have reached an agreement at the moment, because it's a very nuanced discussion, but…
+
+396
+01:01:04.850 --> 01:01:12.790
+Mario Vega: Justin suggested that we bring this up into ACDE, which I don't think is a bad idea, and also.
+
+397
+01:01:13.340 --> 01:01:15.330
+Mario Vega: Yes, just to close…
+
+398
+01:01:15.440 --> 01:01:22.609
+Mario Vega: for now, I think everyone that is interested in this discussion, please join the next call.
+
+399
+01:01:22.870 --> 01:01:29.139
+Mario Vega: And also, please, join ACD, and we can, also follow up the discussion in there.
+
+400
+01:01:29.430 --> 01:01:32.440
+Mario Vega: Anything else from this scythe?
+
+401
+01:01:34.000 --> 01:01:41.410
+Mario Vega: I think also from the specs perspective, what I can say is that, we have, this moment… I think at this point.
+
+402
+01:01:41.830 --> 01:01:54.469
+Mario Vega: we are reaching a point where we need a formal, a better specification model, perhaps. So, it might be worth to see if we can
+
+403
+01:01:54.470 --> 01:02:02.340
+Mario Vega: bring the ideas that we have put into yields on the consensus side of the specs into the RPC.
+
+404
+01:02:02.430 --> 01:02:05.719
+Mario Vega: Perhaps to make the, testing…
+
+405
+01:02:05.810 --> 01:02:18.439
+Mario Vega: language more expressive, and we can, even generate better tests with this. So, yeah, I think that discussion is still open. We can see if that would help in the long run.
+
+406
+01:02:18.480 --> 01:02:26.840
+Mario Vega: But yes, there's a ton of things to do. I don't think it's gonna be, like, very easy to get this going, but it's doable, definitely.
+
+407
+01:02:27.950 --> 01:02:32.750
+Mario Vega: All right, yeah, thanks, Justin, for the Zoom link to the next call.
+
+408
+01:02:32.900 --> 01:02:36.330
+Mario Vega: Alright. Anything else?
+
+409
+01:02:36.980 --> 01:02:39.210
+Mario Vega: That can be discussed in this call.
+
+410
+01:02:49.670 --> 01:03:07.969
+Mario Vega: Yeah, and thanks, thanks, Sebastian, for bringing up the issue and starting the discussion. I think this is a really important topic, thanks for bringing it up, and also thanks for the very well-written post in ED research. It's been a great, resource to read, and yeah.
+
+411
+01:03:08.420 --> 01:03:14.289
+Mario Vega: Yeah. Thanks, everyone, for joining the call. If there's nothing else, we can close the discussion here.
+
+412
+01:03:18.250 --> 01:03:19.439
+Marius van der Wijden: Alright, thank you.
+
+413
+01:03:20.110 --> 01:03:21.370
+felipe: Thanks, everyone. Bye.
+
+414
+01:03:25.010 --> 01:03:25.870
+Łukasz Rozmej: Bye.
+

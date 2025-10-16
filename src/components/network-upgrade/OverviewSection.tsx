@@ -109,6 +109,25 @@ export const OverviewSection: React.FC<OverviewSectionProps> = ({
       {/* Special note for Fusaka testnet rollout */}
       {forkName.toLowerCase() === 'fusaka' && (
         <>
+          <div className="mb-6 p-4 bg-amber-50 dark:bg-amber-900/20 border border-amber-200 dark:border-amber-700 rounded">
+            <div className="flex items-start gap-3">
+              <svg className="w-5 h-5 text-amber-600 dark:text-amber-400 mt-0.5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.732-.833-2.5 0L4.268 16.5c-.77.833.192 2.5 1.732 2.5z" />
+              </svg>
+              <div>
+                <h4 className="font-medium text-amber-900 dark:text-amber-100 text-sm mb-1">Important: Blob Transaction Format Change</h4>
+                <p className="text-amber-800 dark:text-amber-200 text-xs leading-relaxed">
+                  <strong>EIP-7594 (PeerDAS)</strong> changes the proof format from blob proofs to cell proofs. Blob transaction originators (L2s, etc.) must update their software to create <strong>Cell Proofs</strong> instead of blob proofs. This change may break applications that send blob transactions. <a
+                    href="https://blog.ethereum.org/2025/10/15/fusaka-blob-update"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="text-amber-900 dark:text-amber-100 hover:text-amber-700 dark:hover:text-amber-300 underline decoration-1 underline-offset-2 transition-colors font-medium"
+                  >Read the full details and migration guide</a>.
+                </p>
+              </div>
+            </div>
+          </div>
+
           <div className="mb-6 p-4 bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-700 rounded">
             <div className="flex items-start gap-3">
               <svg className="w-5 h-5 text-blue-600 dark:text-blue-400 mt-0.5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">

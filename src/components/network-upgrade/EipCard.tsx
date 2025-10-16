@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { EIP } from '../../types';
 import {
   getInclusionStage,
@@ -21,6 +21,7 @@ interface EipCardProps {
 export const EipCard: React.FC<EipCardProps> = ({ eip, forkName, handleExternalLinkClick }) => {
   const eipId = `eip-${eip.id}`;
   const layer = getHeadlinerLayer(eip, forkName);
+  const [showChampionDetails, setShowChampionDetails] = useState(false);
 
   return (
     <article key={eip.id} className={`bg-white dark:bg-slate-800 border rounded p-8 ${
@@ -32,8 +33,17 @@ export const EipCard: React.FC<EipCardProps> = ({ eip, forkName, handleExternalL
       <header className="border-b border-slate-100 dark:border-slate-700 pb-6 mb-6">
         <div className="flex flex-col lg:flex-row lg:items-start lg:justify-between">
           <div className="flex-1">
-            <div className="flex items-center gap-3">
-              <h3 className="text-xl font-medium text-slate-900 dark:text-slate-100 leading-tight">
+            <div className="flex items-center gap-3 group relative">
+              {/* Anchor link - positioned absolutely in the left margin */}
+              <div className="absolute -left-5 top-1/2 -translate-y-1/2 opacity-0 group-hover:opacity-100 transition-opacity duration-200">
+                <CopyLinkButton
+                  sectionId={eipId}
+                  title={`Copy link to this section`}
+                  size="sm"
+                />
+              </div>
+
+              <h3 className="text-xl font-medium text-slate-900 dark:text-slate-100 leading-tight flex-1">
                 {isHeadliner(eip, forkName) && (
                   <Tooltip
                     text={(() => {
@@ -41,10 +51,10 @@ export const EipCard: React.FC<EipCardProps> = ({ eip, forkName, handleExternalL
                       const isSFI = inclusionStage === 'Scheduled for Inclusion';
                       if (forkName.toLowerCase() === 'glamsterdam') {
                         return isSFI
-                          ? "Selected headliner feature of this network upgrade"
-                          : "Proposed headliner feature of this network upgrade";
+                          ? "Selected headliner feature"
+                          : "Proposed headliner feature";
                       }
-                      return "Headliner feature of this network upgrade";
+                      return "Headliner feature";
                     })()}
                     className="inline-block cursor-pointer"
                   >
@@ -78,25 +88,66 @@ export const EipCard: React.FC<EipCardProps> = ({ eip, forkName, handleExternalL
                   </Tooltip>
                 )}
               </h3>
-              <div className="flex items-center gap-2 relative top-0.5">
-                <Tooltip text={`View ${getProposalPrefix(eip)}-${eip.id} specification`}>
+
+              {/* External links - always visible on the right */}
+              <div className="flex items-center gap-2 relative top-0.5 ml-auto">
+                {/* Discussion link */}
+                {eip.discussionLink && (
+                  <Tooltip text="View discussion">
+                    <a
+                      href={eip.discussionLink}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      onClick={() => handleExternalLinkClick('discussion', eip.discussionLink)}
+                      className="text-slate-400 hover:text-slate-600 dark:text-slate-500 dark:hover:text-slate-300 transition-colors cursor-pointer relative group"
+                    >
+                      <div className="relative w-7 h-7">
+                        <img
+                          src="/eth-mag.png"
+                          alt="Ethereum Magicians"
+                          className="w-7 h-7 opacity-90 dark:opacity-70"
+                        />
+                        <svg
+                          className="absolute -bottom-0.5 -right-0.5 w-4 h-4 opacity-0 group-hover:opacity-100 transition-opacity"
+                          fill="none"
+                          stroke="currentColor"
+                          strokeWidth="2"
+                          viewBox="0 0 24 24"
+                        >
+                          <path strokeLinecap="round" strokeLinejoin="round" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
+                        </svg>
+                      </div>
+                    </a>
+                  </Tooltip>
+                )}
+
+                {/* Specification link */}
+                <Tooltip text="View specification">
                   <a
                     href={getSpecificationUrl(eip)}
                     target="_blank"
                     rel="noopener noreferrer"
                     onClick={() => handleExternalLinkClick('specification', getSpecificationUrl(eip))}
-                    className="text-slate-400 hover:text-slate-600 dark:text-slate-500 dark:hover:text-slate-300 transition-colors cursor-pointer"
+                    className="text-slate-400 hover:text-slate-600 dark:text-slate-500 dark:hover:text-slate-300 transition-colors cursor-pointer relative group"
                   >
-                    <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
-                    </svg>
+                    <div className="relative w-7 h-7">
+                      <img
+                        src="/eth-diamond-black.png"
+                        alt="Ethereum"
+                        className="w-7 h-7 opacity-90 dark:opacity-100 dark:invert"
+                      />
+                      <svg
+                        className="absolute -bottom-0.5 -right-0.5 w-4 h-4 opacity-0 group-hover:opacity-100 transition-opacity"
+                        fill="none"
+                        stroke="currentColor"
+                        strokeWidth="2"
+                        viewBox="0 0 24 24"
+                      >
+                        <path strokeLinecap="round" strokeLinejoin="round" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
+                      </svg>
+                    </div>
                   </a>
                 </Tooltip>
-                <CopyLinkButton
-                  sectionId={eipId}
-                  title={`Copy link to this section`}
-                  size="sm"
-                />
               </div>
             </div>
           </div>
@@ -127,6 +178,73 @@ export const EipCard: React.FC<EipCardProps> = ({ eip, forkName, handleExternalL
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
                 </svg>
               </a>
+            </div>
+          );
+        })()}
+
+        {/* Champion Information */}
+        {forkName.toLowerCase() === 'glamsterdam' && (() => {
+          const forkRelationship = eip.forkRelationships.find(fr => fr.forkName.toLowerCase() === forkName.toLowerCase());
+          const champion = forkRelationship?.champion;
+
+          return (
+            <div className="mt-4">
+              {champion ? (
+                <>
+                  <div className="inline-flex items-center gap-2">
+                    <span className="text-xs text-slate-500 dark:text-slate-400 font-medium">Champion:</span>
+                    <button
+                      onClick={() => setShowChampionDetails(!showChampionDetails)}
+                      className="inline-flex items-center gap-1.5 text-xs text-slate-700 dark:text-slate-300 hover:text-slate-900 dark:hover:text-slate-100 transition-colors group"
+                    >
+                      <span className="font-medium">{champion.name}</span>
+                      {(champion.discord || champion.telegram || champion.email) && (
+                        <svg
+                          className={`w-3.5 h-3.5 text-slate-400 group-hover:text-slate-600 dark:group-hover:text-slate-200 transition-all ${showChampionDetails ? 'rotate-180' : ''}`}
+                          fill="none"
+                          stroke="currentColor"
+                          viewBox="0 0 24 24"
+                        >
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+                        </svg>
+                      )}
+                    </button>
+                  </div>
+
+                  {showChampionDetails && (champion.discord || champion.telegram || champion.email) && (
+                    <div className="mt-2 ml-4 space-y-1.5 bg-slate-50 dark:bg-slate-700/50 rounded px-3 py-2">
+                      {champion.discord && (
+                        <div className="flex items-center gap-2 text-xs">
+                          <span className="text-slate-500 dark:text-slate-400">Discord:</span>
+                          <span className="font-mono text-slate-700 dark:text-slate-300">{champion.discord}</span>
+                        </div>
+                      )}
+                      {champion.telegram && (
+                        <div className="flex items-center gap-2 text-xs">
+                          <span className="text-slate-500 dark:text-slate-400">Telegram:</span>
+                          <span className="font-mono text-slate-700 dark:text-slate-300">{champion.telegram}</span>
+                        </div>
+                      )}
+                      {champion.email && (
+                        <div className="flex items-center gap-2 text-xs">
+                          <span className="text-slate-500 dark:text-slate-400">Email:</span>
+                          <a
+                            href={`mailto:${champion.email}`}
+                            className="font-mono text-blue-600 dark:text-blue-400 hover:underline"
+                          >
+                            {champion.email}
+                          </a>
+                        </div>
+                      )}
+                    </div>
+                  )}
+                </>
+              ) : (
+                <div className="inline-flex items-center gap-2 bg-amber-50/80 dark:bg-amber-900/10 border border-amber-200/60 dark:border-amber-700/30 rounded px-2.5 py-1.5">
+                  <span className="text-xs text-slate-500 dark:text-slate-400 font-medium">Champion:</span>
+                  <span className="text-xs text-amber-700 dark:text-amber-400/90 italic">Not yet assigned</span>
+                </div>
+              )}
             </div>
           );
         })()}

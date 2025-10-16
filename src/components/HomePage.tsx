@@ -12,14 +12,14 @@ const HomePage = () => {
   const handleExternalLinkClick = (linkType: string, url: string) => {
     trackLinkClick(linkType, url);
   };
-  
+
   // Colors for call types
   const callTypeColors = {
     acdc: 'border-l-purple-500 dark:border-l-purple-400',
     acde: 'border-l-blue-500 dark:border-l-blue-400',
     acdt: 'border-l-green-500 dark:border-l-green-400'
   };
-  
+
   const callTypeBadgeColors = {
     acdc: 'bg-purple-100 dark:bg-purple-900/30 text-purple-700 dark:text-purple-300',
     acde: 'bg-blue-100 dark:bg-blue-900/30 text-blue-700 dark:text-blue-300',
@@ -49,10 +49,10 @@ const HomePage = () => {
           <div className="absolute top-0 right-0">
             <ThemeToggle />
           </div>
-          <Link to="/" className="text-4xl font-serif bg-gradient-to-r from-purple-600 via-blue-600 to-purple-800 bg-clip-text text-transparent hover:from-purple-700 hover:via-blue-700 hover:to-purple-900 transition-all duration-200 mb-3 tracking-tight inline-block">
+          <Link to="/" className="text-4xl font-serif bg-gradient-to-r from-purple-600 via-blue-600 to-purple-800 bg-clip-text text-transparent hover:from-purple-700 hover:via-blue-700 hover:to-purple-900 transition-all duration-200 mb-2 tracking-tight inline-block">
             Forkcast
           </Link>
-          <h2 className="text-xl font-light text-slate-700 dark:text-slate-300 tracking-tight mb-2">
+          <h2 className="text-xl font-light text-slate-700 dark:text-slate-300 tracking-tight">
             Ethereum Upgrade Tracker
           </h2>
           <p className="text-base text-slate-600 dark:text-slate-400 max-w-2xl mx-auto leading-relaxed">
@@ -124,14 +124,14 @@ const HomePage = () => {
             <h2 className="text-xl font-medium text-slate-900 dark:text-slate-100">
               Recent Protocol Calls
             </h2>
-            <Link 
-              to="/calls" 
+            <Link
+              to="/calls"
               className="text-sm text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-200 transition-colors"
             >
               View all calls →
             </Link>
           </div>
-          
+
           <div className="bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg overflow-hidden">
             <div className="divide-y divide-slate-200 dark:divide-slate-700">
               {recentCalls.map((call) => (
@@ -164,29 +164,23 @@ const HomePage = () => {
 
         {/* Footer */}
         <div className="mt-16 text-center text-sm text-slate-500 dark:text-slate-400">
-          <p className="italic mb-2">
-            An experiment by the Protocol Support team.
-          </p>
-          <p className="text-xs mb-4">
-            Have feedback? Contact{' '}
-            <a
-              href="mailto:nixo@ethereum.org"
-              onClick={() => handleExternalLinkClick('email_contact', 'mailto:nixo@ethereum.org')}
-              className="text-slate-500 hover:text-slate-700 dark:text-slate-400 dark:hover:text-slate-200 underline decoration-1 underline-offset-2"
-            >
-              nixo
-            </a>
-            {' '}or{' '}
-            <a
-              href="https://x.com/wolovim"
-              target="_blank"
-              rel="noopener noreferrer"
-              onClick={() => handleExternalLinkClick('twitter_contact', 'https://x.com/wolovim')}
-              className="text-slate-500 hover:text-slate-700 dark:text-slate-400 dark:hover:text-slate-200 underline decoration-1 underline-offset-2"
-            >
-              @wolovim
-            </a>
-          </p>
+          <div className="mb-6">
+            <div className="w-16 h-16 mx-auto mb-3 flex items-center justify-center">
+              <img
+                src="/blobby-gradient-red.svg"
+                alt="Ethereum Foundation Protocol Support team logo"
+                className="w-16 h-16 cursor-pointer dark:invert hover:invert-0 transition-all duration-500"
+              />
+            </div>
+            <div className="text-center">
+              <p className="text-sm italic text-slate-500 dark:text-slate-400">
+                An experiment by
+              </p>
+              <p className="text-lg font-light text-slate-700 dark:text-slate-300">
+                EF Protocol Support
+              </p>
+            </div>
+          </div>
           <p className="text-xs mb-2">
             <a
               href="https://github.com/ethereum/forkcast"

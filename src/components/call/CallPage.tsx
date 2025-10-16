@@ -47,6 +47,29 @@ const CallPage: React.FC = () => {
   const [isPlaying, setIsPlaying] = useState(false);
   const [selectedSearchResult, setSelectedSearchResult] = useState<{timestamp: string, text: string, type: string} | null>(null);
   const pollingIntervalRef = useRef<ReturnType<typeof setInterval> | undefined>(undefined);
+  const [isSearchOpen, setIsSearchOpen] = useState(false);
+
+  // Detect OS for keyboard shortcut display
+  const isMac = typeof navigator !== 'undefined' ?
+    (navigator.userAgent.indexOf('Mac') !== -1 || navigator.userAgent.indexOf('iPhone') !== -1 || navigator.userAgent.indexOf('iPad') !== -1) :
+    false;
+  const searchShortcut = isMac ? '⌘F' : 'Ctrl+F';
+
+  // Keyboard shortcut to open search (Cmd/Ctrl + F)
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if ((e.metaKey || e.ctrlKey) && e.key === 'f') {
+        e.preventDefault();
+        setIsSearchOpen(true);
+        if (player && isPlaying) {
+          player.pauseVideo();
+        }
+      }
+    };
+
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, [player, isPlaying]);
 
   // Convert timestamp string to seconds for comparison
   const timestampToSeconds = (timestamp: string | null | undefined): number => {
@@ -761,11 +784,38 @@ const CallPage: React.FC = () => {
               >
                 ← All Calls
               </Link>
+              <button
+                onClick={() => {
+                  setIsSearchOpen(true);
+                  handlePauseVideo();
+                }}
+                className="p-2 rounded-lg bg-slate-100 hover:bg-slate-200 dark:bg-slate-700 dark:hover:bg-slate-600 transition-colors"
+                aria-label="Search"
+                title={`Search (${searchShortcut})`}
+              >
+                <svg className="w-5 h-5 text-slate-700 dark:text-slate-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                </svg>
+              </button>
               <ThemeToggle />
             </div>
           </div>
         </div>
       </div>
+
+      {/* Mobile Search Button - Fixed Bottom Right */}
+      <button
+        onClick={() => {
+          setIsSearchOpen(true);
+          handlePauseVideo();
+        }}
+        className="sm:hidden fixed bottom-6 right-6 z-40 bg-blue-600 hover:bg-blue-700 dark:bg-blue-500 dark:hover:bg-blue-600 text-white rounded-full p-3 shadow-lg hover:shadow-xl transition-all duration-200"
+        aria-label="Search"
+      >
+        <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+        </svg>
+      </button>
 
       {/* Search Component */}
       <CallSearch
@@ -776,7 +826,8 @@ const CallPage: React.FC = () => {
         onResultClick={handleTranscriptClick}
         syncConfig={callConfig?.sync}
         currentVideoTime={currentVideoTime}
-        onPauseVideo={handlePauseVideo}
+        isOpen={isSearchOpen}
+        setIsOpen={setIsSearchOpen}
       />
 
       {/* Content */}

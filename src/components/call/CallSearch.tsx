@@ -21,7 +21,8 @@ interface CallSearchProps {
     videoStartTime: string;
   };
   currentVideoTime?: number;
-  onPauseVideo?: () => void;
+  isOpen: boolean;
+  setIsOpen: (isOpen: boolean) => void;
 }
 
 const CallSearch: React.FC<CallSearchProps> = ({
@@ -32,14 +33,9 @@ const CallSearch: React.FC<CallSearchProps> = ({
   onResultClick,
   syncConfig,
   currentVideoTime: _currentVideoTime = 0, // Keep for future use
-  onPauseVideo,
+  isOpen,
+  setIsOpen,
 }) => {
-  // Detect OS for keyboard shortcut display
-  const isMac = typeof navigator !== 'undefined' ?
-    (navigator.userAgent.indexOf('Mac') !== -1 || navigator.userAgent.indexOf('iPhone') !== -1 || navigator.userAgent.indexOf('iPad') !== -1) :
-    false;
-  const shortcutKey = isMac ? '⌘K' : 'Ctrl+K';
-  const [isOpen, setIsOpen] = useState(false);
   const [query, setQuery] = useState('');
   const [selectedFilter, setSelectedFilter] = useState<'all' | 'transcript' | 'chat' | 'agenda' | 'action'>('all');
   const [selectedIndex, setSelectedIndex] = useState(0);
@@ -47,16 +43,10 @@ const CallSearch: React.FC<CallSearchProps> = ({
   const searchInputRef = useRef<HTMLInputElement>(null);
   const resultsContainerRef = useRef<HTMLDivElement>(null);
 
-  // Keyboard shortcut to open search (Cmd/Ctrl + K)
+  // Handle Escape key to close search
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
-      if ((e.metaKey || e.ctrlKey) && e.key === 'k') {
-        e.preventDefault();
-        setIsOpen(true);
-        if (onPauseVideo) {
-          onPauseVideo();
-        }
-      } else if (e.key === 'Escape' && isOpen) {
+      if (e.key === 'Escape' && isOpen) {
         setIsOpen(false);
         setQuery('');
         setSelectedIndex(0);
@@ -65,7 +55,7 @@ const CallSearch: React.FC<CallSearchProps> = ({
 
     window.addEventListener('keydown', handleKeyDown);
     return () => window.removeEventListener('keydown', handleKeyDown);
-  }, [isOpen, onPauseVideo]);
+  }, [isOpen, setIsOpen]);
 
   // Focus input when opened
   useEffect(() => {
@@ -506,25 +496,7 @@ const CallSearch: React.FC<CallSearchProps> = ({
   };
 
   if (!isOpen) {
-    return (
-      <button
-        onClick={() => {
-          setIsOpen(true);
-          if (onPauseVideo) {
-            onPauseVideo();
-          }
-        }}
-        className="fixed bottom-6 right-6 z-40 bg-blue-600 hover:bg-blue-700 dark:bg-blue-500 dark:hover:bg-blue-600 text-white rounded-full p-3 shadow-lg hover:shadow-xl transition-all duration-200 group"
-        title={`Search (${shortcutKey})`}
-      >
-        <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
-        </svg>
-        <span className="absolute bottom-full right-0 mb-2 px-2 py-1 text-xs bg-slate-800 dark:bg-slate-700 text-white rounded opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap">
-          Search {shortcutKey}
-        </span>
-      </button>
-    );
+    return null;
   }
 
   return (

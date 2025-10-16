@@ -1,0 +1,535 @@
+00:05:15	Dmitry Gusakov:	Hi there
+00:05:54	Etan (Nimbus):	Reacted to "Hi there" with 😃
+00:06:02	Justin Traglia:	Gm
+00:06:14	Pooja Ranjan:	gm
+00:08:29	stokes:	https://github.com/ethereum/pm/issues/1754
+00:10:05	Kalo | Obol:	On obol side we missed bumping some nodes… pardon for that
+00:10:40	Justin Traglia:	Pretty cool that it worked as well as it did with RPC 😅
+00:11:32	Enrico Del Fante (tbenr):	Reacted to "Pretty cool that it ..." with 💯
+00:11:58	Ameziane Hamlat:	@Enrico Del Fante (tbenr) Was that issue related to the behaviour we saw on the drop in network activity on besu/teku validators on Holesky ?
+00:12:00	Enrico Del Fante (tbenr):	Replying to "Pretty cool that it ..."
+
+RPC+EL seems pretty reliable
+00:12:09	Justin Traglia:	Reacted to "RPC+EL seems pretty ..." with 🔥
+00:12:52	Enrico Del Fante (tbenr):	Replying to "@Enrico Del Fante (t..."
+
+Not sure TBH
+00:12:53	Justin Florentine (Besu):	anyone know what L2s were affected by this?  https://blog.ethereum.org/2025/10/15/fusaka-blob-update
+00:13:19	Koen (Aztec):	Reacted to "anyone know what L2s..." with ✋
+00:13:25	Enrico Del Fante (tbenr):	Replying to "@Enrico Del Fante (t..."
+
+The node manages to get everything via EL and send them out anyway.. so not sure actually
+00:13:33	spencer-tb:	Reacted to "RPC+EL seems pretty ..." with 🔥
+00:14:11	Ameziane Hamlat:	Reacted to "The node manages to ..." with 👍
+00:14:16	Łukasz Rozmej:	Nethermind is considering enabling conversion like Geth has. We generally have the code for it already.
+00:14:39	Ahmad Bitar | Nethermind:	Replying to "Nethermind is consid..." 
+
+ Hidden behind a flag
+00:14:43	Marius van der Wijden:	Tbh most rollups have learned about it this week
+00:14:46	Łukasz Rozmej:	Replying to "Nethermind is consid..."
+
+both for sumbiting through eth_sendTransaction and those in TxPool
+00:14:50	Etan (Nimbus):	Reacted to "Tbh most rollups hav..." with 😂
+00:15:11	Mario Havel:	Reacted to "Tbh most rollups h..." with 😂
+00:15:15	Peter:	Replying to "Tbh most rollups hav..."
+
+We learned about it from last week’s ACDE call
+00:15:16	Dustin:	is there a way to ensure that some testing occurs before it's last-minute in future forks?
+00:15:23	Trent:	Audio a bit bad marius
+00:15:27	Parithosh Jayanthi:	Reacted to "Tbh most rollups hav..." with 😂
+00:15:34	stokes:	Replying to "is there a way to en..."
+
+devnets
+00:15:40	stokes:	Replying to "is there a way to en..."
+
+Let me say something
+00:15:43	Enrico Del Fante (tbenr):	Reacted to "Audio a bit bad mari..." with ➕
+00:15:49	Ben Edgington:	MicDAO
+00:15:52	Christine Kim:	Reacted to "Audio a bit bad mari..." with ➕
+00:15:58	Mehdi Aouadi:	Reacted to "MicDAO" with 😂
+00:16:01	Mario Havel:	Reacted to "MicDAO" with 🔥
+00:16:18	Barnabé Monnot:	Reacted to "MicDAO" with 🎤
+00:16:44	Łukasz Rozmej:	Replying to "Nethermind is consid..."
+
+@Ahmad Bitar | Nethermind we might change defaults for it
+00:16:46	nixo:	re: andrew’s question - why was there a “mekong” for pectra but not for other forks?
+00:17:04	Etan (Nimbus):	Replying to "re: andrew’s questio..."
+
+there was also a zhejiang for shanghai
+00:17:05	Peter (Scroll):	Testing on shadowfork networks would be easier than redeploying on devnets
+00:17:10	Marius van der Wijden:	Replying to "Audio a bit bad mari..." 
+
+ Sorry, am in a loud cafe
+00:17:16	Parithosh Jayanthi:	Replying to "re: andrew’s questio..."
+
+We used to have 2 testnets, this time we had 3 and didn’t want to have a 4th
+00:17:23	nixo:	Reacted to "We used to have 2 te..." with 👍
+00:17:36	nixo:	Reacted to "there was also a zhe..." with 👍
+00:17:40	Justin Traglia:	Reacted to "MicDAO" with 😂
+00:19:13	stokes:	https://ethereum-magicians.org/t/blob-retrieval-guarantee-post-fusaka/25822
+00:19:20	Dustin:	this isn't super-avoidable, past a 2x factor
+00:19:25	Dustin:	it's just how 1D peerdas works
+00:19:39	Dustin:	one needs an "almost-supernode" regardless
+00:19:40	terence:	if the blob is public, you can get it from the EL mempool as well
+00:20:06	Etan (Nimbus):	Replying to "if the blob is publi..."
+
+do the testnets have mevboost / private transactions?
+00:20:16	kingy_sigp:	Replying to "one needs an "almost..."
+
+light supernode > sidekick node? 🤔
+00:20:25	Dustin:	that's 2D peerdas
+00:20:28	Francesco:	One note is that it’s a problem that’s meant to be resolved with cell-level messaging and row subnets
+00:20:36	Francesco:	Replying to "One note is that it’..."
+
+You don’t need any 2D for this
+00:20:40	Ansgar Dietrichs:	in general blobs are not meant as the propagation layer for L2s, just as a publishing guarantee. L2s are meant to have their own propagation mechanisms on top, with L1 just as integrity guarantee
+00:20:41	Dustin:	2D peerdas was repeatedly rejected
+00:20:49	Francesco:	Replying to "2D peerdas was repea..."
+
+2D is not related to this
+00:20:50	Etan (Nimbus):	Replying to "One note is that it’..."
+
+“2D” meaning cells, no more supernodes.
+
+not meaning “FullDAS”, in this context, I think
+00:21:02	Ahmad Bitar | Nethermind:	Reacted to in general blobs are... with "➕"
+00:21:03	Francesco:	Replying to "One note is that it’..."
+
+Well it’s still 1D so let’s not call it that?
+00:21:05	potuz:	we're working on implementation of this: custody the minimal but sampling from 64 so as to recover the blobs and returning  them
+00:21:14	Dustin:	Replying to "2D peerdas was rep..."
+
+well, need access to rows
+00:21:14	potuz:	so it doesn't signal it but it saves
+00:21:24	Dustin:	Replying to "2D peerdas was rep..."
+
+i.e. cells
+00:21:26	Francesco:	Replying to "2D peerdas was repea..."
+
+Sure but there’s no 2D encoding
+00:22:16	Manu:	Regarding the disk space needed, a technique would be to store only 64 cells, but 128 proofs.
+
+Proofs are cheap to store but expensive to reconstruct.
+Cells are expensive to store and cheap to reconstruct.
+00:22:29	Dustin:	Replying to "One note is that it..."
+
+literally it's two dimensions
+00:22:33	Dustin:	Replying to "One note is that it..."
+
+rows. and columns. two dimensions
+00:22:35	Dustin:	Replying to "One note is that it..."
+
+2D
+00:22:47	Dustin:	Replying to "One note is that it..."
+
+it is not 1D, no
+00:22:51	Ansgar Dietrichs:	wait the EL never sees the blobs, right?
+00:23:03	stokes:	Replying to "wait the EL never se..."
+
+They are in the mempool
+00:23:07	Ansgar Dietrichs:	Replying to "wait the EL never se..."
+
+right, there is a chance you see it in the mempool
+00:23:08	Dustin:	Replying to "2D peerdas was rep..."
+
+look at those goalpost moving
+00:23:19	stokes:	Replying to "wait the EL never se..."
+
+At least for now, almost no private blobs
+00:23:26	Ahmad Bitar | Nethermind:	El mempool needs to be sharded eventually though, no?
+00:23:26	Parithosh Jayanthi:	Replying to "wait the EL never se..."
+
+The entire get blobs optimisation relies on this anyway
+00:23:31	Manu:	Reacted to "The entire get blobs..." with 👍
+00:23:34	terence:	Replying to "wait the EL never se..."
+
+and batch poster should def have the blob tx, they can store it for later
+00:23:39	Ansgar Dietrichs:	Replying to "wait the EL never se..."
+
+that’s an optimistic case optimization though
+00:23:47	Parithosh Jayanthi:	Reacted to "El mempool needs to ..." with 👍🏽
+00:23:51	Dustin:	Replying to "wait the EL never ..."
+
+yes, it's why it's dicey and ther eshould have been more testing without it (some happened, yes)
+00:23:51	Ansgar Dietrichs:	Replying to "wait the EL never se..."
+
+obv blob users can’t rely on optimistic case mechanisms
+00:23:58	potuz:	Reacted to "and batch poster sho..." with 👍
+00:23:59	terence:	Replying to "wait the EL never se..."
+
+they just need to know if it is included or not
+00:24:11	Ahmad Bitar | Nethermind:	Also, most L2 use builder apis to publish blobs. So you wont see the blobs in mempool in this case
+00:24:25	FLCL:	Replying to "wait the EL never se..."
+
+if so it can be extracted from el block
+00:24:30	Enrico Del Fante (tbenr):	interesting
+00:25:18	Marius van der Wijden:	Replying to "Also, most L2 use bu..." 
+
+ Iirc most l2s don't do that at the moment (might change in the future)
+00:25:32	potuz:	Reacted to "Iirc most l2s don't ..." with 👍
+00:25:33	Francesco:	Reacted to "Iirc most l2s don't ..." with 👍
+00:25:33	stokes:	https://github.com/ethereum/consensus-specs/pull/4657
+00:25:40	Justin Traglia:	Reacted to "https://github.com/e..." with 👍
+00:25:42	Francesco:	Replying to "Also, most L2 use bu..."
+
+Almost no l2s do this
+00:25:49	Mario Havel:	Reacted to "El mempool needs t..." with 👍🏽
+00:25:50	Trent:	The post from Marius https://blog.ethereum.org/2025/10/15/fusaka-blob-update
+00:25:52	Koen (Aztec):	Reacted to "https://github.com/e..." with 👍
+00:25:56	Manu:	Reacted to "https://github.com/e..." with 👍
+00:26:02	Peter (Scroll):	Replying to "Also, most L2 use bu..."
+
+We used to only rely on the public mempool. But our blobs took long to get included so now we post to multiple APIs.
+00:26:12	Marius van der Wijden:	Reacted to We used to only rely... with "👍"
+00:26:29	Marius van der Wijden:	Replying to "Also, most L2 use bu..." 
+
+ 
+(Which is the correct behavior I think)
+00:26:31	FLCL:	Replying to "wait the EL never se..."
+
+blobs can be used to recontruct l2 state, so I guess they would be still needed
+00:27:01	J Sunnyside Labs:	Reacted to "https://github.com/e..." with 👍
+00:27:15	stokes:	https://notes.ethereum.org/@bbusa/fusaka-bpo-timeline
+00:27:35	Barnabas:	Reacted to "https://notes.ethere..." with 🔥
+00:27:37	Barnabas:	ship it
+00:27:39	Parithosh Jayanthi:	Reacted to "https://notes.ethere..." with 🔥
+00:27:45	Justin Traglia:	Reacted to "ship it" with 🚢
+00:27:49	Justin Traglia:	Reacted to "https://notes.ethere..." with 🔥
+00:27:53	Parithosh Jayanthi:	Reacted to "ship it" with 🚢
+00:28:00	Trent:	Reacted to "ship it" with 🚢
+00:28:05	Sam Jernigan:	ship
+00:28:14	Enrico Del Fante (tbenr):	LFG
+00:28:17	Marius van der Wijden:	Nov 3. sounds good to me
+00:28:26	kingy_sigp:	Reacted to "Nov 3. sounds good t..." with 😂
+00:29:06	Kalo | Obol:	Reacted to "Nov 3. sounds good t..." with 😂
+00:29:13	Fredrik:	Mainnet
+Mainnet should not have an upgrade date set until all testnets have been upgraded.
+The upgrade must have gone through at least two testnets.
+Mainnet must not upgrade less than 30 days after the final testnet has been verified to have been successfully upgraded. This is to ensure enough time has been given to test and spot potential issues before going live on mainnet and to allow for downstream projects to plan their upgrades. L2s need time to produce DAO proposals, organize their own upgrades, etc.
+00:29:18	Phil Ngo:	Although this is probably implying that we don’t have anything from the Hoodi fork that would be of concern, Nov 3 release is doable.
+00:29:26	Fredrik:	https://github.com/ethereum/pm/blob/master/processes/protocol-upgrade.md#mainnet
+00:29:28	Phil Ngo:	Hoodi is on 28th October
+00:29:38	Francesco:	Replying to "2D peerdas was repea..."
+
+...
+00:29:40	Barnabas:	should not is not must not :D
+00:29:47	Christine Kim:	Reacted to "should not is not mu..." with 😂
+00:29:52	Justin Traglia:	Reacted to "should not is not mu..." with 👍
+00:29:55	kingy_sigp:	Reacted to "should not is not mu..." with 👍
+00:29:57	J Sunnyside Labs:	Reacted to "should not is not mu..." with 😂
+00:30:03	Fredrik:	Indeed, but we should at least take it into consideration
+00:30:18	Sam Jernigan:	Reacted to "should not is not mu..." with 👍
+00:30:22	kingy_sigp:	we've already put dec 3 ascii art in lighthouse, we're gtg
+00:30:24	felix (eest):	Reacted to "ship it" with 🚢
+00:30:30	Barnabas:	Reacted to "we've already put de..." with 🎉
+00:30:31	Trent:	Reacted to "we've already put de..." with 😁
+00:30:33	manas:	Reacted to "we've already put ..." with 🎉
+00:30:34	Barnabas:	Reacted to "we've already put de..." with 💯
+00:30:38	Parithosh Jayanthi:	Reacted to "should not is not mu..." with 👍
+00:30:39	Ben Edgington:	Reacted to "we've already put de..." with 🎉
+00:30:48	wolovim:	Reacted to "we've already put de..." with 🎉
+00:30:49	Matt B:	Reacted to "we've already put ..." with 🎉
+00:30:49	Justin Traglia:	I support this 👍
+00:30:56	Łukasz Rozmej:	No issue for Nerhermind
+00:31:02	spencer-tb:	Reacted to "Indeed, but we shoul..." with 👍
+00:31:09	Phil Ngo:	Reacted to "we've already put de..." with 🎉
+00:31:13	Parithosh Jayanthi:	Reacted to "we've already put de..." with 🎉
+00:31:25	potuz:	Reacted to "we've already put de..." with 😁
+00:31:28	Justin Traglia:	Reacted to "we've already put de..." with 🎉
+00:31:34	Nando | Diva:	Reacted to "should not is not ..." with 😂
+00:31:36	Shane Moore:	Reacted to "we've already put de..." with 🎉
+00:32:07	Kalo | Obol:	Reacted to "we've already put de..." with 🎉
+00:32:31	potuz:	release named "dia de los muertos", a little prophetic for the fork :)
+00:32:35	Raúl Kripalani:	Replying to "2D peerdas was repea…"
+AFAIU, this isn’t really about 2D PeerDAS, but about resolving for some user access patterns
+00:32:52	Greg K | Lido:	Reacted to "release named "dia..." with 😂
+00:33:00	Nando | Diva:	Reacted to "release named "dia..." with 😂
+00:33:00	kingy_sigp:	Reacted to "release named "dia d..." with 😅
+00:33:19	Mario Havel:	Reacted to "release named "dia..." with 💀
+00:34:03	Raúl Kripalani:	Replying to "2D peerdas was repea…"
+What these nodes are interested in is in accessing their own blobs, which custodying specific row indices wouldn’t give them anyway
+00:34:14	Marius van der Wijden:	Have we prototyped trustless payments? Have we tested trustless payments? How would the userflow work?
+00:34:39	Justin Florentine (Besu):	Reacted to "release named "dia d..." with 💀
+00:34:45	Justin Traglia:	Replying to "Have we prototyped t..."
+
+Trustless is the current spec, so yes.
+00:35:57	Dustin:	why do people keep trying to split the trustless payments part off? it was one of the things justifying its complexity, and it keeps coming up
+00:36:31	Justin Traglia:	Reacted to "why do people keep t..." with 👍
+00:36:41	Barnabé Monnot:	Replying to "why do people keep t..."
+
+imo this is a contentious feature, despite broad core dev agreement to the contrary
+00:37:30	Ansgar Dietrichs:	I think I agree. let’s treat them as separate for governance, but keep them together in EIP / spec, unless / until we were to decide to not have staked builders in Glamsterdam.
+00:37:31	Christoph Schlegel:	Replying to "why do people keep t..."
+
+But what is so contentious about them? It’s a feature feel free to not use it
+00:37:35	Dustin:	Replying to "why do people keep..."
+
+Ok, from my perspective that's just straight-up bait and switch if it's dropped now. The vast majority of ePBS complexity is in place anyway, and this drops an actual benefit from having two signers
+00:38:20	Barnabé Monnot:	Replying to "why do people keep t..."
+
+@Christoph Schlegel features take time to ship and have consequences on future designs. that said yes we are imo too far down in the implementation tree to reverse course at this point
+00:38:24	Justin Florentine (Besu):	Replying to "I think I agree. let..."
+
+not sure i understand how that is practicable?
+00:38:27	Ahmad Bitar | Nethermind:	Reacted to why do people keep t... with "👍"
+00:38:43	Dustin:	Replying to "why do people keep..."
+
+the builder API has been broken and created weird trust relationship ("unbundling attacks") etc for years, and this is finally an alternative
+00:38:43	Ansgar Dietrichs:	Replying to "I think I agree. let..."
+
+well as in, we make the final decision soon (say pre devconnect)
+00:39:11	Ansgar Dietrichs:	Replying to "I think I agree. let..."
+
+then it would still be possible to split
+00:39:20	DA | Flashbots:	Reacted to "the builder API has ..." with 👍
+00:39:28	Barnabé Monnot:	Replying to "why do people keep t..."
+
+@Dustin your arguments, not mine
+00:39:58	Justin Traglia:	Reacted to "the builder API has ..." with 👍
+00:40:04	Christoph Schlegel:	Replying to "why do people keep t..."
+
+@Barnabé Monnot but on the future consequences part I haven’t heard any convincing argument. The only argument I could envision is that we could design them in a better way. Or was there anything else?
+00:40:17	terence:	Replying to "I think I agree. let..."
+
+for CL client, its hard to make any substantive progress on glamsterdam until we can come down to a firm decision
+00:40:32	Justin Florentine (Besu):	Reacted to "for CL client, its h..." with ➕
+00:40:45	Ansgar Dietrichs:	Replying to "I think I agree. let..."
+
+well I think you should move forward for now assuming they stay together
+00:40:52	Barnabé Monnot:	Replying to "why do people keep t..."
+
+@Christoph Schlegel better write-up here https://discord.com/channels/595666850260713488/874767108809031740/1428346638606532689
+00:40:54	Francesco:	Replying to "why do people keep t..."
+
+For example supporting them has an effect on the consensus protocol design. When we want to change this in the future to improve the current very sub-optimal protocol, there’s likely going to be a price to pay
+00:41:00	Ansgar Dietrichs:	Replying to "I think I agree. let..."
+
+it is already understood that a split would be somewhat disruptive
+00:41:29	terence:	Replying to "I think I agree. let..."
+
+split would mean a new EIP, new consens spec, new everything imo
+00:41:38	Justin Florentine (Besu):	Reacted to "split would mean a n..." with ➕
+00:42:00	Christoph Schlegel:	Reacted to "the builder API has ..." with 👍
+00:42:35	Ansgar Dietrichs:	Replying to "why do people keep t..."
+
+why do people keep trying to split the trustless payments part off
+
+I can only speak for myself: I really want FOCIL in Glamterdam, but staked builders + FOCIL is just too big of a scope to me. So I’d rather do FOCIL instead of staked builders.
+00:43:38	Justin Florentine (Besu):	i'm having a hard time imagining scheduling just staked building in a future hardfork.
+00:43:44	Ansgar Dietrichs:	Replying to "I think I agree. let..."
+
+not sure “new spec” is an accurate way of describing it, we constantly make changes to EIPs as we get closer to a hard fork
+00:44:03	ethDreamer (Mark):	I didn’t say it was impossible or super difficult. I just said that at this point in the process it will almost certainly take more time.
+00:44:21	Ansgar Dietrichs:	Replying to "i'm having a hard ti..."
+
+that should be a sign then that it is not a super impactful feature.
+
+That’s exactly why I prefer to ship FOCIL in the first place.
+00:44:53	Barnabé Monnot:	Replying to "i'm having a hard ti..."
+
+If the point is that it could have only been shipped as an omnibus feature, I think it’s not a very convincing argument for shipping trustless payments
+00:44:56	potuz:	free option problem has nothing to do with trustless payments
+00:44:57	Barnabé Monnot:	Reacted to "that should be a sig..." with 👍
+00:45:06	Barnabé Monnot:	Reacted to "free option problem ..." with 👍
+00:45:08	terence:	wait, trustless payment has nothing to do with free option problem
+00:45:32	Ansgar Dietrichs:	Replying to "I didn’t say it was ..."
+
+more time than having not had it in ePBS in the first place? or more time than keeping it in? I really think the reworking of all of the testing efforts to accommodate the new dual building pipeline will be a huge headache
+00:45:36	Ansgar Dietrichs:	Reacted to "free option problem ..." with 👍
+00:45:38	Ansgar Dietrichs:	Replying to "free option problem ..."
+
+agree.
+00:45:41	Greg K | Lido:	Reacted to "that should be a s..." with 👍
+00:45:48	Justin Florentine (Besu):	Replying to "i'm having a hard ti..."
+
+i take it more as a signal that it is controversial, and has opposition. not that it isn't low impact. I think it's very high impact and pretty fundamental to ePBS
+00:45:48	Ahmad Bitar | Nethermind:	Reacted to free option problem ... with "👍"
+00:45:49	Christoph Schlegel:	Replying to "free option problem ..."
+
+Well if you don’t have a trustless payment, you would need to have a relay helping you with the free option
+00:45:49	Greg K | Lido:	Reacted to "If the point is th..." with 👍
+00:45:50	Caspar Schwarz-Schilling:	Reacted to "free option problem ..." with 👍
+00:46:09	Christoph Schlegel:	Replying to "free option problem ..."
+
+But generally agree that it would still be there with or without
+00:46:23	ethDreamer (Mark):	Replying to "I didn’t say it was ..."
+
+More time to come up with an alternative spec at this point in the process and hash out the debate and rework the code
+00:46:24	Carl Beekhuizen:	Reacted to "If the point is that..." with 👍
+00:46:40	Carl Beekhuizen:	Reacted to "free option problem ..." with 👍
+00:46:42	Ansgar Dietrichs:	Reacted to "If the point is that..." with 👍
+00:46:54	Sophia Gold:	Replying to "free option proble..."
+
+Can't you mitigate it by commiting in the slot after the reveal? How would that work with trustless payments?
+00:47:07	Justin Florentine (Besu):	Reacted to "free option problem ..." with 👍
+00:47:14	Greg K | Lido:	Reacted to "free option proble..." with 👍
+00:47:18	Shane Moore:	Reacted to "free option problem ..." with 👍
+00:47:18	Justin Traglia:	I support leaving it as it is.
+00:47:18	Ansgar Dietrichs:	Replying to "i'm having a hard ti..."
+
+does it have opposition? my opposition is purely about opportunity cost. if we ever have a hard fork where we don’t have anything more important, we should ship it!
+00:47:31	Dmitry Gusakov | Lido:	The question is does it add a meaningful benefit to outweigh the complexity
+00:47:37	Barnabas:	Can we just make a decision and stick to it?
+00:47:40	Justin Traglia:	Reacted to "Can we just make a d..." with 👍
+00:47:43	Enrico Del Fante (tbenr):	Reacted to "Can we just make a d..." with 👍
+00:47:43	Dmitry Gusakov | Lido:	Reacted to "Can we just make a d..." with 👍
+00:47:47	DA | Flashbots:	Reacted to "Can we just make a d..." with 👍
+00:47:47	Greg K | Lido:	Reacted to "Can we just make a..." with 👍
+00:47:48	felix (eest):	Reacted to "Can we just make a..." with 👍
+00:47:50	Justin Traglia:	Replying to "Can we just make a d..."
+
+Yes please.
+00:47:50	potuz:	Reacted to "Can we just make a d..." with 👍
+00:47:51	Barnabas:	Lets not drag it on for 2 more weeks
+00:47:55	potuz:	Replying to "Can we just make a d..."
+
+yes please
+00:47:56	Francesco:	Replying to "i'm having a hard ti..."
+
+I have some level of opposition to it because it’s very much not clear that it’s a “free” feature (or rather that the cost is only the work it takes to ship it)
+00:48:09	Ansgar Dietrichs:	Replying to "Can we just make a d..."
+
+I think making the decision before making a decision on FOCIL means effectively killing FOCIL.
+00:48:11	Justin Traglia:	So we have decided to leave it as it is?
+00:48:12	Dmitry Gusakov | Lido:	Replying to "Can we just make a d..."
+
+Agree, that the decision is needed
+00:48:15	Christoph Schlegel:	Reacted to "Can we just make a d..." with 👍
+00:48:21	Dmitry Gusakov | Lido:	Reacted to "I think making the d..." with 👍
+00:48:28	Francesco:	Replying to "i'm having a hard ti..."
+
+There are costs, we just don’t 100% know what they are and we will only find out later
+00:48:34	Fredrik:	As is it is
+00:48:37	Barnabas:	Reacted to "As it is" with 👍
+00:48:39	Justin Traglia:	Reacted to "As it is" with 👍
+00:48:43	Francesco:	Replying to "i'm having a hard ti..."
+
+Otherwise it’s obviously a good feature, we just don’t know what we are trading it off against
+00:49:06	Ansgar Dietrichs:	wait the decision was explicitly not to give it “headliner proteciton status” though, right?
+00:49:29	Ansgar Dietrichs:	Replying to "wait the decision wa..."
+
+I understand that that is what people want to do anyway, so in practice I don’t see it being removed. just asking as a matter of process
+00:50:26	Enrico Del Fante (tbenr):	I think more the second
+00:51:09	Marius van der Wijden:	Yeah, pulling it out in 6 weeks for focil is bad imo
+00:51:45	Dustin:	FOCIL being deliberately put after ePBS was always making it contingent, that was the deal
+00:51:50	Justin Florentine (Besu):	EL devs putting on their CL hats...
+00:52:00	Dmitry Gusakov | Lido:	Reacted to "EL devs putting on t..." with 😂
+00:52:03	potuz:	Reacted to "EL devs putting on t..." with 😁
+00:52:04	Barnabas:	Reacted to "EL devs putting on t..." with 😁
+00:52:18	Ahmad Bitar | Nethermind:	Reacted to EL devs putting on t... with "😁"
+00:52:24	soispoke:	I don’t think we should necessarily make the decision about FOCIL right now tbh, to me it also depends on other EIPs?
+00:52:28	Justin Traglia:	Reacted to "EL devs putting on t..." with 😂
+00:52:40	Justin Traglia:	Reacted to "FOCIL being delibera..." with 👍
+00:52:42	Ansgar Dietrichs:	staked builders are also not a scaling feature
+00:52:45	potuz:	Reacted to "I don’t think we sho..." with 👍
+00:52:50	Barnabé Monnot:	Reacted to "staked builders are ..." with 👍
+00:52:50	Ansgar Dietrichs:	Replying to "staked builders are ..."
+
+that’s the point
+00:52:53	Greg K | Lido:	Reacted to "staked builders ar..." with 👍
+00:52:54	soispoke:	Reacted to "staked builders are ..." with 👍
+00:53:12	Parithosh Jayanthi:	Reacted to "EL devs putting on t..." with 😁
+00:53:13	Carl Beekhuizen:	Reacted to "staked builders are ..." with 👍
+00:53:14	Justin Florentine (Besu):	cries in CROPS
+00:53:17	Dmitry Gusakov | Lido:	Reacted to "staked builders are ..." with 👍
+00:53:22	Parithosh Jayanthi:	Reacted to "staked builders are ..." with 👍
+00:53:25	Ansgar Dietrichs:	Replying to "staked builders are ..."
+
+we decide to prioritize staked builders over FOCIL as the main non-scaling part of the CL-side Glamsterdam scope
+00:53:30	Greg K | Lido:	Reacted to "The question is do..." with 👍
+00:53:34	Ansgar Dietrichs:	Replying to "staked builders are ..."
+
+I think that is a really really bad decision
+00:53:52	Ansgar Dietrichs:	Replying to "cries in CROPS"
+
+I mean same. I really think this might effectively be the death of censorship resistance on Ethereum, full stop
+00:53:59	Dmitry Gusakov | Lido:	Replying to "staked builders are ..."
+
+I have a feeling that staked builders will not see a major use. Cause there is not real reason for builders to switch from off-chain
+00:54:17	Marius van der Wijden:	Replying to "cries in CROPS" 
+
+ Thats a bit hard, I don't think so
+00:54:21	soispoke:	Replying to "cries in CROPS"
+
+agreed, are people 100% confident we wouldn’t be able to ship both?
+00:54:23	Ansgar Dietrichs:	Replying to "cries in CROPS"
+
+at least 20% chance that by H-Star FOCIL is too controversial to be shipped
+00:54:25	Justin Florentine (Besu):	Replying to "cries in CROPS"
+
+can't the devs do something?
+00:54:28	Greg K | Lido:	Reacted to "I have a feeling t..." with 👍
+00:54:33	soispoke:	Reacted to "at least 20% chance ..." with 👍
+00:54:34	Marius van der Wijden:	Reacted to I have a feeling tha... with "👍"
+00:54:43	Dmitry Gusakov | Lido:	Reacted to "at least 20% chance ..." with 👍
+00:54:49	Caspar Schwarz-Schilling:	Reacted to "at least 20% chance ..." with 👍
+00:54:50	Barnabé Monnot:	Replying to "cries in CROPS"
+
+I’m 80% confident we shouldn’t ship both
+00:54:51	Justin Traglia:	Reacted to "can't the devs do so..." with 😅
+00:54:54	Caspar Schwarz-Schilling:	Reacted to "staked builders are ..." with 👍
+00:55:03	Ansgar Dietrichs:	Replying to "cries in CROPS"
+
+@soispoke I mean I think that is where most ppl here disagree with me. to me, yes, shipping both would be super irresponsible. but I think there is a chance we do that anyway
+00:55:05	Jihoon:	Reacted to "at least 20% chance ..." with 👍
+00:55:09	Sophia Gold:	Replying to "staked builders ar..."
+
+Agree FOCIL is much more useful than trustless payments, but it's not clear to me that's the tradeoff
+00:55:22	Dmitry Gusakov | Lido:	On 7688. It will be great to finally have it
+00:55:22	Barnabas:	We have time, so why not discuss FOCIL in or out?
+00:55:30	terence:	isnt that too early?
+00:55:30	Carl Beekhuizen:	Reacted to "I have a feeling tha..." with 👍
+00:55:34	Justin Traglia:	Reacted to "isnt that too early?" with 👍
+00:55:37	Kalo | Obol:	Reacted to "isnt that too early?" with 👍
+00:55:37	soispoke:	Reacted to "isnt that too early?" with 👍
+00:55:41	Mehdi Aouadi:	Reacted to "isnt that too early?" with 👍
+00:55:41	James He:	Reacted to "isnt that too early?" with 👍
+00:55:45	Jihoon:	Reacted to "isnt that too early?" with 👍
+00:55:46	Josh Davis:	30
+00:55:50	Justin Florentine (Besu):	tbf FOCIL is CFI
+00:55:54	Etan (Nimbus):	quite a few EIPs actually depend on 7688 too, e.g., terence’s 8015 would be enabled
+00:55:54	wolovim:	Glamsterdam point of contacts/champions are listed on forkcast now: https://forkcast.org/upgrade/glamsterdam — some assumptions made, reach out if anything is not as expected.
+00:56:00	Etan (Nimbus):	that’s why I brought it up early, as it’s foundational
+00:56:04	nixo:	yea i do think there’s good reason to treat focil differently from the PFIs
+00:56:09	Parithosh Jayanthi:	Replying to "isnt that too early?"
+
+If we struggle to agree on the major EIPs before fusaka is shipped, then we can’t start pipelining anything
+00:56:15	Dmitry Gusakov | Lido:	Sorry, what is the resolution on 7688?
+00:56:25	Ansgar Dietrichs:	majority of PFI’d EIPs are EL-side
+00:56:30	Dmitry Gusakov | Lido:	But why?
+00:56:37	Ansgar Dietrichs:	Replying to "majority of PFI’d EI..."
+
+so CL side should be a bit more manageable
+00:56:43	Barnabas:	Reacted to "If we struggle to ag..." with 👍
+00:56:49	Marius van der Wijden:	Replying to "But why?" 
+
+ Process reasons
+00:56:49	Barnabas:	Replying to "isnt that too early?"
+
+we need to accelerate somewhere
+00:57:06	kev:	On PeerDAS, is max-blobs needed for Fusaka?
+00:57:15	Marius van der Wijden:	Replying to "But why?" 
+
+ We should focus on getting fusaka out the door before we start the tedious process of filtering new eips
+00:57:17	kev:	Replying to "On PeerDAS, is max-b..."
+
+yep
+00:57:19	soispoke:	People are not necessarily prepared to talk about FOCIL (it wasn’t on the agenda or anything) but I do think it should be somewhat treated differently than PFId EIPs
+00:57:22	Barnabas:	Replying to "On PeerDAS, is max-b..."
+
+thats more of an EL question
+00:57:32	Justin Florentine (Besu):	Reacted to "People are not neces..." with ➕
+00:57:33	kev:	Reacted to "thats more of an EL ..." with 👍
+00:57:38	Greg K | Lido:	Reacted to "People are not nec..." with ➕
+00:57:40	Jihoon:	Reacted to "People are not neces..." with 👍
+00:57:41	Parithosh Jayanthi:	Reacted to "thats more of an EL ..." with 👍
+00:57:43	Dmitry Gusakov | Lido:	Replying to "But why?"
+
+Fair. Let’s not just drop it for the third time lol
+00:57:44	Barnabé Monnot:	Replying to "isnt that too early?"
+
+What new information would be known later? Seems we already know that it would add some constant amount of delay to the fork
+00:57:45	soispoke:	Replying to "People are not neces..."
+
+And have a FOCIL specific discussion soonish
+00:57:46	nixo:	Reacted to "People are not neces..." with ➕

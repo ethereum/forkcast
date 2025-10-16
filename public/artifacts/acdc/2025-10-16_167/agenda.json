@@ -1,0 +1,101 @@
+{
+    "executive_summary": "The meeting covered significant progress on Fusaka deployment with successful testnets and a proposed mainnet timeline of December 3rd, requiring client releases by November 3rd. A key decision was made to keep trustless payments within the ePBS specification despite complexity concerns, enabling implementation work to proceed. The group acknowledged communication gaps around blob API changes that caught some L2s unprepared, highlighting the need for better testing coordination on devnets before production deployments.",
+    "agenda": [
+      {
+        "section": "Fusaka",
+        "items": [
+          {
+            "start_timestamp": "00:08:43",
+            "title": "DevNet-3 Status",
+            "summary": "DevNet-3 continues running with minor bugs discovered related to database usage and blob storage. Issues have been resolved.",
+            "decision": null,
+            "action_items": []
+          },
+          {
+            "start_timestamp": "00:09:21",
+            "title": "Holesky BPO2 and Sepolia Fork Results",
+            "summary": "Both testnets forked successfully with operational turbulence but no client issues. Teku discovered a bug in column subnet subscriptions where nodes only subscribed to 8 subnets instead of all when running validators without the supernode flag.",
+            "decision": null,
+            "action_items": []
+          },
+          {
+            "start_timestamp": "00:11:35",
+            "title": "Blob API Changes and L2 Communication",
+            "summary": "The transition from 4844-style to PeerDAS-style blob proofs caught multiple rollups off guard despite being discussed in ACD. Issues arose from unclear backwards compatibility claims in the EIP and different testing environments between core devs and L2s.",
+            "decision": null,
+            "action_items": []
+          },
+          {
+            "start_timestamp": "00:18:13",
+            "title": "Blob Retrieval Under PeerDAS",
+            "summary": "Aztec raised concerns about L2s needing to run super nodes for blob retrieval due to bandwidth constraints. Discussion covered potential solutions including light super nodes that custody minimal columns while subscribing to all subnets for reconstruction.",
+            "decision": null,
+            "action_items": [
+              {
+                "what": "Implement light super node feature to help with blob retrieval for L2s",
+                "who": "Prysm team",
+                "timestamp": "00:22:00"
+              }
+            ]
+          },
+          {
+            "start_timestamp": "00:26:58",
+            "title": "Fusaka Mainnet Timeline",
+            "summary": "Proposed timeline targets November 3rd for client releases and December 3rd for mainnet deployment. Discussion acknowledged tension with the formal process requiring all testnets to complete before setting mainnet dates.",
+            "decision": null,
+            "action_items": [
+              {
+                "what": "Reach out to each client team async to confirm feasibility of Fusaka timeline",
+                "who": "stokes",
+                "timestamp": "00:31:00"
+              },
+              {
+                "what": "Bring Fusaka mainnet date proposal to next week's ACD for formal approval",
+                "who": "stokes",
+                "timestamp": "00:31:08"
+              }
+            ]
+          },
+          {
+            "start_timestamp": "00:31:38",
+            "title": "Sepolia BPO-1 Announcement",
+            "summary": "Sepolia BPO-1 scheduled for next week Tuesday UTC as the next Fusaka event.",
+            "decision": null,
+            "action_items": []
+          }
+        ]
+      },
+      {
+        "section": "Glamsterdam",
+        "items": [
+          {
+            "start_timestamp": "00:32:40",
+            "title": "Trustless Payments in ePBS",
+            "summary": "Extended discussion on whether to keep trustless payments in the ePBS specification. Concerns raised about complexity for staking protocols and ecosystem impact, but consensus emerged to keep the current design to avoid further delays.",
+            "decision": "Keep trustless payments as part of the ePBS specification without separation",
+            "action_items": []
+          },
+          {
+            "start_timestamp": "00:48:53",
+            "title": "ePBS Implementation Progress",
+            "summary": "Limited implementation progress due to Fusaka work and waiting on trustless payments decision. Teams targeting devnets sometime this year.",
+            "decision": null,
+            "action_items": [
+              {
+                "what": "Work toward having Glamsterdam DevNets sometime this year",
+                "who": "Client teams",
+                "timestamp": "00:49:05"
+              }
+            ]
+          },
+          {
+            "start_timestamp": "00:53:23",
+            "title": "EIP-7688 PFI Announcement",
+            "summary": "EIP-7688 (generalized indices) has been PFI'd for Glamsterdam with support from Diva and Lido. Full discussion of PFI'd EIPs deferred until after Fusaka mainnet date is set.",
+            "decision": null,
+            "action_items": []
+          }
+        ]
+      }
+    ]
+  }

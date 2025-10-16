@@ -1,0 +1,54 @@
+{
+  "meeting_topic": "All Core Devs - Consensus (ACDC) #167, October 16, 2025",
+  "meeting_start_time": "2025-10-16T13:53:53Z",
+  "meeting_end_time": "2025-10-16T14:52:26Z",
+  "summary_start_time": "2025-10-16T13:59:52Z",
+  "summary_end_time": "2025-10-16T14:52:00Z",
+  "summary_created_time": "2025-10-16T13:53:53Z",
+  "summary_last_modified_time": "2025-10-16T14:53:29Z",
+  "summary_overview": "The meeting covered updates on various testnets and projects, including progress reports on DevNet 3 and discussions about recent changes to Blob APIs that caused some confusion among roll-ups. The team explored solutions for blob retrieval under PureDOS and storage optimization strategies, while also discussing the timeline for the mainnet release and concerns about trustless payments. The group concluded by addressing the governance and implementation of trustless payments and block payload separation features, ultimately deciding to keep the current design despite added complexity.",
+  "summary_details": [
+    {
+      "label": "Testnets Progress and Bug Updates",
+      "summary": "The meeting focused on updates and discussions about various testnets and projects. Barnabas reported that DevNet 3 is progressing well, with a few bugs related to database usage being resolved. Enrico mentioned a bug discovered in the subscription process for subnets in Teku, which was working reliably despite the issue. Fredrik provided an overview of the Fisiana contest, which concluded on the 13th, and confirmed that there were no findings that would delay the hard fork. The team expressed satisfaction with the progress of the testnets, particularly noting the absence of issues seen in previous tests like Pectra."
+    },
+    {
+      "label": "Blob API Transition Communication Issues",
+      "summary": "The meeting discussed recent changes to Blob APIs, particularly the transition from 4544-style blobs to dust-style blobs, which caused some confusion among roll-ups. Stokes explained that while the EIP claimed backward compatibility, there were some miscommunications about the changes, and some roll-ups only learned about them this week. The group agreed that better communication and testing on staging environments could help prevent similar last-minute changes in the future. Nixo and others suggested using shadowfork networks for testing instead of redeploying on devnets, and Marius proposed adding information about RPC filters to future EIPs to avoid miscommunication."
+    },
+    {
+      "label": "Blob Retrieval and Storage Optimization",
+      "summary": "The meeting discussed concerns about blob retrieval under PureDOS, particularly for decentralized sequencers, with Koen highlighting bandwidth constraints requiring everyone to run super nodes. The group explored solutions including light super nodes and custom tooling, with Enrico suggesting a middle ground where nodes could custody a minimal subset of columns to reconstruct blobs. The discussion also covered storage optimization strategies, with Manu proposing storing 64 cells but 128 proofs to save space, and the team noted that most L2s use builder APIs to publish blobs rather than relying on the public mempool."
+    },
+    {
+      "label": "Mainnet Timeline Discussion",
+      "summary": "The team discussed the timeline for the mainnet release, with a proposal to aim for November 3rd for client releases and December 3rd for the mainnet launch. While there was general support for this timeline, Fredrik raised concerns about following the established process, which states that the mainnet upgrade date should not be set until all testnets have been upgraded. The team agreed to further discuss and potentially formalize the dates at the next ACD meeting, with Stokes planning to reach out to client teams asynchronously for any additional concerns. They also noted the upcoming Sepolia BPO for Fusaka next week."
+    },
+    {
+      "label": "Trustless Payments Discussion and Decisions",
+      "summary": "The team discussed concerns about trustless payments, with Lynn expressing that the feature should have been separated from EIPs but now supports off-protocol payments as a standard, which was welcomed by core developers. Enrico emphasized the importance of keeping the specification separate after deciding to ship EPPS without trustless payments, to avoid wasted effort. The group agreed to accept the current state and continue discussions, with a focus on properly supporting off-protocol payments."
+    },
+    {
+      "label": "Trustless Payments and EPBS Governance",
+      "summary": "The team discussed the governance and implementation of trustless payments and block payload separation (EPBS) features. Enrico suggested treating them as separate for governance but keeping them together in EIP/spec unless a decision is made to remove staked builders from Glamsterdam. ethDreamer expressed that while separating these features would be complex, the current design is workable for version 1, with potential improvements for version 2. Dmitry raised concerns about the added complexity for staking protocols like Lido, noting that monitoring both off-chain and on-chain markets would require significant additional effort."
+    },
+    {
+      "label": "Trustless Payments EIP Design Decision",
+      "summary": "The team discussed the potential separation of trustless payments from the current EIP, with Francesco clarifying that such a split was technically feasible but not necessarily beneficial at this stage. Sophia and others expressed concerns about delays in shipping the hard fork if the EIP were split, while Lin emphasized that the free option problem should be discussed independently from payments. The group agreed to keep the current design, acknowledging the added complexity but deciding to move forward with the implementation rather than spending more time on potential changes."
+    },
+    {
+      "label": "EIP Trustless Payments Status Review",
+      "summary": "The team discussed the status of trustless payments in the EIP, ultimately deciding to leave it as is. They also addressed concerns about the scope of the Glamsterdam fork, particularly regarding the inclusion of FOCIL and other EIPs. The group agreed to focus on getting Fusaka out the door before discussing the rest of the Glamsterdam scope in detail. They noted that there are 29 EIPs in the MetaEIP list that will need to be considered for inclusion in the fork."
+    }
+  ],
+  "next_steps": [
+    "All client teams to prepare for Fusaka mainnet releases by November 3rd, targeting December 3rd for mainnet deployment.",
+    "Client teams to prepare for Sepolia BPO1 next week .",
+    "Core developers to continue implementation work on ePBS with trustless payments for Glamsterdam.",
+    "Client teams to work toward having Glamsterdam DevNets sometime this year.",
+    "Prism team to implement the \"light super node\" feature to help with blob retrieval for L2s.",
+    "stokes to bring the Fusaka mainnet date proposal  to next week's ACD for formal approval.",
+    "stokes to reach out to each client team async to confirm the feasibility of the Fusaka timeline.",
+    "Core developers to review Jimmy's RFC regarding changing a condition in the spec from \"should\" to \"may\" to reduce bandwidth requirements for non-super nodes."
+  ]
+}

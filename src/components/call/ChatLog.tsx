@@ -154,17 +154,23 @@ const ChatLog: React.FC<ChatLogProps> = ({ content, syncConfig, selectedSearchRe
         if (message.startsWith('Reacted to') || message.startsWith('Heeft gereageerd op')) {
           // Handle multiple formats:
           // English:
-          // 1. Reacted to "message" with emoji
-          // 2. Reacted to message with "emoji"
-          // 3. Reacted to "message" with "emoji"
+          // 1. Reacted to "message" with emoji (may have nested quotes)
+          // 2. Reacted to "message" with "emoji"
+          // 3. Reacted to message with "emoji" (no quotes around message)
           // Dutch:
           // 4. Heeft gereageerd op "message" met emoji
-          // Also handle curly quotes - be more specific to avoid multiple matches
+          //
+          // Strategy: Use a greedy match that captures everything between the first quote
+          // and " with " (for English) or " met " (for Dutch), handling nested quotes
           const reactionPatterns = [
-            /Reacted to [""]([^""]+)[""] with [""](.+?)[""]/,  // Both quoted (English)
-            /Reacted to [""]([^""]+)[""] with ([^""\s]+)$/,  // Quoted message, unquoted emoji (English)
-            /Reacted to ([^""]+?) with [""](.+?)[""]/,  // Unquoted message, quoted emoji (English)
-            /Heeft gereageerd op [""]([^""]+)[""] met (.+)$/,  // Dutch format
+            // English: Match from opening quote to last " with ", then capture emoji
+            /^Reacted to [""](.+)[""] with [""](.+?)[""]$/,  // Both quoted
+            /^Reacted to [""](.+)[""] with (.+)$/,  // Message quoted, emoji unquoted
+            /^Reacted to (.+?) with [""](.+?)[""]$/,  // Message unquoted, emoji quoted
+            /^Reacted to (.+?) with (.+)$/,  // Neither quoted
+            // Dutch format
+            /^Heeft gereageerd op [""](.+)[""] met (.+)$/,
+            /^Heeft gereageerd op (.+?) met [""](.+?)[""]$/,  // Message unquoted, emoji quoted
           ];
 
           let matched = false;
@@ -172,7 +178,8 @@ const ChatLog: React.FC<ChatLogProps> = ({ content, syncConfig, selectedSearchRe
             const reactionMatch = message.match(pattern);
             if (reactionMatch) {
               // Normalize the target message - handle ellipsis for truncated messages
-              let targetMessage = reactionMatch[1].replace(/[""]/g, '').trim();
+              // Remove any curly quotes that might be in the matched text
+              let targetMessage = reactionMatch[1].replace(/[""]/g, '"').trim();
               const emoji = reactionMatch[2].replace(/[""]/g, '').trim();
 
               // Attempt to find the full message text if the reaction is on a truncated message
@@ -436,34 +443,76 @@ const ChatLog: React.FC<ChatLogProps> = ({ content, syncConfig, selectedSearchRe
               const replyMatch = englishReplyMatch || dutchReplyMatch;
               const actualMessage = replyMatch ? replyMatch[2] : reply.message;
               const isSelectedReply = selectedSearchResult?.timestamp === reply.timestamp && selectedSearchResult?.type === 'chat';
+
+              // Find reactions for the reply's actual message content
+              const replyMessageReactions = Array.from(reactions.entries())
+                .filter(([reactionText, _]) => {
+                  // Match against the actual message content, not the full "Replying to..." text
+                  const normalizedMessage = actualMessage.replace(/\.\.\.$/, '').trim();
+                  if (reactionText.endsWith('...')) {
+                    return normalizedMessage.startsWith(reactionText.slice(0, -3).trim());
+                  }
+                  return reactionText === actualMessage;
+                })
+                .flatMap(([_, reactionList]) => reactionList);
+
+              // Group reactions by emoji for replies
+              const groupedReplyReactions = replyMessageReactions.reduce((acc, reaction) => {
+                if (!acc[reaction.emoji]) {
+                  acc[reaction.emoji] = [];
+                }
+                acc[reaction.emoji].push(reaction.speaker);
+                return acc;
+              }, {} as Record<string, string[]>);
+
               return (
-                <div
-                  key={replyIndex}
-                  data-chat-timestamp={reply.timestamp}
-                  onClick={(e) => handleChatEntryClick(e, reply.timestamp)}
-                  className={`ml-20 mt-1 pl-4 border-l-2 cursor-pointer hover:bg-slate-50 dark:hover:bg-slate-700/30 rounded transition-colors ${isSelectedReply ? 'border-yellow-500 bg-yellow-50 dark:bg-yellow-900/20' : 'border-slate-200 dark:border-slate-600'}`}
-                >
-                  <div className="flex gap-3 text-sm">
-                    <span className={`text-xs flex-shrink-0 font-mono mt-0.5 ${isSelectedReply ? 'text-yellow-600 dark:text-yellow-400' : 'text-slate-500 dark:text-slate-400'}`} style={{ minWidth: '64px' }}>
-                      {syncConfig?.transcriptStartTime && syncConfig?.videoStartTime
-                        ? secondsToTimestamp(getAdjustedVideoTime(reply.timestamp))
-                        : reply.timestamp
-                      }
-                    </span>
-                    <div className="flex-1 min-w-0">
-                      <span className={`font-medium mr-2 ${isSelectedReply ? 'text-yellow-900 dark:text-yellow-100' : 'text-slate-700 dark:text-slate-300'}`}>
-                        {reply.speaker}:
+                <div key={replyIndex} className="space-y-1">
+                  <div
+                    data-chat-timestamp={reply.timestamp}
+                    onClick={(e) => handleChatEntryClick(e, reply.timestamp)}
+                    className={`ml-20 mt-1 pl-4 border-l-2 cursor-pointer hover:bg-slate-50 dark:hover:bg-slate-700/30 rounded transition-colors ${isSelectedReply ? 'border-yellow-500 bg-yellow-50 dark:bg-yellow-900/20' : 'border-slate-200 dark:border-slate-600'}`}
+                  >
+                    <div className="flex gap-3 text-sm">
+                      <span className={`text-xs flex-shrink-0 font-mono mt-0.5 ${isSelectedReply ? 'text-yellow-600 dark:text-yellow-400' : 'text-slate-500 dark:text-slate-400'}`} style={{ minWidth: '64px' }}>
+                        {syncConfig?.transcriptStartTime && syncConfig?.videoStartTime
+                          ? secondsToTimestamp(getAdjustedVideoTime(reply.timestamp))
+                          : reply.timestamp
+                        }
                       </span>
-                      <span className={`break-words ${isSelectedReply ? 'text-slate-900 dark:text-slate-100' : 'text-slate-600 dark:text-slate-400'}`}>
-                        {actualMessage.split(/\r\n|\r|\n/).map((line, index) => (
-                          <React.Fragment key={index}>
-                            {index > 0 && <br />}
-                            {renderTextWithLinks(line)}
-                          </React.Fragment>
-                        ))}
-                      </span>
+                      <div className="flex-1 min-w-0">
+                        <span className={`font-medium mr-2 ${isSelectedReply ? 'text-yellow-900 dark:text-yellow-100' : 'text-slate-700 dark:text-slate-300'}`}>
+                          {reply.speaker}:
+                        </span>
+                        <span className={`break-words ${isSelectedReply ? 'text-slate-900 dark:text-slate-100' : 'text-slate-600 dark:text-slate-400'}`}>
+                          {actualMessage.split(/\r\n|\r|\n/).map((line, index) => (
+                            <React.Fragment key={index}>
+                              {index > 0 && <br />}
+                              {renderTextWithLinks(line)}
+                            </React.Fragment>
+                          ))}
+                        </span>
+                      </div>
                     </div>
                   </div>
+                  {/* Emoji Reactions for Replies */}
+                  {Object.keys(groupedReplyReactions).length > 0 && (
+                    <div className="flex gap-1 ml-20 pl-4 text-xs mt-1">
+                      {Object.entries(groupedReplyReactions).map(([emoji, speakers], index) => (
+                        <span
+                          key={index}
+                          className="inline-flex items-center gap-1 bg-slate-100 dark:bg-slate-700 text-slate-600 dark:text-slate-300 px-1.5 py-0.5 rounded-full text-xs border border-slate-200 dark:border-slate-600"
+                          title={speakers.join(', ')}
+                        >
+                          <span>{emoji}</span>
+                          {speakers.length > 1 && (
+                            <span className="text-slate-500 dark:text-slate-400 font-medium">
+                              {speakers.length}
+                            </span>
+                          )}
+                        </span>
+                      ))}
+                    </div>
+                  )}
                 </div>
               );
             })}

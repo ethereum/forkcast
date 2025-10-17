@@ -46,14 +46,14 @@
       "improveUX": { "description": "Lower fees and better security users relying on apps using BLS signatures." }
     },
     "stakeholderImpacts": {
-      "endUsers": { "impact": "Low", "description": "Lower gas and better security for apps that use BLS signatures (e.g., staking, bridges)." },
-      "appDevs": { "impact": "Medium", "description": "Can rely on a standard, efficient precompile for BLS operations instead of custom Solidity code." },
-      "walletDevs": { "impact": "Low", "description": "No changes for wallets" },
-      "toolingInfra": { "impact": "Low", "description": "Indexers and tools that analyze execution on EVM level will need to update to recognize the new precompile." },
-      "layer2s": { "impact": "Medium", "description": "EVM L2s need to update to stay compatible, certain L1 operations can take advantage of this." },
-      "stakersNodes": { "impact": "Low", "description": "Not a direct impact on regular validators. Some pools with onchain infrastracture can upgrade to utilize the precompile." },
-      "clClients": { "impact": "None", "description": "Beacon Chain unchanged; this is an execution-layer precompile." },
-      "elClients": { "impact": "Medium", "description": "Implementation, testing and fuzzing the new precompile for performance and correctness." }
+      "endUsers": { "description": "Lower gas and better security for apps that use BLS signatures (e.g., staking, bridges)." },
+      "appDevs": { "description": "Can rely on a standard, efficient precompile for BLS operations instead of custom Solidity code." },
+      "walletDevs": { "description": "No changes for wallets" },
+      "toolingInfra": { "description": "Indexers and tools that analyze execution on EVM level will need to update to recognize the new precompile." },
+      "layer2s": { "description": "EVM L2s need to update to stay compatible, certain L1 operations can take advantage of this." },
+      "stakersNodes": { "description": "Not a direct impact on regular validators. Some pools with onchain infrastracture can upgrade to utilize the precompile." },
+      "clClients": { "description": "Beacon Chain unchanged; this is an execution-layer precompile." },
+      "elClients": { "description": "Implementation, testing and fuzzing the new precompile for performance and correctness." }
     },
     "benefits": [
       "Cheaper and safer BLS signature verification",
@@ -398,14 +398,14 @@
       "scaleL1": { "description": "Reduces complexity and improves speed of deposit processing, improving robustness of staking infrastructure." }
     },
     "stakeholderImpacts": {
-      "endUsers": { "impact": "Low", "description": "No impact on normal transactions, only improved the process of becoming a validator" },
-      "appDevs": { "impact": "Low", "description": "Contracts are not affected" },
-      "walletDevs": { "impact": "Low", "description": "No impact on wallets." },
-      "toolingInfra": { "impact": "Low", "description": "Indexers may track deposit events directly from EL." },
-      "layer2s": { "impact": "None", "description": "L2s are not impacted." },
-      "stakersNodes": { "impact": "Medium", "description": "Deposits are processed more quickly, pools can now onboard validators more easily." },
-      "clClients": { "impact": "Medium", "description": "Consume deposits via the new delivery path from execution layer." },
-      "elClients": { "impact": "Medium", "description": "Implement deposit delivery to consensus, simplifying legacy eth1data polling." }
+      "endUsers": { "description": "No impact on normal transactions, only improved the process of becoming a validator" },
+      "appDevs": { "description": "Contracts are not affected" },
+      "walletDevs": { "description": "No impact on wallets." },
+      "toolingInfra": { "description": "Indexers may track deposit events directly from EL." },
+      "layer2s": { "description": "L2s are not impacted." },
+      "stakersNodes": { "description": "Deposits are processed more quickly, pools can now onboard validators more easily." },
+      "clClients": { "description": "Consume deposits via the new delivery path from execution layer." },
+      "elClients": { "description": "Implement deposit delivery to consensus, simplifying legacy eth1data polling." }
     },
     "benefits": [
       "Future proofing deposit flow with less complexity",
@@ -536,14 +536,14 @@
       "improveUX": { "description": "Provides a safer, more direct exit mechanism from the execution layer, reducing operational risk and simplifying validator management." }
     },
     "stakeholderImpacts": {
-      "endUsers": { "impact": "Low", "description": "Improves safety and UX of staking services that users interact with." },
-      "appDevs": { "impact": "Low", "description": "Staking protocols gain a safer, onchain way to coordinate exits." },
-      "walletDevs": { "impact": "Low", "description": "No changes to wallets." },
-      "toolingInfra": { "impact": "Low", "description": "EL explorers can track exit calls and state transitions onchain." },
-      "layer2s": { "impact": "None", "description": "Not impacting L2s." },
-      "stakersNodes": { "impact": "High", "description": "Alternative exit mechanism, enables withdrawals even when validator keys are lost." },
-      "clClients": { "impact": "Medium", "description": "Implement the new exit flow initiated via execution-layer contract." },
-      "elClients": { "impact": "Medium", "description": "Implement and expose the exit-trigger contract, new communication with CL." }
+      "endUsers": { "description": "Improves safety and UX of staking services that users interact with." },
+      "appDevs": { "description": "Staking protocols gain a safer, onchain way to coordinate exits." },
+      "walletDevs": { "description": "No changes to wallets." },
+      "toolingInfra": { "description": "EL explorers can track exit calls and state transitions onchain." },
+      "layer2s": { "description": "Not impacting L2s." },
+      "stakersNodes": { "description": "Alternative exit mechanism, enables withdrawals even when validator keys are lost." },
+      "clClients": { "description": "Implement the new exit flow initiated via execution-layer contract." },
+      "elClients": { "description": "Implement and expose the exit-trigger contract, new communication with CL." }
     },
     "benefits": [
       "Safer operational separation of keys for staking",
@@ -594,14 +594,14 @@
       "improveUX": { "description": "Simplifies operations for large stakers and staking providers, improves experience for compounding stake." }
     },
     "stakeholderImpacts": {
-      "endUsers": { "impact": "Low", "description": "No direct impact on regular users." },
-      "appDevs": { "impact": "None", "description": "No changes for smart contracts." },
-      "walletDevs": { "impact": "Low", "description": "No impact on user wallets." },
-      "toolingInfra": { "impact": "Low", "description": "Beacon explorers need adapts to custom effective balances per validator." },
-      "layer2s": { "impact": "None", "description": "No L2 impact." },
-      "stakersNodes": { "impact": "Medium", "description": "Can consolidate many validators into fewer, reducing overhead and bandwidth." },
-      "clClients": { "impact": "High", "description": "Update Beacon implementation and validator clients with new way to handle effective balance" },
-      "elClients": { "impact": "None", "description": "Minimal EL changes." }
+      "endUsers": { "description": "No direct impact on regular users." },
+      "appDevs": { "description": "No changes for smart contracts." },
+      "walletDevs": { "description": "No impact on user wallets." },
+      "toolingInfra": { "description": "Beacon explorers need adapts to custom effective balances per validator." },
+      "layer2s": { "description": "No L2 impact." },
+      "stakersNodes": { "description": "Can consolidate many validators into fewer, reducing overhead and bandwidth." },
+      "clClients": { "description": "Update Beacon implementation and validator clients with new way to handle effective balance" },
+      "elClients": { "description": "Minimal EL changes." }
     },
     "benefits": [
       "Reduces network overhead by consolidating validator sets",
@@ -727,14 +727,14 @@
       "scaleL1": { "description": "Reduces consensus layer overhead for attestation validation and aggregation, improving performance and paving the way for higher throughput." }
     },
     "stakeholderImpacts": {
-      "endUsers": { "impact": "Low", "description": "No direct impact" },
-      "appDevs": { "impact": "None", "description": "No changes to applications." },
-      "walletDevs": { "impact": "None", "description": "Wallets unchanged." },
-      "toolingInfra": { "impact": "Low", "description": "Consensus monitoring tools have to update parsing of attestations." },
-      "layer2s": { "impact": "Low", "description": "No direct change on L2s unless they rely on attestation data." },
-      "stakersNodes": { "impact": "Medium", "description": "Lower resource usage for attestation handling and aggregation, less data to process." },
-      "clClients": { "impact": "Medium", "description": "Implementation changes to attestation structures and verification." },
-      "elClients": { "impact": "None", "description": "Execution layer not affected." }
+      "endUsers": { "description": "No direct impact" },
+      "appDevs": { "description": "No changes to applications." },
+      "walletDevs": { "description": "Wallets unchanged." },
+      "toolingInfra": { "description": "Consensus monitoring tools have to update parsing of attestations." },
+      "layer2s": { "description": "No direct change on L2s unless they rely on attestation data." },
+      "stakersNodes": { "description": "Lower resource usage for attestation handling and aggregation, less data to process." },
+      "clClients": { "description": "Implementation changes to attestation structures and verification." },
+      "elClients": { "description": "Execution layer not affected." }
     },
     "benefits": [
       "More efficient consensus verification and aggregation",
@@ -858,14 +858,14 @@
     ],
     "laymanDescription": "Calldata gas costs is increased to limit state growth and incentivize more efficient blobs to store data.",
     "stakeholderImpacts": {
-      "endUsers": { "impact": "Low", "description": "Normal transactions see no change, contracts relying on calldata become a little more expensive to execute." },
-      "appDevs": { "impact": "Low", "description": "Contracts behaviour is not changed  but the state storage is more expensive." },
-      "walletDevs": { "impact": "Low", "description": "Fee estimation may adjust for new calldata cost." },
-      "toolingInfra": { "impact": "Low", "description": "Contract and gas analytics need reflect updated calldata pricing." },
-      "layer2s": { "impact": "Medium", "description": "L2s should use blobs over calldata, improving network scalability." },
-      "stakersNodes": { "impact": "Low", "description": "No direct impact on validators." },
-      "clClients": { "impact": "None", "description": "Consensus unaffected." },
-      "elClients": { "impact": "Low", "description": "Adjust EVM gas accounting for calldata." }
+      "endUsers": { "description": "Normal transactions see no change, contracts relying on calldata become a little more expensive to execute." },
+      "appDevs": { "description": "Contracts behaviour is not changed  but the state storage is more expensive." },
+      "walletDevs": { "description": "Fee estimation may adjust for new calldata cost." },
+      "toolingInfra": { "description": "Contract and gas analytics need reflect updated calldata pricing." },
+      "layer2s": { "description": "L2s should use blobs over calldata, improving network scalability." },
+      "stakersNodes": { "description": "No direct impact on validators." },
+      "clClients": { "description": "Consensus unaffected." },
+      "elClients": { "description": "Adjust EVM gas accounting for calldata." }
     },
     "benefits": [
       "Bounds worst-case block size for network safety and scalability",
@@ -1038,14 +1038,14 @@
       "scaleL1": { "description": "Standardizes messaging from the execution layer, reducing complexity as the protocol evolves and enabling more efficiency." }
     },
     "stakeholderImpacts": {
-      "endUsers": { "impact": "Low", "description": "No changes for users." },
-      "appDevs": { "impact": "Low", "description": "Smart contract developers can now utilize new features to communicate with Beacon chain" },
-      "walletDevs": { "impact": "Low", "description": "No changes for wallets." },
-      "toolingInfra": { "impact": "Low", "description": "Monitoring tools cana analyze new types of requests." },
-      "layer2s": { "impact": "Low", "description": "No impact on L2s directly." },
-      "stakersNodes": { "impact": "Low", "description": "More options to manage validators from onchain operations, mainly for pools.." },
-      "clClients": { "impact": "Medium", "description": "Handling new request types from EL." },
-      "elClients": { "impact": "Medium", "description": "Implementing new system contracts and requests." }
+      "endUsers": { "description": "No changes for users." },
+      "appDevs": { "description": "Smart contract developers can now utilize new features to communicate with Beacon chain" },
+      "walletDevs": { "description": "No changes for wallets." },
+      "toolingInfra": { "description": "Monitoring tools cana analyze new types of requests." },
+      "layer2s": { "description": "No impact on L2s directly." },
+      "stakersNodes": { "description": "More options to manage validators from onchain operations, mainly for pools.." },
+      "clClients": { "description": "Handling new request types from EL." },
+      "elClients": { "description": "Implementing new system contracts and requests." }
     },
     "benefits": [
       "More native and easy communication between EL and CL",
@@ -1119,14 +1119,14 @@
       "scaleBlobs": { "description": "Directly increases data availability for rollups by raising blob capacity, improving throughput." }
     },
     "stakeholderImpacts": {
-      "endUsers": { "impact": "Medium", "description": "Lower fees on L2s as more blob space becomes available." },
-      "appDevs": { "impact": "Low", "description": "Rollup apps benefit from cheaper data availability." },
-      "walletDevs": { "impact": "Low", "description": "No direct changes, potential fee improvements for L2 transactions." },
-      "toolingInfra": { "impact": "Low", "description": "Monitoring should surface new blob target/max parameters." },
-      "layer2s": { "impact": "High", "description": "Directly increases throughput for rollups using blobs, more L2 scale." },
-      "stakersNodes": { "impact": "Low", "description": "Slightly higher data propagation at the p2p layer within safe bounds." },
-      "clClients": { "impact": "Medium", "description": "Parameters update that needed more optimization and testing" },
-      "elClients": { "impact": "Low", "description": "Update blob gas accounting and targets." }
+      "endUsers": { "description": "Lower fees on L2s as more blob space becomes available." },
+      "appDevs": { "description": "Rollup apps benefit from cheaper data availability." },
+      "walletDevs": { "description": "No direct changes, potential fee improvements for L2 transactions." },
+      "toolingInfra": { "description": "Monitoring should surface new blob target/max parameters." },
+      "layer2s": { "description": "Directly increases throughput for rollups using blobs, more L2 scale." },
+      "stakersNodes": { "description": "Slightly higher data propagation at the p2p layer within safe bounds." },
+      "clClients": { "description": "Parameters update that needed more optimization and testing" },
+      "elClients": { "description": "Update blob gas accounting and targets." }
     },
     "benefits": [
       "Higher data capacity for rollups",
@@ -1228,14 +1228,14 @@
       "improveUX": { "description": "Brings account abstraction benefits to EOAs, creating new smart wallets with features allowing for better security, batching, recovery, and gassless transactions." }
     },
     "stakeholderImpacts": {
-      "endUsers": { "impact": "High", "description": "Better wallet UX with new features without migrating to a new address." },
-      "appDevs": { "impact": "Medium", "description": "Dapps can levarage new smart wallet features and enables users to do more complex operations easily." },
-      "walletDevs": { "impact": "High", "description": "Wallets need to implement a secure workflow that allows users to activate a chosen smart account." },
-      "toolingInfra": { "impact": "Medium", "description": "Recognize new wallet operations and standard wallet contracts" },
-      "layer2s": { "impact": "Low", "description": "L2s can implement same feature to allow for better cross chain interop" },
-      "stakersNodes": { "impact": "None", "description": "Validators are not affected." },
-      "clClients": { "impact": "None", "description": "Consensus not changed." },
-      "elClients": { "impact": "Medium", "description": "Support new transaction type and code authorization for EOAs to contract wallets." }
+      "endUsers": { "description": "Better wallet UX with new features without migrating to a new address." },
+      "appDevs": { "description": "Dapps can levarage new smart wallet features and enables users to do more complex operations easily." },
+      "walletDevs": { "description": "Wallets need to implement a secure workflow that allows users to activate a chosen smart account." },
+      "toolingInfra": { "description": "Recognize new wallet operations and standard wallet contracts" },
+      "layer2s": { "description": "L2s can implement same feature to allow for better cross chain interop" },
+      "stakersNodes": { "description": "Validators are not affected." },
+      "clClients": { "description": "Consensus not changed." },
+      "elClients": { "description": "Support new transaction type and code authorization for EOAs to contract wallets." }
     },
     "benefits": [
       "Brings account abstraction features to EOAs",
@@ -1739,14 +1739,14 @@
       "scaleBlobs": { "description": "Enables easier configuration for blob target value and its scaling in the future." }
     },
     "stakeholderImpacts": {
-      "endUsers": { "impact": "Low", "description": "No direct impact." },
-      "appDevs": { "impact": "Low", "description": "No changes for contract developers." },
-      "walletDevs": { "impact": "Low", "description": "No impact on wallets." },
-      "toolingInfra": { "impact": "Low", "description": "Simplifies introspection of blob parameters from network configs." },
-      "layer2s": { "impact": "Medium", "description": "Rollups can benefit from clearer capacity settings." },
-      "stakersNodes": { "impact": "Low", "description": "Easier to follow blob schedule updates." },
-      "clClients": { "impact": "None", "description": "CL needs to be aware of new config fields." },
-      "elClients": { "impact": "Low", "description": "Genesis configuration processing needs to implement new fields." }
+      "endUsers": { "description": "No direct impact." },
+      "appDevs": { "description": "No changes for contract developers." },
+      "walletDevs": { "description": "No impact on wallets." },
+      "toolingInfra": { "description": "Simplifies introspection of blob parameters from network configs." },
+      "layer2s": { "description": "Rollups can benefit from clearer capacity settings." },
+      "stakersNodes": { "description": "Easier to follow blob schedule updates." },
+      "clClients": { "description": "CL needs to be aware of new config fields." },
+      "elClients": { "description": "Genesis configuration processing needs to implement new fields." }
     },
     "benefits": [
       "Reduces coordination overhead between clients",

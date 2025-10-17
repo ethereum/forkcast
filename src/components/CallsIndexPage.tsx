@@ -279,43 +279,77 @@ const CallsIndexPage: React.FC = () => {
           </div>
         </div>
 
-        <div className="space-y-4">
-          {(() => {
-            // Group items by month
-            const monthGroups = new Map<string, (Call | TimelineEvent | UpcomingCall)[]>();
+        {/* Timeline container with vertical line */}
+        <div className="relative pl-12">
+          {/* Vertical timeline line */}
+          <div className="absolute left-10 top-0 bottom-0 w-px bg-gradient-to-b from-slate-200 via-slate-300 to-slate-200 dark:from-slate-700 dark:via-slate-600 dark:to-slate-700"></div>
 
-            sortedItems.forEach((item) => {
-              // Parse date as local time, not UTC
-              const [year, month, day] = item.date.split('-').map(Number);
-              const itemDate = new Date(year, month - 1, day);
-              const monthYear = itemDate.toLocaleDateString('en-US', { month: 'long', year: 'numeric' });
+          <div className="space-y-3">
+            {(() => {
+              let lastMonthYear = '';
+              const today = new Date();
+              today.setHours(0, 0, 0, 0);
+              let hasCrossedToday = false;
 
-              if (!monthGroups.has(monthYear)) {
-                monthGroups.set(monthYear, []);
-              }
-              monthGroups.get(monthYear)!.push(item);
-            });
+              return sortedItems.map((item, index) => {
+                // Parse date as local time, not UTC
+                const [year, month, day] = item.date.split('-').map(Number);
+                const itemDate = new Date(year, month - 1, day);
+                itemDate.setHours(0, 0, 0, 0);
+                const monthYear = itemDate.toLocaleDateString('en-US', { month: 'long', year: 'numeric' });
+                const monthName = itemDate.toLocaleDateString('en-US', { month: 'short' });
+                const yearString = itemDate.toLocaleDateString('en-US', { year: 'numeric' });
+                const showMonthLabel = monthYear !== lastMonthYear;
 
-            const monthEntries = Array.from(monthGroups.entries());
+                if (showMonthLabel) {
+                  lastMonthYear = monthYear;
+                }
 
-            // Render each month group
-            return monthEntries.map(([monthYear, items], monthIndex) => (
-              <div key={`month-${monthYear}`} className="relative">
-                {/* Subtle connecting line between months */}
-                {monthIndex < monthEntries.length - 1 && (
-                  <div className="absolute left-1/2 bottom-0 translate-y-full w-px h-4 bg-slate-200 dark:bg-slate-700" />
-                )}
+                // Check if we need to show the today divider
+                const isUpcoming = itemDate > today;
+                const wasPreviousUpcoming = index > 0 ? (() => {
+                  const [prevYear, prevMonth, prevDay] = sortedItems[index - 1].date.split('-').map(Number);
+                  const prevDate = new Date(prevYear, prevMonth - 1, prevDay);
+                  prevDate.setHours(0, 0, 0, 0);
+                  return prevDate > today;
+                })() : true;
+                const showTodayDivider = !hasCrossedToday && wasPreviousUpcoming && !isUpcoming;
 
-                <div className="bg-white dark:bg-slate-800/50 rounded-xl overflow-hidden border border-slate-200/50 dark:border-slate-700/50 hover:border-slate-300 dark:hover:border-slate-600 transition-colors">
-                  {/* Month header with gradient accent */}
-                  <div className="px-4 py-2 bg-gradient-to-r from-slate-50 to-slate-100 dark:from-slate-800 dark:to-slate-700 border-b border-slate-200/50 dark:border-slate-700/50">
-                    <h3 className="text-xs font-semibold text-slate-600 dark:text-slate-400 uppercase tracking-wider">
-                      {monthYear}
-                    </h3>
-                  </div>
-                  <div className="p-3">
-                    <div className="space-y-2">
-                      {items.map((item) => {
+                if (showTodayDivider) {
+                  hasCrossedToday = true;
+                }
+
+                return (
+                  <React.Fragment key={`item-${index}`}>
+                    {showTodayDivider && (
+                      <div className="relative my-6 ml-2 flex items-center gap-3">
+                        <div className="text-[10px] font-bold text-amber-600 dark:text-amber-400 uppercase tracking-wider whitespace-nowrap">
+                          Today
+                        </div>
+                        <div className="flex-1 h-px bg-gradient-to-r from-amber-400 to-transparent dark:from-amber-500 dark:to-transparent"></div>
+                      </div>
+                    )}
+                    <div className="relative">
+                    {/* Month label - absolutely positioned */}
+                    {showMonthLabel && (
+                      <div className="absolute left-[-3rem] top-0 w-8 flex flex-col items-start">
+                        <div className="sticky top-8">
+                          <span className="text-[11px] font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider [writing-mode:vertical-lr] rotate-180">
+                            {monthName}
+                          </span>
+                          <span className="text-[10px] font-semibold text-slate-400 dark:text-slate-500 [writing-mode:vertical-lr] rotate-180 mt-1">
+                            {yearString}
+                          </span>
+                        </div>
+                      </div>
+                    )}
+
+                    {/* Timeline connector - horizontal line from timeline to item */}
+                    <div className="absolute left-[-0.5rem] top-1/2 -translate-y-1/2 w-2 h-px bg-slate-300 dark:bg-slate-600"></div>
+
+                    {/* Timeline item */}
+                    <div className="ml-2">
+                    {(() => {
                         // Render timeline event
                         if (item.type === 'event') {
                           const event = item as TimelineEvent;
@@ -420,10 +454,12 @@ const CallsIndexPage: React.FC = () => {
                                   <div className="text-sm text-slate-600 dark:text-slate-400">
                                     {upcomingCall.date}
                                   </div>
-                                  <div className="hidden sm:flex items-center gap-1.5 ml-2">
-                                    <div className="w-1.5 h-1.5 rounded-full bg-emerald-500"></div>
-                                    <span className="text-xs text-emerald-600 dark:text-emerald-400 font-medium">Upcoming</span>
-                                  </div>
+                                  {isUpcoming && (
+                                    <div className="hidden sm:flex items-center gap-1.5 ml-2">
+                                      <div className="w-1.5 h-1.5 rounded-full bg-emerald-500"></div>
+                                      <span className="text-xs text-emerald-600 dark:text-emerald-400 font-medium">Upcoming</span>
+                                    </div>
+                                  )}
                                 </div>
                                 <div className="text-slate-400 dark:text-slate-500 group-hover:text-slate-600 dark:group-hover:text-slate-300 transition-colors">
                                   ↗
@@ -473,13 +509,14 @@ const CallsIndexPage: React.FC = () => {
                             </div>
                           </Link>
                         );
-                      })}
+                    })()}
                     </div>
-                  </div>
-                </div>
-              </div>
-            ));
-          })()}
+                    </div>
+                  </React.Fragment>
+                );
+              });
+            })()}
+          </div>
         </div>
       </div>
 

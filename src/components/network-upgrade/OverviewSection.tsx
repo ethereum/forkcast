@@ -30,15 +30,15 @@ export const OverviewSection: React.FC<OverviewSectionProps> = ({
       color: 'bg-amber-50 text-amber-700 dark:bg-amber-900/20 dark:text-amber-300'
     },
     {
-      stage: 'Included',
-      count: eips.filter(eip => getInclusionStage(eip, forkName) === 'Included').length,
-      color: 'bg-emerald-50 text-emerald-800 dark:bg-emerald-900/20 dark:text-emerald-300'
-    },
-    {
       stage: 'Scheduled for Inclusion',
       count: eips.filter(eip => getInclusionStage(eip, forkName) === 'Scheduled for Inclusion').length,
       color: 'bg-green-50 text-green-700 dark:bg-green-900/20 dark:text-green-300'
     },
+    // {
+    //   stage: 'Included',
+    //   count: eips.filter(eip => getInclusionStage(eip, forkName) === 'Included').length,
+    //   color: 'bg-emerald-50 text-emerald-800 dark:bg-emerald-900/20 dark:text-emerald-300'
+    // },
     {
       stage: 'Declined for Inclusion',
       count: eips.filter(eip => getInclusionStage(eip, forkName) === 'Declined for Inclusion').length,

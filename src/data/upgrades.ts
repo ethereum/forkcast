@@ -22,7 +22,7 @@ export const networkUpgrades: NetworkUpgrade[] = [
     tagline: 'Account abstraction enables smart contract functionality for regular accounts, validator improvements increase balance limits and speed up deposits, and blob throughput doubles for better Layer 2 scaling.',
     status: 'Active',
     activationDate: 'May 7, 2025',
-    disabled: false,
+    disabled: true,
     metaEipLink: 'https://ethereum-magicians.org/t/pectra-network-upgrade-meta-thread/16809'
   },
   {

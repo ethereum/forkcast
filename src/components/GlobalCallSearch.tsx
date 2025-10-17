@@ -32,7 +32,6 @@ export default function GlobalCallSearch({ isOpen, onClose, initialQuery = '' }:
   const [selectedIndex, setSelectedIndex] = useState(0);
   const [filterType, setFilterType] = useState<'all' | 'transcript' | 'chat' | 'agenda' | 'action'>('all');
   const [callTypeFilter, setCallTypeFilter] = useState<'all' | 'ACDC' | 'ACDE' | 'ACDT'>('all');
-  const [showContext, setShowContext] = useState(true);
   const [searchStats, setSearchStats] = useState<{ total: number; shown: number } | null>(null);
   const inputRef = useRef<HTMLInputElement>(null);
   const resultsContainerRef = useRef<HTMLDivElement>(null);
@@ -287,14 +286,6 @@ export default function GlobalCallSearch({ isOpen, onClose, initialQuery = '' }:
                   {filter === 'all' ? 'All Calls' : filter}
                 </button>
               ))}
-            </div>
-            <div className="ml-auto flex-shrink-0">
-              <button
-                onClick={() => setShowContext(!showContext)}
-                className="text-xs text-slate-500 hover:text-slate-700 dark:hover:text-slate-300 p-2 -m-2 touch-manipulation whitespace-nowrap"
-              >
-                {showContext ? 'Hide' : 'Show'} context
-              </button>
             </div>
           </div>
 

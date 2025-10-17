@@ -67,15 +67,16 @@ const CallPage: React.FC = () => {
     const searchQuery = searchParams.get('search');
     const timestamp = searchParams.get('timestamp');
     const type = searchParams.get('type');
+    const text = searchParams.get('text');
 
-    if (searchQuery && timestamp && type) {
+    if (searchQuery && timestamp && type && text) {
       // Store the search query for initialization (but don't open search modal)
       setInitialSearchQuery(searchQuery);
 
-      // Set up highlighting
+      // Set up highlighting - use the actual result text, not the search query
       setSelectedSearchResult({
         timestamp,
-        text: searchQuery,
+        text: decodeURIComponent(text),
         type
       });
 

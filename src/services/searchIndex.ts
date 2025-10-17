@@ -26,7 +26,7 @@ class SearchIndexService {
   private readonly DB_NAME = 'forkcast_search';
   private readonly DB_VERSION = 1;
   private readonly STORE_NAME = 'search_index';
-  private readonly INDEX_VERSION = '1.0.3';
+  private readonly INDEX_VERSION = '1.0.4';
   private readonly MAX_INDEX_AGE = 24 * 60 * 60 * 1000; // 24 hours
 
   private constructor() {}
@@ -156,11 +156,10 @@ class SearchIndexService {
         // Fetch all content for this call
         const baseUrl = `/artifacts/${call.type}/${call.date}_${call.number}`;
 
-        const [transcript, chat, agenda, summary] = await Promise.all([
+        const [transcript, chat, agenda] = await Promise.all([
           fetch(`${baseUrl}/transcript.vtt`).then(res => res.ok ? res.text() : null).catch(() => null),
           fetch(`${baseUrl}/chat.txt`).then(res => res.ok ? res.text() : null).catch(() => null),
-          fetch(`${baseUrl}/agenda.json`).then(res => res.ok ? res.json() : null).catch(() => null),
-          fetch(`${baseUrl}/summary.json`).then(res => res.ok ? res.json() : null).catch(() => null)
+          fetch(`${baseUrl}/agenda.json`).then(res => res.ok ? res.json() : null).catch(() => null)
         ]);
 
         // Process transcript
@@ -199,27 +198,9 @@ class SearchIndexService {
           });
         }
 
-        // Process agenda
+        // Process agenda (includes action items)
         if (agenda?.agenda) {
           const entries = this.parseAgendaForIndex(agenda, call);
-          entries.forEach(entry => {
-            const docIndex = index.documents.length;
-            index.documents.push(entry);
-            callDocIndices.push(docIndex);
-
-            // Update inverted index
-            entry.tokens.forEach(token => {
-              if (!index.invertedIndex.has(token)) {
-                index.invertedIndex.set(token, new Set());
-              }
-              index.invertedIndex.get(token)!.add(docIndex);
-            });
-          });
-        }
-
-        // Process action items
-        if (summary?.item?.action_items) {
-          const entries = this.parseActionItemsForIndex(summary, call);
           entries.forEach(entry => {
             const docIndex = index.documents.length;
             index.documents.push(entry);
@@ -358,42 +339,40 @@ class SearchIndexService {
 
     agendaData.agenda.forEach((section: any) => {
       section.items?.forEach((item: any) => {
+        // Index agenda item itself
         if (item.title || item.summary) {
-          const text = [item.title, item.summary].filter(Boolean).join(' - ');
+          // Use title as the text for matching, but include both title and summary in tokens for searching
+          const searchText = [item.title, item.summary].filter(Boolean).join(' ');
           results.push({
             callType: call.type,
             callDate: call.date,
             callNumber: call.number,
             type: 'agenda',
             timestamp: item.start_timestamp || '00:00:00',
-            text: text,
-            tokens: this.tokenize(text),
-            normalizedText: this.normalize(text)
+            text: item.title, // Store just the title for matching in AgendaSummary
+            tokens: this.tokenize(searchText), // But index both title and summary for search
+            normalizedText: this.normalize(searchText)
           });
         }
-      });
-    });
 
-    return results;
-  }
-
-  // Parse action items for indexing
-  private parseActionItemsForIndex(summaryData: any, call: any): IndexedContent[] {
-    const results: IndexedContent[] = [];
-
-    summaryData.item.action_items.forEach((item: any) => {
-      const text = item.what;
-      const speaker = item.who;
-      results.push({
-        callType: call.type,
-        callDate: call.date,
-        callNumber: call.number,
-        type: 'action',
-        timestamp: item.timestamp || '00:00:00',
-        speaker: speaker,
-        text: text,
-        tokens: this.tokenize(text + ' ' + (speaker || '')),
-        normalizedText: this.normalize(text)
+        // Index action items within this agenda item
+        if (item.action_items && Array.isArray(item.action_items)) {
+          item.action_items.forEach((actionItem: any) => {
+            if (actionItem.what) {
+              results.push({
+                callType: call.type,
+                callDate: call.date,
+                callNumber: call.number,
+                type: 'action',
+                timestamp: actionItem.timestamp || item.start_timestamp || '00:00:00',
+                speaker: actionItem.who,
+                text: actionItem.what,
+                tokens: this.tokenize(actionItem.what + ' ' + (actionItem.who || '')),
+                normalizedText: this.normalize(actionItem.what)
+              });
+            }
+          });
+        }
       });
     });
 

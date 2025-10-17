@@ -124,7 +124,7 @@ export default function GlobalCallSearch({ isOpen, onClose, initialQuery = '' }:
       } else if (e.key === 'Enter' && results[selectedIndex]) {
         e.preventDefault();
         const result = results[selectedIndex];
-        const url = `${result.callPath}?search=${encodeURIComponent(query)}&timestamp=${result.timestamp}&type=${result.type}`;
+        const url = `${result.callPath}?search=${encodeURIComponent(query)}&timestamp=${result.timestamp}&type=${result.type}&text=${encodeURIComponent(result.text)}`;
         window.location.href = url;
       }
     };
@@ -332,7 +332,7 @@ export default function GlobalCallSearch({ isOpen, onClose, initialQuery = '' }:
                 return (
                   <Link
                     key={`${result.callPath}-${result.timestamp}-${index}`}
-                    to={`${result.callPath}?search=${encodeURIComponent(query)}&timestamp=${result.timestamp}&type=${result.type}`}
+                    to={`${result.callPath}?search=${encodeURIComponent(query)}&timestamp=${result.timestamp}&type=${result.type}&text=${encodeURIComponent(result.text)}`}
                     onMouseEnter={() => setSelectedIndex(index)}
                     className={`block w-full text-left px-3 sm:px-4 py-4 sm:py-3 hover:bg-slate-50 dark:hover:bg-slate-700/30 transition-colors touch-manipulation ${
                       isSelected ? 'bg-slate-50 dark:bg-slate-700/30' : ''

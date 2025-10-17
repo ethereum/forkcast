@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef, useCallback } from 'react';
-import { Link, useParams } from 'react-router-dom';
+import { Link, useParams, useLocation } from 'react-router-dom';
 import YouTube, { YouTubeProps } from 'react-youtube';
 import ChatLog from './ChatLog';
 import Summary from './Summary';
@@ -30,6 +30,7 @@ interface CallConfig {
 
 const CallPage: React.FC = () => {
   const { '*': callPath } = useParams();
+  const location = useLocation();
   const [callData, setCallData] = useState<CallData | null>(null);
   const [callConfig, setCallConfig] = useState<CallConfig | null>(null);
   const [loading, setLoading] = useState(true);
@@ -54,6 +55,137 @@ const CallPage: React.FC = () => {
     (navigator.userAgent.indexOf('Mac') !== -1 || navigator.userAgent.indexOf('iPhone') !== -1 || navigator.userAgent.indexOf('iPad') !== -1) :
     false;
   const searchShortcut = isMac ? '⌘F' : 'Ctrl+F';
+
+  // Variable to track initial search query from URL
+  const [initialSearchQuery, setInitialSearchQuery] = useState('');
+  // Track if we've already navigated to avoid duplicate seeks
+  const hasNavigatedToSearchResult = useRef(false);
+
+  // Handle search parameters from URL for direct navigation
+  useEffect(() => {
+    const searchParams = new URLSearchParams(location.search);
+    const searchQuery = searchParams.get('search');
+    const timestamp = searchParams.get('timestamp');
+    const type = searchParams.get('type');
+
+    if (searchQuery && timestamp && type) {
+      // Store the search query for initialization (but don't open search modal)
+      setInitialSearchQuery(searchQuery);
+
+      // Set up highlighting
+      setSelectedSearchResult({
+        timestamp,
+        text: searchQuery,
+        type
+      });
+
+      // Auto-expand summary for agenda/action items
+      if (type === 'agenda' || type === 'action') {
+        setSummaryExpanded(true);
+      }
+
+      // We'll handle the video seek and scroll after everything is loaded
+      // This will be done in a separate effect once the player and callConfig are ready
+    }
+  }, [location.search]);
+
+  // Handle navigation to selected search result when player is ready
+  useEffect(() => {
+    if (selectedSearchResult && player && callConfig && callData && !hasNavigatedToSearchResult.current) {
+      const { timestamp, type } = selectedSearchResult;
+
+      // Mark that we've navigated to prevent duplicate seeks
+      hasNavigatedToSearchResult.current = true;
+
+      // Helper to convert timestamp for video seek
+      const timestampToSecs = (ts: string): number => {
+        const parts = ts.split(':');
+        if (parts.length !== 3) return 0;
+        const [hours, minutes, seconds] = parts.map(p => parseFloat(p));
+        return hours * 3600 + minutes * 60 + seconds;
+      };
+
+      // Calculate adjusted time for video
+      const transcriptSeconds = timestampToSecs(timestamp.split('.')[0]);
+      let adjustedTime = transcriptSeconds;
+
+      if (callConfig?.sync?.transcriptStartTime && callConfig?.sync?.videoStartTime) {
+        const offset = timestampToSecs(callConfig.sync.transcriptStartTime) -
+                      timestampToSecs(callConfig.sync.videoStartTime);
+        adjustedTime = transcriptSeconds - offset;
+      }
+
+      // Seek video to timestamp - check if player has seekTo method
+      // Wait a bit for player to be fully ready
+      setTimeout(() => {
+        try {
+          if (player && typeof player.seekTo === 'function' && callData.videoUrl) {
+            player.seekTo(adjustedTime);
+            setCurrentVideoTime(adjustedTime);
+          }
+        } catch (error) {
+          console.warn('Error seeking video:', error);
+        }
+      }, 100);
+
+      // Scroll to the entry after DOM is ready
+      setTimeout(() => {
+        if (type === 'transcript' && transcriptRef.current) {
+          const targetEntry = transcriptRef.current.querySelector(`[data-timestamp="${timestamp}"]`) as HTMLElement;
+          if (targetEntry) {
+            const container = transcriptRef.current;
+            const containerHeight = container.clientHeight;
+            const containerRect = container.getBoundingClientRect();
+            const entryRect = targetEntry.getBoundingClientRect();
+            const entryOffsetFromContainerTop = entryRect.top - containerRect.top + container.scrollTop;
+            const targetScrollTop = entryOffsetFromContainerTop - (containerHeight * 0.1);
+            const maxScroll = Math.max(0, container.scrollHeight - containerHeight);
+            const finalScrollTop = Math.max(0, Math.min(targetScrollTop, maxScroll));
+
+            container.scrollTo({
+              top: finalScrollTop,
+              behavior: 'smooth'
+            });
+          }
+        } else if (type === 'chat' && chatLogRef.current) {
+          // Wait a bit longer for chat to render since it's more complex
+          setTimeout(() => {
+            const targetEntry = chatLogRef.current?.querySelector(`[data-chat-timestamp="${timestamp}"]`) as HTMLElement;
+            console.log('Chat scroll debug:', {
+              timestamp,
+              targetEntry: !!targetEntry,
+              container: !!chatLogRef.current,
+              allChatEntries: chatLogRef.current?.querySelectorAll('[data-chat-timestamp]').length
+            });
+
+            if (targetEntry && chatLogRef.current) {
+              const container = chatLogRef.current;
+              const containerHeight = container.clientHeight;
+              const containerRect = container.getBoundingClientRect();
+              const entryRect = targetEntry.getBoundingClientRect();
+              const entryOffsetFromContainerTop = entryRect.top - containerRect.top + container.scrollTop;
+              const targetScrollTop = entryOffsetFromContainerTop - (containerHeight * 0.1);
+              const maxScroll = Math.max(0, container.scrollHeight - containerHeight);
+              const finalScrollTop = Math.max(0, Math.min(targetScrollTop, maxScroll));
+
+              console.log('Chat scroll calculations:', {
+                containerHeight,
+                entryOffsetFromContainerTop,
+                targetScrollTop,
+                finalScrollTop,
+                maxScroll
+              });
+
+              container.scrollTo({
+                top: finalScrollTop,
+                behavior: 'smooth'
+              });
+            }
+          }, 500); // Extra delay for chat rendering
+        }
+      }, 500); // Wait for DOM to be ready
+    }
+  }, [selectedSearchResult, player, callConfig, callData]);
 
   // Keyboard shortcut to open search (Cmd/Ctrl + F)
   useEffect(() => {
@@ -828,6 +960,7 @@ const CallPage: React.FC = () => {
         currentVideoTime={currentVideoTime}
         isOpen={isSearchOpen}
         setIsOpen={setIsSearchOpen}
+        initialQuery={initialSearchQuery}
       />
 
       {/* Content */}

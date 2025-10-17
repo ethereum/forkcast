@@ -23,6 +23,7 @@ interface CallSearchProps {
   currentVideoTime?: number;
   isOpen: boolean;
   setIsOpen: (isOpen: boolean) => void;
+  initialQuery?: string;
 }
 
 const CallSearch: React.FC<CallSearchProps> = ({
@@ -35,8 +36,9 @@ const CallSearch: React.FC<CallSearchProps> = ({
   currentVideoTime: _currentVideoTime = 0, // Keep for future use
   isOpen,
   setIsOpen,
+  initialQuery = '',
 }) => {
-  const [query, setQuery] = useState('');
+  const [query, setQuery] = useState(initialQuery);
   const [selectedFilter, setSelectedFilter] = useState<'all' | 'transcript' | 'chat' | 'agenda' | 'action'>('all');
   const [selectedIndex, setSelectedIndex] = useState(0);
   const [showContext, setShowContext] = useState(true);
@@ -57,12 +59,15 @@ const CallSearch: React.FC<CallSearchProps> = ({
     return () => window.removeEventListener('keydown', handleKeyDown);
   }, [isOpen, setIsOpen]);
 
-  // Focus input when opened
+  // Focus input when opened and set initial query
   useEffect(() => {
     if (isOpen && searchInputRef.current) {
       searchInputRef.current.focus();
+      if (initialQuery) {
+        setQuery(initialQuery);
+      }
     }
-  }, [isOpen]);
+  }, [isOpen, initialQuery]);
 
   // Helper functions for timestamp conversion
   const timestampToSeconds = (timestamp: string): number => {

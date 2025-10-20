@@ -1,0 +1,282 @@
+import React, { useEffect, useRef } from 'react';
+
+interface HighlightItem {
+  timestamp: string;
+  highlight: string;
+}
+
+interface ActionItem {
+  timestamp: string;
+  action: string;
+  owner: string;
+}
+
+interface Decision {
+  timestamp: string;
+  decision: string;
+}
+
+interface Commitment {
+  timestamp: string;
+  commitment: string;
+}
+
+interface TldrData {
+  meeting: string;
+  highlights: {
+    [category: string]: HighlightItem[];
+  };
+  action_items: ActionItem[];
+  decisions_made: Decision[];
+  notable_commitments: Commitment[];
+}
+
+interface SyncConfig {
+  transcriptStartTime: string;
+  videoStartTime: string;
+  description?: string;
+}
+
+interface TldrSummaryProps {
+  data: TldrData;
+  onTimestampClick?: (timestamp: string) => void;
+  syncConfig?: SyncConfig;
+  currentVideoTime?: number;
+  selectedSearchResult?: {timestamp: string, text: string, type: string} | null;
+}
+
+const TldrSummary: React.FC<TldrSummaryProps> = ({
+  data,
+  onTimestampClick,
+  syncConfig,
+  currentVideoTime = 0,
+  selectedSearchResult
+}) => {
+  const containerRef = useRef<HTMLDivElement>(null);
+
+  const formatTimestamp = (timestamp: string): string => {
+    const [hours, minutes, seconds] = timestamp.split(':');
+    const h = parseInt(hours);
+    const m = parseInt(minutes);
+    if (h === 0) {
+      return `00:${m}:${seconds}`;
+    }
+    return `${h}:${m}:${seconds}`;
+  };
+
+  const timestampToSeconds = (timestamp: string | null | undefined): number => {
+    if (!timestamp) return 0;
+    const parts = timestamp.split(':');
+    if (parts.length !== 3) return 0;
+    const [hours, minutes, seconds] = parts.map(p => parseFloat(p));
+    return hours * 3600 + minutes * 60 + seconds;
+  };
+
+  const getDisplayTimestamp = (timestamp: string): string => {
+    return formatTimestamp(timestamp);
+  };
+
+
+  const handleTimestampClick = (timestamp: string, event: React.MouseEvent) => {
+    event.stopPropagation();
+    if (onTimestampClick) {
+      onTimestampClick(timestamp);
+    }
+  };
+
+  const formatCategoryName = (category: string): string => {
+    return category.split('_').map(word =>
+      word.charAt(0).toUpperCase() + word.slice(1)
+    ).join(' ');
+  };
+
+  const getAdjustedVideoTime = (transcriptTimestamp: string): number => {
+    const transcriptSeconds = timestampToSeconds(formatTimestamp(transcriptTimestamp));
+    if (syncConfig?.transcriptStartTime && syncConfig?.videoStartTime) {
+      const transcriptStartSeconds = timestampToSeconds(syncConfig.transcriptStartTime);
+      const videoStartSeconds = timestampToSeconds(syncConfig.videoStartTime);
+      const offset = transcriptStartSeconds - videoStartSeconds;
+      return transcriptSeconds - offset;
+    }
+    return transcriptSeconds;
+  };
+
+  const isCurrentHighlight = (timestamp: string, allHighlights: HighlightItem[]): boolean => {
+    if (!currentVideoTime || !syncConfig?.transcriptStartTime || !syncConfig?.videoStartTime) return false;
+    const itemVideoTime = getAdjustedVideoTime(timestamp);
+    const itemIndex = allHighlights.findIndex(h => h.timestamp === timestamp);
+    const nextItem = itemIndex < allHighlights.length - 1 ? allHighlights[itemIndex + 1] : null;
+    const nextItemVideoTime = nextItem ? getAdjustedVideoTime(nextItem.timestamp) : Infinity;
+    return currentVideoTime >= itemVideoTime && currentVideoTime < nextItemVideoTime;
+  };
+
+  const allHighlights: HighlightItem[] = Object.values(data.highlights).flat();
+
+  useEffect(() => {
+    if (!selectedSearchResult) return;
+    if (selectedSearchResult.type === 'agenda') {
+      setTimeout(() => {
+        if (containerRef.current) {
+          const selectedElement = containerRef.current.querySelector(
+            `[data-highlight-timestamp="${selectedSearchResult.timestamp}"]`
+          ) as HTMLElement;
+          if (selectedElement) {
+            selectedElement.scrollIntoView({ behavior: 'smooth', block: 'center' });
+          }
+        }
+      }, 100);
+    }
+  }, [selectedSearchResult]);
+
+  return (
+    <div ref={containerRef} className="grid grid-cols-1 lg:grid-cols-5 gap-6">
+      {/* Left Column: Highlights */}
+      <div className="lg:col-span-3">
+        <h2 className="text-base font-semibold text-slate-900 dark:text-slate-100 mb-4">
+          TL;DR
+        </h2>
+        <div className="space-y-4">
+          {Object.entries(data.highlights).map(([category, items]) => (
+            <div key={category}>
+              <h3 className="text-xs font-semibold text-slate-900 dark:text-slate-100 uppercase tracking-wide mb-2">
+                {formatCategoryName(category)}
+              </h3>
+              <ul className="space-y-1 list-disc list-outside ml-5 text-slate-600 dark:text-slate-400">
+                {items.map((item, index) => {
+                  const isHighlighted = isCurrentHighlight(item.timestamp, allHighlights);
+                  const isSelected = selectedSearchResult?.timestamp === item.timestamp &&
+                                   selectedSearchResult?.type === 'agenda';
+                  return (
+                    <li
+                      key={index}
+                      data-highlight-timestamp={item.timestamp}
+                      onClick={(e) => handleTimestampClick(item.timestamp, e)}
+                      className="text-sm cursor-pointer group text-slate-600 dark:text-slate-400"
+                    >
+                      <span className={`rounded px-1 py-0.5 transition-colors inline ${
+                        isSelected
+                          ? 'bg-yellow-50 dark:bg-yellow-900/50 text-slate-900 dark:text-slate-100'
+                          : isHighlighted
+                          ? 'bg-blue-50 dark:bg-blue-900/50 text-slate-900 dark:text-slate-100'
+                          : 'hover:text-slate-900 dark:hover:text-slate-100'
+                      }`}>
+                        {item.highlight}
+                      </span>
+                      <span className="text-xs text-slate-400 dark:text-slate-500 ml-1 opacity-0 group-hover:opacity-100 transition-opacity">
+                        {getDisplayTimestamp(item.timestamp)}
+                      </span>
+                    </li>
+                  );
+                })}
+              </ul>
+            </div>
+          ))}
+        </div>
+      </div>
+
+      {/* Right Column: Actions, Decisions, Commitments */}
+      <div className="lg:col-span-2 space-y-6">
+        {/* Action Items */}
+        {data.action_items && data.action_items.length > 0 && (
+          <div className="pb-6 border-b border-slate-200 dark:border-slate-700">
+            <h3 className="text-xs font-semibold text-slate-900 dark:text-slate-100 uppercase tracking-wide mb-2">
+              Action Items
+            </h3>
+            <ul className="space-y-1 list-none ml-0">
+              {data.action_items.map((item, index) => {
+                const isSelected = selectedSearchResult?.timestamp === item.timestamp &&
+                                 selectedSearchResult?.type === 'action';
+                return (
+                  <li
+                    key={index}
+                    onClick={(e) => handleTimestampClick(item.timestamp, e)}
+                    className="text-sm cursor-pointer group before:content-['→'] before:mr-2 before:text-slate-400 dark:before:text-slate-500 text-slate-600 dark:text-slate-400"
+                  >
+                    <span className={`rounded px-1 py-0.5 transition-colors inline ${
+                      isSelected
+                        ? 'bg-yellow-50 dark:bg-yellow-900/50 text-slate-900 dark:text-slate-100'
+                        : 'hover:text-slate-900 dark:hover:text-slate-100'
+                    }`}>
+                      <span className="font-normal">{item.owner}:</span> {item.action}
+                    </span>
+                    <span className="text-xs text-slate-400 dark:text-slate-500 ml-1 opacity-0 group-hover:opacity-100 transition-opacity">
+                      {getDisplayTimestamp(item.timestamp)}
+                    </span>
+                  </li>
+                );
+              })}
+            </ul>
+          </div>
+        )}
+
+        {/* Decisions Made */}
+        {data.decisions_made && data.decisions_made.length > 0 && (
+          <div className="pb-6 border-b border-slate-200 dark:border-slate-700">
+            <h3 className="text-xs font-semibold text-slate-900 dark:text-slate-100 uppercase tracking-wide mb-2">
+              Decisions
+            </h3>
+            <ul className="space-y-1 list-none ml-0">
+              {data.decisions_made.map((decision, index) => {
+                const isSelected = selectedSearchResult?.timestamp === decision.timestamp &&
+                                 selectedSearchResult?.type === 'decision';
+                return (
+                  <li
+                    key={index}
+                    onClick={(e) => handleTimestampClick(decision.timestamp, e)}
+                    className="text-sm cursor-pointer group before:content-['→'] before:mr-2 before:text-slate-400 dark:before:text-slate-500 text-slate-600 dark:text-slate-400"
+                  >
+                    <span className={`rounded px-1 py-0.5 transition-colors inline ${
+                      isSelected
+                        ? 'bg-yellow-50 dark:bg-yellow-900/50 text-slate-900 dark:text-slate-100'
+                        : 'hover:text-slate-900 dark:hover:text-slate-100'
+                    }`}>
+                      {decision.decision}
+                    </span>
+                    <span className="text-xs text-slate-400 dark:text-slate-500 ml-1 opacity-0 group-hover:opacity-100 transition-opacity">
+                      {getDisplayTimestamp(decision.timestamp)}
+                    </span>
+                  </li>
+                );
+              })}
+            </ul>
+          </div>
+        )}
+
+        {/* Notable Commitments */}
+        {data.notable_commitments && data.notable_commitments.length > 0 && (
+          <div>
+            <h3 className="text-xs font-semibold text-slate-900 dark:text-slate-100 uppercase tracking-wide mb-2">
+              Targets
+            </h3>
+            <ul className="space-y-1 list-none ml-0">
+              {data.notable_commitments.map((commitment, index) => {
+                const isSelected = selectedSearchResult?.timestamp === commitment.timestamp &&
+                                 selectedSearchResult?.type === 'commitment';
+                return (
+                  <li
+                    key={index}
+                    onClick={(e) => handleTimestampClick(commitment.timestamp, e)}
+                    className="text-sm cursor-pointer group before:content-['→'] before:mr-2 before:text-slate-400 dark:before:text-slate-500 text-slate-600 dark:text-slate-400"
+                  >
+                    <span className={`rounded px-1 py-0.5 transition-colors inline ${
+                      isSelected
+                        ? 'bg-yellow-50 dark:bg-yellow-900/50 text-slate-900 dark:text-slate-100'
+                        : 'hover:text-slate-900 dark:hover:text-slate-100'
+                    }`}>
+                      {commitment.commitment}
+                    </span>
+                    <span className="text-xs text-slate-400 dark:text-slate-500 ml-1 opacity-0 group-hover:opacity-100 transition-opacity">
+                      {getDisplayTimestamp(commitment.timestamp)}
+                    </span>
+                  </li>
+                );
+              })}
+            </ul>
+          </div>
+        )}
+      </div>
+    </div>
+  );
+};
+
+export default TldrSummary;

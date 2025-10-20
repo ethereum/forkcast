@@ -15,6 +15,7 @@ interface CallSearchProps {
   chatContent?: string;
   agendaData?: any;
   summaryData?: any;
+  tldrData?: any;
   onResultClick?: (timestamp: string, searchResult?: SearchResult) => void;
   syncConfig?: {
     transcriptStartTime: string;
@@ -31,6 +32,7 @@ const CallSearch: React.FC<CallSearchProps> = ({
   chatContent,
   agendaData,
   summaryData: _summaryData, // Keep for future use
+  tldrData,
   onResultClick,
   syncConfig,
   currentVideoTime: _currentVideoTime = 0, // Keep for future use
@@ -309,8 +311,42 @@ const CallSearch: React.FC<CallSearchProps> = ({
       });
     }
 
-    // Search agenda topics
-    if (agendaData && (selectedFilter === 'all' || selectedFilter === 'agenda')) {
+    // Search agenda topics - prioritize tldrData if available
+    if (tldrData && (selectedFilter === 'all' || selectedFilter === 'agenda')) {
+      // Search highlights from tldr
+      const allHighlights = Object.values(tldrData.highlights).flat() as any[];
+      allHighlights.forEach((item: any, index: number) => {
+        const highlightLower = item.highlight.toLowerCase();
+
+        let score = 0;
+        let hasMatch = false;
+
+        if (highlightLower.includes(queryLower)) {
+          score += 10;
+          hasMatch = true;
+        }
+
+        const allWordsPresent = queryWords.every(word => highlightLower.includes(word));
+        if (allWordsPresent) {
+          score += 5;
+          hasMatch = true;
+        }
+
+        queryWords.forEach(word => {
+          if (highlightLower.includes(word)) score += 2;
+        });
+
+        if (hasMatch || score > 0) {
+          results.push({
+            type: 'agenda',
+            timestamp: item.timestamp,
+            text: item.highlight,
+            matchScore: score,
+            originalIndex: index,
+          });
+        }
+      });
+    } else if (agendaData && (selectedFilter === 'all' || selectedFilter === 'agenda')) {
       const allItems = agendaData.agenda.flatMap((section: any) => section.items);
       allItems.forEach((item: any, index: number) => {
         const titleLower = item.title.toLowerCase();
@@ -350,8 +386,47 @@ const CallSearch: React.FC<CallSearchProps> = ({
       });
     }
 
-    // Search action items
-    if (agendaData && (selectedFilter === 'all' || selectedFilter === 'action')) {
+    // Search action items - prioritize tldrData if available
+    if (tldrData && (selectedFilter === 'all' || selectedFilter === 'action')) {
+      if (tldrData.action_items) {
+        tldrData.action_items.forEach((action: any, index: number) => {
+          const actionLower = action.action.toLowerCase();
+          const ownerLower = (action.owner || '').toLowerCase();
+
+          let score = 0;
+          let hasMatch = false;
+
+          if (actionLower.includes(queryLower) || ownerLower.includes(queryLower)) {
+            score += 10;
+            hasMatch = true;
+          }
+
+          const allWordsPresent = queryWords.every(word =>
+            actionLower.includes(word) || ownerLower.includes(word)
+          );
+          if (allWordsPresent) {
+            score += 5;
+            hasMatch = true;
+          }
+
+          queryWords.forEach(word => {
+            if (actionLower.includes(word)) score += 2;
+            if (ownerLower.includes(word)) score += 3;
+          });
+
+          if (hasMatch || score > 0) {
+            results.push({
+              type: 'action',
+              timestamp: action.timestamp,
+              speaker: action.owner,
+              text: action.action,
+              matchScore: score + 5, // Bonus for action items
+              originalIndex: index,
+            });
+          }
+        });
+      }
+    } else if (agendaData && (selectedFilter === 'all' || selectedFilter === 'action')) {
       const allItems = agendaData.agenda.flatMap((section: any) => section.items);
       allItems.forEach((item: any) => {
         if (item.action_items) {
@@ -405,7 +480,7 @@ const CallSearch: React.FC<CallSearchProps> = ({
     });
 
     return results;
-  }, [transcriptContent, chatContent, agendaData, selectedFilter]);
+  }, [transcriptContent, chatContent, agendaData, tldrData, selectedFilter]);
 
   const searchResults = useMemo(() => searchContent(query), [searchContent, query]);
 

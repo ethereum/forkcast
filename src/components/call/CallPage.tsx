@@ -4,6 +4,7 @@ import YouTube, { YouTubeProps } from 'react-youtube';
 import ChatLog from './ChatLog';
 import Summary from './Summary';
 import AgendaSummary from './AgendaSummary';
+import TldrSummary from './TldrSummary';
 import CallSearch from './CallSearch';
 import ThemeToggle from '../ui/ThemeToggle';
 
@@ -16,6 +17,7 @@ interface CallData {
   videoUrl?: string;
   summaryData?: any;
   agendaData?: any;
+  tldrData?: any;
 }
 
 interface CallConfig {
@@ -404,6 +406,18 @@ const CallPage: React.FC = () => {
           }
         }
 
+        // Load tldr if it exists
+        const tldrResponse = await fetch(`/artifacts/${artifactPath}/tldr.json`);
+        let tldrData = undefined;
+        if (tldrResponse.ok) {
+          try {
+            tldrData = await tldrResponse.json();
+            console.log('Loaded tldr:', tldrData);
+          } catch (e) {
+            console.warn('Failed to parse tldr.json:', e);
+          }
+        }
+
         // Load config file if it exists
         const configResponse = await fetch(`/artifacts/${artifactPath}/config.json`);
         let config: CallConfig | null = null;
@@ -445,7 +459,8 @@ const CallPage: React.FC = () => {
           transcriptContent,
           videoUrl,
           summaryData,
-          agendaData
+          agendaData,
+          tldrData
         });
 
       } catch (error) {
@@ -956,6 +971,7 @@ const CallPage: React.FC = () => {
         chatContent={callData.chatContent}
         agendaData={callData.agendaData}
         summaryData={callData.summaryData}
+        tldrData={callData.tldrData}
         onResultClick={handleTranscriptClick}
         syncConfig={callConfig?.sync}
         currentVideoTime={currentVideoTime}
@@ -1044,7 +1060,7 @@ const CallPage: React.FC = () => {
         )}
 
         {/* Meeting Summary Section */}
-        {(callData.agendaData || callData.summaryData) && (
+        {(callData.tldrData || callData.agendaData || callData.summaryData) && (
           <div className="mb-4">
             <div className="bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg shadow-sm hover:shadow-md transition-shadow">
               <button
@@ -1056,7 +1072,11 @@ const CallPage: React.FC = () => {
                     Summary
                   </h2>
                   <div className="flex items-center gap-2">
-                    {callData.agendaData ? (
+                    {callData.tldrData ? (
+                      <span className="text-xs text-slate-500 dark:text-slate-400">
+                        {Object.values(callData.tldrData.highlights).flat().length} highlights • {callData.tldrData.action_items?.length || 0} action items
+                      </span>
+                    ) : callData.agendaData ? (
                       <span className="text-xs text-slate-500 dark:text-slate-400">
                         {callData.agendaData.agenda.flatMap((section: any) => section.items).length} topics • {callData.agendaData.agenda.flatMap((section: any) => section.items).reduce((sum: number, item: any) => sum + (item.action_items?.length || 0), 0)} action items
                       </span>
@@ -1082,7 +1102,15 @@ const CallPage: React.FC = () => {
               {summaryExpanded && (
                 <div className="border-t border-slate-200 dark:border-slate-700 transition-opacity duration-500 ease-out opacity-0 animate-[fadeIn_0.5s_ease-out_forwards]">
                   <div className="p-6">
-                    {callData.agendaData ? (
+                    {callData.tldrData ? (
+                      <TldrSummary
+                        data={callData.tldrData}
+                        onTimestampClick={handleTranscriptClick}
+                        syncConfig={callConfig?.sync}
+                        currentVideoTime={currentVideoTime}
+                        selectedSearchResult={selectedSearchResult}
+                      />
+                    ) : callData.agendaData ? (
                       <AgendaSummary
                         data={callData.agendaData}
                         onTimestampClick={handleTranscriptClick}

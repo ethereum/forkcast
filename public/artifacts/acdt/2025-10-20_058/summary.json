@@ -1,0 +1,50 @@
+{
+  "meeting_topic": "All Core Devs - Testing (ACDT) #58, Oct 20, 2025",
+  "meeting_start_time": "2025-10-20T13:50:54Z",
+  "meeting_end_time": "2025-10-20T14:23:01Z",
+  "summary_start_time": "2025-10-20T14:00:43Z",
+  "summary_end_time": "2025-10-20T14:23:00Z",
+  "summary_created_time": "2025-10-20T14:23:58Z",
+  "summary_last_modified_time": "2025-10-20T15:58:26Z",
+  "summary_overview": "The team discussed updates on the Sepolia hard fork and upcoming changes related to the Fusaka blob update, including new release plans for various clients and potential system issues to watch for. They reviewed progress on client implementations and discussed improvements in RPC compatibility, with a new communication approach being implemented on the Steel Discord server. The team also addressed concerns about the upcoming shutdown of Bosky and discussed various technical issues including block-level access lists and gas limit problems in account abstraction.",
+  "summary_details": [
+    {
+      "label": "Sepolia Hard Fork Updates",
+      "summary": "The team discussed updates on the Sepolia hard fork and upcoming changes related to the Fusaka blob update. Barnabas reported that the first BPO will increase the target to 10 and max to 15 blobs on Sapori, with the next BPO scheduled for October 28th. James mentioned a new release for prysm to fix the blob endpoint on mainnet, and Parithosh highlighted the introduction of a 16 million transaction cap limit with Osaka, advising users to review their systems for potential issues. The team encouraged users to report any UX or RPC-related issues observed after the Sepolia Fusaka update for further tracking and fixes before the mainnet launch."
+    },
+    {
+      "label": "Erigon 3.2.1 Release Discussion",
+      "summary": "The team discussed the release of Erigon 3.2.1, which includes bug fixes and is recommended for use on Hoodi due to fixing an issue with Aragon producing invalid blocks. Andrew explained that the invalid block issue occurred when transactions depended on the beacon route, and Parithosh suggested discussing more details in a shared chat and adding a test case to EEST. The team also mentioned an optional release of Geth and planned to update their blog with information about Lighthouse and Aragon issues."
+    },
+    {
+      "label": "Geth Blob Transaction Conversion Update",
+      "summary": "The team discussed the upcoming release of Geth that will automatically convert blob transactions for L2s still sending the wrong transactions, which will be enabled by default without any flags. Parithosh clarified that this conversion feature will be available in the next one or two releases after the fork. Ameziane mentioned that Besu also has an optional release available. The team also briefly discussed enabling 60M gas on Hoodi, which Parithosh confirmed should already be at that level."
+    },
+    {
+      "label": "Bosky Shutdown and Migration Alert",
+      "summary": "The team discussed the status of Hoodie, which is already at 60 million, and confirmed it's in good shape. Barnabas warned about the upcoming shutdown of Bosky by the end of the month, urging operators to migrate their infrastructure away from it as non-finality is expected by the end of the week. The team agreed to create a blog post to remind everyone about the Bosky shutdown, which Parithosh and Barnabas will work on this week."
+    },
+    {
+      "label": "DevNet 2 and Gas Limit Issues",
+      "summary": "The team discussed issues with user operations in account abstraction and gas limit problems, with Marek explaining that increasing gas limits is challenging with bundled transactions. Parithosh provided updates on DevNet 2, noting that while most nodes are now healthy, there's still an unhealthy Netherland node that needs to be fixed before switching the network ID. The team also mentioned that Aragon wants to conduct tests on PostDevnet, and Stefan was asked for an update on block-level access lists, which was not provided in the transcript."
+    },
+    {
+      "label": "Client Implementations and Spec Updates",
+      "summary": "The team discussed progress on client implementations, with Besu, Geth, and Nethermind being close to completion for DevNet0. Toni mentioned an upcoming block access list breakout call on Wednesday to discuss Coinbase handling and edge cases. The team also discussed visualization improvements for block-level access lists in DORA, with Toni noting that a tab already exists in the Explorer but metrics are still pending. Justin provided an update on the EPBS spec, confirming that the Beta Zero spec is finalized for DevNet0, with a new Beta 1 release planned for later in the week. The team encouraged client teams to reach out if they have implementations ready for early testing."
+    },
+    {
+      "label": "RPC Compatibility and Communication Updates",
+      "summary": "The team discussed improvements in RPC compatibility, with \u0141ukasz reporting progress in parsing implementation and increased compatibility with Hive tests. Parithosh mentioned that a weekly bot now tracks RPC compatibility progress, noting positive improvements in two clients and a 13% increase in passing tests. The team also announced a new communication approach, consolidating channels on the Steel Discord server for better coordination between client developers and testing teams."
+    }
+  ],
+  "next_steps": [
+    "Ethereum Foundation to publish a blog post about the transaction cap limit with Osaka and considerations for users with pre-signed transactions.",
+    "Ethereum Foundation to publish a blog post reminding everyone about Holsky shutdown by the end of the month.",
+    "Pawan to release a new RC for Hoodie with bug fixes.",
+    "Parithosh to update the blog with Lighthouse, Aragon, and other client issues.",
+    "Client teams to implement block-level access lists for DevNet 0 .",
+    "EPBS team to release Beta 1 spec sometime this week.",
+    "Toni's team to discuss Coinbase handling for block-level access lists at the breakout call on Wednesday.",
+    "Katya to introduce metrics for block-level access lists in DORA."
+  ]
+}

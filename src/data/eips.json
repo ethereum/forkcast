@@ -3149,7 +3149,7 @@
     "category": "Core",
     "createdDate": "2025-04-12",
     "discussionLink": "https://ethereum-magicians.org/t/eip-7932-secondary-signature-algorithms/23514",
-    "reviewer": "bot",
+    "reviewer": "expert",
     "forkRelationships": [
       {
         "forkName": "Glamsterdam",
@@ -3158,7 +3158,13 @@
         "champion": { "name": "SirSpudlington", "discord": "txtiger" }
       }
     ],
-    "laymanDescription": "Creates a standardized way for new transaction-level signature algorithms to be added. Allowing easier migration and higher interoperability with current systems.",
+    "laymanDescription": "Creates a standardized way for new transaction-level signature algorithms to be added. Which allows easier migration and higher interoperability with current systems.",
+    "northStars": ["Improve UX"],
+    "northStarAlignment": {
+      "improveUX": {
+        "description": "Improves user experience by enabling easier adoption of alternative signatures without placing too high a burden on app developers. EIP-7932 also improves security by providing a pathway for quantum safe account migration."
+      }
+    },
     "stakeholderImpacts": {
       "endUsers": {
         "description": "Improves security by allowing users to choose other signing algorithms. Potentially the option for native TPM / passkey support."
@@ -3173,7 +3179,7 @@
         "description": "Requires large initial modifications for EIP implementation but lower future overhead on introduction of new algorithms."
       },
       "layer2s": {
-        "description": "No direct impact on layer 2s unless this EIP is adopted."
+        "description": "No direct impact on layer 2s unless this EIP is adopted by that L2."
       },
       "stakersNodes": {
         "description": "May reduce resource consumption due to non-EVM verification of alternate algorithms."
@@ -3946,7 +3952,7 @@
     "category": "Core",
     "createdDate": "2025-09-20",
     "discussionLink": "https://ethereum-magicians.org/t/discussion-topic-for-eip-8030/25557",
-    "reviewer": "bot",
+    "reviewer": "expert",
     "forkRelationships": [
       {
         "forkName": "Glamsterdam",
@@ -3956,9 +3962,15 @@
       }
     ],
     "laymanDescription": "Adds P256 signatures to Ethereum transactions, improving security and compatibility with other technologies.",
+    "northStars": ["Improve UX"],
+    "northStarAlignment": {
+      "improveUX": {
+        "description": "Improves user experience by enabling transaction signature support for secp256r1, and improves EIP-7932 security by adding a test vector of a well-known algorithm."
+      }
+    },
     "stakeholderImpacts": {
       "endUsers": {
-        "description": "Improves signature algorithm options for users and potentiall enables native passkey / TPM support."
+        "description": "Improves signature algorithm options for users and potentially enables native passkey / TPM support."
       },
       "appDevs": {
         "description": "Does not affect app developers under EIP-7932 framework."
@@ -3984,7 +3996,7 @@
     },
     "benefits": [
       "Increases security and flexibility in Ethereum transactions with P256 signatures.",
-      "Provides developers with new tools to enhance compatibility with modern cryptographic methods.",
+      "Provides a proven-secure algorithm for testing EIP-7932.",
       "Facilitates smoother interoperability with other blockchain technologies supporting P256.",
       "Helps maintain Ethereum's competitive edge by adapting to popular cryptographic standards."
     ]

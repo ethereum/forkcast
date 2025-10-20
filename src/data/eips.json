@@ -3143,7 +3143,7 @@
     "id": 7932,
     "title": "EIP-7932: Secondary Signature Algorithms",
     "status": "Draft",
-    "description": "Introduces new algorithms for signing transactions on Ethereum, enabling the use of alternative signature methods.",
+    "description": "Introduces a new transaction type and precompile for handling alternative signature algorithms",
     "author": "James Kempton (@SirSpudlington)",
     "type": "Standards Track",
     "category": "Core",
@@ -3155,41 +3155,41 @@
         "forkName": "Glamsterdam",
         "status": "Proposed",
         "layer": "EL",
-        "champion": { "name": "James Kempton", "discord": "txtiger" }
+        "champion": { "name": "SirSpudlington", "discord": "txtiger" }
       }
     ],
-    "laymanDescription": "Allows the use of alternative signature algorithms, improving security and flexibility in transactions.",
+    "laymanDescription": "Creates a standardized way for new transaction-level signature algorithms to be added. Allowing easier migration and higher interoperability with current systems.",
     "stakeholderImpacts": {
       "endUsers": {
-        "description": "Improves security through advanced signing methods."
+        "description": "Improves security by allowing users to choose other signing algorithms. Potentially the option for native TPM / passkey support."
       },
       "appDevs": {
-        "description": "Enables integration of various algorithms, enhancing transaction capabilities."
+        "description": "Allows abstracting implementation of multiple signature schemes to a single standardized interface. No work is required to support EIP-7932 transactions natively."
       },
       "walletDevs": {
-        "description": "Facilitates the incorporation of alternative signatures, boosting wallet flexibility."
+        "description": "Large changes to transaction / key handling required for wallets to support optional wrapping and signing functionality."
       },
       "toolingInfra": {
-        "description": "Requires updates to support new signature algorithms and transaction types."
+        "description": "Requires large initial modifications for EIP implementation but lower future overhead on introduction of new algorithms."
       },
       "layer2s": {
-        "description": "Increases transaction variety, potentially enhancing compatibility with rollups."
+        "description": "No direct impact on layer 2s unless this EIP is adopted."
       },
       "stakersNodes": {
-        "description": "Optimizes validation processes with newer signing algorithms."
+        "description": "May reduce resource consumption due to non-EVM verification of alternate algorithms."
       },
       "clClients": {
-        "description": "Enhances client functionalities by adapting to different signing methods."
+        "description": "No direct CL effects as this EIP only affects the execution layer."
       },
       "elClients": {
-        "description": "Supports efficient execution of transactions with varied signature algorithms."
+        "description": "Allows easier implementation of existing algorithms without having to rework transaction handling per new algorithm."
       }
     },
     "benefits": [
-      "Standardizes the representation of alternative algorithms, increasing flexibility in transaction signing.",
-      "Improves security against future threats, especially from quantum computing advancements.",
-      "Aids in the transition to new cryptographic methods essential for maintaining network integrity.",
-      "Enhances usability by allowing a broader range of signing algorithms, attracting diverse applications."
+      "Standardizes the introduction of alternative signature algorithms without breaking existing tooling.",
+      "Allows gradual migration to quantum-safe algorithms before quantum-computer threats.",
+      "Reduces client developer workload on introduction of new algorithms.",
+      "Reduces network reliance on single algorithm by increasing signature diversity."
     ]
   },
   {
@@ -3723,59 +3723,6 @@
     ]
   },
   {
-    "id": 7980,
-    "title": "EIP-7980: Ed25519 transaction support",
-    "status": "Draft",
-    "description": "Introduces Ed25519 digital signature support in Ethereum transactions to enhance security and interoperability.",
-    "author": "James Kempton (@SirSpudlington)",
-    "type": "Standards Track",
-    "category": "Core",
-    "createdDate": "2025-06-25",
-    "discussionLink": "https://ethereum-magicians.org/t/eip-7980-adding-ed25519-as-a-signature-scheme-to-test-eip-7932/24663",
-    "reviewer": "bot",
-    "forkRelationships": [
-      {
-        "forkName": "Glamsterdam",
-        "status": "Proposed",
-        "layer": "EL",
-        "champion": { "name": "James Kempton", "discord": "txtiger" }
-      }
-    ],
-    "laymanDescription": "Adds Ed25519 signatures to Ethereum transactions, improving security and compatibility with other technologies.",
-    "stakeholderImpacts": {
-      "endUsers": {
-        "description": "Improves transaction security and options for users."
-      },
-      "appDevs": {
-        "description": "Facilitates testing and enhances security for applications."
-      },
-      "walletDevs": {
-        "description": "Expands wallet capabilities to support new signature types."
-      },
-      "toolingInfra": {
-        "description": "Requires updates to support Ed25519 signature verification."
-      },
-      "layer2s": {
-        "description": "Can utilize Ed25519 for improved cross-platform interactions."
-      },
-      "stakersNodes": {
-        "description": "May require adjustments to accommodate new signature processing."
-      },
-      "clClients": {
-        "description": "Encourages updates to handle diverse signature schemes."
-      },
-      "elClients": {
-        "description": "Enhances the efficiency of contract execution with new signature types."
-      }
-    },
-    "benefits": [
-      "Increases security and flexibility in Ethereum transactions with Ed25519 signatures.",
-      "Provides developers with new tools to enhance compatibility with modern cryptographic methods.",
-      "Facilitates smoother interoperability with other blockchain technologies supporting Ed25519.",
-      "Helps maintain Ethereum's competitive edge by adapting to popular cryptographic standards."
-    ]
-  },
-  {
     "id": 7981,
     "title": "EIP-7981: Increase access list cost",
     "status": "Draft",
@@ -3987,6 +3934,59 @@
       "Improved transaction handling without altering user experience.",
       "Finer control over excessive resource usage leads to fewer network overloads.",
       "Paves the way for advanced pricing models without major protocol disruptions."
+    ]
+  },
+  {
+    "id": 8030,
+    "title": "EIP-8030: P256 transaction support",
+    "status": "Draft",
+    "description": "Adds an EIP-7932 algorithm type for P256 support of type `0x0`",
+    "author": "James Kempton (@SirSpudlington)",
+    "type": "Standards Track",
+    "category": "Core",
+    "createdDate": "2025-09-20",
+    "discussionLink": "https://ethereum-magicians.org/t/discussion-topic-for-eip-8030/25557",
+    "reviewer": "bot",
+    "forkRelationships": [
+      {
+        "forkName": "Glamsterdam",
+        "status": "Proposed",
+        "layer": "EL",
+        "champion": { "name": "SirSpudlington", "discord": "txtiger" }
+      }
+    ],
+    "laymanDescription": "Adds P256 signatures to Ethereum transactions, improving security and compatibility with other technologies.",
+    "stakeholderImpacts": {
+      "endUsers": {
+        "description": "Improves signature algorithm options for users and potentiall enables native passkey / TPM support."
+      },
+      "appDevs": {
+        "description": "Does not affect app developers under EIP-7932 framework."
+      },
+      "walletDevs": {
+        "description": "Expands wallet capabilities to support new signature types."
+      },
+      "toolingInfra": {
+        "description": "Requires simple update to support P256 signature verification."
+      },
+      "layer2s": {
+        "description": "Sequencers may utilize P256 for settling L1 proofs."
+      },
+      "stakersNodes": {
+        "description": "Would have little effect to Node Operators."
+      },
+      "clClients": {
+        "description": "No direct CL effects as this EIP only affects the execution layer."
+      },
+      "elClients": {
+        "description": "Would require minimal update to point the new EIP-7932 entry to the existing P256 precompile."
+      }
+    },
+    "benefits": [
+      "Increases security and flexibility in Ethereum transactions with P256 signatures.",
+      "Provides developers with new tools to enhance compatibility with modern cryptographic methods.",
+      "Facilitates smoother interoperability with other blockchain technologies supporting P256.",
+      "Helps maintain Ethereum's competitive edge by adapting to popular cryptographic standards."
     ]
   },
   {

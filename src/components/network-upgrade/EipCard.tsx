@@ -11,6 +11,8 @@ import {
   getHeadlinerLayer,
 } from '../../utils';
 import { Tooltip, CopyLinkButton } from '../ui';
+import { usePokebalData } from '../../hooks/usePokebalData';
+import { ClientTestingProgress } from './ClientTestingProgress';
 
 interface EipCardProps {
   eip: EIP;
@@ -22,6 +24,9 @@ export const EipCard: React.FC<EipCardProps> = ({ eip, forkName, handleExternalL
   const eipId = `eip-${eip.id}`;
   const layer = getHeadlinerLayer(eip, forkName);
   const [showChampionDetails, setShowChampionDetails] = useState(false);
+
+  // Fetch pokebal data for EIP 7928
+  const { data: pokebalData, loading: pokebalLoading, error: pokebalError } = usePokebalData(eip.id);
 
   return (
     <article key={eip.id} className={`bg-white dark:bg-slate-800 border rounded p-8 ${
@@ -248,6 +253,25 @@ export const EipCard: React.FC<EipCardProps> = ({ eip, forkName, handleExternalL
             </div>
           );
         })()}
+
+        {/* Client Testing Progress (EIP 7928) */}
+        {eip.id === 7928 && !pokebalLoading && (
+          <>
+            {pokebalData && <ClientTestingProgress data={pokebalData} />}
+            {pokebalError && (
+              <div className="mt-4 border-t border-slate-200 dark:border-slate-600 pt-4">
+                <h4 className="text-sm font-semibold text-slate-900 dark:text-slate-100 mb-3 uppercase tracking-wide">
+                  Client Implementation Progress
+                </h4>
+                <div className="bg-amber-50 dark:bg-amber-900/10 border border-amber-200 dark:border-amber-700/30 rounded-lg p-4">
+                  <p className="text-sm text-amber-800 dark:text-amber-200">
+                    Unable to load implementation progress data.
+                  </p>
+                </div>
+              </div>
+            )}
+          </>
+        )}
       </div>
 
       <div className="mt-8 space-y-8">

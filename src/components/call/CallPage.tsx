@@ -154,12 +154,6 @@ const CallPage: React.FC = () => {
           // Wait a bit longer for chat to render since it's more complex
           setTimeout(() => {
             const targetEntry = chatLogRef.current?.querySelector(`[data-chat-timestamp="${timestamp}"]`) as HTMLElement;
-            console.log('Chat scroll debug:', {
-              timestamp,
-              targetEntry: !!targetEntry,
-              container: !!chatLogRef.current,
-              allChatEntries: chatLogRef.current?.querySelectorAll('[data-chat-timestamp]').length
-            });
 
             if (targetEntry && chatLogRef.current) {
               const container = chatLogRef.current;
@@ -170,14 +164,6 @@ const CallPage: React.FC = () => {
               const targetScrollTop = entryOffsetFromContainerTop - (containerHeight * 0.1);
               const maxScroll = Math.max(0, container.scrollHeight - containerHeight);
               const finalScrollTop = Math.max(0, Math.min(targetScrollTop, maxScroll));
-
-              console.log('Chat scroll calculations:', {
-                containerHeight,
-                entryOffsetFromContainerTop,
-                targetScrollTop,
-                finalScrollTop,
-                maxScroll
-              });
 
               container.scrollTo({
                 top: finalScrollTop,
@@ -388,7 +374,6 @@ const CallPage: React.FC = () => {
         if (summaryResponse.ok) {
           try {
             summaryData = await summaryResponse.json();
-            console.log('Loaded summary:', summaryData);
           } catch (e) {
             console.warn('Failed to parse summary.json:', e);
           }
@@ -400,7 +385,6 @@ const CallPage: React.FC = () => {
         if (agendaResponse.ok) {
           try {
             agendaData = await agendaResponse.json();
-            console.log('Loaded agenda:', agendaData);
           } catch (e) {
             console.warn('Failed to parse agenda.json:', e);
           }
@@ -412,7 +396,6 @@ const CallPage: React.FC = () => {
         if (tldrResponse.ok) {
           try {
             tldrData = await tldrResponse.json();
-            console.log('Loaded tldr:', tldrData);
           } catch (e) {
             console.warn('Failed to parse tldr.json:', e);
           }
@@ -425,11 +408,6 @@ const CallPage: React.FC = () => {
           try {
             config = await configResponse.json();
             setCallConfig(config);
-            console.log('Loaded config:', config);
-            if (config?.sync) {
-              const offset = timestampToSeconds(config.sync.transcriptStartTime) - timestampToSeconds(config.sync.videoStartTime);
-              console.log(`Sync offset: ${offset} seconds (transcript ${config.sync.transcriptStartTime} -> video ${config.sync.videoStartTime})`);
-            }
           } catch (e) {
             console.warn('Failed to parse config.json:', e);
           }
@@ -491,7 +469,6 @@ const CallPage: React.FC = () => {
       const timestamp = event.detail.timestamp;
       if (player && timestamp) {
         const adjustedTime = getAdjustedVideoTime(timestamp);
-        console.log(`Summary timestamp ${timestamp} -> seeking to video time ${adjustedTime}s`);
         player.seekTo(adjustedTime);
         player.playVideo();
 

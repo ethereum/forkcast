@@ -1,5 +1,6 @@
 export * from './ClientPerspectives';
 export * from './ClientTeamPerspectives';
+export * from './ClientTestingProgress';
 export * from './EipCard';
 export * from './FusakaTimeline';
 export * from './GlamsterdamTimeline';

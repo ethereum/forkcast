@@ -76,11 +76,10 @@ export const ClientTestingProgress: React.FC<ClientTestingProgressProps> = ({ da
             {/* Center text */}
             <text
               x={size / 2}
-              y={size / 2}
+              y={size / 2 + 5}
               textAnchor="middle"
-              dominantBaseline="middle"
-              className="text-xs font-semibold fill-slate-700 dark:fill-slate-300 transform rotate-90"
-              style={{ transformOrigin: 'center' }}
+              className="text-xs font-semibold fill-slate-700 dark:fill-slate-300"
+              transform={`rotate(90, ${size / 2}, ${size / 2})`}
             >
               {percentage.toFixed(0)}%
             </text>

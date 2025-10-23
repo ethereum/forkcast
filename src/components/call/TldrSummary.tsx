@@ -16,9 +16,9 @@ interface Decision {
   decision: string;
 }
 
-interface Commitment {
+interface Target {
   timestamp: string;
-  commitment: string;
+  target: string;
 }
 
 interface TldrData {
@@ -27,8 +27,8 @@ interface TldrData {
     [category: string]: HighlightItem[];
   };
   action_items: ActionItem[];
-  decisions_made: Decision[];
-  notable_commitments: Commitment[];
+  decisions: Decision[];
+  targets: Target[];
 }
 
 interface SyncConfig {
@@ -73,6 +73,17 @@ const TldrSummary: React.FC<TldrSummaryProps> = ({
   };
 
   const getDisplayTimestamp = (timestamp: string): string => {
+    if (syncConfig?.transcriptStartTime && syncConfig?.videoStartTime) {
+      const adjustedSeconds = getAdjustedVideoTime(timestamp);
+      const hours = Math.floor(adjustedSeconds / 3600);
+      const minutes = Math.floor((adjustedSeconds % 3600) / 60);
+      const seconds = Math.floor(adjustedSeconds % 60);
+      const formattedSeconds = seconds.toString().padStart(2, '0');
+      if (hours === 0) {
+        return `00:${minutes}:${formattedSeconds}`;
+      }
+      return `${hours}:${minutes}:${formattedSeconds}`;
+    }
     return formatTimestamp(timestamp);
   };
 
@@ -210,13 +221,13 @@ const TldrSummary: React.FC<TldrSummaryProps> = ({
         )}
 
         {/* Decisions Made */}
-        {data.decisions_made && data.decisions_made.length > 0 && (
+        {data.decisions && data.decisions.length > 0 && (
           <div className="pb-6 border-b border-slate-200 dark:border-slate-700">
             <h3 className="text-xs font-semibold text-slate-900 dark:text-slate-100 uppercase tracking-wide mb-2">
               Decisions
             </h3>
             <ul className="space-y-1 list-none ml-0">
-              {data.decisions_made.map((decision, index) => {
+              {data.decisions.map((decision, index) => {
                 const isSelected = selectedSearchResult?.timestamp === decision.timestamp &&
                                  selectedSearchResult?.type === 'decision';
                 return (
@@ -243,19 +254,19 @@ const TldrSummary: React.FC<TldrSummaryProps> = ({
         )}
 
         {/* Notable Commitments */}
-        {data.notable_commitments && data.notable_commitments.length > 0 && (
+        {data.targets && data.targets.length > 0 && (
           <div>
             <h3 className="text-xs font-semibold text-slate-900 dark:text-slate-100 uppercase tracking-wide mb-2">
               Targets
             </h3>
             <ul className="space-y-1 list-none ml-0">
-              {data.notable_commitments.map((commitment, index) => {
-                const isSelected = selectedSearchResult?.timestamp === commitment.timestamp &&
-                                 selectedSearchResult?.type === 'commitment';
+              {data.targets.map((target, index) => {
+                const isSelected = selectedSearchResult?.timestamp === target.timestamp &&
+                                 selectedSearchResult?.type === 'target';
                 return (
                   <li
                     key={index}
-                    onClick={(e) => handleTimestampClick(commitment.timestamp, e)}
+                    onClick={(e) => handleTimestampClick(target.timestamp, e)}
                     className="text-sm cursor-pointer group before:content-['→'] before:mr-2 before:text-slate-400 dark:before:text-slate-500 text-slate-600 dark:text-slate-400"
                   >
                     <span className={`rounded px-1 py-0.5 transition-colors inline ${
@@ -263,10 +274,10 @@ const TldrSummary: React.FC<TldrSummaryProps> = ({
                         ? 'bg-yellow-50 dark:bg-yellow-900/50 text-slate-900 dark:text-slate-100'
                         : 'hover:text-slate-900 dark:hover:text-slate-100'
                     }`}>
-                      {commitment.commitment}
+                      {target.target}
                     </span>
                     <span className="text-xs text-slate-400 dark:text-slate-500 ml-1 opacity-0 group-hover:opacity-100 transition-opacity">
-                      {getDisplayTimestamp(commitment.timestamp)}
+                      {getDisplayTimestamp(target.timestamp)}
                     </span>
                   </li>
                 );

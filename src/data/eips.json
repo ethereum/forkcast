@@ -84,7 +84,7 @@
     "title": "EIP-2780: Reduce intrinsic transaction gas",
     "status": "Draft",
     "description": "EIP-2780 proposes reducing the basic gas cost for transactions on the Ethereum network from 21,000 to 6,000 units, aiming to improve efficiency and capacity.",
-    "author": "Matt Garnett (@lightclient), Uri Klarman (@uriklarman), Ben Adams (@benaadams)",
+    "author": "Matt Garnett (@lightclient), Uri Klarman (@uriklarman), Ben Adams (@benaadams), Maria Ines Silva (@misilva73), Anders Elowsson (@anderselowsson), Anthony Sassano (@sassal)",
     "type": "Standards Track",
     "category": "Core",
     "createdDate": "2020-07-11",
@@ -98,38 +98,39 @@
         "champion": { "name": "Ben Adams", "discord": "ben_a_adams" }
       }
     ],
-    "laymanDescription": "Reduces gas costs for transactions to make the network more efficient.",
+    "laymanDescription": "Reduces gas costs for transactions to make the network more efficient and affordable, especially for simple ETH transfers.",
     "stakeholderImpacts": {
       "endUsers": {
         "description": "Lower transaction fees enhance user experience."
       },
       "appDevs": {
-        "description": "Increased transaction throughput simplifies app functionality."
+        "description": "Higher transaction throughput improves responsiveness and usability of dapps."
       },
       "walletDevs": {
-        "description": "Lower costs improve wallet performance."
+        "description": "Lower costs improve wallet UX, gas estimations will need adjustments."
       },
       "toolingInfra": {
-        "description": "Requires updates for estimating transaction costs accurately."
+        "description": "Gas estimators and analytics tools need recalibration for new intrinsic costs."
       },
       "layer2s": {
-        "description": "Boosted efficiency supports greater Layer 2 scalability."
+        "description": "Cheaper L1 settlement boosts throughput and lowers bridging and exit costs."
       },
       "stakersNodes": {
-        "description": "Streamlined transactions reduce resource overhead."
+        "description": "Smaller per-transaction load and less batching increases block density, improving parallel execution opportunities."
       },
       "clClients": {
-        "description": "Improved consensus efficiency with more transactions per block."
+        "description": "Higher tx-per-block capacity improves consensus throughput and efficiency."
       },
       "elClients": {
-        "description": "More efficient execution of transactions enhances overall performance."
+        "description": "Refined cost model aligns gas with real execution work, improving engine utilization."
       }
     },
     "benefits": [
-      "Reduces the gas cost barrier for transactions, promoting more frequent usage.",
-      "Increases the number of transactions that can be processed per block, improving network scalability.",
-      "Aligns transaction pricing with actual computational costs, enhancing fairness.",
-      "Facilitates lower-cost ETH transfers, improving engagement and activity on the network."
+      "Improves overall throughput by reducing per-transaction gas, increasing effective block capacity.",
+      "Lowers the fixed transaction cost, restoring viability for small and frequent ETH payments.",
+      "Aligns intrinsic gas with actual computational work, removing legacy mispricing and improving economic fairness.",
+      "Reduces incentives for batching, allowing more independent transactions and greater client parallelism.",
+      "Strengthens ETH's role as native money by reducing friction and increasing velocity of onchain settlement."
     ]
   },
   {

@@ -1,0 +1,1938 @@
+WEBVTT
+
+1
+00:04:56.070 --> 00:04:58.389
+Justin Traglia: Hello, y'all. How's it going?
+
+2
+00:05:00.010 --> 00:05:01.839
+Pooja Ranjan: Hey, Justin. Good, good.
+
+3
+00:05:02.400 --> 00:05:08.509
+Pooja Ranjan: So, we are pre-streaming right now. Let us know whenever we are ready to move over the stream. After 14, of course.
+
+4
+00:05:09.250 --> 00:05:15.210
+Justin Traglia: Okay, will do. I'm gonna go ahead and share my screen in preparation for the call.
+
+5
+00:05:16.080 --> 00:05:16.870
+Pooja Ranjan: Sounds good.
+
+6
+00:07:38.710 --> 00:07:40.900
+Justin Traglia: Good morning, Lance.
+
+7
+00:07:41.510 --> 00:07:43.000
+Lin Oshitani | Nethermind: Hi, good morning. Can you hear me?
+
+8
+00:07:43.530 --> 00:07:45.069
+Justin Traglia: Yep, can hear you just fine.
+
+9
+00:07:46.260 --> 00:07:46.790
+Lin Oshitani | Nethermind: P.
+
+10
+00:08:06.670 --> 00:08:08.449
+Justin Traglia: Good morning, POTUS.
+
+11
+00:08:10.010 --> 00:08:11.110
+potuz: Hello, hello.
+
+12
+00:08:12.390 --> 00:08:12.930
+Lin Oshitani | Nethermind: Hey.
+
+13
+00:08:21.280 --> 00:08:25.159
+Justin Traglia: Good morning, Terrence. We'll get started here in, like, 2 minutes.
+
+14
+00:08:44.090 --> 00:08:46.839
+Justin Traglia: Good morning When you go.
+
+15
+00:08:50.160 --> 00:08:50.810
+nflaig: Hey.
+
+16
+00:08:59.370 --> 00:09:01.900
+Justin Traglia: Good morning, everyone. Just a couple more minutes.
+
+17
+00:09:21.330 --> 00:09:24.800
+Justin Traglia: Good morning, Mehdi, Sophia, and Salius.
+
+18
+00:09:27.340 --> 00:09:28.210
+Mehdi Aouadi: Hi, guys.
+
+19
+00:09:31.040 --> 00:09:32.079
+Saulius Grigaitis | Grandine: Bye, guys.
+
+20
+00:09:36.380 --> 00:09:38.029
+Justin Traglia: One more minute, and we'll get started.
+
+21
+00:10:05.400 --> 00:10:13.620
+Justin Traglia: All right, let's kick it off, I guess. Hello everyone, welcome to EPBS Breakout Room Call 25.
+
+22
+00:10:14.080 --> 00:10:24.859
+Justin Traglia: Oh, I'm sorry. Thank you, Fija. I'll restart. Hi everyone, welcome to EPBS Breakout Call 25. Lots of stuff to talk about today, so let's jump right in.
+
+23
+00:10:25.630 --> 00:10:31.819
+Justin Traglia: I'll quickly go over some of the… or just, like, mention that there are some open PRs that we should probably
+
+24
+00:10:31.930 --> 00:10:34.200
+Justin Traglia: Try to get merged soon.
+
+25
+00:10:34.460 --> 00:10:38.799
+Justin Traglia: a couple of testing PRs and a PR from NC.
+
+26
+00:10:39.340 --> 00:10:42.320
+Justin Traglia: I can discuss that with POTUS and NC later.
+
+27
+00:10:42.560 --> 00:10:47.609
+Justin Traglia: And then there are two to-do items, for anyone who wants to pick those up.
+
+28
+00:10:49.390 --> 00:10:57.290
+Justin Traglia: So just removing some tests which were no longer relevant in GOS, and adding some asserts that were missing, that Terrence pointed out.
+
+29
+00:10:57.910 --> 00:11:02.799
+Justin Traglia: There haven't really been that much spec work this week, just one small PR merged.
+
+30
+00:11:03.450 --> 00:11:08.910
+Justin Traglia: I'm guessing client teams are very busy working on their implementations.
+
+31
+00:11:10.140 --> 00:11:17.520
+Justin Traglia: And then let's talk on that. Anyone from PRISM available to give us a status update on their implementation for DevNet Zero?
+
+32
+00:11:19.810 --> 00:11:33.599
+terence: So we have a bunch of open PRs, and we're not gonna merge them until we have a stable Fusaka release, which is out, should be unscheduled.
+
+33
+00:11:33.600 --> 00:11:43.239
+terence: today, so… which means we want to see how it goes over the weekend, and on Monday, we can start merging them. In terms of open PR, I… we have implemented
+
+34
+00:11:43.240 --> 00:11:55.809
+terence: most of them… most… actually, everything in the Beacon chain.md, nothing else on validator for choice and P2P side, just the Beacon chain MD.
+
+35
+00:11:55.810 --> 00:12:03.459
+terence: And they are all passing spec tests, so that's good. Basically, the existing SPAC test that we have.
+
+36
+00:12:03.510 --> 00:12:10.420
+terence: And, I guess maybe, like, that's the update, but I would like to hear from other client teams, like.
+
+37
+00:12:10.420 --> 00:12:25.510
+terence: what other SPAT tests are we… are you guys passing today? Because I'm passing everything in EPA processing, SSE static, and block operation. I'm wondering if there's, something else that I can be passing, which I am not trying.
+
+38
+00:12:25.780 --> 00:12:30.170
+terence: And today, so yeah, I'm curious to see what other spat tests people are passing.
+
+39
+00:12:31.530 --> 00:12:39.510
+Justin Traglia: Stefan, I think you mentioned that TechQu was passing, like, a lot of other tests. Is there anything else that they should be testing?
+
+40
+00:12:42.910 --> 00:12:48.830
+Stefan Bratanov: Yeah, hi. Yeah, I think we passed all the references apart from Fork Choice.
+
+41
+00:12:49.170 --> 00:12:55.039
+Stefan Bratanov: Yeah, all the operations, like block cursing, exhibition sailor Pursing.
+
+42
+00:12:55.710 --> 00:12:58.159
+Stefan Bratanov: The bid processing.
+
+43
+00:13:00.010 --> 00:13:04.189
+Stefan Bratanov: Yeah, I think that's pretty much everything there's linked.
+
+44
+00:13:04.810 --> 00:13:05.630
+Stefan Bratanov: Okay.
+
+45
+00:13:05.630 --> 00:13:06.499
+terence: Why would you feel so strong?
+
+46
+00:13:07.130 --> 00:13:07.690
+terence: That's true.
+
+47
+00:13:07.760 --> 00:13:09.429
+Stefan Bratanov: Yeah, there are no touches.
+
+48
+00:13:09.430 --> 00:13:09.990
+terence: Thank you.
+
+49
+00:13:11.760 --> 00:13:12.430
+terence: Thank you.
+
+50
+00:13:13.020 --> 00:13:21.670
+Justin Traglia: Before, we could move on to the other client, Terrence, how are you feeling about, end of October DevNet Zero launch? Is this feel unrealistic to you?
+
+51
+00:13:22.200 --> 00:13:30.800
+terence: I feel it's a little rushed, I mean, like, I'm not saying it's impossible, but it's just rushed, because, yeah, I don't know.
+
+52
+00:13:30.800 --> 00:13:31.240
+Justin Traglia: Okay.
+
+53
+00:13:31.240 --> 00:13:31.600
+terence: Yeah.
+
+54
+00:13:31.600 --> 00:13:33.649
+Justin Traglia: Yeah, I guess we have a few more weeks.
+
+55
+00:13:34.820 --> 00:13:39.740
+Justin Traglia: Alright, let's move on to the next client. Is there anyone here from Lighthouse who can give an update?
+
+56
+00:13:41.700 --> 00:13:44.260
+Justin Traglia: I'm scanning the member list, I don't see anyone.
+
+57
+00:13:46.920 --> 00:13:52.740
+Justin Traglia: Okay. Let's move on to Teku, then. Anyone from TechQu willing to give a status implementation update?
+
+58
+00:13:53.200 --> 00:13:58.979
+Stefan Bratanov: Yeah, sure, I can give it. Yeah, we haven't done that much work as far apart from passing the reference tests.
+
+59
+00:13:59.160 --> 00:14:02.349
+Stefan Bratanov: Just a little bit of plumbing here and there.
+
+60
+00:14:04.320 --> 00:14:06.790
+Stefan Bratanov: Yeah, not that much money.
+
+61
+00:14:08.040 --> 00:14:11.169
+Stefan Bratanov: But, yeah, I think over the next few weeks, we'll…
+
+62
+00:14:11.900 --> 00:14:17.620
+Stefan Bratanov: I mean, our work would be easier, given that we've done, I mean, Make things easier.
+
+63
+00:14:18.340 --> 00:14:18.920
+Justin Traglia: Okay.
+
+64
+00:14:18.920 --> 00:14:20.270
+Stefan Bratanov: Nothing major, no.
+
+65
+00:14:21.950 --> 00:14:26.409
+Justin Traglia: And how are you feeling about the end of October artificial deadline?
+
+66
+00:14:27.970 --> 00:14:30.400
+Stefan Bratanov: I just don't feel it's too realistic.
+
+67
+00:14:30.720 --> 00:14:34.089
+Stefan Bratanov: But, yeah, let's say again in a couple of weeks. I…
+
+68
+00:14:34.330 --> 00:14:36.110
+Stefan Bratanov: I'm not very confident in the order.
+
+69
+00:14:37.180 --> 00:14:38.950
+Justin Traglia: Thank you.
+
+70
+00:14:40.570 --> 00:14:46.850
+Justin Traglia: Onskir says end of October might be nice to not get into DeafConnect-related rush.
+
+71
+00:14:47.060 --> 00:14:51.159
+Justin Traglia: Not sure how many people here will be attending TEF Connect. Yeah, that's fair.
+
+72
+00:14:52.710 --> 00:14:53.590
+Justin Traglia: Yeah.
+
+73
+00:14:54.240 --> 00:14:55.660
+Justin Traglia: Potus, what's up?
+
+74
+00:14:56.420 --> 00:14:59.770
+potuz: I think it's… it's kind of hard to…
+
+75
+00:15:00.240 --> 00:15:10.699
+potuz: think about end of October, given that ACD decided that we're gonna make a decision on whether to split or not the CIP by October, like, a week from now.
+
+76
+00:15:11.090 --> 00:15:22.220
+potuz: So that means that we can't really realistically merge anything on our main branches if we need to, like… splitting this thing is not that it's just removing part of code, it means changing it completely.
+
+77
+00:15:22.760 --> 00:15:30.369
+potuz: So, it's… it's kind of crazy to start to merge things when there's no decision that is going to be made until a week from now.
+
+78
+00:15:30.480 --> 00:15:34.170
+potuz: Which is already going to be about, like, 17th of October.
+
+79
+00:15:38.800 --> 00:15:40.539
+Justin Traglia: Yeah, that's fair.
+
+80
+00:15:43.760 --> 00:15:49.589
+Justin Traglia: Okay, we can discuss that more, I guess, after the trusted… trustless payments discussion.
+
+81
+00:15:50.360 --> 00:15:53.249
+Justin Traglia: Is there anyone here from Nimbus that's willing to give an update?
+
+82
+00:15:53.930 --> 00:15:56.999
+Justin Traglia: I don't think I see Ignis or Terzak.
+
+83
+00:15:58.620 --> 00:16:01.270
+Justin Traglia: Lodestar? Nico?
+
+84
+00:16:01.920 --> 00:16:08.720
+nflaig: We have some work in progress on the state transition code. I don't think it's passing reference tests yet.
+
+85
+00:16:09.010 --> 00:16:14.920
+nflaig: But we are at least passing SSC static tests, but that's about it.
+
+86
+00:16:17.560 --> 00:16:18.320
+Justin Traglia: Okay.
+
+87
+00:16:18.780 --> 00:16:23.930
+Justin Traglia: Thank you. And, lastly, Grandean, Salius, can you give us a status update?
+
+88
+00:16:23.930 --> 00:16:30.230
+Saulius Grigaitis | Grandine: Yeah, so we started to work on that, however, I think we are…
+
+89
+00:16:30.520 --> 00:16:33.290
+Saulius Grigaitis | Grandine: Still far from, from the…
+
+90
+00:16:34.160 --> 00:16:46.770
+Saulius Grigaitis | Grandine: from a solid… relatively solid implementation that could interop with others, so… so yeah, we started to work on that, and also there is, Subha Sish from,
+
+91
+00:16:46.770 --> 00:16:57.109
+Saulius Grigaitis | Grandine: from fellowship program, which I think he is on the chat, he maybe can give some access, some update on, on, on the things that he did.
+
+92
+00:16:58.140 --> 00:17:13.109
+Subhasish | Grandine(EPF): Yeah, so, majorly, I think, there are open PRs on, peer-to-peer interface areas, so I think, this PR on, the newer topic support, on the, lib P2P side, and,
+
+93
+00:17:13.130 --> 00:17:18.769
+Subhasish | Grandine(EPF): The blocker production code is, sort of ready, but it's, not yet…
+
+94
+00:17:18.960 --> 00:17:34.309
+Subhasish | Grandine(EPF): passing tests, I guess, all the tests, and, we are having some, discussions around Fork Choice.B. We're having some, actual code, I think, around, end of next week, I guess. So, yeah, that's pretty much it.
+
+95
+00:17:38.310 --> 00:17:40.149
+Justin Traglia: Cool, thank you for the update.
+
+96
+00:17:40.370 --> 00:17:45.259
+Justin Traglia: And then let's follow up, or follow up back, jump back to Lighthouse. Shane?
+
+97
+00:17:46.510 --> 00:17:53.330
+Shane Moore: Hey guys, yeah, on my end, I did a lot of these stuff around PTP, like, getting, pillows by…
+
+98
+00:17:53.830 --> 00:18:11.030
+Shane Moore: Then by range, but the stuff in the validator client, they'd isolated over there, so just to be able to request, like, from a self-editing perspective, a block, and be able to, send it back, and also for teaching outloop, request and send back as well.
+
+99
+00:18:11.390 --> 00:18:26.370
+Shane Moore: We haven't started on anything related to testing. A big effort we want to handle is separation of payload processing. It's gonna be, like, a pretty good refactor for us, and I think that's gonna take some time. But, yeah, that's our update for now.
+
+100
+00:18:29.020 --> 00:18:30.340
+Justin Traglia: Great, thank you.
+
+101
+00:18:31.840 --> 00:18:39.470
+Justin Traglia: Anything else that clients would like to discuss regarding implementations for DevNet Zero before we move on to the next topic?
+
+102
+00:18:39.620 --> 00:18:44.660
+Justin Traglia: Such as blockers, concerns… Anything like that?
+
+103
+00:18:49.160 --> 00:18:50.560
+Justin Traglia: Yep, Otis?
+
+104
+00:18:50.560 --> 00:18:58.390
+potuz: There's a request from someone from Grandin, on Discord now, and I've seen this request before, I think probably from Stefan.
+
+105
+00:18:58.590 --> 00:19:02.620
+potuz: Which is about, adding the slot to the sidecars.
+
+106
+00:19:02.900 --> 00:19:18.800
+potuz: Even though it's not necessary, it might be good for implementers, and the problem of not deciding on this is that this changes as a Z tests. I'm not sure how bad is it to add this later, or to add it now.
+
+107
+00:19:18.930 --> 00:19:29.339
+potuz: Yeah, I don't know. I don't know if we need to make a decision about this today, or if we need to make a… or if we can delay that decision for longer, but this is going to bite us eventually.
+
+108
+00:19:32.410 --> 00:19:33.230
+Justin Traglia: Hmm.
+
+109
+00:19:33.390 --> 00:19:37.630
+Justin Traglia: Stefan, do you have any updates on this? Or, like, have you determined whether or not it's…
+
+110
+00:19:37.830 --> 00:19:39.409
+Justin Traglia: Necessary to have.
+
+111
+00:19:39.910 --> 00:19:40.430
+Stefan Bratanov: Everyone.
+
+112
+00:19:40.430 --> 00:19:40.860
+Saulius Grigaitis | Grandine: Goodbye.
+
+113
+00:19:40.880 --> 00:19:50.080
+Stefan Bratanov: Yeah, I saw the comment from Brandy, and yeah, it's exactly the same thing that we have in our code.
+
+114
+00:19:50.270 --> 00:19:54.000
+Stefan Bratanov: So… Yeah, if we don't have that, then…
+
+115
+00:19:54.130 --> 00:19:57.299
+Stefan Bratanov: Any data falling sidecars wouldn't be…
+
+116
+00:19:58.140 --> 00:20:03.629
+Stefan Bratanov: receipts and RPC. I mean, we'll get an exception. Unless we record them, I think.
+
+117
+00:20:05.810 --> 00:20:08.550
+Justin Traglia: Okay, and Salius, do you agree with that, or…
+
+118
+00:20:08.550 --> 00:20:17.689
+Saulius Grigaitis | Grandine: Yeah, so my suggestion would be to add the slot number and forget this issue. I mean, I really don't see why we cannot add it.
+
+119
+00:20:18.050 --> 00:20:19.540
+Saulius Grigaitis | Grandine: this,
+
+120
+00:20:20.160 --> 00:20:28.879
+Saulius Grigaitis | Grandine: So, we would save a huge, factoring, huge changes in the client by bringing, back this,
+
+121
+00:20:29.450 --> 00:20:30.689
+Saulius Grigaitis | Grandine: It's a lot better.
+
+122
+00:20:31.480 --> 00:20:36.279
+Justin Traglia: Would you argue that we should do this sort of, like, retroactively, so that this would be,
+
+123
+00:20:36.990 --> 00:20:38.860
+Justin Traglia: the spec for DevNet Zero.
+
+124
+00:20:40.350 --> 00:20:46.000
+Saulius Grigaitis | Grandine: We are not sure that we will be able to participate in DevNet Zero,
+
+125
+00:20:46.680 --> 00:20:53.400
+Saulius Grigaitis | Grandine: But, I mean, for us, it would be better if we do that as soon as possible.
+
+126
+00:20:53.620 --> 00:21:02.750
+Saulius Grigaitis | Grandine: So, I mean… it seems that the option would be to add it later, after DevNet0, is that correct?
+
+127
+00:21:04.820 --> 00:21:07.610
+Justin Traglia: I believe that is an option, POTUST?
+
+128
+00:21:07.980 --> 00:21:19.290
+potuz: So, this is just a bureaucratic statement for me. I completely agree that adding the slot is fine, and it might help us. It might help Prism as well.
+
+129
+00:21:19.310 --> 00:21:31.089
+potuz: But… so the issue is about, like, which release to target for Definite Zero. I like it better that we've already frozen that, the spec release so that we can actually aim for that.
+
+130
+00:21:31.500 --> 00:21:37.569
+potuz: And, a way of, like, making safe is that we are any ways going to,
+
+131
+00:21:37.950 --> 00:21:45.410
+potuz: try to attack DevNet Zero without any blobs. So I suspect that it doesn't matter if we include it or not for the DevNet.
+
+132
+00:21:45.580 --> 00:21:53.000
+potuz: It's going to be the same, the same because we are targeting not having any blobs for the DevNet, in any case.
+
+133
+00:21:53.310 --> 00:22:01.260
+potuz: So, if that's the case, then we can… we can add it, but then, not include it in the release that is considered for DevNet Zero.
+
+134
+00:22:01.400 --> 00:22:08.730
+potuz: Now, if there's no problem in adding it now, and changing the test, and changing everything, let's go ahead and add it. It's not a problem to add it.
+
+135
+00:22:09.930 --> 00:22:18.179
+potuz: It's… there's not even an assert on the slot. If we add it, we're going to have to add an assert that the become block root
+
+136
+00:22:18.390 --> 00:22:21.240
+potuz: Corresponds to a block for that slot.
+
+137
+00:22:23.390 --> 00:22:32.540
+Justin Traglia: Okay. I like this plan. If I understood it correctly, we keep DevNet Zero specs the same as they are now. There would be no blobs for DevNet0.
+
+138
+00:22:32.940 --> 00:22:34.360
+Justin Traglia: We make a PR…
+
+139
+00:22:34.520 --> 00:22:40.260
+Justin Traglia: with the add slot to Datacom sidecar, and then we would do that for, like, DevNet 1 or something.
+
+140
+00:22:40.590 --> 00:22:41.390
+Justin Traglia: Right.
+
+141
+00:22:44.680 --> 00:22:45.360
+Justin Traglia: Yep.
+
+142
+00:22:48.270 --> 00:22:53.309
+Justin Traglia: Okay, sounds good. So yeah, let's make a PR for that, and we'll get it merged.
+
+143
+00:22:55.020 --> 00:22:57.440
+Justin Traglia: Anything else? Any other concerns?
+
+144
+00:23:02.830 --> 00:23:11.880
+Justin Traglia: Okay, let's move on to the next section, then, trusted payments, or trusted or trustless payments. Lynn, would you like to get us started on this?
+
+145
+00:23:12.550 --> 00:23:17.009
+Lin Oshitani | Nethermind: Yeah, yeah, sure. So, I already talked to my points.
+
+146
+00:23:17.120 --> 00:23:21.330
+Lin Oshitani | Nethermind: not ACTC, but I think there's, like, 3 things that…
+
+147
+00:23:21.680 --> 00:23:27.509
+Lin Oshitani | Nethermind: we should kind of decide upon. Like, one is, like, should we have process payments in the current EAP in the first place?
+
+148
+00:23:27.650 --> 00:23:28.839
+Lin Oshitani | Nethermind: Can we split?
+
+149
+00:23:29.380 --> 00:23:30.350
+Lin Oshitani | Nethermind: And…
+
+150
+00:23:30.450 --> 00:23:37.069
+Lin Oshitani | Nethermind: Yeah, I've asked some people in the ecosystem to join this call, too, if they have any wishes they want to raise.
+
+151
+00:23:37.180 --> 00:23:45.979
+Lin Oshitani | Nethermind: Yeah, the second point is that if we're gonna have it, like, what does it look like? I think, Bottas, you were mentioning some doubts around the current design, that it can be simplified.
+
+152
+00:23:46.140 --> 00:23:50.650
+Lin Oshitani | Nethermind: like, what's the exact… if we're gonna have it, like, what does it look like? And the third point is…
+
+153
+00:23:50.810 --> 00:23:51.590
+Lin Oshitani | Nethermind: Like.
+
+154
+00:23:52.320 --> 00:23:57.440
+Lin Oshitani | Nethermind: I think we all agree that we should have off-protocol bids to be supported, like, what does that look like?
+
+155
+00:23:57.550 --> 00:24:01.770
+Lin Oshitani | Nethermind: How should it be standardized? I think Terrence, you already started some write-ups, thanks for that, I think…
+
+156
+00:24:01.910 --> 00:24:03.110
+Lin Oshitani | Nethermind: That kind of things.
+
+157
+00:24:03.230 --> 00:24:16.209
+Lin Oshitani | Nethermind: is to be discussed, and for the first point, like, the only point that I want to reiterate here is that I think we're kind of underestimating the coordination complexity that arises from this, like, how do we get it right?
+
+158
+00:24:16.350 --> 00:24:19.639
+Lin Oshitani | Nethermind: Especially if we're, like, having doubts around the design at this point.
+
+159
+00:24:19.750 --> 00:24:28.779
+Lin Oshitani | Nethermind: like, how do we be sure that everyone's happy about it? How do we involve them? Like, for example, like, in this call, I've asked some people to join, but…
+
+160
+00:24:29.000 --> 00:24:39.799
+Lin Oshitani | Nethermind: we'll probably have to keep on doing that if we want to get it right, and the coordination, like, because I guess you guys also want to… a lot of things to do in the implementation side, we don't want to hijack this call too much, so…
+
+161
+00:24:40.330 --> 00:24:46.099
+Lin Oshitani | Nethermind: That kind of coordination, and… is required, and I think it's kind of underestimated so far.
+
+162
+00:24:47.510 --> 00:24:51.979
+Lin Oshitani | Nethermind: But yeah, if we're gonna do it, we should do it right, so, like, we need to.
+
+163
+00:24:52.150 --> 00:24:53.670
+Lin Oshitani | Nethermind: Be sure that everyone's happy.
+
+164
+00:24:54.380 --> 00:24:59.670
+Lin Oshitani | Nethermind: So, that's my only point that I wanted to add there. If anyone wants to…
+
+165
+00:25:00.060 --> 00:25:06.790
+Lin Oshitani | Nethermind: talk about their point on any of these points, I'm… We'll just… Yeah, feel free to.
+
+166
+00:25:10.510 --> 00:25:12.119
+Lin Oshitani | Nethermind: Peak up, or… yeah.
+
+167
+00:25:14.830 --> 00:25:17.619
+Justin Traglia: Potus or Terrence, or anyone that…
+
+168
+00:25:18.590 --> 00:25:21.470
+Justin Traglia: Wants to talk. What are your opinions?
+
+169
+00:25:24.140 --> 00:25:31.750
+potuz: I've made clear my point here. It's, one thing is to argue for trusted payments.
+
+170
+00:25:32.690 --> 00:25:40.100
+potuz: Which the IP already considers. The IP already allows for this, and we have very good designs for this.
+
+171
+00:25:40.580 --> 00:25:51.730
+potuz: So we… we do have trusted payments of protocol. I mean, trusted payments. We do have that. We do have support for that. That was very clear even from the beginning.
+
+172
+00:25:52.170 --> 00:26:00.579
+potuz: Now, Removing trustless payments, that's a very different story, and I haven't seen a single argument for it.
+
+173
+00:26:01.240 --> 00:26:06.249
+potuz: Now, if we are going to go that route of removing trustless payments.
+
+174
+00:26:06.470 --> 00:26:14.080
+potuz: I think we need to analyze practically what are our options, to remove trustless payments.
+
+175
+00:26:14.420 --> 00:26:16.809
+potuz: We, well…
+
+176
+00:26:17.170 --> 00:26:21.610
+potuz: We need to… we need to decide how we're gonna do this, because it's still not trivial.
+
+177
+00:26:22.020 --> 00:26:30.470
+potuz: By removing trustless payments, how the sign-in is going to happen, the builders will still need to be staked.
+
+178
+00:26:30.560 --> 00:26:48.499
+potuz: Because someone needs to sign them. If the builders are not staked, then we need to redesign how MedBoost is going to work, how many back and forths are going to be happening. I mean, the whole specification needs to be done if we actually need to remove… if we want to remove the staked builders from the picture.
+
+179
+00:26:48.740 --> 00:26:52.170
+potuz: So, I think people are just… separating
+
+180
+00:26:52.360 --> 00:27:06.940
+potuz: not separating, but, like, they are putting in the same bag trustless payments with stake builders, and they are different. The staked building is used for the separation of the payload by the bid.
+
+181
+00:27:07.120 --> 00:27:11.210
+potuz: So if we keep stake builders, then it's very simple.
+
+182
+00:27:11.420 --> 00:27:19.290
+potuz: If we don't keep them, well, I want to see a design. I want to see a specification, I want to see a PIP, I want to see the whole thing, the whole package. Like.
+
+183
+00:27:19.810 --> 00:27:26.529
+potuz: hand-waving our ways around how the design of the IP will be is one thing. The other thing is actually writing the specs.
+
+184
+00:27:29.580 --> 00:27:31.040
+Justin Traglia: On-screen?
+
+185
+00:27:33.160 --> 00:27:42.949
+Ansgar Dietrichs: Yeah, I just wanted to say, I mean, I think these are fair concerns by Potos. I think that, in principle… so here's the case, the somewhat uninformed case, I must…
+
+186
+00:27:43.010 --> 00:27:58.900
+Ansgar Dietrichs: I'm clear, I haven't written an alternative spec, or even, like, have looked very, very closely to what that would look like. Again, my… what I'm thinking of is really just, like, yeah, get a version of… a base version of EPBS that would be without unconditional payments and without
+
+187
+00:27:58.900 --> 00:28:04.280
+Ansgar Dietrichs: state builders, but again, put us as raising concerns that that might not actually be so easy to facilitate, so…
+
+188
+00:28:04.350 --> 00:28:14.119
+Ansgar Dietrichs: that point taken. The reason why I personally would like to see, in a way, base EPBS in just that raw form is that
+
+189
+00:28:14.120 --> 00:28:32.439
+Ansgar Dietrichs: I still think we should then discuss, do we want this package of stake builders' unconditional payments, and in what form in Glamsterdam? But I feel like that should go through more the general EAP process, because… and here's my argument, basically, like, the reason why I would at least want to consider not having it in Glamsterdam at all is that I feel like it adds
+
+190
+00:28:32.520 --> 00:28:39.119
+Ansgar Dietrichs: extra implementation complexity, just compared to today, right? Like, just this entire CL side.
+
+191
+00:28:39.360 --> 00:28:46.300
+Ansgar Dietrichs: builder balance, build a staking mechanism is just… it's just pretty novel, and so… so there's significant extra overhead, and I…
+
+192
+00:28:46.440 --> 00:29:06.439
+Ansgar Dietrichs: personally think that we are already at the point where EPBS is going to probably be the biggest chunk of the biggest feature in Amsterdam, and so it will take the longest time. I… if we really want to add more things on the CR side, I personally would rather spend our little remaining room, basically, on something like fossil than
+
+193
+00:29:06.590 --> 00:29:13.439
+Ansgar Dietrichs: stake builders unconditional payments, but at least the point… point being is I feel like that kind of conversation, even if we end up
+
+194
+00:29:13.670 --> 00:29:25.870
+Ansgar Dietrichs: deciding to basically go with unconditional payments. I would much rather have that just as part of the normal EIP discussion process, rather than basically having it baked in with EPPS. But again, all of this is just assuming
+
+195
+00:29:26.010 --> 00:29:38.169
+Ansgar Dietrichs: that we can come up very quickly with inspect that removes these elements, and that actually then does look significantly simpler. If it's not simpler to remove, then all of these arguments are moot.
+
+196
+00:29:39.840 --> 00:29:42.270
+Justin Traglia: Potus, would you like to respond?
+
+197
+00:29:43.280 --> 00:30:01.830
+potuz: Not really, it's already in the chat. I mean, we've gone over this for, like, 2 years. When people actually went through the headliners for the fork already knew what it was. This issue of trustless payments or not is raised…
+
+198
+00:30:01.950 --> 00:30:03.670
+potuz: Now, after…
+
+199
+00:30:03.850 --> 00:30:19.419
+potuz: after a while, not because of complexity on the protocol, but because of the need to have trusted payments. This is nothing to do with the extra complexity that comes from having the mechanism to actually be paid in a trustless manner.
+
+200
+00:30:19.650 --> 00:30:39.229
+potuz: the staking of the builders and all of this is already part of the separation of the payload and the block, and now it sort of, like, seems that people are trying to backdoor a way into, like, removing the whole discussion that we already had on SED and choosing an SFI, an SFI EIP. I find it's kind of weird. It's…
+
+201
+00:30:39.960 --> 00:30:52.130
+potuz: Yeah, I mean, the argument is we want trusted payments, okay, fine, we already have this, and then we're gonna use that argument to remove an SFI, change completely, and gut the whole EIP.
+
+202
+00:30:53.760 --> 00:30:58.389
+Lin Oshitani | Nethermind: So… Yeah, like, I do see that it's, like, really…
+
+203
+00:30:58.500 --> 00:31:03.680
+Lin Oshitani | Nethermind: Late in the process, all that, but my impression is that, like, the whole SFI was more around
+
+204
+00:31:03.990 --> 00:31:10.190
+Lin Oshitani | Nethermind: like, it was advertised as a pipelining solution, and, like, a lot of this question was around that, like, should we do this discussion?
+
+205
+00:31:10.190 --> 00:31:15.309
+potuz: Stake Builders was a solution to pipelining, that stake builders was a way of pipelining.
+
+206
+00:31:15.530 --> 00:31:21.439
+Lin Oshitani | Nethermind: That's… that's one question I had. So, you think that stake builders is a requirement for pipelining, is that correct?
+
+207
+00:31:22.740 --> 00:31:24.449
+potuz: In DCIP, yes.
+
+208
+00:31:25.090 --> 00:31:27.060
+Lin Oshitani | Nethermind: But, like, in principle.
+
+209
+00:31:28.850 --> 00:31:31.949
+potuz: In principle, no, I haven't seen a single design.
+
+210
+00:31:32.120 --> 00:31:34.569
+potuz: This CIP was specified 2 years ago.
+
+211
+00:31:34.570 --> 00:31:35.290
+Lin Oshitani | Nethermind: Yes.
+
+212
+00:31:35.290 --> 00:31:46.780
+potuz: And now people are arguing that, no, we don't want to have this because there's no philosophical… there's no proof, there's no theorem that we need to have stakebuilders, but people are not coming up with a spec!
+
+213
+00:31:46.780 --> 00:31:55.309
+potuz: And after we've specified an EIP, people are trying to come up with yet another design. We've already debunked many of them.
+
+214
+00:31:56.950 --> 00:32:00.309
+potuz: Since Berlin, I had to analyze a new one every week.
+
+215
+00:32:00.480 --> 00:32:02.670
+potuz: At some point, this has to stop people.
+
+216
+00:32:03.400 --> 00:32:04.049
+Lin Oshitani | Nethermind: Yeah,
+
+217
+00:32:04.610 --> 00:32:05.440
+Lin Oshitani | Nethermind: bleep.
+
+218
+00:32:06.070 --> 00:32:10.279
+Lin Oshitani | Nethermind: Let's see your, like… Yeah, concerns around that, but…
+
+219
+00:32:11.080 --> 00:32:16.899
+Lin Oshitani | Nethermind: Like, is it not as simple as just… Unlimited to a header.
+
+220
+00:32:17.190 --> 00:32:19.879
+Lin Oshitani | Nethermind: At, like, the attestation time, and…
+
+221
+00:32:20.550 --> 00:32:22.379
+Lin Oshitani | Nethermind: That's it, like, you just leave everything off.
+
+222
+00:32:22.380 --> 00:32:35.799
+potuz: I can argue this here, but I think it doesn't belong in this meeting, but it's not, because if you commit to a header, who's gonna sign it? You cannot just have a BLS signature from someone that is random, that's a DOS,
+
+223
+00:32:35.800 --> 00:32:53.889
+potuz: So you do need to have a BLS signature from someone that is already in the state. So someone that you already know is BLS signature, so that you validate the signature. And to have this, you need to put it in the state, and to put it in the state, then it needs to be state, at least one ETH or something, so that it's not a DOS on the beacon state.
+
+224
+00:32:53.890 --> 00:33:08.210
+potuz: We've already gone over all of these things, and people have been trying to… have tried to come up with the science, and… and they are reinventing the wheel, because they're coming late to a discussion of problems that we've already tried to solve two years ago.
+
+225
+00:33:09.190 --> 00:33:11.100
+Lin Oshitani | Nethermind: So it's not, like… I was thinking.
+
+226
+00:33:11.100 --> 00:33:16.230
+potuz: And we documented all of this, by the way, very well documented over 2 years ago.
+
+227
+00:33:18.540 --> 00:33:21.820
+Lin Oshitani | Nethermind: So it doesn't work if Sonner's a proposer, like, as we have right now.
+
+228
+00:33:22.730 --> 00:33:32.189
+potuz: It would work if the signer is a proposer, but then you need to redesign the whole mechanism of MapBoost to actually have the builder protected from unbundling.
+
+229
+00:33:35.410 --> 00:33:36.340
+Lin Oshitani | Nethermind: Okay, I see.
+
+230
+00:33:36.450 --> 00:33:39.779
+Lin Oshitani | Nethermind: Yeah, that's probably the part that I'm getting, but yes, it's not.
+
+231
+00:33:40.270 --> 00:33:42.950
+Lin Oshitani | Nethermind: be… Let's go separately.
+
+232
+00:33:44.290 --> 00:33:46.790
+Lin Oshitani | Nethermind: Yeah, Score, you have your hand up?
+
+233
+00:33:48.530 --> 00:33:51.150
+Ansgar Dietrichs: Yeah, I mean, I just… Why don't say we should…
+
+234
+00:33:51.510 --> 00:34:09.799
+Ansgar Dietrichs: just split the conversation into two separate concerns. One is the spec, you know, like, as Potus was saying, like, the… is this even viable? Yes or no? The other concern is the governance process. I actually am somewhat agnostic on the spec side. Potus might be right, I still don't quite understand why, but…
+
+235
+00:34:09.800 --> 00:34:12.830
+Ansgar Dietrichs: at the same time, obviously, Protos is much, much, much dependent.
+
+236
+00:34:12.900 --> 00:34:16.580
+Ansgar Dietrichs: On the governance side, though, I think I disagree with you, Protos, because
+
+237
+00:34:16.679 --> 00:34:22.649
+Ansgar Dietrichs: Yes. Obviously, it's not ideal to, like, basically, like, after accepting it, kind of changing, like.
+
+238
+00:34:22.690 --> 00:34:41.860
+Ansgar Dietrichs: demanding, quote-unquote, to change… I don't think it's a demand, just, like, an ask to change the scope a bit. I think it's coming from this place that… I also went back, I read the justifications for all… from all the client teams that supported EPBS when we had this roundup of, like, who's in favor, who's not in favor for the headliner, and…
+
+239
+00:34:41.989 --> 00:34:57.309
+Ansgar Dietrichs: I have to look at the list again, but it's, like, out of the 10 clients, basically, it was, like, 6, 7 clients explicitly saying that this is… their motivation is coming from scaling, for scaling reasons, primarily, and then 2 clients just not specifying explicitly, so…
+
+240
+00:34:57.320 --> 00:35:06.069
+Ansgar Dietrichs: It's very much basically the mandate for the headliner is using EPBS for scaling, and then unconditional payments, and the state builder and whatnot.
+
+241
+00:35:06.070 --> 00:35:27.110
+Ansgar Dietrichs: Unless it's, again, necessary for the spec, which is your argument, but that's a separate argument from the governance process point of view. It's basically just, like, an additional, like, staking-related feature, like, an additional, like, build-up, like, basically, like, Ethereum improvement feature, but then it should just be a non-headliner EIP to express that. That's kind of… so, governance-wise, I think I disagree with you spec-wise. I think it's possible you're right.
+
+242
+00:35:29.560 --> 00:35:30.550
+Justin Traglia: Potus?
+
+243
+00:35:31.700 --> 00:35:33.700
+potuz: Once more, two things.
+
+244
+00:35:34.740 --> 00:35:41.160
+potuz: The trustless payments has Very little addition to the spec.
+
+245
+00:35:41.950 --> 00:35:49.570
+potuz: from the… scaling EIP. The scaling EIP already has
+
+246
+00:35:49.860 --> 00:36:00.789
+potuz: an in-protocol signer, which is the builder, it already has the separation, the payload, the four-choice changes, it already has essentially everything.
+
+247
+00:36:00.960 --> 00:36:10.489
+potuz: The trustless payments addition originally actually was incredibly simple, it was just a balance change on the validators.
+
+248
+00:36:10.800 --> 00:36:14.539
+potuz: It got slightly more complicated because Lido requested it.
+
+249
+00:36:16.000 --> 00:36:21.139
+potuz: But that's it. So it's a min… the trustless payment part is a minor thing.
+
+250
+00:36:21.970 --> 00:36:40.230
+potuz: What clients voted for, which was the scaling IP, already includes the in-protocol builder that is already acknowledged in the beacon state. This is regardless of trusted payment or not. This is what we need for the pipelining.
+
+251
+00:36:40.340 --> 00:36:46.429
+potuz: And this was already in the IP. The people that voted for this already knew that it was in the IP for this.
+
+252
+00:36:47.030 --> 00:36:48.400
+potuz: Second.
+
+253
+00:36:48.700 --> 00:37:07.740
+potuz: we are going to be… continue using this argument that, this EIP is more complicated, and we should delay it because… or even take it out of Glamsterdam, because it's going to be the one that is going to delay it. And yes, of course, it's going to delay it if we keep arguing and we keep discussing whether or not this EIP should even be included.
+
+254
+00:37:08.120 --> 00:37:22.440
+potuz: I mean, after SFI in it, after all of what we've done, now we want to go back, put it back on the discussion, whether or not we're going to include it or not, and yes, of course, we're not going to merge anything, and we are going to delay, of course. Clearly, we are going to delay.
+
+255
+00:37:22.590 --> 00:37:40.920
+potuz: So it's… I find it fascinating that this thing… these kind of things are happening. And I find it fascinating by people that haven't even read the spec to not realize that trusted payments were already covered, that trustless payments have very little to do in this picture with the builder being staked or not.
+
+256
+00:37:41.140 --> 00:37:58.409
+potuz: Trustless payments only adds, one of these, builders' withdrawals and one of these, pending payments. If we went with, balance transfers, we could just remove some of them, but that's it. It's just a minor thing compared to the actual EIP.
+
+257
+00:37:58.410 --> 00:38:03.789
+potuz: And state builders, well, that's the way we have it specified. There's no other specification.
+
+258
+00:38:06.770 --> 00:38:07.860
+Justin Traglia: Terrence.
+
+259
+00:38:09.370 --> 00:38:21.389
+terence: Right, so I guess I'll chime in a few points, just, like, from reading the situation from the last few months. I think, in general, we're looking at these two designs, right? We're comparing
+
+260
+00:38:21.390 --> 00:38:35.469
+terence: our EPBS with this base version of EPBS, which people claim to be simpler, but I think that's the wrong way to look at this. I think it's basically our EPBS and another version of EPBS, which is not like a base version of EPBS,
+
+261
+00:38:35.470 --> 00:38:45.310
+terence: Because when you remove, like, this, like, the trust's payment and pending queue and stuff, it becomes a totally different design, which…
+
+262
+00:38:45.330 --> 00:38:54.519
+terence: we frankly don't have the vetted authority yet, right? So I don't think we can definitely ship that in glamster then, like, within, like.
+
+263
+00:38:55.000 --> 00:39:05.200
+terence: mid-year of 2026, just because of… it's just so early to switch the design. So I've… so I think I would encourage people to look at this, like.
+
+264
+00:39:05.200 --> 00:39:19.770
+terence: EPBS version 1 versus EPBS version 2, but not, like, the base version of EPBS, because it's completely different. I think the other thing that, like, our current design also supports both, like, trusted and trustless payments.
+
+265
+00:39:19.770 --> 00:39:34.649
+terence: Right? The only difference is that, like, the builders needs to be staked, which, surprisingly, we talked to builders over the years, and they all seem okay with it, so I would love to see more feedback from the builder side on, like.
+
+266
+00:39:34.710 --> 00:39:43.439
+terence: basically, I would like to see them come out and to hear them say, like, they're not okay with this, because, yeah, I'm surprised to hear this one.
+
+267
+00:39:46.460 --> 00:39:47.769
+Justin Traglia: Lorenta?
+
+268
+00:39:49.880 --> 00:39:59.289
+Lorenzo: Hey, just, I guess we don't want to comment necessarily on the spec, because I think that would be outside, kind of, my realm, but let's say specifically on the stake builders…
+
+269
+00:40:00.540 --> 00:40:14.119
+Lorenzo: I do think that it's quite a change. Doesn't necessarily mean that it's gonna be, you know, too disruptive, or it's gonna destroy the market, but I do think it's quite a change, so we wrote an article on this, and how that might affect…
+
+270
+00:40:14.360 --> 00:40:18.789
+Lorenzo: let's say, builder competition, relay competition, and in general, I think the…
+
+271
+00:40:18.920 --> 00:40:27.219
+Lorenzo: There is a large, let's say, off-protocol market currently that's responsible for some 95% of the blocks in Ethereum.
+
+272
+00:40:27.630 --> 00:40:30.030
+Lorenzo: And I think that sometimes maybe this
+
+273
+00:40:30.180 --> 00:40:33.569
+Lorenzo: Market, is not as, let's say,
+
+274
+00:40:33.840 --> 00:40:37.730
+Lorenzo: Taken into account when, when making protocol changes, so…
+
+275
+00:40:37.840 --> 00:40:40.210
+Lorenzo: I think it's just, just, I guess, a point.
+
+276
+00:40:47.210 --> 00:41:03.869
+potuz: Lorenzo, when you said, quite a change, I assume that this is what you guys wrote, explaining that, the capital efficiency and, like, keeping track of depositing and payments on the CL, that that would be, quite complicated, right?
+
+277
+00:41:05.010 --> 00:41:07.100
+Lorenzo: Yeah, for example, yeah.
+
+278
+00:41:07.100 --> 00:41:23.220
+potuz: Okay, which has… and also, there's this issue of, like, the… the risk that a builder would be taking by, like, putting up a bid, a very large bid, and they paying it up front if they… if they… for some reason, the payload doesn't get included, right?
+
+279
+00:41:24.130 --> 00:41:30.719
+Lorenzo: Yeah, or for… or just having, you know, enough balance to beat the… for blocks on the… Perfect. So…
+
+280
+00:41:31.110 --> 00:41:39.529
+potuz: So, again, all of this… It's gone with just… Pain of protocol.
+
+281
+00:41:40.090 --> 00:41:42.819
+potuz: Which might even be the default.
+
+282
+00:41:43.040 --> 00:41:45.430
+potuz: For example, for Lido validators.
+
+283
+00:41:45.670 --> 00:41:51.420
+potuz: And again, I want to stress this, because it seems to me that people don't have this clear here.
+
+284
+00:41:51.900 --> 00:41:59.259
+potuz: If I am a node operator, and I just whitelist and say, I want to take a bid from Titan.
+
+285
+00:41:59.880 --> 00:42:02.020
+potuz: And I don't care if it doesn't pay me.
+
+286
+00:42:02.250 --> 00:42:11.940
+potuz: This is already allowed today, and the builder… and the proposer would actually get the bid. Titan will sign it. We still need Titan to be staked.
+
+287
+00:42:12.470 --> 00:42:13.880
+potuz: Will it sign it?
+
+288
+00:42:13.990 --> 00:42:30.380
+potuz: And we're gonna get the payment in exactly the same way that we get it today, on the EL side, on the address that we're specifying in the same way on the Builder API, and no changes are going to be on the side from Titan, nor on the side of the proposer that is receiving this payment.
+
+289
+00:42:30.670 --> 00:42:31.960
+potuz: So…
+
+290
+00:42:32.790 --> 00:42:43.409
+potuz: I… I don't see how this could be invasive, nor very… a big change from the point of view of Titan, except the fact that you need to be staked
+
+291
+00:42:43.510 --> 00:42:51.459
+potuz: That's 32 ETH. There's not going to be balance changes, because you're only going to be beating off protocol, I mean, if you want to go that route.
+
+292
+00:42:51.810 --> 00:42:53.380
+potuz: And… that's it!
+
+293
+00:42:53.730 --> 00:42:59.850
+potuz: No changes on any of the logistics, no changes on the risks, no changes on anything.
+
+294
+00:43:00.840 --> 00:43:14.469
+potuz: So, for someone that doesn't want to go on the protocol side, and doesn't want to be bidding on the protocol side, and only wants to be sending bids on the off-protocol side, again, I don't see what is the change.
+
+295
+00:43:19.600 --> 00:43:26.770
+Lorenzo: Yeah, I guess my point was related just to Terrence's comments that whether billions having to be staked would be an issue.
+
+296
+00:43:26.930 --> 00:43:31.510
+Lorenzo: Obviously, if a builder doesn't have to be staked, then that would not be an issue.
+
+297
+00:43:33.880 --> 00:43:37.979
+Lorenzo: Assuming there is some of protocol, you know, bidding.
+
+298
+00:43:39.060 --> 00:43:39.490
+potuz: Well…
+
+299
+00:43:39.490 --> 00:43:41.990
+Lorenzo: I would just… maybe, sorry, I would just…
+
+300
+00:43:43.200 --> 00:43:50.509
+Lorenzo: Yeah, sorry, I just wanted to add that some of the, I think, points that we mentioned are not necessarily related about Titan itself.
+
+301
+00:43:50.790 --> 00:43:54.030
+Lorenzo: Obviously, you know, Titan is a large builder.
+
+302
+00:43:54.260 --> 00:44:06.429
+Lorenzo: But there are also a number of other builders, and potentially new builders coming in, too. And if you have, you know, some builders who have just, direct access, that would, that would also not be ideal for competition.
+
+303
+00:44:08.760 --> 00:44:09.910
+Justin Traglia: at the end.
+
+304
+00:44:11.770 --> 00:44:13.390
+Lin Oshitani | Nethermind: Who… yeah.
+
+305
+00:44:13.800 --> 00:44:21.200
+Lin Oshitani | Nethermind: Like, I think… I do see that, like, trustless… trustful payments, or, like, off-vertical payments can be supported, and…
+
+306
+00:44:21.610 --> 00:44:26.710
+Lin Oshitani | Nethermind: My expectation is that's probably gonna be, like, the dominant usage, and…
+
+307
+00:44:27.270 --> 00:44:29.999
+Lin Oshitani | Nethermind: Which is… kind of okay, as in…
+
+308
+00:44:30.580 --> 00:44:38.450
+Lin Oshitani | Nethermind: like, there's not much disruption. It might also mean that we are having some complexity that's…
+
+309
+00:44:38.550 --> 00:44:41.419
+Lin Oshitani | Nethermind: Not gonna be used, but maybe that's okay.
+
+310
+00:44:42.000 --> 00:44:48.370
+Lin Oshitani | Nethermind: But, like, this is all under the assumption that it's going to be very, very easy to have off-road payments, like, you don't need off-work.
+
+311
+00:44:48.870 --> 00:44:56.799
+Lin Oshitani | Nethermind: all the clients will have support for it. It's just out of the box, like, just some configuration change, and you can just have the exact flow that you have right now.
+
+312
+00:44:57.790 --> 00:45:09.189
+Lin Oshitani | Nethermind: I think that kind of support will be needed if we're gonna have it, to have trustless payments, and minimize disruption, and also minimize, like, the arguments that we're gonna need in this kind of calls.
+
+313
+00:45:09.730 --> 00:45:11.669
+Lin Oshitani | Nethermind: Like, as long as we have that.
+
+314
+00:45:12.270 --> 00:45:13.339
+Lin Oshitani | Nethermind: I think it'll be…
+
+315
+00:45:14.550 --> 00:45:19.330
+Lin Oshitani | Nethermind: And I think there was some, like… I think, like, in the past, like, week or so, like, in Discord.
+
+316
+00:45:20.260 --> 00:45:21.659
+Lin Oshitani | Nethermind: I think Blackboard does you?
+
+317
+00:45:21.770 --> 00:45:27.179
+Lin Oshitani | Nethermind: be much more supportive. Well, you were always supportive, probably, but, like, I think a lot of us were kind of…
+
+318
+00:45:28.550 --> 00:45:35.139
+Lin Oshitani | Nethermind: misunderstanding your point around removing the MedBoost. We thought it was removing off-protocol payments, but not the case, so…
+
+319
+00:45:35.250 --> 00:45:43.830
+Lin Oshitani | Nethermind: But I think the question now then would be, like, how much support will we have? Like, how much out-of-the-box support that's standardized around the clients will we have?
+
+320
+00:45:46.710 --> 00:45:47.500
+Justin Traglia: Notice.
+
+321
+00:45:48.380 --> 00:45:58.000
+potuz: the very first time that I pitched EPBS on ACD, Danny Ryan was still running the meeting, and…
+
+322
+00:45:58.200 --> 00:46:17.309
+potuz: I mentioned this, and Danny repeated it, just to clarify that that was the situation, because everyone that was opposing EPBS back then, that was 2 years ago, was opposing it on the ground that it would be bypassed. And Danny made the point of saying, this is not about forcing people to go the trustless route, this is about giving them the option.
+
+323
+00:46:19.170 --> 00:46:28.970
+potuz: And I think it was very clear back then, that, already back then, that this was a thing. It was not about forcing people using something, it was about giving them the option.
+
+324
+00:46:29.200 --> 00:46:39.940
+potuz: That was always my, my way of thinking about this. And I think we will, we have to. All clients, we specify it so that, so that
+
+325
+00:46:40.050 --> 00:46:56.770
+potuz: node operators that want to take trusted payments, they have to, and it's… I don't know, you've already been in the discussions, and I think it's kind of universally agreed that the easiest way to do this would be to get enough protocol bid on the builder API,
+
+326
+00:46:56.770 --> 00:47:09.270
+potuz: And that's it. I just have clients allowing, by default, those off-protocol bids to be counted on whitelisted builders that they trust. That's a very simple configuration that everyone should use.
+
+327
+00:47:09.480 --> 00:47:19.829
+potuz: What I would oppose, and adamantly oppose, and I would definitely not want to include this in PRISM, is a way of removing the trustless payments route.
+
+328
+00:47:20.300 --> 00:47:38.539
+potuz: Because it's just a matter of safety. One of the biggest things that EPBS gives us is a way of having a pair builder circuit breaker, for example. I would not want to lose that. I would not want to lose the ability of having the P2P layer bids winning the auction, so that,
+
+329
+00:47:38.540 --> 00:47:55.430
+potuz: So that we can have a fallback mechanism which is over P2P, even especially so whenever proposers can no longer propose themselves. So I would oppose, and I would adamantly oppose, a way, a configuration, that removes the trustless payments.
+
+330
+00:47:55.990 --> 00:48:06.739
+potuz: I'm totally fine with defaulting to trusted payments. I am totally fine with allowing node operators to prefer them. I am against removing the trustless route.
+
+331
+00:48:07.300 --> 00:48:13.129
+Lin Oshitani | Nethermind: We're removing… The trustless route, an employer thinking about the case where the proposer just
+
+332
+00:48:13.440 --> 00:48:17.559
+Lin Oshitani | Nethermind: Alex himself as a builder, and then just offered courses, like, completely.
+
+333
+00:48:17.560 --> 00:48:26.470
+potuz: No, that's… no, removing the trusted rub will be… I don't take any bids unless it is from this builder that it's going to be only off protocol.
+
+334
+00:48:27.280 --> 00:48:30.359
+potuz: So that, I, I, I, I, I don't like.
+
+335
+00:48:30.880 --> 00:48:33.000
+Lin Oshitani | Nethermind: For example, like, in the…
+
+336
+00:48:33.520 --> 00:48:42.070
+Lin Oshitani | Nethermind: like, proposals that Terminus had, like, you'll have a configuration file that configures, like, this builder is trusted, you have a boost.
+
+337
+00:48:42.680 --> 00:48:49.259
+Lin Oshitani | Nethermind: But if you only have trusted in that list, wouldn't you be kind of… Bypassing the trustless.
+
+338
+00:48:49.260 --> 00:49:07.110
+potuz: No, the P2P stack is always… the P2P stack is always taken. Like, you can… I would be very against validators being able to stop the P2P stack from happening. You can boost the non-P2P one, and you can boost it, like, very largely, that's fine.
+
+339
+00:49:07.180 --> 00:49:19.310
+potuz: But the thing is that there should always be a fallback in that if you don't get a bid from the trusted payment side, and for some reason you cannot propose, you should be able to take a bid from the B2P layer.
+
+340
+00:49:20.800 --> 00:49:28.579
+Lin Oshitani | Nethermind: Yeah, in principle, I do agree, but, like, operationally, for example, some node operators, they might have no idea how to handle
+
+341
+00:49:28.930 --> 00:49:31.530
+Lin Oshitani | Nethermind: like, these deal-side payments.
+
+342
+00:49:31.920 --> 00:49:35.789
+Lin Oshitani | Nethermind: And… It might have to go through, like, different accounting and all that.
+
+343
+00:49:36.200 --> 00:49:39.060
+Lin Oshitani | Nethermind: In that case, maybe they'll need some time.
+
+344
+00:49:39.800 --> 00:49:45.070
+Lin Oshitani | Nethermind: To actually, you know, Disable the trustless payment until they got ready.
+
+345
+00:49:45.850 --> 00:49:51.269
+Lin Oshitani | Nethermind: I think… one of the concerns around, like, that Lido was raising was that, like, they have to
+
+346
+00:49:52.830 --> 00:49:58.140
+Lin Oshitani | Nethermind: Like, upgrade their software to actually, like, do the accounting for the payment route.
+
+347
+00:50:13.240 --> 00:50:16.399
+Justin Traglia: Potus or Terrence, do you respond to that?
+
+348
+00:50:24.560 --> 00:50:26.280
+Justin Traglia: Okay.
+
+349
+00:50:27.140 --> 00:50:35.270
+potuz: I guess Lido can always boost the… I mean, there is an effective way of disabling the P2P stack in a sense.
+
+350
+00:50:35.440 --> 00:50:40.080
+potuz: By boosting, very largely, your whitelisted builders.
+
+351
+00:50:42.400 --> 00:50:51.069
+potuz: The problem is what happens when those guys… you boost yourself as a local builder, and you boost the whitelisted builders a lot.
+
+352
+00:50:51.650 --> 00:50:53.050
+potuz: And then…
+
+353
+00:50:53.200 --> 00:51:01.510
+potuz: even if no builder is giving you a bid, you will just still choose your local payload instead of the P2P stack payload.
+
+354
+00:51:04.730 --> 00:51:05.820
+Lin Oshitani | Nethermind: Yeah, that makes sense.
+
+355
+00:51:07.460 --> 00:51:13.100
+Lin Oshitani | Nethermind: So, yeah, my personal… standpoint right now is that, like, if we…
+
+356
+00:51:13.740 --> 00:51:19.009
+Lin Oshitani | Nethermind: kind of had a time machine to go back, I think. It would have been better if we had, like, two different
+
+357
+00:51:19.150 --> 00:51:22.859
+Lin Oshitani | Nethermind: EIPs and two different discussions, but I do see your point that it's kind of…
+
+358
+00:51:23.450 --> 00:51:28.420
+Lin Oshitani | Nethermind: Already very tied together, and… Hard to see, like, where we can actually separate.
+
+359
+00:51:29.720 --> 00:51:36.190
+Lin Oshitani | Nethermind: And… as long as, like, we have very, very good support, and you're already agreeing, so I think…
+
+360
+00:51:36.520 --> 00:51:41.480
+Lin Oshitani | Nethermind: That's very nice that, like, we have very good out-of-the-box support to block local payments.
+
+361
+00:51:41.630 --> 00:51:42.660
+Lin Oshitani | Nethermind: I think so.
+
+362
+00:51:42.950 --> 00:51:46.019
+Lin Oshitani | Nethermind: A lot of the concerns that the community had will be mitigated.
+
+363
+00:51:46.770 --> 00:51:52.729
+Lin Oshitani | Nethermind: Wondering if, like, Lido, I think someone from Lido is here, like, if you guys had anything that you guys…
+
+364
+00:51:54.000 --> 00:51:55.549
+Lin Oshitani | Nethermind: Wanted to be snow.
+
+365
+00:51:56.830 --> 00:52:02.979
+Lin Oshitani | Nethermind: Is it okay to have trustless payment, but having, like, very good supportive payments?
+
+366
+00:52:06.410 --> 00:52:07.180
+Justin Traglia: Greg?
+
+367
+00:52:08.130 --> 00:52:23.140
+Greg K | Lido: Yeah, so… from lighter side, the important thing that I think was discussed with POTUS is to… as he said before, it was the withdrawal part, so that the, you know, the MEV records are not,
+
+368
+00:52:23.140 --> 00:52:31.379
+Greg K | Lido: sent directly in the SEL, but they are given in this, the recipient address on the execution layer via the withdrawal queue.
+
+369
+00:52:31.510 --> 00:52:38.950
+Greg K | Lido: So, yeah, since this is now incorporated in the specs, this kind, kinda…
+
+370
+00:52:39.080 --> 00:52:57.940
+Greg K | Lido: you know, avoids having to update the… our on-chain kind of, infrastructure, so that's a big thing, and I think this was discussed with, Bottus before I joined Light, and it's already settled, so that's fine. Yeah, then…
+
+371
+00:52:58.100 --> 00:53:13.860
+Greg K | Lido: I also talked in the algorithms last week. I do have the opinion that, you know, it could be two separate eaves for reasons that I already said, like, no, I think it's two quite different
+
+372
+00:53:13.860 --> 00:53:26.029
+Greg K | Lido: conceptual topics, like the scalability part of the pipelining and the proposal builder separation. So, for me, it seems to me that it's kinda…
+
+373
+00:53:26.130 --> 00:53:32.729
+Greg K | Lido: many sorts at once, but, you know, I think it all boils down
+
+374
+00:53:32.920 --> 00:53:46.829
+Greg K | Lido: to what discussed also in the chat, and the claim of what was before. So, the main thing that is not 100% clear, I think, to everyone is that, this lack of stake builders is necessary either way, so…
+
+375
+00:53:46.830 --> 00:53:58.529
+Greg K | Lido: what's the main point of Portos that I think it's… it was not clear to me. It's not 100% clear to me until now, but I think, yeah, 2K is… well, I was not…
+
+376
+00:53:58.900 --> 00:54:04.999
+Greg K | Lido: Definitely so that this takes builder is necessary for the pipelining part, so this was not clear to me.
+
+377
+00:54:05.010 --> 00:54:21.640
+Greg K | Lido: So, but yeah, so looking at the high level, it seems to me that those are kind of independent things. But, you know, yeah, as I said, like, so it seems to me more normal to separate, but, yeah, if there is another solution, then for, like, since we have these withdrawals.
+
+378
+00:54:21.660 --> 00:54:28.630
+Greg K | Lido: set, in the specification for Lido, yeah, that would be… Okay.
+
+379
+00:54:35.290 --> 00:54:39.379
+Justin Traglia: Thank you. Any response from POTUS or Lynn about that?
+
+380
+00:54:49.440 --> 00:54:50.100
+Justin Traglia: Photos?
+
+381
+00:54:50.100 --> 00:54:56.440
+potuz: Actually, yeah, so… This whole discussion is kind of very, very unfortunate, in a sense, because
+
+382
+00:54:57.390 --> 00:55:02.610
+potuz: if… I mean, we had a system that was incredibly simple.
+
+383
+00:55:02.750 --> 00:55:15.050
+potuz: to… to transfer, payments on the CL side. The system was… the builder pays, its balance is decreased, and the balance of the proposer is increased.
+
+384
+00:55:15.450 --> 00:55:28.469
+potuz: And, yes, it needs to be churned, it will… definitely would look like, exactly like it is today, except that it won't hit the exit queue, and it won't hit the deposit churn.
+
+385
+00:55:29.690 --> 00:55:41.659
+potuz: Now, this was changed by the explicit request of Lido, because they didn't want to change the… they didn't want to change their contracts, and this would make them change the contracts anyways, but…
+
+386
+00:55:41.660 --> 00:55:57.160
+potuz: But it would make their life easier. But if… had we known that Lido anyways would take only trusted payments, then I think we would have gone with the other system anyways, which is actually safer. Well, I don't know safer, but it is better from the UX perspective that it doesn't affect the churn.
+
+387
+00:55:57.640 --> 00:56:04.100
+potuz: So now it's this very unfortunate situation in which we might actually want to go back to that system.
+
+388
+00:56:06.590 --> 00:56:19.970
+potuz: The change doesn't seem to be too large. It's actually very minor, as far as I can see. We now have these builder payments that are put in the state in the case that the
+
+389
+00:56:20.010 --> 00:56:27.440
+potuz: payload is not available, and we are going to check for those and epoch transition, and then we put a withdrawal
+
+390
+00:56:27.500 --> 00:56:28.929
+potuz: We just churned.
+
+391
+00:56:29.140 --> 00:56:41.770
+potuz: And it's processed with process withdrawals later on. I think the only change that we need to do is to put, instead of a withdrawal, we need to put a transfer to be churned. It has to be churned, because we don't want to be in transfers fast.
+
+392
+00:56:42.070 --> 00:56:59.920
+potuz: And, we would put a… instead of a withdrawal, a builder transfer, on a pa… on a… again, on a… on a slice, exactly as it is today, but instead of being process in process withdrawals, it would be processing… process builder transfers, and it would take its own churn.
+
+393
+00:57:00.430 --> 00:57:03.259
+potuz: I think it's a very minor change to the current spec.
+
+394
+00:57:03.460 --> 00:57:09.620
+potuz: So if… and it's something that people might want to, like, look into if we want to go that route.
+
+395
+00:57:10.130 --> 00:57:24.690
+potuz: So that we don't affect actual withdrawals and deposits and exits, and we just go back to the drawing board on this, because it's useless to have a system that was requested by Lido, but that Lido would not use it.
+
+396
+00:57:26.350 --> 00:57:37.110
+Greg K | Lido: Sorry, sorry about this, but I think it's kind of… there is some confusion here. I never said that Light is not gonna use it, so there's perhaps some confusion here. I never said that Light is not gonna use it.
+
+397
+00:57:37.360 --> 00:57:45.930
+Greg K | Lido: So, Leido requested this in order to have the option to use it, of course, right? So, perhaps there is here some misconception.
+
+398
+00:57:45.930 --> 00:57:51.550
+potuz: No, so Lido will use trust… will use in-protocol payments, would support this.
+
+399
+00:57:52.530 --> 00:57:57.930
+Greg K | Lido: Yeah, I mean, we will be examining this, so it's not, lido never decided to not use it, yeah.
+
+400
+00:58:02.430 --> 00:58:14.869
+Greg K | Lido: So this is why the, kind of, the way receiving the payment is something important for later, right? If LATO didn't care about receiving a payment, then that wouldn't have been important for later, right?
+
+401
+00:58:15.200 --> 00:58:16.730
+Greg K | Lido: Wouldn't make sense, of course.
+
+402
+00:58:21.780 --> 00:58:23.980
+Greg K | Lido: So I guess there is some confusion here.
+
+403
+00:58:25.490 --> 00:58:29.550
+Greg K | Lido: So does it… is it clear now, or is there any more question on that?
+
+404
+00:58:29.550 --> 00:58:38.570
+potuz: Not clear to me, because it's… if you're going to use this, then you are going to need to change your contracts anyways. If you go the trusted payments.
+
+405
+00:58:38.700 --> 00:58:46.139
+potuz: mechanism, then there's no change on the contracts at all, as far as I can see, because it's exactly the same as what you have today now.
+
+406
+00:58:52.120 --> 00:59:04.410
+Greg K | Lido: Yeah, but also, in the… in the trustless way, it's important for, like, logos to receive the payments on the EL, like in this execution layer, what to have, and not have the consensus layer,
+
+407
+00:59:04.410 --> 00:59:07.770
+potuz: Yeah, yeah, in the trustless… in the trustless side, right?
+
+408
+00:59:07.770 --> 00:59:09.740
+Greg K | Lido: Exactly, exactly. So this is settled.
+
+409
+00:59:10.930 --> 00:59:15.180
+Greg K | Lido: So, no, like, I think this should be clear, right?
+
+410
+00:59:20.120 --> 00:59:27.259
+Lin Oshitani | Nethermind: Yeah, I think it's clear. I think the point here is that if Lido is to use Trust Sustain, that's the requirement.
+
+411
+00:59:27.510 --> 00:59:32.899
+Lin Oshitani | Nethermind: But they haven't… still haven't decided whether to use it. Like, they need some more further investigation for that.
+
+412
+00:59:34.020 --> 00:59:35.180
+Lin Oshitani | Nethermind: Does that make sense?
+
+413
+00:59:37.130 --> 00:59:46.509
+Lin Oshitani | Nethermind: Yeah, put this, like, I think many people are kind of asking the same question, so maybe, you know, we don't have much time, it's still worth going over, like, why are staked builders
+
+414
+00:59:46.900 --> 00:59:50.900
+Lin Oshitani | Nethermind: required for pipelining. You mentioned that it's actually for protecting the builders.
+
+415
+00:59:50.900 --> 00:59:57.440
+potuz: Well, I don't know, I don't have a specification, a full specification of how does it go.
+
+416
+00:59:57.730 --> 01:00:02.069
+potuz: With, the proposer self-signing.
+
+417
+01:00:02.780 --> 01:00:10.279
+potuz: And the original… yes, so that's it. Like, there's no full specification of how the proposal self-signs.
+
+418
+01:00:10.730 --> 01:00:14.169
+potuz: It requires a bunch of backs and forths.
+
+419
+01:00:14.460 --> 01:00:21.200
+potuz: And even to… to actually, like, broadcast the payload later.
+
+420
+01:00:21.770 --> 01:00:25.760
+potuz: The… there's… it requires another back and forth.
+
+421
+01:00:25.870 --> 01:00:31.770
+potuz: Like, the implementation actually is actually much more complicated, too, because you see that the payload itself
+
+422
+01:00:32.030 --> 01:00:39.860
+potuz: It's again signed by the proposer, so there has to be a communication between the proposer and the builder.
+
+423
+01:00:40.320 --> 01:00:47.930
+potuz: When you're about to propose, and then there has to be another communication between the proposer and the builder when you're about to submit the payload.
+
+424
+01:00:48.030 --> 01:00:49.090
+potuz: And,
+
+425
+01:00:49.730 --> 01:00:55.640
+Lin Oshitani | Nethermind: Isn't that what the relays do right now? Like, kind of? Like, they sit in the middle,
+
+426
+01:00:56.120 --> 01:01:10.940
+potuz: Yeah, so… and Francesco is saying something, that the builder can sign it, but it doesn't need to be staked. Yeah, so… and then the problem with that, I think it's just a DOS, right? So, I don't under… we need to have a list of signatures.
+
+427
+01:01:11.870 --> 01:01:14.370
+potuz: yeah.
+
+428
+01:01:15.230 --> 01:01:25.560
+potuz: That's… that's right. It's not even clear what the signature… well, the signature is useful for… for validation. We're propagating an object that we need to know from with whom it's coming.
+
+429
+01:01:25.720 --> 01:01:31.489
+potuz: On the P2P side, otherwise you can be DOSED. So that's why the signature comes in the payload.
+
+430
+01:01:32.660 --> 01:01:38.659
+potuz: And now the question is whether or not we can have signatures from people that are not in the beacon state.
+
+431
+01:01:39.210 --> 01:01:46.839
+potuz: That… yeah, I do not know about the safety of that. That's why we had them. Now, of course,
+
+432
+01:01:47.040 --> 01:01:52.869
+potuz: If we… since we're saying that the That most of the…
+
+433
+01:01:53.160 --> 01:02:08.080
+potuz: most of the payments will be trusted anyways, and there's no reason for someone that is going to be providing trusted, trusted bids, there's no reason to be staked for 32 ETH, because anyways, most of your bids are going to be on the trusted side.
+
+434
+01:02:08.390 --> 01:02:16.709
+potuz: So, in principle, we could have builders being staked by very little, so that it's just a deterrent from DOSing the…
+
+435
+01:02:17.380 --> 01:02:27.929
+potuz: the beacon state, but but that will require more changes on the protocol side, so that… it's absolutely fine to have builders that are staked for very little.
+
+436
+01:02:28.090 --> 01:02:32.510
+potuz: But I think that would require changes on the beacon state that are, that are worse.
+
+437
+01:02:32.970 --> 01:02:37.340
+potuz: For example, we could make them not validators, and being staked very little.
+
+438
+01:02:37.430 --> 01:02:55.070
+potuz: And that's easy. But if we make them validators and being staked very little, so that their money is not sitting them just losing money, then it becomes much harder. So, I don't know. I mean, all of this… these are design decisions, it's just that it's… it's a specification that no one did.
+
+439
+01:02:55.320 --> 01:03:01.840
+potuz: I'm going back on the drawboard now, to, like, go back and specify all of this again.
+
+440
+01:03:02.260 --> 01:03:04.360
+potuz: That is a big change.
+
+441
+01:03:08.230 --> 01:03:11.930
+Lin Oshitani | Nethermind: Yeah, I guess, like, the BIM protocol part…
+
+442
+01:03:12.790 --> 01:03:17.399
+Lin Oshitani | Nethermind: imagine wouldn't be too much of a change, but, like, have support for the MEP boost, and…
+
+443
+01:03:17.880 --> 01:03:21.659
+Lin Oshitani | Nethermind: But maybe there's… Oh, I'm not sure, but yeah.
+
+444
+01:03:22.050 --> 01:03:27.040
+Lin Oshitani | Nethermind: I do agree that it's… it is, like… Don't have that much time.
+
+445
+01:03:31.210 --> 01:03:35.089
+Justin Traglia: Yeah, we don't really have that much time left in a call. 5 more minutes.
+
+446
+01:03:35.900 --> 01:03:46.629
+Justin Traglia: I don't think that we should make a decision on this today. I think we should save the decision making for next week's ACDC call, which Stokes will be leading.
+
+447
+01:03:50.730 --> 01:04:00.869
+Justin Traglia: Okay, let's continue talking about that, then. For the final agenda item, Mehdi, are you available to talk about the attestation container?
+
+448
+01:04:01.360 --> 01:04:02.900
+Justin Traglia: Yeah, sure.
+
+449
+01:04:03.580 --> 01:04:21.750
+Mehdi Aouadi: Yeah, sure. So, yeah, I, I basically was working on the gossip rules, for Gloas, and, when I reached the attestation stage, I noticed that, the attestation data index is now used for, to signal the payload status.
+
+450
+01:04:22.120 --> 01:04:28.579
+Mehdi Aouadi: And, we used to force it and hardcode it to zero in Electra, but, it's not the case now.
+
+451
+01:04:28.850 --> 01:04:38.389
+Mehdi Aouadi: So yeah, I was a little bit worried about that, because in my understanding, that would require a new container.
+
+452
+01:04:38.650 --> 01:04:41.480
+Mehdi Aouadi: To basically be able to…
+
+453
+01:04:41.600 --> 01:04:59.189
+Mehdi Aouadi: to differentiate the attestations and interpret the index field accordingly. So yeah, and in my understanding, too, that would have some side effects, basically, on the attestation data creation API.
+
+454
+01:04:59.510 --> 01:05:12.569
+Mehdi Aouadi: well, the gossip rules and the attestation data creation. So, yeah, I wanted to raise this concern to have some feedback and see if other people have
+
+455
+01:05:12.800 --> 01:05:16.560
+Mehdi Aouadi: I came across this, this issue, and yeah.
+
+456
+01:05:20.190 --> 01:05:26.759
+potuz: I'm sorry, I missed the issue. What is the issue, Mary? That we're using the index to, like, signal the payload?
+
+457
+01:05:26.760 --> 01:05:42.709
+Mehdi Aouadi: Yeah, I mean that the index in Electra, we were sure that the index was set to zero, and we was, for example, in TECO implementation, we were using that to check if it's an Elektra attestation, for example.
+
+458
+01:05:42.710 --> 01:05:46.699
+potuz: And now, now we're gonna have index different than zero, and…
+
+459
+01:05:46.700 --> 01:06:06.660
+Mehdi Aouadi: Yeah, yeah, that's the issue. And I was even thinking about the fork boundaries, when we move from Electra to GLAS, we could still have… we'll be still receiving some electra… a mix of Electra and the GLOAS attestations, and we need to differentiate,
+
+460
+01:06:06.770 --> 01:06:13.370
+Mehdi Aouadi: them, so yeah, that could be tricky, and I'm a little bit worried about that, so yeah.
+
+461
+01:06:15.660 --> 01:06:21.480
+potuz: Yeah, we'll need to look at this, too. I think we don't distinguish because of this.
+
+462
+01:06:22.550 --> 01:06:24.140
+potuz: But I'm not sure.
+
+463
+01:06:29.840 --> 01:06:36.359
+Mehdi Aouadi: I mean, we could add some workarounds and try to do some hacky workarounds, but…
+
+464
+01:06:37.280 --> 01:06:56.570
+Mehdi Aouadi: in my opinion, it would be really better if we add the spec change to that. Otherwise, we already introduced some… a lot of workarounds with the EIP attestation, and I really don't want to see some other hacky ways to handle that.
+
+465
+01:06:56.730 --> 01:06:58.790
+Mehdi Aouadi: For the next fork, so, yeah.
+
+466
+01:06:59.440 --> 01:07:03.550
+Justin Traglia: What would the spec change look like exactly? Would there just be a new container?
+
+467
+01:07:03.550 --> 01:07:21.700
+Mehdi Aouadi: Yeah, I think it would be a new container, even though it would be exactly the same data structure. The only difference would be, like, a conceptual difference, basically how we interpret the index field. Because we, in Elektra.
+
+468
+01:07:21.940 --> 01:07:29.159
+Mehdi Aouadi: We set, explicitly in the spec that the index field would be set to zero, And, yeah.
+
+469
+01:07:32.820 --> 01:07:34.470
+Justin Traglia: Yeah,
+
+470
+01:07:34.930 --> 01:07:41.840
+Justin Traglia: we should consider how difficult this will be for other clients as well. Like Terrence said, that adding a new access station container in Prism is…
+
+471
+01:07:42.370 --> 01:07:44.650
+Justin Traglia: Pain in the butt.
+
+472
+01:07:44.650 --> 01:07:46.209
+Mehdi Aouadi: When tech would go back.
+
+473
+01:07:46.690 --> 01:07:51.409
+Justin Traglia: Yeah, I understand your concern, though. Let's discuss this more on Discord, and…
+
+474
+01:07:51.720 --> 01:07:52.120
+Mehdi Aouadi: Yeah, sure.
+
+475
+01:07:52.120 --> 01:07:58.370
+Justin Traglia: Maybe if you could make a PR, just as, like, a proposal that we could discuss, that would be great. Sure.
+
+476
+01:07:58.370 --> 01:08:00.190
+Mehdi Aouadi: Okay, sure, let's do it like that.
+
+477
+01:08:01.320 --> 01:08:02.020
+Justin Traglia: Okay.
+
+478
+01:08:03.380 --> 01:08:08.710
+Justin Traglia: We're pretty much out of time. Is there anything anyone would like to discuss before we end the call?
+
+479
+01:08:16.740 --> 01:08:21.419
+Justin Traglia: Okay, thank you everyone for joining. I'll be sure to post a recap soon.
+
+480
+01:08:21.950 --> 01:08:23.639
+Justin Traglia: I'll see you all in 2 weeks.
+
+481
+01:08:25.029 --> 01:08:26.969
+potuz: Thank you, thank you.
+
+482
+01:08:26.970 --> 01:08:28.089
+Mehdi Aouadi: Thank you, bye.
+
+483
+01:08:28.370 --> 01:08:28.920
+Justin Traglia: Yep.
+
+484
+01:08:29.870 --> 01:08:30.550
+Stefan Bratanov: Alright.
+

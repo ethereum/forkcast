@@ -1,0 +1,66 @@
+{
+  "meeting_topic": "EIP-7732 Breakout Room  call #21,  August 15, 2025",
+  "meeting_start_time": "2025-10-10T13:51:49Z",
+  "meeting_end_time": "2025-10-10T15:00:34Z",
+  "summary_start_time": "2025-10-10T13:56:47Z",
+  "summary_end_time": "2025-10-10T15:00:22Z",
+  "summary_created_time": "2025-10-10T15:01:29Z",
+  "summary_last_modified_time": "2025-10-10T16:36:05Z",
+  "summary_overview": "The team reviewed implementation progress across various projects including Prism, Teku, Nimbus, and Lighthouse, with most members reporting partial completion of features while expressing concerns about meeting the end of October deadline. The group discussed technical changes to DevNet including adding slot numbers to sidecars and debated the inclusion of process payments in the current EIP, with significant discussion around trustless payments and state builders. The conversation ended with discussions about attestation data indexing concerns and plans to address staked builders and validator infrastructure in next week's ACDC call.",
+  "summary_details": [
+    {
+      "label": "Meeting Pre-Stream Setup",
+      "summary": "The meeting began with Justin preparing to share his screen and Pooja noting they were pre-streaming, with instructions to move to the stream after 14. Justin greeted several participants, including Lance, POTUS, Terrence, and NFLAIG, and confirmed he could hear everyone. The meeting was set to start in two minutes."
+    },
+    {
+      "label": "DevNet Zero Implementation Status Update",
+      "summary": "The team discussed ongoing PRs and implementation progress for DevNet Zero. Terence reported that Prism has implemented most of the beacon DAO MD features and is waiting for a stable Fusaka release before merging PRs. He expressed concern about the end of October launch timeline being rushed. Stefan confirmed that Teku has passed all relevant SPAT tests. The team agreed to follow up with Lighthouse for their implementation status."
+    },
+    {
+      "label": "Project Implementation Status Review",
+      "summary": "The team discussed implementation progress across different projects, with Stefan reporting minimal work done beyond passing reference tests, while expressing uncertainty about the end of October deadline due to pending decisions on CIP splitting. Nico shared that Nimbus has work in progress on state transition code, passing static tests but not reference tests yet. Shane provided an update on Lighthouse, noting progress on PTP and validator client work, but highlighted that payload processing separation would require significant refactoring and was unlikely to meet the October deadline."
+    },
+    {
+      "label": "DevNet Sidecar Slot Number Update",
+      "summary": "The team discussed adding a slot number to the sidecars for DevNet, with Saulius advocating for immediate implementation to avoid future refactoring. They decided to create a PR to add the slot to the Datacom sidecar, targeting DevNet1 rather than DevNet0, while keeping the current DevNet0 specs unchanged. The group agreed this change would not affect DevNet0 since they are targeting no blobs for that release anyway."
+    },
+    {
+      "label": "EIP Process Payment Design Discussion",
+      "summary": "The team discussed the inclusion of process payments in the current EIP, with Lin highlighting the need for careful coordination and design review. Potuz raised concerns about removing trustless payments, emphasizing the complexity of redesigning the system without state builders and the need for a detailed specification. Ansgar suggested considering a base version of ePBS without unconditional payments and state builders, arguing that this package should go through the general EIP process to avoid adding extra implementation complexity to Glamsterdamdam."
+    },
+    {
+      "label": "SFI EIP Governance Process Concerns",
+      "summary": "The group discussed concerns about changes to the SFI EIP, with Potuz emphasizing that the original discussion on trustless payments and state builders was already completed two years ago. Lin inquired about the relationship between state builders and pipelining, while Ansgar suggested separating the discussion into two concerns: the specification viability and the governance process. Ansgar noted that while he is agnostic about the spec, he believes the governance process should be reconsidered, as the headliner's primary motivation was scaling, and additional features like staking should be addressed through non-headliner EIPs."
+    },
+    {
+      "label": "Trustless Payments and Protocol Impact",
+      "summary": "The team discussed the scaling EIP and trustless payments implementation, with Potuz explaining that trustless payments were already covered in the existing specification and represented only minor additions. Terence emphasized that the current design supports both trusted and trustless payments, and highlighted the need for more feedback from builders regarding the stake-pushing requirement. Lorenzo raised concerns about the potential impact of stake builders on builder competition and relay competition, noting that the off-protocol market currently responsible for 95% of Ethereum blocks might not be fully considered in protocol changes."
+    },
+    {
+      "label": "ePBS Builder Payment Flexibility",
+      "summary": "The discussion focused on the implementation of off-protocol payments for builders in Ethereum Proof of Stake (ePBS). Lorenzo and Potuz clarified that the proposed changes would not require significant modifications for node operators or proposers, as builders could continue using existing payment methods. Lin emphasized the importance of easy off-protocol payment support to minimize disruption and reduce arguments against the change. Potuz stressed that ePBS should offer builders an option, not a requirement, for off-protocol payments, while maintaining trustless payment routes for safety and fallback mechanisms."
+    },
+    {
+      "label": "Trustless Payment Route Removal Debate",
+      "summary": "The team discussed the removal of trustless payment routes, with Potuz opposing the removal and emphasizing the importance of a fallback P2P stack. Lin and others raised concerns about operational challenges for node operators and the need for software upgrades to handle trustless payments. The group agreed that while trustless payments should remain, there should be strong support for on-protocol payments. Greg from Lido confirmed that the withdrawal part of the specification had been settled, avoiding the need for on-chain infrastructure updates."
+    },
+    {
+      "label": "Payment System and Builder Staking",
+      "summary": "The team discussed the implications of changing the payment system, with potuz explaining that Lido requested a simpler system but might still use trusted payments. They debated the necessity of staked builders for pipelining, with potuz and others questioning the safety of allowing signatures from non-staked entities. The group also considered the possibility of reducing builder staking requirements, though potuz noted this would require changes to the protocol. The discussion concluded with potuz stating the need to go back to the drawing board to specify these changes further."
+    },
+    {
+      "label": "Attestation Data Indexing Concerns",
+      "summary": "The team discussed concerns about changes to attestation data indexing, where Mehdi raised an issue about the index field no longer being hardcoded to zero, which could create compatibility problems between Electra and global attestation systems. Justin suggested discussing this further on Discord and requested Mehdi to create a PR as a proposal for review. The team agreed to save decisions about staked builders and validator infrastructure for next week's ACDC call led by Stokes."
+    }
+  ],
+  "next_steps": [
+    "Mehdi to create a PR proposing a solution for the attestation container issue in GLOS where the index field is now used to signal payload status.",
+    "Client teams to continue implementation work for DevNet Zero.",
+    "Saulius/Grandine to make a PR to add slot to Datacom Sidecar for future DevNet implementation.",
+    "Client teams to discuss and standardize out-of-the-box support for off-protocol payments.",
+    "Justin to post a recap of the meeting.",
+    "All participants to continue the trustless payments discussion on Discord before the next ACDC call.",
+    "Potus and NC to discuss open PRs that need to be merged soon.",
+    "Someone to pick up the to-do items: removing tests no longer relevant in GOSS and adding missing asserts pointed out by Terrence."
+  ]
+}

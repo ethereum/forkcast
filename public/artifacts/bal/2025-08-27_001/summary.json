@@ -1,0 +1,53 @@
+{
+  "meeting_topic": "EIP-7928 Breakout #1, August 27, 2025",
+  "meeting_start_time": "2025-08-27T13:56:41Z",
+  "meeting_end_time": "2025-08-27T15:32:24Z",
+  "summary_start_time": "2025-08-27T13:58:03Z",
+  "summary_end_time": "2025-08-27T14:52:12Z",
+  "summary_created_time": "2025-08-27T15:34:11Z",
+  "summary_last_modified_time": "2025-08-27T17:07:56Z",
+  "summary_overview": "The team discussed streaming arrangements for an upcoming meeting and confirmed they would stream on both X and YouTube platforms. The main focus was on the implementation progress of EIPs, particularly the Geth implementation where Jared presented benchmark results and discussed performance improvements in state processing. The team also reviewed testing efforts, client progress on implementing the BAL EIP, and agreed to maintain the current implementation while continuing to evaluate performance and benchmark results for future devnet deployment.",
+  "summary_details": [
+    {
+      "label": "Streaming Setup for EOP Breakout",
+      "summary": "Toni and Pooja discussed streaming arrangements for an upcoming meeting, agreeing to stream on both X and YouTube platforms. Pooja confirmed she would be ready to stream in about 2 minutes, and Toni decided to wait a few more minutes before starting the stream. Once ready, Toni gave the signal to Pooja, who confirmed they were live. The meeting then began with Toni welcoming everyone to the 1st EOP 7, 9, 28 Breakout call."
+    },
+    {
+      "label": "EIP Implementation Progress and Benchmarks",
+      "summary": "The team discussed the implementation progress of EIPs, focusing on the Geth implementation where Jared reported that block access list execution and building are complete, though storage and account reads are still pending. Jared presented benchmark results and mentioned that the code is ready for a devnet, pending verification of consensus and engine API changes. Toni noted that the inclusion of reads is still under discussion, with parallel I/O being considered valuable for larger blocks."
+    },
+    {
+      "label": "Transaction Processing Models Performance Overview",
+      "summary": "Jared presented an overview of the current serial and parallel transaction execution models, highlighting the performance differences between the master and bal branches. He explained that the bal branch processes blocks 2.6 times faster than the master branch, with state root calculation being the slowest step. Jared also mentioned ongoing work to optimize pre-processing steps and will continue to run longer benchmarks to gather more accurate performance data."
+    },
+    {
+      "label": "Block I/O Strategies Performance Analysis",
+      "summary": "The team discussed the benefits and tradeoffs of different I/O strategies for block processing. Jared explained that while parallel I/O provides some speedup, state locations are not strictly necessary for execution, though they could be useful for accessing more detailed information about block changes. Po presented benchmark results showing that pre-fetching block states can improve state read rates through multi-layer reading and snapshot techniques, though Toni requested these results be shared with the group. The team agreed to conduct more detailed benchmarks to evaluate the performance impact of batch loading and state location usage, with Toni emphasizing the importance of understanding how larger block sizes would affect execution times versus I/O times."
+    },
+    {
+      "label": "State Processing Performance Optimization",
+      "summary": "The team discussed performance improvements in state processing, with Toni noting a 2x speedup in average cases and a 33x speedup in worst cases when using 32 cores. Jared suggested exploring the possibility of batch loading non-mutated storage slots and accounts after starting state route calculations, while Toni and Carl emphasized the need to balance I/O costs against performance gains. The group agreed that benchmarks against Mainnet would be necessary to determine the optimal approach, with Karim adding that mixing I/O and CPU operations during block processing might be beneficial."
+    },
+    {
+      "label": "Python Testing Framework Updates",
+      "summary": "Rahul and Felipe provided updates on testing efforts, focusing on a Python-based testing framework and integration with specs. Felipe explained the workflow, including how transactions are processed and tested, while Rahul highlighted the aggregation of test cases into a structured markdown file for better organization. They discussed the need for more complex and invalid tests, as well as the development of an adoption dashboard using an integration framework to track client progress."
+    },
+    {
+      "label": "BAL EIP Implementation Progress Review",
+      "summary": "The team discussed progress on implementing the BAL (Block Access List) EIP across different client projects. Toni requested client teams to provide updates on their progress, with Jared mentioning their first PR review scheduled for tomorrow. Mirgee from Beizu reported they had implemented the degree protocol for BLs but needed to update the engineering EIP and address potential edge cases. Mark from Aragon shared that they were working on the bound implementation and expected to provide an estimate by the end of the week, while Soubhik from Refuel reported progress on the engine API changes and reads/writes storage implementation. The team agreed to continue benchmarking to decide whether to include reads in the devnet, with Toni noting that Geff and Bezu might be the first clients ready for devnet deployment."
+    },
+    {
+      "label": "EIP Performance and RLP Decision",
+      "summary": "The team discussed keeping reads in the EIP for now to evaluate worst-case performance without them, with Toni agreeing to maintain the current implementation. Marc inquired about RLP versus SSZ, and Toni confirmed broad consensus to use RLP due to its simplicity and smaller size, noting some potential advantages of SSZ with compact proofs. The team agreed to meet again in two weeks for the next breakout call, with an unnamed participant suggesting a target of three weeks for the bal-devnet-0 release."
+    }
+  ],
+  "next_steps": [
+    "Jared to implement and benchmark reads in Geth to evaluate performance impact of batch I/O vs. on-demand loading.",
+    "Jared to continue running longer benchmarks on Geth implementation to verify the 2.2x speed-up holds.",
+    "Po  to share detailed benchmark results on batch I/O performance with the group.",
+    "Client developers to submit new edge case test cases as PRs to the markdown file shared by Rahul.",
+    "Rahul and Felipe to finalize the basic test set and make a small release for client integration.",
+    "Felipe to continue work on implementing more complex test structures and invalid tests.",
+    "Client teams  to continue implementation of EIP-7928 and provide updates at the next call."
+  ]
+}

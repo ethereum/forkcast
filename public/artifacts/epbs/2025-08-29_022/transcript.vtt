@@ -1,0 +1,2602 @@
+WEBVTT
+
+1
+00:02:25.580 --> 00:02:26.680
+Pooja Ranjan: Hello, Ben.
+
+2
+00:02:30.690 --> 00:02:32.010
+Will Corcoran: Hi, Peter. How are you?
+
+3
+00:02:33.420 --> 00:02:34.860
+Pooja Ranjan: Good, good, thank you.
+
+4
+00:02:36.040 --> 00:02:38.910
+Will Corcoran: Thanks for, bringing the last year.
+
+5
+00:02:39.350 --> 00:02:42.499
+Pooja Ranjan: That's all right, so would you be running the call today?
+
+6
+00:02:44.290 --> 00:02:46.450
+Will Corcoran: Yeah, I'll be about reading the call.
+
+7
+00:02:46.890 --> 00:02:53.410
+Pooja Ranjan: Okay, alright, so whenever you're ready, you can just let me know to move over the stream, because I will go ahead and start the pre-stream.
+
+8
+00:02:54.390 --> 00:02:55.610
+Will Corcoran: Perfect, thanks.
+
+9
+00:05:46.070 --> 00:05:46.740
+Stefan Bratanov: Hello.
+
+10
+00:06:15.290 --> 00:06:19.109
+Will Corcoran: I'll just give people another minute, and we'll start.
+
+11
+00:07:20.990 --> 00:07:27.160
+Will Corcoran: Great. So, Pooja, you can move us over to the livestream.
+
+12
+00:07:32.090 --> 00:07:35.350
+Will Corcoran: Alright, thank you. Welcome to…
+
+13
+00:07:35.480 --> 00:07:41.809
+Will Corcoran: breakout room number 22 for EP, or EIP7732, or EPBS.
+
+14
+00:07:43.510 --> 00:07:50.880
+Will Corcoran: We're gonna start with agenda item number two. I think we're waiting for POTUS to join us. We're gonna go back to agenda item number one.
+
+15
+00:07:51.170 --> 00:08:08.170
+Will Corcoran: But, Terrence, if you wanted to speak to, I guess the second agenda item discussing the potential shift of beacon-blocked body fields, like KZG commitments and execution requests from consensus layer to execution layer.
+
+16
+00:08:08.420 --> 00:08:10.009
+Will Corcoran: I know you had some…
+
+17
+00:08:10.360 --> 00:08:17.760
+Will Corcoran: You know, wanted to highlight the benefits, but also flag any backwards compatibility or tech debt concerns.
+
+18
+00:08:18.930 --> 00:08:19.919
+terence: Yeah, for sure.
+
+19
+00:08:20.180 --> 00:08:26.299
+terence: Porto's just joined, but let's start with number two first, then we can go to number 1.
+
+20
+00:08:26.410 --> 00:08:38.490
+terence: And, so I guess the question here is that… let me give you a little background on just our rationale, that in EIP7732, EPBS,
+
+21
+00:08:38.490 --> 00:09:02.279
+terence: there's this notion of pipelining, which means that you're moving some stuff from the consensus side to the execution side, and then on the execution side, you have this signed execution pedal envelope, which consists of, like, execution requests, KCG commitments, and those were originally on the block body, on the Beacon block body. Now the question is, like, what do we do with those
+
+22
+00:09:02.860 --> 00:09:14.310
+terence: existing fields on the Bitcoin block body that's being moved to the execution site. We could either just remove them, or we could stop them with empty value, but assert them in the state.
+
+23
+00:09:14.310 --> 00:09:33.950
+terence: And then, in the current spec that we are removing them, and therefore, the generalized index is gonna be different than before. It's no longer backward compatible. I haven't heard any strong pushback on this. Like, if your applications, you
+
+24
+00:09:33.950 --> 00:09:47.520
+terence: care about this generalized index field, such that you want them to stay the same, that we're compatible from, Fulu or Electra, like, please speak up. But for now, I'm just assuming, like, remove them is, like.
+
+25
+00:09:47.760 --> 00:10:00.010
+terence: it's basically cleaner, and then it's less tepid. And, yeah, so that's… so that's basically the beacon blood body fields. And then there's, and then the second item on the…
+
+26
+00:10:00.020 --> 00:10:18.710
+terence: or number two is, it's data column sidecar, right? So, like, in EPDS, because of removing all the KCG commitment to the execution side, the inclusion proof step is also different. That means that you have to create another data column sidecar.
+
+27
+00:10:18.710 --> 00:10:27.040
+terence: With a different inclusion-proof deck. And that kind of leads to the questions of, like, because we know the notion of consistency
+
+28
+00:10:27.060 --> 00:10:37.450
+terence: block will be released before the… before the iconic sidecar. You actually do not need, the signed block header and also the inclusion proof.
+
+29
+00:10:37.450 --> 00:10:49.839
+terence: in a data collection sidecar. So you can actually remove those two, and then it's also much cleaner as well. So, but that requires more, like, eyes on it. I had a PR out on that already.
+
+30
+00:10:49.840 --> 00:10:53.760
+terence: But I basically have two PRs in the consensus fact report today.
+
+31
+00:10:53.820 --> 00:11:09.120
+terence: sorry, I actually have swan PR for this purpose. That is just, renaming the data column sidecar. We removed the sign block body header, sign block header, and also the inclusion proof. So, yeah, feedback welcome.
+
+32
+00:11:14.680 --> 00:11:19.259
+terence: Yeah, basically, Will. That's… that's basically… yeah.
+
+33
+00:11:24.010 --> 00:11:27.029
+Will Corcoran: Great, any… Any thoughts on this?
+
+34
+00:11:33.790 --> 00:11:34.690
+Will Corcoran: Yeah.
+
+35
+00:11:35.230 --> 00:11:42.459
+ethDreamer (Mark): So, like, I haven't had time to, like, fully consider this, but I will say that…
+
+36
+00:11:42.830 --> 00:11:48.060
+ethDreamer (Mark): It seems like perhaps even another Benefit of this?
+
+37
+00:11:48.390 --> 00:11:55.830
+ethDreamer (Mark): is, as far as I can tell, the execution requests are the only thing that was in the beacon block
+
+38
+00:11:56.530 --> 00:12:03.039
+ethDreamer (Mark): that… really required the beacon block to be signed. That and, like, the state route, basically.
+
+39
+00:12:03.390 --> 00:12:06.250
+Potuz: I'm sorry, that required the payload to be signed?
+
+40
+00:12:06.400 --> 00:12:10.059
+ethDreamer (Mark): the… yes, the payload, sorry, the payload to be signed.
+
+41
+00:12:10.060 --> 00:12:13.410
+Potuz: They don't need to be signed because it broadcasts.
+
+42
+00:12:14.440 --> 00:12:16.190
+Potuz: Otherwise, you're tossed.
+
+43
+00:12:18.770 --> 00:12:25.689
+ethDreamer (Mark): So, you can check the hash that it matches everything, and if they change anything, you know, that would…
+
+44
+00:12:25.950 --> 00:12:34.819
+ethDreamer (Mark): Like, the… there are only a couple of fields that were not protected, that were outside the block. Everything in the block can't be changed, because it's committed to by the hash.
+
+45
+00:12:35.130 --> 00:12:49.180
+terence: But the CL cannot do that before rebroadcasting, right? We don't want to make this new engine API call to check the block hash, or… we don't want to code new payloads before we… beforehand.
+
+46
+00:12:49.180 --> 00:12:49.840
+ethDreamer (Mark): So…
+
+47
+00:12:50.020 --> 00:13:05.339
+ethDreamer (Mark): the CLRD, if… I mean, this… that is true. You would have to be able to evaluate the block hash yourself on the CL side, which some CLs, including Lighthouse and Nimbus, do, because if you don't send… if when you're syncing, you don't send every block
+
+48
+00:13:05.340 --> 00:13:13.030
+ethDreamer (Mark): like, a new payload. If you don't send a new payload on every block, the spec actually requires you to validate the block hash on the CL side.
+
+49
+00:13:14.860 --> 00:13:27.769
+ethDreamer (Mark): Because it would enable some attacks if you don't, and you're not sending every single new payload when you're syncing and waiting for the execution engine to tell you that it's valid. If you instead skip over blocks and just, like, send every thousandth, as I think Lighthouse does.
+
+50
+00:13:27.770 --> 00:13:35.190
+ethDreamer (Mark): You have to do things like verify the hash, and we have that kind of code, but this would actually require that you have the ability to verify the hash in the CLL.
+
+51
+00:13:40.400 --> 00:13:41.629
+Enrico Del Fante (tbenr): And we don't.
+
+52
+00:13:43.270 --> 00:13:49.339
+ethDreamer (Mark): Yeah, I mean… We do, we know Nimbus does, and… It does enable you to…
+
+53
+00:13:49.860 --> 00:13:53.729
+ethDreamer (Mark): Not have to send new payload to every… every… when you're syncing.
+
+54
+00:13:54.020 --> 00:13:55.729
+ethDreamer (Mark): It does enable you to, like.
+
+55
+00:13:56.040 --> 00:14:04.909
+ethDreamer (Mark): it doesn't have that benefit that you wouldn't have to send new payload every time when you're syncing, but… yeah, no, it's just… it was just something that I was thinking about.
+
+56
+00:14:05.430 --> 00:14:10.119
+ethDreamer (Mark): But… I was just pointing out that, like, moving the…
+
+57
+00:14:11.130 --> 00:14:19.370
+ethDreamer (Mark): If you move the execution request also out, then the only thing a malicious actor could really modify would be the state route, and…
+
+58
+00:14:19.750 --> 00:14:23.729
+Potuz: What do you mean, the execution request's out?
+
+59
+00:14:24.130 --> 00:14:25.269
+ethDreamer (Mark): If you move it up…
+
+60
+00:14:25.350 --> 00:14:26.819
+Potuz: How are we doing that?
+
+61
+00:14:27.260 --> 00:14:35.789
+ethDreamer (Mark): Oh, actually… Well, so I thought the idea was that the execution requests are being moved to…
+
+62
+00:14:36.070 --> 00:14:39.669
+Potuz: The execution requests are not being moved anywhere, they are in the envelope.
+
+63
+00:14:40.000 --> 00:14:48.299
+Potuz: I think the idea now… what we're discussing now is the proof, the proof of inclusion of the KCC commitments. This is in the sidecards.
+
+64
+00:14:48.940 --> 00:14:56.240
+Potuz: We do not need to prove that the case… that the sidecars are actually included in the block. There's no longer a need to prove that.
+
+65
+00:14:57.360 --> 00:14:58.140
+ethDreamer (Mark): Okay.
+
+66
+00:14:59.550 --> 00:15:00.910
+ethDreamer (Mark): A lot of things.
+
+67
+00:15:00.910 --> 00:15:15.820
+Enrico Del Fante (tbenr): I have a question, maybe just for wrap-up in my head. So, removing the inclusion proof from the sidecars has a strong assumption that you assume you have already received the big on block, right?
+
+68
+00:15:16.200 --> 00:15:16.670
+Potuz: Yes.
+
+69
+00:15:16.670 --> 00:15:17.280
+Enrico Del Fante (tbenr): Right?
+
+70
+00:15:17.280 --> 00:15:20.640
+Potuz: Correct. So, otherwise you have to wait.
+
+71
+00:15:20.640 --> 00:15:39.550
+Enrico Del Fante (tbenr): Okay, so that's my point. If you don't see the bigum block and you start seeing the sidecars, what do you do with gossip? Validation? So, you have to withhold and wait for the block, and then afterwards you say, okay, we can disseminate the…
+
+72
+00:15:39.890 --> 00:15:41.280
+Enrico Del Fante (tbenr): the, the…
+
+73
+00:15:41.280 --> 00:15:46.880
+Potuz: Yeah, so just drop them, but but I think the… what happens is that
+
+74
+00:15:47.250 --> 00:15:52.919
+Potuz: Today we have this issue because both of these things are being broadcast at the same time by the same player.
+
+75
+00:15:53.650 --> 00:16:03.919
+Potuz: But in EPBS, it does not make any sense to receive the sidecar before… it's just like receiving the payload before receiving the block. If you receive a payload before receiving the block.
+
+76
+00:16:03.960 --> 00:16:12.699
+Enrico Del Fante (tbenr): Yeah, yeah, yeah, I mean, in the perfect world where everything goes into the right direction, it's okay, it's just a matter of
+
+77
+00:16:13.020 --> 00:16:21.699
+Enrico Del Fante (tbenr): a networking glitch that you don't see the beacon block, but you start seeing other stuff that's supposed to be.
+
+78
+00:16:21.820 --> 00:16:37.650
+Enrico Del Fante (tbenr): So we have to deal with, in code, an edge case in this case, which will be dropping those sidecars, and supposed to never ever receive them, and what we do with the…
+
+79
+00:16:37.930 --> 00:16:41.029
+Enrico Del Fante (tbenr): Dissemination, do we…
+
+80
+00:16:41.720 --> 00:16:52.459
+Enrico Del Fante (tbenr): We can't validate them, so we should drop and say… invalid. But then we downscore the peers.
+
+81
+00:16:52.840 --> 00:16:55.119
+Enrico Del Fante (tbenr): So, yeah, there is a kind of an edge case.
+
+82
+00:16:55.120 --> 00:17:05.480
+Potuz: Yeah, it worries me even more for the payload, so our current behavior for the payload is kind of tricky, right? When you get a payload that refers to a beacon block for the current slot.
+
+83
+00:17:06.200 --> 00:17:16.900
+Potuz: We are currently requesting that block by route. At least this is what saved us in our, Kurtosis runs with, with Teku.
+
+84
+00:17:16.900 --> 00:17:17.290
+Enrico Del Fante (tbenr): Yeah.
+
+85
+00:17:17.290 --> 00:17:19.559
+Potuz: Requesting those blocks by route.
+
+86
+00:17:20.240 --> 00:17:27.560
+Potuz: And this is dangerous to do, right? Because anyone can send you a payload for that slot, and you're gonna be starting making requests.
+
+87
+00:17:28.200 --> 00:17:37.100
+Potuz: Yeah. So I'm not… yeah, I'm not sure. We need to get the P2P experts to decide what is the best, what is the safest way of dealing with these things that are unexpected.
+
+88
+00:17:37.100 --> 00:17:37.890
+ethDreamer (Mark): And…
+
+89
+00:17:38.740 --> 00:17:53.159
+ethDreamer (Mark): I mean, I don't know, maybe this is already dismissed, but the ability to receive the payload before the beacon block was one of the things that at least I had theorized, was a potential way, if we had to apply penalties to
+
+90
+00:17:53.690 --> 00:17:55.520
+ethDreamer (Mark): like…
+
+91
+00:17:56.210 --> 00:18:01.829
+ethDreamer (Mark): Proposing a beacon block, but not proposing the execution payload because you're doing a free option, but you're self-building.
+
+92
+00:18:02.020 --> 00:18:12.830
+ethDreamer (Mark): then proposing the execution payload before the beacon block and allowing that to actually propagate via gossip was one of the ways I had thought that you could prevent a solo staker from suffering such a penalty, but…
+
+93
+00:18:12.830 --> 00:18:27.740
+Potuz: Self-building is never an issue, because the proposer index is already expected from the BCOM state, so if you receive a payload from the proposer index of the current slot, it's fine to request the block.
+
+94
+00:18:28.060 --> 00:18:32.619
+Potuz: It's… that's not a GOS vector. The problem is, if you receive a payload.
+
+95
+00:18:32.780 --> 00:18:41.039
+Potuz: From an arbitrary builder, signed by an arbitrary builder, for the current slot, then anyone can actually send you such a thing.
+
+96
+00:18:41.180 --> 00:18:43.950
+ethDreamer (Mark): Right. And this becomes now a DOS.
+
+97
+00:18:44.660 --> 00:18:45.450
+Enrico Del Fante (tbenr): Yeah.
+
+98
+00:18:55.270 --> 00:19:00.499
+ethDreamer (Mark): So this hasn't… Rolled out, potentially, that mitigation if it comes to that.
+
+99
+00:19:01.230 --> 00:19:02.360
+ethDreamer (Mark): That's good to know.
+
+100
+00:19:02.580 --> 00:19:13.970
+Potuz: So, Alex has a question, I didn't understand, I just saw it. Could you state it, Alex? I'm not sure if you were talking about the miracle proof, or this issue now of payloads.
+
+101
+00:19:14.360 --> 00:19:20.499
+stokes: Yeah, I mean, maybe I wasn't following, but I thought we were talking about… okay, so I think you said that basically…
+
+102
+00:19:20.760 --> 00:19:27.700
+stokes: We don't need to have this, like, KCG inclusion proof in the bobsidecars anymore because of how UPBS works.
+
+103
+00:19:28.000 --> 00:19:33.400
+stokes: But then, I mean, I think it gets back to what we were just talking about, where you might get the bulbs before.
+
+104
+00:19:33.730 --> 00:19:37.559
+stokes: And then that's a DOS vector, right? Unless there's some way… so I think what…
+
+105
+00:19:37.880 --> 00:19:43.320
+stokes: Just, you know, off the top of my head, you'd want to still have some kind of proof, and…
+
+106
+00:19:44.140 --> 00:19:45.720
+stokes: I mean, yeah, the weird thing is you won'.
+
+107
+00:19:45.720 --> 00:19:51.050
+Potuz: I think here it's a safe assumption that things are coming in the right order.
+
+108
+00:19:51.340 --> 00:20:02.659
+Potuz: Because even if you're self-proposing, you might want to send things in the right order. You don't even have time to propagate the blobs, and the become block needs to propagate much faster.
+
+109
+00:20:02.660 --> 00:20:12.310
+Potuz: So I think it's absolutely safe to just drop messages and ignore them. Instead of downscoring or anything, just ignore messages that come in before the block.
+
+110
+00:20:12.310 --> 00:20:12.759
+ethDreamer (Mark): Here's coming.
+
+111
+00:20:12.760 --> 00:20:21.989
+Enrico Del Fante (tbenr): Yeah. Ignore if they are not in the same order, and it should be a very edge case in this standard situation.
+
+112
+00:20:23.360 --> 00:20:27.159
+stokes: Well, but it might not be. Like, someone might be actively trying to exploit it.
+
+113
+00:20:27.880 --> 00:20:38.479
+stokes: So, I mean, this is why we did this in the first place. So, like, if you get a bobside car, you should be able to prove it back to either the beacon block or the execution payload that you have, right?
+
+114
+00:20:43.260 --> 00:20:46.509
+Potuz: That's if you have it. Like, if you don't have it.
+
+115
+00:20:47.600 --> 00:20:52.520
+Potuz: Right? If you don't have… I think today, people probably do just ignore it.
+
+116
+00:20:53.070 --> 00:20:56.840
+Potuz: Which doesn't change the behavior. That's my whole point.
+
+117
+00:20:57.130 --> 00:20:57.760
+stokes: Yeah.
+
+118
+00:20:59.590 --> 00:21:09.540
+Potuz: So today, what happens is that you prove it once, and now you save this… the sign… you need to do a verification there for the root.
+
+119
+00:21:09.790 --> 00:21:17.700
+Potuz: And since you have the header, you can do this signature verification there, and then whenever you actually receive the blog, you don't need to redo that verification.
+
+120
+00:21:18.580 --> 00:21:35.919
+Potuz: But I think this is just completely in vain after a PBS. You could just assume that the blog… you're gonna see the blog before, and if you haven't, just ignored the package before. Ignoring is not a… it's not a problem on the P2P, it's not a DOS, as long as it's more costly to generate the message.
+
+121
+00:21:40.320 --> 00:21:41.820
+Potuz: But the payload is, the payload.
+
+122
+00:21:41.820 --> 00:21:42.269
+stokes: This is a problem.
+
+123
+00:21:42.270 --> 00:21:43.100
+Potuz: room, I think.
+
+124
+00:21:46.890 --> 00:21:53.100
+stokes: Okay, but the payload would have a block cache, let's say, that is committed to in the beacon block, so that's fine.
+
+125
+00:21:53.280 --> 00:22:00.000
+Potuz: Yeah, so if you see the… yeah, the problem is the same kind of situation, like, if you see
+
+126
+00:22:00.100 --> 00:22:18.249
+Potuz: So let's forget about DPBS, and today, you receive a beacon block whose parents you don't have, you request that parent. And we are fine doing this because we first check that the beacon block that we're receiving corresponds to a proposal that we were expecting for that slot.
+
+127
+00:22:18.410 --> 00:22:27.899
+Potuz: So not an arbitrary guy can send us this, so that's why we request the parents. But if we receive a payload, this is a problem, because anyone can send us a payload.
+
+128
+00:22:29.170 --> 00:22:31.650
+stokes: Well, but they can't, it's signed by a builder, right?
+
+129
+00:22:31.650 --> 00:22:33.670
+Potuz: Yeah, but any builder can do that.
+
+130
+00:22:34.200 --> 00:22:42.510
+Potuz: Builders are not expected… we're not expecting to see this particular builder sending a payload now, unless…
+
+131
+00:22:42.780 --> 00:22:50.369
+Potuz: we already have that become block. So the analog of this situation, where you're requesting a parent because you don't have it.
+
+132
+00:22:50.420 --> 00:23:06.369
+Potuz: doesn't really apply for payloads, because we're getting a payload for an arbitrary builder, we don't have the VCOM block, and we cannot start requesting… that's what we're doing now, but I think we're making a mistake. We cannot just start arbitrarily requesting the corresponding Beacon block just because a builder sent us.
+
+133
+00:23:11.920 --> 00:23:16.660
+stokes: Hmm, so you could… Yeah, okay.
+
+134
+00:23:16.660 --> 00:23:21.369
+Enrico Del Fante (tbenr): Yeah, but the problem is then… You have to…
+
+135
+00:23:21.660 --> 00:23:26.069
+Enrico Del Fante (tbenr): Somehow cache them, then wait for…
+
+136
+00:23:26.390 --> 00:23:38.699
+Enrico Del Fante (tbenr): For the actual beacon block, or you assume that you ignore them, you drop them, you wait for the actual beacon block, and then you do a request by route.
+
+137
+00:23:39.230 --> 00:23:39.840
+Enrico Del Fante (tbenr): as…
+
+138
+00:23:39.840 --> 00:23:40.650
+stokes: So yet?
+
+139
+00:23:40.650 --> 00:23:46.420
+Enrico Del Fante (tbenr): Drop everything that comes, before your action beacon block.
+
+140
+00:23:46.680 --> 00:23:59.179
+Potuz: You could do that, you could… you could just block… I think I would implement a cache, a small cache, but yes, in principle, you can just drop the payload, once you get the VCOM block, request the payload by route.
+
+141
+00:23:59.500 --> 00:24:04.289
+Enrico Del Fante (tbenr): Yeah, and a heater cache if you have it, at least a limited cache, you can just…
+
+142
+00:24:04.690 --> 00:24:16.899
+Enrico Del Fante (tbenr): cache them limitedly, but this applies to the common ones as well. I would… I would do the same for… for… for blobs as well.
+
+143
+00:24:16.900 --> 00:24:20.109
+Potuz: Yeah, yeah, that's what I think it's what we should do.
+
+144
+00:24:21.090 --> 00:24:21.840
+Enrico Del Fante (tbenr): Right.
+
+145
+00:24:21.840 --> 00:24:22.390
+ethDreamer (Mark): There's…
+
+146
+00:24:22.390 --> 00:24:28.810
+Enrico Del Fante (tbenr): gate everything. Don't do any RPC before receiving the big on block.
+
+147
+00:24:29.040 --> 00:24:29.850
+Enrico Del Fante (tbenr): Yeah.
+
+148
+00:24:29.960 --> 00:24:32.090
+Enrico Del Fante (tbenr): I kind of agree at the moment.
+
+149
+00:24:32.560 --> 00:24:35.469
+stokes: That's probably the pragmatic way to do this.
+
+150
+00:24:35.710 --> 00:24:40.170
+stokes: You could also imagine the builder has to include the proposer's signature.
+
+151
+00:24:40.340 --> 00:24:45.540
+ethDreamer (Mark): That's what I was thinking, yeah, like, how… how much data is a beacon block header?
+
+152
+00:24:47.950 --> 00:24:56.409
+stokes: Not, it's tiny, but I think it's more… we have to make sure all the, like, flows make sense here. But basically, you could…
+
+153
+00:24:57.770 --> 00:25:09.240
+stokes: you would have some signifier in the execution payload, which I think the proposal signature would be a good candidate, and that would at least constrain this message space quite a bit.
+
+154
+00:25:11.260 --> 00:25:14.219
+stokes: I mean, I think it would constrain it exactly to what we want.
+
+155
+00:25:14.390 --> 00:25:14.840
+ethDreamer (Mark): Interesting.
+
+156
+00:25:14.840 --> 00:25:20.989
+stokes: Because then we're assuming builders see the beacon block before everyone else, which I don't know if that's the case.
+
+157
+00:25:23.420 --> 00:25:26.129
+Potuz: Well, that HAS to be the case, right?
+
+158
+00:25:26.240 --> 00:25:29.599
+Potuz: Otherwise, the builder doesn't even know that it needs to broadcast a block.
+
+159
+00:25:31.230 --> 00:25:36.470
+stokes: Right, so, okay, let's think about this. So, proposer broadcasts to beacon block.
+
+160
+00:25:36.660 --> 00:25:47.650
+stokes: The builder then must watch for that beacon block, and then basically it would just take the signature of that message and put it onto their… what is it, the signed execution payload envelope?
+
+161
+00:25:48.750 --> 00:25:49.609
+Potuz: Yeah, it…
+
+162
+00:25:49.610 --> 00:25:50.700
+stokes: Then you would know.
+
+163
+00:25:51.100 --> 00:25:52.879
+stokes: Basically, it's basically like a token.
+
+164
+00:25:53.050 --> 00:25:56.410
+stokes: Well, yeah, I don't know if it does make sense.
+
+165
+00:25:56.410 --> 00:26:06.109
+Potuz: It sort of, like, doesn't make any sense to add this extra latency when it can only be added after the blog has actually broadcast.
+
+166
+00:26:07.460 --> 00:26:11.680
+Potuz: I mean, I understand that this prevents a possible DOS,
+
+167
+00:26:12.800 --> 00:26:24.399
+Potuz: But, I mean, that DOS can happen anyways by people sending you this invalid thing, and still you're gonna do a signature verification, which is much worse than just ignoring the full thing.
+
+168
+00:26:24.630 --> 00:26:25.320
+stokes: No.
+
+169
+00:26:26.820 --> 00:26:34.920
+Potuz: So I don't see how this prevents anything, because anyone that wants to send you this maliciously still is going to make you do a work.
+
+170
+00:26:35.280 --> 00:26:36.620
+Potuz: Verify something.
+
+171
+00:26:44.840 --> 00:26:58.929
+terence: I think at the minimum, the P2P spec needs to be updated here. That's my takeaway as an action item, that we need to include, like, some sort of, like, cache that says that we only accept the first payload from the builder based on this index.
+
+172
+00:26:58.930 --> 00:27:07.270
+Potuz: No, I don't think this should be… this should be specified at all. I mean, this is just client implements however they want. We… we can just say ignore.
+
+173
+00:27:10.310 --> 00:27:14.040
+terence: Even though the builder can send you multiple payloads, they'll just spam you.
+
+174
+00:27:14.410 --> 00:27:15.620
+terence: Because today, there's no…
+
+175
+00:27:15.890 --> 00:27:20.830
+Potuz: You could just say ignore if… if you haven't seen the barren bacon block.
+
+176
+00:27:21.440 --> 00:27:30.089
+Enrico Del Fante (tbenr): Yeah, I would just add some security, related, sentences where…
+
+177
+00:27:30.320 --> 00:27:41.290
+Enrico Del Fante (tbenr): It's a… it's a suggestion, so… Just ignore everything that… comes… Before the begin blocking.
+
+178
+00:27:41.290 --> 00:27:45.380
+terence: Yeah, yeah, okay, okay, so just add that, yeah, yeah, that's fine.
+
+179
+00:27:47.980 --> 00:27:52.759
+terence: Yeah, I mean, what I'm… yeah, stores basically say what I meant.
+
+180
+00:27:52.760 --> 00:27:59.520
+Enrico Del Fante (tbenr): And dust prevention, just for that, and then… and then all clients can just decide what to do.
+
+181
+00:28:00.260 --> 00:28:03.300
+Enrico Del Fante (tbenr): Just, like, a suggestion from a security perspective.
+
+182
+00:28:11.960 --> 00:28:14.180
+Potuz: I think that is already filtered,
+
+183
+00:28:14.180 --> 00:28:18.319
+terence: No, no, no, that's enough today. We don't have that. That's what I meant with that.
+
+184
+00:28:18.320 --> 00:28:19.650
+Potuz: Oh, we didn't have the…
+
+185
+00:28:19.650 --> 00:28:24.799
+terence: We don't have payload? We don't have payload. Oh, I thought, I thought… That's what I meant to add.
+
+186
+00:28:24.800 --> 00:28:26.280
+Potuz: Yeah, that needs to add, certainly.
+
+187
+00:28:26.280 --> 00:28:27.120
+terence: Okay, that's missing.
+
+188
+00:28:27.120 --> 00:28:27.980
+Potuz: added.
+
+189
+00:28:27.980 --> 00:28:29.160
+terence: Okay, we're… okay, we're on the.
+
+190
+00:28:29.160 --> 00:28:31.330
+Potuz: Are you sure it's not… are you sure?
+
+191
+00:28:31.660 --> 00:28:36.859
+Potuz: One line that says it's the first message that we see from that builder for that song?
+
+192
+00:28:36.860 --> 00:28:39.510
+terence: check, I don't think it's there, that's why I'm surprised.
+
+193
+00:28:39.510 --> 00:28:40.860
+Potuz: Yeah, if he's not there, that's a bug.
+
+194
+00:28:40.860 --> 00:28:42.630
+terence: I just suggested to add that, yeah.
+
+195
+00:28:43.760 --> 00:28:47.280
+terence: Yeah, we don't have that. Yeah, we don't have that, just check again.
+
+196
+00:28:52.720 --> 00:28:58.370
+Will Corcoran: Do we go back to Agenda Item 1, or do you guys, want to continue to ideate on this?
+
+197
+00:28:59.030 --> 00:29:07.210
+terence: No, I think we are good. Okay, so I know the action item, I will do that after the call, and yeah, feel free to jump to agenda 1.
+
+198
+00:29:08.170 --> 00:29:08.800
+Will Corcoran: Okay.
+
+199
+00:29:08.900 --> 00:29:18.249
+Will Corcoran: Yeah, POTUS, this is accessing post-state information, like account balances, contract states, and the EVM after execution payload processing.
+
+200
+00:29:18.700 --> 00:29:24.820
+Will Corcoran: Do you want to kind of tee up the details and the… the, I think, 3 trade-offs that you outlined?
+
+201
+00:29:26.040 --> 00:29:28.640
+Potuz: Yeah, I was just looking at the P2P,
+
+202
+00:29:28.940 --> 00:29:42.470
+Potuz: And document to see if it was there or not. Yeah, so, okay, so this is something that was raised, by the Lido guys. I think it doesn't apply today, to them, it's not a problem to them. But, the situation is the following.
+
+203
+00:29:42.610 --> 00:30:01.179
+Potuz: How does someone prove something on the EVM today about the consensus layer? Say that you want to prove that the validator, you want to act, for example, like returning money to someone that is running a validator, and you want to prove that this validator is not slashed.
+
+204
+00:30:01.500 --> 00:30:03.750
+Potuz: At least up to the previous block.
+
+205
+00:30:04.050 --> 00:30:12.589
+Potuz: the EVM… has the last block route, and it gives you that by EIP4788,
+
+206
+00:30:13.020 --> 00:30:22.399
+Potuz: That beacon block root, it's just a root, but then in… within the beacon block, we have a state root field, and that state root
+
+207
+00:30:22.520 --> 00:30:28.550
+Potuz: Is the post-tate after executing that become block.
+
+208
+00:30:30.020 --> 00:30:39.069
+Potuz: So you can prove against that state root, you can produce a miracle proof up to that state root, and then from that state root up to the blocked root.
+
+209
+00:30:39.250 --> 00:30:44.349
+Potuz: And then on DVM, you have a proof of anything that happened on that post-it.
+
+210
+00:30:44.870 --> 00:30:49.510
+Potuz: So, for example, you can prove if that validator field was slashed or not.
+
+211
+00:30:50.660 --> 00:31:10.779
+Potuz: On EPBS, however, there's two state transitions. One is after the beacon block route has been executed, after the beacon block, with that Beacon block route has been executed, and then there's another state transition with a different final state route, which is after the payload has been executed.
+
+212
+00:31:10.860 --> 00:31:14.179
+Potuz: So, suppose in the same situation as today.
+
+213
+00:31:14.460 --> 00:31:22.059
+Potuz: on the payload for the block at slot n plus 1, you want to prove if a validator was slashed or not.
+
+214
+00:31:22.460 --> 00:31:26.640
+Potuz: then you do exactly the same thing that I just said.
+
+215
+00:31:27.410 --> 00:31:29.090
+Potuz: And you would get the right
+
+216
+00:31:29.540 --> 00:31:40.419
+Potuz: answer because a validator cannot be slashed on the second state transition, which is the state transition of the payload. However, if you need to prove something that happened
+
+217
+00:31:40.600 --> 00:31:57.710
+Potuz: in the last state transition, because of, for example, an execution request, or something that was processed with the payload, but not at the beacon block that the EAP4788 gives you, then you're in trouble, because you cannot prove against
+
+218
+00:31:57.720 --> 00:32:04.440
+Potuz: that post-state transition, because you don't have that state route anywhere. You don't have a commitment to that state route.
+
+219
+00:32:07.410 --> 00:32:13.929
+Potuz: Yeah, I thought it was that we did have it. I didn't say Terrence on the P2P stuff.
+
+220
+00:32:14.360 --> 00:32:22.170
+Potuz: Okay, so… so the question is, do we need to provide a functionality to prove this against the last
+
+221
+00:32:22.550 --> 00:32:25.500
+Potuz: Peak and state transition or not?
+
+222
+00:32:26.160 --> 00:32:32.770
+Potuz: Notice that you can always prove against the parent, the previous, payload transition, because…
+
+223
+00:32:32.990 --> 00:32:45.309
+Potuz: The state itself has a state roots field, and the latest entry in that field is going to be the post-state transition of the latest payload.
+
+224
+00:32:45.960 --> 00:32:57.549
+Potuz: Before the become block root, with beacon block route given by 48788. So you can always prove something about either the grandparents
+
+225
+00:32:57.750 --> 00:33:04.509
+Potuz: post… Execution transition transition, or about the parent-post-consensus transition.
+
+226
+00:33:05.070 --> 00:33:11.339
+Potuz: Now, the question is, do we want to have something that proves against the parent's execution transition, or not?
+
+227
+00:33:11.510 --> 00:33:16.090
+Potuz: The only thing that changes on the beacon state are because of execution requests.
+
+228
+00:33:19.990 --> 00:33:21.709
+stokes: Are you sure? That's the only thing?
+
+229
+00:33:22.120 --> 00:33:26.410
+Potuz: Well, yeah, currently it's that, right? So we have the, the, the…
+
+230
+00:33:26.860 --> 00:33:27.290
+stokes: Anything?
+
+231
+00:33:27.290 --> 00:33:33.840
+Potuz: that has… in the payload… in the payload envelope, you only come in with, execution requests.
+
+232
+00:33:34.620 --> 00:33:45.679
+Potuz: and you process the withdrawals, but the withdrawals are already pre-processed in the beacon state, but their execution requests aren't. They are only processed with the payload.
+
+233
+00:33:47.420 --> 00:33:56.509
+Potuz: I mean, it's an easy EIP to add on the execution side. You just have a new EIP that gives you the latest execution payload envelope route.
+
+234
+00:33:58.010 --> 00:34:00.210
+stokes: Yeah, but we also don't want scope creep.
+
+235
+00:34:00.830 --> 00:34:03.460
+stokes: I would say to leave it alone, myself, unless…
+
+236
+00:34:03.460 --> 00:34:04.120
+Potuz: comes on.
+
+237
+00:34:04.120 --> 00:34:15.649
+stokes: And it's like, this is, like, you know, completely unacceptable, but it should be fine. Like, even the way 4788 is designed, you have, like, a day of look back, so…
+
+238
+00:34:16.690 --> 00:34:22.050
+stokes: The whole point was not to have something so time-sensitive that this is really gonna be an issue.
+
+239
+00:34:22.639 --> 00:34:30.009
+stokes: But I want to understand a little bit better. So basically, we're now saying, for one slot, there are two beacon state routes.
+
+240
+00:34:32.230 --> 00:34:33.170
+stokes: Okay.
+
+241
+00:34:33.170 --> 00:34:33.730
+Potuz: Yes.
+
+242
+00:34:33.730 --> 00:34:36.399
+stokes: Is it written into the state roots field in the Beacon state?
+
+243
+00:34:36.400 --> 00:34:40.820
+Potuz: No. So, the state root fields on the beacon state
+
+244
+00:34:40.949 --> 00:34:55.780
+Potuz: only has the post-state transition of the latest payload, and if there wasn't any payload, the… so it is… so the state routes in the beacon state doesn't change. It means that whenever you do the state… the slot transition.
+
+245
+00:34:55.960 --> 00:34:59.299
+Potuz: You compute what was the state route at that point.
+
+246
+00:35:01.790 --> 00:35:05.190
+stokes: Okay, but then that's just gonna be post-state routes at the beacon block, right?
+
+247
+00:35:05.580 --> 00:35:16.349
+Potuz: Well, that's going to be post-state routes of the payload, if there was a payload, or the beacon block, if there was a beacon block, or the previous payload if there was neither.
+
+248
+00:35:16.670 --> 00:35:17.530
+stokes: Okay.
+
+249
+00:35:17.810 --> 00:35:23.830
+stokes: And so, the way it works is… but, okay, so, but you end up basically writing two routes.
+
+250
+00:35:23.960 --> 00:35:26.290
+Potuz: Oh, I see what you mean. Just one. There's only one?
+
+251
+00:35:26.290 --> 00:35:28.360
+stokes: Yeah, yeah, I see what you mean.
+
+252
+00:35:29.720 --> 00:35:30.350
+stokes: Hmm.
+
+253
+00:35:30.350 --> 00:35:38.809
+ethDreamer (Mark): So the… so basically the index, like, I, corresponds to a slot, and it's the most advanced state root of that slot.
+
+254
+00:35:39.360 --> 00:35:40.430
+Potuz: That's correct.
+
+255
+00:35:41.570 --> 00:35:49.610
+Potuz: So it… it keeps the current… in the happy case, it keeps the current semantics of being after you executed the payload.
+
+256
+00:35:58.320 --> 00:36:05.419
+Potuz: I also think that we should just leave this problem alone until someone requests a fix.
+
+257
+00:36:05.570 --> 00:36:18.899
+Potuz: Because the fix can come either on committing more on the… so the Beacon block can commit to a previous state route, the… the EVM can commit to the execution payload envelope route.
+
+258
+00:36:19.190 --> 00:36:25.019
+Potuz: Or the beacon state itself can keep track of both state transitions.
+
+259
+00:36:25.280 --> 00:36:27.020
+Potuz: The last one.
+
+260
+00:36:28.340 --> 00:36:38.420
+Potuz: It would be more fine, like, in the sense that you can prove against either of them in a finely grained manner, but it adds a lot.
+
+261
+00:36:38.800 --> 00:36:42.759
+Potuz: to the beacon stage. So the last one is the only one that I would be opposed.
+
+262
+00:36:50.510 --> 00:36:52.260
+stokes: Yeah, I think we would just leave it alone for now.
+
+263
+00:37:02.150 --> 00:37:02.850
+Will Corcoran: Sorry.
+
+264
+00:37:03.280 --> 00:37:05.100
+Will Corcoran: No change is a good chain.
+
+265
+00:37:06.870 --> 00:37:07.840
+Will Corcoran: Terrence?
+
+266
+00:37:08.280 --> 00:37:16.899
+Will Corcoran: I just dropped, the two PRs, 4525 and 4527, in the chat that you had to open.
+
+267
+00:37:17.810 --> 00:37:22.099
+Will Corcoran: I don't know if there's anything that you wanted to discuss there, or if you're looking for feedback.
+
+268
+00:37:22.420 --> 00:37:38.280
+terence: Not much. So, yeah, I guess for 4525, that's renaming execution Payload Header to Execution PayloadBid. That's what people have been suggesting. And that's actually also nice, because it fixes the spec test issue, such that today.
+
+269
+00:37:38.280 --> 00:37:43.010
+terence: If the name just overloaded, then it gets… it messes up the like sign up.
+
+270
+00:37:43.010 --> 00:37:49.219
+terence: the light find object for SSC spare beta test, and we don't know how to solve it, so this actually resolved it, which is nice.
+
+271
+00:37:49.220 --> 00:38:09.170
+terence: So, yeah, I think that one is a no-brainer. And then the Depot Clome sidecar was the second one to remove inclusion proof. I think that one probably needs more time, more eyes on land, before we merge it. I'm not in, like, a rush to merge it. I think we're still fairly early on that, so yeah. But the first one, we can merge it once it's ready, and I will fix the DIMP.
+
+272
+00:38:09.270 --> 00:38:12.599
+terence: And, yeah, and make sure it's green today.
+
+273
+00:38:16.620 --> 00:38:17.240
+Will Corcoran: Great.
+
+274
+00:38:19.630 --> 00:38:26.439
+Will Corcoran: I don't see Barth on the call. He had shared HackMD, I just dropped him a chat regarding some…
+
+275
+00:38:27.600 --> 00:38:32.709
+Will Corcoran: proposed changes, or considerations for the Builder API,
+
+276
+00:38:33.070 --> 00:38:40.840
+Will Corcoran: I can keep this on the agenda, and we can discuss it next time if they're able to attend, or if people have thoughts on it now, we can…
+
+277
+00:38:41.050 --> 00:38:51.550
+stokes: Yeah, he couldn't make it today. Part of this goes back to the discussion that Potos, Terrence, and I were having on Discord around
+
+278
+00:38:52.110 --> 00:38:59.530
+stokes: how this all fits together, say, with an external builder network, I think this document can probably…
+
+279
+00:38:59.920 --> 00:39:04.469
+stokes: be iterated a bit more. So yeah, I think we're good for now.
+
+280
+00:39:04.930 --> 00:39:05.660
+Potuz: I think.
+
+281
+00:39:05.660 --> 00:39:06.090
+Will Corcoran: Okay.
+
+282
+00:39:06.090 --> 00:39:08.259
+Potuz: This document, though, has a lot of…
+
+283
+00:39:08.630 --> 00:39:11.910
+Potuz: mistakes as to how EPVS works.
+
+284
+00:39:12.750 --> 00:39:20.220
+stokes: Yeah, it's kind of… I think… yeah, I was working with him on this, I think we didn't understand some things, and now we do, so…
+
+285
+00:39:20.220 --> 00:39:38.319
+Potuz: we… we do have… I mean, and I've talked to builders before, and we never wrote it because, well, because we were waiting until the CIP was accepted, but we do have a very clear understanding of what the builder API should be.
+
+286
+00:39:38.710 --> 00:39:43.890
+Potuz: And it should not be very… very different to what MedBoost is now.
+
+287
+00:39:44.010 --> 00:39:59.829
+Potuz: It would be essentially exactly the same way. We should support builders' registrations, because we want to send them the fee recipient where the bid is going to be paid. We want to request the header in the exact same way that we do it now.
+
+288
+00:40:00.220 --> 00:40:10.349
+Potuz: The only difference that I think we might be forced into doing that, and I think that's really the only difference, is that we might need to sign the message
+
+289
+00:40:10.510 --> 00:40:12.050
+Potuz: To a given builder.
+
+290
+00:40:13.060 --> 00:40:31.379
+Potuz: So the validator… a proposer will need to, like, cache these signatures, because this is going to be a different signature for each one of the builders that you're requesting directly. And I think the proposer will need to cache them before the next lot. When you find out that you're proposing next lot, you will need to start caching those requests.
+
+291
+00:40:31.540 --> 00:40:37.169
+Potuz: And and sign them all, so that you send them signed in the next lot.
+
+292
+00:40:38.400 --> 00:40:46.310
+ethDreamer (Mark): Why… what is the rationale for including the builder index in the signed piece of data?
+
+293
+00:40:47.640 --> 00:40:56.680
+Potuz: Because… so the issue is that the auction becomes… even though it's not intentional, the auction becomes sealed.
+
+294
+00:40:57.650 --> 00:41:06.669
+Potuz: Currently, you now can track what are the bids for everyone on the relay, but if you're communicating directly with the builder.
+
+295
+00:41:06.670 --> 00:41:09.620
+ethDreamer (Mark): Oh, so if… okay, so, like…
+
+296
+00:41:10.080 --> 00:41:19.249
+ethDreamer (Mark): if you were… if it didn't include the builder index, then the proposer could send something that they assigned to one builder, and he could use that to send to another builder.
+
+297
+00:41:19.250 --> 00:41:31.450
+Potuz: Exactly. And since it's sealed, I think this is a request. I mean, it's not that it's important to me, I suspect that builders want this, and when I talked to builders, they told me yes.
+
+298
+00:41:32.310 --> 00:41:36.030
+Potuz: So… so I think this is something that we need to… we need to do.
+
+299
+00:41:40.060 --> 00:41:47.290
+ethDreamer (Mark): So, I also had some question about the spec to bring up, I don't know, on me.
+
+300
+00:41:48.120 --> 00:41:50.120
+ethDreamer (Mark): Have a chance, but it was…
+
+301
+00:41:50.380 --> 00:41:52.300
+ethDreamer (Mark): It seemed like an ambiguity to me.
+
+302
+00:41:53.780 --> 00:41:55.140
+Potuz: this, or…
+
+303
+00:41:55.140 --> 00:41:55.770
+ethDreamer (Mark): Yeah, it's difficult.
+
+304
+00:41:55.770 --> 00:41:57.430
+Potuz: for the Builder API?
+
+305
+00:41:57.860 --> 00:42:01.099
+ethDreamer (Mark): It's… no, it's actually the peer-to-peer spec.
+
+306
+00:42:01.600 --> 00:42:03.050
+ethDreamer (Mark): Passive conditions.
+
+307
+00:42:03.630 --> 00:42:11.469
+ethDreamer (Mark): If you look at the one for the execution payload, the envelope, I linked it just now, the
+
+308
+00:42:11.850 --> 00:42:17.610
+ethDreamer (Mark): Looks like the third condition, the one that says reject block passes validation.
+
+309
+00:42:18.160 --> 00:42:22.499
+ethDreamer (Mark): What does that mean, exactly? Like…
+
+310
+00:42:24.770 --> 00:42:27.290
+Potuz: Block there is the consensus block.
+
+311
+00:42:28.920 --> 00:42:32.379
+ethDreamer (Mark): Okay, block be the block with…
+
+312
+00:42:33.250 --> 00:42:34.980
+Potuz: Block there is the block.
+
+313
+00:42:34.980 --> 00:42:35.330
+ethDreamer (Mark): I see.
+
+314
+00:42:35.330 --> 00:42:38.830
+Potuz: That corresponds, that has the root of envelope, beacon block root.
+
+315
+00:42:39.040 --> 00:42:46.089
+Potuz: Okay, so… And if you have an invalid block, you do not want to sync a payload that is based on an invalid block.
+
+316
+00:42:46.090 --> 00:42:50.239
+ethDreamer (Mark): Alright, so it's blocked, not envelope. Okay, thank you. Yeah, there's…
+
+317
+00:42:55.560 --> 00:43:12.589
+Potuz: Yeah, but coming back to the builder API, I mean, do we want… because that's a question I think, we have now, right? Do we want to scope the first DevNet with external builders, or do we want to do what we did with TechCU, which is self-building, but the fully PBS thing?
+
+318
+00:43:13.140 --> 00:43:19.129
+Potuz: Because if we are going to include the builder API on the first DevNet, then we really need to fix it now.
+
+319
+00:43:19.480 --> 00:43:22.419
+Potuz: Otherwise, this can be delayed a little bit.
+
+320
+00:43:22.420 --> 00:43:25.030
+stokes: Yeah, Delane seems fine.
+
+321
+00:43:25.630 --> 00:43:32.550
+stokes: I mean, there are many changes here, so I think even just showing it works with, like, local self-building is a good first step, right?
+
+322
+00:43:36.370 --> 00:43:43.249
+stokes: But yeah, this is… I agree we should not delay on this too much, because we should figure it out.
+
+323
+00:43:43.520 --> 00:43:43.950
+Potuz: business owner.
+
+324
+00:43:43.950 --> 00:43:45.620
+stokes: a blocker for the first I've nut.
+
+325
+00:43:45.870 --> 00:43:59.980
+Potuz: the API itself, I think we don't want to change anything. Like, we don't want to change the calls, and we don't want to change the types. The only thing is that the header becomes now what was called,
+
+326
+00:44:00.010 --> 00:44:08.310
+Potuz: payload envelope… what is it? Execution payload header, and now it's going to be called whatever Terrence is calling it,
+
+327
+00:44:08.420 --> 00:44:09.789
+Potuz: Something like Bit.
+
+328
+00:44:09.930 --> 00:44:17.790
+Potuz: But the calls and everything should be the same. The only difference that I see is that we might need to sign them, and I don't know
+
+329
+00:44:18.000 --> 00:44:22.349
+Potuz: how that signature is going to be. Is it a… I assume it's a BLS signature.
+
+330
+00:44:23.550 --> 00:44:24.700
+Potuz: Yeah, who knows?
+
+331
+00:44:24.700 --> 00:44:26.469
+stokes: You mean the staked builder?
+
+332
+00:44:27.190 --> 00:44:42.029
+Potuz: No, the… no, the return is going to be a signed object, that's fine, but, the question is that the proposer needs to sign the request itself. So today, the proposer sends via MedBoost a request.
+
+333
+00:44:42.360 --> 00:44:44.269
+Potuz: And that request is not signed.
+
+334
+00:44:45.470 --> 00:44:46.570
+Potuz: So…
+
+335
+00:44:46.920 --> 00:44:58.139
+Potuz: now we… the builder API is going to be exactly the same, but the request for the header, the request for the bid, needs to come with a signature. I am the proposer index.
+
+336
+00:44:58.140 --> 00:44:58.870
+stokes: or…
+
+337
+00:44:58.870 --> 00:44:59.669
+Potuz: Right, so the purple.
+
+338
+00:44:59.670 --> 00:45:00.479
+stokes: I also need to say?
+
+339
+00:45:01.100 --> 00:45:03.170
+Potuz: Well, because…
+
+340
+00:45:03.660 --> 00:45:13.350
+Potuz: You want to, the auction is sealed, so you don't want to have the builder being hit by other builders
+
+341
+00:45:13.490 --> 00:45:19.389
+Potuz: Asking them, what is your best bid? Because the other builder will get information that is otherwise secret.
+
+342
+00:45:21.690 --> 00:45:26.729
+stokes: Okay. So, like, today, MedBoost doesn't work like that, and everyone seems okay with it.
+
+343
+00:45:27.170 --> 00:45:35.220
+Potuz: Well, yeah, but today the auction is not sealed. After… when… today, I'm not allowed to contact the builder directly.
+
+344
+00:45:35.940 --> 00:45:36.770
+Potuz: Right?
+
+345
+00:45:37.720 --> 00:45:42.580
+stokes: Well, the builder and the Relay in either era are just the same thing, like, let's just…
+
+346
+00:45:42.730 --> 00:45:44.290
+stokes: treat them as Right?
+
+347
+00:45:44.290 --> 00:45:58.200
+Potuz: If the builder and the relay is the same thing, then this becomes EPBS, and then other builders are trusting when they participate on that relay. But after EPVS, this gets dropped, because I cannot trust
+
+348
+00:45:58.410 --> 00:46:12.580
+Potuz: that their bid in a relay is the latest good bid, because the proposal can actually be contacting this other random builder on their endpoint directly. So, builders among themselves cannot trust themselves anymore.
+
+349
+00:46:15.340 --> 00:46:16.010
+ethDreamer (Mark): Yeah, so…
+
+350
+00:46:16.010 --> 00:46:22.080
+stokes: Right, so I don't see how that's different from today, because another builder could also not trust another relay, right?
+
+351
+00:46:25.600 --> 00:46:28.489
+stokes: You're muted, but…
+
+352
+00:46:28.490 --> 00:46:29.289
+Potuz: I didn't… I didn't get.
+
+353
+00:46:29.290 --> 00:46:32.370
+stokes: I just… I just don't see how it's any different, like…
+
+354
+00:46:32.570 --> 00:46:40.760
+stokes: this is kind of, I think, orthogonal to EPVS or not. We're just saying, today, it's not a sealed auction.
+
+355
+00:46:40.900 --> 00:46:44.539
+stokes: And then what you were saying is you want it to become a sealed auction.
+
+356
+00:46:44.540 --> 00:46:56.360
+Potuz: No, no, I don't… no, I don't… I don't mind. If we don't implement this, it's fine by me, because it's less work. This is an ask from builders, and the reason is that they expect the auction to become sealed.
+
+357
+00:46:56.870 --> 00:47:08.800
+Potuz: Today, my node does not have access to a random builder. My node only has access to these two or three relays that I can put on MapBoost.
+
+358
+00:47:09.060 --> 00:47:11.940
+Potuz: And those relays are trusted by the builders.
+
+359
+00:47:13.080 --> 00:47:21.820
+Potuz: But tomorrow, my node will have… But what are they trusted, right? Because they're still today leaking the same information that you're saying the builders want to hide.
+
+360
+00:47:22.920 --> 00:47:27.529
+stokes: No, we could go call relays right now and get all of the same information.
+
+361
+00:47:27.670 --> 00:47:35.699
+Potuz: Is my point. But the question is, today my node cannot get on the side a bid from one of those builders.
+
+362
+00:47:35.830 --> 00:47:38.540
+Potuz: Because I just don't know where to even ask them.
+
+363
+00:47:39.520 --> 00:47:46.070
+Potuz: Right? And I wouldn't even trust… my knob would not trust a bid on the side, it only trusts the relays.
+
+364
+00:47:46.520 --> 00:47:50.469
+Potuz: But tomorrow, I cannot Trust a bid that comes from the side.
+
+365
+00:47:53.260 --> 00:47:59.760
+stokes: I don't think it matters. Like, I think the picture's the same either way, because, like, all you can get right now is a header.
+
+366
+00:48:00.030 --> 00:48:03.600
+stokes: And then all you would get under this change, let's say, is add, or…
+
+367
+00:48:03.600 --> 00:48:04.480
+Potuz: Nope.
+
+368
+00:48:05.110 --> 00:48:08.950
+Potuz: Today, you just get a header. Tomorrow, you're gonna get a signed header.
+
+369
+00:48:09.100 --> 00:48:12.180
+Potuz: So tomorrow, I can actually enforce the header.
+
+370
+00:48:12.690 --> 00:48:20.650
+stokes: Okay, but that doesn't change anything about any MEV you're leaking, right? Like, that's the thing, is like, you're not actually leaking any MEV at any point in time.
+
+371
+00:48:21.150 --> 00:48:25.170
+Potuz: No, no, it's not about leaking MEV, it's about leaking what is the best bid.
+
+372
+00:48:25.700 --> 00:48:30.390
+Potuz: Do we have any builders here? This is taken directly out of the Titans report.
+
+373
+00:48:32.040 --> 00:48:34.490
+Potuz: If you have a builder here, they can just describe why.
+
+374
+00:48:34.490 --> 00:48:35.080
+ethDreamer (Mark): Simply…
+
+375
+00:48:35.080 --> 00:48:35.590
+stokes: Either way.
+
+376
+00:48:35.590 --> 00:48:40.340
+ethDreamer (Mark): I think he's saying that today the builders… like…
+
+377
+00:48:40.470 --> 00:48:50.819
+ethDreamer (Mark): can all pull the relay and also get the information on what the… like, the auction is open today, it's not closed today, and we can make it open after EPBS, just as…
+
+378
+00:48:50.820 --> 00:48:58.609
+stokes: or closed. Like, we can make this change, and it would become sealed bid, and that's fine, but it's just kind of indifferent to EPVS, is my only point.
+
+379
+00:48:58.610 --> 00:49:00.659
+Potuz: Yes, I… with this, I completely agree.
+
+380
+00:49:01.070 --> 00:49:01.720
+stokes: Okay.
+
+381
+00:49:02.730 --> 00:49:03.930
+Potuz: I completely agree.
+
+382
+00:49:04.120 --> 00:49:04.530
+ethDreamer (Mark): So.
+
+383
+00:49:04.530 --> 00:49:05.220
+stokes: Yeah.
+
+384
+00:49:05.420 --> 00:49:21.920
+ethDreamer (Mark): One side effect of this, which is a little more subtle, is like, right now, we do expect users to curate their own list of relays, but that's not been such an issue, because relays don't often change that much. I don't know how often there's turnover among builders.
+
+385
+00:49:22.220 --> 00:49:38.070
+ethDreamer (Mark): If there's, like, more builders that come in and out, but if you do require it to be a sealed bid, it precludes there being a kind of relay that, like, you can point at where, like, say if you don't want to curate your own list of builders, and you just want to say, like.
+
+386
+00:49:38.520 --> 00:49:51.749
+ethDreamer (Mark): I want to point at a relay that's just gonna, like, builders are gonna sign up to it all the time, and maybe stop, or whatever, come in and out, and I won't have to, like, curate my own list. I'll just point at a relay, it'll collect bids for me, and give me the highest one.
+
+387
+00:49:52.180 --> 00:49:57.309
+ethDreamer (Mark): Like, if you have to sign for each builder, it precludes this kind of relay from existing.
+
+388
+00:49:58.980 --> 00:50:08.819
+stokes: Well, so there are things you can do here. I was thinking about this some, and yeah, I don't know. Okay, so the obvious solution is that…
+
+389
+00:50:10.500 --> 00:50:16.090
+stokes: I mean, yeah, basically the relay and builder merges, so I don't know, you could call them, like, meta builders or something, but…
+
+390
+00:50:16.400 --> 00:50:24.249
+stokes: Basically, you just need that actor that you're talking about, this aggregation actor, to be a staked builder under EPVS, and then this is fine.
+
+391
+00:50:24.840 --> 00:50:27.490
+stokes: I think for this to work…
+
+392
+00:50:27.490 --> 00:50:31.499
+Potuz: Darren says it's optional. I mean, you can just send something that is not signed.
+
+393
+00:50:31.780 --> 00:50:32.190
+ethDreamer (Mark): Yeah.
+
+394
+00:50:32.190 --> 00:50:34.860
+Potuz: And that really contrasted or not.
+
+395
+00:50:35.170 --> 00:50:38.040
+ethDreamer (Mark): I, I was talking about something completely different, which is, like.
+
+396
+00:50:39.070 --> 00:50:44.260
+ethDreamer (Mark): A relay whose only purpose is to, like, do the work for you of curating builders.
+
+397
+00:50:44.800 --> 00:50:46.419
+ethDreamer (Mark): You get what I'm saying? So you don't have to make…
+
+398
+00:50:46.420 --> 00:50:53.170
+stokes: But you can still have this, is what I'm saying. Like, there's no reason you can't have this, it's just, you ultimately need a signature from a staked builder.
+
+399
+00:50:53.660 --> 00:51:01.110
+stokes: And the question then is, like, does this aggregate, like, how does it… does this aggregation entity that looks like a relay today, does it…
+
+400
+00:51:01.260 --> 00:51:04.639
+stokes: Is it the staked one and signing bids? Is it…
+
+401
+00:51:05.630 --> 00:51:09.530
+stokes: It could probably just forward them, and that's fine. But then it just acts like a relay today.
+
+402
+00:51:10.560 --> 00:51:26.549
+ethDreamer (Mark): Well, I… yeah, I guess you could have… if the builders trust that this third-party relay service isn't going to reveal the bids to any of the other builders, then I suppose… Which they already do today. They don't today trust… they trust them, but not that they're not going to reveal bids, but yeah.
+
+403
+00:51:26.710 --> 00:51:34.400
+stokes: Yeah, I mean, we've discussed this. I don't know, the Flashbox people have done a lot of research, and so they have opinions on this.
+
+404
+00:51:34.770 --> 00:51:40.129
+stokes: I don't think it… Like, I think either paradigm is fine, it's just that…
+
+405
+00:51:40.330 --> 00:51:42.870
+stokes: Yeah, it does, like, change the market structure.
+
+406
+00:51:43.510 --> 00:51:49.370
+stokes: But I've never seen anything that says, you know, one is strictly better than the other. It's just kind of different options.
+
+407
+00:51:49.690 --> 00:51:59.959
+ethDreamer (Mark): I had heard that it was good for the buyer when the bid… when the auction was closed, but I am not an expert in that domain.
+
+408
+00:52:00.450 --> 00:52:02.130
+ethDreamer (Mark): So that could be completely rough.
+
+409
+00:52:03.870 --> 00:52:07.780
+Potuz: My impression here is that we don't want to make
+
+410
+00:52:07.890 --> 00:52:16.079
+Potuz: a statement about how the auction should be. Like, if we can make it so that the market decides this, it's better.
+
+411
+00:52:17.220 --> 00:52:21.190
+Potuz: Instead of us making an opinionated decision on how the options should be.
+
+412
+00:52:22.000 --> 00:52:23.779
+ethDreamer (Mark): Well, the weird thing is that…
+
+413
+00:52:24.520 --> 00:52:28.479
+ethDreamer (Mark): Can you have both an open and closed auction at the same time?
+
+414
+00:52:30.380 --> 00:52:32.029
+ethDreamer (Mark): what I mean is, like.
+
+415
+00:52:32.910 --> 00:52:37.149
+ethDreamer (Mark): would you have two sets of bids, one that's private and one that's more public? Like…
+
+416
+00:52:38.930 --> 00:52:40.749
+ethDreamer (Mark): I… I don't know, I just…
+
+417
+00:52:42.260 --> 00:52:46.220
+ethDreamer (Mark): Because when you're like, we'll let the market decide, or let it be more…
+
+418
+00:52:47.850 --> 00:52:51.660
+ethDreamer (Mark): like, open, and people will do whatever they want. It seems like…
+
+419
+00:52:52.120 --> 00:52:58.300
+ethDreamer (Mark): Once an open auction exists, it precludes having a closed auction, or maybe not.
+
+420
+00:53:00.380 --> 00:53:02.880
+ethDreamer (Mark): That's why I asked if they could exist at the same time.
+
+421
+00:53:07.650 --> 00:53:08.440
+ethDreamer (Mark): Early.
+
+422
+00:53:15.040 --> 00:53:17.859
+Will Corcoran: So in the chat, sounds like there's…
+
+423
+00:53:18.310 --> 00:53:21.070
+Will Corcoran: Christopher, I don't know if there's anything that you want to add to this, but…
+
+424
+00:53:21.250 --> 00:53:26.399
+Will Corcoran: Some of the sealed proposer bids or seller bids are…
+
+425
+00:53:26.670 --> 00:53:29.130
+Will Corcoran: Consider to be the… the fairest way to go?
+
+426
+00:53:32.490 --> 00:53:39.730
+Christoph Schlegel: And this way, I don't know. I mean, as discussed before, it's a… is a thing…
+
+427
+00:53:41.150 --> 00:53:45.590
+Christoph Schlegel: Makes sense under some circumstances, and to have optionality of,
+
+428
+00:53:46.480 --> 00:53:51.530
+Christoph Schlegel: what, what auction, to use would be valuable. Yes.
+
+429
+00:53:52.550 --> 00:54:03.369
+Christoph Schlegel: But, so intuitively, these, CF bid auctions usually use them when you have… you fear that the bidders collude in your auction, or they try to coordinate the behavior.
+
+430
+00:54:07.640 --> 00:54:15.840
+ethDreamer (Mark): The other… if we have a sealed auction, though, too, we also are doing all this work to, like, add in a public gossip for the bids.
+
+431
+00:54:16.580 --> 00:54:22.229
+ethDreamer (Mark): So… I mean, I think the thought was that…
+
+432
+00:54:22.230 --> 00:54:25.100
+stokes: Yeah. I mean, it's kind of just a different channel, though, right?
+
+433
+00:54:26.340 --> 00:54:36.289
+Potuz: Yeah, both of these things are to prevent collisions. Like, if we do it sealed, that's good in the sense that it's harder for the builders to collude.
+
+434
+00:54:37.030 --> 00:54:42.280
+Potuz: Because it's… the fact that it's sealed makes it easier to defect any kind of collusion.
+
+435
+00:54:43.470 --> 00:54:46.259
+stokes: Yeah, but Mark's point is we won't have sealed bids.
+
+436
+00:54:46.260 --> 00:54:56.849
+Potuz: I understand. And then the P2P stack that is completely open and everyone can see those bids also makes it hard… makes it harder to have a complete collusion of builders.
+
+437
+00:54:57.070 --> 00:55:03.919
+Potuz: Like, sending, for example, off-protocol better bids, because we will have some builders that would only put
+
+438
+00:55:04.110 --> 00:55:06.350
+Potuz: public bets on the P2P stack.
+
+439
+00:55:08.000 --> 00:55:14.340
+stokes: Well, we're assuming that, but yes, assuming there are enough there to make a difference. The thing is, though.
+
+440
+00:55:14.340 --> 00:55:17.750
+Potuz: I already talked to our chain last to have our own builder about this.
+
+441
+00:55:17.750 --> 00:55:18.340
+stokes: Okay.
+
+442
+00:55:18.470 --> 00:55:19.550
+stokes: Yeah, cool.
+
+443
+00:55:21.110 --> 00:55:27.099
+stokes: I'll believe it when I see it. That's not… I'm not trying to be negative, but I'm just not sure what it will.
+
+444
+00:55:27.100 --> 00:55:29.609
+Potuz: Oh, my own node will provide bits.
+
+445
+00:55:29.880 --> 00:55:38.260
+Potuz: on the P2P stack. My own personal home node. Of course, they're not going to be competitive, but my own node will provide bits, for sure.
+
+446
+00:55:39.520 --> 00:55:40.190
+stokes: Okay.
+
+447
+00:55:41.620 --> 00:55:48.240
+stokes: Jumping back one point, though, it seems like… so imagine all builders only use the P2P
+
+448
+00:55:48.450 --> 00:55:50.780
+stokes: Bidful is what I've been calling it.
+
+449
+00:55:51.080 --> 00:55:55.000
+stokes: I feel like you could still collude there, right?
+
+450
+00:55:55.000 --> 00:55:58.540
+Potuz: no builder will use the P2P stack.
+
+451
+00:55:59.010 --> 00:56:02.099
+Potuz: Like, Titan will never send a bid over P2P.
+
+452
+00:56:04.410 --> 00:56:06.259
+stokes: Well, we don't know that, but sure, assume they would.
+
+453
+00:56:06.260 --> 00:56:10.550
+Potuz: No, no, we do know that! Why would they ever send a bid over P2P?
+
+454
+00:56:11.150 --> 00:56:19.669
+Potuz: I mean, they today never send the bid until the very last millisecond. Why would they change this and start bidding, like, 2 seconds beforehand?
+
+455
+00:56:21.230 --> 00:56:23.410
+stokes: To play weird games.
+
+456
+00:56:23.410 --> 00:56:24.630
+Potuz: No, I guess I can tell you.
+
+457
+00:56:24.630 --> 00:56:25.720
+stokes: The point is just so you can imagine.
+
+458
+00:56:25.720 --> 00:56:35.189
+Potuz: signed. Alex, this doesn't work. These are signed. I can take them for this. So, I can enforce a two-second older bed over the P2P.
+
+459
+00:56:35.710 --> 00:56:53.579
+Potuz: This is different than today, that you can start sending bids on a relay 2 seconds earlier, because the relay will serve the last bid that they have. Over the P2P, whatever you sent is already signed and is enforced. If you have a better block later, screw you anyways. The proposer can just put whatever bid they decide.
+
+460
+00:56:54.650 --> 00:56:57.730
+stokes: So, Titan will not send bids over P2P.
+
+461
+00:56:57.730 --> 00:56:59.099
+Potuz: That's a matter of fact.
+
+462
+00:57:00.370 --> 00:57:01.130
+stokes: I'm sure.
+
+463
+00:57:01.470 --> 00:57:02.400
+stokes: Agreed.
+
+464
+00:57:03.700 --> 00:57:04.870
+stokes: Separately?
+
+465
+00:57:05.710 --> 00:57:13.220
+stokes: what could happen. What I do know does happen today is, you know, say Titan is looking at bids against BuilderNet.
+
+466
+00:57:13.730 --> 00:57:21.439
+stokes: from the relays today, they play games based on what they do know. And I'm just saying that open bids in the P2P pool.
+
+467
+00:57:21.610 --> 00:57:23.680
+stokes: Gives you the same sort of information.
+
+468
+00:57:24.110 --> 00:57:33.360
+stokes: So there's a chance now for people to play games here, where they could try to, like, trick other propo- er, sorry, other builders, and yeah, like, there just is…
+
+469
+00:57:34.300 --> 00:57:36.579
+stokes: There's, like, a tax surface here, quote-unquote.
+
+470
+00:57:37.420 --> 00:57:38.800
+Potuz: What's the attack.
+
+471
+00:57:40.340 --> 00:57:48.850
+stokes: I basically… so I put a bid out into the world to convince other builders that I'm bidding something other than I would want to.
+
+472
+00:57:51.910 --> 00:58:06.879
+Potuz: Again, so what is… what is this attack? This is… this is a signed bid. If this bid that you're putting is too high, you might be taken, and you have to produce that payload, because it's just bid and it's signed.
+
+473
+00:58:07.030 --> 00:58:11.919
+Potuz: It's binding. And if the bid is just too low, it's just useless information.
+
+474
+00:58:13.640 --> 00:58:20.020
+stokes: Well, but it's not useless, which is my point, because then maybe because of that, Yeah.
+
+475
+00:58:20.150 --> 00:58:21.080
+stokes: Okay.
+
+476
+00:58:22.250 --> 00:58:23.399
+stokes: Maybe it's fine.
+
+477
+00:58:30.920 --> 00:58:32.280
+stokes: I'd have to think about it more.
+
+478
+00:58:36.090 --> 00:58:44.209
+Will Corcoran: Alright, last item on the agenda is just really calling attention to… we've got an empty spec sheet.
+
+479
+00:58:44.360 --> 00:58:46.479
+Will Corcoran: For DevNet Zero.
+
+480
+00:58:47.010 --> 00:58:52.660
+Will Corcoran: I'll take a first stab at getting this loaded up and running by the group.
+
+481
+00:58:52.880 --> 00:58:57.369
+Will Corcoran: by the next call, which is in 2 weeks, on September 12th.
+
+482
+00:58:58.040 --> 00:59:00.159
+Will Corcoran: I don't know…
+
+483
+00:59:00.290 --> 00:59:09.740
+Will Corcoran: I guess one thing I would like some feedback on is timing or proposed schedule for when we anticipate this DevNet 0 to launch.
+
+484
+00:59:12.770 --> 00:59:16.690
+stokes: Maybe, sorry, just to summarize the previous discussion, we… Oh, for sure.
+
+485
+00:59:16.860 --> 00:59:19.929
+stokes: We want them to have sealed bids.
+
+486
+00:59:20.860 --> 00:59:28.740
+stokes: in the builder API, whatever that looks like under EPBS, and then otherwise, we still have open bids with the P2P layer.
+
+487
+00:59:31.580 --> 00:59:32.330
+stokes: Okay.
+
+488
+00:59:34.880 --> 00:59:35.739
+stokes: That was it.
+
+489
+00:59:36.650 --> 00:59:39.369
+stokes: I don't have any views on the DevNet.
+
+490
+00:59:40.230 --> 00:59:43.739
+stokes: But the sooner the better is probably always good.
+
+491
+00:59:43.740 --> 01:00:01.970
+Potuz: It'd be nice to know, I guess in this order, do we want to have them, like, multiple clients, or is it fine if it's just a single or two clients DevNet to start with? And the second one, I mean, if… if we want just… if it's fine if it's a pure PRISM or a pure technical devnet.
+
+492
+01:00:02.370 --> 01:00:05.969
+Potuz: we're gonna have one timeline, which I think it's by the end of October.
+
+493
+01:00:06.450 --> 01:00:10.249
+Potuz: If we do want to have all clients, then it's better if…
+
+494
+01:00:10.500 --> 01:00:12.870
+Potuz: We know how other clients are doing.
+
+495
+01:00:14.550 --> 01:00:21.700
+stokes: I would say two minimum, because, like, one minimum is just, you know, local dev net anyone can do, so that doesn't add too much.
+
+496
+01:00:22.180 --> 01:00:23.690
+stokes: 2, then, is different.
+
+497
+01:00:23.980 --> 01:00:26.190
+stokes: I wouldn't block on everyone being ready.
+
+498
+01:00:26.300 --> 01:00:30.629
+stokes: Because I think even having two is going to give us information that's useful.
+
+499
+01:00:32.370 --> 01:00:34.029
+stokes: That's what my intuition would say.
+
+500
+01:00:36.510 --> 01:00:44.510
+stokes: I mean, yeah, the other thing then is just, like, okay, now that there's two, there's now interop concerns, and that might be a whole little rabbit hole of attention.
+
+501
+01:00:45.100 --> 01:00:50.890
+stokes: But that's also kind of the whole point of doing this sooner rather than later, so… Seems fine.
+
+502
+01:00:55.270 --> 01:01:01.400
+stokes: Do we have… Like, what, Prism, Teku, are there other clients here?
+
+503
+01:01:02.580 --> 01:01:05.820
+stokes: I don't see anyone. Okay. I guess Lighthouse.
+
+504
+01:01:05.820 --> 01:01:10.030
+Potuz: There's Lighthouse, and there's, there's Nimbus? No, Lodestar.
+
+505
+01:01:10.200 --> 01:01:11.100
+Will Corcoran: Oh, it's fair.
+
+506
+01:01:11.540 --> 01:01:13.030
+Potuz: And now, there's Nimbus too.
+
+507
+01:01:14.290 --> 01:01:14.890
+stokes: Great.
+
+508
+01:01:15.390 --> 01:01:16.260
+stokes: So, yeah.
+
+509
+01:01:17.410 --> 01:01:19.100
+stokes: Have people started looking at this?
+
+510
+01:01:19.830 --> 01:01:20.970
+ethDreamer (Mark): Yeah, I mean…
+
+511
+01:01:21.710 --> 01:01:29.109
+ethDreamer (Mark): we're implementing, but we're quite a ways away, at the time being. I keep getting pulled onto Fusaka stuff.
+
+512
+01:01:30.190 --> 01:01:30.840
+stokes: Yeah.
+
+513
+01:01:31.470 --> 01:01:32.160
+ethDreamer (Mark): But…
+
+514
+01:01:32.590 --> 01:01:33.959
+stokes: Kusaka's very important.
+
+515
+01:01:38.610 --> 01:01:56.160
+terence: It's also worth mentioning that there is spat tests for the basic stuff already, so basically, as you're implementing, you can also check spat tests in the same PR just to make sure that pass. Hopefully, that will shorten some, like, time in terms of debugging on, like, multi-client setup.
+
+516
+01:01:59.610 --> 01:02:05.900
+Potuz: What I'd like to get, even from clients that are just starting to implement, it would be nice if we can just set up some branches.
+
+517
+01:02:06.180 --> 01:02:16.600
+Potuz: that we can pull out of the PandaOps, image… Docker Images, builders, so that we can test on Cryptosis without having to bug you.
+
+518
+01:02:17.340 --> 01:02:29.490
+Potuz: Like, if I can actually grab, I know that the latest CPBS Docker image from Lighthouse is going to be whatever you have latest, I can try against it without having to bug Lighthouse.
+
+519
+01:02:32.290 --> 01:02:37.419
+stokes: I think that's a very good idea, but it also sounds like other clients are not even
+
+520
+01:02:37.590 --> 01:02:39.340
+stokes: In a place where they can give you that right now.
+
+521
+01:02:41.660 --> 01:02:47.669
+Enrico Del Fante (tbenr): And to be honest, we will try to move away from a branch as soon as possible.
+
+522
+01:02:48.130 --> 01:02:51.649
+Potuz: Same here. Same problem with Ozaka, yeah.
+
+523
+01:02:51.650 --> 01:02:57.370
+Enrico Del Fante (tbenr): We, yeah, and we will definitely have, kind of a blackout for a, for a…
+
+524
+01:02:57.550 --> 01:03:15.010
+Enrico Del Fante (tbenr): medium time period to actually start grabbing stuff, and maybe rewrite portion of that thing that we have in our current branch, and probably do… and yeah, having a proper implementation, we'll test it, so we will have, will take some time.
+
+525
+01:03:15.270 --> 01:03:19.749
+Enrico Del Fante (tbenr): Even if we have a kind of, current working…
+
+526
+01:03:19.900 --> 01:03:26.320
+Enrico Del Fante (tbenr): testing branch doesn't mean that we will have, soon implementation on master.
+
+527
+01:03:29.550 --> 01:03:39.070
+Potuz: Yeah, we're in the same scenario, and we also need to change quite a bit our implementation, so we're gonna start, like, pulling things, and this is only going to happen after we have
+
+528
+01:03:39.280 --> 01:03:46.460
+Potuz: Fulu in our developed branch. So once… once we have complete Fulu on the developed branch, we can start looking into
+
+529
+01:03:46.640 --> 01:03:49.530
+Potuz: EPVS. Otherwise, it doesn't make any sense.
+
+530
+01:03:50.940 --> 01:03:55.069
+Enrico Del Fante (tbenr): You are in a worse position than us, even.
+
+531
+01:04:02.400 --> 01:04:05.799
+Will Corcoran: I think that's all we got for today.
+
+532
+01:04:06.040 --> 01:04:08.720
+Will Corcoran: I'll try to circulate notes.
+
+533
+01:04:09.090 --> 01:04:10.210
+Will Corcoran: Yeah, Mark.
+
+534
+01:04:10.250 --> 01:04:15.309
+ethDreamer (Mark): question about, I mean, Terrence brought this up, but…
+
+535
+01:04:15.510 --> 01:04:18.120
+ethDreamer (Mark): There's something I was thinking about. So today.
+
+536
+01:04:18.820 --> 01:04:23.089
+ethDreamer (Mark): Whether you're… whether you're using a builder or not, you will…
+
+537
+01:04:23.280 --> 01:04:39.059
+ethDreamer (Mark): like, get… you will have the option to self-build, and generally clients will tell their EL to build a block, and then we'll compare the value of the block against the builder block, and you could, in theory, end up picking your own local block if
+
+538
+01:04:39.240 --> 01:04:43.580
+ethDreamer (Mark): It ended up being more valuable, or if it didn't meet certain conditions that you can specify it anyway.
+
+539
+01:04:43.780 --> 01:04:47.100
+ethDreamer (Mark): I… I expect something similar to happen in…
+
+540
+01:04:47.470 --> 01:04:55.620
+ethDreamer (Mark): Post-epbs, where you're still preparing, at least, to publish locally if something were to happen with your communication with the builder.
+
+541
+01:04:55.870 --> 01:04:57.539
+ethDreamer (Mark): And if you think through…
+
+542
+01:04:57.760 --> 01:05:06.269
+ethDreamer (Mark): what that means, then the… you'd have the following order of events. You would first prepare payload to your EL,
+
+543
+01:05:06.610 --> 01:05:14.040
+ethDreamer (Mark): then you need to get the block from your EL, Turn it into a bid.
+
+544
+01:05:14.390 --> 01:05:25.849
+ethDreamer (Mark): send that bid to your validator. Have your validator sign that bid, and then at slot 0, or at time zero into the slot, or whenever you would usually fetch bids, that's when you…
+
+545
+01:05:26.220 --> 01:05:32.100
+ethDreamer (Mark): would… Go actually fetch bids from builders and compare against the bid that you built earlier.
+
+546
+01:05:33.120 --> 01:05:40.340
+ethDreamer (Mark): So, it's a little funny because it necessarily means that a certain number of steps took place before you…
+
+547
+01:05:41.020 --> 01:05:51.450
+ethDreamer (Mark): Like, like, you stopped local building in order to sign and create a bid before you, like, hit builders to stop building.
+
+548
+01:05:51.720 --> 01:05:56.550
+Potuz: I think we do this at the same time now, so when… So…
+
+549
+01:05:56.790 --> 01:06:02.769
+Potuz: Today, we request a local payload at the same time that we request a header.
+
+550
+01:06:04.550 --> 01:06:11.380
+Potuz: So that's… that's a point. So you… you start slot zero, you request a local payload from your engine.
+
+551
+01:06:12.380 --> 01:06:15.820
+Potuz: And you request headers from the external builders at the same time.
+
+552
+01:06:16.050 --> 01:06:16.980
+ethDreamer (Mark): Okay, but so.
+
+553
+01:06:16.980 --> 01:06:23.639
+Potuz: You wait for the external builders, and by the time that the external builder has returned, you compare against your payload.
+
+554
+01:06:24.130 --> 01:06:30.439
+ethDreamer (Mark): So, like, you get your local payload… oh, so you just compare against your payload, and in which case…
+
+555
+01:06:30.440 --> 01:06:34.930
+Potuz: the bid in parallel, but it doesn't matter. The question is comparing against the payload.
+
+556
+01:06:34.930 --> 01:06:41.570
+ethDreamer (Mark): Sure, but then, let's say you take your local payload, then… when…
+
+557
+01:06:41.910 --> 01:06:53.580
+ethDreamer (Mark): your original request to the Beacon API was asking for assigned bids to… or, like, a signed bid to, like, put into your block. No, I guess it's asking for a beacon block. Yeah, so it's asking for a beacon block to sign, right?
+
+558
+01:06:53.580 --> 01:06:59.779
+Potuz: No, the what? So, the engine API just asks for a payload. There's no changes on the engine API.
+
+559
+01:06:59.780 --> 01:07:00.719
+ethDreamer (Mark): How much knowledge.
+
+560
+01:07:00.720 --> 01:07:03.679
+Potuz: Oh, the Beacon API, you mean from the validator client?
+
+561
+01:07:05.620 --> 01:07:09.880
+ethDreamer (Mark): Yeah, so, like, the validator's gonna need to request a beacon block to sign.
+
+562
+01:07:10.240 --> 01:07:23.070
+ethDreamer (Mark): and the CL is gonna have to pick, like, the best payload. And so, like, usually, when they request being blocked to sign, that is when you're gonna hit for builder pay… builder bids. Well…
+
+563
+01:07:23.730 --> 01:07:28.550
+ethDreamer (Mark): if you haven't already gotten your payload from the EL, gotten
+
+564
+01:07:28.730 --> 01:07:36.469
+ethDreamer (Mark): an unsigned bid that you can return back to your validator to sign, to then put in your beacon block, to give back to your, like.
+
+565
+01:07:36.470 --> 01:07:42.710
+Potuz: No, the way we do this now is, at the beginning of the slot, the validator client requests the bid to sign.
+
+566
+01:07:43.380 --> 01:07:46.939
+Potuz: At that time, it also requests the Beacon Blog sign.
+
+567
+01:07:47.060 --> 01:07:50.580
+Potuz: the beacon node handles both. The beacon node
+
+568
+01:07:50.870 --> 01:07:59.340
+Potuz: Gets the payload, requests the header from the builder, the payload uses to make a bid, it sends back the bid to the validator.
+
+569
+01:07:59.620 --> 01:08:04.579
+Potuz: Gets the signature from the validator, and then assembles a bit on block with whatever the best speed is.
+
+570
+01:08:04.580 --> 01:08:05.909
+ethDreamer (Mark): And sends that.
+
+571
+01:08:06.270 --> 01:08:10.159
+Potuz: Sends back that to the validator client, the validator client signs the become block.
+
+572
+01:08:10.160 --> 01:08:12.340
+ethDreamer (Mark): This has to be multiple requests, then?
+
+573
+01:08:12.340 --> 01:08:13.170
+Potuz: It has to be…
+
+574
+01:08:15.150 --> 01:08:31.309
+terence: So this is why, like, I have been thinking, like, we know what the cell build scenario is, we know when cell building, if the proposal index and the building index are the same, that we could maybe, if it's self-built, then just don't check the signature of the bid.
+
+575
+01:08:31.310 --> 01:08:34.869
+Potuz: Such that you must make it more complicated.
+
+576
+01:08:34.870 --> 01:08:35.770
+terence: It's supposed to be suspended.
+
+577
+01:08:35.770 --> 01:08:38.590
+Potuz: more complicated just to save one signature.
+
+578
+01:08:39.069 --> 01:08:51.320
+terence: But it's one Beacon API request, and then it's also one, like, I think it's… I think it's a much greater safe there than the spec change, someone that's implementing it.
+
+579
+01:08:52.649 --> 01:08:54.119
+ethDreamer (Mark): I think I agree.
+
+580
+01:08:54.119 --> 01:08:58.649
+Enrico Del Fante (tbenr): That's I have the same feeling…
+
+581
+01:08:59.559 --> 01:09:03.809
+Enrico Del Fante (tbenr): There are two in-flight requests, the beacon…
+
+582
+01:09:03.810 --> 01:09:04.310
+terence: Sure.
+
+583
+01:09:04.310 --> 01:09:15.890
+Enrico Del Fante (tbenr): light will have to wait the other one to close, and then return back. It's kind of a little bit… the design is complete.
+
+584
+01:09:16.689 --> 01:09:20.559
+ethDreamer (Mark): It's all to be driven, by the way, by the validator client.
+
+585
+01:09:21.389 --> 01:09:23.079
+ethDreamer (Mark): Which makes it worse.
+
+586
+01:09:23.229 --> 01:09:24.669
+ethDreamer (Mark): Even, like…
+
+587
+01:09:29.079 --> 01:09:30.849
+ethDreamer (Mark): It's like, you… you…
+
+588
+01:09:30.850 --> 01:09:42.390
+Enrico Del Fante (tbenr): Yeah, yeah, because you have to have the validator client ask for the bid before, because otherwise the bid or not doesn't know that there is a self-building in…
+
+589
+01:09:42.580 --> 01:09:43.969
+Enrico Del Fante (tbenr): in, in flight.
+
+590
+01:09:44.370 --> 01:09:46.689
+Enrico Del Fante (tbenr): yeah.
+
+591
+01:09:48.220 --> 01:09:49.670
+ethDreamer (Mark): That's my thought, because if.
+
+592
+01:09:49.670 --> 01:10:00.099
+Enrico Del Fante (tbenr): Unless during the preparation, we also prepare, giving the information to the beacon node that I am a validator who.
+
+593
+01:10:00.100 --> 01:10:02.470
+Potuz: That's… we are doing this for the…
+
+594
+01:10:02.470 --> 01:10:12.220
+ethDreamer (Mark): Yeah, no, that already exists, like, the customer does know that you need to… that you need… that you have an upcoming proposal, and it tells your executioner to prepare a payload, but…
+
+595
+01:10:12.590 --> 01:10:19.629
+ethDreamer (Mark): Like… but the point is that at… generally, what the validator asks for is a friggin' beacon block.
+
+596
+01:10:19.830 --> 01:10:20.530
+ethDreamer (Mark): And…
+
+597
+01:10:21.410 --> 01:10:29.680
+ethDreamer (Mark): If we don't require the value to sign this thing, then it's just gonna get back a beacon block. It's one request, gets back a beacon block.
+
+598
+01:10:29.680 --> 01:10:33.000
+terence: It's seamless today, it's seamless today. There's no charge there.
+
+599
+01:10:33.130 --> 01:10:39.899
+ethDreamer (Mark): Yeah, same as… that's what I'm saying, that's simple. If we don't… if we do require the validator to sign, it asks for a beacon block.
+
+600
+01:10:40.790 --> 01:10:49.549
+ethDreamer (Mark): Somehow, either before, or during, or some weird way, it has to get back an unsigned bid to sign, to send back, and then get the beacon block.
+
+601
+01:10:49.550 --> 01:11:01.099
+Potuz: No, no, no, so we've requested bid before, but if we do what Terrence says, that self-building does not need to include a bid, or… I mean, we enforce that the signature, for example, is zero.
+
+602
+01:11:01.100 --> 01:11:01.720
+ethDreamer (Mark): Yes.
+
+603
+01:11:01.720 --> 01:11:08.569
+Potuz: then you can just go this… make this into a single request. Just request a beacon block, and that's it.
+
+604
+01:11:08.570 --> 01:11:10.310
+ethDreamer (Mark): It's… it's much simpler.
+
+605
+01:11:10.310 --> 01:11:11.540
+terence: It's seminars today.
+
+606
+01:11:11.740 --> 01:11:12.460
+terence: Nothing changed.
+
+607
+01:11:12.460 --> 01:11:16.989
+Potuz: Okay, it is… it is a change. It is a change in the spec. We can… we can add it.
+
+608
+01:11:17.140 --> 01:11:21.559
+Potuz: just make… I would say that the signature needs to be zero in the case of…
+
+609
+01:11:21.560 --> 01:11:21.900
+ethDreamer (Mark): Yeah.
+
+610
+01:11:21.900 --> 01:11:24.670
+Potuz: In the case of the… of self-building.
+
+611
+01:11:24.920 --> 01:11:25.670
+ethDreamer (Mark): Yeah.
+
+612
+01:11:26.130 --> 01:11:31.890
+ethDreamer (Mark): Because the beacon block is signed anyway, so, like, it's already dumb in this case.
+
+613
+01:11:32.060 --> 01:11:38.500
+ethDreamer (Mark): You know, you're signing a little piece in the block, and then outside the block, like… Sure.
+
+614
+01:11:38.500 --> 01:11:55.480
+Potuz: The change in the spec is simple, it's just I didn't want to add this extra check. But, yeah, the change in the spec is just enforce that the signature in the header is zero, well, in the bid is zero, if it's self-building. If the proposal… the builder index is the same as the proposal index.
+
+615
+01:11:55.680 --> 01:12:02.499
+Potuz: And in this case, the validator index would… the validator client would only request once a become block, and that's it.
+
+616
+01:12:02.500 --> 01:12:04.709
+ethDreamer (Mark): Which is what it does today. It's perfect.
+
+617
+01:12:09.700 --> 01:12:11.299
+Potuz: So do you guys want to add this?
+
+618
+01:12:11.800 --> 01:12:12.630
+ethDreamer (Mark): Oh, yeah.
+
+619
+01:12:12.630 --> 01:12:14.110
+terence: I can add them.
+
+620
+01:12:14.110 --> 01:12:15.340
+Potuz: Rico, sounds good to you?
+
+621
+01:12:15.340 --> 01:12:17.220
+Enrico Del Fante (tbenr): Yes.
+
+622
+01:12:18.160 --> 01:12:35.510
+Enrico Del Fante (tbenr): To me, I would… yeah, I don't have the details, but I think, like, we're already handling explicitly the case where there is the self-building, so you're… in the spec, that case is already well… well-defined. We're adding another…
+
+623
+01:12:35.850 --> 01:12:49.820
+Enrico Del Fante (tbenr): condition there, so it's not just another thing, another con… another situation that we have to handle. It's just a situation that is already there with just an additional constraint, which
+
+624
+01:12:50.140 --> 01:12:58.479
+Enrico Del Fante (tbenr): may… may be easier, and we save… we save some… something on the VCBN communication.
+
+625
+01:12:58.480 --> 01:13:07.080
+ethDreamer (Mark): Well, like, the only way, because without this, it's like, the simplest way to do it without this is to just have the validator client
+
+626
+01:13:07.540 --> 01:13:11.019
+ethDreamer (Mark): Hit before, like, do this in advance.
+
+627
+01:13:12.050 --> 01:13:17.130
+ethDreamer (Mark): You know, if you want to do it just in time, then you have to handle all the edge cases of, like…
+
+628
+01:13:18.050 --> 01:13:25.039
+ethDreamer (Mark): You know, the… the builder bids arriving beforehand, and like… like, it just…
+
+629
+01:13:26.100 --> 01:13:31.619
+terence: My biggest complaint is not the extra code, it's that Bitcoin now has to catch that pillow.
+
+630
+01:13:31.620 --> 01:13:32.250
+Potuz: Yeah, they got it.
+
+631
+01:13:32.250 --> 01:13:35.160
+terence: The next person. I don't like that catch.
+
+632
+01:13:37.820 --> 01:13:42.749
+Potuz: Yeah, that's what we're doing. We're caching the… we're caching the payload and the pitch.
+
+633
+01:13:46.820 --> 01:13:50.589
+Potuz: All right, so let's add… let's agree that then that the signature is zero.
+
+634
+01:13:50.720 --> 01:13:52.340
+Potuz: On the header? On the bit?
+
+635
+01:13:52.640 --> 01:13:54.270
+ethDreamer (Mark): On the bid for self-building.
+
+636
+01:13:54.270 --> 01:13:55.170
+Potuz: Okay.
+
+637
+01:13:59.170 --> 01:14:00.190
+Potuz: Okay.
+
+638
+01:14:04.430 --> 01:14:05.290
+Will Corcoran: Alright.
+
+639
+01:14:05.890 --> 01:14:12.089
+Will Corcoran: seems like a productive call. Any last comments?
+
+640
+01:14:12.640 --> 01:14:14.810
+Potuz: This is going to be in the first Debnet.
+
+641
+01:14:14.960 --> 01:14:20.310
+Potuz: So this… this… this thing will be in the first abnet, just on the scope, okay.
+
+642
+01:14:20.530 --> 01:14:23.859
+ethDreamer (Mark): For any DevNet. I want to implement the other thing.
+
+643
+01:14:24.410 --> 01:14:34.349
+ethDreamer (Mark): Yeah, no, I know, but the first definite is… I was going to suggest that we only do self-building? Well, we already agreed on that, too. Oh, okay. So, but with this change already included.
+
+644
+01:14:34.590 --> 01:14:40.539
+Potuz: So, let's wait until… yeah, so let's have this PR today so that it is in Alpha 6.
+
+645
+01:14:40.900 --> 01:14:41.720
+ethDreamer (Mark): Sweet.
+
+646
+01:14:48.320 --> 01:14:50.790
+Will Corcoran: Great. Well…
+
+647
+01:14:51.160 --> 01:14:57.759
+Will Corcoran: Everyone have a nice weekend, and we'll see each other in another 2 weeks on September 12th.
+
+648
+01:15:00.080 --> 01:15:01.170
+Potuz: Thank you!
+
+649
+01:15:01.170 --> 01:15:02.740
+terence: Thank you for hosting.
+
+650
+01:15:03.260 --> 01:15:04.280
+stokes: Thanks, Erwin.
+

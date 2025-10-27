@@ -1,0 +1,774 @@
+WEBVTT
+
+1
+00:05:01.350 --> 00:05:05.839
+Jihoon: Maybe we can wait one more minute, and then just start?
+
+2
+00:06:01.570 --> 00:06:04.309
+Jihoon: Alright, I can… I think we can just…
+
+3
+00:06:05.630 --> 00:06:10.810
+Jihoon: start this call. Alright, hello and welcome, everyone, to Fossil Breakout 20.
+
+4
+00:06:11.220 --> 00:06:17.999
+Jihoon: Same as before, we can jump right into status updates and have some discussions, if any.
+
+5
+00:06:18.340 --> 00:06:20.069
+Jihoon: I guess.
+
+6
+00:06:20.210 --> 00:06:21.610
+Jihoon: We already have.
+
+7
+00:06:22.590 --> 00:06:33.219
+Jihoon: Everyone who are active on fossil development these days, but do we have any development metrics or testing updates?
+
+8
+00:06:37.950 --> 00:06:39.230
+Jihoon: Yes, Katya?
+
+9
+00:06:40.480 --> 00:06:56.159
+Katya: Hello, everyone. I updated the PR and added these new metrics implemented in Lodestar in this PR. Yeah, I left a couple of comments. I've seen your answer already to whom.
+
+10
+00:06:56.510 --> 00:07:13.799
+Katya: So, yeah, I'm not sure. My question is, are we going to have some simulation of failing inclusion lists, or equilocating inclusion lists? For example, for peer does,
+
+11
+00:07:13.990 --> 00:07:26.309
+Katya: prison team, made this… added the CLI flag, which… which caused kind of loss of columns, and so we could check a little bit.
+
+12
+00:07:26.760 --> 00:07:34.760
+Katya: This kind of thing, do… do you have something on your mind, something like this?
+
+13
+00:07:34.890 --> 00:07:37.480
+Katya: Are we gonna check it?
+
+14
+00:07:37.740 --> 00:07:42.260
+Katya: Somehow, or just through the dead nuts and…
+
+15
+00:07:44.010 --> 00:07:46.050
+Jihoon: Yeah, that's a good question. I think…
+
+16
+00:07:46.520 --> 00:07:55.289
+Jihoon: We can take our two prongs here. One is using some CLI flag, as you just mentioned, to produce some
+
+17
+00:07:55.840 --> 00:08:01.179
+Jihoon: Invalid or equivocating ancological leads.
+
+18
+00:08:01.460 --> 00:08:14.839
+Jihoon: And the second approach would be, setting up Author Tour to, you know, run some tests over invalid or duplicating culture lists.
+
+19
+00:08:14.840 --> 00:08:15.609
+Katya: about 4 weeks ago.
+
+20
+00:08:16.930 --> 00:08:33.970
+Katya: Yeah, for the tests, the metric, the metrics won't work, so we won't, see the simulations on the dashboard, I guess so. So, with CLI common, that would be great, would be interesting.
+
+21
+00:08:34.570 --> 00:08:38.379
+Katya: At least to check the metrics, and yeah.
+
+22
+00:08:41.090 --> 00:08:44.339
+Jihoon: Yeah, I agree. Once we,
+
+23
+00:08:44.930 --> 00:09:00.050
+Jihoon: decide to include fossil in Glamsterdam, we can add such flags so that we can test if every client is working as expected, and use your metrics dashboard to
+
+24
+00:09:00.240 --> 00:09:02.310
+Jihoon: See how it works.
+
+25
+00:09:04.140 --> 00:09:06.660
+Katya: So, currently.
+
+26
+00:09:07.280 --> 00:09:25.109
+Katya: My latest run of Lodestar was yesterday, and I had some issues, but we're trying… we're discussing it with the Lodestar team, so maybe, yeah, I think they made some updates, and they need to check again today.
+
+27
+00:09:25.300 --> 00:09:31.029
+Katya: That would be great, if we could have some interop,
+
+28
+00:09:31.270 --> 00:09:38.419
+Katya: I don't know, maybe you could try to implement these metrics as well on the prison side, or then…
+
+29
+00:09:38.730 --> 00:09:47.869
+Katya: We can launch some kind of interop, even through kurtosis, maybe some of these metrics that would be interesting to look into it.
+
+30
+00:09:50.260 --> 00:09:52.209
+Katya: Whenever you have some time.
+
+31
+00:09:53.220 --> 00:09:54.450
+Jihoon: Yeah,
+
+32
+00:09:54.620 --> 00:10:02.820
+Jihoon: Do you know what kind of work that most of people would do? Is it about rebasing, or just adding metrics?
+
+33
+00:10:04.080 --> 00:10:07.189
+Katya: The metrics are added, yeah, I think rebasing.
+
+34
+00:10:08.190 --> 00:10:10.140
+Jihoon: Oh, great. Yeah.
+
+35
+00:10:11.060 --> 00:10:12.060
+Jihoon: Yeah, right.
+
+36
+00:10:13.210 --> 00:10:16.820
+Jihoon: for Prism… Hmm.
+
+37
+00:10:20.010 --> 00:10:36.609
+Katya: We have kind of… we have the set of metrics, we have the dashboard, so it's technically possible if some other clients will build the metrics, it's technically possible to check, to compare it to clients, for example.
+
+38
+00:10:37.720 --> 00:10:41.440
+Jihoon: Yes, for PRISM, I think…
+
+39
+00:10:41.870 --> 00:10:47.429
+Jihoon: it'll take some time to rebase it on the flow. Yesterday, I…
+
+40
+00:10:48.360 --> 00:10:53.040
+Jihoon: I had opened a PR that enable
+
+41
+00:10:53.260 --> 00:11:06.519
+Jihoon: fossil genesis block to PRISM, and it was marched yesterday, so I think we can start working on replacing, on the PRISM side.
+
+42
+00:11:07.370 --> 00:11:08.600
+Jihoon: But…
+
+43
+00:11:08.790 --> 00:11:25.360
+Jihoon: the branch is a bit stale, so I think… not sure. I need to take a look into it to measure how much it would take. To be honest, I've been mostly working on something else, so I cannot promise, when that
+
+44
+00:11:25.890 --> 00:11:30.750
+Jihoon: when that I'm gonna start working on it. Yeah.
+
+45
+00:11:31.620 --> 00:11:43.180
+Katya: Okay, just let me know if this rebase happens. Just let me know, maybe I can take a look into it, how to add metrics.
+
+46
+00:11:43.790 --> 00:11:46.370
+Katya: Yeah, just… Pin me somewhere.
+
+47
+00:11:47.570 --> 00:11:53.459
+Jihoon: Okay, great. Maybe you can try interop with Lighthouse?
+
+48
+00:11:53.700 --> 00:11:56.329
+Jihoon: Not sure if Lighthouse is on Flow.
+
+49
+00:11:57.890 --> 00:12:01.069
+Katya: I, I will, I will ask.
+
+50
+00:12:01.390 --> 00:12:02.900
+Katya: In the channel.
+
+51
+00:12:04.320 --> 00:12:05.040
+Jihoon: Okay, great.
+
+52
+00:12:07.450 --> 00:12:10.919
+Katya: as soon as I can run Loadar.
+
+53
+00:12:12.590 --> 00:12:14.449
+Jihoon: Yeah, sure, yeah, take your time.
+
+54
+00:12:16.900 --> 00:12:17.950
+Katya: Thank you.
+
+55
+00:12:19.110 --> 00:12:20.050
+Jihoon: Thank you.
+
+56
+00:12:23.930 --> 00:12:26.299
+Jihoon: Do we have any other updates?
+
+57
+00:12:50.150 --> 00:12:56.709
+Jihoon: On my end, I've been mostly working on something else, and a little bit of spec tests.
+
+58
+00:12:56.900 --> 00:13:04.379
+Jihoon: I do hope I can finish it by this week, and I've been saying this over and over again for the past few weeks, but I…
+
+59
+00:13:04.480 --> 00:13:11.559
+Jihoon: I'm gonna aim to finish it by this week, and open up a PR against Constance's spec repo.
+
+60
+00:13:12.120 --> 00:13:13.790
+Jihoon: Yeah.
+
+61
+00:13:17.300 --> 00:13:22.500
+Jihoon: Hi, Doma. Hi, Nancy. We were just sharing some status updates.
+
+62
+00:13:35.230 --> 00:13:37.520
+Jihoon: Yeah. Welcome.
+
+63
+00:13:39.050 --> 00:13:43.190
+Jihoon: Do we have any… Updates on red side.
+
+64
+00:13:46.140 --> 00:13:57.319
+Pelle Krabbenhoeft: On the rest side, it's been pretty much just cleaning up some of the code and doing the interop testing with, Geth, which has all been going well. If you want, I can talk on the…
+
+65
+00:13:57.680 --> 00:14:02.409
+Pelle Krabbenhoeft: Lighthouse, issues I was finding and working on real quick.
+
+66
+00:14:04.020 --> 00:14:05.320
+Jihoon: Yeah, please share it.
+
+67
+00:14:05.920 --> 00:14:09.510
+Pelle Krabbenhoeft: Yeah, so… Lighthouse…
+
+68
+00:14:09.640 --> 00:14:28.710
+Pelle Krabbenhoeft: was only passing zero inclusion lists even back for Electra, which I thought was kind of weird. So I looked more into it, and it seems like, the inclusion list that it's trying to get from the cache is… it's trying to get from, slot N instead of slot N minus 1.
+
+69
+00:14:29.400 --> 00:14:35.109
+Pelle Krabbenhoeft: And when it's trying to get the inclusion list, there's obviously no inclusion list, because…
+
+70
+00:14:35.140 --> 00:14:52.309
+Pelle Krabbenhoeft: those inclusion lists for that slot haven't been sent out, so it's just grabbing one slot ahead. So I'm working on having it grabbed from one slot behind, and so far, it's been working in testing. So, still need to iron out a few things with that, but I'll probably open a PR for it.
+
+71
+00:14:54.610 --> 00:15:04.499
+Jihoon: Great, great. And, if I remember it correctly, there's, another issue that some blocks are missing.
+
+72
+00:15:04.660 --> 00:15:09.940
+Pelle Krabbenhoeft: Oh yeah, when I just put my naive, implementation together.
+
+73
+00:15:09.940 --> 00:15:25.919
+Pelle Krabbenhoeft: I was running Geth and REST together, and both clients were sometimes failing blocks, or not proposing blocks. I know on the REST side, my logs were saying that it was an inclusion-less issue, so…
+
+74
+00:15:25.920 --> 00:15:36.659
+Pelle Krabbenhoeft: one transaction didn't get included. I didn't quite check… I didn't quite figure out if it was the same issue on Geth, but I'm guessing it's probably the same. But still need to look into that.
+
+75
+00:15:41.240 --> 00:15:49.870
+Jihoon: Could you elaborate a little bit of how does the enclosure list transaction prevent some block from, being proposed?
+
+76
+00:15:49.870 --> 00:15:56.040
+Pelle Krabbenhoeft: Yeah, on my end, just the inclusion list transaction didn't get included. Sorry.
+
+77
+00:15:56.270 --> 00:16:00.100
+Pelle Krabbenhoeft: And that's why it was failing the new payload V5.
+
+78
+00:16:01.360 --> 00:16:06.920
+Jihoon: Got it, got it. So… the CL is reorging out because it found
+
+79
+00:16:07.050 --> 00:16:10.700
+Jihoon: Some trans… English transactions are missing.
+
+80
+00:16:10.820 --> 00:16:11.840
+Jihoon: For some reason.
+
+81
+00:16:11.840 --> 00:16:17.569
+Pelle Krabbenhoeft: Yeah, yeah, I haven't quite gotten to the bottom of it, but that's what I've seen so far.
+
+82
+00:16:18.430 --> 00:16:19.580
+Jihoon: Got it, got it.
+
+83
+00:16:19.980 --> 00:16:20.910
+Jihoon: Right.
+
+84
+00:16:23.160 --> 00:16:33.600
+Jihoon: Alright, cool. So, it's really nice to see that we are having some… Debugging and progress on the…
+
+85
+00:16:33.740 --> 00:16:39.480
+Jihoon: On the first EL interrupt, there might be some bug in GAT, so…
+
+86
+00:16:39.620 --> 00:16:42.620
+Jihoon: Just, yeah, feel free to just…
+
+87
+00:16:42.810 --> 00:16:46.739
+Jihoon: find the bug and open up a PR or report it somewhere.
+
+88
+00:16:47.090 --> 00:16:49.240
+Jihoon: And, yeah, looking forward to it.
+
+89
+00:16:51.000 --> 00:17:05.319
+Pelle Krabbenhoeft: Sounds good. I'll let you know. And then, also, Lodestar, I don't know what's causing it, but there's also zero inclusion lists, and the logs of Lodestar say that it's successfully adding the inclusion list to the cache, so…
+
+90
+00:17:05.430 --> 00:17:10.000
+Pelle Krabbenhoeft: I don't know what's going on there. It could be a similar thing, but something to think about.
+
+91
+00:17:12.290 --> 00:17:16.490
+Jihoon: Right. But you mean Lighthouse, right? That low star.
+
+92
+00:17:16.950 --> 00:17:30.279
+Pelle Krabbenhoeft: No, Lodestar as well. I haven't looked into the Lodestar code, so it could be something else, but just saying it might be the same thing as Lighthouse. Not sure, though.
+
+93
+00:17:30.690 --> 00:17:36.940
+Jihoon: Oh, I thought that Lowestar is not working today, but… Probably, I was wrong.
+
+94
+00:17:37.830 --> 00:17:51.099
+Pelle Krabbenhoeft: I… it was… it wasn't working perfectly when I was checking on Fulu, but I was able… the build for a while, there were… there is another issue, but I was also getting a zero inclusion list.
+
+95
+00:17:51.280 --> 00:17:53.269
+Pelle Krabbenhoeft: It was a bit of a shaky testnet.
+
+96
+00:17:54.750 --> 00:17:55.940
+Jihoon: Got it, got it.
+
+97
+00:17:56.100 --> 00:17:56.840
+Jihoon: Hmm.
+
+98
+00:17:57.370 --> 00:18:00.660
+nflaig: What value do you use for seconds per slot?
+
+99
+00:18:02.690 --> 00:18:05.040
+Pelle Krabbenhoeft: I was using 6.
+
+100
+00:18:05.310 --> 00:18:06.020
+nflaig: Yeah.
+
+101
+00:18:06.020 --> 00:18:07.959
+Pelle Krabbenhoeft: Do I need to move that to 12 for…
+
+102
+00:18:08.360 --> 00:18:14.709
+nflaig: Yeah, I think so, because we didn't move the code to the BPS yet, so to use basis points.
+
+103
+00:18:14.910 --> 00:18:28.909
+nflaig: So I think it uses absolute values, and then you get to the… yeah, it submits the wrong inclusion lists, because the freeze deadline or the submit deadline is 9 seconds, so it's outside of the slot.
+
+104
+00:18:29.690 --> 00:18:31.960
+nflaig: I think that might be an issue, yeah.
+
+105
+00:18:32.120 --> 00:18:36.230
+Pelle Krabbenhoeft: Yeah, that sounds like it probably is that. I'll have to get that a look.
+
+106
+00:18:38.880 --> 00:18:41.800
+Jihoon: Yeah, remember that we had this issue…
+
+107
+00:18:42.550 --> 00:18:46.529
+Jihoon: I don't know, like, many months ago. Right, yeah.
+
+108
+00:18:46.790 --> 00:18:48.029
+Jihoon: Makes sense.
+
+109
+00:18:49.430 --> 00:18:57.030
+nflaig: Yeah, I don't think we have fixed anything in that regard, because the spec was just like that, and was just recently changed.
+
+110
+00:18:58.720 --> 00:19:06.830
+Jihoon: Yeah, you're right. So, I guess we can try interop between, Lostar Lighthouse, GED and Rev.
+
+111
+00:19:18.520 --> 00:19:19.909
+Pelle Krabbenhoeft: Yeah, we can probably do that.
+
+112
+00:19:20.250 --> 00:19:23.680
+Pelle Krabbenhoeft: Especially once I get Lighthouse fixed up.
+
+113
+00:19:24.880 --> 00:19:33.659
+Jihoon: Yeah, sounds great. With that, would it be enough for…
+
+114
+00:19:35.040 --> 00:19:41.710
+Jihoon: testing the metrics dashboard, Katya, if we have, like, at least two CL clients.
+
+115
+00:19:42.630 --> 00:19:48.419
+Jihoon: Even if we don't have metrics implemented in Lighthouse, it'll be implemented in Lowestar, so…
+
+116
+00:19:49.450 --> 00:20:00.529
+Katya: then it doesn't make sense if the other client… I mean, for metrics interop, if the other client doesn't have… so it will be just…
+
+117
+00:20:00.770 --> 00:20:04.150
+Katya: door, and that's it, so I won't see anything.
+
+118
+00:20:04.320 --> 00:20:08.380
+Katya: on the Lighthouse, on the dashboard.
+
+119
+00:20:09.960 --> 00:20:11.159
+Jihoon: Right, right.
+
+120
+00:20:13.070 --> 00:20:16.000
+Jihoon: Like, could you remind us what would be the…
+
+121
+00:20:16.160 --> 00:20:22.090
+Jihoon: Goals of this metrics, testing, like, how, how…
+
+122
+00:20:22.500 --> 00:20:33.000
+Jihoon: Like, let's say that we implemented the metrics correctly in all clients, then how do we tell if they are implemented correctly?
+
+123
+00:20:35.040 --> 00:20:46.760
+Katya: I mean, first of all, we are just observing the values on the dashboard, and I mean, it's more for…
+
+124
+00:20:47.190 --> 00:21:04.429
+Katya: The final goal is to observe this metric in the long-term period, so when we already have DevNets, so normally DevOps teams just observe if something's going wrong.
+
+125
+00:21:04.540 --> 00:21:10.960
+Katya: During the long period of time, it's… it's… It's good to use dashboards.
+
+126
+00:21:12.260 --> 00:21:18.710
+Katya: And at the same time, we can… we can just compare, different values.
+
+127
+00:21:18.890 --> 00:21:30.629
+Katya: On different clients, so… Which also sometimes can be helpful for the clients itself, like…
+
+128
+00:21:31.540 --> 00:21:38.769
+Katya: How long is, like, purification going, etc, so… and to find some issues, maybe?
+
+129
+00:21:40.160 --> 00:21:46.549
+Jihoon: Got it, got it. So… even if you just run a local dev net with Lowestar.
+
+130
+00:21:47.190 --> 00:22:04.649
+Jihoon: then you can see the dashboard bit, but it doesn't tell you anything other than you just see the metrics measured in certain ways. So you want to use that dashboard to see if others say, clients are seeing the same thing in the expected ways.
+
+131
+00:22:05.380 --> 00:22:13.669
+Katya: Yeah, that would be great, because this is the goal of the metric specs, so, the clients have, like, more or less,
+
+132
+00:22:14.090 --> 00:22:19.590
+Katya: Similar implementation in the important points, like.
+
+133
+00:22:19.980 --> 00:22:26.369
+Katya: You wanna see, like, how verification goes, like, how many inclusion leads are produced, etc.
+
+134
+00:22:26.920 --> 00:22:31.990
+Katya: So, just a… Some kind of evaluation and observation.
+
+135
+00:22:33.730 --> 00:22:35.260
+Jihoon: Got it, got it. Cool.
+
+136
+00:22:36.590 --> 00:22:37.780
+Jihoon: Right, thank you.
+
+137
+00:22:41.520 --> 00:22:53.080
+Katya: I would also like to collab with, EL team, maybe Reth, just to look into, what metrics could be added on the EL side.
+
+138
+00:22:56.410 --> 00:23:00.829
+Pelle Krabbenhoeft: Yeah, I'd love to work on that as well, so, just DM me on Discord.
+
+139
+00:23:02.080 --> 00:23:03.279
+Katya: Okay, thanks.
+
+140
+00:23:11.560 --> 00:23:17.650
+Jihoon: Very nice. Do we have any other updates, or…
+
+141
+00:23:17.830 --> 00:23:19.740
+Jihoon: Something that we want to discuss?
+
+142
+00:23:38.260 --> 00:23:43.949
+Jihoon: Otherwise, I think… We can go ahead and wrap up this call.
+
+143
+00:23:44.420 --> 00:23:46.950
+Jihoon: I was thinking about…
+
+144
+00:23:47.820 --> 00:23:57.070
+Jihoon: Yeah, I just wanted to ask, what do people think about changing falsehood breakout to monthly until
+
+145
+00:23:57.240 --> 00:24:10.400
+Jihoon: We have client devs come back, because people are busy with Fusaka, and then we also need to wait until a PBS spec and implementation are finalized, so…
+
+146
+00:24:11.870 --> 00:24:16.500
+Jihoon: On one hand, we can just skip this one bi-weekly, so that we can
+
+147
+00:24:16.740 --> 00:24:19.509
+Jihoon: Keep the momentum or something.
+
+148
+00:24:19.850 --> 00:24:27.200
+Jihoon: On the other hand, I don't know, maybe we are… We could use…
+
+149
+00:24:28.010 --> 00:24:32.829
+Jihoon: Our time more efficiently by making this monthly?
+
+150
+00:24:33.120 --> 00:24:35.780
+Jihoon: I don't have a strong opinion, I just wanted to…
+
+151
+00:24:36.000 --> 00:24:38.500
+Jihoon: Ask what people here think about it.
+
+152
+00:24:42.630 --> 00:24:49.169
+Katya: My opinion, bi-weekly would be great, not to lose focus at all, like…
+
+153
+00:24:49.810 --> 00:24:55.889
+Katya: One… once a month is kind of… Too rare.
+
+154
+00:24:56.040 --> 00:24:56.840
+Jihoon: Okay.
+
+155
+00:25:15.760 --> 00:25:17.110
+Jihoon: Oh, yeah.
+
+156
+00:25:17.580 --> 00:25:20.350
+Jihoon: Yeah, I think for now we can just…
+
+157
+00:25:20.830 --> 00:25:24.180
+Jihoon: Keep it as is, maybe bi-weekly.
+
+158
+00:25:24.330 --> 00:25:28.129
+Jihoon: Because monthly is too long, I think that's a valid point.
+
+159
+00:25:28.340 --> 00:25:37.530
+Jihoon: And… yeah, thank you, Thuma. There's a… there was a… there's a proposal to… use
+
+160
+00:25:37.970 --> 00:25:43.119
+Jihoon: fossil in the context of native roll-ups. Luca…
+
+161
+00:25:43.960 --> 00:25:50.530
+Jihoon: Yeah, Ruka reached out to me, like, I don't know, a few months ago, and we…
+
+162
+00:25:50.720 --> 00:26:02.990
+Jihoon: doubled in about how to implement this, in the native roll-ups, I mean, how to implement it using the… inheriting, the existing execution spec.
+
+163
+00:26:03.470 --> 00:26:06.839
+Jihoon: I think what's interesting…
+
+164
+00:26:07.070 --> 00:26:13.679
+Jihoon: to see this idea, maybe we can ask Luca to share his idea next breakout.
+
+165
+00:26:18.010 --> 00:26:20.950
+Jihoon: Yes, it's a… it's a nice summary.
+
+166
+00:26:24.200 --> 00:26:37.619
+Jihoon: There was a tweet thread, that Luca shared. Let me pull that link real quick, and then we can wait for more discussion, and then wrap up this call.
+
+167
+00:26:53.880 --> 00:26:59.639
+Jihoon: Yeah, here's the thread. Please take a look into it if you're interested.
+
+168
+00:27:00.460 --> 00:27:03.090
+Jihoon: And then… Yeah.
+
+169
+00:27:04.330 --> 00:27:09.699
+Jihoon: Maybe we can have a look here to share a little bit more about it next breakout.
+
+170
+00:27:09.880 --> 00:27:11.160
+Jihoon: In two weeks.
+
+171
+00:27:22.920 --> 00:27:26.159
+Jihoon: Does anyone have any more comments?
+
+172
+00:27:26.370 --> 00:27:28.519
+Jihoon: Or… anything to discuss?
+
+173
+00:27:30.840 --> 00:27:39.480
+Katya: Last quick question, should we start from Elektra in ketosis, or maybe you can start from Fullo?
+
+174
+00:27:42.030 --> 00:27:45.640
+Jihoon: I think they're starting… no.
+
+175
+00:27:47.020 --> 00:27:51.520
+Katya: My latest config is, like, Electrod and Foolos, and…
+
+176
+00:27:53.000 --> 00:27:58.889
+Jihoon: Yeah, we are still on Electra, right? Pelly, do you start on Flu or Electra?
+
+177
+00:28:02.160 --> 00:28:04.160
+Pelle Krabbenhoeft: For Lodestar, or…
+
+178
+00:28:04.790 --> 00:28:07.249
+Jihoon: For Lostar and Lighthouse.
+
+179
+00:28:08.140 --> 00:28:17.269
+Pelle Krabbenhoeft: For Lighthouse, I've been doing, Glow Ass and Electra, just testing both of those, and then Lodestar, I believe, is only up to Fulu right now.
+
+180
+00:28:19.940 --> 00:28:26.630
+Jihoon: up to Flu, so you start, you start from Electra, and then transition into Flu, and then Gloas.
+
+181
+00:28:27.240 --> 00:28:32.150
+Pelle Krabbenhoeft: I… I think I was just starting from Fulu for Lodestar.
+
+182
+00:28:33.230 --> 00:28:33.969
+Jihoon: Got it.
+
+183
+00:28:35.810 --> 00:28:37.920
+Katya: Okay, we'll try. Thank you.
+
+184
+00:28:44.100 --> 00:28:47.469
+Jihoon: Does that mean the load star already repased on the flow?
+
+185
+00:28:51.000 --> 00:28:56.669
+nflaig: Yeah, we have the fork between claws and fool, so in between those two.
+
+186
+00:28:57.480 --> 00:28:58.360
+Jihoon: Oh, cool.
+
+187
+00:29:10.230 --> 00:29:18.089
+Jihoon: Alright, I think… We can go ahead and wrap up this call, and… We can get their…
+
+188
+00:29:18.700 --> 00:29:29.460
+Jihoon: in two weeks, and share another update. And in the meantime, I will ask Luca if he can join us to share his idea on fossil
+
+189
+00:29:29.750 --> 00:29:32.040
+Jihoon: In negative roll-ups next time.
+
+190
+00:29:40.540 --> 00:29:41.790
+Jihoon: Alright, guys?
+
+191
+00:29:42.120 --> 00:29:46.340
+Jihoon: Thank you for joining, and… See you in 2 weeks!
+
+192
+00:29:47.800 --> 00:29:49.270
+Katya: Thank you, everyone. Bye.
+
+193
+00:29:52.320 --> 00:29:53.130
+nflaig: Yep.
+

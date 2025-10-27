@@ -785,17 +785,29 @@ const CallPage: React.FC = () => {
 
   if (!callData) {
     return (
-      <div className="min-h-screen bg-slate-50 text-slate-900 p-6">
-        <div className="max-w-4xl mx-auto">
-          <div className="text-center">
-            <h1 className="text-2xl font-semibold text-slate-900 mb-4">Call Not Found</h1>
-            <p className="text-slate-600 mb-6">The requested call could not be found.</p>
-            <Link
-              to="/calls"
-              className="inline-flex items-center px-4 py-2 bg-slate-600 text-white rounded-lg hover:bg-slate-700 transition-colors"
-            >
-              ← Back to Calls
-            </Link>
+      <div className="min-h-screen bg-slate-50 dark:bg-slate-900 flex items-center justify-center p-6">
+        <div className="max-w-md w-full">
+          <div className="bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg shadow-lg p-8">
+            <div className="text-center">
+              <div className="mb-4">
+                <div className="inline-flex items-center justify-center w-16 h-16 rounded-full bg-amber-100 dark:bg-amber-900/30">
+                  <svg className="w-8 h-8 text-amber-600 dark:text-amber-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+                  </svg>
+                </div>
+              </div>
+              <h1 className="text-2xl font-semibold text-slate-900 dark:text-slate-100 mb-2">Call Not Found</h1>
+              <p className="text-slate-600 dark:text-slate-400 mb-6">The requested call could not be found. It may not exist or hasn't been added yet.</p>
+              <Link
+                to="/calls"
+                className="inline-flex items-center gap-2 px-4 py-2 bg-blue-600 dark:bg-blue-500 text-white rounded-lg hover:bg-blue-700 dark:hover:bg-blue-600 transition-colors shadow-sm"
+              >
+                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 19l-7-7m0 0l7-7m-7 7h18" />
+                </svg>
+                Back to All Calls
+              </Link>
+            </div>
           </div>
         </div>
       </div>
@@ -813,6 +825,9 @@ const CallPage: React.FC = () => {
       case 'acdc': return 'All Core Devs Consensus';
       case 'acde': return 'All Core Devs Execution';
       case 'acdt': return 'All Core Devs Testing';
+      case 'epbs': return 'ePBS Breakout Room';
+      case 'bal': return 'BAL Breakout Room';
+      case 'focil': return 'FOCIL Breakout Room';
       default: return callData.type;
     }
   };

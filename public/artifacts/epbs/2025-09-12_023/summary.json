@@ -1,0 +1,49 @@
+{
+  "meeting_topic": "EIP-7732 Breakout Room  call #21,  August 15, 2025",
+  "meeting_start_time": "2025-09-12T13:54:52Z",
+  "meeting_end_time": "2025-09-12T15:26:31Z",
+  "summary_start_time": "2025-09-12T13:56:53Z",
+  "summary_end_time": "2025-09-12T14:54:16Z",
+  "summary_created_time": "2025-09-12T15:28:20Z",
+  "summary_last_modified_time": "2025-09-12T17:02:03Z",
+  "summary_overview": "The team discussed open specification PRs and consensus specifications, focusing on header naming conventions and merging related PRs for Ethereum. They reviewed testing PRs and discussed the transition to Devnet 0, emphasizing the need to freeze the spec for header changes while leaving withdrawals as they are. The group also addressed beacon API standardization, explored builder API design, and discussed the implications of supporting off-chain relays and builders in the protocol.",
+  "summary_details": [
+    {
+      "label": "EIP Header Naming Convention Discussion",
+      "summary": "Justin led the meeting in Will's absence, discussing open specification PRs for EIPs, primarily focusing on Terence's contributions. The main topic was the header naming convention, where Francesco and others requested keeping the existing header structure, though Terence had renamed it to \"Execution Payload Bid.\" The team also noted that one PR related to \"get proposer head\" was not yet opened, and Justin confirmed he had merged a related PR about abort payment on proposer. The meeting experienced some technical difficulties with streaming, which were eventually resolved."
+    },
+    {
+      "label": "Ethereum Consensus PR Merge Discussion",
+      "summary": "The team discussed merging several PRs related to Ethereum consensus specifications. Terence explained that while his PR to rename the execution payload header had been approved, there were conflicts that needed to be resolved. They agreed to merge Terence's PR today, with Potuz planning to open a subsequent PR to update the header during payload processing and remove the latest block hash. The team also reviewed testing PRs, with Terence noting that while withdrawal testing was challenging, it was not currently a priority. Potuz mentioned that while the target for Devnet 0 was the end of October, there were still some decisions needed regarding the header structure and placement."
+    },
+    {
+      "label": "Devnet 0 Transition Planning Meeting",
+      "summary": "The team discussed the transition to Devnet 0, focusing on the header changes and withdrawal processes. Potuz emphasized the need to freeze the spec for Devnet 0, including the header changes, while leaving withdrawals as they are to meet the October deadline. The group agreed to prioritize the header PR and start coding on mainnet branches. Shane presented a PR for the Beacon API standardization, which received initial reviews from Erdek and others. The team identified key stakeholders for API reviews, including Jacek, Etan, Dustin, and Paul Harris, with a focus on feedback from client teams. Shane also highlighted new APIs for bids, envelopes, and payload attestation, as well as modifications to existing APIs like get block."
+    },
+    {
+      "label": "Beacon Block API Endpoint Decision",
+      "summary": "The team discussed the choice between creating a V4 endpoint or modifying the V3 endpoint for beacon block responses, with a consensus forming in favor of V4 for cleaner code. They also explored the use of the consensus block value field, which was confirmed to be used by Vouch and potentially other clients, with Chris Berry now handling these responsibilities. The team agreed to maintain the current process of triggering data column sidecar creation when releasing execution envelopes, eliminating the need for a new API endpoint."
+    },
+    {
+      "label": "Off-Chain Relays Protocol Discussion",
+      "summary": "The team discussed the implications of supporting off-chain relays and builders in the protocol. Potus and Justin expressed that they would prefer everything to be within the protocol, with builders potentially staking a relay to support non-staked builders. Lorenzo added that builders often have negative expected value due to rebates to apps and originators. The team agreed that the protocol spec should not specify off-protocol behavior, and Stefan raised questions about how proposers would connect to builders in this scenario."
+    },
+    {
+      "label": "Blind Signing Protocol Discussion",
+      "summary": "The team discussed the flow for blind signing in the protocol, with potuz explaining the process of requesting and submitting bids, as well as signing payload envelopes. Francesco and others expressed concerns about the complexity of the proposed method compared to simply accepting signed 0-value bids with real values specified outside the protocol. The group agreed that the current mevboost-like approach might be simpler and sufficient for their needs. Shane raised questions about the builder API and direct HTTP connections to builders, which potuz addressed by explaining the potential for decentralized bid requests and fallback mechanisms. The team decided to defer further discussion on the builder API for later, as Devnet 0 would focus on self-building support."
+    },
+    {
+      "label": "Builder API Design Discussion",
+      "summary": "The team discussed the design of the builder API, with Lorenzo clarifying that either signing or not signing is acceptable for the protocol evolution. They addressed questions about validator creation and compound validators, with Potuz explaining that new validators with 0x03 credentials could be created but existing validators cannot be converted to builders before the fork. The team also discussed concerns about builder endpoints and the readiness of Titan relay or builder for the fork, though specific implementation details were not finalized."
+    }
+  ],
+  "next_steps": [
+    "Potuz to open a PR to keep the header with the same functionality as today, remove the latest block hash, and add a new field for the bid.",
+    "Terence to fix conflicts and merge the PR for renaming execution payload header to execution payload bid.",
+    "Potuz to review Terence's attestation processing test PR.",
+    "Potuz to review Terence's execution payload if reset PR.",
+    "Terence to share the link to the test cases for fork choice tests.",
+    "Shane to reach out to Chris Berry regarding the consensus block value field in the Beacon API.",
+    "Client teams to implement the builder API for Devnet 0 with local building support."
+  ]
+}

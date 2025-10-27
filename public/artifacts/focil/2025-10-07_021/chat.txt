@@ -1,0 +1,20 @@
+00:09:39	Jihoon:	https://native-rollups.l2beat.com/
+00:24:11	Peter:	You could fall back to permissionless sequencing if the centralized sequencer does not relay forced transactions. (Deterrent with permissionless fallback instead of "based windows”.)
+00:34:36	potuz:	includers will reinclude it in the next IL
+00:40:17	potuz:	what?
+00:40:34	potuz:	we have weakly calls about all the subtleties of FOCIL
+00:42:11	Jihoon:	Replying to "we have weakly calls..."
+
+Do you want to share more about it?
+00:49:13	potuz:	Replying to "we have weakly calls..."
+
+it's mostly about censorship assumptions on L1, FOCIL doesn't remove the main problems
+00:49:35	Jihoon:	https://github.com/ethereum/execution-spec-tests/blob/main/tests/amsterdam/eip7928_block_level_access_lists/test_cases.md
+00:54:45	Jihoon:	Replying to "we have weakly calls..."
+
+Interesting, could you elaborate more?
+00:54:47	Katya:	https://github.com/ethereum/execution-metrics/pull/4#discussion_r2406702189
+00:56:00	Katya:	Example - execution_inclusion_list_transactions_invalid_total
+00:56:56	potuz:	Replying to "we have weakly calls..."
+
+yes: one assumption that rollups *do not make* on L1 is that an attacker holds < 50% of the stake. And it makes sense not to make this assumption because the rollup bridge may contain more than that value. FOCIL would be fantastic to guarantee censor resistance in less than a challenge period without this assumption, but unfortunately it needs it

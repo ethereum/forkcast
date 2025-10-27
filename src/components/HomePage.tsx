@@ -15,15 +15,21 @@ const HomePage = () => {
 
   // Colors for call types
   const callTypeColors = {
-    acdc: 'border-l-purple-500 dark:border-l-purple-400',
-    acde: 'border-l-blue-500 dark:border-l-blue-400',
-    acdt: 'border-l-green-500 dark:border-l-green-400'
+    acdc: 'border-l-blue-500 dark:border-l-blue-400',
+    acde: 'border-l-sky-500 dark:border-l-sky-400',
+    acdt: 'border-l-teal-500 dark:border-l-teal-400',
+    epbs: 'border-l-amber-500 dark:border-l-amber-400',
+    bal: 'border-l-red-500 dark:border-l-red-400',
+    focil: 'border-l-orange-500 dark:border-l-orange-400'
   };
 
   const callTypeBadgeColors = {
-    acdc: 'bg-purple-100 dark:bg-purple-900/30 text-purple-700 dark:text-purple-300',
-    acde: 'bg-blue-100 dark:bg-blue-900/30 text-blue-700 dark:text-blue-300',
-    acdt: 'bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-300'
+    acdc: 'bg-blue-100 dark:bg-blue-900/30 text-blue-700 dark:text-blue-300',
+    acde: 'bg-sky-100 dark:bg-sky-900/30 text-sky-700 dark:text-sky-300',
+    acdt: 'bg-teal-100 dark:bg-teal-900/30 text-teal-700 dark:text-teal-300',
+    epbs: 'bg-amber-100 dark:bg-amber-900/30 text-amber-700 dark:text-amber-300',
+    bal: 'bg-red-100 dark:bg-red-900/30 text-red-700 dark:text-red-300',
+    focil: 'bg-orange-100 dark:bg-orange-900/30 text-orange-700 dark:text-orange-300'
   };
 
   const getStatusColor = (status: string) => {
@@ -142,11 +148,11 @@ const HomePage = () => {
                 >
                   <div className="flex items-center justify-between">
                     <div className="flex items-center gap-3">
-                      <span className={`text-xs font-medium px-2 py-0.5 rounded-full ${callTypeBadgeColors[call.type]}`}>
+                      <span className={`text-xs font-medium px-2 py-0.5 rounded-full min-w-[3.5rem] text-center ${callTypeBadgeColors[call.type]}`}>
                         {call.type.toUpperCase()}
                       </span>
                       <span className="text-sm font-medium text-slate-900 dark:text-slate-100">
-                        Meeting #{call.number}
+                        Call #{call.number}
                       </span>
                       <span className="text-sm text-slate-600 dark:text-slate-400">
                         {call.date}

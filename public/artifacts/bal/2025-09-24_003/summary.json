@@ -1,0 +1,43 @@
+{
+  "meeting_topic": "EIP-7928 Breakout #3, Sept 24, 2025",
+  "meeting_start_time": "2025-09-24T13:56:14Z",
+  "meeting_end_time": "2025-09-24T14:50:35Z",
+  "summary_start_time": "2025-09-24T14:00:09Z",
+  "summary_end_time": "2025-09-24T14:46:04Z",
+  "summary_created_time": "2025-09-24T14:51:15Z",
+  "summary_last_modified_time": "2025-09-24T16:25:58Z",
+  "summary_overview": "The team evaluated different approaches for Block Access List implementation, including whether to use a hash or root structure and how to handle self-destruct operations. They discussed various technical considerations around precompiles, storage roots, and transaction handling, with Toni tasked to provide more detailed specifications in the EIP. The team reviewed client updates from team members working on StateRoot performance, execution specs, and the Engine API, while also planning to re-evaluate certain design decisions after gathering more data.",
+  "summary_details": [
+    {
+      "label": "Access List Hashing Structure Discussion",
+      "summary": "The team discussed three main agenda items: whether to use a block-level access list hash or root structure, how to handle transaction self-destruct, and the inclusion of intermediate storage account routes in access lists to speed up hashing. Jason explained that moving from a hash to a root structure could improve execution precomps by providing more organized and reliable proofs, particularly for post-state guarantees, though this would require intent-style programming. The team also considered Jared's suggestion to include only the self-destructed account address rather than making self-destruct transactions explicit."
+    },
+    {
+      "label": "Roots vs. Hashes for BALs",
+      "summary": "The team discussed the merits of using roots instead of hashes for Block Access Lists (BALs). Toni summarized the potential benefits, including easier proofs for pre-validators and cheaper, more granular proofs. However, the group expressed concerns about adding complexity and agreed to keep the current system for now. Jason was tasked with publishing his analysis on precoms for further developer input, and Toni planned to reach out to Vitalik for clarification on his points about the BAL system."
+    },
+    {
+      "label": "Self-Destruct Operations in BAL Design",
+      "summary": "The team discussed how to handle self-destruct operations in the Block Live Access List (BAL). They agreed that self-destructs occurring in the same transaction as a state change should be treated as reads without special handling, as they don't modify the state. Jared pointed out that this would break the consistency of the BAL design, but the team decided to proceed with this approach to save space. They also discussed the need to test cases where an account is created, accesses storage, and then self-destructs, though Jared suggested this might be a rare enough occurrence to handle as a normal case in the BAL."
+    },
+    {
+      "label": "Precompile Address Inclusion in BAL",
+      "summary": "The team discussed the inclusion of precompile addresses in the Block Access List (BAL). Toni noted that the current specifications are underspecified regarding precompiles, and the team agreed to keep the current behavior where precompiles are included in the BAL if accessed through certain opcodes like BALANCE or CALL, but not if accessed through other means. \u0141ukasz and others expressed concerns about the complexity of differentiating between call types, and Toni agreed to add more detailed specifications in the EIP. The team decided to maintain the current approach for now, with Toni planning to clarify the specifications further."
+    },
+    {
+      "label": "BlockCloud Optimization and Client Updates",
+      "summary": "The team discussed a potential optimization for the BlockCloud Access List to include post-state storage roots for accounts, which Jared introduced based on Gary's suggestion. While the idea was deemed interesting, Toni suggested keeping the current design and re-evaluating in two weeks after gathering more data on its benefits. Client updates were shared, with Jared noting focus on StateRoot update performance, Marc working on execution spec test debugging, and Karim reporting progress on the Engine API implementation but noting issues with block validation between Geth and Besu. Felipe announced an upcoming release of test updates."
+    }
+  ],
+  "next_steps": [
+    "Toni to revert the recent commits with \"fixed self-destruct logic\" in the specs to match the EIP again.",
+    "Toni to clarify in the EIP that all state  accessed until self-destruct should be included in the Block Lab Access List.",
+    "Toni to add proper specifications in the EIP regarding how precompiles should be tracked in the Block Lab Access List.",
+    "Toni to reach out to Vitalik to get his input on block-level access list hash versus root for the testing call.",
+    "Jason to publish a post about precompiles to help developers understand the topic better.",
+    "Rahul to fix the execution spec test affecting self-destruct.",
+    "Felipe to release a new version of the tests with updates for Consume Engine  by today.",
+    "Besu team to debug and investigate why blocks created by Besu are being refused by Geth.",
+    "Erigon team to investigate blockers concerning the consumer engine, specifically looking into locks issues."
+  ]
+}

@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState } from "react";
 
 interface TranscriptProps {
   isOpen: boolean;
@@ -12,11 +12,15 @@ interface VTTEntry {
   text: string;
 }
 
-const Transcript: React.FC<TranscriptProps> = ({ isOpen, onClose, content }) => {
+const Transcript: React.FC<TranscriptProps> = ({
+  isOpen,
+  onClose,
+  content,
+}) => {
   const [vttTranscript] = useState<string>(content);
 
   const parseVTTTranscript = (text: string): VTTEntry[] => {
-    const lines = text.split('\n');
+    const lines = text.split("\n");
     const entries: VTTEntry[] = [];
     let currentEntry: Partial<VTTEntry> = {};
 
@@ -24,12 +28,12 @@ const Transcript: React.FC<TranscriptProps> = ({ isOpen, onClose, content }) => 
       const line = lines[i].trim();
 
       // Skip WEBVTT header and empty lines
-      if (line === 'WEBVTT' || line === '' || /^\d+$/.test(line)) {
+      if (line === "WEBVTT" || line === "" || /^\d+$/.test(line)) {
         continue;
       }
 
       // Parse timestamp line
-      if (line.includes('-->')) {
+      if (line.includes("-->")) {
         const timeMatch = line.match(/(\d{2}:\d{2}:\d{2}\.\d{3})/);
         if (timeMatch) {
           currentEntry.timestamp = timeMatch[1];
@@ -46,11 +50,15 @@ const Transcript: React.FC<TranscriptProps> = ({ isOpen, onClose, content }) => 
           currentEntry.text = speakerMatch[2].trim();
         } else {
           // If no colon pattern, treat the whole line as text
-          currentEntry.speaker = 'Unknown';
+          currentEntry.speaker = "Unknown";
           currentEntry.text = line;
         }
 
-        if (currentEntry.timestamp && currentEntry.speaker && currentEntry.text) {
+        if (
+          currentEntry.timestamp &&
+          currentEntry.speaker &&
+          currentEntry.text
+        ) {
           entries.push(currentEntry as VTTEntry);
           currentEntry = {};
         }
@@ -62,7 +70,7 @@ const Transcript: React.FC<TranscriptProps> = ({ isOpen, onClose, content }) => 
 
   const formatTimestamp = (timestamp: string): string => {
     // Convert "00:04:05.754" to "00:04:05"
-    return timestamp.split('.')[0];
+    return timestamp.split(".")[0];
   };
 
   const renderVTTTranscript = () => {
@@ -71,8 +79,12 @@ const Transcript: React.FC<TranscriptProps> = ({ isOpen, onClose, content }) => 
       <div className="space-y-2 max-h-96 overflow-y-auto">
         {entries.map((entry, index) => (
           <div key={index} className="flex gap-2 text-sm">
-            <span className="text-slate-500 text-xs w-16 flex-shrink-0">{formatTimestamp(entry.timestamp)}</span>
-            <span className="font-medium text-slate-700 min-w-0">{entry.speaker}:</span>
+            <span className="text-slate-500 text-xs w-16 flex-shrink-0">
+              {formatTimestamp(entry.timestamp)}
+            </span>
+            <span className="font-medium text-slate-700 min-w-0">
+              {entry.speaker}:
+            </span>
             <span className="text-slate-600 flex-1">{entry.text}</span>
           </div>
         ))}
@@ -96,12 +108,21 @@ const Transcript: React.FC<TranscriptProps> = ({ isOpen, onClose, content }) => 
             onClick={onClose}
             className="text-slate-400 hover:text-slate-600 transition-colors"
           >
-            <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+            <svg
+              className="w-6 h-6"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth={2}
+                d="M6 18L18 6M6 6l12 12"
+              />
             </svg>
           </button>
         </div>
-
 
         {/* Content */}
         <div className="flex-1 overflow-hidden p-6">

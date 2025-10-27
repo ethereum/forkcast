@@ -1,5 +1,5 @@
-import { useState, useEffect } from 'react';
-import { PokebalResponse } from '../types/pokebal';
+import { useState, useEffect } from "react";
+import { PokebalResponse } from "../types/pokebal";
 
 export function usePokebalData(eipNumber: number): {
   data: PokebalResponse | null;
@@ -20,7 +20,9 @@ export function usePokebalData(eipNumber: number): {
     const fetchData = async () => {
       try {
         setLoading(true);
-        const response = await fetch(`https://pokebal.raxhvl.com/api/adoption/${eipNumber}`);
+        const response = await fetch(
+          `https://pokebal.raxhvl.com/api/adoption/${eipNumber}`
+        );
 
         if (!response.ok) {
           throw new Error(`Failed to fetch: ${response.status}`);
@@ -30,7 +32,7 @@ export function usePokebalData(eipNumber: number): {
         setData(result);
         setError(null);
       } catch (err) {
-        setError(err instanceof Error ? err : new Error('Unknown error'));
+        setError(err instanceof Error ? err : new Error("Unknown error"));
         setData(null);
       } finally {
         setLoading(false);
@@ -42,4 +44,3 @@ export function usePokebalData(eipNumber: number): {
 
   return { data, loading, error };
 }
-

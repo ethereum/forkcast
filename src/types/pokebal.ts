@@ -21,4 +21,3 @@ export interface PokebalResponse {
   clients: ClientTestResult[];
   lastUpdated?: string;
 }
-

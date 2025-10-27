@@ -79,7 +79,13 @@ const RankPage: React.FC = () => {
   // Initialize with Glamsterdam headliner EIPs
   useEffect(() => {
     const glamsterdamHeadliners = eipsData
-      .filter((eip) => eip.forkRelationships.some((fork) => fork.forkName.toLowerCase() === "glamsterdam" && fork.status === "Proposed"))
+      .filter((eip) =>
+        eip.forkRelationships.some(
+          (fork) =>
+            fork.forkName.toLowerCase() === "glamsterdam" &&
+            fork.status === "Proposed"
+        )
+      )
       .filter((eip) => !isHeadliner(eip, "glamsterdam"))
       .map((eip) => ({
         id: `eip-${eip.id}`,
@@ -501,17 +507,18 @@ const RankPage: React.FC = () => {
               <p className="text-xs text-slate-600 dark:text-slate-300 leading-relaxed mb-4">
                 Glamsterdam headliner proposals have been agreed upon and
                 non-headliner EIPs can now be proposed. Users, app developers,
-                core developers, and any other stakeholders are invited to
-                voice their support for their preferences.
+                core developers, and any other stakeholders are invited to voice
+                their support for their preferences.
               </p>
               <p className="text-xs text-slate-600 dark:text-slate-300 leading-relaxed mb-4">
-                Drag and drop (desktop) or tap-to-assign (mobile) the EIP proposals
-                into tiers. S-tier represents your highest priority proposals,
-                while D-tier represents your lowest priority. The list of proposals
-                is long; rank as many or as few as you like.
+                Drag and drop (desktop) or tap-to-assign (mobile) the EIP
+                proposals into tiers. S-tier represents your highest priority
+                proposals, while D-tier represents your lowest priority. The
+                list of proposals is long; rank as many or as few as you like.
               </p>
               <p className="text-xs text-slate-600 dark:text-slate-300 leading-relaxed">
-                Download the image to share your rankings and start a conversation.{" "}
+                Download the image to share your rankings and start a
+                conversation.{" "}
                 <a
                   href="https://forkcast.org/upgrade/glamsterdam"
                   className="text-purple-600 hover:text-purple-700 dark:text-purple-400 dark:hover:text-purple-300"
@@ -614,7 +621,9 @@ const RankPage: React.FC = () => {
                                 ? (e) => handleDragStart(e, item.id)
                                 : undefined
                             }
-                            onDragEnd={!isTouchDevice ? handleDragEnd : undefined}
+                            onDragEnd={
+                              !isTouchDevice ? handleDragEnd : undefined
+                            }
                             className="flex items-center justify-between p-2 bg-white dark:bg-slate-700 border border-slate-200 dark:border-slate-600 rounded shadow-sm min-w-max"
                           >
                             <div className="flex items-center gap-2 min-w-0 flex-1">

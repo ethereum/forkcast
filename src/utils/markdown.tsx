@@ -1,4 +1,4 @@
-import React from 'react';
+import React from "react";
 
 /**
  * Parse markdown links and convert to React components
@@ -44,4 +44,4 @@ export const parseMarkdownLinks = (text: string): React.ReactNode[] => {
   }
 
   return parts.length > 0 ? parts : [text];
-}; 
+};

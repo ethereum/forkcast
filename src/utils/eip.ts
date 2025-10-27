@@ -1,41 +1,52 @@
-import { EIP, ForkRelationship, InclusionStage, ProposalType } from '../types/eip';
+import {
+  EIP,
+  ForkRelationship,
+  InclusionStage,
+  ProposalType,
+} from "../types/eip";
 
 /**
  * Get the inclusion stage for an EIP in a specific fork
  */
-export const getInclusionStage = (eip: EIP, forkName?: string): InclusionStage => {
-  if (!forkName) return 'Unknown';
+export const getInclusionStage = (
+  eip: EIP,
+  forkName?: string
+): InclusionStage => {
+  if (!forkName) return "Unknown";
 
-  const forkRelationship = eip.forkRelationships.find(fork =>
-    fork.forkName.toLowerCase() === forkName.toLowerCase()
+  const forkRelationship = eip.forkRelationships.find(
+    (fork) => fork.forkName.toLowerCase() === forkName.toLowerCase()
   );
 
-  if (!forkRelationship) return 'Unknown';
+  if (!forkRelationship) return "Unknown";
 
   switch (forkRelationship.status) {
-    case 'Proposed':
-      return 'Proposed for Inclusion';
-    case 'Considered':
-      return 'Considered for Inclusion';
-    case 'Scheduled':
-      return 'Scheduled for Inclusion';
-    case 'Declined':
-      return 'Declined for Inclusion';
-    case 'Included':
-      return 'Included';
+    case "Proposed":
+      return "Proposed for Inclusion";
+    case "Considered":
+      return "Considered for Inclusion";
+    case "Scheduled":
+      return "Scheduled for Inclusion";
+    case "Declined":
+      return "Declined for Inclusion";
+    case "Included":
+      return "Included";
     default:
-      return 'Unknown';
+      return "Unknown";
   }
 };
 
 /**
  * Get the headliner discussion link for an EIP in a specific fork
  */
-export const getHeadlinerDiscussionLink = (eip: EIP, forkName?: string): string | null => {
+export const getHeadlinerDiscussionLink = (
+  eip: EIP,
+  forkName?: string
+): string | null => {
   if (!forkName) return null;
 
-  const forkRelationship = eip.forkRelationships.find(fork =>
-    fork.forkName.toLowerCase() === forkName.toLowerCase()
+  const forkRelationship = eip.forkRelationships.find(
+    (fork) => fork.forkName.toLowerCase() === forkName.toLowerCase()
   );
   return forkRelationship?.headlinerDiscussionLink || null;
 };
@@ -46,8 +57,8 @@ export const getHeadlinerDiscussionLink = (eip: EIP, forkName?: string): string 
 export const isHeadliner = (eip: EIP, forkName?: string): boolean => {
   if (!forkName) return false;
 
-  const forkRelationship = eip.forkRelationships.find(fork =>
-    fork.forkName.toLowerCase() === forkName.toLowerCase()
+  const forkRelationship = eip.forkRelationships.find(
+    (fork) => fork.forkName.toLowerCase() === forkName.toLowerCase()
   );
   return forkRelationship?.isHeadliner || false;
 };
@@ -55,11 +66,14 @@ export const isHeadliner = (eip: EIP, forkName?: string): boolean => {
 /**
  * Get the layer (EL/CL) for a headliner EIP in a specific fork
  */
-export const getHeadlinerLayer = (eip: EIP, forkName?: string): string | null => {
+export const getHeadlinerLayer = (
+  eip: EIP,
+  forkName?: string
+): string | null => {
   if (!forkName) return null;
 
-  const forkRelationship = eip.forkRelationships.find(fork =>
-    fork.forkName.toLowerCase() === forkName.toLowerCase()
+  const forkRelationship = eip.forkRelationships.find(
+    (fork) => fork.forkName.toLowerCase() === forkName.toLowerCase()
   );
   return forkRelationship?.layer || null;
 };
@@ -68,24 +82,24 @@ export const getHeadlinerLayer = (eip: EIP, forkName?: string): string | null =>
  * Get the layman title (remove EIP/RIP prefix)
  */
 export const getLaymanTitle = (eip: EIP): string => {
-  return eip.title.replace(/^(EIP|RIP)-\d+:\s*/, '');
+  return eip.title.replace(/^(EIP|RIP)-\d+:\s*/, "");
 };
 
 /**
  * Get the proposal prefix (EIP or RIP)
  */
 export const getProposalPrefix = (eip: EIP): ProposalType => {
-  if (eip.title.startsWith('RIP-')) {
-    return 'RIP';
+  if (eip.title.startsWith("RIP-")) {
+    return "RIP";
   }
-  return 'EIP';
+  return "EIP";
 };
 
 /**
  * Get the specification URL for an EIP
  */
 export const getSpecificationUrl = (eip: EIP): string => {
-  if (eip.title.startsWith('RIP-')) {
+  if (eip.title.startsWith("RIP-")) {
     return `https://github.com/ethereum/RIPs/blob/master/RIPS/rip-${eip.id}.md`;
   }
   return `https://eips.ethereum.org/EIPS/eip-${eip.id}`;
@@ -97,8 +111,8 @@ export const getSpecificationUrl = (eip: EIP): string => {
 export const wasHeadlinerCandidate = (eip: EIP, forkName?: string): boolean => {
   if (!forkName) return false;
 
-  const forkRelationship = eip.forkRelationships.find(fork =>
-    fork.forkName.toLowerCase() === forkName.toLowerCase()
+  const forkRelationship = eip.forkRelationships.find(
+    (fork) => fork.forkName.toLowerCase() === forkName.toLowerCase()
   );
   return forkRelationship?.wasHeadlinerCandidate || false;
 };
@@ -106,10 +120,13 @@ export const wasHeadlinerCandidate = (eip: EIP, forkName?: string): boolean => {
 /**
  * Get the fork relationship for an EIP in a specific fork
  */
-export const getForkRelationship = (eip: EIP, forkName?: string): ForkRelationship | undefined => {
+export const getForkRelationship = (
+  eip: EIP,
+  forkName?: string
+): ForkRelationship | undefined => {
   if (!forkName) return undefined;
 
-  return eip.forkRelationships.find(fork =>
-    fork.forkName.toLowerCase() === forkName.toLowerCase()
+  return eip.forkRelationships.find(
+    (fork) => fork.forkName.toLowerCase() === forkName.toLowerCase()
   );
 };

@@ -1,10 +1,10 @@
-import { protocolCalls } from '../data/calls';
+import { protocolCalls } from "../data/calls";
 
 export interface IndexedContent {
   callType: string;
   callDate: string;
   callNumber: string;
-  type: 'transcript' | 'chat' | 'agenda' | 'action';
+  type: "transcript" | "chat" | "agenda" | "action";
   timestamp: string;
   speaker?: string;
   text: string;
@@ -23,10 +23,10 @@ class SearchIndexService {
   private static instance: SearchIndexService;
   private index: SearchIndex | null = null;
   private indexPromise: Promise<SearchIndex> | null = null;
-  private readonly DB_NAME = 'forkcast_search';
+  private readonly DB_NAME = "forkcast_search";
   private readonly DB_VERSION = 1;
-  private readonly STORE_NAME = 'search_index';
-  private readonly INDEX_VERSION = '1.0.4';
+  private readonly STORE_NAME = "search_index";
+  private readonly INDEX_VERSION = "1.0.4";
   private readonly MAX_INDEX_AGE = 24 * 60 * 60 * 1000; // 24 hours
 
   private constructor() {}
@@ -42,9 +42,9 @@ class SearchIndexService {
   private tokenize(text: string): string[] {
     return text
       .toLowerCase()
-      .replace(/[^\w\s]/g, ' ') // Remove punctuation
+      .replace(/[^\w\s]/g, " ") // Remove punctuation
       .split(/\s+/)
-      .filter(token => token.length > 1); // Filter out single characters
+      .filter((token) => token.length > 1); // Filter out single characters
   }
 
   // Normalize text for searching
@@ -73,11 +73,11 @@ class SearchIndexService {
   private async loadFromStorage(): Promise<SearchIndex | null> {
     try {
       const db = await this.openDB();
-      const transaction = db.transaction([this.STORE_NAME], 'readonly');
+      const transaction = db.transaction([this.STORE_NAME], "readonly");
       const store = transaction.objectStore(this.STORE_NAME);
 
       const data = await new Promise<any>((resolve, reject) => {
-        const request = store.get('index');
+        const request = store.get("index");
         request.onsuccess = () => resolve(request.result);
         request.onerror = () => reject(request.error);
       });
@@ -94,10 +94,13 @@ class SearchIndexService {
       const index: SearchIndex = {
         documents: data.documents,
         invertedIndex: new Map(
-          Object.entries(data.invertedIndex).map(([key, value]) => [key, new Set(value as number[])])
+          Object.entries(data.invertedIndex).map(([key, value]) => [
+            key,
+            new Set(value as number[]),
+          ])
         ),
         callIndex: new Map(Object.entries(data.callIndex)),
-        lastUpdated: data.lastUpdated
+        lastUpdated: data.lastUpdated,
       };
 
       return index;
@@ -113,18 +116,21 @@ class SearchIndexService {
         version: this.INDEX_VERSION,
         documents: index.documents,
         invertedIndex: Object.fromEntries(
-          Array.from(index.invertedIndex.entries()).map(([key, value]) => [key, Array.from(value)])
+          Array.from(index.invertedIndex.entries()).map(([key, value]) => [
+            key,
+            Array.from(value),
+          ])
         ),
         callIndex: Object.fromEntries(index.callIndex.entries()),
-        lastUpdated: index.lastUpdated
+        lastUpdated: index.lastUpdated,
       };
 
       const db = await this.openDB();
-      const transaction = db.transaction([this.STORE_NAME], 'readwrite');
+      const transaction = db.transaction([this.STORE_NAME], "readwrite");
       const store = transaction.objectStore(this.STORE_NAME);
 
       await new Promise<void>((resolve, reject) => {
-        const request = store.put(data, 'index');
+        const request = store.put(data, "index");
         request.onsuccess = () => resolve();
         request.onerror = () => reject(request.error);
       });
@@ -136,12 +142,14 @@ class SearchIndexService {
   }
 
   // Build the search index
-  async buildIndex(onProgress?: (progress: number) => void): Promise<SearchIndex> {
+  async buildIndex(
+    onProgress?: (progress: number) => void
+  ): Promise<SearchIndex> {
     const index: SearchIndex = {
       documents: [],
       invertedIndex: new Map(),
       callIndex: new Map(),
-      lastUpdated: Date.now()
+      lastUpdated: Date.now(),
     };
 
     const totalCalls = protocolCalls.length;
@@ -156,21 +164,27 @@ class SearchIndexService {
         const baseUrl = `/artifacts/${call.type}/${call.date}_${call.number}`;
 
         const [transcript, chat, agenda] = await Promise.all([
-          fetch(`${baseUrl}/transcript.vtt`).then(res => res.ok ? res.text() : null).catch(() => null),
-          fetch(`${baseUrl}/chat.txt`).then(res => res.ok ? res.text() : null).catch(() => null),
-          fetch(`${baseUrl}/agenda.json`).then(res => res.ok ? res.json() : null).catch(() => null)
+          fetch(`${baseUrl}/transcript.vtt`)
+            .then((res) => (res.ok ? res.text() : null))
+            .catch(() => null),
+          fetch(`${baseUrl}/chat.txt`)
+            .then((res) => (res.ok ? res.text() : null))
+            .catch(() => null),
+          fetch(`${baseUrl}/agenda.json`)
+            .then((res) => (res.ok ? res.json() : null))
+            .catch(() => null),
         ]);
 
         // Process transcript
         if (transcript) {
           const entries = this.parseTranscriptForIndex(transcript, call);
-          entries.forEach(entry => {
+          entries.forEach((entry) => {
             const docIndex = index.documents.length;
             index.documents.push(entry);
             callDocIndices.push(docIndex);
 
             // Update inverted index
-            entry.tokens.forEach(token => {
+            entry.tokens.forEach((token) => {
               if (!index.invertedIndex.has(token)) {
                 index.invertedIndex.set(token, new Set());
               }
@@ -182,13 +196,13 @@ class SearchIndexService {
         // Process chat
         if (chat) {
           const entries = this.parseChatForIndex(chat, call);
-          entries.forEach(entry => {
+          entries.forEach((entry) => {
             const docIndex = index.documents.length;
             index.documents.push(entry);
             callDocIndices.push(docIndex);
 
             // Update inverted index
-            entry.tokens.forEach(token => {
+            entry.tokens.forEach((token) => {
               if (!index.invertedIndex.has(token)) {
                 index.invertedIndex.set(token, new Set());
               }
@@ -200,13 +214,13 @@ class SearchIndexService {
         // Process agenda (includes action items)
         if (agenda?.agenda) {
           const entries = this.parseAgendaForIndex(agenda, call);
-          entries.forEach(entry => {
+          entries.forEach((entry) => {
             const docIndex = index.documents.length;
             index.documents.push(entry);
             callDocIndices.push(docIndex);
 
             // Update inverted index
-            entry.tokens.forEach(token => {
+            entry.tokens.forEach((token) => {
               if (!index.invertedIndex.has(token)) {
                 index.invertedIndex.set(token, new Set());
               }
@@ -219,7 +233,6 @@ class SearchIndexService {
         if (callDocIndices.length > 0) {
           index.callIndex.set(callKey, callDocIndices);
         }
-
       } catch {
         // Error indexing call - continue with next call
       }
@@ -237,8 +250,11 @@ class SearchIndexService {
   }
 
   // Parse transcript for indexing
-  private parseTranscriptForIndex(content: string, call: any): IndexedContent[] {
-    const lines = content.split('\n');
+  private parseTranscriptForIndex(
+    content: string,
+    call: any
+  ): IndexedContent[] {
+    const lines = content.split("\n");
     const results: IndexedContent[] = [];
 
     // VTT format has entries like:
@@ -251,20 +267,26 @@ class SearchIndexService {
       const line = lines[i].trim();
 
       // Look for timestamp line
-      const timestampMatch = line.match(/(\d{2}:\d{2}:\d{2}\.\d{3})\s+-->\s+(\d{2}:\d{2}:\d{2}\.\d{3})/);
+      const timestampMatch = line.match(
+        /(\d{2}:\d{2}:\d{2}\.\d{3})\s+-->\s+(\d{2}:\d{2}:\d{2}\.\d{3})/
+      );
       if (timestampMatch && i + 1 < lines.length) {
-        const startTime = timestampMatch[1].split('.')[0];
+        const startTime = timestampMatch[1].split(".")[0];
 
         // Next line(s) should be content
         const contentLines: string[] = [];
         let j = i + 1;
-        while (j < lines.length && lines[j].trim() !== '' && !lines[j].match(/^\d+$/)) {
+        while (
+          j < lines.length &&
+          lines[j].trim() !== "" &&
+          !lines[j].match(/^\d+$/)
+        ) {
           contentLines.push(lines[j]);
           j++;
         }
 
         if (contentLines.length > 0) {
-          const content = contentLines.join(' ');
+          const content = contentLines.join(" ");
           const speakerMatch = content.match(/^([^:]+):\s*(.+)/);
 
           if (speakerMatch) {
@@ -273,12 +295,12 @@ class SearchIndexService {
               callType: call.type,
               callDate: call.date,
               callNumber: call.number,
-              type: 'transcript',
+              type: "transcript",
               timestamp: startTime,
               speaker: speakerMatch[1].trim(),
               text: text,
-              tokens: this.tokenize(text + ' ' + speakerMatch[1]),
-              normalizedText: this.normalize(text)
+              tokens: this.tokenize(text + " " + speakerMatch[1]),
+              normalizedText: this.normalize(text),
             });
           }
         }
@@ -293,22 +315,25 @@ class SearchIndexService {
 
   // Parse chat for indexing
   private parseChatForIndex(content: string, call: any): IndexedContent[] {
-    const lines = content.split('\n').filter(line => line.trim());
+    const lines = content.split("\n").filter((line) => line.trim());
     const results: IndexedContent[] = [];
 
     for (let i = 0; i < lines.length; i++) {
-      const parts = lines[i].split('\t');
+      const parts = lines[i].split("\t");
       if (parts.length < 3) continue;
 
       const [timestamp, speaker, ...messageParts] = parts;
-      let message = messageParts.join('\t');
+      let message = messageParts.join("\t");
 
       // Skip reactions (covers both "Reacted to "..." and "Reacted to ...")
-      if (message.startsWith('Reacted to ')) continue;
+      if (message.startsWith("Reacted to ")) continue;
 
       // Handle replies
-      if (message.startsWith('Replying to "') || message.startsWith('In reply to "')) {
-        if (i + 1 < lines.length && !lines[i + 1].includes('\t')) {
+      if (
+        message.startsWith('Replying to "') ||
+        message.startsWith('In reply to "')
+      ) {
+        if (i + 1 < lines.length && !lines[i + 1].includes("\t")) {
           message = lines[i + 1].trim();
           i++;
         }
@@ -319,12 +344,12 @@ class SearchIndexService {
           callType: call.type,
           callDate: call.date,
           callNumber: call.number,
-          type: 'chat',
+          type: "chat",
           timestamp,
           speaker: speaker.trim(),
           text: message.trim(),
-          tokens: this.tokenize(message + ' ' + speaker),
-          normalizedText: this.normalize(message)
+          tokens: this.tokenize(message + " " + speaker),
+          normalizedText: this.normalize(message),
         });
       }
     }
@@ -341,16 +366,18 @@ class SearchIndexService {
         // Index agenda item itself
         if (item.title || item.summary) {
           // Use title as the text for matching, but include both title and summary in tokens for searching
-          const searchText = [item.title, item.summary].filter(Boolean).join(' ');
+          const searchText = [item.title, item.summary]
+            .filter(Boolean)
+            .join(" ");
           results.push({
             callType: call.type,
             callDate: call.date,
             callNumber: call.number,
-            type: 'agenda',
-            timestamp: item.start_timestamp || '00:00:00',
+            type: "agenda",
+            timestamp: item.start_timestamp || "00:00:00",
             text: item.title, // Store just the title for matching in AgendaSummary
             tokens: this.tokenize(searchText), // But index both title and summary for search
-            normalizedText: this.normalize(searchText)
+            normalizedText: this.normalize(searchText),
           });
         }
 
@@ -362,12 +389,15 @@ class SearchIndexService {
                 callType: call.type,
                 callDate: call.date,
                 callNumber: call.number,
-                type: 'action',
-                timestamp: actionItem.timestamp || item.start_timestamp || '00:00:00',
+                type: "action",
+                timestamp:
+                  actionItem.timestamp || item.start_timestamp || "00:00:00",
                 speaker: actionItem.who,
                 text: actionItem.what,
-                tokens: this.tokenize(actionItem.what + ' ' + (actionItem.who || '')),
-                normalizedText: this.normalize(actionItem.what)
+                tokens: this.tokenize(
+                  actionItem.what + " " + (actionItem.who || "")
+                ),
+                normalizedText: this.normalize(actionItem.what),
               });
             }
           });
@@ -379,11 +409,14 @@ class SearchIndexService {
   }
 
   // Search the index
-  async search(query: string, options: {
-    callType?: 'all' | 'ACDC' | 'ACDE' | 'ACDT';
-    contentType?: 'all' | 'transcript' | 'chat' | 'agenda' | 'action';
-    limit?: number;
-  } = {}): Promise<IndexedContent[]> {
+  async search(
+    query: string,
+    options: {
+      callType?: "all" | "ACDC" | "ACDE" | "ACDT";
+      contentType?: "all" | "transcript" | "chat" | "agenda" | "action";
+      limit?: number;
+    } = {}
+  ): Promise<IndexedContent[]> {
     // Ensure index is loaded
     const index = await this.getIndex();
 
@@ -394,10 +427,10 @@ class SearchIndexService {
     const docScores = new Map<number, number>();
 
     // Score based on token matches
-    queryTokens.forEach(token => {
+    queryTokens.forEach((token) => {
       const docIndices = index.invertedIndex.get(token);
       if (docIndices) {
-        docIndices.forEach(docIndex => {
+        docIndices.forEach((docIndex) => {
           const currentScore = docScores.get(docIndex) || 0;
           docScores.set(docIndex, currentScore + 1);
         });
@@ -411,10 +444,18 @@ class SearchIndexService {
       const doc = index.documents[docIndex];
 
       // Apply filters
-      if (options.callType && options.callType !== 'all' && doc.callType.toUpperCase() !== options.callType) {
+      if (
+        options.callType &&
+        options.callType !== "all" &&
+        doc.callType.toUpperCase() !== options.callType
+      ) {
         return;
       }
-      if (options.contentType && options.contentType !== 'all' && doc.type !== options.contentType) {
+      if (
+        options.contentType &&
+        options.contentType !== "all" &&
+        doc.type !== options.contentType
+      ) {
         return;
       }
 
@@ -427,7 +468,7 @@ class SearchIndexService {
       }
 
       // Bonus for all tokens present
-      const allTokensPresent = queryTokens.every(token =>
+      const allTokensPresent = queryTokens.every((token) =>
         doc.tokens.includes(token)
       );
       if (allTokensPresent) {
@@ -435,8 +476,8 @@ class SearchIndexService {
       }
 
       // Type bonuses
-      if (doc.type === 'action') finalScore += 3;
-      if (doc.type === 'agenda') finalScore += 2;
+      if (doc.type === "action") finalScore += 3;
+      if (doc.type === "agenda") finalScore += 2;
 
       scoredDocs.push({ doc, score: finalScore });
     });
@@ -452,7 +493,7 @@ class SearchIndexService {
 
     // Apply limit
     const limit = options.limit || 100;
-    return scoredDocs.slice(0, limit).map(item => item.doc);
+    return scoredDocs.slice(0, limit).map((item) => item.doc);
   }
 
   // Get or build the index
@@ -490,16 +531,16 @@ class SearchIndexService {
     // Clear IndexedDB
     try {
       const db = await this.openDB();
-      const transaction = db.transaction([this.STORE_NAME], 'readwrite');
+      const transaction = db.transaction([this.STORE_NAME], "readwrite");
       const store = transaction.objectStore(this.STORE_NAME);
       await new Promise<void>((resolve, reject) => {
-        const request = store.delete('index');
+        const request = store.delete("index");
         request.onsuccess = () => resolve();
         request.onerror = () => reject(request.error);
       });
       db.close();
     } catch (error) {
-      console.error('Error clearing index:', error);
+      console.error("Error clearing index:", error);
     }
 
     await this.buildIndex(onProgress);
@@ -512,14 +553,19 @@ class SearchIndexService {
   }
 
   // Get index statistics
-  getStats(): { documentCount: number; tokenCount: number; callCount: number; lastUpdated: Date | null } | null {
+  getStats(): {
+    documentCount: number;
+    tokenCount: number;
+    callCount: number;
+    lastUpdated: Date | null;
+  } | null {
     if (!this.index) return null;
 
     return {
       documentCount: this.index.documents.length,
       tokenCount: this.index.invertedIndex.size,
       callCount: this.index.callIndex.size,
-      lastUpdated: new Date(this.index.lastUpdated)
+      lastUpdated: new Date(this.index.lastUpdated),
     };
   }
 }

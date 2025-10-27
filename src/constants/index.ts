@@ -1,1 +1,1 @@
-export * from './timeline-phases'; 
+export * from "./timeline-phases";

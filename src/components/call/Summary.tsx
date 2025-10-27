@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState } from "react";
 
 interface ZoomSummaryData {
   summary_overview: string;
@@ -16,7 +16,9 @@ interface SummaryProps {
 }
 
 const Summary: React.FC<SummaryProps> = ({ data }) => {
-  const [expandedSections, setExpandedSections] = useState<Set<number>>(new Set());
+  const [expandedSections, setExpandedSections] = useState<Set<number>>(
+    new Set()
+  );
 
   const toggleSection = (index: number) => {
     const newExpanded = new Set(expandedSections);
@@ -66,18 +68,23 @@ const Summary: React.FC<SummaryProps> = ({ data }) => {
                 onClick={toggleAllSections}
                 className={`text-xs font-medium px-2 py-1 rounded transition-colors ${
                   expandedSections.size === data.summary_details.length
-                    ? 'text-slate-700 dark:text-slate-200 bg-slate-200 dark:bg-slate-700 hover:bg-slate-300 dark:hover:bg-slate-600'
-                    : 'text-slate-600 dark:text-slate-400 bg-slate-100 dark:bg-slate-800 hover:text-slate-800 dark:hover:text-slate-200 hover:bg-slate-200 dark:hover:bg-slate-700'
+                    ? "text-slate-700 dark:text-slate-200 bg-slate-200 dark:bg-slate-700 hover:bg-slate-300 dark:hover:bg-slate-600"
+                    : "text-slate-600 dark:text-slate-400 bg-slate-100 dark:bg-slate-800 hover:text-slate-800 dark:hover:text-slate-200 hover:bg-slate-200 dark:hover:bg-slate-700"
                 }`}
               >
-                {expandedSections.size === data.summary_details.length ? 'Collapse All' : 'Expand All'}
+                {expandedSections.size === data.summary_details.length
+                  ? "Collapse All"
+                  : "Expand All"}
               </button>
             </div>
             <div className="space-y-2">
               {data.summary_details.map((detail, index) => {
                 const isExpanded = expandedSections.has(index);
                 return (
-                  <div key={index} className="border border-slate-200 dark:border-slate-700 border-l-3 border-l-blue-200 dark:border-l-blue-700/50 rounded-lg overflow-hidden">
+                  <div
+                    key={index}
+                    className="border border-slate-200 dark:border-slate-700 border-l-3 border-l-blue-200 dark:border-l-blue-700/50 rounded-lg overflow-hidden"
+                  >
                     <button
                       onClick={() => toggleSection(index)}
                       className="w-full px-4 py-3 text-left bg-blue-50/30 dark:bg-blue-950/10 hover:bg-blue-50/50 dark:hover:bg-blue-950/15 transition-colors flex items-center justify-between cursor-pointer"
@@ -88,14 +95,19 @@ const Summary: React.FC<SummaryProps> = ({ data }) => {
                       <svg
                         className={`w-4 h-4 transition-all duration-200 flex-shrink-0 ${
                           isExpanded
-                            ? 'rotate-180 text-slate-700 dark:text-slate-300'
-                            : 'text-slate-500 dark:text-slate-400'
+                            ? "rotate-180 text-slate-700 dark:text-slate-300"
+                            : "text-slate-500 dark:text-slate-400"
                         }`}
                         fill="none"
                         stroke="currentColor"
                         viewBox="0 0 24 24"
                       >
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          strokeWidth={2}
+                          d="M19 9l-7 7-7-7"
+                        />
                       </svg>
                     </button>
                     {isExpanded && (
@@ -113,15 +125,18 @@ const Summary: React.FC<SummaryProps> = ({ data }) => {
         )}
       </div>
 
-       {/* Next Steps - Takes up 1/3 of the width */}
-       {data.next_steps && data.next_steps.length > 0 && (
-         <div className="lg:col-span-1">
-           <h3 className="text-sm font-semibold text-slate-600 dark:text-slate-400 mb-3">
-             Next Steps ({data.next_steps.length})
-           </h3>
+      {/* Next Steps - Takes up 1/3 of the width */}
+      {data.next_steps && data.next_steps.length > 0 && (
+        <div className="lg:col-span-1">
+          <h3 className="text-sm font-semibold text-slate-600 dark:text-slate-400 mb-3">
+            Next Steps ({data.next_steps.length})
+          </h3>
           <div className="space-y-3">
             {data.next_steps.map((step, index) => (
-              <div key={index} className="bg-green-50/30 dark:bg-green-950/10 border border-green-200 dark:border-green-800/30 rounded-lg p-3">
+              <div
+                key={index}
+                className="bg-green-50/30 dark:bg-green-950/10 border border-green-200 dark:border-green-800/30 rounded-lg p-3"
+              >
                 <div className="flex items-start gap-3">
                   <span className="inline-flex items-center justify-center w-5 h-5 rounded-full bg-green-200 dark:bg-green-800/50 text-green-800 dark:text-green-200 text-xs font-semibold flex-shrink-0 mt-1">
                     {index + 1}
@@ -137,11 +152,15 @@ const Summary: React.FC<SummaryProps> = ({ data }) => {
       )}
 
       {/* Show message if no content */}
-      {!data.summary_overview && (!data.summary_details || data.summary_details.length === 0) && (!data.next_steps || data.next_steps.length === 0) && (
-        <div className="text-center py-8">
-          <p className="text-slate-500 dark:text-slate-400 text-sm">No summary data available</p>
-        </div>
-      )}
+      {!data.summary_overview &&
+        (!data.summary_details || data.summary_details.length === 0) &&
+        (!data.next_steps || data.next_steps.length === 0) && (
+          <div className="text-center py-8">
+            <p className="text-slate-500 dark:text-slate-400 text-sm">
+              No summary data available
+            </p>
+          </div>
+        )}
     </div>
   );
 };

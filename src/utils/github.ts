@@ -1,5 +1,5 @@
 export interface UpcomingCall {
-  type: 'acdc' | 'acde' | 'acdt';
+  type: "acdc" | "acde" | "acdt";
   title: string;
   date: string;
   number: string;
@@ -17,7 +17,10 @@ interface GitHubIssue {
 // Examples: "All Core Devs - Consensus (ACDC) #166, October 2, 2025"
 //           "All Core Devs - Execution (ACDE) #222, October 9, 2025"
 //           "All Core Devs - Testing (ACDT) #56, Oct 6, 2025"
-function parseCallFromTitle(title: string, githubUrl: string): UpcomingCall | null {
+function parseCallFromTitle(
+  title: string,
+  githubUrl: string
+): UpcomingCall | null {
   // Match patterns like "ACDC) #166, October 2, 2025" or "ACDE) #222, October 9, 2025"
   const match = title.match(/\(ACD([CET])\)\s*#(\d+),\s*(.+?)(?:\s*$)/i);
 
@@ -26,10 +29,10 @@ function parseCallFromTitle(title: string, githubUrl: string): UpcomingCall | nu
   const [, typeChar, number, dateStr] = match;
 
   // Map type character to full type
-  const typeMap: { [key: string]: 'acdc' | 'acde' | 'acdt' } = {
-    'C': 'acdc', // Consensus
-    'E': 'acde', // Execution
-    'T': 'acdt'  // Testing
+  const typeMap: { [key: string]: "acdc" | "acde" | "acdt" } = {
+    C: "acdc", // Consensus
+    E: "acde", // Execution
+    T: "acdt", // Testing
   };
 
   const type = typeMap[typeChar.toUpperCase()];
@@ -43,8 +46,8 @@ function parseCallFromTitle(title: string, githubUrl: string): UpcomingCall | nu
     type,
     title: title.trim(),
     date,
-    number: number.padStart(3, '0'), // Pad numbers to 3 digits
-    githubUrl
+    number: number.padStart(3, "0"), // Pad numbers to 3 digits
+    githubUrl,
   };
 }
 
@@ -56,7 +59,7 @@ function parseCallDate(dateStr: string): string | null {
     if (isNaN(date.getTime())) return null;
 
     // Format as YYYY-MM-DD
-    return date.toISOString().split('T')[0];
+    return date.toISOString().split("T")[0];
   } catch {
     return null;
   }
@@ -65,7 +68,9 @@ function parseCallDate(dateStr: string): string | null {
 // Fetch upcoming ACD calls from GitHub issues
 export async function fetchUpcomingCalls(): Promise<UpcomingCall[]> {
   try {
-    const response = await fetch('https://api.github.com/repos/ethereum/pm/issues?state=open&per_page=20');
+    const response = await fetch(
+      "https://api.github.com/repos/ethereum/pm/issues?state=open&per_page=20"
+    );
 
     if (!response.ok) {
       return [];
@@ -73,14 +78,14 @@ export async function fetchUpcomingCalls(): Promise<UpcomingCall[]> {
 
     const issues: GitHubIssue[] = await response.json();
     const upcomingCalls: UpcomingCall[] = [];
-    const today = new Date().toISOString().split('T')[0];
+    const today = new Date().toISOString().split("T")[0];
 
     // Import completed calls to check for duplicates
-    const { protocolCalls } = await import('../data/calls');
-    
+    const { protocolCalls } = await import("../data/calls");
+
     // Create a set of completed call identifiers (type + number)
     const completedCallIds = new Set(
-      protocolCalls.map(call => `${call.type}-${call.number}`)
+      protocolCalls.map((call) => `${call.type}-${call.number}`)
     );
 
     // Track one call per type
@@ -104,7 +109,6 @@ export async function fetchUpcomingCalls(): Promise<UpcomingCall[]> {
 
     // Sort by date
     return upcomingCalls.sort((a, b) => a.date.localeCompare(b.date));
-
   } catch {
     return [];
   }

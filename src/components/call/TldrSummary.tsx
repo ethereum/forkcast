@@ -1,4 +1,4 @@
-import React, { useEffect, useRef } from 'react';
+import React, { useEffect, useRef } from "react";
 
 interface HighlightItem {
   timestamp: string;
@@ -42,7 +42,11 @@ interface TldrSummaryProps {
   onTimestampClick?: (timestamp: string) => void;
   syncConfig?: SyncConfig;
   currentVideoTime?: number;
-  selectedSearchResult?: {timestamp: string, text: string, type: string} | null;
+  selectedSearchResult?: {
+    timestamp: string;
+    text: string;
+    type: string;
+  } | null;
 }
 
 const TldrSummary: React.FC<TldrSummaryProps> = ({
@@ -50,12 +54,12 @@ const TldrSummary: React.FC<TldrSummaryProps> = ({
   onTimestampClick,
   syncConfig,
   currentVideoTime = 0,
-  selectedSearchResult
+  selectedSearchResult,
 }) => {
   const containerRef = useRef<HTMLDivElement>(null);
 
   const formatTimestamp = (timestamp: string): string => {
-    const [hours, minutes, seconds] = timestamp.split(':');
+    const [hours, minutes, seconds] = timestamp.split(":");
     const h = parseInt(hours);
     const m = parseInt(minutes);
     if (h === 0) {
@@ -66,9 +70,9 @@ const TldrSummary: React.FC<TldrSummaryProps> = ({
 
   const timestampToSeconds = (timestamp: string | null | undefined): number => {
     if (!timestamp) return 0;
-    const parts = timestamp.split(':');
+    const parts = timestamp.split(":");
     if (parts.length !== 3) return 0;
-    const [hours, minutes, seconds] = parts.map(p => parseFloat(p));
+    const [hours, minutes, seconds] = parts.map((p) => parseFloat(p));
     return hours * 3600 + minutes * 60 + seconds;
   };
 
@@ -78,7 +82,7 @@ const TldrSummary: React.FC<TldrSummaryProps> = ({
       const hours = Math.floor(adjustedSeconds / 3600);
       const minutes = Math.floor((adjustedSeconds % 3600) / 60);
       const seconds = Math.floor(adjustedSeconds % 60);
-      const formattedSeconds = seconds.toString().padStart(2, '0');
+      const formattedSeconds = seconds.toString().padStart(2, "0");
       if (hours === 0) {
         return `00:${minutes}:${formattedSeconds}`;
       }
@@ -86,7 +90,6 @@ const TldrSummary: React.FC<TldrSummaryProps> = ({
     }
     return formatTimestamp(timestamp);
   };
-
 
   const handleTimestampClick = (timestamp: string, event: React.MouseEvent) => {
     event.stopPropagation();
@@ -96,15 +99,20 @@ const TldrSummary: React.FC<TldrSummaryProps> = ({
   };
 
   const formatCategoryName = (category: string): string => {
-    return category.split('_').map(word =>
-      word.charAt(0).toUpperCase() + word.slice(1)
-    ).join(' ');
+    return category
+      .split("_")
+      .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
+      .join(" ");
   };
 
   const getAdjustedVideoTime = (transcriptTimestamp: string): number => {
-    const transcriptSeconds = timestampToSeconds(formatTimestamp(transcriptTimestamp));
+    const transcriptSeconds = timestampToSeconds(
+      formatTimestamp(transcriptTimestamp)
+    );
     if (syncConfig?.transcriptStartTime && syncConfig?.videoStartTime) {
-      const transcriptStartSeconds = timestampToSeconds(syncConfig.transcriptStartTime);
+      const transcriptStartSeconds = timestampToSeconds(
+        syncConfig.transcriptStartTime
+      );
       const videoStartSeconds = timestampToSeconds(syncConfig.videoStartTime);
       const offset = transcriptStartSeconds - videoStartSeconds;
       return transcriptSeconds - offset;
@@ -112,27 +120,45 @@ const TldrSummary: React.FC<TldrSummaryProps> = ({
     return transcriptSeconds;
   };
 
-  const isCurrentHighlight = (timestamp: string, allHighlights: HighlightItem[]): boolean => {
-    if (!currentVideoTime || !syncConfig?.transcriptStartTime || !syncConfig?.videoStartTime) return false;
+  const isCurrentHighlight = (
+    timestamp: string,
+    allHighlights: HighlightItem[]
+  ): boolean => {
+    if (
+      !currentVideoTime ||
+      !syncConfig?.transcriptStartTime ||
+      !syncConfig?.videoStartTime
+    )
+      return false;
     const itemVideoTime = getAdjustedVideoTime(timestamp);
-    const itemIndex = allHighlights.findIndex(h => h.timestamp === timestamp);
-    const nextItem = itemIndex < allHighlights.length - 1 ? allHighlights[itemIndex + 1] : null;
-    const nextItemVideoTime = nextItem ? getAdjustedVideoTime(nextItem.timestamp) : Infinity;
-    return currentVideoTime >= itemVideoTime && currentVideoTime < nextItemVideoTime;
+    const itemIndex = allHighlights.findIndex((h) => h.timestamp === timestamp);
+    const nextItem =
+      itemIndex < allHighlights.length - 1
+        ? allHighlights[itemIndex + 1]
+        : null;
+    const nextItemVideoTime = nextItem
+      ? getAdjustedVideoTime(nextItem.timestamp)
+      : Infinity;
+    return (
+      currentVideoTime >= itemVideoTime && currentVideoTime < nextItemVideoTime
+    );
   };
 
   const allHighlights: HighlightItem[] = Object.values(data.highlights).flat();
 
   useEffect(() => {
     if (!selectedSearchResult) return;
-    if (selectedSearchResult.type === 'agenda') {
+    if (selectedSearchResult.type === "agenda") {
       setTimeout(() => {
         if (containerRef.current) {
           const selectedElement = containerRef.current.querySelector(
             `[data-highlight-timestamp="${selectedSearchResult.timestamp}"]`
           ) as HTMLElement;
           if (selectedElement) {
-            selectedElement.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            selectedElement.scrollIntoView({
+              behavior: "smooth",
+              block: "center",
+            });
           }
         }
       }, 100);
@@ -154,9 +180,13 @@ const TldrSummary: React.FC<TldrSummaryProps> = ({
               </h3>
               <ul className="space-y-1 list-disc list-outside ml-5 text-slate-600 dark:text-slate-400">
                 {items.map((item, index) => {
-                  const isHighlighted = isCurrentHighlight(item.timestamp, allHighlights);
-                  const isSelected = selectedSearchResult?.timestamp === item.timestamp &&
-                                   selectedSearchResult?.type === 'agenda';
+                  const isHighlighted = isCurrentHighlight(
+                    item.timestamp,
+                    allHighlights
+                  );
+                  const isSelected =
+                    selectedSearchResult?.timestamp === item.timestamp &&
+                    selectedSearchResult?.type === "agenda";
                   return (
                     <li
                       key={index}
@@ -164,13 +194,15 @@ const TldrSummary: React.FC<TldrSummaryProps> = ({
                       onClick={(e) => handleTimestampClick(item.timestamp, e)}
                       className="text-sm cursor-pointer group text-slate-600 dark:text-slate-400"
                     >
-                      <span className={`rounded px-1 py-0.5 transition-colors inline ${
-                        isSelected
-                          ? 'bg-yellow-50 dark:bg-yellow-900/50 text-slate-900 dark:text-slate-100'
-                          : isHighlighted
-                          ? 'bg-blue-50 dark:bg-blue-900/50 text-slate-900 dark:text-slate-100'
-                          : 'hover:text-slate-900 dark:hover:text-slate-100'
-                      }`}>
+                      <span
+                        className={`rounded px-1 py-0.5 transition-colors inline ${
+                          isSelected
+                            ? "bg-yellow-50 dark:bg-yellow-900/50 text-slate-900 dark:text-slate-100"
+                            : isHighlighted
+                              ? "bg-blue-50 dark:bg-blue-900/50 text-slate-900 dark:text-slate-100"
+                              : "hover:text-slate-900 dark:hover:text-slate-100"
+                        }`}
+                      >
                         {item.highlight}
                       </span>
                       <span className="text-xs text-slate-400 dark:text-slate-500 ml-1 opacity-0 group-hover:opacity-100 transition-opacity">
@@ -195,20 +227,24 @@ const TldrSummary: React.FC<TldrSummaryProps> = ({
             </h3>
             <ul className="space-y-1 list-none ml-0">
               {data.action_items.map((item, index) => {
-                const isSelected = selectedSearchResult?.timestamp === item.timestamp &&
-                                 selectedSearchResult?.type === 'action';
+                const isSelected =
+                  selectedSearchResult?.timestamp === item.timestamp &&
+                  selectedSearchResult?.type === "action";
                 return (
                   <li
                     key={index}
                     onClick={(e) => handleTimestampClick(item.timestamp, e)}
                     className="text-sm cursor-pointer group before:content-['→'] before:mr-2 before:text-slate-400 dark:before:text-slate-500 text-slate-600 dark:text-slate-400"
                   >
-                    <span className={`rounded px-1 py-0.5 transition-colors inline ${
-                      isSelected
-                        ? 'bg-yellow-50 dark:bg-yellow-900/50 text-slate-900 dark:text-slate-100'
-                        : 'hover:text-slate-900 dark:hover:text-slate-100'
-                    }`}>
-                      <span className="font-normal">{item.owner}:</span> {item.action}
+                    <span
+                      className={`rounded px-1 py-0.5 transition-colors inline ${
+                        isSelected
+                          ? "bg-yellow-50 dark:bg-yellow-900/50 text-slate-900 dark:text-slate-100"
+                          : "hover:text-slate-900 dark:hover:text-slate-100"
+                      }`}
+                    >
+                      <span className="font-normal">{item.owner}:</span>{" "}
+                      {item.action}
                     </span>
                     <span className="text-xs text-slate-400 dark:text-slate-500 ml-1 opacity-0 group-hover:opacity-100 transition-opacity">
                       {getDisplayTimestamp(item.timestamp)}
@@ -228,19 +264,22 @@ const TldrSummary: React.FC<TldrSummaryProps> = ({
             </h3>
             <ul className="space-y-1 list-none ml-0">
               {data.decisions.map((decision, index) => {
-                const isSelected = selectedSearchResult?.timestamp === decision.timestamp &&
-                                 selectedSearchResult?.type === 'decision';
+                const isSelected =
+                  selectedSearchResult?.timestamp === decision.timestamp &&
+                  selectedSearchResult?.type === "decision";
                 return (
                   <li
                     key={index}
                     onClick={(e) => handleTimestampClick(decision.timestamp, e)}
                     className="text-sm cursor-pointer group before:content-['→'] before:mr-2 before:text-slate-400 dark:before:text-slate-500 text-slate-600 dark:text-slate-400"
                   >
-                    <span className={`rounded px-1 py-0.5 transition-colors inline ${
-                      isSelected
-                        ? 'bg-yellow-50 dark:bg-yellow-900/50 text-slate-900 dark:text-slate-100'
-                        : 'hover:text-slate-900 dark:hover:text-slate-100'
-                    }`}>
+                    <span
+                      className={`rounded px-1 py-0.5 transition-colors inline ${
+                        isSelected
+                          ? "bg-yellow-50 dark:bg-yellow-900/50 text-slate-900 dark:text-slate-100"
+                          : "hover:text-slate-900 dark:hover:text-slate-100"
+                      }`}
+                    >
                       {decision.decision}
                     </span>
                     <span className="text-xs text-slate-400 dark:text-slate-500 ml-1 opacity-0 group-hover:opacity-100 transition-opacity">
@@ -261,19 +300,22 @@ const TldrSummary: React.FC<TldrSummaryProps> = ({
             </h3>
             <ul className="space-y-1 list-none ml-0">
               {data.targets.map((target, index) => {
-                const isSelected = selectedSearchResult?.timestamp === target.timestamp &&
-                                 selectedSearchResult?.type === 'target';
+                const isSelected =
+                  selectedSearchResult?.timestamp === target.timestamp &&
+                  selectedSearchResult?.type === "target";
                 return (
                   <li
                     key={index}
                     onClick={(e) => handleTimestampClick(target.timestamp, e)}
                     className="text-sm cursor-pointer group before:content-['→'] before:mr-2 before:text-slate-400 dark:before:text-slate-500 text-slate-600 dark:text-slate-400"
                   >
-                    <span className={`rounded px-1 py-0.5 transition-colors inline ${
-                      isSelected
-                        ? 'bg-yellow-50 dark:bg-yellow-900/50 text-slate-900 dark:text-slate-100'
-                        : 'hover:text-slate-900 dark:hover:text-slate-100'
-                    }`}>
+                    <span
+                      className={`rounded px-1 py-0.5 transition-colors inline ${
+                        isSelected
+                          ? "bg-yellow-50 dark:bg-yellow-900/50 text-slate-900 dark:text-slate-100"
+                          : "hover:text-slate-900 dark:hover:text-slate-100"
+                      }`}
+                    >
                       {target.target}
                     </span>
                     <span className="text-xs text-slate-400 dark:text-slate-500 ml-1 opacity-0 group-hover:opacity-100 transition-opacity">

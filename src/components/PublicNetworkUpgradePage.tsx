@@ -1,9 +1,9 @@
-import React, { useEffect, useState } from 'react';
-import { Link, useLocation } from 'react-router-dom';
-import eipsData from '../data/eips.json';
-import { useMetaTags } from '../hooks/useMetaTags';
-import { useAnalytics } from '../hooks/useAnalytics';
-import { EIP, ClientTeamPerspective } from '../types';
+import React, { useEffect, useState } from "react";
+import { Link, useLocation } from "react-router-dom";
+import eipsData from "../data/eips.json";
+import { useMetaTags } from "../hooks/useMetaTags";
+import { useAnalytics } from "../hooks/useAnalytics";
+import { EIP, ClientTeamPerspective } from "../types";
 import {
   getInclusionStage,
   isHeadliner,
@@ -11,14 +11,11 @@ import {
   getProposalPrefix,
   getSpecificationUrl,
   getHeadlinerLayer,
-  wasHeadlinerCandidate
-} from '../utils';
-import {
-  getInclusionStageColor,
-  getUpgradeStatusColor
-} from '../utils/colors';
-import { Tooltip, CopyLinkButton } from './ui';
-import ThemeToggle from './ui/ThemeToggle';
+  wasHeadlinerCandidate,
+} from "../utils";
+import { getInclusionStageColor, getUpgradeStatusColor } from "../utils/colors";
+import { Tooltip, CopyLinkButton } from "./ui";
+import ThemeToggle from "./ui/ThemeToggle";
 import {
   NetworkUpgradeTimeline,
   FusakaTimeline,
@@ -26,8 +23,8 @@ import {
   TableOfContents,
   OverviewSection,
   ClientPerspectives,
-  EipCard
-} from './network-upgrade';
+  EipCard,
+} from "./network-upgrade";
 
 interface PublicNetworkUpgradePageProps {
   forkName: string;
@@ -44,12 +41,13 @@ const PublicNetworkUpgradePage: React.FC<PublicNetworkUpgradePageProps> = ({
   description,
   status,
   metaEipLink,
-  clientTeamPerspectives
+  clientTeamPerspectives,
 }) => {
   const [eips, setEips] = useState<EIP[]>([]);
-  const [activeSection, setActiveSection] = useState<string>('overview');
+  const [activeSection, setActiveSection] = useState<string>("overview");
   const [isDeclinedExpanded, setIsDeclinedExpanded] = useState(false);
-  const [isHeadlinerProposalsExpanded, setIsHeadlinerProposalsExpanded] = useState(false);
+  const [isHeadlinerProposalsExpanded, setIsHeadlinerProposalsExpanded] =
+    useState(false);
   const location = useLocation();
   const { trackUpgradeView, trackLinkClick } = useAnalytics();
 
@@ -62,9 +60,9 @@ const PublicNetworkUpgradePage: React.FC<PublicNetworkUpgradePageProps> = ({
 
   // Filter EIPs that have relationships with this fork
   useEffect(() => {
-    const filteredEips = eipsData.filter(eip =>
-      eip.forkRelationships.some(fork =>
-        fork.forkName.toLowerCase() === forkName.toLowerCase()
+    const filteredEips = eipsData.filter((eip) =>
+      eip.forkRelationships.some(
+        (fork) => fork.forkName.toLowerCase() === forkName.toLowerCase()
       )
     );
     setEips(filteredEips);
@@ -83,7 +81,7 @@ const PublicNetworkUpgradePage: React.FC<PublicNetworkUpgradePageProps> = ({
       setTimeout(() => {
         const element = document.getElementById(hash);
         if (element) {
-          element.scrollIntoView({ behavior: 'smooth', block: 'start' });
+          element.scrollIntoView({ behavior: "smooth", block: "start" });
           setActiveSection(hash);
         }
       }, 100);
@@ -102,12 +100,12 @@ const PublicNetworkUpgradePage: React.FC<PublicNetworkUpgradePageProps> = ({
       },
       {
         threshold: 0.3,
-        rootMargin: '0px'
+        rootMargin: "0px",
       }
     );
 
     // Observe all section elements
-    const sections = document.querySelectorAll('[data-section]');
+    const sections = document.querySelectorAll("[data-section]");
     sections.forEach((section) => observer.observe(section));
 
     return () => {
@@ -117,99 +115,139 @@ const PublicNetworkUpgradePage: React.FC<PublicNetworkUpgradePageProps> = ({
 
   // Generate TOC items
   const tocItems = [
-    { id: 'overview', label: 'Overview', type: 'section' as const, count: null as number | null },
+    {
+      id: "overview",
+      label: "Overview",
+      type: "section" as const,
+      count: null as number | null,
+    },
     // Add timeline sections for specific forks
-    ...(forkName.toLowerCase() === 'glamsterdam' ? [
-      { id: 'glamsterdam-timeline', label: 'Timeline', type: 'section' as const, count: null as number | null }
-    ] : []),
-    ...(forkName.toLowerCase() === 'fusaka' ? [
-      { id: 'fusaka-timeline', label: 'Timeline', type: 'section' as const, count: null as number | null }
-    ] : []),
+    ...(forkName.toLowerCase() === "glamsterdam"
+      ? [
+          {
+            id: "glamsterdam-timeline",
+            label: "Timeline",
+            type: "section" as const,
+            count: null as number | null,
+          },
+        ]
+      : []),
+    ...(forkName.toLowerCase() === "fusaka"
+      ? [
+          {
+            id: "fusaka-timeline",
+            label: "Timeline",
+            type: "section" as const,
+            count: null as number | null,
+          },
+        ]
+      : []),
 
     // Show EIP sections for all forks (including Glamsterdam)
     ...[
-      ...['Included', 'Scheduled for Inclusion', 'Considered for Inclusion', 'Proposed for Inclusion', 'Declined for Inclusion']
-        .flatMap(stage => {
-          // For Glamsterdam, exclude headliners from "Proposed for Inclusion" since they have their own section
-          const stageEips = eips.filter(eip => {
-            const matchesStage = getInclusionStage(eip, forkName) === stage;
-            if (forkName.toLowerCase() === 'glamsterdam' && stage === 'Proposed for Inclusion') {
-              return matchesStage && !isHeadliner(eip, forkName);
-            }
-            return matchesStage;
-          });
-
-          if (stageEips.length === 0) return [];
-
-          // Sort EIPs: headliners first, then by EIP number
-          const sortedEips = stageEips.sort((a, b) => {
-            const aIsHeadliner = isHeadliner(a, forkName);
-            const bIsHeadliner = isHeadliner(b, forkName);
-
-            // If one is headliner and other isn't, headliner comes first
-            if (aIsHeadliner && !bIsHeadliner) return -1;
-            if (!aIsHeadliner && bIsHeadliner) return 1;
-
-            // If both are same type (both headliner or both not), sort by EIP number
-            return a.id - b.id;
-          });
-
-          const stageItem = {
-            id: stage.toLowerCase().replace(/\s+/g, '-'),
-            label: stage,
-            type: 'section' as const,
-            count: stageEips.length
-          };
-
-          // For Declined for Inclusion, only show the section header, not individual EIPs
-          if (stage === 'Declined for Inclusion') {
-            return [stageItem];
+      ...[
+        "Included",
+        "Scheduled for Inclusion",
+        "Considered for Inclusion",
+        "Proposed for Inclusion",
+        "Declined for Inclusion",
+      ].flatMap((stage) => {
+        // For Glamsterdam, exclude headliners from "Proposed for Inclusion" since they have their own section
+        const stageEips = eips.filter((eip) => {
+          const matchesStage = getInclusionStage(eip, forkName) === stage;
+          if (
+            forkName.toLowerCase() === "glamsterdam" &&
+            stage === "Proposed for Inclusion"
+          ) {
+            return matchesStage && !isHeadliner(eip, forkName);
           }
+          return matchesStage;
+        });
 
-          // For all other stages, show individual EIPs
-          const eipItems = sortedEips.map(eip => {
-            const isHeadlinerEip = isHeadliner(eip, forkName);
-            const inclusionStage = getInclusionStage(eip, forkName);
-            const isSFI = inclusionStage === 'Scheduled for Inclusion';
+        if (stageEips.length === 0) return [];
 
-            // Use filled star for SFI EIPs, empty star for other headliners in Glamsterdam
-            const starSymbol = forkName.toLowerCase() === 'glamsterdam'
-              ? (isSFI ? '★' : '☆')
-              : '★';
+        // Sort EIPs: headliners first, then by EIP number
+        const sortedEips = stageEips.sort((a, b) => {
+          const aIsHeadliner = isHeadliner(a, forkName);
+          const bIsHeadliner = isHeadliner(b, forkName);
 
-            const proposalPrefix = getProposalPrefix(eip);
-            const layer = isHeadlinerEip ? getHeadlinerLayer(eip, forkName) : null;
+          // If one is headliner and other isn't, headliner comes first
+          if (aIsHeadliner && !bIsHeadliner) return -1;
+          if (!aIsHeadliner && bIsHeadliner) return 1;
 
-            return {
-              id: `eip-${eip.id}`,
-              label: `${isHeadlinerEip ? `${starSymbol} ` : ''}${proposalPrefix}-${eip.id}: ${getLaymanTitle(eip)}${layer ? ` (${layer})` : ''}`,
-              type: 'eip' as const,
-              count: null as number | null
-            };
-          });
+          // If both are same type (both headliner or both not), sort by EIP number
+          return a.id - b.id;
+        });
 
-          return [stageItem, ...eipItems];
-        }),
+        const stageItem = {
+          id: stage.toLowerCase().replace(/\s+/g, "-"),
+          label: stage,
+          type: "section" as const,
+          count: stageEips.length,
+        };
+
+        // For Declined for Inclusion, only show the section header, not individual EIPs
+        if (stage === "Declined for Inclusion") {
+          return [stageItem];
+        }
+
+        // For all other stages, show individual EIPs
+        const eipItems = sortedEips.map((eip) => {
+          const isHeadlinerEip = isHeadliner(eip, forkName);
+          const inclusionStage = getInclusionStage(eip, forkName);
+          const isSFI = inclusionStage === "Scheduled for Inclusion";
+
+          // Use filled star for SFI EIPs, empty star for other headliners in Glamsterdam
+          const starSymbol =
+            forkName.toLowerCase() === "glamsterdam"
+              ? isSFI
+                ? "★"
+                : "☆"
+              : "★";
+
+          const proposalPrefix = getProposalPrefix(eip);
+          const layer = isHeadlinerEip
+            ? getHeadlinerLayer(eip, forkName)
+            : null;
+
+          return {
+            id: `eip-${eip.id}`,
+            label: `${isHeadlinerEip ? `${starSymbol} ` : ""}${proposalPrefix}-${eip.id}: ${getLaymanTitle(eip)}${layer ? ` (${layer})` : ""}`,
+            type: "eip" as const,
+            count: null as number | null,
+          };
+        });
+
+        return [stageItem, ...eipItems];
+      }),
 
       // Add headliner candidates section for Glamsterdam if there are any
-      ...(forkName.toLowerCase() === 'glamsterdam' ? (() => {
-        const headlinerProposals = eips.filter(eip => wasHeadlinerCandidate(eip, forkName));
-        return headlinerProposals.length > 0 ? [{
-          id: 'headliner-proposals',
-          label: 'Headliner Proposals',
-          type: 'section' as const,
-          count: headlinerProposals.length
-        }] : [];
-      })() : []),
-    ]
+      ...(forkName.toLowerCase() === "glamsterdam"
+        ? (() => {
+            const headlinerProposals = eips.filter((eip) =>
+              wasHeadlinerCandidate(eip, forkName)
+            );
+            return headlinerProposals.length > 0
+              ? [
+                  {
+                    id: "headliner-proposals",
+                    label: "Headliner Proposals",
+                    type: "section" as const,
+                    count: headlinerProposals.length,
+                  },
+                ]
+              : [];
+          })()
+        : []),
+    ],
   ];
 
   const scrollToSection = (sectionId: string) => {
     const element = document.getElementById(sectionId);
     if (element) {
-      element.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      element.scrollIntoView({ behavior: "smooth", block: "start" });
       // Update URL hash
-      window.history.pushState(null, '', `#${sectionId}`);
+      window.history.pushState(null, "", `#${sectionId}`);
       setActiveSection(sectionId);
     }
   };
@@ -224,12 +262,18 @@ const PublicNetworkUpgradePage: React.FC<PublicNetworkUpgradePageProps> = ({
         {/* Header */}
         <div className="mb-8">
           <div className="mb-6 flex justify-between items-start">
-            <Link to="/" className="text-3xl font-serif bg-gradient-to-r from-purple-600 via-blue-600 to-purple-800 bg-clip-text text-transparent hover:from-purple-700 hover:via-blue-700 hover:to-purple-900 transition-all duration-200 tracking-tight">
+            <Link
+              to="/"
+              className="text-3xl font-serif bg-gradient-to-r from-purple-600 via-blue-600 to-purple-800 bg-clip-text text-transparent hover:from-purple-700 hover:via-blue-700 hover:to-purple-900 transition-all duration-200 tracking-tight"
+            >
               Forkcast
             </Link>
             <ThemeToggle />
           </div>
-          <Link to="/" className="text-slate-600 hover:text-slate-800 dark:text-slate-300 dark:hover:text-slate-100 mb-6 inline-block text-sm font-medium">
+          <Link
+            to="/"
+            className="text-slate-600 hover:text-slate-800 dark:text-slate-300 dark:hover:text-slate-100 mb-6 inline-block text-sm font-medium"
+          >
             ← All Network Upgrades
           </Link>
 
@@ -237,32 +281,53 @@ const PublicNetworkUpgradePage: React.FC<PublicNetworkUpgradePageProps> = ({
             <div className="flex flex-col lg:flex-row lg:items-start lg:justify-between">
               <div className="flex-1">
                 <div className="flex items-center gap-3 mb-3">
-                  <h1 className="text-3xl font-light text-slate-900 dark:text-slate-100 tracking-tight">{displayName}</h1>
+                  <h1 className="text-3xl font-light text-slate-900 dark:text-slate-100 tracking-tight">
+                    {displayName}
+                  </h1>
                   <CopyLinkButton
                     sectionId="upgrade"
                     title="Copy link to this upgrade"
                   />
                 </div>
-                <p className="text-base text-slate-600 dark:text-slate-300 mb-2 leading-relaxed max-w-2xl">{description}</p>
+                <p className="text-base text-slate-600 dark:text-slate-300 mb-2 leading-relaxed max-w-2xl">
+                  {description}
+                </p>
                 {metaEipLink && (
                   <div className="mb-4">
                     <a
                       href={metaEipLink}
                       target="_blank"
                       rel="noopener noreferrer"
-                      onClick={() => handleExternalLinkClick('meta_eip_discussion', metaEipLink)}
+                      onClick={() =>
+                        handleExternalLinkClick(
+                          "meta_eip_discussion",
+                          metaEipLink
+                        )
+                      }
                       className="inline-flex items-center gap-1.5 text-sm text-purple-600 hover:text-purple-800 dark:text-purple-400 dark:hover:text-purple-300 underline decoration-1 underline-offset-2 transition-colors"
                     >
                       View Meta EIP Discussion
-                      <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
+                      <svg
+                        className="w-4 h-4"
+                        fill="none"
+                        stroke="currentColor"
+                        viewBox="0 0 24 24"
+                      >
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          strokeWidth={2}
+                          d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"
+                        />
                       </svg>
                     </a>
                   </div>
                 )}
               </div>
               <div className="mt-6 lg:mt-0">
-                <span className={`px-3 py-1 text-xs font-medium rounded ${getUpgradeStatusColor(status)}`}>
+                <span
+                  className={`px-3 py-1 text-xs font-medium rounded ${getUpgradeStatusColor(status)}`}
+                >
                   {status}
                 </span>
               </div>
@@ -270,20 +335,32 @@ const PublicNetworkUpgradePage: React.FC<PublicNetworkUpgradePageProps> = ({
 
             <div className="mt-2">
               <p className="text-xs text-slate-400 dark:text-slate-500 italic max-w-xl">
-              Forkcast is an ongoing experiment by the Protocol Support team to make the network upgrade process more accessible. Have feedback? Contact{' '}
+                Forkcast is an ongoing experiment by the Protocol Support team
+                to make the network upgrade process more accessible. Have
+                feedback? Contact{" "}
                 <a
                   href="mailto:nixo@ethereum.org"
-                  onClick={() => handleExternalLinkClick('email_contact', 'mailto:nixo@ethereum.org')}
+                  onClick={() =>
+                    handleExternalLinkClick(
+                      "email_contact",
+                      "mailto:nixo@ethereum.org"
+                    )
+                  }
                   className="text-slate-500 hover:text-slate-700 dark:text-slate-400 dark:hover:text-slate-200 underline decoration-1 underline-offset-2"
                 >
                   nixo
-                </a>
-                {' '}or{' '}
+                </a>{" "}
+                or{" "}
                 <a
                   href="https://x.com/wolovim"
                   target="_blank"
                   rel="noopener noreferrer"
-                  onClick={() => handleExternalLinkClick('twitter_contact', 'https://x.com/wolovim')}
+                  onClick={() =>
+                    handleExternalLinkClick(
+                      "twitter_contact",
+                      "https://x.com/wolovim"
+                    )
+                  }
                   className="text-slate-500 hover:text-slate-700 dark:text-slate-400 dark:hover:text-slate-200 underline decoration-1 underline-offset-2"
                 >
                   @wolovim
@@ -312,11 +389,17 @@ const PublicNetworkUpgradePage: React.FC<PublicNetworkUpgradePageProps> = ({
               />
 
               {/* Glamsterdam Timeline Section */}
-              {forkName.toLowerCase() === 'glamsterdam' && (
-                <div className="space-y-6" id="glamsterdam-timeline" data-section>
+              {forkName.toLowerCase() === "glamsterdam" && (
+                <div
+                  className="space-y-6"
+                  id="glamsterdam-timeline"
+                  data-section
+                >
                   <div className="border-b border-slate-200 dark:border-slate-700 pb-4">
                     <div className="flex items-center gap-3 mb-2">
-                      <h2 className="text-xl font-medium text-slate-900 dark:text-slate-100">Timeline</h2>
+                      <h2 className="text-xl font-medium text-slate-900 dark:text-slate-100">
+                        Timeline
+                      </h2>
                       <CopyLinkButton
                         sectionId="glamsterdam-timeline"
                         title="Copy link to timeline"
@@ -324,7 +407,9 @@ const PublicNetworkUpgradePage: React.FC<PublicNetworkUpgradePageProps> = ({
                       />
                     </div>
                     <p className="text-sm text-slate-600 dark:text-slate-300 max-w-3xl">
-                      The planning timeline for Glamsterdam, showing the progression from headliner selection to final implementation decisions.
+                      The planning timeline for Glamsterdam, showing the
+                      progression from headliner selection to final
+                      implementation decisions.
                     </p>
                   </div>
                   <GlamsterdamTimeline />
@@ -332,11 +417,13 @@ const PublicNetworkUpgradePage: React.FC<PublicNetworkUpgradePageProps> = ({
               )}
 
               {/* Fusaka Timeline Section */}
-              {forkName.toLowerCase() === 'fusaka' && (
+              {forkName.toLowerCase() === "fusaka" && (
                 <div className="space-y-6" id="fusaka-timeline" data-section>
                   <div className="border-b border-slate-200 dark:border-slate-700 pb-4">
                     <div className="flex items-center gap-3 mb-2">
-                      <h2 className="text-xl font-medium text-slate-900 dark:text-slate-100">Timeline</h2>
+                      <h2 className="text-xl font-medium text-slate-900 dark:text-slate-100">
+                        Timeline
+                      </h2>
                       <CopyLinkButton
                         sectionId="fusaka-timeline"
                         title="Copy link to timeline"
@@ -344,7 +431,9 @@ const PublicNetworkUpgradePage: React.FC<PublicNetworkUpgradePageProps> = ({
                       />
                     </div>
                     <p className="text-sm text-slate-600 dark:text-slate-300 max-w-3xl">
-                      The deployment timeline for Fusaka, showing the progression from devnets through testnet deployments to mainnet.
+                      The deployment timeline for Fusaka, showing the
+                      progression from devnets through testnet deployments to
+                      mainnet.
                     </p>
                   </div>
                   <FusakaTimeline />
@@ -353,19 +442,46 @@ const PublicNetworkUpgradePage: React.FC<PublicNetworkUpgradePageProps> = ({
 
               {/* EIPs Grouped by Stage */}
               {[
-                { stage: 'Included', description: 'EIPs that are part of the activated upgrade on mainnet.' },
-                { stage: 'Scheduled for Inclusion', description: 'EIPs that client teams have agreed to implement in the next upgrade devnet. These are very likely to be included in the final upgrade.' },
-                { stage: 'Considered for Inclusion', description: 'EIPs that client teams are positive towards. Implementation may begin, but inclusion is not yet guaranteed.' },
-                { stage: 'Proposed for Inclusion', description: 'EIPs that have been proposed for this upgrade but are still under initial review by client teams.' },
-                { stage: 'Declined for Inclusion', description: 'EIPs that were proposed, but ultimately declined for inclusion in the upgrade for various reasons. They may be reconsidered for future upgrades.' }
+                {
+                  stage: "Included",
+                  description:
+                    "EIPs that are part of the activated upgrade on mainnet.",
+                },
+                {
+                  stage: "Scheduled for Inclusion",
+                  description:
+                    "EIPs that client teams have agreed to implement in the next upgrade devnet. These are very likely to be included in the final upgrade.",
+                },
+                {
+                  stage: "Considered for Inclusion",
+                  description:
+                    "EIPs that client teams are positive towards. Implementation may begin, but inclusion is not yet guaranteed.",
+                },
+                {
+                  stage: "Proposed for Inclusion",
+                  description:
+                    "EIPs that have been proposed for this upgrade but are still under initial review by client teams.",
+                },
+                {
+                  stage: "Declined for Inclusion",
+                  description:
+                    "EIPs that were proposed, but ultimately declined for inclusion in the upgrade for various reasons. They may be reconsidered for future upgrades.",
+                },
               ].map(({ stage, description }) => {
-                let stageEips = eips.filter(eip => getInclusionStage(eip, forkName) === stage);
+                let stageEips = eips.filter(
+                  (eip) => getInclusionStage(eip, forkName) === stage
+                );
 
                 if (stageEips.length === 0) return null;
 
                 // For Glamsterdam, exclude headliners from "Proposed for Inclusion" since they have their own section
-                if (forkName.toLowerCase() === 'glamsterdam' && stage === 'Proposed for Inclusion') {
-                  stageEips = stageEips.filter(eip => !isHeadliner(eip, forkName));
+                if (
+                  forkName.toLowerCase() === "glamsterdam" &&
+                  stage === "Proposed for Inclusion"
+                ) {
+                  stageEips = stageEips.filter(
+                    (eip) => !isHeadliner(eip, forkName)
+                  );
                   if (stageEips.length === 0) return null;
                 }
 
@@ -382,30 +498,47 @@ const PublicNetworkUpgradePage: React.FC<PublicNetworkUpgradePageProps> = ({
                   return a.id - b.id;
                 });
 
-                const stageId = stage.toLowerCase().replace(/\s+/g, '-');
-                const isDeclinedStage = stage === 'Declined for Inclusion';
+                const stageId = stage.toLowerCase().replace(/\s+/g, "-");
+                const isDeclinedStage = stage === "Declined for Inclusion";
 
                 return (
-                  <div key={stage} className="space-y-6" id={stageId} data-section>
+                  <div
+                    key={stage}
+                    className="space-y-6"
+                    id={stageId}
+                    data-section
+                  >
                     <div className="border-b border-slate-200 dark:border-slate-700 pb-4">
                       <div className="flex items-center gap-3 mb-2">
-                        <h2 className="text-xl font-medium text-slate-900 dark:text-slate-100">{stage}</h2>
-                        <span className={`px-2 py-1 text-xs font-medium rounded ${getInclusionStageColor(stage as any)}`}>
-                          {stageEips.length} EIP{stageEips.length !== 1 ? 's' : ''}
+                        <h2 className="text-xl font-medium text-slate-900 dark:text-slate-100">
+                          {stage}
+                        </h2>
+                        <span
+                          className={`px-2 py-1 text-xs font-medium rounded ${getInclusionStageColor(stage as any)}`}
+                        >
+                          {stageEips.length} EIP
+                          {stageEips.length !== 1 ? "s" : ""}
                         </span>
                         {isDeclinedStage && (
                           <button
-                            onClick={() => setIsDeclinedExpanded(!isDeclinedExpanded)}
+                            onClick={() =>
+                              setIsDeclinedExpanded(!isDeclinedExpanded)
+                            }
                             className="flex items-center gap-1.5 text-xs text-slate-600 hover:text-slate-800 dark:text-slate-400 dark:hover:text-slate-200 transition-colors"
                           >
-                            {isDeclinedExpanded ? 'Collapse' : 'Expand'}
+                            {isDeclinedExpanded ? "Collapse" : "Expand"}
                             <svg
-                              className={`w-3.5 h-3.5 transition-transform ${isDeclinedExpanded ? 'rotate-180' : ''}`}
+                              className={`w-3.5 h-3.5 transition-transform ${isDeclinedExpanded ? "rotate-180" : ""}`}
                               fill="none"
                               stroke="currentColor"
                               viewBox="0 0 24 24"
                             >
-                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+                              <path
+                                strokeLinecap="round"
+                                strokeLinejoin="round"
+                                strokeWidth={2}
+                                d="M19 9l-7 7-7-7"
+                              />
                             </svg>
                           </button>
                         )}
@@ -415,13 +548,17 @@ const PublicNetworkUpgradePage: React.FC<PublicNetworkUpgradePageProps> = ({
                           size="sm"
                         />
                       </div>
-                      <p className="text-sm text-slate-600 dark:text-slate-300 max-w-3xl">{description}</p>
+                      <p className="text-sm text-slate-600 dark:text-slate-300 max-w-3xl">
+                        {description}
+                      </p>
                     </div>
 
                     {isDeclinedStage && !isDeclinedExpanded ? (
                       <div className="bg-slate-50 dark:bg-slate-700 border border-slate-200 dark:border-slate-600 rounded p-4">
                         <p className="text-sm text-slate-600 dark:text-slate-300">
-                          {stageEips.length} EIP{stageEips.length !== 1 ? 's' : ''} declined for inclusion in this upgrade.
+                          {stageEips.length} EIP
+                          {stageEips.length !== 1 ? "s" : ""} declined for
+                          inclusion in this upgrade.
                           <button
                             onClick={() => setIsDeclinedExpanded(true)}
                             className="ml-1 text-slate-700 hover:text-slate-900 dark:text-slate-300 dark:hover:text-slate-100 underline decoration-1 underline-offset-2 transition-colors"
@@ -432,7 +569,7 @@ const PublicNetworkUpgradePage: React.FC<PublicNetworkUpgradePageProps> = ({
                       </div>
                     ) : (
                       <div className="space-y-6">
-                        {sortedStageEips.map(eip => {
+                        {sortedStageEips.map((eip) => {
                           if (!eip.laymanDescription) return null;
 
                           const eipId = `eip-${eip.id}`;
@@ -440,11 +577,18 @@ const PublicNetworkUpgradePage: React.FC<PublicNetworkUpgradePageProps> = ({
                           // For declined EIPs, show simplified view
                           if (isDeclinedStage) {
                             return (
-                              <article key={eip.id} className="bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-600 rounded p-4" id={eipId} data-section>
+                              <article
+                                key={eip.id}
+                                className="bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-600 rounded p-4"
+                                id={eipId}
+                                data-section
+                              >
                                 <div className="flex items-start justify-between">
                                   <div className="flex-1">
                                     <h3 className="text-base font-medium text-slate-900 dark:text-slate-100 leading-tight mb-2">
-                                      <span className="text-slate-400 dark:text-slate-500 text-sm font-mono mr-2">{getProposalPrefix(eip)}-{eip.id}</span>
+                                      <span className="text-slate-400 dark:text-slate-500 text-sm font-mono mr-2">
+                                        {getProposalPrefix(eip)}-{eip.id}
+                                      </span>
                                       <span>{eip.title}</span>
                                     </h3>
                                     <p className="text-slate-700 dark:text-slate-300 text-sm leading-relaxed">
@@ -458,7 +602,12 @@ const PublicNetworkUpgradePage: React.FC<PublicNetworkUpgradePageProps> = ({
                                           href={eip.discussionLink}
                                           target="_blank"
                                           rel="noopener noreferrer"
-                                          onClick={() => handleExternalLinkClick('discussion', eip.discussionLink)}
+                                          onClick={() =>
+                                            handleExternalLinkClick(
+                                              "discussion",
+                                              eip.discussionLink
+                                            )
+                                          }
                                           className="text-slate-400 hover:text-slate-600 dark:text-slate-500 dark:hover:text-slate-300 transition-colors cursor-pointer relative group"
                                         >
                                           <div className="relative w-7 h-7">
@@ -474,7 +623,11 @@ const PublicNetworkUpgradePage: React.FC<PublicNetworkUpgradePageProps> = ({
                                               strokeWidth="2"
                                               viewBox="0 0 24 24"
                                             >
-                                              <path strokeLinecap="round" strokeLinejoin="round" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
+                                              <path
+                                                strokeLinecap="round"
+                                                strokeLinejoin="round"
+                                                d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"
+                                              />
                                             </svg>
                                           </div>
                                         </a>
@@ -485,7 +638,12 @@ const PublicNetworkUpgradePage: React.FC<PublicNetworkUpgradePageProps> = ({
                                         href={getSpecificationUrl(eip)}
                                         target="_blank"
                                         rel="noopener noreferrer"
-                                        onClick={() => handleExternalLinkClick('specification', getSpecificationUrl(eip))}
+                                        onClick={() =>
+                                          handleExternalLinkClick(
+                                            "specification",
+                                            getSpecificationUrl(eip)
+                                          )
+                                        }
                                         className="text-slate-400 hover:text-slate-600 dark:text-slate-500 dark:hover:text-slate-300 transition-colors cursor-pointer relative group"
                                       >
                                         <div className="relative w-7 h-7">
@@ -501,7 +659,11 @@ const PublicNetworkUpgradePage: React.FC<PublicNetworkUpgradePageProps> = ({
                                             strokeWidth="2"
                                             viewBox="0 0 24 24"
                                           >
-                                            <path strokeLinecap="round" strokeLinejoin="round" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
+                                            <path
+                                              strokeLinecap="round"
+                                              strokeLinejoin="round"
+                                              d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"
+                                            />
                                           </svg>
                                         </div>
                                       </a>
@@ -513,7 +675,14 @@ const PublicNetworkUpgradePage: React.FC<PublicNetworkUpgradePageProps> = ({
                           }
 
                           // Full view for non-declined EIPs
-                          return <EipCard key={eip.id} eip={eip} forkName={forkName} handleExternalLinkClick={handleExternalLinkClick} />;
+                          return (
+                            <EipCard
+                              key={eip.id}
+                              eip={eip}
+                              forkName={forkName}
+                              handleExternalLinkClick={handleExternalLinkClick}
+                            />
+                          );
                         })}
                       </div>
                     )}
@@ -522,89 +691,141 @@ const PublicNetworkUpgradePage: React.FC<PublicNetworkUpgradePageProps> = ({
               })}
 
               {/* Headliner Proposals Section (for Glamsterdam) */}
-              {forkName.toLowerCase() === 'glamsterdam' && eips.filter(eip => wasHeadlinerCandidate(eip, forkName)).length > 0 && (
-                <div className="space-y-6" id="headliner-proposals" data-section>
-                  <div className="border-b border-slate-200 dark:border-slate-700 pb-4">
-                    <div className="flex items-center gap-3 mb-2">
-                      <h2 className="text-xl font-medium text-slate-900 dark:text-slate-100">Headliner Proposals</h2>
-                      <span className="px-2 py-1 text-xs font-medium rounded bg-purple-100 text-purple-700 dark:bg-purple-900/20 dark:text-purple-300">
-                        {eips.filter(eip => wasHeadlinerCandidate(eip, forkName)).length} EIP{eips.filter(eip => wasHeadlinerCandidate(eip, forkName)).length !== 1 ? 's' : ''}
-                      </span>
-                      <button
-                        onClick={() => setIsHeadlinerProposalsExpanded(!isHeadlinerProposalsExpanded)}
-                        className="flex items-center gap-1.5 text-xs text-slate-600 hover:text-slate-800 dark:text-slate-400 dark:hover:text-slate-200 transition-colors"
-                      >
-                        {isHeadlinerProposalsExpanded ? 'Collapse' : 'Expand'}
-                        <svg
-                          className={`w-3.5 h-3.5 transition-transform ${isHeadlinerProposalsExpanded ? 'rotate-180' : ''}`}
-                          fill="none"
-                          stroke="currentColor"
-                          viewBox="0 0 24 24"
-                        >
-                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
-                        </svg>
-                      </button>
-                      <CopyLinkButton
-                        sectionId="headliner-proposals"
-                        title="Copy link to headliner proposals"
-                        size="sm"
-                      />
-                    </div>
-                    <p className="text-sm text-slate-600 dark:text-slate-300 max-w-3xl">
-                      Headliners are the most important features to include in each network upgrade. The community considered the following headliner proposals.
-                    </p>
-                  </div>
-
-                  {!isHeadlinerProposalsExpanded ? (
-                    <div className="bg-purple-50 dark:bg-purple-900/10 border border-purple-200 dark:border-purple-600 rounded p-4">
-                      <p className="text-sm text-slate-600 dark:text-slate-300">
-                        {eips.filter(eip => wasHeadlinerCandidate(eip, forkName)).length} headliner proposal{eips.filter(eip => wasHeadlinerCandidate(eip, forkName)).length !== 1 ? 's' : ''} were considered for inclusion in this network upgrade.
+              {forkName.toLowerCase() === "glamsterdam" &&
+                eips.filter((eip) => wasHeadlinerCandidate(eip, forkName))
+                  .length > 0 && (
+                  <div
+                    className="space-y-6"
+                    id="headliner-proposals"
+                    data-section
+                  >
+                    <div className="border-b border-slate-200 dark:border-slate-700 pb-4">
+                      <div className="flex items-center gap-3 mb-2">
+                        <h2 className="text-xl font-medium text-slate-900 dark:text-slate-100">
+                          Headliner Proposals
+                        </h2>
+                        <span className="px-2 py-1 text-xs font-medium rounded bg-purple-100 text-purple-700 dark:bg-purple-900/20 dark:text-purple-300">
+                          {
+                            eips.filter((eip) =>
+                              wasHeadlinerCandidate(eip, forkName)
+                            ).length
+                          }{" "}
+                          EIP
+                          {eips.filter((eip) =>
+                            wasHeadlinerCandidate(eip, forkName)
+                          ).length !== 1
+                            ? "s"
+                            : ""}
+                        </span>
                         <button
-                          onClick={() => setIsHeadlinerProposalsExpanded(true)}
-                          className="ml-1 text-purple-700 hover:text-purple-900 dark:text-purple-300 dark:hover:text-purple-100 underline decoration-1 underline-offset-2 transition-colors"
+                          onClick={() =>
+                            setIsHeadlinerProposalsExpanded(
+                              !isHeadlinerProposalsExpanded
+                            )
+                          }
+                          className="flex items-center gap-1.5 text-xs text-slate-600 hover:text-slate-800 dark:text-slate-400 dark:hover:text-slate-200 transition-colors"
                         >
-                          Click to expand and view details.
+                          {isHeadlinerProposalsExpanded ? "Collapse" : "Expand"}
+                          <svg
+                            className={`w-3.5 h-3.5 transition-transform ${isHeadlinerProposalsExpanded ? "rotate-180" : ""}`}
+                            fill="none"
+                            stroke="currentColor"
+                            viewBox="0 0 24 24"
+                          >
+                            <path
+                              strokeLinecap="round"
+                              strokeLinejoin="round"
+                              strokeWidth={2}
+                              d="M19 9l-7 7-7-7"
+                            />
+                          </svg>
                         </button>
+                        <CopyLinkButton
+                          sectionId="headliner-proposals"
+                          title="Copy link to headliner proposals"
+                          size="sm"
+                        />
+                      </div>
+                      <p className="text-sm text-slate-600 dark:text-slate-300 max-w-3xl">
+                        Headliners are the most important features to include in
+                        each network upgrade. The community considered the
+                        following headliner proposals.
                       </p>
                     </div>
-                  ) : (
-                    <div className="space-y-6">
-                      {/* Client Team Perspectives */}
-                      <ClientPerspectives
-                        perspectives={clientTeamPerspectives}
-                        onLinkClick={(url: string) => {
-                          window.open(url, '_blank');
-                          handleExternalLinkClick('client_perspective', url);
-                        }}
-                      />
 
-                      {eips
-                        .filter(eip => wasHeadlinerCandidate(eip, forkName))
-                        .sort((a, b) => {
-                          const layerA = getHeadlinerLayer(a, forkName);
-                          const layerB = getHeadlinerLayer(b, forkName);
+                    {!isHeadlinerProposalsExpanded ? (
+                      <div className="bg-purple-50 dark:bg-purple-900/10 border border-purple-200 dark:border-purple-600 rounded p-4">
+                        <p className="text-sm text-slate-600 dark:text-slate-300">
+                          {
+                            eips.filter((eip) =>
+                              wasHeadlinerCandidate(eip, forkName)
+                            ).length
+                          }{" "}
+                          headliner proposal
+                          {eips.filter((eip) =>
+                            wasHeadlinerCandidate(eip, forkName)
+                          ).length !== 1
+                            ? "s"
+                            : ""}{" "}
+                          were considered for inclusion in this network upgrade.
+                          <button
+                            onClick={() =>
+                              setIsHeadlinerProposalsExpanded(true)
+                            }
+                            className="ml-1 text-purple-700 hover:text-purple-900 dark:text-purple-300 dark:hover:text-purple-100 underline decoration-1 underline-offset-2 transition-colors"
+                          >
+                            Click to expand and view details.
+                          </button>
+                        </p>
+                      </div>
+                    ) : (
+                      <div className="space-y-6">
+                        {/* Client Team Perspectives */}
+                        <ClientPerspectives
+                          perspectives={clientTeamPerspectives}
+                          onLinkClick={(url: string) => {
+                            window.open(url, "_blank");
+                            handleExternalLinkClick("client_perspective", url);
+                          }}
+                        />
 
-                          // Sort by layer first (EL before CL)
-                          if (layerA === 'EL' && layerB === 'CL') return -1;
-                          if (layerA === 'CL' && layerB === 'EL') return 1;
+                        {eips
+                          .filter((eip) => wasHeadlinerCandidate(eip, forkName))
+                          .sort((a, b) => {
+                            const layerA = getHeadlinerLayer(a, forkName);
+                            const layerB = getHeadlinerLayer(b, forkName);
 
-                          // Then sort by EIP number within each layer
-                          return a.id - b.id;
-                        })
-                        .map(eip => {
-                          if (!eip.laymanDescription) return null;
-                          return <EipCard key={eip.id} eip={eip} forkName={forkName} handleExternalLinkClick={handleExternalLinkClick} />;
-                        })
-                      }
-                    </div>
-                  )}
-                </div>
-              )}
+                            // Sort by layer first (EL before CL)
+                            if (layerA === "EL" && layerB === "CL") return -1;
+                            if (layerA === "CL" && layerB === "EL") return 1;
+
+                            // Then sort by EIP number within each layer
+                            return a.id - b.id;
+                          })
+                          .map((eip) => {
+                            if (!eip.laymanDescription) return null;
+                            return (
+                              <EipCard
+                                key={eip.id}
+                                eip={eip}
+                                forkName={forkName}
+                                handleExternalLinkClick={
+                                  handleExternalLinkClick
+                                }
+                              />
+                            );
+                          })}
+                      </div>
+                    )}
+                  </div>
+                )}
             </div>
 
             {eips.length === 0 && (
               <div className="text-center py-16">
-                <p className="text-slate-500 dark:text-slate-400 text-sm">No improvements found for this network upgrade.</p>
+                <p className="text-slate-500 dark:text-slate-400 text-sm">
+                  No improvements found for this network upgrade.
+                </p>
               </div>
             )}
           </div>

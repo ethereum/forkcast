@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect } from "react";
 
 interface AnnouncementBannerProps {
   /** Unique key for localStorage to track dismissal */
@@ -29,23 +29,23 @@ export default function AnnouncementBanner({
   fullTitle,
   badge,
   linkUrl,
-  linkText = 'Learn More',
-  linkTextMobile = 'Info',
-  gradientClasses = 'bg-gradient-to-r from-cyan-600 via-lime-600 to-amber-600 dark:from-cyan-700 dark:via-lime-700 dark:to-amber-700',
-  borderClasses = 'border-lime-600',
-  showIcon = true
+  linkText = "Learn More",
+  linkTextMobile = "Info",
+  gradientClasses = "bg-gradient-to-r from-cyan-600 via-lime-600 to-amber-600 dark:from-cyan-700 dark:via-lime-700 dark:to-amber-700",
+  borderClasses = "border-lime-600",
+  showIcon = true,
 }: AnnouncementBannerProps) {
   const [isVisible, setIsVisible] = useState(false);
 
   useEffect(() => {
     // Check if the banner has been dismissed
-    const isDismissed = localStorage.getItem(storageKey) === 'true';
+    const isDismissed = localStorage.getItem(storageKey) === "true";
     setIsVisible(!isDismissed);
   }, [storageKey]);
 
   const handleDismiss = () => {
     setIsVisible(false);
-    localStorage.setItem(storageKey, 'true');
+    localStorage.setItem(storageKey, "true");
   };
 
   if (!isVisible) {
@@ -53,14 +53,26 @@ export default function AnnouncementBanner({
   }
 
   return (
-    <div className={`${gradientClasses} text-white shadow-sm border-b ${borderClasses} relative z-50`}>
+    <div
+      className={`${gradientClasses} text-white shadow-sm border-b ${borderClasses} relative z-50`}
+    >
       <div className="max-w-4xl mx-auto px-4 sm:px-0">
         <div className="flex items-center justify-between py-3 sm:py-4">
           <div className="flex items-center space-x-2 sm:space-x-3 flex-1">
             {showIcon && (
               <div className="flex-shrink-0 hidden sm:block">
-                <svg className="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
+                <svg
+                  className="h-5 w-5"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"
+                  />
                 </svg>
               </div>
             )}
@@ -88,8 +100,18 @@ export default function AnnouncementBanner({
               >
                 <span className="hidden sm:inline">{linkText}</span>
                 <span className="sm:hidden">{linkTextMobile}</span>
-                <svg className="h-3 w-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
+                <svg
+                  className="h-3 w-3"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"
+                  />
                 </svg>
               </a>
             )}
@@ -98,8 +120,18 @@ export default function AnnouncementBanner({
               className="inline-flex items-center justify-center w-6 h-6 bg-white/20 hover:bg-white/30 transition-colors duration-200 rounded"
               aria-label="Dismiss banner"
             >
-              <svg className="h-3 w-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+              <svg
+                className="h-3 w-3"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M6 18L18 6M6 6l12 12"
+                />
               </svg>
             </button>
           </div>

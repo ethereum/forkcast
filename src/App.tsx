@@ -9,6 +9,7 @@ import { getUpgradeById } from './data/upgrades';
 import { useAnalytics } from './hooks/useAnalytics';
 import { ThemeProvider } from './contexts/ThemeContext';
 import ExternalRedirect from './components/ExternalRedirect';
+import { ErrorBoundary } from './components/ErrorBoundary';
 
 function RedirectHandler() {
   const navigate = useNavigate();
@@ -54,11 +55,12 @@ function App() {
   // const pectraUpgrade = getUpgradeById('pectra')!;
 
   return (
-    <ThemeProvider>
-      <Router basename="">
-        <RedirectHandler />
-        <AnalyticsTracker />
-        <Routes>
+    <ErrorBoundary>
+      <ThemeProvider>
+        <Router basename="">
+          <RedirectHandler />
+          <AnalyticsTracker />
+          <Routes>
           <Route path="/" element={<HomePage />} />
           <Route path="/upgrade/fusaka" element={
             <PublicNetworkUpgradePage
@@ -94,9 +96,10 @@ function App() {
           } /> */}
           {/* Catch-all route that redirects to home page */}
           <Route path="*" element={<Navigate to="/" replace />} />
-        </Routes>
-      </Router>
-    </ThemeProvider>
+          </Routes>
+        </Router>
+      </ThemeProvider>
+    </ErrorBoundary>
   );
 }
 

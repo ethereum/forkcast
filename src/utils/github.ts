@@ -68,7 +68,6 @@ export async function fetchUpcomingCalls(): Promise<UpcomingCall[]> {
     const response = await fetch('https://api.github.com/repos/ethereum/pm/issues?state=open&per_page=20');
 
     if (!response.ok) {
-      console.warn('Failed to fetch GitHub issues:', response.status);
       return [];
     }
 
@@ -106,8 +105,7 @@ export async function fetchUpcomingCalls(): Promise<UpcomingCall[]> {
     // Sort by date
     return upcomingCalls.sort((a, b) => a.date.localeCompare(b.date));
 
-  } catch (error) {
-    console.error('Error fetching upcoming calls:', error);
+  } catch {
     return [];
   }
 }

@@ -58,8 +58,6 @@ const CallPage: React.FC = () => {
     false;
   const searchShortcut = isMac ? '⌘F' : 'Ctrl+F';
 
-  // Variable to track initial search query from URL
-  const [initialSearchQuery, setInitialSearchQuery] = useState('');
   // Track if we've already navigated to avoid duplicate seeks
   const hasNavigatedToSearchResult = useRef(false);
 
@@ -72,9 +70,6 @@ const CallPage: React.FC = () => {
     const text = searchParams.get('text');
 
     if (searchQuery && timestamp && type && text) {
-      // Store the search query for initialization (but don't open search modal)
-      setInitialSearchQuery(searchQuery);
-
       // Set up highlighting - use the actual result text, not the search query
       setSelectedSearchResult({
         timestamp,
@@ -351,7 +346,6 @@ const CallPage: React.FC = () => {
         );
 
         if (!matchingCall) {
-          console.error('Call not found:', callPath);
           setLoading(false);
           return;
         }
@@ -415,18 +409,13 @@ const CallPage: React.FC = () => {
           console.log('No config.json found - highlighting disabled');
         }
 
-        // Determine video URL: config > video.txt > fallback
+        // Determine video URL: config > video.txt
         let videoUrl: string | undefined;
         if (config?.videoUrl) {
           videoUrl = config.videoUrl;
         } else {
           const videoResponse = await fetch(`/artifacts/${artifactPath}/video.txt`);
           videoUrl = videoResponse.ok ? (await videoResponse.text()).trim() : undefined;
-        }
-
-        // Fallback for testing if no URL found
-        if (!videoUrl) {
-          videoUrl = 'https://www.youtube.com/watch?v=wF0gWBHZdu8';
         }
 
         setCallData({
@@ -441,8 +430,8 @@ const CallPage: React.FC = () => {
           tldrData
         });
 
-      } catch (error) {
-        console.error('Failed to load call data:', error);
+      } catch {
+        // Error loading call data - will show loading state
       } finally {
         setLoading(false);
       }
@@ -954,7 +943,6 @@ const CallPage: React.FC = () => {
         currentVideoTime={currentVideoTime}
         isOpen={isSearchOpen}
         setIsOpen={setIsSearchOpen}
-        initialQuery={initialSearchQuery}
       />
 
       {/* Content */}

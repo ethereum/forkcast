@@ -101,8 +101,7 @@ class SearchIndexService {
       };
 
       return index;
-    } catch (error) {
-      console.error('Error loading search index from storage:', error);
+    } catch {
       return null;
     }
   }
@@ -131,8 +130,8 @@ class SearchIndexService {
       });
 
       db.close();
-    } catch (error) {
-      console.error('Error saving search index to storage:', error);
+    } catch {
+      // Error saving to storage - index will be rebuilt on next load
     }
   }
 
@@ -221,8 +220,8 @@ class SearchIndexService {
           index.callIndex.set(callKey, callDocIndices);
         }
 
-      } catch (error) {
-        console.error(`Error indexing call ${callKey}:`, error);
+      } catch {
+        // Error indexing call - continue with next call
       }
 
       processedCalls++;

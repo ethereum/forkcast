@@ -68,8 +68,8 @@ export default function GlobalCallSearch({ isOpen, onClose, initialQuery = '' }:
         setLoading(true);
         try {
           const searchResults = await searchIndexService.search(searchQuery, {
-            callType: callType === 'all' ? undefined : callType as 'ACDC' | 'ACDE' | 'ACDT',
-            contentType: contentType === 'all' ? undefined : contentType as any,
+            callType: callType === 'all' ? undefined : (callType as 'ACDC' | 'ACDE' | 'ACDT'),
+            contentType: contentType === 'all' ? undefined : (contentType as 'transcript' | 'chat' | 'agenda' | 'action'),
             limit: 500
           });
 
@@ -89,8 +89,7 @@ export default function GlobalCallSearch({ isOpen, onClose, initialQuery = '' }:
           const limitedResults = formattedResults.slice(0, 200);
           setResults(limitedResults);
           setSearchStats({ total: formattedResults.length, shown: limitedResults.length });
-        } catch (error) {
-          console.error('Search error:', error);
+        } catch {
           setResults([]);
           setSearchStats(null);
         } finally {
@@ -228,7 +227,7 @@ export default function GlobalCallSearch({ isOpen, onClose, initialQuery = '' }:
         {/* Search Header */}
         <div className="border-b border-slate-200 dark:border-slate-700">
           <div className="flex items-center gap-3 p-3 sm:p-4">
-            <svg className="w-5 h-5 sm:w-5 sm:h-5 text-slate-400 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <svg className="w-5 h-5 sm:w-5 sm:h-5 text-slate-400 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-label="Search">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
             </svg>
             <input

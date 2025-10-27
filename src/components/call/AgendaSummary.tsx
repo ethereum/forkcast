@@ -116,8 +116,10 @@ const AgendaSummary: React.FC<AgendaSummaryProps> = ({ data, onTimestampClick, s
     setExpandedItems(newExpanded);
   };
 
-  // Flatten all items to get global order for highlighting
-  const allItems = data.agenda.flatMap(section => section.items);
+  // Flatten all items to get global order for highlighting, sorted by timestamp
+  const allItems = data.agenda
+    .flatMap(section => section.items)
+    .sort((a, b) => timestampToSeconds(a.start_timestamp) - timestampToSeconds(b.start_timestamp));
 
   // Check if an agenda item should be highlighted based on current video time
   const isCurrentItem = (itemTimestamp: string, itemIndex: number): boolean => {

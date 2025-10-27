@@ -121,7 +121,9 @@ const TldrSummary: React.FC<TldrSummaryProps> = ({
     return currentVideoTime >= itemVideoTime && currentVideoTime < nextItemVideoTime;
   };
 
-  const allHighlights: HighlightItem[] = Object.values(data.highlights).flat();
+  const allHighlights: HighlightItem[] = Object.values(data.highlights)
+    .flat()
+    .sort((a, b) => timestampToSeconds(a.timestamp) - timestampToSeconds(b.timestamp));
 
   useEffect(() => {
     if (!selectedSearchResult) return;

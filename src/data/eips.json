@@ -562,6 +562,118 @@
     "laymanDescription": "This introduces the JUMPF instruction for EOF contracts, enabling tail call optimization by jumping to code sections without adding return stack frames. It also introduces non-returning functions - sections that never return control to their caller. This is particularly efficient for error handling helpers that end with REVERT, allowing compilers to generate more optimal code with reduced gas costs and smaller bytecode size. Functions can jump to other functions with fewer outputs, and non-returning functions don't need to clean up extra stack items before terminating."
   },
   {
+    "id": 6404,
+    "title": "SSZ transactions",
+    "status": "Draft",
+    "description": "This EIP defines a migration process of EIP-2718 Recursive-Length Prefix (RLP) transactions to Simple Serialize (SSZ).",
+    "author": "Etan Kissling (@etan-status), Gajinder Singh (@g11tech), Vitalik Buterin (@vbuterin)",
+    "type": "Standards Track",
+    "category": "Core",
+    "createdDate": "2023-01-30",
+    "discussionLink": "https://ethereum-magicians.org/t/eip-6404-ssz-transactions/12783",
+    "reviewer": "staff",
+    "forkRelationships": [
+      {
+        "forkName": "Glamsterdam",
+        "status": "Proposed",
+        "layer": "EL",
+        "champion": {
+          "name": "Etan Kissling",
+          "discord": "etan_status"
+        }
+      }
+    ],
+    "laymanDescription": "Moves Ethereum transactions from RLP to SSZ. This changes serialization and the block header’s transactions_root, enabling more efficient proofs and future flexibility. Users should see no behavioral change.",
+    "stakeholderImpacts": {
+      "endUsers": {
+        "description": "No visible change; sending and receiving transactions remains the same. Migration affects encoding and proofs internally."
+      },
+      "appDevs": {
+        "description": "Apps using transaction inclusion proofs or transactions_root must migrate from MPT-based roots to the SSZ transactions_root."
+      },
+      "walletDevs": {
+        "description": "Wallet libraries may need SSZ encoding and signing support. Original RLP sig_hash and tx_hash remain recoverable for compatibility."
+      },
+      "toolingInfra": {
+        "description": "Indexers/explorers using MPT transaction proofs or header roots must adopt SSZ roots and update verification pipelines."
+      },
+      "layer2s": {
+        "description": "Systems relying on mainnet transaction inclusion proofs should switch from MPT proofs to SSZ-based roots for compatibility."
+      },
+      "stakersNodes": {
+        "description": "Operators must run clients supporting SSZ transactions, updated header commitments, and Engine API/ExecutionPayload changes."
+      },
+      "clClients": {
+        "description": "Implement ExecutionPayload and header changes using SSZ transactions_root and adjust Engine API; moderate serialization and hashing complexity."
+      },
+      "elClients": {
+        "description": "Add SSZ serialization/validation for all transactions, update header commitments and Engine API; higher implementation complexity."
+      }
+    },
+    "benefits": [
+      "Efficient transaction inclusion proofs via SSZ roots",
+      "Better partial hashing and verification of data",
+      "Aligns execution and consensus around SSZ",
+      "Improves forward compatibility for transaction changes"
+    ]
+  },
+  {
+    "id": 6466,
+    "title": "SSZ receipts",
+    "status": "Draft",
+    "description": "This EIP defines a migration process of EIP-2718 Recursive-Length Prefix (RLP) receipts to Simple Serialize (SSZ).",
+    "author": "Etan Kissling (@etan-status), Gajinder Singh (@g11tech), Vitalik Buterin (@vbuterin)",
+    "type": "Standards Track",
+    "category": "Core",
+    "createdDate": "2023-02-08",
+    "discussionLink": "https://ethereum-magicians.org/t/eip-6466-ssz-receipts/12884",
+    "reviewer": "staff",
+    "forkRelationships": [
+      {
+        "forkName": "Glamsterdam",
+        "status": "Proposed",
+        "layer": "EL",
+        "champion": {
+          "name": "Etan Kissling",
+          "discord": "etan_status"
+        }
+      }
+    ],
+    "laymanDescription": "Ethereum receipts, which record each transaction’s outcome, currently use RLP and are hard to prove or verify. This proposal moves receipts to SSZ, enabling easier proofs, removing bloated logs bloom, and adding data to verify common receipt information.",
+    "stakeholderImpacts": {
+      "endUsers": {
+        "description": "The EIP does not describe direct end-user changes or new behavior, only internal receipt encoding."
+      },
+      "appDevs": {
+        "description": "Enables client applications to prove specific receipt parts, like logs, without the full receipt, improving log verification."
+      },
+      "walletDevs": {
+        "description": "Adds on-chain data needed to verify from, gasUsed, and contractAddress fields that wallets and JSON-RPC currently expose."
+      },
+      "toolingInfra": {
+        "description": "Defines a universal SSZ receipt format, deprecates cumulativeGasUsed, logIndex, and logs bloom, simplifying parallel execution analysis and proof tooling."
+      },
+      "layer2s": {
+        "description": "Allows L2 fraud proofs to efficiently prove individual receipt parts, such as logs, instead of providing full receipts."
+      },
+      "stakersNodes": {
+        "description": "The EIP does not describe specific changes for validators or node operators beyond adopting the new SSZ receipt format."
+      },
+      "clClients": {
+        "description": "No consensus-layer client changes are described; required code changes or complexity for consensus clients are not specified."
+      },
+      "elClients": {
+        "description": "Execution-layer clients must migrate receipts from EIP-2718 RLP to SSZ and implement the new universal SSZ receipt format."
+      }
+    },
+    "benefits": [
+      "Supports efficient proofs of individual receipt parts, like logs, without sending full receipts.",
+      "Removes stateful fields such as cumulativeGasUsed and logIndex to aid parallel execution.",
+      "Includes data to verify from, gasUsed, and contractAddress directly from the receipt.",
+      "Eliminates the inefficient logs bloom, reducing storage overhead."
+    ]
+  },
+  {
     "id": 6800,
     "title": "EIP-6800: Ethereum state using a unified verkle tree",
     "status": "Draft",
@@ -1697,6 +1809,62 @@
     ]
   },
   {
+    "id": 7708,
+    "title": "ETH transfers emit a log",
+    "status": "Stagnant",
+    "description": "All ETH-transfers, including transactions, CALL and SELFDESTRUCT, emit a log so ETH movements are detectable via a single, standard mechanism.",
+    "author": "Vitalik Buterin (@vbuterin), Peter Davies (@petertdavies)",
+    "type": "Standards Track",
+    "category": "Core",
+    "createdDate": "2024-05-17",
+    "discussionLink": "https://ethereum-magicians.org/t/eip-7708-eth-transfers-emit-a-log/20034",
+    "reviewer": "staff",
+    "forkRelationships": [
+      {
+        "forkName": "Glamsterdam",
+        "status": "Proposed",
+        "layer": "EL",
+        "champion": {
+          "name": "Carl Beekhuizen",
+          "discord": "carlbeek"
+        }
+      }
+    ],
+    "laymanDescription": "Make every ETH transfer—including from contracts and SELFDESTRUCT—emit an event log. Apps and explorers can track ETH movements uniformly, similar to ERC-20 transfers, improving deposit detection and reducing ad-hoc tracing.",
+    "stakeholderImpacts": {
+      "endUsers": {
+        "description": "Deposits and withdrawals are detected more reliably across apps and exchanges; no change to how users send or receive ETH."
+      },
+      "appDevs": {
+        "description": "Can subscribe to a standard ETH transfer log instead of tracing; requires small updates to indexers and business logic."
+      },
+      "walletDevs": {
+        "description": "Optionally watch a canonical event for ETH transfers to improve UX; otherwise existing send/receive flows remain unchanged."
+      },
+      "toolingInfra": {
+        "description": "Explorers and data indexers must parse and surface the new log; moderate engineering to integrate, test, and backfill if desired."
+      },
+      "layer2s": {
+        "description": "Rollups mirroring L1 EVM semantics may add the same log for consistency; others have no direct requirements."
+      },
+      "stakersNodes": {
+        "description": "More log entries per block; execution node receipts grow slightly, increasing storage and bandwidth requirements for some RPC setups."
+      },
+      "clClients": {
+        "description": "No consensus-layer changes anticipated; minimal or no code modifications beyond recognizing updated receipt sizes from execution payloads."
+      },
+      "elClients": {
+        "description": "Implement emitting a log on value-transferring CALLs, transactions, and SELFDESTRUCT; update EVM and receipt construction; add tests."
+      }
+    },
+    "benefits": [
+      "Unified, queryable signal for ETH transfers across EOAs and contracts.",
+      "Reduces reliance on tracing for ETH balance change detection.",
+      "Improves deposit handling for smart contract wallet senders.",
+      "Simplifies indexing and analytics for ETH movement."
+    ]
+  },
+  {
     "id": 7732,
     "title": "EIP-7732: enshrined Proposer-Builder separation (ePBS)",
     "status": "Draft",
@@ -2469,6 +2637,62 @@
       "Cheaper than proving slot via EIP-4788; simple 2-gas opcode call.",
       "Slot number available directly in block header and engine API.",
       "No added proving complexity; similar to TIMESTAMP for ZK-VMs."
+    ]
+  },
+  {
+    "id": 7872,
+    "title": "Max blob flag for local builders",
+    "status": "Draft",
+    "description": "Adds a flag to the block builder to let operators configure a maximum number of blobs per locally built block. This is an execution-layer–only change.",
+    "author": "Francesco D'Amato <francesco.damato@ethereum.org>, Kevaundray Wedderburn (@kevaundray), Toni Wahrstätter (@nerolation), Alex Stokes (@ralexstokes), Ben Adams (@benaadams), Gajinder Singh (@g11tech), Dustin (@tersec)",
+    "type": "Standards Track",
+    "category": "Core",
+    "createdDate": "2025-01-30",
+    "discussionLink": "https://ethereum-magicians.org/t/max-blob-flags-for-local-builders/22734",
+    "reviewer": "staff",
+    "forkRelationships": [
+      {
+        "forkName": "Glamsterdam",
+        "status": "Proposed",
+        "layer": "EL",
+        "champion": {
+          "name": "Kevaundray Wedderburn",
+          "discord": ""
+        }
+      }
+    ],
+    "laymanDescription": "Lets node operators set a cap on how many blob-carrying transactions their local builder includes in a block, helping bandwidth-constrained setups avoid overfilling blocks with blobs.",
+    "stakeholderImpacts": {
+      "endUsers": {
+        "description": "No direct UX changes; transaction semantics remain identical. Only block composition may vary by operator settings."
+      },
+      "appDevs": {
+        "description": "No EVM or API changes. Apps sending blob transactions behave the same; inclusion depends on local builder caps."
+      },
+      "walletDevs": {
+        "description": "No transaction format or signing changes. Wallet functionality unaffected by this configuration-only execution change."
+      },
+      "toolingInfra": {
+        "description": "Execution-layer builder tooling should expose and respect a configurable max-blobs parameter. Relays and CL nodes unchanged."
+      },
+      "layer2s": {
+        "description": "No protocol changes. Locally built L1 blocks may include fewer blob transactions when operators configure lower caps."
+      },
+      "stakersNodes": {
+        "description": "Validators running local builders gain a tuning knob aligned with bandwidth. No consensus or fork-choice changes."
+      },
+      "clClients": {
+        "description": "No code changes expected; EL-only behavior. Headers, fork choice, and gossip remain unchanged for consensus clients."
+      },
+      "elClients": {
+        "description": "Add a config flag and enforce it during blob tx selection. Validate against protocol maximum and local cap."
+      }
+    },
+    "benefits": [
+      "Gives operators control over blob load.",
+      "Mitigates blob availability risks on low bandwidth.",
+      "EL-only change with limited surface area.",
+      "No changes to transaction or consensus formats."
     ]
   },
   {
@@ -3720,6 +3944,62 @@
     ]
   },
   {
+    "id": 7971,
+    "title": "Hard Limits for Transient Storage",
+    "status": "Draft",
+    "description": "Reduce gas costs for transient storage operations (TLOAD and TSTORE) by using constant pricing and introduce a transaction-global cap on transient storage slots to mitigate denial-of-service via excessive allocation. This lowers costs for common use cases while preserving protections against resource exhaustion.",
+    "author": "Charles Cooper (@charles-cooper), Ben Adams (@benaadams), Maria Silva (@misilva73), Jochem Brouwer (@jochem-brouwer)",
+    "type": "Standards Track",
+    "category": "Core",
+    "createdDate": "2025-06-12",
+    "discussionLink": "https://ethereum-magicians.org/t/add-eip-hard-limit-and-cost-reduction-for-transient-storage-allocation/24542",
+    "reviewer": "staff",
+    "forkRelationships": [
+      {
+        "forkName": "Glamsterdam",
+        "status": "Proposed",
+        "layer": "EL",
+        "champion": {
+          "name": "Maria Silva",
+          "discord": ""
+        }
+      }
+    ],
+    "laymanDescription": "Makes temporary, one-transaction storage cheaper and sets a hard cap on how much can be used per transaction. This reduces gas for common patterns while protecting nodes from excessive memory use.",
+    "stakeholderImpacts": {
+      "endUsers": {
+        "description": "May lower fees in apps using transient storage; otherwise no behavior change. Possible failures if the global cap is reached."
+      },
+      "appDevs": {
+        "description": "Cheaper transient storage enables guards and metadata patterns; must handle transaction-wide slot cap and update gas assumptions in code."
+      },
+      "walletDevs": {
+        "description": "Adjust fee estimation and warnings for potential cap-exceeded reverts; otherwise no signing or serialization changes."
+      },
+      "toolingInfra": {
+        "description": "Profilers, tracers, and simulators must incorporate constant TLOAD/TSTORE pricing and track per-transaction transient slot usage."
+      },
+      "layer2s": {
+        "description": "Rollups adjusting EVM gas must mirror pricing and enforce slot cap; evaluate shared-bundle DoS implications in sequencer pipelines."
+      },
+      "stakersNodes": {
+        "description": "Resource profile mostly unchanged; adopt fork including new gas schedule and per-transaction slot-accounting rules."
+      },
+      "clClients": {
+        "description": "Consensus layer changes are limited to fork activation metadata and versioning; low code complexity, mostly configuration and coordination."
+      },
+      "elClients": {
+        "description": "Implement constant costs for TLOAD/TSTORE, enforce a transaction-global slot cap, update gas accounting and tests; moderate code changes."
+      }
+    },
+    "benefits": [
+      "Lower gas for transient storage via constant pricing",
+      "Per-transaction cap prevents excessive transient memory use",
+      "Encourages transient-storage patterns without persistent writes",
+      "Simplifies cost reasoning for compilers and tooling"
+    ]
+  },
+  {
     "id": 7976,
     "title": "EIP-7976: Increase Calldata Floor Cost",
     "status": "Draft",
@@ -3963,7 +4243,7 @@
     "forkRelationships": [
       {
         "forkName": "Glamsterdam",
-        "status": "Proposed",
+        "status": "Withdrawn",
         "layer": "EL",
         "champion": {
           "name": "Anders Elowsson",
@@ -4291,6 +4571,62 @@
     ]
   },
   {
+    "id": 8045,
+    "title": "Exclude slashed validators from proposing",
+    "status": "Draft",
+    "description": "This EIP proposes a modification to the beacon chain proposer selection process to exclude slashed validators from being selected as proposers.",
+    "author": "Francesco D'Amato (@fradamt), Barnabas Busa (@barnabasbusa)",
+    "type": "Standards Track",
+    "category": "Core",
+    "createdDate": "2025-10-16",
+    "discussionLink": "https://ethereum-magicians.org/t/eip-8045-exclude-slashed-validators-from-proposing/25850",
+    "reviewer": "staff",
+    "forkRelationships": [
+      {
+        "forkName": "Glamsterdam",
+        "status": "Proposed",
+        "layer": "CL",
+        "champion": {
+          "name": "Barnabas Busa",
+          "discord": ""
+        }
+      }
+    ],
+    "laymanDescription": "After a slashing event, punished validators can still be scheduled to propose blocks, causing missed slots and slow recovery. This change simply skips slashed validators so healthy ones keep proposing and the chain keeps running.",
+    "stakeholderImpacts": {
+      "endUsers": {
+        "description": "Users should experience fewer stalled slots and better network responsiveness after large validator slashings, because only non-slashed validators will propose blocks."
+      },
+      "appDevs": {
+        "description": "Application behavior during recovery from mass slashings becomes more predictable, with fewer missed blocks and smoother chain progress. No application changes required."
+      },
+      "walletDevs": {
+        "description": "Wallets get more consistent head updates after slashings, reducing confusing gaps in block production. No direct wallet code changes are expected."
+      },
+      "toolingInfra": {
+        "description": "Indexers, explorers, and relays see steadier block flow after slashings, easing incident handling. No protocol-facing changes required for these services."
+      },
+      "layer2s": {
+        "description": "L2 sequencers relying on L1 data and finality benefit from steadier L1 block production after slashings, improving uptime. No L2 code impact."
+      },
+      "stakersNodes": {
+        "description": "Once slashed, a validator immediately loses proposer eligibility. Node operators must account for skipped proposing duties but otherwise run unchanged software."
+      },
+      "clClients": {
+        "description": "Consensus clients must update proposer selection logic to prefilter slashed validators using beacon state, integrate with EIP-7917 lookahead, and add tests."
+      },
+      "elClients": {
+        "description": "Execution clients are unaffected because block proposer selection lives in the consensus layer; no modifications are required in execution code."
+      }
+    },
+    "benefits": [
+      "Maintains block production after mass slashing events.",
+      "Improves chain resilience and recovery during network disruptions.",
+      "Prevents wasting proposer slots on already slashed validators.",
+      "Reduces prolonged degraded performance while slashed validators exit."
+    ]
+  },
+  {
     "id": 8058,
     "title": "EIP-8058: Contract Bytecode Deduplication Discount",
     "status": "Draft",
@@ -4346,5 +4682,173 @@
       "Can yield major savings when GAS_CODE_DEPOSIT is high (e.g., under EIP-8037).",
       "Encourages bytecode reuse and efficient factory/clone patterns."
     ]
-  }
+  },
+  {
+    "id": 8053,
+    "title": "Milli-gas for High-precision Gas Metering",
+    "status": "Draft",
+    "description": "This proposal introduces the milli-gas counter as the EVM’s internal gas accounting. Gas costs are defined and tracked in milli_gas, then rounded up to gas at the end of execution. Gas limits and transaction fees continue to be computed and verified using the current gas_used counter, enabling more precise accounting of cheap compute without changing UX.",
+    "author": "Maria Silva (@misilva73)",
+    "type": "Standards Track",
+    "category": "Core",
+    "createdDate": "2025-10-17",
+    "discussionLink": "https://ethereum-magicians.org/t/eip-8053-milli-gas-counter-for-high-precision-gas-metering/25946",
+    "reviewer": "staff",
+    "forkRelationships": [
+      {
+        "forkName": "Glamsterdam",
+        "status": "Proposed",
+        "layer": "EL",
+        "champion": {
+          "name": "Maria Silva",
+          "discord": ""
+        }
+      }
+    ],
+    "laymanDescription": "Counts gas in thousandths (milli-gas) during EVM execution for finer precision, then rounds to normal gas at transaction end. Fees and limits stay the same, so users and apps shouldn’t notice changes.",
+    "stakeholderImpacts": {
+      "endUsers": {
+        "description": "No UX or fee changes; gas limits and pricing remain computed with gas_used, so behavior and costs are unchanged."
+      },
+      "appDevs": {
+        "description": "Contracts unaffected; no code changes expected since limits and fees still use gas_used rather than the new milli_gas counter."
+      },
+      "walletDevs": {
+        "description": "Transaction fee estimation and validation remain tied to gas_used; no API surface changes described or wallet-side modifications expected."
+      },
+      "toolingInfra": {
+        "description": "Tools using gas_used remain accurate; no explicit requirement to expose milli_gas since it is an internal accounting detail."
+      },
+      "layer2s": {
+        "description": "No specific L2 impacts stated; proposal covers internal EVM accounting only, with fees and limits unchanged at transaction interface."
+      },
+      "stakersNodes": {
+        "description": "Fee mechanics and limits remain as today; no staking or validator configuration changes are described in this proposal."
+      },
+      "clClients": {
+        "description": "No consensus-layer changes are described; proposal targets EL metering, and CL client code modifications are not indicated."
+      },
+      "elClients": {
+        "description": "Add a milli_gas counter; meter opcodes in milli_gas; round to gas at transaction end; keep gas_used for limits/fees. Block-level conversion would be a larger change."
+      }
+    },
+    "benefits": [
+      "More precise accounting for cheap compute",
+      "Keeps fees and gas limits unchanged",
+      "Preserves user and application UX",
+      "Introduces precision without contract changes"
+    ]
+  },
+  {
+    "id": 8057,
+    "title": "Inter-Block Temporal Locality Gas Discounts",
+    "status": "Draft",
+    "description": "Introduces a deterministic, multi-block discount for the first access to accounts and storage keys in a transaction. The discount decays to zero based on how many blocks have passed since the item was last touched. Intra-block warming is unchanged. The mechanism uses block-level access lists (EIP-7928) from prior blocks so a newly synced node can price the first block it validates without replaying historical execution.",
+    "author": "Ben Adams (@benaadams), Toni Wahrstätter (@nerolation), Maria Inês Silva (@misilva73), Amirul Ashraf (@asdacap)",
+    "type": "Standards Track",
+    "category": "Core",
+    "createdDate": "2025-10-20",
+    "discussionLink": "https://ethereum-magicians.org/t/eip-8057-block-temporal-locality-gas-discounts/25912",
+    "reviewer": "staff",
+    "forkRelationships": [
+      {
+        "forkName": "Glamsterdam",
+        "status": "Proposed",
+        "layer": "EL",
+        "champion": {
+          "name": "Ben Adams",
+          "discord": ""
+        }
+      }
+    ],
+    "laymanDescription": "Ethereum clients already cache recently used state, so touching the same contracts again soon is cheaper in practice. This EIP updates gas costs to reflect that reality: if an account or storage slot was accessed in the last few blocks, the first access in a new transaction costs less gas. Nothing else about how transactions work changes.",
+    "stakeholderImpacts": {
+      "endUsers": {
+        "description": "Some transactions touching recently used contracts or storage may cost less gas, lowering typical fees without changing how users interact."
+      },
+      "appDevs": {
+        "description": "Apps that reuse the same accounts or storage in nearby blocks pay less gas on first access. No opcode changes required."
+      },
+      "walletDevs": {
+        "description": "Wallet gas estimators must include temporal discounts using recent block access lists. Pricing is deterministic from public chain data."
+      },
+      "toolingInfra": {
+        "description": "Builders and searchers may batch related operations across back-to-back blocks to capture discounts. Tooling must report per-call gas using this rule."
+      },
+      "layer2s": {
+        "description": "Rollup bridges and keepers reusing L1 state across nearby blocks pay less gas on first access. Rollup protocol rules remain unchanged."
+      },
+      "stakersNodes": {
+        "description": "Validators must upgrade for the fork and maintain a short rolling index of recently accessed items to verify block gas charges."
+      },
+      "clClients": {
+        "description": "Consensus clients mostly just activate the fork and accept payloads using the new gas schedule. No other logic changes."
+      },
+      "elClients": {
+        "description": "Execution-layer clients must implement the new temporal discount logic, track prior-block access lists, and update gas accounting for first accesses."
+      }
+    },
+    "benefits": [
+      "Aligns gas costs with real client caching and hardware behavior.",
+      "Lowers average per-access gas without increasing worst-case cost.",
+      "Improves effective L1 throughput and block execution efficiency.",
+      "Enables deterministic, provable pricing from recent block data, easing stateless validation."
+    ]
+  },
+  {
+    "id": 8059,
+    "title": "Gas Units Rebase for High-precision Metering",
+    "status": "Draft",
+    "description": "This proposal rebases Ethereum’s gas unit by a factor of 1,000 to enable high-precision metering without fractional gas. All gas-related parameters and variables are increased by that factor. This reduces rounding errors when repricing EVM operations and future-proofs gas costs as hardware improves and state access remains costly, while avoiding major internal EVM logic changes.",
+    "author": "Maria Silva (@misilva73)",
+    "type": "Standards Track",
+    "category": "Core",
+    "createdDate": "2025-10-22",
+    "discussionLink": "https://ethereum-magicians.org/t/eip-8059-gas-rebase-for-high-precision-gas-metering/25945",
+    "reviewer": "staff",
+    "forkRelationships": [
+      {
+        "forkName": "Glamsterdam",
+        "status": "Proposed",
+        "layer": "EL",
+        "champion": {
+          "name": "Maria Silva",
+          "discord": ""
+        }
+      }
+    ],
+    "laymanDescription": "Ethereum measures work in gas. This change multiplies the size of one gas unit by 1,000 so gas usage can be measured more precisely without decimals. The math inside clients is updated, but how transactions behave stays the same.",
+    "stakeholderImpacts": {
+      "endUsers": {
+        "description": "Users may notice gas numbers change, since each unit is 1,000× smaller, but transaction behavior and protocol rules stay the same."
+      },
+      "appDevs": {
+        "description": "App and contract developers must update hardcoded gas cost constants, tests, and benchmarks to the 1,000× unit. Contract bytecode semantics stay unchanged."
+      },
+      "walletDevs": {
+        "description": "Wallets must update gas estimation, limit defaults, and UI displays to the rebased 1,000× unit so transactions include correct values."
+      },
+      "toolingInfra": {
+        "description": "Explorers, profilers, and RPC analytics must revise gas accounting, reporting, and alerts to reflect the new 1,000× unit across all fields."
+      },
+      "layer2s": {
+        "description": "Rollups and other L2s that follow Ethereum gas semantics must rescale gas metering, calldata pricing, and limits by 1,000× for L1 consistency."
+      },
+      "stakersNodes": {
+        "description": "Validators and node operators must upgrade clients to enforce rebased gas accounting and block validation rules; normal operational workflows otherwise remain unchanged."
+      },
+      "clClients": {
+        "description": "Consensus clients must update header checks for gas limit and gas used to the rebased scale; other fork choice and attestation code is unchanged."
+      },
+      "elClients": {
+        "description": "Execution clients must apply the 1,000× factor across opcode costs, transaction validation, gas accounting, RPC exposure, and metering logic, touching many constants and tests."
+      }
+    },
+    "benefits": [
+      "Enables high-precision gas metering without fractional gas.",
+      "Reduces rounding errors when repricing EVM operations.",
+      "Future-proofs gas costs as hardware improves and state access stays costly.",
+      "Avoids major changes to internal EVM logic."
+    ]
+  }  
 ]

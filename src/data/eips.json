@@ -571,7 +571,7 @@
     "category": "Core",
     "createdDate": "2023-01-30",
     "discussionLink": "https://ethereum-magicians.org/t/eip-6404-ssz-transactions/12783",
-    "reviewer": "staff",
+    "reviewer": "bot",
     "forkRelationships": [
       {
         "forkName": "Glamsterdam",
@@ -627,7 +627,7 @@
     "category": "Core",
     "createdDate": "2023-02-08",
     "discussionLink": "https://ethereum-magicians.org/t/eip-6466-ssz-receipts/12884",
-    "reviewer": "staff",
+    "reviewer": "bot",
     "forkRelationships": [
       {
         "forkName": "Glamsterdam",
@@ -1818,7 +1818,7 @@
     "category": "Core",
     "createdDate": "2024-05-17",
     "discussionLink": "https://ethereum-magicians.org/t/eip-7708-eth-transfers-emit-a-log/20034",
-    "reviewer": "staff",
+    "reviewer": "bot",
     "forkRelationships": [
       {
         "forkName": "Glamsterdam",
@@ -2649,7 +2649,7 @@
     "category": "Core",
     "createdDate": "2025-01-30",
     "discussionLink": "https://ethereum-magicians.org/t/max-blob-flags-for-local-builders/22734",
-    "reviewer": "staff",
+    "reviewer": "bot",
     "forkRelationships": [
       {
         "forkName": "Glamsterdam",
@@ -2657,7 +2657,7 @@
         "layer": "EL",
         "champion": {
           "name": "Kevaundray Wedderburn",
-          "discord": ""
+          "discord": "kevaundray"
         }
       }
     ],
@@ -3953,7 +3953,7 @@
     "category": "Core",
     "createdDate": "2025-06-12",
     "discussionLink": "https://ethereum-magicians.org/t/add-eip-hard-limit-and-cost-reduction-for-transient-storage-allocation/24542",
-    "reviewer": "staff",
+    "reviewer": "bot",
     "forkRelationships": [
       {
         "forkName": "Glamsterdam",
@@ -3961,7 +3961,7 @@
         "layer": "EL",
         "champion": {
           "name": "Maria Silva",
-          "discord": ""
+          "discord": "misilva73"
         }
       }
     ],
@@ -4342,6 +4342,62 @@
     ]
   },
   {
+    "id": 8024,
+    "title": "Backward compatible SWAPN, DUPN, EXCHANGE",
+    "status": "Review",
+    "description": "Currently, SWAP* and DUP* instructions are limited to a stack depth of 16. Introduce three new instructions, SWAPN, DUPN and EXCHANGE which lift this limitation and allow accessing the stack at higher depths.",
+    "author": "Francisco Giordano (@frangio), Charles Cooper (@charles-cooper), Alex Beregszaszi (@axic)",
+    "type": "Standards Track",
+    "category": "Core",
+    "createdDate": "2025-08-16",
+    "discussionLink": "https://ethereum-magicians.org/t/eip-8024-backward-compatible-swapn-dupn-exchange/25486",
+    "reviewer": "staff",
+    "forkRelationships": [
+      {
+        "forkName": "Glamsterdam",
+        "status": "",
+        "layer": "EL",
+        "champion": {
+          "name": "frangio",
+          "discord": "frangio"
+        }
+      }
+    ],
+    "laymanDescription": "Adds three new EVM opcodes (DUPN, SWAPN, EXCHANGE) so contracts can read, duplicate, and swap values deeper than 16 stack slots. This lets compilers generate simpler, more efficient code without extra memory moves, while staying backward compatible.",
+    "stakeholderImpacts": {
+      "endUsers": {
+        "description": "Possible minor gas savings from more efficient compiled bytecode, but no new features or actions required from normal users."
+      },
+      "appDevs": {
+        "description": "Smart contract authors benefit from compilers that juggle many parameters and locals more easily; typical Solidity/Vyper source code stays unchanged."
+      },
+      "walletDevs": {
+        "description": "Wallet software is unaffected because transaction formats, signatures, and account semantics do not change; no wallet logic updates are required."
+      },
+      "toolingInfra": {
+        "description": "Debuggers, tracers, disassemblers, and gas analyzers must add support for the three new opcodes, their immediates, and 3-gas cost."
+      },
+      "layer2s": {
+        "description": "EVM-equivalent L2s must add these opcodes so contracts using deep stack access compiled for mainnet execute identically."
+      },
+      "stakersNodes": {
+        "description": "Node operators and validators must upgrade execution software at the fork to enforce the new opcode semantics and gas accounting."
+      },
+      "clClients": {
+        "description": "Consensus layer clients mainly coordinate fork timing; they do not implement EVM opcodes, so code changes are minimal."
+      },
+      "elClients": {
+        "description": "Execution layer clients must add DUPN, SWAPN, EXCHANGE with immediates, depth checks, and 3-gas cost; moderate interpreter changes."
+      }
+    },
+    "benefits": [
+      "Lets contracts access and rearrange stack values deeper than 16 items.",
+      "Simplifies compilers managing many local variables and function parameters.",
+      "Reduces need for temporary memory shuffling when accessing deep stack values.",
+      "Adds EXCHANGE for swapping any two stack positions, improving stack scheduling."
+    ]
+  },
+  {
     "id": 8030,
     "title": "EIP-8030: P256 transaction support",
     "status": "Draft",
@@ -4580,7 +4636,7 @@
     "category": "Core",
     "createdDate": "2025-10-16",
     "discussionLink": "https://ethereum-magicians.org/t/eip-8045-exclude-slashed-validators-from-proposing/25850",
-    "reviewer": "staff",
+    "reviewer": "bot",
     "forkRelationships": [
       {
         "forkName": "Glamsterdam",
@@ -4588,7 +4644,7 @@
         "layer": "CL",
         "champion": {
           "name": "Barnabas Busa",
-          "discord": ""
+          "discord": "barnabasbusa"
         }
       }
     ],
@@ -4693,7 +4749,7 @@
     "category": "Core",
     "createdDate": "2025-10-17",
     "discussionLink": "https://ethereum-magicians.org/t/eip-8053-milli-gas-counter-for-high-precision-gas-metering/25946",
-    "reviewer": "staff",
+    "reviewer": "bot",
     "forkRelationships": [
       {
         "forkName": "Glamsterdam",
@@ -4701,7 +4757,7 @@
         "layer": "EL",
         "champion": {
           "name": "Maria Silva",
-          "discord": ""
+          "discord": "misilva73"
         }
       }
     ],
@@ -4757,7 +4813,7 @@
         "layer": "EL",
         "champion": {
           "name": "Ben Adams",
-          "discord": ""
+          "discord": "ben_a_adams"
         }
       }
     ],
@@ -4813,7 +4869,7 @@
         "layer": "EL",
         "champion": {
           "name": "Maria Silva",
-          "discord": ""
+          "discord": "misilva73"
         }
       }
     ],

@@ -499,10 +499,8 @@ const RankPage: React.FC = () => {
                 What is this?
               </h3>
               <p className="text-xs text-slate-600 dark:text-slate-300 leading-relaxed mb-4">
-                Glamsterdam headliner proposals have been agreed upon and
-                non-headliner EIPs can now be proposed. Users, app developers,
-                core developers, and any other stakeholders are invited to
-                voice their support for their preferences.
+                Users, node operators, app developers, core developers, and any other stakeholders
+                are invited to voice their support for their preferred EIPs in the Glamsterdam fork.
               </p>
               <p className="text-xs text-slate-600 dark:text-slate-300 leading-relaxed mb-4">
                 Drag and drop (desktop) or tap-to-assign (mobile) the EIP proposals
@@ -538,8 +536,7 @@ const RankPage: React.FC = () => {
                   </svg>
                 </div>
                 <p className="text-xs leading-relaxed text-slate-600 dark:text-slate-300">
-                  The deadline for submissions has not yet been set, so more
-                  EIPs may be proposed.
+                  The deadline for proposal submissions is October 30th, 2025.
                 </p>
               </div>
             </div>
@@ -696,7 +693,7 @@ const RankPage: React.FC = () => {
                 </div>
               )}
             </div>
-            <div className="space-y-2">
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-2">
               {getUnassignedItems().map((item) => (
                 <div
                   key={item.id}

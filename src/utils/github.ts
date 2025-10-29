@@ -17,9 +17,11 @@ interface GitHubIssue {
 // Examples: "All Core Devs - Consensus (ACDC) #166, October 2, 2025"
 //           "All Core Devs - Execution (ACDE) #222, October 9, 2025"
 //           "All Core Devs - Testing (ACDT) #56, Oct 6, 2025"
+//           "All Core Devs - Consensus (ACDC) #168, October 30, 2025 🎃"
 function parseCallFromTitle(title: string, githubUrl: string): UpcomingCall | null {
   // Match patterns like "ACDC) #166, October 2, 2025" or "ACDE) #222, October 9, 2025"
-  const match = title.match(/\(ACD([CET])\)\s*#(\d+),\s*(.+?)(?:\s*$)/i);
+  // Captures the date portion, allowing for trailing content like emojis
+  const match = title.match(/\(ACD([CET])\)\s*#(\d+),\s*(.+)/i);
 
   if (!match) return null;
 
@@ -51,8 +53,13 @@ function parseCallFromTitle(title: string, githubUrl: string): UpcomingCall | nu
 // Convert date strings like "October 2, 2025" or "Oct 6, 2025" to YYYY-MM-DD format
 function parseCallDate(dateStr: string): string | null {
   try {
+    // Extract just the date portion, handling trailing emojis or other characters
+    // Match patterns like "October 30, 2025" or "Oct 6, 2025"
+    const dateMatch = dateStr.match(/([A-Za-z]+\s+\d{1,2},\s*\d{4})/);
+    const cleanDateStr = dateMatch ? dateMatch[1] : dateStr.trim();
+
     // Handle formats like "October 2, 2025" or "Oct 6, 2025"
-    const date = new Date(dateStr);
+    const date = new Date(cleanDateStr);
     if (isNaN(date.getTime())) return null;
 
     // Format as YYYY-MM-DD
@@ -78,7 +85,7 @@ export async function fetchUpcomingCalls(): Promise<UpcomingCall[]> {
 
     // Import completed calls to check for duplicates
     const { protocolCalls } = await import('../data/calls');
-    
+
     // Create a set of completed call identifiers (type + number)
     const completedCallIds = new Set(
       protocolCalls.map(call => `${call.type}-${call.number}`)

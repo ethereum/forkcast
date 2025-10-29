@@ -4683,63 +4683,6 @@
     ]
   },
   {
-    "id": 8058,
-    "title": "EIP-8058: Contract Bytecode Deduplication Discount",
-    "status": "Draft",
-    "description": "Introduces a gas discount for deploying duplicate contract bytecode by leveraging EIP-2930 access lists.",
-    "author": "Carlos Perez (@CPerezz), Wei Han Ng (@weiihann), Guillaume Ballet (@gballet)",
-    "type": "Standards Track",
-    "category": "Core",
-    "createdDate": "2025-10-22",
-    "discussionLink": "https://ethereum-magicians.org/t/eip-8058-contract-bytecode-deduplication-discount/25933",
-    "reviewer": "bot",
-    "forkRelationships": [
-      {
-        "forkName": "Glamsterdam",
-        "status": "Proposed",
-        "layer": "EL",
-        "champion": {
-          "name": "Carlos Perez",
-          "discord": "CPerezz.eth"
-        }
-      }
-    ],
-    "laymanDescription": "If you deploy a contract that's exactly the same as one that already exists and you include that existing contract’s address in your transaction’s access list, you don’t pay the per-byte code deposit again—the new contract just points to the already-stored code.",
-    "stakeholderImpacts": {
-      "endUsers": {
-        "description": "Cheaper deployments for apps that spin up many identical contracts (e.g., factory wallets or clones); no change to how transactions are sent."
-      },
-      "appDevs": {
-        "description": "Can cut deployment costs for factory/clone patterns by adding a reference contract address to the access list; update builders and deploy scripts to include access lists and handle cases without a discount."
-      },
-      "walletDevs": {
-        "description": "Update gas estimation and access-list generation to surface potential deduplication discounts and clearly indicate when the discount will or won’t apply."
-      },
-      "toolingInfra": {
-        "description": "Estimators, simulators, and tracers should build the CodeHash Access-Set from the access list at tx start and report when deduplication triggers; consider dual estimates (with/without discount)."
-      },
-      "layer2s": {
-        "description": "Rollups mirroring L1 gas semantics may adopt this to lower duplicate deployment costs; coordinate with any increased GAS_CODE_DEPOSIT (e.g., per EIP-8037) and access-list handling in sequencers."
-      },
-      "stakersNodes": {
-        "description": "Minimal runtime overhead; implement building the CodeHash Access-Set and conditional charging; no trie/schema changes. Same-block ordering effects are deterministic."
-      },
-      "clClients": {
-        "description": "No consensus changes on the CL—standard fork coordination only."
-      },
-      "elClients": {
-        "description": "Implement access-list–based set W, hash check on successful CREATE/CREATE2, and conditional code-deposit charging per EIP-2930/2929. Also, consider implementing a code -> address reverse index to avoid complexity to users on finding the required address."
-      }
-    },
-    "benefits": [
-      "Aligns gas costs with actual storage usage for duplicate deployments.",
-      "Deterministic and consensus-safe: depends on access lists and current state, not local databases.",
-      "No new transaction format or reverse indexes; reuses EIP-2930 infrastructure.",
-      "Can yield major savings when GAS_CODE_DEPOSIT is high (e.g., under EIP-8037).",
-      "Encourages bytecode reuse and efficient factory/clone patterns."
-    ]
-  },
-  {
     "id": 8053,
     "title": "Milli-gas for High-precision Gas Metering",
     "status": "Draft",
@@ -4852,6 +4795,63 @@
     ]
   },
   {
+    "id": 8058,
+    "title": "EIP-8058: Contract Bytecode Deduplication Discount",
+    "status": "Draft",
+    "description": "Introduces a gas discount for deploying duplicate contract bytecode by leveraging EIP-2930 access lists.",
+    "author": "Carlos Perez (@CPerezz), Wei Han Ng (@weiihann), Guillaume Ballet (@gballet)",
+    "type": "Standards Track",
+    "category": "Core",
+    "createdDate": "2025-10-22",
+    "discussionLink": "https://ethereum-magicians.org/t/eip-8058-contract-bytecode-deduplication-discount/25933",
+    "reviewer": "bot",
+    "forkRelationships": [
+      {
+        "forkName": "Glamsterdam",
+        "status": "Proposed",
+        "layer": "EL",
+        "champion": {
+          "name": "Carlos Perez",
+          "discord": "CPerezz.eth"
+        }
+      }
+    ],
+    "laymanDescription": "If you deploy a contract that's exactly the same as one that already exists and you include that existing contract’s address in your transaction’s access list, you don’t pay the per-byte code deposit again—the new contract just points to the already-stored code.",
+    "stakeholderImpacts": {
+      "endUsers": {
+        "description": "Cheaper deployments for apps that spin up many identical contracts (e.g., factory wallets or clones); no change to how transactions are sent."
+      },
+      "appDevs": {
+        "description": "Can cut deployment costs for factory/clone patterns by adding a reference contract address to the access list; update builders and deploy scripts to include access lists and handle cases without a discount."
+      },
+      "walletDevs": {
+        "description": "Update gas estimation and access-list generation to surface potential deduplication discounts and clearly indicate when the discount will or won’t apply."
+      },
+      "toolingInfra": {
+        "description": "Estimators, simulators, and tracers should build the CodeHash Access-Set from the access list at tx start and report when deduplication triggers; consider dual estimates (with/without discount)."
+      },
+      "layer2s": {
+        "description": "Rollups mirroring L1 gas semantics may adopt this to lower duplicate deployment costs; coordinate with any increased GAS_CODE_DEPOSIT (e.g., per EIP-8037) and access-list handling in sequencers."
+      },
+      "stakersNodes": {
+        "description": "Minimal runtime overhead; implement building the CodeHash Access-Set and conditional charging; no trie/schema changes. Same-block ordering effects are deterministic."
+      },
+      "clClients": {
+        "description": "No consensus changes on the CL—standard fork coordination only."
+      },
+      "elClients": {
+        "description": "Implement access-list–based set W, hash check on successful CREATE/CREATE2, and conditional code-deposit charging per EIP-2930/2929. Also, consider implementing a code -> address reverse index to avoid complexity to users on finding the required address."
+      }
+    },
+    "benefits": [
+      "Aligns gas costs with actual storage usage for duplicate deployments.",
+      "Deterministic and consensus-safe: depends on access lists and current state, not local databases.",
+      "No new transaction format or reverse indexes; reuses EIP-2930 infrastructure.",
+      "Can yield major savings when GAS_CODE_DEPOSIT is high (e.g., under EIP-8037).",
+      "Encourages bytecode reuse and efficient factory/clone patterns."
+    ]
+  },
+  {
     "id": 8059,
     "title": "Gas Units Rebase for High-precision Metering",
     "status": "Draft",
@@ -4906,5 +4906,5 @@
       "Future-proofs gas costs as hardware improves and state access stays costly.",
       "Avoids major changes to internal EVM logic."
     ]
-  }  
+  }
 ]

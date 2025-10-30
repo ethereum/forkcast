@@ -4398,6 +4398,66 @@
     ]
   },
   {
+    "id": 8024,
+    "title": "EIP-8024: Backward compatible SWAPN, DUPN, EXCHANGE",
+    "status": "Review",
+    "description": "Introduce additional instructions for manipulating the stack which allow accessing the stack at higher depths.",
+    "author": "Francisco Giordano (@frangio), Charles Cooper (@charles-cooper), Alex Beregszaszi (@axic)",
+    "type": "Standards Track",
+    "category": "Core",
+    "createdDate": "2025-08-16",
+    "discussionLink": "https://ethereum-magicians.org/t/eip-8024-backward-compatible-swapn-dupn-exchange/25486",
+    "reviewer": "expert",
+    "forkRelationships": [
+      {
+        "forkName": "Glamsterdam",
+        "status": "Proposed",
+        "layer": "EL",
+        "champion": {
+          "name": "Francisco Giordano",
+          "discord": "frangio_"
+        }
+      }
+    ],
+    "laymanDescription": "Adds new instructions to increase the reachable elements of the stack.",
+    "northStarAlignment": {
+      "improveUX": {
+        "description": "Enables Solidity to easily solve the \"stack too deep\" error that frequently prevents smart contract developers from working effectively."
+      }
+    },
+    "stakeholderImpacts": {
+      "endUsers": {
+        "description": "Cheaper transactions from more efficient bytecode."
+      },
+      "appDevs": {
+        "description": "Once Solidity adopts it, no more workarounds will be necessary for \"stack too deep\" errors."
+      },
+      "walletDevs": {
+        "description": "No impact."
+      },
+      "toolingInfra": {
+        "description": "Must implement support for new instructions."
+      },
+      "layer2s": {
+        "description": "Can adopt new instructions."
+      },
+      "stakersNodes": {
+        "description": "No impact."
+      },
+      "clClients": {
+        "description": "No impact."
+      },
+      "elClients": {
+        "description": "Must implement new instructions."
+      }
+    },
+    "benefits": [
+      "Compilers can generate code more easily without the complexity of spilling.",
+      "New EXCHANGE instruction can replace three instructions with a single one.",
+      "Smart contracts are freer to make heavier use of the stack instead of resorting to memory.",
+    ]
+  },
+  {
     "id": 8030,
     "title": "EIP-8030: P256 transaction support",
     "status": "Draft",

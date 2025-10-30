@@ -8,7 +8,7 @@ import {
   getProposalPrefix,
   getSpecificationUrl,
   parseMarkdownLinks,
-  getHeadlinerLayer,
+  getEipLayer,
 } from '../../utils';
 import { Tooltip, CopyLinkButton } from '../ui';
 import { usePokebalData } from '../../hooks/usePokebalData';
@@ -22,7 +22,7 @@ interface EipCardProps {
 
 export const EipCard: React.FC<EipCardProps> = ({ eip, forkName, handleExternalLinkClick }) => {
   const eipId = `eip-${eip.id}`;
-  const layer = getHeadlinerLayer(eip, forkName);
+  const layer = getEipLayer(eip, forkName);
   const [showChampionDetails, setShowChampionDetails] = useState(false);
 
   // Fetch pokebal data for EIP 7928

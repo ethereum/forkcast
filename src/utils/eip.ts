@@ -65,6 +65,18 @@ export const getHeadlinerLayer = (eip: EIP, forkName?: string): string | null =>
 };
 
 /**
+ * Get the layer (EL/CL) for any EIP in a specific fork
+ */
+export const getEipLayer = (eip: EIP, forkName?: string): 'EL' | 'CL' | null => {
+  if (!forkName) return null;
+
+  const forkRelationship = eip.forkRelationships.find(fork =>
+    fork.forkName.toLowerCase() === forkName.toLowerCase()
+  );
+  return forkRelationship?.layer as 'EL' | 'CL' | null || null;
+};
+
+/**
  * Get the layman title (remove EIP/RIP prefix)
  */
 export const getLaymanTitle = (eip: EIP): string => {

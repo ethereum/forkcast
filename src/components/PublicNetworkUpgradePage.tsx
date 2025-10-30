@@ -10,8 +10,8 @@ import {
   getLaymanTitle,
   getProposalPrefix,
   getSpecificationUrl,
-  getHeadlinerLayer,
-  wasHeadlinerCandidate
+  wasHeadlinerCandidate,
+  getEipLayer
 } from '../utils';
 import {
   getInclusionStageColor,
@@ -50,6 +50,7 @@ const PublicNetworkUpgradePage: React.FC<PublicNetworkUpgradePageProps> = ({
   const [activeSection, setActiveSection] = useState<string>('overview');
   const [isDeclinedExpanded, setIsDeclinedExpanded] = useState(false);
   const [isHeadlinerProposalsExpanded, setIsHeadlinerProposalsExpanded] = useState(false);
+  const [layerFilter, setLayerFilter] = useState<'all' | 'EL' | 'CL'>('all');
   const location = useLocation();
   const { trackUpgradeView, trackLinkClick } = useAnalytics();
 
@@ -115,6 +116,12 @@ const PublicNetworkUpgradePage: React.FC<PublicNetworkUpgradePageProps> = ({
     };
   }, [eips]);
 
+  // Filter EIPs by layer
+  const filterEipsByLayer = (eipsList: EIP[]) => {
+    if (layerFilter === 'all') return eipsList;
+    return eipsList.filter(eip => getEipLayer(eip, forkName) === layerFilter);
+  };
+
   // Generate TOC items
   const tocItems = [
     { id: 'overview', label: 'Overview', type: 'section' as const, count: null as number | null },
@@ -131,13 +138,16 @@ const PublicNetworkUpgradePage: React.FC<PublicNetworkUpgradePageProps> = ({
       ...['Included', 'Scheduled for Inclusion', 'Considered for Inclusion', 'Proposed for Inclusion', 'Declined for Inclusion']
         .flatMap(stage => {
           // For Glamsterdam, exclude headliners from "Proposed for Inclusion" since they have their own section
-          const stageEips = eips.filter(eip => {
+          let stageEips = eips.filter(eip => {
             const matchesStage = getInclusionStage(eip, forkName) === stage;
             if (forkName.toLowerCase() === 'glamsterdam' && stage === 'Proposed for Inclusion') {
               return matchesStage && !isHeadliner(eip, forkName);
             }
             return matchesStage;
           });
+
+          // Apply layer filter
+          stageEips = filterEipsByLayer(stageEips);
 
           if (stageEips.length === 0) return [];
 
@@ -178,7 +188,7 @@ const PublicNetworkUpgradePage: React.FC<PublicNetworkUpgradePageProps> = ({
               : '★';
 
             const proposalPrefix = getProposalPrefix(eip);
-            const layer = isHeadlinerEip ? getHeadlinerLayer(eip, forkName) : null;
+            const layer = getEipLayer(eip, forkName);
 
             return {
               id: `eip-${eip.id}`,
@@ -193,7 +203,7 @@ const PublicNetworkUpgradePage: React.FC<PublicNetworkUpgradePageProps> = ({
 
       // Add headliner candidates section for Glamsterdam if there are any
       ...(forkName.toLowerCase() === 'glamsterdam' ? (() => {
-        const headlinerProposals = eips.filter(eip => wasHeadlinerCandidate(eip, forkName));
+        const headlinerProposals = filterEipsByLayer(eips.filter(eip => wasHeadlinerCandidate(eip, forkName)));
         return headlinerProposals.length > 0 ? [{
           id: 'headliner-proposals',
           label: 'Headliner Proposals',
@@ -296,6 +306,47 @@ const PublicNetworkUpgradePage: React.FC<PublicNetworkUpgradePageProps> = ({
 
         <NetworkUpgradeTimeline currentForkName={forkName} />
 
+        {/* Layer Filter - Glamsterdam only */}
+        {forkName.toLowerCase() === 'glamsterdam' && (
+          <div className="mb-6 flex items-center gap-3">
+            <span className="text-sm font-medium text-slate-600 dark:text-slate-400">Filter EIPs by layer:</span>
+            <div className="flex gap-2">
+              <button
+                onClick={() => setLayerFilter('all')}
+                className={`px-3 py-1.5 text-sm font-medium rounded transition-colors border ${
+                  layerFilter === 'all'
+                    ? 'bg-purple-100 text-purple-700 border-purple-200 dark:bg-purple-900/20 dark:text-purple-300 dark:border-purple-600'
+                    : 'bg-slate-200 text-slate-700 border-slate-300 hover:bg-slate-300 dark:bg-slate-700 dark:text-slate-300 dark:border-slate-600 dark:hover:bg-slate-600'
+                }`}
+              >
+                All
+              </button>
+              <button
+                onClick={() => setLayerFilter('EL')}
+                className={`px-3 py-1.5 text-sm font-medium rounded transition-colors border ${
+                  layerFilter === 'EL'
+                    ? 'bg-indigo-100 text-indigo-700 border-indigo-200 dark:bg-indigo-900/20 dark:text-indigo-300 dark:border-indigo-600'
+                    : 'bg-slate-200 text-slate-700 border-slate-300 hover:bg-slate-300 dark:bg-slate-700 dark:text-slate-300 dark:border-slate-600 dark:hover:bg-slate-600'
+                }`}
+              >
+                <span className="md:hidden">EL</span>
+                <span className="hidden md:inline">EL (Execution Layer)</span>
+              </button>
+              <button
+                onClick={() => setLayerFilter('CL')}
+                className={`px-3 py-1.5 text-sm font-medium rounded transition-colors border ${
+                  layerFilter === 'CL'
+                    ? 'bg-teal-100 text-teal-700 border-teal-200 dark:bg-teal-900/20 dark:text-teal-300 dark:border-teal-600'
+                    : 'bg-slate-200 text-slate-700 border-slate-300 hover:bg-slate-300 dark:bg-slate-700 dark:text-slate-300 dark:border-slate-600 dark:hover:bg-slate-600'
+                }`}
+              >
+                <span className="md:hidden">CL</span>
+                <span className="hidden md:inline">CL (Consensus Layer)</span>
+              </button>
+            </div>
+          </div>
+        )}
+
         <div className="flex gap-8">
           <TableOfContents
             items={tocItems}
@@ -306,7 +357,7 @@ const PublicNetworkUpgradePage: React.FC<PublicNetworkUpgradePageProps> = ({
           <div className="flex-1 min-w-0">
             <div className="space-y-8">
               <OverviewSection
-                eips={eips}
+                eips={filterEipsByLayer(eips)}
                 forkName={forkName}
                 onStageClick={scrollToSection}
               />
@@ -361,13 +412,15 @@ const PublicNetworkUpgradePage: React.FC<PublicNetworkUpgradePageProps> = ({
               ].map(({ stage, description }) => {
                 let stageEips = eips.filter(eip => getInclusionStage(eip, forkName) === stage);
 
-                if (stageEips.length === 0) return null;
-
                 // For Glamsterdam, exclude headliners from "Proposed for Inclusion" since they have their own section
                 if (forkName.toLowerCase() === 'glamsterdam' && stage === 'Proposed for Inclusion') {
                   stageEips = stageEips.filter(eip => !isHeadliner(eip, forkName));
-                  if (stageEips.length === 0) return null;
                 }
+
+                // Apply layer filter
+                stageEips = filterEipsByLayer(stageEips);
+
+                if (stageEips.length === 0) return null;
 
                 // Sort EIPs: headliners first, then by EIP number
                 const sortedStageEips = stageEips.sort((a, b) => {
@@ -522,13 +575,13 @@ const PublicNetworkUpgradePage: React.FC<PublicNetworkUpgradePageProps> = ({
               })}
 
               {/* Headliner Proposals Section (for Glamsterdam) */}
-              {forkName.toLowerCase() === 'glamsterdam' && eips.filter(eip => wasHeadlinerCandidate(eip, forkName)).length > 0 && (
+              {forkName.toLowerCase() === 'glamsterdam' && filterEipsByLayer(eips.filter(eip => wasHeadlinerCandidate(eip, forkName))).length > 0 && (
                 <div className="space-y-6" id="headliner-proposals" data-section>
                   <div className="border-b border-slate-200 dark:border-slate-700 pb-4">
                     <div className="flex items-center gap-3 mb-2">
                       <h2 className="text-xl font-medium text-slate-900 dark:text-slate-100">Headliner Proposals</h2>
                       <span className="px-2 py-1 text-xs font-medium rounded bg-purple-100 text-purple-700 dark:bg-purple-900/20 dark:text-purple-300">
-                        {eips.filter(eip => wasHeadlinerCandidate(eip, forkName)).length} EIP{eips.filter(eip => wasHeadlinerCandidate(eip, forkName)).length !== 1 ? 's' : ''}
+                        {filterEipsByLayer(eips.filter(eip => wasHeadlinerCandidate(eip, forkName))).length} EIP{filterEipsByLayer(eips.filter(eip => wasHeadlinerCandidate(eip, forkName))).length !== 1 ? 's' : ''}
                       </span>
                       <button
                         onClick={() => setIsHeadlinerProposalsExpanded(!isHeadlinerProposalsExpanded)}
@@ -558,7 +611,7 @@ const PublicNetworkUpgradePage: React.FC<PublicNetworkUpgradePageProps> = ({
                   {!isHeadlinerProposalsExpanded ? (
                     <div className="bg-purple-50 dark:bg-purple-900/10 border border-purple-200 dark:border-purple-600 rounded p-4">
                       <p className="text-sm text-slate-600 dark:text-slate-300">
-                        {eips.filter(eip => wasHeadlinerCandidate(eip, forkName)).length} headliner proposal{eips.filter(eip => wasHeadlinerCandidate(eip, forkName)).length !== 1 ? 's' : ''} were considered for inclusion in this network upgrade.
+                        {filterEipsByLayer(eips.filter(eip => wasHeadlinerCandidate(eip, forkName))).length} headliner proposal{filterEipsByLayer(eips.filter(eip => wasHeadlinerCandidate(eip, forkName))).length !== 1 ? 's' : ''} were considered for inclusion in this network upgrade.
                         <button
                           onClick={() => setIsHeadlinerProposalsExpanded(true)}
                           className="ml-1 text-purple-700 hover:text-purple-900 dark:text-purple-300 dark:hover:text-purple-100 underline decoration-1 underline-offset-2 transition-colors"
@@ -578,11 +631,11 @@ const PublicNetworkUpgradePage: React.FC<PublicNetworkUpgradePageProps> = ({
                         }}
                       />
 
-                      {eips
+                      {filterEipsByLayer(eips)
                         .filter(eip => wasHeadlinerCandidate(eip, forkName))
                         .sort((a, b) => {
-                          const layerA = getHeadlinerLayer(a, forkName);
-                          const layerB = getHeadlinerLayer(b, forkName);
+                          const layerA = getEipLayer(a, forkName);
+                          const layerB = getEipLayer(b, forkName);
 
                           // Sort by layer first (EL before CL)
                           if (layerA === 'EL' && layerB === 'CL') return -1;

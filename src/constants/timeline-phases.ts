@@ -26,14 +26,14 @@ export const GLAMSTERDAM_TIMELINE_PHASES: TimelinePhase[] = [
     title: 'Non-Headliner EIP Proposals',
     dateRange: 'July 21 - Aug 21',
     description: 'Non-headliner EIPs can now be proposed for inclusion in Glamsterdam.',
-    status: 'current'
+    status: 'completed'
   },
   {
     id: 'cfi-decisions',
     title: 'Non-Headliner EIP CFI Decisions',
     dateRange: 'Sep 4 & 11',
     description: 'ACDC and ACDE calls select which Proposed for Inclusion EIPs advance to Considered for Inclusion.',
-    status: 'upcoming'
+    status: 'current'
   },
   {
     id: 'cfi-to-sfi',

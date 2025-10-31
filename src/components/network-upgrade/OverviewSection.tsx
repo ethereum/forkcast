@@ -134,14 +134,14 @@ export const OverviewSection: React.FC<OverviewSectionProps> = ({
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
               </svg>
               <div>
-                <h4 className="font-medium text-blue-900 dark:text-blue-100 text-sm mb-1">Testnet Rollout Announced</h4>
+                <h4 className="font-medium text-blue-900 dark:text-blue-100 text-sm mb-1">Mainnet Deployment Scheduled</h4>
                 <p className="text-blue-800 dark:text-blue-200 text-xs leading-relaxed">
-                  Fusaka testnet deployments begin October 1st with Holešky, followed by Sepolia (Oct 14) and Hoodi (Oct 28). <a
+                  Fusaka testnet deployments have completed successfully on Holešky, Sepolia, and Hoodi. Mainnet deployment is scheduled for <strong>December 3rd</strong>. <a
                     href="https://blog.ethereum.org/2025/09/26/fusaka-testnet-announcement"
                     target="_blank"
                     rel="noopener noreferrer"
                     className="text-blue-900 dark:text-blue-100 hover:text-blue-700 dark:hover:text-blue-300 underline decoration-1 underline-offset-2 transition-colors font-medium"
-                  >Read the full announcement</a> for technical details and client release information.
+                  >View the testnet announcement</a> for client release details.
                 </p>
               </div>
             </div>

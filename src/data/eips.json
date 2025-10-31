@@ -3013,7 +3013,7 @@
     "id": 7904,
     "title": "EIP-7904: General Repricing",
     "status": "Draft",
-    "description": "Proposal for adjusting gas costs to better reflect computational complexity of operations.",
+    "description": "Gas Cost Repricing to reflect computational complexity and transaction throughput increase.",
     "author": "Jacek Glen (@JacekGlen), Lukasz Glen (@lukasz-glen), Maria Silva (@misilva73)",
     "type": "Standards Track",
     "category": "Core",
@@ -3031,7 +3031,12 @@
         }
       }
     ],
-    "laymanDescription": "Rebalances gas costs to ensure they accurately reflect the computational workload of operations, enhancing network efficiency.",
+    "laymanDescription": "Updates gas costs of all compute operatons to ensure they accurately reflect their computational workload.",
+    "northStarAlignment": {
+      "scaleL1": {
+        "description": "Increases the throughput of compute operations by optimizing gas costs to better match actual resource usage."
+      }
+    },
     "stakeholderImpacts": {
       "endUsers": {
         "description": "Users may see cost changes for certain transactions."
@@ -3060,9 +3065,8 @@
     },
     "benefits": [
       "Aligns gas pricing with empirical computational complexity.",
-      "Improves network throughput by optimizing pricing schemes.",
-      "Enhances the security of the network against token abuse.",
-      "Simplifies cost estimation for developers and users alike."
+      "Improves network throughput by reducing gas cost of compute operations.",
+      "Enhances the security of the network against abuse of single bottlenecks."
     ]
   },
   {
@@ -3947,7 +3951,7 @@
     "id": 7971,
     "title": "Hard Limits for Transient Storage",
     "status": "Draft",
-    "description": "Reduce gas costs for transient storage operations (TLOAD and TSTORE) by using constant pricing and introduce a transaction-global cap on transient storage slots to mitigate denial-of-service via excessive allocation. This lowers costs for common use cases while preserving protections against resource exhaustion.",
+    "description": "Decrease costs for TLOAD and TSTORE with a transaction-global limit.",
     "author": "Charles Cooper (@charles-cooper), Ben Adams (@benaadams), Maria Silva (@misilva73), Jochem Brouwer (@jochem-brouwer)",
     "type": "Standards Track",
     "category": "Core",
@@ -3965,7 +3969,12 @@
         }
       }
     ],
-    "laymanDescription": "Makes temporary, one-transaction storage cheaper and sets a hard cap on how much can be used per transaction. This reduces gas for common patterns while protecting nodes from excessive memory use.",
+    "laymanDescription": "Makes transient storage cheaper and sets a hard cap on how much can be used per transaction. This reduces gas for common patterns while protecting nodes from excessive memory use.",
+    "northStarAlignment": {
+      "scaleL1": {
+        "description": "Reduces the costs of transient storage, thus improving its usability. Pushing more users to leverage transient storage will ease the burden on state access."
+      }
+    },
     "stakeholderImpacts": {
       "endUsers": {
         "description": "May lower fees in apps using transient storage; otherwise no behavior change. Possible failures if the global cap is reached."
@@ -3993,7 +4002,7 @@
       }
     },
     "benefits": [
-      "Lower gas for transient storage via constant pricing",
+      "Lower gas for transient storage operatins",
       "Per-transaction cap prevents excessive transient memory use",
       "Encourages transient-storage patterns without persistent writes",
       "Simplifies cost reasoning for compilers and tooling"
@@ -4289,7 +4298,7 @@
     "id": 8011,
     "title": "EIP-8011: Multidimensional Gas Metering",
     "status": "Draft",
-    "description": "Proposal to measure gas usage across multiple resource dimensions, improving efficiency and control.",
+    "description": "Gas accounting by EVM resource, increasing throughput and improving resource usage controls, with minimal changes to the protocol and UX.",
     "author": "Maria Silva (@misilva73)",
     "type": "Standards Track",
     "category": "Core",
@@ -4307,7 +4316,12 @@
         }
       }
     ],
-    "laymanDescription": "Improves transaction handling by allowing separate metering for computation, data access, and storage, enhancing Ethereum's ability to handle transactions effectively.",
+    "laymanDescription": "Improves resource allocation by allowing separate metering for computation, data access, and storage, enhancing Ethereum's ability to handle resource limits more effectively.",
+    "northStarAlignment": {
+      "scaleL1": {
+        "description": "More expresssive metering allows for better resource management, leading to higher throughput and reduced congestion."
+      }
+    },
     "stakeholderImpacts": {
       "endUsers": {
         "description": "Users experience no change in transaction behavior while enjoying improved efficiency in resource management."
@@ -4335,9 +4349,9 @@
       }
     },
     "benefits": [
-      "Enhances efficiency by decoupling resource metering from block congestion.",
-      "Improved transaction handling without altering user experience.",
+      "Blocks can carry transactions that stress distinct resources simultaneously, improving packing efficiency and throughput.",
       "Finer control over excessive resource usage leads to fewer network overloads.",
+      "No impact to user experience.",
       "Paves the way for advanced pricing models without major protocol disruptions."
     ]
   },
@@ -4522,7 +4536,7 @@
     "id": 8037,
     "title": "EIP-8037: State Creation Gas Cost Increase",
     "status": "Draft",
-    "description": "Proposes to increase gas costs for state creation to manage growth and improve Ethereum's scalability.",
+    "description": "Harmonization and increase of state creation gas costs to mitigate state growth and unblock scaling.",
     "author": "Maria Silva (@misilva73), Carlos Perez (@CPerezz), Jochem Brouwer (@jochem-brouwer), Ansgar Dietrichs (@adietrichs)",
     "type": "Standards Track",
     "category": "Core",
@@ -4540,7 +4554,12 @@
         }
       }
     ],
-    "laymanDescription": "Increases costs associated with creating new states, aiming to reduce excessive state growth and enhance scalability.",
+    "laymanDescription": "Proposes to increase gas costs for state creation to mitigate state growth under higher throughput regimes.",
+    "northStarAlignment": {
+      "scaleL1": {
+        "description": "By making state creation more expensive, this EIP helps control state growth, which is crucial for scaling Ethereum."
+      }
+    },
     "stakeholderImpacts": {
       "endUsers": {
         "description": "Users may experience higher transaction fees for creating new accounts and contracts, but improved scalability benefits all."
@@ -4568,9 +4587,8 @@
       }
     },
     "benefits": [
-      "Standardizes costs across all state creation operations, promoting fairness.",
-      "Reduces excessive state growth, enhancing Ethereum's overall scalability.",
-      "Improved user experience as scalability bottlenecks are addressed.",
+      "Standardizes costs across all state creation operations.",
+      "Mitigates excessive state growth, enhancing Ethereum's overall scalability.",
       "Encourages developers to optimize contract designs due to increased costs."
     ]
   },
@@ -4578,7 +4596,7 @@
     "id": 8038,
     "title": "EIP-8038: State-access gas cost increase",
     "status": "Draft",
-    "description": "Proposes an increase in gas costs for state-access operations to reflect Ethereum's expanded state and performance needs.",
+    "description": "Increases the gas cost of state-access operations to reflect Ethereum’s larger state.",
     "author": "Maria Silva (@misilva73), Wei Han Ng (@weiihann), Ansgar Dietrichs (@adietrichs)",
     "type": "Standards Track",
     "category": "Core",
@@ -4596,10 +4614,15 @@
         }
       }
     ],
-    "laymanDescription": "Increases gas costs for accessing state data to ensure alignment with current performance and resource needs, crucial for optimal network functionality.",
+    "laymanDescription": "Increases gas costs for accessing state data to ensure alignment with current performance.",
+    "northStarAlignment": {
+      "scaleL1": {
+        "description": ""
+      }
+    },
     "stakeholderImpacts": {
       "endUsers": {
-        "description": "Users may experience minor cost adjustments for transactions related to state access, ensuring smoother network performance."
+        "description": "Users may experience cost adjustments for transactions related to state access."
       },
       "appDevs": {
         "description": "Developers must account for higher state access costs, potentially leading to adjustments in gas estimations during deployment."
@@ -4626,8 +4649,7 @@
     "benefits": [
       "Improved alignment of gas costs with actual state access performance.",
       "Enhanced network performance while maintaining optimal resource usage.",
-      "Encourages more efficient smart contract design by reflecting true operational costs.",
-      "Incentivizes developers to optimize state access patterns for better efficiency."
+      "Encourages more efficient smart contract design by reflecting true operational costs."
     ]
   },
   {
@@ -4690,7 +4712,7 @@
     "id": 8053,
     "title": "Milli-gas for High-precision Gas Metering",
     "status": "Draft",
-    "description": "This proposal introduces the milli-gas counter as the EVM’s internal gas accounting. Gas costs are defined and tracked in milli_gas, then rounded up to gas at the end of execution. Gas limits and transaction fees continue to be computed and verified using the current gas_used counter, enabling more precise accounting of cheap compute without changing UX.",
+    "description": "Adds `milli-gas` as the EVM’s internal gas accounting unit, reducing rounding errors without impacting UX.",
     "author": "Maria Silva (@misilva73)",
     "type": "Standards Track",
     "category": "Core",
@@ -4709,12 +4731,17 @@
       }
     ],
     "laymanDescription": "Counts gas in thousandths (milli-gas) during EVM execution for finer precision, then rounds to normal gas at transaction end. Fees and limits stay the same, so users and apps shouldn’t notice changes.",
+    "northStarAlignment": {
+      "scaleL1": {
+        "description": "Enables a more precise accounting of efficient compute operations, thus removing an average of 4% loss in block space per transaction from roundig errors."
+      }
+    },
     "stakeholderImpacts": {
       "endUsers": {
         "description": "No UX or fee changes; gas limits and pricing remain computed with gas_used, so behavior and costs are unchanged."
       },
       "appDevs": {
-        "description": "Contracts unaffected; no code changes expected since limits and fees still use gas_used rather than the new milli_gas counter."
+        "description": "Minimal code changes expected since limits and fees still use gas_used rather than the new milli_gas counter. `GAS` opcode will report in `milli-gas`."
       },
       "walletDevs": {
         "description": "Transaction fee estimation and validation remain tied to gas_used; no API surface changes described or wallet-side modifications expected."
@@ -4859,7 +4886,7 @@
     "id": 8059,
     "title": "Gas Units Rebase for High-precision Metering",
     "status": "Draft",
-    "description": "This proposal rebases Ethereum’s gas unit by a factor of 1,000 to enable high-precision metering without fractional gas. All gas-related parameters and variables are increased by that factor. This reduces rounding errors when repricing EVM operations and future-proofs gas costs as hardware improves and state access remains costly, while avoiding major internal EVM logic changes.",
+    "description": "Gas parameters and variables are increased to a factor of `REBASE_FACTOR` to reduce rounding errors without major changes to the EVM.",
     "author": "Maria Silva (@misilva73)",
     "type": "Standards Track",
     "category": "Core",
@@ -4877,7 +4904,12 @@
         }
       }
     ],
-    "laymanDescription": "Ethereum measures work in gas. This change multiplies the size of one gas unit by 1,000 so gas usage can be measured more precisely without decimals. The math inside clients is updated, but how transactions behave stays the same.",
+    "laymanDescription": "This proposal rebases Ethereum’s gas unit by a factor of 1,000 to enable high-precision metering without fractional gas. All gas-related parameters and variables are increased by that factor.",
+    "northStarAlignment": {
+      "scaleL1": {
+        "description": "Enables a more precise accounting of efficient compute operations, thus removing an average of 4% loss in block space per transaction from roundig errors."
+      }
+    },
     "stakeholderImpacts": {
       "endUsers": {
         "description": "Users may notice gas numbers change, since each unit is 1,000× smaller, but transaction behavior and protocol rules stay the same."

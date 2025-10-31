@@ -64,20 +64,20 @@ export const FUSAKA_TIMELINE_PHASES: TimelinePhase[] = [
     title: 'Sepolia Testnet Deployment',
     dateRange: 'Oct 14',
     description: 'Deploy Fusaka to the permissioned validator testnet.',
-    status: 'current'
+    status: 'completed'
   },
   {
     id: 'hoodi',
     title: 'Hoodi Testnet Deployment',
     dateRange: 'Oct 28',
     description: 'Deploy Fusaka to the permissionless validator testnet for final testing.',
-    status: 'upcoming'
+    status: 'completed'
   },
   {
     id: 'mainnet',
     title: 'Mainnet Deployment',
-    dateRange: 'TBD',
+    dateRange: 'Dec 3',
     description: 'Final deployment of Fusaka to Ethereum mainnet after successful testnet validation.',
-    status: 'upcoming'
+    status: 'current'
   }
 ];

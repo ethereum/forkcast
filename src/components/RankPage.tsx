@@ -86,8 +86,33 @@ const RankPage: React.FC = () => {
         eip,
         tier: null,
       }));
-    setItems(glamsterdamHeadliners);
+
+    // Try to load saved rankings from localStorage
+    const savedRankings = localStorage.getItem("glamsterdam-rankings");
+    if (savedRankings) {
+      try {
+        const parsed = JSON.parse(savedRankings);
+        // Merge saved tier assignments with current EIP data
+        const merged = glamsterdamHeadliners.map((item) => {
+          const saved = parsed.find((s: TierItem) => s.id === item.id);
+          return saved ? { ...item, tier: saved.tier } : item;
+        });
+        setItems(merged);
+      } catch (e) {
+        // If parsing fails, just use default
+        setItems(glamsterdamHeadliners);
+      }
+    } else {
+      setItems(glamsterdamHeadliners);
+    }
   }, []);
+
+  // Save rankings to localStorage whenever they change
+  useEffect(() => {
+    if (items.length > 0) {
+      localStorage.setItem("glamsterdam-rankings", JSON.stringify(items));
+    }
+  }, [items]);
 
   const handleDragStart = (e: React.DragEvent, itemId: string) => {
     setDraggedItem(itemId);
@@ -462,6 +487,7 @@ const RankPage: React.FC = () => {
 
   const handleReset = () => {
     setItems((prev) => prev.map((item) => ({ ...item, tier: null })));
+    localStorage.removeItem("glamsterdam-rankings");
   };
 
   const handleExternalLinkClick = (linkType: string, url: string) => {
@@ -536,7 +562,7 @@ const RankPage: React.FC = () => {
                   </svg>
                 </div>
                 <p className="text-xs leading-relaxed text-slate-600 dark:text-slate-300">
-                  The deadline for proposal submissions is October 30th, 2025.
+                  The deadline for proposal submissions was October 30th, 2025.
                 </p>
               </div>
             </div>

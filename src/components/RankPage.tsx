@@ -203,15 +203,19 @@ const RankPage: React.FC = () => {
       rankedCount: rankedItems.length,
     });
 
-    // Canvas dimensions
-    const canvasWidth = 540 * scale;
+    // Canvas dimensions - two column layout
+    const canvasWidth = 720 * scale; // Wider canvas for more text
     const cardHeight = 36 * scale;
     const cardGap = 6 * scale;
+    const columnGap = 6 * scale;
+
+    // Calculate canvas height based on two-column layout
     const canvasHeight =
       60 * scale +
       TIERS.reduce((acc, tier) => {
         const count = getItemsInTier(tier.id).length;
-        return acc + Math.max(1, count) * (cardHeight + cardGap);
+        const rows = Math.max(1, Math.ceil(count / 2)); // At least 1 row even if empty
+        return acc + rows * (cardHeight + cardGap);
       }, 0);
 
     const canvas = document.createElement("canvas");
@@ -243,14 +247,17 @@ const RankPage: React.FC = () => {
     const blockPadX = 4 * scale;
     const blockRadius = 12 * scale;
     const leftPad = bandWidth + 8 * scale;
-    const cardWidth = canvasWidth - leftPad - 4 * scale;
+    const availableWidth = canvasWidth - leftPad - 4 * scale;
+    const cardWidth = (availableWidth - columnGap) / 2; // Split into two columns
 
-    // Draw tiers and cards
+    // Draw tiers and cards in two columns
     let y = 6 * scale;
     TIERS.forEach((tier) => {
       const itemsInTier = getItemsInTier(tier.id);
-      const tierHeight =
-        Math.max(1, itemsInTier.length) * (cardHeight + cardGap);
+
+      const rows = Math.max(1, Math.ceil(itemsInTier.length / 2));
+      const tierHeight = rows * (cardHeight + cardGap);
+
       // Draw background block for the tier
       ctx.save();
       ctx.beginPath();
@@ -275,13 +282,18 @@ const RankPage: React.FC = () => {
       ctx.fillText(tier.id, bandWidth / 2, y + tierHeight / 2);
       ctx.restore();
 
-      // Draw EIP cards
+      // Draw EIP cards in two columns
       if (itemsInTier.length > 0) {
         itemsInTier.forEach((item, idx) => {
+          const row = Math.floor(idx / 2);
+          const col = idx % 2;
+          const cardX = leftPad + col * (cardWidth + columnGap);
+          const cardY = y + row * (cardHeight + cardGap) + cardGap / 2;
+
           drawCard(
             ctx,
-            leftPad,
-            y + idx * (cardHeight + cardGap) + cardGap / 2,
+            cardX,
+            cardY,
             cardWidth,
             cardHeight,
             blockRadius,

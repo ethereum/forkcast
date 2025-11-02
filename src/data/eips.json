@@ -4420,6 +4420,62 @@
     ]
   },
   {
+    "id": 8013,
+    "title": "Static relative jumps and calls for the EVM",
+    "status": "Draft",
+    "description": "Introduce five EVM instructions (RJUMP, RJUMPI, RJUMPV, RJUMPSUB, RJUMPSUBV) that encode destinations as signed immediates, replacing most dynamic JUMP patterns and enabling cheaper, more easily validated control flow.",
+    "author": "Greg Colvin, Alex Beregszaszi, Andrei Maiboroda, Paweł Bylica",
+    "type": "Standards Track",
+    "category": "Core",
+    "createdDate": "2025-08-19",
+    "discussionLink": "https://ethereum-magicians.org/t/eip-8013-static-relative-jumps-and-calls-for-the-evm/25222",
+    "reviewer": "bot",
+    "forkRelationships": [
+      {
+        "forkName": "Glamsterdam",
+        "status": "Proposed",
+        "layer": "EL",
+        "champion": {
+          "name": "Greg Colvin",
+          "email": "greg@colvin.org"
+        }
+      }
+    ],
+    "laymanDescription": "Adds five new EVM jump/call instructions that point to nearby code using a small offset instead of a pushed address, making contracts cheaper to run and easier for clients and tools to verify after Glamsterdam.",
+    "stakeholderImpacts": {
+      "endUsers": {
+        "description": "May see lower gas from contracts using static jumps; no direct action or UX impact."
+      },
+      "appDevs": {
+        "description": "Need to emit five new RJUMP opcodes to gain cost/perf; requires building for Glamsterdam EVM and EIP-7979."
+      },
+      "walletDevs": {
+        "description": "Update opcode tables and simulators so bytecode with RJUMP* disassembles and estimates gas correctly; minimal runtime changes."
+      },
+      "toolingInfra": {
+        "description": "Static analyzers, tracers, bytecode validators must understand relative offset encoding and extended checks from EIP-7979."
+      },
+      "layer2s": {
+        "description": "L2s implementing Glamsterdam EVM need the same five opcodes and validation or contracts using them cannot deploy."
+      },
+      "stakersNodes": {
+        "description": "Validators must run updated EL clients for Glamsterdam; failure to upgrade will lead to consensus failures on new blocks."
+      },
+      "clClients": {
+        "description": "Complexity limited to fork configuration and Engine API versioning so EL can announce support for new opcodes."
+      },
+      "elClients": {
+        "description": "Must add RJUMP, RJUMPI, RJUMPV, RJUMPSUB, RJUMPSUBV decoding, immediate validation, gas accounting, and tests extending EIP-7979."
+      }
+    },
+    "benefits": [
+      "Cheaper structured control flow than PUSHn+JUMP.",
+      "Improves static analysis by fixing jump targets.",
+      "Reduces runtime destination checks and gas.",
+      "Aligns with EOF/EIP-7979 validation for immediates."
+    ]
+  },  
+  {
     "id": 8024,
     "title": "EIP-8024: Backward compatible SWAPN, DUPN, EXCHANGE",
     "status": "Review",
@@ -5065,5 +5121,173 @@
       "Future-proofs gas costs as hardware improves and state access stays costly.",
       "Avoids major changes to internal EVM logic."
     ]
-  }
+  },
+  {
+    "id": 8062,
+    "title": "Add sweep withdrawal fee for 0x01 validators",
+    "status": "Draft",
+    "description": "Imposes a 0.05% fee on partial (“sweep”) withdrawals from 0x01 validators to account for resources and encourage 0x02 migration.",
+    "author": "Anders Elowsson (@anderselowsson), Toni Wahrstätter (@nerolation), Francesco D'Amato (@fradamt), Ben Adams (@benaadams), Maria Inês Silva (@misilva73)",
+    "type": "Standards Track",
+    "category": "Core",
+    "createdDate": "2025-10-28",
+    "discussionLink": "https://ethereum-magicians.org/t/eip-8062-add-sweep-withdrawal-fee-for-0x01-validators/26003",
+    "reviewer": "bot",
+    "forkRelationships": [
+      {
+        "forkName": "Glamsterdam",
+        "status": "Proposed",
+        "layer": "CL",
+        "champion": {
+          "name": "Anders Elowsson",
+          "discord": "anderselowsson"
+        }
+      }
+    ],
+    "laymanDescription": "Adds a small 0.05% fee when old-style 0x01 validators auto-withdraw extra balance, keeping consolidation and costs fair.",
+    "stakeholderImpacts": {
+      "endUsers": {
+        "description": "End users who do not run validators are unaffected; change happens inside protocol accounting for validator sweeps only now implemented."
+      },
+      "appDevs": {
+        "description": "Apps are unaffected unless they surface validator sweep amounts and must now display the slightly reduced 0x01 payouts exactly received."
+      },
+      "walletDevs": {
+        "description": "Wallets tracking staking rewards should show 0.05% less for 0x01 sweeps so balances match beacon-chain output and EL state changes."
+      },
+      "toolingInfra": {
+        "description": "Explorers and accounting tools must model the new fee on 0x01 sweeps to keep reward reports consistent across CL/EL data."
+      },
+      "layer2s": {
+        "description": "L2 teams operating Ethereum validators with 0x01 credentials get slightly smaller sweep credits; other L2 systems unaffected by this proposal."
+      },
+      "stakersNodes": {
+        "description": "0x01 validator operators will receive 0.05% less per sweep and are nudged toward consolidating or upgrading to 0x02 validator types."
+      },
+      "clClients": {
+        "description": "Consensus clients add a constant and arithmetic in process_withdrawals; low complexity but consensus-critical so thorough tests required before Glamsterdam activation."
+      },
+      "elClients": {
+        "description": "Execution clients must accept reduced sweep amounts and reflect the fee’s EL state change; integration surface is minimal for fork."
+      }
+    },
+    "benefits": [
+      "Makes 0x01 sweep withdrawals slightly costed instead of free.",
+      "Improves fairness between legacy 0x01 and compounding 0x02 validators.",
+      "Incentivizes operators to consolidate for the benefit of the network",
+      "Aligns CL withdrawals with EL resource usage."
+    ]
+  },
+  {
+    "id": 8068,
+    "title": "Neutral effective balance design",
+    "status": "Draft",
+    "description": "This EIP proposes a neutral effective balance design to ensure 0x01 (skimming) and 0x02 (compounding) validators receive equal yields by adjusting hysteresis thresholds, resetting EB after withdrawals, and preventing gaming to support stake consolidation.",
+    "author": "Anders Elowsson (@anderselowsson)",
+    "type": "Standards Track",
+    "category": "Core",
+    "createdDate": "2025-10-28",
+    "discussionLink": "https://ethereum-magicians.org/t/eip-8068-neutral-effective-balance-design/26015",
+    "reviewer": "bot",
+    "forkRelationships": [
+      {
+        "forkName": "Glamsterdam",
+        "status": "Proposed",
+        "layer": "CL",
+        "champion": {
+          "name": "Anders Elowsson",
+          "discord": "anderselowsson"
+        }
+      }
+    ],
+    "laymanDescription": "Makes staking treat ‘skimmed’ and ‘compounding’ validators the same by tweaking effective balance rules, so operators can consolidate without losing yield.",
+    "stakeholderImpacts": {
+      "endUsers": {
+        "description": "No direct effect; staking reward accounting stays inside the consensus layer and user transactions stay unchanged."
+      },
+      "appDevs": {
+        "description": "No app-facing protocol change; validator consolidation does not alter JSON-RPC, gas rules, or transaction semantics."
+      },
+      "walletDevs": {
+        "description": "Deposit/withdrawal handling unchanged; wallets may optionally display validator-mode neutrality but no mandatory code updates."
+      },
+      "toolingInfra": {
+        "description": "Staking dashboards and monitoring may update yield calculations to reflect neutral EB and the revised hysteresis thresholds."
+      },
+      "layer2s": {
+        "description": "No rollup/L2 logic changes identified; this is an L1 consensus-layer adjustment to validator accounting only."
+      },
+      "stakersNodes": {
+        "description": "0x02 operators get yields aligned with 0x01 and should adopt specs adding neutral EB, reset-on-withdrawal, and new thresholds."
+      },
+      "clClients": {
+        "description": "Must implement neutral EB math, ±0.5/±0.25 hysteresis, and one-time temporary_upward_threshold after withdrawals; moderate integration effort."
+      },
+      "elClients": {
+        "description": "No execution-layer work identified; EB and hysteresis are handled in consensus specs, so EL code can remain unchanged."
+      }
+    },
+    "benefits": [
+      "Equalizes rewards for 0x01 and 0x02 validators.",
+      "Improves capital efficiency for compounding validators.",
+      "Removes hysteresis-gaming opportunities.",
+      "Supports stake consolidation toward fast finality."
+    ]
+  },
+  {
+    "id": 8070,
+    "title": "Sparse Blobpool",
+    "status": "Draft",
+    "description": "Introduces a sparse blobpool for the Execution Layer that fetches full payloads for blob-carrying transactions with probability 0.15 and otherwise samples custody-aligned cells, reusing the Consensus Layer custody set to reduce average blobpool bandwidth by about 4x while preserving data availability.",
+    "author": "Raúl Kripalani (@raulk), Bosul Mun (@healthykim), Francesco D'Amato (@fradamt), Csaba Kiraly (@cskiraly), Felix Lange (@fjl), Marios Ioannou (@mariosioannou-create), Alex Stokes (@ralexstokes)",
+    "type": "Standards Track",
+    "category": "Core",
+    "createdDate": "2025-10-29",
+    "discussionLink": "https://ethereum-magicians.org/t/eip-8070-sparse-blobpool/26023",
+    "reviewer": "bot",
+    "forkRelationships": [
+      {
+        "forkName": "Glamsterdam",
+        "status": "Proposed",
+        "layer": "EL",
+        "champion": {
+          "name": "Raúl Kripalani",
+          "discord": "raulvk"
+        }
+      }
+    ],
+    "laymanDescription": "Ethereum nodes fully download only some blob transactions and sample the exact blob pieces the consensus layer cares about, cutting Execution Layer bandwidth roughly fourfold while keeping blob transactions moving.",
+    "stakeholderImpacts": {
+      "endUsers": {
+        "description": "No user-facing change; blob transactions stay reliable as BPO forks raise throughput, reducing failures from Execution Layer bandwidth pressure."
+      },
+      "appDevs": {
+        "description": "Application logic unchanged; contracts or rollup sequencers relying on blob data get steadier L1 availability during busy network-wide periods."
+      },
+      "walletDevs": {
+        "description": "Wallets submitting type-3 blob transactions gain more reliable propagation; minimal adjustments, mainly ensuring compatibility with updated EL peers locally."
+      },
+      "toolingInfra": {
+        "description": "Block explorers, relays and monitors should surface partial-blob availability and new eth/71 fields to reflect node sampling state."
+      },
+      "layer2s": {
+        "description": "Rollups posting blobs to L1 face lower risk of EL blobpool saturation, keeping DA publication within expected windows."
+      },
+      "stakersNodes": {
+        "description": "Validator operators must run EL clients supporting sparse blobpool to match CL custody; operational workflows stay largely intact."
+      },
+      "clClients": {
+        "description": "Consensus clients need to send custody updates over Engine API and tolerate EL sampling, adding moderate networking and API work."
+      },
+      "elClients": {
+        "description": "Execution clients implement eth/71, blobpool sampling, storage for custody cells and builder policies—largest code changes and testing burden."
+      }
+    },
+    "benefits": [
+      "Cuts EL blobpool bandwidth to ~25% of current design.",
+      "Keeps CL and EL sampling aligned for DA checks.",
+      "Preserves stochastic blobpool without complex sharding.",
+      "Supports future BPO fork throughput increases."
+    ]
+  }    
 ]

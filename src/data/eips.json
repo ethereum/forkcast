@@ -583,7 +583,7 @@
         }
       }
     ],
-    "laymanDescription": "Moves Ethereum transactions from RLP to SSZ. This changes serialization and the block header’s transactions_root, enabling more efficient proofs and future flexibility. Users should see no behavioral change.",
+    "laymanDescription": "Moves Ethereum transactions from RLP to SSZ. This changes serialization and the block header's transactions_root, enabling more efficient proofs and future flexibility. Users should see no behavioral change.",
     "stakeholderImpacts": {
       "endUsers": {
         "description": "No visible change; sending and receiving transactions remains the same. Migration affects encoding and proofs internally."
@@ -639,7 +639,7 @@
         }
       }
     ],
-    "laymanDescription": "Ethereum receipts, which record each transaction’s outcome, currently use RLP and are hard to prove or verify. This proposal moves receipts to SSZ, enabling easier proofs, removing bloated logs bloom, and adding data to verify common receipt information.",
+    "laymanDescription": "Ethereum receipts, which record each transaction's outcome, currently use RLP and are hard to prove or verify. This proposal moves receipts to SSZ, enabling easier proofs, removing bloated logs bloom, and adding data to verify common receipt information.",
     "stakeholderImpacts": {
       "endUsers": {
         "description": "The EIP does not describe direct end-user changes or new behavior, only internal receipt encoding."
@@ -4716,7 +4716,7 @@
     "id": 8038,
     "title": "EIP-8038: State-access gas cost increase",
     "status": "Draft",
-    "description": "Increases the gas cost of state-access operations to reflect Ethereum’s larger state.",
+    "description": "Increases the gas cost of state-access operations to reflect Ethereum's larger state.",
     "author": "Maria Silva (@misilva73), Wei Han Ng (@weiihann), Ansgar Dietrichs (@adietrichs)",
     "type": "Standards Track",
     "category": "Core",
@@ -4891,7 +4891,7 @@
     "id": 8053,
     "title": "Milli-gas for High-precision Gas Metering",
     "status": "Draft",
-    "description": "Adds `milli-gas` as the EVM’s internal gas accounting unit, reducing rounding errors without impacting UX.",
+    "description": "Adds `milli-gas` as the EVM's internal gas accounting unit, reducing rounding errors without impacting UX.",
     "author": "Maria Silva (@misilva73)",
     "type": "Standards Track",
     "category": "Core",
@@ -4909,7 +4909,7 @@
         }
       }
     ],
-    "laymanDescription": "Counts gas in thousandths (milli-gas) during EVM execution for finer precision, then rounds to normal gas at transaction end. Fees and limits stay the same, so users and apps shouldn’t notice changes.",
+    "laymanDescription": "Counts gas in thousandths (milli-gas) during EVM execution for finer precision, then rounds to normal gas at transaction end. Fees and limits stay the same, so users and apps shouldn't notice changes.",
     "northStarAlignment": {
       "scaleL1": {
         "description": "Enables a more precise accounting of efficient compute operations, thus removing an average of 4% loss in block space per transaction from roundig errors."
@@ -5026,7 +5026,7 @@
         }
       }
     ],
-    "laymanDescription": "If you deploy a contract that's exactly the same as one that already exists and you include that existing contract’s address in your transaction’s access list, you don’t pay the per-byte code deposit again—the new contract just points to the already-stored code.",
+    "laymanDescription": "If you deploy a contract that's exactly the same as one that already exists and you include that existing contract's address in your transaction's access list, you don't pay the per-byte code deposit again—the new contract just points to the already-stored code.",
     "stakeholderImpacts": {
       "endUsers": {
         "description": "Cheaper deployments for apps that spin up many identical contracts (e.g., factory wallets or clones); no change to how transactions are sent."
@@ -5035,7 +5035,7 @@
         "description": "Can cut deployment costs for factory/clone patterns by adding a reference contract address to the access list; update builders and deploy scripts to include access lists and handle cases without a discount."
       },
       "walletDevs": {
-        "description": "Update gas estimation and access-list generation to surface potential deduplication discounts and clearly indicate when the discount will or won’t apply."
+        "description": "Update gas estimation and access-list generation to surface potential deduplication discounts and clearly indicate when the discount will or won't apply."
       },
       "toolingInfra": {
         "description": "Estimators, simulators, and tracers should build the CodeHash Access-Set from the access list at tx start and report when deduplication triggers; consider dual estimates (with/without discount)."
@@ -5083,7 +5083,7 @@
         }
       }
     ],
-    "laymanDescription": "This proposal rebases Ethereum’s gas unit by a factor of 1,000 to enable high-precision metering without fractional gas. All gas-related parameters and variables are increased by that factor.",
+    "laymanDescription": "This proposal rebases Ethereum's gas unit by a factor of 1,000 to enable high-precision metering without fractional gas. All gas-related parameters and variables are increased by that factor.",
     "northStarAlignment": {
       "scaleL1": {
         "description": "Enables a more precise accounting of efficient compute operations, thus removing an average of 4% loss in block space per transaction from roundig errors."
@@ -5162,13 +5162,13 @@
         "description": "L2 teams operating Ethereum validators with 0x01 credentials get slightly smaller sweep credits; other L2 systems unaffected by this proposal."
       },
       "stakersNodes": {
-        "description": "0x01 validator operators will receive 0.05% less per sweep and are nudged toward consolidating or upgrading to 0x02 validator types."
+        "description": "0x01 validator operators will pay 0.05% per sweep and are nudged toward consolidating or upgrading to 0x02 validator types."
       },
       "clClients": {
         "description": "Consensus clients add a constant and arithmetic in process_withdrawals; low complexity but consensus-critical so thorough tests required before Glamsterdam activation."
       },
       "elClients": {
-        "description": "Execution clients must accept reduced sweep amounts and reflect the fee’s EL state change; integration surface is minimal for fork."
+        "description": "Execution clients must accept reduced sweep amounts and reflect the fee's EL state change; integration surface is minimal for fork."
       }
     },
     "benefits": [
@@ -5200,7 +5200,7 @@
         }
       }
     ],
-    "laymanDescription": "Makes staking treat ‘skimmed’ and ‘compounding’ validators the same by tweaking effective balance rules, so operators can consolidate without losing yield.",
+    "laymanDescription": "Makes staking treat 'skimmed' and 'compounding' validators the same by tweaking effective balance rules, so operators can consolidate without losing yield.",
     "stakeholderImpacts": {
       "endUsers": {
         "description": "No direct effect; staking reward accounting stays inside the consensus layer and user transactions stay unchanged."

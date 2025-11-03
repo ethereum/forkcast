@@ -79,7 +79,7 @@ const RankPage: React.FC = () => {
   // Initialize with Glamsterdam headliner EIPs
   useEffect(() => {
     const glamsterdamHeadliners = eipsData
-      .filter((eip) => eip.forkRelationships.some((fork) => fork.forkName.toLowerCase() === "glamsterdam" && fork.status === "Proposed"))
+      .filter((eip) => eip.forkRelationships.some((fork) => fork.forkName.toLowerCase() === "glamsterdam" && (fork.status === "Proposed" || fork.status === "Considered")))
       .filter((eip) => !isHeadliner(eip, "glamsterdam"))
       .map((eip) => ({
         id: `eip-${eip.id}`,
@@ -723,7 +723,10 @@ const RankPage: React.FC = () => {
           <div>
             <div className="flex items-center justify-between mb-4">
               <h3 className="text-lg font-medium text-slate-900 dark:text-slate-100">
-                EIPs Proposed for Inclusion (PFI)
+                Candidate EIPs (CFI/PFI)
+                <span className="ml-2 text-sm text-slate-500 dark:text-slate-400">
+                  ({getUnassignedItems().length} EIPs)
+                </span>
               </h3>
               {items.filter((item) => item.tier !== null).length > 0 && (
                 <div className="text-xs text-slate-500 dark:text-slate-400 bg-slate-100 dark:bg-slate-700 px-2 py-1 rounded">

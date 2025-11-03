@@ -704,13 +704,13 @@ const RankPage: React.FC = () => {
                 <div className="flex items-center justify-end gap-3">
                   <button
                     onClick={handleReset}
-                    className="px-3 py-1.5 text-xs font-medium text-slate-300 hover:text-white transition-colors rounded"
+                    className="px-3 py-1.5 text-xs font-medium text-slate-300 hover:text-white hover:bg-slate-700 transition-colors rounded cursor-pointer"
                   >
                     Reset
                   </button>
                   <button
                     onClick={handleSave}
-                    className="px-3 py-1.5 text-xs font-medium bg-purple-600 text-white rounded hover:bg-purple-700 transition-colors"
+                    className="px-3 py-1.5 text-xs font-medium bg-purple-600 text-white rounded hover:bg-purple-700 transition-colors cursor-pointer"
                   >
                     Download Image
                   </button>
@@ -725,7 +725,7 @@ const RankPage: React.FC = () => {
               <h3 className="text-lg font-medium text-slate-900 dark:text-slate-100">
                 Candidate EIPs (CFI/PFI)
                 <span className="ml-2 text-sm text-slate-500 dark:text-slate-400">
-                  ({getUnassignedItems().length} EIPs)
+                  ({getUnassignedItems().length} unranked)
                 </span>
               </h3>
               {items.filter((item) => item.tier !== null).length > 0 && (

@@ -1,0 +1,1326 @@
+WEBVTT
+
+1
+00:05:09.810 --> 00:05:11.090
+Barnabas: Hello, everyone.
+
+2
+00:05:12.310 --> 00:05:15.239
+Barnabas: Let's give it a few more minutes, and then we can get started.
+
+3
+00:06:27.550 --> 00:06:31.400
+Barnabas: I think we can get started. Akash, can you start the stream?
+
+4
+00:06:33.560 --> 00:06:34.500
+Akash | ECH: We are liar.
+
+5
+00:06:35.390 --> 00:06:46.529
+Barnabas: Thank you. Welcome, everybody, to ACDT number 60. We seem to have a very light schedule for today, but let's jump straight into it.
+
+6
+00:06:46.840 --> 00:06:58.090
+Barnabas: So, Fusaka-related topics, last week we had, supporting BPO2, and, Hoodi Fusaka activation, fork activation.
+
+7
+00:06:58.350 --> 00:07:09.309
+Barnabas: Most things went smoothly, except, Prism, found a bulb. I will get, Manu to talk about that in a little bit.
+
+8
+00:07:10.190 --> 00:07:20.010
+Barnabas: And, for the rest of this week, we are expecting BP01 to go live on Hoodi, and hopefully that will be a smooth transition as well.
+
+9
+00:07:20.900 --> 00:07:23.880
+Barnabas: Manu, would you like to take the floor?
+
+10
+00:07:29.390 --> 00:07:38.839
+Manu: So let me pass the… So, HackMD. So, yeah, briefly, I just read the TRDR.
+
+11
+00:07:39.170 --> 00:07:44.630
+Manu: So, we notized two things, with Prism.
+
+12
+00:07:44.850 --> 00:07:49.889
+Manu: The first one is starting at Houdi, Fusaka and Houdi.
+
+13
+00:07:50.320 --> 00:07:59.210
+Manu: We noticed a few attester nodes on the network, which are struggling. By struggling, I'm… Talking about…
+
+14
+00:07:59.520 --> 00:08:06.960
+Manu: Producing attestation where target.epoch minus source.epoch is higher strictly than 2.
+
+15
+00:08:07.950 --> 00:08:13.280
+Manu: There's not maybe Prism, or maybe not, I don't know yet.
+
+16
+00:08:13.930 --> 00:08:21.440
+Manu: And, yes, and so when, this is, this is the first issue, and when, we have some node storing like that.
+
+17
+00:08:22.000 --> 00:08:34.579
+Manu: in some cases, PRISM, when receiving attestation from those notes, may, in some cases, reject attestation, and then don't score to the peer…
+
+18
+00:08:35.159 --> 00:08:40.859
+Manu: who broadcast it, who, yeah, who gossiped the attestation and eventually disconnects the PR.
+
+19
+00:08:42.169 --> 00:08:50.529
+Manu: And at the end, yes, we see that we mainly lose a lot of lighter spills, and…
+
+20
+00:08:50.750 --> 00:08:53.729
+Manu: We gain a lot of, present peers.
+
+21
+00:08:55.680 --> 00:09:02.439
+Manu: Yeah, so this is the TLDR, if you want to read in more details, there is a HackMD which is linked in the chat.
+
+22
+00:09:03.040 --> 00:09:04.870
+Manu: And we are working on a fix.
+
+23
+00:09:05.570 --> 00:09:09.189
+Manu: Hopefully today, or… Early this week.
+
+24
+00:09:11.340 --> 00:09:17.010
+Barnabas: Okay, great. So we were hoping to get all the claims released out by end of today.
+
+25
+00:09:17.070 --> 00:09:19.939
+Manu: So, I assume that might not be possible.
+
+26
+00:09:19.940 --> 00:09:21.110
+Barnabas: represent anymore?
+
+27
+00:09:21.700 --> 00:09:25.979
+Manu: No, no, no, no. Not for today, for sure. For sure, even if we, if we fix the…
+
+28
+00:09:26.250 --> 00:09:31.529
+Manu: click the bug today, I mean, we will need some days, a few days for soaking before releasing.
+
+29
+00:09:31.820 --> 00:09:34.490
+Manu: So, definitely not today.
+
+30
+00:09:36.630 --> 00:09:38.939
+Barnabas: Right, okay.
+
+31
+00:09:39.430 --> 00:09:48.180
+Barnabas: What about any other client teams? Anyone found any Fusaka-related books, in the recent days, or during Hudi?
+
+32
+00:10:04.690 --> 00:10:09.970
+Barnabas: Okay, and regarding, any other… yep.
+
+33
+00:10:10.120 --> 00:10:11.190
+Barnabas: Enrico?
+
+34
+00:10:20.950 --> 00:10:23.140
+Barnabas: Enrico, you raise your hand.
+
+35
+00:10:25.410 --> 00:10:27.099
+Enrico Del Fante (tbenr): Sorry, I was in mute.
+
+36
+00:10:27.830 --> 00:10:37.000
+Enrico Del Fante (tbenr): I joined late, so I don't know if it's been mentioned already, but by the end of last week, we discovered some…
+
+37
+00:10:37.100 --> 00:10:39.210
+Enrico Del Fante (tbenr): Bad blob sidecars.
+
+38
+00:10:40.130 --> 00:10:50.160
+Enrico Del Fante (tbenr): KCG proofs flow… with the wrong KCG proofs floating around in the network, and we did an analysis that has been…
+
+39
+00:10:50.730 --> 00:10:59.300
+Enrico Del Fante (tbenr): Like that in many… many, destinants before.
+
+40
+00:10:59.330 --> 00:11:19.320
+Enrico Del Fante (tbenr): So, we noticed that, because we had a bug log that was printing, that some of the website card we received would have been rejected, and then we did… we dig into that, and we found out that the proofs were wrong. So, according to my
+
+41
+00:11:19.940 --> 00:11:31.440
+Enrico Del Fante (tbenr): Yeah, according to my, to my latest update, it was a load star primarily sending this over the network, and apparently they're working on a fix.
+
+42
+00:11:31.940 --> 00:11:42.269
+Enrico Del Fante (tbenr): And, we started the minute release, and we should do… we should go out with it in the upcoming hours.
+
+43
+00:11:45.250 --> 00:11:48.349
+Barnabas: So was it just a partial number of blobs?
+
+44
+00:11:48.460 --> 00:11:51.360
+Barnabas: Or all blood… Transactions?
+
+45
+00:11:51.950 --> 00:11:53.050
+Barnabas: We're incorrect.
+
+46
+00:11:53.510 --> 00:12:00.089
+Enrico Del Fante (tbenr): The blob sidecars were wrong, so it was… they were including
+
+47
+00:12:00.330 --> 00:12:08.129
+Enrico Del Fante (tbenr): wrong KCG proofs, essentially. Not passing KCG validation over the gossip rule validation.
+
+48
+00:12:08.860 --> 00:12:11.269
+Barnabas: Did we not catch this earlier?
+
+49
+00:12:11.450 --> 00:12:13.409
+Barnabas: When the block became invalid.
+
+50
+00:12:14.060 --> 00:12:17.169
+Enrico Del Fante (tbenr): That's a good question.
+
+51
+00:12:17.850 --> 00:12:26.579
+Enrico Del Fante (tbenr): We've probably changed something on the logging side that become… make this more, evident.
+
+52
+00:12:27.150 --> 00:12:30.519
+Enrico Del Fante (tbenr): the frequency of on Houdi happening was…
+
+53
+00:12:30.740 --> 00:12:41.739
+Enrico Del Fante (tbenr): probably higher, but we discovered… we checked that it was also happening on Sepolia, probably on Olski too, so yeah.
+
+54
+00:12:43.040 --> 00:12:44.390
+Enrico Del Fante (tbenr): Don't know why.
+
+55
+00:12:44.390 --> 00:12:46.500
+Barnabas: What about on Fusaka Devna 3?
+
+56
+00:12:48.610 --> 00:12:51.570
+Enrico Del Fante (tbenr): I haven't checked there. I haven't checked there.
+
+57
+00:12:52.130 --> 00:13:00.549
+Barnabas: Because that would be a platform where we could do end-to-end tests, basically, and validate that if our center picks for it, then…
+
+58
+00:13:01.670 --> 00:13:04.129
+Barnabas: We would be able to validate it.
+
+59
+00:13:06.250 --> 00:13:11.549
+Enrico Del Fante (tbenr): Yeah, I don't know how to actually catch this, maybe having,
+
+60
+00:13:12.200 --> 00:13:20.420
+Enrico Del Fante (tbenr): A metric that tracks how many rejection happens on every subnet.
+
+61
+00:13:21.520 --> 00:13:24.579
+Enrico Del Fante (tbenr): Which can tell you, even in testnets.
+
+62
+00:13:25.510 --> 00:13:37.980
+Enrico Del Fante (tbenr): DevNets, that's there. There is something wrong sent over the network, but otherwise, everything is normally recorded as a debug log, so it's kind of hidden, so…
+
+63
+00:13:38.170 --> 00:13:39.030
+Enrico Del Fante (tbenr): If…
+
+64
+00:13:39.340 --> 00:13:48.910
+Enrico Del Fante (tbenr): The good thing has been distributed on the network anyway, you don't see that there was something wrong sent over anyway.
+
+65
+00:13:50.040 --> 00:13:53.939
+Enrico Del Fante (tbenr): Yeah, maybe, maybe some, some kind of metric.
+
+66
+00:13:54.250 --> 00:13:55.200
+Enrico Del Fante (tbenr): could help.
+
+67
+00:13:55.320 --> 00:13:56.160
+Enrico Del Fante (tbenr): In the future.
+
+68
+00:13:59.100 --> 00:14:00.130
+Barnabas: Yeah, Manu?
+
+69
+00:14:00.930 --> 00:14:12.869
+Manu: Yeah, I wanted to say that I also, saw, a lot of, Lodstar, peers, passing, 0.6000Z cell proof.
+
+70
+00:14:13.560 --> 00:14:18.600
+Manu: And, yes, I said this already on the Discord, but…
+
+71
+00:14:18.990 --> 00:14:21.379
+Manu: for example, for Prism, if,
+
+72
+00:14:21.580 --> 00:14:37.040
+Manu: PRISM does get blobs V2 from the EL, and if, for some reason, the EL gives bad proofs, then in this case, PRISM won't verify the proof, because we trust the execution layer.
+
+73
+00:14:37.380 --> 00:14:45.130
+Manu: And then, this proof will be, will be, you know, in, in, in,
+
+74
+00:14:45.300 --> 00:14:52.109
+Manu: data column sidecars, and then Prism will send data column sidecars with bad proof, and will be, you know.
+
+75
+00:14:52.750 --> 00:15:02.639
+Manu: And that messages will be rejected by other peers, and at the end, peers will reject… will, don't score and eventually, disconnect,
+
+76
+00:15:03.700 --> 00:15:10.179
+Manu: For example, Pierre, who, who, who did the… gets blocked V2 because of, potentially, bad…
+
+77
+00:15:10.950 --> 00:15:12.580
+Manu: from the, from the ear.
+
+78
+00:15:14.760 --> 00:15:22.260
+Enrico Del Fante (tbenr): Yeah, and also Teku, and probably most of other kinds will do that. So…
+
+79
+00:15:22.490 --> 00:15:31.149
+Enrico Del Fante (tbenr): If the source of this problem was the EL, maybe a test on the engine API,
+
+80
+00:15:32.620 --> 00:15:40.160
+Enrico Del Fante (tbenr): on every CL… EL client could have triggered this, detected this.
+
+81
+00:15:45.110 --> 00:15:46.180
+Barnabas: Yeah, Nicole?
+
+82
+00:15:46.670 --> 00:15:55.179
+nflaig: Yeah, so I think Matt is not here, so I can give a quick update what we found so far. So there is not really an evidence that it's from the EL yet.
+
+83
+00:15:55.500 --> 00:16:07.479
+nflaig: We had a bug, that we are fixing, where basically we would, call get blob32 or reconstruct cells, and then we import the block, and then…
+
+84
+00:16:07.500 --> 00:16:25.930
+nflaig: What we do internally, we clean up the block input, which basically tracks the columns and the block, and then when we would receive another column for the block over Gossip, we would restart the whole process, because we internally, the code was already pruned.
+
+85
+00:16:26.330 --> 00:16:31.610
+nflaig: So we would call get blob32 again for that data, even though the block is already…
+
+86
+00:16:31.780 --> 00:16:34.280
+nflaig: Fully there and, imported.
+
+87
+00:16:34.560 --> 00:16:41.649
+nflaig: And we think the zero boost might be some internal buffer that gets overwritten due to that, while we are still…
+
+88
+00:16:41.750 --> 00:16:44.859
+nflaig: Flushing the data to gossip.
+
+89
+00:16:49.560 --> 00:17:01.849
+nflaig: And maybe regarding the, why we didn't see this on the DevNet, so there was a pretty major refactoring we did about a month ago, so this code wasn't really running for that long on the DevNet also.
+
+90
+00:17:05.160 --> 00:17:06.630
+Barnabas: Yeah, mono?
+
+91
+00:17:08.560 --> 00:17:10.940
+Manu: Sorry, I just forget to lower my hand.
+
+92
+00:17:18.130 --> 00:17:24.150
+Barnabas: Have you noticed any of these zero proofs, floating around that were not published by Lodestar?
+
+93
+00:17:27.460 --> 00:17:29.290
+Manu: Yeah, mainly by those stories.
+
+94
+00:17:29.580 --> 00:17:30.750
+Manu: But not only.
+
+95
+00:17:31.080 --> 00:17:32.940
+Manu: But mainly.
+
+96
+00:17:34.920 --> 00:17:36.739
+Barnabas: What does that mean?
+
+97
+00:17:37.150 --> 00:17:39.160
+Manu: I mean… Which other…
+
+98
+00:17:39.160 --> 00:17:41.530
+Barnabas: Which other client have you detected?
+
+99
+00:17:41.770 --> 00:17:48.420
+Manu: Yeah, I saw at least one Sprism, at least… exactly one Sprism, I saw exactly one Sprism.
+
+100
+00:17:48.720 --> 00:17:55.290
+Manu: And that's why, because of that, I assume… assume,
+
+101
+00:17:55.410 --> 00:18:00.149
+Manu: a bad EL proof coming from the EL may be the cause.
+
+102
+00:18:01.250 --> 00:18:05.099
+Manu: But it's, yeah, it's very majority of time, it's lost our, and…
+
+103
+00:18:05.530 --> 00:18:13.699
+Manu: And sometimes it's not Lustar, sometimes it is other clients, including Prism. But… Yes, let's say 0.
+
+104
+00:18:14.460 --> 00:18:17.739
+Manu: Between 0 and 1% of the time, it's not close to.
+
+105
+00:18:19.900 --> 00:18:25.540
+Barnabas: Okay, do we feel like this is a critical problem going forward?
+
+106
+00:18:26.880 --> 00:18:31.069
+Manu: I don't think so, because in this case, just the…
+
+107
+00:18:31.220 --> 00:18:34.349
+Manu: The, the, the sidecar is just rejected.
+
+108
+00:18:34.770 --> 00:18:35.809
+Manu: And that's all.
+
+109
+00:18:36.600 --> 00:18:39.759
+Manu: And so the 40 peer may be,
+
+110
+00:18:40.460 --> 00:18:49.769
+Manu: Don't scroll… is don't scroll and may be disconnected, but the sidecars, the 40 sidecars, are not gossiped over the network by the first player.
+
+111
+00:18:59.990 --> 00:19:00.810
+Barnabas: Right.
+
+112
+00:19:05.750 --> 00:19:08.969
+Barnabas: Do we have any other Fusaka-related topics?
+
+113
+00:19:13.980 --> 00:19:18.859
+Barnabas: In case not, then maybe we can move on to the AI gospel testing.
+
+114
+00:19:19.210 --> 00:19:27.390
+Barnabas: Anyone from NetherMind or the testing team, Ari, could you give us an update how everything is going?
+
+115
+00:19:29.870 --> 00:19:46.790
+Kamil Chodoła: I can give an anomaly to that. So, for now, we are focusing on stabilizing the entire environment, that's why last week, we decided to switch to 100 megas blocks only, and this is better right now, results are much more stable, and
+
+116
+00:19:46.900 --> 00:19:49.899
+Kamil Chodoła: The feedback loop is faster, that's a good thing.
+
+117
+00:19:50.050 --> 00:20:02.370
+Kamil Chodoła: Other than that, working on adding newest version of EST compute scenarios, but having some issues with generated Genesis files, working with Louis on that.
+
+118
+00:20:03.260 --> 00:20:07.480
+Kamil Chodoła: And in the meantime, we are working together with Marius…
+
+119
+00:20:07.810 --> 00:20:19.340
+Kamil Chodoła: on some repricing branches and repricing machine, where we're only testing the… and very… grasping the inputs for potential repricings for Glamster now.
+
+120
+00:20:20.120 --> 00:20:35.649
+Kamil Chodoła: And from stateful scenarios point of view, here I need to refresh the machine, which is testing SAN and other stateful tests on top of LoadNet, because there was some issue out there, and it is down for now, but I need to revive it.
+
+121
+00:20:35.860 --> 00:20:38.320
+Kamil Chodoła: And in the meantime, everything,
+
+122
+00:20:38.600 --> 00:20:48.040
+Kamil Chodoła: is progressing, I would say, in proper direction. We need to improve our metrics collection to have a better input for repricings moving forward.
+
+123
+00:20:52.070 --> 00:21:03.359
+Parithosh Jayanthi: Also, to note that clients starting this week will be releasing with 60 million as the default, so as and when the network starts updating, we should see the gas limit go up.
+
+124
+00:21:03.700 --> 00:21:05.640
+Parithosh Jayanthi: Or at least starts being booted up.
+
+125
+00:21:09.160 --> 00:21:13.640
+Kamil Chodoła: I see already some blocks on 35+, again, so…
+
+126
+00:21:16.820 --> 00:21:20.549
+Ben Adams: We may… we may have an issue, because…
+
+127
+00:21:21.070 --> 00:21:26.200
+Ben Adams: I think the gas limit was voted up last time, rather than using the defaults, so…
+
+128
+00:21:26.530 --> 00:21:32.389
+Ben Adams: It may be more resistant to going up if everybody's manually set their value.
+
+129
+00:21:34.280 --> 00:21:36.290
+Ben Adams: We might need to reach out.
+
+130
+00:21:37.600 --> 00:21:38.840
+Ben Adams: For the community.
+
+131
+00:21:40.890 --> 00:21:46.820
+Kamil Chodoła: And what will happen, probably, will be that we will… I'll update at once on…
+
+132
+00:21:46.820 --> 00:21:48.110
+Parithosh Jayanthi: Outlook, right?
+
+133
+00:21:48.380 --> 00:21:54.990
+Parithosh Jayanthi: Also, the… yeah, the good thing is there's a hard focus, so… worst case, we'll hit the gas limit up a bit then.
+
+134
+00:21:57.720 --> 00:22:03.750
+Ben Adams: Yeah, but if they've used flags to set it to 45, then… Little stat, 45.
+
+135
+00:22:06.850 --> 00:22:10.539
+Barnabas: I think most users will be using, the default flags.
+
+136
+00:22:11.910 --> 00:22:16.699
+Parithosh Jayanthi: Yeah, but it is worth reaching out. We can do a round of that once the releases are out.
+
+137
+00:22:18.690 --> 00:22:19.520
+Barnabas: Yeah.
+
+138
+00:22:21.150 --> 00:22:25.380
+Barnabas: Okay, so is there anything else for estimate testing?
+
+139
+00:22:33.320 --> 00:22:37.280
+Barnabas: But then, let's, get into grump serum testing.
+
+140
+00:22:38.800 --> 00:22:41.600
+Barnabas: Stefan, would you have an update for us?
+
+141
+00:22:42.910 --> 00:22:56.130
+Stefan Starflinger: So the definite, is pretty ready. Nethermind, and Russ have signaled that they're ready with the last changes from the call on about.
+
+142
+00:22:56.200 --> 00:23:03.399
+Stefan Starflinger: But Geth, and PESO, I think they haven't signaled yet, and I think we might have also a testing update.
+
+143
+00:23:05.170 --> 00:23:11.179
+Stefan Starflinger: Do you have a… Testing update regarding the latest tests.
+
+144
+00:23:15.630 --> 00:23:17.499
+raxhvl: Yeah, I've posted it in the chat.
+
+145
+00:23:22.030 --> 00:23:27.919
+Stefan Starflinger: Okay, that sounds pretty promising. I think as soon as that's ready, we can start with the DevNet.
+
+146
+00:23:28.830 --> 00:23:32.629
+Jared Wasinger: Sorry, but what do you mean by signaling in this context?
+
+147
+00:23:35.700 --> 00:23:36.230
+Jared Wasinger: I mean…
+
+148
+00:23:36.620 --> 00:23:40.780
+Jared Wasinger: Like, when you say the clients have signaled that they're ready or not.
+
+149
+00:23:42.210 --> 00:23:44.019
+Stefan Starflinger: Oh, I…
+
+150
+00:23:44.410 --> 00:23:52.979
+Stefan Starflinger: in the blog access list chat, I tagged all the client teams and asked to give, like, a thumbs up when they're ready.
+
+151
+00:23:53.240 --> 00:24:00.540
+Jared Wasinger: Oh, okay, gotcha, yeah. I'll do that, I think Geth should… Geth should be ready, yeah.
+
+152
+00:24:00.940 --> 00:24:09.429
+Stefan Starflinger: Yeah, so that would be nice if, when you're ready, also when Biso's ready, and then I will, start the, DevNet.
+
+153
+00:24:12.320 --> 00:24:14.400
+Stefan Starflinger: I think that's it from my side.
+
+154
+00:24:18.050 --> 00:24:19.420
+Barnabas: Yeah, Mark?
+
+155
+00:24:20.360 --> 00:24:24.570
+Marc: Oh yeah, I just had a quick question about these, test results.
+
+156
+00:24:24.670 --> 00:24:35.850
+Marc: So it's from… are those, test fixtures up to date? So I know we agreed to make some, kind of, change just before the DevNet,
+
+157
+00:24:35.990 --> 00:24:39.690
+Marc: And I'm not sure if that's included or not in those tests.
+
+158
+00:24:46.730 --> 00:24:50.759
+felipe: Rahul, I saw you left and came back. Did you catch that question?
+
+159
+00:24:51.160 --> 00:24:53.540
+raxhvl: No, no, I just lost it. Could you repeat that?
+
+160
+00:24:54.110 --> 00:25:03.919
+Marc: Yeah, I was just asking if those, tests, 1.3.0, is that up to date? Because, yeah, the Coinbase change, is actually.
+
+161
+00:25:03.920 --> 00:25:07.610
+raxhvl: No, I think… Yeah, there is a new release coming up.
+
+162
+00:25:07.610 --> 00:25:07.930
+Marc: Okay.
+
+163
+00:25:07.930 --> 00:25:09.880
+raxhvl: That'll be likely today or tomorrow.
+
+164
+00:25:10.130 --> 00:25:13.480
+raxhvl: That includes close to, I think, 25 tests.
+
+165
+00:25:13.660 --> 00:25:16.770
+raxhvl: Yeah, so that should cover everything.
+
+166
+00:25:18.430 --> 00:25:20.100
+Marc: Okay, great. Thank you.
+
+167
+00:25:21.140 --> 00:25:28.840
+felipe: Yeah, and the updates to the Coinbase are also there too, so it does update some of the older tests, according to the breakout.
+
+168
+00:25:29.330 --> 00:25:31.190
+felipe: Session conversations.
+
+169
+00:25:34.370 --> 00:25:41.759
+draganrakita: Are those 100% passing on that new test suit, or on old one?
+
+170
+00:25:45.840 --> 00:25:55.520
+raxhvl: The results are from the previous test. This does not include the Coinbase test, so we'll… we'll update the results today, once we have a new release.
+
+171
+00:26:05.200 --> 00:26:11.829
+Barnabas: Okay, great. Is there anything else regarding… Doctor back to this testimon?
+
+172
+00:26:15.380 --> 00:26:16.940
+Stefan Starflinger: I think that sums it up.
+
+173
+00:26:20.490 --> 00:26:24.300
+Barnabas: Okay, anyone would have any updates regarding EPBS?
+
+174
+00:26:31.760 --> 00:26:50.459
+Mario Vega: Hey, so, I don't have that many updates, but, Justin did ping me before the meeting that he won't be able to join. Basically, the only updates is that there are two new releases on the consistent specs. One is 1.6.0, and the other is 1.6.0 beta number 2.
+
+175
+00:26:50.680 --> 00:26:57.160
+Mario Vega: So, that's… that's basically it. Just… just please give it a look. I, I see that there's a comprehensive,
+
+176
+00:26:57.300 --> 00:27:06.139
+Mario Vega: readme, at least in the 1.6.0 beta 2. So yes, I think that should give you more context. But yeah, more than that, I'm not… I'm not sure.
+
+177
+00:27:11.160 --> 00:27:18.139
+Barnabas: Yeah, I also haven't heard any update from buying teams, signaling that they would be ready for DevNet Zero, so…
+
+178
+00:27:18.510 --> 00:27:24.860
+Barnabas: I don't think we can do, APB as a net0 before NetConnect, but maybe…
+
+179
+00:27:25.190 --> 00:27:39.779
+Barnabas: all DevNet Zero could actually happen sometime this week, and then we would have something, running throughout DevConnect, and then we should target for, APBS DevNet late November, early December.
+
+180
+00:27:46.230 --> 00:27:51.350
+Barnabas: Any other, questions or updates regarding Glamster then?
+
+181
+00:28:05.400 --> 00:28:14.279
+Barnabas: Maybe then we can talk about, the mainnet client releases. We heard from Prism already that they would not be ready, for today.
+
+182
+00:28:14.430 --> 00:28:19.869
+Barnabas: But, I would like to hear from every single client team if they could make it.
+
+183
+00:28:25.740 --> 00:28:33.119
+Kamil Chodoła: So, for NaturMind, we are working on release right now, but we are facing some unexpected regression around sync,
+
+184
+00:28:33.250 --> 00:28:39.059
+Kamil Chodoła: So… Worst case scenario will release today, minimize the version.
+
+185
+00:28:40.150 --> 00:28:43.759
+Kamil Chodoła: And we'll have hotfix probably in the coming days.
+
+186
+00:28:50.480 --> 00:28:57.500
+Andrew Ashikhmin: For Aragon, we've released 3.2.2 today, which has Fusaka on mainnet.
+
+187
+00:29:01.760 --> 00:29:06.980
+Barnabas: Can you guys also confirm everybody, set the gas limit to 60 million by default?
+
+188
+00:29:07.290 --> 00:29:07.870
+Andrew Ashikhmin: Yup.
+
+189
+00:29:10.510 --> 00:29:14.010
+Andrew Ashikhmin: It was said in the previous patch release.
+
+190
+00:29:14.190 --> 00:29:15.450
+Andrew Ashikhmin: So, yeah, it's sad.
+
+191
+00:29:20.220 --> 00:29:25.070
+Barnabas: Okay, great. And, any CL teams?
+
+192
+00:29:56.090 --> 00:30:02.129
+Barnabas: If you're reading the chat, I see that, the expiration will not release, and…
+
+193
+00:30:02.840 --> 00:30:07.220
+Barnabas: Taku is in progress, I'm gonna start his working RNAs as well.
+
+194
+00:30:09.900 --> 00:30:15.420
+Barnabas: Oh, I think it looks like, we're not gonna have a complete list of releases by the end of today.
+
+195
+00:30:15.720 --> 00:30:19.760
+Barnabas: We should really try to do a deadline by…
+
+196
+00:30:20.670 --> 00:30:22.940
+Barnabas: I would say Wednesday this week.
+
+197
+00:30:23.290 --> 00:30:30.819
+Barnabas: And if we cannot meet that deadline, then, we might actually need to consider rescheduling main network.
+
+198
+00:30:31.380 --> 00:30:35.769
+Barnabas: Just in… in case to have that, for today in between.
+
+199
+00:30:36.420 --> 00:30:41.269
+Barnabas: releases, but… Yeah, I really don't want to have that.
+
+200
+00:30:55.510 --> 00:31:07.499
+Barnabas: Yeah, is the 5th of, 5th of November as a final deadline would make sense, and then I think we could have the blog post out by Thursday, maybe by ECD.
+
+201
+00:31:14.220 --> 00:31:21.520
+Barnabas: I haven't talked with Alex, when we wanted to check out the blog post, but I think, this week would be very, very good.
+
+202
+00:31:34.200 --> 00:31:42.319
+Enrico Del Fante (tbenr): Point is that we sh… we don't want to release if, for… by any chance, there is some… there is still a…
+
+203
+00:31:42.810 --> 00:31:46.019
+Enrico Del Fante (tbenr): As a condition in which we could postpone.
+
+204
+00:31:46.900 --> 00:31:51.640
+Enrico Del Fante (tbenr): So, it could be tricky, then, to… Whatever colder it is.
+
+205
+00:31:54.870 --> 00:31:57.480
+Enrico Del Fante (tbenr): We could, but there might be a noise.
+
+206
+00:32:04.350 --> 00:32:14.369
+Barnabas: Yeah, I think if we can have all the clients raised by the 5th, we really shouldn't have a problem, still forcing, maybe not on the 3rd of December.
+
+207
+00:32:18.280 --> 00:32:25.910
+Barnabas: I'm just a bit worried that if we do slide it, for, like, next week, there are gonna be further delays, yeah, due to DevConnect.
+
+208
+00:32:26.290 --> 00:32:31.809
+Barnabas: And that could actually lead to potentially, causing some issues down the line.
+
+209
+00:32:32.160 --> 00:32:36.070
+Barnabas: Because we did want to leave at least one month between now.
+
+210
+00:32:36.190 --> 00:32:37.960
+Barnabas: Reason, Minnet.
+
+211
+00:32:46.900 --> 00:32:51.009
+Barnabas: I think the main, the main question here is,
+
+212
+00:32:51.530 --> 00:32:56.399
+Barnabas: If PRISM would be, if PRISM thinks that they would be ready by Wednesday.
+
+213
+00:32:57.860 --> 00:33:03.179
+Manu: Yeah, so, in the best case, we…
+
+214
+00:33:03.850 --> 00:33:08.630
+Manu: In the best case, yes, we… we find the… we fix the bug today.
+
+215
+00:33:08.750 --> 00:33:10.140
+Manu: Which is a third.
+
+216
+00:33:10.720 --> 00:33:14.309
+Manu: And we need a few days for, for soaking.
+
+217
+00:33:16.500 --> 00:33:24.340
+Manu: So yes, fifths will be the really best, best, best case, in my opinion, for a release date.
+
+218
+00:33:25.220 --> 00:33:30.890
+Manu: It's more, reasonable to expect a release this week, but maybe not on Wednesday.
+
+219
+00:33:32.560 --> 00:33:34.190
+Manu: Yep.
+
+220
+00:33:40.550 --> 00:33:51.019
+Manu: Yeah, yeah, yeah, so, I mean, yes, so in the best case, release candidate on 5th. If we fix a bug today, we can have a release candidate on 5th.
+
+221
+00:33:51.250 --> 00:33:56.039
+Manu: Yes, but maybe not a release on this day.
+
+222
+00:33:56.620 --> 00:33:57.350
+Manu: Yep.
+
+223
+00:34:01.060 --> 00:34:03.520
+Barnabas: Yeah, maybe Lighthouse can also comment?
+
+224
+00:34:07.060 --> 00:34:09.570
+Barnabas: Not sure if anyone from that house is here.
+
+225
+00:34:19.560 --> 00:34:21.210
+Barnabas: I'm quite sure you find anyone.
+
+226
+00:34:21.320 --> 00:34:22.870
+Barnabas: And the call from Nathan.
+
+227
+00:34:45.949 --> 00:34:47.330
+Barnabas: Yep, met you.
+
+228
+00:34:48.139 --> 00:34:57.939
+Matthew Keil: So, we identified a bug as well, that didn't show up until we got to the larger network. We've figured out what the issue is.
+
+229
+00:34:58.269 --> 00:35:02.009
+Matthew Keil: And we're in the process of also soaking a fix.
+
+230
+00:35:02.149 --> 00:35:09.549
+Matthew Keil: And talking about it actively. So we should be able to get the release out, but that is also kind of a…
+
+231
+00:35:10.649 --> 00:35:17.529
+Matthew Keil: by the 5th is our goal, but just wanted to put it out in the world that it's a best-case scenario.
+
+232
+00:35:21.820 --> 00:35:22.770
+Barnabas: Thank you.
+
+233
+00:35:26.400 --> 00:35:34.539
+Barnabas: Yeah, I think we should, stick to the original timeline of the 3rd of December, let's push out the releases, and
+
+234
+00:35:35.160 --> 00:35:42.460
+Barnabas: we need to re-evaluate by Occo Devs on Thursday if we really don't have all the
+
+235
+00:35:43.180 --> 00:35:49.669
+Barnabas: all the major releases by, all core devs, then, we might need to discuss an alternative deadline.
+
+236
+00:35:50.520 --> 00:35:52.050
+Barnabas: Or, main net.
+
+237
+00:35:52.230 --> 00:36:00.450
+Barnabas: But I think we should stick to the, urgent schedule for now, because, yeah, the 30-day is,
+
+238
+00:36:01.100 --> 00:36:06.080
+Barnabas: It's almost there, with, having already settled by the 5th.
+
+239
+00:36:07.160 --> 00:36:11.049
+Barnabas: But if, by Thursday, all coordinates, we cannot,
+
+240
+00:36:11.560 --> 00:36:17.000
+Barnabas: we cannot have the releases, then… then I think an alternative proposal will have to come up.
+
+241
+00:36:19.660 --> 00:36:21.340
+Barnabas: Does that sound reasonable?
+
+242
+00:36:21.450 --> 00:36:23.020
+Barnabas: For, everyone?
+
+243
+00:36:36.900 --> 00:36:44.730
+Barnabas: Okay, great. And I just got a confirmation from Alex that we're gonna be targeting the blog post also by Thursday.
+
+244
+00:36:44.900 --> 00:36:48.820
+Barnabas: So, yeah, just please keep working on your releases.
+
+245
+00:36:51.220 --> 00:37:00.310
+Barnabas: Okay, there's one more topic that Mario wanted to bring up, the testing complexity assessment checklist.
+
+246
+00:37:01.380 --> 00:37:04.529
+Barnabas: Could you please, bring it up, Mario?
+
+247
+00:37:04.920 --> 00:37:05.890
+Barnabas: If you're here.
+
+248
+00:37:05.890 --> 00:37:13.850
+Mario Vega: Yeah, of course. Yeah, it's very, it's very quick. So, we are gathering information on, the…
+
+249
+00:37:13.980 --> 00:37:28.959
+Mario Vega: proposed for inclusion EIPs for Amsterdam, and we've seen that there's a ton of them, and so, we have a tracker for this, I just showed you the link. We're gonna use a checklist, basically, to follow the,
+
+250
+00:37:29.270 --> 00:37:40.200
+Mario Vega: to try to determine how the testing complexity for a given EIP is, like, either high or low. This is only for the execution layer at the moment.
+
+251
+00:37:40.350 --> 00:37:53.979
+Mario Vega: But, in any case, if you want to jump in and chime in into this issue, please do so in regards of any EIPs that you think we should prioritize.
+
+252
+00:37:54.030 --> 00:38:04.779
+Mario Vega: Because you see more impact of this EVM EIP, just please go into the issue and comment on there, and we'll try to prioritize,
+
+253
+00:38:04.780 --> 00:38:16.869
+Mario Vega: to assess the complexity of the testing of this EVM EIP, so we can move it forward, and maybe even start with the specification implementation, and also the testing implementation.
+
+254
+00:38:17.370 --> 00:38:19.080
+Mario Vega: But yeah, that's basically it.
+
+255
+00:38:20.260 --> 00:38:27.519
+Barnabas: This is great, Mario, thank you. Would you be open to also include the CL EIPs in here?
+
+256
+00:38:27.830 --> 00:38:33.580
+Barnabas: I know that they would be targeting different kind of tests, but… We only have a,
+
+257
+00:38:33.720 --> 00:38:38.829
+Barnabas: very few, I think maybe 3 CL-specific EIPs in Amsterdam.
+
+258
+00:38:39.130 --> 00:38:42.770
+Mario Vega: Yeah, absolutely. I mean, if you have comments on the…
+
+259
+00:38:42.970 --> 00:38:59.159
+Mario Vega: on the CL EIPs that you want, that you want, that you think we should prioritize, just… you just feel free to leave them here. We'll try to redirect this to the proper people to… to… for them to… to start implementing or, assessing the complexity of an EIP, yeah.
+
+260
+00:38:59.160 --> 00:38:59.800
+Barnabas: Yep.
+
+261
+00:39:02.020 --> 00:39:10.210
+Barnabas: So, would you expect, that each team goes through all the IPs, and assigns someone to it, or…
+
+262
+00:39:10.810 --> 00:39:20.140
+Mario Vega: So, yeah, that's it, that's the question, right? So there's too many EIPs, in my opinion. So what I'm asking here is that if we can, like.
+
+263
+00:39:20.370 --> 00:39:31.489
+Mario Vega: get a sentiment from the rest of the core devs for Glamstagram EIPs, just to see which ones we should prioritize on… on assessing.
+
+264
+00:39:31.710 --> 00:39:39.029
+Mario Vega: based on their feeling on which one will have the better impact in the EVM,
+
+265
+00:39:39.170 --> 00:39:44.319
+Mario Vega: I think, I think that's… that's what we should, like, lead with, with those EIPs, yeah.
+
+266
+00:39:53.390 --> 00:39:59.490
+lightclient: I feel like the problem is that we have 10 EIPs that are just focused on pricing-related concerns.
+
+267
+00:40:11.140 --> 00:40:15.099
+Ansgar Dietrichs: Matt, can you clarify how is this a problem in this regard specifically?
+
+268
+00:40:16.200 --> 00:40:31.940
+lightclient: I mean, we want someone to, like, deeply look at all these EIPs, and we also want to try and find the things that are impactful, but if we're just going… you know, if we're going to do the pricing, which is seemingly, like, highest priority, I don't even know if we have the bandwidth to also be doing
+
+269
+00:40:32.120 --> 00:40:36.440
+lightclient: that many impactful things to the EVM on top of that, that are not related to pricing.
+
+270
+00:40:42.820 --> 00:40:47.659
+Ansgar Dietrichs: Right, but that seems more like a general folk scoping kind of
+
+271
+00:40:48.200 --> 00:40:53.220
+Ansgar Dietrichs: Argument and discussion, whereas for, like, specifically the testing impact assessment.
+
+272
+00:40:53.740 --> 00:41:04.129
+Ansgar Dietrichs: I mean, yeah, I would focus on basically figuring out what are the first batch of, like, most important, highest impact ones that we should try to get a feeling for first.
+
+273
+00:41:04.310 --> 00:41:08.310
+Ansgar Dietrichs: And that probably includes some repricing, maybe includes some non-repricing ones.
+
+274
+00:41:12.900 --> 00:41:15.330
+lightclient: It just feels like a lot to me. I feel like we should have…
+
+275
+00:41:15.490 --> 00:41:21.980
+lightclient: some clear prioritization of the EIPs before we just… Analyze all of them.
+
+276
+00:41:24.510 --> 00:41:27.760
+lightclient: But if people feel like we have the bandwidth to do it, then we can do it.
+
+277
+00:41:30.530 --> 00:41:39.299
+Mario Vega: You know, I completely agree with you, Lagland. Yeah, that's what I… I feel like we're overwhelmed at the moment with the amount of EIPs that we have to analyze.
+
+278
+00:41:39.300 --> 00:41:41.439
+Łukasz Rozmej: So, what I wanted to get from.
+
+279
+00:41:41.440 --> 00:41:46.490
+Mario Vega: the rest of the core labs, is there's… if there's, like, a clear sign of which ones we should prioritize.
+
+280
+00:41:46.940 --> 00:41:49.609
+Mario Vega: Yeah, I completely agree, this is too much.
+
+281
+00:41:51.390 --> 00:41:57.850
+Łukasz Rozmej: Nevermind team went through, I think, all the APs, maybe there were some newly…
+
+282
+00:41:58.500 --> 00:42:17.699
+Łukasz Rozmej: We went through all this, we find, and we can share some of our views. We… I think it's not yet, like, published so far, but we can at least, if we want, give you, like.
+
+283
+00:42:18.810 --> 00:42:20.899
+Barnabas: It's been pretty hard to hear you in the past.
+
+284
+00:42:21.190 --> 00:42:21.880
+Łukasz Rozmej: What?
+
+285
+00:42:23.370 --> 00:42:24.080
+Łukasz Rozmej: Okay.
+
+286
+00:42:24.080 --> 00:42:24.680
+Barnabas: Nope.
+
+287
+00:42:24.790 --> 00:42:29.590
+Barnabas: Maybe you can give a… just leave some, text in the chat?
+
+288
+00:42:30.920 --> 00:42:33.150
+Barnabas: Because your audio is cutting out.
+
+289
+00:42:33.150 --> 00:42:34.430
+Łukasz Rozmej: I'm driving.
+
+290
+00:42:34.650 --> 00:42:35.300
+Barnabas: Okay.
+
+291
+00:42:36.060 --> 00:42:44.940
+Marc: Yeah, he was just saying the team's gone through all of the different EIPs, and, we're in the process of writing something up that we can share soon.
+
+292
+00:42:46.690 --> 00:43:04.880
+Barnabas: Yeah, I think it would be good if some bigger teams would be able to, like, give the other teams a heads up of, like, which are the EIPs that they would consider kicking out right away, decorate as fast as possible, so that other teams wouldn't need to
+
+293
+00:43:04.900 --> 00:43:09.600
+Barnabas: basically chew through those EIPs, and I think that would be very, very good.
+
+294
+00:43:26.510 --> 00:43:35.860
+Barnabas: Could we have the Netherland list open, or, like, publicly available for everyone, and then maybe we can already start kicking
+
+295
+00:43:36.100 --> 00:43:39.930
+Barnabas: AIPs out on this week's, Occo Devs call.
+
+296
+00:43:42.300 --> 00:43:44.570
+Marc: Yeah, we can post it somewhere soon.
+
+297
+00:43:46.110 --> 00:43:47.830
+Barnabas: That would be good. Thank you.
+
+298
+00:43:50.240 --> 00:43:53.979
+Barnabas: Anyone else have any other topic that they would like to discuss?
+
+299
+00:43:56.260 --> 00:44:00.729
+lightclient: I think just last thing on this… For the testing team?
+
+300
+00:44:01.320 --> 00:44:04.099
+lightclient: I think the highest priority is the repricing EAPs.
+
+301
+00:44:04.360 --> 00:44:08.140
+lightclient: So, if you're still waiting for more signal, I think that's…
+
+302
+00:44:08.760 --> 00:44:12.010
+lightclient: The clearest signal to me is that we need to look at these and figure out
+
+303
+00:44:12.770 --> 00:44:20.429
+lightclient: What makes sense, where the complexities are gonna be, what the interplay between them is going to be, and then when clients start releasing their preferences, we can start looking at the non…
+
+304
+00:44:20.740 --> 00:44:22.449
+lightclient: Free pricing related stuff.
+
+305
+00:44:32.910 --> 00:44:34.469
+Barnabas: Yep. Charger?
+
+306
+00:44:37.220 --> 00:44:40.840
+Fredrik: Yeah, this is unrelated to… to that, but,
+
+307
+00:44:41.490 --> 00:44:55.589
+Fredrik: Yeah, as we're moving towards the mainnetwork, we are… we also have the mainnet upgrade and incident response team plan, which Alex has been working on.
+
+308
+00:44:55.930 --> 00:44:57.579
+Fredrik: You can find it here.
+
+309
+00:44:58.070 --> 00:45:01.360
+Fredrik: Basically, it will be the same as we did for
+
+310
+00:45:01.500 --> 00:45:08.170
+Fredrik: the idea of this is that we do it the same way as we do with Pectra, where each of the client teams sound
+
+311
+00:45:08.920 --> 00:45:15.910
+Fredrik: Shared roles. Teams have, basically coordinators assigned to,
+
+312
+00:45:16.120 --> 00:45:18.960
+Fredrik: As points of contacts, so,
+
+313
+00:45:20.120 --> 00:45:25.979
+Fredrik: It's probably a good idea for client teams to at least start thinking about
+
+314
+00:45:26.680 --> 00:45:30.009
+Fredrik: Who should be the primary coordinator? Who should be the backup?
+
+315
+00:45:30.140 --> 00:45:38.660
+Fredrik: Coordinator, etc, and yeah, it's something that we're gonna have to be… Doing in the coming weeks.
+
+316
+00:45:40.060 --> 00:45:44.369
+Barnabas: Yeah, could you guys please make a PR to this,
+
+317
+00:45:44.860 --> 00:45:53.990
+Barnabas: more than fine if you feel like you could be your client team's primary or backup coordinator, and you can start merging in those PRs.
+
+318
+00:45:55.760 --> 00:46:02.170
+Barnabas: Or, yeah, possibly just reach out to Alex. I'm not sure if there's an open PR about this already.
+
+319
+00:46:02.500 --> 00:46:07.720
+Fredrik: I don't think there is… he's… I don't think he's opened a PR yet.
+
+320
+00:46:09.190 --> 00:46:11.439
+Barnabas: Yeah, because I just saw that this was at work.
+
+321
+00:46:12.560 --> 00:46:13.310
+Fredrik: Yep.
+
+322
+00:46:24.590 --> 00:46:33.070
+Barnabas: Okay, so I think we should merge this, into the upstream repo as soon as possible, and then, client teams can make a PR to that.
+
+323
+00:46:36.880 --> 00:46:38.380
+Barnabas: Thanks for bringing it up.
+
+324
+00:46:41.480 --> 00:46:43.690
+Barnabas: Okay, is there anything else?
+
+325
+00:46:49.640 --> 00:46:55.630
+Barnabas: Okay, Slat, good luck with all the releases, and well, hopefully everyone
+
+326
+00:46:56.020 --> 00:46:59.150
+Barnabas: We'll be ready by, Wednesday or Thursday this week.
+
+327
+00:46:59.770 --> 00:47:01.559
+Barnabas: And see you all on Thursday.
+
+328
+00:47:04.090 --> 00:47:05.220
+Manu: Video, thank you.
+
+329
+00:47:06.010 --> 00:47:06.740
+Stefan Starflinger: Thank you.
+
+330
+00:47:07.110 --> 00:47:07.550
+Andrew Ashikhmin: My buddy.
+
+331
+00:47:07.550 --> 00:47:08.249
+Mario Vega: Thank you, goodbye.
+

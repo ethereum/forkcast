@@ -63,6 +63,64 @@ const TIERS: Tier[] = [
   },
 ];
 
+// EIP collections mapping - ephemeral categorization for PFI/CFI proposals
+const EIP_COLLECTIONS: { [key: string]: string } = {
+  "2780": "Repricing Bundle - Minimal",
+  "2926": "Repricing Bundle - Possible Additions",
+  "5920": "EVM Execution & Opcodes",
+  "6404": "Serialization & Data Structures",
+  "6466": "Serialization & Data Structures",
+  "7610": "EVM Execution & Opcodes",
+  "7619": "Cryptography & Signatures",
+  "7668": "Transaction & Block Features",
+  "7686": "EVM Execution & Opcodes",
+  "7688": "Serialization & Data Structures",
+  "7708": "Transaction & Block Features",
+  "7745": "Transaction & Block Features",
+  "7778": "Repricing Bundle - Recommended Additions",
+  "7791": "EVM Execution & Opcodes",
+  "7793": "Transaction & Block Features",
+  "7805": "Consensus & Validator Operations",
+  "7819": "EVM Execution & Opcodes",
+  "7843": "EVM Execution & Opcodes",
+  "7872": "Transaction & Block Features",
+  "7903": "Contract Deployment & Code",
+  "7904": "Repricing Bundle - Minimal",
+  "7907": "Contract Deployment & Code",
+  "7919": "Transaction & Block Features",
+  "7923": "Repricing Bundle - Possible Additions",
+  "7932": "Cryptography & Signatures",
+  "7949": "Transaction & Block Features",
+  "7971": "Repricing Bundle - Recommended Additions",
+  "7973": "Repricing Bundle - Possible Additions",
+  "7976": "Repricing Bundle - Minimal",
+  "7979": "EVM Execution & Opcodes",
+  "7981": "Repricing Bundle - Minimal",
+  "7997": "Contract Deployment & Code",
+  "8011": "Repricing Bundle - Possible Additions",
+  "8013": "EVM Execution & Opcodes",
+  "8024": "EVM Execution & Opcodes",
+  "8030": "Cryptography & Signatures",
+  "8032": "Repricing Bundle - Recommended Additions",
+  "8037": "Repricing Bundle - Minimal",
+  "8038": "Repricing Bundle - Minimal",
+  "8045": "Consensus & Validator Operations",
+  "8051": "Cryptography & Signatures",
+  "8053": "Repricing Bundle - Recommended Additions",
+  "8057": "Repricing Bundle - Possible Additions",
+  "8058": "Repricing Bundle - Recommended Additions",
+  "8059": "Repricing Bundle - Recommended Additions",
+  "8061": "Consensus & Validator Operations",
+  "8062": "Consensus & Validator Operations",
+  "8068": "Consensus & Validator Operations",
+  "8070": "Transaction & Block Features",
+};
+
+// Helper function to get collection for an EIP
+const getEipCollection = (eip: EIP): string => {
+  return EIP_COLLECTIONS[eip.id.toString()] || "Uncategorized";
+};
+
 const RankPage: React.FC = () => {
   const navigate = useNavigate();
   const { trackLinkClick, trackEvent } = useAnalytics();
@@ -124,7 +182,7 @@ const RankPage: React.FC = () => {
       const unassigned = items.filter((item) => item.tier === null);
       const collections = new Set<string>();
       unassigned.forEach((item) => {
-        const collection = item.eip.collection || "Uncategorized";
+        const collection = getEipCollection(item.eip);
         collections.add(collection);
       });
       if (collections.size > 0) {
@@ -237,9 +295,9 @@ const RankPage: React.FC = () => {
   const getUnassignedItemsByCollection = () => {
     const unassigned = getUnassignedItems();
     const grouped = new Map<string, TierItem[]>();
-    
+
     unassigned.forEach((item) => {
-      const collection = item.eip.collection || "Uncategorized";
+      const collection = getEipCollection(item.eip);
       if (!grouped.has(collection)) {
         grouped.set(collection, []);
       }
@@ -624,11 +682,11 @@ const RankPage: React.FC = () => {
         </div>
       </div>
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 items-start">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
           {/* Tiers */}
-          <div>
+          <div className="flex flex-col gap-4">
             {/* Instructions */}
-            <div className="mb-4 p-4 bg-white rounded-lg border border-slate-200 dark:bg-slate-800 dark:border-slate-700">
+            <div className="p-4 bg-white rounded-lg border border-slate-200 dark:bg-slate-800 dark:border-slate-700">
               <h3 className="text-sm font-medium text-slate-900 dark:text-slate-100 mb-2">
                 What is this?
               </h3>
@@ -674,7 +732,7 @@ const RankPage: React.FC = () => {
                 </p>
               </div>
             </div>
-            <div className="rounded-lg bg-white shadow border border-slate-200 dark:bg-slate-800 dark:border-slate-700 flex flex-col overflow-hidden p-0">
+            <div className="rounded-lg bg-white shadow border border-slate-200 dark:bg-slate-800 dark:border-slate-700 flex flex-col overflow-hidden p-0 lg:sticky lg:top-4 lg:max-h-[calc(100vh-2rem)]">
               {/* Meme-style header */}
               <div className="bg-slate-800 px-4 py-3 flex items-center justify-between">
                 <h3 className="text-lg font-bold text-white">Your Rankings</h3>
@@ -830,23 +888,25 @@ const RankPage: React.FC = () => {
                 </div>
               )}
             </div>
-            <div className="space-y-6">
+            <div className="space-y-4">
               {getUnassignedItemsByCollection().map(([collection, collectionItems]) => {
                 const isExpanded = expandedCollections.has(collection);
                 return (
-                  <div key={collection}>
+                  <div key={collection} className="bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg overflow-hidden">
                     <button
                       onClick={() => toggleCollection(collection)}
-                      className="flex items-center justify-between w-full text-left mb-2 p-2 -mx-2 rounded hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors"
+                      className="flex items-center justify-between w-full text-left px-4 py-3 bg-slate-50 dark:bg-slate-800/50 hover:bg-slate-100 dark:hover:bg-slate-700/50 transition-colors border-b border-slate-200 dark:border-slate-700 cursor-pointer"
                     >
-                      <h4 className="text-sm font-semibold text-slate-700 dark:text-slate-300">
-                        {collection}
-                        <span className="ml-2 text-xs font-normal text-slate-500 dark:text-slate-400">
-                          ({collectionItems.length})
+                      <div className="flex items-center gap-2">
+                        <h4 className="text-sm font-semibold text-slate-900 dark:text-slate-100">
+                          {collection}
+                        </h4>
+                        <span className="inline-flex items-center justify-center px-2 py-0.5 text-xs font-medium bg-slate-200 dark:bg-slate-700 text-slate-700 dark:text-slate-300 rounded-full">
+                          {collectionItems.length}
                         </span>
-                      </h4>
+                      </div>
                       <svg
-                        className={`w-4 h-4 text-slate-500 dark:text-slate-400 transition-transform ${
+                        className={`w-4 h-4 text-slate-400 dark:text-slate-500 transition-transform ${
                           isExpanded ? "rotate-180" : ""
                         }`}
                         fill="none"
@@ -862,7 +922,7 @@ const RankPage: React.FC = () => {
                       </svg>
                     </button>
                     {isExpanded && (
-                      <div className="grid grid-cols-1 lg:grid-cols-2 gap-2">
+                      <div className="grid grid-cols-1 lg:grid-cols-2 gap-2 p-3">
                         {collectionItems.map((item) => (
                           <div
                             key={item.id}

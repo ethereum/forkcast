@@ -1609,6 +1609,62 @@
     ]
   },
   {
+    "id": 7686,
+    "title": "Linear EVM memory limits",
+    "status": "Draft",
+    "description": "Add a hard memory limit equal to the gas limit of the current context. Make the maximum gas cost of a sub-call depend on the memory used in the current context. The two rules together ensure that a transaction with N gas can use at most N bytes of memory.",
+    "author": "Vitalik Buterin (@vbuterin)",
+    "type": "Standards Track",
+    "category": "Core",
+    "createdDate": "2024-04-15",
+    "discussionLink": "https://ethereum-magicians.org/t/eip-7686-linear-evm-memory-limits/19448",
+    "reviewer": "bot",
+    "forkRelationships": [
+      {
+        "forkName": "Glamsterdam",
+        "status": "Proposed",
+        "layer": "EL",
+        "champion": {
+          "name": "Carl Beekhuizen",
+          "discord": "carlbeek"
+        }
+      }
+    ],
+    "laymanDescription": "This proposal ties how much EVM memory a transaction can use directly to its gas. It simplifies memory pricing rules so each unit of gas corresponds to at most one byte of memory, making worst-case resource use easier to understand for operators and developers.",
+    "stakeholderImpacts": {
+      "endUsers": {
+        "description": "For ordinary users this change is largely invisible, mainly constraining unusually memory-heavy transactions that approach gas and resource limits."
+      },
+      "appDevs": {
+        "description": "Contract developers may review patterns that access high memory with little gas, though typical applications fit within the new limits."
+      },
+      "walletDevs": {
+        "description": "Wallets that implement their own gas estimation must update memory-cost logic; others inherit the behavior change from underlying nodes."
+      },
+      "toolingInfra": {
+        "description": "Gas analyzers, simulators, and tracing tools must update their memory cost and call-gas models to match the new linear rules."
+      },
+      "layer2s": {
+        "description": "EVM-compatible rollups mirroring mainnet gas rules would implement the new memory limit and pricing to maintain behavior compatibility."
+      },
+      "stakersNodes": {
+        "description": "Node operators benefit from a linear bound on per-transaction memory usage, simplifying capacity planning and reducing worst-case memory exhaustion risk."
+      },
+      "clClients": {
+        "description": "Consensus-layer clients see minimal direct impact; they mainly ensure testing and fork configuration align with updated execution-layer behavior."
+      },
+      "elClients": {
+        "description": "Execution-layer clients must update EVM memory-cost calculation, enforce the new per-context memory cap, and adjust call-gas logic accordingly."
+      }
+    },
+    "benefits": [
+      "Provides a clear linear upper bound on total memory a transaction can consume.",
+      "Simplifies EVM memory pricing by removing the quadratic term from the cost function.",
+      "Makes worst-case resource usage easier to estimate for EVM executions and client operators.",
+      "Aligns call-gas limits with memory usage, avoiding unbounded memory growth across nested sub-calls."
+    ]
+  },  
+  {
     "id": 7688,
     "title": "EIP-7688: Forward compatible consensus data structures",
     "status": "Draft",
@@ -2002,6 +2058,62 @@
       "Removal of trust assumptions on off-protocol closed source software."
     ]
   },
+  {
+    "id": 7745,
+    "title": "Trustless log index",
+    "status": "Draft",
+    "description": "Introduces a Merkle-tree-based log index that replaces header bloom filters. All log values share a global index space, with sparse two-dimensional filter maps enabling efficient, provable searches over limited data and returning accurate block and transaction locations for candidates.",
+    "author": "Zsolt Felföldi (@zsfelfoldi)",
+    "type": "Standards Track",
+    "category": "Core",
+    "createdDate": "2024-07-17",
+    "discussionLink": "https://ethereum-magicians.org/t/eip-7745-two-dimensional-log-filter-data-structure/20580",
+    "reviewer": "bot",
+    "forkRelationships": [
+      {
+        "forkName": "Glamsterdam",
+        "status": "Proposed",
+        "layer": "EL",
+        "champion": {
+          "name": "Felföldi Zsolt",
+          "discord": "zsfelfoldi"
+        }
+      }
+    ],
+    "laymanDescription": "Ethereum currently uses bloom filters in each block header to help search event logs, but they are inefficient today. This proposal replaces them with a new Merkle-based log index that uses moderate extra consensus data yet greatly reduces bandwidth and computation for finding events, especially for light clients and indexing services.",
+    "stakeholderImpacts": {
+      "endUsers": {
+        "description": "Indirect impact: improved performance and reliability of dapps or explorers that rely on historical event searches, especially on bandwidth-constrained devices."
+      },
+      "appDevs": {
+        "description": "Log-heavy applications may gain cheaper, more scalable indexing and queries, but need underlying infrastructure updated to support the new index."
+      },
+      "walletDevs": {
+        "description": "Wallets performing event lookups or light-client verification may adopt log-index proofs or depend on upgraded infrastructure providers and RPCs."
+      },
+      "toolingInfra": {
+        "description": "Indexers, explorers, DHT-based log networks and RPC providers must implement the new global log index, filter-map structure and Merkle-proof generation."
+      },
+      "layer2s": {
+        "description": "Specification targets L1 execution; no direct changes for L2s unless they mirror L1 header fields or adopt this log index."
+      },
+      "stakersNodes": {
+        "description": "Validators and full nodes must construct log index state per block, maintain consensus data and integrate changes into fork-handling logic."
+      },
+      "clClients": {
+        "description": "Consensus clients treat log_index_root as opaque execution data but must update header schemas, fork logic and networking to recognize it."
+      },
+      "elClients": {
+        "description": "Execution clients must maintain the LogIndex, replace logs_bloom with log_index_root, manage filter maps and Merkle trees, and extend RPCs."
+      }
+    },
+    "benefits": [
+      "Enables efficient, Merkle-provable log searches that touch only small portions of the global log dataset.",
+      "Maintains consistently low false positive rates even as block gas limits and log volumes increase.",
+      "Reduces bandwidth for log-event discovery by orders of magnitude compared with existing per-block bloom filters.",
+      "Provides precise block and transaction positions for candidate hits, minimizing unnecessary receipt fetches during log queries."
+    ]
+  },  
   {
     "id": 7761,
     "title": "EIP-7761: EXTCODETYPE instruction",
@@ -4073,6 +4185,62 @@
     ]
   },
   {
+    "id": 7973,
+    "title": "Warm Account Write Metering",
+    "status": "Draft",
+    "description": "This EIP introduces warm metering for account writes. If an account's nonce, balance or codehash is changed multiple times in one transaction, subsequent writes are cheaper because the state root update is only charged once.",
+    "author": "Charles Cooper (@charles-cooper), Maria Silva (@misilva73), Ben Adams (@benaadams)",
+    "type": "Standards Track",
+    "category": "Core",
+    "createdDate": "2025-06-14",
+    "discussionLink": "https://ethereum-magicians.org/t/eip-7973-warm-account-write-metering/25907",
+    "reviewer": "bot",
+    "forkRelationships": [
+      {
+        "forkName": "Glamsterdam",
+        "status": "Proposed",
+        "layer": "EL",
+        "champion": {
+          "name": "Charles Cooper",
+          "discord": "big_tech_sux"
+        }
+      }
+    ],
+    "laymanDescription": "Changes gas rules so once an account is updated in a transaction, later updates to it are cheaper, aligning fees with actual state-root work and reducing the penalty for repeated ETH transfers or future value-transfer opcodes.",
+    "stakeholderImpacts": {
+      "endUsers": {
+        "description": "End users keep existing transaction flows; compatible wallets and RPCs abstract the new gas rules, with potential fee reductions on multi-update transactions."
+      },
+      "appDevs": {
+        "description": "Applications performing multiple native ETH transfers or repeated account updates per transaction may see reduced gas usage and can redesign flows to exploit batched writes."
+      },
+      "walletDevs": {
+        "description": "Wallets must update gas estimation logic for new account-write costs; otherwise, overestimation and related attack surfaces from mispriced transactions become possible."
+      },
+      "toolingInfra": {
+        "description": "Node software, RPC services, and monitoring tools must implement updated gas formulas and parameters for account writes, ensuring estimates and analytics reflect the repricing."
+      },
+      "layer2s": {
+        "description": "EVM-compatible layer 2s that follow mainnet gas rules would need to mirror the new account write costs to preserve behavior compatibility."
+      },
+      "stakersNodes": {
+        "description": "Consensus participants and node operators must upgrade for the scheduled gas repricing fork and ensure RPC endpoints implement the new estimation behavior."
+      },
+      "clClients": {
+        "description": "Consensus-layer clients primarily integrate standard fork logistics—activation parameters and testing—since gas metering changes occur entirely in execution-layer state transition logic."
+      },
+      "elClients": {
+        "description": "Execution clients must revise gas constants, implement per-transaction tracking of cold versus warm account writes, and integrate the new costing with EIP-2200 and block-level access list logic."
+      }
+    },
+    "benefits": [
+      "Reduces gas charged for repeated updates to the same account within a single transaction.",
+      "Brings account update costs closer to the actual cost of computing state root changes.",
+      "Reduces disparity between multiple native ETH transfers and analogous token transfers in a single transaction.",
+      "Avoids unfair gas penalties for future value-transfer opcodes that repeatedly update account balances."
+    ]
+  },  
+  {
     "id": 7976,
     "title": "EIP-7976: Increase Calldata Floor Cost",
     "status": "Draft",
@@ -5122,6 +5290,62 @@
       "Avoids major changes to internal EVM logic."
     ]
   },
+  {
+    "id": 8061,
+    "title": "Increase churn limits",
+    "status": "Draft",
+    "description": "This EIP triples the global churn limit by raising activation/exit and consolidation churn and introducing a distinct consolidation churn quotient. This maintains a long weak subjectivity period while enabling faster validator consolidation, accelerating progress toward faster finality and easing deposit and exit queue congestion.",
+    "author": "Francesco D'Amato (@fradamt), Anders Elowsson (@anderselowsson)",
+    "type": "Standards Track",
+    "category": "Core",
+    "createdDate": "2025-10-17",
+    "discussionLink": "https://ethereum-magicians.org/t/eip-8061-increase-churn-limits/25991",
+    "reviewer": "bot",
+    "forkRelationships": [
+      {
+        "forkName": "Glamsterdam",
+        "status": "Proposed",
+        "layer": "CL",
+        "champion": {
+          "name": "UNKNOWN",
+          "discord": ""
+        }
+      }
+    ],
+    "laymanDescription": "Raises limits on how many validators can activate, exit, or consolidate each epoch and separates consolidation churn, improving validator consolidation speed and easing deposit and exit queues while preserving a long weak-subjectivity period and existing security assumptions.",
+    "stakeholderImpacts": {
+      "endUsers": {
+        "description": "No direct user-facing changes; effects are limited to validator churn parameters, with only indirect benefits through future finality improvements."
+      },
+      "appDevs": {
+        "description": "Application logic and smart contracts remain unchanged; only underlying consensus churn limits adjust, so most applications require no code modifications."
+      },
+      "walletDevs": {
+        "description": "Wallet protocols stay the same; only beacon-chain churn parameters change, so implementations rarely need updates beyond optional queue displays."
+      },
+      "toolingInfra": {
+        "description": "Validator dashboards, explorers, and forecasting tools must update churn constants and formulas to correctly estimate activation, exit, and consolidation queues."
+      },
+      "layer2s": {
+        "description": "Layer 2 protocols see minimal direct impact; beacon-chain validator churn parameters change, but L2 smart contract logic remains unchanged."
+      },
+      "stakersNodes": {
+        "description": "Stakers and node operators gain higher churn throughput, shortening queues and reducing consolidation costs while maintaining a long weak-subjectivity period."
+      },
+      "clClients": {
+        "description": "Consensus clients must update configuration constants and churn computation logic, adding a separate consolidation churn quotient and revising queue accounting."
+      },
+      "elClients": {
+        "description": "Execution clients require no code changes; all churn computations reside in the consensus layer, leaving execution implementations unaffected."
+      }
+    },
+    "benefits": [
+      "Triples the global churn limit while preserving a long weak-subjectivity period for consensus safety.",
+      "Increases activation and exit throughput, shortening validator deposit and exit queues under growing stake.",
+      "Separates consolidation churn into its own limit, configurable independently from activation and exit churn.",
+      "Improves staking liquidity by reducing consolidation time and associated opportunity costs for validators."
+    ]
+  },  
   {
     "id": 8062,
     "title": "Add sweep withdrawal fee for 0x01 validators",

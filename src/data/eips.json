@@ -5377,22 +5377,22 @@
         "description": "Apps are unaffected unless they surface validator sweep amounts and must now display the slightly reduced 0x01 payouts exactly received."
       },
       "walletDevs": {
-        "description": "Wallets tracking staking rewards should show 0.05% less for 0x01 sweeps so balances match beacon-chain output and EL state changes."
+        "description": "The amount credited to the EL will be 0.05% lower than the balance decrease on the CL."
       },
       "toolingInfra": {
-        "description": "Explorers and accounting tools must model the new fee on 0x01 sweeps to keep reward reports consistent across CL/EL data."
+        "description": "The amount credited to the EL will be 0.05% lower than the balance decrease on the CL."
       },
       "layer2s": {
-        "description": "L2 teams operating Ethereum validators with 0x01 credentials get slightly smaller sweep credits; other L2 systems unaffected by this proposal."
+        "description": "L2 systems unaffected by this proposal."
       },
       "stakersNodes": {
-        "description": "0x01 validator operators will pay 0.05% per sweep and are nudged toward consolidating or upgrading to 0x02 validator types."
+        "description": "Skimming 0x01 validators will pay 0.05% per sweep and are nudged toward upgrading to 0x02 validator types."
       },
       "clClients": {
         "description": "Consensus clients add a constant and arithmetic in process_withdrawals; low complexity but consensus-critical so thorough tests required before Glamsterdam activation."
       },
       "elClients": {
-        "description": "Execution clients must accept reduced sweep amounts and reflect the fee's EL state change; integration surface is minimal for fork."
+        "description": "Execution clients require no code changes. The amount credited to the EL will be 0.05% lower than the balance decrease on the CL."
       }
     },
     "benefits": [
@@ -5433,16 +5433,16 @@
         "description": "No app-facing protocol change; validator consolidation does not alter JSON-RPC, gas rules, or transaction semantics."
       },
       "walletDevs": {
-        "description": "Deposit/withdrawal handling unchanged; wallets may optionally display validator-mode neutrality but no mandatory code updates."
+        "description": "Deposit/withdrawal handling unchanged; no mandatory code updates."
       },
       "toolingInfra": {
-        "description": "Staking dashboards and monitoring may update yield calculations to reflect neutral EB and the revised hysteresis thresholds."
+        "description": "The actual yield becomes in line with existing interpretations of what validators earn."
       },
       "layer2s": {
         "description": "No rollup/L2 logic changes identified; this is an L1 consensus-layer adjustment to validator accounting only."
       },
       "stakersNodes": {
-        "description": "0x02 operators get yields aligned with 0x01 and should adopt specs adding neutral EB, reset-on-withdrawal, and new thresholds."
+        "description": "Compounding 0x02 validators get the same yield as 0x01 validators, which they already believed that they did. No longer possible to game partial withdrawals"
       },
       "clClients": {
         "description": "Must implement neutral EB math, ±0.5/±0.25 hysteresis, and one-time temporary_upward_threshold after withdrawals; moderate integration effort."

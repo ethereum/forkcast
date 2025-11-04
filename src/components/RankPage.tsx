@@ -75,6 +75,7 @@ const RankPage: React.FC = () => {
   const [expandedCollections, setExpandedCollections] = useState<Set<string>>(
     new Set()
   );
+  const [collectionOrder, setCollectionOrder] = useState<string[]>([]);
   const isTouchDevice =
     typeof window !== "undefined" &&
     ("ontouchstart" in window || navigator.maxTouchPoints > 0);
@@ -117,9 +118,9 @@ const RankPage: React.FC = () => {
     }
   }, [items]);
 
-  // Initialize expanded collections when items are loaded
+  // Initialize expanded collections and randomize collection order when items are loaded
   useEffect(() => {
-    if (items.length > 0 && expandedCollections.size === 0) {
+    if (items.length > 0 && expandedCollections.size === 0 && collectionOrder.length === 0) {
       const unassigned = items.filter((item) => item.tier === null);
       const collections = new Set<string>();
       unassigned.forEach((item) => {
@@ -128,6 +129,15 @@ const RankPage: React.FC = () => {
       });
       if (collections.size > 0) {
         setExpandedCollections(collections);
+        
+        // Randomize collection order once on page load
+        const collectionsArray = Array.from(collections);
+        // Fisher-Yates shuffle algorithm
+        for (let i = collectionsArray.length - 1; i > 0; i--) {
+          const j = Math.floor(Math.random() * (i + 1));
+          [collectionsArray[i], collectionsArray[j]] = [collectionsArray[j], collectionsArray[i]];
+        }
+        setCollectionOrder(collectionsArray);
       }
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -215,23 +225,26 @@ const RankPage: React.FC = () => {
       grouped.get(collection)!.push(item);
     });
     
-    // Convert to array and sort by:
-    // 1. Number of EIPs (descending - most first)
-    // 2. Lowest EIP ID in category (ascending - lower IDs first)
-    const sorted = Array.from(grouped.entries()).sort((a, b) => {
-      // Sort by count first (descending)
-      const countDiff = b[1].length - a[1].length;
-      if (countDiff !== 0) {
-        return countDiff;
-      }
-      
-      // If counts are equal, sort by lowest EIP ID in each category
-      const minA = Math.min(...a[1].map(item => item.eip.id));
-      const minB = Math.min(...b[1].map(item => item.eip.id));
-      return minA - minB;
-    });
+    // Use the stored collection order (randomized once on page load)
+    // If collectionOrder is empty (shouldn't happen, but fallback), use alphabetical
+    if (collectionOrder.length > 0) {
+      const orderedEntries: [string, TierItem[]][] = [];
+      collectionOrder.forEach((collection) => {
+        if (grouped.has(collection)) {
+          orderedEntries.push([collection, grouped.get(collection)!]);
+        }
+      });
+      // Add any collections that might have been added but aren't in the order (shouldn't happen)
+      grouped.forEach((items, collection) => {
+        if (!collectionOrder.includes(collection)) {
+          orderedEntries.push([collection, items]);
+        }
+      });
+      return orderedEntries;
+    }
     
-    return sorted;
+    // Fallback: alphabetical order if collectionOrder hasn't been set yet
+    return Array.from(grouped.entries()).sort((a, b) => a[0].localeCompare(b[0]));
   };
 
   const toggleCollection = (collection: string) => {

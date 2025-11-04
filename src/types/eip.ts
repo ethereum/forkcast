@@ -31,6 +31,8 @@ export interface EIP {
   category?: string;
   createdDate: string;
   discussionLink: string;
+  reviewer?: string;
+  collection?: string;
   forkRelationships: ForkRelationship[];
   laymanDescription?: string;
   northStars?: string[];

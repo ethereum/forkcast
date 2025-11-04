@@ -303,7 +303,7 @@ const RankPage: React.FC = () => {
       }
       grouped.get(collection)!.push(item);
     });
-    
+
     // Use the stored collection order (randomized once on page load)
     // If collectionOrder is empty (shouldn't happen, but fallback), use alphabetical
     if (collectionOrder.length > 0) {
@@ -321,9 +321,13 @@ const RankPage: React.FC = () => {
       });
       return orderedEntries;
     }
-    
+
     // Fallback: alphabetical order if collectionOrder hasn't been set yet
     return Array.from(grouped.entries()).sort((a, b) => a[0].localeCompare(b[0]));
+  };
+
+  const getTotalItemsCountByCollection = (collection: string): number => {
+    return items.filter((item) => getEipCollection(item.eip) === collection).length;
   };
 
   const toggleCollection = (collection: string) => {
@@ -902,7 +906,7 @@ const RankPage: React.FC = () => {
                           {collection}
                         </h4>
                         <span className="inline-flex items-center justify-center px-2 py-0.5 text-xs font-medium bg-slate-200 dark:bg-slate-700 text-slate-700 dark:text-slate-300 rounded-full">
-                          {collectionItems.length}
+                          {getTotalItemsCountByCollection(collection)}
                         </span>
                       </div>
                       <svg

@@ -130,13 +130,34 @@ const RankPage: React.FC = () => {
       if (collections.size > 0) {
         setExpandedCollections(collections);
         
-        // Randomize collection order once on page load
-        const collectionsArray = Array.from(collections);
-        // Fisher-Yates shuffle algorithm
-        for (let i = collectionsArray.length - 1; i > 0; i--) {
+        // Separate Repricing Bundle categories from others
+        const repricingBundleCategories = [
+          "Repricing Bundle - Minimal",
+          "Repricing Bundle - Recommended Additions",
+          "Repricing Bundle - Possible Additions"
+        ].filter(cat => collections.has(cat));
+        
+        const otherCollections = Array.from(collections).filter(
+          cat => !repricingBundleCategories.includes(cat)
+        );
+        
+        // Randomize other collections
+        for (let i = otherCollections.length - 1; i > 0; i--) {
           const j = Math.floor(Math.random() * (i + 1));
-          [collectionsArray[i], collectionsArray[j]] = [collectionsArray[j], collectionsArray[i]];
+          [otherCollections[i], otherCollections[j]] = [otherCollections[j], otherCollections[i]];
         }
+        
+        // Insert Repricing Bundle group at a random position
+        const collectionsArray: string[] = [];
+        if (repricingBundleCategories.length > 0) {
+          const insertPosition = Math.floor(Math.random() * (otherCollections.length + 1));
+          collectionsArray.push(...otherCollections.slice(0, insertPosition));
+          collectionsArray.push(...repricingBundleCategories);
+          collectionsArray.push(...otherCollections.slice(insertPosition));
+        } else {
+          collectionsArray.push(...otherCollections);
+        }
+        
         setCollectionOrder(collectionsArray);
       }
     }

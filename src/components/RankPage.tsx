@@ -72,6 +72,9 @@ const RankPage: React.FC = () => {
   const [selectedMobileItem, setSelectedMobileItem] = useState<string | null>(
     null
   );
+  const [expandedCollections, setExpandedCollections] = useState<Set<string>>(
+    new Set()
+  );
   const isTouchDevice =
     typeof window !== "undefined" &&
     ("ontouchstart" in window || navigator.maxTouchPoints > 0);
@@ -112,6 +115,22 @@ const RankPage: React.FC = () => {
     if (items.length > 0) {
       localStorage.setItem("glamsterdam-rankings", JSON.stringify(items));
     }
+  }, [items]);
+
+  // Initialize expanded collections when items are loaded
+  useEffect(() => {
+    if (items.length > 0 && expandedCollections.size === 0) {
+      const unassigned = items.filter((item) => item.tier === null);
+      const collections = new Set<string>();
+      unassigned.forEach((item) => {
+        const collection = item.eip.collection || "Uncategorized";
+        collections.add(collection);
+      });
+      if (collections.size > 0) {
+        setExpandedCollections(collections);
+      }
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [items]);
 
   const handleDragStart = (e: React.DragEvent, itemId: string) => {
@@ -182,6 +201,49 @@ const RankPage: React.FC = () => {
 
   const getUnassignedItems = () => {
     return items.filter((item) => item.tier === null);
+  };
+
+  const getUnassignedItemsByCollection = () => {
+    const unassigned = getUnassignedItems();
+    const grouped = new Map<string, TierItem[]>();
+    
+    unassigned.forEach((item) => {
+      const collection = item.eip.collection || "Uncategorized";
+      if (!grouped.has(collection)) {
+        grouped.set(collection, []);
+      }
+      grouped.get(collection)!.push(item);
+    });
+    
+    // Convert to array and sort by:
+    // 1. Number of EIPs (descending - most first)
+    // 2. Lowest EIP ID in category (ascending - lower IDs first)
+    const sorted = Array.from(grouped.entries()).sort((a, b) => {
+      // Sort by count first (descending)
+      const countDiff = b[1].length - a[1].length;
+      if (countDiff !== 0) {
+        return countDiff;
+      }
+      
+      // If counts are equal, sort by lowest EIP ID in each category
+      const minA = Math.min(...a[1].map(item => item.eip.id));
+      const minB = Math.min(...b[1].map(item => item.eip.id));
+      return minA - minB;
+    });
+    
+    return sorted;
+  };
+
+  const toggleCollection = (collection: string) => {
+    setExpandedCollections((prev) => {
+      const next = new Set(prev);
+      if (next.has(collection)) {
+        next.delete(collection);
+      } else {
+        next.add(collection);
+      }
+      return next;
+    });
   };
 
   const handleSave = () => {
@@ -734,70 +796,107 @@ const RankPage: React.FC = () => {
                 </div>
               )}
             </div>
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-2">
-              {getUnassignedItems().map((item) => (
-                <div
-                  key={item.id}
-                  draggable={!isTouchDevice}
-                  onDragStart={
-                    !isTouchDevice
-                      ? (e) => handleDragStart(e, item.id)
-                      : undefined
-                  }
-                  onDragEnd={!isTouchDevice ? handleDragEnd : undefined}
-                  onTouchStart={
-                    isTouchDevice
-                      ? () => setSelectedMobileItem(item.id)
-                      : undefined
-                  }
-                  onTouchEnd={
-                    isTouchDevice
-                      ? () => {
-                          setItems((prev) =>
-                            prev.map((item) =>
-                              item.id === selectedMobileItem
-                                ? { ...item, tier: dragOverTier || null }
-                                : item
-                            )
-                          );
-                          setSelectedMobileItem(null);
-                        }
-                      : undefined
-                  }
-                  onClick={
-                    isTouchDevice
-                      ? () => handleMobileItemClick(item.id)
-                      : undefined
-                  }
-                  className={`p-2 bg-white dark:bg-slate-700 border border-slate-200 dark:border-slate-600 rounded-lg cursor-move hover:shadow-md transition-all touch-manipulation ${
-                    draggedItem === item.id ? "opacity-50" : ""
-                  } ${
-                    selectedMobileItem === item.id
-                      ? "ring-2 ring-purple-400 bg-purple-50 dark:bg-purple-900/20"
-                      : ""
-                  }`}
-                >
-                  <div className="flex items-center gap-2">
-                    <span className="text-xs font-mono text-slate-500 dark:text-slate-400">
-                      {getProposalPrefix(item.eip)}-{item.eip.id}
-                    </span>
-                    {getHeadlinerLayer(item.eip, "glamsterdam") && (
-                      <span
-                        className={`px-1 py-0.5 text-xs font-medium rounded ${
-                          getHeadlinerLayer(item.eip, "glamsterdam") === "EL"
-                            ? "bg-indigo-100 text-indigo-700 dark:bg-indigo-900/20 dark:text-indigo-300"
-                            : "bg-teal-100 text-teal-700 dark:bg-teal-900/20 dark:text-teal-300"
+            <div className="space-y-6">
+              {getUnassignedItemsByCollection().map(([collection, collectionItems]) => {
+                const isExpanded = expandedCollections.has(collection);
+                return (
+                  <div key={collection}>
+                    <button
+                      onClick={() => toggleCollection(collection)}
+                      className="flex items-center justify-between w-full text-left mb-2 p-2 -mx-2 rounded hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors"
+                    >
+                      <h4 className="text-sm font-semibold text-slate-700 dark:text-slate-300">
+                        {collection}
+                        <span className="ml-2 text-xs font-normal text-slate-500 dark:text-slate-400">
+                          ({collectionItems.length})
+                        </span>
+                      </h4>
+                      <svg
+                        className={`w-4 h-4 text-slate-500 dark:text-slate-400 transition-transform ${
+                          isExpanded ? "rotate-180" : ""
                         }`}
+                        fill="none"
+                        stroke="currentColor"
+                        viewBox="0 0 24 24"
                       >
-                        {getHeadlinerLayer(item.eip, "glamsterdam")}
-                      </span>
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          strokeWidth={2}
+                          d="M19 9l-7 7-7-7"
+                        />
+                      </svg>
+                    </button>
+                    {isExpanded && (
+                      <div className="grid grid-cols-1 lg:grid-cols-2 gap-2">
+                        {collectionItems.map((item) => (
+                          <div
+                            key={item.id}
+                            draggable={!isTouchDevice}
+                            onDragStart={
+                              !isTouchDevice
+                                ? (e) => handleDragStart(e, item.id)
+                                : undefined
+                            }
+                            onDragEnd={!isTouchDevice ? handleDragEnd : undefined}
+                            onTouchStart={
+                              isTouchDevice
+                                ? () => setSelectedMobileItem(item.id)
+                                : undefined
+                            }
+                            onTouchEnd={
+                              isTouchDevice
+                                ? () => {
+                                    setItems((prev) =>
+                                      prev.map((item) =>
+                                        item.id === selectedMobileItem
+                                          ? { ...item, tier: dragOverTier || null }
+                                          : item
+                                      )
+                                    );
+                                    setSelectedMobileItem(null);
+                                  }
+                                : undefined
+                            }
+                            onClick={
+                              isTouchDevice
+                                ? () => handleMobileItemClick(item.id)
+                                : undefined
+                            }
+                            className={`p-2 bg-white dark:bg-slate-700 border border-slate-200 dark:border-slate-600 rounded-lg cursor-move hover:shadow-md transition-all touch-manipulation ${
+                              draggedItem === item.id ? "opacity-50" : ""
+                            } ${
+                              selectedMobileItem === item.id
+                                ? "ring-2 ring-purple-400 bg-purple-50 dark:bg-purple-900/20"
+                                : ""
+                            }`}
+                          >
+                            <div className="flex items-center gap-2">
+                              <span className="text-xs font-mono text-slate-500 dark:text-slate-400">
+                                {getProposalPrefix(item.eip)}-{item.eip.id}
+                              </span>
+                              {getHeadlinerLayer(item.eip, "glamsterdam") && (
+                                <span
+                                  className={`px-1 py-0.5 text-xs font-medium rounded ${
+                                    getHeadlinerLayer(item.eip, "glamsterdam") === "EL"
+                                      ? "bg-indigo-100 text-indigo-700 dark:bg-indigo-900/20 dark:text-indigo-300"
+                                      : "bg-teal-100 text-teal-700 dark:bg-teal-900/20 dark:text-teal-300"
+                                  }`}
+                                >
+                                  {getHeadlinerLayer(item.eip, "glamsterdam")}
+                                </span>
+                              )}
+                              <span className="font-medium text-xs text-slate-900 dark:text-slate-100 truncate">
+                                {getLaymanTitle(item.eip)}
+                              </span>
+                            </div>
+                          </div>
+                        ))}
+                      </div>
                     )}
-                    <span className="font-medium text-xs text-slate-900 dark:text-slate-100 truncate">
-                      {getLaymanTitle(item.eip)}
-                    </span>
                   </div>
-                </div>
-              ))}
+                );
+              })}
             </div>
           </div>
         </div>

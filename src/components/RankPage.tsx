@@ -815,7 +815,7 @@ const RankPage: React.FC = () => {
                         : tier.rowBgColor
                     }`}
                   >
-                    <div className="w-full flex flex-col gap-1 p-1 overflow-x-auto">
+                    <div className="w-full flex flex-col gap-1 p-1 lg:overflow-x-auto">
                       {getItemsInTier(tier.id).length === 0 ? (
                         <div className="h-5 flex items-center justify-center">
                           {isTouchDevice && selectedMobileItem && (
@@ -835,7 +835,7 @@ const RankPage: React.FC = () => {
                                 : undefined
                             }
                             onDragEnd={!isTouchDevice ? handleDragEnd : undefined}
-                            className="flex items-center justify-between p-2 bg-white dark:bg-slate-700 border border-slate-200 dark:border-slate-600 rounded shadow-sm min-w-max"
+                            className="flex items-center justify-between p-2 bg-white dark:bg-slate-700 border border-slate-200 dark:border-slate-600 rounded shadow-sm lg:min-w-max"
                           >
                             <div className="flex items-center gap-2 min-w-0 flex-1">
                               <span className="text-xs font-mono text-slate-500 dark:text-slate-400 flex-shrink-0">

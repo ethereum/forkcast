@@ -738,14 +738,16 @@ const RankPage: React.FC = () => {
             </div>
             <div className="rounded-lg bg-white shadow border border-slate-200 dark:bg-slate-800 dark:border-slate-700 flex flex-col overflow-hidden p-0 lg:sticky lg:top-4 lg:max-h-[calc(100vh-2rem)]">
               {/* Meme-style header */}
-              <div className="bg-slate-800 px-4 py-3 flex items-center justify-between">
+              <div className="bg-slate-800 px-4 py-3 flex items-center justify-between flex-shrink-0">
                 <h3 className="text-lg font-bold text-white">Your Rankings</h3>
                 <span className="text-sm font-mono text-slate-400">
                   forkcast.org/rank
                 </span>
               </div>
-              {/* Tier rows, flush, no spacing */}
-              {TIERS.map((tier) => (
+              {/* Scrollable tier rows container */}
+              <div className="flex-1 overflow-y-auto">
+                {/* Tier rows, flush, no spacing */}
+                {TIERS.map((tier) => (
                 <div
                   key={tier.id}
                   className={`flex items-stretch w-full overflow-hidden transition-shadow duration-150
@@ -857,8 +859,9 @@ const RankPage: React.FC = () => {
                   </div>
                 </div>
               ))}
+              </div>
               {/* Footer */}
-              <div className="bg-slate-800 px-4 py-3">
+              <div className="bg-slate-800 px-4 py-3 flex-shrink-0">
                 <div className="flex items-center justify-end gap-3">
                   <button
                     onClick={handleReset}
@@ -878,8 +881,8 @@ const RankPage: React.FC = () => {
           </div>
 
           {/* Unassigned Items */}
-          <div>
-            <div className="flex items-center justify-between mb-4">
+          <div className="lg:sticky lg:top-4 lg:max-h-[calc(100vh-2rem)] lg:overflow-hidden lg:flex lg:flex-col">
+            <div className="flex items-center justify-between mb-4 flex-shrink-0">
               <h3 className="text-lg font-medium text-slate-900 dark:text-slate-100">
                 Candidate EIPs (CFI/PFI)
                 <span className="ml-2 text-sm text-slate-500 dark:text-slate-400">
@@ -892,7 +895,7 @@ const RankPage: React.FC = () => {
                 </div>
               )}
             </div>
-            <div className="space-y-4">
+            <div className="space-y-4 lg:overflow-y-auto lg:flex-1">
               {getUnassignedItemsByCollection().map(([collection, collectionItems]) => {
                 const isExpanded = expandedCollections.has(collection);
                 return (

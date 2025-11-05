@@ -988,46 +988,6 @@ const RankPage: React.FC = () => {
                                 : undefined
                             }
                             onDragEnd={!isTouchDevice ? handleDragEnd : undefined}
-                            onMouseEnter={
-                              !isTouchDevice
-                                ? (e) => {
-                                    const rect = e.currentTarget.getBoundingClientRect();
-                                    const tooltipWidth = 400;
-                                    const tooltipHeight = 350; // estimated
-                                    const padding = 10;
-
-                                    // Try to position to the right first
-                                    let x = rect.right + padding;
-                                    let y = rect.top;
-
-                                    // If tooltip would go off right edge, position to the left
-                                    if (x + tooltipWidth > window.innerWidth - padding) {
-                                      x = rect.left - tooltipWidth - padding;
-                                    }
-
-                                    // If still off screen (left side), center it horizontally
-                                    if (x < padding) {
-                                      x = (window.innerWidth - tooltipWidth) / 2;
-                                    }
-
-                                    // Prevent tooltip from going off bottom
-                                    if (y + tooltipHeight > window.innerHeight - padding) {
-                                      y = Math.max(padding, window.innerHeight - tooltipHeight - padding);
-                                    }
-
-                                    setHoveredEip(item.eip);
-                                    setTooltipPosition({ x, y });
-                                  }
-                                : undefined
-                            }
-                            onMouseLeave={
-                              !isTouchDevice
-                                ? () => {
-                                    setHoveredEip(null);
-                                    setTooltipPosition(null);
-                                  }
-                                : undefined
-                            }
                             onTouchStart={
                               isTouchDevice
                                 ? () => setSelectedMobileItem(item.id)
@@ -1061,7 +1021,53 @@ const RankPage: React.FC = () => {
                             }`}
                           >
                             <div className="flex items-center gap-2">
-                              <span className="text-xs font-mono text-slate-500 dark:text-slate-400">
+                              <span
+                                className="text-xs font-mono text-slate-500 dark:text-slate-400 lg:cursor-help inline-flex items-center"
+                                style={{
+                                  borderBottom: isTouchDevice ? 'none' : '1px dotted currentColor',
+                                  marginBottom: isTouchDevice ? '-1px' : '-2px'
+                                }}
+                                onMouseEnter={
+                                  !isTouchDevice
+                                    ? (e) => {
+                                        const rect = e.currentTarget.getBoundingClientRect();
+                                        const tooltipWidth = 400;
+                                        const tooltipHeight = 350; // estimated
+                                        const padding = 10;
+
+                                        // Try to position to the right first
+                                        let x = rect.right + padding;
+                                        let y = rect.top;
+
+                                        // If tooltip would go off right edge, position to the left
+                                        if (x + tooltipWidth > window.innerWidth - padding) {
+                                          x = rect.left - tooltipWidth - padding;
+                                        }
+
+                                        // If still off screen (left side), center it horizontally
+                                        if (x < padding) {
+                                          x = (window.innerWidth - tooltipWidth) / 2;
+                                        }
+
+                                        // Prevent tooltip from going off bottom
+                                        if (y + tooltipHeight > window.innerHeight - padding) {
+                                          y = Math.max(padding, window.innerHeight - tooltipHeight - padding);
+                                        }
+
+                                        setHoveredEip(item.eip);
+                                        setTooltipPosition({ x, y });
+                                      }
+                                    : undefined
+                                }
+                                onMouseLeave={
+                                  !isTouchDevice
+                                    ? () => {
+                                        setHoveredEip(null);
+                                        setTooltipPosition(null);
+                                      }
+                                    : undefined
+                                }
+                              >
                                 {getProposalPrefix(item.eip)}-{item.eip.id}
                               </span>
                               {getHeadlinerLayer(item.eip, "glamsterdam") && (
@@ -1101,38 +1107,23 @@ const RankPage: React.FC = () => {
             maxWidth: '400px',
             width: 'auto'
           }}
-          onMouseEnter={() => setHoveredEip(hoveredEip)}
-          onMouseLeave={() => {
-            setHoveredEip(null);
-            setTooltipPosition(null);
-          }}
         >
           <div className="bg-white dark:bg-slate-800 border-2 border-purple-300 dark:border-purple-600 rounded-lg shadow-2xl p-4">
-            <div className="flex items-start justify-between mb-3">
-              <div className="flex items-center gap-2">
-                <span className="text-sm font-mono font-bold text-purple-600 dark:text-purple-400">
-                  EIP-{hoveredEip.id}
+            <div className="flex items-start gap-2 mb-3">
+              <span className="text-sm font-mono font-bold text-purple-600 dark:text-purple-400">
+                EIP-{hoveredEip.id}
+              </span>
+              {getHeadlinerLayer(hoveredEip, "glamsterdam") && (
+                <span
+                  className={`px-1.5 py-0.5 text-xs font-medium rounded ${
+                    getHeadlinerLayer(hoveredEip, "glamsterdam") === "EL"
+                      ? "bg-indigo-100 text-indigo-700 dark:bg-indigo-900/20 dark:text-indigo-300"
+                      : "bg-teal-100 text-teal-700 dark:bg-teal-900/20 dark:text-teal-300"
+                  }`}
+                >
+                  {getHeadlinerLayer(hoveredEip, "glamsterdam")}
                 </span>
-                {getHeadlinerLayer(hoveredEip, "glamsterdam") && (
-                  <span
-                    className={`px-1.5 py-0.5 text-xs font-medium rounded ${
-                      getHeadlinerLayer(hoveredEip, "glamsterdam") === "EL"
-                        ? "bg-indigo-100 text-indigo-700 dark:bg-indigo-900/20 dark:text-indigo-300"
-                        : "bg-teal-100 text-teal-700 dark:bg-teal-900/20 dark:text-teal-300"
-                    }`}
-                  >
-                    {getHeadlinerLayer(hoveredEip, "glamsterdam")}
-                  </span>
-                )}
-              </div>
-              <button
-                onClick={() => setHoveredEip(null)}
-                className="text-slate-400 hover:text-slate-600 dark:text-slate-500 dark:hover:text-slate-300"
-              >
-                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
-                </svg>
-              </button>
+              )}
             </div>
 
             <h4 className="text-sm font-semibold text-slate-900 dark:text-slate-100 mb-2">

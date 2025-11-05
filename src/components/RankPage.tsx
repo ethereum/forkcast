@@ -155,7 +155,7 @@ const RankPage: React.FC = () => {
     new Set()
   );
   const [collectionOrder, setCollectionOrder] = useState<string[]>([]);
-  const [isInstructionsExpanded, setIsInstructionsExpanded] = useState(true);
+  const [isInstructionsExpanded, setIsInstructionsExpanded] = useState(false);
   const [hoveredEip, setHoveredEip] = useState<EIP | null>(null);
   const [tooltipPosition, setTooltipPosition] = useState<{ x: number; y: number } | null>(null);
   const isTouchDevice =

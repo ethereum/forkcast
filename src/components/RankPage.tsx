@@ -73,7 +73,7 @@ const EIP_COLLECTIONS: { [key: string]: string } = {
   "7610": "EVM Execution & Opcodes",
   "7619": "Cryptography & Signatures",
   "7668": "Transaction & Block Features",
-  "7686": "EVM Execution & Opcodes",
+  "7686": "Repricing Bundle - Possible Additions",
   "7688": "Serialization & Data Structures",
   "7708": "Transaction & Block Features",
   "7745": "Transaction & Block Features",
@@ -187,24 +187,24 @@ const RankPage: React.FC = () => {
       });
       if (collections.size > 0) {
         setExpandedCollections(collections);
-        
+
         // Separate Repricing Bundle categories from others
         const repricingBundleCategories = [
           "Repricing Bundle - Minimal",
           "Repricing Bundle - Recommended Additions",
           "Repricing Bundle - Possible Additions"
         ].filter(cat => collections.has(cat));
-        
+
         const otherCollections = Array.from(collections).filter(
           cat => !repricingBundleCategories.includes(cat)
         );
-        
+
         // Randomize other collections
         for (let i = otherCollections.length - 1; i > 0; i--) {
           const j = Math.floor(Math.random() * (i + 1));
           [otherCollections[i], otherCollections[j]] = [otherCollections[j], otherCollections[i]];
         }
-        
+
         // Insert Repricing Bundle group at a random position
         const collectionsArray: string[] = [];
         if (repricingBundleCategories.length > 0) {
@@ -215,7 +215,7 @@ const RankPage: React.FC = () => {
         } else {
           collectionsArray.push(...otherCollections);
         }
-        
+
         setCollectionOrder(collectionsArray);
       }
     }

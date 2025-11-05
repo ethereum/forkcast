@@ -1,7 +1,7 @@
 import { useEffect } from 'react';
 import { useAnalytics } from '../hooks/useAnalytics';
 
-const FEEDBACK_URL = 'https://ethereum-magicians.org/t/soliciting-stakeholder-feedback-on-glamsterdam-headliners/24885';
+const FEEDBACK_URL = 'https://ethereum-magicians.org/t/community-feedback-on-non-headlining-features-in-glamsterdam/26410';
 
 const spinnerStyle: React.CSSProperties = {
   width: 40,

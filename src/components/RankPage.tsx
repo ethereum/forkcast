@@ -134,6 +134,7 @@ const RankPage: React.FC = () => {
     new Set()
   );
   const [collectionOrder, setCollectionOrder] = useState<string[]>([]);
+  const [isInstructionsExpanded, setIsInstructionsExpanded] = useState(true);
   const isTouchDevice =
     typeof window !== "undefined" &&
     ("ontouchstart" in window || navigator.maxTouchPoints > 0);
@@ -690,51 +691,75 @@ const RankPage: React.FC = () => {
           {/* Tiers */}
           <div className="flex flex-col gap-4">
             {/* Instructions */}
-            <div className="p-4 bg-white rounded-lg border border-slate-200 dark:bg-slate-800 dark:border-slate-700">
-              <h3 className="text-sm font-medium text-slate-900 dark:text-slate-100 mb-2">
-                What is this?
-              </h3>
-              <p className="text-xs text-slate-600 dark:text-slate-300 leading-relaxed mb-4">
-                Users, node operators, app developers, core developers, and any other stakeholders
-                are invited to voice their support for their preferred EIPs in the Glamsterdam fork.
-              </p>
-              <p className="text-xs text-slate-600 dark:text-slate-300 leading-relaxed mb-4">
-                Drag and drop (desktop) or tap-to-assign (mobile) the EIP proposals
-                into tiers. S-tier represents your highest priority proposals,
-                while D-tier represents your lowest priority. The list of proposals
-                is long; rank as many or as few as you like.
-              </p>
-              <p className="text-xs text-slate-600 dark:text-slate-300 leading-relaxed">
-                Download the image to share your rankings and start a conversation.{" "}
-                <a
-                  href="https://forkcast.org/upgrade/glamsterdam"
-                  className="text-purple-600 hover:text-purple-700 dark:text-purple-400 dark:hover:text-purple-300"
+            <div className="bg-white rounded-lg border border-slate-200 dark:bg-slate-800 dark:border-slate-700 overflow-hidden">
+              <button
+                onClick={() => setIsInstructionsExpanded(!isInstructionsExpanded)}
+                className="w-full flex items-center justify-between px-4 py-3 text-left hover:bg-slate-50 dark:hover:bg-slate-700/50 transition-colors cursor-pointer"
+              >
+                <h3 className="text-sm font-medium text-slate-900 dark:text-slate-100">
+                  What is this?
+                </h3>
+                <svg
+                  className={`w-4 h-4 text-slate-400 dark:text-slate-500 transition-transform ${
+                    isInstructionsExpanded ? "rotate-180" : ""
+                  }`}
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
                 >
-                  Learn more about Glamsterdam
-                </a>
-                .
-              </p>
-              <div className="mt-4 flex items-start gap-2.5 rounded-lg border border-slate-200 bg-slate-100 p-3 dark:border-slate-700 dark:bg-slate-800">
-                <div className="flex-shrink-0 pt-0.5">
-                  <svg
-                    className="h-4 w-4 text-slate-500 dark:text-slate-400"
-                    xmlns="http://www.w3.org/2000/svg"
-                    fill="none"
-                    viewBox="0 0 24 24"
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
                     strokeWidth={2}
-                    stroke="currentColor"
-                  >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      d="M11.25 11.25l.041-.02a.75.75 0 011.063.852l-.708 2.836a.75.75 0 001.063.852l.041-.021M21 12a9 9 0 11-18 0 9 9 0 0118 0zm-9-3.75h.008v.008H12v-.008z"
-                    />
-                  </svg>
+                    d="M19 9l-7 7-7-7"
+                  />
+                </svg>
+              </button>
+              {isInstructionsExpanded && (
+                <div className="px-4 pb-4">
+                  <p className="text-xs text-slate-600 dark:text-slate-300 leading-relaxed mb-4">
+                    Users, node operators, app developers, core developers, and any other stakeholders
+                    are invited to voice their support for their preferred EIPs in the Glamsterdam fork.
+                  </p>
+                  <p className="text-xs text-slate-600 dark:text-slate-300 leading-relaxed mb-4">
+                    Drag and drop (desktop) or tap-to-assign (mobile) the EIP proposals
+                    into tiers. S-tier represents your highest priority proposals,
+                    while D-tier represents your lowest priority. The list of proposals
+                    is long; rank as many or as few as you like.
+                  </p>
+                  <p className="text-xs text-slate-600 dark:text-slate-300 leading-relaxed">
+                    Download the image to share your rankings and start a conversation.{" "}
+                    <a
+                      href="https://forkcast.org/upgrade/glamsterdam"
+                      className="text-purple-600 hover:text-purple-700 dark:text-purple-400 dark:hover:text-purple-300"
+                    >
+                      Learn more about Glamsterdam
+                    </a>
+                    .
+                  </p>
+                  <div className="mt-4 flex items-start gap-2.5 rounded-lg border border-slate-200 bg-slate-100 p-3 dark:border-slate-700 dark:bg-slate-800">
+                    <div className="flex-shrink-0 pt-0.5">
+                      <svg
+                        className="h-4 w-4 text-slate-500 dark:text-slate-400"
+                        xmlns="http://www.w3.org/2000/svg"
+                        fill="none"
+                        viewBox="0 0 24 24"
+                        strokeWidth={2}
+                        stroke="currentColor"
+                      >
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          d="M11.25 11.25l.041-.02a.75.75 0 011.063.852l-.708 2.836a.75.75 0 001.063.852l.041-.021M21 12a9 9 0 11-18 0 9 9 0 0118 0zm-9-3.75h.008v.008H12v-.008z"
+                        />
+                      </svg>
+                    </div>
+                    <p className="text-xs leading-relaxed text-slate-600 dark:text-slate-300">
+                      The deadline for proposal submissions was October 30th, 2025.
+                    </p>
+                  </div>
                 </div>
-                <p className="text-xs leading-relaxed text-slate-600 dark:text-slate-300">
-                  The deadline for proposal submissions was October 30th, 2025.
-                </p>
-              </div>
+              )}
             </div>
             <div className="rounded-lg bg-white shadow border border-slate-200 dark:bg-slate-800 dark:border-slate-700 flex flex-col overflow-hidden p-0 lg:sticky lg:top-4 lg:max-h-[calc(100vh-2rem)]">
               {/* Meme-style header */}

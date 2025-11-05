@@ -121,6 +121,27 @@ const getEipCollection = (eip: EIP): string => {
   return EIP_COLLECTIONS[eip.id.toString()] || "Uncategorized";
 };
 
+// Helper function to clean author names - remove GitHub handles and emails
+const cleanAuthorName = (author: string): string => {
+  // Remove content in parentheses (e.g., GitHub handles)
+  let cleaned = author.replace(/\([^)]*\)/g, '');
+  // Remove content in angle brackets (e.g., email addresses)
+  cleaned = cleaned.replace(/<[^>]*>/g, '');
+  // Replace multiple spaces with single space
+  cleaned = cleaned.replace(/\s+/g, ' ');
+  // Clean up spaces around commas: remove space before comma, ensure single space after
+  cleaned = cleaned.replace(/\s*,\s*/g, ', ');
+  // Clean up extra commas and trailing commas
+  cleaned = cleaned.replace(/,\s*,/g, ',').replace(/,\s*$/g, '').trim();
+  return cleaned;
+};
+
+// Helper function to truncate long text with ellipsis
+const truncateText = (text: string, maxLength: number): string => {
+  if (text.length <= maxLength) return text;
+  return text.slice(0, maxLength).trim() + '...';
+};
+
 const RankPage: React.FC = () => {
   const navigate = useNavigate();
   const { trackLinkClick, trackEvent } = useAnalytics();
@@ -135,6 +156,8 @@ const RankPage: React.FC = () => {
   );
   const [collectionOrder, setCollectionOrder] = useState<string[]>([]);
   const [isInstructionsExpanded, setIsInstructionsExpanded] = useState(true);
+  const [hoveredEip, setHoveredEip] = useState<EIP | null>(null);
+  const [tooltipPosition, setTooltipPosition] = useState<{ x: number; y: number } | null>(null);
   const isTouchDevice =
     typeof window !== "undefined" &&
     ("ontouchstart" in window || navigator.maxTouchPoints > 0);
@@ -965,6 +988,46 @@ const RankPage: React.FC = () => {
                                 : undefined
                             }
                             onDragEnd={!isTouchDevice ? handleDragEnd : undefined}
+                            onMouseEnter={
+                              !isTouchDevice
+                                ? (e) => {
+                                    const rect = e.currentTarget.getBoundingClientRect();
+                                    const tooltipWidth = 400;
+                                    const tooltipHeight = 350; // estimated
+                                    const padding = 10;
+
+                                    // Try to position to the right first
+                                    let x = rect.right + padding;
+                                    let y = rect.top;
+
+                                    // If tooltip would go off right edge, position to the left
+                                    if (x + tooltipWidth > window.innerWidth - padding) {
+                                      x = rect.left - tooltipWidth - padding;
+                                    }
+
+                                    // If still off screen (left side), center it horizontally
+                                    if (x < padding) {
+                                      x = (window.innerWidth - tooltipWidth) / 2;
+                                    }
+
+                                    // Prevent tooltip from going off bottom
+                                    if (y + tooltipHeight > window.innerHeight - padding) {
+                                      y = Math.max(padding, window.innerHeight - tooltipHeight - padding);
+                                    }
+
+                                    setHoveredEip(item.eip);
+                                    setTooltipPosition({ x, y });
+                                  }
+                                : undefined
+                            }
+                            onMouseLeave={
+                              !isTouchDevice
+                                ? () => {
+                                    setHoveredEip(null);
+                                    setTooltipPosition(null);
+                                  }
+                                : undefined
+                            }
                             onTouchStart={
                               isTouchDevice
                                 ? () => setSelectedMobileItem(item.id)
@@ -989,7 +1052,7 @@ const RankPage: React.FC = () => {
                                 ? () => handleMobileItemClick(item.id)
                                 : undefined
                             }
-                            className={`p-2 bg-white dark:bg-slate-700 border border-slate-200 dark:border-slate-600 rounded-lg cursor-move hover:shadow-md transition-all touch-manipulation ${
+                            className={`relative p-2 bg-white dark:bg-slate-700 border border-slate-200 dark:border-slate-600 rounded-lg cursor-move hover:shadow-md transition-all touch-manipulation ${
                               draggedItem === item.id ? "opacity-50" : ""
                             } ${
                               selectedMobileItem === item.id
@@ -1027,6 +1090,75 @@ const RankPage: React.FC = () => {
           </div>
         </div>
       </div>
+
+      {/* Hover Tooltip for EIP Details (Desktop Only) */}
+      {hoveredEip && !isTouchDevice && tooltipPosition && (
+        <div
+          className="fixed z-50"
+          style={{
+            left: tooltipPosition.x,
+            top: tooltipPosition.y,
+            maxWidth: '400px',
+            width: 'auto'
+          }}
+          onMouseEnter={() => setHoveredEip(hoveredEip)}
+          onMouseLeave={() => {
+            setHoveredEip(null);
+            setTooltipPosition(null);
+          }}
+        >
+          <div className="bg-white dark:bg-slate-800 border-2 border-purple-300 dark:border-purple-600 rounded-lg shadow-2xl p-4">
+            <div className="flex items-start justify-between mb-3">
+              <div className="flex items-center gap-2">
+                <span className="text-sm font-mono font-bold text-purple-600 dark:text-purple-400">
+                  EIP-{hoveredEip.id}
+                </span>
+                {getHeadlinerLayer(hoveredEip, "glamsterdam") && (
+                  <span
+                    className={`px-1.5 py-0.5 text-xs font-medium rounded ${
+                      getHeadlinerLayer(hoveredEip, "glamsterdam") === "EL"
+                        ? "bg-indigo-100 text-indigo-700 dark:bg-indigo-900/20 dark:text-indigo-300"
+                        : "bg-teal-100 text-teal-700 dark:bg-teal-900/20 dark:text-teal-300"
+                    }`}
+                  >
+                    {getHeadlinerLayer(hoveredEip, "glamsterdam")}
+                  </span>
+                )}
+              </div>
+              <button
+                onClick={() => setHoveredEip(null)}
+                className="text-slate-400 hover:text-slate-600 dark:text-slate-500 dark:hover:text-slate-300"
+              >
+                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                </svg>
+              </button>
+            </div>
+
+            <h4 className="text-sm font-semibold text-slate-900 dark:text-slate-100 mb-2">
+              {getLaymanTitle(hoveredEip)}
+            </h4>
+
+            <p className="text-xs text-slate-600 dark:text-slate-300 leading-relaxed mb-3">
+              {truncateText(hoveredEip.laymanDescription || hoveredEip.description, 300)}
+            </p>
+
+            {hoveredEip.author && (
+              <div className="text-xs text-slate-500 dark:text-slate-400 mb-2">
+                <span className="font-medium">Author:</span> {cleanAuthorName(hoveredEip.author)}
+              </div>
+            )}
+
+            {hoveredEip.forkRelationships.find(fork => fork.forkName.toLowerCase() === "glamsterdam")?.champion && (
+              <div className="text-xs text-slate-500 dark:text-slate-400">
+                <span className="font-medium">Champion:</span>{" "}
+                {hoveredEip.forkRelationships.find(fork => fork.forkName.toLowerCase() === "glamsterdam")?.champion?.name}
+              </div>
+            )}
+          </div>
+        </div>
+      )}
+
       {/* Experiment Disclaimer */}
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-8">
         <div className="text-center space-y-3">

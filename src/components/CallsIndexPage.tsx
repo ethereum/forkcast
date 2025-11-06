@@ -122,6 +122,12 @@ const CallsIndexPage: React.FC = () => {
       date: '2025-11-12',
       title: 'Fusaka BPO2 on Hoodi (14/21 blobs)',
       category: 'testnet'
+    },
+    {
+      type: 'event',
+      date: '2025-12-03',
+      title: 'Fusaka Live on Mainnet',
+      category: 'mainnet'
     }
   ];
 

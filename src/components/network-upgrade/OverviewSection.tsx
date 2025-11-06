@@ -145,11 +145,11 @@ export const OverviewSection: React.FC<OverviewSectionProps> = ({
                 <h4 className="font-medium text-blue-900 dark:text-blue-100 text-sm mb-1">Mainnet Deployment Scheduled</h4>
                 <p className="text-blue-800 dark:text-blue-200 text-xs leading-relaxed">
                   Fusaka testnet deployments have completed successfully on Holešky, Sepolia, and Hoodi. Mainnet deployment is scheduled for <strong>December 3rd</strong>. <a
-                    href="https://blog.ethereum.org/2025/09/26/fusaka-testnet-announcement"
+                    href="https://blog.ethereum.org/en/2025/11/06/fusaka-mainnet-announcement"
                     target="_blank"
                     rel="noopener noreferrer"
                     className="text-blue-900 dark:text-blue-100 hover:text-blue-700 dark:hover:text-blue-300 underline decoration-1 underline-offset-2 transition-colors font-medium"
-                  >View the testnet announcement</a> for client release details.
+                  >View the mainnet announcement</a> for client release details.
                 </p>
               </div>
             </div>

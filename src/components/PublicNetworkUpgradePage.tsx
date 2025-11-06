@@ -360,6 +360,8 @@ const PublicNetworkUpgradePage: React.FC<PublicNetworkUpgradePageProps> = ({
                 eips={filterEipsByLayer(eips)}
                 forkName={forkName}
                 onStageClick={scrollToSection}
+                clientTeamPerspectives={clientTeamPerspectives}
+                onExternalLinkClick={handleExternalLinkClick}
               />
 
               {/* Glamsterdam Timeline Section */}

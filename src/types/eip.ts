@@ -1,7 +1,8 @@
 export interface ClientTeamPerspective {
   teamName: string;
   teamType: 'EL' | 'CL' | 'Both'; // Execution Layer, Consensus Layer, or both
-  blogPostUrl: string;
+  headlinerBlogPostUrl?: string;
+  candidateBlogPostUrl?: string; // For non-headliner (CFI/PFI) commentary
 }
 
 export interface ForkRelationship {

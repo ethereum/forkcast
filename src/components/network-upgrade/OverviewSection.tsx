@@ -1,21 +1,26 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import { EIP } from '../../types';
+import { EIP, ClientTeamPerspective } from '../../types';
 import {
   getInclusionStage,
 } from '../../utils';
 import { CopyLinkButton } from '../ui/CopyLinkButton';
+import { ClientPerspectives } from './ClientPerspectives';
 
 interface OverviewSectionProps {
   eips: EIP[];
   forkName: string;
   onStageClick: (stageId: string) => void;
+  clientTeamPerspectives?: ClientTeamPerspective[];
+  onExternalLinkClick?: (linkType: string, url: string) => void;
 }
 
 export const OverviewSection: React.FC<OverviewSectionProps> = ({
   eips,
   forkName,
   onStageClick,
+  clientTeamPerspectives,
+  onExternalLinkClick,
 }) => {
   const stageStats = [
     {
@@ -150,6 +155,20 @@ export const OverviewSection: React.FC<OverviewSectionProps> = ({
             </div>
           </div>
         </>
+      )}
+
+      {/* Client Perspectives for candidate EIPs (Glamsterdam only) */}
+      {forkName.toLowerCase() === 'glamsterdam' && clientTeamPerspectives && (
+        <div className="mb-6">
+          <ClientPerspectives
+            perspectives={clientTeamPerspectives}
+            type="candidate"
+            onLinkClick={(url: string) => {
+              window.open(url, '_blank');
+              onExternalLinkClick?.('client_perspective_candidate', url);
+            }}
+          />
+        </div>
       )}
 
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">

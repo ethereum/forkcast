@@ -5,24 +5,32 @@ import { ALL_CLIENT_TEAMS } from '../../constants/client-teams';
 interface ClientPerspectivesProps {
   perspectives?: ClientTeamPerspective[];
   onLinkClick?: (url: string) => void;
+  type?: 'headliner' | 'candidate';
 }
 
 export const ClientPerspectives: React.FC<ClientPerspectivesProps> = ({
   perspectives = [],
-  onLinkClick
+  onLinkClick,
+  type = 'headliner'
 }) => {
+  const isHeadliner = type === 'headliner';
+
   return (
     <div className="p-6 bg-indigo-50 dark:bg-indigo-900/20 border border-indigo-200 dark:border-indigo-700 rounded">
       <h4 className="font-medium text-indigo-900 dark:text-indigo-100 text-sm mb-3">
-        Client Team Perspectives
+        Client Team {isHeadliner ? 'Headliner' : 'Scoping'} Perspectives
       </h4>
       <p className="text-indigo-800 dark:text-indigo-200 text-xs leading-relaxed mb-3">
-        Client teams publish their perspectives on headliner selection. These viewpoints are especially important as these teams will implement and maintain the chosen features.
+        {isHeadliner
+          ? 'Client teams publish their perspectives on headliner selection. These viewpoints are especially important as these teams will implement and maintain the chosen features.'
+          : 'Client teams have published their perspectives on EIPs that have been proposed for inclusion in the Glamsterdam upgrade.'
+        }
       </p>
       <div className="flex flex-wrap gap-2">
         {ALL_CLIENT_TEAMS.map((team) => {
           const perspective = perspectives.find(p => p.teamName === team.name);
-          const hasPerspective = !!perspective;
+          const blogPostUrl = isHeadliner ? perspective?.headlinerBlogPostUrl : perspective?.candidateBlogPostUrl;
+          const hasPerspective = !!blogPostUrl;
 
           return (
             <div
@@ -32,7 +40,7 @@ export const ClientPerspectives: React.FC<ClientPerspectivesProps> = ({
                   ? 'bg-white dark:bg-slate-700 border border-indigo-200 dark:border-indigo-600 hover:bg-indigo-50 dark:hover:bg-indigo-900/20 cursor-pointer'
                   : 'bg-indigo-100 dark:bg-indigo-900/30 border border-indigo-200 dark:border-indigo-600 opacity-60'
               }`}
-              onClick={() => hasPerspective && perspective?.blogPostUrl && onLinkClick?.(perspective.blogPostUrl)}
+              onClick={() => hasPerspective && onLinkClick?.(blogPostUrl)}
             >
               <span className={`px-1 py-0.5 rounded text-xs font-medium ${
                 team.type === 'EL' ? 'bg-indigo-100 text-indigo-700 dark:bg-indigo-900/20 dark:text-indigo-300' :

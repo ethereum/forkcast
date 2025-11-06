@@ -79,10 +79,10 @@ export const ClientTeamPerspectives: React.FC<ClientTeamPerspectivesProps> = ({
                 </span>
               </Tooltip>
               <a
-                href={perspective.blogPostUrl}
+                href={perspective.headlinerBlogPostUrl}
                 target="_blank"
                 rel="noopener noreferrer"
-                onClick={() => handleExternalLinkClick('client_team_perspective', perspective.blogPostUrl)}
+                onClick={() => handleExternalLinkClick('client_team_perspective', perspective.headlinerBlogPostUrl || '')}
                 className="text-sm font-medium text-slate-900 hover:text-indigo-600 underline decoration-1 underline-offset-2 transition-colors"
               >
                 {perspective.teamName}

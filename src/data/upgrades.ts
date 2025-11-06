@@ -49,57 +49,66 @@ export const networkUpgrades: NetworkUpgrade[] = [
       {
         teamName: 'Besu',
         teamType: 'EL',
-        blogPostUrl: 'https://hackmd.io/@RoboCopsGoneMad/Ski-5cHLge'
+        headlinerBlogPostUrl: 'https://hackmd.io/@RoboCopsGoneMad/Ski-5cHLge',
       },
       {
         teamName: 'Erigon',
-        teamType: 'Both',
-        blogPostUrl: 'https://hackmd.io/@erigon/Glamsterdam_Headliners_View'
+        teamType: 'EL',
+        headlinerBlogPostUrl: 'https://hackmd.io/@erigon/Glamsterdam_Headliners_View',
+        candidateBlogPostUrl: 'https://github.com/erigontech/erigon/wiki/Glamsterdam-PFI-stand'
       },
       {
         teamName: 'Geth',
         teamType: 'EL',
-        blogPostUrl: 'https://github.com/ethereum/pm/issues/1610#issuecomment-3073521193'
+        headlinerBlogPostUrl: 'https://github.com/ethereum/pm/issues/1610#issuecomment-3073521193',
+        candidateBlogPostUrl: 'https://notes.ethereum.org/@fjl/geth-glamsterdam-eip-ranking'
       },
       {
         teamName: 'Grandine',
         teamType: 'CL',
-        blogPostUrl: 'https://github.com/ethereum/pm/issues/1610#issuecomment-3078680887'
+        headlinerBlogPostUrl: 'https://github.com/ethereum/pm/issues/1610#issuecomment-3078680887'
       },
       {
         teamName: 'Lighthouse',
         teamType: 'CL',
-        blogPostUrl: 'https://blog.sigmaprime.io/glamsterdam-headliner.html'
+        headlinerBlogPostUrl: 'https://blog.sigmaprime.io/glamsterdam-headliner.html',
       },
       {
         teamName: 'Lodestar',
         teamType: 'CL',
-        blogPostUrl: 'https://blog.chainsafe.io/lodestars-glamsterdam-headliner-vision/'
+        headlinerBlogPostUrl: 'https://blog.chainsafe.io/lodestars-glamsterdam-headliner-vision/'
       },
       {
         teamName: 'Nethermind',
         teamType: 'EL',
-        blogPostUrl: 'https://hackmd.io/@nethermindclient/Syqj3VUUxg'
+        headlinerBlogPostUrl: 'https://hackmd.io/@nethermindclient/Syqj3VUUxg',
+        candidateBlogPostUrl: 'https://x.com/URozmej/status/1986040895578296825'
       },
       {
         teamName: 'Nimbus',
         teamType: 'CL',
-        blogPostUrl: 'https://notes.status.im/MJFCsbS0RTaDZYMMapR1ng?view'
+        headlinerBlogPostUrl: 'https://notes.status.im/MJFCsbS0RTaDZYMMapR1ng?view'
+      },
+      {
+        teamName: 'Nimbus EL',
+        teamType: 'EL',
+        candidateBlogPostUrl: 'https://notes.status.im/s/SFCD7JqpS'
       },
       {
         teamName: 'Prysm',
         teamType: 'CL',
-        blogPostUrl: 'https://hackmd.io/@tchain/prysm-glamsterdam-headliner'
+        headlinerBlogPostUrl: 'https://hackmd.io/@tchain/prysm-glamsterdam-headliner',
       },
       {
         teamName: 'Reth',
         teamType: 'EL',
-        blogPostUrl: 'https://hackmd.io/@ZPrq5kalQqSX-138YNSJUQ/H1JafRXLle'
+        headlinerBlogPostUrl: 'https://hackmd.io/@ZPrq5kalQqSX-138YNSJUQ/H1JafRXLle',
+        candidateBlogPostUrl: 'https://hackmd.io/@jenpaff/S1bj9gqkbe'
       },
       {
         teamName: 'Teku',
         teamType: 'CL',
-        blogPostUrl: 'https://hackmd.io/@teku/SJeW2JULlx'
+        headlinerBlogPostUrl: 'https://hackmd.io/@teku/SJeW2JULlx'
       }
     ]
   }

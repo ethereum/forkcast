@@ -270,6 +270,35 @@ export const EipCard: React.FC<EipCardProps> = ({ eip, forkName, handleExternalL
                 </div>
               </div>
             )}
+            {/* Block Access List Resources */}
+            <div className="mt-4 border-t border-slate-200 dark:border-slate-600 pt-4">
+              <div className="bg-blue-50 dark:bg-blue-900/10 border border-blue-200 dark:border-blue-700/30 rounded-lg p-4">
+                <div className="flex items-start gap-3">
+                  <svg className="w-5 h-5 text-blue-600 dark:text-blue-400 mt-0.5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
+                  </svg>
+                  <div className="flex-1">
+                    <p className="text-sm text-blue-800 dark:text-blue-200">
+                      For additional resources, specifications, breakout call recordings, and client implementation details, visit{' '}
+                      <a
+                        href="https://blockaccesslist.xyz"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="font-medium underline decoration-1 underline-offset-2 hover:text-blue-900 dark:hover:text-blue-100 transition-colors"
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          if (window._paq) {
+                            window._paq.push(['trackEvent', 'External Link', 'block_access_list_eip', 'https://blockaccesslist.xyz']);
+                          }
+                        }}
+                      >
+                        blockaccesslist.xyz
+                      </a>
+                    </p>
+                  </div>
+                </div>
+              </div>
+            </div>
           </>
         )}
       </div>

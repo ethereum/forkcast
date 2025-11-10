@@ -785,27 +785,55 @@ const CallPage: React.FC = () => {
 
   if (!callData) {
     return (
-      <div className="min-h-screen bg-slate-50 dark:bg-slate-900 flex items-center justify-center p-6">
-        <div className="max-w-md w-full">
-          <div className="bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg shadow-lg p-8">
-            <div className="text-center">
-              <div className="mb-4">
-                <div className="inline-flex items-center justify-center w-16 h-16 rounded-full bg-amber-100 dark:bg-amber-900/30">
-                  <svg className="w-8 h-8 text-amber-600 dark:text-amber-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
-                  </svg>
-                </div>
+      <div className="min-h-screen bg-slate-50 dark:bg-slate-900 text-slate-900 dark:text-slate-100">
+        {/* Header */}
+        <div className="bg-white dark:bg-slate-800 border-b border-slate-200 dark:border-slate-700 sticky top-0 z-10">
+          <div className="max-w-4xl mx-auto px-4 sm:px-6 py-2">
+            <div className="flex items-center justify-between">
+              <Link to="/" className="text-lg font-serif bg-gradient-to-r from-purple-600 via-blue-600 to-purple-800 bg-clip-text text-transparent hover:from-purple-700 hover:via-blue-700 hover:to-purple-900 transition-all duration-200 tracking-tight">
+                Forkcast
+              </Link>
+              <ThemeToggle />
+            </div>
+          </div>
+        </div>
+
+        {/* Content */}
+        <div className="max-w-4xl mx-auto px-6 py-16">
+          <div className="bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg p-12 shadow-sm text-center">
+            {/* Icon */}
+            <div className="mb-6 flex justify-center">
+              <div className="w-20 h-20 rounded-full bg-slate-100 dark:bg-slate-700 flex items-center justify-center">
+                <svg className="w-10 h-10 text-slate-400 dark:text-slate-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                </svg>
               </div>
-              <h1 className="text-2xl font-semibold text-slate-900 dark:text-slate-100 mb-2">Call Not Found</h1>
-              <p className="text-slate-600 dark:text-slate-400 mb-6">The requested call could not be found. It may not exist or hasn't been added yet.</p>
+            </div>
+
+            {/* Title and Message */}
+            <h1 className="text-2xl font-semibold text-slate-900 dark:text-slate-100 mb-3">
+              Call Not Found
+            </h1>
+            <p className="text-slate-600 dark:text-slate-400 mb-8 max-w-md mx-auto">
+              The requested call could not be found. It may not be available yet or the link might be incorrect.
+            </p>
+
+            {/* Actions */}
+            <div className="flex items-center justify-center gap-3">
               <Link
                 to="/calls"
-                className="inline-flex items-center gap-2 px-4 py-2 bg-blue-600 dark:bg-blue-500 text-white rounded-lg hover:bg-blue-700 dark:hover:bg-blue-600 transition-colors shadow-sm"
+                className="inline-flex items-center gap-2 px-5 py-2.5 bg-slate-900 dark:bg-slate-100 text-white dark:text-slate-900 rounded-lg hover:bg-slate-700 dark:hover:bg-slate-200 transition-colors font-medium"
               >
                 <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 19l-7-7m0 0l7-7m-7 7h18" />
                 </svg>
-                Back to All Calls
+                Back to Calls
+              </Link>
+              <Link
+                to="/"
+                className="inline-flex items-center gap-2 px-5 py-2.5 bg-slate-100 dark:bg-slate-700 text-slate-700 dark:text-slate-300 rounded-lg hover:bg-slate-200 dark:hover:bg-slate-600 transition-colors font-medium"
+              >
+                Home
               </Link>
             </div>
           </div>

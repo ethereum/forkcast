@@ -161,16 +161,16 @@ const ChatLog: React.FC<ChatLogProps> = ({ content, syncConfig, selectedSearchRe
           // 4. Heeft gereageerd op "message" met emoji
           //
           // Strategy: Use a greedy match that captures everything between the first quote
-          // and " with " (for English) or " met " (for Dutch), handling nested quotes
+          // and " with " (for English) or " met " (for Dutch), handling nested quotes and newlines
           const reactionPatterns = [
-            // English: Match from opening quote to last " with ", then capture emoji
-            /^Reacted to [""](.+)[""] with [""](.+?)[""]$/,  // Both quoted
-            /^Reacted to [""](.+)[""] with (.+)$/,  // Message quoted, emoji unquoted
-            /^Reacted to (.+?) with [""](.+?)[""]$/,  // Message unquoted, emoji quoted
-            /^Reacted to (.+?) with (.+)$/,  // Neither quoted
+            // English: Match from opening quote to last " with ", then capture emoji (with multiline support)
+            /^Reacted to [""](.+?)[""] with [""](.+?)[""]$/s,  // Both quoted
+            /^Reacted to [""](.+?)[""] with (.+)$/s,  // Message quoted, emoji unquoted
+            /^Reacted to (.+?) with [""](.+?)[""]$/s,  // Message unquoted, emoji quoted
+            /^Reacted to (.+?) with (.+)$/s,  // Neither quoted
             // Dutch format
-            /^Heeft gereageerd op [""](.+)[""] met (.+)$/,
-            /^Heeft gereageerd op (.+?) met [""](.+?)[""]$/,  // Message unquoted, emoji quoted
+            /^Heeft gereageerd op [""](.+?)[""] met (.+)$/s,
+            /^Heeft gereageerd op (.+?) met [""](.+?)[""]$/s,  // Message unquoted, emoji quoted
           ];
 
           let matched = false;
@@ -179,14 +179,24 @@ const ChatLog: React.FC<ChatLogProps> = ({ content, syncConfig, selectedSearchRe
             if (reactionMatch) {
               // Normalize the target message - handle ellipsis for truncated messages
               // Remove any curly quotes that might be in the matched text
-              let targetMessage = reactionMatch[1].replace(/[""]/g, '"').trim();
+              // Also normalize newlines to spaces for matching
+              let targetMessage = reactionMatch[1].replace(/[""]/g, '"').replace(/\n/g, ' ').trim();
               const emoji = reactionMatch[2].replace(/[""]/g, '').trim();
 
               // Attempt to find the full message text if the reaction is on a truncated message
               const isTruncated = targetMessage.endsWith('...');
               if (isTruncated) {
                 const searchText = targetMessage.slice(0, -3).trim();
-                const parentMessage = messages.find(m => m.message.startsWith(searchText));
+                const parentMessage = messages.find(m => m.message.replace(/\n/g, ' ').startsWith(searchText));
+                if (parentMessage) {
+                  targetMessage = parentMessage.message;
+                }
+              } else {
+                // For non-truncated reactions, try to match with existing messages
+                // by normalizing newlines for comparison
+                const parentMessage = messages.find(m =>
+                  m.message.replace(/\n/g, ' ').trim() === targetMessage
+                );
                 if (parentMessage) {
                   targetMessage = parentMessage.message;
                 }

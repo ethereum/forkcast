@@ -165,27 +165,48 @@ export const EipCard: React.FC<EipCardProps> = ({ eip, forkName, handleExternalL
           {parseMarkdownLinks(eip.laymanDescription || '')}
         </p>
 
-        {/* Headliner Discussion Link */}
-        {(() => {
-          const isHeadlinerEip = isHeadliner(eip, forkName);
-          const discussionLink = getHeadlinerDiscussionLink(eip, forkName);
-          return isHeadlinerEip && discussionLink && (
-            <div className="mt-3">
+        <div className="mt-3 text-xs space-x-3">
+          {/* Block Access List Resources (EIP 7928) */}
+          {eip.id === 7928 && (
+            <a
+              href="https://blockaccesslist.xyz"
+              target="_blank"
+              rel="noopener noreferrer"
+              onClick={(e) => {
+                e.stopPropagation();
+                if (window._paq) {
+                  window._paq.push(['trackEvent', 'External Link', 'block_access_list_eip', 'https://blockaccesslist.xyz']);
+                }
+              }}
+              className="inline-flex items-center gap-1 text-purple-600 hover:text-purple-800 dark:text-purple-400 dark:hover:text-purple-300 underline decoration-1 underline-offset-2 transition-colors"
+            >
+              blockaccesslist.xyz
+              <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
+              </svg>
+            </a>
+          )}
+
+          {/* Headliner Discussion Link */}
+          {(() => {
+            const isHeadlinerEip = isHeadliner(eip, forkName);
+            const discussionLink = getHeadlinerDiscussionLink(eip, forkName);
+            return isHeadlinerEip && discussionLink && (
               <a
                 href={discussionLink}
                 target="_blank"
                 rel="noopener noreferrer"
                 onClick={() => handleExternalLinkClick('headliner_discussion', discussionLink)}
-                className="inline-flex items-center gap-1.5 text-xs text-purple-600 hover:text-purple-800 dark:text-purple-400 dark:hover:text-purple-300 underline decoration-1 underline-offset-2 transition-colors"
+                className="inline-flex items-center gap-1 text-purple-600 hover:text-purple-800 dark:text-purple-400 dark:hover:text-purple-300 underline decoration-1 underline-offset-2 transition-colors"
               >
-                Read the headliner proposal and discussion on EthMag
-                <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                Headliner proposal
+                <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
                 </svg>
               </a>
-            </div>
-          );
-        })()}
+            );
+          })()}
+        </div>
 
         {/* Champion Information */}
         {forkName.toLowerCase() === 'glamsterdam' && (() => {
@@ -270,35 +291,6 @@ export const EipCard: React.FC<EipCardProps> = ({ eip, forkName, handleExternalL
                 </div>
               </div>
             )}
-            {/* Block Access List Resources */}
-            <div className="mt-4 border-t border-slate-200 dark:border-slate-600 pt-4">
-              <div className="bg-blue-50 dark:bg-blue-900/10 border border-blue-200 dark:border-blue-700/30 rounded-lg p-4">
-                <div className="flex items-start gap-3">
-                  <svg className="w-5 h-5 text-blue-600 dark:text-blue-400 mt-0.5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
-                  </svg>
-                  <div className="flex-1">
-                    <p className="text-sm text-blue-800 dark:text-blue-200">
-                      For additional resources, specifications, breakout call recordings, and client implementation details, visit{' '}
-                      <a
-                        href="https://blockaccesslist.xyz"
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="font-medium underline decoration-1 underline-offset-2 hover:text-blue-900 dark:hover:text-blue-100 transition-colors"
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          if (window._paq) {
-                            window._paq.push(['trackEvent', 'External Link', 'block_access_list_eip', 'https://blockaccesslist.xyz']);
-                          }
-                        }}
-                      >
-                        blockaccesslist.xyz
-                      </a>
-                    </p>
-                  </div>
-                </div>
-              </div>
-            </div>
           </>
         )}
       </div>

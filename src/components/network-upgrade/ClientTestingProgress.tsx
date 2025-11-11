@@ -95,7 +95,7 @@ export const ClientTestingProgress: React.FC<ClientTestingProgressProps> = ({ da
   return (
     <div className="mt-4 border-t border-slate-200 dark:border-slate-600 pt-4">
       <h4 className="text-sm font-semibold text-slate-900 dark:text-slate-100 mb-3 uppercase tracking-wide">
-        Client Implementation Progress
+        Client Testing Progress
       </h4>
 
       <div className="bg-slate-50 dark:bg-slate-700/50 border border-slate-200 dark:border-slate-600 rounded-lg p-4">

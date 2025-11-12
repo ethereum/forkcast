@@ -5502,5 +5502,59 @@
       "Preserves stochastic blobpool without complex sharding.",
       "Supports future BPO fork throughput increases."
     ]
+  },
+  {
+    "id": 8071,
+    "title": "Prevent using consolidations as withdrawals",
+    "status": "Draft",
+    "description": "Cancels a consolidation request if processing it would push the target validator's effective balance above the maximum, which would otherwise withdraw excess balance when the consolidation queue is faster than the exit queue.",
+    "author": "Mikhail Kalinin (@mkalinin), Francesco D'Amato (@fradamt)",
+    "type": "Standards Track",
+    "category": "Core",
+    "createdDate": "2025-10-29",
+    "discussionLink": "https://ethereum-magicians.org/t/eip-8071-prevent-using-consolidations-as-withdrawals/26037",
+    "reviewer": "bot",
+    "forkRelationships": [
+      {
+        "forkName": "Glamsterdam",
+        "status": "Proposed",
+        "layer": "CL",
+        "champion": {
+          "name": "Francesco D'Amato",
+          "discord": "fradamt"
+        }
+      }
+    ],
+    "laymanDescription": "Prevents consolidation requests that would push the target validator's effective balance above the maximum.",
+    "stakeholderImpacts": {
+      "endUsers": {
+        "description": "No explicit impact on everyday Ethereum users is described; only validator consolidation and withdrawal processing semantics are updated."
+      },
+      "appDevs": {
+        "description": "The EIP describes no changes to application-layer behavior, so smart contracts and dapp logic are unaffected."
+      },
+      "walletDevs": {
+        "description": "No wallet-specific changes are specified; the proposal only alters how consensus clients process validator consolidation requests."
+      },
+      "toolingInfra": {
+        "description": "No tooling or infrastructure modifications are mentioned; changes are limited to consensus clients' consolidation-handling logic."
+      },
+      "layer2s": {
+        "description": "Layer 2 systems are not referenced; the change targets Ethereum mainnet consensus-layer validator consolidation only."
+      },
+      "stakersNodes": {
+        "description": "Validators can no longer rely on consolidations as a faster withdrawal path; they must use the exit queue instead."
+      },
+      "clClients": {
+        "description": "Consensus clients must add a helper and update process_consolidation_request to cancel offending consolidations and cover new tests."
+      },
+      "elClients": {
+        "description": "No execution-layer implementation complexity is described; the specification only changes consensus-layer consolidation behavior."
+      }
+    },
+    "benefits": [
+      "Prevents using consolidation queue as a faster, unintended withdrawal path.",
+      "Aligns consolidation behavior with its intended purpose instead of behaving like exits."
+    ]
   }
 ]

@@ -66,17 +66,20 @@ export const networkUpgrades: NetworkUpgrade[] = [
       {
         teamName: 'Grandine',
         teamType: 'CL',
-        headlinerBlogPostUrl: 'https://github.com/ethereum/pm/issues/1610#issuecomment-3078680887'
+        headlinerBlogPostUrl: 'https://github.com/ethereum/pm/issues/1610#issuecomment-3078680887',
+        candidateBlogPostUrl: 'https://github.com/ethereum/pm/issues/1790#issuecomment-3528064777'
       },
       {
         teamName: 'Lighthouse',
         teamType: 'CL',
         headlinerBlogPostUrl: 'https://blog.sigmaprime.io/glamsterdam-headliner.html',
+        candidateBlogPostUrl: 'https://blog.sigmaprime.io/glamsterdam-eip-preferences.html'
       },
       {
         teamName: 'Lodestar',
         teamType: 'CL',
-        headlinerBlogPostUrl: 'https://blog.chainsafe.io/lodestars-glamsterdam-headliner-vision/'
+        headlinerBlogPostUrl: 'https://blog.chainsafe.io/lodestars-glamsterdam-headliner-vision/',
+        candidateBlogPostUrl: 'https://blog.chainsafe.io/lodestar-glamsterdam-upgrade-proposal/'
       },
       {
         teamName: 'Nethermind',
@@ -87,7 +90,8 @@ export const networkUpgrades: NetworkUpgrade[] = [
       {
         teamName: 'Nimbus',
         teamType: 'CL',
-        headlinerBlogPostUrl: 'https://notes.status.im/MJFCsbS0RTaDZYMMapR1ng?view'
+        headlinerBlogPostUrl: 'https://notes.status.im/MJFCsbS0RTaDZYMMapR1ng?view',
+        candidateBlogPostUrl: 'https://notes.status.im/s/6-ZIuquGe'
       },
       {
         teamName: 'Nimbus EL',
@@ -98,6 +102,7 @@ export const networkUpgrades: NetworkUpgrade[] = [
         teamName: 'Prysm',
         teamType: 'CL',
         headlinerBlogPostUrl: 'https://hackmd.io/@tchain/prysm-glamsterdam-headliner',
+        candidateBlogPostUrl: 'https://github.com/ethereum/pm/issues/1790#issuecomment-3524246616'
       },
       {
         teamName: 'Reth',
@@ -108,7 +113,8 @@ export const networkUpgrades: NetworkUpgrade[] = [
       {
         teamName: 'Teku',
         teamType: 'CL',
-        headlinerBlogPostUrl: 'https://hackmd.io/@teku/SJeW2JULlx'
+        headlinerBlogPostUrl: 'https://hackmd.io/@teku/SJeW2JULlx',
+        candidateBlogPostUrl: 'https://hackmd.io/KUFN0UIMRgCLheMVzFmN5A'
       }
     ]
   }

@@ -1,0 +1,957 @@
+00:05:45	nixo:	gm
+00:05:52	Mario Vega:	gm
+00:05:52	Pierre-Louis Roman | Chainbound:	hello hello
+00:05:53	Enrico Del Fante (tbenr):	gm
+00:06:09	Potuz:	gm
+00:06:11	Bastin:	gm
+00:07:49	stokes:	https://github.com/ethereum/pm/issues/1790
+00:09:25	Ahmad Bitar | Nethermind:	Blob fees going crazy on hoodi
+00:09:42	Potuz:	we could mention the attestation issue
+00:10:12	kev and pandaops:	Blob base fee:
+379718 wei doesn’t seem that high?
+00:11:39	Ahmad Bitar | Nethermind:	Replying to "Blob base fee:
+37971..." 
+
+ I see 0.2759 Gwei on hoodi.blobscan.com
+00:13:00	Dustin:	they have to be tied to Fusaka explicitly somehow
+00:13:15	stokes:	#execution-dev
+00:13:37	nixo:	Replying to "#execution-dev"
+
+https://discord.com/channels/595666850260713488/688075293562503241/1437751005293973536
+00:15:08	Ryan Berckmans:	gm, I'm a guest today to remark on headliner EIPs for Glamsterdam.
+00:17:00	kev and pandaops:	Cool let us know as soon as we can start helping! Can we target end of nov?
+00:17:20	terence:	dont think the engine api changes need to be the first devnet though
+00:17:28	Anders Elowsson:	Replying to "gm, I'm a guest toda..."
+
+Are you referring to ePBS and BALs?
+00:17:31	kev and pandaops:	Reacted to "dont think the engin..." with 👍🏽
+00:18:04	Potuz:	Reacted to "dont think the engin..." with 👍🏽
+00:18:45	uliana:	Reacted to "dont think the eng..." with 👍🏽
+00:18:58	Ryan Berckmans:	Replying to "gm, I'm a guest to..."
+
+I'm here to argue for Glamsterdam to ship ASAP to unlock additional blob scaling ASAP, and therefore for the exclusion of FOCIL from Glamsterdam.
+00:20:12	terence:	only headliner or only eip?
+00:20:38	soispoke:	Frontrunning the agenda I guess
+00:20:42	Potuz:	This is most probably about FOCIL only so probably it could go after discussing all the other EIPs cause FOCIL will surely be a contentious thing that will take over the meeting
+00:20:44	Trent:	Replying to "only headliner or on..."
+
+Only CL headliner
+00:20:45	kingy_sigp:	Reacted to "Frontrunning the age..." with 😂
+00:20:53	kingy_sigp:	Reacted to "This is most probabl..." with 👏
+00:20:54	donnoh | L2BEAT:	Reacted to "Frontrunning the age..." with 😂
+00:20:57	donnoh | L2BEAT:	Reacted to "This is most probabl..." with 👍
+00:21:03	stokes:	Replying to "This is most probabl..."
+
+You want to cover the others first?
+00:21:03	Potuz:	we have a bunch of EIPs to discuss, can we go through them before?
+00:21:05	Pelle Krabbenhoeft:	Reacted to "Frontrunning the age…" with 😂
+00:21:10	stokes:	Replying to "This is most probabl..."
+
+I could see either way, sequence wise
+00:21:11	Łukasz Rozmej:	Replying to "This is most probabl..."
+
+I came for FOCIL and you tell me I have to wait more? No fair!
+00:21:12	donnoh | L2BEAT:	Reacted to "we have a bunch of E..." with ➕
+00:21:17	lightclient:	Reacted to "This is most probabl..." with 👍
+00:21:19	Mehdi Aouadi:	Reacted to "Frontrunning the age..." with 😂
+00:21:25	Potuz:	Replying to "This is most probabl..."
+
+I suspect if we open the can of FOCIL we won' t advance at all today, we probably want to do the others first
+00:21:28	uliana:	Reacted to "we have a bunch of..." with 👍
+00:21:30	donnoh | L2BEAT:	Reacted to "I suspect if we open..." with ➕
+00:21:32	Łukasz Rozmej:	Reacted to "I suspect if we open..." with ➕
+00:21:38	Łukasz Rozmej:	Reacted to "Frontrunning the age..." with 😂
+00:21:50	terence:	Maybe a good starting point to discuss is do we want glamseterdam shipping to be constrained by a deadline?
+00:21:56	Francesco:	What’s the point of discussing the other EIPs without having made the most consequential decision?
+00:22:03	Sophia Gold:	doesn't this depend on the ptc deadline? i haven't checked the spec in a bit: do we currently even get blob scaling?
+00:22:07	Ryan Berckmans:	Thank your your time today. Have a good call.
+00:22:57	Potuz:	Replying to "What’s the point of ..."
+
+all the other EIPs are kinda irrelevant with respect to adding or not FOCIL
+00:22:58	Anders Elowsson:	Reacted to "Thank your your time..." with 👍
+00:23:03	Pelle Krabbenhoeft:	Reacted to "I suspect if we open…" with ➕
+00:23:46	Sophia Gold:	Replying to "doesn't this depen..."
+
+just to be clear, i like a 4s ptc deadline for the extra proving time
+00:24:05	Anders Elowsson:	Reacted to "Frontrunning the age..." with 😂
+00:26:08	Potuz:	Replying to "doesn't this depend ..."
+
+I think there' s broad consensus on dual deadlines and on setting the deadlines later at testing time
+00:26:18	Sophia Gold:	Reacted to "I think there' s b..." with 👍
+00:26:31	Potuz:	Replying to "doesn't this depend ..."
+
+at any rate we will have dual deadlines in the spec and the option to set them at the same time if needed
+00:26:35	Jihoon:	Reacted to "Frontrunning the age..." with 😂
+00:27:44	Sophia Gold:	Replying to "doesn't this depen..."
+
+if people aren't concerned about the free option, obviously dual deadline is best
+00:27:55	Barnabé Monnot:	Reacted to "What’s the point of ..." with 👍
+00:28:26	kev and pandaops:	2w sounds very optimistic. IMO we can barely do engineAPI changes in 2w cadence even when it doesn’t touch more than one EIP.
+00:29:14	Mario Vega:	Reacted to "2w sounds very optim..." with 👍🏼
+00:29:16	NC:	Replying to "2w sounds very optim…"
+I think we are only speaking about engineering effort
+00:30:07	Potuz:	Replying to "doesn't this depend ..."
+
+we are concerned, so we want to set them as soon as possible given the blob count, and presumably do something similar with the payload depending on gas limit or payload size for example
+00:30:23	Trent:	Reacted to "2w sounds very optim..." with 👍🏼
+00:30:53	kev and pandaops:	Replying to "2w sounds very optim..."
+
+Yeah but that’s usually not compressed in one stretch and often interlaced with PR reviews and getting input from a wider range of audiences. Barely any EIP can be done in a 2w timeline extension to the overall fork tbh, let alone a big one.
+00:31:48	Sophia Gold:	Reacted to "we are concerned, ..." with 👍
+00:33:26	Sophia Gold:	Replying to "doesn't this depen..."
+
+i see. i know it was suggested to have them be dynamic but didn't know that was being seriously considered
+00:33:54	NC:	Replying to "2w sounds very optim…"
+@kev and pandaops yea I understand, there’s additional effort for spec writing and reviewing. I think the 2 weeks refers to additional time spent provided epbs and focil are implemented, and the related spec and test infrastructure is ready
+00:34:22	Potuz:	Replying to "doesn't this depend ..."
+
+it doesn't need to be in Glamsterdam and it is not a hardfork so it's easy to test and implement after the fork
+00:34:54	Potuz:	Replying to "doesn't this depend ..."
+
+having the deadline be dependent on the payload size or the number of KZG commitments is trivial to implement and ship, probably harder to test and set the right parameters
+00:35:00	kev and pandaops:	Reacted to "@kev and pandaops ye..." with 👍🏽
+00:35:29	Potuz:	Replying to "doesn't this depend ..."
+
+but anyway is also trivially gameable for a builder that wants to exercise the free option so it's not a solution at all
+00:35:41	Dustin:	Reacted to "2w sounds very opt..." with 👍🏼
+00:36:12	Anders Elowsson:	What’s the complexity diff on 8061 vs 8071? Purely from a dev perspective, ignoring the weak subjectivity analysis.
+00:37:10	soispoke:	Ok so summary for FOCIL:
+3 teams explicitly want to SFI it
+2 teams expressed conditional support (as in support with caveats, mainly around fork complexity and timelines) 
+1 team would rather DFI it
+00:37:15	Potuz:	8061 is a bit more complex, 8071's changes are localized it should be much simpler to deploy and test
+00:37:19	Dustin:	Replying to "2w sounds very opt..."
+
+So if FOCIL has already implemented, then it takes 2 weeks, that's the intent? I think the idea is, from a baseline of no FOCIL
+00:37:23	Caspar Schwarz-Schilling:	RIG view: https://notes.ethereum.org/@css/rig-glamsterdam
+00:37:27	Dustin:	Replying to "2w sounds very opt..."
+
+Because that's the alternative
+00:37:35	Barnabé Monnot:	Should we add tweets to the record? https://x.com/barnabemonnot/status/1988202114657505428
+00:37:45	Anders Elowsson:	Reacted to "Screenshot 2025-11-13 at 09.18.50.png" with 👍
+00:37:46	Jihoon:	Reacted to "Ok so summary for FO..." with 👍
+00:37:48	felix (eest):	Reacted to "Ok so summary for ..." with 👍
+00:37:54	terence:	Replying to "2w sounds very optim..."
+
+FOCIL on top of fulu is different than FOCIL on top of epbs too
+00:37:55	kingy_sigp:	Replying to "What’s the complexit..."
+
+8071 is basically just if >2048 dont allow consolidation
+00:37:56	Francesco:	Replying to "8061 is a bit more c..."
+
+It’s also much less useful
+00:38:14	Caspar Schwarz-Schilling:	Reacted to "It’s also much less ..." with 👍
+00:38:20	Sophia Gold:	Can we discuss whether we think we can credibly commit to scheduling FOCIL for the H fork?
+00:38:26	Potuz:	Replying to "8061 is a bit more c..."
+
+yeah my preference is 8061
+00:38:35	Dustin:	Replying to "2w sounds very opt..."
+
+Yeah, has it been rebased yet?
+00:38:39	Dustin:	Replying to "2w sounds very opt..."
+
+It's not real until it has
+00:38:44	soispoke:	Replying to "Should we add tweets..."
+
+https://x.com/soispoke/status/1988250897437052934?s=20
+00:38:46	Anders Elowsson:	Reacted to "It’s also much less ..." with 👍
+00:38:59	Trent:	Will the testing and panda teams give their perspective on complexity of SFIing FOCIL?
+00:39:05	Barnabé Monnot:	Reacted to "Will the testing and..." with 👍
+00:39:07	Potuz:	Replying to "8061 is a bit more c..."
+
+I think 8071 is the worst of both worlds: we not only don't use the consolidation churn for useful things like exits, but also make exits worst for everyone
+00:39:12	Mario Vega:	Reacted to "Will the testing and..." with 👍
+00:39:24	kev and pandaops:	Replying to "2w sounds very optim..."
+
++1 I think we’re realistically talking about a fork 3-6mos later if we add focil in vs not.
+00:39:44	kev and pandaops:	Replying to "2w sounds very optim..."
+
+And this is optimistic, assuming specs don’t churn much
+00:40:02	Greg K | Lido:	Reacted to "Can we discuss whe..." with 👍
+00:40:19	terence:	Replying to "2w sounds very optim..."
+
+I think adding focil pushes the mainnet date to end of next year, so it's more important to discuss whether time line is a constraint. If we agree it's not then let's add focil
+00:40:21	Pelle Krabbenhoeft:	Reacted to "Yeah, has it been re…" with 👍
+00:40:26	Mario Vega:	EIP-7805 EL spec testing complexity assessment here: https://github.com/ethsteel/pm/blob/main/complexity_assessments/EIPs/EIP-7805.md#checklist 
+Tldr, not the end of the world but complexity mid/high nonetheless. This plus BAL + Gas repricing is way too high compounded complexity in our opinion.
+00:40:30	donnoh | L2BEAT:	Reacted to "Ok so summary for FO..." with 👍
+00:40:39	donnoh | L2BEAT:	Reacted to "Screenshot 2025-11-13 at 09.18.50.png" with 👍
+00:40:41	Dustin:	Replying to "2w sounds very opt..."
+
+Yeah, this is our position
+00:40:42	Barnabé Monnot:	Reacted to "EIP-7805 EL spec tes..." with 👍
+00:40:48	kev and pandaops:	IMO we shouldn’t include focil because of fear. We should include it because it’s a good feature and we need it. If we do, then we need to accept that theres a chance of no fork in 2026.
+00:40:49	Dustin:	Reacted to "I think adding foc..." with 👍
+00:40:51	kev and pandaops:	Reacted to "I think adding focil..." with 👍
+00:41:07	Toni Wahrstätter:	Reacted to IMO we shouldn’t inc... with "👍"
+00:41:14	Trent:	Reacted to "EIP-7805 EL spec tes..." with 👍
+00:41:19	Mario Vega:	Reacted to "IMO we shouldn’t inc..." with 👍
+00:41:19	Barnabé Monnot:	Reacted to "IMO we shouldn’t inc..." with 👍
+00:41:21	nixo:	i will say a wallet dev and andrew coathup chimed in on community feedback (in addition to the already-mentioned stakers union): https://ethereum-magicians.org/t/community-feedback-on-non-headlining-features-in-glamsterdam/26410 
+
+on the CL side: support for 8045, 8062, 8068 on a B-tier
+
+support for pushing FOCIL to Heka from abc, with strong support for it in Glammy from Stakers Union. Wallet dev only had an opinion on an EL EIP
+
+(no need to speak, pretty straightforward)
+00:41:40	Trent:	Reacted to "IMO we shouldn’t inc..." with 👍
+00:41:42	Greg K | Lido:	Replying to "Screenshot 2025-11..."
+
+8062 is an unfair penalty for 0x01 validators, while 8068 gives sound incentives to switch from 0x01 to 0x02, why is 8062 considered a better choice?
+00:41:51	Barnabé Monnot:	Replying to "EIP-7805 EL spec tes..."
+
+“This analysis has only been done for execution layer clients. The impact on CL clients will be much greater.”
+00:41:56	Stefan Starflinger:	Reacted to "IMO we shouldn’t inc…" with 👍
+00:42:11	Mario Vega:	Reacted to "“This analysis has o..." with 👍🏼
+00:42:37	Toni Wahrstätter:	Replying to "[Full message cannot be displayed on this version]" 
+
+ 0x1 cost resources (e.g. data and compute) but don't pay for it.
+00:42:45	Francesco:	I don’t think it’s as black and white as “if we don’t SFI FOCIL we’re saying that fork cadence is the only thing that matters”
+00:42:49	NC:	Replying to "IMO we shouldn’t inc…"
+If we want epbs, focil, 6s slot by the end of next year, then how does epbs + focil alone already take the whole year? Or we just do epbs + 6s slot by end of next year?
+00:42:56	Joshua Rudolf:	Reacted to "I don’t think it’s a…" with 👍
+00:43:00	uliana:	Reacted to "I don’t think it..." with 👍
+00:43:07	Trent:	Reacted to "I don’t think it’s a..." with 👍
+00:43:19	NC:	Reacted to "Ok so summary for FO…" with 👍
+00:43:24	soispoke:	Replying to "I don’t think it’s a..."
+
+It’s the main argument though, everyone seems to agree FOCIL is important as a feature in itself
+00:43:43	Anders Elowsson:	Replying to "Screenshot 2025-11-13 at 09.18.50.png"
+
+8062 is not necessarily unfair given that 0x02 already pay substantially for their withdrawals and that 0x01 skim withdrawals also cost resources which are not paid for. 8068 would be nice but we argue that we can try to compensate by doing 8062 a bit stronger to get a simpler change cover for both.
+00:43:45	soispoke:	Replying to "I don’t think it’s a..."
+
+So if it’s not about the feature itself it’s about fork complexity or fork cadence
+00:43:50	NC:	Reacted to "I don’t think it’s a…" with 👍
+00:43:59	kev and pandaops:	Replying to "IMO we shouldn’t inc..."
+
+I think we can do bal + epbs -> June/aug. 6s + focil -> jan/march realistically.
+00:44:08	Greg K | Lido:	Replying to "Screenshot 2025-11..."
+
+Do 0x02 pay for skimming beyond 2048?
+00:44:18	Trent:	Can some of the testing or panda team speak on audio, not chat?
+00:44:19	Francesco:	Replying to "I don’t think it’s a..."
+
+Many things are important, doesn’t mean we should do them all at once
+00:44:24	kev and pandaops:	Replying to "IMO we shouldn’t inc..."
+
+Doing all: bal/epbs/6s/focil in 2026 is a pipe dream if we’re being honest with ourselves.
+00:44:27	Mehdi Aouadi:	FOCIL in H fork with 6s slots will present the same issue we have today with ePBS
+00:44:43	Potuz:	Replying to "FOCIL in H fork with..."
+
+yeah this is my main fear of delaying FOCIL
+00:44:43	Stefan Bratanov:	Reacted to "FOCIL in H fork with..." with 👍
+00:44:48	lightclient:	Every fork adds risk too
+00:44:50	donnoh | L2BEAT:	Reacted to "FOCIL in H fork with..." with 👍
+00:44:52	felix (eest):	Reacted to "FOCIL in H fork wi..." with 👍
+00:44:52	donnoh | L2BEAT:	Reacted to "yeah this is my main..." with 👍
+00:44:53	Enrico Del Fante (tbenr):	Reacted to "FOCIL in H fork with..." with 👍
+00:44:55	NC:	Reacted to "FOCIL in H fork with…" with 👍
+00:45:05	Justin Traglia:	Reacted to "FOCIL in H fork with..." with 👍
+00:45:06	soispoke:	Reacted to "FOCIL in H fork with..." with 👍
+00:45:08	Mehdi Aouadi:	Reacted to "yeah this is my main..." with 👍
+00:45:10	Anders Elowsson:	Replying to "Screenshot 2025-11-13 at 09.18.50.png"
+
+No I was referring to partial withdrawals
+00:45:11	Mario Vega:	Reacted to "Doing all: bal/epbs/..." with 👍🏼
+00:45:12	soispoke:	Replying to "FOCIL in H fork with..."
+
+exactly
+00:45:52	lightclient:	It’s just not possible to make commitments that far in advance
+00:45:58	soispoke:	Replying to "I don’t think it’s a..."
+
+Sure, I don’t think this contradicts what I said
+00:45:59	lightclient:	We don’t know what we’ll need to do in 18 months
+00:46:05	Potuz:	We are doing exactly that: we are doing N+2 right now before shipping N+1
+00:46:06	cayman:	Reacted to "FOCIL in H fork with..." with 👍
+00:46:12	Caspar Schwarz-Schilling:	Reacted to "yeah this is my main..." with 👍
+00:46:14	Toni Wahrstätter:	CR is important and focil, giving us better inclusion guarantees, is a strong proposal but I'd be against making the fork larger at this point, recognizing that ePBS is already big enough.
+I don't think we should commit to anything re h* today/soon.
+00:46:15	soispoke:	Reacted to "It’s just not possib..." with 👍
+00:46:50	NC:	Replying to "CR is important and …"
+Focil will be the new verkle or eof that’s what people fear I think
+00:47:00	kasey:	Replying to "FOCIL in H fork with..."
+
+However focil and epbs both include changes to fork choice / STF and  new messages/topics as Dustin highlighted. So there are more possibilities for testing interactions between focil and ebps; 6s and focil seem more orthogonal to each other.
+00:47:01	Toni Wahrstätter:	Replying to "CR is important and ..." 
+
+ No i don't think so
+00:47:18	Łukasz Rozmej:	Reacted to "FOCIL in H fork with..." with 👍
+00:47:23	Justins iPhone:	i dont want to repeat the same mistakes as EOF either
+00:47:27	Lodestar Team:	Replying to "We are doing exactly..."
+
+We say that with N being Fusaka, so we mean having guarantees for Heka today also for say, FOCIL
+00:47:47	satushh:	Reacted to "CR is important an..." with 👍
+00:47:58	Dustin:	Replying to "CR is important an..."
+
+If one abstracts from "Verkle" to "statelessness", statelessness just evolved
+00:48:01	Potuz:	Replying to "We are doing exactly..."
+
+oh so you want to plan the next 3 forks? good luck with that, we can barely scope the next one
+00:48:07	Francesco:	Reacted to "If one abstracts fro..." with 👍
+00:48:07	lightclient:	Reacted to "If one abstracts fro..." with 🔥
+00:48:08	Pelle Krabbenhoeft:	Reacted to "yeah this is my main…" with 👍
+00:48:12	kingy_sigp:	Reacted to "oh so you want to pl..." with 😂
+00:48:22	cayman:	Reacted to "We don’t know what w..." with 👍
+00:48:31	NC:	Reacted to "i dont want to repea…" with 👍
+00:48:38	donnoh | L2BEAT:	Reacted to "If one abstracts fro..." with 👍
+00:48:40	Lodestar Team:	Replying to "We are doing exactly..."
+
+Yes we have been poor at those commitments historically
+00:48:41	Francesco:	Replying to "CR is important and ..."
+
+Strong agree, the equivalent here would be if we just decided that we want to do something different than focil (but with the same goal), which would be fine
+00:48:45	Greg K | Lido:	Replying to "Screenshot 2025-11..."
+
+Yep so the same resource (auto sweeping algo) is charged for 0x01 but not for 0x02, this is an asymmetry, which I can not see how can be rationalized.
+
+This hurts trust-minimized permissionless staking such as Lido CSM and Rocket Pool, which rely on 0x01 (fixed bond requirement)
+00:48:46	Łukasz Rozmej:	Replying to "CR is important and ..."
+
+@Dustin but shipped is better than perfect ;)
+00:48:48	Stefan Bratanov:	Replying to "We are doing exactly..."
+
+We can also ship just FOCIL in H* relatively quickly after ePBS, and leave 6s for I*
+00:48:56	Trent:	Reacted to "If one abstracts fro..." with 👍
+00:49:01	Francesco:	Replying to "CR is important and ..."
+
+Plus don’t get the verkle argument anyway because the complexity compared to focil is way different
+00:49:02	donnoh | L2BEAT:	Reacted to "@Dustin but shipped ..." with 👍
+00:49:03	Ansgar Dietrichs:	Personally, seeing how passionate everyone here is about FOCIL, I don’t worry at all that delaying it would risk us never shipping it (or some future variant).
+
+Ironically I would be much more in favor of shipping it now if there was less enthusiastic support for it (because that would make me worried for the future otherwise)
+00:49:05	Barnabé Monnot:	Reacted to "If one abstracts fro..." with 👍
+00:49:05	Toni Wahrstätter:	Replying to "CR is important and ..." 
+
+ Completely separate things and yeah, if we have an even better CR solution in 6 month, good. I don't think that will be the case. FOCIL is the result of years of research and it feels like the design space has been explored with FOCIL being the best we got to.
+00:49:15	stokes:	Reacted to "Personally, seeing h..." with 👍
+00:49:20	Potuz:	Replying to "We are doing exactly..."
+
+that would be my preference for sure, probably no chance of that happening though
+00:49:24	Francesco:	Reacted to "Personally, seeing h..." with 👍
+00:49:26	Toni Wahrstätter:	Reacted to If one abstracts fro... with "👍"
+00:49:27	Barnabé Monnot:	Reacted to "Personally, seeing h..." with 👍
+00:49:28	Simon (@siladu) | Besu:	Reacted to "We can also ship jus..." with 👍
+00:49:29	donnoh | L2BEAT:	Reacted to "Personally, seeing h..." with 🤔
+00:49:35	soispoke:	Reacted to "Personally, seeing h..." with 🤔
+00:49:52	Dustin:	EOF had a different issue: to brutally shortly and subjectively summarize a long debate, it was a victim of did people even want it. And that doesn't seem likely for FOCIL. it's a qualitatively new feature set
+00:49:57	Łukasz Rozmej:	There is always new shiny thing….
+00:49:59	kev and pandaops:	Reacted to "Personally, seeing h..." with 👍
+00:50:02	Greg K | Lido:	Reacted to "Personally, seeing..." with 👍
+00:50:04	soispoke:	Replying to "Personally, seeing h..."
+
+Ship things people are not enthusiastic about is also a bit odd but I think I see what you mean
+00:50:10	stokes:	Its different bc of how core it is to atheneum’s values
+00:50:14	vitalik:	I have one thing to say (sorry hand raise not working in browser)
+00:50:23	stokes:	Replying to "Its different bc of ..."
+
+ethereum
+00:50:28	Will’s iPhone:	Reacted to "I have one thing to …" with ❤️
+00:50:39	stokes:	Replying to "I have one thing to ..."
+
+After lodestar!
+00:50:40	kingy_sigp:	if the inertia here is FOCIL to Heka - that changes our appetite for some of the other EIPs. Generally, we're in favour of more targeted, shorter cadence hardforks - but acknowledge there is widespread community support for FOCIL
+00:50:40	Anders Elowsson:	Replying to "CR is important and ..."
+
+We have FOCILR in EIP-8046 which extends on FOCIL. FOCILR offers strong censorship resistance. But that extension means we still benefit from shipping FOCIL first.
+
+https://eips.ethereum.org/EIPS/eip-8046
+00:50:50	Toni Wahrstätter:	Replying to "Personally, seeing h..." 
+
+ Complexity piles up though. No matter how enthusiastic we are
+00:51:09	Mario Vega:	Reacted to "Complexity piles up ..." with 👍🏼
+00:51:44	kev and pandaops:	We do also want to mention that 6s slots and focil tend to touch different parts of the system. This feature is not true if we ship focil/epbs/bals. There’s always overlap ofc, but focil and 6s are relatively separate features.
+00:52:07	Ben Edgington:	Fwiw, committing to headliners 2-3 forks out seems fine to me.
+00:52:15	stokes:	Reacted to "Fwiw, committing to ..." with 👍
+00:52:16	Trent:	this group chose ePBS as a priority. There are complexity consequences to decisions, and we simply cannot do everything desirable in the same fork
+00:52:21	kev and pandaops:	Reacted to "Fwiw, committing to ..." with 👍
+00:52:23	Will’s iPhone:	Reacted to "Fwiw, committing to …" with 👍
+00:52:30	kev and pandaops:	Reacted to "this group chose ePB..." with 👍🏽
+00:52:33	Toni Wahrstätter:	Reacted to this group chose ePB... with "👍🏽"
+00:52:37	Mehdi Aouadi:	Replying to "FOCIL in H fork with..."
+
+Not sure 6s slots and FOCIL are orthogonal since focil is time sensitive. IMO there will be some design/timing challenges to keep focil reliable. And yes, FOCIL will probably delay the fork (be it because of the testing complexity or the protocol design) but anyway, a 6 months fork is already not possible even with ePBS alone
+00:52:37	Stefan Starflinger:	Reacted to "this group chose ePB…" with 👍🏽
+00:52:38	Justin Florentine (Besu):	Replying to "this group chose ePB..."
+
+but most of the client teams just said they can
+00:52:46	felix (eest):	Reacted to "but most of the cl..." with 👍
+00:52:50	Mehdi Aouadi:	Reacted to "Personally, seeing h..." with 👍
+00:52:51	kev and pandaops:	Replying to "this group chose ePB..."
+
+I see it as a positive problem! We’re all so enthusiastic about improving etheruem 🙂 we just gotta temper expectations a bit sometimes.
+00:53:04	NC:	Reacted to "Fwiw, committing to …" with 👍
+00:53:04	Mario Vega:	Reacted to "this group chose ePB..." with 👍🏽
+00:53:13	Ben Edgington:	Replying to "Fwiw, committing to ..."
+
+Doing frequent upgrades de-risks this and increases certainty.
+00:53:15	kev and pandaops:	Replying to "this group chose ePB..."
+
+@Justin Florentine (Besu) well depends on the timeline, if were fine with no fork in 2026 - sure
+00:53:18	cayman:	Reacted to "but most of the clie..." with 👍
+00:53:19	Potuz:	Replying to "this group chose ePB..."
+
+"They can" there's nuances to that
+00:53:23	Dustin:	Reacted to "Personally, seeing..." with 👍
+00:53:24	donnoh | L2BEAT:	Reacted to "Fwiw, committing to ..." with 👍
+00:53:27	Trent:	Reacted to ""They can" there's n..." with 👍
+00:53:38	Justin Florentine (Besu):	Replying to "this group chose ePB..."
+
+and those nuances are being ignored in this conversation
+00:53:55	Francesco:	Replying to "this group chose ePB..."
+
+There was a “we can do it all” moment circa May 2024 😆
+00:53:56	kev and pandaops:	Replying to "FOCIL in H fork with..."
+
+The difference is that 6s slots is not a moving target, once we decide its 6s - there’s a design consideration that can be taken as truth
+00:53:57	Dustin:	Reacted to "this group chose e..." with 👍🏽
+00:54:00	kev and pandaops:	Replying to "FOCIL in H fork with..."
+
+This is not true for most other EIPs
+00:54:01	Potuz:	Replying to "this group chose ePB..."
+
+we definitely can, and my preference would be to commit to shipping it, but admitting that we don't care more about fork cadence than fork content
+00:54:11	kev and pandaops:	Replying to "FOCIL in H fork with..."
+
+It would ofc be a problem if we didn’t know if we wanted 6s Or 4s or whatever
+00:54:13	kev and pandaops:	Replying to "FOCIL in H fork with..."
+
+But that isn’t the case
+00:54:15	Łukasz Rozmej:	Reacted to "Fwiw, committing to ..." with 👍
+00:54:19	Justin Florentine (Besu):	Reacted to "we definitely can, a..." with 💯
+00:54:22	Trent:	Replying to "this group chose ePB..."
+
+Testing and pandaOps are pointing out the complexity risk beyond timeline. Multiple client teams have pointed out the risk
+00:54:39	Justin Florentine (Besu):	Replying to "this group chose ePB..."
+
+there is always risks, and some are acceptable
+00:54:39	kev and pandaops:	Reacted to "Testing and pandaOps..." with 👍🏽
+00:54:59	Potuz:	Replying to "this group chose ePB..."
+
+I think Pari is right re: testing ePBS+FOCIL, I think he's wrong re: testing 6s + FOCIL
+00:55:00	kev and pandaops:	Replying to "this group chose ePB..."
+
+Well there risk is also that we ship none of the other glamsterdam benefits in 2026, is that risk worth it? - im not sure.
+00:55:12	kev and pandaops:	Reacted to "I think Pari is righ..." with 👍🏽
+00:55:16	cayman:	Reacted to "we definitely can, a..." with 💯
+00:55:30	Dustin:	Reacted to "Testing and pandaO..." with 👍🏽
+00:56:14	vitalik:	I agree with "fast glam is good" from a decentralization/CR perspective
+00:56:19	Mario Vega:	Reacted to "There was a “we can ..." with 👍🏼
+00:56:36	Potuz:	Replying to "FOCIL in H fork with..."
+
+@Mehdi Aouadi exactly, I think this is the main mistake pandaOps is making in their estimates
+00:56:39	Trent:	Reacted to "I agree with "fast g..." with 👍
+00:56:41	Toni Wahrstätter:	Reacted to I agree with "fast g... with "👍"
+00:56:52	vitalik:	because BAL + zkevm unlocks super efficient full nodes
+00:56:57	Potuz:	Replying to "FOCIL in H fork with..."
+
+I very much contest the concept that testing with ePBS will be more complicated than with 6s
+00:57:06	kev and pandaops:	Reacted to "I agree with "fast g..." with 👍
+00:57:06	uliana:	Reacted to "because BAL + zkev..." with 👍
+00:57:08	kev and pandaops:	Reacted to "because BAL + zkevm ..." with 👍
+00:57:09	Carl Beekhuizen:	Reacted to "this group chose ePB…" with 👍🏽
+00:57:10	NC:	Reacted to "I very much contest …" with 👍
+00:57:21	kev and pandaops:	Reacted to "I very much contest ..." with 👍
+00:57:23	Potuz:	Even if our commitments aren't "credible", why can't we at least make them?
+00:57:27	Mario Vega:	Reacted to "because BAL + zkevm ..." with 👍
+00:57:28	Barnabé Monnot:	Reacted to "this group chose ePB..." with 👍🏽
+00:57:39	kingy_sigp:	Reacted to "Even if our commitme..." with 👍
+00:57:41	donnoh | L2BEAT:	Reacted to "Even if our commitme..." with 👍
+00:57:53	Stefan Starflinger:	Reacted to "Even if our commitme…" with 👍
+00:57:56	Sophia Gold:	Replying to "Even if our commit..."
+
+i think we need to say what we will actually do, different from past commitments, to ensure this one happens
+00:57:57	soispoke:	I don’t think we have a credible way to commit to it, the best way to commit to it is to ship it in Glamsterdam
+00:58:04	kev and pandaops:	Replying to "FOCIL in H fork with..."
+
+Our claim is based on the thought that epbs will still undergo changes  (so far this has proven true). 6s slots mostly has fixed constraints that can be taken as true for FOCIL specs.
+00:58:09	Caspar Schwarz-Schilling:	Reacted to "i think we need to s..." with 🤝
+00:58:17	kev and pandaops:	Reacted to "Even if our commitme..." with 👍
+00:58:20	Potuz:	Replying to "Even if our commitme..."
+
+every single fork since I arrived to Ethereum we said "we will do Verkle next"
+00:58:39	Justin Florentine (Besu):	we can't do that thing again, where research vetoes client teams and then we promise to tweak the process to address in the future.
+00:58:55	Trent:	Context changes
+Tech changes
+00:58:56	Lodestar Team:	Reacted to "we can't do that thi..." with 🙏
+00:59:05	kasey:	Reacted to "Our claim is based o..." with 👍
+00:59:10	Potuz:	Replying to "Even if our commitme..."
+
+the very same thing was said many times to Verkle
+00:59:10	kingy_sigp:	SFI FOCIL for heka sounds appropriate
+00:59:10	kev and pandaops:	Replying to "we can't do that thi..."
+
+I mean the team pushing for focil is a research team itself...
+00:59:11	nixo:	i think we should take a week or two to think about how to credibly commit. 
+and also, CFI seems more appropriate than SFI to me
+00:59:28	Toni Wahrstätter:	Reacted to SFI FOCIL for heka s... with "👍"
+00:59:30	kev and pandaops:	Reacted to "SFI FOCIL for heka s..." with 👍
+00:59:32	donnoh | L2BEAT:	Reacted to "SFI FOCIL for heka s..." with 👍
+00:59:34	Caspar Schwarz-Schilling:	Reacted to "SFI FOCIL for heka s..." with 👍
+00:59:36	kev and pandaops:	Reacted to "i think we should ta..." with 👍🏽
+00:59:37	Potuz:	Reacted to "i think we should ta..." with 👍🏼
+00:59:42	Barnabé Monnot:	Reacted to "i think we should ta..." with 👍
+00:59:42	dionysuz.eth:	Reacted to "i think we should ta..." with 👍
+00:59:57	Francesco:	Replying to "we can't do that thi..."
+
+Not only that, but there are non-research teams pointing out the same things? Pandaops, testing, some client teams even
+01:00:09	Greg K | Lido:	Reacted to "SFI FOCIL for heka..." with 👍
+01:00:11	Barnabé Monnot:	Reacted to "Not only that, but t..." with 💯
+01:00:14	Mario Vega:	Reacted to "i think we should ta..." with 👍🏽
+01:00:14	kev and pandaops:	Reacted to "Not only that, but t..." with 💯
+01:00:27	Francesco:	Replying to "we can't do that thi..."
+
+I don’t think it’s healthy to put everything in terms of research vs development or something like that
+01:00:29	soispoke:	Glam > SFI > CFI > softer commitment
+01:00:30	Trent:	Reacted to "I mean the team push..." with 👍
+01:00:34	Trent:	Reacted to "Not only that, but t..." with 👍
+01:00:38	Trent:	Reacted to "I don’t think it’s h..." with 👍
+01:00:40	Will’s iPhone:	Reacted to "I don’t think it’s h…" with 👍
+01:00:42	Caspar Schwarz-Schilling:	Reacted to "I don’t think it’s h..." with 👍
+01:00:45	cayman:	Reacted to "i think we should ta..." with 👍
+01:00:46	Caspar Schwarz-Schilling:	Reacted to "Not only that, but t..." with 👍
+01:00:48	Caspar Schwarz-Schilling:	Reacted to "I mean the team push..." with 👍
+01:01:01	NC:	Replying to "i think we should ta…"
+Epbs didn’t get cfi’ed and sfi’ed later on. It got sfi’ed right off the bat
+01:01:03	Justin Florentine (Besu):	Replying to "we can't do that thi..."
+
+yes, the client teams are point out the complexity as well, and yet still think it should be included or are neutral on the matter
+01:01:04	cayman:	Reacted to "Glam > SFI > CFI > s..." with 👍
+01:01:13	Daniel Knopik:	Reacted to "However focil and ..." with 👍
+01:01:19	danceratopz:	Reacted to "i think we should ta..." with 👍
+01:01:26	Sergei Iakovlev | P2P.org:	Reacted to "every single fork ..." with 😂
+01:01:31	nixo:	SFI is strong but it skips the point of CFI -> SFI for signalling purposes
+01:01:35	soispoke:	But people were involved for Glamsterdam already...
+01:01:42	soispoke:	And they clearly expressed support
+01:01:50	Barnabé Monnot:	Replying to "you’re muted potuz"
+
+my bad
+01:01:50	Daniel Knopik:	Reacted to "I very much contes..." with 👍
+01:01:53	cayman:	Reacted to "I don’t think it’s h..." with 👍
+01:02:00	Sophia Gold:	why not have the H headliner discussion now? we need to pipeline work on 6s slots too
+01:02:03	nixo:	agree with potuz - we skip the headliner process, which doesn’t feel fair to anyone who’s not at this call and expects the Heka headliner process to kick off later
+01:02:11	Justin Florentine (Besu):	it's kinda wild to just make up a new process feature on the fly. i think planning +2 is great, but we should actually plan out how that will work.
+01:02:17	Stefan Bratanov:	Reacted to "agree with potuz - w..." with 👍
+01:02:21	Barnabé Monnot:	Reacted to "agree with potuz - w..." with 👍
+01:02:22	nixo:	Reacted to "it's kinda wild to j..." with ➕
+01:02:25	donnoh | L2BEAT:	Reacted to "agree with potuz - w..." with 👍
+01:02:25	Potuz:	Reacted to "it's kinda wild to j..." with 👍🏼
+01:02:26	Mario Vega:	Reacted to "agree with potuz - w..." with 👍
+01:02:27	Mehdi Aouadi:	Reacted to "it's kinda wild to j..." with 👍
+01:02:28	satushh:	Reacted to "agree with potuz -..." with 👍
+01:02:31	Mehdi Aouadi:	Reacted to "it's kinda wild to j..." with ➕
+01:02:32	Trent:	Replying to "why not have the H h..."
+
+Lots to pack into a 90min call
+01:02:34	Francesco:	Replying to "we can't do that thi..."
+
+Also just want to point out that the headliner of this fork is epbs 😄 Famously the favourite EIP of the research team
+01:02:36	Dustin:	Replying to "agree with potuz -..."
+
+This is the first time the process has been used at all; it's subject to change
+01:02:45	stokes:	Replying to "it's kinda wild to j..."
+
+Yeah I think we should take another call cycle
+01:02:47	Pelle Krabbenhoeft:	Reacted to "it's kinda wild to j…" with ➕
+01:02:48	kev and pandaops:	Reacted to "Also just want to po..." with 👍🏽
+01:02:50	cayman:	Reacted to "it's kinda wild to j..." with ➕
+01:02:52	Potuz:	Replying to "we can't do that thi..."
+
+lol
+01:02:54	Caspar Schwarz-Schilling:	Reacted to "Also just want to po..." with 😅
+01:02:55	stokes:	Replying to "it's kinda wild to j..."
+
+Agree we don’t need to yolo something right now
+01:02:55	Trent:	Reacted to "Also just want to po..." with 👍🏽
+01:02:55	Jihoon:	Reacted to "Also just want to po..." with 👍🏽
+01:02:56	nixo:	Reacted to "Also just want to po..." with 😅
+01:02:57	Łukasz Rozmej:	Reacted to "Also just want to po..." with 😅
+01:02:57	donnoh | L2BEAT:	Reacted to "Also just want to po..." with 😅
+01:02:58	Caspar Schwarz-Schilling:	Reacted to "lol" with ❤️
+01:03:00	kev and pandaops:	Reacted to "it's kinda wild to j..." with ➕
+01:03:01	Łukasz Rozmej:	Reacted to "lol" with ❤️
+01:03:02	donnoh | L2BEAT:	Reacted to "lol" with ❤️
+01:03:03	nixo:	Reacted to "lol" with ❤️
+01:03:03	kev and pandaops:	Reacted to "lol" with ❤️
+01:03:03	Barnabé Monnot:	Replying to "agree with potuz - w..."
+
+We should at least take a moment to discuss the best next steps here. But imo the discussion is going in the right direction, how do we allocate scarce client and testing resources well
+01:03:05	Dustin:	Replying to "agree with potuz -..."
+
+It's intrinsically incompatible to ask for n+2, n+3, etc commitments, for example
+01:03:09	Mehdi Aouadi:	Reacted to "lol" with ❤️
+01:03:09	uliana:	Reacted to "We should at least..." with 👍
+01:03:11	Carl Beekhuizen:	Reacted to "agree with potuz - w…" with 👍
+01:03:14	Ulysse Pavloff:	Reacted to "it's kinda wild to j..." with 👍
+01:03:14	Anders Elowsson:	Reacted to "Also just want to po..." with 😅
+01:03:14	Enrico Del Fante (tbenr):	Reacted to "Also just want to po..." with 😅
+01:03:28	Mario Vega:	Reacted to "I don’t think it’s h..." with 👍
+01:03:29	Barnabé Monnot:	Reacted to "Also just want to po..." with 😅
+01:03:31	Joshua Rudolf:	Reacted to "lol" with ❤️
+01:03:34	Mehdi Aouadi:	Reacted to "agree with potuz - w..." with 👍
+01:03:44	Joshua Rudolf:	Reacted to "Also just want to po…" with 😅
+01:03:44	Toni Wahrstätter:	Tbf, the community is not ignored here. They were loudest about ePBS and they were heard.
+01:03:55	Potuz:	Replying to "it's kinda wild to j..."
+
+Yes, this should be clear anyway
+01:04:01	Mario Havel:	Reacted to "it's kinda wild to..." with 👍
+01:04:08	Potuz:	Replying to "it's kinda wild to j..."
+
+we can't make such a decision today, except include or not in Glamsterdam perhaps
+01:04:10	Stefan Bratanov:	We mentioned multiple times that we want faster forks, it would be a good practice to have a quick H* fork with FOCIL as a headliner
+01:04:28	Ben Edgington:	Reacted to "We mentioned multipl..." with ❤️
+01:04:36	Toni Wahrstätter:	Reacted to We mentioned multipl... with "❤️"
+01:04:41	soispoke:	Replying to "Tbf, the community i..."
+
+I mean right now just speaking of client teams: 
+3 teams explicitly want to SFI it for Glam
+2 teams expressed conditional support (as in support with caveats, mainly around fork complexity and timelines) 
+1 team would rather DFI it
+01:04:47	NC:	Replying to "We mentioned multipl…"
+Are you suggesting no 6s slot in H star?
+01:04:57	Potuz:	Reacted to "We mentioned multipl..." with ❤️
+01:04:58	soispoke:	Replying to "Tbf, the community i..."
+
+How many times do we have to get feedback before we SFI something
+01:05:03	Justin Florentine (Besu):	Reacted to "I mean right now jus..." with 👍
+01:05:04	kev and pandaops:	Yeah agreed, FOCIL taken as a given main EIP for H star makes sense to us. Gives the credibility to the focil team, while still leaving scope open for a traditional headliner process for Hstar.
+01:05:05	Ansgar Dietrichs:	Reacted to "lol" with ❤️
+01:05:09	Potuz:	Replying to "We mentioned multipl..."
+
+That would be my headliner for H for sure
+01:05:11	Barnabé Monnot:	One thing that happens with DFI’ing FOCIL is we have much more space for doing some of the preliminary work on 6s slots that is analytics/testing heavy. Just much better use of pipelined resources imo
+01:05:11	donnoh | L2BEAT:	Reacted to "We mentioned multipl..." with ❤️
+01:05:20	Justin Traglia:	Reacted to "We mentioned multipl..." with ❤️
+01:05:20	Ahmad Bitar | Nethermind:	Reacted to How many times do we... with "➕"
+01:05:22	Enrico Del Fante (tbenr):	Replying to "We mentioned multipl..."
+
+Mine too!
+01:05:24	Justin Traglia:	Reacted to "Yeah agreed, FOCIL t..." with 👍
+01:05:25	Francesco:	Replying to "We mentioned multipl..."
+
+This doesn’t just depend on the CL to be fair, the EL independently has important things to do that will impact how H* is scheduled
+01:05:28	donnoh | L2BEAT:	Reacted to "Yeah agreed, FOCIL t..." with 👍
+01:05:37	Potuz:	Replying to "We mentioned multipl..."
+
+Sure
+01:05:37	Sophia Gold:	Reacted to "I don’t think it..." with 👍
+01:05:44	Justin Florentine (Besu):	Replying to "Tbf, the community i..."
+
+broader community was very supportive of focil for G* when we chose ePBS too.
+01:05:48	Mario Havel:	Reacted to "Yeah agreed, FOCIL..." with 👍
+01:05:50	cayman:	Reacted to "I mean right now jus..." with 👍
+01:05:50	Sophia Gold:	Reacted to "Also just want to ..." with 😅
+01:05:51	Sophia Gold:	Reacted to "lol" with ❤️
+01:05:54	Stefan Bratanov:	Replying to "We mentioned multipl..."
+
+Yes, 6s in I
+01:05:58	soispoke:	Replying to "Tbf, the community i..."
+
+yes
+01:06:04	danceratopz:	Reacted to "We mentioned multipl..." with ❤️
+01:06:19	donnoh | L2BEAT:	Reacted to "I mean right now jus..." with 👍
+01:06:23	donnoh | L2BEAT:	Reacted to "How many times do we..." with ➕
+01:06:35	Stefan Bratanov:	Reacted to "This doesn’t just de..." with 👍
+01:06:41	kingy_sigp:	if we're delaying focil we can reconsider 7688 and 8045 that seem to have support from other CL teams
+01:06:46	Trent:	The broader community does not have the same levels of context and does not bear the responsibility of testing and troubleshooting
+
+And ultimately would not have the burden of dealing with mainnet issues should they arise
+01:06:57	Caspar Schwarz-Schilling:	Moving ahead with scoping other EIPs is tricky without having a decision on FOCIL?
+01:07:12	Toni Wahrstätter:	Reacted to The broader communit... with "💯"
+01:07:15	Justin Florentine (Besu):	Replying to "Tbf, the community i..."
+
+right, the client teams do.
+01:07:21	soispoke:	Reacted to "right, the client te..." with 👍
+01:07:27	Mehdi Aouadi:	Reacted to "right, the client te..." with 👍
+01:07:27	donnoh | L2BEAT:	Reacted to "right, the client te..." with 👍
+01:07:29	Trent:	Replying to "Tbf, the community i..."
+
+Client teams are bad at overcommitting
+01:07:31	soispoke:	Replying to "Tbf, the community i..."
+
+And both the community and the client teams agree
+01:07:33	Toni Wahrstätter:	Replying to "Tbf, the community i..." 
+
+ It's not only client teams that are busy with forks
+01:07:41	NC:	Replying to "Tbf, the community i…"
+@Trent then this fact needs to be communicated well to the public and see if they change their mind
+01:08:23	Greg K | Lido:	Reacted to "if we're delaying ..." with 👍
+01:08:41	Trent:	Replying to "Tbf, the community i..."
+
+The community delegates stewardship responsibility to core devs who work on this stuff full time. in most cases, they necessarily do not have the capacity to make informed decisions
+01:08:48	Toni Wahrstätter:	Replying to "Tbf, the community i..." 
+
+ I'm not against focil. I'm just not a fan of shipping a big fork, having seen how complex ePBS by itself is.
+01:09:09	kev and pandaops:	Reacted to "I'm not against foci..." with 👍🏽
+01:09:12	Stefan Bratanov:	Reacted to "I'm not against foci..." with 👍🏽
+01:09:27	Potuz:	I really think those EIPs won't change at all the landscape re:consolidations
+01:09:42	Caspar Schwarz-Schilling:	tldr: Drop 8068 in favor of a higher fee in 8062 (much better tradeoff re complexity/goal)
+01:09:44	soispoke:	Replying to "Tbf, the community i..."
+
+@Trent so who is the voice of reason then if it’s neither the community or core devs
+01:09:52	donnoh | L2BEAT:	Reacted to "@Trent so who is the..." with 😅
+01:10:00	felix (eest):	Reacted to "@Trent so who is t..." with 😅
+01:10:10	Justin Florentine (Besu):	Reacted to "@Trent so who is the..." with 😅
+01:10:11	Carl Beekhuizen:	Reacted to "I'm not against foci…" with 👍🏽
+01:10:19	Dustin:	Reacted to "I really think tho..." with 👍
+01:10:44	Dustin:	Reacted to "I'm not against fo..." with 👍🏽
+01:10:51	lightclient:	Replying to "Tbf, the community i..."
+
+Pandas?
+01:10:56	kev and pandaops:	Reacted to "Pandas?" with 😂
+01:11:02	Barnabé Monnot:	Reacted to "Pandas?" with 🐼
+01:11:03	lightclient:	Replying to "Tbf, the community i..."
+
+dont laugh
+01:11:03	Ahmad Bitar | Nethermind:	Reacted to Pandas? with "🐼"
+01:11:04	soispoke:	Replying to "Tbf, the community i..."
+
+Haha ok fair enough
+01:11:14	NC:	I feel like having a maintenance hard fork to adjust consolidation and make every mechanism in the protocol is used as intended would be nice
+01:11:18	Toni Wahrstätter:	Reacted to Pandas? with "🐼"
+01:11:24	kingy_sigp:	Reacted to "Pandas?" with 🐼
+01:11:28	Trent:	I should have been more specific
+
+Core contributors broadly (not just “devs”), and client teams specifically overcommit
+
+Tim and stokes tried to caution what happened in pectra. Pandas and testing are strongly cautioning against FOCIL in glam
+01:11:42	Stefan Starflinger:	Reacted to "Pandas?" with 🐼
+01:11:45	Joshua Rudolf:	Reacted to "Fwiw, committing to …" with 👍
+01:11:48	Trent:	Reacted to "Pandas?" with 🐼
+01:11:55	Justin Florentine (Besu):	Replying to "Tbf, the community i..."
+
+"pandas" is at least a reasonable answer, but i'm not convinced they think it's impossible for G*
+01:12:01	Mario Vega:	Reacted to "Pandas?" with 🐼
+01:12:04	Caspar Schwarz-Schilling:	Replying to "I really think those..."
+
+The fee gives us a lever to lean into even more in the future. Say we start with fair fee (resource consumption wise) and it’s not sufficient, we can then decide to be more explicit and increase fee to very explicitly incentivize switching to 0x02 vals
+01:12:09	Barnabé Monnot:	Replying to "Tbf, the community i..."
+
+Nothing is impossible, some things are unreasonable
+01:12:33	kev and pandaops:	Replying to "Tbf, the community i..."
+
+We don’t think it’s impossible, we think it comes with the risk of no fork in 2026 + higher complexity. it’s definitely possible given time.
+01:12:34	Trent:	Reacted to "Nothing is impossibl..." with 👍
+01:12:37	kev and pandaops:	Reacted to "Nothing is impossibl..." with 👍
+01:12:46	terence:	what about centralized exchanges
+01:12:54	Greg K | Lido:	Replying to "Screenshot 2025-11..."
+
+If the goal is to switch to 0x02, then just incentivize switching (8068), penalizing 0x01 does not seem fair. 
+
+It should be okay to have some validators of type 0x01 (by choice or necessity) don't see why they should pay a penalty for that
+01:13:33	Francesco:	They can just switch though
+01:13:35	Justin Florentine (Besu):	Replying to "Tbf, the community i..."
+
+right, and THATs what we're not talking about, the prioritizing of fork cadence over fork content.
+01:13:46	Francesco:	If we provide incentives to consolidate, it’s not fair to 0x01 then
+01:14:00	Potuz:	Replying to "If we provide incent..."
+
+yes I don't think we need to provde these incentives either
+01:14:02	kev and pandaops:	Reacted to "right, and THATs wha..." with 👍🏽
+01:14:12	Francesco:	That’s great to hear 🙂
+01:14:45	Francesco:	Replying to "That’s great to hear..."
+
+This is not great to hear 😅
+01:15:22	Toni Wahrstätter:	Replying to "Tbf, the community i..." 
+
+ Imo, even if we delay, we still risk piling up too much complexity with only a few ppl remaining deeply understanding the protocol.
+01:15:29	Francesco:	90% consolidation would still mean 100k+ validators just for the remaining 10%, so a small minority would be putting a huge burden on the network
+01:16:07	NC:	Reacted to "right, and THATs wha…" with 👍🏽
+01:16:25	NC:	Replying to "Tbf, the community i…"
+@Justin Florentine (Besu) definitely a fine balance between the two
+01:16:35	Toni Wahrstätter:	Replying to "Tbf, the community i..." 
+
+ Like even if we delay until 2027, I'm not convinced it'll be an easy fork, just because it will still be big.
+01:17:08	kev and pandaops:	Reacted to "Like even if we dela..." with 👍🏽
+01:17:09	donnoh | L2BEAT:	Reacted to "right, and THATs wha..." with 👍🏽
+01:17:13	Anders Elowsson:	Reacted to "90% consolidation wo..." with 👍
+01:17:14	Justin Florentine (Besu):	Replying to "Tbf, the community i..."
+
+i thought ethereum was supposed to be more ambitious
+01:17:35	Justin Florentine (Besu):	Replying to "Tbf, the community i..."
+
+(j/k i know ambition is just price coded)
+01:17:39	Greg K | Lido:	Replying to "If we provide ince..."
+
+This is why I said "if we want to provide incentives, then ... ". 
+
+Btw effective balance definition in 8068 is much more reasonable than the current one anyways imho
+01:17:43	terence:	lol
+01:17:49	Sergei Iakovlev | P2P.org:	Reacted to "If the goal is to ..." with 💯
+01:18:00	kev and pandaops:	Reacted to "lol" with 😂
+01:18:03	kingy_sigp:	I think we need another cycle if FOCIL is being delayed. That's a big change to what we had planned internally.
+01:18:06	Barnabé Monnot:	Reacted to "lol" with 😂
+01:18:07	Caspar Schwarz-Schilling:	Reacted to "lol" with 😂
+01:18:08	lightclient:	It seems like too much contention to accept FOCIL?
+01:18:13	kev and pandaops:	Glad to play the classics of potuz and bbusa disagreeing
+01:18:14	Stefan Starflinger:	Reacted to "lol" with 😂
+01:18:17	felix (eest):	Reacted to "Glad to play the c..." with 😂
+01:18:19	Will’s iPhone:	Reacted to "Glad to play the cla…" with 😂
+01:18:20	lightclient:	Reacted to "Glad to play the cla..." with 🔥
+01:18:24	Barnabé Monnot:	Reacted to "Glad to play the cla..." with ❤️
+01:18:25	nixo:	Reacted to "Glad to play the cla..." with 😂
+01:18:26	kingy_sigp:	Reacted to "Glad to play the cla..." with 🔥
+01:18:27	kingy_sigp:	Reacted to "Glad to play the cla..." with 😂
+01:18:29	Ahmad Bitar | Nethermind:	Reacted to Glad to play the cla... with "😂"
+01:18:33	terence:	Replying to "Glad to play the cla..."
+
+need a polymarket for this next time
+01:18:38	NC:	Reacted to "(j/k i know ambition…" with 😂
+01:18:40	kev and pandaops:	Replying to "Glad to play the cla..."
+
+I miss the good old days (barnabas)
+01:18:42	satushh:	Reacted to "lol" with 😂
+01:18:45	Pelle Krabbenhoeft:	Reacted to "need a polymarket fo…" with ❤️
+01:18:50	Potuz:	Reacted to "Glad to play the cla..." with 😂
+01:18:59	Potuz:	Reacted to "I miss the good old ..." with 🤣
+01:19:11	Caspar Schwarz-Schilling:	Reacted to "Glad to play the cla..." with ❤️
+01:19:14	Ben Edgington:	Reacted to "Glad to play the cla..." with 😂
+01:19:38	danceratopz:	Reacted to "Pandas?" with 🐼
+01:19:57	hangleang:	Reacted to "Glad to play the cla..." with 😂
+01:20:05	Justin Traglia:	Reacted to "Glad to play the cla..." with 😂
+01:20:23	Francesco:	Note about that is that if we really care about that issue we could also replace 71 with the churn sharing mechanic
+01:20:27	Sophia Gold:	if we're giving it another call, perhaps pandaops or others can come back with a proposal for structure of early work for both FOCIL and 6s slots to increase their likelihood of shipping on time
+01:20:32	Francesco:	Replying to "Note about that is t..."
+
+(Without everything else that 61 does)
+01:20:32	NC:	Replying to "It seems like too mu…"
+Because we don’t have a way to express credible commitment in H* that that crowd agree
+01:21:11	Francesco:	Replying to "Note about that is t..."
+
+Agree with potuz that the preferable thing to do is the 61 mechanic, at least we make better use of the churn
+01:21:18	soispoke:	Reacted to "Because we don’t hav..." with 👍
+01:21:21	terence:	is there a consensus spec PR for 8061?
+01:21:55	Potuz:	yes that thing is the simplest change I can actually think about
+01:22:08	Potuz:	cause then it's strictly better than 8071
+01:22:10	Justin Traglia:	Replying to "is there a consensus..."
+
+Not that I’m aware of .
+01:22:22	kev and pandaops:	Reacted to "(j/k i know ambition..." with 😂
+01:23:17	Barnabé Monnot:	Replying to "It seems like too mu..."
+
+Not sure the credible commitment is a need-to-have to DFI focil. It is a nice-to-have for fork planning tho
+01:23:21	Caspar Schwarz-Schilling:	Reacted to "90% consolidation wo..." with 👍
+01:24:50	kev and pandaops:	If there is a mass slashing event on mainnet, it would be very good to have this.
+01:24:54	Francesco:	Replying to "yes that thing is th..."
+
+Assuming this was about the churn sharing thing, I could discuss with Mikhail to replace 8071 with it if people feel that it’s a better solution for that problem in isolation
+01:24:56	stokes:	Replying to "If there is a mass s..."
+
+That’s true
+01:25:07	Francesco:	Replying to "yes that thing is th..."
+
+So we could more easily make that decision separately from the churn limit stuff
+01:25:55	Caspar Schwarz-Schilling:	Replying to "It seems like too mu..."
+
+I think that ignores a lot of support for FOCIL. Credible commitment seems like a necessary condition for just DFI’ing FOCIL now, or need to go back to FOCIL conversation now.
+01:26:05	Anders Elowsson:	To state in the comments what I said on 8068 also: I just want to make sure people understand that the way to earn the highest yield on Ethereum is to just run multiple 32.75 ETH validators at 33 EB. If we believe it is going to be too complex for people to fiddle with this and not worth the energy, then we can ignore that concern as well. 
+
+And it may very well be too complex and we may not think people will do it. I think that could be a reasonable assumption. I just want it to have been understood and considered.
+01:26:41	Caspar Schwarz-Schilling:	Replying to "It seems like too mu..."
+
+We moved on with conversation because credible commitment was brought up as a path out of the glamsterdam conundrum
+01:26:45	soispoke:	Reacted to "I think that ignores..." with 💯
+01:26:53	Enrico Del Fante (tbenr):	Reacted to "committee.jpg" with 😂
+01:26:56	Dustin:	Reacted to "committee.jpg" with 😂
+01:27:02	Potuz:	Reacted to "kev and pandaops has..." with 😂
+01:27:06	cayman:	Reacted to "We moved on with con..." with 👍
+01:27:08	soispoke:	Reacted to "We moved on with con..." with 👍
+01:27:15	NC:	Reacted to "We moved on with con…" with 👍
+01:27:19	cayman:	Reacted to "kev and pandaops has..." with 😂
+01:27:23	Francesco:	Seems like a good enough reason to at least not SFI and just look into it a bit more first
+01:27:38	Sergei Iakovlev | P2P.org:	Reacted to "committee.jpg" with 😂
+01:27:44	Justin Traglia:	Reacted to "committee.jpg" with 😂
+01:28:08	Mehdi Aouadi:	Reacted to "committee.jpg" with 😂
+01:28:15	Barnabé Monnot:	Reacted to "committee.jpg" with 😂
+01:28:15	Caspar Schwarz-Schilling:	Reacted to "To state in the comm..." with 👍
+01:28:17	Daniel Knopik:	Reacted to "To state in the co..." with 👍
+01:28:24	Will’s iPhone:	Reacted to "committee.jpg" with 😂
+01:28:36	Francesco:	Process q: if I were to move out the “churn sharing thing” into a separate EIP, would people complain that it wasn’t PFId on time?
+01:28:58	Anders Elowsson:	Replying to "Process q: if I were..."
+
+It is grandfathered in 🙂
+01:29:12	donnoh | L2BEAT:	Reacted to "I think that ignores..." with 👍
+01:29:13	cayman:	nice to have, opens the doors to use progressive ssz types for future features
+01:29:16	kingy_sigp:	Replying to "Process q: if I were..."
+
+probably - people do be complaining. worth doing though.
+01:29:20	Justin Traglia:	Reacted to "nice to have, opens ..." with 👍
+01:29:23	Sergei Iakovlev | P2P.org:	Reacted to "To state in the co..." with 🤔
+01:30:02	NC:	Stable container will be the new meme for the longest pfi’ed eip in ethereum history
+01:30:07	wolovim:	Reacted to "It is grandfathered ..." with ☝️
+01:30:07	Potuz:	Replying to "Process q: if I were..."
+
+@Francesco that nonexistent EIP is my favorite by far, and we can get into the deeper discussion of the rest of 8061 and the right 7d vs 10d vs 30d WS separately.
+01:30:27	Potuz:	Replying to "Process q: if I were..."
+
+Aren't you the author of 8071? just change it :P
+01:30:49	Potuz:	Replying to "Process q: if I were..."
+
+Or was it Misha, get him to change it, and then it was PFI
+01:30:50	kingy_sigp:	7688 and 8045 both were nice to haves for us. Without FOCIL we could more likely consider these in scope.
+01:31:00	Greg K | Lido:	Lido on 7688: https://github.com/ethereum/pm/issues/1754#issuecomment-3410880980
+01:31:01	Enrico Del Fante (tbenr):	Reacted to "Stable container wil..." with 🥹
+01:31:02	Lodestar Team:	Replying to "Stable container wil..."
+
+It’s the nicest thing to have every time, but never necessary enough
+01:31:06	kev and pandaops:	Reacted to "Stable container wil..." with 🥹
+01:31:11	Francesco:	Replying to "Process q: if I were..."
+
+Mikhail and I
+01:31:27	Potuz:	@kasey said that it wont be too  much for us to include it
+01:31:29	Francesco:	Replying to "Process q: if I were..."
+
+Well I think from this call there’s people that prefer the other approach
+01:31:37	Francesco:	Replying to "Process q: if I were..."
+
+So maybe it isn’t fair to just delete it from existence
+01:32:12	Potuz:	Reacted to "So maybe it isn’t fa..." with 🤣
+01:32:18	Lodestar Team:	Not a huge lift for Lodestar either for stable container
+01:33:10	Anders Elowsson:	Credible commitment..
+
+TFI - targeted for inclusion?
+01:33:20	Greg K | Lido:	Reacted to "Credible commitmen..." with 👍
+01:33:37	soispoke:	Replying to "Credible commitment...."
+
+Please not one more acronym 🙂
+01:33:45	Josh Davis:	Reacted to "Please not one more ..." with 😂
+01:33:50	kingy_sigp:	Reacted to "Please not one more ..." with 😂
+01:33:50	donnoh | L2BEAT:	Reacted to "Please not one more ..." with 😂
+01:33:54	Potuz:	please do it
+01:33:58	daveproxy80:	Reacted to "Please not one more ..." with 😂
+01:33:59	kingy_sigp:	no issue
+01:34:02	satushh:	Reacted to "please do it" with 👍
+01:34:05	kev and pandaops:	Reacted to "Please not one more ..." with 😂
+01:34:15	cayman:	Reacted to "no issue" with 👍
+01:34:17	cayman:	Reacted to "please do it" with 👍
+01:34:18	Lodestar Team:	No issue here either
+01:34:19	NC:	Looks like the credible commitment discussion just suddenly stopped. What’s the outcome of that discussion?
+01:34:23	Jihoon:	Do we put all candidates on the table when discussing the headliner for H* or just FOCIL?
+01:34:29	wolovim:	Reacted to "please do it" with 👍
+01:34:30	wolovim:	Reacted to "no issue" with 👍
+01:34:32	Anders Elowsson:	Replying to "Credible commitment...."
+
+Hehe
+01:34:47	Sophia Gold:	Replying to "Do we put all cand..."
+
+i think for the CL we should
+01:34:59	Sophia Gold:	Replying to "Do we put all cand..."
+
+why not? it seems obvious
+01:35:04	Potuz:	yeah, FOCIL happens to be both layers
+01:35:24	Jihoon:	Replying to "Do we put all candid..."
+
+So.. it's a good way to delay FOCIL further with the same reason?
+01:35:45	cayman:	Replying to "Looks like the credi..."
+
+sounded like "take convo offline, figure out process patch to support this"
+01:35:54	Barnabé Monnot:	❤️
+01:36:03	kev and pandaops:	Replying to "Do we put all candid..."
+
+I think it’d be additive given that FOCIL is SFI-ed right? So the discussion would be for other headliners rather than a replacement headliner
+01:36:24	Jihoon:	Replying to "Do we put all candid..."
+
+Is it SFI'd for H?
+01:37:11	wolovim:	Replying to "Do we put all candid..."
+
+not on this call

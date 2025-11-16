@@ -5,6 +5,7 @@ import HomePage from './components/HomePage';
 import RankPage from './components/RankPage';
 import CallsIndexPage from './components/CallsIndexPage';
 import CallPage from './components/call/CallPage';
+import { SchedulePage } from './components/schedule';
 import { getUpgradeById } from './data/upgrades';
 import { useAnalytics } from './hooks/useAnalytics';
 import { ThemeProvider } from './contexts/ThemeContext';
@@ -61,6 +62,7 @@ function App() {
         <AnalyticsTracker />
         <Routes>
           <Route path="/" element={<HomePage />} />
+          <Route path="/schedule" element={<SchedulePage />} />
           <Route path="/upgrade/pectra" element={
             <PublicNetworkUpgradePage
               forkName="Pectra"

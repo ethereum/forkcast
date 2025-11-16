@@ -33,6 +33,15 @@ function getProtocolCalls() {
 
 const protocolCalls = getProtocolCalls();
 
+// Define standalone pages with their metadata
+const standalonePages = [
+  {
+    path: 'schedule',
+    title: 'ACD Planning Sandbox - Forkcast',
+    description: 'Internal planning tool for ACD participants. Explore hypothetical upgrade timelines.',
+  },
+];
+
 // Define upgrade routes with their metadata
 const upgrades = [
   {
@@ -101,8 +110,22 @@ function generateAllPages() {
 
   console.log('Generating static pages...\n');
 
+  // Generate standalone pages
+  console.log('📄 Generating standalone pages:');
+  standalonePages.forEach(page => {
+    const pagePath = path.join(distDir, page.path);
+    if (!fs.existsSync(pagePath)) {
+      fs.mkdirSync(pagePath, { recursive: true });
+    }
+
+    const html = generateStaticPage(page.path, page.title, page.description);
+    const outputPath = path.join(pagePath, 'index.html');
+    fs.writeFileSync(outputPath, html);
+    console.log(`  ✓ ${page.path}`);
+  });
+
   // Generate upgrade pages
-  console.log('📦 Generating upgrade pages:');
+  console.log('\n📦 Generating upgrade pages:');
   upgrades.forEach(upgrade => {
     const routeParts = upgrade.path.split('/');
     let currentPath = distDir;

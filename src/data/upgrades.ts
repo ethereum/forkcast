@@ -50,6 +50,7 @@ export const networkUpgrades: NetworkUpgrade[] = [
         teamName: 'Besu',
         teamType: 'EL',
         headlinerBlogPostUrl: 'https://hackmd.io/@RoboCopsGoneMad/Ski-5cHLge',
+        candidateBlogPostUrl: 'https://hackmd.io/@RoboCopsGoneMad/GlamTiers'
       },
       {
         teamName: 'Erigon',

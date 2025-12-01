@@ -1,0 +1,56 @@
+{
+  "id": 6466,
+  "title": "SSZ receipts",
+  "status": "Draft",
+  "description": "This EIP defines a migration process of EIP-2718 Recursive-Length Prefix (RLP) receipts to Simple Serialize (SSZ).",
+  "author": "Etan Kissling (@etan-status), Gajinder Singh (@g11tech), Vitalik Buterin (@vbuterin)",
+  "type": "Standards Track",
+  "category": "Core",
+  "createdDate": "2023-02-08",
+  "discussionLink": "https://ethereum-magicians.org/t/eip-6466-ssz-receipts/12884",
+  "reviewer": "bot",
+  "forkRelationships": [
+    {
+      "forkName": "Glamsterdam",
+      "status": "Proposed",
+      "layer": "EL",
+      "champion": {
+        "name": "Etan Kissling",
+        "discord": "etan_status"
+      }
+    }
+  ],
+  "laymanDescription": "Ethereum receipts, which record each transaction's outcome, currently use RLP and are hard to prove or verify. This proposal moves receipts to SSZ, enabling easier proofs, removing bloated logs bloom, and adding data to verify common receipt information.",
+  "stakeholderImpacts": {
+    "endUsers": {
+      "description": "The EIP does not describe direct end-user changes or new behavior, only internal receipt encoding."
+    },
+    "appDevs": {
+      "description": "Enables client applications to prove specific receipt parts, like logs, without the full receipt, improving log verification."
+    },
+    "walletDevs": {
+      "description": "Adds on-chain data needed to verify from, gasUsed, and contractAddress fields that wallets and JSON-RPC currently expose."
+    },
+    "toolingInfra": {
+      "description": "Defines a universal SSZ receipt format, deprecates cumulativeGasUsed, logIndex, and logs bloom, simplifying parallel execution analysis and proof tooling."
+    },
+    "layer2s": {
+      "description": "Allows L2 fraud proofs to efficiently prove individual receipt parts, such as logs, instead of providing full receipts."
+    },
+    "stakersNodes": {
+      "description": "The EIP does not describe specific changes for validators or node operators beyond adopting the new SSZ receipt format."
+    },
+    "clClients": {
+      "description": "No consensus-layer client changes are described; required code changes or complexity for consensus clients are not specified."
+    },
+    "elClients": {
+      "description": "Execution-layer clients must migrate receipts from EIP-2718 RLP to SSZ and implement the new universal SSZ receipt format."
+    }
+  },
+  "benefits": [
+    "Supports efficient proofs of individual receipt parts, like logs, without sending full receipts.",
+    "Removes stateful fields such as cumulativeGasUsed and logIndex to aid parallel execution.",
+    "Includes data to verify from, gasUsed, and contractAddress directly from the receipt.",
+    "Eliminates the inefficient logs bloom, reducing storage overhead."
+  ]
+}

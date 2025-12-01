@@ -1,0 +1,58 @@
+{
+  "id": 7668,
+  "title": "EIP-7668: Remove bloom filters",
+  "status": "Draft",
+  "description": "Proposes to remove bloom filters from Ethereum's execution blocks and receipts.",
+  "author": "Vitalik Buterin (@vbuterin)",
+  "type": "Standards Track",
+  "category": "Core",
+  "createdDate": "2024-03-31",
+  "discussionLink": "https://ethereum-magicians.org/t/eip-7653-remove-bloom-filters/19447",
+  "reviewer": "staff",
+  "forkRelationships": [
+    {
+      "forkName": "Fusaka",
+      "status": "Declined"
+    },
+    {
+      "forkName": "Glamsterdam",
+      "status": "Proposed",
+      "layer": "EL",
+      "champion": {
+        "name": "Jochem Brouwer",
+        "discord": "jochembrouwer"
+      }
+    }
+  ],
+  "laymanDescription": "Bloom filters were supposed to provide log filters for applications but they do not work as originally intended. Under this EIP, the field is not entirely removed but needs to be empty. Applications should seek alternative and decentralized solution to fetching relevant logs.",
+  "stakeholderImpacts": {
+    "endUsers": {
+      "description": "Users are not directly impacted."
+    },
+    "appDevs": {
+      "description": "Applications that depend on bloom filters to fetch logs will break and will need to adopt alternative solutions."
+    },
+    "walletDevs": {
+      "description": "Wallets that somehow rely on bloom filters need to implement an alternative."
+    },
+    "toolingInfra": {
+      "description": "Any tooling that fetches information using execution bloom filters will break and needs to change."
+    },
+    "layer2s": {
+      "description": "No direct impact on L2s, they can decide whether to follow the change or keep filters."
+    },
+    "stakersNodes": {
+      "description": "No impact on node operation."
+    },
+    "clClients": {
+      "description": "No changes for consensus clients."
+    },
+    "elClients": {
+      "description": "Execution clients need to stop creating bloom filters and including them in blocks, instead just returning empty field.."
+    }
+  },
+  "benefits": [
+    "Simplifies the protocol by removing outdated bloom filter mechanism.",
+    "Encourages development of alternative decentralized querying solutions."
+  ]
+}

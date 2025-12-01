@@ -1,0 +1,63 @@
+{
+  "id": 7942,
+  "title": "EIP-7942: Available Attestation",
+  "status": "Draft",
+  "description": "A comprehensive solution to address all known reorganization attacks in Ethereum PoS through available attestation mechanisms.",
+  "author": "Mingfei Zhang, et al.",
+  "type": "Standards Track",
+  "category": "Core",
+  "createdDate": "2024-04-29",
+  "discussionLink": "https://ethereum-magicians.org/t/eip-7942-available-attestation-a-reorg-resilient-solution-for-ethereum/23927",
+  "reviewer": "bot",
+  "forkRelationships": [
+    {
+      "forkName": "Glamsterdam",
+      "status": "",
+      "isHeadliner": false,
+      "wasHeadlinerCandidate": true,
+      "headlinerDiscussionLink": "https://ethereum-magicians.org/t/glamsterdam-headliner-proposal-available-attestation/24377",
+      "layer": "CL"
+    }
+  ],
+  "laymanDescription": "This is a comprehensive solution to eliminate all known reorganization attacks on Ethereum. Instead of fixing attacks one-by-one, Available Attestation redesigns how consensus works to make reorg attacks fundamentally impossible.",
+  "northStarAlignment": {
+    "scaleL1": {
+      "description": "Eliminates all known reorg attacks, dramatically improving network security and enabling more aggressive scaling optimizations without security trade-offs."
+    },
+    "improveUX": {
+      "description": "Eliminates transaction reordering attacks, provides guaranteed inclusion properties, and dramatically improves user confidence in transaction finality."
+    }
+  },
+  "stakeholderImpacts": {
+    "endUsers": {
+      "description": "Eliminates the possibility of transaction censorship and reorg attacks, providing guaranteed transaction inclusion and much stronger finality guarantees."
+    },
+    "appDevs": {
+      "description": "Can build applications with stronger security assumptions, eliminate MEV-related edge cases, and provide users with guaranteed transaction execution properties."
+    },
+    "walletDevs": {
+      "description": "Can provide stronger transaction finality guarantees and eliminate concerns about transaction reordering after inclusion."
+    },
+    "toolingInfra": {
+      "description": "Major updates needed for consensus monitoring, reorg detection systems, and fork choice analysis tools to handle the new attestation mechanisms."
+    },
+    "layer2s": {
+      "description": "Dramatically improves bridge security by eliminating L1 reorg risks and enables more aggressive optimization of settlement mechanisms."
+    },
+    "stakersNodes": {
+      "description": "Fundamental changes to attestation behavior and fork choice logic, but eliminates complex reorg-related edge cases in validator operations."
+    },
+    "clClients": {
+      "description": "Major implementation work required for new attestation mechanisms, modified fork choice logic, and consensus layer protocol changes."
+    },
+    "elClients": {
+      "description": "Need to coordinate with new consensus mechanisms but most changes are in the consensus layer attestation logic."
+    }
+  },
+  "benefits": [
+    "Eliminates all known reorganization attacks permanently",
+    "Provides formal security guarantees with mathematical proofs",
+    "Strengthens transaction inclusion and finality properties",
+    "Enables more aggressive scaling without security trade-offs"
+  ]
+}

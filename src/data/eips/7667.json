@@ -1,0 +1,57 @@
+{
+  "id": 7667,
+  "title": "EIP-7667: Raise gas costs of hash functions",
+  "status": "Draft",
+  "description": "Increases gas costs for hash function operations to better reflect computational costs in Verkle tree environments.",
+  "author": "Verkle Team",
+  "type": "Standards Track",
+  "category": "Core",
+  "createdDate": "2024-03-26",
+  "discussionLink": "https://ethereum-magicians.org/t/eip-7667-raise-gas-costs-of-hash-functions/19446",
+  "reviewer": "staff",
+  "forkRelationships": [
+    {
+      "forkName": "Glamsterdam",
+      "status": "Withdrawn",
+      "layer": "EL"
+    }
+  ],
+  "laymanDescription": "Increase gas for hashing to better match real costs, prevent hash-heavy block abuse, and keep Ethereum verification practical and decentralized.",
+  "northStarAlignment": {
+    "scaleL1": {
+      "description": "Ensures sustainable economics for hash operations in the Verkle tree environment and prevents potential DoS vectors from underpriced operations."
+    }
+  },
+  "stakeholderImpacts": {
+    "endUsers": {
+      "description": "Most transactions unchanged; hash-heavy operations may cost slightly more gas, modestly increasing fees in specific dapps only occasionally."
+    },
+    "appDevs": {
+      "description": "Contracts relying on hashing (proof verification, logging) see higher gas; developers may optimize or reduce on-chain hashing to control costs."
+    },
+    "walletDevs": {
+      "description": "No functional changes; gas estimation sourced from nodes reflects new pricing, but UI fee projections may rise for hash-heavy calls."
+    },
+    "toolingInfra": {
+      "description": "Off-chain analyzers or gas simulators using custom cost tables must update constants; otherwise, node-backed tooling continues working without changes required."
+    },
+    "layer2s": {
+      "description": "Indirect benefit aligning L1 costs with ZK proving realities; no mandatory changes to rollup protocols, though pricing strategies may adjust."
+    },
+    "stakersNodes": {
+      "description": "Minimal operational effect; block production logic unchanged beyond adopting clients with updated gas schedule if activated during network upgrades only."
+    },
+    "clClients": {
+      "description": "Consensus-layer functionality unaffected; coordination for any network upgrade only, with no EVM pricing logic implemented here within this client layer."
+    },
+    "elClients": {
+      "description": "Must implement updated opcode and precompile gas constants; affects transaction validation, simulation, and gas accounting across execution clients implementations universally."
+    }
+  },
+  "benefits": [
+    "Aligns gas pricing with ZK proving costs, reducing worst-case proof time outliers.",
+    "Discourages hash-heavy blocks that strain provers and increase centralization risks.",
+    "Reduces reliance on ad-hoc sequencer limits and centralized rollup workarounds.",
+    "Prepares Ethereum for eventual L1 SNARK verification with predictable proving bounds."
+  ]
+}

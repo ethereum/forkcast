@@ -1,0 +1,63 @@
+{
+  "id": 7923,
+  "title": "EIP-7923: Linear, Page-Based Memory Costing",
+  "status": "Draft",
+  "description": "Linearize memory pricing and replace the current quadratic formula with a page-based cost model.",
+  "author": "Charles Cooper (@charles-cooper), Qi Zhou (@qizhou)",
+  "type": "Standards Track",
+  "category": "Core",
+  "createdDate": "2025-03-27",
+  "discussionLink": "https://ethereum-magicians.org/t/eip-linearize-memory-costing/23290",
+  "reviewer": "staff",
+  "forkRelationships": [
+    {
+      "forkName": "Glamsterdam",
+      "status": "Proposed",
+      "layer": "EL",
+      "champion": {
+        "name": "Charles Cooper",
+        "telegram": "big_tech_sux"
+      }
+    }
+  ],
+  "laymanDescription": "Linearizes EVM memory with 4KB pages: 100-gas allocation, 6-gas thrash, 64MB cap. Contracts that hit quadratic expansion limits finish with the same logic but steadier gas usage, allowing for more efficient memory management and predicatble gas costs.",
+  "northStarAlignment": {
+    "scaleL1": {
+      "description": "The more efficient memory management in contracts will lower the gas limit and allow for more operations onchain"
+    },
+    "improveUX": {
+      "description": "The gas cost estimation by user wallets can be more straightforward, resulting in less overpaying and avoiding out of gas transaction fails."
+    }
+  },
+  "stakeholderImpacts": {
+    "endUsers": {
+      "description": "Transaction gas for memory-heavy calls may be lower, wallets are better at estimating gas to spend."
+    },
+    "appDevs": {
+      "description": "Account for page allocation (4096 B) and thrash costs; 32-bit addresses; 64 MiB tx memory cap; MSIZE unchanged. Better ways to address memory with new optimizations. The changes are backwards compatible."
+    },
+    "walletDevs": {
+      "description": "Update simulators/estimators to model page allocation and thrash costs; surface OOM exceptional halts."
+    },
+    "toolingInfra": {
+      "description": "Clients, tracers, profilers need LRU(512) page tracking and new gas accounting; optional mmap-style backing."
+    },
+    "layer2s": {
+      "description": "EVM-equivalent chains must adopt new costing/limits; reassess proving and sequencer cost models for compatibility."
+    },
+    "stakersNodes": {
+      "description": "More predictable resource bounds via transaction-global memory limit, RPC providers can revise eth_call policies and DoS assumptions."
+    },
+    "clClients": {
+      "description": "This change doesn't touch the consensus layer."
+    },
+    "elClients": {
+      "description": "Implementation of new linear, page-based costing, LRU thrash checks, and OOM halts while preserving MSIZE semantics while maintaining compatibility with the old model."
+    }
+  },
+  "benefits": [
+    "Replaces quadratic memory expansion with linear, page-based costing for predictable gas.",
+    "Provides support for virtual memory addressing, unlocking heap/stack separation in high-level smart contract languages.",
+    "Providing developers with better ways to manage memory, similar to other architectures."
+  ]
+}

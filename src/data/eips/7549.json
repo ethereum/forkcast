@@ -1,0 +1,54 @@
+{
+  "id": 7549,
+  "title": "EIP-7549: Move committee index outside Attestation",
+  "status": "Final",
+  "description": "Moves the committee index outside of attestations to improve consensus layer efficiency.",
+  "author": "dapplion",
+  "type": "Standards Track",
+  "category": "Core",
+  "createdDate": "2023-11-09",
+  "discussionLink": "https://ethereum-magicians.org/t/eip-7549-move-committee-index-outside-attestation/15710",
+  "reviewer": "bot",
+  "forkRelationships": [
+    {
+      "forkName": "Pectra",
+      "status": "Included"
+    }
+  ],
+  "laymanDescription": "Simplifies the structure of validator attestations by moving the committee index field outside the signed message, making verification and aggregation cheaper.",
+  "northStarAlignment": {
+    "scaleL1": {
+      "description": "Reduces consensus layer overhead for attestation validation and aggregation, improving performance and paving the way for higher throughput."
+    }
+  },
+  "stakeholderImpacts": {
+    "endUsers": {
+      "description": "No direct impact"
+    },
+    "appDevs": {
+      "description": "No changes to applications."
+    },
+    "walletDevs": {
+      "description": "Wallets unchanged."
+    },
+    "toolingInfra": {
+      "description": "Consensus monitoring tools have to update parsing of attestations."
+    },
+    "layer2s": {
+      "description": "No direct change on L2s unless they rely on attestation data."
+    },
+    "stakersNodes": {
+      "description": "Lower resource usage for attestation handling and aggregation, less data to process."
+    },
+    "clClients": {
+      "description": "Implementation changes to attestation structures and verification."
+    },
+    "elClients": {
+      "description": "Execution layer not affected."
+    }
+  },
+  "benefits": [
+    "More efficient consensus verification and aggregation",
+    "Improves performance for consensus nodes processing lot of signatures"
+  ]
+}

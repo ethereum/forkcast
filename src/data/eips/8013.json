@@ -1,0 +1,56 @@
+{
+  "id": 8013,
+  "title": "Static relative jumps and calls for the EVM",
+  "status": "Draft",
+  "description": "Introduce five EVM instructions (RJUMP, RJUMPI, RJUMPV, RJUMPSUB, RJUMPSUBV) that encode destinations as signed immediates, replacing most dynamic JUMP patterns and enabling cheaper, more easily validated control flow.",
+  "author": "Greg Colvin, Alex Beregszaszi, Andrei Maiboroda, Paweł Bylica",
+  "type": "Standards Track",
+  "category": "Core",
+  "createdDate": "2025-08-19",
+  "discussionLink": "https://ethereum-magicians.org/t/eip-8013-static-relative-jumps-and-calls-for-the-evm/25222",
+  "reviewer": "bot",
+  "forkRelationships": [
+    {
+      "forkName": "Glamsterdam",
+      "status": "Proposed",
+      "layer": "EL",
+      "champion": {
+        "name": "Greg Colvin",
+        "email": "greg@colvin.org"
+      }
+    }
+  ],
+  "laymanDescription": "Adds five new EVM jump/call instructions that point to nearby code using a small offset instead of a pushed address, making contracts cheaper to run and easier for clients and tools to verify after Glamsterdam.",
+  "stakeholderImpacts": {
+    "endUsers": {
+      "description": "May see lower gas from contracts using static jumps; no direct action or UX impact."
+    },
+    "appDevs": {
+      "description": "Need to emit five new RJUMP opcodes to gain cost/perf; requires building for Glamsterdam EVM and EIP-7979."
+    },
+    "walletDevs": {
+      "description": "Update opcode tables and simulators so bytecode with RJUMP* disassembles and estimates gas correctly; minimal runtime changes."
+    },
+    "toolingInfra": {
+      "description": "Static analyzers, tracers, bytecode validators must understand relative offset encoding and extended checks from EIP-7979."
+    },
+    "layer2s": {
+      "description": "L2s implementing Glamsterdam EVM need the same five opcodes and validation or contracts using them cannot deploy."
+    },
+    "stakersNodes": {
+      "description": "Validators must run updated EL clients for Glamsterdam; failure to upgrade will lead to consensus failures on new blocks."
+    },
+    "clClients": {
+      "description": "Complexity limited to fork configuration and Engine API versioning so EL can announce support for new opcodes."
+    },
+    "elClients": {
+      "description": "Must add RJUMP, RJUMPI, RJUMPV, RJUMPSUB, RJUMPSUBV decoding, immediate validation, gas accounting, and tests extending EIP-7979."
+    }
+  },
+  "benefits": [
+    "Cheaper structured control flow than PUSHn+JUMP.",
+    "Improves static analysis by fixing jump targets.",
+    "Reduces runtime destination checks and gas.",
+    "Aligns with EOF/EIP-7979 validation for immediates."
+  ]
+}

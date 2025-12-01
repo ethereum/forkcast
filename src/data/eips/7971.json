@@ -1,0 +1,61 @@
+{
+  "id": 7971,
+  "title": "Hard Limits for Transient Storage",
+  "status": "Draft",
+  "description": "Decrease costs for TLOAD and TSTORE with a transaction-global limit.",
+  "author": "Charles Cooper (@charles-cooper), Ben Adams (@benaadams), Maria Silva (@misilva73), Jochem Brouwer (@jochem-brouwer)",
+  "type": "Standards Track",
+  "category": "Core",
+  "createdDate": "2025-06-12",
+  "discussionLink": "https://ethereum-magicians.org/t/add-eip-hard-limit-and-cost-reduction-for-transient-storage-allocation/24542",
+  "reviewer": "expert",
+  "forkRelationships": [
+    {
+      "forkName": "Glamsterdam",
+      "status": "Proposed",
+      "layer": "EL",
+      "champion": {
+        "name": "Maria Silva",
+        "discord": "misilva73"
+      }
+    }
+  ],
+  "laymanDescription": "Makes transient storage cheaper and sets a hard cap on how much can be used per transaction. This reduces gas for common patterns while protecting nodes from excessive memory use.",
+  "northStarAlignment": {
+    "scaleL1": {
+      "description": "Reduces the costs of transient storage, thus improving its usability. Pushing more users to leverage transient storage will ease the burden on state access."
+    }
+  },
+  "stakeholderImpacts": {
+    "endUsers": {
+      "description": "May lower fees in apps using transient storage; otherwise no behavior change. Possible failures if the global cap is reached."
+    },
+    "appDevs": {
+      "description": "Cheaper transient storage enables guards and metadata patterns; must handle transaction-wide slot cap and update gas assumptions in code."
+    },
+    "walletDevs": {
+      "description": "Adjust fee estimation and warnings for potential cap-exceeded reverts; otherwise no signing or serialization changes."
+    },
+    "toolingInfra": {
+      "description": "Profilers, tracers, and simulators must incorporate constant TLOAD/TSTORE pricing and track per-transaction transient slot usage."
+    },
+    "layer2s": {
+      "description": "Rollups adjusting EVM gas must mirror pricing and enforce slot cap; evaluate shared-bundle DoS implications in sequencer pipelines."
+    },
+    "stakersNodes": {
+      "description": "Resource profile mostly unchanged; adopt fork including new gas schedule and per-transaction slot-accounting rules."
+    },
+    "clClients": {
+      "description": "Consensus layer changes are limited to fork activation metadata and versioning; low code complexity, mostly configuration and coordination."
+    },
+    "elClients": {
+      "description": "Implement constant costs for TLOAD/TSTORE, enforce a transaction-global slot cap, update gas accounting and tests; moderate code changes."
+    }
+  },
+  "benefits": [
+    "Lower gas for transient storage operations",
+    "Per-transaction cap prevents excessive transient memory use",
+    "Encourages transient-storage patterns without persistent writes",
+    "Simplifies cost reasoning for compilers and tooling"
+  ]
+}

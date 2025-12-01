@@ -1,0 +1,61 @@
+{
+  "id": 6873,
+  "title": "EIP-6873: Preimage retention",
+  "status": "Draft",
+  "description": "Execution clients must retain the preimages of addresses and slots accessed between the fork preceding the verge, and the verge itself.",
+  "author": "Guillaume Ballet",
+  "type": "Standards Track",
+  "category": "Core",
+  "createdDate": "2023-04-14",
+  "discussionLink": "https://ethereum-magicians.org/t/eip-6873-preimage-retention-in-the-fork-preceding-the-verge/15830",
+  "reviewer": "staff",
+  "forkRelationships": [
+    {
+      "forkName": "Glamsterdam",
+      "status": "Withdrawn",
+      "layer": "EL",
+      "champion": {
+        "name": "Guillaume Ballet",
+        "discord": "gballet"
+      }
+    }
+  ],
+  "laymanDescription": "Have nodes temporarily keep the original addresses and storage keys used before the Verge, so Ethereum can switch to Verkle trees smoothly.",
+  "northStarAlignment": {
+    "scaleL1": {
+      "description": "Essential infrastructure component for Verkle tree transition, ensuring data integrity and availability during the state system migration."
+    }
+  },
+  "stakeholderImpacts": {
+    "endUsers": {
+      "description": "No direct user-facing impact - this is purely infrastructure maintenance during the Verkle transition."
+    },
+    "appDevs": {
+      "description": "No impact on smart contract development as this handles backend state management during migration."
+    },
+    "walletDevs": {
+      "description": "No impact on wallet development as preimage retention is handled transparently by the protocol."
+    },
+    "toolingInfra": {
+      "description": "Infrastructure providers need to understand preimage retention requirements for proper state reconstruction and proof generation."
+    },
+    "layer2s": {
+      "description": "No direct impact on Layer 2 operations as this manages execution layer state transition details."
+    },
+    "stakersNodes": {
+      "description": "Need to properly handle preimage data during the Verkle tree migration to maintain state verification capabilities."
+    },
+    "clClients": {
+      "description": "No direct impact on consensus layer operations as this affects execution layer state management."
+    },
+    "elClients": {
+      "description": "Must implement proper preimage retention mechanisms during state tree migration to ensure continuity of state verification."
+    }
+  },
+  "benefits": [
+    "Ensures data integrity during Verkle tree transition",
+    "Maintains historical state accessibility",
+    "Prevents data loss during migration",
+    "Supports smooth transition to stateless model"
+  ]
+}

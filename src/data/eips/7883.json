@@ -1,0 +1,56 @@
+{
+  "id": 7883,
+  "title": "EIP-7883: ModExp Gas Cost Increase",
+  "status": "Draft",
+  "description": "Increases cost of ModExp precompile",
+  "author": "Marcin Sobczak (@marcindsobczak), Marek Moraczyński (@MarekM25), Marcos Maceo (@stdevMac)",
+  "type": "Standards Track",
+  "category": "Core",
+  "createdDate": "2025-02-11",
+  "discussionLink": "https://ethereum-magicians.org/t/eip-7883-modexp-gas-cost-increase/22841",
+  "reviewer": "bot",
+  "forkRelationships": [
+    {
+      "forkName": "Fusaka",
+      "status": "Scheduled"
+    }
+  ],
+  "laymanDescription": "This increases the gas cost of the ModExp cryptographic precompile to address underpriced operations. It raises the minimum cost from 200 to 500 gas and doubles costs for large inputs over 32 bytes.",
+  "northStarAlignment": {
+    "scaleL1": {
+      "description": "Improves network economic sustainability by ensuring cryptographic precompiles are properly priced, preventing potential DoS vectors from underpriced operations."
+    }
+  },
+  "stakeholderImpacts": {
+    "endUsers": {
+      "description": "Most users unaffected. Applications using ModExp with large inputs (>32 bytes) will see increased gas costs."
+    },
+    "appDevs": {
+      "description": "Applications using RSA verification, large modular exponentiation, or cryptographic protocols with big numbers may need to optimize or budget for higher costs."
+    },
+    "walletDevs": {
+      "description": "No impact as wallets typically don't use ModExp precompile directly."
+    },
+    "toolingInfra": {
+      "description": "Gas estimation and fee calculation tools need updates for the new ModExp pricing formula."
+    },
+    "layer2s": {
+      "description": "L2s using ModExp precompile for cryptographic operations will see increased costs for large input operations."
+    },
+    "stakersNodes": {
+      "description": "Better compensation alignment for computational work, reduced risk of DoS attacks through underpriced operations."
+    },
+    "clClients": {
+      "description": "No direct impact on consensus layer operations as this affects execution layer precompile pricing."
+    },
+    "elClients": {
+      "description": "Need to implement the updated ModExp pricing formula with new minimum costs and scaling factors for large inputs."
+    }
+  },
+  "benefits": [
+    "Fixes underpriced ModExp operations that cost less than simpler precompiles",
+    "Ensures ModExp pricing reflects actual computational cost",
+    "Prevents potential DoS from cheap complex operations",
+    "Aligns gas costs with performance benchmarks"
+  ]
+}

@@ -1,0 +1,61 @@
+{
+  "id": 7778,
+  "title": "EIP-7778: Block Gas Limit Accounting without Refunds",
+  "status": "Draft",
+  "description": "Prevents block gas limit circumvention by excluding refunds from block accounting; preserves user transaction incentives semantics.",
+  "author": "Ben Adams (@benaadams), Toni Wahrstätter (@nerolation)",
+  "type": "Standards Track",
+  "category": "Core",
+  "createdDate": "2024-10-01",
+  "discussionLink": "https://ethereum-magicians.org/t/eip-7778-prevent-block-gas-smuggling/21234",
+  "reviewer": "staff",
+  "forkRelationships": [
+    {
+      "forkName": "Glamsterdam",
+      "status": "Proposed",
+      "layer": "EL",
+      "champion": {
+        "name": "Toni Wahrstätter",
+        "discord": "nero_eth"
+      }
+    }
+  ],
+  "laymanDescription": "Closes a loophole where gas refunds let blocks pack extra work. Refunds still reduce user costs, but don't shrink the block's counted gas. Aligns block size with real EVM work and reduces worst-case block-size variance.",
+  "northStarAlignment": {
+    "scaleL1": {
+      "description": "Reduces worst-case block size and variance, improving throughput predictability; does not increase average capacity or lower fees network-wide."
+    }
+  },
+  "stakeholderImpacts": {
+    "endUsers": {
+      "description": "No substantial direct impact; transactions execute as before. Refunds still discount user costs but no longer shrink counted block gas."
+    },
+    "appDevs": {
+      "description": "Contracts generally unchanged. Only strategies exploiting large refunds lose ability to help pack extra computation into blocks via accounting quirks."
+    },
+    "walletDevs": {
+      "description": "No changes required. Gas estimation, fee math, and refund display remain the same at the transaction level for users today."
+    },
+    "toolingInfra": {
+      "description": "Block builders, simulators, and analyzers should enforce and reflect gross block-gas accounting; update tests and dashboards to avoid refund-based variance."
+    },
+    "layer2s": {
+      "description": "Minimal direct impact. Sequencers mirroring L1 semantics may adopt same accounting; otherwise, no changes to rollup fee or capacity models."
+    },
+    "stakersNodes": {
+      "description": "Lower variance in execution work per block improves predictability and reduces pathological worst-case loads; efficiency gains from smoother resource usage."
+    },
+    "clClients": {
+      "description": "No consensus-layer changes expected; negligible impact beyond observing more consistent block execution times on the execution layer during validation overhead."
+    },
+    "elClients": {
+      "description": "Must implement block accounting change and tests; ensure refunds don't reduce block-gas used. Otherwise limited complexity and compatibility concerns overall."
+    }
+  },
+  "benefits": [
+    "Aligns block gas with actual EVM work.",
+    "Prevents refund-based circumvention of block limits.",
+    "Reduces worst-case block size variance.",
+    "Improves node execution predictability and safety."
+  ]
+}

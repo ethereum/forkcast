@@ -1,0 +1,61 @@
+{
+  "id": 7951,
+  "title": "EIP-7951: Precompile for secp256r1 Curve Support",
+  "status": "Draft",
+  "description": "Add precompiled contract for secp256r1 ECDSA signature verification with proper security checks",
+  "author": "Carl Beekhuizen (@carlbeek), Ulaş Erdoğan (@ulerdogan), Doğan Alpaslan (@doganalpaslan)",
+  "type": "Standards Track",
+  "category": "Core",
+  "createdDate": "2025-05-27",
+  "discussionLink": "https://ethereum-magicians.org/t/eip-7951-precompile-for-secp256r1-curve-support/24360",
+  "reviewer": "bot",
+  "forkRelationships": [
+    {
+      "forkName": "Pectra",
+      "status": "Considered"
+    },
+    {
+      "forkName": "Fusaka",
+      "status": "Scheduled"
+    }
+  ],
+  "laymanDescription": "This adds support for a widely-used cryptographic curve called secp256r1 (also known as P-256) to Ethereum. Currently, Ethereum only supports the secp256k1 curve for signatures, but many devices and systems use secp256r1. This change allows Ethereum to verify signatures from devices like iPhones, Android phones, hardware wallets, and other systems that use this standard curve, making it easier to integrate with existing infrastructure. Note: This EIP supercedes [RIP-7212](https://github.com/ethereum/RIPs/blob/master/RIPS/rip-7212.md).",
+  "northStarAlignment": {
+    "improveUX": {
+      "description": "Dramatically improves user experience by enabling native integration with billions of devices that use secp256r1, eliminating the need for complex signature conversion or additional infrastructure."
+    }
+  },
+  "stakeholderImpacts": {
+    "endUsers": {
+      "description": "Can use their existing devices (phones, hardware wallets) to sign Ethereum transactions without additional software or conversion steps."
+    },
+    "appDevs": {
+      "description": "Can integrate with existing secp256r1-based systems and devices more easily, reducing development complexity for authentication and signing flows."
+    },
+    "walletDevs": {
+      "description": "Can support native signing from devices that use secp256r1, improving wallet compatibility and user experience across different platforms."
+    },
+    "toolingInfra": {
+      "description": "Need to implement secp256r1 signature verification in tooling, but gain ability to work with broader ecosystem of devices and systems."
+    },
+    "layer2s": {
+      "description": "Can leverage secp256r1 signatures for Layer 2 operations, improving compatibility with existing infrastructure."
+    },
+    "stakersNodes": {
+      "description": "Minimal impact as this primarily affects transaction validation and doesn't change consensus or staking mechanics."
+    },
+    "clClients": {
+      "description": "No impact on consensus layer as this affects execution layer transaction validation."
+    },
+    "elClients": {
+      "description": "Need to implement secp256r1 precompile for efficient signature verification, but this is a well-established cryptographic standard."
+    }
+  },
+  "benefits": [
+    "Enables native integration with billions of secp256r1 devices",
+    "Eliminates need for signature conversion or additional infrastructure",
+    "Improves user experience for mobile and hardware wallet users",
+    "Reduces development complexity for authentication systems",
+    "Enables compliance with existing security standards"
+  ]
+}

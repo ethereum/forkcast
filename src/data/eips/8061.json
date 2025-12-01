@@ -1,0 +1,56 @@
+{
+  "id": 8061,
+  "title": "Increase churn limits",
+  "status": "Draft",
+  "description": "This EIP triples the global churn limit by raising activation/exit and consolidation churn and introducing a distinct consolidation churn quotient. This maintains a long weak subjectivity period while enabling faster validator consolidation, accelerating progress toward faster finality and easing deposit and exit queue congestion.",
+  "author": "Francesco D'Amato (@fradamt), Anders Elowsson (@anderselowsson)",
+  "type": "Standards Track",
+  "category": "Core",
+  "createdDate": "2025-10-17",
+  "discussionLink": "https://ethereum-magicians.org/t/eip-8061-increase-churn-limits/25991",
+  "reviewer": "bot",
+  "forkRelationships": [
+    {
+      "forkName": "Glamsterdam",
+      "status": "Proposed",
+      "layer": "CL",
+      "champion": {
+        "name": "Francesco D'Amato",
+        "discord": "fradamt"
+      }
+    }
+  ],
+  "laymanDescription": "Raises limits on how many validators can activate, exit, or consolidate each epoch and separates consolidation churn, improving validator consolidation speed and easing deposit and exit queues while preserving a long weak-subjectivity period and existing security assumptions.",
+  "stakeholderImpacts": {
+    "endUsers": {
+      "description": "No direct user-facing changes; effects are limited to validator churn parameters, with only indirect benefits through future finality improvements."
+    },
+    "appDevs": {
+      "description": "Application logic and smart contracts remain unchanged; only underlying consensus churn limits adjust, so most applications require no code modifications."
+    },
+    "walletDevs": {
+      "description": "Wallet protocols stay the same; only beacon-chain churn parameters change, so implementations rarely need updates beyond optional queue displays."
+    },
+    "toolingInfra": {
+      "description": "Validator dashboards, explorers, and forecasting tools must update churn constants and formulas to correctly estimate activation, exit, and consolidation queues."
+    },
+    "layer2s": {
+      "description": "Layer 2 protocols see minimal direct impact; beacon-chain validator churn parameters change, but L2 smart contract logic remains unchanged."
+    },
+    "stakersNodes": {
+      "description": "Stakers and node operators gain higher churn throughput, shortening queues and reducing consolidation costs while maintaining a long weak-subjectivity period."
+    },
+    "clClients": {
+      "description": "Consensus clients must update configuration constants and churn computation logic, adding a separate consolidation churn quotient and revising queue accounting."
+    },
+    "elClients": {
+      "description": "Execution clients require no code changes; all churn computations reside in the consensus layer, leaving execution implementations unaffected."
+    }
+  },
+  "benefits": [
+    "Triples the global churn limit while preserving a long weak-subjectivity period for consensus safety.",
+    "Increases activation and exit throughput, shortening validator deposit and exit queues under growing stake.",
+    "Separates consolidation churn into its own limit, configurable independently from activation and exit churn.",
+    "Improves staking liquidity by reducing consolidation time and associated opportunity costs for validators."
+  ]
+}

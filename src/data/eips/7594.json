@@ -1,0 +1,61 @@
+{
+  "id": 7594,
+  "title": "EIP-7594: PeerDAS - Peer Data Availability Sampling",
+  "status": "Draft",
+  "description": "Introduces peer data availability sampling to improve data availability for Ethereum's scaling solutions.",
+  "author": "Francesco D'Amato, Dankrad Feist, et al.",
+  "type": "Standards Track",
+  "category": "Core",
+  "createdDate": "2024-01-15",
+  "discussionLink": "https://ethereum-magicians.org/t/eip-7594-peerdas-peer-data-availability-sampling/18215",
+  "reviewer": "bot",
+  "forkRelationships": [
+    {
+      "forkName": "Fusaka",
+      "status": "Scheduled",
+      "isHeadliner": true
+    }
+  ],
+  "laymanDescription": "PeerDAS enables Ethereum nodes to specialize in storing different pieces of data while still verifying everything is available. This foundational change dramatically increases data capacity for Layer 2 networks while maintaining security.",
+  "northStarAlignment": {
+    "scaleL1": {
+      "description": "Essential foundation for scaling Ethereum's data capacity. Builds the infrastructure needed for full Danksharding, potentially increasing data throughput from ~375KB/s to several MB/s in future upgrades."
+    },
+    "scaleBlobs": {
+      "description": "Directly enables Layer 2 scaling by allowing nodes to efficiently handle much more data without overwhelming individual participants."
+    }
+  },
+  "stakeholderImpacts": {
+    "endUsers": {
+      "description": "Benefits through much cheaper Layer 2 transactions and access to applications that need more data throughput."
+    },
+    "appDevs": {
+      "description": "Enables building applications with higher data requirements. Layer 2 developers benefit from reduced costs and higher capacity limits."
+    },
+    "walletDevs": {
+      "description": "Minimal direct impact. Users benefit indirectly through better Layer 2 transaction reliability and lower costs."
+    },
+    "toolingInfra": {
+      "description": "Major updates needed for block explorers, indexers, and data availability APIs to handle the new sampling system and proof formats."
+    },
+    "layer2s": {
+      "description": "Game-changing for Layer 2 economics - dramatically reduces costs for posting transaction data and enables much higher throughput rollups."
+    },
+    "stakersNodes": {
+      "description": "Must implement the new specialized data storage and sampling system. Changes from downloading everything to participating in a coordinated verification network."
+    },
+    "clClients": {
+      "description": "Major implementation work required for the new data distribution system, sampling protocols, and coordination between nodes. This is a core infrastructure change."
+    },
+    "elClients": {
+      "description": "Need to update how blob transactions are handled and verified, including new proof formats and validation methods."
+    }
+  },
+  "benefits": [
+    "Dramatically reduces Layer 2 transaction costs",
+    "Enables scaling to 128+ blobs per block over time",
+    "Nodes only store a fraction of data while maintaining security",
+    "Foundation for competing with high-speed blockchains",
+    "Paves the way for full Danksharding"
+  ]
+}

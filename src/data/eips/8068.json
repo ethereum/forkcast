@@ -1,0 +1,56 @@
+{
+  "id": 8068,
+  "title": "Neutral effective balance design",
+  "status": "Draft",
+  "description": "This EIP proposes a neutral effective balance design to ensure 0x01 (skimming) and 0x02 (compounding) validators receive equal yields by adjusting hysteresis thresholds, resetting EB after withdrawals, and preventing gaming to support stake consolidation.",
+  "author": "Anders Elowsson (@anderselowsson)",
+  "type": "Standards Track",
+  "category": "Core",
+  "createdDate": "2025-10-28",
+  "discussionLink": "https://ethereum-magicians.org/t/eip-8068-neutral-effective-balance-design/26015",
+  "reviewer": "bot",
+  "forkRelationships": [
+    {
+      "forkName": "Glamsterdam",
+      "status": "Declined",
+      "layer": "CL",
+      "champion": {
+        "name": "Anders Elowsson",
+        "discord": "anderselowsson"
+      }
+    }
+  ],
+  "laymanDescription": "Makes staking treat 'skimmed' and 'compounding' validators the same by tweaking effective balance rules, so operators can consolidate without losing yield.",
+  "stakeholderImpacts": {
+    "endUsers": {
+      "description": "No direct effect; staking reward accounting stays inside the consensus layer and user transactions stay unchanged."
+    },
+    "appDevs": {
+      "description": "No app-facing protocol change; validator consolidation does not alter JSON-RPC, gas rules, or transaction semantics."
+    },
+    "walletDevs": {
+      "description": "Deposit/withdrawal handling unchanged; no mandatory code updates."
+    },
+    "toolingInfra": {
+      "description": "The actual yield becomes in line with existing interpretations of what validators earn."
+    },
+    "layer2s": {
+      "description": "No rollup/L2 logic changes identified; this is an L1 consensus-layer adjustment to validator accounting only."
+    },
+    "stakersNodes": {
+      "description": "Compounding 0x02 validators get the same yield as 0x01 validators, which they already believed that they did. No longer possible to game partial withdrawals"
+    },
+    "clClients": {
+      "description": "Must implement neutral EB math, ±0.5/±0.25 hysteresis, and one-time temporary_upward_threshold after withdrawals; moderate integration effort."
+    },
+    "elClients": {
+      "description": "No execution-layer work identified; EB and hysteresis are handled in consensus specs, so EL code can remain unchanged."
+    }
+  },
+  "benefits": [
+    "Equalizes rewards for 0x01 and 0x02 validators.",
+    "Improves capital efficiency for compounding validators.",
+    "Removes hysteresis-gaming opportunities.",
+    "Supports stake consolidation toward fast finality."
+  ]
+}

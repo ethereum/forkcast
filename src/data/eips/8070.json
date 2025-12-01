@@ -1,0 +1,56 @@
+{
+  "id": 8070,
+  "title": "Sparse Blobpool",
+  "status": "Draft",
+  "description": "Introduces a sparse blobpool for the Execution Layer that fetches full payloads for blob-carrying transactions with probability 0.15 and otherwise samples custody-aligned cells, reusing the Consensus Layer custody set to reduce average blobpool bandwidth by about 4x while preserving data availability.",
+  "author": "Raúl Kripalani (@raulk), Bosul Mun (@healthykim), Francesco D'Amato (@fradamt), Csaba Kiraly (@cskiraly), Felix Lange (@fjl), Marios Ioannou (@mariosioannou-create), Alex Stokes (@ralexstokes)",
+  "type": "Standards Track",
+  "category": "Core",
+  "createdDate": "2025-10-29",
+  "discussionLink": "https://ethereum-magicians.org/t/eip-8070-sparse-blobpool/26023",
+  "reviewer": "bot",
+  "forkRelationships": [
+    {
+      "forkName": "Glamsterdam",
+      "status": "Proposed",
+      "layer": "EL",
+      "champion": {
+        "name": "Raúl Kripalani",
+        "discord": "raulvk"
+      }
+    }
+  ],
+  "laymanDescription": "Ethereum nodes fully download only some blob transactions and sample the exact blob pieces the consensus layer cares about, cutting Execution Layer bandwidth roughly fourfold while keeping blob transactions moving.",
+  "stakeholderImpacts": {
+    "endUsers": {
+      "description": "No user-facing change; blob transactions stay reliable as BPO forks raise throughput, reducing failures from Execution Layer bandwidth pressure."
+    },
+    "appDevs": {
+      "description": "Application logic unchanged; contracts or rollup sequencers relying on blob data get steadier L1 availability during busy network-wide periods."
+    },
+    "walletDevs": {
+      "description": "Wallets submitting type-3 blob transactions gain more reliable propagation; minimal adjustments, mainly ensuring compatibility with updated EL peers locally."
+    },
+    "toolingInfra": {
+      "description": "Block explorers, relays and monitors should surface partial-blob availability and new eth/71 fields to reflect node sampling state."
+    },
+    "layer2s": {
+      "description": "Rollups posting blobs to L1 face lower risk of EL blobpool saturation, keeping DA publication within expected windows."
+    },
+    "stakersNodes": {
+      "description": "Validator operators must run EL clients supporting sparse blobpool to match CL custody; operational workflows stay largely intact."
+    },
+    "clClients": {
+      "description": "Consensus clients need to send custody updates over Engine API and tolerate EL sampling, adding moderate networking and API work."
+    },
+    "elClients": {
+      "description": "Execution clients implement eth/71, blobpool sampling, storage for custody cells and builder policies—largest code changes and testing burden."
+    }
+  },
+  "benefits": [
+    "Cuts EL blobpool bandwidth to ~25% of current design.",
+    "Keeps CL and EL sampling aligned for DA checks.",
+    "Preserves stochastic blobpool without complex sharding.",
+    "Supports future BPO fork throughput increases."
+  ]
+}

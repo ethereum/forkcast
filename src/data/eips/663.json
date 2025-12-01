@@ -1,0 +1,23 @@
+{
+  "id": 663,
+  "title": "EIP-663: SWAPN, DUPN and EXCHANGE instructions",
+  "status": "Review",
+  "description": "Introduce additional instructions for manipulating the stack which allow accessing the stack at higher depths",
+  "author": "Alex Beregszaszi (@axic), Charles Cooper (@charles-cooper), Danno Ferrin (@shemnon)",
+  "type": "Standards Track",
+  "category": "Core",
+  "createdDate": "2017-07-03",
+  "discussionLink": "https://ethereum-magicians.org/t/eip-663-swapn-dupn-and-exchange-instructions/3346",
+  "reviewer": "bot",
+  "forkRelationships": [
+    {
+      "forkName": "Fusaka",
+      "status": "Declined"
+    },
+    {
+      "forkName": "Pectra",
+      "status": "Considered"
+    }
+  ],
+  "laymanDescription": "This adds three new EVM instructions (DUPN, SWAPN, and EXCHANGE) that allow smart contracts to access and manipulate stack items beyond the current 16-item limit, reaching up to 256 items deep. Currently, the EVM stack can hold 1024 items but only the top 16 are easily accessible. These new instructions help compilers write more efficient code for complex functions with many variables by providing better stack management capabilities. The feature only works with the new EOF bytecode format, not legacy contracts."
+}

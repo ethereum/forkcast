@@ -1,0 +1,55 @@
+{
+  "id": 2780,
+  "title": "EIP-2780: Reduce intrinsic transaction gas",
+  "status": "Draft",
+  "description": "EIP-2780 proposes reducing the basic tx cost from 21,000 to 4,500 gas units, providing more space mainly for ETH tranfer.",
+  "author": "Matt Garnett (@lightclient), Uri Klarman (@uriklarman), Ben Adams (@benaadams), Maria Ines Silva (@misilva73), Anders Elowsson (@anderselowsson), Anthony Sassano (@sassal)",
+  "type": "Standards Track",
+  "category": "Core",
+  "createdDate": "2020-07-11",
+  "discussionLink": "https://ethereum-magicians.org/t/eip-2780-reduce-intrinsic-cost-of-transactions/4413",
+  "reviewer": "staff",
+  "forkRelationships": [
+    {
+      "forkName": "Glamsterdam",
+      "status": "Proposed",
+      "layer": "EL",
+      "champion": {
+        "name": "Ben Adams",
+        "discord": "ben_a_adams"
+      }
+    }
+  ],
+  "laymanDescription": "Changes base tx cost for more efficiency in cold/hot state management and improving ETH monetary functions. Lowering basic ETH tranfers to 6,000 gas and charging extra 25,000 for new account creation. Alternative to increasing block gas limit.",
+  "stakeholderImpacts": {
+    "endUsers": {
+      "description": "Lower fees means it's easier to use ETH for payments."
+    },
+    "appDevs": {
+      "description": "Changes how fee is managed based on accessed state, lowers base cost for every kind of transaction."
+    },
+    "walletDevs": {
+      "description": "The fee cost estimation needs to be updated with new changes and complexity."
+    },
+    "toolingInfra": {
+      "description": "Transaction analysis needs to distinguish new gas accounting."
+    },
+    "layer2s": {
+      "description": "L2s aiming to be EVM compatible need to implement this change, ETH will can better for payments even on L2 chains."
+    },
+    "stakersNodes": {
+      "description": "No direct impact, state growth should stay constrained."
+    },
+    "clClients": {
+      "description": "No direct impact on consensus."
+    },
+    "elClients": {
+      "description": "Changes in tx processing and gas accounting, potential performance overhead like gas limit increase"
+    }
+  },
+  "benefits": [
+    "Reduces the gas cost barrier for ETH transactions, promoting more frequent usage of the native token.",
+    "Updates legacy fixed cost to new model based on the actual impact of the transaction..",
+    "Improves monetary properties of ETH, making it a better payment tool"
+  ]
+}

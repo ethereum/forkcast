@@ -1,0 +1,54 @@
+{
+  "id": 7610,
+  "title": "EIP-7610: Revert creation in case of non-empty storage",
+  "status": "Draft",
+  "description": "This EIP adds condition to a contract creation transaction to ensure it fails if the destination address has non-empty storage.",
+  "author": "Gary Rong (@rjl493456442), Martin Holst Swende (@holiman)",
+  "type": "Standards Track",
+  "category": "Core",
+  "createdDate": "2024-02-02",
+  "discussionLink": "https://ethereum-magicians.org/t/eip-revert-creation-in-case-of-non-empty-storage/18452",
+  "reviewer": "staff",
+  "forkRelationships": [
+    {
+      "forkName": "Glamsterdam",
+      "status": "Proposed",
+      "layer": "EL",
+      "champion": {
+        "name": "Jochem Brouwer",
+        "discord": "jochembrouwer"
+      }
+    }
+  ],
+  "laymanDescription": "Existing conditions to prevent deploying contract at address with existing data are insufficient, this ensures it cannot happen even in edge case scenarios. There are at least 28 contracts that were deployed with this issue.",
+  "stakeholderImpacts": {
+    "endUsers": {
+      "description": "No direct impact on regular users."
+    },
+    "appDevs": {
+      "description": "Making sure devs cannot deploy contract on incorrect address with proper error handling."
+    },
+    "walletDevs": {
+      "description": "No changes to wallets."
+    },
+    "toolingInfra": {
+      "description": "Contract development tooling needs to update and handle errors correctly"
+    },
+    "layer2s": {
+      "description": "L2s can benefit from the improvement following the change in their implementations."
+    },
+    "stakersNodes": {
+      "description": "No impact on stakers and nodes."
+    },
+    "clClients": {
+      "description": "No change to consensus layer."
+    },
+    "elClients": {
+      "description": "New condition needs to implement the check in EL clients."
+    }
+  },
+  "benefits": [
+    "Mitigates issues stemming from contract deployment over existing storage.",
+    "Makes sure app developers cannot make this mistake and provides correct errors if such a tx is submitted."
+  ]
+}

@@ -1,0 +1,73 @@
+{
+  "id": 7805,
+  "title": "EIP-7805: Fork-Choice Inclusion Lists (FOCIL)",
+  "status": "Draft",
+  "description": "Fork-Choice enforced Inclusion Lists improve improve censorship resistance by enable multiple proposer to force-include transactions in Ethereum blocks.",
+  "author": "Thomas Thiery (@soispoke) <thomas.thiery@ethereum.org>, Francesco D'Amato <francesco.damato@ethereum.org>, Julian Ma <julian.ma@ethereum.org>, Barnabé Monnot <barnabe.monnot@ethereum.org>, Terence Tsao <ttsao@offchainlabs.com>, Jacob Kaufmann <jacob.kaufmann@ethereum.org>, Jihoon Song <jihoonsong.dev@gmail.com>",
+  "type": "Standards Track",
+  "category": "Core",
+  "createdDate": "2024-05-15",
+  "discussionLink": "https://ethereum-magicians.org/t/eip-7805-committee-based-fork-choice-enforced-inclusion-lists-focil/21578",
+  "reviewer": "bot",
+  "forkRelationships": [
+    {
+      "forkName": "Fusaka",
+      "status": "Declined"
+    },
+    {
+      "forkName": "Glamsterdam",
+      "status": "Considered",
+      "isHeadliner": false,
+      "wasHeadlinerCandidate": true,
+      "headlinerDiscussionLink": "https://ethereum-magicians.org/t/eip-7805-fork-choice-inclusion-lists-focil-as-a-candidate-for-glamsterdam/24342",
+      "layer": "CL",
+      "champion": {
+        "name": "soispoke",
+        "discord": "soispoke"
+      }
+    }
+  ],
+  "laymanDescription": "FOCIL empowers multiple validators to mandate the inclusion of specific transactions in each block, thereby improving the network's censorship resistance properties.",
+  "northStarAlignment": {
+    "scaleL1": {
+      "description": "Ethereum currently relies on local block builders to preserve censorship resistance. However, depending on local block builders comes at a cost to performance and incentives, which may conflict with scaling throughput. FOCIL is crucial in L1 scaling because it helps decouple local block building from censorship resistance."
+    },
+    "scaleBlobs": {
+      "description": "A more censorship-resistant L1 provides better foundation for Layer 2 settlement guarantees, and allows to shorten the exit time window for optimistic rollups."
+    },
+    "improveUX": {
+      "description": "Provides strong guarantees against transaction censorship and ensures fair access to block space for all users regardless of transaction content."
+    }
+  },
+  "stakeholderImpacts": {
+    "endUsers": {
+      "description": "Strong protection against transaction censorship for all end users, guaranteed inclusion for valid transactions, and improved confidence in Ethereum's credible neutrality."
+    },
+    "appDevs": {
+      "description": "Can build applications with stronger inclusion guarantees and reduced concerns about application-specific censorship."
+    },
+    "walletDevs": {
+      "description": "Can provide users with stronger transaction inclusion guarantees and better protection against selective censorship."
+    },
+    "toolingInfra": {
+      "description": "Censorship monitoring tools, inclusion list analysis, and validator behavior tracking systems need major updates after FOCIL implementation."
+    },
+    "layer2s": {
+      "description": "More censorship-resistant L1 settlement provides stronger guarantees for Layer 2 transaction processing, bridge operations, and reduces rollup challenge period risks."
+    },
+    "stakersNodes": {
+      "description": "Validators must now build inclusion lists according to the protocol rules, and attesters must enforce inclusion lists conditions are satisfied before voting for a block."
+    },
+    "clClients": {
+      "description": "Major implementation work required for inclusion lists propagation and enforcement, including fork-choice modifications."
+    },
+    "elClients": {
+      "description": "Need build inclusion lists, to update the execution payload with inclusion list transactions, and communicate with the consensus layer."
+    }
+  },
+  "benefits": [
+    "Provides strong censorship resistance guarantees",
+    "Ensures fair access to block space for all users",
+    "Strengthens Ethereum's credible neutrality"
+  ]
+}

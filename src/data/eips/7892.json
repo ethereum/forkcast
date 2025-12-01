@@ -1,0 +1,58 @@
+{
+  "id": 7892,
+  "title": "EIP-7892: Blob Parameter Only ('BPO') Hardforks",
+  "status": "Draft",
+  "description": "Enables hardforks that only modify blob-related parameters without requiring a new fork-version or changing any other consensus rules.",
+  "author": "Mark Mackey (@ethDreamer), Raúl Kripalani (@raulk)",
+  "type": "Informational",
+  "createdDate": "2025-02-28",
+  "discussionLink": "https://ethereum-magicians.org/t/eip-7892-blob-parameter-only-hardforks/23018",
+  "reviewer": "bot",
+  "forkRelationships": [
+    {
+      "forkName": "Fusaka",
+      "status": "Scheduled"
+    }
+  ],
+  "laymanDescription": "This creates a new lightweight process to adjust blob storage parameters. Instead of waiting for a major upgrade, Ethereum can make smaller, more frequent adjustments to blob capacity to accommodate changing demand from Layer 2s.",
+  "northStarAlignment": {
+    "scaleBlobs": {
+      "description": "Directly addresses the rapid growth in L2 data availability demand by enabling more frequent, incremental blob capacity increases to prevent sustained saturation."
+    },
+    "improveUX": {
+      "description": "Provides predictable scaling framework that gives L2 builders confidence to commit to Ethereum over alternative DA solutions."
+    }
+  },
+  "stakeholderImpacts": {
+    "endUsers": {
+      "description": "Indirect benefits through more responsive blob capacity scaling leading to lower and more stable L2 transaction costs."
+    },
+    "appDevs": {
+      "description": "More predictable data availability scaling gives developers confidence to build applications requiring consistent blob capacity growth."
+    },
+    "walletDevs": {
+      "description": "Minimal direct impact. Benefits indirectly through improved L2 scaling economics and more stable transaction costs."
+    },
+    "toolingInfra": {
+      "description": "Major updates needed for upgrade tracking, blob parameter monitoring, and tooling to handle the new BPO fork mechanism."
+    },
+    "layer2s": {
+      "description": "Critical for L2 growth strategy - enables continuous scaling of data availability capacity to match rapidly growing demand without waiting for major hard forks."
+    },
+    "stakersNodes": {
+      "description": "Need to handle more frequent but lighter-weight network upgrades. Simplified upgrade process reduces operational overhead compared to full hard forks."
+    },
+    "clClients": {
+      "description": "Significant changes needed for blob schedule management, modified compute_fork_digest implementation, and P2P networking updates including ENR extensions."
+    },
+    "elClients": {
+      "description": "Major implementation work required for blob schedule configuration management, activation timestamp handling, and coordination with consensus layer blob parameter changes."
+    }
+  },
+  "benefits": [
+    "Faster response to Layer 2 data demand growth",
+    "Lighter coordination than full network upgrades",
+    "Predictable scaling roadmap for builders",
+    "Safer capacity increases through smaller steps"
+  ]
+}

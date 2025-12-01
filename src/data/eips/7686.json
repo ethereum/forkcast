@@ -1,0 +1,56 @@
+{
+  "id": 7686,
+  "title": "Linear EVM memory limits",
+  "status": "Draft",
+  "description": "Add a hard memory limit equal to the gas limit of the current context. Make the maximum gas cost of a sub-call depend on the memory used in the current context. The two rules together ensure that a transaction with N gas can use at most N bytes of memory.",
+  "author": "Vitalik Buterin (@vbuterin)",
+  "type": "Standards Track",
+  "category": "Core",
+  "createdDate": "2024-04-15",
+  "discussionLink": "https://ethereum-magicians.org/t/eip-7686-linear-evm-memory-limits/19448",
+  "reviewer": "bot",
+  "forkRelationships": [
+    {
+      "forkName": "Glamsterdam",
+      "status": "Proposed",
+      "layer": "EL",
+      "champion": {
+        "name": "Carl Beekhuizen",
+        "discord": "carlbeek"
+      }
+    }
+  ],
+  "laymanDescription": "This proposal ties how much EVM memory a transaction can use directly to its gas. It simplifies memory pricing rules so each unit of gas corresponds to at most one byte of memory, making worst-case resource use easier to understand for operators and developers.",
+  "stakeholderImpacts": {
+    "endUsers": {
+      "description": "For ordinary users this change is largely invisible, mainly constraining unusually memory-heavy transactions that approach gas and resource limits."
+    },
+    "appDevs": {
+      "description": "Contract developers may review patterns that access high memory with little gas, though typical applications fit within the new limits."
+    },
+    "walletDevs": {
+      "description": "Wallets that implement their own gas estimation must update memory-cost logic; others inherit the behavior change from underlying nodes."
+    },
+    "toolingInfra": {
+      "description": "Gas analyzers, simulators, and tracing tools must update their memory cost and call-gas models to match the new linear rules."
+    },
+    "layer2s": {
+      "description": "EVM-compatible rollups mirroring mainnet gas rules would implement the new memory limit and pricing to maintain behavior compatibility."
+    },
+    "stakersNodes": {
+      "description": "Node operators benefit from a linear bound on per-transaction memory usage, simplifying capacity planning and reducing worst-case memory exhaustion risk."
+    },
+    "clClients": {
+      "description": "Consensus-layer clients see minimal direct impact; they mainly ensure testing and fork configuration align with updated execution-layer behavior."
+    },
+    "elClients": {
+      "description": "Execution-layer clients must update EVM memory-cost calculation, enforce the new per-context memory cap, and adjust call-gas logic accordingly."
+    }
+  },
+  "benefits": [
+    "Provides a clear linear upper bound on total memory a transaction can consume.",
+    "Simplifies EVM memory pricing by removing the quadratic term from the cost function.",
+    "Makes worst-case resource usage easier to estimate for EVM executions and client operators.",
+    "Aligns call-gas limits with memory usage, avoiding unbounded memory growth across nested sub-calls."
+  ]
+}

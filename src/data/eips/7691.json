@@ -1,0 +1,55 @@
+{
+  "id": 7691,
+  "title": "EIP-7691: Blob throughput increase",
+  "status": "Final",
+  "description": "Increases blob throughput to improve data availability for Layer 2 solutions.",
+  "author": "Ansgar Dietrichs, Dankrad Feist",
+  "type": "Standards Track",
+  "category": "Core",
+  "createdDate": "2024-04-17",
+  "discussionLink": "https://ethereum-magicians.org/t/eip-7691-blob-throughput-increase/19724",
+  "reviewer": "bot",
+  "forkRelationships": [
+    {
+      "forkName": "Pectra",
+      "status": "Included"
+    }
+  ],
+  "laymanDescription": "Doubles the target number of blobs per block (and raises the max) to increase L2 data capacity until future upgrades enable even more blobs.",
+  "northStarAlignment": {
+    "scaleBlobs": {
+      "description": "Directly increases data availability for rollups by raising blob capacity, improving throughput."
+    }
+  },
+  "stakeholderImpacts": {
+    "endUsers": {
+      "description": "Lower fees on L2s as more blob space becomes available."
+    },
+    "appDevs": {
+      "description": "Rollup apps benefit from cheaper data availability."
+    },
+    "walletDevs": {
+      "description": "No direct changes, potential fee improvements for L2 transactions."
+    },
+    "toolingInfra": {
+      "description": "Monitoring should surface new blob target/max parameters."
+    },
+    "layer2s": {
+      "description": "Directly increases throughput for rollups using blobs, more L2 scale."
+    },
+    "stakersNodes": {
+      "description": "Slightly higher data propagation at the p2p layer within safe bounds."
+    },
+    "clClients": {
+      "description": "Parameters update that needed more optimization and testing"
+    },
+    "elClients": {
+      "description": "Update blob gas accounting and targets."
+    }
+  },
+  "benefits": [
+    "Higher data capacity for rollups",
+    "Lower L2 fees in the near term",
+    "Provides extra space before PeerDAS unlocks even momre"
+  ]
+}

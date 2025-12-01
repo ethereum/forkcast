@@ -1,0 +1,59 @@
+{
+  "id": 7791,
+  "title": "EIP-7791: GAS2ETH opcode",
+  "status": "Draft",
+  "description": "Introduces a new opcode, `GAS2ETH`, to convert gas to ETH",
+  "author": "Charles Cooper (@charles-cooper), Pascal Caversaccio (@pcaversaccio)",
+  "type": "Standards Track",
+  "category": "Core",
+  "createdDate": "2024-08-13",
+  "discussionLink": "https://ethereum-magicians.org/t/eip-7791-gas2eth-opcode/21418",
+  "reviewer": "staff",
+  "forkRelationships": [
+    {
+      "forkName": "Fusaka",
+      "status": "Declined"
+    },
+    {
+      "forkName": "Glamsterdam",
+      "status": "Proposed",
+      "layer": "EL",
+      "champion": {
+        "name": "Charles Cooper",
+        "telegram": "big_tech_sux"
+      }
+    }
+  ],
+  "laymanDescription": "EIP-7791 creates native fee mechanism for decentralized application by introducing a new GAS2ETH opcode that allows smart contracts to convert gas directly into ETH and send it to a specified address. It provides a new monetization mechanism for smart contract authors and public goods projects that scales with network usage. Instead of complex fee structures or token schemes, developers can charge gas (which users already understand) and receive proportional compensation during high network activity periods. The opcode takes a target address and gas amount, deducts the gas from the transaction, calculates the ETH value using the current gas price, and transfers that ETH to the specified address.",
+  "stakeholderImpacts": {
+    "endUsers": {
+      "description": "Users can automatically support developers of dapps they are using without using any third party tokens or tools."
+    },
+    "appDevs": {
+      "description": "Contract developers can receive fees propotional to usage of their contract and benefit from its success without building any external mechanism."
+    },
+    "walletDevs": {
+      "description": "Wallets are estimating gas fees as always but when interacting with contracts using this opcode, the estimated fee will include the regular network fee and portion paid to the contract beneficiary address."
+    },
+    "toolingInfra": {
+      "description": "Compilers will have to implement the new opcode and provide new tooling for developers to use it. Explorers should recognize the new fee structure and display the new fee structure. "
+    },
+    "layer2s": {
+      "description": "EVM-equivalent L2s implementing this opcode mirror mainnet behavior; optional adoption otherwise. Expect routine client updates, testing, and gas schedule alignment."
+    },
+    "stakersNodes": {
+      "description": "Node operators simply upgrade clients at fork; runtime behavior unchanged."
+    },
+    "clClients": {
+      "description": "This is EVM only change, consensus changes expected for CL; only standard fork coordination."
+    },
+    "elClients": {
+      "description": "Execution clients need to modify their EVM implementation, gas estimation and metering functions which introduces new complexity."
+    }
+  },
+  "benefits": [
+    "Native way for dapp developers to benefit from success of their work without relying on tokens, DAOs or external profit/public goods mechanisms",
+    "Fair distribution of fees proportional to contract usage.",
+    "Simple and clear UX for dapp users who can continue using their wallets with regular gas fee estimates as before."
+  ]
+}

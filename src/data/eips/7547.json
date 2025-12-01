@@ -1,0 +1,54 @@
+{
+  "id": 7547,
+  "title": "EIP-7547: Inclusion lists",
+  "status": "Stagnant",
+  "description": "Add an inclusion list mechanism to allow forced transaction inclusion.",
+  "author": "mike (@michaelneuder), Vitalik (@vbuterin), Francesco (@fradamt), Terence (@terencechain), potuz (@potuz), Manav (@manav2401)",
+  "type": "Standards Track",
+  "category": "Core",
+  "createdDate": "2023-10-24",
+  "discussionLink": "https://ethereum-magicians.org/t/eip-7547-inclusion-lists/17474",
+  "reviewer": "bot",
+  "forkRelationships": [
+    {
+      "forkName": "Pectra",
+      "status": "Considered"
+    }
+  ],
+  "laymanDescription": "Introduces inclusion lists so proposers can require that specific transactions be included promptly, improving censorship resistance.",
+  "northStarAlignment": {
+    "improveUX": {
+      "description": "Ensures users' transactions are included in a timely manner, reducing censorship uncertainty and improving user experience."
+    }
+  },
+  "stakeholderImpacts": {
+    "endUsers": {
+      "description": "Greater assurance that their transactions will not be censored and will be included quickly."
+    },
+    "appDevs": {
+      "description": "Can build applications with stronger guarantees around transaction inclusion, e.g. privacy perserving protocols."
+    },
+    "walletDevs": {
+      "description": "No direct changes in regular user wallets."
+    },
+    "toolingInfra": {
+      "description": "Analytic tools for censored transactions can follow changes introduced by ILs"
+    },
+    "layer2s": {
+      "description": "L2s relying on timely L1 inclusion benefit from improved censorship resistance and liveness."
+    },
+    "stakersNodes": {
+      "description": "Validators will have to comply with commitment to supplied inclusion lists when creating blocks."
+    },
+    "clClients": {
+      "description": "Consensus and validator clients must support inclusion list rules and validation."
+    },
+    "elClients": {
+      "description": "Execution clients may need to validate inclusion list commitments."
+    }
+  },
+  "benefits": [
+    "Improves censorship resistance by enabling forced transaction inclusion",
+    "Strengthens neutrality, makes it easier to use potentially censored protocols"
+  ]
+}

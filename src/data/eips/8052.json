@@ -1,0 +1,56 @@
+{
+  "id": 8052,
+  "title": "Precompile for Falcon support",
+  "status": "Draft",
+  "description": "Introduces three precompiled contracts implementing NIST's Falcon-512 signature scheme for post-quantum signature verification, with both NIST-compliant and EVM-optimized variants.",
+  "author": "Renaud Dubois (@rdubois-crypto), Simon Masson (@simonmasson), Antonio Sanso (@asanso), Marius van der Wijden, Kevaundray Wedderburn, Zhenfei Zhang, Nicolas Consigny",
+  "type": "Standards Track",
+  "category": "Core",
+  "createdDate": "2025-10-17",
+  "discussionLink": "https://ethereum-magicians.org/t/eip-8052-precompile-for-falcon-support/25860",
+  "reviewer": "expert",
+  "forkRelationships": [],
+  "laymanDescription": "Adds three precompiles for lattice-based signature verification that are safe against Quantum Computer analysis. The scheme splits verification into Hash-to-Point (with NIST SHAKE256 or EVM-friendly Keccak variants) and a core algorithm, enabling both NIST compliance and gas-efficient verification.",
+  "northStarAlignment": {
+    "scaleL1": {
+      "description": "Enables quantum-resistant signatures at the protocol level with compact signature sizes (~666 bytes), supporting long-term security without sacrificing throughput"
+    },
+    "improveUX": {
+      "description": "Modular design allows choosing between NIST compliance and EVM efficiency based on application needs"
+    }
+  },
+  "stakeholderImpacts": {
+    "endUsers": {
+      "description": "Access to Post-Quantum security with the most compact signatures compared to other lattice schemes"
+    },
+    "appDevs": {
+      "description": "Provides modular access to post-quantum cryptography with choice between standardized (SHAKE256) and gas-efficient (Keccak-PRNG) variants for Hash-to-Point"
+    },
+    "walletDevs": {
+      "description": "Compact PQ signatures (666 bytes) for contract wallets, though larger than ECDSA. Will need to standardize HD key generation and derivation paths."
+    },
+    "toolingInfra": {
+      "description": "Will need to add language and CLI access to Falcon signature verification and generation across three precompiles"
+    },
+    "layer2s": {
+      "description": "Will need to add to next L2 hard fork. Modular design may enable ZK-friendly implementations in the future."
+    },
+    "stakersNodes": {
+      "description": "Invisible to stakers, leanConsensus is where PQC will be introduced to them"
+    },
+    "clClients": {
+      "description": "Invisible to the consensus layer, leanConsensus is where PQC will be introduced to them"
+    },
+    "elClients": {
+      "description": "Will integrate external library (PQClean, reference implementation, etc) for three precompiles: two Hash-to-Point variants and one core algorithm. Extensive assets are provided to facilitate integration. Task involves library integration, NTT optimization, and gas metering."
+    }
+  },
+  "benefits": [
+    "NIST-standardized lattice-based post-quantum cryptography",
+    "Compact signatures (~666 bytes) compared to other PQ schemes",
+    "Modular design separating Hash-to-Point from core verification",
+    "EVM-optimized variant using Keccak-PRNG reduces gas costs significantly",
+    "Enables future ZK-SNARK/STARK optimizations via alternative Hash-to-Point implementations",
+    "Hardness based on SIS problem over NTRU lattices, secure against quantum adversaries"
+  ]
+}

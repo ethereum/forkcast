@@ -1,0 +1,65 @@
+{
+  "id": 7819,
+  "title": "EIP-7819: SETDELEGATE instruction",
+  "status": "Draft",
+  "description": "Introduce a new instruction allowing contracts to create clones using EIP-7702 delegation designations",
+  "author": "Hadrien Croubois (@amxx)",
+  "type": "Standards Track",
+  "category": "Core",
+  "createdDate": "2024-11-18",
+  "discussionLink": "https://ethereum-magicians.org/t/eip-7819-create-delegate/21763",
+  "reviewer": "expert",
+  "forkRelationships": [
+    {
+      "forkName": "Fusaka",
+      "status": "Declined"
+    },
+    {
+      "forkName": "Glamsterdam",
+      "status": "Proposed",
+      "layer": "EL",
+      "champion": {
+        "name": "Hadrien Croubois",
+        "discord": "hadriencroubois"
+      }
+    }
+  ],
+  "laymanDescription": "Adds a new instruction for upgradeable, lightweight contract clones via EIP-7702 delegation. This is similar to upgradable proxy contracts but enabled natively on protocol level, therfore cutting gas and complexity.",
+  "northStarAlignment": {
+    "improveUX": {
+      "description": "Native delegation provides upgradeability without the need for storage lookups and removes any issue related to code version incompatibilities. Development of contracts using proxies becomes easier and users benefit from additional security."
+    }
+  },
+  "stakeholderImpacts": {
+    "endUsers": {
+      "description": "Most users see unchanged behavior; some smart accounts may become cheaper and smoother, with minor upgrade-related risk managed by factories."
+    },
+    "appDevs": {
+      "description": "Contract developers get a way to create upgradeable clones, reducing gas and complexity; must guard against chaining and immediate delegation changes."
+    },
+    "walletDevs": {
+      "description": "Smart-account wallets may benefit from cheaper verification and operations; minimal code changes expected, aside from supporting delegation-aware introspection and risk messaging."
+    },
+    "toolingInfra": {
+      "description": "Explorers, indexers, and debuggers should recognize delegation indicators and mid-transaction updates; otherwise limited changes beyond existing EIP-7702 handling."
+    },
+    "layer2s": {
+      "description": "EVM-equivalent L2s implementing this opcode mirror mainnet behavior; optional adoption otherwise. Expect routine client updates, testing, and gas schedule alignment."
+    },
+    "stakersNodes": {
+      "description": "Node operators simply upgrade clients at fork; runtime behavior unchanged. Increased use of delegations may slightly affect tracing tools, not validation."
+    },
+    "clClients": {
+      "description": "No consensus changes expected for CL; only standard fork coordination. No new serialization, gossip, or signature rules introduced by this opcode."
+    },
+    "elClients": {
+      "description": "Must implement SETDELEGATE semantics, gas accounting, refunds, and EIP-2929 touches; ensure compatibility with EIP-7702 delegation indicators and immediate-effect code updates."
+    }
+  },
+  "benefits": [
+    "Upgradeable clones without storage lookups, using EIP-7702 delegation indicators.",
+    "Lower gas by moving call redirection from EVM bytecode to protocol.",
+    "Smaller state footprint than proxies; delegation objects are only 23 bytes.",
+    "Immediate, factory-controlled upgrades or locking, reducing complexity in account factories."
+  ]
+}

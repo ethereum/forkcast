@@ -1,0 +1,63 @@
+{
+  "id": 7903,
+  "title": "EIP-7903: Remove Initcode Size Limit",
+  "status": "Draft",
+  "description": "Removes the initcode size limit introduced in EIP-3860",
+  "author": "Charles Cooper (@charles-cooper)",
+  "type": "Standards Track",
+  "category": "Core",
+  "createdDate": "2025-03-05",
+  "discussionLink": "https://ethereum-magicians.org/t/remove-initcode-size-limit/23066",
+  "reviewer": "staff",
+  "forkRelationships": [
+    {
+      "forkName": "Fusaka",
+      "status": "Declined"
+    },
+    {
+      "forkName": "Glamsterdam",
+      "status": "Proposed",
+      "layer": "EL",
+      "champion": {
+        "name": "Charles Cooper",
+        "telegram": "big_tech_sux"
+      }
+    }
+  ],
+  "laymanDescription": "This removes the 49,152-byte limit on initialization code (initcode) that was introduced by EIP-3860. The problem this solves is that the current limit makes it unnecessarily difficult to deploy large, complex smart contracts that need to create multiple sub-contracts in a single transaction. For example, if you want to deploy a sophisticated DeFi protocol that consists of several interconnected contracts, you might hit the initcode limit even though each final contract stays under the 24KB deployed code limit (EIP-170). This forces developers to split deployments across multiple transactions, which is more expensive, less efficient, and breaks the clean abstractions that high-level programming languages try to provide. By removing this artificial limit, the EIP allows for more flexible deployment patterns while still maintaining security through existing gas costs that scale with initcode size. The per-block gas limit already naturally restricts initcode to reasonable sizes (around 16MB at current gas limits), making the 49KB cap redundant. This change is fully backward compatible and only removes restrictions without changing how contracts work.",
+  "northStarAlignment": {
+    "improveUX": {
+      "description": "Contract developers deploying big projects will have much easier life and users can also verify contracts they interact with more easily."
+    }
+  },
+  "stakeholderImpacts": {
+    "endUsers": {
+      "description": "Not a direct impact on regular usage. But users who investage how was the contract setup and verifying what they interact it will have it more straightforward."
+    },
+    "appDevs": {
+      "description": "Developers will hugely benefit from this change, especially when deploying big set of contracts with complex initialization. No workarounds and less complexity, only straight forward setup even for complex projects."
+    },
+    "walletDevs": {
+      "description": "No direct impact on wallet devs. If wallets have onchain infrastracture, their developers might benefit from easier deployments."
+    },
+    "toolingInfra": {
+      "description": "Explorers need to be able to display the bigger initcode."
+    },
+    "layer2s": {
+      "description": "EVM-equivalent need to implement the change to follow the execution layer specification."
+    },
+    "stakersNodes": {
+      "description": "Node operators shouldn't notice a direct change because the bigger initcode still fits in the same block size. Over the time, stored initcode will take bigger part of the disk space."
+    },
+    "clClients": {
+      "description": "No consensus changes expected for CL; only standard fork coordination."
+    },
+    "elClients": {
+      "description": "EL clients implementation is simple, only removes or changes the hardcoded size limit."
+    }
+  },
+  "benefits": [
+    "Smoother deployment of big projects, no more extra tooling needed.",
+    "Developer experience is much more straightforward and follows industry standarts."
+  ]
+}

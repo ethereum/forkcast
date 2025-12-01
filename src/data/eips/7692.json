@@ -1,0 +1,71 @@
+{
+  "id": 7692,
+  "title": "EIP-7692: EVM Object Format (EOFv1) Meta",
+  "status": "Review",
+  "description": "Meta EIP listing the EIPs belonging to the EVM Object Format (EOF) proposal in its first version, enabling code versioning and paving the way for RISC-V execution environments.",
+  "author": "Alex Beregszaszi (@axic), Paweł Bylica (@chfast), Andrei Maiboroda (@gumb0), Piotr Dobaczewski (@pdobacz), Danno Ferrin (@shemnon)",
+  "type": "Meta",
+  "category": "Core",
+  "createdDate": "2024-04-17",
+  "discussionLink": "https://ethereum-magicians.org/t/glamsterdam-headliner-proposal-eof/21271",
+  "reviewer": "bot",
+  "forkRelationships": [
+    {
+      "forkName": "Fusaka",
+      "status": "Declined"
+    },
+    {
+      "forkName": "Glamsterdam",
+      "status": "",
+      "isHeadliner": false,
+      "wasHeadlinerCandidate": true,
+      "headlinerDiscussionLink": "https://ethereum-magicians.org/t/glamsterdam-headliner-proposal-eof/24464",
+      "layer": "EL"
+    }
+  ],
+  "laymanDescription": "This introduces a new container format for EVM bytecode that enables code versioning, removes complex jump analysis, and paves the way for new execution environments like RISC-V and EVM64 within the same contract. This EIP was Declined for Inclusion from Fusaka on [April 28th](https://blog.ethereum.org/2025/04/29/checkpoint-2#eof) due to a lack of consensus on implementation details and the resulting potential slowdown of shipping PeerDAS. It has been re-proposed as a headlining feature in Glamsterdam with multiple variants to address community concerns.",
+  "northStarAlignment": {
+    "scaleL1": {
+      "description": "Enables incremental deployment of more efficient execution environments like RISC-V and EVM64 for computationally intensive tasks while maintaining EVM compatibility. Removes JUMPDEST analysis overhead."
+    },
+    "improveUX": {
+      "description": "Provides better developer tools through improved code analysis, versioning capabilities, and performance improvements for computationally intensive applications."
+    }
+  },
+  "stakeholderImpacts": {
+    "endUsers": {
+      "description": "Indirect benefits from improved contract performance and reduced gas costs for computationally intensive operations. Better reliability from enhanced code validation."
+    },
+    "appDevs": {
+      "description": "Can use multiple execution environments within same contract - write normal logic in EVM and intensive computations in EVM64/RISC-V. Better code analysis tools and function support improve development experience."
+    },
+    "walletDevs": {
+      "description": "Minimal direct impact on wallet development, though improved contract reliability and performance benefit user experience indirectly."
+    },
+    "toolingInfra": {
+      "description": "Major updates needed for debuggers, analyzers, and development tools to support EOF containers, multiple execution environments, and new bytecode format. Better analysis capabilities once implemented."
+    },
+    "layer2s": {
+      "description": "Can leverage more efficient execution environments for proof generation and validation. Better code analysis aids in rollup optimization and security verification."
+    },
+    "stakersNodes": {
+      "description": "Reduced computational overhead from eliminating JUMPDEST analysis. Potential increased complexity from supporting multiple execution environments within contracts."
+    },
+    "clClients": {
+      "description": "Minimal direct impact on consensus layer operations as this primarily affects execution layer bytecode processing and validation."
+    },
+    "elClients": {
+      "description": "Major implementation work for new bytecode container format, multiple execution environments, enhanced validation, and maintaining backwards compatibility with legacy bytecode."
+    }
+  },
+  "benefits": [
+    "Enables incremental adoption of RISC-V and EVM64 within existing contracts",
+    "Removes complex JUMPDEST analysis improving execution efficiency",
+    "Provides code versioning for backward-incompatible protocol changes",
+    "Enables better code analysis and development tooling",
+    "Introduces first-class function support improving analysis opportunities",
+    "Addresses multiple EVM pain points through container format",
+    "Paves the way for maintaining existing toolchain while adding new capabilities",
+    "Enables 'both EVM and RISC-V' rather than 'either EVM or RISC-V' approach"
+  ]
+}

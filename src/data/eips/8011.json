@@ -1,0 +1,61 @@
+{
+  "id": 8011,
+  "title": "EIP-8011: Multidimensional Gas Metering",
+  "status": "Draft",
+  "description": "Gas accounting by EVM resource, increasing throughput and improving resource usage controls, with minimal changes to the protocol and UX.",
+  "author": "Maria Silva (@misilva73)",
+  "type": "Standards Track",
+  "category": "Core",
+  "createdDate": "2025-08-22",
+  "discussionLink": "https://ethereum-magicians.org/t/eip-8011-multidimensional-gas-metering/25260",
+  "reviewer": "expert",
+  "forkRelationships": [
+    {
+      "forkName": "Glamsterdam",
+      "status": "Proposed",
+      "layer": "EL",
+      "champion": {
+        "name": "Maria Silva",
+        "discord": "misilva73"
+      }
+    }
+  ],
+  "laymanDescription": "Improves resource allocation by allowing separate metering for computation, data access, and storage, enhancing Ethereum's ability to handle resource limits more effectively.",
+  "northStarAlignment": {
+    "scaleL1": {
+      "description": "More expresssive metering allows for better resource management, leading to higher throughput and reduced congestion."
+    }
+  },
+  "stakeholderImpacts": {
+    "endUsers": {
+      "description": "Users experience no change in transaction behavior while enjoying improved efficiency in resource management."
+    },
+    "appDevs": {
+      "description": "Developers can optimize contracts with resource-specific gas costs, needing to ensure compatibility with existing fee systems."
+    },
+    "walletDevs": {
+      "description": "Minimal adjustments required; focus on ensuring wallets correctly reflect gas costs along different resource dimensions."
+    },
+    "toolingInfra": {
+      "description": "Existing tools may need updates to accurately account for multidimensional gas metrics; mainly impacts monitoring tools."
+    },
+    "layer2s": {
+      "description": "EVM-compatible L2s will need to adopt these changes, with routine updates and testing expected for gas accounting consistency."
+    },
+    "stakersNodes": {
+      "description": "Node operators upgrade clients at the fork; normal operational behavior remains consistent with revised gas metrics."
+    },
+    "clClients": {
+      "description": "No major consensus changes expected; only standard fork coordination without new serialization or signature rules."
+    },
+    "elClients": {
+      "description": "Complex updates required to implement resource-specific gas accounting and compatibility with previous gas-related EIPs."
+    }
+  },
+  "benefits": [
+    "Blocks can carry transactions that stress distinct resources simultaneously, improving packing efficiency and throughput.",
+    "Finer control over excessive resource usage leads to fewer network overloads.",
+    "No impact to user experience.",
+    "Paves the way for advanced pricing models without major protocol disruptions."
+  ]
+}

@@ -1,0 +1,56 @@
+{
+  "id": 7745,
+  "title": "Trustless log index",
+  "status": "Draft",
+  "description": "Introduces a Merkle-tree-based log index that replaces header bloom filters. All log values share a global index space, with sparse two-dimensional filter maps enabling efficient, provable searches over limited data and returning accurate block and transaction locations for candidates.",
+  "author": "Zsolt Felföldi (@zsfelfoldi)",
+  "type": "Standards Track",
+  "category": "Core",
+  "createdDate": "2024-07-17",
+  "discussionLink": "https://ethereum-magicians.org/t/eip-7745-two-dimensional-log-filter-data-structure/20580",
+  "reviewer": "bot",
+  "forkRelationships": [
+    {
+      "forkName": "Glamsterdam",
+      "status": "Proposed",
+      "layer": "EL",
+      "champion": {
+        "name": "Felföldi Zsolt",
+        "discord": "zsfelfoldi"
+      }
+    }
+  ],
+  "laymanDescription": "Ethereum currently uses bloom filters in each block header to help search event logs, but they are inefficient today. This proposal replaces them with a new Merkle-based log index that uses moderate extra consensus data yet greatly reduces bandwidth and computation for finding events, especially for light clients and indexing services.",
+  "stakeholderImpacts": {
+    "endUsers": {
+      "description": "Indirect impact: improved performance and reliability of dapps or explorers that rely on historical event searches, especially on bandwidth-constrained devices."
+    },
+    "appDevs": {
+      "description": "Log-heavy applications may gain cheaper, more scalable indexing and queries, but need underlying infrastructure updated to support the new index."
+    },
+    "walletDevs": {
+      "description": "Wallets performing event lookups or light-client verification may adopt log-index proofs or depend on upgraded infrastructure providers and RPCs."
+    },
+    "toolingInfra": {
+      "description": "Indexers, explorers, DHT-based log networks and RPC providers must implement the new global log index, filter-map structure and Merkle-proof generation."
+    },
+    "layer2s": {
+      "description": "Specification targets L1 execution; no direct changes for L2s unless they mirror L1 header fields or adopt this log index."
+    },
+    "stakersNodes": {
+      "description": "Validators and full nodes must construct log index state per block, maintain consensus data and integrate changes into fork-handling logic."
+    },
+    "clClients": {
+      "description": "Consensus clients treat log_index_root as opaque execution data but must update header schemas, fork logic and networking to recognize it."
+    },
+    "elClients": {
+      "description": "Execution clients must maintain the LogIndex, replace logs_bloom with log_index_root, manage filter maps and Merkle trees, and extend RPCs."
+    }
+  },
+  "benefits": [
+    "Enables efficient, Merkle-provable log searches that touch only small portions of the global log dataset.",
+    "Maintains consistently low false positive rates even as block gas limits and log volumes increase.",
+    "Reduces bandwidth for log-event discovery by orders of magnitude compared with existing per-block bloom filters.",
+    "Provides precise block and transaction positions for candidate hits, minimizing unnecessary receipt fetches during log queries."
+  ]
+}

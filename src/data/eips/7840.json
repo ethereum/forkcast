@@ -1,0 +1,55 @@
+{
+  "id": 7840,
+  "title": "EIP-7840: Add blob schedule to EL config files",
+  "status": "Final",
+  "description": "Adds blob schedule configuration to execution layer config files for better blob management.",
+  "author": "lightclient",
+  "type": "Informational",
+  "category": "Interface",
+  "createdDate": "2024-05-01",
+  "discussionLink": "https://ethereum-magicians.org/t/eip-7840-add-blob-schedule-to-el-config-files/20100",
+  "reviewer": "bot",
+  "forkRelationships": [
+    {
+      "forkName": "Pectra",
+      "status": "Included"
+    }
+  ],
+  "laymanDescription": "Adds a new blob related parameters to client config so targets, maximums, and fee adjustments can be easily configured.",
+  "northStarAlignment": {
+    "scaleBlobs": {
+      "description": "Enables easier configuration for blob target value and its scaling in the future."
+    }
+  },
+  "stakeholderImpacts": {
+    "endUsers": {
+      "description": "No direct impact."
+    },
+    "appDevs": {
+      "description": "No changes for contract developers."
+    },
+    "walletDevs": {
+      "description": "No impact on wallets."
+    },
+    "toolingInfra": {
+      "description": "Simplifies introspection of blob parameters from network configs."
+    },
+    "layer2s": {
+      "description": "Rollups can benefit from clearer capacity settings."
+    },
+    "stakersNodes": {
+      "description": "Easier to follow blob schedule updates."
+    },
+    "clClients": {
+      "description": "CL needs to be aware of new config fields."
+    },
+    "elClients": {
+      "description": "Genesis configuration processing needs to implement new fields."
+    }
+  },
+  "benefits": [
+    "Reduces coordination overhead between clients",
+    "Enables dynamic tuning of blob capacity",
+    "Improves ops clarity for testnets"
+  ]
+}

@@ -1,0 +1,74 @@
+{
+  "id": 7732,
+  "title": "EIP-7732: enshrined Proposer-Builder separation (ePBS)",
+  "status": "Draft",
+  "description": "Enshrines proposer-builder separation at the protocol level to improve MEV resistance and block production efficiency.",
+  "author": "Potuz, et al.",
+  "type": "Standards Track",
+  "category": "Core",
+  "createdDate": "2024-07-15",
+  "discussionLink": "https://ethereum-magicians.org/t/eip-7732-enshrined-proposer-builder-separation-epbs/20329",
+  "reviewer": "bot",
+  "forkRelationships": [
+    {
+      "forkName": "Fusaka",
+      "status": "Declined"
+    },
+    {
+      "forkName": "Glamsterdam",
+      "status": "Scheduled",
+      "isHeadliner": true,
+      "wasHeadlinerCandidate": true,
+      "headlinerDiscussionLink": "https://ethereum-magicians.org/t/eip-7732-the-case-for-inclusion-in-glamsterdam/24306",
+      "layer": "CL",
+      "champion": {
+        "name": "potuz",
+        "discord": "potuz"
+      }
+    }
+  ],
+  "laymanDescription": "Proposes the decoupling of the consensus block from the execution payload, both in broadcast and validation. This feature enables L1 scaling by significantly changing the time required to both broadcast and executing the payload together with all the blob data, from the current ~2 seconds to aproximately ~9 seconds. It allows for a maximum portion of the slot to be spent in propagation large data.",
+  "northStarAlignment": {
+    "scaleL1": {
+      "description": "Enables for much larger payloads by removing the broadcast and the execution from the hot path of block validation."
+    },
+    "scaleBlobs": {
+      "description": "Enables for much larger number of blobs by removing the broadcast and data availability sampling from the hot path of block validation."
+    },
+    "improveUX": {
+      "description": "Second order effect of lower prices and higher tx throughput. Slight delay in minimal tx iclusion time from 0 to ~2 seconds."
+    }
+  },
+  "stakeholderImpacts": {
+    "endUsers": {
+      "description": "Second order effect of lower prices and higher tx throughput."
+    },
+    "appDevs": {
+      "description": "No direct impact. It enables applications to leverage previous builder information, something that is not currently available. It enables trustless preconfirmation schemes."
+    },
+    "walletDevs": {
+      "description": "No direct impact. It enables wallets to send encrypted txs to anonymous builders."
+    },
+    "toolingInfra": {
+      "description": "Explorers and block monitors need updates to handle the separation of the beacon block from the payload."
+    },
+    "layer2s": {
+      "description": "Second order effect of higher blob count being possible."
+    },
+    "stakersNodes": {
+      "description": "Major changes and updates are needed for trustless monitoring in staking pools. Staking UX is improved by a refined builder picking and monitoring."
+    },
+    "clClients": {
+      "description": "Major changes for CL clients"
+    },
+    "elClients": {
+      "description": "No changes for EL clients."
+    }
+  },
+  "benefits": [
+    "Better slot utilization getting close to 100% utilization for broadcasting + execution",
+    "Removal of most of the heavy work from the hot path of block validation.",
+    "Removal of trust assumptions for proposers and builders.",
+    "Removal of trust assumptions on off-protocol closed source software."
+  ]
+}

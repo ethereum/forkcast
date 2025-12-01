@@ -1,0 +1,56 @@
+{
+  "id": 7823,
+  "title": "EIP-7823: Set upper bounds for MODEXP",
+  "status": "Review",
+  "description": "Each input field is restricted to a maximum of 8192 bits",
+  "author": "Alex Beregszaszi (@axic), Radoslaw Zagorowicz (@rodiazet)",
+  "type": "Standards Track",
+  "category": "Core",
+  "createdDate": "2024-11-11",
+  "discussionLink": "https://ethereum-magicians.org/t/eip-7823-set-upper-bounds-for-modexp/21798",
+  "reviewer": "bot",
+  "forkRelationships": [
+    {
+      "forkName": "Fusaka",
+      "status": "Scheduled"
+    }
+  ],
+  "laymanDescription": "This introduces a 8192-bit (1024 byte) limit on each input to the MODEXP cryptographic precompile. MODEXP has been a source of consensus bugs due to unbounded inputs. By setting practical limits that cover all real-world use cases (like RSA verification), this reduces the testing surface area and paves the way for future replacement with more efficient EVM code.",
+  "northStarAlignment": {
+    "scaleL1": {
+      "description": "Improves network reliability by preventing consensus bugs and reducing testing complexity for a critical precompile."
+    }
+  },
+  "stakeholderImpacts": {
+    "endUsers": {
+      "description": "No impact - analysis shows no historical transactions would be affected by these limits."
+    },
+    "appDevs": {
+      "description": "Applications using very large cryptographic operations (>8192 bits) would need to restructure, but no known use cases exist."
+    },
+    "walletDevs": {
+      "description": "No user-facing impact as limits exceed all practical cryptographic use cases."
+    },
+    "toolingInfra": {
+      "description": "Gas estimation and fee calculation tools need updates for the new ModExp pricing formula."
+    },
+    "layer2s": {
+      "description": "Provides more predictable gas costs for cryptographic operations in L2 smart contracts."
+    },
+    "stakersNodes": {
+      "description": "Reduced risk of consensus bugs and more predictable resource usage for MODEXP operations."
+    },
+    "clClients": {
+      "description": "No changes required for consensus layer implementations."
+    },
+    "elClients": {
+      "description": "Must implement bounds checking for MODEXP inputs and handle new error conditions for oversized inputs."
+    }
+  },
+  "benefits": [
+    "Eliminates underpriced cryptographic operations",
+    "Prevents potential DoS attacks",
+    "Better compensation for computational work",
+    "More consistent gas pricing"
+  ]
+}

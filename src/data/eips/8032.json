@@ -1,0 +1,56 @@
+{
+  "id": 8032,
+  "title": "EIP-8032: Size-Based Storage Gas Pricing ",
+  "status": "Draft",
+  "description": "Proposes dynamic pricing for SSTORE operations based on contract storage size, aimed at reducing state bloat.",
+  "author": "Guillaume Ballet (@gballet)",
+  "type": "Standards Track",
+  "category": "Core",
+  "createdDate": "2025-09-29",
+  "discussionLink": "https://ethereum-magicians.org/t/the-case-for-eip-8032-in-glamsterdam-tree-depth-based-storage-gas-pricing/25619",
+  "reviewer": "bot",
+  "forkRelationships": [
+    {
+      "forkName": "Glamsterdam",
+      "status": "Proposed",
+      "layer": "EL",
+      "champion": {
+        "name": "Guillaume Ballet",
+        "discord": "gballet"
+      }
+    }
+  ],
+  "laymanDescription": "Adjusts gas costs for SSTORE operations based on how much data a contract holds, incentivizing efficient storage management.",
+  "stakeholderImpacts": {
+    "endUsers": {
+      "description": "Users experience potentially lower costs as inefficient contracts incur higher fees."
+    },
+    "appDevs": {
+      "description": "Developers are motivated to optimize storage usage, leading to better resource management."
+    },
+    "walletDevs": {
+      "description": "Wallets may see changes in cost calculations for contract interactions; minimal updates required."
+    },
+    "toolingInfra": {
+      "description": "Tools need to adapt to new gas price calculations related to storage; ensures users are informed."
+    },
+    "layer2s": {
+      "description": "L2s adopting this will align with mainnet behavior; expect similar updates and testing."
+    },
+    "stakersNodes": {
+      "description": "Node operators update clients for enhanced gas calculations; no major disruptions expected."
+    },
+    "clClients": {
+      "description": "No new consensus mechanisms; standard fork coordination suffices without serialization changes."
+    },
+    "elClients": {
+      "description": "Implement updated gas calculations for SSTORE, ensuring compatibility with dynamic pricing changes."
+    }
+  },
+  "benefits": [
+    "Encourages efficient contract design and reduces state bloat.",
+    "Aligns storage costs with actual usage, promoting healthier network sustainability.",
+    "Facilitates better resource allocation across the Ethereum ecosystem.",
+    "Simplifies decision-making for contract storage management."
+  ]
+}

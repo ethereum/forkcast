@@ -1,0 +1,19 @@
+{
+  "id": 7873,
+  "title": "EIP-7873: EOF - TXCREATE and InitcodeTransaction type",
+  "status": "Review",
+  "description": "Adds a `TXCREATE` instruction to EOF and an accompanying transaction type allowing to create EOF contracts from transaction data",
+  "author": "Piotr Dobaczewski (@pdobacz), Andrei Maiboroda (@gumb0), Paweł Bylica (@chfast), Alex Beregszaszi (@axic), Danno Ferrin (@shemnon)",
+  "type": "Standards Track",
+  "category": "Core",
+  "createdDate": "2025-01-31",
+  "discussionLink": "https://ethereum-magicians.org/t/eip-7873-eof-txcreate-instruction-and-initcodetransaction-type/22765",
+  "reviewer": "bot",
+  "forkRelationships": [
+    {
+      "forkName": "Fusaka",
+      "status": "Declined"
+    }
+  ],
+  "laymanDescription": "This introduces a new way to deploy EOF contracts by adding a TXCREATE instruction and a special InitcodeTransaction type. The problem it solves is that EOF removes the traditional CREATE and CREATE2 instructions used to deploy contracts. With this EIP, both regular users (EOAs) and smart contracts can deploy EOF contracts by including the contract code directly in transaction data and using TXCREATE to deploy it. This works alongside the existing EOFCREATE instruction, giving developers all the contract creation capabilities they had before EOF. The TXCREATE instruction can also deploy legacy contracts, making it a universal bootstrapping mechanism for getting EOF contracts onto the blockchain."
+}

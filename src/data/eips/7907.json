@@ -1,0 +1,67 @@
+{
+  "id": 7907,
+  "title": "EIP-7907: Meter Contract Code Size And Increase Limit",
+  "status": "Draft",
+  "description": "Increases the contract code size limit introduced in EIP-170 and adds a gas metering to code loading",
+  "author": "Charles Cooper (@charles-cooper), Qi Zhou (@qizhou)",
+  "type": "Standards Track",
+  "category": "Core",
+  "createdDate": "2025-03-14",
+  "discussionLink": "https://ethereum-magicians.org/t/eip-remove-contract-size-limit/23156",
+  "reviewer": "staff",
+  "forkRelationships": [
+    {
+      "forkName": "Fusaka",
+      "status": "Declined"
+    },
+    {
+      "forkName": "Glamsterdam",
+      "status": "Proposed",
+      "layer": "EL",
+      "champion": {
+        "name": "Charles Cooper",
+        "telegram": "big_tech_sux"
+      }
+    }
+  ],
+  "laymanDescription": "Increases the contract code size limit from 24KB to 256KB and introduces gas metering for larger contracts. This will enable developers to deploy larger files and applications in a single contract instead of more complex multi contract architecture.",
+  "northStarAlignment": {
+    "scaleL1": {
+      "description": "Enabling larger contracts while keeping the network secure with new gas metering preventing DoS attacks."
+    },
+    "improveUX": {
+      "description": "Major developer experience improvement - eliminates need for complex architectural patterns, reduces deployment complexity, and enables single-contract solutions."
+    }
+  },
+  "stakeholderImpacts": {
+    "endUsers": {
+      "description": "Indirect benefits to users of applications in a single contract, potentially lower gas costs from reduced cross-contract calls."
+    },
+    "appDevs": {
+      "description": "Eliminates major development constraints - can create larger, more complex contracts without splitting logic across multiple contracts or using proxies."
+    },
+    "walletDevs": {
+      "description": "No changes to regular wallets. Potential benefits to 7702 contracts for AA wallets, enabling more features in a single contract."
+    },
+    "toolingInfra": {
+      "description": "Contract verification tools, static analysis, and deployment infrastructure need updates to handle larger contracts and new gas metering."
+    },
+    "layer2s": {
+      "description": "L2s following this change will bring same benefits to their developer community."
+    },
+    "stakersNodes": {
+      "description": "No changes for node operators."
+    },
+    "clClients": {
+      "description": "No changes on consensus layer."
+    },
+    "elClients": {
+      "description": "Need to change maximum allowed contract size and implement the new gas metering."
+    }
+  },
+  "benefits": [
+    "Enables much larger smart contracts (10x size increase)",
+    "Eliminates complex multi-contract workarounds for dapp developers",
+    "Saves gas on operations that would otherwise require cross contract calls"
+  ]
+}

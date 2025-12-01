@@ -1,0 +1,55 @@
+{
+  "id": 7702,
+  "title": "EIP-7702: Set EOA account code",
+  "status": "Final",
+  "description": "Allows Externally Owned Accounts (EOAs) to temporarily set code, enabling account abstraction features.",
+  "author": "Vitalik Buterin, Sam Wilson, Ansgar Dietrichs, Matt Garnett",
+  "type": "Standards Track",
+  "category": "Core",
+  "createdDate": "2024-04-20",
+  "discussionLink": "https://ethereum-magicians.org/t/eip-7702-set-eoa-account-code-for-one-transaction/19769",
+  "reviewer": "bot",
+  "forkRelationships": [
+    {
+      "forkName": "Pectra",
+      "status": "Included"
+    }
+  ],
+  "laymanDescription": "Enables an address to delegate its control to an existing smart contract, creating an account abstracted wallet with new programmable features.",
+  "northStarAlignment": {
+    "improveUX": {
+      "description": "Brings account abstraction benefits to EOAs, creating new smart wallets with features allowing for better security, batching, recovery, and gassless transactions."
+    }
+  },
+  "stakeholderImpacts": {
+    "endUsers": {
+      "description": "Better wallet UX with new features without migrating to a new address."
+    },
+    "appDevs": {
+      "description": "Dapps can levarage new smart wallet features and enables users to do more complex operations easily."
+    },
+    "walletDevs": {
+      "description": "Wallets need to implement a secure workflow that allows users to activate a chosen smart account."
+    },
+    "toolingInfra": {
+      "description": "Recognize new wallet operations and standard wallet contracts"
+    },
+    "layer2s": {
+      "description": "L2s can implement same feature to allow for better cross chain interop"
+    },
+    "stakersNodes": {
+      "description": "Validators are not affected."
+    },
+    "clClients": {
+      "description": "Consensus not changed."
+    },
+    "elClients": {
+      "description": "Support new transaction type and code authorization for EOAs to contract wallets."
+    }
+  },
+  "benefits": [
+    "Brings account abstraction features to EOAs",
+    "Better UX for users with features like gasless and batched transactions",
+    "Provides alternative recovery options for wallets"
+  ]
+}

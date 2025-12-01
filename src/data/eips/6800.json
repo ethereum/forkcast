@@ -1,0 +1,56 @@
+{
+  "id": 6800,
+  "title": "EIP-6800: Ethereum state using a unified verkle tree",
+  "status": "Draft",
+  "description": "Migrates Ethereum's state from Merkle Patricia tries to Verkle trees for improved efficiency and statelessness support.",
+  "author": "Guillaume Ballet, Verkle Team",
+  "type": "Standards Track",
+  "category": "Core",
+  "createdDate": "2023-03-20",
+  "discussionLink": "https://ethereum-magicians.org/t/eip-6800-ethereum-state-using-a-unified-verkle-tree/13734",
+  "reviewer": "bot",
+  "forkRelationships": [],
+  "laymanDescription": "This proposes transitioning Ethereum's entire state system from Merkle Patricia tries to Verkle trees. This foundational change would enable stateless clients, dramatically faster syncing, and better scalability while maintaining security. However, it's competing with other major proposals for Glamsterdam.",
+  "northStarAlignment": {
+    "scaleL1": {
+      "description": "Revolutionary improvement to state management enabling stateless clients, faster state access, and much more efficient proof sizes. This is foundational infrastructure for long-term scaling."
+    },
+    "improveUX": {
+      "description": "Enables instant node syncing through stateless operation, dramatically reducing barriers to running Ethereum infrastructure and improving decentralization."
+    }
+  },
+  "stakeholderImpacts": {
+    "endUsers": {
+      "description": "Revolutionary improvement in node syncing speed (from hours/days to minutes), better network decentralization, and more reliable access to Ethereum services."
+    },
+    "appDevs": {
+      "description": "More efficient state access patterns and improved proof verification, though most smart contract logic remains unchanged."
+    },
+    "walletDevs": {
+      "description": "Can implement much faster light clients and improve wallet syncing speed through stateless verification capabilities."
+    },
+    "toolingInfra": {
+      "description": "Complete overhaul needed for state management, proof generation, indexing systems, and block explorers to handle Verkle tree proofs."
+    },
+    "layer2s": {
+      "description": "More efficient state root verification and improved cross-chain proof mechanisms using Verkle tree cryptography."
+    },
+    "stakersNodes": {
+      "description": "Can operate with dramatically reduced storage requirements and near-instant syncing through stateless validation, lowering barriers to participation."
+    },
+    "clClients": {
+      "description": "Minimal direct impact as this primarily affects execution layer state management and proof structures."
+    },
+    "elClients": {
+      "description": "Complete state system rewrite required including Verkle tree implementation, state migration logic, and new proof generation/verification systems."
+    }
+  },
+  "benefits": [
+    "Enables instant node syncing through stateless operation",
+    "Dramatically reduces storage requirements for validators",
+    "Improves network decentralization through lower barriers",
+    "More efficient cryptographic proofs (smaller size)",
+    "Foundation for future scalability improvements"
+  ],
+  "isHeadliner": false
+}

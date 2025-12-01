@@ -1,0 +1,65 @@
+{
+  "id": 7843,
+  "title": "EIP-7843: SLOTNUM opcode",
+  "status": "Review",
+  "description": "Opcode to get the current slot number.",
+  "author": "Marc Harvey-Hill (@Marchhill)",
+  "type": "Standards Track",
+  "category": "Core",
+  "createdDate": "2024-12-06",
+  "discussionLink": "https://ethereum-magicians.org/t/eip-7843-slotnum-opcode/22234",
+  "reviewer": "staff",
+  "forkRelationships": [
+    {
+      "forkName": "Fusaka",
+      "status": "Declined"
+    },
+    {
+      "forkName": "Glamsterdam",
+      "status": "Proposed",
+      "layer": "EL",
+      "champion": {
+        "name": "Marc Harvey-Hill",
+        "discord": "marchhill"
+      }
+    }
+  ],
+  "laymanDescription": "Let contracts directly read the current slot number cheaply, removing timestamp math and reducing breakage if Ethereum's slot duration changes later.",
+  "northStarAlignment": {
+    "improveUX": {
+      "description": "Enables more reliable time-based smart contracts and better coordination between consensus and execution layers."
+    }
+  },
+  "stakeholderImpacts": {
+    "endUsers": {
+      "description": "Indirectly benefits from more reliable app timing if slot duration changes in future networks."
+    },
+    "appDevs": {
+      "description": "Simplifies reading beacon time onchain, avoiding timestamp math and EIP-4788 proofs; fewer assumptions about the slot schedule."
+    },
+    "walletDevs": {
+      "description": "Little to no impact; wallets typically don't consume slot numbers. Optional UI or simulation support could display it."
+    },
+    "toolingInfra": {
+      "description": "Block explorers, RPC simulators, and debuggers may add opcode support and parse the new header slot_number field."
+    },
+    "layer2s": {
+      "description": "Optional support; helpful if mirroring L1 semantics. Not required unless chains want SLOTNUM compatibility and header field parity."
+    },
+    "stakersNodes": {
+      "description": "No operational changes expected; clients handle computation and propagation. Node operators shouldn't need configuration or workflow updates."
+    },
+    "clClients": {
+      "description": "Must compute slot_number and include it in headers and engine API payloads; aligns with existing consensus-layer slot calculations."
+    },
+    "elClients": {
+      "description": "Implement new opcode, validate header field, expose via RPC, and price gas; updates required across execution clients."
+    }
+  },
+  "benefits": [
+    "Removes hardcoded slot assumptions; apps remain correct if slot duration changes.",
+    "Cheaper than proving slot via EIP-4788; simple 2-gas opcode call.",
+    "Slot number available directly in block header and engine API.",
+    "No added proving complexity; similar to TIMESTAMP for ZK-VMs."
+  ]
+}

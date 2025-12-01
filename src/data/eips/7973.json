@@ -1,0 +1,56 @@
+{
+  "id": 7973,
+  "title": "Warm Account Write Metering",
+  "status": "Draft",
+  "description": "This EIP introduces warm metering for account writes. If an account's nonce, balance or codehash is changed multiple times in one transaction, subsequent writes are cheaper because the state root update is only charged once.",
+  "author": "Charles Cooper (@charles-cooper), Maria Silva (@misilva73), Ben Adams (@benaadams)",
+  "type": "Standards Track",
+  "category": "Core",
+  "createdDate": "2025-06-14",
+  "discussionLink": "https://ethereum-magicians.org/t/eip-7973-warm-account-write-metering/25907",
+  "reviewer": "bot",
+  "forkRelationships": [
+    {
+      "forkName": "Glamsterdam",
+      "status": "Proposed",
+      "layer": "EL",
+      "champion": {
+        "name": "Charles Cooper",
+        "discord": "big_tech_sux"
+      }
+    }
+  ],
+  "laymanDescription": "Changes gas rules so once an account is updated in a transaction, later updates to it are cheaper, aligning fees with actual state-root work and reducing the penalty for repeated ETH transfers or future value-transfer opcodes.",
+  "stakeholderImpacts": {
+    "endUsers": {
+      "description": "End users keep existing transaction flows; compatible wallets and RPCs abstract the new gas rules, with potential fee reductions on multi-update transactions."
+    },
+    "appDevs": {
+      "description": "Applications performing multiple native ETH transfers or repeated account updates per transaction may see reduced gas usage and can redesign flows to exploit batched writes."
+    },
+    "walletDevs": {
+      "description": "Wallets must update gas estimation logic for new account-write costs; otherwise, overestimation and related attack surfaces from mispriced transactions become possible."
+    },
+    "toolingInfra": {
+      "description": "Node software, RPC services, and monitoring tools must implement updated gas formulas and parameters for account writes, ensuring estimates and analytics reflect the repricing."
+    },
+    "layer2s": {
+      "description": "EVM-compatible layer 2s that follow mainnet gas rules would need to mirror the new account write costs to preserve behavior compatibility."
+    },
+    "stakersNodes": {
+      "description": "Consensus participants and node operators must upgrade for the scheduled gas repricing fork and ensure RPC endpoints implement the new estimation behavior."
+    },
+    "clClients": {
+      "description": "Consensus-layer clients primarily integrate standard fork logistics—activation parameters and testing—since gas metering changes occur entirely in execution-layer state transition logic."
+    },
+    "elClients": {
+      "description": "Execution clients must revise gas constants, implement per-transaction tracking of cold versus warm account writes, and integrate the new costing with EIP-2200 and block-level access list logic."
+    }
+  },
+  "benefits": [
+    "Reduces gas charged for repeated updates to the same account within a single transaction.",
+    "Brings account update costs closer to the actual cost of computing state root changes.",
+    "Reduces disparity between multiple native ETH transfers and analogous token transfers in a single transaction.",
+    "Avoids unfair gas penalties for future value-transfer opcodes that repeatedly update account balances."
+  ]
+}

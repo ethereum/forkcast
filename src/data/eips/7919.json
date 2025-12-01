@@ -1,0 +1,71 @@
+{
+  "id": 7919,
+  "title": "EIP-7919: Pureth - Provable RPC responses",
+  "status": "Draft",
+  "description": "Enables provable RPC responses to eliminate trust requirements in data access and improve decentralization.",
+  "author": "Etan Kissling, et al.",
+  "type": "Standards Track",
+  "category": "Core",
+  "createdDate": "2024-09-01",
+  "discussionLink": "https://ethereum-magicians.org/t/eip-7919-pureth-provable-rpc-responses/21180",
+  "reviewer": "staff",
+  "forkRelationships": [
+    {
+      "forkName": "Fusaka",
+      "status": "Declined"
+    },
+    {
+      "forkName": "Glamsterdam",
+      "status": "Proposed",
+      "isHeadliner": false,
+      "wasHeadlinerCandidate": true,
+      "headlinerDiscussionLink": "https://ethereum-magicians.org/t/glamsterdam-headliner-proposal-pureth/24459",
+      "layer": "EL",
+      "champion": {
+        "name": "Etan Kissling",
+        "discord": "etan_status"
+      }
+    }
+  ],
+  "laymanDescription": "This enables Ethereum nodes to provide cryptographic proofs with their responses, eliminating the need to trust RPC providers. Users can verify that data from any source is authentic without running their own full node.",
+  "northStarAlignment": {
+    "scaleL1": {
+      "description": "Improves network decentralization by reducing reliance on trusted RPC providers and enabling more efficient light client verification."
+    },
+    "improveUX": {
+      "description": "Eliminates trust requirements for data access, enables secure light clients, and dramatically improves decentralization of the application ecosystem."
+    }
+  },
+  "stakeholderImpacts": {
+    "endUsers": {
+      "description": "Can use any RPC provider securely without trust, access verified blockchain data from lightweight applications, and reduced dependence on centralized services."
+    },
+    "appDevs": {
+      "description": "Can build truly decentralized applications without requiring users to run full nodes, implement secure light clients, and verify data from any source."
+    },
+    "walletDevs": {
+      "description": "Can implement secure light wallets that verify all data cryptographically, reducing infrastructure costs while maintaining security guarantees."
+    },
+    "toolingInfra": {
+      "description": "RPC providers need major updates to support proof generation, block explorers can provide verifiable data, and new verification tooling needs development."
+    },
+    "layer2s": {
+      "description": "Can implement more secure light clients for Layer 2 networks and improve cross-chain data verification mechanisms."
+    },
+    "stakersNodes": {
+      "description": "Need to generate cryptographic proofs for data responses, though this enables lighter infrastructure for many use cases."
+    },
+    "clClients": {
+      "description": "May need some coordination for proof generation, but this primarily affects execution layer data structures."
+    },
+    "elClients": {
+      "description": "Major implementation work required for proof generation systems, new data structures, and RPC response verification mechanisms."
+    }
+  },
+  "benefits": [
+    "Eliminates need to trust RPC providers",
+    "Enables secure light clients for wallets and dApps",
+    "Dramatically improves application decentralization",
+    "Reduces infrastructure requirements for verified data access"
+  ]
+}

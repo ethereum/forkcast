@@ -1,0 +1,55 @@
+{
+  "id": 7935,
+  "title": "EIP-7935: Set default gas limit to 60M",
+  "status": "Draft",
+  "description": "Recommend a new gas limit value for Fusaka and update execution layer client default configs",
+  "author": "Sophia Gold (@sophia-gold), Parithosh Jayanthi (@parithoshj), Toni Wahrstätter (@nerolation), Carl Beekhuizen (@CarlBeek), Ansgar Dietrichs (@adietrichs), Dankrad Feist (@dankrad), Alex Stokes (@ralexstokes), Josh Rudolph (@jrudolph), Giulio Rebuffo (@Giulio2002), Storm Slivkoff (@sslivkoff)",
+  "type": "Informational",
+  "createdDate": "2025-04-22",
+  "discussionLink": "https://ethereum-magicians.org/t/eip-7935-set-default-gas-limit-to-xx0m/23789",
+  "reviewer": "bot",
+  "forkRelationships": [
+    {
+      "forkName": "Fusaka",
+      "status": "Scheduled"
+    }
+  ],
+  "laymanDescription": "This proposes increasing the gas limit from 36M to 60M to scale L1 execution capacity. While this change does not require a hard fork (gas limit is a validator-chosen parameter), it requires extensive testing to ensure network stability at higher computational loads and so inclusion of the EIP in the hard fork ensures that this work is prioritized and ongoing.",
+  "northStarAlignment": {
+    "scaleL1": {
+      "description": "Directly increases overall network throughput by allowing more computation per block, the most straightforward way to scale L1 execution capacity."
+    }
+  },
+  "stakeholderImpacts": {
+    "endUsers": {
+      "description": "Benefits from higher throughput and faster transaction processing, but potential risks if inadequately tested or if RPC infrastructure can't keep up."
+    },
+    "appDevs": {
+      "description": "Can build more sophisticated applications without hitting gas limits, but need to be aware that the specific limit value is still TBD."
+    },
+    "walletDevs": {
+      "description": "Better user experience with faster confirmations, but RPC node performance impacts could affect wallet reliability."
+    },
+    "toolingInfra": {
+      "description": "RPC providers, indexers, and monitoring tools need significant updates to handle larger blocks and higher computational loads."
+    },
+    "layer2s": {
+      "description": "More block space available for settlement transactions, but coordination needed with EIP-7825's 30M transaction cap."
+    },
+    "stakersNodes": {
+      "description": "Need significantly more computational power to process larger blocks. Validator hardware requirements may increase substantially."
+    },
+    "clClients": {
+      "description": "Must handle larger execution payloads and ensure consensus layer can propagate larger blocks within gossip limits."
+    },
+    "elClients": {
+      "description": "Major testing and bug-fixing effort required to handle larger blocks safely. Must update default gas limit configurations and ensure stability at higher computational loads."
+    }
+  },
+  "benefits": [
+    "Directly increases mainnet throughput",
+    "Enables more complex smart contracts",
+    "Reduces transaction queuing during high demand",
+    "Improves confirmation times"
+  ]
+}

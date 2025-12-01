@@ -1,0 +1,57 @@
+{
+  "id": 6110,
+  "title": "EIP-6110: Supply validator deposits on chain",
+  "status": "Final",
+  "description": "Enables validator deposits to be processed directly on the execution layer, improving efficiency.",
+  "author": "Mikhail Kalinin, Danny Ryan, Peter Davies",
+  "type": "Standards Track",
+  "category": "Core",
+  "createdDate": "2022-12-09",
+  "discussionLink": "https://ethereum-magicians.org/t/eip-6110-supply-validator-deposits-on-chain/12072",
+  "reviewer": "bot",
+  "forkRelationships": [
+    {
+      "forkName": "Pectra",
+      "status": "Included"
+    }
+  ],
+  "laymanDescription": "New way how validator deposits are processed between CL and EL, more simple and native to merged Ethereum enabling better UX and features.",
+  "northStarAlignment": {
+    "improveUX": {
+      "description": "Improves validator operations by removing legacy EL to CL communication, reducing friction and enabling for better features."
+    },
+    "scaleL1": {
+      "description": "Reduces complexity and improves speed of deposit processing, improving robustness of staking infrastructure."
+    }
+  },
+  "stakeholderImpacts": {
+    "endUsers": {
+      "description": "No impact on normal transactions, only improved the process of becoming a validator"
+    },
+    "appDevs": {
+      "description": "Contracts are not affected"
+    },
+    "walletDevs": {
+      "description": "No impact on wallets."
+    },
+    "toolingInfra": {
+      "description": "Indexers may track deposit events directly from EL."
+    },
+    "layer2s": {
+      "description": "L2s are not impacted."
+    },
+    "stakersNodes": {
+      "description": "Deposits are processed more quickly, pools can now onboard validators more easily."
+    },
+    "clClients": {
+      "description": "Consume deposits via the new delivery path from execution layer."
+    },
+    "elClients": {
+      "description": "Implement deposit delivery to consensus, simplifying legacy eth1data polling."
+    }
+  },
+  "benefits": [
+    "Future proofing deposit flow with less complexity",
+    "Enabling more features built on modern deposit flow"
+  ]
+}

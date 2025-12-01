@@ -1,0 +1,67 @@
+{
+  "id": 7928,
+  "title": "EIP-7928: Block-level Access Lists",
+  "status": "Draft",
+  "description": "Enforced block access lists with storage locations and state diffs.",
+  "author": "Toni Wahrstätter (@nerolation), Dankrad Feist (@dankrad), Francesco D'Amato (@fradamt), Jochem Brouwer (@jochem-brouwer), Ignacio Hagopian (@jsign)",
+  "type": "Standards Track",
+  "category": "Core",
+  "createdDate": "2025-03-31",
+  "discussionLink": "https://ethereum-magicians.org/t/eip-7928-block-level-access-lists/23337",
+  "reviewer": "bot",
+  "forkRelationships": [
+    {
+      "forkName": "Glamsterdam",
+      "status": "Scheduled",
+      "isHeadliner": true,
+      "wasHeadlinerCandidate": true,
+      "headlinerDiscussionLink": "https://ethereum-magicians.org/t/eip-7928-block-level-access-lists-the-case-for-glamsterdam/24343",
+      "layer": "EL",
+      "champion": {
+        "name": "Toni Wahrstätter",
+        "discord": "nero_eth"
+      }
+    }
+  ],
+  "laymanDescription": "This introduces access lists at the block level rather than individual transactions, dramatically reducing gas costs for applications that access similar state and enabling new optimization patterns.",
+  "northStarAlignment": {
+    "scaleL1": {
+      "description": "Significantly reduces gas costs for state access through block-level optimization, improving overall network efficiency and throughput."
+    },
+    "improveUX": {
+      "description": "Lower gas costs for complex applications and improved predictability for applications with similar state access patterns."
+    }
+  },
+  "stakeholderImpacts": {
+    "endUsers": {
+      "description": "Lower gas costs for complex applications, especially DeFi protocols and applications that access similar state across multiple transactions."
+    },
+    "appDevs": {
+      "description": "Can optimize applications for block-level access patterns, significantly reduce gas costs for state-heavy applications, and enable new design patterns."
+    },
+    "walletDevs": {
+      "description": "Indirect benefits through lower gas costs for applications, but minimal direct impact on wallet development."
+    },
+    "toolingInfra": {
+      "description": "Gas estimation tools, transaction simulation, and optimization analysis need updates to handle block-level access list patterns."
+    },
+    "layer2s": {
+      "description": "More efficient state access in Layer 2 settlement transactions and optimized bridge operations."
+    },
+    "stakersNodes": {
+      "description": "More efficient block processing due to optimized state access patterns, reducing computational overhead."
+    },
+    "clClients": {
+      "description": "No direct impact on consensus layer operations as this affects execution layer state access optimization."
+    },
+    "elClients": {
+      "description": "Significant implementation work required for block-level access list management, state access optimization, and gas accounting updates."
+    }
+  },
+  "benefits": [
+    "Dramatically reduces gas costs for state-heavy applications",
+    "Enables new optimization patterns for developers",
+    "Improves block processing efficiency",
+    "Provides more predictable gas costs for complex applications"
+  ]
+}

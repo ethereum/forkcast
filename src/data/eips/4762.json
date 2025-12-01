@@ -1,0 +1,51 @@
+{
+  "id": 4762,
+  "title": "EIP-4762: Statelessness gas cost changes",
+  "status": "Draft",
+  "description": "Adjusts gas costs to support stateless execution and Verkle tree state transitions.",
+  "author": "Guillaume Ballet, Vitalik Buterin, Dankrad Feist",
+  "type": "Standards Track",
+  "category": "Core",
+  "createdDate": "2022-01-13",
+  "discussionLink": "https://ethereum-magicians.org/t/eip-4762-statelessness-gas-cost-changes/8714",
+  "reviewer": "bot",
+  "forkRelationships": [],
+  "laymanDescription": "This restructures how gas costs work to prepare for stateless clients - nodes that can validate blocks without storing the entire blockchain state. The changes ensure gas costs accurately reflect the new computational model.",
+  "northStarAlignment": {
+    "scaleL1": {
+      "description": "Essential foundation for stateless clients, which enable massive improvements in node syncing speed and storage requirements. Enables nodes to validate without storing full state."
+    }
+  },
+  "stakeholderImpacts": {
+    "endUsers": {
+      "description": "Indirect benefits through improved network decentralization and faster node syncing, but gas cost changes may affect some transaction patterns."
+    },
+    "appDevs": {
+      "description": "Some operations may have different gas costs, requiring optimization of smart contracts for the new stateless execution model."
+    },
+    "walletDevs": {
+      "description": "Need to update gas estimation for transactions affected by the new cost model, but most operations remain similar."
+    },
+    "toolingInfra": {
+      "description": "Major updates needed for gas estimation, transaction simulation, and stateless proof generation. Block explorers need stateless verification capabilities."
+    },
+    "layer2s": {
+      "description": "May need to adjust for new gas costs in settlement transactions and state access patterns."
+    },
+    "stakersNodes": {
+      "description": "Can run much lighter nodes using stateless validation, dramatically reducing storage and syncing requirements while maintaining security."
+    },
+    "clClients": {
+      "description": "Minimal impact as this primarily affects execution layer gas metering and state access patterns."
+    },
+    "elClients": {
+      "description": "Major implementation work required for new gas metering model, stateless execution environment, and witness data handling."
+    }
+  },
+  "benefits": [
+    "Enables stateless client operation with dramatically faster sync",
+    "Reduces storage requirements for node operators",
+    "Improves network decentralization through lower barriers",
+    "Foundation for Verkle tree state transition"
+  ]
+}

@@ -1,0 +1,56 @@
+{
+  "id": 7981,
+  "title": "EIP-7981: Increase access list cost",
+  "status": "Draft",
+  "description": "This EIP charges additional gas for non-zero and zero bytes in access lists to prevent circumvention of gas pricing rules and ensure fair costs.",
+  "author": "Toni Wahrstätter (@nerolation)",
+  "type": "Standards Track",
+  "category": "Core",
+  "createdDate": "2024-12-27",
+  "discussionLink": "https://ethereum-magicians.org/t/eip-7981-increase-access-list-cost/24680",
+  "reviewer": "bot",
+  "forkRelationships": [
+    {
+      "forkName": "Glamsterdam",
+      "status": "Proposed",
+      "layer": "EL",
+      "champion": {
+        "name": "Toni Wahrstätter",
+        "discord": "nero_eth"
+      }
+    }
+  ],
+  "laymanDescription": "Adjusts transaction costs for access lists to balance gas fees and prevent block size inflation.",
+  "stakeholderImpacts": {
+    "endUsers": {
+      "description": "Improves transaction fairness by standardizing costs based on data usage."
+    },
+    "appDevs": {
+      "description": "Encourages efficient transaction design due to higher costs for larger access lists."
+    },
+    "walletDevs": {
+      "description": "Could require updates to handle new cost structures in gas estimation."
+    },
+    "toolingInfra": {
+      "description": "Need to adapt estimation tools for new access list pricing."
+    },
+    "layer2s": {
+      "description": "Reduces potential for block size inflation leading to enhanced scalability."
+    },
+    "stakersNodes": {
+      "description": "Minimal direct impact, but improved network health benefits all participants."
+    },
+    "clClients": {
+      "description": "Adjustments required for gas cost calculations influencing consensus protocols."
+    },
+    "elClients": {
+      "description": "Optimizes execution efficiency under new pricing impacting overall gas usage."
+    }
+  },
+  "benefits": [
+    "Enhances economic model by charging based on resource usage, which promotes efficient transaction design.",
+    "Increases network stability by reducing maximum block size through reduced incentive to use large access lists.",
+    "Encourages fairer transaction costs across users by preventing underutilization of pricing structures.",
+    "Maintains compatibility with existing EIP-2930 while introducing necessary changes to the access list gas calculations."
+  ]
+}

@@ -1,0 +1,61 @@
+{
+  "id": 8059,
+  "title": "Gas Units Rebase for High-precision Metering",
+  "status": "Draft",
+  "description": "Gas parameters and variables are increased to a factor of `REBASE_FACTOR` to reduce rounding errors without major changes to the EVM.",
+  "author": "Maria Silva (@misilva73)",
+  "type": "Standards Track",
+  "category": "Core",
+  "createdDate": "2025-10-22",
+  "discussionLink": "https://ethereum-magicians.org/t/eip-8059-gas-rebase-for-high-precision-gas-metering/25945",
+  "reviewer": "expert",
+  "forkRelationships": [
+    {
+      "forkName": "Glamsterdam",
+      "status": "Proposed",
+      "layer": "EL",
+      "champion": {
+        "name": "Maria Silva",
+        "discord": "misilva73"
+      }
+    }
+  ],
+  "laymanDescription": "This proposal rebases Ethereum's gas unit by a factor of 1,000 to enable high-precision metering without fractional gas. All gas-related parameters and variables are increased by that factor.",
+  "northStarAlignment": {
+    "scaleL1": {
+      "description": "Enables a more precise accounting of efficient compute operations, thus removing an average of 4% loss in block space per transaction from roundig errors."
+    }
+  },
+  "stakeholderImpacts": {
+    "endUsers": {
+      "description": "Users may notice gas numbers change, since each unit is 1,000× smaller, but transaction behavior and protocol rules stay the same."
+    },
+    "appDevs": {
+      "description": "App and contract developers must update hardcoded gas cost constants, tests, and benchmarks to the 1,000× unit. Contract bytecode semantics stay unchanged."
+    },
+    "walletDevs": {
+      "description": "Wallets must update gas estimation, limit defaults, and UI displays to the rebased 1,000× unit so transactions include correct values."
+    },
+    "toolingInfra": {
+      "description": "Explorers, profilers, and RPC analytics must revise gas accounting, reporting, and alerts to reflect the new 1,000× unit across all fields."
+    },
+    "layer2s": {
+      "description": "Rollups and other L2s that follow Ethereum gas semantics must rescale gas metering, calldata pricing, and limits by 1,000× for L1 consistency."
+    },
+    "stakersNodes": {
+      "description": "Validators and node operators must upgrade clients to enforce rebased gas accounting and block validation rules; normal operational workflows otherwise remain unchanged."
+    },
+    "clClients": {
+      "description": "Consensus clients must update header checks for gas limit and gas used to the rebased scale; other fork choice and attestation code is unchanged."
+    },
+    "elClients": {
+      "description": "Execution clients must apply the 1,000× factor across opcode costs, transaction validation, gas accounting, RPC exposure, and metering logic, touching many constants and tests."
+    }
+  },
+  "benefits": [
+    "Enables high-precision gas metering without fractional gas.",
+    "Reduces rounding errors when repricing EVM operations.",
+    "Future-proofs gas costs as hardware improves and state access stays costly.",
+    "Avoids major changes to internal EVM logic."
+  ]
+}

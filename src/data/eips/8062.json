@@ -1,0 +1,56 @@
+{
+  "id": 8062,
+  "title": "Add sweep withdrawal fee for 0x01 validators",
+  "status": "Draft",
+  "description": "Imposes a 0.05% fee on partial (“sweep”) withdrawals from 0x01 validators to account for resources and encourage 0x02 migration.",
+  "author": "Anders Elowsson (@anderselowsson), Toni Wahrstätter (@nerolation), Francesco D'Amato (@fradamt), Ben Adams (@benaadams), Maria Inês Silva (@misilva73)",
+  "type": "Standards Track",
+  "category": "Core",
+  "createdDate": "2025-10-28",
+  "discussionLink": "https://ethereum-magicians.org/t/eip-8062-add-sweep-withdrawal-fee-for-0x01-validators/26003",
+  "reviewer": "expert",
+  "forkRelationships": [
+    {
+      "forkName": "Glamsterdam",
+      "status": "Proposed",
+      "layer": "CL",
+      "champion": {
+        "name": "Anders Elowsson",
+        "discord": "anderselowsson"
+      }
+    }
+  ],
+  "laymanDescription": "Adds a small 0.05% fee when old-style 0x01 validators auto-withdraw extra balance, keeping consolidation and costs fair.",
+  "stakeholderImpacts": {
+    "endUsers": {
+      "description": "End users who do not run validators are unaffected; change happens inside protocol accounting for validator sweeps only now implemented."
+    },
+    "appDevs": {
+      "description": "Apps are unaffected unless they surface validator sweep amounts and must now display the slightly reduced 0x01 payouts exactly received."
+    },
+    "walletDevs": {
+      "description": "The amount credited to the EL will be 0.05% lower than the balance decrease on the CL."
+    },
+    "toolingInfra": {
+      "description": "The amount credited to the EL will be 0.05% lower than the balance decrease on the CL."
+    },
+    "layer2s": {
+      "description": "L2 systems unaffected by this proposal."
+    },
+    "stakersNodes": {
+      "description": "Skimming 0x01 validators will pay 0.05% per sweep and are nudged toward upgrading to 0x02 validator types."
+    },
+    "clClients": {
+      "description": "Consensus clients add a constant and arithmetic in process_withdrawals; low complexity but consensus-critical so thorough tests required before Glamsterdam activation."
+    },
+    "elClients": {
+      "description": "Execution clients require no code changes. The amount credited to the EL will be 0.05% lower than the balance decrease on the CL."
+    }
+  },
+  "benefits": [
+    "Incentivizes validator consolidation required for fast finality.",
+    "Let's 0x01 validators pay for the EL workload imposed by the sweep.",
+    "Is easy to expand in the future if consolidation remains insufficient.",
+    "Can be expanded already today to compensate for 0x02 lower capital efficiency"
+  ]
+}

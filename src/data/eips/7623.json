@@ -1,0 +1,49 @@
+{
+  "id": 7623,
+  "title": "EIP-7623: Increase calldata cost",
+  "status": "Final",
+  "description": "Increases the gas cost of calldata to better reflect its resource usage and improve network efficiency.",
+  "author": "Toni Wahrstätter, Vitalik Buterin",
+  "type": "Standards Track",
+  "category": "Core",
+  "createdDate": "2024-02-13",
+  "discussionLink": "https://ethereum-magicians.org/t/eip-7623-increase-calldata-cost/18647",
+  "reviewer": "bot",
+  "forkRelationships": [
+    {
+      "forkName": "Pectra",
+      "status": "Included"
+    }
+  ],
+  "laymanDescription": "Calldata gas costs is increased to limit state growth and incentivize more efficient blobs to store data.",
+  "stakeholderImpacts": {
+    "endUsers": {
+      "description": "Normal transactions see no change, contracts relying on calldata become a little more expensive to execute."
+    },
+    "appDevs": {
+      "description": "Contracts behaviour is not changed  but the state storage is more expensive."
+    },
+    "walletDevs": {
+      "description": "Fee estimation may adjust for new calldata cost."
+    },
+    "toolingInfra": {
+      "description": "Contract and gas analytics need reflect updated calldata pricing."
+    },
+    "layer2s": {
+      "description": "L2s should use blobs over calldata, improving network scalability."
+    },
+    "stakersNodes": {
+      "description": "No direct impact on validators."
+    },
+    "clClients": {
+      "description": "Consensus unaffected."
+    },
+    "elClients": {
+      "description": "Adjust EVM gas accounting for calldata."
+    }
+  },
+  "benefits": [
+    "Bounds worst-case block size for network safety and scalability",
+    "Encourages use of blobs for large data"
+  ]
+}

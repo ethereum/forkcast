@@ -1,0 +1,60 @@
+{
+  "id": 7904,
+  "title": "EIP-7904: General Repricing",
+  "status": "Draft",
+  "description": "Gas Cost Repricing to reflect computational complexity and transaction throughput increase.",
+  "author": "Jacek Glen (@JacekGlen), Lukasz Glen (@lukasz-glen), Maria Silva (@misilva73)",
+  "type": "Standards Track",
+  "category": "Core",
+  "createdDate": "2025-02-05",
+  "discussionLink": "https://ethereum-magicians.org/t/gas-cost-repricing-to-reflect-computational-complexity/23067",
+  "reviewer": "expert",
+  "forkRelationships": [
+    {
+      "forkName": "Glamsterdam",
+      "status": "Proposed",
+      "layer": "EL",
+      "champion": {
+        "name": "Maria Silva",
+        "discord": "misilva73"
+      }
+    }
+  ],
+  "laymanDescription": "Updates gas costs of all compute operatons to ensure they accurately reflect their computational workload.",
+  "northStarAlignment": {
+    "scaleL1": {
+      "description": "Increases the throughput of compute operations by optimizing gas costs to better match actual resource usage."
+    }
+  },
+  "stakeholderImpacts": {
+    "endUsers": {
+      "description": "Users may see cost changes for certain transactions."
+    },
+    "appDevs": {
+      "description": "Developers can optimize smart contracts with more accurate gas costs, greatly enhancing efficiency."
+    },
+    "walletDevs": {
+      "description": "Wallet developers may need to adjust fee estimation mechanisms based on new gas pricing."
+    },
+    "toolingInfra": {
+      "description": "Tools must adapt to new gas cost structures to ensure accurate reporting and estimation."
+    },
+    "layer2s": {
+      "description": "L2 solutions will need to align their gas pricing with changes introduced to maintain compatibility."
+    },
+    "stakersNodes": {
+      "description": "Node operators will upgrade clients to manage new gas structures but should expect minimal disruption."
+    },
+    "clClients": {
+      "description": "No consensus changes expected; focus on routine fork coordination with existing protocols."
+    },
+    "elClients": {
+      "description": "Must adapt gas accounting and refunds, ensuring compatibility with existing EIP metrics and updates."
+    }
+  },
+  "benefits": [
+    "Aligns gas pricing with empirical computational complexity.",
+    "Improves network throughput by reducing gas cost of compute operations.",
+    "Enhances the security of the network against abuse of single bottlenecks."
+  ]
+}

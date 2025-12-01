@@ -1,0 +1,23 @@
+{
+  "id": 7480,
+  "title": "EIP-7480: EOF - Data section access instructions",
+  "status": "Draft",
+  "description": "Instructions to read data section of EOF container",
+  "author": "Andrei Maiboroda (@gumb0), Alex Beregszaszi (@axic), Paweł Bylica (@chfast)",
+  "type": "Standards Track",
+  "category": "Core",
+  "createdDate": "2023-08-11",
+  "discussionLink": "https://ethereum-magicians.org/t/eip-7480-eof-data-section-access-instructions/15414",
+  "reviewer": "bot",
+  "forkRelationships": [
+    {
+      "forkName": "Fusaka",
+      "status": "Declined"
+    },
+    {
+      "forkName": "Pectra",
+      "status": "Considered"
+    }
+  ],
+  "laymanDescription": "This introduces four new instructions for EOF contracts to access their data section: DATALOAD (loads 32-byte word), DATALOADN (optimized version with compile-time offset), DATASIZE (returns data section size), and DATACOPY (copies data to memory). These replace the deprecated CODECOPY instruction for data access in EOF contracts, enabling proper separation between code and data. The instructions follow the same pattern as existing data access instructions like those for calldata and returndata, with zero-padding for out-of-bounds access and validation to ensure safe operation."
+}

@@ -1,0 +1,60 @@
+{
+  "id": 8037,
+  "title": "EIP-8037: State Creation Gas Cost Increase",
+  "status": "Draft",
+  "description": "Harmonization and increase of state creation gas costs to mitigate state growth and unblock scaling.",
+  "author": "Maria Silva (@misilva73), Carlos Perez (@CPerezz), Jochem Brouwer (@jochem-brouwer), Ansgar Dietrichs (@adietrichs)",
+  "type": "Standards Track",
+  "category": "Core",
+  "createdDate": "2025-10-01",
+  "discussionLink": "https://ethereum-magicians.org/t/eip-8037-state-creation-gas-cost-increase/25694",
+  "reviewer": "expert",
+  "forkRelationships": [
+    {
+      "forkName": "Glamsterdam",
+      "status": "Proposed",
+      "layer": "EL",
+      "champion": {
+        "name": "Maria Silva",
+        "discord": "misilva73"
+      }
+    }
+  ],
+  "laymanDescription": "Proposes to increase gas costs for state creation to mitigate state growth under higher throughput regimes.",
+  "northStarAlignment": {
+    "scaleL1": {
+      "description": "By making state creation more expensive, this EIP helps control state growth, which is crucial for scaling Ethereum."
+    }
+  },
+  "stakeholderImpacts": {
+    "endUsers": {
+      "description": "Users may experience higher transaction fees for creating new accounts and contracts, but improved scalability benefits all."
+    },
+    "appDevs": {
+      "description": "Developers should anticipate increased deployment costs, necessitating adjustments to gas estimation tools and budget projections."
+    },
+    "walletDevs": {
+      "description": "Wallet developers need to update gas estimations to reflect new costs; otherwise, minimal code changes are needed."
+    },
+    "toolingInfra": {
+      "description": "Tooling and infrastructure must accommodate new pricing models for transaction estimates, with only minor changes to existing tools."
+    },
+    "layer2s": {
+      "description": "L2s adopting this EIP will align with mainnet behaviors, requiring thorough testing and client updates for accurate operations."
+    },
+    "stakersNodes": {
+      "description": "Node operators will need to update their clients for new gas parameters; otherwise, operations and validation remain unchanged."
+    },
+    "clClients": {
+      "description": "Minimal changes expected for CL clients; primarily involves standard fork coordination with minimal complexity."
+    },
+    "elClients": {
+      "description": "Must integrate new gas costs into transaction handling, requiring updates to gas accounting and ensuring compatibility with existing EIP standards."
+    }
+  },
+  "benefits": [
+    "Standardizes costs across all state creation operations.",
+    "Mitigates excessive state growth, enhancing Ethereum's overall scalability.",
+    "Encourages developers to optimize contract designs due to increased costs."
+  ]
+}

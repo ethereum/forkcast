@@ -1,0 +1,61 @@
+{
+  "id": 7997,
+  "title": "EIP-7997: Deterministic Factory Predeploy",
+  "status": "Draft",
+  "description": "A minimal `CREATE2` factory shared by EVM chains.",
+  "author": "Francisco Giordano (@frangio)",
+  "type": "Standards Track",
+  "category": "Core",
+  "createdDate": "2025-08-03",
+  "discussionLink": "https://ethereum-magicians.org/t/eip-7997-deterministic-factory-predeploy/24998",
+  "reviewer": "expert",
+  "forkRelationships": [
+    {
+      "forkName": "Glamsterdam",
+      "status": "Proposed",
+      "layer": "EL",
+      "champion": {
+        "name": "Francisco Giordano",
+        "discord": "frangio_"
+      }
+    }
+  ],
+  "laymanDescription": "Enables developers to deploy smart contracts at identical addresses across EVM chains.",
+  "northStarAlignment": {
+    "improveUX": {
+      "description": "Complements the rollup-centric roadmap with a native and reliable mechanism for deployment of multi-chain contracts, including smart contract accounts."
+    }
+  },
+  "stakeholderImpacts": {
+    "endUsers": {
+      "description": "Consistent addresses across chains reduce cognitive load and potential for error."
+    },
+    "appDevs": {
+      "description": "Simplifies deployment of apps to multiple chains and development of apps that use cross-chain interop."
+    },
+    "walletDevs": {
+      "description": "Provides a native solution to the problem of deploying multi-chain smart contract accounts."
+    },
+    "toolingInfra": {
+      "description": "Tools will be able to replace their default CREATE2 factory with the canonical one, or one deployed from it."
+    },
+    "layer2s": {
+      "description": "Need to adopt the EIP to make the factory widely available and materialize benefits for developers."
+    },
+    "stakersNodes": {
+      "description": "No impact."
+    },
+    "clClients": {
+      "description": "No consensus changes expected."
+    },
+    "elClients": {
+      "description": "Need to implement a new kind of system contract that is not deployed via transaction but is not a precompile either. Conceptually simple but new in the EL."
+    }
+  },
+  "benefits": [
+    "Improves UX and mitigates risk of loss of funds for users of smart contract accounts.",
+    "Simplifies multi-chain and cross-chain smart contracts by removing the need for per-chain parameterization or mappings.",
+    "Reduces the number of addresses that multi-chain applications have to distribute.",
+    "Addresses limitations of fragile workarounds currently in use by developers for this need, providing a native solution instead."
+  ]
+}

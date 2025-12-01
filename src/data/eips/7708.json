@@ -1,0 +1,56 @@
+{
+  "id": 7708,
+  "title": "ETH transfers emit a log",
+  "status": "Stagnant",
+  "description": "All ETH-transfers, including transactions, CALL and SELFDESTRUCT, emit a log so ETH movements are detectable via a single, standard mechanism.",
+  "author": "Vitalik Buterin (@vbuterin), Peter Davies (@petertdavies)",
+  "type": "Standards Track",
+  "category": "Core",
+  "createdDate": "2024-05-17",
+  "discussionLink": "https://ethereum-magicians.org/t/eip-7708-eth-transfers-emit-a-log/20034",
+  "reviewer": "bot",
+  "forkRelationships": [
+    {
+      "forkName": "Glamsterdam",
+      "status": "Proposed",
+      "layer": "EL",
+      "champion": {
+        "name": "Carl Beekhuizen",
+        "discord": "carlbeek"
+      }
+    }
+  ],
+  "laymanDescription": "Make every ETH transfer—including from contracts and SELFDESTRUCT—emit an event log. Apps and explorers can track ETH movements uniformly, similar to ERC-20 transfers, improving deposit detection and reducing ad-hoc tracing.",
+  "stakeholderImpacts": {
+    "endUsers": {
+      "description": "Deposits and withdrawals are detected more reliably across apps and exchanges; no change to how users send or receive ETH."
+    },
+    "appDevs": {
+      "description": "Can subscribe to a standard ETH transfer log instead of tracing; requires small updates to indexers and business logic."
+    },
+    "walletDevs": {
+      "description": "Optionally watch a canonical event for ETH transfers to improve UX; otherwise existing send/receive flows remain unchanged."
+    },
+    "toolingInfra": {
+      "description": "Explorers and data indexers must parse and surface the new log; moderate engineering to integrate, test, and backfill if desired."
+    },
+    "layer2s": {
+      "description": "Rollups mirroring L1 EVM semantics may add the same log for consistency; others have no direct requirements."
+    },
+    "stakersNodes": {
+      "description": "More log entries per block; execution node receipts grow slightly, increasing storage and bandwidth requirements for some RPC setups."
+    },
+    "clClients": {
+      "description": "No consensus-layer changes anticipated; minimal or no code modifications beyond recognizing updated receipt sizes from execution payloads."
+    },
+    "elClients": {
+      "description": "Implement emitting a log on value-transferring CALLs, transactions, and SELFDESTRUCT; update EVM and receipt construction; add tests."
+    }
+  },
+  "benefits": [
+    "Unified, queryable signal for ETH transfers across EOAs and contracts.",
+    "Reduces reliance on tracing for ETH balance change detection.",
+    "Improves deposit handling for smart contract wallet senders.",
+    "Simplifies indexing and analytics for ETH movement."
+  ]
+}

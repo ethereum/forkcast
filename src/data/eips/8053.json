@@ -1,0 +1,61 @@
+{
+  "id": 8053,
+  "title": "Milli-gas for High-precision Gas Metering",
+  "status": "Draft",
+  "description": "Adds `milli-gas` as the EVM's internal gas accounting unit, reducing rounding errors without impacting UX.",
+  "author": "Maria Silva (@misilva73)",
+  "type": "Standards Track",
+  "category": "Core",
+  "createdDate": "2025-10-17",
+  "discussionLink": "https://ethereum-magicians.org/t/eip-8053-milli-gas-counter-for-high-precision-gas-metering/25946",
+  "reviewer": "expert",
+  "forkRelationships": [
+    {
+      "forkName": "Glamsterdam",
+      "status": "Proposed",
+      "layer": "EL",
+      "champion": {
+        "name": "Maria Silva",
+        "discord": "misilva73"
+      }
+    }
+  ],
+  "laymanDescription": "Counts gas in thousandths (milli-gas) during EVM execution for finer precision, then rounds to normal gas at transaction end. Fees and limits stay the same, so users and apps shouldn't notice changes.",
+  "northStarAlignment": {
+    "scaleL1": {
+      "description": "Enables a more precise accounting of efficient compute operations, thus removing an average of 4% loss in block space per transaction from roundig errors."
+    }
+  },
+  "stakeholderImpacts": {
+    "endUsers": {
+      "description": "No UX or fee changes; gas limits and pricing remain computed with gas_used, so behavior and costs are unchanged."
+    },
+    "appDevs": {
+      "description": "Minimal code changes expected since limits and fees still use gas_used rather than the new milli_gas counter. `GAS` opcode will report in `milli-gas`."
+    },
+    "walletDevs": {
+      "description": "Transaction fee estimation and validation remain tied to gas_used; no API surface changes described or wallet-side modifications expected."
+    },
+    "toolingInfra": {
+      "description": "Tools using gas_used remain accurate; no explicit requirement to expose milli_gas since it is an internal accounting detail."
+    },
+    "layer2s": {
+      "description": "No specific L2 impacts stated; proposal covers internal EVM accounting only, with fees and limits unchanged at transaction interface."
+    },
+    "stakersNodes": {
+      "description": "Fee mechanics and limits remain as today; no staking or validator configuration changes are described in this proposal."
+    },
+    "clClients": {
+      "description": "No consensus-layer changes are described; proposal targets EL metering, and CL client code modifications are not indicated."
+    },
+    "elClients": {
+      "description": "Add a milli_gas counter; meter opcodes in milli_gas; round to gas at transaction end; keep gas_used for limits/fees. Block-level conversion would be a larger change."
+    }
+  },
+  "benefits": [
+    "More precise accounting for cheap compute",
+    "Keeps fees and gas limits unchanged",
+    "Preserves user and application UX",
+    "Introduces precision without contract changes"
+  ]
+}

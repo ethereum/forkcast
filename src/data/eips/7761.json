@@ -1,0 +1,19 @@
+{
+  "id": 7761,
+  "title": "EIP-7761: EXTCODETYPE instruction",
+  "status": "Review",
+  "description": "Add EXTCODETYPE instruction to EOF to address common uses of EXTCODE* instructions",
+  "author": "Andrei Maiboroda (@gumb0), Piotr Dobaczewski (@pdobacz), Danno Ferrin (@shemnon)",
+  "type": "Standards Track",
+  "category": "Core",
+  "createdDate": "2024-09-01",
+  "discussionLink": "https://ethereum-magicians.org/t/eip-7761-is-contract-instruction/20936",
+  "reviewer": "bot",
+  "forkRelationships": [
+    {
+      "forkName": "Fusaka",
+      "status": "Declined"
+    }
+  ],
+  "laymanDescription": "This adds an EXTCODETYPE instruction to EOF contracts to distinguish between different account types. EOF removes code introspection capabilities like EXTCODESIZE, but this creates problems for ERC-721 and ERC-1155 tokens that need to know whether a recipient is an EOA (externally owned account) or a contract to implement safe transfers correctly. EXTCODETYPE returns 0 for no code (EOA), 1 for legacy contracts, and 2 for EOF contracts. This enables proper implementation of token standards in EOF while also helping proxy contracts verify that their upgrade targets are safe to call with EXTDELEGATECALL."
+}

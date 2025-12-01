@@ -1,0 +1,23 @@
+{
+  "id": 6206,
+  "title": "EIP-6206: EOF - JUMPF and non-returning functions",
+  "status": "Review",
+  "description": "Introduces instruction for chaining function calls.",
+  "author": "Andrei Maiboroda (@gumb0), Alex Beregszaszi (@axic), Paweł Bylica (@chfast), Matt Garnett (@lightclient)",
+  "type": "Standards Track",
+  "category": "Core",
+  "createdDate": "2022-12-21",
+  "discussionLink": "https://ethereum-magicians.org/t/eip-4750-eof-functions/8195",
+  "reviewer": "bot",
+  "forkRelationships": [
+    {
+      "forkName": "Fusaka",
+      "status": "Declined"
+    },
+    {
+      "forkName": "Pectra",
+      "status": "Considered"
+    }
+  ],
+  "laymanDescription": "This introduces the JUMPF instruction for EOF contracts, enabling tail call optimization by jumping to code sections without adding return stack frames. It also introduces non-returning functions - sections that never return control to their caller. This is particularly efficient for error handling helpers that end with REVERT, allowing compilers to generate more optimal code with reduced gas costs and smaller bytecode size. Functions can jump to other functions with fewer outputs, and non-returning functions don't need to clean up extra stack items before terminating."
+}

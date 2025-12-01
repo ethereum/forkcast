@@ -1,0 +1,58 @@
+{
+  "id": 2537,
+  "title": "EIP-2537: Precompile for BLS12-381 curve operations",
+  "status": "Final",
+  "description": "Adds precompiled contracts for BLS12-381 curve operations to enable efficient cryptographic operations.",
+  "author": "Alex Vlasov, et al.",
+  "type": "Standards Track",
+  "category": "Core",
+  "createdDate": "2020-02-21",
+  "discussionLink": "https://ethereum-magicians.org/t/eip-2537-bls12-381-precompiles/4187",
+  "reviewer": "bot",
+  "forkRelationships": [
+    {
+      "forkName": "Pectra",
+      "status": "Included"
+    }
+  ],
+  "laymanDescription": "A new precompile for the BLS12-381 curve, a native function built in clients that smart contracts can use to verify signatures and perform certain operation more cheaply and securely.",
+  "northStarAlignment": {
+    "scaleL1": {
+      "description": "More efficient perations for cryptography-heavy apps and enable more complex protocols at L1 capacity."
+    },
+    "improveUX": {
+      "description": "Lower fees and better security users relying on apps using BLS signatures."
+    }
+  },
+  "stakeholderImpacts": {
+    "endUsers": {
+      "description": "Lower gas and better security for apps that use BLS signatures (e.g., staking, bridges)."
+    },
+    "appDevs": {
+      "description": "Can rely on a standard, efficient precompile for BLS operations instead of custom Solidity code."
+    },
+    "walletDevs": {
+      "description": "No changes for wallets"
+    },
+    "toolingInfra": {
+      "description": "Indexers and tools that analyze execution on EVM level will need to update to recognize the new precompile."
+    },
+    "layer2s": {
+      "description": "EVM L2s need to update to stay compatible, certain L1 operations can take advantage of this."
+    },
+    "stakersNodes": {
+      "description": "Not a direct impact on regular validators. Some pools with onchain infrastracture can upgrade to utilize the precompile."
+    },
+    "clClients": {
+      "description": "Beacon Chain unchanged; this is an execution-layer precompile."
+    },
+    "elClients": {
+      "description": "Implementation, testing and fuzzing the new precompile for performance and correctness."
+    }
+  },
+  "benefits": [
+    "Cheaper and safer BLS signature verification",
+    "Enables efficient cryptography for certain use cases like staking, light clients, bridges and ZK",
+    "Easier for devs, more secure and cheaper for users"
+  ]
+}

@@ -1,0 +1,66 @@
+{
+  "id": 7793,
+  "title": "EIP-7793: Conditional Transactions",
+  "status": "Draft",
+  "description": "Transactions that only executes at a specific index and slot.",
+  "author": "Marc Harvey-Hill (@Marchhill), Ahmad Bitar (@smartprogrammer93)",
+  "type": "Standards Track",
+  "category": "Core",
+  "createdDate": "2024-10-17",
+  "discussionLink": "https://ethereum-magicians.org/t/eip-7793-asserttxindex-opcode/21513",
+  "reviewer": "staff",
+  "forkRelationships": [
+    {
+      "forkName": "Fusaka",
+      "status": "Declined"
+    },
+    {
+      "forkName": "Glamsterdam",
+      "status": "Proposed",
+      "layer": "EL",
+      "champion": {
+        "name": "Marc Harvey-Hill",
+        "discord": "marchhill"
+      }
+    }
+  ],
+  "laymanDescription": "Adds support for conditional transaction that is only valid at a chosen spot in a block, improving support for encrypted mempools.",
+  "northStars": [
+    "Improve UX"
+  ],
+  "northStarAlignment": {
+    "improveUX": {
+      "description": "Enables better MEV protection for users using encrypted mempools."
+    }
+  },
+  "stakeholderImpacts": {
+    "endUsers": {
+      "description": "Improves the option of using encrypted mempool for users trying to avoid MEV."
+    },
+    "appDevs": {
+      "description": "Apps can take advantage of new features and TXINDEX opcode to identify position of the transaction in block."
+    },
+    "walletDevs": {
+      "description": "Wallets that support encrypted mempools should support new conditional transaction type fields."
+    },
+    "toolingInfra": {
+      "description": "Can add decoding and display information for transaction with conditions, displaying TXINDEX data."
+    },
+    "layer2s": {
+      "description": "L2s unaffected unless they choose to implement equivalent semantics."
+    },
+    "stakersNodes": {
+      "description": "No direct change to nodes, validators need to make sure their external builders support the change.."
+    },
+    "clClients": {
+      "description": "Indirectly affected via EIP-7843 (if included) dependency exposing slot in headers; otherwise no consensus changes specific to conditional transactions."
+    },
+    "elClients": {
+      "description": "Must implement new transaction type with condition checks and TXINDEX opcode."
+    }
+  },
+  "benefits": [
+    "Enforces mempool ordering, preventing builder reordering and frontrunning.",
+    "Provides TXINDEX opcode for onchain verification of declared conditional transaction index."
+  ]
+}

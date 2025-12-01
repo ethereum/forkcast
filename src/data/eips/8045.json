@@ -1,0 +1,56 @@
+{
+  "id": 8045,
+  "title": "Exclude slashed validators from proposing",
+  "status": "Draft",
+  "description": "This EIP proposes a modification to the beacon chain proposer selection process to exclude slashed validators from being selected as proposers.",
+  "author": "Francesco D'Amato (@fradamt), Barnabas Busa (@barnabasbusa)",
+  "type": "Standards Track",
+  "category": "Core",
+  "createdDate": "2025-10-16",
+  "discussionLink": "https://ethereum-magicians.org/t/eip-8045-exclude-slashed-validators-from-proposing/25850",
+  "reviewer": "bot",
+  "forkRelationships": [
+    {
+      "forkName": "Glamsterdam",
+      "status": "Proposed",
+      "layer": "CL",
+      "champion": {
+        "name": "Barnabas Busa",
+        "discord": "barnabasbusa"
+      }
+    }
+  ],
+  "laymanDescription": "After a slashing event, punished validators can still be scheduled to propose blocks, causing missed slots and slow recovery. This change simply skips slashed validators so healthy ones keep proposing and the chain keeps running.",
+  "stakeholderImpacts": {
+    "endUsers": {
+      "description": "Users should experience fewer stalled slots and better network responsiveness after large validator slashings, because only non-slashed validators will propose blocks."
+    },
+    "appDevs": {
+      "description": "Application behavior during recovery from mass slashings becomes more predictable, with fewer missed blocks and smoother chain progress. No application changes required."
+    },
+    "walletDevs": {
+      "description": "Wallets get more consistent head updates after slashings, reducing confusing gaps in block production. No direct wallet code changes are expected."
+    },
+    "toolingInfra": {
+      "description": "Indexers, explorers, and relays see steadier block flow after slashings, easing incident handling. No protocol-facing changes required for these services."
+    },
+    "layer2s": {
+      "description": "L2 sequencers relying on L1 data and finality benefit from steadier L1 block production after slashings, improving uptime. No L2 code impact."
+    },
+    "stakersNodes": {
+      "description": "Once slashed, a validator immediately loses proposer eligibility. Node operators must account for skipped proposing duties but otherwise run unchanged software."
+    },
+    "clClients": {
+      "description": "Consensus clients must update proposer selection logic to prefilter slashed validators using beacon state, integrate with EIP-7917 lookahead, and add tests."
+    },
+    "elClients": {
+      "description": "Execution clients are unaffected because block proposer selection lives in the consensus layer; no modifications are required in execution code."
+    }
+  },
+  "benefits": [
+    "Maintains block production after mass slashing events.",
+    "Improves chain resilience and recovery during network disruptions.",
+    "Prevents wasting proposer slots on already slashed validators.",
+    "Reduces prolonged degraded performance while slashed validators exit."
+  ]
+}

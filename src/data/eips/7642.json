@@ -1,0 +1,59 @@
+{
+  "id": 7642,
+  "title": "EIP-7642: eth/69 - history expiry and simpler receipts",
+  "status": "Draft",
+  "description": "Adds history serving window and removes bloom filter in receipt",
+  "author": "Marius van der Wijden (@MariusVanDerWijden), Felix Lange <fjl@ethereum.org>, Ahmad Bitar (@smartprogrammer93) <smartprogrammer@windowslive.com>",
+  "type": "Standards Track",
+  "category": "Networking",
+  "createdDate": "2024-02-29",
+  "discussionLink": "https://ethereum-magicians.org/t/eth-70-drop-pre-merge-fields-from-eth-protocol/19005",
+  "reviewer": "bot",
+  "forkRelationships": [
+    {
+      "forkName": "Pectra",
+      "status": "Included"
+    },
+    {
+      "forkName": "Fusaka",
+      "status": "Scheduled"
+    }
+  ],
+  "laymanDescription": "A change to EL networking that changes how receipts are handled and removes old data from node synchronization, saving approximately 530GB of bandwidth during sync.",
+  "northStarAlignment": {
+    "scaleL1": {
+      "description": "Significant bandwidth reduction (530GB+ per sync) and improved networking efficiency paving path for later history expiry."
+    }
+  },
+  "stakeholderImpacts": {
+    "endUsers": {
+      "description": "Indirect benefits through faster node sync times and reduced bandwidth usage during initial sync."
+    },
+    "appDevs": {
+      "description": "No impact on smart contract development or execution environment."
+    },
+    "walletDevs": {
+      "description": "No changes to wallets."
+    },
+    "toolingInfra": {
+      "description": "Historical data APIs and indexers need updates for new history serving windows and modified networking protocols."
+    },
+    "layer2s": {
+      "description": "No direct impact on L2s, only processing historical data from L1 might be affected."
+    },
+    "stakersNodes": {
+      "description": "Significant bandwidth savings during sync operations."
+    },
+    "clClients": {
+      "description": "Minimal impact as this primarily affects execution layer networking protocols."
+    },
+    "elClients": {
+      "description": "Major implementation work required for new eth/69 protocol including history serving windows, bloom filter removal from receipts, and BlockRangeUpdate messaging."
+    }
+  },
+  "benefits": [
+    "Saves ~530GB of bandwidth per node sync",
+    "Faster setup for new Ethereum nodes",
+    "Prepares for history expiry management"
+  ]
+}

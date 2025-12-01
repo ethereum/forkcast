@@ -1,0 +1,55 @@
+{
+  "id": 8038,
+  "title": "EIP-8038: State-access gas cost increase",
+  "status": "Draft",
+  "description": "Increases the gas cost of state-access operations to reflect Ethereum's larger state.",
+  "author": "Maria Silva (@misilva73), Wei Han Ng (@weiihann), Ansgar Dietrichs (@adietrichs)",
+  "type": "Standards Track",
+  "category": "Core",
+  "createdDate": "2025-10-03",
+  "discussionLink": "https://ethereum-magicians.org/t/eip-8038-further-increase-in-state-access-costs/25693",
+  "reviewer": "expert",
+  "forkRelationships": [
+    {
+      "forkName": "Glamsterdam",
+      "status": "Proposed",
+      "layer": "EL",
+      "champion": {
+        "name": "Maria Silva",
+        "discord": "misilva73"
+      }
+    }
+  ],
+  "laymanDescription": "Increases gas costs for accessing state data to ensure alignment with current performance.",
+  "stakeholderImpacts": {
+    "endUsers": {
+      "description": "Users may experience cost adjustments for transactions related to state access."
+    },
+    "appDevs": {
+      "description": "Developers must account for higher state access costs, potentially leading to adjustments in gas estimations during deployment."
+    },
+    "walletDevs": {
+      "description": "Wallets need to update gas estimation logic to incorporate the new parameters, affecting the transaction success rate."
+    },
+    "toolingInfra": {
+      "description": "Tools must adapt to new gas cost models to ensure accurate reporting and analysis of transaction behaviors."
+    },
+    "layer2s": {
+      "description": "L2 implementations need to align with the updated state access costs; anticipate necessary updates to ensure compatibility."
+    },
+    "stakersNodes": {
+      "description": "Node operators must upgrade to new client versions to accommodate updated gas pricing; minimal impact on runtime behavior."
+    },
+    "clClients": {
+      "description": "No consensus changes expected for CL; only standard fork coordination. No new serialization or gossip rules necessitated by this proposal."
+    },
+    "elClients": {
+      "description": "Adaptations required in gas accounting for state access operations; must ensure compatibility with previous gas models and EIP-2929."
+    }
+  },
+  "benefits": [
+    "Improved alignment of gas costs with actual state access performance.",
+    "Enhanced network performance while maintaining optimal resource usage.",
+    "Encourages more efficient smart contract design by reflecting true operational costs."
+  ]
+}

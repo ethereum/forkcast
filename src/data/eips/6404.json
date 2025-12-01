@@ -1,0 +1,56 @@
+{
+  "id": 6404,
+  "title": "SSZ transactions",
+  "status": "Draft",
+  "description": "This EIP defines a migration process of EIP-2718 Recursive-Length Prefix (RLP) transactions to Simple Serialize (SSZ).",
+  "author": "Etan Kissling (@etan-status), Gajinder Singh (@g11tech), Vitalik Buterin (@vbuterin)",
+  "type": "Standards Track",
+  "category": "Core",
+  "createdDate": "2023-01-30",
+  "discussionLink": "https://ethereum-magicians.org/t/eip-6404-ssz-transactions/12783",
+  "reviewer": "bot",
+  "forkRelationships": [
+    {
+      "forkName": "Glamsterdam",
+      "status": "Proposed",
+      "layer": "EL",
+      "champion": {
+        "name": "Etan Kissling",
+        "discord": "etan_status"
+      }
+    }
+  ],
+  "laymanDescription": "Moves Ethereum transactions from RLP to SSZ. This changes serialization and the block header's transactions_root, enabling more efficient proofs and future flexibility. Users should see no behavioral change.",
+  "stakeholderImpacts": {
+    "endUsers": {
+      "description": "No visible change; sending and receiving transactions remains the same. Migration affects encoding and proofs internally."
+    },
+    "appDevs": {
+      "description": "Apps using transaction inclusion proofs or transactions_root must migrate from MPT-based roots to the SSZ transactions_root."
+    },
+    "walletDevs": {
+      "description": "Wallet libraries may need SSZ encoding and signing support. Original RLP sig_hash and tx_hash remain recoverable for compatibility."
+    },
+    "toolingInfra": {
+      "description": "Indexers/explorers using MPT transaction proofs or header roots must adopt SSZ roots and update verification pipelines."
+    },
+    "layer2s": {
+      "description": "Systems relying on mainnet transaction inclusion proofs should switch from MPT proofs to SSZ-based roots for compatibility."
+    },
+    "stakersNodes": {
+      "description": "Operators must run clients supporting SSZ transactions, updated header commitments, and Engine API/ExecutionPayload changes."
+    },
+    "clClients": {
+      "description": "Implement ExecutionPayload and header changes using SSZ transactions_root and adjust Engine API; moderate serialization and hashing complexity."
+    },
+    "elClients": {
+      "description": "Add SSZ serialization/validation for all transactions, update header commitments and Engine API; higher implementation complexity."
+    }
+  },
+  "benefits": [
+    "Efficient transaction inclusion proofs via SSZ roots",
+    "Better partial hashing and verification of data",
+    "Aligns execution and consensus around SSZ",
+    "Improves forward compatibility for transaction changes"
+  ]
+}

@@ -1,0 +1,55 @@
+{
+  "id": 7002,
+  "title": "EIP-7002: Execution layer triggerable exits",
+  "status": "Final",
+  "description": "Allows validator exits to be triggered from the execution layer, improving validator management.",
+  "author": "Danny Ryan, Mikhail Kalinin",
+  "type": "Standards Track",
+  "category": "Core",
+  "createdDate": "2023-05-09",
+  "discussionLink": "https://ethereum-magicians.org/t/eip-7002-execution-layer-triggerable-exits/14195",
+  "reviewer": "bot",
+  "forkRelationships": [
+    {
+      "forkName": "Pectra",
+      "status": "Included"
+    }
+  ],
+  "laymanDescription": "A new system contract that lets the withdrawal credential owner trigger a validator exit onchain without the need for BLS validator key on CL.",
+  "northStarAlignment": {
+    "improveUX": {
+      "description": "Provides a safer, more direct exit mechanism from the execution layer, reducing operational risk and simplifying validator management."
+    }
+  },
+  "stakeholderImpacts": {
+    "endUsers": {
+      "description": "Improves safety and UX of staking services that users interact with."
+    },
+    "appDevs": {
+      "description": "Staking protocols gain a safer, onchain way to coordinate exits."
+    },
+    "walletDevs": {
+      "description": "No changes to wallets."
+    },
+    "toolingInfra": {
+      "description": "EL explorers can track exit calls and state transitions onchain."
+    },
+    "layer2s": {
+      "description": "Not impacting L2s."
+    },
+    "stakersNodes": {
+      "description": "Alternative exit mechanism, enables withdrawals even when validator keys are lost."
+    },
+    "clClients": {
+      "description": "Implement the new exit flow initiated via execution-layer contract."
+    },
+    "elClients": {
+      "description": "Implement and expose the exit-trigger contract, new communication with CL."
+    }
+  },
+  "benefits": [
+    "Safer operational separation of keys for staking",
+    "Trust-minimized exits for staking protocols",
+    "Reduces reliance on validator keys access on Beacon Chain"
+  ]
+}

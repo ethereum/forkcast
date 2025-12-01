@@ -1,0 +1,61 @@
+{
+  "id": 8030,
+  "title": "EIP-8030: P256 transaction support",
+  "status": "Draft",
+  "description": "Adds an EIP-7932 algorithm type for P256 support of type `0x0`",
+  "author": "James Kempton (@SirSpudlington)",
+  "type": "Standards Track",
+  "category": "Core",
+  "createdDate": "2025-09-20",
+  "discussionLink": "https://ethereum-magicians.org/t/discussion-topic-for-eip-8030/25557",
+  "reviewer": "expert",
+  "forkRelationships": [
+    {
+      "forkName": "Glamsterdam",
+      "status": "Proposed",
+      "layer": "EL",
+      "champion": {
+        "name": "SirSpudlington",
+        "discord": "txtiger"
+      }
+    }
+  ],
+  "laymanDescription": "Adds P256 signatures to Ethereum transactions, improving security and compatibility with other technologies.",
+  "northStarAlignment": {
+    "improveUX": {
+      "description": "Improves user experience by enabling transaction signature support for secp256r1, and improves EIP-7932 security by adding a test vector of a well-known algorithm."
+    }
+  },
+  "stakeholderImpacts": {
+    "endUsers": {
+      "description": "Improves signature algorithm options for users and potentially enables native passkey / TPM support."
+    },
+    "appDevs": {
+      "description": "Does not affect app developers under EIP-7932 framework."
+    },
+    "walletDevs": {
+      "description": "Expands wallet capabilities to support new signature types."
+    },
+    "toolingInfra": {
+      "description": "Requires a simple update to support P256 signature verification."
+    },
+    "layer2s": {
+      "description": "Sequencers may utilize P256 for settling L1 proofs."
+    },
+    "stakersNodes": {
+      "description": "Would have little effect on Node Operators."
+    },
+    "clClients": {
+      "description": "No direct CL effects as this EIP only affects the execution layer."
+    },
+    "elClients": {
+      "description": "Would require a minimal update to point the new EIP-7932 entry to the existing P256 precompile."
+    }
+  },
+  "benefits": [
+    "Increases security and flexibility in Ethereum transactions with P256 signatures.",
+    "Provides a proven-secure algorithm for testing EIP-7932.",
+    "Facilitates smoother interoperability with other blockchain technologies supporting P256.",
+    "Helps maintain Ethereum's competitive edge by adapting to popular cryptographic standards."
+  ]
+}

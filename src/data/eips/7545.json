@@ -1,0 +1,54 @@
+{
+  "id": 7545,
+  "title": "EIP-7545: Verkle proof verification precompile",
+  "status": "Draft",
+  "description": "Adds a precompiled contract for efficient verification of Verkle tree proofs to support stateless execution.",
+  "author": "Guillaume Ballet, Verkle Team",
+  "type": "Standards Track",
+  "category": "Core",
+  "createdDate": "2023-11-01",
+  "discussionLink": "https://ethereum-magicians.org/t/eip-7545-verkle-proof-verification-precompile/15665",
+  "reviewer": "bot",
+  "forkRelationships": [],
+  "laymanDescription": "This adds efficient built-in verification for Verkle tree cryptographic proofs. Instead of expensive smart contract computations, this precompile enables fast and cheap verification of the new proof system.",
+  "northStarAlignment": {
+    "scaleL1": {
+      "description": "Essential for efficient Verkle tree proof verification within smart contracts, enabling advanced stateless applications and cross-chain verification."
+    },
+    "improveUX": {
+      "description": "Enables new applications requiring state proof verification at much lower gas costs than pure smart contract implementations."
+    }
+  },
+  "stakeholderImpacts": {
+    "endUsers": {
+      "description": "Benefits through cheaper applications that need to verify state proofs, enabling new use cases like efficient cross-chain bridges."
+    },
+    "appDevs": {
+      "description": "Enables building applications that efficiently verify Verkle proofs, opening up new possibilities for cross-chain protocols and state-dependent applications."
+    },
+    "walletDevs": {
+      "description": "Can implement more efficient state verification in light clients and improve cross-chain transaction validation."
+    },
+    "toolingInfra": {
+      "description": "Infrastructure services can leverage efficient proof verification for state-dependent queries and cross-chain data verification."
+    },
+    "layer2s": {
+      "description": "Critical for Layer 2 systems that need to verify L1 state efficiently, enabling better bridge security and state synchronization."
+    },
+    "stakersNodes": {
+      "description": "Indirect benefits through more efficient proof verification reducing overall network computational load."
+    },
+    "clClients": {
+      "description": "No direct impact on consensus layer operations as this affects execution layer precompile functionality."
+    },
+    "elClients": {
+      "description": "Must implement the Verkle proof verification precompile with proper gas accounting and cryptographic verification algorithms."
+    }
+  },
+  "benefits": [
+    "Enables cheap verification of Verkle proofs in smart contracts",
+    "Unlocks new cross-chain application possibilities",
+    "Reduces gas costs for state proof verification",
+    "Essential infrastructure for stateless applications"
+  ]
+}

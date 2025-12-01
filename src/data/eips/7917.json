@@ -1,0 +1,54 @@
+{
+  "id": 7917,
+  "title": "EIP-7917: Deterministic proposer lookahead",
+  "status": "Draft",
+  "description": "Pre-calculate and store a deterministic proposer lookahead in the beacon state at the start of every epoch",
+  "author": "Lin Oshitani (@linoscope) <lin@nethermind.io>, Justin Drake (@JustinDrake) <justin@ethereum.org>",
+  "type": "Standards Track",
+  "category": "Core",
+  "createdDate": "2025-03-24",
+  "discussionLink": "https://ethereum-magicians.org/t/eip-7917-deterministic-proposer-lookahead/23259",
+  "reviewer": "bot",
+  "forkRelationships": [
+    {
+      "forkName": "Fusaka",
+      "status": "Scheduled"
+    }
+  ],
+  "laymanDescription": "This makes Ethereum's block proposer schedule completely predictable ahead of time. Currently, validators can't know who will propose blocks in the next epoch until it starts, which creates uncertainty for MEV mitigation and preconfirmation protocols. This change pre-calculates and stores the proposer schedule for future epochs, making it deterministic and accessible to applications.",
+  "northStarAlignment": {
+    "improveUX": {
+      "description": "Enables reliable preconfirmation services and improved transaction ordering predictability."
+    }
+  },
+  "stakeholderImpacts": {
+    "endUsers": {
+      "description": "Better protection from MEV extraction through improved preconfirmation services and more predictable transaction ordering."
+    },
+    "appDevs": {
+      "description": "Can build more sophisticated MEV mitigation strategies and preconfirmation protocols with predictable proposer schedules."
+    },
+    "walletDevs": {
+      "description": "Can implement better MEV protection features and more reliable transaction timing predictions for users."
+    },
+    "toolingInfra": {
+      "description": "MEV analysis tools, preconfirmation services, and block builder infrastructure need updates to leverage predictable proposer schedules."
+    },
+    "layer2s": {
+      "description": "More predictable L1 block production timing improves Layer 2 settlement coordination and transaction scheduling."
+    },
+    "stakersNodes": {
+      "description": "Minimal impact on validator operations, but provides better visibility into future proposer assignments."
+    },
+    "clClients": {
+      "description": "Need to implement proposer lookahead calculation and storage in beacon state, with additional computation at epoch boundaries."
+    },
+    "elClients": {
+      "description": "Minimal impact as this primarily affects consensus layer proposer scheduling and beacon state management."
+    }
+  },
+  "benefits": [
+    "Improves predictability for based preconfirmation protocols",
+    "Makes block proposer schedule deterministic"
+  ]
+}

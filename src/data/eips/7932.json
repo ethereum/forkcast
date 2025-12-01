@@ -1,0 +1,61 @@
+{
+  "id": 7932,
+  "title": "EIP-7932: Secondary Signature Algorithms",
+  "status": "Draft",
+  "description": "Introduces a new transaction type and precompile for handling alternative signature algorithms",
+  "author": "James Kempton (@SirSpudlington)",
+  "type": "Standards Track",
+  "category": "Core",
+  "createdDate": "2025-04-12",
+  "discussionLink": "https://ethereum-magicians.org/t/eip-7932-secondary-signature-algorithms/23514",
+  "reviewer": "expert",
+  "forkRelationships": [
+    {
+      "forkName": "Glamsterdam",
+      "status": "Proposed",
+      "layer": "EL",
+      "champion": {
+        "name": "SirSpudlington",
+        "discord": "txtiger"
+      }
+    }
+  ],
+  "laymanDescription": "Creates a standardized way for new transaction-level signature algorithms to be added, which allows easier migration and higher interoperability with current systems.",
+  "northStarAlignment": {
+    "improveUX": {
+      "description": "Improves user experience by enabling easier adoption of alternative signatures without placing too high a burden on app developers. EIP-7932 also improves security by providing a pathway for quantum-safe account migration."
+    }
+  },
+  "stakeholderImpacts": {
+    "endUsers": {
+      "description": "Improves security by allowing users to choose other signing algorithms, potentially enabling native TPM / passkey support."
+    },
+    "appDevs": {
+      "description": "Allows abstracting implementation of multiple signature schemes to a single standardized interface. No work is required to support EIP-7932 transactions natively."
+    },
+    "walletDevs": {
+      "description": "Large changes to transaction / key handling are required for wallets to support optional wrapping and signing functionality."
+    },
+    "toolingInfra": {
+      "description": "Requires large initial modifications for EIP implementation but reduces future overhead when introducing new algorithms."
+    },
+    "layer2s": {
+      "description": "No direct impact on layer 2s unless this EIP is adopted by that L2."
+    },
+    "stakersNodes": {
+      "description": "May reduce resource consumption due to non-EVM verification of alternate algorithms."
+    },
+    "clClients": {
+      "description": "No direct CL effects as this EIP only affects the execution layer."
+    },
+    "elClients": {
+      "description": "Allows easier implementation of existing algorithms without having to rework transaction handling per new algorithm."
+    }
+  },
+  "benefits": [
+    "Standardizes the introduction of alternative signature algorithms without breaking existing tooling.",
+    "Allows gradual migration to quantum-safe algorithms before quantum-computer threats.",
+    "Reduces client developer workload on introduction of new algorithms.",
+    "Reduces network reliance on single algorithm by increasing signature diversity."
+  ]
+}

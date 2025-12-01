@@ -1,0 +1,64 @@
+{
+  "id": 8051,
+  "title": "Precompile for ML-DSA signature verification",
+  "status": "Draft",
+  "description": "Introduces two precompiled contracts implementing NIST's ML-DSA and ML-DSA-ETH for post-quantum signature verification.",
+  "author": "Renaud Dubois (@rdubois-crypto), Simon Masson (@simonmasson)",
+  "type": "Standards Track",
+  "category": "Core",
+  "createdDate": "2025-10-15",
+  "discussionLink": "https://ethereum-magicians.org/t/eip-8051-ml-dsa-verification/25857",
+  "reviewer": "expert",
+  "forkRelationships": [
+    {
+      "forkName": "Glamsterdam",
+      "status": "Proposed",
+      "layer": "EL",
+      "champion": {
+        "name": "Danno Ferrin",
+        "discord": "_shemnon"
+      }
+    }
+  ],
+  "laymanDescription": "Adds two precompiles for signature verification that are safe against Quantum Computer analysis. One is an NIST standard FIPS-204 whereas the other replaces the XOF with Keccak, which is more accessible to EVM implementation.",
+  "northStarAlignment": {
+    "scaleL1": {
+      "description": "Enables quantum-resistant signatures at the protocol level, supporting long-term security and ecosystem growth"
+    },
+    "improveUX": {
+      "description": "Accessible implementation of FIPS-204, which is cost-prohibitive for the EVM."
+    }
+  },
+  "stakeholderImpacts": {
+    "endUsers": {
+      "description": "Access to Post-Quantum security."
+    },
+    "appDevs": {
+      "description": "Provides cost-efficient access to post-quantum cryptography for dApps requiring quantum resistance"
+    },
+    "walletDevs": {
+      "description": "Cheap PQ signatures for contract wallets. Will need to standardize HD key generation."
+    },
+    "toolingInfra": {
+      "description": "Will need to add language and CLI access to Falcon signature verification, and generation."
+    },
+    "layer2s": {
+      "description": "Will need to add to next L2 hard fork. May want to consider as an alternative wherever ecrecover is used."
+    },
+    "stakersNodes": {
+      "description": "Invisible to stakers, leanConsensus is where PQC will be introduced to them."
+    },
+    "clClients": {
+      "description": "Invisible to the consensus layer, leanConsensus is where PQC will be introduced to them."
+    },
+    "elClients": {
+      "description": "Will integrate an external library (PQClean, PQ Code, etc) so the task will mostly be wiring up the library and gas metering."
+    }
+  },
+  "benefits": [
+    "NIST-standardized post-quantum cryptography (FIPS-204)",
+    "Eth optimized variant of FIPS-206",
+    "Hardness assumptions secure against quantum adversaries",
+    "Integrates with EIP-7932 algorithmic transaction framework"
+  ]
+}

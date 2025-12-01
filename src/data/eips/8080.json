@@ -1,0 +1,56 @@
+{
+  "id": 8080,
+  "title": "Let exits use the consolidation queue",
+  "status": "Draft",
+  "description": "Allows validator exits to be routed through the consolidation queue, reusing consolidation churn so the protocol can process more exits, democratizing access to an unintended liquidity benefit while preserving existing security guarantees.",
+  "author": "Francesco D'Amato (@fradamt)",
+  "type": "Standards Track",
+  "category": "Core",
+  "createdDate": "2025-11-13",
+  "discussionLink": "https://ethereum-magicians.org/t/eip-9999-let-exits-use-the-consolidation-queue/26552",
+  "reviewer": "bot",
+  "forkRelationships": [
+    {
+      "forkName": "Glamsterdam",
+      "status": "Proposed",
+      "layer": "CL",
+      "champion": {
+        "name": "Francesco D'Amato",
+        "discord": "fradamt"
+      }
+    }
+  ],
+  "laymanDescription": "Changes how validator exits are queued by letting them share capacity with the consolidation queue. Removes an advantage for very large validators and lets more stakers exit or rebalance quickly without weakening security.",
+  "stakeholderImpacts": {
+    "endUsers": {
+      "description": "Indirect impact: staking withdrawals and liquid staking tokens may become more responsive during heavy demand, but user-facing interfaces remain unchanged."
+    },
+    "appDevs": {
+      "description": "No protocol changes for smart contract developers; only economic behaviour of validator exits and staking derivatives liquidity may subtly improve."
+    },
+    "walletDevs": {
+      "description": "Minimal impact. Wallets showing validator exits or withdrawals may adjust messaging on exit timing in congestion; no protocol changes required."
+    },
+    "toolingInfra": {
+      "description": "Monitoring and analytics tools tracking exit queue lengths must update models to account for churn reallocation via the consolidation queue."
+    },
+    "layer2s": {
+      "description": "Layer 2 protocols have no direct integration work; systems depending on staking liquidity may benefit from faster exits and rebalancing."
+    },
+    "stakersNodes": {
+      "description": "Validators and staking providers gain fairer access to extra churn, enabling predictable exit times and increased capacity during rush periods."
+    },
+    "clClients": {
+      "description": "Consensus clients must modify `compute_exit_epoch_and_update_churn` to route some exits via `compute_consolidation_epoch_and_update_churn`, carefully handling churn accounting and queue invariants."
+    },
+    "elClients": {
+      "description": "Execution clients see no direct consensus logic changes; mainly fork-activation plumbing, configuration updates, and compatibility testing with upgraded consensus clients."
+    }
+  },
+  "benefits": [
+    "Democratizes access to consolidation churn previously exploitable only by very large validators.",
+    "Increases effective exit capacity by reusing consolidation churn when demand from exits is high.",
+    "Maintains existing security assumptions by reallocating churn without changing overall safety parameters.",
+    "Improves staking liquidity, helping operators and liquid staking tokens manage exits during demand spikes."
+  ]
+}

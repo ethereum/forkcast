@@ -4,7 +4,6 @@ export const ALL_CLIENT_TEAMS = [
   { name: 'Erigon', type: 'EL' as const },
   { name: 'Geth', type: 'EL' as const },
   { name: 'Nethermind', type: 'EL' as const },
-  { name: 'Nimbus EL', type: 'EL' as const },
   { name: 'Reth', type: 'EL' as const },
   // Consensus Layer teams (alphabetized)
   { name: 'Grandine', type: 'CL' as const },

@@ -95,11 +95,6 @@ export const networkUpgrades: NetworkUpgrade[] = [
         candidateBlogPostUrl: 'https://notes.status.im/s/6-ZIuquGe'
       },
       {
-        teamName: 'Nimbus EL',
-        teamType: 'EL',
-        candidateBlogPostUrl: 'https://notes.status.im/s/SFCD7JqpS'
-      },
-      {
         teamName: 'Prysm',
         teamType: 'CL',
         headlinerBlogPostUrl: 'https://hackmd.io/@tchain/prysm-glamsterdam-headliner',

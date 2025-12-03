@@ -1,83 +1,46 @@
-# Forkcast - Ethereum Network Upgrades
+# The Forkcast Manifesto
 
-An experiment by the Protocol Support team to provide public-facing information about Ethereum network upgrades.
+_Forkcast accelerates Ethereum network upgrades by removing friction from the AllCoreDevs process._
 
-## Live Site
+Less friction means:
 
-Visit the deployed site at: https://forkcast.org
+* Less wasted effort and burnout
+* More engaged and productive participants
+* Faster, more ambitious Ethereum upgrades
 
-## Overview
+### Where friction lives
 
-This is a standalone client-side application that provides public access to information about Ethereum network upgrades. It displays EIPs (Ethereum Improvement Proposals) in a user-friendly format, showing their inclusion status, impact on different stakeholders, and alignment with Ethereum's strategic goals.
+The Ethereum upgrade process is a complex system with many stakeholders. Friction may be found in:
 
-## Features
+* **Identifying stakeholder priorities:** Before specific EIPs are evaluated, it's valuable to understand broadly what is most important to each Ethereum stakeholder group.
+* **Understanding stakeholder impact:** While being evaluated, each EIP requires specific and timely feedback from relevant stakeholders.
+* **Managing proposal volume:** More EIPs are proposed than any one client team can reasonably evaluate for a given upgrade.
+* **Maximizing synchronous time:** Weekly synchronous meetings must make good use of the valuable hours offered by its attendees.
+* **Aggregating disparate context:** Important decision-making context lives across many platforms and mediums.
+* **Surfacing readiness signals:** Only sufficiently mature proposals should be championed for inclusion in the next upgrade.
+* **Ambiguous ownership:** EIPs generally require a champion to make it into an upgrade.
 
-- **Network Upgrade Overview**: View upcoming, scheduled, and completed Ethereum network upgrades
-- **EIP Details**: Detailed information about each EIP including:
-  - Layman-friendly explanations
-  - Inclusion stage (Proposed, Considered, Scheduled, Declined)
-  - Impact on different stakeholders (developers, users, validators, etc.)
-  - Alignment with Ethereum's North Star goals (Scale L1, Scale blobs, Improve UX)
-  - Benefits, trade-offs, and timeline information
+### Who we serve
 
-## Contributing
+Forkcast’s priority persona is the median client developer: an experienced software engineer with 1-2 years under their belt as a full-time EL or CL contributor. They’re heads down implementing features, squashing bugs, and optimizing performance. They do not have the bandwidth to attend and keep up with every ACD call, EIP proposal, and Ethereum Magicians thread. They rely on their colleagues and social media for TL;DRs. They may not yet be confident enough to champion their own EIPs, but may aspire to one day. Why this persona? They feel the friction most and have the ability to act on it.
 
-If you see incorrect information about an EIP's impacts or benefits, content-only pull requests are very welcome. Structural changes or feature requests should open issues.
+A priority persona honorable mention is the ACD facilitator. Call and process facilitators have an outsized impact on the focus and delivery of network upgrades, given their mandate to collect, distill, and act upon the preferences of a wide variety of stakeholders.
 
-## Development
+More generally, the aim is to be useful to high-context individuals with the greatest ability to push Ethereum forward.
 
-```bash
-# Install dependencies
-npm install
+Additional personas served in various capacities:
 
-# Start development server
-npm run dev
+* Client developers, both new and experienced
+* EIP authors and champions
+* Testing teams (e.g., ethPandaOps, STEEL, consensus testing)
+* L2 chain developers
+* App developers
+* End users and enthusiasts
 
-# Build for production
-npm run build
+### How we serve
 
-# Preview production build
-npm run preview
-```
+Forkcast:
 
-## Deployment
-
-The site automatically deploys to GitHub Pages when changes are merged into the `main` branch.
-
-## Project Structure
-
-```
-forkcast-public/
-├── src/
-│   ├── components/
-│   │   ├── HomePage.tsx           # Landing page with upgrade list
-│   │   └── PublicNetworkUpgradePage.tsx  # Main upgrade detail page
-│   ├── data/
-│   │   └── eips.json             # EIP data
-│   ├── App.tsx                   # Main app component with routing
-│   ├── main.tsx                  # App entry point
-│   ├── index.css                 # Global styles
-│   └── vite-env.d.ts            # Vite type definitions
-├── public/                       # Static assets
-├── package.json
-├── vite.config.ts               # Vite configuration
-├── tsconfig.json                # TypeScript configuration
-└── README.md
-```
-
-## Technology Stack
-
-- **React 19** - UI framework
-- **TypeScript** - Type safety
-- **Vite** - Build tool and dev server
-- **React Router** - Client-side routing
-- **Tailwind CSS** - Styling
-- **ESLint** - Code linting
-
-## Data Structure
-
-The application uses a JSON file (`src/data/eips.json`) containing EIP information. Each EIP includes:
-
-- Basic metadata (ID, title, status, author, etc.)
-- Fork relationships (which network upgrades include this EIP)
-- Public-facing explanations and impact assessments
+* makes accessible the "state of the world" - the current process timeline, what's being proposed, and the impacts of proposals
+* provides tools for stakeholders to understand and communicate preferences
+* is a collection of social experiments and will evolve quickly in response to the needs of the upgrade process

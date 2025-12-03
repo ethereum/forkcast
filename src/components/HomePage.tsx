@@ -3,6 +3,7 @@ import { networkUpgrades } from '../data/upgrades';
 import { getRecentCalls } from '../data/calls';
 import { useAnalytics } from '../hooks/useAnalytics';
 import ThemeToggle from './ui/ThemeToggle';
+import UpgradeCarousel from './ui/UpgradeCarousel';
 
 const HomePage = () => {
   const upgrades = networkUpgrades;
@@ -66,63 +67,8 @@ const HomePage = () => {
           </p>
         </div>
 
-        {/* Upgrades Grid */}
-        <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
-          {upgrades.map((upgrade) => {
-            const cardContent = (
-              <>
-                <div className="flex items-start justify-between mb-4">
-                  <h2 className={`text-xl font-medium leading-tight ${upgrade.disabled ? 'text-slate-500 dark:text-slate-400' : 'text-slate-900 dark:text-slate-100'}`}>
-                    {upgrade.name}
-                  </h2>
-                  <div className="flex flex-col items-end gap-1">
-                    <span className={`px-2 py-1 text-xs font-medium rounded border ${getStatusColor(upgrade.status)}`}>
-                      {upgrade.status}
-                    </span>
-                    {upgrade.disabled && (
-                      <span className="px-2 py-1 text-xs font-medium rounded bg-slate-100 text-slate-500 border border-slate-200 dark:bg-slate-700 dark:text-slate-400 dark:border-slate-600 whitespace-nowrap">
-                        Page Coming Soon
-                      </span>
-                    )}
-                  </div>
-                </div>
-
-                <p className={`text-sm leading-relaxed mb-4 ${upgrade.disabled ? 'text-slate-400 dark:text-slate-500' : 'text-slate-600 dark:text-slate-300'}`}>
-                  {upgrade.tagline}
-                </p>
-
-                <div className={`text-xs ${upgrade.disabled ? 'text-slate-400 dark:text-slate-500' : 'text-slate-500 dark:text-slate-400'}`}>
-                  <span className="font-medium">
-                    {upgrade.status === 'Active' ? 'Activated:' :
-                     upgrade.status === 'Upcoming' ? 'Target:' :
-                     upgrade.status === 'Planning' ? 'Target:' : 'Date:'}
-                  </span> {upgrade.activationDate}
-                </div>
-              </>
-            );
-
-            if (upgrade.disabled) {
-              return (
-                <div
-                  key={upgrade.path}
-                  className="bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg p-6 opacity-60 cursor-not-allowed"
-                >
-                  {cardContent}
-                </div>
-              );
-            } else {
-              return (
-                <Link
-                  key={upgrade.path}
-                  to={upgrade.path}
-                  className="bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg p-6 hover:shadow-lg transition-shadow duration-200 hover:border-slate-300 dark:hover:border-slate-600"
-                >
-                  {cardContent}
-                </Link>
-              );
-            }
-          })}
-        </div>
+        {/* Upgrades Carousel */}
+        <UpgradeCarousel upgrades={upgrades} getStatusColor={getStatusColor} />
 
         {/* Recent Protocol Calls Section */}
         <div className="mt-12">

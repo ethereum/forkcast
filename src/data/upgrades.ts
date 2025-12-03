@@ -19,7 +19,7 @@ export const networkUpgrades: NetworkUpgrade[] = [
     path: '/upgrade/pectra',
     name: 'Pectra Upgrade',
     description: 'Major upgrade introducing account abstraction (enabling smart contract functionality for regular accounts), validator experience improvements (higher balance limits, faster deposits, better exit controls), and blob scaling (doubled throughput for Layer 2 data). Named after the combination of "Prague" (execution layer upgrade, named after Devcon IV location) and "Electra" (consensus layer upgrade, named after a star in Taurus).',
-    tagline: 'Account abstraction enables smart contract functionality for regular accounts, validator improvements increase balance limits and speed up deposits, and blob throughput doubles for better Layer 2 scaling.',
+    tagline: 'Account abstraction, validator upgrades, and 2x blob throughput - making Ethereum faster and cheaper.',
     status: 'Active',
     activationDate: 'May 7, 2025',
     disabled: true,
@@ -30,7 +30,7 @@ export const networkUpgrades: NetworkUpgrade[] = [
     path: '/upgrade/fusaka',
     name: 'Fusaka Upgrade',
     description: 'Major improvements to Ethereum\'s scalability and user experience, including PeerDAS for enhanced data availability. Named after the combination of "Fulu" (consensus layer upgrade, named after a star) and "Osaka" (execution layer upgrade, named after a Devcon location).',
-    tagline: 'PeerDAS enables nodes to specialize in storing different data pieces while maintaining security, dramatically increasing data capacity for Layer 2 networks and improving overall scalability.',
+    tagline: 'PeerDAS enables nodes to specialize in storing subsets of data while maintaining security, dramatically increasing data capacity for Layer 2 networks.',
     status: 'Upcoming',
     activationDate: 'Dec 3, 2025',
     disabled: false
@@ -113,6 +113,16 @@ export const networkUpgrades: NetworkUpgrade[] = [
         candidateBlogPostUrl: 'https://hackmd.io/KUFN0UIMRgCLheMVzFmN5A'
       }
     ]
+  },
+  {
+    id: 'hekota',
+    path: '/upgrade/hekota',
+    name: 'Heka/Bogotá Upgrade',
+    description: 'Future network upgrade currently in early planning stages. Named after the combination of "Heka" (consensus layer upgrade, named after a star) and "Bogota" (execution layer upgrade, named after a Devcon location).',
+    tagline: 'Post-Glamsterdam network upgrade in early planning.',
+    status: 'Planning',
+    activationDate: 'TBD',
+    disabled: true
   }
 ];
 

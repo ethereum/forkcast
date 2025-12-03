@@ -51,6 +51,7 @@ function AnalyticsTracker() {
 function App() {
   const fusakaUpgrade = getUpgradeById('fusaka')!;
   const glamsterdamUpgrade = getUpgradeById('glamsterdam')!;
+  // const hekotaUpgrade = getUpgradeById('hekota')!;
   // const pectraUpgrade = getUpgradeById('pectra')!;
 
   return (
@@ -60,6 +61,15 @@ function App() {
         <AnalyticsTracker />
         <Routes>
           <Route path="/" element={<HomePage />} />
+          {/* <Route path="/upgrade/pectra" element={
+            <PublicNetworkUpgradePage
+              forkName="Pectra"
+              displayName={pectraUpgrade.name}
+              description={pectraUpgrade.description}
+              status={pectraUpgrade.status}
+              metaEipLink={pectraUpgrade.metaEipLink}
+            />
+          } /> */}
           <Route path="/upgrade/fusaka" element={
             <PublicNetworkUpgradePage
               forkName="Fusaka"
@@ -79,19 +89,19 @@ function App() {
               clientTeamPerspectives={glamsterdamUpgrade.clientTeamPerspectives}
             />
           } />
+          {/* <Route path="/upgrade/hekota" element={
+            <PublicNetworkUpgradePage
+              forkName="Hekotá"
+              displayName={hekotaUpgrade.name}
+              description={hekotaUpgrade.description}
+              status={hekotaUpgrade.status}
+              metaEipLink={hekotaUpgrade.metaEipLink}
+            />
+          } /> */}
           <Route path="/rank" element={<RankPage />} />
           <Route path="/calls" element={<CallsIndexPage />} />
           <Route path="/calls/*" element={<CallPage />} />
           <Route path="/feedback" element={<ExternalRedirect />} />
-          {/* <Route path="/upgrade/pectra" element={
-            <PublicNetworkUpgradePage
-              forkName="Pectra"
-              displayName={pectraUpgrade.name}
-              description={pectraUpgrade.description}
-              status={pectraUpgrade.status}
-              metaEipLink={pectraUpgrade.metaEipLink}
-            />
-          } /> */}
           {/* Catch-all route that redirects to home page */}
           <Route path="*" element={<Navigate to="/" replace />} />
         </Routes>

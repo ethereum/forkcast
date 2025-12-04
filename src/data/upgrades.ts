@@ -31,7 +31,7 @@ export const networkUpgrades: NetworkUpgrade[] = [
     name: 'Fusaka Upgrade',
     description: 'Major improvements to Ethereum\'s scalability and user experience, including PeerDAS for enhanced data availability. Named after the combination of "Fulu" (consensus layer upgrade, named after a star) and "Osaka" (execution layer upgrade, named after a Devcon location).',
     tagline: 'PeerDAS enables nodes to specialize in storing subsets of data while maintaining security, dramatically increasing data capacity for Layer 2 networks.',
-    status: 'Upcoming',
+    status: 'Active',
     activationDate: 'Dec 3, 2025',
     disabled: false
   },
@@ -41,7 +41,7 @@ export const networkUpgrades: NetworkUpgrade[] = [
     name: 'Glamsterdam Upgrade',
     description: 'Major network upgrade featuring Block-level Access Lists and ePBS. Named after the combination of "Amsterdam" (execution layer upgrade, named after the previous Devconnect location) and "Gloas" (consensus layer upgrade, named after a star).',
     tagline: 'Enhancing Ethereum with Block-level Access Lists and ePBS for big efficiency and scalability gains.',
-    status: 'Planning',
+    status: 'Upcoming',
     activationDate: '2026',
     disabled: false,
     metaEipLink: 'https://ethereum-magicians.org/t/eip-7773-glamsterdam-network-upgrade-meta-thread/21195',

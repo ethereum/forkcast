@@ -80,7 +80,7 @@ export const NetworkUpgradeTimeline: React.FC<NetworkUpgradeTimelineProps> = ({ 
           <div
             className="absolute flex flex-col items-center z-20"
             style={{
-              left: `calc(${markerPercent}% + 20px)`,
+              left: `calc(${markerPercent}%)`,
               top: '60%',
               transform: 'translateY(-50%)',
             }}

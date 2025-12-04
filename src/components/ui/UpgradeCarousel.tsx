@@ -8,9 +8,9 @@ interface UpgradeCarouselProps {
 }
 
 const UpgradeCarousel = ({ upgrades, getStatusColor }: UpgradeCarouselProps) => {
-  const [currentIndex, setCurrentIndex] = useState(0);
   const visibleCount = 3;
   const maxIndex = Math.max(0, upgrades.length - visibleCount);
+  const [currentIndex, setCurrentIndex] = useState(maxIndex);
 
   const goToPrevious = () => {
     setCurrentIndex((prev) => Math.max(0, prev - 1));

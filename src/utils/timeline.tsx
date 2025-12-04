@@ -6,8 +6,8 @@ import { TimelinePhase } from '../constants/timeline-phases';
  * Position is between the last Active and first Upcoming upgrade
  */
 export const calculateTimelineMarkerPosition = (upgrades: Array<{ status: string }>): number => {
-  // Find the index for 'we are here' (between last Active and first Upcoming)
-  const activeIdx = upgrades.findIndex(u => u.status === 'Active');
+  // Find the index for 'we are here' (between last Live and first Upcoming)
+  const activeIdx = upgrades.findIndex(u => u.status === 'Live');
   const upcomingIdx = upgrades.findIndex(u => u.status === 'Upcoming');
 
   // Default position

@@ -6,7 +6,7 @@ export interface NetworkUpgrade {
   name: string;
   description: string;
   tagline: string;
-  status: 'Active' | 'Upcoming' | 'Planning' | 'Research';
+  status: 'Live' | 'Upcoming' | 'Planning' | 'Research';
   activationDate: string;
   disabled: boolean;
   metaEipLink?: string;
@@ -20,7 +20,7 @@ export const networkUpgrades: NetworkUpgrade[] = [
     name: 'Pectra Upgrade',
     description: 'Major upgrade introducing account abstraction (enabling smart contract functionality for regular accounts), validator experience improvements (higher balance limits, faster deposits, better exit controls), and blob scaling (doubled throughput for Layer 2 data). Named after the combination of "Prague" (execution layer upgrade, named after Devcon IV location) and "Electra" (consensus layer upgrade, named after a star in Taurus).',
     tagline: 'Account abstraction, validator upgrades, and 2x blob throughput - making Ethereum faster and cheaper.',
-    status: 'Active',
+    status: 'Live',
     activationDate: 'May 7, 2025',
     disabled: true,
     metaEipLink: 'https://ethereum-magicians.org/t/pectra-network-upgrade-meta-thread/16809'
@@ -31,7 +31,7 @@ export const networkUpgrades: NetworkUpgrade[] = [
     name: 'Fusaka Upgrade',
     description: 'Major improvements to Ethereum\'s scalability and user experience, including PeerDAS for enhanced data availability. Named after the combination of "Fulu" (consensus layer upgrade, named after a star) and "Osaka" (execution layer upgrade, named after a Devcon location).',
     tagline: 'PeerDAS enables nodes to specialize in storing subsets of data while maintaining security, dramatically increasing data capacity for Layer 2 networks.',
-    status: 'Active',
+    status: 'Live',
     activationDate: 'Dec 3, 2025',
     disabled: false
   },

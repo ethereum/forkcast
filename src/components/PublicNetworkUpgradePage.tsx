@@ -34,6 +34,7 @@ interface PublicNetworkUpgradePageProps {
   displayName: string;
   description: string;
   status: string;
+  activationDate?: string;
   metaEipLink?: string;
   clientTeamPerspectives?: ClientTeamPerspective[];
 }
@@ -43,6 +44,7 @@ const PublicNetworkUpgradePage: React.FC<PublicNetworkUpgradePageProps> = ({
   displayName,
   description,
   status,
+  activationDate,
   metaEipLink,
   clientTeamPerspectives
 }) => {
@@ -134,9 +136,12 @@ const PublicNetworkUpgradePage: React.FC<PublicNetworkUpgradePageProps> = ({
     ] : []),
 
     // Show EIP sections for all forks (including Glamsterdam)
+    // For Live upgrades, only show Included and Declined for Inclusion
     ...[
-      ...['Included', 'Scheduled for Inclusion', 'Considered for Inclusion', 'Proposed for Inclusion', 'Declined for Inclusion']
-        .flatMap(stage => {
+      ...(status === 'Live'
+        ? ['Included', 'Declined for Inclusion']
+        : ['Included', 'Scheduled for Inclusion', 'Considered for Inclusion', 'Proposed for Inclusion', 'Declined for Inclusion']
+      ).flatMap(stage => {
           // For Glamsterdam, exclude headliners from "Proposed for Inclusion" since they have their own section
           let stageEips = eips.filter(eip => {
             const matchesStage = getInclusionStage(eip, forkName) === stage;
@@ -359,6 +364,8 @@ const PublicNetworkUpgradePage: React.FC<PublicNetworkUpgradePageProps> = ({
               <OverviewSection
                 eips={filterEipsByLayer(eips)}
                 forkName={forkName}
+                status={status}
+                activationDate={activationDate}
                 onStageClick={scrollToSection}
                 clientTeamPerspectives={clientTeamPerspectives}
                 onExternalLinkClick={handleExternalLinkClick}
@@ -405,13 +412,20 @@ const PublicNetworkUpgradePage: React.FC<PublicNetworkUpgradePageProps> = ({
               )}
 
               {/* EIPs Grouped by Stage */}
-              {[
-                { stage: 'Included', description: 'EIPs that are part of the activated upgrade on mainnet.' },
-                { stage: 'Scheduled for Inclusion', description: 'EIPs that client teams have agreed to implement in the next upgrade devnet. These are very likely to be included in the final upgrade.' },
-                { stage: 'Considered for Inclusion', description: 'EIPs that client teams are positive towards. Implementation may begin, but inclusion is not yet guaranteed.' },
-                { stage: 'Proposed for Inclusion', description: 'EIPs that have been proposed for this upgrade but are still under initial review by client teams.' },
-                { stage: 'Declined for Inclusion', description: 'EIPs that were proposed, but ultimately declined for inclusion in the upgrade for various reasons. They may be reconsidered for future upgrades.' }
-              ].map(({ stage, description }) => {
+              {/* For Live upgrades, only show Included and Declined for Inclusion */}
+              {(status === 'Live'
+                ? [
+                    { stage: 'Included', description: 'EIPs that are part of the activated upgrade on mainnet.' },
+                    { stage: 'Declined for Inclusion', description: 'EIPs that were proposed, but ultimately declined for inclusion in the upgrade for various reasons. They may be reconsidered for future upgrades.' }
+                  ]
+                : [
+                    { stage: 'Included', description: 'EIPs that are part of the activated upgrade on mainnet.' },
+                    { stage: 'Scheduled for Inclusion', description: 'EIPs that client teams have agreed to implement in the next upgrade devnet. These are very likely to be included in the final upgrade.' },
+                    { stage: 'Considered for Inclusion', description: 'EIPs that client teams are positive towards. Implementation may begin, but inclusion is not yet guaranteed.' },
+                    { stage: 'Proposed for Inclusion', description: 'EIPs that have been proposed for this upgrade but are still under initial review by client teams.' },
+                    { stage: 'Declined for Inclusion', description: 'EIPs that were proposed, but ultimately declined for inclusion in the upgrade for various reasons. They may be reconsidered for future upgrades.' }
+                  ]
+              ).map(({ stage, description }) => {
                 let stageEips = eips.filter(eip => getInclusionStage(eip, forkName) === stage);
 
                 // For Glamsterdam, exclude headliners from "Proposed for Inclusion" since they have their own section

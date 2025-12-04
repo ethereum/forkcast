@@ -29,7 +29,7 @@ const HomePage = () => {
 
   const getStatusColor = (status: string) => {
     switch (status) {
-      case 'Active':
+      case 'Live':
         return 'bg-emerald-100 text-emerald-800 border-emerald-200 dark:bg-emerald-900/20 dark:text-emerald-300 dark:border-emerald-700';
       case 'Scheduled':
         return 'bg-yellow-100 text-yellow-800 border-yellow-200 dark:bg-yellow-900/20 dark:text-yellow-300 dark:border-yellow-700';

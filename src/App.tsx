@@ -76,6 +76,7 @@ function App() {
               displayName={fusakaUpgrade.name}
               description={fusakaUpgrade.description}
               status={fusakaUpgrade.status}
+              activationDate={fusakaUpgrade.activationDate}
               metaEipLink={fusakaUpgrade.metaEipLink}
             />
           } />
@@ -85,6 +86,7 @@ function App() {
               displayName={glamsterdamUpgrade.name}
               description={glamsterdamUpgrade.description}
               status={glamsterdamUpgrade.status}
+              activationDate={glamsterdamUpgrade.activationDate}
               metaEipLink={glamsterdamUpgrade.metaEipLink}
               clientTeamPerspectives={glamsterdamUpgrade.clientTeamPerspectives}
             />

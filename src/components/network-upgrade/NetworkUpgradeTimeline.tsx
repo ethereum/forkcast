@@ -61,8 +61,15 @@ export const NetworkUpgradeTimeline: React.FC<NetworkUpgradeTimelineProps> = ({ 
                 </div>
             );
 
+            // Adjust margins to create more space between Fusaka and Glamsterdam for "we are here"
+            const marginClass = upgrade.id === 'fusaka'
+              ? 'mr-6'
+              : upgrade.id === 'glamsterdam'
+                ? 'ml-6'
+                : '';
+
             return (
-              <div key={upgrade.id} className="flex flex-col items-center flex-1 min-w-0" style={{ position: 'relative' }}>
+              <div key={upgrade.id} className={`flex flex-col items-center flex-1 min-w-0 ${marginClass}`} style={{ position: 'relative' }}>
                 {/* Make non-current upgrades clickable only if not disabled */}
                 {!isCurrent && upgrade.path && !upgrade.disabled ? (
                   <Link to={upgrade.path} className="block">

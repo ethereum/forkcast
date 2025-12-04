@@ -30,7 +30,7 @@ export const StatusBadge: React.FC<StatusBadgeProps> = ({
         }
       case 'upgrade-status':
         switch (status) {
-          case 'Active':
+          case 'Live':
             return 'bg-emerald-100 text-emerald-800';
           case 'Upcoming':
             return 'bg-blue-100 text-blue-800';

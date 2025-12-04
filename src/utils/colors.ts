@@ -25,7 +25,7 @@ export const getInclusionStageColor = (stage: InclusionStage): string => {
  */
 export const getUpgradeStatusColor = (status: string): string => {
   switch (status) {
-    case 'Active':
+    case 'Live':
       return 'bg-emerald-100 text-emerald-800 dark:bg-emerald-900/20 dark:text-emerald-300';
     case 'Upcoming':
       return 'bg-blue-100 text-blue-800 dark:bg-blue-900/20 dark:text-blue-300';

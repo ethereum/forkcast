@@ -48,7 +48,7 @@ export const FUSAKA_TIMELINE_PHASES: TimelinePhase[] = [
   {
     id: 'devnets',
     title: 'Devnets',
-    dateRange: 'In Progress',
+    dateRange: 'Complete',
     description: 'Client teams implement and test Fusaka changes on internal development networks.',
     status: 'completed'
   },
@@ -78,6 +78,6 @@ export const FUSAKA_TIMELINE_PHASES: TimelinePhase[] = [
     title: 'Mainnet Deployment',
     dateRange: 'Dec 3',
     description: 'Final deployment of Fusaka to Ethereum mainnet after successful testnet validation.',
-    status: 'current'
+    status: 'completed'
   }
 ];

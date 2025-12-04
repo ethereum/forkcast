@@ -54,7 +54,7 @@ const UpgradeCarousel = ({ upgrades, getStatusColor }: UpgradeCarouselProps) => 
           className={`text-xs mt-4 ${upgrade.disabled ? 'text-slate-400 dark:text-slate-500' : 'text-slate-500 dark:text-slate-400'}`}
         >
           <span className="font-medium">
-            {upgrade.status === 'Active'
+            {upgrade.status === 'Live'
               ? 'Activated:'
               : upgrade.status === 'Upcoming'
                 ? 'Target:'

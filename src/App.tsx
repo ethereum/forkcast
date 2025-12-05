@@ -52,7 +52,7 @@ function App() {
   const fusakaUpgrade = getUpgradeById('fusaka')!;
   const glamsterdamUpgrade = getUpgradeById('glamsterdam')!;
   // const hekotaUpgrade = getUpgradeById('hekota')!;
-  // const pectraUpgrade = getUpgradeById('pectra')!;
+  const pectraUpgrade = getUpgradeById('pectra')!;
 
   return (
     <ThemeProvider>
@@ -61,15 +61,16 @@ function App() {
         <AnalyticsTracker />
         <Routes>
           <Route path="/" element={<HomePage />} />
-          {/* <Route path="/upgrade/pectra" element={
+          <Route path="/upgrade/pectra" element={
             <PublicNetworkUpgradePage
               forkName="Pectra"
               displayName={pectraUpgrade.name}
               description={pectraUpgrade.description}
               status={pectraUpgrade.status}
+              activationDate={pectraUpgrade.activationDate}
               metaEipLink={pectraUpgrade.metaEipLink}
             />
-          } /> */}
+          } />
           <Route path="/upgrade/fusaka" element={
             <PublicNetworkUpgradePage
               forkName="Fusaka"

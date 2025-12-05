@@ -22,7 +22,7 @@ export const networkUpgrades: NetworkUpgrade[] = [
     tagline: 'Account abstraction, validator upgrades, and 2x blob throughput - making Ethereum faster and cheaper.',
     status: 'Live',
     activationDate: 'May 7, 2025',
-    disabled: true,
+    disabled: false,
     metaEipLink: 'https://ethereum-magicians.org/t/pectra-network-upgrade-meta-thread/16809'
   },
   {

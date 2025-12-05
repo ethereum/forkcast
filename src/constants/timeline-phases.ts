@@ -44,6 +44,37 @@ export const GLAMSTERDAM_TIMELINE_PHASES: TimelinePhase[] = [
   }
 ];
 
+export const PECTRA_TIMELINE_PHASES: TimelinePhase[] = [
+  {
+    id: 'devnets',
+    title: 'Devnets',
+    dateRange: 'Complete',
+    description: 'Client teams implement and test Pectra changes on internal development networks.',
+    status: 'completed'
+  },
+  {
+    id: 'holesky',
+    title: 'Holešky Testnet Deployment',
+    dateRange: 'Feb 24',
+    description: 'Deploy Pectra to a testnet for initial testing.',
+    status: 'completed'
+  },
+  {
+    id: 'sepolia',
+    title: 'Sepolia Testnet Deployment',
+    dateRange: 'Mar 5',
+    description: 'Deploy Pectra to the permissioned validator testnet.',
+    status: 'completed'
+  },
+  {
+    id: 'mainnet',
+    title: 'Mainnet Deployment',
+    dateRange: 'May 7',
+    description: 'Final deployment of Pectra to Ethereum mainnet after successful testnet validation.',
+    status: 'completed'
+  }
+];
+
 export const FUSAKA_TIMELINE_PHASES: TimelinePhase[] = [
   {
     id: 'devnets',

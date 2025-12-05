@@ -4,6 +4,7 @@ export * from './ClientTestingProgress';
 export * from './EipCard';
 export * from './FusakaTimeline';
 export * from './GlamsterdamTimeline';
+export * from './PectraTimeline';
 export * from './HeadlinerOptions';
 export * from './NetworkUpgradeTimeline';
 export * from './OverviewSection';

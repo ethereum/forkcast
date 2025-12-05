@@ -23,6 +23,7 @@ import {
   NetworkUpgradeTimeline,
   FusakaTimeline,
   GlamsterdamTimeline,
+  PectraTimeline,
   TableOfContents,
   OverviewSection,
   ClientPerspectives,
@@ -127,12 +128,9 @@ const PublicNetworkUpgradePage: React.FC<PublicNetworkUpgradePageProps> = ({
   // Generate TOC items
   const tocItems = [
     { id: 'overview', label: 'Overview', type: 'section' as const, count: null as number | null },
-    // Add timeline sections for specific forks
-    ...(forkName.toLowerCase() === 'glamsterdam' ? [
-      { id: 'glamsterdam-timeline', label: 'Timeline', type: 'section' as const, count: null as number | null }
-    ] : []),
-    ...(forkName.toLowerCase() === 'fusaka' ? [
-      { id: 'fusaka-timeline', label: 'Timeline', type: 'section' as const, count: null as number | null }
+    // Add timeline section for forks that have one
+    ...(['glamsterdam', 'fusaka', 'pectra'].includes(forkName.toLowerCase()) ? [
+      { id: `${forkName.toLowerCase()}-timeline`, label: 'Timeline', type: 'section' as const, count: null as number | null }
     ] : []),
 
     // Show EIP sections for all forks (including Glamsterdam)
@@ -371,45 +369,44 @@ const PublicNetworkUpgradePage: React.FC<PublicNetworkUpgradePageProps> = ({
                 onExternalLinkClick={handleExternalLinkClick}
               />
 
-              {/* Glamsterdam Timeline Section */}
-              {forkName.toLowerCase() === 'glamsterdam' && (
-                <div className="space-y-6" id="glamsterdam-timeline" data-section>
-                  <div className="border-b border-slate-200 dark:border-slate-700 pb-4">
-                    <div className="flex items-center gap-3 mb-2">
-                      <h2 className="text-xl font-medium text-slate-900 dark:text-slate-100">Timeline</h2>
-                      <CopyLinkButton
-                        sectionId="glamsterdam-timeline"
-                        title="Copy link to timeline"
-                        size="sm"
-                      />
+              {/* Timeline Section */}
+              {(() => {
+                const timelineConfig: Record<string, { description: string; component: React.ReactNode }> = {
+                  glamsterdam: {
+                    description: 'The planning timeline for Glamsterdam, showing the progression from headliner selection to final implementation decisions.',
+                    component: <GlamsterdamTimeline />
+                  },
+                  fusaka: {
+                    description: 'The deployment timeline for Fusaka, showing the progression from devnets through testnet deployments to mainnet.',
+                    component: <FusakaTimeline />
+                  },
+                  pectra: {
+                    description: 'The deployment timeline for Pectra, showing the progression from devnets through testnet deployments to mainnet.',
+                    component: <PectraTimeline />
+                  }
+                };
+                const config = timelineConfig[forkName.toLowerCase()];
+                if (!config) return null;
+                const sectionId = `${forkName.toLowerCase()}-timeline`;
+                return (
+                  <div className="space-y-6" id={sectionId} data-section>
+                    <div className="border-b border-slate-200 dark:border-slate-700 pb-4">
+                      <div className="flex items-center gap-3 mb-2">
+                        <h2 className="text-xl font-medium text-slate-900 dark:text-slate-100">Timeline</h2>
+                        <CopyLinkButton
+                          sectionId={sectionId}
+                          title="Copy link to timeline"
+                          size="sm"
+                        />
+                      </div>
+                      <p className="text-sm text-slate-600 dark:text-slate-300 max-w-3xl">
+                        {config.description}
+                      </p>
                     </div>
-                    <p className="text-sm text-slate-600 dark:text-slate-300 max-w-3xl">
-                      The planning timeline for Glamsterdam, showing the progression from headliner selection to final implementation decisions.
-                    </p>
+                    {config.component}
                   </div>
-                  <GlamsterdamTimeline />
-                </div>
-              )}
-
-              {/* Fusaka Timeline Section */}
-              {forkName.toLowerCase() === 'fusaka' && (
-                <div className="space-y-6" id="fusaka-timeline" data-section>
-                  <div className="border-b border-slate-200 dark:border-slate-700 pb-4">
-                    <div className="flex items-center gap-3 mb-2">
-                      <h2 className="text-xl font-medium text-slate-900 dark:text-slate-100">Timeline</h2>
-                      <CopyLinkButton
-                        sectionId="fusaka-timeline"
-                        title="Copy link to timeline"
-                        size="sm"
-                      />
-                    </div>
-                    <p className="text-sm text-slate-600 dark:text-slate-300 max-w-3xl">
-                      The deployment timeline for Fusaka, showing the progression from devnets through testnet deployments to mainnet.
-                    </p>
-                  </div>
-                  <FusakaTimeline />
-                </div>
-              )}
+                );
+              })()}
 
               {/* EIPs Grouped by Stage */}
               {/* For Live upgrades, only show Included and Declined for Inclusion */}

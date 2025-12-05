@@ -2,15 +2,9 @@ import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import ThemeToggle from './ui/ThemeToggle';
 import { protocolCalls, type Call } from '../data/calls';
+import { timelineEvents, type TimelineEvent } from '../data/events';
 import { fetchUpcomingCalls, type UpcomingCall } from '../utils/github';
 import GlobalCallSearch from './GlobalCallSearch';
-
-interface TimelineEvent {
-  type: 'event';
-  date: string;
-  title: string;
-  category: 'mainnet' | 'testnet' | 'milestone' | 'announcement' | 'devnet';
-}
 
 const CallsIndexPage: React.FC = () => {
   const [selectedFilter, setSelectedFilter] = useState<string>('all');
@@ -19,117 +13,6 @@ const CallsIndexPage: React.FC = () => {
   const [searchOpen, setSearchOpen] = useState(false);
 
   const calls = protocolCalls;
-
-  const timelineEvents: TimelineEvent[] = [
-    {
-      type: 'event',
-      date: '2025-05-07',
-      title: 'Pectra Live on Mainnet',
-      category: 'mainnet'
-    },
-    {
-      type: 'event',
-      date: '2025-05-26',
-      title: 'Fusaka Devnet-0 Launches',
-      category: 'devnet'
-    },
-    {
-      type: 'event',
-      date: '2025-06-09',
-      title: 'Fusaka Devnet-1 Launches',
-      category: 'devnet'
-    },
-    {
-      type: 'event',
-      date: '2025-06-26',
-      title: 'Fusaka Devnet-2 Launches',
-      category: 'devnet'
-    },
-    {
-      type: 'event',
-      date: '2025-07-23',
-      title: 'Fusaka Devnet-3 Launches',
-      category: 'devnet'
-    },
-    {
-      type: 'event',
-      date: '2025-07-30',
-      title: 'Ethereum Turns 10! 🎉',
-      category: 'milestone'
-    },
-    {
-      type: 'event',
-      date: '2025-08-08',
-      title: 'Fusaka Devnet-4 Launches',
-      category: 'devnet'
-    },
-    {
-      type: 'event',
-      date: '2025-09-10',
-      title: 'Fusaka Devnet-5 Launches',
-      category: 'devnet'
-    },
-    {
-      type: 'event',
-      date: '2025-10-01',
-      title: 'Fusaka Live on Holešky Testnet',
-      category: 'testnet'
-    },
-    {
-      type: 'event',
-      date: '2025-10-07',
-      title: 'Fusaka BPO1 on Holešky (10/15 blobs)',
-      category: 'testnet'
-    },
-    {
-      type: 'event',
-      date: '2025-10-13',
-      title: 'Fusaka BPO2 on Holešky (14/21 blobs)',
-      category: 'testnet'
-    },
-    {
-      type: 'event',
-      date: '2025-10-14',
-      title: 'Fusaka Live on Sepolia Testnet',
-      category: 'testnet'
-    },
-    {
-      type: 'event',
-      date: '2025-10-21',
-      title: 'Fusaka BPO1 on Sepolia (10/15 blobs)',
-      category: 'testnet'
-    },
-    {
-      type: 'event',
-      date: '2025-10-27',
-      title: 'Fusaka BPO2 on Sepolia (14/21 blobs)',
-      category: 'testnet'
-    },
-    {
-      type: 'event',
-      date: '2025-10-28',
-      title: 'Fusaka Live on Hoodi Testnet',
-      category: 'testnet'
-    },
-    {
-      type: 'event',
-      date: '2025-11-05',
-      title: 'Fusaka BPO1 on Hoodi (10/15 blobs)',
-      category: 'testnet'
-    },
-    {
-      type: 'event',
-      date: '2025-11-12',
-      title: 'Fusaka BPO2 on Hoodi (14/21 blobs)',
-      category: 'testnet'
-    },
-    {
-      type: 'event',
-      date: '2025-12-03',
-      title: 'Fusaka Live on Mainnet',
-      category: 'mainnet'
-    }
-  ];
 
   // Fetch upcoming calls on component mount
   useEffect(() => {
@@ -300,15 +183,25 @@ const CallsIndexPage: React.FC = () => {
           <div className="space-y-3">
             {(() => {
               let lastMonthYear = '';
-              const today = new Date();
-              today.setHours(0, 0, 0, 0);
+              const now = new Date();
               let hasCrossedToday = false;
 
+              // Helper to check if an item is upcoming, using datetime for events when available
+              const isItemUpcoming = (item: TimelineItem): boolean => {
+                if (item.type === 'event' && (item as TimelineEvent).datetime) {
+                  const eventTime = new Date((item as TimelineEvent).datetime!.replace(' ', 'T') + 'Z');
+                  return eventTime > now;
+                }
+                // For items without datetime, use end of day comparison
+                const [year, month, day] = item.date.split('-').map(Number);
+                const itemDate = new Date(year, month - 1, day, 23, 59, 59);
+                return itemDate > now;
+              };
+
               return sortedItems.map((item, index) => {
-                // Parse date as local time, not UTC
+                // Parse date as local time for display
                 const [year, month, day] = item.date.split('-').map(Number);
                 const itemDate = new Date(year, month - 1, day);
-                itemDate.setHours(0, 0, 0, 0);
                 const monthYear = itemDate.toLocaleDateString('en-US', { month: 'long', year: 'numeric' });
                 const monthName = itemDate.toLocaleDateString('en-US', { month: 'short' });
                 const yearString = itemDate.toLocaleDateString('en-US', { year: 'numeric' });
@@ -319,13 +212,8 @@ const CallsIndexPage: React.FC = () => {
                 }
 
                 // Check if we need to show the today divider
-                const isUpcoming = itemDate > today;
-                const wasPreviousUpcoming = index > 0 ? (() => {
-                  const [prevYear, prevMonth, prevDay] = sortedItems[index - 1].date.split('-').map(Number);
-                  const prevDate = new Date(prevYear, prevMonth - 1, prevDay);
-                  prevDate.setHours(0, 0, 0, 0);
-                  return prevDate > today;
-                })() : true;
+                const isUpcoming = isItemUpcoming(item);
+                const wasPreviousUpcoming = index > 0 ? isItemUpcoming(sortedItems[index - 1]) : true;
                 const showTodayDivider = !hasCrossedToday && wasPreviousUpcoming && !isUpcoming;
 
                 if (showTodayDivider) {
@@ -381,14 +269,6 @@ const CallsIndexPage: React.FC = () => {
                             announcement: 'border-purple-500',
                             devnet: 'border-orange-500'
                           };
-
-                          // Check if event is upcoming
-                          const today = new Date();
-                          today.setHours(0, 0, 0, 0);
-                          const [year, month, day] = event.date.split('-').map(Number);
-                          const eventDate = new Date(year, month - 1, day);
-                          eventDate.setHours(0, 0, 0, 0);
-                          const isUpcoming = eventDate > today;
 
                           return (
                             <div

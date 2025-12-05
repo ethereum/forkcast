@@ -36,14 +36,19 @@ const protocolCalls = getProtocolCalls();
 // Define upgrade routes with their metadata
 const upgrades = [
   {
+    path: 'upgrade/pectra',
+    title: 'Pectra Upgrade - Forkcast',
+    description: 'Account abstraction, validator upgrades, and 2x blob throughput - making Ethereum faster and cheaper. Live on mainnet May 7, 2025.',
+  },
+  {
     path: 'upgrade/fusaka',
-    title: 'Fusaka - Forkcast',
-    description: 'See what\'s on the horizon and how it impacts you. Track Ethereum network upgrades and explore how changes affect users, developers, and the ecosystem.',
+    title: 'Fusaka Upgrade - Forkcast',
+    description: 'PeerDAS enables nodes to specialize in storing subsets of data while maintaining security, dramatically increasing data capacity for Layer 2 networks. Live on mainnet Dec 3, 2025.',
   },
   {
     path: 'upgrade/glamsterdam',
-    title: 'Glamsterdam - Forkcast',
-    description: 'See what\'s on the horizon and how it impacts you. Track Ethereum network upgrades and explore how changes affect users, developers, and the ecosystem.',
+    title: 'Glamsterdam Upgrade - Forkcast',
+    description: 'Enhancing Ethereum with Block-level Access Lists and ePBS for big efficiency and scalability gains.',
   },
 ];
 

@@ -5,9 +5,15 @@ export interface ClientTeamPerspective {
   candidateBlogPostUrl?: string; // For non-headliner (CFI/PFI) commentary
 }
 
+export interface StatusEvent {
+  status: 'Proposed' | 'Considered' | 'Scheduled' | 'Declined' | 'Included';
+  call?: `${'acdc' | 'acde' | 'acdt'}/${number}`;
+  reason?: string;
+}
+
 export interface ForkRelationship {
   forkName: string;
-  status: string;
+  statusHistory: StatusEvent[]; // Ordered oldest -> newest
   isHeadliner?: boolean;
   wasHeadlinerCandidate?: boolean;
   headlinerDiscussionLink?: string;

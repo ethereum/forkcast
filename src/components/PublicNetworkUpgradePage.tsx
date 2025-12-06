@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
-import eipsData from '../data/eips.json';
+import { eipsData } from '../data/eips';
 import { useMetaTags } from '../hooks/useMetaTags';
 import { useAnalytics } from '../hooks/useAnalytics';
 import { EIP, ClientTeamPerspective } from '../types';

@@ -9,6 +9,7 @@ import { getUpgradeById } from './data/upgrades';
 import { useAnalytics } from './hooks/useAnalytics';
 import { ThemeProvider } from './contexts/ThemeContext';
 import ExternalRedirect from './components/ExternalRedirect';
+import EipPage from './components/EipPage';
 
 function RedirectHandler() {
   const navigate = useNavigate();
@@ -105,6 +106,7 @@ function App() {
           <Route path="/calls" element={<CallsIndexPage />} />
           <Route path="/calls/*" element={<CallPage />} />
           <Route path="/feedback" element={<ExternalRedirect />} />
+          <Route path="/eips/:id" element={<EipPage />} />
           {/* Catch-all route that redirects to home page */}
           <Route path="*" element={<Navigate to="/" replace />} />
         </Routes>

@@ -69,6 +69,7 @@ export const protocolCalls: Call[] = [
   { type: 'acdt', date: '2025-11-03', number: '060', path: 'acdt/060' },
   { type: 'acdt', date: '2025-11-10', number: '061', path: 'acdt/061' },
   { type: 'acdt', date: '2025-12-01', number: '062', path: 'acdt/062' },
+  { type: 'acdt', date: '2025-12-08', number: '063', path: 'acdt/063' },
 
   // ePBS calls
   { type: 'epbs', date: '2025-08-15', number: '021', path: 'epbs/021' },

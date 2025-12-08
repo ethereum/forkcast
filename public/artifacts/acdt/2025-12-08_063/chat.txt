@@ -1,0 +1,176 @@
+00:03:38	Stefan Starflinger:	Hello
+00:04:08	Justin Traglia:	Gm
+00:07:56	Barnabas:	sounds like epbs fixes this 😂
+00:08:03	Barnabas:	hate to sound like potuz
+00:08:55	Barnabas:	p2p team did something great: https://ethp2p.github.io/notebooks/02-blob-flow.html
+00:09:02	Bharath:	Reacted to "p2p team did somethi..." with ❤️
+00:09:06	Bharath:	Reacted to "sounds like epbs fix..." with 😂
+00:09:12	Justin Traglia:	Reacted to "p2p team did somethi..." with ❤️
+00:09:22	Raúl Kripalani:	hey! actually i'd like to give an update on mainnet and Fusaka
+00:09:26	Raúl Kripalani:	in preparation for BPO1
+00:09:27	Justin Traglia:	Replying to "p2p team did somethi..."
+
+That’s cool 🙂
+00:10:20	Bharath:	Replying to "sounds like epbs fix..."
+
+I don’t think ePBS fixes this, if a staked builder doesn’t implement the builder-api, we could kinda get fucked regardless lmaoo
+00:10:29	Ameziane Hamlat:	Reacted to "p2p team did somethi..." with ❤️
+00:10:38	Bharath:	Replying to "sounds like epbs fix..."
+
+And by builder-api I mean the direct connection from proposer to builder
+00:10:38	Barnabas:	BPO1 is actually almost exactly 24h away
+00:12:11	spencer-tb:	Reacted to "BPO1 is actually alm..." with ❤️
+00:12:14	Bharath:	Reacted to "BPO1 is actually alm..." with ❤️
+00:12:21	Antoine James:	Reacted to "p2p team did somethi..." with ❤️
+00:12:28	Barnabas:	do we know why blob count 2/5/7/8 so infrequent?
+00:12:54	James He:	This isn’t something specific to fulu, but fulu definitely made it a lot worse, https://github.com/OffchainLabs/prysm/issues/16096, this also includes a work around , the workaround isn’t perfect but it’s a solution until we have something more permanent in
+00:13:07	Justin Traglia:	Reacted to "BPO1 is actually alm..." with ❤️
+00:13:29	Justin Traglia:	Reacted to "This isn’t something..." with 🤔
+00:13:38	Bharath:	It would be good to know how late relays are broadcasting blocks post Fusaka since that can impact data column broadcast
+00:14:10	Pawan Dhananjay:	Reacted to "It would be good to ..." with 👍
+00:15:56	Barnabas:	Replying to "sounds like epbs fix..."
+
+staked builders would be required to have builder-api.
+00:16:04	Barnabas:	Replying to "sounds like epbs fix..."
+
+otherwise they couldn’t be a builder no?
+00:16:29	felipe:	Reacted to "p2p team did somet..." with ❤️
+00:16:48	Pawan Dhananjay:	Do we have any data for getBlobs effectiveness?
+00:17:22	Pawan Dhananjay:	Very cool visualizations btw 👌
+00:17:43	felipe:	Reacted to "Very cool visualiz..." with 💯
+00:17:45	Dustin:	what is the incentive to include blobs?
+00:17:52	Dustin:	for FB
+00:18:01	spencer-tb:	Reacted to "Very cool visualizat..." with 💯
+00:18:03	Barnabas:	Reacted to "Very cool visualizat..." with 💯
+00:18:25	Barnabas:	Replying to "what is the incentiv..."
+
+0.004Gwei 😂
+00:18:43	Mario Vega:	Reacted to "Very cool visualizat..." with 💯
+00:18:57	Antoine James:	Reacted to "Very cool visualizat..." with 💯
+00:19:25	Jen:	Reacted to "Very cool visualizat..." with 💯
+00:19:30	Justin Traglia:	Replying to "for FB"
+
+flashbots?
+00:19:40	Dustin:	Replying to "for FB"
+
+Yeah
+00:19:54	Pooja Ranjan:	Reacted to "Very cool visualizat..." with 💯
+00:20:06	Mehdi Aouadi:	Reacted to "Very cool visualizat..." with 💯
+00:20:13	0xAphrodETH:	Reacted to "Very cool visualizat..." with 💯
+00:20:19	Raúl Kripalani:	yeah sorry i just dropped this without even putting it on the agenda 😄
+00:21:03	Bharath:	Replying to "sounds like epbs fix..."
+
+Not necessarily, if they have staked the amount with a 0x03 withdraw credential. You become a builder.
+I guess if you don’t implement the builder-api its still fine since you can use the p2p bidpool
+00:21:06	Raúl Kripalani:	Reacted to "Very cool visualizat..." with ❤️
+00:21:26	Raúl Kripalani:	pls drop viz requests here
+00:21:47	nflaig:	Replying to "sounds like epbs fix..."
+
+if the builder has a bug you would still have a slot with an empty execution payload
+
+the difference is that the CL part of the block would not be missed but that's due to the decoupling of CL<>EL block, not really related to whether you have staked builders or not
+00:22:02	Bharath:	Reacted to "if the builder has a..." with 👍
+00:22:06	Pawan Dhananjay:	Reacted to "if the builder has a..." with 👍
+00:22:31	Justin Traglia:	Replying to "for FB"
+
+Builders have an incentive to include blobs for the blob fees. Relays are just an intermediate without incentives/disincentives.
+00:22:43	Raúl Kripalani:	Replying to "do we know why blob ..."
+
+not at the moment, but once we have the correlations we may see some interesting patterns. in parallel we can ask builders/relays
+00:22:51	nflaig:	Reacted to "Very cool visualizat..." with 💯
+00:23:18	Barnabas:	Reacted to "not at the moment, b..." with 👍
+00:24:22	Raúl Kripalani:	Replying to "for FB"
+
+yep it might just be that the builders that work with Flashbots bias towards 0 blobs
+00:24:30	Stefan Starflinger:	* Update the debug endpoint (if possible) https://notes.ethereum.org/@ethpandaops/bal-devnet-0#Besu-debug-endpoint
+00:24:38	Marius van der Wijden:	What happened after 13 epochs?
+00:25:15	Stefan Starflinger:	* https://github.com/ethereum/execution-specs/pull/1846 SELFDESTRUCT GAS Boundry
+00:25:37	Bharath:	Reacted to "not at the moment, b..." with 👍
+00:26:01	Raúl Kripalani:	Replying to "Very cool visualizat..."
+
+thanks! source is here: https://github.com/ethp2p/notebooks feel free to open issues for visualizations you'd like to see
+00:26:58	Stefan Starflinger:	* devnet-0 https://dora.bal-devnet-0.ethpandaops.io/
+00:27:05	Pawan Dhananjay:	Reacted to "thanks! source is he..." with ❤️
+00:27:17	Justin Traglia:	In prep for the ePBS update. We had a breakout call on Friday. Talked about dynamic penalties (solves the free option problem), the non-staked builder api, and trustless payments. We’re going to make the decision on trustless payments (keep or remove) at ACDC this Thursday.
+
+A short recap:
+https://x.com/JustinTraglia/status/1997021426914668843
+
+The next breakout call is Dec 19th:
+https://github.com/ethereum/pm/issues/1835
+
+Which happens to be the last ePBS breakout call. Starting in 2026, we would like to discuss dev updates here at ACDT.
+00:28:13	Marius van der Wijden:	Reacted to Screenshot2025_12_08_152435.jpg with "😂"
+00:28:14	Mario Vega:	Reacted to "Screenshot2025_12_08_152435.jpg" with 😂
+00:28:16	felipe:	Reacted to "Screenshot2025_12_..." with 😂
+00:28:20	Stefan Starflinger:	shhh no one should know
+00:28:21	jochem-brouwer:	Heeft gereageerd op "Screenshot2025_12_..." met 😂
+00:28:24	Karim T. (matkt):	Reacted to "Screenshot2025_12_08_152435.jpg" with 😂
+00:28:25	Akash | ECH:	Reacted to "Screenshot2025_12_08_152435.jpg" with 😂
+00:28:34	raxhvl:	Reacted to "Barnabas has sent yo..." with 😂
+00:28:35	Pawan Dhananjay:	Reacted to "Screenshot2025_12_08_152435.jpg" with 😂
+00:28:37	Katya:	Are clients interested in defining some ePBS metrics across the clients for devnets?
+00:28:44	Pawan Dhananjay:	Reacted to "In prep for the ePBS..." with 👍
+00:29:00	Justin Traglia:	Replying to "In prep for the ePBS..."
+
+Also, I've been working on refactoring withdrawals code in the specs. Hoping to get this merged this week.
+00:29:03	spencer-tb:	Reacted to "Screenshot2025_12_08_152435.jpg" with 😂
+00:29:28	Katya:	Reacted to "Screenshot2025_12_08_152435.jpg" with 🔥
+00:29:33	Raúl Kripalani:	Reacted to "It would be good to ..." with 👍
+00:29:36	Jihoon:	Reacted to "Also, I've been work…" with 👍
+00:29:44	felipe:	Reacted to "* https://github.c..." with 💯
+00:30:20	Mehdi Aouadi:	Reacted to "Screenshot2025_12_08_152435.jpg" with 😂
+00:30:38	Barnabas:	@Justin Traglia probably worth raising, that on last friday’s call we didn’t hear any significant argument why we should remove trustless payments.
+00:31:02	Caleb:	Reacted to "@Justin Traglia pr..." with 👍
+00:32:26	Stefan Starflinger:	Reacted to "@Justin Traglia prob..." with 👍
+00:32:28	Justin Traglia:	Reacted to "Screenshot2025_12_08_152435.jpg" with 😂
+00:32:54	alex:	Replying to "@Justin Traglia prob..."
+
+ehhh 😅 . i guess that’s subjective. are you sure you’re speaking for everyone?
+00:33:17	alex:	Replying to "@Justin Traglia prob..."
+
+i do see three thumbs up 👍
+00:33:23	Stefan Starflinger:	Replying to "@Justin Traglia prob..."
+
+I was a little confused by calling relays and block builders the opinion of the community. Are RPC providers also community?
+00:33:28	Dustin:	Reacted to "@Justin Traglia pr..." with 👍
+00:33:52	Justin Traglia:	I haven’t thought about it much. Too early.
+00:34:02	Bharath:	Reacted to "I haven’t thought ab..." with 👍
+00:34:12	alex:	maybe quick note that to me its not clear at all that even if trustless lands side-cars are out. to me that’s still an open discussion. if others disagree feel free to add your view.
+00:34:59	alex:	Replying to "@Justin Traglia prob..."
+
+100%. community is much wider. “out of protocol block building actors” is maybe what was meant.
+00:35:07	Mario Vega:	Reacted to "Are clients interest..." with 👍🏼
+00:37:23	spencer-tb:	PR has details for bench artefacts: https://github.com/ethereum/execution-specs/pull/1827
+00:37:32	Bharath:	Replying to "maybe quick note tha..."
+
+Yeah we need to weigh out the pros and cons for staked and unstaked builders.
+https://github.com/ethereum/consensus-specs/pull/4733  allows builders to specify off-protocol payments they want to make. We definitely will have a builder-api for staked builders which seems to be similar to the status quo today. It seems to me that relays can stake 32eth, become a builder and just opt out of trustless payments?
+00:38:02	Bharath:	Replying to "maybe quick note tha..."
+
+My initial hand at the builder-api for unstaked builders, it seems like it could get a bit complicated for clients and relays. Complexity is always debatable tho
+00:40:02	Mario Vega:	https://github.com/ethereum/execution-apis/pull/710
+00:40:12	spencer-tb:	Reacted to "https://github.com/e..." with ❤️
+00:42:46	Barnabas:	maybe bundle similar type EIPs together?
+00:42:52	Barnabas:	instead of having all its own release?
+00:44:40	Barnabas:	I think its up to the STEEL team, what they prefer
+00:44:42	Barnabas:	and which is faster
+00:44:57	Barnabas:	if we have to spend weeks rebasing it later, then maybe better to just have everything be based on top of BALs
+00:45:05	Marc:	seems a bit simpler to test with BALs but no strong preference
+00:45:15	Stefan Starflinger:	makes sense
+00:45:35	spencer-tb:	Nice! Lets aim for that
+00:45:41	raxhvl:	Would lean w/ BAL too, would be interesting to see interaction with other EIPs
+00:45:47	Karim T. (matkt):	Reacted to "Would lean w/ BAL to..." with ➕
+00:45:51	felipe:	Reacted to "Would lean w/ BAL ..." with ➕
+00:45:55	jochem-brouwer:	Heeft gereageerd op "Would lean w/ BAL ..." met ➕
+00:45:55	Mario Vega:	Reacted to "Would lean w/ BAL to..." with ➕
+00:45:57	Stefan Starflinger:	but lest aim for devnet-3 for this
+00:46:02	spencer-tb:	Reacted to "but lest aim for dev..." with ❤️
+00:46:07	felipe:	Reacted to "but lest aim for d..." with 👍
+00:46:11	Stefan Starflinger:	2/3
+00:46:16	Mario Vega:	Reacted to "but lest aim for dev..." with 👍
+00:46:17	felipe:	Reacted to "2/3" with 👍
+00:46:19	alex:	Reacted to "Yeah we need to weig..." with 👀
+00:46:28	pk910:	Reacted to "BPO1 is actually alm..." with ❤️
+00:46:29	spencer-tb:	Reacted to "2/3" with 👍
+00:46:35	Justin Traglia:	Bye everyone

@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef, useCallback } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { Link, useParams, useLocation } from 'react-router-dom';
 import YouTube, { YouTubeProps } from 'react-youtube';
 import ChatLog from './ChatLog';
@@ -39,9 +39,7 @@ const CallPage: React.FC = () => {
   const [summaryExpanded, setSummaryExpanded] = useState(false);
   const transcriptRef = useRef<HTMLDivElement>(null);
   const chatLogRef = useRef<HTMLDivElement>(null);
-  const [isUserScrolling, setIsUserScrolling] = useState(false);
   const [isUserScrollingTranscript, setIsUserScrollingTranscript] = useState(false);
-  const scrollTimeoutRef = useRef<ReturnType<typeof setTimeout> | undefined>(undefined);
   const transcriptScrollTimeoutRef = useRef<ReturnType<typeof setTimeout> | undefined>(undefined);
   const isProgrammaticScrollRef = useRef(false);
   const lastHighlightedTimestampRef = useRef<string | null>(null);
@@ -255,83 +253,6 @@ const CallPage: React.FC = () => {
     return transcriptSeconds - syncOffsetSeconds;
   };
 
-  // Handle transcript scroll
-  const handleTranscriptScroll = useCallback(() => {
-    if (!transcriptRef.current || !chatLogRef.current || !callData?.chatContent || !callData?.transcriptContent) return;
-
-    // Set flag to prevent feedback loop
-    if (isUserScrolling) return;
-
-    const transcriptContainer = transcriptRef.current;
-    const transcriptEntries = transcriptContainer.querySelectorAll('[data-timestamp]');
-
-    // Find the visible transcript entry
-    let visibleTimestamp = 0;
-
-    const containerTop = transcriptContainer.scrollTop;
-    const containerHeight = transcriptContainer.clientHeight;
-    const viewportMiddle = containerTop + containerHeight / 3; // Focus on upper third of viewport
-
-    transcriptEntries.forEach((entry) => {
-      const element = entry as HTMLElement;
-      const elementTop = element.offsetTop;
-
-      if (elementTop <= viewportMiddle && elementTop > containerTop) {
-        const timestamp = element.getAttribute('data-timestamp');
-        if (timestamp) {
-          visibleTimestamp = timestampToSeconds(formatTimestamp(timestamp));
-        }
-      }
-    });
-
-    if (visibleTimestamp > 0) {
-      // Find corresponding chat message
-      const chatContainer = chatLogRef.current;
-      const chatMessages = chatContainer.querySelectorAll('[data-chat-timestamp]');
-
-      let closestMessage: HTMLElement | null = null;
-      let closestDiff = Infinity;
-
-      chatMessages.forEach((message) => {
-        const element = message as HTMLElement;
-        const chatTimestamp = element.getAttribute('data-chat-timestamp');
-        if (chatTimestamp) {
-          const chatSeconds = timestampToSeconds(chatTimestamp);
-          const diff = Math.abs(chatSeconds - visibleTimestamp);
-
-          if (diff < closestDiff) {
-            closestDiff = diff;
-            closestMessage = element;
-          }
-        }
-      });
-
-      if (closestMessage && chatContainer) {
-        // Scroll chat to show the closest message within its container only
-        setIsUserScrolling(true);
-
-        const messageElement = closestMessage as HTMLElement;
-        const messageOffsetTop = messageElement.offsetTop;
-        const messageHeight = messageElement.offsetHeight;
-        const containerHeight = chatContainer.clientHeight;
-
-        // Center the message in the container
-        const targetScrollTop = messageOffsetTop - (containerHeight / 2) + (messageHeight / 2);
-
-        chatContainer.scrollTo({
-          top: targetScrollTop,
-          behavior: 'smooth'
-        });
-
-        // Reset flag after animation
-        if (scrollTimeoutRef.current) clearTimeout(scrollTimeoutRef.current);
-        scrollTimeoutRef.current = setTimeout(() => {
-          setIsUserScrolling(false);
-        }, 300);
-      }
-    }
-  }, [callData, isUserScrolling]);
-
   useEffect(() => {
     const loadCallData = async () => {
       if (!callPath) {
@@ -451,12 +372,9 @@ const CallPage: React.FC = () => {
     loadCallData();
   }, [callPath]);
 
-  // Clean up timeout and interval on unmount
+  // Clean up interval on unmount
   useEffect(() => {
     return () => {
-      if (scrollTimeoutRef.current) {
-        clearTimeout(scrollTimeoutRef.current);
-      }
       if (pollingIntervalRef.current) {
         clearInterval(pollingIntervalRef.current);
       }
@@ -1158,7 +1076,6 @@ const CallPage: React.FC = () => {
                 <div
                   ref={transcriptRef}
                   className="space-y-1 max-h-[400px] overflow-y-auto pr-2"
-                  onScroll={handleTranscriptScroll}
                 >
                   {parseVTTTranscript(callData.transcriptContent)
                     .filter(entry => {

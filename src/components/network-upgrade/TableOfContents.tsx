@@ -6,6 +6,7 @@ interface TOCItem {
   label: string;
   type: 'section' | 'eip';
   count: number | null;
+  layer?: 'EL' | 'CL' | null;
 }
 
 type LayerFilter = 'all' | 'EL' | 'CL';
@@ -80,7 +81,7 @@ export const TableOfContents: React.FC<TableOfContentsProps> = ({
 
   return (
     <div className="hidden lg:block w-64 flex-shrink-0">
-      <div className="sticky top-6 overflow-y-auto max-h-[calc(100vh-3rem)]">
+      <div className="sticky top-6 overflow-y-auto max-h-[calc(100vh-3rem)] z-[9999]">
         <div className="flex items-center justify-between mb-4">
           <h3 className="text-sm font-semibold text-slate-900 dark:text-slate-100 uppercase tracking-wide">Contents</h3>
           <Tooltip text="Scroll to top" position="bottom">
@@ -168,32 +169,59 @@ export const TableOfContents: React.FC<TableOfContentsProps> = ({
         )}
 
         <nav className="space-y-1">
-          {filteredItems.map((item) => (
-            <button
-              key={item.id}
-              onClick={() => onSectionClick(item.id)}
-              className={`w-full text-left rounded transition-colors ${
-                item.type === 'section'
-                  ? `px-3 py-2 text-sm ${
-                      activeSection === item.id
-                        ? 'bg-purple-100 text-purple-800 dark:bg-purple-900/20 dark:text-purple-300 font-medium'
-                        : 'text-slate-600 dark:text-slate-300 hover:text-slate-900 dark:hover:text-slate-100 hover:bg-slate-100 dark:hover:bg-slate-700'
-                    }`
-                  : `px-6 py-1.5 text-xs ${
-                      activeSection === item.id
-                        ? 'bg-purple-50 text-purple-700 dark:bg-purple-900/10 dark:text-purple-300 font-medium'
-                        : 'text-slate-500 dark:text-slate-400 hover:text-slate-700 dark:hover:text-slate-200 hover:bg-slate-50 dark:hover:bg-slate-700/50'
-                    }`
-              }`}
-            >
-              <div className="flex items-center justify-between">
-                <span className={item.type === 'eip' ? 'truncate' : ''}>{item.label}</span>
-                {item.count && !searchQuery && (
-                  <span className="text-xs text-slate-400 dark:text-slate-500 flex-shrink-0 ml-2">{item.count}</span>
-                )}
-              </div>
-            </button>
-          ))}
+          {filteredItems.map((item) => {
+            const button = (
+              <button
+                key={item.id}
+                onClick={() => onSectionClick(item.id)}
+                className={`w-full text-left rounded transition-colors ${
+                  item.type === 'section'
+                    ? `px-3 py-2 text-sm ${
+                        activeSection === item.id
+                          ? 'bg-purple-100 text-purple-800 dark:bg-purple-900/20 dark:text-purple-300 font-medium'
+                          : 'text-slate-600 dark:text-slate-300 hover:text-slate-900 dark:hover:text-slate-100 hover:bg-slate-100 dark:hover:bg-slate-700'
+                      }`
+                    : `px-6 py-1.5 text-xs cursor-pointer ${
+                        activeSection === item.id
+                          ? 'bg-purple-50 text-purple-700 dark:bg-purple-900/10 dark:text-purple-300 font-medium'
+                          : 'text-slate-500 dark:text-slate-400 hover:text-slate-700 dark:hover:text-slate-200 hover:bg-slate-50 dark:hover:bg-slate-700/50'
+                      }`
+                }`}
+              >
+                <div className="flex items-center justify-between">
+                  <span className={item.type === 'eip' ? 'truncate' : ''}>{item.label}</span>
+                  {item.count && !searchQuery && (
+                    <span className="text-xs text-slate-400 dark:text-slate-500 flex-shrink-0 ml-2">{item.count}</span>
+                  )}
+                </div>
+              </button>
+            );
+
+            if (item.type === 'eip') {
+              const tooltipContent = (
+                <span className="flex items-center gap-2">
+                  {item.layer && (
+                    <span className={`px-1.5 py-0.5 text-xs font-medium rounded ${
+                      item.layer === 'EL'
+                        ? 'bg-indigo-100 text-indigo-700 dark:bg-indigo-900/20 dark:text-indigo-300'
+                        : 'bg-teal-100 text-teal-700 dark:bg-teal-900/20 dark:text-teal-300'
+                    }`}>
+                      {item.layer}
+                    </span>
+                  )}
+                  <span>{item.label}</span>
+                </span>
+              );
+
+              return (
+                <Tooltip key={item.id} content={tooltipContent} position="right">
+                  {button}
+                </Tooltip>
+              );
+            }
+
+            return <div key={item.id}>{button}</div>;
+          })}
         </nav>
       </div>
     </div>

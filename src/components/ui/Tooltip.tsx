@@ -2,14 +2,16 @@ import React, { useState, useRef } from 'react';
 
 interface TooltipProps {
   children: React.ReactNode;
-  text: string;
+  text?: string;
+  content?: React.ReactNode;
   className?: string;
-  position?: 'top' | 'bottom';
+  position?: 'top' | 'bottom' | 'right';
 }
 
 export const Tooltip: React.FC<TooltipProps> = ({
   children,
   text,
+  content,
   className = '',
   position = 'top'
 }) => {
@@ -20,10 +22,17 @@ export const Tooltip: React.FC<TooltipProps> = ({
     if (!triggerRef.current) return {};
 
     const rect = triggerRef.current.getBoundingClientRect();
-    const tooltipHeight = 28;
-    const padding = 4;
+    const tooltipHeight = 32;
+    const padding = 6;
 
-    if (position === 'bottom') {
+    if (position === 'right') {
+      return {
+        position: 'fixed',
+        top: rect.top + rect.height / 2,
+        left: rect.right + padding,
+        transform: 'translateY(-50%)',
+      };
+    } else if (position === 'bottom') {
       return {
         position: 'fixed',
         top: rect.bottom + padding,
@@ -50,15 +59,10 @@ export const Tooltip: React.FC<TooltipProps> = ({
       {children}
       {isVisible && (
         <div
-          className="bg-slate-800 text-white text-xs px-2 py-1 rounded whitespace-nowrap z-50 shadow-lg dark:bg-slate-600 dark:text-slate-100"
+          className="bg-white dark:bg-slate-800 border-2 border-purple-300 dark:border-purple-600 text-slate-900 dark:text-slate-100 text-xs px-3 py-1.5 rounded-lg whitespace-nowrap z-[9999] shadow-xl"
           style={getTooltipStyle()}
         >
-          {text}
-          <div className={`absolute left-1/2 transform -translate-x-1/2 border-4 border-transparent ${
-            position === 'bottom'
-              ? '-top-2 border-b-slate-800 dark:border-b-slate-600'
-              : 'top-full border-t-slate-800 dark:border-t-slate-600'
-          }`}></div>
+          {content || text}
         </div>
       )}
     </div>

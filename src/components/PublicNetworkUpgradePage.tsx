@@ -54,6 +54,7 @@ const PublicNetworkUpgradePage: React.FC<PublicNetworkUpgradePageProps> = ({
   const [isDeclinedExpanded, setIsDeclinedExpanded] = useState(false);
   const [isHeadlinerProposalsExpanded, setIsHeadlinerProposalsExpanded] = useState(false);
   const [layerFilter, setLayerFilter] = useState<'all' | 'EL' | 'CL'>('all');
+  const [searchQuery, setSearchQuery] = useState('');
   const location = useLocation();
   const { trackUpgradeView, trackLinkClick } = useAnalytics();
 
@@ -123,6 +124,23 @@ const PublicNetworkUpgradePage: React.FC<PublicNetworkUpgradePageProps> = ({
   const filterEipsByLayer = (eipsList: EIP[]) => {
     if (layerFilter === 'all') return eipsList;
     return eipsList.filter(eip => getEipLayer(eip, forkName) === layerFilter);
+  };
+
+  // Filter EIPs by search query
+  const filterEipsBySearch = (eipsList: EIP[]) => {
+    if (!searchQuery.trim()) return eipsList;
+    const query = searchQuery.toLowerCase().trim();
+    return eipsList.filter(eip => {
+      const proposalPrefix = getProposalPrefix(eip);
+      const laymanTitle = getLaymanTitle(eip);
+      const searchableText = `${proposalPrefix}-${eip.id} ${eip.title} ${laymanTitle}`.toLowerCase();
+      return searchableText.includes(query);
+    });
+  };
+
+  // Combined filter function
+  const filterEips = (eipsList: EIP[]) => {
+    return filterEipsBySearch(filterEipsByLayer(eipsList));
   };
 
   // Generate TOC items
@@ -309,52 +327,16 @@ const PublicNetworkUpgradePage: React.FC<PublicNetworkUpgradePageProps> = ({
 
         <NetworkUpgradeTimeline currentForkName={forkName} />
 
-        {/* Layer Filter - Glamsterdam only */}
-        {forkName.toLowerCase() === 'glamsterdam' && (
-          <div className="mb-6 flex items-center gap-3">
-            <span className="text-sm font-medium text-slate-600 dark:text-slate-400">Filter EIPs by layer:</span>
-            <div className="flex gap-2">
-              <button
-                onClick={() => setLayerFilter('all')}
-                className={`px-3 py-1.5 text-sm font-medium rounded transition-colors border ${
-                  layerFilter === 'all'
-                    ? 'bg-purple-100 text-purple-700 border-purple-200 dark:bg-purple-900/20 dark:text-purple-300 dark:border-purple-600'
-                    : 'bg-white text-slate-600 border-slate-200 hover:bg-slate-50 hover:border-slate-300 dark:bg-slate-700 dark:text-slate-300 dark:border-slate-600 dark:hover:bg-slate-600'
-                }`}
-              >
-                All
-              </button>
-              <button
-                onClick={() => setLayerFilter('EL')}
-                className={`px-3 py-1.5 text-sm font-medium rounded transition-colors border ${
-                  layerFilter === 'EL'
-                    ? 'bg-indigo-100 text-indigo-700 border-indigo-200 dark:bg-indigo-900/20 dark:text-indigo-300 dark:border-indigo-600'
-                    : 'bg-white text-slate-600 border-slate-200 hover:bg-slate-50 hover:border-slate-300 dark:bg-slate-700 dark:text-slate-300 dark:border-slate-600 dark:hover:bg-slate-600'
-                }`}
-              >
-                <span className="md:hidden">EL</span>
-                <span className="hidden md:inline">EL (Execution Layer)</span>
-              </button>
-              <button
-                onClick={() => setLayerFilter('CL')}
-                className={`px-3 py-1.5 text-sm font-medium rounded transition-colors border ${
-                  layerFilter === 'CL'
-                    ? 'bg-teal-100 text-teal-700 border-teal-200 dark:bg-teal-900/20 dark:text-teal-300 dark:border-teal-600'
-                    : 'bg-white text-slate-600 border-slate-200 hover:bg-slate-50 hover:border-slate-300 dark:bg-slate-700 dark:text-slate-300 dark:border-slate-600 dark:hover:bg-slate-600'
-                }`}
-              >
-                <span className="md:hidden">CL</span>
-                <span className="hidden md:inline">CL (Consensus Layer)</span>
-              </button>
-            </div>
-          </div>
-        )}
-
         <div className="flex gap-8">
           <TableOfContents
             items={tocItems}
             activeSection={activeSection}
             onSectionClick={scrollToSection}
+            searchQuery={searchQuery}
+            onSearchChange={setSearchQuery}
+            layerFilter={layerFilter}
+            onLayerFilterChange={setLayerFilter}
+            showLayerFilter={forkName.toLowerCase() === 'glamsterdam'}
           />
 
           <div className="flex-1 min-w-0">
@@ -430,8 +412,8 @@ const PublicNetworkUpgradePage: React.FC<PublicNetworkUpgradePageProps> = ({
                   stageEips = stageEips.filter(eip => !isHeadliner(eip, forkName));
                 }
 
-                // Apply layer filter
-                stageEips = filterEipsByLayer(stageEips);
+                // Apply layer and search filters
+                stageEips = filterEips(stageEips);
 
                 if (stageEips.length === 0) return null;
 
@@ -588,13 +570,13 @@ const PublicNetworkUpgradePage: React.FC<PublicNetworkUpgradePageProps> = ({
               })}
 
               {/* Headliner Proposals Section (for Glamsterdam) */}
-              {forkName.toLowerCase() === 'glamsterdam' && filterEipsByLayer(eips.filter(eip => wasHeadlinerCandidate(eip, forkName))).length > 0 && (
+              {forkName.toLowerCase() === 'glamsterdam' && filterEips(eips.filter(eip => wasHeadlinerCandidate(eip, forkName))).length > 0 && (
                 <div className="space-y-6" id="headliner-proposals" data-section>
                   <div className="border-b border-slate-200 dark:border-slate-700 pb-4">
                     <div className="flex items-center gap-3 mb-2">
                       <h2 className="text-xl font-medium text-slate-900 dark:text-slate-100">Headliner Proposals</h2>
                       <span className="px-2 py-1 text-xs font-medium rounded bg-purple-100 text-purple-700 dark:bg-purple-900/20 dark:text-purple-300">
-                        {filterEipsByLayer(eips.filter(eip => wasHeadlinerCandidate(eip, forkName))).length} EIP{filterEipsByLayer(eips.filter(eip => wasHeadlinerCandidate(eip, forkName))).length !== 1 ? 's' : ''}
+                        {filterEips(eips.filter(eip => wasHeadlinerCandidate(eip, forkName))).length} EIP{filterEips(eips.filter(eip => wasHeadlinerCandidate(eip, forkName))).length !== 1 ? 's' : ''}
                       </span>
                       <button
                         onClick={() => setIsHeadlinerProposalsExpanded(!isHeadlinerProposalsExpanded)}
@@ -624,7 +606,7 @@ const PublicNetworkUpgradePage: React.FC<PublicNetworkUpgradePageProps> = ({
                   {!isHeadlinerProposalsExpanded ? (
                     <div className="bg-purple-50 dark:bg-purple-900/10 border border-purple-200 dark:border-purple-600 rounded p-4">
                       <p className="text-sm text-slate-600 dark:text-slate-300">
-                        {filterEipsByLayer(eips.filter(eip => wasHeadlinerCandidate(eip, forkName))).length} headliner proposal{filterEipsByLayer(eips.filter(eip => wasHeadlinerCandidate(eip, forkName))).length !== 1 ? 's' : ''} were considered for inclusion in this network upgrade.
+                        {filterEips(eips.filter(eip => wasHeadlinerCandidate(eip, forkName))).length} headliner proposal{filterEips(eips.filter(eip => wasHeadlinerCandidate(eip, forkName))).length !== 1 ? 's' : ''} were considered for inclusion in this network upgrade.
                         <button
                           onClick={() => setIsHeadlinerProposalsExpanded(true)}
                           className="ml-1 text-purple-700 hover:text-purple-900 dark:text-purple-300 dark:hover:text-purple-100 underline decoration-1 underline-offset-2 transition-colors"
@@ -644,7 +626,7 @@ const PublicNetworkUpgradePage: React.FC<PublicNetworkUpgradePageProps> = ({
                         }}
                       />
 
-                      {filterEipsByLayer(eips)
+                      {filterEips(eips)
                         .filter(eip => wasHeadlinerCandidate(eip, forkName))
                         .sort((a, b) => {
                           const layerA = getEipLayer(a, forkName);

@@ -213,9 +213,10 @@ const PublicNetworkUpgradePage: React.FC<PublicNetworkUpgradePageProps> = ({
 
             return {
               id: `eip-${eip.id}`,
-              label: `${isHeadlinerEip ? `${starSymbol} ` : ''}${proposalPrefix}-${eip.id}: ${getLaymanTitle(eip)}${layer ? ` (${layer})` : ''}`,
+              label: `${isHeadlinerEip ? `${starSymbol} ` : ''}${proposalPrefix}-${eip.id}: ${getLaymanTitle(eip)}`,
               type: 'eip' as const,
-              count: null as number | null
+              count: null as number | null,
+              layer: layer as 'EL' | 'CL' | null
             };
           });
 

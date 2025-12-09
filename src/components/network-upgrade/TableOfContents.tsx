@@ -1,4 +1,5 @@
 import React, { useMemo } from 'react';
+import { Tooltip } from '../ui';
 
 interface TOCItem {
   id: string;
@@ -82,16 +83,17 @@ export const TableOfContents: React.FC<TableOfContentsProps> = ({
       <div className="sticky top-6 overflow-y-auto max-h-[calc(100vh-3rem)]">
         <div className="flex items-center justify-between mb-4">
           <h3 className="text-sm font-semibold text-slate-900 dark:text-slate-100 uppercase tracking-wide">Contents</h3>
-          <button
-            onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
-            className="p-1 text-slate-400 hover:text-slate-600 dark:hover:text-slate-300 transition-colors"
-            aria-label="Scroll to top"
-            title="Scroll to top"
-          >
-            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 19V6M12 6l-5 5M12 6l5 5M5 3h14" />
-            </svg>
-          </button>
+          <Tooltip text="Scroll to top" position="bottom">
+            <button
+              onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
+              className="p-1 text-slate-400 hover:text-slate-600 dark:hover:text-slate-300 transition-colors cursor-pointer"
+              aria-label="Scroll to top"
+            >
+              <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 19V6M12 6l-5 5M12 6l5 5M5 3h14" />
+              </svg>
+            </button>
+          </Tooltip>
         </div>
 
         {/* Search input */}
@@ -118,37 +120,43 @@ export const TableOfContents: React.FC<TableOfContentsProps> = ({
 
         {/* Layer filter */}
         {showLayerFilter && onLayerFilterChange && (
-          <div className="flex gap-1 mb-3">
-            <button
-              onClick={() => onLayerFilterChange('all')}
-              className={`flex-1 px-2 py-1 text-xs font-medium rounded border transition-colors ${
-                layerFilter === 'all'
-                  ? 'border-slate-400 text-slate-700 bg-white dark:border-slate-400 dark:text-slate-200 dark:bg-slate-700'
-                  : 'border-slate-200 text-slate-500 bg-white hover:border-slate-300 dark:border-slate-600 dark:text-slate-400 dark:bg-slate-800 dark:hover:border-slate-500'
-              }`}
-            >
-              All
-            </button>
-            <button
-              onClick={() => onLayerFilterChange('EL')}
-              className={`flex-1 px-2 py-1 text-xs font-medium rounded border transition-colors ${
-                layerFilter === 'EL'
-                  ? 'bg-indigo-100 text-indigo-700 border-indigo-200 dark:bg-indigo-900/20 dark:text-indigo-300 dark:border-indigo-600'
-                  : 'border-slate-200 text-slate-500 bg-white hover:border-slate-300 dark:border-slate-600 dark:text-slate-400 dark:bg-slate-800 dark:hover:border-slate-500'
-              }`}
-            >
-              EL
-            </button>
-            <button
-              onClick={() => onLayerFilterChange('CL')}
-              className={`flex-1 px-2 py-1 text-xs font-medium rounded border transition-colors ${
-                layerFilter === 'CL'
-                  ? 'bg-teal-100 text-teal-700 border-teal-200 dark:bg-teal-900/20 dark:text-teal-300 dark:border-teal-600'
-                  : 'border-slate-200 text-slate-500 bg-white hover:border-slate-300 dark:border-slate-600 dark:text-slate-400 dark:bg-slate-800 dark:hover:border-slate-500'
-              }`}
-            >
-              CL
-            </button>
+          <div className="flex gap-1 mb-3 px-0.5">
+            <Tooltip text="Show all EIPs" position="bottom" className="flex-1">
+              <button
+                onClick={() => onLayerFilterChange('all')}
+                className={`w-full px-2 py-1 text-xs font-medium rounded border transition-colors cursor-pointer ${
+                  layerFilter === 'all'
+                    ? 'border-slate-400 text-slate-700 bg-white dark:border-slate-400 dark:text-slate-200 dark:bg-slate-700'
+                    : 'border-slate-200 text-slate-500 bg-white hover:border-slate-300 dark:border-slate-600 dark:text-slate-400 dark:bg-slate-800 dark:hover:border-slate-500'
+                }`}
+              >
+                All
+              </button>
+            </Tooltip>
+            <Tooltip text="Execution Layer" position="bottom" className="flex-1">
+              <button
+                onClick={() => onLayerFilterChange('EL')}
+                className={`w-full px-2 py-1 text-xs font-medium rounded border transition-colors cursor-pointer ${
+                  layerFilter === 'EL'
+                    ? 'bg-indigo-100 text-indigo-700 border-indigo-200 dark:bg-indigo-900/20 dark:text-indigo-300 dark:border-indigo-600'
+                    : 'border-slate-200 text-slate-500 bg-white hover:border-slate-300 dark:border-slate-600 dark:text-slate-400 dark:bg-slate-800 dark:hover:border-slate-500'
+                }`}
+              >
+                EL
+              </button>
+            </Tooltip>
+            <Tooltip text="Consensus Layer" position="bottom" className="flex-1">
+              <button
+                onClick={() => onLayerFilterChange('CL')}
+                className={`w-full px-2 py-1 text-xs font-medium rounded border transition-colors cursor-pointer ${
+                  layerFilter === 'CL'
+                    ? 'bg-teal-100 text-teal-700 border-teal-200 dark:bg-teal-900/20 dark:text-teal-300 dark:border-teal-600'
+                    : 'border-slate-200 text-slate-500 bg-white hover:border-slate-300 dark:border-slate-600 dark:text-slate-400 dark:bg-slate-800 dark:hover:border-slate-500'
+                }`}
+              >
+                CL
+              </button>
+            </Tooltip>
           </div>
         )}
 

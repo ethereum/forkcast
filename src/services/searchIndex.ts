@@ -26,7 +26,7 @@ class SearchIndexService {
   private readonly DB_NAME = 'forkcast_search';
   private readonly DB_VERSION = 1;
   private readonly STORE_NAME = 'search_index';
-  private readonly INDEX_VERSION = '1.0.4';
+  private readonly INDEX_VERSION = '1.0.5';
   private readonly MAX_INDEX_AGE = 24 * 60 * 60 * 1000; // 24 hours
 
   private constructor() {}
@@ -156,10 +156,11 @@ class SearchIndexService {
         // Fetch all content for this call
         const baseUrl = `/artifacts/${call.type}/${call.date}_${call.number}`;
 
-        const [transcript, chat, agenda] = await Promise.all([
+        const [transcript, chat, agenda, tldr] = await Promise.all([
           fetch(`${baseUrl}/transcript.vtt`).then(res => res.ok ? res.text() : null).catch(() => null),
           fetch(`${baseUrl}/chat.txt`).then(res => res.ok ? res.text() : null).catch(() => null),
-          fetch(`${baseUrl}/agenda.json`).then(res => res.ok ? res.json() : null).catch(() => null)
+          fetch(`${baseUrl}/agenda.json`).then(res => res.ok ? res.json() : null).catch(() => null),
+          fetch(`${baseUrl}/tldr.json`).then(res => res.ok ? res.json() : null).catch(() => null)
         ]);
 
         // Process transcript
@@ -201,6 +202,24 @@ class SearchIndexService {
         // Process agenda (includes action items)
         if (agenda?.agenda) {
           const entries = this.parseAgendaForIndex(agenda, call);
+          entries.forEach(entry => {
+            const docIndex = index.documents.length;
+            index.documents.push(entry);
+            callDocIndices.push(docIndex);
+
+            // Update inverted index
+            entry.tokens.forEach(token => {
+              if (!index.invertedIndex.has(token)) {
+                index.invertedIndex.set(token, new Set());
+              }
+              index.invertedIndex.get(token)!.add(docIndex);
+            });
+          });
+        }
+
+        // Process TLDR (highlights, action items, decisions, targets)
+        if (tldr) {
+          const entries = this.parseTldrForIndex(tldr, call);
           entries.forEach(entry => {
             const docIndex = index.documents.length;
             index.documents.push(entry);
@@ -375,6 +394,88 @@ class SearchIndexService {
         }
       });
     });
+
+    return results;
+  }
+
+  // Parse TLDR for indexing (highlights, action items, decisions, targets)
+  private parseTldrForIndex(tldrData: any, call: any): IndexedContent[] {
+    const results: IndexedContent[] = [];
+
+    // Index highlights (categorized agenda items)
+    if (tldrData.highlights) {
+      Object.values(tldrData.highlights).forEach((categoryHighlights: any) => {
+        categoryHighlights.forEach((item: any) => {
+          if (item.highlight) {
+            results.push({
+              callType: call.type,
+              callDate: call.date,
+              callNumber: call.number,
+              type: 'agenda',
+              timestamp: item.timestamp || '00:00:00',
+              text: item.highlight,
+              tokens: this.tokenize(item.highlight),
+              normalizedText: this.normalize(item.highlight)
+            });
+          }
+        });
+      });
+    }
+
+    // Index action items
+    if (tldrData.action_items && Array.isArray(tldrData.action_items)) {
+      tldrData.action_items.forEach((item: any) => {
+        if (item.action) {
+          results.push({
+            callType: call.type,
+            callDate: call.date,
+            callNumber: call.number,
+            type: 'action',
+            timestamp: item.timestamp || '00:00:00',
+            speaker: item.owner,
+            text: item.action,
+            tokens: this.tokenize(item.action + ' ' + (item.owner || '')),
+            normalizedText: this.normalize(item.action)
+          });
+        }
+      });
+    }
+
+    // Index decisions as agenda items
+    if (tldrData.decisions && Array.isArray(tldrData.decisions)) {
+      tldrData.decisions.forEach((item: any) => {
+        if (item.decision) {
+          results.push({
+            callType: call.type,
+            callDate: call.date,
+            callNumber: call.number,
+            type: 'agenda',
+            timestamp: item.timestamp || '00:00:00',
+            text: item.decision,
+            tokens: this.tokenize(item.decision),
+            normalizedText: this.normalize(item.decision)
+          });
+        }
+      });
+    }
+
+    // Index targets as agenda items
+    if (tldrData.targets && Array.isArray(tldrData.targets)) {
+      tldrData.targets.forEach((item: any) => {
+        if (item.target) {
+          results.push({
+            callType: call.type,
+            callDate: call.date,
+            callNumber: call.number,
+            type: 'agenda',
+            timestamp: item.timestamp || '00:00:00',
+            text: item.target,
+            tokens: this.tokenize(item.target),
+            normalizedText: this.normalize(item.target)
+          });
+        }
+      });
+    }
 
     return results;
   }

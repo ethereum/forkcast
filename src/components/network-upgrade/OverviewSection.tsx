@@ -109,6 +109,23 @@ export const OverviewSection: React.FC<OverviewSectionProps> = ({
         </>
       )}
 
+      {/* Early planning notice for Hekota */}
+      {forkName.toLowerCase() === 'hekota' && (
+        <div className="mb-6 p-4 bg-slate-50 dark:bg-slate-700/50 border border-slate-200 dark:border-slate-600 rounded">
+          <div className="flex items-start gap-3">
+            <svg className="w-5 h-5 text-slate-500 dark:text-slate-400 mt-0.5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+            </svg>
+            <div>
+              <h4 className="font-medium text-slate-900 dark:text-slate-100 text-sm mb-1">Early Planning Stage</h4>
+              <p className="text-slate-600 dark:text-slate-300 text-xs leading-relaxed">
+                Heka/Bogotá is in early planning. The headliner proposal window will open soon. Check back for updates as the upgrade planning process begins.
+              </p>
+            </div>
+          </div>
+        </div>
+      )}
+
       {/* Client Perspectives for candidate EIPs (Glamsterdam only) */}
       {forkName.toLowerCase() === 'glamsterdam' && clientTeamPerspectives && (
         <div className="mb-6">

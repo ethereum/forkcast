@@ -118,11 +118,11 @@ export const networkUpgrades: NetworkUpgrade[] = [
     id: 'hekota',
     path: '/upgrade/hekota',
     name: 'Heka/Bogotá Upgrade',
-    description: 'Future network upgrade currently in early planning stages. Named after the combination of "Heka" (consensus layer upgrade, named after a star) and "Bogota" (execution layer upgrade, named after a Devcon location).',
+    description: 'Future network upgrade currently in early planning stages. Named after the combination of "Heka" (consensus layer upgrade, named after a star) and "Bogotá" (execution layer upgrade, named after a Devcon location).',
     tagline: 'Post-Glamsterdam network upgrade in early planning.',
     status: 'Planning',
     activationDate: 'TBD',
-    disabled: true
+    disabled: false
   }
 ];
 

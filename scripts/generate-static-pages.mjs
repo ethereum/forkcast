@@ -50,6 +50,11 @@ const upgrades = [
     title: 'Glamsterdam Upgrade - Forkcast',
     description: 'Enhancing Ethereum with Block-level Access Lists and ePBS for big efficiency and scalability gains.',
   },
+  {
+    path: 'upgrade/hekota',
+    title: 'Heka/Bogotá Upgrade - Forkcast',
+    description: 'Post-Glamsterdam network upgrade in early planning.',
+  },
 ];
 
 // Get full type name for calls

@@ -112,3 +112,41 @@ export const FUSAKA_TIMELINE_PHASES: TimelinePhase[] = [
     status: 'completed'
   }
 ];
+
+export const HEKOTA_TIMELINE_PHASES: TimelinePhase[] = [
+  {
+    id: 'fork-focus',
+    title: 'Fork Focus Discussion & Headliner Proposals',
+    dateRange: 'Date TBD',
+    description: 'ACD calls focus on discussing Heka/Bogotá\'s high-level goals. Headliner champions present proposals.',
+    status: 'current'
+  },
+  {
+    id: 'headliner-discussion',
+    title: 'Headliner Discussion & Finalization',
+    dateRange: 'Date TBD',
+    description: 'ACD evaluates candidate headliners, solicits community feedback, and finalizes decisions.',
+    status: 'upcoming'
+  },
+  {
+    id: 'non-headliner-proposals',
+    title: 'Non-Headliner EIP Proposals',
+    dateRange: 'Date TBD',
+    description: 'Non-headliner EIPs can now be proposed for inclusion in Heka/Bogotá.',
+    status: 'upcoming'
+  },
+  {
+    id: 'cfi-decisions',
+    title: 'Non-Headliner EIP CFI Decisions',
+    dateRange: 'Date TBD',
+    description: 'ACDC and ACDE calls select which Proposed for Inclusion EIPs advance to Considered for Inclusion.',
+    status: 'upcoming'
+  },
+  {
+    id: 'cfi-to-sfi',
+    title: 'CFI → SFI EIP Decisions',
+    dateRange: 'Date TBD',
+    description: 'As Heka/Bogotá devnets begin, final decisions on which CFI EIPs will be included in the upgrade\'s devnet.',
+    status: 'upcoming'
+  }
+];

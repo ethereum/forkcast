@@ -123,21 +123,6 @@ const SchedulePage: React.FC = () => {
     setPhaseDurations(prev => ({ ...prev, [key]: Math.max(1, value) }));
   };
 
-  // Helper functions for locking/unlocking dates
-  const lockDate = (fork: string, phaseId: string, itemName: string, date: string) => {
-    const key = `${fork}:${phaseId}:${itemName}`;
-    setLockedDates(prev => ({ ...prev, [key]: date }));
-  };
-
-  const unlockDate = (fork: string, phaseId: string, itemName: string) => {
-    const key = `${fork}:${phaseId}:${itemName}`;
-    setLockedDates(prev => {
-      const { [key]: _removed, ...rest } = prev;
-      void _removed; // Intentionally discarding this value
-      return rest;
-    });
-  };
-
   // Get the effective date (locked value or calculated value)
   const getEffectiveDate = (fork: string, phaseId: string, itemName: string, calculatedDate: string): string => {
     const key = `${fork}:${phaseId}:${itemName}`;
@@ -197,6 +182,99 @@ const SchedulePage: React.FC = () => {
     }),
     [hekotaMainnetDate, hekotaDevnetCount, phaseDurations]
   );
+
+  // Get all milestones in chronological order for a fork
+  const getMilestoneOrder = (fork: string): Array<{ phaseId: string; itemName: string }> => {
+    const projection = fork === 'glamsterdam' ? dynamicGlamsterdamProjection : dynamicHekotaProjection;
+    const devnetCount = fork === 'glamsterdam' ? glamsterdamDevnetCount : hekotaDevnetCount;
+
+    const milestones: Array<{ phaseId: string; itemName: string }> = [
+      { phaseId: 'headliner-selection', itemName: 'Proposal Deadline' },
+      { phaseId: 'headliner-selection', itemName: 'Selection Date' },
+      { phaseId: 'eip-selection', itemName: 'PFI Deadline' },
+      { phaseId: 'eip-selection', itemName: 'CFI Deadline' },
+    ];
+
+    // Add devnets
+    for (let i = 0; i < devnetCount; i++) {
+      milestones.push({ phaseId: 'development', itemName: `Devnet-${i}` });
+    }
+
+    // Add testnets (skip Holesky as it's deprecated)
+    const testnetPhase = projection.phases.find(p => p.phaseId === 'public-testnets');
+    testnetPhase?.testnets?.forEach(testnet => {
+      if (testnet.status !== 'deprecated') {
+        milestones.push({ phaseId: 'public-testnets', itemName: testnet.name });
+      }
+    });
+
+    return milestones;
+  };
+
+  // Get calculated date for a milestone from projections
+  const getCalculatedDateForMilestone = (fork: string, phaseId: string, itemName: string): string => {
+    const projection = fork === 'glamsterdam' ? dynamicGlamsterdamProjection : dynamicHekotaProjection;
+    const phase = projection.phases.find(p => p.phaseId === phaseId);
+
+    if (phaseId === 'headliner-selection' || phaseId === 'eip-selection') {
+      const substep = phase?.substeps?.find(s => s.name === itemName);
+      return substep?.date || substep?.projectedDate || '';
+    } else if (phaseId === 'development') {
+      const devnet = phase?.devnets?.find(d => d.name === itemName);
+      return devnet?.date || devnet?.projectedDate || '';
+    } else if (phaseId === 'public-testnets') {
+      const testnet = phase?.testnets?.find(t => t.name === itemName);
+      return testnet?.date || testnet?.projectedDate || '';
+    }
+    return '';
+  };
+
+  // Lock a date and cascade to all previous milestones
+  const lockDate = (fork: string, phaseId: string, itemName: string, date: string) => {
+    // Fusaka is read-only, no cascading needed
+    if (fork === 'fusaka') {
+      const key = `${fork}:${phaseId}:${itemName}`;
+      setLockedDates(prev => ({ ...prev, [key]: date }));
+      return;
+    }
+
+    const milestones = getMilestoneOrder(fork);
+    const targetIndex = milestones.findIndex(m => m.phaseId === phaseId && m.itemName === itemName);
+
+    if (targetIndex === -1) {
+      // Fallback: just lock the single date
+      const key = `${fork}:${phaseId}:${itemName}`;
+      setLockedDates(prev => ({ ...prev, [key]: date }));
+      return;
+    }
+
+    // Lock all milestones from start up to and including the target
+    setLockedDates(prev => {
+      const newLocked = { ...prev };
+      for (let i = 0; i <= targetIndex; i++) {
+        const milestone = milestones[i];
+        const key = `${fork}:${milestone.phaseId}:${milestone.itemName}`;
+        // Only lock if not already locked
+        if (!(key in newLocked)) {
+          const calcDate = getCalculatedDateForMilestone(fork, milestone.phaseId, milestone.itemName);
+          const effectiveDate = prev[key] ?? calcDate;
+          newLocked[key] = effectiveDate;
+        }
+      }
+      // Always set the target date to the specified value
+      newLocked[`${fork}:${phaseId}:${itemName}`] = date;
+      return newLocked;
+    });
+  };
+
+  const unlockDate = (fork: string, phaseId: string, itemName: string) => {
+    const key = `${fork}:${phaseId}:${itemName}`;
+    setLockedDates(prev => {
+      const { [key]: _removed, ...rest } = prev;
+      void _removed;
+      return rest;
+    });
+  };
 
   useMetaTags({
     title: 'ACD Planning Sandbox - Forkcast',

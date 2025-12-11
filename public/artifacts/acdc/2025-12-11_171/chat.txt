@@ -1,0 +1,928 @@
+00:15:50	Justin Traglia:	Gm
+00:15:51	Yassine Ferhane:	Gm
+00:15:57	Chris Haug:	gm
+00:16:00	christophschlegel:	gm
+00:16:18	Kalo | Obol:	gm
+00:16:22	Mehdi Aouadi:	gm
+00:16:41	Pierre-Louis:	gm gm
+00:16:52	Christine Kim:	gm
+00:16:59	nixo:	gm
+00:17:05	stokes:	https://github.com/ethereum/pm/issues/1825
+00:18:46	Raúl Kripalani:	p2p team released a first batch of daily notebooks: https://ethp2p.github.io/notebooks/ more coming soon
+00:19:45	Łukasz Rozmej:	@Potuz
+why not save in async?
+00:19:52	Raúl Kripalani:	Should be fine to attest and store async
+00:20:07	Raúl Kripalani:	Attestation duty != custody duty
+00:20:33	Pawan Dhananjay:	Haven’t heard any attestation degradation reports on LH. But I doubt any of our users don’t use decently fast ssds
+00:20:36	Łukasz Rozmej:	if you validated it you DO want to be async
+00:20:41	Dustin:	It's more that until the columns are processed, the block isn't valid
+00:21:31	Cayman Nava:	Reacted to "It's more that until..." with 👍
+00:23:00	Manu:	It’s more than serving.
+What about if you attest for a block and save columns async, and the client has a bug preventing it to save columns into disk?
+
+In this case, the data is unavailable, while we voted for the given block
+00:23:20	Dustin:	then you don't have them
+00:23:27	Manu:	Reacted to "then you don't have ..." with 👍
+00:23:27	Dustin:	until they have been persisted
+00:23:48	Satyajit:	Reacted to "It’s more than se..." with 👍
+00:24:00	Manu:	Exactly. That’s why IMO we should not declare these columns as available before clearly persisting them to storage
+00:24:18	Manu:	(And so, declare the block as available, and vote for this block)
+00:24:18	Dustin:	It's not about the status message, only
+00:24:35	Manu:	Reacted to "It's not about the s..." with 👍
+00:25:05	Potuz:	+1 Dustin
+00:25:25	Carl Beekhuizen:	do we have an idea of what is meant when we say these nodes have a slower disk? what kind of disk? any idea of how many nodes?
+00:25:50	Potuz:	Replying to "do we have an idea o..."
+
+I know of one user’s disk, just a sec
+00:26:03	Carl Beekhuizen:	Reacted to "I know of one user’s…" with 🙏
+00:26:32	Potuz:	Replying to "do we have an idea o..."
+
+SAMSUNG 870 QVO SATA III SSD 2TB
+00:26:33	Potuz:	Replying to "do we have an idea o..."
+
+This failed
+00:26:35	Potuz:	Replying to "do we have an idea o..."
+
+And
+00:26:42	Potuz:	Replying to "do we have an idea o..."
+
+Moving to this fixed
+00:26:43	Barnabas:	Replying to "do we have an idea o..."
+
+QVO’s are very slow.
+00:26:43	Potuz:	Replying to "do we have an idea o..."
+
+SAMSUNG 970 EVO Plus SSD 2TB NVMe M.2
+00:26:54	Barnabas:	Replying to "do we have an idea o..."
+
+QVOs can be slower than HDDs
+00:26:58	stokes:	https://ethereum-magicians.org/t/2025-upgrade-process-retrospective/27082?u=nixo
+00:26:59	Potuz:	Replying to "do we have an idea o..."
+
+The point is that this node was performing perfectly since genesis
+00:27:05	Potuz:	Replying to "do we have an idea o..."
+
+And started failing at Fulu
+00:27:14	Łukasz Rozmej:	Replying to "do we have an idea o..."
+
+SATA SSD considered to slow? 😱
+00:27:21	Potuz:	Replying to "do we have an idea o..."
+
+Regardless of having a slower disk, the requirements clearly changed for this node
+00:27:31	Potuz:	Replying to "do we have an idea o..."
+
+And I have a few others impacted by the same
+00:27:51	Barnabas:	Replying to "do we have an idea o..."
+
+QVO SSD’s are considered to be slow. Not all SATA SSD is created equal.
+00:28:33	Łukasz Rozmej:	Replying to "do we have an idea o..."
+
+Max SATA speed, 100k IOPS, looks good to me: https://www.techpowerup.com/ssd-specs/samsung-870-qvo-2-tb.d17
+00:29:32	Barnabas:	Replying to "do we have an idea o..."
+
+As soon as your SLC cache is exhasted your writes speeds will go down to sub 70MBps
+00:29:51	Carl Beekhuizen:	Replying to "do we have an idea o…"
+also we require nvme drives in 7870. but in general we should have better resolution on the ssd requirements here
+00:29:52	Łukasz Rozmej:	Reacted to "As soon as your SLC ..." with 👍
+00:29:53	Barnabas:	Replying to "do we have an idea o..."
+
+max IOPS advertisments are a scam when we are talking about QLC type storage
+00:29:54	alex (ultra sound):	good summary 👍
+00:30:21	Carl Beekhuizen:	Reacted to "max IOPS advertismen…" with 👍
+00:30:28	Fredrik:	I propose we include trustless payments
+00:30:35	Justin Florentine (Besu):	Reacted to "I propose we include..." with ➕
+00:30:37	Barnabas:	Reacted to "I propose we include..." with ➕
+00:30:40	donnoh | L2BEAT:	Reacted to "I propose we include..." with ➕
+00:30:40	Poulav:	Reacted to "I propose we inclu..." with ➕
+00:30:41	Yassine Ferhane:	Reacted to "I propose we include..." with ➕
+00:30:41	terence:	Reacted to "I propose we include..." with ➕
+00:30:42	Fredrik:	Reacted to "I propose we include…" with ➕
+00:30:43	Stefan Starflinger:	Reacted to "I propose we include..." with ➕
+00:30:43	Justin Traglia:	Reacted to "I propose we include..." with ➕
+00:30:44	brunoflashbots:	Reacted to "I propose we include..." with ➕
+00:30:46	James He:	Reacted to "I propose we include..." with ➕
+00:30:48	Satyajit:	Reacted to "I propose we inclu..." with ➕
+00:30:55	christophschlegel:	Reacted to "I propose we include..." with ➕
+00:30:57	Milos:	Reacted to "I propose we inclu..." with ➕
+00:30:59	kingy_sigp:	Reacted to "I propose we include..." with ➕
+00:31:05	soispoke:	Reacted to "I propose we include..." with ➕
+00:31:08	Kalo | Obol:	Reacted to "also we require nvme..." with 👍
+00:31:14	Pawan Dhananjay:	Reacted to "I propose we include..." with ➕
+00:31:16	Enrico Del Fante (tbenr):	Reacted to "I propose we include..." with ➕
+00:31:17	hangleang:	Reacted to "I propose we inclu..." with ➕
+00:31:27	Mehdi Aouadi:	Reacted to "I propose we include..." with ➕
+00:31:35	Caleb:	Reacted to "I propose we inclu..." with ➕
+00:32:24	Mario Havel:	Reacted to "I propose we inclu..." with ➕
+00:32:29	saulius:	Reacted to "I propose we include..." with ➕
+00:33:30	Justin Florentine (Besu):	alex makes a good point, warrants addition to the retro thread on eth mag
+00:33:33	DA | Flashbots:	Reacted to "I propose we include..." with ➕
+00:33:34	Francesco:	Q: there are still proposed modifications to this part of the spec. How long do we expect we need to agree on a final version?
+00:33:36	Barnabas:	I think we have already slowed down, and cycled back to this topic 2/3 weeks after we have made a decision.
+00:33:38	jochem-brouwer:	Heeft gereageerd op "alex makes a good ..." met ➕
+00:33:43	Carl Beekhuizen:	Reacted to "Q: there are still p…" with 👍
+00:33:54	Bharath:	Reacted to "I propose we include..." with ➕
+00:34:05	alex (ultra sound):	Replying to "Q: there are still p..."
+
+can i find them somewhere?
+00:34:06	hangleang:	Reacted to "Q: there are still..." with 👍
+00:34:32	Ansgar Dietrichs:	I think at this point it is likely too late to revisit the decision, at some point it needs to be final.
+
+I will say though, as a point of criticism of the EIP champions, given how important a headliner is, I found remarkably little willingness to consider adjustments earlier into the process. That was a failure in my opinion.
+00:34:52	nflaig:	if we wanna ship the fork fast I think we should split it out into H* and also allow more feedback on the design, if we wanna ship in Glamsterdam we should consider all feedback and take into account that shipping the fork might take longer
+00:35:06	alex (ultra sound):	existing ecosystem will be disrupted to some extent i think. still researching what it’ll mean exactly but i foresee some real work to be done before we settle in a new equilibrium for how most bids are sourced.
+00:35:12	hangleang:	Replying to "Q: there are still..."
+
+the sooner we can freeze the spec, the better
+00:35:19	alex (ultra sound):	Reacted to "alex makes a good po..." with ❤️
+00:35:33	Justin Florentine (Besu):	Replying to "I think at this poin..."
+
+thats a tough assertion to make. I saw the same, but didn't feel that adjustments were not fairly considered.
+00:36:30	Justin Traglia:	Replying to "Q: there are still p..."
+
+At least a few weeks from today, given the holidays. There are some things we’d like to explore like staked builders without validator duties so they can make faster deposits. But I would consider these to be optimizations/improvements.
+00:36:33	Dustin:	Replying to "I think at this po..."
+
+I thought Potuz was remarkably open to contributions/changes
+00:36:33	alex (ultra sound):	Reacted to "thats a tough assert..." with 👍
+00:36:48	Dustin:	Replying to "I think at this po..."
+
+It's been ongoing for literally years now
+00:36:53	Caleb:	Reacted to "I thought Potuz wa..." with ➕
+00:36:53	gd:	Reacted to "At least a few wee..." with 👍
+00:36:56	James He:	Reacted to "I thought Potuz was ..." with ➕
+00:37:01	brunoflashbots:	Reacted to "I thought Potuz was ..." with ➕
+00:37:02	DA | Flashbots:	Reacted to "I thought Potuz was ..." with ➕
+00:37:12	Potuz:	Replying to "Q: there are still p..."
+
+These are big changes though
+00:37:25	terence:	Replying to "Q: there are still p..."
+
+what changes here?
+00:37:41	Pawan Dhananjay:	Reacted to "I thought Potuz was ..." with ➕
+00:37:48	Justin Traglia:	Reacted to "These are big change..." with 👍
+00:37:50	christophschlegel:	Replying to "I think at this poin..."
+
+Potuz presented at Flashbots and was very open to our opinion. Seems just that MEV ecosystems and devs operate on different timelines.
+00:38:03	Francesco:	Replying to "Q: there are still p..."
+
+It doesn’t feel like we should be exploring things at this stage though?
+00:38:15	Francesco:	Replying to "Q: there are still p..."
+
+This is exactly why this part of the EIP should have been split up btw...
+00:38:29	donnoh | L2BEAT:	Reacted to "These are big change..." with 👍
+00:38:44	donnoh | L2BEAT:	Reacted to "This is exactly why ..." with 😅
+00:39:32	Justin Traglia:	Replying to "Q: there are still p..."
+
+We’re trying to work with builders to make things better for them. Compromises.
+00:39:54	Justin Florentine (Besu):	i think this is a fair case, but seems like it is an iterable impovement
+00:40:15	Justin Florentine (Besu):	i.e. ePBS 1.1 in a later release
+00:40:30	Justin Traglia:	Call out for the next ePBS breakout call: https://github.com/ethereum/pm/issues/1835
+00:40:56	Trent:	Reacted to "i think this is a fa..." with 👍
+00:40:57	alex (ultra sound):	Reacted to "This is exactly why ..." with 😅
+00:40:58	Francesco:	In Fusaka we spent ~a month discussing getBlobsv2 versus v3, which was a tiny decision. I am worried that this will drag on, especially since it’s not an isolated decision, it affects builders, it touches a few things in the spec etc...
+00:41:00	Potuz:	Reacted to "i think this is a fa..." with 👍
+00:41:05	Justin Traglia:	Reacted to "i think this is a fa..." with 👍
+00:41:06	alex (ultra sound):	Reacted to "At least a few weeks..." with 👍
+00:41:24	donnoh | L2BEAT:	Reacted to "i think this is a fa..." with 👍
+00:41:32	Trent:	Reacted to "In Fusaka we spent ~..." with 👍
+00:41:41	Quintus Kilbourn:	Taking away the 32 eth minimum and allowing deposits to go faster keep capital requirements down which is good for keeping the market easy to participate in
+
+The only other major thing to say is that we really should do as much as possible to avoid using p2p for bidding (great for WW3 but undesirable for everything else)
+00:41:42	Francesco:	I am sure we’ll sort it out eventually, just doesn’t seem like a small thing
+00:41:50	Potuz:	Replying to "In Fusaka we spent ~..."
+
+My general take on these things is to by default not change things like this big when they are already in motion, but at least we want to be exploring how bad of a change it would be
+00:41:59	Potuz:	Replying to "In Fusaka we spent ~..."
+
+It could be this fork or the next one to iterate over this
+00:42:00	Justin Traglia:	Replying to "In Fusaka we spent ~..."
+
+There was also the new transaction type, with cell proofs instead of blob proofs. That happened pretty late into the process, no?
+00:42:01	alex (ultra sound):	Reacted to "Taking away the 32 e..." with 👍
+00:42:05	christophschlegel:	Reacted to "Taking away the 32 e..." with 👍
+00:42:20	kasey:	Reacted to "I thought Potuz was ..." with ❤️
+00:42:23	Francesco:	Replying to "In Fusaka we spent ~..."
+
+That happened a few months before Pectra went live
+00:42:35	Justin Traglia:	Reacted to "That happened a few ..." with 👍
+00:42:50	gd:	Reacted to "Taking away the 32..." with 👍
+00:43:14	Trent:	Bump for @Ansgar Dietrichs to reaccess after dropping
+00:43:35	Potuz:	Replying to "Taking away the 32 e..."
+
+I think we want to have a decentralized set of p2p bids, they aren’t really a problem for the proposer cause they’ll get just a few of them already heavily filtered
+00:43:55	Justin Traglia:	Reacted to "I think we want to h..." with 👍
+00:45:47	gd:	I think as long as there is an alternative path to validators p2p is fine. p2p becomes a bit more of a concern if it is the only option to reach a large enough portion of the stake
+00:46:16	Justin Florentine (Besu):	so that framing is assuming that the door is closed to FOCIL in Glamsterdam.
+00:47:57	Toni Wahrstätter:	Replying to "so that framing is a..." 
+
+ Which is reasonable, imo. ePBS and BALs are both big features and we shouldn't do 3 big features in one fork.
+00:48:26	nixo:	it’s not ‘process for the sake of process’ - client teams have indicated support for focil in glamsterdam but the rest of the ecosystem hasn’t really had the opportunity. they need a ‘process’ to know how to participate
+00:48:41	Justin Florentine (Besu):	Replying to "so that framing is a..."
+
+i agree, but disagree that we can't take more time on a fork. i'm not sold on the 6th month cadence being inviolable.
+00:48:42	Trent:	Reacted to "it’s not ‘process fo..." with 👍
+00:48:45	Bharath:	Reacted to "I think as long as t..." with 👍
+00:49:21	nixo:	imo FOCIL should be CFI’d and then we should set this heka(?) timeline definitively so there’s clarity
+00:49:44	Francesco:	Replying to "I think at this poin..."
+
+Two things are true imo:
+Potuz (and Terence and others) did a great job at engaging with all kinds of stakeholders repeatedly, over a long period of time.
+Earlier in the decision process, the discussion became more charged than it should have been because people felt that trustless payments would either get in now (on the wave of epbs’ scalability features) or never (similar dynamics to FOCIL). People saying that trustless payments could be split from the other features and raising concerns around complexity were ignored or treated as lacking Ethereum values
+00:50:04	Ansgar Dietrichs:	I personally would be open to FOCIL sfi now - but I don’t think it would be appropriate to assign it headliner status before starting the headliner process. That would be unfair to other potential headliner proposals.
+
+In practice ofc good chance we then decide there is no room for a(nother) CL headliner, but that should be during a proper headliner scoping process.
+00:50:23	alex (ultra sound):	Reacted to "Two things are true ..." with 👀
+00:50:27	soispoke:	Replying to "I personally would b..."
+
+So SFI FOCIL as a non headliner?
+00:50:30	Trent:	I dont know if we need to argue the benefits of FOCIL (or any other specific EIP) right now, we’re talking about the process
+00:50:42	Potuz:	Reacted to "I dont know if we ne..." with 👍
+00:50:48	Ansgar Dietrichs:	Replying to "I personally would b…"
+SFI without assessment of whether headliner
+00:50:54	Greg K |Lido:	Reacted to "I personally would..." with 👍
+00:50:57	soispoke:	Reacted to "SFI without assessme..." with 👍
+00:50:59	soispoke:	Reacted to "I personally would b..." with 👍
+00:51:00	terence:	Reacted to "I dont know if we ne..." with 👍
+00:51:01	Greg K |Lido:	Reacted to "SFI without assess..." with 👍
+00:51:02	Justin Florentine (Besu):	one users censorhip is another users whitehat rescue
+00:51:11	Toni Wahrstätter:	Reacted to I dont know if we ne... with "👍"
+00:51:14	Francesco:	Replying to "I think at this poin..."
+
+(And to be clear I am not saying that this was all on Potuz or someone, it’s partially just the governance dynamics that can turn unhealthy when something is contentious)
+00:51:18	Potuz:	FWIW, that paper doesn’t talk about FOCIL but MCP
+00:51:30	Potuz:	The assumptions on FOCIL are different 🙂
+00:51:33	terence:	Yes
+00:51:36	terence:	It's very different
+00:51:38	Vukasin:	Reacted to "I dont know if we ..." with 👍
+00:51:44	nixo:	Replying to "I personally would b..."
+
+the first SFI is the headliner status
+00:51:44	Dustin:	Yeah, I don't think right now the argument was, is FOCIL good or not?
+00:51:48	alex (ultra sound):	Reacted to "(And to be clear I a..." with 👍
+00:51:58	Mehdi Aouadi:	Reacted to "I dont know if we ne..." with 👍
+00:52:00	Dustin:	There wasn't really disagreement about that part
+00:52:04	Potuz:	Except Matt 🙂
+00:52:10	Lorenzo:	Reacted to "Two things are tru..." with 👍
+00:52:13	donnoh | L2BEAT:	Reacted to "The assumptions on F..." with 👍
+00:52:47	Ansgar Dietrichs:	Replying to "I personally would b…"
+It’s less of a bending of process to change that than to decide to skip an entire headliner process
+00:52:53	Toni Wahrstätter:	Feels like the majority agrees that focil has merits. 
+This doesn't change the fact that glamsterdam is already big and that we should stick to the process to give other eips the same chance as focil in heka.
+00:53:30	nixo:	Replying to "I personally would b..."
+
+i don’t understand your message
+00:53:36	Cayman Nava:	Reacted to "Two things are true ..." with 👍
+00:53:37	Martin | ethrex:	Reacted to "Feels like the major..." with 👍
+00:53:45	Francesco:	Replying to "I personally would b..."
+
+The process is a few months old, so not exactly sacred, and at the end of the day the process serves Ethereum goals, not itself. Still, SFIng something before the headliner process makes the headliner process fairly meaningless
+00:53:47	Cayman Nava:	Reacted to "I personally would b..." with 👍
+00:53:55	Stefan Starflinger:	Reacted to "Feels like the major..." with 👍
+00:53:58	nixo:	Reacted to "The process is a few..." with 👍
+00:54:58	donnoh | L2BEAT:	the takeway i wanted to give is that i dont think we should SFI until we properly understand the benefits and right now we dont 😅
+00:55:09	Dustin:	Yeah, also I think we'd already agreed that it's nto in Glamsterdam, that's not the point of contention anymore
+00:55:16	Barnabas:	I have really bad deja vu about FOCIL discussion.
+00:55:23	soispoke:	Reacted to "I have really bad de..." with 👍
+00:55:32	Toni Wahrstätter:	Replying to "There wasn't really ..." 
+
+ We should also involve rollups in the discussion who will not get CR from focil, or at least flag it publicly that blobs won't be supported.
+Same for starks that are too big to fit into ILs.
+Talking to people, this isn't clear to many.
+00:55:33	Dustin:	It's literally, is it CFI or SFI
+00:55:34	Dustin:	that's t
+00:56:13	Potuz:	Do we have a timeline set for the headliner process? Tim had posted for Gloas a list of dates up until when the headliner would be accepted for being proposed, when discussions started, etc.
+00:56:19	donnoh | L2BEAT:	Reacted to "We should also invol..." with 💯
+00:56:32	Toni Wahrstätter:	Replying to "Do we have a timelin..." 
+
+ Process-wise, january?
+00:56:32	Caspar Schwarz-Schilling:	To me the clear take-away from last ACDC was that clients should decide whether to SFI FOCIL for Heka on this ACDC. Why change this now? Let‘s just do this.
+00:56:39	Ansgar Dietrichs:	But we considered it very seriously as a non headliner for Glamsterdam as of 2 calls ago
+00:56:56	Potuz:	Replying to "Do we have a timelin..."
+
+If we’re talking about a couple of weeks then it’s probably a waste of time anyway to decide anything now?
+00:57:01	kingy_sigp:	Reacted to "To me the clear take..." with 👍
+00:57:02	nixo:	Replying to "Do we have a timelin..."
+
+https://ethereum-magicians.org/t/eip-8081-heka-bogota-network-upgrade-meta-thread/26876
+00:57:10	Ansgar Dietrichs:	Replying to "But we considered it…"
+I do agree it will likely end up as a headliner. That’s fine. No need to make that decision today
+00:57:11	Potuz:	Reacted to "To me the clear take..." with 👍
+00:57:14	Ladislaus:	Hat auf "To me the clear take..." mit 👍 reagiert
+00:57:18	Cayman Nava:	Reacted to "If we’re talking abo..." with 👍
+00:57:20	Stefan Starflinger:	Reacted to "To me the clear take..." with 👍
+00:57:29	nflaig:	FOCIL is orders of magnitude simpler than peerdas or epbs so I think it can definitely be a non headliner
+00:57:31	donnoh | L2BEAT:	Reacted to "To me the clear take..." with 👍
+00:57:31	Justin Florentine (Besu):	Replying to "But we considered it..."
+
+sorta. i think that consideration hinges very much on a non 6-month cadence.
+00:57:33	Francesco:	That is something I agree with though, the headliner process is a bit weird with things like FOCIL
+00:57:39	Ansgar Dietrichs:	Reacted to "FOCIL is orders of m…" with 👍
+00:57:42	Mehdi Aouadi:	Reacted to "FOCIL is orders of m..." with 👍
+00:57:50	soispoke:	Reacted to "FOCIL is orders of m..." with 👍
+00:57:57	Potuz:	Replying to "Do we have a timelin..."
+
+Oh thanks Nixo, I looked in forkcast instead 😅
+00:58:03	sean:	can we do FOCIL + shorter slots?
+00:58:07	Ansgar Dietrichs:	Replying to "But we considered it…"
+Right, but as of 2 calls ago that seemingly was a price we were potentially willing to pay
+00:58:09	Justin Florentine (Besu):	Reacted to "FOCIL is orders of m..." with 👍
+00:58:21	soispoke:	Reacted to "Right, but as of 2 c..." with 👍
+00:58:23	Justin Florentine (Besu):	Reacted to "can we do FOCIL + sh..." with 👎
+00:58:23	Francesco:	Reacted to "FOCIL is orders of m..." with 👍
+00:58:24	Vukasin:	Reacted to "FOCIL is orders of..." with 👍
+00:58:32	Potuz:	Replying to "can we do FOCIL + sh..."
+
+I honestly disagreed with Pari here, I think FOCIL+shorter slots is even harder than FOCIL+ePBS
+00:58:47	NC:	Replying to "FOCIL is orders of m..."
+
+I don’t think a headliner candidate is weighted by its technical complexity but the influence it brings
+00:58:48	soispoke:	FOCIL is definitely not as big as ePBS though
+00:59:07	Toni Wahrstätter:	Replying to "can we do FOCIL + sh..." 
+
+ I feel like we shouldn't, with regards to complexity
+00:59:10	Potuz:	Reacted to "FOCIL is definitely ..." with 👍
+00:59:17	Justin Florentine (Besu):	Replying to "But we considered it..."
+
+yes, and so that would be the process point we should be discussing
+00:59:19	donnoh | L2BEAT:	Replying to "There wasn't really ..."
+
+it’s not only starks but some fraud proof system bisection steps can also be very big
+00:59:39	sean:	basically SFI'ing FOCIL without it being explicit about what we're giving up is basically the problem with doing it early
+
+people def want shorter slots and we would be avoiding that discussion
+01:00:04	Chris Haug:	Reacted to "basically SFI'ing FO..." with 👍
+01:00:17	Toni Wahrstätter:	Replying to "There wasn't really ..." 
+
+ Right, should we sfi anything before those affected (by not being able to use it) are at least aware?
+01:00:18	Justin Florentine (Besu):	Reacted to "basically SFI'ing FO..." with 👍
+01:00:28	Mehdi Aouadi:	SFI it now and do the headliner process. If FOCIL is selected as headliner , fine, otherwise let it be just SFI’ed with another headliner. At least that way we will be carefull while selecting the hadliner if not FOCIL
+01:00:36	soispoke:	Reacted to "SFI it now and do th..." with 👍
+01:00:36	Fredrik:	How much time are we talking of between now and being able to SFI according to the process?
+01:00:41	Mario Havel:	Reacted to "SFI it now and do ..." with 👍
+01:00:46	Caspar Schwarz-Schilling:	Reacted to "SFI it now and do th…" with 👍
+01:00:46	stokes:	Replying to "How much time are we..."
+
+A few weeks
+01:00:50	nflaig:	Reacted to "SFI it now and do th..." with 👍
+01:00:53	Ladislaus:	Hat auf "SFI it now and do th..." mit 👍 reagiert
+01:00:58	soispoke:	Replying to "SFI it now and do th..."
+
+Yeah exactly
+01:01:06	Potuz:	Replying to "How much time are we..."
+
+Yeah that was my question above, I think this all may be a waste of time if in a couple of weeks we’ll be discussing anyway
+01:01:21	Christine Kim:	Reacted to "Yeah that was my que..." with 👍
+01:01:23	Ansgar Dietrichs:	Replying to "But we considered it…"
+Well yes, but I would argue not today as part of Glamsterdam scoping. We should keep the process deviation minimal. CFI or SFI FOCIL for H* today, then have the conversation about headliner status and 6-month cadence during the H* headliner process we will start soon
+01:01:31	donnoh | L2BEAT:	Reacted to "Yeah that was my que..." with 👍
+01:01:40	Martin | ethrex:	Reacted to "basically SFI'ing FO..." with 👍
+01:02:03	sean:	Replying to "SFI it now and do ..."
+
+I was just trying to get at, you can't do this with some EIPs if another one is complicated enough, for example shorter slots people don't think is possible
+01:02:09	Marc:	Reacted to "SFI it now and do th…" with 👍
+01:02:13	sean:	Replying to "SFI it now and do ..."
+
+you can't really make the decision in isolation
+01:02:16	Francesco:	Given that most people do want FOCIL to be included and there’s this history etc… and the headliner process is soon, why not just follow the process and select it in a few weeks that way though, rather than bending the process?
+01:02:32	terence:	Reacted to "Given that most peop..." with 👍
+01:02:35	Christine Kim:	Reacted to "Given that most peop..." with 👍
+01:02:35	Toni Wahrstätter:	Reacted to Given that most peop... with "👍"
+01:02:40	Francesco:	(At the moment it also seems clear that it is much farther than 6SS in maturity, so it seems hard to imagine that this is not what we end up with in a few weeks)
+01:02:42	Barnabas:	Can we timebox FOCIL pls?
+01:02:43	Ansgar Dietrichs:	Reacted to "SFI it now and do th…" with 👍
+01:02:43	Cayman Nava:	Reacted to "Given that most peop..." with 👍
+01:02:44	Trent:	We are again edging into retrospective discussions about process over the last few weeks instead of moving forward
+
+Can we agree to just start the broader process ASAP?
+01:02:47	Potuz:	To me the bulliest case of FOCIL I have heard is that the current censors want it so that they can stop censoring
+01:02:47	Trent:	Reacted to "Can we timebox FOCIL..." with 👍
+01:03:01	soispoke:	Reacted to "To me the bulliest c..." with 👍
+01:03:04	Stefan Starflinger:	Reacted to "Can we timebox FOCIL..." with 👍
+01:03:13	Martin | ethrex:	Reacted to "Given that most peop..." with 👍
+01:03:15	Mario Havel:	FOCIL is something really worth committing to and should not become a victim of the process we are still discovering
+01:03:18	Subhasish:	Reacted to "To me the bulliest..." with 👍
+01:03:18	Will Corcoran:	Reacted to "We are again edging ..." with 👍
+01:03:21	donnoh | L2BEAT:	Reacted to "Given that most peop..." with 👍
+01:03:23	Martin | ethrex:	Reacted to "Can we timebox FOCIL..." with 👍
+01:03:23	soispoke:	Reacted to "FOCIL is something r..." with 👍
+01:03:31	Milos:	Reacted to "FOCIL is something..." with 👍
+01:03:40	Mario Havel:	Reacted to "To me the bulliest..." with 👍
+01:03:45	Milos:	Reacted to "To me the bulliest..." with 👍
+01:03:57	Toni Wahrstätter:	It has the size of a headliner and we've closed glamsterdam. 
+The next step would be doing the headliner process in a few weeks and see where we land by then.
+01:04:28	terence:	TIL:  txns from the public mempool that are included in some blocks, 17% are not in the winning block. (https://x.com/soispoke/status/1999095871435137396 )
+01:04:32	Vukasin:	Reacted to "FOCIL is something..." with 👍
+01:04:36	Toni Wahrstätter:	Replying to "FOCIL is something r..." 
+
+ That's your take. Others will say differently or have different priorities
+01:04:53	Carl Beekhuizen:	Reacted to "That's your take. Ot…" with 👍
+01:04:56	soispoke:	Replying to "TIL:  txns from the ..."
+
+Caveat dataset is small but yeah was surprised by this as well
+01:04:57	Mehdi Aouadi:	Replying to "SFI it now and do th..."
+
+that reasoning doesn’t take into account that FOCIL already got more support than any new EIP, has a working prototype and has already been discussed… It’s unfait to just forget everything and reset the process
+01:05:03	soispoke:	Reacted to "that reasoning doesn..." with 👍
+01:05:24	Francesco:	Replying to "SFI it now and do th..."
+
+These things are still true though, and why very likely FOCIL will be selected
+01:05:25	sean:	We can put resources into it regardless of SFI status
+01:05:28	Cayman Nava:	imo focil can't make additional engineering progress until its rebased on ePBS (likely lines up with headliner process?)
+01:05:42	felipe:	Reacted to "Feels like the maj..." with 👍
+01:05:43	Francesco:	Replying to "SFI it now and do th..."
+
+It’s not that in a few weeks we forget that it has a lot of support and mature specs etc…
+01:05:57	Toni Wahrstätter:	Replying to "To me the bulliest c..." 
+
+ Yeah, bc we shift responsibility to validators. You should talk to them too.
+01:06:01	Justin Florentine (Besu):	Replying to "We can put resources..."
+
+thats not generally realistic, existing SFI'd features tax teams.
+01:06:18	Justin Florentine (Besu):	Reacted to "imo focil can't make..." with ➕
+01:06:58	Ansgar Dietrichs:	So seems like we have 3 options:
+​CFI
+SFI without deciding whether headliner
+SFI as headliner
+01:07:00	soispoke:	I think the same arguments were said for Glamsterdam: we all like FOCIL but we don’t want to include it now
+01:07:01	terence:	Side comment: FOCIL on top of epbs may not be as simple as ppl think. The forkchoice part is the biggest complexiity. Epbs add the notion of empty payload slot so when focil reorg, it needs to consider parent hash as well
+01:07:16	sean:	Replying to "We can put resourc..."
+
+Usually SFI'd stuff is further along tbf.. but we've already had Eitan on our team implement it and I'm sure he'd love to keep pushing it
+01:07:23	alex (ultra sound):	Reacted to "So seems like we hav..." with 👍
+01:07:24	soispoke:	Reacted to "So seems like we hav..." with 👍
+01:07:46	nflaig:	Replying to "It has the size of a..."
+
+how is "size" defined here, in terms of LoC it's tiny (~2,5k) compared  to other headliners like peerdas which was 20k+ LoC
+01:08:08	Francesco:	Replying to "I think the same arg..."
+
+I think the clear message is that we do want to include it now (for H*, as a headliner) though
+01:08:10	Pawan Dhananjay:	Replying to "We can put resources..."
+
+Tbf, 6 second slot is heavier on the testing side than implementation side
+01:08:13	Chris Haug:	Reacted to "It has the size of a..." with 👍
+01:08:18	Trent:	Can we please timebox
+01:08:19	Justin Florentine (Besu):	Replying to "We can put resources..."
+
+huh, see i see the fact that multiple clients have focil impls means it should be SFId to reflect reality
+01:08:20	DA | Flashbots:	Replying to "TIL:  txns from the ..."
+
+I don’t trust those stats. Certainly not reflective of what I’ve seen. Unless these are just late tx or 0 fee spam.
+01:08:27	stokes:	Replying to "Can we please timebo..."
+
+Yes, Matt and then that’s that
+01:08:50	Cayman Nava:	Reacted to "Side comment: FOCIL ..." with 👍
+01:09:08	donnoh | L2BEAT:	Reacted to "Yeah, bc we shift re..." with 👍
+01:09:22	soispoke:	We’ve been discussing for 5 months though
+01:09:35	DA | Flashbots:	Replying to "TIL:  txns from the ..."
+
+Would be curious to look at our internal stats.
+01:09:40	Mehdi Aouadi:	Reacted to "We’ve been discussin..." with 😫
+01:09:41	Toni Wahrstätter:	Replying to "It has the size of a..." 
+
+ Touches both layers, adds extra deadlines, complex, many small "hacks"  (no blobs, no fraud proof support (too large, no stark support). Those things add up.
+01:09:49	sean:	Replying to "We can put resourc..."
+
+there's a 6s impl too though
+01:10:06	Ansgar Dietrichs:	So how are we going to make the decision today?
+01:10:12	Jihoon:	Replying to "Side comment: FOCIL ..."
+
+Good point, it's something we want to keep in mind. But still it doesn't change that FOCIL is probably the most mature and well-researched EIP among headliner candidates
+01:10:24	soispoke:	Reacted to "So how are we going ..." with 👍
+01:10:27	donnoh | L2BEAT:	Reacted to "Touches both layers,..." with 👍
+01:11:03	Hsiao-Wei Wang:	Reacted to "So seems like we hav..." with 👍
+01:11:04	nixo:	+1, ‘process’ should be independent of what we want, that’s the only way we have a good process. we can’t adjust the process based on what specific features we want in the next fork, that creates a bad process
+01:11:17	Justin Florentine (Besu):	Reacted to "+1, ‘process’ should..." with ➕
+01:11:23	Pawan Dhananjay:	Reacted to "+1, ‘process’ should..." with ➕
+01:11:48	Toni Wahrstätter:	6ss is "easy" to implement but needs time to do proper analysis, e.g. around geo decentralization. 
+6ss is as far as focil when it comes to understanding technical impact.
+What is needed is more analysis.
+01:12:02	Martin | ethrex:	Reacted to "+1, ‘process’ should..." with ➕
+01:12:08	Chris Haug:	Reacted to "6ss is "easy" to imp..." with 👍
+01:12:11	Pierre-Louis | Chainbound:	Reacted to "+1, ‘process’ sh..." with ➕
+01:12:30	Poulav:	Reacted to "+1, ‘process’ sh..." with ➕
+01:12:42	Pawan Dhananjay:	Reacted to "6ss is "easy" to imp..." with 👍
+01:13:19	NC:	Replying to "+1, ‘process’ should..."
+
+True, but take into account that this process is relatively new and there is room to improve the process. Generally agree your point
+01:13:26	Trent:	IMO it was a mistake to try and poll client teams as a way to get this early "credible commitment”
+
+Mistakes were made. Start the process
+01:13:32	sean:	Reacted to "IMO it was a mista..." with 👍
+01:13:33	Carl Beekhuizen:	Reacted to "+1, ‘process’ should…" with ➕
+01:13:35	Ansgar Dietrichs:	If we SFI without headliner decision, we are only telling the community "heads up, next fork the CL side will have less room for changes, so take that into consideration when you participate in the public scoping process" - that’s fine imo, much better than "sorry, headliner was already secretly pre selected"
+01:13:38	Chris Haug:	Reacted to "IMO it was a mistake..." with 👍
+01:13:50	Pawan Dhananjay:	Replying to "We can put resources..."
+
+Yeah exactly, implementing 6s on a client doesn’t say much in terms of having it “ready”
+01:14:06	Milos:	Reacted to "If we SFI without ..." with 👍
+01:14:08	soispoke:	Reacted to "If we SFI without he..." with 👍
+01:14:09	Greg K |Lido:	Reacted to "If we SFI without ..." with 👍
+01:14:11	Mehdi Aouadi:	Reacted to "If we SFI without he..." with 👍
+01:14:14	Justin Traglia:	Reacted to "Yeah exactly, implem..." with 👍
+01:14:17	Caspar Schwarz-Schilling:	Reacted to "If we SFI without he…" with 👍
+01:14:25	Justin Traglia:	Reacted to "Tbf, 6 second slot i..." with 👍
+01:14:33	Justin Traglia:	Reacted to "6ss is "easy" to imp..." with 👍
+01:14:45	Marc:	Reacted to "If we SFI without he…" with 👍
+01:14:53	Toni Wahrstätter:	Agree with matt. We shouldn't exploit loopholes in the process, sidestepping it, or turn this (technical) decission into what is happening right now
+01:15:01	jochem-brouwer:	Heeft gereageerd op "Agree with matt. W..." met 👍
+01:15:07	jochem-brouwer:	Heeft gereageerd op "Agree with matt. W..." met ➕
+01:15:07	Poulav:	Reacted to "If we SFI without ..." with 👍
+01:15:08	Jihoon:	Replying to "We can put resources..."
+
+As a person who has built the 6s prototype, I don't think we understand 6s's technical impact as much as FOCIL. Unlike FOCIL, 6s has the nature that we should analyze 2nd and 3rd order impact similar to EIP-7549. Having running prototype that is running in a "local" environment doesn't really tell us much on its technical impact.
+01:15:17	Chris Haug:	Reacted to "Agree with matt. We ..." with 👍
+01:15:23	sean:	Like are we afraid discussion in the future will yield a different result?
+01:15:33	Pawan Dhananjay:	Reacted to "As a person who has ..." with 👍
+01:15:36	wolovim:	Reacted to "Like are we afraid d…" with ☝️
+01:15:41	Christine Kim:	Reacted to "Like are we afraid d..." with ☝️
+01:15:50	nixo:	we have to make a CFI or SFI decision??
+01:16:17	Barnabas:	Replying to "we have to make a CF..."
+
+we will do headliner selection in the new year
+01:16:26	Justin Florentine (Besu):	DFI
+01:16:27	Francesco:	Replying to "Like are we afraid d..."
+
+That’s the concern, which is reasonable given how unpredictable ACD as a forum is 😅 However all of these discussions are just accumulating “evidence for the future”
+01:16:31	Justin Florentine (Besu):	but heka soon
+01:16:32	donnoh | L2BEAT:	Reacted to "IMO it was a mistake..." with 👍
+01:16:39	soispoke:	So no CFI or SFI?
+01:16:42	soispoke:	For Heka
+01:16:42	Dustin:	so not CFI?
+01:16:48	Barnabas:	I don’t think it matters
+01:16:50	Barnabas:	lets just move on
+01:16:59	donnoh | L2BEAT:	Reacted to "Like are we afraid d..." with ☝️
+01:17:01	Mario Vega:	Reacted to "lets just move on" with 👍🏼
+01:17:16	Potuz:	+1 Nixo
+01:17:20	Justin Traglia:	Reacted to "lets just move on" with 👍🏼
+01:17:20	soispoke:	Reacted to "+1 Nixo" with 👍
+01:17:26	NC:	Reacted to "+1 Nixo" with 👍
+01:17:32	Ansgar Dietrichs:	Reacted to "+1 Nixo" with 👍
+01:17:33	Barnabas:	Lets go.
+01:17:34	Milos:	In my opinion, CFI/SFI for Heka doesn't mean much. If Headliner is something else, it can cause FOCIL to be DFI-ed from Heka as well (e.g. due to complexity)
+01:17:39	Justin Florentine (Besu):	sounds perfectly cromulent
+01:17:40	Dustin:	This is pretty disingenuous relative to the claim made a couple of weeks ago
+01:17:46	soispoke:	Reacted to "This is pretty disin..." with 👍
+01:17:49	Chris Haug:	Reacted to "In my opinion, CFI/S..." with 👍
+01:18:02	Hsiao-Wei Wang:	Does CFI need EL teams’ confirmation?
+01:18:08	Milos:	Replying to "In my opinion, CFI..."
+
+To clarify, I support FOCIL as headliner.
+01:18:14	felipe:	Reacted to "lets just move on" with 👍🏼
+01:18:17	soispoke:	Replying to "Does CFI need EL tea..."
+
+They were supportive of SFI last ACDE
+01:18:19	Pawan Dhananjay:	I thought it was CFId already
+01:18:23	kingy_sigp:	Lighthouse supports CFI until we do headliner discussion
+01:18:29	Hsiao-Wei Wang:	Reacted to "They were supportive..." with 👍
+01:18:31	Francesco:	Replying to "I thought it was CFI..."
+
+Yeah wasn’t it?
+01:18:40	soispoke:	Replying to "I thought it was CFI..."
+
+I thought it was
+01:18:42	donnoh | L2BEAT:	Reacted to "In my opinion, CFI/S..." with 👍
+01:18:42	Justin Florentine (Besu):	Besu CFI'd focil in G*, same for H*
+01:19:04	Ansgar Dietrichs:	Replying to "Does CFI need EL tea…"
+EL teams also were a bit tired of constant ping pong with ACDC, so I think they would prefer a decision today
+01:19:11	donnoh | L2BEAT:	Reacted to "Yeah wasn’t it?" with 👍
+01:19:27	sean:	Replying to "Like are we afraid..."
+
+if changes require consensus I don't get how a different result is even a bad result. in theory more people should be involved in January
+01:19:32	Pawan Dhananjay:	Reacted to "Yeah wasn’t it?" with 👍
+01:19:41	Poulav:	Reacted to "I thought it was C..." with ➕
+01:19:43	Toni Wahrstätter:	SFI would be too early. People want shorter slots too. And saying we delay CR features - as we _always_ do - is wrong. It's barely a one year old eip.
+01:19:55	Ansgar Dietrichs:	Can we check, are the people that preferred SFI okay with CFI as a compromise?
+01:20:02	Barnabas:	Replying to "Can we check, are th..."
+
+no
+01:20:06	donnoh | L2BEAT:	Reacted to "SFI would be too ear..." with 👍
+01:20:07	Barnabas:	Replying to "Can we check, are th..."
+
+We need to move on
+01:20:09	nixo:	Replying to "Can we check, are th..."
+
+no
+01:20:10	Justin Traglia:	Reacted to "We need to move on" with 👍
+01:20:12	Louis:	Reacted to "We need to move on" with 👍
+01:20:17	nixo:	Reacted to "We need to move on" with 👍
+01:20:19	donnoh | L2BEAT:	Reacted to "We need to move on" with 👍
+01:20:23	Ansgar Dietrichs:	Replying to "Can we check, are th…"
+Well check as in, check here in chat
+01:20:47	Potuz:	Replying to "Can we check, are th..."
+
+No, but it seems that we’re not going to be able to agree on SFI today, so CFI is the best option we have
+01:20:54	Justin Florentine (Besu):	Replying to "Can we check, are th..."
+
+i'm confused because we spent a lot of time talking about adhering to process, and I guess PFIs are open for Heka now?
+01:21:17	Ansgar Dietrichs:	Well either way - welcome CFI’d FOCIL to H*! 🙂
+01:21:20	Potuz:	Replying to "Can we check, are th..."
+
+Yes, PFI had never a start date AFAIK
+01:21:29	Etan (Nimbus):	7688 implementation complexity due diligence:
+https://github.com/user-attachments/files/24103859/7688.pdf
+01:21:30	Justin Florentine (Besu):	Replying to "Can we check, are th..."
+
+good enough I'll take it
+01:21:43	wolovim:	Reacted to "good enough I'll tak…" with 😆
+01:21:43	Potuz:	Mic dao
+01:21:44	terence:	micdao
+01:22:12	Justin Florentine (Besu):	fiber-to-the-mic dao
+01:22:34	Barnabas:	Time to get out of the tunnel Etan
+01:22:38	nixo:	🙁 etan, it’s so bad that it’s impossible to understand
+01:22:39	Tamaghna Choudhuri:	Reacted to "Time to get out of t..." with 😆
+01:22:43	kingy_sigp:	For 7688 we think it is not insignificant in terms of scope but is worthwhile including. Lighthouse would support its inclusion in glamsterdam.
+01:22:46	donnoh | L2BEAT:	Reacted to "Time to get out of t..." with 😆
+01:22:54	nixo:	Reacted to "Time to get out of t..." with 😆
+01:22:56	Tamaghna Choudhuri:	Reacted to "For 7688 we think it..." with ❤️
+01:23:07	Dustin:	Reacted to "For 7688 we think ..." with ❤️
+01:23:10	Justin Traglia:	Reacted to "For 7688 we think it..." with ➕
+01:23:11	Leo:	Reacted to "Time to get out of..." with 😆
+01:23:14	Barnabas:	any other CL teams?
+01:23:14	NC:	Reacted to "For 7688 we think it..." with ➕
+01:23:16	Etan (Nimbus):	last slide of the pdf
+01:23:22	Cayman Nava:	Lodestar would support inclusion in glamsterdam (with the asterisk that it drop if it causes fork delays)
+01:23:24	Dustin:	Nimbus supports, obviously
+01:23:24	NC:	Lodestar supports
+01:24:03	Greg K |Lido:	Lido supports 7688 (SFI)
+01:24:05	Etan (Nimbus):	Replying to "Time to get out of t..."
+
+joining from a hotel lobby...
+01:24:22	Barnabas:	@Potuz is prysm pro inclusion ?
+01:24:26	Etan (Nimbus):	in any case, let me write here
+01:24:31	Dustin:	+1 to Potuz's point
+01:24:36	Francesco:	Reacted to "good enough I'll tak..." with 😆
+01:24:57	Etan (Nimbus):	no serialization change (network / db same), only hashing change
+length checks move to the p2p rules
+01:24:58	Barnabas:	Can we have a prysm stance on this by end of this call?
+01:25:09	saulius:	Grandine suggests to attempt inclusion of 7688 in later devnet-3/4 when it will be clear that there is room for it in Glamsterdam.
+01:25:14	Etan (Nimbus):	tests are on par with existing SSZ
+tests for new max length also exist
+01:25:19	Barnabas:	I don’t understand how we don’t have a team’s stance on each open EIP at this point
+01:25:40	Dustin:	Replying to "Grandine suggests ..."
+
+There weren't that many devnets targeted for Fusaka, they failed so there was a devnet 5/6
+01:25:49	Enrico Del Fante (tbenr):	I think we should go for it
+01:25:54	Mario Vega:	Wait is this EL? no, right?
+01:25:54	Cayman Nava:	Reacted to "I think we should go..." with 👍
+01:25:58	Dustin:	Replying to "Grandine suggests ..."
+
+that's extremely late
+01:25:59	Etan (Nimbus):	it’s CL
+01:26:04	Mario Vega:	Reacted to "it’s CL" with 👍🏼
+01:26:11	Dustin:	Reacted to "I think we should ..." with 👍
+01:26:16	nflaig:	Reacted to "I think we should go..." with 👍
+01:26:26	Justin Traglia:	Reacted to "I think we should go..." with 👍
+01:26:27	donnoh | L2BEAT:	Reacted to "I don’t understand h..." with 😅
+01:26:33	Dustin:	How is the current process "fast"? EIP-7688 has been around for years
+01:27:01	Justin Traglia:	Reacted to "Wait is this EL? no,..." with 👎
+01:27:30	Greg K |Lido:	I had the impression that Prysm supports 7688 (see ACDC - NOv 13th): https://github.com/ethereum/pm/issues/1790#issuecomment-3524246616
+01:27:57	terence:	prysm team supports EIP-7688 per team agreement: https://github.com/ethereum/pm/issues/1790#issuecomment-3524246616 
+but i do echo Cayman's feedback that we should drop it there's extensive delay
+01:28:11	Dustin:	Reacted to "prysm team support..." with 👍
+01:28:23	Cayman Nava:	It's trivial to remove for Lodestar. We have changes in the client segregated to the types ProgressiveContainer -> Container
+01:28:32	Etan (Nimbus):	yeah it’s quite self-contained imo, mostly in library
+01:28:34	Subhasish:	Reacted to "Grandine suggests ..." with 👍
+01:29:08	Etan (Nimbus):	also, let’s use #ssz channel to discuss any tech challenges about it
+01:30:09	Potuz:	Yes they are separate
+01:30:13	Potuz:	They have no intersection now
+01:30:37	Francesco:	I am here
+01:31:04	Justin Florentine (Besu):	Fidelity?
+01:31:34	kingy_sigp:	lighthouse supports 8080
+01:31:52	Dustin:	sure, 8080 is fine
+01:32:09	Barnabas:	is any CL team against CFI 8080?
+01:32:42	Potuz:	We support it if people agree with the WSP decrease safety assumptions.
+01:32:55	saulius:	Replying to "Grandine suggests to..."
+
+devnet-2 works too :)
+01:32:56	kingy_sigp:	At this time we don't support 8061 as adjustments to consensus code are non-trivial. If there are specific advantages people want from 8061 we would want to see them because at the moment it doesn't seem worth it to us.
+01:33:06	Francesco:	It doesn’t come from anywhere, it’s a magic number like the previous number 😅 I don’t know about this fidelity thing though
+01:33:08	Cayman Nava:	I had thought that the existing ws period at 2 weeks mirrors our "worst case" timeline for coordinating around bad network conditions
+01:33:17	Potuz:	Reacted to "It doesn’t come from..." with 🤣
+01:33:25	Francesco:	To be clear I wrote the EIP, without input from fidelity or whoever
+01:33:33	NC:	Regarding shorter WS period, we should ask the broader community because they run the nodes and whether 7 days is enough for them
+01:33:42	saulius:	Replying to "Grandine suggests to..."
+
+I just want to get all the clients interoping on devnet-1 with epbs first.
+01:34:12	stokes:	Replying to "To be clear I wrote ..."
+
+Yes, im just calling attention to this comment
+
+https://github.com/ethereum/pm/issues/1825#issuecomment-3640072332
+01:34:22	Barnabas:	I think we should CFI the EIP, and bikeshed the exact value
+01:34:33	Potuz:	Reacted to "I think we should CF..." with 👍
+01:34:36	Dustin:	Replying to "To be clear I wrot..."
+
+Right, I'm not saying Fidelity was involved in writing the EIP
+01:34:38	Potuz:	Replying to "I think we should CF..."
+
+I agree
+01:34:40	Francesco:	Reacted to "Right, I'm not sayin..." with 👍
+01:34:45	Phil Ngo:	Replying to "I had thought that t..."
+
+IIRC, it also mirrored around how long we kept blobs around for as well.
+01:34:46	Francesco:	Replying to "To be clear I wrote ..."
+
+Yeah just wanted to clarify
+01:35:34	Francesco:	The main advantage is not having a 40 day withdrawal queue 😄 In combination with 8080, it would be like 5 days or something
+01:35:42	Francesco:	Replying to "The main advantage i..."
+
+(With current amount of eth in the queue)
+01:35:59	Justin Traglia:	Reacted to "I think we should CF..." with 👍
+01:36:49	Francesco:	Also consider that the benefits are actually greater for home stakers or anyway stakers other than LSTs and staking pools, because the in-protocol exits is all they have
+01:37:11	Barnabas:	SFI is when we we have them on devnets
+01:37:18	Barnabas:	thats probably still at least a month away
+01:37:29	Francesco:	Reacted to "I think we should CF..." with 👍
+01:38:02	Potuz:	Reacted to "IIRC, it also mirror..." with 👍
+01:38:11	Potuz:	Replying to "I had thought that t..."
+
+But that was the other way around
+01:38:17	Potuz:	Replying to "I had thought that t..."
+
+We chose the blob retention period because of that
+01:38:22	Francesco:	Replying to "I think we should CF..."
+
+I would support this, and I am very much open to more conservative values. Just we have to be mindful that it doesn’t make sense to do the EIP if we don’t decrease the WSP meaningfully (like at least to 12 days or 10 days or something)
+01:38:44	Barnabas:	2048 epochs sounds pretty good to me (9d)
+01:39:00	Potuz:	Replying to "I think we should CF..."
+
+I looked into the implementation and it seems simple enough to justify implementation to at least have some testing already done
+01:39:09	Cayman Nava:	Reacted to "I think we should CF..." with 👍
+01:39:19	Phil Ngo:	Reacted to "We chose the blob re..." with 👍
+01:39:19	Francesco:	Replying to "I had thought that t..."
+
+Yeah the WSP existed from the beginning, before blobs. Unfortunately I wasn’t around back then and from the documents I read I can’t find a clear motivation for 15 days other than it being a somewhat meaningful social coordination period
+01:39:23	Potuz:	Replying to "I think we should CF..."
+
+Doubt we’ll get much bikeshedding against a week for WSP unless some real P0 appears
+01:39:27	Barnabas:	Time to get to work!
+01:39:30	terence:	sounds good to me
+01:39:32	kingy_sigp:	That's fine
+01:39:37	jochem-brouwer:	Heeft gereageerd op "Time to get to wor..." met 🚀
+01:39:42	Phil Ngo:	Let’s get to work!
+01:39:47	jochem-brouwer:	Heeft gereageerd op "Let’s get to work!" met 🚀
+01:39:48	Francesco:	Great! Thanks everyone
+01:40:01	Potuz:	Reacted to "Time to get to work!" with 🚀
+01:40:06	stokes:	https://ethereum-magicians.org/t/eip-8081-heka-bogota-network-upgrade-meta-thread/26876?u=ralexstokes
+01:40:27	Potuz:	Is there ACDE next week?
+01:40:34	Barnabas:	Replying to "Is there ACDE next w..."
+
+yes
+01:40:38	nixo:	Replying to "Is there ACDE next w..."
+
+yes
+01:40:38	Potuz:	Reacted to "yes" with 🙏
+01:41:25	Barnabas:	Jan 5 is the first ACD
+01:41:46	nixo:	Replying to "Jan 5 is the first A..."
+
+oh that’s ACDT?
+01:42:00	nixo:	from leobago at MigaLibs in the R&D discord:
+
+> I noticed the name voted for the hard fork after Glamsterdam was Heka - Bogota. All of the star names we have selected are in the official list of star names given by the International Astronomical Union [but Heka isn't a real star name]
+> If there are no strong objections to this, I would set up a second vote for H, with only names from the catalog.
+
+other options:
+https://ethereum-magicians.org/t/h-star-name-for-consensus-layer-upgrade-after-glamsterdam/24298/15
+
+full conversation in the #uncategorized channel
+
+emoji react 
+🌟 to choose a proper star name
+🤷 to just move forward with Heka even tho it's not a real star name
+01:42:05	nixo:	Reacted to "from leobago at Miga..." with 🤷
+01:42:09	Barnabas:	Replying to "Jan 5 is the first A..."
+
+You telling me ACDT is not a real ACD ? 😄
+01:42:19	nixo:	Reacted to "You telling me ACDT ..." with 😅
+01:42:26	nixo:	Replying to "Jan 5 is the first A..."
+
+i would never
+01:42:41	Barnabas:	Reacted to "from leobago at Miga..." with ⭐
+01:42:44	Christine Kim:	Reacted to "from leobago at Miga..." with 🤷
+01:42:46	Daniel Knopik:	Reacted to "from leobago at Mi..." with ⭐
+01:42:47	Milos:	Reacted to "from leobago at Mi..." with ⭐
+01:42:56	Justin Florentine (Besu):	Reacted to "from leobago at Miga..." with ⭐
+01:43:03	jochem-brouwer:	Heeft gereageerd op "from leobago at Mi..." met ⭐
+01:43:06	donnoh | L2BEAT:	Reacted to "from leobago at Miga..." with ⭐
+01:43:08	Kalo | Obol:	Reacted to "from leobago at Miga..." with ⭐
+01:43:08	Yassine Ferhane:	Reacted to "from leobago at Miga..." with ⭐
+01:43:14	nixo:	emoji reacts are winning to choose a real star name
+01:43:15	felipe:	Reacted to "You telling me ACD..." with 😢
+01:43:22	Mehdi Aouadi:	Reacted to "from leobago at Miga..." with ⭐
+01:43:23	felipe:	Reacted to "from leobago at Mi..." with ⭐
+01:43:37	nflaig:	Reacted to "from leobago at Miga..." with ⭐
+01:43:37	Caleb:	Reacted to "from leobago at Mi..." with ⭐
+01:43:38	Katya:	Reacted to "emoji reacts are win..." with ➕
+01:43:43	nixo:	i just ask that the decision is made by next ACD? thurs
+01:43:45	Dustin:	Reacted to "from leobago at Mi..." with ⭐
+01:43:47	Barnabas:	I think we can really quickly change a new name, shouldn’t get stuck on this. If its not a real star, its kinda dumb lol
+01:43:57	jochem-brouwer:	Heeft gereageerd op "I think we can rea..." met ⭐
+01:44:00	felipe:	Reacted to "I think we can rea..." with 💯
+01:44:00	Milos:	Reacted to "I think we can rea..." with ⭐
+01:44:02	Trent:	Reacted to "I think we can reall..." with 👍
+01:44:03	Potuz:	lol
+01:44:06	nixo:	Reacted to "I think we can reall..." with ⭐
+01:44:06	Justin Florentine (Besu):	to soon to headline, to late to rename
+01:44:09	Dustin:	Reacted to "I think we can rea..." with ⭐
+01:44:12	Ansgar Dietrichs:	Replying to "Jan 5 is the first A…"
+We were thinking about having that ACDT as an ACDE replacement, given ACDE Jan 1 is cancelled
+01:44:13	nixo:	Reacted to "to soon to headline,..." with 😂
+01:44:13	Barnabas:	Reacted to "to soon to headline,..." with 😂
+01:44:14	Josh Davis:	Reacted to "to soon to headline,..." with 😂
+01:44:15	terence:	did we have a credible commitment to star name
+01:44:16	Poulav:	Reacted to "to soon to headlin..." with 😂
+01:44:18	Cayman Nava:	Reacted to "to soon to headline,..." with 😂
+01:44:22	nixo:	Reacted to "did we have a credib..." with 😂
+01:44:22	kingy_sigp:	Reacted to "did we have a credib..." with 😂
+01:44:23	NC:	Reacted to "to soon to headline,..." with 😂
+01:44:24	Barnabas:	Reacted to "did we have a credib..." with 😂
+01:44:25	Enrico Del Fante (tbenr):	Reacted to "did we have a credib..." with 😂
+01:44:25	Trent:	Not now terrenceeee
+01:44:25	Pawan Dhananjay:	Reacted to "I think we can reall..." with 😂
+01:44:25	Potuz:	I still call it the H fork
+01:44:28	nflaig:	Reacted to "did we have a credib..." with 😂
+01:44:28	Yassine Ferhane:	Reacted to "did we have a credib..." with 😂
+01:44:28	Katya:	Reacted to "did we have a credib..." with 😂
+01:44:29	Milos:	Reacted to "to soon to headlin..." with 😂
+01:44:30	Mehdi Aouadi:	Reacted to "to soon to headline,..." with 😂
+01:44:31	Pawan Dhananjay:	Reacted to "did we have a credib..." with 😂
+01:44:32	Justin Traglia:	Reacted to "did we have a credib..." with 😂
+01:44:32	jochem-brouwer:	Heeft gereageerd op "did we have a cred..." met 😂
+01:44:32	Milos:	Reacted to "did we have a cred..." with 😂
+01:44:33	Cayman Nava:	Reacted to "did we have a credib..." with 😂
+01:44:37	Barnabas:	we should trust the process
+01:44:37	Ansgar Dietrichs:	Replying to "Jan 5 is the first A…"
+In case that would be acceptable from the ACDT side
+01:44:38	NC:	Replying to "to soon to headline,..."
+
+We are in a mysterious timeline
+01:44:38	Mehdi Aouadi:	Reacted to "did we have a credib..." with 😂
+01:44:39	donnoh | L2BEAT:	Reacted to "did we have a credib..." with 😂
+01:44:44	Pooja Ranjan:	Reacted to "I still call it the ..." with 👍
+01:44:45	jochem-brouwer:	Antwoord verzenden naar "I still call it th..."
+
+H star!!
+01:44:45	kingy_sigp:	do we need star headliner process
+01:44:46	Poulav:	Reacted to "did we have a cred..." with 😂
+01:44:48	Phil Ngo:	Reacted to "to soon to headline,..." with 😂
+01:44:48	Justin Florentine (Besu):	yes, but the process is still forming, like a protostar
+01:44:52	Daniel Knopik:	Reacted to "to soon to headlin..." with 😂
+01:44:54	felipe:	Let's name a star Heka and propose it officially?
+01:44:55	Phil Ngo:	Reacted to "did we have a credib..." with 😂
+01:44:55	Pooja Ranjan:	Reacted to "to soon to headline,..." with 😂
+01:45:00	nixo:	Reacted to "Let's name a star He..." with 🫨
+01:45:01	Potuz:	Reacted to "Let's name a star He..." with 🫨
+01:45:02	donnoh | L2BEAT:	Reacted to "Let's name a star He..." with 🫨
+01:45:03	Justin Florentine (Besu):	Replying to "Let's name a star He..."
+
+brilliant
+01:45:03	Ansgar Dietrichs:	Replying to "Jan 5 is the first A…"
+Given the significant remaining EL scoping work ahead
+01:45:05	nixo:	Reacted to "Let's name a star He..." with 💙
+01:45:06	nflaig:	Reacted to "to soon to headline,..." with 😂
+01:45:14	Kalo | Obol:	Reacted to "Let's name a star He..." with 🫨
+01:45:14	Mehdi Aouadi:	Reacted to "Let's name a star He..." with 🫨
+01:45:15	Ansgar Dietrichs:	Reacted to "i would never" with 😂
+01:45:15	Barnabas:	+1 Hunor
+01:45:28	Potuz:	Reacted to "to soon to headline,..." with 😂
+01:45:36	Caleb:	Reacted to "Let's name a star ..." with 💙
+01:45:47	nixo:	portmanteau by next ACDE
+01:45:50	Justin Florentine (Besu):	Replying to "+1 Hunor"
+
+Hugota 🫂
+01:45:50	Josh Davis:	Will be dependent on the star, no?
+01:46:00	Barnabas:	Replying to "Jan 5 is the first A..."
+
+I think we can do that.
+01:46:00	kasey:	Still sad it didn’t line up so we could have hamsterdam
+01:46:06	Chris Berry:	Reacted to "Hugota 🫂" with 😂
+01:46:06	Satyajit:	Reacted to "Will be dependent ..." with 👍
+01:46:08	jochem-brouwer:	Heeft gereageerd op "Still sad it didn..." met 😂
+01:46:09	nixo:	Reacted to "+1 Hunor" with 😵‍💫
+01:46:09	Barnabas:	Replying to "Jan 5 is the first A..."
+
+Do we need a credible commitment for the swap?
+01:46:10	Kalo | Obol:	Reacted to "Still sad it didn’t ..." with 😂
+01:46:12	Katya:	Reacted to "Still sad it didn’t ..." with 😂
+01:46:15	Chris Berry:	Reacted to "Still sad it didn’t ..." with 😂
+01:46:18	nixo:	Reacted to "Still sad it didn’t ..." with 😂
+01:46:19	Barnabas:	Reacted to "Still sad it didn’t ..." with 😂
+01:46:19	Milos:	Reacted to "Still sad it didn..." with 😂
+01:46:20	Justin Florentine (Besu):	Replying to "Still sad it didn’t ..."
+
+this guy The Wires
+01:46:21	Vukasin:	Reacted to "from leobago at Mi..." with ⭐
+01:46:22	jochem-brouwer:	Heeft gereageerd op "Still sad it didn..." met 🍔
+01:46:23	donnoh | L2BEAT:	Reacted to "Hugota 🫂" with 😂
+01:46:26	Ansgar Dietrichs:	Curious what we will do in 10 years when we will run out of letters
+01:46:28	felipe:	Reacted to "Still sad it didn..." with 😂
+01:46:28	Potuz:	Reacted to "Still sad it didn’t ..." with 😂
+01:46:31	felipe:	Reacted to "Still sad it didn..." with 💯
+01:46:34	Pawan Dhananjay:	Reacted to "Still sad it didn’t ..." with 😂
+01:46:34	dionysuz.eth:	thank you alex
+01:46:35	Barnabas:	Reacted to "Hugota 🫂" with 😂
+01:46:35	Francesco:	Reacted to "Still sad it didn’t ..." with 🍔
+01:46:35	kasey:	Reacted to "this guy The Wires" with 💯
+01:46:39	felipe:	Reacted to "this guy The Wires" with 💯
+01:46:44	Mario Vega:	Replying to "Jan 5 is the first A..."
+
+If you put the discussion in the agenda for Jan 5 we can just do it

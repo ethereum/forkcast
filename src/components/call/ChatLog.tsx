@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useCallback } from 'react';
 
 interface ChatMessage {
   timestamp: string;
@@ -16,9 +16,11 @@ interface ChatLogProps {
   } | null;
   selectedSearchResult?: {timestamp: string, text: string, type: string} | null;
   onTimestampClick?: (timestamp: string) => void;
+  currentVideoTime?: number;
+  isPlaying?: boolean;
 }
 
-const ChatLog: React.FC<ChatLogProps> = ({ content, syncConfig, selectedSearchResult, onTimestampClick }) => {
+const ChatLog: React.FC<ChatLogProps> = ({ content, syncConfig, selectedSearchResult, onTimestampClick, currentVideoTime, isPlaying }) => {
   // --- Handle clicking on chat entries (but not links) ---
   const handleChatEntryClick = (event: React.MouseEvent, timestamp: string) => {
     // Don't trigger video jump if clicking on a link
@@ -54,6 +56,25 @@ const ChatLog: React.FC<ChatLogProps> = ({ content, syncConfig, selectedSearchRe
       return part;
     });
   };
+
+  // --- Check if a chat entry should be highlighted based on current video time ---
+  const isCurrentChatEntry = useCallback((entryTimestamp: string, index: number, allEntries: ChatMessage[]): boolean => {
+    if (!syncConfig?.transcriptStartTime || !syncConfig?.videoStartTime || currentVideoTime === undefined) return false;
+    if (entryTimestamp === '00:00:00') return false; // Skip virtual/unknown timestamp entries
+
+    const entryVideoTime = getAdjustedVideoTime(entryTimestamp);
+    
+    // Find next entry with a valid timestamp
+    let nextEntryVideoTime = Infinity;
+    for (let i = index + 1; i < allEntries.length; i++) {
+      if (allEntries[i].timestamp !== '00:00:00') {
+        nextEntryVideoTime = getAdjustedVideoTime(allEntries[i].timestamp);
+        break;
+      }
+    }
+
+    return currentVideoTime >= entryVideoTime && currentVideoTime < nextEntryVideoTime;
+  }, [syncConfig, currentVideoTime]);
 
   // --- Timestamp conversion helpers ---
   const timestampToSeconds = (timestamp: string): number => {
@@ -363,11 +384,13 @@ const ChatLog: React.FC<ChatLogProps> = ({ content, syncConfig, selectedSearchRe
         const replies = parentToReplies.get(key);
         const isParentWithReplies = replies && replies.length > 0;
         const isSelectedSearch = selectedSearchResult?.timestamp === message.timestamp && selectedSearchResult?.type === 'chat';
+        const isCurrentEntry = isPlaying && isCurrentChatEntry(message.timestamp, index, standaloneMessages);
         return (
           <div key={index} className="space-y-1">
             {/* Message */}
             <div
               data-chat-timestamp={message.timestamp}
+              data-current-chat={isCurrentEntry ? 'true' : undefined}
               onClick={(e) => handleChatEntryClick(e, message.timestamp)}
               className={`group hover:bg-slate-50 dark:hover:bg-slate-700/30 py-1 px-2 -mx-2 rounded transition-colors cursor-pointer
                 ${isSelectedSearch ? 'bg-yellow-50 dark:bg-yellow-900/20 border-l-2 border-yellow-500 rounded-r-md' : ''}
@@ -391,9 +414,9 @@ const ChatLog: React.FC<ChatLogProps> = ({ content, syncConfig, selectedSearchRe
                       ? (isSelectedSearch ? 'text-yellow-600 dark:text-yellow-400 italic' : 'text-slate-500 dark:text-slate-400 italic')
                       : (isSelectedSearch ? 'text-slate-900 dark:text-slate-100' : 'text-slate-600 dark:text-slate-400')
                   }`}>
-                    {message.message.split(/\r\n|\r|\n/).map((line, index) => (
-                      <React.Fragment key={index}>
-                        {index > 0 && <br />}
+                    {message.message.split(/\r\n|\r|\n/).map((line, lineIndex) => (
+                      <React.Fragment key={lineIndex}>
+                        {lineIndex > 0 && <br />}
                         {renderTextWithLinks(line)}
                       </React.Fragment>
                     ))}
@@ -453,6 +476,9 @@ const ChatLog: React.FC<ChatLogProps> = ({ content, syncConfig, selectedSearchRe
               const replyMatch = englishReplyMatch || dutchReplyMatch;
               const actualMessage = replyMatch ? replyMatch[2] : reply.message;
               const isSelectedReply = selectedSearchResult?.timestamp === reply.timestamp && selectedSearchResult?.type === 'chat';
+              // Find the reply's index in standaloneMessages for current entry check
+              const replyIndexInAll = standaloneMessages.findIndex(m => m.timestamp === reply.timestamp && m.message === reply.message);
+              const isReplyCurrentEntry = isPlaying && replyIndexInAll >= 0 && isCurrentChatEntry(reply.timestamp, replyIndexInAll, standaloneMessages);
 
               // Find reactions for the reply's actual message content
               const replyMessageReactions = Array.from(reactions.entries())
@@ -479,8 +505,10 @@ const ChatLog: React.FC<ChatLogProps> = ({ content, syncConfig, selectedSearchRe
                 <div key={replyIndex} className="space-y-1">
                   <div
                     data-chat-timestamp={reply.timestamp}
+                    data-current-chat={isReplyCurrentEntry ? 'true' : undefined}
                     onClick={(e) => handleChatEntryClick(e, reply.timestamp)}
-                    className={`ml-20 mt-1 pl-4 border-l-2 cursor-pointer hover:bg-slate-50 dark:hover:bg-slate-700/30 rounded transition-colors ${isSelectedReply ? 'border-yellow-500 bg-yellow-50 dark:bg-yellow-900/20' : 'border-slate-200 dark:border-slate-600'}`}
+                    className={`ml-20 mt-1 pl-4 border-l-2 cursor-pointer hover:bg-slate-50 dark:hover:bg-slate-700/30 rounded transition-colors
+                      ${isSelectedReply ? 'border-yellow-500 bg-yellow-50 dark:bg-yellow-900/20' : 'border-slate-200 dark:border-slate-600'}`}
                   >
                     <div className="flex gap-3 text-sm">
                       <span className={`text-xs flex-shrink-0 font-mono mt-0.5 ${isSelectedReply ? 'text-yellow-600 dark:text-yellow-400' : 'text-slate-500 dark:text-slate-400'}`} style={{ minWidth: '64px' }}>
@@ -494,9 +522,9 @@ const ChatLog: React.FC<ChatLogProps> = ({ content, syncConfig, selectedSearchRe
                           {reply.speaker}:
                         </span>
                         <span className={`break-words ${isSelectedReply ? 'text-slate-900 dark:text-slate-100' : 'text-slate-600 dark:text-slate-400'}`}>
-                          {actualMessage.split(/\r\n|\r|\n/).map((line, index) => (
-                            <React.Fragment key={index}>
-                              {index > 0 && <br />}
+                          {actualMessage.split(/\r\n|\r|\n/).map((line, lineIdx) => (
+                            <React.Fragment key={lineIdx}>
+                              {lineIdx > 0 && <br />}
                               {renderTextWithLinks(line)}
                             </React.Fragment>
                           ))}

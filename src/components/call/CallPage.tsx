@@ -40,9 +40,13 @@ const CallPage: React.FC = () => {
   const transcriptRef = useRef<HTMLDivElement>(null);
   const chatLogRef = useRef<HTMLDivElement>(null);
   const [isUserScrollingTranscript, setIsUserScrollingTranscript] = useState(false);
+  const [isChatSynced, setIsChatSynced] = useState(true);
   const transcriptScrollTimeoutRef = useRef<ReturnType<typeof setTimeout> | undefined>(undefined);
   const isProgrammaticScrollRef = useRef(false);
+  const isProgrammaticChatScrollRef = useRef(false);
   const lastHighlightedTimestampRef = useRef<string | null>(null);
+  const lastHighlightedChatTimestampRef = useRef<string | null>(null);
+  const previousVideoTimeRef = useRef<number>(0);
   const [player, setPlayer] = useState<any>(null);
   const [currentVideoTime, setCurrentVideoTime] = useState(0);
   const [isPlaying, setIsPlaying] = useState(false);
@@ -460,6 +464,35 @@ const CallPage: React.FC = () => {
     };
   }, [callData]);
 
+  // Detect manual scrolling on chat log - breaks sync until user re-syncs
+  useEffect(() => {
+    if (!chatLogRef.current) return;
+
+    const handleChatScroll = () => {
+      // Ignore programmatic scrolls
+      if (isProgrammaticChatScrollRef.current) {
+        return;
+      }
+
+      // Break sync permanently until user clicks re-sync
+      setIsChatSynced(false);
+    };
+
+    const container = chatLogRef.current;
+    container.addEventListener('scroll', handleChatScroll);
+
+    return () => {
+      container.removeEventListener('scroll', handleChatScroll);
+    };
+  }, [callData]);
+
+  // Handler to re-sync chat to video
+  const handleResyncChat = () => {
+    setIsChatSynced(true);
+    // Reset the last highlighted timestamp to force immediate scroll
+    lastHighlightedChatTimestampRef.current = null;
+  };
+
   const scrollTranscriptToEntry = (entryElement: HTMLElement) => {
     if (!transcriptRef.current) return;
 
@@ -511,11 +544,19 @@ const CallPage: React.FC = () => {
     const maxScroll = Math.max(0, container.scrollHeight - containerHeight);
     const finalScrollTop = Math.max(0, Math.min(targetScrollTop, maxScroll));
 
+    // Mark as programmatic scroll
+    isProgrammaticChatScrollRef.current = true;
+
     // Smooth scroll within container only
     container.scrollTo({
       top: finalScrollTop,
       behavior: 'smooth'
     });
+
+    // Reset flag after scroll completes
+    setTimeout(() => {
+      isProgrammaticChatScrollRef.current = false;
+    }, 500);
   };
 
   // Auto-scroll transcript to highlighted entry
@@ -565,6 +606,61 @@ const CallPage: React.FC = () => {
       }
     }
   }, [currentVideoTime, isPlaying, callConfig, isUserScrollingTranscript]);
+
+  // Auto-scroll chat log to current entry
+  useEffect(() => {
+    // Skip if chat is not synced, not playing, or no sync config
+    if (!isChatSynced || !isPlaying || !chatLogRef.current || !callConfig?.sync?.transcriptStartTime || !callConfig?.sync?.videoStartTime) return;
+
+    // Find the current chat entry by data attribute
+    const currentEntry = chatLogRef.current.querySelector('[data-current-chat="true"]') as HTMLElement;
+
+    if (currentEntry) {
+      const container = chatLogRef.current;
+
+      // Get the timestamp to check if it's a new entry
+      const currentTimestamp = currentEntry.getAttribute('data-chat-timestamp');
+
+      // Only scroll if this is a different entry than last time
+      if (currentTimestamp === lastHighlightedChatTimestampRef.current) {
+        return;
+      }
+      lastHighlightedChatTimestampRef.current = currentTimestamp;
+
+      // Get positions relative to the container, not the document
+      const containerHeight = container.clientHeight;
+      const containerRect = container.getBoundingClientRect();
+      const entryRect = currentEntry.getBoundingClientRect();
+
+      // Calculate entry position relative to container's scroll area
+      const entryOffsetFromContainerTop = entryRect.top - containerRect.top + container.scrollTop;
+      const entryHeight = currentEntry.offsetHeight;
+
+      // Calculate where the entry currently is in the viewport
+      const entryRelativeTop = entryOffsetFromContainerTop - container.scrollTop;
+      const entryRelativeBottom = entryRelativeTop + entryHeight;
+
+      // Check if the entry is visible in a good position (20% to 70% of viewport)
+      const isInGoodPosition = entryRelativeTop >= (containerHeight * 0.2) &&
+                               entryRelativeBottom <= (containerHeight * 0.7);
+
+      if (!isInGoodPosition) {
+        scrollChatToEntry(currentEntry);
+      }
+    }
+  }, [currentVideoTime, isPlaying, callConfig, isChatSynced]);
+
+  // Detect video seek and re-sync chat (mirrors transcript behavior)
+  useEffect(() => {
+    const timeDiff = Math.abs(currentVideoTime - previousVideoTimeRef.current);
+    
+    if (timeDiff > 2 && previousVideoTimeRef.current > 0) {
+      setIsChatSynced(true);
+      lastHighlightedChatTimestampRef.current = null;
+    }
+    
+    previousVideoTimeRef.current = currentVideoTime;
+  }, [currentVideoTime]);
 
   // YouTube player handlers
   const onPlayerReady: YouTubeProps['onReady'] = (event) => {
@@ -640,6 +736,10 @@ const CallPage: React.FC = () => {
       // Update currentVideoTime immediately to ensure highlighting updates
       setCurrentVideoTime(adjustedTime);
 
+      // Re-sync chat when user explicitly seeks to a timestamp
+      setIsChatSynced(true);
+      lastHighlightedChatTimestampRef.current = null; // Force immediate scroll on next render
+
       // Store search result for highlighting if it came from search
       if (searchResult) {
         setSelectedSearchResult({
@@ -668,6 +768,16 @@ const CallPage: React.FC = () => {
         if (targetEntry) {
           scrollChatToEntry(targetEntry);
         }
+      }
+
+      // Scroll chat to corresponding time (with a small delay for the data attribute to update)
+      if (chatLogRef.current && callConfig?.sync) {
+        setTimeout(() => {
+          const currentChatEntry = chatLogRef.current?.querySelector('[data-current-chat="true"]') as HTMLElement;
+          if (currentChatEntry) {
+            scrollChatToEntry(currentChatEntry);
+          }
+        }, 100);
       }
 
       // Update URL with timestamp for sharing
@@ -1134,9 +1244,23 @@ const CallPage: React.FC = () => {
           <div>
             {callData.chatContent && (
               <div className="bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg p-4 shadow-sm hover:shadow-md transition-shadow">
-                <h2 className="text-sm font-semibold text-slate-900 dark:text-slate-100 mb-3">Chat Logs</h2>
+                <div className="flex items-center justify-between mb-3">
+                  <h2 className="text-sm font-semibold text-slate-900 dark:text-slate-100">Chat Logs</h2>
+                  {!isChatSynced && callConfig?.sync && (
+                    <button
+                      onClick={handleResyncChat}
+                      className="flex items-center gap-1 text-xs text-blue-600 dark:text-blue-400 hover:text-blue-700 dark:hover:text-blue-300 transition-colors px-2 py-1 rounded hover:bg-blue-50 dark:hover:bg-blue-900/30"
+                      title="Sync chat to video"
+                    >
+                      <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
+                      </svg>
+                      Sync
+                    </button>
+                  )}
+                </div>
                 <div ref={chatLogRef} className="max-h-[400px] overflow-y-auto pr-2">
-                  <ChatLog content={callData.chatContent} syncConfig={callConfig?.sync} selectedSearchResult={selectedSearchResult} onTimestampClick={handleTranscriptClick} />
+                  <ChatLog content={callData.chatContent} syncConfig={callConfig?.sync} selectedSearchResult={selectedSearchResult} onTimestampClick={handleTranscriptClick} currentVideoTime={currentVideoTime} isPlaying={isPlaying} />
                 </div>
               </div>
             )}

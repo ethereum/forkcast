@@ -113,12 +113,12 @@ export const FUSAKA_TIMELINE_PHASES: TimelinePhase[] = [
   }
 ];
 
-export const HEKOTA_TIMELINE_PHASES: TimelinePhase[] = [
+export const HEZOTA_TIMELINE_PHASES: TimelinePhase[] = [
   {
     id: 'fork-focus',
     title: 'Fork Focus Discussion & Headliner Proposals',
     dateRange: 'Date TBD',
-    description: 'ACD calls focus on discussing Heka/Bogotá\'s high-level goals. Headliner champions present proposals.',
+    description: 'ACD calls focus on discussing Hezotá\'s high-level goals. Headliner champions present proposals.',
     status: 'current'
   },
   {
@@ -132,7 +132,7 @@ export const HEKOTA_TIMELINE_PHASES: TimelinePhase[] = [
     id: 'non-headliner-proposals',
     title: 'Non-Headliner EIP Proposals',
     dateRange: 'Date TBD',
-    description: 'Non-headliner EIPs can now be proposed for inclusion in Heka/Bogotá.',
+    description: 'Non-headliner EIPs can now be proposed for inclusion in Hezotá.',
     status: 'upcoming'
   },
   {
@@ -146,7 +146,7 @@ export const HEKOTA_TIMELINE_PHASES: TimelinePhase[] = [
     id: 'cfi-to-sfi',
     title: 'CFI → SFI EIP Decisions',
     dateRange: 'Date TBD',
-    description: 'As Heka/Bogotá devnets begin, final decisions on which CFI EIPs will be included in the upgrade\'s devnet.',
+    description: 'As Hezotá devnets begin, final decisions on which CFI EIPs will be included in the upgrade\'s devnet.',
     status: 'upcoming'
   }
 ];
@@ -324,8 +324,8 @@ export const GLAMSTERDAM_PROGRESS: ForkProgress = {
   ]
 };
 
-export const HEKOTA_PROJECTION: ForkProgress = {
-  forkName: 'Hekota',
+export const HEZOTA_PROJECTION: ForkProgress = {
+  forkName: 'Hezota',
   phases: [
     {
       phaseId: 'headliner-selection',

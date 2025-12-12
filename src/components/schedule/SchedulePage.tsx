@@ -65,9 +65,9 @@ const DURATION_LABELS: Record<keyof PhaseDurations, { label: string; description
 
 const SchedulePage: React.FC = () => {
   const [glamsterdamMainnetDate, setGlamsterdamMainnetDate] = useState<string>(() => loadFromStorage().glamsterdamMainnetDate);
-  const [hekotaMainnetDate, setHekotaMainnetDate] = useState<string>(() => loadFromStorage().hekotaMainnetDate);
+  const [hekotaMainnetDate, setHezotaMainnetDate] = useState<string>(() => loadFromStorage().hekotaMainnetDate);
   const [glamsterdamDevnetCount, setGlamsterdamDevnetCount] = useState<number>(() => loadFromStorage().glamsterdamDevnetCount);
-  const [hekotaDevnetCount, setHekotaDevnetCount] = useState<number>(() => loadFromStorage().hekotaDevnetCount);
+  const [hekotaDevnetCount, setHezotaDevnetCount] = useState<number>(() => loadFromStorage().hekotaDevnetCount);
   const [lockedDates, setLockedDates] = useState<Record<string, string>>(() => loadFromStorage().lockedDates);
   const [phaseDurations, setPhaseDurations] = useState<PhaseDurations>(() => loadFromStorage().phaseDurations);
   const [showSettings, setShowSettings] = useState(false);
@@ -110,9 +110,9 @@ const SchedulePage: React.FC = () => {
   // Reset to defaults
   const resetPlanningTable = () => {
     setGlamsterdamMainnetDate(DEFAULT_STATE.glamsterdamMainnetDate);
-    setHekotaMainnetDate(DEFAULT_STATE.hekotaMainnetDate);
+    setHezotaMainnetDate(DEFAULT_STATE.hekotaMainnetDate);
     setGlamsterdamDevnetCount(DEFAULT_STATE.glamsterdamDevnetCount);
-    setHekotaDevnetCount(DEFAULT_STATE.hekotaDevnetCount);
+    setHezotaDevnetCount(DEFAULT_STATE.hekotaDevnetCount);
     setLockedDates(DEFAULT_STATE.lockedDates);
     setPhaseDurations(DEFAULT_STATE.phaseDurations);
     localStorage.removeItem(STORAGE_KEY);
@@ -174,8 +174,8 @@ const SchedulePage: React.FC = () => {
     };
   }, [glamsterdamMainnetDate, glamsterdamDevnetCount, phaseDurations]);
 
-  const dynamicHekotaProjection = useMemo(() =>
-    generateForkProgress('Hekota', parseLocalDate(hekotaMainnetDate), {
+  const dynamicHezotaProjection = useMemo(() =>
+    generateForkProgress('Hezota', parseLocalDate(hekotaMainnetDate), {
       headlinerProposalDeadlineOverride: new Date(2026, 0, 15), // January 15, 2026
       devnetCount: hekotaDevnetCount,
       durations: phaseDurations,
@@ -185,7 +185,7 @@ const SchedulePage: React.FC = () => {
 
   // Get all milestones in chronological order for a fork
   const getMilestoneOrder = (fork: string): Array<{ phaseId: string; itemName: string }> => {
-    const projection = fork === 'glamsterdam' ? dynamicGlamsterdamProjection : dynamicHekotaProjection;
+    const projection = fork === 'glamsterdam' ? dynamicGlamsterdamProjection : dynamicHezotaProjection;
     const devnetCount = fork === 'glamsterdam' ? glamsterdamDevnetCount : hekotaDevnetCount;
 
     const milestones: Array<{ phaseId: string; itemName: string }> = [
@@ -213,7 +213,7 @@ const SchedulePage: React.FC = () => {
 
   // Get calculated date for a milestone from projections
   const getCalculatedDateForMilestone = (fork: string, phaseId: string, itemName: string): string => {
-    const projection = fork === 'glamsterdam' ? dynamicGlamsterdamProjection : dynamicHekotaProjection;
+    const projection = fork === 'glamsterdam' ? dynamicGlamsterdamProjection : dynamicHezotaProjection;
     const phase = projection.phases.find(p => p.phaseId === phaseId);
 
     if (phaseId === 'headliner-selection' || phaseId === 'eip-selection') {
@@ -526,7 +526,7 @@ const SchedulePage: React.FC = () => {
                           Glamsterdam
                         </th>
                         <th className={`px-3 py-2 text-left text-xs font-semibold text-slate-600 dark:text-slate-300 uppercase tracking-wider ${mobileFork === 'hekota' ? '' : 'hidden'} md:table-cell`}>
-                          Hekota
+                          Hezotá
                         </th>
                       </tr>
                     </thead>
@@ -538,7 +538,7 @@ const SchedulePage: React.FC = () => {
                     ).map((phase) => {
                       const fusakaPhase = FUSAKA_PROGRESS.phases.find(p => p.phaseId === phase.id);
                       const glamsterdamPhase = dynamicGlamsterdamProjection.phases.find(p => p.phaseId === phase.id);
-                      const hekotaPhase = dynamicHekotaProjection.phases.find(p => p.phaseId === phase.id);
+                      const hekotaPhase = dynamicHezotaProjection.phases.find(p => p.phaseId === phase.id);
 
                       return (
                         <React.Fragment key={phase.id}>
@@ -623,14 +623,14 @@ const SchedulePage: React.FC = () => {
                                   <span className="text-slate-500 dark:text-slate-400 text-sm">{hekotaDevnetCount} devnets</span>
                                   <div className="flex items-center">
                                     <button
-                                      onClick={() => setHekotaDevnetCount(Math.max(1, hekotaDevnetCount - 1))}
+                                      onClick={() => setHezotaDevnetCount(Math.max(1, hekotaDevnetCount - 1))}
                                       className="px-1.5 py-0.5 text-sm bg-slate-200 dark:bg-slate-600 hover:bg-slate-300 dark:hover:bg-slate-500 rounded-l border border-slate-300 dark:border-slate-500"
                                       title="Remove devnet"
                                     >
                                       −
                                     </button>
                                     <button
-                                      onClick={() => setHekotaDevnetCount(hekotaDevnetCount + 1)}
+                                      onClick={() => setHezotaDevnetCount(hekotaDevnetCount + 1)}
                                       className="px-1.5 py-0.5 text-sm bg-slate-200 dark:bg-slate-600 hover:bg-slate-300 dark:hover:bg-slate-500 rounded-r border border-l-0 border-slate-300 dark:border-slate-500"
                                       title="Add devnet"
                                     >
@@ -670,7 +670,7 @@ const SchedulePage: React.FC = () => {
                             const getPhaseProgress = (fork: string) => {
                               if (fork === 'fusaka') return FUSAKA_PROGRESS;
                               if (fork === 'glamsterdam') return dynamicGlamsterdamProjection;
-                              return dynamicHekotaProjection;
+                              return dynamicHezotaProjection;
                             };
                             const calcDurationWarning = (fork: string, currentDate: string) => {
                               if (!durationConfig || !currentDate) return null;
@@ -859,7 +859,7 @@ const SchedulePage: React.FC = () => {
                     {FUSAKA_PROGRESS.phases.find(p => p.phaseId === 'public-testnets')?.testnets?.map((testnet, idx) => {
                       const fusakaTestnetPhase = FUSAKA_PROGRESS.phases.find(p => p.phaseId === 'public-testnets');
                       const glamsterdamTestnetPhase = dynamicGlamsterdamProjection.phases.find(p => p.phaseId === 'public-testnets');
-                      const hekotaTestnetPhase = dynamicHekotaProjection.phases.find(p => p.phaseId === 'public-testnets');
+                      const hekotaTestnetPhase = dynamicHezotaProjection.phases.find(p => p.phaseId === 'public-testnets');
 
                       return (
                         <tr key={`testnet-${idx}`} className="hover:bg-slate-50 dark:hover:bg-slate-700/30 bg-slate-50/50 dark:bg-slate-800/50">
@@ -996,9 +996,9 @@ const SchedulePage: React.FC = () => {
                           <input
                             type="date"
                             value={hekotaMainnetDate}
-                            onChange={(e) => setHekotaMainnetDate(e.target.value)}
+                            onChange={(e) => setHezotaMainnetDate(e.target.value)}
                             className="px-1.5 py-0.5 text-sm border border-slate-300 dark:border-slate-600 rounded bg-white dark:bg-slate-700 text-slate-900 dark:text-slate-100 focus:outline-none focus:ring-1 focus:ring-purple-500 cursor-pointer"
-                            title="Click to adjust Hekota mainnet date"
+                            title="Click to adjust Hezotá mainnet date"
                           />
                           {(() => {
                             const hekDate = parseLocalDate(hekotaMainnetDate);
@@ -1030,11 +1030,11 @@ const SchedulePage: React.FC = () => {
             forks={[
               { name: 'Fusaka', progress: FUSAKA_PROGRESS, color: '#10b981' },
               { name: 'Glamsterdam', progress: dynamicGlamsterdamProjection, color: '#6366f1' },
-              { name: 'Hekota', progress: dynamicHekotaProjection, color: '#f59e0b' },
+              { name: 'Hezotá', progress: dynamicHezotaProjection, color: '#f59e0b' },
             ]}
             startDate={new Date(2025, 4, 1)} // May 2025
             monthsToShow={(() => {
-              // Calculate months from May 2025 to Hekota mainnet + 1 month buffer
+              // Calculate months from May 2025 to Hezota mainnet + 1 month buffer
               const start = new Date(2025, 4, 1);
               const hekotaDate = parseLocalDate(hekotaMainnetDate);
               const months = (hekotaDate.getFullYear() - start.getFullYear()) * 12

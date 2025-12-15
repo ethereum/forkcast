@@ -149,7 +149,7 @@ const EditableDateCell: React.FC<EditableDateCellProps> = ({
         <span className={`text-xs ${gapWidth} text-right ${gapIsNegative ? 'text-red-600 dark:text-red-400 font-semibold' : gapIsWarning ? 'text-amber-600 dark:text-amber-400 font-medium' : 'text-slate-400 dark:text-slate-500'}`}>
           {gapText || ''}
         </span>
-        <span className={`${iconWidth} text-xs text-purple-500 text-center`} title="Date from meta threa">
+        <span className={`${iconWidth} text-xs text-purple-500 text-center`} title="Date from meta thread">
           🔒
         </span>
       </div>

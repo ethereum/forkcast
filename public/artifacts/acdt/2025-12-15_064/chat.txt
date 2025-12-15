@@ -1,0 +1,207 @@
+00:03:58	lightclient:	gm
+00:04:03	Yassine Ferhane:	gm
+00:04:06	wolovim:	Reacted to "gm" with 🌞
+00:04:48	Justin Traglia:	Gm
+00:05:14	Fredrik:	Reacted to "gm" with 🌅
+00:05:17	Fredrik:	Reacted to "gm" with 🌅
+00:05:20	Fredrik:	Reacted to "Gm" with 🌅
+00:06:02	Stefan Starflinger:	hello
+00:06:46	James He:	Prysm released post mortem main net incident
+00:07:05	Mario Vega:	Reacted to "Gm" with 🌅
+00:07:07	Justin Traglia:	Replying to "Prysm released post ..."
+
+https://prysm.offchainlabs.com/docs/misc/mainnet-postmortems/#fusaka-mainnet-prysm-incident
+00:07:30	James He:	https://prysm.offchainlabs.com/docs/misc/mainnet-postmortems/
+00:07:35	James He:	Reacted to "https://prysm.offcha..." with 👍
+00:07:45	Barnabas:	Reacted to "https://prysm.offcha..." with 💯
+00:07:47	Bharath:	Reacted to "https://prysm.offcha..." with 👍
+00:08:05	Mario Vega:	https://github.com/ethereum/execution-spec-tests/releases/tag/bal%40v2.0.0
+00:10:53	felipe:	Reacted to "https://github.com..." with ❤️
+00:14:03	Justin Traglia:	https://github.com/ethereum/consensus-specs/pull/4788 
+
+In the PR we've made, builders will be tracked in a new builders list in the state. Some key changes: There is no activation queue for builders. Top-up deposits are instant, as soon as they hit the CL. The minimum builder balance is 1 ETH. Builders will not be able to perform partial withdrawals; only do full exits. Builders cannot be slashed nor penalized, which leads to a few nice simplifications for payments. Builder payments are faster since they don't need to go through the exit queue & min validator withdrawal delay.
+00:15:08	Mario Vega:	How would this list be bootstraped at fork boundary?
+00:15:46	Pawan Dhananjay:	We’d need some time to review this for lighthouse
+00:16:49	Barnabas:	Reacted to "We’d need some time ..." with 👍
+00:17:16	Justin Traglia:	https://github.com/ethereum/pm/issues/1835
+00:19:32	Justin Traglia:	https://github.com/ethereum/consensus-specs/pull/4777
+00:20:43	Raúl Kripalani:	i'll take a look
+00:20:52	Barnabas:	Reacted to "i'll take a look" with 👍
+00:20:54	Justin Traglia:	Reacted to "i'll take a look" with 🙏
+00:23:40	Pawan Dhananjay:	The preferences are just gas limit and fee_recipient right?
+00:24:09	Pawan Dhananjay:	Gotcha, I’ll check it out
+00:24:15	Bharath:	Replying to "Gotcha, I’ll check i..."
+
+https://github.com/ethereum/consensus-specs/pull/4777/commits/779d0037dd12f272bb0e4bc84add20833416bddb
+00:24:34	Bharath:	https://github.com/ethereum/builder-specs/pull/138
+00:25:15	Barnabas:	Replying to "https://github.com/e..."
+
+is this built on top of 4788?
+00:25:34	Barnabas:	Replying to "https://github.com/e..."
+
+https://github.com/ethereum/consensus-specs/pull/4788
+00:25:43	Justin Traglia:	Also, consensus devs, please review the following PRs. I would like to merge them today:
+
+Refactor process_withdrawals consensus-specs#4765
+Refactor get_expected_withdrawals consensus-specs#4766
+00:26:23	Pawan Dhananjay:	Replying to "Gotcha, I’ll check i..."
+
+My first instinct is trusted_payments_accepted is unnecessary as the proposer doesn’t have to adhere to this preference in any way
+00:26:49	Justin Florentine (Besu):	this guy gets it
+00:26:55	Enrico Del Fante (tbenr):	Reacted to "this guy gets it" with 🔥
+00:26:57	Kamil Chodoła:	Reacted to "this guy gets it" with 🔥
+00:26:57	Mario Vega:	Reacted to "this guy gets it" with 🚀
+00:26:59	Justin Traglia:	Reacted to "this guy gets it" with 😄
+00:26:59	wolovim:	Reacted to "this guy gets it" with 📈
+00:27:00	Marc:	Reacted to "this guy gets it" with 🔥
+00:27:01	draganrakita:	Reacted to "this guy gets it" with 🚀
+00:27:03	draganrakita:	Reacted to "this guy gets it" with 📈
+00:27:04	draganrakita:	Reacted to "this guy gets it" with 🔥
+00:27:11	Yassine Ferhane:	Reacted to "this guy gets it" with 🔥
+00:27:13	Enrico Del Fante (tbenr):	Replying to "this guy gets it"
+
+He is just trying to emulate the original
+00:27:20	Alexey:	if we will have shorter slots, it might be not good to increase it now, unless we are ready to double it next time?
+00:27:25	Ben Adams:	Reacted to "this guy gets it" with 🚀
+00:27:25	Ben Adams:	Reacted to "this guy gets it" with 😄
+00:27:53	Justin Florentine (Besu):	Replying to "this guy gets it"
+
+ben has his own, significant energy lets goooooo
+00:28:00	Ben Adams:	Replying to "if we will have shor..."
+
+Don't think shorter slots needs to effect it
+00:28:53	Pawan Dhananjay:	Reacted to "this guy gets it" with 🔥
+00:29:12	Raúl Kripalani:	perfect
+00:29:20	Alexey:	Replying to "if we will have shor..."
+
+You will have less time for execution?
+00:29:36	Enrico Del Fante (tbenr):	Replying to "if we will have shor..."
+
+Yeah, shorter slots should adjust GAS independently
+00:30:30	Alexey:	Replying to "if we will have shor..."
+
+I mean in 6 sec slot time 80 will feel like 160
+00:31:06	Enrico Del Fante (tbenr):	Replying to "if we will have shor..."
+
+So if we go to 6, at activation gas limit will be halved, independently by current value
+00:32:14	Alexey:	Reacted to "So if we go to 6, at..." with 👍
+00:33:01	Kamil Chodoła:	Quite a broad topic so worth hearing from others - but maybe once we will have solid numbers?
+00:33:02	wolovim:	It was only 2 one-off sessions
+00:33:28	Maria Silva:	Replying to "Quite a broad topic ..."
+
+Yeah, agreed
+00:33:57	Alexey:	https://github.com/NethermindEth/nethermind/pull/9942 will be ready tomorrow
+00:34:14	Barnabas:	Reacted to "https://github.com/N..." with 👍
+00:35:29	Ben Adams:	Reacted to "ben has his own, sig..." with 💜
+00:35:38	Ben Adams:	Reacted to "this guy gets it" with 🔥
+00:35:55	Raúl Kripalani:	Reacted to "https://github.com/N..." with 👍
+00:36:02	Raúl Kripalani:	Reacted to "https://github.com/N..." with 🎉
+00:36:27	Justin Traglia:	Reacted to "My first instinct is..." with 👍
+00:37:17	Kamil Chodoła:	Not controversial - not seeing much value in voting gas limit on validators side while blobs are specd
+00:37:22	Justin Traglia:	Replying to "Gotcha, I’ll check i..."
+
+I’ve reverted the trusted_payments_accepted change. We can discuss adding that later, if/when the PR is merged.
+00:38:34	Kamil Chodoła:	Would be nice to have networks parameters be on specification to be set.
+ 
+Imagine giving slot time as a parameter for validators to decide on :D
+00:38:58	Barnabas:	Replying to "Would be nice to hav..."
+
+Giphy [ID:1T96TRBBGYThC]
+[Full message cannot be displayed on this version]
+00:39:07	Kamil Chodoła:	Reacted to "Replying to "Would..." with 😂
+00:39:10	Ben Adams:	Reacted to "Giphy [ID:1T96TRBBGY..." with 😂
+00:39:13	Alexey:	Reacted to "Giphy [ID:1T96TRBBGY..." with 😂
+00:39:16	Akash | ECH:	Reacted to "Giphy [ID:1T96TRBBGYThC]" with 😂
+00:39:28	Luca | Vero:	Reacted to "Giphy [ID:1T96TRBBGYThC]" with 😂
+00:39:32	Ben Adams:	Replying to "Would be nice to hav..."
+
+Voting on slot time; changing per block?
+00:39:39	Pawan Dhananjay:	Reacted to "Giphy [ID:1T96TRBBGYThC]" with 😂
+00:39:53	Ameziane Hamlat:	Reacted to "Giphy [ID:1T96TRBBGYThC]" with 😂
+00:40:09	Kamil Chodoła:	Replying to "Would be nice to h..."
+
+but only can decrese by 0.001% per block
+00:40:48	Mario Vega:	Reacted to "Giphy [ID:1T96TRBBGYThC]" with 😂
+00:40:54	Justin Traglia:	Reacted to "Giphy [ID:1T96TRBBGYThC]" with 😂
+00:43:42	Enrico Del Fante (tbenr):	Replying to "Would be nice to hav..."
+
+🤯
+00:43:53	Enrico Del Fante (tbenr):	Reacted to "Giphy [ID:1T96TRBBGYThC]" with 😂
+00:47:51	Stefan Starflinger:	https://notes.ethereum.org/@ethpandaops/bal-devnet-1 updated devnet note for bals
+00:48:28	Stefan Starflinger:	(not all the branches for ELs are available yet)
+00:49:00	Barnabas:	https://ethereum-magicians.org/t/h-star-name-for-consensus-layer-upgrade-after-glamsterdam/24298/16?u=bbusa
+00:49:01	nixo:	TIL how to pronounce chase’s discord handle
+00:49:13	Chase Wright:	Reacted to "TIL how to pronounce..." with 😂
+00:49:32	Kamil Chodoła:	In Nethermind we built sth similar for RPC benchmarking - Carlos is not there but asked him already to comapre and see the way forward if we should continue our effort or we should collab to make it generally better
+00:49:37	nixo:	the portmanteau is already up too!
+https://ethereum-magicians.org/t/h-star-name-for-consensus-layer-upgrade-after-glamsterdam/24298/18
+00:49:37	Barnabas:	Heka -> Heze
+00:50:09	Ben Adams:	Hezgota
+00:50:11	Leo:	I can look at the pronuntiation
+00:50:16	nixo:	Reacted to "I can look at the pr..." with 💙
+00:50:18	Barnabas:	Reacted to "I can look at the pr..." with 💙
+00:50:30	Chase Wright:	Replying to "In Nethermind we bui..."
+
+Based on my notes and overall goals, it would be a perfect collaboration to combine these 2 repos and unify the architecture.
+00:50:42	Barnabas:	18dec - ACDE
+22dec - ACDT Cancelled 
+25dec - ACDC Cancelled
+29dec - ACDT Cancelled
+1jan - ACDE Cancelled
+5jan - ACDT -> ACDE 
+8jan - ACDC
+12jan - ACDT
+00:51:16	Ben Adams:	Reacted to "18dec - ACDE
+22dec -..." with 👍
+00:51:21	Akash | ECH:	Reacted to "18dec - ACDE
+22dec -..." with 👍
+00:51:22	Mario Vega:	Reacted to "18dec - ACDE
+22dec -..." with 👍
+00:51:23	Ameziane Hamlat:	Reacted to "In Nethermind we bui..." with 👍
+00:51:28	Justin Traglia:	Reacted to "18dec - ACDE
+22dec -..." with 👍
+00:51:31	nixo:	core devs being forced to take time off by calls landing exactly on holidays
+00:51:32	0xAphrodETH:	I think shorter is better, maybe Hekta
+00:51:39	Mario Vega:	Reacted to "core devs being forc..." with 😂
+00:51:39	Jen:	Reacted to "18dec - ACDE
+22dec -..." with 👍
+00:51:44	Barnabas:	Reacted to "core devs being forc..." with 😂
+00:51:47	Stefan Starflinger:	Reacted to "core devs being forc..." with 😂
+00:51:49	Maria Silva:	Reacted to "18dec - ACDE
+22dec -..." with 👍
+00:51:49	James He:	Last one please haha
+00:51:56	Tullio Canepa | Erigon:	Reacted to "In Nethermind we bui..." with 👍
+00:51:57	Ben Adams:	Replying to "I think shorter is b..."
+
+Hezta
+00:52:02	James He:	Reacted to "core devs being forc..." with 😂
+00:52:05	Katya:	Call for next week
+00:52:06	0xAphrodETH:	Reacted to "Hezta" with 👍
+00:52:07	Tullio Canepa | Erigon:	Reacted to "Based on my notes an..." with 👍
+00:52:15	James He:	I don’t want*
+00:52:16	nixo:	Replying to "Last one please haha"
+
+he’s saying this is the last one?
+00:52:21	Katya:	Reacted to "I don’t want*" with 😂
+00:52:26	nixo:	Reacted to "I don’t want*" with 👍
+00:52:28	James He:	Replying to "Last one please haha"
+
+This one as the last one please
+00:52:54	Mario Vega:	Reacted to "I don’t want*" with 👍
+00:53:12	Katya:	Happy holidays
+00:53:15	Barnabas:	18dec - ACDE
+22dec - ACDT Cancelled 
+25dec - ACDC Cancelled
+29dec - ACDT Cancelled
+1jan - ACDE Cancelled
+5jan - ACDT -> ACDE 
+8jan - ACDC
+12jan - ACDT
+00:53:16	Mario Vega:	Reacted to "Happy holidays" with ❤️
+00:53:18	James He:	Reacted to "Happy holidays" with ❤️
+00:53:18	Stefan Starflinger:	Reacted to "Happy holidays" with ❤️
+00:53:19	Luis Pinto | Besu:	Reacted to "Happy holidays" with ❤️
+00:53:21	Leo:	Reacted to "Happy holidays" with ❤️
+00:53:21	Yassine Ferhane:	Reacted to "Happy holidays" with ❤️
+00:53:23	Luca | Vero:	Reacted to "Happy holidays" with ❤️
+00:53:32	Justin Traglia:	Reacted to "Happy holidays" with ❤️

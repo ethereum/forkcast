@@ -23,7 +23,7 @@ import {
   NetworkUpgradeTimeline,
   FusakaTimeline,
   GlamsterdamTimeline,
-  HezotaTimeline,
+  HegotaTimeline,
   PectraTimeline,
   TableOfContents,
   OverviewSection,
@@ -148,7 +148,7 @@ const PublicNetworkUpgradePage: React.FC<PublicNetworkUpgradePageProps> = ({
   const tocItems = [
     { id: 'overview', label: 'Overview', type: 'section' as const, count: null as number | null },
     // Add timeline section for forks that have one
-    ...(['glamsterdam', 'fusaka', 'pectra', 'hezota'].includes(forkName.toLowerCase()) ? [
+    ...(['glamsterdam', 'fusaka', 'pectra', 'hegota'].includes(forkName.toLowerCase()) ? [
       { id: `${forkName.toLowerCase()}-timeline`, label: 'Timeline', type: 'section' as const, count: null as number | null }
     ] : []),
 
@@ -356,9 +356,9 @@ const PublicNetworkUpgradePage: React.FC<PublicNetworkUpgradePageProps> = ({
               {/* Timeline Section */}
               {(() => {
                 const timelineConfig: Record<string, { description: string; component: React.ReactNode }> = {
-                  hezota: {
-                    description: 'The planning timeline for Hezotá, showing the progression from headliner selection to final implementation decisions.',
-                    component: <HezotaTimeline />
+                  hegota: {
+                    description: 'The planning timeline for Hegotá, showing the progression from headliner selection to final implementation decisions.',
+                    component: <HegotaTimeline />
                   },
                   glamsterdam: {
                     description: 'The planning timeline for Glamsterdam, showing the progression from headliner selection to final implementation decisions.',
@@ -656,7 +656,7 @@ const PublicNetworkUpgradePage: React.FC<PublicNetworkUpgradePageProps> = ({
               )}
             </div>
 
-            {eips.length === 0 && forkName.toLowerCase() !== 'hezota' && (
+            {eips.length === 0 && forkName.toLowerCase() !== 'hegota' && (
               <div className="text-center py-16">
                 <p className="text-slate-500 dark:text-slate-400 text-sm">No improvements found for this network upgrade.</p>
               </div>

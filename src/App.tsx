@@ -52,7 +52,7 @@ function AnalyticsTracker() {
 function App() {
   const fusakaUpgrade = getUpgradeById('fusaka')!;
   const glamsterdamUpgrade = getUpgradeById('glamsterdam')!;
-  const hezotaUpgrade = getUpgradeById('hezota')!;
+  const hegotaUpgrade = getUpgradeById('hegota')!;
   const pectraUpgrade = getUpgradeById('pectra')!;
 
   return (
@@ -94,14 +94,14 @@ function App() {
               clientTeamPerspectives={glamsterdamUpgrade.clientTeamPerspectives}
             />
           } />
-          <Route path="/upgrade/hezota" element={
+          <Route path="/upgrade/hegota" element={
             <PublicNetworkUpgradePage
-              forkName="Hezota"
-              displayName={hezotaUpgrade.name}
-              description={hezotaUpgrade.description}
-              status={hezotaUpgrade.status}
-              activationDate={hezotaUpgrade.activationDate}
-              metaEipLink={hezotaUpgrade.metaEipLink}
+              forkName="Hegota"
+              displayName={hegotaUpgrade.name}
+              description={hegotaUpgrade.description}
+              status={hegotaUpgrade.status}
+              activationDate={hegotaUpgrade.activationDate}
+              metaEipLink={hegotaUpgrade.metaEipLink}
             />
           } />
           <Route path="/rank" element={<RankPage />} />

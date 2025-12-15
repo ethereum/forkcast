@@ -12,22 +12,22 @@ import EditableDateCell from './EditableDateCell';
 const STORAGE_KEY = 'forkcast-planning-table';
 const MOBILE_NOTICE_KEY = 'forkcast-mobile-notice-dismissed';
 
-type MobileFork = 'fusaka' | 'glamsterdam' | 'hekota';
+type MobileFork = 'fusaka' | 'glamsterdam' | 'hezota';
 
 interface PlanningTableState {
   glamsterdamMainnetDate: string;
-  hekotaMainnetDate: string;
+  hezotaMainnetDate: string;
   glamsterdamDevnetCount: number;
-  hekotaDevnetCount: number;
+  hezotaDevnetCount: number;
   lockedDates: Record<string, string>;
   phaseDurations: PhaseDurations;
 }
 
 const DEFAULT_STATE: PlanningTableState = {
   glamsterdamMainnetDate: '2026-06-01',
-  hekotaMainnetDate: '2027-01-15',
+  hezotaMainnetDate: '2027-01-15',
   glamsterdamDevnetCount: 6,
-  hekotaDevnetCount: 6,
+  hezotaDevnetCount: 6,
   lockedDates: {},
   phaseDurations: DEFAULT_PHASE_DURATIONS,
 };
@@ -65,9 +65,9 @@ const DURATION_LABELS: Record<keyof PhaseDurations, { label: string; description
 
 const SchedulePage: React.FC = () => {
   const [glamsterdamMainnetDate, setGlamsterdamMainnetDate] = useState<string>(() => loadFromStorage().glamsterdamMainnetDate);
-  const [hekotaMainnetDate, setHezotaMainnetDate] = useState<string>(() => loadFromStorage().hekotaMainnetDate);
+  const [hezotaMainnetDate, setHezotaMainnetDate] = useState<string>(() => loadFromStorage().hezotaMainnetDate);
   const [glamsterdamDevnetCount, setGlamsterdamDevnetCount] = useState<number>(() => loadFromStorage().glamsterdamDevnetCount);
-  const [hekotaDevnetCount, setHezotaDevnetCount] = useState<number>(() => loadFromStorage().hekotaDevnetCount);
+  const [hezotaDevnetCount, setHezotaDevnetCount] = useState<number>(() => loadFromStorage().hezotaDevnetCount);
   const [lockedDates, setLockedDates] = useState<Record<string, string>>(() => loadFromStorage().lockedDates);
   const [phaseDurations, setPhaseDurations] = useState<PhaseDurations>(() => loadFromStorage().phaseDurations);
   const [showSettings, setShowSettings] = useState(false);
@@ -94,9 +94,9 @@ const SchedulePage: React.FC = () => {
   useEffect(() => {
     const state: PlanningTableState = {
       glamsterdamMainnetDate,
-      hekotaMainnetDate,
+      hezotaMainnetDate,
       glamsterdamDevnetCount,
-      hekotaDevnetCount,
+      hezotaDevnetCount,
       lockedDates,
       phaseDurations,
     };
@@ -105,14 +105,14 @@ const SchedulePage: React.FC = () => {
     } catch (e) {
       console.warn('Failed to save planning table state to localStorage:', e);
     }
-  }, [glamsterdamMainnetDate, hekotaMainnetDate, glamsterdamDevnetCount, hekotaDevnetCount, lockedDates, phaseDurations]);
+  }, [glamsterdamMainnetDate, hezotaMainnetDate, glamsterdamDevnetCount, hezotaDevnetCount, lockedDates, phaseDurations]);
 
   // Reset to defaults
   const resetPlanningTable = () => {
     setGlamsterdamMainnetDate(DEFAULT_STATE.glamsterdamMainnetDate);
-    setHezotaMainnetDate(DEFAULT_STATE.hekotaMainnetDate);
+    setHezotaMainnetDate(DEFAULT_STATE.hezotaMainnetDate);
     setGlamsterdamDevnetCount(DEFAULT_STATE.glamsterdamDevnetCount);
-    setHezotaDevnetCount(DEFAULT_STATE.hekotaDevnetCount);
+    setHezotaDevnetCount(DEFAULT_STATE.hezotaDevnetCount);
     setLockedDates(DEFAULT_STATE.lockedDates);
     setPhaseDurations(DEFAULT_STATE.phaseDurations);
     localStorage.removeItem(STORAGE_KEY);
@@ -175,18 +175,19 @@ const SchedulePage: React.FC = () => {
   }, [glamsterdamMainnetDate, glamsterdamDevnetCount, phaseDurations]);
 
   const dynamicHezotaProjection = useMemo(() =>
-    generateForkProgress('Hezota', parseLocalDate(hekotaMainnetDate), {
-      headlinerProposalDeadlineOverride: new Date(2026, 0, 15), // January 15, 2026
-      devnetCount: hekotaDevnetCount,
+    generateForkProgress('Hezota', parseLocalDate(hezotaMainnetDate), {
+      headlinerProposalDeadlineOverride: new Date(2026, 1, 4), // February 4, 2026
+      headlinerSelectionDeadlineOverride: new Date(2026, 1, 26), // February 26, 2026
+      devnetCount: hezotaDevnetCount,
       durations: phaseDurations,
     }),
-    [hekotaMainnetDate, hekotaDevnetCount, phaseDurations]
+    [hezotaMainnetDate, hezotaDevnetCount, phaseDurations]
   );
 
   // Get all milestones in chronological order for a fork
   const getMilestoneOrder = (fork: string): Array<{ phaseId: string; itemName: string }> => {
     const projection = fork === 'glamsterdam' ? dynamicGlamsterdamProjection : dynamicHezotaProjection;
-    const devnetCount = fork === 'glamsterdam' ? glamsterdamDevnetCount : hekotaDevnetCount;
+    const devnetCount = fork === 'glamsterdam' ? glamsterdamDevnetCount : hezotaDevnetCount;
 
     const milestones: Array<{ phaseId: string; itemName: string }> = [
       { phaseId: 'headliner-selection', itemName: 'Proposal Deadline' },
@@ -339,7 +340,7 @@ const SchedulePage: React.FC = () => {
         <div className="md:hidden mb-4 flex items-center gap-2">
           <span className="text-xs text-slate-500 dark:text-slate-400 uppercase tracking-wider">View:</span>
           <div className="flex rounded-lg border border-slate-300 dark:border-slate-600 overflow-hidden">
-            {(['fusaka', 'glamsterdam', 'hekota'] as MobileFork[]).map((fork) => (
+            {(['fusaka', 'glamsterdam', 'hezota'] as MobileFork[]).map((fork) => (
               <button
                 key={fork}
                 onClick={() => setMobileFork(fork)}
@@ -361,11 +362,11 @@ const SchedulePage: React.FC = () => {
           const previousDates = {
             fusaka: null as Date | null,
             glamsterdam: null as Date | null,
-            hekota: null as Date | null
+            hezota: null as Date | null
           };
 
           // Helper to calculate and format gap
-          const calculateGap = (dateString: string | undefined, forkKey: 'fusaka' | 'glamsterdam' | 'hekota'): { text: string; isNegative: boolean } => {
+          const calculateGap = (dateString: string | undefined, forkKey: 'fusaka' | 'glamsterdam' | 'hezota'): { text: string; isNegative: boolean } => {
             if (!dateString) return { text: '', isNegative: false };
             const currentDate = parseShortDate(dateString);
             if (!currentDate) return { text: '', isNegative: false };
@@ -413,7 +414,7 @@ const SchedulePage: React.FC = () => {
           const pectraMainnet = parseShortDate('May 7, 2025')!;
           const fusakaMainnet = parseShortDate('Dec 3, 2025')!;
           const glamsterdamMainnet = parseLocalDate(glamsterdamMainnetDate);
-          const hekotaMainnet = parseLocalDate(hekotaMainnetDate);
+          const hezotaMainnet = parseLocalDate(hezotaMainnetDate);
 
           return (
             <div className="mb-10">
@@ -429,7 +430,7 @@ const SchedulePage: React.FC = () => {
                     <div className="flex items-center gap-2">
                       <button
                         onClick={() => setShowSettings(!showSettings)}
-                        className="px-3 py-1.5 text-xs text-slate-600 dark:text-slate-400 hover:text-slate-800 dark:hover:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-700 rounded border border-slate-300 dark:border-slate-600 transition-colors flex items-center gap-1"
+                        className="px-3 py-1.5 text-xs text-slate-600 dark:text-slate-400 hover:text-slate-800 dark:hover:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-700 rounded border border-slate-300 dark:border-slate-600 transition-colors flex items-center gap-1 cursor-pointer"
                         title="Adjust phase duration assumptions"
                       >
                         <span>{showSettings ? '▼' : '▶'}</span>
@@ -437,7 +438,7 @@ const SchedulePage: React.FC = () => {
                       </button>
                       <button
                         onClick={resetPlanningTable}
-                        className="px-3 py-1.5 text-xs text-slate-600 dark:text-slate-400 hover:text-red-600 dark:hover:text-red-400 hover:bg-red-50 dark:hover:bg-red-900/20 rounded border border-slate-300 dark:border-slate-600 hover:border-red-300 dark:hover:border-red-700 transition-colors"
+                        className="px-3 py-1.5 text-xs text-slate-600 dark:text-slate-400 hover:text-red-600 dark:hover:text-red-400 hover:bg-red-50 dark:hover:bg-red-900/20 rounded border border-slate-300 dark:border-slate-600 hover:border-red-300 dark:hover:border-red-700 transition-colors cursor-pointer"
                         title="Reset all dates and settings to defaults"
                       >
                         Reset
@@ -523,10 +524,32 @@ const SchedulePage: React.FC = () => {
                           Fusaka
                         </th>
                         <th className={`px-3 py-2 text-left text-xs font-semibold text-slate-600 dark:text-slate-300 uppercase tracking-wider ${mobileFork === 'glamsterdam' ? '' : 'hidden'} md:table-cell`}>
-                          Glamsterdam
+                          <a
+                            href="https://ethereum-magicians.org/t/eip-7773-glamsterdam-network-upgrade-meta-thread/21195"
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="inline-flex items-center gap-1 hover:text-purple-600 dark:hover:text-purple-400"
+                            title="Glamsterdam upgrade meta thread"
+                          >
+                            Glamsterdam
+                            <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
+                            </svg>
+                          </a>
                         </th>
-                        <th className={`px-3 py-2 text-left text-xs font-semibold text-slate-600 dark:text-slate-300 uppercase tracking-wider ${mobileFork === 'hekota' ? '' : 'hidden'} md:table-cell`}>
-                          Hezotá
+                        <th className={`px-3 py-2 text-left text-xs font-semibold text-slate-600 dark:text-slate-300 uppercase tracking-wider ${mobileFork === 'hezota' ? '' : 'hidden'} md:table-cell`}>
+                          <a
+                            href="https://ethereum-magicians.org/t/eip-8081-heka-bogota-network-upgrade-meta-thread/26876"
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="inline-flex items-center gap-1 hover:text-purple-600 dark:hover:text-purple-400"
+                            title="Hezotá upgrade meta thread"
+                          >
+                            Hezotá
+                            <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
+                            </svg>
+                          </a>
                         </th>
                       </tr>
                     </thead>
@@ -538,7 +561,7 @@ const SchedulePage: React.FC = () => {
                     ).map((phase) => {
                       const fusakaPhase = FUSAKA_PROGRESS.phases.find(p => p.phaseId === phase.id);
                       const glamsterdamPhase = dynamicGlamsterdamProjection.phases.find(p => p.phaseId === phase.id);
-                      const hekotaPhase = dynamicHezotaProjection.phases.find(p => p.phaseId === phase.id);
+                      const hezotaPhase = dynamicHezotaProjection.phases.find(p => p.phaseId === phase.id);
 
                       return (
                         <React.Fragment key={phase.id}>
@@ -603,34 +626,34 @@ const SchedulePage: React.FC = () => {
                                 </div>
                               )}
                             </td>
-                            <td className={`px-3 py-1.5 ${mobileFork === 'hekota' ? '' : 'hidden'} md:table-cell`}>
-                              {hekotaPhase && phase.id !== 'development' && phase.id !== 'headliner-selection' && phase.id !== 'eip-selection' && (
+                            <td className={`px-3 py-1.5 ${mobileFork === 'hezota' ? '' : 'hidden'} md:table-cell`}>
+                              {hezotaPhase && phase.id !== 'development' && phase.id !== 'headliner-selection' && phase.id !== 'eip-selection' && (
                                 <div className="flex items-center gap-2">
                                   <div className={`inline-flex items-center justify-center w-4 py-0.5 rounded text-xs font-medium ${
-                                    hekotaPhase.status === 'completed' ? 'bg-green-100 text-green-800 dark:bg-green-900/20 dark:text-green-300' :
-                                    hekotaPhase.status === 'in-progress' ? 'bg-blue-100 text-blue-800 dark:bg-blue-900/20 dark:text-blue-300' :
+                                    hezotaPhase.status === 'completed' ? 'bg-green-100 text-green-800 dark:bg-green-900/20 dark:text-green-300' :
+                                    hezotaPhase.status === 'in-progress' ? 'bg-blue-100 text-blue-800 dark:bg-blue-900/20 dark:text-blue-300' :
                                     'bg-slate-100 text-slate-600 dark:bg-slate-700 dark:text-slate-300'
                                   }`}>
-                                    {hekotaPhase.status === 'completed' ? '✓' : hekotaPhase.status === 'in-progress' ? '→' : '○'}
+                                    {hezotaPhase.status === 'completed' ? '✓' : hezotaPhase.status === 'in-progress' ? '→' : '○'}
                                   </div>
                                   <div className="text-slate-700 dark:text-slate-300 text-sm">
-                                    {hekotaPhase.projectedDate}
+                                    {hezotaPhase.projectedDate}
                                   </div>
                                 </div>
                               )}
                               {phase.id === 'development' && (
                                 <div className="flex items-center gap-2">
-                                  <span className="text-slate-500 dark:text-slate-400 text-sm">{hekotaDevnetCount} devnets</span>
+                                  <span className="text-slate-500 dark:text-slate-400 text-sm">{hezotaDevnetCount} devnets</span>
                                   <div className="flex items-center">
                                     <button
-                                      onClick={() => setHezotaDevnetCount(Math.max(1, hekotaDevnetCount - 1))}
+                                      onClick={() => setHezotaDevnetCount(Math.max(1, hezotaDevnetCount - 1))}
                                       className="px-1.5 py-0.5 text-sm bg-slate-200 dark:bg-slate-600 hover:bg-slate-300 dark:hover:bg-slate-500 rounded-l border border-slate-300 dark:border-slate-500"
                                       title="Remove devnet"
                                     >
                                       −
                                     </button>
                                     <button
-                                      onClick={() => setHezotaDevnetCount(hekotaDevnetCount + 1)}
+                                      onClick={() => setHezotaDevnetCount(hezotaDevnetCount + 1)}
                                       className="px-1.5 py-0.5 text-sm bg-slate-200 dark:bg-slate-600 hover:bg-slate-300 dark:hover:bg-slate-500 rounded-r border border-l-0 border-slate-300 dark:border-slate-500"
                                       title="Add devnet"
                                     >
@@ -643,17 +666,17 @@ const SchedulePage: React.FC = () => {
                           </tr>
 
                           {/* Substep detail rows (for headliner-selection and eip-selection) */}
-                          {(phase.id === 'headliner-selection' || phase.id === 'eip-selection') && (glamsterdamPhase?.substeps || hekotaPhase?.substeps || fusakaPhase?.substeps) && (glamsterdamPhase?.substeps || hekotaPhase?.substeps || fusakaPhase?.substeps)!.map((substep, idx) => {
+                          {(phase.id === 'headliner-selection' || phase.id === 'eip-selection') && (glamsterdamPhase?.substeps || hezotaPhase?.substeps || fusakaPhase?.substeps) && (glamsterdamPhase?.substeps || hezotaPhase?.substeps || fusakaPhase?.substeps)!.map((substep, idx) => {
                             const fusakaSubstep = fusakaPhase?.substeps?.[idx];
                             const glamsterdamSubstep = glamsterdamPhase?.substeps?.[idx];
-                            const hekotaSubstep = hekotaPhase?.substeps?.[idx];
+                            const hezotaSubstep = hezotaPhase?.substeps?.[idx];
                             const fusakaGap = fusakaSubstep ? calculateGap(fusakaSubstep.date || fusakaSubstep.projectedDate, 'fusaka') : { text: '', isNegative: false };
                             const glamsterdamCalcDate = glamsterdamSubstep?.date || glamsterdamSubstep?.projectedDate || '';
                             const glamsterdamEffectiveDate = getEffectiveDate('glamsterdam', phase.id, substep.name, glamsterdamCalcDate);
                             const glamsterdamGap = glamsterdamSubstep ? calculateGap(glamsterdamEffectiveDate, 'glamsterdam') : { text: '', isNegative: false };
-                            const hekotaCalcDate = hekotaSubstep?.projectedDate || '';
-                            const hekotaEffectiveDate = getEffectiveDate('hekota', phase.id, substep.name, hekotaCalcDate);
-                            const hekotaGap = hekotaSubstep ? calculateGap(hekotaEffectiveDate, 'hekota') : { text: '', isNegative: false };
+                            const hezotaCalcDate = hezotaSubstep?.projectedDate || '';
+                            const hezotaEffectiveDate = getEffectiveDate('hezota', phase.id, substep.name, hezotaCalcDate);
+                            const hezotaGap = hezotaSubstep ? calculateGap(hezotaEffectiveDate, 'hezota') : { text: '', isNegative: false };
 
                             // Calculate duration warnings based on substep transitions
                             // Selection Date: from Proposal Deadline (HEADLINER_SELECTION_DURATION)
@@ -683,7 +706,7 @@ const SchedulePage: React.FC = () => {
                             };
 
                             const glamsterdamDuration = calcDurationWarning('glamsterdam', glamsterdamEffectiveDate);
-                            const hekotaDuration = calcDurationWarning('hekota', hekotaEffectiveDate);
+                            const hezotaDuration = calcDurationWarning('hezota', hezotaEffectiveDate);
 
                             return (
                             <tr key={`${phase.id}-substep-${idx}`} className="hover:bg-slate-50 dark:hover:bg-slate-700/30 bg-slate-50/50 dark:bg-slate-800/50">
@@ -723,21 +746,22 @@ const SchedulePage: React.FC = () => {
                                   />
                                 ) : null}
                               </td>
-                              <td className={`px-3 py-1.5 ${mobileFork === 'hekota' ? '' : 'hidden'} md:table-cell`}>
-                                {hekotaSubstep ? (
+                              <td className={`px-3 py-1.5 ${mobileFork === 'hezota' ? '' : 'hidden'} md:table-cell`}>
+                                {hezotaSubstep ? (
                                   <EditableDateCell
-                                    fork="hekota"
+                                    fork="hezota"
                                     phaseId={phase.id}
                                     itemName={substep.name}
-                                    calculatedDate={hekotaSubstep.projectedDate || ''}
-                                    isCompleted={hekotaSubstep.status === 'completed'}
-                                    isEditable={hekotaSubstep.status !== 'completed'}
+                                    calculatedDate={hezotaSubstep.projectedDate || ''}
+                                    isCompleted={hezotaSubstep.status === 'completed'}
+                                    isEditable={hezotaSubstep.status !== 'completed'}
                                     lockedDates={lockedDates}
                                     onLock={lockDate}
                                     onUnlock={unlockDate}
-                                    gapText={hekotaDuration ? `(${hekotaDuration.days >= 0 ? '+' : ''}${hekotaDuration.days}d)` : hekotaGap.text}
-                                    gapIsNegative={hekotaDuration ? hekotaDuration.days < 0 : hekotaGap.isNegative}
-                                    gapIsWarning={hekotaDuration?.isUnderExpected && hekotaDuration.days >= 0}
+                                    gapText={hezotaDuration ? `(${hezotaDuration.days >= 0 ? '+' : ''}${hezotaDuration.days}d)` : hezotaGap.text}
+                                    gapIsNegative={hezotaDuration ? hezotaDuration.days < 0 : hezotaGap.isNegative}
+                                    gapIsWarning={hezotaDuration?.isUnderExpected && hezotaDuration.days >= 0}
+                                    isSourceLocked={phase.id === 'headliner-selection' && (substep.name === 'Proposal Deadline' || substep.name === 'Selection Date')}
                                   />
                                 ) : null}
                               </td>
@@ -749,13 +773,13 @@ const SchedulePage: React.FC = () => {
                           {phase.id === 'development' && (() => {
                             const fusakaDevnetCount = fusakaPhase?.devnets?.length || 0;
                             const glamDevnetCount = glamsterdamPhase?.devnets?.length || 0;
-                            const hekDevnetCount = hekotaPhase?.devnets?.length || 0;
-                            const maxDevnets = Math.max(fusakaDevnetCount, glamDevnetCount, hekDevnetCount);
+                            const hezotaDevnetCount = hezotaPhase?.devnets?.length || 0;
+                            const maxDevnets = Math.max(fusakaDevnetCount, glamDevnetCount, hezotaDevnetCount);
 
                             return Array.from({ length: maxDevnets }, (_, idx) => {
                               const fusakaDevnet = fusakaPhase?.devnets?.[idx];
                               const glamDevnet = glamsterdamPhase?.devnets?.[idx];
-                              const hekDevnet = hekotaPhase?.devnets?.[idx];
+                              const hezotaDevnet = hezotaPhase?.devnets?.[idx];
                               const devnetName = `Devnet-${idx}`;
 
                               return (
@@ -764,28 +788,24 @@ const SchedulePage: React.FC = () => {
                                     {devnetName}
                                   </td>
                                   <td className={`px-3 py-1.5 ${mobileFork === 'fusaka' ? '' : 'hidden'} md:table-cell`}>
-                                    {fusakaDevnet ? (
-                                      <div className="flex items-center gap-2">
-                                        <div className={`inline-flex items-center justify-center w-4 py-0.5 rounded text-xs font-medium ${
-                                          fusakaDevnet.status === 'completed' ? 'bg-green-100 text-green-800 dark:bg-green-900/20 dark:text-green-300' :
-                                          fusakaDevnet.status === 'in-progress' ? 'bg-blue-100 text-blue-800 dark:bg-blue-900/20 dark:text-blue-300' :
-                                          'bg-slate-100 text-slate-600 dark:bg-slate-700 dark:text-slate-300'
-                                        }`}>
-                                          {fusakaDevnet.status === 'completed' ? '✓' : fusakaDevnet.status === 'in-progress' ? '→' : '○'}
-                                        </div>
-                                        <div className="text-slate-700 dark:text-slate-300 text-sm">
-                                          {fusakaDevnet.date || fusakaDevnet.projectedDate}
-                                          {(() => {
-                                            const gap = calculateGap(fusakaDevnet.date || fusakaDevnet.projectedDate, 'fusaka');
-                                            return gap.text && (
-                                              <span className={`text-xs ml-1 ${gap.isNegative ? 'text-red-600 dark:text-red-400 font-semibold' : 'text-slate-400 dark:text-slate-500'}`}>
-                                                {gap.text}
-                                              </span>
-                                            );
-                                          })()}
-                                        </div>
-                                      </div>
-                                    ) : (
+                                    {fusakaDevnet ? (() => {
+                                      const fusakaDevnetGap = calculateGap(fusakaDevnet.date || fusakaDevnet.projectedDate, 'fusaka');
+                                      return (
+                                        <EditableDateCell
+                                          fork="fusaka"
+                                          phaseId="development"
+                                          itemName={devnetName}
+                                          calculatedDate={fusakaDevnet.date || fusakaDevnet.projectedDate || ''}
+                                          isCompleted={fusakaDevnet.status === 'completed'}
+                                          isEditable={false}
+                                          lockedDates={lockedDates}
+                                          onLock={lockDate}
+                                          onUnlock={unlockDate}
+                                          gapText={fusakaDevnetGap.text}
+                                          gapIsNegative={fusakaDevnetGap.isNegative}
+                                        />
+                                      );
+                                    })() : (
                                       <span className="text-slate-300 dark:text-slate-600 text-sm">—</span>
                                     )}
                                   </td>
@@ -813,24 +833,24 @@ const SchedulePage: React.FC = () => {
                                       <span className="text-slate-300 dark:text-slate-600 text-sm">—</span>
                                     )}
                                   </td>
-                                  <td className={`px-3 py-1.5 ${mobileFork === 'hekota' ? '' : 'hidden'} md:table-cell`}>
-                                    {hekDevnet ? (() => {
-                                      const hekDevnetDate = hekDevnet.date || hekDevnet.projectedDate || '';
-                                      const effectiveHekDevnetDate = getEffectiveDate('hekota', 'development', devnetName, hekDevnetDate);
-                                      const hekDevnetGap = calculateGap(effectiveHekDevnetDate, 'hekota');
+                                  <td className={`px-3 py-1.5 ${mobileFork === 'hezota' ? '' : 'hidden'} md:table-cell`}>
+                                    {hezotaDevnet ? (() => {
+                                      const hezotaDevnetDate = hezotaDevnet.date || hezotaDevnet.projectedDate || '';
+                                      const effectiveHezotaDevnetDate = getEffectiveDate('hezota', 'development', devnetName, hezotaDevnetDate);
+                                      const hezotaDevnetGap = calculateGap(effectiveHezotaDevnetDate, 'hezota');
                                       return (
                                         <EditableDateCell
-                                          fork="hekota"
+                                          fork="hezota"
                                           phaseId="development"
                                           itemName={devnetName}
-                                          calculatedDate={hekDevnetDate}
-                                          isCompleted={hekDevnet.status === 'completed'}
+                                          calculatedDate={hezotaDevnetDate}
+                                          isCompleted={hezotaDevnet.status === 'completed'}
                                           isEditable={true}
                                           lockedDates={lockedDates}
                                           onLock={lockDate}
                                           onUnlock={unlockDate}
-                                          gapText={hekDevnetGap.text}
-                                          gapIsNegative={hekDevnetGap.isNegative}
+                                          gapText={hezotaDevnetGap.text}
+                                          gapIsNegative={hezotaDevnetGap.isNegative}
                                         />
                                       );
                                     })() : (
@@ -852,14 +872,14 @@ const SchedulePage: React.FC = () => {
                       </td>
                       <td className={`px-3 py-1.5 ${mobileFork === 'fusaka' ? '' : 'hidden'} md:table-cell`}></td>
                       <td className={`px-3 py-1.5 ${mobileFork === 'glamsterdam' ? '' : 'hidden'} md:table-cell`}></td>
-                      <td className={`px-3 py-1.5 ${mobileFork === 'hekota' ? '' : 'hidden'} md:table-cell`}></td>
+                      <td className={`px-3 py-1.5 ${mobileFork === 'hezota' ? '' : 'hidden'} md:table-cell`}></td>
                     </tr>
 
                     {/* Testnet detail rows */}
                     {FUSAKA_PROGRESS.phases.find(p => p.phaseId === 'public-testnets')?.testnets?.map((testnet, idx) => {
                       const fusakaTestnetPhase = FUSAKA_PROGRESS.phases.find(p => p.phaseId === 'public-testnets');
                       const glamsterdamTestnetPhase = dynamicGlamsterdamProjection.phases.find(p => p.phaseId === 'public-testnets');
-                      const hekotaTestnetPhase = dynamicHezotaProjection.phases.find(p => p.phaseId === 'public-testnets');
+                      const hezotaTestnetPhase = dynamicHezotaProjection.phases.find(p => p.phaseId === 'public-testnets');
 
                       return (
                         <tr key={`testnet-${idx}`} className="hover:bg-slate-50 dark:hover:bg-slate-700/30 bg-slate-50/50 dark:bg-slate-800/50">
@@ -867,28 +887,25 @@ const SchedulePage: React.FC = () => {
                             {testnet.name}
                           </td>
                           <td className={`px-3 py-1.5 ${mobileFork === 'fusaka' ? '' : 'hidden'} md:table-cell`}>
-                            {fusakaTestnetPhase?.testnets?.[idx] && (
-                              <div className="flex items-center gap-2">
-                                <div className={`inline-flex items-center justify-center w-4 py-0.5 rounded text-xs font-medium ${
-                                  fusakaTestnetPhase.testnets[idx].status === 'completed' ? 'bg-green-100 text-green-800 dark:bg-green-900/20 dark:text-green-300' :
-                                  fusakaTestnetPhase.testnets[idx].status === 'in-progress' ? 'bg-blue-100 text-blue-800 dark:bg-blue-900/20 dark:text-blue-300' :
-                                  'bg-slate-100 text-slate-600 dark:bg-slate-700 dark:text-slate-300'
-                                }`}>
-                                  {fusakaTestnetPhase.testnets[idx].status === 'completed' ? '✓' : fusakaTestnetPhase.testnets[idx].status === 'in-progress' ? '→' : '○'}
-                                </div>
-                                <div className="text-slate-700 dark:text-slate-300 text-sm">
-                                  {fusakaTestnetPhase.testnets[idx].date || fusakaTestnetPhase.testnets[idx].projectedDate}
-                                  {(() => {
-                                    const gap = calculateGap(fusakaTestnetPhase.testnets[idx].date || fusakaTestnetPhase.testnets[idx].projectedDate, 'fusaka');
-                                    return gap.text && (
-                                      <span className={`text-xs ml-1 ${gap.isNegative ? 'text-red-600 dark:text-red-400 font-semibold' : 'text-slate-400 dark:text-slate-500'}`}>
-                                        {gap.text}
-                                      </span>
-                                    );
-                                  })()}
-                                </div>
-                              </div>
-                            )}
+                            {fusakaTestnetPhase?.testnets?.[idx] && (() => {
+                              const fusakaTestnet = fusakaTestnetPhase.testnets[idx];
+                              const fusakaTestnetGap = calculateGap(fusakaTestnet.date || fusakaTestnet.projectedDate, 'fusaka');
+                              return (
+                                <EditableDateCell
+                                  fork="fusaka"
+                                  phaseId="public-testnets"
+                                  itemName={testnet.name}
+                                  calculatedDate={fusakaTestnet.date || fusakaTestnet.projectedDate || ''}
+                                  isCompleted={fusakaTestnet.status === 'completed'}
+                                  isEditable={false}
+                                  lockedDates={lockedDates}
+                                  onLock={lockDate}
+                                  onUnlock={unlockDate}
+                                  gapText={fusakaTestnetGap.text}
+                                  gapIsNegative={fusakaTestnetGap.isNegative}
+                                />
+                              );
+                            })()}
                           </td>
                           <td className={`px-3 py-1.5 ${mobileFork === 'glamsterdam' ? '' : 'hidden'} md:table-cell`}>
                             {glamsterdamTestnetPhase?.testnets?.[idx] && (
@@ -917,28 +934,28 @@ const SchedulePage: React.FC = () => {
                               })()
                             )}
                           </td>
-                          <td className={`px-3 py-1.5 ${mobileFork === 'hekota' ? '' : 'hidden'} md:table-cell`}>
-                            {hekotaTestnetPhase?.testnets?.[idx] && (
-                              hekotaTestnetPhase.testnets[idx].status === 'deprecated' ? (
+                          <td className={`px-3 py-1.5 ${mobileFork === 'hezota' ? '' : 'hidden'} md:table-cell`}>
+                            {hezotaTestnetPhase?.testnets?.[idx] && (
+                              hezotaTestnetPhase.testnets[idx].status === 'deprecated' ? (
                                 <div className="text-slate-400 dark:text-slate-500 text-sm italic">Deprecated</div>
                               ) : (() => {
-                                const hekTestnet = hekotaTestnetPhase.testnets[idx];
-                                const hekTestnetDate = hekTestnet.date || hekTestnet.projectedDate || '';
-                                const effectiveHekTestnetDate = getEffectiveDate('hekota', 'public-testnets', testnet.name, hekTestnetDate);
-                                const hekTestnetGap = calculateGap(effectiveHekTestnetDate, 'hekota');
+                                const hezotaTestnet = hezotaTestnetPhase.testnets[idx];
+                                const hezotaTestnetDate = hezotaTestnet.date || hezotaTestnet.projectedDate || '';
+                                const effectiveHezotaTestnetDate = getEffectiveDate('hezota', 'public-testnets', testnet.name, hezotaTestnetDate);
+                                const hezotaTestnetGap = calculateGap(effectiveHezotaTestnetDate, 'hezota');
                                 return (
                                   <EditableDateCell
-                                    fork="hekota"
+                                    fork="hezota"
                                     phaseId="public-testnets"
                                     itemName={testnet.name}
-                                    calculatedDate={hekTestnetDate}
-                                    isCompleted={hekTestnet.status === 'completed'}
+                                    calculatedDate={hezotaTestnetDate}
+                                    isCompleted={hezotaTestnet.status === 'completed'}
                                     isEditable={true}
                                     lockedDates={lockedDates}
                                     onLock={lockDate}
                                     onUnlock={unlockDate}
-                                    gapText={hekTestnetGap.text}
-                                    gapIsNegative={hekTestnetGap.isNegative}
+                                    gapText={hezotaTestnetGap.text}
+                                    gapIsNegative={hezotaTestnetGap.isNegative}
                                   />
                                 );
                               })()
@@ -991,19 +1008,19 @@ const SchedulePage: React.FC = () => {
                           </span>
                         </div>
                       </td>
-                      <td className={`px-3 py-1.5 ${mobileFork === 'hekota' ? '' : 'hidden'} md:table-cell`}>
+                      <td className={`px-3 py-1.5 ${mobileFork === 'hezota' ? '' : 'hidden'} md:table-cell`}>
                         <div className="flex flex-col gap-1">
                           <input
                             type="date"
-                            value={hekotaMainnetDate}
+                            value={hezotaMainnetDate}
                             onChange={(e) => setHezotaMainnetDate(e.target.value)}
                             className="px-1.5 py-0.5 text-sm border border-slate-300 dark:border-slate-600 rounded bg-white dark:bg-slate-700 text-slate-900 dark:text-slate-100 focus:outline-none focus:ring-1 focus:ring-purple-500 cursor-pointer"
-                            title="Click to adjust Hezotá mainnet date"
+                            title="Click to adjust Hezota mainnet date"
                           />
                           {(() => {
-                            const hekDate = parseLocalDate(hekotaMainnetDate);
-                            const dateStr = hekDate.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
-                            const gap = calculateGap(dateStr, 'hekota');
+                            const hezotaDate = parseLocalDate(hezotaMainnetDate);
+                            const dateStr = hezotaDate.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
+                            const gap = calculateGap(dateStr, 'hezota');
                             return gap.text && (
                               <span className={`text-xs ${gap.isNegative ? 'text-red-600 dark:text-red-400 font-semibold' : 'text-slate-400 dark:text-slate-500'}`}>
                                 {gap.text}
@@ -1011,7 +1028,7 @@ const SchedulePage: React.FC = () => {
                             );
                           })()}
                           <span className="text-xs text-purple-600 dark:text-purple-400 font-medium">
-                            {formatMonthsDays(glamsterdamMainnet, hekotaMainnet)} after Glamsterdam
+                            {formatMonthsDays(glamsterdamMainnet, hezotaMainnet)} after Glamsterdam
                           </span>
                         </div>
                       </td>
@@ -1030,15 +1047,15 @@ const SchedulePage: React.FC = () => {
             forks={[
               { name: 'Fusaka', progress: FUSAKA_PROGRESS, color: '#10b981' },
               { name: 'Glamsterdam', progress: dynamicGlamsterdamProjection, color: '#6366f1' },
-              { name: 'Hezotá', progress: dynamicHezotaProjection, color: '#f59e0b' },
+              { name: 'Hezota', progress: dynamicHezotaProjection, color: '#f59e0b' },
             ]}
             startDate={new Date(2025, 4, 1)} // May 2025
             monthsToShow={(() => {
               // Calculate months from May 2025 to Hezota mainnet + 1 month buffer
               const start = new Date(2025, 4, 1);
-              const hekotaDate = parseLocalDate(hekotaMainnetDate);
-              const months = (hekotaDate.getFullYear() - start.getFullYear()) * 12
-                + (hekotaDate.getMonth() - start.getMonth()) + 2; // +2 for buffer
+              const hezotaDate = parseLocalDate(hezotaMainnetDate);
+              const months = (hezotaDate.getFullYear() - start.getFullYear()) * 12
+                + (hezotaDate.getMonth() - start.getMonth()) + 2; // +2 for buffer
               return Math.max(months, 12); // At least 12 months
             })()}
           />

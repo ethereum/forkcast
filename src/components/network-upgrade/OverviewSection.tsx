@@ -109,8 +109,8 @@ export const OverviewSection: React.FC<OverviewSectionProps> = ({
         </>
       )}
 
-      {/* Early planning notice for Hezota */}
-      {forkName.toLowerCase() === 'hezota' && (
+      {/* Early planning notice for Hegota */}
+      {forkName.toLowerCase() === 'hegota' && (
         <div className="mb-6 p-4 bg-slate-50 dark:bg-slate-700/50 border border-slate-200 dark:border-slate-600 rounded">
           <div className="flex items-start gap-3">
             <svg className="w-5 h-5 text-slate-500 dark:text-slate-400 mt-0.5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -119,7 +119,7 @@ export const OverviewSection: React.FC<OverviewSectionProps> = ({
             <div>
               <h4 className="font-medium text-slate-900 dark:text-slate-100 text-sm mb-1">Early Planning Stage</h4>
               <p className="text-slate-600 dark:text-slate-300 text-xs leading-relaxed">
-                Hezotá is in early planning. The headliner proposal window will open soon. Check back for updates as the upgrade planning process begins.
+                Hegotá is in early planning. The headliner proposal window will open soon. Check back for updates as the upgrade planning process begins.
               </p>
             </div>
           </div>

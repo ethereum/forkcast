@@ -1,10 +1,10 @@
 import React from 'react';
-import { HEZOTA_TIMELINE_PHASES } from '../../constants/timeline-phases';
+import { HEGOTA_TIMELINE_PHASES } from '../../constants/timeline-phases';
 import { getPhaseStatusIcon } from '../../utils/timeline';
 import { getPhaseStatusColor } from '../../utils/colors';
 
-export const HezotaTimeline: React.FC = () => {
-  const phases = HEZOTA_TIMELINE_PHASES;
+export const HegotaTimeline: React.FC = () => {
+  const phases = HEGOTA_TIMELINE_PHASES;
 
   return (
     <div className="mb-4">

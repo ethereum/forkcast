@@ -60,8 +60,8 @@ const upgrades = [
     description: 'Enhancing Ethereum with Block-level Access Lists and ePBS for big efficiency and scalability gains.',
   },
   {
-    path: 'upgrade/hezota',
-    title: 'Heze/Bogotá Upgrade - Forkcast',
+    path: 'upgrade/hegota',
+    title: 'Hegotá Upgrade - Forkcast',
     description: 'Post-Glamsterdam network upgrade in early planning.',
   },
 ];

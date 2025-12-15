@@ -134,6 +134,7 @@ export function calculateForkDates(
 export interface ForkProgressOptions {
   isHistorical?: boolean;
   headlinerProposalDeadlineOverride?: Date;
+  headlinerSelectionDeadlineOverride?: Date;
   devnetCount?: number;
   durations?: PhaseDurations;
 }
@@ -155,7 +156,13 @@ export function generateForkProgress(
   // Allow overriding the headliner proposal deadline for forks with locked-in dates
   if (options.headlinerProposalDeadlineOverride) {
     dates.headlinerProposalDeadline = options.headlinerProposalDeadlineOverride;
-    // Recalculate selection deadline based on the override
+  }
+
+  // Allow overriding the headliner selection deadline, or calculate from proposal deadline
+  if (options.headlinerSelectionDeadlineOverride) {
+    dates.headlinerSelectionDeadline = options.headlinerSelectionDeadlineOverride;
+  } else if (options.headlinerProposalDeadlineOverride) {
+    // Recalculate selection deadline based on the proposal override
     dates.headlinerSelectionDeadline = new Date(options.headlinerProposalDeadlineOverride);
     dates.headlinerSelectionDeadline.setDate(dates.headlinerSelectionDeadline.getDate() + durations.HEADLINER_SELECTION_DURATION);
   }

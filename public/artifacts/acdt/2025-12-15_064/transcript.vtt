@@ -1,0 +1,1738 @@
+WEBVTT
+
+1
+00:00:55.520 --> 00:00:57.309
+Justin Traglia: Good morning, gentlemen.
+
+2
+00:01:01.260 --> 00:01:03.239
+Justin Traglia: You're leaving today's call, right, Barnabas?
+
+3
+00:01:04.269 --> 00:01:05.329
+Barnabas: I really can't.
+
+4
+00:01:06.360 --> 00:01:07.370
+Justin Traglia: Cool, cool.
+
+5
+00:01:08.130 --> 00:01:12.430
+Barnabas: Do you want to discuss the… The new ventilator type thing?
+
+6
+00:01:12.910 --> 00:01:16.409
+Justin Traglia: Yeah, I do. I just left a comment on the agenda.
+
+7
+00:01:16.530 --> 00:01:19.240
+Barnabas: Okay, yeah, I haven't seen it yet.
+
+8
+00:01:19.490 --> 00:01:22.030
+Barnabas: I think it would be good to discuss it, for sure.
+
+9
+00:01:22.230 --> 00:01:24.459
+Barnabas: Especially if you're gonna be merging it in now.
+
+10
+00:01:25.240 --> 00:01:31.689
+Justin Traglia: Yeah, and also the… and also the proposer preferences gossip topic thing I'd like to discuss.
+
+11
+00:01:32.890 --> 00:01:40.979
+Justin Traglia: I just kind of want to get, like, a feeling for it, like, what do others think, and then maybe ask for reviews and merge it.
+
+12
+00:01:41.420 --> 00:01:42.510
+Justin Traglia: Just whenever.
+
+13
+00:01:43.680 --> 00:01:44.570
+Barnabas: Yeah, sounds good.
+
+14
+00:04:42.900 --> 00:04:44.080
+Barnabas: Groupon?
+
+15
+00:04:44.400 --> 00:04:46.829
+Barnabas: Let's give it another minute, then we can get started.
+
+16
+00:05:47.970 --> 00:05:53.519
+Barnabas: Alright, let's get started. Welcome everybody to AllCoreDev's testing call, number 64.
+
+17
+00:05:54.460 --> 00:05:58.260
+Barnabas: We have a packed agenda for today, so let's get started.
+
+18
+00:05:58.450 --> 00:06:08.299
+Barnabas: Regarding Fusaka, we had, last week BP01 going live, and it was a success, so congratulations to everybody participating in that.
+
+19
+00:06:09.640 --> 00:06:14.159
+Barnabas: And, is there any other open questions regarding Fusaka?
+
+20
+00:06:20.250 --> 00:06:31.100
+Barnabas: The only thing I can think of is, possibly BPO2, which is scheduled to go live on the 7th of January, which is, still, like, 3 weeks away from now.
+
+21
+00:06:31.540 --> 00:06:42.350
+Barnabas: But other than that, I think, Fusaka is pretty much done. We're gonna have some BPO discussion later on the call, but, for now, I think we can move on to Glamsterdam.
+
+22
+00:06:46.030 --> 00:06:46.930
+Barnabas: Okay.
+
+23
+00:06:48.430 --> 00:06:57.769
+Barnabas: Oh yeah, prison, had a post-mortem of, what happened in Fusaka during, like, right after the fort.
+
+24
+00:06:57.950 --> 00:07:04.910
+Barnabas: James, could you maybe just put it in the chat, and then everybody can, take a look at the…
+
+25
+00:07:05.880 --> 00:07:06.890
+Barnabas: blog post.
+
+26
+00:07:07.370 --> 00:07:09.859
+Barnabas: Or, I don't know, do you guys want to talk about it?
+
+27
+00:07:17.650 --> 00:07:19.870
+Barnabas: Oh, I guess not. Okay.
+
+28
+00:07:20.030 --> 00:07:24.529
+Barnabas: I think, I think we can move on to Glamsterdam again. So…
+
+29
+00:07:24.690 --> 00:07:29.950
+Barnabas: Stefan, maybe you can give us an update for DevNet1 or DevNet 0 updates?
+
+30
+00:07:31.180 --> 00:07:40.560
+Stefan Starflinger: Yeah, sure. So, we made some progress regarding the execution specters. There has been a release 2.0.
+
+31
+00:07:40.790 --> 00:07:51.609
+Stefan Starflinger: And, it would be great if clients did test against this new release. It came with a small spec change, where we use now the UNT256.
+
+32
+00:07:51.950 --> 00:08:05.809
+Stefan Starflinger: for storage keys and values, so a lot of the tests will initially be failing. You can start testing against a BAL Definite 0 branch, but it would be great if all the client teams could switch to a biodefinite 1 branch.
+
+33
+00:08:07.700 --> 00:08:14.689
+Stefan Starflinger: There's, in particular, one test that some clients have been saying they're failing is the out-of-gas self-destruct test, so it'd be great if
+
+34
+00:08:15.000 --> 00:08:19.320
+Stefan Starflinger: You could have a look. If you need any help with that, feel free to reach out.
+
+35
+00:08:19.730 --> 00:08:25.270
+Stefan Starflinger: And otherwise, it's just general stuff. I've also added it to the agenda.
+
+36
+00:08:25.420 --> 00:08:31.059
+Stefan Starflinger: Is Philippe here, maybe you would want to give an update also from the testing side?
+
+37
+00:08:32.809 --> 00:08:35.329
+felipe: Yeah, sure. Other than…
+
+38
+00:08:35.559 --> 00:08:39.669
+felipe: the UN256 changes, we added, quite a bit of…
+
+39
+00:08:39.999 --> 00:08:43.949
+felipe: Gas boundary tests for call-up codes.
+
+40
+00:08:44.459 --> 00:08:46.719
+felipe: So we should have more coverage there as well.
+
+41
+00:08:46.969 --> 00:08:48.789
+felipe: But yeah.
+
+42
+00:08:49.069 --> 00:08:53.209
+felipe: I think, everything else, went pretty smooth on the testing side.
+
+43
+00:08:56.200 --> 00:08:57.090
+Stefan Starflinger: Corvettes.
+
+44
+00:08:57.360 --> 00:09:07.079
+Stefan Starflinger: Then yeah, it's… we have a breakout call, on Wednesday, I think, for Baos, and we can discuss anything in particular there.
+
+45
+00:09:07.300 --> 00:09:23.899
+Stefan Starflinger: But otherwise, I think we're making good progress. I'd also like to remind people that it would be great to run kiosis tests with the EVM files, and just to make sure, leave it running for a while, just to make sure that the clients are working well in interop.
+
+46
+00:09:24.180 --> 00:09:31.209
+Stefan Starflinger: But otherwise, if clients might want to give a quick update where they're at right now, that would be great, or we could…
+
+47
+00:09:31.560 --> 00:09:33.740
+Stefan Starflinger: do it on Wednesday as well.
+
+48
+00:09:34.080 --> 00:09:35.330
+Stefan Starflinger: more detailed.
+
+49
+00:09:40.410 --> 00:09:43.260
+Karim T. (matkt): I can on the business side, so,
+
+50
+00:09:43.700 --> 00:09:50.100
+Karim T. (matkt): Today, we implemented several features, we… we merged, state fruit conclusion…
+
+51
+00:09:50.280 --> 00:09:53.099
+Karim T. (matkt): traditional background, thanks to Block Access List.
+
+52
+00:09:53.390 --> 00:10:06.079
+Karim T. (matkt): We are finishing the perfect parallelization with block access list. We just have to add some tests, but it's currently working, so I think we'll be able to merge the PR soon.
+
+53
+00:10:06.580 --> 00:10:16.880
+Karim T. (matkt): We don't have yet batch reading using block accesses, but it will not be too hard to implement it, so I think we'll have it also as soon as possible.
+
+54
+00:10:17.270 --> 00:10:23.279
+Karim T. (matkt): We have some failing tests, some tests regarding the call operation.
+
+55
+00:10:23.660 --> 00:10:31.990
+Karim T. (matkt): So we know how to fix that, we just didn't start it to work on it, and we fixed also a self-district,
+
+56
+00:10:32.160 --> 00:10:43.430
+Karim T. (matkt): issue, recently. So… Yeah, accepting that, we started the BaldurNet1 branch, we merged all of the different fixes.
+
+57
+00:10:43.750 --> 00:10:50.590
+Karim T. (matkt): And, we also updated the slot key and values format in this branch, so…
+
+58
+00:10:50.890 --> 00:10:53.780
+Karim T. (matkt): Normally, it should be okay for the next run.
+
+59
+00:11:03.100 --> 00:11:07.329
+Barnabas: That's great. Is there any other ELs that could give us an update?
+
+60
+00:11:07.500 --> 00:11:08.709
+Barnabas: About their progress?
+
+61
+00:11:13.320 --> 00:11:23.510
+Marc: Yeah, for NetherMind, at the moment, I'm focused on the parallel transaction execution and, state route computation.
+
+62
+00:11:25.340 --> 00:11:33.760
+Marc: So, made some good progress on that, and I just need to, do a few updates related to this, new testing release.
+
+63
+00:11:43.090 --> 00:11:53.899
+draganrakita: From Redside, we made change to, storage, making from the… B256 to number.
+
+64
+00:11:54.010 --> 00:12:03.040
+draganrakita: Started work on the… using BAL on the state route, and talking about BAR, how to do it parallel.
+
+65
+00:12:03.320 --> 00:12:05.100
+draganrakita: How to do parallel education.
+
+66
+00:12:05.480 --> 00:12:14.230
+draganrakita: I have run, 2.0 tests today, and had one bug to self-destruct, and…
+
+67
+00:12:14.920 --> 00:12:17.759
+draganrakita: out gas that I fixed.
+
+68
+00:12:25.420 --> 00:12:27.140
+Barnabas: Thank you. Anyone else?
+
+69
+00:12:33.670 --> 00:12:36.609
+Barnabas: Anyone maybe from gas could speak up?
+
+70
+00:12:46.750 --> 00:12:49.259
+Barnabas: Okay, is there any… yup.
+
+71
+00:12:49.260 --> 00:12:53.189
+milen | Erigon: Yeah, hey, I can give a quick one for, Aragon,
+
+72
+00:12:53.550 --> 00:13:04.489
+milen | Erigon: We, just created the boudevNet branch and, joined the Hive tests. I think we have a bunch… a bunch of failure to go through.
+
+73
+00:13:04.990 --> 00:13:08.450
+milen | Erigon: And, yeah, we also have…
+
+74
+00:13:08.800 --> 00:13:17.029
+milen | Erigon: One other person working on, parallel execution, which also should be enabled by default on that branch.
+
+75
+00:13:17.610 --> 00:13:26.429
+milen | Erigon: So yeah, I think we're just gonna go through the tests, through the remaining test failures next week, and yeah, that's about it.
+
+76
+00:13:30.880 --> 00:13:37.329
+Barnabas: Okay, thank you. Do we have any other ELs that would like to give us on that?
+
+77
+00:13:43.240 --> 00:13:49.960
+Barnabas: In case not, then I will just, pass the word to Justin. He has a few proposals for EPBS.
+
+78
+00:13:51.100 --> 00:13:52.739
+Justin Traglia: Yep. Hello, everyone.
+
+79
+00:13:53.100 --> 00:13:58.359
+Justin Traglia: Yeah, so for EPBS, I guess the first thing we should talk about is probably,
+
+80
+00:13:58.890 --> 00:14:03.220
+Justin Traglia: the change to builders that we want to make. So, like, we want to change
+
+81
+00:14:03.660 --> 00:14:09.820
+Justin Traglia: builders so that they're not validating entities. This simplifies things quite a bit.
+
+82
+00:14:10.430 --> 00:14:16.450
+Justin Traglia: Faster deposits, instant top- like, instant top-ups,
+
+83
+00:14:17.590 --> 00:14:20.980
+Justin Traglia: Lots of other simplifications, but essentially this moves…
+
+84
+00:14:21.240 --> 00:14:25.260
+Justin Traglia: Builders from the validators list in the state to a new builders list.
+
+85
+00:14:25.390 --> 00:14:30.679
+Justin Traglia: Just asking client teams and everyone to review it, see if we all agree.
+
+86
+00:14:30.990 --> 00:14:38.289
+Justin Traglia: There's two different proposals for how we can do it. It seems that the second option is the most popular, so that's the one we'll probably go with.
+
+87
+00:14:39.050 --> 00:14:41.050
+Justin Traglia: It's just a term, like…
+
+88
+00:14:41.790 --> 00:14:53.540
+Justin Traglia: Simplicity versus, like, lots of changes, yeah, regarding the pub key. Like, whether or not we should update the withdrawal structures to include a pub key, or just to reuse the validator index field.
+
+89
+00:14:54.540 --> 00:14:56.790
+Justin Traglia: How do client teams feel about this?
+
+90
+00:15:03.260 --> 00:15:05.780
+Barnabas: Maybe someone from PRISM gonna comment on it?
+
+91
+00:15:12.360 --> 00:15:14.160
+Justin Traglia: That's a good question, Mario.
+
+92
+00:15:16.980 --> 00:15:30.659
+Justin Traglia: I mean, there's multiple different ways we could bootstrap this, or sorry, there is a way we could bootstrap this, I'm not sure if it's a good idea, though, but we could have 0x03 validators before the fork, and then at the fork, they are converted to the new builder type.
+
+93
+00:15:32.000 --> 00:15:33.219
+Justin Traglia: That's one option.
+
+94
+00:15:33.610 --> 00:15:37.590
+Justin Traglia: Or we just require builders wait one epoch before…
+
+95
+00:15:38.130 --> 00:15:45.409
+Justin Traglia: submitting bids so that they can create the builders. Like, it would be almost instant to create a new builder, and the minimum,
+
+96
+00:15:46.180 --> 00:15:46.879
+Barnabas: It would be too.
+
+97
+00:15:46.880 --> 00:15:50.540
+Justin Traglia: The minimum stake amount would be 1 ETH as well. What is it, Barnabas?
+
+98
+00:15:50.690 --> 00:16:00.079
+Barnabas: You mentioned, last week that it would be around 2 epochs to process a new builder, so if we have a fork transition, then we would basically go without
+
+99
+00:16:00.920 --> 00:16:03.979
+Barnabas: Without builders for 3 epochs, right?
+
+100
+00:16:04.780 --> 00:16:06.200
+Justin Traglia: Something like that, yeah.
+
+101
+00:16:06.810 --> 00:16:11.920
+Justin Traglia: Unless we do the bootstrapping, idea. And I think POTUS is in favor of that. It's just…
+
+102
+00:16:12.080 --> 00:16:14.779
+Justin Traglia: I'm personally not. I think it's kind of complicated.
+
+103
+00:16:18.450 --> 00:16:25.599
+Barnabas: I mean… we had 0x02 editors also going online before the fork of Spectra.
+
+104
+00:16:25.710 --> 00:16:26.510
+Barnabas: So why would…
+
+105
+00:16:26.510 --> 00:16:26.990
+Justin Traglia: Yeah.
+
+106
+00:16:26.990 --> 00:16:28.200
+Barnabas: Why would this be a problem?
+
+107
+00:16:29.210 --> 00:16:32.480
+Justin Traglia: So there's a property I want to maintain that…
+
+108
+00:16:33.200 --> 00:16:38.089
+Justin Traglia: There can't be a validator and a builder with the same pub key in the state.
+
+109
+00:16:38.330 --> 00:16:40.619
+Justin Traglia: Just for simplicity, that way you can, like.
+
+110
+00:16:40.810 --> 00:16:47.650
+Justin Traglia: Know that if you're given some pup key, you can look it up in one or the other, and know that they don't exist in both.
+
+111
+00:16:47.950 --> 00:16:51.800
+Justin Traglia: If we do the conversion, you would essentially have
+
+112
+00:16:53.150 --> 00:16:57.339
+Justin Traglia: Sorry, you would have a pub key in both, and I just don't like that.
+
+113
+00:17:00.110 --> 00:17:01.530
+Justin Traglia: Does that make sense?
+
+114
+00:17:01.530 --> 00:17:03.190
+Barnabas: Yep, it does.
+
+115
+00:17:06.349 --> 00:17:09.340
+Barnabas: Is there a breakout this Friday?
+
+116
+00:17:09.630 --> 00:17:12.329
+Justin Traglia: There is indeed. I can share a link just in just a second.
+
+117
+00:17:13.349 --> 00:17:20.329
+Barnabas: So, it would be very, very, very good if you could make a final decision on this by, this week's breakout.
+
+118
+00:17:20.459 --> 00:17:23.779
+Barnabas: And, I can go off to the holidays with,
+
+119
+00:17:24.109 --> 00:17:34.079
+Barnabas: the firm decision. I didn't really make the decision even before that, but I saw that, for example, Lighthouse didn't have time to take a closer look yet, so…
+
+120
+00:17:34.759 --> 00:17:38.549
+Barnabas: I would like to have a deadline on that for the breakout room.
+
+121
+00:17:38.989 --> 00:17:39.939
+Justin Traglia: Agreed.
+
+122
+00:17:39.939 --> 00:17:40.859
+Barnabas: Enrico?
+
+123
+00:17:41.470 --> 00:17:47.449
+Enrico Del Fante (tbenr): Just a very quick question. I was not looking into the details, but one question I had…
+
+124
+00:17:48.020 --> 00:18:01.029
+Enrico Del Fante (tbenr): In my mind is, if we go in that direction, does it mean that, like, any normal validator that wants to submit bids of the network are actually cut off?
+
+125
+00:18:01.790 --> 00:18:04.780
+Enrico Del Fante (tbenr): So, you… you won't be validating.
+
+126
+00:18:06.030 --> 00:18:07.969
+Justin Traglia: They would be cut off, yeah.
+
+127
+00:18:08.240 --> 00:18:18.310
+Enrico Del Fante (tbenr): So, like, a thing that, like, Potos is saying, always saying that, my node running at home will always submit beats, that, that's not true anymore.
+
+128
+00:18:18.450 --> 00:18:20.789
+Enrico Del Fante (tbenr): So, you have to have a different…
+
+129
+00:18:20.790 --> 00:18:21.520
+Justin Traglia: Correct.
+
+130
+00:18:21.520 --> 00:18:22.280
+Enrico Del Fante (tbenr): Okay.
+
+131
+00:18:22.400 --> 00:18:25.120
+Justin Traglia: I mean, you would just have to have, like, a…
+
+132
+00:18:25.480 --> 00:18:27.509
+Justin Traglia: Another note at home with one ETH.
+
+133
+00:18:27.510 --> 00:18:34.299
+Enrico Del Fante (tbenr): And, well, depends by where we land in terms of capital, minimal capital.
+
+134
+00:18:34.840 --> 00:18:41.000
+Enrico Del Fante (tbenr): Just to enable building, so if we go with higher… If required.
+
+135
+00:18:41.610 --> 00:18:42.000
+Justin Traglia: Yeah.
+
+136
+00:18:42.000 --> 00:18:45.310
+Enrico Del Fante (tbenr): Then this would become capital inefficient.
+
+137
+00:18:46.190 --> 00:18:51.879
+Justin Traglia: Agreed. Yeah, we can discuss that more later, but currently it's, 1 ETH is the minimum.
+
+138
+00:18:57.670 --> 00:19:00.000
+Justin Traglia: But you're right, it does break that,
+
+139
+00:19:00.180 --> 00:19:03.140
+Justin Traglia: That was nice that any validator could submit a bid.
+
+140
+00:19:03.700 --> 00:19:04.520
+Enrico Del Fante (tbenr): Yep.
+
+141
+00:19:04.800 --> 00:19:08.510
+Enrico Del Fante (tbenr): I was personally… personal liking it.
+
+142
+00:19:15.010 --> 00:19:21.069
+Justin Traglia: Any other top… sorry, any other, Points on the builder's change.
+
+143
+00:19:29.650 --> 00:19:32.979
+Justin Traglia: Okay, there's a different topic I'd like to discuss then, too.
+
+144
+00:19:33.410 --> 00:19:40.279
+Justin Traglia: the proposer preferences gossip topic suggestion that I, am wanting to make.
+
+145
+00:19:40.770 --> 00:19:54.189
+Justin Traglia: Essentially, we need a way to convey to builders the fee recipient and gas limit, and whether or not they accept trusted payments. And I think the best way to do that is via a new gossip topic.
+
+146
+00:19:55.100 --> 00:20:00.909
+Justin Traglia: What is it now? The epoch before the…
+
+147
+00:20:01.280 --> 00:20:06.390
+Justin Traglia: Proposal. Proposers would submit their preferences to the topic.
+
+148
+00:20:07.020 --> 00:20:12.859
+Justin Traglia: So yeah, just… 32 proposer preferences per epoch.
+
+149
+00:20:13.160 --> 00:20:17.270
+Justin Traglia: So it's a pretty minimal, topic without, like, a lot of traffic.
+
+150
+00:20:17.850 --> 00:20:23.240
+Justin Traglia: Have clients had time to review this one? Or… Do people have ideas?
+
+151
+00:20:24.600 --> 00:20:25.520
+Justin Traglia: Thoughts?
+
+152
+00:20:28.630 --> 00:20:34.069
+Bharath: I have one thought, like, so, I think recently, you added a field,
+
+153
+00:20:34.720 --> 00:20:38.690
+Bharath: To… to signal that the proposal will accept a trusted payment.
+
+154
+00:20:39.010 --> 00:20:42.849
+Bharath: I'm unsure if that should be on the gossip topic, because
+
+155
+00:20:43.420 --> 00:20:46.869
+Bharath: I would assume, like, the proposer would, what is that?
+
+156
+00:20:47.220 --> 00:20:52.960
+Bharath: you have a set of builders you trust, right? Because there's a risk here, like, the builder could say, I…
+
+157
+00:20:53.080 --> 00:20:59.289
+Bharath: could signal an execution payment with the bid, but can choose to, like, not do it, and there's no easy way to verify that, so…
+
+158
+00:20:59.480 --> 00:21:05.929
+Bharath: I would assume the proposer would want to, like, be like, okay, I trust Builder A, B, C, but I don't trust D.
+
+159
+00:21:06.090 --> 00:21:10.890
+Bharath: So, I would assume this should be more granular, is my take.
+
+160
+00:21:12.890 --> 00:21:14.130
+Justin Traglia: Possibly, yeah.
+
+161
+00:21:14.770 --> 00:21:25.999
+Bharath: Yeah, so… yeah, that's where, like, I am just evaluating, like, maybe validated registrations might be the place, because there you could kind of, like, be more granular in, sending per-builder preferences.
+
+162
+00:21:26.370 --> 00:21:32.390
+Justin Traglia: validator registrations with… with who? Like, the trusted builders out of protocol builders, whatever they're called?
+
+163
+00:21:33.430 --> 00:21:37.050
+Bharath: Yeah, no, no, I mean, like, you anyways have the URLs of the…
+
+164
+00:21:37.290 --> 00:21:56.259
+Bharath: So, like, to… let's say that you have a builder API, you anyways are going to have the URLs of the builders in one way or the other. You either have your own whitelist, or you fetch it from somewhere. You kind of know, okay, this is the builder, this is… this builder A, this is builder B, and through that, you're able to, like, okay, I don't trust this builder, I don't trust that builder, or I trust this builder.
+
+165
+00:21:56.540 --> 00:21:59.610
+Bharath: So, that's, like, in an initial thought right now, then.
+
+166
+00:22:00.490 --> 00:22:09.399
+Justin Traglia: I'm confused how the registrations part works. Do you send your registration to each individual builder, like, in Epoch before the proposal, or how would that work?
+
+167
+00:22:10.270 --> 00:22:17.229
+Bharath: Yeah, that's the idea. I mean, like… like, today, I think, on an epoch boundary, we send the registrations, so I would assume, like.
+
+168
+00:22:17.380 --> 00:22:24.780
+Bharath: This definitely has to be more thought out, and, like, I'm working on, like, writing more down here, but the initial thought is, like.
+
+169
+00:22:24.910 --> 00:22:30.949
+Bharath: On the epoch boundaries, when, you're sending a validated registrations, you… you take a design… you take a call, okay, like.
+
+170
+00:22:31.110 --> 00:22:35.179
+Bharath: I know I'm gonna send to this builder, I probably, like.
+
+171
+00:22:35.360 --> 00:22:38.479
+Bharath: I want to accept, like, a trusted payment from them, or not.
+
+172
+00:22:38.680 --> 00:22:41.580
+Bharath: But yeah, that's just the high thought, like…
+
+173
+00:22:42.330 --> 00:22:45.350
+Justin Traglia: Okay. Yeah, I mean, I don't have to think about it more, I don't know.
+
+174
+00:22:45.750 --> 00:22:47.960
+Bharath: Yeah, we can, like, take it out on the channel, like, yeah.
+
+175
+00:22:49.260 --> 00:22:50.010
+Justin Traglia: Cora.
+
+176
+00:22:50.260 --> 00:23:05.609
+Justin Traglia: I don't like the current way validator registrations work with relays, like, where each validator sends a registration regardless of whether or not they're proposing. It's kind of messy and inefficient, so… I feel that this gossip topic solves a big problem.
+
+177
+00:23:06.650 --> 00:23:20.240
+Bharath: It does, it does, like… I think it's just, like, the question is, like, do we want, like, per builder preferences? The gossip topic is great for, like, communicating, like, a global preference with, like, the fee recipient and gas limit, that totally makes sense, but…
+
+178
+00:23:20.380 --> 00:23:26.609
+Bharath: Like, maybe once you want, like, a per-builder, like, preference, like, I don't know, I'm just, like, putting it out, like, like, something like,
+
+179
+00:23:26.940 --> 00:23:39.270
+Bharath: like, min-bit doesn't make sense, but I don't know, I can't get anything in my head right now, but some up top, some, like, you know, per builder, like, preference, like, if you want. I don't know if the gossip topic is the best way to communicate it.
+
+180
+00:23:39.810 --> 00:23:42.960
+Bharath: Because that's on a global… But yeah.
+
+181
+00:23:45.330 --> 00:23:47.849
+Justin Traglia: Okay, yeah, we can discuss that more.
+
+182
+00:23:47.850 --> 00:23:49.260
+Bharath: Yeah, yeah, no, but off-cost, sure.
+
+183
+00:23:49.260 --> 00:24:03.200
+Justin Traglia: Offline. Palan, yes, but I just added a, accept… sorry, Trusted Payments Accepted field, because, we were discussing it in the EPBS channel on the Ether R&D Discord.
+
+184
+00:24:04.060 --> 00:24:08.730
+Justin Traglia: It's just a Boolean. If people don't like that, I can remove it.
+
+185
+00:24:12.000 --> 00:24:12.690
+Justin Traglia: Yep.
+
+186
+00:24:17.180 --> 00:24:18.170
+Justin Traglia: Thank you.
+
+187
+00:24:18.380 --> 00:24:21.959
+Justin Traglia: And, I guess that's it for me for EPBS.
+
+188
+00:24:22.240 --> 00:24:24.260
+Justin Traglia: Maybe just more client updates or something.
+
+189
+00:24:25.060 --> 00:24:31.259
+Bharath: I can give, like, a small update, like, I've been working on, like, just, like, starting to spec out the builder specs.
+
+190
+00:24:31.690 --> 00:24:34.670
+Bharath: thinking about, like, our documents, we've been thinking about,
+
+191
+00:24:35.520 --> 00:24:47.529
+Bharath: how the builder API will look for staked and unstaked builders. Unstaked builders probably, with the 1 ETH, like, change, like, where we reduce the stake to 1 ETH, I… I'm pretty doubtful we… we will have unstaked builders.
+
+192
+00:24:47.830 --> 00:24:52.590
+Bharath: We could, like, push builders to stake with one ETH, that should be fine, and do, like.
+
+193
+00:24:52.790 --> 00:24:55.570
+Bharath: A trusted payment on, this thing, like…
+
+194
+00:24:55.830 --> 00:25:00.910
+Bharath: So, so yeah, outside that, I've just been working on the builder specs, like, trying to, like.
+
+195
+00:25:01.280 --> 00:25:10.839
+Bharath: And it's an initial iteration. This will definitely, like, go through, like, a lot of, like, changes, a lot of iterations up once things are, like, more clear and more,
+
+196
+00:25:11.080 --> 00:25:16.919
+Bharath: What's that? More, like, concrete. So, yeah, that's one update I have, like, just, like, starting to work on that.
+
+197
+00:25:19.880 --> 00:25:25.540
+Bharath: 4788, you mean… Like, the EIP47AA?
+
+198
+00:25:26.060 --> 00:25:29.299
+Barnabas: No, no, no, I meant, Justin's… yeah.
+
+199
+00:25:30.630 --> 00:25:32.269
+Barnabas: Yeah, the option too.
+
+200
+00:25:33.540 --> 00:25:35.850
+Bharath: Sorry, I couldn't, like…
+
+201
+00:25:37.060 --> 00:25:42.400
+Barnabas: So that's… that's the PR that Justin has been talking about, just previously.
+
+202
+00:25:42.890 --> 00:25:49.700
+Bharath: Oh, yeah, yeah, no, so I still have to look at that PR and, like, make, like, changes according to that, if it does impact.
+
+203
+00:25:51.270 --> 00:25:52.440
+Barnabas: Okay, hold on.
+
+204
+00:25:54.980 --> 00:25:59.599
+Barnabas: Yeah, and Justin has, two more, PRs that he would like to merge in today.
+
+205
+00:25:59.930 --> 00:26:01.070
+Barnabas: Please.
+
+206
+00:26:01.510 --> 00:26:07.670
+Barnabas: Go through them and review it, and approve if you're happy, or raise any questions if you're not.
+
+207
+00:26:09.760 --> 00:26:13.240
+Barnabas: Okay, is there any other EPBS, discussion topic?
+
+208
+00:26:20.530 --> 00:26:28.800
+Barnabas: In Kesnau, do we have anyone regarding, gas limit increase discussion.
+
+209
+00:26:31.570 --> 00:26:32.500
+Barnabas: Got done.
+
+210
+00:26:32.820 --> 00:26:44.329
+Ben Adams: Let's go! Sorry, assuming… I think it's, depending on, how we feel about the BPOs.
+
+211
+00:26:46.780 --> 00:26:49.499
+Ben Adams: As I understand it, that's all looking good.
+
+212
+00:26:49.650 --> 00:26:55.460
+Ben Adams: We're not, like, stressing, the, the validation's out?
+
+213
+00:26:57.640 --> 00:27:02.510
+Ben Adams: Because, obviously, we have BPO2 to come, so… Right.
+
+214
+00:27:02.510 --> 00:27:14.820
+Barnabas: The VPR2 would have a few requirements on the CL side. It would probably want to have the max blobs on the ER side and partial responses on the CL side.
+
+215
+00:27:15.040 --> 00:27:18.409
+Barnabas: Which might require a few more weeks of work.
+
+216
+00:27:19.840 --> 00:27:27.600
+Ben Adams: Yeah, I just mean in terms of… because it's lower… lower bandwidth than the, 3 free sockers.
+
+217
+00:27:29.800 --> 00:27:30.440
+Barnabas: Joe.
+
+218
+00:27:37.930 --> 00:27:52.599
+Kamil Chodoła: So, from testing point of view, we are improving test generation right now, as we have some missing tests, so… yeah, and we have already PR ready to merge everything and retest once more.
+
+219
+00:27:53.000 --> 00:27:59.249
+Kamil Chodoła: So, we need to have that as a precondition, that's first thing. And other than that,
+
+220
+00:27:59.570 --> 00:28:03.690
+Kamil Chodoła: We are working in Netherlands right now on some improvements around State DB.
+
+221
+00:28:04.030 --> 00:28:09.930
+Kamil Chodoła: but also would wait for BPOs first to see how it would go, and in the meantime, discuss it further.
+
+222
+00:28:10.390 --> 00:28:15.520
+Kamil Chodoła: But other than that, I don't see any reasons to limit ourselves.
+
+223
+00:28:15.790 --> 00:28:21.319
+Kamil Chodoła: So, I mean, 75 or 80, whatever we want to pick, should be doable.
+
+224
+00:28:21.450 --> 00:28:22.340
+Kamil Chodoła: Quite soon.
+
+225
+00:28:22.690 --> 00:28:26.310
+Kamil Chodoła: But you need to have these tests restarted once more.
+
+226
+00:28:30.320 --> 00:28:42.329
+Raúl Kripalani: Yeah, if there's a concrete definition for the gas limit and potentially a date, I would really appreciate that, because it would help us focus the analysis a lot more.
+
+227
+00:28:45.890 --> 00:28:53.309
+Kamil Chodoła: So, running tests, we'll have it this week, everything restarted, refreshed to the latest spec.
+
+228
+00:28:53.670 --> 00:29:03.279
+Kamil Chodoła: And then we'll know if there are any other bottlenecks which were introduced, or any new tests which are uncovering some… some worrisome scenarios.
+
+229
+00:29:03.910 --> 00:29:10.459
+Kamil Chodoła: And yes, and after that, I will make a summary, and will maybe suggest some… something for it.
+
+230
+00:29:14.540 --> 00:29:15.720
+Barnabas: Perfect, thank you.
+
+231
+00:29:17.640 --> 00:29:19.410
+Barnabas: Is there anything else?
+
+232
+00:29:19.620 --> 00:29:21.970
+Barnabas: Regarding interest in the gas limit further?
+
+233
+00:29:23.760 --> 00:29:30.629
+Ameziane Hamlat: I have a quick question. How do we want to handle the next increase in gas limit? Because if…
+
+234
+00:29:31.590 --> 00:29:35.880
+Ameziane Hamlat: We have to do it before, like, Lamsterdam, this means that…
+
+235
+00:29:36.920 --> 00:29:39.400
+Ameziane Hamlat: Either we change the defaults.
+
+236
+00:29:39.950 --> 00:29:46.689
+Barnabas: That would be the idea, to change the defaults for the next BPO, ideally.
+
+237
+00:29:46.690 --> 00:29:48.850
+Ameziane Hamlat: I see, okay, that's the… okay.
+
+238
+00:29:50.060 --> 00:29:51.160
+Ameziane Hamlat: That makes sense.
+
+239
+00:29:51.430 --> 00:29:55.090
+Ben Adams: I'm remembering… Also, you know, signal.
+
+240
+00:29:55.940 --> 00:29:56.860
+Ben Adams: Socially.
+
+241
+00:29:58.030 --> 00:30:00.960
+Ben Adams: The validators can choose if they want to.
+
+242
+00:30:01.110 --> 00:30:02.030
+Ben Adams: Go further.
+
+243
+00:30:02.900 --> 00:30:06.750
+Ben Adams: I mean, not go further. Raise, raise their own setting.
+
+244
+00:30:08.420 --> 00:30:18.070
+Barnabas: I mean, validators can do whatever they want right now, so, yeah, that's a different topic. I think that's very dangerous. Probably we should stop doing that.
+
+245
+00:30:18.710 --> 00:30:21.719
+Barnabas: But, that's a discussion for another day, I think.
+
+246
+00:30:23.640 --> 00:30:28.000
+Ben Adams: What do you mean? Socially signalling that… We think it's okay.
+
+247
+00:30:28.340 --> 00:30:43.129
+Barnabas: Yeah, like, same way as with the BPOs, the target and max are configured by the client, and it's not overwrittenable by a runtime flag. So I think we should be doing the same, for the guest limit as well.
+
+248
+00:30:44.310 --> 00:30:45.139
+Ben Adams: Oh, okay.
+
+249
+00:30:45.580 --> 00:30:48.360
+Ben Adams: Okay, that's a discussion for a different day.
+
+250
+00:30:48.360 --> 00:30:50.120
+Barnabas: Yeah, exactly.
+
+251
+00:30:54.860 --> 00:30:57.409
+Barnabas: Okay, is there any other…
+
+252
+00:30:57.890 --> 00:31:00.639
+Barnabas: Topics to discuss regarding the guesstimate increase?
+
+253
+00:31:02.900 --> 00:31:08.109
+Kamil Chodoła: I mean, it's kind of related, but in the meantime, we are working heavily towards the repricings.
+
+254
+00:31:08.330 --> 00:31:10.029
+Kamil Chodoła: And then some analysis.
+
+255
+00:31:10.280 --> 00:31:18.030
+Kamil Chodoła: We have already quite a lot of tests, like a sample test for each opcode.
+
+256
+00:31:18.190 --> 00:31:26.450
+Kamil Chodoła: a set of 160 tests with worst cases for each specific opcode, and right now Lewis is working on adding precompiles on top of that.
+
+257
+00:31:27.020 --> 00:31:27.950
+Kamil Chodoła: And…
+
+258
+00:31:28.360 --> 00:31:43.959
+Kamil Chodoła: hopefully today, or tomorrow, we'll gather some first data for Maria and her team to analyze the data and start suggesting some better numbers, because the current ones from 7904, which were suggested quite a long time ago.
+
+259
+00:31:43.960 --> 00:31:57.140
+Kamil Chodoła: are, I would say, completely irrelevant comparing to the client's performance, and it would introduce plenty of new bottlenecks and making spread much worse. So, we need to figure out the better numbers for it, surely.
+
+260
+00:31:57.350 --> 00:32:00.629
+Kamil Chodoła: And hopefully, we will have that by the end of December.
+
+261
+00:32:03.630 --> 00:32:04.319
+Barnabas: That's good.
+
+262
+00:32:07.560 --> 00:32:11.090
+Barnabas: Yep. So I think there's also a breakout room.
+
+263
+00:32:12.450 --> 00:32:17.170
+Barnabas: Where we can dive in deeper for the repricing.
+
+264
+00:32:17.310 --> 00:32:24.920
+Barnabas: Numbers, and yeah, just follow up in… offline, maybe, if you have a good suggestion coming.
+
+265
+00:32:26.020 --> 00:32:32.770
+Maria Silva: Sorry, I would add, I don't think there's a breakout room at the moment. We did, like, a one-time
+
+266
+00:32:32.920 --> 00:32:40.569
+Maria Silva: Thing, but if you guys think it's useful, we can restart it in a more, like, weekly basis or bi-weekly basis.
+
+267
+00:32:40.860 --> 00:32:43.469
+Maria Silva: If you feel that's helpful.
+
+268
+00:32:48.960 --> 00:32:55.050
+Barnabas: Oh, I… Yeah, maybe I, missed that. I thought that we had, breakouts for this.
+
+269
+00:32:55.500 --> 00:33:00.390
+Barnabas: I'm not sure if… if you need one. Maybe you can discuss that offline?
+
+270
+00:33:02.140 --> 00:33:03.400
+Maria Silva: Sounds good, sounds good.
+
+271
+00:33:06.760 --> 00:33:08.160
+Barnabas: Okay,
+
+272
+00:33:08.740 --> 00:33:19.780
+Barnabas: a few more follow-up topics regarding, possibly scheduling BP03. As I mentioned earlier, we would probably want to have the partial responses,
+
+273
+00:33:20.050 --> 00:33:23.099
+Barnabas: working before we activate BPOS3.
+
+274
+00:33:23.220 --> 00:33:32.689
+Barnabas: We should have a working prison and lighthouse branch right now, with, gas and nitrominees supporting Get Block Space 3.
+
+275
+00:33:33.620 --> 00:33:48.220
+Barnabas: hopefully we can have all ELs, push out a branch, at least, for GetLabs V3, and all other CLs also to, support the posture responses. And then we can start doing an interrupt testing, and,
+
+276
+00:33:48.890 --> 00:33:52.409
+Barnabas: Try to figure out what the next bottleneck is going to be.
+
+277
+00:33:56.840 --> 00:34:00.629
+Barnabas: Raul, maybe you have something else to add?
+
+278
+00:34:01.870 --> 00:34:20.480
+Raúl Kripalani: No, I think you… you summarized it pretty well. I think some ELs already had, PRs that they had submitted when we had this original discussion and Fusaka time, so it should be a matter of rehashing those PRs and… and refreshing them if Master has changed. So pretty… pretty straightforward. It's a backwards compatible change.
+
+279
+00:34:20.480 --> 00:34:23.930
+Raúl Kripalani: It would help if ELs would…
+
+280
+00:34:23.929 --> 00:34:42.179
+Raúl Kripalani: include, if they feel comfortable to do that, if they would include this change in their next release, whether a minor, patch, or whatever, because, it would help integration, like, it would help us integrate better in DevNets, going forward, so that we have to maintain fewer, fewer branches.
+
+281
+00:34:42.219 --> 00:34:56.389
+Raúl Kripalani: And yeah, we'll keep this group updated on what the numbers are and how things are looking as we continue the efforts. There is some open points in the spec that we are trying to
+
+282
+00:34:56.389 --> 00:35:02.980
+Raúl Kripalani: resolve, or at least get directionally resolved by the end of this week, so that, when we resume this work.
+
+283
+00:35:03.000 --> 00:35:18.459
+Raúl Kripalani: after, kind of, like, the stopping period finishes, we'll kind of, like, come back to a solid spec. So, yeah, if people can… we'll send a link, and if people can start having a look, like, most… there's already a working… there's already a working group. Most people…
+
+284
+00:35:18.510 --> 00:35:20.360
+Raúl Kripalani: Like, the different…
+
+285
+00:35:20.470 --> 00:35:36.070
+Raúl Kripalani: Devs that are network inclined from ELs and CLs have already been added, and we're meeting on a weekly basis. If you would like to participate in this call, just reach out, and I'll add you as well, and this is what we'll be sharing the spec. So yeah, that's pretty much it.
+
+286
+00:35:37.950 --> 00:35:47.239
+Barnabas: Thank you. Yeah, and one more follow-up on, possibly including this in the next, releases. I, I would like to…
+
+287
+00:35:47.270 --> 00:36:01.440
+Barnabas: Reach out to all the ES to implement the max blobs flag, which will limit local block builders to be able to limit how many blobs they would like to include in a specific block, making sure that they will not produce an orphan block.
+
+288
+00:36:01.510 --> 00:36:05.629
+Barnabas: I know that Netherland and REST has already implemented it, but,
+
+289
+00:36:05.700 --> 00:36:14.909
+Barnabas: I would like just to have this included in the next releases of every year, hopefully in the next, month or two.
+
+290
+00:36:17.280 --> 00:36:23.069
+Barnabas: And I saw Ben raise your hand for a little bit. Do you have something to add?
+
+291
+00:36:25.570 --> 00:36:34.940
+Ben Adams: Yeah, it was just back on the topic of raising the gas limit, but also with shorter slots, and your controversial
+
+292
+00:36:35.320 --> 00:36:39.500
+Ben Adams: Take on that it should be… Set.
+
+293
+00:36:39.930 --> 00:36:45.680
+Ben Adams: By the, by the values in the clients, rather than…
+
+294
+00:36:47.550 --> 00:36:58.660
+Ben Adams: by… by the validators. If we did do that, then the issue with shorter slots would be easily resolved, whereas at the moment, there's a… there's an argument over
+
+295
+00:36:59.180 --> 00:37:01.129
+Ben Adams: How we interpret the value.
+
+296
+00:37:03.970 --> 00:37:06.279
+Ben Adams: So, maybe, maybe we could put that…
+
+297
+00:37:06.390 --> 00:37:08.650
+Ben Adams: And there's something for the shortest slot.
+
+298
+00:37:10.520 --> 00:37:12.299
+Barnabas: How do we interpret which value?
+
+299
+00:37:12.990 --> 00:37:19.330
+Ben Adams: Like, if a validator set the gas limit, it becomes ambiguous what we want to do when.
+
+300
+00:37:19.330 --> 00:37:21.990
+Barnabas: It would be a no-op, that's my proposal.
+
+301
+00:37:22.340 --> 00:37:22.990
+Ben Adams: Yeah, yeah.
+
+302
+00:37:24.930 --> 00:37:29.319
+Ben Adams: But it solves the issue with shorter slots, and what do we do with the gas limit.
+
+303
+00:37:30.540 --> 00:37:31.210
+Barnabas: Yeah.
+
+304
+00:37:37.460 --> 00:37:42.669
+Barnabas: Yeah, I think this may be a topic that we could discuss early next year.
+
+305
+00:37:42.810 --> 00:37:45.549
+Barnabas: If you actually want to do this or not,
+
+306
+00:37:46.590 --> 00:37:50.389
+Barnabas: Yeah, I'm not sure if today is the right call for that.
+
+307
+00:37:53.260 --> 00:37:54.740
+Barnabas: Okay,
+
+308
+00:37:54.880 --> 00:38:04.149
+Barnabas: There's one more, topic, the RPC testing from Tulio, from Aragon. He has a quick presentation for us.
+
+309
+00:38:06.100 --> 00:38:10.059
+Tullio Canepa | Erigon: Yes, hi everyone. May I share my screen?
+
+310
+00:38:20.770 --> 00:38:22.359
+Tullio Canepa | Erigon: Okay, can you see the slides?
+
+311
+00:38:22.540 --> 00:38:23.840
+Tullio Canepa | Erigon: Hope so.
+
+312
+00:38:23.840 --> 00:38:24.570
+Barnabas: Yes, we can.
+
+313
+00:38:24.950 --> 00:38:40.450
+Tullio Canepa | Erigon: Okay, thank you. Okay, I'm Tulio from Aragon, nicknamed Kanipat on Discord, and I'll be talking about RPC testing in the context of the rising standardization efforts of the LRPC protocol.
+
+314
+00:38:41.240 --> 00:38:53.340
+Tullio Canepa | Erigon: The current status of the RPC protocol is well known. We have many differences among the various client implementations at multiple levels.
+
+315
+00:38:53.450 --> 00:39:04.669
+Tullio Canepa | Erigon: at namespace level, endpoint level, input-output levels, and above all, in semantics, especially for non-trivial API endpoints.
+
+316
+00:39:06.040 --> 00:39:09.059
+Tullio Canepa | Erigon: Of course, such fragmentation,
+
+317
+00:39:09.150 --> 00:39:29.139
+Tullio Canepa | Erigon: is the result of lacking standardization, but fortunately, there are some efforts already ongoing, which hopefully will produce a proper standardization process, and as Aragon, we are really keen to join such effort. I've been told that there is this RPC standard call, and I'm planning to join it in the future.
+
+318
+00:39:29.610 --> 00:39:40.859
+Tullio Canepa | Erigon: And in our view, three areas are fundamental. The specs, it's important to come up with a full spec, both in human-readable and machine-readable formats.
+
+319
+00:39:41.320 --> 00:40:00.559
+Tullio Canepa | Erigon: A proper version scheme is required, and it's particularly relevant to improve application layer developer experience. Last but not least, the largest possible non-regression test suite, and this is where I'm going to focus right now in the following slides.
+
+320
+00:40:02.120 --> 00:40:12.289
+Tullio Canepa | Erigon: In our opinion, testing for compatibility at the RPC layer, when full standardization is in place, will need more than one single tool.
+
+321
+00:40:12.490 --> 00:40:20.980
+Tullio Canepa | Erigon: Currently, there is IVRPC Compact test suite, and just to be extremely clear, we love it, we really love it.
+
+322
+00:40:21.120 --> 00:40:26.710
+Tullio Canepa | Erigon: It's just that, as always happens, it has strengths and weaknesses.
+
+323
+00:40:27.480 --> 00:40:32.509
+Tullio Canepa | Erigon: So, we have developed a complementary, let's say, RPC testing suite, which…
+
+324
+00:40:32.710 --> 00:40:44.579
+Tullio Canepa | Erigon: with its own strengths and weaknesses, which we call RPC integration tests, and we use both of them in our CI, as you can see from the picture.
+
+325
+00:40:45.010 --> 00:40:52.220
+Tullio Canepa | Erigon: We use them for non-regression testing, not only in Aragon main branch and release branches.
+
+326
+00:40:52.320 --> 00:40:55.489
+Tullio Canepa | Erigon: but also as gates in HPR.
+
+327
+00:40:56.520 --> 00:40:59.180
+Tullio Canepa | Erigon: But why should we use two different tools?
+
+328
+00:40:59.500 --> 00:41:01.200
+Tullio Canepa | Erigon: Well, because…
+
+329
+00:41:01.450 --> 00:41:14.499
+Tullio Canepa | Erigon: Both such tools inherently come down to some trade-offs when it comes to checking RPC compatibility. On one hand, Hive RPC Compact uses a small simulated chain.
+
+330
+00:41:14.680 --> 00:41:15.880
+Tullio Canepa | Erigon: contains…
+
+331
+00:41:15.990 --> 00:41:27.840
+Tullio Canepa | Erigon: about 200 tests, and adding new test cases may be hard in some situations. As an example, in case of a complex interaction among different contracts.
+
+332
+00:41:28.420 --> 00:41:40.539
+Tullio Canepa | Erigon: On the other hand, Hive automatically handles the provisioning of all clients in its chain, and it's quite lightweight in terms of resource requirement, which is good, of course.
+
+333
+00:41:41.070 --> 00:41:51.489
+Tullio Canepa | Erigon: So, in my opinion, it's very good for a priori testing, let's say, which means for testing well-defined cases that you can identify up front.
+
+334
+00:41:51.660 --> 00:41:55.759
+Tullio Canepa | Erigon: I mean, for example, when developing a new API implementation.
+
+335
+00:41:56.930 --> 00:42:04.590
+Tullio Canepa | Erigon: As opposed to this RPC, Integration tests instead work with real data from real chains.
+
+336
+00:42:04.800 --> 00:42:11.050
+Tullio Canepa | Erigon: Our collection contains more… oh, sorry, contains more than,
+
+337
+00:42:12.610 --> 00:42:22.680
+Tullio Canepa | Erigon: Contains more than 1,300 tests, and adding new test cases is
+
+338
+00:42:22.900 --> 00:42:27.449
+Tullio Canepa | Erigon: is really as simple as adding a new JSON file.
+
+339
+00:42:27.680 --> 00:42:32.749
+Tullio Canepa | Erigon: With request and response pair. Of course, in this case.
+
+340
+00:42:33.120 --> 00:42:47.120
+Tullio Canepa | Erigon: Client provisioning is completely left to the user, because we use, real nodes, in sync with, real… attached to, mainnet or real testnets.
+
+341
+00:42:47.450 --> 00:42:48.300
+Tullio Canepa | Erigon: And…
+
+342
+00:42:48.490 --> 00:43:05.129
+Tullio Canepa | Erigon: So, in some sense, the testing setup is heavy. Not the framework itself, the framework is lightweight, but I think you've got what I want to say, and the real test setup is… is heavy.
+
+343
+00:43:05.740 --> 00:43:19.389
+Tullio Canepa | Erigon: This tool really shines, in my opinion, in a posteriority testing, which means if you have an issue coming directly from mainnet or some testnet, you can simply add a new
+
+344
+00:43:19.820 --> 00:43:31.550
+Tullio Canepa | Erigon: JSON file to start testing, and come up with a non-regression test that will run on your CI at the end of the bug session, and this is very useful.
+
+345
+00:43:32.820 --> 00:43:44.580
+Tullio Canepa | Erigon: Okay, so let's take a look at the testing modes that we have in our RPC integration test. We have two different modes, historical tests and latest tests.
+
+346
+00:43:44.760 --> 00:43:51.449
+Tullio Canepa | Erigon: Historical tests are tests executed at some old block or old state.
+
+347
+00:43:51.700 --> 00:44:00.490
+Tullio Canepa | Erigon: Key features, okay, we support both HTTP and WebSocket Transport Protocol, also with optional compression.
+
+348
+00:44:00.690 --> 00:44:06.120
+Tullio Canepa | Erigon: And we basically use JSON response files containing
+
+349
+00:44:06.320 --> 00:44:09.129
+Tullio Canepa | Erigon: The request, and the expected response.
+
+350
+00:44:09.830 --> 00:44:14.590
+Tullio Canepa | Erigon: Historical tests typically work, for an archive node.
+
+351
+00:44:14.830 --> 00:44:24.100
+Tullio Canepa | Erigon: even in degraded mode, let's say. Here, with degraded, I mean, synced up to the max block contained in the test suite.
+
+352
+00:44:24.530 --> 00:44:27.810
+Tullio Canepa | Erigon: But not more, so you don't need to have it cinched up.
+
+353
+00:44:28.050 --> 00:44:32.699
+Tullio Canepa | Erigon: to the tip, necessarily. You can, but it's not strictly required.
+
+354
+00:44:33.450 --> 00:44:38.959
+Tullio Canepa | Erigon: Then we have, latest tests, which are tests done at the chain head.
+
+355
+00:44:40.930 --> 00:44:51.449
+Tullio Canepa | Erigon: We cannot compare the response with a predefined result in this case, so we use a reference system, which means we run another client implementation.
+
+356
+00:44:51.600 --> 00:44:57.340
+Tullio Canepa | Erigon: Issue the same request to both the system under test, which is arrogant for us.
+
+357
+00:44:57.470 --> 00:45:03.139
+Tullio Canepa | Erigon: And to the reference system, then we compare the responses and the test passes if they are the same.
+
+358
+00:45:03.670 --> 00:45:08.209
+Tullio Canepa | Erigon: This setup works also for a full node.
+
+359
+00:45:08.320 --> 00:45:12.330
+Tullio Canepa | Erigon: Or even for an aggressively pruned node.
+
+360
+00:45:15.200 --> 00:45:25.050
+Tullio Canepa | Erigon: As a last note, I would like to add that RPC tests also contain a tool for performance testing.
+
+361
+00:45:25.510 --> 00:45:30.759
+Tullio Canepa | Erigon: I suppose that currently, Each client team has its own way of doing this.
+
+362
+00:45:31.290 --> 00:45:37.130
+Tullio Canepa | Erigon: But there are so many challenges in performance testing,
+
+363
+00:45:37.580 --> 00:45:44.569
+Tullio Canepa | Erigon: That's… we think it would be good to share the burden and team up on this subject.
+
+364
+00:45:45.040 --> 00:45:52.690
+Tullio Canepa | Erigon: Main challenges are, of course, various node… handle various node configuration to test, different platforms.
+
+365
+00:45:52.820 --> 00:45:59.919
+Tullio Canepa | Erigon: different hardware and OSes, a huge number of test vectors that you can choose from, You… you need to…
+
+366
+00:46:00.150 --> 00:46:15.199
+Tullio Canepa | Erigon: probably save a results history if you want to experiment with fancy things, like automatic corrugation detection, which is something we are trying to do. It's still in progress, because it's not trivial.
+
+367
+00:46:15.480 --> 00:46:22.450
+Tullio Canepa | Erigon: And yeah, in the end, we run also performance tests, as well in our CI.
+
+368
+00:46:22.870 --> 00:46:25.540
+Tullio Canepa | Erigon: Nightly or on demand.
+
+369
+00:46:27.160 --> 00:46:36.079
+Tullio Canepa | Erigon: Okay, that's basically it. Once again, this is the public repository for our RPC testing suite.
+
+370
+00:46:36.390 --> 00:46:46.070
+Tullio Canepa | Erigon: the current version is, that we use on our CI is written in Python. It all started as a couple pall of dirty Python scripts.
+
+371
+00:46:46.280 --> 00:46:52.119
+Tullio Canepa | Erigon: Now we are doing a complete rewriting goal to have better control over the underlying tools.
+
+372
+00:46:52.260 --> 00:46:57.860
+Tullio Canepa | Erigon: that we use. For example, for performance testing, we rely on the data.
+
+373
+00:46:58.570 --> 00:47:05.140
+Tullio Canepa | Erigon: And we believe that all clients can benefit from using it alongside hybrid PC compacts.
+
+374
+00:47:05.280 --> 00:47:06.450
+Tullio Canepa | Erigon: As we do.
+
+375
+00:47:06.580 --> 00:47:10.509
+Tullio Canepa | Erigon: Or maybe, I don't know, using a modified version?
+
+376
+00:47:10.830 --> 00:47:20.310
+Tullio Canepa | Erigon: I mean, any way this community ends up using it, that's totally welcome, and we are happy to share it.
+
+377
+00:47:20.700 --> 00:47:26.479
+Tullio Canepa | Erigon: And to collaborate in standardizing the RPC also in the testing.
+
+378
+00:47:27.050 --> 00:47:31.920
+Tullio Canepa | Erigon: And, yeah, I think that's it, and… Thank you very much.
+
+379
+00:47:33.000 --> 00:47:34.080
+Barnabas: Thank you, Tulio.
+
+380
+00:47:34.800 --> 00:47:41.660
+Barnabas: Yeah, I think it would be very good for you to present this also, possibly in the
+
+381
+00:47:43.260 --> 00:47:52.459
+Barnabas: in the RPC standardization call. I'm not sure when the next one is for that one. Maybe next week, Monday, actually, at 3 p.m. UTC.
+
+382
+00:47:53.480 --> 00:47:54.680
+Tullio Canepa | Erigon: next Monday.
+
+383
+00:47:54.680 --> 00:47:57.400
+Barnabas: Yep. Okay, yep.
+
+384
+00:47:57.720 --> 00:47:58.460
+Tullio Canepa | Erigon: Yeah, yeah, yeah.
+
+385
+00:47:58.460 --> 00:48:04.279
+Barnabas: pre-systemization calls, so I'm not sure if they have it scheduled for that as well.
+
+386
+00:48:05.160 --> 00:48:05.790
+Tullio Canepa | Erigon: I'll do it.
+
+387
+00:48:05.790 --> 00:48:10.350
+Barnabas: That would be the… yeah, that would be the proper place to present this, I think, yeah.
+
+388
+00:48:10.870 --> 00:48:12.849
+Tullio Canepa | Erigon: Okay, okay. Thank you.
+
+389
+00:48:13.620 --> 00:48:18.180
+Barnabas: Thank you. Anyway, does anyone have a question, or…
+
+390
+00:48:19.310 --> 00:48:33.369
+Chase Wright: Actually, I was just wondering, Tulio, can you hit me up on Discord? I'm Mystic Ryujin. I'm working on documenting a lot of this stuff on the EF side, so I'd like to work with you on this.
+
+391
+00:48:34.300 --> 00:48:35.720
+Tullio Canepa | Erigon: Sure, I will ping you.
+
+392
+00:48:35.720 --> 00:48:36.360
+Chase Wright: Thank you.
+
+393
+00:48:46.670 --> 00:48:52.460
+Barnabas: Okay, so the next topic is, HTAR discussion topics,
+
+394
+00:48:52.730 --> 00:49:05.279
+Barnabas: There was a bit of confusion last week, raised by this comment on Eat Magicians, where we decided star name that we picked, HECA is not an actual star name.
+
+395
+00:49:05.420 --> 00:49:10.939
+Barnabas: So, Leo proposed that, Beginning to,
+
+396
+00:49:11.640 --> 00:49:29.320
+Barnabas: we're gonna rename Heko to Heze, or Hizzy, or… I still don't really know how to… how to pronounce the start name, but seems like we have actually got more votes on this alternative name than the original name, so I would just say that we move on with the…
+
+397
+00:49:29.830 --> 00:49:33.379
+Barnabas: new, H star name of Heather.
+
+398
+00:49:33.510 --> 00:49:34.340
+Barnabas: Oh.
+
+399
+00:49:35.740 --> 00:49:36.840
+Barnabas: Easy.
+
+400
+00:49:37.340 --> 00:49:40.480
+Barnabas: Does anyone know how to actually… pronounce it?
+
+401
+00:49:46.710 --> 00:49:57.219
+Barnabas: Yeah, and then maybe for the final sorting, we can make the decision on this Thursday call, so that this topic is,
+
+402
+00:49:57.660 --> 00:49:59.390
+Barnabas: Over, once and for all.
+
+403
+00:49:59.520 --> 00:50:03.640
+Barnabas: And then we can start working on the next, story.
+
+404
+00:50:06.560 --> 00:50:09.489
+Barnabas: Anyone has an opinion on this?
+
+405
+00:50:17.280 --> 00:50:22.089
+Barnabas: Oh, yeah, that would be very good to know the actual pronunciation of the star.
+
+406
+00:50:24.380 --> 00:50:25.630
+Barnabas: uncertain.
+
+407
+00:50:29.460 --> 00:50:36.689
+Barnabas: Okay, then… The next topic would be the holiday schedule for ACDs.
+
+408
+00:50:37.290 --> 00:50:42.049
+Barnabas: I'm going to be posting a…
+
+409
+00:50:42.280 --> 00:50:53.950
+Barnabas: proposal in the chat. So, this week's Thursday, there's gonna be an ACDE, and the 22nd of December, there might be a ACDT. It depends on whether
+
+410
+00:50:54.220 --> 00:50:55.770
+Barnabas: Redeem it necessary?
+
+411
+00:50:56.160 --> 00:51:14.780
+Barnabas: 25th of December, ACDC would be canceled. 29th of December, ACDT would be canceled. 1st of January, the ACDE would be canceled. On the 5th of January, ACDT would become a ACDE. And on the 8th of January, it would be an ACDC.
+
+412
+00:51:16.350 --> 00:51:22.010
+Barnabas: Would everyone be happy with this schedule?
+
+413
+00:51:22.200 --> 00:51:34.349
+Barnabas: My main question would be the 22nd of December, which is next week, Monday. Do we actually need another ECDT for this year, or could this call be the last,
+
+414
+00:51:35.130 --> 00:51:37.220
+Barnabas: SCDT of the year.
+
+415
+00:51:50.970 --> 00:51:58.290
+Barnabas: If nobody's gonna raise anything, then, I think we're gonna be also canceling the ACDT next week, Monday.
+
+416
+00:51:59.940 --> 00:52:02.820
+Barnabas: our… yeah, James… James wants to…
+
+417
+00:52:03.160 --> 00:52:07.890
+Barnabas: Jim's on to the CDP, so… Go for next week?
+
+418
+00:52:08.050 --> 00:52:08.780
+Barnabas: Nope.
+
+419
+00:52:11.160 --> 00:52:18.340
+Barnabas: So I guess we're gonna try to schedule one more call for next week, Monday, and that's gonna be… oh, you don't want it.
+
+420
+00:52:25.990 --> 00:52:29.769
+Barnabas: Does anyone want a call next Monday?
+
+421
+00:52:36.840 --> 00:52:40.470
+Barnabas: Yeah, it doesn't… it doesn't sound like people.
+
+422
+00:52:40.580 --> 00:52:52.850
+Barnabas: want a call, so I would just propose that we cancel next week's call as well, and we're gonna be back on the 12th of January next year, so almost a month from now.
+
+423
+00:52:53.070 --> 00:52:55.739
+Barnabas: with the next, Oracle Devs testing.
+
+424
+00:53:00.640 --> 00:53:02.959
+Barnabas: And I think that's it, for today.
+
+425
+00:53:04.720 --> 00:53:06.750
+Barnabas: Unless someone has.
+
+426
+00:53:07.060 --> 00:53:08.869
+Barnabas: Has anything else, Jared?
+
+427
+00:53:15.010 --> 00:53:18.729
+Barnabas: Happy holidays, and here's the updated schedule.
+
+428
+00:53:21.080 --> 00:53:26.240
+Barnabas: And… see you all on the 18th of December on the last Occo Devs call.
+
+429
+00:53:26.820 --> 00:53:27.760
+Barnabas: this year.
+
+430
+00:53:30.840 --> 00:53:32.160
+Barnabas: Thank you, bye-bye.
+
+431
+00:53:32.790 --> 00:53:33.890
+felipe: Thanks, bye.
+
+432
+00:53:34.650 --> 00:53:35.460
+Pawan Dhananjay: Thank you.
+
+433
+00:53:35.640 --> 00:53:36.360
+Leo: Bye.
+
+434
+00:53:40.070 --> 00:53:41.020
+Tullio Canepa | Erigon: Thank you.
+

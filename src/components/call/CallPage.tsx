@@ -88,6 +88,16 @@ const CallPage: React.FC = () => {
       // We'll handle the video seek and scroll after everything is loaded
       // This will be done in a separate effect once the player and callConfig are ready
     }
+
+    // Handle direct chat link (format: ?chat=00:05:28)
+    const chatTimestamp = searchParams.get('chat');
+    if (chatTimestamp) {
+      setSelectedSearchResult({
+        timestamp: chatTimestamp,
+        text: '',
+        type: 'chat'
+      });
+    }
   }, [location.search]);
 
   // Handle navigation to selected search result when player is ready

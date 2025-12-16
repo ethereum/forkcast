@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 
 interface ChatMessage {
   timestamp: string;
@@ -19,6 +19,18 @@ interface ChatLogProps {
 }
 
 const ChatLog: React.FC<ChatLogProps> = ({ content, syncConfig, selectedSearchResult, onTimestampClick }) => {
+  const [copiedTimestamp, setCopiedTimestamp] = useState<string | null>(null);
+
+  // --- Copy link to a specific chat message ---
+  const copyMessageLink = (timestamp: string, event: React.MouseEvent) => {
+    event.stopPropagation(); // Don't trigger video seek
+    const url = `${window.location.origin}${window.location.pathname}?chat=${timestamp}`;
+    navigator.clipboard.writeText(url).then(() => {
+      setCopiedTimestamp(timestamp);
+      setTimeout(() => setCopiedTimestamp(null), 2000);
+    });
+  };
+
   // --- Handle clicking on chat entries (but not links) ---
   const handleChatEntryClick = (event: React.MouseEvent, timestamp: string) => {
     // Don't trigger video jump if clicking on a link
@@ -374,14 +386,32 @@ const ChatLog: React.FC<ChatLogProps> = ({ content, syncConfig, selectedSearchRe
               `}
             >
               <div className="flex gap-3 text-sm">
-                <span className={`text-xs flex-shrink-0 font-mono mt-0.5 ${isSelectedSearch ? 'text-yellow-600 dark:text-yellow-400' : 'text-slate-500 dark:text-slate-400'}`} style={{ minWidth: '64px' }}>
-                  {message.timestamp === '00:00:00'
-                    ? '--:--:--'
-                    : syncConfig?.transcriptStartTime && syncConfig?.videoStartTime
-                      ? secondsToTimestamp(getAdjustedVideoTime(message.timestamp))
-                      : message.timestamp
-                  }
-                </span>
+                {message.timestamp !== '00:00:00' ? (
+                  <button
+                    onClick={(e) => copyMessageLink(message.timestamp, e)}
+                    className={`text-xs flex-shrink-0 font-mono mt-0.5 transition-colors ${
+                      copiedTimestamp === message.timestamp
+                        ? 'text-emerald-600 dark:text-emerald-400'
+                        : isSelectedSearch
+                          ? 'text-yellow-600 dark:text-yellow-400 group-hover:text-blue-600 dark:group-hover:text-blue-400'
+                          : 'text-slate-500 dark:text-slate-400 group-hover:text-blue-600 dark:group-hover:text-blue-400'
+                    }`}
+                    style={{ minWidth: '64px' }}
+                  >
+                    <span className="group-hover:hidden">
+                      {syncConfig?.transcriptStartTime && syncConfig?.videoStartTime
+                        ? secondsToTimestamp(getAdjustedVideoTime(message.timestamp))
+                        : message.timestamp}
+                    </span>
+                    <span className="hidden group-hover:inline text-[10px] hover:underline cursor-pointer">
+                      {copiedTimestamp === message.timestamp ? 'Copied!' : 'Copy link'}
+                    </span>
+                  </button>
+                ) : (
+                  <span className={`text-xs flex-shrink-0 font-mono mt-0.5 ${isSelectedSearch ? 'text-yellow-600 dark:text-yellow-400' : 'text-slate-500 dark:text-slate-400'}`} style={{ minWidth: '64px' }}>
+                    --:--:--
+                  </span>
+                )}
                 <div className="flex-1 min-w-0">
                   <span className={`font-medium mr-2 ${isSelectedSearch ? 'text-yellow-900 dark:text-yellow-100' : 'text-slate-700 dark:text-slate-300'}`}>
                     {message.speaker === 'Unknown' ? 'Context' : message.speaker}:
@@ -480,15 +510,29 @@ const ChatLog: React.FC<ChatLogProps> = ({ content, syncConfig, selectedSearchRe
                   <div
                     data-chat-timestamp={reply.timestamp}
                     onClick={(e) => handleChatEntryClick(e, reply.timestamp)}
-                    className={`ml-20 mt-1 pl-4 border-l-2 cursor-pointer hover:bg-slate-50 dark:hover:bg-slate-700/30 rounded transition-colors ${isSelectedReply ? 'border-yellow-500 bg-yellow-50 dark:bg-yellow-900/20' : 'border-slate-200 dark:border-slate-600'}`}
+                    className={`group ml-20 mt-1 pl-4 border-l-2 cursor-pointer hover:bg-slate-50 dark:hover:bg-slate-700/30 rounded transition-colors ${isSelectedReply ? 'border-yellow-500 bg-yellow-50 dark:bg-yellow-900/20' : 'border-slate-200 dark:border-slate-600'}`}
                   >
                     <div className="flex gap-3 text-sm">
-                      <span className={`text-xs flex-shrink-0 font-mono mt-0.5 ${isSelectedReply ? 'text-yellow-600 dark:text-yellow-400' : 'text-slate-500 dark:text-slate-400'}`} style={{ minWidth: '64px' }}>
-                        {syncConfig?.transcriptStartTime && syncConfig?.videoStartTime
-                          ? secondsToTimestamp(getAdjustedVideoTime(reply.timestamp))
-                          : reply.timestamp
-                        }
-                      </span>
+                      <button
+                        onClick={(e) => copyMessageLink(reply.timestamp, e)}
+                        className={`text-xs flex-shrink-0 font-mono mt-0.5 transition-colors ${
+                          copiedTimestamp === reply.timestamp
+                            ? 'text-emerald-600 dark:text-emerald-400'
+                            : isSelectedReply
+                              ? 'text-yellow-600 dark:text-yellow-400 group-hover:text-blue-600 dark:group-hover:text-blue-400'
+                              : 'text-slate-500 dark:text-slate-400 group-hover:text-blue-600 dark:group-hover:text-blue-400'
+                        }`}
+                        style={{ minWidth: '64px' }}
+                      >
+                        <span className="group-hover:hidden">
+                          {syncConfig?.transcriptStartTime && syncConfig?.videoStartTime
+                            ? secondsToTimestamp(getAdjustedVideoTime(reply.timestamp))
+                            : reply.timestamp}
+                        </span>
+                        <span className="hidden group-hover:inline text-[10px] hover:underline cursor-pointer">
+                          {copiedTimestamp === reply.timestamp ? 'Copied!' : 'Copy link'}
+                        </span>
+                      </button>
                       <div className="flex-1 min-w-0">
                         <span className={`font-medium mr-2 ${isSelectedReply ? 'text-yellow-900 dark:text-yellow-100' : 'text-slate-700 dark:text-slate-300'}`}>
                           {reply.speaker}:

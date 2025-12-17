@@ -11,7 +11,7 @@ import {
   getEipLayer,
 } from '../../utils';
 import { Tooltip, CopyLinkButton } from '../ui';
-import { usePokebalData } from '../../hooks/usePokebalData';
+import { useButterflyData } from '../../hooks/useButterflyData';
 import { ClientTestingProgress } from './ClientTestingProgress';
 
 interface EipCardProps {
@@ -25,8 +25,8 @@ export const EipCard: React.FC<EipCardProps> = ({ eip, forkName, handleExternalL
   const layer = getEipLayer(eip, forkName);
   const [showChampionDetails, setShowChampionDetails] = useState(false);
 
-  // Fetch pokebal data for EIP 7928
-  const { data: pokebalData, loading: pokebalLoading, error: pokebalError } = usePokebalData(eip.id);
+  // Fetch butterfly data for EIP 7928
+  const { data: butterflyData, loading: butterflyLoading, error: butterflyError } = useButterflyData(eip.id, forkName);
 
   return (
     <article key={eip.id} className={`bg-white dark:bg-slate-800 border rounded p-8 ${
@@ -276,10 +276,10 @@ export const EipCard: React.FC<EipCardProps> = ({ eip, forkName, handleExternalL
         })()}
 
         {/* Client Testing Progress (EIP 7928) */}
-        {eip.id === 7928 && !pokebalLoading && (
+        {eip.id === 7928 && !butterflyLoading && (
           <>
-            {pokebalData && <ClientTestingProgress data={pokebalData} />}
-            {pokebalError && (
+            {butterflyData && <ClientTestingProgress data={butterflyData} />}
+            {butterflyError && (
               <div className="mt-4 border-t border-slate-200 dark:border-slate-600 pt-4">
                 <h4 className="text-sm font-semibold text-slate-900 dark:text-slate-100 mb-3 uppercase tracking-wide">
                   Client Testing Progress

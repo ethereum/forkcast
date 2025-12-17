@@ -369,8 +369,10 @@ const ForkGanttChart: React.FC<ForkGanttChartProps> = ({
                                 left: `${getPosition(milestone.startDate)}%`,
                               }}
                             >
+                              {/* Larger invisible hit area for easier hover */}
+                              <div className="absolute w-6 h-6 -ml-3 -mt-3 top-1/2 left-1/2" />
                               <div
-                                className="w-2 h-2 rounded-full -ml-1 ring-2 ring-white dark:ring-slate-800"
+                                className="w-2 h-2 rounded-full -ml-1 ring-2 ring-white dark:ring-slate-800 pointer-events-none"
                                 style={{ backgroundColor: fork.color }}
                               />
                               {/* Tooltip */}

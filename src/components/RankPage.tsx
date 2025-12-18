@@ -6,9 +6,10 @@ import {
   getLaymanTitle,
   getProposalPrefix,
   getHeadlinerLayer,
+  getInclusionStage,
 } from "../utils/eip";
 import { useAnalytics } from "../hooks/useAnalytics";
-import eipsData from "../data/eips.json";
+import { eipsData } from "../data/eips";
 import ThemeToggle from "./ui/ThemeToggle";
 
 interface TierItem {
@@ -165,7 +166,11 @@ const RankPage: React.FC = () => {
   // Initialize with Glamsterdam headliner EIPs
   useEffect(() => {
     const glamsterdamHeadliners = eipsData
-      .filter((eip) => eip.forkRelationships.some((fork) => fork.forkName.toLowerCase() === "glamsterdam" && (fork.status === "Proposed" || fork.status === "Considered")))
+      .filter((eip) =>
+        ["Proposed for Inclusion", "Considered for Inclusion"].includes(
+          getInclusionStage(eip, "glamsterdam")
+        )
+      )
       .filter((eip) => !isHeadliner(eip, "glamsterdam"))
       .map((eip) => ({
         id: `eip-${eip.id}`,

@@ -7,7 +7,11 @@ export interface ClientTeamPerspective {
 
 export interface ForkRelationship {
   forkName: string;
-  status: string;
+  statusHistory: Array<{
+    status: 'Proposed' | 'Considered' | 'Scheduled' | 'Declined' | 'Included' | 'Withdrawn';
+    call?: `${'acdc' | 'acde' | 'acdt'}/${number}`;
+    date?: string;
+  }>; // Ordered oldest -> newest
   isHeadliner?: boolean;
   wasHeadlinerCandidate?: boolean;
   headlinerDiscussionLink?: string;
@@ -62,6 +66,7 @@ export type InclusionStage =
   | 'Scheduled for Inclusion'
   | 'Declined for Inclusion'
   | 'Included'
+  | 'Withdrawn'
   | 'Unknown';
 
 export type ProposalType = 'EIP' | 'RIP';

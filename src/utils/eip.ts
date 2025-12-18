@@ -10,9 +10,11 @@ export const getInclusionStage = (eip: EIP, forkName?: string): InclusionStage =
     fork.forkName.toLowerCase() === forkName.toLowerCase()
   );
 
-  if (!forkRelationship) return 'Unknown';
+  if (!forkRelationship || !forkRelationship.statusHistory.length) return 'Unknown';
 
-  switch (forkRelationship.status) {
+  const status = forkRelationship.statusHistory[forkRelationship.statusHistory.length - 1].status;
+
+  switch (status) {
     case 'Proposed':
       return 'Proposed for Inclusion';
     case 'Considered':
@@ -23,6 +25,8 @@ export const getInclusionStage = (eip: EIP, forkName?: string): InclusionStage =
       return 'Declined for Inclusion';
     case 'Included':
       return 'Included';
+    case 'Withdrawn':
+      return 'Withdrawn';
     default:
       return 'Unknown';
   }

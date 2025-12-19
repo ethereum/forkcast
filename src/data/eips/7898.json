@@ -12,7 +12,11 @@
   "forkRelationships": [
     {
       "forkName": "Fusaka",
-      "status": "Declined"
+      "statusHistory": [
+        {
+          "status": "Declined"
+        }
+      ]
     }
   ],
   "laymanDescription": "This addresses a fundamental scalability bottleneck by separating transaction data from consensus data in Ethereum blocks. Currently, beacon blocks contain all transaction data embedded within them, but as Ethereum aims to increase block sizes (potentially by 10x), this creates serious networking and processing problems. Larger transaction payloads cause higher latencies for block transmission, increased bandwidth requirements, and longer block processing times that hurt validator performance. This EIP solves these issues by replacing the full transaction data in beacon blocks with just a header, while transmitting the actual transaction data separately. This allows the consensus layer to process blocks quickly while handling much larger transaction payloads independently. Additional benefits include reduced storage requirements for beacon nodes, more efficient proposer-builder separation, and laying groundwork for future innovations like ZK-proof-based execution validation where transaction data could be handled similarly to blobs with data availability sampling."

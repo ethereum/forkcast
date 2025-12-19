@@ -12,7 +12,11 @@
   "forkRelationships": [
     {
       "forkName": "Fusaka",
-      "status": "Declined"
+      "statusHistory": [
+        {
+          "status": "Declined"
+        }
+      ]
     }
   ],
   "laymanDescription": "This adds a dedicated metadata section to EOF contracts that is completely separate from executable code and data. Currently, compilers include metadata (like compiler versions, IPFS hashes of source files) by mixing it with contract data, which creates problems for source code verification and causes different bytecode when metadata changes. The new metadata section solves these issues by being unreachable by contract execution, unchanging after deployment, and clearly separated from functional code. This makes source code verification much easier and ensures that contracts with identical logic but different metadata will have the same executable bytecode."

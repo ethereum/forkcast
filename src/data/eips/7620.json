@@ -12,7 +12,11 @@
   "forkRelationships": [
     {
       "forkName": "Fusaka",
-      "status": "Declined"
+      "statusHistory": [
+        {
+          "status": "Declined"
+        }
+      ]
     }
   ],
   "laymanDescription": "This introduces new contract creation instructions for EOF contracts: EOFCREATE and RETURNCODE, which replace the legacy CREATE/CREATE2 instructions. Since EOF removes code observability (the ability to inspect and manipulate code), the old creation methods don't work. EOFCREATE creates contracts using pre-validated subcontainers within the factory contract, maintaining security while enabling factory patterns. RETURNCODE allows the initialization code to specify which subcontainer becomes the deployed contract and append additional data. This preserves the factory contract use case while maintaining EOF's code non-observability guarantees."

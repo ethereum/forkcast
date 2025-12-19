@@ -12,7 +12,11 @@
   "forkRelationships": [
     {
       "forkName": "Fusaka",
-      "status": "Declined"
+      "statusHistory": [
+        {
+          "status": "Declined"
+        }
+      ]
     }
   ],
   "laymanDescription": "This adds an EXTCODETYPE instruction to EOF contracts to distinguish between different account types. EOF removes code introspection capabilities like EXTCODESIZE, but this creates problems for ERC-721 and ERC-1155 tokens that need to know whether a recipient is an EOA (externally owned account) or a contract to implement safe transfers correctly. EXTCODETYPE returns 0 for no code (EOA), 1 for legacy contracts, and 2 for EOF contracts. This enables proper implementation of token standards in EOF while also helping proxy contracts verify that their upgrade targets are safe to call with EXTDELEGATECALL."

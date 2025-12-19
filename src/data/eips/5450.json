@@ -12,11 +12,19 @@
   "forkRelationships": [
     {
       "forkName": "Fusaka",
-      "status": "Declined"
+      "statusHistory": [
+        {
+          "status": "Declined"
+        }
+      ]
     },
     {
       "forkName": "Pectra",
-      "status": "Declined"
+      "statusHistory": [
+        {
+          "status": "Declined"
+        }
+      ]
     }
   ],
   "laymanDescription": "This adds comprehensive stack validation to EOF contracts at deployment time, ensuring that stack underflow and overflow cannot happen during execution. By analyzing all possible code paths and tracking stack heights, it eliminates the need for most runtime stack checks, making execution faster and more predictable. Only CALLF and JUMPF instructions need runtime stack overflow checks. The validation also prevents deployment of unreachable code and ensures proper function termination. This creates guarantees that enable better compiler optimizations and ahead-of-time compilation while maintaining linear validation complexity."

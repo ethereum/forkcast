@@ -12,7 +12,11 @@
   "forkRelationships": [
     {
       "forkName": "Fusaka",
-      "status": "Declined"
+      "statusHistory": [
+        {
+          "status": "Declined"
+        }
+      ]
     }
   ],
   "laymanDescription": "This introduces three new call instructions (EXTCALL, EXTDELEGATECALL, EXTSTATICCALL) for EOF contracts that remove gas observability and simplify call semantics. Unlike legacy CALL instructions, these don't allow specifying gas limits - they use the 63/64th rule automatically. They return extensible status codes (0=success, 1=revert, 2=failure) instead of boolean values, remove output buffer complexity in favor of RETURNDATACOPY, and add RETURNDATALOAD for efficient return data access. This makes contracts more resilient to future gas repricing and eliminates many gas-related attack vectors while simplifying the calling mechanism."

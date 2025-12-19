@@ -12,7 +12,11 @@
   "forkRelationships": [
     {
       "forkName": "Fusaka",
-      "status": "Declined"
+      "statusHistory": [
+        {
+          "status": "Declined"
+        }
+      ]
     }
   ],
   "laymanDescription": "This adds a new EXTCODEADDRESS instruction to EOF contracts that helps them work with EIP-7702 delegation accounts without breaking EOF's no-code-introspection rule. The problem it solves is that EOF removes the ability to read raw contract code, but contracts still need to know when an account is delegating execution to another address. This instruction takes an address and returns the actual address that will execute the code - for regular accounts it returns the same address, but for delegated accounts it returns the address they're delegating to. This enables important use cases like managed proxy contracts ensuring they don't delegate to unsafe addresses, sponsorship contracts verifying delegation hasn't changed during a transaction, and security-conscious contracts that only accept specific delegation targets."

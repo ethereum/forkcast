@@ -1,52 +1,56 @@
 {
-    "id": 7910,
-    "title": "EIP-7910: eth_config JSON-RPC Method",
-    "status": "Draft",
-    "description": "This EIP defines a JSON-RPC method, eth_config, that provides node-relevant configuration data for the current, next, and last known forks.",
-    "author": "Danno Ferrin (@shemnon)",
-    "type": "Standards Track",
-    "category": "Core",
-    "createdDate": "2025-03-18",
-    "discussionLink": "https://ethereum-magicians.org/t/eth-config-json-rpc-method/23183",
-    "reviewer": "staff",
-    "forkRelationships": [
-      {
-        "forkName": "Fusaka",
-        "status": "Included",
-        "layer": "EL"
-      }
-    ],
-    "laymanDescription": "Adds an eth_config API on Ethereum nodes so tools can read how clients are configured for current and upcoming forks, helping operators verify settings.",
-    "stakeholderImpacts": {
-      "endUsers": {
-        "description": "End users do not interact with eth_config directly, but benefit from fewer consensus issues when operators confirm client configurations before forks."
-      },
-      "appDevs": {
-        "description": "eth_config lets application developers who manage nodes inspect fork configuration; otherwise, the EIP does not define direct changes to application behavior."
-      },
-      "walletDevs": {
-        "description": "Wallet developers are not a primary audience in the EIP; impacts are limited to indirect reliability improvements from correctly configured nodes during fork activations."
-      },
-      "toolingInfra": {
-        "description": "Monitoring and infrastructure tools can call eth_config to compare configurations across nodes, automate pre-fork validation scripts, and detect configuration mismatches before upgrades."
-      },
-      "layer2s": {
-        "description": "Layer 2 systems are not explicitly targeted; they inherit any reliability improvements from better configured L1 nodes used for bridging and settlement."
-      },
-      "stakersNodes": {
-        "description": "Node operators and validator teams are primary users: eth_config lets them inspect current and next fork parameters and confirm clients match published specifications."
-      },
-      "clClients": {
-        "description": "Consensus layer clients that support eth_config must add code to gather fork configuration, surface it via Engine API, and track future configuration fields."
-      },
-      "elClients": {
-        "description": "Execution layer clients implement the eth_config JSON-RPC method, assemble current/next/last configuration objects, ensure values stay synchronized with fork parameters, and handle caching or rate-limiting per recommendations."
-      }
+  "id": 7910,
+  "title": "EIP-7910: eth_config JSON-RPC Method",
+  "status": "Draft",
+  "description": "This EIP defines a JSON-RPC method, eth_config, that provides node-relevant configuration data for the current, next, and last known forks.",
+  "author": "Danno Ferrin (@shemnon)",
+  "type": "Standards Track",
+  "category": "Core",
+  "createdDate": "2025-03-18",
+  "discussionLink": "https://ethereum-magicians.org/t/eth-config-json-rpc-method/23183",
+  "reviewer": "staff",
+  "forkRelationships": [
+    {
+      "forkName": "Fusaka",
+      "statusHistory": [
+        {
+          "status": "Included"
+        }
+      ],
+      "layer": "EL"
+    }
+  ],
+  "laymanDescription": "Adds an eth_config API on Ethereum nodes so tools can read how clients are configured for current and upcoming forks, helping operators verify settings.",
+  "stakeholderImpacts": {
+    "endUsers": {
+      "description": "End users do not interact with eth_config directly, but benefit from fewer consensus issues when operators confirm client configurations before forks."
     },
-    "benefits": [
-      "Makes node fork configurations visible through a standardized eth_config JSON-RPC method.",
-      "Helps operators and monitoring tools confirm clients are correctly configured before scheduled hard forks.",
-      "Reduces risk of consensus splits caused by misconfigured fork parameters across different clients.",
-      "Provides a foundation for automated pre-fork validation scripts and cross-node configuration comparisons."
-    ]
-  }
+    "appDevs": {
+      "description": "eth_config lets application developers who manage nodes inspect fork configuration; otherwise, the EIP does not define direct changes to application behavior."
+    },
+    "walletDevs": {
+      "description": "Wallet developers are not a primary audience in the EIP; impacts are limited to indirect reliability improvements from correctly configured nodes during fork activations."
+    },
+    "toolingInfra": {
+      "description": "Monitoring and infrastructure tools can call eth_config to compare configurations across nodes, automate pre-fork validation scripts, and detect configuration mismatches before upgrades."
+    },
+    "layer2s": {
+      "description": "Layer 2 systems are not explicitly targeted; they inherit any reliability improvements from better configured L1 nodes used for bridging and settlement."
+    },
+    "stakersNodes": {
+      "description": "Node operators and validator teams are primary users: eth_config lets them inspect current and next fork parameters and confirm clients match published specifications."
+    },
+    "clClients": {
+      "description": "Consensus layer clients that support eth_config must add code to gather fork configuration, surface it via Engine API, and track future configuration fields."
+    },
+    "elClients": {
+      "description": "Execution layer clients implement the eth_config JSON-RPC method, assemble current/next/last configuration objects, ensure values stay synchronized with fork parameters, and handle caching or rate-limiting per recommendations."
+    }
+  },
+  "benefits": [
+    "Makes node fork configurations visible through a standardized eth_config JSON-RPC method.",
+    "Helps operators and monitoring tools confirm clients are correctly configured before scheduled hard forks.",
+    "Reduces risk of consensus splits caused by misconfigured fork parameters across different clients.",
+    "Provides a foundation for automated pre-fork validation scripts and cross-node configuration comparisons."
+  ]
+}

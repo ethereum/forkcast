@@ -12,7 +12,11 @@
   "forkRelationships": [
     {
       "forkName": "Fusaka",
-      "status": "Declined"
+      "statusHistory": [
+        {
+          "status": "Declined"
+        }
+      ]
     }
   ],
   "laymanDescription": "This removes the identity precompile (at address 0x04) and replaces it with actual EVM code that does the same thing - simply copying input data to output data. The identity precompile was originally needed because there was no direct way to copy memory, but since the MCOPY opcode was introduced, this precompile is no longer necessary. Removing it reduces maintenance burden and complexity for Ethereum clients, including ZK-EVMs. This serves as a template for potentially removing other underused precompiles in the future, like certain hash functions."

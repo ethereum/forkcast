@@ -117,14 +117,14 @@ export const HEGOTA_TIMELINE_PHASES: TimelinePhase[] = [
   {
     id: 'fork-focus',
     title: 'Fork Focus Discussion & Headliner Proposals',
-    dateRange: 'Date TBD',
+    dateRange: 'Jan 8 - Feb 4',
     description: 'ACD calls focus on discussing Hegotá\'s high-level goals. Headliner champions present proposals.',
     status: 'current'
   },
   {
     id: 'headliner-discussion',
     title: 'Headliner Discussion & Finalization',
-    dateRange: 'Date TBD',
+    dateRange: 'Feb 5 - Feb 26',
     description: 'ACD evaluates candidate headliners, solicits community feedback, and finalizes decisions.',
     status: 'upcoming'
   },

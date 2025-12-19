@@ -1,0 +1,120 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "EIP",
+  "type": "object",
+  "required": ["id", "title", "status", "description", "author", "type", "createdDate", "discussionLink", "forkRelationships"],
+  "additionalProperties": false,
+  "properties": {
+    "id": { "type": "integer" },
+    "title": { "type": "string" },
+    "status": { "type": "string" },
+    "description": { "type": "string" },
+    "author": { "type": "string" },
+    "type": { "type": "string" },
+    "category": { "type": "string" },
+    "createdDate": { "type": "string" },
+    "discussionLink": { "type": "string" },
+    "reviewer": { "type": "string" },
+    "collection": { "type": "string" },
+    "laymanDescription": { "type": "string" },
+    "northStars": {
+      "type": "array",
+      "items": { "type": "string" }
+    },
+    "benefits": {
+      "type": "array",
+      "items": { "type": "string" }
+    },
+    "tradeoffs": {
+      "type": "array",
+      "items": { "type": "string" }
+    },
+    "forkRelationships": {
+      "type": "array",
+      "items": { "$ref": "#/$defs/ForkRelationship" }
+    },
+    "northStarAlignment": { "$ref": "#/$defs/NorthStarAlignment" },
+    "stakeholderImpacts": { "$ref": "#/$defs/StakeholderImpacts" }
+  },
+  "$defs": {
+    "ForkRelationship": {
+      "type": "object",
+      "required": ["forkName", "statusHistory"],
+      "additionalProperties": false,
+      "properties": {
+        "forkName": { "type": "string" },
+        "statusHistory": {
+          "type": "array",
+          "items": { "$ref": "#/$defs/StatusHistoryEntry" }
+        },
+        "isHeadliner": { "type": "boolean" },
+        "wasHeadlinerCandidate": { "type": "boolean" },
+        "headlinerDiscussionLink": { "type": "string" },
+        "layer": { "type": "string" },
+        "champion": { "$ref": "#/$defs/Champion" }
+      }
+    },
+    "StatusHistoryEntry": {
+      "type": "object",
+      "required": ["status"],
+      "additionalProperties": false,
+      "properties": {
+        "status": {
+          "type": "string",
+          "enum": ["Proposed", "Considered", "Scheduled", "Declined", "Included", "Withdrawn"]
+        },
+        "call": {
+          "type": "string",
+          "pattern": "^(acdc|acde|acdt)/[0-9]+$"
+        },
+        "date": {
+          "type": "string",
+          "pattern": "^[0-9]{4}-[0-9]{2}-[0-9]{2}$"
+        }
+      }
+    },
+    "Champion": {
+      "type": "object",
+      "required": ["name"],
+      "additionalProperties": false,
+      "properties": {
+        "name": { "type": "string" },
+        "discord": { "type": "string" },
+        "telegram": { "type": "string" },
+        "email": { "type": "string" }
+      }
+    },
+    "NorthStarAlignment": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "scaleL1": { "$ref": "#/$defs/ImpactDescription" },
+        "scaleBlobs": { "$ref": "#/$defs/ImpactDescription" },
+        "improveUX": { "$ref": "#/$defs/ImpactDescription" }
+      }
+    },
+    "ImpactDescription": {
+      "type": "object",
+      "required": ["description"],
+      "additionalProperties": false,
+      "properties": {
+        "impact": { "type": "string" },
+        "description": { "type": "string" }
+      }
+    },
+    "StakeholderImpacts": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "endUsers": { "$ref": "#/$defs/ImpactDescription" },
+        "appDevs": { "$ref": "#/$defs/ImpactDescription" },
+        "walletDevs": { "$ref": "#/$defs/ImpactDescription" },
+        "toolingInfra": { "$ref": "#/$defs/ImpactDescription" },
+        "layer2s": { "$ref": "#/$defs/ImpactDescription" },
+        "stakersNodes": { "$ref": "#/$defs/ImpactDescription" },
+        "clClients": { "$ref": "#/$defs/ImpactDescription" },
+        "elClients": { "$ref": "#/$defs/ImpactDescription" }
+      }
+    }
+  }
+}

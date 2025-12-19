@@ -131,21 +131,21 @@ export const HEGOTA_TIMELINE_PHASES: TimelinePhase[] = [
   {
     id: 'non-headliner-proposals',
     title: 'Non-Headliner EIP Proposals',
-    dateRange: 'Date TBD',
+    dateRange: 'TBD',
     description: 'Non-headliner EIPs can now be proposed for inclusion in Hegotá.',
     status: 'upcoming'
   },
   {
     id: 'cfi-decisions',
     title: 'Non-Headliner EIP CFI Decisions',
-    dateRange: 'Date TBD',
+    dateRange: 'TBD',
     description: 'ACDC and ACDE calls select which Proposed for Inclusion EIPs advance to Considered for Inclusion.',
     status: 'upcoming'
   },
   {
     id: 'cfi-to-sfi',
     title: 'CFI → SFI EIP Decisions',
-    dateRange: 'Date TBD',
+    dateRange: 'TBD',
     description: 'As Hegotá devnets begin, final decisions on which CFI EIPs will be included in the upgrade\'s devnet.',
     status: 'upcoming'
   }

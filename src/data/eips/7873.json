@@ -12,7 +12,11 @@
   "forkRelationships": [
     {
       "forkName": "Fusaka",
-      "status": "Declined"
+      "statusHistory": [
+        {
+          "status": "Declined"
+        }
+      ]
     }
   ],
   "laymanDescription": "This introduces a new way to deploy EOF contracts by adding a TXCREATE instruction and a special InitcodeTransaction type. The problem it solves is that EOF removes the traditional CREATE and CREATE2 instructions used to deploy contracts. With this EIP, both regular users (EOAs) and smart contracts can deploy EOF contracts by including the contract code directly in transaction data and using TXCREATE to deploy it. This works alongside the existing EOFCREATE instruction, giving developers all the contract creation capabilities they had before EOF. The TXCREATE instruction can also deploy legacy contracts, making it a universal bootstrapping mechanism for getting EOF contracts onto the blockchain."

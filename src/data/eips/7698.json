@@ -12,7 +12,11 @@
   "forkRelationships": [
     {
       "forkName": "Fusaka",
-      "status": "Declined"
+      "statusHistory": [
+        {
+          "status": "Declined"
+        }
+      ]
     }
   ],
   "laymanDescription": "This enables deploying EOF contracts using regular creation transactions (transactions with empty 'to' field). Since legacy CREATE and CREATE2 instructions cannot deploy EOF code, creation transactions are the only way to get the first EOF contracts on-chain. The transaction data contains an EOF initcontainer followed by calldata for constructor arguments. This approach allows existing deployment tooling to work without modification - developers can deploy EOF contracts the same way they deploy legacy contracts, just by concatenating constructor arguments with the initcontainer. The execution ends with a RETURNCODE instruction that specifies which subcontainer becomes the deployed contract."

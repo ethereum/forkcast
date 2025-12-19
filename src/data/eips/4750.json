@@ -12,11 +12,19 @@
   "forkRelationships": [
     {
       "forkName": "Fusaka",
-      "status": "Declined"
+      "statusHistory": [
+        {
+          "status": "Declined"
+        }
+      ]
     },
     {
       "forkName": "Pectra",
-      "status": "Declined"
+      "statusHistory": [
+        {
+          "status": "Declined"
+        }
+      ]
     }
   ],
   "laymanDescription": "This introduces proper function support to EOF contracts by allowing multiple code sections, each representing a separate function. It adds two new instructions: CALLF to call functions and RETF to return from them. Functions have defined input/output parameters and their own isolated stack, improving code organization and analysis. Dynamic jumps (JUMP/JUMPI) are completely removed in favor of static function calls, making contracts more predictable and easier to optimize. A return stack tracks function call history, and JUMPDEST becomes a simple NOP instruction since jump analysis is no longer needed."

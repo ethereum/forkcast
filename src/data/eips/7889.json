@@ -12,7 +12,11 @@
   "forkRelationships": [
     {
       "forkName": "Fusaka",
-      "status": "Declined"
+      "statusHistory": [
+        {
+          "status": "Declined"
+        }
+      ]
     }
   ],
   "laymanDescription": "This automatically makes error messages from failed transactions easily accessible by emitting them as logs. Currently, when a transaction fails (reverts), the error message explaining why it failed is hard to get - you need to request expensive transaction tracing to access it. This creates overhead for users who want to understand why their transaction failed and for nodes that have to replay entire transactions just to extract small error messages. This EIP solves the problem by automatically emitting a log containing the revert message whenever the REVERT opcode is called. This makes error messages accessible through standard RPC calls without any tracing, helping wallets, block explorers, and other tools display helpful error messages to users. It's completely backward compatible and doesn't require any new opcodes or RPC methods."

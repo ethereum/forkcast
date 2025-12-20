@@ -189,7 +189,7 @@ const RankPage: React.FC = () => {
           return saved ? { ...item, tier: saved.tier } : item;
         });
         setItems(merged);
-      } catch (e) {
+      } catch {
         // If parsing fails, just use default
         setItems(glamsterdamHeadliners);
       }
@@ -521,7 +521,7 @@ const RankPage: React.FC = () => {
     const dateWidth = ctx.measureText(` • ${dateStamp}`).width;
     const titleTotalWidth = titleWidth + dateWidth;
 
-    let titleStartX = canvas.width / 2 - titleTotalWidth / 2;
+    const titleStartX = canvas.width / 2 - titleTotalWidth / 2;
 
     // Draw title
     ctx.font = titleFont;
@@ -545,7 +545,7 @@ const RankPage: React.FC = () => {
     const logoWidth = ctx.measureText(logo).width;
     const suffixWidth = ctx.measureText(suffix).width;
     const totalWidth = prefixWidth + logoWidth + suffixWidth;
-    let startX = canvas.width / 2 - totalWidth / 2;
+    const startX = canvas.width / 2 - totalWidth / 2;
     // Draw prefix
     ctx.fillStyle = "#94a3b8"; // darker gray
     ctx.textAlign = "left";

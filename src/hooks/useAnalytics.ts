@@ -2,12 +2,12 @@ import { useCallback } from 'react';
 
 declare global {
   interface Window {
-    _paq: any[];
+    _paq: unknown[][];
   }
 }
 
 export const useAnalytics = () => {
-  const trackEvent = useCallback((eventName: string, properties?: Record<string, any>) => {
+  const trackEvent = useCallback((eventName: string, properties?: Record<string, unknown>) => {
     if (typeof window !== 'undefined' && window._paq) {
       // Matomo custom event tracking
       window._paq.push(['trackEvent', 'Custom', eventName, JSON.stringify(properties)]);

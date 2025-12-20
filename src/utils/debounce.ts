@@ -6,13 +6,13 @@
  * @param delay The number of milliseconds to delay
  * @returns A debounced version of the function
  */
-export function debounce<T extends (...args: any[]) => any>(
-  func: T,
+export function debounce<Args extends unknown[], R>(
+  func: (...args: Args) => R,
   delay: number
-): (...args: Parameters<T>) => void {
+): (...args: Args) => void {
   let timeoutId: ReturnType<typeof setTimeout> | null = null;
 
-  return function debounced(...args: Parameters<T>) {
+  return function debounced(...args: Args) {
     if (timeoutId) {
       clearTimeout(timeoutId);
     }
@@ -32,14 +32,14 @@ export function debounce<T extends (...args: any[]) => any>(
  * @param limit The number of milliseconds to wait between invocations
  * @returns A throttled version of the function
  */
-export function throttle<T extends (...args: any[]) => any>(
-  func: T,
+export function throttle<Args extends unknown[], R>(
+  func: (...args: Args) => R,
   limit: number
-): (...args: Parameters<T>) => void {
+): (...args: Args) => void {
   let inThrottle = false;
-  let lastArgs: Parameters<T> | null = null;
+  let lastArgs: Args | null = null;
 
-  return function throttled(...args: Parameters<T>) {
+  return function throttled(...args: Args) {
     if (!inThrottle) {
       func(...args);
       inThrottle = true;

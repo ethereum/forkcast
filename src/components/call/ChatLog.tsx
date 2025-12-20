@@ -435,7 +435,7 @@ const ChatLog: React.FC<ChatLogProps> = ({ content, syncConfig, selectedSearchRe
             {(() => {
               // Find reactions that match this message (normalized comparison)
               const messageReactions = Array.from(reactions.entries())
-                .filter(([reactionText, _]) => {
+                .filter(([reactionText]) => {
                   // Both the reaction text and the message text should be compared without ellipsis
                   const normalizedMessage = message.message.replace(/\.\.\.$/, '').trim();
                   if (reactionText.endsWith('...')) {
@@ -443,7 +443,7 @@ const ChatLog: React.FC<ChatLogProps> = ({ content, syncConfig, selectedSearchRe
                   }
                   return reactionText === message.message;
                 })
-                .flatMap(([_, reactionList]) => reactionList);
+                .flatMap(([, reactionList]) => reactionList);
 
               // Group reactions by emoji
               const groupedReactions = messageReactions.reduce((acc, reaction) => {
@@ -486,7 +486,7 @@ const ChatLog: React.FC<ChatLogProps> = ({ content, syncConfig, selectedSearchRe
 
               // Find reactions for the reply's actual message content
               const replyMessageReactions = Array.from(reactions.entries())
-                .filter(([reactionText, _]) => {
+                .filter(([reactionText]) => {
                   // Match against the actual message content, not the full "Replying to..." text
                   const normalizedMessage = actualMessage.replace(/\.\.\.$/, '').trim();
                   if (reactionText.endsWith('...')) {
@@ -494,7 +494,7 @@ const ChatLog: React.FC<ChatLogProps> = ({ content, syncConfig, selectedSearchRe
                   }
                   return reactionText === actualMessage;
                 })
-                .flatMap(([_, reactionList]) => reactionList);
+                .flatMap(([, reactionList]) => reactionList);
 
               // Group reactions by emoji for replies
               const groupedReplyReactions = replyMessageReactions.reduce((acc, reaction) => {

@@ -5,6 +5,13 @@ import { fileURLToPath } from 'url';
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
+// Read and parse the EIPs data from JSON file
+function getEips() {
+  const eipsFilePath = path.join(__dirname, '..', 'src', 'data', 'eips.json');
+  const fileContent = fs.readFileSync(eipsFilePath, 'utf-8');
+  return JSON.parse(fileContent);
+}
+
 // Read and parse the calls data from TypeScript file
 function getProtocolCalls() {
   const callsFilePath = path.join(__dirname, '..', 'src', 'data', 'calls.ts');
@@ -32,6 +39,7 @@ function getProtocolCalls() {
 }
 
 const protocolCalls = getProtocolCalls();
+const eips = getEips();
 
 // Define standalone pages with their metadata
 const standalonePages = [
@@ -74,6 +82,24 @@ function getCallTypeName(type) {
     case 'ACDT': return 'All Core Devs Testing';
     default: return type;
   }
+}
+
+// Get EIP proposal prefix (EIP or RIP)
+function getProposalPrefix(eip) {
+  return eip.collection === 'RIP' ? 'RIP' : 'EIP';
+}
+
+// Get layman title for EIP
+function getLaymanTitle(eip) {
+  if (eip.title) {
+    // Remove "EIP-XXXX:" or "RIP-XXXX:" prefix if present
+    const match = eip.title.match(/^(?:EIP|RIP)-\d+:\s*(.+)$/);
+    if (match) {
+      return match[1];
+    }
+    return eip.title;
+  }
+  return `Proposal ${eip.id}`;
 }
 
 // Function to generate HTML with proper meta tags for each route
@@ -182,6 +208,27 @@ function generateAllPages() {
 
     const html = generateStaticPage(fullPath, title, description);
     const outputPath = path.join(currentPath, 'index.html');
+    fs.writeFileSync(outputPath, html);
+    console.log(`  ✓ ${fullPath}`);
+  });
+
+  // Generate individual EIP pages
+  console.log('\n📋 Generating EIP pages:');
+  eips.forEach(eip => {
+    const fullPath = `eips/${eip.id}`;
+    const eipPath = path.join(distDir, 'eips', String(eip.id));
+
+    if (!fs.existsSync(eipPath)) {
+      fs.mkdirSync(eipPath, { recursive: true });
+    }
+
+    // Generate and write the HTML file
+    const prefix = getProposalPrefix(eip);
+    const title = `${prefix}-${eip.id} - Forkcast`;
+    const description = `Description, timeline, and status of ${prefix}-${eip.id}`;
+
+    const html = generateStaticPage(fullPath, title, description);
+    const outputPath = path.join(eipPath, 'index.html');
     fs.writeFileSync(outputPath, html);
     console.log(`  ✓ ${fullPath}`);
   });

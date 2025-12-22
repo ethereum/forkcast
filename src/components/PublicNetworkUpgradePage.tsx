@@ -98,17 +98,45 @@ const PublicNetworkUpgradePage: React.FC<PublicNetworkUpgradePageProps> = ({
 
   // Intersection Observer for TOC
   useEffect(() => {
+    // Track all currently visible sections
+    const visibleSections = new Set<string>();
+
     const observer = new IntersectionObserver(
       (entries) => {
         entries.forEach((entry) => {
           if (entry.isIntersecting) {
-            setActiveSection(entry.target.id);
+            visibleSections.add(entry.target.id);
+          } else {
+            visibleSections.delete(entry.target.id);
           }
         });
+
+        // Find the visible section closest to the top of the viewport
+        if (visibleSections.size > 0) {
+          let closestSection: string | null = null;
+          let closestDistance = Infinity;
+
+          visibleSections.forEach((id) => {
+            const element = document.getElementById(id);
+            if (element) {
+              const rect = element.getBoundingClientRect();
+              // Use the distance from the top of the viewport
+              const distance = Math.abs(rect.top);
+              if (distance < closestDistance) {
+                closestDistance = distance;
+                closestSection = id;
+              }
+            }
+          });
+
+          if (closestSection) {
+            setActiveSection(closestSection);
+          }
+        }
       },
       {
-        threshold: 0.3,
-        rootMargin: '0px'
+        threshold: 0.1,
+        rootMargin: '-10% 0px -70% 0px'
       }
     );
 

@@ -129,3 +129,59 @@ export const getForkRelationship = (eip: EIP, forkName?: string): ForkRelationsh
     fork.forkName.toLowerCase() === forkName.toLowerCase()
   );
 };
+
+/**
+ * Parsed author information
+ */
+export interface ParsedAuthor {
+  name: string;
+  handle?: string; // GitHub username or email
+}
+
+/**
+ * Parse author string into structured data
+ * Handles formats like:
+ * - "Vitalik Buterin"
+ * - "Alex Beregszaszi (@axic)"
+ * - "Vitalik Buterin <vitalik@ethereum.org>"
+ * - "Alex Beregszaszi (@axic), Paweł Bylica (@chfast)"
+ */
+export const parseAuthors = (authorString: string): ParsedAuthor[] => {
+  if (!authorString) return [];
+
+  // Split by comma, but be careful with commas inside parentheses or angle brackets
+  const authors: ParsedAuthor[] = [];
+
+  // Simple split by comma - works for most cases
+  const parts = authorString.split(/,\s*/);
+
+  for (const part of parts) {
+    const trimmed = part.trim();
+    if (!trimmed) continue;
+
+    // Check for GitHub handle pattern: Name (@handle)
+    const githubMatch = trimmed.match(/^(.+?)\s*\(@([^)]+)\)$/);
+    if (githubMatch) {
+      authors.push({
+        name: githubMatch[1].trim(),
+        handle: `@${githubMatch[2]}`,
+      });
+      continue;
+    }
+
+    // Check for email pattern: Name <email>
+    const emailMatch = trimmed.match(/^(.+?)\s*<([^>]+)>$/);
+    if (emailMatch) {
+      authors.push({
+        name: emailMatch[1].trim(),
+        handle: emailMatch[2],
+      });
+      continue;
+    }
+
+    // Just a name
+    authors.push({ name: trimmed });
+  }
+
+  return authors;
+};

@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { Link } from 'react-router-dom';
 import { EIP } from '../../types';
 import {
   getInclusionStage,
@@ -24,9 +25,16 @@ export const EipCard: React.FC<EipCardProps> = ({ eip, forkName, handleExternalL
   const eipId = `eip-${eip.id}`;
   const layer = getEipLayer(eip, forkName);
   const [showChampionDetails, setShowChampionDetails] = useState(false);
+  const [isExpanded, setIsExpanded] = useState(false);
 
   // Fetch butterfly data for EIP 7928
   const { data: butterflyData, loading: butterflyLoading, error: butterflyError } = useButterflyData(eip.id, forkName);
+
+  // Check if there's expandable content
+  const hasExpandableContent =
+    (eip.stakeholderImpacts && Object.keys(eip.stakeholderImpacts).length > 0) ||
+    (eip.tradeoffs && eip.tradeoffs.length > 0) ||
+    (eip.northStarAlignment?.scaleL1 || eip.northStarAlignment?.scaleBlobs || eip.northStarAlignment?.improveUX);
 
   return (
     <article key={eip.id} className={`bg-white dark:bg-slate-800 border rounded p-8 ${
@@ -76,7 +84,12 @@ export const EipCard: React.FC<EipCardProps> = ({ eip, forkName, handleExternalL
                     </span>
                   </Tooltip>
                 )}
-                <span className="text-slate-400 dark:text-slate-500 text-sm font-mono mr-2 relative -top-px">{getProposalPrefix(eip)}-{eip.id}</span>
+                <Link
+                  to={`/eips/${eip.id}`}
+                  className="text-slate-400 dark:text-slate-500 hover:text-purple-600 dark:hover:text-purple-400 text-sm font-mono mr-2 relative -top-px transition-colors"
+                >
+                  {getProposalPrefix(eip)}-{eip.id}
+                </Link>
                 <span>{getLaymanTitle(eip)}</span>
                 {layer && (
                   <Tooltip
@@ -237,31 +250,39 @@ export const EipCard: React.FC<EipCardProps> = ({ eip, forkName, handleExternalL
                     </button>
                   </div>
 
-                  {showChampionDetails && (champion.discord || champion.telegram || champion.email) && (
-                    <div className="mt-2 ml-4 space-y-1.5 bg-slate-50 dark:bg-slate-700/50 rounded px-3 py-2">
-                      {champion.discord && (
-                        <div className="flex items-center gap-2 text-xs">
-                          <span className="text-slate-500 dark:text-slate-400">Discord:</span>
-                          <span className="font-mono text-slate-700 dark:text-slate-300">{champion.discord}</span>
+                  {(champion.discord || champion.telegram || champion.email) && (
+                    <div
+                      className={`grid transition-all duration-300 ease-in-out ${
+                        showChampionDetails ? 'grid-rows-[1fr] opacity-100' : 'grid-rows-[0fr] opacity-0'
+                      }`}
+                    >
+                      <div className="overflow-hidden">
+                        <div className="mt-2 ml-4 space-y-1.5 bg-slate-50 dark:bg-slate-700/50 rounded px-3 py-2">
+                          {champion.discord && (
+                            <div className="flex items-center gap-2 text-xs">
+                              <span className="text-slate-500 dark:text-slate-400">Discord:</span>
+                              <span className="font-mono text-slate-700 dark:text-slate-300">{champion.discord}</span>
+                            </div>
+                          )}
+                          {champion.telegram && (
+                            <div className="flex items-center gap-2 text-xs">
+                              <span className="text-slate-500 dark:text-slate-400">Telegram:</span>
+                              <span className="font-mono text-slate-700 dark:text-slate-300">{champion.telegram}</span>
+                            </div>
+                          )}
+                          {champion.email && (
+                            <div className="flex items-center gap-2 text-xs">
+                              <span className="text-slate-500 dark:text-slate-400">Email:</span>
+                              <a
+                                href={`mailto:${champion.email}`}
+                                className="font-mono text-blue-600 dark:text-blue-400 hover:underline"
+                              >
+                                {champion.email}
+                              </a>
+                            </div>
+                          )}
                         </div>
-                      )}
-                      {champion.telegram && (
-                        <div className="flex items-center gap-2 text-xs">
-                          <span className="text-slate-500 dark:text-slate-400">Telegram:</span>
-                          <span className="font-mono text-slate-700 dark:text-slate-300">{champion.telegram}</span>
-                        </div>
-                      )}
-                      {champion.email && (
-                        <div className="flex items-center gap-2 text-xs">
-                          <span className="text-slate-500 dark:text-slate-400">Email:</span>
-                          <a
-                            href={`mailto:${champion.email}`}
-                            className="font-mono text-blue-600 dark:text-blue-400 hover:underline"
-                          >
-                            {champion.email}
-                          </a>
-                        </div>
-                      )}
+                      </div>
                     </div>
                   )}
                 </>
@@ -293,13 +314,11 @@ export const EipCard: React.FC<EipCardProps> = ({ eip, forkName, handleExternalL
             )}
           </>
         )}
-      </div>
 
-      <div className="mt-8 space-y-8">
-        {/* Benefits */}
+        {/* Benefits - Always visible */}
         {eip.benefits && eip.benefits.length > 0 && (
-          <div>
-            <h4 className="text-sm font-semibold text-slate-900 dark:text-slate-100 mb-4 uppercase tracking-wide">Key Benefits</h4>
+          <div className="mt-6">
+            <h4 className="text-sm font-semibold text-slate-900 dark:text-slate-100 mb-3 uppercase tracking-wide">Key Benefits</h4>
             <ul className="space-y-2">
               {eip.benefits.map((benefit, index) => (
                 <li key={index} className="flex items-start text-sm">
@@ -311,6 +330,33 @@ export const EipCard: React.FC<EipCardProps> = ({ eip, forkName, handleExternalL
           </div>
         )}
 
+        {/* Expand/Collapse Button */}
+        {hasExpandableContent && (
+          <button
+            onClick={() => setIsExpanded(!isExpanded)}
+            className="mt-4 flex items-center gap-1.5 text-xs text-slate-500 hover:text-slate-700 dark:text-slate-400 dark:hover:text-slate-200 transition-colors"
+          >
+            <svg
+              className={`w-4 h-4 transition-transform duration-200 ${isExpanded ? 'rotate-180' : ''}`}
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+            </svg>
+            <span>{isExpanded ? 'Show less' : 'Show more'}</span>
+          </button>
+        )}
+      </div>
+
+      {/* Expandable Content */}
+      <div
+        className={`grid transition-all duration-300 ease-in-out ${
+          isExpanded ? 'grid-rows-[1fr] opacity-100' : 'grid-rows-[0fr] opacity-0'
+        }`}
+      >
+        <div className="overflow-hidden">
+          <div className="mt-8 space-y-8">
         {/* Stakeholder Impact */}
         {eip.stakeholderImpacts && Object.keys(eip.stakeholderImpacts).length > 0 && (
           <div>
@@ -386,6 +432,8 @@ export const EipCard: React.FC<EipCardProps> = ({ eip, forkName, handleExternalL
             </div>
           </div>
         )}
+          </div>
+        </div>
       </div>
     </article>
   );

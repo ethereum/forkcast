@@ -44,27 +44,57 @@ const ChatLog: React.FC<ChatLogProps> = ({ content, syncConfig, selectedSearchRe
     }
   };
 
-  // --- Helper function to render text with links ---
-  const renderTextWithLinks = (text: string) => {
-    const urlRegex = /(https?:\/\/[^\s]+)/g;
-    const parts = text.split(urlRegex);
+  // --- Helper function to render text with links, GIFs and handle placeholders ---
+  const renderMessageContent = (text: string) => {
+    // 1. Remove specific placeholder text associated with Giphy/discord exports
+    const processedText = text.replace(/(\s*→\s*)?\[Full message cannot be displayed on this version\]/g, '');
 
-    return parts.map((part, index) => {
-      if (part.match(urlRegex)) {
-        return (
-          <a
-            key={index}
-            href={part}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="text-blue-600 dark:text-blue-400 hover:underline"
-          >
-            {part}
-          </a>
+    // 2. Split by Giphy ID pattern
+    const giphyRegex = /Giphy \[ID:([a-zA-Z0-9_-]+)\]/g;
+    const parts = processedText.split(giphyRegex);
+
+    const result: React.ReactNode[] = [];
+
+    parts.forEach((part, index) => {
+      // Odd indices are the captured groups (IDs)
+      if (index % 2 === 1) {
+        const giphyId = part;
+        result.push(
+          <img
+            key={`giphy-${index}`}
+            src={`https://media.giphy.com/media/${giphyId}/giphy.gif`}
+            alt="GIF"
+            className="rounded-lg my-1 max-w-[200px] block"
+            onClick={(e) => e.stopPropagation()}
+          />
         );
+      } else if (part) {
+        
+        const urlRegex = /(https?:\/\/[^\s]+)/g;
+        const textParts = part.split(urlRegex);
+
+        textParts.forEach((textPart, textIndex) => {
+          if (textPart.match(urlRegex)) {
+            result.push(
+              <a
+                key={`link-${index}-${textIndex}`}
+                href={textPart}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-blue-600 dark:text-blue-400 hover:underline"
+                onClick={(e) => e.stopPropagation()}
+              >
+                {textPart}
+              </a>
+            );
+          } else if (textPart) {
+            result.push(<React.Fragment key={`text-${index}-${textIndex}`}>{textPart}</React.Fragment>);
+          }
+        });
       }
-      return part;
     });
+
+    return result;
   };
 
   // --- Timestamp conversion helpers ---
@@ -424,7 +454,7 @@ const ChatLog: React.FC<ChatLogProps> = ({ content, syncConfig, selectedSearchRe
                     {message.message.split(/\r\n|\r|\n/).map((line, index) => (
                       <React.Fragment key={index}>
                         {index > 0 && <br />}
-                        {renderTextWithLinks(line)}
+                        {renderMessageContent(line)}
                       </React.Fragment>
                     ))}
                   </span>
@@ -541,7 +571,7 @@ const ChatLog: React.FC<ChatLogProps> = ({ content, syncConfig, selectedSearchRe
                           {actualMessage.split(/\r\n|\r|\n/).map((line, index) => (
                             <React.Fragment key={index}>
                               {index > 0 && <br />}
-                              {renderTextWithLinks(line)}
+                              {renderMessageContent(line)}
                             </React.Fragment>
                           ))}
                         </span>

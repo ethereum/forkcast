@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useLayoutEffect } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { eipsData } from '../data/eips';
 import { useMetaTags } from '../hooks/useMetaTags';
@@ -81,62 +81,64 @@ const PublicNetworkUpgradePage: React.FC<PublicNetworkUpgradePageProps> = ({
     trackUpgradeView(forkName);
   }, [forkName, trackUpgradeView]);
 
-  // Handle URL hash on component mount and location changes
+  // Expand sections if URL hash points to an EIP inside them
   useEffect(() => {
+    const hash = location.hash;
+    const match = hash.match(/^#eip-(\d+)$/);
+
+    if (match && eips.length > 0) {
+      const eipId = parseInt(match[1]);
+      const targetEip = eips.find(e => e.id === eipId);
+
+      if (targetEip) {
+        // Define collapsible sections with their predicate logic and state setters.
+        // This ensures the configuration is unified and type-safe.
+        const collapsibleSections = [
+          {
+            shouldExpand: (e: EIP) => getInclusionStage(e, forkName) === 'Declined for Inclusion',
+            setExpanded: setIsDeclinedExpanded
+          },
+          {
+            shouldExpand: (e: EIP) => wasHeadlinerCandidate(e, forkName),
+            setExpanded: setIsHeadlinerProposalsExpanded
+          }
+        ];
+
+        // Invariant: any hash-linked EIP must exist in the DOM at render time.
+        // Collapsed sections must be expanded before anchor scroll occurs.
+        collapsibleSections.forEach(section => {
+          if (section.shouldExpand(targetEip)) {
+            section.setExpanded(true);
+          }
+        });
+      }
+    }
+  }, [location.hash, eips, forkName]);
+
+  // Handle URL hash on component mount and location changes
+  useLayoutEffect(() => {
     const hash = location.hash.substring(1); // Remove the # symbol
     if (hash) {
-      // Small delay to ensure DOM is ready
-      setTimeout(() => {
-        const element = document.getElementById(hash);
-        if (element) {
-          element.scrollIntoView({ behavior: 'smooth', block: 'start' });
-          setActiveSection(hash);
-        }
-      }, 100);
+      const element = document.getElementById(hash);
+      if (element) {
+        element.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      }
     }
-  }, [location.hash, eips]);
+  }, [location.hash, eips, isDeclinedExpanded, isHeadlinerProposalsExpanded]);
 
   // Intersection Observer for TOC
   useEffect(() => {
-    // Track all currently visible sections
-    const visibleSections = new Set<string>();
-
     const observer = new IntersectionObserver(
       (entries) => {
         entries.forEach((entry) => {
           if (entry.isIntersecting) {
-            visibleSections.add(entry.target.id);
-          } else {
-            visibleSections.delete(entry.target.id);
+            setActiveSection(entry.target.id);
           }
         });
-
-        // Find the visible section closest to the top of the viewport
-        if (visibleSections.size > 0) {
-          let closestSection: string | null = null;
-          let closestDistance = Infinity;
-
-          visibleSections.forEach((id) => {
-            const element = document.getElementById(id);
-            if (element) {
-              const rect = element.getBoundingClientRect();
-              // Use the distance from the top of the viewport
-              const distance = Math.abs(rect.top);
-              if (distance < closestDistance) {
-                closestDistance = distance;
-                closestSection = id;
-              }
-            }
-          });
-
-          if (closestSection) {
-            setActiveSection(closestSection);
-          }
-        }
       },
       {
-        threshold: 0.1,
-        rootMargin: '-10% 0px -70% 0px'
+        threshold: 0.3,
+        rootMargin: '0px'
       }
     );
 

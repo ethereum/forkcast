@@ -295,9 +295,15 @@ const CallPage: React.FC = () => {
         const chatResponse = await fetch(`/artifacts/${artifactPath}/chat.txt`);
         const chatContent = chatResponse.ok ? await chatResponse.text() : undefined;
 
-        // Load transcript
-        const transcriptResponse = await fetch(`/artifacts/${artifactPath}/transcript.vtt`);
-        const transcriptContent = transcriptResponse.ok ? await transcriptResponse.text() : undefined;
+        // Load transcript (prefer corrected version if available)
+        let transcriptContent: string | undefined;
+        const correctedResponse = await fetch(`/artifacts/${artifactPath}/transcript_corrected.vtt`);
+        if (correctedResponse.ok) {
+          transcriptContent = await correctedResponse.text();
+        } else {
+          const transcriptResponse = await fetch(`/artifacts/${artifactPath}/transcript.vtt`);
+          transcriptContent = transcriptResponse.ok ? await transcriptResponse.text() : undefined;
+        }
 
         // Load summary if it exists
         const summaryResponse = await fetch(`/artifacts/${artifactPath}/summary.json`);

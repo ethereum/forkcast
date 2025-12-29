@@ -15,6 +15,26 @@ export interface NetworkUpgrade {
 
 export const networkUpgrades: NetworkUpgrade[] = [
   {
+    id: 'shapella',
+    path: '/upgrade/shapella',
+    name: 'Shapella Upgrade',
+    description: 'Major upgrade enabling staking withdrawals, allowing validators to withdraw their staked ETH for the first time since the Beacon Chain launch. Named after the combination of "Shanghai" (execution layer upgrade, named after Devcon II location) and "Capella" (consensus layer upgrade, named after a star).',
+    tagline: 'Enabling staking withdrawals and completing the transition to proof-of-stake.',
+    status: 'Live',
+    activationDate: 'Apr 12, 2023',
+    disabled: true
+  },
+  {
+    id: 'dencun',
+    path: '/upgrade/dencun',
+    name: 'Dencun Upgrade',
+    description: 'Major upgrade introducing proto-danksharding (EIP-4844) for Layer 2 scaling via blob transactions. Named after the combination of "Deneb" (consensus layer upgrade, named after a star) and "Cancun" (execution layer upgrade, named after Devcon III location).',
+    tagline: 'Proto-danksharding brings cheaper Layer 2 transactions through blob data.',
+    status: 'Live',
+    activationDate: 'Mar 13, 2024',
+    disabled: true
+  },
+  {
     id: 'pectra',
     path: '/upgrade/pectra',
     name: 'Pectra Upgrade',
@@ -30,7 +50,7 @@ export const networkUpgrades: NetworkUpgrade[] = [
     path: '/upgrade/fusaka',
     name: 'Fusaka Upgrade',
     description: 'Major improvements to Ethereum\'s scalability and user experience, including PeerDAS for enhanced data availability. Named after the combination of "Fulu" (consensus layer upgrade, named after a star) and "Osaka" (execution layer upgrade, named after a Devcon location).',
-    tagline: 'PeerDAS enables nodes to specialize in storing subsets of data while maintaining security, dramatically increasing data capacity for Layer 2 networks.',
+    tagline: 'PeerDAS enables nodes to specialize in storing data subsets, increasing capacity for Layer 2 networks.',
     status: 'Live',
     activationDate: 'Dec 3, 2025',
     disabled: false

@@ -81,6 +81,13 @@ const PublicNetworkUpgradePage: React.FC<PublicNetworkUpgradePageProps> = ({
     trackUpgradeView(forkName);
   }, [forkName, trackUpgradeView]);
 
+  // Scroll to top when navigating to page (unless there's a hash)
+  useEffect(() => {
+    if (!location.hash) {
+      window.scrollTo(0, 0);
+    }
+  }, [location.pathname]);
+
   // Handle URL hash on component mount and location changes
   useEffect(() => {
     const hash = location.hash.substring(1); // Remove the # symbol

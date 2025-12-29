@@ -1,5 +1,5 @@
-import React, { useEffect } from 'react';
-import { Link, useParams, Navigate } from 'react-router-dom';
+import React, { useEffect, useMemo, useCallback } from 'react';
+import { Link, useParams, Navigate, useNavigate } from 'react-router-dom';
 import { eipsData } from '../../data/eips';
 import { useMetaTags } from '../../hooks/useMetaTags';
 import { useAnalytics } from '../../hooks/useAnalytics';
@@ -18,13 +18,38 @@ import { EipSearch } from './EipSearch';
 export const EipPage: React.FC = () => {
   const { id } = useParams<{ id: string }>();
   const { trackLinkClick } = useAnalytics();
+  const navigate = useNavigate();
 
   const eipId = parseInt(id || '', 10);
   const eip = eipsData.find((e) => e.id === eipId);
 
+  // Get sorted EIPs for navigation
+  const sortedEips = useMemo(() => [...eipsData].sort((a, b) => a.id - b.id), []);
+  const currentIndex = sortedEips.findIndex((e) => e.id === eipId);
+  const prevEip = currentIndex > 0 ? sortedEips[currentIndex - 1] : null;
+  const nextEip = currentIndex < sortedEips.length - 1 ? sortedEips[currentIndex + 1] : null;
+
   useEffect(() => {
     window.scrollTo(0, 0);
   }, [id]);
+
+  // Keyboard navigation
+  const handleKeyDown = useCallback((e: KeyboardEvent) => {
+    // Don't navigate if user is typing in an input
+    if (e.target instanceof HTMLInputElement || e.target instanceof HTMLTextAreaElement) {
+      return;
+    }
+    if (e.key === 'ArrowLeft' && prevEip) {
+      navigate(`/eips/${prevEip.id}`);
+    } else if (e.key === 'ArrowRight' && nextEip) {
+      navigate(`/eips/${nextEip.id}`);
+    }
+  }, [navigate, prevEip, nextEip]);
+
+  useEffect(() => {
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, [handleKeyDown]);
 
   useMetaTags({
     title: eip ? `${getProposalPrefix(eip)}-${eip.id}: ${getLaymanTitle(eip)} - Forkcast` : 'EIP Not Found - Forkcast',
@@ -260,6 +285,36 @@ export const EipPage: React.FC = () => {
             )}
           </div>
         </article>
+
+        {/* Previous/Next Navigation */}
+        <nav className="mt-6 flex items-center justify-between">
+          {prevEip ? (
+            <Link
+              to={`/eips/${prevEip.id}`}
+              className="flex items-center gap-2 text-sm text-slate-500 hover:text-slate-700 dark:text-slate-400 dark:hover:text-slate-200 transition-colors group"
+            >
+              <svg className="w-4 h-4 group-hover:-translate-x-0.5 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
+              </svg>
+              <span className="font-mono text-xs">{getProposalPrefix(prevEip)}-{prevEip.id}</span>
+            </Link>
+          ) : (
+            <div />
+          )}
+          {nextEip ? (
+            <Link
+              to={`/eips/${nextEip.id}`}
+              className="flex items-center gap-2 text-sm text-slate-500 hover:text-slate-700 dark:text-slate-400 dark:hover:text-slate-200 transition-colors group"
+            >
+              <span className="font-mono text-xs">{getProposalPrefix(nextEip)}-{nextEip.id}</span>
+              <svg className="w-4 h-4 group-hover:translate-x-0.5 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+              </svg>
+            </Link>
+          ) : (
+            <div />
+          )}
+        </nav>
 
         {/* Footer */}
         <footer className="mt-8 text-center text-sm text-slate-500 dark:text-slate-400 space-y-3">

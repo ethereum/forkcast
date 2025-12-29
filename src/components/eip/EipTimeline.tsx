@@ -25,24 +25,24 @@ const statusColors: Record<string, { dot: string; text: string }> = {
     text: 'text-emerald-700 dark:text-emerald-400',
   },
   Scheduled: {
-    dot: 'bg-blue-500',
-    text: 'text-blue-700 dark:text-blue-400',
+    dot: 'bg-emerald-500',
+    text: 'text-emerald-700 dark:text-emerald-400',
   },
   Considered: {
-    dot: 'bg-purple-500',
-    text: 'text-purple-700 dark:text-purple-400',
+    dot: 'bg-amber-500',
+    text: 'text-amber-700 dark:text-amber-400',
   },
   Proposed: {
-    dot: 'bg-slate-400',
-    text: 'text-slate-600 dark:text-slate-400',
+    dot: 'bg-blue-500',
+    text: 'text-blue-700 dark:text-blue-400',
   },
   Declined: {
     dot: 'bg-red-500',
     text: 'text-red-700 dark:text-red-400',
   },
   Withdrawn: {
-    dot: 'bg-amber-500',
-    text: 'text-amber-700 dark:text-amber-400',
+    dot: 'bg-slate-400',
+    text: 'text-slate-600 dark:text-slate-400',
   },
   created: {
     dot: 'bg-indigo-500',
@@ -107,6 +107,13 @@ export const EipTimeline: React.FC<EipTimelineProps> = ({ eip }) => {
     const reversedHistory = [...fork.statusHistory].reverse();
 
     reversedHistory.forEach((entry, index) => {
+      // Always show current status (index 0), but skip prior statuses without attribution
+      const isCurrentStatus = index === 0;
+      const hasAttribution = entry.date || entry.call;
+      if (!isCurrentStatus && !hasAttribution) {
+        return;
+      }
+
       // Calculate sort order:
       // - Dated events sort by date (descending)
       // - Within same fork, more recent statuses come first

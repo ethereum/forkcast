@@ -169,9 +169,9 @@ const UpgradeCarousel = ({ upgrades, getStatusColor }: UpgradeCarouselProps) => 
           </button>
 
           {/* Cards Grid */}
-          <div className="grid grid-cols-3 gap-6 items-stretch">
+          <div className="grid grid-cols-3 gap-6">
             {visibleUpgrades.map((upgrade) => (
-              <div key={upgrade.path} className="flex">
+              <div key={upgrade.path} className="min-h-[220px]">
                 {renderCard(upgrade)}
               </div>
             ))}

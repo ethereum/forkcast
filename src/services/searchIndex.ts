@@ -157,7 +157,9 @@ class SearchIndexService {
         const baseUrl = `/artifacts/${call.type}/${call.date}_${call.number}`;
 
         const [transcript, chat, agenda, tldr] = await Promise.all([
-          fetch(`${baseUrl}/transcript.vtt`).then(res => res.ok ? res.text() : null).catch(() => null),
+          // Prefer corrected transcript if available
+          fetch(`${baseUrl}/transcript_corrected.vtt`).then(res => res.ok ? res.text() : null).catch(() => null)
+            .then(corrected => corrected ?? fetch(`${baseUrl}/transcript.vtt`).then(res => res.ok ? res.text() : null).catch(() => null)),
           fetch(`${baseUrl}/chat.txt`).then(res => res.ok ? res.text() : null).catch(() => null),
           fetch(`${baseUrl}/agenda.json`).then(res => res.ok ? res.json() : null).catch(() => null),
           fetch(`${baseUrl}/tldr.json`).then(res => res.ok ? res.json() : null).catch(() => null)

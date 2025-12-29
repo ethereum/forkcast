@@ -171,6 +171,21 @@ function generateAllPages() {
     console.log(`  ✓ ${upgrade.path}`);
   });
 
+  // Generate EIPs index page
+  console.log('\n📋 Generating EIPs index:');
+  const eipsIndexPath = path.join(distDir, 'eips');
+  if (!fs.existsSync(eipsIndexPath)) {
+    fs.mkdirSync(eipsIndexPath, { recursive: true });
+  }
+
+  const eipsIndexHtml = generateStaticPage(
+    'eips',
+    'EIP Directory - Forkcast',
+    'Browse all Ethereum Improvement Proposals tracked on Forkcast. Filter by status, network upgrade, and type.'
+  );
+  fs.writeFileSync(path.join(eipsIndexPath, 'index.html'), eipsIndexHtml);
+  console.log('  ✓ eips/index.html');
+
   // Generate calls index page
   console.log('\n📞 Generating calls index:');
   const callsIndexPath = path.join(distDir, 'calls');

@@ -9,7 +9,7 @@ interface NetworkUpgradeTimelineProps {
 
 export const NetworkUpgradeTimeline: React.FC<NetworkUpgradeTimelineProps> = ({ currentForkName }) => {
   const currentForkId = currentForkName.toLowerCase();
-  const upgrades = networkUpgrades;
+  const upgrades = networkUpgrades.filter(u => !u.disabled);
 
   // Calculate position for 'we are here' marker
   const markerPercent = calculateTimelineMarkerPosition(upgrades);

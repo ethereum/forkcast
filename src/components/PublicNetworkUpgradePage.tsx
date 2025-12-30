@@ -3,7 +3,7 @@ import { Link, useLocation } from 'react-router-dom';
 import { eipsData } from '../data/eips';
 import { useMetaTags } from '../hooks/useMetaTags';
 import { useAnalytics } from '../hooks/useAnalytics';
-import { EIP, ClientTeamPerspective } from '../types';
+import { EIP, ClientTeamPerspective, InclusionStage } from '../types';
 import {
   getInclusionStage,
   isHeadliner,
@@ -86,7 +86,7 @@ const PublicNetworkUpgradePage: React.FC<PublicNetworkUpgradePageProps> = ({
     if (!location.hash) {
       window.scrollTo(0, 0);
     }
-  }, [location.pathname]);
+  }, [location.pathname, location.hash]);
 
   // Handle URL hash on component mount and location changes
   useEffect(() => {
@@ -479,7 +479,7 @@ const PublicNetworkUpgradePage: React.FC<PublicNetworkUpgradePageProps> = ({
                     <div className="border-b border-slate-200 dark:border-slate-700 pb-4">
                       <div className="flex items-center gap-3 mb-2">
                         <h2 className="text-xl font-medium text-slate-900 dark:text-slate-100">{stage}</h2>
-                        <span className={`px-2 py-1 text-xs font-medium rounded ${getInclusionStageColor(stage as any)}`}>
+                        <span className={`px-2 py-1 text-xs font-medium rounded ${getInclusionStageColor(stage as InclusionStage)}`}>
                           {stageEips.length} EIP{stageEips.length !== 1 ? 's' : ''}
                         </span>
                         {isDeclinedStage && (

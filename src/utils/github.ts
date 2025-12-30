@@ -1,3 +1,5 @@
+import { protocolCalls } from '../data/calls';
+
 export interface UpcomingCall {
   type: 'acdc' | 'acde' | 'acdt';
   title: string;
@@ -82,9 +84,6 @@ export async function fetchUpcomingCalls(): Promise<UpcomingCall[]> {
     const issues: GitHubIssue[] = await response.json();
     const upcomingCalls: UpcomingCall[] = [];
     const today = new Date().toISOString().split('T')[0];
-
-    // Import completed calls to check for duplicates
-    const { protocolCalls } = await import('../data/calls');
 
     // Create a set of completed call identifiers (type + number)
     const completedCallIds = new Set(

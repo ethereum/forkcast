@@ -223,9 +223,9 @@ const UpgradeCarousel = ({ upgrades, getStatusColor }: UpgradeCarouselProps) => 
         )}
       </div>
 
-      {/* Mobile Compact List - hidden on desktop */}
+      {/* Mobile Compact List - hidden on desktop, reversed so newest is on top */}
       <div className="lg:hidden space-y-3">
-        {upgrades.map((upgrade) => renderCompactCard(upgrade))}
+        {[...upgrades].reverse().map((upgrade) => renderCompactCard(upgrade))}
       </div>
     </>
   );

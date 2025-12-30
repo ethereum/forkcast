@@ -7,6 +7,7 @@ import AgendaSummary from './AgendaSummary';
 import TldrSummary from './TldrSummary';
 import CallSearch from './CallSearch';
 import ThemeToggle from '../ui/ThemeToggle';
+import { protocolCalls } from '../../data/calls';
 
 interface CallData {
   type: string;
@@ -276,8 +277,7 @@ const CallPage: React.FC = () => {
 
         // Map from simplified URL to artifact folder path
         // We need to find the matching call from our data to get the date
-        const callsModule = await import('../../data/calls');
-        const matchingCall = callsModule.protocolCalls.find(
+        const matchingCall = protocolCalls.find(
           call => call.type === type && call.number === number
         );
 

@@ -107,10 +107,11 @@ export const EipTimeline: React.FC<EipTimelineProps> = ({ eip }) => {
     const reversedHistory = [...fork.statusHistory].reverse();
 
     reversedHistory.forEach((entry, index) => {
-      // Always show current status (index 0), but skip prior statuses without attribution
+      // Always show current status (index 0), Proposed status, or statuses with attribution
       const isCurrentStatus = index === 0;
       const hasAttribution = entry.date || entry.call;
-      if (!isCurrentStatus && !hasAttribution) {
+      const isProposed = entry.status === 'Proposed';
+      if (!isCurrentStatus && !hasAttribution && !isProposed) {
         return;
       }
 
@@ -197,7 +198,7 @@ export const EipTimeline: React.FC<EipTimelineProps> = ({ eip }) => {
                             </Link>
                             {statusLabels[event.status || '']}
                           </p>
-                          {event.champion && (
+                          {event.champion && event.status === 'Proposed' && (
                             <Tooltip text={`Champion for ${event.forkName}`}>
                               <div className="flex items-center gap-1 text-xs text-slate-400 dark:text-slate-500 cursor-help shrink-0">
                                 <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">

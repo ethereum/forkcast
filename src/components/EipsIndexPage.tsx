@@ -17,7 +17,6 @@ const EipsIndexPage: React.FC = () => {
   const [stageFilters, setStageFilters] = useState<Set<string>>(new Set());
   const [sortField, setSortField] = useState<SortField>('updated');
   const [sortDirection, setSortDirection] = useState<SortDirection>('desc');
-  const [openDropdown, setOpenDropdown] = useState<string | null>(null);
   const [mobileFiltersOpen, setMobileFiltersOpen] = useState(false);
 
   // Extract unique values for filters
@@ -183,19 +182,7 @@ const EipsIndexPage: React.FC = () => {
 
   const hasActiveFilters = statusFilters.size > 0 || forkFilters.size > 0 || categoryFilters.size > 0 || stageFilters.size > 0;
 
-  // Close dropdown when clicking outside
-  React.useEffect(() => {
-    const handleClickOutside = (e: MouseEvent) => {
-      const target = e.target as HTMLElement;
-      if (!target.closest('.dropdown-container')) {
-        setOpenDropdown(null);
-      }
-    };
-    document.addEventListener('mousedown', handleClickOutside);
-    return () => document.removeEventListener('mousedown', handleClickOutside);
-  }, []);
-
-  // Lock body scroll when mobile filters are open
+  // Lock body scroll when filters modal is open
   React.useEffect(() => {
     if (mobileFiltersOpen) {
       document.body.style.overflow = 'hidden';
@@ -317,189 +304,178 @@ const EipsIndexPage: React.FC = () => {
           </div>
           <Link
             to="/"
-            className="text-2xl font-serif bg-gradient-to-r from-purple-600 via-blue-600 to-purple-800 bg-clip-text text-transparent hover:from-purple-700 hover:via-blue-700 hover:to-purple-900 transition-all duration-200 tracking-tight inline-block mb-2"
+            className="text-2xl font-serif bg-gradient-to-r from-purple-600 via-blue-600 to-purple-800 bg-clip-text text-transparent hover:from-purple-700 hover:via-blue-700 hover:to-purple-900 transition-all duration-200 tracking-tight inline-block mb-4"
           >
             Forkcast
           </Link>
-          <div className="flex items-center justify-between mb-4">
+          <div className="flex items-center justify-between gap-3">
             <h1 className="text-xl font-semibold text-slate-900 dark:text-slate-100">
               EIP Directory
             </h1>
             <div className="flex items-center gap-3">
               <EipSearch />
-              <span className="text-sm text-slate-500 dark:text-slate-400">
+              <button
+                onClick={() => setMobileFiltersOpen(true)}
+                className={`flex items-center gap-2 px-4 py-2.5 rounded-lg border text-sm font-medium transition-colors ${
+                  hasActiveFilters
+                    ? 'bg-purple-50 dark:bg-purple-900/20 border-purple-300 dark:border-purple-700 text-purple-700 dark:text-purple-300'
+                    : 'bg-white dark:bg-slate-800 border-slate-200 dark:border-slate-700 text-slate-700 dark:text-slate-300'
+                }`}
+              >
+                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 4a1 1 0 011-1h16a1 1 0 011 1v2.586a1 1 0 01-.293.707l-6.414 6.414a1 1 0 00-.293.707V17l-4 4v-6.586a1 1 0 00-.293-.707L3.293 7.293A1 1 0 013 6.586V4z" />
+                </svg>
+                <span className="hidden sm:inline">Filters</span>
+                {hasActiveFilters && (
+                  <span className="px-1.5 py-0.5 text-xs bg-purple-200 dark:bg-purple-800 text-purple-800 dark:text-purple-200 rounded-full">
+                    {statusFilters.size + forkFilters.size + categoryFilters.size + stageFilters.size}
+                  </span>
+                )}
+              </button>
+              <span className="text-sm text-slate-500 dark:text-slate-400 hidden sm:inline">
                 {filteredAndSortedEips.length} {filteredAndSortedEips.length === 1 ? 'EIP' : 'EIPs'}
               </span>
             </div>
           </div>
         </div>
 
-        {/* Mobile Filters Button */}
-        <div className="md:hidden mb-4">
-          <div className="flex items-center gap-3">
-            <button
-              onClick={() => setMobileFiltersOpen(true)}
-              className={`flex items-center gap-2 px-4 py-2.5 rounded-lg border text-sm font-medium transition-colors ${
-                hasActiveFilters
-                  ? 'bg-purple-50 dark:bg-purple-900/20 border-purple-300 dark:border-purple-700 text-purple-700 dark:text-purple-300'
-                  : 'bg-white dark:bg-slate-800 border-slate-200 dark:border-slate-700 text-slate-700 dark:text-slate-300'
-              }`}
-            >
-              <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 4a1 1 0 011-1h16a1 1 0 011 1v2.586a1 1 0 01-.293.707l-6.414 6.414a1 1 0 00-.293.707V17l-4 4v-6.586a1 1 0 00-.293-.707L3.293 7.293A1 1 0 013 6.586V4z" />
-              </svg>
-              <span>Filters</span>
-              {hasActiveFilters && (
-                <span className="px-1.5 py-0.5 text-xs bg-purple-200 dark:bg-purple-800 text-purple-800 dark:text-purple-200 rounded-full">
-                  {statusFilters.size + forkFilters.size + categoryFilters.size + stageFilters.size}
-                </span>
-              )}
-            </button>
-            {hasActiveFilters && (
-              <button
-                onClick={clearAllFilters}
-                className="text-sm text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-200 font-medium"
-              >
-                Clear
-              </button>
-            )}
-          </div>
-        </div>
-
-        {/* Mobile Filters Bottom Sheet */}
+        {/* Filters Modal/Sheet */}
         {mobileFiltersOpen && (
-          <div className="md:hidden fixed inset-0 z-50">
+          <div className="fixed inset-0 z-50 animate-fadeIn">
             {/* Backdrop */}
             <div
-              className="absolute inset-0 bg-black/50 transition-opacity"
+              className="absolute inset-0 bg-black/50"
               onClick={() => setMobileFiltersOpen(false)}
             />
-            {/* Sheet */}
-            <div className="absolute bottom-0 left-0 right-0 bg-white dark:bg-slate-800 rounded-t-2xl max-h-[85vh] overflow-hidden flex flex-col animate-slide-up">
-              {/* Header */}
-              <div className="flex items-center justify-between px-4 py-3 border-b border-slate-200 dark:border-slate-700">
-                <h2 className="text-lg font-semibold text-slate-900 dark:text-slate-100">Filters</h2>
-                <div className="flex items-center gap-3">
-                  {hasActiveFilters && (
+            {/* Modal */}
+            <div className="md:absolute md:inset-0 md:flex md:items-center md:justify-center absolute bottom-0 left-0 right-0">
+              <div className="bg-white dark:bg-slate-800 md:rounded-2xl rounded-t-2xl md:max-w-3xl md:w-full max-h-[85vh] md:max-h-[90vh] overflow-hidden flex flex-col animate-fade-scale md:shadow-2xl">
+                {/* Header */}
+                <div className="flex items-center justify-between px-4 py-3 border-b border-slate-200 dark:border-slate-700">
+                  <h2 className="text-lg font-semibold text-slate-900 dark:text-slate-100">Filters</h2>
+                  <div className="flex items-center gap-3">
+                    {hasActiveFilters && (
+                      <button
+                        onClick={clearAllFilters}
+                        className="text-sm text-purple-600 dark:text-purple-400 font-medium"
+                      >
+                        Clear all
+                      </button>
+                    )}
                     <button
-                      onClick={clearAllFilters}
-                      className="text-sm text-purple-600 dark:text-purple-400 font-medium"
+                      onClick={() => setMobileFiltersOpen(false)}
+                      className="p-1 rounded-full hover:bg-slate-100 dark:hover:bg-slate-700 transition-colors"
                     >
-                      Clear all
+                      <svg className="w-6 h-6 text-slate-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                      </svg>
                     </button>
-                  )}
-                  <button
-                    onClick={() => setMobileFiltersOpen(false)}
-                    className="p-1 rounded-full hover:bg-slate-100 dark:hover:bg-slate-700 transition-colors"
-                  >
-                    <svg className="w-6 h-6 text-slate-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
-                    </svg>
-                  </button>
-                </div>
-              </div>
-
-              {/* Filter Content */}
-              <div className="flex-1 overflow-y-auto p-4 space-y-6">
-                {/* Upgrade Filter */}
-                <div>
-                  <h3 className="text-sm font-semibold text-slate-700 dark:text-slate-300 mb-3">Upgrade</h3>
-                  <div className="flex flex-wrap gap-2">
-                    {forksWithNone.map(fork => {
-                      const isSelected = forkFilters.has(fork);
-                      const forkColor = fork !== 'No Fork' ? getForkColor(fork) : '';
-                      const displayName = fork !== 'No Fork' ? getForkDisplayName(fork) : fork;
-                      return (
-                        <button
-                          key={fork}
-                          onClick={() => toggleFilter(forkFilters, setForkFilters, fork)}
-                          className={`px-3 py-2 text-sm font-medium rounded-lg transition-colors ${
-                            isSelected
-                              ? 'ring-2 ring-purple-500 ring-offset-1 dark:ring-offset-slate-800'
-                              : ''
-                          } ${fork !== 'No Fork' ? forkColor : 'bg-slate-100 dark:bg-slate-700 text-slate-700 dark:text-slate-300'}`}
-                        >
-                          {displayName}
-                        </button>
-                      );
-                    })}
                   </div>
                 </div>
 
-                {/* Stage Filter */}
-                {stages.length > 0 && (
+              {/* Filter Content */}
+              <div className="flex-1 overflow-y-auto p-4 md:p-6">
+                <div className="grid md:grid-cols-2 gap-6">
+                  {/* Upgrade Filter */}
                   <div>
-                    <h3 className="text-sm font-semibold text-slate-700 dark:text-slate-300 mb-3">Stage</h3>
+                    <h3 className="text-sm font-semibold text-slate-700 dark:text-slate-300 mb-3">Upgrade</h3>
                     <div className="flex flex-wrap gap-2">
-                      {stages.map(stage => {
-                        const isSelected = stageFilters.has(stage);
-                        const label = getStageLabel(stage);
-                        const stageColor = getStageColor(stage);
+                      {forksWithNone.map(fork => {
+                        const isSelected = forkFilters.has(fork);
+                        const forkColor = fork !== 'No Fork' ? getForkColor(fork) : '';
+                        const displayName = fork !== 'No Fork' ? getForkDisplayName(fork) : fork;
                         return (
                           <button
-                            key={stage}
-                            onClick={() => toggleFilter(stageFilters, setStageFilters, stage)}
-                            className={`px-3 py-2 text-sm font-medium rounded-lg transition-colors ${stageColor} ${
+                            key={fork}
+                            onClick={() => toggleFilter(forkFilters, setForkFilters, fork)}
+                            className={`px-3 py-2 text-sm font-medium rounded-lg transition-colors ${
                               isSelected
                                 ? 'ring-2 ring-purple-500 ring-offset-1 dark:ring-offset-slate-800'
                                 : ''
-                            }`}
+                            } ${fork !== 'No Fork' ? forkColor : 'bg-slate-100 dark:bg-slate-700 text-slate-700 dark:text-slate-300'}`}
                           >
-                            {label}
+                            {displayName}
                           </button>
                         );
                       })}
                     </div>
                   </div>
-                )}
 
-                {/* Status Filter */}
-                <div>
-                  <h3 className="text-sm font-semibold text-slate-700 dark:text-slate-300 mb-3">Status</h3>
-                  <div className="flex flex-wrap gap-2">
-                    {statuses.map(status => {
-                      const isSelected = statusFilters.has(status);
-                      return (
-                        <button
-                          key={status}
-                          onClick={() => toggleFilter(statusFilters, setStatusFilters, status)}
-                          className={`px-3 py-2 text-sm font-medium rounded-lg transition-colors ${
-                            isSelected
-                              ? 'bg-purple-100 dark:bg-purple-900/30 text-purple-800 dark:text-purple-300 ring-2 ring-purple-500 ring-offset-1 dark:ring-offset-slate-800'
-                              : 'bg-slate-100 dark:bg-slate-700 text-slate-700 dark:text-slate-300'
-                          }`}
-                        >
-                          {status}
-                        </button>
-                      );
-                    })}
-                  </div>
-                </div>
+                  {/* Stage Filter */}
+                  {stages.length > 0 && (
+                    <div>
+                      <h3 className="text-sm font-semibold text-slate-700 dark:text-slate-300 mb-3">Stage</h3>
+                      <div className="flex flex-wrap gap-2">
+                        {stages.map(stage => {
+                          const isSelected = stageFilters.has(stage);
+                          const label = getStageLabel(stage);
+                          const stageColor = getStageColor(stage);
+                          return (
+                            <button
+                              key={stage}
+                              onClick={() => toggleFilter(stageFilters, setStageFilters, stage)}
+                              className={`px-3 py-2 text-sm font-medium rounded-lg transition-colors ${stageColor} ${
+                                isSelected
+                                  ? 'ring-2 ring-purple-500 ring-offset-1 dark:ring-offset-slate-800'
+                                  : ''
+                              }`}
+                            >
+                              {label}
+                            </button>
+                          );
+                        })}
+                      </div>
+                    </div>
+                  )}
 
-                {/* Type/Category Filter */}
-                {categories.length > 0 && (
+                  {/* Status Filter */}
                   <div>
-                    <h3 className="text-sm font-semibold text-slate-700 dark:text-slate-300 mb-3">Type</h3>
+                    <h3 className="text-sm font-semibold text-slate-700 dark:text-slate-300 mb-3">Status</h3>
                     <div className="flex flex-wrap gap-2">
-                      {categories.map(category => {
-                        const isSelected = categoryFilters.has(category);
+                      {statuses.map(status => {
+                        const isSelected = statusFilters.has(status);
                         return (
                           <button
-                            key={category}
-                            onClick={() => toggleFilter(categoryFilters, setCategoryFilters, category)}
+                            key={status}
+                            onClick={() => toggleFilter(statusFilters, setStatusFilters, status)}
                             className={`px-3 py-2 text-sm font-medium rounded-lg transition-colors ${
                               isSelected
                                 ? 'bg-purple-100 dark:bg-purple-900/30 text-purple-800 dark:text-purple-300 ring-2 ring-purple-500 ring-offset-1 dark:ring-offset-slate-800'
                                 : 'bg-slate-100 dark:bg-slate-700 text-slate-700 dark:text-slate-300'
                             }`}
                           >
-                            {category}
+                            {status}
                           </button>
                         );
                       })}
                     </div>
                   </div>
-                )}
+
+                  {/* Type/Category Filter */}
+                  {categories.length > 0 && (
+                    <div>
+                      <h3 className="text-sm font-semibold text-slate-700 dark:text-slate-300 mb-3">Type</h3>
+                      <div className="flex flex-wrap gap-2">
+                        {categories.map(category => {
+                          const isSelected = categoryFilters.has(category);
+                          return (
+                            <button
+                              key={category}
+                              onClick={() => toggleFilter(categoryFilters, setCategoryFilters, category)}
+                              className={`px-3 py-2 text-sm font-medium rounded-lg transition-colors ${
+                                isSelected
+                                  ? 'bg-purple-100 dark:bg-purple-900/30 text-purple-800 dark:text-purple-300 ring-2 ring-purple-500 ring-offset-1 dark:ring-offset-slate-800'
+                                  : 'bg-slate-100 dark:bg-slate-700 text-slate-700 dark:text-slate-300'
+                              }`}
+                            >
+                              {category}
+                            </button>
+                          );
+                        })}
+                      </div>
+                    </div>
+                  )}
+                </div>
               </div>
 
               {/* Footer */}
@@ -511,217 +487,10 @@ const EipsIndexPage: React.FC = () => {
                   Show {filteredAndSortedEips.length} {filteredAndSortedEips.length === 1 ? 'result' : 'results'}
                 </button>
               </div>
+              </div>
             </div>
           </div>
         )}
-
-        {/* Desktop Filters */}
-        <div className="hidden md:block mb-6">
-          <div className="flex flex-wrap items-center gap-3">
-            {/* Status Filter Dropdown */}
-            <div className="relative dropdown-container">
-              <button
-                onClick={() => setOpenDropdown(openDropdown === 'status' ? null : 'status')}
-                className={`flex items-center gap-2 px-3 py-2 rounded-lg border text-sm font-medium transition-colors ${
-                  statusFilters.size > 0
-                    ? 'bg-purple-50 dark:bg-purple-900/20 border-purple-300 dark:border-purple-700 text-purple-700 dark:text-purple-300'
-                    : 'bg-white dark:bg-slate-800 border-slate-200 dark:border-slate-700 text-slate-700 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-700'
-                }`}
-              >
-                <span>Status</span>
-                {statusFilters.size > 0 && (
-                  <span className="px-1.5 py-0.5 text-xs bg-purple-200 dark:bg-purple-800 text-purple-800 dark:text-purple-200 rounded-full">
-                    {statusFilters.size}
-                  </span>
-                )}
-                <svg className={`w-4 h-4 transition-transform ${openDropdown === 'status' ? 'rotate-180' : ''}`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
-                </svg>
-              </button>
-              {openDropdown === 'status' && (
-                <div className="absolute top-full left-0 mt-2 w-64 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg shadow-lg z-50 max-h-80 overflow-y-auto">
-                  <div className="p-2 space-y-1">
-                    {statuses.map(status => (
-                      <label
-                        key={status}
-                        className="flex items-center gap-2 px-3 py-2 rounded-md hover:bg-slate-50 dark:hover:bg-slate-700 cursor-pointer transition-colors"
-                      >
-                        <input
-                          type="checkbox"
-                          checked={statusFilters.has(status)}
-                          onChange={() => toggleFilter(statusFilters, setStatusFilters, status)}
-                          className="w-4 h-4 text-purple-600 border-slate-300 rounded focus:ring-purple-500"
-                        />
-                        <span className="text-sm text-slate-700 dark:text-slate-300">
-                          {status}
-                        </span>
-                      </label>
-                    ))}
-                  </div>
-                </div>
-              )}
-            </div>
-
-            {/* Fork Filter Dropdown */}
-            <div className="relative dropdown-container">
-              <button
-                onClick={() => setOpenDropdown(openDropdown === 'fork' ? null : 'fork')}
-                className={`flex items-center gap-2 px-3 py-2 rounded-lg border text-sm font-medium transition-colors ${
-                  forkFilters.size > 0
-                    ? 'bg-purple-50 dark:bg-purple-900/20 border-purple-300 dark:border-purple-700 text-purple-700 dark:text-purple-300'
-                    : 'bg-white dark:bg-slate-800 border-slate-200 dark:border-slate-700 text-slate-700 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-700'
-                }`}
-              >
-                <span>Upgrade</span>
-                {forkFilters.size > 0 && (
-                  <span className="px-1.5 py-0.5 text-xs bg-purple-200 dark:bg-purple-800 text-purple-800 dark:text-purple-200 rounded-full">
-                    {forkFilters.size}
-                  </span>
-                )}
-                <svg className={`w-4 h-4 transition-transform ${openDropdown === 'fork' ? 'rotate-180' : ''}`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
-                </svg>
-              </button>
-              {openDropdown === 'fork' && (
-                <div className="absolute top-full left-0 mt-2 w-56 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg shadow-lg z-50 max-h-80 overflow-y-auto">
-                  <div className="p-2 space-y-1">
-                    {forksWithNone.map(fork => {
-                      const forkColor = fork !== 'No Fork' ? getForkColor(fork) : '';
-                      const displayName = fork !== 'No Fork' ? getForkDisplayName(fork) : fork;
-                      return (
-                        <label
-                          key={fork}
-                          className="flex items-center gap-2 px-3 py-2 rounded-md hover:bg-slate-50 dark:hover:bg-slate-700 cursor-pointer transition-colors"
-                        >
-                          <input
-                            type="checkbox"
-                            checked={forkFilters.has(fork)}
-                            onChange={() => toggleFilter(forkFilters, setForkFilters, fork)}
-                            className="w-4 h-4 text-purple-600 border-slate-300 rounded focus:ring-purple-500"
-                          />
-                          {fork !== 'No Fork' ? (
-                            <span className={`text-sm font-medium px-2 py-0.5 rounded ${forkColor}`}>
-                              {displayName}
-                            </span>
-                          ) : (
-                            <span className="text-sm text-slate-700 dark:text-slate-300">{displayName}</span>
-                          )}
-                        </label>
-                      );
-                    })}
-                  </div>
-                </div>
-              )}
-            </div>
-
-            {/* Stage Filter Dropdown */}
-            {stages.length > 0 && (
-              <div className="relative dropdown-container">
-                <button
-                  onClick={() => setOpenDropdown(openDropdown === 'stage' ? null : 'stage')}
-                  className={`flex items-center gap-2 px-3 py-2 rounded-lg border text-sm font-medium transition-colors ${
-                    stageFilters.size > 0
-                      ? 'bg-purple-50 dark:bg-purple-900/20 border-purple-300 dark:border-purple-700 text-purple-700 dark:text-purple-300'
-                      : 'bg-white dark:bg-slate-800 border-slate-200 dark:border-slate-700 text-slate-700 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-700'
-                  }`}
-                >
-                  <span>Stage</span>
-                  {stageFilters.size > 0 && (
-                    <span className="px-1.5 py-0.5 text-xs bg-purple-200 dark:bg-purple-800 text-purple-800 dark:text-purple-200 rounded-full">
-                      {stageFilters.size}
-                    </span>
-                  )}
-                  <svg className={`w-4 h-4 transition-transform ${openDropdown === 'stage' ? 'rotate-180' : ''}`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
-                  </svg>
-                </button>
-                {openDropdown === 'stage' && (
-                  <div className="absolute top-full left-0 mt-2 w-56 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg shadow-lg z-50 max-h-80 overflow-y-auto">
-                    <div className="p-2 space-y-1">
-                      {stages.map(stage => {
-                        const label = getStageLabel(stage);
-                        const stageColor = getStageColor(stage);
-                        return (
-                          <label
-                            key={stage}
-                            className="flex items-center gap-2 px-3 py-2 rounded-md hover:bg-slate-50 dark:hover:bg-slate-700 cursor-pointer transition-colors"
-                          >
-                            <input
-                              type="checkbox"
-                              checked={stageFilters.has(stage)}
-                              onChange={() => toggleFilter(stageFilters, setStageFilters, stage)}
-                              className="w-4 h-4 text-purple-600 border-slate-300 rounded focus:ring-purple-500"
-                            />
-                            <span className={`text-sm font-medium px-2 py-0.5 rounded ${stageColor}`}>
-                              {label}
-                            </span>
-                          </label>
-                        );
-                      })}
-                    </div>
-                  </div>
-                )}
-              </div>
-            )}
-
-            {/* Category Filter Dropdown */}
-            {categories.length > 0 && (
-              <div className="relative dropdown-container">
-                <button
-                  onClick={() => setOpenDropdown(openDropdown === 'category' ? null : 'category')}
-                  className={`flex items-center gap-2 px-3 py-2 rounded-lg border text-sm font-medium transition-colors ${
-                    categoryFilters.size > 0
-                      ? 'bg-purple-50 dark:bg-purple-900/20 border-purple-300 dark:border-purple-700 text-purple-700 dark:text-purple-300'
-                      : 'bg-white dark:bg-slate-800 border-slate-200 dark:border-slate-700 text-slate-700 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-700'
-                  }`}
-                >
-                  <span>Type</span>
-                  {categoryFilters.size > 0 && (
-                    <span className="px-1.5 py-0.5 text-xs bg-purple-200 dark:bg-purple-800 text-purple-800 dark:text-purple-200 rounded-full">
-                      {categoryFilters.size}
-                    </span>
-                  )}
-                  <svg className={`w-4 h-4 transition-transform ${openDropdown === 'category' ? 'rotate-180' : ''}`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
-                  </svg>
-                </button>
-                {openDropdown === 'category' && (
-                  <div className="absolute top-full left-0 mt-2 w-56 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg shadow-lg z-50 max-h-80 overflow-y-auto">
-                    <div className="p-2 space-y-1">
-                      {categories.map(category => (
-                        <label
-                          key={category}
-                          className="flex items-center gap-2 px-3 py-2 rounded-md hover:bg-slate-50 dark:hover:bg-slate-700 cursor-pointer transition-colors"
-                        >
-                          <input
-                            type="checkbox"
-                            checked={categoryFilters.has(category)}
-                            onChange={() => toggleFilter(categoryFilters, setCategoryFilters, category)}
-                            className="w-4 h-4 text-purple-600 border-slate-300 rounded focus:ring-purple-500"
-                          />
-                          <span className="text-sm text-slate-700 dark:text-slate-300">{category}</span>
-                        </label>
-                      ))}
-                    </div>
-                  </div>
-                )}
-              </div>
-            )}
-
-            {/* Clear All Filters */}
-            {hasActiveFilters && (
-              <button
-                onClick={clearAllFilters}
-                className="ml-auto text-sm text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-200 font-medium flex items-center gap-2 transition-colors"
-              >
-                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
-                </svg>
-                Clear all
-              </button>
-            )}
-          </div>
-        </div>
 
         {/* Table - Desktop */}
         <div className="hidden md:block bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg overflow-hidden">

@@ -60,7 +60,7 @@ export const EipSearch: React.FC = () => {
 
   return (
     <div ref={containerRef} className="relative">
-      <div className="flex items-center gap-2 bg-slate-100 dark:bg-slate-700 rounded-lg px-3 py-2">
+      <div className="flex items-center gap-2 bg-slate-100 dark:bg-slate-700 rounded-lg px-3 py-2.5">
         <svg
           className="w-4 h-4 text-slate-400"
           fill="none"

@@ -1,0 +1,1950 @@
+WEBVTT
+
+1
+00:04:51.550 --> 00:05:00.670
+devconnect: Oh, yes.
+
+2
+00:05:00.930 --> 00:05:02.800
+devconnect: Yes, I think they can hear us.
+
+3
+00:05:04.980 --> 00:05:05.580
+devconnect: Perfect.
+
+4
+00:05:05.580 --> 00:05:14.519
+Toni Wahrstätter: Perfect, yeah, let's see… I talked with Kusha, and he was saying someone will join to record the meeting, but it doesn't look like it.
+
+5
+00:05:33.480 --> 00:05:37.329
+Toni Wahrstätter: Yeah, I think we are ready to start.
+
+6
+00:05:54.400 --> 00:05:57.740
+Toni Wahrstätter: Awesome. Then, I would say let's get started.
+
+7
+00:05:58.690 --> 00:06:17.549
+Toni Wahrstätter: Welcome, everyone. Today is the November 19th, 2025, the 7th EAP7928 breaker call. We have quite a packed agenda today, I see, because some of us are in… at DevConnect, as you see on the… on the video.
+
+8
+00:06:17.930 --> 00:06:23.390
+Toni Wahrstätter: And we've been discussing for the past hour everything related to Book Club Access List?
+
+9
+00:06:24.010 --> 00:06:27.150
+Toni Wahrstätter: And we put all those things on the agenda, so…
+
+10
+00:06:27.340 --> 00:06:29.590
+Toni Wahrstätter: We agree to have a look at the agenda?
+
+11
+00:06:31.170 --> 00:06:35.580
+Toni Wahrstätter: I would say we can directly start with the first topic, which is…
+
+12
+00:06:36.210 --> 00:06:45.389
+Toni Wahrstätter: The first topic is actually just a summary of what was decided last year… last week. So last week, we discussed if we should add the gas used values into the block access list.
+
+13
+00:06:45.560 --> 00:06:58.469
+Toni Wahrstätter: And we decided against it, basically because, things stay way simpler if we just assume clients, order transactions by the transaction index in the block.
+
+14
+00:06:58.600 --> 00:07:10.770
+Toni Wahrstätter: But I just wanted to put it on the agenda so that we flag this again, and yeah. Does anyone have, different opinions this week that… that you want to share?
+
+15
+00:07:22.120 --> 00:07:31.030
+Toni Wahrstätter: If that's not the case, I think we can just assume we will not put the gas used values into the block access list and keep it as is.
+
+16
+00:07:41.100 --> 00:07:41.970
+Toni Wahrstätter: Perfect.
+
+17
+00:07:42.820 --> 00:07:44.809
+Toni Wahrstätter: Then let's keep it as is.
+
+18
+00:07:45.810 --> 00:07:49.960
+Toni Wahrstätter: The second agenda item is syncing and pulse.
+
+19
+00:07:50.630 --> 00:07:58.590
+Toni Wahrstätter: So I would be interesting to hear from client teams what their, strategies are when it comes to syncing, especially
+
+20
+00:07:58.690 --> 00:08:10.170
+Toni Wahrstätter: which block level access list might be able… will we be able to just drop, and how many should we keep around, at least? And I'm curious what client teams think about this.
+
+21
+00:08:12.980 --> 00:08:25.100
+Jared Wasinger: I can say for Geth that we haven't discussed this very much internally, outside of the fact that we do see, bowels being useful for removing the healing phase of the SnapSync.
+
+22
+00:08:25.360 --> 00:08:30.540
+Jared Wasinger: I guess my thinking right now is that…
+
+23
+00:08:31.260 --> 00:08:37.480
+Jared Wasinger: Probably we will just keep as many bells as we have blocks for, but that…
+
+24
+00:08:38.010 --> 00:08:52.870
+Jared Wasinger: it's probably a good idea to… and also that I… I do think it should be optional to serve the BALs for historical blocks, because, like, it's optional to,
+
+25
+00:08:53.060 --> 00:09:00.849
+Jared Wasinger: to serve, like, the SNAP protocol, And then,
+
+26
+00:09:01.710 --> 00:09:06.049
+Jared Wasinger: Yeah, I guess, my thing is that we just have to decide what
+
+27
+00:09:06.720 --> 00:09:13.010
+Jared Wasinger: The window… what, like, a suggested window would be to maintain them?
+
+28
+00:09:14.100 --> 00:09:16.640
+Jared Wasinger: Yep.
+
+29
+00:09:19.880 --> 00:09:22.769
+Karim T.: Why it will not be necessary to…
+
+30
+00:09:23.080 --> 00:09:27.589
+Karim T.: To serve a certain block, a certain amount of block,
+
+31
+00:09:28.190 --> 00:09:33.950
+Karim T.: And this amount will be mandatory. Just like that, we'll be sure that, for SnapSync.
+
+32
+00:09:35.310 --> 00:09:38.389
+Karim T.: We'll have the reson block, so it should help every time.
+
+33
+00:09:39.360 --> 00:09:45.940
+Jared Wasinger: Yeah, I mean, it could be mandatory, right? But if you think about, like, the SNAP protocol as it currently is, it's not…
+
+34
+00:09:46.900 --> 00:09:52.700
+Jared Wasinger: at least to my understanding, it's not mandatory that a node serves the SNAP protocol if it's…
+
+35
+00:09:53.150 --> 00:09:54.419
+Jared Wasinger: Like, that's… Nuh.
+
+36
+00:09:54.810 --> 00:09:56.419
+Jared Wasinger: It's also optional.
+
+37
+00:09:56.930 --> 00:10:02.799
+Karim T.: I mean, if you sell Snap, you should also sell block access, at least I was thinking maybe about something like that, but…
+
+38
+00:10:04.300 --> 00:10:14.340
+Jared Wasinger: Yeah, I think… I think the SNAP protocol would become obsolete. Like, this would be the… serving the BAL would be kind of like a replacement for SNAP, but…
+
+39
+00:10:19.310 --> 00:10:37.369
+Karim T.: I'm not sure, because we have different steps in SNAP, so we have the first step, where we are downloading the leaf, and we are reconstructing the tree, so I think this step is still mandatory. And after we have the hill, when we are trying to heal the tree, and maybe the FlatDB, if you have FlatDB.
+
+40
+00:10:37.560 --> 00:10:39.010
+Jared Wasinger: Yeah, yeah, yeah.
+
+41
+00:10:39.010 --> 00:10:40.359
+Karim T.: There's a halibut, yeah.
+
+42
+00:10:40.720 --> 00:10:44.859
+Jared Wasinger: Yeah, yeah, you're right, I… yeah, I… I… I agree.
+
+43
+00:10:45.810 --> 00:10:46.759
+Karim T.: I, I also had.
+
+44
+00:10:46.760 --> 00:10:52.119
+Jared Wasinger: I think I agree with you that it would be mandatory to serve… to serve the SNAP and,
+
+45
+00:10:52.380 --> 00:10:54.729
+Jared Wasinger: the PALs, yeah.
+
+46
+00:10:55.930 --> 00:10:58.660
+Karim T.: I had also a discussion with Guillaume, he said that
+
+47
+00:10:59.120 --> 00:11:03.020
+Karim T.: Maybe if we have a reorg during the snap sync,
+
+48
+00:11:03.500 --> 00:11:08.629
+Karim T.: We will still maybe need a hill, because, block access list is just,
+
+49
+00:11:08.730 --> 00:11:11.300
+Karim T.: It's not bidirectional, we don't have the…
+
+50
+00:11:11.890 --> 00:11:22.819
+Karim T.: previous data, we only have the post data, so we cannot roll back a block access list. So if you have a reorg, maybe you'll have to do a heal, but in the happy pass, normally.
+
+51
+00:11:23.270 --> 00:11:24.969
+Karim T.: Block accesses will be in us.
+
+52
+00:11:31.630 --> 00:11:32.720
+Toni Wahrstätter: Yeah, Dragon?
+
+53
+00:11:34.530 --> 00:11:47.159
+draganrakita: I talked with Red Team about persisting balls, and the feedback that I got is the best case for that would be to not persist it at all, and not even serve it on over a P2P.
+
+54
+00:11:47.590 --> 00:11:50.600
+draganrakita: That would be the simplest solution to us.
+
+55
+00:11:51.990 --> 00:12:00.459
+draganrakita: If ball is kinda needed for the snap sync, maybe adding, I think Jared, proposed this to have
+
+56
+00:12:00.910 --> 00:12:07.600
+draganrakita: SnapSync endpoint that will basically fetch ballpark the blockage.
+
+57
+00:12:09.120 --> 00:12:10.290
+draganrakita: Would probably work.
+
+58
+00:12:11.420 --> 00:12:12.010
+Karim T.: But…
+
+59
+00:12:12.120 --> 00:12:24.439
+Karim T.: Block access list, in the block header, we have the block access list hash, so all we can verify the hash if we don't have the block access list, which… the only possibility will be to replace the block and generate it.
+
+60
+00:12:25.830 --> 00:12:35.380
+draganrakita: In general, you receive the ball from the engine. I would assume that's the point where would we check if this hash is correct or not.
+
+61
+00:12:35.750 --> 00:12:39.559
+draganrakita: But if we dropped balls from the history, I…
+
+62
+00:12:39.890 --> 00:12:44.079
+draganrakita: They think that cash is… is going to be there, unchecked.
+
+63
+00:12:44.420 --> 00:12:46.829
+draganrakita: I think that could be fine.
+
+64
+00:12:49.070 --> 00:12:55.910
+draganrakita: Because you're basically… Syncing from the top tip to the bottom, and verify all the hashes there.
+
+65
+00:13:06.770 --> 00:13:07.610
+Toni Wahrstätter: Okay.
+
+66
+00:13:07.980 --> 00:13:11.209
+Toni Wahrstätter: So just to summarize, so, Jeff and…
+
+67
+00:13:11.900 --> 00:13:15.420
+Toni Wahrstätter: Yeah, so get… Jared was saying you were…
+
+68
+00:13:15.680 --> 00:13:20.989
+Toni Wahrstätter: Planning to keep the bars around, and you make it optional for serving for historical blocks.
+
+69
+00:13:21.340 --> 00:13:30.480
+Toni Wahrstätter: And Dragon was just saying he would prefer to drop them and not serve them at all, or at least keep a few of them around, am I correct?
+
+70
+00:13:32.670 --> 00:13:35.319
+Toni Wahrstätter: With a few, I mean, enough for SnapSync.
+
+71
+00:13:36.540 --> 00:13:42.650
+draganrakita: Yeah, I think the team said that they're fine with dropping them all.
+
+72
+00:13:43.250 --> 00:13:49.020
+draganrakita: But I'm not that familiar with that part of the code, so I'm just, like, transmitting the message that I received.
+
+73
+00:13:52.490 --> 00:13:53.290
+Toni Wahrstätter: Okay.
+
+74
+00:13:53.540 --> 00:14:02.230
+Toni Wahrstätter: Yeah, this sounds like we would want to keep at least enough block lab access lists around for, like, the week's objectivity period, so, like.
+
+75
+00:14:02.510 --> 00:14:10.259
+Toni Wahrstätter: Am I… am I correct here? Like, 2 weeks of block lab access lists? Is that what is, like, needed in the worst case?
+
+76
+00:14:14.980 --> 00:14:19.019
+Jared Wasinger: Can you… can you expand on… On the rationale for that?
+
+77
+00:14:20.230 --> 00:14:27.129
+Toni Wahrstätter: Like, what is the… what is the, point in the past when you would start Snapsing?
+
+78
+00:14:31.270 --> 00:14:38.980
+Jared Wasinger: Oh, yeah, I don't know, I mean, I guess it kind of depends on what the…
+
+79
+00:14:40.520 --> 00:14:44.919
+Jared Wasinger: After you download the entire, initial state.
+
+80
+00:14:45.200 --> 00:14:50.840
+Jared Wasinger: Like, how long… the amount of time that you would keep the balls around for would depend on, like.
+
+81
+00:14:51.160 --> 00:14:54.910
+Jared Wasinger: How long it would take to download the initial, like, state snapshot.
+
+82
+00:14:55.240 --> 00:15:01.020
+Jared Wasinger: And how far you would be behind, so it's kind of, yeah, like, I mean, it's dependent on…
+
+83
+00:15:02.190 --> 00:15:08.159
+Jared Wasinger: the… However fast the given node can sync.
+
+84
+00:15:08.770 --> 00:15:12.139
+Karim T.: I think, in general, it's, less than a day.
+
+85
+00:15:12.680 --> 00:15:13.330
+Karim T.: That's true.
+
+86
+00:15:13.330 --> 00:15:15.290
+Jared Wasinger: Yeah, 2 weeks would be a long time.
+
+87
+00:15:15.450 --> 00:15:16.100
+Karim T.: Hmm.
+
+88
+00:15:20.390 --> 00:15:22.120
+Toni Wahrstätter: Okay, perfect.
+
+89
+00:15:23.820 --> 00:15:27.249
+Toni Wahrstätter: Any other client has an… with an opinion on that?
+
+90
+00:15:28.360 --> 00:15:36.430
+Ben Adams: Isn't that normally, sort of, 64 blocks, or around there? Because otherwise you stop getting responses from,
+
+91
+00:15:38.170 --> 00:15:41.249
+Ben Adams: You need to be quite close to the head to discuss it.
+
+92
+00:15:45.910 --> 00:15:49.479
+Ben Adams: So, so a two-week period would be fair enough.
+
+93
+00:15:54.780 --> 00:16:02.489
+Toni Wahrstätter: Okay, this is, this is good, because this is, then way less, data than I initially expected.
+
+94
+00:16:14.700 --> 00:16:19.310
+Toni Wahrstätter: Yeah, I think it's good that we, have discussed it already. Maybe we can also…
+
+95
+00:16:19.420 --> 00:16:24.890
+Toni Wahrstätter: Bring it up in two weeks for the next breaker call, just to, confirm that again.
+
+96
+00:16:25.310 --> 00:16:31.399
+Toni Wahrstätter: And yeah, use the time in between to look into this, more carefully.
+
+97
+00:16:42.390 --> 00:16:47.059
+Toni Wahrstätter: Perfect. Then let's just move on with the next agenda item.
+
+98
+00:16:47.190 --> 00:17:01.379
+Toni Wahrstätter: Which is block lab access list metrics and Tracer. So basically, it would be great if we had the metrics that Katya proposed a few weeks ago, if we can get them
+
+99
+00:17:01.950 --> 00:17:08.999
+Toni Wahrstätter: as early into the protocol as possible, so best case that we have them in definite zero already.
+
+100
+00:17:09.300 --> 00:17:10.909
+Toni Wahrstätter: careers will…
+
+101
+00:17:11.079 --> 00:17:17.180
+Toni Wahrstätter: clients think about this, so how far are we on those metrics? Have you already looked into this?
+
+102
+00:17:38.940 --> 00:17:41.890
+Toni Wahrstätter: They assume… This means no.
+
+103
+00:17:42.670 --> 00:17:48.559
+Toni Wahrstätter: Yeah, I'm not… I'm not sure, in terms of priorities, what we should do here, if we should…
+
+104
+00:17:48.660 --> 00:17:58.489
+Toni Wahrstätter: get the metrics already in Definite Zero, or if we want to focus on having, clients running smoothly on Definite Zero without the metrics set, then we're fine with that.
+
+105
+00:18:22.260 --> 00:18:33.089
+Toni Wahrstätter: And on a related note, I think Felipe has a proposal for including the block accesses in the logs, just as Raph does right now.
+
+106
+00:18:33.200 --> 00:18:35.319
+Toni Wahrstätter: Felipe, do you want to expand on that?
+
+107
+00:18:38.390 --> 00:18:42.369
+devconnect: Yeah, I can… I can expand a little bit.
+
+108
+00:18:42.770 --> 00:18:50.700
+devconnect: Right now, debugging is… is quite tough, and so I think that if in debug logs we, for…
+
+109
+00:18:52.150 --> 00:19:03.260
+devconnect: Block-level access list mismatches. If we can get the, the bells, logged, it would help significantly on the testing side.
+
+110
+00:19:03.400 --> 00:19:12.109
+devconnect: And so this is… this is more just of an ask to… to try to get those as debug logs, because right now, for a lot of clients, we just have the…
+
+111
+00:19:12.320 --> 00:19:15.020
+devconnect: The hash mismatch when it's invalid?
+
+112
+00:19:15.560 --> 00:19:20.050
+devconnect: Yeah, and that makes things significantly difficult.
+
+113
+00:19:20.500 --> 00:19:23.829
+devconnect: to, to find the issues, so…
+
+114
+00:19:39.180 --> 00:19:42.440
+Toni Wahrstätter: Yeah, just as Penny says here in the chat, I'm relaying that.
+
+115
+00:19:42.600 --> 00:19:49.040
+Toni Wahrstätter: Putting the whole diff into the log, and not just the hash mismatch, that would be great.
+
+116
+00:20:03.580 --> 00:20:08.440
+Toni Wahrstätter: Perfect, and just to summarize those two points, I guess we are… Sorry, Mario?
+
+117
+00:20:08.440 --> 00:20:20.850
+devconnect: So, when you, when you say, diffs only, it's… you still full, print the full block-level access list only when diffs happen? Or do you mean that we should only print the diff?
+
+118
+00:20:21.040 --> 00:20:24.950
+devconnect: Of the block-level access list against the expectation, or could you expand on that?
+
+119
+00:20:24.950 --> 00:20:37.020
+Łukasz Rozmej: You only print the diff, so print the things that are missing in the access list found, and print the things that are excessive in the access list constructed, right? So don't print everything.
+
+120
+00:20:37.130 --> 00:20:40.759
+Łukasz Rozmej: Because access lists can be huge, and diffs can be, like, one or two addresses.
+
+121
+00:20:41.330 --> 00:20:50.399
+devconnect: Sure, sure. I think then the log should be very clear, like, which one has the diff, right? Whether it's the test vector or the client.
+
+122
+00:20:50.670 --> 00:20:59.169
+devconnect: Because sometimes that can't… that's not clear, so as long as we agree on that, then… yeah, I think the diffs make the most sense, for sure.
+
+123
+00:21:10.520 --> 00:21:12.130
+Toni Wahrstätter: Perfect, thank you very much.
+
+124
+00:21:12.500 --> 00:21:18.960
+Toni Wahrstätter: Then, let me quickly summarize that. So, we will likely not have the metrics and the definite zero.
+
+125
+00:21:19.530 --> 00:21:27.609
+Toni Wahrstätter: But we will definitely try to put the diffs into the logs, as soon as possible, just to make testing and stuff easier.
+
+126
+00:21:39.320 --> 00:21:40.340
+Toni Wahrstätter: Great.
+
+127
+00:21:41.620 --> 00:21:45.499
+Toni Wahrstätter: There… okay, what… sorry, let me quickly read the chat.
+
+128
+00:21:46.790 --> 00:21:50.419
+Toni Wahrstätter: What… what do we do with the orders? Yeah, this is a good point.
+
+129
+00:21:53.980 --> 00:21:55.710
+Toni Wahrstätter: Do you have an idea, Lukash?
+
+130
+00:21:59.720 --> 00:22:02.580
+Łukasz Rozmej: I would have to think about it. Is the order important?
+
+131
+00:22:04.750 --> 00:22:11.450
+Toni Wahrstätter: Yeah, it is important because we, of course, enforce some ordering.
+
+132
+00:22:11.780 --> 00:22:16.659
+Toni Wahrstätter: But, yeah, I'm thinking, is it… is it that important to have that in the logs?
+
+133
+00:22:17.170 --> 00:22:19.889
+Toni Wahrstätter: Because we… if we have the diff anyway.
+
+134
+00:22:20.320 --> 00:22:24.299
+Toni Wahrstätter: the problem might not be in the ordering, right? So I assume there will not be
+
+135
+00:22:24.840 --> 00:22:25.440
+Toni Wahrstätter: Back in the order.
+
+136
+00:22:25.440 --> 00:22:26.400
+Ben Adams: And overly?
+
+137
+00:22:37.140 --> 00:22:39.050
+Ben Adams: Generate a different option.
+
+138
+00:22:45.380 --> 00:22:47.140
+Ben Adams: We just have a generic…
+
+139
+00:22:47.600 --> 00:22:52.519
+Jared Wasinger: If the ordering's different, can't we just have a generic error message in the logs, and it, like…
+
+140
+00:22:54.550 --> 00:22:58.299
+Jared Wasinger: You don't really need the… the BAL diff won't…
+
+141
+00:22:59.590 --> 00:23:02.849
+Jared Wasinger: Even be necessary if that is the source of the error.
+
+142
+00:23:05.140 --> 00:23:05.740
+Toni Wahrstätter: Right, yeah.
+
+143
+00:23:06.050 --> 00:23:12.969
+Toni Wahrstätter: Yeah, that's my feeling, too. That if the ordering is wrong, we might be fine with just having a special message there.
+
+144
+00:23:13.340 --> 00:23:19.329
+Toni Wahrstätter: And for all other issues with the bar, we will include the… In the law.
+
+145
+00:23:20.370 --> 00:23:23.630
+raxhvl: The ordering itself could be part of it, let's say.
+
+146
+00:23:23.910 --> 00:23:29.909
+raxhvl: We expect a certain order, and this is the given order. It can be formatted like a bit.
+
+147
+00:23:47.710 --> 00:23:52.249
+Toni Wahrstätter: Perfect. Is there anything else we should, discuss regarding
+
+148
+00:23:53.070 --> 00:23:58.840
+Toni Wahrstätter: making life for testers easier? Is there anything else?
+
+149
+00:23:59.010 --> 00:24:07.549
+Toni Wahrstätter: Mario or Philippe that you could think of that we might need? Stefan was just saying, any updates on including generated block access lists?
+
+150
+00:24:07.660 --> 00:24:13.529
+Toni Wahrstätter: In the debug that block call, Does anyone have insights there?
+
+151
+00:24:15.460 --> 00:24:19.210
+Jared Wasinger: I made some progress for implementing it in Geth,
+
+152
+00:24:19.950 --> 00:24:23.750
+Jared Wasinger: And I mean, I can definitely see why it's useful.
+
+153
+00:24:24.430 --> 00:24:33.680
+Jared Wasinger: But it also… it also kind of makes the code path a bit convoluted, because now, when we are executing.
+
+154
+00:24:33.840 --> 00:24:41.960
+Jared Wasinger: And we receive some error from a transaction, we can't just immediately stop executing the block and terminate, we have to, like…
+
+155
+00:24:43.260 --> 00:24:54.179
+Jared Wasinger: execute every single transaction and reconstruct the block access list, and it just creates, it makes an already complex code path just, like, a bit more…
+
+156
+00:24:54.870 --> 00:25:02.359
+Jared Wasinger: difficult to reason about, so I didn't finish implementing it yet. I mean, it can definitely be done, but it's…
+
+157
+00:25:02.650 --> 00:25:05.870
+Jared Wasinger: Like, we haven't… on the get side, we haven't…
+
+158
+00:25:06.340 --> 00:25:15.960
+Jared Wasinger: There hasn't been that much, like, review on the code yet, so… it's, like, adding another piece of complexity on an already…
+
+159
+00:25:17.360 --> 00:25:22.350
+Jared Wasinger: Significant change to the,
+
+160
+00:25:23.030 --> 00:25:28.540
+Jared Wasinger: To the execution and, state route calculation path, but… no.
+
+161
+00:25:33.920 --> 00:25:38.870
+Jared Wasinger: But that being said, I mean, I only spent, like, a day on it, so there's a… there's…
+
+162
+00:25:39.050 --> 00:25:47.269
+Jared Wasinger: Maybe I'm… Overstating how… Invasive it would be, but…
+
+163
+00:25:47.580 --> 00:25:54.479
+Jared Wasinger: That was just… this is just my impression from having done a bit of, like, cursory… investigation into it.
+
+164
+00:26:01.080 --> 00:26:04.729
+Toni Wahrstätter: Has someone else from other client teams already worked on that?
+
+165
+00:26:07.180 --> 00:26:10.910
+Karim T.: On the zoo side, we have it, so… should be, should be okay.
+
+166
+00:26:22.970 --> 00:26:24.610
+Toni Wahrstätter: Awesome. Anyone else?
+
+167
+00:26:27.920 --> 00:26:36.109
+draganrakita: From red side, we're executing all the sections, and recreating the ball, and just comparing it at the end.
+
+168
+00:26:36.890 --> 00:26:39.690
+draganrakita: So we will not fail if…
+
+169
+00:26:41.490 --> 00:26:45.909
+draganrakita: No, we'll fail if we fetch something that's not existing in the ball.
+
+170
+00:26:47.110 --> 00:26:52.089
+draganrakita: But we will not fail if the change is different than expected.
+
+171
+00:26:53.330 --> 00:27:00.800
+draganrakita: So, there is some cases where we will We maybe could know beforehand.
+
+172
+00:27:00.950 --> 00:27:05.190
+draganrakita: But we would check it at the end of the block.
+
+173
+00:27:08.630 --> 00:27:25.480
+Stefan Starflinger: My question is, are you providing an endpoint for the get bad blocks, and including the generated block access list that you generated in this endpoint as well, so that we can use it for debugging?
+
+174
+00:27:27.410 --> 00:27:33.420
+draganrakita: It's… it would be easy to add, it's just executing and recreating the ball.
+
+175
+00:27:33.680 --> 00:27:37.550
+draganrakita: But I'm not sure if we have the endpoint for the bad block.
+
+176
+00:27:40.690 --> 00:27:44.560
+Stefan Starflinger: Would be great if you could, get back to me on that.
+
+177
+00:27:51.550 --> 00:27:59.469
+Toni Wahrstätter: Yeah, this would be great. Maybe, maybe, would be great if, Stefan, if you could drop a message in the blog access list, Discord.
+
+178
+00:27:59.720 --> 00:28:03.250
+Toni Wahrstätter: Just that we have it, yeah, somewhere written there.
+
+179
+00:28:03.370 --> 00:28:06.959
+Toni Wahrstätter: So that we can refer clients to that message, then.
+
+180
+00:28:25.110 --> 00:28:30.999
+Toni Wahrstätter: someone from MetaMind, who can give an update on… on that topic?
+
+181
+00:28:37.100 --> 00:28:40.809
+Ben Adams: I don't expect this, request.
+
+182
+00:28:42.370 --> 00:28:51.669
+Łukasz Rozmej: Oh, sorry, I don't know. Mark is the only one that has the newest knowledge. He's working on it, but I don't see him on the call.
+
+183
+00:28:52.580 --> 00:28:53.979
+Toni Wahrstätter: Okay, yeah, no worry.
+
+184
+00:28:56.800 --> 00:29:03.219
+Toni Wahrstätter: Anything else regarding, things we might wanna have for testing?
+
+185
+00:29:03.490 --> 00:29:05.239
+Toni Wahrstätter: That we should discuss today?
+
+186
+00:29:12.810 --> 00:29:19.720
+draganrakita: Just to say that the last testing feature is really great. It fixes all the bugs.
+
+187
+00:29:20.240 --> 00:29:21.870
+draganrakita: So, it's perfect.
+
+188
+00:29:27.520 --> 00:29:41.159
+Toni Wahrstätter: Yeah, it looks like Ref is quite far when it comes to testing. We can… we can directly go into the client updates, so how are all our clients doing when it comes to testing with the latest release?
+
+189
+00:29:47.850 --> 00:30:00.899
+Jared Wasinger: Yeah, I've been mostly working on the performance side, so I haven't, been working on the, getting conformance with the tests in the latest release yet, but…
+
+190
+00:30:01.230 --> 00:30:03.629
+Jared Wasinger: It's… on my list.
+
+191
+00:30:10.950 --> 00:30:19.670
+Karim T.: So, on Bezos' side, we fixed several issues, thanks to the new test, but there are still some issues in the test suite, so we'll see with the new version.
+
+192
+00:30:20.150 --> 00:30:28.349
+Karim T.: We are also… we have a first version of the stateful computation background that is working, but we are trying to do some improvement on it.
+
+193
+00:30:28.900 --> 00:30:33.889
+Karim T.: And we are starting to work on the perfect parallelization using BAL.
+
+194
+00:30:36.940 --> 00:30:37.790
+Karim T.: It's all…
+
+195
+00:30:40.620 --> 00:30:41.620
+Toni Wahrstätter: Thank you very much.
+
+196
+00:30:45.240 --> 00:30:51.510
+draganrakita: From red side, here on the tests, I think one is failing, but 40…
+
+197
+00:30:51.660 --> 00:30:53.799
+draganrakita: 40 faulty ones were fixed.
+
+198
+00:30:54.630 --> 00:30:57.040
+draganrakita: Yep, that's… mostly it.
+
+199
+00:31:01.920 --> 00:31:03.690
+Toni Wahrstätter: Someone from Aragon here?
+
+200
+00:31:11.080 --> 00:31:13.270
+Toni Wahrstätter: I don't think so.
+
+201
+00:31:14.980 --> 00:31:25.529
+Toni Wahrstätter: Let's continue on with NetherMind, or should we… or do you want to wait until Marchin will… or Mark will provide the update?
+
+202
+00:31:31.340 --> 00:31:37.769
+Toni Wahrstätter: Or do you, Ben, or Lukash, do you have insights into… okay, it just so pumps up, perfect.
+
+203
+00:31:39.050 --> 00:31:44.399
+Toni Wahrstätter: Yeah, there is… there is this one topic that has been a recurring theme over the last
+
+204
+00:31:44.660 --> 00:31:49.750
+Toni Wahrstätter: months, basically, about the REIT locations, or the state locations in Nepal.
+
+205
+00:31:50.300 --> 00:31:58.599
+Toni Wahrstätter: And… The latest I've heard so far was client teams very much were for including the relocations.
+
+206
+00:31:59.000 --> 00:32:02.290
+Toni Wahrstätter: Because it enables parallel and I.O.
+
+207
+00:32:04.060 --> 00:32:17.120
+Toni Wahrstätter: And this is the question, like, how would we best, test it? I know that Lukash has suggested that we just test it in actual client implementation, so, for example, on ketosis or something.
+
+208
+00:32:17.870 --> 00:32:23.529
+Toni Wahrstätter: Is this… Something that other clients think is… might be the best thing to do, to actually
+
+209
+00:32:23.660 --> 00:32:31.139
+Toni Wahrstätter: determine if it's worth adding the state locations, because, of course, they add a lot of data to the block. It's, like, 50% of the…
+
+210
+00:32:31.440 --> 00:32:36.560
+Toni Wahrstätter: Ball size comes from the read locations, the state locations that are not changed.
+
+211
+00:32:37.750 --> 00:32:44.380
+Toni Wahrstätter: And we have been discussing it in a bunch of breakout calls, but We haven't really gotten to…
+
+212
+00:32:44.550 --> 00:32:53.249
+Toni Wahrstätter: benchmarks that were, like, super clear when it came to adding the state locations. And especially, we have to think about higher gas limits, like.
+
+213
+00:32:53.740 --> 00:33:10.340
+Toni Wahrstätter: beyond 100 million, and if it makes no sense, when we are at those high limits, to have the state locations, or if the value of having the state locations in the balls is kind of declining over time with an increasing gas limit.
+
+214
+00:33:14.530 --> 00:33:18.759
+Łukasz Rozmej: So, that's a very good question, and exactly we can do different things. We can…
+
+215
+00:33:19.080 --> 00:33:26.400
+Łukasz Rozmej: Blindly at state locations, we can blindly exclude them. We could try to…
+
+216
+00:33:26.700 --> 00:33:33.969
+Łukasz Rozmej: Implement kind of both and benchmark it on different… on different versions and different… different kind of blocks.
+
+217
+00:33:34.510 --> 00:33:42.289
+Łukasz Rozmej: We can all… then the last thing, we can always try to be smart, and by smart, I mean…
+
+218
+00:33:43.090 --> 00:33:46.030
+Łukasz Rozmej: Do something like…
+
+219
+00:33:46.180 --> 00:34:02.069
+Łukasz Rozmej: include them conditionally, right? So, by conditionally, I mean, we could have some heuristic, and that heuristic is that if the transaction does at least N reads, right, or something.
+
+220
+00:34:02.850 --> 00:34:09.520
+Łukasz Rozmej: Then you include them, otherwise you don't, right? So, there is way, way…
+
+221
+00:34:10.540 --> 00:34:25.590
+Łukasz Rozmej: different strategies to target different cases. I think we should be aware about the size increase, so generally, I'm a bit hesitant about including them blindly.
+
+222
+00:34:25.590 --> 00:34:30.719
+Łukasz Rozmej: But on the other hand, if there is an edge case transaction that does a huge amount of reads.
+
+223
+00:34:30.889 --> 00:34:34.779
+Łukasz Rozmej: And okay, with 16 million gas limit, it's still…
+
+224
+00:34:35.350 --> 00:34:46.269
+Łukasz Rozmej: it's still bounded, so it's not that bad as without it. But even then, maybe there's some threshold where it's worth including, so…
+
+225
+00:34:46.510 --> 00:34:50.879
+Łukasz Rozmej: We can do multiple things, and, depends how…
+
+226
+00:34:51.170 --> 00:34:56.629
+Łukasz Rozmej: How much precise in-tuggling bottlenecks we want to be.
+
+227
+00:34:58.370 --> 00:35:05.689
+Toni Wahrstätter: Yeah, my… my concern with, having, like, heuristics for the reads is the following.
+
+228
+00:35:05.780 --> 00:35:21.350
+Toni Wahrstätter: it's like, imagine disk I.O. becomes a bottleneck, then the worst-case block would not only be worst case in terms of having a lot of S loads, but also having additional data in the block. So it's basically, like, for blocks that are already, like.
+
+229
+00:35:21.490 --> 00:35:28.180
+Toni Wahrstätter: very bad to execute. We would be like, okay, let's add additional data to exactly those blocks, and the blocks that
+
+230
+00:35:28.330 --> 00:35:31.979
+Toni Wahrstätter: Our lightweight will probably not have the read values in them.
+
+231
+00:35:32.320 --> 00:35:33.640
+Toni Wahrstätter: You know, it's like…
+
+232
+00:35:34.420 --> 00:35:41.579
+Toni Wahrstätter: It feels almost, like, counterproductive to be like, okay, our heaviest block will now also include additional data.
+
+233
+00:35:43.630 --> 00:35:48.599
+Łukasz Rozmej: By heaviest, by network transmission size? That's what you mean, or…
+
+234
+00:35:48.600 --> 00:35:56.309
+Toni Wahrstätter: No, by just workload for I.O, for example, assuming, for example, a block that does only S loads.
+
+235
+00:35:56.760 --> 00:36:04.120
+Łukasz Rozmej: Okay, but that block now is, can… those S-loads can be parallelized, right? Like, completely.
+
+236
+00:36:05.550 --> 00:36:06.249
+Łukasz Rozmej: At least for…
+
+237
+00:36:06.250 --> 00:36:06.580
+Toni Wahrstätter: Yeah.
+
+238
+00:36:06.580 --> 00:36:12.190
+Łukasz Rozmej: worse transactions, so actually, we kind of alleviate the I.O,
+
+239
+00:36:12.420 --> 00:36:15.690
+Łukasz Rozmej: bottleneck here, by including the reads for those.
+
+240
+00:36:19.110 --> 00:36:25.550
+Łukasz Rozmej: So, my expectation would be the opposite, that we actually have the worst blocks, that
+
+241
+00:36:25.760 --> 00:36:30.239
+Łukasz Rozmej: Let's say we have, I don't know what gas limit are we targeting? 300?
+
+242
+00:36:30.740 --> 00:36:43.479
+Łukasz Rozmej: Okay, 300 gas limit, so 300 divided by 16, that's around 19 transactions, worst, and if they are all doing loads, so… we could…
+
+243
+00:36:43.740 --> 00:36:53.129
+Łukasz Rozmej: you know, parallelize that. The networking is the bad thing, right? That we get hit by this huge increase in balls.
+
+244
+00:36:54.360 --> 00:36:55.070
+Łukasz Rozmej: So…
+
+245
+00:36:55.410 --> 00:37:02.030
+Łukasz Rozmej: I don't know, it's hard to say without the numbers, it's hard to say without benchmarking, it's hard to say without…
+
+246
+00:37:02.300 --> 00:37:08.459
+Łukasz Rozmej: Additional complexity of clients that will hit us here and there.
+
+247
+00:37:09.300 --> 00:37:15.410
+Łukasz Rozmej: But… Yeah, I think, like, in most cases, we don't need readables?
+
+248
+00:37:15.440 --> 00:37:16.979
+Ben Adams: So they would be just an overview.
+
+249
+00:37:16.980 --> 00:37:17.599
+Łukasz Rozmej: overhead for now.
+
+250
+00:37:17.600 --> 00:37:18.820
+Ben Adams: working in the proposal.
+
+251
+00:37:18.820 --> 00:37:35.779
+Łukasz Rozmej: But here and there might be a transaction that we will say, oh, now this transaction, all transactions are finished in few milliseconds, and this one transaction now tails for next 100 milliseconds. And if we had balls for it, read balls for it, it would just…
+
+252
+00:37:36.820 --> 00:37:38.349
+Łukasz Rozmej: Be 10 times less.
+
+253
+00:37:38.710 --> 00:37:40.250
+Łukasz Rozmej: So that's my guess.
+
+254
+00:37:40.470 --> 00:37:45.609
+Łukasz Rozmej: But, without measuring it, it's hard to say.
+
+255
+00:37:49.190 --> 00:37:57.159
+Ben Adams: One, kind of objection I have to the parent.
+
+256
+00:37:57.330 --> 00:38:06.669
+Ben Adams: Read slots is they don't… sorry, the read locations is they don't have what transaction they're ready.
+
+257
+00:38:07.300 --> 00:38:10.989
+Ben Adams: So they're all just, lexographically ordered, which…
+
+258
+00:38:12.560 --> 00:38:16.630
+Ben Adams: is the equivalent of, like, a random lift, so you…
+
+259
+00:38:16.760 --> 00:38:24.910
+Ben Adams: you can't overlap the running of transactions with the I.O. You can't… you can't say, alright, I've loaded the
+
+260
+00:38:25.130 --> 00:38:36.230
+Ben Adams: data for the first 10 transactions, so I can start running them now, while I'm still loading the data for the following, you know, 100 transactions.
+
+261
+00:38:36.670 --> 00:38:38.250
+Ben Adams: You don't know.
+
+262
+00:38:39.390 --> 00:38:44.739
+Ben Adams: what date you're reading? Obviously, there's a size buffoon going back into the.
+
+263
+00:38:52.310 --> 00:38:53.490
+Toni Wahrstätter: Yeah, that's true.
+
+264
+00:38:54.120 --> 00:39:12.970
+Toni Wahrstätter: I mean, this is in general something we can discuss, also alongside having the state locations in the house, if it would make sense to add transaction indices. Of course, the problem here is, as soon as we add transaction indices, we cannot aggregate them as well as we can today, because today, if we have a right
+
+265
+00:39:13.400 --> 00:39:20.919
+Toni Wahrstätter: to any storage slot, no matter in which transaction index, we don't include that right as a read anymore.
+
+266
+00:39:21.140 --> 00:39:25.120
+Toni Wahrstätter: Of course, if we would now add transaction indices to REITs.
+
+267
+00:39:25.230 --> 00:39:28.269
+Toni Wahrstätter: Which are not needed for parallel execution.
+
+268
+00:39:28.750 --> 00:39:43.969
+Toni Wahrstätter: then we would have to kind of deduplicate those entries, and you would have the same storage slot as a write and a read, with potentially different transaction indices. So, my expectation would be that the block lab access list would definitely grow in size by…
+
+269
+00:39:46.470 --> 00:39:56.879
+Ben Adams: If… if we assume, that you parallelize transactions in order, so you… the first transaction you run is…
+
+270
+00:39:57.350 --> 00:40:03.800
+Ben Adams: The first transaction, and the second transac- you know, the second transaction, even if it's happening at the same time.
+
+271
+00:40:04.750 --> 00:40:09.049
+Ben Adams: It's the second one. Then you could…
+
+272
+00:40:09.420 --> 00:40:27.289
+Ben Adams: achieve the same effect by just marking the first transaction that that slot was read in. Not, not every transaction that's read. So you just need to say, oh, right, this is read in transaction 1, this is the first time it's read. Transaction 1, transaction 50, or whatever. And then you can
+
+273
+00:40:27.420 --> 00:40:36.100
+Ben Adams: You could shed… you'd have enough to start scheduling. You wouldn't need to record, you know, this is read by transaction 1, 5, 10, 11.
+
+274
+00:40:36.100 --> 00:40:48.419
+Łukasz Rozmej: Yeah, so… exactly, so if we had write first and then read, we don't need to include the read one, and if we had read first and write later, then yeah, we would have duplication.
+
+275
+00:40:48.750 --> 00:40:52.880
+Łukasz Rozmej: But we, again, wouldn't have to…
+
+276
+00:40:53.200 --> 00:41:02.029
+Łukasz Rozmej: Only once, right? So only one duplication. We don't have to mark reads for subsequent transactions, like, only the first occurrence of a read.
+
+277
+00:41:02.350 --> 00:41:03.230
+Łukasz Rozmej: In the block.
+
+278
+00:41:03.910 --> 00:41:05.389
+Toni Wahrstätter: Yeah, this makes sense.
+
+279
+00:41:05.620 --> 00:41:09.400
+Toni Wahrstätter: Then I guess the question is, is this worth the complexity?
+
+280
+00:41:09.530 --> 00:41:14.120
+Toni Wahrstätter: I guess this might also depend on the numbers we are looking for, right?
+
+281
+00:41:16.770 --> 00:41:22.400
+Toni Wahrstätter: So, with numbers, I mean the benchmarks that we might still need to get, yeah.
+
+282
+00:41:23.970 --> 00:41:28.719
+Toni Wahrstätter: Because, of course, this would be, like, a worst case that, imagine, we have,
+
+283
+00:41:28.920 --> 00:41:35.129
+Toni Wahrstätter: A transaction that is at the very end of the block, and also scheduled to be executed at the very end of the block.
+
+284
+00:41:35.310 --> 00:41:44.520
+Toni Wahrstätter: But… The prefetcher starts prefetching the store slot of that transaction first, because they are lexicographically first.
+
+285
+00:41:45.210 --> 00:41:51.239
+Toni Wahrstätter: And then we would end up with execution not having the cache ready to be consumed.
+
+286
+00:41:56.500 --> 00:41:59.549
+Ben Adams: I think it'll become more of,
+
+287
+00:42:00.050 --> 00:42:04.009
+Ben Adams: Leaving a lot on the table as the… as the blocks get bigger.
+
+288
+00:42:04.580 --> 00:42:08.659
+Ben Adams: That's the slots get shorter.
+
+289
+00:42:09.020 --> 00:42:14.009
+Ben Adams: Because whether, you know, where you want to do a balustr.
+
+290
+00:42:14.430 --> 00:42:16.109
+Ben Adams: Or, lovely better.
+
+291
+00:42:18.700 --> 00:42:21.049
+Toni Wahrstätter: Yeah, I totally agree, but this is definitely…
+
+292
+00:42:21.510 --> 00:42:24.219
+Toni Wahrstätter: My only concern would be complexity here.
+
+293
+00:42:24.420 --> 00:42:30.209
+Toni Wahrstätter: like, will we find… like, this rule that, you and Nucha suggested, that…
+
+294
+00:42:30.400 --> 00:42:41.989
+Toni Wahrstätter: If there was a write with a lower transaction index, then the read would just not be included at all, like we do today. We don't include it if there is a write.
+
+295
+00:42:42.160 --> 00:42:59.160
+Toni Wahrstätter: And then, like, if there is a read with a higher transaction index, with a lower transaction index, then we would actually include the read with the index, kind of telling the client this is something that needs to be prefetched right at the beginning.
+
+296
+00:43:00.050 --> 00:43:03.110
+Toni Wahrstätter: So what do clients think about complexity here?
+
+297
+00:43:05.110 --> 00:43:21.279
+Ben Adams: I also think, if they're in the same transaction, so you do, do an S load first, and then you do an S store later in that same transaction, that would only need to be the lead, because you don't… sorry, that would only need to be the right.
+
+298
+00:43:21.530 --> 00:43:27.250
+Ben Adams: Because… The reason implied. So it would only be if it was… I read it.
+
+299
+00:43:27.410 --> 00:43:31.420
+Ben Adams: in a… Earlier transaction that had an array.
+
+300
+00:43:32.180 --> 00:43:34.720
+Ben Adams: Hopefully that shouldn't…
+
+301
+00:43:34.840 --> 00:43:40.980
+Ben Adams: necessarily add too much superposition. I don't know how much overlapping there would be an exact job.
+
+302
+00:43:49.340 --> 00:43:51.549
+raxhvl: We could also wait for some data to…
+
+303
+00:43:51.550 --> 00:43:52.750
+Toni Wahrstätter: Yeah, go ahead.
+
+304
+00:43:53.790 --> 00:44:02.020
+raxhvl: We could also wait for some data to come in. I think, every client could have their own niche parallelization strategy, and we could
+
+305
+00:44:02.180 --> 00:44:06.369
+raxhvl: see, like, what part of execution is idling on I.O.
+
+306
+00:44:06.660 --> 00:44:08.760
+raxhvl: And once we have more data.
+
+307
+00:44:08.930 --> 00:44:19.799
+raxhvl: This would also vary a lot based on investor advice, so we could see, like, where are the rare, limits for education idling.
+
+308
+00:44:19.940 --> 00:44:21.749
+raxhvl: And then maybe…
+
+309
+00:44:22.050 --> 00:44:30.129
+raxhvl: For lower draftsmen, maybe under 100 million, we're not even need it now, so we could just add the complexity as we go later.
+
+310
+00:44:31.510 --> 00:44:36.560
+Toni Wahrstätter: Yeah, I can see that point, but I think… I think, like, we should definitely design a system to work, like.
+
+311
+00:44:36.820 --> 00:44:39.210
+Toni Wahrstätter: to be, like, future-proof. For example.
+
+312
+00:44:39.590 --> 00:44:43.819
+Toni Wahrstätter: Ready to support, like, 300, 500 million guests, and so on.
+
+313
+00:44:44.150 --> 00:44:53.219
+Toni Wahrstätter: So, this is, like, why it's so difficult right now to tell those things, because we have no experience with such high gas limits, and as Ben says.
+
+314
+00:44:53.580 --> 00:45:03.890
+Toni Wahrstätter: the REIT indices, so having transaction indices mapped to the REITs, might be becoming more important with increasing gas limits, because
+
+315
+00:45:04.020 --> 00:45:18.190
+Toni Wahrstätter: Of course, the worst case would then just be a transaction at the very end, and the prefetcher starts prefetching everything that is read in that transaction, although it's only needed at the very end of the block.
+
+316
+00:45:19.940 --> 00:45:22.570
+raxhvl: I agree. Yeah, we should, we should target,
+
+317
+00:45:22.790 --> 00:45:25.379
+raxhvl: Like, getting numbers, or at least hearing them alone.
+
+318
+00:45:25.660 --> 00:45:30.510
+raxhvl: And we could also see if we can, like, optimize our parallelization strategy.
+
+319
+00:45:30.780 --> 00:45:32.270
+raxhvl: To work around this.
+
+320
+00:45:32.410 --> 00:45:36.289
+raxhvl: And only the larger output would be to add more complex material.
+
+321
+00:45:37.770 --> 00:45:38.570
+Toni Wahrstätter: Right, yeah.
+
+322
+00:45:39.140 --> 00:45:46.659
+Toni Wahrstätter: Yeah, I guess at least from the spec side, if I think about the specs, this shouldn't be too complex, because this would be a change to this
+
+323
+00:45:46.910 --> 00:46:01.910
+Toni Wahrstätter: quite isolated in the block access list builder. Basically, the part of the code that takes the… everything that was tracked in the state, and then builds the aggregated block access list. So from a spec side, this should be
+
+324
+00:46:02.140 --> 00:46:06.799
+Toni Wahrstätter: Okay-ish to do, and not, like, super complex.
+
+325
+00:46:07.030 --> 00:46:19.780
+Toni Wahrstätter: But of course, we were just talking about removing the read values, and now we are like, okay, let's add some more inputs to the reads. I get the argument that, okay, reads make more sense if we
+
+326
+00:46:19.920 --> 00:46:25.499
+Toni Wahrstätter: Have, like, this additional, 8 bytes, which is, like, the transaction index attached.
+
+327
+00:46:26.510 --> 00:46:32.519
+Toni Wahrstätter: But yeah, I would say we just, wait for numbers, and then we decide upon those things.
+
+328
+00:46:36.830 --> 00:46:54.859
+Łukasz Rozmej: One comment about, having some data about big blogs. So Nevermind, Camille from Nevermind, with Carlos are doing those, some experiments where they have a tool that combines
+
+329
+00:46:56.970 --> 00:47:12.510
+Łukasz Rozmej: new payloads from mainnet, they're using from mainnet, that combines new payloads into very big new payloads. So, they try to aim around 1 giga for new payload, for example, but this is more or less configurable.
+
+330
+00:47:12.740 --> 00:47:19.870
+Łukasz Rozmej: And then they replay those extremely big blocks on the,
+
+331
+00:47:20.240 --> 00:47:34.100
+Łukasz Rozmej: on the notes, to get some performance metrics from it. So, this could be adapted to get even more better, maybe real-life numbers, or if you want to check anything there.
+
+332
+00:47:34.980 --> 00:47:40.469
+Łukasz Rozmej: That sounds like a good idea, to, to get some experience with.
+
+333
+00:47:41.140 --> 00:47:47.159
+Łukasz Rozmej: Real-like, blocks that are around 500 or 1 giga gas.
+
+334
+00:47:50.650 --> 00:47:52.879
+Toni Wahrstätter: Okay, yeah, this is interesting.
+
+335
+00:47:53.010 --> 00:48:03.610
+Toni Wahrstätter: So this is… this is our… this is separate from Bloatnet, right? Because this might also be something we want to test, like, how will everything behave on a bigger…
+
+336
+00:48:03.850 --> 00:48:12.859
+Łukasz Rozmej: So, currently, they were working on mainnet, because they wanted to get, I think, like, more mainnet-like numbers.
+
+337
+00:48:13.020 --> 00:48:16.820
+Łukasz Rozmej: But this could be used on BloatNet, too, with no problem.
+
+338
+00:48:20.370 --> 00:48:31.779
+Łukasz Rozmej: But there is a lot of setup, because each client has to have a correct snapshot, etc, so it can be rewinded to that point of time, so it's… it's,
+
+339
+00:48:32.260 --> 00:48:44.269
+Łukasz Rozmej: It's quite a manual process, or at least the… maybe not manual, but there is a lot of manual, like, preparation in order to automate this process, and it's not really very, like,
+
+340
+00:48:45.070 --> 00:48:49.690
+Łukasz Rozmej: Easy to just adjust it on the fly, right?
+
+341
+00:48:52.380 --> 00:48:55.849
+Toni Wahrstätter: Right, yeah. Okay, but this is good to know, thanks.
+
+342
+00:48:55.850 --> 00:49:04.639
+Łukasz Rozmej: I think they will present it somewhere tomorrow about it, on some Nevermind-related presentation, if you want to.
+
+343
+00:49:05.780 --> 00:49:06.670
+Łukasz Rozmej: No more.
+
+344
+00:49:09.010 --> 00:49:14.719
+Toni Wahrstätter: Yeah, maybe you can drop the link, if possible, in the botlab Access List breakouts.
+
+345
+00:49:14.720 --> 00:49:15.250
+Łukasz Rozmej: Fuck.
+
+346
+00:49:15.250 --> 00:49:18.589
+Toni Wahrstätter: channel, or… or you send us a DM, yeah.
+
+347
+00:49:18.590 --> 00:49:20.930
+Łukasz Rozmej: Yeah, I can, I can ask them,
+
+348
+00:49:21.180 --> 00:49:22.830
+Łukasz Rozmej: For, for the link, too.
+
+349
+00:49:23.750 --> 00:49:26.860
+Łukasz Rozmej: Okay, thank… no worries. Dragon?
+
+350
+00:49:28.090 --> 00:49:32.890
+draganrakita: Yeah, I'm just saying, commenting on my gut feeling.
+
+351
+00:49:34.700 --> 00:49:49.060
+draganrakita: the block journal and execution journal is not just loading the data, it is some CPU. So, having what needs to be read from the database makes sense, because we want, when that CPU happens on…
+
+352
+00:49:49.310 --> 00:49:55.649
+draganrakita: 4, 5, 8 threads, whatever we have. We want to have something done in the background.
+
+353
+00:49:56.560 --> 00:50:00.509
+draganrakita: So, having what needs to be re-read
+
+354
+00:50:00.780 --> 00:50:03.550
+draganrakita: It seems that it's going to be impactful.
+
+355
+00:50:04.260 --> 00:50:08.999
+draganrakita: Knowing order, but needs to be read
+
+356
+00:50:09.560 --> 00:50:13.280
+draganrakita: I don't think it's going to be that important.
+
+357
+00:50:13.750 --> 00:50:19.899
+draganrakita: Because even if some thread needs to wait for something to be read.
+
+358
+00:50:20.590 --> 00:50:27.159
+draganrakita: We still… we are not going to be… Bottlenecked by that much.
+
+359
+00:50:27.820 --> 00:50:32.139
+draganrakita: It's not something that's going to take, 100 millisecond.
+
+360
+00:50:33.310 --> 00:50:39.659
+draganrakita: So, there will be slightly… there will be a need for mechanisms that will prioritize.
+
+361
+00:50:39.900 --> 00:50:46.780
+draganrakita: The… the reads that are happening now, in comparison that older it.
+
+362
+00:50:47.320 --> 00:50:57.670
+draganrakita: But I'm not sure if the benefits, like, this is just a gut feeling, like my comment. I'm not sure if adding the indices to the reads are going to matter a lot.
+
+363
+00:50:58.270 --> 00:51:03.399
+draganrakita: At least that's… this is how I'm thinking now. Without data, this is just, like, hypothesis.
+
+364
+00:51:09.250 --> 00:51:18.709
+Toni Wahrstätter: Yeah, this makes a lot of sense, and this was also, like, where… what I was thinking about, that maybe as long as you can do parallel I.O,
+
+365
+00:51:18.910 --> 00:51:35.649
+Toni Wahrstätter: There's one process busy anyway, and you are just, like, executing in the meantime, and then you would at least have everything in cash already for the last transactions, and for those first transactions, where it would be handy if you have them ready in the cache.
+
+366
+00:51:35.750 --> 00:51:43.699
+Toni Wahrstätter: you would just do some prioritized I.O. for exactly that transaction, so you can continue executing.
+
+367
+00:51:44.130 --> 00:51:52.640
+Toni Wahrstätter: But this, yeah, I mean, we need the numbers for that, we desperately need them, but I guess… It's…
+
+368
+00:51:53.080 --> 00:51:53.950
+Toni Wahrstätter: Yeah.
+
+369
+00:51:55.750 --> 00:52:14.089
+Toni Wahrstätter: not so… not so easy to tell, because I also have hard times, telling what is the actual, efficiency gains we get from parallel I.O. versus splitting, distributing transactions over threads, and then having this implicit parallel I.O. to
+
+370
+00:52:14.500 --> 00:52:22.120
+Toni Wahrstätter: Or I should better frame it as batch I.O. versus parallel I.O, because if batch I.O. is really, like, super powerful.
+
+371
+00:52:22.320 --> 00:52:26.119
+Toni Wahrstätter: then it might… and, for example, I could… you could imagine, like.
+
+372
+00:52:26.630 --> 00:52:31.100
+Toni Wahrstätter: I.O. would take a fraction of the time that the actual execution takes.
+
+373
+00:52:31.710 --> 00:52:35.620
+Toni Wahrstätter: Then, having the indices might not make much sense.
+
+374
+00:52:37.690 --> 00:52:41.950
+draganrakita: Just additional comment, reading in…
+
+375
+00:52:42.170 --> 00:52:53.740
+draganrakita: when you know the data is ordered, at least MDMEX have, like, the cursor that can… it's faster to read, like, when you have ordered data.
+
+376
+00:52:54.400 --> 00:53:04.140
+draganrakita: So, having a batch of all the reads that needs to be read with the sorted order is going to be faster than reading it by randomly.
+
+377
+00:53:05.620 --> 00:53:07.340
+draganrakita: I'm not sure by how much.
+
+378
+00:53:07.510 --> 00:53:13.120
+draganrakita: That's, like, big information here, but I would say 1.5 to 2 times faster.
+
+379
+00:53:19.510 --> 00:53:20.580
+Toni Wahrstätter: Awesome, yeah.
+
+380
+00:53:21.110 --> 00:53:28.069
+Toni Wahrstätter: So, what do we think about, those numbers that we actually need? So, what would be the next steps?
+
+381
+00:53:28.300 --> 00:53:29.830
+Toni Wahrstätter: that,
+
+382
+00:53:30.110 --> 00:53:39.919
+Toni Wahrstätter: what are you guys planning on doing so that we might get those numbers from actual implementations? Would you need anything from…
+
+383
+00:53:40.060 --> 00:53:43.049
+Toni Wahrstätter: Would you need any specific tests, or…
+
+384
+00:53:43.430 --> 00:53:48.700
+Toni Wahrstätter: Like you said, with the increased block sizes and that kind of stuff.
+
+385
+00:53:48.810 --> 00:53:56.859
+Toni Wahrstätter: Like, how would we actually get to those numbers that we would want to have, to have, like, certainty over adding
+
+386
+00:53:57.050 --> 00:54:01.830
+Toni Wahrstätter: The state locations, or even adding, like, transaction indices to the state locations.
+
+387
+00:54:06.730 --> 00:54:07.740
+Toni Wahrstätter: Yep, Ben?
+
+388
+00:54:10.230 --> 00:54:12.849
+Ben Adams: I think in the guests…
+
+389
+00:54:13.270 --> 00:54:21.169
+Ben Adams: testing, or the… or maybe the BlakeNet channel. So Joachim came up with… he came up with this little…
+
+390
+00:54:21.370 --> 00:54:23.620
+Ben Adams: Tests that were performing quite badly.
+
+391
+00:54:24.610 --> 00:54:28.719
+Ben Adams: With S-loads in their stores, and it seems…
+
+392
+00:54:28.830 --> 00:54:36.920
+Ben Adams: They're exactly the access initiative address, so we may already have seen that.
+
+393
+00:54:40.700 --> 00:54:42.540
+Ben Adams: But I'll look into our family.
+
+394
+00:54:54.820 --> 00:54:57.680
+Toni Wahrstätter: Have other clients looked into… Yeah, go ahead.
+
+395
+00:54:58.050 --> 00:55:03.879
+Karim T.: I just wanted to say, maybe we need multiple devnets with different configuration at the same time, and
+
+396
+00:55:04.510 --> 00:55:07.340
+Karim T.: And we can see the different performance.
+
+397
+00:55:10.190 --> 00:55:20.419
+Toni Wahrstätter: Yeah, of course. This comes, of course, with some overhead that would be nice if we can avoid, like, having multiple defnets with different configurations.
+
+398
+00:55:23.010 --> 00:55:31.500
+Toni Wahrstätter: I totally get the argument that it's, like, difficult to simulate it in a vacuum without having actual client implementations running.
+
+399
+00:55:32.850 --> 00:55:39.390
+Toni Wahrstätter: Yeah, I'm not sure. What do other buy-in teams think about this? Should we actually…
+
+400
+00:55:39.500 --> 00:55:47.610
+Toni Wahrstätter: go for different definets, or would it be enough to have, like, a DEFNET that has it implemented, and we measure everything from there?
+
+401
+00:55:48.180 --> 00:55:59.709
+Karim T.: Maybe not by configuration, but for example, one DevNet with a big state, one DevNet with a… as it may be a shadow fork of mainnet to see the current performance.
+
+402
+00:55:59.860 --> 00:56:08.420
+Karim T.: just some kind of configuration like that, and in one, for example, in the blood devnet, we can have multiple BISU with different flags, but .
+
+403
+00:56:11.640 --> 00:56:19.910
+Ben Adams: Yeah, would it be useful to be able to pass in a flag to turn off any block-level access lists,
+
+404
+00:56:20.400 --> 00:56:25.179
+Ben Adams: Optimizations, like, taking advantage, not doing any preloads, etc.
+
+405
+00:56:25.730 --> 00:56:29.270
+Ben Adams: And then, not doing any parallelization.
+
+406
+00:56:29.510 --> 00:56:32.640
+Ben Adams: And then literally run the same chain.
+
+407
+00:56:33.120 --> 00:56:39.989
+Ben Adams: one with the flag on, saying, don't do any block. I mean, obviously, you still have to, perhaps, verify it.
+
+408
+00:56:40.110 --> 00:56:48.059
+Ben Adams: And then you'll… you'll see this is the effects from the optimizations, you know, parallelization, doing…
+
+409
+00:56:48.220 --> 00:56:52.380
+Ben Adams: Loading state, etc, and here's the effect without the wheel.
+
+410
+00:56:53.010 --> 00:56:54.940
+Ben Adams: We'll see what the appliance does look like.
+
+411
+00:56:59.350 --> 00:57:01.169
+Toni Wahrstätter: Yeah, I would agree.
+
+412
+00:57:01.390 --> 00:57:07.650
+Toni Wahrstätter: just a little bit hesitant because of the complexity there. I don't want, like, clients to have, like.
+
+413
+00:57:08.120 --> 00:57:12.420
+Toni Wahrstätter: overly complex, implementations on the DevNet.
+
+414
+00:57:12.910 --> 00:57:17.310
+Toni Wahrstätter: Not sure, if this is actually super complex for clients.
+
+415
+00:57:17.640 --> 00:57:22.080
+Toni Wahrstätter: To have, like, a flag that turns on and off the state locations.
+
+416
+00:57:23.040 --> 00:57:30.060
+Toni Wahrstätter: Basically, the state locations are always there, but that turns on and off if we actually use the state locations.
+
+417
+00:57:36.160 --> 00:57:39.399
+Ben Adams: Sort of have that for,
+
+418
+00:57:39.780 --> 00:57:48.400
+Ben Adams: I think both Netherland and REC, and maybe some others, so we do cache and pre-compile results, and in order
+
+419
+00:57:48.580 --> 00:57:51.499
+Ben Adams: measure that for, HERFNAP.
+
+420
+00:57:52.560 --> 00:57:59.170
+Ben Adams: And for the, the benchmarking, we have a flag that literally switches off parts of
+
+421
+00:57:59.350 --> 00:58:07.520
+Ben Adams: Switches off the optimization, so we can get access to the raw underlying, you know, what is the performance of this reconfile.
+
+422
+00:58:08.980 --> 00:58:15.499
+Ben Adams: So, I think it's… I think it's possible, if it would produce, worthwhile results.
+
+423
+00:58:25.610 --> 00:58:31.119
+Toni Wahrstätter: Maybe a direct question to Jared and Dragan and Kareem, what do you guys think about this?
+
+424
+00:58:32.660 --> 00:58:35.999
+Karim T.: I don't think it will be difficult to have some flags,
+
+425
+00:58:36.330 --> 00:58:49.230
+Karim T.: We have already some flags, we already started to have different flags with different configuration for block access list, in order to be ready for this kind of test, so I don't think it will be difficult.
+
+426
+00:58:50.670 --> 00:58:52.379
+Karim T.: To add more flags, or two.
+
+427
+00:58:52.720 --> 00:58:54.320
+Karim T.: To add more configuration.
+
+428
+00:58:56.230 --> 00:58:58.130
+draganrakita: I'm not exactly sure.
+
+429
+00:58:58.370 --> 00:59:06.040
+draganrakita: What flags are we talking about? Flags that would remove prefetching of the reads?
+
+430
+00:59:07.140 --> 00:59:08.260
+draganrakita: Just that one.
+
+431
+00:59:08.690 --> 00:59:09.920
+Toni Wahrstätter: Yeah, exactly.
+
+432
+00:59:10.720 --> 00:59:16.240
+Ben Adams: And, and then the… Paralyzation, analyzing, if we've done it.
+
+433
+00:59:18.010 --> 00:59:19.089
+draganrakita: Can you repeat that, Ben?
+
+434
+00:59:19.700 --> 00:59:26.790
+Ben Adams: And any parallelization, or, sort of using the…
+
+435
+00:59:28.230 --> 00:59:33.980
+Ben Adams: SCOR changes to then use that to parallelize all the transactions.
+
+436
+00:59:35.130 --> 00:59:36.080
+Ben Adams: I assume.
+
+437
+00:59:36.610 --> 00:59:37.389
+Ben Adams: We'll hit this up.
+
+438
+00:59:37.390 --> 00:59:40.179
+draganrakita: Okay, removing parallelization of the sections. Okay.
+
+439
+00:59:40.500 --> 00:59:41.640
+draganrakita: Those two flags.
+
+440
+00:59:41.640 --> 00:59:44.010
+Ben Adams: So you, so you, so you can do a,
+
+441
+00:59:45.030 --> 00:59:48.989
+Ben Adams: This is without block-level access, this is with block-level access.
+
+442
+00:59:50.930 --> 00:59:51.730
+draganrakita: Makes sense.
+
+443
+00:59:53.010 --> 00:59:56.820
+Ben Adams: And then, you know, the next day, you put gas to 500.
+
+444
+01:00:03.760 --> 01:00:13.709
+Toni Wahrstätter: Have you been looking into this, or thinking about this already, Jared? Is there any concerns that you would have regarding adding a flag that turns off prefetching the state location?
+
+445
+01:00:15.970 --> 01:00:18.379
+Jared Wasinger: Yeah, we can do it,
+
+446
+01:00:21.650 --> 01:00:33.190
+Jared Wasinger: And it should be possible for the transaction parallelization as well. I'm… I guess I'm just not… fully understanding
+
+447
+01:00:33.890 --> 01:00:47.239
+Jared Wasinger: how the insights gained from the… so, sorry, I kinda… I… my attention kind of trailed off for a bit, but, I… I'm not really understanding how the… the insights gained from this
+
+448
+01:00:48.130 --> 01:00:54.820
+Jared Wasinger: Will… Help us determine whether the…
+
+449
+01:00:55.390 --> 01:01:09.759
+Jared Wasinger: current read format is sufficient, or if we need to add the transaction indices. I mean, yeah, I can… I can add flags to disable these various, the… the… these… these flags are possible, but it just doesn't…
+
+450
+01:01:10.870 --> 01:01:13.659
+Jared Wasinger: I'm struggling to connect the dots in my head.
+
+451
+01:01:14.930 --> 01:01:32.690
+Toni Wahrstätter: Yeah, I think there are two different things. One, we want to know the difference between having the state locations versus having… don't having the state locations, and for that, a flag that just, decides if we use the state locations from the ball in the prefetcher or not.
+
+452
+01:01:32.910 --> 01:01:34.090
+Toni Wahrstätter: Would be enough.
+
+453
+01:01:34.300 --> 01:01:44.840
+Toni Wahrstätter: regarding the transaction indices, this will be more complex, and I think we should more… first focus more on the first, determining if the state locations are worth it, because
+
+454
+01:01:44.960 --> 01:01:48.020
+Toni Wahrstätter: if, for example, Jagan's feeling is, right, that
+
+455
+01:01:48.140 --> 01:01:52.369
+Toni Wahrstätter: We might not need the transaction indices for the state locations.
+
+456
+01:01:52.630 --> 01:01:59.819
+Toni Wahrstätter: Then we will find that out with only that flag, with only the flag that turns on and off the state locations.
+
+457
+01:02:00.040 --> 01:02:02.060
+Toni Wahrstätter: If we find out that
+
+458
+01:02:02.240 --> 01:02:09.989
+Toni Wahrstätter: at a higher gas limit. State locations might be helpful, but only if they actually included the transaction indices.
+
+459
+01:02:10.300 --> 01:02:22.760
+Toni Wahrstätter: then this is different, but I would assume, we can just continue with having this flag that only targets, basically, what the prefetcher does,
+
+460
+01:02:23.330 --> 01:02:29.679
+Toni Wahrstätter: Either it runs with the state locations, or you would just run the prefetcher as it runs today.
+
+461
+01:02:34.060 --> 01:02:45.649
+Jared Wasinger: Yeah, okay. So, for us, it would be easy to… to enable or disable
+
+462
+01:02:45.770 --> 01:02:53.170
+Jared Wasinger: The asynchronous loading of the read locations, but…
+
+463
+01:02:53.400 --> 01:02:57.659
+Jared Wasinger: The prefetcher as it runs today is not…
+
+464
+01:02:59.470 --> 01:03:07.060
+Jared Wasinger: a thing, post BAL, forgetth, but yeah, otherwise… Okay. Yeah.
+
+465
+01:03:07.470 --> 01:03:16.789
+Toni Wahrstätter: Okay, yeah, then, my fault. I was just assuming that the loading from disk of the state locations would be prefetching, but yeah.
+
+466
+01:03:16.960 --> 01:03:18.470
+Toni Wahrstätter: Sorry for that confusion.
+
+467
+01:03:21.860 --> 01:03:22.699
+Jared Wasinger: No, it's okay.
+
+468
+01:03:22.700 --> 01:03:23.320
+Toni Wahrstätter: Awesome.
+
+469
+01:03:23.320 --> 01:03:24.569
+Jared Wasinger: Wanted to clarify.
+
+470
+01:03:25.080 --> 01:03:29.929
+Toni Wahrstätter: Yeah, then let me… let me quickly summarize. So, we decided today that we do the…
+
+471
+01:03:30.100 --> 01:03:40.119
+Toni Wahrstätter: we talked about, SnapSync, that we might keep some buzz around, at least to enable SnapSync, and then we also serve them for SnapSync.
+
+472
+01:03:40.640 --> 01:03:52.609
+Toni Wahrstätter: Regarding the logs, we decided that we all put… so all client teams put the divs into the logs, so that, this makes life of testing team easier.
+
+473
+01:03:53.230 --> 01:04:08.979
+Toni Wahrstätter: And finally, we also decided that we want to do, a defread with potentially adding, or with adding a flag that turns using the state locations on and off in order to give us numbers on how important the state locations actually are.
+
+474
+01:04:11.420 --> 01:04:16.689
+Toni Wahrstätter: Great. We are already at the end of the call. Is there anything else we should discuss?
+
+475
+01:04:17.820 --> 01:04:25.370
+Karim T.: I just had a question, are we talking to add this flag for the next DevNet, or another one?
+
+476
+01:04:26.280 --> 01:04:36.460
+Karim T.: Because, for example, in Bezu, we didn't implement it yet, the prefetching from the block access list, so… just to see if we need to pre-authorize that or not.
+
+477
+01:04:41.310 --> 01:04:53.570
+Toni Wahrstätter: Yeah, that's a good question. My feeling would be we would probably want to have that on DevNet1, just because we… the earlier we get those numbers, the better. Or for DevNet 0, sorry.
+
+478
+01:04:54.270 --> 01:04:59.559
+Toni Wahrstätter: Yeah, I would say we should edit for that next year.
+
+479
+01:05:01.600 --> 01:05:10.149
+Stefan Starflinger: I also would like to say that right now, we still don't have 3 clients that are consistently working and not forking off.
+
+480
+01:05:10.360 --> 01:05:21.620
+Stefan Starflinger: So I still managed to get Nethermine and Geth to fork off, and kind of the con… Or the prerequisite for us to, launch the DevNet properly, so that clients
+
+481
+01:05:21.910 --> 01:05:28.940
+Stefan Starflinger: can work with a little bit of a transaction load, especially I would like to remind everyone to try out the EVM buzz.
+
+482
+01:05:29.040 --> 01:05:42.139
+Stefan Starflinger: scenario, the spammer, and see that the client, is stable with it. Red, seems to be working well, and Diesel seems to be working well so far with it. But otherwise, the other clients are still struggling.
+
+483
+01:05:48.250 --> 01:05:55.669
+Toni Wahrstätter: Perfect. Thanks a lot for that update, Stefan. Then I would say, let's… yeah, is there anything else someone wants to bring up?
+
+484
+01:05:58.930 --> 01:06:01.969
+Toni Wahrstätter: Otherwise, we can take the discussion offline.
+
+485
+01:06:04.770 --> 01:06:05.710
+Toni Wahrstätter: Awesome.
+
+486
+01:06:06.570 --> 01:06:10.789
+Toni Wahrstätter: Then, thanks everyone, and see you at the next Waco Calling 2 weeks.
+
+487
+01:06:13.030 --> 01:06:14.200
+Jared Wasinger: Yup, bye-bye.
+

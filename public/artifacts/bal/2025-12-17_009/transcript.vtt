@@ -1,0 +1,1342 @@
+WEBVTT
+
+1
+00:05:35.380 --> 00:05:39.870
+Toni Wahrstätter: Hello, everyone. Let's give people a few more minutes to join.
+
+2
+00:07:47.140 --> 00:07:50.070
+Toni Wahrstätter: Perfect. Is the stream ready?
+
+3
+00:07:51.750 --> 00:07:52.909
+Akash | ECH: Yeah, be alive.
+
+4
+00:07:59.890 --> 00:08:02.310
+Toni Wahrstätter: Great. One second…
+
+5
+00:08:07.970 --> 00:08:12.769
+Toni Wahrstätter: Just pulling up the… Agenda of today.
+
+6
+00:08:13.090 --> 00:08:14.000
+Toni Wahrstätter: Awesome.
+
+7
+00:08:14.780 --> 00:08:16.180
+Toni Wahrstätter: Is my audio okay?
+
+8
+00:08:18.480 --> 00:08:19.170
+Barnabas: Yep.
+
+9
+00:08:20.500 --> 00:08:21.829
+Toni Wahrstätter: Okay, perfect.
+
+10
+00:08:23.040 --> 00:08:34.729
+Toni Wahrstätter: Welcome, everyone. I post the agenda into the chat. Welcome, everyone. Today is December 17th. It's the 9th EAP7928 breakout call.
+
+11
+00:08:36.110 --> 00:08:40.919
+Toni Wahrstätter: And we still have something on the agenda that,
+
+12
+00:08:41.730 --> 00:08:46.379
+Toni Wahrstätter: basically was the topic of last week. Namely,
+
+13
+00:08:48.170 --> 00:08:56.120
+Toni Wahrstätter: Namely, how long do we store block lab access lists, and how do we make them, accessible over the engine API?
+
+14
+00:08:57.020 --> 00:08:59.020
+Toni Wahrstätter: If you look into the agenda.
+
+15
+00:08:59.170 --> 00:09:06.220
+Toni Wahrstätter: There are 3 PRs, one of them, the second one is against the execution specs, and the other two against the EAP.
+
+16
+00:09:07.350 --> 00:09:10.490
+Toni Wahrstätter: And what is proposed in there is basically
+
+17
+00:09:10.680 --> 00:09:16.409
+Toni Wahrstätter: That we make sure that we keep at least enough block access lists
+
+18
+00:09:17.240 --> 00:09:26.139
+Toni Wahrstätter: Until the weak subjectivity period, and the rational behind this is we want to make sure that, if a node goes offline.
+
+19
+00:09:26.670 --> 00:09:37.460
+Toni Wahrstätter: for less than the week's subjectivity period and wants to catch up by re-execution, then there must be enough block of access lists around, such that,
+
+20
+00:09:37.780 --> 00:09:47.919
+Toni Wahrstätter: Catching up with the head is actually feasible, because, of course, you might need parallelization in the context of re-execution.
+
+21
+00:09:48.200 --> 00:09:49.720
+Toni Wahrstätter: sync.
+
+22
+00:09:51.460 --> 00:09:52.480
+Toni Wahrstätter: So, yeah.
+
+23
+00:09:52.800 --> 00:09:59.249
+Toni Wahrstätter: Have people had time to look into those? Especially, do client teams have any opinions?
+
+24
+00:10:18.070 --> 00:10:25.389
+Toni Wahrstätter: By the way, I almost forgot, this also includes the topic of removing the block web access list from the block body.
+
+25
+00:10:54.770 --> 00:10:57.079
+Toni Wahrstätter: Yeah, I guess there's,
+
+26
+00:10:57.350 --> 00:11:03.759
+Toni Wahrstätter: no one against that. It seems like this was the broad consensus that we reached.
+
+27
+00:11:04.230 --> 00:11:18.650
+Toni Wahrstätter: Also Karim is saying that in the chat, he's okay with removing it from the block body. I remember Gary and Jared were also advocating for removing it from the block body last week. The question that remained was only.
+
+28
+00:11:18.700 --> 00:11:28.810
+Toni Wahrstätter: How does it… how does the ball get from the CL to the EL? So far, it has been passed from the CL via the engine API using the execution payload.
+
+29
+00:11:29.180 --> 00:11:36.490
+Toni Wahrstätter: And Yeah, Justin Karim and me had a call with POTUS yesterday, And…
+
+30
+00:11:37.610 --> 00:11:51.580
+Toni Wahrstätter: POTUS mentioned that the execution payload header will not be stored on the CL site anymore, so we don't have to care about the execution payload header, but we would then just put the block-level access list in the execution payload.
+
+31
+00:11:51.910 --> 00:11:55.080
+Toni Wahrstätter: It goes to the execution layer.
+
+32
+00:11:55.490 --> 00:12:00.630
+Toni Wahrstätter: And the executioner would then need to take the block-level access list, hash it.
+
+33
+00:12:01.400 --> 00:12:03.680
+Toni Wahrstätter: And then start the state transition.
+
+34
+00:12:03.900 --> 00:12:07.490
+Toni Wahrstätter: And afterwards, the CO would use the…
+
+35
+00:12:07.750 --> 00:12:13.389
+Toni Wahrstätter: Hash from the provided block of access list and put it into the block header.
+
+36
+00:12:13.730 --> 00:12:24.190
+Toni Wahrstätter: And in the end, after execution, the EL would compare the generated block level access list that was generated during execution with the block hash.
+
+37
+00:12:24.340 --> 00:12:27.350
+Toni Wahrstätter: And if this check, matches.
+
+38
+00:12:28.220 --> 00:12:36.900
+Toni Wahrstätter: it means that the block level access list was actually exactly the same that was derived during generation.
+
+39
+00:12:42.650 --> 00:12:52.649
+Toni Wahrstätter: So this would make sense. This also means that we have to store, at least 15.7 days of block lab access lists. This is around
+
+40
+00:12:53.040 --> 00:12:56.780
+Toni Wahrstätter: Yeah, you can think of it as a max of 10GB.
+
+41
+00:12:59.940 --> 00:13:02.750
+Toni Wahrstätter: Doesn't fit into memory anymore.
+
+42
+00:13:24.520 --> 00:13:25.540
+Toni Wahrstätter: Great.
+
+43
+00:13:26.430 --> 00:13:35.860
+Toni Wahrstätter: then we can, I guess, if there's, no opinion on that, I would, interpreted as consensus here.
+
+44
+00:13:36.210 --> 00:13:42.730
+Toni Wahrstätter: Because it feels like we already reached that point in the Discord discussion, so…
+
+45
+00:13:43.050 --> 00:13:46.999
+Toni Wahrstätter: Just wanted to bring it up again, that everyone is on the same page.
+
+46
+00:13:47.430 --> 00:13:53.790
+Toni Wahrstätter: What does this actually mean for our tests? Maybe, Rahul or Felipe, do we have to change a lot there now?
+
+47
+00:14:01.900 --> 00:14:04.500
+felipe: Yeah, that's a good question.
+
+48
+00:14:05.970 --> 00:14:11.640
+felipe: Since the block lab, block access list is no longer in the, block body.
+
+49
+00:14:12.280 --> 00:14:15.819
+felipe: I think we need to… Including them in the vector.
+
+50
+00:14:16.420 --> 00:14:17.710
+felipe: Somewhere else.
+
+51
+00:14:18.660 --> 00:14:23.979
+felipe: Just, to have a reference to it. And we'll have to figure out how to arrange that.
+
+52
+00:14:27.940 --> 00:14:30.680
+Toni Wahrstätter: Yeah, it's interesting. What is, like, the starting point?
+
+53
+00:14:30.880 --> 00:14:50.870
+Toni Wahrstätter: from the tests, because we start basically at the EL block, and not at the execution payload, right? Because the execution payload would basically be everything passed from the CL, which is a lot of header fields, plus the withdrawals, if I remember correctly, execution requests, and…
+
+54
+00:14:51.750 --> 00:14:54.739
+Toni Wahrstätter: The transactions itself.
+
+55
+00:15:07.570 --> 00:15:08.820
+Toni Wahrstätter: Oh, maybe…
+
+56
+00:15:09.230 --> 00:15:16.279
+Toni Wahrstätter: Maybe, do you know, Jochen, how we are treating this, or what would be the cleanest way to…
+
+57
+00:15:17.540 --> 00:15:20.470
+Toni Wahrstätter: To, to implement that in the testing framework.
+
+58
+00:15:22.220 --> 00:15:24.690
+jochem-brouwer: So, what's specifically implementing?
+
+59
+00:15:25.370 --> 00:15:30.019
+Toni Wahrstätter: The fact that the block type access list is not part of the block body anymore.
+
+60
+00:15:31.140 --> 00:15:35.589
+Toni Wahrstätter: So, yeah.
+
+61
+00:15:35.790 --> 00:15:41.119
+jochem-brouwer: So, where's this currently, then, a part of? .
+
+62
+00:15:41.940 --> 00:15:45.940
+Toni Wahrstätter: So it comes from the CL as part of the execution payload.
+
+63
+00:15:45.940 --> 00:15:47.650
+jochem-brouwer: Right,
+
+64
+00:15:48.120 --> 00:15:53.380
+jochem-brouwer: to be honest, I don't really know. I think we have to… I will check, how the…
+
+65
+00:15:53.630 --> 00:15:57.439
+jochem-brouwer: Blobs are basically handled, because this is somewhat similar.
+
+66
+00:15:57.720 --> 00:15:59.400
+jochem-brouwer: At this point, I would not know.
+
+67
+00:16:00.040 --> 00:16:17.479
+Toni Wahrstätter: Yeah, I'm wondering if we even need it, if we even need to change something at the tests there. For example, this is a question to you, Felipe. Are the test cases, are each individual test case also checking that the bul is correct? Like, doing a hash check at the end?
+
+68
+00:16:20.470 --> 00:16:22.420
+felipe: Yeah, yeah, so…
+
+69
+00:16:23.240 --> 00:16:30.460
+felipe: Obviously, so we all… we also have, like, the engine version of the tests, right? And these don't actually have…
+
+70
+00:16:31.120 --> 00:16:32.480
+felipe: the full bell.
+
+71
+00:16:32.650 --> 00:16:41.080
+felipe: This will take… Just the block access list, hashed.
+
+72
+00:16:42.240 --> 00:16:48.870
+felipe: And so, honestly, I think for debugging purposes, it's really nice to have them in these test vectors.
+
+73
+00:16:49.030 --> 00:16:52.739
+felipe: But if they're going to be…
+
+74
+00:16:52.850 --> 00:16:56.009
+felipe: If we're gonna have the hash, that's proposed.
+
+75
+00:16:56.490 --> 00:17:01.690
+felipe: then I think this may be the… all we need. It's just not gonna be ideally
+
+76
+00:17:02.760 --> 00:17:05.620
+felipe: Very debuggable, which is not…
+
+77
+00:17:05.780 --> 00:17:09.549
+felipe: Yeah, it's not ideal while we're in, like, such a large testing phase.
+
+78
+00:17:10.480 --> 00:17:19.120
+Toni Wahrstätter: Right, I can see that, yeah. Because the workflow would then look like the following. The CL would pass the execution payload to the EL,
+
+79
+00:17:19.490 --> 00:17:22.339
+Toni Wahrstätter: In the execution payload, there is the full bar.
+
+80
+00:17:22.780 --> 00:17:32.920
+Toni Wahrstätter: and you will then hash the bul. And this is basically where we are currently starting, right? Except that we have both the hash and the bul.
+
+81
+00:17:32.990 --> 00:17:43.939
+Toni Wahrstätter: And now we would basically only have, like, the hash. We would then run execution, would derive a generated bul, would hash it, and compare it with the hash and the header.
+
+82
+00:17:49.710 --> 00:17:55.399
+Toni Wahrstätter: Yeah, this is… this is interesting, because it's… it's like the bowel provided by the seal.
+
+83
+00:17:55.540 --> 00:17:59.990
+Toni Wahrstätter: doesn't… does never need to enter the state transition function on the EL.
+
+84
+00:18:00.430 --> 00:18:05.190
+Toni Wahrstätter: Because the EL, like, if you execute transactions, you will just generate
+
+85
+00:18:05.390 --> 00:18:09.870
+Toni Wahrstätter: the ball for validation. But you never need… to…
+
+86
+00:18:10.090 --> 00:18:17.520
+Toni Wahrstätter: Have the provided bul enter the system in that sense, because it's… it will just be used to…
+
+87
+00:18:17.630 --> 00:18:19.000
+Toni Wahrstätter: to parallelize.
+
+88
+00:18:19.220 --> 00:18:27.899
+Toni Wahrstätter: And in the end, we need a hash of it, at least in the header, to make sure we can actually validate it during execution.
+
+89
+00:18:31.170 --> 00:18:33.980
+Toni Wahrstätter: So the power from the CL should also never
+
+90
+00:18:34.380 --> 00:18:39.269
+Toni Wahrstätter: enter the test cases, but I can see the argument why it makes sense for debugging.
+
+91
+00:18:42.390 --> 00:18:47.489
+jochem-brouwer: So, I just checked, like, it seems that for the blobs,
+
+92
+00:18:47.820 --> 00:19:01.549
+jochem-brouwer: So just to… just to compare that, because in the blobs, it seems that in the test format, indeed, the blobs themselves are not provided, but the blob version hashes are provided, of course, in the block.
+
+93
+00:19:01.890 --> 00:19:07.859
+jochem-brouwer: So, yeah, for… in this case, The debugging would be harder.
+
+94
+00:19:09.420 --> 00:19:19.049
+jochem-brouwer: But of course, like, this is, like, the end result, like, if we were to remove it from the block body, then it's indeed, as you say, like, not part of the state and such information.
+
+95
+00:19:19.330 --> 00:19:25.310
+jochem-brouwer: So this is, like, a logical result, but for the debugging purposes, if we think this is,
+
+96
+00:19:25.650 --> 00:19:30.639
+jochem-brouwer: wanted, then I think we should feedback this in general to the testing framework.
+
+97
+00:19:30.750 --> 00:19:34.250
+jochem-brouwer: That we somehow need, like, this data.
+
+98
+00:19:34.530 --> 00:19:36.669
+jochem-brouwer: To also help de-booking this.
+
+99
+00:19:37.120 --> 00:19:40.199
+jochem-brouwer: But this is the part of how we test it, yeah.
+
+100
+00:19:40.430 --> 00:19:49.350
+Toni Wahrstätter: So then we could either have, like, an optional field in the state transition function or something in the specs? Are you thinking along those lines?
+
+101
+00:19:51.350 --> 00:19:56.690
+jochem-brouwer: So it will be more part of, like, the testing framework itself.
+
+102
+00:19:56.990 --> 00:20:04.699
+jochem-brouwer: how this will be handled in the testing format. So it needs, as you say, like, these optional fields, like, maybe like this metadata or something.
+
+103
+00:20:04.840 --> 00:20:09.139
+jochem-brouwer: That, includes the fill block access list.
+
+104
+00:20:09.310 --> 00:20:10.940
+jochem-brouwer: Which is optional.
+
+105
+00:20:11.100 --> 00:20:18.390
+jochem-brouwer: Because in the end, the clients will… the EL clients will only verify that the hash of this thing is correct.
+
+106
+00:20:18.530 --> 00:20:23.429
+jochem-brouwer: And for debugging, we would, of course, need the expected block access list.
+
+107
+00:20:23.800 --> 00:20:37.989
+jochem-brouwer: So this will be more part of, like, the testing framework, so we need, like, some kind of… how we would fill these tests. You would need some kind of endpoint at the EL, or debug endpoint to get this… the,
+
+108
+00:20:38.600 --> 00:20:46.300
+jochem-brouwer: The expected book access list in order to include this in the testing format, so in the fixture which the clients would consume when testing this.
+
+109
+00:20:51.290 --> 00:20:54.939
+Toni Wahrstätter: Okay, yeah, this sounds better than what I was thinking of.
+
+110
+00:20:55.750 --> 00:20:57.120
+Toni Wahrstätter: Awesome, thank you.
+
+111
+00:20:58.630 --> 00:21:03.619
+Toni Wahrstätter: Yeah, this seems like this is something we need to figure out, like, because we can't…
+
+112
+00:21:03.740 --> 00:21:11.109
+Toni Wahrstätter: We can't lose, this nice feature of having, like, good debug logs that compare them.
+
+113
+00:21:14.540 --> 00:21:21.490
+jochem-brouwer: Yeah, I think what we should do here is to also look a little bit back in how the blobs were tested.
+
+114
+00:21:21.730 --> 00:21:24.699
+jochem-brouwer: Because I think this is somewhat similar.
+
+115
+00:21:24.820 --> 00:21:31.840
+jochem-brouwer: Because I also don't see, like, the, blobs In the, fixtures themselves.
+
+116
+00:21:32.200 --> 00:21:36.340
+jochem-brouwer: So I'm not really sure if that was a problem back then, how this was actually tested.
+
+117
+00:21:37.650 --> 00:21:39.250
+Toni Wahrstätter: Yeah, I think this will be…
+
+118
+00:21:39.250 --> 00:21:39.840
+jochem-brouwer: Yeah.
+
+119
+00:21:39.840 --> 00:21:54.530
+Toni Wahrstätter: Blobs are different, I think, because they don't really interact with execution, so there was… we probably never had, like, a script that compared two blobs with one another, right? You would probably create… have many tests for how you create a blob.
+
+120
+00:21:54.830 --> 00:22:01.220
+Toni Wahrstätter: But then, on a testnet, I… I don't know, actually, but I would assume we did not compare
+
+121
+00:22:01.580 --> 00:22:04.000
+Toni Wahrstätter: Blobs with one another in the tests.
+
+122
+00:22:05.370 --> 00:22:11.739
+jochem-brouwer: Yeah, that would actually make sense, yeah. Okay, let me think about this a little bit, how we should approach this, if it changes, yeah.
+
+123
+00:22:12.280 --> 00:22:14.360
+Toni Wahrstätter: Perfect, thank you.
+
+124
+00:22:15.220 --> 00:22:24.029
+Toni Wahrstätter: Is there anything else we should discuss under this topic of specs and And, testing updates.
+
+125
+00:22:30.600 --> 00:22:31.760
+draganrakita: Maybe I can…
+
+126
+00:22:34.030 --> 00:22:47.470
+draganrakita: About this discussion, are we talking about changing the JSON format for the test? I feel that current format is fine, I'm not sure why we need to change it. I'm not understanding that point.
+
+127
+00:22:49.260 --> 00:22:50.800
+felipe: Yeah,
+
+128
+00:22:51.630 --> 00:22:59.540
+felipe: So if the block access list gets removed from the block body itself, the blocks part of the vectors
+
+129
+00:22:59.960 --> 00:23:02.090
+felipe: Would no longer have this, like.
+
+130
+00:23:02.310 --> 00:23:07.929
+felipe: black access list field, right? And I think what we're just trying to discuss is
+
+131
+00:23:08.390 --> 00:23:11.050
+felipe: It's super useful for debugging,
+
+132
+00:23:11.050 --> 00:23:11.400
+draganrakita: Yeah.
+
+133
+00:23:11.400 --> 00:23:16.269
+felipe: And maybe it can perhaps be, like, an underscored field or something that says, like.
+
+134
+00:23:16.640 --> 00:23:21.719
+felipe: This is not part of the actual block body, but this is, like, useful information for testing.
+
+135
+00:23:21.990 --> 00:23:26.079
+felipe: And I think, yeah, I agree with Jakam that, like.
+
+136
+00:23:26.540 --> 00:23:34.149
+felipe: Somewhere, like, if we decide we want to keep this for debugging, somewhere in some metadata section, it might be really useful to just keep it around.
+
+137
+00:23:34.150 --> 00:23:38.240
+draganrakita: I would even just leave it like that, because it…
+
+138
+00:23:38.600 --> 00:23:55.649
+draganrakita: you have additional fields, LLP or something like that, that is basically… we have a need to have special type to decode the JSON block that's inside the JSON, so we don't care if it's underscored, if this is named something else, or if this name…
+
+139
+00:23:56.010 --> 00:23:58.410
+draganrakita: Block, access, list, ball, or whatever.
+
+140
+00:24:00.170 --> 00:24:00.890
+draganrakita: Okay.
+
+141
+00:24:01.060 --> 00:24:01.620
+draganrakita: Thanks.
+
+142
+00:24:01.620 --> 00:24:06.320
+felipe: Yes, yeah, that makes sense. I was looking at the RLP just now as well, and…
+
+143
+00:24:08.460 --> 00:24:19.690
+draganrakita: Yeah, it's special format, it's special, like, it's not… you cannot use block to… to deserialize that kind of JSO, you need special type that's going to do that.
+
+144
+00:24:20.690 --> 00:24:24.779
+draganrakita: But, yeah, I think that's, like, okay, it's a small decision.
+
+145
+00:24:26.050 --> 00:24:28.029
+felipe: Yeah, it's a small decision, yeah.
+
+146
+00:24:35.390 --> 00:24:39.720
+Toni Wahrstätter: Perfect, yeah, we can also resolve that topic, async afterwards.
+
+147
+00:24:39.880 --> 00:24:45.309
+Toni Wahrstätter: After looking deep into it, like, what is the… Most efficient and clean way.
+
+148
+00:24:45.720 --> 00:24:55.610
+Toni Wahrstätter: To still get, like, the logging, but on the other hand, we also don't want, the specs to deviate from what client should actually do.
+
+149
+00:25:05.930 --> 00:25:14.080
+Toni Wahrstätter: Any other opinion on that? Also on the other topic of the retention period? So there are two topics now.
+
+150
+00:25:14.510 --> 00:25:17.270
+Toni Wahrstätter: The bowel being removed from the block body.
+
+151
+00:25:17.920 --> 00:25:24.849
+Toni Wahrstätter: Stored separately, and then… Secondly, the retention period of…
+
+152
+00:25:25.120 --> 00:25:30.350
+Toni Wahrstätter: 3,533 epochs, which is, like.
+
+153
+00:25:30.990 --> 00:25:32.640
+Toni Wahrstätter: A little more than 2 weeks.
+
+154
+00:25:55.730 --> 00:25:57.780
+Toni Wahrstätter: Perfect, then I guess we can…
+
+155
+00:25:58.170 --> 00:26:01.449
+Toni Wahrstätter: Move on to the next topic, let me quickly check.
+
+156
+00:26:01.670 --> 00:26:04.030
+Toni Wahrstätter: But there's nothing in the chat neither.
+
+157
+00:26:05.170 --> 00:26:06.530
+Toni Wahrstätter: Looks good.
+
+158
+00:26:06.920 --> 00:26:07.810
+Toni Wahrstätter: Perfect.
+
+159
+00:26:08.730 --> 00:26:11.070
+Toni Wahrstätter: 10… the…
+
+160
+00:26:12.180 --> 00:26:21.850
+Toni Wahrstätter: Last update on the agenda that we have today is client updates on optimizations. We can combine it with, in general, client updates.
+
+161
+00:26:21.970 --> 00:26:27.710
+Toni Wahrstätter: Kind updates on optimizations is very specific, because
+
+162
+00:26:27.840 --> 00:26:30.410
+Toni Wahrstätter: As discussed a few weeks ago.
+
+163
+00:26:30.560 --> 00:26:44.790
+Toni Wahrstätter: we need certain optimizations also for the repricing work that is going on for Glamstadam. So, for example, in order to get reliable benchmarks for the repricing, we at least need a client
+
+164
+00:26:45.320 --> 00:26:48.689
+Toni Wahrstätter: Or, or better, multiple clients that have
+
+165
+00:26:49.250 --> 00:26:53.980
+Toni Wahrstätter: parallel execution implemented, and parallel I.O.
+
+166
+00:26:54.920 --> 00:27:04.220
+Toni Wahrstätter: Because those… Would then inform us, especially on the state-related pricing, and people are… Blocked by that.
+
+167
+00:27:04.370 --> 00:27:13.599
+Toni Wahrstätter: for doing benchmarks, for the repricing. Is there any work going on? I remember, like, there were clients that were already working on
+
+168
+00:27:14.030 --> 00:27:15.920
+Toni Wahrstätter: parallel I.O.
+
+169
+00:27:17.550 --> 00:27:19.580
+Toni Wahrstätter: Maybe someone could give an update.
+
+170
+00:27:25.910 --> 00:27:34.209
+Karim T. (matkt): For example, on Bezoo, so, we have the parallel execution implemented, so it's, we are doing some tests currently.
+
+171
+00:27:34.520 --> 00:27:42.990
+Karim T. (matkt): For the parallel I.O, as I said, it's not yet implemented, we didn't have time for the moment, but,
+
+172
+00:27:44.570 --> 00:27:50.540
+Karim T. (matkt): It depends on when we will start the DevNet, but I think we'll be able to have something really,
+
+173
+00:27:50.920 --> 00:27:54.039
+Karim T. (matkt): Those are next divinets, in my opinion.
+
+174
+00:27:56.570 --> 00:28:00.370
+Toni Wahrstätter: Awesome, thank you And when we say parallel I.O,
+
+175
+00:28:00.830 --> 00:28:04.949
+Toni Wahrstätter: we mean, this parallel batch I.O.
+
+176
+00:28:05.140 --> 00:28:09.560
+Toni Wahrstätter: Where you load everything in one… in one go, basically, right?
+
+177
+00:28:10.180 --> 00:28:11.230
+Karim T. (matkt): Yes, yes.
+
+178
+00:28:12.300 --> 00:28:18.690
+Toni Wahrstätter: Okay, yeah, because I also referred to it as parallel I.O, but I think parallel batch I.O. or batch I.O.
+
+179
+00:28:18.800 --> 00:28:23.290
+Toni Wahrstätter: Might be even more accurate, just to not, mix things up.
+
+180
+00:28:23.670 --> 00:28:26.049
+Toni Wahrstätter: Any other… Yeah, go ahead.
+
+181
+00:28:26.260 --> 00:28:32.710
+Karim T. (matkt): I just wanted to say, it depends when we want to start this DevNet, because there is some vacation, etc, so…
+
+182
+00:28:33.400 --> 00:28:37.549
+Karim T. (matkt): Yeah, I don't know when it would be ready, but…
+
+183
+00:28:38.890 --> 00:28:43.659
+Toni Wahrstätter: Yeah, what's your plan, Stefan? Maybe you can give a small update on…
+
+184
+00:28:44.220 --> 00:28:45.850
+Stefan Starflinger: On how we're doing here.
+
+185
+00:28:46.650 --> 00:29:00.860
+Stefan Starflinger: So, it seems, that clients are much more stable now, which is really, really nice. So, the critical path most clients, seem to agree on now, which is great. We can start the dead at one. I think…
+
+186
+00:29:01.520 --> 00:29:07.829
+Stefan Starflinger: Today or tomorrow, even. But unfortunately, there are, like, holidays coming up, and most people won't be doing much.
+
+187
+00:29:07.950 --> 00:29:14.850
+Stefan Starflinger: But I mean, if that's not a problem, we can… and if some people are working through the holidays, I can go ahead and start that at one.
+
+188
+00:29:15.140 --> 00:29:27.309
+Stefan Starflinger: But if most people will say, like, no, probably not really worth it, we can also do it, beginning of January, straight after. I'm open to… to that. Both is fine with me.
+
+189
+00:29:34.520 --> 00:29:40.330
+mark: Yeah, so, from an Aragon perspective, we're in a bit of a strange place, in that…
+
+190
+00:29:40.540 --> 00:29:50.970
+mark: we're quite well advanced with optimizations, but we're not running… we're not passing Hive tests, basically. So…
+
+191
+00:29:51.590 --> 00:29:59.340
+mark: I… so… we've got two optimization tasks going on at the moment. One is…
+
+192
+00:29:59.670 --> 00:30:07.750
+mark: Execution optimization. The other is parallelizing our, our, commitment calculation.
+
+193
+00:30:07.940 --> 00:30:14.069
+mark: I think the execution parallelization and the kind of parallel I.O.
+
+194
+00:30:15.780 --> 00:30:20.770
+mark: We're just testing at the moment, and probably by the end of this week, we'll have a first version of it.
+
+195
+00:30:21.310 --> 00:30:30.750
+mark: Now… when we're ready from a BALS DevNet perspective, is dependent on getting the,
+
+196
+00:30:31.210 --> 00:30:37.049
+mark: the hive tests that are failing at the moment, passing, which I'm also shown
+
+197
+00:30:37.170 --> 00:30:43.550
+mark: basically, I spoke to him before the call, and he's expecting that to get fixed by the end of this week.
+
+198
+00:30:43.710 --> 00:30:50.610
+mark: If he doesn't, because I'm working at least part of next week.
+
+199
+00:30:50.840 --> 00:30:56.379
+mark: I'll switch from doing the optimization work that I'm working on to actually just getting us through the,
+
+200
+00:30:56.710 --> 00:31:06.130
+mark: Through the, the hive testing. So I think probably by… kind of… by… mid.
+
+201
+00:31:06.820 --> 00:31:11.910
+mark: by the week between Christmas and New Year, I think we should have… we should have both of them completed.
+
+202
+00:31:13.760 --> 00:31:14.650
+mark: If that makes sense.
+
+203
+00:31:14.650 --> 00:31:22.649
+Toni Wahrstätter: Awesome, yeah. With both of them, you now meant parallel execution and parallel post-state route calculation, right? Or was the…
+
+204
+00:31:22.840 --> 00:31:28.879
+mark: Well, we're basically… so, parallel execution, parallel… so, parallel…
+
+205
+00:31:29.330 --> 00:31:38.929
+mark: what we're doing is parallel execution, parallel state calculation, right, and parallel I.O. There are kind of three pieces.
+
+206
+00:31:39.450 --> 00:31:43.000
+mark: And… we are exp…
+
+207
+00:31:43.320 --> 00:31:48.190
+mark: The… our latest iteration of the code runs all three of those things in parallel with each other.
+
+208
+00:31:49.330 --> 00:31:56.110
+mark: And also, execution and… Commitment calculations, R.
+
+209
+00:31:56.240 --> 00:31:58.609
+mark: parallel themselves, if you see what I mean.
+
+210
+00:31:59.760 --> 00:32:14.730
+Toni Wahrstätter: Yeah, okay, I think I gotcha, yeah. And I can think of the parallel batch I.O. as basically a process that just, goes through the ball, fetches everything into cache while the execution is already, like, starting.
+
+211
+00:32:14.930 --> 00:32:30.249
+mark: Yeah, and the commitment calculation is also starting. And effectively, the way that it works is whichever gets to read… whichever of those three processes gets to read the data first will read it, with the expectation that the…
+
+212
+00:32:31.580 --> 00:32:36.389
+mark: the… the data fetcher will get there before the other two, if you see what I mean.
+
+213
+00:32:38.380 --> 00:32:39.920
+Toni Wahrstätter: Yeah, this makes sense.
+
+214
+00:32:39.920 --> 00:32:48.170
+mark: Yeah, yeah, because given we start fetching data when, you know, as soon as we get the block, by the time we get to
+
+215
+00:32:48.360 --> 00:32:59.279
+mark: the other parallel processing, the assumption is that we'll have everything, everything cached by then. If for any reason we haven't, we'll have, you know, we'll go and get it during that parallel process.
+
+216
+00:33:01.910 --> 00:33:05.990
+mark: And then we'll see how fast all that goes.
+
+217
+00:33:08.570 --> 00:33:09.490
+Toni Wahrstätter: Perfect.
+
+218
+00:33:09.490 --> 00:33:24.579
+mark: Yeah. I mean, I think the slight problem that we've got is we really need to be on the BALS testnet to get any decent data out of those benchmarks, because we need the bowels in order to actually have, like, perfect parallel execution. See what I mean?
+
+219
+00:33:25.310 --> 00:33:27.009
+Toni Wahrstätter: Yeah, I can see that.
+
+220
+00:33:28.890 --> 00:33:31.170
+Toni Wahrstätter: Okay, yeah, thanks a lot for the update.
+
+221
+00:33:32.310 --> 00:33:46.019
+jochem-brouwer: Yeah, maybe just to chime in on the benchmarks and the testing, we are currently also working on benchmarks, which are specifically targeted for the block-level access lists, and for these, what we do is we create benchmarks.
+
+222
+00:33:46.250 --> 00:33:50.700
+jochem-brouwer: Which, have transactions, which you cannot execute,
+
+223
+00:33:50.930 --> 00:33:54.839
+jochem-brouwer: Parallelized, because these transactions interact with each other.
+
+224
+00:33:54.980 --> 00:33:56.450
+jochem-brouwer: So,
+
+225
+00:33:56.890 --> 00:34:09.160
+jochem-brouwer: With these benchmarks, you should see that if you use the block-level access list correctly, then you can actually parallelize those, and if you don't use block-level access list, then you have to execute these transactions sequentially.
+
+226
+00:34:09.250 --> 00:34:26.489
+jochem-brouwer: So this should also be part of, like, the benchmarking effort that you can really see, okay, does it work or does it not work? Because also for these DevNets, like, if you have a very optimistic, or not very optimistic, but, like, well, a somewhat optimistic prefetcher.
+
+227
+00:34:26.780 --> 00:34:38.459
+jochem-brouwer: where you just start out transactions, where you start on the pre-state of the current block, then in most cases, I would say, and I think Tony also has this nice site.
+
+228
+00:34:38.639 --> 00:34:56.699
+jochem-brouwer: Where you can see, like, the interactions of these transactions. Like, most transactions don't actually interact with each other. So, if we would, well, I would say somewhat naively, look at the block of access to this result on mainnet blocks, then we can already somewhat parallelize those.
+
+229
+00:34:56.730 --> 00:35:12.720
+jochem-brouwer: But of course, we want to see, like, the actual effort if we want to create… if we create some blocks where you have to execute these transactions sequentially if there is no block-level exit list, and when there is a block-level exit list, you can actually execute this parallelized.
+
+230
+00:35:12.760 --> 00:35:20.839
+jochem-brouwer: And then you can see if you have implemented this correctly, because this should, in the end, lead up to, like, well, close to the amount of threads.
+
+231
+00:35:20.950 --> 00:35:24.119
+jochem-brouwer: Which you run, as a kind of speedup factor.
+
+232
+00:35:24.280 --> 00:35:28.940
+jochem-brouwer: So I just wanted to share that this is an effort for the benchmarking part of this.
+
+233
+00:35:28.940 --> 00:35:31.690
+mark: Yeah, so, just on that, it's kind of…
+
+234
+00:35:32.030 --> 00:35:45.100
+mark: on mainnet at the moment, we get, like, a 2.5 parallelization factor by just running parallel execution with no bounds, so I'm not sure whether what you're talking about is the difference between serial execution
+
+235
+00:35:45.350 --> 00:35:47.320
+mark: And,
+
+236
+00:35:47.790 --> 00:35:58.030
+mark: And bowels, or the difference between running, let's call it non-bowel parallelization, where you get, interactions.
+
+237
+00:35:58.810 --> 00:36:01.940
+mark: Now, obviously, if you create a block where
+
+238
+00:36:02.090 --> 00:36:05.580
+mark: Everything's dependent on everything else, it will become serial.
+
+239
+00:36:05.750 --> 00:36:07.270
+mark: Basically.
+
+240
+00:36:08.010 --> 00:36:23.490
+jochem-brouwer: Yes, but the key point of the block-level access list is that you can now have the pre-state of the transaction, and read this from the block access list. So that is when you can actually use the block-level access list to know what the pre-state is before, like, any transaction of the block.
+
+241
+00:36:23.490 --> 00:36:35.650
+jochem-brouwer: And then you can use that to parallelize the transaction. And if you would not have the book-level access list, then this is not possible, because you would need to execute the previous transactions in order to execute the current transaction, because you need to.
+
+242
+00:36:35.650 --> 00:36:38.639
+mark: Yeah, only, only, only if there's a dependency.
+
+243
+00:36:39.370 --> 00:36:48.320
+jochem-brouwer: Yes, exactly. So these benchmarks, they create these tests where, without a block-level access list, you cannot
+
+244
+00:36:48.380 --> 00:36:59.629
+jochem-brouwer: Execute them, well, how you would execute them now, like, parallelized, because then you would end up with a different statehood than if you would execute them, sequentially.
+
+245
+00:37:01.290 --> 00:37:12.300
+Toni Wahrstätter: Yeah, I understand it as essentially as a worst-case for today scenario. Basically, it would force you to sequential execution today.
+
+246
+00:37:12.650 --> 00:37:21.849
+Toni Wahrstätter: And with Block Live Access List, you should get to parallel execution, and then you should, like, see a steep drop in execution time.
+
+247
+00:37:22.570 --> 00:37:35.469
+Toni Wahrstätter: Would be interesting to think about, okay, could we have, similar scenarios, for I.O. and the post-stateload calculation? I would assume, like, I.O. is just doing as many S loads as possible.
+
+248
+00:37:35.560 --> 00:37:45.299
+Toni Wahrstätter: We have benchmarks on that, and parallel state route, probably doing as many S stores as possible, which we should also have.
+
+249
+00:37:45.490 --> 00:37:51.780
+Toni Wahrstätter: Because those will be interesting to test, even with block web access lists afterwards, like, what is the…
+
+250
+00:37:51.910 --> 00:38:03.479
+Toni Wahrstätter: Worst case, is it, like, a block that is well-parallelizable? Because every block is parallelizable, but has a lot of overhead when it comes to post-state route, or is it I.O?
+
+251
+00:38:03.620 --> 00:38:09.190
+Toni Wahrstätter: This is still something we have to figure out, and also depends a lot on how we do the repricing in the end.
+
+252
+00:38:18.080 --> 00:38:23.080
+Toni Wahrstätter: Awesome. Any other client team that has an update on…
+
+253
+00:38:24.400 --> 00:38:29.709
+Toni Wahrstätter: How is it going, and how is it going, especially with regards to the optimizations?
+
+254
+00:38:31.740 --> 00:38:43.999
+Marc: I, for another mind, made some good progress on the parallel transaction execution and state route computation. Haven't started on the, batteries yet.
+
+255
+00:38:44.420 --> 00:38:55.289
+Marc: Also just, fixing issues, so it seems like we're passing all of the RLP tests for the new, release. I'm just, checking out the engine tests as well.
+
+256
+00:38:55.520 --> 00:38:56.880
+Marc: Yeah, that's it.
+
+257
+00:39:03.380 --> 00:39:04.599
+Toni Wahrstätter: Thank you very much.
+
+258
+00:39:04.900 --> 00:39:07.970
+Toni Wahrstätter: Any other client team with an update that…
+
+259
+00:39:08.900 --> 00:39:11.720
+Toni Wahrstätter: We forgot that we didn't cover so far?
+
+260
+00:39:12.450 --> 00:39:19.430
+draganrakita: From Redside, parallel state route is in progress.
+
+261
+00:39:19.750 --> 00:39:27.049
+draganrakita: And, parallel execution is… I think Matt started working on it.
+
+262
+00:39:27.720 --> 00:39:32.920
+draganrakita: Yeah, we had one bug with self-destruct with the last, ball.
+
+263
+00:39:33.040 --> 00:39:35.749
+draganrakita: 2-0 test that I fixed.
+
+264
+00:39:36.880 --> 00:39:38.910
+draganrakita: Yeah, that's it.
+
+265
+00:39:42.450 --> 00:39:43.919
+Toni Wahrstätter: Great, thank you very much.
+
+266
+00:39:46.580 --> 00:39:50.520
+Toni Wahrstätter: Did we forget any client team now? Is someone from GAF here?
+
+267
+00:39:52.650 --> 00:39:56.210
+Toni Wahrstätter: Otherwise we can also check async.
+
+268
+00:39:57.930 --> 00:39:59.440
+Toni Wahrstätter: Doesn't look like it.
+
+269
+00:40:01.040 --> 00:40:02.349
+Toni Wahrstätter: Yeah, nevermind.
+
+270
+00:40:05.270 --> 00:40:20.910
+Toni Wahrstätter: Right, is there any other topic we should discuss today? I would say we definitely need… would be great if we decide, should we launch the DevNet, pre the holidays? I saw Stefan ask that question in the chat.
+
+271
+00:40:21.540 --> 00:40:26.200
+Toni Wahrstätter: It feels like it's… it might be worth to do so. What's your feeling, Stefan?
+
+272
+00:40:28.070 --> 00:40:37.090
+Stefan Starflinger: I think, I can go ahead with the clients that are running smoothly, and it's not a problem to add clients later, as well, as soon as you're ready.
+
+273
+00:40:37.310 --> 00:40:42.590
+Stefan Starflinger: I can deploy that. It's just not good to start with two little clients that are stable.
+
+274
+00:40:43.840 --> 00:40:49.949
+Toni Wahrstätter: Right, which clients, are stable right now? I saw it's Raph and NimbleCL, right?
+
+275
+00:40:49.950 --> 00:40:58.270
+Stefan Starflinger: Nethermine, and Noombus are running pretty smoothly at the moment, and Bezos just has one issue with the call.
+
+276
+00:40:58.730 --> 00:41:06.610
+Stefan Starflinger: That they're fixing so far. And Aragon, I'm still waiting on the BAL Definite One branch to… to try that out.
+
+277
+00:41:08.360 --> 00:41:11.969
+Toni Wahrstätter: Awesome. Yeah, this sounds like it might be worth it, huh?
+
+278
+00:41:12.210 --> 00:41:19.490
+Stefan Starflinger: to phrase it differently, is there any client that, will benefit from having the DevNet up, over the holidays?
+
+279
+00:41:34.030 --> 00:41:37.719
+Toni Wahrstätter: Yeah, seems like we're still very early and we have time, so…
+
+280
+00:41:38.170 --> 00:41:44.050
+Toni Wahrstätter: I'm also fine with delaying the deflate, and then making sure we have the…
+
+281
+00:41:45.260 --> 00:41:50.239
+Toni Wahrstätter: The bowel block body separation already implemented?
+
+282
+00:41:50.720 --> 00:41:53.920
+Toni Wahrstätter: And same for the retention period, and that…
+
+283
+00:41:54.640 --> 00:42:00.389
+Toni Wahrstätter: kind of things. I'm wondering, for client teams, like, how much work is this in addition to
+
+284
+00:42:01.070 --> 00:42:04.639
+Toni Wahrstätter: Store files on disk, and…
+
+285
+00:42:04.770 --> 00:42:08.539
+Toni Wahrstätter: Keep some of them in memory, which might be needed for syncing.
+
+286
+00:42:24.910 --> 00:42:30.259
+Stefan Starflinger: Yeah, I also kind of agree with Barnabas, we shouldn't change too much now.
+
+287
+00:42:30.260 --> 00:42:32.020
+Toni Wahrstätter: No, no, I wouldn't change it now.
+
+288
+00:42:32.020 --> 00:42:32.560
+Stefan Starflinger: So…
+
+289
+00:42:33.100 --> 00:42:39.119
+Toni Wahrstätter: Yeah, I wouldn't change it now, it was more like we could… we could ship a defnet with the version as is.
+
+290
+00:42:39.320 --> 00:42:45.499
+Toni Wahrstätter: And so, with exactly what you mentioned earlier, where clients are already, like, interoping.
+
+291
+00:42:45.930 --> 00:42:50.170
+Toni Wahrstätter: And then, because in the end, it's a small change, to move the…
+
+292
+00:42:50.590 --> 00:42:54.030
+Toni Wahrstätter: the ball out from the block body. It's just,
+
+293
+00:42:54.160 --> 00:43:00.879
+Toni Wahrstätter: not something we have dealt with in the past, so it's more like, I guess, complexity on the testing side and so on.
+
+294
+00:43:01.050 --> 00:43:06.810
+Toni Wahrstätter: And definitely should not go in a dev lab that we would want to launch before the holidays.
+
+295
+00:43:15.130 --> 00:43:16.599
+Stefan Starflinger: Yeah, that sounds good.
+
+296
+00:43:19.420 --> 00:43:21.850
+Toni Wahrstätter: So, in this case, it feels like we…
+
+297
+00:43:22.710 --> 00:43:28.489
+Toni Wahrstätter: will launch at DevNet before the holidays, or what… what's the… what's the outcome now?
+
+298
+00:43:30.380 --> 00:43:32.250
+Stefan Starflinger: Yeah, I think we can do it.
+
+299
+00:43:32.700 --> 00:43:33.760
+Stefan Starflinger: Another 30 cup.
+
+300
+00:43:34.240 --> 00:43:40.089
+Stefan Starflinger: we should go ahead. Otherwise, we can just then, with the changes, launch another definite as well.
+
+301
+00:43:42.170 --> 00:43:51.720
+Toni Wahrstätter: Exactly, yeah. We can then… we can then launch another DevNet, later. It won't… also, those changes won't affect, like, the smaller…
+
+302
+00:43:51.890 --> 00:43:59.360
+Toni Wahrstätter: Or… Difficult details of the EAP, like, what content about should.
+
+303
+00:43:59.570 --> 00:44:00.470
+Toni Wahrstätter: should have.
+
+304
+00:44:09.860 --> 00:44:10.910
+Toni Wahrstätter: Great.
+
+305
+00:44:12.990 --> 00:44:30.320
+Toni Wahrstätter: Yeah, this is… this was basically the last agenda point we had for this week. It seems like, to summarize what we covered today, we have broad agreement on both topics of the retention period being the week subjectivity period.
+
+306
+00:44:30.830 --> 00:44:35.010
+Toni Wahrstätter: Of around 3,500 epochs, a little more.
+
+307
+00:44:35.430 --> 00:44:45.090
+Toni Wahrstätter: and that we separate the block of access list from the Yelp block. It travels through the execution payload via the engine API.
+
+308
+00:44:45.840 --> 00:44:48.890
+Toni Wahrstätter: And… Yep.
+
+309
+00:44:50.420 --> 00:44:53.460
+Toni Wahrstätter: This is basically, what we covered today.
+
+310
+00:44:53.700 --> 00:44:59.470
+Toni Wahrstätter: Anything else someone wants to bring up or discuss before we wrap up?
+
+311
+00:45:00.830 --> 00:45:01.860
+Toni Wahrstätter: Jorgen, yeah.
+
+312
+00:45:02.090 --> 00:45:07.389
+jochem-brouwer: Yeah, I just wanted to, say, to repeat, Karim from chat.
+
+313
+00:45:07.500 --> 00:45:09.399
+jochem-brouwer: He said…
+
+314
+00:45:09.720 --> 00:45:13.409
+jochem-brouwer: Because I'm also not sure if the chat is in the stream or not, so it's nice for the…
+
+315
+00:45:13.850 --> 00:45:15.530
+jochem-brouwer: And…
+
+316
+00:45:15.810 --> 00:45:26.010
+jochem-brouwer: the thing afterwards, but, he says, could, we are also in the testnet having the two nodes configuration with and without, the block driver access list? I think this is a very good point.
+
+317
+00:45:26.010 --> 00:45:42.220
+jochem-brouwer: Because then we can see, like, the impact with the block-level access list, which I have on the performance. Because I think at some point, like, we have the implementation, so the spec of the block-level access list, but this also implicitly means that clients have to implement this parallelization.
+
+318
+00:45:42.380 --> 00:45:44.060
+jochem-brouwer: And,
+
+319
+00:45:44.300 --> 00:45:49.289
+jochem-brouwer: I think, like, as a good measurement, it's also nice to have, like, these two kinds of nodes on the testnet.
+
+320
+00:45:49.490 --> 00:45:57.230
+jochem-brouwer: And also as a verification that these block-level access lists are implemented correctly in terms of the optimizations and the parallelization of it.
+
+321
+00:45:57.410 --> 00:46:01.170
+jochem-brouwer: So just wanted to mention that. Nice point from Corrine, yeah.
+
+322
+00:46:01.720 --> 00:46:05.740
+Toni Wahrstätter: Yeah, it's a good point. I think we discussed it at some point on…
+
+323
+00:46:05.870 --> 00:46:15.390
+Toni Wahrstätter: The 7th or… the sixth or 7th breakout call, where clients basically agreed that every client will have, like, a flag implemented.
+
+324
+00:46:15.480 --> 00:46:26.059
+Toni Wahrstätter: for… are the… do we actually use the read values for patch I.O, or don't we make use of them? And this will then later help us to
+
+325
+00:46:26.290 --> 00:46:32.859
+Toni Wahrstätter: Determine the impact of the reads or of the state locations, onto the performance.
+
+326
+00:46:33.770 --> 00:46:36.909
+Toni Wahrstätter: Perfect, yeah, thanks for… For mentioning that.
+
+327
+00:46:39.440 --> 00:46:40.410
+Toni Wahrstätter: Awesome.
+
+328
+00:46:41.110 --> 00:46:45.680
+Toni Wahrstätter: Any more… Topics before we wrap up.
+
+329
+00:46:59.070 --> 00:47:01.089
+Toni Wahrstätter: Seems like it's not the case.
+
+330
+00:47:01.870 --> 00:47:05.389
+Toni Wahrstätter: Then, I would say we wrap up earlier today.
+
+331
+00:47:06.100 --> 00:47:10.299
+Toni Wahrstätter: And see each other on the next breakout call in two weeks.
+
+332
+00:47:13.290 --> 00:47:15.010
+Toni Wahrstätter: Thanks, everyone.
+
+333
+00:47:17.680 --> 00:47:19.160
+jochem-brouwer: See you! Bye-bye.
+
+334
+00:47:19.160 --> 00:47:19.930
+Marc: Bye, thanks.
+
+335
+00:47:20.610 --> 00:47:21.350
+felipe: Bye.
+

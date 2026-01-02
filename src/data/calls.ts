@@ -81,6 +81,9 @@ export const protocolCalls: Call[] = [
   { type: 'epbs', date: '2025-09-26', number: '024', path: 'epbs/024' },
   { type: 'epbs', date: '2025-10-10', number: '025', path: 'epbs/025' },
   { type: 'epbs', date: '2025-10-24', number: '026', path: 'epbs/026' },
+  { type: 'epbs', date: '2025-11-07', number: '027', path: 'epbs/027' },
+  { type: 'epbs', date: '2025-12-05', number: '028', path: 'epbs/028' },
+  { type: 'epbs', date: '2025-12-19', number: '029', path: 'epbs/029' },
 
   // BAL calls
   { type: 'bal', date: '2025-08-27', number: '001', path: 'bal/001' },
@@ -88,12 +91,19 @@ export const protocolCalls: Call[] = [
   { type: 'bal', date: '2025-09-24', number: '003', path: 'bal/003' },
   { type: 'bal', date: '2025-10-08', number: '004', path: 'bal/004' },
   { type: 'bal', date: '2025-10-22', number: '005', path: 'bal/005' },
+  { type: 'bal', date: '2025-11-05', number: '006', path: 'bal/006' },
+  { type: 'bal', date: '2025-11-19', number: '007', path: 'bal/007' },
+  { type: 'bal', date: '2025-12-03', number: '008', path: 'bal/008' },
+  { type: 'bal', date: '2025-12-17', number: '009', path: 'bal/009' },
 
   // FOCIL calls
   { type: 'focil', date: '2025-09-09', number: '019', path: 'focil/019' },
   { type: 'focil', date: '2025-09-23', number: '020', path: 'focil/020' },
   { type: 'focil', date: '2025-10-07', number: '021', path: 'focil/021' },
   { type: 'focil', date: '2025-10-21', number: '022', path: 'focil/022' },
+  { type: 'focil', date: '2025-11-04', number: '023', path: 'focil/023' },
+  { type: 'focil', date: '2025-12-02', number: '024', path: 'focil/024' },
+  { type: 'focil', date: '2025-12-16', number: '025', path: 'focil/025' },
 ];
 
 // Helper to get recent calls

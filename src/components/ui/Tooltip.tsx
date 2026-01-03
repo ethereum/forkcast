@@ -16,7 +16,7 @@ export const Tooltip: React.FC<TooltipProps> = ({
   position = 'top'
 }) => {
   const [isVisible, setIsVisible] = useState(false);
-  const triggerRef = useRef<HTMLDivElement>(null);
+  const triggerRef = useRef<HTMLSpanElement>(null);
 
   const getTooltipStyle = (): React.CSSProperties => {
     if (!triggerRef.current) return {};
@@ -50,7 +50,7 @@ export const Tooltip: React.FC<TooltipProps> = ({
   };
 
   return (
-    <div
+    <span
       ref={triggerRef}
       className={`relative ${className}`}
       onMouseEnter={() => setIsVisible(true)}
@@ -58,13 +58,13 @@ export const Tooltip: React.FC<TooltipProps> = ({
     >
       {children}
       {isVisible && (
-        <div
-          className="bg-white dark:bg-slate-800 border-2 border-purple-300 dark:border-purple-600 text-slate-900 dark:text-slate-100 text-xs px-3 py-1.5 rounded-lg whitespace-nowrap z-[9999] shadow-xl"
+        <span
+          className="bg-white dark:bg-slate-800 border-2 border-purple-300 dark:border-purple-600 text-slate-900 dark:text-slate-100 text-xs px-3 py-1.5 rounded-lg whitespace-nowrap z-[9999] shadow-xl block"
           style={getTooltipStyle()}
         >
           {content || text}
-        </div>
+        </span>
       )}
-    </div>
+    </span>
   );
 };

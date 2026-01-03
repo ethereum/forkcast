@@ -8,6 +8,15 @@ import TldrSummary from './TldrSummary';
 import CallSearch from './CallSearch';
 import ThemeToggle from '../ui/ThemeToggle';
 import { protocolCalls } from '../../data/calls';
+import { eipsData } from '../../data/eips';
+import { EIP, ForkRelationship } from '../../types/eip';
+
+// Mapping of breakout call types to their associated EIP IDs
+const BREAKOUT_EIP_MAP: Record<string, number> = {
+  epbs: 7732,
+  bal: 7928,
+  focil: 7805,
+};
 
 interface CallData {
   type: string;
@@ -832,6 +841,25 @@ const CallPage: React.FC = () => {
     }
   };
 
+  // Get associated EIP info for breakout calls
+  const getBreakoutEipInfo = (): { eip: EIP; latestFork: ForkRelationship | null } | null => {
+    const callType = callData.type.toLowerCase();
+    const eipId = BREAKOUT_EIP_MAP[callType];
+    if (!eipId) return null;
+
+    const eip = eipsData.find(e => e.id === eipId);
+    if (!eip) return null;
+
+    // Get the latest fork relationship (last in array, typically the most current upgrade)
+    const latestFork = eip.forkRelationships.length > 0
+      ? eip.forkRelationships[eip.forkRelationships.length - 1]
+      : null;
+
+    return { eip, latestFork };
+  };
+
+  const breakoutEipInfo = getBreakoutEipInfo();
+
   const parseVTTTranscript = (text: string) => {
     const lines = text.split('\n');
     const entries: Array<{ timestamp: string; speaker: string; text: string }> = [];
@@ -1029,6 +1057,23 @@ const CallPage: React.FC = () => {
                         >
                           #{callConfig.issue}
                         </a>
+                      </div>
+                    )}
+                    {breakoutEipInfo && (
+                      <div className="flex items-center gap-2">
+                        <span className="text-slate-500 dark:text-slate-400">📋</span>
+                        <span className="text-slate-600 dark:text-slate-300">EIP:</span>
+                        <Link
+                          to={`/eips/${breakoutEipInfo.eip.id}`}
+                          className="text-blue-600 hover:text-blue-800 dark:text-blue-400 dark:hover:text-blue-200 font-medium underline decoration-1 underline-offset-2"
+                        >
+                          {breakoutEipInfo.eip.id}
+                        </Link>
+                        {breakoutEipInfo.latestFork && (
+                          <span className="text-slate-500 dark:text-slate-400">
+                            ({breakoutEipInfo.latestFork.statusHistory[breakoutEipInfo.latestFork.statusHistory.length - 1]?.status} for {breakoutEipInfo.latestFork.forkName}{breakoutEipInfo.latestFork.isHeadliner ? ', Headliner' : ''})
+                          </span>
+                        )}
                       </div>
                     )}
                   </div>

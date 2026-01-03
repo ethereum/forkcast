@@ -103,8 +103,14 @@ export const EipTimeline: React.FC<EipTimelineProps> = ({ eip }) => {
   sortedForks.forEach((fork) => {
     const upgradeOrder = getUpgradeOrder(fork.forkName);
 
+    // If there's a champion and no "Proposed" in history, prepend it
+    const hasProposedStep = fork.statusHistory.some(entry => entry.status === 'Proposed');
+    const effectiveHistory = (fork.champion && !hasProposedStep)
+      ? [{ status: 'Proposed' as const }, ...fork.statusHistory]
+      : fork.statusHistory;
+
     // Reverse the status history so most recent is first
-    const reversedHistory = [...fork.statusHistory].reverse();
+    const reversedHistory = [...effectiveHistory].reverse();
 
     reversedHistory.forEach((entry, index) => {
       // Always show current status (index 0), Proposed status, or statuses with attribution

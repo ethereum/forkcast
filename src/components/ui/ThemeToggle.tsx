@@ -4,7 +4,7 @@ import { useTheme } from '../../contexts/ThemeContext';
 type ThemeOption = 'system' | 'light' | 'dark';
 
 const ThemeToggle: React.FC = () => {
-  const { themePreference, resolvedTheme, setThemePreference } = useTheme();
+  const { themePreference, setThemePreference } = useTheme();
   const [isOpen, setIsOpen] = useState(false);
   const containerRef = useRef<HTMLDivElement>(null);
 

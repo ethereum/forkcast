@@ -41,6 +41,40 @@
     </script>
     <!-- End Matomo Code -->
 
+    <!-- Theme initialization to prevent FOUC -->
+    <script>
+      (function() {
+        const getSystemTheme = () => {
+          return window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+        };
+        
+        const getThemePreference = () => {
+          try {
+            const saved = localStorage.getItem('theme');
+            if (saved === 'light' || saved === 'dark') {
+              return saved;
+            }
+          } catch (e) {
+            // localStorage might not be available
+          }
+          return 'system';
+        };
+        
+        const applyTheme = (theme) => {
+          const root = document.documentElement;
+          if (theme === 'dark') {
+            root.classList.add('dark');
+          } else {
+            root.classList.remove('dark');
+          }
+        };
+        
+        const preference = getThemePreference();
+        const resolvedTheme = preference === 'system' ? getSystemTheme() : preference;
+        applyTheme(resolvedTheme);
+      })();
+    </script>
+
     <!-- GitHub Pages SPA redirect handling -->
     <script type="text/javascript">
       // Handle GitHub Pages SPA redirect

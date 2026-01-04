@@ -44,11 +44,19 @@ const CallsIndexPage: React.FC = () => {
   // Filter and sort calls and events
   const filteredCalls = selectedFilter === 'all'
     ? calls
+    : selectedFilter === 'acd'
+    ? calls.filter(call => ['acdc', 'acde', 'acdt'].includes(call.type))
+    : selectedFilter === 'breakouts'
+    ? calls.filter(call => ['epbs', 'bal', 'focil'].includes(call.type))
     : calls.filter(call => call.type === selectedFilter);
 
   // Filter upcoming calls based on selected filter
   const filteredUpcomingCalls = selectedFilter === 'all'
     ? upcomingCalls
+    : selectedFilter === 'acd'
+    ? upcomingCalls.filter(call => ['acdc', 'acde', 'acdt'].includes(call.type))
+    : selectedFilter === 'breakouts'
+    ? upcomingCalls.filter(call => ['epbs', 'bal', 'focil'].includes(call.type))
     : upcomingCalls.filter(call => call.type === selectedFilter);
 
   // Combine calls, upcoming calls, and events into timeline items
@@ -63,16 +71,38 @@ const CallsIndexPage: React.FC = () => {
 
   const filterOptions = [
     { value: 'all', label: 'All' },
+    { value: 'acd', label: 'ACD' },
     { value: 'acdc', label: 'ACDC' },
     { value: 'acde', label: 'ACDE' },
-    { value: 'acdt', label: 'ACDT' }
+    { value: 'acdt', label: 'ACDT' },
+    { value: 'breakouts', label: 'Breakouts' }
   ];
 
   return (
     <div className="min-h-screen bg-slate-50 dark:bg-slate-900">
       <div className="max-w-3xl mx-auto px-6 py-8">
         <div className="mb-6 relative">
-          <div className="absolute top-0 right-0">
+          <div className="absolute top-0 right-0 flex items-center gap-2">
+            <button
+              onClick={() => setSearchOpen(true)}
+              className="p-2 rounded-lg bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 transition-colors"
+              aria-label="Search all calls"
+              title="Search (⌘F)"
+            >
+              <svg
+                className="w-5 h-5 text-slate-700 dark:text-slate-300"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
+                />
+              </svg>
+            </button>
             <ThemeToggle />
           </div>
           <Link to="/" className="text-2xl font-serif bg-gradient-to-r from-purple-600 via-blue-600 to-purple-800 bg-clip-text text-transparent hover:from-purple-700 hover:via-blue-700 hover:to-purple-900 transition-all duration-200 tracking-tight inline-block mb-2">
@@ -80,68 +110,45 @@ const CallsIndexPage: React.FC = () => {
           </Link>
           <div className="flex items-center justify-between">
             <h1 className="text-xl font-semibold text-slate-900 dark:text-slate-100">Protocol Calendar</h1>
-            <div className="flex items-center gap-3">
-              {/* Search Button */}
-              <button
-                onClick={() => setSearchOpen(true)}
-                className="flex items-center gap-2 px-3 py-1.5 text-sm bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-400 rounded-lg hover:bg-slate-200 dark:hover:bg-slate-700 transition-colors"
-                aria-label="Search all calls"
-              >
-                <svg
-                  className="w-4 h-4"
-                  fill="none"
-                  stroke="currentColor"
-                  viewBox="0 0 24 24"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth={2}
-                    d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
-                  />
-                </svg>
-                <span className="hidden sm:inline">Search</span>
-                <kbd className="hidden sm:inline-flex items-center gap-1 px-1.5 py-0.5 text-xs bg-slate-200 dark:bg-slate-700 rounded">
-                  <span className="text-[10px]">⌘</span>F
-                </kbd>
-              </button>
-
-              <div className="text-sm text-slate-500 dark:text-slate-400">
-                {filteredCalls.length} calls
-                {filteredUpcomingCalls.length > 0 && (
-                  <span> • {filteredUpcomingCalls.length} upcoming</span>
-                )}
-                {showEvents && timelineEvents.length > 0 && (
-                  <span> • {timelineEvents.length} events</span>
-                )}
-              </div>
+            <div className="hidden sm:block text-sm text-slate-500 dark:text-slate-400">
+              {filteredCalls.length} calls
+              {filteredUpcomingCalls.length > 0 && (
+                <span> • {filteredUpcomingCalls.length} upcoming</span>
+              )}
+              {showEvents && timelineEvents.length > 0 && (
+                <span> • {timelineEvents.length} events</span>
+              )}
             </div>
           </div>
 
           {/* Filter buttons and events toggle */}
-          <div className="flex items-center justify-between mt-4 flex-wrap gap-2">
-            <div className="flex gap-1.5 flex-wrap">
+          <div className="flex items-center justify-between mt-4 gap-2">
+            <div className="flex gap-1.5 overflow-x-auto scrollbar-hide flex-nowrap sm:flex-wrap">
               {filterOptions.map((option) => {
                 // Define colors for each filter type
                 const activeColors = {
                   all: 'bg-slate-600 dark:bg-slate-400 text-white dark:text-slate-900',
-                  acdc: 'bg-purple-500 dark:bg-purple-400 text-white dark:text-purple-950',
-                  acde: 'bg-blue-500 dark:bg-blue-400 text-white dark:text-blue-950',
-                  acdt: 'bg-green-500 dark:bg-green-400 text-white dark:text-green-950'
+                  acd: 'bg-indigo-600 dark:bg-indigo-500 text-white dark:text-white',
+                  acdc: 'bg-blue-600 dark:bg-blue-500 text-white dark:text-white',
+                  acde: 'bg-sky-600 dark:bg-sky-500 text-white dark:text-white',
+                  acdt: 'bg-teal-600 dark:bg-teal-500 text-white dark:text-white',
+                  breakouts: 'bg-yellow-600 dark:bg-yellow-500 text-white dark:text-yellow-950'
                 };
 
                 const inactiveColors = {
                   all: 'bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-400 hover:bg-slate-200 dark:hover:bg-slate-700',
-                  acdc: 'bg-purple-50 dark:bg-purple-950/30 text-purple-600 dark:text-purple-400 hover:bg-purple-100 dark:hover:bg-purple-900/30',
-                  acde: 'bg-blue-50 dark:bg-blue-950/30 text-blue-600 dark:text-blue-400 hover:bg-blue-100 dark:hover:bg-blue-900/30',
-                  acdt: 'bg-green-50 dark:bg-green-950/30 text-green-600 dark:text-green-400 hover:bg-green-100 dark:hover:bg-green-900/30'
+                  acd: 'bg-indigo-50 dark:bg-indigo-950/30 text-indigo-700 dark:text-indigo-400 hover:bg-indigo-100 dark:hover:bg-indigo-900/30',
+                  acdc: 'bg-blue-50 dark:bg-blue-950/30 text-blue-700 dark:text-blue-400 hover:bg-blue-100 dark:hover:bg-blue-900/30',
+                  acde: 'bg-sky-50 dark:bg-sky-950/30 text-sky-700 dark:text-sky-400 hover:bg-sky-100 dark:hover:bg-sky-900/30',
+                  acdt: 'bg-teal-50 dark:bg-teal-950/30 text-teal-700 dark:text-teal-400 hover:bg-teal-100 dark:hover:bg-teal-900/30',
+                  breakouts: 'bg-yellow-50 dark:bg-yellow-950/30 text-yellow-700 dark:text-yellow-400 hover:bg-yellow-100 dark:hover:bg-yellow-900/30'
                 };
 
                 return (
                   <button
                     key={option.value}
                     onClick={() => setSelectedFilter(option.value)}
-                    className={`px-2.5 py-1 text-xs font-medium rounded-md transition-all ${
+                    className={`px-2.5 py-1 text-xs font-medium rounded-md transition-all whitespace-nowrap flex-shrink-0 ${
                       selectedFilter === option.value
                         ? activeColors[option.value as keyof typeof activeColors]
                         : inactiveColors[option.value as keyof typeof inactiveColors]
@@ -309,15 +316,21 @@ const CallsIndexPage: React.FC = () => {
 
                           // Define colors for upcoming calls - same colors as completed but with dashed border
                           const upcomingCallTypeColors = {
-                            acdc: 'border-l-purple-500 dark:border-l-purple-400',
-                            acde: 'border-l-blue-500 dark:border-l-blue-400',
-                            acdt: 'border-l-green-500 dark:border-l-green-400'
+                            acdc: 'border-l-blue-500 dark:border-l-blue-400',
+                            acde: 'border-l-sky-500 dark:border-l-sky-400',
+                            acdt: 'border-l-teal-500 dark:border-l-teal-400',
+                            epbs: 'border-l-amber-500 dark:border-l-amber-400',
+                            bal: 'border-l-red-500 dark:border-l-red-400',
+                            focil: 'border-l-orange-500 dark:border-l-orange-400'
                           };
 
                           const upcomingCallTypeBadgeColors = {
-                            acdc: 'bg-purple-100 dark:bg-purple-900/30 text-purple-700 dark:text-purple-300',
-                            acde: 'bg-blue-100 dark:bg-blue-900/30 text-blue-700 dark:text-blue-300',
-                            acdt: 'bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-300'
+                            acdc: 'bg-blue-100 dark:bg-blue-900/30 text-blue-700 dark:text-blue-300',
+                            acde: 'bg-sky-100 dark:bg-sky-900/30 text-sky-700 dark:text-sky-300',
+                            acdt: 'bg-teal-100 dark:bg-teal-900/30 text-teal-700 dark:text-teal-300',
+                            epbs: 'bg-amber-100 dark:bg-amber-900/30 text-amber-700 dark:text-amber-300',
+                            bal: 'bg-red-100 dark:bg-red-900/30 text-red-700 dark:text-red-300',
+                            focil: 'bg-orange-100 dark:bg-orange-900/30 text-orange-700 dark:text-orange-300'
                           };
 
                           return (
@@ -331,11 +344,11 @@ const CallsIndexPage: React.FC = () => {
                             >
                               <div className="flex items-center justify-between">
                                 <div className="flex items-center gap-3">
-                                  <span className={`text-xs font-medium px-2 py-0.5 rounded-full ${upcomingCallTypeBadgeColors[upcomingCall.type]}`}>
+                                  <span className={`text-xs font-medium px-2 py-0.5 rounded-full min-w-[3.5rem] text-center ${upcomingCallTypeBadgeColors[upcomingCall.type]}`}>
                                     {upcomingCall.type.toUpperCase()}
                                   </span>
                                   <div className="text-sm font-medium text-slate-900 dark:text-slate-100">
-                                    Meeting #{upcomingCall.number}
+                                    Call #{upcomingCall.number}
                                   </div>
                                   <div className="text-sm text-slate-600 dark:text-slate-400">
                                     {upcomingCall.date}
@@ -360,15 +373,21 @@ const CallsIndexPage: React.FC = () => {
 
                         // Define colors for each call type
                         const callTypeColors = {
-                          acdc: 'border-l-purple-500 dark:border-l-purple-400',
-                          acde: 'border-l-blue-500 dark:border-l-blue-400',
-                          acdt: 'border-l-green-500 dark:border-l-green-400'
+                          acdc: 'border-l-blue-500 dark:border-l-blue-400',
+                          acde: 'border-l-sky-500 dark:border-l-sky-400',
+                          acdt: 'border-l-teal-500 dark:border-l-teal-400',
+                          epbs: 'border-l-amber-500 dark:border-l-amber-400',
+                          bal: 'border-l-red-500 dark:border-l-red-400',
+                          focil: 'border-l-orange-500 dark:border-l-orange-400'
                         };
 
                         const callTypeBadgeColors = {
-                          acdc: 'bg-purple-100 dark:bg-purple-900/30 text-purple-700 dark:text-purple-300',
-                          acde: 'bg-blue-100 dark:bg-blue-900/30 text-blue-700 dark:text-blue-300',
-                          acdt: 'bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-300'
+                          acdc: 'bg-blue-100 dark:bg-blue-900/30 text-blue-700 dark:text-blue-300',
+                          acde: 'bg-sky-100 dark:bg-sky-900/30 text-sky-700 dark:text-sky-300',
+                          acdt: 'bg-teal-100 dark:bg-teal-900/30 text-teal-700 dark:text-teal-300',
+                          epbs: 'bg-amber-100 dark:bg-amber-900/30 text-amber-700 dark:text-amber-300',
+                          bal: 'bg-red-100 dark:bg-red-900/30 text-red-700 dark:text-red-300',
+                          focil: 'bg-orange-100 dark:bg-orange-900/30 text-orange-700 dark:text-orange-300'
                         };
 
                         return (
@@ -379,11 +398,11 @@ const CallsIndexPage: React.FC = () => {
                           >
                             <div className="flex items-center justify-between">
                               <div className="flex items-center gap-3">
-                                <span className={`text-xs font-medium px-2 py-0.5 rounded-full ${callTypeBadgeColors[call.type]}`}>
+                                <span className={`text-xs font-medium px-2 py-0.5 rounded-full min-w-[3.5rem] text-center ${callTypeBadgeColors[call.type]}`}>
                                   {call.type.toUpperCase()}
                                 </span>
                                 <div className="text-sm font-medium text-slate-900 dark:text-slate-100">
-                                  Meeting #{call.number}
+                                  Call #{call.number}
                                 </div>
                                 <div className="text-sm text-slate-600 dark:text-slate-400">
                                   {call.date}

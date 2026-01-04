@@ -834,6 +834,9 @@ const CallPage: React.FC = () => {
       case 'acdc': return 'All Core Devs Consensus';
       case 'acde': return 'All Core Devs Execution';
       case 'acdt': return 'All Core Devs Testing';
+      case 'epbs': return 'ePBS Breakout Room';
+      case 'bal': return 'BAL Breakout Room';
+      case 'focil': return 'FOCIL Breakout Room';
       default: return callData.type;
     }
   };

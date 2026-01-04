@@ -1,0 +1,1786 @@
+WEBVTT
+
+1
+00:01:20.660 --> 00:01:21.720
+Toni Wahrstätter: Hello!
+
+2
+00:01:22.560 --> 00:01:23.660
+Pooja Ranjan: Hey, Tony!
+
+3
+00:01:24.390 --> 00:01:25.479
+Toni Wahrstätter: How's it going?
+
+4
+00:01:25.750 --> 00:01:26.759
+Pooja Ranjan: Good, good.
+
+5
+00:01:26.930 --> 00:01:28.480
+Pooja Ranjan: So I hope, …
+
+6
+00:01:28.630 --> 00:01:41.810
+Pooja Ranjan: Everything should be good. I'm open to stream on both platforms, X and YouTube. Just let me know whenever you want to move over the stream, because I'll be pre-streaming in about 2 minutes.
+
+7
+00:01:42.690 --> 00:01:48.530
+Toni Wahrstätter: Okay, perfect. Yeah, I think we will wait a few more minutes anyway, and then I will just tell you to start the stream.
+
+8
+00:01:48.840 --> 00:01:50.050
+Pooja Ranjan: Sure, thank you.
+
+9
+00:01:50.050 --> 00:01:51.170
+Toni Wahrstätter: Cool, thank you.
+
+10
+00:01:55.270 --> 00:01:56.070
+Barnabas: You know….
+
+11
+00:01:56.950 --> 00:01:57.770
+Toni Wahrstätter: Hello.
+
+12
+00:05:33.440 --> 00:05:36.780
+Toni Wahrstätter: GM, GM, let's wait a few more minutes.
+
+13
+00:06:17.970 --> 00:06:18.920
+Toni Wahrstätter: Perfect.
+
+14
+00:06:21.240 --> 00:06:23.829
+Toni Wahrstätter: I think we're good to start the stream now.
+
+15
+00:06:27.720 --> 00:06:28.779
+Pooja Ranjan: We are life.
+
+16
+00:06:29.980 --> 00:06:31.000
+Toni Wahrstätter: Thank you very much.
+
+17
+00:06:32.030 --> 00:06:38.070
+Toni Wahrstätter: Hello, everyone, and welcome to the first, EOP7928 breakout call.
+
+18
+00:06:38.440 --> 00:06:49.170
+Toni Wahrstätter: I thought it makes sense, to have a breaker call around the EAP, now on a more regular basis, just to keep track of progress happening.
+
+19
+00:06:49.630 --> 00:07:07.239
+Toni Wahrstätter: On today's agenda, there's not that many topics, but we still have, some open points to discuss, and I would propose that we start, today's first breakout with Jared talking a bit about the implementation progress he made in GEF,
+
+20
+00:07:07.360 --> 00:07:16.009
+Toni Wahrstätter: Then there is Rahul, who will talk a little bit about testing progress and everything that is happening on the testing front.
+
+21
+00:07:16.170 --> 00:07:28.350
+Toni Wahrstätter: And then we have Chen from the EVE storage team for QuarkChain, who will present some results on their performance analysis of block-level access lists in GAF.
+
+22
+00:07:28.740 --> 00:07:37.940
+Toni Wahrstätter: And before we start getting into those topics, let me just quickly recap some info around the EAP.
+
+23
+00:07:38.200 --> 00:07:46.539
+Toni Wahrstätter: First of all, on blockaccesslist.xyz, I posted it into the chat.
+
+24
+00:07:47.020 --> 00:07:53.759
+Toni Wahrstätter: You should find all the important information, especially if you scroll down to the resources headline.
+
+25
+00:07:53.840 --> 00:08:07.890
+Toni Wahrstätter: There you find all the, specs, like the EL specs, the execution API specs, and the CL specs, as well as test cases and everything. So this is kind of the place where we try to bundle all that information.
+
+26
+00:08:08.220 --> 00:08:09.290
+Toni Wahrstätter: And…
+
+27
+00:08:10.150 --> 00:08:24.370
+Toni Wahrstätter: Yeah, everything is summarized there. If you want to submit new test cases, then Rahul will show you how to do so. There's a dedicated testing doc where we collect many test cases.
+
+28
+00:08:25.160 --> 00:08:29.680
+Toni Wahrstätter: But yeah, without further ado, I would say, Jared would be…
+
+29
+00:08:29.800 --> 00:08:36.280
+Toni Wahrstätter: pass it to you in order for you to present us some initial results you collected on GAF.
+
+30
+00:08:37.200 --> 00:08:55.659
+Jared Wasinger: Yeah, cool. Yeah, so I can just… just to summarize where the Geth implementation is at right now, we fully implemented the EIP, except for storage and account reads,
+
+31
+00:08:56.280 --> 00:09:05.090
+Jared Wasinger: … So, basically, at this point, … we're…
+
+32
+00:09:06.430 --> 00:09:15.900
+Jared Wasinger: we're more or less ready to… to… to do a DevNet, in the sense that the code is written and I'm reasonably sure.
+
+33
+00:09:16.160 --> 00:09:26.510
+Jared Wasinger: that the consensus API, the engine API changes and the minor changes should work, but I'm still verifying that on my end.
+
+34
+00:09:27.050 --> 00:09:38.590
+Jared Wasinger: The execution… the… so, block access list execution and, building are… are… are implemented.
+
+35
+00:09:38.900 --> 00:09:49.210
+Jared Wasinger: And I've done… quite a bit of work to get the performance To a reasonable, … point.
+
+36
+00:09:49.480 --> 00:09:55.979
+Jared Wasinger: So, I guess I'll just share my screen. I have a few slides just kind of summarizing
+
+37
+00:09:56.120 --> 00:09:57.789
+Jared Wasinger: The latest benchmark.
+
+38
+00:10:00.170 --> 00:10:06.939
+Jared Wasinger: Where… used to Google Meet, so, …
+
+39
+00:10:09.410 --> 00:10:12.070
+Jared Wasinger: Okay, so I'm just going to…
+
+40
+00:10:13.190 --> 00:10:15.790
+Jared Wasinger: Looks like I have to give it a permission here.
+
+41
+00:10:20.310 --> 00:10:22.369
+Jared Wasinger: I have to rejoin the call.
+
+42
+00:10:25.800 --> 00:10:40.010
+Toni Wahrstätter: Karim, I think this is a good point, regarding the reads, I think this is still up for discussion. So far, my feeling was that, the majority of people is still for including the reads, just because parallel
+
+43
+00:10:40.290 --> 00:10:45.460
+Toni Wahrstätter: I.O. might, be very valuable, especially with bigger blocks.
+
+44
+00:10:45.870 --> 00:10:50.299
+Toni Wahrstätter: But, yeah, this is still something we have to discuss.
+
+45
+00:10:50.570 --> 00:10:52.550
+Toni Wahrstätter: Okay, Jared is back.
+
+46
+00:11:22.130 --> 00:11:25.339
+Toni Wahrstätter: Jared, are you… are you already talking?
+
+47
+00:11:31.770 --> 00:11:32.520
+Toni Wahrstätter: Is this true?
+
+48
+00:11:38.570 --> 00:11:40.199
+Milos: You're muted.
+
+49
+00:11:44.980 --> 00:11:48.469
+Toni Wahrstätter: Jared, can you hear us? You're still muted.
+
+50
+00:11:49.810 --> 00:11:55.609
+Jared Wasinger: Yeah, yeah, yeah, oops, okay. Yeah, so, just to, …
+
+51
+00:11:56.680 --> 00:12:08.549
+Jared Wasinger: overview of the serial execution that Geth currently performs. We execute transactions one after the other. Simultaneously, for mutated state, we will fetch
+
+52
+00:12:08.870 --> 00:12:17.510
+Jared Wasinger: Intermediate trinodes in the background, so that when we go to compute the state root, It's… vast, …
+
+53
+00:12:19.040 --> 00:12:21.640
+Jared Wasinger: Oop, this is the wrong slide. Oops.
+
+54
+00:12:22.190 --> 00:12:23.960
+Jared Wasinger: Yeah, that's the next slide.
+
+55
+00:12:30.940 --> 00:12:32.740
+Jared Wasinger: Okay, so…
+
+56
+00:12:33.070 --> 00:12:43.720
+Jared Wasinger: Mmm… right, in block execution, compute the state rehash, we validate block fields and the state rehash against what's reported in the block, and then we write the mutated state to disk.
+
+57
+00:12:44.730 --> 00:12:56.450
+Jared Wasinger: Block access list execution, parallelizes the transaction execution and the state route calculation. So in this model.
+
+58
+00:12:56.640 --> 00:12:58.820
+Jared Wasinger: We…
+
+59
+00:12:59.150 --> 00:13:14.790
+Jared Wasinger: Don't have the advantage of being able to prefetch trinodes in the background, but when we go to commit, we can do everything in… we can commit all of the nodes, or when we go to compute the tri-root hash, and we have to fetch the intermediate tri nodes, we can do this all in parallel.
+
+60
+00:13:15.200 --> 00:13:21.399
+Jared Wasinger: So, it ends up being not a huge performance hit, …
+
+61
+00:13:21.730 --> 00:13:27.860
+Jared Wasinger: So when we execute… when we execute transactions and simultaneously calculate the state route.
+
+62
+00:13:28.420 --> 00:13:35.320
+Jared Wasinger: We provide an empty pre-state to the… to these, like, worker threads.
+
+63
+00:13:35.590 --> 00:13:40.470
+Jared Wasinger: And then they will, build… they will, …
+
+64
+00:13:41.760 --> 00:13:44.169
+Jared Wasinger: So they will sort of, like, …
+
+65
+00:13:44.480 --> 00:13:53.429
+Jared Wasinger: compute the state they need to execute against by looking at the access list. And then some of that information is also supplemented from the…
+
+66
+00:13:53.710 --> 00:13:54.810
+Jared Wasinger: from disk.
+
+67
+00:13:56.970 --> 00:14:03.130
+Jared Wasinger: Block excess construction, yeah, like I mentioned, we haven't implemented reads. I was…
+
+68
+00:14:03.300 --> 00:14:15.220
+Jared Wasinger: kind of under the impression we would remove them. It sounds like we'll talk about this today. For rights, we… it's pretty straightforward when we go… we… we… yeah, it's pretty straightforward.
+
+69
+00:14:15.900 --> 00:14:19.219
+Jared Wasinger: Alright, so, can you all see my mouse?
+
+70
+00:14:20.370 --> 00:14:21.180
+Toni Wahrstätter: Yes.
+
+71
+00:14:21.420 --> 00:14:25.910
+Jared Wasinger: Okay. So… The performance of the master branch is…
+
+72
+00:14:26.790 --> 00:14:34.959
+Jared Wasinger: the overhead is dominated by the state… by the execution. So these first three columns, these first three rows.
+
+73
+00:14:35.630 --> 00:14:44.120
+Jared Wasinger: are… if you sum them together, this is the time it takes to perform the execution. So…
+
+74
+00:14:44.700 --> 00:14:47.490
+Jared Wasinger: So then when we go to update, the…
+
+75
+00:14:47.850 --> 00:15:01.700
+Jared Wasinger: The account update here, and then the storage update here are fairly quick, because we have pre-warmed trinodes while executing transactions. But the actual transaction execution time is… is large.
+
+76
+00:15:02.580 --> 00:15:09.870
+Jared Wasinger: Oh, I should also mention, so this… these numbers I'm giving are a benchmark of an import of 10,000 blocks.
+
+77
+00:15:10.090 --> 00:15:11.749
+Jared Wasinger: It's not a huge…
+
+78
+00:15:12.260 --> 00:15:23.419
+Jared Wasinger: span of time, and I'm running a longer benchmark now, so I will have some updated numbers soon, but right now, this is what I have to present. So…
+
+79
+00:15:23.880 --> 00:15:33.510
+Jared Wasinger: Right, so with the BAL branch, on this, on this benchmark, The, … so the performances…
+
+80
+00:15:34.180 --> 00:15:40.929
+Jared Wasinger: Overall, the block processing speed's about 2.6 times faster.
+
+81
+00:15:41.380 --> 00:15:49.040
+Jared Wasinger: So the state root calculation here is our… our slowest, but the block execution…
+
+82
+00:15:49.640 --> 00:15:59.860
+Jared Wasinger: is, very fast. … And then, so these… these… these block preprocessing is… is…
+
+83
+00:16:00.270 --> 00:16:08.499
+Jared Wasinger: we can kind of ignore that, because that's just… this is a… this branch was a work in progress when I performed these benchmarks, but I think that this step
+
+84
+00:16:09.290 --> 00:16:18.499
+Jared Wasinger: This step, and this… the preprocessing state loading is actually just a component of the preprocessing step, so it's not, like, an additive…
+
+85
+00:16:18.660 --> 00:16:24.819
+Jared Wasinger: You don't add all these up to get the total, the total time it took to process the block.
+
+86
+00:16:25.310 --> 00:16:35.010
+Jared Wasinger: But I think that this step actually can be optimized away, and I'll be working on that at some point over the next week or two.
+
+87
+00:16:36.040 --> 00:16:37.400
+Jared Wasinger: …
+
+88
+00:16:42.470 --> 00:16:49.090
+Jared Wasinger: Right, so, I mean, yeah, this is kind of what I have right now, and I think that…
+
+89
+00:16:49.380 --> 00:16:57.780
+Jared Wasinger: I've been doing some… I've been running a longer benchmark, and there are definitely… …
+
+90
+00:16:58.260 --> 00:17:08.640
+Jared Wasinger: spikes. So here, the execution is, like, fairly reasonable, but I've definitely seen some spikes where the execution is actually, in general.
+
+91
+00:17:08.950 --> 00:17:13.429
+Jared Wasinger: on par with the state root calculation, so far as what I'm seeing.
+
+92
+00:17:13.829 --> 00:17:23.079
+Jared Wasinger: … And yeah, so I will be continuing to benchmark this and try to improve it, …
+
+93
+00:17:23.609 --> 00:17:33.650
+Jared Wasinger: I think right now, though, from what I've seen with the latest results, I think at least a 2.2X or slow… or 2.2X or so speed up
+
+94
+00:17:34.050 --> 00:17:46.650
+Jared Wasinger: seems to hold, and … I mean, I'll have to run more benchmarks to actually see what the master branch performs over this longer period of time that I'm measuring, but…
+
+95
+00:17:47.230 --> 00:17:49.299
+Jared Wasinger: Yeah.
+
+96
+00:17:49.990 --> 00:17:55.309
+Jared Wasinger: So that's… The… yeah, that's pretty much my update.
+
+97
+00:17:57.710 --> 00:17:58.940
+Toni Wahrstätter: Awesome, thanks.
+
+98
+00:17:59.230 --> 00:18:12.379
+Toni Wahrstätter: Just a quick question, in this… when you say execution, and you didn't do any parallel I.O. in this model, right? Because you said you were not using the reads yet, or the state locations.
+
+99
+00:18:12.380 --> 00:18:16.800
+Jared Wasinger: Well, so the I.O. is parallel because you're…
+
+100
+00:18:17.200 --> 00:18:26.160
+Jared Wasinger: it's all… they're executing in parallel, so I think, like, a good portion of the speedup is actually due to the parallel I.O, …
+
+101
+00:18:28.210 --> 00:18:36.669
+Jared Wasinger: But, yeah, it's… it's not executing with the reads, and also, …
+
+102
+00:18:37.300 --> 00:18:41.419
+Jared Wasinger: I mean, I can… I can definitely measure reads. It… it… it…
+
+103
+00:18:41.720 --> 00:18:50.030
+Jared Wasinger: it's doable. It kind of involves adding a separate component, but… It can be done.
+
+104
+00:18:53.430 --> 00:18:54.260
+Toni Wahrstätter: Right.
+
+105
+00:18:54.520 --> 00:18:59.479
+Toni Wahrstätter: Yeah, this also plays into this, what Kareem is saying in the chat.
+
+106
+00:18:59.480 --> 00:18:59.920
+Jared Wasinger: items.
+
+107
+00:18:59.920 --> 00:19:04.460
+Toni Wahrstätter: the state locations, then you can do something like batch parallel I.O,
+
+108
+00:19:04.680 --> 00:19:12.730
+Toni Wahrstätter: But if you don't have the read locations, then you can still do some parallel I.O, because you already parallelized the transactions.
+
+109
+00:19:14.560 --> 00:19:19.299
+Jared Wasinger: Yeah, just to answer this question, so I don't…
+
+110
+00:19:19.850 --> 00:19:24.540
+Jared Wasinger: I don't think we need to do batch…
+
+111
+00:19:24.890 --> 00:19:35.950
+Jared Wasinger: I don't… I'm not exactly sure what this question is, but I don't think that we need to do batch I.O. up front. I think we can just start executing
+
+112
+00:19:36.410 --> 00:19:39.719
+Jared Wasinger: Like, we don't need the pre-state completely loaded.
+
+113
+00:19:40.070 --> 00:19:47.830
+Jared Wasinger: at the start, if that's what this question is getting at, right? We can just start executing, and then load things in as we need them.
+
+114
+00:19:48.530 --> 00:19:49.560
+Jared Wasinger: …
+
+115
+00:19:49.850 --> 00:20:03.269
+Jared Wasinger: And with the… yeah, I mean, with the reads also, it's like, it doesn't really make sense… because they're not indexed by the… by where they occur in the block, I think that parallelizing loading them up front would actually be…
+
+116
+00:20:05.130 --> 00:20:08.089
+Jared Wasinger: I think it would be slower, personally.
+
+117
+00:20:08.350 --> 00:20:09.320
+Jared Wasinger: ….
+
+118
+00:20:11.540 --> 00:20:17.520
+Toni Wahrstätter: Right. Yeah, this is a good argument. And then the question becomes… If we don't…
+
+119
+00:20:17.780 --> 00:20:23.679
+Toni Wahrstätter: Put the state locations in there, because they give us some… certain amount of speedup.
+
+120
+00:20:24.300 --> 00:20:26.900
+Toni Wahrstätter: Are there other reasons why we keep them in?
+
+121
+00:20:27.040 --> 00:20:29.320
+Toni Wahrstätter: And one of the reasons could be that
+
+122
+00:20:29.490 --> 00:20:33.339
+Toni Wahrstätter: We just, have more information in the block lab access list.
+
+123
+00:20:33.580 --> 00:20:36.320
+Toni Wahrstätter: We don't only have the information that
+
+124
+00:20:36.480 --> 00:20:41.549
+Toni Wahrstätter: changed. We know what changed, and in which way it changed, or to what it changed.
+
+125
+00:20:41.870 --> 00:20:44.930
+Toni Wahrstätter: And then we will also know, like, what was accessed.
+
+126
+00:20:45.770 --> 00:20:47.610
+Toni Wahrstätter: Yeah.
+
+127
+00:20:48.300 --> 00:20:52.609
+Jared Wasinger: Yeah, definitely. I would say, in that case, it would be…
+
+128
+00:20:53.360 --> 00:21:08.960
+Jared Wasinger: I wonder if it… if there… what the usefulness trade-off is. Like, if there's no… if there's information that storage slots were accessed in a block, but we don't know what transaction they were accessed in…
+
+129
+00:21:09.450 --> 00:21:18.249
+Jared Wasinger: … I… I'm… I guess I'm just wondering how that would be used.
+
+130
+00:21:18.430 --> 00:21:19.340
+Jared Wasinger: But….
+
+131
+00:21:22.060 --> 00:21:24.250
+Po: Okay, so….
+
+132
+00:21:25.160 --> 00:21:30.020
+Jared Wasinger: But to answer the question, batch load…
+
+133
+00:21:30.410 --> 00:21:33.090
+Jared Wasinger: Yeah, I mean, I can measure it. I… I…
+
+134
+00:21:33.790 --> 00:21:43.930
+Jared Wasinger: We already… in the benchmarks I presented, there is actually some batch loading up front of the pre-state that gets modified, and it… it adds
+
+135
+00:21:44.450 --> 00:21:48.169
+Jared Wasinger: I mean, maybe, like, 10% overhead overall, so….
+
+136
+00:21:58.990 --> 00:22:00.260
+Toni Wahrstätter: Cool, thank you.
+
+137
+00:22:01.670 --> 00:22:10.290
+Toni Wahrstätter: Yeah, Chen, did you want to say something, or do you want to, just continue with presenting, the work you guys did?
+
+138
+00:22:13.270 --> 00:22:20.090
+Po: Yeah, actually, when we are doing the benchmark, and…
+
+139
+00:22:20.210 --> 00:22:24.660
+Po: We have a… we use some of the… …
+
+140
+00:22:24.790 --> 00:22:32.850
+Po: account and storage slot, use this information to do… with this information, we can do some kind of, …
+
+141
+00:22:33.100 --> 00:22:38.739
+Po: This snapshot and, to accelerate the…
+
+142
+00:22:38.990 --> 00:22:44.069
+Po: block process as a queuing time. I, I don't know if I…
+
+143
+00:22:44.280 --> 00:22:48.460
+Po: I expressed my opinion correctly, yeah, because….
+
+144
+00:22:51.530 --> 00:22:58.210
+Toni Wahrstätter: Okay, so you, you say, the state locations would also be helpful for execution.
+
+145
+00:22:59.100 --> 00:23:05.220
+Po: Yeah, yeah, because, there are two options. One is, like Jared did.
+
+146
+00:23:05.870 --> 00:23:13.480
+Po: You've fetched the storage and account state during execution.
+
+147
+00:23:13.700 --> 00:23:24.470
+Po: Yeah, the second option is you'll just prefetch all the pre-blocks state, then executing, yeah. The…
+
+148
+00:23:25.210 --> 00:23:31.130
+Po: Benefits of the, … Prefetching the state is that you can do some
+
+149
+00:23:31.320 --> 00:23:35.140
+Po: Snapshot, because we know all the… Free.
+
+150
+00:23:35.670 --> 00:23:45.150
+Po: post-financial state. This, state, we can, kind of, do multi-layer stated reading.
+
+151
+00:23:45.290 --> 00:23:52.750
+Po: Yeah, we can snapshot every… about, for example, 10 transactions, and then we can…
+
+152
+00:23:52.870 --> 00:24:04.360
+Po: make, this snapshot. Yeah, if we want to adjust the state, we could, just, But…
+
+153
+00:24:04.710 --> 00:24:10.060
+Po: Do a kind of a multi-layer reading, yeah.
+
+154
+00:24:10.400 --> 00:24:15.349
+Po: And this will accelerate the, state rate, state rate.
+
+155
+00:24:16.150 --> 00:24:20.510
+Toni Wahrstätter: Okay, is that… is that part of the… of the benchmark as you're going to present?
+
+156
+00:24:21.560 --> 00:24:32.449
+Po: Yeah, it's part of the result, but I didn't, write… presented the routine on my presentation, yeah.
+
+157
+00:24:32.780 --> 00:24:33.890
+Toni Wahrstätter: Okay, no worry.
+
+158
+00:24:35.310 --> 00:24:41.189
+Toni Wahrstätter: Okay, yeah, it would be… would be nice if you could… if you could share, those results with… with this group.
+
+159
+00:24:41.540 --> 00:24:47.410
+Toni Wahrstätter: would be very interesting to look into those, because I think you also did some analysis on… …
+
+160
+00:24:47.810 --> 00:24:53.540
+Toni Wahrstätter: what happens if we 10x the block size, right? If we have suddenly, like, 10x the gas limit?
+
+161
+00:24:53.650 --> 00:24:57.950
+Toni Wahrstätter: How would that impact execution time versus I.O. time?
+
+162
+00:24:58.520 --> 00:25:01.360
+Toni Wahrstätter: Perfect, I see you posted it into the chat.
+
+163
+00:25:04.220 --> 00:25:04.970
+Toni Wahrstätter: Great.
+
+164
+00:25:07.550 --> 00:25:12.790
+Toni Wahrstätter: Yeah, I agree with Carl. I think we should… we should get some better benchmarks on…
+
+165
+00:25:12.950 --> 00:25:15.890
+Toni Wahrstätter: what do we actually get from… from Batch.io?
+
+166
+00:25:17.840 --> 00:25:33.960
+Jared Wasinger: Hey, Poe, I have a quick question about this, this, slide you just posted. So the speed up at the bottom, is that, versus master, or what… what is that… what is that based on?
+
+167
+00:25:36.480 --> 00:25:42.810
+Po: Let me rephrase your question. You mean master is the main branch of gas?
+
+168
+00:25:43.330 --> 00:25:44.150
+Jared Wasinger: Yeah.
+
+169
+00:25:44.960 --> 00:25:50.000
+Po: Yeah, yeah, the… Version is, …
+
+170
+00:25:50.390 --> 00:26:08.819
+Po: Yeah, in the second PPT is 1.16… it's, close to the latest version. The latest version is 1.1716.2, and, my version is 1.16.1, yeah.
+
+171
+00:26:09.410 --> 00:26:10.800
+Jared Wasinger: Gotcha, okay.
+
+172
+00:26:17.670 --> 00:26:24.740
+Toni Wahrstätter: Okay, and if I interpret it correctly, it's like the result is also like a 2X speedup, …
+
+173
+00:26:24.910 --> 00:26:27.469
+Toni Wahrstätter: For average cases, right?
+
+174
+00:26:29.820 --> 00:26:30.700
+Po: Yeah, right.
+
+175
+00:26:42.540 --> 00:26:48.429
+Carl Beekhuizen: I mean, I wanna just highlight again that we care about worst case, which is a 33x speedup, supposedly.
+
+176
+00:26:49.970 --> 00:26:56.260
+Toni Wahrstätter: Right, yeah, that's a good point, because if you use, like, 32 cores, like… As this experiment did.
+
+177
+00:26:56.660 --> 00:27:00.339
+Toni Wahrstätter: And we would have had, like, worst-case blocks than, …
+
+178
+00:27:00.740 --> 00:27:03.889
+Toni Wahrstätter: We would have gotten a 32X speedup, this is…
+
+179
+00:27:04.190 --> 00:27:12.560
+Toni Wahrstätter: But even, even for the average case, like, a 2X sounds already, like, more than I expected. Of course, I expected, like, big, …
+
+180
+00:27:12.990 --> 00:27:16.180
+Toni Wahrstätter: And performance improvement for worst cases.
+
+181
+00:27:16.650 --> 00:27:20.010
+Toni Wahrstätter: But, like, 2x4 average cases is already, like, very good.
+
+182
+00:27:27.230 --> 00:27:35.699
+Toni Wahrstätter: But yeah, it would be interesting to find out, like, if clients actually need the state locations to do something like batch I.O. up front.
+
+183
+00:27:36.140 --> 00:27:39.149
+Toni Wahrstätter: Or if we remove them, and…
+
+184
+00:27:39.550 --> 00:27:45.559
+Toni Wahrstätter: In the end, it's not only do clients need them, but do, … Should the protocol have them?
+
+185
+00:27:46.050 --> 00:27:49.179
+Toni Wahrstätter: Maybe there are some use cases we're not aware of yet.
+
+186
+00:27:50.110 --> 00:27:51.540
+Toni Wahrstätter: That might need them.
+
+187
+00:27:53.850 --> 00:27:56.210
+Carl Beekhuizen: And we also need to weigh that off against the…
+
+188
+00:27:57.060 --> 00:28:00.520
+Carl Beekhuizen: Like, cost and time of sending that over the wire.
+
+189
+00:28:03.220 --> 00:28:07.180
+Carl Beekhuizen: You know, they're not… they're not free to… to add, or, sorry, to have.
+
+190
+00:28:09.370 --> 00:28:10.110
+Toni Wahrstätter: Right.
+
+191
+00:28:10.610 --> 00:28:16.259
+Jared Wasinger: It's also possible that if we can batch the storage lookups
+
+192
+00:28:16.620 --> 00:28:31.170
+Jared Wasinger: so for red storage and red accounts, if we can do that up front, but also… but kick that off after we've started performing the state root calculation, I mean, I could…
+
+193
+00:28:31.820 --> 00:28:37.879
+Jared Wasinger: I could see that being an interesting… route to benchmark and Explore.
+
+194
+00:28:42.320 --> 00:28:45.910
+Carl Beekhuizen: Can you say a little bit more about what you mean by after the stated computation?
+
+195
+00:28:46.160 --> 00:28:52.179
+Jared Wasinger: So, the… If we… if we batch load
+
+196
+00:28:52.540 --> 00:29:04.119
+Jared Wasinger: non-mutated storage slots and accounts up front, but we haven't yet, started to compute the state root calculation. We're…
+
+197
+00:29:04.330 --> 00:29:09.740
+Jared Wasinger: Adding overhead up front and delaying work we could already do.
+
+198
+00:29:12.220 --> 00:29:20.540
+Jared Wasinger: Because, like, the mutated storage slots and accounts aren't needed to… you don't need to load them to compute the state root.
+
+199
+00:29:30.940 --> 00:29:34.919
+Carl Beekhuizen: Okay, I'm… Not following here, like, don't we need the post date?
+
+200
+00:29:35.150 --> 00:29:38.150
+Carl Beekhuizen: Like, that the root of the post state at the end of the block?
+
+201
+00:29:40.000 --> 00:29:46.540
+Jared Wasinger: Yeah, sure. I thought we were talking about the, like, when we say batch… I… batch…
+
+202
+00:29:47.060 --> 00:29:50.179
+Jared Wasinger: I.O. up front here at…
+
+203
+00:29:51.520 --> 00:30:09.750
+Jared Wasinger: Yeah, I'm just… I'm just saying, like, if we… we can, of course, batch the loading of the mutated accounts up front. That's the only, like, precursor… the mutated accounts and the mutated store slots up front, because that's the only precursor for performing the state root update, but then…
+
+204
+00:30:10.290 --> 00:30:19.280
+Jared Wasinger: … But we wouldn't also need to warm the… …
+
+205
+00:30:19.390 --> 00:30:22.769
+Jared Wasinger: Any storage slots or accounts that aren't mutated?
+
+206
+00:30:25.790 --> 00:30:30.780
+Jared Wasinger: Before… before we, in parallel, start the root computation.
+
+207
+00:30:32.100 --> 00:30:33.170
+Carl Beekhuizen: Yeah, I see.
+
+208
+00:30:33.170 --> 00:30:35.149
+Jared Wasinger: I'm kind of just thinking aloud here, but….
+
+209
+00:30:35.150 --> 00:30:36.030
+Carl Beekhuizen: Yeah, yeah.
+
+210
+00:30:37.170 --> 00:30:45.029
+Carl Beekhuizen: I mean, I think… I think a lot of the thought process comes back to… like, Dunkard did some experiments a while ago, just on, like, batch random reads.
+
+211
+00:30:45.360 --> 00:30:47.189
+Carl Beekhuizen: I'm also very contrived.
+
+212
+00:30:47.300 --> 00:30:50.550
+Carl Beekhuizen: Example, but he got something stupid, like a 50x speedup.
+
+213
+00:30:50.740 --> 00:30:53.659
+Carl Beekhuizen: on… Floating arbitrary.
+
+214
+00:30:53.920 --> 00:30:55.409
+Carl Beekhuizen: data from an SSD.
+
+215
+00:30:56.250 --> 00:31:00.039
+Carl Beekhuizen: Just by doing batch reads as opposed to individual reads?
+
+216
+00:31:01.460 --> 00:31:07.900
+Carl Beekhuizen: So I think that's where, like, a lot of the intuition of, like, oh yeah, it's probably worth just, like, fetching all the state, whether it gets mutated or not.
+
+217
+00:31:08.990 --> 00:31:11.559
+Carl Beekhuizen: Like, before the execution starts.
+
+218
+00:31:24.970 --> 00:31:26.240
+Jared Wasinger: Yeah, I mean, I…
+
+219
+00:31:26.810 --> 00:31:35.949
+Jared Wasinger: I definitely agree that, … I would definitely say that, like, I haven't benchmarked reads. It appears that, …
+
+220
+00:31:36.710 --> 00:31:45.359
+Jared Wasinger: the work from eStorage and, and Poe, Poe, or Chen, sorry, I, I, it appears that they've….
+
+221
+00:31:45.360 --> 00:31:48.450
+Po: Okay, you can call… Or, let's say, by…
+
+222
+00:31:48.600 --> 00:31:51.929
+Po: Feminine name, yeah. Always my English name.
+
+223
+00:31:52.260 --> 00:31:56.339
+Jared Wasinger: Okay, okay. … Yeah, I mean, I…
+
+224
+00:31:58.600 --> 00:32:00.769
+Jared Wasinger: It's definitely worth exploring, yeah, for sure.
+
+225
+00:32:01.340 --> 00:32:04.999
+Jared Wasinger: I'd like to benchmark it, and I… and I intend to.
+
+226
+00:32:08.260 --> 00:32:09.620
+Carl Beekhuizen: Okay, fantastic.
+
+227
+00:32:09.970 --> 00:32:17.580
+Carl Beekhuizen: Yeah, I think that's… that there's, like, so much here that it's like, oh yeah, there could be one trade-off here, or one trade-off in another way, and it's like, benchmarks, I think, are the only way of answering these questions.
+
+228
+00:32:19.830 --> 00:32:30.920
+Toni Wahrstätter: Which… which exact benchmarks are you thinking of here, Charit? So, which benchmarks would you… because this should be something, like, very sim… very simple to do, right?
+
+229
+00:32:33.190 --> 00:32:37.640
+Jared Wasinger: Yeah, so I would just implement the…
+
+230
+00:32:38.020 --> 00:32:42.140
+Jared Wasinger: I would implement reads, and then I would…
+
+231
+00:32:42.740 --> 00:32:45.739
+Jared Wasinger: I would benchmark them against Mainnet as a start.
+
+232
+00:32:45.940 --> 00:32:47.580
+Jared Wasinger: And…
+
+233
+00:32:51.960 --> 00:33:02.319
+Jared Wasinger: Yeah, I mean, just batch loading the red storage slots up front, and see what kind of performance… see what the results are.
+
+234
+00:33:03.910 --> 00:33:10.300
+Jared Wasinger: I mean, yeah, like I said, there's some interplay with, like, the state root computation, so implementing it is…
+
+235
+00:33:10.780 --> 00:33:13.930
+Jared Wasinger: I mean, it's not very complex, but…
+
+236
+00:33:14.470 --> 00:33:17.800
+Jared Wasinger: There's definitely… yeah, I mean, it, it, …
+
+237
+00:33:18.960 --> 00:33:21.900
+Jared Wasinger: Yeah, just benchmarking against mainnet and seeing if…
+
+238
+00:33:22.400 --> 00:33:29.479
+Jared Wasinger: We can fiddle around with the implementation to… To… yield performance gains?
+
+239
+00:33:30.910 --> 00:33:34.970
+Karim T.: I think it will also depend on the… who we implement the…
+
+240
+00:33:36.300 --> 00:33:43.560
+Karim T.: the block processing, because I said if we want also to compute the stage route from the beginning, we'll have also to batch…
+
+241
+00:33:43.760 --> 00:33:48.319
+Karim T.: Or try to read the intermediate node of the tree in order to compute the state root.
+
+242
+00:33:48.670 --> 00:33:50.989
+Karim T.: If you have also two batches the read.
+
+243
+00:33:51.240 --> 00:33:55.539
+Karim T.: So we'll have a lot of things to read at the beginning of the block. I feel that
+
+244
+00:33:55.650 --> 00:33:58.369
+Karim T.: It would be maybe better if we can mix…
+
+245
+00:33:58.630 --> 00:34:17.110
+Karim T.: between I.O. and CPU, so as I said, if we are running all of the transactions at the same time, sometimes we have I.O, and during I.O, we can run something else, any VML code or something like that, but if we do all of the batch at the beginning, we just wait at the beginning of the block to finish all of the I.O,
+
+246
+00:34:17.920 --> 00:34:21.769
+Karim T.: And, I don't know if it will be better or not just asking like that.
+
+247
+00:34:22.389 --> 00:34:23.910
+Karim T.: And thinking about that.
+
+248
+00:34:29.829 --> 00:34:35.479
+Toni Wahrstätter: Yeah, I think it's a fair comment. I think we only find it out if we do some benchmarks and…
+
+249
+00:34:35.619 --> 00:34:38.749
+Toni Wahrstätter: And then we see, in the end, it's, it's, …
+
+250
+00:34:39.619 --> 00:34:47.649
+Toni Wahrstätter: It's, like, the absolute time it takes to execute the whole block. Doesn't matter, if we do it up front or during execution.
+
+251
+00:34:47.859 --> 00:34:52.129
+Toni Wahrstätter: So yeah, would be… I think we just need some benchmarks at this point.
+
+252
+00:34:52.409 --> 00:35:01.789
+Toni Wahrstätter: to figure it out. Would be great if we can even get them from multiple clients to just have some more certainty on… on that decision.
+
+253
+00:35:14.340 --> 00:35:16.090
+Po: Yeah, extorted.
+
+254
+00:35:20.880 --> 00:35:22.040
+Po: Yeah.
+
+255
+00:35:25.700 --> 00:35:31.130
+Po: All the… generate the sales, the…
+
+256
+00:35:34.240 --> 00:35:35.060
+Po: Duh.
+
+257
+00:35:36.010 --> 00:35:39.770
+Po: Sorry, That's why I….
+
+258
+00:35:40.540 --> 00:35:43.640
+Toni Wahrstätter: I, I think, I think we can't really hear you, Paul.
+
+259
+00:35:44.140 --> 00:35:46.109
+Toni Wahrstätter: I think your mic has a problem.
+
+260
+00:35:46.690 --> 00:35:49.850
+Po: Okay, so is it… is it okay now?
+
+261
+00:35:50.520 --> 00:35:52.270
+Toni Wahrstätter: Try it again?
+
+262
+00:35:53.430 --> 00:35:58.599
+Po: Okay, so I think I will have to… Transfer Mac.
+
+263
+00:36:01.490 --> 00:36:03.209
+Toni Wahrstätter: No worry. Perfect.
+
+264
+00:36:03.400 --> 00:36:05.460
+Toni Wahrstätter: … right.
+
+265
+00:36:05.920 --> 00:36:06.890
+Toni Wahrstätter: Yeah.
+
+266
+00:36:07.060 --> 00:36:16.330
+Toni Wahrstätter: I think we can… we can end that topic, regarding REITs, and at this point, I think at this point, we agree we… we need to… we need some more data.
+
+267
+00:36:16.510 --> 00:36:17.850
+Toni Wahrstätter: To figure it out.
+
+268
+00:36:19.000 --> 00:36:35.709
+Toni Wahrstätter: So I would say let's move on to the next agenda point, which is Rahul, telling us something about the testing efforts going on, and also Felipe is on the call. Would be great to hear his perspective on updates from him, too.
+
+269
+00:36:48.830 --> 00:36:53.750
+raxhvl: Hey, so I'm gonna quickly go over some updates on the testing front.
+
+270
+00:36:54.130 --> 00:37:01.079
+raxhvl: Give you some updates on the progress, give you a brief overview of how the test works on the record.
+
+271
+00:37:01.330 --> 00:37:03.700
+raxhvl: And then, a couple of housekeeping items.
+
+272
+00:37:04.960 --> 00:37:06.269
+raxhvl: So, …
+
+273
+00:37:06.710 --> 00:37:12.970
+raxhvl: The test mainly depends on two repositories. One is EAST, which is like a Python test testing framework.
+
+274
+00:37:13.090 --> 00:37:17.390
+raxhvl: And we have EALS, which is, like, a Python implementation of the spec.
+
+275
+00:37:17.870 --> 00:37:20.779
+raxhvl: We have both of tools working now.
+
+276
+00:37:21.150 --> 00:37:27.590
+raxhvl: We're currently trying a basic, set of tests, about 5 test cases.
+
+277
+00:37:27.730 --> 00:37:34.100
+raxhvl: And reviewing how that, It's been executed.
+
+278
+00:37:34.330 --> 00:37:41.620
+raxhvl: Once we are confident with that, we'll do a small release where, as clients, you guys can just start integrating
+
+279
+00:37:41.880 --> 00:37:45.049
+raxhvl: These tests as part of your development cycle.
+
+280
+00:37:45.330 --> 00:37:50.779
+raxhvl: And then, we'll keep on, working on more complex tests later.
+
+281
+00:37:52.350 --> 00:37:58.649
+raxhvl: Yeah, so Felipe is, like, doing, … Doing the integration testing now.
+
+282
+00:37:58.920 --> 00:38:03.470
+raxhvl: He's on the call to, like, give you an overview of how the test works under the hood.
+
+283
+00:38:03.850 --> 00:38:05.329
+raxhvl: Over to you, Chandita.
+
+284
+00:38:07.910 --> 00:38:11.580
+felipe: Yeah, sure. So right now there's…
+
+285
+00:38:12.130 --> 00:38:16.009
+felipe: As Rahul mentioned, there's, there's the spec side.
+
+286
+00:38:16.480 --> 00:38:28.529
+felipe: Written in Python and the testing side as well. So, what I did, was some work trying to bridge, Tony's PR on the spec side with Rahul's on the testing side.
+
+287
+00:38:29.310 --> 00:38:33.810
+felipe: And, we got, got it working through…
+
+288
+00:38:34.090 --> 00:38:45.290
+felipe: There were just some changes to your PR, Tony, to just pass things through the T8N tool, the transition tool that's talking across the testing and the specs.
+
+289
+00:38:45.670 --> 00:38:51.239
+felipe: And so, basically I got this working, we do have,
+
+290
+00:38:51.700 --> 00:38:55.230
+felipe: some of the basic tests Rahul is working on.
+
+291
+00:38:55.930 --> 00:39:09.600
+felipe: Right now, I'm figuring out how to make the developer experience a little better for adding some complex test cases and some invalid checks.
+
+292
+00:39:09.860 --> 00:39:19.639
+felipe: But as it's working, you know, this is, like, a general flow of East here. Transactions are sent over to the specs to fill.
+
+293
+00:39:19.800 --> 00:39:29.770
+felipe: these fixtures… eels is the specs in this case. They receive the block, they will…
+
+294
+00:39:30.040 --> 00:39:38.490
+felipe: build the block access list, and they pass it back. So we… what we pass back to the testing right now is the hash and the header.
+
+295
+00:39:38.980 --> 00:39:44.640
+felipe: and the ROP encoded, … Block access list from the specs.
+
+296
+00:39:45.080 --> 00:39:54.300
+felipe: What we do on the testing side is we define some smaller subset of the block access list that we care about for the test.
+
+297
+00:39:54.620 --> 00:40:01.019
+felipe: Some of these tests will have the full subset, right? Or it'll be, like, a full check on the valve that's returned.
+
+298
+00:40:01.330 --> 00:40:14.920
+felipe: But sometimes we only care about certain things, and so we do perform this check, but we also rehash the full, access list and check it against the hash in the header, so we always have this double check.
+
+299
+00:40:15.400 --> 00:40:16.840
+felipe: On the testing side.
+
+300
+00:40:21.260 --> 00:40:24.149
+felipe: And, yeah, Rahul, is there one more slide?
+
+301
+00:40:24.680 --> 00:40:26.510
+felipe: Yes, perfect.
+
+302
+00:40:27.000 --> 00:40:28.010
+felipe: And so…
+
+303
+00:40:28.470 --> 00:40:36.710
+felipe: Here, this is basically, like, once this fixture is filled with the specs, and this is a common flow for the testing as well.
+
+304
+00:40:37.430 --> 00:40:41.110
+felipe: This can be consumed by clients over…
+
+305
+00:40:41.290 --> 00:40:49.249
+felipe: consume engine, and so this just kind of shows, the flow there as well. But that's… those are the updates on my side.
+
+306
+00:40:49.500 --> 00:41:01.539
+felipe: I do… I do actually have, initial implementation of the… of this, like, more complex, model structure, to start working on the invalid tests, and… and I did…
+
+307
+00:41:01.820 --> 00:41:08.219
+felipe: Write a couple invalid tests yesterday, but that's still a work in progress, but it does seem to be working well at the moment.
+
+308
+00:41:13.720 --> 00:41:14.680
+raxhvl: Thanks, Felipe.
+
+309
+00:41:14.890 --> 00:41:18.870
+raxhvl: Another thing that we noticed was, there are…
+
+310
+00:41:19.000 --> 00:41:23.069
+raxhvl: There are some creative tests, that… that comes from that.
+
+311
+00:41:23.330 --> 00:41:28.059
+raxhvl: But they're often lost in Discord messages and GitHub issues.
+
+312
+00:41:28.370 --> 00:41:35.479
+raxhvl: So we're trying to aggregate that, as part of the report itself.
+
+313
+00:41:35.770 --> 00:41:40.410
+raxhvl: Into a Markdown file. This is, like, a structured Markdown file, which…
+
+314
+00:41:40.680 --> 00:41:48.480
+raxhvl: Goes over, the goal of the test, the setup that is required, and the assertion that we're trying to make.
+
+315
+00:41:48.750 --> 00:41:55.380
+raxhvl: So, if you guys have any, any test cases in mind, I'd suggest.
+
+316
+00:41:55.630 --> 00:41:59.459
+raxhvl: Making a PR to this, this, background files.
+
+317
+00:41:59.940 --> 00:42:10.209
+raxhvl: And, we can probably… Use that to make discussions, give focus updates, and for other high-level
+
+318
+00:42:10.500 --> 00:42:13.920
+raxhvl: Activity on the test cases.
+
+319
+00:42:15.090 --> 00:42:16.170
+raxhvl: …
+
+320
+00:42:16.650 --> 00:42:26.660
+raxhvl: We also are using this Markdown file along with the test case to integrate into Hive, which is like an integration framework which talks to all the clients.
+
+321
+00:42:27.590 --> 00:42:32.480
+raxhvl: … To create, like, an adoption dashboard.
+
+322
+00:42:32.800 --> 00:42:34.479
+raxhvl: This is what it looks like.
+
+323
+00:42:37.000 --> 00:42:43.709
+raxhvl: So, this pulls in the data from the markdown file in a way that's easier to read.
+
+324
+00:42:44.040 --> 00:42:48.150
+raxhvl: … for people to understand what's happening under the hood.
+
+325
+00:42:48.420 --> 00:42:53.550
+raxhvl: It also fills in the Python test against each client using pipes.
+
+326
+00:42:53.930 --> 00:42:58.670
+raxhvl: And then shows an update, on to our matrix here.
+
+327
+00:42:59.190 --> 00:43:02.669
+raxhvl: This runs on a CI server, …
+
+328
+00:43:02.970 --> 00:43:08.280
+raxhvl: And this is how it looks. You can tap on a test to see what exactly it's testing.
+
+329
+00:43:09.560 --> 00:43:11.910
+raxhvl: And… yeah.
+
+330
+00:43:14.060 --> 00:43:20.379
+raxhvl: Obviously, there's a link to… to the background file for you guys to create a PR.
+
+331
+00:43:23.540 --> 00:43:24.450
+raxhvl: Yes.
+
+332
+00:43:24.740 --> 00:43:26.479
+raxhvl: That's all from us, thank you.
+
+333
+00:43:29.260 --> 00:43:30.150
+Toni Wahrstätter: Awesome.
+
+334
+00:43:30.260 --> 00:43:31.500
+Toni Wahrstätter: Thank you very much.
+
+335
+00:43:31.610 --> 00:43:32.750
+Toni Wahrstätter: Both of you.
+
+336
+00:43:33.150 --> 00:43:38.489
+Toni Wahrstätter: Yeah, I posted, I posted your Markdown file, the link to it, in the chat.
+
+337
+00:43:38.900 --> 00:43:43.430
+Toni Wahrstätter: Would be great if client devs, every time they come up with a new edge case.
+
+338
+00:43:43.600 --> 00:43:45.499
+Toni Wahrstätter: Cannot do a PR against it.
+
+339
+00:43:45.870 --> 00:43:50.590
+Toni Wahrstätter: We're already in the Discord I saw yesterday, I think, …
+
+340
+00:43:51.150 --> 00:43:57.899
+Toni Wahrstätter: Can't find the message right now, but I think we already stumbled across a few edge cases where certain clients,
+
+341
+00:43:58.120 --> 00:44:03.309
+Toni Wahrstätter: would have put that, certain address into the block lab access list, while others wouldn't have.
+
+342
+00:44:03.750 --> 00:44:08.220
+Toni Wahrstätter: And in the end, I think we just need a lot of those test cases, too.
+
+343
+00:44:09.010 --> 00:44:09.800
+Toni Wahrstätter: Yeah.
+
+344
+00:44:10.910 --> 00:44:13.329
+Toni Wahrstätter: Get to a clean implementation.
+
+345
+00:44:16.340 --> 00:44:17.980
+Toni Wahrstätter: Perfect, thank you.
+
+346
+00:44:23.760 --> 00:44:41.020
+Toni Wahrstätter: Right, finally, I just wanted to ask clients about progress. It would be nice if client teams could just quickly give a little bit of an update where they are, what they think, about the EAP, and if there are any blockers or anything where we could help.
+
+347
+00:44:42.730 --> 00:44:45.239
+Toni Wahrstätter: Maybe we can start with… with you, Jared.
+
+348
+00:44:48.120 --> 00:44:57.060
+Jared Wasinger: Yeah, so… we actually have our first, review call on the PR tomorrow.
+
+349
+00:44:57.560 --> 00:45:00.450
+Jared Wasinger: So… Hmm.
+
+350
+00:45:01.320 --> 00:45:09.500
+Jared Wasinger: Yeah, from my side, not much right now, but maybe that will change after tomorrow, so….
+
+351
+00:45:11.120 --> 00:45:12.160
+Toni Wahrstätter: Cool, thanks.
+
+352
+00:45:13.040 --> 00:45:15.950
+Toni Wahrstätter: Is there someone from Besu here?
+
+353
+00:45:19.140 --> 00:45:23.870
+Karim T.: Yes, but maybe, … You can talk, Marieu.
+
+354
+00:45:28.970 --> 00:45:31.360
+mirgee: Yeah, sure, so… Amen.
+
+355
+00:45:32.200 --> 00:45:40.890
+mirgee: So in this event, we, we have implemented a degree of protocol support for BLs.
+
+356
+00:45:41.780 --> 00:45:45.100
+mirgee: … …
+
+357
+00:45:45.640 --> 00:45:50.930
+mirgee: But we still, we still need to update the engineering PI, and it's possible that we haven't, …
+
+358
+00:45:51.510 --> 00:45:57.280
+mirgee: incorporated, like, the spec changes. The PR has been open for, for
+
+359
+00:45:57.690 --> 00:45:59.859
+mirgee: What about the month with little changes?
+
+360
+00:46:00.360 --> 00:46:05.089
+mirgee: And it's possible that we are mishandling some of the edge cases.
+
+361
+00:46:05.760 --> 00:46:11.690
+mirgee: For example, I'm aware that We are omitting the…
+
+362
+00:46:11.900 --> 00:46:15.519
+mirgee: system contracts from BLs completely for the moment.
+
+363
+00:46:18.630 --> 00:46:26.559
+mirgee: … we've been testing against the bowel analysis, report and getting good results there.
+
+364
+00:46:27.330 --> 00:46:28.279
+mirgee: Was that worth?
+
+365
+00:46:30.980 --> 00:46:39.439
+mirgee: Yeah, but, … the PR has been blocked on…
+
+366
+00:46:42.910 --> 00:46:48.570
+mirgee: Some issues, but, otherwise, otherwise… …
+
+367
+00:46:50.420 --> 00:46:53.559
+mirgee: That's… that's… I think that's… that's our status.
+
+368
+00:46:56.170 --> 00:46:57.570
+Toni Wahrstätter: Awesome, thank you.
+
+369
+00:46:59.450 --> 00:47:04.089
+Toni Wahrstätter: Is there an update from someone at Aragon?
+
+370
+00:47:04.730 --> 00:47:12.310
+Mark Holt: Yeah, hi, it's Mark Holt here. I'm doing the BAL implementation at Aragon.
+
+371
+00:47:12.890 --> 00:47:17.009
+Mark Holt: Status is, I'm just starting, so…
+
+372
+00:47:18.220 --> 00:47:23.210
+Mark Holt: I'm… probably by the end of this week, I'll have an estimate of,
+
+373
+00:47:24.020 --> 00:47:28.919
+Mark Holt: how long it'll take to get to something that's working.
+
+374
+00:47:29.180 --> 00:47:38.670
+Mark Holt: I think we're just in the middle of merging. We've got a… we've got a parallel execution engine that we've been working on for some time, which is just going into main.
+
+375
+00:47:38.680 --> 00:47:49.569
+Mark Holt: So, I think the work to support, BAL is going to be just integrating the engine API and making sure that the data structures that we've got
+
+376
+00:47:50.070 --> 00:47:52.779
+Mark Holt: … essentially a mappable.
+
+377
+00:47:53.130 --> 00:47:57.100
+Mark Holt: Which, looking at the spec, I think is a relatively straightforward process.
+
+378
+00:47:57.410 --> 00:48:07.789
+Mark Holt: So, I mean, if it goes well, probably a couple of weeks will be in-dev testing, I would guess. If it goes badly, probably 3 or 4 weeks.
+
+379
+00:48:08.310 --> 00:48:09.749
+Mark Holt: I think is where we are.
+
+380
+00:48:14.390 --> 00:48:15.200
+Toni Wahrstätter: Thank you.
+
+381
+00:48:16.840 --> 00:48:30.180
+Toni Wahrstätter: Yeah, just to directly address, Karim's comment, about, that it would be nice to have a configuration ready for the first DevNet, especially decide on things like, do we want to put reads in there or not?
+
+382
+00:48:30.480 --> 00:48:37.490
+Toni Wahrstätter: I would say right now the ERP is still, like, with reads, so I would still stick to having the reads included for now.
+
+383
+00:48:38.010 --> 00:48:45.359
+Toni Wahrstätter: But, yeah, we can still, as said, as soon as we have some benchmark… benchmarks, we can take a final decision.
+
+384
+00:48:45.870 --> 00:48:54.629
+Toni Wahrstätter: I hope that we get the benchmarks before we get closer to a definite, so that we have the benchmarks rather soon, so that we can decide.
+
+385
+00:48:54.870 --> 00:48:56.350
+Toni Wahrstätter: on that earlier.
+
+386
+00:48:58.530 --> 00:49:02.350
+Toni Wahrstätter: Yeah, thank you, Mark. Is there anyone from REF here?
+
+387
+00:49:06.230 --> 00:49:08.100
+Soubhik: Hello, we're currently…
+
+388
+00:49:08.390 --> 00:49:15.690
+Soubhik: working on the engine API changes. Just today, we have done the new version for payload structure.
+
+389
+00:49:26.770 --> 00:49:27.959
+Toni Wahrstätter: Awesome, thank you.
+
+390
+00:49:28.650 --> 00:49:34.649
+Toni Wahrstätter: Did you… did you start with the engine API, or which… of which part did you start there?
+
+391
+00:49:34.650 --> 00:49:39.929
+Soubhik: No, no. We have implemented the reads and write storage part already. We are…
+
+392
+00:49:40.320 --> 00:49:42.900
+Soubhik: We're currently recording both the reads and writes.
+
+393
+00:50:00.520 --> 00:50:01.510
+Toni Wahrstätter: Thanks.
+
+394
+00:50:03.020 --> 00:50:05.030
+Toni Wahrstätter: Do we have someone from Nethermind?
+
+395
+00:50:06.800 --> 00:50:14.409
+Marc: Yeah, hello. So, I've started prototyping, block access lists in Nethermind.
+
+396
+00:50:14.530 --> 00:50:24.120
+Marc: So far, I've been focusing on the, sort of, construction part, which has progressed pretty well, so the, sort of, construction and serialization.
+
+397
+00:50:24.340 --> 00:50:37.659
+Marc: And the way I decided to sort of approach it is to split it into two PRs, so there's the one which is, like, the construction, and then the other part is actually using the block access list, so all of the kind of parallelization aspect.
+
+398
+00:50:37.810 --> 00:50:40.669
+Marc: And I haven't really, …
+
+399
+00:50:40.990 --> 00:50:46.970
+Marc: worked on that part of it as much, and it seems like it will be significantly more, kind of complex.
+
+400
+00:50:47.430 --> 00:50:48.200
+Marc: But…
+
+401
+00:50:48.370 --> 00:50:55.969
+Marc: the way I kind of understand it from the spec, it does seem quite logical to split it into those parts, because you could almost just…
+
+402
+00:50:56.700 --> 00:51:03.210
+Marc: Do the construction without necessarily leveraging everything, so that does seem to give us a little bit of, …
+
+403
+00:51:03.430 --> 00:51:10.559
+Marc: kind of flexibility there in terms of scheduling. I'm not sure if anyone else has approached it that way. …
+
+404
+00:51:11.190 --> 00:51:12.819
+Marc: But yeah, that's it for now.
+
+405
+00:51:16.990 --> 00:51:18.410
+Toni Wahrstätter: Great, thank you.
+
+406
+00:51:21.660 --> 00:51:27.050
+Toni Wahrstätter: Yeah, if there's nothing else that we want to discuss today, …
+
+407
+00:51:27.620 --> 00:51:37.279
+Toni Wahrstätter: we can end the call. This was basically everything we had on the agenda. I note that we still need to do the benchmarking to decide upon
+
+408
+00:51:37.700 --> 00:51:43.440
+Toni Wahrstätter: Do we want to include the reads or not? Or not the reads, but the state locations? This is kind of…
+
+409
+00:51:43.600 --> 00:51:44.829
+Toni Wahrstätter: The same here.
+
+410
+00:51:45.110 --> 00:51:53.539
+Toni Wahrstätter: And, yeah, and then we can discuss about the first definite. I think GEF and Biso might be the first clients that…
+
+411
+00:51:53.660 --> 00:51:55.130
+Toni Wahrstätter: Might be ready.
+
+412
+00:51:55.500 --> 00:52:02.740
+Toni Wahrstätter: But yeah, as the EAP is not that big, would be cool to get a Defnet, to get to a DEFNET as soon as possible.
+
+413
+00:52:05.650 --> 00:52:06.450
+Jared Wasinger: So…
+
+414
+00:52:06.580 --> 00:52:19.139
+Jared Wasinger: Yeah, I guess, yeah, based on Carl's comment earlier, I personally kind of lean towards keeping reads in until we can demonstrate worst-case performance, which isn't…
+
+415
+00:52:19.150 --> 00:52:28.799
+Jared Wasinger: trivial, so we… it would be nice to keep those in until we can set up some kind of, like, attack net where we spin up a bunch of these, like.
+
+416
+00:52:28.950 --> 00:52:31.720
+Jared Wasinger: Worst case, blocks without reads.
+
+417
+00:52:32.290 --> 00:52:41.299
+Jared Wasinger: Sorry, that… I just realized that didn't make sense. I want to evaluate, like, what the worst-case performance is without having the reads before we decide whether or not to remove them.
+
+418
+00:52:42.650 --> 00:52:44.000
+Jared Wasinger: So, yeah.
+
+419
+00:52:46.070 --> 00:52:47.050
+Jared Wasinger: At least, yeah.
+
+420
+00:52:47.050 --> 00:52:48.359
+Toni Wahrstätter: Yep, that's fair.
+
+421
+00:52:49.900 --> 00:52:58.299
+Toni Wahrstätter: Perfect. Yeah, the ERP as it stands today, still includes the reads, so I think we just leave it as, as that, and…
+
+422
+00:52:58.860 --> 00:53:06.770
+Toni Wahrstätter: then we can still decide at some point if we want to remove them or not, but for… as a default, I would suggest we keep them for now.
+
+423
+00:53:11.210 --> 00:53:12.250
+Toni Wahrstätter: Perfect.
+
+424
+00:53:14.170 --> 00:53:15.580
+Toni Wahrstätter: Let's see….
+
+425
+00:53:15.580 --> 00:53:16.040
+Marc: Just….
+
+426
+00:53:16.040 --> 00:53:17.169
+Toni Wahrstätter: Your hand, yeah.
+
+427
+00:53:17.170 --> 00:53:31.410
+Marc: Yeah, I just had one quick question. So, I saw on the agenda something about RLP versus SSZ. I've gone with implementing RLP, but… and I kind of… it seemed like last ACD
+
+428
+00:53:31.590 --> 00:53:36.950
+Marc: that was agreed upon, but I just want to check, are we kind of all in agreement that we're going to use that?
+
+429
+00:53:39.590 --> 00:53:47.449
+Toni Wahrstätter: Yeah, so just to summarize on… this was on all Cardiff's call, I think, last week, the majority… I think most people were…
+
+430
+00:53:48.310 --> 00:53:50.720
+Toni Wahrstätter: So most people didn't have a strong opinion.
+
+431
+00:53:51.170 --> 00:54:00.229
+Toni Wahrstätter: But it seemed like the… the less complex way would be to just go with RLP and not use the ERP to introduce a new…
+
+432
+00:54:00.350 --> 00:54:02.160
+Toni Wahrstätter: Yeah.
+
+433
+00:54:02.410 --> 00:54:04.430
+Toni Wahrstätter: to introduce, SSC.
+
+434
+00:54:05.230 --> 00:54:13.169
+Toni Wahrstätter: This is kinda, also the default that is now in the EAP. I think we have some broad consensus on that.
+
+435
+00:54:13.430 --> 00:54:17.290
+Toni Wahrstätter: But I'm happy to discuss that, if anyone else wants to.
+
+436
+00:54:18.200 --> 00:54:20.260
+Toni Wahrstätter: Yeah, defend SSC.
+
+437
+00:54:25.830 --> 00:54:28.430
+Marc: Yeah, I mean, I think ROP makes sense to me.
+
+438
+00:54:32.450 --> 00:54:39.369
+Toni Wahrstätter: Yeah, there were some pros and cons for both, like, SSC with smaller, more compact proofs.
+
+439
+00:54:40.480 --> 00:54:49.900
+Toni Wahrstätter: might have some, advantages there too, but RLP, in the end, it's smaller, so we save, like, 10%, 5-10%, …
+
+440
+00:54:50.300 --> 00:54:58.399
+Toni Wahrstätter: on the size, which is negligible, but still, and it's just known, so all clients have, codebases with RLP, and it, like…
+
+441
+00:55:00.320 --> 00:55:01.510
+Toni Wahrstätter: That's complex.
+
+442
+00:55:10.510 --> 00:55:11.590
+Toni Wahrstätter: Perfect.
+
+443
+00:55:12.220 --> 00:55:13.040
+Toni Wahrstätter: Boom.
+
+444
+00:55:14.530 --> 00:55:20.360
+Toni Wahrstätter: Thank you very much, and see you in two weeks at the next breakout call.
+
+445
+00:55:23.550 --> 00:55:24.790
+Marc: It is, but….
+
+446
+00:55:27.190 --> 00:55:28.210
+Jared Wasinger: Yeah, buddy.
+

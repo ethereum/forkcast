@@ -1,0 +1,32 @@
+{
+  "meeting_topic": "Focil Breakout",
+  "meeting_start_time": "2025-10-07T13:53:47Z",
+  "meeting_end_time": "2025-10-07T14:58:21Z",
+  "summary_start_time": "2025-10-07T14:01:19Z",
+  "summary_end_time": "2025-10-07T14:56:18Z",
+  "summary_created_time": "2025-10-07T14:59:11Z",
+  "summary_last_modified_time": "2025-10-07T16:33:49Z",
+  "summary_overview": "The meeting focused on discussing the implementation of forced transactions in roll-ups and the challenges faced by native roll-ups in using the Engine API. Donnoh and Potuz debated the limitations and assumptions involved in reusing existing checks for forced transactions, emphasizing the need for a centralized sequencer and the potential restrictions on design space. Development updates included unit tests for inclusion lists, fixes for fork-choice and beacon block timeout errors, and progress on metrics for Reth and Lodestar clients, while Katya raised questions about counting invalid transactions and proposed combining metrics for CL and EL parts in a dashboard for easier comparison.",
+  "summary_details": [
+    {
+      "label": "Native Rollups and Forced Transactions",
+      "summary": "Luca from L2Bit presented on native rollups, explaining their concept and the challenges of implementing forced transactions. He discussed how native rollups can leverage the execute precompile to minimize risks and maintain feature parity with L1. Luca highlighted the difficulties of implementing forced transactions in rollups with centralized sequencers, suggesting the use of inclusion lists to address this issue. He also explored how Fossil's implementation could be adapted to support forced transactions in native rollups. The discussion touched on potential challenges with transaction resubmission and validation in the context of inclusion lists."
+    },
+    {
+      "label": "FOCIL Implementation in L1 and L2",
+      "summary": "Donnoh and Jihoon discussed the challenges of implementing forced transactions in L2s, particularly for native roll-ups. They explored the potential benefits of having FOCIL in L1, which could simplify the work for L2s and improve censorship resistance. Potuz clarified that FOCIL on L2 would involve reusing the execution layer's transaction check function, which is not a mechanism design or part of the consensus. The discussion concluded with an agreement that while having FOCIL in L1 could benefit L2s, it should not be the primary reason for its inclusion in the L1 protocol."
+    },
+    {
+      "label": "Roll-up Forced Transactions Implementation Challenges",
+      "summary": "The meeting focused on discussing the implementation of forced transactions in roll-ups and the challenges faced by native roll-ups in using the Engine API. Donnoh and Potuz debated the limitations and assumptions involved in reusing existing checks for forced transactions, emphasizing the need for a centralized sequencer and the potential restrictions on design space. Jihoon highlighted the importance of delays for reverse transactions and suggested using an empty inclusion list for external mechanisms. Development updates included unit tests for inclusion lists, fixes for fork-choice and beacon block timeout errors, and progress on metrics for Reth and Lodestar clients. Katya raised questions about counting invalid transactions and proposed combining metrics for CL and EL parts in a dashboard for easier comparison."
+    }
+  ],
+  "next_steps": [
+    "Jihoon to share a document that lays out test cases for inclusion list store.",
+    "Jihoon to follow up with Justin about where to place the test cases document .",
+    "Jihoon to look into the \"beaconBlock Timeout\" error with the Geth prototype after completing testing work.",
+    "Katya to continue building a dashboard combining relevant CL and EL metrics for easier comparison.",
+    "Katya to share the complete dashboard design for further discussion when finished.",
+    "Pelle and Katya to continue work on getting metrics working in Reth."
+  ]
+}

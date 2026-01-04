@@ -1,0 +1,41 @@
+{
+  "meeting_topic": "EIP-7928 Breakout #5, Oct 22, 2025",
+  "meeting_start_time": "2025-10-22T13:53:13Z",
+  "meeting_end_time": "2025-10-22T14:38:26Z",
+  "summary_start_time": "2025-10-22T13:58:50Z",
+  "summary_end_time": "2025-10-22T14:34:04Z",
+  "summary_created_time": "2025-10-22T14:49:17Z",
+  "summary_last_modified_time": "2025-10-22T16:15:12Z",
+  "summary_overview": "The team discussed Coinbase address handling in block access lists and agreed on modifications to include the Coinbase address in read operations for transactions, even with zero tips, while excluding it when no transactions occur. Testing updates and client progress were reviewed across multiple implementations including Geth, Besu, Nethermind, and Reth, with various team members reporting on performance optimizations and integration work. The team confirmed plans for including Coinbase modifications in the next devnet release, with testing scenarios being prepared to cover different block scenarios, and scheduled the next breakout call for two weeks' time.",
+  "summary_details": [
+    {
+      "label": "Coinbase Address Handling Discussion",
+      "summary": "The meeting focused on discussing Coinbase handling in the BlockLab access list, where Toni explained the current specification that includes the Coinbase address only when there are balance changes or withdrawals. The team also reviewed testing updates and client updates, but these were not detailed in the transcript. The discussion primarily centered around whether to change the current Coinbase address handling mechanism, with Toni inviting input on whether to keep it as is or make modifications."
+    },
+    {
+      "label": "Coinbase Address Handling Protocol Updates",
+      "summary": "The team discussed the handling of Coinbase addresses in block access lists, agreeing to always include the Coinbase address as a read when there are transactions, even if the transaction has a zero tip. They also decided that the Coinbase address would not be included if there are no transactions and no system operations touching the Coinbase. Rahul will update the test cases, and Toni will update the specs and EIP. The team reviewed client updates, with Jared working on performance optimization for state root calculation in Geth, Karim verifying block processing in Besu, Marc making progress with bowel construction and testing interop in Nethermind, and Ishika integrating Dragon's branch in Reth."
+    },
+    {
+      "label": "BALs Integration Progress Update",
+      "summary": "The team discussed progress on BALs integration, with Mark reporting their first PR merge and plans for a DevNet Zero branch by Friday. They agreed to include Coinbase modifications in the next devnet, with Rahul confirming tests would be ready this week to cover various scenarios including empty blocks and zero-reward transactions. The team also addressed some client integration issues that Stefan is working on, and Toni confirmed the next breakout call would be held in two weeks."
+    }
+  ],
+  "next_steps": [
+    "Toni: Update the specs and EIP to reflect that Coinbase address is always included in Block Level Access List when there are transactions",
+    "Rahul: Update test cases to reflect new Coinbase handling rules",
+    "Rahul: Create tests for Coinbase edge cases this week",
+    "Rahul: Complete missing exceptions within EEST framework for incorrect BAL payloads by late this week",
+    "Rahul: Work on new test release including Coinbase updates and system operations",
+    "Jared: Continue work on optimizing state root calculation performance in Geth",
+    "Karim: Implement Coinbase modifications in Besu for next devnet",
+    "Karim: Complete shadow fork of mainnet to measure state root performance impact on Besu",
+    "Karim: Continue work on fixing parallelization of transaction execution with Block Access List in Besu",
+    "Marc: Investigate and resolve consensus issues found during interop testing with Besu and Geth",
+    "Marc: Create regression tests for consensus issues discovered",
+    "Ishika: Complete integration from Alloy EVM branch to Dragon's branch in Reth by end of day",
+    "Mark: Create DevNet Zero branch for Erigon by tomorrow or Friday",
+    "Stefan: Fix Consensus-layer client issues with Prism interop by end of week",
+    "Stefan: Wait for Coinbase test completion before progressing with devnet setup"
+  ]
+}

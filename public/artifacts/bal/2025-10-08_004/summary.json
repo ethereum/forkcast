@@ -1,0 +1,33 @@
+{
+  "meeting_topic": "EIP-7928 Breakout #4, Oct 8, 2025",
+  "meeting_start_time": "2025-10-08T13:53:10Z",
+  "meeting_end_time": "2025-10-08T14:29:58Z",
+  "summary_start_time": "2025-10-08T13:59:34Z",
+  "summary_end_time": "2025-10-08T14:25:39Z",
+  "summary_created_time": "2025-10-08T14:30:37Z",
+  "summary_last_modified_time": "2025-10-08T16:05:24Z",
+  "summary_overview": "The team discussed and decided to maintain the BlockHive Access List hash approach for now, while considering future transitions to BlockHive access list root when needed. They aligned on handling precompiles and balance changes in the block access list, with specific decisions made about including all precompiles and not recording certain balance changes. Multiple client implementations including Geth, Nethermind, Ruh's tests, Erien's implementation, and Besu reported various stages of progress toward a first devnet, with Toni planning to coordinate the scheduling with PandaOps for next week.",
+  "summary_details": [
+    {
+      "label": "BlockHive Access List Decision",
+      "summary": "The meeting focused on discussing the BlockHive Access List Hash versus BlockHub Access List Root topic, with Toni noting that clients had previously favored keeping the BlockCloud access list as is and considering a future move to BlockHive access list root when partial stateless nodes become more important. Toni requested updates from clients on their progress and testing, but no updates were provided. The group decided to stick with the BlockHive Access List hash for now, and Toni mentioned a point raised by Marc Hill in Discord regarding this topic."
+    },
+    {
+      "label": "Precompiles and Balance Change Handling",
+      "summary": "The team discussed handling precompiles in the block access list, with Marc proposing to exclude precompiles that don't interact with state, but the group agreed to include all precompiles for consistency and lower complexity. They also aligned on not recording balance changes that result in the balance returning to its original value, following the behavior of other clients like Geth and Besu. Toni requested that Rahul and Felipe provide test cases to ensure correct handling of these edge cases."
+    },
+    {
+      "label": "Client Devnets Progress Update",
+      "summary": "The team discussed progress on various client implementations and their readiness for a first devnet. Jared reported that Geth is close to being ready, with a devnet possible in a day or two. Marc mentioned fixes for Nethermind's BALs implementation in Hive tests. Ishika reported progress on Ruh's tests and BAL DevNet Zero branch. Mark stated that Erien's implementation is nearly complete, with a branch expected by Monday and Hive tests passing by the end of next week. Karim confirmed that Besu is working in local devnets. Toni will check with PandaOps about scheduling the first devnet, which seems likely to happen next week."
+    }
+  ],
+  "next_steps": [
+    "Rahul and Felipe to add a test case for the balance changes edge case where an account's balance changes during a transaction but returns to its original value.",
+    "Toni to review Felipe's PR for the 7702 changes in the spec.",
+    "All clients to provide feedback on Katya's metrics standardization proposal in the Discord channel.",
+    "PandaOps and Toni to coordinate the first devnet setup for the following week.",
+    "Marc to continue fixing edge cases in Nethermind's BAL implementation to pass all Hive tests.",
+    "Reth team to review and implement the new tests that were added.",
+    "Erigon team to finalize their implementation branch by Monday and aim to pass all Hive tests by the end of the week."
+  ]
+}

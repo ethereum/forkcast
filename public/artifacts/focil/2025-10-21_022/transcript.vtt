@@ -1,0 +1,310 @@
+WEBVTT
+
+1
+00:09:13.060 --> 00:09:18.389
+Jihoon: I think we can wait just one… another minute, and then start the call.
+
+2
+00:10:25.000 --> 00:10:30.319
+Jihoon: Alright, I think, we can start this call.
+
+3
+00:10:32.370 --> 00:10:33.270
+Pooja Ranjan: VLI.
+
+4
+00:10:34.840 --> 00:10:42.860
+Jihoon: Okay, thank you, Pooja. Hello, everyone! Welcome and thanks for joining Fawcett Breakout 22nd.
+
+5
+00:10:43.230 --> 00:10:55.350
+Jihoon: Today, I haven't prepared any research update, so we could share development updates, as always, and if anyone has anything to share, we can jump into it afterward.
+
+6
+00:10:56.410 --> 00:11:03.470
+Jihoon: So, development updates, what do we have on client development, metrics, or testing?
+
+7
+00:11:06.600 --> 00:11:08.630
+Jihoon: Does anyone want to go first?
+
+8
+00:11:18.700 --> 00:11:21.539
+Jihoon: All right, and let me go first. So,
+
+9
+00:11:21.970 --> 00:11:26.380
+Jihoon: I've added unit tests for inclusion-laced store.
+
+10
+00:11:27.000 --> 00:11:30.290
+Jihoon: Along with a checklist for CL tests.
+
+11
+00:11:31.260 --> 00:11:34.729
+Jihoon: Here's a link, if anyone's interested.
+
+12
+00:11:36.700 --> 00:11:41.929
+Jihoon: Yeah, I drafted in a table, but Justin revamped it so we can read it easily.
+
+13
+00:11:42.290 --> 00:11:47.710
+Jihoon: I'm gonna add more test cases and implement corresponding test.
+
+14
+00:11:47.960 --> 00:11:50.279
+Jihoon: In the meantime, if anyone come up with
+
+15
+00:11:51.050 --> 00:11:55.719
+Jihoon: Testing ideas that's not there, please feel free to open up a PR.
+
+16
+00:11:56.050 --> 00:12:02.529
+Jihoon: I also fixed the gaff image, so we can have an… interrupt between Geth and Wrath.
+
+17
+00:12:03.120 --> 00:12:10.580
+Jihoon: At least I thought I did, but it seems there's a bug, probably in GATT, and that's what I'm gonna work on next.
+
+18
+00:12:19.780 --> 00:12:20.990
+Jihoon: Yes, Pella?
+
+19
+00:12:22.650 --> 00:12:24.910
+Pelle Krabbenhoeft: I can go next, if that's all.
+
+20
+00:12:25.590 --> 00:12:26.530
+Jihoon: Yes, please.
+
+21
+00:12:27.290 --> 00:12:36.250
+Pelle Krabbenhoeft: Alright, so this week, I added… well, I cleaned up some of the metrics that me and Katya were working on last time, and we have…
+
+22
+00:12:36.430 --> 00:12:50.699
+Pelle Krabbenhoeft: 3 more that we're adding right now, I believe. So that's almost finished, and then that'll be all for the EL metrics in Wrath. And then I've also been working on the execution tests, just drafting up the…
+
+23
+00:12:50.820 --> 00:13:04.329
+Pelle Krabbenhoeft: the checklist for them, and started a little work on the actual coding for that, but, still, it's my first time doing tests for this. So, it's going along… it's going pretty well, but yeah.
+
+24
+00:13:15.870 --> 00:13:23.339
+Jihoon: Sounds great. Do we have any updates on other clients, like maybe Teku or Lowestar?
+
+25
+00:13:27.440 --> 00:13:33.850
+Mehdi Aouadi: Yeah, I can give an update for Teku. We didn't really make any, real progress.
+
+26
+00:13:33.990 --> 00:13:35.390
+Mehdi Aouadi: Since last time.
+
+27
+00:13:35.570 --> 00:13:42.120
+Mehdi Aouadi: We kept the, the branch that we had, which is working on top of Folu.
+
+28
+00:13:42.330 --> 00:13:45.620
+Mehdi Aouadi: You know,
+
+29
+00:13:46.200 --> 00:13:56.129
+Mehdi Aouadi: I tried to rebase it on top of Glow As without TPBS, but it turned out to be a little bit hacky and hard to do, so I did… I chose to not lose the…
+
+30
+00:13:56.330 --> 00:14:06.070
+Mehdi Aouadi: too much time on it. So for now, hopefully we will, have a… we will wait for the, for a stable version of EPBS, and maybe…
+
+31
+00:14:06.410 --> 00:14:10.860
+Mehdi Aouadi: then we will, consider rebasing it on top of, GlowEyes.
+
+32
+00:14:11.530 --> 00:14:12.379
+Mehdi Aouadi: Oh, yeah.
+
+33
+00:14:13.360 --> 00:14:27.199
+Jihoon: Yeah, sorry about the miscommunication. I think we want to remain on top of Flu, and then we don't wanna go for Glas without the PBS, because it will be too hacky, because.
+
+34
+00:14:27.200 --> 00:14:27.890
+Mehdi Aouadi: Yeah.
+
+35
+00:14:27.890 --> 00:14:31.660
+Jihoon: Yeah, so we… we can just stay on fluid, and then…
+
+36
+00:14:31.900 --> 00:14:38.539
+Jihoon: probably in a few months, if we decide to include, I mean, SFI Fossil in Glamsterdam.
+
+37
+00:14:39.050 --> 00:14:46.470
+Jihoon: Yeah, we can… still, we wanna… I think we wanna wait until the PBS spec and implementation.
+
+38
+00:14:46.640 --> 00:15:03.660
+Jihoon: are gonna stabilize, and then, yeah, we can try to rebase it on top of it, and then there will be a little bit of spec changes, to rebase fossil on top of a PBS, but, I can take care of it. And, yeah, so for… for…
+
+39
+00:15:04.160 --> 00:15:06.880
+Jihoon: Now, for the time being, I think we can just…
+
+40
+00:15:07.270 --> 00:15:13.030
+Jihoon: stay on top of Lou, and then try to make an interop between CL and Yale clients.
+
+41
+00:15:13.620 --> 00:15:14.490
+Mehdi Aouadi: Yeah, sure.
+
+42
+00:15:21.030 --> 00:15:24.770
+Jihoon: So there's no update for Lostar,
+
+43
+00:15:27.300 --> 00:15:31.220
+Jihoon: Yeah, I guess that's it for client.
+
+44
+00:15:31.410 --> 00:15:32.620
+Jihoon: development?
+
+45
+00:15:34.030 --> 00:15:38.020
+Jihoon: Hmm, so Katya is not here,
+
+46
+00:15:38.370 --> 00:15:42.640
+Jihoon: Maybe, Pella, do you have any updates on EL metrics?
+
+47
+00:15:46.560 --> 00:16:06.259
+Pelle Krabbenhoeft: Yeah, the only thing that's changed from last time is we're adding metrics into the block builder when we're applying the inclusion list to the block building process, but those metrics are pretty much the same as the metrics we were getting from the validation of a block in New Payload.
+
+48
+00:16:13.240 --> 00:16:16.310
+Jihoon: Do you know what causes that discrepancy?
+
+49
+00:16:18.000 --> 00:16:20.369
+Pelle Krabbenhoeft: It's…
+
+50
+00:16:20.970 --> 00:16:27.630
+Pelle Krabbenhoeft: It might actually be exactly the same, I might have misspoke, I don't have it pulled up right in front of me, but…
+
+51
+00:16:27.790 --> 00:16:29.769
+Pelle Krabbenhoeft: Yeah. Ju…
+
+52
+00:16:30.060 --> 00:16:40.350
+Pelle Krabbenhoeft: We just wanted to track it differently, because it looks like it's tracked differently on consensus layer as well, just because it's two different calls.
+
+53
+00:16:43.680 --> 00:16:51.030
+Jihoon: Gotcha. So, alright, so… Last time Katya shared… said that we don't wanna…
+
+54
+00:16:51.530 --> 00:16:56.009
+Jihoon: gathered two information, I mean, same information.
+
+55
+00:16:56.160 --> 00:17:00.650
+Jihoon: in the CL and EL, and I guess…
+
+56
+00:17:01.540 --> 00:17:07.030
+Jihoon: I may be wrong, but we want to somehow unify metrics across the CL and EL.
+
+57
+00:17:08.319 --> 00:17:09.859
+Jihoon: Maybe it's already done.
+
+58
+00:17:12.020 --> 00:17:25.979
+Pelle Krabbenhoeft: So, the metrics that we're getting on the EL are still different, because we're tracking how many of each transaction got included or unincluded, and then a label for why.
+
+59
+00:17:26.210 --> 00:17:35.340
+Pelle Krabbenhoeft: Whereas the consensus layer is just a raw number of how many, transactions were passed, I believe.
+
+60
+00:17:38.300 --> 00:17:42.999
+Jihoon: Gotcha. How many transactions we passed.
+
+61
+00:17:46.740 --> 00:17:47.760
+Jihoon: I see.
+
+62
+00:17:53.580 --> 00:17:55.309
+Jihoon: Right, yeah. Thank you.
+
+63
+00:17:59.360 --> 00:18:11.180
+Jihoon: So that's for metrics, and I guess, yeah, I guess, Pella, you also want to share something about… I guess you already shared, but maybe you want to…
+
+64
+00:18:11.760 --> 00:18:16.499
+Jihoon: mention what you're working on on EL test checklist.
+
+65
+00:18:18.890 --> 00:18:37.650
+Pelle Krabbenhoeft: Yeah, I don't know if there's too much more to share about that, other than what I already mentioned, but, so far, I have, I believe it's 10 or 11 tests, that Jihoon's been leaving some comments on, and I've been working on getting those all fixed up and ready.
+
+66
+00:18:38.070 --> 00:18:57.919
+Pelle Krabbenhoeft: just mostly basic stuff, like, ensuring that the size limit on the IL creation from the EL is correct, and then some basic transaction stuff, and making sure invalid transactions aren't included, and stuff like that.
+
+67
+00:19:02.560 --> 00:19:03.700
+Jihoon: Sounds great.
+
+68
+00:19:03.840 --> 00:19:10.270
+Jihoon: So… Yeah, we were gonna have checklists for both CL and EL, and…
+
+69
+00:19:10.900 --> 00:19:14.760
+Jihoon: Corresponding test will be following.
+
+70
+00:19:15.580 --> 00:19:22.610
+Jihoon: Hmm, yeah, so I think that's for our development updates.
+
+71
+00:19:23.120 --> 00:19:28.379
+Jihoon: Does anyone wanna… Does anyone have any comments, or…
+
+72
+00:19:29.120 --> 00:19:30.610
+Jihoon: Something to share.
+
+73
+00:19:45.090 --> 00:19:49.950
+Jihoon: Yeah, otherwise we can go ahead and wrap up the call a bit early.
+
+74
+00:19:50.340 --> 00:19:55.959
+Jihoon: Alright guys, thanks for joining, and…
+
+75
+00:19:56.580 --> 00:20:01.580
+Jihoon: Hope you guys have a great rest of your day, and see you in two weeks.
+
+76
+00:20:04.980 --> 00:20:06.060
+Pooja Ranjan: Thank you.
+
+77
+00:20:07.280 --> 00:20:07.900
+nflaig: Beautiful.
+

@@ -1,0 +1,1530 @@
+WEBVTT
+
+1
+00:00:31.850 --> 00:00:32.890
+Toni Wahrstaetter: And no.
+
+2
+00:02:00.740 --> 00:02:01.790
+Toni Wahrstaetter: Lower one.
+
+3
+00:02:01.940 --> 00:02:05.999
+Toni Wahrstaetter: Let's give people… A few more minutes to join.
+
+4
+00:04:03.750 --> 00:04:04.750
+Toni Wahrstaetter: Perfect.
+
+5
+00:04:05.940 --> 00:04:10.320
+Toni Wahrstaetter: How does the stream look like? Are we good to go?
+
+6
+00:04:26.970 --> 00:04:31.980
+Pooja Ranjan: Like the windows… Can we just wait for one more minute? I think we're all in.
+
+7
+00:04:32.760 --> 00:04:36.969
+Toni Wahrstaetter: Perfect, yeah, let's wait for one more minute, then the stream is ready.
+
+8
+00:05:30.840 --> 00:05:33.340
+Pooja Ranjan: We can move over the stream.
+
+9
+00:05:36.260 --> 00:05:37.220
+Toni Wahrstaetter: Awesome.
+
+10
+00:05:37.420 --> 00:05:39.340
+Toni Wahrstaetter: Then, let's start.
+
+11
+00:05:42.260 --> 00:05:45.739
+Toni Wahrstaetter: Great! Welcome, everyone, to the second…
+
+12
+00:05:45.990 --> 00:05:57.599
+Toni Wahrstaetter: EIP7928 breakout call. I will post today's agenda in the chat, it's rather short. We have two agenda items, today.
+
+13
+00:05:58.000 --> 00:06:09.979
+Toni Wahrstaetter: First of all, we have to discuss about, do we want to include transaction indices, or how we call them now, block lab access indices for reads.
+
+14
+00:06:10.190 --> 00:06:15.609
+Toni Wahrstaetter: So for everything that is not touched, or for everything that is touched but not modified.
+
+15
+00:06:16.190 --> 00:06:23.159
+Toni Wahrstaetter: And the second item is basically just client updates and seeing where we're at and how close we are to a definite.
+
+16
+00:06:24.970 --> 00:06:30.189
+Toni Wahrstaetter: Right, there was a short discussion on the Discord,
+
+17
+00:06:30.560 --> 00:06:46.529
+Toni Wahrstaetter: Some brought it up that we should include the block level access indices, for S loads and for all the opcodes, like call, static call, X code size, and so on, that touch an account without modifying it.
+
+18
+00:06:47.270 --> 00:06:52.750
+Toni Wahrstaetter: And the question is, should we include block-level access list indices for it?
+
+19
+00:06:54.340 --> 00:06:57.859
+Toni Wahrstaetter: So I would just, yeah, pass that question to clients.
+
+20
+00:06:58.830 --> 00:07:00.520
+Toni Wahrstaetter: What do you guys think?
+
+21
+00:07:06.270 --> 00:07:08.179
+Toni Wahrstaetter: Maybe you can start some by…
+
+22
+00:07:08.410 --> 00:07:11.050
+Toni Wahrstaetter: Telling us the motivation behind it.
+
+23
+00:07:14.950 --> 00:07:21.620
+Som | Erigon: All right, thanks, Tony, am I wonderful.
+
+24
+00:07:24.380 --> 00:07:25.470
+Toni Wahrstaetter: Yeah, I can hear you.
+
+25
+00:07:27.860 --> 00:07:31.580
+Som | Erigon: Got it. Okay, so the motivation is,
+
+26
+00:07:32.570 --> 00:07:40.630
+Som | Erigon: The way I envision block-level access list to servers in the post-Clamsterdam world is…
+
+27
+00:07:41.160 --> 00:07:46.510
+Som | Erigon: One of the aspects is parallel, execution, of course.
+
+28
+00:07:46.740 --> 00:07:52.550
+Som | Erigon: And I suppose that is, something that most of the clients
+
+29
+00:07:53.010 --> 00:07:57.989
+Som | Erigon: including Aragon, I would be looking into and implementing, because, you know, why not?
+
+30
+00:07:58.180 --> 00:08:08.660
+Som | Erigon: That should speed up, execution to some extent. By that, I mean, like, it's…
+
+31
+00:08:09.200 --> 00:08:16.560
+Som | Erigon: From our initial results with parallel execution, we've seen that something like a…
+
+32
+00:08:16.670 --> 00:08:20.440
+Som | Erigon: Mark and Patricia try might slow you down, so you need, like.
+
+33
+00:08:21.020 --> 00:08:26.689
+Som | Erigon: Quite a bit of parallelization, in order to benefit from that.
+
+34
+00:08:26.820 --> 00:08:35.500
+Som | Erigon: That's, like, a day-to-day, but another, possibly, potentially big thing that might happen is…
+
+35
+00:08:35.679 --> 00:08:40.200
+Som | Erigon: that you include, ZK EVMs,
+
+36
+00:08:40.690 --> 00:08:45.250
+Som | Erigon: And create proofs for transactions and blocks.
+
+37
+00:08:45.840 --> 00:08:52.170
+Som | Erigon: So, when I sort of, dived into this, with our…
+
+38
+00:08:52.400 --> 00:09:02.399
+Som | Erigon: work for a prover. It is apparent that in order to create a proof, with the current set of ZKVMs, that sort of
+
+39
+00:09:02.680 --> 00:09:06.570
+Som | Erigon: Simulate the running of a bare metal,
+
+40
+00:09:07.320 --> 00:09:11.060
+Som | Erigon: you know, cut-down version of RISC-V,
+
+41
+00:09:12.070 --> 00:09:16.530
+Som | Erigon: Runner, you sort of don't want it to…
+
+42
+00:09:17.140 --> 00:09:27.820
+Som | Erigon: talk back and forth, with BB, as you would allow your regular execution clients to do. So that would mean, do you like to have that
+
+43
+00:09:28.280 --> 00:09:29.730
+Som | Erigon: fully stateless.
+
+44
+00:09:30.460 --> 00:09:35.880
+Som | Erigon: But in order for something to be fully stateless, of course, you need, the whole state
+
+45
+00:09:36.450 --> 00:09:50.889
+Som | Erigon: Before and after in a block, and the execution as well, but block level access list, actually sits in a convenient spot to optimize maximum benefit with the least amount of space.
+
+46
+00:09:51.480 --> 00:09:57.100
+Som | Erigon: So, you would expect this kind of a setup to run alongside
+
+47
+00:09:57.210 --> 00:10:02.100
+Som | Erigon: Something that can read the bells and give you the pre-state.
+
+48
+00:10:02.390 --> 00:10:05.529
+Som | Erigon: Of execution, which you would then pass through the
+
+49
+00:10:05.740 --> 00:10:10.670
+Som | Erigon: risk 5 runner that you've got, inside of your prover.
+
+50
+00:10:10.880 --> 00:10:14.540
+Som | Erigon: And, that will just one shot give you the proof.
+
+51
+00:10:15.020 --> 00:10:19.130
+Som | Erigon: Offer execution… Trace generation?
+
+52
+00:10:19.550 --> 00:10:27.899
+Som | Erigon: So, in order for you to know which state to give it, because you don't want to give unnecessary state, really, because
+
+53
+00:10:28.100 --> 00:10:33.800
+Som | Erigon: Every, every byte of data that you've passed into, this
+
+54
+00:10:33.910 --> 00:10:42.180
+Som | Erigon: very, performance-sensitive kind of a, setup. It's very costly, so you'd rather just give it
+
+55
+00:10:42.710 --> 00:10:46.790
+Som | Erigon: Only the bits and pieces necessary for that,
+
+56
+00:10:47.500 --> 00:10:54.209
+Som | Erigon: tiny bit of execution that happens. One way to analyze the proving itself would be to…
+
+57
+00:10:54.950 --> 00:10:57.359
+Som | Erigon: Generate the prices, and then…
+
+58
+00:10:57.470 --> 00:11:11.140
+Som | Erigon: try to stitch those traces in a GPU. That's beyond the scope of the actual execution client, but on a protocol level, you can at least say that you can create
+
+59
+00:11:11.310 --> 00:11:16.360
+Som | Erigon: Transaction level granularity, for…
+
+60
+00:11:16.830 --> 00:11:22.750
+Som | Erigon: Parallelization, both in regular execution and for proving.
+
+61
+00:11:22.930 --> 00:11:32.250
+Som | Erigon: So in order to do that, you would need the transaction-free states for all the transactions, because your client is, you know, stateless.
+
+62
+00:11:32.970 --> 00:11:41.089
+Som | Erigon: And in order to do that, block-level access lists can sort of help you by already telling you
+
+63
+00:11:41.300 --> 00:11:51.740
+Som | Erigon: Which all accounts perform reads, so you can just exactly parcel, your runner with that exact, read state needed.
+
+64
+00:11:52.190 --> 00:11:55.050
+Som | Erigon: So that is the, overall motivation.
+
+65
+00:11:57.400 --> 00:11:58.910
+Toni Wahrstaetter: Let's see, thanks.
+
+66
+00:11:59.610 --> 00:12:05.059
+Toni Wahrstaetter: Yeah, to me, it feels like there is a trade-off between,
+
+67
+00:12:05.390 --> 00:12:14.689
+Toni Wahrstaetter: the information we add in addition to what we currently have in the block access list. So, of course, this would make the block access list a little bit, larger.
+
+68
+00:12:14.850 --> 00:12:19.479
+Toni Wahrstaetter: But on the other hand, we allow people who generate proofs
+
+69
+00:12:19.700 --> 00:12:30.729
+Toni Wahrstaetter: we don't need to pass them that much data. Because, of course, today, if you want to, execute a certain transaction, what you need is everything,
+
+70
+00:12:31.830 --> 00:12:38.520
+Toni Wahrstaetter: So all the pre-state that that transaction touches, but also the pre-state that that transaction reads.
+
+71
+00:12:39.020 --> 00:12:43.579
+Toni Wahrstaetter: And because we don't have transaction indices mapped to
+
+72
+00:12:43.900 --> 00:12:47.140
+Toni Wahrstaetter: what is red in the block of access list?
+
+73
+00:12:47.780 --> 00:12:57.730
+Toni Wahrstaetter: you would have to pass everything, right? So you would have to pass everything that this certain transaction is going to modify, but in addition to that, you would also have to
+
+74
+00:12:58.010 --> 00:13:03.610
+Toni Wahrstaetter: pass, yeah, all the values that are only red. Is that kind of correct?
+
+75
+00:13:04.720 --> 00:13:05.669
+Som | Erigon: Yep.
+
+76
+00:13:07.140 --> 00:13:19.370
+Toni Wahrstaetter: And then it's kind of the trade-off, right? Like, do we want to include more information in the block access list, or are we fine with passing, like, a few kilobytes? Because here we are talking about
+
+77
+00:13:19.520 --> 00:13:21.010
+Toni Wahrstaetter: kilobytes of data?
+
+78
+00:13:21.170 --> 00:13:22.789
+Toni Wahrstaetter: To the provers.
+
+79
+00:13:28.560 --> 00:13:31.739
+Sophia Gold: So, I'm not sure if the,
+
+80
+00:13:32.450 --> 00:13:37.830
+Sophia Gold: Like, stateless execution matters so much for the provers when you look at
+
+81
+00:13:37.930 --> 00:13:52.589
+Sophia Gold: how high the hardware requirements for proving are, I think that more of the benefits are the worst-case parallelism you get, right? There are some ZKVMs that are already, chunking, traces, rather than waiting
+
+82
+00:13:52.750 --> 00:14:00.149
+Sophia Gold: For full execution, before starting proven. But that's, of course, like, optimistic, so,
+
+83
+00:14:00.370 --> 00:14:04.640
+Sophia Gold: If you can fully parallelize everything, along with having,
+
+84
+00:14:04.740 --> 00:14:09.559
+Sophia Gold: you know, transaction gas limit, I think that's where you get most of the benefit.
+
+85
+00:14:17.530 --> 00:14:18.310
+Toni Wahrstaetter: Thank you.
+
+86
+00:14:20.690 --> 00:14:26.360
+Toni Wahrstaetter: Do other clients have an opinion on that, especially when it comes to proving or parallelization?
+
+87
+00:14:28.060 --> 00:14:38.660
+Toni Wahrstaetter: Like, how do you envision, parallelization to be implemented? Would it also matter for, parallelization, kind of, how much data you would need to pass to each process?
+
+88
+00:14:39.880 --> 00:14:52.650
+Jared Wasinger: So, based on the benchmarks I've run on GET, on just… Very… Standard hardware,
+
+89
+00:14:53.100 --> 00:14:57.250
+Jared Wasinger: akin to, I forget the EIP number, but there's an EIP that…
+
+90
+00:14:57.580 --> 00:15:04.390
+Jared Wasinger: specifies a… sort of a standard node specs. I've been running benchmarks against
+
+91
+00:15:04.770 --> 00:15:07.710
+Jared Wasinger: against a VM that's roughly equivalent to those.
+
+92
+00:15:07.850 --> 00:15:21.350
+Jared Wasinger: I… And I haven't implemented these indices yet, but I just… I…
+
+93
+00:15:23.220 --> 00:15:27.920
+Jared Wasinger: I don't really expect them to… to…
+
+94
+00:15:28.050 --> 00:15:35.110
+Jared Wasinger: I don't expect it to speed up block processing in the general case, and also, based on what we've seen so far,
+
+95
+00:15:35.440 --> 00:15:42.179
+Jared Wasinger: the state root computation is still, dominant, so unless…
+
+96
+00:15:43.200 --> 00:15:51.149
+Jared Wasinger: that can be brought down below execution. Any savings we would gain in execution don't…
+
+97
+00:15:51.920 --> 00:16:02.119
+Jared Wasinger: really have a practical effect. But, yeah, that's… My impression.
+
+98
+00:16:03.570 --> 00:16:07.779
+Toni Wahrstaetter: Okay, thanks. Maybe one follow-up question?
+
+99
+00:16:08.220 --> 00:16:10.270
+Toni Wahrstaetter: Like, it wouldn't really…
+
+100
+00:16:10.970 --> 00:16:21.420
+Toni Wahrstaetter: improve execution time. It would more be like, okay, you need to pass less data to execution, which in turn might improve execution again.
+
+101
+00:16:21.690 --> 00:16:32.940
+Toni Wahrstaetter: But it's more like, when you parallelize using the block access list today, what data do you pass to this process? Is it, like, the entire CAF?
+
+102
+00:16:36.230 --> 00:16:44.009
+Jared Wasinger: we don't pass… well, in my implementation, we don't… we pass…
+
+103
+00:16:44.970 --> 00:16:59.550
+Jared Wasinger: Actually, we don't pass anything, so each… each parallel executor will reach out to the database to instantiate whatever state it needs, and because the database maintains a cache that is shared between
+
+104
+00:17:00.070 --> 00:17:09.350
+Jared Wasinger: between con… between requests, a staple cache, it just exists in that cache, so it's pretty opaque.
+
+105
+00:17:09.770 --> 00:17:10.820
+Jared Wasinger: to us.
+
+106
+00:17:10.920 --> 00:17:15.310
+Jared Wasinger: Like, there's no, like, shuffling around of data.
+
+107
+00:17:16.260 --> 00:17:20.760
+Jared Wasinger: to the executing Go routines or threads in my implementation.
+
+108
+00:17:21.440 --> 00:17:25.779
+Karim T.: You don't need to pass the right of the previous execution?
+
+109
+00:17:25.989 --> 00:17:26.849
+Karim T.: To the…
+
+110
+00:17:27.280 --> 00:17:44.369
+Jared Wasinger: No, no, oh, sorry, I… well, you… yeah, I passed the, the… the… the BAL is… is available to these, go… to these separate, threads, but they can just recompute the…
+
+111
+00:17:44.470 --> 00:17:50.969
+Jared Wasinger: the state they need based on the pre-state and applying the changes in the BAL. So yeah, the BAL is the only thing that's passed.
+
+112
+00:17:58.890 --> 00:18:01.900
+Karim T.: as you said, I think if we… Sorry?
+
+113
+00:18:02.430 --> 00:18:03.739
+Toni Wahrstaetter: No, go ahead, please.
+
+114
+00:18:03.740 --> 00:18:07.690
+Karim T.: I just wanted to say, in basis size, I see.
+
+115
+00:18:07.940 --> 00:18:09.420
+Karim T.: If you want to implement.
+
+116
+00:18:09.640 --> 00:18:11.850
+Karim T.: the full polarization.
+
+117
+00:18:12.490 --> 00:18:16.269
+Karim T.: I think what we will use is for the one on the right, on the right.
+
+118
+00:18:18.160 --> 00:18:21.760
+Karim T.: something similar to what Jared did, I think, so…
+
+119
+00:18:22.670 --> 00:18:29.919
+Karim T.: Just passing the write of the previous transaction to each transaction, and run in parallel, and do the read.
+
+120
+00:18:30.410 --> 00:18:32.970
+Karim T.: On each shred, in parallel, and see…
+
+121
+00:18:34.160 --> 00:18:37.310
+Karim T.: And compute and merge the results at the end, but…
+
+122
+00:18:37.590 --> 00:18:41.340
+Karim T.: At the moment, I don't really see the need of the grid.
+
+123
+00:18:44.680 --> 00:18:49.749
+Karim T.: And the same for Bezos, the compute, or the state computation is still king,
+
+124
+00:18:50.210 --> 00:18:52.600
+Karim T.: Big part of the block execution, so…
+
+125
+00:18:53.180 --> 00:18:57.549
+Karim T.: Block access is only with the right will improve a big part.
+
+126
+00:18:58.270 --> 00:18:59.120
+Karim T.: Processing.
+
+127
+00:19:02.410 --> 00:19:18.989
+Toni Wahrstaetter: Thank you, so just, so if I understood that right, then you say that you would also kind of not include the transaction index, for everything that is not modified in the PAL, just because we don't… we might not need it, and we can just
+
+128
+00:19:19.640 --> 00:19:30.199
+Toni Wahrstaetter: Or at least that's the case for your client, that you can just do it like Jared described it for GEF, where you have, like, access to the complete block lab access list, and the entire cache.
+
+129
+00:19:30.420 --> 00:19:32.470
+Toni Wahrstaetter: And you parallelize for that.
+
+130
+00:19:32.730 --> 00:19:33.839
+Toni Wahrstaetter: Is that correct?
+
+131
+00:19:34.720 --> 00:19:36.010
+Toni Wahrstaetter: Okay, okay.
+
+132
+00:19:36.770 --> 00:19:39.339
+Toni Wahrstaetter: And this is, like, different for Aragon, right?
+
+133
+00:19:42.160 --> 00:19:50.410
+Som | Erigon: So… again, as Jared said, all of this doesn't matter because MPT is the bottleneck.
+
+134
+00:19:50.580 --> 00:19:58.389
+Som | Erigon: for parallel, compensation. But, right now, even our execution, actual execution module.
+
+135
+00:19:58.820 --> 00:20:14.809
+Som | Erigon: does not, benefit that greatly from reads, from BALT, because it's not really needed. Database is fast enough, at the current level, so it's the identical case for Aragon as well, that
+
+136
+00:20:15.410 --> 00:20:24.209
+Som | Erigon: Parallel, reads from database, through the threads is the way that it is implemented right now.
+
+137
+00:20:24.450 --> 00:20:30.059
+Som | Erigon: And there would not be any reason to, not do this, because
+
+138
+00:20:30.300 --> 00:20:34.610
+Som | Erigon: If you're only processing, like, I suppose, like, 50 million gas or so.
+
+139
+00:20:35.000 --> 00:20:43.260
+Som | Erigon: The parallel reads are not that much, and you are sort of processing the block on a single machine.
+
+140
+00:20:43.510 --> 00:20:50.769
+Som | Erigon: So your database thread… the database threads can be managed by the OS,
+
+141
+00:20:50.980 --> 00:20:54.549
+Som | Erigon: Which is, you know, hosting it, so all is good.
+
+142
+00:20:54.770 --> 00:21:01.490
+Som | Erigon: But, that's the case for Arago, it's the same, but my argument is that
+
+143
+00:21:01.620 --> 00:21:09.549
+Som | Erigon: I don't think, Val's, pipe was to enable 60 million gas, or even 100 million gas, it was to…
+
+144
+00:21:09.790 --> 00:21:13.720
+Som | Erigon: Maybe futuristically enable, gear gas or something?
+
+145
+00:21:14.260 --> 00:21:19.449
+Som | Erigon: So, you can imagine, like, when you reach, that level,
+
+146
+00:21:19.630 --> 00:21:25.260
+Som | Erigon: You would want to run a cluster, of executors.
+
+147
+00:21:25.400 --> 00:21:29.870
+Som | Erigon: Where, it's not that same single source database.
+
+148
+00:21:30.390 --> 00:21:46.180
+Som | Erigon: that you're running. Of course, you can say that you'll have multiple databases having the entire copy of the database and so on, but I think if you can pass the data at once, you can save some time, and of course.
+
+149
+00:21:46.460 --> 00:21:51.130
+Som | Erigon: In stateless, validators, it's a big, big win still.
+
+150
+00:21:54.230 --> 00:22:03.570
+Toni Wahrstaetter: Yeah, that's fair. But also, for block club accesses, they do give you quite a lot in terms of, scaling, because you can also
+
+151
+00:22:03.730 --> 00:22:16.340
+Toni Wahrstaetter: Basically, all the worst cases we have that are not like history growth or state growth, so basically all the worst cases around precompiles, opcodes, how much storage access we can handle and stuff.
+
+152
+00:22:16.350 --> 00:22:25.220
+Toni Wahrstaetter: they will all become better, right? Because you were probably comparing or determining the, the results based on average blocks.
+
+153
+00:22:25.840 --> 00:22:35.460
+Toni Wahrstaetter: But I think it would be a fair comparison to compare it with worst-case blocks, where basically you call, for example, the modx precompile as often as you can.
+
+154
+00:22:35.700 --> 00:22:39.620
+Toni Wahrstaetter: And with block-level access lists, you should just be able to parallelize them.
+
+155
+00:22:41.350 --> 00:22:51.659
+Toni Wahrstaetter: Yeah, but I agree, it's not like a holy grail that allows us to go to 100 million, especially if we don't figure out solutions for state growth and stuff, but this is…
+
+156
+00:22:52.010 --> 00:22:53.789
+Toni Wahrstaetter: Probably a different discussion.
+
+157
+00:22:54.630 --> 00:22:57.160
+Toni Wahrstaetter: Yeah, what about other clients?
+
+158
+00:22:57.580 --> 00:22:58.390
+Toni Wahrstaetter: Have a look.
+
+159
+00:22:58.390 --> 00:23:10.850
+Som | Erigon: If I may, I want to add one more thing. So, another thing is, let's say you have an ASIC or a coprocessor, which is, you know, maybe…
+
+160
+00:23:11.080 --> 00:23:18.039
+Som | Erigon: I can imagine, the future, maybe next year or next couple of years, that you're doing quite a bit of,
+
+161
+00:23:18.600 --> 00:23:22.630
+Som | Erigon: your execution through GPUs or code processors?
+
+162
+00:23:22.720 --> 00:23:42.049
+Som | Erigon: to which you would sort of have the same model of execution as we have for ZK Proverse today, that it's an independently running module with a very small footprint of code, and you just, instantiate, like, 1,000 instances or 100,000 instances of that.
+
+163
+00:23:42.050 --> 00:23:50.970
+Som | Erigon: in one go, and then you just wait half a second, and, like, all of those, GPU cores just return you the result.
+
+164
+00:23:51.400 --> 00:23:59.750
+Som | Erigon: Immediately, but if those same GPU-like cores, and it's not exactly GPU, but, you know, just get the analogy.
+
+165
+00:23:59.880 --> 00:24:18.289
+Som | Erigon: If they have to sort of depend on CPU, to, again, go to the database and go via memory to return the results, they would not be very effective. So, I think, like, if you have, a coprocessor or something like that.
+
+166
+00:24:18.650 --> 00:24:27.420
+Som | Erigon: Even in traditional computing, valves are going to be, like, if you just put the reads in,
+
+167
+00:24:27.820 --> 00:24:37.289
+Som | Erigon: It's gonna be, like, a huge boost for that kind of use case, and I think it may come, next year or something like that.
+
+168
+00:24:42.130 --> 00:24:42.940
+Toni Wahrstaetter: Thank you.
+
+169
+00:24:45.370 --> 00:24:58.570
+Toni Wahrstaetter: Yeah, this is very interesting. I'm curious to hear, do other clients have an opinion on that topic, on the topic of including block-level access indices for everything that is not modified?
+
+170
+00:25:20.200 --> 00:25:21.410
+Toni Wahrstaetter: Okay.
+
+171
+00:25:22.160 --> 00:25:30.370
+Toni Wahrstaetter: Yeah, right now it looks like, most people are for, for not including them, but I definitely see the arguments,
+
+172
+00:25:30.590 --> 00:25:33.199
+Toni Wahrstaetter: What do you think, Sam? Should we just,
+
+173
+00:25:33.340 --> 00:25:38.869
+Toni Wahrstaetter: Postpone that decision, and keep it as it is for now, and then maybe
+
+174
+00:25:39.710 --> 00:25:44.760
+Toni Wahrstaetter: Yeah, check with the CK people, too, and see what they demand.
+
+175
+00:25:49.850 --> 00:25:58.089
+Som | Erigon: Well, I… The argument is, that the 2% increase can…
+
+176
+00:25:58.280 --> 00:26:02.890
+Som | Erigon: Probably give you, many seconds of benefit.
+
+177
+00:26:03.220 --> 00:26:07.449
+Som | Erigon: In terms of passing the restate?
+
+178
+00:26:07.710 --> 00:26:10.219
+Som | Erigon: Because otherwise, you would have to…
+
+179
+00:26:10.490 --> 00:26:15.560
+Som | Erigon: Know the pre-state, in advance before trying to prove it.
+
+180
+00:26:15.950 --> 00:26:21.200
+Som | Erigon: And, like, currently there is no way around this for ZKIP, people.
+
+181
+00:26:21.460 --> 00:26:25.379
+Som | Erigon: They are happy to make a proof after
+
+182
+00:26:25.520 --> 00:26:30.939
+Som | Erigon: execution is done, and yeah, I agree that, you know, hardware is big and all.
+
+183
+00:26:31.260 --> 00:26:36.710
+Som | Erigon: But, it would be interesting to see if, you know, it reaches
+
+184
+00:26:37.030 --> 00:26:44.469
+Som | Erigon: more demand, for these fancy use cases. So, I just want,
+
+185
+00:26:44.740 --> 00:26:48.400
+Som | Erigon: This to kind of have a little extra data.
+
+186
+00:26:48.720 --> 00:26:58.340
+Som | Erigon: And be future resilient, and to, like, not need any more modifications in the next half hour.
+
+187
+00:26:58.450 --> 00:27:03.320
+Som | Erigon: Rather than, you know, just have the bare minimum and…
+
+188
+00:27:03.550 --> 00:27:09.170
+Som | Erigon: You know, just, look at how it is being done today and be happy with it.
+
+189
+00:27:09.570 --> 00:27:17.250
+Som | Erigon: I'm okay either way, it's just that, if you had this, maybe at the protocol level.
+
+190
+00:27:17.470 --> 00:27:20.769
+Som | Erigon: You get a, nice speed bump.
+
+191
+00:27:21.690 --> 00:27:22.430
+Som | Erigon: So…
+
+192
+00:27:24.310 --> 00:27:34.600
+Sophia Gold: I mean, I'm happy to dig more into the ZK side and ask ZKVM teams, but I'm first unclear still how this difference
+
+193
+00:27:35.150 --> 00:27:41.989
+Sophia Gold: Like, is a difference for, proving versus just validators re-executing?
+
+194
+00:27:42.160 --> 00:27:49.290
+Sophia Gold: Right? Like, execution speed definitely matters significantly for proofing, but I don't understand how it,
+
+195
+00:27:50.530 --> 00:27:55.210
+Sophia Gold: how it's more different here. Like…
+
+196
+00:27:55.640 --> 00:27:59.570
+Sophia Gold: They're not stateless right now, right?
+
+197
+00:28:00.400 --> 00:28:05.349
+Sophia Gold: like, ZKVMs, they're not, they're not doing execution statelessly.
+
+198
+00:28:09.080 --> 00:28:15.090
+Som | Erigon: Sorry, what do you mean they're not doing it? Are you saying, like, we have VMs have databases inside them?
+
+199
+00:28:16.480 --> 00:28:23.790
+Sophia Gold: The… I believe that the guest programs are loading the state, yeah.
+
+200
+00:28:25.510 --> 00:28:34.040
+Som | Erigon: Yeah, but, like, you'd have to pass the state to them after executing somewhere else, statefully, first, then…
+
+201
+00:28:34.250 --> 00:28:40.840
+Som | Erigon: You, you have to do that because there is no provision, like, block-level access list as of today.
+
+202
+00:28:41.300 --> 00:28:45.790
+Sophia Gold: But after block-level access list, you'll still have to continue to do this.
+
+203
+00:28:46.050 --> 00:28:48.280
+Som | Erigon: Which is, like, to generate something like…
+
+204
+00:28:48.460 --> 00:28:56.280
+Som | Erigon: Block-level access list, plus all the values populated, and then you can sort of generate the execution trace underfoot.
+
+205
+00:28:56.700 --> 00:29:06.959
+Som | Erigon: So, yeah, currently they don't do it because they don't have it. I'm just saying, like, after BAL, they will still not have it, and still continue working in this way.
+
+206
+00:29:07.650 --> 00:29:10.899
+Som | Erigon: Which maybe we can do a little bit better with.
+
+207
+00:29:12.180 --> 00:29:19.570
+Sophia Gold: Yeah, I just… I'm saying that I'm not sure that that's any different from what And a tester…
+
+208
+00:29:20.260 --> 00:29:24.369
+Sophia Gold: That's re-executing and not,
+
+209
+00:29:24.810 --> 00:29:28.350
+Sophia Gold: not proving the block would do, right? Like…
+
+210
+00:29:29.540 --> 00:29:38.960
+Som | Erigon: Okay, okay, okay, another clarification, okay, in my mind, we don't have two executors, we only have valves.
+
+211
+00:29:39.080 --> 00:29:57.669
+Som | Erigon: And, the prover that does one-time execution only. So, it saves you, like, the execution… the first execution time entirely, not within the prover, but, like, outside of the prover that you use to generate the trace in the first place. You can just get rid of that, because the val is the…
+
+212
+00:29:57.830 --> 00:30:03.030
+Som | Erigon: Kind of the trays that you are missing today, that you have to generate before generating the proof.
+
+213
+00:30:04.260 --> 00:30:19.340
+Sophia Gold: Right, but so, when… after Glamsterdam, right? I assume that the majority of… Attesters will, be…
+
+214
+00:30:19.800 --> 00:30:30.620
+Sophia Gold: Right, yeah, this is sort of like what Kareem is saying. Like, well, I mean, I think it will be in production, but it won't be, like, the norm, right, for our testers to use. They'll still be re-executing.
+
+215
+00:30:31.820 --> 00:30:36.929
+Sophia Gold: it should be, you know, faster with bowels, and I don't think that that is any different
+
+216
+00:30:37.390 --> 00:30:45.120
+Sophia Gold: From what approver… from this… the considerations that a prover has in terms of execution. Or at least with regards to the issue we're discussing now.
+
+217
+00:30:47.870 --> 00:31:00.820
+Som | Erigon: Yeah, but they won't be able to use the belt, at least is my argument, that if they have… I know they'd be happy with it, but, like, why not make them… make it easier for them to use it with the read value?
+
+218
+00:31:00.820 --> 00:31:11.440
+Toni Wahrstaetter: They would just not… they would just not be able to use it that, efficiently, right? Because what… what the prover needs in order to… let's say the prover wants to prove, the last.
+
+219
+00:31:11.530 --> 00:31:13.430
+Sophia Gold: 10 transactions off the block.
+
+220
+00:31:13.530 --> 00:31:16.920
+Toni Wahrstaetter: Then I would need to give the prover the pre-state of the block.
+
+221
+00:31:17.060 --> 00:31:22.520
+Sophia Gold: Then the block level access list, so that the prover can arrive at the state where he starts from.
+
+222
+00:31:23.090 --> 00:31:27.029
+Toni Wahrstaetter: And I would have to give him everything…
+
+223
+00:31:27.670 --> 00:31:40.029
+Toni Wahrstaetter: concerning read values, so everything that is touched in the block, because I don't know in which transaction it is touched, so I would need to give everything to the prover. This is, like, what you're describing here, right, some that…
+
+224
+00:31:41.020 --> 00:31:41.920
+Som | Erigon: Exactly.
+
+225
+00:31:41.920 --> 00:32:01.120
+Toni Wahrstaetter: that instead of pre-filtering which exact values the prover will need for those specific transactions, I will have to give him everything and be like, yeah, the right values will be part of the set I just gave you, but I can't yet tell you which exact read values you will need.
+
+226
+00:32:01.960 --> 00:32:04.290
+Toni Wahrstaetter: And I can definitely see that, because, yeah.
+
+227
+00:32:04.610 --> 00:32:13.229
+Toni Wahrstaetter: In a world where you would do some distributed proof generation, then you would, of course, need to send that over the wire.
+
+228
+00:32:14.370 --> 00:32:28.099
+Toni Wahrstaetter: Yeah, I think it's a valid concern, and a valid argument, to include the transaction indices. As said, it would add, like, 2% of additional size, looking at the snappy compressed block access list size.
+
+229
+00:32:28.830 --> 00:32:36.299
+Toni Wahrstaetter: It would definitely save, like, kilobytes of data that will not be needed to be passed to the approver.
+
+230
+00:32:37.090 --> 00:32:49.820
+Toni Wahrstaetter: it's the question of, is it worth it, right? Because those 2% would go into history, whereas the additional kilobytes provers need to send over the wire, and we don't really need to care about it that much.
+
+231
+00:32:50.390 --> 00:33:04.100
+Toni Wahrstaetter: So yeah, it feels like we need more answers from CKVM teams, so it would be great if, yeah, we can reach out to them and ask what they think about the current block of accesses design, and then we can still, like, add
+
+232
+00:33:04.700 --> 00:33:07.119
+Toni Wahrstaetter: the block lab access list indices.
+
+233
+00:33:09.830 --> 00:33:16.579
+Toni Wahrstaetter: So, right now, I've already specced it. If you look into the Discord, there isn't spec implementation, it's…
+
+234
+00:33:16.790 --> 00:33:18.850
+Toni Wahrstaetter: It's kind of trivial to add the…
+
+235
+00:33:19.110 --> 00:33:25.519
+Toni Wahrstaetter: Transaction indices, because all the code exists that tracks that.
+
+236
+00:33:25.910 --> 00:33:31.479
+Toni Wahrstaetter: It's just, it adds a little bit more of complexity, because now we have, like, edge cases where
+
+237
+00:33:32.340 --> 00:33:41.899
+Toni Wahrstaetter: transaction… We don't include, addresses and their transaction… and the index where they're attached.
+
+238
+00:33:42.090 --> 00:33:42.850
+Toni Wahrstaetter: if…
+
+239
+00:33:43.770 --> 00:33:51.420
+Toni Wahrstaetter: they are modified in the same transaction, right? Because otherwise we would have duplicated values. So I think it adds some complexity.
+
+240
+00:33:52.360 --> 00:33:54.239
+Toni Wahrstaetter: But it might be worth it.
+
+241
+00:34:03.140 --> 00:34:09.389
+Toni Wahrstaetter: Is there anything else, someone would like to add to that topic before we close that one?
+
+242
+00:34:14.159 --> 00:34:19.079
+Som | Erigon: I would also like to know if there is someone against it completely.
+
+243
+00:34:19.329 --> 00:34:21.749
+Som | Erigon: Because there might be some things that I'm missing.
+
+244
+00:34:31.860 --> 00:34:32.540
+Carl Beekhuizen: I mean…
+
+245
+00:34:32.909 --> 00:34:43.220
+Carl Beekhuizen: I wouldn't say I'm against it completely, but I think we just need to be, like, very careful adding things with, like, unclear payoffs. Like, we need a lot more data before we commit ourselves to something like this, because
+
+246
+00:34:43.340 --> 00:34:46.090
+Carl Beekhuizen: Once we have this in the protocol, there will be…
+
+247
+00:34:46.630 --> 00:34:51.179
+Carl Beekhuizen: Someone who uses it, and now this is complexity we have to carry around forever.
+
+248
+00:34:52.060 --> 00:34:57.490
+Carl Beekhuizen: like, I think we need to, like, very clearly understand the trade-offs, and I think we're quite far from that, and I think we're, like.
+
+249
+00:34:57.870 --> 00:35:01.440
+Carl Beekhuizen: Over-indexing on exactly what we expect.
+
+250
+00:35:01.590 --> 00:35:04.090
+Carl Beekhuizen: ZK things to potentially look like in the future?
+
+251
+00:35:05.370 --> 00:35:13.260
+Carl Beekhuizen: It's just very unfair to me that this is the right thing to be adding in shipping right now. I think, like, we should rather be a bit more conservative and focus on
+
+252
+00:35:14.070 --> 00:35:22.379
+Carl Beekhuizen: like… The simplest version, without this, and then rather focus on getting the, like, actual scaling benefits.
+
+253
+00:35:23.580 --> 00:35:27.510
+Carl Beekhuizen: Like, having client teams, like, implement
+
+254
+00:35:27.880 --> 00:35:35.349
+Carl Beekhuizen: like, the marginal scaling benefit from block-level access lists, rather spending their time on that over implementing this, I think it's a much better use of time.
+
+255
+00:35:35.780 --> 00:35:39.549
+Carl Beekhuizen: Just given what we know for now, that very likely may change, though.
+
+256
+00:35:43.210 --> 00:35:46.620
+Sophia Gold: Well, I'm not sure I fully understand the,
+
+257
+00:35:47.160 --> 00:35:51.990
+Sophia Gold: The gain that you get from including these or not. But,
+
+258
+00:35:52.550 --> 00:35:54.700
+Sophia Gold: Theoretically, like, it should be the same…
+
+259
+00:35:55.160 --> 00:36:00.160
+Sophia Gold: scaling benefits for clients not in a ZK world, right?
+
+260
+00:36:00.640 --> 00:36:07.029
+Sophia Gold: Unless people are saying that you're so bound by, a saber computation that
+
+261
+00:36:07.670 --> 00:36:13.199
+Sophia Gold: You know, we've exhausted the, the benefits of proving, or improving execution for now.
+
+262
+00:36:20.040 --> 00:36:21.090
+Toni Wahrstaetter: Right, yeah.
+
+263
+00:36:21.920 --> 00:36:37.940
+Toni Wahrstaetter: Yeah, yeah, I think in the average block, there's still the stage root computation that is the heaviest part. For worst-case blocks, you might get different worst cases, so suddenly execution or storage or something might become the worst case. But yeah, it feels like
+
+264
+00:36:38.120 --> 00:36:48.009
+Toni Wahrstaetter: We don't have enough answers yet to really, take a decision on that. It would be great to get more answers from CKVM teams, how they plan to use that.
+
+265
+00:36:48.350 --> 00:36:52.490
+Toni Wahrstaetter: I would stick to not including them for now.
+
+266
+00:36:53.240 --> 00:37:08.990
+Toni Wahrstaetter: If we still want to include them, it shouldn't be too difficult, because it's basically just adding transaction indices to storage reads, and of course, the transaction indices to the account object that we have, basically the changes object.
+
+267
+00:37:09.870 --> 00:37:10.929
+Toni Wahrstaetter: And, yeah.
+
+268
+00:37:11.710 --> 00:37:16.820
+Toni Wahrstaetter: We can still add it at a later point. I think, it would not be too late, because it's,
+
+269
+00:37:17.130 --> 00:37:18.880
+Toni Wahrstaetter: Rather small change.
+
+270
+00:37:20.900 --> 00:37:24.900
+Toni Wahrstaetter: But yeah, in this case, I would say we just stick to the…
+
+271
+00:37:25.130 --> 00:37:27.600
+Toni Wahrstaetter: To how it looks… how it is today.
+
+272
+00:37:27.750 --> 00:37:30.220
+Toni Wahrstaetter: And… Yeah.
+
+273
+00:37:31.180 --> 00:37:32.739
+Toni Wahrstaetter: Just reading the chat.
+
+274
+00:37:34.240 --> 00:37:36.099
+Toni Wahrstaetter: Yeah, I agree with Karima.
+
+275
+00:37:44.480 --> 00:37:45.500
+Toni Wahrstaetter: Awesome.
+
+276
+00:37:49.170 --> 00:38:01.130
+Toni Wahrstaetter: Perfect, yeah, maybe just to add, the original motivation to not include transaction indices at everything that is not modified was because you actually don't need it for parallelization.
+
+277
+00:38:01.240 --> 00:38:08.969
+Toni Wahrstaetter: Because if it doesn't change, then the value you have in cash is still correct, and you might not need it.
+
+278
+00:38:10.520 --> 00:38:13.930
+Toni Wahrstaetter: But yeah, let's see if we have to revisit that in the future.
+
+279
+00:38:16.430 --> 00:38:19.409
+Toni Wahrstaetter: Anything else someone wants to add?
+
+280
+00:38:33.720 --> 00:38:43.709
+Toni Wahrstaetter: Great, then I would suggest we just, yeah, go through all the clients and see where people are at, if there are any blockers, and also…
+
+281
+00:38:43.940 --> 00:38:46.399
+Toni Wahrstaetter: See how far we are in terms of
+
+282
+00:38:46.850 --> 00:38:48.850
+Toni Wahrstaetter: Getting closer to a first effort.
+
+283
+00:38:50.180 --> 00:38:53.989
+Toni Wahrstaetter: Can we just start with you, Jared, Kev?
+
+284
+00:38:55.290 --> 00:39:02.379
+Jared Wasinger: Yeah, sure. Yeah, so I'm continuing to work to get the…
+
+285
+00:39:03.220 --> 00:39:08.299
+Jared Wasinger: the changes merged in Geth,
+
+286
+00:39:09.100 --> 00:39:13.860
+Jared Wasinger: Not really much of an update in terms of the performance.
+
+287
+00:39:14.380 --> 00:39:22.309
+Jared Wasinger: Since I gave the numbers from the la- prototype on the last call, yup.
+
+288
+00:39:24.230 --> 00:39:27.749
+Toni Wahrstaetter: What's your estimate regarding a first deflate?
+
+289
+00:39:36.970 --> 00:39:43.269
+Jared Wasinger: I, could… Probably could have a branch ready fairly soon,
+
+290
+00:39:47.820 --> 00:39:50.990
+Jared Wasinger: Maybe… maybe, like, a few days to a week?
+
+291
+00:39:51.190 --> 00:39:52.110
+Jared Wasinger: At minimum.
+
+292
+00:39:52.740 --> 00:39:57.389
+Toni Wahrstaetter: Yeah, I guess it will only make sense if we have at least a second client pair.
+
+293
+00:39:57.510 --> 00:40:00.560
+Toni Wahrstaetter: But this is… this is great to hear. Okay, thank you.
+
+294
+00:40:02.290 --> 00:40:02.810
+Jared Wasinger: Oh.
+
+295
+00:40:03.130 --> 00:40:04.560
+Jared Wasinger: It's gonna take longer.
+
+296
+00:40:04.560 --> 00:40:04.920
+Toni Wahrstaetter: Is that?
+
+297
+00:40:04.920 --> 00:40:08.850
+Jared Wasinger: to actually get it merged in Geth, though, but… Yeah.
+
+298
+00:40:09.640 --> 00:40:10.630
+Jared Wasinger: Anyways…
+
+299
+00:40:12.660 --> 00:40:13.860
+Toni Wahrstaetter: Okay, thanks.
+
+300
+00:40:15.250 --> 00:40:17.670
+Toni Wahrstaetter: Let's do Aragon next.
+
+301
+00:40:22.650 --> 00:40:31.229
+Som | Erigon: No updates. Mark from our team would be working on it. He's trying to… improve,
+
+302
+00:40:32.080 --> 00:40:40.519
+Som | Erigon: our Merkle filtration try calculation, which seems to be the bottleneck at the moment, but no concrete progress there.
+
+303
+00:40:45.660 --> 00:40:48.550
+Toni Wahrstaetter: Cool, so you're already looking into the…
+
+304
+00:40:48.720 --> 00:40:53.089
+Toni Wahrstaetter: Parallelizing the stage root computation? Did I get that right?
+
+305
+00:40:54.190 --> 00:41:00.249
+Som | Erigon: It's already being parallelized, but, we have observed that,
+
+306
+00:41:01.660 --> 00:41:11.540
+Som | Erigon: it can be optimized quite a lot, or at least needs to be optimized. Something to do with our database, that when you have
+
+307
+00:41:11.600 --> 00:41:22.339
+Som | Erigon: So we have, some lock FTM parallelization that improves execution time already, without the balls, which is my 2.5x or 3x.
+
+308
+00:41:22.460 --> 00:41:34.929
+Som | Erigon: It's very close to what Bells would allow you. But then you hit, like, at the same time when you start your parallel route calculation, that takes way longer.
+
+309
+00:41:35.530 --> 00:41:40.879
+Som | Erigon: Which, you know, doesn't make sense, so we'll have to do some work on that.
+
+310
+00:41:42.370 --> 00:41:43.170
+Som | Erigon: Yep.
+
+311
+00:41:45.020 --> 00:41:46.180
+Toni Wahrstaetter: Great, thanks.
+
+312
+00:41:47.840 --> 00:41:50.420
+Toni Wahrstaetter: Then, let's do Netherland next.
+
+313
+00:41:52.800 --> 00:42:09.920
+Marc: I, so progressing on, the block access list construction, most stuff seems to be working around all the system contracts, withdrawals, but I'm still looking into one edge case around, reverted transactions.
+
+314
+00:42:09.950 --> 00:42:21.830
+Marc: But I think it shouldn't be too long until we're able to join a DevNet. Just had a quick question on, like, what's the state of tests at the moment? Are there any tests that I could run?
+
+315
+00:42:26.020 --> 00:42:33.020
+Toni Wahrstaetter: Yes, there are. I would forward that question to Felipe, if he's… Ready?
+
+316
+00:42:33.580 --> 00:42:36.130
+felipe: Yeah, yeah, I could speak about that.
+
+317
+00:42:36.350 --> 00:42:41.269
+felipe: We released the first pre-release.
+
+318
+00:42:41.800 --> 00:42:50.290
+felipe: At the end of last week, but, there were some issues on the spec side that needed to be updated, and I believe that they have been.
+
+319
+00:42:50.620 --> 00:42:54.710
+felipe: And there were, there were some things on the test side as well.
+
+320
+00:42:55.180 --> 00:43:07.469
+felipe: This should be ready for another release, and we could get it out as soon as, after this call. All the code is already in place. We just, should get some sanity checks there, and then,
+
+321
+00:43:08.130 --> 00:43:10.489
+felipe: Yeah, we should just get out another release, so…
+
+322
+00:43:10.770 --> 00:43:12.690
+felipe: We have some good test vectors.
+
+323
+00:43:17.700 --> 00:43:18.910
+Toni Wahrstaetter: Awesome, thanks.
+
+324
+00:43:22.220 --> 00:43:24.670
+Toni Wahrstaetter: Then, let's continue with REF.
+
+325
+00:43:28.670 --> 00:43:37.460
+Ishika: We have, ran the initial tests, and as of now, we are looking closely into the H cases to make sure we
+
+326
+00:43:37.570 --> 00:43:40.480
+Ishika: Not kind of misusing any.
+
+327
+00:43:40.660 --> 00:43:51.420
+Ishika: And, also, we are working on cleaning up our existing implementations and sort of including the other parts as they come.
+
+328
+00:43:54.900 --> 00:43:56.100
+Toni Wahrstaetter: Awesome, thank you.
+
+329
+00:43:56.380 --> 00:44:01.059
+Toni Wahrstaetter: What do you think, regarding, First Step Net? What is kind of the…
+
+330
+00:44:01.470 --> 00:44:04.229
+Toni Wahrstaetter: The rough timeline, or the planned timeline.
+
+331
+00:44:07.600 --> 00:44:11.779
+Ishika: As of right, we will take some time.
+
+332
+00:44:11.960 --> 00:44:25.269
+Ishika: Like, we have, certain parts ready, but as of now, concerning indices or other parts, we need to discuss it with the team and see whether if they have some sort of opinion about it.
+
+333
+00:44:25.490 --> 00:44:27.659
+Ishika: What they want to look regarding it.
+
+334
+00:44:28.820 --> 00:44:36.660
+Ishika: So, it will take some time, I can say, about a week or two for us to, like, have things ready.
+
+335
+00:44:40.050 --> 00:44:41.350
+Toni Wahrstaetter: Perfect, thank you.
+
+336
+00:44:42.350 --> 00:44:44.380
+Ishika: And then, peso.
+
+337
+00:44:45.660 --> 00:44:54.370
+Karim T.: Yeah, so, no big update, we had to work on something else, but, yeah, for the moment, we still have the block access list creation.
+
+338
+00:44:54.540 --> 00:45:02.009
+Karim T.: And this week, we will work on the state rule computation optimization, thanks to Block Access List.
+
+339
+00:45:02.140 --> 00:45:08.349
+Karim T.: So yes, this is the next topic, we'll work on… It's over.
+
+340
+00:45:11.180 --> 00:45:15.849
+Toni Wahrstaetter: Great, so you would already be ready for a DevNet in this case?
+
+341
+00:45:16.550 --> 00:45:24.050
+Karim T.: So we have block accesses creation, not block accesses validation, but, I think we will be able…
+
+342
+00:45:24.270 --> 00:45:34.849
+Karim T.: to propose a block with a block access list. I'm not developing… I'm not the guy who is working on that, but I can ask the guy who is working on that to verify that.
+
+343
+00:45:35.190 --> 00:45:42.420
+Karim T.: something we can do, but yeah, I think we should be able to propose block with block access list, normally, yeah.
+
+344
+00:45:44.590 --> 00:45:45.190
+Toni Wahrstaetter: Awesome.
+
+345
+00:45:45.410 --> 00:45:46.300
+Toni Wahrstaetter: Thank you.
+
+346
+00:45:47.050 --> 00:45:53.060
+Toni Wahrstaetter: Yeah, it's great to hear. It feels like we're getting very close to a first effort already. We're not in a rush, of course.
+
+347
+00:45:53.500 --> 00:45:57.949
+Toni Wahrstaetter: And, yeah, I guess if we get to a first definite by end of month.
+
+348
+00:45:58.240 --> 00:46:00.429
+Toni Wahrstaetter: Would already be a great achievement.
+
+349
+00:46:02.420 --> 00:46:05.290
+Karim T.: Yeah, I think for the end of March, yeah, it would be okay.
+
+350
+00:46:06.640 --> 00:46:11.190
+Toni Wahrstaetter: Cool Perfect. Did I forget anyone?
+
+351
+00:46:21.210 --> 00:46:22.060
+Toni Wahrstaetter: Great.
+
+352
+00:46:23.250 --> 00:46:28.959
+Toni Wahrstaetter: So, is there anything else people want to discuss before we wrap up?
+
+353
+00:46:39.570 --> 00:46:43.230
+Toni Wahrstaetter: Maybe just to add, I was also discussing with
+
+354
+00:46:43.610 --> 00:46:50.320
+Toni Wahrstaetter: Of course, because the block of access list is now an ROP and not an SSS anymore, we cannot prove anything against it.
+
+355
+00:46:50.470 --> 00:46:54.959
+Toni Wahrstaetter: And it would have been kinda handy for pre-confirmas.
+
+356
+00:46:55.530 --> 00:47:00.019
+Toni Wahrstaetter: So, the question came up is, like, how big of… how…
+
+357
+00:47:00.370 --> 00:47:14.600
+Toni Wahrstaetter: Yeah, how big of a deal would it be to treat the block level access list similar to receipts, so that we put them into a try and allow proofs against this try, instead of only the block level access list half?
+
+358
+00:47:15.040 --> 00:47:18.370
+Toni Wahrstaetter: This is, like… I would assume a bigger topic.
+
+359
+00:47:18.590 --> 00:47:19.550
+Toni Wahrstaetter: And…
+
+360
+00:47:19.690 --> 00:47:26.959
+Toni Wahrstaetter: a rather big change, but I just wanted to bring it up so that people can discuss it, and we can still, discuss it, like, in the next
+
+361
+00:47:27.240 --> 00:47:30.049
+Toni Wahrstaetter: Breakout call in two weeks, if this would be something.
+
+362
+00:47:31.080 --> 00:47:38.219
+Toni Wahrstaetter: we need. So far, it seems like it's only simplifying the work of pre-confirmers and not, like, a big enabler.
+
+363
+00:47:38.810 --> 00:47:41.650
+Toni Wahrstaetter: But yeah, interesting thought, definitely.
+
+364
+00:47:42.050 --> 00:47:46.810
+Jared Wasinger: So we would create a try of the hashes.
+
+365
+00:47:47.510 --> 00:47:52.589
+Jared Wasinger: of… Past block-level access lists?
+
+366
+00:47:53.160 --> 00:47:59.680
+Toni Wahrstaetter: Yeah, for example, and then you could do an MPT proof against this try, and it would be easier
+
+367
+00:47:59.880 --> 00:48:05.479
+Toni Wahrstaetter: Yeah, it would be a shorter proof than providing the entire block have access list.
+
+368
+00:48:09.580 --> 00:48:10.200
+Jared Wasinger: Hmm.
+
+369
+00:48:11.580 --> 00:48:13.370
+Jared Wasinger: Yeah, it seems doable.
+
+370
+00:48:22.480 --> 00:48:29.840
+Toni Wahrstaetter: Yeah, we can… I can put it on the agenda for the breakout call in two weeks. We can discuss it,
+
+371
+00:48:30.350 --> 00:48:37.000
+Toni Wahrstaetter: Definitely, for sure, it needs to give us some big advantages to, yeah, be worth the changes.
+
+372
+00:48:37.310 --> 00:48:39.150
+Toni Wahrstaetter: But, yeah, let's see.
+
+373
+00:48:41.410 --> 00:48:43.710
+Toni Wahrstaetter: Great. Is there anything else?
+
+374
+00:48:44.930 --> 00:48:46.339
+Toni Wahrstaetter: Someone wants to add?
+
+375
+00:48:48.960 --> 00:48:51.619
+Toni Wahrstaetter: Otherwise, we would just wrap up.
+
+376
+00:48:59.880 --> 00:49:00.850
+Toni Wahrstaetter: Awesome.
+
+377
+00:49:02.030 --> 00:49:04.959
+Toni Wahrstaetter: Then, thanks everyone, and see you…
+
+378
+00:49:05.090 --> 00:49:07.680
+Toni Wahrstaetter: At the next breakout call in 2 weeks.
+
+379
+00:49:09.420 --> 00:49:10.610
+Jared Wasinger: Yep, bye.
+
+380
+00:49:10.810 --> 00:49:11.680
+Som | Erigon: Bye. Thank you.
+
+381
+00:49:12.000 --> 00:49:12.600
+Karim T.: Motion.
+
+382
+00:49:13.200 --> 00:49:14.189
+Ishika: Thank you.
+

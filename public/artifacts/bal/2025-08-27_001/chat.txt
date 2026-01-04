@@ -1,0 +1,51 @@
+00:05:29	Carl Beekhuizen:	gm gm
+00:07:47	Toni Wahrstätter:	blockaccesslist.xyz
+00:09:28	Karim T.:	Do we need read, this is the question
+00:11:51	Barnabas:	mic dao
+00:12:53	Karim T.:	I think if we can run transaction in // ,we will have // io, just not batch io at the beginning
+00:20:12	Karim T.:	I think the same, I ‘m saying that we don’t need read because batching io seems useless as we can run transaction in //
+00:21:17	Carl Beekhuizen:	I think we need benchmarks on whether the batch load is faster or not in the worst case.
+00:21:28	Karim T.:	Reacted to "I think we need benc..." with ➕
+00:24:57	Po:	https://docs.google.com/presentation/d/1dfdHgBoHl-xwO7eOEYfkRNgs5fWlZRYda1GbYTCaAKY/edit?slide=id.g382ef0951fb_0_26#slide=id.g382ef0951fb_0_26
+00:25:15	mirgee:	Reacted to "I think we need benc..." with ➕
+00:30:13	Karim T.:	We need also to batch io the intermediate node of the trie for the state root
+00:30:51	Karim T.:	So it will be too much io at the beginning if we batch also the read at the beginning
+00:31:13	Karim T.:	So waiting a lot of time to just batch at the beginning of the block
+00:35:40	Karim T.:	I don’t hear well
+00:36:14	Barnabas:	Replying to "mic dao"
+
+mic dao x2
+00:36:17	Po:	I'll log out and change my mic
+00:39:43	Carl Beekhuizen:	Oner more concern on reads: if we read as we execute, the worst case block becomes one where a ton of reads happen at the end of a thread’s execution and we suddenly become blocked on one tx’s reads.
+
+I’d guess that on average read-while-executing if faster, but not for the worst case (and I think that we might need a maliciously constructed block to see this, it might not be clear using today’s blocks as a benchmark).
+00:40:15	Po:	yeah
+00:40:29	Jared Wasinger:	Reacted to "Oner more concern on..." with 👍
+00:40:35	Po:	for the worse case, it's better to prefetch
+00:40:52	Karim T.:	Reacted to "Oner more concern on..." with 👍
+00:40:58	mirgee:	Reacted to "Oner more concern on..." with 👍
+00:41:47	Carl Beekhuizen:	Replying to "for the worse case, ..."
+
+And I’m going to keep beating the-only-thing-we-care-about-is-worst-case drum
+00:41:54	Toni Wahrstätter:	link for the markdown file:
+https://github.com/ethereum/execution-spec-tests/blob/feat/eip-7928/checklist/tests/unscheduled/eip7928_block_level_access_lists/checklist.md
+00:42:07	felipe:	Reacted to "link for the markd..." with ➕
+00:44:20	raxhvl:	https://pokebal.raxhvl.com/  - The tracker
+00:44:23	Barnabas:	wen devnet 0?
+00:44:30	Po:	Reacted to "https://pokebal.raxh..." with 👍
+00:44:47	Barnabas:	fork to be activated with: AmsterdamTime
+00:45:28	Barnabas:	Could we have clients implement  bal-devnet-0 branches, and we can setup auto build/deploy.
+00:46:23	felipe:	@Toni Wahrstätter I've built my EELS PR on top of all of your commits. If we can make sure you can push to my repo, are you good with making this the PR we focus on for the specs implementation?
+00:46:44	Toni Wahrstätter:	Replying to "@Toni Wahrstätter I'..."
+
+yeah will do that!
+00:46:50	felipe:	Reacted to "yeah will do that!" with 👍
+00:47:34	felipe:	I have to pop out for another meeting. Will catch up on the rest via recording.
+00:47:55	Toni Wahrstätter:	Reacted to "I have to pop out fo..." with 🤝
+00:48:04	Karim T.:	It will be nice to have a link with the configuration needed for the devnet and BAL format we will use (with or without read) , etc
+00:50:29	Jared Wasinger:	I think also that reads vs no reads depends on attack cases as well.  And it’s hard to express these in standalone benchmarks because the IO perf depends on the size of the database.
+00:53:05	Carl Beekhuizen:	Reacted to "I think also that re..." with 👀
+00:54:35	Barnabas:	ssz warriors have not shown up
+00:54:42	Jared Wasinger:	Reacted to "ssz warriors have no..." with 😂
+00:55:17	Barnabas:	can we aim for bal-devnet-0 in 3 weeks?
+00:55:31	Carl Beekhuizen:	Thanks all

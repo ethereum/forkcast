@@ -1,0 +1,79 @@
+00:06:44	terence:	i can create one, im a mod
+00:07:10	terence:	21
+00:09:15	Barnabas:	hola amigos
+00:10:23	Justin Traglia:	Reacted to "hola amigos" with 👋
+00:10:43	Barnabas:	haha
+00:12:34	Francesco:	I think independently of the commitment I’d rather leave out the state root, that’s another thing the builder needs to be more or less in the critical path
+00:12:48	Justin Traglia:	Reacted to "I think independentl..." with 👍
+00:13:21	terence:	@Bruno Mazorra you are unmuted btw
+00:13:34	Bruno Mazorra:	sry
+00:13:41	terence:	Reacted to "sry" with ❤️
+00:15:10	Potuz:	Reacted to "I think independentl..." with 👍
+00:17:17	Potuz:	Fwiw I checked that Prysm actually suffers from this, I thought that we implemented it the way that Francesco is trying to change but no, we are subject to this bug now
+00:18:07	terence:	Replying to "Fwiw I checked that ..."
+
+first timely block of slot? or proposer is the same on the canonical chain?
+00:18:17	Justin Traglia:	What would the fix look like?
+00:18:38	Potuz:	Replying to "Fwiw I checked that ..."
+
+No the issue of syncing a block from a remote branch, OTOH we won’t sync arbitrary blocks though
+00:18:58	Potuz:	Replying to "What would the fix l..."
+
+Is that one liner: check that the proposer is the one expected in the canonical branch
+00:19:14	Justin Traglia:	Reacted to "Is that one liner: c..." with 👍
+00:19:18	terence:	Replying to "Fwiw I checked that ..."
+
+because our gossip check is "different"?
+00:19:19	Potuz:	Replying to "What would the fix l..."
+
+So it’s a descendent from the current head
+00:19:23	Justin Traglia:	Ideally it would be fixed at fusaka, not a BPO
+00:19:31	Potuz:	Replying to "What would the fix l..."
+
+Or not necessarily
+00:19:40	Potuz:	Replying to "What would the fix l..."
+
+But same index
+00:19:45	Barnabas:	Reacted to "Ideally it would be ..." with 👍
+00:20:50	Stefan Bratanov:	I am not sure about Teku, have to check if we have this
+00:21:10	terence:	I know we did it for attestation, but i forgot we did it for the block as well
+00:32:04	Stefan Bratanov:	I will double check, pretty sure we had this, even remember a PR of it
+00:33:04	Potuz:	Replying to "I know we did it for..."
+
+Ahh you may be right that this is still in a branch and we had Nishant preventing this because clients didn’t agree
+00:35:04	terence:	writing spec tests is the hard part (I think)
+00:36:14	Justin Traglia:	Reacted to "writing spec tests i..." with 👍
+00:36:45	Potuz:	Should be pretty trivial for fork choice tests though,
+00:36:55	Potuz:	Cause we keep the equivocation
+00:37:53	Justin Traglia:	I believe we currently reject 0-value bids in relays
+00:37:59	Justin Traglia:	So it would be inline with that
+00:38:19	terence:	beacon node rejects 0 value bid anyway when requesting header
+00:38:39	terence:	(for prysm at least)
+00:39:05	Justin Traglia:	All for rejecting it
+00:39:18	Justin Traglia:	(enforcing non 0-value bids from builders)
+00:39:55	NC:	I mean if those out-protocols want to get around this, they can just submit a bid with 0.001ETH or something right?
+00:40:03	Justin Traglia:	Reacted to "I mean if those out-..." with 👍
+00:40:23	Stefan Bratanov:	it makes sense to me
+00:43:33	Justin Traglia:	Sorry, I have to bail for an appt 👋
+00:49:37	terence:	you can count skipped slots using state.block_roots no?
+00:50:09	Potuz:	Not. really
+00:51:53	terence:	interesting, I thought you could just count the number of same block roots in state.block_roots because we process_slot before process_block
+00:55:09	Shane Moore:	https://blog.shutter.network/shutters-perspective-on-glamsterdam-and-a-cryptographic-fix-for-epbss-free-option-problem/?utm_source=chatgpt.com
+00:55:14	Potuz:	Reacted to "https://blog.shutter..." with 👍
+00:59:26	Barnabas:	Touching fulu spec feels sketchy
+00:59:35	terence:	are we moving from column to cell anyway? can also just remove there
+01:00:18	Potuz:	Replying to "Touching fulu spec f..."
+
+It’s not changing Fulu
+01:00:27	Potuz:	Replying to "Touching fulu spec f..."
+
+It’s changing the Fulu additions in Glamsterdam
+01:03:50	Stefan Bratanov:	yeah I agree lots of if statements for the kzg commitments was in Teku for the ePBS interop
+01:04:27	Potuz:	Reacted to "yeah I agree lots of..." with 👍
+01:04:53	Barnabas:	too late
+01:04:54	terence:	easy
+01:04:58	NC:	lol
+01:05:51	terence:	but we should set on a spec version yet, ex: whats the final data column sidecar format?
+01:06:16	Barnabas:	20th of Oct sounds good for target then?
+01:06:24	Barnabas:	should be a week without public testnet
+01:06:25	Stefan Bratanov:	Reacted to "should be a week wit..." with 👍

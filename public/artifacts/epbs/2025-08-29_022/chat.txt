@@ -1,0 +1,88 @@
+00:04:35	stokes:	g(epbs)m
+00:04:45	terence:	gm
+00:04:51	Will Corcoran:	Gm gm
+00:04:51	Chris Haug:	gm
+00:05:32	Will Corcoran:	Where is mr epbs?
+00:05:40	Chris Haug:	Reacted to "Where is mr epbs?" with 😁
+00:05:59	terence:	ill ping him
+00:06:25	Lumi | Offchain Labs:	Reacted to "Where is mr epbs?" with 😁
+00:07:15	terence:	i think we can start without potuz and just do agenda item 2 first
+00:07:31	Pooja Ranjan:	We are Live!
+00:08:25	Potuz:	Am I here?
+00:08:29	Will Corcoran:	Reacted to "Am I here?" with 🤣
+00:08:30	Chris Haug:	Reacted to "Am I here?" with 😁
+00:08:36	Justin Florentine (Besu):	i see you fren
+00:08:41	Potuz:	had to log in like 10 times
+00:11:13	Will Corcoran:	So, :
+1) remove entirely OR
+2) stub as empty?
+00:12:18	stokes:	Stubbing as empty will be less of a headache
+00:15:12	stokes:	Hm don’t we need to prove the linkage for DoS reasons?
+00:27:44	stokes:	Can filter the p2p topic to one message per builder
+00:27:49	stokes:	Per slot
+00:27:53	Will Corcoran:	I can ask Raul and/or Marco to join the next call, if helpful
+00:31:50	terence:	sorry @Potuz and @stokes we do have it:   [IGNORE] The node has not seen another valid SignedExecutionPayloadEnvelope for this block root from this builder.  maybe not in our usual language but that specifies what I was worry about
+00:31:57	stokes:	Reacted to "sorry @Potuz and @st..." with 👍
+00:33:20	Will Corcoran:	Evaluate options:
+a. Leave as-is, using state.state_roots for post-payload access (grandparent payload, sufficient for most cases).
+
+b. New EIP exposing execution payload envelope root (like EIP-4788, for post-payload proofs).
+
+c. Add pre_state_root to beacon block (similar functionality to a)
+00:34:35	Will Corcoran:	Team Leave it Alone?
+00:34:38	Will Corcoran:	Reacted to "Team Leave it Alone?" with 👍
+00:35:57	Potuz:	Reacted to "Team Leave it Alone?" with 👍
+00:36:06	terence:	Reacted to "Team Leave it Alone?" with 👍
+00:36:23	stokes:	Reacted to "Team Leave it Alone?" with 👍
+00:37:06	Will Corcoran:	https://github.com/ethereum/consensus-specs/pull/4525
+https://github.com/ethereum/consensus-specs/pull/4527
+00:38:23	Will Corcoran:	https://hackmd.io/@bchain/BJYoUYjIll
+00:42:08	ethDreamer (Mark):	https://github.com/ethereum/consensus-specs/blob/master/specs/gloas/p2p-interface.md#execution_payload
+00:47:15	terence:	the siganture should be an optional field anyway, builder can choose or not choose to gate it
+00:50:18	Potuz:	Reacted to "the siganture should..." with 👍🏼
+00:52:07	Christoph Schlegel:	The other way around, for the seller
+00:52:25	stokes:	Replying to "The other way around..."
+
+Open or sealed?
+00:52:34	stokes:	Replying to "The other way around..."
+
+(Is better for the seller)
+00:52:51	Potuz:	Replying to "The other way around..."
+
+sealed is better for the seller
+00:52:53	Christoph Schlegel:	Replying to "The other way around..."
+
+With a lot of asterisks sealed bid might be better for seller
+00:52:53	Potuz:	Replying to "The other way around..."
+
+the proposer in this case
+00:53:08	stokes:	Reacted to "With a lot of asteri..." with 👍
+00:53:13	Christoph Schlegel:	Replying to "The other way around..."
+
+Harder to coordinate for the bidders
+00:53:39	Potuz:	Replying to "The other way around..."
+
+fair?
+00:54:13	stokes:	Makes sense
+00:54:39	Will Corcoran:	Reacted to "fair?" with 😆
+00:54:58	Will Corcoran:	Replying to "The other way around..."
+
+Least-exploitable?
+00:58:06	terence:	you cant cancel p2p bids though, if you have a higher bid, someone will just take it
+00:58:36	Will Corcoran:	https://notes.ethereum.org/@ethpandaops/epbs-devnet-0
+00:59:18	Potuz:	how are clients in implementations?
+00:59:31	Potuz:	yes
+01:00:43	Will Corcoran:	Teku: does end of October work for you?
+01:01:24	Enrico Del Fante (tbenr):	Replying to "Teku: does end of Oc..."
+
+I hope so
+01:01:30	Potuz:	Reacted to "I hope so" with 👍🏼
+01:01:41	NC:	Lodestar: pretty early into the implementation
+01:01:43	Enrico Del Fante (tbenr):	Replying to "Teku: does end of Oc..."
+
+We will have a long work to start moving stuff on master branch
+01:01:54	Will Corcoran:	Reacted to "I hope so" with 👍🏼
+01:01:56	stokes:	Id say just launch devnet-0 once two clients are ready
+01:02:02	Will Corcoran:	Reacted to "Id say just launch d..." with 👍
+01:02:13	stokes:	May not be able to set a date today
+01:03:26	Potuz:	we're on the same scenario Enrico

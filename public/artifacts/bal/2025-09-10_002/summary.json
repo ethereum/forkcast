@@ -1,0 +1,54 @@
+{
+  "meeting_topic": "EIP-7928 Breakout Room",
+  "meeting_start_time": "2025-09-10T13:59:16Z",
+  "meeting_end_time": "2025-09-10T14:52:56Z",
+  "summary_start_time": "2025-09-10T14:01:18Z",
+  "summary_end_time": "2025-09-10T14:48:33Z",
+  "summary_created_time": "2025-09-10T14:55:01Z",
+  "summary_last_modified_time": "2025-09-10T16:28:16Z",
+  "summary_overview": "The team discussed the potential inclusion of block-level access indices in the Ethereum Virtual Machine state, exploring how this could improve parallel execution and stateless execution efficiency. The discussion centered around the trade-offs between adding more information to access lists and optimizing data transfer for proof generation in distributed systems. The team decided to maintain the current implementation for now, with plans to revisit the addition of transaction indices later, while various client implementations continue to progress with optimization efforts.",
+  "summary_details": [
+    {
+      "label": "EIP 7,9 Discussion Breakout",
+      "summary": "The meeting began with Toni and Pooja waiting for the remaining participants to join before starting the stream. Once everyone was present, Toni introduced the agenda for the Ethereum Improvement Proposal (EIP) 7,9 breakout call, which was briefly discussed. The meeting focused on two agenda items, with the main discussion point being the topic of the discussion being left open in the transcript."
+    },
+    {
+      "label": "EVM State Access Optimization Discussion",
+      "summary": "The team discussed whether to include block lab access indices for reads in the Ethereum Virtual Machine (EVM) state. Som explained the motivation for including these indices, citing the need for parallel execution in a post-Glamsterdam world and the potential implementation of zero-knowledge (ZK) EVMs for transaction and block proofs. He explained that block-level access lists could help optimize the state of the execution client, allowing for more efficient stateless execution and reducing unnecessary data transfer."
+    },
+    {
+      "label": "Blob Access List Trade-offs Discussion",
+      "summary": "The team discussed the trade-offs between adding more information to the Blob access list and reducing data passed to provers. Jared explained that his implementation doesn't pass the entire state to parallel executors, as they can recompute the state needed based on the pre-state and applying changes in the access list. The discussion also touched on the benefits of using the rights only for full validation in the business side."
+    },
+    {
+      "label": "Block-Level Access Lists Implementation",
+      "summary": "The team discussed the implementation of block-level access lists (BALs) and their potential benefits for scaling. Karim and Som explained that while BALs could improve performance for large blocks, the current MPT implementation remains the main bottleneck for parallel processing. Toni suggested considering worst-case execution scenarios, such as precompiles, to better evaluate the impact of BALs. The discussion also touched on the potential for using GPUs or ASICs for proving, while keeping the execution on CPU, and the importance of database optimization."
+    },
+    {
+      "label": "Block Indices for zkvm Efficiency",
+      "summary": "The team discussed implementing block indices for zkvm execution. Somewhat controversially, Somewhere suggested that including indices could provide a 2% increase in efficiency, which would be beneficial for the restate. However, others were unsure about the difference between this approach and re-execution by validators. Karim clarified that using BAL (block-level access list) would be nice, but as long as necessary."
+    },
+    {
+      "label": "Distributed System Proof Generation Optimization",
+      "summary": "Toni and others discussed the need for efficient data transmission and proof generation in a distributed system. Toni highlighted the necessity of providing the prover with the pre-state of the block, block-level access list, and all read values touched in the block for accurate proof generation. The team debated the inclusion of transaction indices in the block access list to optimize data transfer, considering the additional storage space and network bandwidth usage. Toni suggested reaching out to the ZKVM team for further insights on the current block access list design and potential improvements."
+    },
+    {
+      "label": "Transaction Indices Implementation Caution",
+      "summary": "The team discussed the potential addition of transaction indices to the protocol, with Toni and Carl expressing caution about implementing changes with unclear payoffs. Carl emphasized the need for more data and a clearer understanding of trade-offs before committing to such additions, suggesting that focusing on scaling benefits and block-level access lists might be a better use of time. Toni agreed, noting that the current state root computation remains the heaviest part of blocks, and the team decided to stick with the current implementation for now, with the possibility of adding transaction indices later if needed. Karim supported this approach, stating that it was too soon to consider modifications for ZK due to ongoing research."
+    },
+    {
+      "label": "Client Implementations and Merkel Optimizations",
+      "summary": "The team discussed progress on various client implementations, with Jared reporting that a branch for the first effort could be ready in a few days to a week, though actual merge in Geth would take longer. Som reported on Erigon's work to optimize Merkel Patricia tree cancellation and state root computation, noting improvements of 2.5-3x in execution time. The team agreed that having at least a second client pair would make sense before proceeding with the first effort, and Karim confirmed that Besu would be ready to propose blocks with block access lists by the end of the month. Toni raised the possibility of treating block access lists like receipts and allowing proofs against them, which would be discussed further in the next breakout call in two weeks."
+    }
+  ],
+  "next_steps": [
+    "Sophia to reach out to ZK-EVM teams to gather their input on including transaction indices for read-only operations in block level access lists.",
+    "Felipe to release updated test vectors for EIP-7928 after this call.",
+    "Jared to prepare a branch for Geth implementation within a few days to a week.",
+    "Mark  to continue working on improving Merkle Patricia trie calculation which is currently a bottleneck.",
+    "Marc  to resolve the remaining edge case around reverted transactions for block access list construction.",
+    "Ishika and Reth team to discuss and decide on their approach regarding transaction indices implementation within the next 1-2 weeks.",
+    "Besu team to continue work on state root computation optimization using block access lists.",
+    "Toni to add discussion about treating block level access lists similar to receipts  to the agenda for the next breakout call in 2 weeks."
+  ]
+}

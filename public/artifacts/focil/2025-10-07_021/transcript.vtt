@@ -1,0 +1,1734 @@
+WEBVTT
+
+1
+00:07:30.280 --> 00:07:31.720
+Jihoon: Hello, hello!
+
+2
+00:07:31.830 --> 00:07:35.370
+Jihoon: I think we can wait a few more minutes, and then start.
+
+3
+00:08:55.460 --> 00:08:59.529
+Jihoon: Alright, I think we can kick it off. Pooja, are we ready?
+
+4
+00:09:02.650 --> 00:09:03.479
+Pooja Ranjan: We are life.
+
+5
+00:09:04.530 --> 00:09:13.060
+Jihoon: Okay, thank you. Hello everyone, welcome to Fossil Breakout 21st. Today, we have a research presentation.
+
+6
+00:09:13.460 --> 00:09:19.110
+Jihoon: Luca from L2Beat will gonna give us a talk about fossil and native roll-ups.
+
+7
+00:09:19.220 --> 00:09:34.719
+Jihoon: A native roll-up is an EVM-based roll-up using the execute precompile, so you can minimize the risk of bug, governance, and so on and so forth. For anyone interested, please take a look into this article.
+
+8
+00:09:35.600 --> 00:09:37.560
+Jihoon: Let me share it in the chat.
+
+9
+00:09:38.840 --> 00:09:48.789
+Jihoon: After the talk, we can share development updates, as usual. So, please welcome Luca from L2Bit. Luca, if you're ready, the stage is yours.
+
+10
+00:09:50.920 --> 00:09:52.010
+donnoh | L2BEAT: Hey, everyone!
+
+11
+00:09:52.290 --> 00:09:56.370
+donnoh | L2BEAT: Thank you for inviting me. So…
+
+12
+00:09:56.510 --> 00:10:01.740
+donnoh | L2BEAT: I don't have a… I don't have slides, because I was in…
+
+13
+00:10:01.940 --> 00:10:06.550
+donnoh | L2BEAT: Singapore this week, and didn't have the time, but maybe it's even more interesting this way.
+
+14
+00:10:06.720 --> 00:10:12.070
+donnoh | L2BEAT: So, I can maybe share the, Let me see…
+
+15
+00:10:12.200 --> 00:10:16.309
+donnoh | L2BEAT: The… that website that you shared in the chat?
+
+16
+00:10:16.760 --> 00:10:22.589
+donnoh | L2BEAT: And what I want to do is to… let me say…
+
+17
+00:10:23.650 --> 00:10:36.290
+donnoh | L2BEAT: is to give you kind of a small introduction on native rollups, the idea behind native rollups, and why I think .fosale, is useful, is very useful here.
+
+18
+00:10:36.500 --> 00:10:40.870
+donnoh | L2BEAT: Especially for native roll-ups, but not only. So…
+
+19
+00:10:41.710 --> 00:10:50.609
+donnoh | L2BEAT: The idea behind native rollups is… so let's assume, first of all, that we have, statelessness on all 1, so we can…
+
+20
+00:10:51.130 --> 00:11:00.319
+donnoh | L2BEAT: we can execute transactions, we can perform the state transition function L1, without having the full state, so we just have
+
+21
+00:11:00.600 --> 00:11:07.480
+donnoh | L2BEAT: Pre-state route, we have a post-state route, and we have a list of transactions, which are possibly, you know.
+
+22
+00:11:07.600 --> 00:11:13.610
+donnoh | L2BEAT: Stateless, traces to be able to execute them statelessly.
+
+23
+00:11:14.040 --> 00:11:19.220
+donnoh | L2BEAT: And now the deal here is… if, L1…
+
+24
+00:11:19.350 --> 00:11:31.129
+donnoh | L2BEAT: pool nodes can perform a state transition function which is stateless. In principle, they can perform the state transition function on arbitrary states, not only the state of L1.
+
+25
+00:11:31.800 --> 00:11:38.919
+donnoh | L2BEAT: So, in principle, these L1 full nodes can apply the set position function.
+
+26
+00:11:39.070 --> 00:11:43.729
+donnoh | L2BEAT: With the state of the roll-ups as well, right? And…
+
+27
+00:11:45.670 --> 00:11:55.309
+donnoh | L2BEAT: If done, you know, naively, with re-execution, it doesn't bring many benefits, because you would consume the same resources.
+
+28
+00:11:55.440 --> 00:12:02.510
+donnoh | L2BEAT: But if we also assume that we have ZK on L1, this becomes much more interesting, right? So…
+
+29
+00:12:03.490 --> 00:12:11.119
+donnoh | L2BEAT: The idea behind native rollups is to reuse the same stack that is used for Ethereum itself, but for the…
+
+30
+00:12:11.250 --> 00:12:18.609
+donnoh | L2BEAT: For the… for the roll-ups as well. So… The goal of…
+
+31
+00:12:18.690 --> 00:12:37.990
+donnoh | L2BEAT: the NativeOps proposal is to implement a precompile, which is called the execute precompile, which it… what it does is basically, a recursive function to the state transition function. I have two variants in my documents, one that does a
+
+32
+00:12:38.370 --> 00:12:51.110
+donnoh | L2BEAT: recursive call just to the apply body. I assume that, you know, you are familiar with the… with what I'm talking about in the execution layer, given that, you know, post-sale touches this stuff.
+
+33
+00:12:51.420 --> 00:13:08.179
+donnoh | L2BEAT: So one variant only does a recursive call to apply body, it skips the header checks, while the other variant does, you know, it's a recursive call to the state transition function with all the header information, so this is a little bit more…
+
+34
+00:13:09.950 --> 00:13:25.430
+donnoh | L2BEAT: is a little bit longer, while the other one is a little bit shorter. And the reason why we have both, because a lot of rollups today, they skip header checks in the first place, so it's interesting to have both. In any case.
+
+35
+00:13:25.560 --> 00:13:30.660
+donnoh | L2BEAT: The idea here is… The executePrecompile takes as an input.
+
+36
+00:13:31.080 --> 00:13:48.579
+donnoh | L2BEAT: all the information that goes in the block environment, that is then used in the block environment, of course, and the transactions, right? So, an input is the list of transactions, which is ideally a link to a blob, or many blobs.
+
+37
+00:13:49.240 --> 00:14:05.659
+donnoh | L2BEAT: And then, all the information that they usually require for this, for this block environment. So, for example, the chain ID, this is specific to each roll-up, this is an input. The pre-state, this is supposed to be saved in a contract, another one, and you pass it again as an input.
+
+38
+00:14:06.300 --> 00:14:16.440
+donnoh | L2BEAT: You can have arbitrary guest limits, you can have arbitrary coin base, this could be, you know, a predefined address, it could be…
+
+39
+00:14:16.790 --> 00:14:22.699
+donnoh | L2BEAT: set to be the same as the L1 Coinbase, if you're, for example, a base roll-up.
+
+40
+00:14:23.760 --> 00:14:29.749
+donnoh | L2BEAT: And… in general, you know, all these values can be inputs.
+
+41
+00:14:31.480 --> 00:14:32.890
+donnoh | L2BEAT: And…
+
+42
+00:14:33.480 --> 00:14:40.819
+donnoh | L2BEAT: And these inputs are then passed to the apply body, which does the actual transition, and checks that the…
+
+43
+00:14:41.410 --> 00:14:50.129
+donnoh | L2BEAT: transition from a pre-state, which is again a state root, and a post state, is correct, using the same execution environment that Ethereum already uses.
+
+44
+00:14:50.780 --> 00:14:58.229
+donnoh | L2BEAT: And the cool, like, a cool way to reason about native rollups is
+
+45
+00:14:59.830 --> 00:15:06.329
+donnoh | L2BEAT: The same is that… the same relation that there is between the consensus layer
+
+46
+00:15:06.520 --> 00:15:13.180
+donnoh | L2BEAT: and the execution layer for Ethereum. The same relation can be… Phones!
+
+47
+00:15:13.410 --> 00:15:17.160
+donnoh | L2BEAT: between L1 and L2, in the sense of…
+
+48
+00:15:17.710 --> 00:15:21.469
+donnoh | L2BEAT: For example, the broadcast limit
+
+49
+00:15:21.920 --> 00:15:32.719
+donnoh | L2BEAT: no, sorry. Like, the Coinbase is something that information that comes from the consensus layer, right? Like, all the information that comes from the consensus layer
+
+50
+00:15:33.340 --> 00:15:50.040
+donnoh | L2BEAT: now comes from L1, from the perspective of a native roll-up. So, another, like, obvious example is, Randall, right? This is something that comes from the consensus layer. For native roll-ups, this is an input that comes from L1.
+
+51
+00:15:50.550 --> 00:16:01.320
+donnoh | L2BEAT: And L1 can decide whether to, like, either pass the things from the consensus layer, or, like, the same things the other one already has, or do something else.
+
+52
+00:16:04.860 --> 00:16:14.890
+donnoh | L2BEAT: And this is quite cool, because now you kind of have a programmable consensus layer in the form of a smart contracts, which is… which is super interesting.
+
+53
+00:16:15.470 --> 00:16:19.020
+donnoh | L2BEAT: So this is the, like, short LDR about native rollups.
+
+54
+00:16:19.520 --> 00:16:31.509
+donnoh | L2BEAT: And… the… The important thing about this precompile is, okay, we want to do this recursive call.
+
+55
+00:16:32.000 --> 00:16:39.690
+donnoh | L2BEAT: So that, you know, the reason why we want to have this recursive call, by the way, is twofold. Our first reason is
+
+56
+00:16:41.570 --> 00:16:49.999
+donnoh | L2BEAT: we want projects to upgrade every time Ethereum upgrades, automatically, so if there's, you know, if there is a fork, this changes, because there is a new structure, a new…
+
+57
+00:16:50.490 --> 00:17:01.660
+donnoh | L2BEAT: pre-compiled, and it is also a new transaction type, let's say 7702. They would also be automatically supported on the native products as well.
+
+58
+00:17:01.920 --> 00:17:11.120
+donnoh | L2BEAT: So they… these roll-ups wouldn't need to have their own dedicated governance just to be… just to have feature pilot fever one, and the second reason is…
+
+59
+00:17:11.349 --> 00:17:14.860
+donnoh | L2BEAT: To be bug-free, because if there is a bug.
+
+60
+00:17:14.960 --> 00:17:19.500
+donnoh | L2BEAT: In a native roll-up, it also means that there is a bug on a one, and…
+
+61
+00:17:19.740 --> 00:17:22.959
+donnoh | L2BEAT: it's gonna be fixed with a fork. This is not…
+
+62
+00:17:23.430 --> 00:17:30.320
+donnoh | L2BEAT: what happens today if there is a bug in our rollout? If there is a bug, then L1 is not gonna save them.
+
+63
+00:17:31.390 --> 00:17:39.990
+donnoh | L2BEAT: So, so we want to do this recursive call, but the thing is, the L2 environment is a little bit different compared to L1.
+
+64
+00:17:40.450 --> 00:17:44.429
+donnoh | L2BEAT: It's not enough to do this, naively.
+
+65
+00:17:44.540 --> 00:17:49.409
+donnoh | L2BEAT: And that's why, like, there is… there are other things, around.
+
+66
+00:17:49.730 --> 00:17:54.350
+donnoh | L2BEAT: Not many, because, again, we can see that it's very short.
+
+67
+00:17:54.760 --> 00:18:00.750
+donnoh | L2BEAT: But we need some… some things. So, for example, one thing that needs to be supported is messaging.
+
+68
+00:18:00.880 --> 00:18:04.569
+donnoh | L2BEAT: From L122, and I have this page that describes
+
+69
+00:18:04.990 --> 00:18:08.200
+donnoh | L2BEAT: The way that current system works.
+
+70
+00:18:08.330 --> 00:18:17.599
+donnoh | L2BEAT: like, at least popular ones, or, like, our most interesting ones, or unique, like OpiStack, Lina, Type, and Obstac, how they implement L12 messaging.
+
+71
+00:18:18.260 --> 00:18:31.770
+donnoh | L2BEAT: Which is used for deposits, token deposits from L1. You deposit the token on L1, it needs to appear on the L2, and then you need to implement withdrawals, from L2 to L1, right? Messagingsystem.
+
+72
+00:18:32.120 --> 00:18:36.359
+donnoh | L2BEAT: For example, is able to burn those tokens on L2.
+
+73
+00:18:36.650 --> 00:18:41.599
+donnoh | L2BEAT: And, unlock the tokens that are locked in an escrow normal.
+
+74
+00:18:42.880 --> 00:18:46.460
+donnoh | L2BEAT: And… One of those differences?
+
+75
+00:18:47.050 --> 00:18:53.769
+donnoh | L2BEAT: from L1 execution environment and the L2 execution environment is forced transactions.
+
+76
+00:18:54.130 --> 00:19:03.819
+donnoh | L2BEAT: So… we really want rollups to have the same censorship resistance as L1, as Ethereum. And this means that
+
+77
+00:19:04.210 --> 00:19:10.539
+donnoh | L2BEAT: If, for example, you have a rollup that has a centralized sequencer, and the centralized sequencer is censoring you.
+
+78
+00:19:11.100 --> 00:19:15.630
+donnoh | L2BEAT: you should be able to send your transaction on L1, And…
+
+79
+00:19:15.980 --> 00:19:24.769
+donnoh | L2BEAT: have the guarantee that if L1 includes your transaction, then also the L2 will process such transaction.
+
+80
+00:19:25.840 --> 00:19:31.389
+donnoh | L2BEAT: And… you know, I… I work at L2Peat, and…
+
+81
+00:19:32.120 --> 00:19:38.509
+donnoh | L2BEAT: One of the most difficult things to implement for a project, is forced transactions.
+
+82
+00:19:38.710 --> 00:19:49.909
+donnoh | L2BEAT: They're very complicated. Every project kind of has a different way to implement forced transactions. For example, if you look at OP stack.
+
+83
+00:19:50.570 --> 00:19:53.070
+donnoh | L2BEAT: They have a new transaction type.
+
+84
+00:19:53.580 --> 00:20:02.509
+donnoh | L2BEAT: This transaction type is called a repository transaction, and they need to heavily modify How the derivation works?
+
+85
+00:20:02.960 --> 00:20:08.090
+donnoh | L2BEAT: I can show, maybe…
+
+86
+00:20:08.430 --> 00:20:13.750
+donnoh | L2BEAT: Like, in the derivation, if you look at the… this is the OP.
+
+87
+00:20:13.870 --> 00:20:15.150
+donnoh | L2BEAT: spec…
+
+88
+00:20:15.770 --> 00:20:23.989
+donnoh | L2BEAT: when they derive the transaction list, like, it's quite complicated. Of course, I will not go into the details, but they…
+
+89
+00:20:25.330 --> 00:20:33.529
+donnoh | L2BEAT: kind of… significantly modify DL1 execution environment to be able to, support first transactions.
+
+90
+00:20:33.840 --> 00:20:46.359
+donnoh | L2BEAT: If you look at Arbitrum, the way that Arbitrum implements first transactions, it is even more complicated. They have not one new transaction type, but they have many.
+
+91
+00:20:46.830 --> 00:20:48.549
+donnoh | L2BEAT: This many.
+
+92
+00:20:50.260 --> 00:20:59.090
+donnoh | L2BEAT: And… There are projects that try to minimize the, the diff.
+
+93
+00:20:59.460 --> 00:21:02.060
+donnoh | L2BEAT: with L1, so one example is…
+
+94
+00:21:02.310 --> 00:21:08.629
+donnoh | L2BEAT: Linear. Linear is a project that wants… To be an L2…
+
+95
+00:21:08.740 --> 00:21:14.890
+donnoh | L2BEAT: without touching the execution clients at all, right? And…
+
+96
+00:21:17.460 --> 00:21:23.159
+donnoh | L2BEAT: Because of this, they have been particularly struggling with implementing first transactions.
+
+97
+00:21:23.480 --> 00:21:27.100
+donnoh | L2BEAT: Because R1, again, doesn't have a concept of first transactions.
+
+98
+00:21:27.460 --> 00:21:35.110
+donnoh | L2BEAT: And… We talked with them for a long time. They presented us with a doc.
+
+99
+00:21:35.460 --> 00:21:38.160
+donnoh | L2BEAT: With a proposal for forced transactions.
+
+100
+00:21:38.650 --> 00:21:46.920
+donnoh | L2BEAT: And basically, you know, the simpler way you can implement first transactions today in a system is to…
+
+101
+00:21:47.300 --> 00:21:55.350
+donnoh | L2BEAT: like, with a centralized sequencer, is to have some windows some periodic windows.
+
+102
+00:21:55.920 --> 00:21:59.550
+donnoh | L2BEAT: where anyone can sequence transactions. So basically, you have…
+
+103
+00:21:59.710 --> 00:22:02.690
+donnoh | L2BEAT: These windows, where you become a base roll-up.
+
+104
+00:22:02.830 --> 00:22:06.909
+donnoh | L2BEAT: Linear called, calls this block base blocks.
+
+105
+00:22:07.140 --> 00:22:10.290
+donnoh | L2BEAT: So every now and then, there can be a base block.
+
+106
+00:22:10.960 --> 00:22:19.510
+donnoh | L2BEAT: Which is problematic, because if you… for a certain period, you're paced, you get into the… all the complexity of being paced.
+
+107
+00:22:19.830 --> 00:22:26.079
+donnoh | L2BEAT: of having base sequencing. So, for example, you have degradation for pre-confirmations.
+
+108
+00:22:26.310 --> 00:22:29.320
+donnoh | L2BEAT: And the UX is not great, in general.
+
+109
+00:22:29.510 --> 00:22:37.030
+donnoh | L2BEAT: And… We also talked with Aztec, you know, which is this privacy L2, and also for them.
+
+110
+00:22:37.260 --> 00:22:47.840
+donnoh | L2BEAT: It has been, like, they're not TBM, but also for them, it has been, like, quite challenging to implement first infrastructure mechanism, and they also are planning to…
+
+111
+00:22:48.200 --> 00:22:50.400
+donnoh | L2BEAT: Maybe use this base windows?
+
+112
+00:22:50.560 --> 00:22:51.580
+donnoh | L2BEAT: Oh…
+
+113
+00:22:51.790 --> 00:22:56.289
+donnoh | L2BEAT: But in any case, the message that I want to send you is, implementing forced transaction is very difficult.
+
+114
+00:22:56.910 --> 00:22:57.960
+donnoh | L2BEAT: And…
+
+115
+00:22:58.250 --> 00:23:05.189
+donnoh | L2BEAT: So, if we want to implement first actions for a native roll-up, what is that we would need to do?
+
+116
+00:23:05.360 --> 00:23:16.380
+donnoh | L2BEAT: Either we go with this base of Windows, but again, the UX is terrible. I don't think anyone really would want to do this if there is another way.
+
+117
+00:23:16.840 --> 00:23:22.430
+donnoh | L2BEAT: The other way is… dot…
+
+118
+00:23:23.000 --> 00:23:33.160
+donnoh | L2BEAT: So, the high-level idea of forced transactions is the sequencer is answering you, you send that transaction on all one. On all one, you have a smart contract that queues
+
+119
+00:23:33.730 --> 00:23:35.869
+donnoh | L2BEAT: These transactions, right?
+
+120
+00:23:36.990 --> 00:23:44.080
+donnoh | L2BEAT: And then, you need to have a mechanism on all one, such that…
+
+121
+00:23:44.750 --> 00:23:52.449
+donnoh | L2BEAT: You take the sequencer batches, the list of transactions, to the sequencer.
+
+122
+00:23:52.650 --> 00:23:54.110
+donnoh | L2BEAT: Wants to post.
+
+123
+00:23:54.380 --> 00:23:57.140
+donnoh | L2BEAT: You take this first transaction queue.
+
+124
+00:23:57.550 --> 00:24:05.759
+donnoh | L2BEAT: all-in-one, where anyone can just push transactions to this queue, and then you need to have a mechanism to check
+
+125
+00:24:06.370 --> 00:24:11.100
+donnoh | L2BEAT: That the sequencer actually includes the transactions
+
+126
+00:24:11.330 --> 00:24:14.319
+donnoh | L2BEAT: That are in the first transactions, right?
+
+127
+00:24:14.450 --> 00:24:20.470
+donnoh | L2BEAT: So, you know, this might sound familiar. Basically, the first resuction queue is
+
+128
+00:24:20.620 --> 00:24:26.109
+donnoh | L2BEAT: Works as an inclusion list, and you want to force the inclusion list in the
+
+129
+00:24:26.560 --> 00:24:29.119
+donnoh | L2BEAT: In the sequencer botches.
+
+130
+00:24:29.720 --> 00:24:34.820
+donnoh | L2BEAT: And to do this, it is difficult, like…
+
+131
+00:24:35.380 --> 00:24:45.980
+donnoh | L2BEAT: most of the time, this is done as part of the derivation, but, like, in general, this is done as part of the state transition. This is not a check that is on L1, because checking
+
+132
+00:24:46.150 --> 00:24:53.469
+donnoh | L2BEAT: That some transactions that you have saved, let's say, in storage, on L1, are included in a blob.
+
+133
+00:24:53.940 --> 00:24:58.340
+donnoh | L2BEAT: Because the sequencer on OpenL2 posts stuff in a block.
+
+134
+00:24:58.890 --> 00:25:07.620
+donnoh | L2BEAT: probably requires a ZK verifier. And the purpose of native rollups is that, you know, we want to simplify managing
+
+135
+00:25:08.090 --> 00:25:15.759
+donnoh | L2BEAT: a roll-up at a point in which projects do not even need to think about ZK verifiers, right? So this is a problem.
+
+136
+00:25:16.360 --> 00:25:19.710
+donnoh | L2BEAT: So, I was looking at fossil, and…
+
+137
+00:25:22.030 --> 00:25:34.320
+donnoh | L2BEAT: And the cool thing about Fossil is that it implements exactly this mechanism, from an execution layer perspective. So I'm, you know, I'm not looking at the consensus layer at all, because
+
+138
+00:25:34.870 --> 00:25:45.720
+donnoh | L2BEAT: It doesn't matter for native rollups, in the sense of the consensus layer everything that L1
+
+139
+00:25:45.910 --> 00:25:51.209
+donnoh | L2BEAT: fetches from the consensus layer, and a native rollup will fetch from a contract on L1.
+
+140
+00:25:52.350 --> 00:26:01.879
+donnoh | L2BEAT: So if, you know, I looked at the spec, again, I'm not super familiar, but my understanding of the spec is
+
+141
+00:26:02.450 --> 00:26:09.460
+donnoh | L2BEAT: There is this new inclusion list that is added to the state transition, and then…
+
+142
+00:26:09.670 --> 00:26:18.599
+donnoh | L2BEAT: there is this, validate inclusion list transactions, I think, which does exactly, the thing that forced transactions are supposed to do.
+
+143
+00:26:18.720 --> 00:26:29.889
+donnoh | L2BEAT: You have the list of transactions that comes from the builder, you have the inclusion list that comes from somewhere else, and then there is this piece of code that checks that the…
+
+144
+00:26:30.130 --> 00:26:38.519
+donnoh | L2BEAT: Dot the… The transactions that come from the builder include an encryption list transactions, right?
+
+145
+00:26:38.710 --> 00:26:46.300
+donnoh | L2BEAT: So now, if we have this on L1, Aww.
+
+146
+00:26:47.220 --> 00:26:52.600
+donnoh | L2BEAT: also the execute precompile would be able to make use of it. So…
+
+147
+00:26:52.920 --> 00:27:02.680
+donnoh | L2BEAT: If we go, you know, this is the execute precompile. At some point, the execute precompile would do a say transition call.
+
+148
+00:27:03.260 --> 00:27:08.400
+donnoh | L2BEAT: with a blockchain and a block. If we have four cylinder 1, here we would add an inclusion list.
+
+149
+00:27:09.360 --> 00:27:17.849
+donnoh | L2BEAT: And… These inclusion lists would come from a smart contract. So again, the idea here is
+
+150
+00:27:18.580 --> 00:27:30.190
+donnoh | L2BEAT: there is some function that allows users to send transactions one-on-one. These transactions with the full signatures are saved in the smart contract, and then
+
+151
+00:27:30.890 --> 00:27:39.549
+donnoh | L2BEAT: the… This list is passed as an input to the execute precompile, so that the
+
+152
+00:27:39.780 --> 00:27:45.129
+donnoh | L2BEAT: State transition of the roll-up is conditioned based on these encryption lists.
+
+153
+00:27:45.600 --> 00:27:49.400
+donnoh | L2BEAT: And this would allow to have… to implement first transactions.
+
+154
+00:27:49.890 --> 00:27:54.569
+donnoh | L2BEAT: Without having to worry about a dedicated mechanism to check for inclusion.
+
+155
+00:27:55.980 --> 00:28:01.880
+donnoh | L2BEAT: So, I talked about, you know, checking inclusion in a blob.
+
+156
+00:28:02.020 --> 00:28:08.139
+donnoh | L2BEAT: This is not something that Fossil handles today, or is supposed to handle.
+
+157
+00:28:08.620 --> 00:28:14.960
+donnoh | L2BEAT: but… I'm kind of thinking in the future, because… when…
+
+158
+00:28:16.270 --> 00:28:19.449
+donnoh | L2BEAT: Ethereum will move to ZK.
+
+159
+00:28:19.570 --> 00:28:26.120
+donnoh | L2BEAT: The idea here is that L1 itself will also post It's transactions.
+
+160
+00:28:26.360 --> 00:28:28.420
+donnoh | L2BEAT: To blobs.
+
+161
+00:28:28.730 --> 00:28:32.000
+donnoh | L2BEAT: So, Fossil in a ZK ward.
+
+162
+00:28:32.280 --> 00:28:40.990
+donnoh | L2BEAT: also kind of needs to check inclusion, within blobs. This is, like, a future problem, open problem, whatever, but, like, I'm assuming
+
+163
+00:28:41.340 --> 00:28:46.260
+donnoh | L2BEAT: that's… L1 will fix for sale with blobs.
+
+164
+00:28:46.800 --> 00:28:48.919
+donnoh | L2BEAT: By itself, eventually.
+
+165
+00:28:49.740 --> 00:28:54.939
+donnoh | L2BEAT: And… Native roll-ups will be able to use the exact same mechanism.
+
+166
+00:28:55.300 --> 00:28:57.379
+donnoh | L2BEAT: For… for this.
+
+167
+00:28:59.590 --> 00:29:06.459
+donnoh | L2BEAT: So, I think I can… Stop here, if anyone has questions.
+
+168
+00:29:15.050 --> 00:29:17.349
+Jihoon: Great, thank you, Luca. So,
+
+169
+00:29:17.900 --> 00:29:35.149
+Jihoon: You've covered what native rollups are, challenges of implementing forced transactions for rollups with centralized sequencers, and how can we add forced transactions to native roll-ups.
+
+170
+00:29:35.350 --> 00:29:50.209
+Jihoon: If I understood correctly, I think the main idea is to use the inclusion list transactions field of state transition function to enforce the forced transactions, and
+
+171
+00:29:50.320 --> 00:29:53.840
+Jihoon: Those will come from a smart contract.
+
+172
+00:29:54.440 --> 00:30:02.420
+Jihoon: And any user can send and save transactions to the smart contract, whichever they want to enforce, right?
+
+173
+00:30:04.210 --> 00:30:14.459
+donnoh | L2BEAT: Yes, yeah, exactly. So, the… the thing that I still need to figure out, and that maybe, you guys can help, is…
+
+174
+00:30:14.910 --> 00:30:31.340
+donnoh | L2BEAT: how to handle the complexities of sending transactions to a smart contract compared to the mempool, right? Because it could be that you send a transaction to inclusion lists, these are used as an input to the state transition, but…
+
+175
+00:30:31.820 --> 00:30:40.590
+donnoh | L2BEAT: these transactions don't actually get in because of, you know, gas limits or whatever, right? So…
+
+176
+00:30:41.380 --> 00:30:48.180
+donnoh | L2BEAT: There is a problem of, like, resubmission, because… It could be, you know.
+
+177
+00:30:48.560 --> 00:30:54.650
+donnoh | L2BEAT: But they don't… like, we don't have a mempool that keeps the transactions. These transactions are actually consumed.
+
+178
+00:30:54.920 --> 00:31:08.049
+donnoh | L2BEAT: So this is kind of the complexity that needs to be solved, but I'm pretty confident… like, I'm pretty optimistic that they can be solved. Also because,
+
+179
+00:31:08.310 --> 00:31:10.679
+donnoh | L2BEAT: Existing roll-ups already have this problem.
+
+180
+00:31:11.410 --> 00:31:14.209
+donnoh | L2BEAT: In a way or the other, with first introductions.
+
+181
+00:31:16.550 --> 00:31:23.899
+Jihoon: So, as long as we… Somehow have the transaction included in a blog.
+
+182
+00:31:24.110 --> 00:31:31.560
+Jihoon: It's… okay, right? As long as the transaction… Has… have no problem.
+
+183
+00:31:32.150 --> 00:31:34.470
+Jihoon: When it's…
+
+184
+00:31:34.920 --> 00:31:48.289
+Jihoon: when it interacts with a smart contract, like, there is no, like, revert, no whatever, that just… yeah, if that execution goes okay, then all we need to care is whether the transaction is included in the block.
+
+185
+00:31:50.620 --> 00:31:56.000
+donnoh | L2BEAT: Yeah, yeah, like, what I'm worried about is, let's say,
+
+186
+00:31:57.040 --> 00:32:05.520
+donnoh | L2BEAT: a transaction is at the tip of this queue, right? It is…
+
+187
+00:32:05.790 --> 00:32:07.609
+donnoh | L2BEAT: It is used as an input.
+
+188
+00:32:07.780 --> 00:32:12.659
+donnoh | L2BEAT: Of this transition, recursive call, like, as a… in a crucial list.
+
+189
+00:32:12.950 --> 00:32:16.730
+donnoh | L2BEAT: But then… The transaction is skipped.
+
+190
+00:32:17.460 --> 00:32:21.000
+donnoh | L2BEAT: I don't remember exactly where, this is done.
+
+191
+00:32:21.740 --> 00:32:25.119
+donnoh | L2BEAT: Like, where is it?
+
+192
+00:32:25.390 --> 00:32:27.390
+donnoh | L2BEAT: Here, right?
+
+193
+00:32:27.560 --> 00:32:29.950
+donnoh | L2BEAT: Where does this continue? In the spec?
+
+194
+00:32:30.520 --> 00:32:39.679
+donnoh | L2BEAT: What happens if a transaction is skipped? You would need to resubmit the transaction on L1 in this queue.
+
+195
+00:32:40.730 --> 00:32:58.929
+Jihoon: Yeah, the… that part is… so, you can see to continue here. The first one is to check the… if the IL transaction is not a blob transaction, because currently we don't support blob transaction. Right.
+
+196
+00:32:58.930 --> 00:33:00.160
+donnoh | L2BEAT: Yeah, that's fine.
+
+197
+00:33:00.440 --> 00:33:09.490
+Jihoon: Yes, you know, because of some possible other factor. And the second one is, actually… is…
+
+198
+00:33:10.010 --> 00:33:14.540
+Jihoon: It checks if the… Not included
+
+199
+00:33:14.740 --> 00:33:19.580
+Jihoon: IL transaction could have been appended at the end of the block.
+
+200
+00:33:19.890 --> 00:33:23.050
+Jihoon: So… What we want is…
+
+201
+00:33:23.800 --> 00:33:35.500
+Jihoon: if an IELT transaction is not included, then we are executing lines below 1,110, you know? And…
+
+202
+00:33:35.500 --> 00:33:36.130
+donnoh | L2BEAT: Yep.
+
+203
+00:33:36.130 --> 00:33:39.029
+Jihoon: If we are hitting that line, then…
+
+204
+00:33:39.310 --> 00:33:52.300
+Jihoon: we want to see if the IL transaction cannot be appended at the end of a block. So, when we try to validate and execute a transaction at the end of a block.
+
+205
+00:33:53.470 --> 00:34:03.270
+Jihoon: if we have any kind of, you know, exception, then that's fine. That IL transaction is validly omitted.
+
+206
+00:34:04.990 --> 00:34:05.620
+donnoh | L2BEAT: Yep.
+
+207
+00:34:06.330 --> 00:34:13.070
+Jihoon: So that's what the code is trying to achieve, and… Oh.
+
+208
+00:34:15.290 --> 00:34:26.070
+Jihoon: Right, I guess you're saying that there could be a possible case that a forced transaction can be validly omitted for some reason.
+
+209
+00:34:27.560 --> 00:34:38.379
+donnoh | L2BEAT: Yeah, yeah, exactly. Like, what happens in that case? In a fossil, a normal fossil, I think it would remain in the mempool, right, and can be, picked again.
+
+210
+00:34:40.650 --> 00:34:41.950
+donnoh | L2BEAT: I would assume.
+
+211
+00:34:42.590 --> 00:34:46.619
+donnoh | L2BEAT: In this case, you probably would need to resubmit.
+
+212
+00:34:47.020 --> 00:34:48.889
+donnoh | L2BEAT: Your transactional one.
+
+213
+00:34:51.280 --> 00:35:00.569
+Jihoon: I guess it depends if the transaction cannot be included In subsequent blocks.
+
+214
+00:35:00.910 --> 00:35:11.530
+Jihoon: For whatever reason. Then… the transaction will be evicted from the mempool. Otherwise, I think includeers will
+
+215
+00:35:12.120 --> 00:35:16.009
+Jihoon: Yeah, pick it up again in the next IL, just as Potter said.
+
+216
+00:35:17.640 --> 00:35:26.909
+donnoh | L2BEAT: Yeah, yeah, exactly. So, like, this is kind of the difference that needs to be, thought a little bit more in the context of native prolops.
+
+217
+00:35:27.330 --> 00:35:28.170
+Jihoon: Hmm, host.
+
+218
+00:35:28.170 --> 00:35:31.360
+donnoh | L2BEAT: To how to handle, like, resubmission.
+
+219
+00:35:32.010 --> 00:35:38.170
+donnoh | L2BEAT: But again, as I said, I'm pretty optimistic that there is a… there is a solution somewhere.
+
+220
+00:35:38.780 --> 00:35:44.729
+Jihoon: Do you have similar cases, today with forest transactions?
+
+221
+00:35:46.780 --> 00:35:53.609
+donnoh | L2BEAT: So… Like, the only case…
+
+222
+00:35:54.220 --> 00:35:57.700
+donnoh | L2BEAT: No, I don't think there is.
+
+223
+00:35:58.210 --> 00:36:10.280
+donnoh | L2BEAT: Because… So for optimism, the way… the way that in OP Stack works is there is…
+
+224
+00:36:10.580 --> 00:36:13.640
+donnoh | L2BEAT: Kind of always pays for forced transactions.
+
+225
+00:36:14.440 --> 00:36:17.390
+donnoh | L2BEAT: They always allocate some space.
+
+226
+00:36:17.760 --> 00:36:19.190
+donnoh | L2BEAT: Just for them.
+
+227
+00:36:21.930 --> 00:36:26.220
+donnoh | L2BEAT: So, I think there isn't the issue that…
+
+228
+00:36:26.750 --> 00:36:29.680
+donnoh | L2BEAT: There isn't enough space in the block, I think.
+
+229
+00:36:30.930 --> 00:36:35.320
+donnoh | L2BEAT: In Arbitrum, the way that it works is…
+
+230
+00:36:36.520 --> 00:36:39.630
+donnoh | L2BEAT: The sequencer decides when to include them.
+
+231
+00:36:40.310 --> 00:36:44.680
+donnoh | L2BEAT: And it has a… some time… window.
+
+232
+00:36:44.830 --> 00:36:47.969
+donnoh | L2BEAT: Which is, like, 24 hours, I think. It's pretty long.
+
+233
+00:36:48.860 --> 00:36:57.130
+donnoh | L2BEAT: And if it doesn't include this transaction in 24 hours, then the user can, force it themselves.
+
+234
+00:36:58.050 --> 00:37:05.279
+donnoh | L2BEAT: And the, like, the L2 is kind of forced to… to process this transaction. It is inserted.
+
+235
+00:37:05.580 --> 00:37:13.890
+donnoh | L2BEAT: I cannot be skipped. The only case that is kind of similar, is… Mmm…
+
+236
+00:37:14.870 --> 00:37:29.339
+donnoh | L2BEAT: No, it's not actually very similar. But basically, there is this case where you send a message, and this message fails on the L2, and you need to resubmit it. Like, it fails because maybe you specify the gas limit, but then, unexpectedly.
+
+237
+00:37:29.540 --> 00:37:31.720
+donnoh | L2BEAT: The L2 gas changed.
+
+238
+00:37:32.380 --> 00:37:37.210
+donnoh | L2BEAT: And then it fails because it goes out of gas, and you need to submit it.
+
+239
+00:37:37.850 --> 00:37:43.069
+donnoh | L2BEAT: And in that case, you need to actually send another transaction.
+
+240
+00:37:47.320 --> 00:37:53.899
+Jihoon: Got it. So, in that case, we need to… the user needs to send another transaction to force included.
+
+241
+00:37:54.810 --> 00:37:59.600
+donnoh | L2BEAT: Yeah, unless… unless there is a way to…
+
+242
+00:37:59.930 --> 00:38:04.670
+donnoh | L2BEAT: Know if a transaction was skipped or not.
+
+243
+00:38:05.000 --> 00:38:16.399
+donnoh | L2BEAT: Because if you know it… You could, like, keep those that are skipped because of… Gas limits?
+
+244
+00:38:18.560 --> 00:38:22.050
+donnoh | L2BEAT: Or… I don't know.
+
+245
+00:38:22.710 --> 00:38:23.270
+Jihoon: Right.
+
+246
+00:38:23.270 --> 00:38:27.669
+donnoh | L2BEAT: But probably, probably it's not, it's not, it's not feasible to implement this.
+
+247
+00:38:29.960 --> 00:38:31.290
+Jihoon: Yeah, I agree, yeah.
+
+248
+00:38:31.730 --> 00:38:41.049
+Jihoon: maybe the situation is not equivalent, but I'm also optimistic that we were gonna be able to find a solution for this case.
+
+249
+00:38:41.570 --> 00:38:42.310
+donnoh | L2BEAT: Nope.
+
+250
+00:38:43.560 --> 00:38:48.769
+Jihoon: Yeah, great. Yeah, does anyone have any question?
+
+251
+00:38:48.960 --> 00:38:53.900
+Jihoon: For native roll-ups, or fossil native roll-ups?
+
+252
+00:38:55.070 --> 00:39:06.380
+donnoh | L2BEAT: And by the way, sorry, the thing that I… that I forgot to mention is this is, like, super relevant for native rollups, but it could also be used by existing roll-ups as well.
+
+253
+00:39:06.580 --> 00:39:13.840
+donnoh | L2BEAT: So, all major EVM rollups, like Optimism, Base, you know, Arbitrum, Scroll.
+
+254
+00:39:14.260 --> 00:39:19.129
+donnoh | L2BEAT: Tyco, Linear, and whatnot. They try to minimize the difficult one.
+
+255
+00:39:19.280 --> 00:39:27.120
+donnoh | L2BEAT: So, even if you're not native, you could… Try to minimize the diff.
+
+256
+00:39:27.580 --> 00:39:30.510
+donnoh | L2BEAT: By implementing first transactions in this way.
+
+257
+00:39:31.300 --> 00:39:33.860
+donnoh | L2BEAT: Already, without being native.
+
+258
+00:39:37.290 --> 00:39:46.229
+Jihoon: Is it okay to understand that if we implement fossil in L1, that's gonna replace forced transactions?
+
+259
+00:39:47.110 --> 00:40:02.310
+donnoh | L2BEAT: I think it is possible, because again, all the EVM rollups, what they do is that they just fork what is on L1. So if they fork L1 and POSIL is there, they have this mechanism that they can potentially use for personal transactions.
+
+260
+00:40:02.730 --> 00:40:08.979
+donnoh | L2BEAT: I don't think any of the current follow-up teams are looking into this, to be honest.
+
+261
+00:40:09.320 --> 00:40:15.120
+donnoh | L2BEAT: Because, you know, they have many things to think about, and…
+
+262
+00:40:16.320 --> 00:40:20.429
+donnoh | L2BEAT: Yeah, either they already implemented this, and changing might not be worth it.
+
+263
+00:40:20.990 --> 00:40:24.709
+donnoh | L2BEAT: But for those that haven't.
+
+264
+00:40:25.370 --> 00:40:35.490
+donnoh | L2BEAT: or for those that maybe wish to simplify their design, it might be worth it. So, I… one example is linear. As I said, linear is kind of struggling.
+
+265
+00:40:35.610 --> 00:40:39.099
+donnoh | L2BEAT: I would recommend Linea to look into this.
+
+266
+00:40:40.150 --> 00:40:42.230
+donnoh | L2BEAT: Oh, Nope.
+
+267
+00:40:42.950 --> 00:40:45.450
+donnoh | L2BEAT: Like, well before native rollups.
+
+268
+00:40:59.440 --> 00:41:04.079
+Jihoon: So… Luca, you shared, some challenges.
+
+269
+00:41:04.290 --> 00:41:07.299
+Jihoon: that… L2s are having.
+
+270
+00:41:07.480 --> 00:41:15.709
+Jihoon: to implement forced transactions, then if we somehow succeed to have fossil in L1, then…
+
+271
+00:41:16.180 --> 00:41:19.379
+Jihoon: It'll be good for them, because they don't need to worry about it anymore.
+
+272
+00:41:21.340 --> 00:41:26.119
+Jihoon: maybe there's another reason that we… why we want to have also in L1.
+
+273
+00:41:27.230 --> 00:41:28.960
+donnoh | L2BEAT: Ehh… yes?
+
+274
+00:41:29.480 --> 00:41:34.140
+donnoh | L2BEAT: Also, like, on the other hand,
+
+275
+00:41:34.680 --> 00:41:42.570
+donnoh | L2BEAT: projects can already implement… like, L2s could already implement Force Hill, even without having a tunnel one, right? So…
+
+276
+00:41:42.830 --> 00:41:45.390
+donnoh | L2BEAT: In the sense of…
+
+277
+00:41:46.020 --> 00:41:58.280
+donnoh | L2BEAT: like, if their goal is just to have a fossil-like mechanism, they cannot implement it. If their goal is to minimize the deficit L1, which is what most projects want, then of course you need to wait, for L1 to have fossil.
+
+278
+00:41:59.480 --> 00:42:06.970
+donnoh | L2BEAT: I think that it might not be a good enough argument to say
+
+279
+00:42:07.750 --> 00:42:11.810
+donnoh | L2BEAT: we need fossil on L1, so that's a…
+
+280
+00:42:15.650 --> 00:42:26.089
+donnoh | L2BEAT: They can already do it. And this, you know, in all core devs' calls, this happened many times, that someone wanted to have something on one, just to have it on the tools as well.
+
+281
+00:42:26.360 --> 00:42:34.239
+donnoh | L2BEAT: And… My feeling is that this is not a strong enough argument for something to be included on one.
+
+282
+00:42:35.070 --> 00:42:36.260
+donnoh | L2BEAT: But…
+
+283
+00:42:37.670 --> 00:42:43.520
+donnoh | L2BEAT: It is something to keep in mind. Like, in practice, my opinion is this would simplify the work for Altos.
+
+284
+00:42:46.070 --> 00:42:50.169
+Jihoon: Yeah, I get it, yeah. I guess it's,
+
+285
+00:42:51.730 --> 00:43:00.449
+Jihoon: There was an argument to have delayed execution over EPBS, because it could be more beneficial to L2
+
+286
+00:43:00.940 --> 00:43:02.999
+Jihoon: But, yeah.
+
+287
+00:43:03.890 --> 00:43:14.109
+Jihoon: when we are considering some feature for L1, then we should prioritize L1 over L2, so… yeah, that's a good point. Patas, do you wanna share something?
+
+288
+00:43:14.110 --> 00:43:22.410
+potuz: What does it mean fossil on L2? L2 doesn't have 4 choice, so… what part of fossil, or what is fossil on L2?
+
+289
+00:43:23.400 --> 00:43:26.899
+donnoh | L2BEAT: Yeah, yeah, yeah, so the idea here is to…
+
+290
+00:43:27.390 --> 00:43:33.279
+donnoh | L2BEAT: Try to reuse the check that is done on the execution layer, where you have
+
+291
+00:43:33.440 --> 00:43:43.469
+donnoh | L2BEAT: a list of transactions that is checked against another list of transactions, which is the inclusion list, right? So the idea here is just to reuse this check on the execution layer.
+
+292
+00:43:43.990 --> 00:43:52.179
+potuz: Oh, okay, so it's just a matter of, like, using a function that is just a simple check, that is an implementation detail. It's not a mechanism.
+
+293
+00:43:52.670 --> 00:43:59.430
+potuz: It's not a mechanism design, it's not part of consensus, it's not… it's just simply reusing that part of code in the year.
+
+294
+00:44:00.550 --> 00:44:06.550
+donnoh | L2BEAT: Yeah, yeah, exactly. So, there is the need for roll-ups to have a check somewhere that
+
+295
+00:44:07.140 --> 00:44:20.820
+donnoh | L2BEAT: the centralized sequencer, the list of transactions that the centralized sequencer is sequencing, includes forced transactions. Forced transactions come from somewhere else, like, usually a different function in a contract.
+
+296
+00:44:21.250 --> 00:44:28.210
+donnoh | L2BEAT: And to implement the check, That the sequencer batches include forced transactions.
+
+297
+00:44:28.690 --> 00:44:32.319
+donnoh | L2BEAT: It is difficult, for roll-ups.
+
+298
+00:44:32.660 --> 00:44:35.249
+donnoh | L2BEAT: Without modifying
+
+299
+00:44:36.010 --> 00:44:42.630
+donnoh | L2BEAT: without heavily or, like, significantly modifiable one. And the idea here is, if the execution layer already has this check.
+
+300
+00:44:42.920 --> 00:44:45.490
+donnoh | L2BEAT: The roll-ups can…
+
+301
+00:44:45.490 --> 00:44:52.049
+potuz: reuse this. And by the way, you're assuming that the check is going to be the same. You're… you're, you're assuming…
+
+302
+00:44:52.180 --> 00:44:59.679
+potuz: one condition on rollups, that rollouts are going to be using, first of all, the engine API. So, already this drives Arbitrum out.
+
+303
+00:45:00.580 --> 00:45:02.050
+donnoh | L2BEAT: Yeah, yeah, yeah, of course, of course.
+
+304
+00:45:02.050 --> 00:45:13.989
+potuz: But, I mean, there's a bunch of conditions on Fossil itself and on the way that this will be implemented in ELS that would just drive down the number of rollouts that could use this, could reuse this code dramatically.
+
+305
+00:45:14.600 --> 00:45:25.790
+potuz: Because also, the conditions on being inclusible for L2 might be very different than being includeable for L1. They might depend on different things than just gas limits and whatever it is.
+
+306
+00:45:28.080 --> 00:45:37.539
+donnoh | L2BEAT: Yes, yeah, exactly, so… The main reason why I advocate for this L2 fossil is mainly for native roll-ups.
+
+307
+00:45:37.810 --> 00:45:38.890
+donnoh | L2BEAT: Because…
+
+308
+00:45:39.270 --> 00:45:51.640
+donnoh | L2BEAT: It is, I don't know if you joined, late to this call, but I discussed how Arbitrum implements first transactions, and Arbitrum implements first transactions with new transaction types. It has new transaction types.
+
+309
+00:45:51.850 --> 00:45:56.220
+donnoh | L2BEAT: And it kind of modifies derivation a little bit.
+
+310
+00:45:56.440 --> 00:45:57.540
+donnoh | L2BEAT: And…
+
+311
+00:45:57.790 --> 00:46:06.990
+donnoh | L2BEAT: For native rollups, we cannot have dedicated transaction types just for first transactions. So how can we implement first transactions?
+
+312
+00:46:07.910 --> 00:46:11.530
+donnoh | L2BEAT: Without new transaction types, and without doing crazy things.
+
+313
+00:46:12.080 --> 00:46:14.689
+donnoh | L2BEAT: The simplest thing is to…
+
+314
+00:46:15.260 --> 00:46:28.870
+donnoh | L2BEAT: Like, if L1 already has a mechanism for forced transactions, more or less, on the execution layer, the native rollups that the only thing that they do is a recursive call to the situation function, they would be able to reuse.
+
+315
+00:46:29.010 --> 00:46:32.030
+donnoh | L2BEAT: the same exact mechanism. And of course, this restricts
+
+316
+00:46:32.540 --> 00:46:35.800
+donnoh | L2BEAT: The design space for forced transactions a lot.
+
+317
+00:46:36.290 --> 00:46:41.960
+donnoh | L2BEAT: If you want to implement something else, Are this different on fossil?
+
+318
+00:46:42.680 --> 00:46:50.130
+donnoh | L2BEAT: What you can do is pass an empty inclusion list to the execute precompile, And then, have a…
+
+319
+00:46:50.430 --> 00:47:00.470
+donnoh | L2BEAT: external mechanism that does this for you. You could have, for example, a ZK verifier, that does…
+
+320
+00:47:00.650 --> 00:47:11.480
+donnoh | L2BEAT: I don't know, the check in a different way. But the cool thing about the inclusion list being an input to the execute precompile is that, for example, you can implement delays.
+
+321
+00:47:11.710 --> 00:47:18.539
+donnoh | L2BEAT: Right? So, you can pass, for example, let's imagine that this inclusion list is a queue on L1 in a smart contract.
+
+322
+00:47:18.840 --> 00:47:21.170
+donnoh | L2BEAT: You can have a delay of, let's say.
+
+323
+00:47:21.350 --> 00:47:37.070
+donnoh | L2BEAT: 12 hours or 24 hours before these transactions actually are feeded… are actually feeded in the execute precompile. And this would kind of… you… you kind of… you would be able to kind of implement these delays
+
+324
+00:47:37.120 --> 00:47:42.730
+donnoh | L2BEAT: that chains like Arbitrum and Optimism have for reverse transactions, not to invalidate pre-confirmations.
+
+325
+00:47:44.130 --> 00:47:52.780
+donnoh | L2BEAT: But yes, like, I agree that this limits the design space. But native roll-ups are supposed to be very, very similar to…
+
+326
+00:47:53.150 --> 00:47:54.430
+donnoh | L2BEAT: So, all ones.
+
+327
+00:47:54.640 --> 00:48:00.669
+donnoh | L2BEAT: And I don't think, you know, from a user perspective, it makes lots of… A lot of difference.
+
+328
+00:48:11.250 --> 00:48:18.200
+Jihoon: Great, great. Maybe we can have one more question if anyone has… Any?
+
+329
+00:48:18.740 --> 00:48:24.780
+Jihoon: Otherwise, we can move on to the next topic, because we have only 20 minutes left.
+
+330
+00:48:33.310 --> 00:48:39.279
+Jihoon: Alright, thank you for your presentation, Luca, and thank you for all the Q&A, and if anyone
+
+331
+00:48:39.450 --> 00:48:45.039
+Jihoon: Pop up with another question, then just feel free to ask him in the chat.
+
+332
+00:48:46.410 --> 00:48:49.479
+Jihoon: Yeah, so,
+
+333
+00:48:53.610 --> 00:48:59.150
+Jihoon: For development updates, does anyone want to share some updates?
+
+334
+00:49:10.630 --> 00:49:17.500
+Jihoon: Maybe I can go first. I'm currently adding some unit tests for inclusion lates to store.
+
+335
+00:49:17.850 --> 00:49:27.359
+Jihoon: And then I'm gonna share a document that lays out test cases. Won't be exhaustive from day one, so please feel free to contribute.
+
+336
+00:49:27.920 --> 00:49:34.519
+Jihoon: I haven't started it yet, but it would be… look like this, so…
+
+337
+00:49:36.540 --> 00:49:46.809
+Jihoon: I'm not sure where to put this. I'm gonna ask Justin about this. It may be placed under Foster for Implementer Repo, or…
+
+338
+00:49:47.060 --> 00:49:53.590
+Jihoon: kinds of spec repo, if it's possible. Not sure yet, but yeah, that's what I'm working on at the moment.
+
+339
+00:49:58.390 --> 00:50:03.240
+Jihoon: Does any client… Have any development updates?
+
+340
+00:50:06.300 --> 00:50:15.869
+nflaig: I guess from last meeting we had, the update is that we can run on 6-second slots now, since we use BPS values.
+
+341
+00:50:16.400 --> 00:50:18.469
+nflaig: This is also the updated spec.
+
+342
+00:50:19.740 --> 00:50:30.459
+nflaig: And then we updated or fixed our fork choice FCU calls to also pass the EL. I think that was one other issue, that there were empty IELTS.
+
+343
+00:50:31.480 --> 00:50:38.869
+nflaig: And yeah, pretty much what I shared on the description. So all bugs should be fixed now.
+
+344
+00:50:44.150 --> 00:50:51.839
+Jihoon: Thanks for sharing! I actually haven't tried that out, but do you still see the…
+
+345
+00:50:52.460 --> 00:50:58.240
+Jihoon: What was the error? Beacon block timeout error.
+
+346
+00:50:58.550 --> 00:51:02.139
+nflaig: Yeah, I still saw that, with Geth, yeah.
+
+347
+00:51:02.380 --> 00:51:03.030
+Jihoon: Yeah.
+
+348
+00:51:03.030 --> 00:51:09.980
+nflaig: used to be random, even before FULU, before EIP7805 fork.
+
+349
+00:51:10.500 --> 00:51:11.030
+Jihoon: Hmm.
+
+350
+00:51:11.030 --> 00:51:19.099
+nflaig: So, I'm not sure. Yeah, also we run with Fulu Genesis, so maybe there's some issue related to Fusaka, I don't know.
+
+351
+00:51:20.370 --> 00:51:24.779
+nflaig: But I don't see on the CL side what's the issue.
+
+352
+00:51:25.120 --> 00:51:28.440
+Jihoon: But you don't see such error when you are working with
+
+353
+00:51:28.550 --> 00:51:34.030
+Jihoon: other features, right? Like, we don't have such, error in…
+
+354
+00:51:34.600 --> 00:51:37.910
+Jihoon: Olesky DevNet, for example, so I think.
+
+355
+00:51:37.910 --> 00:51:39.080
+nflaig: Oh, yeah.
+
+356
+00:51:39.080 --> 00:51:49.349
+Jihoon: yeah, there's something wrong with the, get prototype, I guess. So, I… I rebased it, actually, last week, but I haven't,
+
+357
+00:51:50.330 --> 00:52:02.409
+Jihoon: had any luxury to spend my time on it yet. Yeah, let me take a look into it after I'm done with this testing stuff, and yeah, thanks for the progress on the Lone Star side.
+
+358
+00:52:03.580 --> 00:52:11.090
+nflaig: Yeah, I think I… so with REF, I also didn't see the issue. There's some random inclusion list unsatisfied blocks.
+
+359
+00:52:11.770 --> 00:52:23.160
+nflaig: Which I'm not sure, where the issue is. There's one issue I know about in Lodesta, that we use the same cutoff for attestation, review, freeze, and proposal cutoff.
+
+360
+00:52:23.750 --> 00:52:32.439
+nflaig: But I don't think that matters in a local DevNet, since all IELTs should be available before the attester cutoff anyway.
+
+361
+00:52:33.780 --> 00:52:51.590
+Pelle: That should be fixed now, though. There was a bug in just some encoding for the ILs and how we were reading it from the engine API, but in recent tests, I haven't seen any missed blocks from, unsatisfied ILs. So, definitely check the newest commit.
+
+362
+00:52:53.260 --> 00:52:56.350
+nflaig: I said, do you have an image, public, from IF?
+
+363
+00:52:56.350 --> 00:53:00.770
+Pelle: And I do not have an image up right now. I can work on that, though.
+
+364
+00:53:01.560 --> 00:53:02.690
+nflaig: Alright, thanks.
+
+365
+00:53:11.540 --> 00:53:12.450
+Jihoon: I guess.
+
+366
+00:53:12.610 --> 00:53:20.109
+Jihoon: That's that for Lodestar, and… Do we have… do you have more updates on Red's side?
+
+367
+00:53:20.800 --> 00:53:38.669
+Pelle: I've been working with Katya to get the metrics working. It's… there's some issues with, like, how RETH does metrics that I'm looking into right now, but we have some basic metrics up, and then we're also looking at adding the ones you suggested as well.
+
+368
+00:53:44.340 --> 00:53:51.290
+Jihoon: Great, having that said, do you… yeah, Katya, do you wanna… Add something?
+
+369
+00:53:52.080 --> 00:54:04.260
+Katya: Yeah, hi everyone. So, regarding the metrics, we, we bumped into the problem that how to count, valid and invalid,
+
+370
+00:54:05.000 --> 00:54:14.549
+Katya: transactions, because, for example, it depends on implementation. If you bump into… if you have, like, one invalid transaction.
+
+371
+00:54:14.680 --> 00:54:24.640
+Katya: For example, how it was in Wrath, they just, break the validation, all the validation process, and that means
+
+372
+00:54:24.700 --> 00:54:36.519
+Katya: They may have one invalid transaction, and others can be considered as invalid, but in fact, they are not invalid, so I wonder how other clients
+
+373
+00:54:36.890 --> 00:54:47.560
+Katya: implement this? So, do we really… can we really count invalid transactions in this case? So, we are discussing
+
+374
+00:54:47.920 --> 00:54:50.820
+Katya: This new list of transactions, like.
+
+375
+00:54:50.970 --> 00:54:59.730
+Katya: valid and invalid size bytes, gas usage limit, is it possible to count on the EL side?
+
+376
+00:55:00.420 --> 00:55:10.630
+Katya: And also these, you know, the number of invalids. For example, for consensus layer, we just consider, the inclusion list itself.
+
+377
+00:55:10.760 --> 00:55:28.899
+Katya: If it's valid or invalid. But on the yield side, we operate with transactions, and it's a little bit tricky to count invalid transactions in this case. I don't know, Jihoon, how it is implemented on the gas side? Maybe, you know.
+
+378
+00:55:29.800 --> 00:55:33.419
+Katya: Or… or we may discuss in the Discord.
+
+379
+00:55:34.480 --> 00:55:41.939
+Jihoon: Yeah, so, on the sales side, transactions are just bytes, so they don't, you know, but…
+
+380
+00:55:42.170 --> 00:55:57.789
+Jihoon: interpret what the transaction is, that's why we just care about enclosure list on the sales side, but on the EL side, we know how to handle transactions, so we can… if we want, we can look with more granularity.
+
+381
+00:55:57.900 --> 00:56:13.190
+Jihoon: So the suggestion that I've made was just an example. I don't have a strong opinion on the metrics, so if you feel like this is too much, then, yeah, we can just decide to not add
+
+382
+00:56:13.350 --> 00:56:17.730
+Jihoon: new metrics, but on the GAT end.
+
+383
+00:56:18.400 --> 00:56:26.499
+Jihoon: When… so there's a code that checks if there is a leftover enough guest left.
+
+384
+00:56:26.680 --> 00:56:30.900
+Jihoon: to add any missing IL transaction, so…
+
+385
+00:56:32.880 --> 00:56:40.030
+Jihoon: We could use the code to… Logue whether the…
+
+386
+00:56:40.390 --> 00:56:44.140
+Jihoon: missing IL transactions, was…
+
+387
+00:56:44.310 --> 00:56:47.490
+Jihoon: Left out because of gas limit or whatnot.
+
+388
+00:56:47.740 --> 00:56:50.120
+Jihoon: Yeah, so,
+
+389
+00:56:50.830 --> 00:56:56.359
+Jihoon: from your perspective, what kind of metrics do we want to have on the EL side?
+
+390
+00:56:57.060 --> 00:57:08.600
+Jihoon: Like, even on the CL side, if you feel like we have too many metrics, then we can, you know, just trim it out and leave it with only necessary ones.
+
+391
+00:57:10.240 --> 00:57:26.410
+Katya: Yeah, I don't mind, any additional transactions, just, I want to be sure that other clients… because I think for Pele, he had to change the code to count invalid transactions, so, maybe he can add as well, like.
+
+392
+00:57:26.720 --> 00:57:27.889
+Katya: More on this.
+
+393
+00:57:32.810 --> 00:57:33.640
+Jihoon: Yeah, spell it?
+
+394
+00:57:34.500 --> 00:57:43.689
+Pelle: Yeah, sorry, I think there was a little bit of a misunderstanding. When we were first talking, I was thinking invalid as in transactions that make the block invalid, not, like.
+
+395
+00:57:43.830 --> 00:57:52.950
+Pelle: invalid traction, transactions because of gas and whatnot, so that should all be fixed now, so it's not really a worry, Katya.
+
+396
+00:57:53.110 --> 00:57:56.210
+Pelle: But we should be… sorry about that, yeah.
+
+397
+00:57:56.620 --> 00:58:05.289
+Katya: Yeah, yeah, and I wonder if other clients can count the number of invalid transactions, if it's not an issue, just to be sure.
+
+398
+00:58:05.700 --> 00:58:08.889
+Katya: We can also discuss in the Discord.
+
+399
+00:58:09.220 --> 00:58:09.930
+Katya: Shut up.
+
+400
+00:58:14.020 --> 00:58:18.430
+Jihoon: Yeah, sounds great. In general, do you think… we have…
+
+401
+00:58:18.690 --> 00:58:21.699
+Jihoon: Too many metrics compared to other topics.
+
+402
+00:58:22.940 --> 00:58:26.310
+Katya: No, I don't think so. It looks…
+
+403
+00:58:26.560 --> 00:58:44.260
+Katya: It looks quite good. I would think… I started to build a dashboard, like CL and DL parts separately, but now I think, you know, that it's better to combine, for example, the metrics regarding payload, it's better to combine them on one panel, maybe.
+
+404
+00:58:44.260 --> 00:58:51.899
+Katya: And to easily compare CL and EL parts, for the metrics which correlate with each other.
+
+405
+00:58:53.610 --> 00:58:54.300
+Jihoon: Hmm.
+
+406
+00:58:54.590 --> 00:59:05.040
+Jihoon: But… Do you think it's better to somehow separate the CL and EL In that one panel.
+
+407
+00:59:06.990 --> 00:59:09.450
+Jihoon: It's just a, you know, design choice, I guess.
+
+408
+00:59:09.450 --> 00:59:16.519
+Katya: Yeah, that's the design choice, so, I will try to mix them,
+
+409
+00:59:16.730 --> 00:59:30.870
+Katya: As the same way as I shared the screenshot, right? So, you can see both EL and CL for this email metrics. Let's say how many transactions sent and how many transactions received.
+
+410
+00:59:31.250 --> 00:59:47.110
+Katya: So, for these metrics, maybe it makes sense to put them together, but we can still discuss whenever it will be finished. On the rev side, I will share the whole dashboard, the whole picture, and we can discuss as well.
+
+411
+00:59:48.730 --> 00:59:49.879
+Jihoon: Yeah, that was great.
+
+412
+00:59:52.820 --> 01:00:00.430
+Katya: If it's not an issue, for example, for EL clients to see both, CL and DL metrics.
+
+413
+01:00:10.020 --> 01:00:10.610
+Jihoon: Hmm.
+
+414
+01:00:13.390 --> 01:00:17.200
+Jihoon: Yeah, we can, continue discussion regarding it.
+
+415
+01:00:17.690 --> 01:00:20.520
+Jihoon: Do we have any other updates?
+
+416
+01:00:35.020 --> 01:00:37.549
+Katya: I have a quick question about,
+
+417
+01:00:40.040 --> 01:00:55.349
+Katya: engine new payload, V5. So, currently, V5 is used for block-level access lists, and it will be the same V5 for… for fossil, or it depends if it will be SFI, or…
+
+418
+01:00:56.180 --> 01:00:58.340
+Katya: I just… I don't know how versions.
+
+419
+01:00:59.230 --> 01:01:05.230
+Jihoon: Yeah, so, I think it depends on whether we…
+
+420
+01:01:05.780 --> 01:01:13.469
+Jihoon: what's it? Whether we SAFI fossil or not, so if we SAFI fossil, then we…
+
+421
+01:01:14.430 --> 01:01:19.790
+Jihoon: gonna… I think we're gonna merge those two changes into one V5.
+
+422
+01:01:20.450 --> 01:01:38.669
+Jihoon: And, yeah, so if we… the bell's already there, so I think it has priority, so if we decide to not include the fossil in Glamsterdam, and somehow, let's say, we want to add it in edge fork, then we want to use V6 or something.
+
+423
+01:01:39.460 --> 01:01:40.570
+Katya: Got it, thank you.
+
+424
+01:01:41.070 --> 01:01:42.230
+Jihoon: Yep, thanks.
+
+425
+01:01:50.820 --> 01:01:54.949
+Jihoon: All right, do we have any other updates or questions?
+
+426
+01:02:07.340 --> 01:02:11.880
+Jihoon: Otherwise, we can go ahead and wrap up this call, and…
+
+427
+01:02:13.100 --> 01:02:16.330
+Jihoon: Have another car after 2 weeks?
+
+428
+01:02:16.510 --> 01:02:17.760
+Jihoon: Alright then.
+
+429
+01:02:18.170 --> 01:02:24.770
+Jihoon: Thanks for joining, and have a great rest of your day, and see you guys in two weeks.
+
+430
+01:02:26.130 --> 01:02:27.130
+Katya: Thank you, bye.
+
+431
+01:02:27.450 --> 01:02:28.650
+nflaig: Thanks, yep.
+
+432
+01:02:29.220 --> 01:02:29.970
+Jihoon: Bye-bye.
+
+433
+01:02:31.650 --> 01:02:32.420
+Pooja Ranjan: Thank you.
+

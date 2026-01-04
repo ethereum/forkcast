@@ -1,0 +1,1090 @@
+WEBVTT
+
+1
+00:05:32.620 --> 00:05:33.650
+Toni Wahrstaetter: Hello?
+
+2
+00:05:36.230 --> 00:05:38.110
+Pooja Ranjan: Hey, Tony, good morning.
+
+3
+00:05:54.830 --> 00:06:02.579
+Pooja Ranjan: I'm going to start pre-streaming in a few seconds, and just let me know whenever we are ready to move over the stream.
+
+4
+00:06:04.040 --> 00:06:05.609
+Toni Wahrstaetter: Sounds good, thank you.
+
+5
+00:08:03.490 --> 00:08:06.160
+Toni Wahrstaetter: Hello, everyone. Let's wait.
+
+6
+00:08:06.520 --> 00:08:09.630
+Toni Wahrstaetter: One or two more minutes for people to join.
+
+7
+00:09:32.190 --> 00:09:34.880
+Toni Wahrstaetter: Perfect, I think we're ready to go.
+
+8
+00:09:36.830 --> 00:09:37.769
+Pooja Ranjan: We are live.
+
+9
+00:09:39.620 --> 00:09:40.929
+Toni Wahrstaetter: Great, thank you.
+
+10
+00:09:41.210 --> 00:09:50.740
+Toni Wahrstaetter: Welcome, everyone! Today we have the fifth EIP7928 breakout call. It's the 22nd October 2025.
+
+11
+00:09:51.610 --> 00:09:54.330
+Toni Wahrstaetter: And we have 3 agenda items today.
+
+12
+00:09:54.540 --> 00:10:07.190
+Toni Wahrstaetter: First of all, we wanted to talk about Coinbase handling. This came up in Discord, and also, there were some suggestions that we change how we view the Coinbase address at the moment.
+
+13
+00:10:07.530 --> 00:10:18.300
+Toni Wahrstaetter: Then second, as usual, we did some, testing and specs updates. There were some updates that we can discuss today. And finally, client updates.
+
+14
+00:10:19.330 --> 00:10:25.059
+Toni Wahrstaetter: So let's directly start into the… start with the first agenda item.
+
+15
+00:10:25.320 --> 00:10:28.760
+Toni Wahrstaetter: which is the Coinbase handling in the BlockClam Exorcist.
+
+16
+00:10:29.460 --> 00:10:38.220
+Toni Wahrstaetter: To give you a quick recap how it works right now, so the Coinbase address is only included in the Block Live access list.
+
+17
+00:10:38.610 --> 00:10:40.519
+Toni Wahrstaetter: If it actually changes.
+
+18
+00:10:40.770 --> 00:10:45.230
+Toni Wahrstaetter: This means, if there is any transaction, that…
+
+19
+00:10:45.980 --> 00:10:53.349
+Toni Wahrstaetter: has a positive tip, then the Coinbase will see a balance change.
+
+20
+00:10:53.450 --> 00:11:06.649
+Toni Wahrstaetter: The same applies, if the Coinbase address receives a withdrawal. So in this case, even blocks without any transactions can still have a block lab access list with the Coinbase address included.
+
+21
+00:11:07.350 --> 00:11:10.130
+Toni Wahrstaetter: In case the companies receive the withdrawal.
+
+22
+00:11:11.510 --> 00:11:12.440
+Toni Wahrstaetter: And…
+
+23
+00:11:12.880 --> 00:11:22.299
+Toni Wahrstaetter: For any other, so if there is a block with where the Coinbase address receives no withdrawal, and there is no transaction, then the Coinbase address is not included at all.
+
+24
+00:11:22.560 --> 00:11:27.760
+Toni Wahrstaetter: So this is what is spec'd right now, and also the state of the EIP.
+
+25
+00:11:28.370 --> 00:11:31.759
+Toni Wahrstaetter: And I'm happy to discuss if we should change that.
+
+26
+00:11:32.540 --> 00:11:34.830
+Toni Wahrstaetter: Or, if we keep it as is.
+
+27
+00:11:40.920 --> 00:11:48.640
+draganrakita: Did you maybe mention the use case when there is transaction, but the fee reward is zero?
+
+28
+00:11:49.470 --> 00:11:53.550
+draganrakita: what happened for codebase in that case?
+
+29
+00:11:54.620 --> 00:11:57.150
+Toni Wahrstaetter: In this case, it would also not be included.
+
+30
+00:12:03.940 --> 00:12:15.080
+Toni Wahrstaetter: But this is a good example, yeah. So, if the fee reward is zero, then we would not see a call to the Coinbase address, and the Coinbase address would not be included. So, a zero…
+
+31
+00:12:15.210 --> 00:12:21.339
+Toni Wahrstaetter: Value reward is, in this case, different than a zero value call.
+
+32
+00:12:21.560 --> 00:12:23.450
+Toni Wahrstaetter: Because in a zero-value call.
+
+33
+00:12:23.610 --> 00:12:30.250
+Toni Wahrstaetter: The address you're calling would still be included, at least as a read, so with all empty changes.
+
+34
+00:12:30.500 --> 00:12:33.579
+Toni Wahrstaetter: But for the reward, it would not be included at all.
+
+35
+00:12:34.970 --> 00:12:40.890
+draganrakita: This kinda clashes with the state clear IP.
+
+36
+00:12:41.520 --> 00:12:47.100
+draganrakita: Where even we have some tests in East that test this use case.
+
+37
+00:12:47.370 --> 00:12:54.759
+draganrakita: When the Coinbase is basically empty but existing, and you reward it at the end.
+
+38
+00:12:55.600 --> 00:13:04.060
+draganrakita: Expectation there is that, the Coinbase is going to be touched, at the end, removed from the…
+
+39
+00:13:04.940 --> 00:13:06.880
+draganrakita: from the state.
+
+40
+00:13:09.920 --> 00:13:19.839
+Toni Wahrstaetter: I see the conveys is going to be touched, and is it always empty in this case, the conveys? Is it only touched if it's empty? Or is it always touched in that scenario?
+
+41
+00:13:20.230 --> 00:13:27.840
+draganrakita: It's always touched, but only action that needs to be… needs to happen is if it is empty.
+
+42
+00:13:28.080 --> 00:13:30.050
+draganrakita: That means it needs to be removed.
+
+43
+00:13:31.130 --> 00:13:32.130
+draganrakita: From the state.
+
+44
+00:13:38.200 --> 00:13:46.220
+Jared Wasinger: Yeah, so previously, I think I was pro… I was pro, to not include the…
+
+45
+00:13:46.420 --> 00:13:56.950
+Jared Wasinger: Coinbase as a read if the balance doesn't change, like, in the case of the empty block or the zero fee payment, but I…
+
+46
+00:13:57.120 --> 00:13:58.210
+Jared Wasinger: think…
+
+47
+00:13:58.430 --> 00:14:12.049
+Jared Wasinger: now that the point about… I think it's… I forget what the state straight clearing EIP… so the point about it being touched as part of the… I think it might be EIP161, I can't quite…
+
+48
+00:14:12.200 --> 00:14:15.350
+Jared Wasinger: remember right now, but I think that…
+
+49
+00:14:16.350 --> 00:14:33.770
+Jared Wasinger: perhaps that's actually, like, I mean, a fairly decent argument to actually just include the Coinbase, and as… and furthermore, just include anything that would be touched as part of EIP161 as a read.
+
+50
+00:14:37.370 --> 00:14:40.809
+draganrakita: I would do something in the middle.
+
+51
+00:14:41.060 --> 00:14:51.659
+draganrakita: If the empty fee is transferred to Coinbase, hey, let's include Coinbase, it is the same behavior as you're transferring the zero value to any other account.
+
+52
+00:14:52.320 --> 00:15:00.040
+draganrakita: But… I've… if… If there is no trace section.
+
+53
+00:15:00.170 --> 00:15:02.770
+draganrakita: then I would not include Coinbase.
+
+54
+00:15:05.200 --> 00:15:10.189
+draganrakita: But that second part is not… I'm not going to die on that, to be honest.
+
+55
+00:15:10.580 --> 00:15:17.450
+draganrakita: We can, yeah… we can always add some edge case where we always add the Coinbase.
+
+56
+00:15:18.670 --> 00:15:28.230
+Toni Wahrstaetter: Yeah, to me… to me, this… this feels like the cleanest solution to this, because now I can definitely see the argument for including the Coinbase in
+
+57
+00:15:28.910 --> 00:15:34.709
+Toni Wahrstaetter: this exact edge case that you described with this, three-digit ERP that we're talking about.
+
+58
+00:15:34.830 --> 00:15:41.319
+Toni Wahrstaetter: It also, just to echo what Rahu is saying there in the chat, it will also,
+
+59
+00:15:41.850 --> 00:15:58.819
+Toni Wahrstaetter: allow us to treat a zero-value call exactly the same as a zero-value balance. So, essentially, we would just have a rule in the ERP that the Coinbase address is always included, at least as a read, if there is no other changes happening to the Coinbase account.
+
+60
+00:15:59.120 --> 00:16:03.740
+Toni Wahrstaetter: And then we don't have to think about any of those edge cases.
+
+61
+00:16:16.800 --> 00:16:27.800
+Toni Wahrstaetter: I'm curious what other clients think about this. This is definitely a small change to the specs, and also some changes to the AOP required.
+
+62
+00:16:28.100 --> 00:16:33.610
+Toni Wahrstaetter: I guess we will also have to, change the tests we have on that topic.
+
+63
+00:16:34.430 --> 00:16:39.669
+Toni Wahrstaetter: All small changes, I'm happy to do so, but let's see what other clients think about it.
+
+64
+00:16:44.270 --> 00:16:52.260
+Marc: I think it makes sense to include it. It just seems a bit more consistent, and we don't have this, specific edge case.
+
+65
+00:17:00.400 --> 00:17:03.969
+Toni Wahrstaetter: just, just for Lucas, Lucas to quickly,
+
+66
+00:17:04.160 --> 00:17:10.930
+Toni Wahrstaetter: summarize the discussions about the Coinbase address, how it is included in the block lab access list.
+
+67
+00:17:11.099 --> 00:17:13.049
+Toni Wahrstaetter: We are now landing…
+
+68
+00:17:13.420 --> 00:17:22.599
+Toni Wahrstaetter: at including the Coinbase address, no matter what. So the Coinbase address will always be in the block lab access list, and the least
+
+69
+00:17:22.660 --> 00:17:35.909
+Toni Wahrstaetter: it would be in there with empty changes. So there can be balance changes, a Coinbase address can also have nonce changes or code changes, but it will always be in there at least as a read, as a state access.
+
+70
+00:17:36.460 --> 00:17:41.909
+Toni Wahrstaetter: Because previously, there was the situation that A block with no transactions?
+
+71
+00:17:42.700 --> 00:17:53.529
+Toni Wahrstaetter: The question popped up, should the Coinbase address be included or not, and what happens if the block reward is zero versus non-zero? So the easiest solution seems like we
+
+72
+00:17:53.850 --> 00:18:01.130
+Toni Wahrstaetter: have a new edge case for the Coinbase, which says the Coinbase address is always included in the block lab access list, no matter what.
+
+73
+00:18:12.120 --> 00:18:20.130
+raxhvl: I'm always including Coinbase as One problem, because… It introduces redundancy.
+
+74
+00:18:20.500 --> 00:18:24.449
+raxhvl: We could always get the Coinbase from the block anyways.
+
+75
+00:18:27.120 --> 00:18:31.700
+Toni Wahrstaetter: Right, yeah, it's a bit of, duplicated information there.
+
+76
+00:18:31.720 --> 00:18:48.200
+Toni Wahrstaetter: But I think it's fine, because it's only, like, a very rare edge case. This edge case only occurs if we have a block where the Coinbase address wouldn't be included anyway. And usually, blocks have transactions with positive tips.
+
+77
+00:18:48.320 --> 00:18:51.049
+Toni Wahrstaetter: So, I think we can live with it.
+
+78
+00:19:03.950 --> 00:19:13.270
+Toni Wahrstaetter: Great, then just to summarize the to-dos, I will update the specs and the EAP. Rahul, will you update the test cases?
+
+79
+00:19:15.920 --> 00:19:16.510
+raxhvl: Yep.
+
+80
+00:19:20.060 --> 00:19:25.259
+Toni Wahrstaetter: Perfect Is there… maybe asking Felipe, is there anything else,
+
+81
+00:19:25.390 --> 00:19:28.620
+Toni Wahrstaetter: That you might be thinking of that we have to change here?
+
+82
+00:19:29.420 --> 00:19:31.520
+Toni Wahrstaetter: I guess not, right?
+
+83
+00:19:32.710 --> 00:19:38.539
+felipe: No, I think the… Yeah, the yield side, the spec side needs to change,
+
+84
+00:19:38.700 --> 00:19:40.540
+felipe: But yeah, I'm good with this change.
+
+85
+00:19:41.810 --> 00:19:42.959
+felipe: Makes sense to me.
+
+86
+00:19:43.450 --> 00:19:44.650
+Toni Wahrstaetter: Okay, perfect.
+
+87
+00:19:45.040 --> 00:19:48.269
+Toni Wahrstaetter: Great, then let's move forward with that. Yeah, please go ahead.
+
+88
+00:19:48.270 --> 00:19:53.930
+draganrakita: Just… just to confirm, so always include it, even if there is no transactions.
+
+89
+00:19:54.750 --> 00:19:55.949
+Toni Wahrstaetter: Right, yeah.
+
+90
+00:19:56.470 --> 00:19:59.619
+draganrakita: Can have a very, probably in the specs, we will…
+
+91
+00:19:59.620 --> 00:20:07.729
+Toni Wahrstaetter: it will even simplify the specs a bit, because we will just have one line at the very beginning of the block, where we put the Coinbase address in there.
+
+92
+00:20:14.570 --> 00:20:17.370
+Marc: I mean, an alternative would be…
+
+93
+00:20:17.510 --> 00:20:21.189
+Marc: to just have it only if there was, I guess, just one…
+
+94
+00:20:21.560 --> 00:20:25.409
+Marc: Transaction with… with a… with a zero balance change.
+
+95
+00:20:26.120 --> 00:20:32.059
+Marc: I don't know, because always including it seems like almost adding another
+
+96
+00:20:32.170 --> 00:20:38.729
+Marc: Edge case, whereas if we just have it so that whenever there's a zero transfer, then that's just, you know, always handled the same.
+
+97
+00:20:39.120 --> 00:20:42.120
+Marc: That seems the simplest to me, but I mean, it's a small difference.
+
+98
+00:20:43.090 --> 00:20:44.360
+draganrakita: Same hero.
+
+99
+00:20:44.570 --> 00:20:46.820
+draganrakita: Aware of what Mark said.
+
+100
+00:20:47.010 --> 00:20:53.120
+draganrakita: It simpler… if included always, then we have some additional condition that we need to add.
+
+101
+00:20:53.290 --> 00:20:59.690
+draganrakita: If included, only if there is transaction, even if… even if the fee…
+
+102
+00:20:59.830 --> 00:21:04.359
+draganrakita: Value is 0, then we just use what's salted there.
+
+103
+00:21:05.060 --> 00:21:10.890
+draganrakita: It's small change, it doesn't matter, we can always have, like, additional condition, but just wanted to point that up.
+
+104
+00:21:11.360 --> 00:21:18.630
+Toni Wahrstaetter: I'm fine with this one, too. So then the edge case would be we include the Coinbase address.
+
+105
+00:21:19.420 --> 00:21:22.029
+Toni Wahrstaetter: Even if the reward is zero.
+
+106
+00:21:24.510 --> 00:21:25.230
+draganrakita: Yep.
+
+107
+00:21:25.900 --> 00:21:31.489
+Toni Wahrstaetter: Okay, yeah, curious to hear what others think about this. I'm fine with that one, too.
+
+108
+00:21:42.320 --> 00:21:43.740
+raxhvl: I think it's cleaner.
+
+109
+00:21:44.450 --> 00:21:50.279
+raxhvl: This way, this is like any other balance change for an account.
+
+110
+00:21:54.160 --> 00:22:06.199
+Jared Wasinger: Yeah, so as far as implementing it in Geth, I think regardless of whether it's always include or, include as long as there's a,
+
+111
+00:22:06.360 --> 00:22:24.900
+Jared Wasinger: a transaction in the block that, even if it pays zero fees, it's still a bit of a special case, and I think what's important from my perspective is that we just settle, so, I don't have a strong opinion either way.
+
+112
+00:22:28.700 --> 00:22:40.110
+Toni Wahrstaetter: Just to confirm, the… if there is no transaction in a block, the Coinbase will be included, and if there is a transaction in a block with a zero tip, the Coinbase will also be included, right?
+
+113
+00:22:42.770 --> 00:22:48.399
+Jared Wasinger: I think that was the always include option, but my understanding of what
+
+114
+00:22:48.880 --> 00:22:53.249
+Jared Wasinger: maybe I misheard, but I think what Mark and Dragon just said was to…
+
+115
+00:22:53.360 --> 00:22:57.930
+Jared Wasinger: If that there is an empty block to not include the Coinbase.
+
+116
+00:22:59.870 --> 00:23:04.829
+Jared Wasinger: And if there is a block containing one or more transactions, even if they pay zero fees.
+
+117
+00:23:05.590 --> 00:23:08.270
+Jared Wasinger: to include the Coinbase, that's the other option.
+
+118
+00:23:10.840 --> 00:23:12.110
+draganrakita: Yeah, that's one.
+
+119
+00:23:13.390 --> 00:23:26.899
+Toni Wahrstaetter: Okay, interesting, because I was thinking, like, okay, isn't it, like, from the Coinbase perspective, the same if I receive zero reward through a block with no transactions versus zero reward through a block with one transaction paying zero tips?
+
+120
+00:23:26.940 --> 00:23:28.410
+Jared Wasinger: Is there, is there some…
+
+121
+00:23:28.410 --> 00:23:29.030
+Toni Wahrstaetter: Good, dude.
+
+122
+00:23:29.170 --> 00:23:44.689
+Jared Wasinger: The distinction that Dragon pointed out earlier is that from the EIP for the state clearing, the… in the case where there is the zero fee transaction, the Coinbase is actually touched.
+
+123
+00:23:45.430 --> 00:23:54.470
+Jared Wasinger: And in the… because we no longer pay the block rewards at… the…
+
+124
+00:23:56.150 --> 00:24:06.450
+Jared Wasinger: the… in the other case, the Coinbase would not be touched in an empty block without Any transactions?
+
+125
+00:24:06.650 --> 00:24:07.850
+Toni Wahrstaetter: Okay, gotcha.
+
+126
+00:24:07.850 --> 00:24:10.100
+Jared Wasinger: I don't know, just maybe…
+
+127
+00:24:10.100 --> 00:24:11.069
+Toni Wahrstaetter: I think you got it, yeah.
+
+128
+00:24:11.070 --> 00:24:13.459
+Jared Wasinger: Someone else can expand on it for me.
+
+129
+00:24:14.770 --> 00:24:24.319
+Toni Wahrstaetter: No, this is interesting, because it's then actually the tip paying that touches the Coinbase and not the reward, right?
+
+130
+00:24:27.440 --> 00:24:35.449
+Toni Wahrstaetter: Yeah, makes sense, because there is no, block reward. So, okay, because I'm just thinking in the specs, we might have already
+
+131
+00:24:35.920 --> 00:24:41.560
+Toni Wahrstaetter: We might do that already correctly, but I would have to double-check, because Yeah.
+
+132
+00:24:42.140 --> 00:24:45.540
+Toni Wahrstaetter: But… Are we then fine with,
+
+133
+00:24:46.360 --> 00:24:48.989
+Toni Wahrstaetter: Agreeing on that solution that we…
+
+134
+00:24:49.610 --> 00:24:55.529
+Toni Wahrstaetter: So, just to summarize, the Coinbase would then be included in case there is a transaction.
+
+135
+00:24:56.420 --> 00:25:09.800
+Toni Wahrstaetter: Even though the transaction has a zero tip. So if the transaction has a positive tip, the transaction… the Coinbase is included anyway, because it has a balance change. But if the transaction has a zero tip.
+
+136
+00:25:10.050 --> 00:25:15.019
+Toni Wahrstaetter: then the Coinbase would at least be included as a state access, as a read.
+
+137
+00:25:20.940 --> 00:25:21.690
+Toni Wahrstaetter: Great.
+
+138
+00:25:21.850 --> 00:25:26.359
+Toni Wahrstaetter: And the only situation where the Coinbase address would not be included
+
+139
+00:25:26.490 --> 00:25:30.559
+Toni Wahrstaetter: Would then be a block with no transactions, is that correct, too?
+
+140
+00:25:44.490 --> 00:25:54.679
+Toni Wahrstaetter: Okay, yeah. Rahul is also confirming me in the chat, so the Coinbase address would not be included in the block access list in case if there is no transactions, and…
+
+141
+00:25:54.860 --> 00:25:59.670
+Toni Wahrstaetter: No system operations touching the Coinbase, which could happen with a withdrawal.
+
+142
+00:26:01.280 --> 00:26:02.080
+Toni Wahrstaetter: Perfect.
+
+143
+00:26:03.430 --> 00:26:08.410
+Toni Wahrstaetter: Yeah, then let's update the EAP, the specs and the tests, and…
+
+144
+00:26:08.990 --> 00:26:12.579
+Toni Wahrstaetter: Make sure we have it ready for the next, release.
+
+145
+00:26:13.590 --> 00:26:14.420
+Toni Wahrstaetter: Awesome.
+
+146
+00:26:15.490 --> 00:26:24.240
+Toni Wahrstaetter: Then we can… is there… before we move on to the second point, is there anything else people want to discuss regarding the Coinbase address tracking?
+
+147
+00:26:24.790 --> 00:26:29.229
+Karim T.: Monique, could you just summarize again, just to be sure I follow everything?
+
+148
+00:26:29.490 --> 00:26:40.299
+Toni Wahrstaetter: Yeah, so the Coinbase, will be included if it sees a balance change, for example. So if there is any change in the block.
+
+149
+00:26:40.500 --> 00:26:51.259
+Toni Wahrstaetter: But regarding the Coinbase, then it's included no matter what, so there's no edge case around that. For example, if the Coinbase receives a tip from a transaction, then it's included with the balance change.
+
+150
+00:26:51.560 --> 00:26:57.369
+Toni Wahrstaetter: The interesting case is what happens if the block is empty, so there is no transaction in the block.
+
+151
+00:26:57.760 --> 00:27:02.830
+Toni Wahrstaetter: In this case, the Coinbase is… Not touched.
+
+152
+00:27:03.190 --> 00:27:05.749
+Toni Wahrstaetter: The Coinbase would also not be included.
+
+153
+00:27:06.110 --> 00:27:07.910
+Toni Wahrstaetter: So, zero transactions.
+
+154
+00:27:08.070 --> 00:27:18.150
+Toni Wahrstaetter: could mean the Coinbase is not included in the bulk. It could also mean the Coinbase is still included in the block of access list, but only if it receives a withdrawal.
+
+155
+00:27:19.730 --> 00:27:20.870
+Toni Wahrstaetter: And then…
+
+156
+00:27:21.130 --> 00:27:29.859
+Toni Wahrstaetter: Another second interesting case was, what if there is a transaction in the block, but it pays zero tip to the Coinbase?
+
+157
+00:27:30.200 --> 00:27:34.500
+Toni Wahrstaetter: In this case, we agreed that we include the…
+
+158
+00:27:35.080 --> 00:27:38.489
+Toni Wahrstaetter: Coinbase address into the block access list. So…
+
+159
+00:27:38.780 --> 00:27:49.099
+Toni Wahrstaetter: In both examples, when there is no transaction, and when there is one transaction that pays nothing as a tip, in both transactions, the Coinbase address receives nothing.
+
+160
+00:27:49.780 --> 00:27:52.969
+Toni Wahrstaetter: But in the first case, where there is no transaction.
+
+161
+00:27:53.570 --> 00:28:03.399
+Toni Wahrstaetter: the Coinbase is not actually touched, and that's why we don't include it. In the second case, when there is a transaction, then the Coinbase is touched, and we include it.
+
+162
+00:28:07.560 --> 00:28:08.240
+Karim T.: Just explain.
+
+163
+00:28:13.780 --> 00:28:19.329
+Toni Wahrstaetter: Perfect. Is there anything else, regarding the Coinbase tracking before we move on?
+
+164
+00:28:30.910 --> 00:28:36.379
+Toni Wahrstaetter: Great. Then the next point on the agenda would be testing and specs update.
+
+165
+00:28:36.650 --> 00:28:44.040
+Toni Wahrstaetter: I would ask Rahul or Felipe, is there… are there any updates from your side, regarding testing and…
+
+166
+00:28:44.770 --> 00:28:46.399
+Toni Wahrstaetter: Test releases.
+
+167
+00:28:51.480 --> 00:28:59.849
+raxhvl: Yeah, so clients are passing almost all test cases, the positive ones, so we're about 90… 89% of
+
+168
+00:29:00.100 --> 00:29:06.600
+raxhvl: test cases that we're currently passing. The remaining 10 test cases has mostly to do with
+
+169
+00:29:06.890 --> 00:29:12.350
+raxhvl: incorrect pal payloads, and I believe the clients are also passing those.
+
+170
+00:29:12.550 --> 00:29:16.640
+raxhvl: But we're missing some exceptions within each framework.
+
+171
+00:29:17.140 --> 00:29:23.440
+raxhvl: So, yeah, so we'll get that in probably… Late this week.
+
+172
+00:29:23.930 --> 00:29:31.229
+raxhvl: And I think we should be good to go in terms of the current release. We're also working on a new release.
+
+173
+00:29:31.890 --> 00:29:35.229
+raxhvl: For the tests that we discussed this past week.
+
+174
+00:29:35.380 --> 00:29:41.140
+raxhvl: That includes, the Coinbase, updates, and…
+
+175
+00:29:42.120 --> 00:29:46.039
+raxhvl: Some system operations, so we still don't have a new install, so…
+
+176
+00:29:49.680 --> 00:29:51.279
+Toni Wahrstaetter: Awesome, thank you very much.
+
+177
+00:29:53.290 --> 00:29:58.180
+Toni Wahrstaetter: Is there any updates, worth sharing from the first step that we had?
+
+178
+00:29:58.300 --> 00:29:59.970
+Toni Wahrstaetter: Maybe from clients, or…
+
+179
+00:30:00.290 --> 00:30:01.540
+Toni Wahrstaetter: From people involved?
+
+180
+00:30:03.880 --> 00:30:09.780
+Stefan Starflinger: I mean, the definite is still being set up, if that's what you mean. It's not running yet.
+
+181
+00:30:11.390 --> 00:30:12.930
+Toni Wahrstaetter: Okay, all good.
+
+182
+00:30:14.250 --> 00:30:18.399
+Toni Wahrstaetter: I saw, SSU right then, Nicole Steffen.
+
+183
+00:30:18.560 --> 00:30:27.850
+Toni Wahrstaetter: I think you and PK, you were also working on, improving DORA, right? Because I had, like, a very naive DORA implementation at the beginning.
+
+184
+00:30:28.100 --> 00:30:32.590
+Toni Wahrstaetter: And… Are there any updates? Any… anything you can already share?
+
+185
+00:30:33.140 --> 00:30:35.869
+Stefan Starflinger: Maybe Pike wants to update on the Bora?
+
+186
+00:30:38.380 --> 00:30:40.610
+pk910: Yep,
+
+187
+00:30:41.370 --> 00:30:55.539
+pk910: Well, basically, we have, accessless visualization in DORA. I've reworked at you a bit to be more performant, so it's client-side rendered, and it's also able to render really big lists if needed.
+
+188
+00:30:56.110 --> 00:31:12.259
+pk910: Another thing that's also added is a comparison feature, so you can post another BL and compare it to the one that is inside the block. So you can see diffs directly and, yeah, act on these.
+
+189
+00:31:12.430 --> 00:31:22.159
+pk910: If there's anything that's needed, or any improvement suggestions, please reach out to me. I'm happy to add them as well.
+
+190
+00:31:25.850 --> 00:31:30.030
+Toni Wahrstaetter: Amazing, thank you very much. This is great, especially the DivView.
+
+191
+00:31:30.150 --> 00:31:33.550
+Toni Wahrstaetter: I can… I can see that this will be very handy in the future.
+
+192
+00:31:34.310 --> 00:31:35.750
+Toni Wahrstaetter: Thanks a lot for that.
+
+193
+00:31:39.170 --> 00:31:43.759
+Toni Wahrstaetter: Great, then, let's move on to the last agenda item of today.
+
+194
+00:31:44.130 --> 00:31:46.219
+Toni Wahrstaetter: As usual, the client updates.
+
+195
+00:31:47.180 --> 00:31:49.490
+Toni Wahrstaetter: Maybe we can start with Jared.
+
+196
+00:31:51.370 --> 00:32:06.390
+Jared Wasinger: Yeah, so basically the update on the GIF side is that we have been incrementally merging various parts of the access list changes into the codebase,
+
+197
+00:32:07.330 --> 00:32:15.310
+Jared Wasinger: there's still… Quite a ways to go on that front, but, we're working on it,
+
+198
+00:32:16.170 --> 00:32:19.259
+Jared Wasinger: I think now the focus is…
+
+199
+00:32:19.890 --> 00:32:28.819
+Jared Wasinger: While that is happening, also the focus from my end is on the development side is shifting back to, trying to
+
+200
+00:32:28.850 --> 00:32:40.419
+Jared Wasinger: Optimize the performance on our side, specifically focused on the performance of the state route calculation.
+
+201
+00:32:41.120 --> 00:32:45.660
+Jared Wasinger: So… Yeah,
+
+202
+00:32:45.830 --> 00:32:51.539
+Jared Wasinger: I hope to have more to share on that soon, but it's in progress at the moment.
+
+203
+00:32:52.370 --> 00:32:55.040
+Jared Wasinger: Yeah, that's it.
+
+204
+00:32:57.370 --> 00:33:06.310
+Toni Wahrstaetter: Awesome, thanks a lot, and yeah, would be great, if you can share some results in the call as soon as you got them. Sounds… sounds exciting.
+
+205
+00:33:08.270 --> 00:33:11.500
+Toni Wahrstaetter: Perfect, then let's continue with Bisu.
+
+206
+00:33:14.040 --> 00:33:20.680
+Karim T.: On the basel side, we are now passing all the… all of the RLP tests, and also enzyme tests.
+
+207
+00:33:20.810 --> 00:33:27.340
+Karim T.: So we just need to merge the PR that Margie made to update the execution spec test.
+
+208
+00:33:27.440 --> 00:33:33.480
+Karim T.: repo mapping. So we also started to implement the state root in background.
+
+209
+00:33:33.640 --> 00:33:37.519
+Karim T.: At the beginning of the block processing, thanks to Block Access List.
+
+210
+00:33:37.650 --> 00:33:54.069
+Karim T.: So, it's already working, but for the moment, just, we are logging the result of the statehood computation to compare. But in another PR, we will verify the state root and fail the block if it's not matching. But for the moment, just want to compare if it's working or not.
+
+211
+00:33:54.980 --> 00:34:00.669
+Karim T.: What we want to do also in the next step is to do a shadow fork of mainnet.
+
+212
+00:34:00.940 --> 00:34:08.329
+Karim T.: And like that, we'll be able to measure the impact of the state routine background regarding performance on Bezoo.
+
+213
+00:34:08.500 --> 00:34:11.599
+Karim T.: So, it would be nice if we can do that.
+
+214
+00:34:11.810 --> 00:34:19.549
+Karim T.: And we are also working and trying to fix the parallelization of execution of transaction with block access list.
+
+215
+00:34:23.050 --> 00:34:24.719
+Toni Wahrstaetter: Awesome, thank you very much.
+
+216
+00:34:25.850 --> 00:34:28.159
+Toni Wahrstaetter: Let's continue with Nethermind.
+
+217
+00:34:29.980 --> 00:34:48.030
+Marc: It, so made quite a bit of progress with the, bowel construction. I've been testing out Interop with, Bessieu and Geth, and, now it's able to get quite a bit past the, Glow Asph walk.
+
+218
+00:34:48.120 --> 00:34:53.670
+Marc: But there are still some, like, consensus issues after, a few epochs.
+
+219
+00:34:53.860 --> 00:34:55.690
+Marc: So I'm having a look into that.
+
+220
+00:34:55.810 --> 00:35:04.149
+Marc: But I've also just found quite a few, kind of consensus issues that were there, even though 100% of the tests were,
+
+221
+00:35:04.720 --> 00:35:11.450
+Marc: were passing, so I'm gonna speak a bit to make some regression tests for everything I found.
+
+222
+00:35:12.120 --> 00:35:13.150
+Marc: Awesome.
+
+223
+00:35:14.590 --> 00:35:18.440
+Toni Wahrstaetter: Yeah, thanks a lot, and great, great inputs there.
+
+224
+00:35:18.780 --> 00:35:22.860
+Toni Wahrstaetter: This… this seems like we… we haven't covered anything.
+
+225
+00:35:23.010 --> 00:35:28.149
+Toni Wahrstaetter: Yet, everything yet in the tests, and definitely some… some more things to do here.
+
+226
+00:35:28.500 --> 00:35:33.269
+Toni Wahrstaetter: Thanks a lot for that let's continue with ref.
+
+227
+00:35:36.280 --> 00:35:58.950
+Ishika: Hello, so for it, the tests were passing. As of now, we were moving from integrations of our branch to that of Dragon's branch, which I believe will be more architecture-friendly, concerning it will be less dependent on the Alloy VM. The majority of the parts are integrated, but there are certain things I would like to take care of.
+
+228
+00:35:59.100 --> 00:36:08.560
+Ishika: So that's something we are doing, but overall, it's alright, and possibly I will be… the error we are having as of now, I will possibly fix it by the end of the day.
+
+229
+00:36:11.860 --> 00:36:14.040
+Toni Wahrstaetter: Great, thanks a lot for this update.
+
+230
+00:36:14.180 --> 00:36:16.060
+Toni Wahrstaetter: Sounds… sounds very good.
+
+231
+00:36:17.070 --> 00:36:19.249
+Toni Wahrstaetter: And finally, Aragon.
+
+232
+00:36:21.670 --> 00:36:27.630
+Mark Holt: Yeah, hi. So, where we are, we've just, I think, yesterday, merged
+
+233
+00:36:28.080 --> 00:36:40.680
+Mark Holt: our first PR, which is the basic support for bowels into Maine. There's a couple more PRs to go, which hopefully will happen over the next couple of days, so…
+
+234
+00:36:41.050 --> 00:36:44.689
+Mark Holt: I think we should have a DevNet Zero
+
+235
+00:36:45.920 --> 00:36:49.309
+Mark Holt: branch that we create, probably tomorrow or Friday.
+
+236
+00:36:49.460 --> 00:36:53.500
+Mark Holt: And then after that, we're kind of…
+
+237
+00:36:53.980 --> 00:36:56.440
+Mark Holt: We'll do some testing and see where we are.
+
+238
+00:36:56.600 --> 00:37:01.539
+Mark Holt: I would say we're about a week behind where I thought we were.
+
+239
+00:37:02.510 --> 00:37:11.210
+Mark Holt: on the last call, just because, we've got sidetracked with Fusaka issues, which kind of took priority.
+
+240
+00:37:12.160 --> 00:37:19.329
+Mark Holt: But we're basically back on block-level access lists as a, you know, as our primary focus now.
+
+241
+00:37:21.600 --> 00:37:23.369
+Toni Wahrstaetter: Sounds good, thanks a lot.
+
+242
+00:37:23.560 --> 00:37:31.589
+Toni Wahrstaetter: And let me know, or reach out to me, Rahul, Felipe, if you… if you need any help with getting integrated into the tests and everything.
+
+243
+00:37:32.230 --> 00:37:40.749
+Mark Holt: Yeah, yeah, so we'll do that, but I think we'll probably either be working on that Friday or early next week, just to set your expectations of…
+
+244
+00:37:40.900 --> 00:37:43.179
+Mark Holt: But I'm sure we'll start breaking stuff.
+
+245
+00:37:43.470 --> 00:37:44.860
+Mark Holt: As soon as we try.
+
+246
+00:37:45.840 --> 00:37:48.220
+Toni Wahrstaetter: Sounds good. Thank you very much.
+
+247
+00:37:50.480 --> 00:37:57.909
+Toni Wahrstaetter: Great, then this was the last agenda item we had on today's call. Is there anything else people want to bring up?
+
+248
+00:37:59.000 --> 00:38:14.140
+Stefan Starflinger: I just wanted to summarize regarding the definites a little bit more, that I've been finding a lot of issues working together with different client teams that I've been holding off, kind of, progressing and getting that live, but I think
+
+249
+00:38:14.430 --> 00:38:30.679
+Stefan Starflinger: By the end of the week, I think we might be ready. I'm still… need to fix something with the consensus Layer clients that loads are in Prism, interop. There was something that I'm still looking into, and I hope that with Nevermind, it will also
+
+250
+00:38:30.850 --> 00:38:35.469
+Stefan Starflinger: be working better, and then we can start the definite, I think, definite zero.
+
+251
+00:38:38.550 --> 00:38:42.470
+Karim T.: Do we want to have the Coinbase modifications for the next DevNets?
+
+252
+00:38:43.780 --> 00:38:46.950
+Karim T.: Because I think we'll have to do some modification in Bezoop.
+
+253
+00:38:50.050 --> 00:39:02.070
+Stefan Starflinger: That's a good question. I think maybe, Tony, that's something we could find out before we start, if we want to do a wait and have that modification in or not.
+
+254
+00:39:05.620 --> 00:39:10.999
+Toni Wahrstaetter: Okay, Jared and Dragon are saying they want to, have it already?
+
+255
+00:39:11.110 --> 00:39:17.159
+Toni Wahrstaetter: I'm happy to… to go for it, but it's more of a question for clients, I guess.
+
+256
+00:39:17.620 --> 00:39:22.169
+Karim T.: I think it would be okay if we have some tests, just to be sure.
+
+257
+00:39:22.510 --> 00:39:24.330
+Karim T.: We are working correctly.
+
+258
+00:39:25.430 --> 00:39:26.570
+Karim T.: Okay, thanks.
+
+259
+00:39:29.470 --> 00:39:32.699
+Toni Wahrstaetter: Perfect, yeah, just to echo what Rahul is saying in the chat.
+
+260
+00:39:32.850 --> 00:39:44.510
+Toni Wahrstaetter: That, he's working on tests, this week, so that we have, those individual tests. I think we need a test for an empty block, then a block with one transaction, paying no tips.
+
+261
+00:39:44.690 --> 00:39:48.440
+Toni Wahrstaetter: And the regular block, and then we should have everything covered there.
+
+262
+00:39:48.670 --> 00:39:52.020
+Toni Wahrstaetter: But then let's agree that in the first FNAT,
+
+263
+00:39:52.510 --> 00:40:00.840
+Toni Wahrstaetter: End of week, next week, that we, already include those most recent changes regarding the Coinbase tracking.
+
+264
+00:40:01.840 --> 00:40:04.020
+Stefan Starflinger: Sounds good, then I'll wait for that.
+
+265
+00:40:10.700 --> 00:40:14.440
+Toni Wahrstaetter: Perfect. Is there anything else we should discuss today?
+
+266
+00:40:27.700 --> 00:40:34.220
+Toni Wahrstaetter: If not… We can end the call at this point, we can end a little bit earlier, and…
+
+267
+00:40:35.110 --> 00:40:42.029
+Toni Wahrstaetter: Yeah, see everyone in the next, 7, 9, 28 breakout call in 2 weeks. Thanks a lot.
+
+268
+00:40:43.910 --> 00:40:44.600
+draganrakita: Bye.
+
+269
+00:40:45.080 --> 00:40:45.484
+Jared Wasinger: Oh.
+
+270
+00:40:45.890 --> 00:40:46.500
+Mark Holt: Bye.
+
+271
+00:40:46.500 --> 00:40:47.140
+Karim T.: Alright.
+
+272
+00:40:47.900 --> 00:40:48.610
+Ishika: Bye.
+

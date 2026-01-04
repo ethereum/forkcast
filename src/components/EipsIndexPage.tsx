@@ -2,12 +2,12 @@ import React, { useState, useMemo } from 'react';
 import { Link } from 'react-router-dom';
 import ThemeToggle from './ui/ThemeToggle';
 import { eipsData } from '../data/eips';
-import { getProposalPrefix, getLaymanTitle, getInclusionStage } from '../utils/eip';
+import { getProposalPrefix, getLaymanTitle, getInclusionStage, isHeadlinerInAnyFork, wasHeadlinerCandidateInAnyFork } from '../utils/eip';
 import { EipSearch } from './eip/EipSearch';
 import { Tooltip } from './ui';
 import { networkUpgrades } from '../data/upgrades';
 
-type SortField = 'number' | 'date' | 'status' | 'updated';
+type SortField = 'number' | 'date' | 'status' | 'updated' | 'headliner';
 type SortDirection = 'asc' | 'desc';
 
 const EipsIndexPage: React.FC = () => {
@@ -151,6 +151,16 @@ const EipsIndexPage: React.FC = () => {
             return statusWithDate?.date ? new Date(statusWithDate.date).getTime() : 0;
           };
           compareValue = getUpdateDate(a) - getUpdateDate(b);
+          break;
+        }
+        case 'headliner': {
+          // Sort order: selected (2) > proposed (1) > none (0)
+          const getHeadlinerScore = (eip: typeof a) => {
+            if (isHeadlinerInAnyFork(eip)) return 2;
+            if (wasHeadlinerCandidateInAnyFork(eip)) return 1;
+            return 0;
+          };
+          compareValue = getHeadlinerScore(a) - getHeadlinerScore(b);
           break;
         }
       }
@@ -526,6 +536,19 @@ const EipsIndexPage: React.FC = () => {
                   <th className="px-4 py-3 text-left text-xs font-semibold text-slate-600 dark:text-slate-400 uppercase tracking-wider">
                     Upgrade
                   </th>
+                  <th className="px-2 py-3 text-center">
+                    <Tooltip text="Headliner status: ★ = selected, ☆ = proposed">
+                      <button
+                        onClick={() => handleSort('headliner')}
+                        className="text-xs font-semibold text-slate-600 dark:text-slate-400 uppercase tracking-wider hover:text-slate-900 dark:hover:text-slate-200 flex items-center gap-1 transition-colors cursor-help"
+                      >
+                        ★
+                        {sortField === 'headliner' && (
+                          <span className="text-purple-500">{sortDirection === 'asc' ? '↑' : '↓'}</span>
+                        )}
+                      </button>
+                    </Tooltip>
+                  </th>
                   <th className="px-4 py-3 text-left text-xs font-semibold text-slate-600 dark:text-slate-400 uppercase tracking-wider">
                     Stage
                   </th>
@@ -626,6 +649,13 @@ const EipsIndexPage: React.FC = () => {
                         )}
                       </div>
                     </td>
+                      <td className="px-2 py-3 text-center">
+                        {isHeadlinerInAnyFork(eip) ? (
+                          <span className="text-slate-700 dark:text-slate-300" title="Selected headliner">★</span>
+                        ) : wasHeadlinerCandidateInAnyFork(eip) ? (
+                          <span className="text-slate-400 dark:text-slate-500" title="Proposed headliner">☆</span>
+                        ) : null}
+                      </td>
                       <td className="px-4 py-3 whitespace-nowrap">
                         {eip.forkRelationships.length > 0 ? (
                           (() => {
@@ -706,6 +736,12 @@ const EipsIndexPage: React.FC = () => {
                 <div className="flex items-start justify-between gap-2 mb-2">
                   <span className="text-base font-mono font-semibold text-purple-600 dark:text-purple-400">
                     {getProposalPrefix(eip)}-{eip.id}
+                    {isHeadlinerInAnyFork(eip) && (
+                      <span className="ml-1.5 text-slate-700 dark:text-slate-300" title="Selected headliner">★</span>
+                    )}
+                    {wasHeadlinerCandidateInAnyFork(eip) && (
+                      <span className="ml-1.5 text-slate-400 dark:text-slate-500" title="Proposed headliner">☆</span>
+                    )}
                   </span>
                   {/* Fork and Stage grouped together side-by-side */}
                   {mostRecentFork && (

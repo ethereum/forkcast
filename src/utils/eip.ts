@@ -120,6 +120,22 @@ export const wasHeadlinerCandidate = (eip: EIP, forkName?: string): boolean => {
 };
 
 /**
+ * Check if an EIP is a selected headliner in ANY fork
+ */
+export const isHeadlinerInAnyFork = (eip: EIP): boolean => {
+  return eip.forkRelationships.some(fork => fork.isHeadliner === true);
+};
+
+/**
+ * Check if an EIP was a headliner candidate in ANY fork (but not selected in any)
+ */
+export const wasHeadlinerCandidateInAnyFork = (eip: EIP): boolean => {
+  // If selected in any fork, this returns false
+  if (isHeadlinerInAnyFork(eip)) return false;
+  return eip.forkRelationships.some(fork => fork.wasHeadlinerCandidate === true);
+};
+
+/**
  * Get the fork relationship for an EIP in a specific fork
  */
 export const getForkRelationship = (eip: EIP, forkName?: string): ForkRelationship | undefined => {

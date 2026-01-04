@@ -1,0 +1,41 @@
+{
+  "meeting_topic": "EIP-7928 Breakout #9, Dec 17, 2025",
+  "meeting_start_time": "2025-12-17T13:55:39Z",
+  "meeting_end_time": "2025-12-17T14:43:10Z",
+  "summary_start_time": "2025-12-17T14:01:16Z",
+  "summary_end_time": "2025-12-17T14:43:02Z",
+  "summary_created_time": "2025-12-17T14:43:41Z",
+  "summary_last_modified_time": "2025-12-17T16:18:40Z",
+  "summary_overview": "The team discussed changes to block access list storage and handling, reaching consensus to remove them from the block body and implement a new process where execution payloads will carry the lists to the execution layer. They addressed testing requirements and specifications for block access lists, including retention periods and client optimizations for parallel execution and I/O. The team reviewed progress on various Ethereum clients and agreed to launch the devnet-1 with the current version before the holiday, while planning to test the impact of block access lists on performance using a two-node configuration.",
+  "summary_details": [
+    {
+      "label": "Block Access List Storage Changes",
+      "summary": "The team discussed the storage and accessibility of block access lists, focusing on keeping them until the weak subjectivity period to enable re-execution if a node goes offline. There was consensus to remove block access lists from the block body, with Karim, Gary, and Jared previously advocating for this change. The team also agreed on a new process where the execution payload will carry the block access list to the execution layer, which will hash it and use it for state transition. Toni noted that this would require storing approximately 15.7 days of block access lists, equivalent to about 10GB, and asked Rahul or Felipe if their tests would need changes."
+    },
+    {
+      "label": "Block Access List Testing Updates",
+      "summary": "The team discussed changes to the block access list (BAL) handling in tests and specifications. They agreed to keep the BAL in test vectors for debugging purposes, potentially as an underscored field in metadata. The group also addressed the retention period of 3,533 epochs for block data. Lastly, they touched on the need for client optimizations, particularly parallel execution and I/O, to support repricing work for Glamsterdam."
+    },
+    {
+      "label": "Parallel Execution Progress Update",
+      "summary": "The team discussed progress on parallel execution and optimization efforts across different clients. Karim reported that parallel I/O implementation is in testing, while Mark shared that Erigon is working on execution optimization and parallel commitment calculation, with both expected to be ready by mid-December. The team agreed to consider launching devnet-1 either before or after the holidays, with Stefan noting that clients are now more stable. Toni emphasized the importance of testing with BALs to measure the effectiveness of parallel execution, and Karim suggested waiting a few days for the CALL fix before proceeding with devnet-1."
+    },
+    {
+      "label": "Ethereum Client Status and Launch",
+      "summary": "The team discussed the status of various Ethereum clients, with Stefan reporting that Gas-Rest, Nethermind, Nimbus, and Besu (except for one call issue) were running smoothly, while Erigon was awaiting the BAL Definitive 1 branch. They agreed to launch the Ethnet with the current version before the holiday, separating the block-live access list from the block body and implementing the retention period of around 3500 epochs. Jochem suggested testing the impact of the block access list on performance using a two-node configuration with and without the list in the testnet."
+    }
+  ],
+  "next_steps": [
+    "Felipe and Jochem: Figure out how to include block access list in test vectors for debugging purposes, potentially as metadata or optional field",
+    "Jochem: Check how blobs are handled in testing framework to inform approach for block access list testing",
+    "Karim : Implement parallel batch I/O",
+    "Stefan: Start devnet 1 with stable clients  today or tomorrow",
+    "Erigon team : Fix Hive tests by end of this week",
+    "Erigon team : Complete parallel execution, parallel I/O, and parallel commitment calculation by mid-week between Christmas and New Year",
+    "Besu team: Fix issue with the call before devnet launch",
+    "Stefan: Try out Erigon's BAL Definite 1 branch once available",
+    "All client teams: Implement flag to toggle whether batch I/O uses read values from block access list",
+    "Stefan: Launch another devnet later with block access list removal from block body changes",
+    "Stefan: Configure testnet with two node configurations  to measure performance impact"
+  ]
+}

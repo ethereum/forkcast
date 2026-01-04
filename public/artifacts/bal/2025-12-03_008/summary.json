@@ -1,0 +1,48 @@
+{
+  "meeting_topic": "EIP-7928 Breakout #8, Dec 3, 2025",
+  "meeting_start_time": "2025-12-03T13:57:40Z",
+  "meeting_end_time": "2025-12-03T17:05:19Z",
+  "summary_start_time": "2025-12-03T14:00:32Z",
+  "summary_end_time": "2025-12-03T15:08:58Z",
+  "summary_created_time": "2025-12-03T17:05:59Z",
+  "summary_last_modified_time": "2025-12-03T18:41:20Z",
+  "summary_overview": "The meeting focused on discussing Ethereum specifications and implementations, with particular emphasis on gas accounting, block access lists, and storage implications. The team evaluated different approaches for handling block access lists, including whether to store them in the block body or as sidecar data, while considering the impact on storage requirements and node performance. After reviewing various technical aspects and concerns, the group decided to maintain the current approach of keeping block access lists in the block body for now, with plans to gather more data and projections over the next few weeks before making any final decisions.",
+  "summary_details": [
+    {
+      "label": "Ethereum Gas and Access List Updates",
+      "summary": "The meeting focused on discussing three topics related to Ethereum specifications and implementations. Toni Wahrst\u00e4tter led the discussion, starting with a clarification on how to handle calls that send value but run out of gas, which involves a change in the static checks and state access process. The team also discussed storing the block access list in the block body versus not storing them, and reviewed optimizations needed for benchmarks to determine the value of including read values in the block access list. Toni Wahrst\u00e4tter shared a pull request for client feedback and sought input from Jared about potential changes to gas accounting in Geth."
+    },
+    {
+      "label": "Gas Cost and Memory Access",
+      "summary": "The team discussed gas cost calculations for memory expansion, access, and transfer operations, with Jared working on fixing test coverage for potential chain splits between Geth and Besu. They agreed that static checks should be performed before state access, following the approach used by Besu and Reth, and confirmed that Nethermind's implementation aligns with the specifications once memory expansion inconsistencies are resolved. The team also discussed storing Blob Access Lists in the block body versus the block header, with Lukasz providing a comprehensive analysis of the pros and cons of each approach."
+    },
+    {
+      "label": "Debating Block Access Lists Impact",
+      "summary": "The team discussed the pros and cons of including Block Access Lists (BALs) in block bodies. \u0141ukasz raised concerns about the increased storage and network costs, while Toni provided analysis showing BALs account for about 50% of block size. Mark and the Reth team expressed neutrality, noting they could reconstitute BALs from existing access history if needed. The group debated the benefits of keeping BALs for syncing, with Jared arguing they could reduce healing time, though Ben questioned the value for nodes syncing from further back than the retention period. The team agreed more analysis was needed, particularly around the impact of increased gas limits and the potential for BALs to be transmitted as sidecar data."
+    },
+    {
+      "label": "Block Access Lists Storage Discussion",
+      "summary": "The team discussed storage implications of block access lists (BALs) in CLs and archives. They debated whether to drop BALs from both the EL and CL, with \u0141ukasz noting this could increase storage requirements by 10x. Karim explained that for Besu, SnapSync requires minimal block access, and missing blocks could be retrieved during healing. Jared raised questions about how far back CLs provide new payloads, with \u0141ukasz noting that healing should handle small gaps but could be problematic for longer lapses."
+    },
+    {
+      "label": "Blockchain BAL Storage Strategy Discussion",
+      "summary": "The team discussed the retention and handling of Block Access Lists (BALs) in the blockchain system. They agreed to keep BALs in the block body for now, rather than creating a sidecar, to maintain simplicity and avoid immediate complexity. However, they acknowledged the potential for increased storage requirements and the need for further analysis of the impact on nodes, particularly archive nodes. The group decided to gather more data and projections over the next few weeks before making a final decision, with a focus on consulting with CLs and other stakeholders about their storage practices and the potential for optional BALs in certain circumstances."
+    },
+    {
+      "label": "Blockchain BAL Handling Discussion",
+      "summary": "The team discussed the handling of BALs (block auxiliaries) in the blockchain, focusing on whether to keep them in the block body or move them to a sidecar. They agreed to maintain the current approach of keeping BALs in the block body for now, with Toni Wahrst\u00e4tter suggesting this as the best solution and proposing to add the topic to the next Breakout Call agenda in two weeks. Mark mentioned he would investigate the importance of reads in BALs before the next meeting, while Karim noted ongoing work on batch reading IO. The team also briefly touched on using Zor for storing NNS, which Toni Wahrst\u00e4tter suggested clarifying in the next meeting."
+    }
+  ],
+  "next_steps": [
+    "Jared : Fix gas accounting inconsistency for call opcodes with static checks before state access, and update test coverage",
+    "Nethermind team: Fix memory expansion inconsistency versus REF and Besu",
+    "Felipe: Release new test version after merging memory expansion PR and enabling old Ethereum tests with BALs",
+    "Toni: Redo analysis on BAL size at 60 million gas limit and provide clear numbers on storage growth",
+    "\u0141ukasz: Gather projections for storage requirements at different gas limits  and show expected growth",
+    "Team: Talk with CL developers about their block retention periods and get their opinion on BALs storage",
+    "Team: Discuss with Ansgar and other storage-focused people about BAL storage implications",
+    "Mark : Research how much the team cares about reads and whether reads should be included in BALs",
+    "Toni: Put BAL storage topic  on agenda for next Breakout Call in two weeks",
+    "Toni and Ben: Clarify async the discussion about using ZOR for storing nonces"
+  ]
+}

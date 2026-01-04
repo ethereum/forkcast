@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef, useCallback, useMemo } from 'react';
 import { Link, useParams, useLocation } from 'react-router-dom';
 import YouTube, { YouTubeProps } from 'react-youtube';
 import ChatLog from './ChatLog';
@@ -61,6 +61,25 @@ const CallPage: React.FC = () => {
   const [initialSearchQuery, setInitialSearchQuery] = useState('');
   // Track if we've already navigated to avoid duplicate seeks
   const hasNavigatedToSearchResult = useRef(false);
+
+  // Compute previous and next calls within the same series
+  const { prevCall, nextCall } = useMemo(() => {
+    if (!callData) return { prevCall: null, nextCall: null };
+
+    // Get all calls of the same type (series), sorted by number
+    // Note: callData.type may be uppercase, protocolCalls uses lowercase
+    const callType = callData.type.toLowerCase();
+    const seriesCalls = protocolCalls
+      .filter(call => call.type === callType)
+      .sort((a, b) => parseInt(a.number) - parseInt(b.number));
+
+    const currentIndex = seriesCalls.findIndex(call => call.number === callData.number);
+
+    return {
+      prevCall: currentIndex > 0 ? seriesCalls[currentIndex - 1] : null,
+      nextCall: currentIndex < seriesCalls.length - 1 ? seriesCalls[currentIndex + 1] : null,
+    };
+  }, [callData]);
 
   // Handle search parameters from URL for direct navigation
   useEffect(() => {
@@ -251,7 +270,7 @@ const CallPage: React.FC = () => {
   };
 
   // Apply sync offset to convert transcript time to video time
-  const getAdjustedVideoTime = (transcriptTimestamp: string): number => {
+  const getAdjustedVideoTime = useCallback((transcriptTimestamp: string): number => {
     const transcriptSeconds = timestampToSeconds(formatTimestamp(transcriptTimestamp));
 
     // Calculate offset from current config state
@@ -262,7 +281,7 @@ const CallPage: React.FC = () => {
 
     // Fallback to pre-calculated offset if config not available
     return transcriptSeconds - syncOffsetSeconds;
-  };
+  }, [callConfig, syncOffsetSeconds]);
 
   useEffect(() => {
     const loadCallData = async () => {
@@ -292,17 +311,36 @@ const CallPage: React.FC = () => {
         const date = matchingCall.date;
 
         // Load chat logs
+        // Note: We validate content doesn't start with HTML because SPA dev servers
+        // may return 200 with index.html for missing files
+        let chatContent: string | undefined;
         const chatResponse = await fetch(`/artifacts/${artifactPath}/chat.txt`);
-        const chatContent = chatResponse.ok ? await chatResponse.text() : undefined;
+        if (chatResponse.ok) {
+          const content = await chatResponse.text();
+          if (content.trim() && !content.trimStart().startsWith('<!')) {
+            chatContent = content;
+          }
+        }
 
         // Load transcript (prefer corrected version if available)
+        // Note: We validate content starts with "WEBVTT" because SPA dev servers
+        // may return 200 with index.html for missing files
         let transcriptContent: string | undefined;
         const correctedResponse = await fetch(`/artifacts/${artifactPath}/transcript_corrected.vtt`);
         if (correctedResponse.ok) {
-          transcriptContent = await correctedResponse.text();
-        } else {
+          const content = await correctedResponse.text();
+          if (content.trimStart().startsWith('WEBVTT')) {
+            transcriptContent = content;
+          }
+        }
+        if (!transcriptContent) {
           const transcriptResponse = await fetch(`/artifacts/${artifactPath}/transcript.vtt`);
-          transcriptContent = transcriptResponse.ok ? await transcriptResponse.text() : undefined;
+          if (transcriptResponse.ok) {
+            const content = await transcriptResponse.text();
+            if (content.trimStart().startsWith('WEBVTT')) {
+              transcriptContent = content;
+            }
+          }
         }
 
         // Load summary if it exists
@@ -420,7 +458,7 @@ const CallPage: React.FC = () => {
     return () => {
       window.removeEventListener('seekToTimestamp', handleSeekToTimestamp as EventListener);
     };
-  }, [player, callConfig]);
+  }, [player, callConfig, getAdjustedVideoTime]);
 
   // Poll for video time when playing
   useEffect(() => {
@@ -707,10 +745,10 @@ const CallPage: React.FC = () => {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-slate-50 text-slate-900 p-6">
+      <div className="min-h-screen bg-slate-50 dark:bg-slate-900 text-slate-900 dark:text-slate-100 p-6">
         <div className="max-w-4xl mx-auto">
           <div className="text-center">
-            <p className="text-slate-600">Loading call data...</p>
+            <p className="text-slate-600 dark:text-slate-400">Loading call data...</p>
           </div>
         </div>
       </div>
@@ -1004,6 +1042,47 @@ const CallPage: React.FC = () => {
                       Open in YouTube
                     </a>
                   </div>
+                  {/* Series Navigation */}
+                  {(prevCall || nextCall) && (
+                    <div className="mt-4 pt-4 border-t border-slate-200 dark:border-slate-700 flex justify-between items-center gap-2">
+                      {prevCall ? (
+                        <Link
+                          to={`/calls/${prevCall.path}`}
+                          className="group flex-1 flex flex-col items-start gap-0.5 p-2 -m-2 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-700/50 transition-colors"
+                        >
+                          <span className="text-xs text-slate-500 dark:text-slate-400 flex items-center gap-1">
+                            <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
+                            </svg>
+                            Previous
+                          </span>
+                          <span className="text-sm font-medium text-slate-700 dark:text-slate-200 group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors">
+                            {prevCall.type.toUpperCase()} #{prevCall.number}
+                          </span>
+                        </Link>
+                      ) : (
+                        <span className="flex-1" />
+                      )}
+                      {nextCall ? (
+                        <Link
+                          to={`/calls/${nextCall.path}`}
+                          className="group flex-1 flex flex-col items-end gap-0.5 p-2 -m-2 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-700/50 transition-colors"
+                        >
+                          <span className="text-xs text-slate-500 dark:text-slate-400 flex items-center gap-1">
+                            Next
+                            <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                            </svg>
+                          </span>
+                          <span className="text-sm font-medium text-slate-700 dark:text-slate-200 group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors">
+                            {nextCall.type.toUpperCase()} #{nextCall.number}
+                          </span>
+                        </Link>
+                      ) : (
+                        <span className="flex-1" />
+                      )}
+                    </div>
+                  )}
                 </div>
               </div>
             </div>
@@ -1082,78 +1161,88 @@ const CallPage: React.FC = () => {
         {/* Transcript and Chat Grid */}
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
           {/* Transcript */}
-          <div>
-            {callData.transcriptContent && (
-              <div className="bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg p-4 shadow-sm hover:shadow-md transition-shadow">
-                <h2 className="text-sm font-semibold text-slate-900 dark:text-slate-100 mb-3">Transcript</h2>
-                <div
-                  ref={transcriptRef}
-                  className="space-y-1 max-h-[400px] overflow-y-auto pr-2"
-                >
-                  {parseVTTTranscript(callData.transcriptContent)
-                    .filter(entry => {
-                      // Hide entries before transcriptStartTime if sync config exists
-                      if (callConfig?.sync?.transcriptStartTime) {
-                        const entrySeconds = timestampToSeconds(entry.timestamp);
-                        const startSeconds = timestampToSeconds(callConfig.sync.transcriptStartTime);
-                        return entrySeconds >= startSeconds;
-                      }
-                      return true;
-                    })
-                    .map((entry, index, entries) => {
-                    const isHighlighted = isCurrentEntry(entry.timestamp, index, entries);
-                    const isSelectedSearch = selectedSearchResult?.timestamp === entry.timestamp && selectedSearchResult?.type === 'transcript';
-                    return (
-                      <div
-                        key={index}
-                        data-timestamp={entry.timestamp}
-                        onClick={() => handleTranscriptClick(entry.timestamp)}
-                        className={`flex gap-3 text-sm group hover:bg-slate-50 dark:hover:bg-slate-700/30 py-1 px-2 -mx-2 rounded transition-colors cursor-pointer border-l-2
-                          ${isSelectedSearch ? 'bg-yellow-50 dark:bg-yellow-900/20 border-yellow-500 rounded-r-md' :
-                            isHighlighted ? 'bg-blue-50 dark:bg-blue-900/30 border-blue-500 rounded-r-md' :
-                            'border-transparent'}
-                        `}
-                      >
-                        <span className={`text-xs flex-shrink-0 font-mono mt-0.5
-                          ${isSelectedSearch ? 'text-yellow-600 dark:text-yellow-400' :
-                            isHighlighted ? 'text-blue-600 dark:text-blue-400' :
-                            'text-slate-500 dark:text-slate-400'}
-                        `} style={{ minWidth: '64px' }}>
-                          {callConfig?.sync?.transcriptStartTime && callConfig?.sync?.videoStartTime
-                            ? secondsToTimestamp(getAdjustedVideoTime(entry.timestamp))
-                            : formatTimestamp(entry.timestamp)
-                          }
+          <div className="bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg p-4 shadow-sm hover:shadow-md transition-shadow">
+            <h2 className="text-sm font-semibold text-slate-900 dark:text-slate-100 mb-3">Transcript</h2>
+            {callData.transcriptContent?.trim() ? (
+              <div
+                ref={transcriptRef}
+                className="space-y-1 max-h-[400px] overflow-y-auto pr-2"
+              >
+                {parseVTTTranscript(callData.transcriptContent)
+                  .filter(entry => {
+                    // Hide entries before transcriptStartTime if sync config exists
+                    if (callConfig?.sync?.transcriptStartTime) {
+                      const entrySeconds = timestampToSeconds(entry.timestamp);
+                      const startSeconds = timestampToSeconds(callConfig.sync.transcriptStartTime);
+                      return entrySeconds >= startSeconds;
+                    }
+                    return true;
+                  })
+                  .map((entry, index, entries) => {
+                  const isHighlighted = isCurrentEntry(entry.timestamp, index, entries);
+                  const isSelectedSearch = selectedSearchResult?.timestamp === entry.timestamp && selectedSearchResult?.type === 'transcript';
+                  return (
+                    <div
+                      key={index}
+                      data-timestamp={entry.timestamp}
+                      onClick={() => handleTranscriptClick(entry.timestamp)}
+                      className={`flex gap-3 text-sm group hover:bg-slate-50 dark:hover:bg-slate-700/30 py-1 px-2 -mx-2 rounded transition-colors cursor-pointer border-l-2
+                        ${isSelectedSearch ? 'bg-yellow-50 dark:bg-yellow-900/20 border-yellow-500 rounded-r-md' :
+                          isHighlighted ? 'bg-blue-50 dark:bg-blue-900/30 border-blue-500 rounded-r-md' :
+                          'border-transparent'}
+                      `}
+                    >
+                      <span className={`text-xs flex-shrink-0 font-mono mt-0.5
+                        ${isSelectedSearch ? 'text-yellow-600 dark:text-yellow-400' :
+                          isHighlighted ? 'text-blue-600 dark:text-blue-400' :
+                          'text-slate-500 dark:text-slate-400'}
+                      `} style={{ minWidth: '64px' }}>
+                        {callConfig?.sync?.transcriptStartTime && callConfig?.sync?.videoStartTime
+                          ? secondsToTimestamp(getAdjustedVideoTime(entry.timestamp))
+                          : formatTimestamp(entry.timestamp)
+                        }
+                      </span>
+                      <div className="flex-1 min-w-0">
+                        <span className={`font-medium mr-2
+                          ${isSelectedSearch ? 'text-yellow-900 dark:text-yellow-100' :
+                            isHighlighted ? 'text-blue-900 dark:text-blue-100' :
+                            'text-slate-700 dark:text-slate-300'}
+                        `}>
+                          {entry.speaker}:
                         </span>
-                        <div className="flex-1 min-w-0">
-                          <span className={`font-medium mr-2
-                            ${isSelectedSearch ? 'text-yellow-900 dark:text-yellow-100' :
-                              isHighlighted ? 'text-blue-900 dark:text-blue-100' :
-                              'text-slate-700 dark:text-slate-300'}
-                          `}>
-                            {entry.speaker}:
-                          </span>
-                          <span className={`break-words
-                            ${isSelectedSearch ? 'text-slate-900 dark:text-slate-100' :
-                              isHighlighted ? 'text-slate-900 dark:text-slate-100' :
-                              'text-slate-600 dark:text-slate-400'}
-                          `}>{entry.text}</span>
-                        </div>
+                        <span className={`break-words
+                          ${isSelectedSearch ? 'text-slate-900 dark:text-slate-100' :
+                            isHighlighted ? 'text-slate-900 dark:text-slate-100' :
+                            'text-slate-600 dark:text-slate-400'}
+                        `}>{entry.text}</span>
                       </div>
-                    );
-                  })}
-                </div>
+                    </div>
+                  );
+                })}
+              </div>
+            ) : (
+              <div className="flex flex-col items-center justify-center py-12 text-center">
+                <svg className="w-10 h-10 text-slate-300 dark:text-slate-600 mb-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                </svg>
+                <p className="text-sm text-slate-500 dark:text-slate-400">No transcript available</p>
               </div>
             )}
           </div>
 
           {/* Chat Logs */}
-          <div>
-            {callData.chatContent && (
-              <div className="bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg p-4 shadow-sm hover:shadow-md transition-shadow">
-                <h2 className="text-sm font-semibold text-slate-900 dark:text-slate-100 mb-3">Chat Logs</h2>
-                <div ref={chatLogRef} className="max-h-[400px] overflow-y-auto pr-2">
-                  <ChatLog content={callData.chatContent} syncConfig={callConfig?.sync} selectedSearchResult={selectedSearchResult} onTimestampClick={handleTranscriptClick} />
-                </div>
+          <div className="bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg p-4 shadow-sm hover:shadow-md transition-shadow">
+            <h2 className="text-sm font-semibold text-slate-900 dark:text-slate-100 mb-3">Chat Logs</h2>
+            {callData.chatContent ? (
+              <div ref={chatLogRef} className="max-h-[400px] overflow-y-auto pr-2">
+                <ChatLog content={callData.chatContent} syncConfig={callConfig?.sync} selectedSearchResult={selectedSearchResult} onTimestampClick={handleTranscriptClick} />
+              </div>
+            ) : (
+              <div className="flex flex-col items-center justify-center py-12 text-center">
+                <svg className="w-10 h-10 text-slate-300 dark:text-slate-600 mb-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" />
+                </svg>
+                <p className="text-sm text-slate-500 dark:text-slate-400">No chat logs available</p>
               </div>
             )}
           </div>

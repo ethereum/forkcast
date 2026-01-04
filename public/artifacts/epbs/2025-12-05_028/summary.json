@@ -1,0 +1,44 @@
+{
+  "meeting_topic": "EIP-7732 Breakout Room Call",
+  "meeting_start_time": "2025-12-05T13:59:47Z",
+  "meeting_end_time": "2025-12-05T15:23:06Z",
+  "summary_start_time": "2025-12-05T14:00:05Z",
+  "summary_end_time": "2025-12-05T15:18:47Z",
+  "summary_created_time": "2025-12-05T15:23:46Z",
+  "summary_last_modified_time": "2025-12-05T16:59:23Z",
+  "summary_overview": "The team reviewed updates from various client implementations of ePBS and discussed a new consensus-spec release. A proposal for dynamic penalties in block building was presented to mitigate the free option problem, with the team publishing a specification and research post for feedback. The conversation ended with extensive discussions about the potential removal of trustless payments from the protocol, with concerns raised about market dynamics and relay operations, leading to an agreement to continue the debate at the upcoming ACDC meeting.",
+  "summary_details": [
+    {
+      "label": "ePBS Client Implementation Status Update",
+      "summary": "The team discussed updates from various client implementations of ePBS. Justin announced a new consensus-spec release (version 1.6.1) and mentioned that the final breakout call would be on December 19th, after which discussions would move to ACDT. Client team updates were provided, with most teams reporting limited progress due to issues with Fusaka. Dustin and Caleb discussed ongoing ePBS support integration into Nimbus, while Lodestar reported progress on state transitions and work in progress for P2P and block building. Grandine shared updates on Sync Manager changes, envelope support, and fork-choice implementation."
+    },
+    {
+      "label": "Dynamic Penalty Proposal for Block Building",
+      "summary": "Christoph presented a proposal for dynamic penalties to mitigate the free option problem in block building. The proposal involves adjusting penalties based on the correlation of payload failures, with penalties escalating for clusters of failures. The system would track penalties alongside pending payments, with penalties deducted from builder balances at the end of each epoch. The proposal includes theoretical guarantees and backtesting results, showing that penalties of 0.02-0.04 ETH could achieve a 0.5% acceptable failure rate. The team has published a specification and research post on ETH Research, seeking feedback on the proposal's feasibility and potential issues."
+    },
+    {
+      "label": "Trustless Payments and Builder Penalties",
+      "summary": "The group discussed a proposal to remove trustless payments and staked builders, with Christoph explaining that proposers would be penalized for undelivered payloads. Potuz raised concerns about the viability of implementing this penalty mechanism, noting that builders could be off-protocol and difficult to penalize. The discussion also touched on the potential impact of liveness bugs on validators, with Potuz highlighting that this proposal could result in capital loss for validators in cases of client bugs. The conversation ended with a brief mention of moving on to discuss the builder API with ePBS."
+    },
+    {
+      "label": "Builder API Proposal Discussion",
+      "summary": "Bharath presented a proposal for the builder API in the context of ePBS, discussing how it would function with both staked and off-protocol builders. The proposal includes a flow for communication between proposers and builders, as well as a mechanism for handling off-protocol builders through a blinded execution payload envelope. The discussion raised questions about the necessity and feasibility of supporting off-protocol builders, with some contention on the topic. Following Bharath's presentation, Alex introduced a separate discussion on trustless payments, questioning whether it should be included in the Glamsterdam update, acknowledging the strong opinions on both sides of the debate."
+    },
+    {
+      "label": "Trustless Payments: Centralization Debate",
+      "summary": "The meeting focused on the debate over trustless payments in Ethereum's protocol. Alex highlighted concerns about the potential centralization of the block-building market and the risk of reducing the number of builders if trustless payments are introduced. George and Barnabas argued that relays provide valuable services, such as OFAC compliance, that could be lost if trustless payments are implemented. The group discussed the possibility of fewer builders competing for proposer bids, which could lead to a more centralized market. Cayman suggested that the current design of trustless payments is not enforceable and proposed splitting the staked-builder and trustless payment flow for further research. The conversation ended with a debate over whether Ethereum should prioritize protocol improvements over the potential negative impacts on relays and proposers."
+    },
+    {
+      "label": "Trustless Payments Removal Debate",
+      "summary": "The team discussed the potential removal of trustless payments from the protocol, with concerns raised about the impact on builder market dynamics and relay operations. Max and Matthew expressed caution about rushing to remove trustless payments, citing potential technical complexities and the need for further analysis. Potuz emphasized the benefits of trustless payments, including resilience and liveness, and called for clear arguments for their removal. The group agreed to continue the discussion at the upcoming ACDC meeting, where a final decision will be made."
+    }
+  ],
+  "next_steps": [
+    "Client teams: Review the list of unmerged PRs shared by Justin since the last breakout call",
+    "Christoph and Bruno: Receive feedback on the dynamic penalty proposal ETH Research post and spec",
+    "Bharath: Continue work on builder API specification for ePBS and incorporate feedback from discussions",
+    "All participants: Review this call's discussion on trustless payments before ACDC next week",
+    "Justin: Publish a new consensus-spec release  if clients want it",
+    "Community and clients: Come to a decision on trustless payments and be prepared to speak up at ACDC next week"
+  ]
+}

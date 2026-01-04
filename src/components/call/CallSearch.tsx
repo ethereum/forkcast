@@ -480,7 +480,7 @@ const CallSearch: React.FC<CallSearchProps> = ({
     });
 
     return results;
-  }, [transcriptContent, chatContent, agendaData, tldrData, selectedFilter]);
+  }, [transcriptContent, chatContent, agendaData, tldrData, selectedFilter, syncConfig]);
 
   const searchResults = useMemo(() => searchContent(query), [searchContent, query]);
 

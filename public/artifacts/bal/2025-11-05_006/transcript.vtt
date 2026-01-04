@@ -1,0 +1,2126 @@
+WEBVTT
+
+1
+00:03:32.760 --> 00:03:34.470
+Toni Wahrstaetter: Hello, everyone.
+
+2
+00:03:37.970 --> 00:03:38.560
+Karim T.: Hello?
+
+3
+00:04:39.170 --> 00:04:42.660
+Toni Wahrstaetter: Let's give people one or two more minutes, and then we start.
+
+4
+00:05:41.350 --> 00:05:43.830
+Toni Wahrstaetter: Okay, I think we're ready to go.
+
+5
+00:05:57.690 --> 00:06:06.400
+Toni Wahrstaetter: Perfect. Hello, everyone, and welcome to the sixth breakout call of EAP7928. It's November the 5th.
+
+6
+00:06:06.990 --> 00:06:11.679
+Toni Wahrstaetter: And let me directly post the agenda into the chat.
+
+7
+00:06:12.270 --> 00:06:22.729
+Toni Wahrstaetter: So that everyone can have a look. We have quite a few topics, because I put all the spec changes we made in the… since the last breakout call into…
+
+8
+00:06:22.980 --> 00:06:29.790
+Toni Wahrstaetter: Into the agenda today, just so that people are aware of what happened since last time.
+
+9
+00:06:30.210 --> 00:06:43.369
+Toni Wahrstaetter: This basically includes fixing how we track withdrawals, so you might remember in the last breakout call, we discussed how withdrawals are handled, and we had some bugs there in the specs.
+
+10
+00:06:43.910 --> 00:06:51.359
+Toni Wahrstaetter: Besides… Besides that… Yeah, there weren't…
+
+11
+00:06:51.550 --> 00:06:59.429
+Toni Wahrstaetter: any other major changes, at least as far as I'm aware. Maybe, Felipe or Rahul
+
+12
+00:06:59.540 --> 00:07:03.759
+Toni Wahrstaetter: If you want to add something to that, feel free.
+
+13
+00:07:07.020 --> 00:07:08.840
+raxhvl: I think that covers it, Tony.
+
+14
+00:07:10.030 --> 00:07:10.740
+Toni Wahrstaetter: Perfect.
+
+15
+00:07:12.820 --> 00:07:13.690
+Toni Wahrstaetter: Awesome.
+
+16
+00:07:14.170 --> 00:07:26.550
+Toni Wahrstaetter: Yeah, have a look at the agenda. I linked all the specs, and besides that, you can see the agenda point proposed changes, and this is then directly the first topic that we should discuss today.
+
+17
+00:07:27.050 --> 00:07:32.459
+Toni Wahrstaetter: Namely, do we want to include gas used values of each transaction?
+
+18
+00:07:32.750 --> 00:07:34.480
+Toni Wahrstaetter: in the block lab access list.
+
+19
+00:07:34.860 --> 00:07:40.369
+Toni Wahrstaetter: And… I've already spec'd it, so you can look at the specs, how it would look like.
+
+20
+00:07:40.810 --> 00:07:48.419
+Toni Wahrstaetter: And the main motivation behind this change was allowing clients to better parallelize transactions and avoiding
+
+21
+00:07:48.750 --> 00:07:55.500
+Toni Wahrstaetter: Worst cases that originate from not being able to distribute transactions.
+
+22
+00:07:55.880 --> 00:07:59.019
+Toni Wahrstaetter: Evenly across your course.
+
+23
+00:08:00.520 --> 00:08:03.989
+Toni Wahrstaetter: So, I'm not even sure if this is the right,
+
+24
+00:08:04.270 --> 00:08:09.889
+Toni Wahrstaetter: mental model I have on that one, so I'm curious what client teams think about this one.
+
+25
+00:08:10.010 --> 00:08:17.080
+Toni Wahrstaetter: If the gas used is actually something that would be helpful, or… If you think, like.
+
+26
+00:08:17.650 --> 00:08:23.329
+Toni Wahrstaetter: Just naively, parallelizing them in the sequence, how they are in the block.
+
+27
+00:08:23.580 --> 00:08:28.230
+Toni Wahrstaetter: Is… is good enough, or… Might even, yield the same results.
+
+28
+00:08:43.010 --> 00:08:46.409
+Toni Wahrstaetter: So if anyone has thoughts on this one…
+
+29
+00:08:46.580 --> 00:08:50.209
+Toni Wahrstaetter: I would just… I would assume that the default is just we don't do it.
+
+30
+00:08:50.540 --> 00:08:58.149
+Toni Wahrstaetter: But I think we should consider it, at least thinking of, Certain worst-case scenarios where…
+
+31
+00:08:58.970 --> 00:09:07.059
+Toni Wahrstaetter: You could end up with, with big transactions, being executed on one core, while other cores might idle.
+
+32
+00:09:21.520 --> 00:09:27.530
+Gary Rong: So, personalizing it's really hard to say that how much performance gain we can have by adding these,
+
+33
+00:09:27.660 --> 00:09:36.130
+Gary Rong: inductor. One good way is we can try to compare the So, execution time.
+
+34
+00:09:36.350 --> 00:09:40.089
+Gary Rong: With this, gas used, indicated or without.
+
+35
+00:09:40.340 --> 00:09:41.760
+Gary Rong: So that,
+
+36
+00:09:42.010 --> 00:09:50.300
+Gary Rong: We can, like, try to measure the real, blog, and, then we can decide if we want to include it or not.
+
+37
+00:09:53.240 --> 00:10:02.230
+Toni Wahrstaetter: Yeah, good point, and maybe just one question I would have regarding that. What would actually change if I give you a list of the gas used values? Would you just,
+
+38
+00:10:02.600 --> 00:10:10.110
+Toni Wahrstaetter: Modify the order in which you present transactions to the exec… to the executor.
+
+39
+00:10:22.460 --> 00:10:40.190
+Toni Wahrstaetter: Or is there a process where you're really like, okay, I have transaction 3, 5, and 7, and they are all very big, so I make sure I distribute them across core 1, 2, and 3, and make sure they are not landing on the same core? Is there even something like this happening?
+
+40
+00:10:42.660 --> 00:10:46.339
+Gary Rong: I hadn't really, like, thought about it, but I guess,
+
+41
+00:10:47.680 --> 00:10:56.999
+Gary Rong: We will try to, schedule the heavy transaction first, so that they can be… there's no waiting time, and we can try to…
+
+42
+00:10:57.290 --> 00:10:59.899
+Gary Rong: Give it, like, more execution time.
+
+43
+00:11:00.310 --> 00:11:09.370
+Gary Rong: Yeah, it sounds like a very naive approach, like, we schedule the heavy transition first, and then…
+
+44
+00:11:09.850 --> 00:11:15.090
+Gary Rong: try to emit the transaction one by one to different threads.
+
+45
+00:11:16.490 --> 00:11:21.600
+Gary Rong: Yeah, the… I don't have, like… Any…
+
+46
+00:11:21.740 --> 00:11:24.570
+Gary Rong: like, a useful comment for it, because I never…
+
+47
+00:11:25.140 --> 00:11:29.060
+Gary Rong: I, like, haven't did any experiment about this.
+
+48
+00:11:31.750 --> 00:11:32.810
+Toni Wahrstaetter: Yeah, Dragon?
+
+49
+00:11:34.530 --> 00:11:41.509
+draganrakita: I think it's not worth it. Rough math around that, the worst case, if…
+
+50
+00:11:41.610 --> 00:11:48.310
+draganrakita: If the stealing of the, like, scheduling of transactions to the course is done correctly.
+
+51
+00:11:48.410 --> 00:11:56.590
+draganrakita: The worst case can potentially be… because we have, like, 60 million cap limits, 60 million gas per transaction.
+
+52
+00:11:56.870 --> 00:12:03.450
+draganrakita: The difference is, like, 50% faster execution when everything is parallel.
+
+53
+00:12:04.250 --> 00:12:11.650
+draganrakita: With both, that the speedup is, like, 3-4 times, 50% doesn't matter at all.
+
+54
+00:12:12.190 --> 00:12:20.370
+draganrakita: So it doesn't, if the workstealing is done correctly, I don't think it's worth adding that.
+
+55
+00:12:23.600 --> 00:12:25.750
+Toni Wahrstaetter: Yeah, I see the SEO point.
+
+56
+00:12:26.280 --> 00:12:37.020
+Toni Wahrstaetter: Yeah, the example, a more tangible example, might be assuming 60 million guests, and we have, like, or a little bit above 60 million, we have 4.
+
+57
+00:12:37.770 --> 00:12:44.990
+Toni Wahrstaetter: let's say we have one max size transaction, and all the available… the remaining gas is consumed by EVE transfers, for example.
+
+58
+00:12:45.270 --> 00:12:49.829
+Toni Wahrstaetter: What you would want to avoid is executing all the EVE transfers.
+
+59
+00:12:50.310 --> 00:12:57.280
+Toni Wahrstaetter: before the big transaction. So what you want to do is parabolizing them, I guess?
+
+60
+00:12:59.460 --> 00:13:06.000
+Toni Wahrstaetter: Yeah, but I can see your argument that it might just not be worth it, and just confirming also what Gary said. Go ahead.
+
+61
+00:13:06.000 --> 00:13:25.119
+draganrakita: In… in general, at least, I still didn't… I'm not sure even if I'm going to implement that, but you want to implement something like steel intersection. You have 4 threads, or 4 cores, that execute in the… in the parallel, and they steal for one… one single queue.
+
+62
+00:13:25.510 --> 00:13:32.199
+draganrakita: And whatever the core finish, executed transaction, it steals another transaction from the queue.
+
+63
+00:13:32.370 --> 00:13:39.870
+draganrakita: In that sense, every core that's not… that wants more work will steal the task from that queue.
+
+64
+00:13:40.980 --> 00:13:45.500
+draganrakita: At least, this is, like, one of examples how could this, like, work.
+
+65
+00:13:45.670 --> 00:13:50.719
+draganrakita: Worst case for that, if the last Task is the biggest one.
+
+66
+00:13:51.050 --> 00:13:58.160
+draganrakita: And the biggest task is 60 million, so it's like… It's… yeah.
+
+67
+00:13:59.270 --> 00:14:01.200
+draganrakita: It's not worth it, to be honest.
+
+68
+00:14:01.760 --> 00:14:06.539
+Toni Wahrstaetter: So compared to, like, 60 million gas limit, it's already, like, one-fourth.
+
+69
+00:14:06.700 --> 00:14:12.330
+Toni Wahrstaetter: And compared to, like, 100 million, like, the effect will just become… Smaller and smaller.
+
+70
+00:14:12.760 --> 00:14:13.810
+draganrakita: Yeah, exactly.
+
+71
+00:14:28.510 --> 00:14:33.289
+Toni Wahrstaetter: Yeah, anyone else who wants to chime in, voice an opinion?
+
+72
+00:14:40.270 --> 00:14:42.030
+Toni Wahrstaetter: Otherwise,
+
+73
+00:14:42.200 --> 00:14:51.599
+Toni Wahrstaetter: We don't have to take a decision today anyways. The default would be just we don't change anything, and the gas used would stay out of the block of access list.
+
+74
+00:14:52.010 --> 00:15:02.380
+Toni Wahrstaetter: We can also use, the time around DevConnect to discuss that further. Maybe clients, get to comparing how they would eventually parallelize
+
+75
+00:15:02.930 --> 00:15:08.739
+Toni Wahrstaetter: But in general, I agree. This argument of Dragon does make a lot of sense, that
+
+76
+00:15:08.990 --> 00:15:11.449
+Toni Wahrstaetter: We might improve the worst case.
+
+77
+00:15:11.590 --> 00:15:13.800
+Toni Wahrstaetter: But it might not be worth it.
+
+78
+00:15:15.050 --> 00:15:28.740
+Po: hello, Tani. Yeah, go ahead. I have a question. Because I joined later, the question is, shall we schedule the transaction execution by guest used?
+
+79
+00:15:29.820 --> 00:15:37.689
+Toni Wahrstaetter: Yes, exactly. If we put the gas used values into the block lab access list, if this is kind of useful information for parallelizing.
+
+80
+00:15:38.210 --> 00:15:47.470
+Po: Okay, I recently just did an experiment with gas limit. Yeah, it seems this information is
+
+81
+00:15:48.260 --> 00:15:55.469
+Po: Enough, and it seems the most time-consuming
+
+82
+00:15:56.130 --> 00:16:01.320
+Po: Transactions will dominate the block execution time.
+
+83
+00:16:01.720 --> 00:16:07.419
+Po: Yeah, maybe later I can show a demo, so you can see the results.
+
+84
+00:16:07.650 --> 00:16:13.049
+Po: Yeah, we can't schedule just by the gas limit, yeah.
+
+85
+00:16:15.010 --> 00:16:27.640
+Toni Wahrstaetter: Exactly, yeah, this… these are, like, the… there are three options, scheduling just by… or four options. Just naively scheduling, by their order, as they are in the block, then you can use the guest limit.
+
+86
+00:16:27.800 --> 00:16:40.950
+Toni Wahrstaetter: then you can use the gas used, which would require us to add it into the block of access list, and the most hacky solution would be you take the balanced diff, and from that you infer the gas used, because
+
+87
+00:16:41.150 --> 00:16:45.530
+Toni Wahrstaetter: Every, every time you pay fees, it's also a balanced diff.
+
+88
+00:16:47.150 --> 00:16:55.030
+Toni Wahrstaetter: yeah, it might be attackable, and the cleanest solution would be to just use the gas used, but as Dragon said,
+
+89
+00:16:55.670 --> 00:16:59.709
+Toni Wahrstaetter: Worst case scenarios are still, like, very contained.
+
+90
+00:16:59.810 --> 00:17:00.740
+mark: Bye.
+
+91
+00:17:00.740 --> 00:17:05.169
+Toni Wahrstaetter: the 7825 transaction cost limit.
+
+92
+00:17:05.710 --> 00:17:09.799
+Toni Wahrstaetter: And we might just ignore it, ignore the whole topic, and don't include it.
+
+93
+00:17:10.170 --> 00:17:13.900
+Toni Wahrstaetter: But yeah, definitely happy to look at your results there.
+
+94
+00:17:15.589 --> 00:17:29.789
+mark: Yeah, so sorry, just, I joined a bit late, so I'm not… So, one of the things that we've discovered with parallelization in Aragon is we've basically ended up with two phases. We do the execution phase.
+
+95
+00:17:30.649 --> 00:17:35.489
+mark: And then we do the receipt phase at the end, because…
+
+96
+00:17:35.939 --> 00:17:46.069
+mark: Depending on the order in which parallel execution is happening, if you use a common gas port, it basically, you're gonna go out of gas.
+
+97
+00:17:46.419 --> 00:17:57.789
+mark: Essentially, when, in fact, you wouldn't, once you… once you get to the end of it. So having… having the gas per execution would make that process a lot easier, basically.
+
+98
+00:17:58.149 --> 00:18:05.799
+mark: Because it means while you're execute… you know, when you execute a particular transaction, you can check its gas at the time.
+
+99
+00:18:06.669 --> 00:18:10.859
+mark: Which you generally can't do when you're executing in parallel.
+
+100
+00:18:11.009 --> 00:18:12.709
+mark: Because you don't know the order.
+
+101
+00:18:13.639 --> 00:18:14.929
+mark: If you see what I mean.
+
+102
+00:18:17.340 --> 00:18:17.950
+Toni Wahrstaetter: Yep.
+
+103
+00:18:18.320 --> 00:18:22.520
+Toni Wahrstaetter: Yeah, this is… this is… this is exactly the argument. Yeah.
+
+104
+00:18:22.620 --> 00:18:24.180
+mark: I had too, yeah.
+
+105
+00:18:24.180 --> 00:18:41.920
+Toni Wahrstaetter: Dragon's counterargument is, like, that even if it turns out you scheduled them in a way where you did, like, the worst job possible, for example, you were tricked into scheduling that way, then the worst case would still be, like, you would maximally have, like, one transaction on top.
+
+106
+00:18:41.920 --> 00:18:44.370
+Toni Wahrstaetter: While all cores are idling.
+
+107
+00:18:44.390 --> 00:18:49.779
+Toni Wahrstaetter: And this transaction only has a size of 16 million, which is, like, 1 fourth of…
+
+108
+00:18:50.070 --> 00:18:52.220
+Toni Wahrstaetter: Yeah, what do you mean?
+
+109
+00:18:52.220 --> 00:18:58.870
+mark: The problem is more that if you've got transactions with reverts in the middle of them.
+
+110
+00:18:59.100 --> 00:19:06.259
+mark: As you're processing, the transaction looks like it's using more gas than it should do, and…
+
+111
+00:19:06.390 --> 00:19:11.050
+mark: What then happens is, it's generally fine, but if you're on a full block.
+
+112
+00:19:11.180 --> 00:19:16.099
+mark: And you get to the final transactions, you can basically run out of gas too soon.
+
+113
+00:19:16.240 --> 00:19:17.449
+mark: If you see what I mean.
+
+114
+00:19:19.100 --> 00:19:26.630
+mark: So you get a set of edge cases around… Failing blocks, on gas.
+
+115
+00:19:27.340 --> 00:19:32.849
+mark: When actually they don't, because the… effectively, the transaction looks like it's using a lot of gas, then it reverts.
+
+116
+00:19:35.890 --> 00:19:36.490
+mark: So…
+
+117
+00:19:36.490 --> 00:19:39.630
+draganrakita: I'm not exactly following this use case.
+
+118
+00:19:41.520 --> 00:19:50.429
+draganrakita: Are we talking about if the intersection is not spending exact amount of gas that it should be?
+
+119
+00:19:50.800 --> 00:19:52.030
+draganrakita: Or something else.
+
+120
+00:19:52.180 --> 00:19:56.169
+mark: Well, I mean, the transient gas cost of a transaction
+
+121
+00:19:56.600 --> 00:20:00.050
+mark: Changes, depending on whether it reverts or not.
+
+122
+00:20:01.110 --> 00:20:03.140
+mark: And…
+
+123
+00:20:05.350 --> 00:20:14.080
+mark: Basically, that means you end up with some cases when it looks like they're overusing gas. So you get out of gas sooner than you expect.
+
+124
+00:20:14.200 --> 00:20:16.790
+mark: If you know what the transaction gas is.
+
+125
+00:20:16.950 --> 00:20:19.150
+mark: You're never gonna hit that situation.
+
+126
+00:20:21.070 --> 00:20:25.099
+draganrakita: You mean if the trace section reverts, all the gas are…
+
+127
+00:20:25.520 --> 00:20:31.050
+draganrakita: He spent, even if the gas is not, like… used.
+
+128
+00:20:31.350 --> 00:20:32.179
+draganrakita: It's it like that.
+
+129
+00:20:32.180 --> 00:20:39.339
+mark: Yeah, it looks like it's… so it depends, to some extent… extent, it depends how you're doing the gas calculation.
+
+130
+00:20:40.070 --> 00:20:42.850
+draganrakita: Yeah, then this is, like…
+
+131
+00:20:43.110 --> 00:20:53.270
+draganrakita: Good case where the cycle should take a lot more time, but in reality, it takes one end of the
+
+132
+00:20:54.030 --> 00:21:00.740
+draganrakita: time than it should be. It's like, yeah, it's faster to execute than we expect from the gas.
+
+133
+00:21:02.030 --> 00:21:03.500
+draganrakita: Okay, that's a good comment.
+
+134
+00:21:03.920 --> 00:21:04.660
+mark: Yeah.
+
+135
+00:21:04.900 --> 00:21:06.319
+Jared Wasinger: Why is it's not clear…
+
+136
+00:21:06.770 --> 00:21:08.420
+mark: Does this…
+
+137
+00:21:08.730 --> 00:21:10.070
+Jared Wasinger: Sorry, go ahead.
+
+138
+00:21:11.130 --> 00:21:17.149
+mark: It just executes differently, and basically what we've discovered in testing is you get the occasional block.
+
+139
+00:21:17.410 --> 00:21:25.309
+mark: that you go out of gas right close to the end, basically. And it's only… so it only impacts full blocks, basically.
+
+140
+00:21:26.900 --> 00:21:28.360
+mark: Or foolish blocks.
+
+141
+00:21:30.730 --> 00:21:40.050
+Jared Wasinger: Yeah, I… I don't fully follow, but I… just to be clear, like, the implication of this…
+
+142
+00:21:40.750 --> 00:21:45.659
+Jared Wasinger: Of not having the gas used here is basically that if we…
+
+143
+00:21:46.360 --> 00:21:58.659
+Jared Wasinger: That we can't invalidate a block for the actual gas use of all the transactions, going over what is allowed by the gas pool.
+
+144
+00:21:58.870 --> 00:22:05.880
+Jared Wasinger: We can't do that until we, like, we have to execute all the transactions and validate it at the end, right?
+
+145
+00:22:05.880 --> 00:22:11.759
+mark: Yeah. In the collection of the receipts? Is that… that's the issue you're getting at here? Yeah, yeah, that's the issue.
+
+146
+00:22:11.760 --> 00:22:12.610
+Jared Wasinger: Okay.
+
+147
+00:22:14.810 --> 00:22:15.339
+Toni Wahrstaetter: Let's see.
+
+148
+00:22:15.760 --> 00:22:23.799
+Toni Wahrstaetter: So, essentially, at the very end, you would go through all the transactions again, and determine if they actually
+
+149
+00:22:23.990 --> 00:22:25.280
+Toni Wahrstaetter: Fit into the block.
+
+150
+00:22:25.280 --> 00:22:45.080
+mark: Yeah, which, you know, in practice, it's not a very computationally heavy process, so it doesn't make much difference to the… because… because you need… the thing is, you need to do that for the receipts anyway, because you've got a… you need the… you need the aggregate number as the… so you end up having to total the receipts at the end anyway.
+
+151
+00:22:46.110 --> 00:22:53.849
+mark: And comparatively, it's very little processing to do that, so you don't get a big advantage in doing that.
+
+152
+00:22:54.170 --> 00:23:03.260
+mark: Well, doing that whole process at the end doesn't seem to cost much time, in terms of the scheme of processing a block.
+
+153
+00:23:04.990 --> 00:23:06.089
+Toni Wahrstaetter: Right, and then…
+
+154
+00:23:06.090 --> 00:23:09.399
+Jared Wasinger: The main downside is… is just that you can't… you can't…
+
+155
+00:23:09.510 --> 00:23:14.119
+Jared Wasinger: You can't know that the block is bad until you've processed all the…
+
+156
+00:23:14.440 --> 00:23:17.350
+Jared Wasinger: Yeah, correct. transactions in this circumstance, so…
+
+157
+00:23:19.660 --> 00:23:25.409
+Toni Wahrstaetter: Right, but this is not really a DOS vector or anything, so… to me, it feels like…
+
+158
+00:23:26.300 --> 00:23:38.419
+Toni Wahrstaetter: This is not really a strong argument for having the gas used values in the popular excess list. I do see why it makes this process cleaner.
+
+159
+00:23:38.690 --> 00:23:46.359
+Toni Wahrstaetter: Because you could just compare each transaction individually and independently to the gas used value in the popular access list.
+
+160
+00:23:46.560 --> 00:23:47.380
+mark: Yeah.
+
+161
+00:23:49.470 --> 00:23:52.369
+Toni Wahrstaetter: Yeah, so it's a nice… Yeah, good point.
+
+162
+00:23:52.410 --> 00:23:55.719
+mark: I'm just… yeah, so, in the scheme of things, it's a nice path.
+
+163
+00:23:57.890 --> 00:24:00.430
+Toni Wahrstaetter: Right, yeah. Yeah, I agree to that.
+
+164
+00:24:00.610 --> 00:24:04.250
+Toni Wahrstaetter: Yeah, I think… I think for now,
+
+165
+00:24:04.450 --> 00:24:12.739
+Toni Wahrstaetter: We would… we would not include it, but, yeah, we still have some time to recite this topic. We don't have to take a decision of,
+
+166
+00:24:13.110 --> 00:24:19.759
+Toni Wahrstaetter: Today, So, we can also discuss, during DevConnect and at the next, breakout call again.
+
+167
+00:24:20.670 --> 00:24:23.540
+Toni Wahrstaetter: Yeah, it's good that we have,
+
+168
+00:24:23.910 --> 00:24:29.009
+Toni Wahrstaetter: Brought this topic up so that people are aware of this possibility.
+
+169
+00:24:32.410 --> 00:24:34.810
+Toni Wahrstaetter: Any more comments on that?
+
+170
+00:24:51.850 --> 00:24:55.590
+Toni Wahrstaetter: Perfect, then let's move on to the next agenda item.
+
+171
+00:24:56.040 --> 00:25:01.110
+Toni Wahrstaetter: Actually, the next agenda item is client, indefinite updates.
+
+172
+00:25:01.230 --> 00:25:07.789
+Toni Wahrstaetter: So, if you want, Stefan, I would invite you to Give us an update there.
+
+173
+00:25:08.750 --> 00:25:20.360
+Stefan Starflinger: So, we, overhauled a little bit how we do definites. We added a new boot node, setup, so that's why we've been kind of iterating on our side a little bit.
+
+174
+00:25:20.520 --> 00:25:24.680
+Stefan Starflinger: I can also share, kind of, the spec updates,
+
+175
+00:25:24.830 --> 00:25:30.369
+Stefan Starflinger: that I haven't mentioned yet. PK has, added, EVM fuzz.
+
+176
+00:25:30.890 --> 00:25:33.680
+Stefan Starflinger: Tool to the spammer that we can use.
+
+177
+00:25:33.920 --> 00:25:38.360
+Stefan Starflinger: It basically creates contracts with, different opcodes.
+
+178
+00:25:38.550 --> 00:25:55.439
+Stefan Starflinger: And if you run that with different client pairings, there's still a few issues that can be found. So I'm generally kind of waiting for a very or relatively stable kurtosis testnet.
+
+179
+00:25:55.540 --> 00:25:59.349
+Stefan Starflinger: And to see that all clients are decently working together.
+
+180
+00:25:59.570 --> 00:26:04.999
+Stefan Starflinger: And I think also with the spec changes, it would be good to get some client updates also.
+
+181
+00:26:05.140 --> 00:26:14.290
+Stefan Starflinger: kind of where we are at, because it's, it's, wouldn't make sense to spend money on a DevNet, if it's not running stable yet.
+
+182
+00:26:18.480 --> 00:26:23.880
+Toni Wahrstaetter: Yeah, thanks for the update. Maybe let's ask client teams how…
+
+183
+00:26:24.050 --> 00:26:30.330
+Toni Wahrstaetter: Far in the process are we, or how close do you feel being able to turn a definite?
+
+184
+00:26:30.880 --> 00:26:33.299
+Toni Wahrstaetter: When it would make sense, of course.
+
+185
+00:26:33.980 --> 00:26:37.969
+Jared Wasinger: Yeah, I guess I'll just go,
+
+186
+00:26:38.430 --> 00:26:45.170
+Jared Wasinger: I think that Geth is mostly ready, but, like, so we just had this new…
+
+187
+00:26:45.360 --> 00:26:54.129
+Jared Wasinger: test release… so, essentially, the Coinbase issue hasn't been entirely settled in Geth,
+
+188
+00:26:55.260 --> 00:26:58.759
+Jared Wasinger: But other than that, we would be ready to go.
+
+189
+00:27:01.800 --> 00:27:11.660
+Karim T.: On Bizzou, we are passing all of the tests related to Amsterdam, but we have a… I think, as other clients, we have a lot of issue in the tests that are testing old fork.
+
+190
+00:27:12.060 --> 00:27:25.869
+Karim T.: So, I'm not sure if we want to be sure that we are passing this test before starting the DevNet, or if we just say that it's bad configuration of the test, and we will see, maybe in the next version, if it's okay.
+
+191
+00:27:29.520 --> 00:27:34.889
+Karim T.: Because we don't really know if it's just because of a bad configuration in the test, or if it's really a…
+
+192
+00:27:35.180 --> 00:27:37.699
+Karim T.: A real issue or something, isn't it?
+
+193
+00:27:41.600 --> 00:27:43.790
+Stefan Starflinger: Do we have someone? Yeah, sorry.
+
+194
+00:27:44.210 --> 00:27:50.390
+Marc: I was just gonna say, for Nevermind, it's the same, just, going through these new tests,
+
+195
+00:27:50.810 --> 00:27:56.100
+Marc: This new test release, and just checking, why some of these tests are failing.
+
+196
+00:28:01.860 --> 00:28:08.749
+draganrakita: Same with RAT. I don't have any pending items on both sides.
+
+197
+00:28:09.020 --> 00:28:18.220
+draganrakita: So… Fixing tests on spec side, running them to confirm that everything is okay. It's, like, the next thing.
+
+198
+00:28:18.440 --> 00:28:21.769
+draganrakita: And after that, I think DevNet Zero could be spun up.
+
+199
+00:28:27.700 --> 00:28:40.070
+mark: So, where we are from an Aragon perspective is we've now got an implementation that we're testing. We're getting quite a few Hive test fails, so…
+
+200
+00:28:41.410 --> 00:28:51.380
+mark: Chome, who's actually working on it, is not on the call, because it's not good from a time zone perspective, but I'm wondering if there's somebody he can contact, just to find out whether
+
+201
+00:28:51.860 --> 00:28:56.460
+mark: Because this is the first time we're going through, he's trying to work out whether the fails are…
+
+202
+00:28:56.830 --> 00:29:05.470
+mark: us, or DevNet issues, testnet issues, or Hive issues. So, it would be good if there's somebody that we can put him in touch with.
+
+203
+00:29:08.670 --> 00:29:12.290
+mark: Because we're kind of bootstrapped in the hive process at the moment.
+
+204
+00:29:13.140 --> 00:29:21.960
+Toni Wahrstaetter: Yeah, definitely. So, I think the… the two people with the most insight on that process are Felipe and Rahul.
+
+205
+00:29:22.500 --> 00:29:29.390
+Toni Wahrstaetter: So, yeah, Rahul, I just see you on the call of the deep end, maybe you could get them a little bit?
+
+206
+00:29:29.820 --> 00:29:33.269
+felipe: Yeah, yeah, I'd like to catch up.
+
+207
+00:29:33.380 --> 00:29:36.879
+felipe: With everyone on the state of the tests, so…
+
+208
+00:29:37.310 --> 00:29:43.399
+felipe: There are a few spec changes that are needed that, actually impact…
+
+209
+00:29:43.630 --> 00:29:47.929
+felipe: So this is based on conversations on the block access list, Ether and D channel.
+
+210
+00:29:48.480 --> 00:29:59.620
+felipe: There's a more recent conversation with… with Sam, who's… Been leading the… the Execution Specs project.
+
+211
+00:30:00.210 --> 00:30:06.410
+felipe: And these changes are going to actually impact the specifications for all forks.
+
+212
+00:30:06.680 --> 00:30:10.439
+felipe: And so what I want to do right now is release a patch.
+
+213
+00:30:10.570 --> 00:30:15.380
+felipe: For the tests that has The changes that we need so that we can
+
+214
+00:30:15.490 --> 00:30:21.900
+felipe: Generate cleaner tests for block access lists. And this includes all the old forks.
+
+215
+00:30:22.860 --> 00:30:27.460
+felipe: So what this release did is it basically
+
+216
+00:30:27.630 --> 00:30:31.909
+felipe: Build all of the tests that we have in our test repo.
+
+217
+00:30:32.070 --> 00:30:34.059
+felipe: Across all of the forks.
+
+218
+00:30:34.730 --> 00:30:43.070
+felipe: generating block access lists for all of them, and so I expected quite a few failures.
+
+219
+00:30:43.540 --> 00:30:50.409
+felipe: Because this will reveal edge cases that we just haven't written targeted tests for block access lists yet.
+
+220
+00:30:50.980 --> 00:30:57.010
+felipe: But knowing that there are spec changes that are needed, means…
+
+221
+00:30:57.370 --> 00:31:00.849
+felipe: Right now, it's really hard to tell, which tests
+
+222
+00:31:01.140 --> 00:31:07.670
+felipe: Are, actually bad tests, and which ones are failing because the specs aren't up to date.
+
+223
+00:31:07.950 --> 00:31:12.169
+felipe: So there's this… Discrepancy of resolving
+
+224
+00:31:12.490 --> 00:31:17.420
+felipe: the specifications quick enough for Amsterdam, at least, so that we can
+
+225
+00:31:18.240 --> 00:31:24.500
+felipe: Put out a patch release for the tests, but also, ultimately, we have to go back and
+
+226
+00:31:24.740 --> 00:31:29.650
+felipe: Fix the specifications. It's basically related around charging gas.
+
+227
+00:31:29.970 --> 00:31:37.569
+felipe: For, memory expansion and… Loading account earlier, within each call.
+
+228
+00:31:38.040 --> 00:31:42.049
+felipe: And then continuing on with the call afterwards, so that we…
+
+229
+00:31:42.280 --> 00:31:46.320
+felipe: Only track the account if we have enough gas to track the account, and things like these.
+
+230
+00:31:46.480 --> 00:31:53.489
+felipe: And so, yeah, unfortunately, the current state of the tests don't… aren't very representative of
+
+231
+00:31:53.800 --> 00:31:57.029
+felipe: What the specifications, should be.
+
+232
+00:31:58.500 --> 00:31:59.420
+felipe: Currently.
+
+233
+00:32:03.710 --> 00:32:05.569
+Toni Wahrstaetter: Thank you very much for the update.
+
+234
+00:32:05.890 --> 00:32:11.800
+Toni Wahrstaetter: Yeah, I've just posted the PR I'm working on in the chat.
+
+235
+00:32:12.390 --> 00:32:14.720
+Toni Wahrstaetter: Just to summarize.
+
+236
+00:32:15.260 --> 00:32:24.420
+Toni Wahrstaetter: there are two things… some things are more like cleaning up. For example, putting the state tracker into the block environment instead of the state.
+
+237
+00:32:24.700 --> 00:32:29.940
+Toni Wahrstaetter: The more crucial thing you were referring to is really
+
+238
+00:32:30.210 --> 00:32:37.130
+Toni Wahrstaetter: Kind of splitting up the charging gas from checking the gas, and making sure that if we
+
+239
+00:32:37.320 --> 00:32:38.930
+Toni Wahrstaetter: Run out of gas.
+
+240
+00:32:39.780 --> 00:32:48.999
+Toni Wahrstaetter: or let me put it differently, that we never put an address into the block club access list, or any entry into the access list.
+
+241
+00:32:49.700 --> 00:32:52.610
+Toni Wahrstaetter: When we run out of gas afterwards.
+
+242
+00:32:53.570 --> 00:32:58.799
+Toni Wahrstaetter: Right, so you want to kinda… what, Dragon… I think Dragon was that… was saying that, or…
+
+243
+00:32:58.910 --> 00:33:04.789
+Toni Wahrstaetter: who was… I don't remember who brought it up, but is that already, like, addressed in my PR?
+
+244
+00:33:06.980 --> 00:33:13.309
+felipe: I… I'll need to go back. This is the new PR, right, after we've had conversations with Sam?
+
+245
+00:33:13.810 --> 00:33:14.440
+Toni Wahrstaetter: Right, yeah.
+
+246
+00:33:15.240 --> 00:33:23.809
+felipe: Okay, yeah, I had the… so I also posted my gas charge split PR, and this does, stabilize all the bad tests.
+
+247
+00:33:25.790 --> 00:33:32.470
+felipe: And this is… I'm not sure if this is all of the changes that we need, but I think this covers most of them.
+
+248
+00:33:33.020 --> 00:33:41.819
+felipe: And it does have all of the targeted block access list tests that are up to spec passing, and so I feel like
+
+249
+00:33:42.260 --> 00:33:49.019
+felipe: this PR that I worked on, and whether those changes are also in your PR, some version of that.
+
+250
+00:33:49.250 --> 00:33:52.639
+felipe: Is what we need for a more stable test release.
+
+251
+00:33:54.260 --> 00:34:05.280
+Toni Wahrstaetter: Perfect, yeah, then I will take those changes out of my PR and just leave it at this refactoring, where we move the, state tracker around.
+
+252
+00:34:06.700 --> 00:34:12.369
+felipe: Yeah, that sounds great. Internally, I think I just… I would like to get,
+
+253
+00:34:13.090 --> 00:34:15.549
+felipe: The steel team on board with
+
+254
+00:34:16.040 --> 00:34:25.099
+felipe: putting these changes up for Amsterdam first, and then we can focus on the full forks, refactor to how the specifications charge gas in general.
+
+255
+00:34:25.719 --> 00:34:27.670
+felipe: After the fact, so that we can…
+
+256
+00:34:28.130 --> 00:34:30.100
+felipe: Get our tests up to speed.
+
+257
+00:34:36.360 --> 00:34:37.809
+Toni Wahrstaetter: Perfect, thank you.
+
+258
+00:34:39.210 --> 00:34:44.739
+Toni Wahrstaetter: Awesome, yeah, I haven't, haven't seen your PI yet. I will, I will review it. Perfect.
+
+259
+00:34:48.040 --> 00:34:51.120
+Toni Wahrstaetter: Any other, updates we should discuss?
+
+260
+00:34:52.199 --> 00:34:54.770
+Toni Wahrstaetter: Regarding testing, regarding the specs?
+
+261
+00:34:55.320 --> 00:34:57.570
+Toni Wahrstaetter: Making sure we don't forget anything.
+
+262
+00:35:05.150 --> 00:35:12.419
+Toni Wahrstaetter: I'm relaying this message from Stefan. The clients please run the EVM fast scenario for Spammer.
+
+263
+00:35:17.860 --> 00:35:18.720
+Toni Wahrstaetter: Great.
+
+264
+00:35:20.130 --> 00:35:24.679
+Toni Wahrstaetter: If there's nothing else, then we can move on to the next agenda item.
+
+265
+00:35:28.350 --> 00:35:37.010
+Toni Wahrstaetter: Which is… A rather old topic, it's still about, do we want to include the reads, or… Don't.
+
+266
+00:35:37.270 --> 00:35:48.009
+Toni Wahrstaetter: With reads, we usually mean the state locations, so unmodified accounts that come with empty, lists of changes objects, and also
+
+267
+00:35:48.150 --> 00:35:49.340
+Toni Wahrstaetter: storage keys?
+
+268
+00:35:50.240 --> 00:35:56.780
+Toni Wahrstaetter: So everything that is touched within the block but not modified. We have discussed that topic, a while ago.
+
+269
+00:35:57.290 --> 00:36:01.220
+Toni Wahrstaetter: And Gary did some benchmarks very recently.
+
+270
+00:36:01.740 --> 00:36:05.600
+Toni Wahrstaetter: Gary, are you on the call? Do you wanna… Quickly.
+
+271
+00:36:05.600 --> 00:36:06.180
+Gary Rong: Yo.
+
+272
+00:36:06.180 --> 00:36:07.079
+Toni Wahrstaetter: Yeah, what you did there.
+
+273
+00:36:08.150 --> 00:36:16.830
+Gary Rong: Yeah, I can, share my… right up, can I share my screen?
+
+274
+00:36:18.820 --> 00:36:20.000
+Toni Wahrstaetter: Yeah, should work.
+
+275
+00:36:22.230 --> 00:36:24.350
+Gary Rong: Okay, can you see my screen?
+
+276
+00:36:24.350 --> 00:36:25.609
+Toni Wahrstaetter: I can see it, yeah.
+
+277
+00:36:26.850 --> 00:36:35.820
+Gary Rong: Yeah, so, I've been discussing with Tony recently about whether to include the read location in the BAL,
+
+278
+00:36:36.090 --> 00:36:43.089
+Gary Rong: So, at the beginning, I was at the opposite side, because I think it's not that easy to…
+
+279
+00:36:43.440 --> 00:36:48.090
+Gary Rong: properly gets all the relocation during the block's execution.
+
+280
+00:36:48.520 --> 00:36:55.760
+Gary Rong: And, because we need to compare the BAL data in the consistency,
+
+281
+00:36:56.660 --> 00:37:02.830
+Gary Rong: So if we provide, like, slightly different data, since the consensus will be few.
+
+282
+00:37:03.110 --> 00:37:12.010
+Gary Rong: like, I am not very confident about it, so I suggest that maybe we can,
+
+283
+00:37:12.680 --> 00:37:18.080
+Gary Rong: Exclude the location in the initial version.
+
+284
+00:37:18.650 --> 00:37:27.790
+Gary Rong: But, yeah, later I try to, measure the performance gain we can have by including… by utilizing this relocation.
+
+285
+00:37:28.210 --> 00:37:41.199
+Gary Rong: So, I think the intention of the BAI is to try to optimize the block's execute… block execution, and, so that we can push the network S limit, upwards safely.
+
+286
+00:37:41.540 --> 00:37:50.900
+Gary Rong: But we need to ensure that the BL can benefit, basically, all the potential scenarios in the block's execution.
+
+287
+00:37:51.380 --> 00:37:57.749
+Gary Rong: One potential worst case I can imagine is that the read-heavy block.
+
+288
+00:37:58.630 --> 00:38:05.449
+Gary Rong: And so now the… gas cost for the code as load is.
+
+289
+00:38:05.590 --> 00:38:20.080
+Gary Rong: $2,100, and for the account access, it's 2600. So, with the current network guest limit, we can, in theory, have, 20…
+
+290
+00:38:20.590 --> 00:38:23.560
+Gary Rong: thousand, S-loading within a single block.
+
+291
+00:38:25.240 --> 00:38:34.059
+Gary Rong: Yeah, so I try to measure, like, how much time we need to spend if we want to access this
+
+292
+00:38:34.280 --> 00:38:37.850
+Gary Rong: So many, storage or accounts.
+
+293
+00:38:38.610 --> 00:38:47.410
+Gary Rong: And, with Osaka, like, we limit the maximum gas limit within a single transaction to 16 million.
+
+294
+00:38:47.680 --> 00:38:49.140
+Gary Rong: So,
+
+295
+00:38:49.360 --> 00:38:59.550
+Gary Rong: It means that we can at least have 4 transactions within a single block. So the baseline I have chose is a thread with 4,
+
+296
+00:39:00.680 --> 00:39:08.650
+Gary Rong: So the first thing I did is, I tried to measure the batch rate with different thread over the raw SSD.
+
+297
+00:39:09.340 --> 00:39:19.380
+Gary Rong: And, yeah, it turns out that, with 34, we can achieve this, 70s, 7…
+
+298
+00:39:19.640 --> 00:39:31.999
+Gary Rong: 70,000 QPS, curry per second, and with 128, we can achieve, Roughly… 10x the speed up.
+
+299
+00:39:32.320 --> 00:39:38.600
+Gary Rong: so, yeah. And,
+
+300
+00:39:39.100 --> 00:39:52.120
+Gary Rong: like, it's the real performance over the raw SSD, and the next thing I did is I tried to perform, this batch read over a real E3 million guest node.
+
+301
+00:39:52.600 --> 00:40:02.810
+Gary Rong: The background is that, the database size is, 288 gigabytes for the… Key-value store.
+
+302
+00:40:03.360 --> 00:40:14.580
+Gary Rong: And, yeah, so… With 4thread, so… QPS is around… Mmm, 22K.
+
+303
+00:40:15.010 --> 00:40:16.350
+Gary Rong: And,
+
+304
+00:40:16.870 --> 00:40:26.210
+Gary Rong: if we give, like, 128 thread, the QPS can go up to, 200K, so it's 10x faster.
+
+305
+00:40:26.560 --> 00:40:33.219
+Gary Rong: And this number, like, totally changed my mind, and I think it's worthwhile, because,
+
+306
+00:40:33.830 --> 00:40:38.860
+Gary Rong: It is 10x faster for this particular, rehabic scenario.
+
+307
+00:40:39.470 --> 00:40:42.159
+Gary Rong: And another interesting thing is,
+
+308
+00:40:42.680 --> 00:41:00.140
+Gary Rong: I've… I have observed is that, before the thread, 32, if we give more thread, like, higher concurrency, the reperformance, will be increased linearly, but after that, we, like.
+
+309
+00:41:00.670 --> 00:41:09.649
+Gary Rong: Hit the acceleration point, and the performance… there is no significant performance gain by having more concurrency.
+
+310
+00:41:09.860 --> 00:41:17.009
+Gary Rong: So I think it might be relevant with the physical structure of the SSD, because internally it has some…
+
+311
+00:41:17.760 --> 00:41:21.629
+Gary Rong: Channel inside, and it has a specific capacity.
+
+312
+00:41:23.240 --> 00:41:28.950
+Gary Rong: Yeah, so let's say the acceleration point is 32 thread.
+
+313
+00:41:29.140 --> 00:41:39.550
+Gary Rong: And, given that, for a single transaction, the maximum gas limit is 16 million gas. So, I think we can say that
+
+314
+00:41:39.850 --> 00:41:47.900
+Gary Rong: Before the network gas limit, be increased to 500 mega… a million gas.
+
+315
+00:41:48.020 --> 00:41:52.089
+Gary Rong: So BAL waste red location will still be beneficial for us.
+
+316
+00:41:53.540 --> 00:42:13.530
+Gary Rong: Yeah, but all the benchmarks are performed over the gas implementation, like, different client can… because different clients use totally different database, and the number might be slightly different, or could be completely different, so I would recommend you guys to
+
+317
+00:42:13.830 --> 00:42:22.149
+Gary Rong: simulated the same thing, and to make sure, like, our numbers are aligned with each other, so that we can make, so…
+
+318
+00:42:22.430 --> 00:42:25.120
+Gary Rong: Final decision to include it or not.
+
+319
+00:42:27.960 --> 00:42:29.670
+Gary Rong: Yeah,
+
+320
+00:42:30.220 --> 00:42:40.120
+Gary Rong: I guess that's it. I did link my benchmark program here, so if you want to have a reference implementation, you can check it out.
+
+321
+00:42:40.530 --> 00:42:44.269
+Gary Rong: Yeah, but otherwise, syncs, that's it.
+
+322
+00:42:46.690 --> 00:42:48.330
+Toni Wahrstaetter: Awesome, thank you very much.
+
+323
+00:42:49.440 --> 00:42:52.080
+Toni Wahrstaetter: Are there any questions people have?
+
+324
+00:42:54.220 --> 00:43:01.090
+Łukasz Rozmej: So, one comment from me, because Gary used 28 thread CPU, so this 32…
+
+325
+00:43:01.200 --> 00:43:11.990
+Łukasz Rozmej: thread limit, increases might be as well from the CPU being, completely used, but I don't know. That might be a good thing to, check.
+
+326
+00:43:12.710 --> 00:43:21.879
+Łukasz Rozmej: So, maybe on different CPU and different disk, or, like, especially, like, disk in RAID, we could achieve even more, scaling.
+
+327
+00:43:22.840 --> 00:43:23.440
+Gary Rong: Yep.
+
+328
+00:43:23.680 --> 00:43:31.550
+Gary Rong: It could be possible, so, yeah, we can try to use a different setup to run the benchmark again, and .
+
+329
+00:43:35.750 --> 00:43:40.429
+mark: Sorry, so how many CPU threads… so how many CPU threads have you got?
+
+330
+00:43:41.620 --> 00:43:43.320
+mark: Cause you, my…
+
+331
+00:43:43.630 --> 00:43:51.720
+Gary Rong: In my setup, I use, Intro, like, 147… K.
+
+332
+00:43:53.810 --> 00:43:56.369
+Gary Rong: So it should have, like, roughly 20s.
+
+333
+00:43:56.650 --> 00:44:00.450
+Gary Rong: cost for… concurrency.
+
+334
+00:44:00.450 --> 00:44:01.609
+mark: Yeah, so the question…
+
+335
+00:44:01.610 --> 00:44:04.529
+Łukasz Rozmej: 20 cars and 28 threads.
+
+336
+00:44:06.440 --> 00:44:07.220
+Gary Rong: Hmm.
+
+337
+00:44:08.440 --> 00:44:10.659
+mark: But, so, for Disgao.
+
+338
+00:44:11.210 --> 00:44:19.970
+mark: you're not… it may be offloaded off the core. The interesting question is, if you have fewer cores and the same number of threads, what does it do to the performance?
+
+339
+00:44:22.500 --> 00:44:25.350
+Gary Rong: Yeah, I think,
+
+340
+00:44:25.830 --> 00:44:37.350
+Gary Rong: When I tried… when I did my benchmark, like, it is the only program I am running, so I would assume that it can use all the, available cores.
+
+341
+00:44:37.570 --> 00:44:39.660
+Gary Rong: But, as I said,
+
+342
+00:44:39.790 --> 00:44:53.139
+Gary Rong: in my setup, like, I use this particular CPU and this particular SSD. If we use something different, maybe the number could be, like, slightly different. So, yeah.
+
+343
+00:44:53.510 --> 00:44:56.910
+Gary Rong: Yeah, I'm just wondering how much CPUs were doing.
+
+344
+00:44:57.420 --> 00:44:58.270
+mark: Because they're basically.
+
+345
+00:44:58.820 --> 00:44:59.780
+mark: this guy,
+
+346
+00:45:00.070 --> 00:45:02.509
+mark: or… or device I have.
+
+347
+00:45:04.590 --> 00:45:09.170
+Gary Rong: So in this, benchmark case,
+
+348
+00:45:09.930 --> 00:45:14.829
+Gary Rong: I… basically, we have no, CPU, computation.
+
+349
+00:45:14.940 --> 00:45:17.629
+mark: Because, we assume it's a really heavy…
+
+350
+00:45:17.830 --> 00:45:29.799
+Gary Rong: block, and the read is the slowest operation. So, for the worst case, it's just all the read without any VMIC computation.
+
+351
+00:45:31.500 --> 00:45:34.700
+mark: Yes, that's what I'm saying. So that implies that, actually.
+
+352
+00:45:34.860 --> 00:45:38.880
+mark: you can… your number of threads is not CPU dependent.
+
+353
+00:45:39.300 --> 00:45:43.089
+mark: It's… you should be able to increase the number of
+
+354
+00:45:43.400 --> 00:45:46.880
+mark: threads you've got allocated to I.O.
+
+355
+00:45:48.010 --> 00:45:54.110
+mark: Because… the CPUs are just idle. They're probably waiting for the I.O. to return.
+
+356
+00:46:00.150 --> 00:46:02.589
+mark: Because it's the I.O. subsystem that you're loading.
+
+357
+00:46:07.770 --> 00:46:08.940
+mark: If you see what I mean.
+
+358
+00:46:15.580 --> 00:46:20.880
+mark: Anyway, so it'd be interesting to see what the numbers would look like on less threads.
+
+359
+00:46:21.060 --> 00:46:23.589
+mark: I mean, less CPUs, same number of threads.
+
+360
+00:46:28.550 --> 00:46:29.190
+Gary Rong: Yeah.
+
+361
+00:46:32.210 --> 00:46:38.889
+Toni Wahrstaetter: Yeah, and it would be great if clients can also reproduce the… reproduce that, individually, just if we have.
+
+362
+00:46:39.560 --> 00:46:51.319
+Toni Wahrstaetter: more data points on the topic, as well as we should try it with double the state size. So currently, in Gary's analysis, the state was at 288 gigabytes.
+
+363
+00:46:52.000 --> 00:47:00.490
+Toni Wahrstaetter: I think right now… We have a state growth of, like, 60… 6200 gigabytes per year.
+
+364
+00:47:00.660 --> 00:47:04.180
+Toni Wahrstaetter: So, we should definitely try it with double the state size, too.
+
+365
+00:47:04.620 --> 00:47:08.890
+Toni Wahrstaetter: And see if this changes something in the numbers.
+
+366
+00:47:14.670 --> 00:47:21.430
+Toni Wahrstaetter: But in general, because one thing we have to consider when it comes to the state breeds is that the worst case
+
+367
+00:47:21.550 --> 00:47:23.719
+Toni Wahrstaetter: Block level access this side.
+
+368
+00:47:23.970 --> 00:47:27.580
+Toni Wahrstaetter: Size is also for the exact same scenario.
+
+369
+00:47:27.910 --> 00:47:43.810
+Toni Wahrstaetter: So, we might end up in a situation where we have, like, the worst-case block containing a lot of storage reads, while a rather big block… it's not the worst-case block, because call data will still be
+
+370
+00:47:44.020 --> 00:47:53.270
+Toni Wahrstaetter: Allowing you to get to a bigger block, but it's a… it's a big block. So, for example, at 60 million guests, the blocks of access list would be at, like.
+
+371
+00:47:53.470 --> 00:47:57.320
+Toni Wahrstaetter: 850 kilobytes to 1MB.
+
+372
+00:47:58.840 --> 00:48:05.819
+Toni Wahrstaetter: Which takes a… with 50 ambit, takes 165 milliseconds to download.
+
+373
+00:48:08.570 --> 00:48:20.030
+Toni Wahrstaetter: So this is all something, all things we have to consider here. So if we, like, get something from the state locations, then it must be significant, and it must be
+
+374
+00:48:20.330 --> 00:48:24.149
+Toni Wahrstaetter: Worth the costs we pay, on bandwidth.
+
+375
+00:48:24.710 --> 00:48:27.419
+Toni Wahrstaetter: But based on this analysis, it looks like it.
+
+376
+00:48:27.980 --> 00:48:30.050
+mark: And it looks like it's… it's…
+
+377
+00:48:30.200 --> 00:48:36.519
+Toni Wahrstaetter: tops at 500 million. So, like, at 500 million, we have enough transactions
+
+378
+00:48:37.160 --> 00:48:40.500
+Toni Wahrstaetter: That you can, nicely parallelize them.
+
+379
+00:48:41.090 --> 00:48:47.350
+Toni Wahrstaetter: And then… The benefits we get are a little lower, or less significant.
+
+380
+00:48:47.630 --> 00:48:51.719
+Toni Wahrstaetter: And… Yeah. Go ahead, Mark. You wanna say something?
+
+381
+00:48:51.720 --> 00:49:00.059
+mark: I was going to say, the other… the other thing, though, is that if you're running… when you start running parallel execution, if you parallelize the transactions.
+
+382
+00:49:00.300 --> 00:49:04.830
+mark: You get a fair amount of natural Parallelized reads, anyway.
+
+383
+00:49:06.050 --> 00:49:09.880
+mark: Right, because if you've got all… if you've got all your executions running.
+
+384
+00:49:10.620 --> 00:49:14.850
+mark: N of them hit a read, so you're running reads in parallel anyway.
+
+385
+00:49:16.110 --> 00:49:17.530
+mark: If you see what I mean.
+
+386
+00:49:17.530 --> 00:49:25.790
+Toni Wahrstaetter: Exactly, exactly. That's why Gary took 4 as the benchmark, because essentially, with 60 million transactions.
+
+387
+00:49:26.020 --> 00:49:30.569
+Toni Wahrstaetter: You will be able to parallelize 4 transactions at the same time.
+
+388
+00:49:30.760 --> 00:49:36.460
+Toni Wahrstaetter: Which is essentially the same as doing, like, Using 4 threads for reading.
+
+389
+00:49:36.600 --> 00:49:39.070
+Toni Wahrstaetter: Right? This is what you're referring to.
+
+390
+00:49:39.070 --> 00:49:55.199
+mark: Oh, yeah, and I'm saying, basically, so, if you've got all the… I mean, in practice, if you've got all the reads up front when you start parallel execution, you'll kick off a set of parallel reads, but also, you've got, like, a race condition in the sense that
+
+391
+00:49:55.970 --> 00:50:05.520
+mark: you won't… I don't think you'll wait to start executing transactions, and then, kind of, the early transactions will actually go to the disks themselves.
+
+392
+00:50:05.690 --> 00:50:08.390
+mark: Right? Because they get there before the read comes back.
+
+393
+00:50:09.020 --> 00:50:19.179
+mark: And the question, if you care about bandwidth, is what boost do you get over the natural parallel flow, if you see what I mean?
+
+394
+00:50:19.720 --> 00:50:25.400
+mark: Because you could be driving the disk quite fast anyway, just from the parallel execution process.
+
+395
+00:50:28.180 --> 00:50:38.280
+mark: So you might not need… you might not need the read list, because the transactions will get there pretty quickly anyway, if you see what I mean.
+
+396
+00:50:38.810 --> 00:50:46.470
+Toni Wahrstaetter: Yeah. Yeah, that's a good point, and that's, I would say, exactly the reason why we have to consider if reads actually give us
+
+397
+00:50:46.610 --> 00:50:54.210
+Toni Wahrstaetter: enough to be worth the costs we pay. Right now, based off Gary's analysis, it looks like it is worth it, because
+
+398
+00:50:54.830 --> 00:51:03.049
+Toni Wahrstaetter: It was, like, 8x or something, and in absolute numbers, a few seconds.
+
+399
+00:51:03.230 --> 00:51:10.259
+Toni Wahrstaetter: Difference when we are at 500 milliseconds? Or a few, tenth of a second difference?
+
+400
+00:51:11.430 --> 00:51:25.069
+Toni Wahrstaetter: if I remember correctly, like, a little more than half a second of difference, and then it looks like it's worth the bandwidth costs we pay. But yeah, I think… I think it's very close, and we should definitely get some numbers on
+
+401
+00:51:25.860 --> 00:51:32.009
+Toni Wahrstaetter: Different clients, different implementations of the simulations, and second, on a larger state.
+
+402
+00:51:33.240 --> 00:51:37.309
+Toni Wahrstaetter: And, yeah, maybe we can then take a… take a decision.
+
+403
+00:51:37.890 --> 00:51:39.469
+Toni Wahrstaetter: As soon as we hefted.
+
+404
+00:51:41.990 --> 00:51:50.669
+Toni Wahrstaetter: I just see Dragon in the chat. There is EAP7870, if I remember correctly.
+
+405
+00:51:50.850 --> 00:51:54.040
+Toni Wahrstaetter: That defines, like, minimum hardware specs, ELP.
+
+406
+00:51:54.210 --> 00:51:57.460
+Toni Wahrstaetter: 7870, am I correct? Yes.
+
+407
+00:51:57.870 --> 00:51:59.719
+Toni Wahrstaetter: I will post it into the chat.
+
+408
+00:52:00.360 --> 00:52:08.969
+Łukasz Rozmej: Can we just implement both and run real-world, like, testing later, and decide closer to the deadline?
+
+409
+00:52:10.070 --> 00:52:10.980
+Łukasz Rozmej: on that.
+
+410
+00:52:10.980 --> 00:52:11.570
+Toni Wahrstaetter: If you're happy.
+
+411
+00:52:11.570 --> 00:52:28.300
+Łukasz Rozmej: Being measuring both, right, having both access lists with and without, or, like, maybe distribute with, but then measure execution with and without, right? On one machine like that, one machine like that, and compare
+
+412
+00:52:28.380 --> 00:52:33.290
+Łukasz Rozmej: The actual results in practical blocks, and worst-case blocks, too.
+
+413
+00:52:34.870 --> 00:52:41.890
+Gary Rong: Yeah, it is, like, the intention of makes this benchmark, because we can… Like, have a…
+
+414
+00:52:42.490 --> 00:52:46.050
+Gary Rong: Feelings at how much performance difference we will have.
+
+415
+00:52:46.410 --> 00:52:47.790
+Gary Rong: So,
+
+416
+00:52:48.040 --> 00:53:01.090
+Gary Rong: Like, if we run the BAL in the real, scenario, it would be perfect, but at this stage, the early stage, we can try to measure the performance difference with this benchmark first.
+
+417
+00:53:01.460 --> 00:53:03.020
+Gary Rong: It's what I'm trying to say.
+
+418
+00:53:03.020 --> 00:53:03.640
+mark: Yeah.
+
+419
+00:53:04.050 --> 00:53:16.100
+mark: But I kind of agree that we need to go through… we should leave it… so I think leaving it in at the moment is a good idea, and they… we ought to leave it in for quite a long way through the…
+
+420
+00:53:16.230 --> 00:53:25.350
+mark: the DevNet process, because once we've established some operating parameters, what we actually want to do is take it out and see whether it makes any difference.
+
+421
+00:53:26.070 --> 00:53:33.179
+mark: If you see what I mean. Because otherwise, you really don't get the… the… what does it do to the overall end-to-end parallel flow?
+
+422
+00:53:34.140 --> 00:53:37.550
+mark: Because one of the things that I've discovered
+
+423
+00:53:37.860 --> 00:53:43.790
+mark: testing parallelization in Aragon is, you really need to have all the pieces together.
+
+424
+00:53:43.990 --> 00:53:47.619
+mark: Because they… they have different behavior when you test them individually.
+
+425
+00:53:49.390 --> 00:53:50.910
+mark: Basically, in the end.
+
+426
+00:53:52.160 --> 00:54:01.620
+Łukasz Rozmej: So, if we have them in for now, we don't even have to take them out, we just have to have a second implementation that doesn't use it, and we can compare it live, the difference on…
+
+427
+00:54:01.620 --> 00:54:04.950
+mark: Yeah, yeah, correct, yeah, yeah. Yeah, I agree with that.
+
+428
+00:54:06.140 --> 00:54:11.889
+mark: Because you can say, well, what practical difference does this have over your block time if you use it or you don't?
+
+429
+00:54:16.100 --> 00:54:19.679
+Toni Wahrstaetter: Yeah, I can see that argument. The only thing I was,
+
+430
+00:54:20.090 --> 00:54:29.370
+Toni Wahrstaetter: Hesitant about was taking a late decision on that, because, of course, we would love to… to have the numbers today instead of tomorrow.
+
+431
+00:54:29.750 --> 00:54:30.180
+mark: Yeah.
+
+432
+00:54:30.180 --> 00:54:39.059
+Toni Wahrstaetter: So I don't wanna… you know, I'm not sure if it's the cleanest approach to have, like, two releases running at the same time, or if we…
+
+433
+00:54:39.640 --> 00:54:47.730
+Toni Wahrstaetter: Just do the benchmarks now, and make sure we get it… we get to as close, as realistic for a south as possible.
+
+434
+00:54:47.860 --> 00:54:57.869
+Toni Wahrstaetter: I mean, from the spec side, it wouldn't be a big problem, but I would assume that in client implementations, it's not just taking them out versus leaving them in.
+
+435
+00:54:57.870 --> 00:55:10.650
+Łukasz Rozmej: Not really, it should be relatively easy to do, because you could just have a parameter if you load those, in the background thread, based on this access list, or you don't, or you just ignore the street access list, right? In a way.
+
+436
+00:55:11.620 --> 00:55:12.160
+Toni Wahrstaetter: Yeah.
+
+437
+00:55:12.160 --> 00:55:12.610
+Łukasz Rozmej: So, I…
+
+438
+00:55:12.610 --> 00:55:26.469
+Toni Wahrstaetter: So there are some edge cases attached, right? For example, if you revert and you have written to something in the specs, for example, we have this custom function that converts a write to a read for reverted writes.
+
+439
+00:55:26.970 --> 00:55:34.989
+Toni Wahrstaetter: stuff like this would then be needed to be commented out, but I agree, it should be possible to…
+
+440
+00:55:35.110 --> 00:55:35.800
+Toni Wahrstaetter: Yeah.
+
+441
+00:55:36.060 --> 00:55:37.069
+Toni Wahrstaetter: To do so.
+
+442
+00:55:39.510 --> 00:55:42.480
+Gary Rong: Yeah, and another point is that
+
+443
+00:55:42.610 --> 00:55:48.129
+Gary Rong: Personally, I think there are so many HGKs in, like, collecting the relocation.
+
+444
+00:55:49.430 --> 00:55:56.750
+Gary Rong: If we can somehow make an early decision that we don't want this relocation, it would be much easier for the implementation.
+
+445
+00:56:03.280 --> 00:56:04.250
+Toni Wahrstaetter: Right, yeah.
+
+446
+00:56:06.220 --> 00:56:16.100
+Toni Wahrstaetter: Yeah, the good thing is that we have… we have them in the EAP right now, and clients are basically ready to… to ship them, or on the track to ship them.
+
+447
+00:56:17.130 --> 00:56:22.260
+Toni Wahrstaetter: Compared to adding them later on, which might be… Way too difficult.
+
+448
+00:56:22.440 --> 00:56:30.939
+Toni Wahrstaetter: So, I… I would suggest we keep them in for now, but it's great that we now have more data points on that topic.
+
+449
+00:56:31.010 --> 00:56:42.499
+Toni Wahrstaetter: And then it would be great if we can simulate it even more. Maybe we get some clarity before we even need to run multiple versions on a defnet and compare them empirically.
+
+450
+00:56:43.490 --> 00:56:45.339
+Toni Wahrstaetter: But yeah, let's see.
+
+451
+00:56:45.770 --> 00:56:48.850
+Toni Wahrstaetter: Let's keep the discussion on that, ongoing.
+
+452
+00:56:49.740 --> 00:56:51.479
+Toni Wahrstaetter: And keep the thread open.
+
+453
+00:56:56.220 --> 00:57:03.479
+Toni Wahrstaetter: Is there… Any… anything else we should discuss regarding, this optimization.
+
+454
+00:57:13.490 --> 00:57:22.189
+mark: No, I just want… I mean, it's… the summary of the discussion seems to be that benchmarks doesn't rule it out, right? It says, actually.
+
+455
+00:57:22.990 --> 00:57:30.720
+mark: is potentially going to give a big enough performance improvement to… that we should continue with it. That was what I was hearing.
+
+456
+00:57:30.880 --> 00:57:32.670
+mark: Gary's saying, I think.
+
+457
+00:57:32.670 --> 00:57:35.699
+Toni Wahrstaetter: Yeah, and Gary's benchmarks were also, like.
+
+458
+00:57:36.000 --> 00:57:45.349
+Toni Wahrstaetter: not super clear on what, what is the actual, to-do from them, right? Because they give us, like, an 8 to 10X,
+
+459
+00:57:45.570 --> 00:57:51.590
+Toni Wahrstaetter: With diminishing value, with increasing, block gas limit?
+
+460
+00:57:51.770 --> 00:57:55.670
+Toni Wahrstaetter: But at the same time, ignoring, increasing state.
+
+461
+00:57:56.500 --> 00:58:00.450
+Toni Wahrstaetter: So, I think… I think it's very difficult to…
+
+462
+00:58:00.970 --> 00:58:04.190
+Toni Wahrstaetter: To tell if it's worth it or not, just based on that.
+
+463
+00:58:04.950 --> 00:58:08.920
+Toni Wahrstaetter: But it's definitely a first data point we can anchor, anchor on.
+
+464
+00:58:10.840 --> 00:58:25.690
+Łukasz Rozmej: Interesting conclusion for implementation is that if we do have read access lists, we probably want to spawn, as many threads for transaction processing up to the num…
+
+465
+00:58:25.910 --> 00:58:36.869
+Łukasz Rozmej: we have on our CPU, but if we don't have read access lists, we probably want more threads on transaction processing than we have
+
+466
+00:58:38.820 --> 00:58:43.570
+Łukasz Rozmej: it will be stalled. So that's an interesting point for the implementation.
+
+467
+00:58:44.750 --> 00:58:57.159
+mark: Yeah, well, I think the reason I was asking about how much CPU has it got, the problem is, if you dedicate CPU to reading, you're not dedicating CPU to, computing transactions.
+
+468
+00:58:57.530 --> 00:59:00.050
+mark: So there's going to be a trade-off there, potentially.
+
+469
+00:59:04.100 --> 00:59:08.049
+Gary Rong: Yeah, but, I mean, like, in this particular scenario…
+
+470
+00:59:08.050 --> 00:59:11.370
+Toni Wahrstaetter: Same for the block… for the post-stage route, I guess, right?
+
+471
+00:59:12.760 --> 00:59:13.610
+mark: Yeah.
+
+472
+00:59:19.580 --> 00:59:23.720
+Toni Wahrstaetter: Perfect, yeah, thanks a lot, Gary, for the benchmarks. This is super helpful.
+
+473
+00:59:23.720 --> 00:59:24.970
+Jared Wasinger: Gary? Yeah, go ahead.
+
+474
+00:59:25.360 --> 00:59:29.549
+Jared Wasinger: Gary, you were starting to say something, and I…
+
+475
+00:59:29.550 --> 00:59:30.259
+Gary Rong: Can you hear me?
+
+476
+00:59:30.260 --> 00:59:30.970
+Jared Wasinger: Yep.
+
+477
+00:59:31.140 --> 00:59:32.180
+Jared Wasinger: Yeah, I can hear you.
+
+478
+00:59:32.180 --> 00:59:32.820
+Gary Rong: Totally.
+
+479
+00:59:32.940 --> 00:59:40.649
+Gary Rong: So what I'm trying to say is that, if we think that the read is, underpriced.
+
+480
+00:59:41.140 --> 00:59:49.759
+Gary Rong: So the worst case will be a block with all the, as load, with basically no EVM computation.
+
+481
+00:59:49.920 --> 00:59:55.319
+Gary Rong: So in this case, if we dedicate all the CPU cores to the S load, it should be fair.
+
+482
+00:59:56.470 --> 01:00:05.190
+Gary Rong: Because there is no, other EVM, computation, and, EVM computation is, like,
+
+483
+01:00:05.390 --> 01:00:08.260
+Gary Rong: Way more faster than the discrete.
+
+484
+01:00:16.710 --> 01:00:23.509
+Toni Wahrstaetter: Is that… is that realistic? Is it even possible to do, like, only S-loads without any computation in between?
+
+485
+01:00:25.140 --> 01:00:32.599
+Gary Rong: I'm not so sure, but I guess, it might be feasible to have some specific program to
+
+486
+01:00:33.880 --> 01:00:52.890
+Gary Rong: to do the, for example, external code hash for a non-existent account, and this address could be generated, like, randomly. In this particular scenario, it will basically touch all the pieces of the database, so we can avoid the data locality in the cache.
+
+487
+01:00:53.250 --> 01:01:01.240
+Gary Rong: It should be possible to correct such block to slow down the block execution, even with the current mainnet.
+
+488
+01:01:07.360 --> 01:01:11.270
+Toni Wahrstaetter: Thank you very much, yeah. Is there any… anything else on that topic?
+
+489
+01:01:16.770 --> 01:01:21.930
+Toni Wahrstaetter: Otherwise, let's get to the last point in the agenda, namely, in person.
+
+490
+01:01:22.560 --> 01:01:33.159
+Toni Wahrstaetter: meet up at DevConnect, so we have space at DevConnect that we can meet up and discuss, everything around block access list, progress.
+
+491
+01:01:33.320 --> 01:01:38.690
+Toni Wahrstaetter: There is no… Daytime yet, so this is still something,
+
+492
+01:01:39.410 --> 01:01:42.130
+Toni Wahrstaetter: I will work on, but I will keep…
+
+493
+01:01:42.570 --> 01:01:49.979
+Toni Wahrstaetter: everyone updated, and also make sure that people that are not at DevConnect will be able to join via Zoom, or…
+
+494
+01:01:50.600 --> 01:01:52.320
+Toni Wahrstaetter: We can meet Torin, or something.
+
+495
+01:01:53.030 --> 01:02:02.009
+Toni Wahrstaetter: But yeah, just as a heads up, we might meet and discuss things like the gas limit, the reads, and so on, at DevConnect.
+
+496
+01:02:05.300 --> 01:02:15.799
+Toni Wahrstaetter: Perfect! Before we end the call, is there any open topic we should discuss? Anything else we forgot that is, like, important until the next breakout call in two weeks?
+
+497
+01:02:20.020 --> 01:02:22.200
+felipe: Just on what…
+
+498
+01:02:22.200 --> 01:02:31.400
+Stefan Starflinger: Sorry, just on what Philippe said, there are, like, the debugging, there's just the hash if there's a mismatch between the bars and the logs.
+
+499
+01:02:31.500 --> 01:02:46.520
+Stefan Starflinger: But there's a debug endpoint that Bezos implemented, maybe other clients might want to look into implementing that, where they have the bad block that they disagree with, and they have the access list that they generated, so it's easy to compare.
+
+500
+01:02:49.160 --> 01:02:52.040
+Toni Wahrstaetter: Good point, yeah. Thanks, Stefan, for bringing that up.
+
+501
+01:02:53.980 --> 01:02:57.810
+felipe: Yeah, that's a nice second step, too, though. I feel like
+
+502
+01:02:58.190 --> 01:03:02.800
+felipe: because we have so many hive failures, if we had this in the debug logs, it would be…
+
+503
+01:03:03.390 --> 01:03:07.659
+felipe: Quite quick to just have them to compare against each other.
+
+504
+01:03:08.020 --> 01:03:11.200
+felipe: Something Mario, from Steel brought up is…
+
+505
+01:03:11.930 --> 01:03:25.010
+felipe: It would… it would be good for a future like this if we had, tracing aligned, too, at some point. I mean, this is somewhat in the future, but how we do EVM tracing, but we can trace what the bow is doing for each client.
+
+506
+01:03:25.400 --> 01:03:28.439
+felipe: But… this debug,
+
+507
+01:03:28.790 --> 01:03:34.099
+felipe: debug log of the full valve, on errors would be… would be quite nice, I think.
+
+508
+01:03:34.730 --> 01:03:36.540
+mark: Yeah, having spent the last…
+
+509
+01:03:36.860 --> 01:03:45.989
+mark: several months debugging parallel flows, that would be definitely useful, because you end up needing… what you want is one that worked and one that didn't, and to do a compare of them.
+
+510
+01:03:47.010 --> 01:03:50.559
+mark: Otherwise, it's really difficult to work out what the hell's going on.
+
+511
+01:03:51.200 --> 01:03:52.320
+felipe: Yeah, exactly.
+
+512
+01:03:52.320 --> 01:03:56.049
+mark: Yeah, so this endpoint, does it have a… has it got a specification?
+
+513
+01:03:56.880 --> 01:04:00.239
+mark: Is there something we can copy so we don't do something similar but different?
+
+514
+01:04:01.660 --> 01:04:03.719
+mark: The basic one you mentioned.
+
+515
+01:04:03.720 --> 01:04:17.030
+Stefan Starflinger: I don't think it has a specification. It basically just dumps the block as a top-level key, and under it, it's the generated block access list as another key, and that's pretty much it.
+
+516
+01:04:17.120 --> 01:04:25.300
+mark: Right, so it's basically just the block, and so, in the response, it's the block… And the bow, basically.
+
+517
+01:04:25.730 --> 01:04:32.090
+Stefan Starflinger: basically, I can share, in the channel, in the research channel, I can share an example as well.
+
+518
+01:04:32.090 --> 01:04:37.870
+mark: Yeah, no, that would be great, just so that we don't… because we might as well just copy it, so we're producing the same thing.
+
+519
+01:04:38.290 --> 01:04:45.619
+Stefan Starflinger: Yeah, and in the spec I shared above, I also shared the curl request to get it.
+
+520
+01:04:46.830 --> 01:04:49.460
+Stefan Starflinger: I'll also share an example there, yeah.
+
+521
+01:04:49.710 --> 01:04:55.479
+mark: Yeah, no, that would be brilliant, just so that… because we'll definitely implement it, because I think we need it, basically.
+
+522
+01:04:56.400 --> 01:04:57.510
+Stefan Starflinger: Sounds good.
+
+523
+01:04:57.510 --> 01:04:58.090
+mark: Yep.
+
+524
+01:05:01.130 --> 01:05:02.060
+Toni Wahrstaetter: Perfect.
+
+525
+01:05:02.350 --> 01:05:03.300
+Toni Wahrstaetter: Awesome.
+
+526
+01:05:03.470 --> 01:05:06.239
+Toni Wahrstaetter: Then we're at the end of the call anyway.
+
+527
+01:05:06.860 --> 01:05:10.949
+Toni Wahrstaetter: Thanks, everyone, for attending, and see you at the next one in two weeks.
+
+528
+01:05:12.310 --> 01:05:13.100
+mark: Okay.
+
+529
+01:05:13.440 --> 01:05:14.290
+felipe: Oh, thanks.
+
+530
+01:05:15.240 --> 01:05:16.060
+Gary Rong: U.S.
+
+531
+01:05:16.310 --> 01:05:17.630
+Jared Wasinger: Yeah, bail.
+

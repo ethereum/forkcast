@@ -9,8 +9,8 @@ export interface ForkRelationship {
   forkName: string;
   statusHistory: Array<{
     status: 'Proposed' | 'Considered' | 'Scheduled' | 'Declined' | 'Included' | 'Withdrawn';
-    call?: `${'acdc' | 'acde' | 'acdt'}/${number}`;
-    date?: string;
+    call: `${'acdc' | 'acde' | 'acdt'}/${number}` | null;
+    date: string | null;
   }>; // Ordered oldest -> newest
   isHeadliner?: boolean;
   wasHeadlinerCandidate?: boolean;

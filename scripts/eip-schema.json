@@ -56,7 +56,7 @@
     },
     "StatusHistoryEntry": {
       "type": "object",
-      "required": ["status"],
+      "required": ["status", "call", "date"],
       "additionalProperties": false,
       "properties": {
         "status": {
@@ -64,12 +64,16 @@
           "enum": ["Proposed", "Considered", "Scheduled", "Declined", "Included", "Withdrawn"]
         },
         "call": {
-          "type": "string",
-          "pattern": "^(acdc|acde|acdt)/[0-9]+$"
+          "oneOf": [
+            { "type": "string", "pattern": "^(acdc|acde|acdt)/[0-9]+$" },
+            { "type": "null" }
+          ]
         },
         "date": {
-          "type": "string",
-          "pattern": "^[0-9]{4}-[0-9]{2}-[0-9]{2}$"
+          "oneOf": [
+            { "type": "string", "pattern": "^[0-9]{4}-[0-9]{2}-[0-9]{2}$" },
+            { "type": "null" }
+          ]
         }
       }
     },

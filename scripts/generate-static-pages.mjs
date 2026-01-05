@@ -202,7 +202,6 @@ function generateAllPages() {
   console.log('  ✓ calls/index.html');
 
   // Generate individual call pages
-  console.log('\n📞 Generating individual call pages:');
   protocolCalls.forEach(call => {
     const fullPath = `calls/${call.path}`;
     const routeParts = fullPath.split('/');
@@ -224,11 +223,10 @@ function generateAllPages() {
     const html = generateStaticPage(fullPath, title, description);
     const outputPath = path.join(currentPath, 'index.html');
     fs.writeFileSync(outputPath, html);
-    console.log(`  ✓ ${fullPath}`);
   });
+  console.log(`\n📞 Generated ${protocolCalls.length} call pages`);
 
   // Generate individual EIP pages
-  console.log('\n📋 Generating EIP pages:');
   eips.forEach(eip => {
     const fullPath = `eips/${eip.id}`;
     const eipPath = path.join(distDir, 'eips', String(eip.id));
@@ -245,8 +243,8 @@ function generateAllPages() {
     const html = generateStaticPage(fullPath, title, description);
     const outputPath = path.join(eipPath, 'index.html');
     fs.writeFileSync(outputPath, html);
-    console.log(`  ✓ ${fullPath}`);
   });
+  console.log(`📋 Generated ${eips.length} EIP pages`);
 
   console.log('\n✨ Static pages generated successfully!');
 }

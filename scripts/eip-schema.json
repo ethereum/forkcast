@@ -55,27 +55,42 @@
       }
     },
     "StatusHistoryEntry": {
-      "type": "object",
-      "required": ["status", "call", "date"],
-      "additionalProperties": false,
-      "properties": {
-        "status": {
-          "type": "string",
-          "enum": ["Proposed", "Considered", "Scheduled", "Declined", "Included", "Withdrawn"]
+      "oneOf": [
+        {
+          "type": "object",
+          "required": ["status"],
+          "additionalProperties": false,
+          "properties": {
+            "status": {
+              "type": "string",
+              "enum": ["Proposed", "Included"]
+            }
+          }
         },
-        "call": {
-          "oneOf": [
-            { "type": "string", "pattern": "^(acdc|acde|acdt)/[0-9]+$" },
-            { "type": "null" }
-          ]
-        },
-        "date": {
-          "oneOf": [
-            { "type": "string", "pattern": "^[0-9]{4}-[0-9]{2}-[0-9]{2}$" },
-            { "type": "null" }
-          ]
+        {
+          "type": "object",
+          "required": ["status", "call", "date"],
+          "additionalProperties": false,
+          "properties": {
+            "status": {
+              "type": "string",
+              "enum": ["Considered", "Scheduled", "Declined", "Withdrawn"]
+            },
+            "call": {
+              "oneOf": [
+                { "type": "string", "pattern": "^(acdc|acde|acdt)/[0-9]+$" },
+                { "type": "null" }
+              ]
+            },
+            "date": {
+              "oneOf": [
+                { "type": "string", "pattern": "^[0-9]{4}-[0-9]{2}-[0-9]{2}$" },
+                { "type": "null" }
+              ]
+            }
+          }
         }
-      }
+      ]
     },
     "Champion": {
       "type": "object",

@@ -5,13 +5,23 @@ export interface ClientTeamPerspective {
   candidateBlogPostUrl?: string; // For non-headliner (CFI/PFI) commentary
 }
 
+// Statuses not tied to ACD calls
+type NonAcdStatus = {
+  status: 'Proposed' | 'Included';
+};
+
+// Statuses decided in ACD calls (null allowed for legacy data)
+type AcdStatus = {
+  status: 'Considered' | 'Scheduled' | 'Declined' | 'Withdrawn';
+  call: `${'acdc' | 'acde' | 'acdt'}/${number}` | null;
+  date: string | null;
+};
+
+export type ForkStatus = NonAcdStatus | AcdStatus;
+
 export interface ForkRelationship {
   forkName: string;
-  statusHistory: Array<{
-    status: 'Proposed' | 'Considered' | 'Scheduled' | 'Declined' | 'Included' | 'Withdrawn';
-    call: `${'acdc' | 'acde' | 'acdt'}/${number}` | null;
-    date: string | null;
-  }>; // Ordered oldest -> newest
+  statusHistory: ForkStatus[]; // Ordered oldest -> newest
   isHeadliner?: boolean;
   wasHeadlinerCandidate?: boolean;
   headlinerDiscussionLink?: string;

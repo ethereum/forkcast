@@ -25,6 +25,7 @@ export const protocolCalls: Call[] = [
   { type: 'acdc', date: '2025-11-13', number: '169', path: 'acdc/169' },
   { type: 'acdc', date: '2025-11-27', number: '170', path: 'acdc/170' },
   { type: 'acdc', date: '2025-12-11', number: '171', path: 'acdc/171' },
+  { type: 'acdc', date: '2026-01-08', number: '172', path: 'acdc/172' },
 
   // ACDE calls
   { type: 'acde', date: '2025-03-27', number: '208', path: 'acde/208' },

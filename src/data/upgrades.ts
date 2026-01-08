@@ -142,7 +142,8 @@ export const networkUpgrades: NetworkUpgrade[] = [
     tagline: 'Post-Glamsterdam network upgrade in early planning.',
     status: 'Planning',
     activationDate: 'TBD',
-    disabled: false
+    disabled: false,
+    metaEipLink: 'https://ethereum-magicians.org/t/eip-8081-hegota-network-upgrade-meta-thread/26876'
   }
 ];
 

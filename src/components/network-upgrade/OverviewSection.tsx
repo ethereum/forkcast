@@ -109,17 +109,26 @@ export const OverviewSection: React.FC<OverviewSectionProps> = ({
         </>
       )}
 
-      {/* Early planning notice for Hegota */}
+      {/* Headliner proposal window notice for Hegota */}
       {forkName.toLowerCase() === 'hegota' && (
-        <div className="mb-6 p-4 bg-slate-50 dark:bg-slate-700/50 border border-slate-200 dark:border-slate-600 rounded">
+        <div className="mb-6 p-4 bg-gradient-to-r from-amber-50 to-orange-50 dark:from-amber-900/20 dark:to-orange-900/20 border-2 border-amber-200 dark:border-amber-700 rounded">
           <div className="flex items-start gap-3">
-            <svg className="w-5 h-5 text-slate-500 dark:text-slate-400 mt-0.5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+            <svg className="w-5 h-5 text-amber-600 dark:text-amber-400 mt-0.5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11 5.882V19.24a1.76 1.76 0 01-3.417.592l-2.147-6.15M18 13a3 3 0 100-6M5.436 13.683A4.001 4.001 0 017 6h1.832c4.1 0 7.625-1.234 9.168-3v14c-1.543-1.766-5.067-3-9.168-3H7a3.988 3.988 0 01-1.564-.317z" />
             </svg>
             <div>
-              <h4 className="font-medium text-slate-900 dark:text-slate-100 text-sm mb-1">Early Planning Stage</h4>
-              <p className="text-slate-600 dark:text-slate-300 text-xs leading-relaxed">
-                Hegotá is in early planning. The headliner proposal window will open soon. Check back for updates as the upgrade planning process begins.
+              <h4 className="font-medium text-amber-900 dark:text-amber-100 text-sm mb-1">Headliner Proposal Window Open</h4>
+              <p className="text-amber-800 dark:text-amber-200 text-xs leading-relaxed">
+                The headliner proposal window is open until February 4th. To propose a headliner, post on the{' '}
+                <a
+                  href="https://ethereum-magicians.org/t/eip-8081-hegota-network-upgrade-meta-thread/26876"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="underline hover:text-amber-900 dark:hover:text-amber-100"
+                >
+                  Ethereum Magicians meta thread
+                </a>
+                {' '}and present your EIP on an ACDE or ACDC call.
               </p>
             </div>
           </div>

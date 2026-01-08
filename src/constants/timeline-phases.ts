@@ -329,19 +329,20 @@ export const HEGOTA_PROJECTION: ForkProgress = {
   phases: [
     {
       phaseId: 'headliner-selection',
-      status: 'upcoming',
+      status: 'in-progress',
+      actualStartDate: 'Jan 8, 2026',
       projectedDate: 'Q1-Q2 2026',
-      progressNotes: 'Headliner review debate: timing depends on Glamsterdam progress',
+      progressNotes: 'Headliner proposal window open until Feb 4, 2026',
       substeps: [
         {
           name: 'Proposal Deadline',
-          status: 'upcoming',
-          projectedDate: 'Q1 2026'
+          status: 'in-progress',
+          projectedDate: 'Feb 4, 2026'
         },
         {
           name: 'Selection Deadline',
           status: 'upcoming',
-          projectedDate: 'Q2 2026'
+          projectedDate: 'Q1-Q2 2026'
         }
       ]
     },

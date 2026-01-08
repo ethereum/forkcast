@@ -2,9 +2,15 @@ import React from 'react';
 import { HEGOTA_TIMELINE_PHASES } from '../../constants/timeline-phases';
 import { getPhaseStatusIcon } from '../../utils/timeline';
 import { getPhaseStatusColor } from '../../utils/colors';
+import { useAnalytics } from '../../hooks/useAnalytics';
 
 export const HegotaTimeline: React.FC = () => {
   const phases = HEGOTA_TIMELINE_PHASES;
+  const { trackLinkClick } = useAnalytics();
+
+  const handleExternalLinkClick = (linkType: string, url: string) => {
+    trackLinkClick(linkType, url);
+  };
 
   return (
     <div className="mb-4">
@@ -51,6 +57,27 @@ export const HegotaTimeline: React.FC = () => {
                 </div>
               </div>
             ))}
+          </div>
+        </div>
+
+        {/* Footer */}
+        <div className="mt-4 pt-4 border-t border-slate-200 dark:border-slate-600">
+          <div className="flex items-center justify-between">
+            <a
+              href="https://ethereum-magicians.org/t/eip-8081-hegota-network-upgrade-meta-thread/26876"
+              target="_blank"
+              rel="noopener noreferrer"
+              onClick={() => handleExternalLinkClick('timeline_discussion', 'https://ethereum-magicians.org/t/eip-8081-hegota-network-upgrade-meta-thread/26876')}
+              className="inline-flex items-center gap-1.5 text-xs text-purple-600 hover:text-purple-800 dark:text-purple-400 dark:hover:text-purple-300 underline decoration-1 underline-offset-2 transition-colors"
+            >
+              View full timeline details
+              <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
+              </svg>
+            </a>
+            <span className="text-xs text-slate-400 dark:text-slate-500 italic">
+              Dates subject to change
+            </span>
           </div>
         </div>
       </div>

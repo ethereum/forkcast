@@ -445,1262 +445,1262 @@ Guillaume: blocked, because as soon as we try to propose a proper fix, people al
 Guillaume: So, I think… If you really want an increase in code size.
 
 112
-00:20:15.010 --> 00:20:24.719
+00:19:37.009 --> 00:19:46.719
 Guillaume: Yeah, just do that, don't make it too big, but if you want to create a new, a new gas model, it's going to be…
 
 113
-00:20:25.090 --> 00:20:38.320
+00:19:47.089 --> 00:20:00.319
 Guillaume: Yeah, people are going to work around it, and this gas model proposed in that EIP, just 2 gas per bytes, where does that come from? It's not consistent with… it's not consistent with the rest of the storage model.
 
 114
-00:20:38.350 --> 00:20:57.569
+00:20:00.349 --> 00:20:19.568
 Guillaume: If it was consistent, we would have a lot higher gas per byte. It's also a bit weird, because the first 24 kilobytes are free, but then they're not. So, actually, it sounds like reading the first 24 kilobytes is free, but it's not, it's just…
 
 115
-00:20:57.590 --> 00:21:10.080
+00:20:19.589 --> 00:20:32.079
 Guillaume: Up until 24KB is completely free, and then it's not, so that's a bit awkward, and this is guaranteed to cause people to start optimizing around this, and we're going to have some issues.
 
 116
-00:21:11.730 --> 00:21:12.980
+00:20:33.730 --> 00:20:34.980
 Ansgar Dietrichs: Ben?
 
 117
-00:21:14.190 --> 00:21:22.229
+00:20:36.190 --> 00:20:44.229
 Ben Adams: I wouldn't object to just going for the straight increase that's proposed, if that's… That's the, switch.
 
 118
-00:21:28.210 --> 00:21:34.660
+00:20:50.210 --> 00:20:56.660
 Ansgar Dietrichs: Yeah, and maybe just one comment on this, of course, from the repricing side, given that this time around in the Hartford, we will actually change
 
 119
-00:21:34.800 --> 00:21:47.580
+00:20:56.799 --> 00:21:09.579
 Ansgar Dietrichs: prices anyway, we could take, basically, the worst case that would come from a small, just, base increase, so if we were to just go through 32 kilobytes or something, we could just take that into consideration on the pricing side. That was…
 
 120
-00:21:47.580 --> 00:21:57.220
+00:21:09.579 --> 00:21:19.220
 Ansgar Dietrichs: less of a realistic option in Fusaka, where we just didn't want to do otherwise repricings. So, indeed, this, like, even simpler than this proposed EAP would
 
 121
-00:21:57.520 --> 00:22:00.630
+00:21:19.519 --> 00:21:22.630
 Ansgar Dietrichs: Wouldn't be more possible this time around. Charles?
 
 122
-00:22:02.930 --> 00:22:11.549
+00:21:24.930 --> 00:21:33.548
 Charles: Hello, yeah, I just want to point out that the first 24 kilobytes is not free, it's just the price is unchanged, so it's backwards compatible, and
 
 123
-00:22:11.770 --> 00:22:20.919
+00:21:33.769 --> 00:21:42.919
 Charles: The 2 gas per byte is not out of line with the rest of the storage model, because the read from the disk is, like.
 
 124
-00:22:21.120 --> 00:22:25.140
+00:21:43.119 --> 00:21:47.140
 Charles: A sequential read, and it's very different from a random access.
 
 125
-00:22:25.270 --> 00:22:26.650
+00:21:47.269 --> 00:21:48.650
 Charles: key-value lookup.
 
 126
-00:22:30.570 --> 00:22:39.790
+00:21:52.569 --> 00:22:01.789
 Ansgar Dietrichs: Right. Yeah, so the thing is, I think it would be really nice to make a decision today. I think that the options that we have would be either to go with the CAP7907,
 
 127
-00:22:39.820 --> 00:22:54.179
+00:22:01.819 --> 00:22:16.179
 Ansgar Dietrichs: Or to go with the simpler change of just basically a static small bump of the maximum size. Obviously, technically, we don't have a PFI DIP for that. I personally think replacing this existing one with a simpler one
 
 128
-00:22:54.180 --> 00:23:16.159
+00:22:16.180 --> 00:22:38.159
 Ansgar Dietrichs: would be fine process-wise, but of course, we would have to double-check if people agree. Or option three, just to not do anything about contract size in Glamsterdam. Yeah, it would be good for us to come to a conclusion today. So far, it seems like opinions are mixed on these three options. Do we have other people, other clients, with views on this?
 
 129
-00:23:16.690 --> 00:23:18.710
+00:22:38.690 --> 00:22:40.710
 Ansgar Dietrichs: Preferences across these three options.
 
 130
-00:23:19.700 --> 00:23:33.969
+00:22:41.700 --> 00:22:55.969
 EF Berlin office: I guess one other thing I would keep in mind is, like, there is a bigger design space within the, yeah, the 7907 world than, like, I think that particular EIP has explored, right? So, like…
 
 131
-00:23:34.040 --> 00:23:58.820
+00:22:56.039 --> 00:23:20.819
 EF Berlin office: one example is, that, you can, like, I think it would be rational to make the gas price, like, fully linear and actually charge less for contracts that are smaller than 24 kilobytes, which would, give us room for increasing the cost of accessing the full-size ones, and then, like, basically we would just charge existing ones at the 24 kilobyte level.
 
 132
-00:23:58.820 --> 00:24:15.339
+00:23:20.819 --> 00:23:37.338
 EF Berlin office: Or if you don't want to do that, potentially solve it with a refund. So, like, if we, yeah, believe in the principle that, like, in today, at least, you know, like, before we have.
 
 133
-00:24:15.340 --> 00:24:21.440
+00:23:37.339 --> 00:23:43.440
 EF Berlin office: some kind of perfect world model where, like, you know, like, trees are better or something else,
 
 134
-00:24:21.440 --> 00:24:31.799
+00:23:43.440 --> 00:23:53.798
 EF Berlin office: Then, like, we agree with the principle that, like, bigger contracts should cost more to access than smaller contracts, then, like, there's…
 
 135
-00:24:31.800 --> 00:24:50.680
+00:23:53.799 --> 00:24:12.680
 EF Berlin office: ways to do that that don't fit the, yeah, like, that aren't the, yeah, ex… the exact numbers in 7907, and so I think it might be, yeah, also worthwhile to kind of, like, split apart that question, and then, like, once we, yeah, make that decision, then,
 
 136
-00:24:50.840 --> 00:24:53.460
+00:24:12.839 --> 00:24:15.460
 EF Berlin office: Like, then think about the constants.
 
 137
-00:24:55.700 --> 00:24:57.350
+00:24:17.700 --> 00:24:19.349
 EF Berlin office: Hmm.
 
 138
-00:24:57.550 --> 00:25:13.200
+00:24:19.549 --> 00:24:35.200
 Ansgar Dietrichs: Right, so the decision today would be first more about the mechanism approach, so do we do the constant bump, do we do the 7907 change, or don't we… do we not do any change? And then, yes, we can revisit the specifics, say, of 7907 in case we end up going with that.
 
 139
-00:25:14.680 --> 00:25:17.370
+00:24:36.680 --> 00:24:39.369
 Ansgar Dietrichs: yeah, Ben?
 
 140
-00:25:18.030 --> 00:25:22.130
+00:24:40.029 --> 00:24:44.130
 Ben Adams: I mean, it is… I have been a smart contract developer.
 
 141
-00:25:22.760 --> 00:25:31.820
+00:24:44.759 --> 00:24:53.819
 Ben Adams: Prior, and the 24K is a very annoying, limit, because you're normally We normally…
 
 142
-00:25:32.420 --> 00:25:36.929
+00:24:54.420 --> 00:24:58.929
 Ben Adams: Hit it, even if you're trying to optimize as much as you can.
 
 143
-00:25:37.600 --> 00:25:41.260
+00:24:59.599 --> 00:25:03.259
 Ben Adams: And so a small increase would probably
 
 144
-00:25:41.910 --> 00:25:46.149
+00:25:03.910 --> 00:25:08.148
 Ben Adams: take the edge off for a lot of… a lot of developers.
 
 145
-00:25:47.130 --> 00:25:50.700
+00:25:09.130 --> 00:25:12.700
 Ben Adams: And then larger sizes, maybe we can look at.
 
 146
-00:25:50.820 --> 00:25:53.600
+00:25:12.819 --> 00:25:15.599
 Ben Adams: Doing something more intelligent later.
 
 147
-00:26:08.200 --> 00:26:22.709
+00:25:30.200 --> 00:25:44.709
 Ansgar Dietrichs: Right. Barnabas has a question in chat about the kind of size of 7907, whether this might be too large. I personally don't remember it being proposed as a headliner or anything like that, but,
 
 148
-00:26:23.230 --> 00:26:26.909
+00:25:45.230 --> 00:25:48.909
 Ansgar Dietrichs: Yeah, of course, the question would be whether clients feel comfortable with
 
 149
-00:26:27.230 --> 00:26:32.019
+00:25:49.230 --> 00:25:54.019
 Ansgar Dietrichs: Adding 7907 to an already relatively large, fork?
 
 150
-00:26:32.500 --> 00:26:34.859
+00:25:54.500 --> 00:25:56.858
 Ansgar Dietrichs: Do we have…
 
 151
-00:26:35.030 --> 00:26:48.449
+00:25:57.029 --> 00:26:10.449
 Ansgar Dietrichs: maybe… so we've heard from Guillaume, and we've heard from Ben, from the NetherMind side. Do we have other client devs that have, maybe, either this time around, or back for Fusaka, looked at 7907 and have an opinion on
 
 152
-00:26:48.670 --> 00:26:53.020
+00:26:10.670 --> 00:26:15.019
 Ansgar Dietrichs: The complexity involved, of a mechanism like that.
 
 153
-00:26:53.240 --> 00:26:59.770
+00:26:15.240 --> 00:26:21.769
 Ansgar Dietrichs: And how comfortable they would be having this part of the fogscope this time around.
 
 154
-00:27:00.220 --> 00:27:07.050
+00:26:22.220 --> 00:26:29.049
 Ben Adams: I mean, the… if we do the simple bump, that's obviously… Very minimal change.
 
 155
-00:27:07.580 --> 00:27:14.600
+00:26:29.579 --> 00:26:36.599
 Ben Adams: The 7907 changes the account structure, because it adds the length.
 
 156
-00:27:14.710 --> 00:27:20.510
+00:26:36.710 --> 00:26:42.509
 Ben Adams: So… it is… is more invasive, but, I mean…
 
 157
-00:27:21.270 --> 00:27:26.120
+00:26:43.269 --> 00:26:48.119
 Ben Adams: Chunk-based code also wanted that… that change. But the simplest would be…
 
 158
-00:27:26.760 --> 00:27:31.549
+00:26:48.759 --> 00:26:53.548
 Ben Adams: Just to bump the size, and then we don't have to change any of the data structures.
 
 159
-00:27:43.680 --> 00:27:48.870
+00:27:05.680 --> 00:27:10.869
 Ansgar Dietrichs: I see. We have a comment from the testing team in chat saying that
 
 160
-00:27:49.240 --> 00:27:58.579
+00:27:11.240 --> 00:27:20.578
 Ansgar Dietrichs: the complexity for 7907 is… medium to high, if I read that correctly.
 
 161
-00:27:59.050 --> 00:28:07.629
+00:27:21.049 --> 00:27:29.628
 Ansgar Dietrichs: To me, yeah, that at least puts it a little bit in question, whether we have enough room in the part fork that's already relatively large.
 
 162
-00:28:07.630 --> 00:28:19.089
+00:27:29.630 --> 00:27:41.088
 EF Berlin office: Can I, quickly propose a small delta to 7907 that would, probably solve the problem, which is you just charge based on max cost, and then once you read the code, you refund based on the actual size.
 
 163
-00:28:20.580 --> 00:28:27.660
+00:27:42.579 --> 00:27:49.660
 Ansgar Dietrichs: Yeah, I think there's just some concerns around, maybe, some of these, like, very old hard-coded stipends that.
 
 164
-00:28:29.540 --> 00:28:31.490
+00:27:51.539 --> 00:27:53.490
 Ansgar Dietrichs: Might not be enough for that, but…
 
 165
-00:28:37.730 --> 00:28:38.460
+00:27:59.730 --> 00:28:00.460
 Ansgar Dietrichs: Right.
 
 166
-00:28:40.120 --> 00:28:41.090
+00:28:02.119 --> 00:28:03.089
 Ansgar Dietrichs: M…
 
 167
-00:28:41.720 --> 00:28:49.200
+00:28:03.720 --> 00:28:11.200
 Ansgar Dietrichs: Yeah, it… that's… I… I don't know, like, I… so right now, I see the… the two options I see is…
 
 168
-00:28:50.800 --> 00:29:08.920
+00:28:12.799 --> 00:28:30.920
 Ansgar Dietrichs: given that, given that there's this… the concerns about the scope, at least, it doesn't seem obvious that we have a decision basis to include 7907 today. I think the two choices that we then… I mean, unless there's more support by more clients right now, which there doesn't seem to be.
 
 169
-00:29:09.180 --> 00:29:12.799
+00:28:31.180 --> 00:28:34.798
 Ansgar Dietrichs: I think the only two decisions we then have left is either we go with
 
 170
-00:29:13.140 --> 00:29:22.010
+00:28:35.140 --> 00:28:44.009
 Ansgar Dietrichs: making a decision for, you know, either nothing or this just constant bump from 24 to 32, for example. Now…
 
 171
-00:29:22.040 --> 00:29:42.000
+00:28:44.039 --> 00:29:04.000
 Ansgar Dietrichs: Otherwise, if given that there is so much interest in this mechanism now, it seems like if people are actually committing to working on this over the next week, we could have this be one of the two last decisions we revisit next week, but only if there's actually people committing to actually working on it in the meantime. Otherwise, I think it would be… not be useful.
 
 172
-00:29:49.150 --> 00:29:50.070
+00:29:11.150 --> 00:29:12.069
 Ansgar Dietrichs: And Greg?
 
 173
-00:29:51.910 --> 00:30:10.329
+00:29:13.910 --> 00:29:32.328
 Greg K | Lido: Yeah, so, I had emphasized also in the previous ACD call that, I think it's quite important to increase the max contract size, so… and I think that there are… there were more client teams supporting this, but perhaps some people are not here today. So I will definitely…
 
 174
-00:30:10.330 --> 00:30:14.139
+00:29:32.329 --> 00:29:36.138
 Greg K | Lido: Disagree to just doing nothing.
 
 175
-00:30:14.140 --> 00:30:15.580
+00:29:36.140 --> 00:29:37.579
 Greg K | Lido: I…
 
 176
-00:30:15.660 --> 00:30:29.390
+00:29:37.660 --> 00:29:51.390
 Greg K | Lido: We might do this kind of, simpler bump, but, I would strongly disagree to, like, do nothing. We could discuss if we do the full EIP or just some smaller, chains.
 
 177
-00:30:29.390 --> 00:30:39.060
+00:29:51.390 --> 00:30:01.059
 Greg K | Lido: But, yeah, this request for larger contract sizes was already a long time ago, even for Fusaka, so I don't think we should delay more on this.
 
 178
-00:30:39.090 --> 00:30:43.310
+00:30:01.089 --> 00:30:05.309
 Greg K | Lido: And then, of course, for H-star, we could do a more kind of long-term approach.
 
 179
-00:30:44.050 --> 00:30:54.909
+00:30:06.049 --> 00:30:16.909
 Ansgar Dietrichs: Yep, sounds good. Yeah, so, given that, I think we also need to move on to the other ERPs, here's a proposal. I know people don't want to delay further, but I think goal for next week.
 
 180
-00:30:54.910 --> 00:31:04.139
+00:30:16.910 --> 00:30:26.138
 Ansgar Dietrichs: next week's ACDE is to really absolutely finalize and close the scoping. So that's why I would, personally propose that we
 
 181
-00:31:04.140 --> 00:31:20.809
+00:30:26.140 --> 00:30:42.808
 Ansgar Dietrichs: have pushed this decision one more week, but with the understanding that on next week's call, if people… if we don't come on and people have specifically worked on 7907 in depth in the meantime, it is out of consideration. It seems like it's… the uncertainty about the scope and the variance would mean that either people work on it
 
 182
-00:31:20.810 --> 00:31:26.509
+00:30:42.809 --> 00:30:48.509
 Ansgar Dietrichs: In this week in between, or we only have the choice between the constant bump to 32, or
 
 183
-00:31:26.510 --> 00:31:36.510
+00:30:48.509 --> 00:30:58.509
 Ansgar Dietrichs: doing nothing in Glamsterdam. So that's basically understanding, so there won't be… otherwise, we won't have, like, infinite deliberations on 7907 anymore next week. Is that okay with people?
 
 184
-00:31:37.200 --> 00:31:39.580
+00:30:59.200 --> 00:31:01.579
 lightclient: I mean, isn't that what we said for this call?
 
 185
-00:31:40.550 --> 00:31:48.990
+00:31:02.549 --> 00:31:10.990
 Ansgar Dietrichs: I don't think we actually talked about 7907 at all, last week. Oh, sorry, before, before Christmas, the ACD, we didn't get to it.
 
 186
-00:31:49.380 --> 00:31:53.130
+00:31:11.380 --> 00:31:15.130
 Guillaume: We did talk about it through 2926.
 
 187
-00:31:54.920 --> 00:32:05.409
+00:31:16.920 --> 00:31:27.409
 lightclient: I mean, I think we just keep saying, you know, next call, if someone has actually done something on it, then we'll make a decision, and people just aren't working on it. So I don't think it's gonna change again.
 
 188
-00:32:05.690 --> 00:32:06.440
+00:31:27.690 --> 00:31:28.440
 lightclient: Between now.
 
 189
-00:32:06.440 --> 00:32:08.190
+00:31:28.440 --> 00:31:30.190
 Ansgar Dietrichs: posing to DFI today?
 
 190
-00:32:09.060 --> 00:32:14.850
+00:31:31.059 --> 00:31:36.849
 lightclient: If we want to have faster forks, we need to just be realistic, and this doesn't have a lot of…
 
 191
-00:32:15.430 --> 00:32:25.549
+00:31:37.430 --> 00:31:47.548
 lightclient: clarity from clients, and we already have a lot on our plates to deliver with Glamsterdam, so… I think it's totally fine to just plan on doing something in H-star.
 
 192
-00:32:31.150 --> 00:32:42.509
+00:31:53.150 --> 00:32:04.509
 jochem-brouwer: Yeah, I just want to add, as I said in the chat, I don't want to overload myself, but I also think that this contract code size increase is, like, a big community ask, so I think we should at least try to do something.
 
 193
-00:32:42.510 --> 00:32:54.289
+00:32:04.509 --> 00:32:16.288
 jochem-brouwer: As I said, I don't want to overload myself, but I will like to assist here, so I will suggest to indeed delay this decision to next call.
 
 194
-00:32:54.420 --> 00:32:58.649
+00:32:16.420 --> 00:32:20.648
 jochem-brouwer: And I will… well, I will just try to… to… to do this, yeah.
 
 195
-00:32:58.780 --> 00:33:01.100
+00:32:20.779 --> 00:32:23.099
 jochem-brouwer: But I could use, like, a lot of help. Yeah, thanks.
 
 196
-00:33:01.100 --> 00:33:18.039
+00:32:23.099 --> 00:32:40.038
 Ansgar Dietrichs: just because we need to move on now, like, I understand, Matt, I think you're probably right, but I think, given that there's enough interest here, I will make the decision, we will bump it one more time, but yeah, if by next week no one has really worked on this, like, we don't talk about it anymore, it's gonna be a very quick decision. Like, there's basically, like…
 
 197
-00:33:18.630 --> 00:33:25.100
+00:32:40.630 --> 00:32:47.099
 Ansgar Dietrichs: Yeah, either there is substantial kind of, like, progress, or it's just going to be a quick decision.
 
 198
-00:33:25.300 --> 00:33:38.719
+00:32:47.299 --> 00:33:00.719
 Ansgar Dietrichs: Okay, with that, we'll move on to the next ones. So then, we will also… I suggest we also move the decision on 7903 one more time, because that one is basically just in connection, it's the question of.
 
 199
-00:33:38.750 --> 00:33:48.730
+00:33:00.750 --> 00:33:10.730
 Ansgar Dietrichs: Do we need more init code size if we have more contract code size, given that we don't know yet whether we will increase contract… it'll be a bundled decision?
 
 200
-00:33:48.940 --> 00:33:56.730
+00:33:10.940 --> 00:33:18.730
 Ansgar Dietrichs: Which then, leads us to, oh, Marius, did you want to comment on 7903?
 
 201
-00:33:56.730 --> 00:33:59.740
+00:33:18.730 --> 00:33:21.740
 Marius van der Wijden: Yes, we cannot remove the import size limit.
 
 202
-00:33:59.880 --> 00:34:01.300
+00:33:21.880 --> 00:33:23.299
 Marius van der Wijden: That's not possible.
 
 203
-00:34:01.700 --> 00:34:05.759
+00:33:23.700 --> 00:33:27.759
 Marius van der Wijden: Because of the… the jump dust attacks.
 
 204
-00:34:06.220 --> 00:34:08.310
+00:33:28.220 --> 00:33:30.309
 Marius van der Wijden: We need to do something more.
 
 205
-00:34:08.980 --> 00:34:11.340
+00:33:30.980 --> 00:33:33.340
 Marius van der Wijden: Small toe, but.
 
 206
-00:34:14.889 --> 00:34:16.669
+00:33:36.889 --> 00:33:38.668
 Ansgar Dietrichs: Okay, so then…
 
 207
-00:34:17.939 --> 00:34:34.239
+00:33:39.938 --> 00:33:56.239
 Ansgar Dietrichs: it's basically the same thing here, like, if anyone actually thinks we need to do something about this, then by next week, you have… you either present work that actually makes it viable to include something like this, otherwise it's also going to be out. But yeah, I don't want to be held up too much by these contract size.
 
 208
-00:34:34.379 --> 00:34:39.629
+00:33:56.378 --> 00:34:01.628
 Ansgar Dietrichs: discussions. Charles, if you have a comment on just specifically 7903, I would request to maybe push it to next week.
 
 209
-00:34:39.859 --> 00:34:41.449
+00:34:01.858 --> 00:34:03.449
 Ansgar Dietrichs: Okay, perfect.
 
 210
-00:34:41.659 --> 00:34:59.289
+00:34:03.659 --> 00:34:21.289
 Ansgar Dietrichs: Then, let's move on to 7997, the factory pre-deploy. That one, it… I marked it as a DFI, kind of, just because it was very… there was very little, feedback by clients, very mixed,
 
 211
-00:34:59.289 --> 00:35:01.789
+00:34:21.289 --> 00:34:23.789
 Ansgar Dietrichs: So, given that we
 
 212
-00:35:01.789 --> 00:35:13.269
+00:34:23.789 --> 00:34:35.268
 Ansgar Dietrichs: have limited room, it's just a default, no, just because there's no clear yes. Has this changed? Have clients, in the meantime, realized that that is a priority for them? Or would we just go with the DFI?
 
 213
-00:35:23.329 --> 00:35:29.929
+00:34:45.329 --> 00:34:51.929
 Ansgar Dietrichs: yeah, if there's no change from opinion, then I think we just, DFI7997.
 
 214
-00:35:30.939 --> 00:35:37.089
+00:34:52.938 --> 00:34:59.088
 Ansgar Dietrichs: And then the, the next one, EIP8058,
 
 215
-00:35:37.339 --> 00:35:52.619
+00:34:59.338 --> 00:35:14.619
 Ansgar Dietrichs: I'm not sure if we have Carlos on the call today, I don't think so, but, he, as the author, he specifically requested to withdraw, the EAP because, because there was,
 
 216
-00:35:53.129 --> 00:36:06.489
+00:35:15.128 --> 00:35:28.489
 Ansgar Dietrichs: Just, you know, too much focus? Oh, sorry, never mind that. Do you still want to… I just wanted to basically wait with the decision for the call, just in case anyone wanted to object or something, but are you still… you'd still prefer for the CRP to be withdrawn?
 
 217
-00:36:06.810 --> 00:36:20.309
+00:35:28.809 --> 00:35:42.309
 CPerezz: Yeah, I mean, I did it so that we can focus on repricings, because there's a lot of confusion already with it, so if no team is hardly interested on this one, yeah, I think we can drop it. It's just a good UX improvement, but it won't be critical.
 
 218
-00:36:21.300 --> 00:36:24.809
+00:35:43.300 --> 00:35:46.809
 Ansgar Dietrichs: Yes, Felix, do you have a comment on, 8058?
 
 219
-00:36:27.060 --> 00:36:32.960
+00:35:49.059 --> 00:35:54.960
 Felix (Geth): No, my question is about the previous decision. It's about the 7997.
 
 220
-00:36:33.390 --> 00:36:35.990
+00:35:55.389 --> 00:35:57.989
 Felix (Geth): Because, I was just…
 
 221
-00:36:36.110 --> 00:36:39.129
+00:35:58.110 --> 00:36:01.128
 Felix (Geth): I was just curious, so why was it DFI?
 
 222
-00:36:40.700 --> 00:36:51.919
+00:36:02.699 --> 00:36:13.918
 Ansgar Dietrichs: Oh, you're right. I mean, you can revisit this one more time, it's just, there was… so, we… if we look at the client votes, we had, two Bs, and an A.
 
 223
-00:36:52.140 --> 00:37:10.809
+00:36:14.139 --> 00:36:32.809
 Ansgar Dietrichs: for it, that those were the only kind of considerations, and then every time so far it's come up, there's never been anyone arguing for it, so it's just a default. That's why I asked if anyone basically specifically by now thinks it's actually a priority. So if you, for example, would want to argue for, actually, for it, that it should be a priority, I'd be happy to
 
 224
-00:37:10.810 --> 00:37:17.509
+00:36:32.809 --> 00:36:39.509
 Ansgar Dietrichs: check with the clients to revisit that decision. Would you want to argue for 7997 inclusion?
 
 225
-00:37:18.200 --> 00:37:27.160
+00:36:40.199 --> 00:36:49.159
 Felix (Geth): I mean, I just wanted to quickly bring up that this particular EIP is very, very small, and it doesn't have…
 
 226
-00:37:27.580 --> 00:37:43.279
+00:36:49.579 --> 00:37:05.278
 Felix (Geth): any kind of… so the implementation impact of this is very small. And so, for this reason, I feel like we might either be able to decide it based on a simple vote, or something like that, because there isn't gonna be a lot of…
 
 227
-00:37:43.650 --> 00:37:48.119
+00:37:05.650 --> 00:37:10.119
 Felix (Geth): testing, or… It's just about…
 
 228
-00:37:48.780 --> 00:37:55.210
+00:37:10.780 --> 00:37:17.210
 Felix (Geth): Making sure that a very specific contract exists in the chain at a known address.
 
 229
-00:37:55.870 --> 00:38:01.399
+00:37:17.869 --> 00:37:23.398
 Felix (Geth): So, I would just be curious to basically hear the official statement from all the clients.
 
 230
-00:38:01.680 --> 00:38:08.279
+00:37:23.679 --> 00:37:30.278
 Felix (Geth): About this, and it should be decided like that, and not just, you know, because nobody said anything, we're not gonna…
 
 231
-00:38:09.410 --> 00:38:11.010
+00:37:31.409 --> 00:37:33.010
 Felix (Geth): We're just gonna DFI.
 
 232
-00:38:13.750 --> 00:38:26.049
+00:37:35.750 --> 00:37:48.048
 Ansgar Dietrichs: Yeah, that's very reasonable. Again, that's why, you know, it was… that's specifically the type of comment I wanted to elicit, someone specifically arguing for it, so we can… we can check with other clients. Justin, do you have an opinion on…
 
 233
-00:38:26.160 --> 00:38:27.440
+00:37:48.159 --> 00:37:49.440
 Ansgar Dietrichs: 7997?
 
 234
-00:38:33.960 --> 00:38:37.069
+00:37:55.960 --> 00:37:59.068
 Ansgar Dietrichs: Because you have your hand raised, or is it on a different point?
 
 235
-00:38:47.520 --> 00:38:49.310
+00:38:09.519 --> 00:38:11.309
 Ansgar Dietrichs: You are muted.
 
 236
-00:38:58.950 --> 00:39:02.910
+00:38:20.949 --> 00:38:24.909
 Ansgar Dietrichs: Not sure. Yeah, Justin, if you're…
 
 237
-00:39:06.040 --> 00:39:09.750
+00:38:28.039 --> 00:38:31.750
 Ansgar Dietrichs: Yeah, I don't know, sounds… sounds like Tristan might not be able…
 
 238
-00:39:10.040 --> 00:39:13.789
+00:38:32.039 --> 00:38:35.789
 Ansgar Dietrichs: To say anything? Any, any, anyone else?
 
 239
-00:39:14.010 --> 00:39:16.429
+00:38:36.010 --> 00:38:38.429
 Ansgar Dietrichs: Han, did you want to comment on the EIP?
 
 240
-00:39:17.530 --> 00:39:23.749
+00:38:39.530 --> 00:38:45.748
 Han | Stateless: I wanted to comment on AD58, but maybe I'll wait until someone else… Yeah.
 
 241
-00:39:24.390 --> 00:39:30.090
+00:38:46.389 --> 00:38:52.090
 Ansgar Dietrichs: Yeah, okay, I mean, we can… I can briefly go through, so,
 
 242
-00:39:30.490 --> 00:39:35.750
+00:38:52.489 --> 00:38:57.750
 Ansgar Dietrichs: Yeah, I mean, it sounds like we have difficult technical difficulties from the Besu side,
 
 243
-00:39:38.310 --> 00:39:47.800
+00:39:00.309 --> 00:39:09.800
 Ansgar Dietrichs: Then, do we have anyone from Nethermind, that… that has an opinion on 7997? NetherMind was the only client that ranked it as A.
 
 244
-00:39:49.500 --> 00:39:52.049
+00:39:11.500 --> 00:39:14.048
 Ben Adams: I think it's… Oops, there we go.
 
 245
-00:39:53.010 --> 00:40:00.610
+00:39:15.010 --> 00:39:22.610
 Łukasz Rozmej: Yeah, we think it's good. It wasn't a priority for us, but we don't oppose it in any way. We think it's actually.
 
 246
-00:40:03.280 --> 00:40:08.240
+00:39:25.280 --> 00:39:30.239
 Ben Adams: It also provides, a… Straightforward.
 
 247
-00:40:08.580 --> 00:40:19.680
+00:39:30.579 --> 00:39:41.679
 Ben Adams: entry point for L2s and everything to copy, so that you can have deterministic deployment across chains, because there's… there's some issues with, L2s that are not quite
 
 248
-00:40:20.210 --> 00:40:23.040
+00:39:42.210 --> 00:39:45.039
 Ben Adams: EVM… 100% EVM.
 
 249
-00:40:26.270 --> 00:40:36.229
+00:39:48.269 --> 00:39:58.228
 Ansgar Dietrichs: Sounds good. So, maybe, if anyone from Besu, like, I mean, maybe either Justin, or if…
 
 250
-00:40:36.460 --> 00:40:43.279
+00:39:58.460 --> 00:40:05.278
 Ansgar Dietrichs: voice doesn't work, maybe in chat could briefly say whether Besu would Be open to inclusion, or…
 
 251
-00:40:48.930 --> 00:41:01.170
+00:40:10.929 --> 00:40:23.170
 Ansgar Dietrichs: I mean, in the meantime, do we have anyone from Erigon or Reth on the call that, could say whether the clients have a take? I think… I think there were no comments from either client on the CIP?
 
 252
-00:41:04.240 --> 00:41:12.309
+00:40:26.239 --> 00:40:34.309
 Andrew Ashikhmin: Yeah, so… I would, I'm slightly against it, because I think,
 
 253
-00:41:12.660 --> 00:41:21.159
+00:40:34.659 --> 00:40:43.159
 Andrew Ashikhmin: We have bigger fish to fry, and with pre-compiles, there will be… Subtle points, like…
 
 254
-00:41:21.540 --> 00:41:37.340
+00:40:43.539 --> 00:40:59.340
 Andrew Ashikhmin: does it, change… does it actually create a contract? Does it change the tri-state route or not, and things like that. So, there will be… it's not, like, completely trivial to implement.
 
 255
-00:41:45.460 --> 00:41:46.040
+00:41:07.460 --> 00:41:08.039
 Ansgar Dietrichs: Right
 
 256
-00:41:47.410 --> 00:41:56.280
+00:41:09.409 --> 00:41:18.280
 Ansgar Dietrichs: Yeah, so it sounds like there's some interest, there's some skepticism, Felix, you have your hand up again, do you… yeah, do you want to say some more on this, on the UP?
 
 257
-00:41:56.750 --> 00:41:59.430
+00:41:18.750 --> 00:41:21.429
 Felix (Geth): Sorry, I just left it up, there was no…
 
 258
-00:42:00.520 --> 00:42:08.230
+00:41:22.519 --> 00:41:30.230
 Felix (Geth): There's no further comment on this from my end. I really just wanted to raise it in a more formal way than just declining it by default.
 
 259
-00:42:08.720 --> 00:42:22.480
+00:41:30.719 --> 00:41:44.480
 Felix (Geth): I do also think that this is useful, and it is useful also in some ways as a prep work for account abstraction, because it removes the requirement to have an EOA to perform the deterministic deployment.
 
 260
-00:42:22.610 --> 00:42:28.550
+00:41:44.610 --> 00:41:50.550
 Felix (Geth): So, in some ways, this is actually… Very important for…
 
 261
-00:42:30.350 --> 00:42:37.889
+00:41:52.349 --> 00:41:59.889
 Felix (Geth): some roadmap of a construction or something. So there are things there, but Andrew is also right, it has some…
 
 262
-00:42:38.570 --> 00:42:39.880
+00:42:00.570 --> 00:42:01.880
 Felix (Geth): They're awesome.
 
 263
-00:42:40.120 --> 00:42:42.329
+00:42:02.119 --> 00:42:04.329
 Felix (Geth): untried things in there.
 
 264
-00:42:44.850 --> 00:43:00.269
+00:42:06.849 --> 00:42:22.268
 Ansgar Dietrichs: Yeah, so given that, I'm just curious, because I think most people are, kind of, could go either way, like, would you rec… like, just… from… from your… from Geth's point of view, would you prefer this to be in… in Glamsterdam, or would you prefer this?
 
 265
-00:43:00.530 --> 00:43:02.540
+00:42:22.530 --> 00:42:24.539
 Ansgar Dietrichs: to be revisited for H-star.
 
 266
-00:43:03.670 --> 00:43:07.810
+00:42:25.670 --> 00:42:29.809
 Felix (Geth): I think it's easy enough for us to put it in the… in Amsterdam.
 
 267
-00:43:08.740 --> 00:43:16.770
+00:42:30.739 --> 00:42:38.769
 Felix (Geth): And then, I mean, we can always drop. Like, the way I see it is that, like, if it turns out too complicated, it can be dropped, but it's more like a question of…
 
 268
-00:43:17.830 --> 00:43:25.729
+00:42:39.829 --> 00:42:47.728
 Felix (Geth): I… I think it… there's an argument from the guest side, the way we argued it is that, like, most of these, like, simple changes
 
 269
-00:43:26.680 --> 00:43:31.420
+00:42:48.679 --> 00:42:53.420
 Felix (Geth): that benefit the community should just be included in Glamsterdam, because
 
 270
-00:43:31.820 --> 00:43:34.279
+00:42:53.820 --> 00:42:56.278
 Felix (Geth): Yeah, it's not complicated to do.
 
 271
-00:43:35.190 --> 00:43:49.609
+00:42:57.190 --> 00:43:11.608
 Ansgar Dietrichs: Okay, then, yeah, I would, then also just maybe go with also… Barnabas also said this in chat, we can just CFI it for now, and then remove it again, given that it's such a small change, I think that is feasible. And Drew, would that be okay with you from your end?
 
 272
-00:43:50.300 --> 00:43:51.880
+00:43:12.300 --> 00:43:13.880
 Andrew Ashikhmin: Yeah, sure.
 
 273
-00:43:52.420 --> 00:44:00.049
+00:43:14.420 --> 00:43:22.048
 Ansgar Dietrichs: Okay, then, okay, then we will actually see CFI now, 7997. Thank you, Felix, for…
 
 274
-00:44:00.430 --> 00:44:01.989
+00:43:22.429 --> 00:43:23.989
 Ansgar Dietrichs: Bringing that up again.
 
 275
-00:44:03.640 --> 00:44:19.300
+00:43:25.639 --> 00:43:41.300
 Ansgar Dietrichs: And my apologies for maybe going over it too quickly. Then, back to AD58. So again, the author, Carlos, was, basically proposing to just withdraw it, but it sounded like, Han, you wanted to say something?
 
 276
-00:44:19.300 --> 00:44:39.100
+00:43:41.300 --> 00:44:01.099
 Han | Stateless: Yeah, I just wanted to say something about this EIP. So, even though our team, sales team, thinks that this is not a prioritized EIP, but, the motivation behind this, EIP is primarily a UX improvement for users and contract developers, since it basically reduces code deposit gas costs.
 
 277
-00:44:39.120 --> 00:44:44.869
+00:44:01.119 --> 00:44:06.869
 Han | Stateless: As, what I know is that most clients internally already deduplicate their contract code.
 
 278
-00:44:45.050 --> 00:44:48.920
+00:44:07.050 --> 00:44:10.920
 Han | Stateless: So, yeah, it would be nice for users to get this,
 
 279
-00:44:49.240 --> 00:45:05.050
+00:44:11.239 --> 00:44:27.050
 Han | Stateless: gas cost discount, but we haven't actually gotten any feedback from contract developers, so it'd be nice if anyone has any opinions on this. But, yeah, another pass point is that it's also highly probable that this EIP is fairly simple to implement and test.
 
 280
-00:45:05.570 --> 00:45:18.149
+00:44:27.570 --> 00:44:40.148
 Han | Stateless: So based on our latest analysis on the deployed contracts, 80% of the contracts have a code size under 1KB, so adding this discount likely wouldn't affect the majority.
 
 281
-00:45:18.150 --> 00:45:28.829
+00:44:40.150 --> 00:44:50.829
 Han | Stateless: But that said, given the repricing effort more broadly, longer term, we would still want users to pay for what's actually being stored and not pay redundant costs.
 
 282
-00:45:28.970 --> 00:45:31.460
+00:44:50.969 --> 00:44:53.460
 Han | Stateless: So yeah, just to say a few words about this EIP.
 
 283
-00:45:34.980 --> 00:45:41.209
+00:44:56.980 --> 00:45:03.208
 Ansgar Dietrichs: Yeah, I think the default would be to go with the intention of the,
 
 284
-00:45:41.650 --> 00:45:54.049
+00:45:03.650 --> 00:45:16.048
 Ansgar Dietrichs: EIP author, just because if a championed author wants to withdraw, then I think it's best to withdraw, although Carlos did seem to say that if there was strong interest, then of course he'd be willing to reconsider, so…
 
 285
-00:45:54.050 --> 00:46:06.249
+00:45:16.050 --> 00:45:28.248
 Ansgar Dietrichs: Are there from the client team side? Is there… is there strong interest? It seems like we have not gotten any specific feedback from the smart contract developer's side that… that there was concrete interest in this.
 
 286
-00:46:06.560 --> 00:46:15.900
+00:45:28.559 --> 00:45:37.900
 Ansgar Dietrichs: Which, yeah, to me indicates we could also wait and revisit this in H-star. Is there any client that would really want to see this in Glamsterdam now already?
 
 287
-00:46:27.010 --> 00:46:33.089
+00:45:49.010 --> 00:45:55.088
 Guillaume: Yeah. So, we are currently discussing it, on a different channel.
 
 288
-00:46:33.390 --> 00:46:53.010
+00:45:55.389 --> 00:46:15.010
 Guillaume: And, I'm saying we, the stateless team. I think there's a good, interest, that just declared itself, and we would like to, to expand a bit on this. So, I'm going to make, at the team level and the executive decision, to withdraw it.
 
 289
-00:46:53.440 --> 00:47:13.149
+00:46:15.440 --> 00:46:35.148
 Guillaume: Even though, yeah, it has some potential, but I think if we rework it, a bit, we could actually make a very strong case for it in, in H-star, and I would like to see that. So, yeah, sorry, Han, but I think, it's better for the long term.
 
 290
-00:47:15.410 --> 00:47:24.210
+00:46:37.409 --> 00:46:46.210
 Ansgar Dietrichs: then, yeah, with all these comments, I think, this has promise, and I think we hopefully then have a version for it for HSA, but then it sounds like for Glamsterdam, we will…
 
 291
-00:47:24.370 --> 00:47:26.849
+00:46:46.369 --> 00:46:48.849
 Ansgar Dietrichs: officially DFI it today.
 
 292
-00:47:29.240 --> 00:47:47.559
+00:46:51.239 --> 00:47:09.559
 Ansgar Dietrichs: Okay, then, we can move on to the next block, which is these… the… what I call the utility EIPs. There was this EIP7668 remove bloom filters. This, the situation there is that every client basically had the… seemed to have a similar opinion, which was basically.
 
 293
-00:47:47.820 --> 00:48:05.259
+00:47:09.820 --> 00:47:27.259
 Ansgar Dietrichs: this, seems easy and nice to have, but also not super high priority. So in that sense, kind of similar to the deterministic, pre-deploy that we just discussed. So basically now, today would then also be a decision, decision time on this. Do we…
 
 294
-00:48:05.620 --> 00:48:12.540
+00:47:27.619 --> 00:47:34.539
 Ansgar Dietrichs: Do clients have an opinion 7668, should this be in Amsterdam, or should this wait for another hard fork?
 
 295
-00:48:21.290 --> 00:48:31.349
+00:47:43.289 --> 00:47:53.349
 Felix (Geth): So, I can say something, sorry, I didn't raise my hand, but I guess nobody else did. So, one problem with removing broom filters is that it will introduce…
 
 296
-00:48:32.310 --> 00:48:42.349
+00:47:54.309 --> 00:48:04.349
 Felix (Geth): some encoding variances, based on fork, and we have seen in the past that this can be problematic, so the implementation of this can actually be
 
 297
-00:48:44.480 --> 00:48:45.789
+00:48:06.480 --> 00:48:07.789
 Felix (Geth): There are some…
 
 298
-00:48:45.920 --> 00:48:54.689
+00:48:07.920 --> 00:48:16.688
 Felix (Geth): it can actually turn out to be a lot of work. I just wanted to raise it up front. At the same time, it has a nice promise that
 
 299
-00:48:54.810 --> 00:48:59.019
+00:48:16.809 --> 00:48:21.018
 Felix (Geth): These filters are basically totally unused, and they are just legacy.
 
 300
-00:48:59.160 --> 00:49:05.410
+00:48:21.159 --> 00:48:27.409
 Felix (Geth): So yeah, if we can avoid it, it's nice, but it's definitely something to consider that this can…
 
 301
-00:49:06.040 --> 00:49:11.669
+00:48:28.039 --> 00:48:33.668
 Felix (Geth): This can, you can… you can have some issues.
 
 302
-00:49:14.100 --> 00:49:21.480
+00:48:36.099 --> 00:48:43.480
 Felix (Geth): Yeah, so as Matt is saying, there's also the possibility of remove… leaving the… Leaving the filters the same.
 
 303
-00:49:24.730 --> 00:49:31.149
+00:48:46.730 --> 00:48:53.148
 Felix (Geth): It's… it's just something to consider, like, when we are hashing the… when we are hashing, receipts, for example, then,
 
 304
-00:49:31.390 --> 00:49:46.380
+00:48:53.389 --> 00:49:08.380
 Felix (Geth): we would have to just hash some zero bytes or something, maybe that's a possibility, but either way, like, changing the hashing of receipts in a fork requires some logic in the clients, and it might not be easy to add, or it might be very easy to add, I don't know, it totally depends on client.
 
 305
-00:49:48.920 --> 00:49:56.179
+00:49:10.920 --> 00:49:18.179
 Ansgar Dietrichs: Right. So that is an argument for some caution here, although with some of these variants proposed, it could be simple.
 
 306
-00:49:56.280 --> 00:50:04.030
+00:49:18.280 --> 00:49:26.030
 Ansgar Dietrichs: Is there, yeah, any other client that would… Specifically want this included.
 
 307
-00:50:05.080 --> 00:50:10.769
+00:49:27.079 --> 00:49:32.768
 Ansgar Dietrichs: I can… I mean, I can go through the list, do we… Nethermine, do we have a… do we have a take on… on the CRP?
 
 308
-00:50:15.230 --> 00:50:22.860
+00:49:37.230 --> 00:49:44.860
 Łukasz Rozmej: I'm not talking by the whole… for the whole Nethermine, but just for myself, I… I would skip it to do the scope creep.
 
 309
-00:50:23.460 --> 00:50:28.370
+00:49:45.460 --> 00:49:50.369
 Łukasz Rozmej: Why? Because it's… might… might be more complicated than expected.
 
 310
-00:50:29.870 --> 00:50:38.700
+00:49:51.869 --> 00:50:00.699
 Ansgar Dietrichs: Okay, so then that's some skepticism for Glamsterdam from both guys and another mindset. Yeah, understanding you're not necessarily speaking for the entire team. Marius?
 
 311
-00:50:39.620 --> 00:50:50.459
+00:50:01.619 --> 00:50:12.458
 Marius van der Wijden: Yeah, I also… I'm also, favorable to the argument that instead of just removing it, we could replace it with a…
 
 312
-00:50:50.800 --> 00:50:53.339
+00:50:12.800 --> 00:50:15.338
 Marius van der Wijden: Block filter, so, yeah.
 
 313
-00:50:53.500 --> 00:50:56.360
+00:50:15.500 --> 00:50:18.360
 Marius van der Wijden: I think maybe we should just postpone it for now.
 
 314
-00:50:57.910 --> 00:51:01.949
+00:50:19.909 --> 00:50:23.949
 Ansgar Dietrichs: Okay, then I think… We have heard enough, kind of.
 
 315
-00:51:02.160 --> 00:51:07.090
+00:50:24.159 --> 00:50:29.090
 Ansgar Dietrichs: concerns or ideas to replace it with a different EIP in the next HardFog that
 
 316
-00:51:08.320 --> 00:51:10.530
+00:50:30.320 --> 00:50:32.530
 Ansgar Dietrichs: obvious decision seems to be DFI.
 
 317
-00:51:10.650 --> 00:51:14.230
+00:50:32.650 --> 00:50:36.230
 Ansgar Dietrichs: Is there anyone who wants to still argue for CFI?
 
 318
-00:51:21.030 --> 00:51:26.910
+00:50:43.030 --> 00:50:48.909
 Ansgar Dietrichs: Okay, then for Glamsterdam, we DFI7668.
 
 319
-00:51:27.210 --> 00:51:47.400
+00:50:49.210 --> 00:51:09.400
 Ansgar Dietrichs: then we can, go to the next one, EIP7745, the Trustless Log Index. My understanding is that there was, part of, like, this broader change that, Salt was working on. I marked the TSDFI candidate just because there was some scope concerns, and I think so far.
 
 320
-00:51:47.400 --> 00:51:51.040
+00:51:09.400 --> 00:51:13.039
 Ansgar Dietrichs: it was mostly the guest team and Salt that was interested in this.
 
 321
-00:51:51.040 --> 00:51:55.490
+00:51:13.039 --> 00:51:17.489
 Ansgar Dietrichs: But yeah, as also, do you want to give an update? Do you want to make an argument for inclusion?
 
 322
-00:51:56.590 --> 00:52:13.410
+00:51:18.590 --> 00:51:35.409
 Zsolt Felföldi: Yes, thank you. So, so the thing is, as far as I can see, yeah, it's, it's mostly, like, like, like, like, came out, like, this, from the GATT team, and we have our roadmap of this, this, trustless execution API, which is…
 
 323
-00:52:13.410 --> 00:52:36.270
+00:51:35.409 --> 00:51:58.269
 Zsolt Felföldi: well, cool as it is, but it would be way more cooler if we could make it, like, full-featured and could, properly prove everything trustlessly, which is, well, yeah, yeah, might be high priority for some and lower for some others. And I think Besu also signaled, like, put it in the A tier. I know, like, Netherland raised,
 
 324
-00:52:36.270 --> 00:52:38.879
+00:51:58.269 --> 00:52:00.878
 Zsolt Felföldi: Concerns about high complexity, which
 
 325
-00:52:38.880 --> 00:53:03.859
+00:52:00.880 --> 00:52:25.858
 Zsolt Felföldi: Okay, so about the complexity. So I've talked about how to approach this, and so it's a… it's kind of horizontally complex, it's true. Like, it's a complicated data structure, but as far as the implications to the rest of, like, the protocol go, it's, I think, not so dangerous. So, like, it has an input, like, like, like, throwing the logs into the data structure.
 
 326
-00:53:03.860 --> 00:53:16.209
+00:52:25.860 --> 00:52:38.208
 Zsolt Felföldi: and then a root comes out, and everything, and and since the last call, I also did some measurements. Now I have some numbers, not all of them yet, but…
 
 327
-00:53:16.210 --> 00:53:32.549
+00:52:38.210 --> 00:52:54.548
 Zsolt Felföldi: So I can also say this is kind of a really performant thing. So, right now, I think, the 7… or 375 gas cost of log addresses and topics could be maintained with this
 
 328
-00:53:32.640 --> 00:53:38.969
+00:52:54.639 --> 00:53:00.969
 Zsolt Felföldi: structure added, and so the thing is, I think, I think this thing could also, in the future, have
 
 329
-00:53:38.970 --> 00:53:59.779
+00:53:00.969 --> 00:53:21.778
 Zsolt Felföldi: positive implications for scaling, because, like, it's just a lot cheaper to add logs than state entries, and this could be good for, like, cross-chain or cross-shard, or add to communications, or anything, and I'm also trying to work out these ideas as we go.
 
 330
-00:53:59.780 --> 00:54:01.780
+00:53:21.780 --> 00:53:23.780
 Zsolt Felföldi: So, the thing is that,
 
 331
-00:54:01.960 --> 00:54:26.840
+00:53:23.960 --> 00:53:48.840
 Zsolt Felföldi: Yeah, I'm not sure, yeah, we have lots of features proposed for Glamsterdam, but the thing is, if we just deify this now, then probably I will keep working on this mostly alone, trying to get some interest around it, but also, like, this is a big thing, and maybe it's just too big to, like, next time at the H-star decisions, I just don't want to be at the same place.
 
 332
-00:54:26.840 --> 00:54:29.800
+00:53:48.840 --> 00:53:51.800
 Zsolt Felföldi: So, yeah, I was still…
 
 333
-00:54:29.830 --> 00:54:48.219
+00:53:51.829 --> 00:54:10.219
 Zsolt Felföldi: argue for maybe CFI English now, and, so that just we consider it. It means considered for inclusion, not scheduled, and, and, and, and, and so that, like, like, we start, like, more inter-team communication about this, and we figure out.
 
 334
-00:54:48.350 --> 00:54:56.679
+00:54:10.349 --> 00:54:18.679
 Zsolt Felföldi: yeah, how much time it takes, and if it takes more time, then yeah, it's fine to defer it to H-star. I just think, like, this is an important…
 
 335
-00:54:57.470 --> 00:55:07.490
+00:54:19.469 --> 00:54:29.489
 Zsolt Felföldi: thing, not just because it's my project, but… but yeah, so I… I think I… each… each week, I will have better and better arguments for it, but, yeah, so…
 
 336
-00:55:08.030 --> 00:55:10.279
+00:54:30.030 --> 00:54:32.278
 Zsolt Felföldi: That's… that's what I wanted to add.
 
 337
-00:55:10.670 --> 00:55:28.859
+00:54:32.670 --> 00:54:50.858
 Ansgar Dietrichs: Okay, thank you. And just from the process side, like, I think for a CFI decision, we would need at least rough consensus from all clients, for inclusion, or at least preliminary inclusion. So, so far, signaling-wise, NetherMind and Erigon had signaled against it, so we would need them to change their minds to move to CFI. Marius?
 
 338
-00:55:31.370 --> 00:55:36.870
+00:54:53.369 --> 00:54:58.869
 Marius van der Wijden: Yeah, I, I'm only arguing on behalf of myself.
 
 339
-00:55:37.320 --> 00:55:46.399
+00:54:59.320 --> 00:55:08.398
 Marius van der Wijden: And, just wanted to, like, kind of talk a bit about my opinion about this. I think it's a very good idea, and I think it is
 
 340
-00:55:46.520 --> 00:55:51.290
+00:55:08.519 --> 00:55:13.289
 Marius van der Wijden: going to be… Much more important going forward.
 
 341
-00:55:51.860 --> 00:55:54.500
+00:55:13.860 --> 00:55:16.500
 Marius van der Wijden: In the future, where not all nodes will have
 
 342
-00:55:54.750 --> 00:56:03.980
+00:55:16.750 --> 00:55:25.980
 Marius van der Wijden: will have the state, and not all nodes will have the receipts. It is, much more important to… to where we…
 
 343
-00:56:04.100 --> 00:56:11.349
+00:55:26.099 --> 00:55:33.349
 Marius van der Wijden: to be able to query stuff trustlessly, so I think this is definitely a step in the right direction.
 
 344
-00:56:11.630 --> 00:56:15.910
+00:55:33.630 --> 00:55:37.909
 Marius van der Wijden: from a… I…
 
 345
-00:56:16.820 --> 00:56:23.309
+00:55:38.820 --> 00:55:45.309
 Marius van der Wijden: I don't think we should ship it in Amsterdam, in my personal opinion. I think it's…
 
 346
-00:56:23.650 --> 00:56:37.309
+00:55:45.650 --> 00:55:59.309
 Marius van der Wijden: Not as, important as some of the other things, but I think there should be significant work going into this so that it is, able to ship in, in, in extra.
 
 347
-00:56:37.480 --> 00:56:44.310
+00:55:59.480 --> 00:56:06.309
 Marius van der Wijden: Because again, The more we move away from from, like,
 
 348
-00:56:45.030 --> 00:56:54.029
+00:56:07.030 --> 00:56:16.028
 Marius van der Wijden: Every node having everything, the more important it will become to have trustless, Ways of querying stuff.
 
 349
-00:56:54.420 --> 00:57:01.179
+00:56:16.420 --> 00:56:23.179
 Marius van der Wijden: And this provides a trustless way to query receipts and events, which is really nice.
 
 350
-00:57:02.330 --> 00:57:03.740
+00:56:24.329 --> 00:56:25.739
 Ansgar Dietrichs: Lukash?
 
 351
-00:57:05.370 --> 00:57:07.449
+00:56:27.369 --> 00:56:29.449
 Łukasz Rozmej: So, I,
 
 352
-00:57:07.950 --> 00:57:27.139
+00:56:29.949 --> 00:56:49.139
 Łukasz Rozmej: I agree that this is, unlocks interesting use cases, so completely agree here, and this might be really, really useful, so… it's something I would also like to see at some point, maybe not even at that long point. But the problem is, again, and I kind of seize with some…
 
 353
-00:57:27.300 --> 00:57:33.869
+00:56:49.300 --> 00:56:55.869
 Łukasz Rozmej: with some of Guillaume EIPs, that those EIPs are very important, and they address a lot of, like.
 
 354
-00:57:34.190 --> 00:57:49.090
+00:56:56.190 --> 00:57:11.090
 Łukasz Rozmej: tech depth, kind of, in some way, or features that were kind of missed, but are really useful. But they are not really hot and sexy, but they are, on the other hand, on the size of headliners.
 
 355
-00:57:49.580 --> 00:57:58.529
+00:57:11.579 --> 00:57:20.528
 Łukasz Rozmej: and, like, in a really, really big way, so… unless we kind of agree that we are doing some…
 
 356
-00:57:58.580 --> 00:58:11.200
+00:57:20.579 --> 00:57:33.199
 Łukasz Rozmej: more just address, those, tagged them, or kind of headliners in some way. It's really hard to schedule those, because
 
 357
-00:58:11.470 --> 00:58:20.680
+00:57:33.469 --> 00:57:42.679
 Łukasz Rozmej: I agree, I get that Geth team, for example, has this log build already, has this thing more or less done, so it's easy for them, but…
 
 358
-00:58:20.840 --> 00:58:35.870
+00:57:42.840 --> 00:57:57.869
 Łukasz Rozmej: I disagree that it's easy for everyone just to catch up, and I also disagree that this isn't dangerous, this is as dangerous as it can get, because this is a potential consensus issue on…
 
 359
-00:58:36.030 --> 00:58:42.390
+00:57:58.030 --> 00:58:04.389
 Łukasz Rozmej: On a stateful data structure that is big, which is the hardest thing to debug.
 
 360
-00:58:43.010 --> 00:58:53.379
+00:58:05.010 --> 00:58:15.378
 Łukasz Rozmej: like, it's State 3 kind of, consensus-level issue generating, structure, right? So,
 
 361
-00:58:53.550 --> 00:59:10.080
+00:58:15.550 --> 00:58:32.079
 Łukasz Rozmej: Yeah, so I would like to have this kind of thing at some point, but again, if we want to schedule that, we probably need to schedule that as a headliner, or as a… in a fork that has maybe another headliner, and just this, and nothing really big that we can really focus on that for a longer period of time.
 
 362
-00:59:11.720 --> 00:59:18.720
+00:58:33.719 --> 00:58:40.719
 Ansgar Dietrichs: Yeah, so it seems like the decision is trending towards DFI with several clients with concerns, but come back now?
 
 363
-00:59:19.760 --> 00:59:44.619
+00:58:41.760 --> 00:59:06.619
 Tamaghna Choudhuri: Yeah, hi. So I have been working on Pureths, and under that, I have been working on this too. So, the thing about… inside the Nimbus EL, so the thing that the team, both Dustin and Ethan, are agreeing on is, it's better to have this for the next fork, and also, from an implementation standpoint, as I've been working on it, some things, it would be better to have more tests, like, let's say, the minimal state index that we need to
 
 364
-00:59:44.620 --> 00:59:49.940
+00:59:06.619 --> 00:59:11.940
 Tamaghna Choudhuri: to send through the wires and other stuff. So, like, it's better to have it in the next fork than the current fork.
 
 365
-00:59:53.880 --> 00:59:55.469
+00:59:15.880 --> 00:59:17.469
 Ansgar Dietrichs: Okay, Felix?
 
 366
-00:59:57.440 --> 01:00:03.880
+00:59:19.440 --> 00:59:25.880
 Felix (Geth): I'm sorry, I just wanted to go back to the argument that was presented by,
 
 367
-01:00:04.100 --> 01:00:07.670
+00:59:26.099 --> 00:59:29.670
 Felix (Geth): Abukas right now, so the,
 
 368
-01:00:08.100 --> 01:00:13.000
+00:59:30.099 --> 00:59:35.000
 Felix (Geth): and maybe tie it also to what Joel said, so one of the things about this EIP
 
 369
-01:00:13.220 --> 01:00:16.700
+00:59:35.219 --> 00:59:38.699
 Felix (Geth): Is that… it introduces
 
 370
-01:00:17.260 --> 01:00:22.569
+00:59:39.260 --> 00:59:44.568
 Felix (Geth): Logic in a place where we didn't have the logic before, which is in the,
 
 371
-01:00:23.720 --> 01:00:36.389
+00:59:45.719 --> 00:59:58.389
 Felix (Geth): as a kind of post-processing step after indexing transactions, after processing transactions. And I think for that reason, it actually has slightly lower danger, because it is not really on the main
 
 372
-01:00:36.430 --> 01:00:48.260
+00:59:58.429 --> 01:00:10.260
 Felix (Geth): path of executing an individual transaction, but rather than it's just, like, an update to a data structure. And the update function is the same for all
 
 373
-01:00:49.350 --> 01:00:55.970
+01:00:11.349 --> 01:00:17.969
 Felix (Geth): Transactions, so it's basically a data structure that supports one operation, which is to append Items?
 
 374
-01:00:56.280 --> 01:01:02.440
+01:00:18.280 --> 01:00:24.440
 Felix (Geth): And then it has another operation to compute the root. So I think, for this reason, it's actually quite easy to test
 
 375
-01:01:02.820 --> 01:01:07.710
+01:00:24.820 --> 01:00:29.710
 Felix (Geth): it exhaustively, and I think it makes it less dangerous.
 
 376
-01:01:08.560 --> 01:01:11.460
+01:00:30.559 --> 01:00:33.460
 Felix (Geth): Maybe it's something to consider to…
 
 377
-01:01:11.730 --> 01:01:22.950
+01:00:33.730 --> 01:00:44.949
 Felix (Geth): I don't know, change your mind or something, but I think it's something where if a single person can work on this, and basically create an implementation, and then also exhaustively test it.
 
 378
-01:01:23.150 --> 01:01:26.500
+01:00:45.150 --> 01:00:48.500
 Felix (Geth): Whereas with some other changes that are related with
 
 379
-01:01:26.680 --> 01:01:36.959
+01:00:48.679 --> 01:00:58.958
 Felix (Geth): EVM execution, or things like that, it can often have a higher complexity because it ties in with the other workflows that the client has, or the state implementation, or…
 
 380
-01:01:37.850 --> 01:01:39.809
+01:00:59.849 --> 01:01:01.809
 Felix (Geth): But this isn't like that.
 
 381
-01:01:41.430 --> 01:01:55.719
+01:01:03.429 --> 01:01:17.719
 Ansgar Dietrichs: Right. Yeah, I mean, purely on process grounds, I just would say that, again, we would need rough consensus of clients to move this forward to CFI. So far from the comments, that doesn't seem to be the case with
 
 382
-01:01:56.040 --> 01:01:56.900
+01:01:18.039 --> 01:01:18.900
 Ansgar Dietrichs: M.
 
 383
-01:01:57.180 --> 01:02:01.049
+01:01:19.179 --> 01:01:23.048
 Ansgar Dietrichs: With some of these objections around, scope,
 
 384
-01:02:01.480 --> 01:02:07.250
+01:01:23.480 --> 01:01:29.250
 Ansgar Dietrichs: And I… yeah, so I… I think unless you can live convince
 
 385
-01:02:07.380 --> 01:02:11.400
+01:01:29.380 --> 01:01:33.400
 Ansgar Dietrichs: People right now, and we are basically approaching the end of the call.
 
 386
-01:02:11.590 --> 01:02:18.650
+01:01:33.590 --> 01:01:40.650
 Ansgar Dietrichs: I think we don't really have much of a choice but to DFI it, but, Sol, do you want to…
 
 387
-01:02:19.020 --> 01:02:21.480
+01:01:41.019 --> 01:01:43.480
 Ansgar Dietrichs: Have a quick… one quick more comment?
 
 388
-01:02:21.480 --> 01:02:26.559
+01:01:43.480 --> 01:01:48.559
 Zsolt Felföldi: Yeah, I just wanted to add that, okay, so the process…
 
 389
-01:02:26.720 --> 01:02:45.500
+01:01:48.719 --> 01:02:07.500
 Zsolt Felföldi: is what it is, but, I mean, I mean, I mostly just, want to make sure to somehow get the ball rolling, and, from, like, like, Lukash's comment, I sense that, okay, it is pretty great that at least, yeah, others are now interested in this, so…
 
 390
-01:02:45.500 --> 01:02:55.540
+01:02:07.500 --> 01:02:17.539
 Zsolt Felföldi: I mean, if in any way we can start working on this, like, together, and I will try to, like, reach out more and share whatever I have, then…
 
 391
-01:02:55.880 --> 01:02:57.240
+01:02:17.880 --> 01:02:19.239
 Zsolt Felföldi: Yeah, I mean.
 
 392
-01:03:00.360 --> 01:03:00.750
+01:02:22.360 --> 01:02:22.750
 Ansgar Dietrichs: Yeah.
 
 393
-01:03:00.750 --> 01:03:17.619
+01:02:22.750 --> 01:02:39.619
 Zsolt Felföldi: So if we DFI is now, I just… I would just like to ask somehow to just also spend a little bit of thought on this and start working on it. I mean, others should just… just give it a little… some priority or some… some… some resources, but, yeah.
 
 394
-01:03:18.040 --> 01:03:24.950
+01:02:40.039 --> 01:02:46.949
 Zsolt Felföldi: Okay, so probably I will not live convince everyone in this call, like, in 10 seconds, right? I don't know, so yeah, that's it.
 
 395
-01:03:25.820 --> 01:03:29.509
+01:02:47.820 --> 01:02:51.509
 Ansgar Dietrichs: Yeah, I think this is… we sometimes have these situations,
 
 396
-01:03:29.510 --> 01:03:53.119
+01:02:51.510 --> 01:03:15.119
 Ansgar Dietrichs: I personally think it's probably just very tough to, go through the Ocodevs calls, the synchronous calls directly, to basically change people's minds whenever there are changes where there's already pre-set opinions by clients. I think for this, often, like, breakout calls and these types of processes can help a lot, so what then my recommendation would be, well, like, my proposal for today would be to say we DFI it for Glamsterdam, just because I don't think we will, in time.
 
 397
-01:03:53.130 --> 01:03:56.219
+01:03:15.130 --> 01:03:18.219
 Ansgar Dietrichs: Have enough change of mind from clients.
 
 398
-01:03:56.250 --> 01:04:14.260
+01:03:18.250 --> 01:03:36.260
 Ansgar Dietrichs: But then maybe, Zald, if you could, I think, ideally, maybe be in touch with Nick, so I think that would be the easiest, and discuss, like, one… maybe not immediately, because people's mind will now still be on Amsterdam, but, like, at what moment in time over the next month, it might be a good time to just organize an ACD breakout.
 
 399
-01:04:14.260 --> 01:04:23.759
+01:03:36.260 --> 01:03:45.759
 Ansgar Dietrichs: on this topic. I think that would actually be a really good way of, outside of the main ACD schedule, basically make progress on this and make sure that it's not in the same place again for HSTAR. Would that be okay with you?
 
 400
-01:04:23.990 --> 01:04:30.270
+01:03:45.989 --> 01:03:52.269
 Zsolt Felföldi: Yes, absolutely. I think we already spent, quite a lot of time on this, on, like.
 
 401
-01:04:30.270 --> 01:04:52.010
+01:03:52.269 --> 01:04:14.010
 Zsolt Felföldi: the ACD, so right now, we just have to figure out how and better we can move forward this. So yeah, let's do breakouts, and as Lukash also suggested, maybe I should just propose it for headliner for H-star. Yeah, but actually, actually, yeah, I… I'm not really… I wouldn't really want to do… make it a headliner, but yeah.
 
 402
-01:04:52.170 --> 01:04:59.570
+01:04:14.170 --> 01:04:21.570
 Zsolt Felföldi: We will figure this out, and probably we won't figure this out on this call. So yeah, let's do a breakout. Alright.
 
 403
-01:04:59.750 --> 01:05:11.109
+01:04:21.750 --> 01:04:33.108
 Ansgar Dietrichs: Yeah, sounds good. And then, so then I propose to DFI it for now, for Amsterdam. Any last objections to this? Felix, you still have your hand up, but it might be from the previous comment.
 
 404
-01:05:12.500 --> 01:05:16.160
+01:04:34.500 --> 01:04:38.159
 Ansgar Dietrichs: Yeah. So, any objections to DFI now, then, for Glamsterdam?
 
 405
-01:05:18.450 --> 01:05:19.240
+01:04:40.449 --> 01:04:41.239
 Ansgar Dietrichs: Okay.
 
 406
-01:05:19.340 --> 01:05:22.390
+01:04:41.340 --> 01:04:44.389
 Ansgar Dietrichs: than, than we deify this.
 
 407
-01:05:22.550 --> 01:05:29.019
+01:04:44.550 --> 01:04:51.018
 Ansgar Dietrichs: So yeah, then, I think we reached the end of the call, the ACDT slot is only 60 minutes, not 90 minutes,
 
 408
-01:05:29.630 --> 01:05:32.519
+01:04:51.630 --> 01:04:54.518
 Ansgar Dietrichs: We have, we have one more. Mug?
 
 409
-01:05:34.590 --> 01:05:44.159
+01:04:56.590 --> 01:05:06.159
 Marc: Hi, so I just wanted to very quickly, raise something, because, so 7793 is the next to be discussed, so I assume we'll cover that next week.
 
 410
-01:05:44.450 --> 01:06:03.669
+01:05:06.449 --> 01:05:25.668
 Marc: But I made this thread, which kind of briefly explains it, and I can… wait, I'll try and share that in the chat. Okay, I can't share it in the chat, but I'll add it to the next agenda, and it'd be great if anyone had any feedback on the EIP, if they could share that there, to help us make a decision next week.
 
 411
-01:06:06.100 --> 01:06:14.330
+01:05:28.099 --> 01:05:36.329
 Ansgar Dietrichs: Yeah, that sounds good. Just a very quick, question because Nixon. Chad just asked about, are we not going for 90 minutes? My understanding is, I just saw it on the calendar.
 
 412
-01:06:14.440 --> 01:06:23.380
+01:05:36.440 --> 01:05:45.380
 Ansgar Dietrichs: scheduled for 60 minutes. I'd be happy to go for 90, but I feel like… I assume people probably planned for 60, given that that's what it was on the calendar for.
 
 413
-01:06:23.730 --> 01:06:37.969
+01:05:45.730 --> 01:05:59.969
 Ansgar Dietrichs: I also do think we're actually now in a good shape to really finalize the scope next week. I think we went through enough EIPs, so just to mention, so basically the last ones that we will basically have to discuss, then on next call.
 
 414
-01:06:37.970 --> 01:06:53.840
+01:05:59.969 --> 01:06:15.840
 Ansgar Dietrichs: is 7793, conditional transactions. That one is flagged as maybe the default DFI just because there wasn't much… so much active interest on the last calls, and Geth specifically only put it in C, so if…
 
 415
-01:06:53.930 --> 01:07:15.789
+01:06:15.929 --> 01:06:37.789
 Ansgar Dietrichs: the champion could convince Geth asynchronously until next week, that would make a big difference for its chances of success. The payoff code, same thing, kind of like default EFI, just because we only had Cs and Bs from all the clients, so it doesn't seem likely that there's enough interest to get it included. We have one more EIP on the crypto quantum side that we have to discuss. 8051, I think.
 
 416
-01:07:15.790 --> 01:07:26.809
+01:06:37.789 --> 01:06:48.809
 Ansgar Dietrichs: the big default would be to delay all the quantum changes until next fork, and again, if someone disagrees with that, they would have to try to convince core devs.
 
 417
-01:07:26.810 --> 01:07:43.069
+01:06:48.809 --> 01:07:05.068
 Ansgar Dietrichs: asynchronously, we have some of these questions… these non-protocol changing EIPs, where we have to just make a decision whether they should be part of the focus group or not, including this one specifically about revert creation in case of non-MP storage, where we just have to decide process-wise where that even fits in general.
 
 418
-01:07:43.090 --> 01:08:00.150
+01:07:05.090 --> 01:07:22.150
 Ansgar Dietrichs: And then, with all of those things out of the way, the last two, earlier ERPs that we have to revisit would be, one on the, storage, the state growth, basically, like, how do we exactly handle state growth, and then the,
 
 419
-01:08:00.150 --> 01:08:09.679
+01:07:22.150 --> 01:07:31.679
 Ansgar Dietrichs: contract size, question. So these are all the decisions left for next Thursday. I think that is a very realistic scope for one call.
 
 420
-01:08:09.780 --> 01:08:18.149
+01:07:31.780 --> 01:07:40.149
 Ansgar Dietrichs: And then the goal really is that, and we will also timebox all these discussions, that we… at the end of next week's call, we have a finalized
 
 421
-01:08:18.390 --> 01:08:29.909
+01:07:40.390 --> 01:07:51.908
 Ansgar Dietrichs: at least CFI scope for Glamsterdam, and then, of course, EAPs can still fall off if they end up causing problems down the road. Yeah, does it sound good for everyone? Then I think now's a good stopping point.
 
 422
-01:08:31.020 --> 01:08:34.120
+01:07:53.020 --> 01:07:56.119
 Ansgar Dietrichs: Yeah?
 
 423
-01:08:34.410 --> 01:08:43.439
+01:07:56.409 --> 01:08:05.439
 Ansgar Dietrichs: Thank you all for attending, and yeah, I can't wait for 12 Amsterdam Scope finalized. This has been a lot, but thank you all for the patience, and see you next week.
 
 424
-01:08:46.520 --> 01:08:47.330
+01:08:08.520 --> 01:08:09.329
 jochem-brouwer: Thank you.
 
 425
-01:08:47.350 --> 01:08:48.020
+01:08:09.350 --> 01:08:10.020
 Marius van der Wijden: Pretty good.
 
 426
-01:08:49.880 --> 01:08:51.349
+01:08:11.880 --> 01:08:13.349
 Andrew Ashikhmin: Thank you, bye-bye.
 

@@ -333,9 +333,124 @@ const ComplexityPage: React.FC = () => {
           </div>
         )}
 
-        {/* EIP Table */}
+        {/* Mobile Card List */}
         {(!loading || complexityMap.size > 0) && (
-        <div className="bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded overflow-hidden">
+        <div className="md:hidden space-y-2">
+          {sortedEips.length === 0 ? (
+            <div className="bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg p-6 text-center text-slate-500 dark:text-slate-400">
+              No EIPs found for this fork
+            </div>
+          ) : (
+            sortedEips.map(({ eip, complexity }) => {
+              const stage = getInclusionStage(eip, selectedFork) as InclusionStage;
+              const shortStage = stage.replace(' for Inclusion', '');
+              const isExpanded = expandedEip === eip.id;
+
+              return (
+                <div
+                  key={eip.id}
+                  className="bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg overflow-hidden"
+                >
+                  <button
+                    onClick={() => complexity && setExpandedEip(isExpanded ? null : eip.id)}
+                    className="w-full px-4 py-3 text-left"
+                    disabled={!complexity}
+                  >
+                    <div className="flex items-start justify-between gap-3">
+                      <div className="flex-1 min-w-0">
+                        <div className="flex items-center gap-2 mb-1">
+                          <span className="font-mono text-sm text-purple-600 dark:text-purple-400">
+                            {getProposalPrefix(eip)}-{eip.id}
+                          </span>
+                          <span className={`px-1.5 py-0.5 text-[10px] rounded ${getInclusionStageColor(stage)}`}>
+                            {shortStage}
+                          </span>
+                        </div>
+                        <p className="text-sm text-slate-900 dark:text-slate-100 truncate">
+                          {getLaymanTitle(eip)}
+                        </p>
+                      </div>
+                      <div className="flex items-center gap-2 shrink-0">
+                        {complexity ? (
+                          <>
+                            <div className="text-right">
+                              <span className={`inline-flex items-center gap-1 px-2 py-0.5 text-xs font-medium rounded ${getComplexityTierColor(complexity.tier)}`}>
+                                {getComplexityTierEmoji(complexity.tier)} {complexity.totalScore}
+                              </span>
+                            </div>
+                            <svg
+                              className={`w-4 h-4 text-slate-400 transition-transform ${isExpanded ? 'rotate-180' : ''}`}
+                              fill="none"
+                              stroke="currentColor"
+                              viewBox="0 0 24 24"
+                            >
+                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+                            </svg>
+                          </>
+                        ) : (
+                          <span className="text-xs text-slate-400 dark:text-slate-500 italic">
+                            Not assessed
+                          </span>
+                        )}
+                      </div>
+                    </div>
+                  </button>
+
+                  {/* Expanded anchor details */}
+                  {isExpanded && complexity && (
+                    <div className="px-4 pb-4 pt-2 border-t border-slate-100 dark:border-slate-700">
+                      <div className="flex items-center justify-between mb-3">
+                        <span className="text-xs text-slate-500 dark:text-slate-400">
+                          {complexity.anchors.filter((a) => a.score > 0).length}/{complexity.anchors.length} anchors scored
+                        </span>
+                        <a
+                          href={complexity.assessmentUrl}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="text-xs text-purple-600 dark:text-purple-400"
+                        >
+                          View full assessment
+                        </a>
+                      </div>
+                      <div className="space-y-1">
+                        {complexity.anchors.filter(a => a.score > 0).map((anchor, idx) => (
+                          <div key={idx} className="flex items-center justify-between py-1">
+                            <span className="text-xs text-slate-700 dark:text-slate-300 truncate pr-2">
+                              {anchor.name}
+                            </span>
+                            {anchor.score <= 3 ? (
+                              <div className="flex gap-0.5 shrink-0">
+                                {[1, 2, 3].map((level) => (
+                                  <div
+                                    key={level}
+                                    className={`w-2 h-2 rounded-sm ${
+                                      anchor.score >= level
+                                        ? level === 1 ? 'bg-amber-400' : level === 2 ? 'bg-orange-500' : 'bg-red-500'
+                                        : 'bg-slate-200 dark:bg-slate-600'
+                                    }`}
+                                  />
+                                ))}
+                              </div>
+                            ) : (
+                              <span className="inline-flex items-center justify-center px-1.5 h-4 text-[10px] font-semibold text-red-600 dark:text-red-100 bg-red-200/60 dark:bg-red-600/40 rounded">
+                                {anchor.score}
+                              </span>
+                            )}
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  )}
+                </div>
+              );
+            })
+          )}
+        </div>
+        )}
+
+        {/* Desktop Table */}
+        {(!loading || complexityMap.size > 0) && (
+        <div className="hidden md:block bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded overflow-hidden">
           <table className="w-full">
             <thead className="bg-slate-50 dark:bg-slate-700/50">
               <tr>

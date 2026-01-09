@@ -8,6 +8,7 @@ import CallPage from './components/call/CallPage';
 import { SchedulePage } from './components/schedule';
 import { EipPage } from './components/eip';
 import EipsIndexPage from './components/EipsIndexPage';
+import ComplexityPage from './components/ComplexityPage';
 import { getUpgradeById } from './data/upgrades';
 import { useAnalytics } from './hooks/useAnalytics';
 import { ThemeProvider } from './contexts/ThemeContext';
@@ -112,6 +113,7 @@ function App() {
           <Route path="/feedback" element={<ExternalRedirect />} />
           <Route path="/eips" element={<EipsIndexPage />} />
           <Route path="/eips/:id" element={<EipPage />} />
+          <Route path="/complexity" element={<ComplexityPage />} />
           {/* Catch-all route that redirects to home page */}
           <Route path="*" element={<Navigate to="/" replace />} />
         </Routes>

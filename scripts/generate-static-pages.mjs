@@ -48,6 +48,11 @@ const standalonePages = [
     title: 'ACD Planning Sandbox - Forkcast',
     description: 'Internal planning tool for ACD participants. Explore hypothetical upgrade timelines.',
   },
+  {
+    path: 'complexity',
+    title: 'EIP Complexity Analysis - Forkcast',
+    description: 'Analyze EIP complexity scores from the STEEL team to help scope network upgrades.',
+  },
 ];
 
 // Define upgrade routes with their metadata
@@ -87,19 +92,6 @@ function getCallTypeName(type) {
 // Get EIP proposal prefix (EIP or RIP)
 function getProposalPrefix(eip) {
   return eip.collection === 'RIP' ? 'RIP' : 'EIP';
-}
-
-// Get layman title for EIP
-function getLaymanTitle(eip) {
-  if (eip.title) {
-    // Remove "EIP-XXXX:" or "RIP-XXXX:" prefix if present
-    const match = eip.title.match(/^(?:EIP|RIP)-\d+:\s*(.+)$/);
-    if (match) {
-      return match[1];
-    }
-    return eip.title;
-  }
-  return `Proposal ${eip.id}`;
 }
 
 // Function to generate HTML with proper meta tags for each route

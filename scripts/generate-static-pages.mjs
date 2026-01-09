@@ -50,7 +50,7 @@ const standalonePages = [
   },
   {
     path: 'complexity',
-    title: 'EIP Complexity Analysis - Forkcast',
+    title: 'EIP Test Complexity Analysis - Forkcast',
     description: 'Analyze EIP complexity scores from the STEEL team to help scope network upgrades.',
   },
 ];

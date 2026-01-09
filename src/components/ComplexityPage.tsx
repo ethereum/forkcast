@@ -26,7 +26,7 @@ const ComplexityPage: React.FC = () => {
   const { complexityMap, loading, error, refetch } = useComplexityData();
 
   useMetaTags({
-    title: 'EIP Complexity Analysis - Forkcast',
+    title: 'EIP Test Complexity Analysis - Forkcast',
     description: 'Analyze EIP complexity scores from the STEEL team to help plan network upgrade contents.',
     url: 'https://forkcast.org/complexity',
   });
@@ -197,7 +197,7 @@ const ComplexityPage: React.FC = () => {
           </Link>
           <div className="flex items-center justify-between gap-4 mb-2">
             <h1 className="text-xl font-semibold text-slate-900 dark:text-slate-100">
-              Complexity Analysis
+              Test Complexity Analysis
             </h1>
             <a
               href="https://github.com/ethsteel/pm/tree/main/complexity_assessments/EIPs"
@@ -211,11 +211,17 @@ const ComplexityPage: React.FC = () => {
               </svg>
             </a>
           </div>
-          <p className="text-sm text-slate-500 dark:text-slate-400 max-w-2xl">
-            Scores based on 23 anchors (0-3 pts each). Tiers:
+          <p className="text-sm text-slate-500 dark:text-slate-400">
+            Scores based on 24 anchors. Tiers:
             <span className="text-emerald-600 dark:text-emerald-400"> Low &lt;10</span>,
             <span className="text-amber-600 dark:text-amber-400"> Medium 10-19</span>,
             <span className="text-red-600 dark:text-red-400"> High &ge;20</span>
+          </p>
+          <p className="mt-2 text-xs text-blue-600 dark:text-blue-400 bg-blue-50 dark:bg-blue-900/20 px-2 py-1 rounded inline-flex items-center gap-1.5">
+            <svg className="w-3.5 h-3.5 shrink-0" fill="currentColor" viewBox="0 0 20 20">
+              <path fillRule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clipRule="evenodd" />
+            </svg>
+            Scores reflect testing effort, not implementation complexity. Early estimations subject to change.
           </p>
         </div>
 

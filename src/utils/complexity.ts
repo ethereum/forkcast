@@ -22,8 +22,35 @@ export function parseComplexityMarkdown(markdown: string, eipNumber: number): Ei
 }
 
 /**
+ * Parse a score value that may be a single number, sum like "X + Y + Z", dash, or empty
+ * Examples: "0", "3", "3 + 3", "2 + 2 + 3 + 1", "—", "-", ""
+ */
+function parseScore(scoreStr: string): number {
+  const trimmed = scoreStr.trim();
+
+  // Empty, dash, or em-dash means not scored (0)
+  if (trimmed === '' || trimmed === '—' || trimmed === '-' || trimmed === '–') {
+    return 0;
+  }
+
+  // Check for addition format (any number of addends)
+  if (trimmed.includes('+')) {
+    const parts = trimmed.split('+');
+    return parts.reduce((sum, part) => {
+      const num = parseInt(part.trim(), 10);
+      return sum + (isNaN(num) ? 0 : num);
+    }, 0);
+  }
+
+  // Single number
+  const num = parseInt(trimmed, 10);
+  return isNaN(num) ? 0 : num;
+}
+
+/**
  * Parse the checklist table to extract anchor scores
  * Format: | **Anchor Name** | 0 | rationale |
+ * Also handles: | **Anchor Name** | 3 + 3 | rationale | (double-weighted)
  */
 function parseAnchorsFromTable(markdown: string): ComplexityAnchor[] {
   const anchors: ComplexityAnchor[] = [];
@@ -35,13 +62,14 @@ function parseAnchorsFromTable(markdown: string): ComplexityAnchor[] {
   const tableContent = checklistMatch[0];
 
   // Match table rows: | **Anchor Name** | score | rationale |
+  // Score can be: single digit, sum like "2 + 2 + 3 + 1", dash, or empty for unscored
   // Also handles | Anchor Name | score | rationale | (without bold)
-  const rowRegex = /\|\s*\*?\*?([^|*]+)\*?\*?\s*\|\s*(\d+)\s*\|\s*([^|]*)\|/g;
+  const rowRegex = /\|\s*\*?\*?([^|*]+)\*?\*?\s*\|\s*([^|]*?)\s*\|\s*([^|]*)\|/g;
   let match;
 
   while ((match = rowRegex.exec(tableContent)) !== null) {
     const name = match[1].trim();
-    const score = parseInt(match[2], 10);
+    const score = parseScore(match[2]);
     const notes = match[3].trim() || undefined;
 
     // Skip header rows

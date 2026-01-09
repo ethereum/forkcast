@@ -476,42 +476,63 @@ const ComplexityPage: React.FC = () => {
                     {expandedEip === eip.id && complexity && (
                       <tr className="bg-slate-50 dark:bg-slate-800/50">
                         <td colSpan={6} className="px-4 py-4">
-                          <div className="space-y-4">
+                          <div className="space-y-3">
                             <div className="flex items-center justify-between">
-                              <h4 className="text-sm font-medium text-slate-700 dark:text-slate-300">
-                                Anchor Breakdown
-                              </h4>
+                              <div className="flex items-center gap-3">
+                                <h4 className="text-sm font-medium text-slate-700 dark:text-slate-300">
+                                  Anchor Scores
+                                </h4>
+                                <span className="text-xs text-slate-500 dark:text-slate-400">
+                                  {complexity.anchors.filter((a) => a.score > 0).length} of {complexity.anchors.length} anchors scored
+                                </span>
+                              </div>
                               <a
                                 href={complexity.assessmentUrl}
                                 target="_blank"
                                 rel="noopener noreferrer"
-                                className="text-xs text-purple-600 hover:text-purple-800 dark:text-purple-400 dark:hover:text-purple-300 underline"
+                                className="text-xs text-purple-600 hover:text-purple-800 dark:text-purple-400 dark:hover:text-purple-300 flex items-center gap-1"
                               >
-                                View full assessment →
+                                Full assessment
+                                <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
+                                </svg>
                               </a>
                             </div>
-                            <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-2">
-                              {complexity.anchors
-                                .filter((a) => a.score > 0)
-                                .map((anchor, idx) => (
-                                  <div
-                                    key={idx}
-                                    className="flex items-center justify-between bg-white dark:bg-slate-700 rounded px-2 py-1 text-xs"
-                                  >
-                                    <span className="text-slate-600 dark:text-slate-300 truncate mr-2">
-                                      {anchor.name}
-                                    </span>
-                                    <span className="font-mono font-medium text-slate-900 dark:text-slate-100">
+                            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-x-6 gap-y-1.5">
+                              {complexity.anchors.map((anchor, idx) => (
+                                <div key={idx} className="flex items-center gap-2 py-0.5">
+                                  {anchor.score <= 3 ? (
+                                    <div className="flex gap-0.5">
+                                      {[1, 2, 3].map((level) => (
+                                        <div
+                                          key={level}
+                                          className={`w-2 h-2 rounded-sm ${
+                                            anchor.score >= level
+                                              ? level === 1
+                                                ? 'bg-amber-400'
+                                                : level === 2
+                                                ? 'bg-orange-500'
+                                                : 'bg-red-500'
+                                              : 'bg-slate-200 dark:bg-slate-600'
+                                          }`}
+                                        />
+                                      ))}
+                                    </div>
+                                  ) : (
+                                    <span className="inline-flex items-center justify-center w-[26px] h-4 text-[10px] font-semibold text-red-600 dark:text-red-100 bg-red-200/60 dark:bg-red-600/40 rounded">
                                       {anchor.score}
                                     </span>
-                                  </div>
-                                ))}
+                                  )}
+                                  <span className={`text-xs truncate ${
+                                    anchor.score > 0
+                                      ? 'text-slate-700 dark:text-slate-200'
+                                      : 'text-slate-400 dark:text-slate-500'
+                                  }`}>
+                                    {anchor.name}
+                                  </span>
+                                </div>
+                              ))}
                             </div>
-                            {complexity.anchors.filter((a) => a.score > 0).length === 0 && (
-                              <p className="text-xs text-slate-500 dark:text-slate-400 italic">
-                                All anchors scored 0
-                              </p>
-                            )}
                           </div>
                         </td>
                       </tr>

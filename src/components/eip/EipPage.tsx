@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useCallback } from 'react';
+import React, { useEffect, useMemo, useCallback, useState } from 'react';
 import { Link, useParams, Navigate, useNavigate } from 'react-router-dom';
 import { eipsData } from '../../data/eips';
 import { useMetaTags } from '../../hooks/useMetaTags';
@@ -14,11 +14,13 @@ import { Tooltip } from '../ui';
 import ThemeToggle from '../ui/ThemeToggle';
 import { EipTimeline } from './EipTimeline';
 import { EipSearch } from './EipSearch';
+import EipSearchModal from './EipSearchModal';
 
 export const EipPage: React.FC = () => {
   const { id } = useParams<{ id: string }>();
   const { trackLinkClick } = useAnalytics();
   const navigate = useNavigate();
+  const [searchModalOpen, setSearchModalOpen] = useState(false);
 
   const eipId = parseInt(id || '', 10);
   const eip = eipsData.find((e) => e.id === eipId);
@@ -35,6 +37,13 @@ export const EipPage: React.FC = () => {
 
   // Keyboard navigation
   const handleKeyDown = useCallback((e: KeyboardEvent) => {
+    // Handle Cmd/Ctrl+F for search
+    if ((e.metaKey || e.ctrlKey) && e.key === 'f') {
+      e.preventDefault();
+      setSearchModalOpen(true);
+      return;
+    }
+
     // Don't navigate if user is typing in an input
     if (e.target instanceof HTMLInputElement || e.target instanceof HTMLTextAreaElement) {
       return;
@@ -86,7 +95,7 @@ export const EipPage: React.FC = () => {
               </svg>
               <span>All EIPs</span>
             </Link>
-            <EipSearch />
+            <EipSearch onOpen={() => setSearchModalOpen(true)} />
             <ThemeToggle />
           </div>
         </div>
@@ -360,6 +369,12 @@ export const EipPage: React.FC = () => {
           </p>
         </footer>
       </div>
+
+      {/* Search Modal */}
+      <EipSearchModal
+        isOpen={searchModalOpen}
+        onClose={() => setSearchModalOpen(false)}
+      />
     </div>
   );
 };

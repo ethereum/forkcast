@@ -1,9 +1,10 @@
-import React, { useState, useMemo } from 'react';
+import React, { useState, useMemo, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import ThemeToggle from './ui/ThemeToggle';
 import { eipsData } from '../data/eips';
 import { getProposalPrefix, getLaymanTitle, getInclusionStage, isHeadlinerInAnyFork, wasHeadlinerCandidateInAnyFork } from '../utils/eip';
 import { EipSearch } from './eip/EipSearch';
+import EipSearchModal from './eip/EipSearchModal';
 import { Tooltip } from './ui';
 import { networkUpgrades } from '../data/upgrades';
 
@@ -18,6 +19,20 @@ const EipsIndexPage: React.FC = () => {
   const [sortField, setSortField] = useState<SortField>('updated');
   const [sortDirection, setSortDirection] = useState<SortDirection>('desc');
   const [mobileFiltersOpen, setMobileFiltersOpen] = useState(false);
+  const [searchModalOpen, setSearchModalOpen] = useState(false);
+
+  // Global keyboard shortcut for search (Cmd/Ctrl+F)
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if ((e.metaKey || e.ctrlKey) && e.key === 'f') {
+        e.preventDefault();
+        setSearchModalOpen(true);
+      }
+    };
+
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, []);
 
   // Extract unique values for filters
   const { statuses, forks, categories, stages } = useMemo(() => {
@@ -323,7 +338,7 @@ const EipsIndexPage: React.FC = () => {
               EIP Directory
             </h1>
             <div className="flex items-center gap-3">
-              <EipSearch />
+              <EipSearch onOpen={() => setSearchModalOpen(true)} />
               <button
                 onClick={() => setMobileFiltersOpen(true)}
                 className={`flex items-center gap-2 px-4 py-2.5 rounded-lg border text-sm font-medium transition-colors ${
@@ -786,6 +801,12 @@ const EipsIndexPage: React.FC = () => {
           </div>
         )}
       </div>
+
+      {/* Search Modal */}
+      <EipSearchModal
+        isOpen={searchModalOpen}
+        onClose={() => setSearchModalOpen(false)}
+      />
     </div>
   );
 };

@@ -81,6 +81,24 @@ export const getEipLayer = (eip: EIP, forkName?: string): 'EL' | 'CL' | null => 
 };
 
 /**
+ * Get the primary layer for an EIP across all fork relationships
+ * Returns the layer if all fork relationships have the same layer, otherwise null
+ */
+export const getPrimaryEipLayer = (eip: EIP): 'EL' | 'CL' | null => {
+  const layers = eip.forkRelationships
+    .map(fork => fork.layer)
+    .filter((layer): layer is 'EL' | 'CL' => layer === 'EL' || layer === 'CL');
+
+  if (layers.length === 0) return null;
+
+  // Check if all layers are the same
+  const firstLayer = layers[0];
+  const allSame = layers.every(layer => layer === firstLayer);
+
+  return allSame ? firstLayer : null;
+};
+
+/**
  * Get the layman title (remove EIP/RIP prefix)
  */
 export const getLaymanTitle = (eip: EIP): string => {

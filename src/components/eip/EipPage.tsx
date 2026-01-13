@@ -9,6 +9,7 @@ import {
   getSpecificationUrl,
   parseMarkdownLinks,
   parseAuthors,
+  getPrimaryEipLayer,
 } from '../../utils';
 import { Tooltip } from '../ui';
 import ThemeToggle from '../ui/ThemeToggle';
@@ -24,6 +25,7 @@ export const EipPage: React.FC = () => {
 
   const eipId = parseInt(id || '', 10);
   const eip = eipsData.find((e) => e.id === eipId);
+  const layer = eip ? getPrimaryEipLayer(eip) : null;
 
   // Get sorted EIPs for navigation
   const sortedEips = useMemo(() => [...eipsData].sort((a, b) => a.id - b.id), []);
@@ -110,9 +112,18 @@ export const EipPage: React.FC = () => {
                   <span className="text-slate-400 dark:text-slate-500 text-sm font-mono">
                     {getProposalPrefix(eip)}-{eip.id}
                   </span>
-                  <span className="px-2 py-0.5 text-xs font-medium rounded bg-slate-100 dark:bg-slate-700 text-slate-600 dark:text-slate-300">
+                  <span className="px-2 py-0.5 text-xs font-medium rounded bg-slate-100 dark:bg-slate-700 text-slate-600 dark:text-slate-300 border border-transparent">
                     {eip.status}
                   </span>
+                  {layer && (
+                    <span className={`px-2 py-0.5 text-xs font-medium rounded ${
+                      layer === 'EL'
+                        ? 'bg-indigo-100 text-indigo-700 dark:bg-indigo-900/20 dark:text-indigo-300 border border-indigo-200 dark:border-indigo-600'
+                        : 'bg-teal-100 text-teal-700 dark:bg-teal-900/20 dark:text-teal-300 border border-teal-200 dark:border-teal-600'
+                    }`} title={layer === 'EL' ? 'Primarily impacts Execution Layer' : 'Primarily impacts Consensus Layer'}>
+                      {layer}
+                    </span>
+                  )}
                 </div>
                 <h1 className="text-2xl font-medium text-slate-900 dark:text-slate-100 leading-tight">
                   {getLaymanTitle(eip)}

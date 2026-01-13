@@ -53,6 +53,11 @@ const standalonePages = [
     title: 'EIP Test Complexity Analysis - Forkcast',
     description: 'Analyze EIP complexity scores from the STEEL team to help scope network upgrades.',
   },
+  {
+    path: 'priority',
+    title: 'Client Prioritization - Forkcast',
+    description: 'Aggregate view of Ethereum client team stances on EIPs proposed for network upgrades.',
+  },
 ];
 
 // Define upgrade routes with their metadata

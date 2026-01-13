@@ -9,12 +9,15 @@ interface EipTimelineProps {
 }
 
 interface TimelineEvent {
-  type: 'created' | 'fork_status';
+  type: 'created' | 'fork_status' | 'presentation';
   date?: string | null;
   call?: string | null;
   forkName?: string;
   status?: string;
   champion?: { name: string };
+  // For presentation events
+  link?: string;
+  headlinerProposal?: boolean;
   // For sorting: lower = more recent (shown first)
   sortOrder: number;
 }
@@ -47,6 +50,10 @@ const statusColors: Record<string, { dot: string; text: string }> = {
   created: {
     dot: 'bg-indigo-500',
     text: 'text-indigo-700 dark:text-indigo-400',
+  },
+  presentation: {
+    dot: 'bg-blue-500',
+    text: 'text-blue-700 dark:text-blue-400',
   },
 };
 
@@ -136,6 +143,26 @@ export const EipTimeline: React.FC<EipTimelineProps> = ({ eip }) => {
         sortOrder,
       });
     });
+
+    // Add presentation events for this fork
+    // Presentations appear AFTER status events (higher sortOrder = lower in timeline)
+    // Within presentations, maintain oldest-to-newest order
+    if (fork.presentationHistory) {
+      fork.presentationHistory.forEach((presentation, index) => {
+        // Sort order formula: -upgradeOrder * 10000 + 1000 + presentationIndex
+        const sortOrder = -upgradeOrder * 10000 + 1000 + index;
+
+        events.push({
+          type: 'presentation',
+          date: presentation.date,
+          call: presentation.call,
+          link: presentation.link,
+          forkName: fork.forkName,
+          headlinerProposal: presentation.headlinerProposal,
+          sortOrder,
+        });
+      });
+    }
   });
 
   // Sort events
@@ -157,7 +184,16 @@ export const EipTimeline: React.FC<EipTimelineProps> = ({ eip }) => {
               const isLast = index === events.length - 1;
               const colors = event.type === 'created'
                 ? statusColors.created
-                : (statusColors[event.status || ''] || statusColors.Proposed);
+                : event.type === 'presentation'
+                  ? statusColors.presentation
+                  : (statusColors[event.status || ''] || statusColors.Proposed);
+
+              // Determine presentation label based on call/link and headlinerProposal
+              const getPresentationLabel = () => {
+                if (event.headlinerProposal) return 'Headliner Proposal';
+                if (event.call) return 'Presented';
+                return 'Proposed';
+              };
 
               return (
                 <div key={index} className="relative flex gap-3">
@@ -181,6 +217,46 @@ export const EipTimeline: React.FC<EipTimelineProps> = ({ eip }) => {
                             {formatDate(event.date)}
                           </p>
                         )}
+                      </>
+                    ) : event.type === 'presentation' ? (
+                      <>
+                        <p className={`text-sm font-medium leading-5 ${colors.text}`}>
+                          <Link
+                            to={`/upgrade/${event.forkName?.toLowerCase()}`}
+                            className="text-xs font-mono px-1.5 py-0.5 rounded bg-slate-100 dark:bg-slate-700 text-slate-500 dark:text-slate-400 hover:bg-slate-200 dark:hover:bg-slate-600 hover:text-slate-700 dark:hover:text-slate-300 mr-1.5 transition-colors"
+                          >
+                            {event.forkName}
+                          </Link>
+                          {getPresentationLabel()}
+                        </p>
+                        <p className="text-xs text-slate-400 dark:text-slate-500 mt-0.5">
+                          {event.date && <span>{formatDate(event.date)}</span>}
+                          {event.date && (event.call || event.link) && <span> · </span>}
+                          {event.call && (() => {
+                            const { display, link } = formatCallReference(event.call);
+                            return (
+                              <Link
+                                to={link}
+                                className="text-slate-500 dark:text-slate-400 hover:text-purple-600 dark:hover:text-purple-400 underline decoration-slate-300 dark:decoration-slate-600 underline-offset-2"
+                              >
+                                {display}
+                              </Link>
+                            );
+                          })()}
+                          {!event.call && event.link && (
+                            <a
+                              href={event.link}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              className="text-slate-500 dark:text-slate-400 hover:text-purple-600 dark:hover:text-purple-400 underline decoration-slate-300 dark:decoration-slate-600 underline-offset-2 inline-flex items-center gap-1"
+                            >
+                              Forum Post
+                              <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
+                              </svg>
+                            </a>
+                          )}
+                        </p>
                       </>
                     ) : (
                       <>

@@ -17,6 +17,12 @@ export interface ForkRelationship {
   headlinerDiscussionLink?: string;
   layer?: string;
   champion?: Champion;
+  presentationHistory?: Array<{
+    call?: `${'acdc' | 'acde' | 'acdt'}/${number}`;
+    link?: string;
+    date: string;
+    headlinerProposal?: boolean;
+  }>;
 }
 
 export interface Champion {

@@ -39,16 +39,16 @@
   },
   "stakeholderImpacts": {
     "endUsers": {
-      "description": "Improves security by allowing users to choose other signing algorithms, potentially enabling native TPM / passkey support."
+      "description": "Improves security by allowing users to choose other signing algorithms."
     },
     "appDevs": {
-      "description": "Allows abstracting implementation of multiple signature schemes to a single standardized interface. No work is required to support EIP-7932 transactions natively."
+      "description": "Allows abstracting implementation of multiple signature schemes to a single standardized interface. The sigrecover precompile is a near drop in replacement of ecrecover."
     },
     "walletDevs": {
-      "description": "Large changes to transaction / key handling are required for wallets to support optional wrapping and signing functionality."
+      "description": "AA wallets may use the algorithm registry for algorithm flexibility."
     },
     "toolingInfra": {
-      "description": "Requires large initial modifications for EIP implementation but reduces future overhead when introducing new algorithms."
+      "description": "No direct tooling impact."
     },
     "layer2s": {
       "description": "No direct impact on layer 2s unless this EIP is adopted by that L2."
@@ -57,16 +57,20 @@
       "description": "May reduce resource consumption due to non-EVM verification of alternate algorithms."
     },
     "clClients": {
-      "description": "No direct CL effects as this EIP only affects the execution layer."
+      "description": "No direct impact on CL."
     },
     "elClients": {
-      "description": "Allows easier implementation of existing algorithms without having to rework transaction handling per new algorithm."
+      "description": "Allows easier implementation of new algorithms without having to rework transaction handling per new algorithm."
     }
   },
   "benefits": [
     "Standardizes the introduction of alternative signature algorithms without breaking existing tooling.",
-    "Allows gradual migration to quantum-safe algorithms before quantum-computer threats.",
+    "Complements account abstraction for crypto-agile verification.",
     "Reduces client developer workload on introduction of new algorithms.",
     "Reduces network reliance on single algorithm by increasing signature diversity."
+  ],
+  "tradeoffs": [
+    "EIP-7932 increases network complexity.",
+    "Poorly implemented algorithms may pose security risks."
   ]
 }

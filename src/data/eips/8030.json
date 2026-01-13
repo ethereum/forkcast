@@ -31,10 +31,10 @@
       }
     }
   ],
-  "laymanDescription": "Adds P256 signatures to Ethereum transactions, improving security and compatibility with other technologies.",
+  "laymanDescription": "Adds P256 signature support to the EIP-7932 algorithm registry to allow use with the registry interface.",
   "northStarAlignment": {
     "improveUX": {
-      "description": "Improves user experience by enabling transaction signature support for secp256r1, and improves EIP-7932 security by adding a test vector of a well-known algorithm."
+      "description": "TODO"
     }
   },
   "stakeholderImpacts": {
@@ -45,28 +45,28 @@
       "description": "Does not affect app developers under EIP-7932 framework."
     },
     "walletDevs": {
-      "description": "Expands wallet capabilities to support new signature types."
+      "description": "Expands both AA and EOA wallet capabilities to support new signature types."
     },
     "toolingInfra": {
       "description": "Requires a simple update to support P256 signature verification."
     },
     "layer2s": {
-      "description": "Sequencers may utilize P256 for settling L1 proofs."
+      "description": "No direct impact for Layer 2s."
     },
     "stakersNodes": {
       "description": "Would have little effect on Node Operators."
     },
     "clClients": {
-      "description": "No direct CL effects as this EIP only affects the execution layer."
+      "description": "No direct impact for CL."
     },
     "elClients": {
-      "description": "Would require a minimal update to point the new EIP-7932 entry to the existing P256 precompile."
+      "description": "Would require a minimal update to point the EIP-7932 entry to the existing P256 logic."
     }
   },
   "benefits": [
-    "Increases security and flexibility in Ethereum transactions with P256 signatures.",
-    "Provides a proven-secure algorithm for testing EIP-7932.",
-    "Facilitates smoother interoperability with other blockchain technologies supporting P256.",
-    "Helps maintain Ethereum's competitive edge by adapting to popular cryptographic standards."
+    "Improves crypto-agility of EIP-7932 registry."
+  ],
+  "tradeoffs": [
+    "P256 is not quantum secure"
   ]
 }

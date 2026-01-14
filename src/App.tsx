@@ -10,6 +10,7 @@ import { EipPage } from './components/eip';
 import EipsIndexPage from './components/EipsIndexPage';
 import ComplexityPage from './components/ComplexityPage';
 import PrioritizationPage from './components/PrioritizationPage';
+import DevnetPrioritizationPage from './components/DevnetPrioritizationPage';
 import { getUpgradeById } from './data/upgrades';
 import { useAnalytics } from './hooks/useAnalytics';
 import { ThemeProvider } from './contexts/ThemeContext';
@@ -116,6 +117,7 @@ function App() {
           <Route path="/eips/:id" element={<EipPage />} />
           <Route path="/complexity" element={<ComplexityPage />} />
           <Route path="/priority" element={<PrioritizationPage />} />
+          <Route path="/devnets" element={<DevnetPrioritizationPage />} />
           {/* Catch-all route that redirects to home page */}
           <Route path="*" element={<Navigate to="/" replace />} />
         </Routes>

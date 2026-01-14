@@ -58,6 +58,11 @@ const standalonePages = [
     title: 'Client Prioritization - Forkcast',
     description: 'Aggregate view of Ethereum client team stances on EIPs proposed for network upgrades.',
   },
+  {
+    path: 'devnets',
+    title: 'Devnet Prioritization - Forkcast',
+    description: 'Track devnet inclusion status, test complexity, and client support for EIPs in upcoming network upgrades.',
+  },
 ];
 
 // Define upgrade routes with their metadata

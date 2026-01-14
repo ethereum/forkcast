@@ -98,6 +98,7 @@ export const protocolCalls: Call[] = [
   { type: 'bal', date: '2025-11-19', number: '007', path: 'bal/007' },
   { type: 'bal', date: '2025-12-03', number: '008', path: 'bal/008' },
   { type: 'bal', date: '2025-12-17', number: '009', path: 'bal/009' },
+  { type: 'bal', date: '2026-01-14', number: '010', path: 'bal/010' },
 
   // FOCIL calls
   { type: 'focil', date: '2025-09-09', number: '019', path: 'focil/019' },

@@ -107,6 +107,7 @@ export const protocolCalls: Call[] = [
   { type: 'focil', date: '2025-11-04', number: '023', path: 'focil/023' },
   { type: 'focil', date: '2025-12-02', number: '024', path: 'focil/024' },
   { type: 'focil', date: '2025-12-16', number: '025', path: 'focil/025' },
+  { type: 'focil', date: '2026-01-13', number: '026', path: 'focil/026' },
 ];
 
 // Helper to get recent calls

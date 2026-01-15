@@ -1,4 +1,4 @@
-import React, { useState, useMemo } from 'react';
+import React, { useState, useMemo, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { eipsData } from '../data/eips';
 import { useComplexityData, getComplexityForEip } from '../hooks/useComplexityData';
@@ -10,6 +10,7 @@ import { getInclusionStageColor } from '../utils/colors';
 import { InclusionStage } from '../types';
 import { useMetaTags } from '../hooks/useMetaTags';
 import ThemeToggle from './ui/ThemeToggle';
+import AnalysisNav from './ui/AnalysisNav';
 import { EipComplexity } from '../types/complexity';
 import { EipAggregateStance } from '../types/prioritization';
 import devnetData from '../data/devnets/glamsterdam.json';
@@ -145,8 +146,34 @@ const DevnetPrioritizationPage: React.FC = () => {
   const [stageFilter, setStageFilter] = useState<string>('all');
   const [layerFilter, setLayerFilter] = useState<'all' | 'EL' | 'CL'>('all');
   const [showScoringInfo, setShowScoringInfo] = useState(false);
+  const [filtersModalOpen, setFiltersModalOpen] = useState(false);
 
   const { complexityMap, loading: complexityLoading, refetch } = useComplexityData();
+
+  // Lock body scroll when filters modal is open
+  useEffect(() => {
+    if (filtersModalOpen) {
+      document.body.style.overflow = 'hidden';
+    } else {
+      document.body.style.overflow = '';
+    }
+    return () => {
+      document.body.style.overflow = '';
+    };
+  }, [filtersModalOpen]);
+
+  // Count active filters
+  const activeFilterCount = [
+    stageFilter !== 'all',
+    layerFilter !== 'all',
+    devnetFilter !== 'all',
+  ].filter(Boolean).length;
+
+  const clearFilters = () => {
+    setStageFilter('all');
+    setLayerFilter('all');
+    setDevnetFilter('all');
+  };
   const { aggregates: priorityAggregates } = usePrioritizationData('glamsterdam');
 
   useMetaTags({
@@ -372,56 +399,36 @@ const DevnetPrioritizationPage: React.FC = () => {
           <p className="text-sm text-slate-500 dark:text-slate-400">
             Track devnet inclusion, test complexity, and client support to help prioritize EIPs for upcoming devnets.
           </p>
+          <p className="mt-1 text-xs text-slate-500 dark:text-slate-400">
+            This page is not prescriptive. It aggregates data points as a decision-making aid, not a recommendation.
+          </p>
+          <div className="mt-4">
+            <AnalysisNav />
+          </div>
         </div>
 
         {/* Toolbar */}
-        <div className="mb-4 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg p-4">
-          <div className="flex flex-wrap items-center gap-x-6 gap-y-3">
-            {/* Stage filter */}
-            <div className="flex items-center gap-2">
-              <span className="text-sm text-slate-500 dark:text-slate-400">Stage:</span>
-              <select
-                value={stageFilter}
-                onChange={(e) => setStageFilter(e.target.value)}
-                className="px-3 py-1.5 bg-slate-50 dark:bg-slate-700 border border-slate-200 dark:border-slate-600 rounded text-sm focus:outline-none focus:ring-2 focus:ring-purple-500"
-              >
-                <option value="all">All</option>
-                {stageOptions.map((opt) => (
-                  <option key={opt} value={opt}>{opt.replace(' for Inclusion', '')}</option>
-                ))}
-              </select>
-            </div>
-
-            {/* Layer filter */}
-            <div className="flex items-center gap-2">
-              <span className="text-sm text-slate-500 dark:text-slate-400">Layer:</span>
-              <select
-                value={layerFilter}
-                onChange={(e) => setLayerFilter(e.target.value as 'all' | 'EL' | 'CL')}
-                className="px-3 py-1.5 bg-slate-50 dark:bg-slate-700 border border-slate-200 dark:border-slate-600 rounded text-sm focus:outline-none focus:ring-2 focus:ring-purple-500"
-              >
-                <option value="all">All</option>
-                <option value="EL">EL</option>
-                <option value="CL">CL</option>
-              </select>
-            </div>
-
-            {/* Devnet filter */}
-            <div className="flex items-center gap-2">
-              <span className="text-sm text-slate-500 dark:text-slate-400">Devnet:</span>
-              <select
-                value={devnetFilter}
-                onChange={(e) => setDevnetFilter(e.target.value)}
-                className="px-3 py-1.5 bg-slate-50 dark:bg-slate-700 border border-slate-200 dark:border-slate-600 rounded text-sm focus:outline-none focus:ring-2 focus:ring-purple-500"
-              >
-                <option value="all">All</option>
-                {devnetOptions.map((opt) => (
-                  <option key={opt} value={opt}>{opt}</option>
-                ))}
-              </select>
-            </div>
-
-            <div className="hidden sm:block w-px h-6 bg-slate-200 dark:bg-slate-600" />
+        <div className="mb-6 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg p-4">
+          <div className="flex flex-wrap items-center gap-x-4 gap-y-3">
+            {/* Filters button */}
+            <button
+              onClick={() => setFiltersModalOpen(true)}
+              className={`flex items-center gap-2 px-4 py-2.5 rounded-lg border text-sm font-medium transition-colors ${
+                activeFilterCount > 0
+                  ? 'bg-purple-50 dark:bg-purple-900/20 border-purple-300 dark:border-purple-700 text-purple-700 dark:text-purple-300'
+                  : 'bg-white dark:bg-slate-800 border-slate-200 dark:border-slate-700 text-slate-700 dark:text-slate-300'
+              }`}
+            >
+              <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 4a1 1 0 011-1h16a1 1 0 011 1v2.586a1 1 0 01-.293.707l-6.414 6.414a1 1 0 00-.293.707V17l-4 4v-6.586a1 1 0 00-.293-.707L3.293 7.293A1 1 0 013 6.586V4z" />
+              </svg>
+              <span className="hidden sm:inline">Filters</span>
+              {activeFilterCount > 0 && (
+                <span className="px-1.5 py-0.5 text-xs bg-purple-200 dark:bg-purple-800 text-purple-800 dark:text-purple-200 rounded-full">
+                  {activeFilterCount}
+                </span>
+              )}
+            </button>
 
             {/* Active only toggle */}
             <label className="flex items-center gap-2 cursor-pointer select-none">
@@ -456,6 +463,139 @@ const DevnetPrioritizationPage: React.FC = () => {
             </div>
           </div>
         </div>
+
+        {/* Filters Modal */}
+        {filtersModalOpen && (
+          <div className="fixed inset-0 z-50 animate-fadeIn">
+            {/* Backdrop */}
+            <div
+              className="absolute inset-0 bg-black/50"
+              onClick={() => setFiltersModalOpen(false)}
+            />
+            {/* Modal */}
+            <div className="md:absolute md:inset-0 md:flex md:items-center md:justify-center absolute bottom-0 left-0 right-0">
+              <div className="bg-white dark:bg-slate-800 md:rounded-2xl rounded-t-2xl md:max-w-2xl md:w-full max-h-[85vh] md:max-h-[90vh] overflow-hidden flex flex-col animate-fade-scale md:shadow-2xl">
+                {/* Header */}
+                <div className="flex items-center justify-between px-4 py-3 border-b border-slate-200 dark:border-slate-700">
+                  <h2 className="text-lg font-semibold text-slate-900 dark:text-slate-100">Filters</h2>
+                  <div className="flex items-center gap-3">
+                    {activeFilterCount > 0 && (
+                      <button
+                        onClick={clearFilters}
+                        className="text-sm text-purple-600 dark:text-purple-400 font-medium"
+                      >
+                        Clear all
+                      </button>
+                    )}
+                    <button
+                      onClick={() => setFiltersModalOpen(false)}
+                      className="p-1 rounded-full hover:bg-slate-100 dark:hover:bg-slate-700 transition-colors"
+                    >
+                      <svg className="w-6 h-6 text-slate-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                      </svg>
+                    </button>
+                  </div>
+                </div>
+
+                {/* Filter Content */}
+                <div className="flex-1 overflow-y-auto p-4 md:p-6">
+                  <div className="grid md:grid-cols-2 gap-6">
+                    {/* Stage Filter */}
+                    <div>
+                      <h3 className="text-sm font-semibold text-slate-700 dark:text-slate-300 mb-3">Inclusion Stage</h3>
+                      <div className="flex flex-wrap gap-2">
+                        {[{ value: 'all', label: 'All Stages' }, ...stageOptions.map(s => ({ value: s, label: s.replace(' for Inclusion', '') }))].map(({ value, label }) => {
+                          const isSelected = stageFilter === value;
+                          return (
+                            <button
+                              key={value}
+                              onClick={() => setStageFilter(value)}
+                              className={`px-3 py-2 text-sm font-medium rounded-lg transition-colors ${
+                                isSelected
+                                  ? 'bg-purple-100 dark:bg-purple-900/30 text-purple-800 dark:text-purple-300 ring-2 ring-purple-500 ring-offset-1 dark:ring-offset-slate-800'
+                                  : 'bg-slate-100 dark:bg-slate-700 text-slate-700 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-600'
+                              }`}
+                            >
+                              {label}
+                            </button>
+                          );
+                        })}
+                      </div>
+                    </div>
+
+                    {/* Layer Filter */}
+                    <div>
+                      <h3 className="text-sm font-semibold text-slate-700 dark:text-slate-300 mb-3">Layer</h3>
+                      <div className="flex flex-wrap gap-2">
+                        {(['all', 'EL', 'CL'] as const).map((layer) => {
+                          const isSelected = layerFilter === layer;
+                          const label = layer === 'all' ? 'All Layers' : layer === 'EL' ? 'Execution Layer' : 'Consensus Layer';
+                          return (
+                            <button
+                              key={layer}
+                              onClick={() => setLayerFilter(layer)}
+                              className={`px-3 py-2 text-sm font-medium rounded-lg transition-colors ${
+                                isSelected
+                                  ? 'bg-purple-100 dark:bg-purple-900/30 text-purple-800 dark:text-purple-300 ring-2 ring-purple-500 ring-offset-1 dark:ring-offset-slate-800'
+                                  : 'bg-slate-100 dark:bg-slate-700 text-slate-700 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-600'
+                              }`}
+                            >
+                              {label}
+                            </button>
+                          );
+                        })}
+                      </div>
+                    </div>
+
+                    {/* Devnet Filter */}
+                    <div className="md:col-span-2">
+                      <h3 className="text-sm font-semibold text-slate-700 dark:text-slate-300 mb-3">Devnet</h3>
+                      <div className="flex flex-wrap gap-2">
+                        <button
+                          onClick={() => setDevnetFilter('all')}
+                          className={`px-3 py-2 text-sm font-medium rounded-lg transition-colors ${
+                            devnetFilter === 'all'
+                              ? 'bg-purple-100 dark:bg-purple-900/30 text-purple-800 dark:text-purple-300 ring-2 ring-purple-500 ring-offset-1 dark:ring-offset-slate-800'
+                              : 'bg-slate-100 dark:bg-slate-700 text-slate-700 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-600'
+                          }`}
+                        >
+                          All Devnets
+                        </button>
+                        {devnetOptions.map((devnet) => {
+                          const isSelected = devnetFilter === devnet;
+                          return (
+                            <button
+                              key={devnet}
+                              onClick={() => setDevnetFilter(isSelected ? 'all' : devnet)}
+                              className={`px-3 py-2 text-sm font-medium rounded-lg transition-colors ${
+                                isSelected
+                                  ? 'bg-violet-100 dark:bg-violet-900/30 text-violet-800 dark:text-violet-300 ring-2 ring-violet-500 ring-offset-1 dark:ring-offset-slate-800'
+                                  : 'bg-slate-100 dark:bg-slate-700 text-slate-700 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-600'
+                              }`}
+                            >
+                              {devnet}
+                            </button>
+                          );
+                        })}
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Footer */}
+                <div className="px-4 py-3 border-t border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-900/50">
+                  <button
+                    onClick={() => setFiltersModalOpen(false)}
+                    className="w-full py-3 bg-purple-600 hover:bg-purple-700 text-white font-medium rounded-lg transition-colors"
+                  >
+                    Show {sortedData.length} {sortedData.length === 1 ? 'result' : 'results'}
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        )}
 
         {/* Scoring Explanation */}
         <div className="mb-4">
@@ -702,26 +842,28 @@ const DevnetPrioritizationPage: React.FC = () => {
                         className="hover:bg-slate-50 dark:hover:bg-slate-700/30"
                       >
                         <td className="px-4 py-3">
-                          <Link
-                            to={`/eips/${item.eipId}`}
-                            className="font-mono text-sm text-purple-600 hover:text-purple-800 dark:text-purple-400 dark:hover:text-purple-300"
-                          >
-                            {eip ? getProposalPrefix(eip) : 'EIP'}-{item.eipId}
-                          </Link>
+                          <div className="flex items-center gap-2">
+                            <Link
+                              to={`/eips/${item.eipId}`}
+                              className="font-mono text-sm text-purple-600 hover:text-purple-800 dark:text-purple-400 dark:hover:text-purple-300"
+                            >
+                              {eip ? getProposalPrefix(eip) : 'EIP'}-{item.eipId}
+                            </Link>
+                            {item.layer && (
+                              <span className={`px-1.5 py-0.5 text-[10px] rounded ${
+                                item.layer === 'EL'
+                                  ? 'bg-indigo-100 text-indigo-700 dark:bg-indigo-900/30 dark:text-indigo-300'
+                                  : 'bg-teal-100 text-teal-700 dark:bg-teal-900/30 dark:text-teal-300'
+                              }`}>
+                                {item.layer}
+                              </span>
+                            )}
+                          </div>
                         </td>
                         <td className="px-4 py-3">
                           <span className="text-sm text-slate-900 dark:text-slate-100">
                             {item.title}
                           </span>
-                          {item.layer && (
-                            <span className={`ml-2 text-[10px] px-1.5 py-0.5 rounded ${
-                              item.layer === 'EL'
-                                ? 'bg-indigo-100 text-indigo-700 dark:bg-indigo-900/20 dark:text-indigo-300'
-                                : 'bg-teal-100 text-teal-700 dark:bg-teal-900/20 dark:text-teal-300'
-                            }`}>
-                              {item.layer}
-                            </span>
-                          )}
                         </td>
                         <td className="px-4 py-3">
                           <span className={`inline-block px-2 py-0.5 text-xs rounded ${getInclusionStageColor(item.stage as InclusionStage)}`}>

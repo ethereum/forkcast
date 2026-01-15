@@ -1,6 +1,5 @@
-import React, { useState, useMemo } from 'react';
+import React, { useState, useMemo, useEffect } from 'react';
 import { Link } from 'react-router-dom';
-import { networkUpgrades } from '../data/upgrades';
 import { usePrioritizationData, getELClients, getCLClients } from '../hooks/usePrioritizationData';
 import {
   sortEipAggregates,
@@ -17,12 +16,14 @@ import { InclusionStage } from '../types';
 import { EipAggregateStance, ClientStance } from '../types/prioritization';
 import { useMetaTags } from '../hooks/useMetaTags';
 import ThemeToggle from './ui/ThemeToggle';
+import AnalysisNav from './ui/AnalysisNav';
 
 type FilterLayer = 'all' | 'EL' | 'CL';
 type FilterStance = 'all' | 'support' | 'mixed' | 'oppose' | 'none';
 
+const SELECTED_FORK = 'glamsterdam';
+
 const PrioritizationPage: React.FC = () => {
-  const [selectedFork, setSelectedFork] = useState('glamsterdam');
   const [sortField, setSortField] = useState<SortField>('average');
   const [sortDirection, setSortDirection] = useState<SortDirection>('desc');
   const [filterLayer, setFilterLayer] = useState<FilterLayer>('all');
@@ -30,22 +31,27 @@ const PrioritizationPage: React.FC = () => {
   const [filterClient, setFilterClient] = useState<string>('all');
   const [hideExcluded, setHideExcluded] = useState(true);
   const [expandedEip, setExpandedEip] = useState<number | null>(null);
-  const [showFilters, setShowFilters] = useState(false);
+  const [filtersModalOpen, setFiltersModalOpen] = useState(false);
 
-  const { aggregates, lastUpdated } = usePrioritizationData(selectedFork);
+  const { aggregates } = usePrioritizationData(SELECTED_FORK);
+
+  // Lock body scroll when filters modal is open
+  useEffect(() => {
+    if (filtersModalOpen) {
+      document.body.style.overflow = 'hidden';
+    } else {
+      document.body.style.overflow = '';
+    }
+    return () => {
+      document.body.style.overflow = '';
+    };
+  }, [filtersModalOpen]);
 
   useMetaTags({
     title: 'Client Prioritization - Forkcast',
     description: 'Aggregate view of Ethereum client team stances on CFI EIPs for network upgrades.',
     url: 'https://forkcast.org/priority',
   });
-
-  // Get available forks
-  const availableForks = useMemo(() => {
-    return networkUpgrades.filter(
-      (u) => !u.disabled && ['Upcoming', 'Planning', 'Research'].includes(u.status)
-    );
-  }, []);
 
   // Apply filtering
   const filteredAggregates = useMemo(() => {
@@ -168,129 +174,47 @@ const PrioritizationPage: React.FC = () => {
           >
             Forkcast
           </Link>
-          <div className="flex items-center justify-between gap-4 mb-2">
+          <div className="flex items-center gap-3 mb-2">
             <h1 className="text-xl font-semibold text-slate-900 dark:text-slate-100">
               Client Prioritization
             </h1>
-            <span className="text-xs text-slate-500 dark:text-slate-400">
-              Last updated: {lastUpdated}
+            <span className="px-2 py-0.5 text-xs font-medium bg-purple-100 text-purple-700 dark:bg-purple-900/30 dark:text-purple-300 rounded">
+              Glamsterdam
             </span>
           </div>
           <p className="text-sm text-slate-500 dark:text-slate-400">
             Aggregate client team stances on proposed EIPs. Scores normalized to 1-5 scale.
           </p>
+          <p className="mt-1 text-xs text-slate-500 dark:text-slate-400">
+            Most perspectives were written in November 2025. Thinking and EIPs may have evolved since then.
+          </p>
+          <div className="mt-4">
+            <AnalysisNav />
+          </div>
         </div>
 
         {/* Toolbar */}
         <div className="mb-6 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg p-4">
           <div className="flex flex-wrap items-center gap-x-4 gap-y-3">
-            {/* Fork selector */}
-            <div className="flex items-center gap-2">
-              <span className="text-sm text-slate-500 dark:text-slate-400">Fork:</span>
-              <select
-                value={selectedFork}
-                onChange={(e) => setSelectedFork(e.target.value)}
-                className="px-3 py-1.5 bg-slate-50 dark:bg-slate-700 border border-slate-200 dark:border-slate-600 rounded text-sm font-medium focus:outline-none focus:ring-2 focus:ring-purple-500"
-              >
-                {availableForks.map((fork) => (
-                  <option key={fork.id} value={fork.id}>
-                    {fork.name.replace(' Upgrade', '')}
-                  </option>
-                ))}
-              </select>
-            </div>
-
-            {/* Filters dropdown */}
-            <div className="relative">
-              <button
-                onClick={() => setShowFilters(!showFilters)}
-                className={`flex items-center gap-2 px-3 py-1.5 border rounded text-sm font-medium transition-colors ${
-                  activeFilterCount > 0
-                    ? 'bg-purple-50 border-purple-300 text-purple-700 dark:bg-purple-900/30 dark:border-purple-700 dark:text-purple-300'
-                    : 'bg-slate-50 border-slate-200 text-slate-600 dark:bg-slate-700 dark:border-slate-600 dark:text-slate-300'
-                } hover:bg-slate-100 dark:hover:bg-slate-600`}
-              >
-                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 4a1 1 0 011-1h16a1 1 0 011 1v2.586a1 1 0 01-.293.707l-6.414 6.414a1 1 0 00-.293.707V17l-4 4v-6.586a1 1 0 00-.293-.707L3.293 7.293A1 1 0 013 6.586V4z" />
-                </svg>
-                Filters
-                {activeFilterCount > 0 && (
-                  <span className="flex items-center justify-center w-5 h-5 text-xs font-bold bg-purple-600 text-white rounded-full">
-                    {activeFilterCount}
-                  </span>
-                )}
-                <svg className={`w-4 h-4 transition-transform ${showFilters ? 'rotate-180' : ''}`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
-                </svg>
-              </button>
-
-              {/* Filter dropdown panel */}
-              {showFilters && (
-                <div className="absolute top-full left-0 mt-2 w-72 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg shadow-lg z-10 p-4 space-y-4">
-                  {/* Layer filter */}
-                  <div>
-                    <label className="block text-xs font-medium text-slate-500 dark:text-slate-400 mb-1.5">Layer</label>
-                    <select
-                      value={filterLayer}
-                      onChange={(e) => setFilterLayer(e.target.value as FilterLayer)}
-                      className="w-full px-3 py-1.5 bg-slate-50 dark:bg-slate-700 border border-slate-200 dark:border-slate-600 rounded text-sm focus:outline-none focus:ring-2 focus:ring-purple-500"
-                    >
-                      <option value="all">All layers</option>
-                      <option value="EL">Execution Layer only</option>
-                      <option value="CL">Consensus Layer only</option>
-                    </select>
-                  </div>
-
-                  {/* Client filter */}
-                  <div>
-                    <label className="block text-xs font-medium text-slate-500 dark:text-slate-400 mb-1.5">Client</label>
-                    <select
-                      value={filterClient}
-                      onChange={(e) => setFilterClient(e.target.value)}
-                      className="w-full px-3 py-1.5 bg-slate-50 dark:bg-slate-700 border border-slate-200 dark:border-slate-600 rounded text-sm focus:outline-none focus:ring-2 focus:ring-purple-500"
-                    >
-                      <option value="all">All clients</option>
-                      <optgroup label="Execution Layer">
-                        {elClients.map((client) => (
-                          <option key={client} value={client}>{client}</option>
-                        ))}
-                      </optgroup>
-                      <optgroup label="Consensus Layer">
-                        {clClients.map((client) => (
-                          <option key={client} value={client}>{client}</option>
-                        ))}
-                      </optgroup>
-                    </select>
-                  </div>
-
-                  {/* Stance filter */}
-                  <div>
-                    <label className="block text-xs font-medium text-slate-500 dark:text-slate-400 mb-1.5">Stance</label>
-                    <select
-                      value={filterStance}
-                      onChange={(e) => setFilterStance(e.target.value as FilterStance)}
-                      className="w-full px-3 py-1.5 bg-slate-50 dark:bg-slate-700 border border-slate-200 dark:border-slate-600 rounded text-sm focus:outline-none focus:ring-2 focus:ring-purple-500"
-                    >
-                      <option value="all">All stances</option>
-                      <option value="support">High support (avg ≥ 4)</option>
-                      <option value="mixed">Contested</option>
-                      <option value="oppose">More opposition</option>
-                      <option value="none">No stances yet</option>
-                    </select>
-                  </div>
-
-                  {/* Clear filters */}
-                  {activeFilterCount > 0 && (
-                    <button
-                      onClick={clearFilters}
-                      className="w-full px-3 py-1.5 text-sm text-purple-600 dark:text-purple-400 hover:bg-purple-50 dark:hover:bg-purple-900/20 rounded transition-colors"
-                    >
-                      Clear all filters
-                    </button>
-                  )}
-                </div>
+            {/* Filters button */}
+            <button
+              onClick={() => setFiltersModalOpen(true)}
+              className={`flex items-center gap-2 px-4 py-2.5 rounded-lg border text-sm font-medium transition-colors ${
+                activeFilterCount > 0
+                  ? 'bg-purple-50 dark:bg-purple-900/20 border-purple-300 dark:border-purple-700 text-purple-700 dark:text-purple-300'
+                  : 'bg-white dark:bg-slate-800 border-slate-200 dark:border-slate-700 text-slate-700 dark:text-slate-300'
+              }`}
+            >
+              <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 4a1 1 0 011-1h16a1 1 0 011 1v2.586a1 1 0 01-.293.707l-6.414 6.414a1 1 0 00-.293.707V17l-4 4v-6.586a1 1 0 00-.293-.707L3.293 7.293A1 1 0 013 6.586V4z" />
+              </svg>
+              <span className="hidden sm:inline">Filters</span>
+              {activeFilterCount > 0 && (
+                <span className="px-1.5 py-0.5 text-xs bg-purple-200 dark:bg-purple-800 text-purple-800 dark:text-purple-200 rounded-full">
+                  {activeFilterCount}
+                </span>
               )}
-            </div>
+            </button>
 
             {/* Active only toggle */}
             <label className="flex items-center gap-2 cursor-pointer select-none">
@@ -324,6 +248,164 @@ const PrioritizationPage: React.FC = () => {
           </div>
         </div>
 
+        {/* Filters Modal */}
+        {filtersModalOpen && (
+          <div className="fixed inset-0 z-50 animate-fadeIn">
+            {/* Backdrop */}
+            <div
+              className="absolute inset-0 bg-black/50"
+              onClick={() => setFiltersModalOpen(false)}
+            />
+            {/* Modal */}
+            <div className="md:absolute md:inset-0 md:flex md:items-center md:justify-center absolute bottom-0 left-0 right-0">
+              <div className="bg-white dark:bg-slate-800 md:rounded-2xl rounded-t-2xl md:max-w-2xl md:w-full max-h-[85vh] md:max-h-[90vh] overflow-hidden flex flex-col animate-fade-scale md:shadow-2xl">
+                {/* Header */}
+                <div className="flex items-center justify-between px-4 py-3 border-b border-slate-200 dark:border-slate-700">
+                  <h2 className="text-lg font-semibold text-slate-900 dark:text-slate-100">Filters</h2>
+                  <div className="flex items-center gap-3">
+                    {activeFilterCount > 0 && (
+                      <button
+                        onClick={clearFilters}
+                        className="text-sm text-purple-600 dark:text-purple-400 font-medium"
+                      >
+                        Clear all
+                      </button>
+                    )}
+                    <button
+                      onClick={() => setFiltersModalOpen(false)}
+                      className="p-1 rounded-full hover:bg-slate-100 dark:hover:bg-slate-700 transition-colors"
+                    >
+                      <svg className="w-6 h-6 text-slate-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                      </svg>
+                    </button>
+                  </div>
+                </div>
+
+                {/* Filter Content */}
+                <div className="flex-1 overflow-y-auto p-4 md:p-6">
+                  <div className="grid md:grid-cols-2 gap-6">
+                    {/* Layer Filter */}
+                    <div>
+                      <h3 className="text-sm font-semibold text-slate-700 dark:text-slate-300 mb-3">Layer</h3>
+                      <div className="flex flex-wrap gap-2">
+                        {(['all', 'EL', 'CL'] as const).map((layer) => {
+                          const isSelected = filterLayer === layer;
+                          const label = layer === 'all' ? 'All Layers' : layer === 'EL' ? 'Execution Layer' : 'Consensus Layer';
+                          return (
+                            <button
+                              key={layer}
+                              onClick={() => setFilterLayer(layer)}
+                              className={`px-3 py-2 text-sm font-medium rounded-lg transition-colors ${
+                                isSelected
+                                  ? 'bg-purple-100 dark:bg-purple-900/30 text-purple-800 dark:text-purple-300 ring-2 ring-purple-500 ring-offset-1 dark:ring-offset-slate-800'
+                                  : 'bg-slate-100 dark:bg-slate-700 text-slate-700 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-600'
+                              }`}
+                            >
+                              {label}
+                            </button>
+                          );
+                        })}
+                      </div>
+                    </div>
+
+                    {/* Stance Filter */}
+                    <div>
+                      <h3 className="text-sm font-semibold text-slate-700 dark:text-slate-300 mb-3">Stance</h3>
+                      <div className="flex flex-wrap gap-2">
+                        {([
+                          { value: 'all', label: 'All Stances' },
+                          { value: 'support', label: 'High Support' },
+                          { value: 'mixed', label: 'Contested' },
+                          { value: 'oppose', label: 'More Opposition' },
+                          { value: 'none', label: 'No Stances' },
+                        ] as const).map(({ value, label }) => {
+                          const isSelected = filterStance === value;
+                          return (
+                            <button
+                              key={value}
+                              onClick={() => setFilterStance(value)}
+                              className={`px-3 py-2 text-sm font-medium rounded-lg transition-colors ${
+                                isSelected
+                                  ? 'bg-purple-100 dark:bg-purple-900/30 text-purple-800 dark:text-purple-300 ring-2 ring-purple-500 ring-offset-1 dark:ring-offset-slate-800'
+                                  : 'bg-slate-100 dark:bg-slate-700 text-slate-700 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-600'
+                              }`}
+                            >
+                              {label}
+                            </button>
+                          );
+                        })}
+                      </div>
+                    </div>
+
+                    {/* EL Clients Filter */}
+                    <div>
+                      <h3 className="text-sm font-semibold text-slate-700 dark:text-slate-300 mb-3 flex items-center gap-1.5">
+                        <span className="w-2 h-2 rounded-full bg-indigo-500"></span>
+                        EL Clients
+                      </h3>
+                      <div className="flex flex-wrap gap-2">
+                        {elClients.map((client) => {
+                          const isSelected = filterClient === client;
+                          return (
+                            <button
+                              key={client}
+                              onClick={() => setFilterClient(isSelected ? 'all' : client)}
+                              className={`px-3 py-2 text-sm font-medium rounded-lg transition-colors ${
+                                isSelected
+                                  ? 'bg-indigo-100 dark:bg-indigo-900/30 text-indigo-800 dark:text-indigo-300 ring-2 ring-indigo-500 ring-offset-1 dark:ring-offset-slate-800'
+                                  : 'bg-slate-100 dark:bg-slate-700 text-slate-700 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-600'
+                              }`}
+                            >
+                              {client}
+                            </button>
+                          );
+                        })}
+                      </div>
+                    </div>
+
+                    {/* CL Clients Filter */}
+                    <div>
+                      <h3 className="text-sm font-semibold text-slate-700 dark:text-slate-300 mb-3 flex items-center gap-1.5">
+                        <span className="w-2 h-2 rounded-full bg-teal-500"></span>
+                        CL Clients
+                      </h3>
+                      <div className="flex flex-wrap gap-2">
+                        {clClients.map((client) => {
+                          const isSelected = filterClient === client;
+                          return (
+                            <button
+                              key={client}
+                              onClick={() => setFilterClient(isSelected ? 'all' : client)}
+                              className={`px-3 py-2 text-sm font-medium rounded-lg transition-colors ${
+                                isSelected
+                                  ? 'bg-teal-100 dark:bg-teal-900/30 text-teal-800 dark:text-teal-300 ring-2 ring-teal-500 ring-offset-1 dark:ring-offset-slate-800'
+                                  : 'bg-slate-100 dark:bg-slate-700 text-slate-700 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-600'
+                              }`}
+                            >
+                              {client}
+                            </button>
+                          );
+                        })}
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Footer */}
+                <div className="px-4 py-3 border-t border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-900/50">
+                  <button
+                    onClick={() => setFiltersModalOpen(false)}
+                    className="w-full py-3 bg-purple-600 hover:bg-purple-700 text-white font-medium rounded-lg transition-colors"
+                  >
+                    Show {sortedAggregates.length} {sortedAggregates.length === 1 ? 'result' : 'results'}
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        )}
+
         {/* Mobile Card List */}
         <div className="lg:hidden space-y-2">
           {sortedAggregates.length === 0 ? (
@@ -354,8 +436,8 @@ const PrioritizationPage: React.FC = () => {
                           {agg.layer && (
                             <span className={`px-1.5 py-0.5 text-[10px] rounded ${
                               agg.layer === 'EL'
-                                ? 'bg-blue-100 text-blue-700 dark:bg-blue-900/30 dark:text-blue-300'
-                                : 'bg-sky-100 text-sky-700 dark:bg-sky-900/30 dark:text-sky-300'
+                                ? 'bg-indigo-100 text-indigo-700 dark:bg-indigo-900/30 dark:text-indigo-300'
+                                : 'bg-teal-100 text-teal-700 dark:bg-teal-900/30 dark:text-teal-300'
                             }`}>
                               {agg.layer}
                             </span>
@@ -430,13 +512,13 @@ const PrioritizationPage: React.FC = () => {
                 </th>
                 <th className="px-4 py-3 text-center text-sm font-medium text-slate-700 dark:text-slate-300">
                   <div className="flex items-center justify-center gap-1">
-                    <span className="w-2 h-2 rounded-full bg-blue-500"></span>
+                    <span className="w-2 h-2 rounded-full bg-indigo-500"></span>
                     EL Clients
                   </div>
                 </th>
                 <th className="px-4 py-3 text-center text-sm font-medium text-slate-700 dark:text-slate-300">
                   <div className="flex items-center justify-center gap-1">
-                    <span className="w-2 h-2 rounded-full bg-sky-500"></span>
+                    <span className="w-2 h-2 rounded-full bg-teal-500"></span>
                     CL Clients
                   </div>
                 </th>
@@ -531,8 +613,8 @@ const TableRow: React.FC<TableRowProps> = ({ agg, elClients, clClients, isExpand
             {agg.layer && (
               <span className={`px-1.5 py-0.5 text-[10px] rounded ${
                 agg.layer === 'EL'
-                  ? 'bg-blue-100 text-blue-700 dark:bg-blue-900/30 dark:text-blue-300'
-                  : 'bg-sky-100 text-sky-700 dark:bg-sky-900/30 dark:text-sky-300'
+                  ? 'bg-indigo-100 text-indigo-700 dark:bg-indigo-900/30 dark:text-indigo-300'
+                  : 'bg-teal-100 text-teal-700 dark:bg-teal-900/30 dark:text-teal-300'
               }`}>
                 {agg.layer}
               </span>
@@ -669,15 +751,15 @@ const ClientStancesGrid: React.FC<ClientStancesGridProps> = ({ stances, elClient
   return (
     <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
       <div>
-        <h4 className="text-xs font-medium text-blue-600 dark:text-blue-400 mb-2 flex items-center gap-1">
-          <span className="w-2 h-2 rounded-full bg-blue-500"></span>
+        <h4 className="text-xs font-medium text-indigo-600 dark:text-indigo-400 mb-2 flex items-center gap-1">
+          <span className="w-2 h-2 rounded-full bg-indigo-500"></span>
           Execution Layer Clients
         </h4>
         <div>{elClients.map(renderClientRow)}</div>
       </div>
       <div>
-        <h4 className="text-xs font-medium text-sky-600 dark:text-sky-400 mb-2 flex items-center gap-1">
-          <span className="w-2 h-2 rounded-full bg-sky-500"></span>
+        <h4 className="text-xs font-medium text-teal-600 dark:text-teal-400 mb-2 flex items-center gap-1">
+          <span className="w-2 h-2 rounded-full bg-teal-500"></span>
           Consensus Layer Clients
         </h4>
         <div>{clClients.map(renderClientRow)}</div>

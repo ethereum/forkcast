@@ -1,7 +1,6 @@
-import React, { useState, useMemo } from 'react';
+import React, { useState, useMemo, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { eipsData } from '../data/eips';
-import { networkUpgrades } from '../data/upgrades';
 import { useComplexityData, getComplexityForEip } from '../hooks/useComplexityData';
 import { getComplexityTierColor, getComplexityTierEmoji } from '../utils/complexity';
 import { getInclusionStage, getLaymanTitle, getProposalPrefix, getSpecificationUrl } from '../utils';
@@ -9,21 +8,43 @@ import { getInclusionStageColor } from '../utils/colors';
 import { InclusionStage } from '../types';
 import { useMetaTags } from '../hooks/useMetaTags';
 import ThemeToggle from './ui/ThemeToggle';
+import AnalysisNav from './ui/AnalysisNav';
 import { ComplexityTier } from '../types';
 
 type SortField = 'eip' | 'complexity' | 'tier' | 'stage';
 type SortDirection = 'asc' | 'desc';
 type FilterTier = 'all' | 'Low' | 'Medium' | 'High' | 'unassessed';
 
+const SELECTED_FORK = 'glamsterdam';
+
 const ComplexityPage: React.FC = () => {
-  const [selectedFork, setSelectedFork] = useState('glamsterdam');
   const [sortField, setSortField] = useState<SortField>('complexity');
   const [sortDirection, setSortDirection] = useState<SortDirection>('desc');
   const [filterTier, setFilterTier] = useState<FilterTier>('all');
   const [hideExcluded, setHideExcluded] = useState(true);
   const [expandedEip, setExpandedEip] = useState<number | null>(null);
+  const [filtersModalOpen, setFiltersModalOpen] = useState(false);
 
   const { complexityMap, loading, error, refetch } = useComplexityData();
+
+  // Lock body scroll when filters modal is open
+  useEffect(() => {
+    if (filtersModalOpen) {
+      document.body.style.overflow = 'hidden';
+    } else {
+      document.body.style.overflow = '';
+    }
+    return () => {
+      document.body.style.overflow = '';
+    };
+  }, [filtersModalOpen]);
+
+  // Count active filters
+  const activeFilterCount = filterTier !== 'all' ? 1 : 0;
+
+  const clearFilters = () => {
+    setFilterTier('all');
+  };
 
   useMetaTags({
     title: 'EIP Test Complexity Analysis - Forkcast',
@@ -31,26 +52,30 @@ const ComplexityPage: React.FC = () => {
     url: 'https://forkcast.org/complexity',
   });
 
-  // Get available forks (non-disabled, non-Live except special cases)
-  const availableForks = useMemo(() => {
-    return networkUpgrades.filter(
-      (u) => !u.disabled && ['Upcoming', 'Planning', 'Research'].includes(u.status)
-    );
-  }, []);
-
-  // Get EIPs for selected fork
+  // Get EIPs for selected fork with layer info
   const forkEips = useMemo(() => {
-    return eipsData.filter((eip) =>
-      eip.forkRelationships.some(
-        (rel) => rel.forkName.toLowerCase() === selectedFork.toLowerCase()
+    return eipsData
+      .filter((eip) =>
+        eip.forkRelationships.some(
+          (rel) => rel.forkName.toLowerCase() === SELECTED_FORK.toLowerCase()
+        )
       )
-    );
-  }, [selectedFork]);
+      .map((eip) => {
+        const forkRel = eip.forkRelationships.find(
+          (rel) => rel.forkName.toLowerCase() === SELECTED_FORK.toLowerCase()
+        );
+        return {
+          eip,
+          layer: forkRel?.layer as 'EL' | 'CL' | undefined,
+        };
+      });
+  }, []);
 
   // Combine EIPs with complexity data
   const eipsWithComplexity = useMemo(() => {
-    return forkEips.map((eip) => ({
+    return forkEips.map(({ eip, layer }) => ({
       eip,
+      layer,
       complexity: getComplexityForEip(complexityMap, eip.id),
     }));
   }, [forkEips, complexityMap]);
@@ -62,7 +87,7 @@ const ComplexityPage: React.FC = () => {
     // Filter out declined/withdrawn/unknown if hideExcluded is true
     if (hideExcluded) {
       result = result.filter((e) => {
-        const stage = getInclusionStage(e.eip, selectedFork);
+        const stage = getInclusionStage(e.eip, SELECTED_FORK);
         return stage !== 'Declined for Inclusion' && stage !== 'Withdrawn' && stage !== 'Unknown';
       });
     }
@@ -76,7 +101,7 @@ const ComplexityPage: React.FC = () => {
     }
 
     return result;
-  }, [eipsWithComplexity, filterTier, hideExcluded, selectedFork]);
+  }, [eipsWithComplexity, filterTier, hideExcluded]);
 
   // Apply sorting
   const sortedEips = useMemo(() => {
@@ -117,8 +142,8 @@ const ComplexityPage: React.FC = () => {
             'Withdrawn': 6,
             'Unknown': 7,
           };
-          const stageA = getInclusionStage(a.eip, selectedFork);
-          const stageB = getInclusionStage(b.eip, selectedFork);
+          const stageA = getInclusionStage(a.eip, SELECTED_FORK);
+          const stageB = getInclusionStage(b.eip, SELECTED_FORK);
           comparison = (stageOrder[stageA] || 99) - (stageOrder[stageB] || 99);
           break;
         }
@@ -126,7 +151,7 @@ const ComplexityPage: React.FC = () => {
 
       return sortDirection === 'asc' ? comparison : -comparison;
     });
-  }, [filteredEips, sortField, sortDirection, selectedFork]);
+  }, [filteredEips, sortField, sortDirection]);
 
   // Calculate summary stats
   const stats = useMemo(() => {
@@ -183,7 +208,7 @@ const ComplexityPage: React.FC = () => {
 
   return (
     <div className="min-h-screen bg-slate-50 dark:bg-slate-900 text-slate-900 dark:text-slate-100 p-6">
-      <div className="max-w-6xl mx-auto">
+      <div className="max-w-7xl mx-auto">
         {/* Header */}
         <div className="mb-6 relative">
           <div className="absolute top-0 right-0">
@@ -195,76 +220,59 @@ const ComplexityPage: React.FC = () => {
           >
             Forkcast
           </Link>
-          <div className="flex items-center justify-between gap-4 mb-2">
+          <div className="flex items-center gap-3 mb-2">
             <h1 className="text-xl font-semibold text-slate-900 dark:text-slate-100">
               Test Complexity Analysis
             </h1>
+            <span className="px-2 py-0.5 text-xs font-medium bg-purple-100 text-purple-700 dark:bg-purple-900/30 dark:text-purple-300 rounded">
+              Glamsterdam
+            </span>
+          </div>
+          <p className="text-sm text-slate-500 dark:text-slate-400">
+            Scores based on 24 anchors from{' '}
             <a
               href="https://github.com/ethsteel/pm/tree/main/complexity_assessments/EIPs"
               target="_blank"
               rel="noopener noreferrer"
-              className="text-xs text-slate-500 hover:text-purple-600 dark:text-slate-400 dark:hover:text-purple-400 flex items-center gap-1"
+              className="text-purple-600 hover:text-purple-700 dark:text-purple-400 dark:hover:text-purple-300 underline"
             >
-              STEEL data
-              <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
-              </svg>
+              STEEL
             </a>
-          </div>
-          <p className="text-sm text-slate-500 dark:text-slate-400">
-            Scores based on 24 anchors. Tiers:
+            . Tiers:
             <span className="text-emerald-600 dark:text-emerald-400"> Low &lt;10</span>,
             <span className="text-amber-600 dark:text-amber-400"> Medium 10-19</span>,
             <span className="text-red-600 dark:text-red-400"> High &ge;20</span>
           </p>
-          <p className="mt-2 text-xs text-blue-600 dark:text-blue-400 bg-blue-50 dark:bg-blue-900/20 px-2 py-1 rounded inline-flex items-center gap-1.5">
-            <svg className="w-3.5 h-3.5 shrink-0" fill="currentColor" viewBox="0 0 20 20">
-              <path fillRule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clipRule="evenodd" />
-            </svg>
+          <p className="mt-1 text-xs text-slate-500 dark:text-slate-400">
             Scores reflect testing effort, not implementation complexity. Early estimations subject to change.
           </p>
+          <div className="mt-4">
+            <AnalysisNav />
+          </div>
         </div>
 
         {/* Toolbar */}
         <div className="mb-6 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg p-4">
-          <div className="flex flex-wrap items-center gap-x-6 gap-y-3">
-            {/* Fork selector */}
-            <div className="flex items-center gap-2">
-              <span className="text-sm text-slate-500 dark:text-slate-400">Fork:</span>
-              <select
-                id="fork-select"
-                value={selectedFork}
-                onChange={(e) => setSelectedFork(e.target.value)}
-                className="px-3 py-1.5 bg-slate-50 dark:bg-slate-700 border border-slate-200 dark:border-slate-600 rounded text-sm font-medium focus:outline-none focus:ring-2 focus:ring-purple-500"
-              >
-                {availableForks.map((fork) => (
-                  <option key={fork.id} value={fork.id}>
-                    {fork.name.replace(' Upgrade', '')}
-                  </option>
-                ))}
-              </select>
-            </div>
-
-            <div className="hidden sm:block w-px h-6 bg-slate-200 dark:bg-slate-600" />
-
-            {/* Tier filter */}
-            <div className="flex items-center gap-2">
-              <span className="text-sm text-slate-500 dark:text-slate-400">Tier:</span>
-              <select
-                id="tier-filter"
-                value={filterTier}
-                onChange={(e) => setFilterTier(e.target.value as FilterTier)}
-                className="px-3 py-1.5 bg-slate-50 dark:bg-slate-700 border border-slate-200 dark:border-slate-600 rounded text-sm focus:outline-none focus:ring-2 focus:ring-purple-500"
-              >
-                <option value="all">All</option>
-                <option value="Low">Low</option>
-                <option value="Medium">Medium</option>
-                <option value="High">High</option>
-                <option value="unassessed">Not Assessed</option>
-              </select>
-            </div>
-
-            <div className="hidden sm:block w-px h-6 bg-slate-200 dark:bg-slate-600" />
+          <div className="flex flex-wrap items-center gap-x-4 gap-y-3">
+            {/* Filters button */}
+            <button
+              onClick={() => setFiltersModalOpen(true)}
+              className={`flex items-center gap-2 px-4 py-2.5 rounded-lg border text-sm font-medium transition-colors ${
+                activeFilterCount > 0
+                  ? 'bg-purple-50 dark:bg-purple-900/20 border-purple-300 dark:border-purple-700 text-purple-700 dark:text-purple-300'
+                  : 'bg-white dark:bg-slate-800 border-slate-200 dark:border-slate-700 text-slate-700 dark:text-slate-300'
+              }`}
+            >
+              <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 4a1 1 0 011-1h16a1 1 0 011 1v2.586a1 1 0 01-.293.707l-6.414 6.414a1 1 0 00-.293.707V17l-4 4v-6.586a1 1 0 00-.293-.707L3.293 7.293A1 1 0 013 6.586V4z" />
+              </svg>
+              <span className="hidden sm:inline">Filters</span>
+              {activeFilterCount > 0 && (
+                <span className="px-1.5 py-0.5 text-xs bg-purple-200 dark:bg-purple-800 text-purple-800 dark:text-purple-200 rounded-full">
+                  {activeFilterCount}
+                </span>
+              )}
+            </button>
 
             {/* Active only toggle */}
             <label className="flex items-center gap-2 cursor-pointer select-none">
@@ -318,6 +326,89 @@ const ComplexityPage: React.FC = () => {
           </div>
         </div>
 
+        {/* Filters Modal */}
+        {filtersModalOpen && (
+          <div className="fixed inset-0 z-50 animate-fadeIn">
+            {/* Backdrop */}
+            <div
+              className="absolute inset-0 bg-black/50"
+              onClick={() => setFiltersModalOpen(false)}
+            />
+            {/* Modal */}
+            <div className="md:absolute md:inset-0 md:flex md:items-center md:justify-center absolute bottom-0 left-0 right-0">
+              <div className="bg-white dark:bg-slate-800 md:rounded-2xl rounded-t-2xl md:max-w-lg md:w-full max-h-[85vh] md:max-h-[90vh] overflow-hidden flex flex-col animate-fade-scale md:shadow-2xl">
+                {/* Header */}
+                <div className="flex items-center justify-between px-4 py-3 border-b border-slate-200 dark:border-slate-700">
+                  <h2 className="text-lg font-semibold text-slate-900 dark:text-slate-100">Filters</h2>
+                  <div className="flex items-center gap-3">
+                    {activeFilterCount > 0 && (
+                      <button
+                        onClick={clearFilters}
+                        className="text-sm text-purple-600 dark:text-purple-400 font-medium"
+                      >
+                        Clear all
+                      </button>
+                    )}
+                    <button
+                      onClick={() => setFiltersModalOpen(false)}
+                      className="p-1 rounded-full hover:bg-slate-100 dark:hover:bg-slate-700 transition-colors"
+                    >
+                      <svg className="w-6 h-6 text-slate-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                      </svg>
+                    </button>
+                  </div>
+                </div>
+
+                {/* Filter Content */}
+                <div className="flex-1 overflow-y-auto p-4 md:p-6">
+                  {/* Tier Filter */}
+                  <div>
+                    <h3 className="text-sm font-semibold text-slate-700 dark:text-slate-300 mb-3">Complexity Tier</h3>
+                    <div className="flex flex-wrap gap-2">
+                      {([
+                        { value: 'all', label: 'All Tiers', color: null },
+                        { value: 'Low', label: 'Low (<10)', color: 'emerald' },
+                        { value: 'Medium', label: 'Medium (10-19)', color: 'amber' },
+                        { value: 'High', label: 'High (≥20)', color: 'red' },
+                        { value: 'unassessed', label: 'Not Assessed', color: null },
+                      ] as const).map(({ value, label, color }) => {
+                        const isSelected = filterTier === value;
+                        return (
+                          <button
+                            key={value}
+                            onClick={() => setFilterTier(value)}
+                            className={`px-3 py-2 text-sm font-medium rounded-lg transition-colors ${
+                              isSelected
+                                ? 'bg-purple-100 dark:bg-purple-900/30 text-purple-800 dark:text-purple-300 ring-2 ring-purple-500 ring-offset-1 dark:ring-offset-slate-800'
+                                : 'bg-slate-100 dark:bg-slate-700 text-slate-700 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-600'
+                            }`}
+                          >
+                            {color && (
+                              <span className={`inline-block w-2 h-2 rounded-full mr-1.5 bg-${color}-500`}></span>
+                            )}
+                            {label}
+                          </button>
+                        );
+                      })}
+                    </div>
+                  </div>
+                </div>
+
+                {/* Footer */}
+                <div className="px-4 py-3 border-t border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-900/50">
+                  <button
+                    onClick={() => setFiltersModalOpen(false)}
+                    className="w-full py-3 bg-purple-600 hover:bg-purple-700 text-white font-medium rounded-lg transition-colors"
+                  >
+                    Show {sortedEips.length} {sortedEips.length === 1 ? 'result' : 'results'}
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        )}
+
         {/* Error State */}
         {error && (
           <div className="mb-6 p-4 bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded">
@@ -347,8 +438,8 @@ const ComplexityPage: React.FC = () => {
               No EIPs found for this fork
             </div>
           ) : (
-            sortedEips.map(({ eip, complexity }) => {
-              const stage = getInclusionStage(eip, selectedFork) as InclusionStage;
+            sortedEips.map(({ eip, layer, complexity }) => {
+              const stage = getInclusionStage(eip, SELECTED_FORK) as InclusionStage;
               const shortStage = stage.replace(' for Inclusion', '');
               const isExpanded = expandedEip === eip.id;
 
@@ -364,10 +455,19 @@ const ComplexityPage: React.FC = () => {
                   >
                     <div className="flex items-start justify-between gap-3">
                       <div className="flex-1 min-w-0">
-                        <div className="flex items-center gap-2 mb-1">
+                        <div className="flex items-center gap-2 mb-1 flex-wrap">
                           <span className="font-mono text-sm text-purple-600 dark:text-purple-400">
                             {getProposalPrefix(eip)}-{eip.id}
                           </span>
+                          {layer && (
+                            <span className={`px-1.5 py-0.5 text-[10px] rounded ${
+                              layer === 'EL'
+                                ? 'bg-indigo-100 text-indigo-700 dark:bg-indigo-900/20 dark:text-indigo-300'
+                                : 'bg-teal-100 text-teal-700 dark:bg-teal-900/20 dark:text-teal-300'
+                            }`}>
+                              {layer}
+                            </span>
+                          )}
                           <span className={`px-1.5 py-0.5 text-[10px] rounded ${getInclusionStageColor(stage)}`}>
                             {shortStage}
                           </span>
@@ -518,18 +618,29 @@ const ComplexityPage: React.FC = () => {
                   </td>
                 </tr>
               ) : (
-                sortedEips.map(({ eip, complexity }) => (
+                sortedEips.map(({ eip, layer, complexity }) => (
                   <React.Fragment key={eip.id}>
                     <tr className="hover:bg-slate-50 dark:hover:bg-slate-700/30">
                       <td className="px-4 py-3">
-                        <a
-                          href={getSpecificationUrl(eip)}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          className="font-mono text-sm text-purple-600 hover:text-purple-800 dark:text-purple-400 dark:hover:text-purple-300"
-                        >
-                          {getProposalPrefix(eip)}-{eip.id}
-                        </a>
+                        <div className="flex items-center gap-2">
+                          <a
+                            href={getSpecificationUrl(eip)}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="font-mono text-sm text-purple-600 hover:text-purple-800 dark:text-purple-400 dark:hover:text-purple-300"
+                          >
+                            {getProposalPrefix(eip)}-{eip.id}
+                          </a>
+                          {layer && (
+                            <span className={`px-1.5 py-0.5 text-[10px] rounded ${
+                              layer === 'EL'
+                                ? 'bg-indigo-100 text-indigo-700 dark:bg-indigo-900/30 dark:text-indigo-300'
+                                : 'bg-teal-100 text-teal-700 dark:bg-teal-900/30 dark:text-teal-300'
+                            }`}>
+                              {layer}
+                            </span>
+                          )}
+                        </div>
                       </td>
                       <td className="px-4 py-3">
                         <Link
@@ -541,7 +652,7 @@ const ComplexityPage: React.FC = () => {
                       </td>
                       <td className="px-4 py-3">
                         {(() => {
-                          const stage = getInclusionStage(eip, selectedFork) as InclusionStage;
+                          const stage = getInclusionStage(eip, SELECTED_FORK) as InclusionStage;
                           const shortStage = stage.replace(' for Inclusion', '');
                           return (
                             <span className={`inline-block px-2 py-0.5 text-xs rounded ${getInclusionStageColor(stage)}`}>

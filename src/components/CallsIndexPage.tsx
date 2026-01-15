@@ -186,16 +186,26 @@ const CallsIndexPage: React.FC = () => {
               const now = new Date();
               let hasCrossedToday = false;
 
-              // Helper to check if an item is upcoming, using datetime for events when available
+              // Helper to check if an item is upcoming
               const isItemUpcoming = (item: TimelineItem): boolean => {
+                // Events use their datetime if available
                 if (item.type === 'event' && (item as TimelineEvent).datetime) {
                   const eventTime = new Date((item as TimelineEvent).datetime!.replace(' ', 'T') + 'Z');
                   return eventTime > now;
                 }
-                // For items without datetime, use end of day comparison
+
+                // Upcoming calls from GitHub - assume 14:00 UTC start time
+                if ('githubUrl' in item) {
+                  const [year, month, day] = item.date.split('-').map(Number);
+                  const callTime = new Date(Date.UTC(year, month - 1, day, 14, 0, 0));
+                  return callTime > now;
+                }
+
+                // Completed calls and events without datetime - compare local dates
                 const [year, month, day] = item.date.split('-').map(Number);
-                const itemDate = new Date(year, month - 1, day, 23, 59, 59);
-                return itemDate > now;
+                const itemDate = new Date(year, month - 1, day);
+                const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+                return itemDate > today;
               };
 
               return sortedItems.map((item, index) => {

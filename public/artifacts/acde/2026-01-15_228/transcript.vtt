@@ -1,0 +1,2806 @@
+WEBVTT
+
+1
+00:04:04.430 --> 00:04:06.420
+Ansgar Dietrichs: Hello, hello everyone. Can you hear me well?
+
+2
+00:04:07.130 --> 00:04:10.369
+Justin Florentine (Besu): Good morning, Ethereum, we can hear ya!
+
+3
+00:04:13.330 --> 00:04:15.539
+Ansgar Dietrichs: Well, good morning, Justin, to you, too.
+
+4
+00:04:25.360 --> 00:04:27.930
+Ansgar Dietrichs: Yeah, let's wait, like, one more minute, but
+
+5
+00:04:28.230 --> 00:04:32.650
+Ansgar Dietrichs: I've gotten the request to maybe, in the future, start kind of sharper on time.
+
+6
+00:04:33.160 --> 00:04:40.589
+Ansgar Dietrichs: So… yeah, maybe for today we wait just a little longer again, but then possibly starting on next ACDE, we might…
+
+7
+00:04:40.790 --> 00:04:42.090
+Ansgar Dietrichs: Get going quicker.
+
+8
+00:05:10.720 --> 00:05:12.549
+Ansgar Dietrichs: Okay, I think we can go live.
+
+9
+00:05:15.810 --> 00:05:17.050
+Josh Davis: You are alive.
+
+10
+00:05:18.450 --> 00:05:24.410
+Ansgar Dietrichs: Perfect. Hello, everyone. Welcome to Allcodev's Call 228.
+
+11
+00:05:25.570 --> 00:05:28.660
+Ansgar Dietrichs: I'll put the link to the agenda in the chat.
+
+12
+00:05:28.820 --> 00:05:41.890
+Ansgar Dietrichs: Basically for today, two main topics. One is the, DevNets, glam setup DevNets, specifically DevNet2Scope, and then some clarifications to related EAPs. And then afterwards, hopefully, we,
+
+13
+00:05:42.420 --> 00:05:47.940
+Ansgar Dietrichs: we'll be able to finish the, Bramstam PFI decisions today.
+
+14
+00:05:48.190 --> 00:06:04.550
+Ansgar Dietrichs: To get started, for DevNet 2, specifically, so there was a preliminary decision made on DevNet2's scope on ACDT this Monday, but then my understanding is there was some conversation afterwards about whether maybe that scope was too broad,
+
+15
+00:06:04.580 --> 00:06:08.289
+Ansgar Dietrichs: Whether that… whether it would make sense to revisit that.
+
+16
+00:06:08.510 --> 00:06:16.849
+Ansgar Dietrichs: So, do we… do we have anyone with context on this decision and the current status of the thinking there on the call that could give a summary?
+
+17
+00:06:19.350 --> 00:06:27.180
+Stefan Starflinger: Yeah, I could give a quick summary. In general, it seems that we need to change something
+
+18
+00:06:27.320 --> 00:06:40.909
+Stefan Starflinger: in the CL for this change, and that's why there was some, kind of discussion if we should even include it, because having changes in the EL and the CL, so the goal was just to have changes in the EL, might be a little bit,
+
+19
+00:06:41.180 --> 00:06:54.310
+Stefan Starflinger: too much, so there was some discussion about that. It would be great to hear quickly from clients how they feel about it, but from my perspective, it seems it would be nice to include it. It's only, I think, a small change set.
+
+20
+00:06:54.530 --> 00:06:58.179
+Stefan Starflinger: And I think it shouldn't be such a big blocker.
+
+21
+00:06:58.300 --> 00:07:12.439
+Stefan Starflinger: But from Lordstor right now, we don't have anyone, I think, that can speak about that. I think we will… from the Lordstar side, we can make a discussion on Monday when someone will be back from holiday. That's pretty much the context.
+
+22
+00:07:14.090 --> 00:07:19.120
+Ansgar Dietrichs: Sounds good. And just to clarify, this is about the slot numb code specifically, is this right?
+
+23
+00:07:19.880 --> 00:07:22.300
+Stefan Starflinger: Yeah, EIP7843.
+
+24
+00:07:27.200 --> 00:07:28.790
+Ansgar Dietrichs: Sounds good.
+
+25
+00:07:28.980 --> 00:07:39.440
+Ansgar Dietrichs: Yeah, I do think, I mean, in principle, I'm not… I'm not sure how the EL clients feel about this in general. It seems to me like it would be nice if we could kind of agree on the scope of DevNet2.
+
+26
+00:07:39.860 --> 00:07:42.919
+Ansgar Dietrichs: Kind of today, not just next week.
+
+27
+00:07:43.400 --> 00:07:52.329
+Ansgar Dietrichs: Of course, unless… so, so, so, do we have client teams with an opinion, A, on, like, do we want to make, this decision today, and then…
+
+28
+00:07:52.530 --> 00:07:59.410
+Ansgar Dietrichs: Whether they would want to… Yeah, remove the slot number up code from Devon 2.
+
+29
+00:08:02.910 --> 00:08:03.740
+Carl Beekhuizen: Admin.
+
+30
+00:08:05.590 --> 00:08:07.660
+Carl Beekhuizen: You're unmuted.
+
+31
+00:08:10.890 --> 00:08:13.799
+Ansgar Dietrichs: Was there someone from the big group?
+
+32
+00:08:14.290 --> 00:08:17.609
+Ansgar Dietrichs: In the camera that wants to say something, or was this accidental?
+
+33
+00:08:18.510 --> 00:08:22.140
+Carl Beekhuizen: No, sorry, we're just technologically illiterate. Mostly me.
+
+34
+00:08:24.080 --> 00:08:25.079
+Ansgar Dietrichs: In a voice.
+
+35
+00:08:25.410 --> 00:08:29.269
+Stefan Starflinger: I mean, otherwise, we can also just decide on Monday if,
+
+36
+00:08:29.570 --> 00:08:31.849
+Stefan Starflinger: There's no one wants to talk now about it.
+
+37
+00:08:33.169 --> 00:08:38.329
+Ansgar Dietrichs: Yeah, I mean, in principle, like, I was trying to monetize with timeboxes anyway,
+
+38
+00:08:38.649 --> 00:08:47.729
+Ansgar Dietrichs: if there's no urgency on this discussion, which I thought there might be, but now that no one's speaking up, it seems like maybe there's no urgency, then I would propose we just…
+
+39
+00:08:47.979 --> 00:09:00.249
+Ansgar Dietrichs: make, kind of, like, the final DevW2 scoping decisions on ACDT next Monday. But of course, it's good to pilot this today, so people are aware that's when that will happen.
+
+40
+00:09:02.589 --> 00:09:06.789
+Ansgar Dietrichs: Is that okay with everyone? I'll just wait for any protest?
+
+41
+00:09:12.769 --> 00:09:26.889
+Ansgar Dietrichs: Okay, but then we do… then let's just not today touch the scoping discussion itself, but we do have a few EAP clarification requests, or otherwise kind of just topics around the EAPs that came up, four in total.
+
+42
+00:09:27.079 --> 00:09:30.509
+Ansgar Dietrichs: I'll just go through them one by one. So the first one was…
+
+43
+00:09:30.639 --> 00:09:40.769
+Ansgar Dietrichs: on the ERP7778, lock us accounting without refunds, there is… A request for clarifications…
+
+44
+00:09:40.999 --> 00:09:45.519
+Ansgar Dietrichs: On cumulative gas used, gas used for paying, gas used for block limit.
+
+45
+00:09:45.729 --> 00:09:47.579
+Ansgar Dietrichs: I think the comment…
+
+46
+00:09:48.459 --> 00:09:54.119
+Ansgar Dietrichs: Was by Andrew, on the issue. Is Andrew, are you on the call, or Tony, do you have…
+
+47
+00:09:55.009 --> 00:09:56.029
+Ansgar Dietrichs: Context on this?
+
+48
+00:09:57.240 --> 00:09:58.850
+Andrew Ashikhmin: Yeah, I'm on the call.
+
+49
+00:10:00.210 --> 00:10:05.400
+Andrew Ashikhmin: Basically, as I wrote on Discord, At least,
+
+50
+00:10:05.530 --> 00:10:10.989
+Andrew Ashikhmin: So, is it 7778 or 80-22?
+
+51
+00:10:11.270 --> 00:10:12.750
+Ansgar Dietrichs: Mayor 7778.
+
+52
+00:10:13.190 --> 00:10:17.760
+Andrew Ashikhmin: Yeah, okay, so… Yeah, at least an Aragon…
+
+53
+00:10:18.200 --> 00:10:33.929
+Andrew Ashikhmin: The assumption that the cumulative gas used in receipts actually corresponds to block gas limit counting is in so many places that it will be very difficult to change it.
+
+54
+00:10:34.220 --> 00:10:37.709
+Andrew Ashikhmin: So I suggest to keep that, that assumption.
+
+55
+00:10:38.240 --> 00:10:44.359
+Andrew Ashikhmin: Otherwise, yeah, it will be a massive change, and very bug-prone.
+
+56
+00:10:45.450 --> 00:10:53.050
+Andrew Ashikhmin: So that's a change that I proposed to the spec, and there is also a clarification needed
+
+57
+00:10:53.190 --> 00:11:01.400
+Andrew Ashikhmin: Because it underspecies the overplay between, 77-78 and,
+
+58
+00:11:02.100 --> 00:11:10.149
+Andrew Ashikhmin: 76, 23, but I think, yeah, maybe Tony can comment on that.
+
+59
+00:11:12.180 --> 00:11:12.510
+Ansgar Dietrichs: Tony?
+
+60
+00:11:12.510 --> 00:11:15.679
+Toni Wahrstätter: That's a good point. I actually, I actually had a PR
+
+61
+00:11:16.030 --> 00:11:21.080
+Toni Wahrstätter: Today, so this is something we clarified today in the execution specs.
+
+62
+00:11:21.840 --> 00:11:28.270
+Toni Wahrstätter: And… just to… to ask you, Andrew, you were saying you want the…
+
+63
+00:11:30.440 --> 00:11:38.800
+Toni Wahrstätter: The block gas accounting should include the transaction costs before the refunds, after the refunds, sorry. So you want the receipts to include
+
+64
+00:11:38.910 --> 00:11:43.040
+Toni Wahrstätter: The gas used after the refunds, am I correct here?
+
+65
+00:11:44.160 --> 00:11:50.399
+Andrew Ashikhmin: No, no, no, so… The, it should be, like…
+
+66
+00:11:50.790 --> 00:11:57.080
+Andrew Ashikhmin: Okay, so in 7778, you have this, this,
+
+67
+00:11:57.230 --> 00:12:06.319
+Andrew Ashikhmin: Gas used for block accounting, right? Number 2, which… which does not contain refunds, right?
+
+68
+00:12:06.590 --> 00:12:15.680
+Andrew Ashikhmin: So, I want cumulative gas used in receipts to be consistent with, with block gas accounting, not user gas costs.
+
+69
+00:12:16.730 --> 00:12:23.320
+Toni Wahrstätter: Okay, yeah, this is… this is exactly what we clarified in the last PR, so it should be fine now.
+
+70
+00:12:23.320 --> 00:12:25.669
+Andrew Ashikhmin: Please, take a look and let me know.
+
+71
+00:12:26.020 --> 00:12:31.660
+Toni Wahrstätter: Because previously it said the receipts should include the gas used
+
+72
+00:12:31.840 --> 00:12:38.820
+Toni Wahrstätter: the gas used after the refunds, but the receipts only include the cumulative gas used. So the question is.
+
+73
+00:12:39.090 --> 00:12:45.669
+Toni Wahrstätter: What do we want to add to the cumulative gaseous? Should we add the gaseous pre-refund or after refund?
+
+74
+00:12:45.990 --> 00:12:46.610
+Toni Wahrstätter: And…
+
+75
+00:12:46.610 --> 00:12:48.960
+Andrew Ashikhmin: Do we need to use it to edit?
+
+76
+00:12:51.140 --> 00:12:55.600
+Toni Wahrstätter: So it makes sense to, add the… gas used,
+
+77
+00:12:56.360 --> 00:13:01.939
+Toni Wahrstätter: Pre-refund in order such that we can use the cumulative gas used to enforce the block gas limit.
+
+78
+00:13:03.000 --> 00:13:14.210
+Andrew Ashikhmin: Yeah, I don't know, I don't know whether we need to add the gas used before refund, maybe it's useful, but I guess if there is no big ask for it, we can just skip it.
+
+79
+00:13:15.000 --> 00:13:16.119
+Andrew Ashikhmin: But I don't know.
+
+80
+00:13:18.540 --> 00:13:25.299
+Ansgar Dietrichs: Okay, is this something that, then, beyond this, we can take offline, or would we have to make a decision here further today?
+
+81
+00:13:25.720 --> 00:13:35.049
+Toni Wahrstätter: No, I think we can take it async. Let's have a chat under the PR I posted. I think that's the best place where we can discuss that further.
+
+82
+00:13:38.560 --> 00:13:48.090
+Ansgar Dietrichs: Sounds good. Then, I'll move to the next EIP. That is, EIP 8024, so the swap and dupe and exchange opcodes.
+
+83
+00:13:48.240 --> 00:13:52.210
+Ansgar Dietrichs: There was also an…
+
+84
+00:13:52.590 --> 00:14:01.919
+Ansgar Dietrichs: a comment by Andrew, about, clarification, basically what happens if the code ends, right, right before an,
+
+85
+00:14:02.060 --> 00:14:06.289
+Ansgar Dietrichs: immediate operand. And then there was also separately from…
+
+86
+00:14:06.590 --> 00:14:15.730
+Ansgar Dietrichs: drag on a proposal to potentially simplify the EIP, so,
+
+87
+00:14:16.210 --> 00:14:21.160
+Ansgar Dietrichs: Yeah, Andrew, do you want to give a comment on a clarification on your question first?
+
+88
+00:14:22.520 --> 00:14:34.900
+Andrew Ashikhmin: Yes, so the, this EIP was, underspecified. I looked at the implementation in GAS, and there it treated that case when, when,
+
+89
+00:14:35.260 --> 00:14:40.999
+Andrew Ashikhmin: The immediate operand was on the code's end as an error.
+
+90
+00:14:41.380 --> 00:14:53.040
+Andrew Ashikhmin: And it's not what push 1 does, so my suggestion is to do it consistently with push 1. I treat the value of the operand as 0.
+
+91
+00:14:53.300 --> 00:14:59.110
+Andrew Ashikhmin: I mean, I don't care much. I just have a slight preference for com…
+
+92
+00:14:59.490 --> 00:15:09.330
+Andrew Ashikhmin: for consistency, but in any case, it should be specified in the EIP. I think there is a PR to the EIP to…
+
+93
+00:15:09.480 --> 00:15:12.710
+Andrew Ashikhmin: Treat the operand value as zero in such case.
+
+94
+00:15:14.730 --> 00:15:21.539
+Ansgar Dietrichs: Okay, do we have anyone on the call? I see one raised hand. Is this… is this about this topic, or…
+
+95
+00:15:21.860 --> 00:15:22.930
+Ansgar Dietrichs: EIP question?
+
+96
+00:15:23.950 --> 00:15:35.189
+frangio: Yeah, about this. So just, I want to give some context. So first on the… on the zero padding, yeah, this is the PR. I'm already changing it to be, like, push, which makes sense.
+
+97
+00:15:35.410 --> 00:15:43.900
+frangio: And on Dragon's question, the… there… the EIP currently…
+
+98
+00:15:44.830 --> 00:15:49.469
+frangio: So, in order to, to work with, Trump disk analysis.
+
+99
+00:15:50.210 --> 00:15:56.170
+frangio: The EIP is currently designed in a way that the immediate has to avoid using
+
+100
+00:15:56.460 --> 00:16:08.720
+frangio: the jump test opcode as a part of its immediate, or the push opcodes as a part of its immediate. And because this leaves a gap in the range available for the immediate.
+
+101
+00:16:09.470 --> 00:16:13.250
+frangio: There needs to be an encoding and decoding step, which…
+
+102
+00:16:13.360 --> 00:16:28.810
+frangio: is relatively simple, but also relatively complex, and so Dragon's, suggestion is to instead use, another approach which, adds, like, a… is encoded in a way that you go, like.
+
+103
+00:16:29.140 --> 00:16:47.919
+frangio: you put the swap-in opcode, and then you follow it by the push one opcode, and only then you put the immediate… but the push is not really an instruction, there is just part of the broader instruction encoding. All of this is explained in the Ethereum Magicians post that I shared on the chat. There are the two options there.
+
+104
+00:16:48.360 --> 00:16:58.870
+frangio: And I don't think anybody has very strong opinions about what to choose, so we just have to make a choice, and so it would be good to know what others
+
+105
+00:16:59.130 --> 00:17:05.460
+frangio: feel here is, the best choice. I will just say, I think the trade-off is
+
+106
+00:17:06.180 --> 00:17:19.159
+frangio: Slightly or marginally more compute versus, being less efficient in terms of bytecode size, obviously, because one is a 2-byte encoding versus a 3-byte encoding.
+
+107
+00:17:19.160 --> 00:17:29.660
+frangio: But, to be frank, this is also an instruction that is not going to be extremely frequent, so it's, you can also argue that the bytecode size impact is not going to be so much.
+
+108
+00:17:31.590 --> 00:17:33.119
+Ansgar Dietrichs: And, yeah, try them.
+
+109
+00:17:34.230 --> 00:17:41.979
+Dragan Rakita: The only stance that we have strong… that we have strong stance is DCIP needs to be included.
+
+110
+00:17:42.200 --> 00:17:54.980
+Dragan Rakita: So, first or second version, it doesn't matter a lot. In my opinion, second version, having opcode, push to, and bytes is a lot more simple, and something that we could like to.
+
+111
+00:17:55.990 --> 00:18:02.679
+Dragan Rakita: But yeah, that's… this… this was not even my idea, this was, like, idea for, like, 2 years ago, and just bring… bringing it back.
+
+112
+00:18:05.290 --> 00:18:20.810
+Ansgar Dietrichs: I see. And, I would assume that the timing on this decision, like, that it's relatively urgent to decide this, given that this is potentially, or, like, for now, scheduled for DevNet 2, and I guess it would not be ideal if we implement it one way and then have to implement it a different way for DevNet 3 and forward.
+
+113
+00:18:21.150 --> 00:18:22.270
+Ansgar Dietrichs: So…
+
+114
+00:18:22.270 --> 00:18:29.030
+Dragan Rakita: I would like… I would like to hear others just commenting on that now, or as async.
+
+115
+00:18:29.440 --> 00:18:35.940
+Dragan Rakita: It should be, like, simplest decision, but we need, like, input from other clients, not just threats.
+
+116
+00:18:38.380 --> 00:18:46.149
+Ansgar Dietrichs: That's good. Do we have any clients right now on the call that have a take on this? Yes? Can you?
+
+117
+00:18:47.370 --> 00:18:55.639
+Daniel Lehrner (Besu): Yeah, so I implemented it on the basis side, how it is specified in the EIP right now, and I mean, the logic is okay.
+
+118
+00:18:55.860 --> 00:18:58.420
+Daniel Lehrner (Besu): So, I mean, this decoding logic is a bit…
+
+119
+00:18:58.920 --> 00:19:02.930
+Daniel Lehrner (Besu): unusual, but I don't think it's that complex.
+
+120
+00:19:03.300 --> 00:19:08.319
+Daniel Lehrner (Besu): But if we have to change it, I don't think there's any issue from our side.
+
+121
+00:19:08.510 --> 00:19:14.370
+Daniel Lehrner (Besu): So, as long… as long as the EIP goes in, we are fine. So, we don't have any strong opinions, I would say.
+
+122
+00:19:18.070 --> 00:19:18.900
+Ansgar Dietrichs: Makes sense.
+
+123
+00:19:19.100 --> 00:19:20.450
+Ansgar Dietrichs: Anyone else?
+
+124
+00:19:25.600 --> 00:19:29.059
+Ansgar Dietrichs: Otherwise, maybe question for,
+
+125
+00:19:30.340 --> 00:19:40.239
+Ansgar Dietrichs: Dragan and Francesco, where would the best place be for people to, like, come and comment to make that decision, say, in the next days?
+
+126
+00:19:41.320 --> 00:19:46.599
+Ansgar Dietrichs: Asynchronously? Is this the Discord? Is this the Ether Magicians? Like, where would be the best place?
+
+127
+00:19:49.380 --> 00:19:51.250
+Ansgar Dietrichs: Yeah, Ben, maybe before?
+
+128
+00:19:52.120 --> 00:19:57.529
+Ben Adams: So, one of them changes jump desk analysis, and the other doesn't, is that correct?
+
+129
+00:19:58.240 --> 00:19:59.889
+frangio: No, none of them do.
+
+130
+00:20:02.550 --> 00:20:06.259
+Dragan Rakita: Depends how you do jump test analysis.
+
+131
+00:20:06.400 --> 00:20:14.080
+Dragan Rakita: Depends if you're basically asking, if you're searching job destination, or you're searching the immediate.
+
+132
+00:20:14.310 --> 00:20:17.639
+Dragan Rakita: I didn't get, thoughts a little bit different.
+
+133
+00:20:32.760 --> 00:20:33.370
+Ansgar Dietrichs: Yeah.
+
+134
+00:20:33.970 --> 00:20:40.430
+Ansgar Dietrichs: So then, I guess, back to the question of where the best forum is for the decision?
+
+135
+00:20:47.300 --> 00:20:55.369
+frangio: Wherever people want to leave their opinion, I'm monitoring Discord, but also the Ethereum Magicians forum from the EIP works.
+
+136
+00:20:57.310 --> 00:21:07.349
+Ansgar Dietrichs: And would it be reasonable to say that a decision, at least for, like, DevNet 2, would be made by Monday, Monday ACDT? Because I guess that would be nice for people implementing this?
+
+137
+00:21:11.590 --> 00:21:17.309
+frangio: Yeah, I think that makes sense, and maybe if no decision is made, we just go with the current one.
+
+138
+00:21:19.410 --> 00:21:28.299
+Ansgar Dietrichs: Sounds good. So then, I guess, ask for our clients, do have a look, and if you have an opinion, or I guess even if you're fine with either, then just leave that as a comment.
+
+139
+00:21:28.420 --> 00:21:30.590
+Ansgar Dietrichs: Somewhere where the comment can easily be found.
+
+140
+00:21:31.800 --> 00:21:43.010
+Ansgar Dietrichs: Okay, thank you. Then, I'll move on again. We have quite a bit to get through. The next topic, was… the last EIP clarification was…
+
+141
+00:21:43.140 --> 00:22:00.149
+Ansgar Dietrichs: EIP7708, so this is ETH transfers emitting a log. My understanding is that there is a pending PR and some open questions. I'm not sure if the questions are answered in the PR, or, like, they're specifically not yet answered in the PR, but there was a comment
+
+142
+00:22:02.210 --> 00:22:10.069
+Ansgar Dietrichs: by Spencer, on… on the agenda. Are you on the call, or does anyone else have context on that, Pierre?
+
+143
+00:22:11.070 --> 00:22:16.820
+spencer-tb: Hey, yeah, I, yeah, just wanted to give that PR some more love,
+
+144
+00:22:17.090 --> 00:22:21.979
+spencer-tb: I think, it feels like everyone's in agreement, but I think some more eyes just to…
+
+145
+00:22:22.160 --> 00:22:26.630
+spencer-tb: Determine if we're happy with the log address and the first topic value.
+
+146
+00:22:26.750 --> 00:22:30.410
+spencer-tb: And then also, if he wants to include… The payment logs.
+
+147
+00:22:30.560 --> 00:22:32.359
+spencer-tb: On top of these transfer logs.
+
+148
+00:22:32.750 --> 00:22:38.189
+spencer-tb: And more of a, can we get this motion to respect sooner rather than later?
+
+149
+00:22:38.520 --> 00:22:39.730
+spencer-tb: clarification.
+
+150
+00:22:45.890 --> 00:22:47.070
+Ansgar Dietrichs: Sounds good.
+
+151
+00:22:47.730 --> 00:22:54.070
+spencer-tb: Definitely, I guess I'd also like to ask if we're going to finalize the scope for DevNet 2 next Monday.
+
+152
+00:22:54.500 --> 00:22:58.169
+spencer-tb: We're DevNet 2 scheduled on Wednesday, should we push?
+
+153
+00:22:58.520 --> 00:23:00.020
+spencer-tb: 7 at 2 forwards.
+
+154
+00:23:08.290 --> 00:23:14.959
+Ansgar Dietrichs: That's a reasonable question. Do we have… I'm not sure exactly who is in charge of demo coordination, like, do we have.
+
+155
+00:23:16.550 --> 00:23:18.439
+Stefan Starflinger: Sorry, I didn't catch that.
+
+156
+00:23:21.880 --> 00:23:22.550
+spencer-tb: It just feels…
+
+157
+00:23:22.550 --> 00:23:23.000
+Ansgar Dietrichs: And so what's.
+
+158
+00:23:23.000 --> 00:23:28.990
+spencer-tb: So, a general question, if we should push Devin at 2 forward, if we're going to finalize this group next Monday.
+
+159
+00:23:29.270 --> 00:23:35.539
+spencer-tb: Maybe, the 28th instead of the 21st? It gives us an extra…
+
+160
+00:23:35.930 --> 00:23:42.100
+Stefan Starflinger: Yeah, I think we can, see how far we are on Monday, and then decide on a date.
+
+161
+00:23:46.150 --> 00:23:55.660
+Daniel Lehrner (Besu): I think we don't even have the execution tests yet, no? I mean, before those aren't finished, we can't really start the definite.
+
+162
+00:23:55.780 --> 00:23:58.990
+Daniel Lehrner (Besu): Because we cannot properly test everything.
+
+163
+00:24:00.800 --> 00:24:05.440
+spencer-tb: Yeah, and I guess before we have the test out, we kind of need to finalize the specs.
+
+164
+00:24:06.000 --> 00:24:06.590
+Daniel Lehrner (Besu): Yeah.
+
+165
+00:24:13.560 --> 00:24:29.129
+Stefan Starflinger: Yeah, I think what would be good is just to get everything ready for DevNet 2, as far as we can. I think I will leave DevNet 1 running a little bit longer, so that we can still target that, because the testing setup there is already ready.
+
+166
+00:24:29.310 --> 00:24:37.940
+Stefan Starflinger: And we can do the benchmarking there, would be my suggestion, and then develop all the new EIPs on top of DevNet 2.
+
+167
+00:24:38.070 --> 00:24:44.969
+Stefan Starflinger: And try to get everything ready there, and we should finalize everything on Monday, what exactly we're going to, that's not too.
+
+168
+00:24:49.720 --> 00:24:50.360
+Ansgar Dietrichs: Sounds good.
+
+169
+00:24:50.720 --> 00:24:53.350
+Ansgar Dietrichs: So, is that a good place to leave it at for now?
+
+170
+00:24:54.050 --> 00:24:57.150
+Ansgar Dietrichs: And then come back on ACDT on Monday?
+
+171
+00:24:58.410 --> 00:24:59.609
+spencer-tb: Yeah, that's good.
+
+172
+00:25:02.550 --> 00:25:14.179
+Ansgar Dietrichs: Awesome, sounds good. Then, you know, also same thing on, like, the EAP that's been… sorry, the PR that's been mentioned since 2008, the ETH transfers one, yeah, clients that might have an opinion, haven't looked yet, do have a look.
+
+173
+00:25:14.400 --> 00:25:19.430
+Ansgar Dietrichs: And then, presumably on Monday, by Monday, this would be… finalized.
+
+174
+00:25:19.600 --> 00:25:29.560
+Ansgar Dietrichs: Okay. Then, any last comments? Anyone that still wanted to bring anything up regarding the DevNets? Otherwise, we would move on to the Glamstam PFI decisions, the outstanding ones?
+
+175
+00:25:36.900 --> 00:25:40.960
+Ansgar Dietrichs: Okay, then let's move on.
+
+176
+00:25:41.930 --> 00:26:01.069
+Ansgar Dietrichs: we have, only a few EMPs left, I listed them all, with Nixu's help, and Nixu listed them all in the, agenda for the call, but we also still have this document, where they're categorized in different categories. I'm not sure there was some issue with the
+
+177
+00:26:01.670 --> 00:26:06.969
+Ansgar Dietrichs: website earlier today? Is it currently working? Perfect, okay. Thank you, thank you very much, Josh.
+
+178
+00:26:07.260 --> 00:26:08.380
+Ansgar Dietrichs: M…
+
+179
+00:26:09.280 --> 00:26:17.839
+Ansgar Dietrichs: Okay, so we… then we can, we can go through them. Specifically, one ERP that we've been postponing for a while now, that is ready now for… for a…
+
+180
+00:26:18.130 --> 00:26:21.790
+Ansgar Dietrichs: Decision is EIP 8037.
+
+181
+00:26:22.090 --> 00:26:26.529
+Ansgar Dietrichs: So you can see it there on the state growth section, so specifically, that's basically the…
+
+182
+00:26:26.650 --> 00:26:36.849
+Ansgar Dietrichs: question of how, like, the choice of approach for the repricings of state growth, specifically. And, I think Marius had a brief presentation prepared for
+
+183
+00:26:37.300 --> 00:26:39.300
+Ansgar Dietrichs: For this, Marius, are you on the call?
+
+184
+00:26:39.970 --> 00:26:44.409
+Ansgar Dietrichs: Actually, then, we would have to switch screen sharing, actually.
+
+185
+00:26:46.390 --> 00:26:49.049
+Marius van der Wijden: Can you guys hear me alright?
+
+186
+00:26:49.250 --> 00:26:50.930
+Ansgar Dietrichs: A bit quiet, but we can hear you.
+
+187
+00:26:51.520 --> 00:26:53.159
+Marius van der Wijden: Okay, I tried to scream.
+
+188
+00:26:54.560 --> 00:26:56.430
+Marius van der Wijden: Yes, 1837…
+
+189
+00:27:00.250 --> 00:27:03.379
+Trent: You're very quiet, if you can move any closer.
+
+190
+00:27:03.680 --> 00:27:05.279
+Trent: To the mic, or something.
+
+191
+00:27:05.780 --> 00:27:11.260
+Marius van der Wijden: I'm as close to the mic as I can be. I'll just try to scream.
+
+192
+00:27:11.860 --> 00:27:20.709
+Marius van der Wijden: Basically, 1837, the state creation gas cost increase. It has multiple different, goals.
+
+193
+00:27:21.130 --> 00:27:23.069
+Marius van der Wijden: makes state growth,
+
+194
+00:27:23.310 --> 00:27:31.670
+Marius van der Wijden: Dependent on the gas limit, so that whenever we increase the gas limit, we also increase the cost for creating new state.
+
+195
+00:27:31.850 --> 00:27:36.650
+Marius van der Wijden: And this is very important, because if we, like, 10x the gas limit…
+
+196
+00:27:36.950 --> 00:27:47.450
+Marius van der Wijden: We also want to 10X how… we don't want to 10x the amount of state that we are… that can be created in this… in this gas limit. We want the state
+
+197
+00:27:47.900 --> 00:27:53.060
+Marius van der Wijden: Increase to be kind of constant, and we want a target of
+
+198
+00:27:53.420 --> 00:27:57.959
+Marius van der Wijden: Roughly 100GB per year, and this can be, changed.
+
+199
+00:27:59.240 --> 00:28:15.079
+Marius van der Wijden: for this to happen, we need to measure state growth on a different axis than normal computation, and another thing that this EIP wants to do is wants to harmonize state creation across all operations. As you can see here, it is very different
+
+200
+00:28:15.710 --> 00:28:22.149
+Marius van der Wijden: Like, creating one byte of state is very different across the different operations that we have.
+
+201
+00:28:22.840 --> 00:28:26.479
+Marius van der Wijden: So, the block gas limit.
+
+202
+00:28:26.590 --> 00:28:32.660
+Marius van der Wijden: What we want to do is make the state growth dependent on the block gas limit,
+
+203
+00:28:33.230 --> 00:28:37.099
+Marius van der Wijden: And in the last line, you see a formula for this.
+
+204
+00:28:37.320 --> 00:28:42.080
+Marius van der Wijden: And basically, small changes in the gas limit are smoothed out.
+
+205
+00:28:42.750 --> 00:28:47.719
+Marius van der Wijden: Otherwise, every time we would increase the gas limit, this would require repricings.
+
+206
+00:28:48.240 --> 00:28:54.160
+Marius van der Wijden: What this means, though, is that the intrinsic gas is now dependent on the block gas limit.
+
+207
+00:28:54.560 --> 00:29:05.839
+Marius van der Wijden: This means the transaction pools will need to, change slightly, so every time this cost per byte changes, we have… we would have to recheck the intrinsic gas,
+
+208
+00:29:05.940 --> 00:29:09.589
+Marius van der Wijden: To see if these… if the transaction is still occludable.
+
+209
+00:29:09.870 --> 00:29:15.639
+Marius van der Wijden: But, there might be a different, like, we might, change this formula a bit.
+
+210
+00:29:15.780 --> 00:29:24.589
+Marius van der Wijden: To smooth out the gas limit changes even more. So, you would only need to recheck if the gas limit changes pretty drastically.
+
+211
+00:29:25.250 --> 00:29:33.390
+Marius van der Wijden: And in addition to this, we will also need to introduce multidimensional metering.
+
+212
+00:29:33.530 --> 00:29:35.930
+Marius van der Wijden: But this is not multidimensional.
+
+213
+00:29:36.150 --> 00:29:44.070
+Marius van der Wijden: gas. This is very different, but we would, need to measure the state growth and a different exist than compute.
+
+214
+00:29:44.670 --> 00:29:49.129
+Marius van der Wijden: And, so we can adjust them independently.
+
+215
+00:29:49.510 --> 00:30:01.549
+Marius van der Wijden: If we didn't do this, if we wanted to curb the state growth, that would, have the result that big contracts would be impossible to, to be created in the 60…
+
+216
+00:30:01.840 --> 00:30:04.319
+Marius van der Wijden: megacity, transaction limit.
+
+217
+00:30:04.570 --> 00:30:08.410
+Marius van der Wijden: So let's… Go through the concrete implementation.
+
+218
+00:30:08.550 --> 00:30:16.250
+Marius van der Wijden: The gas… In this… in this new world is the minimum of the gas limit and 60 million.
+
+219
+00:30:16.270 --> 00:30:30.710
+Marius van der Wijden: gas. The gas limit can be much bigger than 60 million gas. Every… everything that is bigger than the 60 million gas is added to the state gas budget. And now, if you create state…
+
+220
+00:30:31.090 --> 00:30:36.730
+Marius van der Wijden: You first check the state gas budget, and only the normal gas later.
+
+221
+00:30:36.960 --> 00:30:41.180
+Marius van der Wijden: And then all of the normal operations will charge to gas.
+
+222
+00:30:41.340 --> 00:30:52.130
+Marius van der Wijden: As usual, and that means that, at maximum, a transaction will execute 16 megas of burst resources.
+
+223
+00:30:52.460 --> 00:30:59.089
+Marius van der Wijden: as much as it pays for state growth. And, this also means off-heat gas will just work normally.
+
+224
+00:30:59.570 --> 00:31:03.859
+Marius van der Wijden: Why is this important?
+
+225
+00:31:04.010 --> 00:31:10.600
+Marius van der Wijden: The burst resources need to still be unaffected, so we can have the 16 megas gas limit.
+
+226
+00:31:11.760 --> 00:31:12.950
+Marius van der Wijden: Not for the execution.
+
+227
+00:31:14.830 --> 00:31:19.619
+Marius van der Wijden: So, result of this is all state operations will be split into
+
+228
+00:31:20.700 --> 00:31:31.529
+Marius van der Wijden: gas costs and state gas costs. So, for example, the S-store operation now charges 2,100, the cold S-load cost to gas.
+
+229
+00:31:31.740 --> 00:31:37.539
+Marius van der Wijden: And this cost, which is dependent on the gas limit, to storage gas.
+
+230
+00:31:38.700 --> 00:31:39.450
+Marius van der Wijden: So…
+
+231
+00:31:40.020 --> 00:31:53.330
+Marius van der Wijden: Why do we need this? We need this, otherwise we cannot increase the gas limit, because every time we would increase the gas limit, we would need to reprise all of the storage operations. Measuring the state growth separately allows us to adjust the limits.
+
+232
+00:31:53.540 --> 00:31:55.069
+Marius van der Wijden: And,
+
+233
+00:31:55.230 --> 00:32:03.259
+Marius van der Wijden: We allow to limit execution to $16 million, and unlocking higher state growth by making state growth itself more expensive.
+
+234
+00:32:03.450 --> 00:32:11.710
+Marius van der Wijden: And the changes are pretty limited to the EVM. I've implemented this yesterday and today in roughly 4 hours combined.
+
+235
+00:32:12.150 --> 00:32:21.470
+Marius van der Wijden: The… the… The heavy lifting, Or, like… people's,
+
+236
+00:32:21.700 --> 00:32:27.209
+Marius van der Wijden: There will be changes to the way we test, so testing is a bit affected, and block
+
+237
+00:32:28.040 --> 00:32:30.570
+Marius van der Wijden: Creation, block building is a bit affected.
+
+238
+00:32:30.840 --> 00:32:33.620
+Marius van der Wijden: But, all of those changes are…
+
+239
+00:32:34.370 --> 00:32:38.789
+Marius van der Wijden: Quite small for… compared to the gain that we can have with this.
+
+240
+00:32:39.580 --> 00:32:42.820
+Marius van der Wijden: In, in, in, in, in the amount of,
+
+241
+00:32:42.920 --> 00:32:49.490
+Marius van der Wijden: And the amount of compute, increase that we can do while keeping the state basically on a separate axis.
+
+242
+00:32:50.320 --> 00:32:51.510
+Marius van der Wijden: Yes, that's it.
+
+243
+00:32:54.580 --> 00:32:55.550
+Marius van der Wijden: Questions?
+
+244
+00:32:59.590 --> 00:33:00.230
+Andrew Ashikhmin: None.
+
+245
+00:33:00.310 --> 00:33:20.180
+Andrew Ashikhmin: Well, so, my initial impression is that it's hacky, and we should go for proper multidimensional gas. And, like, if we try to squeeze it in, into Glamstadam, we'll repeat the same mistake as we did with Pectra.
+
+246
+00:33:20.290 --> 00:33:31.019
+Andrew Ashikhmin: like, it's… we were too greedy, and we had to split the hard fork in two. So, to me, like, a proper version of this, without the… all the hacks.
+
+247
+00:33:31.040 --> 00:33:48.139
+Andrew Ashikhmin: like, proper version of introducing a new dimension to the gas. It sounds like a good headliner for the next hard fork, but yeah, I just, again, I'm just seeing, like, this is the same Pectra story repeating again. I, like, we implemented it in 4 hours.
+
+248
+00:33:48.390 --> 00:33:57.850
+Andrew Ashikhmin: I think it's optimistic and heroic, and there will be implications that are far-fetched.
+
+249
+00:34:00.380 --> 00:34:06.259
+Maria Silva: I'm sorry, Andrew, can you explain a bit more why you think this is hacky? Because this seems to be to be…
+
+250
+00:34:06.790 --> 00:34:16.029
+Maria Silva: Very compatible with, like… The full multidimensional metering, where you just meter every resource independently.
+
+251
+00:34:17.219 --> 00:34:30.499
+Andrew Ashikhmin: Then maybe we should then do it. We already have blob gas, right? So why don't we have… why don't we do it properly, and have state gas and so on?
+
+252
+00:34:30.969 --> 00:34:44.149
+Andrew Ashikhmin: Rather than, like, pretend that it's not introducing a new dimension, but, like, kind of is introducing and is not, that just sounds to me a bit, strange and inconsistent.
+
+253
+00:34:44.960 --> 00:34:51.399
+Maria Silva: I would say the only difference here is that BlockCas has its own fee, and we are not
+
+254
+00:34:51.670 --> 00:34:55.940
+Maria Silva: yet doing the independent fees, right? Like, the state.
+
+255
+00:34:55.949 --> 00:34:56.359
+Andrew Ashikhmin: Yeah.
+
+256
+00:34:56.360 --> 00:35:07.789
+Maria Silva: creation gas is still charged on the main fee, but we are introducing an internal counter that is metering state creation costs independently. So I don't see how
+
+257
+00:35:08.270 --> 00:35:09.700
+Maria Silva: That's different.
+
+258
+00:35:10.450 --> 00:35:14.449
+Andrew Ashikhmin: But maybe we should introduce, like, an independent fee.
+
+259
+00:35:15.720 --> 00:35:16.809
+Maria Silva: Right, but so…
+
+260
+00:35:17.890 --> 00:35:28.570
+Maria Silva: that is a bigger change than just doing metering. So it's… you need metering to do the pricing, right, to update the fees, so you would have to do metering anyway.
+
+261
+00:35:29.000 --> 00:35:38.089
+Maria Silva: But just doing metering is simpler and already gives us big benefits. But if you wanted to do, for instance, multidimensional pricing in H-star.
+
+262
+00:35:38.250 --> 00:35:49.229
+Maria Silva: We still could do it and use the stuff we are implementing now in multidimensional metering. So they are completely compatible, it's just we don't need to do them all in the same step.
+
+263
+00:35:49.950 --> 00:35:55.340
+Maria Silva: And just doing metering already gives us huge cadence in scalability.
+
+264
+00:35:56.530 --> 00:36:14.720
+Andrew Ashikhmin: Okay, maybe. Just, okay, my initial impression is just we are trying, like, for tactical reasons, we are trying to… we are introducing unnecessary complexity to the protocol instead of a more, kind of elegant and comprehensive solution. But again, it's my first impression. I might be wrong.
+
+265
+00:36:15.880 --> 00:36:26.430
+Ansgar Dietrichs: Yeah, one… maybe from my… one comment from my side is just that I think it's important to keep in mind… I, in principle, agree with some of these worries about lump sum scope. The problem is just that
+
+266
+00:36:26.440 --> 00:36:39.519
+Ansgar Dietrichs: really the vast majority of Glamsterdam ERPs that we have, including both headliners, are focused on enabling a higher gas limit, and I think we are on track to actually being able to achieve quite a bit of a gas limit increase. I'm very excited about that.
+
+267
+00:36:39.720 --> 00:36:52.140
+Ansgar Dietrichs: But all of this is basically blocked if we do not have any adjustment to limiting state growth. I think my understanding is currently, as of, like, today, we're basically at a roughly 100GB state growth rate.
+
+268
+00:36:52.410 --> 00:37:10.879
+Ansgar Dietrichs: annualized, and that is without any increases. We might even be able to get a little bit of a further gas increase before Amsterdam, so basically we would arrive at Amsterdam and then be blocked from actually making use of any of the changes we ship, if we don't have anything to address the, the state growth concerns.
+
+269
+00:37:11.280 --> 00:37:20.899
+Ansgar Dietrichs: So while I, yeah, I think the concerns are very valid, but I do think, yeah, we need to discuss, like, if we do not want to go with this proposed change, what else are we doing about state growth?
+
+270
+00:37:21.110 --> 00:37:24.489
+Ansgar Dietrichs: to actually be able to use all of the other changes that are coming with Bamsadam.
+
+271
+00:37:31.100 --> 00:37:33.909
+Marius van der Wijden: So, I… I was also kind of…
+
+272
+00:37:34.030 --> 00:37:37.110
+Marius van der Wijden: against this change when I… when I started?
+
+273
+00:37:37.740 --> 00:37:38.530
+Marius van der Wijden: And,
+
+274
+00:37:38.870 --> 00:37:49.150
+Marius van der Wijden: implementation, I kind of realized that this is really not such a big deal, and it seems to me to be, like, the optimal solution, given the trade-offs that we have.
+
+275
+00:37:55.550 --> 00:37:56.460
+Ansgar Dietrichs: them down.
+
+276
+00:38:06.820 --> 00:38:08.920
+Ansgar Dietrichs: You had your hand raised?
+
+277
+00:38:09.070 --> 00:38:09.850
+Ansgar Dietrichs: On off?
+
+278
+00:38:16.920 --> 00:38:23.750
+Ansgar Dietrichs: Okay, right. I do think it's not ideal, of course, this kind of the specific
+
+279
+00:38:24.700 --> 00:38:30.270
+Ansgar Dietrichs: proposed, shape is coming on the call, where we ideally would already want to make the decision.
+
+280
+00:38:30.800 --> 00:38:38.639
+Ansgar Dietrichs: At the same time, I would also be very sad if we leave today's call while still not having finalized at least the CFI decisions.
+
+281
+00:38:40.670 --> 00:38:51.009
+Ansgar Dietrichs: how do clients overall feel about this? Do we feel ready? Do we feel in… that we have the information to make this decision now? Where… what are people leaning towards? Maybe I can just call on
+
+282
+00:38:51.070 --> 00:39:01.770
+Ansgar Dietrichs: I mean, I'm not sure, Marius, how much you've coordinated with the rest of GATH. Are you… how much… are you speaking for the GATT team versus just your own personal opinion? Do we have anyone else from the GATH team on the call that could comment as well?
+
+283
+00:39:06.710 --> 00:39:18.709
+Felix (Geth): Yeah, I can give a quick comment. So, I do think that the direction laid out is, like, a good one. I vastly prefer this solution to actual multidimensional gas, because I always felt that the…
+
+284
+00:39:19.060 --> 00:39:27.629
+Felix (Geth): True multi-dimensional gas accounting has a lot of challenges that we were never really able to resolve in theory, so this seems to be
+
+285
+00:39:27.940 --> 00:39:30.199
+Felix (Geth): Something that is actually possible.
+
+286
+00:39:30.370 --> 00:39:34.599
+Felix (Geth): And so, yeah, I would say… I could get behind this.
+
+287
+00:39:38.690 --> 00:39:42.239
+Ansgar Dietrichs: We have anyone from… Nethermind on the call?
+
+288
+00:39:43.400 --> 00:39:44.390
+Ansgar Dietrichs: Dennis?
+
+289
+00:39:45.020 --> 00:39:46.159
+Ansgar Dietrichs: A view on this?
+
+290
+00:39:52.040 --> 00:39:58.149
+marek: So, from my side, I really like, gas metering proposed by Maria.
+
+291
+00:40:02.600 --> 00:40:03.450
+Ansgar Dietrichs: Do you prefer…
+
+292
+00:40:03.930 --> 00:40:13.899
+Ansgar Dietrichs: talking about the full gas metering that, I think we decided to, for now, GFI for Glamsterdam, or are you talking about this, like, smaller version?
+
+293
+00:40:14.360 --> 00:40:15.740
+Ansgar Dietrichs: Maris just presented.
+
+294
+00:40:16.050 --> 00:40:17.370
+marek: Smaller version.
+
+295
+00:40:20.760 --> 00:40:25.050
+Ansgar Dietrichs: I see. Okay. From the baseu side, I think we just…
+
+296
+00:40:25.480 --> 00:40:27.490
+Ansgar Dietrichs: At an attempt at a hand raised?
+
+297
+00:40:30.650 --> 00:40:41.230
+Justin Florentine (Besu): Yeah, I think, we might need a little bit of time. I think we're a little torn between the difference between the multidimensional… a full-blown multidimensional approach and metering, only because…
+
+298
+00:40:41.370 --> 00:40:47.589
+Justin Florentine (Besu): You know, when things go in, they don't come out, right? So we need to think about that.
+
+299
+00:40:51.080 --> 00:40:56.170
+Ansgar Dietrichs: And does that specifically mean, that you'd prefer to not make the decision today?
+
+300
+00:40:59.950 --> 00:41:04.180
+Justin Florentine (Besu): I think that means we are unprepared to contribute to the decision today.
+
+301
+00:41:06.390 --> 00:41:09.510
+Carl Beekhuizen: Maybe, yeah, I mean, I think,
+
+302
+00:41:10.080 --> 00:41:14.859
+Carl Beekhuizen: to make, kind of, the decision clearer, I would, like, just propose what the, yeah.
+
+303
+00:41:14.860 --> 00:41:39.530
+Carl Beekhuizen: what possible, alternative is, and it would be, basically a bare-bones EIP that increases the, gas, like, the state creation costs. Probably for contracts, the number I had was from $200,000 going to $300, for new storage slots from 20,000 to, 80,000, and for creating new accounts from, 25,000 to $100,000.
+
+304
+00:41:39.910 --> 00:41:54.760
+Carl Beekhuizen: And, the, idea is basically that, like, this would go in, and, this would be, either sufficient or somewhat, or a little bit uncomfortable for the next year, but then,
+
+305
+00:41:54.760 --> 00:42:02.679
+Carl Beekhuizen: So I think, like, if you want maximum simplicity for Glanster Dam, like, as you crank that goal up to infinity, like, you basically approach having to do this.
+
+306
+00:42:02.700 --> 00:42:21.149
+Carl Beekhuizen: But, the long-term picture of this is, like, I think importance to think about, right? Which is that, like, keeping code mostly out of the increases, which is necessary to allow deployments within 16 million, is, something that, like.
+
+307
+00:42:21.250 --> 00:42:37.290
+Carl Beekhuizen: we'd eventually have to fix, and in general, the… it feels like the way that things are growing is that, like, the ratio between ex… how much we can scale execution and how much we can scale states dies, it would…
+
+308
+00:42:37.290 --> 00:42:49.450
+Carl Beekhuizen: it will, in the long-term future, possibly be a factor of 10, or even a factor of, like, 30 different from, what it was at the beginning. And so, like, basically, yeah, gas costs, would,
+
+309
+00:42:50.100 --> 00:43:01.970
+Carl Beekhuizen: have to change quite a bit, and and so, like, a gas policy increase ultimately would likely kick the can down the road, and so, realistically, yeah, it would basically mean, you know, like, either…
+
+310
+00:43:02.040 --> 00:43:05.679
+Carl Beekhuizen: Multidimensional in something, eventually.
+
+311
+00:43:05.680 --> 00:43:23.640
+Carl Beekhuizen: Or it would mean that we, yeah, like, create a completely different facility for creating big contracts and, like, basically deprecate and break the existing functionality eventually, right? So, I think, like, that's the, like, basically the alternative path to, like, doing something like this now.
+
+312
+00:43:27.920 --> 00:43:30.759
+Ansgar Dietrichs: Right. And just to basically make that
+
+313
+00:43:31.150 --> 00:43:35.450
+Ansgar Dietrichs: So basically, like, for people who are maybe not super deep into this topic, so…
+
+314
+00:43:35.550 --> 00:43:51.869
+Ansgar Dietrichs: Yeah, the idea could be we basically, like, completely remove the multidimensional metering aspect of it, and then we either have a fixed repricing or a repricing that is still relative to the gas limit, but no kind of no separate tracking of the state creation gas and all these things. The main, kind of, like.
+
+315
+00:43:52.170 --> 00:44:11.789
+Ansgar Dietrichs: Downside there is that if we still want to allow for maximum size contract deployments within a 16 million transaction, we basically have a very sharp limit on how much we can increase the price for state… for contract deployments, and so it would mean that we end up in a world where contract deployments are basically, say, four times cheaper than all other ways of creating, state.
+
+316
+00:44:11.980 --> 00:44:21.999
+Ansgar Dietrichs: Which means if someone wants to, they can basically just, or if, say, for example, there's… yeah, there's some reason why average use case patterns on Ethereum
+
+317
+00:44:22.220 --> 00:44:24.369
+Ansgar Dietrichs: Switch more towards contract deployments.
+
+318
+00:44:24.540 --> 00:44:34.750
+Ansgar Dietrichs: state growth could be at a very high rate, for a couple months at least, until we get to a more proper solution in H-star. If we're willing to take that trade-off, that would be a simpler option.
+
+319
+00:44:42.360 --> 00:44:43.050
+Ansgar Dietrichs: Maria?
+
+320
+00:44:44.900 --> 00:44:51.590
+Maria Silva: Yeah, I just would like to add, like, this thing of doing, like, a proper solution
+
+321
+00:44:51.720 --> 00:45:00.740
+Maria Silva: on HTAR, I just want to clarify that, actually, it wouldn't be a very different proposal from what we have right now. I think
+
+322
+00:45:00.910 --> 00:45:03.339
+Maria Silva: What we have right now is, like, the minimum
+
+323
+00:45:04.010 --> 00:45:15.099
+Maria Silva: change in the EVM that would allow us to meet their state growth independently from the other resources, which I think it's something we'll want to do at some point in the future, but
+
+324
+00:45:15.220 --> 00:45:24.730
+Maria Silva: this step, even if you do more stuff on top of it, this small step will have to do it anyways. So the question is, like, do we have scope for doing it now?
+
+325
+00:45:24.980 --> 00:45:40.500
+Maria Silva: Or do we push it forward? Knowing that doing it now, it actually brings a lot of benefits in terms of scalability and making sure that contract deployments don't get too cheap in relation to all the other state creation operations.
+
+326
+00:45:48.100 --> 00:45:50.449
+Ansgar Dietrichs: Sounds good. So the three options that I…
+
+327
+00:45:50.630 --> 00:45:54.760
+Ansgar Dietrichs: see for today that we could decide is the EIP as proposed by Marius.
+
+328
+00:45:54.890 --> 00:46:01.879
+Ansgar Dietrichs: or a static repricing, as proposed by Vitalik, with the understanding that basically, yeah, we are somewhat
+
+329
+00:46:02.300 --> 00:46:15.539
+Ansgar Dietrichs: you know, have this risk of somewhat higher state growth for a while because of contracts, or a variant of what Vitalik proposed, but basically still with this relative pricing to the gas limit. So, just kind of, just taking out the metering.
+
+330
+00:46:16.010 --> 00:46:20.499
+Ansgar Dietrichs: Again, would be nice to make a decision today,
+
+331
+00:46:22.020 --> 00:46:28.049
+Ansgar Dietrichs: Yeah, after listening to these different proposed solutions, do we have more client team opinions? Ben?
+
+332
+00:46:29.700 --> 00:46:33.520
+Ben Adams: Yeah, for some more consideration time.
+
+333
+00:46:33.640 --> 00:46:39.260
+Ben Adams: This just presented today, and… So it's the… New alternative?
+
+334
+00:46:46.440 --> 00:46:55.900
+Ansgar Dietrichs: If we wanted to have more consideration time, the next ACDE would be in 2 weeks. Is there any way for us to make a decision on a faster timeline on this?
+
+335
+00:46:56.150 --> 00:47:00.129
+Ansgar Dietrichs: How much, like, what is a reasonable amount of time for clients to look into this?
+
+336
+00:47:01.570 --> 00:47:06.930
+Ben Adams: ACBT? I mean, I don't… I don't think it needs 2 weeks to think about.
+
+337
+00:47:11.300 --> 00:47:12.540
+Ben Adams: I like my nostal.
+
+338
+00:47:12.960 --> 00:47:26.410
+Ansgar Dietrichs: what… so what… what… what clients, would that be, enough time? That's basically two days from now? I mean, two working days? Is this… does that work for clients? Then… then I do think… because, yeah, I think I'd be much more comfortable delaying for Monday than delaying for 2 weeks.
+
+339
+00:47:35.200 --> 00:47:49.659
+Ansgar Dietrichs: But yeah, then, I think, I mean, I see quite a few thumbs up on ACDT in chat, so then, yeah, let's, let's, postpone to that. Maybe we can have, like, a summary document of the available, options out to help guide that.
+
+340
+00:47:50.680 --> 00:47:57.719
+Ansgar Dietrichs: Okay, good. Then, let's move on. Quite a few more ERPs to discuss, and hopefully this is the only one that we are postponing.
+
+341
+00:47:57.910 --> 00:48:07.999
+Ansgar Dietrichs: We had 3 last… Can we maybe, yeah, share the document again? If we scroll down, to EIP7793, that's the conditional transactions one.
+
+342
+00:48:09.010 --> 00:48:12.750
+Ansgar Dietrichs: That was the one where we, basically, we left it off.
+
+343
+00:48:13.140 --> 00:48:24.960
+Ansgar Dietrichs: last call. We basically didn't go, like, there was 3 last ERPs that we didn't get to, so I would want to start with those before we revisit the other, the other ones. So 7793 conditional transactions.
+
+344
+00:48:25.120 --> 00:48:34.799
+Ansgar Dietrichs: The main reason why, this is… right now, basically, everything is marked as DFI candidate by default, just because, yeah, we kind of have a pretty big scope.
+
+345
+00:48:34.880 --> 00:48:49.680
+Ansgar Dietrichs: There wasn't really much engagement by clients so far on calls when we were discussing it. However, we had two clients, specifically NetherMind and Besu, who ranked this as A, and so that's why I wanted to at least get back to this one more time, so…
+
+346
+00:48:50.070 --> 00:48:57.879
+Ansgar Dietrichs: if, say, someone from either of those two clients, or someone else with opinions on the CRP would want to make a case for…
+
+347
+00:48:58.230 --> 00:49:04.220
+Ansgar Dietrichs: Adding, 7793 to the box scope, then now would be the time to speak up.
+
+348
+00:49:07.530 --> 00:49:12.569
+Marc: Yeah, so the motivation for this EIP really is to
+
+349
+00:49:12.800 --> 00:49:16.960
+Marc: Provide better support for encrypted mempools.
+
+350
+00:49:17.280 --> 00:49:25.120
+Marc: And provide a way for users to send their transactions, with, like, a very strong guarantee that they won't be front-run.
+
+351
+00:49:25.330 --> 00:49:31.700
+Marc: And kind of the way it's designed is to kind of support, like,
+
+352
+00:49:32.120 --> 00:49:38.869
+Marc: This kind of happening more at the application level, so sort of a minimal change to the protocol that will allow
+
+353
+00:49:39.040 --> 00:49:42.660
+Marc: Sort of the application layer to do most of the work.
+
+354
+00:49:43.110 --> 00:49:48.080
+Marc: Yeah, that's the sort of main motivation.
+
+355
+00:49:48.380 --> 00:49:57.949
+Marc: So, I think that, I was discussing with Marius, because he had some concerns about the, the sort of block-building aspect of it.
+
+356
+00:49:58.080 --> 00:50:02.069
+Marc: And whether it kind of complicated that, so I responded to that.
+
+357
+00:50:02.190 --> 00:50:10.190
+Marc: And essentially, because it's only, targeted towards,
+
+358
+00:50:10.350 --> 00:50:20.450
+Marc: these, kind of, it's out of protocol, and only specific validators have to opt into it. It would kind of contain, potentially, the block building changes to,
+
+359
+00:50:20.570 --> 00:50:23.910
+Marc: Only certain, kind of, clients that,
+
+360
+00:50:24.120 --> 00:50:27.540
+Marc: you know, want to provide support for it.
+
+361
+00:50:27.890 --> 00:50:31.850
+Marc: But yeah, I'm not sure if…
+
+362
+00:50:33.160 --> 00:50:36.480
+Marc: I'm not sure if the guest team were convinced by that, but yeah.
+
+363
+00:50:39.800 --> 00:50:40.640
+Ansgar Dietrichs: Maris?
+
+364
+00:50:41.320 --> 00:50:54.499
+Marius van der Wijden: Yeah, I'm not… I'm not super convinced by that, because that basically means we have some transactions that only some people, or some clients, or some, like, sophisticated builders can… can build, and others…
+
+365
+00:50:54.890 --> 00:50:58.980
+Marius van der Wijden: We'll just not be able to include them.
+
+366
+00:51:00.130 --> 00:51:04.190
+Marius van der Wijden: And, like, unsophisticated builders, or… Yeah.
+
+367
+00:51:04.710 --> 00:51:08.709
+Marius van der Wijden: I'm sorry, I… up… Upped my microphone.
+
+368
+00:51:10.890 --> 00:51:25.829
+Marc: Yeah, so to kind of address that, so what I'm kind of saying here is that mostly, okay, so you would have, like, this sort of, as I say, it would be out of protocol, and certain, you know, proposals have opted into it, and they're running, like, a custom block builder.
+
+369
+00:51:27.060 --> 00:51:40.769
+Marc: building plugin, and then, you know, that would kind of handle that. But for those who aren't opted in, you could kind of have some kind of very basic support, so it's not like you're kind of limited to not, support these transactions at all.
+
+370
+00:51:40.820 --> 00:51:48.659
+Marc: But, you could just kind of have some very kind of basic heuristic, where you're just going to kind of see what conditional transactions are in the mempool.
+
+371
+00:51:48.750 --> 00:51:51.449
+Marc: And attempt to place them at the top of block.
+
+372
+00:51:51.580 --> 00:51:54.360
+Marc: Before you kind of sequence the rest of the block.
+
+373
+00:51:58.760 --> 00:51:59.790
+Ansgar Dietrichs: Fabian?
+
+374
+00:52:00.790 --> 00:52:04.899
+Fabio Di Fabio: Yep, so… I'm,
+
+375
+00:52:05.130 --> 00:52:14.170
+Fabio Di Fabio: following this discussion, and I want to say that I understand that most of the staff for the
+
+376
+00:52:14.400 --> 00:52:19.319
+Fabio Di Fabio: Encrypted mempool is, out of protocol, but…
+
+377
+00:52:19.780 --> 00:52:28.190
+Fabio Di Fabio: Apart from the new conditional transaction type and the… transaction index, opcode.
+
+378
+00:52:28.420 --> 00:52:34.819
+Fabio Di Fabio: I'm more concerned about the transaction index of code.
+
+379
+00:52:35.060 --> 00:52:45.310
+Fabio Di Fabio: As a way to have… maybe a quick way to start implementing encrypted transaction mempool.
+
+380
+00:52:46.320 --> 00:52:53.080
+Fabio Di Fabio: And because I don't know if this, opcode We'll be always…
+
+381
+00:52:53.920 --> 00:53:03.129
+Fabio Di Fabio: be used also in future. Maybe it could be something that will be deprecated, and we know how difficulties tend to
+
+382
+00:53:03.650 --> 00:53:16.499
+Fabio Di Fabio: to deprecate and remove, maybe, opcodes that are now more used. So, what about… I don't know if you have thought about, instead of adding this opcode.
+
+383
+00:53:16.680 --> 00:53:19.050
+Fabio Di Fabio: What about changing the…
+
+384
+00:53:19.530 --> 00:53:27.579
+Fabio Di Fabio: Block import validation rule to make sure that a conditional transaction is included in the right place.
+
+385
+00:53:27.690 --> 00:53:37.080
+Fabio Di Fabio: So instead of, adding the opcode, Working on the… Block validation rules.
+
+386
+00:53:37.660 --> 00:53:39.390
+Fabio Di Fabio: Have you thought about that?
+
+387
+00:53:40.330 --> 00:53:43.480
+Marc: Yep, so that's the way that the EIP does work.
+
+388
+00:53:43.630 --> 00:53:47.079
+Marc: So basically, it's kind of two parts, so there's…
+
+389
+00:53:47.260 --> 00:54:01.720
+Marc: the conditional transaction, like, the new transaction type, right? And then this is integrated into the block validation rules, so if you created a block and included this transaction in the wrong place, it would invalidate the block.
+
+390
+00:54:02.110 --> 00:54:06.750
+Marc: And the op code is actually for… more for a different purpose.
+
+391
+00:54:07.000 --> 00:54:13.169
+Marc: So, if you're actually one of the users who sent your transaction that's been included on-chain.
+
+392
+00:54:13.390 --> 00:54:17.880
+Marc: It's gonna be part of, like, in most cases, part of a bundle.
+
+393
+00:54:18.120 --> 00:54:31.889
+Marc: And so what you want is a way to actually check in the smart… in your, like, smart account what the TX index is, because you don't necessarily trust whoever actually posted the transaction, like, the bundler.
+
+394
+00:54:32.040 --> 00:54:34.640
+Marc: You can't necessarily trust them.
+
+395
+00:54:34.830 --> 00:54:41.880
+Marc: So you kind of need a way to also check on-chain, that was included where it was expected to be.
+
+396
+00:54:42.440 --> 00:54:48.690
+Ansgar Dietrichs: Yeah, just to cut in here for timebox reasons, Maris has mentioned it for now, I see Maris had the comment that
+
+397
+00:54:48.900 --> 00:54:58.379
+Ansgar Dietrichs: he would prefer to basically have this not in Amsterdam, but maybe consider it for H. Stein. I see in the kind of emoji reaction supporting this, Dragon from
+
+398
+00:54:58.550 --> 00:55:02.340
+Ansgar Dietrichs: On Breath's side, and we have Marek from Nethermind.
+
+399
+00:55:02.780 --> 00:55:16.049
+Ansgar Dietrichs: And also, yeah, so that, to me, implies that we might just be relatively far away from, kind of, broad client support for this in Amsterdam, in which case we should just, for now.
+
+400
+00:55:16.230 --> 00:55:19.860
+Ansgar Dietrichs: just physically… just move on with the DFI decision.
+
+401
+00:55:20.130 --> 00:55:22.730
+Ansgar Dietrichs: and reconsider this for Edgestar.
+
+402
+00:55:23.590 --> 00:55:25.110
+Ansgar Dietrichs: Does that seem reasonable?
+
+403
+00:55:26.380 --> 00:55:27.220
+Ansgar Dietrichs: width.
+
+404
+00:55:27.600 --> 00:55:28.620
+Ansgar Dietrichs: for people.
+
+405
+00:55:29.020 --> 00:55:33.359
+Ansgar Dietrichs: Well, yeah, if any of the clients that I mentioned basically feel like they don't…
+
+406
+00:55:33.660 --> 00:55:44.420
+Ansgar Dietrichs: they're not correctly represented as opposing inclusion in Amsterdam, then ideally, now would be a good time to correct that. Otherwise, I think we have more basis for CFI, and then we have to DFI now.
+
+407
+00:55:54.920 --> 00:56:09.570
+Ansgar Dietrichs: Okay, then I would say, I mean, it does seem like a very interesting proposal, and I do think it probably has good chances in H-star, but I think then the decision is clear, and that we just don't have enough client support for this, for Glumpster dump, so then we would…
+
+408
+00:56:09.790 --> 00:56:12.370
+Ansgar Dietrichs: I… yeah, then we'll deify it now.
+
+409
+00:56:14.960 --> 00:56:27.309
+Ansgar Dietrichs: Okay, then, we move on to the second EIP out of that section, which is the, or the second one out of the ones that were left, which is the payoff code, EIP5920.
+
+410
+00:56:30.370 --> 00:56:43.149
+Ansgar Dietrichs: there, basically, the reason why this is marked, again, as DFI is just that, by default, anything here is DFI, but also that no single client had ranked this better than B, and we had, basically, client rankings B, B, B, C.
+
+411
+00:56:43.260 --> 00:56:54.299
+Ansgar Dietrichs: So, seemed pretty far from client consensus on including it. Has anything changed since then? Are any clients super excited about this now? Otherwise, I think it's a clear default DFI.
+
+412
+00:57:10.750 --> 00:57:18.330
+Ansgar Dietrichs: Okay, then I think for this one, we don't have to have too much discussion. Then the pay-up code is also deified for now, for Amsterdam.
+
+413
+00:57:18.580 --> 00:57:24.399
+Ansgar Dietrichs: And then the last one to talk about before we can, loop back to the beginning is…
+
+414
+00:57:24.680 --> 00:57:32.020
+Ansgar Dietrichs: EIP8051, that is the precompile for MLDSA signature verification. So this was…
+
+415
+00:57:32.130 --> 00:57:40.760
+Ansgar Dietrichs: part of a broader, post-quantum kind of, like, bundle of changes. The other ones we have DFI'd, this one specifically.
+
+416
+00:57:42.770 --> 00:57:56.360
+Ansgar Dietrichs: we have not yet, we have not yet made a decision on, and there was, from a while ago already on, on an, ACD agenda from December 15th, there was a comment by, Renaud on,
+
+417
+00:57:56.490 --> 00:58:01.750
+Ansgar Dietrichs: on this EIP and some of the related ones, I'm not sure if you are on the call today.
+
+418
+00:58:02.330 --> 00:58:02.989
+Renaud-ZKNOX: Yes, I am.
+
+419
+00:58:03.560 --> 00:58:07.500
+Ansgar Dietrichs: Perfect. Would you want to briefly summarize your comments on this?
+
+420
+00:58:08.720 --> 00:58:22.130
+Renaud-ZKNOX: Yeah, so, we have been talking a lot about post-quantum transition, yet we have, some… some proposals, so there is… there are two separated, Falcon proposals. There is Delithium.
+
+421
+00:58:22.240 --> 00:58:31.619
+Renaud-ZKNOX: Deliptium actually seems to be the choice of Web 2, because it's already included in some implementation in Chromium.
+
+422
+00:58:31.860 --> 00:58:44.639
+Renaud-ZKNOX: And so on. The difficulty to implement this one is lower than the hosters. There are several implementations, that could be directly integrated into clients.
+
+423
+00:58:45.310 --> 00:58:48.930
+Renaud-ZKNOX: So we think… yeah, and there is no,
+
+424
+00:58:49.640 --> 00:58:54.760
+Renaud-ZKNOX: backward compatibility issue with this one, so we think that While Falcon
+
+425
+00:58:54.940 --> 00:59:08.710
+Renaud-ZKNOX: as some advantage, and mainly we began with implementing those in smart contracts, and the gas cost was far lower, but it's because it's not included in a node. If we compare MLDSA efficiency with Falcon.
+
+426
+00:59:10.320 --> 00:59:11.930
+Renaud-ZKNOX: Okay, what's the commands here?
+
+427
+00:59:12.690 --> 00:59:13.600
+Renaud-ZKNOX: da-da-da.
+
+428
+00:59:16.720 --> 00:59:35.960
+Renaud-ZKNOX: Yep. Is that comment, related to, including, signature verification precompile? So, basically, if we look at the cycle, numbers of post-contomb, verification, it's, for Falcon, it's even, smaller than an ECDSA.
+
+429
+00:59:36.150 --> 00:59:37.430
+Renaud-ZKNOX: verification.
+
+430
+00:59:38.180 --> 00:59:44.080
+Renaud-ZKNOX: So the… the constraints with, Pascantom signature, are as bandwidth.
+
+431
+00:59:44.440 --> 00:59:51.080
+Renaud-ZKNOX: Meaning that, size of signatures and public keys are far far larger.
+
+432
+00:59:52.420 --> 00:59:58.020
+Renaud-ZKNOX: So there are several, several efforts. Consensus, Consensus team is working.
+
+433
+00:59:59.060 --> 01:00:03.720
+Renaud-ZKNOX: Aggregation of signatures, what they… what they will use is,
+
+434
+01:00:03.820 --> 01:00:07.539
+Renaud-ZKNOX: Most probably hash-based, hash-based aggregation.
+
+435
+01:00:08.110 --> 01:00:14.970
+Renaud-ZKNOX: I'm not sure that having a stateful candidates would be good for a consensus layer, so here.
+
+436
+01:00:15.390 --> 01:00:19.190
+Renaud-ZKNOX: Here, I don't know if we need only one pre-compiled, or…
+
+437
+01:00:19.360 --> 01:00:27.900
+Renaud-ZKNOX: If we look at what, what we have for elliptic curves, for instance, we have, we have Air1, we have K1, we have BLS, BLS…
+
+438
+01:00:28.200 --> 01:00:38.930
+Renaud-ZKNOX: Mainly is, is already, available for consensus, so maybe in the future, we could, devise,
+
+439
+01:00:39.050 --> 01:00:45.319
+Renaud-ZKNOX: What is optimal for consensus, and separate what is optimal from consensus and for execution layer.
+
+440
+01:00:45.550 --> 01:00:50.399
+Renaud-ZKNOX: However, having the aggregation mechanism, I guess we could…
+
+441
+01:00:55.270 --> 01:01:01.849
+Renaud-ZKNOX: Yeah, I mean, for the choice, yeah, I see what Maurice is writing.
+
+442
+01:01:02.180 --> 01:01:06.249
+Renaud-ZKNOX: I think that… I'm not sure that Ethereum should be the one.
+
+443
+01:01:06.370 --> 01:01:13.840
+Renaud-ZKNOX: redoing all the process that the NIST has taken for more than 8 years now.
+
+444
+01:01:14.330 --> 01:01:21.200
+Renaud-ZKNOX: So, mainly, I don't know how many cryptographers we have in the Ethereum ecosystem, but basically the NIST and ISAR
+
+445
+01:01:21.320 --> 01:01:27.969
+Renaud-ZKNOX: Are counting, hundreds of cryptographers that has been working for 10 years, so…
+
+446
+01:01:28.400 --> 01:01:37.660
+Renaud-ZKNOX: I'm not sure that if we have to redo all the process on our side, even if some tweaking and tuning to Ethereum might be necessary.
+
+447
+01:01:38.380 --> 01:01:43.920
+Renaud-ZKNOX: And another thing is that, the consensus, will be fast to move, because,
+
+448
+01:01:44.100 --> 01:01:50.310
+Renaud-ZKNOX: As soon as the concern fork will be pushed, all nodes will switch at once.
+
+449
+01:01:50.480 --> 01:01:51.650
+Renaud-ZKNOX: But,
+
+450
+01:01:52.080 --> 01:02:07.080
+Renaud-ZKNOX: moving users from accounts will take years, if we look at what happened with Account Abstraction, for instance. It has been available for 3 years now, and it's mainly no wallet implemented.
+
+451
+01:02:07.290 --> 01:02:10.530
+Renaud-ZKNOX: So I think we… We need to…
+
+452
+01:02:10.860 --> 01:02:15.730
+Renaud-ZKNOX: To begin, the, the pedagogy, and,
+
+453
+01:02:16.830 --> 01:02:20.080
+Renaud-ZKNOX: work on this, because once the solution is available…
+
+454
+01:02:20.080 --> 01:02:38.730
+Ansgar Dietrichs: You know, just to cut in, just because of… for timeboxing, just because we only have 30 minutes left in the call, I think the argument is clear for now. I'd rather, for now, just go on a round of feedback from… from other people on this point, and then we can get back to you afterwards. Thank you. There's a big group there, I'm not sure who of you all want to say something.
+
+455
+01:02:39.710 --> 01:02:43.840
+Carl Beekhuizen: Yeah, I just wanna push back against this, like, I think it's,
+
+456
+01:02:43.900 --> 01:02:47.289
+Carl Beekhuizen: If we had to choose something now, I think this would make a lot of sense.
+
+457
+01:02:47.310 --> 01:03:01.769
+Carl Beekhuizen: But I think, yeah, just given the unknowns of what the industry is gonna adopt, and, like, and put into hardware and that kind of thing, I think it's… making a decision now is, like, like, is a good chance we end up with something that's not quite as popular.
+
+458
+01:03:01.770 --> 01:03:10.300
+Carl Beekhuizen: Also, I think with all the repricings going on, now and in HDAR, I think, like, the trade-offs between compute and
+
+459
+01:03:10.340 --> 01:03:21.399
+Carl Beekhuizen: storage and cold data costs are changing quite dramatically, and that might have a big impact on what is viable or makes sense in terms of the standards, so I think it might be good to hold off on this.
+
+460
+01:03:21.460 --> 01:03:23.109
+Carl Beekhuizen: Certainly for now.
+
+461
+01:03:26.390 --> 01:03:27.100
+Ansgar Dietrichs: Dano?
+
+462
+01:03:28.760 --> 01:03:40.740
+Danno Ferrin - Tectonic.xyz: So, as far as the notion that we're picking a PQ algorithm now, the reality is we are not going to be able to pick just one. Each one has their own quirks and their own compromises that different users are going to want different values for.
+
+463
+01:03:40.820 --> 01:03:52.330
+Danno Ferrin - Tectonic.xyz: But from that set of what is going to probably be in the set, MLDSA is almost certainly going to be one of them, because it has NIFT support, that's FIPS 204.
+
+464
+01:03:52.410 --> 01:04:02.650
+Danno Ferrin - Tectonic.xyz: And that's what chips are coming out with to support the signature already. It's already the leading replacement in the Web2 world for the signatures, for,
+
+465
+01:04:02.850 --> 01:04:05.199
+Danno Ferrin - Tectonic.xyz: for RSA and ECDSA signatures.
+
+466
+01:04:05.270 --> 01:04:23.599
+Danno Ferrin - Tectonic.xyz: But I think another thing that we need to think about is downstream users, particularly in the smart contract world. If we give them no smart contract precompiled support for post-quantum signatures, they're not going to have time to adapt their ideas and their motions towards supporting post-quantum signatures in things like, you know, signed messages.
+
+467
+01:04:23.600 --> 01:04:31.189
+Danno Ferrin - Tectonic.xyz: and smart… and account abstraction. So waiting until we get everything perfect is really going to put all our downstream users at a disadvantage.
+
+468
+01:04:34.410 --> 01:04:35.160
+Ansgar Dietrichs: Ben?
+
+469
+01:04:36.210 --> 01:04:46.079
+Ben Adams: If we're gonna have to support multiple, potentially, would it be better to have some kind of framework?
+
+470
+01:04:47.350 --> 01:04:50.680
+Ben Adams: Where we can say, alright, this is the process that we'll add.
+
+471
+01:04:51.620 --> 01:04:57.219
+Ben Adams: post-quantum signatures, maybe there's a… I don't know if there's a transaction type involved as well.
+
+472
+01:04:58.020 --> 01:05:04.719
+Ben Adams: So that we can… We can add them without them just being sort of randomly compiled.
+
+473
+01:05:05.500 --> 01:05:07.260
+Ben Adams: But in a more coordinated way.
+
+474
+01:05:09.560 --> 01:05:10.810
+Ansgar Dietrichs: Felix?
+
+475
+01:05:11.790 --> 01:05:15.929
+Felix (Geth): So, regarding the transaction type, just as a quick comment, so…
+
+476
+01:05:16.060 --> 01:05:35.310
+Felix (Geth): Having it as a precompile kind of factors in with the whole account abstraction effort, where you would be able to use this precompile inside of a smart account to verify the transaction origin, so just basically adding this precompile in now fits in kind of good with the account abstraction roadmap of being able to support, post-quantum signatures later.
+
+477
+01:05:35.350 --> 01:05:40.050
+Felix (Geth): So that's kind of how I see this. I think… I think sooner or later, we're gonna have to add
+
+478
+01:05:40.170 --> 01:05:46.639
+Felix (Geth): Some, post-quantum signature scheme into the… into the protocol as a pre-compile.
+
+479
+01:05:47.450 --> 01:05:53.509
+Felix (Geth): And so, yeah, we might as well add this one, but adding it as a precompile, I think, is the correct approach.
+
+480
+01:05:56.630 --> 01:06:06.280
+Ansgar Dietrichs: And to clarify, Felix, I think the guest team had put this at sea, but that, to me, sounds like you're now more open to having this as part of Amsterdam, or how to interpret this?
+
+481
+01:06:06.280 --> 01:06:07.790
+Felix (Geth): So,
+
+482
+01:06:08.120 --> 01:06:18.349
+Felix (Geth): I am never really against adding specific crypto precompiles, I have to say, because the process of adding them basically is always the same.
+
+483
+01:06:18.350 --> 01:06:29.900
+Felix (Geth): It requires extensive testing, it requires diversity in the implementation libraries, and it requires that the cryptographic standard itself, which is being added as a print compile, is reasonably
+
+484
+01:06:29.960 --> 01:06:35.739
+Felix (Geth): Agreed upon by the… community of cryptographers, but I think in this case.
+
+485
+01:06:35.850 --> 01:06:53.359
+Felix (Geth): I haven't evaluated if there are good libraries for this algorithm, but I think there are some. And so, mostly it's gonna come down to how it holds up in fast testing and so on, and what is the danger of splitting the network due to a…
+
+486
+01:06:54.240 --> 01:07:04.249
+Felix (Geth): bug in the underlying implementation of this precompile. So that's… I cannot answer this exhaustively right now. I just know that, in general, adding precompiles like this
+
+487
+01:07:04.550 --> 01:07:05.989
+Felix (Geth): Is always the same.
+
+488
+01:07:06.700 --> 01:07:12.260
+Felix (Geth): So I'm not inherently against it. It's also one of the extension points in Ethereum that is…
+
+489
+01:07:13.150 --> 01:07:18.470
+Felix (Geth): kind of the most isolated in some ways, because it's just a function exposed to the EVM.
+
+490
+01:07:20.110 --> 01:07:39.140
+Felix (Geth): So it's also very easy to decide late in the process that, yeah, we don't end up activating this because we found the bug, or we feel not confident about it. Whereas if we make a huge change to, for example, the fee market, and then we decide later to not do this change, we have to undo a lot of complexity, whereas with adding a precompile, we can always, in the last minute, pull it.
+
+491
+01:07:40.390 --> 01:07:45.390
+Felix (Geth): Because there's an issue in testing, or we feel the confidence doesn't hold up, or so.
+
+492
+01:07:47.040 --> 01:07:48.380
+Ansgar Dietrichs: And, Antonio?
+
+493
+01:07:49.040 --> 01:08:03.289
+Antonio Sanso: Right, just, like, adding a quick thing here, I've been working with Renault a lot in the last year on this, just, like, adding something that has been… has not been covered here. I'm all for, like, having, post-quantum
+
+494
+01:08:03.290 --> 01:08:13.360
+Antonio Sanso: into a precompile. There's a little problem until now, there's a bit of confusion what is standardized or what not, and one thing that happened in the last summer that is not
+
+495
+01:08:13.370 --> 01:08:15.260
+Antonio Sanso: A lot well known is that
+
+496
+01:08:15.300 --> 01:08:24.110
+Antonio Sanso: So DSA, so Delitium has been standardized by NIST, and, it's… the signature is bigger than Falcon.
+
+497
+01:08:24.390 --> 01:08:36.109
+Antonio Sanso: And this, this is bad. But what happened last summer at Crypto 2025, the best paper award has actually a lithium with the smaller signature size. What's the problem here? That…
+
+498
+01:08:36.450 --> 01:08:39.099
+Antonio Sanso: Delidium has already been standardized.
+
+499
+01:08:39.260 --> 01:08:53.909
+Antonio Sanso: And, so we are now in a situation where Falcon has a smaller key, and not yet standardized, and, and it's complicated to… the signature is complicated. Delithium has bigger signatures, but…
+
+500
+01:08:54.020 --> 01:09:07.900
+Antonio Sanso: standardized, but at Crypto 2025, actually, there is a new paper that makes the lithium signature smaller, but it's already been standardized, so it's like paradox on paradox, just adding this, sorry.
+
+501
+01:09:12.120 --> 01:09:25.809
+Felix (Geth): So basically what I'm hearing is your feedback is… it's a bit too early, because we don't really… the space of signature algorithms hasn't solidified to the point where we can clearly say which one is the best one, or which one should be added.
+
+502
+01:09:25.960 --> 01:09:48.970
+Antonio Sanso: At the very least, I will wait yet another release, so at the very least, I will not put anything in Glamsterdam, and maybe have a really scoped this properly for H-star, where we have a bit of more months to understand the status quo, because again, like, this, this Delithium, this delithium paper on Crypto 2025, they brought…
+
+503
+01:09:48.970 --> 01:10:08.849
+Antonio Sanso: the signature almost at the same size than Falcon, for example, was totally unexpected, at least to me. And… but the problem now that this has been already standardized, so I will wait at least H-star to, like, and focus… I actually agree with what was written in the chat, that maybe we should have AIM1…
+
+504
+01:10:08.860 --> 01:10:20.299
+Antonio Sanso: one of our, fork only on this, and… because this is going to be a bit of effort. Maybe having more than one, but really having one fork on post-transaction signature focus.
+
+505
+01:10:20.440 --> 01:10:22.599
+Antonio Sanso: We can… I don't know how we want to call it.
+
+506
+01:10:25.360 --> 01:10:30.570
+Ansgar Dietrichs: Okay, right, I think it would be really important if we could make a decision today,
+
+507
+01:10:30.950 --> 01:10:38.670
+Ansgar Dietrichs: it felt a little 50-50. It seemed like everyone was open to it, but also a bit hesitant. I think now, Antonio, you're specifically recommending to…
+
+508
+01:10:39.230 --> 01:10:52.560
+Ansgar Dietrichs: wait at least one more fork? Is this, like, do people in principle, like, I think, again, given the grams and fork scope, like, any 50-50, I think we would eventually resolve with a DFI, because we already have a big fork scope.
+
+509
+01:10:52.750 --> 01:10:56.740
+Ansgar Dietrichs: So… That's maybe what's leaning? Do we…
+
+510
+01:10:57.260 --> 01:11:10.340
+Ansgar Dietrichs: Do we currently have any clients that would prefer this in Ramsterdam over delaying the decision to H-star, basically? Let's ask it this way. Any client representatives that would specifically want this in Gramsterdam?
+
+511
+01:11:24.270 --> 01:11:27.490
+Ansgar Dietrichs: Okay, I think if… if it's… if all the clients basically are…
+
+512
+01:11:27.600 --> 01:11:36.130
+Ansgar Dietrichs: kind of unsure about whether or not this should be in Ramsterdam, and no one… no one really has a strong preference for Amsterdam, and there are some concerns, then I…
+
+513
+01:11:36.410 --> 01:11:40.049
+Ansgar Dietrichs: I think that the default decision here is DFI for Glamsterdam.
+
+514
+01:11:40.400 --> 01:11:52.569
+Ansgar Dietrichs: And maybe we can, like, in the run-up to the H-star decisions, consider having some ACD break out specifically about post-quantum signatures and EVM changes.
+
+515
+01:11:52.990 --> 01:11:56.069
+Ansgar Dietrichs: We can look into this async, but… but yeah, it's…
+
+516
+01:11:56.190 --> 01:12:03.380
+Ansgar Dietrichs: I would say DFI is the last opportunity for any… Objections to the DFI decision?
+
+517
+01:12:10.110 --> 01:12:16.020
+Ansgar Dietrichs: Okay, then we, for Amsterdam DFI, the… Be yippee.
+
+518
+01:12:17.680 --> 01:12:37.059
+Ansgar Dietrichs: Okay, then, let's see, we are already starting to be a bit short on time, but, also not that many EAPs left. Now that the only primary section we should still try to get through is decisions from… or EAPs from last ACDE that we basically had to delay, or postpone to today.
+
+519
+01:12:37.160 --> 01:12:50.149
+Ansgar Dietrichs: The first one in that group, so we now scroll back up, basically, on the page, would be, the T-Store one, so EIP7971, hard limits for transient storage.
+
+520
+01:12:52.200 --> 01:13:03.949
+Ansgar Dietrichs: that one, basically, in general, had some… like, overall, there was some interest in shipping that. At the same time, there were unresolved account obstruction concerns, and specifically, there was the ask to give
+
+521
+01:13:04.030 --> 01:13:17.219
+Ansgar Dietrichs: two more weeks of time for people to potentially address those kind of abstraction concerns. Have those been addressed? Is there anyone with context on this that could speak up? Again, default otherwise, with… if there was no status change, this would be a DFI.
+
+522
+01:13:18.310 --> 01:13:20.760
+Ansgar Dietrichs: Has there been any progress on this?
+
+523
+01:13:38.080 --> 01:13:38.840
+Ansgar Dietrichs: Okay.
+
+524
+01:13:39.040 --> 01:13:40.800
+Ansgar Dietrichs: Then,
+
+525
+01:13:41.300 --> 01:13:48.139
+Ansgar Dietrichs: I would say, then, this kind of… is it auto-DFI? Is there any, any, any objections to, to DFI-ing this?
+
+526
+01:13:55.380 --> 01:14:00.740
+Ansgar Dietrichs: Okay, then 7971 is DFID for Clemsonam.
+
+527
+01:14:01.550 --> 01:14:07.140
+Ansgar Dietrichs: The next one up, would be, EIP8032.
+
+528
+01:14:07.620 --> 01:14:13.400
+Ansgar Dietrichs: which is the size-based storage gas pricing. So the idea was to basically
+
+529
+01:14:13.570 --> 01:14:24.030
+Ansgar Dietrichs: Make it so, state… state rights, could basically be priced, according to the… to the total kind of size of the… of the storage tree.
+
+530
+01:14:24.190 --> 01:14:32.299
+Ansgar Dietrichs: At the cost of a small, kind of, state-treat transition. Do we, like…
+
+531
+01:14:33.080 --> 01:14:37.790
+Ansgar Dietrichs: Do we have anyone with… opinions on… on this EAP?
+
+532
+01:14:37.910 --> 01:14:39.549
+Ansgar Dietrichs: Carlos?
+
+533
+01:14:40.270 --> 01:14:47.359
+CPerezz: Yeah, so very quickly, we… we basically benchmarked initially this, by running worst-case attacks to Zen.
+
+534
+01:14:47.360 --> 01:15:01.580
+CPerezz: But now we have basically bloated a new contract, a new ERC20 contract to 30GB to actually make sure that indeed is the size of the contract storage what actually causes, this, let's say, more performance issues.
+
+535
+01:15:01.580 --> 01:15:10.439
+CPerezz: On the other side, I'm also trying to investigate whether depth, plays into it, and basically which percentage each of them,
+
+536
+01:15:10.440 --> 01:15:26.439
+CPerezz: like, takes, from the overall execution time. So I would say, at least from my side and in my opinion, we don't have enough data to actually, make this or put this into Glamsterdam, until we are not able to run, some experiments on BloodNet.
+
+537
+01:15:28.660 --> 01:15:41.250
+Ansgar Dietrichs: My understanding is also that there's now a renewed interest in working towards a general, kind of, state tree transition for Ethereum, basically the successor to the Verkel saga.
+
+538
+01:15:41.280 --> 01:15:52.090
+Ansgar Dietrichs: But obviously not for Glamsterdam, but for later hard fork. So, of course, the temptation would be to then, like, potentially, like, not make earlier transitions of the state tree.
+
+539
+01:15:53.010 --> 01:15:55.970
+Guillaume: Which would be net… Thank you, man.
+
+540
+01:15:55.970 --> 01:15:56.709
+Ansgar Dietrichs: Maybe you can speak to this.
+
+541
+01:15:56.710 --> 01:16:05.189
+Guillaume: So, yeah, those two EIPs, like the binary trees, transition, and this thing have nothing in common. However.
+
+542
+01:16:05.470 --> 01:16:18.599
+Guillaume: If you are, if as a client developer you are worried that the binary transition is too complex, this is a much simpler version of it, and it gives you a great opportunity to test that transition.
+
+543
+01:16:27.170 --> 01:16:35.470
+Ansgar Dietrichs: Right. Do we have client, team takes on…
+
+544
+01:16:36.240 --> 01:16:44.999
+Ansgar Dietrichs: On this. And of course, just to clarify for people, right, like, the upside, like, the reason for why this would be nice to do is, of course, that otherwise we have to price all
+
+545
+01:16:45.220 --> 01:16:51.189
+Ansgar Dietrichs: SDOS, kind of according to the worst-case performance of the heaviest contracts.
+
+546
+01:16:51.460 --> 01:16:57.769
+Ansgar Dietrichs: Which, of course, it's not ideal. It will make everything a bit more expensive for users.
+
+547
+01:16:58.110 --> 01:17:04.049
+Ansgar Dietrichs: And then, yeah, the reason for not doing it would be the complexity, so that's the trade-off here.
+
+548
+01:17:08.840 --> 01:17:24.059
+Guillaume: Okay, in the interest of time, and also because Carlos would like to talk about 7907, this CIP is created for, to help, actually, Reth and another client.
+
+549
+01:17:24.220 --> 01:17:35.979
+Guillaume: If REST is happy to DFI it, well, you know, I'm not gonna try to help them against their, their will. So, it helps with,
+
+550
+01:17:36.590 --> 01:17:42.199
+Guillaume: It helps to demonstrate the transition, so we will implement it anyway. In fact, the implementation exists.
+
+551
+01:17:42.390 --> 01:17:51.610
+Guillaume: But, yeah, I'm not gonna fight to help people that don't want to be helped, so I am withdrawing this EIP for Glamsterdam.
+
+552
+01:17:55.130 --> 01:18:00.129
+Dragan Rakita: I'm not exactly sure what the help was, but thank you for helping.
+
+553
+01:18:07.280 --> 01:18:13.030
+Ansgar Dietrichs: Okay, is this… like, a final decision deal? Because, I mean, I can check if other clients…
+
+554
+01:18:17.950 --> 01:18:20.230
+Ansgar Dietrichs: Okay. Then, indeed.
+
+555
+01:18:20.720 --> 01:18:27.680
+Ansgar Dietrichs: we will DFI this, or, yeah, with Strait, I think. I mean, DFI is maybe the cleaner way, but either way, same outcome.
+
+556
+01:18:27.850 --> 01:18:29.910
+Ansgar Dietrichs: And, yeah.
+
+557
+01:18:30.280 --> 01:18:35.580
+Ansgar Dietrichs: move on to the next EIP, EIP7907.
+
+558
+01:18:37.380 --> 01:18:53.490
+Ansgar Dietrichs: meter contract code size and increase limit. So, just for context there, yeah, before we go into the analysis that Carlos has done, there is… there was initially several different, proposals for how to potentially allow for larger maximum contract sizes.
+
+559
+01:18:53.560 --> 01:19:03.500
+Ansgar Dietrichs: In this fork, the last… the currently only remaining PFI at EIP is 7907, which would do it, based on a…
+
+560
+01:19:03.500 --> 01:19:22.019
+Ansgar Dietrichs: change to the, to the state, basic account structure by adding, a size value, but only to newly deployed contracts. But we also, on last call, discussed that, theoretically, we could instead replace this with the even simpler ERP by Julio from a while ago, about… that there would basically just
+
+561
+01:19:22.020 --> 01:19:36.679
+Ansgar Dietrichs: do a constant bump to the maximum allowed contract size, and my understanding is that Dallas Hue did an analysis, and I think it was actually primarily about this… this alternative proposal by the… the Julio EIP that would… that would just be a…
+
+562
+01:19:36.810 --> 01:19:37.840
+Ansgar Dietrichs: constant…
+
+563
+01:19:38.180 --> 01:19:47.709
+Ansgar Dietrichs: bump of the maximum contract size, and how much of a bump there we could do, and what the implications would be. Do you want to briefly share your screen and go through that analysis?
+
+564
+01:19:47.950 --> 01:19:51.779
+CPerezz: Yeah, sure. I sent a request to actually share the screen.
+
+565
+01:19:53.060 --> 01:19:54.820
+Ansgar Dietrichs: I think now you should be able to.
+
+566
+01:19:55.080 --> 01:20:03.170
+CPerezz: Omoe… So… This one is… Yeah.
+
+567
+01:20:04.350 --> 01:20:05.360
+CPerezz: Boom.
+
+568
+01:20:06.480 --> 01:20:11.430
+CPerezz: Okay, can you say, can you see the…
+
+569
+01:20:11.480 --> 01:20:12.850
+Ansgar Dietrichs: Yes, we can see the screen.
+
+570
+01:20:12.850 --> 01:20:35.239
+CPerezz: Okay. Okay, perfect. So, yeah, to go very quickly, basically, what I did was I took Geth, I completely disabled all the cache, specifically the code one, and from there, what I did is I deployed 18,000 contracts. All of them have different bytecode, because they use others in the init code.
+
+571
+01:20:35.320 --> 01:21:00.099
+CPerezz: And besides that, they all have different ranges of sizes that go from 0.5 kilobytes to 64. And basically, the TLDR is we are hitting for 64 kilobytes, on average, 1 second of execution time, which includes, of course, reading. So, that's certainly valuable at 60 million gas.
+
+572
+01:21:00.100 --> 01:21:22.780
+CPerezz: especially because Geth, as I said, has a completely disabled cache, which… that is a scenario that will never, ever happen. And on top of that, this is the worst possible case that we could execute, so that's a block full of transactions with minimal overhead to do as many Xcode-sized calls to call contracts as possible.
+
+573
+01:21:23.050 --> 01:21:35.730
+CPerezz: And the data that I would, like to highlight here is that basically Code Read, scales sublinearly with, bytecode size. So basically, as you can see.
+
+574
+01:21:35.770 --> 01:21:54.420
+CPerezz: From the time it takes us to read 0.5 kilobytes to 64 kilobytes, we have an increase of 8.5x, but we have actually gone from 0.5 kilobytes to 64, which means we have a 128x increase in code size.
+
+575
+01:21:55.000 --> 01:22:16.759
+CPerezz: And of course, if you basically check the overall thing, the more we screw towards bigger contracts, the much more time it takes over just reading the code itself than actually doing any other thing whatsoever. So yeah, after all of this, analysis, which you can check in,
+
+576
+01:22:16.760 --> 01:22:23.330
+CPerezz: in its research, I think the easiest way to go will basically be,
+
+577
+01:22:23.890 --> 01:22:48.870
+CPerezz: just accept, having the proposal from Julio, and for the question, what if we go to 100 million gas? Well, with the data we have, the projected times for 100 million gas with this attack will be, 1 second, execution time for 32 kilobyte contracts, and 1.5 seconds for 64 kilobyte contracts. And that's, again, with the cache from GethDescent.
+
+578
+01:22:48.870 --> 01:22:49.480
+CPerezz: disabled.
+
+579
+01:22:49.940 --> 01:22:56.559
+CPerezz: There's only two more things I want to mention here. The first one is, notice that
+
+580
+01:22:56.560 --> 01:23:18.379
+CPerezz: most of the… most of the contracts deployed, nowadays are, copies. So basically, when we actually deployed code, we very rarely see new additions into the database, and that basically comes to say that I think it's not an issue if we just remove,
+
+581
+01:23:18.380 --> 01:23:26.000
+CPerezz: bytecode deployment from EIP8037, and therefore, we're allowed to deploy this,
+
+582
+01:23:26.250 --> 01:23:44.319
+CPerezz: bigger contracts, let's say, at least up to 64 kilobytes, without hitting any transaction gas limit cap issues or anything like that, at least because it's the simplest solution, and because we can, at this point, accept it. But yeah, that's more or less the conclusions. Anyways, you are free to interpret the data as you wish and come up with yours.
+
+583
+01:23:48.280 --> 01:23:51.060
+Ansgar Dietrichs: Thank you very much. So, basically, I think there's three…
+
+584
+01:23:52.110 --> 01:23:59.980
+Ansgar Dietrichs: approaches here, or three decisions we could make. Decision one, of course, would be to do nothing about contract code. Decision two would be
+
+585
+01:24:00.290 --> 01:24:16.200
+Ansgar Dietrichs: to, implement the simpler, Julio EIP, so 7954, I put the links in the chat, with, a bump, and we could decide which bump, so, 32 kilobytes or 64 kilobytes,
+
+586
+01:24:16.230 --> 01:24:34.360
+Ansgar Dietrichs: For example, or option 3 would be to go with the EIP that is actually PFI'd right now, which is 7907, which, just to remind people, right, like, that specifically, instead charges proportional to the size of the contract, so it doesn't have any performance considerations, but it comes at the cost of
+
+587
+01:24:34.620 --> 01:24:43.070
+Ansgar Dietrichs: Also a state change, nothing that needs to be applied retractively with the transition, but basically any new accounts would now have an extra field, which is the code size.
+
+588
+01:24:44.080 --> 01:24:50.729
+Ansgar Dietrichs: Do we have comments on which of those three options would be preferred? Ben?
+
+589
+01:24:52.450 --> 01:24:56.960
+Ben Adams: So I… For the simple bump.
+
+590
+01:24:57.070 --> 01:25:09.400
+Ben Adams: But to the level of 32, we can revisit because they also changed the… Account storage.
+
+591
+01:25:09.970 --> 01:25:13.850
+Ben Adams: And then we can revisit what we want to do after that.
+
+592
+01:25:18.290 --> 01:25:20.180
+Ansgar Dietrichs: maria?
+
+593
+01:25:22.420 --> 01:25:28.160
+Maria Silva: I… I just wanted to, so, to…
+
+594
+01:25:28.250 --> 01:25:39.439
+Maria Silva: say something, like, about the analysis from Carlos. So, an interesting thing here is that you can see that, until the 10 kilobyte contract size, the performance is mostly
+
+595
+01:25:39.440 --> 01:25:51.790
+Maria Silva: linear, so it doesn't increase, significantly with the code size. But then when we go from 10 to 24, 24 to 32, and 32 to 64, we actually see a pretty linear increase.
+
+596
+01:25:51.940 --> 01:26:00.180
+Maria Silva: What this means is that if we want to go, let's say, from 24 to 64, this means that
+
+597
+01:26:00.770 --> 01:26:02.989
+Maria Silva: We would have to price…
+
+598
+01:26:03.150 --> 01:26:15.059
+Maria Silva: the operation at the worst case scenario, which would be the 64. And so, essentially, every time we are loading code, even if it's smaller contracts, to see
+
+599
+01:26:15.060 --> 01:26:25.580
+Maria Silva: a performance which is much, much better, we would have to price it at the worst-case scenario, so at the 64 kilobytes. So, essentially, we would make
+
+600
+01:26:25.600 --> 01:26:31.390
+Maria Silva: The throughput on these operations for Huge majority of users.
+
+601
+01:26:31.500 --> 01:26:35.040
+Maria Silva: linearly worse,
+
+602
+01:26:36.280 --> 01:26:44.189
+Maria Silva: just because we have the possibility of increasing the contract side. So, to me, this is a huge…
+
+603
+01:26:44.420 --> 01:26:50.059
+Maria Silva: drawback for a fork that is all about scalability. So, essentially, we are repricing
+
+604
+01:26:50.240 --> 01:26:55.030
+Maria Silva: Called accessing operations in a worst case.
+
+605
+01:26:55.370 --> 01:27:04.690
+Maria Silva: and hurting the scalability on those… on those operations. So, I don't… I don't think this is something that I would be happy with,
+
+606
+01:27:05.000 --> 01:27:19.969
+Maria Silva: So, I… I do have a huge preference for spending the time and actually implementing 7907 so that we can keep the cost of these operations in line with their, actually, costs to execute.
+
+607
+01:27:23.090 --> 01:27:23.930
+Ansgar Dietrichs: Try that?
+
+608
+01:27:26.120 --> 01:27:31.509
+Dragan Rakita: Upping the size to more conservative, 32 kilobytes.
+
+609
+01:27:32.130 --> 01:27:34.460
+Dragan Rakita: It seems like my spate.
+
+610
+01:27:34.970 --> 01:27:38.049
+Dragan Rakita: That's just… Maybe you should probably do it.
+
+611
+01:27:46.290 --> 01:27:47.200
+Ansgar Dietrichs: Guillaume?
+
+612
+01:27:48.110 --> 01:28:02.680
+Guillaume: Yeah, just a quick response to Maria's statement. For sure, it's true that if you have a single cost for any contract size, someone's going to be fleeced. Either your cost is going to be,
+
+613
+01:28:02.680 --> 01:28:08.639
+Guillaume: To be too low for what you get, or it's going to be too high for a…
+
+614
+01:28:08.640 --> 01:28:13.559
+Guillaume: for the… for the… builder.
+
+615
+01:28:13.710 --> 01:28:23.580
+Guillaume: The thing is, as long as you don't have something like 2926, which tries to precisely pay exactly for what you pay for.
+
+616
+01:28:23.730 --> 01:28:28.279
+Guillaume: You're going to have this, this imbalance, so…
+
+617
+01:28:28.280 --> 01:28:45.929
+Guillaume: even 7907 has this problem. Why is it given a price for something, you, you know, until 24 kilobytes, it's, it's the standard price, and then it gets bigger. It's kind of the same approach, I mean.
+
+618
+01:28:45.930 --> 01:28:54.859
+Guillaume: Either you decide you want to… to, like, the contract code size to… sorry, the access
+
+619
+01:28:55.010 --> 01:29:07.959
+Guillaume: cost for the contract size to… sorry, the access cost to reflect the contract size, in which case, that's $29.26, or you say, well, this is not a problem big enough to do that at this moment.
+
+620
+01:29:07.960 --> 01:29:17.669
+Guillaume: And then you just bump the code size to a safe limit, knowing that some people will pay more than they have to. Either the…
+
+621
+01:29:17.810 --> 01:29:22.190
+Guillaume: The transaction sender, or the… or the blog builder.
+
+622
+01:29:22.340 --> 01:29:26.319
+Guillaume: But yeah, in my view, this is already a choice we made.
+
+623
+01:29:26.350 --> 01:29:37.499
+Guillaume: So that's, there's no point in, selecting or, like, scheduling an EIP. That is going to create a temporary cost.
+
+624
+01:29:37.500 --> 01:29:48.840
+Guillaume: that we'll… we'll have to maintain for the rest of, of the time, with, you know, and that we want to replace eventually, either in I-Star or, or a bit later.
+
+625
+01:29:52.630 --> 01:29:53.429
+Maria Silva: But so, but…
+
+626
+01:29:53.580 --> 01:30:03.639
+Maria Silva: That's the thing, right? Like, ideally, we would have the threshold at 10 kilobytes, or close to it, because before that, costs are fairly linear.
+
+627
+01:30:03.640 --> 01:30:15.650
+Maria Silva: But the issue is that at 24, the difference is still not horrendous. But then, the higher you go, the worse it gets in a linear fashion, right? And so that's…
+
+628
+01:30:16.230 --> 01:30:24.930
+Maria Silva: where I'm concerned is, like, increasing contract size too much will be hurting contract loading…
+
+629
+01:30:25.560 --> 01:30:29.039
+Maria Silva: For all the other users at the same level.
+
+630
+01:30:29.180 --> 01:30:35.130
+Maria Silva: And contract loading is fairly a common thing we do, so…
+
+631
+01:30:35.310 --> 01:30:44.880
+Maria Silva: I don't know, it seems, it seems like a huge hit in scalability. So yeah, I'll be a bit unhappy about that.
+
+632
+01:30:46.400 --> 01:30:51.259
+Guillaume: I mean, core development is about being unhappy, at least that's my experience.
+
+633
+01:30:53.190 --> 01:30:56.099
+Ansgar Dietrichs: From the group, again, there seems to be a comment.
+
+634
+01:30:57.280 --> 01:31:16.319
+Carl Beekhuizen: I think another thing here is that, like, we can also, for smaller contracts, implement some kind of refund mechanism, in the future. It's very… it's very hard to make stuff more expensive, like, price some of these other things correctly, but, like, having it where we charge the 24K limit and then, refund if it was less.
+
+635
+01:31:16.770 --> 01:31:22.310
+Carl Beekhuizen: I think it's a sensible mechanism that wouldn't break anything, and would allow us to get the correct pricing.
+
+636
+01:31:25.080 --> 01:31:36.230
+Ansgar Dietrichs: Are you proposing that we would basically modify the Julio ERP already to have such a refund, for smaller than, like, say, 32GB contracts, or would you say at a later fork this could be added?
+
+637
+01:31:37.500 --> 01:31:41.030
+Carl Beekhuizen: I would… I would say for a later fork,
+
+638
+01:31:41.140 --> 01:31:50.790
+Carl Beekhuizen: I don't think we should make the situation worse by implementing the naive bump, the Julio's EIP, because I think that's just gonna, like.
+
+639
+01:31:51.380 --> 01:31:56.000
+Carl Beekhuizen: Like, it exacerbates the situation in some ways now.
+
+640
+01:31:57.070 --> 01:32:12.250
+Carl Beekhuizen: But, like, I think another mechanism where we correctly price things is more reasonable. And then, like, if we further want to be able to scale the, like, if we want to further price things correctly for the contracts less than 24 kilobytes, I think we can do that in the future.
+
+641
+01:32:12.430 --> 01:32:20.950
+Ansgar Dietrichs: So, we are… yes. Just cutting you, cutting off, because, like, we are… we are, like, one or two minutes before the end of the call,
+
+642
+01:32:21.190 --> 01:32:28.280
+Ansgar Dietrichs: Yeah, it feels a bit hard. It's not… like, it seems like people are leaning towards a bump to 32 kilobytes, it seems like…
+
+643
+01:32:28.430 --> 01:32:41.300
+Ansgar Dietrichs: that's the option that I've heard the most so far. We have not talked much about the actual, like, the kind of the ERP that was originally proposed, the 7907, at all, so it seems like people are mostly
+
+644
+01:32:41.320 --> 01:32:57.980
+Ansgar Dietrichs: apparently not a fan of that style of approach. I don't know, do you have any… maybe just to simplify the decision tree here, like, first, is there any client that actually prefers the 7907 mechanism, so basically the extra fields to new accounts that includes the size of the contract?
+
+645
+01:32:59.950 --> 01:33:05.519
+Ansgar Dietrichs: I mean, I guess I've… Carlos and Ben, you already had you on up, but I assume that was not on this point.
+
+646
+01:33:07.920 --> 01:33:13.299
+Ben Adams: Yeah, I mean, I'm happy… I'm happy with… I'm happy with, 7907.
+
+647
+01:33:13.430 --> 01:33:22.460
+Ben Adams: But if we look at the goal, the short-term goal is to improve developer's experience, and a small bump
+
+648
+01:33:22.850 --> 01:33:24.970
+Ben Adams: We'll give that to, like, 32.
+
+649
+01:33:25.270 --> 01:33:32.330
+Ben Adams: Whereas… In a longer-term vision, we want to be able to allow
+
+650
+01:33:32.430 --> 01:33:35.510
+Ben Adams: Larger contracts, and for that.
+
+651
+01:33:36.080 --> 01:33:43.700
+Ben Adams: maybe we think a little bit longer and do an improved mechanism. So therefore, the 32K bump is, you know, it's a… it's a…
+
+652
+01:33:43.840 --> 01:33:47.029
+Ben Adams: Stopgap to buy some time, make every developer happy.
+
+653
+01:33:47.960 --> 01:33:54.139
+Ben Adams: And they're used to doing 24KB contracts, so it'll be a while before they start hitting 32.
+
+654
+01:33:55.700 --> 01:33:58.589
+Ben Adams: 4K or the 4K.
+
+655
+01:33:59.400 --> 01:34:05.170
+Ansgar Dietrichs: Yeah, so then maybe I would just, like, because I really want to make this decision today,
+
+656
+01:34:05.800 --> 01:34:06.830
+Ansgar Dietrichs: my prop…
+
+657
+01:34:06.840 --> 01:34:25.960
+Ansgar Dietrichs: it's just in terms of, like, what I hear the most seems to be the bump to 32, that's something that came up repeatedly, and yes, there's the protest, and I personally also am a little worried about this, that, like, it will make all contract loads 32% more expensive. At the same time, contract loads are not a very dominating part of the current transaction costs, so maybe it's not so bad.
+
+658
+01:34:26.100 --> 01:34:41.680
+Ansgar Dietrichs: And it's a very highly requested feature. So, do we generally have rough consensus around the bump to 32? So basically, like, DFI-ing 7907, and instead CFI-ing… it's not technically PFI'd, but I think we were all okay with swapping this one out. Basically.
+
+659
+01:34:41.830 --> 01:34:49.340
+Ansgar Dietrichs: CFI-ing Julio's EIP with the understanding that it would be bumped to 32 kilobytes specifically? Is this…
+
+660
+01:34:49.500 --> 01:34:51.119
+Ansgar Dietrichs: Does this have rough consensus?
+
+661
+01:34:56.600 --> 01:34:57.440
+Ansgar Dietrichs: Or…
+
+662
+01:34:57.550 --> 01:35:04.019
+Ansgar Dietrichs: Yeah. It's basically any client, any client representative, I see, for example, Maurice in chat, that might have some…
+
+663
+01:35:04.300 --> 01:35:10.330
+Ansgar Dietrichs: or weak opposition, at least? Like, so any clients that are opposed to this, to this option?
+
+664
+01:35:10.950 --> 01:35:22.099
+Ansgar Dietrichs: Because otherwise, I would propose that we at least CFI it, and then we still, of course, in the DevNet stage, we can still, also we will have benchmarks and everything, and we can still decide whether we actually end up going ahead with it or not, but,
+
+665
+01:35:23.600 --> 01:35:26.529
+Ansgar Dietrichs: In the interest of today, getting through the scoping.
+
+666
+01:35:26.530 --> 01:35:27.940
+Guillaume: GFI, which one?
+
+667
+01:35:28.470 --> 01:35:33.829
+Ansgar Dietrichs: see if I do… so this would be… let me confirm the number.
+
+668
+01:35:33.830 --> 01:35:36.569
+Guillaume: Julius Pierre. Julius…
+
+669
+01:35:36.570 --> 01:35:38.619
+Ansgar Dietrichs: Julius. This is correct, yes.
+
+670
+01:35:38.750 --> 01:35:39.770
+Guillaume: Okay, well…
+
+671
+01:35:39.770 --> 01:35:44.710
+Ansgar Dietrichs: 7954, but… yes, exactly. 7954.
+
+672
+01:35:45.480 --> 01:35:46.549
+Ansgar Dietrichs: And then…
+
+673
+01:35:46.660 --> 01:36:03.480
+Ansgar Dietrichs: just to have this be coupled with the last decision, because we have… we always waited for… so… but yeah, like, first, do we… how do we feel about this? Is this… I'll just… I… can we… so basically, can we CFI this? Is there anyone who… who is veto… who would veto now CFI… making this CFI decision?
+
+674
+01:36:14.430 --> 01:36:24.340
+Ansgar Dietrichs: Okay, then I would say we DFI7907, and we instead CFI as a business swap-in replacement, 7954,
+
+675
+01:36:24.470 --> 01:36:36.480
+Ansgar Dietrichs: And my understanding is that, looking at the AP right now, that it already, in the current form, proposes a bump from 24 to 32, so that is exactly the number that we also intended here.
+
+676
+01:36:37.540 --> 01:36:51.470
+Ansgar Dietrichs: I would then propose that, just for practical reasons, this EIP7954 comes with also an adjustment to the maximum init code size from 848 to 64. We don't have time to get into this now.
+
+677
+01:36:51.470 --> 01:37:01.269
+Ansgar Dietrichs: And there's also this alternative EIP that we basically delay decision on. You can see it right under the one that's currently marked, 7903, remove init code size limit.
+
+678
+01:37:01.320 --> 01:37:21.180
+Ansgar Dietrichs: I would propose that we basically just, on Monday, on ACDT, also very briefly revisit this. This should be a very quick decision, because it's just about the init code, and just basically see, whether A the Julio EIP on this point on the init code is reasonable, and then whether we still see a need for this additional EIP.
+
+679
+01:37:22.200 --> 01:37:23.730
+Ansgar Dietrichs: And…
+
+680
+01:37:24.350 --> 01:37:30.529
+Ansgar Dietrichs: I think that that's the most reasonable, so if everyone is okay with that, then I would basically also delegate that small decision to ACDT.
+
+681
+01:37:33.250 --> 01:37:35.350
+Ansgar Dietrichs: Or Maris, maybe do you…
+
+682
+01:37:35.560 --> 01:37:39.490
+Ansgar Dietrichs: You're saying you'd already just now make the DFI decision on the full uncapping?
+
+683
+01:37:39.720 --> 01:37:45.280
+Marius van der Wijden: Yes, I think we should… we should DFI the full-on capping, we should just do… if we want to go the…
+
+684
+01:37:45.460 --> 01:37:51.410
+Marius van der Wijden: the Julio route, we should go the Julio route, double the… the init code.
+
+685
+01:37:51.520 --> 01:37:55.169
+Marius van der Wijden: That's it, and… and we're… we're done with, like, this…
+
+686
+01:37:57.050 --> 01:37:59.909
+Marius van der Wijden: Like, yeah, walking around the decisions.
+
+687
+01:38:01.650 --> 01:38:17.809
+Ansgar Dietrichs: Okay, then… I mean, that's… I think that's kind of where we are… where this would be headed anyway, so then, yeah, maybe that's more reasonable. Okay, I was a bit hesitant because we're already 5 minutes over time, it's a bit late for a decision, but yes, then I would propose we DFI7907… sorry, not 7903.
+
+688
+01:38:17.930 --> 01:38:22.699
+Ansgar Dietrichs: Remove init code size limit, and we instead just go with the…
+
+689
+01:38:22.960 --> 01:38:32.510
+Ansgar Dietrichs: init code size adjustment from… that is part of, the Julio EIP, and yes, we can still see, of course, if we want to adjust that number. That's in… that's in there.
+
+690
+01:38:33.270 --> 01:38:34.849
+Ansgar Dietrichs: Anyone that's opposed to that?
+
+691
+01:38:41.000 --> 01:38:45.800
+Ansgar Dietrichs: Okay, then we really only have the one delayed decision until Monday,
+
+692
+01:38:46.140 --> 01:38:49.809
+Ansgar Dietrichs: Which was… which one was that? That was the…
+
+693
+01:38:50.300 --> 01:39:07.209
+Ansgar Dietrichs: state growth, so… so we're basically delaying this… yes, exactly. We are delaying the, AT37 state growth decision for Monday, and other than that, the only ERPs that we'll have to talk about for lump sum scope will be the ones without protocol changes, so…
+
+694
+01:39:07.610 --> 01:39:14.099
+Ansgar Dietrichs: for all intents and purposes, otherwise the grump scope is, at this point, final, at least to the CFI stage.
+
+695
+01:39:14.440 --> 01:39:22.669
+Ansgar Dietrichs: Awesome. This was a long path to get here, so I'm very, very happy we got it done, and thank you all very, very much, and
+
+696
+01:39:23.000 --> 01:39:25.220
+Ansgar Dietrichs: See most of you all on ACDT next week.
+
+697
+01:39:29.630 --> 01:39:30.150
+Justin Florentine (Besu): Thanks, y'all.
+
+698
+01:39:30.910 --> 01:39:31.770
+Marius van der Wijden: Thank you, bye-bye.
+
+699
+01:39:34.690 --> 01:39:35.700
+Danno Ferrin - Tectonic.xyz: Thanks, bye.
+
+700
+01:39:36.070 --> 01:39:36.930
+Danno Ferrin - Tectonic.xyz: Sorry, you…
+
+701
+01:39:37.520 --> 01:39:38.700
+Marius van der Wijden: God damn, let's…
+

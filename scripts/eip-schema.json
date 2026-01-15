@@ -51,7 +51,36 @@
         "wasHeadlinerCandidate": { "type": "boolean" },
         "headlinerDiscussionLink": { "type": "string" },
         "layer": { "type": "string" },
-        "champion": { "$ref": "#/$defs/Champion" }
+        "champion": { "$ref": "#/$defs/Champion" },
+        "presentationHistory": {
+          "type": "array",
+          "items": { "$ref": "#/$defs/PresentationHistoryEntry" }
+        }
+      }
+    },
+    "PresentationHistoryEntry": {
+      "type": "object",
+      "required": ["date"],
+      "additionalProperties": false,
+      "anyOf": [
+        { "required": ["call"] },
+        { "required": ["link"] }
+      ],
+      "properties": {
+        "call": {
+          "type": "string",
+          "pattern": "^(acdc|acde|acdt)/[0-9]+$"
+        },
+        "link": {
+          "type": "string"
+        },
+        "date": {
+          "type": "string",
+          "pattern": "^[0-9]{4}-[0-9]{2}-[0-9]{2}$"
+        },
+        "headlinerProposal": {
+          "type": "boolean"
+        }
       }
     },
     "StatusHistoryEntry": {

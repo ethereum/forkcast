@@ -8,18 +8,26 @@ interface EipTimelineProps {
   eip: EIP;
 }
 
-interface TimelineEvent {
-  type: 'created' | 'fork_status' | 'presentation';
+interface StatusEntry {
+  status: string;
   date?: string | null;
   call?: string | null;
-  forkName?: string;
-  status?: string;
-  champion?: { name: string };
-  // For presentation events
+  isCurrentStatus: boolean;
+}
+
+interface PresentationEntry {
+  date?: string | null;
+  call?: string | null;
   link?: string;
   headlinerProposal?: boolean;
-  // For sorting: lower = more recent (shown first)
-  sortOrder: number;
+}
+
+interface ForkGroup {
+  forkName: string;
+  champion?: { name: string };
+  currentStatus: string;
+  statusHistory: StatusEntry[];
+  presentations: PresentationEntry[];
 }
 
 const statusColors: Record<string, { dot: string; text: string }> = {
@@ -50,10 +58,6 @@ const statusColors: Record<string, { dot: string; text: string }> = {
   created: {
     dot: 'bg-indigo-500',
     text: 'text-indigo-700 dark:text-indigo-400',
-  },
-  presentation: {
-    dot: 'bg-blue-500',
-    text: 'text-blue-700 dark:text-blue-400',
   },
 };
 
@@ -89,86 +93,59 @@ function getUpgradeOrder(forkName: string): number {
 }
 
 export const EipTimeline: React.FC<EipTimelineProps> = ({ eip }) => {
-  // Build unified timeline events
-  const events: TimelineEvent[] = [];
-
-  // Add created event (will be at bottom)
-  if (eip.createdDate) {
-    events.push({
-      type: 'created',
-      date: eip.createdDate,
-      sortOrder: 999999, // Always last
-    });
-  }
-
-  // Add fork status events
-  // Sort forks by upgrade order (furthest future first for display within same date)
+  // Build fork groups sorted by upgrade order (most recent first)
   const sortedForks = [...(eip.forkRelationships || [])].sort((a, b) => {
     return getUpgradeOrder(b.forkName) - getUpgradeOrder(a.forkName);
   });
 
-  sortedForks.forEach((fork) => {
-    const upgradeOrder = getUpgradeOrder(fork.forkName);
-
+  const forkGroups: ForkGroup[] = sortedForks.map((fork) => {
     // If there's a champion and no "Proposed" in history, prepend it
     const hasProposedStep = fork.statusHistory.some(entry => entry.status === 'Proposed');
     const effectiveHistory = (fork.champion && !hasProposedStep)
       ? [{ status: 'Proposed' as const, call: null, date: null }, ...fork.statusHistory]
       : fork.statusHistory;
 
-    // Reverse the status history so most recent is first
+    // Reverse so most recent is first
     const reversedHistory = [...effectiveHistory].reverse();
+    const currentStatus = reversedHistory[0]?.status || 'Proposed';
 
-    reversedHistory.forEach((entry, index) => {
-      // Always show current status (index 0), Proposed status, or statuses with attribution
-      const isCurrentStatus = index === 0;
-      const hasAttribution = entry.date || entry.call;
-      const isProposed = entry.status === 'Proposed';
-      if (!isCurrentStatus && !hasAttribution && !isProposed) {
-        return;
-      }
-
-      // Calculate sort order:
-      // - Group by fork (later forks first, i.e., higher upgradeOrder)
-      // - Within each fork, show most recent events first (index from reversedHistory)
-      const sortOrder = -upgradeOrder * 10000 + index;
-
-      events.push({
-        type: 'fork_status',
+    // Build status entries (include current status as first item)
+    const statusHistory: StatusEntry[] = reversedHistory
+      .map((entry, index) => ({
+        status: entry.status,
         date: entry.date,
         call: entry.call,
-        forkName: fork.forkName,
-        status: entry.status,
-        champion: fork.champion,
-        sortOrder,
+        isCurrentStatus: index === 0,
+      }))
+      .filter((entry) => {
+        // Always show current status
+        if (entry.isCurrentStatus) return true;
+        const hasAttribution = entry.date || entry.call;
+        const isProposed = entry.status === 'Proposed';
+        return hasAttribution || isProposed;
       });
-    });
 
-    // Add presentation events for this fork
-    // Presentations appear AFTER status events (higher sortOrder = lower in timeline)
-    // Within presentations, maintain oldest-to-newest order
-    if (fork.presentationHistory) {
-      fork.presentationHistory.forEach((presentation, index) => {
-        // Sort order formula: -upgradeOrder * 10000 + 1000 + presentationIndex
-        const sortOrder = -upgradeOrder * 10000 + 1000 + index;
+    // Build presentation entries (reverse to show oldest first, chronological within section)
+    const presentations: PresentationEntry[] = (fork.presentationHistory || []).map(p => ({
+      date: p.date,
+      call: p.call,
+      link: p.link,
+      headlinerProposal: p.headlinerProposal,
+    }));
 
-        events.push({
-          type: 'presentation',
-          date: presentation.date,
-          call: presentation.call,
-          link: presentation.link,
-          forkName: fork.forkName,
-          headlinerProposal: presentation.headlinerProposal,
-          sortOrder,
-        });
-      });
-    }
+    return {
+      forkName: fork.forkName,
+      champion: fork.champion,
+      currentStatus,
+      statusHistory,
+      presentations,
+    };
   });
 
-  // Sort events
-  events.sort((a, b) => a.sortOrder - b.sortOrder);
+  const hasCreatedDate = !!eip.createdDate;
+  const totalNodes = forkGroups.length + (hasCreatedDate ? 1 : 0);
 
-  if (events.length === 0) {
+  if (totalNodes === 0) {
     return null;
   }
 
@@ -180,130 +157,173 @@ export const EipTimeline: React.FC<EipTimelineProps> = ({ eip }) => {
       <div className="bg-slate-50 dark:bg-slate-700/30 border border-slate-200 dark:border-slate-700 rounded-lg overflow-hidden">
         <div className="px-4 py-3.5 bg-white dark:bg-slate-800">
           <div className="relative">
-            {events.map((event, index) => {
-              const isLast = index === events.length - 1;
-              const colors = event.type === 'created'
-                ? statusColors.created
-                : event.type === 'presentation'
-                  ? statusColors.presentation
-                  : (statusColors[event.status || ''] || statusColors.Proposed);
+            {forkGroups.map((group, groupIndex) => {
+              const isLastNode = !hasCreatedDate && groupIndex === forkGroups.length - 1;
 
-              // Determine presentation label based on call/link and headlinerProposal
-              const getPresentationLabel = () => {
-                if (event.headlinerProposal) return 'Headliner Proposal';
-                if (event.call) return 'Presented';
-                return 'Proposed';
-              };
+              const allItems = [
+                ...group.statusHistory.map((entry) => ({ type: 'status' as const, entry })),
+                ...group.presentations.map((presentation) => ({ type: 'presentation' as const, presentation })),
+              ];
 
               return (
-                <div key={index} className="relative flex gap-3">
-                  {/* Timeline dot and line */}
+                <div key={group.forkName} className="relative flex gap-3">
+                  {/* Main timeline dot and line */}
                   <div className="relative w-2.5 shrink-0 flex flex-col items-center pt-1">
-                    <div className={`w-2.5 h-2.5 rounded-full shrink-0 ${colors.dot}`} />
-                    {!isLast && (
+                    <div className="w-2.5 h-2.5 rounded-full shrink-0 bg-slate-400 dark:bg-slate-500" />
+                    {!isLastNode && (
                       <div className="w-0.5 flex-1 bg-slate-200 dark:bg-slate-700 mb-[-4px]" />
                     )}
+                    {/* Horizontal line to fork badge */}
+                    <div className="absolute left-2.5 top-[9px] w-3 h-0.5 bg-slate-200 dark:bg-slate-700" />
                   </div>
 
                   {/* Content */}
-                  <div className={`min-w-0 flex-1 ${isLast ? '' : 'pb-4'}`}>
-                    {event.type === 'created' ? (
-                      <>
-                        <p className={`text-sm font-medium leading-5 ${colors.text}`}>
-                          EIP Created
-                        </p>
-                        {event.date && (
-                          <p className="text-xs text-slate-500 dark:text-slate-400 mt-0.5">
-                            {formatDate(event.date)}
-                          </p>
-                        )}
-                      </>
-                    ) : event.type === 'presentation' ? (
-                      <>
-                        <p className={`text-sm font-medium leading-5 ${colors.text}`}>
-                          <Link
-                            to={`/upgrade/${event.forkName?.toLowerCase()}`}
-                            className="text-xs font-mono px-1.5 py-0.5 rounded bg-slate-100 dark:bg-slate-700 text-slate-500 dark:text-slate-400 hover:bg-slate-200 dark:hover:bg-slate-600 hover:text-slate-700 dark:hover:text-slate-300 mr-1.5 transition-colors"
-                          >
-                            {event.forkName}
-                          </Link>
-                          {getPresentationLabel()}
-                        </p>
-                        <p className="text-xs text-slate-400 dark:text-slate-500 mt-0.5">
-                          {event.date && <span>{formatDate(event.date)}</span>}
-                          {event.date && (event.call || event.link) && <span> · </span>}
-                          {event.call && (() => {
-                            const { display, link } = formatCallReference(event.call);
+                  <div className={`min-w-0 flex-1 ${isLastNode ? '' : 'pb-4'}`}>
+                    {/* Fork header with bordered badge */}
+                    <div className="flex items-center justify-between gap-2">
+                      <Link
+                        to={`/upgrade/${group.forkName.toLowerCase()}`}
+                        className="text-xs font-mono font-medium px-2 py-0.5 rounded border border-slate-300 dark:border-slate-600 text-slate-600 dark:text-slate-300 hover:border-purple-400 dark:hover:border-purple-500 hover:text-purple-600 dark:hover:text-purple-400 transition-colors"
+                      >
+                        {group.forkName}
+                      </Link>
+                      {group.champion && group.currentStatus === 'Proposed' && (
+                        <Tooltip text={`Champion for ${group.forkName}`}>
+                          <div className="flex items-center gap-1 text-xs text-slate-400 dark:text-slate-500 cursor-help shrink-0">
+                            <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+                            </svg>
+                            <span>{group.champion.name}</span>
+                          </div>
+                        </Tooltip>
+                      )}
+                    </div>
+
+                    {/* Sub-items with dot-and-line */}
+                    {allItems.length > 0 && (
+                      <div className="mt-1.5 ml-2 relative">
+                        {/* Connecting line from fork header */}
+                        <div className="absolute left-[3.5px] -top-1.5 w-0.5 h-3 bg-slate-200 dark:bg-slate-700" />
+                        {allItems.map((item, idx) => {
+                          const isLastChild = idx === allItems.length - 1;
+
+                          if (item.type === 'status') {
+                            const entry = item.entry;
+                            const entryColors = statusColors[entry.status] || statusColors.Proposed;
                             return (
-                              <Link
-                                to={link}
-                                className="text-slate-500 dark:text-slate-400 hover:text-purple-600 dark:hover:text-purple-400 underline decoration-slate-300 dark:decoration-slate-600 underline-offset-2"
-                              >
-                                {display}
-                              </Link>
-                            );
-                          })()}
-                          {!event.call && event.link && (
-                            <a
-                              href={event.link}
-                              target="_blank"
-                              rel="noopener noreferrer"
-                              className="text-slate-500 dark:text-slate-400 hover:text-purple-600 dark:hover:text-purple-400 underline decoration-slate-300 dark:decoration-slate-600 underline-offset-2 inline-flex items-center gap-1"
-                            >
-                              Forum Post
-                              <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
-                              </svg>
-                            </a>
-                          )}
-                        </p>
-                      </>
-                    ) : (
-                      <>
-                        <div className="flex items-center justify-between gap-2">
-                          <p className={`text-sm font-medium leading-5 ${colors.text}`}>
-                            <Link
-                              to={`/upgrade/${event.forkName?.toLowerCase()}`}
-                              className="text-xs font-mono px-1.5 py-0.5 rounded bg-slate-100 dark:bg-slate-700 text-slate-500 dark:text-slate-400 hover:bg-slate-200 dark:hover:bg-slate-600 hover:text-slate-700 dark:hover:text-slate-300 mr-1.5 transition-colors"
-                            >
-                              {event.forkName}
-                            </Link>
-                            {statusLabels[event.status || '']}
-                          </p>
-                          {event.champion && event.status === 'Proposed' && (
-                            <Tooltip text={`Champion for ${event.forkName}`}>
-                              <div className="flex items-center gap-1 text-xs text-slate-400 dark:text-slate-500 cursor-help shrink-0">
-                                <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
-                                </svg>
-                                <span>{event.champion.name}</span>
+                              <div key={`status-${idx}`} className={`relative flex items-center gap-2.5 ${isLastChild ? '' : 'pb-2.5'}`}>
+                                <div className="relative w-2 shrink-0">
+                                  <div className={`w-2 h-2 rounded-full ${entryColors.dot}`} />
+                                  {!isLastChild && (
+                                    <div className="absolute left-[3px] top-2 w-0.5 h-[20px] bg-slate-200 dark:bg-slate-700" />
+                                  )}
+                                </div>
+                                <div className="min-w-0 flex-1 leading-none">
+                                  <span className={`text-xs ${entryColors.text}`}>
+                                    {statusLabels[entry.status]}
+                                  </span>
+                                  {(entry.date || entry.call) && (
+                                    <span className="text-xs text-slate-400 dark:text-slate-500">
+                                      {' · '}
+                                      {entry.date && formatDate(entry.date)}
+                                      {entry.date && entry.call && ' · '}
+                                      {entry.call && (() => {
+                                        const { display, link } = formatCallReference(entry.call);
+                                        return (
+                                          <Link
+                                            to={link}
+                                            className="hover:text-purple-600 dark:hover:text-purple-400 underline decoration-slate-300 dark:decoration-slate-600 underline-offset-2"
+                                          >
+                                            {display}
+                                          </Link>
+                                        );
+                                      })()}
+                                    </span>
+                                  )}
+                                </div>
                               </div>
-                            </Tooltip>
-                          )}
-                        </div>
-                        {(event.date || event.call) && (
-                          <p className="text-xs text-slate-400 dark:text-slate-500 mt-0.5">
-                            {event.date && <span>{formatDate(event.date)}</span>}
-                            {event.date && event.call && <span> · </span>}
-                            {event.call && (() => {
-                              const { display, link } = formatCallReference(event.call);
-                              return (
-                                <Link
-                                  to={link}
-                                  className="text-slate-500 dark:text-slate-400 hover:text-purple-600 dark:hover:text-purple-400 underline decoration-slate-300 dark:decoration-slate-600 underline-offset-2"
-                                >
-                                  {display}
-                                </Link>
-                              );
-                            })()}
-                          </p>
-                        )}
-                      </>
+                            );
+                          } else {
+                            const presentation = item.presentation;
+                            const label = presentation.headlinerProposal
+                              ? 'Headliner Proposal'
+                              : presentation.call
+                                ? 'Presented'
+                                : 'Proposed';
+
+                            return (
+                              <div key={`pres-${idx}`} className={`relative flex items-center gap-2.5 ${isLastChild ? '' : 'pb-2.5'}`}>
+                                <div className="relative w-2 shrink-0">
+                                  <div className="w-2 h-2 rounded-full bg-slate-300 dark:bg-slate-600" />
+                                  {!isLastChild && (
+                                    <div className="absolute left-[3px] top-2 w-0.5 h-[20px] bg-slate-200 dark:bg-slate-700" />
+                                  )}
+                                </div>
+                                <div className="min-w-0 flex-1 leading-none">
+                                  <span className="text-xs text-slate-500 dark:text-slate-400">
+                                    {label}
+                                  </span>
+                                  {(presentation.date || presentation.call || presentation.link) && (
+                                    <span className="text-xs text-slate-400 dark:text-slate-500">
+                                      {' · '}
+                                      {presentation.date && formatDate(presentation.date)}
+                                      {presentation.date && (presentation.call || presentation.link) && ' · '}
+                                      {presentation.call && (() => {
+                                        const { display, link } = formatCallReference(presentation.call);
+                                        return (
+                                          <Link
+                                            to={link}
+                                            className="hover:text-purple-600 dark:hover:text-purple-400 underline decoration-slate-300 dark:decoration-slate-600 underline-offset-2"
+                                          >
+                                            {display}
+                                          </Link>
+                                        );
+                                      })()}
+                                      {!presentation.call && presentation.link && (
+                                        <a
+                                          href={presentation.link}
+                                          target="_blank"
+                                          rel="noopener noreferrer"
+                                          className="hover:text-purple-600 dark:hover:text-purple-400 underline decoration-slate-300 dark:decoration-slate-600 underline-offset-2 inline-flex items-center gap-1"
+                                        >
+                                          Forum Post
+                                          <svg className="w-2.5 h-2.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
+                                          </svg>
+                                        </a>
+                                      )}
+                                    </span>
+                                  )}
+                                </div>
+                              </div>
+                            );
+                          }
+                        })}
+                      </div>
                     )}
                   </div>
                 </div>
               );
             })}
+
+            {/* EIP Created node */}
+            {hasCreatedDate && (
+              <div className="relative flex gap-3">
+                <div className="relative w-2.5 shrink-0 flex flex-col items-center pt-1">
+                  <div className={`w-2.5 h-2.5 rounded-full shrink-0 ${statusColors.created.dot}`} />
+                </div>
+                <div className="min-w-0 flex-1">
+                  <div className="flex items-center gap-2">
+                    <span className="text-xs font-mono font-medium px-2 py-0.5 rounded border border-indigo-300 dark:border-indigo-600 text-indigo-600 dark:text-indigo-400">
+                      EIP Created
+                    </span>
+                    <span className="text-xs text-slate-500 dark:text-slate-400">
+                      {formatDate(eip.createdDate!)}
+                    </span>
+                  </div>
+                </div>
+              </div>
+            )}
           </div>
         </div>
       </div>

@@ -34,6 +34,7 @@ export const getInclusionStage = (eip: EIP, forkName?: string): InclusionStage =
 
 /**
  * Get the headliner discussion link for an EIP in a specific fork
+ * Looks for a headliner_proposal entry in presentationHistory
  */
 export const getHeadlinerDiscussionLink = (eip: EIP, forkName?: string): string | null => {
   if (!forkName) return null;
@@ -41,7 +42,14 @@ export const getHeadlinerDiscussionLink = (eip: EIP, forkName?: string): string 
   const forkRelationship = eip.forkRelationships.find(fork =>
     fork.forkName.toLowerCase() === forkName.toLowerCase()
   );
-  return forkRelationship?.headlinerDiscussionLink || null;
+
+  if (!forkRelationship?.presentationHistory) return null;
+
+  const headlinerProposal = forkRelationship.presentationHistory.find(
+    p => p.type === 'headliner_proposal'
+  );
+
+  return headlinerProposal?.link || null;
 };
 
 /**

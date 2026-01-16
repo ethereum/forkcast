@@ -16,10 +16,10 @@ interface StatusEntry {
 }
 
 interface PresentationEntry {
+  type: 'headliner_proposal' | 'headliner_presentation' | 'presentation' | 'debate';
   date?: string | null;
   call?: string | null;
   link?: string;
-  headlinerProposal?: boolean;
 }
 
 interface ForkGroup {
@@ -125,12 +125,12 @@ export const EipTimeline: React.FC<EipTimelineProps> = ({ eip }) => {
         return hasAttribution || isProposed;
       });
 
-    // Build presentation entries (reverse to show oldest first, chronological within section)
+    // Build presentation entries
     const presentations: PresentationEntry[] = (fork.presentationHistory || []).map(p => ({
+      type: p.type,
       date: p.date,
       call: p.call,
       link: p.link,
-      headlinerProposal: p.headlinerProposal,
     }));
 
     return {
@@ -160,10 +160,30 @@ export const EipTimeline: React.FC<EipTimelineProps> = ({ eip }) => {
             {forkGroups.map((group, groupIndex) => {
               const isLastNode = !hasCreatedDate && groupIndex === forkGroups.length - 1;
 
+              // Merge and sort status history and presentations chronologically
               const allItems = [
-                ...group.statusHistory.map((entry) => ({ type: 'status' as const, entry })),
-                ...group.presentations.map((presentation) => ({ type: 'presentation' as const, presentation })),
-              ];
+                ...group.statusHistory.map((entry) => ({
+                  type: 'status' as const,
+                  entry,
+                  date: entry.date,
+                  isCurrentStatus: entry.isCurrentStatus
+                })),
+                ...group.presentations.map((presentation) => ({
+                  type: 'presentation' as const,
+                  presentation,
+                  date: presentation.date
+                })),
+              ].sort((a, b) => {
+                // Current status always first
+                if (a.type === 'status' && a.isCurrentStatus) return -1;
+                if (b.type === 'status' && b.isCurrentStatus) return 1;
+
+                // Then sort by date (most recent first)
+                if (!a.date && !b.date) return 0;
+                if (!a.date) return 1;
+                if (!b.date) return -1;
+                return new Date(b.date).getTime() - new Date(a.date).getTime();
+              });
 
               return (
                 <div key={group.forkName} className="relative flex gap-3">
@@ -187,7 +207,7 @@ export const EipTimeline: React.FC<EipTimelineProps> = ({ eip }) => {
                       >
                         {group.forkName}
                       </Link>
-                      {group.champion && group.currentStatus === 'Proposed' && (
+                      {group.champion && (
                         <Tooltip text={`Champion for ${group.forkName}`}>
                           <div className="flex items-center gap-1 text-xs text-slate-400 dark:text-slate-500 cursor-help shrink-0">
                             <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -203,7 +223,7 @@ export const EipTimeline: React.FC<EipTimelineProps> = ({ eip }) => {
                     {allItems.length > 0 && (
                       <div className="mt-1.5 ml-2 relative">
                         {/* Connecting line from fork header */}
-                        <div className="absolute left-[3.5px] -top-1.5 w-0.5 h-3 bg-slate-200 dark:bg-slate-700" />
+                        <div className="absolute left-[3px] -top-1.5 w-0.5 h-3 bg-slate-200 dark:bg-slate-700" />
                         {allItems.map((item, idx) => {
                           const isLastChild = idx === allItems.length - 1;
 
@@ -245,11 +265,12 @@ export const EipTimeline: React.FC<EipTimelineProps> = ({ eip }) => {
                             );
                           } else {
                             const presentation = item.presentation;
-                            const label = presentation.headlinerProposal
-                              ? 'Headliner Proposal'
-                              : presentation.call
-                                ? 'Presented'
-                                : 'Proposed';
+                            const label = {
+                              'headliner_proposal': 'Headliner Proposal',
+                              'headliner_presentation': 'Headliner Presentation',
+                              'presentation': 'Presented',
+                              'debate': 'Debated',
+                            }[presentation.type] || 'Presented';
 
                             return (
                               <div key={`pres-${idx}`} className={`relative flex items-center gap-2.5 ${isLastChild ? '' : 'pb-2.5'}`}>

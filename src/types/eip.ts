@@ -14,14 +14,13 @@ export interface ForkRelationship {
   }>; // Ordered oldest -> newest
   isHeadliner?: boolean;
   wasHeadlinerCandidate?: boolean;
-  headlinerDiscussionLink?: string;
   layer?: string;
   champion?: Champion;
   presentationHistory?: Array<{
+    type: 'headliner_proposal' | 'headliner_presentation' | 'presentation' | 'debate';
     call?: `${'acdc' | 'acde' | 'acdt'}/${number}`;
     link?: string;
     date: string;
-    headlinerProposal?: boolean;
   }>;
 }
 

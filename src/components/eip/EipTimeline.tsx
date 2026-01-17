@@ -222,8 +222,8 @@ export const EipTimeline: React.FC<EipTimelineProps> = ({ eip }) => {
                     {/* Sub-items with dot-and-line */}
                     {allItems.length > 0 && (
                       <div className="mt-1.5 ml-2 relative">
-                        {/* Connecting line from fork header */}
-                        <div className="absolute left-[3px] -top-1.5 w-0.5 h-3 bg-slate-200 dark:bg-slate-700" />
+                        {/* Connecting line from fork header - hidden on mobile */}
+                        <div className="hidden md:block absolute left-[3px] -top-1.5 w-0.5 h-3 bg-slate-200 dark:bg-slate-700" />
                         {allItems.map((item, idx) => {
                           const isLastChild = idx === allItems.length - 1;
 
@@ -235,7 +235,7 @@ export const EipTimeline: React.FC<EipTimelineProps> = ({ eip }) => {
                                 <div className="relative w-2 shrink-0">
                                   <div className={`w-2 h-2 rounded-full ${entryColors.dot}`} />
                                   {!isLastChild && (
-                                    <div className="absolute left-[3px] top-2 w-0.5 h-[20px] bg-slate-200 dark:bg-slate-700" />
+                                    <div className="hidden md:block absolute left-[3px] top-2 w-0.5 h-[20px] bg-slate-200 dark:bg-slate-700" />
                                   )}
                                 </div>
                                 <div className="min-w-0 flex-1 leading-none">
@@ -243,22 +243,39 @@ export const EipTimeline: React.FC<EipTimelineProps> = ({ eip }) => {
                                     {statusLabels[entry.status]}
                                   </span>
                                   {(entry.date || entry.call) && (
-                                    <span className="text-xs text-slate-400 dark:text-slate-500">
-                                      {' · '}
-                                      {entry.date && formatDate(entry.date)}
-                                      {entry.date && entry.call && ' · '}
-                                      {entry.call && (() => {
-                                        const { display, link } = formatCallReference(entry.call);
-                                        return (
-                                          <Link
-                                            to={link}
-                                            className="hover:text-purple-600 dark:hover:text-purple-400 underline decoration-slate-300 dark:decoration-slate-600 underline-offset-2"
-                                          >
-                                            {display}
-                                          </Link>
-                                        );
-                                      })()}
-                                    </span>
+                                    <>
+                                      <span className="hidden md:inline text-xs text-slate-400 dark:text-slate-500">
+                                        {' · '}
+                                        {entry.date && formatDate(entry.date)}
+                                        {entry.date && entry.call && ' · '}
+                                        {entry.call && (() => {
+                                          const { display, link } = formatCallReference(entry.call);
+                                          return (
+                                            <Link
+                                              to={link}
+                                              className="hover:text-purple-600 dark:hover:text-purple-400 underline decoration-slate-300 dark:decoration-slate-600 underline-offset-2"
+                                            >
+                                              {display}
+                                            </Link>
+                                          );
+                                        })()}
+                                      </span>
+                                      <div className="md:hidden text-xs text-slate-400 dark:text-slate-500">
+                                        {entry.date && formatDate(entry.date)}
+                                        {entry.date && entry.call && ' · '}
+                                        {entry.call && (() => {
+                                          const { display, link } = formatCallReference(entry.call);
+                                          return (
+                                            <Link
+                                              to={link}
+                                              className="hover:text-purple-600 dark:hover:text-purple-400 underline decoration-slate-300 dark:decoration-slate-600 underline-offset-2"
+                                            >
+                                              {display}
+                                            </Link>
+                                          );
+                                        })()}
+                                      </div>
+                                    </>
                                   )}
                                 </div>
                               </div>
@@ -277,7 +294,7 @@ export const EipTimeline: React.FC<EipTimelineProps> = ({ eip }) => {
                                 <div className="relative w-2 shrink-0">
                                   <div className="w-2 h-2 rounded-full bg-slate-300 dark:bg-slate-600" />
                                   {!isLastChild && (
-                                    <div className="absolute left-[3px] top-2 w-0.5 h-[20px] bg-slate-200 dark:bg-slate-700" />
+                                    <div className="hidden md:block absolute left-[3px] top-2 w-0.5 h-[20px] bg-slate-200 dark:bg-slate-700" />
                                   )}
                                 </div>
                                 <div className="min-w-0 flex-1 leading-none">
@@ -285,35 +302,65 @@ export const EipTimeline: React.FC<EipTimelineProps> = ({ eip }) => {
                                     {label}
                                   </span>
                                   {(presentation.date || presentation.call || presentation.link) && (
-                                    <span className="text-xs text-slate-400 dark:text-slate-500">
-                                      {' · '}
-                                      {presentation.date && formatDate(presentation.date)}
-                                      {presentation.date && (presentation.call || presentation.link) && ' · '}
-                                      {presentation.call && (() => {
-                                        const { display, link } = formatCallReference(presentation.call);
-                                        return (
-                                          <Link
-                                            to={link}
-                                            className="hover:text-purple-600 dark:hover:text-purple-400 underline decoration-slate-300 dark:decoration-slate-600 underline-offset-2"
+                                    <>
+                                      <span className="hidden md:inline text-xs text-slate-400 dark:text-slate-500">
+                                        {' · '}
+                                        {presentation.date && formatDate(presentation.date)}
+                                        {presentation.date && (presentation.call || presentation.link) && ' · '}
+                                        {presentation.call && (() => {
+                                          const { display, link } = formatCallReference(presentation.call);
+                                          return (
+                                            <Link
+                                              to={link}
+                                              className="hover:text-purple-600 dark:hover:text-purple-400 underline decoration-slate-300 dark:decoration-slate-600 underline-offset-2"
+                                            >
+                                              {display}
+                                            </Link>
+                                          );
+                                        })()}
+                                        {!presentation.call && presentation.link && (
+                                          <a
+                                            href={presentation.link}
+                                            target="_blank"
+                                            rel="noopener noreferrer"
+                                            className="hover:text-purple-600 dark:hover:text-purple-400 underline decoration-slate-300 dark:decoration-slate-600 underline-offset-2 inline-flex items-center gap-1"
                                           >
-                                            {display}
-                                          </Link>
-                                        );
-                                      })()}
-                                      {!presentation.call && presentation.link && (
-                                        <a
-                                          href={presentation.link}
-                                          target="_blank"
-                                          rel="noopener noreferrer"
-                                          className="hover:text-purple-600 dark:hover:text-purple-400 underline decoration-slate-300 dark:decoration-slate-600 underline-offset-2 inline-flex items-center gap-1"
-                                        >
-                                          Forum Post
-                                          <svg className="w-2.5 h-2.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
-                                          </svg>
-                                        </a>
-                                      )}
-                                    </span>
+                                            Forum Post
+                                            <svg className="w-2.5 h-2.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
+                                            </svg>
+                                          </a>
+                                        )}
+                                      </span>
+                                      <div className="md:hidden text-xs text-slate-400 dark:text-slate-500">
+                                        {presentation.date && formatDate(presentation.date)}
+                                        {presentation.date && (presentation.call || presentation.link) && ' · '}
+                                        {presentation.call && (() => {
+                                          const { display, link } = formatCallReference(presentation.call);
+                                          return (
+                                            <Link
+                                              to={link}
+                                              className="hover:text-purple-600 dark:hover:text-purple-400 underline decoration-slate-300 dark:decoration-slate-600 underline-offset-2"
+                                            >
+                                              {display}
+                                            </Link>
+                                          );
+                                        })()}
+                                        {!presentation.call && presentation.link && (
+                                          <a
+                                            href={presentation.link}
+                                            target="_blank"
+                                            rel="noopener noreferrer"
+                                            className="hover:text-purple-600 dark:hover:text-purple-400 underline decoration-slate-300 dark:decoration-slate-600 underline-offset-2 inline-flex items-center gap-1"
+                                          >
+                                            Forum Post
+                                            <svg className="w-2.5 h-2.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
+                                            </svg>
+                                          </a>
+                                        )}
+                                      </div>
+                                    </>
                                   )}
                                 </div>
                               </div>

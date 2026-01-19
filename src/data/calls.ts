@@ -118,3 +118,44 @@ export const getRecentCalls = (limit: number = 5): Call[] => {
     .sort((a, b) => b.date.localeCompare(a.date))
     .slice(0, limit);
 };
+
+// Breakout call types and their display info
+export type BreakoutCallType = 'epbs' | 'bal' | 'focil';
+
+export interface BreakoutCallInfo {
+  type: BreakoutCallType;
+  name: string;
+  eipId: number;
+}
+
+export const breakoutCalls: BreakoutCallInfo[] = [
+  { type: 'epbs', name: 'ePBS Breakout', eipId: 7732 },
+  { type: 'bal', name: 'BAL Breakout', eipId: 7928 },
+  { type: 'focil', name: 'FOCIL Breakout', eipId: 7805 },
+];
+
+// Get breakout call info for an EIP
+export const getBreakoutCallForEip = (eipId: number): BreakoutCallInfo | null => {
+  return breakoutCalls.find(bc => bc.eipId === eipId) || null;
+};
+
+// Get previous and next breakout calls for a given type
+export const getBreakoutCallNavigation = (type: BreakoutCallType): { previous: Call | null; next: Call | null } => {
+  const today = new Date().toISOString().split('T')[0];
+  const calls = protocolCalls
+    .filter(c => c.type === type)
+    .sort((a, b) => a.date.localeCompare(b.date));
+
+  const pastCalls = calls.filter(c => c.date <= today);
+  const futureCalls = calls.filter(c => c.date > today);
+
+  return {
+    previous: pastCalls.length > 0 ? pastCalls[pastCalls.length - 1] : null,
+    next: futureCalls.length > 0 ? futureCalls[0] : null,
+  };
+};
+
+// Get internal route for a completed breakout call
+export const getBreakoutCallPath = (call: Call): string => {
+  return `/calls/${call.path}`;
+};

@@ -215,11 +215,7 @@ const DevnetPrioritizationPage: React.FC = () => {
       const stage = getInclusionStage(eip, 'glamsterdam');
       const devnets = devnetMap.get(eip.id) || [];
 
-      // Get layer from fork relationship
-      const forkRel = eip.forkRelationships.find(
-        (rel) => rel.forkName.toLowerCase() === 'glamsterdam'
-      );
-      const layer = forkRel?.layer as 'EL' | 'CL' | null;
+      const layer = eip.layer || null;
 
       // Calculate weighted score
       const weightedScore = calculateWeightedScore(

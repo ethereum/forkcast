@@ -74,8 +74,7 @@ function passesFilters(eip: EIP, filters: EipSearchFilters): boolean {
 
   // Check layer filter
   if (filters.layer !== 'all') {
-    const hasLayer = relevantForks.some(fr => fr.layer === filters.layer);
-    if (!hasLayer) return false;
+    if (eip.layer !== filters.layer) return false;
   }
 
   return true;
@@ -494,9 +493,9 @@ export default function EipSearchModal({ isOpen, onClose, initialQuery = '' }: E
                                   {currentStatus}
                                 </span>
                               )}
-                              {recentFork.layer && (
+                              {eip.layer && (
                                 <span className="text-xs px-1.5 py-0.5 rounded bg-blue-50 dark:bg-blue-900/30 text-blue-600 dark:text-blue-400">
-                                  {recentFork.layer}
+                                  {eip.layer}
                                 </span>
                               )}
                             </>

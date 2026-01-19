@@ -208,11 +208,8 @@ export function calculateEipAggregate(
 function determineEipLayer(eip: EIP | undefined): 'EL' | 'CL' | null {
   if (!eip) return null;
 
-  // Check fork relationships for layer info
-  for (const rel of eip.forkRelationships) {
-    if (rel.layer) {
-      return rel.layer as 'EL' | 'CL';
-    }
+  if (eip.layer) {
+    return eip.layer;
   }
 
   // Fallback: check category

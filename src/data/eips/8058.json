@@ -9,6 +9,7 @@
   "createdDate": "2025-10-22",
   "discussionLink": "https://ethereum-magicians.org/t/eip-8058-contract-bytecode-deduplication-discount/25933",
   "reviewer": "bot",
+  "layer": "EL",
   "forkRelationships": [
     {
       "forkName": "Glamsterdam",
@@ -24,14 +25,13 @@
           "date": "2026-01-05"
         }
       ],
-      "layer": "EL",
       "champion": {
         "name": "Carlos Perez",
         "discord": "CPerezz.eth"
       }
     }
   ],
-  "laymanDescription": "If you deploy a contract that's exactly the same as one that already exists and you include that existing contract's address in your transaction's access list, you don't pay the per-byte code deposit again—the new contract just points to the already-stored code.",
+  "laymanDescription": "If you deploy a contract that's exactly the same as one that already exists and you include that existing contract's address in your transaction's access list, you don't pay the per-byte code deposit again\u2014the new contract just points to the already-stored code.",
   "stakeholderImpacts": {
     "endUsers": {
       "description": "Cheaper deployments for apps that spin up many identical contracts (e.g., factory wallets or clones); no change to how transactions are sent."
@@ -52,10 +52,10 @@
       "description": "Minimal runtime overhead; implement building the CodeHash Access-Set and conditional charging; no trie/schema changes. Same-block ordering effects are deterministic."
     },
     "clClients": {
-      "description": "No consensus changes on the CL—standard fork coordination only."
+      "description": "No consensus changes on the CL\u2014standard fork coordination only."
     },
     "elClients": {
-      "description": "Implement access-list–based set W, hash check on successful CREATE/CREATE2, and conditional code-deposit charging per EIP-2930/2929. Also, consider implementing a code -> address reverse index to avoid complexity to users on finding the required address."
+      "description": "Implement access-list\u2013based set W, hash check on successful CREATE/CREATE2, and conditional code-deposit charging per EIP-2930/2929. Also, consider implementing a code -> address reverse index to avoid complexity to users on finding the required address."
     }
   },
   "benefits": [

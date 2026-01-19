@@ -1,67 +1,66 @@
 {
-    "id": 7954,
-    "title": "Increase Maximum Contract Size",
-    "status": "Draft",
-    "description": "Raises the maximum allowed deployed contract code size from 24,576 bytes (24KiB) to 32,768 bytes (32KiB), and increases the EIP-3860 initcode size limit from 48KiB to 64KiB.",
-    "author": "Giulio Rebuffo (@Giulio2002), Ben Adams (@badams)",
-    "type": "Standards Track",
-    "category": "Core",
-    "createdDate": "2025-06-09",
-    "discussionLink": "https://ethereum-magicians.org/t/increase-maximum-contract-size-to-48kb/24509",
-    "reviewer": "bot",
-    "forkRelationships": [
-      {
-        "forkName": "Glamsterdam",
-        "statusHistory": [
-          {
-            "status": "Considered",
-            "call": "acde/228",
-            "date": "2026-01-15"
-          }
-        ],
-        "layer": "EL",
-        "champion": {
-          "name": "",
-          "discord": ""
+  "id": 7954,
+  "title": "Increase Maximum Contract Size",
+  "status": "Draft",
+  "description": "Raises the maximum allowed deployed contract code size from 24,576 bytes (24KiB) to 32,768 bytes (32KiB), and increases the EIP-3860 initcode size limit from 48KiB to 64KiB.",
+  "author": "Giulio Rebuffo (@Giulio2002), Ben Adams (@badams)",
+  "type": "Standards Track",
+  "category": "Core",
+  "createdDate": "2025-06-09",
+  "discussionLink": "https://ethereum-magicians.org/t/increase-maximum-contract-size-to-48kb/24509",
+  "reviewer": "bot",
+  "layer": "EL",
+  "forkRelationships": [
+    {
+      "forkName": "Glamsterdam",
+      "statusHistory": [
+        {
+          "status": "Considered",
+          "call": "acde/228",
+          "date": "2026-01-15"
         }
+      ],
+      "champion": {
+        "name": "",
+        "discord": ""
       }
-    ],
-    "laymanDescription": "Raises limits so developers can deploy slightly larger contracts: up to 32KiB deployed code and 64KiB initcode after a fork. Existing contracts remain valid.",
-    "stakeholderImpacts": {
-      "endUsers": {
-        "description": "No required action; may benefit from dapps deploying larger contracts after the network upgrade."
-      },
-      "appDevs": {
-        "description": "Can deploy contracts up to 32KiB and initcode up to 64KiB, reducing pressure to split logic."
-      },
-      "walletDevs": {
-        "description": "No new transaction types; deployments may include larger bytecode. Any size validations should reflect new limits."
-      },
-      "toolingInfra": {
-        "description": "Explorers, indexers, verifiers, and RPC tooling should handle larger contract bytecode and initcode in deployment flows."
-      },
-      "layer2s": {
-        "description": "Systems mirroring Ethereum’s limits may need updates to contract-size checks to remain compatible with L1 rules."
-      },
-      "stakersNodes": {
-        "description": "Operators need upgraded clients at fork; larger contracts can slightly increase storage and processing per deployment."
-      },
-      "clClients": {
-        "description": "Mostly fork-activation wiring and testing; the rule change is in execution and enforced by paired EL clients."
-      },
-      "elClients": {
-        "description": "Update EIP-170/EIP-3860 size checks, fork configuration, and tests to accept 32KiB code and 64KiB initcode."
-      }
+    }
+  ],
+  "laymanDescription": "Raises limits so developers can deploy slightly larger contracts: up to 32KiB deployed code and 64KiB initcode after a fork. Existing contracts remain valid.",
+  "stakeholderImpacts": {
+    "endUsers": {
+      "description": "No required action; may benefit from dapps deploying larger contracts after the network upgrade."
     },
-    "benefits": [
-      "Allows deploying larger, more complex contracts within a still-conservative maximum size.",
-      "Increases initcode limit to 64KiB, enabling deployment of larger contract bytecode.",
-      "Existing deployed contracts remain valid and unaffected.",
-      "Minimal protocol change: only updates size constants in existing rules."
-    ],
-    "tradeoffs": [
-      "Not backward compatible for contract deployments exceeding previous limits.",
-      "May slightly increase denial-of-service risk from larger contract code, though limit remains conservative."
-    ]
-  }
-  
+    "appDevs": {
+      "description": "Can deploy contracts up to 32KiB and initcode up to 64KiB, reducing pressure to split logic."
+    },
+    "walletDevs": {
+      "description": "No new transaction types; deployments may include larger bytecode. Any size validations should reflect new limits."
+    },
+    "toolingInfra": {
+      "description": "Explorers, indexers, verifiers, and RPC tooling should handle larger contract bytecode and initcode in deployment flows."
+    },
+    "layer2s": {
+      "description": "Systems mirroring Ethereum\u2019s limits may need updates to contract-size checks to remain compatible with L1 rules."
+    },
+    "stakersNodes": {
+      "description": "Operators need upgraded clients at fork; larger contracts can slightly increase storage and processing per deployment."
+    },
+    "clClients": {
+      "description": "Mostly fork-activation wiring and testing; the rule change is in execution and enforced by paired EL clients."
+    },
+    "elClients": {
+      "description": "Update EIP-170/EIP-3860 size checks, fork configuration, and tests to accept 32KiB code and 64KiB initcode."
+    }
+  },
+  "benefits": [
+    "Allows deploying larger, more complex contracts within a still-conservative maximum size.",
+    "Increases initcode limit to 64KiB, enabling deployment of larger contract bytecode.",
+    "Existing deployed contracts remain valid and unaffected.",
+    "Minimal protocol change: only updates size constants in existing rules."
+  ],
+  "tradeoffs": [
+    "Not backward compatible for contract deployments exceeding previous limits.",
+    "May slightly increase denial-of-service risk from larger contract code, though limit remains conservative."
+  ]
+}

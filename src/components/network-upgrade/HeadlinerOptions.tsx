@@ -55,8 +55,8 @@ export const HeadlinerOptions: React.FC<HeadlinerOptionsProps> = ({
             if (orderA !== orderB) return orderA - orderB;
 
             // Then sort by layer (EL before CL)
-            const layerA = getHeadlinerLayer(a, forkName);
-            const layerB = getHeadlinerLayer(b, forkName);
+            const layerA = getHeadlinerLayer(a);
+            const layerB = getHeadlinerLayer(b);
             if (layerA === 'EL' && layerB === 'CL') return -1;
             if (layerA === 'CL' && layerB === 'EL') return 1;
 
@@ -66,7 +66,7 @@ export const HeadlinerOptions: React.FC<HeadlinerOptionsProps> = ({
           .map(eip => {
             if (!eip.laymanDescription) return null;
 
-            const layer = getHeadlinerLayer(eip, forkName);
+            const layer = getHeadlinerLayer(eip);
             const inclusionStage = getInclusionStage(eip, forkName);
 
             // Determine SFI/CFI status

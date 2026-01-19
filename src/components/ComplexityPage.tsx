@@ -60,15 +60,10 @@ const ComplexityPage: React.FC = () => {
           (rel) => rel.forkName.toLowerCase() === SELECTED_FORK.toLowerCase()
         )
       )
-      .map((eip) => {
-        const forkRel = eip.forkRelationships.find(
-          (rel) => rel.forkName.toLowerCase() === SELECTED_FORK.toLowerCase()
-        );
-        return {
-          eip,
-          layer: forkRel?.layer as 'EL' | 'CL' | undefined,
-        };
-      });
+      .map((eip) => ({
+        eip,
+        layer: eip.layer,
+      }));
   }, []);
 
   // Combine EIPs with complexity data

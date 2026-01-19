@@ -159,7 +159,7 @@ const PublicNetworkUpgradePage: React.FC<PublicNetworkUpgradePageProps> = ({
   // Filter EIPs by layer
   const filterEipsByLayer = (eipsList: EIP[]) => {
     if (layerFilter === 'all') return eipsList;
-    return eipsList.filter(eip => getEipLayer(eip, forkName) === layerFilter);
+    return eipsList.filter(eip => getEipLayer(eip) === layerFilter);
   };
 
   // Filter EIPs by search query
@@ -245,7 +245,7 @@ const PublicNetworkUpgradePage: React.FC<PublicNetworkUpgradePageProps> = ({
               : '★';
 
             const proposalPrefix = getProposalPrefix(eip);
-            const layer = getEipLayer(eip, forkName);
+            const layer = getEipLayer(eip);
 
             return {
               id: `eip-${eip.id}`,
@@ -670,8 +670,8 @@ const PublicNetworkUpgradePage: React.FC<PublicNetworkUpgradePageProps> = ({
                       {filterEips(eips)
                         .filter(eip => wasHeadlinerCandidate(eip, forkName))
                         .sort((a, b) => {
-                          const layerA = getEipLayer(a, forkName);
-                          const layerB = getEipLayer(b, forkName);
+                          const layerA = getEipLayer(a);
+                          const layerB = getEipLayer(b);
 
                           // Sort by layer first (EL before CL)
                           if (layerA === 'EL' && layerB === 'CL') return -1;

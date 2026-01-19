@@ -23,7 +23,7 @@ interface EipCardProps {
 
 export const EipCard: React.FC<EipCardProps> = ({ eip, forkName, handleExternalLinkClick }) => {
   const eipId = `eip-${eip.id}`;
-  const layer = getEipLayer(eip, forkName);
+  const layer = getEipLayer(eip);
   const [showChampionDetails, setShowChampionDetails] = useState(false);
   const [isExpanded, setIsExpanded] = useState(false);
 

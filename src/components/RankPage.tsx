@@ -637,7 +637,7 @@ const RankPage: React.FC = () => {
     cursorX += ctx.measureText(`EIP-${eip.id}`).width + 6 * scale;
     ctx.restore();
     // Layer badge
-    const layer = getHeadlinerLayer(eip, "glamsterdam");
+    const layer = getHeadlinerLayer(eip);
     if (layer) {
       ctx.save();
       ctx.font = `bold ${
@@ -869,18 +869,15 @@ const RankPage: React.FC = () => {
                               <span className="text-xs font-mono text-slate-500 dark:text-slate-400 flex-shrink-0">
                                 {getProposalPrefix(item.eip)}-{item.eip.id}
                               </span>
-                              {getHeadlinerLayer(item.eip, "glamsterdam") && (
+                              {getHeadlinerLayer(item.eip) && (
                                 <span
                                   className={`px-1 py-0.5 text-xs font-medium rounded flex-shrink-0 ${
-                                    getHeadlinerLayer(
-                                      item.eip,
-                                      "glamsterdam"
-                                    ) === "EL"
+                                    getHeadlinerLayer(item.eip) === "EL"
                                       ? "bg-indigo-100 text-indigo-700 dark:bg-indigo-900/20 dark:text-indigo-300"
                                       : "bg-teal-100 text-teal-700 dark:bg-teal-900/20 dark:text-teal-300"
                                   }`}
                                 >
-                                  {getHeadlinerLayer(item.eip, "glamsterdam")}
+                                  {getHeadlinerLayer(item.eip)}
                                 </span>
                               )}
                               <span className="font-medium text-xs text-slate-900 dark:text-slate-100 truncate">
@@ -1075,15 +1072,15 @@ const RankPage: React.FC = () => {
                               >
                                 {getProposalPrefix(item.eip)}-{item.eip.id}
                               </span>
-                              {getHeadlinerLayer(item.eip, "glamsterdam") && (
+                              {getHeadlinerLayer(item.eip) && (
                                 <span
                                   className={`px-1 py-0.5 text-xs font-medium rounded ${
-                                    getHeadlinerLayer(item.eip, "glamsterdam") === "EL"
+                                    getHeadlinerLayer(item.eip) === "EL"
                                       ? "bg-indigo-100 text-indigo-700 dark:bg-indigo-900/20 dark:text-indigo-300"
                                       : "bg-teal-100 text-teal-700 dark:bg-teal-900/20 dark:text-teal-300"
                                   }`}
                                 >
-                                  {getHeadlinerLayer(item.eip, "glamsterdam")}
+                                  {getHeadlinerLayer(item.eip)}
                                 </span>
                               )}
                               <span className="font-medium text-xs text-slate-900 dark:text-slate-100 truncate">
@@ -1118,15 +1115,15 @@ const RankPage: React.FC = () => {
               <span className="text-sm font-mono font-bold text-purple-600 dark:text-purple-400">
                 EIP-{hoveredEip.id}
               </span>
-              {getHeadlinerLayer(hoveredEip, "glamsterdam") && (
+              {getHeadlinerLayer(hoveredEip) && (
                 <span
                   className={`px-1.5 py-0.5 text-xs font-medium rounded ${
-                    getHeadlinerLayer(hoveredEip, "glamsterdam") === "EL"
+                    getHeadlinerLayer(hoveredEip) === "EL"
                       ? "bg-indigo-100 text-indigo-700 dark:bg-indigo-900/20 dark:text-indigo-300"
                       : "bg-teal-100 text-teal-700 dark:bg-teal-900/20 dark:text-teal-300"
                   }`}
                 >
-                  {getHeadlinerLayer(hoveredEip, "glamsterdam")}
+                  {getHeadlinerLayer(hoveredEip)}
                 </span>
               )}
             </div>

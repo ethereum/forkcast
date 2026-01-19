@@ -65,45 +65,24 @@ export const isHeadliner = (eip: EIP, forkName?: string): boolean => {
 };
 
 /**
- * Get the layer (EL/CL) for a headliner EIP in a specific fork
+ * Get the layer (EL/CL) for a headliner EIP
  */
-export const getHeadlinerLayer = (eip: EIP, forkName?: string): string | null => {
-  if (!forkName) return null;
-
-  const forkRelationship = eip.forkRelationships.find(fork =>
-    fork.forkName.toLowerCase() === forkName.toLowerCase()
-  );
-  return forkRelationship?.layer || null;
+export const getHeadlinerLayer = (eip: EIP): string | null => {
+  return eip.layer || null;
 };
 
 /**
- * Get the layer (EL/CL) for any EIP in a specific fork
+ * Get the layer (EL/CL) for any EIP
  */
-export const getEipLayer = (eip: EIP, forkName?: string): 'EL' | 'CL' | null => {
-  if (!forkName) return null;
-
-  const forkRelationship = eip.forkRelationships.find(fork =>
-    fork.forkName.toLowerCase() === forkName.toLowerCase()
-  );
-  return forkRelationship?.layer as 'EL' | 'CL' | null || null;
+export const getEipLayer = (eip: EIP): 'EL' | 'CL' | null => {
+  return eip.layer || null;
 };
 
 /**
- * Get the primary layer for an EIP across all fork relationships
- * Returns the layer if all fork relationships have the same layer, otherwise null
+ * Get the layer for an EIP
  */
 export const getPrimaryEipLayer = (eip: EIP): 'EL' | 'CL' | null => {
-  const layers = eip.forkRelationships
-    .map(fork => fork.layer)
-    .filter((layer): layer is 'EL' | 'CL' => layer === 'EL' || layer === 'CL');
-
-  if (layers.length === 0) return null;
-
-  // Check if all layers are the same
-  const firstLayer = layers[0];
-  const allSame = layers.every(layer => layer === firstLayer);
-
-  return allSame ? firstLayer : null;
+  return eip.layer || null;
 };
 
 /**

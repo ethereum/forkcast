@@ -15,7 +15,6 @@ export interface ForkRelationship {
   }>; // Ordered oldest -> newest
   isHeadliner?: boolean;
   wasHeadlinerCandidate?: boolean;
-  layer?: string;
   champion?: Champion;
   presentationHistory?: Array<{
     type: 'headliner_proposal' | 'headliner_presentation' | 'presentation' | 'debate';
@@ -44,6 +43,7 @@ export interface EIP {
   createdDate: string;
   discussionLink: string;
   reviewer?: string;
+  layer?: 'EL' | 'CL';
   collection?: string;
   forkRelationships: ForkRelationship[];
   laymanDescription?: string;

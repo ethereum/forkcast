@@ -11,6 +11,7 @@ export interface ForkRelationship {
     status: 'Proposed' | 'Considered' | 'Scheduled' | 'Declined' | 'Included' | 'Withdrawn';
     call: `${'acdc' | 'acde' | 'acdt'}/${number}` | null;
     date: string | null;
+    timestamp?: number; // Seconds into the call recording video
   }>; // Ordered oldest -> newest
   isHeadliner?: boolean;
   wasHeadlinerCandidate?: boolean;
@@ -21,6 +22,7 @@ export interface ForkRelationship {
     call?: `${'acdc' | 'acde' | 'acdt'}/${number}`;
     link?: string;
     date: string;
+    timestamp?: number; // Seconds into the call recording video
   }>;
 }
 

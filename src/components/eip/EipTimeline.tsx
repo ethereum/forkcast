@@ -12,6 +12,7 @@ interface StatusEntry {
   status: string;
   date?: string | null;
   call?: string | null;
+  timestamp?: number;
   isCurrentStatus: boolean;
 }
 
@@ -20,6 +21,7 @@ interface PresentationEntry {
   date?: string | null;
   call?: string | null;
   link?: string;
+  timestamp?: number;
 }
 
 interface ForkGroup {
@@ -70,11 +72,13 @@ const statusLabels: Record<string, string> = {
   Withdrawn: 'Withdrawn',
 };
 
-function formatCallReference(call: string): { display: string; link: string } {
+function formatCallReference(call: string, timestamp?: number): { display: string; link: string } {
   const [prefix, number] = call.split('/');
+  const paddedNumber = number.padStart(3, '0');
+  const baseLink = `/calls/${prefix}/${paddedNumber}`;
   return {
     display: `${prefix.toUpperCase()} #${number}`,
-    link: `/calls/${call}`,
+    link: timestamp ? `${baseLink}#t=${timestamp}` : baseLink,
   };
 }
 
@@ -115,6 +119,7 @@ export const EipTimeline: React.FC<EipTimelineProps> = ({ eip }) => {
         status: entry.status,
         date: entry.date,
         call: entry.call,
+        timestamp: entry.timestamp,
         isCurrentStatus: index === 0,
       }))
       .filter((entry) => {
@@ -131,6 +136,7 @@ export const EipTimeline: React.FC<EipTimelineProps> = ({ eip }) => {
       date: p.date,
       call: p.call,
       link: p.link,
+      timestamp: p.timestamp,
     }));
 
     return {
@@ -249,7 +255,7 @@ export const EipTimeline: React.FC<EipTimelineProps> = ({ eip }) => {
                                         {entry.date && formatDate(entry.date)}
                                         {entry.date && entry.call && ' · '}
                                         {entry.call && (() => {
-                                          const { display, link } = formatCallReference(entry.call);
+                                          const { display, link } = formatCallReference(entry.call, entry.timestamp);
                                           return (
                                             <Link
                                               to={link}
@@ -264,7 +270,7 @@ export const EipTimeline: React.FC<EipTimelineProps> = ({ eip }) => {
                                         {entry.date && formatDate(entry.date)}
                                         {entry.date && entry.call && ' · '}
                                         {entry.call && (() => {
-                                          const { display, link } = formatCallReference(entry.call);
+                                          const { display, link } = formatCallReference(entry.call, entry.timestamp);
                                           return (
                                             <Link
                                               to={link}
@@ -308,7 +314,7 @@ export const EipTimeline: React.FC<EipTimelineProps> = ({ eip }) => {
                                         {presentation.date && formatDate(presentation.date)}
                                         {presentation.date && (presentation.call || presentation.link) && ' · '}
                                         {presentation.call && (() => {
-                                          const { display, link } = formatCallReference(presentation.call);
+                                          const { display, link } = formatCallReference(presentation.call, presentation.timestamp);
                                           return (
                                             <Link
                                               to={link}
@@ -336,7 +342,7 @@ export const EipTimeline: React.FC<EipTimelineProps> = ({ eip }) => {
                                         {presentation.date && formatDate(presentation.date)}
                                         {presentation.date && (presentation.call || presentation.link) && ' · '}
                                         {presentation.call && (() => {
-                                          const { display, link } = formatCallReference(presentation.call);
+                                          const { display, link } = formatCallReference(presentation.call, presentation.timestamp);
                                           return (
                                             <Link
                                               to={link}

@@ -142,9 +142,9 @@ const TldrSummary: React.FC<TldrSummaryProps> = ({
   }, [selectedSearchResult]);
 
   return (
-    <div ref={containerRef} className="grid grid-cols-1 lg:grid-cols-5 gap-6">
+    <div ref={containerRef} className="grid grid-cols-1 lg:grid-cols-2 gap-6">
       {/* Left Column: Highlights */}
-      <div className="lg:col-span-3">
+      <div>
         <h2 className="text-base font-semibold text-slate-900 dark:text-slate-100 mb-4">
           TL;DR
         </h2>
@@ -188,7 +188,7 @@ const TldrSummary: React.FC<TldrSummaryProps> = ({
       </div>
 
       {/* Right Column: Actions, Decisions, Commitments */}
-      <div className="lg:col-span-2 space-y-6">
+      <div className="space-y-6">
         {/* Action Items */}
         {data.action_items && data.action_items.length > 0 && (
           <div className="pb-6 border-b border-slate-200 dark:border-slate-700">

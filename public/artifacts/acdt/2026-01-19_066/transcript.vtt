@@ -1,0 +1,1826 @@
+WEBVTT
+
+1
+00:05:43.170 --> 00:05:44.770
+Parithosh Jayanthi: Hello, everyone.
+
+2
+00:05:48.250 --> 00:05:49.959
+Matthew Keil: Happy Easter Park to ya.
+
+3
+00:05:52.510 --> 00:05:54.519
+Parithosh Jayanthi: Happy to go to you as well.
+
+4
+00:06:37.310 --> 00:06:40.919
+Parithosh Jayanthi: Let's give people another minute, and then we can start.
+
+5
+00:07:45.500 --> 00:07:58.179
+Parithosh Jayanthi: Okay, let's get started then. First item on the agenda is getting an update on block-level access for StevNets. Stefan, you have the floor, do you want to give us an update?
+
+6
+00:07:59.200 --> 00:08:02.899
+Stefan Starflinger: Yeah, sure. So, definite one.
+
+7
+00:08:03.080 --> 00:08:16.919
+Stefan Starflinger: was working pretty well. We got syncing fixed in most clients, which is really nice. And, we managed to run stable with EVM fuzzing and Uniswap trades as the workload.
+
+8
+00:08:17.050 --> 00:08:27.240
+Stefan Starflinger: The only thing we couldn't get done was the benchmarking part, with parallel I.O. and parallel execution, so that will be moved to, definite 2.
+
+9
+00:08:27.700 --> 00:08:36.950
+Stefan Starflinger: And in general, now we have to decide what we want to put into, Definite 2, and what we want to push for Definite 3.
+
+10
+00:08:37.169 --> 00:08:39.670
+Stefan Starflinger: I think that is a quick summary.
+
+11
+00:08:41.909 --> 00:08:48.179
+Parithosh Jayanthi: Awesome. Yeah, we have finalizing DevNet2 scope a bit later in this,
+
+12
+00:08:48.429 --> 00:08:51.599
+Parithosh Jayanthi: Actually, we can already continue with that.
+
+13
+00:08:52.549 --> 00:09:05.789
+Parithosh Jayanthi: Okay, let's… let's just continue with MNET2 scope, then. Was there… I see Spencer has this, comment in the issue. Do we want to just go through the comment and solve all of the questions?
+
+14
+00:09:06.229 --> 00:09:23.149
+Parithosh Jayanthi: Eip7843. So the question is, do we push this to DevNet 3, or keep it on DevNet 2? This requires CL changes, and there's two open, PRs linked over there. Who has the most context on this?
+
+15
+00:09:30.439 --> 00:09:36.389
+Parithosh Jayanthi: Okay, looking at it, it mostly looks like engine API changes, are…
+
+16
+00:09:37.989 --> 00:09:43.429
+Parithosh Jayanthi: Stefan, do you have an idea how many CLs are ready with block-level access lists to begin with?
+
+17
+00:09:43.660 --> 00:09:48.220
+Stefan Starflinger: So the only CL we've been using is Lodestar.
+
+18
+00:09:48.520 --> 00:09:54.520
+Stefan Starflinger: Because there is some inconsistency between Prism and Lodestar that we haven't been able to figure out.
+
+19
+00:09:54.820 --> 00:10:00.760
+Stefan Starflinger: And Lodestar has already merged the PR, for this change.
+
+20
+00:10:00.940 --> 00:10:07.429
+Stefan Starflinger: It hasn't been tested, but it seemed to be pretty small. I can share it in the chat.
+
+21
+00:10:07.900 --> 00:10:09.749
+Stefan Starflinger: In a second.
+
+22
+00:10:10.260 --> 00:10:18.219
+Stefan Starflinger: But I would generally prefer to keep it in, unless there is a reason not to. I don't think it's that much of a change.
+
+23
+00:10:18.800 --> 00:10:22.109
+Parithosh Jayanthi: Yeah, it doesn't look too big. Yeah, minimalist?
+
+24
+00:10:23.220 --> 00:10:33.240
+Barnabas: Yeah, so I reached out to Pawan last weekend, and he said that, he will have a DevNet2 ready branch, or Lighthouse, either today or tomorrow.
+
+25
+00:10:35.990 --> 00:10:48.019
+Parithosh Jayanthi: Okay, perfect. So, since this is mostly an engine API change, and Lodestar already has it, let's keep it in, and if there's any opposition, then let's take it out later, but for now, let's keep it in.
+
+26
+00:10:49.860 --> 00:10:50.870
+Parithosh Jayanthi: Sounds good.
+
+27
+00:10:53.390 --> 00:10:54.040
+Stefan Starflinger: Yep.
+
+28
+00:10:54.990 --> 00:10:59.520
+Parithosh Jayanthi: Okay, next item is EIP8024.
+
+29
+00:10:59.640 --> 00:11:03.959
+Parithosh Jayanthi: This is switch encoding to push postfix.
+
+30
+00:11:07.120 --> 00:11:09.200
+Parithosh Jayanthi: I'm posting the link there…
+
+31
+00:11:15.760 --> 00:11:25.459
+Parithosh Jayanthi: Has anyone already reviewed this PR? Will this be a big change? It looks like it's an EL change, so does… do any of the ELs have a preference?
+
+32
+00:11:41.370 --> 00:11:45.639
+Parithosh Jayanthi: How many do we have any of the EL devs here?
+
+33
+00:11:54.400 --> 00:11:59.989
+Parithosh Jayanthi: Fabio, do you maybe want to speak for Bezu? Or Lukash for Netherland?
+
+34
+00:12:04.680 --> 00:12:06.559
+Łukasz Rozmej: Hmm, sir, what's the question?
+
+35
+00:12:07.170 --> 00:12:11.920
+Parithosh Jayanthi: So the question is, does a change to EIP8024?
+
+36
+00:12:13.440 --> 00:12:17.690
+Parithosh Jayanthi: And we want to know if they should be included in two DevNets.
+
+37
+00:12:17.870 --> 00:12:20.809
+Parithosh Jayanthi: 2, or if she… we should delay to DevNet 3.
+
+38
+00:12:21.820 --> 00:12:24.170
+Parithosh Jayanthi: I don't see any…
+
+39
+00:12:26.000 --> 00:12:36.520
+Parithosh Jayanthi: Okay. I also see a comment on the PR itself that says, probably not going with this change, so, okay, maybe we just deny this change for now, and if it needs to go in, we can bring it up on ACD.
+
+40
+00:12:40.560 --> 00:12:41.300
+Parithosh Jayanthi: Okay.
+
+41
+00:12:41.470 --> 00:12:50.349
+Parithosh Jayanthi: The next, order of business is EIP7778, confirm alignment on specs, and this is from,
+
+42
+00:12:50.840 --> 00:12:53.239
+Parithosh Jayanthi: From Tony, so you have the floor, Tony?
+
+43
+00:12:54.940 --> 00:13:06.370
+Toni Wahrstätter: Yeah, I brought up this topic on the Execution Dev Discord, I will post the link to the message into the chat, and I wanted to clarify if we want to use the
+
+44
+00:13:06.550 --> 00:13:12.270
+Toni Wahrstätter: Gas used pre-refunds, or gas used after refunds for accounting.
+
+45
+00:13:12.410 --> 00:13:15.699
+Toni Wahrstätter: The cumulative gas used in the receipts.
+
+46
+00:13:16.690 --> 00:13:32.899
+Toni Wahrstätter: And Andrew brought up last time on ACD that Aragon prefers to use the gas used before the refunds, which means that the block gas accounting will be consistent with the gas accounting in the receipt.
+
+47
+00:13:33.320 --> 00:13:37.840
+Toni Wahrstätter: And I quickly talked with Felix from Geth, and he was also…
+
+48
+00:13:38.030 --> 00:13:40.860
+Toni Wahrstätter: Saying that this might be the cleanest solution to do.
+
+49
+00:13:41.500 --> 00:13:44.869
+Toni Wahrstätter: The thing is, this might also mean that we…
+
+50
+00:13:45.180 --> 00:13:51.949
+Toni Wahrstätter: might want to introduce a new field to the receipt. Basically, the gas spent.
+
+51
+00:13:52.390 --> 00:13:56.200
+Toni Wahrstätter: So this will be the gas used, by the transaction.
+
+52
+00:13:57.390 --> 00:13:59.190
+Toni Wahrstätter: Pre-refund.
+
+53
+00:13:59.930 --> 00:14:08.270
+Toni Wahrstätter: Sorry, post-refund. So this could be used to, populate the field gas used in the EVE getTransaction receipt.
+
+54
+00:14:08.780 --> 00:14:19.209
+Toni Wahrstätter: And now I'm wondering if other clients have an opinion on that. This is the way how it's currently spec'd. So in the specs, we recently changed it to having this new, field in the receipt.
+
+55
+00:14:19.500 --> 00:14:33.819
+Toni Wahrstätter: Because, yeah, as I said, this might be needed because gas use now has different meanings, depending on do we use it for block gas limit enforcement, or do we use it to communicate that info to the user?
+
+56
+00:14:35.060 --> 00:14:42.089
+Toni Wahrstätter: So, I'm wondering if anyone has an opinion on that, or if anyone is opposed to doing it that way.
+
+57
+00:14:44.370 --> 00:14:45.600
+Parithosh Jayanthi: Yeah, Ben?
+
+58
+00:14:46.590 --> 00:14:53.590
+Ben Adams: Yeah, so I think the cumulative gas use Needs to be the…
+
+59
+00:14:53.800 --> 00:14:56.869
+Ben Adams: The amount used by the block.
+
+60
+00:14:57.340 --> 00:15:00.980
+Ben Adams: Not the amount. So… pre-refund.
+
+61
+00:15:01.650 --> 00:15:08.669
+Ben Adams: But I do also think, in line with ETH transfers, and it's a log,
+
+62
+00:15:09.050 --> 00:15:13.909
+Ben Adams: We will need that extra field, saying how much
+
+63
+00:15:14.240 --> 00:15:21.420
+Ben Adams: was actually spent in gas for the transaction. So… post-refund.
+
+64
+00:15:22.820 --> 00:15:27.949
+Ben Adams: And we could, replace, like, Logs Bloom with it if we want.
+
+65
+00:15:28.530 --> 00:15:30.309
+Ben Adams: Rather than adding a new field.
+
+66
+00:15:38.430 --> 00:15:43.990
+Parithosh Jayanthi: So you'd be in favor of keeping it in the same format, as it is right now, right?
+
+67
+00:15:46.260 --> 00:15:57.300
+Ben Adams: The… the one proposed by the… as the change, yes. But… but I think we need a change to the receipts so that if you're trying to use the available data.
+
+68
+00:15:57.480 --> 00:16:01.849
+Ben Adams: To track how much… An account's balance has changed.
+
+69
+00:16:01.970 --> 00:16:06.689
+Ben Adams: And we need to include the post-refund. You know, how much did the account spend?
+
+70
+00:16:09.970 --> 00:16:13.090
+Toni Wahrstätter: Yeah, exactly. This is how it's specced right now.
+
+71
+00:16:13.630 --> 00:16:14.110
+Toni Wahrstätter: Yeah.
+
+72
+00:16:14.110 --> 00:16:20.290
+Ben Adams: Because we can't work out the, we can't do the… Jason or a PC, otherwise.
+
+73
+00:16:20.850 --> 00:16:21.600
+Ben Adams: Or…
+
+74
+00:16:21.600 --> 00:16:24.030
+Toni Wahrstätter: Yeah, exactly.
+
+75
+00:16:24.030 --> 00:16:31.409
+Ben Adams: also undermines, ETH transfers in Metalog, if we don't have… How much the account spent.
+
+76
+00:16:33.220 --> 00:16:33.820
+Toni Wahrstätter: Right.
+
+77
+00:16:34.690 --> 00:16:43.950
+Toni Wahrstätter: Is there also someone from Beso, just to… or… and from Rife? Because then… then it would be great if we get an opinion from all the clients on this.
+
+78
+00:16:44.860 --> 00:16:47.520
+Toni Wahrstätter: Also, if Gef has an official opinion.
+
+79
+00:16:48.300 --> 00:16:50.650
+Toni Wahrstätter: It'd be great to have that clarified today.
+
+80
+00:16:56.700 --> 00:17:00.099
+Parithosh Jayanthi: Yeah, I see Daniel from GETS, do you want to speak up?
+
+81
+00:17:03.030 --> 00:17:10.960
+Daniel Lehrner (Besu): I can speak for Besso. We have not really looked into the PR, so it seems…
+
+82
+00:17:11.780 --> 00:17:16.360
+Daniel Lehrner (Besu): I think we are fine with whatever is proposed.
+
+83
+00:17:16.480 --> 00:17:21.070
+Daniel Lehrner (Besu): I really don't have much details at the moment, but…
+
+84
+00:17:21.180 --> 00:17:27.810
+Daniel Lehrner (Besu): Neither… neither proposal seems to be a big problem for us, at least from the implementation side.
+
+85
+00:17:30.110 --> 00:17:46.639
+Toni Wahrstätter: Okay, great. Yeah, I think… I think it will still keep the… keep the scope, quite limited. The only thing is that clients have been using, cumulative gas to determine what is the gas used of a transaction when it comes to e-gat transaction receipt calls.
+
+86
+00:17:47.090 --> 00:17:52.369
+Toni Wahrstätter: And yeah, the change that is now needed is basically to keep the…
+
+87
+00:17:52.500 --> 00:17:56.659
+Toni Wahrstätter: Same behavior there that we have today.
+
+88
+00:17:57.540 --> 00:18:01.450
+Toni Wahrstätter: Yeah, if you haven't looked into it, please,
+
+89
+00:18:02.030 --> 00:18:11.300
+Toni Wahrstätter: just check it out and comment on the EV… on the execution dev, but I would then assume we go ahead, create the test cases, for this new
+
+90
+00:18:11.610 --> 00:18:13.490
+Toni Wahrstätter: format.
+
+91
+00:18:13.610 --> 00:18:15.970
+Toni Wahrstätter: And also already included.
+
+92
+00:18:16.220 --> 00:18:20.320
+Toni Wahrstätter: In this new, with those new changes in the second DevNet.
+
+93
+00:18:22.570 --> 00:18:27.309
+Parithosh Jayanthi: How much work or time do you think it'll be adding to DevNet2?
+
+94
+00:18:31.660 --> 00:18:40.870
+Toni Wahrstätter: I can't answer that, so from the specs and ERP side, it's done. It very much depends on how much work is it to add new fields to the receipt. I think that's the only thing.
+
+95
+00:18:41.110 --> 00:18:45.320
+Toni Wahrstätter: I don't really have insights into how much work this is at the client.
+
+96
+00:18:46.610 --> 00:18:55.559
+Parithosh Jayanthi: Okay, then I think I'd prefer moving it to DevNet 2, so we do it in the next DevNet, and bite the bullet, even if it takes a little bit longer.
+
+97
+00:18:55.970 --> 00:18:58.209
+Parithosh Jayanthi: Does that sound good for everyone?
+
+98
+00:19:03.830 --> 00:19:05.629
+Ben Adams: Move the change, or the EIP?
+
+99
+00:19:06.530 --> 00:19:11.379
+Parithosh Jayanthi: as in the EIP, as well as the change, is included in the scope of DevNet 2.
+
+100
+00:19:21.010 --> 00:19:22.000
+Parithosh Jayanthi: Okay.
+
+101
+00:19:22.150 --> 00:19:31.380
+Parithosh Jayanthi: Thank you. And the next one is proven merge spec changes for EIP7708.
+
+102
+00:19:34.320 --> 00:19:39.510
+Parithosh Jayanthi: I see Ben's been digging into this one. Do you want to give us some context, Ben?
+
+103
+00:19:45.200 --> 00:19:49.770
+Ben Adams: Oh, okay, yeah, so… This would be…
+
+104
+00:19:54.230 --> 00:20:00.260
+Ben Adams: Any non-zero transfer that's not included in… already in a different field?
+
+105
+00:20:00.450 --> 00:20:01.380
+Ben Adams: of ETH.
+
+106
+00:20:01.650 --> 00:20:07.900
+Ben Adams: So, for instance, paying gas,
+
+107
+00:20:08.050 --> 00:20:11.709
+Ben Adams: It's already included in the transaction, which is…
+
+108
+00:20:11.970 --> 00:20:15.599
+Ben Adams: why I said there's a little bit of conflict if we lose that information.
+
+109
+00:20:15.710 --> 00:20:20.479
+Ben Adams: Then we emit a… we emit an ETH transfer log.
+
+110
+00:20:21.450 --> 00:20:23.980
+Ben Adams: So that you can… you can build…
+
+111
+00:20:25.290 --> 00:20:29.919
+Ben Adams: The state of an account just from looking at logs, withdrawals.
+
+112
+00:20:30.150 --> 00:20:40.560
+Ben Adams: And transactions without having to, previously, I think you have to debug trace work out ETH transfers.
+
+113
+00:20:47.650 --> 00:20:54.460
+Parithosh Jayanthi: Okay, got it. Has everyone gotten a chance to look at this PR, or not yet?
+
+114
+00:20:55.520 --> 00:20:56.799
+Parithosh Jayanthi: Yeah, Spencer?
+
+115
+00:20:57.540 --> 00:20:59.310
+spencer-tb: Hey, yeah, I just, I guess…
+
+116
+00:20:59.450 --> 00:21:02.720
+spencer-tb: I linked it in the comment, just, so I think as the…
+
+117
+00:21:03.490 --> 00:21:11.400
+spencer-tb: PR aspect right now, and we're using… The forced…
+
+118
+00:21:11.560 --> 00:21:15.370
+spencer-tb: 478… 4788, address, system address?
+
+119
+00:21:16.530 --> 00:21:21.149
+spencer-tb: I guess I just want to confirm that everyone's okay with using that address.
+
+120
+00:21:21.680 --> 00:21:23.890
+spencer-tb: in the PR,
+
+121
+00:21:24.900 --> 00:21:31.170
+spencer-tb: Yeah, and then if that's the case, then I guess we go with it. Also, I think initially this PR included
+
+122
+00:21:31.770 --> 00:21:36.540
+spencer-tb: few receipts and withdrawals as well, not just ETH transfers. So this…
+
+123
+00:21:37.260 --> 00:21:44.889
+spencer-tb: This PR… yeah, it's only for ETH transfers, and I believe ETAN moved a few receipts and withdrawals to a separate PR.
+
+124
+00:21:47.450 --> 00:21:52.279
+spencer-tb: Yeah, so if everyone's okay with that, then I guess we can just stick to that as the spec for DemNet 2.
+
+125
+00:21:56.070 --> 00:21:56.500
+Parithosh Jayanthi: But…
+
+126
+00:21:56.500 --> 00:22:05.270
+Ben Adams: on the… on the address specifically, an opinion that's not strongly held is, I'd prefer the address
+
+127
+00:22:05.430 --> 00:22:07.339
+Ben Adams: to be… zeros.
+
+128
+00:22:08.010 --> 00:22:11.420
+Ben Adams: Because it's not, it's not a…
+
+129
+00:22:11.980 --> 00:22:15.210
+Ben Adams: The one currently chosen is… this is the system.
+
+130
+00:22:15.750 --> 00:22:22.400
+Ben Adams: Whereas we're talking about ETH, the asset, which the zero address seems more appropriate for.
+
+131
+00:22:27.700 --> 00:22:29.660
+Ben Adams: Rather than the system.
+
+132
+00:22:30.910 --> 00:22:34.959
+Parithosh Jayanthi: I think there's a comment here explaining the three options, right?
+
+133
+00:22:40.850 --> 00:22:51.719
+Ben Adams: Yeah, so zero… system address, and… Eip788.
+
+134
+00:22:53.650 --> 00:22:54.429
+Parithosh Jayanthi: Got it.
+
+135
+00:22:55.920 --> 00:23:01.989
+Parithosh Jayanthi: Does… has any… Client team, et cetera, had a strong opinion over here?
+
+136
+00:23:14.220 --> 00:23:19.850
+spencer-tb: Maybe we stick to system address, and if we want to change it in the future, we can do that. Just for Definitely.
+
+137
+00:23:22.200 --> 00:23:30.109
+Parithosh Jayanthi: Yeah, I think that sounds reasonable. Let's stick to system address then, and we can still discuss on the PR, what to do.
+
+138
+00:23:31.290 --> 00:23:36.730
+Ben Adams: Could we have these PRs merged so that the… Correct.
+
+139
+00:23:36.890 --> 00:23:39.539
+Ben Adams: put emphasis on that, so that the,
+
+140
+00:23:42.580 --> 00:23:45.180
+Ben Adams: We can follow along with what's canonical.
+
+141
+00:23:46.530 --> 00:23:48.790
+Parithosh Jayanthi: Yep, sounds good. I'll write that down.
+
+142
+00:23:53.260 --> 00:23:54.030
+Parithosh Jayanthi: Okay.
+
+143
+00:23:54.360 --> 00:24:06.390
+Parithosh Jayanthi: The next point that, Spencer brought up was, a few EALS PRs for visibility. Is there any PR here worth discussing, Spencer, or are you.
+
+144
+00:24:06.390 --> 00:24:07.080
+spencer-tb: You're located.
+
+145
+00:24:07.080 --> 00:24:08.500
+Parithosh Jayanthi: Just flag it in the comment.
+
+146
+00:24:08.500 --> 00:24:12.090
+spencer-tb: No discussion here, just wanted to flag it for visibility, yeah. Sorry.
+
+147
+00:24:12.840 --> 00:24:20.439
+Parithosh Jayanthi: Okay, that sounds good. And I guess, based on the decisions on the call, you guys would just merge in the required PRs, and we should be good to go?
+
+148
+00:24:26.320 --> 00:24:28.100
+Parithosh Jayanthi: Okay,
+
+149
+00:24:33.320 --> 00:24:44.689
+Parithosh Jayanthi: Yeah, that sounds good. The next topic on the agenda was, Amsterdam ETBS DevNet update. Do we have anything from the CL client teams? How close are we to the DevNet?
+
+150
+00:24:45.150 --> 00:24:46.469
+Parithosh Jayanthi: How are things looking?
+
+151
+00:24:48.600 --> 00:24:49.759
+Parithosh Jayanthi: Yeah, Jen?
+
+152
+00:24:50.430 --> 00:24:59.750
+Jen: Sorry, just before we move on, can we just reiterate what is the final definite 2 scope, and when are the timelines, and what is missing?
+
+153
+00:25:02.850 --> 00:25:16.670
+Parithosh Jayanthi: Got it. So for DevNet 2, we're gonna be, keeping 7843, along with both the changes that are, included in Spencer's comment. I'll link the comment, in chat here.
+
+154
+00:25:17.480 --> 00:25:35.989
+Parithosh Jayanthi: We're going to be, moving the 8024 discussion to later, so that it's not being included in DevNet2 scope, and would be included in DevNet 3 scope. 7778 is going to be, included along with Tony's changes, so it'll be merged.
+
+155
+00:25:36.170 --> 00:25:46.259
+Parithosh Jayanthi: Eip7708, we merge in the PR as is, and we still have to discuss the, the address, and that can be done later and updated in DevNet 3 if required.
+
+156
+00:25:49.100 --> 00:25:54.819
+Parithosh Jayanthi: As per our timeline, Stefan, did you have an idea on when you wanted DevNet 2 up and running?
+
+157
+00:25:56.610 --> 00:26:11.680
+Stefan Starflinger: I think it would be great if we could get all these PRs merged as quickly as possible. I think I will have everything ready to launch DevNet 2 around Wednesday, but I can set the gloss fork for a little bit later.
+
+158
+00:26:11.960 --> 00:26:24.289
+Stefan Starflinger: So hopefully this week, we should be able to launch DevNet 2. It will be good to be ready by Wednesday… Thursday by the latest. That would be very nice.
+
+159
+00:26:25.040 --> 00:26:29.310
+Stefan Starflinger: But if, clients need more time, it would be great if they could reach out to me.
+
+160
+00:26:31.610 --> 00:26:40.950
+Parithosh Jayanthi: Okay, sounds good. If… and Clancy, the moment you have, images ready, then please just ping Stefan, and you can already have, local governments.
+
+161
+00:26:44.330 --> 00:26:56.319
+Parithosh Jayanthi: And Lucas has a question for 770H. Does it behave the same as each simulate? I would… Spencer, would you be able to take that question?
+
+162
+00:27:00.010 --> 00:27:03.230
+spencer-tb: Yeah, no, sorry, I'm not sure.
+
+163
+00:27:03.920 --> 00:27:07.819
+Parithosh Jayanthi: Okay, then we might have to discuss that later, Lukash.
+
+164
+00:27:08.080 --> 00:27:09.969
+Parithosh Jayanthi: I'm not sure if I have downside.
+
+165
+00:27:14.320 --> 00:27:24.729
+Parithosh Jayanthi: Okay, next item on the agenda was, Glamsterdam EPBS DevNet update, and POTUS has a comment. Do you want to speak up, Potos, or…
+
+166
+00:27:24.860 --> 00:27:26.209
+Parithosh Jayanthi: How do we want to do this?
+
+167
+00:27:27.140 --> 00:27:41.919
+Potuz: Oh, it's just that comment. We… it looks like the spec is finally frozen, at least in what regards to test vectors. Terence has, at least on Prism, opened most of the, local processing of blocks.
+
+168
+00:27:42.830 --> 00:27:55.049
+Potuz: and… and all of the gossip, objects, we are reviewing them. We should merge those PRs in the next 2-3 days. Still, like, all of the periphery of the… of the…
+
+169
+00:27:55.050 --> 00:28:05.919
+Potuz: pull request needs to be developed. It will take more time to talk about Kurtosis runs, but at least the processing and the spec tests are going to be passing in the next 2-3 days.
+
+170
+00:28:09.020 --> 00:28:16.080
+Parithosh Jayanthi: Okay, do we have any other client teams? Cl teams… Phil, do you want to go for Lodestar?
+
+171
+00:28:18.670 --> 00:28:20.170
+Parithosh Jayanthi: Nico.
+
+172
+00:28:27.640 --> 00:28:30.980
+Matthew Keil: I apologize, can you ask that question? Oh, go ahead, Nico.
+
+173
+00:28:30.980 --> 00:28:39.740
+nflaig: So, we have a few PRs open for fork choice, gossip changes, and there's still some work to do for DevNet.
+
+174
+00:28:40.150 --> 00:28:43.870
+nflaig: But yeah, it's looking to get pretty complete now.
+
+175
+00:28:44.640 --> 00:28:46.720
+nflaig: But yeah, we are still a bit far.
+
+176
+00:28:46.960 --> 00:28:49.790
+nflaig: I think for the definite itself.
+
+177
+00:28:52.450 --> 00:28:55.780
+Parithosh Jayanthi: Okay, Dustin, do you want to go for Nimbus?
+
+178
+00:28:57.600 --> 00:29:05.929
+Dustin: Sure, so we've had… For… for a while, the… We're up to date on…
+
+179
+00:29:06.130 --> 00:29:11.960
+Dustin: Alpha.1 specs, with, with a couple of…
+
+180
+00:29:12.400 --> 00:29:17.210
+Dustin: With the fork choice proposal boost quirk aside, we haven't updated for that, but…
+
+181
+00:29:17.580 --> 00:29:22.319
+Dustin: For, for all the, sort of, EPBS, let's say, specific things.
+
+182
+00:29:22.470 --> 00:29:31.200
+Dustin: The… Otherwise, I think we're… we're missing… We're missing block…
+
+183
+00:29:31.310 --> 00:29:38.080
+Dustin: Production, we're missing a couple of other things, I… yeah, it's not…
+
+184
+00:29:38.710 --> 00:29:49.480
+Dustin: We're, we're getting there, but yeah, I would say we're… well, what was the phrase? A bit… a bit far? No, I mean, yeah, we're not… we couldn't do it in the next…
+
+185
+00:29:50.690 --> 00:29:54.130
+Dustin: Or so, for sure. Yeah.
+
+186
+00:29:55.980 --> 00:29:57.729
+Parithosh Jayanthi: Okay, photos?
+
+187
+00:29:59.620 --> 00:30:13.389
+Potuz: Yeah, I wanted to reply to a question that Marius has asked about timings. I speak for myself, but I always suspected that the timings on the PBS were only going to be chosen
+
+188
+00:30:13.510 --> 00:30:26.800
+Potuz: much, much further down the line, when we actually get some testing on more than just a local DevNet, but a decentralized one, so that we can actually measure what are the tightests that we can make.
+
+189
+00:30:27.180 --> 00:30:28.760
+Potuz: In particular.
+
+190
+00:30:28.900 --> 00:30:43.489
+Potuz: At the station deadline, we would want to make it as soon as possible. There is a PR that Francesco opened to make the payload availability deadline variable, depending on the size of the payload, and it seems that that's going to be merged.
+
+191
+00:30:43.620 --> 00:30:51.330
+Potuz: that, that PR also adds a new constant, which is What is the minimum?
+
+192
+00:30:51.500 --> 00:31:02.880
+Potuz: time that, like, a zero-size payload should have, and that, I think, also should be decided after we decide the attestation deadline, the tightest as possible.
+
+193
+00:31:02.960 --> 00:31:13.180
+Potuz: And then there's the problem of when the PTC deadline would be, that that will depend, I think, on the severity of the free option problem.
+
+194
+00:31:14.900 --> 00:31:18.589
+Potuz: And the blob count that we hit to target on Gloas, of course.
+
+195
+00:31:19.110 --> 00:31:28.940
+Parithosh Jayanthi: Yeah, so for Francesco's PR and the variable PTC deadline, I think that's a much bigger topic, and probably more appropriate for ACDC later this week.
+
+196
+00:31:29.210 --> 00:31:37.139
+Parithosh Jayanthi: But yeah, I wanted to continue with, DevNet updates. Solius, do you want to go for, Grandine?
+
+197
+00:31:40.560 --> 00:31:43.790
+saulius: Okay, so… Mmm…
+
+198
+00:31:45.430 --> 00:31:58.200
+saulius: I think we are still missing some, some stuff, and I actually need to check, again with, Hanglang what is the very latest status, on,
+
+199
+00:31:59.470 --> 00:32:06.259
+saulius: on this, on QC PBAS implementation. So yeah, as far as I know, we are still missing something.
+
+200
+00:32:08.610 --> 00:32:12.530
+Parithosh Jayanthi: Okay, do we have anyone from TECU?
+
+201
+00:32:14.870 --> 00:32:15.760
+Parithosh Jayanthi: Yeah, Enrico?
+
+202
+00:32:15.760 --> 00:32:16.400
+Enrico Del Fante (tbenr): Yes?
+
+203
+00:32:16.760 --> 00:32:22.939
+Enrico Del Fante (tbenr): So we merged, the…
+
+204
+00:32:23.100 --> 00:32:36.790
+Enrico Del Fante (tbenr): franchise change to… related to the proposed boost change that recently has been updated. We are surpassing Alpha01 things, testing, and
+
+205
+00:32:37.240 --> 00:32:50.460
+Enrico Del Fante (tbenr): But there are still pending, PRs related to gossiper rules validations. It needs to be… Updated… And,
+
+206
+00:32:51.390 --> 00:32:58.760
+Enrico Del Fante (tbenr): And there is still some work to do around, storage side?
+
+207
+00:33:00.160 --> 00:33:04.159
+Enrico Del Fante (tbenr): and, what else?
+
+208
+00:33:05.880 --> 00:33:11.279
+Enrico Del Fante (tbenr): Give him one sec, but… Yes, we… there is still,
+
+209
+00:33:11.500 --> 00:33:20.969
+Enrico Del Fante (tbenr): there is an open PR, but should be completed, about the non-validating builder's change.
+
+210
+00:33:22.640 --> 00:33:30.710
+Enrico Del Fante (tbenr): But, yeah, I don't think we are that close to having a… a definite… Ready client.
+
+211
+00:33:30.830 --> 00:33:31.880
+Enrico Del Fante (tbenr): At the moment.
+
+212
+00:33:33.340 --> 00:33:37.870
+Parithosh Jayanthi: Okay, and what about Lighthouse? Do we have anyone from the Lighthouse team?
+
+213
+00:33:48.850 --> 00:33:50.509
+Parithosh Jayanthi: Okay,
+
+214
+00:33:50.620 --> 00:34:05.079
+Parithosh Jayanthi: If this is the case, then do we want to set a deadline for at least local kurtosis networks? Because I think at least having a timeline would help us scope the network and start working towards DevNet ID releases.
+
+215
+00:34:06.060 --> 00:34:12.079
+Parithosh Jayanthi: Do we want to aim for the end of the month for at least a kurtosis network with more than two clients?
+
+216
+00:34:15.330 --> 00:34:21.350
+Parithosh Jayanthi: Does that sound achievable? Prism seems to be the farthest ahead, is that… Okay.
+
+217
+00:34:22.060 --> 00:34:25.889
+Parithosh Jayanthi: Photos says 11 days is not gonna be possible for Prism.
+
+218
+00:34:30.239 --> 00:34:33.539
+Parithosh Jayanthi: What timeline would be reasonable for PRISM?
+
+219
+00:34:35.560 --> 00:34:38.269
+Parithosh Jayanthi: Or for, for the CLs in general.
+
+220
+00:34:42.199 --> 00:34:44.619
+Potuz: Yeah, I don't think Prism is the farthest ahead.
+
+221
+00:34:44.839 --> 00:34:48.849
+Potuz: And also, don't know about timelines.
+
+222
+00:34:51.960 --> 00:34:57.709
+Matthew Keil: We also don't have an estimate on timelines, but it's… A few weeks, probably.
+
+223
+00:35:00.250 --> 00:35:00.820
+Parithosh Jayanthi: Okay.
+
+224
+00:35:03.290 --> 00:35:16.159
+Parithosh Jayanthi: Okay, I think we're definitely gonna have to decide at least scoping or some sort of thing for at least local devnets, because if it's gonna take a month to even have the first local DevNet, that's extremely long.
+
+225
+00:35:16.470 --> 00:35:20.530
+Parithosh Jayanthi: Especially because we still have changes coming in, and we haven't even started testing.
+
+226
+00:35:22.300 --> 00:35:29.209
+Parithosh Jayanthi: But yeah, we… I guess we'll parallelly start working on a testing roadmap and see where we can merge the two in.
+
+227
+00:35:32.050 --> 00:35:51.870
+Matthew Keil: So, I don't know if it's worth bringing up again, because I'm not sure, how things have been built, but if it's possible, where we can break the EPBS scope into pieces, I don't know, again, I know POTUS had, we had talked about this, and it's difficult, but if we could do, like, slot restructuring, and then do the…
+
+228
+00:35:52.090 --> 00:35:57.729
+Matthew Keil: some of the other scopes, in a second phase. Just a thought.
+
+229
+00:36:05.790 --> 00:36:16.570
+Parithosh Jayanthi: Yeah, maybe we can add this as an agenda item for Thursday's ACDC as well, because I do think ACD is gonna have opinions on at least some sort of timeline.
+
+230
+00:36:17.670 --> 00:36:23.730
+Parithosh Jayanthi: But yeah, I agree with Dustin, it might add more complexity than it's worth, so at least we have to discuss it and decide.
+
+231
+00:36:25.910 --> 00:36:32.159
+Potuz: It's kind of irrelevant for this, right? So there's no… there's no trustless payments on…
+
+232
+00:36:32.970 --> 00:36:37.709
+Potuz: on the DevNet. There's not even builders, there's not even external builders on the DevNet.
+
+233
+00:36:38.260 --> 00:36:40.879
+Potuz: It's just self-building for the DevNet.
+
+234
+00:36:45.760 --> 00:36:50.329
+Parithosh Jayanthi: Yeah, well, on the DevNet, you can have external builders if you want, but…
+
+235
+00:36:50.580 --> 00:36:51.250
+Potuz: No, we…
+
+236
+00:36:51.250 --> 00:36:51.569
+Parithosh Jayanthi: the need.
+
+237
+00:36:51.570 --> 00:36:52.080
+Potuz: we agreed.
+
+238
+00:36:52.080 --> 00:36:53.800
+Matthew Keil: No, I don't think we should.
+
+239
+00:36:53.800 --> 00:36:54.290
+Potuz: Yeah, we.
+
+240
+00:36:54.290 --> 00:36:55.130
+Parithosh Jayanthi: Yay, we don't have…
+
+241
+00:36:55.130 --> 00:37:01.530
+Potuz: There's not going to be any external builders, there's not going to be even a P2P broadcast of bids.
+
+242
+00:37:02.120 --> 00:37:02.760
+Parithosh Jayanthi: Okay.
+
+243
+00:37:04.970 --> 00:37:07.859
+Parithosh Jayanthi: That sounds good as scoping, for sure, yeah.
+
+244
+00:37:08.840 --> 00:37:21.570
+Matthew Keil: Yeah, and I don't necessarily know where to break it, I'm just thinking outside the box of a way in order to try to get it piece-a-meal. I just don't know from implementation specifics, like, it would be a challenge for us to do it, but I'm just kind of… who's your thought.
+
+245
+00:37:27.150 --> 00:37:35.819
+Parithosh Jayanthi: Yeah, I think we might need to also update the specs page with these caveats, but we can do that after the call.
+
+246
+00:37:41.850 --> 00:37:52.570
+Parithosh Jayanthi: Okay, just to summarize the DevNet discussion before we move on to the next topic then, for Glamsterdam, EIP78437778
+
+247
+00:37:52.710 --> 00:38:02.339
+Parithosh Jayanthi: 7708 are included in DevNet 2, along with all of the changes proposed. EIP8024, the EIP is included in the DevNet.
+
+248
+00:38:02.450 --> 00:38:12.099
+Parithosh Jayanthi: Just that the changes are not being included in the DevNet as proposed. Just wanted to clarify that because I might have misspoken earlier, but yeah.
+
+249
+00:38:12.200 --> 00:38:28.240
+Parithosh Jayanthi: And for EPBS, we'll update the specs page and TBD on a date, but we should try to have at least a local version of the DevNet up and running so we can start testing, and then the testing teams will get together and start making testing plan for EPBS.
+
+250
+00:38:29.750 --> 00:38:32.749
+Parithosh Jayanthi: Any open questions for Glamsterdam?
+
+251
+00:38:37.990 --> 00:38:38.850
+Parithosh Jayanthi: Okay.
+
+252
+00:38:39.130 --> 00:38:49.280
+Parithosh Jayanthi: Then I would hand over to Anskar, because he wants to, continue the discussion from ACD last week on EIP8037.
+
+253
+00:38:50.000 --> 00:38:51.650
+Parithosh Jayanthi: You have the floor answer.
+
+254
+00:38:53.070 --> 00:38:55.150
+Ansgar Dietrichs: Perfect, can everyone hear me?
+
+255
+00:38:57.370 --> 00:39:21.039
+Ansgar Dietrichs: Yeah, well, I assume so. Yeah, so basically, we more or less finished glumpstump scoping on last ACDE. There was one last decision that we wanted to postpone to today, and that specifically is about, EIP 8037, so, our specific strategy for state growth in
+
+256
+00:39:21.410 --> 00:39:45.890
+Ansgar Dietrichs: Glamsterdam, and just to basically remind people, basically, the EIP, as it was proposed by the champions, on, Thursday, basically has two elements to it. One of them is this mechanism that, dynamically adjusts, the state growth pricing based on the gas limit, so that means that instead of a
+
+257
+00:39:46.130 --> 00:39:53.260
+Ansgar Dietrichs: one time, probably pretty, severe, repricing right at the, the hard fork. It basically just…
+
+258
+00:39:53.280 --> 00:40:16.030
+Ansgar Dietrichs: grows together with the gas limit, so if we over time increase the gas limit, there would be… the state growth operations would become more and more expensive over time. So that's the element one, this dynamic pricing, and then the element two is this, separate metering for, state growth gas, and that specifically, was meant to address this.
+
+259
+00:40:16.030 --> 00:40:20.599
+Ansgar Dietrichs: The issue of contract deployments, and the maximum per transaction.
+
+260
+00:40:20.600 --> 00:40:36.399
+Ansgar Dietrichs: gas cap. So those are the two elements, the, the dynamic, pricing based on the gas limit, and the, the separate metering for contract, for, for, for, to enable, large contract, deployments. Yeah, and ideally we would…
+
+261
+00:40:36.400 --> 00:40:48.049
+Ansgar Dietrichs: then make the decision today on whether to include, CFI, the EIP, in that form, or consider alternative forms.
+
+262
+00:40:48.060 --> 00:40:56.050
+Ansgar Dietrichs: I was thinking to start by handing over to Marius to basically give an update of the discussions that were happening,
+
+263
+00:40:56.450 --> 00:40:59.690
+Ansgar Dietrichs: Over the last few days, Marius, are you on the call?
+
+264
+00:41:10.740 --> 00:41:12.710
+Ansgar Dietrichs: Maris?
+
+265
+00:41:13.930 --> 00:41:14.840
+Ansgar Dietrichs: What?
+
+266
+00:41:15.230 --> 00:41:17.270
+Ansgar Dietrichs: I do see Marys on the call.
+
+267
+00:41:20.120 --> 00:41:24.620
+Mario Vega: Maurice, we cannot hear you. Maybe, your microphone's not working.
+
+268
+00:41:58.970 --> 00:42:00.280
+Ansgar Dietrichs: We can hear you now.
+
+269
+00:42:00.460 --> 00:42:01.259
+Ansgar Dietrichs: You can go ahead.
+
+270
+00:42:01.260 --> 00:42:01.800
+Marius van der Wijden: Okay.
+
+271
+00:42:02.190 --> 00:42:17.040
+Marius van der Wijden: Yeah, so, sorry about that. I, over the weekend, I wrote an explainer about 8037, and why we think it's the best solution, for the network right now in order to increase the gas limit.
+
+272
+00:42:17.550 --> 00:42:24.190
+Marius van der Wijden: Yeah, I don't know if the problem with my microphone is,
+
+273
+00:42:24.470 --> 00:42:32.449
+Marius van der Wijden: because of my microphone, or because the person… because it's a person sitting in front of the computer. But anyway,
+
+274
+00:42:32.560 --> 00:42:49.639
+Marius van der Wijden: Yes, so if there are any questions, I'm happy to answer, questions about the… about the EIP. I think we feel very strongly that, this is necessary to ship in Glamsterdam, otherwise we cannot
+
+275
+00:42:49.640 --> 00:42:53.159
+Marius van der Wijden: Significantly, increased the gas limit.
+
+276
+00:42:53.230 --> 00:42:59.539
+Marius van der Wijden: with the… with Bells and EPBS and… and the repricings.
+
+277
+00:43:10.410 --> 00:43:14.769
+Ansgar Dietrichs: Yes, we can go through the list. Amazing.
+
+278
+00:43:15.250 --> 00:43:15.880
+Ameziane Hamlat: Yeah.
+
+279
+00:43:16.170 --> 00:43:31.399
+Ameziane Hamlat: So I raised a few questions on Discord. So for me, as it is today, EIP8037, for me, there is, like, some kind of regression compared to, to Fusaka.
+
+280
+00:43:31.630 --> 00:43:40.419
+Ameziane Hamlat: Because, with EIP 7825, we have this limit, of 16.7,
+
+281
+00:43:40.750 --> 00:43:44.430
+Ameziane Hamlat: Media and gas, so we can have multiple transactions per block.
+
+282
+00:43:44.980 --> 00:43:55.769
+Ameziane Hamlat: And, with this EIP, we can have, much bigger transaction, especially if it has, create, like, like, create state,
+
+283
+00:43:57.310 --> 00:43:58.540
+Ameziane Hamlat: inside.
+
+284
+00:43:58.990 --> 00:44:05.230
+Ameziane Hamlat: And so we can go, basically up to the whole block with, with one transaction.
+
+285
+00:44:05.360 --> 00:44:14.730
+Ameziane Hamlat: So, I understand that we are metering separately, compute and, and state creation, state growth.
+
+286
+00:44:15.480 --> 00:44:20.700
+Ameziane Hamlat: And we still have, like, for this state, growth,
+
+287
+00:44:21.790 --> 00:44:31.390
+Ameziane Hamlat: op codes, especially for us as a store, we still have, like, this compute part that counts for 16.7 million, but still, at the end.
+
+288
+00:44:31.740 --> 00:44:36.579
+Ameziane Hamlat: Before, we could have multiple transactions, in one block.
+
+289
+00:44:36.950 --> 00:44:41.530
+Ameziane Hamlat: And today, in the future, we would have only one transaction.
+
+290
+00:44:42.080 --> 00:44:43.800
+Ameziane Hamlat: This may be…
+
+291
+00:44:44.270 --> 00:44:51.170
+Ameziane Hamlat: will not the worst case. Actually, I am… I don't know, because we need to, maybe, to benchmark it.
+
+292
+00:44:52.560 --> 00:44:58.730
+Ameziane Hamlat: But for me, this is, like, a big change in… especially with
+
+293
+00:44:59.070 --> 00:45:01.840
+Ameziane Hamlat: For, for block access lists in the future.
+
+294
+00:45:02.240 --> 00:45:09.679
+Ameziane Hamlat: So this is, like, the main concern I have. My understanding is that we have… we have, like,
+
+295
+00:45:09.860 --> 00:45:25.440
+Ameziane Hamlat: this different metering to handle that, contract deployment, use case, with 20, 24 kilobytes. So, so for that, 18 million gas,
+
+296
+00:45:25.960 --> 00:45:38.220
+Ameziane Hamlat: 18 million gas limit, transaction limit, either on the state, for example. We could imagine another gas… transaction gas limit on the state, creation part, that… that would
+
+297
+00:45:38.590 --> 00:45:49.289
+Ameziane Hamlat: mitigate, that would mitigate this issue. So I wonder why we… we want to, like, we don't want to cap state, state transactions.
+
+298
+00:45:50.620 --> 00:46:07.049
+Marius van der Wijden: Yes, that's, that's a good point. And, this is, and, Anska, said in the chat, any single transaction action can never be heavier to execute than the 60 million gas limit.
+
+299
+00:46:07.050 --> 00:46:13.500
+Marius van der Wijden: This is true, however, it is also true that now a transaction could…
+
+300
+00:46:13.570 --> 00:46:31.789
+Marius van der Wijden: Again, as before Fusaka consumed the entire block, and spent most of the block on, on state creation, and the, the result would be a single transaction that executes 16 million gas.
+
+301
+00:46:32.020 --> 00:46:39.679
+Marius van der Wijden: on, on compute, and, everything else on state creation. So yes, but…
+
+302
+00:46:42.750 --> 00:46:47.750
+Marius van der Wijden: Still, we would… we would be in the 16… 16 million…
+
+303
+00:46:48.880 --> 00:46:54.229
+Marius van der Wijden: Still, we would limit this transaction by 60 million gas,
+
+304
+00:46:54.550 --> 00:46:57.580
+Marius van der Wijden: Limit, and this is a very…
+
+305
+00:46:57.910 --> 00:47:09.730
+Marius van der Wijden: Weird corner case where someone is willing to deploy… willing to pay for a lot of gas in order to deploy, or in order to create a lot of state.
+
+306
+00:47:09.930 --> 00:47:14.959
+Marius van der Wijden: And, that is… there's nothing different about this.
+
+307
+00:47:15.140 --> 00:47:26.139
+Marius van der Wijden: Practically than, someone right now paying a lot of gas for 5 or 6 transactions to create a lot of state.
+
+308
+00:47:26.350 --> 00:47:37.759
+Marius van der Wijden: So… We can… We can, in theory, also think about adding a…
+
+309
+00:47:37.980 --> 00:47:45.369
+Marius van der Wijden: So basically what this EAP also does is remove the transaction gas limit cap and move it into the EVM.
+
+310
+00:47:45.500 --> 00:48:04.709
+Marius van der Wijden: And we can, we can think about reinstating that, in order to, in order to limit the amount of state creation that a single transaction, can do. That would, that would be possible. The problem there would be to…
+
+311
+00:48:04.710 --> 00:48:19.099
+Marius van der Wijden: what do we limit it? Like, we could limit it to 30 million gas, which would mean… which would allow, in the worst case, two transactions in the current block gas limit. The problem is if we 10x the…
+
+312
+00:48:19.100 --> 00:48:21.600
+Marius van der Wijden: the… the…
+
+313
+00:48:21.600 --> 00:48:37.670
+Marius van der Wijden: the gas limit again, then we would, then we would run into this issue again that we wouldn't be able to deploy big contracts within the 30 million gas, gas limit. So, a solution for that would be to,
+
+314
+00:48:37.990 --> 00:48:42.400
+Marius van der Wijden: To also adjust the gas limit
+
+315
+00:48:42.720 --> 00:48:51.870
+Marius van der Wijden: the… the allowed gas limit per transaction, in tandem with the block gas limit.
+
+316
+00:48:51.870 --> 00:49:04.670
+Marius van der Wijden: So we could do something like, at 60 million gas, you can have, have a transaction that costs 20 million gas at 100, 120 million
+
+317
+00:49:04.940 --> 00:49:09.140
+Marius van der Wijden: Yes, block gas limit, you can have transactions that have
+
+318
+00:49:10.630 --> 00:49:14.779
+Marius van der Wijden: I don't know, I cannot compute 40 million gas per transaction.
+
+319
+00:49:15.000 --> 00:49:22.560
+Marius van der Wijden: So, yes, those… can,
+
+320
+00:49:22.720 --> 00:49:29.519
+Marius van der Wijden: Yes, those would be, solutions to this, to this, to this
+
+321
+00:49:30.360 --> 00:49:48.050
+Marius van der Wijden: problem, but again, I don't really think it's a problem, because, in the worst case, you will only be able to execute one single transaction, and that will run in exactly 16MGAS, and so the…
+
+322
+00:49:48.360 --> 00:49:57.480
+Marius van der Wijden: the worst case… this will be significantly better than the worst case compute operations, and so there's no dose risk attached to it.
+
+323
+00:50:01.020 --> 00:50:02.160
+Ansgar Dietrichs: Ben?
+
+324
+00:50:03.320 --> 00:50:07.549
+Ben Adams: Yeah, following up on that, it does… it will create…
+
+325
+00:50:08.240 --> 00:50:16.859
+Ben Adams: weird corner cases, for instance, where I'm buying a token that's new to me, new to my account.
+
+326
+00:50:17.240 --> 00:50:20.670
+Ben Adams: That will cause state creation in New Balance.
+
+327
+00:50:21.590 --> 00:50:29.210
+Ben Adams: I could be forced out of being included in the next block, because all the state has been used up.
+
+328
+00:50:29.860 --> 00:50:37.490
+Ben Adams: Whereas somebody who's doing a swap Of that same token, but they already have it.
+
+329
+00:50:37.950 --> 00:50:44.870
+Ben Adams: Therefore there's… there's no additional state costs. They will get included in the box, so there's… those weird corner cases.
+
+330
+00:50:45.640 --> 00:50:56.440
+Ben Adams: Saying that, I'm… And for… it does solve problems, so… I think on…
+
+331
+00:50:57.360 --> 00:51:00.770
+Ben Adams: In aggregate, it's… it's a net positive EIP.
+
+332
+00:51:12.120 --> 00:51:18.499
+Ansgar Dietrichs: Yeah, and I mean, from my side, I will say that normally, I do think there's, like, some of these small details
+
+333
+00:51:18.810 --> 00:51:20.640
+Ansgar Dietrichs: that I do feel like…
+
+334
+00:51:20.720 --> 00:51:35.930
+Ansgar Dietrichs: would benefit from some further attention, just to figure out all these specific edge cases. Normally, there would be an argument for delaying the decision a bit more, but in this case, we just, you know, we just really need to get… make the decision. I personally think it would be fine to…
+
+335
+00:51:35.930 --> 00:51:48.749
+Ansgar Dietrichs: have an EP like this, in case we end up agreeing that this is the best version of it, to just CFI it now, and keep iterating on it, and so then if, say, by a week, two weeks from now, the shape it's in is not…
+
+336
+00:51:49.120 --> 00:51:55.710
+Ansgar Dietrichs: convincing for people. We can revisit this, potentially have a simpler version.
+
+337
+00:51:56.140 --> 00:52:03.850
+Ansgar Dietrichs: I think, I think that's reasonable, it has a lot of attention right now, a lot of people that keep iterating on it, so I personally, think that's fine.
+
+338
+00:52:03.920 --> 00:52:18.269
+Ansgar Dietrichs: So for today, I think my main question is basically whether people currently see the EIP as proposed as the best… the best candidate version, at least. So that we can CFI it, or whether people would basically…
+
+339
+00:52:18.570 --> 00:52:25.340
+Ansgar Dietrichs: Have a preference for swapping it out today for a, A simpler version.
+
+340
+00:52:35.090 --> 00:52:35.660
+Ansgar Dietrichs: Oh, yeah.
+
+341
+00:52:35.660 --> 00:52:38.419
+mhaas.eth: can you guys hear me?
+
+342
+00:52:39.310 --> 00:52:39.930
+Ansgar Dietrichs: Yes.
+
+343
+00:52:40.360 --> 00:52:51.069
+mhaas.eth: Yeah, thank you. Hi, I'm Marcus. I just wanted to say that I am actually pro the EIP8037, as it stands, and,
+
+344
+00:52:51.720 --> 00:52:55.230
+mhaas.eth: I honestly think that…
+
+345
+00:52:55.420 --> 00:53:06.649
+mhaas.eth: there was some questions regarding, developer UX, and I just want to say that as long as the tooling just supports this EIP, which shouldn't be that difficult.
+
+346
+00:53:06.770 --> 00:53:10.589
+mhaas.eth: I don't think it would complicate things any further.
+
+347
+00:53:21.040 --> 00:53:21.850
+Ansgar Dietrichs: Andrew?
+
+348
+00:53:22.870 --> 00:53:31.309
+Andrew Ashikhmin: Yeah, I think it's fine to CFI this EIP, but, I would be cautious about the dynamic pricing.
+
+349
+00:53:31.410 --> 00:53:43.860
+Andrew Ashikhmin: I think, it might violate some assumptions of, smart contracts, existing ones, and, also, like, the, smart contracts devs,
+
+350
+00:53:44.770 --> 00:53:55.889
+Andrew Ashikhmin: like, view, or picture. So I would actually go… I would fix this… the cost per state byte, and
+
+351
+00:53:56.210 --> 00:54:07.680
+Andrew Ashikhmin: Instead of linking it to the gas limit, and when we decide to raise the gas limit, we can have a mini hard fork to adjust the cost per statewide.
+
+352
+00:54:10.930 --> 00:54:19.219
+Ansgar Dietrichs: And just to clarify on that point, so would you prefer to see that change today, or would you, in principle, be…
+
+353
+00:54:19.410 --> 00:54:25.100
+Ansgar Dietrichs: okay with, ceifying the EIP today as is, and then revisit it, or, like, over the next…
+
+354
+00:54:26.270 --> 00:54:26.809
+Andrew Ashikhmin: You know, thoughts.
+
+355
+00:54:26.810 --> 00:54:28.710
+Ansgar Dietrichs: Two weeks or so revisiting this question.
+
+356
+00:54:29.450 --> 00:54:33.729
+Andrew Ashikhmin: Yeah, it's fine to revisit it later. I can Cify it now, I think.
+
+357
+00:54:34.870 --> 00:54:40.090
+Ben Adams: I don't think we can… I don't think we can,
+
+358
+00:54:41.450 --> 00:54:46.569
+Ben Adams: Do a mini hard book on gas prices, because they're… sorry, gas limit, because they're…
+
+359
+00:54:46.790 --> 00:54:52.290
+Ben Adams: At the moment, at least, they're independent, and we don't choose the gas limit.
+
+360
+00:54:54.310 --> 00:54:55.590
+Ben Adams: So, we couldn't…
+
+361
+00:54:55.960 --> 00:55:00.730
+Ben Adams: The validators put up the gas limit, and then go, right, we've got to do a mini hard fork.
+
+362
+00:55:01.670 --> 00:55:20.180
+Andrew Ashikhmin: Well, there's still coordination, like, it's… the EF analysis, recommended, gas limit, so I don't see it as a big problem. We… and we have something like the BPO mini hard forks can be perhaps configurable.
+
+363
+00:55:20.830 --> 00:55:25.870
+Andrew Ashikhmin: Anyway, I think this is something we can… Reiterate later.
+
+364
+00:55:28.420 --> 00:55:29.170
+Ansgar Dietrichs: Maria?
+
+365
+00:55:31.780 --> 00:55:38.629
+Maria Silva: Yes, I would… I would add on that point. I think we started to reach out to,
+
+366
+00:55:39.060 --> 00:55:53.369
+Maria Silva: app developers and the community itself, and I think in the following weeks, we'll continue to do that to really understand the potential issues with these dynamic costs. I think if we figure out that there's no issues.
+
+367
+00:55:53.450 --> 00:55:59.610
+Maria Silva: There, I don't see a reason why not doing it this way, because it seems…
+
+368
+00:55:59.770 --> 00:56:05.169
+Maria Silva: Much cleaner than doing a fork every time we need to increase the…
+
+369
+00:56:05.390 --> 00:56:24.619
+Maria Silva: the gas limits. But so… so yeah, we'll… we'll work on understanding better the issues, and if, if we find that the majority of the… of the community thinks it's… it's… it's okay, then, would that, make sense to you, Andrew, to just keep as is?
+
+370
+00:56:26.140 --> 00:56:27.949
+Andrew Ashikhmin: Yeah, yeah, sounds fine.
+
+371
+00:56:28.130 --> 00:56:33.669
+Andrew Ashikhmin: But, I mean, it just, of course, as you say, it's very important to clarify it with the…
+
+372
+00:56:33.940 --> 00:56:37.810
+Andrew Ashikhmin: Smart contract dev community, yeah.
+
+373
+00:56:40.490 --> 00:56:41.339
+Maria Silva: Great, will do.
+
+374
+00:56:42.610 --> 00:56:58.420
+Ansgar Dietrichs: Yeah, and then, one question that I had also posted in chat just now, if you want to leave a comment there or something, like, it seems like, at least right now, we're trending towards a CFI decision, but at the same time, also, people are… still have some questions or aspects that really need to be double-checked.
+
+375
+00:56:58.420 --> 00:57:13.470
+Ansgar Dietrichs: I think there's been very active discussion already on the Discord. My question would just be, is it sufficient to just say that, like, in between the next calls, we are basically… we will have an async, iteration on this, or would people also maybe prefer,
+
+376
+00:57:13.630 --> 00:57:21.980
+Ansgar Dietrichs: Want to have a breakout call scheduled or something, so it's… in addition to the async collaboration.
+
+377
+00:57:27.830 --> 00:57:32.579
+Ansgar Dietrichs: But I guess we… that can be a separate, decision.
+
+378
+00:57:33.010 --> 00:57:50.669
+Marius van der Wijden: I'm, I'm, I'm happy to, I'm happy to, to have a call. We will definitely iterate over some of the points that have been discussed today, internally within DEF, and, but also we can schedule a call and…
+
+379
+00:57:50.880 --> 00:57:55.320
+Marius van der Wijden: And share our progress, and make sure we are answering the right questions.
+
+380
+00:57:58.180 --> 00:58:09.819
+Ansgar Dietrichs: Yeah, then, I think for now, then, I would say it seems like the decision would be to CFI it. I'd give one more round of opportunity for people to protest.
+
+381
+00:58:10.140 --> 00:58:14.069
+Ansgar Dietrichs: But yeah, otherwise then, I think CFI-ing it, and then,
+
+382
+00:58:14.160 --> 00:58:30.220
+Ansgar Dietrichs: Making sure that there's good venues, both for just iterating in general, also iterating in a broader scope, and then, importantly, also, like, get feedback from app developers on topics like the disruptiveness of this dynamic mechanism, these kind of things.
+
+383
+00:58:30.360 --> 00:58:33.179
+Ansgar Dietrichs: But we can… we can do all of this async.
+
+384
+00:58:33.520 --> 00:58:37.789
+Ansgar Dietrichs: Yeah, so anyone, anyone who would be opposed to a CFI today?
+
+385
+00:58:44.890 --> 00:59:02.499
+Ansgar Dietrichs: Okay, then we can CFI 8037, and with that, we really, I think, have a finalized Gram Slam CFI scope, at least. Let's see how many of them will end up making it to SFI, but this is really exciting. Thank you all very much, and thanks, Pari, for letting me…
+
+386
+00:59:02.610 --> 00:59:06.450
+Ansgar Dietrichs: Take some time today to get this to the finish line. Awesome.
+
+387
+00:59:07.710 --> 00:59:17.050
+Parithosh Jayanthi: So, thank you. I wanted to maybe continue quickly with the, with the last one or two items.
+
+388
+00:59:17.240 --> 00:59:24.729
+Parithosh Jayanthi: Bharat, do you want to introduce what you're doing? I don't think we have to go into too much detail, but maybe it's useful context for everyone.
+
+389
+00:59:25.200 --> 00:59:30.889
+Bharath: Yeah, yeah, for sure, I can keep it short. Just the idea is, like, with EPBS, we had conversations on,
+
+390
+00:59:31.290 --> 00:59:36.040
+Bharath: on trying to, like, deprecate them as both sidecar. So, the main question that…
+
+391
+00:59:36.120 --> 00:59:52.140
+Bharath: I wanted to bring up in this call is, what is the temperature check on that? What clients feel? Do they… because I understand their EPBS, the Lamsterdam folk definitely is quite complex, and will clients be able to prioritize this? And secondly.
+
+392
+00:59:52.640 --> 00:59:56.649
+Bharath: If we absorb most of my boost functionality into clients.
+
+393
+00:59:57.260 --> 01:00:04.050
+Bharath: I just wanna… there might be some value in specifying some aspects of it in the builder specs.
+
+394
+01:00:04.500 --> 01:00:17.490
+Bharath: on the consensus specs, but I think it's better to be in the builder specs. There's some sense of, like, okay, like, for example, like, like, how a client can… how a client receives a list of builders.
+
+395
+01:00:17.540 --> 01:00:28.609
+Bharath: Right? Like, in the sense… builders or relays, using them as interchangeable for now. Like, and what are the parameters you pass? Like, okay, like, each builder has their main bid, has their,
+
+396
+01:00:28.820 --> 01:00:34.809
+Bharath: Like, you know, like, like, has the bid boost, and etc, parameters like that, and…
+
+397
+01:00:35.060 --> 01:00:45.820
+Bharath: I generally see some value in standardizing that amongst clients and bringing into a specification, and I assume most of it will just be implementation details, like querying bits in parallel.
+
+398
+01:00:46.210 --> 01:00:49.749
+Bharath: And stuff like that. But yeah, these are main… the main questions.
+
+399
+01:00:49.860 --> 01:01:06.680
+Bharath: I had, number one is, like, what's a temperature check on defecating… absorbing RevBoost into clients for Glamstadam? Secondly, how much of it do we want to specify? I guess the how much of it do we want to specify in the spec? We can take it offline, but I was just curious to understand,
+
+400
+01:01:06.810 --> 01:01:15.140
+Bharath: How, what client teams are thinking about, bringing in that boost functionality into the… absorbing that into clients for glamster?
+
+401
+01:01:18.580 --> 01:01:21.530
+Parithosh Jayanthi: Yeah, do CL teams wanna talk to that?
+
+402
+01:01:29.660 --> 01:01:41.539
+Bharath: Yeah, I think Dustin raised it, like, the… is this really a spec thing? Yeah, I agree, like, a majority of things, I think it would be an implementation thing, but I was just wondering, like, is there some aspects we'd want to, like, standardize amongst clients?
+
+403
+01:01:41.920 --> 01:01:44.369
+Bharath: But, outside that, yeah.
+
+404
+01:01:44.370 --> 01:01:45.880
+Parithosh Jayanthi: Yeah, portals.
+
+405
+01:01:46.910 --> 01:01:56.599
+Potuz: Yes, this was… this has been discussed extensively for over a year, and I think it's pretty clear that the Builder API
+
+406
+01:01:56.600 --> 01:02:09.339
+Potuz: will have to be implemented on CL clients. We already have some ideas of what has to be signed, to whom it has to be signed. This is most of the contacting builders to get a bid.
+
+407
+01:02:09.360 --> 01:02:22.160
+Potuz: And I think we were very clear from the start that CL clients themselves, vanilla CL clients themselves, should have this functionality to be able to contact a builder directly, which is one of the functionalities of MapBoost.
+
+408
+01:02:22.800 --> 01:02:34.900
+Potuz: Mapboost does other things, like, for example, exchanging a blinded payload, that was signed, and this will not be implemented by clients, at least this will not be implemented by PRISM.
+
+409
+01:02:35.300 --> 01:02:47.940
+Potuz: And I think this was also very clear from early on. So I don't… I mean, this thing of, like, contacting directly builders, is something that, yes, it's expected to be part of the builder API, and it should be specified.
+
+410
+01:02:50.360 --> 01:02:53.849
+Bharath: Just to clarify on one thing, when you mentioned that,
+
+411
+01:02:54.510 --> 01:03:10.249
+Bharath: MavBoost also does blind signing, yes, it does do blind signing today, but with EPBS, we really will not have blind signing, unless… if in some future we have an unstake builder API, but just to clarify, that's what you mean, right, when you talk about blind signing, because with EPBS, I don't see where we're gonna have blind sign.
+
+412
+01:03:15.840 --> 01:03:17.389
+Bharath: Yeah, okay, sounds cool.
+
+413
+01:03:18.160 --> 01:03:18.650
+Bharath: Oh.
+
+414
+01:03:18.650 --> 01:03:21.280
+Dustin: Protas, when you talk… oh, sorry, yeah?
+
+415
+01:03:22.020 --> 01:03:23.779
+Bharath: Alright, go ahead, Dustin, sorry.
+
+416
+01:03:24.460 --> 01:03:28.430
+Dustin: Oh, question for Podas. When you kept talking about builders, do you mean…
+
+417
+01:03:28.530 --> 01:03:39.220
+Dustin: PEPBS-type, quote-unquote, builders, or do you mean builders in a, flew when… before, Builder API context.
+
+418
+01:03:39.540 --> 01:03:46.950
+Potuz: The CL client cannot distinguish from them, right? So if you contact a URL, and that URL gives you a signed bid.
+
+419
+01:03:47.240 --> 01:03:51.100
+Potuz: from a builder, the CL doesn't really care. It trusts that.
+
+420
+01:03:51.100 --> 01:03:51.970
+Dustin: Yeah, sure.
+
+421
+01:03:51.970 --> 01:04:09.889
+Potuz: The endpoint returns a signed bid. As long as that interaction happens, that's fine. That endpoint could be a relay that grabs bids from other builders, and we don't care about that. So that part, of course, has to be implemented by CL clients, and we do have more or less a complete specification already set up.
+
+422
+01:04:11.440 --> 01:04:21.460
+Dustin: Right, but I guess… I'm mostly confused, and I'm confused in the sense of, there's… what this current proposal, I mean, without…
+
+423
+01:04:21.600 --> 01:04:40.890
+Dustin: getting too deep into the technical details, it's both lacking things that, if you really want to absorb all of what… especially talk about, like, what CommitBoost does, or, like, if you want to absorb all of that functionality, it's lacking a lot of, sort of, specification related to that. Whether that's a good idea is a different question. At the same time, like.
+
+424
+01:04:41.090 --> 01:04:46.430
+Dustin: the Builder API, to talking with MedBoost.
+
+425
+01:04:46.450 --> 01:05:05.239
+Dustin: uses the Builder API. MevBoost both speaks the Builder API to the relays, and also is spoken to by the Builder API by CLs. That exists today. That is a status quo, right now, for every CL. So when I… so every CL that supports MEV right now already supports the Builder API.
+
+426
+01:05:05.320 --> 01:05:17.349
+Dustin: And if you're saying there's… there's no difference between, well, you know, there's the builder… builders and relays, because they… you're… of course, they can't tell the difference. If… if you want… if, you know,
+
+427
+01:05:17.700 --> 01:05:28.519
+Dustin: So, but at that point, what is actually being proposed here? Is it being… is it a standard for how to specify the multiplexing? Because that is it. That is the one… I mean, EPBS adds the not,
+
+428
+01:05:28.610 --> 01:05:35.390
+Dustin: blinded part. But, okay. But in terms of structurally speaking, the one and only thing different
+
+429
+01:05:35.390 --> 01:05:46.099
+Dustin: here is… is specifying the multiplexing. And that's what… where my skepticism is… is of saying, well, look, that's, to me, just an implementation thing.
+
+430
+01:05:46.100 --> 01:05:56.050
+Dustin: and this was a saying critique made… I mean, doesn't mean we can't specify it at some level, but I mean, it's the same critique made by a couple of the EIPs this cycle,
+
+431
+01:05:56.190 --> 01:05:59.929
+Dustin: In… on the EL side as well.
+
+432
+01:05:59.960 --> 01:06:19.540
+Dustin: the max blobs, right? Has this very, a very, I mean, much simpler idea, a much simpler thing, but is it, like, that's not really spec, exactly. I mean, that's a separate argument, and this is not the time or place to get into it, but that's sort of this critique that was made of it, and that's the same critique I would make here, is that if you have the…
+
+433
+01:06:19.540 --> 01:06:22.530
+Dustin: Like, it's a per-client UX thing.
+
+434
+01:06:23.060 --> 01:06:32.430
+Dustin: Right? Yeah. And that's… I would… I would want to be a lot of clarity about what exactly is… is this proposal getting us? Yeah.
+
+435
+01:06:33.280 --> 01:06:36.219
+Parithosh Jayanthi: Yeah, Enrico, and I think we have to end after that.
+
+436
+01:06:36.720 --> 01:06:40.540
+Enrico Del Fante (tbenr): Yeah, just a quick comment. We tend…
+
+437
+01:06:41.350 --> 01:06:56.719
+Enrico Del Fante (tbenr): To try to have the complexity of clients lower, so if we have something like this kind of multiplexing complexity that could be off-client, and having some intermediate
+
+438
+01:06:57.130 --> 01:07:07.679
+Enrico Del Fante (tbenr): software that can… does that. We see the benefit of that, because we can, yeah, lower down all the complexity, but…
+
+439
+01:07:07.830 --> 01:07:11.510
+Enrico Del Fante (tbenr): I think, like, the point here was…
+
+440
+01:07:11.960 --> 01:07:18.050
+Enrico Del Fante (tbenr): To support only the in-protocol builder flow, or the…
+
+441
+01:07:18.410 --> 01:07:27.919
+Enrico Del Fante (tbenr): Kind of blind signing, flow that is kind of trying to do the off… completely off-protocol bidding.
+
+442
+01:07:28.070 --> 01:07:29.810
+Enrico Del Fante (tbenr): Going through, and…
+
+443
+01:07:30.370 --> 01:07:38.699
+Enrico Del Fante (tbenr): I don't know if Bart was… was referring to that or not, but I agree with Podos that the current
+
+444
+01:07:39.420 --> 01:07:45.140
+Enrico Del Fante (tbenr): Thing that clients needs to be implemented is essentially what we, what we have now.
+
+445
+01:07:45.310 --> 01:07:53.030
+Enrico Del Fante (tbenr): In terms of builder flow, removing completely the, the blinded thing that is just,
+
+446
+01:07:53.800 --> 01:07:56.120
+Enrico Del Fante (tbenr): Less complexity anyway, so…
+
+447
+01:07:57.020 --> 01:08:04.409
+Parithosh Jayanthi: Yeah, Bharat, would you be able to create maybe a thread on, consensus dev, and then you can continue the temp check there?
+
+448
+01:08:04.710 --> 01:08:10.070
+Bharath: Yeah, we have a thread in the… I raised it in Payload Builders, the channel. I can just, like…
+
+449
+01:08:10.280 --> 01:08:10.870
+Parithosh Jayanthi: buffet.
+
+450
+01:08:10.870 --> 01:08:16.149
+Bharath: I'll, yeah, I'll forward that, and, like, we can take the discussion there, but yeah, I have my thoughts. Like, we can talk.
+
+451
+01:08:16.380 --> 01:08:17.350
+Parithosh Jayanthi: Sounds good.
+
+452
+01:08:17.490 --> 01:08:35.299
+Parithosh Jayanthi: And, I don't think we're gonna be able to get to it, but flagging it for async discussion, there's a PR4817 that Portos and Justin wanted to discuss. We don't have time on the call, but maybe you guys can bring it up on the CL dev… consensus Dev chat as well.
+
+453
+01:08:40.720 --> 01:08:47.050
+Parithosh Jayanthi: Okay, then that's it for today. Thanks, everyone, for coming, and sorry for going over.
+
+454
+01:08:50.229 --> 01:08:51.359
+jochem-brouwer: Thanks, Haul. Bye-bye.
+
+455
+01:08:51.659 --> 01:08:52.349
+Stefan Starflinger: Thank you. Bye.
+
+456
+01:08:54.670 --> 01:08:55.420
+Ansgar Dietrichs: Bam.
+

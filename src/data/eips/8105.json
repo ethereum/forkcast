@@ -1,0 +1,75 @@
+{
+  "id": 8105,
+  "title": "EIP-8105: Universal Enshrined Encrypted Mempool",
+  "status": "Draft",
+  "layer": "EL",
+  "description": "Enshrines an encrypted mempool, letting users submit transactions encrypted until block inclusion to reduce front-running/sandwiching and improve weak censorship resistance. The design is encryption-scheme agnostic by supporting arbitrary decryption key providers (e.g., threshold, MPC, TEEs, delay encryption, FHE). Plaintext transactions remain supported, and chain progression is guaranteed even if key providers fail.",
+  "author": "Jannik Luhn (@jannikluhn)",
+  "type": "Standards Track",
+  "category": "Core",
+  "createdDate": "2025-12-17",
+  "discussionLink": "https://ethereum-magicians.org/t/eip-8105-universal-enshrined-encrypted-mempool/27201",
+  "reviewer": "bot",
+  "forkRelationships": [
+    {
+      "forkName": "Hegota",
+      "statusHistory": [
+        {
+          "status": "Proposed",
+          "call": null,
+          "date": null
+        }
+      ],
+      "isHeadliner": true,
+      "wasHeadlinerCandidate": true,
+      "champion": {
+        "name": "Jannik Luhn",
+        "discord": "jannik031153"
+      },
+      "presentationHistory": [
+        {
+          "type": "headliner_proposal",
+          "link": "https://ethereum-magicians.org/t/hegota-headliner-proposal-eip-8105-universal-enshrined-encrypted-mempool-eem/27448",
+          "date": "2026-01-16"
+        }
+      ]
+    }
+  ],
+  "laymanDescription": "Adds a built-in encrypted mempool option: you can submit an encrypted transaction that stays unreadable until it's included in a block. This reduces front-running and sandwich attacks and can improve real-time censorship resistance. Regular plaintext transactions still work, and the chain continues even if key providers fail.",
+  "stakeholderImpacts": {
+    "endUsers": {
+      "description": "Can submit encrypted transactions until inclusion, reducing front-running/sandwiching and strengthening weak censorship-resistance guarantees."
+    },
+    "appDevs": {
+      "description": "May add support for encrypted transaction flows and key-provider selection; must handle payloads being skipped if keys missing."
+    },
+    "walletDevs": {
+      "description": "Need envelope/payload signing support, key-provider discovery, and UX for choosing encrypted vs plaintext submissions."
+    },
+    "toolingInfra": {
+      "description": "Mempool/RPC/builders must relay encrypted txs, process decryption-key messages, and integrate key validation and ordering rules."
+    },
+    "layer2s": {
+      "description": "No required L2 protocol changes; they may opt to use encrypted L1 transactions for their own L1 interactions."
+    },
+    "stakersNodes": {
+      "description": "PTC members must listen for keys, validate them with a gas cap, and attest key availability per encrypted transaction."
+    },
+    "clClients": {
+      "description": "Must implement registry replication, extended payload attestations with a bitfield, and consensus processing of key availability."
+    },
+    "elClients": {
+      "description": "Must add encrypted tx type, envelope batch execution and fee accounting, decryption via registry, and skip-on-failure semantics."
+    }
+  },
+  "benefits": [
+    "Protects users from front-running and sandwich attacks by hiding transaction contents until inclusion.",
+    "Improves weak censorship resistance by blinding builders while encrypted transactions wait for inclusion.",
+    "Supports diverse encryption schemes via arbitrary decryption key providers and a trust-graph mechanism.",
+    "Keeps chain progressing even if key providers fail; plaintext transactions remain supported."
+  ],
+  "tradeoffs": [
+    "Backwards-incompatible protocol changes across execution and consensus layers, increasing implementation complexity.",
+    "Users must trust key providers; withheld or late keys can skip payload while envelope fees paid."
+  ]
+}

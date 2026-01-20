@@ -15,11 +15,13 @@ const navItems: NavItem[] = [
 
 const AnalysisNav: React.FC = () => {
   const location = useLocation();
+  // Normalize pathname by removing trailing slash
+  const pathname = location.pathname.replace(/\/$/, '') || '/';
 
   return (
     <div className="flex items-center gap-1 p-1 bg-slate-100 dark:bg-slate-800 rounded-lg w-fit">
       {navItems.map((item) => {
-        const isActive = location.pathname === item.path;
+        const isActive = pathname === item.path;
         return (
           <Link
             key={item.path}

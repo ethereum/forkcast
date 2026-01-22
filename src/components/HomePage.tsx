@@ -88,16 +88,7 @@ const HomePage = () => {
     }
   };
 
-  // Colors for call types
-  const callTypeColors = {
-    acdc: 'border-l-blue-500 dark:border-l-blue-400',
-    acde: 'border-l-sky-500 dark:border-l-sky-400',
-    acdt: 'border-l-teal-500 dark:border-l-teal-400',
-    epbs: 'border-l-amber-500 dark:border-l-amber-400',
-    bal: 'border-l-red-500 dark:border-l-red-400',
-    focil: 'border-l-orange-500 dark:border-l-orange-400'
-  };
-
+  // Colors for call type badges
   const callTypeBadgeColors = {
     acdc: 'bg-blue-100 dark:bg-blue-900/30 text-blue-700 dark:text-blue-300',
     acde: 'bg-sky-100 dark:bg-sky-900/30 text-sky-700 dark:text-sky-300',
@@ -183,10 +174,10 @@ const HomePage = () => {
                 <Link
                   key={eip.id}
                   to={`/eips/${eip.id}`}
-                  className="block bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg p-4 hover:shadow-md dark:hover:shadow-slate-700/20 transition-all hover:border-purple-300 dark:hover:border-purple-600"
+                  className="group flex items-start justify-between gap-3 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg p-4 hover:shadow-md dark:hover:shadow-slate-700/20 hover:border-purple-300 dark:hover:border-purple-600"
                 >
-                  <div className="flex items-start justify-between gap-2 mb-2">
-                    <div className="flex items-center gap-2">
+                  <div className="flex-1 min-w-0">
+                    <div className="flex items-center gap-2 mb-2 flex-wrap">
                       <span className="text-sm font-mono font-medium text-purple-600 dark:text-purple-400">
                         {getProposalPrefix(eip)}-{eip.id}
                       </span>
@@ -195,19 +186,22 @@ const HomePage = () => {
                           {getStageLabel(inclusionStage)}
                         </span>
                       )}
+                      {mostRecentFork && (
+                        <span className={`px-2 py-0.5 text-xs font-medium rounded ${getForkColor(mostRecentFork.forkName)}`}>
+                          {getForkDisplayName(mostRecentFork.forkName)}
+                        </span>
+                      )}
                     </div>
-                    {mostRecentFork && (
-                      <span className={`px-2 py-0.5 text-xs font-medium rounded flex-shrink-0 ${getForkColor(mostRecentFork.forkName)}`}>
-                        {getForkDisplayName(mostRecentFork.forkName)}
-                      </span>
-                    )}
+                    <h3 className="text-sm font-medium text-slate-900 dark:text-slate-100 mb-1 leading-snug">
+                      {getLaymanTitle(eip)}
+                    </h3>
+                    <p className="text-xs text-slate-600 dark:text-slate-400 line-clamp-2">
+                      {eip.laymanDescription || eip.description}
+                    </p>
                   </div>
-                  <h3 className="text-sm font-medium text-slate-900 dark:text-slate-100 mb-2 leading-snug">
-                    {getLaymanTitle(eip)}
-                  </h3>
-                  <p className="text-xs text-slate-600 dark:text-slate-400 line-clamp-2">
-                    {eip.laymanDescription || eip.description}
-                  </p>
+                  <svg className="w-5 h-5 text-slate-400 group-hover:text-purple-500 flex-shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                  </svg>
                 </Link>
               );
             })}
@@ -228,33 +222,128 @@ const HomePage = () => {
             </Link>
           </div>
 
-          <div className="bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg overflow-hidden">
-            <div className="divide-y divide-slate-200 dark:divide-slate-700">
-              {recentCalls.map((call) => (
-                <Link
-                  key={call.path}
-                  to={`/calls/${call.path}`}
-                  className={`block px-4 py-3 hover:bg-slate-50 dark:hover:bg-slate-700/50 transition-colors border-l-4 ${callTypeColors[call.type]}`}
-                >
-                  <div className="flex items-center justify-between">
-                    <div className="flex items-center gap-3">
-                      <span className={`text-xs font-medium px-2 py-0.5 rounded-full min-w-[3.5rem] text-center ${callTypeBadgeColors[call.type]}`}>
-                        {call.type.toUpperCase()}
-                      </span>
-                      <span className="text-sm font-medium text-slate-900 dark:text-slate-100">
-                        Call #{call.number}
-                      </span>
-                      <span className="text-sm text-slate-600 dark:text-slate-400">
-                        {call.date}
-                      </span>
-                    </div>
-                    <div className="text-slate-400 dark:text-slate-500">
-                      →
-                    </div>
-                  </div>
-                </Link>
-              ))}
-            </div>
+          <div className="space-y-2">
+            {recentCalls.map((call) => (
+              <Link
+                key={call.path}
+                to={`/calls/${call.path}`}
+                className="group flex items-center justify-between gap-3 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg p-4 hover:shadow-md dark:hover:shadow-slate-700/20 hover:border-purple-300 dark:hover:border-purple-600"
+              >
+                <div className="flex items-center gap-3">
+                  <span className={`text-xs font-medium px-2 py-0.5 rounded min-w-[3.5rem] text-center ${callTypeBadgeColors[call.type]}`}>
+                    {call.type.toUpperCase()}
+                  </span>
+                  <span className="text-sm font-medium text-slate-900 dark:text-slate-100">
+                    Call #{call.number}
+                  </span>
+                  <span className="text-sm text-slate-600 dark:text-slate-400">
+                    {call.date}
+                  </span>
+                </div>
+                <svg className="w-5 h-5 text-slate-400 group-hover:text-purple-500 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                </svg>
+              </Link>
+            ))}
+          </div>
+        </div>
+
+        {/* Planning Tools Section */}
+        <div className="mt-12">
+          <div className="flex items-center justify-between mb-4">
+            <h2 className="text-xl font-medium text-slate-900 dark:text-slate-100">
+              Planning Tools
+            </h2>
+          </div>
+
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <Link
+              to="/schedule"
+              className="group flex items-start gap-3 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg p-4 hover:shadow-md dark:hover:shadow-slate-700/20 hover:border-purple-300 dark:hover:border-purple-600"
+            >
+              <div className="flex-shrink-0 w-9 h-9 bg-blue-100 dark:bg-blue-900/40 rounded-lg flex items-center justify-center text-blue-600 dark:text-blue-400">
+                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                </svg>
+              </div>
+              <div className="flex-1 min-w-0">
+                <h3 className="text-sm font-medium text-slate-900 dark:text-slate-100 mb-1">
+                  Schedule
+                </h3>
+                <p className="text-xs text-slate-600 dark:text-slate-400">
+                  Plan fork timelines with adjustable milestones
+                </p>
+              </div>
+              <svg className="w-5 h-5 text-slate-400 group-hover:text-purple-500 flex-shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+              </svg>
+            </Link>
+
+            <Link
+              to="/priority"
+              className="group flex items-start gap-3 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg p-4 hover:shadow-md dark:hover:shadow-slate-700/20 hover:border-purple-300 dark:hover:border-purple-600"
+            >
+              <div className="flex-shrink-0 w-9 h-9 bg-purple-100 dark:bg-purple-900/40 rounded-lg flex items-center justify-center text-purple-600 dark:text-purple-400">
+                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
+                </svg>
+              </div>
+              <div className="flex-1 min-w-0">
+                <h3 className="text-sm font-medium text-slate-900 dark:text-slate-100 mb-1">
+                  Client Priority
+                </h3>
+                <p className="text-xs text-slate-600 dark:text-slate-400">
+                  Aggregated client team stances on EIPs
+                </p>
+              </div>
+              <svg className="w-5 h-5 text-slate-400 group-hover:text-purple-500 flex-shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+              </svg>
+            </Link>
+
+            <Link
+              to="/complexity"
+              className="group flex items-start gap-3 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg p-4 hover:shadow-md dark:hover:shadow-slate-700/20 hover:border-purple-300 dark:hover:border-purple-600"
+            >
+              <div className="flex-shrink-0 w-9 h-9 bg-amber-100 dark:bg-amber-900/40 rounded-lg flex items-center justify-center text-amber-600 dark:text-amber-400">
+                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
+                </svg>
+              </div>
+              <div className="flex-1 min-w-0">
+                <h3 className="text-sm font-medium text-slate-900 dark:text-slate-100 mb-1">
+                  Test Complexity
+                </h3>
+                <p className="text-xs text-slate-600 dark:text-slate-400">
+                  STEEL team complexity assessments per EIP
+                </p>
+              </div>
+              <svg className="w-5 h-5 text-slate-400 group-hover:text-purple-500 flex-shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+              </svg>
+            </Link>
+
+            <Link
+              to="/devnets"
+              className="group flex items-start gap-3 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg p-4 hover:shadow-md dark:hover:shadow-slate-700/20 hover:border-purple-300 dark:hover:border-purple-600"
+            >
+              <div className="flex-shrink-0 w-9 h-9 bg-emerald-100 dark:bg-emerald-900/40 rounded-lg flex items-center justify-center text-emerald-600 dark:text-emerald-400">
+                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
+                </svg>
+              </div>
+              <div className="flex-1 min-w-0">
+                <h3 className="text-sm font-medium text-slate-900 dark:text-slate-100 mb-1">
+                  Devnet Tracker
+                </h3>
+                <p className="text-xs text-slate-600 dark:text-slate-400">
+                  Combined complexity, support, and inclusion status
+                </p>
+              </div>
+              <svg className="w-5 h-5 text-slate-400 group-hover:text-purple-500 flex-shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+              </svg>
+            </Link>
           </div>
         </div>
 
@@ -265,7 +354,7 @@ const HomePage = () => {
               <img
                 src="/blobby-gradient-red.svg"
                 alt="Ethereum Foundation Protocol Support team logo"
-                className="w-16 h-16 cursor-pointer dark:invert hover:invert-0 transition-all duration-500"
+                className="w-16 h-16 cursor-pointer hover:invert dark:invert dark:hover:invert-0 transition-all duration-500"
               />
             </div>
             <div className="text-center">

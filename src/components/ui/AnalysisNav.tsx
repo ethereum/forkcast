@@ -8,6 +8,7 @@ interface NavItem {
 }
 
 const navItems: NavItem[] = [
+  { path: '/schedule', label: 'Schedule', description: 'ACD planning' },
   { path: '/priority', label: 'Client Priority', description: 'Team stances' },
   { path: '/complexity', label: 'Test Complexity', description: 'STEEL scores' },
   { path: '/devnets', label: 'Devnet Tracker', description: 'Combined view' },

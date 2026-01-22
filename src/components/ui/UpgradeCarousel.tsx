@@ -81,7 +81,7 @@ const UpgradeCarousel = ({ upgrades, getStatusColor }: UpgradeCarouselProps) => 
         <Link
           key={upgrade.path}
           to={upgrade.path}
-          className="bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg p-6 hover:shadow-lg transition-shadow duration-200 hover:border-slate-300 dark:hover:border-slate-600 block h-full"
+          className="bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg p-6 hover:shadow-md dark:hover:shadow-slate-700/20 hover:border-purple-300 dark:hover:border-purple-600 block h-full"
         >
           {cardContent}
         </Link>
@@ -126,7 +126,7 @@ const UpgradeCarousel = ({ upgrades, getStatusColor }: UpgradeCarouselProps) => 
         <Link
           key={upgrade.path}
           to={upgrade.path}
-          className="bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg px-4 py-3 hover:shadow-md transition-shadow duration-200 hover:border-slate-300 dark:hover:border-slate-600 block"
+          className="bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg px-4 py-3 hover:shadow-md dark:hover:shadow-slate-700/20 hover:border-purple-300 dark:hover:border-purple-600 block"
         >
           {cardContent}
         </Link>

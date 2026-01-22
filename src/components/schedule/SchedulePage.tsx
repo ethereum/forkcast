@@ -4,7 +4,7 @@ import { FUSAKA_PROGRESS, GLAMSTERDAM_PROGRESS, UPGRADE_PROCESS_PHASES } from '.
 import { useMetaTags } from '../../hooks/useMetaTags';
 import { useAnalytics } from '../../hooks/useAnalytics';
 import ThemeToggle from '../ui/ThemeToggle';
-import { CopyLinkButton } from '../ui';
+import AnalysisNav from '../ui/AnalysisNav';
 import { generateForkProgress, parseLocalDate, parseShortDate, daysBetween, DEFAULT_PHASE_DURATIONS, PhaseDurations } from './forkDateCalculator';
 import ForkGanttChart from './ForkGanttChart';
 import EditableDateCell from './EditableDateCell';
@@ -289,32 +289,29 @@ const SchedulePage: React.FC = () => {
 
   return (
     <div className="min-h-screen bg-slate-50 dark:bg-slate-900 text-slate-900 dark:text-slate-100 p-6">
-      <div className="max-w-6xl mx-auto">
+      <div className="max-w-7xl mx-auto">
         {/* Header */}
-        <div className="mb-8">
-          <div className="mb-6 flex justify-between items-start">
-            <Link to="/" className="text-3xl font-serif bg-gradient-to-r from-purple-600 via-blue-600 to-purple-800 bg-clip-text text-transparent hover:from-purple-700 hover:via-blue-700 hover:to-purple-900 transition-all duration-200 tracking-tight">
-              Forkcast
-            </Link>
+        <div className="mb-6 relative">
+          <div className="absolute top-0 right-0">
             <ThemeToggle />
           </div>
-          <Link to="/" className="text-slate-600 hover:text-slate-800 dark:text-slate-300 dark:hover:text-slate-100 mb-6 inline-block text-sm font-medium">
-            ← Back to Home
+          <Link
+            to="/"
+            className="text-2xl font-serif bg-gradient-to-r from-purple-600 via-blue-600 to-purple-800 bg-clip-text text-transparent hover:from-purple-700 hover:via-blue-700 hover:to-purple-900 transition-all duration-200 tracking-tight inline-block mb-4"
+          >
+            Forkcast
           </Link>
-
-          <div className="border-b border-slate-200 dark:border-slate-700 pb-6">
-            <div className="flex items-center gap-3 mb-3">
-              <h1 className="text-3xl font-light text-slate-900 dark:text-slate-100 tracking-tight">
-                ACD Planning Sandbox
-              </h1>
-              <CopyLinkButton
-                sectionId="schedule"
-                title="Copy link to this page"
-              />
-            </div>
-            <p className="text-sm text-slate-600 dark:text-slate-300 max-w-3xl">
-              Internal planning tool for ACD facilitators, client teams, and testers. Dates shown are hypothetical projections, not commitments. Edit and lock dates to explore planning scenarios.
-            </p>
+          <h1 className="text-xl font-semibold text-slate-900 dark:text-slate-100 mb-2">
+            ACD Planning Sandbox
+          </h1>
+          <p className="text-sm text-slate-500 dark:text-slate-400">
+            Internal planning tool for ACD facilitators, client teams, and testers. Dates shown are hypothetical projections, not commitments.
+          </p>
+          <p className="mt-1 text-xs text-slate-500 dark:text-slate-400">
+            Edit and lock dates to explore planning scenarios. Changes are saved automatically to your browser.
+          </p>
+          <div className="mt-4">
+            <AnalysisNav />
           </div>
         </div>
 
@@ -1062,13 +1059,13 @@ const SchedulePage: React.FC = () => {
         </div>
 
         {/* Footer */}
-        <div className="text-center text-xs text-slate-500 dark:text-slate-400 border-t border-slate-200 dark:border-slate-700 pt-6">
+        <div className="mt-8 text-center text-xs text-slate-400 dark:text-slate-500">
           <p>
             Feedback?{' '}
             <a
               href="mailto:nixo@ethereum.org"
               onClick={() => handleExternalLinkClick('email_contact', 'mailto:nixo@ethereum.org')}
-              className="text-slate-600 hover:text-slate-800 dark:text-slate-400 dark:hover:text-slate-200 underline"
+              className="underline hover:text-slate-600 dark:hover:text-slate-300"
             >
               nixo
             </a>
@@ -1078,7 +1075,7 @@ const SchedulePage: React.FC = () => {
               target="_blank"
               rel="noopener noreferrer"
               onClick={() => handleExternalLinkClick('twitter_contact', 'https://x.com/wolovim')}
-              className="text-slate-600 hover:text-slate-800 dark:text-slate-400 dark:hover:text-slate-200 underline"
+              className="underline hover:text-slate-600 dark:hover:text-slate-300"
             >
               @wolovim
             </a>

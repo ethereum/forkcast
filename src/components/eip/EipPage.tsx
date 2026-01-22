@@ -13,6 +13,7 @@ import {
 } from '../../utils';
 import { Tooltip } from '../ui';
 import ThemeToggle from '../ui/ThemeToggle';
+import { Logo } from '../Logo';
 import { EipTimeline } from './EipTimeline';
 import { EipSearch } from './EipSearch';
 import EipSearchModal from './EipSearchModal';
@@ -102,12 +103,7 @@ export const EipPage: React.FC = () => {
       <div className="max-w-3xl mx-auto">
         {/* Site Header */}
         <div className="mb-6 flex items-center justify-between">
-          <Link
-            to="/"
-            className="text-2xl font-serif bg-gradient-to-r from-purple-600 via-blue-600 to-purple-800 bg-clip-text text-transparent hover:from-purple-700 hover:via-blue-700 hover:to-purple-900 transition-all duration-200 tracking-tight inline-block"
-          >
-            Forkcast
-          </Link>
+          <Logo size="md" />
           <div className="flex items-center gap-3">
             <Link
               to="/eips"

@@ -1,5 +1,6 @@
 import React, { useState, useMemo, useEffect } from 'react';
 import { Link } from 'react-router-dom';
+import { Logo } from './Logo';
 import ThemeToggle from './ui/ThemeToggle';
 import { eipsData } from '../data/eips';
 import { getProposalPrefix, getLaymanTitle, getInclusionStage, isHeadlinerInAnyFork, wasHeadlinerCandidateInAnyFork } from '../utils/eip';
@@ -327,12 +328,7 @@ const EipsIndexPage: React.FC = () => {
           <div className="absolute top-0 right-0">
             <ThemeToggle />
           </div>
-          <Link
-            to="/"
-            className="text-2xl font-serif bg-gradient-to-r from-purple-600 via-blue-600 to-purple-800 bg-clip-text text-transparent hover:from-purple-700 hover:via-blue-700 hover:to-purple-900 transition-all duration-200 tracking-tight inline-block mb-4"
-          >
-            Forkcast
-          </Link>
+          <Logo size="md" className="mb-4" />
           <div className="flex items-center justify-between gap-3">
             <h1 className="text-xl font-semibold text-slate-900 dark:text-slate-100">
               EIP Directory

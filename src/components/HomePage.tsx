@@ -6,6 +6,7 @@ import { useAnalytics } from '../hooks/useAnalytics';
 import { getProposalPrefix, getLaymanTitle, getInclusionStage } from '../utils/eip';
 import ThemeToggle from './ui/ThemeToggle';
 import UpgradeCarousel from './ui/UpgradeCarousel';
+import { Logo } from './Logo';
 
 const HomePage = () => {
   const upgrades = networkUpgrades;
@@ -121,9 +122,7 @@ const HomePage = () => {
           <div className="absolute top-0 right-0">
             <ThemeToggle />
           </div>
-          <Link to="/" className="text-4xl font-serif bg-gradient-to-r from-purple-600 via-blue-600 to-purple-800 bg-clip-text text-transparent hover:from-purple-700 hover:via-blue-700 hover:to-purple-900 transition-all duration-200 mb-2 tracking-tight inline-block">
-            Forkcast
-          </Link>
+          <Logo size="xl" className="mb-2" />
           <h2 className="text-xl font-light text-slate-700 dark:text-slate-300 tracking-tight">
             Ethereum Upgrade Tracker
           </h2>

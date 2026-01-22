@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { eipsData } from '../data/eips';
+import { Logo } from './Logo';
 import { useMetaTags } from '../hooks/useMetaTags';
 import { useAnalytics } from '../hooks/useAnalytics';
 import { EIP, ClientTeamPerspective, InclusionStage } from '../types';
@@ -292,9 +293,7 @@ const PublicNetworkUpgradePage: React.FC<PublicNetworkUpgradePageProps> = ({
         {/* Header */}
         <div className="mb-8">
           <div className="mb-6 flex justify-between items-start">
-            <Link to="/" className="text-3xl font-serif bg-gradient-to-r from-purple-600 via-blue-600 to-purple-800 bg-clip-text text-transparent hover:from-purple-700 hover:via-blue-700 hover:to-purple-900 transition-all duration-200 tracking-tight">
-              Forkcast
-            </Link>
+            <Logo size="lg" />
             <ThemeToggle />
           </div>
           <Link to="/" className="text-slate-600 hover:text-slate-800 dark:text-slate-300 dark:hover:text-slate-100 mb-6 inline-block text-sm font-medium">

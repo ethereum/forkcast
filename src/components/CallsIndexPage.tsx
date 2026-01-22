@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
+import { Logo } from './Logo';
 import ThemeToggle from './ui/ThemeToggle';
 import { protocolCalls, type Call } from '../data/calls';
 import { timelineEvents, type TimelineEvent } from '../data/events';
@@ -105,9 +106,7 @@ const CallsIndexPage: React.FC = () => {
             </button>
             <ThemeToggle />
           </div>
-          <Link to="/" className="text-2xl font-serif bg-gradient-to-r from-purple-600 via-blue-600 to-purple-800 bg-clip-text text-transparent hover:from-purple-700 hover:via-blue-700 hover:to-purple-900 transition-all duration-200 tracking-tight inline-block mb-2">
-            Forkcast
-          </Link>
+          <Logo size="md" className="mb-2" />
           <div className="flex items-center justify-between">
             <h1 className="text-xl font-semibold text-slate-900 dark:text-slate-100">Protocol Calendar</h1>
             <div className="hidden sm:block text-sm text-slate-500 dark:text-slate-400">

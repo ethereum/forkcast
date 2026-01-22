@@ -1,5 +1,6 @@
 import React, { useState, useMemo, useEffect } from 'react';
 import { Link } from 'react-router-dom';
+import { Logo } from './Logo';
 import { usePrioritizationData, getELClients, getCLClients } from '../hooks/usePrioritizationData';
 import {
   sortEipAggregates,
@@ -168,12 +169,7 @@ const PrioritizationPage: React.FC = () => {
           <div className="absolute top-0 right-0">
             <ThemeToggle />
           </div>
-          <Link
-            to="/"
-            className="text-2xl font-serif bg-gradient-to-r from-purple-600 via-blue-600 to-purple-800 bg-clip-text text-transparent hover:from-purple-700 hover:via-blue-700 hover:to-purple-900 transition-all duration-200 tracking-tight inline-block mb-4"
-          >
-            Forkcast
-          </Link>
+          <Logo size="md" className="mb-4" />
           <div className="flex items-center gap-3 mb-2">
             <h1 className="text-xl font-semibold text-slate-900 dark:text-slate-100">
               Client Prioritization

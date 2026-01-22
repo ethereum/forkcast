@@ -6,7 +6,7 @@ import { useAnalytics } from '../hooks/useAnalytics';
 import { getProposalPrefix, getLaymanTitle, getInclusionStage } from '../utils/eip';
 import ThemeToggle from './ui/ThemeToggle';
 import UpgradeCarousel from './ui/UpgradeCarousel';
-import { Logo } from './Logo';
+import { Logo } from './ui/Logo';
 
 const HomePage = () => {
   const upgrades = networkUpgrades;

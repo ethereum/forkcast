@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
-import { Logo } from './Logo';
+import { Logo } from './ui/Logo';
 import ThemeToggle from './ui/ThemeToggle';
 import { protocolCalls, type Call } from '../data/calls';
 import { timelineEvents, type TimelineEvent } from '../data/events';

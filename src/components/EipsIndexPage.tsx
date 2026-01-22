@@ -1,6 +1,6 @@
 import React, { useState, useMemo, useEffect } from 'react';
 import { Link } from 'react-router-dom';
-import { Logo } from './Logo';
+import { Logo } from './ui/Logo';
 import ThemeToggle from './ui/ThemeToggle';
 import { eipsData } from '../data/eips';
 import { getProposalPrefix, getLaymanTitle, getInclusionStage, isHeadlinerInAnyFork, wasHeadlinerCandidateInAnyFork } from '../utils/eip';

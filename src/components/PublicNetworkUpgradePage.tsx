@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { eipsData } from '../data/eips';
-import { Logo } from './Logo';
+import { Logo } from './ui/Logo';
 import { useMetaTags } from '../hooks/useMetaTags';
 import { useAnalytics } from '../hooks/useAnalytics';
 import { EIP, ClientTeamPerspective, InclusionStage } from '../types';

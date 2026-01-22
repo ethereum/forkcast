@@ -1,6 +1,6 @@
 import React, { useState, useMemo, useEffect } from 'react';
 import { Link } from 'react-router-dom';
-import { Logo } from './Logo';
+import { Logo } from './ui/Logo';
 import { eipsData } from '../data/eips';
 import { useComplexityData, getComplexityForEip } from '../hooks/useComplexityData';
 import { getComplexityTierColor, getComplexityTierEmoji } from '../utils/complexity';

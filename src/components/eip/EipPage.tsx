@@ -13,7 +13,7 @@ import {
 } from '../../utils';
 import { Tooltip } from '../ui';
 import ThemeToggle from '../ui/ThemeToggle';
-import { Logo } from '../Logo';
+import { Logo } from '../ui/Logo';
 import { EipTimeline } from './EipTimeline';
 import { EipSearch } from './EipSearch';
 import EipSearchModal from './EipSearchModal';

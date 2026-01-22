@@ -7,7 +7,7 @@ import AgendaSummary from './AgendaSummary';
 import TldrSummary from './TldrSummary';
 import CallSearch from './CallSearch';
 import ThemeToggle from '../ui/ThemeToggle';
-import { Logo } from '../Logo';
+import { Logo } from '../ui/Logo';
 import { protocolCalls } from '../../data/calls';
 import { eipsData } from '../../data/eips';
 import { EIP, ForkRelationship } from '../../types/eip';

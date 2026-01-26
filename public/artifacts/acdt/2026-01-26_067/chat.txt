@@ -1,0 +1,226 @@
+00:11:20	Mario Vega:	Agenda: https://github.com/ethereum/pm/issues/1882
+00:12:00	Mario Vega:	https://github.com/ethereum/execution-spec-tests/releases/tag/bal%40v4.0.0
+00:13:15	Mario Vega:	Comment by Stefan: https://github.com/ethereum/pm/issues/1882#issuecomment-3798678466
+00:13:23	spencer-tb:	Reacted to "Comment by Stefan: h..." with ❤️
+00:17:20	Stefan Starflinger:	https://github.com/ethereum/execution-apis/pull/731
+00:17:25	Barnabas:	https://notes.ethereum.org/@ethpandaops/bal-devnet-2
+00:17:37	Barnabas:	Replying to "https://notes.ethere..."
+
+spec sheet for all the EIPs that we are talking about
+00:17:50	Stefan Starflinger:	we have lodestar and lighthouse CLs now
+00:17:58	Stefan Starflinger:	I'm not sure about lighthouse internals regarding this
+00:18:30	Stefan Starflinger:	Replying to "https://github.com/e..."
+
+would be good to have this merged
+00:18:44	Mario Vega:	https://github.com/ethereum/pm/issues/1882#issuecomment-3798678466
+00:19:58	Barnabas:	there are 4 EIPs not 3 Marius
+00:20:13	Stefan Starflinger:	5 with BAL
+00:20:35	Marius van der Wijden:	Oh we might not have the receipt one
+00:20:52	Toni Wahrstätter:	Replying to "Oh we might not have..." 
+
+ 7778?
+00:21:10	Toni Wahrstätter:	Replying to "Oh we might not have..." 
+
+ If so, the receipt field may be removed anyway
+00:25:01	Barnabas:	wednesday last week lol
+00:25:18	Łukasz Rozmej:	we can start devnet with 3-4 clents
+00:25:28	Toni Wahrstätter:	Reacted to wednesday last week ... with "😂"
+00:25:28	Łukasz Rozmej:	Reacted to "wednesday last week ..." with 👍
+00:25:28	Barnabas:	Reacted to "we can start devnet ..." with 👍
+00:25:52	spencer-tb:	Reacted to "wednesday last week ..." with 😿
+00:25:52	Łukasz Rozmej:	yeah we need to verify on eth tests
+00:26:05	felix (eest):	Reacted to "wednesday last wee..." with 😿
+00:26:27	Stefan Starflinger:	Since the full suite takes too long to run daily, we have created a bal-quick hive suite with only the new EIPs https://hive.ethpandaops.io/#/group/bal-quick
+00:26:48	Stefan Starflinger:	I've switched the bal hive tests to manual and the bal-quick to daily
+00:27:17	Stefan Starflinger:	Reacted to "wednesday last week ..." with 🥹
+00:27:32	Marius van der Wijden:	Replying to "Oh we might not have..." 
+
+ 7708
+00:28:10	Mario Vega:	Reacted to "wednesday last week ..." with 😿
+00:29:00	Stefan Starflinger:	sounds good
+00:30:16	Dragan Rakita:	What is better for protocol?
+00:30:28	felipe:	Reacted to "What is better for..." with ➕
+00:30:28	Mario Vega:	Reacted to "What is better for p..." with ☝🏼
+00:30:48	CPerezz:	Reacted to "What is better for p..." with ☝🏼
+00:30:49	CPerezz:	Reacted to "What is better for p..." with ➕
+00:30:50	Jen:	Reacted to "What is better for p..." with ➕
+00:31:16	spencer-tb:	Reacted to "What is better for p..." with ➕
+00:31:27	felipe:	Replying to "What is better for..."
+
+Yeah I'm more interested in the right answer than what is easier to implement
+00:31:57	Stefan Starflinger:	We whould have 3 clients with 7778 ready without changes to the spec then?
+00:34:17	Dragan Rakita:	If this is true (you can’t get this info unless re execute), than storing it makes sense.
+00:37:20	Barnabas:	we should make a decision today imo
+00:37:34	Dragan Rakita:	Reacted to "we should make a dec..." with ➕
+00:37:37	Stefan Starflinger:	Reacted to "we should make a dec..." with ➕
+00:37:38	felipe:	Reacted to "we should make a d..." with ➕
+00:37:43	Justin Traglia:	Reacted to "we should make a dec..." with ➕
+00:38:10	Łukasz Rozmej:	I got lost
+00:38:16	Marius van der Wijden:	I agree we should put in the work to make it final
+00:38:20	Łukasz Rozmej:	👍
+00:38:25	Dragan Rakita:	We could do without the field in devnet-2
+00:38:33	Jen:	Reacted to "We could do without ..." with 👍
+00:38:58	Guru:	Reacted to "We could do without ..." with 👍
+00:39:06	felipe:	Reacted to "We could do withou..." with 👍
+00:39:18	Jen:	Reth could make it without the field in devnet-2 this week.
+00:39:29	Marius van der Wijden:	@Toni could you write it up again in discord so we make sure everyone is aligned on the same thing
+00:39:42	felipe:	Reacted to "@Toni could you wr..." with ➕
+00:39:44	Toni Wahrstätter:	Here's a short sumary:
+https://discord.com/channels/595666850260713488/1460715235437580369/1463837761982300288
+00:39:46	Jen:	Reacted to "@Toni could you writ..." with ➕
+00:40:09	Stefan Starflinger:	Then lets make the change by removing it from the receipt and try to make devnet-2 asap
+00:40:14	Jen:	Reacted to "Then lets make the c..." with 👍
+00:40:19	Guru:	Reacted to "Then lets make the c..." with 👍
+00:40:28	Dragan Rakita:	Reacted to "Then lets make the c..." with 👍
+00:40:34	felipe:	Reacted to "Then lets make the..." with 👍
+00:40:34	spencer-tb:	Reacted to "Then lets make the c..." with 👍
+00:40:49	felix (eest):	Reacted to "Then lets make the..." with 👍
+00:41:33	Toni Wahrstätter:	Here's another thread with some context on 7778:
+https://discord.com/channels/595666850260713488/688075293562503241/1461678093289656524
+00:41:37	Mario Vega:	Reacted to "Then lets make the c..." with 👍
+00:42:46	Barnabas:	@James He is the beacon api question devnet 0 critical?
+00:43:43	nflaig:	@Barnabas not really, clients can implement whatever works now, we are not running mixed client setups for now I'd assume
+00:43:52	James He:	@Barnabas I don’t think so I think we are going with the 2 step process for devnet 0
+00:44:07	Justin Traglia:	Could we try to launch epbs-devnet-0 in ~10 days? I don’t feel comfortable freezing specs for devnet-1 before launching devnet-0.
+00:44:13	James He:	Btw I assume people won’t have the ptc stuff for devnet 0 right?
+00:44:28	Justin Traglia:	Replying to "Could we try to laun..."
+
+With one or two clients.
+00:45:01	James He:	Do we also have the new updated timelines for other stuff like attestations etc for devnet 0 or do we have the original timelines for devnet 0?
+00:45:22	Toni Wahrstätter:	Reacted to Then lets make the c... with "👍"
+00:45:29	James He:	Or is there a list of assumptions for devnet 0?
+00:45:37	nflaig:	https://github.com/ethereum/beacon-APIs/pull/552
+00:45:52	Justin Traglia:	Replying to "Or is there a list o..."
+
+https://notes.ethereum.org/@ethpandaops/epbs-devnet-0
+00:45:54	Mario Vega:	I thought NC was nico, sorry 😅
+00:46:12	NC:	Replying to "I thought NC was nic..."
+
+happens all the time haha
+00:46:46	Eitan:	Replying to "Could we try to laun…"
+fwiw it’ll be a stretch for LH to be ready for a devnet in 10 days. A more realistic target for us is mid to end feb
+00:47:13	Toni Wahrstätter:	Replying to "@Toni could you writ..." 
+
+ https://discord.com/channels/595666850260713488/688075293562503241/1465354383717040303
+00:47:16	Justin Traglia:	Replying to "Could we try to laun..."
+
+Hmm okay. According to ethpandaops, the goal is Feb 18th for devnet-0.
+00:47:27	Barnabas:	lets push this beacon api changes to devnet 1 scope, so that clients can ship faster.
+00:47:33	Toni Wahrstätter:	Replying to "@Toni could you writ..." 
+
+ Oh yeah! 👍🏼
+00:47:39	James He:	Replying to "Or is there a list o..."
+
+Right, I guess 7732 is probably too big to have everything by devnet 0 ( or are people aiming to have everything) I thought we wanted to do it more incrementally such as not having the ptc voting as part of devote 0
+00:47:47	Eitan:	Reacted to "Hmm okay. According …" with 👍
+00:47:48	Mario Vega:	Replying to "Then lets make the c..."
+
+We’ll prepare a tests release asap
+00:48:27	Dustin:	Nimbus doesn't care about the exact timeline of when the beacon API changes go in; we're using pure-BN (no separate VC) for devnet-0
+00:48:46	nflaig:	https://github.com/ethereum/beacon-APIs/pull/552
+00:48:50	NC:	I brought up the fork choice issue couple weeks ago https://discord.com/channels/595666850260713488/874767108809031740/1458127259549437992 . Sounds like it doesn’t require synchronization @Dustin
+00:48:54	nflaig:	also in general more yes on the PR would be nice
+00:49:02	nflaig:	eyes*
+00:49:23	Stefan Starflinger:	Reacted to "We’ll prepare a test..." with 👍
+00:51:11	Dustin:	Replying to "I brought up the f..."
+
+yeah looks like it can coexist
+00:51:41	Mario Vega:	https://github.com/ethereum/beacon-APIs/pull/552
+00:52:18	nflaig:	there is ongoing discussion in #apis channel so feel free to chime in there
+00:53:08	Mario Vega:	Reacted to "there is ongoing dis..." with 🙏🏼
+00:53:58	Dustin:	generically the concern is that it modifies in-production Electra/Fulu
+00:54:22	Dustin:	the question isn't whether its "tiny", it's whether it can cause consensus risks
+00:54:50	Justin Traglia:	Replying to "the question isn't w..."
+
+I’m not sure that it can cause consensus issues
+00:55:01	Justin Traglia:	Replying to "the question isn't w..."
+
+But Francesco isn’t here to give you a better answer
+00:56:31	Dustin:	ok, if there are no consensus issues, it's fine
+00:56:48	Justin Traglia:	Replying to "ok, if there are no ..."
+
+Let’s double check with Francesco. I’ll make a thread.
+00:57:09	Justin Traglia:	https://github.com/ethereum/consensus-specs/issues/4858
+00:57:37	Barnabas:	alpha 2 is aimed for epbs-devnet-1
+01:00:00	Mario Vega:	https://github.com/ethereum/pm/issues/1882#issuecomment-3791951548
+01:01:25	Ansgar Dietrichs:	EIPs proposed for inclusion in the next devnet should be posted to the ACD-T agenda ahead of time
+
+Decisions around CFI -> SFI or CFI -> DFI will not be discussed in ACD-T and should remain within ACD-E, ACD-C
+
+Is a devnet inclusion decision not basically an SFI decision?
+01:02:18	Ameziane Hamlat:	Reacted to "EIPs proposed for in..." with ➕
+01:02:19	Ansgar Dietrichs:	Replying to "EIPs proposed for in..."
+
+or rather, if we end up not SFI-ing an EIP after it was included in a devnet, that was wasted effort
+01:02:51	Toni Wahrstätter:	Reacted to EIPs proposed for in... with "➕"
+01:03:26	Barnabas:	EOF was SFI-ed it can still be pulled out
+01:03:59	Toni Wahrstätter:	Clients provided great rankings and cfi'd eips should j just be included in the order based on how much support they gained.
+01:04:05	Barnabas:	CFI = have impl.
+01:04:31	Dustin:	Replying to "EOF was SFI-ed it ..."
+
+I mostly take the whole EOF saga as an indication that it was SFI'd prematurely. Of course that might otherwise happen, but it shouldn't be routine
+01:05:22	Jen:	Reacted to "CFI = have impl." with 👍
+01:05:28	Ansgar Dietrichs:	I think it’s fine to make devnet decisions here on acdt, now that everyone is aware to pay attention here. just ideally have it clearly on the agenda ahead of time
+01:05:43	Justin Traglia:	Reacted to "I think it’s fine to..." with 👍
+01:05:57	Pooja Ranjan:	Reacted to "I think it’s fine to..." with 👍
+01:05:58	felix (eest):	Reacted to "I think it’s fine..." with 👍
+01:06:24	Barnabas:	if we don’t want an EIP in the protocol it shoudln’t even be cfi-ed lmao
+01:06:34	Stefan Starflinger:	A spec is never really finished until we have a working implementation
+01:06:48	wolovim:	Reacted to "I think it’s fine to..." with 👍
+01:06:54	Stefan Starflinger:	we shouldn't SFI a Spec we should SFI a spec + implementation
+01:06:58	Ansgar Dietrichs:	and what’s the general connection between implementation and devnet? are there usually any implementations before devnet inclusion? how easy is it to pull individual EIPs back out of a devnet?
+01:07:13	Toni Wahrstätter:	Replying to "if we don’t want an ..." 
+
+ That's what you might think
+01:07:29	wolovim:	psa: iterating on devnet decision making aid here: https://forkcast.org/devnets. Feedback/feature requests welcome.
+01:07:33	Dustin:	it's also how intertwined it is
+01:07:57	Justin Florentine (Besu):	and testing impact
+01:08:22	Toni Wahrstätter:	What is the conclusion now?
+01:08:29	Ansgar Dietrichs:	and (sorry last question) would it be too bureaucratic to have an initial decision on a devnet scope, but then a week later on the next acdt make a go-no go decision? that way clients would have a week to look at the selected EIPs and start implementation
+01:08:45	Ansgar Dietrichs:	Replying to "and (sorry last ques..."
+
+so we could catch EIPs that are more complex than expected
+01:09:18	Dustin:	but mostly CLs don't all have the same per-EIP modularity as ELs might have
+01:09:30	Dustin:	where they can be often granularly enabled/disabled
+01:09:57	Toni Wahrstätter:	How did we get to the 4 eips that are now added to devnet 2? Not opposed to any of them but would be good to have a clear process
+01:10:30	Mario Vega:	https://github.com/ethereum/pm/issues/1882#issuecomment-3795075740
+01:11:03	Barnabas:	Replying to "How did we get to th..."
+
+steel proposed as easy eips to have test cases out for
+01:11:15	Dragan Rakita:	In general I would really like for ACD to have a async decision making (with deadlines) this live process is chaotic.
+01:11:25	Barnabas:	Replying to "How did we get to th..."
+
+we asked ppl on acdt if anyone had any issues having these for the next devnet, no objections, so this is what we set out as a goal
+01:11:28	Mario Vega:	Reacted to "In general I would r..." with 👍🏼
+01:11:56	Ansgar Dietrichs:	Replying to "In general I would r..."
+
+you mean ACDT now or ACDC/E or all of the above?
+01:12:02	Toni Wahrstätter:	Replying to "How did we get to th..." 
+
+ Ok, if that's the process I'm fine with it. Doesn't need to be formalized. I trust testing and devops to have a good feeling for it. Still, the level of support should also matter.
+01:12:07	Ziad Ghali:	Reacted to "CFI = have impl." with 👍
+01:12:11	Pooja Ranjan:	https://ethereum-magicians.org/t/hardfork-meta-bpo1/27582
+01:12:14	Dragan Rakita:	Replying to "In general I would r..."
+
+I am very optimistic to say everything 😄
+01:12:27	Ansgar Dietrichs:	Reacted to "I am very optimistic..." with 😂
+01:12:41	Ansgar Dietrichs:	Replying to "In general I would r..."
+
+makes sense. agree this would be helpful, but it’s also challenging
+01:12:56	Ansgar Dietrichs:	Replying to "In general I would r..."
+
+anyway, dropping off for now. a conversation that we should continue
+01:13:07	Dragan Rakita:	Replying to "In general I would r..."
+
+I agree, hope dies last
+01:13:11	Ansgar Dietrichs:	are we waiting for someone to say goodbye?
+01:13:14	Pooja Ranjan:	I think I lost audio
+01:13:16	Justin Traglia:	Reacted to "In general I would r..." with 👍🏼
+01:13:17	Jen:	Reacted to "I think I lost audio" with ❤️
+01:13:19	Eitan:	Reacted to "are we waiting for s…" with 😅
+01:13:19	Dragan Rakita:	Reacted to "are we waiting for s..." with ❤️
+01:13:21	NC:	Reacted to "are we waiting for s..." with 😅
+01:13:28	Eitan:	Reacted to "I think I lost audio" with ❤️
+01:13:32	Ansgar Dietrichs:	Replying to "I think I lost audio"
+
+no I think people were unsure whether we were waiting for comments

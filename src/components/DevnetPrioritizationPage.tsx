@@ -84,6 +84,8 @@ interface DevnetInfo {
   type: string;
   headliner: string;
   version: number;
+  launchDate?: string;
+  isTarget?: boolean;
 }
 
 interface CombinedEipData {
@@ -109,6 +111,8 @@ function buildDevnetMap(): Map<number, DevnetInfo[]> {
         type: devnet.type,
         headliner: devnet.headliner,
         version: devnet.version,
+        launchDate: devnet.launchDate,
+        isTarget: devnet.isTarget,
       });
       map.set(eipId, existing);
     }
@@ -117,12 +121,13 @@ function buildDevnetMap(): Map<number, DevnetInfo[]> {
   return map;
 }
 
-const devnetMap = buildDevnetMap();
-
-// Get short display for devnet (e.g., "BAL-2" for bal-devnet-2)
-function getDevnetShortName(devnet: DevnetInfo): string {
-  return `${devnet.headliner}-${devnet.version}`;
+// Format date for display (e.g., "Oct 28, 2025")
+function formatLaunchDate(dateStr: string): string {
+  const date = new Date(dateStr + 'T00:00:00');
+  return date.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
 }
+
+const devnetMap = buildDevnetMap();
 
 // Get color for devnet type
 function getDevnetColor(headliner: string): string {
@@ -142,13 +147,38 @@ const DevnetPrioritizationPage: React.FC = () => {
   const [sortField, setSortField] = useState<SortField>('weighted');
   const [sortDirection, setSortDirection] = useState<SortDirection>('desc');
   const [hideExcluded, setHideExcluded] = useState(true);
-  const [devnetFilter, setDevnetFilter] = useState<string>('all');
+  const [hideInDevnet, setHideInDevnet] = useState(false);
   const [stageFilter, setStageFilter] = useState<string>('all');
   const [layerFilter, setLayerFilter] = useState<'all' | 'EL' | 'CL'>('all');
   const [showScoringInfo, setShowScoringInfo] = useState(false);
   const [filtersModalOpen, setFiltersModalOpen] = useState(false);
+  const [expandedDevnets, setExpandedDevnets] = useState<Set<string>>(new Set());
 
   const { complexityMap, loading: complexityLoading, refetch } = useComplexityData();
+
+  // Toggle a single devnet's expanded state
+  const toggleDevnet = (devnetId: string) => {
+    setExpandedDevnets((prev) => {
+      const next = new Set(prev);
+      if (next.has(devnetId)) {
+        next.delete(devnetId);
+      } else {
+        next.add(devnetId);
+      }
+      return next;
+    });
+  };
+
+  // Toggle all devnets expanded/collapsed
+  const toggleAllDevnets = () => {
+    const allDevnetIds = devnetData.devnets.map((d) => d.id);
+    const allExpanded = allDevnetIds.every((id) => expandedDevnets.has(id));
+    if (allExpanded) {
+      setExpandedDevnets(new Set());
+    } else {
+      setExpandedDevnets(new Set(allDevnetIds));
+    }
+  };
 
   // Lock body scroll when filters modal is open
   useEffect(() => {
@@ -166,13 +196,11 @@ const DevnetPrioritizationPage: React.FC = () => {
   const activeFilterCount = [
     stageFilter !== 'all',
     layerFilter !== 'all',
-    devnetFilter !== 'all',
   ].filter(Boolean).length;
 
   const clearFilters = () => {
     setStageFilter('all');
     setLayerFilter('all');
-    setDevnetFilter('all');
   };
   const { aggregates: priorityAggregates } = usePrioritizationData('glamsterdam');
 
@@ -181,15 +209,6 @@ const DevnetPrioritizationPage: React.FC = () => {
     description: 'Track devnet inclusion status, test complexity, and client support for EIPs in upcoming network upgrades.',
     url: 'https://forkcast.org/devnets',
   });
-
-  // Get unique devnet options for filter
-  const devnetOptions = useMemo(() => {
-    const options = new Set<string>();
-    for (const devnet of devnetData.devnets) {
-      options.add(devnet.id);
-    }
-    return Array.from(options).sort();
-  }, []);
 
   // Stage options in priority order
   const stageOptions = [
@@ -249,8 +268,8 @@ const DevnetPrioritizationPage: React.FC = () => {
     }
 
     // Apply devnet filter
-    if (devnetFilter !== 'all') {
-      result = result.filter((e) => e.devnets.some((d) => d.id === devnetFilter));
+    if (hideInDevnet) {
+      result = result.filter((e) => e.devnets.length === 0);
     }
 
     // Apply stage filter
@@ -264,7 +283,7 @@ const DevnetPrioritizationPage: React.FC = () => {
     }
 
     return result;
-  }, [combinedData, hideExcluded, devnetFilter, stageFilter, layerFilter]);
+  }, [combinedData, hideExcluded, hideInDevnet, stageFilter, layerFilter]);
 
   // Apply sorting
   const sortedData = useMemo(() => {
@@ -328,19 +347,53 @@ const DevnetPrioritizationPage: React.FC = () => {
     });
   }, [filteredData, sortField, sortDirection]);
 
-  // Calculate stats
-  const stats = useMemo(() => {
-    const inDevnet = filteredData.filter((e) => e.devnets.length > 0);
-    const withComplexity = filteredData.filter((e) => e.complexity);
-    const withPriority = filteredData.filter((e) => e.priority?.stanceCount && e.priority.stanceCount > 0);
+  // Calculate devnet progression data - which EIPs are new in each devnet
+  const devnetProgression = useMemo(() => {
+    // Sort devnets by version (ascending) to compare progression
+    const sortedDevnets = [...devnetData.devnets].sort((a, b) => a.version - b.version);
 
-    return {
-      total: filteredData.length,
-      inDevnet: inDevnet.length,
-      withComplexity: withComplexity.length,
-      withPriority: withPriority.length,
-    };
-  }, [filteredData]);
+    const progression: Array<{
+      devnet: typeof devnetData.devnets[0];
+      eips: number[];
+      newEips: Set<number>;
+      previousEips: Set<number>;
+    }> = [];
+
+    let previousEipSet = new Set<number>();
+
+    for (const devnet of sortedDevnets) {
+      const currentEipSet = new Set(devnet.eips);
+      const newEips = new Set<number>();
+
+      // Find EIPs that are in current but not in previous
+      for (const eipId of currentEipSet) {
+        if (!previousEipSet.has(eipId)) {
+          newEips.add(eipId);
+        }
+      }
+
+      progression.push({
+        devnet,
+        eips: devnet.eips,
+        newEips,
+        previousEips: previousEipSet,
+      });
+
+      previousEipSet = currentEipSet;
+    }
+
+    // Return in reverse order (most recent first)
+    return progression.reverse();
+  }, []);
+
+  // Get EIP data for a devnet section
+  const getDevnetEipData = (eipIds: number[]) => {
+    return eipIds.map((eipId) => {
+      const eip = eipsData.find((e) => e.id === eipId);
+      const combined = combinedData.find((c) => c.eipId === eipId);
+      return { eipId, eip, combined };
+    }).sort((a, b) => a.eipId - b.eipId);
+  };
 
   const handleSort = (field: SortField) => {
     if (sortField === field) {
@@ -400,63 +453,6 @@ const DevnetPrioritizationPage: React.FC = () => {
           </p>
           <div className="mt-4">
             <AnalysisNav />
-          </div>
-        </div>
-
-        {/* Toolbar */}
-        <div className="mb-6 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg p-4">
-          <div className="flex flex-wrap items-center gap-x-4 gap-y-3">
-            {/* Filters button */}
-            <button
-              onClick={() => setFiltersModalOpen(true)}
-              className={`flex items-center gap-2 px-4 py-2.5 rounded-lg border text-sm font-medium transition-colors ${
-                activeFilterCount > 0
-                  ? 'bg-purple-50 dark:bg-purple-900/20 border-purple-300 dark:border-purple-700 text-purple-700 dark:text-purple-300'
-                  : 'bg-white dark:bg-slate-800 border-slate-200 dark:border-slate-700 text-slate-700 dark:text-slate-300'
-              }`}
-            >
-              <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 4a1 1 0 011-1h16a1 1 0 011 1v2.586a1 1 0 01-.293.707l-6.414 6.414a1 1 0 00-.293.707V17l-4 4v-6.586a1 1 0 00-.293-.707L3.293 7.293A1 1 0 013 6.586V4z" />
-              </svg>
-              <span className="hidden sm:inline">Filters</span>
-              {activeFilterCount > 0 && (
-                <span className="px-1.5 py-0.5 text-xs bg-purple-200 dark:bg-purple-800 text-purple-800 dark:text-purple-200 rounded-full">
-                  {activeFilterCount}
-                </span>
-              )}
-            </button>
-
-            {/* Active only toggle */}
-            <label className="flex items-center gap-2 cursor-pointer select-none">
-              <input
-                type="checkbox"
-                checked={hideExcluded}
-                onChange={(e) => setHideExcluded(e.target.checked)}
-                className="w-4 h-4 rounded border-slate-300 dark:border-slate-600 text-purple-600 focus:ring-purple-500"
-              />
-              <span className="text-sm text-slate-600 dark:text-slate-300">Active only</span>
-            </label>
-
-            {/* Stats */}
-            <div className="flex items-center gap-4 ml-auto text-sm">
-              <span className="text-slate-500 dark:text-slate-400">
-                {stats.total} EIPs
-              </span>
-              <span className="hidden sm:inline text-slate-400 dark:text-slate-500">|</span>
-              <span className="hidden sm:inline text-violet-600 dark:text-violet-400">
-                {stats.inDevnet} in devnets
-              </span>
-              <button
-                onClick={refetch}
-                disabled={complexityLoading}
-                className="p-1.5 text-slate-400 hover:text-slate-600 dark:text-slate-500 dark:hover:text-slate-300 transition-colors disabled:opacity-50"
-                title="Refresh complexity data"
-              >
-                <svg className={`w-4 h-4 ${complexityLoading ? 'animate-spin' : ''}`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
-                </svg>
-              </button>
-            </div>
           </div>
         </div>
 
@@ -544,38 +540,6 @@ const DevnetPrioritizationPage: React.FC = () => {
                       </div>
                     </div>
 
-                    {/* Devnet Filter */}
-                    <div className="md:col-span-2">
-                      <h3 className="text-sm font-semibold text-slate-700 dark:text-slate-300 mb-3">Devnet</h3>
-                      <div className="flex flex-wrap gap-2">
-                        <button
-                          onClick={() => setDevnetFilter('all')}
-                          className={`px-3 py-2 text-sm font-medium rounded-lg transition-colors ${
-                            devnetFilter === 'all'
-                              ? 'bg-purple-100 dark:bg-purple-900/30 text-purple-800 dark:text-purple-300 ring-2 ring-purple-500 ring-offset-1 dark:ring-offset-slate-800'
-                              : 'bg-slate-100 dark:bg-slate-700 text-slate-700 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-600'
-                          }`}
-                        >
-                          All Devnets
-                        </button>
-                        {devnetOptions.map((devnet) => {
-                          const isSelected = devnetFilter === devnet;
-                          return (
-                            <button
-                              key={devnet}
-                              onClick={() => setDevnetFilter(isSelected ? 'all' : devnet)}
-                              className={`px-3 py-2 text-sm font-medium rounded-lg transition-colors ${
-                                isSelected
-                                  ? 'bg-violet-100 dark:bg-violet-900/30 text-violet-800 dark:text-violet-300 ring-2 ring-violet-500 ring-offset-1 dark:ring-offset-slate-800'
-                                  : 'bg-slate-100 dark:bg-slate-700 text-slate-700 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-600'
-                              }`}
-                            >
-                              {devnet}
-                            </button>
-                          );
-                        })}
-                      </div>
-                    </div>
                   </div>
                 </div>
 
@@ -593,65 +557,365 @@ const DevnetPrioritizationPage: React.FC = () => {
           </div>
         )}
 
-        {/* Scoring Explanation */}
-        <div className="mb-4">
-          <button
-            onClick={() => setShowScoringInfo(!showScoringInfo)}
-            className="flex items-center gap-2 text-sm text-slate-600 dark:text-slate-400 hover:text-purple-600 dark:hover:text-purple-400 transition-colors"
-          >
-            <svg
-              className={`w-4 h-4 transition-transform ${showScoringInfo ? 'rotate-90' : ''}`}
-              fill="none"
-              stroke="currentColor"
-              viewBox="0 0 24 24"
+        {/* Active Devnets Section */}
+        <div className="mb-8">
+          <div className="flex items-center justify-between mb-2">
+            <h2 className="text-lg font-semibold text-slate-900 dark:text-slate-100">
+              Active Devnets
+            </h2>
+            <button
+              onClick={toggleAllDevnets}
+              className="text-sm text-purple-600 hover:text-purple-800 dark:text-purple-400 dark:hover:text-purple-300 transition-colors"
             >
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
-            </svg>
-            How is the Weighted Score calculated?
-          </button>
+              {devnetData.devnets.every((d) => expandedDevnets.has(d.id)) ? 'Collapse All' : 'Expand All'}
+            </button>
+          </div>
+          <p className="text-sm text-slate-500 dark:text-slate-400 mb-4">
+            EIPs currently being tested in devnets. Expand each to see implementation details.
+          </p>
 
-          {showScoringInfo && (
-            <div className="mt-3 p-4 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg text-sm">
-              <p className="text-slate-700 dark:text-slate-300 mb-3">
-                The <span className="font-medium text-purple-600 dark:text-purple-400">Weighted Score</span> helps identify EIPs that are well-supported, well-vetted, and relatively easy to implement. Higher scores suggest stronger candidates for prioritization.
-              </p>
+          <div className="space-y-3">
+            {devnetProgression.map(({ devnet, eips, newEips }) => {
+              const isExpanded = expandedDevnets.has(devnet.id);
+              const devnetEipData = getDevnetEipData(eips);
+              const newCount = newEips.size;
+              const notesUrl = `https://notes.ethereum.org/@ethpandaops/${devnet.headliner.toLowerCase()}-devnet-${devnet.version}`;
 
-              <div className="space-y-3">
-                <div className="flex items-start gap-3">
-                  <div className="w-6 h-6 rounded-full bg-emerald-100 dark:bg-emerald-900/30 flex items-center justify-center text-emerald-700 dark:text-emerald-300 text-xs font-medium shrink-0">1</div>
-                  <div>
-                    <div className="font-medium text-slate-800 dark:text-slate-200">Average Support</div>
-                    <div className="text-slate-600 dark:text-slate-400">How much do client teams want this? (1-5 scale from prioritization data)</div>
+              return (
+                <div
+                  key={devnet.id}
+                  className="bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg overflow-hidden"
+                >
+                  {/* Devnet Header */}
+                  <button
+                    onClick={() => toggleDevnet(devnet.id)}
+                    className="w-full flex items-center gap-4 px-4 py-3 hover:bg-slate-50 dark:hover:bg-slate-700/30 transition-colors cursor-pointer"
+                  >
+                    {/* Left: Badge */}
+                    <span className={`px-2.5 py-1 text-sm font-semibold rounded shrink-0 ${getDevnetColor(devnet.headliner)}`}>
+                      {devnet.id}
+                    </span>
+
+                    {/* Center: Metadata */}
+                    <div className="flex-1 min-w-0">
+                      <div className="flex items-center gap-2 flex-wrap">
+                        {/* Date with icon */}
+                        {devnet.launchDate && (
+                          <span className={`inline-flex items-center gap-1.5 text-xs ${devnet.isTarget ? 'text-amber-600 dark:text-amber-400' : 'text-slate-500 dark:text-slate-400'}`}>
+                            <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                            </svg>
+                            {devnet.isTarget && <span className="font-medium">Target:</span>}
+                            {formatLaunchDate(devnet.launchDate)}
+                          </span>
+                        )}
+
+                        <span className="text-slate-300 dark:text-slate-600">•</span>
+
+                        {/* EIP count */}
+                        <span className="text-xs text-slate-500 dark:text-slate-400">
+                          {eips.length} {eips.length === 1 ? 'EIP' : 'EIPs'}
+                        </span>
+
+                        {/* New badge */}
+                        {newCount > 0 && devnet.version > 0 && (
+                          <span className="px-1.5 py-0.5 text-[10px] font-semibold bg-emerald-100 text-emerald-700 dark:bg-emerald-900/30 dark:text-emerald-300 rounded-full uppercase tracking-wide">
+                            +{newCount} new
+                          </span>
+                        )}
+                      </div>
+                    </div>
+
+                    {/* Right: Actions */}
+                    <div className="flex items-center gap-3 shrink-0">
+                      <a
+                        href={notesUrl}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        onClick={(e) => e.stopPropagation()}
+                        className="hidden sm:inline-flex items-center gap-1 text-xs text-purple-600 hover:text-purple-800 dark:text-purple-400 dark:hover:text-purple-300 transition-colors"
+                      >
+                        <span className="underline decoration-1 underline-offset-2">ethPandaOps notes</span>
+                        <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
+                        </svg>
+                      </a>
+                      <svg
+                        className={`w-5 h-5 text-slate-400 transition-transform duration-200 ${isExpanded ? 'rotate-180' : ''}`}
+                        fill="none"
+                        stroke="currentColor"
+                        viewBox="0 0 24 24"
+                      >
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+                      </svg>
+                    </div>
+                  </button>
+
+                  {/* Expanded Content */}
+                  <div
+                    className={`overflow-hidden transition-all duration-300 ease-in-out ${
+                      isExpanded ? 'max-h-[2000px] opacity-100' : 'max-h-0 opacity-0'
+                    }`}
+                  >
+                    <div className="border-t border-slate-200 dark:border-slate-700">
+                      {/* Desktop Table */}
+                      <div className="hidden md:block overflow-x-auto">
+                        <table className="w-full text-sm">
+                          <thead className="bg-slate-50 dark:bg-slate-700/50">
+                            <tr>
+                              <th className="px-4 py-2 text-left font-medium text-slate-600 dark:text-slate-400">EIP</th>
+                              <th className="px-4 py-2 text-left font-medium text-slate-600 dark:text-slate-400">Title</th>
+                              <th className="px-4 py-2 text-center font-medium text-slate-600 dark:text-slate-400">Avg Support</th>
+                              <th className="px-4 py-2 text-center font-medium text-slate-600 dark:text-slate-400">Test Complexity</th>
+                              <th className="px-4 py-2 text-left font-medium text-slate-600 dark:text-slate-400">Stage</th>
+                            </tr>
+                          </thead>
+                          <tbody className="divide-y divide-slate-100 dark:divide-slate-700">
+                            {devnetEipData.map(({ eipId, eip, combined }) => (
+                              <tr key={eipId} className="hover:bg-slate-50 dark:hover:bg-slate-700/30">
+                                <td className="px-4 py-2.5">
+                                  <div className="flex items-center gap-2">
+                                    <Link
+                                      to={`/eips/${eipId}`}
+                                      className="font-mono text-purple-600 hover:text-purple-800 dark:text-purple-400 dark:hover:text-purple-300"
+                                    >
+                                      {eip ? getProposalPrefix(eip) : 'EIP'}-{eipId}
+                                    </Link>
+                                    {newEips.has(eipId) && devnet.version > 0 && (
+                                      <span className="px-1.5 py-0.5 text-[10px] font-semibold bg-emerald-100 text-emerald-700 dark:bg-emerald-900/30 dark:text-emerald-300 rounded uppercase">
+                                        New
+                                      </span>
+                                    )}
+                                  </div>
+                                </td>
+                                <td className="px-4 py-2.5 text-slate-900 dark:text-slate-100">
+                                  {combined?.title || eip?.title || `EIP-${eipId}`}
+                                </td>
+                                <td className="px-4 py-2.5 text-center">
+                                  {combined?.priority?.averageScore != null ? (
+                                    <span className={`inline-block px-2 py-0.5 text-xs font-medium rounded ${getScoreColor(Math.round(combined.priority.averageScore))}`}>
+                                      {combined.priority.averageScore.toFixed(1)}
+                                    </span>
+                                  ) : (
+                                    <span className="text-slate-400 dark:text-slate-500">—</span>
+                                  )}
+                                </td>
+                                <td className="px-4 py-2.5 text-center">
+                                  {combined?.complexity ? (
+                                    <span className={`inline-flex items-center gap-1 px-2 py-0.5 text-xs font-medium rounded ${getComplexityTierColor(combined.complexity.tier)}`}>
+                                      {getComplexityTierEmoji(combined.complexity.tier)} {combined.complexity.totalScore}
+                                    </span>
+                                  ) : (
+                                    <span className="text-slate-400 dark:text-slate-500">—</span>
+                                  )}
+                                </td>
+                                <td className="px-4 py-2.5">
+                                  {combined?.stage ? (
+                                    <span className={`inline-block px-2 py-0.5 text-xs rounded ${getInclusionStageColor(combined.stage as InclusionStage)}`}>
+                                      {combined.stage.replace(' for Inclusion', '')}
+                                    </span>
+                                  ) : (
+                                    <span className="text-slate-400 dark:text-slate-500">—</span>
+                                  )}
+                                </td>
+                              </tr>
+                            ))}
+                          </tbody>
+                        </table>
+                      </div>
+
+                      {/* Mobile Card Layout */}
+                      <div className="md:hidden p-3 space-y-2">
+                        {devnetEipData.map(({ eipId, eip, combined }) => (
+                          <div
+                            key={eipId}
+                            className="bg-slate-50 dark:bg-slate-700/30 rounded-lg p-3"
+                          >
+                            <div className="flex items-start justify-between gap-2 mb-2">
+                              <div className="flex items-center gap-2">
+                                <Link
+                                  to={`/eips/${eipId}`}
+                                  className="font-mono text-sm text-purple-600 hover:text-purple-800 dark:text-purple-400 dark:hover:text-purple-300"
+                                >
+                                  {eip ? getProposalPrefix(eip) : 'EIP'}-{eipId}
+                                </Link>
+                                {newEips.has(eipId) && devnet.version > 0 && (
+                                  <span className="px-1.5 py-0.5 text-[10px] font-semibold bg-emerald-100 text-emerald-700 dark:bg-emerald-900/30 dark:text-emerald-300 rounded uppercase">
+                                    New
+                                  </span>
+                                )}
+                              </div>
+                              {combined?.stage && (
+                                <span className={`px-2 py-0.5 text-[10px] rounded ${getInclusionStageColor(combined.stage as InclusionStage)}`}>
+                                  {combined.stage.replace(' for Inclusion', '')}
+                                </span>
+                              )}
+                            </div>
+                            <p className="text-sm text-slate-900 dark:text-slate-100 mb-2">
+                              {combined?.title || eip?.title || `EIP-${eipId}`}
+                            </p>
+                            <div className="flex items-center gap-3 text-xs">
+                              {combined?.priority?.averageScore != null && (
+                                <div className="flex items-center gap-1">
+                                  <span className="text-slate-500 dark:text-slate-400">Support:</span>
+                                  <span className={`px-1.5 py-0.5 rounded ${getScoreColor(Math.round(combined.priority.averageScore))}`}>
+                                    {combined.priority.averageScore.toFixed(1)}
+                                  </span>
+                                </div>
+                              )}
+                              {combined?.complexity && (
+                                <div className="flex items-center gap-1">
+                                  <span className="text-slate-500 dark:text-slate-400">Test:</span>
+                                  <span className={`px-1.5 py-0.5 rounded ${getComplexityTierColor(combined.complexity.tier)}`}>
+                                    {getComplexityTierEmoji(combined.complexity.tier)} {combined.complexity.totalScore}
+                                  </span>
+                                </div>
+                              )}
+                            </div>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+        </div>
+
+        {/* EIP Candidates Section */}
+        <div className="mb-4">
+          <div className="flex items-center justify-between mb-2">
+            <h2 className="text-lg font-semibold text-slate-900 dark:text-slate-100">
+              EIP Candidates
+            </h2>
+            <span className="text-sm text-slate-500 dark:text-slate-400">
+              {sortedData.length} {sortedData.length === 1 ? 'EIP' : 'EIPs'}
+            </span>
+          </div>
+          <p className="text-sm text-slate-500 dark:text-slate-400 mb-4">
+            Aggregated data points as a decision-making aid, not a recommendation.
+          </p>
+
+          {/* Scoring Explanation */}
+          <div className="mb-4">
+            <button
+              onClick={() => setShowScoringInfo(!showScoringInfo)}
+              className="flex items-center gap-2 text-sm text-slate-600 dark:text-slate-400 hover:text-purple-600 dark:hover:text-purple-400 transition-colors"
+            >
+              <svg
+                className={`w-4 h-4 transition-transform ${showScoringInfo ? 'rotate-90' : ''}`}
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+              </svg>
+              How is the Weighted Score calculated?
+            </button>
+
+            {showScoringInfo && (
+              <div className="mt-3 p-4 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg text-sm">
+                <p className="text-slate-700 dark:text-slate-300 mb-3">
+                  The <span className="font-medium text-purple-600 dark:text-purple-400">Weighted Score</span> combines support, confidence, and testing complexity into a single metric. Higher scores indicate EIPs that are well-supported, well-vetted, and have lower testing overhead.
+                </p>
+
+                <div className="space-y-3">
+                  <div className="flex items-start gap-3">
+                    <div className="w-6 h-6 rounded-full bg-emerald-100 dark:bg-emerald-900/30 flex items-center justify-center text-emerald-700 dark:text-emerald-300 text-xs font-medium shrink-0">1</div>
+                    <div>
+                      <div className="font-medium text-slate-800 dark:text-slate-200">Average Support</div>
+                      <div className="text-slate-600 dark:text-slate-400">How much do client teams want this? (1-5 scale from prioritization data)</div>
+                    </div>
+                  </div>
+
+                  <div className="flex items-start gap-3">
+                    <div className="w-6 h-6 rounded-full bg-blue-100 dark:bg-blue-900/30 flex items-center justify-center text-blue-700 dark:text-blue-300 text-xs font-medium shrink-0">2</div>
+                    <div>
+                      <div className="font-medium text-slate-800 dark:text-slate-200">Confidence Factor <span className="font-normal text-slate-500">(0.5 - 1.0)</span></div>
+                      <div className="text-slate-600 dark:text-slate-400">How many teams have weighed in? More opinions = more confidence in the average. An EIP with 8/11 teams responding is more reliable than one with 2/11.</div>
+                    </div>
+                  </div>
+
+                  <div className="flex items-start gap-3">
+                    <div className="w-6 h-6 rounded-full bg-amber-100 dark:bg-amber-900/30 flex items-center justify-center text-amber-700 dark:text-amber-300 text-xs font-medium shrink-0">3</div>
+                    <div>
+                      <div className="font-medium text-slate-800 dark:text-slate-200">Testing Complexity Discount <span className="font-normal text-slate-500">(0.4 - 1.0)</span></div>
+                      <div className="text-slate-600 dark:text-slate-400">How much testing effort is required? Based on <a href="https://github.com/ethsteel/pm" target="_blank" rel="noopener noreferrer" className="text-purple-600 dark:text-purple-400 hover:underline">STEEL</a> assessments of testing complexity (not implementation complexity). Lower scores get higher multipliers. An EIP with score 5 keeps ~80% of its value; one with score 30 keeps ~40%.</div>
+                    </div>
                   </div>
                 </div>
 
-                <div className="flex items-start gap-3">
-                  <div className="w-6 h-6 rounded-full bg-blue-100 dark:bg-blue-900/30 flex items-center justify-center text-blue-700 dark:text-blue-300 text-xs font-medium shrink-0">2</div>
-                  <div>
-                    <div className="font-medium text-slate-800 dark:text-slate-200">Confidence Factor <span className="font-normal text-slate-500">(0.5 - 1.0)</span></div>
-                    <div className="text-slate-600 dark:text-slate-400">How many teams have weighed in? More opinions = more confidence in the average. An EIP with 8/11 teams responding is more reliable than one with 2/11.</div>
+                <div className="mt-4 pt-3 border-t border-slate-200 dark:border-slate-700">
+                  <div className="text-slate-600 dark:text-slate-400">
+                    <span className="font-medium text-slate-700 dark:text-slate-300">Example:</span> An EIP with 4.0 support from 8 teams and testing complexity score 10:
                   </div>
-                </div>
-
-                <div className="flex items-start gap-3">
-                  <div className="w-6 h-6 rounded-full bg-amber-100 dark:bg-amber-900/30 flex items-center justify-center text-amber-700 dark:text-amber-300 text-xs font-medium shrink-0">3</div>
-                  <div>
-                    <div className="font-medium text-slate-800 dark:text-slate-200">Testing Complexity Discount <span className="font-normal text-slate-500">(0.4 - 1.0)</span></div>
-                    <div className="text-slate-600 dark:text-slate-400">How much testing effort is required? Based on <a href="https://github.com/ethsteel/pm" target="_blank" rel="noopener noreferrer" className="text-purple-600 dark:text-purple-400 hover:underline">STEEL</a> assessments of testing complexity (not implementation complexity). Lower scores get higher multipliers. An EIP with score 5 keeps ~80% of its value; one with score 30 keeps ~40%.</div>
+                  <div className="mt-1 font-mono text-xs text-slate-500 dark:text-slate-400">
+                    4.0 × 0.86 (8/11 teams) × 0.67 (testing complexity 10) = <span className="text-purple-600 dark:text-purple-400 font-medium">2.31</span>
                   </div>
                 </div>
               </div>
+            )}
+          </div>
 
-              <div className="mt-4 pt-3 border-t border-slate-200 dark:border-slate-700">
-                <div className="text-slate-600 dark:text-slate-400">
-                  <span className="font-medium text-slate-700 dark:text-slate-300">Example:</span> An EIP with 4.0 support from 8 teams and testing complexity score 10:
-                </div>
-                <div className="mt-1 font-mono text-xs text-slate-500 dark:text-slate-400">
-                  4.0 × 0.86 (8/11 teams) × 0.67 (testing complexity 10) = <span className="text-purple-600 dark:text-purple-400 font-medium">2.31</span>
-                </div>
-              </div>
+          {/* Toolbar */}
+          <div className="bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg p-4">
+            <div className="flex flex-wrap items-center gap-x-4 gap-y-3">
+              {/* Filters button */}
+              <button
+                onClick={() => setFiltersModalOpen(true)}
+                className={`flex items-center gap-2 px-4 py-2.5 rounded-lg border text-sm font-medium transition-colors ${
+                  activeFilterCount > 0
+                    ? 'bg-purple-50 dark:bg-purple-900/20 border-purple-300 dark:border-purple-700 text-purple-700 dark:text-purple-300'
+                    : 'bg-white dark:bg-slate-800 border-slate-200 dark:border-slate-700 text-slate-700 dark:text-slate-300'
+                }`}
+              >
+                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 4a1 1 0 011-1h16a1 1 0 011 1v2.586a1 1 0 01-.293.707l-6.414 6.414a1 1 0 00-.293.707V17l-4 4v-6.586a1 1 0 00-.293-.707L3.293 7.293A1 1 0 013 6.586V4z" />
+                </svg>
+                <span className="hidden sm:inline">Filters</span>
+                {activeFilterCount > 0 && (
+                  <span className="px-1.5 py-0.5 text-xs bg-purple-200 dark:bg-purple-800 text-purple-800 dark:text-purple-200 rounded-full">
+                    {activeFilterCount}
+                  </span>
+                )}
+              </button>
+
+              {/* Hide excluded toggle */}
+              <label className="flex items-center gap-2 cursor-pointer select-none">
+                <input
+                  type="checkbox"
+                  checked={hideExcluded}
+                  onChange={(e) => setHideExcluded(e.target.checked)}
+                  className="w-4 h-4 rounded border-slate-300 dark:border-slate-600 text-purple-600 focus:ring-purple-500"
+                />
+                <span className="text-sm text-slate-600 dark:text-slate-300">Active only</span>
+              </label>
+
+              {/* Hide in devnet toggle */}
+              <label className="flex items-center gap-2 cursor-pointer select-none">
+                <input
+                  type="checkbox"
+                  checked={hideInDevnet}
+                  onChange={(e) => setHideInDevnet(e.target.checked)}
+                  className="w-4 h-4 rounded border-slate-300 dark:border-slate-600 text-purple-600 focus:ring-purple-500"
+                />
+                <span className="text-sm text-slate-600 dark:text-slate-300">Hide in devnet</span>
+              </label>
+
+              {/* Refresh button */}
+              <button
+                onClick={refetch}
+                disabled={complexityLoading}
+                className="p-1.5 text-slate-400 hover:text-slate-600 dark:text-slate-500 dark:hover:text-slate-300 transition-colors disabled:opacity-50 ml-auto"
+                title="Refresh complexity data"
+              >
+                <svg className={`w-4 h-4 ${complexityLoading ? 'animate-spin' : ''}`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
+                </svg>
+              </button>
             </div>
-          )}
+          </div>
         </div>
 
         {/* Mobile Card List */}
@@ -718,7 +982,7 @@ const DevnetPrioritizationPage: React.FC = () => {
                         key={devnet.id}
                         className={`inline-block px-1.5 py-0.5 text-[10px] font-medium rounded ${getDevnetColor(devnet.headliner)}`}
                       >
-                        {getDevnetShortName(devnet)}
+                        {devnet.id}
                       </span>
                     ))}
                   </div>
@@ -877,7 +1141,7 @@ const DevnetPrioritizationPage: React.FC = () => {
                                     className={`inline-block px-1.5 py-0.5 text-[10px] font-medium rounded ${getDevnetColor(devnet.headliner)}`}
                                     title={devnet.id}
                                   >
-                                    {getDevnetShortName(devnet)}
+                                    {devnet.id}
                                   </span>
                                 ))}
                             </div>

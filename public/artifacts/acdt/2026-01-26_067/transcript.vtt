@@ -1,0 +1,1898 @@
+WEBVTT
+
+1
+00:06:35.850 --> 00:06:42.610
+Pooja Ranjan: Mario, Akash is having some internet issues, so I'll be helping with streaming today. Just let me know whenever you are ready.
+
+2
+00:06:43.630 --> 00:06:44.900
+Mario Vega: Okay, thank you so much.
+
+3
+00:09:57.700 --> 00:10:04.020
+Mario Vega: Hey everyone, we just give a couple more minutes, for more people to join, and we can get started.
+
+4
+00:11:10.760 --> 00:11:14.680
+Mario Vega: I think we have enough people now. Can we get started?
+
+5
+00:11:16.920 --> 00:11:17.900
+Pooja Ranjan: We are life.
+
+6
+00:11:18.620 --> 00:11:19.999
+Mario Vega: Excellent, thank you so much.
+
+7
+00:11:20.110 --> 00:11:34.649
+Mario Vega: Welcome, everyone, to ACDT number 67. Today is January 26th of 2026. Yeah, let's get just started. I shared the agenda in the chat.
+
+8
+00:11:34.830 --> 00:11:36.449
+Mario Vega: For everyone to see.
+
+9
+00:11:36.620 --> 00:11:42.769
+Mario Vega: First of all, we can get started with the glamsterum, I think it's the most pressing topic at the moment.
+
+10
+00:11:42.910 --> 00:11:45.529
+Mario Vega: Yeah, and for…
+
+11
+00:11:45.660 --> 00:11:55.389
+Mario Vega: for the first subtopic is… it would be more than the two, updates. The first thing that I would like to share is that we shared a…
+
+12
+00:11:55.780 --> 00:12:05.450
+Mario Vega: reference spec test release last week, and I'll link it in the chat for everyone to see. It basically contains all of the EIPs.
+
+13
+00:12:05.850 --> 00:12:11.079
+Mario Vega: That, are supposed to be included in the 2 for local access list.
+
+14
+00:12:11.180 --> 00:12:26.710
+Mario Vega: I don't think there's much to say to it, unless, other than people should start just trying to use it, test their clients' implementations, and please raise any issues that you find in the Eat R&D Discord, so we can take a look.
+
+15
+00:12:26.790 --> 00:12:35.540
+Mario Vega: Or if there are any, any concerns, or any other thing, please just, just raise it so we can, we can, try to fix it.
+
+16
+00:12:35.870 --> 00:12:42.639
+Mario Vega: Alright, next to that, I think… Let me see…
+
+17
+00:12:43.330 --> 00:12:52.340
+Mario Vega: Stefan, are you, Nicole? I think you shared a very nicely comprehensive update in the… in the…
+
+18
+00:12:53.210 --> 00:12:58.410
+Mario Vega: in the issue, would you like to, get started on the… on this update?
+
+19
+00:12:59.060 --> 00:13:11.440
+Stefan Starflinger: Yeah, sure. So, just in general, I asked Tony if we could maybe push, the discussions on BAL open PRs, and I just listed the open PRs that we still have.
+
+20
+00:13:11.620 --> 00:13:19.420
+Stefan Starflinger: And then, as a second point, I kind of went over to see how far clients currently are, and I created a nice
+
+21
+00:13:19.490 --> 00:13:32.159
+Stefan Starflinger: table. The main blocker is the, slot num, EIP, so right now, most clients, don't make it through the gloss fork, because they don't have the, engine methods.
+
+22
+00:13:32.230 --> 00:13:51.040
+Stefan Starflinger: So it would be great if clients could merge those, or maybe give an update on that as well in a bit. And then, also, another point is that it would be great to have the flags to enable and disable the block-level access list optimizations.
+
+23
+00:13:51.130 --> 00:13:56.120
+Stefan Starflinger: That would really, unblock some of the repricing, efforts.
+
+24
+00:13:56.380 --> 00:14:11.249
+Stefan Starflinger: Then I would ask for a quick update on the, kind of testing side, how the block-level access is incorporated in the tests to debug that. I think it would be nice for everyone to kind of get an update there.
+
+25
+00:14:11.410 --> 00:14:15.470
+Stefan Starflinger: And that we should, go, like.
+
+26
+00:14:15.640 --> 00:14:27.120
+Stefan Starflinger: try and get, Baldevna 2 running on Wednesday. So yeah, first of all, I would hand over to Tony, maybe to talk over, if you're here on the call, go over the individual open PRs.
+
+27
+00:14:31.510 --> 00:14:47.510
+Toni Wahrstätter: Yeah, let me quickly, pull it up, because I don't have it open right now. If I remember correctly, then for Ball Defnet 2, we wanted to have the JSON RPC methods implemented into clients, just to allow us, to easier debug stuff.
+
+28
+00:14:47.990 --> 00:14:57.090
+Toni Wahrstätter: Then there was an engine API method. I think we got to consensus in the PR there.
+
+29
+00:14:57.230 --> 00:15:10.549
+Toni Wahrstätter: basically why we are having those engine API methods. I think we wanted to discuss that on… in more depth on the… on Wednesday's block of Access List Breakout Call, so I won't go very deep into that one.
+
+30
+00:15:10.910 --> 00:15:13.240
+Toni Wahrstätter: but, yeah.
+
+31
+00:15:13.880 --> 00:15:18.259
+Toni Wahrstätter: Other than that, there's not really… Much more.
+
+32
+00:15:18.840 --> 00:15:23.719
+Toni Wahrstätter: Maybe, if Felipe is on the call, he might… might have something to add there.
+
+33
+00:15:23.870 --> 00:15:25.629
+Toni Wahrstätter: With regards to the testing.
+
+34
+00:15:29.460 --> 00:15:32.279
+felipe: Yeah, for… for now, we,
+
+35
+00:15:32.660 --> 00:15:38.980
+felipe: The block level access list, used to be on the blocked object for blockchain.
+
+36
+00:15:39.300 --> 00:15:49.470
+felipe: Trusts… And since we removed them from the block body, they actually, in the…
+
+37
+00:15:49.820 --> 00:15:55.259
+felipe: 3.0.1 release weren't in the test vectors anymore.
+
+38
+00:15:55.900 --> 00:16:02.089
+felipe: But that block body in tests, also includes an RLP field,
+
+39
+00:16:02.420 --> 00:16:07.599
+felipe: So it's not really representative of a full block body, it just has block information in it.
+
+40
+00:16:08.650 --> 00:16:18.960
+felipe: What we did in the last release is we just put the block-level access list back in these block objects in the blockchain test, so they are there in this 4.0.0 release.
+
+41
+00:16:19.780 --> 00:16:22.370
+felipe: Just as they were in the previous file releases.
+
+42
+00:16:27.050 --> 00:16:35.839
+Mario Vega: Thank you. So just one comment regarding these open PRs, either Tony or Felipe or Stefan, is any of those…
+
+43
+00:16:36.050 --> 00:16:37.920
+Mario Vega: Blocking for .NET2?
+
+44
+00:16:39.580 --> 00:16:50.989
+Stefan Starflinger: Not any of these, necessarily, but it generally would be good to get them merged. So I thought maybe we could speed it up, because it seems like
+
+45
+00:16:51.320 --> 00:16:57.769
+Stefan Starflinger: or maybe not all of them, but some of them shouldn't need too much discussion. For example, the one on the…
+
+46
+00:16:59.520 --> 00:17:12.320
+Stefan Starflinger: execution APIs, adding slot number to fork choice update, I think that one would be great to merge, because that's really a blocker, for getting past the gloss fork for this EIP.
+
+47
+00:17:15.810 --> 00:17:16.240
+Mario Vega: which number.
+
+48
+00:17:16.240 --> 00:17:16.810
+Toni Wahrstätter: Yeah, maybe…
+
+49
+00:17:18.389 --> 00:17:20.839
+Stefan Starflinger: I will share in the chat.
+
+50
+00:17:22.099 --> 00:17:23.959
+Toni Wahrstätter: And just to add to that.
+
+51
+00:17:24.449 --> 00:17:30.539
+Toni Wahrstätter: So, there are basically the three open PRs we're talking about. The first one is about adding
+
+52
+00:17:30.649 --> 00:17:44.519
+Toni Wahrstätter: the engine API method, so this is not necessarily needed, but depends on which CL client we're using, because, I think Floadster, which we have been using so far, is not blinding the block level access lists, as they are not blinding
+
+53
+00:17:44.719 --> 00:17:52.749
+Toni Wahrstätter: the transactions, for example, which other clients do. So, this is not important in this case, if we keep using Lodestar.
+
+54
+00:17:55.619 --> 00:18:03.619
+Toni Wahrstätter: And the other one is more like an update to the EAP, so if my client is on the call, maybe, you could have approved that.
+
+55
+00:18:03.989 --> 00:18:13.239
+Toni Wahrstätter: This was basically, regarding your comment on the Discord channel, and the last one is the JSON RPC method, so also not really blocking, but nice to have.
+
+56
+00:18:24.980 --> 00:18:25.989
+Mario Vega: Alright, thank you.
+
+57
+00:18:27.160 --> 00:18:29.910
+Mario Vega: I think we can move on to the…
+
+58
+00:18:30.060 --> 00:18:34.679
+Mario Vega: second, part of your comment, Stefan,
+
+59
+00:18:35.440 --> 00:18:37.800
+Mario Vega: Basically, this is… this is stable…
+
+60
+00:18:38.000 --> 00:18:43.060
+Mario Vega: Let me… let me just share again the… the common link for everyone to be on the same page.
+
+61
+00:18:43.610 --> 00:18:50.269
+Mario Vega: This is the comment that we're referring to. The second bullet point in that comment contains a table.
+
+62
+00:18:50.430 --> 00:18:55.140
+Mario Vega: It's, basically the status of all the clients.
+
+63
+00:18:55.350 --> 00:19:01.760
+Mario Vega: Yeah, I just wanted to go client by client to see how they are in the implementation phase of this.
+
+64
+00:19:01.870 --> 00:19:13.249
+Mario Vega: I'll just start with Geth, because I think they're the further along in implementation, to see if they have any comments about either the EIPs or the implementation itself.
+
+65
+00:19:13.500 --> 00:19:16.859
+Mario Vega: Is anyone from GED here who wants to comment on this?
+
+66
+00:19:17.340 --> 00:19:20.020
+Mario Vega: For block-level access list, DevNet 2.
+
+67
+00:19:21.110 --> 00:19:22.080
+Mario Vega: Status?
+
+68
+00:19:30.070 --> 00:19:33.809
+Marius van der Wijden: I might be the only one from, from Gus here.
+
+69
+00:19:33.980 --> 00:19:39.319
+Marius van der Wijden: As far as I know, so we have definitely implemented the…
+
+70
+00:19:39.700 --> 00:19:44.780
+Marius van der Wijden: We have implemented the three, EAPs on top.
+
+71
+00:19:45.040 --> 00:19:57.810
+Marius van der Wijden: like slotnum, and Bell Definite2 should also work now. Like, the Bell part of Bell Definite2 should also work now.
+
+72
+00:19:59.110 --> 00:20:12.599
+Marius van der Wijden: So, yeah, we are doing a lot of internal refactors to get some of the stuff merged into master, so that is where some of our time is spent, but, yeah, as far as I know, we should be okay for a definite.
+
+73
+00:20:16.210 --> 00:20:17.219
+Mario Vega: Okay, thank you.
+
+74
+00:20:17.490 --> 00:20:24.990
+Mario Vega: Thank you. Alright, moving on, Bessu, I see that you have local access 7708.
+
+75
+00:20:25.180 --> 00:20:29.610
+Mario Vega: Any comments on the… Status, anything that you want to share?
+
+76
+00:20:29.820 --> 00:20:30.460
+Mario Vega: I'm a project.
+
+77
+00:20:30.460 --> 00:20:35.420
+Daniel Lehrner (Besu): I… I… I… I can do that. So we have…
+
+78
+00:20:35.660 --> 00:20:41.890
+Daniel Lehrner (Besu): Merged 7708, 7778, the gas refunds…
+
+79
+00:20:43.650 --> 00:20:51.909
+Daniel Lehrner (Besu): And we have merged AT24 swap and Doop, and SlotNum is in review.
+
+80
+00:20:52.860 --> 00:20:59.029
+Daniel Lehrner (Besu): And… oh yeah, for the e-logs, we have merged a version that
+
+81
+00:20:59.130 --> 00:21:05.889
+Daniel Lehrner (Besu): The previous one that only had the transfer, that did not have a special topic for Smith District.
+
+82
+00:21:06.210 --> 00:21:17.369
+Daniel Lehrner (Besu): self-destruct. We have also a PR in review that is adding that. So, all the… all the EIPs are either merged or in review.
+
+83
+00:21:19.870 --> 00:21:20.990
+Mario Vega: Excellent, thank you.
+
+84
+00:21:21.140 --> 00:21:23.320
+Mario Vega: Anyone from RETH?
+
+85
+00:21:23.860 --> 00:21:25.000
+Mario Vega: That's available.
+
+86
+00:21:25.870 --> 00:21:37.289
+Jen: Yeah, we have everything in progress, no blockers. I'm just taking a bit more time to review all PRs, and should be in by end of day.
+
+87
+00:21:37.490 --> 00:21:42.519
+Jen: Unless there's some spec changes, and we might need to allocate more time.
+
+88
+00:21:44.780 --> 00:21:45.560
+Mario Vega: Thank you.
+
+89
+00:21:46.130 --> 00:21:48.760
+Mario Vega: Excellent. Anyone from Nethermind?
+
+90
+00:21:50.690 --> 00:21:53.030
+Łukasz Rozmej: So,
+
+91
+00:21:54.160 --> 00:22:10.560
+Łukasz Rozmej: We have, I think, everything implemented. There will be, probably last few slight changes to slot number. We are currently integrating it to one branch. It's not master, but it's a DevNet2 branch.
+
+92
+00:22:10.710 --> 00:22:26.269
+Łukasz Rozmej: And after DevNet2 will be stabilized, we'll probably integrate everything to master at that point, so that's our plan. Not sure about Gatsby funds, because there was some additional discussion around it, and Ben was…
+
+93
+00:22:26.600 --> 00:22:31.530
+Łukasz Rozmej: implementing that PR, and he's traveling now, so, not here.
+
+94
+00:22:31.670 --> 00:22:34.799
+Łukasz Rozmej: Anything else, Mark, you want to add?
+
+95
+00:22:37.810 --> 00:22:44.470
+Marc: No, nothing else, really. I think, yeah, we should have all of the, new IP… new EIPs merged soon.
+
+96
+00:22:49.510 --> 00:23:02.300
+Mario Vega: Yeah, and on 7778, I think we have a comment. I'll get to that in a bit. Let me just try to finish with the rest of the clients. But yeah, there's definitely some open questions and comments.
+
+97
+00:23:02.660 --> 00:23:08.040
+Mario Vega: Alright. From Aragon, do we have any… anyone here that can share some updates?
+
+98
+00:23:08.600 --> 00:23:17.210
+Andrew Ashikhmin: Yeah, so, with the bells, themselves, we are still finishing, some bits and pieces,
+
+99
+00:23:19.620 --> 00:23:26.350
+Andrew Ashikhmin: Yeah, mostly, mostly done, and we should be ready this week, hopefully.
+
+100
+00:23:26.620 --> 00:23:37.169
+Andrew Ashikhmin: With, 7708, It's, it's in review.
+
+101
+00:23:37.840 --> 00:23:43.540
+Andrew Ashikhmin: With, 77.78 gas refunds,
+
+102
+00:23:43.700 --> 00:23:54.089
+Andrew Ashikhmin: Yeah, we'll probably have a discussion shortly afterwards, but, sorry, like, I, I… It was me who…
+
+103
+00:23:54.370 --> 00:23:58.269
+Andrew Ashikhmin: I actually wanted to make some changes, but…
+
+104
+00:23:59.050 --> 00:24:05.539
+Andrew Ashikhmin: Then I realized that it's very difficult to change receipts in Aragon.
+
+105
+00:24:05.960 --> 00:24:14.739
+Andrew Ashikhmin: So, we can implement 7778 without receipt, like, changing the receipt.
+
+106
+00:24:14.870 --> 00:24:23.530
+Andrew Ashikhmin: With adding only an ephemeral field to the receipt, but it will be very difficult for us to implement it with a…
+
+107
+00:24:24.000 --> 00:24:25.409
+Andrew Ashikhmin: Persistent field.
+
+108
+00:24:26.370 --> 00:24:37.360
+Andrew Ashikhmin: 7843… we haven't started implementing it yet. I mean, it's probably an easy
+
+109
+00:24:37.550 --> 00:24:40.610
+Andrew Ashikhmin: One, but it's not done yet.
+
+110
+00:24:41.300 --> 00:24:58.349
+Andrew Ashikhmin: And, we have merged 80-24. So, when you say Wednesday, do you mean Wednesday this week, or Wednesday next week? Because I think we'll be ready by Wednesday next week, but not by Wednesday this week.
+
+111
+00:25:00.310 --> 00:25:12.529
+Stefan Starflinger: Preferably this week, but I can always, yeah, I mean, it would have been good to be done earlier, like Barnabas said, but generally, when… I think at least 3 clients already.
+
+112
+00:25:12.640 --> 00:25:21.829
+Stefan Starflinger: And I hear out that we should have 3 clients ready by Wednesday to launch it, but we can always add clients as they get ready.
+
+113
+00:25:22.230 --> 00:25:23.789
+Stefan Starflinger: Just to get it started.
+
+114
+00:25:25.400 --> 00:25:26.110
+Andrew Ashikhmin: Okay.
+
+115
+00:25:29.150 --> 00:25:33.410
+Mario Vega: Also, we can provide help with the consumption of the tests, so we have engine
+
+116
+00:25:33.730 --> 00:25:43.859
+Mario Vega: engine API tests in the release, which includes CellDump, so if you guys need help to run this, please reach out, to Felipe or myself, and we can help you out.
+
+117
+00:25:44.610 --> 00:25:51.890
+Mario Vega: Alright, thanks, thanks, Andrew. Anyone from Nimbus, just to finalize the status on the clients?
+
+118
+00:25:58.670 --> 00:26:00.930
+Dustin: Yeah, yeah,
+
+119
+00:26:02.180 --> 00:26:09.759
+Dustin: moment. So, yeah, we are… this is in progress. We don't have them yet. I think… I think…
+
+120
+00:26:10.180 --> 00:26:14.670
+Dustin: This week would be… Hmm… ambitious?
+
+121
+00:26:14.980 --> 00:26:18.740
+Dustin: For us, but… Yeah.
+
+122
+00:26:22.710 --> 00:26:24.180
+Dustin: Oh, yeah, in progress.
+
+123
+00:26:25.570 --> 00:26:27.549
+Mario Vega: Alright, perfect. Thank you.
+
+124
+00:26:27.700 --> 00:26:40.559
+Mario Vega: Yeah, please keep us updated on the IT R&D. If you have something ready, please reach out to Stefan so he can help you out, to, just, point you out in the right direction.
+
+125
+00:26:41.010 --> 00:26:48.779
+Mario Vega: Alright, I think the main discussion point for a specific EIP seems to be 7778. Should we just proceed with that?
+
+126
+00:26:50.970 --> 00:26:58.009
+Mario Vega: Tony, I think you have the… you raised the discussion point on the agenda. Do you have more context on what you want to discuss regarding.
+
+127
+00:26:58.010 --> 00:26:58.500
+Toni Wahrstätter: EF.
+
+128
+00:26:58.500 --> 00:26:59.450
+Mario Vega: 7778.
+
+129
+00:27:00.200 --> 00:27:08.910
+Toni Wahrstätter: Yeah, so, right now, what we got in the specs is using the, gas used after the refund.
+
+130
+00:27:09.850 --> 00:27:21.839
+Toni Wahrstätter: Sorry, before the refund in accumulative gas used in the receipts, and we changed that recently. So this means, with EAP7778, there won't be any receipt changes needed.
+
+131
+00:27:22.320 --> 00:27:29.360
+Toni Wahrstätter: And clients can just continue dealing with the receipts as they are, for example, in EVGETransaction receipts.
+
+132
+00:27:30.080 --> 00:27:37.169
+Toni Wahrstätter: And I think Guru has already a PR open for this one, because I think we already merged,
+
+133
+00:27:37.440 --> 00:27:40.269
+Toni Wahrstätter: the other change, and now we need a new PR,
+
+134
+00:27:40.560 --> 00:27:43.629
+Toni Wahrstätter: Correct me if I'm wrong, Guru, if you're on the call.
+
+135
+00:27:43.850 --> 00:27:46.900
+Toni Wahrstätter: But I think we can just proceed with merging this.
+
+136
+00:27:47.300 --> 00:27:53.860
+Toni Wahrstätter: And… Yeah, the question is more like, how much time will clients need to implement that now?
+
+137
+00:27:53.970 --> 00:27:57.519
+Toni Wahrstätter: How far are clients with 7778, and…
+
+138
+00:27:57.700 --> 00:28:10.230
+Toni Wahrstätter: If this doesn't, like, delay definite 2, because clients are busy with slot num anyway, then I would just say we implement that small change and get it into DEFNET 2.
+
+139
+00:28:15.000 --> 00:28:22.629
+Mario Vega: Stefan, what's your preference? I think, from the testing side, we would have to make the change to spec, and just refill the tests, if I'm not mistaken.
+
+140
+00:28:22.820 --> 00:28:25.060
+Mario Vega: Maybe subtle changes in the tests.
+
+141
+00:28:25.390 --> 00:28:26.959
+Mario Vega: One or two PRs.
+
+142
+00:28:27.330 --> 00:28:36.780
+Guru: Actually, yeah, on the specs and testing side, we have a draft PR up already, which makes all of these changes, so as soon as we make a decision.
+
+143
+00:28:37.190 --> 00:28:39.739
+Guru: We should be good to merge that.
+
+144
+00:28:41.760 --> 00:28:44.050
+Stefan Starflinger: I don't have a strong preference.
+
+145
+00:28:44.640 --> 00:28:57.020
+Toni Wahrstätter: Yeah, maybe just to add to that, so this was basically the consensus after some discussion in this call. So, I think at this point, all clients agreed that this is the way how we should proceed.
+
+146
+00:28:57.150 --> 00:29:03.189
+Toni Wahrstätter: So, from that perspective, it's very clear. It's just a matter of, do we want to put it into DEFNET2?
+
+147
+00:29:03.310 --> 00:29:04.330
+Toni Wahrstätter: Or…
+
+148
+00:29:04.660 --> 00:29:11.440
+Toni Wahrstätter: definite free. But this is like, okay, then we would change the receipt now, and change it back in definite free.
+
+149
+00:29:11.780 --> 00:29:16.089
+Toni Wahrstätter: So, this change is actually, quite a simplification, I would say.
+
+150
+00:29:17.930 --> 00:29:18.890
+Mario Vega: Yes, Andrew?
+
+151
+00:29:19.970 --> 00:29:24.350
+Andrew Ashikhmin: Well, so, for us, yeah, I just…
+
+152
+00:29:24.550 --> 00:29:30.740
+Andrew Ashikhmin: Initially, I thought it would be easy for us to change the receipt format, but then I realized that it would be
+
+153
+00:29:30.890 --> 00:29:33.770
+Andrew Ashikhmin: very difficult. So…
+
+154
+00:29:34.070 --> 00:29:42.140
+Andrew Ashikhmin: For us, it's… there is a strong preference for Aragon to implement the version that doesn't require
+
+155
+00:29:42.920 --> 00:29:44.919
+Andrew Ashikhmin: A change to the receipts.
+
+156
+00:29:45.570 --> 00:29:46.880
+Andrew Ashikhmin: Otherwise…
+
+157
+00:29:47.130 --> 00:29:55.920
+Andrew Ashikhmin: We won't be able to… it will take us probably a few weeks… well, at least maybe a couple of weeks to implement.
+
+158
+00:29:56.120 --> 00:30:01.659
+Andrew Ashikhmin: the change, to the receipt format. So I strongly prefer
+
+159
+00:30:02.270 --> 00:30:07.369
+Andrew Ashikhmin: To do the version that doesn't require the receipt form a change now.
+
+160
+00:30:09.970 --> 00:30:10.870
+Mario Vega: Daniel?
+
+161
+00:30:12.600 --> 00:30:22.430
+Daniel Lehrner (Besu): Yeah, so from Basel's side, we, as I mentioned before, we have merged 7778 as is with the modified, received.
+
+162
+00:30:23.090 --> 00:30:26.999
+Daniel Lehrner (Besu): So we will need to revert this back…
+
+163
+00:30:27.750 --> 00:30:41.229
+Daniel Lehrner (Besu): I cannot 100% guarantee that we could do this until Wednesday. So, I mean, how far doesn't need to specify today? We can make it, but if we change this now, it might take us,
+
+164
+00:30:41.780 --> 00:30:47.820
+Daniel Lehrner (Besu): I don't know, one or two days to make the actual change back with the testing, I think.
+
+165
+00:30:48.770 --> 00:30:54.569
+Daniel Lehrner (Besu): So there might be a slight… there might be a slight delay for us if we go with the adoption.
+
+166
+00:30:55.440 --> 00:31:03.959
+Mario Vega: Okay, thank you. There's a nice comment from Dragon in the chat, which is, what is better for the protocol?
+
+167
+00:31:04.200 --> 00:31:08.540
+Mario Vega: please think about that, I'll get back to that. Jen, do you have any comments?
+
+168
+00:31:09.180 --> 00:31:21.029
+Jen: Yeah, actually just wanted to plus one on what Dragon said, and from the rev side, we do have, right now, implemented according to the specs, so we'll also need to make changes.
+
+169
+00:31:21.030 --> 00:31:29.920
+Jen: But yeah, I would like to discuss, first highlight why we are making this change, and what it means to the protocol, aside from how complex it is.
+
+170
+00:31:38.660 --> 00:31:44.909
+Mario Vega: Do you have any comments on what would be better for… In general.
+
+171
+00:31:47.120 --> 00:31:51.929
+Mario Vega: someone who's more familiar with this PR, this EIP, sorry, in particular, who wants to chime in?
+
+172
+00:31:51.930 --> 00:31:58.060
+Toni Wahrstätter: Yeah, so I think it's more an implementation detail, what we're discussing. It's like…
+
+173
+00:31:58.310 --> 00:32:01.810
+Toni Wahrstätter: I, I, I cannot, I cannot really answer how…
+
+174
+00:32:01.960 --> 00:32:04.839
+Toni Wahrstätter: Like, invasive it is to change the receipt.
+
+175
+00:32:05.120 --> 00:32:10.570
+Toni Wahrstätter: The clients I've talked to have been saying that it's not, like.
+
+176
+00:32:10.700 --> 00:32:17.739
+Toni Wahrstätter: A crazy thing to do, but of course, not doing it is… Like, easier to implement.
+
+177
+00:32:18.090 --> 00:32:24.449
+Toni Wahrstätter: So, if you look into the specs, as Guru has specced that now, it's a very simple change.
+
+178
+00:32:24.950 --> 00:32:31.050
+Toni Wahrstätter: And what it gives us, eventually, is just not allowing any transaction to
+
+179
+00:32:31.700 --> 00:32:34.119
+Toni Wahrstätter: Eventually caused more work than it.
+
+180
+00:32:34.800 --> 00:32:36.160
+Toni Wahrstätter: Pays for.
+
+181
+00:32:36.730 --> 00:32:40.070
+Toni Wahrstätter: Or eventually having blocks containing more work
+
+182
+00:32:40.520 --> 00:32:47.629
+Toni Wahrstätter: Then the block gas limit actually enforces. So this is the underlying rationale behind the EUP itself.
+
+183
+00:32:49.800 --> 00:32:51.249
+Mario Vega: Thank you. Yes, Maurice?
+
+184
+00:32:52.500 --> 00:32:57.389
+Marius van der Wijden: Yeah, so as I… as I understand this, there are two kind of
+
+185
+00:32:57.640 --> 00:33:01.540
+Marius van der Wijden: Ways of thinking about, this field.
+
+186
+00:33:01.690 --> 00:33:07.639
+Marius van der Wijden: Either if we don't change anything, then something for the users might change.
+
+187
+00:33:09.340 --> 00:33:19.189
+Marius van der Wijden: So, either we change something for the nodes, in that we would need to store a secondary field that we will not
+
+188
+00:33:19.740 --> 00:33:26.560
+Marius van der Wijden: Be able to, so, we will not be able to just
+
+189
+00:33:26.780 --> 00:33:35.830
+Marius van der Wijden: load this data from somewhere, and then recompute it. In order to recompute this data, we would need to execute the
+
+190
+00:33:36.080 --> 00:33:45.870
+Marius van der Wijden: execute the block, so the only way of kind of getting to this data is to also store it, which would mean we would need to store much…
+
+191
+00:33:46.120 --> 00:33:57.920
+Marius van der Wijden: much more in the database, or, like, one field per receipt more in the database, per transaction more in the database, which is okay.
+
+192
+00:33:58.240 --> 00:34:04.080
+Marius van der Wijden: Because other fields from the receipts we can just load from the block.
+
+193
+00:34:04.470 --> 00:34:08.619
+Marius van der Wijden: And they don't really cost us anything, storage-wise.
+
+194
+00:34:08.880 --> 00:34:17.370
+Marius van der Wijden: And yeah, on the other hand, it is… it might be a usability issue for users, but overall.
+
+195
+00:34:17.920 --> 00:34:20.980
+Marius van der Wijden: I think everyone wants this EIP, it's just…
+
+196
+00:34:25.989 --> 00:34:30.389
+Toni Wahrstätter: Yeah, maybe just to add, because this was, this was a great, description.
+
+197
+00:34:30.569 --> 00:34:35.199
+Toni Wahrstätter: And just to add, because Dragon has also, had a comment in the chat.
+
+198
+00:34:35.539 --> 00:34:46.189
+Toni Wahrstätter: So, there are two things we want. We need the gas used in a block, right? We need to enforce the block gas limit, and for this, under parallel execution.
+
+199
+00:34:46.449 --> 00:34:55.189
+Toni Wahrstätter: We need a way to know, was the block gas limit obeyed, even though transactions execute on different cores, on different threads.
+
+200
+00:34:55.709 --> 00:34:58.599
+Toni Wahrstätter: So this was also part of the discussion, why…
+
+201
+00:34:59.629 --> 00:35:07.529
+Toni Wahrstätter: That's why we need to always know, like, how much did the transaction account against the block gas limit.
+
+202
+00:35:07.779 --> 00:35:10.489
+Toni Wahrstätter: Versus how much did their user actually pay?
+
+203
+00:35:10.719 --> 00:35:13.429
+Toni Wahrstätter: So this has been part of a discussion, and…
+
+204
+00:35:14.049 --> 00:35:21.509
+Toni Wahrstätter: There are two ways to deal with it, and both are fine with block access lists, and one is without a new receipt field.
+
+205
+00:35:21.839 --> 00:35:32.059
+Toni Wahrstätter: And the other, includes a new receipt field. And right now, I think there's, broad consensus that we eventually want to do it without a new receipt field, so…
+
+206
+00:35:32.709 --> 00:35:39.449
+Toni Wahrstätter: It's more like, do we want to delay definite tool launch until next week, which would mean we can implement this change.
+
+207
+00:35:39.689 --> 00:35:41.559
+Toni Wahrstätter: Or do we want to launch it?
+
+208
+00:35:41.719 --> 00:35:43.039
+Toni Wahrstätter: With the old version.
+
+209
+00:35:44.209 --> 00:35:45.829
+Toni Wahrstätter: Booked. This week.
+
+210
+00:35:49.150 --> 00:35:55.539
+Stefan Starflinger: So you're, like, 80-90% sure that this is the right way to go, to summarize.
+
+211
+00:35:56.070 --> 00:35:57.410
+Stefan Starflinger: With this change.
+
+212
+00:35:58.610 --> 00:36:02.670
+Toni Wahrstätter: Yeah, it feels like it's less invasive, you know, because everything…
+
+213
+00:36:03.020 --> 00:36:18.370
+Toni Wahrstätter: around receipts will stay the same, because nothing changes from how clients use receipts today. The only thing that will change, and will become a little bit more complex, is enforcing the block gas limit when transactions are executed on different threads.
+
+214
+00:36:18.500 --> 00:36:28.779
+Toni Wahrstätter: Because you can't just take the receipt values and go through the gas limits and check if they could, at this point in time, still fit into the block.
+
+215
+00:36:29.320 --> 00:36:36.119
+Toni Wahrstätter: But, yeah, there are other ways how clients can deal with this, and this was also discussed. So, it seems like…
+
+216
+00:36:36.680 --> 00:36:39.740
+Toni Wahrstätter: We don't need many changes to make it work.
+
+217
+00:36:45.850 --> 00:36:58.789
+Stefan Starflinger: Okay, I generally tend… if we can get it in this week, this change, it doesn't have to be Wednesday, but if we can make it this week, then I'm for it, but I wouldn't want to wait until next week.
+
+218
+00:37:03.680 --> 00:37:08.569
+Toni Wahrstätter: Yeah, I'm also fine with delaying it. We can also delay it for definite free. It's a small change, and…
+
+219
+00:37:09.170 --> 00:37:11.279
+Toni Wahrstätter: Shouldn't block… shouldn't be a blocker.
+
+220
+00:37:12.470 --> 00:37:13.710
+Mario Vega: Andrew? Yes.
+
+221
+00:37:14.100 --> 00:37:33.880
+Andrew Ashikhmin: Well, if in DevNet 2 we go with the version that requires a receipt change, then probably in Aragon we'll have to skip DevNet 2, because, as I mentioned, for us, it's very difficult to change the receipt format.
+
+222
+00:37:36.750 --> 00:37:41.320
+Andrew Ashikhmin: And there is no point in doing that work if it will be scrapped anyway.
+
+223
+00:37:43.010 --> 00:37:48.759
+Mario Vega: Okay, since I think it would be very valuable to have all clients on DevNet2, otherwise we will lose,
+
+224
+00:37:48.990 --> 00:37:56.069
+Mario Vega: information. I think delaying for a week seems to be, like, an okay solution. Is anyone opposed to this change?
+
+225
+00:37:56.500 --> 00:38:00.300
+Mario Vega: From the rest of the clients, it seems like an easy change for everyone else.
+
+226
+00:38:07.930 --> 00:38:15.820
+Mario Vega: Alright, if not, I think, what we need to do… Sorry, we're talking about 77… 7778, Lukash.
+
+227
+00:38:17.290 --> 00:38:32.239
+Mario Vega: We're deciding whether we are gonna change the receipt format or not, and just wanted input from the rest of the clients to see if we make another release of the tests in this, in the following days, for us to delay the net to… for next week.
+
+228
+00:38:32.300 --> 00:38:37.330
+Mario Vega: So we can get this change in, which would make it much easier for everyone to implement the EIP.
+
+229
+00:38:38.490 --> 00:38:41.400
+Łukasz Rozmej: So, for us, probably doesn't matter much.
+
+230
+00:38:42.300 --> 00:38:44.260
+Łukasz Rozmej: We can… Adjust.
+
+231
+00:38:50.570 --> 00:38:55.249
+Mario Vega: just to raise Dragon's command, we could do without the field in DevNet 2.
+
+232
+00:38:55.490 --> 00:38:58.270
+Mario Vega: Do you mean the change or not the change?
+
+233
+00:39:00.460 --> 00:39:08.000
+Dragan Rakita: I'm not sure what's specified currently in the IP. Either way, both things are very, like, nuisances,
+
+234
+00:39:09.080 --> 00:39:16.870
+Dragan Rakita: the main thing is AAP is good, it needs to be included. If we go with the field or without the field, those are details.
+
+235
+00:39:17.370 --> 00:39:20.960
+Dragan Rakita: I guess let's do what's easier.
+
+236
+00:39:21.680 --> 00:39:26.080
+Dragan Rakita: If it is easier to remove that field from the receipt, let's go with that.
+
+237
+00:39:28.530 --> 00:39:30.180
+Dragan Rakita: But I'm fine with that.
+
+238
+00:39:35.900 --> 00:39:44.399
+Mario Vega: Alright, and Marius asks, Tony if you can make the write-up in the discourse to make sure that everyone's aligned with the same thing. Alright.
+
+239
+00:39:54.930 --> 00:39:56.820
+Mario Vega: Alright, cool.
+
+240
+00:40:00.540 --> 00:40:05.790
+Mario Vega: So, yeah, let's move ahead, with the PBS for the sake of time.
+
+241
+00:40:07.000 --> 00:40:16.770
+Mario Vega: Is anyone here that has more context on EPVS status? Otherwise, we can go to the clients directly to see how is the progress with them implementing EPVS.
+
+242
+00:40:22.870 --> 00:40:24.649
+Justin Traglia: Let's start with the clients.
+
+243
+00:40:25.080 --> 00:40:25.670
+Mario Vega: Alright.
+
+244
+00:40:26.250 --> 00:40:30.980
+Mario Vega: Okay, let me just go, one by one. Anyone from Lighthouse?
+
+245
+00:40:31.890 --> 00:40:40.459
+Eitan: Yeah, Lighthouse-wise, we're working on some consensus changes right now, so, fork choice, payload processing.
+
+246
+00:40:40.590 --> 00:40:49.470
+Eitan: Epoch stuff, and so we're aiming to have… start interoping, like, in a Lighthouse-only Kurtosis network in the following weeks.
+
+247
+00:40:49.700 --> 00:40:53.619
+Eitan: But there's still a lot of work left to do. But yeah, that's our update.
+
+248
+00:40:56.180 --> 00:41:00.790
+Mario Vega: Alright, thank you. Anyone from Teku who wants to share something regarding EBS?
+
+249
+00:41:00.790 --> 00:41:08.970
+Stefan Bratanov: Yeah, so not much update from TechCore compared to last time, the ACDC call last week.
+
+250
+00:41:09.620 --> 00:41:14.560
+Stefan Bratanov: But we're having a couple more people working on it, so hopefully…
+
+251
+00:41:14.950 --> 00:41:18.189
+Stefan Bratanov: We have some interop, block interrupt.
+
+252
+00:41:18.370 --> 00:41:22.700
+Stefan Bratanov: Only Deco in the… Next couple of weeks, hopefully.
+
+253
+00:41:26.440 --> 00:41:29.959
+Mario Vega: Alright, thank you. Anyone from Prism who wants to share an update?
+
+254
+00:41:36.270 --> 00:41:46.940
+James He: I don't see Terrence or POTAs, but, we're making good progress on all the spec functions, and then we've just started on…
+
+255
+00:41:47.060 --> 00:41:50.629
+James He: some of the Beacon APIs, and
+
+256
+00:41:51.080 --> 00:41:57.190
+James He: I'll leave it up to Nico to kick us off on the issue, but,
+
+257
+00:41:57.600 --> 00:42:07.449
+James He: there is an area that, we should align on, for beacon API, statefulness.
+
+258
+00:42:08.720 --> 00:42:12.779
+Mario Vega: Yeah, but definitely, I'll get to that point, yeah, after client updates.
+
+259
+00:42:12.950 --> 00:42:18.230
+Mario Vega: Thank you. Anyone from Rimbus who can share an update?
+
+260
+00:42:19.960 --> 00:42:30.949
+Dustin: Sure, so, I would say steady progress, so we've been kind of merging into… we learned, from Frisaka, where we've been merging into,
+
+261
+00:42:31.160 --> 00:42:33.900
+Dustin: And to trunk, I mean, in a…
+
+262
+00:42:34.150 --> 00:42:40.930
+Dustin: controlled way, but still a continuous way. So we have… The…
+
+263
+00:42:41.620 --> 00:42:48.929
+Dustin: envelope processing is kind of… and also, we have the… we already had a bunch of handling for,
+
+264
+00:42:49.170 --> 00:43:06.079
+Dustin: like, obviously the Gloss data columns, but now we're getting, I don't know, all this, like, a flavor here, I'm not a huge amount of detail, but, integrating that into the block production specifically, like, to… not just handling incoming, but creating our own.
+
+265
+00:43:06.720 --> 00:43:12.160
+Dustin: And broadcasting them, so those are the current open PRs, and…
+
+266
+00:43:12.450 --> 00:43:17.609
+Dustin: Fork choice is still, out there, though, and that's,
+
+267
+00:43:18.510 --> 00:43:37.270
+Dustin: Yeah, I think the thing I want to point out about fork choice, actually, because this is a potentially a bigger… bigger issue than just EPBS, and a bigger risk factor in terms of deploying this, is we're going to end up having a choice, and it's why I think it's worth spending a little more time on in AC, you know, at least
+
+268
+00:43:37.290 --> 00:43:40.660
+Dustin: articulating its existence.
+
+269
+00:43:40.690 --> 00:43:51.379
+Dustin: there's a change in how ProposerBoost works, Alpha 1 did this, and there was some suggestions elsewhere, and fine. But the thing is, it is backwards and compatible.
+
+270
+00:43:51.820 --> 00:43:54.560
+Dustin: like… At least testing-wise, it is.
+
+271
+00:43:55.110 --> 00:44:10.410
+Dustin: And Nimbus hasn't done this, and a number of other clients haven't implemented the backwards part, backwards, you know, the previous, forks either. Now, what we're going to end up with is a choice of, do we do this all at once in… for…
+
+272
+00:44:10.830 --> 00:44:14.379
+Dustin: For, you know, all of the forks? Or do we kind of, kind of…
+
+273
+00:44:14.560 --> 00:44:21.989
+Dustin: isolate this for GOAS, when we do this, for example, and… and they have their trade-offs.
+
+274
+00:44:22.550 --> 00:44:28.419
+Dustin: Anyway, so, for choice, that's, that's still out there, yeah. Anyway, so that's, that's where we are.
+
+275
+00:44:31.680 --> 00:44:41.860
+Mario Vega: Thank you. Just to finalize the client side, we can get back to fork choice, questions, and also the Bitcoin API afterwards. Lodstar, anyone from Loadstar with updates?
+
+276
+00:44:43.380 --> 00:44:48.300
+NC: Yeah, so last week we have implemented the Folk Choice.
+
+277
+00:44:48.410 --> 00:44:50.930
+NC: Except for the proposal boost part.
+
+278
+00:44:51.350 --> 00:44:55.370
+NC: And it's actively under review and testing.
+
+279
+00:44:55.930 --> 00:44:59.979
+NC: And, we also implemented the builder entity.
+
+280
+00:45:00.170 --> 00:45:07.469
+NC: So we are now passing the operation spec test of the alpha.1.
+
+281
+00:45:08.170 --> 00:45:09.770
+NC: spec tests?
+
+282
+00:45:10.410 --> 00:45:18.460
+NC: And we are now moving on to, block importing, and also exploring the state cache.
+
+283
+00:45:18.900 --> 00:45:20.100
+NC: Architecture.
+
+284
+00:45:25.840 --> 00:45:34.179
+Mario Vega: Alright, thank you. Can we just, go ahead with the Bitcoin API discussion, Nico, if you want to take it from there?
+
+285
+00:45:35.380 --> 00:45:42.100
+nflaig: Yeah, sure. So, I left the summary of the proposed, or the options that we have here.
+
+286
+00:45:42.130 --> 00:45:59.860
+nflaig: So, currently, how the spec is done is that we have a two-step process for block production, which nicely maps on the internal beacon node state, because it's similar to how the P2P works, which has the beacon block separate to the execution payload.
+
+287
+00:46:00.300 --> 00:46:13.650
+nflaig: But I noticed the problem with that is, for local block production, that it's stateful, meaning, the beacon node that produces the beacon block is the one that also has the payload.
+
+288
+00:46:13.860 --> 00:46:24.769
+nflaig: And that one needs to be used to produce the execution payload envelope as well. So… and the issue with that is if you have a multi-node setup, and
+
+289
+00:46:24.900 --> 00:46:35.020
+nflaig: stuff like Vouch or Vero that always requests from all beacon nodes. This kind of reduces the reliability of the block production.
+
+290
+00:46:35.520 --> 00:46:40.380
+nflaig: So that's… this is basically the option 1 I listed here, which is the current spec.
+
+291
+00:46:41.290 --> 00:46:44.210
+nflaig: We have two alternatives, I see.
+
+292
+00:46:44.330 --> 00:46:48.950
+nflaig: The second one is, to keep this two-step process.
+
+293
+00:46:49.090 --> 00:47:03.490
+nflaig: that you have to call two APIs, but, still call two APIs. But the execution payload request would return all block contents, which also includes the blobs, which is what we currently have.
+
+294
+00:47:04.180 --> 00:47:11.010
+nflaig: This would allow still to publish to all beacon nodes, so that property would still be there.
+
+295
+00:47:11.230 --> 00:47:18.819
+nflaig: But you still have the problem that only the beacon node that produced the initial beacon block is able to do that.
+
+296
+00:47:19.930 --> 00:47:39.060
+nflaig: to, return the response for the payload. And then, option 3, that would keep it more like the status quo, where we call a single API, and then the… for the local block, we would return, as currently the beacon block, the execution payload, and blobs as well.
+
+297
+00:47:39.400 --> 00:47:47.800
+nflaig: That way, the validator client can then sign everything and publish it through all the existing or connected beaker nodes.
+
+298
+00:47:47.810 --> 00:48:01.939
+nflaig: So this is basically closest to what we have. Some issues there, or there are problems that were raised previously that blobs. The higher the blob count goes, the more data we have to pass around.
+
+299
+00:48:02.230 --> 00:48:11.309
+nflaig: I guess especially if you run Vouch or Vero, you want them on different servers, so latency is definitely something we should consider here.
+
+300
+00:48:12.070 --> 00:48:13.979
+nflaig: But I think, yeah, this keeps it…
+
+301
+00:48:14.170 --> 00:48:26.840
+nflaig: closest to the status quo. It's not as nice from a spec perspective, but, so from the initial feedback, it seems like, most people are in favor of going with option 3.
+
+302
+00:48:27.550 --> 00:48:30.360
+nflaig: But yeah, definitely something to get more feedback on.
+
+303
+00:48:44.300 --> 00:48:45.870
+Mario Vega: Any comments from clients?
+
+304
+00:48:46.770 --> 00:48:48.440
+Mario Vega: Any preference, basically?
+
+305
+00:48:55.890 --> 00:49:01.380
+James He: Well, for definite zero, we're… we're just going with whatever is…
+
+306
+00:49:01.640 --> 00:49:04.080
+James He: We're going with the two-step process, right?
+
+307
+00:49:07.800 --> 00:49:13.730
+Barnabas: Yeah, let's not change the scope of .NET 0. Let's, aim for all these changes for .NET1.
+
+308
+00:49:14.770 --> 00:49:28.779
+nflaig: So, I guess it depends what's easiest for clients, so one thing with the two-step process is also that the beaconode that produces the block needs to cache the payload and the blobs, so I'm not sure that's currently implemented.
+
+309
+00:49:29.400 --> 00:49:38.799
+nflaig: Or at least, for example, I think, Dustin, you mentioned this might not be desired for you, so… I would say clients can just go with whatever is easiest for DevNet Zero.
+
+310
+00:49:45.460 --> 00:49:48.589
+James He: Yeah, we didn't implement the caching yet.
+
+311
+00:49:57.800 --> 00:50:01.460
+Enrico Del Fante (tbenr): Do we really need to have this standardization for…
+
+312
+00:50:01.620 --> 00:50:05.910
+Enrico Del Fante (tbenr): Don't have zero anyway, so it's kind of just for client interrupts.
+
+313
+00:50:07.720 --> 00:50:12.179
+Enrico Del Fante (tbenr): We want to speed up everything, it's just… Let clients do.
+
+314
+00:50:12.630 --> 00:50:18.330
+Enrico Del Fante (tbenr): The quickest things, and then… I'll iron out the standardization later.
+
+315
+00:50:28.200 --> 00:50:38.200
+nflaig: So I personally don't think we need to standardize this now, or for Definite Zero at least, but I think it would still be good if we can move ahead with the PR.
+
+316
+00:50:38.320 --> 00:50:45.859
+nflaig: to get this back up to the… or to get the PR merged soon, because it's pretty large, and there are other changes as well.
+
+317
+00:50:47.880 --> 00:50:50.090
+nflaig: But yeah, it's not that urgent, I would say.
+
+318
+00:50:53.220 --> 00:51:01.370
+Mario Vega: Nico, just one closing comment. So, what do you need from clients? Is it just reviews, or do you need anything else to move this PR forward?
+
+319
+00:51:02.700 --> 00:51:10.260
+nflaig: Yeah, so just the general reviews on the PR, and then just feedback on what options clients would prefer.
+
+320
+00:51:10.570 --> 00:51:19.799
+nflaig: I think if there are not no good arguments for option 1, like how it's currently spec'd, then we should probably go with option 3 to keep the status quo.
+
+321
+00:51:24.710 --> 00:51:33.360
+Mario Vega: Okay, great. Excellent. So please, clients, if you can chime in into this PR, perhaps not the most pressing issue, but it would be helpful.
+
+322
+00:51:33.590 --> 00:51:40.530
+Mario Vega: please do so. I think the link is on the agenda. I'll also share it here again.
+
+323
+00:51:41.120 --> 00:51:42.599
+Mario Vega: For everyone to see.
+
+324
+00:51:43.700 --> 00:51:53.280
+Mario Vega: Great. Any other comments on this? I wanted to go back to Dustin's comments on fork choice. Do you want to expand on that? Do you feel like we should,
+
+325
+00:51:53.460 --> 00:51:59.840
+Mario Vega: Get something decided on this call, or is it something that, Yeah, in general.
+
+326
+00:52:02.000 --> 00:52:16.379
+Dustin: Sure, well, so I see, NC also, commented on this, and, and basically there was a discussion there. To summarize the Discord discussion briefly, it's that, it looks like they are the different fork choice
+
+327
+00:52:16.410 --> 00:52:22.200
+Dustin: variations, let's say, can, can coexist. So that,
+
+328
+00:52:23.690 --> 00:52:25.909
+Dustin: So I guess I'm not sure… it…
+
+329
+00:52:27.000 --> 00:52:33.920
+Dustin: The only thing that would end up having to be, I think, sort of, and this call, relevant, decided is, is it, like.
+
+330
+00:52:34.970 --> 00:52:40.400
+Dustin: It seems like people are pretty confident that this is, in fact, a…
+
+331
+00:52:40.820 --> 00:52:48.910
+Dustin: Not a breaking change in the way that they say the withdrawals were, that would have been a breaking change, as it had turned out.
+
+332
+00:52:49.060 --> 00:53:08.210
+Dustin: That were withdrawn from the pre-GoAS setup. But this is, the tweaks to ProposerBoost and being on the canonical chain and all that, and that's… it's fine if clients do either, and if it's fine if clients do either, then I don't think it's that important to decide now.
+
+333
+00:53:12.790 --> 00:53:14.940
+Dustin: What, like, in terms of interoperability.
+
+334
+00:53:17.700 --> 00:53:18.740
+Mario Vega: Distant Rico?
+
+335
+00:53:19.640 --> 00:53:27.869
+Enrico Del Fante (tbenr): Yeah, if I remember correctly, this is… this was just a change that was… that's just… I decided to go backward into Phase 0.
+
+336
+00:53:28.050 --> 00:53:34.710
+Enrico Del Fante (tbenr): Just because it's covering… an edge case… So, it was…
+
+337
+00:53:35.620 --> 00:53:40.180
+Enrico Del Fante (tbenr): Fine to get this… to put this change to phase 0.
+
+338
+00:53:40.770 --> 00:53:49.000
+Enrico Del Fante (tbenr): And… I feel like maintaining two different versions just because of that tiny change is,
+
+339
+00:53:49.290 --> 00:53:52.139
+Enrico Del Fante (tbenr): Yeah, complication that we should not…
+
+340
+00:53:53.010 --> 00:53:56.179
+Enrico Del Fante (tbenr): do, if this is the question from Dustin.
+
+341
+00:53:56.660 --> 00:54:06.409
+Enrico Del Fante (tbenr): And, so if there's anything that needs to be updated on the test, or a line that goes back to phase zero, I would
+
+342
+00:54:07.220 --> 00:54:18.909
+Enrico Del Fante (tbenr): just make this thing test-related and not production code related to maintain two different behaviors, and it's actually a bug fix, as far as I understood, so…
+
+343
+00:54:20.090 --> 00:54:22.410
+Enrico Del Fante (tbenr): I would like to have that.
+
+344
+00:54:22.710 --> 00:54:25.299
+Enrico Del Fante (tbenr): From Phase 0 and just update tests.
+
+345
+00:54:25.900 --> 00:54:27.420
+Enrico Del Fante (tbenr): And have one worship.
+
+346
+00:54:31.050 --> 00:54:35.469
+Dustin: Okay. I mean, I mean, Steve, I guess, Steve, the question I wrote, though, which is.
+
+347
+00:54:35.790 --> 00:54:39.859
+Dustin: that I'm broadly, I'm not… as long as…
+
+348
+00:54:39.980 --> 00:54:46.849
+Dustin: Pushing back the… so backporting the changes is safe to the existing production,
+
+349
+00:54:47.150 --> 00:54:51.150
+Dustin: sort of forks, which are, obviously, for the EF ones, they're…
+
+350
+00:54:51.300 --> 00:54:53.710
+Dustin: they're foolu at this point,
+
+351
+00:54:53.830 --> 00:54:59.139
+Dustin: Frusaka, and then Electra or Pektra for… Gnosis is still on that, so…
+
+352
+00:54:59.140 --> 00:54:59.680
+Enrico Del Fante (tbenr): cry.
+
+353
+00:54:59.680 --> 00:55:01.840
+Dustin: As long… as long as it's safe.
+
+354
+00:55:02.240 --> 00:55:05.810
+Dustin: We… I don't… I don't care at all about Pre-Pectra. I…
+
+355
+00:55:05.810 --> 00:55:16.999
+Enrico Del Fante (tbenr): So, the actual question is, is this edge case being exploited on mainnet since the beginning of the Beacon chain? And I would say.
+
+356
+00:55:17.170 --> 00:55:19.989
+Enrico Del Fante (tbenr): No, but I live…
+
+357
+00:55:19.990 --> 00:55:39.559
+Dustin: But can it be? Right, but now that is very public, the question is, if… once clients diverge in their implementations, is this a wedge that an attacker can use? And is it actually… and crucially, is it worse to have that wedge than it is to have a suboptimal proposal boost implementation?
+
+358
+00:55:41.820 --> 00:55:47.429
+Dustin: Like, I haven't seen a real analysis of this. Just, like, whatever, just do it, go ahead. Yellow.
+
+359
+00:55:48.250 --> 00:55:49.680
+Dustin: And that's not sufficient.
+
+360
+00:55:52.960 --> 00:56:08.349
+Mario Vega: Alright, I wanted to, see if… Justin, could you… could you chime in on this? Do you see this as a problem, or, should… also, we should, timebox this discussion, just for the sake of, continuing on to other topics?
+
+361
+00:56:08.460 --> 00:56:10.920
+Mario Vega: Yeah.
+
+362
+00:56:10.920 --> 00:56:19.349
+Justin Traglia: I don't have much to say, really. I mean, I wish Francesca were here to chime in. We can chat about this more on Discord, I think, but
+
+363
+00:56:19.550 --> 00:56:24.410
+Justin Traglia: I don't believe there are issues. Like, I don't think there could be, like, a… I don't think that…
+
+364
+00:56:24.920 --> 00:56:28.430
+Justin Traglia: A divergence in implementations of, this.
+
+365
+00:56:28.690 --> 00:56:30.059
+Justin Traglia: will cause issues.
+
+366
+00:56:30.390 --> 00:56:31.120
+Justin Traglia: Yeah.
+
+367
+00:56:35.180 --> 00:56:43.970
+Mario Vega: Alright. Anyway, if you want to bring, this topic into the 8th R&D Discord, Dustin, just…
+
+368
+00:56:44.450 --> 00:56:48.070
+Mario Vega: Just for clarification, yes, please do so, so we can continue async.
+
+369
+00:56:48.590 --> 00:56:51.070
+Mario Vega: Is that… is that okay?
+
+370
+00:56:51.270 --> 00:56:52.030
+Mario Vega: Alright.
+
+371
+00:56:52.430 --> 00:56:54.310
+Dustin: Yep. Yeah, yeah, yeah.
+
+372
+00:56:55.280 --> 00:57:01.790
+Mario Vega: Alright, thanks. Let's move on. Anything else related to EPVS that we should discuss in this call?
+
+373
+00:57:02.260 --> 00:57:04.420
+Mario Vega: Or anyone wants to bring up?
+
+374
+00:57:05.950 --> 00:57:10.060
+Justin Traglia: I can very quickly mention that we are working on,
+
+375
+00:57:10.440 --> 00:57:13.449
+Justin Traglia: specs for the next DevNet, so,
+
+376
+00:57:13.680 --> 00:57:17.889
+Justin Traglia: Alpha 2 release. I have made an issue with,
+
+377
+00:57:18.260 --> 00:57:24.290
+Justin Traglia: deadlines in this, so we plan on freezing the specs on February 6th, and making the release on February 13th.
+
+378
+00:57:24.940 --> 00:57:28.099
+Justin Traglia: Just so there's time to iron out any issues.
+
+379
+00:57:29.850 --> 00:57:30.860
+Justin Traglia: FYI.
+
+380
+00:57:32.310 --> 00:57:34.479
+Justin Traglia: I shared a link in the chat.
+
+381
+00:57:40.250 --> 00:57:44.790
+Justin Traglia: Yes, that's correct. And, there are just two open PRs at the moment.
+
+382
+00:57:45.260 --> 00:57:52.820
+Justin Traglia: the, changes to the minimum builder withdrawal, delay, and, the variable PTC deadline PR.
+
+383
+00:57:53.000 --> 00:57:54.290
+Justin Traglia: Bye, Francesca.
+
+384
+00:58:03.120 --> 00:58:04.189
+Mario Vega: Alright, thank you.
+
+385
+00:58:04.970 --> 00:58:17.449
+Mario Vega: Excellent. Yeah, I think the next topic is, gas benchmarking. Anything that we want to discuss in this call today, or any updates, anyone wants to bring up?
+
+386
+00:58:19.970 --> 00:58:32.230
+Kamil Chodoła: So, nothing in particular for now. I'm in discussion on the new version of Gas Benchmarks, which is done by EF DevOps team right now.
+
+387
+00:58:32.970 --> 00:58:35.929
+Kamil Chodoła: In the meantime, we are working on repricings.
+
+388
+00:58:36.060 --> 00:58:50.070
+Kamil Chodoła: We got some messages from Maria that data is right now better, and working in the meantime on stateful testing to push the data for stateful scenarios, to decide on the repricings for those uploads.
+
+389
+00:58:50.500 --> 00:58:54.110
+Kamil Chodoła: And that would be basically it, so, for now.
+
+390
+00:58:54.240 --> 00:58:56.189
+Kamil Chodoła: The data analysis is happening.
+
+391
+00:59:01.860 --> 00:59:09.829
+Mario Vega: Alright, thank you. Great. Anything else regarding gas prices or benchmarking?
+
+392
+00:59:13.510 --> 00:59:19.010
+Louis: and built-in site, I will try to create a benchmark release.
+
+393
+00:59:19.360 --> 00:59:21.479
+Louis: that supports Osaka.
+
+394
+00:59:21.610 --> 00:59:25.419
+Louis: that tries to run the benchmark under Osaka 4.
+
+395
+00:59:26.320 --> 00:59:27.300
+Louis: this week.
+
+396
+00:59:34.960 --> 00:59:36.250
+Mario Vega: Excellent, thank you, Liz.
+
+397
+00:59:37.280 --> 00:59:38.180
+Mario Vega: Good.
+
+398
+00:59:38.980 --> 00:59:48.050
+Mario Vega: Okay, if nothing else, we can, go into the next… last two topics for this… for this call. The first one is regarding process.
+
+399
+00:59:48.300 --> 00:59:59.890
+Mario Vega: and specifically the CFI EIP to DevNet process, which is what we generally talk about during this call. I made a comment.
+
+400
+01:00:00.080 --> 01:00:07.929
+Mario Vega: on the… on the issue agenda, the last couple of days. And basically, I think…
+
+401
+01:00:07.930 --> 01:00:22.290
+Mario Vega: We should have, like, more defined, and clearer process for everyone to, when we want to move something from CFI into DevNet, because I think there's definitely some room for improvement regarding how this was handled.
+
+402
+01:00:22.310 --> 01:00:25.660
+Mario Vega: In this stepnet, and definitely we can improve.
+
+403
+01:00:25.870 --> 01:00:38.479
+Mario Vega: So what I shared here is basically just a suggestion that maybe we can follow. I think the main issue was the first point that we didn't do properly for this, DevNet, which is,
+
+404
+01:00:38.540 --> 01:00:47.039
+Mario Vega: that every EIP that is gonna be proposed for inclusion in a DevNet, we should post it ahead of time in the ACDT agenda.
+
+405
+01:00:47.210 --> 01:00:55.690
+Mario Vega: for every client to, review, to chime in, to raise any objections, and suggest alternatives.
+
+406
+01:00:55.950 --> 01:01:09.630
+Mario Vega: After that, if there are no, no major issues or major, objections raised by the clients, that is then, brought up in the… during the call.
+
+407
+01:01:09.780 --> 01:01:21.119
+Mario Vega: for a second chance to… for objections, and if there is none, then just basically we start working on the EIPs that have been, just approved by everyone in the… in the DevNet.
+
+408
+01:01:21.220 --> 01:01:31.159
+Mario Vega: Nevertheless, if, after that point, we still discover that there are issues that only are surfaced when the
+
+409
+01:01:31.230 --> 01:01:45.679
+Mario Vega: implementation has started by the clients, or the implementation has started by the specs and tests, this… the EIP should be proposed for removal from the devnet and just defer to a future devnet at any point, if that's the case.
+
+410
+01:01:46.590 --> 01:01:51.460
+Mario Vega: And the last bullet point is basically that this call should never be
+
+411
+01:01:51.460 --> 01:02:15.099
+Mario Vega: use to make decisions regarding CFI to CF… SFI, moving of the, of the status of an EAP, or CFI to DFI. They will not be discussed during this call. Basically, that is, still needs to be discussed within ACDE and ACDC. This is basically, a place for discussion just for anything that we want to add that has already been approved as CFI.
+
+412
+01:02:15.100 --> 01:02:16.530
+Mario Vega: in the ACD,
+
+413
+01:02:16.530 --> 01:02:23.189
+Mario Vega: E or ACDC, and we discuss it here, just to move into it, to start testing procedures.
+
+414
+01:02:23.820 --> 01:02:38.039
+Mario Vega: having said that, I just want to hear from people, basically if this sounds like a… like a good idea, any… any… any comments, or how this should be handled in the future, if there's any…
+
+415
+01:02:38.220 --> 01:02:41.470
+Mario Vega: Issues with this process,
+
+416
+01:02:41.700 --> 01:02:44.960
+Mario Vega: Other than that, what is raising this comment?
+
+417
+01:02:50.590 --> 01:02:56.919
+Mario Vega: And one comment from Ansgar is definite inclusion decision, not basically an SFI decision? Yeah, Ansgar?
+
+418
+01:02:57.630 --> 01:03:05.819
+Ansgar Dietrichs: Yeah, and I mean, it was just a, just something that came to mind, because I feel like, to me,
+
+419
+01:03:06.190 --> 01:03:22.200
+Ansgar Dietrichs: yeah, the inclusion of an EIP into a DevNet at least means that now, if we end up not actually SFI it, not having it be included in the fork in the end, then that was, of course, extra effort that might have been wasteful in retrospect.
+
+420
+01:03:22.200 --> 01:03:27.469
+Ansgar Dietrichs: And so I feel like there's this very real tension. On the one hand, I think making all…
+
+421
+01:03:27.880 --> 01:03:29.929
+Ansgar Dietrichs: debit decisions?
+
+422
+01:03:30.110 --> 01:03:51.459
+Ansgar Dietrichs: only on ACDE or something, or ACDC, of course, that adds extra friction. So, in principle, I do like the idea of just continuing to do that on ACDT. But then, on the other hand, it feels like, kind of like, just saying, oh, but, like, we moved the SFI decision over. That, in a sense, on its own, also seems a bit artificial. So I don't know, I was just curious how you think about that tension between…
+
+423
+01:03:51.590 --> 01:03:53.719
+Ansgar Dietrichs: The definite decision and the status decision.
+
+424
+01:03:54.630 --> 01:04:01.530
+Mario Vega: Yeah, definitely, I wouldn't suggest that on ACDT we decide on a big EIP to be included in a DevNet. That would be…
+
+425
+01:04:01.740 --> 01:04:07.359
+Mario Vega: erratic. For example, the ones in this, round.
+
+426
+01:04:07.670 --> 01:04:11.729
+Mario Vega: Basically because they are easy, quote-unquote, to implement.
+
+427
+01:04:12.170 --> 01:04:26.230
+Mario Vega: But yeah, that proved… that proved, as always, like, to be not the case, not the exact case for all the EAPs, so it's never gonna be, like, a silver bullet that we decide on the easiest, or, things to add to the devnet that are the easiest.
+
+428
+01:04:26.390 --> 01:04:37.820
+Mario Vega: Definitely, we shouldn't include an ACDT, something that is very big, like block-level access lists, or something of a bigger complexity, in my opinion.
+
+429
+01:04:39.100 --> 01:04:47.040
+Mario Vega: But yeah, I'm not sure. To be honest, I'm not sure if we should decide on ACDE, what to include on DevTent, or we should do it here.
+
+430
+01:04:57.720 --> 01:05:03.320
+Mario Vega: Barnabas, do you have any opinion on this, or Stefan, do you have.
+
+431
+01:05:03.320 --> 01:05:18.469
+Barnabas: Yeah, so basically, I think that, you know, CFI status is basically every EIP that we want to have implemented, whether it's going to be included in mainnet or not, is going to be up to ACD later on in ACDE or ACDC.
+
+432
+01:05:18.470 --> 01:05:28.740
+Barnabas: But every single CFI EIP should be implemented by the client, and then… then we can evaluate if it's actually something that we want to SFI, and actually want to push out on mainnet.
+
+433
+01:05:29.490 --> 01:05:31.110
+Barnabas: So,
+
+434
+01:05:31.360 --> 01:05:46.489
+Barnabas: I think making the CFI to SFI decision is up to ACDE and ACDC, but whether or not to implement CFI EIP should really be up to ACDT, and just,
+
+435
+01:05:46.580 --> 01:05:54.599
+Barnabas: Yeah, I think ordering it on which EIP should be implemented first can be… the decision can be made on this call.
+
+436
+01:05:58.040 --> 01:06:12.899
+Stefan Starflinger: I also generally agree with that, and I think, like, only because you have an implementation doesn't mean that it's going to go into the protocol. You should really have a working implementation before the spec is really finalized, and before we have a clear idea if it's
+
+437
+01:06:12.990 --> 01:06:19.390
+Stefan Starflinger: something we want in the protocol. So, generally, I think that's a good suggestion, Mario.
+
+438
+01:06:24.750 --> 01:06:32.529
+Mario Vega: I also feel that we have… we gain a lot of information about EIPs once we start implementing, because before that, it's like.
+
+439
+01:06:32.990 --> 01:06:35.660
+Mario Vega: Best guess scenario, while…
+
+440
+01:06:35.870 --> 01:06:50.339
+Mario Vega: when we add things to the DevNet, we end up, like, really knowing the IP's problems, issues, and implementation details that turn out to be perhaps something much more, difficult to implement.
+
+441
+01:06:50.640 --> 01:06:58.019
+Mario Vega: I would like to ask client devs, how do you feel about this in general, or…
+
+442
+01:07:02.550 --> 01:07:16.680
+Mario Vega: And there's another comment from Ansgar. What's the general connection between implementation and DevNet? Are they usually implementations before DevNet inclusion? How easy it is to pull individual EIPs back out of a DevNet?
+
+443
+01:07:17.560 --> 01:07:22.239
+Mario Vega: This is just personal, it depends, right? Yeah, it depends.
+
+444
+01:07:22.490 --> 01:07:32.709
+Barnabas: how big of an EIP are we talking about? If it's a, you know, one-line change, it's very easy to revert. If it's a very significant change, then yeah, the bigger, the harder it is.
+
+445
+01:07:36.040 --> 01:07:48.830
+Dustin: It's not just sheer size, I would say we saw this in Pectra, for sure, that we had EIPs and, to some degree, Fusaka, not individually huge, but they were 3 or 4 or 4 of them, very, intertwined.
+
+446
+01:07:48.950 --> 01:07:54.450
+Dustin: They all change the same code, the same data structures, the same SSC objects.
+
+447
+01:07:54.930 --> 01:07:55.610
+Dustin: and…
+
+448
+01:07:55.930 --> 01:08:13.499
+Dustin: effectively, I mean, yeah, they were different EIPs, but they were one unit of change, practically speaking, in terms of implementing them, and it would be almost as much effort to remove one as to implement, at least from Nimbus, as to have implemented all of them together, almost.
+
+449
+01:08:13.920 --> 01:08:14.590
+Dustin: Yeah.
+
+450
+01:08:26.689 --> 01:08:29.489
+Mario Vega: Tony, I don't think there's a conclusion,
+
+451
+01:08:30.339 --> 01:08:46.799
+Mario Vega: Yeah, last… one last question from Ansgar. Would it be too botaractic to have an initial decision on a DevNet scope, but then, a week later, on the next ACDT, make a go-no-go decision? That way, clients would have a week to look at the selected EIPs and start implementation?
+
+452
+01:08:46.969 --> 01:08:50.119
+Mario Vega: So we could catch the EIPs that are more complex than expected.
+
+453
+01:08:50.840 --> 01:08:53.340
+Barnabas: That's way too much overhead, in my opinion.
+
+454
+01:08:54.160 --> 01:08:55.069
+Barnabas: Let's go.
+
+455
+01:08:56.939 --> 01:09:06.609
+Ansgar Dietrichs: Okay, yeah, sorry for all the questions. I was just, you know, kind of from the ACDE kind of side, just trying to understand things a bit better, but yeah, yeah, no, I mean, makes sense then. I was just curious.
+
+456
+01:09:08.870 --> 01:09:16.830
+Mario Vega: I think, yeah, definitely we should be more careful about, with GIPs, because even though they look like one-liners.
+
+457
+01:09:17.210 --> 01:09:28.579
+Mario Vega: That's not always the case. But I think this is… this process can definitely evolve. If we catch something, any IP, for example, that is suggested to go into a DevNet, and someone
+
+458
+01:09:28.649 --> 01:09:42.239
+Mario Vega: sees that this is not feasible. We'll make sure that we want to share on the agenda prior to the call, just for everyone to, like, raise the question, either during the call or before, even.
+
+459
+01:09:42.340 --> 01:09:54.250
+Mario Vega: for us to, like, try to minimize the burden. Also, this raises the question whether… when are more complex EIPs gonna make the cut? Which is, I think, that's something that we have to keep discussing.
+
+460
+01:09:54.340 --> 01:10:07.689
+Mario Vega: We're out of time at the moment. But yeah, definitely, I don't think it's resolved. I don't think there's, like, a perfect process, anyway. So, we can bring up this topic again in next week's call, if necessary.
+
+461
+01:10:07.840 --> 01:10:20.130
+Mario Vega: There was one, just, just one more, open, comment by Pooja. I just want to very quickly give you the chance to share it, Pooja, if that's okay, before we close the call.
+
+462
+01:10:20.860 --> 01:10:32.570
+Pooja Ranjan: Yeah, thank you so much, Mario. I wanted to share a few things, a few PRs which are made for BPO-related stuff. Thank you, Mario, for sharing that.
+
+463
+01:10:32.570 --> 01:10:46.759
+Pooja Ranjan: So, in the first PR, I have requested to suggest, open a folder for BPO in order to keep track of progress and everything that general community would want to see, and this folder is suggested on Ethereum slash PM GitHub repository.
+
+464
+01:10:47.050 --> 01:10:57.100
+Pooja Ranjan: Apart from it, there are other two PRs in the EIPS repositories, and those are with respect to the Meta EP for BP01 and BPO2.
+
+465
+01:10:57.110 --> 01:11:17.240
+Pooja Ranjan: In a way, BPO1 and BPO2 are also the network upgrade, the hard fork parameters only, but it reaches the stature of a hard fork, so I believe that there should be Meta E for these two BPOs as well, and we should make Meta E for upcoming BPOs upgrade.
+
+466
+01:11:17.240 --> 01:11:20.479
+Pooja Ranjan: I have added the link to these Meta Eats.
+
+467
+01:11:20.480 --> 01:11:33.320
+Pooja Ranjan: kindly take a look, and yeah, just let us know your opinion. There were a couple of open questions that I wanted to share with this group here to decide and let us know. I would love to hear
+
+468
+01:11:33.530 --> 01:11:51.479
+Pooja Ranjan: from the team, if there is any preference in representation of BPO when we are documenting it. There are 3 different styles. It could be BPO1, BPO Space 1, and BPO-1, whatever is preferred way. I have used BPO1 in the EIP, but if there is any other preference, please let us know.
+
+469
+01:11:51.530 --> 01:12:10.749
+Pooja Ranjan: And I'm happy to update the proposal. And also, if we can get an estimate on how many BPU upgrades we are expecting a year, that would also be helpful in making a decision. I have tried to list most of the obvious question in the Fellowship of Ethereum Magician for people to refer to.
+
+470
+01:12:10.920 --> 01:12:23.840
+Pooja Ranjan: If there is any strong opposition for this EIP, please drop a comment and general support, as well as any suggestion to improve this proposal are already welcome. Thank you so much.
+
+471
+01:13:20.360 --> 01:13:21.290
+Marius van der Wijden: Bye, guys.
+
+472
+01:13:23.050 --> 01:13:26.089
+Pooja Ranjan: All right. Thank you, everyone. Bye-bye.
+
+473
+01:13:26.960 --> 01:13:28.410
+Andrew Ashikhmin: Thank you, bye-bye.
+
+474
+01:13:30.650 --> 01:13:31.420
+Justin Traglia: Alright, bro.
+

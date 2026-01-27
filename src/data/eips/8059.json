@@ -39,19 +39,19 @@
   },
   "stakeholderImpacts": {
     "endUsers": {
-      "description": "Users may notice gas numbers change, since each unit is 1,000\u00d7 smaller, but transaction behavior and protocol rules stay the same."
+      "description": "Users may notice gas numbers change, since each unit is 1,000× smaller, but transaction behavior and protocol rules stay the same."
     },
     "appDevs": {
-      "description": "App and contract developers must update hardcoded gas cost constants, tests, and benchmarks to the 1,000\u00d7 unit. Contract bytecode semantics stay unchanged."
+      "description": "App and contract developers must update hardcoded gas cost constants, tests, and benchmarks to the 1,000× unit. Contract bytecode semantics stay unchanged."
     },
     "walletDevs": {
-      "description": "Wallets must update gas estimation, limit defaults, and UI displays to the rebased 1,000\u00d7 unit so transactions include correct values."
+      "description": "Wallets must update gas estimation, limit defaults, and UI displays to the rebased 1,000× unit so transactions include correct values."
     },
     "toolingInfra": {
-      "description": "Explorers, profilers, and RPC analytics must revise gas accounting, reporting, and alerts to reflect the new 1,000\u00d7 unit across all fields."
+      "description": "Explorers, profilers, and RPC analytics must revise gas accounting, reporting, and alerts to reflect the new 1,000× unit across all fields."
     },
     "layer2s": {
-      "description": "Rollups and other L2s that follow Ethereum gas semantics must rescale gas metering, calldata pricing, and limits by 1,000\u00d7 for L1 consistency."
+      "description": "Rollups and other L2s that follow Ethereum gas semantics must rescale gas metering, calldata pricing, and limits by 1,000× for L1 consistency."
     },
     "stakersNodes": {
       "description": "Validators and node operators must upgrade clients to enforce rebased gas accounting and block validation rules; normal operational workflows otherwise remain unchanged."
@@ -60,7 +60,7 @@
       "description": "Consensus clients must update header checks for gas limit and gas used to the rebased scale; other fork choice and attestation code is unchanged."
     },
     "elClients": {
-      "description": "Execution clients must apply the 1,000\u00d7 factor across opcode costs, transaction validation, gas accounting, RPC exposure, and metering logic, touching many constants and tests."
+      "description": "Execution clients must apply the 1,000× factor across opcode costs, transaction validation, gas accounting, RPC exposure, and metering logic, touching many constants and tests."
     }
   },
   "benefits": [
@@ -68,5 +68,6 @@
     "Reduces rounding errors when repricing EVM operations.",
     "Future-proofs gas costs as hardware improves and state access stays costly.",
     "Avoids major changes to internal EVM logic."
-  ]
+  ],
+  "tradeoffs": null
 }

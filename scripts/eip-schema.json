@@ -2,7 +2,7 @@
   "$schema": "http://json-schema.org/draft-07/schema#",
   "title": "EIP",
   "type": "object",
-  "required": ["id", "title", "status", "description", "author", "type", "createdDate", "discussionLink", "forkRelationships"],
+  "required": ["id", "title", "status", "description", "author", "type", "createdDate", "discussionLink", "forkRelationships", "tradeoffs"],
   "additionalProperties": false,
   "properties": {
     "id": { "type": "integer" },
@@ -27,8 +27,10 @@
       "items": { "type": "string" }
     },
     "tradeoffs": {
-      "type": "array",
-      "items": { "type": "string" }
+      "oneOf": [
+        { "type": "array", "items": { "type": "string" }, "minItems": 1 },
+        { "type": "null" }
+      ]
     },
     "forkRelationships": {
       "type": "array",

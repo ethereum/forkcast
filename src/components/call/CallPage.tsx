@@ -682,6 +682,18 @@ const CallPage: React.FC = () => {
             }, 1000);
           }, 500);
         }
+        return; // Exit early if URL hash was handled
+      }
+    }
+
+    // If no URL hash, start video at videoStartTime to skip intro filler
+    if (callConfig?.sync?.videoStartTime) {
+      const startTime = timestampToSeconds(callConfig.sync.videoStartTime);
+      if (startTime > 0) {
+        setTimeout(() => {
+          event.target.seekTo(startTime);
+          setCurrentVideoTime(startTime);
+        }, 100);
       }
     }
   };

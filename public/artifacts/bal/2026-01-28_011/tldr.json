@@ -1,0 +1,107 @@
+{
+  "meeting": "EIP-7928 Breakout Call #11 - January 28, 2025",
+  "highlights": {
+    "devnet_status": [
+      {
+        "timestamp": "00:08:30",
+        "highlight": "DevNet1 successful: most clients syncing, minimal forks with EVM fuzzer"
+      },
+      {
+        "timestamp": "00:09:13",
+        "highlight": "DevNet2 focus: optimizations testing, not blocking on 7928 spec"
+      }
+    ],
+    "client_optimization_updates": [
+      {
+        "timestamp": "00:11:03",
+        "highlight": "Geth and Besu: flags ready for parallel execution and batch I/O"
+      },
+      {
+        "timestamp": "00:11:51",
+        "highlight": "Nethermind: working on parallel execution and state root computation"
+      }
+    ],
+    "testing_and_benchmarking": [
+      {
+        "timestamp": "00:14:36",
+        "highlight": "Shadow fork and BloatNet testing planned for optimization impact"
+      },
+      {
+        "timestamp": "00:37:27",
+        "highlight": "OpenTelemetry metrics spec proposed for standardized BAL performance tracking"
+      }
+    ],
+    "spec_clarifications": [
+      {
+        "timestamp": "00:22:00",
+        "highlight": "Engine API methods needed: CL pruning requires EL-stored BAL retrieval"
+      },
+      {
+        "timestamp": "00:24:36",
+        "highlight": "Optional BAL field enables CL deduplication during sync without blinding"
+      }
+    ],
+    "malicious_block_handling": [
+      {
+        "timestamp": "00:43:18",
+        "highlight": "Malicious BAL attack: garbage storage slots cause wasted batch I/O"
+      },
+      {
+        "timestamp": "00:46:18",
+        "highlight": "Without transaction indices, blocks validated only after full execution"
+      },
+      {
+        "timestamp": "00:52:34",
+        "highlight": "Three solutions: do nothing, remove state locations, or add indices"
+      },
+      {
+        "timestamp": "00:53:38",
+        "highlight": "First-access indices increase size 4%, enable early invalidation"
+      }
+    ],
+    "organizational": [
+      {
+        "timestamp": "00:08:55",
+        "highlight": "Receipt change for 7778 reverted; gas spent remains in receipts"
+      }
+    ]
+  },
+  "action_items": [
+    {
+      "timestamp": "00:31:41",
+      "action": "Launch DevNet2 with updated specifications",
+      "owner": "Stefan/PandaOps"
+    },
+    {
+      "timestamp": "00:14:54",
+      "action": "Test batch I/O impact on BloatNet for future state sizes",
+      "owner": "Benchmarking team"
+    },
+    {
+      "timestamp": "01:04:46",
+      "action": "Create malicious BAL block benchmark scenarios",
+      "owner": "Jochem"
+    },
+    {
+      "timestamp": "01:06:51",
+      "action": "Add receipts to test fixtures for debugging",
+      "owner": "Felipe/EEST team"
+    }
+  ],
+  "decisions": [
+    {
+      "timestamp": "00:22:00",
+      "decision": "Keep engine API methods as specified; revisit optional BAL later"
+    },
+    {
+      "timestamp": "01:04:00",
+      "decision": "Malicious block handling postponed to DevNet3; no changes for DevNet2"
+    }
+  ],
+  "targets": [
+    {
+      "timestamp": "00:10:00",
+      "target": "February 5 - DevNet2 launch deadline"
+    }
+  ]
+}

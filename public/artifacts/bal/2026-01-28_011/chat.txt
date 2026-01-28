@@ -1,0 +1,94 @@
+00:05:31	jochem-brouwer:	gm
+00:06:03	Stefan Starflinger:	hello
+00:06:12	Karim T. (matkt):	Hello
+00:06:13	felipe:	gm
+00:06:18	Milos:	hello
+00:06:27	YoungWoo Yang:	hello
+00:07:49	Toni Wahrstätter:	Agenda:
+https://github.com/ethereum/pm/issues/1897
+00:08:30	Jared Wasinger:	The receipt change got reverted iirc
+00:08:55	felipe:	Reacted to "The receipt change..." with 👍
+00:09:56	Stefan Starflinger:	https://notes.ethereum.org/@ethpandaops/bal-devnet-2
+00:10:22	Stefan Starflinger:	Reacted to "The receipt change g..." with 👍
+00:11:31	Stefan Starflinger:	added a section on feature flags https://notes.ethereum.org/@ethpandaops/bal-devnet-2#Client-feature-flags
+00:14:01	Karim T. (matkt):	What network is being used for this?
+00:14:08	felipe:	Reacted to "added a section on..." with 👍
+00:14:43	Toni Wahrstätter:	Reacted to "added a section on f..." with 👍
+00:14:55	Karim T. (matkt):	When do we expect to have the Shadow Fork ready?
+00:15:32	Karim T. (matkt):	👍
+00:16:58	Karim T. (matkt):	We would just need to mirror the mainnet transactions for performance.
+00:18:05	jochem-brouwer:	I think for testing purely we should not raise gas limit "just" to test the consensus
+00:19:37	Karim T. (matkt):	There's also the background stateroot.
+00:19:51	Stefan Starflinger:	Reacted to "There's also the bac..." with 👍
+00:19:58	jochem-brouwer:	Antwoord verzenden naar "There's also the b..."
+
+extra thread for state root calculation somewhat in parallel right?
+00:20:17	Jared Wasinger:	Replying to "There's also the bac..."
+
+Loading the intermediate nodes on extra thread(s), and the hashing
+00:20:55	Karim T. (matkt):	Replying to "There's also the bac..." 
+
+ The stateroot will trigger read io
+00:21:20	Jared Wasinger:	Parallel state root interplays with batch io because reading the intermediate nodes will compete for CPU (it’s not purely disk work to look up from db)
+00:21:24	jochem-brouwer:	Heeft gereageerd op "Parallel state roo..." met 👍
+00:21:45	jochem-brouwer:	Yes gotcha regarding the interplay of read I/O with the exec, did not realize this, thanks 😁
+00:21:47	Jared Wasinger:	If we look at them in isolation, it won’t give us a clear picture of the overall performance gains
+00:21:54	jochem-brouwer:	Heeft gereageerd op "If we look at them..." met 👍
+00:22:17	Karim T. (matkt):	Do you launch the prefetch at the same time as the parallelization, or do you launch the prefetch first and then the parallelization
+00:23:43	Jared Wasinger:	Right now, geth parallelizes the tx execution, state trie update, async loading of bal reads.  There’s no prefetching.
+
+But I might rewrite it to prefetch everything first and then do state root update and tx execution.  Need to see if it is faster this way.
+
+The rewrite won’t happen by the time devote 2 is launched
+00:25:03	Karim T. (matkt):	I was also wondering whether it's better to do the prefecth first or everything at the same time. Maybe I'll add a flag to test both
+00:26:11	jochem-brouwer:	Antwoord verzenden naar "I was also wonderi..."
+
+I think this depends on the scenario. For both choices we can create a test case which performs worse in that case, but actually better in the other. Something to keep in mind, the benchmarks will execute the absolute extreme situations, which in usual blocks ("realistic blocks") will not happen. However we should still ensure that clients can exec and validate these blocks reasonably
+00:26:42	jochem-brouwer:	Antwoord verzenden naar "I was also wonderi..."
+
+So per-strategy and client-specific we can craft blocks which perform specifically worse on those clients/strategies
+00:27:53	Karim T. (matkt):	Replying to "I was also wondering..." 
+
+ That's why I think the shadow fork of the mainnet will also allow us to see the behavior with today's blocks.
+00:29:50	jochem-brouwer:	Antwoord verzenden naar "I was also wonderi..."
+
+Ah ok, I see, the shadow fork I mentioned is a fork of mainnet w/h executing the blocks on top of it. This is actually a great idea (maybe already proposed before). We would re-execute mainnet blocks but now with BAL enabled (only BALs)
+00:30:14	felipe:	Reacted to "Ah ok, I see, the ..." with 👍
+00:30:16	jochem-brouwer:	Antwoord verzenden naar "I was also wonderi..."
+
+This gives the realistic gains, not the worst case gains
+00:30:20	felipe:	Reacted to "Ah ok, I see, the ..." with ➕
+00:31:40	Toni Wahrstätter:	https://github.com/ethereum/execution-apis/pull/727
+00:33:42	Toni Wahrstätter:	https://github.com/ethereum/EIPs/pull/11066
+00:36:06	jochem-brouwer:	This comment https://discord.com/channels/595666850260713488/1364000387195076608/1465600399170994231
+00:36:11	Toni Wahrstätter:	https://github.com/ethereum/execution-apis/pull/726
+00:37:21	felipe:	It also allows for only accessing state if there's enough gas for everything else. So in a way there is consensus on a performance improvement where we don't touch state needlessly just to revert the frame later.
+00:37:27	Stefan Starflinger:	https://notes.ethereum.org/@ethpandaops/bal-otel
+00:37:27	Jared Wasinger:	Geth doesn’t have Otel for bals yet
+00:37:30	Karim T. (matkt):	It is for devnet 2 your open telemetry spec ?
+00:37:34	felipe:	Reacted to "Geth doesn’t have..." with 👍
+00:39:12	jochem-brouwer:	https://ethresear.ch/t/a-small-step-towards-data-driven-protocol-decisions-unified-slowblock-metrics-across-clients/23907
+00:39:28	Stefan Starflinger:	Replying to "It is for devnet 2 y..."
+
+Its not a requirement for devnet 2
+00:39:41	Karim T. (matkt):	Replying to "It is for devnet 2 y..." 
+
+ Ok thanks
+00:43:18	Toni Wahrstätter:	https://docs.google.com/presentation/d/1KsjpyPU5CQGbLnSIlHx-e_0CDdGEdonVhVD1d0PzoRM/edit?usp=sharing
+01:00:23	jochem-brouwer:	If tx 2 access slot A for first time, and it is not in slot change for tx 1 and not in first read in tx 2, it is invalid 🤔
+01:04:46	Sixto Palacios:	Thank you
+01:04:52	jochem-brouwer:	I'll add these to benchmark scenarios
+01:04:57	felipe:	Reacted to "I'll add these to ..." with ❤️
+01:05:00	raxhvl:	Reacted to I'll add these to be... with "❤️"
+01:05:00	jochem-brouwer:	(malicious block BAL)
+01:05:21	Stefan Starflinger:	Reacted to "I'll add these to be..." with ❤️
+01:05:46	felipe:	Will have to think on the pathological invalid block case some more
+01:06:48	jochem-brouwer:	eth transfers emit log?
+01:07:28	Fireflies.ai Notetaker Gustavo:	Gustavo invited Fireflies.ai here to record & take notes. View Security & Privacy info: https://fireflies.ai/policy
+
+Type:
+'/ff leave' - Remove Fireflies
+
+View Realtime notes here: https://app.fireflies.ai/live/01KFXH3FY6CZZH3EPYQMJC3BGF?ref=live_chat
+01:09:38	Stefan Starflinger:	thanks
+01:09:41	Sixto Palacios:	Thank you

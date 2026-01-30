@@ -1,0 +1,82 @@
+{
+  "id": 7807,
+  "title": "EIP-7807: SSZ execution blocks",
+  "status": "Draft",
+  "description": "Migrates execution blocks from RLP encoding to Simple Serialize (SSZ). Changes the block hash computation to use hash_tree_root, updates transactions_root, receipts_root, and withdrawals_root to SSZ-based roots, and enables a binary engine API. Requires SSZ transactions (EIP-6404), receipts (EIP-6466), and withdrawals (EIP-6465).",
+  "author": "Etan Kissling (@etan-status), Gajinder Singh (@g11tech)",
+  "type": "Standards Track",
+  "category": "Core",
+  "createdDate": "2024-10-28",
+  "discussionLink": "https://ethereum-magicians.org/t/eip-7807-ssz-execution-blocks/21580",
+  "layer": "EL",
+  "forkRelationships": [
+    {
+      "forkName": "Glamsterdam",
+      "statusHistory": [],
+      "isHeadliner": true,
+      "wasHeadlinerCandidate": false,
+      "champion": {
+        "name": "Etan Kissling",
+        "discord": "etan-status"
+      },
+      "presentationHistory": [
+        {
+          "type": "headliner_proposal",
+          "link": "https://ethereum-magicians.org/t/hegota-headliner-proposal-ssz-execution-blocks/27619",
+          "date": "2026-01-29"
+        },
+        {
+          "type": "headliner_presentation",
+          "call": "acde/229",
+          "date": "2026-01-29",
+          "timestamp": 5202
+        }
+      ]
+    }
+  ],
+  "laymanDescription": "Changes how Ethereum stores and hashes block data from the older RLP format to SSZ. This enables faster data exchange between consensus and execution clients, and allows apps and wallets to prove specific pieces of block data without downloading entire blocks.",
+  "northStarAlignment": {
+    "scaleL1": {
+      "description": "Binary SSZ engine API reduces data size by ~50% and improves encoding efficiency, addressing latency bottlenecks at higher blob counts."
+    },
+    "improveUX": {
+      "description": "Enables Merkle proofs for individual block fields, allowing wallets and apps to verify partial data without trusted third parties."
+    }
+  },
+  "stakeholderImpacts": {
+    "endUsers": {
+      "description": "No visible change to sending or receiving transactions. Benefits come indirectly through faster block propagation and lighter verification tools."
+    },
+    "appDevs": {
+      "description": "Apps verifying block data or transaction inclusion must migrate from RLP/MPT proofs to SSZ-based Merkle proofs."
+    },
+    "walletDevs": {
+      "description": "Wallets can verify transaction inclusion and block data with smaller proofs. Must update any code using block header RLP parsing."
+    },
+    "toolingInfra": {
+      "description": "Indexers and explorers must adopt SSZ block header parsing and new root computations. Potential database schema changes."
+    },
+    "layer2s": {
+      "description": "L2s relying on L1 block hash or header proofs must update verification logic. SSZ proofs enable more efficient cross-layer verification."
+    },
+    "stakersNodes": {
+      "description": "Operators must run updated clients. Binary engine API reduces CL-EL communication overhead."
+    },
+    "clClients": {
+      "description": "Can compute block hash autonomously without waiting for EL. Must implement SSZ ExecutionPayload and binary engine API."
+    },
+    "elClients": {
+      "description": "Major changes to block serialization, storage, networking, and engine API. Must implement SSZ library and new block hash computation."
+    }
+  },
+  "benefits": [
+    "Binary engine API reduces data size by ~50% and improves latency",
+    "Enables Merkle proofs for individual block header fields",
+    "CL can verify block consistency without waiting for EL",
+    "Forward-compatible proofs via ProgressiveContainer"
+  ],
+  "tradeoffs": [
+    "Breaks smart contracts depending on RLP block header format",
+    "Significant database and networking changes for EL clients"
+  ]
+}

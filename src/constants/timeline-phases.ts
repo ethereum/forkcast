@@ -33,14 +33,14 @@ export const GLAMSTERDAM_TIMELINE_PHASES: TimelinePhase[] = [
     title: 'Non-Headliner EIP CFI Decisions',
     dateRange: 'Sep 4 & 11',
     description: 'ACDC and ACDE calls select which Proposed for Inclusion EIPs advance to Considered for Inclusion.',
-    status: 'current'
+    status: 'completed'
   },
   {
     id: 'cfi-to-sfi',
     title: 'CFI → SFI EIP Decisions',
     dateRange: 'Date TBD',
     description: 'As Glamsterdam devnets begin, final decisions on which CFI EIPs will be included in the upgrade\'s devnet.',
-    status: 'upcoming'
+    status: 'current'
   }
 ];
 

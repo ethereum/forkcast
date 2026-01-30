@@ -30,11 +30,7 @@ export const EipCard: React.FC<EipCardProps> = ({ eip, forkName, handleExternalL
   // Fetch butterfly data for EIP 7928
   const { data: butterflyData, loading: butterflyLoading, error: butterflyError } = useButterflyData(eip.id, forkName);
 
-  // Check if there's expandable content
-  const hasExpandableContent =
-    (eip.stakeholderImpacts && Object.keys(eip.stakeholderImpacts).length > 0) ||
-    (eip.tradeoffs && eip.tradeoffs.length > 0) ||
-    (eip.northStarAlignment?.scaleL1 || eip.northStarAlignment?.scaleBlobs || eip.northStarAlignment?.improveUX);
+  const hasMissingTradeoffs = !eip.tradeoffs || eip.tradeoffs.length === 0;
 
   return (
     <article key={eip.id} className={`bg-white dark:bg-slate-800 border rounded p-8 ${
@@ -331,22 +327,20 @@ export const EipCard: React.FC<EipCardProps> = ({ eip, forkName, handleExternalL
         )}
 
         {/* Expand/Collapse Button */}
-        {hasExpandableContent && (
-          <button
-            onClick={() => setIsExpanded(!isExpanded)}
-            className="mt-4 flex items-center gap-1.5 text-xs text-slate-500 hover:text-slate-700 dark:text-slate-400 dark:hover:text-slate-200 transition-colors"
+        <button
+          onClick={() => setIsExpanded(!isExpanded)}
+          className="mt-4 flex items-center gap-1.5 text-xs text-slate-500 hover:text-slate-700 dark:text-slate-400 dark:hover:text-slate-200 transition-colors"
+        >
+          <svg
+            className={`w-4 h-4 transition-transform duration-200 ${isExpanded ? 'rotate-180' : ''}`}
+            fill="none"
+            stroke="currentColor"
+            viewBox="0 0 24 24"
           >
-            <svg
-              className={`w-4 h-4 transition-transform duration-200 ${isExpanded ? 'rotate-180' : ''}`}
-              fill="none"
-              stroke="currentColor"
-              viewBox="0 0 24 24"
-            >
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
-            </svg>
-            <span>{isExpanded ? 'Show less' : 'Show more'}</span>
-          </button>
-        )}
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+          </svg>
+          <span>{isExpanded ? 'Show less' : 'Show more'}</span>
+        </button>
       </div>
 
       {/* Expandable Content */}
@@ -357,6 +351,25 @@ export const EipCard: React.FC<EipCardProps> = ({ eip, forkName, handleExternalL
       >
         <div className="overflow-hidden">
           <div className="mt-8 space-y-8">
+        {/* Trade-offs & Considerations */}
+        <div>
+          <h4 className="text-sm font-semibold text-slate-900 dark:text-slate-100 mb-4 uppercase tracking-wide">Trade-offs & Considerations</h4>
+          {hasMissingTradeoffs ? (
+            <p className="text-sm text-slate-500 dark:text-slate-400 italic">
+              No trade-offs documented yet.
+            </p>
+          ) : (
+            <ul className="space-y-2">
+              {eip.tradeoffs!.map((tradeoff, index) => (
+                <li key={index} className="flex items-start text-sm">
+                  <span className="text-amber-600 dark:text-amber-400 mr-3 mt-0.5 text-xs">●</span>
+                  <span className="text-slate-700 dark:text-slate-300">{tradeoff}</span>
+                </li>
+              ))}
+            </ul>
+          )}
+        </div>
+
         {/* Stakeholder Impact */}
         {eip.stakeholderImpacts && Object.keys(eip.stakeholderImpacts).length > 0 && (
           <div>
@@ -376,31 +389,16 @@ export const EipCard: React.FC<EipCardProps> = ({ eip, forkName, handleExternalL
                   };
 
                   return (
-                    <div key={stakeholder} className="bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-600 rounded p-4">
+                    <div key={stakeholder} className="bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-600 rounded p-4 overflow-hidden">
                       <h5 className="font-semibold text-slate-900 dark:text-slate-100 text-xs mb-3 border-b border-slate-100 dark:border-slate-700 pb-2">
                         {stakeholderNames[stakeholder as keyof typeof stakeholderNames]}
                       </h5>
-                      <p className="text-slate-700 dark:text-slate-300 text-xs leading-relaxed">{impact.description}</p>
+                      <p className="text-slate-700 dark:text-slate-300 text-xs leading-relaxed break-words">{impact.description}</p>
                     </div>
                   );
                 })}
               </div>
             </div>
-          </div>
-        )}
-
-        {/* Trade-offs & Considerations */}
-        {eip.tradeoffs && eip.tradeoffs.length > 0 && (
-          <div>
-            <h4 className="text-sm font-semibold text-slate-900 dark:text-slate-100 mb-4 uppercase tracking-wide">Trade-offs & Considerations</h4>
-            <ul className="space-y-2">
-              {eip.tradeoffs.map((tradeoff, index) => (
-                <li key={index} className="flex items-start text-sm">
-                  <span className="text-amber-600 dark:text-amber-400 mr-3 mt-0.5 text-xs">⚠</span>
-                  <span className="text-slate-700 dark:text-slate-300">{tradeoff}</span>
-                </li>
-              ))}
-            </ul>
           </div>
         )}
 

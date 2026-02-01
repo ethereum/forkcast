@@ -8,6 +8,7 @@ import CallPage from './components/call/CallPage';
 import { SchedulePage } from './components/schedule';
 import { EipPage } from './components/eip';
 import EipsIndexPage from './components/EipsIndexPage';
+import { StakeholderUpgradePage } from './components/stakeholder';
 import ComplexityPage from './components/ComplexityPage';
 import PrioritizationPage from './components/PrioritizationPage';
 import DevnetPrioritizationPage from './components/DevnetPrioritizationPage';
@@ -110,6 +111,7 @@ function App() {
               clientTeamPerspectives={glamsterdamUpgrade.clientTeamPerspectives}
             />
           } />
+          <Route path="/upgrade/glamsterdam/stakeholders" element={<StakeholderUpgradePage forkName="Glamsterdam" />} />
           <Route path="/upgrade/hegota" element={
             <PublicNetworkUpgradePage
               forkName="Hegota"

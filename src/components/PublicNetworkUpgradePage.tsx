@@ -327,6 +327,20 @@ const PublicNetworkUpgradePage: React.FC<PublicNetworkUpgradePageProps> = ({
                     </a>
                   </div>
                 )}
+                {forkName.toLowerCase() === 'glamsterdam' && (
+                  <div className="mb-4">
+                    <Link
+                      to={`/upgrade/${forkName.toLowerCase()}/stakeholders`}
+                      className="inline-flex items-center gap-1.5 text-sm text-slate-600 hover:text-slate-800 dark:text-slate-400 dark:hover:text-slate-200 transition-colors"
+                    >
+                      <span className="text-slate-400 dark:text-slate-500">View by stakeholder:</span>
+                      <span className="underline decoration-1 underline-offset-2">App Developers, Wallet Devs, L2s...</span>
+                      <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 7l5 5m0 0l-5 5m5-5H6" />
+                      </svg>
+                    </Link>
+                  </div>
+                )}
               </div>
               <div className="mt-6 lg:mt-0">
                 <span className={`px-3 py-1 text-xs font-medium rounded ${getUpgradeStatusColor(status)}`}>

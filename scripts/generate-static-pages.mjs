@@ -83,6 +83,11 @@ const upgrades = [
     description: 'Enhancing Ethereum with Block-level Access Lists and ePBS for big efficiency and scalability gains.',
   },
   {
+    path: 'upgrade/glamsterdam/stakeholders',
+    title: 'Glamsterdam by Stakeholder - Forkcast',
+    description: 'EIPs relevant to app developers, wallet devs, L2s, and other stakeholders in the Glamsterdam upgrade.',
+  },
+  {
     path: 'upgrade/hegota',
     title: 'Hegotá Upgrade - Forkcast',
     description: 'Post-Glamsterdam network upgrade in early planning.',

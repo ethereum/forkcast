@@ -6,6 +6,8 @@ export interface UpcomingCall {
   date: string;
   number: string;
   githubUrl: string;
+  issueNumber: number;
+  youtubeUrl?: string;
 }
 
 interface GitHubIssue {
@@ -13,6 +15,29 @@ interface GitHubIssue {
   html_url: string;
   created_at: string;
   state: string;
+  number: number;
+}
+
+interface GitHubComment {
+  body?: string;
+}
+
+// Fetch YouTube URL from issue comments
+async function fetchYouTubeFromIssue(issueNumber: number): Promise<string | undefined> {
+  try {
+    const response = await fetch(`https://api.github.com/repos/ethereum/pm/issues/${issueNumber}/comments`);
+    if (!response.ok) return undefined;
+
+    const comments: GitHubComment[] = await response.json();
+    for (const comment of comments) {
+      // Match: ✅ **YouTube Live**: [Watch Live](URL)
+      const match = comment.body?.match(/YouTube Live.*?\[.*?\]\((https?:\/\/[^\s)]+)\)/i);
+      if (match) return match[1];
+    }
+    return undefined;
+  } catch {
+    return undefined;
+  }
 }
 
 // Parse call info from GitHub issue title
@@ -23,7 +48,7 @@ interface GitHubIssue {
 //           "EIP-7732 Breakout Room Call #27, November 7, 2025"
 //           "FOCIL Breakout #22, October 21, 2025"
 //           "EIP-7928 Breakout #5, Oct 22, 2025"
-function parseCallFromTitle(title: string, githubUrl: string): UpcomingCall | null {
+function parseCallFromTitle(title: string, githubUrl: string, issueNumber: number): Omit<UpcomingCall, 'youtubeUrl'> | null {
   // Try to match ACD* patterns first (ACDC, ACDE, ACDT)
   const acdMatch = title.match(/\(ACD([CET])\)\s*#(\d+),\s*(.+)/i);
 
@@ -48,7 +73,8 @@ function parseCallFromTitle(title: string, githubUrl: string): UpcomingCall | nu
       title: title.trim(),
       date,
       number: number.padStart(3, '0'),
-      githubUrl
+      githubUrl,
+      issueNumber
     };
   }
 
@@ -64,7 +90,8 @@ function parseCallFromTitle(title: string, githubUrl: string): UpcomingCall | nu
       title: title.trim(),
       date,
       number: number.padStart(3, '0'),
-      githubUrl
+      githubUrl,
+      issueNumber
     };
   }
 
@@ -80,7 +107,8 @@ function parseCallFromTitle(title: string, githubUrl: string): UpcomingCall | nu
       title: title.trim(),
       date,
       number: number.padStart(3, '0'),
-      githubUrl
+      githubUrl,
+      issueNumber
     };
   }
 
@@ -96,7 +124,8 @@ function parseCallFromTitle(title: string, githubUrl: string): UpcomingCall | nu
       title: title.trim(),
       date,
       number: number.padStart(3, '0'),
-      githubUrl
+      githubUrl,
+      issueNumber
     };
   }
 
@@ -137,7 +166,7 @@ export async function fetchUpcomingCalls(): Promise<UpcomingCall[]> {
     }
 
     const issues: GitHubIssue[] = await response.json();
-    const upcomingCalls: UpcomingCall[] = [];
+    const parsedCalls: Omit<UpcomingCall, 'youtubeUrl'>[] = [];
     const today = new Date().toISOString().split('T')[0];
 
     // Create a set of completed call identifiers (type + number)
@@ -149,13 +178,13 @@ export async function fetchUpcomingCalls(): Promise<UpcomingCall[]> {
     const foundTypes = new Set<string>();
 
     for (const issue of issues) {
-      const call = parseCallFromTitle(issue.title, issue.html_url);
+      const call = parseCallFromTitle(issue.title, issue.html_url, issue.number);
 
       if (call && call.date >= today && !foundTypes.has(call.type)) {
         // Check if this call already exists in completed calls
         const callId = `${call.type}-${call.number}`;
         if (!completedCallIds.has(callId)) {
-          upcomingCalls.push(call);
+          parsedCalls.push(call);
           foundTypes.add(call.type);
 
           // Stop once we have one of each type (ACDC, ACDE, ACDT, FOCIL, BAL, ePBS)
@@ -163,6 +192,17 @@ export async function fetchUpcomingCalls(): Promise<UpcomingCall[]> {
         }
       }
     }
+
+    // Fetch YouTube URLs in parallel
+    const youtubeUrls = await Promise.all(
+      parsedCalls.map(call => fetchYouTubeFromIssue(call.issueNumber))
+    );
+
+    // Combine parsed calls with YouTube URLs
+    const upcomingCalls: UpcomingCall[] = parsedCalls.map((call, index) => ({
+      ...call,
+      youtubeUrl: youtubeUrls[index]
+    }));
 
     // Sort by date
     return upcomingCalls.sort((a, b) => a.date.localeCompare(b.date));

@@ -342,6 +342,53 @@ const CallsIndexPage: React.FC = () => {
                             focil: 'bg-orange-100 dark:bg-orange-900/30 text-orange-700 dark:text-orange-300'
                           };
 
+                          const cardContent = (
+                            <div className="flex items-center justify-between">
+                              <div className="flex items-center gap-3">
+                                <span className={`text-xs font-medium px-2 py-0.5 rounded-full min-w-[3.5rem] text-center ${upcomingCallTypeBadgeColors[upcomingCall.type]}`}>
+                                  {upcomingCall.type.toUpperCase()}
+                                </span>
+                                <div className="text-sm font-medium text-slate-900 dark:text-slate-100">
+                                  Call #{upcomingCall.number}
+                                </div>
+                                <div className="text-sm text-slate-600 dark:text-slate-400">
+                                  {upcomingCall.date}
+                                </div>
+                                {isUpcoming && (
+                                  <div className="hidden sm:flex items-center gap-1.5 ml-2">
+                                    <div className="w-1.5 h-1.5 rounded-full bg-emerald-500"></div>
+                                    <span className="text-xs text-emerald-600 dark:text-emerald-400 font-medium">Upcoming</span>
+                                  </div>
+                                )}
+                              </div>
+                              <div className="text-slate-400 dark:text-slate-500 group-hover:text-slate-600 dark:group-hover:text-slate-300 transition-colors">
+                                {upcomingCall.youtubeUrl ? '→' : '↗'}
+                              </div>
+                            </div>
+                          );
+
+                          // If YouTube URL exists, use internal Link routing
+                          if (upcomingCall.youtubeUrl) {
+                            return (
+                              <Link
+                                key={`upcoming-${upcomingCall.type}-${upcomingCall.number}`}
+                                to={`/calls/${upcomingCall.type}/${upcomingCall.number}`}
+                                state={{
+                                  upcoming: true,
+                                  date: upcomingCall.date,
+                                  youtubeUrl: upcomingCall.youtubeUrl,
+                                  githubUrl: upcomingCall.githubUrl,
+                                  issueNumber: upcomingCall.issueNumber
+                                }}
+                                className={`block bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg p-3 hover:shadow-md dark:hover:shadow-slate-700/20 transition-all hover:border-slate-300 dark:hover:border-slate-600 group border-l-3 ${upcomingCallTypeColors[upcomingCall.type]}`}
+                                style={{ borderLeftStyle: 'dashed' }}
+                              >
+                                {cardContent}
+                              </Link>
+                            );
+                          }
+
+                          // No YouTube URL - use external link to GitHub
                           return (
                             <a
                               key={`upcoming-${upcomingCall.type}-${upcomingCall.number}`}
@@ -351,28 +398,7 @@ const CallsIndexPage: React.FC = () => {
                               className={`block bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg p-3 hover:shadow-md dark:hover:shadow-slate-700/20 transition-all hover:border-slate-300 dark:hover:border-slate-600 group border-l-3 ${upcomingCallTypeColors[upcomingCall.type]}`}
                               style={{ borderLeftStyle: 'dashed' }}
                             >
-                              <div className="flex items-center justify-between">
-                                <div className="flex items-center gap-3">
-                                  <span className={`text-xs font-medium px-2 py-0.5 rounded-full min-w-[3.5rem] text-center ${upcomingCallTypeBadgeColors[upcomingCall.type]}`}>
-                                    {upcomingCall.type.toUpperCase()}
-                                  </span>
-                                  <div className="text-sm font-medium text-slate-900 dark:text-slate-100">
-                                    Call #{upcomingCall.number}
-                                  </div>
-                                  <div className="text-sm text-slate-600 dark:text-slate-400">
-                                    {upcomingCall.date}
-                                  </div>
-                                  {isUpcoming && (
-                                    <div className="hidden sm:flex items-center gap-1.5 ml-2">
-                                      <div className="w-1.5 h-1.5 rounded-full bg-emerald-500"></div>
-                                      <span className="text-xs text-emerald-600 dark:text-emerald-400 font-medium">Upcoming</span>
-                                    </div>
-                                  )}
-                                </div>
-                                <div className="text-slate-400 dark:text-slate-500 group-hover:text-slate-600 dark:group-hover:text-slate-300 transition-colors">
-                                  ↗
-                                </div>
-                              </div>
+                              {cardContent}
                             </a>
                           );
                         }

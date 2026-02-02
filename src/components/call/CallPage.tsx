@@ -41,6 +41,14 @@ interface CallConfig {
   };
 }
 
+interface UpcomingCallState {
+  upcoming: true;
+  date: string;
+  youtubeUrl: string;
+  githubUrl: string;
+  issueNumber: number;
+}
+
 const CallPage: React.FC = () => {
   const { '*': callPath } = useParams();
   const location = useLocation();
@@ -84,6 +92,11 @@ const CallPage: React.FC = () => {
       .sort((a, b) => parseInt(a.number) - parseInt(b.number));
 
     const currentIndex = seriesCalls.findIndex(call => call.number === callData.number);
+
+    // If call not found in protocolCalls (e.g., upcoming call), don't show navigation
+    if (currentIndex === -1) {
+      return { prevCall: null, nextCall: null };
+    }
 
     return {
       prevCall: currentIndex > 0 ? seriesCalls[currentIndex - 1] : null,
@@ -311,6 +324,25 @@ const CallPage: React.FC = () => {
         );
 
         if (!matchingCall) {
+          // Check if this is an upcoming call from route state
+          const locationState = location.state as UpcomingCallState | null;
+          if (locationState?.upcoming) {
+            // Set minimal call data with YouTube URL for upcoming call
+            setCallData({
+              type: type?.toUpperCase() || '',
+              date: locationState.date,
+              number: number || '',
+              videoUrl: locationState.youtubeUrl
+              // No chatContent, transcriptContent, summaryData, etc.
+            });
+            setCallConfig({
+              videoUrl: locationState.youtubeUrl,
+              issue: locationState.issueNumber
+            });
+            setLoading(false);
+            return;
+          }
+
           console.error('Call not found:', callPath);
           setLoading(false);
           return;
@@ -434,7 +466,7 @@ const CallPage: React.FC = () => {
     };
 
     loadCallData();
-  }, [callPath]);
+  }, [callPath, location.state]);
 
   // Clean up interval on unmount
   useEffect(() => {
@@ -1275,6 +1307,14 @@ const CallPage: React.FC = () => {
                   );
                 })}
               </div>
+            ) : (location.state as UpcomingCallState | null)?.upcoming ? (
+              <div className="flex flex-col items-center justify-center py-12 text-center">
+                <svg className="w-10 h-10 text-amber-400 dark:text-amber-500 mb-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                </svg>
+                <p className="text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">Transcript pending</p>
+                <p className="text-xs text-slate-500 dark:text-slate-400">The transcript will be available after the call</p>
+              </div>
             ) : (
               <div className="flex flex-col items-center justify-center py-12 text-center">
                 <svg className="w-10 h-10 text-slate-300 dark:text-slate-600 mb-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -1291,6 +1331,14 @@ const CallPage: React.FC = () => {
             {callData.chatContent ? (
               <div ref={chatLogRef} className="max-h-[400px] overflow-y-auto pr-2">
                 <ChatLog content={callData.chatContent} syncConfig={callConfig?.sync} selectedSearchResult={selectedSearchResult} onTimestampClick={handleTranscriptClick} />
+              </div>
+            ) : (location.state as UpcomingCallState | null)?.upcoming ? (
+              <div className="flex flex-col items-center justify-center py-12 text-center">
+                <svg className="w-10 h-10 text-amber-400 dark:text-amber-500 mb-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                </svg>
+                <p className="text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">Chat logs pending</p>
+                <p className="text-xs text-slate-500 dark:text-slate-400">Chat logs will be available after the call</p>
               </div>
             ) : (
               <div className="flex flex-col items-center justify-center py-12 text-center">

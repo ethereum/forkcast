@@ -1,0 +1,84 @@
+{
+  "id": 7807,
+  "title": "EIP-7807: SSZ execution blocks",
+  "status": "Draft",
+  "description": "Migrates execution blocks to Simple Serialize (SSZ), enabling a unified block representation across Consensus and Execution layers. Changes transactions_root, receipts_root, withdrawals_root, and block_hash to use SSZ hash_tree_root, and introduces a binary engine API to replace JSON encoding.",
+  "author": "Etan Kissling (@etan-status), Gajinder Singh (@g11tech)",
+  "type": "Standards Track",
+  "category": "Core",
+  "createdDate": "2024-10-28",
+  "discussionLink": "https://ethereum-magicians.org/t/eip-7807-ssz-execution-blocks/21580",
+  "reviewer": "bot",
+  "layer": "EL",
+  "forkRelationships": [
+    {
+      "forkName": "Glamsterdam",
+      "statusHistory": [],
+      "isHeadliner": false,
+      "wasHeadlinerCandidate": true,
+      "presentationHistory": [
+        {
+          "type": "headliner_proposal",
+          "link": "https://ethereum-magicians.org/t/hegota-headliner-proposal-ssz-execution-blocks/27619",
+          "date": "2026-01-29"
+        },
+        {
+          "type": "headliner_presentation",
+          "call": "acde/229",
+          "date": "2026-01-29"
+        }
+      ],
+      "champions": [
+        {
+          "name": "Etan Kissling",
+          "discord": "etan-status"
+        }
+      ]
+    }
+  ],
+  "laymanDescription": "This changes how Ethereum stores and shares block data between its two layers. Instead of converting between multiple formats (JSON, RLP, SSZ), everything uses one binary format. This makes blocks faster to transmit, easier to verify, and enables efficient proofs of specific data without needing entire blocks.",
+  "northStarAlignment": {
+    "scaleL1": {
+      "description": "Binary engine API reduces data exchange by ~50% and eliminates format conversion latency, critical as blob counts and block sizes increase."
+    },
+    "improveUX": {
+      "description": "Tree-based hashes enable proofs of partial transaction data (e.g., function signatures) without requiring full blocks, simplifying light client and wallet implementations."
+    }
+  },
+  "stakeholderImpacts": {
+    "endUsers": {
+      "description": "No visible change. Internal encoding improvements don't affect how users send or receive transactions."
+    },
+    "appDevs": {
+      "description": "Smart contracts depending on block header binary format or linear keccak256 hashing must update their verification logic."
+    },
+    "walletDevs": {
+      "description": "Light client proofs become more efficient with SSZ Merkle trees. Forward-compatible proof verification reduces maintenance."
+    },
+    "toolingInfra": {
+      "description": "Must update to handle SSZ-encoded blocks, new tree-based roots, and binary API responses instead of JSON."
+    },
+    "layer2s": {
+      "description": "More efficient data proofs and verification. Simpler integration as CL and EL share unified data structures."
+    },
+    "stakersNodes": {
+      "description": "Must run updated clients. CL sync simplifies as it no longer needs RLP/MPT support during EL maintenance."
+    },
+    "clClients": {
+      "description": "Major simplification. Can compute block hash autonomously and verify consistency without async EL communication."
+    },
+    "elClients": {
+      "description": "Major implementation work: SSZ library, header restructuring, hash changes, database and networking updates."
+    }
+  },
+  "benefits": [
+    "Binary engine API reduces data exchange ~50%, improving CL-EL latency",
+    "CL can verify block hashes autonomously without waiting for EL responses",
+    "Individual block header fields become provable without full headers",
+    "Forward-compatible proofs via SSZ ProgressiveContainer reduce maintenance"
+  ],
+  "tradeoffs": [
+    "Breaks smart contracts depending on previous block header binary format",
+    "Requires coordinated database and networking protocol changes across implementations"
+  ]
+}

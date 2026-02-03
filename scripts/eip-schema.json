@@ -52,7 +52,12 @@
         },
         "isHeadliner": { "type": "boolean" },
         "wasHeadlinerCandidate": { "type": "boolean" },
-        "champion": { "$ref": "#/$defs/Champion" },
+        "champions": {
+          "type": "array",
+          "items": { "$ref": "#/$defs/Champion" },
+          "minItems": 1,
+          "maxItems": 2
+        },
         "presentationHistory": {
           "type": "array",
           "items": { "$ref": "#/$defs/PresentationHistoryEntry" }

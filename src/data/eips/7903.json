@@ -35,10 +35,12 @@
           "date": "2026-01-15"
         }
       ],
-      "champion": {
-        "name": "Charles Cooper",
-        "telegram": "big_tech_sux"
-      }
+      "champions": [
+        {
+          "name": "Charles Cooper",
+          "telegram": "big_tech_sux"
+        }
+      ]
     }
   ],
   "laymanDescription": "This removes the 49,152-byte limit on initialization code (initcode) that was introduced by EIP-3860. The problem this solves is that the current limit makes it unnecessarily difficult to deploy large, complex smart contracts that need to create multiple sub-contracts in a single transaction. For example, if you want to deploy a sophisticated DeFi protocol that consists of several interconnected contracts, you might hit the initcode limit even though each final contract stays under the 24KB deployed code limit (EIP-170). This forces developers to split deployments across multiple transactions, which is more expensive, less efficient, and breaks the clean abstractions that high-level programming languages try to provide. By removing this artificial limit, the EIP allows for more flexible deployment patterns while still maintaining security through existing gas costs that scale with initcode size. The per-block gas limit already naturally restricts initcode to reasonable sizes (around 16MB at current gas limits), making the 49KB cap redundant. This change is fully backward compatible and only removes restrictions without changing how contracts work.",

@@ -26,7 +26,7 @@ interface PresentationEntry {
 
 interface ForkGroup {
   forkName: string;
-  champion?: { name: string };
+  champions?: { name: string }[];
   currentStatus: string;
   statusHistory: StatusEntry[];
   presentations: PresentationEntry[];
@@ -103,9 +103,10 @@ export const EipTimeline: React.FC<EipTimelineProps> = ({ eip }) => {
   });
 
   const forkGroups: ForkGroup[] = sortedForks.map((fork) => {
-    // If there's a champion and no "Proposed" in history, prepend it
+    // If there are champions and no "Proposed" in history, prepend it
     const hasProposedStep = fork.statusHistory.some(entry => entry.status === 'Proposed');
-    const effectiveHistory = (fork.champion && !hasProposedStep)
+    const hasChampions = fork.champions && fork.champions.length > 0;
+    const effectiveHistory = (hasChampions && !hasProposedStep)
       ? [{ status: 'Proposed' as const, call: null, date: null }, ...fork.statusHistory]
       : fork.statusHistory;
 
@@ -141,7 +142,7 @@ export const EipTimeline: React.FC<EipTimelineProps> = ({ eip }) => {
 
     return {
       forkName: fork.forkName,
-      champion: fork.champion,
+      champions: fork.champions,
       currentStatus,
       statusHistory,
       presentations,
@@ -213,13 +214,13 @@ export const EipTimeline: React.FC<EipTimelineProps> = ({ eip }) => {
                       >
                         {group.forkName}
                       </Link>
-                      {group.champion && (
-                        <Tooltip text={`Champion for ${group.forkName}`}>
+                      {group.champions && group.champions.length > 0 && (
+                        <Tooltip text={`${group.champions.length > 1 ? 'Champions' : 'Champion'} for ${group.forkName}`}>
                           <div className="flex items-center gap-1 text-xs text-slate-400 dark:text-slate-500 cursor-help shrink-0">
                             <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
                             </svg>
-                            <span>{group.champion.name}</span>
+                            <span>{group.champions.map(c => c.name).join(' & ')}</span>
                           </div>
                         </Tooltip>
                       )}

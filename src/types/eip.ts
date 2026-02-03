@@ -15,7 +15,8 @@ export interface ForkRelationship {
   }>; // Ordered oldest -> newest
   isHeadliner?: boolean;
   wasHeadlinerCandidate?: boolean;
-  champion?: Champion;
+  /** Maximum 2 champions allowed */
+  champions?: Champion[];
   presentationHistory?: Array<{
     type: 'headliner_proposal' | 'headliner_presentation' | 'presentation' | 'debate';
     call?: `${'acdc' | 'acde' | 'acdt'}/${number}`;

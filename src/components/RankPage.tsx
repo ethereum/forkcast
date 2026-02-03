@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { EIP } from "../types/eip";
+import { EIP, Champion } from "../types/eip";
 import {
   isHeadliner,
   getLaymanTitle,
@@ -11,6 +11,16 @@ import {
 import { useAnalytics } from "../hooks/useAnalytics";
 import { eipsData } from "../data/eips";
 import ThemeToggle from "./ui/ThemeToggle";
+
+const ChampionDisplay: React.FC<{ champions?: Champion[] }> = ({ champions }) => {
+  if (!champions || champions.length === 0) return null;
+  return (
+    <div className="text-xs text-slate-500 dark:text-slate-400">
+      <span className="font-medium">{champions.length > 1 ? 'Champions:' : 'Champion:'}</span>{" "}
+      {champions.map(c => c.name).join(' & ')}
+    </div>
+  );
+};
 
 interface TierItem {
   id: string;
@@ -1142,12 +1152,9 @@ const RankPage: React.FC = () => {
               </div>
             )}
 
-            {hoveredEip.forkRelationships.find(fork => fork.forkName.toLowerCase() === "glamsterdam")?.champion && (
-              <div className="text-xs text-slate-500 dark:text-slate-400">
-                <span className="font-medium">Champion:</span>{" "}
-                {hoveredEip.forkRelationships.find(fork => fork.forkName.toLowerCase() === "glamsterdam")?.champion?.name}
-              </div>
-            )}
+            <ChampionDisplay
+              champions={hoveredEip.forkRelationships.find(fork => fork.forkName.toLowerCase() === "glamsterdam")?.champions}
+            />
           </div>
         </div>
       )}

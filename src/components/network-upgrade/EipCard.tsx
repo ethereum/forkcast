@@ -220,20 +220,24 @@ export const EipCard: React.FC<EipCardProps> = ({ eip, forkName, handleExternalL
         {/* Champion Information */}
         {forkName.toLowerCase() === 'glamsterdam' && (() => {
           const forkRelationship = eip.forkRelationships.find(fr => fr.forkName.toLowerCase() === forkName.toLowerCase());
-          const champion = forkRelationship?.champion;
+          const champions = forkRelationship?.champions;
+          const hasChampions = champions && champions.length > 0;
+          const hasAnyContactInfo = champions?.some(c => c.discord || c.telegram || c.email);
 
           return (
             <div className="mt-4">
-              {champion ? (
+              {hasChampions ? (
                 <>
                   <div className="inline-flex items-center gap-2">
-                    <span className="text-xs text-slate-500 dark:text-slate-400 font-medium">Champion:</span>
+                    <span className="text-xs text-slate-500 dark:text-slate-400 font-medium">
+                      {champions.length > 1 ? 'Champions:' : 'Champion:'}
+                    </span>
                     <button
                       onClick={() => setShowChampionDetails(!showChampionDetails)}
                       className="inline-flex items-center gap-1.5 text-xs text-slate-700 dark:text-slate-300 hover:text-slate-900 dark:hover:text-slate-100 transition-colors group"
                     >
-                      <span className="font-medium">{champion.name}</span>
-                      {(champion.discord || champion.telegram || champion.email) && (
+                      <span className="font-medium">{champions.map(c => c.name).join(' & ')}</span>
+                      {hasAnyContactInfo && (
                         <svg
                           className={`w-3.5 h-3.5 text-slate-400 group-hover:text-slate-600 dark:group-hover:text-slate-200 transition-all ${showChampionDetails ? 'rotate-180' : ''}`}
                           fill="none"
@@ -246,37 +250,46 @@ export const EipCard: React.FC<EipCardProps> = ({ eip, forkName, handleExternalL
                     </button>
                   </div>
 
-                  {(champion.discord || champion.telegram || champion.email) && (
+                  {hasAnyContactInfo && (
                     <div
                       className={`grid transition-all duration-300 ease-in-out ${
                         showChampionDetails ? 'grid-rows-[1fr] opacity-100' : 'grid-rows-[0fr] opacity-0'
                       }`}
                     >
                       <div className="overflow-hidden">
-                        <div className="mt-2 ml-4 space-y-1.5 bg-slate-50 dark:bg-slate-700/50 rounded px-3 py-2">
-                          {champion.discord && (
-                            <div className="flex items-center gap-2 text-xs">
-                              <span className="text-slate-500 dark:text-slate-400">Discord:</span>
-                              <span className="font-mono text-slate-700 dark:text-slate-300">{champion.discord}</span>
-                            </div>
-                          )}
-                          {champion.telegram && (
-                            <div className="flex items-center gap-2 text-xs">
-                              <span className="text-slate-500 dark:text-slate-400">Telegram:</span>
-                              <span className="font-mono text-slate-700 dark:text-slate-300">{champion.telegram}</span>
-                            </div>
-                          )}
-                          {champion.email && (
-                            <div className="flex items-center gap-2 text-xs">
-                              <span className="text-slate-500 dark:text-slate-400">Email:</span>
-                              <a
-                                href={`mailto:${champion.email}`}
-                                className="font-mono text-blue-600 dark:text-blue-400 hover:underline"
-                              >
-                                {champion.email}
-                              </a>
-                            </div>
-                          )}
+                        <div className="mt-2 ml-4 space-y-3 bg-slate-50 dark:bg-slate-700/50 rounded px-3 py-2">
+                          {champions
+                            .filter(c => c.discord || c.telegram || c.email)
+                            .map((champion, idx) => (
+                              <div key={idx} className="space-y-1.5">
+                                {champions.length > 1 && (
+                                  <div className="text-xs font-medium text-slate-600 dark:text-slate-300">{champion.name}</div>
+                                )}
+                                {champion.discord && (
+                                  <div className="flex items-center gap-2 text-xs">
+                                    <span className="text-slate-500 dark:text-slate-400">Discord:</span>
+                                    <span className="font-mono text-slate-700 dark:text-slate-300">{champion.discord}</span>
+                                  </div>
+                                )}
+                                {champion.telegram && (
+                                  <div className="flex items-center gap-2 text-xs">
+                                    <span className="text-slate-500 dark:text-slate-400">Telegram:</span>
+                                    <span className="font-mono text-slate-700 dark:text-slate-300">{champion.telegram}</span>
+                                  </div>
+                                )}
+                                {champion.email && (
+                                  <div className="flex items-center gap-2 text-xs">
+                                    <span className="text-slate-500 dark:text-slate-400">Email:</span>
+                                    <a
+                                      href={`mailto:${champion.email}`}
+                                      className="font-mono text-blue-600 dark:text-blue-400 hover:underline"
+                                    >
+                                      {champion.email}
+                                    </a>
+                                  </div>
+                                )}
+                              </div>
+                            ))}
                         </div>
                       </div>
                     </div>

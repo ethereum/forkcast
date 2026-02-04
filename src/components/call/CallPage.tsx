@@ -8,7 +8,7 @@ import TldrSummary from './TldrSummary';
 import CallSearch from './CallSearch';
 import ThemeToggle from '../ui/ThemeToggle';
 import { Logo } from '../ui/Logo';
-import { protocolCalls } from '../../data/calls';
+import { protocolCalls, callTypeNames, type CallType } from '../../data/calls';
 import { eipsData } from '../../data/eips';
 import { EIP, ForkRelationship } from '../../types/eip';
 
@@ -873,15 +873,8 @@ const CallPage: React.FC = () => {
 
 
   const getCallTypeLabel = () => {
-    switch(callData.type.toLowerCase()) {
-      case 'acdc': return 'All Core Devs Consensus';
-      case 'acde': return 'All Core Devs Execution';
-      case 'acdt': return 'All Core Devs Testing';
-      case 'epbs': return 'ePBS Breakout Room';
-      case 'bal': return 'BAL Breakout Room';
-      case 'focil': return 'FOCIL Breakout Room';
-      default: return callData.type;
-    }
+    const type = callData.type.toLowerCase() as CallType;
+    return callTypeNames[type] || callData.type;
   };
 
   // Get associated EIP info for breakout calls
@@ -958,7 +951,7 @@ const CallPage: React.FC = () => {
             <div className="flex items-center gap-2">
               <Logo size="xs" />
               <span className="text-xs text-slate-600 dark:text-slate-400">
-                {callData.type.toUpperCase()} #{callData.number}
+                {callTypeNames[callData.type.toLowerCase() as CallType] || callData.type.toUpperCase()} #{callData.number}
               </span>
             </div>
             <div className="flex items-center gap-2">
@@ -1144,7 +1137,7 @@ const CallPage: React.FC = () => {
                             Previous
                           </span>
                           <span className="text-sm font-medium text-slate-700 dark:text-slate-200 group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors">
-                            {prevCall.type.toUpperCase()} #{prevCall.number}
+                            {callTypeNames[prevCall.type]} #{prevCall.number}
                           </span>
                         </Link>
                       ) : (
@@ -1162,7 +1155,7 @@ const CallPage: React.FC = () => {
                             </svg>
                           </span>
                           <span className="text-sm font-medium text-slate-700 dark:text-slate-200 group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors">
-                            {nextCall.type.toUpperCase()} #{nextCall.number}
+                            {callTypeNames[nextCall.type]} #{nextCall.number}
                           </span>
                         </Link>
                       ) : (

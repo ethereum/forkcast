@@ -1,9 +1,24 @@
+export type CallType = 'acdc' | 'acde' | 'acdt' | 'epbs' | 'bal' | 'focil' | 'price' | 'tli' | 'pqts';
+
 export interface Call {
-  type: 'acdc' | 'acde' | 'acdt' | 'epbs' | 'bal' | 'focil';
+  type: CallType;
   date: string;
   number: string;
   path: string;
 }
+
+// Full names for call types (used in tooltips)
+export const callTypeNames: Record<CallType, string> = {
+  acdc: 'All Core Devs - Consensus',
+  acde: 'All Core Devs - Execution',
+  acdt: 'All Core Devs - Testing',
+  epbs: 'ePBS Breakout',
+  bal: 'BAL Breakout',
+  focil: 'FOCIL Breakout',
+  price: 'Glamsterdam Repricings',
+  tli: 'Trustless Log Index',
+  pqts: 'Post Quantum Transaction Signatures',
+};
 
 export const protocolCalls: Call[] = [
   // ACDC calls
@@ -117,6 +132,12 @@ export const protocolCalls: Call[] = [
   { type: 'focil', date: '2025-12-16', number: '025', path: 'focil/025' },
   { type: 'focil', date: '2026-01-13', number: '026', path: 'focil/026' },
   { type: 'focil', date: '2026-01-27', number: '027', path: 'focil/027' },
+
+  // Glamsterdam Repricings calls
+  { type: 'price', date: '2026-02-04', number: '001', path: 'price/001' },
+
+  // Trustless Log Index calls
+  { type: 'tli', date: '2026-02-03', number: '002', path: 'tli/002' },
 ];
 
 // Helper to get recent calls

@@ -52,7 +52,7 @@ export const Tooltip: React.FC<TooltipProps> = ({
   return (
     <span
       ref={triggerRef}
-      className={`relative ${className}`}
+      className={`relative inline-block ${className}`}
       onMouseEnter={() => setIsVisible(true)}
       onMouseLeave={() => setIsVisible(false)}
     >

@@ -1,12 +1,13 @@
 import { Link } from 'react-router-dom';
 import { networkUpgrades } from '../data/upgrades';
-import { getRecentCalls } from '../data/calls';
+import { getRecentCalls, callTypeNames, type CallType } from '../data/calls';
 import { eipsData } from '../data/eips';
 import { useAnalytics } from '../hooks/useAnalytics';
 import { getProposalPrefix, getLaymanTitle, getInclusionStage } from '../utils/eip';
 import ThemeToggle from './ui/ThemeToggle';
 import UpgradeCarousel from './ui/UpgradeCarousel';
 import { Logo } from './ui/Logo';
+import { Tooltip } from './ui/Tooltip';
 
 const HomePage = () => {
   const upgrades = networkUpgrades;
@@ -90,13 +91,16 @@ const HomePage = () => {
   };
 
   // Colors for call type badges
-  const callTypeBadgeColors = {
+  const callTypeBadgeColors: Record<CallType, string> = {
     acdc: 'bg-blue-100 dark:bg-blue-900/30 text-blue-700 dark:text-blue-300',
     acde: 'bg-sky-100 dark:bg-sky-900/30 text-sky-700 dark:text-sky-300',
     acdt: 'bg-teal-100 dark:bg-teal-900/30 text-teal-700 dark:text-teal-300',
     epbs: 'bg-amber-100 dark:bg-amber-900/30 text-amber-700 dark:text-amber-300',
     bal: 'bg-red-100 dark:bg-red-900/30 text-red-700 dark:text-red-300',
-    focil: 'bg-orange-100 dark:bg-orange-900/30 text-orange-700 dark:text-orange-300'
+    focil: 'bg-orange-100 dark:bg-orange-900/30 text-orange-700 dark:text-orange-300',
+    price: 'bg-pink-100 dark:bg-pink-900/30 text-pink-700 dark:text-pink-300',
+    tli: 'bg-rose-100 dark:bg-rose-900/30 text-rose-700 dark:text-rose-300',
+    pqts: 'bg-lime-100 dark:bg-lime-900/30 text-lime-700 dark:text-lime-300'
   };
 
   const getStatusColor = (status: string) => {
@@ -229,9 +233,11 @@ const HomePage = () => {
                 className="group flex items-center justify-between gap-3 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg p-4 hover:shadow-md dark:hover:shadow-slate-700/20 hover:border-purple-300 dark:hover:border-purple-600"
               >
                 <div className="flex items-center gap-3">
-                  <span className={`text-xs font-medium px-2 py-0.5 rounded min-w-[3.5rem] text-center ${callTypeBadgeColors[call.type]}`}>
-                    {call.type.toUpperCase()}
-                  </span>
+                  <Tooltip text={callTypeNames[call.type]}>
+                    <span className={`inline-block text-xs font-medium px-2 py-0.5 rounded min-w-[3.5rem] text-center ${callTypeBadgeColors[call.type]}`}>
+                      {call.type.toUpperCase()}
+                    </span>
+                  </Tooltip>
                   <span className="text-sm font-medium text-slate-900 dark:text-slate-100">
                     Call #{call.number}
                   </span>

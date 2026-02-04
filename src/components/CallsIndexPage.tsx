@@ -1,8 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { Logo } from './ui/Logo';
+import { Tooltip } from './ui/Tooltip';
 import ThemeToggle from './ui/ThemeToggle';
-import { protocolCalls, type Call } from '../data/calls';
+import { protocolCalls, callTypeNames, type Call, type CallType } from '../data/calls';
 import { timelineEvents, type TimelineEvent } from '../data/events';
 import { fetchUpcomingCalls, type UpcomingCall } from '../utils/github';
 import GlobalCallSearch from './GlobalCallSearch';
@@ -42,22 +43,25 @@ const CallsIndexPage: React.FC = () => {
     return () => window.removeEventListener('keydown', handleKeyDown);
   }, []);
 
+  // ACD call types (everything else is a breakout)
+  const acdTypes = ['acdc', 'acde', 'acdt'];
+
   // Filter and sort calls and events
   const filteredCalls = selectedFilter === 'all'
     ? calls
     : selectedFilter === 'acd'
-    ? calls.filter(call => ['acdc', 'acde', 'acdt'].includes(call.type))
+    ? calls.filter(call => acdTypes.includes(call.type))
     : selectedFilter === 'breakouts'
-    ? calls.filter(call => ['epbs', 'bal', 'focil'].includes(call.type))
+    ? calls.filter(call => !acdTypes.includes(call.type))
     : calls.filter(call => call.type === selectedFilter);
 
   // Filter upcoming calls based on selected filter
   const filteredUpcomingCalls = selectedFilter === 'all'
     ? upcomingCalls
     : selectedFilter === 'acd'
-    ? upcomingCalls.filter(call => ['acdc', 'acde', 'acdt'].includes(call.type))
+    ? upcomingCalls.filter(call => acdTypes.includes(call.type))
     : selectedFilter === 'breakouts'
-    ? upcomingCalls.filter(call => ['epbs', 'bal', 'focil'].includes(call.type))
+    ? upcomingCalls.filter(call => !acdTypes.includes(call.type))
     : upcomingCalls.filter(call => call.type === selectedFilter);
 
   // Combine calls, upcoming calls, and events into timeline items
@@ -333,21 +337,26 @@ const CallsIndexPage: React.FC = () => {
                             focil: 'border-l-orange-500 dark:border-l-orange-400'
                           };
 
-                          const upcomingCallTypeBadgeColors = {
+                          const upcomingCallTypeBadgeColors: Record<CallType, string> = {
                             acdc: 'bg-blue-100 dark:bg-blue-900/30 text-blue-700 dark:text-blue-300',
                             acde: 'bg-sky-100 dark:bg-sky-900/30 text-sky-700 dark:text-sky-300',
                             acdt: 'bg-teal-100 dark:bg-teal-900/30 text-teal-700 dark:text-teal-300',
                             epbs: 'bg-amber-100 dark:bg-amber-900/30 text-amber-700 dark:text-amber-300',
                             bal: 'bg-red-100 dark:bg-red-900/30 text-red-700 dark:text-red-300',
-                            focil: 'bg-orange-100 dark:bg-orange-900/30 text-orange-700 dark:text-orange-300'
+                            focil: 'bg-orange-100 dark:bg-orange-900/30 text-orange-700 dark:text-orange-300',
+                            price: 'bg-pink-100 dark:bg-pink-900/30 text-pink-700 dark:text-pink-300',
+                            tli: 'bg-rose-100 dark:bg-rose-900/30 text-rose-700 dark:text-rose-300',
+                            pqts: 'bg-lime-100 dark:bg-lime-900/30 text-lime-700 dark:text-lime-300'
                           };
 
                           const cardContent = (
                             <div className="flex items-center justify-between">
                               <div className="flex items-center gap-3">
-                                <span className={`text-xs font-medium px-2 py-0.5 rounded-full min-w-[3.5rem] text-center ${upcomingCallTypeBadgeColors[upcomingCall.type]}`}>
-                                  {upcomingCall.type.toUpperCase()}
-                                </span>
+                                <Tooltip text={callTypeNames[upcomingCall.type as CallType]}>
+                                  <span className={`inline-block text-xs font-medium px-2 py-0.5 rounded-full min-w-[3.5rem] text-center ${upcomingCallTypeBadgeColors[upcomingCall.type as CallType]}`}>
+                                    {upcomingCall.type.toUpperCase()}
+                                  </span>
+                                </Tooltip>
                                 <div className="text-sm font-medium text-slate-900 dark:text-slate-100">
                                   Call #{upcomingCall.number}
                                 </div>
@@ -407,22 +416,28 @@ const CallsIndexPage: React.FC = () => {
                         const call = item as Call;
 
                         // Define colors for each call type
-                        const callTypeColors = {
+                        const callTypeColors: Record<CallType, string> = {
                           acdc: 'border-l-blue-500 dark:border-l-blue-400',
                           acde: 'border-l-sky-500 dark:border-l-sky-400',
                           acdt: 'border-l-teal-500 dark:border-l-teal-400',
                           epbs: 'border-l-amber-500 dark:border-l-amber-400',
                           bal: 'border-l-red-500 dark:border-l-red-400',
-                          focil: 'border-l-orange-500 dark:border-l-orange-400'
+                          focil: 'border-l-orange-500 dark:border-l-orange-400',
+                          price: 'border-l-pink-500 dark:border-l-pink-400',
+                          tli: 'border-l-rose-500 dark:border-l-rose-400',
+                          pqts: 'border-l-lime-500 dark:border-l-lime-400'
                         };
 
-                        const callTypeBadgeColors = {
+                        const callTypeBadgeColors: Record<CallType, string> = {
                           acdc: 'bg-blue-100 dark:bg-blue-900/30 text-blue-700 dark:text-blue-300',
                           acde: 'bg-sky-100 dark:bg-sky-900/30 text-sky-700 dark:text-sky-300',
                           acdt: 'bg-teal-100 dark:bg-teal-900/30 text-teal-700 dark:text-teal-300',
                           epbs: 'bg-amber-100 dark:bg-amber-900/30 text-amber-700 dark:text-amber-300',
                           bal: 'bg-red-100 dark:bg-red-900/30 text-red-700 dark:text-red-300',
-                          focil: 'bg-orange-100 dark:bg-orange-900/30 text-orange-700 dark:text-orange-300'
+                          focil: 'bg-orange-100 dark:bg-orange-900/30 text-orange-700 dark:text-orange-300',
+                          price: 'bg-pink-100 dark:bg-pink-900/30 text-pink-700 dark:text-pink-300',
+                          tli: 'bg-rose-100 dark:bg-rose-900/30 text-rose-700 dark:text-rose-300',
+                          pqts: 'bg-lime-100 dark:bg-lime-900/30 text-lime-700 dark:text-lime-300'
                         };
 
                         return (
@@ -433,9 +448,11 @@ const CallsIndexPage: React.FC = () => {
                           >
                             <div className="flex items-center justify-between">
                               <div className="flex items-center gap-3">
-                                <span className={`text-xs font-medium px-2 py-0.5 rounded-full min-w-[3.5rem] text-center ${callTypeBadgeColors[call.type]}`}>
-                                  {call.type.toUpperCase()}
-                                </span>
+                                <Tooltip text={callTypeNames[call.type]}>
+                                  <span className={`inline-block text-xs font-medium px-2 py-0.5 rounded-full min-w-[3.5rem] text-center ${callTypeBadgeColors[call.type]}`}>
+                                    {call.type.toUpperCase()}
+                                  </span>
+                                </Tooltip>
                                 <div className="text-sm font-medium text-slate-900 dark:text-slate-100">
                                   Call #{call.number}
                                 </div>

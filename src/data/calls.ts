@@ -42,6 +42,7 @@ export const protocolCalls: Call[] = [
   { type: 'acdc', date: '2025-12-11', number: '171', path: 'acdc/171' },
   { type: 'acdc', date: '2026-01-08', number: '172', path: 'acdc/172' },
   { type: 'acdc', date: '2026-01-22', number: '173', path: 'acdc/173' },
+  { type: 'acdc', date: '2026-02-05', number: '174', path: 'acdc/174' },
 
   // ACDE calls
   { type: 'acde', date: '2025-03-27', number: '208', path: 'acde/208' },
@@ -138,6 +139,9 @@ export const protocolCalls: Call[] = [
 
   // Trustless Log Index calls
   { type: 'tli', date: '2026-02-03', number: '002', path: 'tli/002' },
+
+  // Post Quantum Transaction Signatures calls
+  { type: 'pqts', date: '2026-02-04', number: '001', path: 'pqts/001' },
 ];
 
 // Helper to get recent calls

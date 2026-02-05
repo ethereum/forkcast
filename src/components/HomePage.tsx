@@ -98,9 +98,9 @@ const HomePage = () => {
     epbs: 'bg-amber-100 dark:bg-amber-900/30 text-amber-700 dark:text-amber-300',
     bal: 'bg-red-100 dark:bg-red-900/30 text-red-700 dark:text-red-300',
     focil: 'bg-orange-100 dark:bg-orange-900/30 text-orange-700 dark:text-orange-300',
-    price: 'bg-pink-100 dark:bg-pink-900/30 text-pink-700 dark:text-pink-300',
-    tli: 'bg-rose-100 dark:bg-rose-900/30 text-rose-700 dark:text-rose-300',
-    pqts: 'bg-lime-100 dark:bg-lime-900/30 text-lime-700 dark:text-lime-300'
+    price: 'bg-rose-100 dark:bg-rose-900/30 text-rose-700 dark:text-rose-300',
+    tli: 'bg-pink-100 dark:bg-pink-900/30 text-pink-700 dark:text-pink-300',
+    pqts: 'bg-yellow-100 dark:bg-yellow-900/30 text-yellow-700 dark:text-yellow-300'
   };
 
   const getStatusColor = (status: string) => {

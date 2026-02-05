@@ -344,9 +344,9 @@ const CallsIndexPage: React.FC = () => {
                             epbs: 'bg-amber-100 dark:bg-amber-900/30 text-amber-700 dark:text-amber-300',
                             bal: 'bg-red-100 dark:bg-red-900/30 text-red-700 dark:text-red-300',
                             focil: 'bg-orange-100 dark:bg-orange-900/30 text-orange-700 dark:text-orange-300',
-                            price: 'bg-pink-100 dark:bg-pink-900/30 text-pink-700 dark:text-pink-300',
-                            tli: 'bg-rose-100 dark:bg-rose-900/30 text-rose-700 dark:text-rose-300',
-                            pqts: 'bg-lime-100 dark:bg-lime-900/30 text-lime-700 dark:text-lime-300'
+                            price: 'bg-rose-100 dark:bg-rose-900/30 text-rose-700 dark:text-rose-300',
+                            tli: 'bg-pink-100 dark:bg-pink-900/30 text-pink-700 dark:text-pink-300',
+                            pqts: 'bg-yellow-100 dark:bg-yellow-900/30 text-yellow-700 dark:text-yellow-300'
                           };
 
                           const cardContent = (
@@ -423,9 +423,9 @@ const CallsIndexPage: React.FC = () => {
                           epbs: 'border-l-amber-500 dark:border-l-amber-400',
                           bal: 'border-l-red-500 dark:border-l-red-400',
                           focil: 'border-l-orange-500 dark:border-l-orange-400',
-                          price: 'border-l-pink-500 dark:border-l-pink-400',
-                          tli: 'border-l-rose-500 dark:border-l-rose-400',
-                          pqts: 'border-l-lime-500 dark:border-l-lime-400'
+                          price: 'border-l-rose-500 dark:border-l-rose-400',
+                          tli: 'border-l-pink-500 dark:border-l-pink-400',
+                          pqts: 'border-l-yellow-500 dark:border-l-yellow-400'
                         };
 
                         const callTypeBadgeColors: Record<CallType, string> = {
@@ -435,9 +435,9 @@ const CallsIndexPage: React.FC = () => {
                           epbs: 'bg-amber-100 dark:bg-amber-900/30 text-amber-700 dark:text-amber-300',
                           bal: 'bg-red-100 dark:bg-red-900/30 text-red-700 dark:text-red-300',
                           focil: 'bg-orange-100 dark:bg-orange-900/30 text-orange-700 dark:text-orange-300',
-                          price: 'bg-pink-100 dark:bg-pink-900/30 text-pink-700 dark:text-pink-300',
-                          tli: 'bg-rose-100 dark:bg-rose-900/30 text-rose-700 dark:text-rose-300',
-                          pqts: 'bg-lime-100 dark:bg-lime-900/30 text-lime-700 dark:text-lime-300'
+                          price: 'bg-rose-100 dark:bg-rose-900/30 text-rose-700 dark:text-rose-300',
+                          tli: 'bg-pink-100 dark:bg-pink-900/30 text-pink-700 dark:text-pink-300',
+                          pqts: 'bg-yellow-100 dark:bg-yellow-900/30 text-yellow-700 dark:text-yellow-300'
                         };
 
                         return (

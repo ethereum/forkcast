@@ -67,7 +67,7 @@ export const isHeadliner = (eip: EIP, forkName?: string): boolean => {
 /**
  * Get the layer (EL/CL) for a headliner EIP
  */
-export const getHeadlinerLayer = (eip: EIP): string | null => {
+export const getHeadlinerLayer = (eip: EIP): 'EL' | 'CL' | null => {
   return eip.layer || null;
 };
 
@@ -122,6 +122,26 @@ export const wasHeadlinerCandidate = (eip: EIP, forkName?: string): boolean => {
     fork.forkName.toLowerCase() === forkName.toLowerCase()
   );
   return forkRelationship?.wasHeadlinerCandidate || false;
+};
+
+/**
+ * Check if an EIP was a headliner candidate but was NOT selected
+ * (i.e., it should appear in the Headliner Proposals section, not in regular stages)
+ */
+export const isUnselectedHeadlinerCandidate = (eip: EIP, forkName?: string): boolean => {
+  if (!forkName) return false;
+  return wasHeadlinerCandidate(eip, forkName) && !isHeadliner(eip, forkName);
+};
+
+/**
+ * Sort comparator for ordering by layer (EL first, then CL)
+ */
+export const sortByLayer = <T extends { layer?: 'EL' | 'CL' | string | null }>(a: T, b: T): number => {
+  const layerA = a.layer;
+  const layerB = b.layer;
+  if (layerA === 'EL' && layerB === 'CL') return -1;
+  if (layerA === 'CL' && layerB === 'EL') return 1;
+  return 0;
 };
 
 /**

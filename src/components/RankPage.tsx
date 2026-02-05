@@ -2,14 +2,14 @@ import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { EIP, Champion } from "../types/eip";
 import {
-  isHeadliner,
   getLaymanTitle,
   getProposalPrefix,
   getHeadlinerLayer,
-  getInclusionStage,
+  wasHeadlinerCandidate,
 } from "../utils/eip";
 import { useAnalytics } from "../hooks/useAnalytics";
 import { eipsData } from "../data/eips";
+import { getPendingProposalsForFork, PendingProposal } from "../data/pending-proposals";
 import ThemeToggle from "./ui/ThemeToggle";
 
 const ChampionDisplay: React.FC<{ champions?: Champion[] }> = ({ champions }) => {
@@ -24,7 +24,8 @@ const ChampionDisplay: React.FC<{ champions?: Champion[] }> = ({ champions }) =>
 
 interface TierItem {
   id: string;
-  eip: EIP;
+  eip?: EIP;
+  pendingProposal?: PendingProposal;
   tier: string | null;
 }
 
@@ -74,62 +75,48 @@ const TIERS: Tier[] = [
   },
 ];
 
-// EIP collections mapping - ephemeral categorization for PFI/CFI proposals
-const EIP_COLLECTIONS: { [key: string]: string } = {
-  "2780": "Repricing Bundle - Minimal",
-  "2926": "Repricing Bundle - Possible Additions",
-  "5920": "EVM Execution & Opcodes",
-  "6404": "Serialization & Data Structures",
-  "6466": "Serialization & Data Structures",
-  "7610": "EVM Execution & Opcodes",
-  "7619": "Cryptography & Signatures",
-  "7668": "Transaction & Block Features",
-  "7686": "Repricing Bundle - Possible Additions",
-  "7688": "Serialization & Data Structures",
-  "7708": "Transaction & Block Features",
-  "7745": "Transaction & Block Features",
-  "7778": "Repricing Bundle - Recommended Additions",
-  "7791": "EVM Execution & Opcodes",
-  "7793": "Transaction & Block Features",
-  "7805": "Consensus & Validator Operations",
-  "7819": "EVM Execution & Opcodes",
-  "7843": "EVM Execution & Opcodes",
-  "7872": "Transaction & Block Features",
-  "7903": "Contract Deployment & Code",
-  "7904": "Repricing Bundle - Minimal",
-  "7907": "Contract Deployment & Code",
-  "7919": "Transaction & Block Features",
-  "7923": "Repricing Bundle - Possible Additions",
-  "7932": "Cryptography & Signatures",
-  "7949": "Transaction & Block Features",
-  "7971": "Repricing Bundle - Recommended Additions",
-  "7973": "Repricing Bundle - Possible Additions",
-  "7976": "Repricing Bundle - Minimal",
-  "7979": "EVM Execution & Opcodes",
-  "7981": "Repricing Bundle - Minimal",
-  "7997": "Contract Deployment & Code",
-  "8011": "Repricing Bundle - Possible Additions",
-  "8013": "EVM Execution & Opcodes",
-  "8024": "EVM Execution & Opcodes",
-  "8030": "Cryptography & Signatures",
-  "8032": "Repricing Bundle - Recommended Additions",
-  "8037": "Repricing Bundle - Minimal",
-  "8038": "Repricing Bundle - Minimal",
-  "8045": "Consensus & Validator Operations",
-  "8051": "Cryptography & Signatures",
-  "8053": "Repricing Bundle - Recommended Additions",
-  "8057": "Repricing Bundle - Possible Additions",
-  "8058": "Repricing Bundle - Recommended Additions",
-  "8059": "Repricing Bundle - Recommended Additions",
-  "8061": "Consensus & Validator Operations",
-  "8062": "Consensus & Validator Operations",
-  "8068": "Consensus & Validator Operations",
-  "8070": "Transaction & Block Features",
+// Helper function to get layer for a tier item
+const getItemLayer = (item: TierItem): 'EL' | 'CL' | null => {
+  if (item.eip) {
+    return getHeadlinerLayer(item.eip);
+  }
+  if (item.pendingProposal) {
+    return item.pendingProposal.layer;
+  }
+  return null;
 };
 
-// Helper function to get collection for an EIP
-const getEipCollection = (eip: EIP): string => {
-  return EIP_COLLECTIONS[eip.id.toString()] || "Uncategorized";
+// Helper function to get title for a tier item
+const getItemTitle = (item: TierItem): string => {
+  if (item.eip) {
+    return getLaymanTitle(item.eip);
+  }
+  if (item.pendingProposal) {
+    return item.pendingProposal.title;
+  }
+  return '';
+};
+
+// Helper function to get description for a tier item
+const getItemDescription = (item: TierItem): string => {
+  if (item.eip) {
+    return item.eip.laymanDescription || item.eip.description;
+  }
+  if (item.pendingProposal) {
+    return item.pendingProposal.description;
+  }
+  return '';
+};
+
+// Helper function to get display ID for a tier item
+const getItemDisplayId = (item: TierItem): string => {
+  if (item.eip) {
+    return `${getProposalPrefix(item.eip)}-${item.eip.id}`;
+  }
+  if (item.pendingProposal) {
+    return 'Pending';
+  }
+  return '';
 };
 
 // Helper function to clean author names - remove GitHub handles and emails
@@ -167,95 +154,73 @@ const RankPage: React.FC = () => {
   );
   const [collectionOrder, setCollectionOrder] = useState<string[]>([]);
   const [isInstructionsExpanded, setIsInstructionsExpanded] = useState(false);
-  const [hoveredEip, setHoveredEip] = useState<EIP | null>(null);
+  const [hoveredItem, setHoveredItem] = useState<TierItem | null>(null);
   const [tooltipPosition, setTooltipPosition] = useState<{ x: number; y: number } | null>(null);
   const isTouchDevice =
     typeof window !== "undefined" &&
     ("ontouchstart" in window || navigator.maxTouchPoints > 0);
 
-  // Initialize with Glamsterdam headliner EIPs
+  // Initialize with Hegota headliner EIPs and pending proposals
   useEffect(() => {
-    const glamsterdamHeadliners = eipsData
-      .filter((eip) =>
-        ["Proposed for Inclusion", "Considered for Inclusion"].includes(
-          getInclusionStage(eip, "glamsterdam")
-        )
-      )
-      .filter((eip) => !isHeadliner(eip, "glamsterdam"))
+    // Get EIPs that were headliner candidates for Hegota
+    const hegotaHeadlinerEips = eipsData
+      .filter((eip) => wasHeadlinerCandidate(eip, "hegota"))
       .map((eip) => ({
         id: `eip-${eip.id}`,
         eip,
         tier: null,
       }));
 
+    // Get pending proposals for Hegota
+    const hegotaPendingProposals = getPendingProposalsForFork("hegota")
+      .map((proposal) => ({
+        id: `pending-${proposal.id}`,
+        pendingProposal: proposal,
+        tier: null,
+      }));
+
+    const allItems = [...hegotaHeadlinerEips, ...hegotaPendingProposals];
+
     // Try to load saved rankings from localStorage
-    const savedRankings = localStorage.getItem("glamsterdam-rankings");
+    const savedRankings = localStorage.getItem("hegota-rankings");
     if (savedRankings) {
       try {
         const parsed = JSON.parse(savedRankings);
-        // Merge saved tier assignments with current EIP data
-        const merged = glamsterdamHeadliners.map((item) => {
+        // Merge saved tier assignments with current data
+        const merged = allItems.map((item) => {
           const saved = parsed.find((s: TierItem) => s.id === item.id);
           return saved ? { ...item, tier: saved.tier } : item;
         });
         setItems(merged);
       } catch {
         // If parsing fails, just use default
-        setItems(glamsterdamHeadliners);
+        setItems(allItems);
       }
     } else {
-      setItems(glamsterdamHeadliners);
+      setItems(allItems);
     }
   }, []);
 
   // Save rankings to localStorage whenever they change
   useEffect(() => {
     if (items.length > 0) {
-      localStorage.setItem("glamsterdam-rankings", JSON.stringify(items));
+      localStorage.setItem("hegota-rankings", JSON.stringify(items));
     }
   }, [items]);
 
-  // Initialize expanded collections and randomize collection order when items are loaded
+  // Initialize expanded collections based on layers
   useEffect(() => {
     if (items.length > 0 && expandedCollections.size === 0 && collectionOrder.length === 0) {
       const unassigned = items.filter((item) => item.tier === null);
-      const collections = new Set<string>();
+      const layers = new Set<string>();
       unassigned.forEach((item) => {
-        const collection = getEipCollection(item.eip);
-        collections.add(collection);
+        const layer = getItemLayer(item);
+        if (layer) layers.add(layer);
       });
-      if (collections.size > 0) {
-        setExpandedCollections(collections);
-
-        // Separate Repricing Bundle categories from others
-        const repricingBundleCategories = [
-          "Repricing Bundle - Minimal",
-          "Repricing Bundle - Recommended Additions",
-          "Repricing Bundle - Possible Additions"
-        ].filter(cat => collections.has(cat));
-
-        const otherCollections = Array.from(collections).filter(
-          cat => !repricingBundleCategories.includes(cat)
-        );
-
-        // Randomize other collections
-        for (let i = otherCollections.length - 1; i > 0; i--) {
-          const j = Math.floor(Math.random() * (i + 1));
-          [otherCollections[i], otherCollections[j]] = [otherCollections[j], otherCollections[i]];
-        }
-
-        // Insert Repricing Bundle group at a random position
-        const collectionsArray: string[] = [];
-        if (repricingBundleCategories.length > 0) {
-          const insertPosition = Math.floor(Math.random() * (otherCollections.length + 1));
-          collectionsArray.push(...otherCollections.slice(0, insertPosition));
-          collectionsArray.push(...repricingBundleCategories);
-          collectionsArray.push(...otherCollections.slice(insertPosition));
-        } else {
-          collectionsArray.push(...otherCollections);
-        }
-
-        setCollectionOrder(collectionsArray);
+      if (layers.size > 0) {
+        setExpandedCollections(layers);
+        // Keep consistent order: EL first, then CL
+        setCollectionOrder(['EL', 'CL'].filter(l => layers.has(l)));
       }
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -331,42 +296,45 @@ const RankPage: React.FC = () => {
     return items.filter((item) => item.tier === null);
   };
 
-  const getUnassignedItemsByCollection = () => {
+  const getUnassignedItemsByLayer = () => {
     const unassigned = getUnassignedItems();
     const grouped = new Map<string, TierItem[]>();
 
     unassigned.forEach((item) => {
-      const collection = getEipCollection(item.eip);
-      if (!grouped.has(collection)) {
-        grouped.set(collection, []);
+      const layer = getItemLayer(item) || 'Other';
+      if (!grouped.has(layer)) {
+        grouped.set(layer, []);
       }
-      grouped.get(collection)!.push(item);
+      grouped.get(layer)!.push(item);
     });
 
-    // Use the stored collection order (randomized once on page load)
-    // If collectionOrder is empty (shouldn't happen, but fallback), use alphabetical
+    // Use the stored order (EL first, then CL)
     if (collectionOrder.length > 0) {
       const orderedEntries: [string, TierItem[]][] = [];
-      collectionOrder.forEach((collection) => {
-        if (grouped.has(collection)) {
-          orderedEntries.push([collection, grouped.get(collection)!]);
+      collectionOrder.forEach((layer) => {
+        if (grouped.has(layer)) {
+          orderedEntries.push([layer, grouped.get(layer)!]);
         }
       });
-      // Add any collections that might have been added but aren't in the order (shouldn't happen)
-      grouped.forEach((items, collection) => {
-        if (!collectionOrder.includes(collection)) {
-          orderedEntries.push([collection, items]);
+      // Add any layers that might have been added but aren't in the order
+      grouped.forEach((items, layer) => {
+        if (!collectionOrder.includes(layer)) {
+          orderedEntries.push([layer, items]);
         }
       });
       return orderedEntries;
     }
 
-    // Fallback: alphabetical order if collectionOrder hasn't been set yet
-    return Array.from(grouped.entries()).sort((a, b) => a[0].localeCompare(b[0]));
+    // Fallback: EL first, then CL
+    return Array.from(grouped.entries()).sort((a, b) => {
+      if (a[0] === 'EL') return -1;
+      if (b[0] === 'EL') return 1;
+      return a[0].localeCompare(b[0]);
+    });
   };
 
-  const getTotalItemsCountByCollection = (collection: string): number => {
-    return items.filter((item) => getEipCollection(item.eip) === collection).length;
+  const getTotalItemsCountByLayer = (layer: string): number => {
+    return items.filter((item) => getItemLayer(item) === layer).length;
   };
 
   const toggleCollection = (collection: string) => {
@@ -479,7 +447,7 @@ const RankPage: React.FC = () => {
       ctx.fillText(tier.id, bandWidth / 2, y + tierHeight / 2);
       ctx.restore();
 
-      // Draw EIP cards in two columns
+      // Draw cards in two columns
       if (itemsInTier.length > 0) {
         itemsInTier.forEach((item, idx) => {
           const row = Math.floor(idx / 2);
@@ -494,7 +462,7 @@ const RankPage: React.FC = () => {
             cardWidth,
             cardHeight,
             blockRadius,
-            item.eip,
+            item,
             scale
           );
         });
@@ -521,7 +489,7 @@ const RankPage: React.FC = () => {
     ctx.textBaseline = "middle";
 
     // Title in the center with date
-    const titleText = "Glamsterdam EIP Rankings";
+    const titleText = "Hegota Headliner Rankings";
     const titleFont = `${13 * scale}px -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif`;
     const dateFont = `${13 * scale}px -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif`;
 
@@ -573,7 +541,7 @@ const RankPage: React.FC = () => {
         const url = URL.createObjectURL(blob);
         const a = document.createElement("a");
         a.href = url;
-        a.download = "glamsterdam-eip-rankings.png";
+        a.download = "hegota-headliner-rankings.png";
         document.body.appendChild(a);
         a.click();
         document.body.removeChild(a);
@@ -582,7 +550,7 @@ const RankPage: React.FC = () => {
     });
   };
 
-  // Helper to draw a card (EIP or empty)
+  // Helper to draw a card (TierItem)
   function drawCard(
     ctx: CanvasRenderingContext2D,
     x: number,
@@ -590,7 +558,7 @@ const RankPage: React.FC = () => {
     w: number,
     h: number,
     r: number,
-    eip: EIP | null,
+    item: TierItem | null,
     scale: number
   ) {
     // Card background
@@ -629,13 +597,13 @@ const RankPage: React.FC = () => {
     ctx.closePath();
     ctx.stroke();
     ctx.restore();
-    if (!eip) return;
+    if (!item) return;
     // Vertically center content
     const centerY = y + h / 2;
     // Compact padding
     const padLeft = 8 * scale;
     let cursorX = x + padLeft;
-    // EIP number
+    // ID label (EIP number or "Pending")
     ctx.save();
     ctx.font = `bold ${
       13 * scale
@@ -643,11 +611,12 @@ const RankPage: React.FC = () => {
     ctx.fillStyle = "#64748b";
     ctx.textAlign = "left";
     ctx.textBaseline = "middle";
-    ctx.fillText(`EIP-${eip.id}`, cursorX, centerY);
-    cursorX += ctx.measureText(`EIP-${eip.id}`).width + 6 * scale;
+    const displayId = getItemDisplayId(item);
+    ctx.fillText(displayId, cursorX, centerY);
+    cursorX += ctx.measureText(displayId).width + 6 * scale;
     ctx.restore();
     // Layer badge
-    const layer = getHeadlinerLayer(eip);
+    const layer = getItemLayer(item);
     if (layer) {
       ctx.save();
       ctx.font = `bold ${
@@ -683,12 +652,13 @@ const RankPage: React.FC = () => {
     ctx.fillStyle = "#18181b";
     ctx.textAlign = "left";
     ctx.textBaseline = "middle";
-    let title = getLaymanTitle(eip);
+    const fullTitle = getItemTitle(item);
+    let title = fullTitle;
     const maxWidth = w - (cursorX - x) - 8 * scale;
     while (ctx.measureText(title).width > maxWidth) {
       title = title.slice(0, -1);
     }
-    if (title.length < getLaymanTitle(eip).length)
+    if (title.length < fullTitle.length)
       title = title.slice(0, -3) + "...";
     ctx.fillText(title, cursorX, centerY);
     ctx.restore();
@@ -696,7 +666,7 @@ const RankPage: React.FC = () => {
 
   const handleReset = () => {
     setItems((prev) => prev.map((item) => ({ ...item, tier: null })));
-    localStorage.removeItem("glamsterdam-rankings");
+    localStorage.removeItem("hegota-rankings");
   };
 
   const handleExternalLinkClick = (linkType: string, url: string) => {
@@ -710,13 +680,13 @@ const RankPage: React.FC = () => {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex flex-col items-center h-auto py-3 sm:flex-row sm:justify-center sm:items-center sm:h-16 sm:py-0 relative">
             <button
-              onClick={() => navigate("/upgrade/glamsterdam")}
+              onClick={() => navigate("/upgrade/hegota")}
               className="mb-2 sm:mb-0 sm:absolute sm:left-0 sm:top-1/2 sm:-translate-y-1/2 text-slate-600 hover:text-slate-900 dark:text-slate-300 dark:hover:text-slate-100 transition-colors"
             >
-              ← Back to Glamsterdam
+              ← Back to Hegota
             </button>
             <h1 className="font-semibold text-slate-900 dark:text-slate-100 text-center truncate max-w-full overflow-hidden text-base sm:text-xl">
-              Glamsterdam EIP Tier Maker
+              Hegota Headliner Tier Maker
             </h1>
             <div className="sm:absolute sm:right-0 sm:top-1/2 sm:-translate-y-1/2">
               <ThemeToggle />
@@ -757,21 +727,20 @@ const RankPage: React.FC = () => {
                 <div className="px-4 pb-4">
                   <p className="text-xs text-slate-600 dark:text-slate-300 leading-relaxed mb-4">
                     Users, node operators, app developers, core developers, and any other stakeholders
-                    are invited to voice their support for their preferred EIPs in the Glamsterdam fork.
+                    are invited to voice their support for their preferred headliner proposals for the Hegota upgrade.
                   </p>
                   <p className="text-xs text-slate-600 dark:text-slate-300 leading-relaxed mb-4">
-                    Drag and drop (desktop) or tap-to-assign (mobile) the EIP proposals
+                    Drag and drop (desktop) or tap-to-assign (mobile) the headliner proposals
                     into tiers. S-tier represents your highest priority proposals,
-                    while D-tier represents your lowest priority. The list of proposals
-                    is long; rank as many or as few as you like.
+                    while D-tier represents your lowest priority.
                   </p>
                   <p className="text-xs text-slate-600 dark:text-slate-300 leading-relaxed">
                     Download the image to share your rankings and start a conversation.{" "}
                     <a
-                      href="https://forkcast.org/upgrade/glamsterdam"
+                      href="https://forkcast.org/upgrade/hegota"
                       className="text-purple-600 hover:text-purple-700 dark:text-purple-400 dark:hover:text-purple-300"
                     >
-                      Learn more about Glamsterdam
+                      Learn more about Hegota
                     </a>
                     .
                   </p>
@@ -793,7 +762,7 @@ const RankPage: React.FC = () => {
                       </svg>
                     </div>
                     <p className="text-xs leading-relaxed text-slate-600 dark:text-slate-300">
-                      The deadline for proposal submissions was October 30th, 2025.
+                      The deadline for headliner proposal submissions was February 4th, 2025.
                     </p>
                   </div>
                 </div>
@@ -875,23 +844,23 @@ const RankPage: React.FC = () => {
                             onDragEnd={!isTouchDevice ? handleDragEnd : undefined}
                             className="flex items-center justify-between p-2 bg-white dark:bg-slate-700 border border-slate-200 dark:border-slate-600 rounded shadow-sm lg:min-w-max"
                           >
-                            <div className="flex items-center gap-2 min-w-0 flex-1">
-                              <span className="text-xs font-mono text-slate-500 dark:text-slate-400 flex-shrink-0">
-                                {getProposalPrefix(item.eip)}-{item.eip.id}
+                            <div className="flex items-center gap-2 min-w-0 flex-1 flex-nowrap">
+                              <span className="text-xs font-mono text-slate-500 dark:text-slate-400 flex-shrink-0 whitespace-nowrap">
+                                {getItemDisplayId(item)}
                               </span>
-                              {getHeadlinerLayer(item.eip) && (
+                              {getItemLayer(item) && (
                                 <span
                                   className={`px-1 py-0.5 text-xs font-medium rounded flex-shrink-0 ${
-                                    getHeadlinerLayer(item.eip) === "EL"
+                                    getItemLayer(item) === "EL"
                                       ? "bg-indigo-100 text-indigo-700 dark:bg-indigo-900/20 dark:text-indigo-300"
                                       : "bg-teal-100 text-teal-700 dark:bg-teal-900/20 dark:text-teal-300"
                                   }`}
                                 >
-                                  {getHeadlinerLayer(item.eip)}
+                                  {getItemLayer(item)}
                                 </span>
                               )}
                               <span className="font-medium text-xs text-slate-900 dark:text-slate-100 truncate">
-                                {getLaymanTitle(item.eip)}
+                                {getItemTitle(item)}
                               </span>
                             </div>
                             <button
@@ -944,7 +913,7 @@ const RankPage: React.FC = () => {
           <div className="lg:sticky lg:top-4 lg:max-h-[calc(100vh-2rem)] lg:overflow-hidden lg:flex lg:flex-col">
             <div className="flex items-center justify-between mb-4 flex-shrink-0">
               <h3 className="text-lg font-medium text-slate-900 dark:text-slate-100">
-                Candidate EIPs (CFI/PFI)
+                Headliner Proposals
                 <span className="ml-2 text-sm text-slate-500 dark:text-slate-400">
                   ({getUnassignedItems().length} unranked)
                 </span>
@@ -956,20 +925,28 @@ const RankPage: React.FC = () => {
               )}
             </div>
             <div className="space-y-4 lg:overflow-y-auto lg:flex-1">
-              {getUnassignedItemsByCollection().map(([collection, collectionItems]) => {
-                const isExpanded = expandedCollections.has(collection);
+              {getUnassignedItemsByLayer().map(([layer, layerItems]) => {
+                const isExpanded = expandedCollections.has(layer);
+                const layerLabel = layer === 'EL' ? 'Execution Layer' : layer === 'CL' ? 'Consensus Layer' : layer;
                 return (
-                  <div key={collection} className="bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg overflow-hidden">
+                  <div key={layer} className="bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg overflow-hidden">
                     <button
-                      onClick={() => toggleCollection(collection)}
+                      onClick={() => toggleCollection(layer)}
                       className="flex items-center justify-between w-full text-left px-4 py-3 bg-slate-50 dark:bg-slate-800/50 hover:bg-slate-100 dark:hover:bg-slate-700/50 transition-colors border-b border-slate-200 dark:border-slate-700 cursor-pointer"
                     >
                       <div className="flex items-center gap-2">
+                        <span className={`px-1.5 py-0.5 text-xs font-medium rounded ${
+                          layer === 'EL'
+                            ? 'bg-indigo-100 text-indigo-700 dark:bg-indigo-900/20 dark:text-indigo-300'
+                            : 'bg-teal-100 text-teal-700 dark:bg-teal-900/20 dark:text-teal-300'
+                        }`}>
+                          {layer}
+                        </span>
                         <h4 className="text-sm font-semibold text-slate-900 dark:text-slate-100">
-                          {collection}
+                          {layerLabel}
                         </h4>
                         <span className="inline-flex items-center justify-center px-2 py-0.5 text-xs font-medium bg-slate-200 dark:bg-slate-700 text-slate-700 dark:text-slate-300 rounded-full">
-                          {getTotalItemsCountByCollection(collection)}
+                          {getTotalItemsCountByLayer(layer)}
                         </span>
                       </div>
                       <svg
@@ -990,7 +967,7 @@ const RankPage: React.FC = () => {
                     </button>
                     {isExpanded && (
                       <div className="grid grid-cols-1 lg:grid-cols-2 gap-2 p-3">
-                        {collectionItems.map((item) => (
+                        {layerItems.map((item) => (
                           <div
                             key={item.id}
                             draggable={!isTouchDevice}
@@ -1032,9 +1009,9 @@ const RankPage: React.FC = () => {
                                 : ""
                             }`}
                           >
-                            <div className="flex items-center gap-2">
+                            <div className="flex items-center gap-2 flex-nowrap">
                               <span
-                                className="text-xs font-mono text-slate-500 dark:text-slate-400 lg:cursor-help inline-flex items-center"
+                                className="text-xs font-mono text-slate-500 dark:text-slate-400 lg:cursor-help inline-flex items-center flex-shrink-0 whitespace-nowrap"
                                 style={{
                                   borderBottom: isTouchDevice ? 'none' : '1px dotted currentColor',
                                   marginBottom: isTouchDevice ? '-1px' : '-2px'
@@ -1066,7 +1043,7 @@ const RankPage: React.FC = () => {
                                           y = Math.max(padding, window.innerHeight - tooltipHeight - padding);
                                         }
 
-                                        setHoveredEip(item.eip);
+                                        setHoveredItem(item);
                                         setTooltipPosition({ x, y });
                                       }
                                     : undefined
@@ -1074,27 +1051,27 @@ const RankPage: React.FC = () => {
                                 onMouseLeave={
                                   !isTouchDevice
                                     ? () => {
-                                        setHoveredEip(null);
+                                        setHoveredItem(null);
                                         setTooltipPosition(null);
                                       }
                                     : undefined
                                 }
                               >
-                                {getProposalPrefix(item.eip)}-{item.eip.id}
+                                {getItemDisplayId(item)}
                               </span>
-                              {getHeadlinerLayer(item.eip) && (
+                              {getItemLayer(item) && (
                                 <span
-                                  className={`px-1 py-0.5 text-xs font-medium rounded ${
-                                    getHeadlinerLayer(item.eip) === "EL"
+                                  className={`px-1 py-0.5 text-xs font-medium rounded flex-shrink-0 ${
+                                    getItemLayer(item) === "EL"
                                       ? "bg-indigo-100 text-indigo-700 dark:bg-indigo-900/20 dark:text-indigo-300"
                                       : "bg-teal-100 text-teal-700 dark:bg-teal-900/20 dark:text-teal-300"
                                   }`}
                                 >
-                                  {getHeadlinerLayer(item.eip)}
+                                  {getItemLayer(item)}
                                 </span>
                               )}
                               <span className="font-medium text-xs text-slate-900 dark:text-slate-100 truncate">
-                                {getLaymanTitle(item.eip)}
+                                {getItemTitle(item)}
                               </span>
                             </div>
                           </div>
@@ -1109,8 +1086,8 @@ const RankPage: React.FC = () => {
         </div>
       </div>
 
-      {/* Hover Tooltip for EIP Details (Desktop Only) */}
-      {hoveredEip && !isTouchDevice && tooltipPosition && (
+      {/* Hover Tooltip for Proposal Details (Desktop Only) */}
+      {hoveredItem && !isTouchDevice && tooltipPosition && (
         <div
           className="fixed z-50"
           style={{
@@ -1123,38 +1100,45 @@ const RankPage: React.FC = () => {
           <div className="bg-white dark:bg-slate-800 border-2 border-purple-300 dark:border-purple-600 rounded-lg shadow-2xl p-4">
             <div className="flex items-start gap-2 mb-3">
               <span className="text-sm font-mono font-bold text-purple-600 dark:text-purple-400">
-                EIP-{hoveredEip.id}
+                {getItemDisplayId(hoveredItem)}
               </span>
-              {getHeadlinerLayer(hoveredEip) && (
+              {getItemLayer(hoveredItem) && (
                 <span
                   className={`px-1.5 py-0.5 text-xs font-medium rounded ${
-                    getHeadlinerLayer(hoveredEip) === "EL"
+                    getItemLayer(hoveredItem) === "EL"
                       ? "bg-indigo-100 text-indigo-700 dark:bg-indigo-900/20 dark:text-indigo-300"
                       : "bg-teal-100 text-teal-700 dark:bg-teal-900/20 dark:text-teal-300"
                   }`}
                 >
-                  {getHeadlinerLayer(hoveredEip)}
+                  {getItemLayer(hoveredItem)}
                 </span>
               )}
             </div>
 
             <h4 className="text-sm font-semibold text-slate-900 dark:text-slate-100 mb-2">
-              {getLaymanTitle(hoveredEip)}
+              {getItemTitle(hoveredItem)}
             </h4>
 
             <p className="text-xs text-slate-600 dark:text-slate-300 leading-relaxed mb-3">
-              {truncateText(hoveredEip.laymanDescription || hoveredEip.description, 300)}
+              {truncateText(getItemDescription(hoveredItem), 300)}
             </p>
 
-            {hoveredEip.author && (
+            {hoveredItem.eip?.author && (
               <div className="text-xs text-slate-500 dark:text-slate-400 mb-2">
-                <span className="font-medium">Author:</span> {cleanAuthorName(hoveredEip.author)}
+                <span className="font-medium">Author:</span> {cleanAuthorName(hoveredItem.eip.author)}
               </div>
             )}
 
-            <ChampionDisplay
-              champions={hoveredEip.forkRelationships.find(fork => fork.forkName.toLowerCase() === "glamsterdam")?.champions}
-            />
+            {hoveredItem.eip && (
+              <ChampionDisplay
+                champions={hoveredItem.eip.forkRelationships.find(fork => fork.forkName.toLowerCase() === "hegota")?.champions}
+              />
+            )}
+            {hoveredItem.pendingProposal && hoveredItem.pendingProposal.champions.length > 0 && (
+              <ChampionDisplay
+                champions={hoveredItem.pendingProposal.champions}
+              />
+            )}
           </div>
         </div>
       )}
@@ -1164,9 +1148,8 @@ const RankPage: React.FC = () => {
         <div className="text-center space-y-3">
           <p className="text-xs text-slate-500 dark:text-slate-400 max-w-2xl mx-auto">
             This is an experimental tool for expressing preferences. Rankings
-            are not stored or displayed by Forkcast and do not represent an
-            official vote of any kind. To learn more about Ethereum governance
-            visit{" "}
+            do not represent an official vote of any kind. To learn more about
+            Ethereum governance, visit{" "}
             <a
               target="_blank"
               href="https://ethereum.org/governance"

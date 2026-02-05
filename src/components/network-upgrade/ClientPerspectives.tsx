@@ -38,7 +38,7 @@ export const ClientPerspectives: React.FC<ClientPerspectivesProps> = ({
               className={`inline-flex items-center gap-1.5 px-2 py-1 rounded text-xs ${
                 hasPerspective
                   ? 'bg-white dark:bg-slate-700 border border-indigo-200 dark:border-indigo-600 hover:bg-indigo-50 dark:hover:bg-indigo-900/20 cursor-pointer'
-                  : 'bg-indigo-100 dark:bg-indigo-900/30 border border-indigo-200 dark:border-indigo-600 opacity-60'
+                  : 'bg-indigo-100 dark:bg-indigo-900/30 border border-indigo-200 dark:border-indigo-600 opacity-60 cursor-not-allowed'
               }`}
               onClick={() => hasPerspective && onLinkClick?.(blogPostUrl)}
             >

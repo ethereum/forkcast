@@ -8,6 +8,7 @@ import TldrSummary from './TldrSummary';
 import CallSearch from './CallSearch';
 import ThemeToggle from '../ui/ThemeToggle';
 import { Logo } from '../ui/Logo';
+import { LoadingScreen } from '../ui/LoadingScreen';
 import { protocolCalls, callTypeNames, type CallType } from '../../data/calls';
 import { eipsData } from '../../data/eips';
 import { EIP, ForkRelationship } from '../../types/eip';
@@ -799,13 +800,11 @@ const CallPage: React.FC = () => {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-slate-50 dark:bg-slate-900 text-slate-900 dark:text-slate-100 p-6">
-        <div className="max-w-4xl mx-auto">
-          <div className="text-center">
-            <p className="text-slate-600 dark:text-slate-400">Loading call data...</p>
-          </div>
-        </div>
-      </div>
+      <LoadingScreen
+        message="Loading call"
+        subtitle="Fetching transcript and video..."
+        skeleton
+      />
     );
   }
 

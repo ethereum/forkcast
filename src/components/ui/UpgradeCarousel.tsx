@@ -144,9 +144,10 @@ const UpgradeCarousel = ({ upgrades, getStatusColor }: UpgradeCarouselProps) => 
         <div className="relative">
           {/* Left Arrow */}
           <button
+            type="button"
             onClick={goToPrevious}
             disabled={currentIndex === 0}
-            className={`absolute left-0 top-1/2 -translate-y-1/2 -translate-x-12 z-10 w-10 h-10 flex items-center justify-center rounded-full bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 shadow-md transition-all duration-200 ${
+            className={`absolute left-0 top-1/2 -translate-y-1/2 -translate-x-12 z-20 w-10 h-10 flex items-center justify-center rounded-full bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 shadow-md transition-all duration-200 ${
               currentIndex === 0
                 ? 'opacity-40 cursor-not-allowed'
                 : 'hover:bg-slate-50 dark:hover:bg-slate-700 hover:shadow-lg cursor-pointer'
@@ -179,9 +180,10 @@ const UpgradeCarousel = ({ upgrades, getStatusColor }: UpgradeCarouselProps) => 
 
           {/* Right Arrow */}
           <button
+            type="button"
             onClick={goToNext}
             disabled={currentIndex >= maxIndex}
-            className={`absolute right-0 top-1/2 -translate-y-1/2 translate-x-12 z-10 w-10 h-10 flex items-center justify-center rounded-full bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 shadow-md transition-all duration-200 ${
+            className={`absolute right-0 top-1/2 -translate-y-1/2 translate-x-12 z-20 w-10 h-10 flex items-center justify-center rounded-full bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 shadow-md transition-all duration-200 ${
               currentIndex >= maxIndex
                 ? 'opacity-40 cursor-not-allowed'
                 : 'hover:bg-slate-50 dark:hover:bg-slate-700 hover:shadow-lg cursor-pointer'
@@ -210,6 +212,7 @@ const UpgradeCarousel = ({ upgrades, getStatusColor }: UpgradeCarouselProps) => 
             {Array.from({ length: dotCount }).map((_, index) => (
               <button
                 key={index}
+                type="button"
                 onClick={() => goToIndex(index)}
                 className={`w-2 h-2 rounded-full transition-all duration-200 ${
                   currentIndex === index

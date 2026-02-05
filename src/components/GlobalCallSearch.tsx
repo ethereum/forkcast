@@ -221,10 +221,14 @@ export default function GlobalCallSearch({ isOpen, onClose, initialQuery = '' }:
       <div
         className="absolute inset-0 bg-slate-900/50 backdrop-blur-sm"
         onClick={onClose}
+        aria-hidden="true"
       />
 
-      {/* Search Modal */}
-      <div className="relative w-full max-w-4xl bg-white dark:bg-slate-800 rounded-xl sm:rounded-xl rounded-t-xl shadow-2xl overflow-hidden animate-[slideDown_0.2s_ease-out] max-h-[90vh] sm:max-h-none">
+      {/* Search Modal - stop propagation so clicks inside don't close */}
+      <div
+        className="relative z-10 w-full max-w-4xl bg-white dark:bg-slate-800 rounded-xl sm:rounded-xl rounded-t-xl shadow-2xl overflow-hidden animate-[slideDown_0.2s_ease-out] max-h-[90vh] sm:max-h-none"
+        onClick={(e) => e.stopPropagation()}
+      >
         {/* Search Header */}
         <div className="border-b border-slate-200 dark:border-slate-700">
           <div className="flex items-center gap-3 p-3 sm:p-4">
@@ -237,7 +241,7 @@ export default function GlobalCallSearch({ isOpen, onClose, initialQuery = '' }:
               value={query}
               onChange={(e) => setQuery(e.target.value)}
               placeholder="Search across all calls..."
-              className="flex-1 bg-transparent text-slate-900 dark:text-slate-100 placeholder-slate-400 dark:placeholder-slate-500 outline-none text-base sm:text-base text-lg min-h-[44px] sm:min-h-0"
+              className="flex-1 bg-transparent text-slate-900 dark:text-slate-100 placeholder-slate-400 dark:placeholder-slate-500 outline-none text-base min-h-[44px] sm:min-h-0"
             />
             {loading && (
               <div className="w-5 h-5 border-2 border-blue-500 border-t-transparent rounded-full animate-spin" />
@@ -309,7 +313,7 @@ export default function GlobalCallSearch({ isOpen, onClose, initialQuery = '' }:
         {/* Search Results */}
         <div
           ref={resultsContainerRef}
-          className="max-h-96 sm:max-h-96 max-h-[60vh] overflow-y-auto"
+          className="max-h-[60vh] sm:max-h-96 overflow-y-auto"
         >
           {query && results.length === 0 && !loading && !indexBuilding ? (
             <div className="p-8 text-center text-slate-500 dark:text-slate-400">
@@ -361,7 +365,7 @@ export default function GlobalCallSearch({ isOpen, onClose, initialQuery = '' }:
                         )}
 
                         {/* Text */}
-                        <p className="text-sm sm:text-sm text-base text-slate-900 dark:text-slate-100 line-clamp-3 sm:line-clamp-2 leading-relaxed">
+                        <p className="text-sm text-slate-900 dark:text-slate-100 line-clamp-3 sm:line-clamp-2 leading-relaxed">
                           {highlightMatch(result.text, query)}
                         </p>
                       </div>

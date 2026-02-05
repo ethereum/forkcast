@@ -66,7 +66,103 @@
     </script>
   </head>
   <body>
-    <div id="root"></div>
+    <div id="root">
+      <div class="root-loading" role="status" aria-live="polite" aria-label="Loading">
+        <div class="root-loading-spinner">
+          <div class="root-loading-glow"></div>
+          <div class="root-loading-ring">
+            <div class="root-loading-inner">
+              <img src="/forkcast-logo.svg" alt="" class="root-loading-logo" width="56" height="17">
+            </div>
+          </div>
+        </div>
+        <p class="root-loading-text">Loading</p>
+        <div class="root-loading-dots">
+          <span class="root-loading-dot"></span>
+          <span class="root-loading-dot"></span>
+          <span class="root-loading-dot"></span>
+        </div>
+      </div>
+    </div>
+    <style>
+      html, body { margin: 0; padding: 0; width: 100%; min-height: 100%; background: #f8fafc; }
+      .dark, .dark body { background: #0f172a; }
+      #root { min-height: 100vh; }
+      .root-loading {
+        min-height: 100vh;
+        width: 100%;
+        box-sizing: border-box;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        background: #f8fafc;
+        font-family: system-ui, -apple-system, sans-serif;
+      }
+      .dark .root-loading { background: #0f172a; }
+      .root-loading-spinner { position: relative; width: 80px; height: 80px; margin-bottom: 2rem; display: flex; align-items: center; justify-content: center; }
+      .root-loading-glow {
+        position: absolute;
+        width: 88px;
+        height: 88px;
+        border-radius: 50%;
+        background: conic-gradient(from 0deg, #6366f1, #8b5cf6, #a855f7, #6366f1);
+        animation: root-spin 1.4s linear infinite;
+        opacity: 0.35;
+        filter: blur(12px);
+      }
+      .dark .root-loading-glow { opacity: 0.25; }
+      .root-loading-ring {
+        position: relative;
+        width: 72px;
+        height: 72px;
+        border-radius: 50%;
+        padding: 3px;
+        background: conic-gradient(from 0deg, #6366f1, #8b5cf6, #a855f7, #c084fc, #6366f1);
+        animation: root-spin 1.2s linear infinite;
+      }
+      .root-loading-inner {
+        position: absolute;
+        inset: 3px;
+        border-radius: 50%;
+        background: #f8fafc;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+      .dark .root-loading-inner { background: #0f172a; }
+      .root-loading-logo {
+        width: 56px;
+        height: auto;
+        opacity: 0.9;
+        animation: root-pulse 2s ease-in-out infinite;
+      }
+      .root-loading-text {
+        margin: 0 0 0.5rem;
+        font-size: 0.875rem;
+        font-weight: 500;
+        color: #64748b;
+      }
+      .dark .root-loading-text { color: #94a3b8; }
+      .root-loading-dots {
+        display: inline-flex;
+        gap: 4px;
+        align-items: center;
+      }
+      .root-loading-dot {
+        width: 6px;
+        height: 6px;
+        border-radius: 50%;
+        background: #8b5cf6;
+        animation: root-bounce 1.4s ease-in-out infinite;
+      }
+      .root-loading-dot:nth-child(1) { animation-delay: 0ms; }
+      .root-loading-dot:nth-child(2) { animation-delay: 160ms; }
+      .root-loading-dot:nth-child(3) { animation-delay: 320ms; }
+      @keyframes root-spin { to { transform: rotate(360deg); } }
+      @keyframes root-pulse { 0%, 100% { opacity: 0.85; transform: scale(1); } 50% { opacity: 1; transform: scale(1.05); } }
+      @keyframes root-bounce { 0%, 80%, 100% { transform: scale(0.6); opacity: 0.5; } 40% { transform: scale(1); opacity: 1; } }
+    </style>
     <script type="module" src="/src/main.tsx"></script>
   </body>
 </html>

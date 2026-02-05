@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
 import { EIP } from "../types/eip";
 import {
   isHeadliner,
@@ -757,12 +757,12 @@ const RankPage: React.FC = () => {
                   </p>
                   <p className="text-xs text-slate-600 dark:text-slate-300 leading-relaxed">
                     Download the image to share your rankings and start a conversation.{" "}
-                    <a
-                      href="https://forkcast.org/upgrade/glamsterdam"
+                    <Link
+                      to="/upgrade/glamsterdam"
                       className="text-purple-600 hover:text-purple-700 dark:text-purple-400 dark:hover:text-purple-300"
                     >
                       Learn more about Glamsterdam
-                    </a>
+                    </Link>
                     .
                   </p>
                   <div className="mt-4 flex items-start gap-2.5 rounded-lg border border-slate-200 bg-slate-100 p-3 dark:border-slate-700 dark:bg-slate-800">

@@ -122,7 +122,7 @@ const HomePage = () => {
     <div className="min-h-screen bg-slate-50 dark:bg-slate-900 text-slate-900 dark:text-slate-100 p-6">
       <div className="max-w-4xl mx-auto">
         {/* Header */}
-        <div className="mb-12 text-center relative">
+        <div className="mb-12 text-center relative pr-12">
           <div className="absolute top-0 right-0">
             <ThemeToggle />
           </div>

@@ -5,7 +5,6 @@ import { fileURLToPath } from 'url';
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
-const EIPS_FILE = path.join(__dirname, '../src/data/eips.json');
 const EIPS_DIR = path.join(__dirname, '../src/data/eips');
 const OFFICIAL_EIP_BASE_URL = 'https://raw.githubusercontent.com/ethereum/EIPs/refs/heads/master/EIPS/eip-';
 
@@ -212,6 +211,20 @@ function sleep(ms) {
 }
 
 /**
+ * Load all EIP files from the individual JSON files directory
+ */
+function loadEipsFromDir() {
+  const files = fs.readdirSync(EIPS_DIR).filter(f => f.endsWith('.json'));
+  const eips = [];
+  for (const file of files) {
+    const filePath = path.join(EIPS_DIR, file);
+    const content = JSON.parse(fs.readFileSync(filePath, 'utf8'));
+    eips.push(content);
+  }
+  return eips;
+}
+
+/**
  * Update a local EIP file with official metadata
  */
 function updateLocalEip(eipNumber, localEip, officialMapped) {
@@ -252,14 +265,13 @@ async function validateMetadata() {
   console.log('======================\n');
   console.log('Comparing local EIP data against official ethereum/EIPs repository...\n');
 
-  // Load local EIPs
-  if (!fs.existsSync(EIPS_FILE)) {
-    console.error(`Error: EIPs file not found at ${EIPS_FILE}`);
-    console.error('Run "npm run eips:compile" first.');
+  // Load local EIPs from individual files
+  if (!fs.existsSync(EIPS_DIR)) {
+    console.error(`Error: EIPs directory not found at ${EIPS_DIR}`);
     process.exit(1);
   }
 
-  const allEips = JSON.parse(fs.readFileSync(EIPS_FILE, 'utf8'));
+  const allEips = loadEipsFromDir();
   const localEips = filterEips(allEips, options);
 
   // Show filter info

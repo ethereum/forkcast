@@ -11,8 +11,8 @@ import { fileURLToPath } from 'url';
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const ROOT = join(__dirname, '..');
 
-const MANIFEST_URL = 'https://raw.githubusercontent.com/ethereum/pm/asset-pipeline/.github/ACDbot/artifacts/manifest.json';
-const ASSETS_BASE_URL = 'https://raw.githubusercontent.com/ethereum/pm/asset-pipeline/.github/ACDbot/artifacts';
+const MANIFEST_URL = 'https://raw.githubusercontent.com/ethereum/pm/master/.github/ACDbot/artifacts/manifest.json';
+const ASSETS_BASE_URL = 'https://raw.githubusercontent.com/ethereum/pm/master/.github/ACDbot/artifacts';
 const LOCAL_ASSETS_DIR = join(ROOT, 'public/artifacts');
 const DENYLIST = new Set([
   // Placeholder: 'series'

@@ -196,6 +196,67 @@ export const EipCard: React.FC<EipCardProps> = ({ eip, forkName, handleExternalL
             </a>
           )}
 
+          {/* ePBS Explainer Resources (EIP 7732) */}
+          {eip.id === 7732 && (
+            <>
+              <span className="inline-flex items-center gap-1">
+                <span className="text-slate-500 dark:text-slate-400">Explainers:</span>
+                <a
+                  href="https://www.potuz.net/posts/gloas-annotated-1/"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    if (window._paq) {
+                      window._paq.push(['trackEvent', 'External Link', 'epbs_explainer', 'beacon_chain']);
+                    }
+                  }}
+                  className="inline-flex items-center gap-1 text-purple-600 hover:text-purple-800 dark:text-purple-400 dark:hover:text-purple-300 underline decoration-1 underline-offset-2 transition-colors"
+                >
+                  Beacon
+                  <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
+                  </svg>
+                </a>
+                <a
+                  href="https://www.potuz.net/posts/gloas-annotated-pubsub/"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    if (window._paq) {
+                      window._paq.push(['trackEvent', 'External Link', 'epbs_explainer', 'pubsub']);
+                    }
+                  }}
+                  className="inline-flex items-center gap-1 text-purple-600 hover:text-purple-800 dark:text-purple-400 dark:hover:text-purple-300 underline decoration-1 underline-offset-2 transition-colors"
+                >
+                  Gossip
+                  <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
+                  </svg>
+                </a>
+                <a
+                  href="https://www.potuz.net/posts/gloas-annotated-forkchoice/"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    if (window._paq) {
+                      window._paq.push(['trackEvent', 'External Link', 'epbs_explainer', 'forkchoice']);
+                    }
+                  }}
+                  className="inline-flex items-center gap-1 text-purple-600 hover:text-purple-800 dark:text-purple-400 dark:hover:text-purple-300 underline decoration-1 underline-offset-2 transition-colors"
+                >
+                  Forkchoice
+                  <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
+                  </svg>
+                </a>
+              </span>
+              <span className="text-slate-400 dark:text-slate-500">|</span>
+            </>
+          )}
+
           {/* Headliner Discussion Link */}
           {(() => {
             const isHeadlinerEip = isHeadliner(eip, forkName);

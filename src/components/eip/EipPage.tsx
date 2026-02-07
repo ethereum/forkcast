@@ -18,9 +18,9 @@ import { EipTimeline } from './EipTimeline';
 import { EipSearch } from './EipSearch';
 import EipSearchModal from './EipSearchModal';
 import {
-  getBreakoutCallForEip,
-  getBreakoutCallNavigation,
-  getBreakoutCallPath,
+  eipCallTypes,
+  callTypeNames,
+  getCallNavigation,
 } from '../../data/calls';
 import { fetchUpcomingCalls, type UpcomingCall } from '../../utils/github';
 
@@ -34,8 +34,8 @@ export const EipPage: React.FC = () => {
   const eipId = parseInt(id || '', 10);
   const eip = eipsData.find((e) => e.id === eipId);
   const layer = eip ? getPrimaryEipLayer(eip) : null;
-  const breakoutCallInfo = getBreakoutCallForEip(eipId);
-  const breakoutNav = breakoutCallInfo ? getBreakoutCallNavigation(breakoutCallInfo.type) : null;
+  const callType = eipCallTypes[eipId];
+  const callNav = callType ? getCallNavigation(callType) : null;
 
   // Get sorted EIPs for navigation
   const sortedEips = useMemo(() => [...eipsData].sort((a, b) => a.id - b.id), []);
@@ -49,15 +49,15 @@ export const EipPage: React.FC = () => {
 
   // Fetch upcoming breakout call if this EIP has one
   useEffect(() => {
-    if (breakoutCallInfo) {
+    if (callType) {
       fetchUpcomingCalls().then((calls) => {
-        const upcoming = calls.find((c) => c.type === breakoutCallInfo.type);
+        const upcoming = calls.find((c) => c.type === callType);
         setUpcomingCall(upcoming || null);
       });
     } else {
       setUpcomingCall(null);
     }
-  }, [breakoutCallInfo]);
+  }, [callType]);
 
   // Keyboard navigation
   const handleKeyDown = useCallback((e: KeyboardEvent) => {
@@ -214,22 +214,22 @@ export const EipPage: React.FC = () => {
             </p>
 
             {/* Breakout Call */}
-            {breakoutCallInfo && (breakoutNav?.previous || upcomingCall) && (
+            {callType && (callNav?.previous || upcomingCall) && (
               <div className="mt-4 flex items-center gap-3 text-sm">
                 <div className="flex items-center gap-1.5 text-slate-500 dark:text-slate-400">
                   <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
                   </svg>
-                  <span>{breakoutCallInfo.name}</span>
+                  <span>{callTypeNames[callType]}</span>
                 </div>
                 <span className="text-slate-300 dark:text-slate-600">|</span>
                 <div className="flex items-center gap-3">
-                  {breakoutNav?.previous && (
+                  {callNav?.previous && (
                     <Link
-                      to={getBreakoutCallPath(breakoutNav.previous)}
+                      to={`/calls/${callNav.previous.path}`}
                       className="text-purple-600 dark:text-purple-400 underline decoration-purple-300 dark:decoration-purple-700 underline-offset-2 hover:decoration-purple-500 dark:hover:decoration-purple-400 transition-colors"
                     >
-                      Latest: Call #{parseInt(breakoutNav.previous.number, 10)}
+                      Latest: Call #{parseInt(callNav.previous.number, 10)}
                     </Link>
                   )}
                   {upcomingCall && (

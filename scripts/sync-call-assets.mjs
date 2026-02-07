@@ -18,6 +18,9 @@ const DENYLIST = new Set([
   // Placeholder: 'series'
 ]);
 
+const GENERATED_JSON_PATH = join(ROOT, 'src/data/protocol-calls.generated.json');
+const KNOWN_TYPES = new Set(['acdc', 'acde', 'acdt', 'epbs', 'bal', 'focil', 'price', 'tli', 'pqts']);
+
 // Map pm series names to forkcast type names (for folder paths)
 const SERIES_TO_TYPE = {
   glamsterdamrepricings: 'price',
@@ -158,6 +161,60 @@ async function syncCall(remoteSeries, localType, callId, callData, force = false
   return changesMade;
 }
 
+function generateProtocolCallsJson(callsBySeries) {
+  // Load existing generated calls to preserve history
+  let existing = [];
+  if (existsSync(GENERATED_JSON_PATH)) {
+    try {
+      existing = JSON.parse(readFileSync(GENERATED_JSON_PATH, 'utf-8'));
+    } catch (e) {
+      console.log(`Warning: Could not read existing generated JSON: ${e.message}`);
+    }
+  }
+
+  const existingPaths = new Set(existing.map(c => c.path));
+  let added = 0;
+
+  for (const [series, seriesCalls] of Object.entries(callsBySeries)) {
+    if (DENYLIST.has(series)) continue;
+
+    const localType = getLocalType(series);
+
+    if (!KNOWN_TYPES.has(localType)) {
+      console.log(`Warning: Unknown series "${series}" (resolved type: "${localType}"). Skipping.`);
+      continue;
+    }
+
+    for (const [callId, callData] of Object.entries(seriesCalls)) {
+      // Same filters as asset syncing
+      if (!callData.has_tldr && !callData.has_transcript && !callData.has_corrected_transcript) {
+        continue;
+      }
+      if (!callData.videoUrl) continue;
+
+      // Parse callId: "2026-02-05_174" -> date "2026-02-05", number "174"
+      const sepIndex = callId.lastIndexOf('_');
+      if (sepIndex === -1) continue;
+
+      const date = callId.substring(0, sepIndex);
+      const number = callId.substring(sepIndex + 1).padStart(3, '0');
+      const path = `${localType}/${number}`;
+
+      if (!existingPaths.has(path)) {
+        existing.push({ type: localType, date, number, path });
+        existingPaths.add(path);
+        added++;
+      }
+    }
+  }
+
+  // Sort by type (alpha) then date (ascending)
+  existing.sort((a, b) => a.type.localeCompare(b.type) || a.date.localeCompare(b.date));
+
+  writeFileSync(GENERATED_JSON_PATH, JSON.stringify(existing, null, 2) + '\n');
+  console.log(`\nGenerated ${GENERATED_JSON_PATH}: ${existing.length} total calls (${added} new).`);
+}
+
 async function main() {
   const force = process.argv.includes('--force');
 
@@ -210,6 +267,8 @@ async function main() {
       }
     }
   }
+
+  generateProtocolCallsJson(callsBySeries);
 
   console.log(`\nSync complete. ${totalSynced} calls updated.`);
 }

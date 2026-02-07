@@ -12,30 +12,11 @@ function getEips() {
   return JSON.parse(fileContent);
 }
 
-// Read and parse the calls data from TypeScript file
+// Read and parse the calls data from generated JSON file
 function getProtocolCalls() {
-  const callsFilePath = path.join(__dirname, '..', 'src', 'data', 'calls.ts');
+  const callsFilePath = path.join(__dirname, '..', 'src', 'data', 'protocol-calls.generated.json');
   const fileContent = fs.readFileSync(callsFilePath, 'utf-8');
-
-  // Extract the protocolCalls array from the TypeScript file
-  const match = fileContent.match(/export const protocolCalls.*?=\s*(\[[\s\S]*?\]);/);
-  if (!match) {
-    throw new Error('Could not find protocolCalls in calls.ts');
-  }
-
-  // Parse the array (it's already valid JavaScript syntax)
-  const callsArrayString = match[1]
-    .replace(/type:\s*'(\w+)'/g, 'type: "$1"')
-    .replace(/date:\s*'([\d-]+)'/g, 'date: "$1"')
-    .replace(/number:\s*'(\d+)'/g, 'number: "$1"')
-    .replace(/path:\s*'([^']+)'/g, 'path: "$1"');
-
-  try {
-    return eval(callsArrayString);
-  } catch (e) {
-    console.error('Failed to parse calls array:', e);
-    throw e;
-  }
+  return JSON.parse(fileContent);
 }
 
 const protocolCalls = getProtocolCalls();

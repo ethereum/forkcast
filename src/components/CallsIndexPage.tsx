@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useSearchParams } from 'react-router-dom';
 import { Logo } from './ui/Logo';
 import { Tooltip } from './ui/Tooltip';
 import ThemeToggle from './ui/ThemeToggle';
@@ -9,8 +9,9 @@ import { fetchUpcomingCalls, type UpcomingCall } from '../utils/github';
 import GlobalCallSearch from './GlobalCallSearch';
 
 const CallsIndexPage: React.FC = () => {
-  const [selectedFilter, setSelectedFilter] = useState<string>('all');
-  const [showEvents, setShowEvents] = useState<boolean>(true);
+  const [searchParams, setSearchParams] = useSearchParams();
+  const selectedFilter = searchParams.get('filter') || 'all';
+  const showEvents = searchParams.get('events') !== 'false';
   const [upcomingCalls, setUpcomingCalls] = useState<UpcomingCall[]>([]);
   const [searchOpen, setSearchOpen] = useState(false);
 
@@ -150,7 +151,12 @@ const CallsIndexPage: React.FC = () => {
                 return (
                   <button
                     key={option.value}
-                    onClick={() => setSelectedFilter(option.value)}
+                    onClick={() => setSearchParams(prev => {
+                      const next = new URLSearchParams(prev);
+                      if (option.value === 'all') next.delete('filter');
+                      else next.set('filter', option.value);
+                      return next;
+                    })}
                     className={`px-2.5 py-1 text-xs font-medium rounded-md transition-all whitespace-nowrap flex-shrink-0 ${
                       selectedFilter === option.value
                         ? activeColors[option.value as keyof typeof activeColors]
@@ -165,7 +171,12 @@ const CallsIndexPage: React.FC = () => {
 
             {/* Events toggle */}
             <button
-              onClick={() => setShowEvents(!showEvents)}
+              onClick={() => setSearchParams(prev => {
+                const next = new URLSearchParams(prev);
+                if (showEvents) next.set('events', 'false');
+                else next.delete('events');
+                return next;
+              })}
               className={`flex items-center gap-1.5 px-2.5 py-1 text-xs font-medium rounded-md transition-all ${
                 showEvents
                   ? 'bg-slate-600 dark:bg-slate-400 text-white dark:text-slate-900'

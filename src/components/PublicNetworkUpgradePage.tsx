@@ -806,7 +806,7 @@ const PublicNetworkUpgradePage: React.FC<PublicNetworkUpgradePageProps> = ({
                           >
                             <header className="border-b border-slate-100 dark:border-slate-700 pb-6 mb-6">
                               <div className="flex items-center gap-3">
-                                <h3 className="text-xl font-medium text-slate-900 dark:text-slate-100 leading-tight flex-1">
+                                <h3 className="text-base font-medium text-slate-900 dark:text-slate-100 leading-tight flex-1">
                                   <span className="text-slate-400 dark:text-slate-500 text-sm font-mono mr-2">Pending</span>
                                   <span>{proposal.title}</span>
                                   <Tooltip text={proposal.layer === 'EL' ? 'Primarily impacts Execution Layer' : 'Primarily impacts Consensus Layer'}>

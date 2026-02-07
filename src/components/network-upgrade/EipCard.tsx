@@ -44,7 +44,7 @@ export const EipCard: React.FC<EipCardProps> = ({ eip, forkName, handleExternalL
           <div className="flex-1">
             <div className="flex items-center gap-3 group relative">
               {/* Anchor link - positioned absolutely in the left margin */}
-              <div className="absolute -left-5 top-1/2 -translate-y-1/2 opacity-0 group-hover:opacity-100 transition-opacity duration-200">
+              <div className="absolute -left-5 top-0 bottom-0 flex items-center opacity-0 group-hover:opacity-100 transition-opacity duration-200">
                 <CopyLinkButton
                   sectionId={eipId}
                   title={`Copy link to this section`}
@@ -52,7 +52,7 @@ export const EipCard: React.FC<EipCardProps> = ({ eip, forkName, handleExternalL
                 />
               </div>
 
-              <h3 className="text-xl font-medium text-slate-900 dark:text-slate-100 leading-tight flex-1">
+              <h3 className="text-base font-medium text-slate-900 dark:text-slate-100 leading-tight flex-1">
                 {isHeadliner(eip, forkName) && (
                   <Tooltip
                     text={(() => {
@@ -82,7 +82,7 @@ export const EipCard: React.FC<EipCardProps> = ({ eip, forkName, handleExternalL
                 )}
                 <Link
                   to={`/eips/${eip.id}`}
-                  className="text-slate-400 dark:text-slate-500 hover:text-purple-600 dark:hover:text-purple-400 text-sm font-mono mr-2 relative -top-px transition-colors"
+                  className="text-slate-400 dark:text-slate-500 hover:text-purple-600 dark:hover:text-purple-400 text-sm font-mono mr-2 relative -top-px transition-colors underline decoration-1 underline-offset-2"
                 >
                   {getProposalPrefix(eip)}-{eip.id}
                 </Link>

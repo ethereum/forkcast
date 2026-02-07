@@ -101,7 +101,7 @@ export const OverviewSection: React.FC<OverviewSectionProps> = ({
               </p>
               <a
                 href="/rank"
-                className="inline-flex items-center gap-1.5 px-2.5 py-1 text-xs font-medium rounded border border-amber-300 dark:border-amber-600 bg-amber-100 dark:bg-amber-900/30 text-amber-700 dark:text-amber-300 hover:bg-amber-200 dark:hover:bg-amber-900/50 transition-colors"
+                className="inline-flex items-center gap-1.5 px-2 py-1.5 text-xs font-medium rounded border border-amber-300 dark:border-amber-600 bg-amber-100 dark:bg-amber-900/30 text-amber-700 dark:text-amber-300 hover:bg-amber-200 dark:hover:bg-amber-900/50 transition-colors"
               >
                 Create Your Ranking
                 <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">

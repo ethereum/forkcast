@@ -1,0 +1,329 @@
+{
+  "id": "bal-devnet-2",
+  "upgrade": "glamsterdam",
+  "headliner": "BAL",
+  "version": 2,
+  "launchDate": "2026-02-04",
+  "lastUpdated": "2026-02-03",
+  "notes": [
+    "EL clients: please add flags to enable/disable BAL optimizations batch/parallel io and parallel execution."
+  ],
+  "specVersions": {
+    "consensusSpecs": "v1.6.1",
+    "executionSpecs": "BAL v5.1.0"
+  },
+  "eips": [
+    {
+      "id": 7928,
+      "title": "Block-Level Access Lists",
+      "summary": "Enforced block access lists enabling parallel validation and executionless state updates",
+      "changeStatus": "updated",
+      "lastCommitSha": "fad1a1acab0a433970e47e0b73a4f8a28c220675"
+    },
+    {
+      "id": 8024,
+      "title": "Backward compatible SWAPN, DUPN, EXCHANGE",
+      "summary": "New instructions for stack manipulation beyond the 16-item limit",
+      "changeStatus": "updated",
+      "lastCommitSha": "05146bfcf2a3b0b5962b289ab2bd79b706a45906"
+    },
+    {
+      "id": 7843,
+      "title": "SLOTNUM opcode",
+      "summary": "New opcode (0x4b) returning the current slot number",
+      "changeStatus": "new",
+      "lastCommitSha": "c3bfd4ba41cf0fcbfe8c404f33ba89f5174971e0"
+    },
+    {
+      "id": 7708,
+      "title": "ETH transfers emit a log",
+      "summary": "All ETH transfers emit a log for unified tracking",
+      "changeStatus": "updated",
+      "lastCommitSha": "04026e96ac58077f98a848d0e15ae0e8a599875f"
+    },
+    {
+      "id": 7778,
+      "title": "Block Gas Accounting without Refunds",
+      "summary": "Exclude refunds from block gas accounting to prevent limit circumvention",
+      "changeStatus": "new",
+      "lastCommitSha": "3929b1aab57b493417eccec7457d1485eccb9768"
+    }
+  ],
+  "implementations": {
+    "el": [
+      {
+        "eipId": 7928,
+        "clients": {
+          "Besu": "done",
+          "Erigon": "done",
+          "Geth": "done",
+          "Nethermind": "done",
+          "Nimbus-EL": "done",
+          "Reth": "done"
+        }
+      },
+      {
+        "eipId": 7708,
+        "clients": {
+          "Besu": "done",
+          "Erigon": "done",
+          "Geth": "done",
+          "Nethermind": "done",
+          "Nimbus-EL": "done",
+          "Reth": "done"
+        }
+      },
+      {
+        "eipId": 7778,
+        "clients": {
+          "Besu": "done",
+          "Erigon": "in-progress",
+          "Geth": "done",
+          "Nethermind": "done",
+          "Nimbus-EL": "done",
+          "Reth": "done"
+        }
+      },
+      {
+        "eipId": 7843,
+        "clients": {
+          "Besu": "done",
+          "Erigon": "in-progress",
+          "Geth": "done",
+          "Nethermind": "done",
+          "Nimbus-EL": "done",
+          "Reth": "done"
+        }
+      },
+      {
+        "eipId": 8024,
+        "clients": {
+          "Besu": "done",
+          "Erigon": "in-progress",
+          "Geth": "done",
+          "Nethermind": "done",
+          "Nimbus-EL": "done",
+          "Reth": "done"
+        }
+      }
+    ],
+    "cl": [
+      {
+        "eipId": 7928,
+        "clients": {
+          "Lighthouse": "done",
+          "Lodestar": "done",
+          "Prysm": "done"
+        }
+      },
+      {
+        "eipId": 7843,
+        "clients": {
+          "Lighthouse": "done",
+          "Lodestar": "done",
+          "Prysm": "not-started"
+        }
+      }
+    ]
+  },
+  "prs": [
+    {
+      "repo": "ethereum/EIPs",
+      "number": 9003,
+      "description": "EIP-7708: Respec topic & emitting addr + add LOG2 for SELFDESTRUCT @ self",
+      "eipId": 7708,
+      "status": "merged",
+      "title": "Update EIP-7708: Move to Draft",
+      "headSha": "e8f1b9a9cd4803e6e84c25a6afce0f980c7c9483"
+    },
+    {
+      "repo": "ethereum/EIPs",
+      "number": 11127,
+      "description": "EIP-7708: Clarify SELFDESTRUCT LOG2 events",
+      "eipId": 7708,
+      "status": "merged",
+      "title": "Update EIP-7708: Clarify selfdestruct event",
+      "headSha": "b6ddf5a275423a31497411acab623fea3e46bbe2"
+    },
+    {
+      "repo": "ethereum/EIPs",
+      "number": 11187,
+      "description": "EIP-7708: Clarify CALL to self does not emit transfer log",
+      "eipId": 7708,
+      "status": "merged",
+      "title": "Update EIP-7708: Clarify CALL to self does not emit transfer log",
+      "headSha": "723c1b17e541193088d3c0f2ba3dba8f73cd7616"
+    },
+    {
+      "repo": "ethereum/EIPs",
+      "number": 11190,
+      "description": "EIP-7708: clarify order of burn logs and coinbase transfer logs",
+      "eipId": 7708,
+      "status": "merged",
+      "title": "Update EIP-7708: clarify order of burn logs and coinbase transfer logs",
+      "headSha": "04026e96ac58077f98a848d0e15ae0e8a599875f"
+    },
+    {
+      "repo": "ethereum/EIPs",
+      "number": 11191,
+      "description": "EIP-7778: Revert back to not having a receipt field",
+      "eipId": 7778,
+      "status": "merged",
+      "title": "Update EIP-7778: Revert back to not having a receipt field",
+      "headSha": "3929b1aab57b493417eccec7457d1485eccb9768"
+    },
+    {
+      "repo": "ethereum/EIPs",
+      "number": 11138,
+      "description": "EIP-7778: clarify that user gas accounting remains unchanged",
+      "eipId": 7778,
+      "status": "merged",
+      "title": "Update EIP-7778: clarify that user gas accounting remains unchanged",
+      "headSha": "5f39588a18582804d63a59ee8cc1d3dba1fc0d68"
+    },
+    {
+      "repo": "ethereum/EIPs",
+      "number": 11083,
+      "description": "EIP-7843: consistent naming, engine api",
+      "eipId": 7843,
+      "status": "merged",
+      "title": "Update EIP-7843: Move to Draft",
+      "headSha": "c3bfd4ba41cf0fcbfe8c404f33ba89f5174971e0"
+    },
+    {
+      "repo": "ethereum/EIPs",
+      "number": 10990,
+      "description": "EIP-7928: spurious entry detection",
+      "eipId": 7928,
+      "status": "merged",
+      "title": "Update EIP-7928: clarify spurious entry detection and fix typos",
+      "headSha": "f397e6ce2dfd15b6ea26e00fdaa228920fa13e5e"
+    },
+    {
+      "repo": "ethereum/EIPs",
+      "number": 11066,
+      "description": "EIP-7928: gas validation",
+      "eipId": 7928,
+      "status": "merged",
+      "title": "Update EIP-7928: Further clarify access",
+      "headSha": "78143cb526938f7ce9176afe7b0be8af4a3c7ef8"
+    },
+    {
+      "repo": "ethereum/EIPs",
+      "number": 10895,
+      "description": "EIP-7928: System contract access clarification",
+      "eipId": 7928,
+      "status": "merged",
+      "title": "Update EIP-7928: Clarify system contract caller",
+      "headSha": "293d1a708b7e504b4823c04aab727bdd63ad2c2c"
+    },
+    {
+      "repo": "ethereum/EIPs",
+      "number": 10940,
+      "description": "EIP-7928: BAL retention period WSP",
+      "eipId": 7928,
+      "status": "merged",
+      "title": "Update EIP-7928: change BAL retention period to WSP",
+      "headSha": "f7efd2acb666456d5e9237e02a8de5f54547e0ee"
+    },
+    {
+      "repo": "ethereum/EIPs",
+      "number": 11094,
+      "description": "EIP-8024: Switch encoding to push-postfix (NOT included in devnet-2)",
+      "eipId": 8024,
+      "status": "draft",
+      "title": "Update EIP-8024: Switch ecoding to push-postfix",
+      "headSha": "670dd10072ad79b5333155f618070524997065df"
+    },
+    {
+      "repo": "ethereum/execution-specs",
+      "number": 2023,
+      "description": "EIP-7708: ETH Transfer Emit",
+      "eipId": 7708,
+      "status": "merged",
+      "title": "feat(spec-specs): EIP-7708 ETH Transfers Emit a Log",
+      "headSha": "bfa2cf03e7fbe24bba556b53c4e57f8e089005e9"
+    },
+    {
+      "repo": "ethereum/execution-specs",
+      "number": 1401,
+      "description": "EIP-7778: Block Gas Accounting",
+      "eipId": 7778,
+      "status": "merged",
+      "title": "feat(spec-specs): Implement EIP-7778 Block Gas Accounting without Refunds",
+      "headSha": "52258b0da55bc52cae2a6851f349bb49a43b136f"
+    },
+    {
+      "repo": "ethereum/execution-specs",
+      "number": 2007,
+      "description": "EIP-7843: SlotNum Opcode",
+      "eipId": 7843,
+      "status": "merged",
+      "title": "feat(src): EIP-7843 (SLOTNUM) Draft",
+      "headSha": "8682b5df60a2abddba76d8e43f48e73cac9e0151"
+    },
+    {
+      "repo": "ethereum/execution-specs",
+      "number": 1719,
+      "description": "EIP-7928: Implement Block-Level Access Lists",
+      "eipId": 7928,
+      "status": "merged",
+      "title": "feat(specs,tests): Implement EIP-7928 Block-Level Access Lists",
+      "headSha": "1d11d8d2e0ca104a4731e37aaa671fc19a6d66f1"
+    },
+    {
+      "repo": "ethereum/execution-specs",
+      "number": 1917,
+      "description": "EIP-7928: move bal from payload",
+      "eipId": 7928,
+      "status": "merged",
+      "title": "feat(specs): EIP-7928 move bal from payload",
+      "headSha": "2344445f9e74e9dd2ca8bbed70754137150fc9fe"
+    },
+    {
+      "repo": "ethereum/execution-specs",
+      "number": 2021,
+      "description": "EIP-8024: tests added",
+      "eipId": 8024,
+      "status": "merged",
+      "title": "feat(src): EIP-8024 tests added",
+      "headSha": "1a231a67bc29945fb648df5348e4976048ca671b"
+    },
+    {
+      "repo": "ethereum/execution-apis",
+      "number": 731,
+      "description": "EIP-7843: engine_forkchoiceUpdatedV4",
+      "eipId": 7843,
+      "status": "merged",
+      "title": "engine: EIP-7843 changes - adding slot number to fcU",
+      "headSha": "dc4dbca37ef8697d782f431af19120beaf5517f5"
+    },
+    {
+      "repo": "ethereum/execution-apis",
+      "number": 691,
+      "description": "EIP-7928: ExecutionPayloadV4",
+      "eipId": 7928,
+      "status": "merged",
+      "title": "Add Amsterdam execution-api specs",
+      "headSha": "4ec8e5735ebb3f2ce0702726385cdde70034f78c"
+    },
+    {
+      "repo": "ethereum/execution-apis",
+      "number": 726,
+      "description": "EIP-7928: Add Block-level Access Lists JSON RPC methods",
+      "eipId": 7928,
+      "status": "open",
+      "title": "Add EIP-7928 Block-level Access Lists JSON RPC methods",
+      "headSha": "8e63546491f63919915b2cf75d004e35eb1980b6"
+    },
+    {
+      "repo": "ethereum/execution-apis",
+      "number": 727,
+      "description": "EIP-7928: define API methods",
+      "eipId": 7928,
+      "status": "merged",
+      "title": "engine: define EIP-7928 API methods",
+      "headSha": "585763b34564202d4611d318006ea1f3efb43616"
+    }
+  ]
+}

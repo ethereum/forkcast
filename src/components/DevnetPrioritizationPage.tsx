@@ -638,6 +638,13 @@ const DevnetPrioritizationPage: React.FC = () => {
 
                     {/* Right: Actions */}
                     <div className="flex items-center gap-3 shrink-0">
+                      <Link
+                        to={`/devnets/${devnet.id}`}
+                        onClick={(e) => e.stopPropagation()}
+                        className="hidden sm:inline-flex items-center gap-1 text-xs text-purple-600 hover:text-purple-800 dark:text-purple-400 dark:hover:text-purple-300 transition-colors"
+                      >
+                        <span className="underline decoration-1 underline-offset-2">Spec Sheet</span>
+                      </Link>
                       <a
                         href={notesUrl}
                         target="_blank"

@@ -12,6 +12,7 @@ import { StakeholderUpgradePage } from './components/stakeholder';
 import ComplexityPage from './components/ComplexityPage';
 import PrioritizationPage from './components/PrioritizationPage';
 import DevnetPrioritizationPage from './components/DevnetPrioritizationPage';
+import DevnetSpecPage from './components/DevnetSpecPage';
 import { getUpgradeById } from './data/upgrades';
 import { useAnalytics } from './hooks/useAnalytics';
 import { ThemeProvider } from './contexts/ThemeContext';
@@ -131,6 +132,7 @@ function App() {
           <Route path="/complexity" element={<ComplexityPage />} />
           <Route path="/priority" element={<PrioritizationPage />} />
           <Route path="/devnets" element={<DevnetPrioritizationPage />} />
+          <Route path="/devnets/:id" element={<DevnetSpecPage />} />
           {/* Catch-all route that redirects to home page */}
           <Route path="*" element={<Navigate to="/" replace />} />
         </Routes>

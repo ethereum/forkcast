@@ -15,7 +15,7 @@ const MANIFEST_URL = 'https://raw.githubusercontent.com/ethereum/pm/master/.gith
 const ASSETS_BASE_URL = 'https://raw.githubusercontent.com/ethereum/pm/master/.github/ACDbot/artifacts';
 const LOCAL_ASSETS_DIR = join(ROOT, 'public/artifacts');
 const DENYLIST = new Set([
-  'rpcstandards',
+  // Placeholder: 'series'
 ]);
 
 const GENERATED_JSON_PATH = join(ROOT, 'src/data/protocol-calls.generated.json');

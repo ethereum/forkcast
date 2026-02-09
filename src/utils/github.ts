@@ -1,7 +1,7 @@
 import { protocolCalls } from '../data/calls';
 
 export interface UpcomingCall {
-  type: 'acdc' | 'acde' | 'acdt' | 'focil' | 'bal' | 'epbs';
+  type: 'acdc' | 'acde' | 'acdt' | 'focil' | 'bal' | 'epbs' | 'rpc';
   title: string;
   date: string;
   number: string;
@@ -121,6 +121,23 @@ function parseCallFromTitle(title: string, githubUrl: string, issueNumber: numbe
 
     return {
       type: 'bal',
+      title: title.trim(),
+      date,
+      number: number.padStart(3, '0'),
+      githubUrl,
+      issueNumber
+    };
+  }
+
+  // Try to match RPC Standards pattern: "RPC Standards #20 | February 19, 2026"
+  const rpcMatch = title.match(/RPC Standards\s*#\s*(\d+)\s*\|\s*(.+)/i);
+  if (rpcMatch) {
+    const [, number, dateStr] = rpcMatch;
+    const date = parseCallDate(dateStr.trim());
+    if (!date) return null;
+
+    return {
+      type: 'rpc',
       title: title.trim(),
       date,
       number: number.padStart(3, '0'),

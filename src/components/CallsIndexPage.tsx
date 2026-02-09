@@ -113,7 +113,17 @@ const CallsIndexPage: React.FC = () => {
           </div>
           <Logo size="md" className="mb-2" />
           <div className="flex items-center justify-between">
-            <h1 className="text-xl font-semibold text-slate-900 dark:text-slate-100">Protocol Calendar</h1>
+            <div>
+              <h1 className="text-xl font-semibold text-slate-900 dark:text-slate-100">Protocol Calendar</h1>
+              <a
+                href="https://calendar.google.com/calendar/embed?src=c_upaofong8mgrmrkegn7ic7hk5s%40group.calendar.google.com"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-xs text-slate-500 dark:text-slate-400 hover:text-slate-700 dark:hover:text-slate-300 transition-colors"
+              >
+                Full calendar ↗
+              </a>
+            </div>
             <div className="hidden sm:block text-sm text-slate-500 dark:text-slate-400">
               {filteredCalls.length} calls
               {filteredUpcomingCalls.length > 0 && (
@@ -345,7 +355,8 @@ const CallsIndexPage: React.FC = () => {
                             acdt: 'border-l-teal-500 dark:border-l-teal-400',
                             epbs: 'border-l-amber-500 dark:border-l-amber-400',
                             bal: 'border-l-red-500 dark:border-l-red-400',
-                            focil: 'border-l-orange-500 dark:border-l-orange-400'
+                            focil: 'border-l-orange-500 dark:border-l-orange-400',
+                            rpc: 'border-l-violet-500 dark:border-l-violet-400'
                           };
 
                           const upcomingCallTypeBadgeColors: Record<CallType, string> = {
@@ -357,7 +368,8 @@ const CallsIndexPage: React.FC = () => {
                             focil: 'bg-orange-100 dark:bg-orange-900/30 text-orange-700 dark:text-orange-300',
                             price: 'bg-rose-100 dark:bg-rose-900/30 text-rose-700 dark:text-rose-300',
                             tli: 'bg-pink-100 dark:bg-pink-900/30 text-pink-700 dark:text-pink-300',
-                            pqts: 'bg-yellow-100 dark:bg-yellow-900/30 text-yellow-700 dark:text-yellow-300'
+                            pqts: 'bg-yellow-100 dark:bg-yellow-900/30 text-yellow-700 dark:text-yellow-300',
+                            rpc: 'bg-violet-100 dark:bg-violet-900/30 text-violet-700 dark:text-violet-300'
                           };
 
                           const cardContent = (
@@ -436,7 +448,8 @@ const CallsIndexPage: React.FC = () => {
                           focil: 'border-l-orange-500 dark:border-l-orange-400',
                           price: 'border-l-rose-500 dark:border-l-rose-400',
                           tli: 'border-l-pink-500 dark:border-l-pink-400',
-                          pqts: 'border-l-yellow-500 dark:border-l-yellow-400'
+                          pqts: 'border-l-yellow-500 dark:border-l-yellow-400',
+                          rpc: 'border-l-violet-500 dark:border-l-violet-400'
                         };
 
                         const callTypeBadgeColors: Record<CallType, string> = {
@@ -448,7 +461,8 @@ const CallsIndexPage: React.FC = () => {
                           focil: 'bg-orange-100 dark:bg-orange-900/30 text-orange-700 dark:text-orange-300',
                           price: 'bg-rose-100 dark:bg-rose-900/30 text-rose-700 dark:text-rose-300',
                           tli: 'bg-pink-100 dark:bg-pink-900/30 text-pink-700 dark:text-pink-300',
-                          pqts: 'bg-yellow-100 dark:bg-yellow-900/30 text-yellow-700 dark:text-yellow-300'
+                          pqts: 'bg-yellow-100 dark:bg-yellow-900/30 text-yellow-700 dark:text-yellow-300',
+                          rpc: 'bg-violet-100 dark:bg-violet-900/30 text-violet-700 dark:text-violet-300'
                         };
 
                         return (

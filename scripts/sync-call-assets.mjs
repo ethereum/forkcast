@@ -19,13 +19,14 @@ const DENYLIST = new Set([
 ]);
 
 const GENERATED_JSON_PATH = join(ROOT, 'src/data/protocol-calls.generated.json');
-const KNOWN_TYPES = new Set(['acdc', 'acde', 'acdt', 'epbs', 'bal', 'focil', 'price', 'tli', 'pqts']);
+const KNOWN_TYPES = new Set(['acdc', 'acde', 'acdt', 'epbs', 'bal', 'focil', 'price', 'tli', 'pqts', 'rpc']);
 
 // Map pm series names to forkcast type names (for folder paths)
 const SERIES_TO_TYPE = {
   glamsterdamrepricings: 'price',
   trustlesslogindex: 'tli',
   pqtransactionsignatures: 'pqts',
+  rpcstandards: 'rpc',
 };
 
 function getLocalType(series) {

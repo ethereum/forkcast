@@ -285,8 +285,8 @@ export const GLAMSTERDAM_PROGRESS: ForkProgress = {
         },
         {
           name: 'CFI Deadline',
-          status: 'upcoming',
-          projectedDate: 'Dec 15, 2025'
+          status: 'completed',
+          date: 'Jan 29, 2026'
         }
       ]
     },
@@ -324,7 +324,7 @@ export const GLAMSTERDAM_PROGRESS: ForkProgress = {
   ]
 };
 
-export const HEGOTA_PROJECTION: ForkProgress = {
+export const HEGOTA_PROGRESS: ForkProgress = {
   forkName: 'Hegota',
   phases: [
     {

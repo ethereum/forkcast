@@ -14,7 +14,21 @@ import ThemeToggle from './ui/ThemeToggle';
 import AnalysisNav from './ui/AnalysisNav';
 import { EipComplexity } from '../types/complexity';
 import { EipAggregateStance } from '../types/prioritization';
-import devnetData from '../data/devnets/glamsterdam.json';
+import devnetDataRaw from '../data/devnets/glamsterdam.json';
+
+const devnetData = devnetDataRaw as {
+  upgrade: string;
+  lastUpdated: string;
+  devnets: Array<{
+    id: string;
+    type: string;
+    headliner: string;
+    version: number;
+    launchDate: string;
+    eips: number[];
+    isTarget?: boolean;
+  }>;
+};
 
 type SortField = 'eip' | 'complexity' | 'support' | 'stage' | 'devnets' | 'weighted';
 type SortDirection = 'asc' | 'desc';

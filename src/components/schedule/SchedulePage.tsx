@@ -1,6 +1,6 @@
 import React, { useState, useMemo, useEffect } from 'react';
 import { Logo } from '../ui/Logo';
-import { FUSAKA_PROGRESS, GLAMSTERDAM_PROGRESS, UPGRADE_PROCESS_PHASES } from '../../constants/timeline-phases';
+import { FUSAKA_PROGRESS, GLAMSTERDAM_PROGRESS, HEGOTA_PROGRESS, UPGRADE_PROCESS_PHASES } from '../../constants/timeline-phases';
 import { useMetaTags } from '../../hooks/useMetaTags';
 import { useAnalytics } from '../../hooks/useAnalytics';
 import ThemeToggle from '../ui/ThemeToggle';
@@ -24,10 +24,10 @@ interface PlanningTableState {
 }
 
 const DEFAULT_STATE: PlanningTableState = {
-  glamsterdamMainnetDate: '2026-06-01',
+  glamsterdamMainnetDate: '2026-07-01',
   hegotaMainnetDate: '2027-01-15',
-  glamsterdamDevnetCount: 6,
-  hegotaDevnetCount: 6,
+  glamsterdamDevnetCount: 5,
+  hegotaDevnetCount: 5,
   lockedDates: {},
   phaseDurations: DEFAULT_PHASE_DURATIONS,
 };
@@ -174,15 +174,39 @@ const SchedulePage: React.FC = () => {
     };
   }, [glamsterdamMainnetDate, glamsterdamDevnetCount, phaseDurations]);
 
-  const dynamicHegotaProjection = useMemo(() =>
-    generateForkProgress('Hegota', parseLocalDate(hegotaMainnetDate), {
+  const dynamicHegotaProjection = useMemo(() => {
+    const generated = generateForkProgress('Hegota', parseLocalDate(hegotaMainnetDate), {
       headlinerProposalDeadlineOverride: new Date(2026, 1, 4), // February 4, 2026
       headlinerSelectionDeadlineOverride: new Date(2026, 1, 26), // February 26, 2026
       devnetCount: hegotaDevnetCount,
       durations: phaseDurations,
-    }),
-    [hegotaMainnetDate, hegotaDevnetCount, phaseDurations]
-  );
+    });
+    // Use actual dates from HEGOTA_PROGRESS for completed milestones
+    return {
+      ...generated,
+      phases: generated.phases.map((phase, idx) => {
+        const staticPhase = HEGOTA_PROGRESS.phases[idx];
+        if (staticPhase?.substeps) {
+          return {
+            ...phase,
+            substeps: phase.substeps?.map((substep, substepIdx) => {
+              const staticSubstep = staticPhase.substeps?.[substepIdx];
+              if (staticSubstep?.date) {
+                return {
+                  ...substep,
+                  status: staticSubstep.status,
+                  date: staticSubstep.date,
+                  projectedDate: staticSubstep.date
+                };
+              }
+              return substep;
+            })
+          };
+        }
+        return phase;
+      })
+    };
+  }, [hegotaMainnetDate, hegotaDevnetCount, phaseDurations]);
 
   // Get all milestones in chronological order for a fork
   const getMilestoneOrder = (fork: string): Array<{ phaseId: string; itemName: string }> => {

@@ -10,8 +10,8 @@ interface ChatLogProps {
   content: string;
   scrollContainerRef?: React.RefObject<HTMLDivElement>;
   syncConfig?: {
-    transcriptStartTime: string;
-    videoStartTime: string;
+    transcriptStartTime: string | null;
+    videoStartTime: string | null;
     description?: string;
   } | null;
   selectedSearchResult?: {timestamp: string, text: string, type: string} | null;
@@ -86,7 +86,7 @@ const ChatLog: React.FC<ChatLogProps> = ({ content, syncConfig, selectedSearchRe
   };
 
   const getAdjustedVideoTime = (chatTimestamp: string): number => {
-    if (!syncConfig) return 0;
+    if (!syncConfig?.transcriptStartTime || !syncConfig?.videoStartTime) return 0;
     const chatSeconds = timestampToSeconds(chatTimestamp);
     const syncOffsetSeconds = timestampToSeconds(syncConfig.transcriptStartTime) - timestampToSeconds(syncConfig.videoStartTime);
     return chatSeconds - syncOffsetSeconds;

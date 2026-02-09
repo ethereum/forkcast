@@ -35,8 +35,8 @@ interface CallConfig {
   videoUrl?: string;
   issue?: number;
   sync?: {
-    transcriptStartTime: string;
-    videoStartTime: string;
+    transcriptStartTime: string | null;
+    videoStartTime: string | null;
     description?: string;
   };
 }

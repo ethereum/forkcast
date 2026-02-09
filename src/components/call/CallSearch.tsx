@@ -18,8 +18,8 @@ interface CallSearchProps {
   tldrData?: any;
   onResultClick?: (timestamp: string, searchResult?: SearchResult) => void;
   syncConfig?: {
-    transcriptStartTime: string;
-    videoStartTime: string;
+    transcriptStartTime: string | null;
+    videoStartTime: string | null;
   };
   currentVideoTime?: number;
   isOpen: boolean;

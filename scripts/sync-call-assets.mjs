@@ -69,13 +69,16 @@ function normalizeManifest(manifest) {
   return manifest.calls || {};
 }
 
-function generateConfig(callData) {
+const LIVESTREAMED_TYPES = new Set(['acdc', 'acde', 'acdt']);
+
+function generateConfig(callData, localType) {
+  const needsManualSync = LIVESTREAMED_TYPES.has(localType);
   return {
     issue: callData.issue,
     videoUrl: callData.videoUrl,
     sync: {
-      transcriptStartTime: '00:00:00',
-      videoStartTime: '00:00:00'
+      transcriptStartTime: needsManualSync ? null : '00:00:00',
+      videoStartTime: needsManualSync ? null : '00:00:00'
     }
   };
 }
@@ -125,7 +128,7 @@ async function syncCall(remoteSeries, localType, callId, callData, force = false
   if (!existsSync(configPath)) {
     // Create new config from manifest data
     console.log('  Generating config.json');
-    const config = generateConfig(callData);
+    const config = generateConfig(callData, localType);
     writeFileSync(configPath, JSON.stringify(config, null, 2));
     changesMade = true;
   } else if (callData.videoUrl) {

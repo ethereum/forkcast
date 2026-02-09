@@ -32,8 +32,8 @@ interface TldrData {
 }
 
 interface SyncConfig {
-  transcriptStartTime: string;
-  videoStartTime: string;
+  transcriptStartTime: string | null;
+  videoStartTime: string | null;
   description?: string;
 }
 

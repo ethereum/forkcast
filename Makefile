@@ -1,4 +1,4 @@
-.PHONY: install dev build lint format format-check preview clean validate-eips sync-calls docker-dev docker-build
+.PHONY: install dev build lint format format-check preview clean validate-eips sync-calls docker-dev
 
 install: ## Install dependencies
 	npm ci
@@ -32,9 +32,6 @@ clean: ## Remove build artifacts
 
 docker-dev: ## Start dev server via Docker (no node/npm required)
 	docker compose up --build dev
-
-docker-build: ## Production build via Docker
-	docker build --target prod -t forkcast .
 
 help: ## Show this help
 	@grep -E '^[a-zA-Z_-]+:.*?## .*$$' $(MAKEFILE_LIST) | sort | awk 'BEGIN {FS = ":.*?## "}; {printf "\033[36m%-20s\033[0m %s\n", $$1, $$2}'

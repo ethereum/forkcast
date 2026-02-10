@@ -37,29 +37,6 @@ Additional personas served in various capacities:
 * App developers
 * End users and enthusiasts
 
-### Development
-
-**With Docker (recommended):**
-
-```bash
-git clone https://github.com/ethereum/forkcast.git
-cd forkcast
-make docker-dev
-```
-
-**Without Docker:**
-
-```bash
-git clone https://github.com/ethereum/forkcast.git
-cd forkcast
-make install
-make dev
-```
-
-Open http://localhost:5173 in your browser.
-
-Run `make help` for all available commands.
-
 ### How we serve
 
 Forkcast:

@@ -3,6 +3,7 @@ import { EIP, ClientTeamPerspective } from '../../types';
 import {
   getInclusionStage,
 } from '../../utils';
+import { ActivationDetails } from '../../data/upgrades';
 import { CopyLinkButton } from '../ui/CopyLinkButton';
 import { ClientPerspectives } from './ClientPerspectives';
 
@@ -14,6 +15,7 @@ interface OverviewSectionProps {
   onStageClick: (stageId: string) => void;
   clientTeamPerspectives?: ClientTeamPerspective[];
   onExternalLinkClick?: (linkType: string, url: string) => void;
+  activationDetails?: ActivationDetails;
 }
 
 export const OverviewSection: React.FC<OverviewSectionProps> = ({
@@ -23,20 +25,16 @@ export const OverviewSection: React.FC<OverviewSectionProps> = ({
   activationDate,
   onStageClick,
   clientTeamPerspectives,
+  activationDetails,
   onExternalLinkClick,
 }) => {
-  // For Live upgrades, only show Included and Declined for Inclusion
+  // For Live upgrades, only show Included (declined is replaced by activation details)
   const stageStats = status === 'Live'
     ? [
         {
           stage: 'Included',
           count: eips.filter(eip => getInclusionStage(eip, forkName) === 'Included').length,
           color: 'bg-emerald-50 text-emerald-800 dark:bg-emerald-900/20 dark:text-emerald-300'
-        },
-        {
-          stage: 'Declined for Inclusion',
-          count: eips.filter(eip => getInclusionStage(eip, forkName) === 'Declined for Inclusion').length,
-          color: 'bg-red-50 text-red-800 dark:bg-red-900/20 dark:text-red-300'
         }
       ]
     : [
@@ -129,7 +127,7 @@ export const OverviewSection: React.FC<OverviewSectionProps> = ({
 
       {/* Stage counts grid - hidden for Hegota during headliner selection */}
       {forkName.toLowerCase() !== 'hegota' && (
-        <div className={status === 'Live' ? 'grid grid-cols-1 md:grid-cols-4 gap-4' : 'grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4'}>
+        <div className={status === 'Live' ? 'grid grid-cols-1 md:grid-cols-3 gap-4' : 'grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4'}>
           {/* Live status info box - only for Live upgrades */}
           {status === 'Live' && (
             <div className="flex flex-col items-center justify-center p-4 rounded bg-emerald-50 dark:bg-emerald-900/20 border border-emerald-200 dark:border-emerald-700">
@@ -149,7 +147,6 @@ export const OverviewSection: React.FC<OverviewSectionProps> = ({
           {stageStats.map(({ stage, count, color }) => {
             const stageId = stage.toLowerCase().replace(/\s+/g, '-');
             const hasEips = count > 0;
-            const isIncludedInLive = status === 'Live' && stage === 'Included';
 
             return (
               <button
@@ -157,14 +154,12 @@ export const OverviewSection: React.FC<OverviewSectionProps> = ({
                 onClick={() => hasEips && onStageClick(stageId)}
                 disabled={!hasEips}
                 className={`text-center p-4 rounded transition-all duration-200 ${
-                  isIncludedInLive ? 'md:col-span-2' : ''
-                } ${
                   hasEips
                     ? 'bg-slate-50 dark:bg-slate-700 hover:bg-slate-100 dark:hover:bg-slate-600 hover:shadow-sm cursor-pointer'
                     : 'bg-slate-50 dark:bg-slate-700 opacity-50 cursor-not-allowed'
                 }`}
               >
-                <div className={`font-light text-slate-900 dark:text-slate-100 mb-1 ${isIncludedInLive ? 'text-3xl' : 'text-2xl'}`}>{count}</div>
+                <div className="font-light text-slate-900 dark:text-slate-100 mb-1 text-2xl">{count}</div>
                 <div className="text-xs text-slate-500 dark:text-slate-400 mb-1">EIP{count !== 1 ? 's' : ''}</div>
                 <div className={`text-xs font-medium px-2 py-1 rounded inline-block ${color}`}>
                   {stage}
@@ -172,6 +167,28 @@ export const OverviewSection: React.FC<OverviewSectionProps> = ({
               </button>
             );
           })}
+          {/* Activation details for Live upgrades */}
+          {status === 'Live' && activationDetails && (
+            <a
+              href={`https://ethereum.org/ethereum-forks/#${forkName.toLowerCase()}`}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="p-4 rounded bg-slate-50 dark:bg-slate-700 hover:bg-slate-100 dark:hover:bg-slate-600 hover:shadow-sm cursor-pointer transition-all duration-200 space-y-3"
+            >
+              <div className="flex items-center justify-between">
+                <span className="text-xs text-slate-500 dark:text-slate-400">Block</span>
+                <span className="text-sm font-medium text-slate-900 dark:text-slate-100">{activationDetails.blockNumber.toLocaleString()}</span>
+              </div>
+              <div className="flex items-center justify-between">
+                <span className="text-xs text-slate-500 dark:text-slate-400">Epoch</span>
+                <span className="text-sm font-medium text-slate-900 dark:text-slate-100">{activationDetails.epochNumber.toLocaleString()}</span>
+              </div>
+              <div className="flex items-center justify-between">
+                <span className="text-xs text-slate-500 dark:text-slate-400">Slot</span>
+                <span className="text-sm font-medium text-slate-900 dark:text-slate-100">{activationDetails.slotNumber.toLocaleString()}</span>
+              </div>
+            </a>
+          )}
         </div>
       )}
     </div>

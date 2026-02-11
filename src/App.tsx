@@ -88,6 +88,7 @@ function App() {
               status={pectraUpgrade.status}
               activationDate={pectraUpgrade.activationDate}
               metaEipLink={pectraUpgrade.metaEipLink}
+              activationDetails={pectraUpgrade.activationDetails}
             />
           } />
           <Route path="/upgrade/fusaka" element={
@@ -98,6 +99,7 @@ function App() {
               status={fusakaUpgrade.status}
               activationDate={fusakaUpgrade.activationDate}
               metaEipLink={fusakaUpgrade.metaEipLink}
+              activationDetails={fusakaUpgrade.activationDetails}
             />
           } />
           <Route path="/upgrade/glamsterdam" element={

@@ -1,5 +1,11 @@
 import { ClientTeamPerspective } from '../types/eip';
 
+export interface ActivationDetails {
+  blockNumber: number;
+  epochNumber: number;
+  slotNumber: number;
+}
+
 export interface NetworkUpgrade {
   id: string;
   path: string;
@@ -11,6 +17,7 @@ export interface NetworkUpgrade {
   disabled: boolean;
   metaEipLink?: string;
   clientTeamPerspectives?: ClientTeamPerspective[];
+  activationDetails?: ActivationDetails;
 }
 
 export const networkUpgrades: NetworkUpgrade[] = [
@@ -43,7 +50,12 @@ export const networkUpgrades: NetworkUpgrade[] = [
     status: 'Live',
     activationDate: 'May 7, 2025',
     disabled: false,
-    metaEipLink: 'https://ethereum-magicians.org/t/pectra-network-upgrade-meta-thread/16809'
+    metaEipLink: 'https://ethereum-magicians.org/t/pectra-network-upgrade-meta-thread/16809',
+    activationDetails: {
+      blockNumber: 22431084,
+      epochNumber: 364032,
+      slotNumber: 11649024
+    }
   },
   {
     id: 'fusaka',
@@ -53,7 +65,12 @@ export const networkUpgrades: NetworkUpgrade[] = [
     tagline: 'PeerDAS enables nodes to specialize in storing data subsets, increasing capacity for Layer 2 networks.',
     status: 'Live',
     activationDate: 'Dec 3, 2025',
-    disabled: false
+    disabled: false,
+    activationDetails: {
+      blockNumber: 23935694,
+      epochNumber: 411392,
+      slotNumber: 13164544
+    }
   },
   {
     id: 'glamsterdam',

@@ -21,6 +21,7 @@ import {
   getInclusionStageColor,
   getUpgradeStatusColor
 } from '../utils/colors';
+import { ActivationDetails } from '../data/upgrades';
 import { Tooltip, CopyLinkButton } from './ui';
 import ThemeToggle from './ui/ThemeToggle';
 import {
@@ -56,6 +57,7 @@ interface PublicNetworkUpgradePageProps {
   activationDate?: string;
   metaEipLink?: string;
   clientTeamPerspectives?: ClientTeamPerspective[];
+  activationDetails?: ActivationDetails;
 }
 
 const PublicNetworkUpgradePage: React.FC<PublicNetworkUpgradePageProps> = ({
@@ -65,7 +67,8 @@ const PublicNetworkUpgradePage: React.FC<PublicNetworkUpgradePageProps> = ({
   status,
   activationDate,
   metaEipLink,
-  clientTeamPerspectives
+  clientTeamPerspectives,
+  activationDetails
 }) => {
   // Determine display mode for this upgrade page
   const pageMode = getUpgradePageMode(forkName);
@@ -480,6 +483,7 @@ const PublicNetworkUpgradePage: React.FC<PublicNetworkUpgradePageProps> = ({
                 onStageClick={scrollToSection}
                 clientTeamPerspectives={clientTeamPerspectives}
                 onExternalLinkClick={handleExternalLinkClick}
+                activationDetails={activationDetails}
               />
 
               {/* Timeline Section */}

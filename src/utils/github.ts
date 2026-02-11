@@ -1,7 +1,7 @@
 import { protocolCalls } from '../data/calls';
 
 export interface UpcomingCall {
-  type: 'acdc' | 'acde' | 'acdt' | 'focil' | 'bal' | 'epbs' | 'rpc';
+  type: 'acdc' | 'acde' | 'acdt' | 'focil' | 'bal' | 'epbs' | 'rpc' | 'zkevm';
   title: string;
   date: string;
   number: string;
@@ -146,6 +146,23 @@ function parseCallFromTitle(title: string, githubUrl: string, issueNumber: numbe
     };
   }
 
+  // Try to match L1-zkEVM pattern: "L1-zkEVM breakout #01, Feb 11, 2026"
+  const zkevmMatch = title.match(/L1-zkEVM.*?#(\d+),\s*(.+)/i);
+  if (zkevmMatch) {
+    const [, number, dateStr] = zkevmMatch;
+    const date = parseCallDate(dateStr.trim());
+    if (!date) return null;
+
+    return {
+      type: 'zkevm',
+      title: title.trim(),
+      date,
+      number: number.padStart(3, '0'),
+      githubUrl,
+      issueNumber
+    };
+  }
+
   return null;
 }
 
@@ -204,8 +221,8 @@ export async function fetchUpcomingCalls(): Promise<UpcomingCall[]> {
           parsedCalls.push(call);
           foundTypes.add(call.type);
 
-          // Stop once we have one of each type (ACDC, ACDE, ACDT, FOCIL, BAL, ePBS, RPC)
-          if (foundTypes.size === 7) break;
+          // Stop once we have one of each type (ACDC, ACDE, ACDT, FOCIL, BAL, ePBS, RPC, zkEVM)
+          if (foundTypes.size === 8) break;
         }
       }
     }

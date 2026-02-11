@@ -101,7 +101,8 @@ const HomePage = () => {
     price: 'bg-rose-100 dark:bg-rose-900/30 text-rose-700 dark:text-rose-300',
     tli: 'bg-pink-100 dark:bg-pink-900/30 text-pink-700 dark:text-pink-300',
     pqts: 'bg-yellow-100 dark:bg-yellow-900/30 text-yellow-700 dark:text-yellow-300',
-    rpc: 'bg-violet-100 dark:bg-violet-900/30 text-violet-700 dark:text-violet-300'
+    rpc: 'bg-violet-100 dark:bg-violet-900/30 text-violet-700 dark:text-violet-300',
+    zkevm: 'bg-fuchsia-100 dark:bg-fuchsia-900/30 text-fuchsia-700 dark:text-fuchsia-300'
   };
 
   const getStatusColor = (status: string) => {

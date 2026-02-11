@@ -1,0 +1,67 @@
+{
+  "id": null,
+  "title": "2D PeerDAS and Partial Reconstruction",
+  "status": "Draft",
+  "description": "A native 2D PeerDAS design to support fine-grained sampling, symetric participation for reconstruction and strong security guarantees.",
+  "author": "Leo",
+  "type": "Standards Track",
+  "category": "Core",
+  "createdDate": "2026-02-11",
+  "discussionLink": "https://ethereum-magicians.org/t/hegota-headliner-partial-reconstruction-and-2d-peerdas/27652",
+  "reviewer": "bot",
+  "layer": "CL",
+  "forkRelationships": [
+    {
+      "forkName": "Hegota",
+      "statusHistory": [
+        {
+          "status": "Proposed",
+          "call": null,
+          "date": null
+        }
+      ],
+      "champion": {
+        "name": "Leo",
+        "discord": "leobago"
+      }
+    }
+  ],
+  "laymanDescription": "New DAS design by enabling row-level data dissemination and partial reconstruction via cell-level messaging and 2D PeerDAS",
+  "stakeholderImpacts": {
+    "endUsers": {
+      "description": "More scalability and relibaility"
+    },
+    "appDevs": {
+      "description": ""
+    },
+    "walletDevs": {
+      "description": ""
+    },
+    "toolingInfra": {
+      "description": ""
+    },
+    "layer2s": {
+      "description": "More reliable blob availability"
+    },
+    "stakersNodes": {
+      "description": ""
+    },
+    "clClients": {
+      "description": "Lower bandwidth for sampling"
+    },
+    "elClients": {
+      "description": "Better re-use of blob mempool data"
+    }
+  },
+  "benefits": [
+    "Reduces reliance on high-bandwidth supernodes",
+    "Improves liveness under partial data withholding",
+    "Allows availability recovery to scale with node capacity",
+    "Finer sampling granularity"
+  ],
+  "tradeoffs": [
+    "Increased protocol complexity compared to baseline 1D PeerDAS",
+    "Additional networking primitives for cell-level dissemination",
+    "More involved encoding (2D) and sampling logic"
+  ]
+}

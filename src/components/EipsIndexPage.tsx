@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom';
 import { Logo } from './ui/Logo';
 import ThemeToggle from './ui/ThemeToggle';
 import { eipsData } from '../data/eips';
-import { getProposalPrefix, getLaymanTitle, getInclusionStage, isHeadlinerInAnyFork, wasHeadlinerCandidateInAnyFork } from '../utils/eip';
+import { getProposalPrefix, getLaymanTitle, getInclusionStage, isHeadlinerInAnyFork, wasHeadlinerCandidateInAnyFork, getEipLayer } from '../utils/eip';
 import { EipSearch } from './eip/EipSearch';
 import EipSearchModal from './eip/EipSearchModal';
 import { Tooltip } from './ui';
@@ -17,6 +17,8 @@ const EipsIndexPage: React.FC = () => {
   const [forkFilters, setForkFilters] = useState<Set<string>>(new Set());
   const [categoryFilters, setCategoryFilters] = useState<Set<string>>(new Set());
   const [stageFilters, setStageFilters] = useState<Set<string>>(new Set());
+  const [layerFilters, setLayerFilters] = useState<Set<string>>(new Set());
+  const [headlinerFilters, setHeadlinerFilters] = useState<Set<string>>(new Set());
   const [sortField, setSortField] = useState<SortField>('updated');
   const [sortDirection, setSortDirection] = useState<SortDirection>('desc');
   const [mobileFiltersOpen, setMobileFiltersOpen] = useState(false);
@@ -36,17 +38,20 @@ const EipsIndexPage: React.FC = () => {
   }, []);
 
   // Extract unique values for filters
-  const { statuses, forks, categories, stages } = useMemo(() => {
+  const { statuses, forks, categories, stages, layers } = useMemo(() => {
     const statusSet = new Set<string>();
     const forkSet = new Set<string>();
     const categorySet = new Set<string>();
     const stageSet = new Set<string>();
+    const layerSet = new Set<string>();
 
     eipsData.forEach(eip => {
       if (eip.status) statusSet.add(eip.status);
       // Add category or type since we display category || type
       const typeValue = eip.category || eip.type;
       if (typeValue) categorySet.add(typeValue);
+      const layer = getEipLayer(eip);
+      if (layer) layerSet.add(layer);
 
       eip.forkRelationships.forEach(fork => {
         forkSet.add(fork.forkName);
@@ -91,11 +96,14 @@ const EipsIndexPage: React.FC = () => {
       return a.localeCompare(b);
     });
 
+    const sortedLayers = Array.from(layerSet).sort((a, b) => (a === 'EL' ? -1 : b === 'EL' ? 1 : a.localeCompare(b)));
+
     return {
       statuses: Array.from(statusSet).sort(),
       forks: sortedForks,
       categories: Array.from(categorySet).sort(),
       stages: sortedStages,
+      layers: sortedLayers,
     };
   }, []);
 
@@ -142,6 +150,23 @@ const EipsIndexPage: React.FC = () => {
       });
     }
 
+    // Apply layer filter
+    if (layerFilters.size > 0) {
+      filtered = filtered.filter(eip => {
+        const layer = getEipLayer(eip);
+        return layer && layerFilters.has(layer);
+      });
+    }
+
+    // Apply headliner filter
+    if (headlinerFilters.size > 0) {
+      filtered = filtered.filter(eip => {
+        const isSelected = isHeadlinerInAnyFork(eip);
+        const isProposed = wasHeadlinerCandidateInAnyFork(eip) && !isSelected;
+        return (headlinerFilters.has('Selected') && isSelected) || (headlinerFilters.has('Proposed') && isProposed);
+      });
+    }
+
     // Sort
     const sorted = [...filtered].sort((a, b) => {
       let compareValue = 0;
@@ -185,7 +210,7 @@ const EipsIndexPage: React.FC = () => {
     });
 
     return sorted;
-  }, [statusFilters, forkFilters, categoryFilters, stageFilters, sortField, sortDirection]);
+  }, [statusFilters, forkFilters, categoryFilters, stageFilters, layerFilters, headlinerFilters, sortField, sortDirection]);
 
   // Toggle filter
   const toggleFilter = (filterSet: Set<string>, setFilterSet: React.Dispatch<React.SetStateAction<Set<string>>>, value: string) => {
@@ -204,9 +229,11 @@ const EipsIndexPage: React.FC = () => {
     setForkFilters(new Set());
     setCategoryFilters(new Set());
     setStageFilters(new Set());
+    setLayerFilters(new Set());
+    setHeadlinerFilters(new Set());
   };
 
-  const hasActiveFilters = statusFilters.size > 0 || forkFilters.size > 0 || categoryFilters.size > 0 || stageFilters.size > 0;
+  const hasActiveFilters = statusFilters.size > 0 || forkFilters.size > 0 || categoryFilters.size > 0 || stageFilters.size > 0 || layerFilters.size > 0 || headlinerFilters.size > 0;
 
   // Lock body scroll when filters modal is open
   React.useEffect(() => {
@@ -273,8 +300,8 @@ const EipsIndexPage: React.FC = () => {
       setSortDirection(sortDirection === 'asc' ? 'desc' : 'asc');
     } else {
       setSortField(field);
-      // Default to descending for number and dates, ascending for others
-      setSortDirection((field === 'number' || field === 'date' || field === 'updated') ? 'desc' : 'asc');
+      // Default to descending for number, dates, updated, and headliner (headliners first); ascending for others
+      setSortDirection((field === 'number' || field === 'date' || field === 'updated' || field === 'headliner') ? 'desc' : 'asc');
     }
   };
 
@@ -349,7 +376,7 @@ const EipsIndexPage: React.FC = () => {
                 <span className="hidden sm:inline">Filters</span>
                 {hasActiveFilters && (
                   <span className="px-1.5 py-0.5 text-xs bg-purple-200 dark:bg-purple-800 text-purple-800 dark:text-purple-200 rounded-full">
-                    {statusFilters.size + forkFilters.size + categoryFilters.size + stageFilters.size}
+                    {statusFilters.size + forkFilters.size + categoryFilters.size + stageFilters.size + layerFilters.size + headlinerFilters.size}
                   </span>
                 )}
               </button>
@@ -496,6 +523,65 @@ const EipsIndexPage: React.FC = () => {
                       </div>
                     </div>
                   )}
+
+                  {/* Layer Filter */}
+                  {layers.length > 0 && (
+                    <div>
+                      <h3 className="text-sm font-semibold text-slate-700 dark:text-slate-300 mb-3">Layer</h3>
+                      <div className="flex flex-wrap gap-2">
+                        {layers.map(layer => {
+                          const isSelected = layerFilters.has(layer);
+                          const layerColor = layer === 'EL'
+                            ? 'bg-indigo-100 text-indigo-700 dark:bg-indigo-900/20 dark:text-indigo-300 border border-indigo-200 dark:border-indigo-600 hover:bg-indigo-200 dark:hover:bg-indigo-900/30'
+                            : 'bg-teal-100 text-teal-700 dark:bg-teal-900/20 dark:text-teal-300 border border-teal-200 dark:border-teal-600 hover:bg-teal-200 dark:hover:bg-teal-900/30';
+                          return (
+                            <button
+                              key={layer}
+                              onClick={() => toggleFilter(layerFilters, setLayerFilters, layer)}
+                              className={`px-3 py-2 text-sm font-medium rounded-lg transition-colors ${layerColor} ${
+                                isSelected
+                                  ? 'ring-2 ring-purple-500 ring-offset-1 dark:ring-offset-slate-800'
+                                  : ''
+                              }`}
+                            >
+                              {layer}
+                            </button>
+                          );
+                        })}
+                      </div>
+                    </div>
+                  )}
+
+                  {/* Headliner Filter */}
+                  <div>
+                    <h3 className="text-sm font-semibold text-slate-700 dark:text-slate-300 mb-3">Headliner</h3>
+                    <div className="flex flex-wrap gap-2">
+                      <Tooltip text="Selected headliner for an upgrade">
+                        <button
+                          onClick={() => toggleFilter(headlinerFilters, setHeadlinerFilters, 'Selected')}
+                          className={`px-3 py-2 text-sm font-medium rounded-lg transition-colors ${
+                            headlinerFilters.has('Selected')
+                              ? 'bg-purple-100 dark:bg-purple-900/30 text-purple-800 dark:text-purple-300 ring-2 ring-purple-500 ring-offset-1 dark:ring-offset-slate-800'
+                              : 'bg-slate-100 dark:bg-slate-700 text-slate-700 dark:text-slate-300'
+                          }`}
+                        >
+                          Selected ★
+                        </button>
+                      </Tooltip>
+                      <Tooltip text="Proposed headliner (not selected)">
+                        <button
+                          onClick={() => toggleFilter(headlinerFilters, setHeadlinerFilters, 'Proposed')}
+                          className={`px-3 py-2 text-sm font-medium rounded-lg transition-colors ${
+                            headlinerFilters.has('Proposed')
+                              ? 'bg-purple-100 dark:bg-purple-900/30 text-purple-800 dark:text-purple-300 ring-2 ring-purple-500 ring-offset-1 dark:ring-offset-slate-800'
+                              : 'bg-slate-100 dark:bg-slate-700 text-slate-700 dark:text-slate-300'
+                          }`}
+                        >
+                          Proposed ☆
+                        </button>
+                      </Tooltip>
+                    </div>
+                  </div>
                 </div>
               </div>
 
@@ -546,6 +632,9 @@ const EipsIndexPage: React.FC = () => {
                   </th>
                   <th className="px-4 py-3 text-left text-xs font-semibold text-slate-600 dark:text-slate-400 uppercase tracking-wider">
                     Upgrade
+                  </th>
+                  <th className="px-4 py-3 text-left text-xs font-semibold text-slate-600 dark:text-slate-400 uppercase tracking-wider">
+                    Layer
                   </th>
                   <th className="px-2 py-3 text-center">
                     <Tooltip text="Headliner status: ★ = selected, ☆ = proposed">
@@ -660,6 +749,25 @@ const EipsIndexPage: React.FC = () => {
                         )}
                       </div>
                     </td>
+                      <td className="px-4 py-3 whitespace-nowrap">
+                        {(() => {
+                          const layer = getEipLayer(eip);
+                          if (!layer) return <span className="text-xs text-slate-400 dark:text-slate-500">—</span>;
+                          return (
+                            <Tooltip text={layer === 'EL' ? 'Primarily impacts Execution Layer' : 'Primarily impacts Consensus Layer'}>
+                              <span
+                                className={`inline-flex px-2 py-0.5 text-xs font-medium rounded ${
+                                  layer === 'EL'
+                                    ? 'bg-indigo-100 text-indigo-700 dark:bg-indigo-900/20 dark:text-indigo-300 border border-indigo-200 dark:border-indigo-600'
+                                    : 'bg-teal-100 text-teal-700 dark:bg-teal-900/20 dark:text-teal-300 border border-teal-200 dark:border-teal-600'
+                                }`}
+                              >
+                                {layer}
+                              </span>
+                            </Tooltip>
+                          );
+                        })()}
+                      </td>
                       <td className="px-2 py-3 text-center">
                         {isHeadlinerInAnyFork(eip) ? (
                           <span className="text-slate-700 dark:text-slate-300" title="Selected headliner">★</span>
@@ -736,6 +844,7 @@ const EipsIndexPage: React.FC = () => {
             const statusWithDate = mostRecentFork
               ? [...mostRecentFork.statusHistory].reverse().find(status => status.date)
               : null;
+            const layer = getEipLayer(eip);
 
             return (
               <Link
@@ -754,19 +863,32 @@ const EipsIndexPage: React.FC = () => {
                       <span className="ml-1.5 text-slate-400 dark:text-slate-500" title="Proposed headliner">☆</span>
                     )}
                   </span>
-                  {/* Fork and Stage grouped together side-by-side */}
-                  {mostRecentFork && (
-                    <div className="flex items-center gap-1.5 flex-shrink-0">
-                      <span className={`px-2 py-1 text-xs font-medium rounded ${mostRecentForkColor}`}>
-                        {mostRecentForkDisplay}
+                  {/* Layer, Fork and Stage grouped together side-by-side */}
+                  <div className="flex items-center gap-1.5 flex-shrink-0">
+                    {layer && (
+                      <span
+                        className={`px-2 py-1 text-xs font-medium rounded ${
+                          layer === 'EL'
+                            ? 'bg-indigo-100 text-indigo-700 dark:bg-indigo-900/20 dark:text-indigo-300 border border-indigo-200 dark:border-indigo-600'
+                            : 'bg-teal-100 text-teal-700 dark:bg-teal-900/20 dark:text-teal-300 border border-teal-200 dark:border-teal-600'
+                        }`}
+                      >
+                        {layer}
                       </span>
-                      {stageLabel && (
-                        <span className={`px-2 py-1 text-xs font-medium rounded ${stageColor}`}>
-                          {stageLabel}
+                    )}
+                    {mostRecentFork && (
+                      <>
+                        <span className={`px-2 py-1 text-xs font-medium rounded ${mostRecentForkColor}`}>
+                          {mostRecentForkDisplay}
                         </span>
-                      )}
-                    </div>
-                  )}
+                        {stageLabel && (
+                          <span className={`px-2 py-1 text-xs font-medium rounded ${stageColor}`}>
+                            {stageLabel}
+                          </span>
+                        )}
+                      </>
+                    )}
+                  </div>
                 </div>
 
                 {/* Title */}

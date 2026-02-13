@@ -1,0 +1,94 @@
+{
+  "meeting": "EPBS #023 - 2025-09-12",
+  "highlights": {
+    "specification_updates": [
+      {
+        "timestamp": "00:09:41",
+        "highlight": "Header renamed to Execution Payload Bid; conflicts to be resolved today"
+      },
+      {
+        "timestamp": "00:17:04",
+        "highlight": "Keep header with same functionality; remove latest_block_hash; add bid field"
+      },
+      {
+        "timestamp": "00:19:15",
+        "highlight": "Withdrawals spec frozen as-is for DevNet 0; overhaul deferred"
+      }
+    ],
+    "devnet_planning": [
+      {
+        "timestamp": "00:21:41",
+        "highlight": "DevNet 0 target: end of October, single client minimum"
+      },
+      {
+        "timestamp": "00:32:00",
+        "highlight": "Spec freeze for DevNet 0: current state plus header changes only"
+      },
+      {
+        "timestamp": "00:46:20",
+        "highlight": "DevNet 0 scope: local building only, no builder API yet"
+      }
+    ],
+    "beacon_api": [
+      {
+        "timestamp": "00:23:09",
+        "highlight": "V4 endpoint consensus for produce_block; removes blinded/unblinded complexity"
+      },
+      {
+        "timestamp": "00:31:41",
+        "highlight": "Blob sidecar creation triggers on envelope release; no new endpoint"
+      }
+    ],
+    "builder_protocol": [
+      {
+        "timestamp": "00:35:59",
+        "highlight": "Prism won't support blind signing; staked builders only"
+      },
+      {
+        "timestamp": "00:41:28",
+        "highlight": "Builder API: no registrations needed; similar to current MEV-Boost flow"
+      },
+      {
+        "timestamp": "00:49:03",
+        "highlight": "P2P bids provide decentralized fallback; HTTP direct connects to staked builders"
+      }
+    ]
+  },
+  "action_items": [
+    {
+      "timestamp": "00:17:50",
+      "action": "Open PR to keep header, remove latest_block_hash, preserve bid field",
+      "owner": "Potuz"
+    },
+    {
+      "timestamp": "00:18:40",
+      "action": "Resolve conflicts and merge Execution Payload Bid rename PR today",
+      "owner": "Terence"
+    },
+    {
+      "timestamp": "00:23:38",
+      "action": "Review fork choice test cases on HackMD; feedback requested",
+      "owner": "All teams"
+    }
+  ],
+  "decisions": [
+    {
+      "timestamp": "00:26:26",
+      "decision": "Beacon API: Use V4 endpoint for produce_block (cleaner than modifying V3)"
+    },
+    {
+      "timestamp": "00:36:50",
+      "decision": "Consensus clients won't specify off-protocol relay support in spec"
+    },
+    {
+      "timestamp": "00:41:50",
+      "decision": "Builder API will not require registrations (unlike current MEV-Boost)"
+    }
+  ],
+  "targets": [
+    {
+      "timestamp": "00:21:41",
+      "target": "End of October - DevNet 0 launch (single client minimum)"
+    }
+  ]
+}

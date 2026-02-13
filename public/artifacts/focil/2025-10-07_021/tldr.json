@@ -1,0 +1,81 @@
+{
+  "meeting": "FOCIL #021 - 2025-10-07",
+  "highlights": {
+    "native_rollups_and_focil": [
+      {
+        "timestamp": "00:09:50",
+        "highlight": "Luca presents native rollups: EVM rollups using execute precompile for bug-free, auto-upgrading L2s"
+      },
+      {
+        "timestamp": "00:19:22",
+        "highlight": "Forced transactions difficult for rollups; most require heavy EL modifications or new transaction types"
+      },
+      {
+        "timestamp": "00:26:29",
+        "highlight": "FOCIL's inclusion list mechanism can implement forced transactions for native rollups without modifications"
+      },
+      {
+        "timestamp": "00:39:06",
+        "highlight": "Existing rollups could adopt FOCIL-based forced transactions to minimize L1 diff"
+      }
+    ],
+    "implementation_challenges": [
+      {
+        "timestamp": "00:31:41",
+        "highlight": "Transaction resubmission complexity: validly omitted IL transactions need manual resubmission to contract queue"
+      },
+      {
+        "timestamp": "00:44:28",
+        "highlight": "FOCIL reuse assumes Engine API usage and L1-compatible validity conditions; limits design space"
+      }
+    ],
+    "client_updates": [
+      {
+        "timestamp": "00:50:06",
+        "highlight": "Lodestar: 6-second slots working with BPS values; empty IELTs in FCU calls fixed"
+      },
+      {
+        "timestamp": "00:52:23",
+        "highlight": "Reth: IL encoding bug fixed; no unsatisfied blocks in recent tests"
+      },
+      {
+        "timestamp": "00:53:52",
+        "highlight": "Metrics: Reth and Lodestar working on FOCIL-specific metrics; issue counting invalid transactions"
+      }
+    ],
+    "testing_and_documentation": [
+      {
+        "timestamp": "00:49:17",
+        "highlight": "Jihoon: IL store unit tests in progress; test cases document to be published"
+      },
+      {
+        "timestamp": "00:51:02",
+        "highlight": "Geth beacon block timeout error persists in local devnets; not seen with Reth"
+      }
+    ]
+  },
+  "action_items": [
+    {
+      "timestamp": "00:49:17",
+      "action": "Publish test cases document for inclusion list validation",
+      "owner": "Jihoon"
+    },
+    {
+      "timestamp": "00:56:56",
+      "action": "Discuss invalid transaction counting methodology for EL metrics in Discord",
+      "owner": "EL client teams"
+    }
+  ],
+  "decisions": [
+    {
+      "timestamp": "00:59:05",
+      "decision": "Engine API version (V5 vs V6) for FOCIL depends on Glamsterdam inclusion timing"
+    }
+  ],
+  "targets": [
+    {
+      "timestamp": "01:02:16",
+      "target": "Next FOCIL breakout call in two weeks (October 21, 2025)"
+    }
+  ]
+}

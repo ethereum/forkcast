@@ -1,0 +1,89 @@
+{
+  "meeting": "BAL #008 - 2025-12-03",
+  "highlights": {
+    "gas_accounting_changes": [
+      {
+        "timestamp": "00:06:13",
+        "highlight": "Static checks (memory expansion, access cost, transfer cost) must precede state access"
+      },
+      {
+        "timestamp": "00:08:04",
+        "highlight": "Geth fixing inconsistency; may resolve devnet chain splits with Besu"
+      },
+      {
+        "timestamp": "00:12:05",
+        "highlight": "Nethermind has memory expansion inconsistency vs Ref/Besu; fix pending release"
+      }
+    ],
+    "storage_and_retention": [
+      {
+        "timestamp": "00:15:17",
+        "highlight": "BALs add ~50% to block body size at current gas limit"
+      },
+      {
+        "timestamp": "00:22:42",
+        "highlight": "Increased gas limit will significantly increase history footprint; 4444 pressure"
+      },
+      {
+        "timestamp": "00:47:10",
+        "highlight": "Archive nodes may drop BALs from storage, reconstitute from access history"
+      },
+      {
+        "timestamp": "00:58:30",
+        "highlight": "Block bodies can have optional BALs; nodes delete after retention period"
+      }
+    ],
+    "bal_storage_decision": [
+      {
+        "timestamp": "00:52:48",
+        "highlight": "Status quo maintained: BALs remain in block body for simplicity"
+      },
+      {
+        "timestamp": "00:55:10",
+        "highlight": "Need more data on storage impact before reconsidering sidecar approach"
+      },
+      {
+        "timestamp": "01:06:32",
+        "highlight": "BALs can be erased from blocks after retention period without invalidating hash"
+      }
+    ]
+  },
+  "action_items": [
+    {
+      "timestamp": "00:08:28",
+      "action": "Complete test coverage for call opcode gas accounting",
+      "owner": "Jared/Geth team"
+    },
+    {
+      "timestamp": "00:23:32",
+      "action": "Redo BAL size analysis at 60M+ gas limits with clear numbers",
+      "owner": "Toni"
+    },
+    {
+      "timestamp": "00:54:13",
+      "action": "Consult CL teams on block retention periods and BAL storage approach",
+      "owner": "All teams"
+    },
+    {
+      "timestamp": "01:09:10",
+      "action": "Research importance of including reads in BALs for next call",
+      "owner": "Mark"
+    }
+  ],
+  "decisions": [
+    {
+      "timestamp": "00:14:36",
+      "decision": "Static gas checks must occur before state access in call opcodes"
+    },
+    {
+      "timestamp": "00:52:48",
+      "decision": "Keep BALs in block body; defer sidecar decision pending more analysis"
+    }
+  ],
+  "targets": [
+    {
+      "timestamp": "01:08:05",
+      "target": "Next breakout call in 2 weeks - revisit BAL storage with additional data"
+    }
+  ]
+}

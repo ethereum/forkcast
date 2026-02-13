@@ -1,0 +1,84 @@
+{
+  "meeting": "BAL #007 - November 19, 2025",
+  "highlights": {
+    "syncing_and_storage": [
+      {
+        "timestamp": "00:08:12",
+        "highlight": "BALs should be kept ~2 weeks for SnapSync; optional to serve historically"
+      },
+      {
+        "timestamp": "00:10:02",
+        "highlight": "SnapSync healing phase can be removed with BALs; SNAP protocol coordination needed"
+      }
+    ],
+    "testing_and_debugging": [
+      {
+        "timestamp": "00:19:15",
+        "highlight": "All clients to log BAL diffs (not just hash mismatches) for easier debugging"
+      },
+      {
+        "timestamp": "00:30:51",
+        "highlight": "Reth: 40 faulty tests fixed, 1 remaining; Besu: stateful computation background working"
+      },
+      {
+        "timestamp": "01:05:10",
+        "highlight": "Stefan: Still don't have 3 stable clients; Geth/Nethermind fork under transaction load"
+      }
+    ],
+    "state_locations_debate": [
+      {
+        "timestamp": "00:31:20",
+        "highlight": "Read state locations add 50% to BAL size; benefit unclear at high gas limits"
+      },
+      {
+        "timestamp": "00:42:00",
+        "highlight": "Proposal: Include read transaction indices only for first occurrence; reduces duplication"
+      },
+      {
+        "timestamp": "00:50:20",
+        "highlight": "Dragan: Knowing what to read matters more than read order for parallel I/O"
+      },
+      {
+        "timestamp": "00:55:06",
+        "highlight": "Nethermind team testing 500M-1G gas blocks by combining mainnet payloads"
+      }
+    ]
+  },
+  "action_items": [
+    {
+      "timestamp": "00:28:12",
+      "action": "Document debug_badBlock generatedBlockAccessList requirements in BAL Discord",
+      "owner": "Stefan"
+    },
+    {
+      "timestamp": "00:57:39",
+      "action": "Add flag to enable/disable state location prefetching for devnet0 benchmarking",
+      "owner": "All EL teams"
+    },
+    {
+      "timestamp": "00:49:10",
+      "action": "Share link to Nethermind large block testing presentation in BAL channel",
+      "owner": "\u0141ukasz"
+    }
+  ],
+  "decisions": [
+    {
+      "timestamp": "00:07:22",
+      "decision": "Gas used values will NOT be included in block access lists"
+    },
+    {
+      "timestamp": "00:19:30",
+      "decision": "BAL diff logging required; ordering mismatches get generic error message"
+    },
+    {
+      "timestamp": "01:03:30",
+      "decision": "Defer state location/transaction indices decision until benchmark data available"
+    }
+  ],
+  "targets": [
+    {
+      "timestamp": "01:04:26",
+      "target": "Devnet0 - State location prefetch flag and benchmarking capability needed"
+    }
+  ]
+}

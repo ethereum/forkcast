@@ -1,0 +1,71 @@
+{
+  "meeting": "BAL #003 - September 24, 2025",
+  "highlights": {
+    "bal_design_decisions": [
+      {
+        "timestamp": "00:07:09",
+        "highlight": "Keep BAL hash vs root structure as-is; defer trie complexity"
+      },
+      {
+        "timestamp": "00:19:52",
+        "highlight": "Self-destruct in same transaction: treat as read only, no special handling"
+      },
+      {
+        "timestamp": "00:37:03",
+        "highlight": "Precompiles included in BAL for all opcodes; no call-type differentiation"
+      }
+    ],
+    "client_updates": [
+      {
+        "timestamp": "00:44:59",
+        "highlight": "Geth focusing on state root update performance bottlenecks"
+      },
+      {
+        "timestamp": "00:46:21",
+        "highlight": "Besu blocks rejected by Geth in local devnet; investigating validation issues"
+      }
+    ],
+    "testing_progress": [
+      {
+        "timestamp": "00:47:54",
+        "highlight": "New test release (v5) for Consume Engine coming today"
+      }
+    ]
+  },
+  "action_items": [
+    {
+      "timestamp": "00:18:20",
+      "action": "Reach out to Vitalik for input on BAL root vs hash for testing call",
+      "owner": "Toni"
+    },
+    {
+      "timestamp": "00:19:00",
+      "action": "Publish preconfs analysis for developer review",
+      "owner": "Jason"
+    },
+    {
+      "timestamp": "00:41:28",
+      "action": "Update EIP-7928 specs: clarify self-destruct handling and precompile inclusion",
+      "owner": "Toni"
+    }
+  ],
+  "decisions": [
+    {
+      "timestamp": "00:16:40",
+      "decision": "Keep BAL as hash in header; defer trie structure optimization"
+    },
+    {
+      "timestamp": "00:24:36",
+      "decision": "Same-transaction self-destruct treated as read with no state changes in BAL"
+    },
+    {
+      "timestamp": "00:38:59",
+      "decision": "Include precompiles in BAL for all access types; re-evaluate in 2 weeks"
+    },
+    {
+      "timestamp": "00:42:59",
+      "decision": "Defer post-storage root optimization; keep current BAL design"
+    }
+  ],
+  "targets": []
+}

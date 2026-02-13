@@ -2,8 +2,6 @@ import React, { useState, useEffect, useRef, useCallback, useMemo } from 'react'
 import { Link, useParams, useLocation } from 'react-router-dom';
 import YouTube, { YouTubeProps } from 'react-youtube';
 import ChatLog from './ChatLog';
-import Summary from './Summary';
-import AgendaSummary from './AgendaSummary';
 import TldrSummary from './TldrSummary';
 import CallSearch from './CallSearch';
 import ThemeToggle from '../ui/ThemeToggle';
@@ -19,6 +17,14 @@ const BREAKOUT_EIP_MAP: Record<string, number> = {
   focil: 7805,
 };
 
+interface TldrData {
+  meeting: string;
+  highlights: { [category: string]: { timestamp: string; highlight: string }[] };
+  action_items: { timestamp: string; action: string; owner: string }[];
+  decisions: { timestamp: string; decision: string }[];
+  targets: { timestamp: string; target: string }[];
+}
+
 interface CallData {
   type: string;
   date: string;
@@ -26,9 +32,7 @@ interface CallData {
   chatContent?: string;
   transcriptContent?: string;
   videoUrl?: string;
-  summaryData?: any;
-  agendaData?: any;
-  tldrData?: any;
+  tldrData?: TldrData;
 }
 
 interface CallConfig {
@@ -62,6 +66,7 @@ const CallPage: React.FC = () => {
   const transcriptScrollTimeoutRef = useRef<ReturnType<typeof setTimeout> | undefined>(undefined);
   const isProgrammaticScrollRef = useRef(false);
   const lastHighlightedTimestampRef = useRef<string | null>(null);
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any -- YouTube player API type is not exported
   const [player, setPlayer] = useState<any>(null);
   const [currentVideoTime, setCurrentVideoTime] = useState(0);
   const [isPlaying, setIsPlaying] = useState(false);
@@ -385,28 +390,6 @@ const CallPage: React.FC = () => {
           }
         }
 
-        // Load summary if it exists
-        const summaryResponse = await fetch(`/artifacts/${artifactPath}/summary.json`);
-        let summaryData = undefined;
-        if (summaryResponse.ok) {
-          try {
-            summaryData = await summaryResponse.json();
-          } catch (e) {
-            console.warn('Failed to parse summary.json:', e);
-          }
-        }
-
-        // Load agenda if it exists
-        const agendaResponse = await fetch(`/artifacts/${artifactPath}/agenda.json`);
-        let agendaData = undefined;
-        if (agendaResponse.ok) {
-          try {
-            agendaData = await agendaResponse.json();
-          } catch (e) {
-            console.warn('Failed to parse agenda.json:', e);
-          }
-        }
-
         // Load tldr if it exists
         const tldrResponse = await fetch(`/artifacts/${artifactPath}/tldr.json`);
         let tldrData = undefined;
@@ -453,8 +436,6 @@ const CallPage: React.FC = () => {
           chatContent,
           transcriptContent,
           videoUrl,
-          summaryData,
-          agendaData,
           tldrData
         });
 
@@ -740,7 +721,7 @@ const CallPage: React.FC = () => {
     }
   };
 
-  const handleTranscriptClick = (timestamp: string, searchResult?: any) => {
+  const handleTranscriptClick = (timestamp: string, searchResult?: { text: string; type: string }) => {
     if (player) {
       const adjustedTime = getAdjustedVideoTime(timestamp);
       player.seekTo(adjustedTime);
@@ -785,7 +766,7 @@ const CallPage: React.FC = () => {
   };
 
   // Check if a transcript entry should be highlighted based on current video time
-  const isCurrentEntry = (entryTimestamp: string, index: number, entries: any[]): boolean => {
+  const isCurrentEntry = (entryTimestamp: string, index: number, entries: { timestamp: string }[]): boolean => {
     if (!callConfig?.sync?.transcriptStartTime || !callConfig?.sync?.videoStartTime) return false;
 
     const entryVideoTime = getAdjustedVideoTime(entryTimestamp);
@@ -1021,12 +1002,9 @@ const CallPage: React.FC = () => {
       <CallSearch
         transcriptContent={callData.transcriptContent}
         chatContent={callData.chatContent}
-        agendaData={callData.agendaData}
-        summaryData={callData.summaryData}
         tldrData={callData.tldrData}
         onResultClick={handleTranscriptClick}
         syncConfig={callConfig?.sync}
-        currentVideoTime={currentVideoTime}
         isOpen={isSearchOpen}
         setIsOpen={setIsSearchOpen}
         initialQuery={initialSearchQuery}
@@ -1170,7 +1148,7 @@ const CallPage: React.FC = () => {
         )}
 
         {/* Meeting Summary Section */}
-        {(callData.tldrData || callData.agendaData || callData.summaryData) && (
+        {callData.tldrData && (
           <div className="mb-4">
             <div className="bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg shadow-sm hover:shadow-md transition-shadow">
               <button
@@ -1182,19 +1160,9 @@ const CallPage: React.FC = () => {
                     Summary
                   </h2>
                   <div className="flex items-center gap-2">
-                    {callData.tldrData ? (
-                      <span className="text-xs text-slate-500 dark:text-slate-400">
-                        {Object.values(callData.tldrData.highlights).flat().length} highlights • {callData.tldrData.action_items?.length || 0} action items
-                      </span>
-                    ) : callData.agendaData ? (
-                      <span className="text-xs text-slate-500 dark:text-slate-400">
-                        {callData.agendaData.agenda.flatMap((section: any) => section.items).length} topics • {callData.agendaData.agenda.flatMap((section: any) => section.items).reduce((sum: number, item: any) => sum + (item.action_items?.length || 0), 0)} action items
-                      </span>
-                    ) : (
-                      <span className="text-xs text-slate-500 dark:text-slate-400">
-                        {callData.summaryData.summary_details?.length || 0} topics • {callData.summaryData.next_steps?.length || 0} action items
-                      </span>
-                    )}
+                    <span className="text-xs text-slate-500 dark:text-slate-400">
+                      {Object.values(callData.tldrData.highlights).flat().length} highlights • {callData.tldrData.action_items?.length || 0} action items
+                    </span>
                     <span className="text-xs bg-slate-100 dark:bg-slate-700 text-slate-500 dark:text-slate-300 px-2 py-0.5 rounded-full font-normal border border-slate-200 dark:border-slate-600">
                       Experimental
                     </span>
@@ -1212,25 +1180,13 @@ const CallPage: React.FC = () => {
               {summaryExpanded && (
                 <div className="border-t border-slate-200 dark:border-slate-700 transition-opacity duration-500 ease-out opacity-0 animate-[fadeIn_0.5s_ease-out_forwards]">
                   <div className="p-6">
-                    {callData.tldrData ? (
-                      <TldrSummary
-                        data={callData.tldrData}
-                        onTimestampClick={handleTranscriptClick}
-                        syncConfig={callConfig?.sync}
-                        currentVideoTime={currentVideoTime}
-                        selectedSearchResult={selectedSearchResult}
-                      />
-                    ) : callData.agendaData ? (
-                      <AgendaSummary
-                        data={callData.agendaData}
-                        onTimestampClick={handleTranscriptClick}
-                        syncConfig={callConfig?.sync}
-                        currentVideoTime={currentVideoTime}
-                        selectedSearchResult={selectedSearchResult}
-                      />
-                    ) : (
-                      <Summary data={callData.summaryData} />
-                    )}
+                    <TldrSummary
+                      data={callData.tldrData}
+                      onTimestampClick={handleTranscriptClick}
+                      syncConfig={callConfig?.sync}
+                      currentVideoTime={currentVideoTime}
+                      selectedSearchResult={selectedSearchResult}
+                    />
                   </div>
                 </div>
               )}

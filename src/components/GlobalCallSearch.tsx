@@ -69,7 +69,7 @@ export default function GlobalCallSearch({ isOpen, onClose, initialQuery = '' }:
         try {
           const searchResults = await searchIndexService.search(searchQuery, {
             callType: callType === 'all' ? undefined : callType as 'ACDC' | 'ACDE' | 'ACDT',
-            contentType: contentType === 'all' ? undefined : contentType as any,
+            contentType: contentType === 'all' ? undefined : contentType as 'transcript' | 'chat' | 'agenda' | 'action',
             limit: 500
           });
 

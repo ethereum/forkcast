@@ -1,5 +1,30 @@
 import { protocolCalls } from '../data/calls';
 
+interface CallInfo {
+  type: string;
+  date: string;
+  number: string;
+}
+
+interface TldrHighlightItem {
+  timestamp: string;
+  highlight: string;
+}
+
+interface TldrActionItem {
+  timestamp: string;
+  action: string;
+  owner: string;
+}
+
+interface TldrData {
+  meeting: string;
+  highlights: { [category: string]: TldrHighlightItem[] };
+  action_items: TldrActionItem[];
+  decisions: { timestamp: string; decision: string }[];
+  targets: { timestamp: string; target: string }[];
+}
+
 export interface IndexedContent {
   callType: string;
   callDate: string;
@@ -76,7 +101,14 @@ class SearchIndexService {
       const transaction = db.transaction([this.STORE_NAME], 'readonly');
       const store = transaction.objectStore(this.STORE_NAME);
 
-      const data = await new Promise<any>((resolve, reject) => {
+      interface StoredIndex {
+        version: string;
+        documents: IndexedContent[];
+        invertedIndex: Record<string, number[]>;
+        callIndex: Record<string, number[]>;
+        lastUpdated: number;
+      }
+      const data = await new Promise<StoredIndex | undefined>((resolve, reject) => {
         const request = store.get('index');
         request.onsuccess = () => resolve(request.result);
         request.onerror = () => reject(request.error);
@@ -156,12 +188,11 @@ class SearchIndexService {
         // Fetch all content for this call
         const baseUrl = `/artifacts/${call.type}/${call.date}_${call.number}`;
 
-        const [transcript, chat, agenda, tldr] = await Promise.all([
+        const [transcript, chat, tldr] = await Promise.all([
           // Prefer corrected transcript if available
           fetch(`${baseUrl}/transcript_corrected.vtt`).then(res => res.ok ? res.text() : null).catch(() => null)
             .then(corrected => corrected ?? fetch(`${baseUrl}/transcript.vtt`).then(res => res.ok ? res.text() : null).catch(() => null)),
           fetch(`${baseUrl}/chat.txt`).then(res => res.ok ? res.text() : null).catch(() => null),
-          fetch(`${baseUrl}/agenda.json`).then(res => res.ok ? res.json() : null).catch(() => null),
           fetch(`${baseUrl}/tldr.json`).then(res => res.ok ? res.json() : null).catch(() => null)
         ]);
 
@@ -186,24 +217,6 @@ class SearchIndexService {
         // Process chat
         if (chat) {
           const entries = this.parseChatForIndex(chat, call);
-          entries.forEach(entry => {
-            const docIndex = index.documents.length;
-            index.documents.push(entry);
-            callDocIndices.push(docIndex);
-
-            // Update inverted index
-            entry.tokens.forEach(token => {
-              if (!index.invertedIndex.has(token)) {
-                index.invertedIndex.set(token, new Set());
-              }
-              index.invertedIndex.get(token)!.add(docIndex);
-            });
-          });
-        }
-
-        // Process agenda (includes action items)
-        if (agenda?.agenda) {
-          const entries = this.parseAgendaForIndex(agenda, call);
           entries.forEach(entry => {
             const docIndex = index.documents.length;
             index.documents.push(entry);
@@ -259,7 +272,7 @@ class SearchIndexService {
   }
 
   // Parse transcript for indexing
-  private parseTranscriptForIndex(content: string, call: any): IndexedContent[] {
+  private parseTranscriptForIndex(content: string, call: CallInfo): IndexedContent[] {
     const lines = content.split('\n');
     const results: IndexedContent[] = [];
 
@@ -314,7 +327,7 @@ class SearchIndexService {
   }
 
   // Parse chat for indexing
-  private parseChatForIndex(content: string, call: any): IndexedContent[] {
+  private parseChatForIndex(content: string, call: CallInfo): IndexedContent[] {
     const lines = content.split('\n').filter(line => line.trim());
     const results: IndexedContent[] = [];
 
@@ -354,79 +367,32 @@ class SearchIndexService {
     return results;
   }
 
-  // Parse agenda for indexing
-  private parseAgendaForIndex(agendaData: any, call: any): IndexedContent[] {
+  // Parse TLDR for indexing (highlights, action items, decisions, targets)
+  private parseTldrForIndex(tldrData: TldrData, call: CallInfo): IndexedContent[] {
     const results: IndexedContent[] = [];
 
-    agendaData.agenda.forEach((section: any) => {
-      section.items?.forEach((item: any) => {
-        // Index agenda item itself
-        if (item.title || item.summary) {
-          // Use title as the text for matching, but include both title and summary in tokens for searching
-          const searchText = [item.title, item.summary].filter(Boolean).join(' ');
+    // Index highlights (categorized agenda items)
+    if (tldrData.highlights) {
+      const allHighlights: TldrHighlightItem[] = Object.values(tldrData.highlights).flat();
+      allHighlights.forEach(item => {
+        if (item.highlight) {
           results.push({
             callType: call.type,
             callDate: call.date,
             callNumber: call.number,
             type: 'agenda',
-            timestamp: item.start_timestamp || '00:00:00',
-            text: item.title, // Store just the title for matching in AgendaSummary
-            tokens: this.tokenize(searchText), // But index both title and summary for search
-            normalizedText: this.normalize(searchText)
+            timestamp: item.timestamp || '00:00:00',
+            text: item.highlight,
+            tokens: this.tokenize(item.highlight),
+            normalizedText: this.normalize(item.highlight)
           });
         }
-
-        // Index action items within this agenda item
-        if (item.action_items && Array.isArray(item.action_items)) {
-          item.action_items.forEach((actionItem: any) => {
-            if (actionItem.what) {
-              results.push({
-                callType: call.type,
-                callDate: call.date,
-                callNumber: call.number,
-                type: 'action',
-                timestamp: actionItem.timestamp || item.start_timestamp || '00:00:00',
-                speaker: actionItem.who,
-                text: actionItem.what,
-                tokens: this.tokenize(actionItem.what + ' ' + (actionItem.who || '')),
-                normalizedText: this.normalize(actionItem.what)
-              });
-            }
-          });
-        }
-      });
-    });
-
-    return results;
-  }
-
-  // Parse TLDR for indexing (highlights, action items, decisions, targets)
-  private parseTldrForIndex(tldrData: any, call: any): IndexedContent[] {
-    const results: IndexedContent[] = [];
-
-    // Index highlights (categorized agenda items)
-    if (tldrData.highlights) {
-      Object.values(tldrData.highlights).forEach((categoryHighlights: any) => {
-        categoryHighlights.forEach((item: any) => {
-          if (item.highlight) {
-            results.push({
-              callType: call.type,
-              callDate: call.date,
-              callNumber: call.number,
-              type: 'agenda',
-              timestamp: item.timestamp || '00:00:00',
-              text: item.highlight,
-              tokens: this.tokenize(item.highlight),
-              normalizedText: this.normalize(item.highlight)
-            });
-          }
-        });
       });
     }
 
     // Index action items
-    if (tldrData.action_items && Array.isArray(tldrData.action_items)) {
-      tldrData.action_items.forEach((item: any) => {
+    if (tldrData.action_items) {
+      tldrData.action_items.forEach(item => {
         if (item.action) {
           results.push({
             callType: call.type,
@@ -444,8 +410,8 @@ class SearchIndexService {
     }
 
     // Index decisions as agenda items
-    if (tldrData.decisions && Array.isArray(tldrData.decisions)) {
-      tldrData.decisions.forEach((item: any) => {
+    if (tldrData.decisions) {
+      tldrData.decisions.forEach(item => {
         if (item.decision) {
           results.push({
             callType: call.type,
@@ -462,8 +428,8 @@ class SearchIndexService {
     }
 
     // Index targets as agenda items
-    if (tldrData.targets && Array.isArray(tldrData.targets)) {
-      tldrData.targets.forEach((item: any) => {
+    if (tldrData.targets) {
+      tldrData.targets.forEach(item => {
         if (item.target) {
           results.push({
             callType: call.type,

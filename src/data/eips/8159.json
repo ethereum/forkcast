@@ -1,0 +1,67 @@
+{
+  "id": 8159,
+  "title": "EIP-8159: eth/71 - Block Access List Exchange",
+  "status": "Draft",
+  "description": "Adds peer-to-peer exchange of block-level access lists to the eth protocol",
+  "author": "Toni Wahrstätter (@nerolation)",
+  "type": "Standards Track",
+  "category": "Networking",
+  "createdDate": "2026-02-12",
+  "discussionLink": "https://ethereum-magicians.org/t/eip-8159-eth-71-block-access-list-exchange/27725",
+  "reviewer": "bot",
+  "layer": "EL",
+  "forkRelationships": [
+    {
+      "forkName": "Glamsterdam",
+      "statusHistory": [
+        {
+          "status": "Considered",
+          "call": "acde/230",
+          "date": "2026-02-12"
+        }
+      ],
+      "champions": [
+        {
+          "name": "Toni Wahrstätter",
+          "discord": "nero_eth"
+        }
+      ]
+    }
+  ],
+  "laymanDescription": "Allows Ethereum nodes to share block access lists over the network. These lists record which accounts and storage slots a block touched, enabling faster syncing and parallel transaction processing.",
+  "stakeholderImpacts": {
+    "endUsers": {
+      "description": "No direct impact. Enables faster node sync and block processing."
+    },
+    "appDevs": {
+      "description": "No direct impact. Internal networking change only."
+    },
+    "walletDevs": {
+      "description": "No direct impact. Internal networking change only."
+    },
+    "toolingInfra": {
+      "description": "Node operators may see faster sync times when BALs are available from peers."
+    },
+    "layer2s": {
+      "description": "No direct impact. May benefit from faster L1 finality confirmation."
+    },
+    "stakersNodes": {
+      "description": "Enables parallel execution optimizations. Storage considerations for BAL retention."
+    },
+    "clClients": {
+      "description": "No changes required. EL networking protocol only."
+    },
+    "elClients": {
+      "description": "Moderate complexity. New message handlers, BAL storage/pruning, validation against header hash."
+    }
+  },
+  "benefits": [
+    "Enables peer-based BAL sync for parallel execution optimizations",
+    "Supports executionless state updates during sync",
+    "Allows historical BAL retrieval within retention period"
+  ],
+  "tradeoffs": [
+    "Requires BAL storage during weak subjectivity period (~2 weeks)",
+    "Archive nodes may need to store BALs indefinitely for full historical serving"
+  ]
+}

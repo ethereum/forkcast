@@ -1,0 +1,105 @@
+00:04:31	jochem-brouwer:	gm
+00:04:41	felipe:	gm
+00:04:45	jochem-brouwer:	Heeft gereageerd op "gm" met 👋
+00:04:50	Mario Vega:	gm
+00:04:54	jochem-brouwer:	Heeft gereageerd op "gm" met 🔥
+00:05:12	Barnabas:	https://github.com/ethereum/pm/issues/1920
+00:05:59	Barnabas:	https://dora.blob-devnet-0.ethpandaops.io
+00:06:44	Marius van der Wijden:	Whats the tldr on blob-devnet-0?
+00:07:35	Marius van der Wijden:	And the purpose is to test full peerdas?
+00:08:29	Marius van der Wijden:	Seeign some orphans and 90% participation
+00:09:47	Barnabas:	https://github.com/ethereum/EIPs/pull/11234
+00:10:24	Marius van der Wijden:	Whats the max gas limit this could support?
+00:12:46	Marius van der Wijden:	Ah okay
+00:12:48	Marius van der Wijden:	cool
+00:13:07	Marius van der Wijden:	(github doesn't load for me atm)
+00:14:15	Dustin:	https://www.githubstatus.com/ says "All Systems Operational"
+00:15:03	jochem-brouwer:	It should not be possible to construct a block which violates this constraint (because then you have invalid EVM execution) given that the formula is correct. So if we make this part of consensus then there should thus be tests of specifically sized BALs with items to test that invalidaton
+00:16:41	Barnabas:	https://github.com/ethereum/execution-apis/pull/726
+00:20:49	Barnabas:	https://dora.nft-devnet-10.ethpandaops.io
+00:21:20	Barnabas:	try to sync with kurtosis —  network: nft-devnet-10
+00:22:23	jochem-brouwer:	Also need eth/71
+00:22:24	jochem-brouwer:	Yes =)
+00:24:59	Karim T. (matkt):	Protection against DOS attack will depend on result regarding prefetch no ?
+00:25:30	Mario Vega:	Which Engine API methods?
+00:25:33	Jen:	What’s the timeline for devnet-3?
+00:25:45	Jen:	Replying to "Which Engine API met..."
+
+https://github.com/ethereum/execution-apis/pull/726 I believe
+00:25:45	Toni Wahrstätter:	Replying to "Which Engine API met..."
+
+one sec, I'll pull up the PR
+00:25:55	Mario Vega:	Reacted to "one sec, I'll pull u..." with 🙏🏼
+00:26:48	Toni Wahrstätter:	Replying to "Which Engine API met..."
+
+https://github.com/ethereum/execution-apis/pull/727
+00:27:22	Mario Vega:	Reacted to "https://github.com/e..." with 👍🏼
+00:27:45	Toni Wahrstätter:	8037 was scoped
+00:27:55	Toni Wahrstätter:	and another one iirc
+00:28:00	Dustin:	there's no https://notes.ethereum.org/@ethpandaops/bal-devnet-3 yet?
+00:28:01	Maria Silva:	The contract size
+00:28:09	Barnabas:	Replying to "there's no https://n..."
+
+will make it right after the call
+00:28:11	g1:	devnet-3
+- EIP-8037: State Creation Gas Cost Increase
+- EIP-7954: Increase Maximum Contract Size
+00:28:17	spencer-tb:	Reacted to "devnet-3
+- EIP-8037:..." with ❤️
+00:28:20	felipe:	Reacted to "devnet-3
+- EIP-803..." with ❤️
+00:28:23	Barnabas:	Reacted to "devnet-3
+- EIP-8037:..." with ❤️
+00:28:27	Mario Vega:	Reacted to "devnet-3
+- EIP-8037:..." with 👍🏼
+00:30:17	Mario Vega:	My main concern is 8037 on the testing side
+00:30:23	Ben Adams:	Was this one https://github.com/ethereum/EIPs/pull/11306
+00:30:51	Karim T. (matkt):	Is it devnet3 and devnet2 at the same time ? We wanted to do benchmark on devnet 2
+00:30:54	Ansgar Dietrichs:	there was also `eth_simulateV1` RPC support
+00:31:36	Marius van der Wijden:	Can we either 
+1) push devnet-3 to first week of march
+2) remove new eips (8037 and 7954) from devnet-3
+00:31:53	Marius van der Wijden:	Replying to "Can we either 
+1) ..."
+
+I would prefer to move the deadline
+00:31:53	Ansgar Dietrichs:	from the ACDE summary (looks right):
+
+eth/70 part of devnet-3 spec; clients without support can still participate
+00:32:12	Dustin:	Replying to "Is it devnet3 and ..."
+
+would this mean supporting devnet-2 specs at the same time as devnet-3? these inevitably involve pointless back/forward porting of the same things to keep known-obsolete spec-based devnets running
+00:32:22	Ansgar Dietrichs:	Reacted to "I would prefer to mo..." with 👍
+00:32:25	spencer-tb:	Reacted to "I would prefer to mo..." with 👍
+00:32:26	Jared Wasinger:	Reacted to "I would prefer to mo..." with 👍
+00:32:37	Mario Vega:	Reacted to "I would prefer to mo..." with 👍
+00:32:37	spencer-tb:	Replying to "Can we either 
+1) pu..."
+
+I’d be happy with this
+00:32:44	g1(shadow):	Reacted to "I would prefer to ..." with 👍
+00:32:49	felipe:	Reacted to "I would prefer to ..." with 👍
+00:32:51	g1(shadow):	Reacted to "from the ACDE summ..." with 👍
+00:33:23	Karim T. (matkt):	Don’t really have preference just wanted to understand if we want to do benchmark on devnet 3 now . Before we said devnet 2
+00:33:59	felix (eest):	Reacted to "I would prefer to ..." with 👍
+00:33:59	Marius van der Wijden:	Which client does not have eth_simulateV1 at this point?
+00:34:35	Marius van der Wijden:	We have it in the codebase at least
+00:35:05	Jen:	Reacted to "from the ACDE summar..." with 👍
+00:35:31	Karim T. (matkt):	We have it in besu but not passing test, so maybe better to postpone also
+00:35:47	Marius van der Wijden:	Reacted to "We have it in besu..." with 👍
+00:36:49	Marius van der Wijden:	eth/71 is also optional (only used for sync improvements, which no one has iimpl yet)
+00:37:42	Marius van der Wijden:	Reacted to "will make it right..." with 🔥
+00:40:04	Barnabas:	epbs-devnet-0  branch name?
+00:40:20	Barnabas:	we have  ethpandaops/geth:epbs-devnet-0  for EL image to test your CL locally.
+00:42:43	Barnabas:	Replying to " epbs-devnet-0  bran..."
+
+@Gaia ?
+00:43:07	Gaia:	Replying to " epbs-devnet-0  bran…"
+gloas-devnet-0
+00:43:20	Barnabas:	Replying to " epbs-devnet-0  bran..."
+
+could you please rename to epbs-devnet-0?
+00:43:29	Gaia:	Replying to " epbs-devnet-0  bran…"
+yes np
+00:43:48	Gaia:	Replying to " epbs-devnet-0  bran…"
+lol just realized im using my wife’s zoom profile

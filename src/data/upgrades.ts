@@ -1,4 +1,5 @@
 import { ClientTeamPerspective } from '../types/eip';
+import type { MacroPhase } from '../constants/timeline-phases';
 
 export interface ActivationDetails {
   blockNumber: number;
@@ -18,6 +19,8 @@ export interface NetworkUpgrade {
   metaEipLink?: string;
   clientTeamPerspectives?: ClientTeamPerspective[];
   activationDetails?: ActivationDetails;
+  macroPhaseOverride?: MacroPhase;
+  highlights?: string;
 }
 
 export const networkUpgrades: NetworkUpgrade[] = [
@@ -29,7 +32,8 @@ export const networkUpgrades: NetworkUpgrade[] = [
     tagline: 'Enabling staking withdrawals and completing the transition to proof-of-stake.',
     status: 'Live',
     activationDate: 'Apr 12, 2023',
-    disabled: true
+    disabled: true,
+    highlights: 'Staking withdrawals (EIP-4895)'
   },
   {
     id: 'dencun',
@@ -39,7 +43,8 @@ export const networkUpgrades: NetworkUpgrade[] = [
     tagline: 'Proto-danksharding brings cheaper Layer 2 transactions through blob data.',
     status: 'Live',
     activationDate: 'Mar 13, 2024',
-    disabled: true
+    disabled: true,
+    highlights: 'Proto-danksharding / blobs (EIP-4844)'
   },
   {
     id: 'pectra',
@@ -50,6 +55,7 @@ export const networkUpgrades: NetworkUpgrade[] = [
     status: 'Live',
     activationDate: 'May 7, 2025',
     disabled: false,
+    highlights: 'Account abstraction (EIP-7702), staker upgrades, blob scaling',
     metaEipLink: 'https://ethereum-magicians.org/t/pectra-network-upgrade-meta-thread/16809',
     activationDetails: {
       blockNumber: 22431084,
@@ -66,6 +72,7 @@ export const networkUpgrades: NetworkUpgrade[] = [
     status: 'Live',
     activationDate: 'Dec 3, 2025',
     disabled: false,
+    highlights: 'PeerDAS (EIP-7594), gas limit increase, introduce BPOs',
     activationDetails: {
       blockNumber: 23935694,
       epochNumber: 411392,

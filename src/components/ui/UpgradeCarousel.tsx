@@ -1,13 +1,15 @@
 import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { NetworkUpgrade } from '../../data/upgrades';
+import { FORK_PROGRESS_MAP } from '../../constants/timeline-phases';
+import { getMacroPhaseForUpgrade, getMacroPhaseSummary } from '../../utils/macroPhase';
+import MacroPhaseBar from './MacroPhaseBar';
 
 interface UpgradeCarouselProps {
   upgrades: NetworkUpgrade[];
-  getStatusColor: (status: string) => string;
 }
 
-const UpgradeCarousel = ({ upgrades, getStatusColor }: UpgradeCarouselProps) => {
+const UpgradeCarousel = ({ upgrades }: UpgradeCarouselProps) => {
   const visibleCount = 3;
   const maxIndex = Math.max(0, upgrades.length - visibleCount);
   const [currentIndex, setCurrentIndex] = useState(maxIndex);
@@ -27,40 +29,35 @@ const UpgradeCarousel = ({ upgrades, getStatusColor }: UpgradeCarouselProps) => 
   const visibleUpgrades = upgrades.slice(currentIndex, currentIndex + visibleCount);
 
   const renderCard = (upgrade: NetworkUpgrade) => {
+    const isLive = upgrade.status === 'Live';
+    const progress = FORK_PROGRESS_MAP[upgrade.id];
+    const macroPhase = getMacroPhaseForUpgrade(upgrade);
+    const summary = getMacroPhaseSummary(upgrade, progress);
+
     const cardContent = (
       <div className="flex flex-col h-full">
-        <div className="flex items-start justify-between mb-4">
-          <h2
-            className={`text-xl font-medium leading-tight ${upgrade.disabled ? 'text-slate-500 dark:text-slate-400' : 'text-slate-900 dark:text-slate-100'}`}
-          >
-            {upgrade.name}
-          </h2>
-          <div className="flex flex-col items-end gap-1">
-            <span
-              className={`px-2 py-1 text-xs font-medium rounded border ${getStatusColor(upgrade.status)}`}
-            >
-              {upgrade.status}
-            </span>
-          </div>
+        <h2
+          className={`text-xl font-medium leading-tight mb-4 ${upgrade.disabled ? 'text-slate-500 dark:text-slate-400' : 'text-slate-900 dark:text-slate-100'}`}
+        >
+          {upgrade.name}
+        </h2>
+
+        {/* Progress bar */}
+        <div className="mb-4">
+          <MacroPhaseBar currentPhase={macroPhase} shipped={isLive} />
         </div>
 
         <p
           className={`text-sm leading-relaxed flex-grow ${upgrade.disabled ? 'text-slate-400 dark:text-slate-500' : 'text-slate-600 dark:text-slate-300'}`}
         >
-          {upgrade.tagline}
+          {summary}
         </p>
 
         <div
           className={`text-xs mt-4 ${upgrade.disabled ? 'text-slate-400 dark:text-slate-500' : 'text-slate-500 dark:text-slate-400'}`}
         >
           <span className="font-medium">
-            {upgrade.status === 'Live'
-              ? 'Activated:'
-              : upgrade.status === 'Upcoming'
-                ? 'Target:'
-                : upgrade.status === 'Planning'
-                  ? 'Target:'
-                  : 'Date:'}
+            {isLive ? 'Activated:' : 'Target:'}
           </span>{' '}
           {upgrade.activationDate}
         </div>
@@ -90,25 +87,24 @@ const UpgradeCarousel = ({ upgrades, getStatusColor }: UpgradeCarouselProps) => 
   };
 
   const renderCompactCard = (upgrade: NetworkUpgrade) => {
+    const isLive = upgrade.status === 'Live';
+    const macroPhase = getMacroPhaseForUpgrade(upgrade);
+
     const cardContent = (
-      <div className="flex items-center justify-between">
-        <div className="flex items-center gap-3 min-w-0">
+      <div>
+        <div className="flex items-center justify-between mb-2">
           <h2
             className={`text-base font-medium truncate ${upgrade.disabled ? 'text-slate-500 dark:text-slate-400' : 'text-slate-900 dark:text-slate-100'}`}
           >
             {upgrade.name}
           </h2>
-          <span
-            className={`px-2 py-0.5 text-xs font-medium rounded border shrink-0 ${getStatusColor(upgrade.status)}`}
+          <div
+            className={`text-xs shrink-0 ml-3 ${upgrade.disabled ? 'text-slate-400 dark:text-slate-500' : 'text-slate-500 dark:text-slate-400'}`}
           >
-            {upgrade.status}
-          </span>
+            {upgrade.activationDate}
+          </div>
         </div>
-        <div
-          className={`text-xs shrink-0 ml-3 ${upgrade.disabled ? 'text-slate-400 dark:text-slate-500' : 'text-slate-500 dark:text-slate-400'}`}
-        >
-          {upgrade.activationDate}
-        </div>
+        <MacroPhaseBar currentPhase={macroPhase} shipped={isLive} />
       </div>
     );
 

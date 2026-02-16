@@ -273,10 +273,10 @@ export const GLAMSTERDAM_PROGRESS: ForkProgress = {
     },
     {
       phaseId: 'eip-selection',
-      status: 'in-progress',
+      status: 'completed',
       actualStartDate: 'Aug 2025',
-      projectedDate: 'Dec 2025',
-      progressNotes: 'PFI deadline completed, CFI/SFI decisions ongoing',
+      actualEndDate: 'Jan 29, 2026',
+      progressNotes: 'PFI and CFI deadlines completed, SFI decisions finalized',
       substeps: [
         {
           name: 'PFI Deadline',
@@ -292,12 +292,13 @@ export const GLAMSTERDAM_PROGRESS: ForkProgress = {
     },
     {
       phaseId: 'development',
-      status: 'upcoming',
-      projectedDate: 'Q1-Q2 2026',
-      progressNotes: 'Devnets expected to begin Q1 2026',
+      status: 'in-progress',
+      actualStartDate: 'Feb 2026',
+      projectedDate: 'Q2 2026',
+      progressNotes: 'Scoping complete, implemented EIPs are being tested on devnets',
       devnets: [
-        { name: 'Devnet-0', status: 'upcoming', projectedDate: 'Q1 2026' },
-        { name: 'Devnet-1', status: 'upcoming', projectedDate: 'Q1 2026' },
+        { name: 'Devnet-0', status: 'completed', date: 'Feb 5, 2026' },
+        { name: 'Devnet-1', status: 'in-progress', projectedDate: 'Q1 2026' },
         { name: 'Devnet-2', status: 'upcoming', projectedDate: 'Q1 2026' },
         { name: 'Devnet-3', status: 'upcoming', projectedDate: 'Q1-Q2 2026' },
         { name: 'Devnet-4', status: 'upcoming', projectedDate: 'Q2 2026' },
@@ -519,3 +520,25 @@ export const UPGRADE_PROCESS_PHASES: ProcessPhase[] = [
     notes: 'Schedule Wed monitoring. Need ~60-70% adoption. 2-week minimum window.'
   }
 ];
+
+export type MacroPhase = 'headliners' | 'scoping' | 'devnets' | 'testnets' | 'mainnet';
+
+export interface MacroPhaseConfig {
+  id: MacroPhase;
+  label: string;
+  description: string;
+}
+
+export const MACRO_PHASES: MacroPhaseConfig[] = [
+  { id: 'headliners', label: 'Headliners', description: 'Fork focus definition & headliner selection' },
+  { id: 'scoping', label: 'Scoping', description: 'Non-headliner EIP selection (PFI/CFI/SFI)' },
+  { id: 'devnets', label: 'Devnets', description: 'Client implementation across devnets (0 through N)' },
+  { id: 'testnets', label: 'Testnets', description: 'Public testnet deployments (Sepolia, Hoodi)' },
+  { id: 'mainnet', label: 'Mainnet', description: 'Mainnet activation' },
+];
+
+export const FORK_PROGRESS_MAP: Record<string, ForkProgress> = {
+  fusaka: FUSAKA_PROGRESS,
+  glamsterdam: GLAMSTERDAM_PROGRESS,
+  hegota: HEGOTA_PROGRESS,
+};

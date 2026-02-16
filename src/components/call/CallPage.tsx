@@ -7,6 +7,7 @@ import CallSearch from './CallSearch';
 import ThemeToggle from '../ui/ThemeToggle';
 import { Logo } from '../ui/Logo';
 import { protocolCalls, callTypeNames, type CallType } from '../../data/calls';
+import { fetchUpcomingCalls } from '../../utils/github';
 import { eipsData } from '../../data/eips';
 import { EIP, ForkRelationship } from '../../types/eip';
 
@@ -59,6 +60,7 @@ const CallPage: React.FC = () => {
   const [callData, setCallData] = useState<CallData | null>(null);
   const [callConfig, setCallConfig] = useState<CallConfig | null>(null);
   const [loading, setLoading] = useState(true);
+  const [isUpcoming, setIsUpcoming] = useState(false);
   const [summaryExpanded, setSummaryExpanded] = useState(false);
   const transcriptRef = useRef<HTMLDivElement>(null);
   const chatLogRef = useRef<HTMLDivElement>(null);
@@ -344,8 +346,34 @@ const CallPage: React.FC = () => {
               videoUrl: locationState.youtubeUrl,
               issue: locationState.issueNumber
             });
+            setIsUpcoming(true);
             setLoading(false);
             return;
+          }
+
+          // Direct navigation — try fetching upcoming calls from GitHub
+          try {
+            const upcomingCalls = await fetchUpcomingCalls();
+            const upcomingMatch = upcomingCalls.find(
+              call => call.type === type && call.number === number
+            );
+            if (upcomingMatch) {
+              setCallData({
+                type: type?.toUpperCase() || '',
+                date: upcomingMatch.date,
+                number: number || '',
+                videoUrl: upcomingMatch.youtubeUrl
+              });
+              setCallConfig({
+                videoUrl: upcomingMatch.youtubeUrl,
+                issue: upcomingMatch.issueNumber
+              });
+              setIsUpcoming(true);
+              setLoading(false);
+              return;
+            }
+          } catch {
+            // Fall through to "not found"
           }
 
           console.error('Call not found:', callPath);
@@ -1256,7 +1284,7 @@ const CallPage: React.FC = () => {
                   );
                 })}
               </div>
-            ) : (location.state as UpcomingCallState | null)?.upcoming ? (
+            ) : isUpcoming ? (
               <div className="flex flex-col items-center justify-center py-12 text-center">
                 <svg className="w-10 h-10 text-amber-400 dark:text-amber-500 mb-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
@@ -1281,7 +1309,7 @@ const CallPage: React.FC = () => {
               <div ref={chatLogRef} className="max-h-[400px] overflow-y-auto pr-2">
                 <ChatLog content={callData.chatContent} syncConfig={callConfig?.sync} selectedSearchResult={selectedSearchResult} onTimestampClick={handleTranscriptClick} />
               </div>
-            ) : (location.state as UpcomingCallState | null)?.upcoming ? (
+            ) : isUpcoming ? (
               <div className="flex flex-col items-center justify-center py-12 text-center">
                 <svg className="w-10 h-10 text-amber-400 dark:text-amber-500 mb-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />

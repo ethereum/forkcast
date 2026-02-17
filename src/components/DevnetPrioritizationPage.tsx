@@ -380,8 +380,8 @@ const DevnetPrioritizationPage: React.FC = () => {
 
   // Calculate devnet progression data - which EIPs are new in each devnet
   const devnetProgression = useMemo(() => {
-    // Sort devnets by version (ascending) to compare progression
-    const sortedDevnets = [...devnetData.devnets].sort((a, b) => a.version - b.version);
+    // Sort devnets by launch date (ascending) to compare progression
+    const sortedDevnets = [...devnetData.devnets].sort((a, b) => a.launchDate.localeCompare(b.launchDate));
 
     const progression: Array<{
       devnet: typeof devnetData.devnets[0];

@@ -26,6 +26,7 @@ const devnetData = devnetDataRaw as {
     version: number;
     launchDate: string;
     eips: number[];
+    optionalEips?: number[];
     isTarget?: boolean;
   }>;
 };
@@ -101,6 +102,7 @@ interface DevnetInfo {
   version: number;
   launchDate?: string;
   isTarget?: boolean;
+  optional?: boolean;
 }
 
 interface CombinedEipData {
@@ -128,6 +130,19 @@ function buildDevnetMap(): Map<number, DevnetInfo[]> {
         version: devnet.version,
         launchDate: devnet.launchDate,
         isTarget: devnet.isTarget,
+      });
+      map.set(eipId, existing);
+    }
+    for (const eipId of devnet.optionalEips || []) {
+      const existing = map.get(eipId) || [];
+      existing.push({
+        id: devnet.id,
+        type: devnet.type,
+        headliner: devnet.headliner,
+        version: devnet.version,
+        launchDate: devnet.launchDate,
+        isTarget: devnet.isTarget,
+        optional: true,
       });
       map.set(eipId, existing);
     }
@@ -370,6 +385,7 @@ const DevnetPrioritizationPage: React.FC = () => {
     const progression: Array<{
       devnet: typeof devnetData.devnets[0];
       eips: number[];
+      optionalEips: number[];
       newEips: Set<number>;
       previousEips: Set<number>;
     }> = [];
@@ -377,7 +393,8 @@ const DevnetPrioritizationPage: React.FC = () => {
     let previousEipSet = new Set<number>();
 
     for (const devnet of sortedDevnets) {
-      const currentEipSet = new Set(devnet.eips);
+      const allEips = [...devnet.eips, ...(devnet.optionalEips || [])];
+      const currentEipSet = new Set(allEips);
       const newEips = new Set<number>();
 
       // Find EIPs that are in current but not in previous
@@ -389,7 +406,8 @@ const DevnetPrioritizationPage: React.FC = () => {
 
       progression.push({
         devnet,
-        eips: devnet.eips,
+        eips: allEips,
+        optionalEips: devnet.optionalEips || [],
         newEips,
         previousEips: previousEipSet,
       });
@@ -585,7 +603,8 @@ const DevnetPrioritizationPage: React.FC = () => {
           </p>
 
           <div className="space-y-3">
-            {devnetProgression.map(({ devnet, eips, newEips }) => {
+            {devnetProgression.map(({ devnet, eips, optionalEips, newEips }) => {
+              const optionalEipSet = new Set(optionalEips);
               const isExpanded = expandedDevnets.has(devnet.id);
               const devnetEipData = getDevnetEipData(eips);
               const newCount = newEips.size;
@@ -691,9 +710,23 @@ const DevnetPrioritizationPage: React.FC = () => {
                                     >
                                       {eip ? getProposalPrefix(eip) : 'EIP'}-{eipId}
                                     </Link>
+                                    {combined?.layer && (
+                                      <span className={`px-1.5 py-0.5 text-[10px] rounded ${
+                                        combined.layer === 'EL'
+                                          ? 'bg-indigo-100 text-indigo-700 dark:bg-indigo-900/30 dark:text-indigo-300'
+                                          : 'bg-teal-100 text-teal-700 dark:bg-teal-900/30 dark:text-teal-300'
+                                      }`}>
+                                        {combined.layer}
+                                      </span>
+                                    )}
                                     {newEips.has(eipId) && devnet.version > 0 && (
                                       <span className="px-1.5 py-0.5 text-[10px] font-semibold bg-emerald-100 text-emerald-700 dark:bg-emerald-900/30 dark:text-emerald-300 rounded uppercase">
                                         New
+                                      </span>
+                                    )}
+                                    {optionalEipSet.has(eipId) && (
+                                      <span className="px-1.5 py-0.5 text-[10px] font-semibold bg-slate-100 text-slate-500 dark:bg-slate-700 dark:text-slate-400 rounded uppercase">
+                                        Optional
                                       </span>
                                     )}
                                   </div>
@@ -749,9 +782,23 @@ const DevnetPrioritizationPage: React.FC = () => {
                                 >
                                   {eip ? getProposalPrefix(eip) : 'EIP'}-{eipId}
                                 </Link>
+                                {combined?.layer && (
+                                  <span className={`px-1.5 py-0.5 text-[10px] rounded ${
+                                    combined.layer === 'EL'
+                                      ? 'bg-indigo-100 text-indigo-700 dark:bg-indigo-900/30 dark:text-indigo-300'
+                                      : 'bg-teal-100 text-teal-700 dark:bg-teal-900/30 dark:text-teal-300'
+                                  }`}>
+                                    {combined.layer}
+                                  </span>
+                                )}
                                 {newEips.has(eipId) && devnet.version > 0 && (
                                   <span className="px-1.5 py-0.5 text-[10px] font-semibold bg-emerald-100 text-emerald-700 dark:bg-emerald-900/30 dark:text-emerald-300 rounded uppercase">
                                     New
+                                  </span>
+                                )}
+                                {optionalEipSet.has(eipId) && (
+                                  <span className="px-1.5 py-0.5 text-[10px] font-semibold bg-slate-100 text-slate-500 dark:bg-slate-700 dark:text-slate-400 rounded uppercase">
+                                    Optional
                                   </span>
                                 )}
                               </div>
@@ -1149,9 +1196,9 @@ const DevnetPrioritizationPage: React.FC = () => {
                                   <span
                                     key={devnet.id}
                                     className={`inline-block px-1.5 py-0.5 text-[10px] font-medium rounded ${getDevnetColor(devnet.headliner)}`}
-                                    title={devnet.id}
+                                    title={devnet.optional ? `${devnet.id} (optional)` : devnet.id}
                                   >
-                                    {devnet.id}
+                                    {devnet.id}{devnet.optional ? '*' : ''}
                                   </span>
                                 ))}
                             </div>

@@ -26,6 +26,7 @@ const devnetData = devnetDataRaw as {
     version: number;
     launchDate: string;
     eips: number[];
+    updatedEips?: number[];
     optionalEips?: number[];
     isTarget?: boolean;
   }>;
@@ -386,6 +387,7 @@ const DevnetPrioritizationPage: React.FC = () => {
       devnet: typeof devnetData.devnets[0];
       eips: number[];
       optionalEips: number[];
+      updatedEips: number[];
       newEips: Set<number>;
       previousEips: Set<number>;
     }> = [];
@@ -408,6 +410,7 @@ const DevnetPrioritizationPage: React.FC = () => {
         devnet,
         eips: allEips,
         optionalEips: devnet.optionalEips || [],
+        updatedEips: devnet.updatedEips || [],
         newEips,
         previousEips: previousEipSet,
       });
@@ -603,8 +606,9 @@ const DevnetPrioritizationPage: React.FC = () => {
           </p>
 
           <div className="space-y-3">
-            {devnetProgression.map(({ devnet, eips, optionalEips, newEips }) => {
+            {devnetProgression.map(({ devnet, eips, optionalEips, updatedEips, newEips }) => {
               const optionalEipSet = new Set(optionalEips);
+              const updatedEipSet = new Set(updatedEips);
               const isExpanded = expandedDevnets.has(devnet.id);
               const devnetEipData = getDevnetEipData(eips);
               const newCount = newEips.size;
@@ -724,6 +728,11 @@ const DevnetPrioritizationPage: React.FC = () => {
                                         New
                                       </span>
                                     )}
+                                    {updatedEipSet.has(eipId) && (
+                                      <span className="px-1.5 py-0.5 text-[10px] font-semibold bg-blue-100 text-blue-600 dark:bg-blue-900/30 dark:text-blue-400 rounded uppercase">
+                                        Updated
+                                      </span>
+                                    )}
                                     {optionalEipSet.has(eipId) && (
                                       <span className="px-1.5 py-0.5 text-[10px] font-semibold bg-slate-100 text-slate-500 dark:bg-slate-700 dark:text-slate-400 rounded uppercase">
                                         Optional
@@ -794,6 +803,11 @@ const DevnetPrioritizationPage: React.FC = () => {
                                 {newEips.has(eipId) && devnet.version > 0 && (
                                   <span className="px-1.5 py-0.5 text-[10px] font-semibold bg-emerald-100 text-emerald-700 dark:bg-emerald-900/30 dark:text-emerald-300 rounded uppercase">
                                     New
+                                  </span>
+                                )}
+                                {updatedEipSet.has(eipId) && (
+                                  <span className="px-1.5 py-0.5 text-[10px] font-semibold bg-blue-100 text-blue-600 dark:bg-blue-900/30 dark:text-blue-400 rounded uppercase">
+                                    Updated
                                   </span>
                                 )}
                                 {optionalEipSet.has(eipId) && (

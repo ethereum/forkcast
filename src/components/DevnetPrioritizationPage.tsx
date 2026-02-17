@@ -392,14 +392,16 @@ const DevnetPrioritizationPage: React.FC = () => {
       previousEips: Set<number>;
     }> = [];
 
-    let previousEipSet = new Set<number>();
+    // Track previous EIPs per headliner track
+    const previousByHeadliner = new Map<string, Set<number>>();
 
     for (const devnet of sortedDevnets) {
       const allEips = [...devnet.eips, ...(devnet.optionalEips || [])];
       const currentEipSet = new Set(allEips);
+      const previousEipSet = previousByHeadliner.get(devnet.headliner) || new Set<number>();
       const newEips = new Set<number>();
 
-      // Find EIPs that are in current but not in previous
+      // Find EIPs that are in current but not in previous for this track
       for (const eipId of currentEipSet) {
         if (!previousEipSet.has(eipId)) {
           newEips.add(eipId);
@@ -415,7 +417,7 @@ const DevnetPrioritizationPage: React.FC = () => {
         previousEips: previousEipSet,
       });
 
-      previousEipSet = currentEipSet;
+      previousByHeadliner.set(devnet.headliner, currentEipSet);
     }
 
     // Return in reverse order (most recent first)

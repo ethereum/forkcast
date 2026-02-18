@@ -78,3 +78,18 @@ export type InclusionStage =
   | 'Unknown';
 
 export type ProposalType = 'EIP' | 'RIP';
+
+export type KeyDecisionType = 'stage_change' | 'devnet_inclusion' | 'headliner_selected' | 'other';
+
+export interface KeyDecision {
+  original_text: string;
+  timestamp: string;
+  type: KeyDecisionType;
+  eips: number[];
+  stage_change?: {
+    to: 'Considered' | 'Scheduled' | 'Included' | 'Declined' | 'Withdrawn';
+  };
+  devnet?: string;
+  fork?: string;
+  context?: string;
+}

@@ -9,7 +9,7 @@ import { Logo } from '../ui/Logo';
 import { protocolCalls, callTypeNames, type CallType } from '../../data/calls';
 import { fetchUpcomingCalls } from '../../utils/github';
 import { eipsData } from '../../data/eips';
-import { EIP, ForkRelationship } from '../../types/eip';
+import { EIP, ForkRelationship, KeyDecision } from '../../types/eip';
 
 // Mapping of breakout call types to their associated EIP IDs
 const BREAKOUT_EIP_MAP: Record<string, number> = {
@@ -34,6 +34,7 @@ interface CallData {
   transcriptContent?: string;
   videoUrl?: string;
   tldrData?: TldrData;
+  keyDecisions?: KeyDecision[];
 }
 
 interface CallConfig {
@@ -429,6 +430,18 @@ const CallPage: React.FC = () => {
           }
         }
 
+        // Load key decisions if they exist
+        let keyDecisions: KeyDecision[] | undefined;
+        const keyDecisionsResponse = await fetch(`/artifacts/${artifactPath}/key_decisions.json`);
+        if (keyDecisionsResponse.ok) {
+          try {
+            const kdData = await keyDecisionsResponse.json();
+            keyDecisions = kdData?.key_decisions;
+          } catch (e) {
+            console.warn('Failed to parse key_decisions.json:', e);
+          }
+        }
+
         // Load config file if it exists
         const configResponse = await fetch(`/artifacts/${artifactPath}/config.json`);
         let config: CallConfig | null = null;
@@ -464,7 +477,8 @@ const CallPage: React.FC = () => {
           chatContent,
           transcriptContent,
           videoUrl,
-          tldrData
+          tldrData,
+          keyDecisions
         });
 
       } catch (error) {
@@ -1210,6 +1224,7 @@ const CallPage: React.FC = () => {
                   <div className="p-6">
                     <TldrSummary
                       data={callData.tldrData}
+                      keyDecisions={callData.keyDecisions}
                       onTimestampClick={handleTranscriptClick}
                       syncConfig={callConfig?.sync}
                       currentVideoTime={currentVideoTime}

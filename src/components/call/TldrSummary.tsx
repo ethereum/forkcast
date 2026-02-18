@@ -1,4 +1,6 @@
 import React, { useEffect, useRef } from 'react';
+import { KeyDecision } from '../../types/eip';
+import KeyDecisionsSection from './KeyDecisionsSection';
 
 interface HighlightItem {
   timestamp: string;
@@ -39,6 +41,7 @@ interface SyncConfig {
 
 interface TldrSummaryProps {
   data: TldrData;
+  keyDecisions?: KeyDecision[];
   onTimestampClick?: (timestamp: string) => void;
   syncConfig?: SyncConfig;
   currentVideoTime?: number;
@@ -47,6 +50,7 @@ interface TldrSummaryProps {
 
 const TldrSummary: React.FC<TldrSummaryProps> = ({
   data,
+  keyDecisions,
   onTimestampClick,
   syncConfig,
   currentVideoTime = 0,
@@ -145,9 +149,6 @@ const TldrSummary: React.FC<TldrSummaryProps> = ({
     <div ref={containerRef} className="grid grid-cols-1 lg:grid-cols-2 gap-6">
       {/* Left Column: Highlights */}
       <div>
-        <h2 className="text-base font-semibold text-slate-900 dark:text-slate-100 mb-4">
-          TL;DR
-        </h2>
         <div className="space-y-4">
           {Object.entries(data.highlights).map(([category, items]) => (
             <div key={category}>
@@ -187,11 +188,55 @@ const TldrSummary: React.FC<TldrSummaryProps> = ({
         </div>
       </div>
 
-      {/* Right Column: Actions, Decisions, Commitments */}
-      <div className="space-y-6">
+      {/* Right Column: Decisions, Actions, Commitments */}
+      <div>
+        <div className="space-y-6">
+        {/* Decisions Made */}
+        {data.decisions && data.decisions.length > 0 && (
+          <div className="rounded-lg border border-slate-200 dark:border-slate-700 bg-slate-50/50 dark:bg-slate-800/50 p-4">
+            <h3 className="text-xs font-semibold text-slate-900 dark:text-slate-100 uppercase tracking-wide mb-2">
+              Decisions
+            </h3>
+            {keyDecisions && keyDecisions.length > 0 ? (
+              <KeyDecisionsSection
+                decisions={keyDecisions}
+                onTimestampClick={onTimestampClick}
+                syncConfig={syncConfig}
+                currentVideoTime={currentVideoTime}
+                selectedSearchResult={selectedSearchResult}
+              />
+            ) : (
+              <ul className="space-y-1 list-none ml-0">
+                {data.decisions.map((decision, index) => {
+                  const isSelected = selectedSearchResult?.timestamp === decision.timestamp &&
+                                   selectedSearchResult?.type === 'decision';
+                  return (
+                    <li
+                      key={index}
+                      onClick={(e) => handleTimestampClick(decision.timestamp, e)}
+                      className="text-sm cursor-pointer group before:content-['→'] before:mr-2 before:text-slate-400 dark:before:text-slate-500 text-slate-600 dark:text-slate-400"
+                    >
+                      <span className={`rounded px-1 py-0.5 transition-colors inline ${
+                        isSelected
+                          ? 'bg-yellow-50 dark:bg-yellow-900/50 text-slate-900 dark:text-slate-100'
+                          : 'hover:text-slate-900 dark:hover:text-slate-100'
+                      }`}>
+                        {decision.decision}
+                      </span>
+                      <span className="text-xs text-slate-400 dark:text-slate-500 ml-1 opacity-0 group-hover:opacity-100 transition-opacity">
+                        {getDisplayTimestamp(decision.timestamp)}
+                      </span>
+                    </li>
+                  );
+                })}
+              </ul>
+            )}
+          </div>
+        )}
+
         {/* Action Items */}
         {data.action_items && data.action_items.length > 0 && (
-          <div className="pb-6 border-b border-slate-200 dark:border-slate-700">
+          <div>
             <h3 className="text-xs font-semibold text-slate-900 dark:text-slate-100 uppercase tracking-wide mb-2">
               Action Items
             </h3>
@@ -214,39 +259,6 @@ const TldrSummary: React.FC<TldrSummaryProps> = ({
                     </span>
                     <span className="text-xs text-slate-400 dark:text-slate-500 ml-1 opacity-0 group-hover:opacity-100 transition-opacity">
                       {getDisplayTimestamp(item.timestamp)}
-                    </span>
-                  </li>
-                );
-              })}
-            </ul>
-          </div>
-        )}
-
-        {/* Decisions Made */}
-        {data.decisions && data.decisions.length > 0 && (
-          <div className="pb-6 border-b border-slate-200 dark:border-slate-700">
-            <h3 className="text-xs font-semibold text-slate-900 dark:text-slate-100 uppercase tracking-wide mb-2">
-              Decisions
-            </h3>
-            <ul className="space-y-1 list-none ml-0">
-              {data.decisions.map((decision, index) => {
-                const isSelected = selectedSearchResult?.timestamp === decision.timestamp &&
-                                 selectedSearchResult?.type === 'decision';
-                return (
-                  <li
-                    key={index}
-                    onClick={(e) => handleTimestampClick(decision.timestamp, e)}
-                    className="text-sm cursor-pointer group before:content-['→'] before:mr-2 before:text-slate-400 dark:before:text-slate-500 text-slate-600 dark:text-slate-400"
-                  >
-                    <span className={`rounded px-1 py-0.5 transition-colors inline ${
-                      isSelected
-                        ? 'bg-yellow-50 dark:bg-yellow-900/50 text-slate-900 dark:text-slate-100'
-                        : 'hover:text-slate-900 dark:hover:text-slate-100'
-                    }`}>
-                      {decision.decision}
-                    </span>
-                    <span className="text-xs text-slate-400 dark:text-slate-500 ml-1 opacity-0 group-hover:opacity-100 transition-opacity">
-                      {getDisplayTimestamp(decision.timestamp)}
                     </span>
                   </li>
                 );
@@ -287,6 +299,7 @@ const TldrSummary: React.FC<TldrSummaryProps> = ({
             </ul>
           </div>
         )}
+        </div>
       </div>
     </div>
   );

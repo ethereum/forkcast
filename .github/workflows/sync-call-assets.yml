@@ -33,6 +33,11 @@ jobs:
         run: |
           node scripts/sync-call-assets.mjs ${{ github.event.inputs.force_full_sync == 'true' && '--force' || '' }}
 
+      - name: Extract key decisions from new TLDRs
+        env:
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+        run: node scripts/extract-key-decisions.mjs --all
+
       - name: Check for changes
         id: changes
         run: |

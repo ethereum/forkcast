@@ -1,0 +1,80 @@
+{
+  "meeting": "Encrypt The Mempool #0 - February 18, 2026",
+  "highlights": {
+    "eip_8105_updates": [
+      {
+        "timestamp": "00:08:47",
+        "highlight": "Two-slot execution design: encrypted tx (block N) + decrypted tx (block N+1)"
+      },
+      {
+        "timestamp": "00:09:55",
+        "highlight": "Execution context references previous block to prevent builder communication"
+      },
+      {
+        "timestamp": "00:10:16",
+        "highlight": "Envelope signer reference added to prevent envelope stripping attacks"
+      },
+      {
+        "timestamp": "00:12:04",
+        "highlight": "EIP-8105 PR merged yesterday with all new changes"
+      }
+    ],
+    "gas_metering_design": [
+      {
+        "timestamp": "00:12:24",
+        "highlight": "Encrypted tx consumes all gas; decrypted tx consumes none"
+      },
+      {
+        "timestamp": "00:13:26",
+        "highlight": "Gas charged at block N prices for execution in block N+1"
+      },
+      {
+        "timestamp": "00:17:09",
+        "highlight": "Builder knows next block base fee; no dangerous incentives identified"
+      }
+    ],
+    "lucid_design": [
+      {
+        "timestamp": "00:18:17",
+        "highlight": "Gas limit set to 1/8 block for sealed transactions (was 1/4 in research)"
+      },
+      {
+        "timestamp": "00:21:11",
+        "highlight": "Limit ensures two payloads fit if one missing (liveness guarantee)"
+      },
+      {
+        "timestamp": "00:28:10",
+        "highlight": "Non-guaranteed bundling via same top-of-block fee; deterministic bundling possible later"
+      }
+    ],
+    "organizational": [
+      {
+        "timestamp": "00:07:18",
+        "highlight": "First kickoff call; focus on stabilizing EIP-8105 and Lucid specs"
+      },
+      {
+        "timestamp": "00:22:46",
+        "highlight": "Lucid EIP expected in a few more days"
+      }
+    ]
+  },
+  "action_items": [
+    {
+      "timestamp": "00:22:02",
+      "action": "Review gas metering approach and compare with Lucid design",
+      "owner": "EIP-8105 team (Jannik)"
+    },
+    {
+      "timestamp": "00:23:14",
+      "action": "Analyze real-world block data: shuffle private mempool txs to test ordering dependencies",
+      "owner": "MEV researchers/analysts (call for volunteers)"
+    },
+    {
+      "timestamp": "00:31:11",
+      "action": "Open GitHub issue for next meeting agenda items",
+      "owner": "Justin"
+    }
+  ],
+  "decisions": [],
+  "targets": []
+}

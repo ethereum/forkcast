@@ -357,7 +357,8 @@ const CallsIndexPage: React.FC = () => {
                             bal: 'border-l-red-500 dark:border-l-red-400',
                             focil: 'border-l-orange-500 dark:border-l-orange-400',
                             rpc: 'border-l-violet-500 dark:border-l-violet-400',
-                            zkevm: 'border-l-fuchsia-500 dark:border-l-fuchsia-400'
+                            zkevm: 'border-l-fuchsia-500 dark:border-l-fuchsia-400',
+                            etm: 'border-l-purple-500 dark:border-l-purple-400'
                           };
 
                           const upcomingCallTypeBadgeColors: Record<CallType, string> = {
@@ -371,7 +372,8 @@ const CallsIndexPage: React.FC = () => {
                             tli: 'bg-pink-100 dark:bg-pink-900/30 text-pink-700 dark:text-pink-300',
                             pqts: 'bg-yellow-100 dark:bg-yellow-900/30 text-yellow-700 dark:text-yellow-300',
                             rpc: 'bg-violet-100 dark:bg-violet-900/30 text-violet-700 dark:text-violet-300',
-                            zkevm: 'bg-fuchsia-100 dark:bg-fuchsia-900/30 text-fuchsia-700 dark:text-fuchsia-300'
+                            zkevm: 'bg-fuchsia-100 dark:bg-fuchsia-900/30 text-fuchsia-700 dark:text-fuchsia-300',
+                            etm: 'bg-purple-100 dark:bg-purple-900/30 text-purple-700 dark:text-purple-300'
                           };
 
                           const cardContent = (
@@ -452,7 +454,8 @@ const CallsIndexPage: React.FC = () => {
                           tli: 'border-l-pink-500 dark:border-l-pink-400',
                           pqts: 'border-l-yellow-500 dark:border-l-yellow-400',
                           rpc: 'border-l-violet-500 dark:border-l-violet-400',
-                          zkevm: 'border-l-fuchsia-500 dark:border-l-fuchsia-400'
+                          zkevm: 'border-l-fuchsia-500 dark:border-l-fuchsia-400',
+                          etm: 'border-l-purple-500 dark:border-l-purple-400'
                         };
 
                         const callTypeBadgeColors: Record<CallType, string> = {
@@ -466,7 +469,8 @@ const CallsIndexPage: React.FC = () => {
                           tli: 'bg-pink-100 dark:bg-pink-900/30 text-pink-700 dark:text-pink-300',
                           pqts: 'bg-yellow-100 dark:bg-yellow-900/30 text-yellow-700 dark:text-yellow-300',
                           rpc: 'bg-violet-100 dark:bg-violet-900/30 text-violet-700 dark:text-violet-300',
-                          zkevm: 'bg-fuchsia-100 dark:bg-fuchsia-900/30 text-fuchsia-700 dark:text-fuchsia-300'
+                          zkevm: 'bg-fuchsia-100 dark:bg-fuchsia-900/30 text-fuchsia-700 dark:text-fuchsia-300',
+                          etm: 'bg-purple-100 dark:bg-purple-900/30 text-purple-700 dark:text-purple-300'
                         };
 
                         return (

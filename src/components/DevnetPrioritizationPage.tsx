@@ -36,6 +36,7 @@ type SortField = 'eip' | 'complexity' | 'support' | 'stage' | 'devnets' | 'weigh
 type SortDirection = 'asc' | 'desc';
 
 const MAX_STANCES = 11; // 5 EL + 6 CL clients
+const GAS_REPRICING_EIPS = new Set([2780, 7778, 7904, 7976, 7981, 8037, 8038]);
 
 /**
  * Calculate confidence factor based on how many teams have weighed in
@@ -1024,6 +1025,11 @@ const DevnetPrioritizationPage: React.FC = () => {
                           {item.layer}
                         </span>
                       )}
+                      {GAS_REPRICING_EIPS.has(item.eipId) && (
+                        <span className="ml-2 text-[10px] px-1.5 py-0.5 rounded bg-orange-100 text-orange-700 dark:bg-orange-900/30 dark:text-orange-300">
+                          repricing
+                        </span>
+                      )}
                     </div>
                     {item.weightedScore !== null && (
                       <span
@@ -1189,6 +1195,11 @@ const DevnetPrioritizationPage: React.FC = () => {
                                   : 'bg-teal-100 text-teal-700 dark:bg-teal-900/30 dark:text-teal-300'
                               }`}>
                                 {item.layer}
+                              </span>
+                            )}
+                            {GAS_REPRICING_EIPS.has(item.eipId) && (
+                              <span className="px-1.5 py-0.5 text-[10px] rounded bg-orange-100 text-orange-700 dark:bg-orange-900/30 dark:text-orange-300">
+                                repricing
                               </span>
                             )}
                           </div>

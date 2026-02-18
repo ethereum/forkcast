@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 
 interface BannerLink {
   url: string;
@@ -17,12 +17,9 @@ export default function AnnouncementBanner({
   title,
   links,
 }: AnnouncementBannerProps) {
-  const [isVisible, setIsVisible] = useState(false);
-
-  useEffect(() => {
-    const isDismissed = localStorage.getItem(storageKey) === 'true';
-    setIsVisible(!isDismissed);
-  }, [storageKey]);
+  const [isVisible, setIsVisible] = useState(
+    () => localStorage.getItem(storageKey) !== 'true'
+  );
 
   const handleDismiss = () => {
     setIsVisible(false);

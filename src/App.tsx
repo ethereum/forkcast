@@ -16,6 +16,7 @@ import { getUpgradeById } from './data/upgrades';
 import { useAnalytics } from './hooks/useAnalytics';
 import { ThemeProvider } from './contexts/ThemeContext';
 import ExternalRedirect from './components/ExternalRedirect';
+import AnnouncementBanner from './components/ui/AnnouncementBanner';
 
 function RedirectHandler() {
   const navigate = useNavigate();
@@ -77,6 +78,21 @@ function App() {
         <RedirectHandler />
         <AnalyticsTracker />
         <ScrollToTop />
+        <AnnouncementBanner
+          storageKey="gas-repricing-banner-dismissed"
+          title="Glamsterdam gas repricing: how do proposed changes affect you?"
+          links={[
+            {
+              url: 'https://docs.google.com/forms/d/e/1FAIpQLScmhDCX1I8-RPFL-AEEBJkBkAtbCq_M9quXHspF_OltTbGCGw/viewform',
+              label: 'Take Survey',
+              primary: true,
+            },
+            {
+              url: 'https://gasrepricing.com',
+              label: 'gasrepricing.com',
+            },
+          ]}
+        />
         <Routes>
           <Route path="/" element={<HomePage />} />
           <Route path="/schedule" element={<SchedulePage />} />

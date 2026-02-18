@@ -1,0 +1,1894 @@
+WEBVTT
+
+1
+00:05:21.840 --> 00:05:23.550
+Maria Silva: Hello, everyone.
+
+2
+00:05:23.730 --> 00:05:25.109
+Maria Silva: Anything from your.
+
+3
+00:05:31.040 --> 00:05:32.310
+Butta: Hello, hello.
+
+4
+00:05:34.280 --> 00:05:35.160
+Maria Silva: Alright.
+
+5
+00:05:36.760 --> 00:05:40.499
+Maria Silva: So, I propose he waits.
+
+6
+00:05:40.630 --> 00:05:43.959
+Maria Silva: Minutes to see if more people join, and…
+
+7
+00:05:44.360 --> 00:05:48.410
+Maria Silva: Yeah, then we'll start. Welcome, welcome to the people joining.
+
+8
+00:06:16.480 --> 00:06:23.770
+Maria Silva: Hi, everyone. Just to warn the newcomers, we are waiting one more minute to see if more people join, and then we'll start.
+
+9
+00:07:13.810 --> 00:07:21.240
+Maria Silva: Okay, so I don't see more people coming, so I think we can… we can start.
+
+10
+00:07:21.440 --> 00:07:24.729
+Maria Silva: So this is the agenda for today.
+
+11
+00:07:26.260 --> 00:07:42.280
+Maria Silva: And we'll start, by discussing, 2780, so reduce intrinsic transaction costs, and, Guru will, give us an update on the status of, the specs and test implementation.
+
+12
+00:07:42.630 --> 00:07:45.210
+Maria Silva: Guru, if you want, the floor is yours.
+
+13
+00:07:45.970 --> 00:08:03.379
+Guru: Yeah, thanks, Maria. Yeah, so on EIP2780, on the specs and test side, we've got a draft implementation, and some basic tests already written. So, where we are right now is,
+
+14
+00:08:03.380 --> 00:08:24.909
+Guru: There are some interactions with… so basically the current implementation is likely to break some of the legacy tests, particularly those around 7702 and 7928, the BALS tests. So, we need to kind of fix those before we kind of can make any test release, but that's kind of a…
+
+15
+00:08:24.910 --> 00:08:29.649
+Guru: A lot of tests that we need to fix, so,
+
+16
+00:08:29.650 --> 00:08:48.429
+Guru: it would be good to kind of clarify how these interactions… there are some interaction points which I don't think are fully clear from the EIP document. So, ideally, we want to make these test fixes once, not having to go back and forth and, like, keep fixing them again and again.
+
+17
+00:08:48.430 --> 00:08:59.059
+Guru: So I have raised kind of a PR to the EIP's repository to attempt to clarify this, or at least, like, start a discussion on some of these interactions.
+
+18
+00:08:59.200 --> 00:09:05.480
+Guru: And once those are clear, we can fix those tests and potentially look at making a release.
+
+19
+00:09:05.730 --> 00:09:14.530
+Guru: But the EIP2780 specific tests are already in the draft PR, so on that front, we are pretty good to go.
+
+20
+00:09:15.070 --> 00:09:22.059
+Guru: I can also link to the PR if necessary. This is the PR from the EIPs repo.
+
+21
+00:09:27.040 --> 00:09:27.920
+Maria Silva: Open.
+
+22
+00:09:28.190 --> 00:09:29.589
+Maria Silva: Do you have any comments?
+
+23
+00:09:30.240 --> 00:09:41.830
+Ben Adams: I, it also needs the addition of the log prices from EIP 7708.
+
+24
+00:09:42.490 --> 00:09:44.890
+Ben Adams: Because they're currently free.
+
+25
+00:09:45.040 --> 00:09:53.479
+Ben Adams: However, the… the assumption there is because the gas prices of an ETH transfer are so ridiculously high.
+
+26
+00:09:53.860 --> 00:09:59.310
+Ben Adams: the logs can be free. But since we're bringing down that cost massively.
+
+27
+00:09:59.510 --> 00:10:02.140
+Ben Adams: We should add the log prices on.
+
+28
+00:10:06.240 --> 00:10:13.410
+Ben Adams: Since, yeah, since essentially the EIP's saying, you know, pay for the… pay for the actual costs, and break it all down.
+
+29
+00:10:13.930 --> 00:10:15.360
+Ben Adams: And they should be included.
+
+30
+00:10:16.790 --> 00:10:24.469
+Maria Silva: Yeah, that's, that's a good point. Do you think you could add a PR to include them, or,
+
+31
+00:10:24.940 --> 00:10:25.590
+Maria Silva: Sure.
+
+32
+00:10:25.590 --> 00:10:27.870
+Ben Adams: I can… I can… I can follow up with.
+
+33
+00:10:28.790 --> 00:10:29.590
+Maria Silva: Sounds good.
+
+34
+00:10:29.590 --> 00:10:30.410
+Ben Adams: Do you want me to…
+
+35
+00:10:31.880 --> 00:10:44.999
+Maria Silva: Yeah, that would be great. Cool. Any more comments for Guru? So, I think he linked the PR, I'll urge everyone to review and see if you find any issues there.
+
+36
+00:10:45.060 --> 00:10:53.110
+Maria Silva: Yeah, I linked a few people already to… with some questions, for the Go Guru.
+
+37
+00:10:53.110 --> 00:11:15.289
+Guru: Yeah, just a quick point, I think this would be for, Tony, if he's on the call, regarding BALs, I think account access kind of becomes cheaper if you're, attempting to access only EOAs here. So, if he wants to take a look, if there are any, like, implications on that for the…
+
+38
+00:11:15.390 --> 00:11:18.060
+Guru: For the BALS… BALS size, in particular.
+
+39
+00:11:18.060 --> 00:11:21.899
+Toni Wahrstätter: This is interesting, yeah? How much cheaper will it get? So today, it's…
+
+40
+00:11:22.200 --> 00:11:28.139
+Toni Wahrstätter: 2,400, that's the cheapest you can access an account. How much cheaper will it get?
+
+41
+00:11:28.340 --> 00:11:34.399
+Guru: So if you're attempting to access a cold UA, the charge is $500.
+
+42
+00:11:35.390 --> 00:11:39.050
+Guru: So you're essentially… 25%.
+
+43
+00:11:42.870 --> 00:11:43.320
+Toni Wahrstätter: Okay.
+
+44
+00:11:43.320 --> 00:11:59.260
+Maria Silva: An important, an important point there is this value may also be updated after we have the numbers for the State Access EIP, so AAA38, so it's possible that it will increase a little bit.
+
+45
+00:11:59.500 --> 00:12:04.730
+Maria Silva: But still, it should… will likely be a reduction anyways,
+
+46
+00:12:06.020 --> 00:12:08.900
+Maria Silva: Due to just, benchmarking out
+
+47
+00:12:09.730 --> 00:12:13.900
+Maria Silva: the benchmarking results we've been seeing from ETH transfers benchmarks.
+
+48
+00:12:14.080 --> 00:12:19.020
+Maria Silva: But yeah, so it's something we need to think about.
+
+49
+00:12:24.340 --> 00:12:26.989
+Ben Adams: What's… what's the interaction there?
+
+50
+00:12:28.850 --> 00:12:30.349
+Ben Adams: How does it affect Bell?
+
+51
+00:12:31.690 --> 00:12:34.769
+Toni Wahrstätter: It might affect the worst-case bottle size.
+
+52
+00:12:35.820 --> 00:12:39.740
+Toni Wahrstätter: So this is one of the things, and yeah.
+
+53
+00:12:40.100 --> 00:12:43.129
+Toni Wahrstätter: There's also currently some discussion around how to
+
+54
+00:12:43.450 --> 00:12:47.150
+Toni Wahrstätter: quickly invalidate BALS, which also uses,
+
+55
+00:12:47.960 --> 00:12:52.189
+Toni Wahrstätter: Currently, the 2,000 gas, because that's the cheapest you can access.
+
+56
+00:12:52.590 --> 00:12:54.670
+Toni Wahrstätter: Storage key slash account.
+
+57
+00:12:55.430 --> 00:12:59.270
+Toni Wahrstätter: But this sounds like it will be reduced to 500 then.
+
+58
+00:13:05.800 --> 00:13:06.600
+Maria Silva: Starting.
+
+59
+00:13:14.510 --> 00:13:25.060
+Maria Silva: What are the… what are the next steps there, Guru? Do you want, Tony to just, have a look again and comment, on your PR?
+
+60
+00:13:26.900 --> 00:13:38.510
+Guru: Yeah, so, I mean, that's not a blocker, per se. The next blocker would be to kind of agree on how we want to handle, yes, the 7702.
+
+61
+00:13:38.570 --> 00:13:57.130
+Guru: gas charge and, like, the points that I've raised in the PR. Once we have clarity on how, the final, clarity on how we want to handle those, I can go back and fix the 7702 and 7928, tests that are currently being broken by these changes.
+
+62
+00:13:57.370 --> 00:14:01.199
+Guru: And, that kind of gives us a good test suite, too.
+
+63
+00:14:01.460 --> 00:14:03.849
+Guru: To possibly make a release.
+
+64
+00:14:05.550 --> 00:14:10.929
+Ben Adams: Yeah, I think… I think you're correct on that additional charge, because you have to…
+
+65
+00:14:11.600 --> 00:14:12.860
+Ben Adams: Look up the account.
+
+66
+00:14:19.620 --> 00:14:33.409
+Guru: Yeah, so ideally, just to summarize, the next step would be to get this PR clarified and merged, and then I can proceed to take that result and update my implementation and fix the breaking tests.
+
+67
+00:14:37.630 --> 00:14:48.860
+Maria Silva: Sounds good. So I, I would ask, so I already gave, a quick read and added, so I pinged you, Tony, and Ben, so if you could just go there and just,
+
+68
+00:14:49.530 --> 00:14:54.769
+Maria Silva: do a thumbs up, or something like this, just to make sure that everything looks good, then I can approve it.
+
+69
+00:14:55.020 --> 00:14:57.219
+Maria Silva: And you can leave my shots. Sounds good.
+
+70
+00:15:06.370 --> 00:15:11.440
+Maria Silva: Perfect. Anything else we should discuss regarding the transfers EIP?
+
+71
+00:15:11.660 --> 00:15:14.010
+Maria Silva: Or should we move to the next point?
+
+72
+00:15:21.000 --> 00:15:25.449
+Toni Wahrstätter: Yeah, maybe just to add to that, so intuitively, this…
+
+73
+00:15:26.390 --> 00:15:33.159
+Toni Wahrstätter: tells me that the BALS size will probably increase quite dramatically, right? Because if we…
+
+74
+00:15:33.900 --> 00:15:38.330
+Toni Wahrstätter: Quarter, basically, the cost of accessing an account.
+
+75
+00:15:39.290 --> 00:15:43.889
+Toni Wahrstätter: Right now, of course, the storage keys are the main contributor to the file size.
+
+76
+00:15:44.530 --> 00:15:49.660
+Toni Wahrstätter: But then I would also assume we have to look into, okay, We lower it
+
+77
+00:15:50.090 --> 00:15:53.360
+Toni Wahrstätter: To a level where the ball size gets bloated, so…
+
+78
+00:15:53.470 --> 00:15:59.960
+Toni Wahrstätter: We might need to make it more expensive again, because they also contribute to data.
+
+79
+00:16:00.910 --> 00:16:08.310
+Toni Wahrstätter: We're basically sending one way To as many accounts as possible will probably be the new worst-case bar size.
+
+80
+00:16:16.440 --> 00:16:27.699
+Maria Silva: Again, I… so I think on there, maybe we can wait to have the preliminary numbers on 1838 to understand what would be the actual costs of
+
+81
+00:16:27.930 --> 00:16:35.480
+Maria Silva: Accessing, cold accounts, with code and without code.
+
+82
+00:16:35.690 --> 00:16:38.169
+Maria Silva: And then we can do the…
+
+83
+00:16:38.450 --> 00:16:42.770
+Maria Silva: the math of recalculating the worst case balls, and if we feel like
+
+84
+00:16:42.890 --> 00:16:48.119
+Maria Silva: that's an issue, then it just means that the state's access EIP will have to
+
+85
+00:16:48.710 --> 00:16:53.620
+Maria Silva: Add, some sort of additional cost for… for the data part.
+
+86
+00:16:56.550 --> 00:16:58.409
+Toni Wahrstätter: Yeah, sounds good, let's do that.
+
+87
+00:17:06.390 --> 00:17:14.999
+Maria Silva: Perfect. Any more topics on, ETH transfers EIP, or should we move to the next, the next stop.
+
+88
+00:17:27.750 --> 00:17:32.319
+Maria Silva: Going once, going twice. Okay, I think we'll move to the next topic, so…
+
+89
+00:17:32.670 --> 00:17:36.029
+Maria Silva: For the next topic, we'll be talking about
+
+90
+00:17:36.040 --> 00:17:54.280
+Maria Silva: state creation, gas cost increase, and here we have two topics. So first I wanted to raise, a question that actually drag on from, from, from RED, first raised, and I think kind of, made me go into a rabbit hole of how to
+
+91
+00:17:54.340 --> 00:18:04.110
+Maria Silva: deal with the subcalls and the reservoir mechanisms, so I wanted to present you the options and just open the discussion on that.
+
+92
+00:18:04.180 --> 00:18:08.529
+Maria Silva: And let me just,
+
+93
+00:18:09.200 --> 00:18:12.420
+Maria Silva: open it, because I have some slides.
+
+94
+00:18:16.620 --> 00:18:27.370
+Maria Silva: Okay, and then after this, we'll have, Spencer will keep an update on what he's been up to for, the specs and the tests for PEIPC.
+
+95
+00:18:27.830 --> 00:18:34.430
+Maria Silva: Okay, so I just wanted to, explain,
+
+96
+00:18:35.350 --> 00:18:43.679
+Maria Silva: What is happening now in the… how we deal with gas monitoring in subcalls, and what are… what are the open questions?
+
+97
+00:18:43.930 --> 00:18:44.770
+Maria Silva: So…
+
+98
+00:18:45.580 --> 00:18:53.350
+Maria Silva: just so we are all on the same page, so the current way that the EIP is doing the multidimensional metering, so it is
+
+99
+00:18:53.510 --> 00:19:11.630
+Maria Silva: splitting up these two resources, so we have the state creation operations. They spend, state gas, so this is not the state access cost, but the pure cost of creating new states. And then all the other costs are, the regular gas.
+
+100
+00:19:12.030 --> 00:19:22.740
+Maria Silva: And how we are metering this is we have still the gas left, as we have now in the EVM, and this gas left is essentially
+
+101
+00:19:23.140 --> 00:19:31.750
+Maria Silva: bound by the transaction gas limits, so the 60 million, gas units. And then, because
+
+102
+00:19:31.960 --> 00:19:35.370
+Maria Silva: For state creation, users can use more than
+
+103
+00:19:35.640 --> 00:19:43.690
+Maria Silva: These transaction limits, they have this reservoir, so whenever their transaction requires more than the transaction limit.
+
+104
+00:19:44.110 --> 00:19:53.780
+Maria Silva: this extract is, sent to this reservoir. And then what happens is that, the gas left, so…
+
+105
+00:19:53.880 --> 00:20:07.280
+Maria Silva: The state creation transactions use the reservoir, and then once the reservoir is zero, they start using gas left, while the regular gas is… can only be taken from the gas left, okay?
+
+106
+00:20:08.000 --> 00:20:11.330
+Maria Silva: And then, what happens in calls? So.
+
+107
+00:20:11.490 --> 00:20:27.989
+Maria Silva: In calls, the user is still specifying a single gas value to use in the call, and so the question is, we need to define, first, how does the forwarding happen? So how much gas left in the reservoir will the call have access to?
+
+108
+00:20:28.130 --> 00:20:43.700
+Maria Silva: And then what happens both in the success case, so how much… how are the unused portions returned, and also what happens in the failure. So in a revert, an exceptional halt, how much gas is returned to the gas left in the residue?
+
+109
+00:20:45.100 --> 00:20:48.920
+Maria Silva: And so I try to kind of describe as much as possible
+
+110
+00:20:49.200 --> 00:20:54.479
+Maria Silva: all the… all the options. So option one…
+
+111
+00:20:54.520 --> 00:21:09.390
+Maria Silva: is, essentially we are… when we are in a call, the gas left is the G that is being sent, of course, with the 6364, cup.
+
+112
+00:21:10.200 --> 00:21:24.200
+Maria Silva: And the reservoir is essentially… is essentially all the reservoir, okay? So when the user says, I'm… the call is using G, that G is passed through the gas lift, and then all the available reservoir
+
+113
+00:21:24.370 --> 00:21:26.810
+Maria Silva: He's available for the call.
+
+114
+00:21:27.010 --> 00:21:33.439
+Maria Silva: Under success, the stuff that is unused gets returned.
+
+115
+00:21:34.590 --> 00:21:37.540
+Maria Silva: And both on…
+
+116
+00:21:37.820 --> 00:21:46.730
+Maria Silva: So on the revert, again, gas left, is returned, and the reservoir that is in use is also returned.
+
+117
+00:21:47.410 --> 00:21:50.700
+Maria Silva: On an exceptional halt,
+
+118
+00:21:52.530 --> 00:21:59.820
+Maria Silva: This is where it's a bit different. So here, all the gas left is consumed, so this is to keep consistent with the current design.
+
+119
+00:21:59.910 --> 00:22:08.680
+Maria Silva: But the unused reservoir is also returned. And the rationale for this is that when we have an exceptional halt, then
+
+120
+00:22:08.750 --> 00:22:20.780
+Maria Silva: all the state that would be created is actually not created. And so, if we were to spend the reservoir, this would be too punishing for users.
+
+121
+00:22:20.980 --> 00:22:24.820
+Maria Silva: And so these means that,
+
+122
+00:22:25.040 --> 00:22:29.280
+Maria Silva: Actually, we should, return the reservoir.
+
+123
+00:22:30.800 --> 00:22:41.439
+Maria Silva: So this is option… option one. Option two is very similar, so the forwarding, is… is the same. Success is the same, revert is the same.
+
+124
+00:22:41.810 --> 00:22:56.650
+Maria Silva: But then, on the exceptional halt, we are saying that both the gas lab and the reservoir are zeroed out. Again, this is what is more in line with the current behavior of the exceptional halt.
+
+125
+00:22:56.720 --> 00:23:14.149
+Maria Silva: But again, it's… I think it's too punishing for, for cases where we… we have an exceptional halt, because we would be spending all the reservoir, which was made available, right, and we would be zeroing it out, so it seems a bit too…
+
+126
+00:23:14.240 --> 00:23:15.129
+Maria Silva: to punish you.
+
+127
+00:23:16.430 --> 00:23:31.040
+Maria Silva: Then option 3, the change is how much… is… the change is more on the forwarding part. So for the forwarding, we are saying we are not making all the reservoir available.
+
+128
+00:23:31.090 --> 00:23:44.930
+Maria Silva: But instead, we are making the same proportion that was available in the gas left, we are making the same proportion for reservoir. So, if the call is with G saying, I want to send 20% of my gas left.
+
+129
+00:23:45.040 --> 00:23:49.540
+Maria Silva: To the fall, then we also send 20% off of the reservoir.
+
+130
+00:23:49.680 --> 00:23:59.460
+Maria Silva: And then the success, revert, and exception, halt behaved as the same as in option 1, which is less punishing than option two.
+
+131
+00:24:01.800 --> 00:24:12.820
+Maria Silva: And then, we have, option 4. So this one, the only change is, again, how much of the reservoir is being forward.
+
+132
+00:24:13.110 --> 00:24:17.520
+Maria Silva: And here, the idea is, like, you don't forward the same
+
+133
+00:24:18.230 --> 00:24:23.759
+Maria Silva: ratio, but you forward the exact same volume, right? So if you say, I'm making 20…
+
+134
+00:24:23.800 --> 00:24:40.929
+Maria Silva: K available of gas left, then you also make 20K of reservoir available, if it's available. Like, if you only have 10K, then you send all the available reservoir. But it's not a ratio, it's the exact volume. And I think this one is a bit more in line with
+
+135
+00:24:41.020 --> 00:24:46.709
+Maria Silva: The current way that multidimensional metering works, where you say there's a block limit of
+
+136
+00:24:46.920 --> 00:25:02.619
+Maria Silva: 10K, let's say, or there's a block limit of 60 million gas units, and you can use up to 60 million gas units of both resources. So this is actually a bit more similar to how multidimensional metering does it at block level.
+
+137
+00:25:03.350 --> 00:25:06.660
+Maria Silva: And then success revert an exception is the same as option one.
+
+138
+00:25:07.610 --> 00:25:11.130
+Maria Silva: So, what are the trade-offs? So, it seems like…
+
+139
+00:25:11.430 --> 00:25:26.230
+Maria Silva: In option 1 and 2, you do have, forwarding is a bit simpler. You have access to the full reservoir, but also, this has the problem that G…
+
+140
+00:25:26.450 --> 00:25:36.039
+Maria Silva: doesn't give you a bound on how much the call can spend. So this could lead to weird behaviors where you are just saying, I just want to send G to my call.
+
+141
+00:25:36.330 --> 00:25:43.320
+Maria Silva: And then you end up spending a lot from the reservoir, and so this is a bit,
+
+142
+00:25:43.920 --> 00:25:49.079
+Maria Silva: It's, a bit worse for entrusted, calls.
+
+143
+00:25:49.130 --> 00:26:05.719
+Maria Silva: And, and option two here is even worse, because it's like, if you end up in a… in an out-of-gas condition, then you even get your entire reservoir wiped out. So, I think, clearly, between option one and option two, I would,
+
+144
+00:26:05.810 --> 00:26:08.070
+Maria Silva: prefer much more option one.
+
+145
+00:26:08.490 --> 00:26:20.079
+Maria Silva: Then option 3 and option 4, they give you a bit more control over how much you are spending via the G. But it means that you…
+
+146
+00:26:20.080 --> 00:26:30.139
+Maria Silva: you may have to send bigger gas if you want to use more… if you want to create states during your calls, which also can…
+
+147
+00:26:30.230 --> 00:26:35.219
+Maria Silva: comes with, with, with its own, issues. Then you, you have, like.
+
+148
+00:26:35.980 --> 00:26:48.170
+Maria Silva: the option between 3 and 4 is more like what would be more, intuitive for users when they are setting up G, and what would be, easier, which I don't have, like, a strong intuition there.
+
+149
+00:26:49.550 --> 00:26:53.389
+Maria Silva: And so… I wanted to just open the…
+
+150
+00:26:53.910 --> 00:27:06.640
+Maria Silva: the discussion, if there are any comments in the call, great. If not, I can… I will also share this, async, so we can start the discussion, but I think there's here the question of
+
+151
+00:27:06.660 --> 00:27:15.279
+Maria Silva: how should we define these… these semantics? I mean, in my opinion, option one seems better, sorry, the other… yeah, option one seems better than option two.
+
+152
+00:27:15.310 --> 00:27:17.710
+Maria Silva: But we should maybe…
+
+153
+00:27:18.030 --> 00:27:26.939
+Maria Silva: think a bit more and see, like, is this really true? And then, are there any additional problems with any of those options that we haven't thought about?
+
+154
+00:27:27.180 --> 00:27:33.769
+Maria Silva: So yeah, happy to, to hear your, your comments, on these.
+
+155
+00:27:34.360 --> 00:27:37.149
+Maria Silva: And if there are any questions, also happy to…
+
+156
+00:27:37.380 --> 00:27:39.989
+Maria Silva: Happy education to go into it.
+
+157
+00:27:43.090 --> 00:27:45.900
+Maria Silva: Ben, do you have your hand raised? Do you want to talk?
+
+158
+00:27:45.900 --> 00:27:53.060
+Ben Adams: Yeah, it's a little bit tangential to this, but, does…
+
+159
+00:27:53.350 --> 00:28:02.509
+Ben Adams: Estimate GAF need to change to, provide people with, like, Who we estimate and hire.
+
+160
+00:28:03.290 --> 00:28:08.119
+Ben Adams: Based on the fact they could be charged more.
+
+161
+00:28:10.160 --> 00:28:15.010
+Ben Adams: Because we need to estimate above refunds, if that makes sense.
+
+162
+00:28:15.580 --> 00:28:20.660
+Ben Adams: Because otherwise it will go, can you pay the potential gas that you might spend?
+
+163
+00:28:23.970 --> 00:28:28.949
+Maria Silva: I'm… I'm not sure I understand what you are asking, sorry, can you… can you explain that again?
+
+164
+00:28:28.970 --> 00:28:33.480
+Ben Adams: With, with this EIP, is there a potential that
+
+165
+00:28:34.420 --> 00:28:41.039
+Ben Adams: you're charged more upfront, which is then refunded. So I'm wondering if,
+
+166
+00:28:43.020 --> 00:28:49.820
+Ben Adams: a note should be made that estimate gas should be estimating, like, the higher bound, if you see what I mean.
+
+167
+00:28:50.070 --> 00:28:53.120
+Ben Adams: You could… What you could be spending.
+
+168
+00:28:53.310 --> 00:28:55.390
+Ben Adams: Which might be higher, because you're…
+
+169
+00:28:55.730 --> 00:29:00.439
+Ben Adams: You're spending more on, storage, creating accounts.
+
+170
+00:29:03.000 --> 00:29:10.139
+Maria Silva: But, sorry, do you mean, like, in the case of a Halton Reverse, where your reservoir ends up being…
+
+171
+00:29:10.330 --> 00:29:12.699
+Maria Silva: Wiped out, or not?
+
+172
+00:29:12.840 --> 00:29:18.819
+Ben Adams: I don't mean with these changes you're highlighting at the moment, I just mean the overall EIP.
+
+173
+00:29:18.990 --> 00:29:26.199
+Ben Adams: In that… If we tell the user how much gas they the transaction costs…
+
+174
+00:29:26.580 --> 00:29:31.920
+Ben Adams: Then their transaction will get rejected because…
+
+175
+00:29:33.410 --> 00:29:39.170
+Ben Adams: You originally get charged how much you could potentially pay, and then you get,
+
+176
+00:29:40.880 --> 00:29:43.469
+Ben Adams: And then you get refunded back.
+
+177
+00:29:45.380 --> 00:29:52.980
+Ben Adams: If you spend less, if you sort of. I'm just wondering if we need to put a caveat in for estimate gas to… to make sure it's…
+
+178
+00:29:53.120 --> 00:29:56.200
+Ben Adams: estimating… the maximum.
+
+179
+00:29:56.450 --> 00:29:58.180
+Ben Adams: That you could be spending.
+
+180
+00:29:59.650 --> 00:30:03.179
+Maria Silva: So I'm… I may be wrong, but my understanding is, like, the…
+
+181
+00:30:03.380 --> 00:30:07.160
+Maria Silva: The way that refunds work are not changing.
+
+182
+00:30:07.790 --> 00:30:22.320
+Maria Silva: It's true that gas costs will change, but this is true for all the other EIPs, right? Like, for the… it transfers EIP, it's the same thing, like, gas costs will change, so we'll have to update the…
+
+183
+00:30:22.700 --> 00:30:25.220
+Maria Silva: the estimate costs,
+
+184
+00:30:25.590 --> 00:30:31.139
+Maria Silva: Well, I don't see how these EIP is different from all the others on that respect.
+
+185
+00:30:35.690 --> 00:30:41.140
+Maria Silva: But I'm… I may be missing something, so please, let me know if so.
+
+186
+00:30:48.610 --> 00:30:52.619
+Ben Adams: On… on this, I do think we do need to…
+
+187
+00:30:52.740 --> 00:30:57.429
+Ben Adams: I'm not sure what's the right approach, but I do think we need to limit it.
+
+188
+00:30:59.130 --> 00:31:05.539
+Ben Adams: cap the amount… if… if the, toll is capped.
+
+189
+00:31:05.650 --> 00:31:10.549
+Ben Adams: Then the amount of, reservoir paths should be kept in some way else.
+
+190
+00:31:13.110 --> 00:31:13.790
+Maria Silva: Right.
+
+191
+00:31:20.740 --> 00:31:29.390
+Maria Silva: Yeah, I think this is, yeah, so I think this was a good… a good raise from… from Drogan, like, I… I hadn't… hadn't thought on that.
+
+192
+00:31:29.740 --> 00:31:37.970
+Maria Silva: But I think it's, yeah, it's not obvious, the right approach there. Well, Daniel, do you have any comments?
+
+193
+00:31:39.020 --> 00:31:43.030
+Daniel Lehrner (Besu): Yeah, so, I mean, the idea of the reservoir
+
+194
+00:31:43.210 --> 00:31:47.640
+Daniel Lehrner (Besu): Or the problem it tries to fix is mainly to deploy…
+
+195
+00:31:47.990 --> 00:31:55.120
+Daniel Lehrner (Besu): smart contracts up to the new maximum, no? Because without it, it would not be possible.
+
+196
+00:31:55.340 --> 00:31:57.010
+Daniel Lehrner (Besu): With 8047.
+
+197
+00:31:57.480 --> 00:31:58.440
+Daniel Lehrner (Besu): So… Right.
+
+198
+00:31:59.260 --> 00:32:08.010
+Daniel Lehrner (Besu): I mean, we don't want to encourage people to create a lot of state.
+
+199
+00:32:08.240 --> 00:32:14.939
+Daniel Lehrner (Besu): And, you know, when you create a contract, I would say it's either directly in the transaction, or maybe you do one…
+
+200
+00:32:15.190 --> 00:32:18.099
+Daniel Lehrner (Besu): Subcore when you use a factory.
+
+201
+00:32:19.130 --> 00:32:24.349
+Daniel Lehrner (Besu): But… I'm not sure if you really have to worry about the issue that people have.
+
+202
+00:32:24.570 --> 00:32:34.859
+Daniel Lehrner (Besu): you know, very nested cores, and then create the contract. So maybe even option 2 is fine, because either the contract is created successfully, or it isn't.
+
+203
+00:32:35.350 --> 00:32:36.210
+Daniel Lehrner (Besu): And…
+
+204
+00:32:36.980 --> 00:32:46.670
+Daniel Lehrner (Besu): I'm not sure if it really makes sense to allow people to have this very nested course to use the reservoir, even though maybe there is a revert or whatever.
+
+205
+00:32:46.980 --> 00:32:53.379
+Daniel Lehrner (Besu): Because, I don't know, maybe they can abuse it again in some form.
+
+206
+00:32:54.450 --> 00:32:55.390
+Daniel Lehrner (Besu): So…
+
+207
+00:32:55.640 --> 00:33:07.559
+Daniel Lehrner (Besu): As I said, I would say, you know, we should think what we want to do with the reservoir, and as far as I know, the only use case is to create new smart contracts.
+
+208
+00:33:07.710 --> 00:33:11.220
+Daniel Lehrner (Besu): And that's it. We don't want to encourage people to…
+
+209
+00:33:11.560 --> 00:33:16.150
+Daniel Lehrner (Besu): Use up a lot of state, or to create a new state in any other way than that.
+
+210
+00:33:17.130 --> 00:33:26.669
+Daniel Lehrner (Besu): Turns out, for me… draining all the state cars on the road, actually, I think would be fine.
+
+211
+00:33:27.490 --> 00:33:33.700
+Daniel Lehrner (Besu): But, there might be some patterns for smart contract deployment that I'm not aware of that would…
+
+212
+00:33:34.410 --> 00:33:38.849
+Daniel Lehrner (Besu): be… that would not be a work anymore. It did work today.
+
+213
+00:33:40.100 --> 00:33:48.980
+Maria Silva: Right, I think here the issue is mostly on the factories, which is what you pointed out, too. I think these are the ones that need more
+
+214
+00:33:49.570 --> 00:33:56.349
+Maria Silva: state gas within nested calls. But yeah, Dragan, do you have a comment there?
+
+215
+00:33:57.510 --> 00:33:58.400
+Dragan Rakita: Okay.
+
+216
+00:33:58.910 --> 00:34:01.890
+Dragan Rakita: Maybe I would even split this
+
+217
+00:34:02.380 --> 00:34:08.859
+Dragan Rakita: this in, like, two problems. One is how to limit reservoir to subcalls.
+
+218
+00:34:09.130 --> 00:34:12.229
+Dragan Rakita: Second one, not problem, but, like, discussions.
+
+219
+00:34:12.429 --> 00:34:19.120
+Dragan Rakita: The second one's, is, how about to revert and halt?
+
+220
+00:34:20.050 --> 00:34:25.520
+Dragan Rakita: In general, limit… for the first discussion.
+
+221
+00:34:25.770 --> 00:34:28.949
+Dragan Rakita: Maybe makes sense to limit it somehow?
+
+222
+00:34:29.350 --> 00:34:34.239
+Dragan Rakita: I like idea to limit it proportionally, depending on what gas
+
+223
+00:34:34.510 --> 00:34:40.740
+Dragan Rakita: regular gas is set, but I don't have strong opinions on any of that.
+
+224
+00:34:41.280 --> 00:34:50.600
+Dragan Rakita: Second discussion, I think it makes sense to revert, basically, to refill the reservoir if, basically, the gas that is
+
+225
+00:34:51.380 --> 00:34:55.380
+Dragan Rakita: That should be used for creation is basically not used.
+
+226
+00:34:55.760 --> 00:35:03.819
+Dragan Rakita: I do think that previously we didn't have this option, because we had just one gas, and it was…
+
+227
+00:35:04.170 --> 00:35:05.639
+Dragan Rakita: different state.
+
+228
+00:35:06.370 --> 00:35:11.430
+Dragan Rakita: But we couldn't, like, make the difference between the…
+
+229
+00:35:11.640 --> 00:35:17.489
+Dragan Rakita: the CPU work that was done, or maybe state work that was done.
+
+230
+00:35:17.680 --> 00:35:24.680
+Dragan Rakita: But because we are making this split inside the VM, I think it's a good idea to…
+
+231
+00:35:24.830 --> 00:35:27.840
+Dragan Rakita: Not charged for something that was not done.
+
+232
+00:35:29.260 --> 00:35:29.940
+Dragan Rakita: Yep.
+
+233
+00:35:34.790 --> 00:35:42.860
+Maria Silva: Yeah, I tend to… I tend to agree as well. Yeah, it's just a matter of if someone can think of a problem with that approach.
+
+234
+00:35:43.940 --> 00:35:49.249
+Maria Silva: Yeah, I think it's one of those that we need to kind of stew on it and see if more…
+
+235
+00:35:49.950 --> 00:35:51.240
+Maria Silva: More things come up.
+
+236
+00:35:53.930 --> 00:35:56.770
+Maria Silva: Any more comments on these?
+
+237
+00:36:06.350 --> 00:36:07.760
+Maria Silva: Gold Leash?
+
+238
+00:36:08.040 --> 00:36:19.789
+Luis Pinto | Besu: Yeah, sorry, Maria. Just rolling a bit back even on the problem itself. So, since the state created is kind of rollback if there is a halt or a revert.
+
+239
+00:36:20.190 --> 00:36:22.040
+Luis Pinto | Besu: In the… inside the call.
+
+240
+00:36:22.550 --> 00:36:26.730
+Luis Pinto | Besu: Do we really need to be… to care about,
+
+241
+00:36:27.000 --> 00:36:30.760
+Luis Pinto | Besu: Limiting the amount of state gas costs.
+
+242
+00:36:31.280 --> 00:36:32.560
+Luis Pinto | Besu: That is passed.
+
+243
+00:36:32.740 --> 00:36:42.589
+Luis Pinto | Besu: Since, I mean, we do care about the state that is carried across blocks, but do we carry that much about the state that's temporarily created?
+
+244
+00:36:42.700 --> 00:36:46.429
+Luis Pinto | Besu: In the case of, of a halt or a revert.
+
+245
+00:36:47.520 --> 00:36:49.259
+Luis Pinto | Besu: Inside the call.
+
+246
+00:36:50.110 --> 00:36:50.940
+Luis Pinto | Besu: Yeah, I think…
+
+247
+00:36:51.290 --> 00:37:02.850
+Maria Silva: Yeah, that's… that's a good question, and I think this is where, like, the separation that Dragon did help. So I think one question is, like, on halt and revert what we do.
+
+248
+00:37:03.730 --> 00:37:11.249
+Maria Silva: The other one is, like, even in the success case, how much reservoir should be available for the call?
+
+249
+00:37:11.610 --> 00:37:13.110
+Maria Silva: Right? And I think…
+
+250
+00:37:13.720 --> 00:37:19.800
+Maria Silva: The second question is more about, like, if I'm a user, and I want to, like.
+
+251
+00:37:20.660 --> 00:37:36.930
+Maria Silva: the reason why I'm limiting the gas that is being available in the call is usually a protection, right? Like, if you are interacting with contracts that you are not too sure about, you want to have that control over how much gas is being charged.
+
+252
+00:37:37.080 --> 00:37:41.000
+Maria Silva: And so… these…
+
+253
+00:37:41.610 --> 00:37:58.299
+Maria Silva: this, concept of letting all the reservoir be available changes this, right? Like, now a user says, I just want to use 10K for this, call, but actually I could end up using 20K if I have 10K in the reservoir in my contract somehow, like.
+
+254
+00:37:58.490 --> 00:38:04.250
+Maria Silva: creates a lot of states. And my intuition is, like, this is a bit, like.
+
+255
+00:38:04.450 --> 00:38:09.869
+Maria Silva: It's a bit weird, not giving the option for the user to,
+
+256
+00:38:11.430 --> 00:38:14.819
+Maria Silva: To kind of being able to limit also the reservoir.
+
+257
+00:38:16.880 --> 00:38:25.420
+Maria Silva: And under the two options, essentially, you'd still be limited by G. It wouldn't be exactly G, so for it's an option for it to…
+
+258
+00:38:26.360 --> 00:38:31.270
+Maria Silva: And, in option 2… I'm sorry, in option 3,
+
+259
+00:38:31.900 --> 00:38:42.910
+Maria Silva: G plus the fraction of state gas that is induced by the fraction between. So it's a bit more complicated, but it still gives you some sort of, like.
+
+260
+00:38:43.100 --> 00:38:47.149
+Maria Silva: way to limit this. So I think… This is the…
+
+261
+00:38:47.410 --> 00:38:53.390
+Maria Silva: The question is, like, is this even something that, like, Users to have.
+
+262
+00:38:53.940 --> 00:38:55.850
+Maria Silva: The possibility of doing?
+
+263
+00:38:57.420 --> 00:39:05.899
+Maria Silva: Because the simplest approach would be just to do option one. Like, you let all the reservoir available, but then this comes with, sort of, some
+
+264
+00:39:07.560 --> 00:39:10.730
+Maria Silva: Like, some protection from the user side.
+
+265
+00:39:11.630 --> 00:39:14.470
+Luis Pinto | Besu: In a way, Yes, are you, Ruben?
+
+266
+00:39:14.920 --> 00:39:23.530
+Ben Adams: If you did option one, it would potentially mean that you call a contract with a limited amount of gas, but they can burn all of your
+
+267
+00:39:23.910 --> 00:39:25.190
+Ben Adams: State storage.
+
+268
+00:39:25.480 --> 00:39:35.800
+Luis Pinto | Besu: But the compute part is, like, the S-load is… or S-store is… there's also a compute side of that as well, so…
+
+269
+00:39:36.510 --> 00:39:42.629
+Luis Pinto | Besu: There's a… Excited and the compute part, and that is capped still with the current limits.
+
+270
+00:39:43.200 --> 00:39:51.340
+Maria Silva: Right, I think the issue that, like, the way that you could do it more clearly would be with, like, deploying contracts within the call.
+
+271
+00:39:56.950 --> 00:39:59.120
+Ben Adams: Where there, you can, yeah.
+
+272
+00:39:59.330 --> 00:40:00.309
+Ben Adams: There you can scan.
+
+273
+00:40:00.310 --> 00:40:03.890
+Maria Silva: Spend much more state gas without execution costs.
+
+274
+00:40:04.410 --> 00:40:05.850
+Maria Silva: Sorry, Benacle.
+
+275
+00:40:06.400 --> 00:40:11.570
+Ben Adams: Yeah, because there's the pattern where you do, you know, try-catch. You can do, like, a try-catch, and…
+
+276
+00:40:12.360 --> 00:40:18.190
+Ben Adams: you might expect it to… out of gas as the worst thing that can happen.
+
+277
+00:40:18.620 --> 00:40:24.629
+Ben Adams: But… If it can destroy your reservoir, then that might limit what you…
+
+278
+00:40:26.170 --> 00:40:28.560
+Ben Adams: What you'd expect to be able to do afterwards.
+
+279
+00:40:28.930 --> 00:40:29.819
+Ben Adams: After calling someone.
+
+280
+00:40:33.160 --> 00:40:35.550
+Luis Pinto | Besu: Yeah, I think the committee is a good point.
+
+281
+00:40:36.340 --> 00:40:42.000
+Daniel Lehrner (Besu): Yeah, what if we limit the reservoir only to create, and create 2, and not the other?
+
+282
+00:40:42.350 --> 00:40:44.800
+Daniel Lehrner (Besu): Another store, for example.
+
+283
+00:40:46.550 --> 00:40:52.889
+Daniel Lehrner (Besu): So, this means when I call a contract, they cannot write at least their own state?
+
+284
+00:40:57.490 --> 00:41:01.439
+Maria Silva: I'm sorry, Danielle, I think I lost the first speech, can you finish it?
+
+285
+00:41:01.440 --> 00:41:16.980
+Daniel Lehrner (Besu): Yeah, sorry, I'm just thinking out loud, but what if we bind the reservoir, or only to create and create two, and not to S-store? So we really say the reservoir is only meant for creating new contracts?
+
+286
+00:41:19.270 --> 00:41:30.829
+Daniel Lehrner (Besu): So this means when I call another contract, it could only use my state capacity to create other contracts, but it could not use it to write something to its own state.
+
+287
+00:41:30.980 --> 00:41:33.619
+Daniel Lehrner (Besu): And it would need to use the…
+
+288
+00:41:34.070 --> 00:41:36.970
+Daniel Lehrner (Besu): The, the, the normal gas for… for that.
+
+289
+00:41:39.640 --> 00:41:43.010
+Maria Silva: How… how would that help with this… with this?
+
+290
+00:41:43.840 --> 00:41:52.509
+Daniel Lehrner (Besu): I mean, this would help, because the contract that I called could only create new contracts.
+
+291
+00:41:52.800 --> 00:41:54.259
+Daniel Lehrner (Besu): I learned that, yeah.
+
+292
+00:41:54.620 --> 00:41:58.710
+Daniel Lehrner (Besu): It can still burn all your state costs, I mean, that is true.
+
+293
+00:41:59.440 --> 00:42:00.909
+Daniel Lehrner (Besu): To this, this,
+
+294
+00:42:02.880 --> 00:42:09.019
+Daniel Lehrner (Besu): Yeah. Yeah. No, maybe it makes no sense, really. I was just… I was just thinking out loud.
+
+295
+00:42:10.420 --> 00:42:15.900
+Maria Silva: Yeah, but I think good, I think it's good to think out loud and throw ideas.
+
+296
+00:42:15.900 --> 00:42:16.300
+Daniel Lehrner (Besu): Cheer.
+
+297
+00:42:19.840 --> 00:42:26.089
+Maria Silva: Any more comments on these?
+
+298
+00:42:34.450 --> 00:42:35.670
+Maria Silva: Rose Spencer.
+
+299
+00:42:36.650 --> 00:42:44.529
+spencer-tb: I guess I'd ask, just for the sake of, speeding things up, should we settle on one of the options now, and then we can change, like.
+
+300
+00:42:44.700 --> 00:42:52.290
+spencer-tb: M… In the future, so maybe for DevNet Free, we pick an option, and then… And DevNet4, we actually…
+
+301
+00:42:52.750 --> 00:42:57.570
+spencer-tb: Settle with either the same one, or update it to a different one?
+
+302
+00:42:58.640 --> 00:43:03.459
+Maria Silva: Yeah, I think that's… that's a good question. I think, in my opinion, it's like.
+
+303
+00:43:03.730 --> 00:43:06.899
+Maria Silva: Clearly, option 1 is better than option 2.
+
+304
+00:43:08.750 --> 00:43:18.450
+Maria Silva: And then the question of option one versus the other two, I think, is a bit more nuanced. So I would say,
+
+305
+00:43:22.500 --> 00:43:35.469
+Maria Silva: Yeah, I guess, like, my intuition could be maybe we could start with option 1, which is the simplest one, and then we can think a bit more about it, and then we can switch it to option 3 or 4.
+
+306
+00:43:35.580 --> 00:43:40.710
+Maria Silva: What, what do people think?
+
+307
+00:43:46.050 --> 00:43:57.800
+jochem-brouwer: Yeah, I think we should do this, and what we then do is we figure out what breaks, what can be abused, and if we then figure out that this is something what we don't want, then we have to change it.
+
+308
+00:44:00.750 --> 00:44:09.390
+Maria Silva: Sounds good. So yeah, let's go with option one. I will comment on, on, on the PR, Spencer, and then, we can…
+
+309
+00:44:10.850 --> 00:44:11.759
+Maria Silva: March, I think.
+
+310
+00:44:13.170 --> 00:44:17.050
+Dragan Rakita: There is one edge case related to the option one.
+
+311
+00:44:17.640 --> 00:44:22.319
+Dragan Rakita: It is… you have parent call and subcall, child call.
+
+312
+00:44:22.750 --> 00:44:26.879
+Dragan Rakita: And what if the parent call sends, like, 20 million guests?
+
+313
+00:44:27.700 --> 00:44:31.790
+Dragan Rakita: And then the charcoal… basically…
+
+314
+00:44:32.130 --> 00:44:38.660
+Dragan Rakita: It has, like, 60 million for the regular gas and 4 million for the reservoir.
+
+315
+00:44:40.290 --> 00:44:45.090
+Dragan Rakita: Or… doesn't matter, it doesn't send ventilators, just send, like.
+
+316
+00:44:47.310 --> 00:44:54.079
+Dragan Rakita: Sorry, example is not that great. Imagine sending, like, 1 million, and reservoir, it's, like, 3 million.
+
+317
+00:44:54.360 --> 00:45:00.970
+Dragan Rakita: But what if the child code is basically spedding the…
+
+318
+00:45:01.620 --> 00:45:05.980
+Dragan Rakita: 3.5 million gas, state gas, on itself.
+
+319
+00:45:06.590 --> 00:45:08.910
+Dragan Rakita: What happens if that reverts?
+
+320
+00:45:09.920 --> 00:45:14.260
+Dragan Rakita: Basically, they did spend all the reservoir, and…
+
+321
+00:45:14.890 --> 00:45:20.069
+Dragan Rakita: For the state gas, he additionally spent half a million from the regular gas.
+
+322
+00:45:22.340 --> 00:45:29.580
+Dragan Rakita: Should we, my idea that I had is, basically, we should… we could refill
+
+323
+00:45:29.850 --> 00:45:35.679
+Dragan Rakita: Basically, parent call, then gets additional half a million.
+
+324
+00:45:35.830 --> 00:45:37.400
+Dragan Rakita: on a reservoir.
+
+325
+00:45:37.930 --> 00:45:40.220
+Dragan Rakita: In that sense, we are refilling.
+
+326
+00:45:40.570 --> 00:45:46.809
+Dragan Rakita: full amount of state gas that was consumed by the charcoal.
+
+327
+00:45:47.630 --> 00:45:54.449
+Dragan Rakita: Because the charcoal consumed 3.5 million, but it had only 3 million of reservoir.
+
+328
+00:45:58.980 --> 00:46:01.730
+Dragan Rakita: I'm not sure if I explained it okay.
+
+329
+00:46:01.730 --> 00:46:04.460
+Maria Silva: Right, no, no, no, I think that's a good con… so…
+
+330
+00:46:04.550 --> 00:46:23.680
+Maria Silva: just to summarize, so the case is you had some reservoir, but you were in a coal, and you used more state gas than you had in the reservoir, so you have to spend also gas left, and then there's a revert. Then what happens in the, like, the reservoir will be fully reinstated.
+
+331
+00:46:23.960 --> 00:46:32.769
+Maria Silva: But the gas left wouldn't, so that would go… that would be spent fully.
+
+332
+00:46:33.170 --> 00:46:35.260
+Maria Silva: So I…
+
+333
+00:46:35.260 --> 00:46:36.139
+Dragan Rakita: would be spent.
+
+334
+00:46:36.410 --> 00:46:42.130
+Maria Silva: It should be specified. So I… so I think it's, like, in a reverse, it doesn't matter…
+
+335
+00:46:42.300 --> 00:47:01.399
+Maria Silva: what happens within the call, right? Like, you still do the same as the gas left you sent with the call all gets used, and then the reservoir gets reinstated. So you… in your case, the 500 gas that you used for state gas, that's
+
+336
+00:47:01.610 --> 00:47:08.689
+Maria Silva: was spent from the gas left would also be reinstated, so you wouldn't… It wouldn't be spent.
+
+337
+00:47:10.620 --> 00:47:17.409
+Dragan Rakita: Should the idea is we shouldn't add it back to the… You know, gas left.
+
+338
+00:47:17.690 --> 00:47:21.050
+Dragan Rakita: But we should add it to the reservoir.
+
+339
+00:47:21.840 --> 00:47:26.870
+Dragan Rakita: Then, at the end, the parent call, after the child call reverts halts.
+
+340
+00:47:27.190 --> 00:47:34.990
+Dragan Rakita: It would have, it had 3 million reservoir, but afterward, it would have 3.5.
+
+341
+00:47:37.000 --> 00:47:40.139
+Maria Silva: I don't understand why. Why should it have to be in the hub?
+
+342
+00:47:40.700 --> 00:47:47.869
+Dragan Rakita: If we bant to… Not spend all the… all of the state gas.
+
+343
+00:47:48.490 --> 00:47:51.210
+Dragan Rakita: We should add it somewhere, somewhere.
+
+344
+00:47:51.730 --> 00:47:56.220
+Dragan Rakita: So, we could add it back to the regular gas, but this seems…
+
+345
+00:47:56.650 --> 00:48:07.649
+Dragan Rakita: bad in the sense that we are, like, splitting. The gas that was spent on the state is now added to regular gas.
+
+346
+00:48:07.950 --> 00:48:14.110
+Dragan Rakita: So, better option is to add it back, or add it to the reservoir.
+
+347
+00:48:16.640 --> 00:48:21.790
+Dragan Rakita: Or there's option just to ignore it, and just say, if the…
+
+348
+00:48:22.270 --> 00:48:33.690
+Dragan Rakita: The gas that is basically the state gas, if this consumed… if this consuming regular gas, then this part of the gas is going to be deleted.
+
+349
+00:48:33.990 --> 00:48:36.080
+Dragan Rakita: Not reverted, or…
+
+350
+00:48:37.280 --> 00:48:37.950
+Maria Silva: I…
+
+351
+00:48:38.650 --> 00:48:54.389
+Maria Silva: I mean, maybe we should just do this async and write down in the space PR, but my intuition should be that, yes, those 500 would go away, because you were sending a certain amount of gas to the…
+
+352
+00:48:54.390 --> 00:49:00.199
+Maria Silva: To the call, and on a revert, that amount that you sent should all go away.
+
+353
+00:49:02.170 --> 00:49:05.069
+Maria Silva: Independently, if you use it for state creation or not.
+
+354
+00:49:10.270 --> 00:49:14.139
+Maria Silva: But, yeah, let's, let's, let's, let's discuss this async.
+
+355
+00:49:15.810 --> 00:49:34.859
+Maria Silva: Sounds good. Okay, so maybe I will, after, I will, link, the PR here for people who want to see, and, and for the next point, Spencer, do you want to give a quick update on, what you've been up to for, week 37?
+
+356
+00:49:36.550 --> 00:49:39.550
+spencer-tb: Yeah, I can be fast, so,
+
+357
+00:49:40.280 --> 00:49:45.240
+spencer-tb: Still have the same, specs PR as last week,
+
+358
+00:49:45.590 --> 00:49:50.640
+spencer-tb: I believe I've got option 2 implemented, from the previous discussion, but,
+
+359
+00:49:50.750 --> 00:49:54.040
+spencer-tb: Right now, I'm trying to fill all the…
+
+360
+00:49:54.500 --> 00:50:01.309
+spencer-tb: existing tests that we have in deals, with the spec implementation, and
+
+361
+00:50:01.420 --> 00:50:04.640
+spencer-tb: I have ran into quite a lot of issues, mostly
+
+362
+00:50:04.760 --> 00:50:11.789
+spencer-tb: surrounding, the gas limit for transactions, so I think we… we hard-coded the gas limit in a lot of the transactions in the tests.
+
+363
+00:50:12.000 --> 00:50:15.580
+spencer-tb: And with the new, state gas dimension.
+
+364
+00:50:15.780 --> 00:50:21.400
+spencer-tb: This gas limit, is very low in a lot of the tests, so there's,
+
+365
+00:50:21.780 --> 00:50:25.340
+spencer-tb: A lot of the tests need that increase, but some of the tests also have
+
+366
+00:50:25.990 --> 00:50:29.439
+spencer-tb: Some other interactions with,
+
+367
+00:50:31.740 --> 00:50:42.909
+spencer-tb: So I guess, also with the tests, we need to make sure they're refillable for every fork, right? And with, 7825, we have the transaction gas limit cap.
+
+368
+00:50:43.170 --> 00:50:50.299
+spencer-tb: So it's also trying to make some of the tests fork-aware, so that we're not breaking any previous, fillings.
+
+369
+00:50:50.760 --> 00:50:54.159
+spencer-tb: Of the test. So, I've been working quite heavily on that.
+
+370
+00:50:54.290 --> 00:50:59.380
+spencer-tb: So far, I think I've fixed from Frontier to Shanghai, and then it'll be…
+
+371
+00:50:59.840 --> 00:51:06.000
+spencer-tb: yeah, Prague, Cancun, Osaka, and the Amsterdam tests. I have not yet tested the…
+
+372
+00:51:06.520 --> 00:51:18.669
+spencer-tb: legacy tests as well, and I think those will need to change, so I think it might be a bit of extra work from our side. We do have the internal Steam call after this call, and I think I will ask for some extra help.
+
+373
+00:51:19.250 --> 00:51:20.970
+spencer-tb: And they're from the team.
+
+374
+00:51:21.180 --> 00:51:24.029
+spencer-tb: But yeah, that's, that's the update for myself.
+
+375
+00:51:27.400 --> 00:51:28.130
+Maria Silva: Thank you.
+
+376
+00:51:28.350 --> 00:51:35.120
+Maria Silva: Thank you, Spencer. Are there any questions for Spencer, or should we move to the next point?
+
+377
+00:51:48.910 --> 00:52:01.269
+Maria Silva: Okay, I guess there are no more questions. So the next topic is, on 7976, so the increased call data floor costs. Tony, do you want to give a quick update on that one?
+
+378
+00:52:02.500 --> 00:52:09.139
+Toni Wahrstätter: Yes, I'm happy to do so. I just posted in the agenda the EthResearch post I recently had.
+
+379
+00:52:09.850 --> 00:52:22.750
+Toni Wahrstätter: I already brought this new pricing up in the last ACDE and ACDT, so it's nothing new, but recently we changed the pricing from $15.60
+
+380
+00:52:22.750 --> 00:52:31.190
+Toni Wahrstätter: So 15 for 0 bytes, 60 for non-zero bytes, to 64.64, which means, at the floor cost.
+
+381
+00:52:32.130 --> 00:52:38.620
+Toni Wahrstätter: Users would pay the same Gas per byte, no matter if it's a zero byte or a non-zero byte.
+
+382
+00:52:38.990 --> 00:52:43.710
+Toni Wahrstätter: I already updated the analyzers that is linked in the EIP,
+
+383
+00:52:43.960 --> 00:52:48.920
+Toni Wahrstätter: And instead of affecting 1.5% of transactions, this would affect
+
+384
+00:52:49.090 --> 00:53:06.400
+Toni Wahrstätter: slightly above 2% of the transactions. So, most transactions are still, like, unaffected, and the rational behind this change was that in the worst-case scenario, so for worst-case blocks, it doesn't actually matter that much if it's a zero or non-zero byte, because
+
+385
+00:53:06.650 --> 00:53:15.709
+Toni Wahrstätter: you can… you can otherwise use 0 bytes. You would maximize the number of 0 bytes, because they are cheaper to get, like, the max size block.
+
+386
+00:53:16.050 --> 00:53:20.670
+Toni Wahrstätter: And just making sure that they cost the same, 64…
+
+387
+00:53:20.800 --> 00:53:24.500
+Toni Wahrstätter: Gas per byte ensures that,
+
+388
+00:53:24.890 --> 00:53:26.969
+Toni Wahrstätter: This doesn't matter in the worst case.
+
+389
+00:53:27.430 --> 00:53:31.970
+Toni Wahrstätter: So, I'm curious if people have any opinions on that.
+
+390
+00:53:32.290 --> 00:53:37.470
+Toni Wahrstätter: In the EthResearch post, you can see, if you scroll down, I created this chart.
+
+391
+00:53:37.870 --> 00:53:42.760
+Toni Wahrstätter: That projects, like, what the worst-case block size will be with that change.
+
+392
+00:53:43.250 --> 00:53:44.220
+Toni Wahrstätter: And…
+
+393
+00:53:44.400 --> 00:53:52.060
+Toni Wahrstätter: Yeah, so this gives us some room for scaling, ensuring that the worst-case block size won't be a problem that soon again.
+
+394
+00:53:52.380 --> 00:53:59.959
+Toni Wahrstätter: Of course, until at some point, we have to do something more sophisticated with the call data pricing anyway.
+
+395
+00:54:00.100 --> 00:54:06.850
+Toni Wahrstätter: But this is, like, diffusing the situation, I would say. And the worst case block size, so with the…
+
+396
+00:54:06.970 --> 00:54:09.589
+Toni Wahrstätter: Pricing that we had earlier with the…
+
+397
+00:54:09.800 --> 00:54:15.050
+Toni Wahrstätter: 1560, the worst case block size, would have been at 3.5MB compressed size.
+
+398
+00:54:15.310 --> 00:54:23.670
+Toni Wahrstätter: And with the 6464 pricing, we will get down to slightly above 2MB in the worst case compressed block size.
+
+399
+00:54:25.620 --> 00:54:39.549
+Toni Wahrstätter: I've already started, like, reaching out to the affected parties. There are not many. Like, most users can use blobs anyway for posting data. It's only those that can't move to blobs that still need their call data to get inside DBM.
+
+400
+00:54:39.680 --> 00:54:42.889
+Toni Wahrstätter: And it's only a few parties, that are affected.
+
+401
+00:54:44.240 --> 00:54:49.660
+Toni Wahrstätter: Right? So… If there is any objection or anything, I'm curious to hear it.
+
+402
+00:54:50.780 --> 00:54:57.240
+Ben Adams: On the 64 value, I don't have an opinion, I'll defer to you.
+
+403
+00:54:57.580 --> 00:55:03.769
+Ben Adams: On the zero byte being the same, I think it makes sense, because…
+
+404
+00:55:04.090 --> 00:55:07.240
+Ben Adams: If you're doing useful work, then…
+
+405
+00:55:07.590 --> 00:55:09.540
+Ben Adams: Most of your bytes won't be zero.
+
+406
+00:55:09.890 --> 00:55:18.740
+Ben Adams: So… It's only… The people most affected by it will be the ones filling…
+
+407
+00:55:19.310 --> 00:55:21.630
+Ben Adams: Essentially filling the blocks with nothing.
+
+408
+00:55:22.250 --> 00:55:23.540
+Toni Wahrstätter: Right, exactly.
+
+409
+00:55:23.540 --> 00:55:25.540
+Ben Adams: Not doing… not doing useful work.
+
+410
+00:55:26.640 --> 00:55:45.319
+Toni Wahrstätter: Exactly, yeah. So this is… maybe… maybe I should have, added that previously. The call data price for everyone who will not hit the floor will stay at 416. So it's… it's very well backwards compatible, so users… most users won't feel any difference. It's only those that hit the floor.
+
+411
+00:55:45.520 --> 00:55:48.590
+Toni Wahrstätter: That would actually pay the $64.64.
+
+412
+00:55:57.110 --> 00:56:10.849
+Maria Silva: Yeah, thank you, Tony. I can't think of any issues, I think it makes things change, but yeah, if anyone, has some time to take a look at it and has any issues with comments, please,
+
+413
+00:56:11.060 --> 00:56:12.340
+Maria Silva: For them to…
+
+414
+00:56:14.140 --> 00:56:18.599
+Butta: Tonya, I'm just wondering which entities are affected.
+
+415
+00:56:18.790 --> 00:56:23.019
+Butta: Are they, like, are these, like, protocols? Like, bigger ones, or…
+
+416
+00:56:23.850 --> 00:56:35.619
+Toni Wahrstätter: Yeah, good question. So, it's the same entities that were already affected by 7623 that introduced that mechanism. For example, among those entities, there is Polygon, and there is Starknet.
+
+417
+00:56:35.880 --> 00:56:43.229
+Toni Wahrstätter: And for them, it's because they have very large proofs that can't… and they can't just post their data in blobs.
+
+418
+00:56:43.370 --> 00:56:49.839
+Toni Wahrstätter: So for them, they need the call data to actually, yeah, do some math with the data.
+
+419
+00:56:51.910 --> 00:56:52.899
+Butta: Okay, maybe I'll…
+
+420
+00:56:52.900 --> 00:57:05.500
+Toni Wahrstätter: Those are the main users. There are some… there are some smaller users that is, like, negligible. It's, like, me sending you a transaction and saying, hi Butter. So this is, like, the largest amount of users that are affected, users that are just, like.
+
+421
+00:57:06.010 --> 00:57:08.920
+Toni Wahrstätter: Saying a few words in their call data.
+
+422
+00:57:09.560 --> 00:57:17.810
+Toni Wahrstätter: But when it comes to, like, what is the economic impact, it's those protocols that can't use blobs that are still using call data.
+
+423
+00:57:18.490 --> 00:57:27.760
+Butta: But, yeah, maybe… Go ahead, yeah, please. Maybe, afterwards you can connect with those, and I can force them to fill out our survey.
+
+424
+00:57:29.680 --> 00:57:39.289
+Toni Wahrstätter: Yeah, happy to do so. We are already in discussions with those anyway, but I'm happy to forward them the survey. I guess that's the proper way to do so. Yeah, let's do that.
+
+425
+00:57:39.290 --> 00:57:46.580
+Butta: Yeah, I would, like, yeah, I mean, I think it's gonna be my time anyway, right, Maria? In the agenda, maybe?
+
+426
+00:57:47.450 --> 00:57:48.939
+Butta: I'll take over then.
+
+427
+00:57:50.250 --> 00:57:53.779
+Maria Silva: Yeah, we can… maybe we can… we can move to your… to your section.
+
+428
+00:57:53.780 --> 00:58:03.970
+Butta: Right, so for those that weren't here, last Friday, we introduced a new website, which is called GasRepricing.com.
+
+429
+00:58:04.030 --> 00:58:17.740
+Butta: And on this page, you will be able to find everything related to gas repricing. It also links to the progress, so if you're curious what the status of each individual task is, you can find it here.
+
+430
+00:58:18.220 --> 00:58:37.100
+Butta: You can find a simulator. This is more specifically designed for those that are affected, but more importantly, there is also a survey that would be nice if you or someone you know that might be affected could fill out, because
+
+431
+00:58:37.530 --> 00:58:53.059
+Butta: If you're not affected, you probably will just ignore it, so it's kind of hard to get data to, just confirm the design of the current EIPs.
+
+432
+00:58:53.070 --> 00:59:04.770
+Butta: But still having real data would be nice. For those that forget about the website, we also linked it at the top of Forecast, so it also is promoted here.
+
+433
+00:59:05.030 --> 00:59:20.270
+Butta: And I think yesterday, we also posted it on Twitter, so if you can retweet it, it would be great. I think so far, we got, like, 2 or 3, official survey, candidates.
+
+434
+00:59:20.360 --> 00:59:37.909
+Butta: But I also manually reached out to Coinbase, Kraken, and one other exchange, because I think those are, like, most obvious stakeholders that will be affected, because they have payouts, like, withdrawals, deposits to exchanges.
+
+435
+00:59:37.970 --> 00:59:47.499
+Butta: Or they have other products. So while they might not be represented in the survey itself, yeah, they gave me, like, off-chain information.
+
+436
+00:59:47.880 --> 00:59:49.460
+Butta: Yeah.
+
+437
+00:59:50.120 --> 00:59:59.720
+Butta: I will link it in the chat, so, yeah, maybe you can retweet it. I saw Tony already retweeted it this morning, so thank you for that.
+
+438
+01:00:00.170 --> 01:00:01.900
+Butta: Yeah, that's… that's my part.
+
+439
+01:00:05.570 --> 01:00:12.340
+Maria Silva: Thank you, Bhuta. Yeah, I think this community outreach will be very, very important going forward to make sure that
+
+440
+01:00:12.480 --> 01:00:14.929
+Maria Silva: Users are not surprised by…
+
+441
+01:00:15.430 --> 01:00:21.799
+Maria Silva: By, by the changes, and also that we take into consideration their, their feedback, in time to…
+
+442
+01:00:22.200 --> 01:00:24.430
+Maria Silva: While we are implementing these changes?
+
+443
+01:00:24.560 --> 01:00:35.090
+Maria Silva: So yeah, I'll just, reiterate, like, if you can share these, and, if you know anybody that would be impacted, please, share it with them.
+
+444
+01:00:35.940 --> 01:00:39.960
+Maria Silva: Are there any questions or comments for Bhuta?
+
+445
+01:00:44.750 --> 01:00:45.460
+Butta: So…
+
+446
+01:00:46.000 --> 01:01:05.029
+Butta: just for your knowledge, next thing, we'll be posting it on Reddit, like, eFinance, maybe we can get, like, individual people, to fill it out. I will also try to get in touch with Aave, because I think if they are fine, it's also gonna be fine for other,
+
+447
+01:01:05.190 --> 01:01:13.360
+Butta: DeFi projects, and then maybe Tony can connect me with Polygon and the other folks that he was talking to.
+
+448
+01:01:13.810 --> 01:01:19.150
+Butta: But yeah, as I said, like, if people are fine, they tend to be quiet.
+
+449
+01:01:33.940 --> 01:01:41.659
+Maria Silva: Thank you, Bhuta, and, we are almost at the end of the call, there are no more topics, but I think if there are any
+
+450
+01:01:41.770 --> 01:01:51.319
+Maria Silva: questions or general comments or topics people want to bring up, we still have some time for that, so I'll just open the floor for random topics.
+
+451
+01:01:56.550 --> 01:01:58.689
+Toni Wahrstätter: I had a question in the chat.
+
+452
+01:01:58.900 --> 01:02:01.440
+Toni Wahrstätter: Basically, is it… is it true that…
+
+453
+01:02:01.760 --> 01:02:09.970
+Toni Wahrstätter: the cheapest way to access… for example, if I call balance on an ac… going very much… going back to 2780,
+
+454
+01:02:10.230 --> 01:02:17.830
+Toni Wahrstätter: If I call balance on an account that has no code, will this effectively only cost me 200 gas?
+
+455
+01:02:20.540 --> 01:02:22.200
+Toni Wahrstätter: Can someone clarify that?
+
+456
+01:02:23.810 --> 01:02:32.330
+Maria Silva: You always, you always charge at least the transaction-based cost, which currently is 4,005 benefits.
+
+457
+01:02:34.180 --> 01:02:38.139
+Maria Silva: So, and that covers… let me just open it up so I…
+
+458
+01:02:39.310 --> 01:02:52.689
+Maria Silva: say it incorrectly, but it covers ECU cover costs, as data plate costs, and the call account costs, no codes. So those three components are always charged.
+
+459
+01:02:55.480 --> 01:03:15.010
+Toni Wahrstätter: Right. Yeah, Maria, you did an amazing analysis by the time, if I remember correctly, about the worst-case bar size, so I guess we should just, connect async to see, what changes, but my first intuition would be that the new worst-case bar size will be a transaction.
+
+460
+01:03:15.120 --> 01:03:20.359
+Toni Wahrstätter: a max test transaction that then calls, for example, the balance opcode.
+
+461
+01:03:20.570 --> 01:03:22.179
+Toni Wahrstätter: at as many…
+
+462
+01:03:22.550 --> 01:03:30.299
+Toni Wahrstätter: empty accounts that have no code as possible. And for each of those calls, you would only pay $200,
+
+463
+01:03:30.460 --> 01:03:35.799
+Toni Wahrstätter: But you would get… you would not only call the account, you would also do an S-load, I guess.
+
+464
+01:03:36.700 --> 01:03:43.729
+Toni Wahrstätter: And then you would end up with, 20 bytes from the address, 32 bytes from the storage slot.
+
+465
+01:03:44.130 --> 01:03:48.400
+Toni Wahrstätter: And you would only pay 2,600 plus the 200 gas.
+
+466
+01:03:49.120 --> 01:03:56.400
+Toni Wahrstätter: So I think the worst case file size would change a bit, but yeah, let's connect async and clarify that.
+
+467
+01:03:57.190 --> 01:03:59.609
+Maria Silva: Sounds good. Yeah, happy, happy to do it.
+
+468
+01:04:04.600 --> 01:04:08.460
+Maria Silva: Are there any more comments, or…
+
+469
+01:04:09.110 --> 01:04:11.000
+Maria Silva: Topics, or should we wrap up?
+
+470
+01:04:27.760 --> 01:04:40.250
+Maria Silva: Okay, so it seems there are no more topics. Thank you all for attending. Notes, recordings, and all that will be made available in ForkOST. Yeah, thank you for… thank you for joining.
+
+471
+01:04:43.380 --> 01:04:45.040
+Toni Wahrstätter: Thank you. Bye-bye.
+
+472
+01:04:45.040 --> 01:04:47.179
+Ameziane Hamlat: Bye, see you all in two weeks.
+
+473
+01:04:47.180 --> 01:04:47.900
+jochem-brouwer: Right.
+

@@ -1,0 +1,91 @@
+{
+  "meeting": "Glamsterdam Repricings #2 - February 18, 2026",
+  "highlights": {
+    "eip_2780_eth_transfers": [
+      {
+        "timestamp": "00:08:03",
+        "highlight": "Draft specs and tests ready; legacy test fixes pending clarification"
+      },
+      {
+        "timestamp": "00:09:41",
+        "highlight": "EIP-7708 log prices must be added since ETH transfer costs reduced"
+      },
+      {
+        "timestamp": "00:11:18",
+        "highlight": "Cold EOA access reduced to 500 gas; may impact BAL size"
+      }
+    ],
+    "eip_8037_state_creation": [
+      {
+        "timestamp": "00:17:04",
+        "highlight": "Subcall gas forwarding: Option 1 adopted (full reservoir access, refund on revert)"
+      },
+      {
+        "timestamp": "00:28:19",
+        "highlight": "Estimate gas behavior unchanged; only gas costs updating, not refund mechanics"
+      },
+      {
+        "timestamp": "00:32:08",
+        "highlight": "Reservoir intended primarily for contract deployment via factories"
+      }
+    ],
+    "eip_7976_calldata_repricing": [
+      {
+        "timestamp": "00:52:02",
+        "highlight": "Pricing changed to 64/64 (from 15/60); affects 2% of transactions"
+      },
+      {
+        "timestamp": "00:53:15",
+        "highlight": "Worst-case block size reduced from 3.5MB to 2MB compressed"
+      },
+      {
+        "timestamp": "00:56:35",
+        "highlight": "Main affected parties: Polygon, Starknet (large proofs requiring calldata)"
+      }
+    ],
+    "community_outreach": [
+      {
+        "timestamp": "00:58:03",
+        "highlight": "GasRepricing.com launched with simulator and survey for affected users"
+      },
+      {
+        "timestamp": "00:59:20",
+        "highlight": "Direct outreach to Coinbase, Kraken, and other exchanges initiated"
+      }
+    ],
+    "testing_progress": [
+      {
+        "timestamp": "00:49:46",
+        "highlight": "EIP-8037 specs PR filling existing tests; gas limit issues across forks"
+      }
+    ]
+  },
+  "action_items": [
+    {
+      "timestamp": "00:09:25",
+      "action": "Review EIP-2780 interaction clarifications PR on 7702/7928 gas charges",
+      "owner": "Tony Wahrst\u00e4tter, Ben Adams"
+    },
+    {
+      "timestamp": "00:09:41",
+      "action": "Add EIP-7708 log prices to EIP-2780 specification",
+      "owner": "Ben Adams"
+    },
+    {
+      "timestamp": "01:00:06",
+      "action": "Share GasRepricing.com survey with affected protocols and exchanges",
+      "owner": "All teams"
+    }
+  ],
+  "decisions": [
+    {
+      "timestamp": "00:43:09",
+      "decision": "Option 1 adopted for subcall reservoir mechanics: full reservoir forwarded, refunded on revert/halt"
+    },
+    {
+      "timestamp": "00:52:32",
+      "decision": "EIP-7976 calldata pricing finalized at 64 gas per byte (zero and non-zero)"
+    }
+  ],
+  "targets": []
+}

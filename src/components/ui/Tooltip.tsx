@@ -6,6 +6,7 @@ interface TooltipProps {
   content?: React.ReactNode;
   className?: string;
   position?: 'top' | 'bottom' | 'right';
+  block?: boolean;
 }
 
 export const Tooltip: React.FC<TooltipProps> = ({
@@ -13,7 +14,8 @@ export const Tooltip: React.FC<TooltipProps> = ({
   text,
   content,
   className = '',
-  position = 'top'
+  position = 'top',
+  block = false
 }) => {
   const [isVisible, setIsVisible] = useState(false);
   const triggerRef = useRef<HTMLSpanElement>(null);
@@ -52,7 +54,7 @@ export const Tooltip: React.FC<TooltipProps> = ({
   return (
     <span
       ref={triggerRef}
-      className={`relative inline-block ${className}`}
+      className={`relative ${block ? 'block' : 'inline-block'} ${className}`}
       onMouseEnter={() => setIsVisible(true)}
       onMouseLeave={() => setIsVisible(false)}
     >

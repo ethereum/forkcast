@@ -81,7 +81,7 @@ export const TableOfContents: React.FC<TableOfContentsProps> = ({
 
   return (
     <div className="hidden lg:block w-64 flex-shrink-0">
-      <div className="sticky top-6 overflow-y-auto max-h-[calc(100vh-3rem)] z-[9999]">
+      <div className="sticky top-6 overflow-y-auto overflow-x-hidden max-h-[calc(100vh-3rem)] z-[9999]">
         <div className="flex items-center justify-between mb-4">
           <h3 className="text-sm font-semibold text-slate-900 dark:text-slate-100 uppercase tracking-wide">Contents</h3>
           <Tooltip text="Scroll to top" position="bottom">
@@ -174,7 +174,7 @@ export const TableOfContents: React.FC<TableOfContentsProps> = ({
               <button
                 key={item.id}
                 onClick={() => onSectionClick(item.id)}
-                className={`w-full text-left rounded transition-colors ${
+                className={`w-full text-left rounded transition-colors overflow-hidden ${
                   item.type === 'section'
                     ? `px-3 py-2 text-sm ${
                         activeSection === item.id
@@ -188,8 +188,8 @@ export const TableOfContents: React.FC<TableOfContentsProps> = ({
                       }`
                 }`}
               >
-                <div className="flex items-center justify-between">
-                  <span className={item.type === 'eip' ? 'truncate' : ''}>{item.label}</span>
+                <div className="flex items-center justify-between min-w-0">
+                  <span className={item.type === 'eip' ? 'truncate min-w-0' : ''}>{item.label}</span>
                   {item.count && !searchQuery && (
                     <span className="text-xs text-slate-400 dark:text-slate-500 flex-shrink-0 ml-2">{item.count}</span>
                   )}
@@ -214,7 +214,7 @@ export const TableOfContents: React.FC<TableOfContentsProps> = ({
               );
 
               return (
-                <Tooltip key={item.id} content={tooltipContent} position="right">
+                <Tooltip key={item.id} content={tooltipContent} position="right" block>
                   {button}
                 </Tooltip>
               );

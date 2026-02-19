@@ -103,7 +103,8 @@ const HomePage = () => {
     pqts: 'bg-yellow-100 dark:bg-yellow-900/30 text-yellow-700 dark:text-yellow-300',
     rpc: 'bg-violet-100 dark:bg-violet-900/30 text-violet-700 dark:text-violet-300',
     zkevm: 'bg-fuchsia-100 dark:bg-fuchsia-900/30 text-fuchsia-700 dark:text-fuchsia-300',
-    etm: 'bg-purple-100 dark:bg-purple-900/30 text-purple-700 dark:text-purple-300'
+    etm: 'bg-purple-100 dark:bg-purple-900/30 text-purple-700 dark:text-purple-300',
+    awd: 'bg-lime-100 dark:bg-lime-900/30 text-lime-700 dark:text-lime-300'
   };
 
   return (

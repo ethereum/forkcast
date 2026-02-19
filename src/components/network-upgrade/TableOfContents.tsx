@@ -32,52 +32,77 @@ export const TableOfContents: React.FC<TableOfContentsProps> = ({
   onLayerFilterChange,
   showLayerFilter = false
 }) => {
+  // Filter items based on search and group into sections
+  const { groupedSections, matchCount, totalEipCount } = useMemo(() => {
+    let filteredItems = items;
 
-  const filteredItems = useMemo(() => {
-    if (!searchQuery.trim()) return items;
+    if (searchQuery.trim()) {
+      const query = searchQuery.toLowerCase().trim();
+      const matchingEipIds = new Set<string>();
+      const sectionsWithMatches = new Set<string>();
 
-    const query = searchQuery.toLowerCase().trim();
-    const matchingEipIds = new Set<string>();
-    const sectionsWithMatches = new Set<string>();
-
-    // Find all EIPs that match the search query
-    let currentSection: string | null = null;
-    items.forEach((item) => {
-      if (item.type === 'section') {
-        currentSection = item.id;
-      } else if (item.type === 'eip') {
-        const labelLower = item.label.toLowerCase();
-        // Match against EIP number (e.g., "7702" matches "EIP-7702: ...")
-        // or against title text
-        if (labelLower.includes(query)) {
-          matchingEipIds.add(item.id);
-          if (currentSection) {
-            sectionsWithMatches.add(currentSection);
+      // Find all EIPs that match the search query
+      let currentSection: string | null = null;
+      items.forEach((item) => {
+        if (item.type === "section") {
+          currentSection = item.id;
+        } else if (item.type === "eip") {
+          const labelLower = item.label.toLowerCase();
+          // Match against EIP number (e.g., "7702" matches "EIP-7702: ...")
+          // or against title text
+          if (labelLower.includes(query)) {
+            matchingEipIds.add(item.id);
+            if (currentSection) {
+              sectionsWithMatches.add(currentSection);
+            }
           }
         }
+      });
+
+      // Filter to only show sections with matches and their matching EIPs
+      currentSection = null;
+      filteredItems = items.filter((item) => {
+        if (item.type === "section") {
+          currentSection = item.id;
+          // Always show Overview and Timeline sections, plus sections with matches
+          return (
+            item.id === "overview" ||
+            item.id === "timeline" ||
+            sectionsWithMatches.has(item.id)
+          );
+        } else {
+          return matchingEipIds.has(item.id);
+        }
+      });
+    }
+
+    // Group filtered items into sections
+    const sections: Array<{ section: TOCItem; items: TOCItem[] }> = [];
+    let currentSection: { section: TOCItem; items: TOCItem[] } | null = null;
+
+    filteredItems.forEach((item) => {
+      if (item.type === "section") {
+        if (currentSection) {
+          sections.push(currentSection);
+        }
+        currentSection = { section: item, items: [] };
+      } else if (currentSection) {
+        currentSection.items.push(item);
       }
     });
 
-    // Filter to only show sections with matches and their matching EIPs
-    currentSection = null;
-    return items.filter((item) => {
-      if (item.type === 'section') {
-        currentSection = item.id;
-        // Always show Overview and Timeline sections, plus sections with matches
-        return item.id === 'overview' || item.id === 'timeline' || sectionsWithMatches.has(item.id);
-      } else {
-        return matchingEipIds.has(item.id);
-      }
-    });
+    if (currentSection) {
+      sections.push(currentSection);
+    }
+
+    // Calculate counts
+    const matchCount = filteredItems.filter(
+      (item) => item.type === "eip"
+    ).length;
+    const totalEipCount = items.filter((item) => item.type === "eip").length;
+
+    return { groupedSections: sections, matchCount, totalEipCount };
   }, [items, searchQuery]);
-
-  const matchCount = useMemo(() => {
-    return filteredItems.filter(item => item.type === 'eip').length;
-  }, [filteredItems]);
-
-  const totalEipCount = useMemo(() => {
-    return items.filter(item => item.type === 'eip').length;
-  }, [items]);
 
   return (
     <div className="hidden lg:block w-64 flex-shrink-0">
@@ -168,59 +193,91 @@ export const TableOfContents: React.FC<TableOfContentsProps> = ({
           </p>
         )}
 
-        <nav className="space-y-1">
-          {filteredItems.map((item) => {
-            const button = (
-              <button
-                key={item.id}
-                onClick={() => onSectionClick(item.id)}
-                className={`w-full text-left rounded transition-colors ${
-                  item.type === 'section'
-                    ? `px-3 py-2 text-sm ${
-                        activeSection === item.id
-                          ? 'bg-purple-100 text-purple-800 dark:bg-purple-900/20 dark:text-purple-300 font-medium'
-                          : 'text-slate-600 dark:text-slate-300 hover:text-slate-900 dark:hover:text-slate-100 hover:bg-slate-100 dark:hover:bg-slate-700'
-                      }`
-                    : `px-6 py-1.5 text-xs cursor-pointer ${
-                        activeSection === item.id
-                          ? 'bg-purple-50 text-purple-700 dark:bg-purple-900/10 dark:text-purple-300 font-medium'
-                          : 'text-slate-500 dark:text-slate-400 hover:text-slate-700 dark:hover:text-slate-200 hover:bg-slate-50 dark:hover:bg-slate-700/50'
-                      }`
-                }`}
+        <nav className="flex-1 flex flex-col min-h-0">
+          {groupedSections.map(({ section, items: sectionItems }) => {
+            const hasEipChildren = sectionItems.length > 0;
+
+            return (
+              <div
+                key={section.id}
+                className={
+                  hasEipChildren
+                    ? "flex flex-col min-h-0 flex-1"
+                    : "flex-shrink-0"
+                }
               >
-                <div className="flex items-center justify-between">
-                  <span className={item.type === 'eip' ? 'truncate' : ''}>{item.label}</span>
-                  {item.count && !searchQuery && (
-                    <span className="text-xs text-slate-400 dark:text-slate-500 flex-shrink-0 ml-2">{item.count}</span>
-                  )}
-                </div>
-              </button>
+                {/* Section header */}
+                <button
+                  onClick={() => onSectionClick(section.id)}
+                  className={`w-full text-left rounded transition-colors px-3 py-2 text-sm flex-shrink-0 ${
+                    activeSection === section.id
+                      ? "bg-purple-100 text-purple-800 dark:bg-purple-900/20 dark:text-purple-300 font-medium"
+                      : "text-slate-600 dark:text-slate-300 hover:text-slate-900 dark:hover:text-slate-100 hover:bg-slate-100 dark:hover:bg-slate-700"
+                  }`}
+                >
+                  <div className="flex items-center justify-between">
+                    <span>{section.label}</span>
+                    {section.count && !searchQuery && (
+                      <span className="text-xs text-slate-400 dark:text-slate-500 flex-shrink-0 ml-2">
+                        {section.count}
+                      </span>
+                    )}
+                  </div>
+                </button>
+
+                {/* EIP items */}
+                {hasEipChildren && (
+                  <div className="overflow-y-auto flex-1 min-h-0 space-y-1">
+                    {sectionItems.map((item) => {
+                      const button = (
+                        <button
+                          key={item.id}
+                          onClick={() => onSectionClick(item.id)}
+                          className={`w-full text-left rounded transition-colors px-6 py-1.5 text-xs cursor-pointer ${
+                            activeSection === item.id
+                              ? "bg-purple-50 text-purple-700 dark:bg-purple-900/10 dark:text-purple-300 font-medium"
+                              : "text-slate-500 dark:text-slate-400 hover:text-slate-700 dark:hover:text-slate-200 hover:bg-slate-50 dark:hover:bg-slate-700/50"
+                          }`}
+                        >
+                          <div className="flex items-center justify-between">
+                            <span className="overflow-x-auto whitespace-nowrap">
+                              {item.label}
+                            </span>
+                          </div>
+                        </button>
+                      );
+
+                      const tooltipContent = (
+                        <span className="flex items-center gap-2">
+                          {item.layer && (
+                            <span
+                              className={`px-1.5 py-0.5 text-xs font-medium rounded ${
+                                item.layer === "EL"
+                                  ? "bg-indigo-100 text-indigo-700 dark:bg-indigo-900/20 dark:text-indigo-300"
+                                  : "bg-teal-100 text-teal-700 dark:bg-teal-900/20 dark:text-teal-300"
+                              }`}
+                            >
+                              {item.layer}
+                            </span>
+                          )}
+                          <span>{item.label}</span>
+                        </span>
+                      );
+
+                      return (
+                        <Tooltip
+                          key={item.id}
+                          content={tooltipContent}
+                          position="right"
+                        >
+                          {button}
+                        </Tooltip>
+                      );
+                    })}
+                  </div>
+                )}
+              </div>
             );
-
-            if (item.type === 'eip') {
-              const tooltipContent = (
-                <span className="flex items-center gap-2">
-                  {item.layer && (
-                    <span className={`px-1.5 py-0.5 text-xs font-medium rounded ${
-                      item.layer === 'EL'
-                        ? 'bg-indigo-100 text-indigo-700 dark:bg-indigo-900/20 dark:text-indigo-300'
-                        : 'bg-teal-100 text-teal-700 dark:bg-teal-900/20 dark:text-teal-300'
-                    }`}>
-                      {item.layer}
-                    </span>
-                  )}
-                  <span>{item.label}</span>
-                </span>
-              );
-
-              return (
-                <Tooltip key={item.id} content={tooltipContent} position="right">
-                  {button}
-                </Tooltip>
-              );
-            }
-
-            return <div key={item.id}>{button}</div>;
           })}
         </nav>
       </div>

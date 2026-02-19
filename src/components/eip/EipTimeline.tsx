@@ -24,10 +24,18 @@ interface PresentationEntry {
   timestamp?: number;
 }
 
+const getForkDisplayName = (forkName: string): string => {
+  const displayMap: Record<string, string> = {
+    'Hegota': 'Hegotá'
+  };
+  return displayMap[forkName] || forkName;
+};
+
 interface ForkGroup {
   forkName: string;
   champions?: { name: string }[];
   currentStatus: string;
+  isHeadliner: boolean;
   statusHistory: StatusEntry[];
   presentations: PresentationEntry[];
 }
@@ -144,6 +152,7 @@ export const EipTimeline: React.FC<EipTimelineProps> = ({ eip }) => {
       forkName: fork.forkName,
       champions: fork.champions,
       currentStatus,
+      isHeadliner: !!fork.isHeadliner,
       statusHistory,
       presentations,
     };
@@ -212,10 +221,10 @@ export const EipTimeline: React.FC<EipTimelineProps> = ({ eip }) => {
                         to={`/upgrade/${group.forkName.toLowerCase()}`}
                         className="text-xs font-mono font-medium px-2 py-0.5 rounded border border-slate-300 dark:border-slate-600 text-slate-600 dark:text-slate-300 hover:border-purple-400 dark:hover:border-purple-500 hover:text-purple-600 dark:hover:text-purple-400 transition-colors"
                       >
-                        {group.forkName}
+                        {getForkDisplayName(group.forkName)}
                       </Link>
                       {group.champions && group.champions.length > 0 && (
-                        <Tooltip text={`${group.champions.length > 1 ? 'Champions' : 'Champion'} for ${group.forkName}`}>
+                        <Tooltip text={`${group.champions.length > 1 ? 'Champions' : 'Champion'} for ${getForkDisplayName(group.forkName)}`}>
                           <div className="flex items-center gap-1 text-xs text-slate-400 dark:text-slate-500 cursor-help shrink-0">
                             <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
@@ -249,6 +258,9 @@ export const EipTimeline: React.FC<EipTimelineProps> = ({ eip }) => {
                                   <span className={`text-xs ${entryColors.text}`}>
                                     {statusLabels[entry.status]}
                                   </span>
+                                  {group.isHeadliner && entry.status === 'Scheduled' && (
+                                    <span className="ml-1.5 text-xs text-purple-600 dark:text-purple-400">★ Headliner</span>
+                                  )}
                                   {(entry.date || entry.call) && (
                                     <>
                                       <span className="hidden md:inline text-xs text-slate-400 dark:text-slate-500">

@@ -1,0 +1,1286 @@
+WEBVTT
+
+1
+00:04:55.680 --> 00:04:57.760
+Hester Bruikman: Hey everyone, how's it going?
+
+2
+00:04:59.720 --> 00:05:02.069
+Sam: Hey, it's going pretty well. How about yourself?
+
+3
+00:05:02.930 --> 00:05:08.260
+Hester Bruikman: Good, good. It's been a good day not having to deal with the madness of East Denver.
+
+4
+00:05:09.020 --> 00:05:11.859
+Hester Bruikman: But I'm sure it's, it's very fun to meet her.
+
+5
+00:05:14.520 --> 00:05:20.969
+lcastillo: I'm actually right there, so if it's a bit noisy when I'm presenting, I apologize in advance.
+
+6
+00:05:22.280 --> 00:05:27.770
+Hester Bruikman: Noisy's a good… is a good sign. That's what we want to hear in community events.
+
+7
+00:07:24.290 --> 00:07:30.600
+Sam: Alright, I guess we can probably get started. We do have quite a few items on the agenda. I'm not sure…
+
+8
+00:07:30.840 --> 00:07:34.909
+Sam: who's from which wallet here? I think there are a lot of new names, but
+
+9
+00:07:35.610 --> 00:07:43.299
+Sam: I will post the recording afterwards, so hopefully we'll get some feedback from everybody. So I guess let's get started with All Wallet Devs number 38.
+
+10
+00:07:43.450 --> 00:07:47.560
+Sam: Mercy, are you here?
+
+11
+00:07:49.510 --> 00:07:52.850
+Sam: No? Okay, so we will come back to that one.
+
+12
+00:07:57.610 --> 00:08:05.289
+Sam: Yeah, I guess let's start with the Structured Data Clear Signing Format, ERC-7730. If you guys are here to give us, like, a summary, that'd be great.
+
+13
+00:08:06.600 --> 00:08:08.969
+lcastillo: Yeah, I guess that would be me, so…
+
+14
+00:08:09.450 --> 00:08:27.169
+lcastillo: Hi, everyone. So, very, very happy to be presenting today. I see that Harry has joined also, so I will count on him to back me up when there's any need. Do you know how many, how much time I have to present ERC, roughly? Sure, that's actually appropriate? Okay.
+
+15
+00:08:27.200 --> 00:08:28.370
+Sam: Yeah.
+
+16
+00:08:30.010 --> 00:08:48.560
+lcastillo: So, just, just to give you maybe a little bit, a little bit of context, I've got, I've got a couple of slides that I can share that gives, that explains a bit, history and the approach we had for, for the 7730, file, so let me, if I can, let me share… I don't know if I can share my,
+
+17
+00:08:49.550 --> 00:08:57.030
+lcastillo: If I can share my screen… I'm not sure.
+
+18
+00:08:57.440 --> 00:09:04.610
+Sam: Yeah, the Zoom bot just joined, so hopefully it'll give me, admin here, and…
+
+19
+00:09:06.870 --> 00:09:09.539
+Sam: Nope, I guess not. So,
+
+20
+00:09:10.390 --> 00:09:12.329
+Sam: Do you have a link I might be able to share?
+
+21
+00:09:14.020 --> 00:09:17.820
+lcastillo: It's, it's actually a PDF, PDF file, so…
+
+22
+00:09:18.790 --> 00:09:30.900
+lcastillo: Well, that's fine, I can do it without, without the slides, it's okay. So basically, the context of C730, was to, for, for Ledger, hardware wallets, and wallets to start,
+
+23
+00:09:30.900 --> 00:09:41.950
+lcastillo: trying to solve better the issues of blind signing, so… or do you actually display relevant information to the user when they actually want to approve a transaction on their device?
+
+24
+00:09:42.170 --> 00:09:49.579
+lcastillo: This is a complicated topic because, typically what we realize as wallet maker is that,
+
+25
+00:09:49.580 --> 00:10:07.500
+lcastillo: base function call or message call that you make users sign, even if you are equipped with the API of the smartphone track that you're trying to call, is not really human understandable for many different reasons. The first one is that ABIs are very developer-driven.
+
+26
+00:10:08.330 --> 00:10:27.049
+lcastillo: They are… they look like function calls, rather than mostly user intents, as translated as user intents. And they actually also basically use only the solidity types, which can actually be formatted in many different ways. So, as an example, an integer can be interpreted as a token amount.
+
+27
+00:10:27.050 --> 00:10:40.010
+lcastillo: or can be a date, can be a block height, or any kind of things that make sense for a smart contract as a parameter. And there's no real information that Wallet can use, apart from the smart contract code itself.
+
+28
+00:10:40.090 --> 00:10:44.580
+lcastillo: To try and display this information, correctly to end users.
+
+29
+00:10:44.580 --> 00:11:04.360
+lcastillo: So, this is, this is the crux of the problem that we are trying to solve with the 7730. So, how do we transform a transaction raw data, or a message raw data that we are making a user sign into human-readable intent in the easiest way possible, and the most scalable way possible for our end users? Because,
+
+30
+00:11:04.360 --> 00:11:18.449
+lcastillo: Just to give you a little bit of context, as Ledger, we introduced roughly a lot of technologies to start doing that, actually, a long time ago, like 3-4 years ago, mostly based on programmatic extensions to our application that we're running on our wallet.
+
+31
+00:11:18.500 --> 00:11:36.729
+lcastillo: This was a kind of a maintenance nightmare. It required, basically, dApps developer to understand C code, to actually extend anything in a relevant way. Very specific to Ledger, so not reusable whatsoever for other wallets. So that's why we started to introduce 7730,
+
+32
+00:11:37.000 --> 00:11:39.289
+lcastillo: Proposal as a standard.
+
+33
+00:11:39.390 --> 00:11:54.450
+lcastillo: To have a common approach for, clear signing, any kind of message or transaction, based, based on a few common, common concepts that, that, that we had in mind, that would be able
+
+34
+00:11:54.510 --> 00:12:05.309
+lcastillo: to be reusable by all wallets, so that DAP only has to write his 7730 file once, and will be clear sign on all the wallets, in a kind of a similar standard way, actually.
+
+35
+00:12:05.510 --> 00:12:19.540
+lcastillo: So, the base principle, the philosophy behind this, this standout, we have a, we had a few, few, few things in mind when we started pushing the standard. First is that, it's data-driven, so it's actually a metadata file.
+
+36
+00:12:19.540 --> 00:12:34.559
+lcastillo: Which is, which is appended, kind of appended to the API, so that it complements the API and provides formatting information, to the wallets on, what they should display to the user when they, when the user is interacting with a specific smart contract.
+
+37
+00:12:35.150 --> 00:12:38.759
+lcastillo: This is the basic idea behind the 7730.
+
+38
+00:12:38.760 --> 00:13:01.300
+lcastillo: It's presented as a JSON file that I'll be able to share some examples later that contains this metadata. It's data-driven, so I think it's not a programmatic model, it's only providing metadata about how to format each transaction code. There's no logic built in beyond what is specified in the standard itself.
+
+39
+00:13:01.490 --> 00:13:18.990
+lcastillo: which made it a good support for both hardware wallet and software wallet, given that hardware wallet tends to have far more restriction on the execution capabilities that they have. We wanted a solar that could also be supported by hardware wallets, whatever their form.
+
+40
+00:13:19.200 --> 00:13:21.629
+lcastillo: So that was a fairly important one for us.
+
+41
+00:13:21.750 --> 00:13:46.349
+lcastillo: obviously at Ledger, I would say, but definitely that was useful, because nowadays, what we realize is that by being very, very data-driven, it's basically a JSON file, it also plays fairly well with AI tools, and it created a standout that is fairly easily interpreted by, by AI tools and generated or analyzed by AI tools, so, which is
+
+42
+00:13:46.520 --> 00:13:55.059
+lcastillo: kind of a boon for nowadays, I would say. So, the basic approach of the 7730 file is that, basically, if you…
+
+43
+00:13:55.860 --> 00:13:59.600
+lcastillo: If you look at some of the examples I can post here on the…
+
+44
+00:14:00.560 --> 00:14:08.050
+lcastillo: This is a typical… this one is a… this one is the main example that you can find on the… on the… on the ERC GitHub, on the internet.
+
+45
+00:14:08.050 --> 00:14:10.379
+Sam: You can try sharing your screen again if you want.
+
+46
+00:14:11.660 --> 00:14:19.220
+lcastillo: You know, that would be… But, try…
+
+47
+00:14:19.220 --> 00:14:24.740
+Hester Bruikman: Or if you have a PDF folder, you could ping it to me, I might try sharing to me.
+
+48
+00:14:25.930 --> 00:14:30.370
+lcastillo: Hopefully I can, should be able to see my screen now.
+
+49
+00:14:30.870 --> 00:14:31.989
+Sam: Yep, we're all good.
+
+50
+00:14:32.300 --> 00:14:33.290
+lcastillo: Perfect.
+
+51
+00:14:33.780 --> 00:14:41.729
+lcastillo: So, these are the slides, just an introduction. So, this is what we call, can you see the slides, or do you see the GitHub right now?
+
+52
+00:14:42.730 --> 00:14:43.540
+Sam: Slides.
+
+53
+00:14:44.160 --> 00:14:54.380
+lcastillo: Perfect, so… so just to quickly go through the most important points, this is what we call blind signing, so it's users, they… they definitely, sign
+
+54
+00:14:54.560 --> 00:14:59.210
+lcastillo: Something, but they don't understand whatever they're signing, because it's presented as a hash.
+
+55
+00:14:59.430 --> 00:15:11.280
+lcastillo: And we want to go, basically, to an interface which looks a bit more like, like, sorry, like this, where, every field is interpreted, sorry, every field is interpreted.
+
+56
+00:15:11.620 --> 00:15:22.979
+lcastillo: and clear to the user. And as I mentioned, the… sorry, the ABI itself is not enough, because that's the kind of interface you can build with the API itself.
+
+57
+00:15:23.190 --> 00:15:43.090
+lcastillo: There's a lot of issues, even for the current API to interpret, to interpret the, the parameters as a user, and it's not really that much better than, than, than actually a row hash that you have to sign, because you still have to interpret, as a user, a lot of parameters that are completely,
+
+58
+00:15:43.400 --> 00:15:48.459
+lcastillo: dependent on the program you're calling, actually, so you have to build in knowledge in that, so…
+
+59
+00:15:48.750 --> 00:16:02.959
+lcastillo: And as I was saying, these are the requirements we have, we had when we started to introduce that. So, data-driven, so it's basically a metadata file, human-friendly, so it's made to be, read by humans.
+
+60
+00:16:03.150 --> 00:16:12.819
+lcastillo: With a nice addition that nowadays it's also easily read by AI, so it's pretty, pretty powerful, to, to have kept this requirement all the way through.
+
+61
+00:16:12.860 --> 00:16:30.970
+lcastillo: It's standardized, so we really wanted something that was not specific to a specific wallet or hardware wallet, and that could be reused by all wallets, so that basically the dApps only have to write the file once and be clear signed on all the wallets. That was very important because
+
+62
+00:16:30.980 --> 00:16:43.549
+lcastillo: the problem of clear sending is really a problem of scale. To describe correctly all the files out there, you have to have the support of the community and all the dApp makers to describe, to help us describe what's supposed to be displayed to the user.
+
+63
+00:16:43.560 --> 00:16:58.680
+lcastillo: So really, to build this standard so that we can get, to a scale that is an ATM scale, basically, and not just a couple of wallets trying by themselves to clear sign to buy the UN of… by clear signing, just, whatever they can, actually.
+
+64
+00:16:58.750 --> 00:17:04.249
+lcastillo: And we also wanted something that was easy to implement, or more… rather than easy to implement, that was,
+
+65
+00:17:04.540 --> 00:17:20.169
+lcastillo: possible to implement whatever your constraints, including the most, stringent constraints that a wallet could have, like arbor signers that we have at Ager. So, this was some of the requirements we had in mind when we started developing the 7730.
+
+66
+00:17:21.190 --> 00:17:26.879
+lcastillo: And, how does it work? As we mentioned, basically, you have, you have,
+
+67
+00:17:27.200 --> 00:17:44.039
+lcastillo: the standard, that is the key component, then you write a JSON file that contains the metadata about the way you want to format your transaction and messages. And this gets inside the public registry, and we are in the process of
+
+68
+00:17:44.040 --> 00:17:58.960
+lcastillo: transferring this, the ownership of this public registry to the Ethereum Foundation, so once this is done, you will submit, basically, the semantic file to the public registry. And once this is done, this file is actually imported by the wallet.
+
+69
+00:17:58.960 --> 00:18:07.850
+lcastillo: Verified, and then the wallet can use it to build the user inter… the correct user interface, actually, for that.
+
+70
+00:18:07.930 --> 00:18:27.019
+lcastillo: And what does it look like? Rather than showing an example, maybe I can… well, let me switch back to the GitHub, it's a bit more clear. This is an example of what a simple ERC307730 files look like. There are three important sections to understand in the 7730. So the context section here.
+
+71
+00:18:27.980 --> 00:18:37.969
+lcastillo: is really all the binding context of when the 7730 file is applicable. So it gives you, basically, what contract you're trying to interact with.
+
+72
+00:18:38.010 --> 00:19:02.409
+lcastillo: what are the deployment addresses of this contract in the various chains that are EVM compatible. For a message, it will give you the similar kind of information. You can actually add the name of the contract that you want to pad into. In the V1 of the format, we had also the ABI and the schema of the contract here, but we realized that it was better
+
+73
+00:19:02.410 --> 00:19:04.309
+lcastillo: So you embed it directly in the…
+
+74
+00:19:04.320 --> 00:19:13.200
+lcastillo: In the display section, so… so we removed it, and that made the file far easier to… to read and to manipulate, actually, so it's… it's better.
+
+75
+00:19:13.360 --> 00:19:27.320
+lcastillo: Then we have the metadata section, which contains displayable information by wallets on the target of your interaction, so typical information about which contract you're interacting with, which entity behind the contract you're interacting with.
+
+76
+00:19:27.320 --> 00:19:34.050
+lcastillo: some additional information that might be useful for users, like a URL they can go to to interact with this contract.
+
+77
+00:19:34.050 --> 00:19:45.379
+lcastillo: So, a dApp URL, for instance, or any kind of information that the owner of the contract may want to show to the user about them when a user interacts with the contract.
+
+78
+00:19:46.330 --> 00:19:58.289
+lcastillo: And then the most important section is the display section. So this display section actually contains the core information about the start itself.
+
+79
+00:19:58.290 --> 00:20:13.299
+lcastillo: Which is, the formatting information about a specific function. So here you have, we explicitly name the function that the formatting information applies to. So here it's a simple transfer function for a NIRS20 token.
+
+80
+00:20:13.300 --> 00:20:29.870
+lcastillo: You have an intent, which is a verb that represents the intent of the interaction of the user with when they're calling this function. And then you have the field section, which describes how to format each parameter of the call.
+
+81
+00:20:29.870 --> 00:20:54.510
+lcastillo: And whether you should display it or not as a wallet, actually. So here, you should actually display both parameters. It tells you, okay, the two parameter is actually an address, and you should format it as an address, or as a trusted name, if you have a way to transform the address into a trusted name, which can be an ENS name, for instance, or it can be a local address book for the wallet, if the user has associated this address with a specific name.
+
+82
+00:20:54.510 --> 00:21:01.169
+lcastillo: on his own. So, any kind of transformation from an address to a name is acceptable, as long.
+
+83
+00:21:01.650 --> 00:21:04.039
+lcastillo: as a user, or the wallet trust it, actually.
+
+84
+00:21:04.160 --> 00:21:08.610
+lcastillo: And then the value is actually interpreted as a token amount.
+
+85
+00:21:08.840 --> 00:21:26.960
+lcastillo: So, that means… that means that basically this integral value is supposed to be converted as a token amount, and by that we mean that actually the wallet should, get the token details from the add to parameter here, so basically the destination of the, the transaction in that case.
+
+86
+00:21:26.960 --> 00:21:35.680
+lcastillo: Use it to retrieve the ticker information and the decimal that the token is using for its values.
+
+87
+00:21:35.680 --> 00:21:41.509
+lcastillo: Convert the value using the decimal and display it with as a real value plus a ticker.
+
+88
+00:21:41.510 --> 00:21:53.660
+lcastillo: So that the user really have a nice experience while they're interacting with this token, and don't have to convert themselves the actual integral in the token value. So this is basically the crux of the standard, it's really there.
+
+89
+00:21:53.660 --> 00:22:01.810
+lcastillo: So we've kept adding new formatters to tackle new use cases, so every single time we see new use cases.
+
+90
+00:22:01.810 --> 00:22:20.060
+lcastillo: Then we add new formatters so that we can enrich the standard with new interactions supported by the standard itself. So, for instance, recently, we've, we've added interoperable address, which was another ERC that was introduced.
+
+91
+00:22:20.060 --> 00:22:41.970
+lcastillo: to standardize the way address cross-chain are formatted as a parameter to a function call, and also the way it's actually displayed. So it was a pretty nice addition to say, okay, we actually… this TEGAR value is actually a cross-chain address, and display it as a cross-chain address, as specified by the other ERC. I think it was 7930, if I remember correctly.
+
+92
+00:22:41.970 --> 00:22:56.619
+lcastillo: So this is… we keep adding new formatters like that. We are at a point where we believe we've covered quite a few use cases, and we are fairly happy with the current forms, which is why we're calling it a V2, at least a draft V2 ready for public review and getting more comments on it.
+
+93
+00:22:57.660 --> 00:23:17.379
+lcastillo: What can I say more about the 78730? We've also added a couple of things that makes life easier for the addition of the file itself, so ways to include files or ways to put in command some definition here that makes it a bit easier for an actual developer writing that file to have a more compact
+
+94
+00:23:17.390 --> 00:23:37.850
+lcastillo: for presentation of the file, so this is all described in the ERC-7730. But again, the intent was really to have a file that, in the end, is fairly human-readable, so this service still looks readable for developers that understand what they do, easy to write for smartphone track developers, and that with what
+
+95
+00:23:37.850 --> 00:23:54.370
+lcastillo: still interpreted, completely, easily to interpret by wallet, so that they can, take this file and enrich the API of what the user interacts with to actually, display, the interaction in the nicest way possible that they want to target, actually.
+
+96
+00:23:55.070 --> 00:24:01.640
+lcastillo: So this is, kind of the groups of the 7730, presentation of the standard itself.
+
+97
+00:24:01.920 --> 00:24:12.339
+lcastillo: Around the standout, there's another big topic we have in the pipe currently, which is the discussion about the way we do the governance of the…
+
+98
+00:24:12.710 --> 00:24:29.720
+lcastillo: of the registry itself. So, as I mentioned in the slide, basically, the intent is to put all the 7730 files for now in a GitHub repository. Right now, Ledger is hosting this GitHub repository, but in the coming weeks, it should be migrated to an Eternal Foundation GitHub repository.
+
+99
+00:24:29.720 --> 00:24:41.619
+lcastillo: But a big part of the job of maintaining this GitHub repository is actually checking that the file that goes in the registry actually corresponds to the implementation of the Spartan Track that goes on-chain, actually.
+
+100
+00:24:41.780 --> 00:25:01.659
+lcastillo: This is very important for the security of the whole ecosystem, and it's… the ultimate line of defense in that case is the wallet itself, and the wallet shouldn't… should actually verify, actually, that everything goes, but as an ecosystem, it's far better if there's a way to actually verify and audit the file that is in joint history itself.
+
+101
+00:25:01.660 --> 00:25:12.059
+lcastillo: And attached to this registry, trusted information about who has done the audit, what was verified, and maybe, some additional data, so that wallet can take,
+
+102
+00:25:12.640 --> 00:25:25.979
+lcastillo: a faster decision on trusting a file or not that is in the registry, so this is a big part that is currently under discussion, so I don't think… I think, Eric, you had some proposal on that, to have a…
+
+103
+00:25:26.230 --> 00:25:32.519
+lcastillo: to have a… Let's say, a cleaner proposal on the way we handle the registry.
+
+104
+00:25:32.760 --> 00:25:35.279
+lcastillo: when it's migrated to the Ethereum Foundation.
+
+105
+00:25:35.500 --> 00:25:51.310
+lcastillo: But otherwise, this is the big, big topics. So, 7730 is really about the metadata that enrich your API so that you can convert a transaction or a message into a clear user intent to display to the user.
+
+106
+00:25:51.440 --> 00:26:07.620
+lcastillo: It's a public draft ready for review by the larger community, so that we have the best standard that we can get out there. And then, in the pipe, we have this governance to discuss, so that we get a system
+
+107
+00:26:07.670 --> 00:26:19.860
+lcastillo: Which is as decentralized as possible, with as many auditors that can contribute to the reviews, so that you can really scale the data that is covered by this standard.
+
+108
+00:26:20.160 --> 00:26:20.970
+lcastillo: That's all.
+
+109
+00:26:22.420 --> 00:26:31.840
+lcastillo: roughly in a, you know, let's say in 20 minutes, that's a very quick presentation of the, of the 7730 and the ongoing work, around it, but.
+
+110
+00:26:32.730 --> 00:26:47.949
+Sam: Thank you so much for the presentation. That's a really interesting proposal. There are some questions in chat, but in the interest of moving to, the next proposal… the next discussion point, I'm going to hand the floor off to Mercy, and,
+
+111
+00:26:48.210 --> 00:26:51.390
+Sam: get a presentation about RPC endpoint versioning.
+
+112
+00:26:52.100 --> 00:27:06.719
+Arik: Sam, if we can only ask, like, because, like, I think one of the main purposes of this presentation is two things. One, if you're a wallet, and you're thinking, what does it mean for me, should I integrate this? How?
+
+113
+00:27:06.740 --> 00:27:23.560
+Arik: talk to one of us, right? To Loren, Hester, me, somebody, or just post in, like, the Nexus group or one of the other ones, and reach out, and we're happy to do more specific sessions with wallets and, like, protocols that want to use this, right? So I think this is really, really important.
+
+114
+00:27:23.570 --> 00:27:34.279
+Arik: And if you have feedback on the ERC, where we finished a draft, but we're happy to take more feedbacks, so this is really important for us as well. Thank you.
+
+115
+00:27:37.430 --> 00:27:39.840
+Sam: Great, thanks so much. Mercy.
+
+116
+00:27:41.060 --> 00:27:54.869
+Mercy Boma Naps-Nkari: Hello, Sam, thank you. Good evening, everyone. I don't really have, like, a presentation per se, I just wanted to get more input on this. So, the RPC team is trying to, like, explore endpoint-level versioning for JSON RPC.
+
+117
+00:27:54.980 --> 00:28:04.659
+Mercy Boma Naps-Nkari: API, so… and we would really love to get input from wallet devs and users before we finalize what, the V1 looks like. So, I…
+
+118
+00:28:04.770 --> 00:28:22.830
+Mercy Boma Naps-Nkari: I will share its magician link, so that to get more points in case, maybe, if something comes in my data. So, the thing is that idea, I wanted… we wanted to ask if there are specific methods or response fields where that backward compatibility is critical for wallet devs.
+
+119
+00:28:22.840 --> 00:28:27.710
+Mercy Boma Naps-Nkari: Or any pain points when the spec changes that we should be aware of, so that we don't…
+
+120
+00:28:27.900 --> 00:28:33.399
+Mercy Boma Naps-Nkari: Do something that will break, at some point for the real users of the…
+
+121
+00:28:33.660 --> 00:28:38.299
+Mercy Boma Naps-Nkari: At the endpoint. So, before we finalized version 1,
+
+122
+00:28:38.580 --> 00:28:43.359
+Mercy Boma Naps-Nkari: And we would want to get this input first, so that we will know what to…
+
+123
+00:28:43.720 --> 00:28:52.060
+Mercy Boma Naps-Nkari: include in version 1, and then know how to, like, progressively, take up from there. I don't know if what I'm saying is…
+
+124
+00:28:53.140 --> 00:28:55.079
+Mercy Boma Naps-Nkari: Making sense at all?
+
+125
+00:28:56.370 --> 00:29:05.530
+Sam: I think so. So you're, working on adding versioning to certain Ethereum RPC endpoints, and oh, you're still sharing your screen, by the way.
+
+126
+00:29:06.410 --> 00:29:10.010
+Sam: And you want feedback on how that gets shaped?
+
+127
+00:29:11.260 --> 00:29:17.479
+Mercy Boma Naps-Nkari: Yes, let me share the, link… the PR links to get more context.
+
+128
+00:29:22.440 --> 00:29:27.689
+Arik: I pinged Lauren a couple of times, but, like, if you can stop his screen sharing, maybe that's also a good idea.
+
+129
+00:29:28.180 --> 00:29:31.979
+Sam: No, I'm not, I'm technically not… no, there we go. Okay.
+
+130
+00:29:41.330 --> 00:29:43.540
+Sam: Awesome. Well, thank you, Mercy.
+
+131
+00:29:45.570 --> 00:29:52.209
+Sam: Yeah, if anybody has any feedback, please leave a comment on the discussion thread and PR that's gonna get posted. There we go.
+
+132
+00:29:54.850 --> 00:30:01.750
+Sam: If anybody has any comments now that they'd like to discuss about it, we have a bit of time. Otherwise, we'll move on to the next discussion point.
+
+133
+00:30:07.550 --> 00:30:22.340
+Mercy Boma Naps-Nkari: Okay, sorry, I also want to include… maybe I can share, like, a calling for the RPC in case something comes in mind, because the idea is to get, to address how the, breaking change… how it's been handled currently. If…
+
+134
+00:30:22.340 --> 00:30:30.720
+Mercy Boma Naps-Nkari: That is a pain point for wallet developers, and if there's something we need to keep in mind before making this, shipping this endpoint versioning.
+
+135
+00:30:30.770 --> 00:30:33.579
+Mercy Boma Naps-Nkari: So that it will be useful for…
+
+136
+00:30:34.310 --> 00:30:51.779
+Mercy Boma Naps-Nkari: your workflows, and it doesn't, like, unnecessarily add a sort of complexity to what we have already. So if it is something that is important or useful, we would like to get an input, and then if it's a pain point or something, maybe you feel like, okay, this needs to be corrected, or there's something
+
+137
+00:30:51.880 --> 00:30:56.920
+Mercy Boma Naps-Nkari: that needs to change in the RPC spec, for example. Also, this is, like,
+
+138
+00:30:57.580 --> 00:31:04.930
+Mercy Boma Naps-Nkari: an open floor discussion in general, so… because at the end of the day, wallet devs are the main users of our PC endpoint, so…
+
+139
+00:31:18.000 --> 00:31:19.999
+Sam: Alright, well, thank you so much.
+
+140
+00:31:21.160 --> 00:31:32.150
+Sam: Moving on to the next discussion point, we have another clear signing, proposal Yeah.
+
+141
+00:31:34.460 --> 00:31:39.910
+Sam: I unfortunately don't remember who was supposed to present this, but if you're here, please take over and, tell us a little bit about your proposal.
+
+142
+00:31:39.910 --> 00:31:56.509
+Kirill Pimenov: It's me and also Naila on the call, he probably would need screen sharing permissions. Yeah, bye. So, I swear, it wasn't scheduled for us to be on the same call as Laurent, but I'm really grateful for both his work and, like, setting the stage for this.
+
+143
+00:31:56.510 --> 00:32:14.770
+Kirill Pimenov: Because, like, in my team, we've been using with a very related problem, like, not exactly the same, but closely related. And, like, yeah, with a little bit of a support from Ethereum Foundation, we now can prepare some early, early draft of our funding. We're not even, like.
+
+144
+00:32:14.770 --> 00:32:21.740
+Kirill Pimenov: draft of ERC stage. But, yeah. If you go to the root of it, I would, like.
+
+145
+00:32:21.870 --> 00:32:33.700
+Kirill Pimenov: Our problem is that I'm stupid and stubborn, and because of that, I want to give developers a way to specify how the contracts should be represented in the hardware wallets.
+
+146
+00:32:33.700 --> 00:32:50.170
+Kirill Pimenov: And to add insult to injury, the hardware wallet I have in mind is this thing with a ridiculously low bandwidth, both on input and output, which is a very different, like, security model from Ledger, and a different set of trade-offs needs to be done. And so, yeah, like.
+
+147
+00:32:50.220 --> 00:32:55.409
+Kirill Pimenov: We want users To be able to see what they sign.
+
+148
+00:32:55.490 --> 00:33:11.499
+Kirill Pimenov: And we want users to be able to see what they sign, even if that's a very, very fresh, I don't know, some sort of a DEGAN token swap thing, which launched in the last 24 hours, and definitely, like, it's not going to be merged in any centralized registries, even if it's legit, but that's questionable.
+
+149
+00:33:11.530 --> 00:33:21.630
+Kirill Pimenov: So we want that to work in a developer during semantics, without central repository of tools which verifies it after them.
+
+150
+00:33:21.650 --> 00:33:25.280
+Kirill Pimenov: We want that to work without, like.
+
+151
+00:33:25.280 --> 00:33:44.799
+Kirill Pimenov: real-time dependencies, this thing doesn't have a full Ethereum state, even unless it has access to the GitHub with the latest JSON definitions, and those constant firmware updates. They are not the sweetest point of Ledger, but for us, with an NFC, like, bandwidth to our device, we just can't have it.
+
+152
+00:33:44.810 --> 00:33:53.419
+Kirill Pimenov: So, it shouldn't have, like, any pull dependencies, no real-time communication. It should be, like, one-way push only for this specific call.
+
+153
+00:33:53.610 --> 00:34:07.450
+Kirill Pimenov: And, like, yeah, I don't want to be a trust in the period. I don't want to hold the keys to the castle and tell that, oh, this contract gets clear signing, this doesn't get clear signing. I ideally want that to be the contract author's.
+
+154
+00:34:07.680 --> 00:34:22.849
+Kirill Pimenov: And, at the same time, I want to prevent my users from phishing. So, like, I don't want a new, like, address to be, like, presenting itself as a USDT and then defaulting by customers. Quite a lot of, like, you know, contradictory requirements we have there.
+
+155
+00:34:22.920 --> 00:34:33.650
+Kirill Pimenov: Oh, and of course, we want to have composability, like, since we are talking about, like, push semantics and developer, like, driven work, and so on.
+
+156
+00:34:33.690 --> 00:34:38.580
+Kirill Pimenov: I want that to be wrappable in a multi-sync call from Magnosis Safe.
+
+157
+00:34:38.590 --> 00:34:55.780
+Kirill Pimenov: diagnosis safe or anything down the chain, to have to add additional wrappers for my hardware wallet node to have interpreted, and show it, hi, that's a multi-seq call 1 out of 3, which is wrapping this particular transaction to this new, like, ShibuSwap thing they just deployed.
+
+158
+00:34:56.530 --> 00:34:58.600
+Kirill Pimenov: So, I want…
+
+159
+00:34:58.850 --> 00:35:05.499
+Kirill Pimenov: The… what we see on the screen, or any screen, like, any hardware wallet, maybe, software wallets.
+
+160
+00:35:06.090 --> 00:35:11.879
+Kirill Pimenov: to be the law. I want us to cryptographically be bound to that law, and we designed
+
+161
+00:35:12.120 --> 00:35:25.090
+Kirill Pimenov: with a very different set of requirements, I think, which hopefully extends 7730 with the features which are required to make that possible. Not without its trade-offs, but we will get there in due time.
+
+162
+00:35:25.520 --> 00:35:30.320
+Kirill Pimenov: So, our first and very basic important assumption is, like.
+
+163
+00:35:30.910 --> 00:35:48.239
+Kirill Pimenov: it would… everything would work better if we split explicitly social layer and protocol layer. So, like, social is, like, the who, the, like, oh, I don't want that, like, new smart contract to look as its legitimate USDC. And we sort of solved that by talking lists already.
+
+164
+00:35:48.430 --> 00:36:01.609
+Kirill Pimenov: And anyone can publish such a list, like, let's do contracts lists. Let's extend that to somehow verify the identities by parties you or anyone a developer trusts, and have a, like.
+
+165
+00:36:02.010 --> 00:36:07.980
+Kirill Pimenov: wallet-level definition for any address, even the contract, is it a well-known contract, who owns it, and so on.
+
+166
+00:36:08.400 --> 00:36:22.829
+Kirill Pimenov: And the second, let's extend that with ability of a contract author to specify a display format. It is very, very closely related to 7730, but we would twist that our
+
+167
+00:36:22.990 --> 00:36:27.830
+Kirill Pimenov: way interpreting that format, interpreting that, how to parse that API,
+
+168
+00:36:28.170 --> 00:36:46.249
+Kirill Pimenov: is, like, very friendly to both push-based and composable ways of expressing it. So we want dump to tell to the wallet as an additional array, hey, that is the extended info you need… you can use to show on screen the human reasonable parsing.
+
+169
+00:36:46.550 --> 00:36:57.110
+Kirill Pimenov: And then, like, the wallet will maybe, like, send it to the, like, signer, so, like, maybe it's a nose is safe, which sends it to the, Ledger Live, and the Ledger Live
+
+170
+00:36:57.110 --> 00:37:07.570
+Kirill Pimenov: like, sends it to the actual hardware device. Or, like, using WalletConnect, you send it to the mobile companion of this thing, and then you put this thing behind your phone's NFC, and it also gets pushed.
+
+171
+00:37:08.530 --> 00:37:11.620
+Kirill Pimenov: And every layer in that.
+
+172
+00:37:11.830 --> 00:37:31.280
+Kirill Pimenov: J would just extend the display array, adding an additional, like, representative arrays which help you thematically interpret the APIs. I've seen that question in the Q&A, and I would very briefly address. The problem with APIs in Ethereum, as it stands, is they are not, like.
+
+173
+00:37:31.790 --> 00:37:43.329
+Kirill Pimenov: it requires some data which is not on-chain to parse what it means. It is not semantically unambiguous, and that can be used, like, against bullet users.
+
+174
+00:37:43.430 --> 00:38:03.219
+Kirill Pimenov: In very different ways, but, like, the stupidest way is, oh, there are different tokens, and they have different decimals, and if you swap one for another, and your wallet doesn't know where the decimal is, there is nothing in the EBI call which will tell you if you're swapping 1 or 100 of that token, and if you are presenting that in a human form.
+
+175
+00:38:03.350 --> 00:38:04.510
+Kirill Pimenov: You will fail.
+
+176
+00:38:04.990 --> 00:38:07.080
+Kirill Pimenov: So,
+
+177
+00:38:07.630 --> 00:38:20.300
+Kirill Pimenov: we pass that through DAP, through the wallet, all the layers, to the actual, like, signing device. I'm thinking about hardware wallet, but once again, your MetaMask on the smartphone is exactly the same.
+
+178
+00:38:20.570 --> 00:38:30.299
+Kirill Pimenov: You use that additional, like, metadata which we pushed with, call to represent that on screen for your user.
+
+179
+00:38:30.390 --> 00:38:46.670
+Kirill Pimenov: nice thing which we have sort of kept in mind is that it might have, like, different localities, like, having Chinese interpretations for the fields might be useful, additional to, like, having English language ones. And then you cryptographically commit
+
+180
+00:38:47.570 --> 00:38:57.880
+Kirill Pimenov: to what you've just used to show. And with that, you are avoiding all those attacks with, like, developers or someone presenting themselves as developers.
+
+181
+00:38:57.880 --> 00:39:09.820
+Kirill Pimenov: pushing a falsified metadata to your hardware wallet, so you're signing not what actually happens on-chain. We've all seen those hacks happening, so this is a legitimate vector of attack.
+
+182
+00:39:10.200 --> 00:39:19.460
+Kirill Pimenov: And… Then… you sign that by effectively having a EIP712
+
+183
+00:39:20.090 --> 00:39:30.519
+Kirill Pimenov: hash structs… hashing of what you use to display, like, all those arrays of meta info for the calls, and instruct… which instructs you wanted how to parse.
+
+184
+00:39:30.730 --> 00:39:34.850
+Kirill Pimenov: And then you effectively wrap your call data with an additional
+
+185
+00:39:35.580 --> 00:39:41.800
+Kirill Pimenov: Clear call, on-chain call, and this is one of the important trade-offs we are currently talking about.
+
+186
+00:39:41.890 --> 00:39:56.740
+Kirill Pimenov: So, you have a clear call, which, like, accepts display hash as the first parameter, and call data as a second parameter. And it's a very, very tiny ship, and our benchmark is about, like, 7,000 to 8,000 gas units.
+
+187
+00:39:56.840 --> 00:40:10.749
+Kirill Pimenov: And what it does, it just compares the display hash with what it has hard-coded in the contract, and it fails. If that is mismatched, that means that you've been misled by whoever sent you that meta info, and your transaction is
+
+188
+00:40:11.120 --> 00:40:28.889
+Kirill Pimenov: drawn based on wrong assumptions, it shouldn't never be accepted by chain. This is how we avoid that single point of failure. And, yeah, if clear call passes, then we are good. And, nice thing about that, it's completely stateless and completely composable.
+
+189
+00:40:29.050 --> 00:40:36.290
+Kirill Pimenov: Because, like, different layers of that display logic, they can be assembled all together.
+
+190
+00:40:36.680 --> 00:40:48.779
+Kirill Pimenov: And then, another important part is, like, how do we get from here to there? Because, like, obviously that requires an on-chain changes, and that's a big ask, and we cannot just move the whole Ethereum ecosystem.
+
+191
+00:40:48.990 --> 00:41:08.319
+Kirill Pimenov: So, especially for the things like Uniswap, like Uniswap v2 is not upgradable, it's still being used. If it's… if you cannot see it on screen in a human-readable form, okay, like, that was for nothing, because the goal is to never have to deal with, like, signing those ungradable hashes anymore.
+
+192
+00:41:08.840 --> 00:41:11.680
+Kirill Pimenov: So… We…
+
+193
+00:41:11.820 --> 00:41:25.839
+Kirill Pimenov: Introduce, like, interlinkage between the first thing, like the contract lists, and our display format, in the sense that to be accepted to the contract list, you need to verify your identity and somehow pass the, like, basic checks.
+
+194
+00:41:25.860 --> 00:41:33.340
+Kirill Pimenov: And then you can attach those, display hashes to that contract list, which is…
+
+195
+00:41:33.360 --> 00:41:47.470
+Kirill Pimenov: hopefully not update very frequently. And on another side, like, if you're a new contract, of course, you might be able to deliver a contract which has that additional clear call method, which will just enable everything for you magically.
+
+196
+00:41:47.760 --> 00:41:51.679
+Kirill Pimenov: And there is the middle ground, like, we don't…
+
+197
+00:41:51.680 --> 00:42:16.079
+Kirill Pimenov: like, we want that to be somehow, like, managed on-chain, so, like, there might be a DAO which manages the mapping being this address and this selector maps to that hash data, and those would be just, like, wrapped in either, like, smart wallet call, or just a flashbot-like assumption. So, like, here is a, like, actual call, and here is an assumption by it, and we rely on the flashbots to make sure that externally
+
+198
+00:42:16.080 --> 00:42:19.670
+Kirill Pimenov: account also get the pre-flight checks before sending it.
+
+199
+00:42:20.330 --> 00:42:38.279
+Kirill Pimenov: And, that's sort of it. So, like, our trade-offs are… it either requires a contract change, so, like, extending something like 7730 with additional social layer of, like, hey, this is the source of a hash data that might be on-chain or might not be.
+
+200
+00:42:38.440 --> 00:42:41.230
+Kirill Pimenov: then we have a gas overhead. It is not free.
+
+201
+00:42:41.270 --> 00:42:56.419
+Kirill Pimenov: like, we commit and we make a chain check, an additional check, that's just a couple of S stores, that's a… like, we have benchmarks for that, it's 8,000 gas overhead in the current limitation, might be even tighter, but it is still an overhead.
+
+202
+00:42:56.460 --> 00:43:04.669
+Kirill Pimenov: And, like, yeah, the last one is the local adoption, and this is why we are on this call, and we really want any feedback which would make that adoption easier.
+
+203
+00:43:05.090 --> 00:43:12.509
+Kirill Pimenov: And to prove that it's not just, like, a figment of aligned imagination, I would like to give, like.
+
+204
+00:43:13.050 --> 00:43:23.650
+Kirill Pimenov: driver's seat to Nail, who did the most of the actual work, and I just, like, was, you know, running around during this, and Nael will show us, hopefully, the full cycle of adapt
+
+205
+00:43:23.650 --> 00:43:37.280
+Kirill Pimenov: sending its metadata to the hardware wallet through the, like, wallet adapter, and then we sign and we send it back on-chain. We use a simulated Uniswap, I think, for that demo, if we are ready with that.
+
+206
+00:43:37.390 --> 00:43:41.630
+Kirill Pimenov: And, like, that is it. Yeah.
+
+207
+00:43:46.880 --> 00:43:53.230
+Kirill Pimenov: Maybe we can see you, but not hear you. Okay. Awesome, thank you.
+
+208
+00:43:53.230 --> 00:43:54.150
+Nail: Unknown.
+
+209
+00:43:55.020 --> 00:43:56.229
+Nail: My name is Ned.
+
+210
+00:43:56.390 --> 00:44:04.829
+Nail: I'm from, compel. We're working on Kalakstanine architecture, and I would like to demonstrate to you
+
+211
+00:44:05.530 --> 00:44:11.910
+Nail: how it may work. This app is based on a scaffold, Oath?
+
+212
+00:44:12.380 --> 00:44:26.050
+Nail: I… edit the… installation to contact with the career call support, and I'd like to…
+
+213
+00:44:27.380 --> 00:44:32.889
+Nail: Demonstrate at first how it may work even in your browser, or
+
+214
+00:44:33.050 --> 00:44:36.360
+Nail: Hot waters, because, actually, there's no…
+
+215
+00:44:36.680 --> 00:44:40.810
+Nail: restrictions, if it's hardware wallet or mobile wallet.
+
+216
+00:44:40.950 --> 00:44:42.090
+Nail: On your signals?
+
+217
+00:44:43.170 --> 00:44:48.019
+Nail: So we just… it's installed version 2.
+
+218
+00:44:48.330 --> 00:44:51.200
+Nail: We… let's do a swap.
+
+219
+00:44:52.160 --> 00:45:02.220
+Nail: Right now, we just show this notification, because it's our key is stored in browser. We can see one loading
+
+220
+00:45:02.430 --> 00:45:06.200
+Nail: It just, oh, we're…
+
+221
+00:45:07.160 --> 00:45:14.389
+Nail: requirements… requirements that we want to do, because we don't want dab to hide that…
+
+222
+00:45:14.580 --> 00:45:22.719
+Nail: some value was set in a theorem value of transactions, so… If it's there.
+
+223
+00:45:22.920 --> 00:45:30.340
+Nail: If it's zero, then… we don't show this. And here we can… we can see…
+
+224
+00:45:30.720 --> 00:45:38.660
+Nail: It feels kind of in the same way as, 7732?
+
+225
+00:45:39.160 --> 00:45:40.540
+Nail: Have a little less.
+
+226
+00:45:41.530 --> 00:45:42.350
+Nail: Yep.
+
+227
+00:45:46.310 --> 00:45:52.550
+Nail: So, it's… it demonstrates that it's possible to work Is this it?
+
+228
+00:45:52.890 --> 00:45:56.459
+Nail: it… in Brause, implemented,
+
+229
+00:45:56.880 --> 00:46:05.830
+Nail: REST library, and ported it to browser, to Android, and hardware wallet. And next,
+
+230
+00:46:06.590 --> 00:46:10.519
+Nail: I would like to show you a demonstration of
+
+231
+00:46:10.920 --> 00:46:16.520
+Nail: Android, will it connect it with our compiler? How do I want it?
+
+232
+00:46:18.870 --> 00:46:19.750
+Nail: Please.
+
+233
+00:46:21.450 --> 00:46:26.040
+Nail: I need… I need to… One time, to SH camera.
+
+234
+00:46:39.280 --> 00:46:40.100
+Nail: Here?
+
+235
+00:46:40.500 --> 00:46:41.319
+Nail: Excuse me?
+
+236
+00:46:42.610 --> 00:46:43.620
+Nail: Let's see…
+
+237
+00:46:49.010 --> 00:46:53.020
+Nail: Android device, this is the same dub?
+
+238
+00:46:53.150 --> 00:46:56.880
+Nail: the defend the… And… desktop.
+
+239
+00:46:57.050 --> 00:47:04.650
+Nail: I… before… before I… I had my wallet, Android with…
+
+240
+00:47:07.680 --> 00:47:13.970
+Nail: what it can be done, and I'd like to send it, introduction?
+
+241
+00:47:16.140 --> 00:47:24.220
+Nail: Now we can see that the transaction is passed and displayed on mobile mode, the same way
+
+242
+00:47:24.370 --> 00:47:39.979
+Nail: Yes, it… in browser. Right now, it uses special native use, so it's not text-based, and this time and states how this library
+
+243
+00:47:40.370 --> 00:47:43.410
+Nail: Can be integrated into native.
+
+244
+00:47:44.390 --> 00:47:46.380
+Nail: Mobile… wallets.
+
+245
+00:47:46.660 --> 00:47:47.940
+Nail: With native views.
+
+246
+00:47:48.770 --> 00:47:51.720
+Nail: Now, we click Confirm.
+
+247
+00:47:54.980 --> 00:47:57.850
+Nail: And send it to Compeller.
+
+248
+00:48:03.440 --> 00:48:09.479
+Nail: Let's try one more time, because sometimes NFC… Does intercept.
+
+249
+00:48:18.350 --> 00:48:20.369
+Nail: Let's see the new C brickets.
+
+250
+00:48:21.730 --> 00:48:22.560
+Nail: Yeah.
+
+251
+00:48:23.380 --> 00:48:28.079
+Nail: Let's see what we have on Compella.
+
+252
+00:48:29.190 --> 00:48:40.209
+Nail: basically, it shows… it shows, transaction information, so for F tokens, and all the data that is so…
+
+253
+00:48:40.660 --> 00:48:44.120
+Nail: On mobile, and… this scope.
+
+254
+00:48:44.570 --> 00:48:49.340
+Nail: I don't need to send, actually what…
+
+255
+00:48:49.750 --> 00:48:57.310
+Nail: To compare it one more time, because I disconnected it, and you see, and… But…
+
+256
+00:48:57.310 --> 00:48:58.679
+Kirill Pimenov: I want to highlight that there is no
+
+257
+00:48:59.150 --> 00:49:15.999
+Kirill Pimenov: custom parsing transaction code on the Campella, apart from implementing this RFC. So everything we see about, like, which tokens get sent to which addresses, this call sends wheel, ETH, and so on, those are all part of the spec. They are not hard-coded pre-existing knowledge.
+
+258
+00:49:18.760 --> 00:49:20.280
+Nail: Let's click Approve.
+
+259
+00:49:26.730 --> 00:49:30.810
+Nail: Mount Cho se… transaction encoded.
+
+260
+00:49:32.770 --> 00:49:33.959
+Nail: Well, that's good.
+
+261
+00:49:36.160 --> 00:49:39.230
+Nail: Yeah, and, has action sent?
+
+262
+00:49:39.790 --> 00:49:42.070
+Nail: Op, and reduction sent.
+
+263
+00:49:43.440 --> 00:49:47.209
+Nail: And billing's updated, you can see, almost.
+
+264
+00:49:47.720 --> 00:49:49.040
+Nail: 0.7.
+
+265
+00:49:57.150 --> 00:50:09.760
+Nail: Yeah, so I wanted to… I will say, basically, our approach works well on the web, on mobile, and on…
+
+266
+00:50:09.950 --> 00:50:14.210
+Nail: hardware orders, so… Yeah.
+
+267
+00:50:14.620 --> 00:50:21.410
+Nail: Everyone can benefit from this architecture.
+
+268
+00:50:22.790 --> 00:50:23.990
+Nail: Thank you.
+
+269
+00:50:24.410 --> 00:50:32.040
+Kirill Pimenov: Yeah, thank you. Like, just to reiterate about, like, how this is, like, a full cycle, if you are a developer of the wallet.
+
+270
+00:50:32.170 --> 00:50:41.469
+Kirill Pimenov: you implement the display format parser. Like, maybe you base it on the 7730 work, maybe you do that, like, aside of it, but…
+
+271
+00:50:41.470 --> 00:50:49.359
+Kirill Pimenov: schema is published, like, Rust reference implementation exists, you just do something like that. And you start with, like.
+
+272
+00:50:49.360 --> 00:51:05.409
+Kirill Pimenov: well-known token lists extended to the well-known contract lists, and you get all those features, like those token IDs in the signing pop-up on the Nain's mobile phone. It wasn't hard-coded, it is just, like, in a list of the well-known tokens with their identities.
+
+273
+00:51:05.500 --> 00:51:08.920
+Kirill Pimenov: If you adopt dev, like, well, you start attaching
+
+274
+00:51:08.990 --> 00:51:16.079
+Kirill Pimenov: display, like, array to the same transaction call to the wallet when you talk to the Ethereum wallet.
+
+275
+00:51:16.140 --> 00:51:22.580
+Kirill Pimenov: For legacy contracts, that will be informational, but, like, if you are a new contract, like, do the clear call.
+
+276
+00:51:22.580 --> 00:51:36.759
+Kirill Pimenov: If you're a smart contract dev, do a clear call if you have existing contracts, then, like, work on getting that to the contract lists, and, like, somehow publishing your hash for display, and, like, the
+
+277
+00:51:36.760 --> 00:51:37.840
+Kirill Pimenov: full contents.
+
+278
+00:51:37.940 --> 00:51:45.580
+Kirill Pimenov: And for the ecosystem, like, yeah, I wish that would be, like, more work on figuring out how we control those registries.
+
+279
+00:51:45.580 --> 00:52:02.419
+Kirill Pimenov: And, like, how can we transition from, oh, that's something on Git to something… oh, that's something on-chain we can then leverage on the next stage of this plan, where we can do the smart accounts, wrapping the actual, like, calls in a clear call
+
+280
+00:52:02.420 --> 00:52:10.380
+Kirill Pimenov: Addendums, or having those, like, flashboard task approaches, where even the externally owned accounts can benefit from this.
+
+281
+00:52:10.380 --> 00:52:13.430
+Kirill Pimenov: Without relying on, just…
+
+282
+00:52:13.590 --> 00:52:23.200
+Kirill Pimenov: known parties, and instead of that, meeting to the hashes on chain. So, yeah, I want every feedback we can get.
+
+283
+00:52:23.370 --> 00:52:30.660
+Kirill Pimenov: From the ecosystem. I want that to be ergonomical, I want that to be useful, and I want Slovakia to
+
+284
+00:52:30.760 --> 00:52:31.900
+Kirill Pimenov: start…
+
+285
+00:52:32.370 --> 00:52:49.539
+Kirill Pimenov: moving in the direction where we have a very clear representation for our users what they sign, because, yeah, I'm really not happy with the situation we are in right now. Like, everyone is learning how to sign those hashes, and in the light of every, like.
+
+286
+00:52:49.660 --> 00:52:59.400
+Kirill Pimenov: livid user who is doing more than just sending USDC once in a while. That's a fact of their reality. They cannot fully trust their hardware wallet screens.
+
+287
+00:53:06.790 --> 00:53:10.299
+Sam: Awesome. Thank you so much for, coming out and presenting.
+
+288
+00:53:10.560 --> 00:53:19.459
+Sam: Again, in the interest of time, I think we'll move ahead to the next point, and we'll do asynchronous questions on the Discord server or the Ethereum Wallet Nexus Telegram.
+
+289
+00:53:19.720 --> 00:53:25.990
+Sam: Yeah, and with that, I'll hand it over to the last point, which is universal enshrined encrypted Mempools.
+
+290
+00:53:29.700 --> 00:53:48.050
+Loring: Hi, everyone. My name's Loring, I'm from BrainBot, one of the core contributors to Shudder, which recently proposed EIP A105 as a potential Hegota headliner, and my colleague, Yannick.
+
+291
+00:53:48.050 --> 00:53:57.419
+Loring: We'll be going into some technical details about 8105, and then we would love to get feedback from all of the wallet developers.
+
+292
+00:53:59.450 --> 00:54:05.060
+Jannik Luhn: Yeah, thank you, Loring, and hello from my side as well. My name is Yannick,
+
+293
+00:54:05.510 --> 00:54:18.510
+Jannik Luhn: So, with EIP8105, what we want to do is add an encrypted mempool to Ethereum, with the goal of protecting users from front-running and sandwiching attacks, even if they use the public mempool.
+
+294
+00:54:18.510 --> 00:54:25.600
+Jannik Luhn: Which we think is very valuable, because, users will not have to rely on private inputs anymore, or trusted builders.
+
+295
+00:54:25.600 --> 00:54:34.459
+Jannik Luhn: For the security of their transactions, which is good for the protocol, in terms of decentralization and neutrality and censorship resistance and,
+
+296
+00:54:34.560 --> 00:54:36.269
+Jannik Luhn: Or these properties.
+
+297
+00:54:36.510 --> 00:54:51.390
+Jannik Luhn: How it works on a high level is that we add a new role to the protocol called a key provider, and their job is, on the one hand, to provide encryption keys to users so that they can use those to encrypt their transactions with them.
+
+298
+00:54:51.390 --> 00:54:59.520
+Jannik Luhn: And, on the other hand, provide, when needed, the corresponding decryption keys to the protocol, so that the protocol can then decrypt and execute those transactions.
+
+299
+00:55:00.550 --> 00:55:16.809
+Jannik Luhn: Encrypted transactions will consist of two parts. First, the encrypted payload, that is the actual transaction that the user wants to be executed, wants to have executed, and then around that, this is wrapped in an envelope, which is plain text and handles the gas payment.
+
+300
+00:55:18.160 --> 00:55:26.419
+Jannik Luhn: And they get executed in two steps. First, in the block in which the encrypted transaction is included.
+
+301
+00:55:26.600 --> 00:55:42.619
+Jannik Luhn: this, the encrypted, the plain text pipe will be executed, so the gas payment, and in a way, this schedules then the decrypted transactions to be executed in the next block. Basically, when a key provider sees the executed envelope, they will then provide the,
+
+302
+00:55:42.620 --> 00:55:47.350
+Jannik Luhn: Decryption key between the two blocks, and in the next block, we can decrypt and execute.
+
+303
+00:55:48.680 --> 00:56:06.970
+Jannik Luhn: This is basically it. From a wallet point of view, I think, what has to be done is, first of all, they need to, or you guys need to enable users to choose one of these key providers, or choose for them. I think that should be very similar to how a RPC provider is chosen today.
+
+304
+00:56:07.940 --> 00:56:20.869
+Jannik Luhn: Then they need to encrypt the transaction, which is something that will be dependent on the, on the key provider, that might be,
+
+305
+00:56:21.560 --> 00:56:31.619
+Jannik Luhn: So there might be some SDK that the key provider provides, or an API, maybe, but it's not specified in the protocol.
+
+306
+00:56:31.690 --> 00:56:50.190
+Jannik Luhn: then the wallet has to do the… this two-step signing process, basically encrypt, or sign, encrypt, and sign again the envelope, and then when you send the transaction, you have to watch for basically two events. One, the transaction being included, and the gas payment being handled, and then in the next block, the actual execution.
+
+307
+00:56:50.880 --> 00:56:54.540
+Jannik Luhn: Yeah, I think that's mostly it.
+
+308
+00:56:56.300 --> 00:56:59.059
+Jannik Luhn: Lauren, you want to say a bit more?
+
+309
+00:57:00.080 --> 00:57:03.379
+Loring: I think that's a great introduction,
+
+310
+00:57:03.650 --> 00:57:21.879
+Loring: We have been speaking with the client teams about how to implement this and been getting wonderful feedback. We also recognize that EIP 8105, once implemented, would impact wallets in a range of different ways.
+
+311
+00:57:21.880 --> 00:57:28.110
+Loring: From, potentially changing revenue models, to…
+
+312
+00:57:28.290 --> 00:57:46.819
+Loring: new UX flows, as Yannick mentioned, and so we are excited to make as many connections as possible with different wallets, collect your feedback, your suggestions for improvement, your questions, so that we can incorporate that
+
+313
+00:57:46.820 --> 00:57:56.899
+Loring: into the EIP itself, and make sure that once it is implemented, that it is something which wallets will embrace and,
+
+314
+00:57:56.940 --> 00:57:59.240
+Loring: actively support.
+
+315
+00:57:59.310 --> 00:58:14.779
+Loring: maybe… yeah, I'll leave it there, and if there are questions, and we have time, we can do it on the call, or please reach out to me in the Discord or on Telegram. I'd love to chat with you one-on-one.
+
+316
+00:58:18.890 --> 00:58:22.400
+Sam: Awesome, thank you so much for taking the time to come out and talk about your EIP.
+
+317
+00:58:27.460 --> 00:58:33.430
+Sam: I guess, we have 9 minutes left. If anybody wants to chat about anything, feel free. Otherwise, we can end it here.
+
+318
+00:58:44.490 --> 00:58:50.299
+Sam: Great. Well, let's call it here. I'll upload the recording to the Discord server, and
+
+319
+00:58:50.620 --> 00:58:54.599
+Sam: If anybody has anything to talk about, let me know, and we'll schedule a meeting for next month.
+
+320
+00:58:55.010 --> 00:58:56.140
+Sam: Take care, everyone.
+
+321
+00:58:58.760 --> 00:58:59.400
+Mercy Boma Naps-Nkari: Bye.
+

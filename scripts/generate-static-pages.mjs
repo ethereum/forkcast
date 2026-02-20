@@ -44,6 +44,11 @@ const standalonePages = [
     title: 'Devnet Prioritization - Forkcast',
     description: 'Track devnet inclusion status, test complexity, and client support for EIPs in upcoming network upgrades.',
   },
+  {
+    path: 'decisions',
+    title: 'Key Decisions - Forkcast',
+    description: 'Key decisions from Ethereum All Core Devs meetings.',
+  },
 ];
 
 // Define upgrade routes with their metadata

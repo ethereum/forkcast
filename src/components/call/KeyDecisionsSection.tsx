@@ -54,7 +54,7 @@ const truncateText = (text: string, maxLength: number): string => {
 };
 
 /** EIP link with hover tooltip matching the Rank page pattern */
-const EipLinkWithTooltip: React.FC<{
+export const EipLinkWithTooltip: React.FC<{
   eipId: number;
   eipMap: Map<number, EIP>;
 }> = ({ eipId, eipMap }) => {
@@ -155,7 +155,7 @@ const EipLinkWithTooltip: React.FC<{
  *   → EIP-7872 [DFI]
  *   → EIP-7975 added to [DevNet-3] for Glamsterdam
  */
-const StructuredDecisionContent: React.FC<{
+export const StructuredDecisionContent: React.FC<{
   decision: KeyDecision;
   eipMap: Map<number, EIP>;
 }> = ({ decision, eipMap }) => {

@@ -246,29 +246,8 @@ async function main() {
         continue;
       }
 
-      const localDir = join(LOCAL_ASSETS_DIR, localType, callId);
-      const configPath = join(localDir, 'config.json');
-
-      // Check if we need to update videoUrl in existing config
-      if (!force && existsSync(localDir)) {
-        if (callData.videoUrl && existsSync(configPath)) {
-          try {
-            const existingConfig = JSON.parse(readFileSync(configPath, 'utf-8'));
-            if (existingConfig.videoUrl === null) {
-              console.log(`  Updating ${callId} config.json videoUrl`);
-              existingConfig.videoUrl = callData.videoUrl;
-              writeFileSync(configPath, JSON.stringify(existingConfig, null, 2));
-              totalSynced++;
-            }
-          } catch (e) {
-            // Ignore errors reading/writing config
-          }
-        }
-        continue;
-      }
-
-      console.log(`  Syncing ${callId}...`);
       if (await syncCall(series, localType, callId, callData, force)) {
+        console.log(`  Synced ${callId}`);
         totalSynced++;
       }
     }

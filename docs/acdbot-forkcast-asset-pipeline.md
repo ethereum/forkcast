@@ -4,24 +4,7 @@ The asset pipeline transforms Zoom meeting recordings into browsable call pages 
 
 ## Architecture
 
-```mermaid
-flowchart LR
-    subgraph PM["ethereum/pm (ACDbot)"]
-        Z[Zoom API] --> D[Download Assets]
-        D --> CL[Generate Changelog<br/>Claude Sonnet]
-        CL --> AC[Apply Corrections]
-        AC --> S[Generate Summary<br/>Claude Sonnet]
-        S --> M[Generate Manifest]
-    end
-
-    subgraph FC["Forkcast"]
-        SY[Sync Call Assets] --> KD[Extract Key Decisions<br/>Claude Sonnet]
-        KD --> PC[protocol-calls.generated.json]
-        PC --> APP[Forkcast Frontend]
-    end
-
-    M -- "manifest.json<br/>(raw.githubusercontent.com)" --> SY
-```
+![Asset pipeline architecture diagram](assets/asset-pipeline-architecture.svg)
 
 **PM cron:** every 2 hours | **Forkcast cron:** every hour
 

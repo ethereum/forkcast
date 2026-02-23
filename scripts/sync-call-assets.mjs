@@ -137,7 +137,7 @@ async function syncCall(remoteSeries, localType, callId, callData, force = false
     // Update videoUrl if existing config has null and manifest has a value
     try {
       const existingConfig = JSON.parse(readFileSync(configPath, 'utf-8'));
-      if (existingConfig.videoUrl === null) {
+      if (existingConfig.videoUrl !== callData.videoUrl) {
         console.log('  Updating config.json videoUrl');
         existingConfig.videoUrl = callData.videoUrl;
         writeFileSync(configPath, JSON.stringify(existingConfig, null, 2));

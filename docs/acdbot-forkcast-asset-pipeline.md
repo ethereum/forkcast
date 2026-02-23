@@ -8,7 +8,7 @@ The asset pipeline transforms Zoom meeting recordings into browsable call pages 
 flowchart LR
     subgraph PM["ethereum/pm (ACDbot)"]
         Z[Zoom API] --> D[Download Assets]
-        D --> CL[Generate Changelog<br/>Claude Opus]
+        D --> CL[Generate Changelog<br/>Claude Sonnet]
         CL --> AC[Apply Corrections]
         AC --> S[Generate Summary<br/>Claude Sonnet]
         S --> M[Generate Manifest]
@@ -34,7 +34,7 @@ The pipeline lives in `pm/.github/ACDbot/scripts/asset_pipeline/` and is orchest
 | Step | Script | What it does |
 |------|--------|-------------|
 | 1 | `download_zoom_assets.py` | Fetches transcript (`.vtt`), chat (`.txt`), and optionally Zoom's AI summary (`.json`) from the Zoom API. Selects the longest recording (>10 min) if multiple exist for one date. |
-| 2 | `generate_changelog.py` | Sends the transcript + `ethereum_vocab.yaml` to Claude Opus. Returns a TSV of corrections with confidence levels (high/medium/low). |
+| 2 | `generate_changelog.py` | Sends the transcript + `ethereum_vocab.yaml` to Claude Sonnet (default; configurable via `--model`). Returns a TSV of corrections with confidence levels (high/medium/low). |
 | 3 | *(human review)* | In manual mode, the operator reviews the changelog. In CI mode (`--auto-approve`), this step is skipped. |
 | 4 | `apply_changelog.py` | Applies TSV corrections to produce `transcript_corrected.vtt` via global string replacement. |
 | 5 | `generate_summary.py` | Sends the transcript, chat, and GitHub issue agenda to Claude Sonnet. Produces `tldr.json` — a structured summary with highlights, action items, decisions, and targets. |
@@ -55,7 +55,7 @@ artifacts/acdc/2026-02-19_175/
 
 ### Manifest structure
 
-`manifest.json` is the single source of truth that Forkcast reads. Top-level structure:
+`manifest.json` is the upstream index that Forkcast reads to discover new calls. Note that `protocol-calls.generated.json` on the Forkcast side is additive — entries are never pruned automatically, so removing a call requires a manual edit. Top-level structure:
 
 ```json
 {
@@ -162,7 +162,7 @@ The PM repo uses full series names; Forkcast uses short codes. The mapping is de
 | `encryptthemempool` | `etm` | Encrypt The Mempool |
 | `allwalletdevs` | `awd` | All Wallet Devs |
 
-Series not in `KNOWN_TYPES` are silently skipped by the sync script. To add a new series, add the mapping to `SERIES_TO_TYPE` (if the name differs) and add the short code to `KNOWN_TYPES`.
+Series not in `KNOWN_TYPES` are skipped with a console warning. To add a new series, add the mapping to `SERIES_TO_TYPE` (if the name differs) and add the short code to `KNOWN_TYPES`.
 
 ## Video/Transcript Sync
 
@@ -215,7 +215,7 @@ For calls recorded directly in Zoom (no live stream), the transcript and video s
 
 1. **No `videoUrl` yet.** The video hasn't been uploaded to YouTube, or the manifest hasn't been regenerated after upload. Check `pm/.github/ACDbot/artifacts/manifest.json` for the call entry.
 2. **No text assets yet.** The PM pipeline hasn't completed processing. Check `pm/.github/ACDbot/artifacts/{series}/{date}_{number}/` for the expected files.
-3. **Series not in `KNOWN_TYPES`.** If a new call series was added to PM but not to Forkcast's sync script, it will be silently skipped. Add it to `SERIES_TO_TYPE` and `KNOWN_TYPES` in `sync-call-assets.mjs`.
+3. **Series not in `KNOWN_TYPES`.** If a new call series was added to PM but not to Forkcast's sync script, it will be skipped (with a console warning). Add it to `SERIES_TO_TYPE` and `KNOWN_TYPES` in `sync-call-assets.mjs`.
 
 ### Video and transcript are out of sync on a livestreamed call
 
@@ -238,7 +238,7 @@ This has happened — e.g., ETM call assets were synced from a meeting that didn
 If someone creates a YouTube live stream link via ACDbot but doesn't stream with OBS, the video URL points to a dead stream. Fix in the PM repo:
 
 1. Set YouTube stream entries to `null` in `meeting_topic_mapping.json`.
-2. Upload the Zoom recording manually via the YouTube uploader workflow (paste the Zoom video ID, trigger manual dispatch).
+2. Upload the Zoom recording manually via the YouTube uploader workflow (paste the Zoom meeting ID as `MEETING_ID`, trigger manual dispatch).
 3. Regenerate the manifest.
 
 ### RPC Standards or other series temporarily blocked

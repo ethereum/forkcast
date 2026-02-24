@@ -1,4 +1,4 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 430" width="100%" height="100%">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1150 430" width="100%" height="100%">
   <defs>
     <marker id="arrow" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto">
       <path d="M 0 0 L 10 5 L 0 10 z" fill="#38bdf8" />
@@ -14,21 +14,23 @@
     .box-ai { stroke: #a855f7; }
     .box-file { stroke: #eab308; }
     .box-ui { fill: #064e3b; stroke: #10b981; }
+    .box-manual { fill: #451a03; stroke: #f43f5e; stroke-width: 2; stroke-dasharray: 4 2; rx: 8px; }
     .text { font-family: ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif; font-size: 14px; font-weight: 600; fill: #f8fafc; text-anchor: middle; dominant-baseline: middle; }
     .text-sm { font-family: ui-sans-serif, system-ui, -apple-system, sans-serif; font-size: 12px; font-weight: 500; fill: #94a3b8; text-anchor: middle; dominant-baseline: middle; }
     .text-ai { fill: #c084fc; }
+    .text-manual { fill: #fb7185; }
     .title { font-family: ui-sans-serif, system-ui, -apple-system, sans-serif; font-size: 16px; font-weight: 700; fill: #cbd5e1; }
     .path-anim { fill: none; stroke: #38bdf8; stroke-width: 2; stroke-dasharray: 8 6; animation: flow 1s linear infinite; marker-end: url(#arrow); }
     .path-cross { fill: none; stroke: #f43f5e; stroke-width: 3; stroke-dasharray: 8 6; animation: flow 1s linear infinite; filter: drop-shadow(0 0 4px rgba(244,63,94,0.4)); marker-end: url(#arrow-red); }
     @keyframes flow { to { stroke-dashoffset: -14; } }
   </style>
 
-  <rect width="1000" height="430" class="bg"/>
+  <rect width="1150" height="430" class="bg"/>
 
   <rect x="30" y="40" width="450" height="360" class="subgraph"/>
   <text x="50" y="70" class="title">ethereum/pm (ACDbot)</text>
 
-  <rect x="650" y="40" width="310" height="360" class="subgraph"/>
+  <rect x="650" y="40" width="460" height="360" class="subgraph"/>
   <text x="670" y="70" class="title">Forkcast</text>
 
   <rect x="60" y="100" width="180" height="50" class="box"/>
@@ -64,6 +66,11 @@
   <rect x="690" y="100" width="230" height="50" class="box"/>
   <text x="805" y="125" class="text">Sync Call Assets</text>
 
+  <rect x="935" y="100" width="160" height="60" class="box-manual"/>
+  <text x="1015" y="122" class="text text-manual">Manual Sync</text>
+  <text x="1015" y="142" class="text-sm text-manual">Set offsets in</text>
+  <text x="1015" y="154" class="text-sm text-manual">config.json</text>
+
   <rect x="690" y="180" width="230" height="50" class="box box-ai"/>
   <text x="805" y="196" class="text">Extract Key Decisions</text>
   <text x="805" y="216" class="text-sm text-ai">Claude Sonnet</text>
@@ -75,6 +82,8 @@
   <text x="805" y="365" class="text" style="fill:#6ee7b7; font-size:16px;">Forkcast Frontend</text>
 
   <path d="M 805 150 L 805 175" class="path-anim"/>
+  <path d="M 920 125 L 935 125" class="path-anim" style="stroke: #f43f5e; marker-end: url(#arrow-red);"/>
+  <path d="M 1015 160 L 1015 340 L 920 340" class="path-anim" style="stroke: #f43f5e; marker-end: url(#arrow-red);"/>
   <path d="M 805 230 L 805 255" class="path-anim"/>
   <path d="M 805 310 L 805 335" class="path-anim"/>
 </svg>

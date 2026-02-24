@@ -254,15 +254,3 @@ The sync script has a `DENYLIST` set. If a series is producing bad data (e.g., n
 | `.github/workflows/sync-call-assets.yml` | Cron workflow (every hour) |
 | `src/data/protocol-calls.generated.json` | Generated call index used by the frontend |
 | `public/artifacts/{type}/{date}_{number}/` | Downloaded and generated call assets |
-
-## Glossary
-
-| Term | Meaning |
-|------|---------|
-| **ACDbot** | The GitHub bot that automates Ethereum governance call processing in the PM repo |
-| **VTT** | WebVTT — subtitle/transcript format with timestamps |
-| **TLDR** | `tldr.json` — structured meeting summary (highlights, decisions, action items) |
-| **CFI / SFI / DFI** | Considered / Scheduled / Declined for Inclusion — EIP lifecycle stages |
-| **EIP** | Ethereum Improvement Proposal |
-| **Manifest** | `manifest.json` — the master index of all call assets, read by Forkcast |
-| **Series** | A recurring call type (e.g., ACDC, ACDE, BAL) |

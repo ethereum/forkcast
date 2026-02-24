@@ -8,17 +8,17 @@ The asset pipeline transforms Zoom meeting recordings into browsable call pages 
 
 ## How It Works (PM Side)
 
-The pipeline lives in `pm/.github/ACDbot/scripts/asset_pipeline/` and is orchestrated by `run_pipeline.py`. It runs via the `meeting-asset-pipeline.yml` workflow every 2 hours, or on manual dispatch for a specific series/call.
+The pipeline lives in `pm/.github/ACDbot/scripts/asset_pipeline/` and is orchestrated by `run_pipeline.py`. It runs on a schedule via `meeting-asset-pipeline.yml`, or on manual dispatch for a specific series/call.
 
 ### Pipeline steps
 
 | Step | Script | What it does |
 |------|--------|-------------|
 | 1 | `download_zoom_assets.py` | Fetches transcript (`.vtt`), chat (`.txt`), and optionally Zoom's AI summary (`.json`) from the Zoom API. Selects the longest recording (>10 min) if multiple exist for one date. |
-| 2 | `generate_changelog.py` | Sends the transcript + `ethereum_vocab.yaml` to Claude Sonnet (default; configurable via `--model`). Returns a TSV of corrections with confidence levels (high/medium/low). |
+| 2 | `generate_changelog.py` | Sends the transcript + `ethereum_vocab.yaml` to an LLM (configurable via `--model`). Returns a TSV of corrections with confidence levels (high/medium/low). |
 | 3 | *(human review)* | In manual mode, the operator reviews the changelog. In CI mode (`--auto-approve`), this step is skipped. |
 | 4 | `apply_changelog.py` | Applies TSV corrections to produce `transcript_corrected.vtt` via global string replacement. |
-| 5 | `generate_summary.py` | Sends the transcript, chat, and GitHub issue agenda to Claude Sonnet. Produces `tldr.json` — a structured summary with highlights, action items, decisions, and targets. |
+| 5 | `generate_summary.py` | Sends the transcript, chat, and GitHub issue agenda to an LLM. Produces `tldr.json` — a structured summary with highlights, action items, decisions, and targets. |
 | 6 | `generate_manifest.py` | Scans all artifact directories and writes `manifest.json` — the contract that Forkcast reads. |
 
 ### Artifact directory structure
@@ -68,7 +68,7 @@ artifacts/acdc/2026-02-19_175/
 
 ## How It Works (Forkcast Side)
 
-Two scripts run sequentially via `sync-call-assets.yml` (hourly cron). Both live in `forkcast/scripts/`.
+Two scripts run sequentially via `sync-call-assets.yml` (scheduled cron). Both live in `forkcast/scripts/`.
 
 ### Step 1: Sync call assets (`sync-call-assets.mjs`)
 
@@ -84,7 +84,7 @@ Two scripts run sequentially via `sync-call-assets.yml` (hourly cron). Both live
 Runs only on ACD call types (`acdc`, `acde`, `acdt`):
 
 1. Reads `tldr.json` from each artifact directory.
-2. Sends the TLDR to Claude Sonnet for classification.
+2. Sends the TLDR to an LLM for classification.
 3. Writes `key_decisions.json` per call with structured decision objects.
 
 Each decision has a `type`:
@@ -196,17 +196,20 @@ This has happened — e.g., ETM call assets were synced from a meeting that didn
 
 ## File Reference
 
+> [!NOTE]
+> File paths may drift as the codebase evolves. If you notice a stale path, please update it.
+
 ### PM repo (`ethereum/pm`)
 
 | File | Purpose |
 |------|---------|
 | `.github/ACDbot/scripts/asset_pipeline/run_pipeline.py` | Pipeline orchestrator |
 | `.github/ACDbot/scripts/asset_pipeline/download_zoom_assets.py` | Downloads Zoom recordings, transcripts, chat |
-| `.github/ACDbot/scripts/asset_pipeline/generate_changelog.py` | Generates transcript corrections via Claude |
+| `.github/ACDbot/scripts/asset_pipeline/generate_changelog.py` | Generates transcript corrections via LLM |
 | `.github/ACDbot/scripts/asset_pipeline/apply_changelog.py` | Applies corrections to produce cleaned transcript |
-| `.github/ACDbot/scripts/asset_pipeline/generate_summary.py` | Generates structured TLDR via Claude |
+| `.github/ACDbot/scripts/asset_pipeline/generate_summary.py` | Generates structured TLDR via LLM |
 | `.github/ACDbot/scripts/asset_pipeline/generate_manifest.py` | Builds manifest.json from all artifacts |
-| `.github/workflows/meeting-asset-pipeline.yml` | Cron workflow (every 2 hours) |
+| `.github/workflows/meeting-asset-pipeline.yml` | Scheduled workflow for asset pipeline |
 | `.github/ACDbot/artifacts/manifest.json` | The manifest — contract between PM and Forkcast |
 | `.github/ACDbot/call_series_config.yml` | Series definitions (names, playlists, schedules) |
 | `.github/ACDbot/meeting_topic_mapping.json` | Maps GitHub issues to Zoom meetings |
@@ -216,7 +219,7 @@ This has happened — e.g., ETM call assets were synced from a meeting that didn
 | File | Purpose |
 |------|---------|
 | `scripts/sync-call-assets.mjs` | Fetches manifest, downloads assets, generates config and call index |
-| `scripts/extract-key-decisions.mjs` | Classifies decisions from TLDRs via Claude |
-| `.github/workflows/sync-call-assets.yml` | Cron workflow (every hour) |
+| `scripts/extract-key-decisions.mjs` | Classifies decisions from TLDRs via LLM |
+| `.github/workflows/sync-call-assets.yml` | Scheduled workflow for asset sync |
 | `src/data/protocol-calls.generated.json` | Generated call index used by the frontend |
 | `public/artifacts/{type}/{date}_{number}/` | Downloaded and generated call assets |

@@ -41,7 +41,7 @@ jobs:
       - name: Check for changes
         id: changes
         run: |
-          if git diff --quiet && git diff --cached --quiet; then
+          if git diff --quiet && git diff --cached --quiet && [ -z "$(git ls-files --others --exclude-standard)" ]; then
             echo "has_changes=false" >> $GITHUB_OUTPUT
           else
             echo "has_changes=true" >> $GITHUB_OUTPUT

@@ -200,39 +200,32 @@ For calls recorded directly in Zoom (no live stream), the transcript and video s
 
 ### A call is missing from Forkcast
 
-**Check the manifest first.** The sync script only pulls calls present in `manifest.json` with a `videoUrl` and at least one text asset (TLDR, transcript, or corrected transcript). Common causes:
+**Check the manifest first.** The sync script only pulls calls present in `manifest.json` with a `videoUrl` AND at least one text asset (TLDR, transcript, or corrected transcript). Common causes:
 
 1. **No `videoUrl` yet.** The video hasn't been uploaded to YouTube, or the manifest hasn't been regenerated after upload. Check `pm/.github/ACDbot/artifacts/manifest.json` for the call entry.
 2. **No text assets yet.** The PM pipeline hasn't completed processing. Check `pm/.github/ACDbot/artifacts/{series}/{date}_{number}/` for the expected files.
 3. **Series not in `KNOWN_TYPES`.** If a new call series was added to PM but not to Forkcast's sync script, it will be skipped (with a console warning). Add it to `SERIES_TO_TYPE` and `KNOWN_TYPES` in `sync-call-assets.mjs`.
+4. **Series in `DENYLIST`.** If a series was temporarily blocked from syncing (e.g., during a bad data incident), check `DENYLIST` in `sync-call-assets.mjs` and remove the entry.
 
-### Video and transcript are out of sync on a livestreamed call
+### Forkcast shows a dead or wrong video link
 
-The `config.json` sync offsets are wrong or still `null`. See [Video/Transcript Sync](#videotranscript-sync) for how to set them manually.
+This happens when someone checks **"create youtube livestream link"** on the PM repo GitHub issue but never actually streams via OBS. ACDbot creates a YouTube scheduled stream URL and marks `skip_youtube_upload: true`. The manifest picks up the stream URL (which points to a broadcast that never went live), and Forkcast syncs it as the video link.
 
-### Wrong video URL
+This happened with RPC Standards #21 (ethereum/pm#1943). The fix requires PM-side intervention:
 
-The sync script updates `videoUrl` in `config.json` when the manifest value differs from the local value. If the manifest has the wrong URL, fix it in the PM repo (update `meeting_topic_mapping.json`, regenerate the manifest). The next Forkcast sync cycle will pick up the change.
+1. In `meeting_topic_mapping.json`, find the call entry and set `youtube_streams` to `null` and `skip_youtube_upload` to `false`.
+2. Trigger the `youtube-uploader.yml` workflow via manual dispatch — pass the Zoom meeting ID as `MEETING_ID`. This uploads the actual Zoom recording to YouTube and sets `youtube_video_id` to the correct value.
+3. Regenerate the manifest. The next Forkcast sync cycle picks up the corrected URL automatically — the sync script updates `videoUrl` in `config.json` whenever the manifest value differs from the local value.
+
+**Why this happens:** `generate_manifest.py` checks `youtube_video_id` first (uploaded recording), then falls back to `youtube_streams[0]` (scheduled broadcast). If no recording has been uploaded but a stream was created, the dead stream URL wins.
 
 ### Assets synced in error (misfire)
 
 This has happened — e.g., ETM call assets were synced from a meeting that didn't actually occur. Fix by:
 
 1. Deleting the artifact directory from `public/artifacts/{type}/{date}_{number}/`.
-2. Removing the entry from `protocol-calls.generated.json`.
+2. Removing the entry from `protocol-calls.generated.json` (this file is additive — entries are never pruned automatically).
 3. Committing and pushing.
-
-### YouTube stream created but not actually streamed
-
-If someone creates a YouTube live stream link via ACDbot but doesn't stream with OBS, the video URL points to a dead stream. Fix in the PM repo:
-
-1. Set YouTube stream entries to `null` in `meeting_topic_mapping.json`.
-2. Upload the Zoom recording manually via the YouTube uploader workflow (paste the Zoom meeting ID as `MEETING_ID`, trigger manual dispatch).
-3. Regenerate the manifest.
-
-### RPC Standards or other series temporarily blocked
-
-The sync script has a `DENYLIST` set. If a series is producing bad data (e.g., no videos available), you can temporarily block it by adding the PM series name to `DENYLIST` in `sync-call-assets.mjs`. Remove it once the issue is resolved.
 
 ## File Reference
 

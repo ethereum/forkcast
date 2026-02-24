@@ -100,7 +100,11 @@ Each decision has a `type`:
 
 ### Step 3: Commit and deploy
 
-If any files changed, the workflow commits, pushes, and triggers the `deploy.yml` workflow.
+If any files changed, the workflow commits, pushes, and triggers the `deploy.yml` workflow. The call is now live on Forkcast — but for livestreamed calls, video/transcript playback alignment won't work yet (see [Step 4](#step-4-manual-sync-livestreamed-calls-only)).
+
+### Step 4: Manual sync (livestreamed calls only)
+
+After a livestreamed call (acdc, acde, acdt) is deployed, a Forkcast engineer must manually set the sync offsets in `config.json`. The automated pipeline does not wait for this — it ships the call with `null` offsets, so the transcript and video are available but not aligned. See [Video/Transcript Sync](#videotranscript-sync) for how to set the offsets.
 
 ### Forkcast artifact directory
 
@@ -156,9 +160,9 @@ Forkcast plays YouTube video alongside the VTT transcript. For playback to align
 
 ### Livestreamed calls (acdc, acde, acdt)
 
-These calls are streamed live to YouTube with intro screens, countdown timers, or pre-roll. The Zoom transcript starts recording at a different moment than the YouTube stream begins. This means the offsets must be set manually.
+These calls are streamed live to YouTube with intro screens, countdown timers, or pre-roll. The Zoom transcript starts recording at a different moment than the YouTube stream begins. This means the offsets must be set manually **after the call is already live on Forkcast**.
 
-When the sync script first creates `config.json` for a livestreamed call, both fields are `null`:
+The automated pipeline ships livestreamed calls with `null` sync offsets:
 
 ```json
 {
@@ -169,11 +173,13 @@ When the sync script first creates `config.json` for a livestreamed call, both f
 }
 ```
 
-**To set the sync manually:**
+The call page works — you can watch the video and read the transcript — but synchronized playback (highlighting the transcript line as the video plays) won't function until a Forkcast engineer sets the offsets.
+
+**To set the sync manually (post-deploy):**
 
 1. Open the YouTube video. Find the timestamp where the host first speaks (e.g., `00:03:55`).
 2. Open `transcript_corrected.vtt`. Find the same moment (e.g., `00:06:55`).
-3. Update `config.json`:
+3. Update `config.json` in `public/artifacts/{type}/{date}_{number}/`:
    ```json
    {
      "sync": {

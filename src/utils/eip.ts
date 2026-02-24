@@ -121,7 +121,13 @@ export const wasHeadlinerCandidate = (eip: EIP, forkName?: string): boolean => {
   const forkRelationship = eip.forkRelationships.find(fork =>
     fork.forkName.toLowerCase() === forkName.toLowerCase()
   );
-  return forkRelationship?.wasHeadlinerCandidate || false;
+  if (!forkRelationship?.wasHeadlinerCandidate) return false;
+
+  // Exclude withdrawn proposals
+  const latestStatus = forkRelationship.statusHistory[forkRelationship.statusHistory.length - 1]?.status;
+  if (latestStatus === 'Withdrawn') return false;
+
+  return true;
 };
 
 /**
@@ -157,7 +163,11 @@ export const isHeadlinerInAnyFork = (eip: EIP): boolean => {
 export const wasHeadlinerCandidateInAnyFork = (eip: EIP): boolean => {
   // If selected in any fork, this returns false
   if (isHeadlinerInAnyFork(eip)) return false;
-  return eip.forkRelationships.some(fork => fork.wasHeadlinerCandidate === true);
+  return eip.forkRelationships.some(fork => {
+    if (!fork.wasHeadlinerCandidate) return false;
+    const latestStatus = fork.statusHistory[fork.statusHistory.length - 1]?.status;
+    return latestStatus !== 'Withdrawn';
+  });
 };
 
 /**

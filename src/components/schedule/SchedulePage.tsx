@@ -319,7 +319,7 @@ const SchedulePage: React.FC = () => {
           <div className="absolute top-0 right-0">
             <ThemeToggle />
           </div>
-          <Logo size="md" className="mb-4" />
+          <Logo size="md" className="mb-8" />
           <h1 className="text-xl font-semibold text-slate-900 dark:text-slate-100 mb-2">
             ACD Planning Sandbox
           </h1>
@@ -926,7 +926,7 @@ const SchedulePage: React.FC = () => {
                           <td className={`px-3 py-1.5 ${mobileFork === 'glamsterdam' ? '' : 'hidden'} md:table-cell`}>
                             {glamsterdamTestnetPhase?.testnets?.[idx] && (
                               glamsterdamTestnetPhase.testnets[idx].status === 'deprecated' ? (
-                                <div className="text-slate-400 dark:text-slate-500 text-sm italic">Deprecated</div>
+                                <div className="text-slate-400 dark:text-slate-400 text-sm italic">Deprecated</div>
                               ) : (() => {
                                 const glamTestnet = glamsterdamTestnetPhase.testnets[idx];
                                 const glamTestnetDate = glamTestnet.date || glamTestnet.projectedDate || '';
@@ -953,7 +953,7 @@ const SchedulePage: React.FC = () => {
                           <td className={`px-3 py-1.5 ${mobileFork === 'hegota' ? '' : 'hidden'} md:table-cell`}>
                             {hegotaTestnetPhase?.testnets?.[idx] && (
                               hegotaTestnetPhase.testnets[idx].status === 'deprecated' ? (
-                                <div className="text-slate-400 dark:text-slate-500 text-sm italic">Deprecated</div>
+                                <div className="text-slate-400 dark:text-slate-400 text-sm italic">Deprecated</div>
                               ) : (() => {
                                 const hegotaTestnet = hegotaTestnetPhase.testnets[idx];
                                 const hegotaTestnetDate = hegotaTestnet.date || hegotaTestnet.projectedDate || '';
@@ -990,7 +990,7 @@ const SchedulePage: React.FC = () => {
                           {(() => {
                             const gap = calculateGap('Dec 3, 2025', 'fusaka');
                             return gap.text && (
-                              <span className={`text-xs ${gap.isNegative ? 'text-red-600 dark:text-red-400 font-semibold' : 'text-slate-400 dark:text-slate-500'}`}>
+                              <span className={`text-xs ${gap.isNegative ? 'text-red-600 dark:text-red-400 font-semibold' : 'text-slate-400 dark:text-slate-400'}`}>
                                 {gap.text}
                               </span>
                             );
@@ -1014,7 +1014,7 @@ const SchedulePage: React.FC = () => {
                             const dateStr = glamDate.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
                             const gap = calculateGap(dateStr, 'glamsterdam');
                             return gap.text && (
-                              <span className={`text-xs ${gap.isNegative ? 'text-red-600 dark:text-red-400 font-semibold' : 'text-slate-400 dark:text-slate-500'}`}>
+                              <span className={`text-xs ${gap.isNegative ? 'text-red-600 dark:text-red-400 font-semibold' : 'text-slate-400 dark:text-slate-400'}`}>
                                 {gap.text}
                               </span>
                             );
@@ -1038,7 +1038,7 @@ const SchedulePage: React.FC = () => {
                             const dateStr = hegotaDate.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
                             const gap = calculateGap(dateStr, 'hegota');
                             return gap.text && (
-                              <span className={`text-xs ${gap.isNegative ? 'text-red-600 dark:text-red-400 font-semibold' : 'text-slate-400 dark:text-slate-500'}`}>
+                              <span className={`text-xs ${gap.isNegative ? 'text-red-600 dark:text-red-400 font-semibold' : 'text-slate-400 dark:text-slate-400'}`}>
                                 {gap.text}
                               </span>
                             );
@@ -1078,7 +1078,7 @@ const SchedulePage: React.FC = () => {
         </div>
 
         {/* Footer */}
-        <div className="mt-8 text-center text-xs text-slate-400 dark:text-slate-500">
+        <div className="mt-8 text-center text-xs text-slate-400 dark:text-slate-400">
           <p>
             Feedback?{' '}
             <a

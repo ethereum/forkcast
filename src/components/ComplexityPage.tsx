@@ -210,7 +210,7 @@ const ComplexityPage: React.FC = () => {
           <div className="absolute top-0 right-0">
             <ThemeToggle />
           </div>
-          <Logo size="md" className="mb-4" />
+          <Logo size="md" className="mb-8" />
           <div className="flex items-center gap-3 mb-2">
             <h1 className="text-xl font-semibold text-slate-900 dark:text-slate-100">
               Test Complexity Analysis
@@ -297,7 +297,7 @@ const ComplexityPage: React.FC = () => {
                       <span className="text-slate-600 dark:text-slate-300">{stats.tierCounts.High}</span>
                     </span>
                   </div>
-                  <span className="hidden lg:inline text-slate-400 dark:text-slate-500">|</span>
+                  <span className="hidden lg:inline text-slate-400 dark:text-slate-400">|</span>
                   <span className="hidden lg:inline text-purple-600 dark:text-purple-400 font-medium">
                     {stats.totalScore} pts
                   </span>
@@ -306,7 +306,7 @@ const ComplexityPage: React.FC = () => {
               <button
                 onClick={refetch}
                 disabled={loading}
-                className="p-1.5 text-slate-400 hover:text-slate-600 dark:text-slate-500 dark:hover:text-slate-300 transition-colors disabled:opacity-50"
+                className="p-1.5 text-slate-400 hover:text-slate-600 dark:text-slate-400 dark:hover:text-slate-300 transition-colors disabled:opacity-50"
                 title="Refresh data"
               >
                 <svg className={`w-4 h-4 ${loading ? 'animate-spin' : ''}`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -417,7 +417,7 @@ const ComplexityPage: React.FC = () => {
               <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
             </svg>
             <p className="text-slate-600 dark:text-slate-300 font-medium">Loading complexity data...</p>
-            <p className="text-sm text-slate-400 dark:text-slate-500 mt-1">Fetching assessments from STEEL repository</p>
+            <p className="text-sm text-slate-400 dark:text-slate-400 mt-1">Fetching assessments from STEEL repository</p>
           </div>
         )}
 
@@ -485,7 +485,7 @@ const ComplexityPage: React.FC = () => {
                             </svg>
                           </>
                         ) : (
-                          <span className="text-xs text-slate-400 dark:text-slate-500 italic">
+                          <span className="text-xs text-slate-400 dark:text-slate-400 italic">
                             Not assessed
                           </span>
                         )}
@@ -660,7 +660,7 @@ const ComplexityPage: React.FC = () => {
                             {getComplexityTierEmoji(complexity.tier)} {complexity.tier}
                           </span>
                         ) : (
-                          <span className="text-xs text-slate-400 dark:text-slate-500 italic">
+                          <span className="text-xs text-slate-400 dark:text-slate-400 italic">
                             Not assessed
                           </span>
                         )}
@@ -671,14 +671,14 @@ const ComplexityPage: React.FC = () => {
                             {complexity.totalScore}
                           </span>
                         ) : (
-                          <span className="text-slate-400 dark:text-slate-500">—</span>
+                          <span className="text-slate-400 dark:text-slate-400">—</span>
                         )}
                       </td>
                       <td className="px-4 py-3 text-center">
                         {complexity ? (
                           <button
                             onClick={() => setExpandedEip(expandedEip === eip.id ? null : eip.id)}
-                            className="text-slate-400 hover:text-slate-600 dark:text-slate-500 dark:hover:text-slate-300"
+                            className="text-slate-400 hover:text-slate-600 dark:text-slate-400 dark:hover:text-slate-300"
                             aria-label={expandedEip === eip.id ? 'Collapse details' : 'Expand details'}
                           >
                             <svg
@@ -749,7 +749,7 @@ const ComplexityPage: React.FC = () => {
                                   <span className={`text-xs truncate ${
                                     anchor.score > 0
                                       ? 'text-slate-700 dark:text-slate-200'
-                                      : 'text-slate-400 dark:text-slate-500'
+                                      : 'text-slate-400 dark:text-slate-400'
                                   }`}>
                                     {anchor.name}
                                   </span>
@@ -769,7 +769,7 @@ const ComplexityPage: React.FC = () => {
         )}
 
         {/* Footer */}
-        <div className="mt-8 text-center text-xs text-slate-400 dark:text-slate-500">
+        <div className="mt-8 text-center text-xs text-slate-400 dark:text-slate-400">
           <p>
             Complexity data sourced from the{' '}
             <a

@@ -355,7 +355,7 @@ const EipsIndexPage: React.FC = () => {
           <div className="absolute top-0 right-0">
             <ThemeToggle />
           </div>
-          <Logo size="md" className="mb-4" />
+          <Logo size="md" className="mb-8" />
           <div className="flex items-center justify-between gap-3">
             <h1 className="text-xl font-semibold text-slate-900 dark:text-slate-100">
               EIP Directory
@@ -745,14 +745,14 @@ const EipsIndexPage: React.FC = () => {
                             );
                           })
                         ) : (
-                          <span className="text-xs text-slate-400 dark:text-slate-500">—</span>
+                          <span className="text-xs text-slate-400 dark:text-slate-400">—</span>
                         )}
                       </div>
                     </td>
                       <td className="px-4 py-3 whitespace-nowrap">
                         {(() => {
                           const layer = getEipLayer(eip);
-                          if (!layer) return <span className="text-xs text-slate-400 dark:text-slate-500">—</span>;
+                          if (!layer) return <span className="text-xs text-slate-400 dark:text-slate-400">—</span>;
                           return (
                             <Tooltip text={layer === 'EL' ? 'Primarily impacts Execution Layer' : 'Primarily impacts Consensus Layer'}>
                               <span
@@ -772,7 +772,7 @@ const EipsIndexPage: React.FC = () => {
                         {isHeadlinerInAnyFork(eip) ? (
                           <span className="text-slate-700 dark:text-slate-300" title="Selected headliner">★</span>
                         ) : wasHeadlinerCandidateInAnyFork(eip) ? (
-                          <span className="text-slate-400 dark:text-slate-500" title="Proposed headliner">☆</span>
+                          <span className="text-slate-400 dark:text-slate-400" title="Proposed headliner">☆</span>
                         ) : null}
                       </td>
                       <td className="px-4 py-3 whitespace-nowrap">
@@ -788,11 +788,11 @@ const EipsIndexPage: React.FC = () => {
                                 {label}
                               </span>
                             ) : (
-                              <span className="text-xs text-slate-400 dark:text-slate-500">—</span>
+                              <span className="text-xs text-slate-400 dark:text-slate-400">—</span>
                             );
                           })()
                         ) : (
-                          <span className="text-xs text-slate-400 dark:text-slate-500">—</span>
+                          <span className="text-xs text-slate-400 dark:text-slate-400">—</span>
                         )}
                       </td>
                       <td className="px-4 py-3 whitespace-nowrap">
@@ -810,11 +810,11 @@ const EipsIndexPage: React.FC = () => {
                                 {formatDate(statusWithDate.date)}
                               </span>
                             ) : (
-                              <span className="text-xs text-slate-400 dark:text-slate-500">—</span>
+                              <span className="text-xs text-slate-400 dark:text-slate-400">—</span>
                             );
                           })()
                         ) : (
-                          <span className="text-xs text-slate-400 dark:text-slate-500">—</span>
+                          <span className="text-xs text-slate-400 dark:text-slate-400">—</span>
                         )}
                       </td>
                       <td className="px-4 py-3 whitespace-nowrap">
@@ -860,7 +860,7 @@ const EipsIndexPage: React.FC = () => {
                       <span className="ml-1.5 text-slate-700 dark:text-slate-300" title="Selected headliner">★</span>
                     )}
                     {wasHeadlinerCandidateInAnyFork(eip) && (
-                      <span className="ml-1.5 text-slate-400 dark:text-slate-500" title="Proposed headliner">☆</span>
+                      <span className="ml-1.5 text-slate-400 dark:text-slate-400" title="Proposed headliner">☆</span>
                     )}
                   </span>
                   {/* Layer, Fork and Stage grouped together side-by-side */}
@@ -901,7 +901,7 @@ const EipsIndexPage: React.FC = () => {
                   {statusWithDate?.date && (
                     <span>Updated {formatDate(statusWithDate.date)}</span>
                   )}
-                  <span className="text-slate-400 dark:text-slate-500">
+                  <span className="text-slate-400 dark:text-slate-400">
                     Created {formatDate(eip.createdDate)}
                   </span>
                 </div>

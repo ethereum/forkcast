@@ -176,7 +176,7 @@ const TldrSummary: React.FC<TldrSummaryProps> = ({
                       }`}>
                         {item.highlight}
                       </span>
-                      <span className="text-xs text-slate-400 dark:text-slate-500 ml-1 opacity-0 group-hover:opacity-100 transition-opacity">
+                      <span className="text-xs text-slate-400 dark:text-slate-400 ml-1 opacity-0 group-hover:opacity-100 transition-opacity">
                         {getDisplayTimestamp(item.timestamp)}
                       </span>
                     </li>
@@ -257,7 +257,7 @@ const TldrSummary: React.FC<TldrSummaryProps> = ({
                     }`}>
                       <span className="font-normal">{item.owner}:</span> {item.action}
                     </span>
-                    <span className="text-xs text-slate-400 dark:text-slate-500 ml-1 opacity-0 group-hover:opacity-100 transition-opacity">
+                    <span className="text-xs text-slate-400 dark:text-slate-400 ml-1 opacity-0 group-hover:opacity-100 transition-opacity">
                       {getDisplayTimestamp(item.timestamp)}
                     </span>
                   </li>
@@ -290,7 +290,7 @@ const TldrSummary: React.FC<TldrSummaryProps> = ({
                     }`}>
                       {target.target}
                     </span>
-                    <span className="text-xs text-slate-400 dark:text-slate-500 ml-1 opacity-0 group-hover:opacity-100 transition-opacity">
+                    <span className="text-xs text-slate-400 dark:text-slate-400 ml-1 opacity-0 group-hover:opacity-100 transition-opacity">
                       {getDisplayTimestamp(target.timestamp)}
                     </span>
                   </li>

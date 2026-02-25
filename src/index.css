@@ -3,6 +3,63 @@
 /* Configure dark mode to use class instead of media query */
 @custom-variant dark (&:where(.dark, .dark *));
 
+/* Scanlines overlay — matching Protocol Support */
+.scanlines {
+  position: fixed;
+  inset: 0;
+  background: repeating-linear-gradient(0deg, transparent 0px, transparent 2px, rgba(0,0,0,0.015) 2px, rgba(0,0,0,0.015) 4px);
+  pointer-events: none;
+  z-index: 9999;
+  opacity: 0.5;
+}
+.dark .scanlines {
+  background: repeating-linear-gradient(0deg, transparent 0px, transparent 2px, rgba(0,0,0,0.03) 2px, rgba(0,0,0,0.03) 4px);
+  opacity: 1;
+}
+
+/* Forkcast logo */
+@keyframes glowPulse {
+  0%, 100% { filter: drop-shadow(0 0 6px rgba(0, 212, 255, 0.3)); }
+  50% { filter: drop-shadow(0 0 14px rgba(0, 212, 255, 0.5)) drop-shadow(0 0 28px rgba(168, 85, 247, 0.15)); }
+}
+
+.forkcast-logo {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35em;
+  text-decoration: none;
+}
+
+.forkcast-logo .fork-symbol {
+  font-weight: 700;
+  background: linear-gradient(135deg, #00D4FF 0%, #A855F7 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  animation: glowPulse 3s ease-in-out infinite;
+}
+
+.forkcast-logo:hover .fork-symbol {
+  background: linear-gradient(135deg, #A855F7 0%, #00D4FF 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  animation: none;
+  filter: drop-shadow(0 0 10px rgba(168, 85, 247, 0.4));
+}
+
+.forkcast-wordmark {
+  filter: brightness(0);
+}
+
+.dark .forkcast-wordmark {
+  filter: brightness(0) invert(1);
+}
+
+.forkcast-logo:hover img {
+  opacity: 0.85;
+}
+
 /* Custom animations */
 @keyframes fadeIn {
   from {
@@ -64,8 +121,22 @@
   }
 
   .dark {
-    --background: 222.2 84% 4.9%;
+    --background: 240 100% 0.8%;
     --foreground: 210 40% 98%;
+
+    /* Override Tailwind slate palette to match Protocol Support void theme */
+    /* Backgrounds — all solid, no transparency */
+    --color-slate-900: #000004;
+    --color-slate-800: #111119;
+    --color-slate-700: #232940;
+    --color-slate-600: #2a3050;
+    --color-slate-500: #363d58;
+    /* Text — neutral greys, WCAG AA compliant on #000004 and #111119 */
+    --color-slate-400: #A0A0B0;
+    --color-slate-300: #C0C0CC;
+    --color-slate-200: #B8B8C8;
+    --color-slate-100: #F0F6FF;
+    --color-slate-50: #04040A;
   }
 }
 
@@ -83,47 +154,64 @@
 /* Custom dark mode styles for the application */
 @layer components {
   .dark .bg-slate-50 {
-    @apply bg-slate-900;
+    background-color: #000004;
   }
 
   .dark .bg-white {
-    @apply bg-slate-800;
+    background-color: #111119;
   }
 
   .dark .border-slate-200 {
-    @apply border-slate-700;
+    border-color: #2a3050;
+  }
+
+  .dark .border-slate-700 {
+    border-color: #232940;
+  }
+
+  .dark .border-slate-300 {
+    border-color: #2a3050;
   }
 
   .dark .text-slate-900 {
-    @apply text-slate-100;
+    color: #F0F6FF;
+  }
+
+  .dark .text-slate-700 {
+    color: #A8A8B8;
   }
 
   .dark .text-slate-600 {
-    @apply text-slate-300;
+    color: #A8A8B8;
   }
 
   .dark .text-slate-500 {
-    @apply text-slate-400;
+    color: #9898A8;
   }
 
   .dark .text-slate-400 {
-    @apply text-slate-500;
+    color: #A0A0B0;
   }
 
   .dark .bg-slate-100 {
-    @apply bg-slate-700;
+    background-color: #12121A;
+  }
+
+  /* Ensure bg-slate-700 stays as elevated surface, not border blue */
+  .dark .bg-slate-700 {
+    background-color: #12121A;
   }
 
   .dark .hover\:text-slate-900:hover {
-    @apply hover:text-slate-100;
+    color: #F0F6FF;
   }
 
   .dark .hover\:text-slate-700:hover {
-    @apply hover:text-slate-200;
+    color: #C0C0CC;
   }
 
   .dark .hover\:shadow-md:hover {
-    @apply hover:shadow-slate-900/20;
+    --tw-shadow-color: rgba(0, 0, 4, 0.3);
   }
 
   .dark .bg-red-100 {

@@ -169,7 +169,7 @@ const PrioritizationPage: React.FC = () => {
           <div className="absolute top-0 right-0">
             <ThemeToggle />
           </div>
-          <Logo size="md" className="mb-4" />
+          <Logo size="md" className="mb-8" />
           <div className="flex items-center gap-3 mb-2">
             <h1 className="text-xl font-semibold text-slate-900 dark:text-slate-100">
               Client Prioritization
@@ -452,7 +452,7 @@ const PrioritizationPage: React.FC = () => {
                             {agg.averageScore.toFixed(1)}
                           </span>
                         ) : (
-                          <span className="text-xs text-slate-400 dark:text-slate-500 italic">
+                          <span className="text-xs text-slate-400 dark:text-slate-400 italic">
                             No data
                           </span>
                         )}
@@ -570,7 +570,7 @@ const PrioritizationPage: React.FC = () => {
         </div>
 
         {/* Footer */}
-        <div className="mt-8 text-center text-xs text-slate-400 dark:text-slate-500">
+        <div className="mt-8 text-center text-xs text-slate-400 dark:text-slate-400">
           <p>
             Stances parsed from client team blog posts and public statements.
             Data may not reflect current positions.
@@ -642,13 +642,13 @@ const TableRow: React.FC<TableRowProps> = ({ agg, elClients, clClients, isExpand
               {agg.averageScore.toFixed(1)}
             </span>
           ) : (
-            <span className="text-slate-400 dark:text-slate-500">—</span>
+            <span className="text-slate-400 dark:text-slate-400">—</span>
           )}
         </td>
         <td className="px-4 py-3 text-center">
           <button
             onClick={onToggle}
-            className="text-slate-400 hover:text-slate-600 dark:text-slate-500 dark:hover:text-slate-300"
+            className="text-slate-400 hover:text-slate-600 dark:text-slate-400 dark:hover:text-slate-300"
             aria-label={isExpanded ? 'Collapse details' : 'Expand details'}
           >
             <svg
@@ -737,7 +737,7 @@ const ClientStancesGrid: React.FC<ClientStancesGridProps> = ({ stances, elClient
               </a>
             </>
           ) : (
-            <span className="text-xs text-slate-400 dark:text-slate-500 italic">No stance</span>
+            <span className="text-xs text-slate-400 dark:text-slate-400 italic">No stance</span>
           )}
         </div>
       </div>

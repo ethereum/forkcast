@@ -708,7 +708,7 @@ const RankPage: React.FC = () => {
                   What is this?
                 </h3>
                 <svg
-                  className={`w-4 h-4 text-slate-400 dark:text-slate-500 transition-transform ${
+                  className={`w-4 h-4 text-slate-400 dark:text-slate-400 transition-transform ${
                     isInstructionsExpanded ? "rotate-180" : ""
                   }`}
                   fill="none"
@@ -865,7 +865,7 @@ const RankPage: React.FC = () => {
                             </div>
                             <button
                               onClick={() => handleRemoveFromTier(item.id)}
-                              className="ml-1 p-1 text-slate-400 dark:text-slate-500 hover:text-slate-600 dark:hover:text-slate-300 transition-colors flex-shrink-0"
+                              className="ml-1 p-1 text-slate-400 dark:text-slate-400 hover:text-slate-600 dark:hover:text-slate-300 transition-colors flex-shrink-0"
                             >
                               <svg
                                 className="w-3 h-3"
@@ -950,7 +950,7 @@ const RankPage: React.FC = () => {
                         </span>
                       </div>
                       <svg
-                        className={`w-4 h-4 text-slate-400 dark:text-slate-500 transition-transform ${
+                        className={`w-4 h-4 text-slate-400 dark:text-slate-400 transition-transform ${
                           isExpanded ? "rotate-180" : ""
                         }`}
                         fill="none"
@@ -1159,7 +1159,7 @@ const RankPage: React.FC = () => {
             </a>
             .
           </p>
-          <div className="text-xs text-slate-400 dark:text-slate-500">
+          <div className="text-xs text-slate-400 dark:text-slate-400">
             <span className="italic">Have feedback? Contact </span>
             <a
               href="mailto:nixo@ethereum.org"

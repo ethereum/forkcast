@@ -225,7 +225,7 @@ export const EipTimeline: React.FC<EipTimelineProps> = ({ eip }) => {
                       </Link>
                       {group.champions && group.champions.length > 0 && (
                         <Tooltip text={`${group.champions.length > 1 ? 'Champions' : 'Champion'} for ${getForkDisplayName(group.forkName)}`}>
-                          <div className="flex items-center gap-1 text-xs text-slate-400 dark:text-slate-500 cursor-help shrink-0">
+                          <div className="flex items-center gap-1 text-xs text-slate-400 dark:text-slate-400 cursor-help shrink-0">
                             <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
                             </svg>
@@ -263,7 +263,7 @@ export const EipTimeline: React.FC<EipTimelineProps> = ({ eip }) => {
                                   )}
                                   {(entry.date || entry.call) && (
                                     <>
-                                      <span className="hidden md:inline text-xs text-slate-400 dark:text-slate-500">
+                                      <span className="hidden md:inline text-xs text-slate-400 dark:text-slate-400">
                                         {' · '}
                                         {entry.date && formatDate(entry.date)}
                                         {entry.date && entry.call && ' · '}
@@ -279,7 +279,7 @@ export const EipTimeline: React.FC<EipTimelineProps> = ({ eip }) => {
                                           );
                                         })()}
                                       </span>
-                                      <div className="md:hidden text-xs text-slate-400 dark:text-slate-500">
+                                      <div className="md:hidden text-xs text-slate-400 dark:text-slate-400">
                                         {entry.date && formatDate(entry.date)}
                                         {entry.date && entry.call && ' · '}
                                         {entry.call && (() => {
@@ -322,7 +322,7 @@ export const EipTimeline: React.FC<EipTimelineProps> = ({ eip }) => {
                                   </span>
                                   {(presentation.date || presentation.call || presentation.link) && (
                                     <>
-                                      <span className="hidden md:inline text-xs text-slate-400 dark:text-slate-500">
+                                      <span className="hidden md:inline text-xs text-slate-400 dark:text-slate-400">
                                         {' · '}
                                         {presentation.date && formatDate(presentation.date)}
                                         {presentation.date && (presentation.call || presentation.link) && ' · '}
@@ -351,7 +351,7 @@ export const EipTimeline: React.FC<EipTimelineProps> = ({ eip }) => {
                                           </a>
                                         )}
                                       </span>
-                                      <div className="md:hidden text-xs text-slate-400 dark:text-slate-500">
+                                      <div className="md:hidden text-xs text-slate-400 dark:text-slate-400">
                                         {presentation.date && formatDate(presentation.date)}
                                         {presentation.date && (presentation.call || presentation.link) && ' · '}
                                         {presentation.call && (() => {

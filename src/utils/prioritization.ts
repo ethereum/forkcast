@@ -120,7 +120,7 @@ export function getScoreColor(score: number | null, hasStance: boolean = true): 
       return 'bg-slate-200 text-slate-600 dark:bg-slate-600 dark:text-slate-300';
     } else {
       // No stance - client didn't mention this EIP (lighter gray)
-      return 'bg-slate-100 text-slate-400 dark:bg-slate-800 dark:text-slate-500';
+      return 'bg-slate-100 text-slate-400 dark:bg-slate-800 dark:text-slate-400';
     }
   }
 
@@ -136,7 +136,7 @@ export function getScoreColor(score: number | null, hasStance: boolean = true): 
     case 1:
       return 'bg-red-100 text-red-700 dark:bg-red-900/30 dark:text-red-300';
     default:
-      return 'bg-slate-100 text-slate-400 dark:bg-slate-800 dark:text-slate-500';
+      return 'bg-slate-100 text-slate-400 dark:bg-slate-800 dark:text-slate-400';
   }
 }
 

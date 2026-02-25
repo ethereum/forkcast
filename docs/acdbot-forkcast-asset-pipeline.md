@@ -163,6 +163,39 @@ For calls recorded directly in Zoom (no live stream), the transcript and video s
 
 **Note:** Some non-livestreamed calls (e.g., BAL breakouts) still receive manual sync if the recording has dead air at the start. This is optional — the defaults work for most cases.
 
+## Adding a New Call Series
+
+When a new call series is added to ethereum/pm (e.g., "PQ Interop"), Forkcast needs changes in several files before it can sync and display those calls. The series must already exist in the PM manifest — Forkcast only consumes what the manifest provides.
+
+### Checklist
+
+Use the table below as a checklist. Every new series requires all of these changes.
+
+| # | File | What to do |
+|---|------|-----------|
+| 1 | `src/data/calls.ts` | Add the short code to the `CallType` union and add a `name: 'Display Name'` entry to `callTypeNames`. If the series has an associated EIP, add it to `eipCallTypes`. |
+| 2 | `scripts/sync-call-assets.mjs` | Add the short code to `KNOWN_TYPES`. If the PM series name differs from the short code (it usually does for breakouts), add a mapping in `SERIES_TO_TYPE`. |
+| 3 | `src/components/CallsIndexPage.tsx` | Add the short code with a color to all four color maps: `upcomingCallTypeColors`, `upcomingCallTypeBadgeColors`, `callTypeColors`, `callTypeBadgeColors`. |
+| 4 | `src/components/HomePage.tsx` | Add the short code to the `callTypeBadgeColors` map. |
+| 5 | `src/utils/github.ts` | Add the short code to the `UpcomingCall.type` union. Add a regex matcher in `parseCallFromTitle` for the GitHub issue title format. Increment the `foundTypes.size` limit. |
+
+### Naming conventions
+
+- **Short code** (`CallType`): A terse lowercase identifier used in URLs, file paths, and the generated JSON. Examples: `acdc`, `focil`, `pqi`. Pick something 2-5 characters that matches the badge text.
+- **PM series name**: The key used in the PM manifest's `series` object. This is typically the full name lowercased with spaces removed (e.g., `pqinterop`, `allwalletdevs`, `glamsterdamrepricings`). If it differs from the short code, add a `SERIES_TO_TYPE` mapping.
+- **Display name** (`callTypeNames`): The human-readable name shown in tooltips (e.g., `"PQ Interop"`, `"FOCIL Breakout"`).
+- **Badge text**: What appears in the colored pill on the calendar. This is `call.type.toUpperCase()` — so the short code determines the badge text (e.g., `pqi` renders as `PQI`).
+
+### Verifying
+
+After making all changes, run `npx tsc --noEmit` — the `Record<CallType, string>` types will catch any maps you missed. Then run the sync script to confirm the new series is recognized:
+
+```sh
+node scripts/sync-call-assets.mjs
+```
+
+If the PM manifest already has calls for the series, they should sync down. If not, you'll see the series listed with 0 calls — that's fine, they'll appear once the PM pipeline produces them.
+
 ## Troubleshooting
 
 ### A call is missing from Forkcast

@@ -1,7 +1,7 @@
 import { protocolCalls } from '../data/calls';
 
 export interface UpcomingCall {
-  type: 'acdc' | 'acde' | 'acdt' | 'focil' | 'bal' | 'epbs' | 'rpc' | 'zkevm';
+  type: 'acdc' | 'acde' | 'acdt' | 'focil' | 'bal' | 'epbs' | 'rpc' | 'zkevm' | 'pqi';
   title: string;
   date: string;
   number: string;
@@ -163,6 +163,23 @@ function parseCallFromTitle(title: string, githubUrl: string, issueNumber: numbe
     };
   }
 
+  // Try to match PQ Interop pattern: "PQ Interop #1, March 4, 2026"
+  const pqiMatch = title.match(/PQ.?Interop.*?#(\d+),\s*(.+)/i);
+  if (pqiMatch) {
+    const [, number, dateStr] = pqiMatch;
+    const date = parseCallDate(dateStr.trim());
+    if (!date) return null;
+
+    return {
+      type: 'pqi',
+      title: title.trim(),
+      date,
+      number: number.padStart(3, '0'),
+      githubUrl,
+      issueNumber
+    };
+  }
+
   return null;
 }
 
@@ -221,8 +238,8 @@ export async function fetchUpcomingCalls(): Promise<UpcomingCall[]> {
           parsedCalls.push(call);
           foundTypes.add(call.type);
 
-          // Stop once we have one of each type (ACDC, ACDE, ACDT, FOCIL, BAL, ePBS, RPC, zkEVM)
-          if (foundTypes.size === 8) break;
+          // Stop once we have one of each type (ACDC, ACDE, ACDT, FOCIL, BAL, ePBS, RPC, zkEVM, PQI)
+          if (foundTypes.size === 9) break;
         }
       }
     }

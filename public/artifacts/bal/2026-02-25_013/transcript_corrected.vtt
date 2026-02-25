@@ -1,0 +1,1186 @@
+WEBVTT
+
+1
+00:02:15.900 --> 00:02:16.860
+Akash | ECH: Hey, Tuni.
+
+2
+00:02:26.430 --> 00:02:27.290
+Toni Wahrstätter: Hello?
+
+3
+00:02:28.230 --> 00:02:32.090
+Akash | ECH: I'm helping with the stream today, so let me know whenever you are ready.
+
+4
+00:02:32.860 --> 00:02:35.159
+Toni Wahrstätter: Perfect, amazing. Thank you very much.
+
+5
+00:02:35.550 --> 00:02:37.020
+Akash | ECH: Yeah, it's alright.
+
+6
+00:04:02.730 --> 00:04:09.360
+Toni Wahrstätter: Hello, everyone! Let's give people one or two more minutes to join, and then we can get started.
+
+7
+00:05:54.880 --> 00:05:57.760
+Toni Wahrstätter: Okay, I think we're ready to go.
+
+8
+00:06:00.450 --> 00:06:01.719
+Akash | ECH: Yeah, we are live.
+
+9
+00:06:03.090 --> 00:06:04.600
+Toni Wahrstätter: Awesome, thank you very much.
+
+10
+00:06:04.820 --> 00:06:13.169
+Toni Wahrstätter: Welcome, everyone! Today is the 13th EIP-7628 breakout call. It's February 25th… 25th?
+
+11
+00:06:13.900 --> 00:06:18.940
+Toni Wahrstätter: And we have quite a… some items on the agenda, nothing,
+
+12
+00:06:19.010 --> 00:06:32.489
+Toni Wahrstätter: Nothing super new, nothing surprising. As usual, the first thing we have on the agenda, I just posted it into the chat, by the way, the first thing we have on the agenda is updates on client optimizations.
+
+13
+00:06:32.490 --> 00:06:42.409
+Toni Wahrstätter: just as a… to recall, we need the client optimizations for the repricing, benchmarking required for the Glamsterdam repricing EIPs.
+
+14
+00:06:42.700 --> 00:06:47.369
+Toni Wahrstätter: And it would be great if we get some updates from clients,
+
+15
+00:06:47.560 --> 00:06:53.109
+Toni Wahrstätter: about progress within the last two weeks on parallel I.O, especially.
+
+16
+00:06:53.970 --> 00:06:59.420
+Toni Wahrstätter: So, feel free, any, anyone from my client team, to provide us an update.
+
+17
+00:07:08.720 --> 00:07:11.390
+Karim T. (matkt): I can't start on Besu, so…
+
+18
+00:07:11.770 --> 00:07:22.679
+Karim T. (matkt): We still have the different optimization already implemented, so we had time to do some… Optimization… Hmm, on Zoom.
+
+19
+00:07:23.050 --> 00:07:28.180
+Karim T. (matkt): pRethetch, and also on some other stuff in the block access list branch.
+
+20
+00:07:28.650 --> 00:07:37.220
+Karim T. (matkt): We also implemented the max attempt check and the uniqueity of the validemp, so we are waiting for the test when they will be available.
+
+21
+00:07:38.050 --> 00:07:44.940
+Karim T. (matkt): And, we asked… we started to work on IT71, and, I think it's mainly that, yeah.
+
+22
+00:07:46.590 --> 00:07:48.270
+Karim T. (matkt): Yeah, it's all on Besu.
+
+23
+00:07:48.670 --> 00:07:52.970
+Toni Wahrstätter: Great, thank you very much. Do you already have, like, first numbers?
+
+24
+00:07:53.230 --> 00:07:57.589
+Toni Wahrstätter: Did you already look into benchmarking, especially the batch I.O?
+
+25
+00:07:58.430 --> 00:08:06.939
+Karim T. (matkt): Not really. We are using, for the moment, the devnet 2, so it's not really interesting, regarding the number we have.
+
+26
+00:08:07.210 --> 00:08:11.059
+Karim T. (matkt): We didn't see a lot of differences, because,
+
+27
+00:08:11.290 --> 00:08:13.560
+Karim T. (matkt): It's not similar to mainnet, so…
+
+28
+00:08:13.730 --> 00:08:18.009
+Karim T. (matkt): We are mainly working for the Shadow Fork of mainnet to have really good numbers.
+
+29
+00:08:20.460 --> 00:08:36.530
+Toni Wahrstätter: Right, yeah, that's a good point, because of course we need, like, realistic state to actually benchmark the batch I.O. We can benchmark the parallelization, that's something we can do, especially with execution parallelization, not involving any I.O.
+
+30
+00:08:36.690 --> 00:08:38.200
+Toni Wahrstätter: or state rights?
+
+31
+00:08:38.840 --> 00:08:41.680
+Toni Wahrstätter: And, yeah, thank you very much.
+
+32
+00:08:41.840 --> 00:08:46.989
+Toni Wahrstätter: Let's continue maybe with, do we have someone from Geth on the call?
+
+33
+00:08:51.930 --> 00:08:58.030
+Toni Wahrstätter: Okay, don't think Jared is on the call… yet. Let's skip Geth for now.
+
+34
+00:08:58.310 --> 00:09:01.690
+Toni Wahrstätter: Let's continue with Nethermind, then.
+
+35
+00:09:12.190 --> 00:09:17.819
+Toni Wahrstätter: I just see Mark is also not on the call. Then we continue with Reth.
+
+36
+00:09:34.900 --> 00:09:39.450
+Toni Wahrstätter: Okay, I would just assume there are no updates on the optimizations there.
+
+37
+00:09:39.700 --> 00:09:44.990
+Toni Wahrstätter: Does Erigon have updates on the free-to-friend optimizations?
+
+38
+00:09:56.470 --> 00:10:05.279
+Toni Wahrstätter: Okay, yeah. Seems like not much changed since the last two weeks, so we are still at, having Geth and Beso ready to be
+
+39
+00:10:05.410 --> 00:10:09.099
+Toni Wahrstätter: benchmark, especially on a shadow fork.
+
+40
+00:10:09.580 --> 00:10:28.249
+Toni Wahrstätter: I would then pass the word. I see Jochman has your… has his hand up anyway. I would have passed the word to you anyway, because I know that you guys have already looked into, benchmarking Bezo and Geth on top of the Shadow Fork, and on top of devnet2. So, yeah, please provide us an update there.
+
+41
+00:10:29.990 --> 00:10:47.649
+jochem-brouwer: Yes, so, for the benchmarks, we are writing these benchmarks, and as you said, we indeed need to run these on top of, like, states, like, mainnet state or roadnet state. The problem is that we have to fill these tests, and for this, we have this testing endpoint, this new testing RPC endpoint, and that
+
+42
+00:10:47.680 --> 00:10:52.060
+jochem-brouwer: does not yet, support the Glamstadem, EIPs.
+
+43
+00:10:52.370 --> 00:11:06.070
+jochem-brouwer: The problem here is that we need one client which can support this endpoint, because then we can actually fill these benchmarks on top of state, because it does not make sense to run, like, batch I.O. tests on top of, like, empty state.
+
+44
+00:11:06.070 --> 00:11:14.499
+jochem-brouwer: So we are waiting for this. If we have this testing endpoint, then we can start to fill these benchmark tests and actually win those. So that's the update on the benchmark side.
+
+45
+00:11:16.460 --> 00:11:29.670
+Toni Wahrstätter: Thank you very much. Just to clarify, this means we… we would need a client that has block of accesses implemented, but not any other EIP that we already have on devnet 1 and 2, is that right?
+
+46
+00:11:31.140 --> 00:11:39.290
+jochem-brouwer: It depends on what we actually want to test, because, so this testing endpoint, what it needs to do is it has to build blocks
+
+47
+00:11:39.440 --> 00:11:52.149
+jochem-brouwer: with the supported EIPs which we want to test, I would think that we want to target devnet 2 or devnet 3, so, like, multiple EIPs, and this is the part which needs to be supported on, like, the block building part.
+
+48
+00:11:52.150 --> 00:12:05.559
+jochem-brouwer: So if the client can win these blocks, then that's, of course, very nice. But the thing is, we need to just fill these tests once, so we can generate the payloads to benchmark these EIPs.
+
+49
+00:12:05.580 --> 00:12:09.929
+jochem-brouwer: And this is currently not yet implemented in any client, so we need one client.
+
+50
+00:12:10.000 --> 00:12:23.630
+jochem-brouwer: which implements this endpoint to support, like, these EIPs which we want to test. And just one client is fine, like, not all the clients need this. One client to fill, and then we can actually start filling the benchmarks and also running those.
+
+51
+00:12:27.150 --> 00:12:28.419
+Toni Wahrstätter: Awesome, thank you.
+
+52
+00:12:29.980 --> 00:12:36.120
+Toni Wahrstätter: I saw Jared from GEF joins in the meantime. Jared, would you be willing to provide us an update on
+
+53
+00:12:36.350 --> 00:12:39.570
+Toni Wahrstätter: The bul optimizations, if there are any.
+
+54
+00:12:39.700 --> 00:12:41.660
+Toni Wahrstätter: Especially the batch I.O.
+
+55
+00:12:43.940 --> 00:12:46.359
+Jared Wasinger: Yeah, I mean, so it's…
+
+56
+00:12:46.460 --> 00:12:51.709
+Jared Wasinger: like I mentioned on the, on the channel, there's…
+
+57
+00:12:51.860 --> 00:12:56.260
+Jared Wasinger: Really, not much has changed since the last meeting.
+
+58
+00:12:56.610 --> 00:12:58.070
+Jared Wasinger: Or,
+
+59
+00:12:58.210 --> 00:13:07.409
+Jared Wasinger: Maybe it has, I just can't remember. So there's… there's a few, like, execution option presets.
+
+60
+00:13:07.660 --> 00:13:10.430
+Jared Wasinger: that I've implemented for Geth,
+
+61
+00:13:14.460 --> 00:13:24.329
+Jared Wasinger: Yeah, I mean, the batch I.O. is able to be toggled, the parallel execution and state route is also able to be toggled. I haven't…
+
+62
+00:13:25.140 --> 00:13:29.330
+Jared Wasinger: made…
+
+63
+00:13:30.080 --> 00:13:38.299
+Jared Wasinger: I haven't really worked on that, since I implemented it. I've been busy with other stuff, so there's not really an update in the last week or two.
+
+64
+00:13:41.040 --> 00:13:58.619
+Toni Wahrstätter: Okay, thank you very much. Yeah, it seems like GEF and Bezo are ready for being benchmarked in that case. I saw both clients have already provided us with the necessary flags, such that we can turn the optimizations on and off, which is great, so thank you very much for that.
+
+65
+00:13:59.140 --> 00:14:07.339
+Toni Wahrstätter: And yeah, as soon as other clients are ready, especially since we agreed on focusing more on the batch I.O, because we still need to…
+
+66
+00:14:07.480 --> 00:14:22.159
+Toni Wahrstätter: we not only need the batch.io to determine the final prices for the repricing changes in Glamsterdam, but we also need it to determine if we want to keep the state locations in the ball in first place.
+
+67
+00:14:22.550 --> 00:14:29.090
+Toni Wahrstätter: So, that's why we originally said, like, yeah, let's optimize the batch.io optimizations first, and, like.
+
+68
+00:14:29.450 --> 00:14:42.619
+Toni Wahrstätter: If that means we delay, for example, the powerless debut root computation, then this is fine. But this is great to hear. This means, okay, we still have, like, two clients being basically ready, and yeah.
+
+69
+00:14:42.700 --> 00:14:50.500
+Toni Wahrstätter: as soon as other clients get ready, just please post it into the… into the BlockFlive Access List Discord, and then we can start,
+
+70
+00:14:50.620 --> 00:14:56.640
+Toni Wahrstätter: benchmarking more clients on… on a shadow fork, or on devnet Free.
+
+71
+00:15:00.480 --> 00:15:01.490
+Toni Wahrstätter: Great.
+
+72
+00:15:02.230 --> 00:15:09.370
+Toni Wahrstätter: Is there anything else before we move on on the agenda regarding the optimizations that we should discuss now?
+
+73
+00:15:24.770 --> 00:15:26.760
+Toni Wahrstätter: Seems like not the case.
+
+74
+00:15:27.030 --> 00:15:44.369
+Toni Wahrstätter: then we can move on on the agenda. So, the next agenda item we have is specs updates slash clarifications, and nothing major changed within the recent two weeks. It was more like we had two EIPs merged, two PRs merged.
+
+75
+00:15:44.780 --> 00:15:51.580
+Toni Wahrstätter: The first one was a clarification to the EIP how the ball is used in the state transition function.
+
+76
+00:15:52.040 --> 00:16:09.090
+Toni Wahrstätter: And this is more like a clarification, because some clients will pass the ball in the state transition function, and in the specs, for example, we don't do that. In the specs, you receive the bul over the engine API, you would calculate the ball hash.
+
+77
+00:16:09.190 --> 00:16:13.889
+Toni Wahrstätter: And then you would start exec- executing, and… You would…
+
+78
+00:16:14.030 --> 00:16:24.759
+Toni Wahrstätter: Generate a virtual ball during execution, and in the end, compare the ball hash of this virtual ball that you created during execution with the bul hash in the header.
+
+79
+00:16:24.980 --> 00:16:38.800
+Toni Wahrstätter: That was derived from hashing that BAL received over the engine API. And this is just a clarification, because I know, for example, comparing GEF with the specs, this is a little bit of a different implementation.
+
+80
+00:16:39.010 --> 00:16:45.790
+Toni Wahrstätter: Which doesn't affect, like, correctness at all, but more like to have that clarified in the EIP.
+
+81
+00:16:46.340 --> 00:16:50.940
+Toni Wahrstätter: Let me actually post the PR in the chat, such that everyone can have a look.
+
+82
+00:16:51.870 --> 00:16:59.430
+Toni Wahrstätter: While we're talking… One second… Someone did already, thank you very much, Radipa.
+
+83
+00:17:00.180 --> 00:17:01.160
+Toni Wahrstätter: Perfect.
+
+84
+00:17:02.150 --> 00:17:06.990
+Toni Wahrstätter: Is there anything… Someone wants to discuss regarding that topic.
+
+85
+00:17:22.230 --> 00:17:27.230
+Toni Wahrstätter: Perfect. Yeah, this is more like a clarification than actual change.
+
+86
+00:17:27.579 --> 00:17:40.210
+Toni Wahrstätter: Then let's move on with the next item, which is the simplified file max item check. So, we had that already before the last breakout call, but in the last breakout call, I remember Mark
+
+87
+00:17:40.770 --> 00:17:42.950
+Toni Wahrstätter: Brought up that,
+
+88
+00:17:43.570 --> 00:17:50.349
+Toni Wahrstätter: We might also want to account for bul items that get into the ball for free.
+
+89
+00:17:50.560 --> 00:17:59.929
+Toni Wahrstätter: And those items that enter the ball for free are basically all connected with system contract calls, because every other item in the bell
+
+90
+00:18:00.210 --> 00:18:10.510
+Toni Wahrstätter: has actually some gas attached to it, so you cannot just put something into the bulb without accessing it, which means there's always some gas cost, attached.
+
+91
+00:18:10.700 --> 00:18:17.789
+Toni Wahrstätter: But this is not the case, for example, for everything system contract related, because no one actually pays for it.
+
+92
+00:18:18.150 --> 00:18:22.869
+Toni Wahrstätter: And this affects, withdrawals, execution requests.
+
+93
+00:18:23.200 --> 00:18:28.800
+Toni Wahrstätter: Our execution layer triggered, exits and consolidations.
+
+94
+00:18:29.170 --> 00:18:36.369
+Toni Wahrstätter: And also the pre-execution, system contract calls, like the historical state route.
+
+95
+00:18:36.820 --> 00:18:40.580
+Toni Wahrstätter: Historical block root hashes, and the…
+
+96
+00:18:41.180 --> 00:18:45.650
+Toni Wahrstätter: The 4788 beacon block route in the, in the block.
+
+97
+00:18:46.250 --> 00:18:53.409
+Toni Wahrstätter: So, what we wanted to do with this check, it should only be a safeguard against invalid blocks.
+
+98
+00:18:53.800 --> 00:19:04.989
+Toni Wahrstätter: that takes longer to execute than any valid block would do. And with this max item check, together with the other check we introduced, like, 2 weeks ago, where we compared
+
+99
+00:19:05.100 --> 00:19:08.739
+Toni Wahrstätter: Not yet accessed dollar items with the remaining gas.
+
+100
+00:19:09.250 --> 00:19:20.329
+Toni Wahrstätter: clients should be safe against those type of attacks. It's not a super dangerous attack, I would say, because, of course, it would also require the proposer to sacrifice its block.
+
+101
+00:19:20.640 --> 00:19:29.789
+Toni Wahrstätter: But still, we must make sure that even invalid blocks don't take longer to invalidate than a valid block takes to validate.
+
+102
+00:19:32.200 --> 00:19:41.110
+Toni Wahrstätter: Let me post the, link of this PR into the chat. This was just a, clarification of the EIP.
+
+103
+00:19:42.170 --> 00:19:52.100
+Toni Wahrstätter: And I know the EU's specs PR on that topic is still open, and there's still some discussion. So I'm curious. Maybe, Felipe, do you have
+
+104
+00:19:52.480 --> 00:19:56.089
+Toni Wahrstätter: Any more to add regarding that topic, so we…
+
+105
+00:19:56.470 --> 00:20:00.609
+Toni Wahrstätter: clarify something in EALS, or is everything good to go?
+
+106
+00:20:02.130 --> 00:20:10.199
+felipe: Yeah, so… As I was reviewing the max item check PR,
+
+107
+00:20:11.190 --> 00:20:21.849
+felipe: It looks good there. I think, you know, between Mario and I, we were discussing that the… the fact that it's under security considerations and
+
+108
+00:20:22.580 --> 00:20:26.150
+felipe: Let me see if I can pull up the actual,
+
+109
+00:20:26.870 --> 00:20:38.730
+felipe: Comment and post it, but, this part here… Basically, the words should,
+
+110
+00:20:39.250 --> 00:20:42.520
+felipe: in the PR, for the spec change?
+
+111
+00:20:43.070 --> 00:20:51.100
+felipe: It feels a little, underspecified, whether, you know, this constraint needs to…
+
+112
+00:20:52.490 --> 00:20:57.529
+felipe: Actually be there for clients, and whether… It basically…
+
+113
+00:20:57.850 --> 00:21:01.219
+felipe: Here, this is the link for Mario's comment.
+
+114
+00:21:01.690 --> 00:21:06.760
+felipe: It's basically hard to draw a very clear line on whether
+
+115
+00:21:06.900 --> 00:21:09.460
+felipe: We can test this for clients.
+
+116
+00:21:09.940 --> 00:21:18.340
+felipe: And so, I think we… you know, I think a better explanation of whether this is required,
+
+117
+00:21:19.230 --> 00:21:31.410
+felipe: or not is… would make this clearer, and it would allow us to, like, actually put this in the EALS implementation and write tests for it. And I know clients are expecting tests for this, so…
+
+118
+00:21:31.590 --> 00:21:34.150
+felipe: I wanted to know how you feel about, like.
+
+119
+00:21:35.010 --> 00:21:39.009
+felipe: Making this a little bit more, concrete and more explicit.
+
+120
+00:21:40.390 --> 00:21:44.189
+Toni Wahrstätter: Yeah, it's a good… it's a good point, because I was… I was thinking about this.
+
+121
+00:21:44.320 --> 00:21:54.370
+Toni Wahrstätter: The thing is, we don't put the bul that you receive over the engine API, we don't have it as an argument in the state transition function. So, for example.
+
+122
+00:21:54.480 --> 00:21:55.900
+Toni Wahrstätter: We can…
+
+123
+00:21:55.960 --> 00:22:06.289
+Toni Wahrstätter: We cannot do the… the check where we do… where we look at the not-yet-accessed bul items and compare them with the remaining gas.
+
+124
+00:22:06.290 --> 00:22:16.829
+Toni Wahrstätter: Because we don't have the block lab access list within the state transition function in the block lab access list. So this is more something that would be done outside
+
+125
+00:22:16.990 --> 00:22:19.690
+Toni Wahrstätter: And the thing is, you know.
+
+126
+00:22:19.830 --> 00:22:26.660
+Toni Wahrstätter: Theoretically, you don't need that check, because it only allows you to invalidate the ball quicker.
+
+127
+00:22:26.740 --> 00:22:43.869
+Toni Wahrstätter: So clients may need that, just to make sure that they can invalidate files quicker than executing the whole block, but in the end, you would arrive at the same result. So the block is invalid, it's just a matter of when would you realize that the block is invalid.
+
+128
+00:22:43.950 --> 00:22:57.379
+Toni Wahrstätter: So I'm not sure what is the best, the cleanest way to implement that in EOS. One way would, of course, be to just throw the ball into the state transition fraction, but I think we don't do that. And then the question is.
+
+129
+00:22:58.160 --> 00:23:03.590
+Toni Wahrstätter: it's two things. It's first the max item check, and then the other check where we
+
+130
+00:23:03.940 --> 00:23:11.549
+Toni Wahrstätter: basically determine, is there enough gas available to access the remaining not-yet-accessed bulb items?
+
+131
+00:23:11.750 --> 00:23:17.010
+Toni Wahrstätter: So I'm curious, what… how do you think? Because I think we haven't really specified
+
+132
+00:23:17.970 --> 00:23:28.569
+Toni Wahrstätter: this code path between the engine API and the state transition function in ELS. So basically, what happens in between there.
+
+133
+00:23:30.700 --> 00:23:34.510
+felipe: Yeah, yeah, no, I see what you mean.
+
+134
+00:23:35.550 --> 00:23:44.729
+felipe: It feels like if this is… if this is some early check for clients, then maybe this could be some sort of a benchmark test for clients, where
+
+135
+00:23:45.260 --> 00:23:49.360
+felipe: You know, let's say there's some worst-case malicious bowel test.
+
+136
+00:23:49.950 --> 00:23:58.349
+felipe: And from the… from the spec side, we could… we could have some benchmark tests that benchmarks how quickly clients can invalidate this.
+
+137
+00:23:58.600 --> 00:24:01.749
+felipe: If it feels like this is the end goal.
+
+138
+00:24:02.620 --> 00:24:06.019
+felipe: But as far as, you know.
+
+139
+00:24:06.490 --> 00:24:13.480
+felipe: Adding this to the spec, yeah, it's a little tricky, and having tests for something that isn't,
+
+140
+00:24:14.550 --> 00:24:16.700
+felipe: There's an S clear in this back.
+
+141
+00:24:17.150 --> 00:24:18.920
+felipe: I'll have to think on this some more.
+
+142
+00:24:20.150 --> 00:24:20.950
+Toni Wahrstätter: Okay.
+
+143
+00:24:21.090 --> 00:24:38.759
+Toni Wahrstätter: Yeah, we can also… we can also chat async, because the first thing that Max, I can check, we can do it in the specs. This is nice, because we generate the virtual ball, and we can then just validate the block level access list after execution, making sure that
+
+144
+00:24:38.910 --> 00:24:46.079
+Toni Wahrstätter: those, that there is not, like, the maximum item limit is not exceeded. Like, we can do that.
+
+145
+00:24:46.480 --> 00:25:02.309
+Toni Wahrstätter: But for the other check, that's why… that was my rationale, why I put, like, the remaining gas check in the security consideration section, and the other one into the specs. But yeah, let's… let's talk, async about that, and… and yeah, clarify that.
+
+146
+00:25:05.830 --> 00:25:07.469
+felipe: Okay, Yam, that sounds good.
+
+147
+00:25:08.990 --> 00:25:20.339
+Toni Wahrstätter: Perfect, yeah, and this is… this already brings us directly to the next topic, basically the uniqueness of PAL items. This was also, like, recently added to the EIP.
+
+148
+00:25:20.590 --> 00:25:35.820
+Toni Wahrstätter: I think we are good there, because many of our tests already assumed, like, the ball is built correctly, meaning there are no duplicated entries, for example, duplicated addresses or duplicated.
+
+149
+00:25:36.340 --> 00:25:40.560
+Toni Wahrstätter: storage changes or anything, so I think we're good on that.
+
+150
+00:25:41.090 --> 00:25:45.609
+Toni Wahrstätter: But yeah, I think we still added some new tests there, right?
+
+151
+00:25:48.090 --> 00:25:55.020
+felipe: Yeah, yeah, from some comments on the, on the ETH R&D,
+
+152
+00:25:55.300 --> 00:25:59.669
+felipe: We didn't really have a whole lot of invalid tests based around
+
+153
+00:25:59.790 --> 00:26:07.080
+felipe: duplicates and things like this, so yeah, there was a PR merged. It's not on any of the releases yet, but it should be out on the next one.
+
+154
+00:26:10.130 --> 00:26:13.210
+Toni Wahrstätter: Perfect. Thank you very much for the update.
+
+155
+00:26:14.360 --> 00:26:19.950
+Toni Wahrstätter: Is there anything… People want to discuss regarding those two topics?
+
+156
+00:26:21.090 --> 00:26:26.230
+Toni Wahrstätter: I see Karim is also saying in the chat that Baseway is also checking the order of the keys.
+
+157
+00:26:26.480 --> 00:26:31.820
+Toni Wahrstätter: Do we have a test for, the ordering of the ball items being correct?
+
+158
+00:26:43.630 --> 00:26:49.569
+Toni Wahrstätter: I'm not sure anymore, actually. Do you know Felipe, or maybe Rahul is on the call? Can someone?
+
+159
+00:26:49.570 --> 00:26:50.100
+raxhvl: Yep.
+
+160
+00:26:50.710 --> 00:26:51.310
+raxhvl: They do have…
+
+161
+00:26:51.930 --> 00:26:53.840
+Toni Wahrstätter: We do have, okay, perfect.
+
+162
+00:26:54.840 --> 00:26:56.080
+Toni Wahrstätter: Amazing, thank you.
+
+163
+00:26:59.520 --> 00:27:01.160
+felipe: What is the… R-ruh.
+
+164
+00:27:01.160 --> 00:27:01.540
+Toni Wahrstätter: Go ahead.
+
+165
+00:27:01.540 --> 00:27:04.370
+felipe: Do you know which test this is, Rahul?
+
+166
+00:27:05.560 --> 00:27:09.039
+raxhvl: I think it's in the invalid test, where we,
+
+167
+00:27:09.290 --> 00:27:14.610
+raxhvl: we have those bound modifiers that change the order, right? You made those API.
+
+168
+00:27:16.920 --> 00:27:21.960
+felipe: Yeah, yeah, I believe there… we have some, and I'll double check.
+
+169
+00:27:26.530 --> 00:27:28.250
+Toni Wahrstätter: Awesome, thank you very much.
+
+170
+00:27:31.050 --> 00:27:35.340
+Toni Wahrstätter: Great. Is there anything the clients would like to add regarding those
+
+171
+00:27:35.960 --> 00:27:43.280
+Toni Wahrstätter: Three topics that we discussed now, basically the max item check on the barrel, then also the check of
+
+172
+00:27:43.400 --> 00:27:48.419
+Toni Wahrstätter: Remaining gas versus not-yet-touchable items, and…
+
+173
+00:27:48.570 --> 00:27:53.660
+Toni Wahrstätter: the uniqueness of ball items, is there anything people want to discuss on that topic?
+
+174
+00:28:05.220 --> 00:28:06.050
+Toni Wahrstätter: Great.
+
+175
+00:28:07.040 --> 00:28:08.670
+Toni Wahrstätter: Looks like things are clear.
+
+176
+00:28:10.850 --> 00:28:18.279
+Toni Wahrstätter: Awesome. Then we can… proceed with the next agenda item, which would be the Chase and RPC PR.
+
+177
+00:28:19.710 --> 00:28:26.239
+Toni Wahrstätter: I saw that, I saw that some clients had already implemented the JSON RPC for devnet2,
+
+178
+00:28:26.940 --> 00:28:36.589
+Toni Wahrstätter: there were some recent changes with not returning, like, the hex string, but instead returning the JSON object.
+
+179
+00:28:37.390 --> 00:28:43.040
+Toni Wahrstätter: And I would love to hear if clients have updates on that, if this is, like, ready for definite free.
+
+180
+00:29:04.650 --> 00:29:13.409
+Toni Wahrstätter: Or remind me if I'm wrong, I think we said we wanted to have that definite free already, but please correct me if I'm wrong, but I think we did.
+
+181
+00:29:13.680 --> 00:29:17.980
+Toni Wahrstätter: So, I would just assume, clients will have that implemented.
+
+182
+00:29:18.810 --> 00:29:22.070
+Toni Wahrstätter: What would be great if someone from the client team could confirm?
+
+183
+00:29:29.760 --> 00:29:32.800
+Karim T. (matkt): Yeah, on PZU, it's already implemented, yeah.
+
+184
+00:29:33.000 --> 00:29:34.659
+Karim T. (matkt): So API is implemented.
+
+185
+00:29:42.830 --> 00:29:47.879
+Toni Wahrstätter: Awesome, thank you very much. I just posted the PR in the chat, such that everyone can follow along.
+
+186
+00:29:52.240 --> 00:30:02.089
+Toni Wahrstätter: Yeah, it's nothing that blocks us from devnetly or anything, but yeah, would be great if we can have that implemented and then get it merged.
+
+187
+00:30:06.310 --> 00:30:15.519
+Toni Wahrstätter: I mean, usually we should get it merged, before clients implement it, so I will… I will double-check why this is, not yet merged. I have to…
+
+188
+00:30:15.790 --> 00:30:20.519
+Toni Wahrstätter: I have to double-check that. I think this will also be brought up in the RPC standards call.
+
+189
+00:30:20.820 --> 00:30:27.280
+Toni Wahrstätter: So, I will also have to double-check with, Omar if she has any updates on that,
+
+190
+00:30:28.290 --> 00:30:29.849
+Toni Wahrstätter: Because, of course, yeah.
+
+191
+00:30:30.540 --> 00:30:37.160
+Toni Wahrstätter: double-checking with the experts on our PC is definitely the right way to go there before we merge it.
+
+192
+00:30:40.780 --> 00:30:41.700
+Toni Wahrstätter: Great.
+
+193
+00:30:43.050 --> 00:30:44.090
+Toni Wahrstätter: This was…
+
+194
+00:30:44.240 --> 00:30:53.189
+Toni Wahrstätter: everything we had around the specs. Is there anything we should discuss this week regarding specs or tests? Any updates?
+
+195
+00:31:16.220 --> 00:31:19.519
+Toni Wahrstätter: Looks like that's not the case, which is good.
+
+196
+00:31:20.020 --> 00:31:25.009
+Toni Wahrstätter: And then we have a last agenda item by, Goron, Dan.
+
+197
+00:31:25.170 --> 00:31:29.429
+Toni Wahrstätter: I hope I pronounce your, GitHub handle right here.
+
+198
+00:31:29.630 --> 00:31:34.929
+Toni Wahrstätter: who wants to talk a little bit about the feasibility of using BAL
+
+199
+00:31:35.090 --> 00:31:39.729
+Toni Wahrstätter: For the payload needed by partial stateful nodes.
+
+200
+00:31:40.430 --> 00:31:46.150
+Toni Wahrstätter: So, could you give us a quick intro into what are you looking into there, and…
+
+201
+00:31:46.880 --> 00:31:50.290
+Toni Wahrstätter: Yeah, anything you would like to know.
+
+202
+00:31:50.290 --> 00:31:50.880
+Dan Goron: What about the…
+
+203
+00:31:50.880 --> 00:31:52.319
+Toni Wahrstätter: progress here.
+
+204
+00:31:54.530 --> 00:32:00.300
+Dan Goron: Hi, Tony. Hi, everyone. Nice to be… Participating in your call.
+
+205
+00:32:00.540 --> 00:32:06.179
+Dan Goron: Yes, Don… then go on its, right? Enough.
+
+206
+00:32:10.260 --> 00:32:19.380
+Dan Goron: together with, with Carlos, Perez from, this, Ethereum stay close team. We're…
+
+207
+00:32:19.960 --> 00:32:22.910
+Dan Goron: Pushing a bit the concept of,
+
+208
+00:32:26.090 --> 00:32:31.119
+Dan Goron: Of partial, statefulness, and we were looking to get, your…
+
+209
+00:32:31.770 --> 00:32:40.360
+Dan Goron: people, you know, the opinion of people that work on… on BAL about If we could use
+
+210
+00:32:40.520 --> 00:32:43.959
+Dan Goron: ball as a vehicle for.
+
+211
+00:32:44.140 --> 00:32:53.359
+Dan Goron: For the account, hash diffs, which are basically, the… The payload that you mentioned.
+
+212
+00:32:53.460 --> 00:33:01.369
+Dan Goron: I left… I left, a TLBR on partial statefulness, on the…
+
+213
+00:33:01.620 --> 00:33:05.779
+Dan Goron: On the comment, and on the call's comment.
+
+214
+00:33:05.990 --> 00:33:10.230
+Dan Goron: I can reiterate, very quickly.
+
+215
+00:33:10.630 --> 00:33:16.120
+Dan Goron: The idea that, That's behind the partial statefulness, and that's…
+
+216
+00:33:16.300 --> 00:33:23.290
+Dan Goron: That if we get nodes to store a minimum data set,
+
+217
+00:33:24.100 --> 00:33:29.190
+Dan Goron: From… from the, you know, to persist locally a minimum part of the state.
+
+218
+00:33:29.400 --> 00:33:32.269
+Dan Goron: Then we could get them to be…
+
+219
+00:33:32.400 --> 00:33:35.719
+Dan Goron: Coherent under the state route.
+
+220
+00:33:36.080 --> 00:33:40.400
+Dan Goron: And basically keep up with the… Duh.
+
+221
+00:33:40.740 --> 00:33:49.839
+Dan Goron: Canonical state root, or the global state root, and then be able to store only certain parts of the state.
+
+222
+00:33:50.060 --> 00:34:00.460
+Dan Goron: But those parts, if we can look at them From the topological, from a topology-based view.
+
+223
+00:34:00.550 --> 00:34:19.490
+Dan Goron: Meaning, for EL account state, and then contracts, contract storage, and code. And there's also part of CL, which is… I didn't add, it's not the scope of this call, but also CL state can be viewed.
+
+224
+00:34:21.110 --> 00:34:38.000
+Dan Goron: you know, from the perspective of functional, state subtrees, so to call them. So, to go in, straight into the… into the point why I wanted to… why we wanted to, to talk to you guys.
+
+225
+00:34:38.600 --> 00:34:43.999
+Dan Goron: Is that we can boil our, proposal into three…
+
+226
+00:34:44.719 --> 00:34:55.019
+Dan Goron: main points. So if we can get every node to store the 32-byte commitment, that constitutes the count leaf.
+
+227
+00:34:55.380 --> 00:35:04.190
+Dan Goron: which is account hash. Then, this is a dataset of approximately 10 gigs for 300 million accounts.
+
+228
+00:35:04.400 --> 00:35:10.000
+Dan Goron: Then the nodes would, become globally root-aware, so to speak.
+
+229
+00:35:10.460 --> 00:35:15.270
+Dan Goron: Ball already provides Full state diffs.
+
+230
+00:35:15.400 --> 00:35:17.510
+Dan Goron: Which are,
+
+231
+00:35:17.900 --> 00:35:25.600
+Dan Goron: which take care of update… of nodes updating state values. If… if we can add to ball or to…
+
+232
+00:35:26.390 --> 00:35:32.150
+Dan Goron: Another vehicle, the hash diffs.
+
+233
+00:35:32.420 --> 00:35:35.090
+Dan Goron: Which are structural, state.
+
+234
+00:35:35.310 --> 00:35:36.050
+Dan Goron: I don't know.
+
+235
+00:35:36.470 --> 00:35:37.210
+Dan Goron: Mom.
+
+236
+00:35:38.280 --> 00:35:40.360
+Dan Goron: Which is a structured state.
+
+237
+00:35:40.510 --> 00:35:43.779
+Dan Goron: Yeah, correctly, correct me if I'm wrong.
+
+238
+00:35:44.250 --> 00:35:57.269
+Dan Goron: Then… Nodes would be able to update those stored account hashes without re-execution, and that basically unlocks
+
+239
+00:35:57.620 --> 00:36:04.300
+Dan Goron: The first level of partial statefulness, functionality.
+
+240
+00:36:04.590 --> 00:36:06.180
+Dan Goron: by…
+
+241
+00:36:06.280 --> 00:36:19.690
+Dan Goron: nodes being able to update old account hash into new account hash for every address that has been touched by the block's transaction. Then rehash everything up to
+
+242
+00:36:19.850 --> 00:36:25.119
+Dan Goron: To straight root and match, you know, the, the result with the, with the…
+
+243
+00:36:25.240 --> 00:36:28.130
+Dan Goron: State root… with the root that's in the blocks.
+
+244
+00:36:28.320 --> 00:36:29.200
+Dan Goron: Heather.
+
+245
+00:36:29.630 --> 00:36:38.839
+Dan Goron: I also added some high-level specs change proposal, and I would be very grateful if I would get some
+
+246
+00:36:39.240 --> 00:36:45.019
+Dan Goron: opinion on that. If… if my assumptions were, correct.
+
+247
+00:36:45.980 --> 00:36:53.320
+Dan Goron: Meaning that we can get the pre-state captures from the… from the transaction frame level.
+
+248
+00:36:53.790 --> 00:36:56.300
+Dan Goron: And that we can get the post state.
+
+249
+00:36:56.590 --> 00:37:02.820
+Dan Goron: values, you know, from building Ball, from actually building Ball.
+
+250
+00:37:03.540 --> 00:37:06.970
+Dan Goron: That's it. Please let me know if…
+
+251
+00:37:08.400 --> 00:37:12.120
+Dan Goron: I should continue or have an open discussion.
+
+252
+00:37:13.960 --> 00:37:32.599
+Toni Wahrstätter: Yeah, thanks a lot for this intro. Very interesting topic. Let me just ask a quick question regarding partial statelessness. What would those nodes actually store? I assume they store, like, nonsense and balances, maybe code? Is there anything from storage they would also store?
+
+253
+00:37:33.750 --> 00:37:35.170
+Dan Goron: So,
+
+254
+00:37:35.260 --> 00:37:48.170
+Dan Goron: Let's clear the name first. It's partial statefulness. So, basically, it's not statelessness, it's not strong statelessness, as in stateless…
+
+255
+00:37:48.170 --> 00:37:57.860
+Dan Goron: notes, as we are… as we already heard it a lot of, you know, in the… in the community and in the development, in the R&D, discourse.
+
+256
+00:37:57.860 --> 00:38:08.530
+Dan Goron: So it's partial statefulness, so they would store something, and that would be, as a minimal requirement, that would be the mapping between
+
+257
+00:38:08.590 --> 00:38:10.050
+Dan Goron: each address.
+
+258
+00:38:10.160 --> 00:38:22.199
+Dan Goron: For all accounts, and their account hash, which is the commitment of balance, nouns, code hash, and, contract,
+
+259
+00:38:23.450 --> 00:38:27.260
+Dan Goron: Hash. What's the correct expression here?
+
+260
+00:38:27.580 --> 00:38:31.389
+Dan Goron: I see. The nouns, balance, storage root, and code hashing.
+
+261
+00:38:31.580 --> 00:38:41.149
+Toni Wahrstätter: Okay, and you would basically, for this to work, you would also need the account hashes to be part of the ball, is that correct?
+
+262
+00:38:41.460 --> 00:38:58.679
+Dan Goron: Yes, the account hash diffs, meaning a pre-state account hash, which basically would have to match the existing locally persisted account hash, and the new account hash, which is
+
+263
+00:38:58.880 --> 00:38:59.730
+Dan Goron: Post.
+
+264
+00:38:59.940 --> 00:39:09.410
+Dan Goron: post-execution, or executing the transaction, and then we get a new, the blocks transaction, and then we get a new account.
+
+265
+00:39:09.740 --> 00:39:10.530
+Dan Goron: Hash.
+
+266
+00:39:10.870 --> 00:39:11.410
+Toni Wahrstätter: Okay.
+
+267
+00:39:11.410 --> 00:39:14.400
+Dan Goron: Both these values should be in the payload, yeah.
+
+268
+00:39:14.820 --> 00:39:18.060
+Toni Wahrstätter: And both of those values would be 32 bytes per account.
+
+269
+00:39:18.390 --> 00:39:19.330
+Dan Goron: Yep.
+
+270
+00:39:19.720 --> 00:39:32.340
+Toni Wahrstätter: Okay, perfect. Yeah, it's a very interesting topic. This is definitely relevant for the future. We already talked about that a bit ASIC. Of course, this… I mean, yeah, this will not happen for Glamsterdam.
+
+271
+00:39:32.370 --> 00:39:45.980
+Toni Wahrstätter: But this is definitely something relevant for the future that we should keep discussing. So I would say we can take this async, and it's great that we have now many of the clients also being aware of that topic.
+
+272
+00:39:47.300 --> 00:40:01.640
+Toni Wahrstätter: One thing I would initially say we have to, of course, find out, well, like, what is the worst case? Like, could the ball be inflated with, or bloated with many of those 32 byte values?
+
+273
+00:40:03.160 --> 00:40:09.619
+Toni Wahrstätter: Initially, I would say no, of course. For each touched account, or for each changed account, you would then add
+
+274
+00:40:09.850 --> 00:40:24.530
+Toni Wahrstätter: 64 bytes in addition to the ball, so we should definitely, determine, like, what is the worst case ball size with adding those additional bytes. But apart from that, I don't see, like, any issue right now.
+
+275
+00:40:25.300 --> 00:40:28.000
+Toni Wahrstätter: Jochen, do you want to add something to that?
+
+276
+00:40:28.670 --> 00:40:40.910
+jochem-brouwer: Yes, so currently what you store is an address to the account hash, so that's 32 bytes, and this account hash is, I think, the hash of, like, the balance that wants the coder root and the state root. Is that correct, Dan?
+
+277
+00:40:43.480 --> 00:40:49.460
+Dan Goron: Yes, I think, if I understood correctly what you asked, I think, yes, the answer is.
+
+278
+00:40:49.460 --> 00:41:04.840
+jochem-brouwer: Yes. So, what I would propose to change this, actually, is to store, not the account hash, but actually the code hash and the state root into your partial, stateful node.
+
+279
+00:41:05.580 --> 00:41:25.030
+jochem-brouwer: doubles the size, so 64 bytes, it's now not 32 bytes, but what you can now do from the bulk access list, you now know the changes in the months and the balance, so you can actually reconstruct the new account tree, because you already have the code hash and the state root. Oh, wait, no, there's a problem with that.
+
+280
+00:41:25.850 --> 00:41:34.430
+Dan Goron: But I think for post-state, that would be correct, what you say, but I don't think for priest… would it be correct for pre-state?
+
+281
+00:41:36.100 --> 00:41:37.089
+Dan Goron: What do you mean?
+
+282
+00:41:37.090 --> 00:41:37.490
+jochem-brouwer: I am.
+
+283
+00:41:37.490 --> 00:41:38.040
+Dan Goron: measurable.
+
+284
+00:41:38.780 --> 00:41:42.730
+jochem-brouwer: Yeah, no, I need to think about this a little bit longer. Yeah, let's take this async.
+
+285
+00:41:43.620 --> 00:41:44.470
+Toni Wahrstätter: Yeah, that's students.
+
+286
+00:41:44.470 --> 00:41:44.940
+Dan Goron: Okay, thanks.
+
+287
+00:41:44.940 --> 00:41:51.449
+Toni Wahrstätter: Let's have a discussion. I can set up a Discord group between the three of us first, and then we can hash that out a bit.
+
+288
+00:41:51.740 --> 00:41:56.529
+Toni Wahrstätter: And, yeah, it's great that we have brought it up. Thanks a lot, Dan.
+
+289
+00:41:56.940 --> 00:41:58.990
+Dan Goron: Perfect, guys, thank you for listening.
+
+290
+00:41:59.510 --> 00:42:01.139
+Toni Wahrstätter: Of course, thank you very much.
+
+291
+00:42:02.410 --> 00:42:13.560
+Toni Wahrstätter: Yeah, this is then already the last agenda item that we had for today's call. Is there anything else that clients would like to bring up that we should discuss today, especially focusing on devnet coming up?
+
+292
+00:42:25.970 --> 00:42:27.000
+Toni Wahrstätter: Awesome.
+
+293
+00:42:27.220 --> 00:42:29.210
+Toni Wahrstätter: Looks like everything is clear.
+
+294
+00:42:29.830 --> 00:42:34.770
+Toni Wahrstätter: Dan, thank you very much, everyone, for attending the call, and see you in two weeks.
+
+295
+00:42:39.500 --> 00:42:40.050
+Dan Goron: My blank.
+
+296
+00:42:40.050 --> 00:42:41.639
+felipe: Thank you. Bye.
+

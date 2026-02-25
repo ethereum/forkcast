@@ -1,0 +1,82 @@
+{
+  "meeting": "EIP-7928 Breakout #13 - February 25, 2026",
+  "highlights": {
+    "client_updates": [
+      {
+        "timestamp": "00:07:23",
+        "highlight": "Besu: BAL optimizations complete, max item check and uniqueness implemented"
+      },
+      {
+        "timestamp": "00:08:07",
+        "highlight": "Besu and Geth ready for benchmarking with batch I/O toggles"
+      },
+      {
+        "timestamp": "00:27:30",
+        "highlight": "Besu implemented JSON RPC BAL endpoint for DevNet3"
+      }
+    ],
+    "testing_progress": [
+      {
+        "timestamp": "00:10:29",
+        "highlight": "Benchmark tests blocked: need one client with testing_buildBlockV1 endpoint for Glamsterdam"
+      },
+      {
+        "timestamp": "00:11:06",
+        "highlight": "Benchmarks require mainnet state; empty state tests insufficient for batch I/O"
+      },
+      {
+        "timestamp": "00:26:17",
+        "highlight": "Tests added for BAL uniqueness and ordering validation"
+      }
+    ],
+    "fork_status_and_schedule": [
+      {
+        "timestamp": "00:14:36",
+        "highlight": "Batch I/O benchmarks prioritized: needed for both Glamsterdam repricing and BAL state location decision"
+      }
+    ],
+    "specifications": [
+      {
+        "timestamp": "00:16:14",
+        "highlight": "Merged: STF clarification - BAL hash verification without passing full BAL to STF"
+      },
+      {
+        "timestamp": "00:18:07",
+        "highlight": "Merged: Simplified max item check accounting for free system contract entries"
+      },
+      {
+        "timestamp": "00:25:54",
+        "highlight": "EELS implementation debate: max item check placement in specs vs security considerations"
+      }
+    ],
+    "partial_statefulness": [
+      {
+        "timestamp": "00:32:22",
+        "highlight": "Proposal: Use BAL to transmit account hash diffs (64 bytes per changed account)"
+      },
+      {
+        "timestamp": "00:38:08",
+        "highlight": "Partial stateful nodes would store address\u2192account_hash mapping (~10GB for 300M accounts)"
+      }
+    ]
+  },
+  "action_items": [
+    {
+      "timestamp": "00:11:40",
+      "action": "Implement testing_buildBlockV1 endpoint supporting Glamsterdam EIPs for benchmark filling",
+      "owner": "One client team (preferably Nethermind or EELS)"
+    },
+    {
+      "timestamp": "00:24:02",
+      "action": "Clarify EELS specs placement of max item check and remaining gas validation",
+      "owner": "Toni and Felipe"
+    },
+    {
+      "timestamp": "00:39:46",
+      "action": "Evaluate BAL bloat impact from adding 64-byte account hash diffs for partial statefulness",
+      "owner": "Toni, Jochem, Dan (async Discord)"
+    }
+  ],
+  "decisions": [],
+  "targets": []
+}

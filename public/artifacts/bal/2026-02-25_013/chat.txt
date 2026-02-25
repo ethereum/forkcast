@@ -1,0 +1,53 @@
+00:04:38	felipe:	gm
+00:05:19	Stefan Starflinger:	Hello
+00:06:02	Toni Wahrstätter:	https://github.com/ethereum/pm/issues/1944
+00:09:37	Karim T. (matkt):	It’s not a good day for client updates ^^
+00:09:57	felipe:	Reacted to "It’s not a good d..." with 😅
+00:10:05	Soubhik:	Reacted to "It’s not a good d..." with 😅
+00:10:23	Stefan Starflinger:	Im back from my holiday where did everyone go 😂
+00:12:26	Karim T. (matkt):	Why not creating a shadow fork and build new blocks with transactions of the mainnet transaction pool ?
+00:13:06	felipe:	which endpoint is this @jochem-brouwer? `testing_buildBlockV1`?
+00:13:44	jochem-brouwer:	Replying to "Why not creating a..."
+
+If this is related to benchmarks, we want to really stress test the client. So "normal" mainnet texs are not sufficient here because they are not stressing the client enough. We want to generate "worst case blocks" and try to also abuse the BAL to generate worst cases there (for instance batch I/O where the storage is being loaded in reverse order than they are ordered in the BAL)
+00:14:07	Stefan Starflinger:	Its not very cheap to setup a shadow fork and we generally prefer to have multiple clients ready before taking this on
+00:14:22	jochem-brouwer:	Replying to "which endpoint is ..."
+
+Yup! Nethermind is working on this to support Glamsterdam (already supports Osaka)
+00:14:36	Karim T. (matkt):	Reacted to "If this is related t..." with 👍
+00:14:40	Karim T. (matkt):	Reacted to "Its not very cheap t..." with 👍
+00:14:41	Stefan Starflinger:	Whats the status on the benchmarkoor integration
+00:14:48	felipe:	Replying to "which endpoint is ..."
+
+Ah yep. We now support this in STEEL as well 👍
+00:14:53	Karim T. (matkt):	Replying to "Why not creating a s..."
+
+Ok I think it’s also important to have the two kind of tests
+00:14:56	felipe:	Reacted to "Yup! Nethermind is..." with 👍
+00:15:18	jochem-brouwer:	Replying to "Whats the status o..."
+
+Benchmarkoor should be able to run this, the problem is we cannot fill the benchmarks to plug those into benchmarkoor (this is this testing_endpointV1)
+00:15:33	Stefan Starflinger:	Replying to "Whats the status on …"
+I see
+00:16:14	jochem-brouwer:	Replying to "Whats the status o..."
+
+So need one client to use as benchmark filler. It is not the same as "normal test filling", because for the benchmarks to make sense we need to run it on top of state and not on top on empty or super small state (because the operations are extremely fast there anyways)
+00:16:27	jochem-brouwer:	Reacted to "Ah yep. We now sup..." with 👍
+00:16:54	felipe:	https://github.com/ethereum/EIPs/pull/11227/changes
+00:17:43	Karim T. (matkt):	Replying to "which endpoint is th..."
+
+We have a PR in Besu for that not sure how close we are to merge it
+00:19:41	Toni Wahrstätter:	https://github.com/ethereum/EIPs/pull/11323
+00:20:58	felipe:	https://github.com/ethereum/EIPs/pull/11223#discussion_r2849777995
+00:26:17	Karim T. (matkt):	In Besu we are also checking the order of the keys
+00:28:30	felipe:	swap tx index order test: https://github.com/ethereum/execution-specs/blob/forks/amsterdam/tests/amsterdam/eip7928_block_level_access_lists/test_block_access_lists_invalid.py#L296
+00:29:07	felipe:	Replying to "swap tx index orde..."
+
+also swapping address ordering... yeah we have these
+00:29:41	Toni Wahrstätter:	This is the PR on the json rpc:
+https://github.com/ethereum/pm/issues/1944
+00:30:21	Karim T. (matkt):	Already merged in besu
+00:30:43	Karim T. (matkt):	Replying to "swap tx index order ..."
+
+Talking about checking before block processing
+00:37:36	Jared Wasinger:	I have a conflicting call.  gotta go 🙁

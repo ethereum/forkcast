@@ -470,7 +470,7 @@ const DevnetPrioritizationPage: React.FC = () => {
           <div className="absolute top-0 right-0">
             <ThemeToggle />
           </div>
-          <Logo size="md" className="mb-4" />
+          <Logo size="md" className="mb-8" />
           <div className="flex items-center gap-3 mb-2">
             <h1 className="text-xl font-semibold text-slate-900 dark:text-slate-100">
               Devnet Prioritization
@@ -752,7 +752,7 @@ const DevnetPrioritizationPage: React.FC = () => {
                                       {combined.priority.averageScore.toFixed(1)}
                                     </span>
                                   ) : (
-                                    <span className="text-slate-400 dark:text-slate-500">—</span>
+                                    <span className="text-slate-400 dark:text-slate-400">—</span>
                                   )}
                                 </td>
                                 <td className="px-4 py-2.5 text-center">
@@ -761,7 +761,7 @@ const DevnetPrioritizationPage: React.FC = () => {
                                       {getComplexityTierEmoji(combined.complexity.tier)} {combined.complexity.totalScore}
                                     </span>
                                   ) : (
-                                    <span className="text-slate-400 dark:text-slate-500">—</span>
+                                    <span className="text-slate-400 dark:text-slate-400">—</span>
                                   )}
                                 </td>
                                 <td className="px-4 py-2.5">
@@ -770,7 +770,7 @@ const DevnetPrioritizationPage: React.FC = () => {
                                       {combined.stage.replace(' for Inclusion', '')}
                                     </span>
                                   ) : (
-                                    <span className="text-slate-400 dark:text-slate-500">—</span>
+                                    <span className="text-slate-400 dark:text-slate-400">—</span>
                                   )}
                                 </td>
                               </tr>
@@ -981,7 +981,7 @@ const DevnetPrioritizationPage: React.FC = () => {
               <button
                 onClick={refetch}
                 disabled={complexityLoading}
-                className="p-1.5 text-slate-400 hover:text-slate-600 dark:text-slate-500 dark:hover:text-slate-300 transition-colors disabled:opacity-50 ml-auto"
+                className="p-1.5 text-slate-400 hover:text-slate-600 dark:text-slate-400 dark:hover:text-slate-300 transition-colors disabled:opacity-50 ml-auto"
                 title="Refresh complexity data"
               >
                 <svg className={`w-4 h-4 ${complexityLoading ? 'animate-spin' : ''}`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -1070,7 +1070,7 @@ const DevnetPrioritizationPage: React.FC = () => {
                   <div className="flex items-center gap-4 text-xs text-slate-500 dark:text-slate-400">
                     {item.complexity && (
                       <div className="flex items-center gap-1">
-                        <span className="text-slate-400 dark:text-slate-500">Test:</span>
+                        <span className="text-slate-400 dark:text-slate-400">Test:</span>
                         <span className={`px-1.5 py-0.5 rounded ${getComplexityTierColor(item.complexity.tier)}`}>
                           {getComplexityTierEmoji(item.complexity.tier)} {item.complexity.totalScore}
                         </span>
@@ -1078,11 +1078,11 @@ const DevnetPrioritizationPage: React.FC = () => {
                     )}
                     {item.priority?.averageScore !== null && item.priority?.averageScore !== undefined && (
                       <div className="flex items-center gap-1">
-                        <span className="text-slate-400 dark:text-slate-500">Support:</span>
+                        <span className="text-slate-400 dark:text-slate-400">Support:</span>
                         <span className={`px-1.5 py-0.5 rounded ${getScoreColor(Math.round(item.priority.averageScore))}`}>
                           {item.priority.averageScore.toFixed(1)}
                         </span>
-                        <span className="text-slate-400 dark:text-slate-500">
+                        <span className="text-slate-400 dark:text-slate-400">
                           ({item.priority.stanceCount})
                         </span>
                       </div>
@@ -1230,7 +1230,7 @@ const DevnetPrioritizationPage: React.FC = () => {
                                 ))}
                             </div>
                           ) : (
-                            <span className="text-xs text-slate-400 dark:text-slate-500">—</span>
+                            <span className="text-xs text-slate-400 dark:text-slate-400">—</span>
                           )}
                         </td>
                         <td className="px-4 py-3 text-center">
@@ -1239,7 +1239,7 @@ const DevnetPrioritizationPage: React.FC = () => {
                               {getComplexityTierEmoji(item.complexity.tier)} {item.complexity.totalScore}
                             </span>
                           ) : (
-                            <span className="text-xs text-slate-400 dark:text-slate-500">—</span>
+                            <span className="text-xs text-slate-400 dark:text-slate-400">—</span>
                           )}
                         </td>
                         <td className="px-4 py-3 text-center">
@@ -1248,7 +1248,7 @@ const DevnetPrioritizationPage: React.FC = () => {
                               {item.priority.averageScore.toFixed(1)}
                             </span>
                           ) : (
-                            <span className="text-xs text-slate-400 dark:text-slate-500">—</span>
+                            <span className="text-xs text-slate-400 dark:text-slate-400">—</span>
                           )}
                         </td>
                         <td className="px-4 py-3 text-center">
@@ -1257,7 +1257,7 @@ const DevnetPrioritizationPage: React.FC = () => {
                               {item.priority.stanceCount}
                             </span>
                           ) : (
-                            <span className="text-xs text-slate-400 dark:text-slate-500">0</span>
+                            <span className="text-xs text-slate-400 dark:text-slate-400">0</span>
                           )}
                         </td>
                         <td className="px-4 py-3 text-center">
@@ -1274,7 +1274,7 @@ const DevnetPrioritizationPage: React.FC = () => {
                               {item.weightedScore.toFixed(2)}
                             </span>
                           ) : (
-                            <span className="text-xs text-slate-400 dark:text-slate-500">—</span>
+                            <span className="text-xs text-slate-400 dark:text-slate-400">—</span>
                           )}
                         </td>
                       </tr>
@@ -1287,7 +1287,7 @@ const DevnetPrioritizationPage: React.FC = () => {
         </div>
 
         {/* Footer */}
-        <div className="mt-8 text-center text-xs text-slate-400 dark:text-slate-500">
+        <div className="mt-8 text-center text-xs text-slate-400 dark:text-slate-400">
           <p>
             Complexity data from{' '}
             <a href="https://github.com/ethsteel/pm" target="_blank" rel="noopener noreferrer" className="underline hover:text-slate-600 dark:hover:text-slate-300">

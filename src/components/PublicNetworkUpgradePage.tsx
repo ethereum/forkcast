@@ -375,7 +375,7 @@ const PublicNetworkUpgradePage: React.FC<PublicNetworkUpgradePageProps> = ({
       <div className="max-w-4xl mx-auto">
         {/* Header */}
         <div className="mb-8">
-          <div className="mb-6 flex justify-between items-start">
+          <div className="mb-12 flex justify-between items-start">
             <Logo size="lg" />
             <ThemeToggle />
           </div>
@@ -416,7 +416,7 @@ const PublicNetworkUpgradePage: React.FC<PublicNetworkUpgradePageProps> = ({
                       to={`/upgrade/${forkName.toLowerCase()}/stakeholders`}
                       className="inline-flex items-center gap-1.5 text-sm text-slate-600 hover:text-slate-800 dark:text-slate-400 dark:hover:text-slate-200 transition-colors"
                     >
-                      <span className="text-slate-400 dark:text-slate-500">View by stakeholder:</span>
+                      <span className="text-slate-400 dark:text-slate-400">View by stakeholder:</span>
                       <span className="underline decoration-1 underline-offset-2">App Developers, Wallet Devs, L2s...</span>
                       <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 7l5 5m0 0l-5 5m5-5H6" />
@@ -433,12 +433,12 @@ const PublicNetworkUpgradePage: React.FC<PublicNetworkUpgradePageProps> = ({
             </div>
 
             <div className="mt-2">
-              <p className="text-xs text-slate-400 dark:text-slate-500 italic max-w-xl">
+              <p className="text-xs text-slate-400 dark:text-slate-400 italic max-w-xl">
               Forkcast is an ongoing experiment by the Protocol Support team to make the network upgrade process more accessible. Have feedback? Contact{' '}
                 <a
                   href="mailto:nixo@ethereum.org"
                   onClick={() => handleExternalLinkClick('email_contact', 'mailto:nixo@ethereum.org')}
-                  className="text-slate-500 hover:text-slate-700 dark:text-slate-400 dark:hover:text-slate-200 underline decoration-1 underline-offset-2"
+                  className="text-slate-500 hover:text-slate-700 dark:text-slate-300 dark:hover:text-slate-100 underline decoration-1 underline-offset-2"
                 >
                   nixo
                 </a>
@@ -448,7 +448,7 @@ const PublicNetworkUpgradePage: React.FC<PublicNetworkUpgradePageProps> = ({
                   target="_blank"
                   rel="noopener noreferrer"
                   onClick={() => handleExternalLinkClick('twitter_contact', 'https://x.com/wolovim')}
-                  className="text-slate-500 hover:text-slate-700 dark:text-slate-400 dark:hover:text-slate-200 underline decoration-1 underline-offset-2"
+                  className="text-slate-500 hover:text-slate-700 dark:text-slate-300 dark:hover:text-slate-100 underline decoration-1 underline-offset-2"
                 >
                   @wolovim
                 </a>
@@ -638,7 +638,7 @@ const PublicNetworkUpgradePage: React.FC<PublicNetworkUpgradePageProps> = ({
                                 <div className="flex items-start justify-between">
                                   <div className="flex-1">
                                     <h3 className="text-base font-medium text-slate-900 dark:text-slate-100 leading-tight mb-2">
-                                      <span className="text-slate-400 dark:text-slate-500 text-sm font-mono mr-2">{getProposalPrefix(eip)}-{eip.id}</span>
+                                      <span className="text-slate-400 dark:text-slate-400 text-sm font-mono mr-2">{getProposalPrefix(eip)}-{eip.id}</span>
                                       <span>{eip.title}</span>
                                     </h3>
                                     <p className="text-slate-700 dark:text-slate-300 text-sm leading-relaxed">
@@ -653,7 +653,7 @@ const PublicNetworkUpgradePage: React.FC<PublicNetworkUpgradePageProps> = ({
                                           target="_blank"
                                           rel="noopener noreferrer"
                                           onClick={() => handleExternalLinkClick('discussion', eip.discussionLink)}
-                                          className="text-slate-400 hover:text-slate-600 dark:text-slate-500 dark:hover:text-slate-300 transition-colors cursor-pointer relative group"
+                                          className="text-slate-400 hover:text-slate-600 dark:text-slate-400 dark:hover:text-slate-200 transition-colors cursor-pointer relative group"
                                         >
                                           <div className="relative w-7 h-7">
                                             <img
@@ -680,7 +680,7 @@ const PublicNetworkUpgradePage: React.FC<PublicNetworkUpgradePageProps> = ({
                                         target="_blank"
                                         rel="noopener noreferrer"
                                         onClick={() => handleExternalLinkClick('specification', getSpecificationUrl(eip))}
-                                        className="text-slate-400 hover:text-slate-600 dark:text-slate-500 dark:hover:text-slate-300 transition-colors cursor-pointer relative group"
+                                        className="text-slate-400 hover:text-slate-600 dark:text-slate-400 dark:hover:text-slate-200 transition-colors cursor-pointer relative group"
                                       >
                                         <div className="relative w-7 h-7">
                                           <img
@@ -811,7 +811,7 @@ const PublicNetworkUpgradePage: React.FC<PublicNetworkUpgradePageProps> = ({
                             <header className="border-b border-slate-100 dark:border-slate-700 pb-6 mb-6">
                               <div className="flex items-center gap-3">
                                 <h3 className="text-base font-medium text-slate-900 dark:text-slate-100 leading-tight flex-1">
-                                  <span className="text-slate-400 dark:text-slate-500 text-sm font-mono mr-2">Pending</span>
+                                  <span className="text-slate-400 dark:text-slate-400 text-sm font-mono mr-2">Pending</span>
                                   <span>{proposal.title}</span>
                                   <Tooltip text={proposal.layer === 'EL' ? 'Primarily impacts Execution Layer' : 'Primarily impacts Consensus Layer'}>
                                     <span className={`px-2 py-1 text-xs font-medium rounded ml-2 relative -top-px ${
@@ -829,7 +829,7 @@ const PublicNetworkUpgradePage: React.FC<PublicNetworkUpgradePageProps> = ({
                                     target="_blank"
                                     rel="noopener noreferrer"
                                     onClick={() => handleExternalLinkClick('pending_proposal', proposal.forumLink)}
-                                    className="text-slate-400 hover:text-slate-600 dark:text-slate-500 dark:hover:text-slate-300 transition-colors cursor-pointer relative group"
+                                    className="text-slate-400 hover:text-slate-600 dark:text-slate-400 dark:hover:text-slate-200 transition-colors cursor-pointer relative group"
                                   >
                                     <div className="relative w-7 h-7">
                                       <img

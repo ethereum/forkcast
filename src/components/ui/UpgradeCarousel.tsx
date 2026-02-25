@@ -48,13 +48,13 @@ const UpgradeCarousel = ({ upgrades }: UpgradeCarouselProps) => {
         </div>
 
         <p
-          className={`text-sm leading-relaxed flex-grow ${upgrade.disabled ? 'text-slate-400 dark:text-slate-500' : 'text-slate-600 dark:text-slate-300'}`}
+          className={`text-sm leading-relaxed flex-grow ${upgrade.disabled ? 'text-slate-400 dark:text-slate-400' : 'text-slate-600 dark:text-slate-300'}`}
         >
           {summary}
         </p>
 
         <div
-          className={`text-xs mt-4 ${upgrade.disabled ? 'text-slate-400 dark:text-slate-500' : 'text-slate-500 dark:text-slate-400'}`}
+          className={`text-xs mt-4 ${upgrade.disabled ? 'text-slate-400 dark:text-slate-400' : 'text-slate-500 dark:text-slate-400'}`}
         >
           <span className="font-medium">
             {isLive ? 'Activated:' : 'Target:'}
@@ -99,7 +99,7 @@ const UpgradeCarousel = ({ upgrades }: UpgradeCarouselProps) => {
             {upgrade.name}
           </h2>
           <div
-            className={`text-xs shrink-0 ml-3 ${upgrade.disabled ? 'text-slate-400 dark:text-slate-500' : 'text-slate-500 dark:text-slate-400'}`}
+            className={`text-xs shrink-0 ml-3 ${upgrade.disabled ? 'text-slate-400 dark:text-slate-400' : 'text-slate-500 dark:text-slate-400'}`}
           >
             {upgrade.activationDate}
           </div>

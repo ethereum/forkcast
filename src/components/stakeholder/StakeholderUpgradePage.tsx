@@ -111,7 +111,7 @@ export const StakeholderUpgradePage: React.FC<StakeholderUpgradePageProps> = ({ 
       <div className="max-w-2xl mx-auto">
         {/* Header */}
         <div className="mb-8">
-          <div className="mb-6 flex justify-between items-start">
+          <div className="mb-12 flex justify-between items-start">
             <Logo size="lg" />
             <ThemeToggle />
           </div>
@@ -196,7 +196,7 @@ export const StakeholderUpgradePage: React.FC<StakeholderUpgradePageProps> = ({ 
                     {collapsible && (
                       <button
                         onClick={() => setIsPfiExpanded(!isPfiExpanded)}
-                        className="text-sm text-slate-400 hover:text-slate-600 dark:text-slate-500 dark:hover:text-slate-300 ml-2"
+                        className="text-sm text-slate-400 hover:text-slate-600 dark:text-slate-400 dark:hover:text-slate-300 ml-2"
                       >
                         {isPfiExpanded ? 'collapse' : 'expand'}
                       </button>

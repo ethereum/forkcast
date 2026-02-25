@@ -375,7 +375,7 @@ const AgendaSummary: React.FC<AgendaSummaryProps> = ({ data, onTimestampClick, s
                                         <div className={`leading-snug ${
                                           isActionSelected
                                             ? 'text-slate-900 dark:text-slate-100'
-                                            : 'text-slate-500 dark:text-slate-500'
+                                            : 'text-slate-500 dark:text-slate-400'
                                         }`}>
                                           {step.what}
                                         </div>
@@ -384,7 +384,7 @@ const AgendaSummary: React.FC<AgendaSummaryProps> = ({ data, onTimestampClick, s
                                       <div className={`leading-snug ${
                                         isActionSelected
                                           ? 'text-slate-900 dark:text-slate-100'
-                                          : 'text-slate-500 dark:text-slate-500'
+                                          : 'text-slate-500 dark:text-slate-400'
                                       }`}>
                                         {step.what}
                                       </div>

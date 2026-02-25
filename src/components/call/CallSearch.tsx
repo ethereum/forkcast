@@ -531,7 +531,7 @@ const CallSearch: React.FC<CallSearchProps> = ({
               onChange={(e) => setQuery(e.target.value)}
               onKeyDown={handleKeyDown}
               placeholder="Search transcript, chat, agenda..."
-              className="flex-1 bg-transparent text-slate-900 dark:text-slate-100 placeholder-slate-400 dark:placeholder-slate-500 outline-none text-base sm:text-base text-lg min-h-[44px] sm:min-h-0"
+              className="flex-1 bg-transparent text-slate-900 dark:text-slate-100 placeholder-slate-400 dark:placeholder-slate-400 outline-none text-base sm:text-base text-lg min-h-[44px] sm:min-h-0"
             />
             <button
               onClick={() => { setIsOpen(false); setQuery(''); }}
@@ -637,7 +637,7 @@ const CallSearch: React.FC<CallSearchProps> = ({
               ))}
             </div>
           ) : (
-            <div className="p-8 text-center text-slate-400 dark:text-slate-500">
+            <div className="p-8 text-center text-slate-400 dark:text-slate-400">
               <p className="text-sm mb-3">Start typing to search across:</p>
               <div className="grid grid-cols-2 gap-3 max-w-xs mx-auto text-left">
                 <div className="flex items-center gap-2 text-xs">

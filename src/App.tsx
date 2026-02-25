@@ -94,6 +94,7 @@ function App() {
             },
           ]}
         />
+        <div className="scanlines" />
         <Routes>
           <Route path="/" element={<HomePage />} />
           <Route path="/schedule" element={<SchedulePage />} />

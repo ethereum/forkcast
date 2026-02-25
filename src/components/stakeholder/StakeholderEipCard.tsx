@@ -35,7 +35,7 @@ export const StakeholderEipCard: React.FC<StakeholderEipCardProps> = ({
             to={`/eips/${eip.id}`}
             className="group inline-flex items-baseline gap-2 flex-wrap"
           >
-            <span className="text-slate-400 dark:text-slate-500 text-sm font-mono underline decoration-slate-300 dark:decoration-slate-600 underline-offset-2">
+            <span className="text-slate-400 dark:text-slate-400 text-sm font-mono underline decoration-slate-300 dark:decoration-slate-600 underline-offset-2">
               {getProposalPrefix(eip)}-{eip.id}
             </span>
             <span className="font-medium text-slate-900 dark:text-slate-100 group-hover:text-purple-600 dark:group-hover:text-purple-400 transition-colors">
@@ -61,7 +61,7 @@ export const StakeholderEipCard: React.FC<StakeholderEipCardProps> = ({
               target="_blank"
               rel="noopener noreferrer"
               onClick={() => handleExternalLinkClick('discussion', eip.discussionLink)}
-              className="text-slate-400 hover:text-slate-600 dark:text-slate-500 dark:hover:text-slate-300 transition-colors"
+              className="text-slate-400 hover:text-slate-600 dark:text-slate-400 dark:hover:text-slate-300 transition-colors"
             >
               forum
             </a>
@@ -71,7 +71,7 @@ export const StakeholderEipCard: React.FC<StakeholderEipCardProps> = ({
             target="_blank"
             rel="noopener noreferrer"
             onClick={() => handleExternalLinkClick('specification', getSpecificationUrl(eip))}
-            className="text-slate-400 hover:text-slate-600 dark:text-slate-500 dark:hover:text-slate-300 transition-colors"
+            className="text-slate-400 hover:text-slate-600 dark:text-slate-400 dark:hover:text-slate-300 transition-colors"
           >
             spec
           </a>
@@ -90,7 +90,7 @@ export const StakeholderEipCard: React.FC<StakeholderEipCardProps> = ({
         <>
           <button
             onClick={() => setIsExpanded(!isExpanded)}
-            className="mt-2 text-sm text-slate-400 hover:text-slate-600 dark:text-slate-500 dark:hover:text-slate-300 transition-colors"
+            className="mt-2 text-sm text-slate-400 hover:text-slate-600 dark:text-slate-400 dark:hover:text-slate-300 transition-colors"
           >
             {isExpanded ? '− hide description' : '+ what is this?'}
           </button>

@@ -366,7 +366,7 @@ export default function EipSearchModal({ isOpen, onClose, initialQuery = '' }: E
               value={query}
               onChange={(e) => setQuery(e.target.value)}
               placeholder="Search EIPs by title, author, description..."
-              className="flex-1 bg-transparent text-slate-900 dark:text-slate-100 placeholder-slate-400 dark:placeholder-slate-500 outline-none text-base min-h-[44px] sm:min-h-0"
+              className="flex-1 bg-transparent text-slate-900 dark:text-slate-100 placeholder-slate-400 dark:placeholder-slate-400 outline-none text-base min-h-[44px] sm:min-h-0"
             />
             <button
               onClick={() => { onClose(); setQuery(''); }}
@@ -502,7 +502,7 @@ export default function EipSearchModal({ isOpen, onClose, initialQuery = '' }: E
                           )}
                           {/* Matched field indicator */}
                           {matchedFields.length > 0 && !matchedFields.includes('title') && !matchedFields.includes('id') && !matchedFields.includes('description') && (
-                            <span className="text-xs text-slate-400 dark:text-slate-500">
+                            <span className="text-xs text-slate-400 dark:text-slate-400">
                               · {matchedFields.map(f => getFieldDisplayName(f)).join(', ')}
                             </span>
                           )}
@@ -523,7 +523,7 @@ export default function EipSearchModal({ isOpen, onClose, initialQuery = '' }: E
               })}
             </div>
           ) : (
-            <div className="p-8 text-center text-slate-400 dark:text-slate-500">
+            <div className="p-8 text-center text-slate-400 dark:text-slate-400">
               <p className="text-sm mb-3">Search EIPs or use filters to browse</p>
               <div className="flex flex-wrap justify-center gap-2 max-w-xs mx-auto text-xs">
                 <span className="px-2 py-1 bg-slate-100 dark:bg-slate-700 rounded">title</span>

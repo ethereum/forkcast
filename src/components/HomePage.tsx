@@ -116,7 +116,7 @@ const HomePage = () => {
           <div className="absolute top-0 right-0">
             <ThemeToggle />
           </div>
-          <Logo size="xl" className="mb-2" />
+          <Logo size="2xl" className="mb-4" />
           <h2 className="text-xl font-light text-slate-700 dark:text-slate-300 tracking-tight">
             Ethereum Upgrade Tracker
           </h2>

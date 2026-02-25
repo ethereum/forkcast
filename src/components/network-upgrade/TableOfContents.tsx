@@ -104,7 +104,7 @@ export const TableOfContents: React.FC<TableOfContentsProps> = ({
             placeholder="Filter EIPs..."
             value={searchQuery}
             onChange={(e) => onSearchChange(e.target.value)}
-            className="w-full px-3 py-1.5 text-sm border border-slate-200 dark:border-slate-600 rounded-md bg-white dark:bg-slate-700 text-slate-900 dark:text-slate-100 placeholder-slate-400 dark:placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent"
+            className="w-full px-3 py-1.5 text-sm border border-slate-200 dark:border-slate-600 rounded-md bg-white dark:bg-slate-700 text-slate-900 dark:text-slate-100 placeholder-slate-400 dark:placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent"
           />
           {searchQuery && (
             <button
@@ -191,7 +191,7 @@ export const TableOfContents: React.FC<TableOfContentsProps> = ({
                 <div className="flex items-center justify-between min-w-0">
                   <span className={item.type === 'eip' ? 'truncate min-w-0' : ''}>{item.label}</span>
                   {item.count && !searchQuery && (
-                    <span className="text-xs text-slate-400 dark:text-slate-500 flex-shrink-0 ml-2">{item.count}</span>
+                    <span className="text-xs text-slate-400 dark:text-slate-400 flex-shrink-0 ml-2">{item.count}</span>
                   )}
                 </div>
               </button>

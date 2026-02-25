@@ -37,13 +37,13 @@ export const NetworkUpgradeTimeline: React.FC<NetworkUpgradeTimelineProps> = ({ 
         <div className="relative flex flex-row justify-between items-stretch w-full px-12" style={{ zIndex: 1, minHeight: timelineHeight }}>
           {upgrades.map((upgrade) => {
             const isCurrent = upgrade.id === currentForkId;
-            let labelClass = 'text-slate-500 dark:text-slate-400 font-normal';
-            let boxClass = 'bg-white dark:bg-slate-700 border border-slate-200 dark:border-slate-600';
-            let dateClass = 'text-xs text-slate-400 dark:text-slate-500';
+            let labelClass = 'text-slate-600 dark:text-slate-300 font-normal';
+            let boxClass = 'bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-600';
+            let dateClass = 'text-xs text-slate-500 dark:text-slate-400';
             if (isCurrent) {
               labelClass = 'text-slate-900 dark:text-slate-100 font-semibold';
-              boxClass = 'bg-white dark:bg-slate-700 border border-purple-200 dark:border-purple-600 shadow-sm';
-              dateClass = 'text-xs text-slate-500 dark:text-slate-400 font-medium';
+              boxClass = 'bg-white dark:bg-slate-800 border border-purple-200 dark:border-purple-600 shadow-sm';
+              dateClass = 'text-xs text-slate-600 dark:text-slate-300 font-medium';
             }
 
             const boxContent = (

@@ -111,7 +111,7 @@ const CallsIndexPage: React.FC = () => {
             </button>
             <ThemeToggle />
           </div>
-          <Logo size="md" className="mb-2" />
+          <Logo size="md" className="mb-4" />
           <div className="flex items-center justify-between">
             <div>
               <h1 className="text-xl font-semibold text-slate-900 dark:text-slate-100">Protocol Calendar</h1>
@@ -272,7 +272,7 @@ const CallsIndexPage: React.FC = () => {
                           <span className="text-[11px] font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider [writing-mode:vertical-lr] rotate-180">
                             {monthName}
                           </span>
-                          <span className="text-[10px] font-semibold text-slate-400 dark:text-slate-500 [writing-mode:vertical-lr] rotate-180 mt-1">
+                          <span className="text-[10px] font-semibold text-slate-400 dark:text-slate-400 [writing-mode:vertical-lr] rotate-180 mt-1">
                             {yearString}
                           </span>
                         </div>
@@ -401,7 +401,7 @@ const CallsIndexPage: React.FC = () => {
                                   </div>
                                 )}
                               </div>
-                              <div className="text-slate-400 dark:text-slate-500 group-hover:text-slate-600 dark:group-hover:text-slate-300 transition-colors">
+                              <div className="text-slate-400 dark:text-slate-400 group-hover:text-slate-600 dark:group-hover:text-slate-300 transition-colors">
                                 {upcomingCall.youtubeUrl ? '→' : '↗'}
                               </div>
                             </div>
@@ -501,7 +501,7 @@ const CallsIndexPage: React.FC = () => {
                                   {call.date}
                                 </div>
                               </div>
-                              <div className="text-slate-400 dark:text-slate-500 group-hover:text-slate-600 dark:group-hover:text-slate-300 transition-colors">
+                              <div className="text-slate-400 dark:text-slate-400 group-hover:text-slate-600 dark:group-hover:text-slate-300 transition-colors">
                                 →
                               </div>
                             </div>

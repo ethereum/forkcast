@@ -39,7 +39,7 @@ export const EipCard: React.FC<EipCardProps> = ({ eip, forkName, handleExternalL
         : 'border-slate-200 dark:border-slate-600'
     }`} id={eipId} data-section>
       {/* Header */}
-      <header className="border-b border-slate-100 dark:border-slate-700 pb-6 mb-6">
+      <header className="border-b border-slate-200 dark:border-slate-400 pb-6 mb-6">
         <div className="flex flex-col lg:flex-row lg:items-start lg:justify-between">
           <div className="flex-1">
             <div className="flex items-center gap-3 group relative">
@@ -52,56 +52,60 @@ export const EipCard: React.FC<EipCardProps> = ({ eip, forkName, handleExternalL
                 />
               </div>
 
-              <h3 className="text-base font-medium text-slate-900 dark:text-slate-100 leading-tight flex-1">
-                {isHeadliner(eip, forkName) && (
-                  <Tooltip
-                    text={(() => {
-                      const inclusionStage = getInclusionStage(eip, forkName);
-                      const isSFI = inclusionStage === 'Scheduled for Inclusion';
-                      if (forkName.toLowerCase() === 'glamsterdam') {
-                        return isSFI
-                          ? "Selected headliner feature"
-                          : "Proposed headliner feature";
-                      }
-                      return "Headliner feature";
-                    })()}
-                    className="inline-block cursor-pointer"
-                  >
-                    <span
-                      className="text-purple-400 hover:text-purple-600 dark:text-purple-500 dark:hover:text-purple-400 mr-2 transition-colors cursor-help"
-                    >
-                      {(() => {
+              <div className="flex-1">
+                <div className="flex items-center gap-2 mb-1">
+                  {isHeadliner(eip, forkName) && (
+                    <Tooltip
+                      text={(() => {
                         const inclusionStage = getInclusionStage(eip, forkName);
                         const isSFI = inclusionStage === 'Scheduled for Inclusion';
-                        return forkName.toLowerCase() === 'glamsterdam'
-                          ? (isSFI ? '★' : '☆')
-                          : '★';
+                        if (forkName.toLowerCase() === 'glamsterdam') {
+                          return isSFI
+                            ? "Selected headliner feature"
+                            : "Proposed headliner feature";
+                        }
+                        return "Headliner feature";
                       })()}
-                    </span>
-                  </Tooltip>
-                )}
-                <Link
-                  to={`/eips/${eip.id}`}
-                  className="text-slate-400 dark:text-slate-500 hover:text-purple-600 dark:hover:text-purple-400 text-sm font-mono mr-2 relative -top-px transition-colors underline decoration-1 underline-offset-2"
-                >
-                  {getProposalPrefix(eip)}-{eip.id}
-                </Link>
-                <span>{getLaymanTitle(eip)}</span>
-                {layer && (
-                  <Tooltip
-                    text={layer === 'EL' ? 'Primarily impacts Execution Layer' : 'Primarily impacts Consensus Layer'}
-                    className="inline-block"
+                      className="inline-block cursor-pointer"
+                    >
+                      <span
+                        className="text-purple-400 hover:text-purple-600 dark:text-purple-500 dark:hover:text-purple-400 transition-colors cursor-help"
+                      >
+                        {(() => {
+                          const inclusionStage = getInclusionStage(eip, forkName);
+                          const isSFI = inclusionStage === 'Scheduled for Inclusion';
+                          return forkName.toLowerCase() === 'glamsterdam'
+                            ? (isSFI ? '★' : '☆')
+                            : '★';
+                        })()}
+                      </span>
+                    </Tooltip>
+                  )}
+                  <Link
+                    to={`/eips/${eip.id}`}
+                    className="text-slate-400 dark:text-slate-400 hover:text-purple-600 dark:hover:text-purple-400 text-xs font-mono transition-colors underline decoration-1 underline-offset-2"
                   >
-                    <span className={`px-2 py-1 text-xs font-medium rounded ml-2 relative -top-px ${
-                      layer === 'EL'
-                        ? 'bg-indigo-100 text-indigo-700 dark:bg-indigo-900/20 dark:text-indigo-300 border border-indigo-200 dark:border-indigo-600'
-                        : 'bg-teal-100 text-teal-700 dark:bg-teal-900/20 dark:text-teal-300 border border-teal-200 dark:border-teal-600'
-                    }`}>
-                      {layer}
-                    </span>
-                  </Tooltip>
-                )}
-              </h3>
+                    {getProposalPrefix(eip)}-{eip.id}
+                  </Link>
+                  {layer && (
+                    <Tooltip
+                      text={layer === 'EL' ? 'Primarily impacts Execution Layer' : 'Primarily impacts Consensus Layer'}
+                      className="inline-block"
+                    >
+                      <span className={`px-2 py-0.5 text-xs font-medium rounded ${
+                        layer === 'EL'
+                          ? 'bg-indigo-100 text-indigo-700 dark:bg-indigo-900/20 dark:text-indigo-300 border border-indigo-200 dark:border-indigo-600'
+                          : 'bg-teal-100 text-teal-700 dark:bg-teal-900/20 dark:text-teal-300 border border-teal-200 dark:border-teal-600'
+                      }`}>
+                        {layer}
+                      </span>
+                    </Tooltip>
+                  )}
+                </div>
+                <h3 className="text-lg font-medium text-slate-900 dark:text-slate-100 leading-snug">
+                  {getLaymanTitle(eip)}
+                </h3>
+              </div>
 
               {/* External links - always visible on the right */}
               <div className="flex items-center gap-2 relative top-0.5 ml-auto">
@@ -113,7 +117,7 @@ export const EipCard: React.FC<EipCardProps> = ({ eip, forkName, handleExternalL
                       target="_blank"
                       rel="noopener noreferrer"
                       onClick={() => handleExternalLinkClick('discussion', eip.discussionLink)}
-                      className="text-slate-400 hover:text-slate-600 dark:text-slate-500 dark:hover:text-slate-300 transition-colors cursor-pointer relative group"
+                      className="text-slate-400 hover:text-slate-600 dark:text-slate-400 dark:hover:text-slate-300 transition-colors cursor-pointer relative group"
                     >
                       <div className="relative w-7 h-7">
                         <img
@@ -142,7 +146,7 @@ export const EipCard: React.FC<EipCardProps> = ({ eip, forkName, handleExternalL
                     target="_blank"
                     rel="noopener noreferrer"
                     onClick={() => handleExternalLinkClick('specification', getSpecificationUrl(eip))}
-                    className="text-slate-400 hover:text-slate-600 dark:text-slate-500 dark:hover:text-slate-300 transition-colors cursor-pointer relative group"
+                    className="text-slate-400 hover:text-slate-600 dark:text-slate-400 dark:hover:text-slate-300 transition-colors cursor-pointer relative group"
                   >
                     <div className="relative w-7 h-7">
                       <img
@@ -253,7 +257,7 @@ export const EipCard: React.FC<EipCardProps> = ({ eip, forkName, handleExternalL
                   </svg>
                 </a>
               </span>
-              <span className="text-slate-400 dark:text-slate-500">|</span>
+              <span className="text-slate-400 dark:text-slate-400">|</span>
             </>
           )}
 
@@ -318,7 +322,7 @@ export const EipCard: React.FC<EipCardProps> = ({ eip, forkName, handleExternalL
                       }`}
                     >
                       <div className="overflow-hidden">
-                        <div className="mt-2 ml-4 space-y-3 bg-slate-50 dark:bg-slate-700/50 rounded px-3 py-2">
+                        <div className="mt-2 ml-4 space-y-3 bg-slate-50 dark:bg-slate-700 rounded px-3 py-2">
                           {champions
                             .filter(c => c.discord || c.telegram || c.email)
                             .map((champion, idx) => (
@@ -464,10 +468,10 @@ export const EipCard: React.FC<EipCardProps> = ({ eip, forkName, handleExternalL
 
                   return (
                     <div key={stakeholder} className="bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-600 rounded p-4 overflow-hidden">
-                      <h5 className="font-semibold text-slate-900 dark:text-slate-100 text-xs mb-3 border-b border-slate-100 dark:border-slate-700 pb-2">
+                      <h5 className="font-semibold text-slate-900 dark:text-slate-100 text-sm mb-3 border-b border-slate-100 dark:border-slate-700 pb-2">
                         {stakeholderNames[stakeholder as keyof typeof stakeholderNames]}
                       </h5>
-                      <p className="text-slate-700 dark:text-slate-300 text-xs leading-relaxed break-words">{impact.description}</p>
+                      <p className="text-slate-700 dark:text-slate-300 text-sm leading-relaxed break-words">{impact.description}</p>
                     </div>
                   );
                 })}

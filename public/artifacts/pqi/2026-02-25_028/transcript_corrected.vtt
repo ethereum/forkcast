@@ -1,0 +1,806 @@
+WEBVTT
+
+1
+00:04:18.640 --> 00:04:19.480
+Will Corcoran: Daryl.
+
+2
+00:04:26.360 --> 00:04:27.040
+Katya: Hello.
+
+3
+00:04:46.580 --> 00:04:49.899
+Will Corcoran: Alright. As noted in the chat, a little…
+
+4
+00:04:50.030 --> 00:04:57.710
+Will Corcoran: time boxed today, so let's just jump in with the client updates, Zoom team.
+
+5
+00:05:03.650 --> 00:05:05.229
+Gajinder Singh: Hi, Will, hello, everyone.
+
+6
+00:05:05.440 --> 00:05:15.039
+Gajinder Singh: Yeah, so we have been, working on DevNet 3 interop with other clients, resolving the issues that we are currently seeing.
+
+7
+00:05:15.140 --> 00:05:19.899
+Gajinder Singh: And basically reviewing the PR. Apart from that, we have also…
+
+8
+00:05:19.980 --> 00:05:35.590
+Gajinder Singh: worked on improving the performance of our Zoom node by caching some of the stuff for running straight transitions, and there are some of the PRs that we are sort of reviewing and
+
+9
+00:05:35.690 --> 00:05:37.120
+Gajinder Singh: Working on that end.
+
+10
+00:05:37.230 --> 00:05:41.500
+Gajinder Singh: As well as a little bit of…
+
+11
+00:05:41.630 --> 00:05:49.210
+Gajinder Singh: of PR work on making sure that checkpoint sync, scenarios are, covered, and…
+
+12
+00:05:49.400 --> 00:05:52.099
+Gajinder Singh: So when the vendors,
+
+13
+00:05:52.530 --> 00:06:01.950
+Gajinder Singh: when the note comes back up using Checkpoint Sync, it is able to participate back in the network, so we… we are… we have… we were seeing some issues regarding that, and…
+
+14
+00:06:02.130 --> 00:06:06.660
+Gajinder Singh: We are still working on that, and hopefully we'll have resolution.
+
+15
+00:06:06.780 --> 00:06:14.149
+Gajinder Singh: Soon, Oh… And, for DevNet 4, I think, we…
+
+16
+00:06:14.320 --> 00:06:17.600
+Gajinder Singh: So Anchil has looked into…
+
+17
+00:06:17.770 --> 00:06:22.769
+Gajinder Singh: The… yeah, Anshar was looking into the API, that Emil provided.
+
+18
+00:06:22.970 --> 00:06:26.030
+Gajinder Singh: And, we will start the DevNet for…
+
+19
+00:06:26.130 --> 00:06:29.449
+Gajinder Singh: Spec work, soon, by the end of this week.
+
+20
+00:06:33.130 --> 00:06:36.620
+Will Corcoran: Very exciting. Thanks, Erigon. Ring team.
+
+21
+00:06:36.950 --> 00:06:50.559
+Shariq Naiyer: Sweet, sweet. So we, we got up to, up to spec and up to, other… we got, we got our client running against other clients for DevNet 3, so on, on, some of Partha's, tests.
+
+22
+00:06:50.560 --> 00:07:07.529
+Shariq Naiyer: 5 clients were able to interop. Locally, I've tested against, like, 3 clients, and, and things seem to work out fine. We… beyond… beyond FNet 3, we were working on improving our sinker, and, like, making it more reliable.
+
+23
+00:07:07.530 --> 00:07:19.959
+Shariq Naiyer: And… and for… for checkpoint sync, there was an issue with HTTPS. We just had to swap out a Rust library, so, I think… I think Checkpoint Sync should work fine with Erigon as well now.
+
+24
+00:07:19.960 --> 00:07:32.799
+Shariq Naiyer: And, and yeah, we're ready to start, long-term… long-run DevNets on DevNet 3, and, and, and we're ready to start work on DevNet 4, as, yeah, starting this week.
+
+25
+00:07:36.270 --> 00:07:37.860
+Will Corcoran: Brilliant. Thanks, Sharik.
+
+26
+00:07:38.220 --> 00:07:39.380
+Will Corcoran: Clinton.
+
+27
+00:07:43.170 --> 00:07:48.389
+Will Corcoran: And Camille might still be on the road. Lanterns?
+
+28
+00:07:49.400 --> 00:07:59.069
+Mihir Faujdar: Yep. Thanks, Will. Hi, everyone. So yeah, based on Paza's testing, Lantern was able to achieve interop with other clients for DevNet 3.
+
+29
+00:07:59.220 --> 00:08:05.299
+Mihir Faujdar: And basically, what I'm currently doing now is, so, I've been running…
+
+30
+00:08:05.420 --> 00:08:13.469
+Mihir Faujdar: lean quick start locally on a remote server for DevNet2, and then have been seeing,
+
+31
+00:08:13.620 --> 00:08:31.209
+Mihir Faujdar: issues where, like, after slot 30,000, it could be any arbitrary slot, basically, functionality would break, so I've just been trying to debug issues there. So, I'm basically going to be bringing those fixes into DevNet3 branch, and then,
+
+32
+00:08:31.910 --> 00:08:39.469
+Mihir Faujdar: And then basically release a new, image, for demo 3. But yeah, that's more update. Thanks.
+
+33
+00:08:42.870 --> 00:08:45.180
+Will Corcoran: Thanks, Mihir. Eth Lambda.
+
+34
+00:08:46.840 --> 00:08:47.450
+Pablo Deymo | Lambda: Aye.
+
+35
+00:08:48.700 --> 00:08:52.309
+Pablo Deymo | Lambda: From our side, we were focusing on DevNet 3,
+
+36
+00:08:52.530 --> 00:09:09.350
+Pablo Deymo | Lambda: Through the week, this week. We fixed the small issue, the interoperability of positive messages, so we have, local dev nets working with, first with two Zoom clients and two East Lambdas.
+
+37
+00:09:09.690 --> 00:09:14.890
+Pablo Deymo | Lambda: And then, we, have more… More clients working together.
+
+38
+00:09:15.060 --> 00:09:20.299
+Pablo Deymo | Lambda: We added a attestation committee account CLI parameter.
+
+39
+00:09:20.650 --> 00:09:24.150
+Pablo Deymo | Lambda: Previously, it was hardcoding.
+
+40
+00:09:24.430 --> 00:09:44.299
+Pablo Deymo | Lambda: And we were working on some kind of DevX, or UX, or tooling. We showed logs, tracing logs, of the chain, of the fork choice. We took the idea from Zim client.
+
+41
+00:09:44.590 --> 00:09:49.840
+Pablo Deymo | Lambda: doing this kind of ASCII art in the logs, in the console.
+
+42
+00:09:50.310 --> 00:09:53.310
+Pablo Deymo | Lambda: And we took that idea and ported it to…
+
+43
+00:09:53.850 --> 00:10:05.229
+Pablo Deymo | Lambda: an HTML page, so we develop an HTML page with a live view of the status of the chain.
+
+44
+00:10:05.740 --> 00:10:07.920
+Pablo Deymo | Lambda: on the last 2 to 5 block.
+
+45
+00:10:08.450 --> 00:10:12.410
+Pablo Deymo | Lambda: We can share that on the Telegram chat if you want.
+
+46
+00:10:13.000 --> 00:10:17.159
+Pablo Deymo | Lambda: So… That's huge.
+
+47
+00:10:17.390 --> 00:10:21.880
+Pablo Deymo | Lambda: And we… Based on the… on the protocols.
+
+48
+00:10:22.890 --> 00:10:23.720
+Pablo Deymo | Lambda: Thank you.
+
+49
+00:10:25.580 --> 00:10:26.500
+Will Corcoran: Thanks, Pablo.
+
+50
+00:10:26.700 --> 00:10:28.230
+Will Corcoran: Again, Tim.
+
+51
+00:10:33.780 --> 00:10:44.900
+Shaaibu Suleiman: Yeah, hello, hello, hello. Yeah, so we've completed work, on DevNets, one. We should have raised, a PR, but then…
+
+52
+00:10:45.020 --> 00:11:00.330
+Shaaibu Suleiman: Leanquick Start is not actively supporting, DevNet1 for now, so we had to, test locally. We did the multi, multi-client interrupt, test locally.
+
+53
+00:11:00.480 --> 00:11:04.379
+Shaaibu Suleiman: Basically. And, for now, we're actually looking fine.
+
+54
+00:11:05.170 --> 00:11:09.060
+Shaaibu Suleiman: With the multi-client, interrupt test, we did.
+
+55
+00:11:09.780 --> 00:11:16.609
+Shaaibu Suleiman: For now, we're actually, working on seeing how we can catch up with other teams.
+
+56
+00:11:16.990 --> 00:11:34.240
+Shaaibu Suleiman: On DevNet3, so that, you know, we would also partake in, the multi, client, interrupt test, at least for DevNet3, as soon as possible. So, basically, that's it from our end, Gene.
+
+57
+00:11:34.720 --> 00:11:35.470
+Shaaibu Suleiman: F.
+
+58
+00:11:37.770 --> 00:11:40.819
+Will Corcoran: Thank you Grandine.
+
+59
+00:11:42.190 --> 00:11:51.790
+saulius: Hello, so we are still working on DevNet 3, and there is still some work done until we can interrupt.
+
+60
+00:11:57.090 --> 00:11:57.730
+Will Corcoran: Beautiful.
+
+61
+00:11:58.070 --> 00:12:06.300
+Will Corcoran: Final call for client teams. I don't think I see Lighthouse or Nimbus representatives.
+
+62
+00:12:13.280 --> 00:12:21.230
+Will Corcoran: Great. Cool, so moving on to specifications… And… research.
+
+63
+00:12:21.430 --> 00:12:26.860
+Will Corcoran: One thing I'll… go ahead, Devon.
+
+64
+00:12:26.860 --> 00:12:28.610
+Thomas Coratger: Yeah, yeah, please go ahead.
+
+65
+00:12:28.610 --> 00:12:37.840
+Will Corcoran: Oh, no, I was just gonna ask if, there was anyone starting a high-level dock for DevNet 4, and,
+
+66
+00:12:38.760 --> 00:12:40.569
+Will Corcoran: If that was something that…
+
+67
+00:12:41.570 --> 00:12:46.979
+Gajinder Singh: So, I think Joel is working on it, and I'll ask him to start a high-level doc on DevNet 4.
+
+68
+00:12:47.820 --> 00:13:01.009
+Will Corcoran: Great. And if… when they do that, there's the overall PM doc that just… it's a markdown that kind of cross-coordinates the high-level docs, if they could also update that. Thanks.
+
+69
+00:13:01.170 --> 00:13:02.789
+Will Corcoran: Sorry, go ahead, Tamal.
+
+70
+00:13:03.940 --> 00:13:09.920
+Thomas Coratger: Yeah, no, I was just going to say that, about the spec,
+
+71
+00:13:10.550 --> 00:13:26.180
+Thomas Coratger: I have worked, like, a bit on this last week, in order to make some tests, some clarification, and some simplification for the lean client… lean spec client to be ready for interop.
+
+72
+00:13:26.430 --> 00:13:33.979
+Thomas Coratger: From my local test that I made with LeanSpec and LeanSpec, both interoping together.
+
+73
+00:13:34.640 --> 00:13:48.989
+Thomas Coratger: I obtained pretty encouraging results, but I wanted, like, you as client team to check what this gives with your client and integration, because I think that you are much more experienced than me on every single day to
+
+74
+00:13:49.250 --> 00:13:54.000
+Thomas Coratger: interrupt, DevOps, and then Quick Start in integration, so…
+
+75
+00:13:54.240 --> 00:14:10.509
+Thomas Coratger: please check and let me know if there are some bugs. I am pretty sure that we will find some… some bugs, but I have tried to clarify as much as possible the… the spec and the minimal client. I have added some test vectors for…
+
+76
+00:14:10.510 --> 00:14:16.649
+Thomas Coratger: Example, on every single lady to gossip sub, to the sink.
+
+77
+00:14:16.780 --> 00:14:24.640
+Thomas Coratger: And all of this to try, at least to, to discover, like, preliminary bugs that could happen.
+
+78
+00:14:25.070 --> 00:14:37.679
+Thomas Coratger: I have taken some test vectors from Rust's known implementation, sometimes from EIPs, or for existing specifications.
+
+79
+00:14:37.900 --> 00:14:46.100
+Thomas Coratger: In order to make things as clear as possible and avoid, in the future, potential bugs.
+
+80
+00:14:46.410 --> 00:15:03.350
+Thomas Coratger: So that is done. I didn't want to push much more on this front, since I think that we are, at least in the spec, DevNet3 ready, and so that you can check.
+
+81
+00:15:03.550 --> 00:15:12.969
+Thomas Coratger: clients. Also, I think that before you do the interop, as mentioned by, Partha in,
+
+82
+00:15:13.130 --> 00:15:17.710
+Thomas Coratger: In the chats, we have to be in agreement
+
+83
+00:15:18.020 --> 00:15:31.310
+Thomas Coratger: all together on the SSD container for the signatures. Otherwise, you will have a problem while interoping with the lean spec, because you will not serialize and deserialize in the same way.
+
+84
+00:15:31.490 --> 00:15:44.589
+Thomas Coratger: So yeah, that's it. On the other side, we have worked this week much more on the crypto sides of things, because after the paper that has been published.
+
+85
+00:15:44.720 --> 00:15:47.600
+Thomas Coratger: last week, I think, about Poseidon 2.
+
+86
+00:15:47.830 --> 00:16:06.299
+Thomas Coratger: improvements of attacks. We have tried to think a bit more, even if we are not panicking at all. We are trying to think a bit more on potential alternatives, for example, Poseidon 1 instead of post-Aidon 2, and other potential hash functions, so we are
+
+87
+00:16:06.520 --> 00:16:23.200
+Thomas Coratger: Trying to work a bit more on the Plonk E3 framework in order to integrate missing stuff, to be able to benchmark potential hash functions as fallbacks, and have solutions in case in the future, Poseidon 2 is finally broken.
+
+88
+00:16:23.520 --> 00:16:43.170
+Thomas Coratger: So that is one thing, and also, Emi will talk about this more after, but, related to LinVM, we have tried to integrate also, potential elements of LinVM, inside, Plonk E3 to make in
+
+89
+00:16:43.190 --> 00:16:55.160
+Thomas Coratger: the future, the integration of LeanVM via Plum K3, much easier than it could be right now. So, yeah, please gaze in there, and then I guess that email will have follow-up stuff, yeah.
+
+90
+00:16:57.000 --> 00:17:09.869
+Gajinder Singh: Yeah, I just wanted to circle back on the SSD container for the signatures, so I would like to know what is your thinking, that why should we have the SSD container for signatures in terms of,
+
+91
+00:17:10.000 --> 00:17:19.099
+Gajinder Singh: You know, in terms of it being very neat, definitely it makes sense that we can see what the signatures are made of.
+
+92
+00:17:19.300 --> 00:17:23.969
+Gajinder Singh: But does… a shared client need to, sort of, know
+
+93
+00:17:24.079 --> 00:17:28.710
+Gajinder Singh: What the structure of the signature is, and is it useful in any way, or…
+
+94
+00:17:29.360 --> 00:17:35.190
+Gajinder Singh: It is just, to basically make things easy, because at least in,
+
+95
+00:17:35.690 --> 00:17:40.579
+Gajinder Singh: I don't… I don't think we… we still need to SSZ root it.
+
+96
+00:17:40.680 --> 00:17:42.810
+Gajinder Singh: So that won't be the problem.
+
+97
+00:17:43.090 --> 00:17:49.439
+Gajinder Singh: But, okay, we might… I don't think we need to SSC root it, right?
+
+98
+00:17:55.270 --> 00:17:59.999
+Mihir Faujdar: Yeah, so I think, at the moment, we're not hashing it, so it's not a problem.
+
+99
+00:18:00.320 --> 00:18:07.439
+Mihir Faujdar: Yeah. But it might, we might need it. I'm not sure if we might need to do it in the future, but I'll let Thomas…
+
+100
+00:18:07.950 --> 00:18:12.339
+Thomas Coratger: Yeah, I think that for now, this is not a problem, but maybe in the future.
+
+101
+00:18:13.220 --> 00:18:16.690
+Thomas Coratger: Like, you can try, it depends.
+
+102
+00:18:18.380 --> 00:18:23.450
+Thomas Coratger: let me think… I think that in some potential scenarios.
+
+103
+00:18:27.350 --> 00:18:29.800
+Thomas Coratger: No, I think that for now, this is not a problem.
+
+104
+00:18:33.080 --> 00:18:42.979
+Gajinder Singh: So, I mean, I don't see, the need for SSD routing, the signature ever arriving, but yes, I mean, even for serialization and decentralization.
+
+105
+00:18:43.360 --> 00:18:48.779
+Gajinder Singh: Even though it is not happening at the underlying signature layer, but…
+
+106
+00:18:49.250 --> 00:18:52.180
+Gajinder Singh: Signature library layer, but now at this layer.
+
+107
+00:18:52.350 --> 00:18:56.820
+Gajinder Singh: I'm not sure whether there are any pitfalls for it or not, but…
+
+108
+00:18:57.680 --> 00:19:03.919
+Gajinder Singh: But if there is a reasoning that you had to do this, definitely, I would like to know that.
+
+109
+00:19:06.020 --> 00:19:17.209
+Thomas Coratger: No, no precise thing. I think that this is okay. This is just related to this message that I left in the DivNet3 group.
+
+110
+00:19:18.050 --> 00:19:25.610
+Thomas Coratger: it was just because I think that at least what I have checked in Rim, but I guess this is the same for the other clients.
+
+111
+00:19:25.890 --> 00:19:34.509
+Thomas Coratger: like, you force the encoding to be 3112 bytes.
+
+112
+00:19:36.090 --> 00:19:36.930
+Thomas Coratger: Right?
+
+113
+00:19:39.800 --> 00:19:45.469
+Thomas Coratger: I guess that this is it. You… you… for the signature…
+
+114
+00:19:45.470 --> 00:19:52.009
+Gajinder Singh: I mean, the message says that, basically calculating hashtree root of the signature, but why do we need that hashtree root?
+
+115
+00:19:57.720 --> 00:20:02.640
+Thomas Coratger: No, I, I… No, I don't think that you need it.
+
+116
+00:20:02.950 --> 00:20:05.910
+Thomas Coratger: Because you mean that this,
+
+117
+00:20:06.680 --> 00:20:13.110
+Thomas Coratger: the signatures in your case, already arise as bytes. This is what you mean, right?
+
+118
+00:20:14.260 --> 00:20:15.080
+Gajinder Singh: Right.
+
+119
+00:20:15.390 --> 00:20:22.380
+Thomas Coratger: So, you mean you never need to ask reroute the signature, because this is already done on your behalf, right?
+
+120
+00:20:23.520 --> 00:20:35.260
+Gajinder Singh: Correct, and basically, you know, since we don't even have signatures in attestations inside the block, because that is what, what a normal beacon block would have, they would have
+
+121
+00:20:35.380 --> 00:20:47.890
+Gajinder Singh: attestation, which had aggregated signatures inside the blog itself, but we sort of separated them out, and our signature container carries all the signatures that would be in the block, as well as
+
+122
+00:20:48.080 --> 00:21:02.450
+Gajinder Singh: the proposer signature for the test station that they have, which would then basically change into the full block signature when we have a recursive signature. But what I'm saying is that, right now, I don't think we are hashtrooting signature in any way.
+
+123
+00:21:02.860 --> 00:21:05.800
+Thomas Coratger: Yeah, yeah, that is a possibility, yeah.
+
+124
+00:21:08.240 --> 00:21:13.469
+Thomas Coratger: Yeah. No, yeah, yeah, yeah, I see your point, yeah, I agree. This should not be a problem then.
+
+125
+00:21:15.210 --> 00:21:19.670
+Gajinder Singh: Yeah, so even without SSC container implementation, we should be on the same page, right?
+
+126
+00:21:19.800 --> 00:21:23.050
+Thomas Coratger: Yeah, I think so. For now, I think so, yeah.
+
+127
+00:21:27.450 --> 00:21:28.740
+Thomas Coratger: Yeah, father.
+
+128
+00:21:29.480 --> 00:21:47.049
+Parthasarathy Ramanujam: So yeah, if that's the case, then I presume we can test interop with LeanSpec Node. I just had one question for you, Thomas. So right now, I have the Docker under my personal registry for LeanSpec Node. Is there a particular registry you would, prefer?
+
+129
+00:21:47.060 --> 00:21:55.750
+Parthasarathy Ramanujam: I can include that as a separate PR to LeanSpec to publish Docker images every time there's a merge to master or main branch.
+
+130
+00:21:56.660 --> 00:21:58.630
+Thomas Coratger: Yeah, yeah, that sounds good, yeah.
+
+131
+00:21:59.390 --> 00:22:01.020
+Parthasarathy Ramanujam: Okay, I'll do that.
+
+132
+00:22:05.650 --> 00:22:15.799
+Thomas Coratger: Yeah, Emil, please, if you have anything related. If anyone has something to add on this part, please feel free to do so. Otherwise, like, Emil, feel free to…
+
+133
+00:22:16.540 --> 00:22:21.610
+Thomas Coratger: speak about your advancement for LeanVM?
+
+134
+00:22:22.930 --> 00:22:32.340
+T. Wambsgans: Hi, yeah, thanks. I slightly modified the ISA and the compiler, and those small modifications.
+
+135
+00:22:32.570 --> 00:22:38.990
+T. Wambsgans: improved by about 30%, both XMSS and recursion performance, which is nice.
+
+136
+00:22:39.160 --> 00:22:40.080
+T. Wambsgans: That's it.
+
+137
+00:22:48.500 --> 00:23:08.489
+Anshal: So, I have one small doubt around it. So, I was looking into the code, and I saw that now we have, in the XSMS aggregate container, we already provide, like, the serialized, deserialization third. So, going forward, we'll be using that, to encode and decode, instead of, like, SSE serialization, right?
+
+138
+00:23:10.430 --> 00:23:15.910
+T. Wambsgans: You, you mean the… the serialize and the serialized method in the linear TC repo?
+
+139
+00:23:16.650 --> 00:23:17.190
+Anshal: Yeah.
+
+140
+00:23:17.650 --> 00:23:28.320
+T. Wambsgans: I think I just, put it, but it is not particularly intended for use. I guess you can totally use other encoding. I think all the fields…
+
+141
+00:23:28.430 --> 00:23:35.690
+T. Wambsgans: industries are public, so you should be able to do whatever you want to encode and decode it, I guess.
+
+142
+00:23:36.860 --> 00:23:38.490
+Anshal: Yeah, so,
+
+143
+00:23:39.100 --> 00:23:47.989
+Anshal: Yeah, that is possible, but, what is, like, recommended? Because I see that you are, decompressing it as well, so,
+
+144
+00:23:48.120 --> 00:23:53.889
+Anshal: In my opinion, like, it's a good idea to use it as is, but,
+
+145
+00:23:54.930 --> 00:24:04.439
+Anshal: if there's any benefit of using SSE encoding instead of using the default encoding that is basically provided within the container itself.
+
+146
+00:24:06.850 --> 00:24:15.660
+T. Wambsgans: the default encoding should work. Honestly, I'm not an expert of encoding, so I don't know, but I think the one which is provided in Motisig should be…
+
+147
+00:24:15.960 --> 00:24:25.299
+T. Wambsgans: Close to, like, at least not… like, maybe, 95% from optimal, probably.
+
+148
+00:24:29.440 --> 00:24:30.040
+Anshal: Okay.
+
+149
+00:24:30.860 --> 00:24:31.620
+Anshal: So…
+
+150
+00:24:33.050 --> 00:24:39.929
+Anshal: I'll just post about it on the group itself for the discussion, so that others can also, like, once go through
+
+151
+00:24:40.190 --> 00:24:59.399
+Anshal: the details, and then comment about it. I believe, like, rest of the people aren't mostly aware about it. About, like, the other thing that I had mentioned in the, channel itself. So, you mentioned that we now have, ZK-friendly encoding, so we can have the
+
+152
+00:24:59.460 --> 00:25:03.640
+Anshal: branch with LeanSig as well. So, like.
+
+153
+00:25:03.770 --> 00:25:17.419
+Anshal: I think… will we, like, wait for that to be implemented completely, or we'll have, like, a temporary branch for DevNet 4, something similar to what we did for DevNet 2 in the Lean Multisig repo?
+
+154
+00:25:17.640 --> 00:25:24.790
+T. Wambsgans: I believe first we would need to have the ZK-friendly encoding implemented in the LeanSig repository.
+
+155
+00:25:25.060 --> 00:25:36.169
+T. Wambsgans: I don't know if Benedict is here, I don't know, like, but… and when, when… Yeah, perfect, hi. And if, this is, like.
+
+156
+00:25:36.270 --> 00:25:48.710
+T. Wambsgans: I would also have to see with Benedict which encoding is used, but theoretically, once this is done, it should be much easier to…
+
+157
+00:25:49.150 --> 00:25:54.910
+T. Wambsgans: snackify the encoding, and I guess the…
+
+158
+00:25:55.440 --> 00:26:03.980
+T. Wambsgans: Yeah, probably a dedicated branch, DevNet4, as previously, would be the easiest way to proceed, yeah.
+
+159
+00:26:04.980 --> 00:26:08.180
+Benedikt Wagner: Yeah, I mean, there's an issue in the LeanSig…
+
+160
+00:26:08.810 --> 00:26:17.609
+Benedikt Wagner: repository to implement the encoding from the paper. I think it should not be that hard, so if anyone wants to do it.
+
+161
+00:26:17.780 --> 00:26:24.890
+Benedikt Wagner: I'm happy to… to review a PR, but I'm not sure if I have the time to do it in this week or next week.
+
+162
+00:26:27.390 --> 00:26:28.910
+T. Wambsgans: Yeah, okay, alright.
+
+163
+00:26:29.560 --> 00:26:33.589
+Benedikt Wagner: But yeah, if… I mean, we can also sync, offline.
+
+164
+00:26:33.590 --> 00:26:47.030
+T. Wambsgans: Yeah, okay. And just to be sure, it's, what you have in mind to use is not top of the hypercube encoding, just basically close to the average target sum, right?
+
+165
+00:26:47.660 --> 00:26:50.679
+Benedikt Wagner: Yeah, I think this is the one that we should try first.
+
+166
+00:26:50.680 --> 00:26:52.350
+T. Wambsgans: Yeah, and we basically…
+
+167
+00:26:52.350 --> 00:26:56.770
+Benedikt Wagner: I don't think the complexity of the other encoding is worth it.
+
+168
+00:26:56.970 --> 00:27:12.169
+T. Wambsgans: Okay, and so basically, you decompose each color bears, and you do rejection sampling when it's not, like, the… there is an edge case, and you do rejection sampling, and consequence… like, as a consequence, it becomes uniform, and that's.
+
+169
+00:27:12.170 --> 00:27:14.229
+Benedikt Wagner: Yeah, right. Okay, nothing.
+
+170
+00:27:14.230 --> 00:27:14.770
+T. Wambsgans: Okay.
+
+171
+00:27:15.090 --> 00:27:17.919
+T. Wambsgans: Should be not… okay, should be… I mean, I can…
+
+172
+00:27:17.920 --> 00:27:27.710
+Benedikt Wagner: I can link you to the section in the paper, but it should just be a new message hash, like, a new implementation of the message hash trait, and then combine it with the target sum.
+
+173
+00:27:27.990 --> 00:27:34.470
+T. Wambsgans: the good news is that that's basically the encoding that is used on the main branch of Lin Mutistic, so…
+
+174
+00:27:34.700 --> 00:27:39.280
+T. Wambsgans: at least in minimal TCG, it would be very easy to use it. Perfect.
+
+175
+00:27:50.010 --> 00:28:07.990
+Anshal: Okay, I was just bringing it up because I thought, like, if it would have taken a longer time, then we'll have to think about it, because I should be done with the Remnant 4 speccing by end of this week, but I think, like, it is not a lot of work, so we should be able to, like.
+
+176
+00:28:08.000 --> 00:28:10.360
+Anshal: move forward with the DevNet 4.
+
+177
+00:28:10.360 --> 00:28:28.779
+T. Wambsgans: If at some point I can find some time, I will definitely try to implement it to make a pair in LeanSig. I cannot guarantee you it will be done in the coming days because of the positon stuff and other things, but I will try to do it as soon as I can find some time. Yes.
+
+178
+00:28:29.020 --> 00:28:41.999
+Anshal: Yeah, yeah, I don't need it right away. I'll ping you if I have some doubts as such, but for the specing part, I don't need it anyway. I just need the API, which is already finalized. So, I'm good on that.
+
+179
+00:28:42.380 --> 00:28:43.420
+T. Wambsgans: Perfect, okay.
+
+180
+00:28:56.050 --> 00:29:01.730
+Will Corcoran: Excellent. Any other spec research-related questions, topics?
+
+181
+00:29:08.680 --> 00:29:14.780
+Will Corcoran: Metrics, observability, anything that you wanted to, flag for this week?
+
+182
+00:29:15.660 --> 00:29:28.640
+Katya: Yes, hello, everyone. So, this week I've been testing, Checkpoint Sync, and for 5 clients, it went well, so I just shared some tiny issues in the chat.
+
+183
+00:29:28.670 --> 00:29:52.060
+Katya: The latest Lantern update, updated image, also works, and after the call, I will share with the Lambda team what should be fixed, just, just a small, tiny fix. Regarding DevNet 3 metrics, so I updated, the dashboards for DevNet 2, so I merged them into one dashboard, and will update LinkWix
+
+184
+00:29:52.060 --> 00:29:53.959
+Katya: Start soon, this week.
+
+185
+00:29:54.100 --> 00:30:09.410
+Katya: Regarding Demet 3, metrics, so I'm working on Demet 3 dashboards right now, and, probably, hopefully today, I will merge, the whole PR, if there are no comments on the, on this.
+
+186
+00:30:09.550 --> 00:30:11.689
+Katya: And we'll share in the tooling chat.
+
+187
+00:30:12.800 --> 00:30:15.009
+Katya: That's it for my side, thank you.
+
+188
+00:30:20.440 --> 00:30:29.269
+Katya: So, DevNet 3 metrics will be integrated into the dashboard in DeanQuick Star, so when we build it, you can check on the go.
+
+189
+00:30:30.490 --> 00:30:35.899
+Katya: But it will be a little bit blinded, so let me know if something's wrong. Thank you.
+
+190
+00:30:48.750 --> 00:30:52.639
+Will Corcoran: Excellent. Any other open discussion topics?
+
+191
+00:31:05.790 --> 00:31:11.420
+Will Corcoran: On a fun note, I hope to share the schedule for Pectra.
+
+192
+00:31:11.840 --> 00:31:17.220
+Will Corcoran: Later this week, so I'll drop that in the PQ channel as a little preview.
+
+193
+00:31:24.740 --> 00:31:25.670
+Will Corcoran: Okay.
+
+194
+00:31:25.800 --> 00:31:27.610
+Will Corcoran: Wonderful.
+
+195
+00:31:28.100 --> 00:31:30.709
+Will Corcoran: Quick, efficient call. Appreciate it.
+
+196
+00:31:33.090 --> 00:31:34.350
+Thomas Coratger: Thanks.
+
+197
+00:31:34.350 --> 00:31:35.429
+Shariq Naiyer: Thank y'all.
+
+198
+00:31:36.150 --> 00:31:36.850
+Katya: cure alongside.
+
+199
+00:31:37.080 --> 00:31:37.730
+T. Wambsgans: Alright, thanks.
+
+200
+00:31:37.730 --> 00:31:38.619
+Pablo Deymo | Lambda: Thank you for my…
+
+201
+00:31:39.050 --> 00:31:39.700
+KaydenML: Thank you.
+

@@ -145,7 +145,7 @@ const CallsIndexPage: React.FC = () => {
                   acd: 'bg-indigo-600 dark:bg-indigo-500 text-white dark:text-white',
                   acdc: 'bg-blue-600 dark:bg-blue-500 text-white dark:text-white',
                   acde: 'bg-sky-600 dark:bg-sky-500 text-white dark:text-white',
-                  acdt: 'bg-teal-600 dark:bg-teal-500 text-white dark:text-white',
+                  acdt: 'bg-cyan-600 dark:bg-cyan-500 text-white dark:text-white',
                   breakouts: 'bg-yellow-600 dark:bg-yellow-500 text-white dark:text-yellow-950'
                 };
 
@@ -154,7 +154,7 @@ const CallsIndexPage: React.FC = () => {
                   acd: 'bg-indigo-50 dark:bg-indigo-950/30 text-indigo-700 dark:text-indigo-400 hover:bg-indigo-100 dark:hover:bg-indigo-900/30',
                   acdc: 'bg-blue-50 dark:bg-blue-950/30 text-blue-700 dark:text-blue-400 hover:bg-blue-100 dark:hover:bg-blue-900/30',
                   acde: 'bg-sky-50 dark:bg-sky-950/30 text-sky-700 dark:text-sky-400 hover:bg-sky-100 dark:hover:bg-sky-900/30',
-                  acdt: 'bg-teal-50 dark:bg-teal-950/30 text-teal-700 dark:text-teal-400 hover:bg-teal-100 dark:hover:bg-teal-900/30',
+                  acdt: 'bg-cyan-50 dark:bg-cyan-950/30 text-cyan-700 dark:text-cyan-400 hover:bg-cyan-100 dark:hover:bg-cyan-900/30',
                   breakouts: 'bg-yellow-50 dark:bg-yellow-950/30 text-yellow-700 dark:text-yellow-400 hover:bg-yellow-100 dark:hover:bg-yellow-900/30'
                 };
 
@@ -352,7 +352,7 @@ const CallsIndexPage: React.FC = () => {
                           const upcomingCallTypeColors = {
                             acdc: 'border-l-blue-500 dark:border-l-blue-400',
                             acde: 'border-l-sky-500 dark:border-l-sky-400',
-                            acdt: 'border-l-teal-500 dark:border-l-teal-400',
+                            acdt: 'border-l-cyan-500 dark:border-l-cyan-400',
                             epbs: 'border-l-amber-500 dark:border-l-amber-400',
                             bal: 'border-l-red-500 dark:border-l-red-400',
                             focil: 'border-l-orange-500 dark:border-l-orange-400',
@@ -360,13 +360,13 @@ const CallsIndexPage: React.FC = () => {
                             zkevm: 'border-l-fuchsia-500 dark:border-l-fuchsia-400',
                             etm: 'border-l-purple-500 dark:border-l-purple-400',
                             awd: 'border-l-lime-500 dark:border-l-lime-400',
-                            pqi: 'border-l-cyan-500 dark:border-l-cyan-400'
+                            pqi: 'border-l-emerald-500 dark:border-l-emerald-400'
                           };
 
                           const upcomingCallTypeBadgeColors: Record<CallType, string> = {
                             acdc: 'bg-blue-100 dark:bg-blue-900/30 text-blue-700 dark:text-blue-300',
                             acde: 'bg-sky-100 dark:bg-sky-900/30 text-sky-700 dark:text-sky-300',
-                            acdt: 'bg-teal-100 dark:bg-teal-900/30 text-teal-700 dark:text-teal-300',
+                            acdt: 'bg-cyan-100 dark:bg-cyan-900/30 text-cyan-700 dark:text-cyan-300',
                             epbs: 'bg-amber-100 dark:bg-amber-900/30 text-amber-700 dark:text-amber-300',
                             bal: 'bg-red-100 dark:bg-red-900/30 text-red-700 dark:text-red-300',
                             focil: 'bg-orange-100 dark:bg-orange-900/30 text-orange-700 dark:text-orange-300',
@@ -377,7 +377,7 @@ const CallsIndexPage: React.FC = () => {
                             zkevm: 'bg-fuchsia-100 dark:bg-fuchsia-900/30 text-fuchsia-700 dark:text-fuchsia-300',
                             etm: 'bg-purple-100 dark:bg-purple-900/30 text-purple-700 dark:text-purple-300',
                             awd: 'bg-lime-100 dark:bg-lime-900/30 text-lime-700 dark:text-lime-300',
-                            pqi: 'bg-cyan-100 dark:bg-cyan-900/30 text-cyan-700 dark:text-cyan-300'
+                            pqi: 'bg-emerald-100 dark:bg-emerald-900/30 text-emerald-700 dark:text-emerald-300'
                           };
 
                           const cardContent = (
@@ -450,7 +450,7 @@ const CallsIndexPage: React.FC = () => {
                         const callTypeColors: Record<CallType, string> = {
                           acdc: 'border-l-blue-500 dark:border-l-blue-400',
                           acde: 'border-l-sky-500 dark:border-l-sky-400',
-                          acdt: 'border-l-teal-500 dark:border-l-teal-400',
+                          acdt: 'border-l-cyan-500 dark:border-l-cyan-400',
                           epbs: 'border-l-amber-500 dark:border-l-amber-400',
                           bal: 'border-l-red-500 dark:border-l-red-400',
                           focil: 'border-l-orange-500 dark:border-l-orange-400',
@@ -461,13 +461,13 @@ const CallsIndexPage: React.FC = () => {
                           zkevm: 'border-l-fuchsia-500 dark:border-l-fuchsia-400',
                           etm: 'border-l-purple-500 dark:border-l-purple-400',
                           awd: 'border-l-lime-500 dark:border-l-lime-400',
-                          pqi: 'border-l-cyan-500 dark:border-l-cyan-400'
+                          pqi: 'border-l-emerald-500 dark:border-l-emerald-400'
                         };
 
                         const callTypeBadgeColors: Record<CallType, string> = {
                           acdc: 'bg-blue-100 dark:bg-blue-900/30 text-blue-700 dark:text-blue-300',
                           acde: 'bg-sky-100 dark:bg-sky-900/30 text-sky-700 dark:text-sky-300',
-                          acdt: 'bg-teal-100 dark:bg-teal-900/30 text-teal-700 dark:text-teal-300',
+                          acdt: 'bg-cyan-100 dark:bg-cyan-900/30 text-cyan-700 dark:text-cyan-300',
                           epbs: 'bg-amber-100 dark:bg-amber-900/30 text-amber-700 dark:text-amber-300',
                           bal: 'bg-red-100 dark:bg-red-900/30 text-red-700 dark:text-red-300',
                           focil: 'bg-orange-100 dark:bg-orange-900/30 text-orange-700 dark:text-orange-300',
@@ -478,7 +478,7 @@ const CallsIndexPage: React.FC = () => {
                           zkevm: 'bg-fuchsia-100 dark:bg-fuchsia-900/30 text-fuchsia-700 dark:text-fuchsia-300',
                           etm: 'bg-purple-100 dark:bg-purple-900/30 text-purple-700 dark:text-purple-300',
                           awd: 'bg-lime-100 dark:bg-lime-900/30 text-lime-700 dark:text-lime-300',
-                          pqi: 'bg-cyan-100 dark:bg-cyan-900/30 text-cyan-700 dark:text-cyan-300'
+                          pqi: 'bg-emerald-100 dark:bg-emerald-900/30 text-emerald-700 dark:text-emerald-300'
                         };
 
                         return (

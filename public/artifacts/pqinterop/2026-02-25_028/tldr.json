@@ -1,0 +1,103 @@
+{
+  "meeting": "Post-Quantum (PQ) Interop #28 - February 25, 2026",
+  "highlights": {
+    "devnet_3_status": [
+      {
+        "timestamp": "00:05:03",
+        "highlight": "Zeam and Lantern ready for DevNet-3 interop testing"
+      },
+      {
+        "timestamp": "00:06:36",
+        "highlight": "Ream spec complete, self-finalization tests debugging in progress"
+      },
+      {
+        "timestamp": "00:07:59",
+        "highlight": "5 clients achieved DevNet-3 interop on Partha's local tests"
+      },
+      {
+        "timestamp": "00:08:29",
+        "highlight": "Lantern debugging finalization breaks after slot 30,000 on DevNet-2"
+      }
+    ],
+    "devnet_4_progress": [
+      {
+        "timestamp": "00:13:09",
+        "highlight": "Recursive aggregation API complete - no Merkle tree needed"
+      },
+      {
+        "timestamp": "00:18:27",
+        "highlight": "SSZ signature container changed from variable to fixed-size"
+      },
+      {
+        "timestamp": "00:25:24",
+        "highlight": "ZK-friendly encoding needed in LeanSig before DevNet-4 branch"
+      }
+    ],
+    "cryptography_updates": [
+      {
+        "timestamp": "00:15:44",
+        "highlight": "Poseidon2 attack paper published; exploring Poseidon1 fallback alternatives"
+      },
+      {
+        "timestamp": "00:22:30",
+        "highlight": "LeanVM ISA modifications improved XMSS/recursion performance by 30%"
+      }
+    ],
+    "testing_progress": [
+      {
+        "timestamp": "00:14:03",
+        "highlight": "LeanSpec self-interop passing locally; sync still flaky"
+      },
+      {
+        "timestamp": "00:28:28",
+        "highlight": "DevNet-2 reached 24+ hours continuous finalization milestone"
+      },
+      {
+        "timestamp": "00:29:52",
+        "highlight": "Checkpoint sync working for 5 clients in testing"
+      }
+    ],
+    "organizational": [
+      {
+        "timestamp": "00:12:26",
+        "highlight": "DevNet-4 high-level doc to be created by Zeam team"
+      },
+      {
+        "timestamp": "00:31:05",
+        "highlight": "Port Mode schedule preview coming later this week"
+      }
+    ]
+  },
+  "action_items": [
+    {
+      "timestamp": "00:14:26",
+      "action": "Update lean-spec to use fixed-size signature container (vector vs list)",
+      "owner": "Thomas Coratger"
+    },
+    {
+      "timestamp": "00:27:04",
+      "action": "Implement ZK-friendly encoding from paper in LeanSig repository",
+      "owner": "Benedict Wagner / Emil"
+    },
+    {
+      "timestamp": "00:29:28",
+      "action": "Merge DevNet-3 metrics dashboards into LeanQuickStart",
+      "owner": "Katya"
+    }
+  ],
+  "decisions": [
+    {
+      "timestamp": "00:18:50",
+      "decision": "Signature container spec changed to fixed-size bytes (not variable-size list)"
+    },
+    {
+      "timestamp": "00:20:35",
+      "decision": "Hash tree root of signatures not needed; already handled as bytes"
+    },
+    {
+      "timestamp": "00:26:50",
+      "decision": "Use average target sum encoding (not hypercube) for DevNet-4"
+    }
+  ],
+  "targets": []
+}

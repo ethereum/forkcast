@@ -124,7 +124,7 @@ export const HEGOTA_TIMELINE_PHASES: TimelinePhase[] = [
   {
     id: 'headliner-discussion',
     title: 'Headliner Discussion & Finalization',
-    dateRange: 'Feb 5 - Feb 26',
+    dateRange: 'Feb 5 - Mar 12',
     description: 'ACD evaluates candidate headliners, solicits community feedback, and finalizes decisions.',
     status: 'current'
   },
@@ -333,7 +333,7 @@ export const HEGOTA_PROGRESS: ForkProgress = {
       status: 'in-progress',
       actualStartDate: 'Jan 8, 2026',
       projectedDate: 'Q1-Q2 2026',
-      progressNotes: 'Headliner discussion in progress, selection deadline Feb 26, 2026',
+      progressNotes: 'Headliner discussion in progress, selection deadline Mar 12, 2026',
       substeps: [
         {
           name: 'Proposal Deadline',
@@ -343,7 +343,7 @@ export const HEGOTA_PROGRESS: ForkProgress = {
         {
           name: 'Selection Deadline',
           status: 'in-progress',
-          projectedDate: 'Feb 26, 2026'
+          projectedDate: 'Mar 12, 2026'
         }
       ]
     },

@@ -81,13 +81,25 @@ const upgrades = [
 ];
 
 // Get full type name for calls
+const callTypeNames = {
+  acdc: 'All Core Devs - Consensus',
+  acde: 'All Core Devs - Execution',
+  acdt: 'All Core Devs - Testing',
+  epbs: 'ePBS Breakout',
+  bal: 'BAL Breakout',
+  focil: 'FOCIL Breakout',
+  price: 'Glamsterdam Repricings',
+  tli: 'Trustless Log Index',
+  pqts: 'Post Quantum Transaction Signatures',
+  rpc: 'RPC Standards',
+  zkevm: 'L1-zkEVM Breakout',
+  etm: 'Encrypt The Mempool',
+  awd: 'AllWalletDevs',
+  pqi: 'PQ Interop',
+};
+
 function getCallTypeName(type) {
-  switch(type.toUpperCase()) {
-    case 'ACDC': return 'All Core Devs Consensus';
-    case 'ACDE': return 'All Core Devs Execution';
-    case 'ACDT': return 'All Core Devs Testing';
-    default: return type;
-  }
+  return callTypeNames[type.toLowerCase()] || type;
 }
 
 // Get EIP proposal prefix (EIP or RIP)

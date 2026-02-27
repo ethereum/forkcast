@@ -8,6 +8,7 @@ import ThemeToggle from '../ui/ThemeToggle';
 import { Logo } from '../ui/Logo';
 import { protocolCalls, callTypeNames, type CallType } from '../../data/calls';
 import { fetchUpcomingCalls } from '../../utils/github';
+import { useMetaTags } from '../../hooks/useMetaTags';
 import { eipsData } from '../../data/eips';
 import { EIP, ForkRelationship, KeyDecision } from '../../types/eip';
 
@@ -87,6 +88,15 @@ const CallPage: React.FC = () => {
   const [initialSearchQuery, setInitialSearchQuery] = useState('');
   // Track if we've already navigated to avoid duplicate seeks
   const hasNavigatedToSearchResult = useRef(false);
+
+  // Set meta tags for social previews
+  const callName = callData
+    ? `${callTypeNames[callData.type.toLowerCase() as CallType] || callData.type} #${callData.number}`
+    : 'Call';
+  useMetaTags({
+    title: `${callName} | Forkcast`,
+    description: `Notes and recording for ${callName}`,
+  });
 
   // Compute previous and next calls within the same series
   const { prevCall, nextCall } = useMemo(() => {

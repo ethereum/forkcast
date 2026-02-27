@@ -432,29 +432,6 @@ const PublicNetworkUpgradePage: React.FC<PublicNetworkUpgradePageProps> = ({
               </div>
             </div>
 
-            <div className="mt-2">
-              <p className="text-xs text-slate-400 dark:text-slate-400 italic max-w-xl">
-              Forkcast is an ongoing experiment by the Protocol Support team to make the network upgrade process more accessible. Have feedback? Contact{' '}
-                <a
-                  href="mailto:nixo@ethereum.org"
-                  onClick={() => handleExternalLinkClick('email_contact', 'mailto:nixo@ethereum.org')}
-                  className="text-slate-500 hover:text-slate-700 dark:text-slate-300 dark:hover:text-slate-100 underline decoration-1 underline-offset-2"
-                >
-                  nixo
-                </a>
-                {' '}or{' '}
-                <a
-                  href="https://x.com/wolovim"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  onClick={() => handleExternalLinkClick('twitter_contact', 'https://x.com/wolovim')}
-                  className="text-slate-500 hover:text-slate-700 dark:text-slate-300 dark:hover:text-slate-100 underline decoration-1 underline-offset-2"
-                >
-                  @wolovim
-                </a>
-                .
-              </p>
-            </div>
           </div>
         </div>
 

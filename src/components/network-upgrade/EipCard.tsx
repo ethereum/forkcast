@@ -92,7 +92,7 @@ export const EipCard: React.FC<EipCardProps> = ({ eip, forkName, handleExternalL
                       text={layer === 'EL' ? 'Primarily impacts Execution Layer' : 'Primarily impacts Consensus Layer'}
                       className="inline-block"
                     >
-                      <span className={`px-2 py-0.5 text-xs font-medium rounded ${
+                      <span className={`px-2 py-0.5 text-xs leading-none font-medium rounded relative -top-px ${
                         layer === 'EL'
                           ? 'bg-indigo-100 text-indigo-700 dark:bg-indigo-900/20 dark:text-indigo-300 border border-indigo-200 dark:border-indigo-600'
                           : 'bg-teal-100 text-teal-700 dark:bg-teal-900/20 dark:text-teal-300 border border-teal-200 dark:border-teal-600'

@@ -60,6 +60,10 @@ class SearchIndexService {
 
   private constructor() {}
 
+  private isIndexExpired(index: SearchIndex): boolean {
+    return Date.now() - index.lastUpdated > this.MAX_INDEX_AGE;
+  }
+
   static getInstance(): SearchIndexService {
     if (!SearchIndexService.instance) {
       SearchIndexService.instance = new SearchIndexService();
@@ -514,31 +518,32 @@ class SearchIndexService {
 
   // Get or build the index
   async getIndex(): Promise<SearchIndex> {
-    // Return existing index if available
-    if (this.index) {
+    // Return existing index if available and fresh.
+    if (this.index && !this.isIndexExpired(this.index)) {
       return this.index;
     }
 
-    // Return ongoing index build if in progress
-    if (this.indexPromise) {
-      return this.indexPromise;
+    // Avoid serving stale in-memory indexes.
+    this.index = null;
+
+    // Single-flight: one load/build flow shared across concurrent callers.
+    if (!this.indexPromise) {
+      this.indexPromise = (async () => {
+        const storedIndex = await this.loadFromStorage();
+        if (storedIndex) {
+          this.index = storedIndex;
+          return storedIndex;
+        }
+
+        const builtIndex = await this.buildIndex();
+        this.index = builtIndex;
+        return builtIndex;
+      })().finally(() => {
+        this.indexPromise = null;
+      });
     }
 
-    // Try loading from storage
-    const storedIndex = await this.loadFromStorage();
-    if (storedIndex) {
-      this.index = storedIndex;
-      return storedIndex;
-    }
-
-    // Build new index
-    this.indexPromise = this.buildIndex();
-    try {
-      this.index = await this.indexPromise;
-      return this.index;
-    } finally {
-      this.indexPromise = null;
-    }
+    return this.indexPromise;
   }
 
   preload(): void {
@@ -573,7 +578,7 @@ class SearchIndexService {
   // Check if index needs rebuilding
   needsRebuild(): boolean {
     if (!this.index) return true;
-    return Date.now() - this.index.lastUpdated > this.MAX_INDEX_AGE;
+    return this.isIndexExpired(this.index);
   }
 
   // Get index statistics

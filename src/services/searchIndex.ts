@@ -1,9 +1,13 @@
-import { protocolCalls } from '../data/calls';
-
 interface CallInfo {
   type: string;
   date: string;
   number: string;
+}
+
+interface SearchCorpusCall extends CallInfo {
+  transcript: string | null;
+  chat: string | null;
+  tldr: TldrData | null;
 }
 
 interface TldrHighlightItem {
@@ -177,77 +181,45 @@ class SearchIndexService {
       lastUpdated: Date.now()
     };
 
-    const totalCalls = protocolCalls.length;
+    const response = await fetch('/search-corpus.json');
+    if (!response.ok) {
+      throw new Error(`Failed to fetch search corpus: ${response.status} ${response.statusText}`);
+    }
+
+    const corpusData = await response.json();
+    if (!Array.isArray(corpusData)) {
+      throw new Error('Invalid search corpus format');
+    }
+
+    const corpus = corpusData as SearchCorpusCall[];
+    const totalCalls = corpus.length;
+
+    if (totalCalls === 0) {
+      if (onProgress) onProgress(100);
+      await this.saveToStorage(index);
+      return index;
+    }
+
     let processedCalls = 0;
 
-    for (const call of protocolCalls) {
+    for (const call of corpus) {
       const callKey = `${call.type}_${call.date}_${call.number}`;
       const callDocIndices: number[] = [];
 
       try {
-        // Fetch all content for this call
-        const baseUrl = `/artifacts/${call.type}/${call.date}_${call.number}`;
-
-        const [transcript, chat, tldr] = await Promise.all([
-          // Prefer corrected transcript if available
-          fetch(`${baseUrl}/transcript_corrected.vtt`).then(res => res.ok ? res.text() : null).catch(() => null)
-            .then(corrected => corrected ?? fetch(`${baseUrl}/transcript.vtt`).then(res => res.ok ? res.text() : null).catch(() => null)),
-          fetch(`${baseUrl}/chat.txt`).then(res => res.ok ? res.text() : null).catch(() => null),
-          fetch(`${baseUrl}/tldr.json`).then(res => res.ok ? res.json() : null).catch(() => null)
-        ]);
-
         // Process transcript
-        if (transcript) {
-          const entries = this.parseTranscriptForIndex(transcript, call);
-          entries.forEach(entry => {
-            const docIndex = index.documents.length;
-            index.documents.push(entry);
-            callDocIndices.push(docIndex);
-
-            // Update inverted index
-            entry.tokens.forEach(token => {
-              if (!index.invertedIndex.has(token)) {
-                index.invertedIndex.set(token, new Set());
-              }
-              index.invertedIndex.get(token)!.add(docIndex);
-            });
-          });
+        if (call.transcript) {
+          this.addEntriesToIndex(index, callDocIndices, this.parseTranscriptForIndex(call.transcript, call));
         }
 
         // Process chat
-        if (chat) {
-          const entries = this.parseChatForIndex(chat, call);
-          entries.forEach(entry => {
-            const docIndex = index.documents.length;
-            index.documents.push(entry);
-            callDocIndices.push(docIndex);
-
-            // Update inverted index
-            entry.tokens.forEach(token => {
-              if (!index.invertedIndex.has(token)) {
-                index.invertedIndex.set(token, new Set());
-              }
-              index.invertedIndex.get(token)!.add(docIndex);
-            });
-          });
+        if (call.chat) {
+          this.addEntriesToIndex(index, callDocIndices, this.parseChatForIndex(call.chat, call));
         }
 
         // Process TLDR (highlights, action items, decisions, targets)
-        if (tldr) {
-          const entries = this.parseTldrForIndex(tldr, call);
-          entries.forEach(entry => {
-            const docIndex = index.documents.length;
-            index.documents.push(entry);
-            callDocIndices.push(docIndex);
-
-            // Update inverted index
-            entry.tokens.forEach(token => {
-              if (!index.invertedIndex.has(token)) {
-                index.invertedIndex.set(token, new Set());
-              }
-              index.invertedIndex.get(token)!.add(docIndex);
-            });
-          });
+        if (call.tldr) {
+          this.addEntriesToIndex(index, callDocIndices, this.parseTldrForIndex(call.tldr, call));
         }
 
         // Update call index
@@ -269,6 +241,21 @@ class SearchIndexService {
     await this.saveToStorage(index);
 
     return index;
+  }
+
+  private addEntriesToIndex(index: SearchIndex, callDocIndices: number[], entries: IndexedContent[]): void {
+    entries.forEach(entry => {
+      const docIndex = index.documents.length;
+      index.documents.push(entry);
+      callDocIndices.push(docIndex);
+
+      entry.tokens.forEach(token => {
+        if (!index.invertedIndex.has(token)) {
+          index.invertedIndex.set(token, new Set());
+        }
+        index.invertedIndex.get(token)!.add(docIndex);
+      });
+    });
   }
 
   // Parse transcript for indexing
@@ -546,10 +533,18 @@ class SearchIndexService {
 
     // Build new index
     this.indexPromise = this.buildIndex();
-    this.index = await this.indexPromise;
-    this.indexPromise = null;
+    try {
+      this.index = await this.indexPromise;
+      return this.index;
+    } finally {
+      this.indexPromise = null;
+    }
+  }
 
-    return this.index;
+  preload(): void {
+    void this.getIndex().catch(error => {
+      console.error('Error preloading search index:', error);
+    });
   }
 
   // Force rebuild the index
@@ -572,7 +567,7 @@ class SearchIndexService {
       console.error('Error clearing index:', error);
     }
 
-    await this.buildIndex(onProgress);
+    this.index = await this.buildIndex(onProgress);
   }
 
   // Check if index needs rebuilding

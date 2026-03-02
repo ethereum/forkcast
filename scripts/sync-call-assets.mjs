@@ -4,7 +4,7 @@
  * Fetches manifest.json and downloads new/updated assets.
  */
 
-import { writeFileSync, readFileSync, existsSync, mkdirSync } from 'fs';
+import { writeFileSync, readFileSync, appendFileSync, existsSync, mkdirSync } from 'fs';
 import { dirname, join } from 'path';
 import { fileURLToPath } from 'url';
 
@@ -228,7 +228,7 @@ async function main() {
   const manifest = await fetchManifest();
   const callsBySeries = normalizeManifest(manifest);
 
-  let totalSynced = 0;
+  const syncedPaths = [];
 
   for (const [series, calls] of Object.entries(callsBySeries)) {
     if (DENYLIST.has(series)) continue;
@@ -248,15 +248,21 @@ async function main() {
       }
 
       if (await syncCall(series, localType, callId, callData, force)) {
+        const number = callId.substring(callId.lastIndexOf('_') + 1);
+        syncedPaths.push(`${localType}/${number}`);
         console.log(`  Synced ${callId}`);
-        totalSynced++;
       }
     }
   }
 
   generateProtocolCallsJson(callsBySeries);
 
-  console.log(`\nSync complete. ${totalSynced} calls updated.`);
+  // Emit synced paths for CI commit message (via $GITHUB_OUTPUT)
+  if (syncedPaths.length > 0 && process.env.GITHUB_OUTPUT) {
+    appendFileSync(process.env.GITHUB_OUTPUT, `synced_paths=${syncedPaths.join(', ')}\n`);
+  }
+
+  console.log(`\nSync complete. ${syncedPaths.length} calls updated.`);
 }
 
 main().catch(e => {

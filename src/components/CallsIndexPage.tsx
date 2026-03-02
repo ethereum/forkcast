@@ -6,6 +6,7 @@ import ThemeToggle from './ui/ThemeToggle';
 import { protocolCalls, callTypeNames, isOneOffCall, getCallDisplayName, type Call, type CallType } from '../data/calls';
 import { timelineEvents, type TimelineEvent } from '../data/events';
 import { fetchUpcomingCalls, type UpcomingCall } from '../utils/github';
+import { searchIndexService } from '../services/searchIndex';
 import GlobalCallSearch from './GlobalCallSearch';
 
 const CallsIndexPage: React.FC = () => {
@@ -29,6 +30,11 @@ const CallsIndexPage: React.FC = () => {
     };
 
     loadUpcomingCalls();
+  }, []);
+
+  // Preload search index in the background
+  useEffect(() => {
+    searchIndexService.preload();
   }, []);
 
   // Keyboard shortcut for search

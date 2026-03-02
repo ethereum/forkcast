@@ -6,8 +6,9 @@
   "homepage": "https://wolovim.github.io/forkcast",
   "scripts": {
     "compile-eips": "node scripts/compile-eips.mjs",
-    "dev": "npm run compile-eips && vite",
-    "build": "npm run compile-eips && npm run lint && tsc -b && vite build && node scripts/generate-static-pages.mjs && node scripts/generate-eip-stage-changes.mjs",
+    "compile-search-corpus": "node scripts/compile-search-corpus.mjs",
+    "dev": "npm run compile-eips && npm run compile-search-corpus && vite",
+    "build": "npm run compile-eips && npm run compile-search-corpus && npm run lint && tsc -b && vite build && node scripts/generate-static-pages.mjs && node scripts/generate-eip-stage-changes.mjs",
     "lint": "eslint .",
     "preview": "vite preview",
     "predeploy": "npm run build",

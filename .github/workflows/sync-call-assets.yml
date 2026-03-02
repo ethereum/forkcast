@@ -30,6 +30,7 @@ jobs:
           node-version: '20'
 
       - name: Sync assets from eth/pm
+        id: sync
         run: |
           node scripts/sync-call-assets.mjs ${{ github.event.inputs.force_full_sync == 'true' && '--force' || '' }}
 
@@ -53,7 +54,12 @@ jobs:
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
           git add -A
-          git commit -m "sync call assets from eth/pm"
+          PATHS="${{ steps.sync.outputs.synced_paths }}"
+          if [ -n "$PATHS" ]; then
+            git commit -m "sync call assets from eth/pm" -m "$PATHS"
+          else
+            git commit -m "sync call assets from eth/pm"
+          fi
           git push
 
       - name: Trigger deploy

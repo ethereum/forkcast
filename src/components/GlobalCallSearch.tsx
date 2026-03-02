@@ -38,6 +38,12 @@ export default function GlobalCallSearch({ isOpen, onClose, initialQuery = '' }:
 
   // Initialize search index on mount
   useEffect(() => {
+    if (!isOpen) {
+      setIndexBuilding(false);
+      setIndexProgress(0);
+      return;
+    }
+
     let cancelled = false;
 
     const initIndex = async () => {
@@ -64,9 +70,7 @@ export default function GlobalCallSearch({ isOpen, onClose, initialQuery = '' }:
       }
     };
 
-    if (isOpen) {
-      void initIndex();
-    }
+    void initIndex();
 
     return () => {
       cancelled = true;

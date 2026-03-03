@@ -1,0 +1,22 @@
+name: Weekly Matomo Digest
+
+on:
+  schedule:
+    - cron: '0 14 * * 1' # Every Monday at 14:00 UTC
+  workflow_dispatch: {}
+
+jobs:
+  post-digest:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+      - name: Post Matomo digest to Mattermost
+        run: node scripts/post-matomo-digest.mjs
+        env:
+          MATOMO_URL: ${{ secrets.MATOMO_URL }}
+          MATOMO_TOKEN: ${{ secrets.MATOMO_TOKEN }}
+          MATOMO_SITE_ID: ${{ secrets.MATOMO_SITE_ID }}
+          MATTERMOST_WEBHOOK_URL: ${{ secrets.MATTERMOST_WEBHOOK_URL }}

@@ -205,6 +205,38 @@ class SearchIndexService {
     }
   }
 
+  private async sha256Hex(content: string): Promise<string | null> {
+    const subtle = globalThis.crypto?.subtle;
+    if (!subtle) return null;
+
+    try {
+      const bytes = new TextEncoder().encode(content);
+      const digest = await subtle.digest('SHA-256', bytes);
+      return Array.from(new Uint8Array(digest))
+        .map(byte => byte.toString(16).padStart(2, '0'))
+        .join('');
+    } catch (error) {
+      console.warn('Unable to hash search corpus payload:', error);
+      return null;
+    }
+  }
+
+  private async fetchCorpus(cache: RequestCache = 'default'): Promise<{ corpus: SearchCorpusCall[]; hash: string | null }> {
+    const response = await fetch('/search-corpus.json', { cache });
+    if (!response.ok) {
+      throw new Error(`Failed to fetch search corpus: ${response.status} ${response.statusText}`);
+    }
+
+    const rawCorpus = await response.text();
+    const parsed = JSON.parse(rawCorpus);
+    if (!Array.isArray(parsed)) {
+      throw new Error('Invalid search corpus format');
+    }
+
+    const hash = await this.sha256Hex(rawCorpus);
+    return { corpus: parsed as SearchCorpusCall[], hash };
+  }
+
   // Build the search index
   async buildIndex(onProgress?: (progress: number) => void, corpusHash?: string): Promise<SearchIndex> {
     const index: SearchIndex = {
@@ -214,22 +246,31 @@ class SearchIndexService {
       lastUpdated: Date.now()
     };
 
-    const response = await fetch('/search-corpus.json');
-    if (!response.ok) {
-      throw new Error(`Failed to fetch search corpus: ${response.status} ${response.statusText}`);
+    let { corpus, hash: fetchedHash } = await this.fetchCorpus('no-cache');
+    let resolvedCorpusHash = corpusHash;
+
+    if (corpusHash && !fetchedHash) {
+      console.warn('Search corpus hash unavailable; falling back to TTL-based cache validation.');
+      resolvedCorpusHash = undefined;
     }
 
-    const corpusData = await response.json();
-    if (!Array.isArray(corpusData)) {
-      throw new Error('Invalid search corpus format');
+    if (corpusHash && fetchedHash && fetchedHash !== corpusHash) {
+      // One forced reload to handle transient cache inconsistency during deploy.
+      const retry = await this.fetchCorpus('reload');
+      corpus = retry.corpus;
+      fetchedHash = retry.hash;
+
+      if (fetchedHash !== corpusHash) {
+        console.warn('Search corpus hash mismatch after reload; falling back to TTL-based cache validation.');
+        resolvedCorpusHash = undefined;
+      }
     }
 
-    const corpus = corpusData as SearchCorpusCall[];
     const totalCalls = corpus.length;
 
     if (totalCalls === 0) {
       if (onProgress) onProgress(100);
-      await this.saveToStorage(index, corpusHash);
+      await this.saveToStorage(index, resolvedCorpusHash);
       return index;
     }
 
@@ -271,7 +312,7 @@ class SearchIndexService {
     }
 
     // Save to storage
-    await this.saveToStorage(index, corpusHash);
+    await this.saveToStorage(index, resolvedCorpusHash);
 
     return index;
   }

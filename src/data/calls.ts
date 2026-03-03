@@ -1,6 +1,6 @@
 import generatedCalls from './protocol-calls.generated.json';
 
-export type CallType = 'acdc' | 'acde' | 'acdt' | 'epbs' | 'bal' | 'focil' | 'price' | 'tli' | 'pqts' | 'rpc' | 'zkevm' | 'etm' | 'awd' | 'pqi';
+export type CallType = 'acdc' | 'acde' | 'acdt' | 'epbs' | 'bal' | 'focil' | 'price' | 'tli' | 'pqts' | 'rpc' | 'zkevm' | 'etm' | 'awd' | 'pqi' | 'fcr';
 
 export interface Call {
   type: CallType;
@@ -25,6 +25,7 @@ export const callTypeNames: Record<CallType, string> = {
   etm: 'Encrypt The Mempool',
   awd: 'AllWalletDevs',
   pqi: 'PQ Interop',
+  fcr: 'Fast Confirmation Rule',
 };
 
 export const protocolCalls: Call[] = generatedCalls as Call[];

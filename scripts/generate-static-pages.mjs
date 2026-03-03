@@ -96,6 +96,7 @@ const callTypeNames = {
   etm: 'Encrypt The Mempool',
   awd: 'AllWalletDevs',
   pqi: 'PQ Interop',
+  fcr: 'Fast Confirmation Rule',
 };
 
 function getCallTypeName(type) {

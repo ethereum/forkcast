@@ -1,7 +1,7 @@
-import { protocolCalls } from '../data/calls';
+import { protocolCalls, type CallType } from '../data/calls';
 
 export interface UpcomingCall {
-  type: 'acdc' | 'acde' | 'acdt' | 'focil' | 'bal' | 'epbs' | 'rpc' | 'zkevm' | 'pqi';
+  type: CallType;
   title: string;
   date: string;
   number: string;
@@ -180,6 +180,23 @@ function parseCallFromTitle(title: string, githubUrl: string, issueNumber: numbe
     };
   }
 
+  // Try to match FCR pattern: "Fast Confirmation Rule Breakout #1, March 10, 2026"
+  const fcrMatch = title.match(/Fast Confirmation Rule.*?#(\d+),\s*(.+)/i);
+  if (fcrMatch) {
+    const [, number, dateStr] = fcrMatch;
+    const date = parseCallDate(dateStr.trim());
+    if (!date) return null;
+
+    return {
+      type: 'fcr',
+      title: title.trim(),
+      date,
+      number: number.padStart(3, '0'),
+      githubUrl,
+      issueNumber
+    };
+  }
+
   return null;
 }
 
@@ -238,8 +255,8 @@ export async function fetchUpcomingCalls(): Promise<UpcomingCall[]> {
           parsedCalls.push(call);
           foundTypes.add(call.type);
 
-          // Stop once we have one of each type (ACDC, ACDE, ACDT, FOCIL, BAL, ePBS, RPC, zkEVM, PQI)
-          if (foundTypes.size === 9) break;
+          // Stop once we have one of each type (ACDC, ACDE, ACDT, FOCIL, BAL, ePBS, RPC, zkEVM, PQI, FCR)
+          if (foundTypes.size === 10) break;
         }
       }
     }

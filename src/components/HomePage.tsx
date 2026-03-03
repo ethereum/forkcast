@@ -105,7 +105,8 @@ const HomePage = () => {
     zkevm: 'bg-fuchsia-100 dark:bg-fuchsia-900/30 text-fuchsia-700 dark:text-fuchsia-300',
     etm: 'bg-purple-100 dark:bg-purple-900/30 text-purple-700 dark:text-purple-300',
     awd: 'bg-lime-100 dark:bg-lime-900/30 text-lime-700 dark:text-lime-300',
-    pqi: 'bg-emerald-100 dark:bg-emerald-900/30 text-emerald-700 dark:text-emerald-300'
+    pqi: 'bg-emerald-100 dark:bg-emerald-900/30 text-emerald-700 dark:text-emerald-300',
+    fcr: 'bg-teal-100 dark:bg-teal-900/30 text-teal-700 dark:text-teal-300'
   };
 
   return (

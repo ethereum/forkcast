@@ -1,5 +1,6 @@
 import fs from 'fs';
 import path from 'path';
+import { createHash } from 'crypto';
 import { fileURLToPath } from 'url';
 
 const __filename = fileURLToPath(import.meta.url);
@@ -8,6 +9,7 @@ const __dirname = path.dirname(__filename);
 const CALLS_FILE = path.join(__dirname, '../src/data/protocol-calls.generated.json');
 const ARTIFACTS_DIR = path.join(__dirname, '../public/artifacts');
 const OUTPUT_FILE = path.join(__dirname, '../public/search-corpus.json');
+const META_OUTPUT_FILE = path.join(__dirname, '../public/search-corpus.meta.json');
 
 const readTextIfExists = (filePath) => (fs.existsSync(filePath) ? fs.readFileSync(filePath, 'utf8') : null);
 
@@ -34,5 +36,14 @@ const corpus = calls.map(({ type, date, number }) => {
   };
 });
 
-fs.writeFileSync(OUTPUT_FILE, JSON.stringify(corpus));
+const serializedCorpus = JSON.stringify(corpus);
+const sha256 = createHash('sha256').update(serializedCorpus).digest('hex');
+const metadata = {
+  sha256,
+  calls: corpus.length,
+  bytes: Buffer.byteLength(serializedCorpus, 'utf8')
+};
+
+fs.writeFileSync(OUTPUT_FILE, serializedCorpus);
+fs.writeFileSync(META_OUTPUT_FILE, JSON.stringify(metadata));
 console.log(`✓ Compiled ${corpus.length} calls to ${OUTPUT_FILE}`);

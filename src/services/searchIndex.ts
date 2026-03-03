@@ -10,6 +10,10 @@ interface SearchCorpusCall extends CallInfo {
   tldr: TldrData | null;
 }
 
+interface SearchCorpusMeta {
+  sha256: string;
+}
+
 interface TldrHighlightItem {
   timestamp: string;
   highlight: string;
@@ -103,7 +107,7 @@ class SearchIndexService {
   }
 
   // Load index from IndexedDB
-  private async loadFromStorage(): Promise<SearchIndex | null> {
+  private async loadFromStorage(expectedCorpusHash?: string): Promise<SearchIndex | null> {
     try {
       const db = await this.openDB();
       const transaction = db.transaction([this.STORE_NAME], 'readonly');
@@ -115,6 +119,7 @@ class SearchIndexService {
         invertedIndex: Record<string, number[]>;
         callIndex: Record<string, number[]>;
         lastUpdated: number;
+        corpusHash?: string;
       }
       const data = await new Promise<StoredIndex | undefined>((resolve, reject) => {
         const request = store.get('index');
@@ -128,7 +133,15 @@ class SearchIndexService {
 
       // Check version and age
       if (data.version !== this.INDEX_VERSION) return null;
-      if (Date.now() - data.lastUpdated > this.MAX_INDEX_AGE) return null;
+      if (expectedCorpusHash) {
+        if (data.corpusHash !== expectedCorpusHash) return null;
+      } else if (Date.now() - data.lastUpdated > this.MAX_INDEX_AGE) {
+        // Fallback freshness check if metadata isn't available.
+        return null;
+      }
+
+      // When corpus hash matches, treat the loaded index as fresh for this session.
+      const effectiveLastUpdated = expectedCorpusHash ? Date.now() : data.lastUpdated;
 
       // Reconstruct Maps from stored data
       const index: SearchIndex = {
@@ -137,7 +150,7 @@ class SearchIndexService {
           Object.entries(data.invertedIndex).map(([key, value]) => [key, new Set(value as number[])])
         ),
         callIndex: new Map(Object.entries(data.callIndex)),
-        lastUpdated: data.lastUpdated
+        lastUpdated: effectiveLastUpdated
       };
 
       return index;
@@ -148,7 +161,7 @@ class SearchIndexService {
   }
 
   // Save index to IndexedDB
-  private async saveToStorage(index: SearchIndex): Promise<void> {
+  private async saveToStorage(index: SearchIndex, corpusHash?: string): Promise<void> {
     try {
       const data = {
         version: this.INDEX_VERSION,
@@ -157,7 +170,8 @@ class SearchIndexService {
           Array.from(index.invertedIndex.entries()).map(([key, value]) => [key, Array.from(value)])
         ),
         callIndex: Object.fromEntries(index.callIndex.entries()),
-        lastUpdated: index.lastUpdated
+        lastUpdated: index.lastUpdated,
+        corpusHash
       };
 
       const db = await this.openDB();
@@ -176,8 +190,23 @@ class SearchIndexService {
     }
   }
 
+  private async fetchCorpusMeta(): Promise<SearchCorpusMeta | null> {
+    try {
+      const response = await fetch('/search-corpus.meta.json', { cache: 'no-cache' });
+      if (!response.ok) return null;
+
+      const data = await response.json();
+      if (!data || typeof data.sha256 !== 'string') return null;
+
+      return { sha256: data.sha256 };
+    } catch (error) {
+      console.warn('Unable to load search corpus metadata:', error);
+      return null;
+    }
+  }
+
   // Build the search index
-  async buildIndex(onProgress?: (progress: number) => void): Promise<SearchIndex> {
+  async buildIndex(onProgress?: (progress: number) => void, corpusHash?: string): Promise<SearchIndex> {
     const index: SearchIndex = {
       documents: [],
       invertedIndex: new Map(),
@@ -200,7 +229,7 @@ class SearchIndexService {
 
     if (totalCalls === 0) {
       if (onProgress) onProgress(100);
-      await this.saveToStorage(index);
+      await this.saveToStorage(index, corpusHash);
       return index;
     }
 
@@ -242,7 +271,7 @@ class SearchIndexService {
     }
 
     // Save to storage
-    await this.saveToStorage(index);
+    await this.saveToStorage(index, corpusHash);
 
     return index;
   }
@@ -529,13 +558,16 @@ class SearchIndexService {
     // Single-flight: one load/build flow shared across concurrent callers.
     if (!this.indexPromise) {
       this.indexPromise = (async () => {
-        const storedIndex = await this.loadFromStorage();
+        const corpusMeta = await this.fetchCorpusMeta();
+        const expectedCorpusHash = corpusMeta?.sha256;
+
+        const storedIndex = await this.loadFromStorage(expectedCorpusHash);
         if (storedIndex) {
           this.index = storedIndex;
           return storedIndex;
         }
 
-        const builtIndex = await this.buildIndex();
+        const builtIndex = await this.buildIndex(undefined, expectedCorpusHash);
         this.index = builtIndex;
         return builtIndex;
       })().finally(() => {
@@ -572,7 +604,8 @@ class SearchIndexService {
       console.error('Error clearing index:', error);
     }
 
-    this.index = await this.buildIndex(onProgress);
+    const corpusMeta = await this.fetchCorpusMeta();
+    this.index = await this.buildIndex(onProgress, corpusMeta?.sha256);
   }
 
   // Check if index needs rebuilding

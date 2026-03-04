@@ -19,8 +19,24 @@ function getProtocolCalls() {
   return JSON.parse(fileContent);
 }
 
+// Read and parse devnet spec JSON files
+function getDevnetSpecs() {
+  const devnetsDir = path.join(__dirname, '..', 'src', 'data', 'devnets');
+  if (!fs.existsSync(devnetsDir)) return [];
+  return fs.readdirSync(devnetsDir)
+    .filter(f => f.endsWith('.json'))
+    .map(f => {
+      const content = JSON.parse(fs.readFileSync(path.join(devnetsDir, f), 'utf-8'));
+      // Only include devnet spec files (have id, no upgrade field)
+      if (content.id && !content.upgrade) return content;
+      return null;
+    })
+    .filter(Boolean);
+}
+
 const protocolCalls = getProtocolCalls();
 const eips = getEips();
+const devnetSpecs = getDevnetSpecs();
 
 // Define standalone pages with their metadata
 const standalonePages = [
@@ -251,6 +267,26 @@ function generateAllPages() {
     fs.writeFileSync(outputPath, html);
   });
   console.log(`📋 Generated ${eips.length} EIP pages`);
+
+  // Generate devnet spec pages
+  if (devnetSpecs.length > 0) {
+    console.log('\n🧪 Generating devnet spec pages:');
+    devnetSpecs.forEach(spec => {
+      const fullPath = `devnets/${spec.id}`;
+      const specPath = path.join(distDir, 'devnets', spec.id);
+
+      if (!fs.existsSync(specPath)) {
+        fs.mkdirSync(specPath, { recursive: true });
+      }
+
+      const title = `${spec.title} - Forkcast`;
+      const description = `Devnet spec for ${spec.id}: EIP list, client implementation status, and spec references.`;
+
+      const html = generateStaticPage(fullPath, title, description);
+      fs.writeFileSync(path.join(specPath, 'index.html'), html);
+    });
+    console.log(`  Generated ${devnetSpecs.length} devnet spec pages`);
+  }
 
   console.log('\n✨ Static pages generated successfully!');
 }

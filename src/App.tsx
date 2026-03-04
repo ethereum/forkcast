@@ -11,7 +11,8 @@ import EipsIndexPage from './components/EipsIndexPage';
 import { StakeholderUpgradePage } from './components/stakeholder';
 import ComplexityPage from './components/ComplexityPage';
 import PrioritizationPage from './components/PrioritizationPage';
-import DevnetPrioritizationPage from './components/DevnetPrioritizationPage';
+import DevnetsIndexPage from './components/DevnetsIndexPage';
+import DevnetSpecPage from './components/DevnetSpecPage';
 import DecisionsPage from './components/DecisionsPage';
 import { getUpgradeById } from './data/upgrades';
 import { useAnalytics } from './hooks/useAnalytics';
@@ -135,7 +136,8 @@ function App() {
           <Route path="/eips/:id" element={<EipPage />} />
           <Route path="/complexity" element={<ComplexityPage />} />
           <Route path="/priority" element={<PrioritizationPage />} />
-          <Route path="/devnets" element={<DevnetPrioritizationPage />} />
+          <Route path="/devnets/:id" element={<DevnetSpecPage />} />
+          <Route path="/devnets" element={<DevnetsIndexPage />} />
           <Route path="/decisions" element={<DecisionsPage />} />
           {/* Catch-all route that redirects to home page */}
           <Route path="*" element={<Navigate to="/" replace />} />

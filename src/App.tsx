@@ -44,10 +44,11 @@ function RedirectHandler() {
 function AnalyticsTracker() {
   const location = useLocation();
   const { trackPageView } = useAnalytics();
-
   useEffect(() => {
     // Track page views when route changes in SPA
-    const pageName = location.pathname === '/' ? 'homepage' : location.pathname;
+    const pageName = location.pathname === '/'
+      ? '/'
+      : location.pathname.replace(/\/+$/, '');
     const pageTitle = document.title;
 
     trackPageView(pageName, pageTitle);

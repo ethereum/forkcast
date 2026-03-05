@@ -8,6 +8,7 @@ export interface Call {
   number: string;
   path: string;
   name?: string;
+  issue?: number;
 }
 
 // Full names for call types (used in tooltips)

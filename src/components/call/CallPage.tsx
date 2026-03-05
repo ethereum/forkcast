@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef, useCallback, useMemo } from 'react';
-import { Link, useParams, useLocation } from 'react-router-dom';
+import { Link, useParams, useLocation, useNavigate } from 'react-router-dom';
 import YouTube, { YouTubeProps } from 'react-youtube';
 import ChatLog from './ChatLog';
 import TldrSummary from './TldrSummary';
@@ -59,6 +59,19 @@ interface UpcomingCallState {
 const CallPage: React.FC = () => {
   const { '*': callPath } = useParams();
   const location = useLocation();
+  const navigate = useNavigate();
+
+  // Redirect issue-number URLs (e.g., /calls/1954) to the canonical path
+  useEffect(() => {
+    if (callPath && !callPath.includes('/') && /^\d+$/.test(callPath)) {
+      const issueNum = parseInt(callPath);
+      const byIssue = protocolCalls.find(c => c.issue === issueNum);
+      if (byIssue) {
+        navigate(`/calls/${byIssue.path}`, { replace: true });
+      }
+    }
+  }, [callPath, navigate]);
+
   const [callData, setCallData] = useState<CallData | null>(null);
   const [callConfig, setCallConfig] = useState<CallConfig | null>(null);
   const [loading, setLoading] = useState(true);
@@ -334,6 +347,9 @@ const CallPage: React.FC = () => {
         setLoading(false);
         return;
       }
+
+      // Issue-number URLs are handled by the redirect effect
+      if (!callPath.includes('/') && /^\d+$/.test(callPath)) return;
 
       try {
         // Parse the call path (e.g., "acdc/154")
@@ -1112,7 +1128,7 @@ const CallPage: React.FC = () => {
                     <div className="flex items-center gap-2">
                       <span className="text-slate-500 dark:text-slate-400">🎬</span>
                       <span className="text-slate-600 dark:text-slate-300">Series:</span>
-                      <span className="text-slate-700 dark:text-slate-200 font-medium">{getCallTypeLabel()}</span>
+                      <span className="text-slate-700 dark:text-slate-200 font-medium">{oneOff ? 'One-off call' : getCallTypeLabel()}</span>
                     </div>
                     {callConfig?.issue && (
                       <div className="flex items-center gap-2">

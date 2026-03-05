@@ -210,6 +210,7 @@ function generateProtocolCallsJson(callsBySeries) {
 
       if (!existingPaths.has(path)) {
         const entry = { type: localType, date, number, path };
+        if (callData.issue) entry.issue = callData.issue;
 
         // For one-off calls, read local tldr.json to extract the meeting name
         if (isOneOff) {
@@ -230,6 +231,41 @@ function generateProtocolCallsJson(callsBySeries) {
         existing.push(entry);
         existingPaths.add(path);
         added++;
+      }
+    }
+  }
+
+  // Backfill issue numbers from manifest data
+  const manifestByPath = new Map();
+  for (const [series, seriesCalls] of Object.entries(callsBySeries)) {
+    const localType = getLocalType(series);
+    for (const [callId, callData] of Object.entries(seriesCalls)) {
+      const sepIndex = callId.lastIndexOf('_');
+      if (sepIndex === -1) continue;
+      const number = callId.substring(sepIndex + 1).padStart(3, '0');
+      const path = `${localType}/${number}`;
+      if (callData.issue) manifestByPath.set(path, callData.issue);
+    }
+  }
+  for (const entry of existing) {
+    if (entry.issue) continue;
+    const issue = manifestByPath.get(entry.path);
+    if (issue) {
+      entry.issue = issue;
+    } else {
+      // Fall back to local config.json — try both padded and unpadded number forms
+      const unpadded = entry.number.replace(/^0+/, '') || '0';
+      const candidates = [
+        join(LOCAL_ASSETS_DIR, entry.type, `${entry.date}_${entry.number}`, 'config.json'),
+        join(LOCAL_ASSETS_DIR, entry.type, `${entry.date}_${unpadded}`, 'config.json'),
+      ];
+      for (const configPath of candidates) {
+        if (existsSync(configPath)) {
+          try {
+            const config = JSON.parse(readFileSync(configPath, 'utf-8'));
+            if (config.issue) { entry.issue = config.issue; break; }
+          } catch (_) {}
+        }
       }
     }
   }

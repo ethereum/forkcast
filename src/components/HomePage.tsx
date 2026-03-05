@@ -1,6 +1,6 @@
 import { Link } from 'react-router-dom';
 import { networkUpgrades } from '../data/upgrades';
-import { getRecentCalls, callTypeNames, type CallType } from '../data/calls';
+import { getRecentCalls, getCallDisplayName, isOneOffCall, type CallType } from '../data/calls';
 import { eipsData } from '../data/eips';
 import { useAnalytics } from '../hooks/useAnalytics';
 import { getProposalPrefix, getLaymanTitle, getInclusionStage } from '../utils/eip';
@@ -217,30 +217,34 @@ const HomePage = () => {
           </div>
 
           <div className="space-y-2">
-            {recentCalls.map((call) => (
-              <Link
-                key={call.path}
-                to={`/calls/${call.path}`}
-                className="group flex items-center justify-between gap-3 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg p-4 hover:shadow-md dark:hover:shadow-slate-700/20 hover:border-purple-300 dark:hover:border-purple-600"
-              >
-                <div className="flex items-center gap-3">
-                  <Tooltip text={callTypeNames[call.type]}>
-                    <span className={`inline-block text-xs font-medium px-2 py-0.5 rounded min-w-[3.5rem] text-center ${callTypeBadgeColors[call.type]}`}>
-                      {call.type.toUpperCase()}
+            {recentCalls.map((call) => {
+              const oneOff = isOneOffCall(call.type);
+              const fallbackBadgeColor = 'bg-slate-100 dark:bg-slate-700/50 text-slate-600 dark:text-slate-300';
+              return (
+                <Link
+                  key={call.path}
+                  to={`/calls/${call.path}`}
+                  className="group flex items-center justify-between gap-3 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg p-4 hover:shadow-md dark:hover:shadow-slate-700/20 hover:border-purple-300 dark:hover:border-purple-600"
+                >
+                  <div className="flex items-center gap-3">
+                    <Tooltip text={getCallDisplayName(call)}>
+                      <span className={`inline-block text-xs font-medium px-2 py-0.5 rounded min-w-[3.5rem] text-center ${callTypeBadgeColors[call.type as CallType] || fallbackBadgeColor}`}>
+                        {oneOff ? '1-OFF' : call.type.toUpperCase()}
+                      </span>
+                    </Tooltip>
+                    <span className="text-sm font-medium text-slate-900 dark:text-slate-100">
+                      {oneOff ? call.name || call.type : `Call #${call.number}`}
                     </span>
-                  </Tooltip>
-                  <span className="text-sm font-medium text-slate-900 dark:text-slate-100">
-                    Call #{call.number}
-                  </span>
-                  <span className="text-sm text-slate-600 dark:text-slate-400">
-                    {call.date}
-                  </span>
-                </div>
-                <svg className="w-5 h-5 text-slate-400 group-hover:text-purple-500 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
-                </svg>
-              </Link>
-            ))}
+                    <span className="text-sm text-slate-600 dark:text-slate-400">
+                      {call.date}
+                    </span>
+                  </div>
+                  <svg className="w-5 h-5 text-slate-400 group-hover:text-purple-500 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                  </svg>
+                </Link>
+              );
+            })}
           </div>
         </div>
 

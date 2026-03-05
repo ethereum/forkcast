@@ -115,8 +115,8 @@ const callTypeNames = {
   fcr: 'Fast Confirmation Rule',
 };
 
-function getCallTypeName(type) {
-  return callTypeNames[type.toLowerCase()] || type;
+function getCallTypeName(call) {
+  return call.name || callTypeNames[call.type.toLowerCase()] || call.type;
 }
 
 // Get EIP proposal prefix (EIP or RIP)
@@ -238,9 +238,9 @@ function generateAllPages() {
     });
 
     // Generate and write the HTML file
-    const typeName = getCallTypeName(call.type);
-    const title = `${typeName} #${call.number} - Forkcast`;
-    const description = `Watch ${typeName} call #${call.number} from ${call.date}.`;
+    const typeName = getCallTypeName(call);
+    const title = call.name ? `${typeName} - Forkcast` : `${typeName} #${call.number} - Forkcast`;
+    const description = call.name ? `Watch ${typeName} from ${call.date}.` : `Watch ${typeName} call #${call.number} from ${call.date}.`;
 
     const html = generateStaticPage(fullPath, title, description);
     const outputPath = path.join(currentPath, 'index.html');

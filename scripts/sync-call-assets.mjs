@@ -187,7 +187,8 @@ function generateProtocolCallsJson(callsBySeries) {
 
     const localType = getLocalType(series);
 
-    if (!KNOWN_TYPES.has(localType)) {
+    const isOneOff = localType.startsWith('one-off-');
+    if (!KNOWN_TYPES.has(localType) && !isOneOff) {
       console.log(`Warning: Unknown series "${series}" (resolved type: "${localType}"). Skipping.`);
       continue;
     }
@@ -208,7 +209,25 @@ function generateProtocolCallsJson(callsBySeries) {
       const path = `${localType}/${number}`;
 
       if (!existingPaths.has(path)) {
-        existing.push({ type: localType, date, number, path });
+        const entry = { type: localType, date, number, path };
+
+        // For one-off calls, read local tldr.json to extract the meeting name
+        if (isOneOff) {
+          const tldrPath = join(LOCAL_ASSETS_DIR, localType, callId, 'tldr.json');
+          if (existsSync(tldrPath)) {
+            try {
+              const tldr = JSON.parse(readFileSync(tldrPath, 'utf-8'));
+              if (tldr.meeting) {
+                // Strip trailing date suffix like " - March 5, 2026"
+                entry.name = tldr.meeting.replace(/\s*-\s*[A-Z][a-z]+\s+\d{1,2},\s*\d{4}$/, '');
+              }
+            } catch (e) {
+              console.log(`Warning: Could not read tldr.json for ${localType}/${callId}: ${e.message}`);
+            }
+          }
+        }
+
+        existing.push(entry);
         existingPaths.add(path);
         added++;
       }

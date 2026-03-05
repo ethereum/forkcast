@@ -3,10 +3,11 @@ import generatedCalls from './protocol-calls.generated.json';
 export type CallType = 'acdc' | 'acde' | 'acdt' | 'epbs' | 'bal' | 'focil' | 'price' | 'tli' | 'pqts' | 'rpc' | 'zkevm' | 'etm' | 'awd' | 'pqi' | 'fcr';
 
 export interface Call {
-  type: CallType;
+  type: string;
   date: string;
   number: string;
   path: string;
+  name?: string;
 }
 
 // Full names for call types (used in tooltips)
@@ -30,6 +31,11 @@ export const callTypeNames: Record<CallType, string> = {
 
 export const protocolCalls: Call[] = generatedCalls as Call[];
 
+export const isOneOffCall = (type: string): boolean => type.startsWith('one-off-');
+
+export const getCallDisplayName = (call: Call): string =>
+  call.name || callTypeNames[call.type as CallType] || call.type;
+
 // Helper to get recent calls
 export const getRecentCalls = (limit: number = 5): Call[] => {
   return [...protocolCalls]
@@ -45,7 +51,7 @@ export const eipCallTypes: Record<number, CallType> = {
 };
 
 // Get previous and next calls for a given type
-export const getCallNavigation = (type: CallType): { previous: Call | null; next: Call | null } => {
+export const getCallNavigation = (type: string): { previous: Call | null; next: Call | null } => {
   const today = new Date().toISOString().split('T')[0];
   const calls = protocolCalls
     .filter(c => c.type === type)

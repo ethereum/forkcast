@@ -6,7 +6,7 @@ import TldrSummary from './TldrSummary';
 import CallSearch from './CallSearch';
 import ThemeToggle from '../ui/ThemeToggle';
 import { Logo } from '../ui/Logo';
-import { protocolCalls, callTypeNames, type CallType } from '../../data/calls';
+import { protocolCalls, callTypeNames, isOneOffCall, type CallType } from '../../data/calls';
 import { fetchUpcomingCalls } from '../../utils/github';
 import { useMetaTags } from '../../hooks/useMetaTags';
 import { eipsData } from '../../data/eips';
@@ -90,8 +90,12 @@ const CallPage: React.FC = () => {
   const hasNavigatedToSearchResult = useRef(false);
 
   // Set meta tags for social previews
+  const matchingCall = useMemo(() => {
+    if (!callData) return null;
+    return protocolCalls.find(c => c.type === callData.type.toLowerCase() && c.number === callData.number) ?? null;
+  }, [callData]);
   const callName = callData
-    ? `${callTypeNames[callData.type.toLowerCase() as CallType] || callData.type} #${callData.number}`
+    ? (matchingCall?.name || `${callTypeNames[callData.type.toLowerCase() as CallType] || callData.type}${isOneOffCall(callData.type.toLowerCase()) ? '' : ` #${callData.number}`}`)
     : 'Call';
   useMetaTags({
     title: `${callName} | Forkcast`,
@@ -905,7 +909,10 @@ const CallPage: React.FC = () => {
 
 
 
+  const oneOff = isOneOffCall(callData.type.toLowerCase());
+
   const getCallTypeLabel = () => {
+    if (matchingCall?.name) return matchingCall.name;
     const type = callData.type.toLowerCase() as CallType;
     return callTypeNames[type] || callData.type;
   };
@@ -984,7 +991,7 @@ const CallPage: React.FC = () => {
             <div className="flex items-center gap-2">
               <Logo size="xs" />
               <span className="text-xs text-slate-600 dark:text-slate-400">
-                {callTypeNames[callData.type.toLowerCase() as CallType] || callData.type.toUpperCase()} #{callData.number}
+                {getCallTypeLabel()}{oneOff ? '' : ` #${callData.number}`}
               </span>
             </div>
             <div className="flex items-center gap-2">
@@ -1005,7 +1012,7 @@ const CallPage: React.FC = () => {
               <div className="text-slate-300 dark:text-slate-600">|</div>
               <div className="flex items-center gap-2">
                 <h1 className="text-sm font-semibold text-slate-900 dark:text-slate-100">
-                  {getCallTypeLabel()} #{callData.number}
+                  {getCallTypeLabel()}{oneOff ? '' : ` #${callData.number}`}
                 </h1>
                 <span className="text-sm text-slate-500 dark:text-slate-400">• {callData.date}</span>
               </div>
@@ -1094,7 +1101,7 @@ const CallPage: React.FC = () => {
                 {/* Video Metadata */}
                 <div className="flex flex-col justify-center">
                   <h2 className="text-lg font-semibold text-slate-900 dark:text-slate-100 mb-3">
-                    {getCallTypeLabel()} #{callData.number}
+                    {getCallTypeLabel()}{oneOff ? '' : ` #${callData.number}`}
                   </h2>
                   <div className="space-y-2 text-sm">
                     <div className="flex items-center gap-2">
@@ -1167,7 +1174,7 @@ const CallPage: React.FC = () => {
                             Previous
                           </span>
                           <span className="text-sm font-medium text-slate-700 dark:text-slate-200 group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors">
-                            {callTypeNames[prevCall.type]} #{prevCall.number}
+                            {callTypeNames[prevCall.type as CallType] || prevCall.type} #{prevCall.number}
                           </span>
                         </Link>
                       ) : (
@@ -1185,7 +1192,7 @@ const CallPage: React.FC = () => {
                             </svg>
                           </span>
                           <span className="text-sm font-medium text-slate-700 dark:text-slate-200 group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors">
-                            {callTypeNames[nextCall.type]} #{nextCall.number}
+                            {callTypeNames[nextCall.type as CallType] || nextCall.type} #{nextCall.number}
                           </span>
                         </Link>
                       ) : (

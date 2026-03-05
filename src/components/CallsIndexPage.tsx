@@ -3,7 +3,7 @@ import { Link, useSearchParams } from 'react-router-dom';
 import { Logo } from './ui/Logo';
 import { Tooltip } from './ui/Tooltip';
 import ThemeToggle from './ui/ThemeToggle';
-import { protocolCalls, callTypeNames, type Call, type CallType } from '../data/calls';
+import { protocolCalls, callTypeNames, isOneOffCall, getCallDisplayName, type Call, type CallType } from '../data/calls';
 import { timelineEvents, type TimelineEvent } from '../data/events';
 import { fetchUpcomingCalls, type UpcomingCall } from '../utils/github';
 import GlobalCallSearch from './GlobalCallSearch';
@@ -488,21 +488,25 @@ const CallsIndexPage: React.FC = () => {
                           fcr: 'bg-teal-100 dark:bg-teal-900/30 text-teal-700 dark:text-teal-300'
                         };
 
+                        const oneOff = isOneOffCall(call.type);
+                        const fallbackBorderColor = 'border-l-slate-400 dark:border-l-slate-500';
+                        const fallbackBadgeColor = 'bg-slate-100 dark:bg-slate-700/50 text-slate-600 dark:text-slate-300';
+
                         return (
                           <Link
                             key={call.path}
                             to={`/calls/${call.path}`}
-                            className={`block bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg p-3 hover:shadow-md dark:hover:shadow-slate-700/20 transition-all hover:border-slate-300 dark:hover:border-slate-600 group border-l-4 ${callTypeColors[call.type]}`}
+                            className={`block bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg p-3 hover:shadow-md dark:hover:shadow-slate-700/20 transition-all hover:border-slate-300 dark:hover:border-slate-600 group border-l-4 ${callTypeColors[call.type as CallType] || fallbackBorderColor}`}
                           >
                             <div className="flex items-center justify-between">
                               <div className="flex items-center gap-3">
-                                <Tooltip text={callTypeNames[call.type]}>
-                                  <span className={`inline-block text-xs font-medium px-2 py-0.5 rounded-full min-w-[3.5rem] text-center ${callTypeBadgeColors[call.type]}`}>
-                                    {call.type.toUpperCase()}
+                                <Tooltip text={getCallDisplayName(call)}>
+                                  <span className={`inline-block text-xs font-medium px-2 py-0.5 rounded-full min-w-[3.5rem] text-center ${callTypeBadgeColors[call.type as CallType] || fallbackBadgeColor}`}>
+                                    {oneOff ? '1-OFF' : call.type.toUpperCase()}
                                   </span>
                                 </Tooltip>
                                 <div className="text-sm font-medium text-slate-900 dark:text-slate-100">
-                                  Call #{call.number}
+                                  {oneOff ? call.name || call.type : `Call #${call.number}`}
                                 </div>
                                 <div className="text-sm text-slate-600 dark:text-slate-400">
                                   {call.date}

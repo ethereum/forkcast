@@ -2,7 +2,7 @@ import React, { useState, useEffect, useMemo } from 'react';
 import { Link } from 'react-router-dom';
 import { Logo } from './ui/Logo';
 import ThemeToggle from './ui/ThemeToggle';
-import { protocolCalls, Call, CallType } from '../data/calls';
+import { protocolCalls, Call } from '../data/calls';
 import { KeyDecision, EIP } from '../types/eip';
 import { eipsData } from '../data/eips';
 import { StructuredDecisionContent } from './call/KeyDecisionsSection';
@@ -23,7 +23,7 @@ const FILTER_OPTIONS: { value: FilterType; label: string }[] = [
   { value: 'other', label: 'Other' },
 ];
 
-const ACD_TYPES: CallType[] = ['acdc', 'acde', 'acdt'];
+const ACD_TYPES: string[] = ['acdc', 'acde', 'acdt'];
 
 const formatDate = (dateStr: string): string => {
   const date = new Date(dateStr + 'T00:00:00');

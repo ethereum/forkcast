@@ -248,6 +248,23 @@ function generateAllPages() {
   });
   console.log(`\n📞 Generated ${protocolCalls.length} call pages`);
 
+  // Generate issue-number alias pages (e.g., /calls/1954 → same meta as canonical)
+  let issuePages = 0;
+  protocolCalls.forEach(call => {
+    if (!call.issue) return;
+    const issuePath = path.join(distDir, 'calls', String(call.issue));
+    if (!fs.existsSync(issuePath)) {
+      fs.mkdirSync(issuePath, { recursive: true });
+    }
+    const typeName = getCallTypeName(call);
+    const title = call.name ? `${typeName} - Forkcast` : `${typeName} #${call.number} - Forkcast`;
+    const description = call.name ? `Watch ${typeName} from ${call.date}.` : `Watch ${typeName} call #${call.number} from ${call.date}.`;
+    const html = generateStaticPage(`calls/${call.issue}`, title, description);
+    fs.writeFileSync(path.join(issuePath, 'index.html'), html);
+    issuePages++;
+  });
+  console.log(`🔗 Generated ${issuePages} issue-number alias pages`);
+
   // Generate individual EIP pages
   eips.forEach(eip => {
     const fullPath = `eips/${eip.id}`;

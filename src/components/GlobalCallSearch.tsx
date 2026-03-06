@@ -28,7 +28,6 @@ export default function GlobalCallSearch({ isOpen, onClose, initialQuery = '' }:
   const [results, setResults] = useState<GlobalSearchResult[]>([]);
   const [loading, setLoading] = useState(false);
   const [indexBuilding, setIndexBuilding] = useState(false);
-  const [indexProgress, setIndexProgress] = useState(0);
   const [selectedIndex, setSelectedIndex] = useState(0);
   const [filterType, setFilterType] = useState<'all' | 'transcript' | 'chat' | 'agenda' | 'action'>('all');
   const [callTypeFilter, setCallTypeFilter] = useState<'all' | 'ACDC' | 'ACDE' | 'ACDT'>('all');
@@ -40,7 +39,6 @@ export default function GlobalCallSearch({ isOpen, onClose, initialQuery = '' }:
   useEffect(() => {
     if (!isOpen) {
       setIndexBuilding(false);
-      setIndexProgress(0);
       return;
     }
 
@@ -48,24 +46,19 @@ export default function GlobalCallSearch({ isOpen, onClose, initialQuery = '' }:
 
     const initIndex = async () => {
       const stats = searchIndexService.getStats();
-      const shouldShowProgress = !stats || searchIndexService.needsRebuild();
+      const needsBuild = !stats || searchIndexService.needsRebuild();
 
-      if (shouldShowProgress) {
+      if (needsBuild) {
         setIndexBuilding(true);
-        setIndexProgress(10);
       }
 
       try {
         await searchIndexService.getIndex();
-        if (!cancelled && shouldShowProgress) {
-          setIndexProgress(100);
-        }
       } catch (error) {
         console.error('Failed to initialize search index:', error);
       } finally {
-        if (!cancelled && shouldShowProgress) {
+        if (!cancelled) {
           setIndexBuilding(false);
-          setIndexProgress(0);
         }
       }
     };
@@ -311,18 +304,12 @@ export default function GlobalCallSearch({ isOpen, onClose, initialQuery = '' }:
             </div>
           </div>
 
-          {/* Index Building Progress */}
+          {/* Index Building Indicator */}
           {indexBuilding && (
             <div className="px-3 sm:px-4 pb-3">
-              <div className="flex items-center justify-between text-sm text-slate-500 dark:text-slate-400 mb-2">
+              <div className="flex items-center gap-2 text-sm text-slate-500 dark:text-slate-400">
+                <div className="w-4 h-4 border-2 border-blue-500 border-t-transparent rounded-full animate-spin" />
                 <span>Building search index...</span>
-                <span>{Math.round(indexProgress)}%</span>
-              </div>
-              <div className="w-full bg-slate-200 rounded-full h-1.5 dark:bg-slate-700">
-                <div
-                  className="bg-blue-600 h-1.5 rounded-full transition-all duration-300"
-                  style={{ width: `${indexProgress}%` }}
-                />
               </div>
             </div>
           )}

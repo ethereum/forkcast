@@ -62,15 +62,16 @@ const CallPage: React.FC = () => {
   const navigate = useNavigate();
 
   // Redirect issue-number URLs (e.g., /calls/1954) to the canonical path
+  const normalizedPath = callPath?.replace(/\/+$/, '');
   useEffect(() => {
-    if (callPath && !callPath.includes('/') && /^\d+$/.test(callPath)) {
-      const issueNum = parseInt(callPath);
+    if (normalizedPath && !normalizedPath.includes('/') && /^\d+$/.test(normalizedPath)) {
+      const issueNum = parseInt(normalizedPath);
       const byIssue = protocolCalls.find(c => c.issue === issueNum);
       if (byIssue) {
         navigate(`/calls/${byIssue.path}`, { replace: true });
       }
     }
-  }, [callPath, navigate]);
+  }, [normalizedPath, navigate]);
 
   const [callData, setCallData] = useState<CallData | null>(null);
   const [callConfig, setCallConfig] = useState<CallConfig | null>(null);
@@ -349,7 +350,7 @@ const CallPage: React.FC = () => {
       }
 
       // Issue-number URLs are handled by the redirect effect
-      if (!callPath.includes('/') && /^\d+$/.test(callPath)) return;
+      if (normalizedPath && !normalizedPath.includes('/') && /^\d+$/.test(normalizedPath)) return;
 
       try {
         // Parse the call path (e.g., "acdc/154")
@@ -519,7 +520,7 @@ const CallPage: React.FC = () => {
     };
 
     loadCallData();
-  }, [callPath, location.state]);
+  }, [callPath, normalizedPath, location.state]);
 
   // Clean up interval on unmount
   useEffect(() => {

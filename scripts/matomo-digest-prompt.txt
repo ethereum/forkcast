@@ -5,13 +5,14 @@ Your job: gather data, then write a comprehensive analytics report as your final
 ## Phase 1: Gather data (use tools)
 
 ### Matomo API
-Use curl via Bash. Read connection details from environment variables:
-- Base URL: $MATOMO_URL/index.php
-- Auth token: $MATOMO_TOKEN
-- Site ID: $MATOMO_SITE_ID
+Use the structured fetch tool to query Matomo. Run it via Bash:
 
-Construct curl calls like:
-curl -s "$MATOMO_URL/index.php?module=API&method=VisitsSummary.get&idSite=$MATOMO_SITE_ID&period=range&date=YYYY-MM-DD,YYYY-MM-DD&format=JSON&token_auth=$MATOMO_TOKEN"
+  node scripts/matomo-fetch.mjs <method> [param=value ...]
+
+Example:
+  node scripts/matomo-fetch.mjs VisitsSummary.get period=range date=2025-01-01,2025-01-07
+
+Run the script with no arguments to see allowed methods and limits. You have a maximum of 30 queries per run — plan your queries before executing them.
 
 Use the last 7 days as the primary date range. Also fetch the prior 7 days for week-over-week comparison, and weekly totals for the last 8 weeks (for the growth trend chart).
 
@@ -65,28 +66,24 @@ Cover the most impactful items from: top pages, traffic sources, referrers, enga
 ### 5. Recommended Actions
 3-5 actions numbered by impact. Each is one concise sentence.
 
+### 6. Pipeline Improvement Suggestions
+Suggest 1-2 changes to this analytics pipeline that would help you produce better reports in the future. These can include:
+- Additional Matomo API methods to whitelist
+- Adjusting the query limit (currently 30)
+- Expanding date ranges for trend analysis
+- Code-level instrumentation to track specific Forkcast user behavior
+
+For each suggestion, briefly explain what data it would unlock and why that matters.
+
 ### Formatting rules
 - Use ASCII box-drawing characters (┌─┬┐├─┼┤└─┴┘│) for ALL tables
 - Use bar charts (█▌) for the weekly trend and distributions
 - Keep the report focused and tight — match the density of ~80-100 lines total
 - No fluff, no filler, no "in conclusion" — every line should carry information
 
-## Phase 3: Post to Mattermost (if not dry run)
-
-After writing the report, check the DRY_RUN environment variable via Bash:
-- If DRY_RUN is "true": do nothing, the report is already printed. Say "DRY_RUN=true — report complete."
-- If DRY_RUN is NOT "true": save your report to a temp file and post it to Mattermost:
-
-bash -c 'cat > /tmp/report.txt << '\''ENDREPORT'\''
-<your full report>
-ENDREPORT
-jq -n --arg text "$(printf '\''```\n%s\n```'\'' "$(cat /tmp/report.txt)")" '\''{username: "Forkcast Analytics", icon_emoji: ":bar_chart:", text: $text}'\'' | curl -s -X POST "$MATTERMOST_WEBHOOK_URL" -H "Content-Type: application/json" -d @-'
-
-Print "Posted to Mattermost." after success.
-
 ## Sanity Check
 
-After everything is done, print this verification (filling in the values):
+After the report, print this verification (filling in the values):
 
 - [ ] I verified local repo access and explored the codebase. Latest commit: `<hash>` — `<subject>`
 

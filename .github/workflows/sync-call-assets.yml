@@ -2,8 +2,10 @@
 name: Sync Call Assets from eth/pm
 
 on:
+  repository_dispatch:
+    types: [pm-assets-updated]
   schedule:
-    # Run once per hour
+    # Fallback: run once per hour (to be removed after confirming dispatch works)
     - cron: '0 * * * *'
   workflow_dispatch:
     inputs:

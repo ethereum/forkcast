@@ -22,7 +22,9 @@ jobs:
       - run: npm install -g @anthropic-ai/claude-code
 
       - name: Generate analytics report
+        shell: bash
         run: |
+          set -o pipefail
           claude -p "$(cat scripts/matomo-digest-prompt.txt)" \
             --allowedTools "Bash(node scripts/matomo-fetch.mjs:*) Bash(git:*) Read Glob Grep" \
             --model claude-opus-4-6 \

@@ -619,12 +619,6 @@ class SearchIndexService {
     return this.indexPromise;
   }
 
-  preload(): void {
-    void this.getIndex().catch(error => {
-      console.error('Error preloading search index:', error);
-    });
-  }
-
   // Force rebuild the index
   async rebuildIndex(onProgress?: (progress: number) => void): Promise<void> {
     this.index = null;

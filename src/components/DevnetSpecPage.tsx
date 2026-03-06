@@ -160,27 +160,30 @@ function ClientMatrix({
   );
 }
 
-function isSafeUrl(url: string): boolean {
-  return /^https?:\/\//i.test(url);
-}
+const ICON_PATHS: Record<string, string | string[]> = {
+  explorer: 'M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z',
+  faucet: 'M12 2C12 2 6 9.5 6 14a6 6 0 0012 0c0-4.5-6-12-6-12z',
+  code: 'M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4',
+  signal: 'M8.111 16.404a5.5 5.5 0 017.778 0M12 20h.01m-7.08-7.071c3.904-3.905 10.236-3.905 14.14 0M1.394 9.393c5.857-5.858 15.355-5.858 21.213 0',
+  monitor: [
+    'M15 12a3 3 0 11-6 0 3 3 0 016 0z',
+    'M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z',
+  ],
+  check: 'M9 12l2 3 4-6m6 3a9 9 0 11-18 0 9 9 0 0118 0z',
+  sync: 'M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15',
+  document: 'M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z',
+  link: 'M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14',
+};
 
-function ExternalLink({ label, url }: { label: string; url: string }) {
-  if (!isSafeUrl(url)) {
-    return <span className="inline-flex items-center px-3 py-1.5 rounded-lg bg-slate-100 dark:bg-slate-800 text-sm text-slate-500 dark:text-slate-400">{label}</span>;
-  }
-
+function ResourceIcon({ name }: { name: string }) {
+  const paths = ICON_PATHS[name] || ICON_PATHS.link;
+  const pathList = Array.isArray(paths) ? paths : [paths];
   return (
-    <a
-      href={url}
-      target="_blank"
-      rel="noopener noreferrer"
-      className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-slate-100 dark:bg-slate-800 text-sm text-slate-700 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-700 transition-colors"
-    >
-      {label}
-      <svg className="w-3 h-3 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
-      </svg>
-    </a>
+    <svg className="w-4 h-4 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+      {pathList.map((d, i) => (
+        <path key={i} strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d={d} />
+      ))}
+    </svg>
   );
 }
 
@@ -188,21 +191,21 @@ function ResourceLinks({ networkEntry, metadataLinks }: { networkEntry: NetworkE
   const serviceUrls = networkEntry?.serviceUrls;
   const genesisConfig = networkEntry?.genesisConfig;
 
-  const links: Array<{ label: string; url: string }> = [];
-  if (serviceUrls?.dora) links.push({ label: 'Explorer (Dora)', url: serviceUrls.dora });
-  if (serviceUrls?.faucet) links.push({ label: 'Faucet', url: serviceUrls.faucet });
-  if (serviceUrls?.jsonRpc) links.push({ label: 'JSON-RPC', url: serviceUrls.jsonRpc });
-  if (serviceUrls?.beaconRpc) links.push({ label: 'Beacon API', url: serviceUrls.beaconRpc });
-  if (serviceUrls?.forkmon) links.push({ label: 'Forkmon', url: serviceUrls.forkmon });
-  if (serviceUrls?.assertoor) links.push({ label: 'Assertoor', url: serviceUrls.assertoor });
-  if (serviceUrls?.checkpointSync) links.push({ label: 'Checkpoint Sync', url: serviceUrls.checkpointSync });
+  const links: Array<{ label: string; url: string; icon: string }> = [];
+  if (serviceUrls?.dora) links.push({ label: 'Explorer (Dora)', url: serviceUrls.dora, icon: 'explorer' });
+  if (serviceUrls?.faucet) links.push({ label: 'Faucet', url: serviceUrls.faucet, icon: 'faucet' });
+  if (serviceUrls?.jsonRpc) links.push({ label: 'JSON-RPC', url: serviceUrls.jsonRpc, icon: 'code' });
+  if (serviceUrls?.beaconRpc) links.push({ label: 'Beacon API', url: serviceUrls.beaconRpc, icon: 'signal' });
+  if (serviceUrls?.forkmon) links.push({ label: 'Forkmon', url: serviceUrls.forkmon, icon: 'monitor' });
+  if (serviceUrls?.assertoor) links.push({ label: 'Assertoor', url: serviceUrls.assertoor, icon: 'check' });
+  if (serviceUrls?.checkpointSync) links.push({ label: 'Checkpoint Sync', url: serviceUrls.checkpointSync, icon: 'sync' });
   const clConfig = genesisConfig?.consensusLayer?.find(f => f.path.endsWith('/config.yaml'));
   const elGenesis = genesisConfig?.executionLayer?.find(f => f.path.endsWith('/genesis.json'));
-  if (clConfig) links.push({ label: 'CL Config', url: clConfig.url });
-  if (elGenesis) links.push({ label: 'EL Genesis', url: elGenesis.url });
+  if (clConfig) links.push({ label: 'CL Config', url: clConfig.url, icon: 'document' });
+  if (elGenesis) links.push({ label: 'EL Genesis', url: elGenesis.url, icon: 'document' });
   if (metadataLinks) {
     for (const link of metadataLinks) {
-      links.push({ label: link.title, url: link.url });
+      links.push({ label: link.title, url: link.url, icon: 'link' });
     }
   }
 
@@ -213,9 +216,18 @@ function ResourceLinks({ networkEntry, metadataLinks }: { networkEntry: NetworkE
       <h2 className="text-xl font-bold text-slate-900 dark:text-slate-100 mb-3">
         Resources
       </h2>
-      <div className="flex flex-wrap gap-2">
-        {links.map(({ label, url }) => (
-          <ExternalLink key={url} label={label} url={url} />
+      <div className="grid grid-cols-2 sm:grid-cols-3 gap-x-6 gap-y-1">
+        {links.map(({ label, url, icon }) => (
+          <a
+            key={url}
+            href={url}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="flex items-center gap-2 py-1.5 text-sm text-slate-500 dark:text-slate-400 hover:text-purple-600 dark:hover:text-purple-400 transition-colors"
+          >
+            <ResourceIcon name={icon} />
+            <span>{label}</span>
+          </a>
         ))}
       </div>
     </div>
@@ -325,6 +337,19 @@ function DevnetSpecContent({ spec, networkEntry, metadata }: { spec: DevnetSpec;
             {spec.title}
           </h1>
           <div className="mt-2 flex items-center gap-3 text-sm text-slate-500 dark:text-slate-400">
+            {networkEntry && (
+              <>
+                <a
+                  href={`https://ethpandaops.io/networks/${spec.id}/`}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="hover:text-purple-600 dark:hover:text-purple-400 transition-colors underline decoration-1 underline-offset-2"
+                >
+                  ethPandaOps Dashboard
+                </a>
+                <span>&middot;</span>
+              </>
+            )}
             <a
               href={spec.sourceUrl}
               target="_blank"
@@ -475,6 +500,18 @@ function NetworkOnlyContent({ id, networkEntry, metadata }: { id: string; networ
         <h1 className="text-3xl font-bold text-slate-900 dark:text-slate-100">
           {id}
         </h1>
+        <div className="mt-2 flex items-center gap-3 text-sm text-slate-500 dark:text-slate-400">
+          {networkEntry && (
+            <a
+              href={`https://ethpandaops.io/networks/${id}/`}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="hover:text-purple-600 dark:hover:text-purple-400 transition-colors underline decoration-1 underline-offset-2"
+            >
+              ethPandaOps Dashboard
+            </a>
+          )}
+        </div>
         {metadata?.description && (
           <p className="mt-3 text-sm text-slate-600 dark:text-slate-400">
             {metadata.description}

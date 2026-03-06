@@ -51,20 +51,27 @@ function parseAnnouncements(md) {
   return announcements;
 }
 
+function parseStatusCell(text) {
+  const t = text.trim();
+  if (t.includes(':up:') || t.includes('🆙')) return 'updated';
+  if ((t.includes(':new:') || t.includes('🆕')) && /optional/i.test(t))
+    return 'new_optional';
+  if (t.includes(':new:') || t.includes('🆕')) return 'new';
+  return null;
+}
+
 function parseEipTable(md) {
   // Find the EIP list table - look for rows with [EIP-NNNN](url)
+  // Supports two layouts:
+  //   A) | [EIP-NNNN](url) | title | status |        (shortcodes after title)
+  //   B) | status_emoji | [EIP-NNNN](url) | title |  (emoji before EIP link)
   const eips = [];
   const rowRegex =
-    /\|\s*\[EIP-(\d+)\]\((https?:\/\/[^\s)]+)\)\s*\|\s*([^|]+?)\s*\|\s*([^|\n]*)/g;
+    /\|([^[]*?)\[EIP-(\d+)\]\((https?:\/\/[^\s)]+)\)\s*\|\s*([^|]+?)\s*\|\s*([^|\n]*)/g;
   let match;
   while ((match = rowRegex.exec(md)) !== null) {
-    const [, numberStr, url, title, statusRaw] = match;
-    const statusTrimmed = statusRaw.trim();
-    let status = null;
-    if (statusTrimmed.includes(':up:')) status = 'updated';
-    else if (statusTrimmed.includes(':new:') && /optional/i.test(statusTrimmed))
-      status = 'new_optional';
-    else if (statusTrimmed.includes(':new:')) status = 'new';
+    const [, preEip, numberStr, url, title, postTitle] = match;
+    const status = parseStatusCell(preEip) || parseStatusCell(postTitle);
 
     eips.push({
       number: parseInt(numberStr, 10),

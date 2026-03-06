@@ -3,20 +3,41 @@ name: Weekly Matomo Digest
 on:
   schedule:
     - cron: '0 14 * * 1' # Every Monday at 14:00 UTC
-  workflow_dispatch: {}
+  workflow_dispatch:
+    inputs:
+      dry_run:
+        type: boolean
+        default: false
 
 jobs:
   post-digest:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+        with:
+          fetch-depth: 50
       - uses: actions/setup-node@v4
         with:
           node-version: '20'
-      - name: Post Matomo digest to Mattermost
-        run: node scripts/post-matomo-digest.mjs
+      - run: npm install -g @anthropic-ai/claude-code
+
+      - name: Generate analytics report
+        shell: bash
+        run: |
+          set -o pipefail
+          claude -p "$(cat scripts/matomo-digest-prompt.txt)" \
+            --allowedTools "Bash(node scripts/matomo-fetch.mjs:*) Bash(git:*) Read Glob Grep" \
+            --model claude-opus-4-6 \
+            --max-turns 20 \
+            | tee /tmp/matomo-report.txt
         env:
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
           MATOMO_URL: ${{ secrets.MATOMO_URL }}
           MATOMO_TOKEN: ${{ secrets.MATOMO_TOKEN }}
           MATOMO_SITE_ID: ${{ secrets.MATOMO_SITE_ID }}
+
+      - name: Post to Mattermost
+        if: ${{ inputs.dry_run != true }}
+        run: node scripts/post-mattermost.mjs /tmp/matomo-report.txt
+        env:
           MATTERMOST_WEBHOOK_URL: ${{ secrets.MATTERMOST_WEBHOOK_URL }}

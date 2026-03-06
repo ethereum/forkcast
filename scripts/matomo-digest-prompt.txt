@@ -12,21 +12,9 @@ Use the structured fetch tool to query Matomo. Run it via Bash:
 Example:
   node scripts/matomo-fetch.mjs VisitsSummary.get period=range date=2025-01-01,2025-01-07
 
-Run the script with no arguments to see allowed methods and limits. You have a maximum of 30 queries per run — plan your queries before executing them.
+Run the script with no arguments to see the full list of allowed methods and query limits. Plan your queries before executing — you have a limited budget per run.
 
-Use the last 7 days as the primary date range. Also fetch the prior 7 days for week-over-week comparison, and weekly totals for the last 8 weeks (for the growth trend chart).
-
-Useful API methods:
-- VisitsSummary.get — visits, unique visitors, pageviews, bounce rate, avg duration
-- VisitsSummary.getVisits — for daily breakdown (use period=day)
-- Actions.getPageUrls — top pages (flat=1&filter_limit=30)
-- Referrers.getReferrerType — traffic sources
-- Referrers.getWebsites — referring websites
-- UserCountry.getCountry — visitor countries
-- DevicesDetection.getType — device types
-- VisitTime.getVisitInformationPerServerTime — visits by hour
-- Actions.getEntryPageUrls — landing pages
-- VisitorInterest.getNumberOfVisitsPerVisitDuration — session length distribution
+Use the last 7 days as the primary date range. Also fetch the prior 7 days for week-over-week comparison, and weekly totals for the last 8 weeks (for the growth trend chart). Prioritize VisitsSummary.get and Actions.getPageUrls first, then fill in referrers, devices, and other dimensions with remaining budget.
 
 ### Codebase & Git
 Use Read, Glob, Grep, and Bash (git log, git diff) to explore the codebase and recent changes.

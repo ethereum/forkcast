@@ -1,9 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { Link, useSearchParams } from 'react-router-dom';
 import { Logo } from './ui/Logo';
-import { Tooltip } from './ui/Tooltip';
 import ThemeToggle from './ui/ThemeToggle';
-import { protocolCalls, callTypeNames, isOneOffCall, getCallDisplayName, type Call, type CallType } from '../data/calls';
+import { protocolCalls, callTypeNames, isOneOffCall, type Call, type CallType } from '../data/calls';
 import { timelineEvents, type TimelineEvent } from '../data/events';
 import { fetchUpcomingCalls, type UpcomingCall } from '../utils/github';
 import GlobalCallSearch from './GlobalCallSearch';
@@ -386,28 +385,29 @@ const CallsIndexPage: React.FC = () => {
                           };
 
                           const cardContent = (
-                            <div className="flex items-center justify-between">
-                              <div className="flex items-center gap-3">
-                                <Tooltip text={callTypeNames[upcomingCall.type as CallType]}>
-                                  <span className={`inline-block text-xs font-medium px-2 py-0.5 rounded-full min-w-[3.5rem] text-center ${upcomingCallTypeBadgeColors[upcomingCall.type as CallType]}`}>
-                                    {upcomingCall.type.toUpperCase()}
-                                  </span>
-                                </Tooltip>
-                                <div className="text-sm font-medium text-slate-900 dark:text-slate-100">
-                                  Call #{upcomingCall.number}
+                            <div className="flex items-center justify-between gap-3">
+                              <div className="flex items-center gap-3 min-w-0">
+                                <span className={`inline-block text-xs font-medium px-2 py-0.5 rounded-full min-w-[3.5rem] text-center flex-shrink-0 ${upcomingCallTypeBadgeColors[upcomingCall.type as CallType]}`}>
+                                  {upcomingCall.type.toUpperCase()}
+                                </span>
+                                <div className="text-sm font-medium text-slate-900 dark:text-slate-100 truncate">
+                                  <span className="sm:hidden">Call #{upcomingCall.number}</span>
+                                  <span className="hidden sm:inline">{callTypeNames[upcomingCall.type as CallType] || upcomingCall.type} #{upcomingCall.number}</span>
                                 </div>
-                                <div className="text-sm text-slate-600 dark:text-slate-400">
-                                  {upcomingCall.date}
-                                </div>
+                              </div>
+                              <div className="flex items-center gap-3 flex-shrink-0">
                                 {isUpcoming && (
-                                  <div className="hidden sm:flex items-center gap-1.5 ml-2">
+                                  <div className="hidden sm:flex items-center gap-1.5">
                                     <div className="w-1.5 h-1.5 rounded-full bg-emerald-500"></div>
                                     <span className="text-xs text-emerald-600 dark:text-emerald-400 font-medium">Upcoming</span>
                                   </div>
                                 )}
-                              </div>
-                              <div className="text-slate-400 dark:text-slate-400 group-hover:text-slate-600 dark:group-hover:text-slate-300 transition-colors">
-                                {upcomingCall.youtubeUrl ? '→' : '↗'}
+                                <div className="text-sm text-slate-600 dark:text-slate-400">
+                                  {upcomingCall.date}
+                                </div>
+                                <div className="text-slate-400 dark:text-slate-400 group-hover:text-slate-600 dark:group-hover:text-slate-300 transition-colors">
+                                  {upcomingCall.youtubeUrl ? '→' : '↗'}
+                                </div>
                               </div>
                             </div>
                           );
@@ -498,22 +498,25 @@ const CallsIndexPage: React.FC = () => {
                             to={`/calls/${call.path}`}
                             className={`block bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg p-3 hover:shadow-md dark:hover:shadow-slate-700/20 transition-all hover:border-slate-300 dark:hover:border-slate-600 group border-l-4 ${callTypeColors[call.type as CallType] || fallbackBorderColor}`}
                           >
-                            <div className="flex items-center justify-between">
-                              <div className="flex items-center gap-3">
-                                <Tooltip text={getCallDisplayName(call)}>
-                                  <span className={`inline-block text-xs font-medium px-2 py-0.5 rounded-full min-w-[3.5rem] text-center ${callTypeBadgeColors[call.type as CallType] || fallbackBadgeColor}`}>
-                                    {oneOff ? '1-OFF' : call.type.toUpperCase()}
-                                  </span>
-                                </Tooltip>
-                                <div className="text-sm font-medium text-slate-900 dark:text-slate-100">
-                                  {oneOff ? call.name || call.type : `Call #${call.number}`}
+                            <div className="flex items-center justify-between gap-3">
+                              <div className="flex items-center gap-3 min-w-0">
+                                <span className={`inline-block text-xs font-medium px-2 py-0.5 rounded-full min-w-[3.5rem] text-center flex-shrink-0 ${callTypeBadgeColors[call.type as CallType] || fallbackBadgeColor}`}>
+                                  {oneOff ? '1-OFF' : call.type.toUpperCase()}
+                                </span>
+                                <div className="text-sm font-medium text-slate-900 dark:text-slate-100 truncate">
+                                  {oneOff
+                                    ? call.name || call.type
+                                    : <><span className="sm:hidden">Call #{call.number}</span><span className="hidden sm:inline">{callTypeNames[call.type as CallType] || call.type} #{call.number}</span></>
+                                  }
                                 </div>
+                              </div>
+                              <div className="flex items-center gap-3 flex-shrink-0">
                                 <div className="text-sm text-slate-600 dark:text-slate-400">
                                   {call.date}
                                 </div>
-                              </div>
-                              <div className="text-slate-400 dark:text-slate-400 group-hover:text-slate-600 dark:group-hover:text-slate-300 transition-colors">
-                                →
+                                <div className="text-slate-400 dark:text-slate-400 group-hover:text-slate-600 dark:group-hover:text-slate-300 transition-colors">
+                                  →
+                                </div>
                               </div>
                             </div>
                           </Link>

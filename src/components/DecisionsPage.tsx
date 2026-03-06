@@ -41,7 +41,7 @@ const DecisionsPage: React.FC = () => {
 
   useMetaTags({
     title: 'Key Decisions - Forkcast',
-    description: 'Key decisions from Ethereum All Core Devs meetings, aggregated in reverse-chronological order.',
+    description: 'Key decisions from Ethereum AllCoreDevs meetings, aggregated in reverse-chronological order.',
     url: 'https://forkcast.org/decisions',
   });
 
@@ -110,7 +110,7 @@ const DecisionsPage: React.FC = () => {
             Key Decisions
           </h1>
           <p className="text-sm text-slate-500 dark:text-slate-400">
-            Key decisions from All Core Devs meetings, aggregated in reverse-chronological order.
+            Key decisions from AllCoreDevs meetings, aggregated in reverse-chronological order.
           </p>
         </div>
 

@@ -63,7 +63,7 @@ const standalonePages = [
   {
     path: 'decisions',
     title: 'Key Decisions - Forkcast',
-    description: 'Key decisions from Ethereum All Core Devs meetings.',
+    description: 'Key decisions from Ethereum AllCoreDevs meetings.',
   },
 ];
 
@@ -98,9 +98,9 @@ const upgrades = [
 
 // Get full type name for calls
 const callTypeNames = {
-  acdc: 'All Core Devs - Consensus',
-  acde: 'All Core Devs - Execution',
-  acdt: 'All Core Devs - Testing',
+  acdc: 'AllCoreDevs - Consensus',
+  acde: 'AllCoreDevs - Execution',
+  acdt: 'AllCoreDevs - Testing',
   epbs: 'ePBS Breakout',
   bal: 'BAL Breakout',
   focil: 'FOCIL Breakout',
@@ -218,7 +218,7 @@ function generateAllPages() {
   const callsIndexHtml = generateStaticPage(
     'calls',
     'Protocol Calls - Forkcast',
-    'Browse Ethereum protocol development calls including All Core Devs Consensus, Execution, and Testing meetings.'
+    'Browse Ethereum protocol development calls including AllCoreDevs Consensus, Execution, and Testing meetings.'
   );
   fs.writeFileSync(path.join(callsIndexPath, 'index.html'), callsIndexHtml);
   console.log('  ✓ calls/index.html');

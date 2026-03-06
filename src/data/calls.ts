@@ -13,9 +13,9 @@ export interface Call {
 
 // Full names for call types (used in tooltips)
 export const callTypeNames: Record<CallType, string> = {
-  acdc: 'All Core Devs - Consensus',
-  acde: 'All Core Devs - Execution',
-  acdt: 'All Core Devs - Testing',
+  acdc: 'AllCoreDevs - Consensus',
+  acde: 'AllCoreDevs - Execution',
+  acdt: 'AllCoreDevs - Testing',
   epbs: 'ePBS Breakout',
   bal: 'BAL Breakout',
   focil: 'FOCIL Breakout',

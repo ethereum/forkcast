@@ -9,6 +9,7 @@ import { Logo } from '../ui/Logo';
 import { protocolCalls, callTypeNames, isOneOffCall, type CallType } from '../../data/calls';
 import { fetchUpcomingCalls } from '../../utils/github';
 import { useMetaTags } from '../../hooks/useMetaTags';
+import { ArrowsPointingOutIcon, ArrowsPointingInIcon } from '@heroicons/react/24/outline';
 import { eipsData } from '../../data/eips';
 import { EIP, ForkRelationship, KeyDecision } from '../../types/eip';
 
@@ -91,12 +92,43 @@ const CallPage: React.FC = () => {
   const [selectedSearchResult, setSelectedSearchResult] = useState<{timestamp: string, text: string, type: string} | null>(null);
   const pollingIntervalRef = useRef<ReturnType<typeof setInterval> | undefined>(undefined);
   const [isSearchOpen, setIsSearchOpen] = useState(false);
+  const [isVideoExpanded, setIsVideoExpanded] = useState(false);
+  const [isLargeScreen, setIsLargeScreen] = useState(() => {
+    if (typeof window === 'undefined') return false;
+    return window.matchMedia('(min-width: 1024px)').matches;
+  });
 
   // Detect OS for keyboard shortcut display
   const isMac = typeof navigator !== 'undefined' ?
     (navigator.userAgent.indexOf('Mac') !== -1 || navigator.userAgent.indexOf('iPhone') !== -1 || navigator.userAgent.indexOf('iPad') !== -1) :
     false;
   const searchShortcut = isMac ? '⌘F' : 'Ctrl+F';
+  const isDesktopExpanded = isLargeScreen && isVideoExpanded;
+
+  useEffect(() => {
+    if (typeof window === 'undefined') return;
+
+    const mediaQuery = window.matchMedia('(min-width: 1024px)');
+    const handleChange = (event: MediaQueryListEvent) => {
+      setIsLargeScreen(event.matches);
+    };
+
+    setIsLargeScreen(mediaQuery.matches);
+
+    if (typeof mediaQuery.addEventListener === 'function') {
+      mediaQuery.addEventListener('change', handleChange);
+
+      return () => {
+        mediaQuery.removeEventListener('change', handleChange);
+      };
+    }
+
+    mediaQuery.addListener(handleChange);
+
+    return () => {
+      mediaQuery.removeListener(handleChange);
+    };
+  }, []);
 
   // Variable to track initial search query from URL
   const [initialSearchQuery, setInitialSearchQuery] = useState('');
@@ -714,7 +746,11 @@ const CallPage: React.FC = () => {
         scrollTranscriptToEntry(entryParent);
       }
     }
-  }, [currentVideoTime, isPlaying, callConfig, isUserScrollingTranscript]);
+  }, [currentVideoTime, isPlaying, callConfig, isUserScrollingTranscript, isDesktopExpanded]);
+
+  useEffect(() => {
+    lastHighlightedTimestampRef.current = null;
+  }, [isDesktopExpanded]);
 
   // YouTube player handlers
   const onPlayerReady: YouTubeProps['onReady'] = (event) => {
@@ -998,11 +1034,295 @@ const CallPage: React.FC = () => {
     return entries;
   };
 
+  const isExpandedWorkspace = isDesktopExpanded && Boolean(callData.videoUrl);
+
+  const headerContainerClass = isExpandedWorkspace
+    ? 'max-w-[1800px] mx-auto px-4 sm:px-6 xl:px-8 2xl:px-10 py-2'
+    : 'max-w-7xl mx-auto px-4 sm:px-6 py-2';
+
+  const contentContainerClass = isExpandedWorkspace
+    ? 'max-w-[1800px] mx-auto px-4 sm:px-6 xl:px-8 2xl:px-10 py-4'
+    : 'max-w-7xl mx-auto px-6 py-4';
+
+  const desktopWorkspaceHeight = 'clamp(40rem, calc(100vh - 11rem), 72rem)';
+  const desktopSidebarPaneHeight = `calc((${desktopWorkspaceHeight} - 1rem) / 2)`;
+  const contentGridClass = isExpandedWorkspace
+    ? 'grid grid-cols-1 gap-4 lg:grid-cols-[minmax(0,1.7fr)_minmax(22rem,0.95fr)] lg:items-start'
+    : 'grid grid-cols-1 gap-4 lg:grid-cols-2';
+  const videoSectionLayoutClass = isExpandedWorkspace ? 'lg:row-span-2' : 'lg:col-span-2';
+  const summarySectionLayoutClass = isExpandedWorkspace ? 'lg:col-span-2 lg:row-start-3' : 'lg:col-span-2';
+  const transcriptSectionLayoutClass = isExpandedWorkspace ? 'lg:col-start-2 lg:row-start-1' : '';
+  const chatSectionLayoutClass = isExpandedWorkspace ? 'lg:col-start-2 lg:row-start-2' : '';
+
+  const renderVideoSection = () => (
+    <div
+      className={`bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg p-4 shadow-sm hover:shadow-md transition-shadow ${isExpandedWorkspace ? 'flex h-full flex-col' : ''}`}
+      style={isExpandedWorkspace ? { height: desktopWorkspaceHeight } : undefined}
+    >
+      <div className="mb-4 flex items-center justify-between gap-3">
+        <div>
+          <h2 className="text-lg font-semibold text-slate-900 dark:text-slate-100">
+            {getCallTypeLabel()}{oneOff ? '' : ` #${callData.number}`}
+          </h2>
+          <p className="text-sm text-slate-500 dark:text-slate-400">
+            {callData.date}
+          </p>
+        </div>
+        <button
+          type="button"
+          onClick={() => setIsVideoExpanded(current => !current)}
+          className="hidden lg:inline-flex items-center gap-2 rounded-lg border border-slate-200 bg-slate-50 px-3 py-2 text-sm font-medium text-slate-700 transition-colors hover:bg-slate-100 dark:border-slate-600 dark:bg-slate-700 dark:text-slate-200 dark:hover:bg-slate-600"
+        >
+          {isExpandedWorkspace ? (
+            <ArrowsPointingInIcon className="h-4 w-4" />
+          ) : (
+            <ArrowsPointingOutIcon className="h-4 w-4" />
+          )}
+          {isExpandedWorkspace ? 'Collapse video' : 'Expand video'}
+        </button>
+      </div>
+
+      <div className={isExpandedWorkspace ? 'flex min-h-0 flex-1 flex-col gap-6' : 'grid grid-cols-1 gap-6 lg:grid-cols-2'}>
+        {/* Video Player */}
+        <div className={isExpandedWorkspace ? 'min-h-0 flex-1' : ''}>
+          <div className={`relative overflow-hidden rounded-lg ${isExpandedWorkspace ? 'h-full min-h-0' : 'aspect-video'}`}>
+            <YouTube
+              videoId={extractYouTubeId(callData.videoUrl!)}
+              className="absolute inset-0 h-full w-full"
+              iframeClassName="w-full h-full rounded-lg"
+              onReady={onPlayerReady}
+              onStateChange={onPlayerStateChange}
+              opts={{
+                width: '100%',
+                height: '100%',
+                playerVars: {
+                  autoplay: 0,
+                  modestbranding: 1,
+                  rel: 0
+                }
+              }}
+            />
+          </div>
+        </div>
+
+        {/* Video Metadata */}
+        <div className={`flex flex-col ${isExpandedWorkspace ? 'border-t border-slate-200 pt-4 dark:border-slate-700' : 'justify-center'}`}>
+          <div className="space-y-2 text-sm">
+            <div className="flex items-center gap-2">
+              <span className="text-slate-500 dark:text-slate-400">📅</span>
+              <span className="text-slate-600 dark:text-slate-300">Date:</span>
+              <span className="text-slate-700 dark:text-slate-200 font-medium">{callData.date}</span>
+            </div>
+            <div className="flex items-center gap-2">
+              <span className="text-slate-500 dark:text-slate-400">🎬</span>
+              <span className="text-slate-600 dark:text-slate-300">Series:</span>
+              <span className="text-slate-700 dark:text-slate-200 font-medium">{oneOff ? 'One-off call' : getCallTypeLabel()}</span>
+            </div>
+            {callConfig?.issue && (
+              <div className="flex items-center gap-2">
+                <span className="text-slate-500 dark:text-slate-400">📌</span>
+                <span className="text-slate-600 dark:text-slate-300">Agenda:</span>
+                <a
+                  href={`https://github.com/ethereum/pm/issues/${callConfig.issue}`}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-blue-600 hover:text-blue-800 dark:text-blue-400 dark:hover:text-blue-200 font-medium underline decoration-1 underline-offset-2"
+                >
+                  #{callConfig.issue}
+                </a>
+              </div>
+            )}
+            {breakoutEipInfo && (
+              <div className="flex items-center gap-2">
+                <span className="text-slate-500 dark:text-slate-400">📋</span>
+                <span className="text-slate-600 dark:text-slate-300">EIP:</span>
+                <Link
+                  to={`/eips/${breakoutEipInfo.eip.id}`}
+                  className="text-blue-600 hover:text-blue-800 dark:text-blue-400 dark:hover:text-blue-200 font-medium underline decoration-1 underline-offset-2"
+                >
+                  {breakoutEipInfo.eip.id}
+                </Link>
+                {breakoutEipInfo.latestFork && (
+                  <span className="text-slate-500 dark:text-slate-400">
+                    ({breakoutEipInfo.latestFork.statusHistory[breakoutEipInfo.latestFork.statusHistory.length - 1]?.status} for {breakoutEipInfo.latestFork.forkName}{breakoutEipInfo.latestFork.isHeadliner ? ', Headliner' : ''})
+                  </span>
+                )}
+              </div>
+            )}
+          </div>
+          <div className="mt-4 pt-4 border-t border-slate-200 dark:border-slate-700">
+            <a
+              href={callData.videoUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-flex items-center gap-2 text-sm text-blue-600 dark:text-blue-400 hover:text-blue-700 dark:hover:text-blue-300 transition-colors"
+            >
+              <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 24 24">
+                <path d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z"/>
+              </svg>
+              Open in YouTube
+            </a>
+          </div>
+          {(prevCall || nextCall) && (
+            <div className="mt-4 pt-4 border-t border-slate-200 dark:border-slate-700 flex justify-between items-center gap-2">
+              {prevCall ? (
+                <Link
+                  to={`/calls/${prevCall.path}`}
+                  className="group flex-1 flex flex-col items-start gap-0.5 p-2 -m-2 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-700/50 transition-colors"
+                >
+                  <span className="text-xs text-slate-500 dark:text-slate-400 flex items-center gap-1">
+                    <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
+                    </svg>
+                    Previous
+                  </span>
+                  <span className="text-sm font-medium text-slate-700 dark:text-slate-200 group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors">
+                    {callTypeNames[prevCall.type as CallType] || prevCall.type} #{prevCall.number}
+                  </span>
+                </Link>
+              ) : (
+                <span className="flex-1" />
+              )}
+              {nextCall ? (
+                <Link
+                  to={`/calls/${nextCall.path}`}
+                  className="group flex-1 flex flex-col items-end gap-0.5 p-2 -m-2 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-700/50 transition-colors"
+                >
+                  <span className="text-xs text-slate-500 dark:text-slate-400 flex items-center gap-1">
+                    Next
+                    <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                    </svg>
+                  </span>
+                  <span className="text-sm font-medium text-slate-700 dark:text-slate-200 group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors">
+                    {callTypeNames[nextCall.type as CallType] || nextCall.type} #{nextCall.number}
+                  </span>
+                </Link>
+              ) : (
+                <span className="flex-1" />
+              )}
+            </div>
+          )}
+        </div>
+      </div>
+    </div>
+  );
+
+  const renderTranscriptCard = (scrollClassName: string, cardClassName = '', cardStyle?: React.CSSProperties) => (
+    <div
+      className={`bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg p-4 shadow-sm hover:shadow-md transition-shadow ${cardClassName}`}
+      style={cardStyle}
+    >
+      <h2 className="text-sm font-semibold text-slate-900 dark:text-slate-100 mb-3">Transcript</h2>
+      {callData.transcriptContent?.trim() ? (
+        <div
+          ref={transcriptRef}
+          className={`space-y-1 overflow-y-auto pr-2 ${scrollClassName}`}
+        >
+          {parseVTTTranscript(callData.transcriptContent)
+            .filter(entry => {
+              if (callConfig?.sync?.transcriptStartTime) {
+                const entrySeconds = timestampToSeconds(entry.timestamp);
+                const startSeconds = timestampToSeconds(callConfig.sync.transcriptStartTime);
+                return entrySeconds >= startSeconds;
+              }
+              return true;
+            })
+            .map((entry, index, entries) => {
+              const isHighlighted = isCurrentEntry(entry.timestamp, index, entries);
+              const isSelectedSearch = selectedSearchResult?.timestamp === entry.timestamp && selectedSearchResult?.type === 'transcript';
+              return (
+                <div
+                  key={index}
+                  data-timestamp={entry.timestamp}
+                  onClick={() => handleTranscriptClick(entry.timestamp)}
+                  className={`flex gap-3 text-sm group hover:bg-slate-50 dark:hover:bg-slate-700/30 py-1 px-2 -mx-2 rounded transition-colors cursor-pointer border-l-2
+                    ${isSelectedSearch ? 'bg-yellow-50 dark:bg-yellow-900/20 border-yellow-500 rounded-r-md' :
+                      isHighlighted ? 'bg-blue-50 dark:bg-blue-900/30 border-blue-500 rounded-r-md' :
+                      'border-transparent'}
+                  `}
+                >
+                  <span className={`text-xs flex-shrink-0 font-mono mt-0.5
+                    ${isSelectedSearch ? 'text-yellow-600 dark:text-yellow-400' :
+                      isHighlighted ? 'text-blue-600 dark:text-blue-400' :
+                      'text-slate-500 dark:text-slate-400'}
+                  `} style={{ minWidth: '64px' }}>
+                    {callConfig?.sync?.transcriptStartTime && callConfig?.sync?.videoStartTime
+                      ? secondsToTimestamp(getAdjustedVideoTime(entry.timestamp))
+                      : formatTimestamp(entry.timestamp)
+                    }
+                  </span>
+                  <div className="flex-1 min-w-0">
+                    <span className={`font-medium mr-2
+                      ${isSelectedSearch ? 'text-yellow-900 dark:text-yellow-100' :
+                        isHighlighted ? 'text-blue-900 dark:text-blue-100' :
+                        'text-slate-700 dark:text-slate-300'}
+                    `}>
+                      {entry.speaker}:
+                    </span>
+                    <span className={`break-words
+                      ${isSelectedSearch ? 'text-slate-900 dark:text-slate-100' :
+                        isHighlighted ? 'text-slate-900 dark:text-slate-100' :
+                        'text-slate-600 dark:text-slate-400'}
+                    `}>{entry.text}</span>
+                  </div>
+                </div>
+              );
+            })}
+        </div>
+      ) : isUpcoming ? (
+        <div className={`flex flex-col items-center justify-center text-center ${cardClassName ? 'flex-1' : 'py-12'}`}>
+          <svg className="w-10 h-10 text-amber-400 dark:text-amber-500 mb-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+          </svg>
+          <p className="text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">Transcript pending</p>
+          <p className="text-xs text-slate-500 dark:text-slate-400">The transcript will be available after the call</p>
+        </div>
+      ) : (
+        <div className={`flex flex-col items-center justify-center text-center ${cardClassName ? 'flex-1' : 'py-12'}`}>
+          <svg className="w-10 h-10 text-slate-300 dark:text-slate-600 mb-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+          </svg>
+          <p className="text-sm text-slate-500 dark:text-slate-400">No transcript available</p>
+        </div>
+      )}
+    </div>
+  );
+
+  const renderChatCard = (scrollClassName: string, cardClassName = '', cardStyle?: React.CSSProperties) => (
+    <div
+      className={`bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg p-4 shadow-sm hover:shadow-md transition-shadow ${cardClassName}`}
+      style={cardStyle}
+    >
+      <h2 className="text-sm font-semibold text-slate-900 dark:text-slate-100 mb-3">Chat Logs</h2>
+      {callData.chatContent ? (
+        <div ref={chatLogRef} className={`overflow-y-auto pr-2 ${scrollClassName}`}>
+          <ChatLog content={callData.chatContent} syncConfig={callConfig?.sync} selectedSearchResult={selectedSearchResult} onTimestampClick={handleTranscriptClick} />
+        </div>
+      ) : isUpcoming ? (
+        <div className={`flex flex-col items-center justify-center text-center ${cardClassName ? 'flex-1' : 'py-12'}`}>
+          <svg className="w-10 h-10 text-amber-400 dark:text-amber-500 mb-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+          </svg>
+          <p className="text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">Chat logs pending</p>
+          <p className="text-xs text-slate-500 dark:text-slate-400">Chat logs will be available after the call</p>
+        </div>
+      ) : (
+        <div className={`flex flex-col items-center justify-center text-center ${cardClassName ? 'flex-1' : 'py-12'}`}>
+          <svg className="w-10 h-10 text-slate-300 dark:text-slate-600 mb-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" />
+          </svg>
+          <p className="text-sm text-slate-500 dark:text-slate-400">No chat logs available</p>
+        </div>
+      )}
+    </div>
+  );
+
   return (
     <div className="min-h-screen bg-slate-50 dark:bg-slate-900 text-slate-900 dark:text-slate-100">
       {/* Compact Header */}
       <div className="bg-white dark:bg-slate-800 border-b border-slate-200 dark:border-slate-700 sticky top-0 z-10">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 py-2">
+        <div className={headerContainerClass}>
           {/* Mobile Layout */}
           <div className="sm:hidden flex items-center justify-between">
             <div className="flex items-center gap-2">
@@ -1087,292 +1407,74 @@ const CallPage: React.FC = () => {
       />
 
       {/* Content */}
-      <div className="max-w-7xl mx-auto px-6 py-4">
-        {/* Video Section */}
-        {callData.videoUrl && (
-          <div className="mb-4">
-            <div className="bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg p-4 shadow-sm hover:shadow-md transition-shadow">
-              <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-                {/* Video Player */}
-                <div>
-                  <div className="relative" style={{ paddingBottom: '56.25%' }}>
-                    <YouTube
-                      videoId={extractYouTubeId(callData.videoUrl)}
-                      className="absolute top-0 left-0 w-full h-full"
-                      iframeClassName="w-full h-full rounded-lg"
-                      onReady={onPlayerReady}
-                      onStateChange={onPlayerStateChange}
-                      opts={{
-                        width: '100%',
-                        height: '100%',
-                        playerVars: {
-                          autoplay: 0,
-                          modestbranding: 1,
-                          rel: 0
-                        }
-                      }}
-                    />
-                  </div>
-                </div>
-
-                {/* Video Metadata */}
-                <div className="flex flex-col justify-center">
-                  <h2 className="text-lg font-semibold text-slate-900 dark:text-slate-100 mb-3">
-                    {getCallTypeLabel()}{oneOff ? '' : ` #${callData.number}`}
-                  </h2>
-                  <div className="space-y-2 text-sm">
-                    <div className="flex items-center gap-2">
-                      <span className="text-slate-500 dark:text-slate-400">📅</span>
-                      <span className="text-slate-600 dark:text-slate-300">Date:</span>
-                      <span className="text-slate-700 dark:text-slate-200 font-medium">{callData.date}</span>
-                    </div>
-                    <div className="flex items-center gap-2">
-                      <span className="text-slate-500 dark:text-slate-400">🎬</span>
-                      <span className="text-slate-600 dark:text-slate-300">Series:</span>
-                      <span className="text-slate-700 dark:text-slate-200 font-medium">{oneOff ? 'One-off call' : getCallTypeLabel()}</span>
-                    </div>
-                    {callConfig?.issue && (
-                      <div className="flex items-center gap-2">
-                        <span className="text-slate-500 dark:text-slate-400">📌</span>
-                        <span className="text-slate-600 dark:text-slate-300">Agenda:</span>
-                        <a
-                          href={`https://github.com/ethereum/pm/issues/${callConfig.issue}`}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          className="text-blue-600 hover:text-blue-800 dark:text-blue-400 dark:hover:text-blue-200 font-medium underline decoration-1 underline-offset-2"
-                        >
-                          #{callConfig.issue}
-                        </a>
-                      </div>
-                    )}
-                    {breakoutEipInfo && (
-                      <div className="flex items-center gap-2">
-                        <span className="text-slate-500 dark:text-slate-400">📋</span>
-                        <span className="text-slate-600 dark:text-slate-300">EIP:</span>
-                        <Link
-                          to={`/eips/${breakoutEipInfo.eip.id}`}
-                          className="text-blue-600 hover:text-blue-800 dark:text-blue-400 dark:hover:text-blue-200 font-medium underline decoration-1 underline-offset-2"
-                        >
-                          {breakoutEipInfo.eip.id}
-                        </Link>
-                        {breakoutEipInfo.latestFork && (
-                          <span className="text-slate-500 dark:text-slate-400">
-                            ({breakoutEipInfo.latestFork.statusHistory[breakoutEipInfo.latestFork.statusHistory.length - 1]?.status} for {breakoutEipInfo.latestFork.forkName}{breakoutEipInfo.latestFork.isHeadliner ? ', Headliner' : ''})
-                          </span>
-                        )}
-                      </div>
-                    )}
-                  </div>
-                  <div className="mt-4 pt-4 border-t border-slate-200 dark:border-slate-700">
-                    <a
-                      href={callData.videoUrl}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="inline-flex items-center gap-2 text-sm text-blue-600 dark:text-blue-400 hover:text-blue-700 dark:hover:text-blue-300 transition-colors"
-                    >
-                      <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 24 24">
-                        <path d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z"/>
-                      </svg>
-                      Open in YouTube
-                    </a>
-                  </div>
-                  {/* Series Navigation */}
-                  {(prevCall || nextCall) && (
-                    <div className="mt-4 pt-4 border-t border-slate-200 dark:border-slate-700 flex justify-between items-center gap-2">
-                      {prevCall ? (
-                        <Link
-                          to={`/calls/${prevCall.path}`}
-                          className="group flex-1 flex flex-col items-start gap-0.5 p-2 -m-2 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-700/50 transition-colors"
-                        >
-                          <span className="text-xs text-slate-500 dark:text-slate-400 flex items-center gap-1">
-                            <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
-                            </svg>
-                            Previous
-                          </span>
-                          <span className="text-sm font-medium text-slate-700 dark:text-slate-200 group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors">
-                            {callTypeNames[prevCall.type as CallType] || prevCall.type} #{prevCall.number}
-                          </span>
-                        </Link>
-                      ) : (
-                        <span className="flex-1" />
-                      )}
-                      {nextCall ? (
-                        <Link
-                          to={`/calls/${nextCall.path}`}
-                          className="group flex-1 flex flex-col items-end gap-0.5 p-2 -m-2 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-700/50 transition-colors"
-                        >
-                          <span className="text-xs text-slate-500 dark:text-slate-400 flex items-center gap-1">
-                            Next
-                            <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
-                            </svg>
-                          </span>
-                          <span className="text-sm font-medium text-slate-700 dark:text-slate-200 group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors">
-                            {callTypeNames[nextCall.type as CallType] || nextCall.type} #{nextCall.number}
-                          </span>
-                        </Link>
-                      ) : (
-                        <span className="flex-1" />
-                      )}
-                    </div>
-                  )}
-                </div>
-              </div>
+      <div className={contentContainerClass}>
+        <div className={contentGridClass}>
+          {callData.videoUrl && (
+            <div className={`min-w-0 ${videoSectionLayoutClass}`}>
+              {renderVideoSection()}
             </div>
-          </div>
-        )}
+          )}
 
-        {/* Meeting Summary Section */}
-        {callData.tldrData && (
-          <div className="mb-4">
-            <div className="bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg shadow-sm hover:shadow-md transition-shadow">
-              <button
-                onClick={() => setSummaryExpanded(!summaryExpanded)}
-                className="w-full px-4 py-3 flex items-center justify-between text-left hover:bg-slate-50 dark:hover:bg-slate-700/30 transition-colors rounded-t-lg cursor-pointer"
-              >
-                <div className="flex items-center gap-2">
-                  <h2 className="text-sm font-semibold text-slate-900 dark:text-slate-100">
-                    Summary
-                  </h2>
-                  <div className="flex items-center gap-2">
-                    <span className="text-xs text-slate-500 dark:text-slate-400">
-                      {Object.values(callData.tldrData.highlights).flat().length} highlights • {callData.tldrData.action_items?.length || 0} action items
-                    </span>
-                    <span className="text-xs bg-slate-100 dark:bg-slate-700 text-slate-500 dark:text-slate-300 px-2 py-0.5 rounded-full font-normal border border-slate-200 dark:border-slate-600">
-                      Experimental
-                    </span>
-                  </div>
-                </div>
-                <svg
-                  className={`w-4 h-4 text-slate-400 transition-transform duration-200 ${summaryExpanded ? 'rotate-180' : ''}`}
-                  fill="none"
-                  stroke="currentColor"
-                  viewBox="0 0 24 24"
+          {callData.tldrData && (
+            <div className={summarySectionLayoutClass}>
+              <div className="bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg shadow-sm hover:shadow-md transition-shadow">
+                <button
+                  onClick={() => setSummaryExpanded(!summaryExpanded)}
+                  className="w-full px-4 py-3 flex items-center justify-between text-left hover:bg-slate-50 dark:hover:bg-slate-700/30 transition-colors rounded-t-lg cursor-pointer"
                 >
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
-                </svg>
-              </button>
-              {summaryExpanded && (
-                <div className="border-t border-slate-200 dark:border-slate-700 transition-opacity duration-500 ease-out opacity-0 animate-[fadeIn_0.5s_ease-out_forwards]">
-                  <div className="p-6">
-                    <TldrSummary
-                      data={callData.tldrData}
-                      keyDecisions={callData.keyDecisions}
-                      onTimestampClick={handleTranscriptClick}
-                      syncConfig={callConfig?.sync}
-                      currentVideoTime={currentVideoTime}
-                      selectedSearchResult={selectedSearchResult}
-                    />
-                  </div>
-                </div>
-              )}
-            </div>
-          </div>
-        )}
-
-        {/* Transcript and Chat Grid */}
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
-          {/* Transcript */}
-          <div className="bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg p-4 shadow-sm hover:shadow-md transition-shadow">
-            <h2 className="text-sm font-semibold text-slate-900 dark:text-slate-100 mb-3">Transcript</h2>
-            {callData.transcriptContent?.trim() ? (
-              <div
-                ref={transcriptRef}
-                className="space-y-1 max-h-[400px] overflow-y-auto pr-2"
-              >
-                {parseVTTTranscript(callData.transcriptContent)
-                  .filter(entry => {
-                    // Hide entries before transcriptStartTime if sync config exists
-                    if (callConfig?.sync?.transcriptStartTime) {
-                      const entrySeconds = timestampToSeconds(entry.timestamp);
-                      const startSeconds = timestampToSeconds(callConfig.sync.transcriptStartTime);
-                      return entrySeconds >= startSeconds;
-                    }
-                    return true;
-                  })
-                  .map((entry, index, entries) => {
-                  const isHighlighted = isCurrentEntry(entry.timestamp, index, entries);
-                  const isSelectedSearch = selectedSearchResult?.timestamp === entry.timestamp && selectedSearchResult?.type === 'transcript';
-                  return (
-                    <div
-                      key={index}
-                      data-timestamp={entry.timestamp}
-                      onClick={() => handleTranscriptClick(entry.timestamp)}
-                      className={`flex gap-3 text-sm group hover:bg-slate-50 dark:hover:bg-slate-700/30 py-1 px-2 -mx-2 rounded transition-colors cursor-pointer border-l-2
-                        ${isSelectedSearch ? 'bg-yellow-50 dark:bg-yellow-900/20 border-yellow-500 rounded-r-md' :
-                          isHighlighted ? 'bg-blue-50 dark:bg-blue-900/30 border-blue-500 rounded-r-md' :
-                          'border-transparent'}
-                      `}
-                    >
-                      <span className={`text-xs flex-shrink-0 font-mono mt-0.5
-                        ${isSelectedSearch ? 'text-yellow-600 dark:text-yellow-400' :
-                          isHighlighted ? 'text-blue-600 dark:text-blue-400' :
-                          'text-slate-500 dark:text-slate-400'}
-                      `} style={{ minWidth: '64px' }}>
-                        {callConfig?.sync?.transcriptStartTime && callConfig?.sync?.videoStartTime
-                          ? secondsToTimestamp(getAdjustedVideoTime(entry.timestamp))
-                          : formatTimestamp(entry.timestamp)
-                        }
+                  <div className="flex items-center gap-2">
+                    <h2 className="text-sm font-semibold text-slate-900 dark:text-slate-100">
+                      Summary
+                    </h2>
+                    <div className="flex items-center gap-2">
+                      <span className="text-xs text-slate-500 dark:text-slate-400">
+                        {Object.values(callData.tldrData.highlights).flat().length} highlights • {callData.tldrData.action_items?.length || 0} action items
                       </span>
-                      <div className="flex-1 min-w-0">
-                        <span className={`font-medium mr-2
-                          ${isSelectedSearch ? 'text-yellow-900 dark:text-yellow-100' :
-                            isHighlighted ? 'text-blue-900 dark:text-blue-100' :
-                            'text-slate-700 dark:text-slate-300'}
-                        `}>
-                          {entry.speaker}:
-                        </span>
-                        <span className={`break-words
-                          ${isSelectedSearch ? 'text-slate-900 dark:text-slate-100' :
-                            isHighlighted ? 'text-slate-900 dark:text-slate-100' :
-                            'text-slate-600 dark:text-slate-400'}
-                        `}>{entry.text}</span>
-                      </div>
+                      <span className="text-xs bg-slate-100 dark:bg-slate-700 text-slate-500 dark:text-slate-300 px-2 py-0.5 rounded-full font-normal border border-slate-200 dark:border-slate-600">
+                        Experimental
+                      </span>
                     </div>
-                  );
-                })}
+                  </div>
+                  <svg
+                    className={`w-4 h-4 text-slate-400 transition-transform duration-200 ${summaryExpanded ? 'rotate-180' : ''}`}
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+                  </svg>
+                </button>
+                {summaryExpanded && (
+                  <div className="border-t border-slate-200 dark:border-slate-700 transition-opacity duration-500 ease-out opacity-0 animate-[fadeIn_0.5s_ease-out_forwards]">
+                    <div className="p-6">
+                      <TldrSummary
+                        data={callData.tldrData}
+                        keyDecisions={callData.keyDecisions}
+                        onTimestampClick={handleTranscriptClick}
+                        syncConfig={callConfig?.sync}
+                        currentVideoTime={currentVideoTime}
+                        selectedSearchResult={selectedSearchResult}
+                      />
+                    </div>
+                  </div>
+                )}
               </div>
-            ) : isUpcoming ? (
-              <div className="flex flex-col items-center justify-center py-12 text-center">
-                <svg className="w-10 h-10 text-amber-400 dark:text-amber-500 mb-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
-                </svg>
-                <p className="text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">Transcript pending</p>
-                <p className="text-xs text-slate-500 dark:text-slate-400">The transcript will be available after the call</p>
-              </div>
-            ) : (
-              <div className="flex flex-col items-center justify-center py-12 text-center">
-                <svg className="w-10 h-10 text-slate-300 dark:text-slate-600 mb-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
-                </svg>
-                <p className="text-sm text-slate-500 dark:text-slate-400">No transcript available</p>
-              </div>
+            </div>
+          )}
+
+          <div className={`min-w-0 ${transcriptSectionLayoutClass}`}>
+            {renderTranscriptCard(
+              isExpandedWorkspace ? 'min-h-0 flex-1' : 'max-h-[400px]',
+              isExpandedWorkspace ? 'flex min-h-0 flex-col' : '',
+              isExpandedWorkspace ? { height: desktopSidebarPaneHeight } : undefined
             )}
           </div>
 
-          {/* Chat Logs */}
-          <div className="bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg p-4 shadow-sm hover:shadow-md transition-shadow">
-            <h2 className="text-sm font-semibold text-slate-900 dark:text-slate-100 mb-3">Chat Logs</h2>
-            {callData.chatContent ? (
-              <div ref={chatLogRef} className="max-h-[400px] overflow-y-auto pr-2">
-                <ChatLog content={callData.chatContent} syncConfig={callConfig?.sync} selectedSearchResult={selectedSearchResult} onTimestampClick={handleTranscriptClick} />
-              </div>
-            ) : isUpcoming ? (
-              <div className="flex flex-col items-center justify-center py-12 text-center">
-                <svg className="w-10 h-10 text-amber-400 dark:text-amber-500 mb-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
-                </svg>
-                <p className="text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">Chat logs pending</p>
-                <p className="text-xs text-slate-500 dark:text-slate-400">Chat logs will be available after the call</p>
-              </div>
-            ) : (
-              <div className="flex flex-col items-center justify-center py-12 text-center">
-                <svg className="w-10 h-10 text-slate-300 dark:text-slate-600 mb-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" />
-                </svg>
-                <p className="text-sm text-slate-500 dark:text-slate-400">No chat logs available</p>
-              </div>
+          <div className={`min-w-0 ${chatSectionLayoutClass}`}>
+            {renderChatCard(
+              isExpandedWorkspace ? 'min-h-0 flex-1' : 'max-h-[400px]',
+              isExpandedWorkspace ? 'flex min-h-0 flex-col' : '',
+              isExpandedWorkspace ? { height: desktopSidebarPaneHeight } : undefined
             )}
           </div>
         </div>

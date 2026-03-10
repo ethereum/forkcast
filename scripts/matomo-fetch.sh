@@ -22,6 +22,10 @@ fetch() {
     echo "ERROR: Failed to fetch ${name}" >&2
     exit 1
   fi
+  if ! jq -e 'type == "object" or type == "array"' "$output" >/dev/null 2>&1; then
+    echo "ERROR: ${name} response is not a JSON object/array" >&2
+    exit 1
+  fi
   if jq -e 'type == "object" and .result == "error"' "$output" > /dev/null; then
     echo "ERROR: Matomo returned an API error for ${name}: $(jq -r '.message // "unknown error"' "$output")" >&2
     exit 1

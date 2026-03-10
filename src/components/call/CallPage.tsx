@@ -57,6 +57,29 @@ interface UpcomingCallState {
   issueNumber: number;
 }
 
+const DESKTOP_WORKSPACE_HEIGHT = 'clamp(40rem, calc(100vh - 11rem), 72rem)';
+const DESKTOP_SIDEBAR_PANE_HEIGHT = `calc((${DESKTOP_WORKSPACE_HEIGHT} - 1rem) / 2)`;
+
+const LAYOUT_DEFAULT = {
+  header: 'max-w-7xl mx-auto px-4 sm:px-6 py-2',
+  content: 'max-w-7xl mx-auto px-6 py-4',
+  grid: 'grid grid-cols-1 gap-4 lg:grid-cols-2',
+  videoSection: 'lg:col-span-2',
+  summarySection: 'lg:col-span-2',
+  transcriptSection: '',
+  chatSection: '',
+};
+
+const LAYOUT_EXPANDED = {
+  header: 'max-w-[1800px] mx-auto px-4 sm:px-6 xl:px-8 2xl:px-10 py-2',
+  content: 'max-w-[1800px] mx-auto px-4 sm:px-6 xl:px-8 2xl:px-10 py-4',
+  grid: 'grid grid-cols-1 gap-4 lg:grid-cols-[minmax(0,1.7fr)_minmax(22rem,0.95fr)] lg:items-start',
+  videoSection: 'lg:row-span-2',
+  summarySection: 'lg:col-span-2 lg:row-start-3',
+  transcriptSection: 'lg:col-start-2 lg:row-start-1',
+  chatSection: 'lg:col-start-2 lg:row-start-2',
+};
+
 const CallPage: React.FC = () => {
   const { '*': callPath } = useParams();
   const location = useLocation();
@@ -93,10 +116,9 @@ const CallPage: React.FC = () => {
   const pollingIntervalRef = useRef<ReturnType<typeof setInterval> | undefined>(undefined);
   const [isSearchOpen, setIsSearchOpen] = useState(false);
   const [isVideoExpanded, setIsVideoExpanded] = useState(false);
-  const [isLargeScreen, setIsLargeScreen] = useState(() => {
-    if (typeof window === 'undefined') return false;
-    return window.matchMedia('(min-width: 1024px)').matches;
-  });
+  const [isLargeScreen, setIsLargeScreen] = useState(
+    () => window.matchMedia('(min-width: 1024px)').matches
+  );
 
   // Detect OS for keyboard shortcut display
   const isMac = typeof navigator !== 'undefined' ?
@@ -106,28 +128,13 @@ const CallPage: React.FC = () => {
   const isDesktopExpanded = isLargeScreen && isVideoExpanded;
 
   useEffect(() => {
-    if (typeof window === 'undefined') return;
-
     const mediaQuery = window.matchMedia('(min-width: 1024px)');
     const handleChange = (event: MediaQueryListEvent) => {
       setIsLargeScreen(event.matches);
     };
 
-    setIsLargeScreen(mediaQuery.matches);
-
-    if (typeof mediaQuery.addEventListener === 'function') {
-      mediaQuery.addEventListener('change', handleChange);
-
-      return () => {
-        mediaQuery.removeEventListener('change', handleChange);
-      };
-    }
-
-    mediaQuery.addListener(handleChange);
-
-    return () => {
-      mediaQuery.removeListener(handleChange);
-    };
+    mediaQuery.addEventListener('change', handleChange);
+    return () => mediaQuery.removeEventListener('change', handleChange);
   }, []);
 
   // Variable to track initial search query from URL
@@ -1035,29 +1042,12 @@ const CallPage: React.FC = () => {
   };
 
   const isExpandedWorkspace = isDesktopExpanded && Boolean(callData.videoUrl);
-
-  const headerContainerClass = isExpandedWorkspace
-    ? 'max-w-[1800px] mx-auto px-4 sm:px-6 xl:px-8 2xl:px-10 py-2'
-    : 'max-w-7xl mx-auto px-4 sm:px-6 py-2';
-
-  const contentContainerClass = isExpandedWorkspace
-    ? 'max-w-[1800px] mx-auto px-4 sm:px-6 xl:px-8 2xl:px-10 py-4'
-    : 'max-w-7xl mx-auto px-6 py-4';
-
-  const desktopWorkspaceHeight = 'clamp(40rem, calc(100vh - 11rem), 72rem)';
-  const desktopSidebarPaneHeight = `calc((${desktopWorkspaceHeight} - 1rem) / 2)`;
-  const contentGridClass = isExpandedWorkspace
-    ? 'grid grid-cols-1 gap-4 lg:grid-cols-[minmax(0,1.7fr)_minmax(22rem,0.95fr)] lg:items-start'
-    : 'grid grid-cols-1 gap-4 lg:grid-cols-2';
-  const videoSectionLayoutClass = isExpandedWorkspace ? 'lg:row-span-2' : 'lg:col-span-2';
-  const summarySectionLayoutClass = isExpandedWorkspace ? 'lg:col-span-2 lg:row-start-3' : 'lg:col-span-2';
-  const transcriptSectionLayoutClass = isExpandedWorkspace ? 'lg:col-start-2 lg:row-start-1' : '';
-  const chatSectionLayoutClass = isExpandedWorkspace ? 'lg:col-start-2 lg:row-start-2' : '';
+  const layout = isExpandedWorkspace ? LAYOUT_EXPANDED : LAYOUT_DEFAULT;
 
   const renderVideoSection = () => (
     <div
       className={`bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg p-4 shadow-sm hover:shadow-md transition-shadow ${isExpandedWorkspace ? 'flex h-full flex-col' : ''}`}
-      style={isExpandedWorkspace ? { height: desktopWorkspaceHeight } : undefined}
+      style={isExpandedWorkspace ? { height: DESKTOP_WORKSPACE_HEIGHT } : undefined}
     >
       <div className="mb-4 flex items-center justify-between gap-3">
         <div>
@@ -1208,16 +1198,16 @@ const CallPage: React.FC = () => {
     </div>
   );
 
-  const renderTranscriptCard = (scrollClassName: string, cardClassName = '', cardStyle?: React.CSSProperties) => (
+  const renderTranscriptCard = () => (
     <div
-      className={`bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg p-4 shadow-sm hover:shadow-md transition-shadow ${cardClassName}`}
-      style={cardStyle}
+      className={`bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg p-4 shadow-sm hover:shadow-md transition-shadow ${isExpandedWorkspace ? 'flex min-h-0 flex-col' : ''}`}
+      style={isExpandedWorkspace ? { height: DESKTOP_SIDEBAR_PANE_HEIGHT } : undefined}
     >
       <h2 className="text-sm font-semibold text-slate-900 dark:text-slate-100 mb-3">Transcript</h2>
       {callData.transcriptContent?.trim() ? (
         <div
           ref={transcriptRef}
-          className={`space-y-1 overflow-y-auto pr-2 ${scrollClassName}`}
+          className={`space-y-1 overflow-y-auto pr-2 ${isExpandedWorkspace ? 'min-h-0 flex-1' : 'max-h-[400px]'}`}
         >
           {parseVTTTranscript(callData.transcriptContent)
             .filter(entry => {
@@ -1271,7 +1261,7 @@ const CallPage: React.FC = () => {
             })}
         </div>
       ) : isUpcoming ? (
-        <div className={`flex flex-col items-center justify-center text-center ${cardClassName ? 'flex-1' : 'py-12'}`}>
+        <div className={`flex flex-col items-center justify-center text-center ${isExpandedWorkspace ? 'flex-1' : 'py-12'}`}>
           <svg className="w-10 h-10 text-amber-400 dark:text-amber-500 mb-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
           </svg>
@@ -1279,7 +1269,7 @@ const CallPage: React.FC = () => {
           <p className="text-xs text-slate-500 dark:text-slate-400">The transcript will be available after the call</p>
         </div>
       ) : (
-        <div className={`flex flex-col items-center justify-center text-center ${cardClassName ? 'flex-1' : 'py-12'}`}>
+        <div className={`flex flex-col items-center justify-center text-center ${isExpandedWorkspace ? 'flex-1' : 'py-12'}`}>
           <svg className="w-10 h-10 text-slate-300 dark:text-slate-600 mb-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
           </svg>
@@ -1289,18 +1279,18 @@ const CallPage: React.FC = () => {
     </div>
   );
 
-  const renderChatCard = (scrollClassName: string, cardClassName = '', cardStyle?: React.CSSProperties) => (
+  const renderChatCard = () => (
     <div
-      className={`bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg p-4 shadow-sm hover:shadow-md transition-shadow ${cardClassName}`}
-      style={cardStyle}
+      className={`bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg p-4 shadow-sm hover:shadow-md transition-shadow ${isExpandedWorkspace ? 'flex min-h-0 flex-col' : ''}`}
+      style={isExpandedWorkspace ? { height: DESKTOP_SIDEBAR_PANE_HEIGHT } : undefined}
     >
       <h2 className="text-sm font-semibold text-slate-900 dark:text-slate-100 mb-3">Chat Logs</h2>
       {callData.chatContent ? (
-        <div ref={chatLogRef} className={`overflow-y-auto pr-2 ${scrollClassName}`}>
+        <div ref={chatLogRef} className={`overflow-y-auto pr-2 ${isExpandedWorkspace ? 'min-h-0 flex-1' : 'max-h-[400px]'}`}>
           <ChatLog content={callData.chatContent} syncConfig={callConfig?.sync} selectedSearchResult={selectedSearchResult} onTimestampClick={handleTranscriptClick} />
         </div>
       ) : isUpcoming ? (
-        <div className={`flex flex-col items-center justify-center text-center ${cardClassName ? 'flex-1' : 'py-12'}`}>
+        <div className={`flex flex-col items-center justify-center text-center ${isExpandedWorkspace ? 'flex-1' : 'py-12'}`}>
           <svg className="w-10 h-10 text-amber-400 dark:text-amber-500 mb-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
           </svg>
@@ -1308,7 +1298,7 @@ const CallPage: React.FC = () => {
           <p className="text-xs text-slate-500 dark:text-slate-400">Chat logs will be available after the call</p>
         </div>
       ) : (
-        <div className={`flex flex-col items-center justify-center text-center ${cardClassName ? 'flex-1' : 'py-12'}`}>
+        <div className={`flex flex-col items-center justify-center text-center ${isExpandedWorkspace ? 'flex-1' : 'py-12'}`}>
           <svg className="w-10 h-10 text-slate-300 dark:text-slate-600 mb-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" />
           </svg>
@@ -1322,7 +1312,7 @@ const CallPage: React.FC = () => {
     <div className="min-h-screen bg-slate-50 dark:bg-slate-900 text-slate-900 dark:text-slate-100">
       {/* Compact Header */}
       <div className="bg-white dark:bg-slate-800 border-b border-slate-200 dark:border-slate-700 sticky top-0 z-10">
-        <div className={headerContainerClass}>
+        <div className={layout.header}>
           {/* Mobile Layout */}
           <div className="sm:hidden flex items-center justify-between">
             <div className="flex items-center gap-2">
@@ -1407,16 +1397,16 @@ const CallPage: React.FC = () => {
       />
 
       {/* Content */}
-      <div className={contentContainerClass}>
-        <div className={contentGridClass}>
+      <div className={layout.content}>
+        <div className={layout.grid}>
           {callData.videoUrl && (
-            <div className={`min-w-0 ${videoSectionLayoutClass}`}>
+            <div className={`min-w-0 ${layout.videoSection}`}>
               {renderVideoSection()}
             </div>
           )}
 
           {callData.tldrData && (
-            <div className={summarySectionLayoutClass}>
+            <div className={layout.summarySection}>
               <div className="bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg shadow-sm hover:shadow-md transition-shadow">
                 <button
                   onClick={() => setSummaryExpanded(!summaryExpanded)}
@@ -1462,20 +1452,12 @@ const CallPage: React.FC = () => {
             </div>
           )}
 
-          <div className={`min-w-0 ${transcriptSectionLayoutClass}`}>
-            {renderTranscriptCard(
-              isExpandedWorkspace ? 'min-h-0 flex-1' : 'max-h-[400px]',
-              isExpandedWorkspace ? 'flex min-h-0 flex-col' : '',
-              isExpandedWorkspace ? { height: desktopSidebarPaneHeight } : undefined
-            )}
+          <div className={`min-w-0 ${layout.transcriptSection}`}>
+            {renderTranscriptCard()}
           </div>
 
-          <div className={`min-w-0 ${chatSectionLayoutClass}`}>
-            {renderChatCard(
-              isExpandedWorkspace ? 'min-h-0 flex-1' : 'max-h-[400px]',
-              isExpandedWorkspace ? 'flex min-h-0 flex-col' : '',
-              isExpandedWorkspace ? { height: desktopSidebarPaneHeight } : undefined
-            )}
+          <div className={`min-w-0 ${layout.chatSection}`}>
+            {renderChatCard()}
           </div>
         </div>
       </div>

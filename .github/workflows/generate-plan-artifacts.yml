@@ -1,0 +1,85 @@
+# .github/workflows/generate-plan-artifacts.yml
+name: Generate Plan Artifacts
+
+on:
+  schedule:
+    # ACDE + ACDC: Monday 13:00 UTC (morning US Eastern/Pacific)
+    - cron: '0 13 * * 1'
+    # ACDT: Thursday 19:00 UTC (afternoon US Eastern/Pacific)
+    - cron: '0 19 * * 4'
+  workflow_dispatch:
+    inputs:
+      series:
+        description: 'Series to generate (acde, acdc, acdt, or all)'
+        required: false
+        type: string
+        default: 'all'
+
+jobs:
+  generate:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      actions: write
+
+    steps:
+      - name: Checkout forkcast
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Generate plan artifacts
+        env:
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+        run: |
+          # Determine which series to run based on trigger
+          if [ "${{ github.event_name }}" = "workflow_dispatch" ]; then
+            SERIES="${{ github.event.inputs.series }}"
+          elif [ "${{ github.event.schedule }}" = "0 13 * * 1" ]; then
+            SERIES="acde,acdc"
+          else
+            SERIES="acdt"
+          fi
+
+          if [ "$SERIES" = "all" ]; then
+            SERIES="acde,acdc,acdt"
+          fi
+
+          IFS=',' read -ra TYPES <<< "$SERIES"
+          for t in "${TYPES[@]}"; do
+            echo "Generating plan artifacts for $t..."
+            node scripts/generate-plan-artifacts.mjs --type "$t"
+          done
+
+      - name: Check for changes
+        id: changes
+        run: |
+          if git diff --quiet && git diff --cached --quiet && [ -z "$(git ls-files --others --exclude-standard)" ]; then
+            echo "has_changes=false" >> $GITHUB_OUTPUT
+          else
+            echo "has_changes=true" >> $GITHUB_OUTPUT
+          fi
+
+      - name: Commit and push
+        if: steps.changes.outputs.has_changes == 'true'
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add -A
+          git commit -m "generate plan artifacts"
+          git push
+
+      - name: Trigger deploy
+        if: steps.changes.outputs.has_changes == 'true'
+        uses: actions/github-script@v7
+        with:
+          script: |
+            await github.rest.actions.createWorkflowDispatch({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              workflow_id: 'deploy.yml',
+              ref: 'main'
+            });

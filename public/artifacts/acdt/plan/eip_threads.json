@@ -1,0 +1,295 @@
+{
+  "series": "ACDT",
+  "generated": "2026-03-10",
+  "lookback_calls": [
+    "ACDT #68",
+    "ACDT #69",
+    "ACDT #70",
+    "ACDT #71",
+    "ACDT #72"
+  ],
+  "eip_threads": [
+    {
+      "eip": 7594,
+      "title": "PeerDAS - Peer Data Availability Sampling",
+      "fork": "Fusaka",
+      "stage": "Candidate",
+      "thread": [
+        {
+          "call": "ACDT #68",
+          "date": "2026-02-02",
+          "summary": "blob-devnet-0 launched but supernodes not respecting MIN_EPOCHS_FOR_DATA_COLUMN_SIDECARS_REQUESTS; Lighthouse and Prysm need fixes."
+        },
+        {
+          "call": "ACDT #70",
+          "date": "2026-02-16",
+          "summary": "blob-devnet-0 running with 20 nodes; Lighthouse/Prism ready, Teku/Nimbus in progress."
+        },
+        {
+          "call": "ACDT #71",
+          "date": "2026-02-23",
+          "summary": "Testing partial cells on blob-devnet-0; Lighthouse/Prism live with disconnects under investigation; need Teku, Nimbus, Grandine, Lodestar onboarded."
+        },
+        {
+          "call": "ACDT #72",
+          "date": "2026-03-02",
+          "summary": "CL teams to release hidden flags for Sepolia/Holesky testing; skipping expensive DevNet and testing directly on testnets."
+        }
+      ],
+      "current_state": "Partial cells testing underway on blob-devnet-0; moving to testnet deployment on Holesky/Sepolia with hidden flags.",
+      "open_questions": [
+        "When will remaining CL clients (Teku, Nimbus, Grandine) complete PeerDAS implementation?",
+        "Are disconnection issues on blob-devnet-0 resolved?"
+      ]
+    },
+    {
+      "eip": 7732,
+      "title": "Enshrined Proposer-Builder Separation",
+      "fork": "Glamsterdam",
+      "stage": "Candidate",
+      "thread": [
+        {
+          "call": "ACDT #68",
+          "date": "2026-02-02",
+          "summary": "EPBS devnet-0 scope changed to target v1.7.0-alpha.2 moving blob KZG commitments to bid; all CL teams support alpha-2."
+        },
+        {
+          "call": "ACDT #68",
+          "date": "2026-02-02",
+          "summary": "Variable PTC deadline PR postponed to post-devnet-0; min builder withdrawability delay lowered to 64 epochs."
+        },
+        {
+          "call": "ACDT #69",
+          "date": "2026-02-09",
+          "summary": "DevNet 0 will not focus on fork choice edge cases; Prysm fork choice ready in 1-2 days, Teku passing Alpha 2 tests except fork choice."
+        },
+        {
+          "call": "ACDT #70",
+          "date": "2026-02-16",
+          "summary": "All CL clients need 1-2 weeks; Feb 18 target unrealistic; Lighthouse fixing gossip/import bug."
+        },
+        {
+          "call": "ACDT #71",
+          "date": "2026-02-23",
+          "summary": "Lodestar/Lighthouse interop working; Teku ready end-week; Prism next week; DevNet-0 launches March 4th regardless of client count."
+        },
+        {
+          "call": "ACDT #72",
+          "date": "2026-03-02",
+          "summary": "Prysm passing Kurtosis and finalizing robustly; Lighthouse needs queuing fix for payload-before-block; Teku finalizing storage work; DevNet-0 will ignore payload attestations initially."
+        }
+      ],
+      "current_state": "EPBS devnet-0 targeting March 4th launch with alpha-2 spec; multiple clients approaching readiness with focus on stability over edge cases.",
+      "open_questions": [
+        "Will Lighthouse fix payload queuing issue before launch?",
+        "When will fork choice and sync testing begin after initial stability?",
+        "Will Grandine join devnet-0 or wait for later devnets?"
+      ]
+    },
+    {
+      "eip": 7928,
+      "title": "Block-Level Access Lists",
+      "fork": "Glamsterdam",
+      "stage": "Candidate",
+      "thread": [
+        {
+          "call": "ACDT #68",
+          "date": "2026-02-02",
+          "summary": "execution-apis PRs 726/727 add EIP-7928 JSON RPC methods pending merge."
+        },
+        {
+          "call": "ACDT #69",
+          "date": "2026-02-09",
+          "summary": "bal-devnet-2 launched with BAL implementation; Nimbus issue relates to block access list for finalized blocks."
+        },
+        {
+          "call": "ACDT #70",
+          "date": "2026-02-16",
+          "summary": "BAL DOS protection hard cap on items added via PR 11234; formula may simplify with EIP-7981; JSON-RPC methods simplified to use block number/tag/hash."
+        },
+        {
+          "call": "ACDT #72",
+          "date": "2026-03-02",
+          "summary": "Execution APIs PRs 726 and 746 ready to merge; test fixture metadata adds block access list to each block."
+        }
+      ],
+      "current_state": "BAL running on devnet-2 with DOS protection being refined; execution-apis PRs ready for merge; testing infrastructure updated with metadata fields.",
+      "open_questions": [
+        "Will EIP-7981 integration simplify DOS protection formula?",
+        "Are Nimbus finalized block access list issues resolved?"
+      ]
+    },
+    {
+      "eip": 7954,
+      "title": "Increase Maximum Contract Size",
+      "fork": "Glamsterdam",
+      "stage": "CFI",
+      "thread": [
+        {
+          "call": "ACDT #70",
+          "date": "2026-02-16",
+          "summary": "EIP-7954 scoped for DevNet-3 alongside EIP-8037, ETH/70, and optional ETH/71."
+        },
+        {
+          "call": "ACDT #72",
+          "date": "2026-03-02",
+          "summary": "In DevNet-3 scope; Nethermind targeting Wednesday, other clients progressing."
+        }
+      ],
+      "current_state": "Included in bal-devnet-3 scope targeting March 4th launch.",
+      "open_questions": []
+    },
+    {
+      "eip": 7975,
+      "title": "eth/70 - partial block receipt lists",
+      "fork": "Glamsterdam",
+      "stage": "CFI",
+      "thread": [
+        {
+          "call": "ACDT #69",
+          "date": "2026-02-09",
+          "summary": "ETH/70 implementation ready in Besu; kurtosis testing shows clients syncing unexpectedly; full-sync bypasses receipts so snap-sync needed."
+        },
+        {
+          "call": "ACDT #69",
+          "date": "2026-02-09",
+          "summary": "ETH/70 critical blocker for scaling beyond 83M gas; should be tested in isolation before adding to BAL devnets."
+        },
+        {
+          "call": "ACDT #70",
+          "date": "2026-02-16",
+          "summary": "NFT-devnet-10 launched for ETH/70 testing; Geth/Nethermind confirm sync impossible without ETH/70 for large receipts; Besu syncing externally."
+        },
+        {
+          "call": "ACDT #70",
+          "date": "2026-02-16",
+          "summary": "ETH/70 included in DevNet-3 scope with ETH/71 optional."
+        },
+        {
+          "call": "ACDT #72",
+          "date": "2026-03-02",
+          "summary": "Besu eth/70 ready; Reth eth/70 ready; both can join nft-devnet-10."
+        }
+      ],
+      "current_state": "ETH/70 testing progressing on nft-devnet-10; Besu and Reth ready; confirmed critical for scaling beyond 83M gas limit.",
+      "open_questions": [
+        "When will all clients be ready for ETH/70 integration?",
+        "Has snap-sync testing validated ETH/70 receipt handling?"
+      ]
+    },
+    {
+      "eip": 7976,
+      "title": "Increase Calldata Floor Cost",
+      "fork": "Glamsterdam",
+      "stage": "CFI",
+      "thread": [
+        {
+          "call": "ACDT #69",
+          "date": "2026-02-09",
+          "summary": "EIP-7976 (data repricing) most advanced with complete specs; awaiting final numbers end of March after BAL benchmarks."
+        }
+      ],
+      "current_state": "Spec complete; waiting on BAL-optimized benchmarks for final gas numbers expected end of March.",
+      "open_questions": [
+        "Will EIP-7976 be included in DevNet-3 or DevNet-4?"
+      ]
+    },
+    {
+      "eip": 7981,
+      "title": "Increase Access List Cost",
+      "fork": "Glamsterdam",
+      "stage": "CFI",
+      "thread": [
+        {
+          "call": "ACDT #69",
+          "date": "2026-02-09",
+          "summary": "EIP-7981 (data repricing) most advanced with complete specs; awaiting final numbers end of March after BAL benchmarks."
+        },
+        {
+          "call": "ACDT #70",
+          "date": "2026-02-16",
+          "summary": "EIP-7981 may simplify BAL DOS protection formula."
+        }
+      ],
+      "current_state": "Spec complete; may simplify BAL DOS protection; waiting on final benchmarking numbers.",
+      "open_questions": [
+        "How will EIP-7981 integration affect BAL DOS protection implementation?"
+      ]
+    },
+    {
+      "eip": 8037,
+      "title": "State Creation Gas Cost Increase",
+      "fork": "Glamsterdam",
+      "stage": "CFI",
+      "thread": [
+        {
+          "call": "ACDT #69",
+          "date": "2026-02-09",
+          "summary": "EIP-8037 (state growth) specs progressing with multidimensional metering details being updated; recommended for DevNet 3 as most complex implementation."
+        },
+        {
+          "call": "ACDT #70",
+          "date": "2026-02-16",
+          "summary": "DevNet-3 scope includes EIP-8037; testing concerns raised that many existing tests will break and need refill assessment."
+        },
+        {
+          "call": "ACDT #71",
+          "date": "2026-02-23",
+          "summary": "EIP-8037 dynamic cost-per-byte blocked on testing framework complexity; DevNet-3 will hardcode cost-per-byte at 100M gas with full dynamic version on DevNet-4."
+        },
+        {
+          "call": "ACDT #71",
+          "date": "2026-02-23",
+          "summary": "Spencer targets tests by ACDE Thursday using EELS PR; EIP-3155 tracer changes for state gas approved."
+        },
+        {
+          "call": "ACDT #72",
+          "date": "2026-03-02",
+          "summary": "Besu needs 8037 review; Reth missing 8037 only; Nethermind targeting Wednesday for DevNet-3 readiness."
+        }
+      ],
+      "current_state": "DevNet-3 implementing simplified version with hardcoded cost-per-byte; dynamic multidimensional version deferred to DevNet-4; tests in progress.",
+      "open_questions": [
+        "Will simplified hardcoded version adequately test state growth concerns?",
+        "When will dynamic cost-per-byte version be ready for DevNet-4?",
+        "Are test framework complexities resolved?"
+      ]
+    },
+    {
+      "eip": 8038,
+      "title": "State-access gas cost update",
+      "fork": "Glamsterdam",
+      "stage": "CFI",
+      "thread": [
+        {
+          "call": "ACDT #71",
+          "date": "2026-02-23",
+          "summary": "Full benchmark loop exceeds 1 day for single data point; test definition issues found; EIP-8038 numbers delayed past month-end."
+        }
+      ],
+      "current_state": "Benchmarking in progress but delayed due to test definition issues and long benchmark cycles.",
+      "open_questions": [
+        "When will corrected benchmarks be available?",
+        "What devnet will include EIP-8038?"
+      ]
+    },
+    {
+      "eip": 8159,
+      "title": "eth/71 - Block Access List Exchange",
+      "fork": "Glamsterdam",
+      "stage": "CFI",
+      "thread": [
+        {
+          "call": "ACDT #70",
+          "date": "2026-02-16",
+          "summary": "ETH/71 adds BAL query method; scoped as optional for DevNet-3 so clients can participate without it."
+        }
+      ],
+      "current_state": "Optional inclusion in bal-devnet-3; adds BAL query capability to networking layer.",
+      "open_questions": [
+        "Which clients will implement ETH/71 for DevNet-3?",
+        "Will ETH/71 become mandatory in later devnets?"
+      ]
+    }
+  ]
+}

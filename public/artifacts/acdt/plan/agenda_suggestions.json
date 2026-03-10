@@ -1,0 +1,80 @@
+{
+  "series": "ACDT",
+  "generated": "2026-03-10",
+  "for_call": "ACDT #74",
+  "suggestions": [
+    {
+      "topic": "PTC committee caching decision for ePBS",
+      "priority": "high",
+      "rationale": "ACDT #73 identified a critical attestation validity issue where PTCs valid in epoch N become invalid in N+1. Decision needed this week before testing attestations on ePBS DevNet-0. 256KB cache proposal requires consensus.",
+      "related_eips": [
+        7732
+      ],
+      "source": "open_action_item"
+    },
+    {
+      "topic": "BAL DevNet-3 launch readiness and EIP-8037 consensus bugs",
+      "priority": "high",
+      "rationale": "DevNet-3 launch targeted March 11 but blocked on cross-client EIP-8037 consensus issues. ACDT #73 revealed deep implementation complexity affecting multiple clients (Besu 7 failing tests, Nethermind/Reth expressing concerns). Status check critical before launch decision.",
+      "related_eips": [
+        8037,
+        7954,
+        7975
+      ],
+      "source": "ongoing_discussion"
+    },
+    {
+      "topic": "ePBS DevNet-0 status: reorg handling and attestation testing",
+      "priority": "high",
+      "rationale": "DevNet-0 launched March 4 but encountering fundamental issues: EL must support building on older heads (spec update needed), payload attestations being ignored, and PTC lookahead problems. Need coordinated testing of withdrawals/deposits/blobs before live testing.",
+      "related_eips": [
+        7732
+      ],
+      "source": "devnet_update"
+    },
+    {
+      "topic": "SSZ Engine API transport proposal for ACD approval",
+      "priority": "medium",
+      "rationale": "ACDT #73 deferred SSZ Engine API decision to ACD. Proof-of-concept implemented across 6 clients (Prism/Lodestar/Lighthouse/Teku/Aragon/Nethermind/Geth) addresses serialization bottleneck. Ready for governance decision on optional deployment via content-type headers.",
+      "related_eips": [],
+      "source": "deferred_decision"
+    },
+    {
+      "topic": "Gas repricing benchmarking timeline and final numbers",
+      "priority": "medium",
+      "rationale": "Deferred decision from ACDT #69 expected 'end of March' for final repricing numbers. ACDT #71 revealed benchmark loop exceeds 1 day per data point with test definition issues delaying EIP-8038. Update needed on whether March deadline remains feasible.",
+      "related_eips": [
+        7904,
+        8037,
+        7976,
+        7981,
+        8038
+      ],
+      "source": "deferred_decision"
+    },
+    {
+      "topic": "Perf-devnet-3 sync issues and 5 Gigagas testing results",
+      "priority": "medium",
+      "rationale": "ACDT #73 reported Geth synced successfully but Reth/Nethermind/Besu experiencing sync issues on 1.5-2TB state. 5 Gigagas testing revealing OOM issues. State bloat testing approaching 4TB target — need status on client optimizations and whether worst-case scenarios identified new bottlenecks.",
+      "related_eips": [],
+      "source": "devnet_update"
+    },
+    {
+      "topic": "ETH/70 and ETH/71 deployment status across clients",
+      "priority": "low",
+      "rationale": "ACDT #72 showed Besu and Reth ready for nft-devnet-10 (ETH/70). ETH/71 scoped as optional for DevNet-3 with 2MB soft cap clarification in ACDT #73. Status check on remaining clients and whether ETH/71 will be tested on DevNet-3.",
+      "related_eips": [
+        7975,
+        8159
+      ],
+      "source": "ongoing_discussion"
+    },
+    {
+      "topic": "Fusaka testnet deployment strategy (Holesky/Sepolia vs DevNet)",
+      "priority": "low",
+      "rationale": "ACDT #72 decided to skip expensive Blob DevNet and test directly on Holesky/Sepolia. CL teams targeting hidden flags release for testing. Update on testnet readiness and timeline for PeerDAS activation on public testnets.",
+      "related_eips": [],
+      "source": "ongoing_discussion"
+    }
+  ]
+}

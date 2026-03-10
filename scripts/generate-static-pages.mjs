@@ -65,6 +65,11 @@ const standalonePages = [
     title: 'Key Decisions - Forkcast',
     description: 'Key decisions from Ethereum AllCoreDevs meetings.',
   },
+  {
+    path: 'agenda',
+    title: 'Agenda Planner - Forkcast',
+    description: 'Agenda planning for Ethereum AllCoreDevs facilitators. Suggested topics, open action items, deferred decisions, and EIP discussion history.',
+  },
 ];
 
 // Define upgrade routes with their metadata

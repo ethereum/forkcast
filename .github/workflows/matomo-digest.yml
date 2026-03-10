@@ -27,6 +27,7 @@ jobs:
       - name: Generate analytics report
         run: |
           claude -p "$(cat scripts/matomo-digest-prompt.txt)" \
+            --tools "Bash,Read,Glob,Grep" \
             --allowedTools "Bash(git:*),Read,Glob,Grep" \
             --add-dir /tmp/matomo \
             --model claude-sonnet-4-6 \

@@ -58,6 +58,7 @@ interface UpcomingCallState {
 
 const DESKTOP_WORKSPACE_HEIGHT = 'clamp(40rem, calc(100vh - 11rem), 72rem)';
 const DESKTOP_SIDEBAR_PANE_HEIGHT = `calc((${DESKTOP_WORKSPACE_HEIGHT} - 1rem) / 2)`;
+const TALL_SCREEN_QUERY = '(min-height: 900px) and (max-width: 1600px)';
 
 const LAYOUT_DEFAULT = {
   header: 'max-w-[1800px] mx-auto px-4 sm:px-6 xl:px-8 2xl:px-10 py-2',
@@ -118,6 +119,9 @@ const CallPage: React.FC = () => {
   const [isLargeScreen, setIsLargeScreen] = useState(
     () => window.matchMedia('(min-width: 1024px)').matches
   );
+  const [isTallScreen, setIsTallScreen] = useState(
+    () => window.matchMedia(TALL_SCREEN_QUERY).matches
+  );
 
   // Detect OS for keyboard shortcut display
   const isMac = typeof navigator !== 'undefined' ?
@@ -128,12 +132,20 @@ const CallPage: React.FC = () => {
 
   useEffect(() => {
     const mediaQuery = window.matchMedia('(min-width: 1024px)');
+    const tallQuery = window.matchMedia(TALL_SCREEN_QUERY);
     const handleChange = (event: MediaQueryListEvent) => {
       setIsLargeScreen(event.matches);
     };
+    const handleTallChange = (event: MediaQueryListEvent) => {
+      setIsTallScreen(event.matches);
+    };
 
     mediaQuery.addEventListener('change', handleChange);
-    return () => mediaQuery.removeEventListener('change', handleChange);
+    tallQuery.addEventListener('change', handleTallChange);
+    return () => {
+      mediaQuery.removeEventListener('change', handleChange);
+      tallQuery.removeEventListener('change', handleTallChange);
+    };
   }, []);
 
   // Variable to track initial search query from URL
@@ -1042,12 +1054,40 @@ const CallPage: React.FC = () => {
 
   const isExpandedVideo = isDesktopExpanded && Boolean(callData.videoUrl);
   const isWorkspaceView = !isExpandedVideo && isLargeScreen && Boolean(callData.videoUrl);
+  const showSummaryInColumn = isWorkspaceView && isTallScreen && Boolean(callData.tldrData);
   const layout = isExpandedVideo ? LAYOUT_EXPANDED : LAYOUT_DEFAULT;
+
+  const renderSummaryHeader = () => callData.tldrData && (
+    <div className="flex items-center gap-2">
+      <h2 className="text-sm font-semibold text-slate-900 dark:text-slate-100">
+        Summary
+      </h2>
+      <span className="text-xs text-slate-500 dark:text-slate-400">
+        {Object.values(callData.tldrData.highlights).flat().length} highlights{callData.keyDecisions?.length ? ` • ${callData.keyDecisions.length} decisions` : ''} • {callData.tldrData.action_items?.length || 0} action items
+      </span>
+      <span className="text-xs bg-slate-100 dark:bg-slate-700 text-slate-500 dark:text-slate-300 px-2 py-0.5 rounded-full font-normal border border-slate-200 dark:border-slate-600">
+        Experimental
+      </span>
+    </div>
+  );
+
+  const renderSummaryContent = () => callData.tldrData && (
+    <div className="p-6">
+      <TldrSummary
+        data={callData.tldrData}
+        keyDecisions={callData.keyDecisions}
+        onTimestampClick={handleTranscriptClick}
+        syncConfig={callConfig?.sync}
+        currentVideoTime={currentVideoTime}
+        selectedSearchResult={selectedSearchResult}
+      />
+    </div>
+  );
 
   const renderVideoSection = () => (
     <div
       className={`bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg p-4 shadow-sm hover:shadow-md transition-shadow ${isWorkspaceView ? 'flex h-full flex-col' : ''}`}
-      style={isWorkspaceView ? { height: DESKTOP_WORKSPACE_HEIGHT } : undefined}
+      style={isWorkspaceView ? { height: showSummaryInColumn ? DESKTOP_SIDEBAR_PANE_HEIGHT : DESKTOP_WORKSPACE_HEIGHT } : undefined}
     >
       <div className={isWorkspaceView ? 'flex min-h-0 flex-1 flex-col' : 'flex flex-col gap-4'}>
         {/* Video Player */}
@@ -1389,31 +1429,35 @@ const CallPage: React.FC = () => {
       <div className={layout.content}>
         <div className={layout.grid}>
           {callData.videoUrl && (
-            <div className={`min-w-0 ${layout.videoSection}`}>
+            <div className={`min-w-0 ${showSummaryInColumn ? 'lg:col-start-1 lg:row-start-1' : layout.videoSection}`}>
               {renderVideoSection()}
             </div>
           )}
 
-          {callData.tldrData && (
+          {showSummaryInColumn && callData.tldrData && (
+            <div
+              className="lg:col-start-1 lg:row-start-2"
+              style={{ height: DESKTOP_SIDEBAR_PANE_HEIGHT }}
+            >
+              <div className="bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg shadow-sm hover:shadow-md transition-shadow h-full flex flex-col">
+                <div className="px-4 py-3 flex-shrink-0">
+                  {renderSummaryHeader()}
+                </div>
+                <div className="border-t border-slate-200 dark:border-slate-700 min-h-0 flex-1 overflow-y-auto">
+                  {renderSummaryContent()}
+                </div>
+              </div>
+            </div>
+          )}
+
+          {!showSummaryInColumn && callData.tldrData && (
             <div className={layout.summarySection}>
               <div className="bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg shadow-sm hover:shadow-md transition-shadow">
                 <button
                   onClick={() => setSummaryExpanded(!summaryExpanded)}
                   className="w-full px-4 py-3 flex items-center justify-between text-left hover:bg-slate-50 dark:hover:bg-slate-700/30 transition-colors rounded-t-lg cursor-pointer"
                 >
-                  <div className="flex items-center gap-2">
-                    <h2 className="text-sm font-semibold text-slate-900 dark:text-slate-100">
-                      Summary
-                    </h2>
-                    <div className="flex items-center gap-2">
-                      <span className="text-xs text-slate-500 dark:text-slate-400">
-                        {Object.values(callData.tldrData.highlights).flat().length} highlights{callData.keyDecisions?.length ? ` • ${callData.keyDecisions.length} decisions` : ''} • {callData.tldrData.action_items?.length || 0} action items
-                      </span>
-                      <span className="text-xs bg-slate-100 dark:bg-slate-700 text-slate-500 dark:text-slate-300 px-2 py-0.5 rounded-full font-normal border border-slate-200 dark:border-slate-600">
-                        Experimental
-                      </span>
-                    </div>
-                  </div>
+                  {renderSummaryHeader()}
                   <svg
                     className={`w-4 h-4 text-slate-400 transition-transform duration-200 ${summaryExpanded ? 'rotate-180' : ''}`}
                     fill="none"
@@ -1425,16 +1469,7 @@ const CallPage: React.FC = () => {
                 </button>
                 {summaryExpanded && (
                   <div className="border-t border-slate-200 dark:border-slate-700 transition-opacity duration-500 ease-out opacity-0 animate-[fadeIn_0.5s_ease-out_forwards]">
-                    <div className="p-6">
-                      <TldrSummary
-                        data={callData.tldrData}
-                        keyDecisions={callData.keyDecisions}
-                        onTimestampClick={handleTranscriptClick}
-                        syncConfig={callConfig?.sync}
-                        currentVideoTime={currentVideoTime}
-                        selectedSearchResult={selectedSearchResult}
-                      />
-                    </div>
+                    {renderSummaryContent()}
                   </div>
                 )}
               </div>

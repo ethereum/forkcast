@@ -1112,7 +1112,7 @@ const CallPage: React.FC = () => {
                   >
                     {breakoutEipInfo.eip.id}
                   </Link>
-                  {breakoutEipInfo.latestFork && (
+                  {!isWorkspaceView && breakoutEipInfo.latestFork && (
                     <span className="text-slate-500 dark:text-slate-400">
                       ({breakoutEipInfo.latestFork.statusHistory[breakoutEipInfo.latestFork.statusHistory.length - 1]?.status} for {breakoutEipInfo.latestFork.forkName}{breakoutEipInfo.latestFork.isHeadliner ? ', Headliner' : ''})
                     </span>
@@ -1407,7 +1407,7 @@ const CallPage: React.FC = () => {
                     </h2>
                     <div className="flex items-center gap-2">
                       <span className="text-xs text-slate-500 dark:text-slate-400">
-                        {Object.values(callData.tldrData.highlights).flat().length} highlights • {callData.keyDecisions?.length || 0} decisions • {callData.tldrData.action_items?.length || 0} action items
+                        {Object.values(callData.tldrData.highlights).flat().length} highlights{callData.keyDecisions?.length ? ` • ${callData.keyDecisions.length} decisions` : ''} • {callData.tldrData.action_items?.length || 0} action items
                       </span>
                       <span className="text-xs bg-slate-100 dark:bg-slate-700 text-slate-500 dark:text-slate-300 px-2 py-0.5 rounded-full font-normal border border-slate-200 dark:border-slate-600">
                         Experimental

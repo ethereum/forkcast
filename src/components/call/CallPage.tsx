@@ -1164,22 +1164,26 @@ const CallPage: React.FC = () => {
             <button
               type="button"
               onClick={() => setIsVideoExpanded(current => !current)}
-              className="hidden lg:inline-flex items-center gap-1.5 flex-shrink-0 rounded-md px-2 py-1 text-xs font-medium text-slate-500 transition-colors hover:bg-slate-100 hover:text-slate-700 dark:text-slate-400 dark:hover:bg-slate-700 dark:hover:text-slate-200"
+              className="hidden lg:inline-flex items-center gap-1.5 flex-shrink-0 rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 px-2.5 py-1 text-xs font-normal text-slate-500 dark:text-slate-400 transition-colors hover:bg-slate-50 hover:text-slate-700 dark:hover:bg-slate-700 dark:hover:text-slate-300 cursor-pointer"
             >
               {isExpandedVideo ? (
-                <svg className="h-3.5 w-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <rect x="2" y="2" width="11" height="20" rx="1.5" strokeWidth={1.5} />
-                  <rect x="15" y="2" width="7" height="9" rx="1.5" strokeWidth={1.5} />
-                  <rect x="15" y="13" width="7" height="9" rx="1.5" strokeWidth={1.5} />
+                <svg className="h-4.5 w-4.5" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={1.25} strokeLinecap="round" strokeLinejoin="round">
+                  {/* Arrows pointing inward — hooks at inner points */}
+                  <path d="M4 4l5 5M9 5.5v3.5H5.5" />
+                  <path d="M20 4l-5 5M15 5.5v3.5h3.5" />
+                  <path d="M4 20l5-5M9 18.5v-3.5H5.5" />
+                  <path d="M20 20l-5-5M15 18.5v-3.5h3.5" />
                 </svg>
               ) : (
-                <svg className="h-3.5 w-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <rect x="2" y="2" width="20" height="10" rx="1.5" strokeWidth={1.5} />
-                  <rect x="2" y="15" width="9" height="7" rx="1.5" strokeWidth={1.5} />
-                  <rect x="13" y="15" width="9" height="7" rx="1.5" strokeWidth={1.5} />
+                <svg className="h-4.5 w-4.5" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={1.25} strokeLinecap="round" strokeLinejoin="round">
+                  {/* Arrows pointing outward — hooks at corners */}
+                  <path d="M9 9L4 4M4 8V4h4" />
+                  <path d="M15 9l5-5M20 8V4h-4" />
+                  <path d="M9 15l-5 5M4 16v4h4" />
+                  <path d="M15 15l5 5M20 16v4h-4" />
                 </svg>
               )}
-              {isExpandedVideo ? 'Tile' : 'Stack'}
+              {isExpandedVideo ? 'Exit Theater' : 'Theater Mode'}
             </button>
           </div>
           {isExpandedVideo && (prevCall || nextCall) && (

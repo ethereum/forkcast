@@ -56,9 +56,9 @@ interface UpcomingCallState {
   issueNumber: number;
 }
 
-const DESKTOP_WORKSPACE_HEIGHT = 'clamp(40rem, calc(100vh - 11rem), 72rem)';
+const DESKTOP_WORKSPACE_HEIGHT = 'clamp(40rem, calc(100vh - 7rem), 72rem)';
 const DESKTOP_SIDEBAR_PANE_HEIGHT = `calc((${DESKTOP_WORKSPACE_HEIGHT} - 1rem) / 2)`;
-const TALL_SCREEN_QUERY = '(min-height: 900px) and (max-width: 1600px)';
+const TALL_SCREEN_QUERY = '(min-height: 1000px) and (min-width: 1200px) and (max-width: 1600px)';
 
 const LAYOUT_DEFAULT = {
   header: 'max-w-[1800px] mx-auto px-4 sm:px-6 xl:px-8 2xl:px-10 py-2',

@@ -1076,30 +1076,6 @@ const SchedulePage: React.FC = () => {
             })()}
           />
         </div>
-
-        {/* Footer */}
-        <div className="mt-8 text-center text-xs text-slate-400 dark:text-slate-400">
-          <p>
-            Feedback?{' '}
-            <a
-              href="mailto:nixo@ethereum.org"
-              onClick={() => handleExternalLinkClick('email_contact', 'mailto:nixo@ethereum.org')}
-              className="underline hover:text-slate-600 dark:hover:text-slate-300"
-            >
-              nixo
-            </a>
-            {' '}or{' '}
-            <a
-              href="https://x.com/wolovim"
-              target="_blank"
-              rel="noopener noreferrer"
-              onClick={() => handleExternalLinkClick('twitter_contact', 'https://x.com/wolovim')}
-              className="underline hover:text-slate-600 dark:hover:text-slate-300"
-            >
-              @wolovim
-            </a>
-          </p>
-        </div>
       </div>
     </div>
   );

@@ -2,7 +2,6 @@ import React, { useState, useMemo, useEffect } from 'react';
 import { Logo } from '../ui/Logo';
 import { FUSAKA_PROGRESS, GLAMSTERDAM_PROGRESS, HEGOTA_PROGRESS, UPGRADE_PROCESS_PHASES } from '../../constants/timeline-phases';
 import { useMetaTags } from '../../hooks/useMetaTags';
-import { useAnalytics } from '../../hooks/useAnalytics';
 import ThemeToggle from '../ui/ThemeToggle';
 import AnalysisNav from '../ui/AnalysisNav';
 import { generateForkProgress, parseLocalDate, parseShortDate, daysBetween, DEFAULT_PHASE_DURATIONS, PhaseDurations } from './forkDateCalculator';
@@ -79,7 +78,6 @@ const SchedulePage: React.FC = () => {
       return false;
     }
   });
-  const { trackLinkClick } = useAnalytics();
 
   const dismissMobileNotice = () => {
     setMobileNoticeDismissed(true);
@@ -306,10 +304,6 @@ const SchedulePage: React.FC = () => {
     description: 'Internal planning tool for Ethereum core developers. Explore hypothetical upgrade timelines - these are not committed dates.',
     url: 'https://forkcast.org/schedule',
   });
-
-  const handleExternalLinkClick = (linkType: string, url: string) => {
-    trackLinkClick(linkType, url);
-  };
 
   return (
     <div className="min-h-screen bg-slate-50 dark:bg-slate-900 text-slate-900 dark:text-slate-100 p-6">

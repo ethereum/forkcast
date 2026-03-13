@@ -106,6 +106,9 @@ export const getProposalPrefix = (eip: EIP): ProposalType => {
  * Get the specification URL for an EIP
  */
 export const getSpecificationUrl = (eip: EIP): string => {
+  if (eip.specificationUrl) {
+    return eip.specificationUrl;
+  }
   if (eip.title.startsWith('RIP-')) {
     return `https://github.com/ethereum/RIPs/blob/master/RIPS/rip-${eip.id}.md`;
   }

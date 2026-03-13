@@ -134,20 +134,54 @@ function parseFrontmatter(content) {
 }
 
 /**
- * Fetch official EIP from GitHub
+ * Extract PR number from a GitHub PR URL
  */
-async function fetchOfficialEIP(eipNumber) {
+function extractPrNumber(url) {
+  if (!url) return null;
+  const match = url.match(/github\.com\/ethereum\/EIPs\/pull\/(\d+)/);
+  return match ? match[1] : null;
+}
+
+/**
+ * Fetch official EIP from GitHub (master branch, falling back to open PR)
+ */
+async function fetchOfficialEIP(eipNumber, localEip) {
   const url = `${OFFICIAL_EIP_BASE_URL}${eipNumber}.md`;
   try {
     const response = await fetch(url);
     if (!response.ok) {
       if (response.status === 404) {
+        // Try fetching from an open PR if the local EIP has a specificationUrl
+        const prNumber = extractPrNumber(localEip?.specificationUrl);
+        if (prNumber) {
+          return fetchEIPFromPR(eipNumber, prNumber);
+        }
         return { error: 'NOT_FOUND' };
       }
       return { error: `HTTP ${response.status}` };
     }
     const content = await response.text();
     return { content };
+  } catch (error) {
+    return { error: error.message };
+  }
+}
+
+/**
+ * Fetch EIP from an open PR's head branch
+ */
+async function fetchEIPFromPR(eipNumber, prNumber) {
+  const url = `https://raw.githubusercontent.com/ethereum/EIPs/refs/pull/${prNumber}/head/EIPS/eip-${eipNumber}.md`;
+  try {
+    const response = await fetch(url);
+    if (!response.ok) {
+      if (response.status === 404) {
+        return { error: 'NOT_FOUND' };
+      }
+      return { error: `HTTP ${response.status} (from PR #${prNumber})` };
+    }
+    const content = await response.text();
+    return { content, source: `PR #${prNumber}` };
   } catch (error) {
     return { error: error.message };
   }
@@ -303,7 +337,7 @@ async function validateMetadata() {
     process.stdout.write(`\rChecking EIP-${eipNumber} (${i + 1}/${localEips.length})...`);
 
     // Fetch official EIP
-    const result = await fetchOfficialEIP(eipNumber);
+    const result = await fetchOfficialEIP(eipNumber, localEip);
 
     if (result.error === 'NOT_FOUND') {
       results.notFound.push(eipNumber);

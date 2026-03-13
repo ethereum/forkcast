@@ -1,0 +1,94 @@
+{
+  "id": 8184,
+  "title": "EIP-8184: LUCID Encrypted Mempool",
+  "status": "Draft",
+  "description": "Specifies LUCID, a mechanism for encrypted transactions in Ethereum's public inclusion pipeline. Transactions are committed before their contents are revealed, with decryption delayed until after the scheduling decision is fixed. This protects MEV-sensitive order flow, limits front-running by minimizing pre-execution information leakage, and broadens censorship resistance of inclusion lists. The design supports different decryption schemes including trustless self-decryption.",
+  "author": "Anders Elowsson (@anderselowsson), Justin Florentine (@jflo), Julian Ma (@ma-julian)",
+  "type": "Standards Track",
+  "category": "Core",
+  "createdDate": "2026-03-04",
+  "discussionLink": "https://ethereum-magicians.org/t/hegota-headliner-lucid-encrypted-mempool/27658",
+  "reviewer": "bot",
+  "layer": "EL",
+  "specificationUrl": "https://github.com/ethereum/EIPs/pull/11376",
+  "forkRelationships": [
+    {
+      "forkName": "Hegota",
+      "statusHistory": [
+        {
+          "status": "Proposed",
+          "call": "acde/230",
+          "date": "2026-02-12"
+        },
+        {
+          "status": "Declined",
+          "call": "acde/232",
+          "date": "2026-03-12"
+        }
+      ],
+      "isHeadliner": false,
+      "wasHeadlinerCandidate": true,
+      "champions": [
+        {
+          "name": "Justin Florentine",
+          "discord": "robocopsgonemad"
+        }
+      ],
+      "presentationHistory": [
+        {
+          "type": "headliner_proposal",
+          "link": "https://ethereum-magicians.org/t/hegota-headliner-lucid-encrypted-mempool/27658",
+          "date": "2026-02-05"
+        },
+        {
+          "type": "headliner_presentation",
+          "call": "acde/230",
+          "date": "2026-02-12"
+        }
+      ]
+    }
+  ],
+  "laymanDescription": "Hides transaction details until they are locked into a block, preventing front-running and sandwich attacks. Users can safely broadcast transactions publicly without exposing them to exploitation. The system works with different encryption methods, including letting users decrypt their own transactions, reducing dependence on trusted intermediaries.",
+  "northStarAlignment": {
+    "improveUX": {
+      "description": "Gives users a trustless, permissionless path to MEV protection without relying on private intermediaries or centralized builders."
+    }
+  },
+  "stakeholderImpacts": {
+    "endUsers": {
+      "description": "Protected from front-running and sandwich attacks in the public mempool without needing to trust private intermediaries."
+    },
+    "appDevs": {
+      "description": "Can build applications leveraging trustless MEV protection and on-chain routing with exact pre-state knowledge."
+    },
+    "walletDevs": {
+      "description": "Must integrate encryption standards, handle sealed transaction lifecycle, and help users choose reliable decryptors."
+    },
+    "toolingInfra": {
+      "description": "Block explorers and indexers need to parse sealed transactions, key messages, and delayed execution patterns."
+    },
+    "layer2s": {
+      "description": "Could adopt similar encrypted transaction mechanisms for MEV protection on L2."
+    },
+    "stakersNodes": {
+      "description": "Validators gain agency as includers forcing encrypted transaction inclusion; must handle key-timeliness voting via PTC."
+    },
+    "clClients": {
+      "description": "Significant changes: PTC key-timeliness voting, LucidKeyMessage gossip, and ST-commitment validation in beacon blocks."
+    },
+    "elClients": {
+      "description": "New sealed transaction type, delayed top-of-block execution, ST ticket charging, and ciphertext envelope handling."
+    }
+  },
+  "benefits": [
+    "Prevents front-running and sandwich attacks through commit-before-reveal encrypted transaction inclusion",
+    "Restores public mempool viability by removing the need for private order flow",
+    "Broadens FOCIL censorship resistance to cover MEV-sensitive transactions",
+    "Supports multiple encryption schemes without coupling Ethereum to a specific construction"
+  ],
+  "tradeoffs": [
+    "Adds one-slot execution latency as transactions execute in the following block",
+    "Introduces trust assumptions around decryptors for key release timing",
+    "Substantial cross-layer implementation complexity touching both consensus and execution clients"
+  ]
+}

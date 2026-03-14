@@ -13,7 +13,7 @@ import { getPendingProposalsForFork, PendingProposal } from "../data/pending-pro
 import ThemeToggle from "./ui/ThemeToggle";
 
 const ChampionDisplay: React.FC<{ champions?: Champion[] }> = ({ champions }) => {
-  if (!champions || champions.length === 0) return null;
+  if (!champions || champions.length === 0 || !champions.some(c => c.name)) return null;
   return (
     <div className="text-xs text-slate-500 dark:text-slate-400">
       <span className="font-medium">{champions.length > 1 ? 'Champions:' : 'Champion:'}</span>{" "}

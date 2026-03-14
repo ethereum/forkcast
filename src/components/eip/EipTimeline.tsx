@@ -113,7 +113,7 @@ export const EipTimeline: React.FC<EipTimelineProps> = ({ eip }) => {
   const forkGroups: ForkGroup[] = sortedForks.map((fork) => {
     // If there are champions and no "Proposed" in history, prepend it
     const hasProposedStep = fork.statusHistory.some(entry => entry.status === 'Proposed');
-    const hasChampions = fork.champions && fork.champions.length > 0;
+    const hasChampions = fork.champions && fork.champions.length > 0 && fork.champions.some(c => c.name);
     const effectiveHistory = (hasChampions && !hasProposedStep)
       ? [{ status: 'Proposed' as const, call: null, date: null }, ...fork.statusHistory]
       : fork.statusHistory;
@@ -223,7 +223,7 @@ export const EipTimeline: React.FC<EipTimelineProps> = ({ eip }) => {
                       >
                         {getForkDisplayName(group.forkName)}
                       </Link>
-                      {group.champions && group.champions.length > 0 && (
+                      {group.champions && group.champions.length > 0 && group.champions.some(c => c.name) && (
                         <Tooltip text={`${group.champions.length > 1 ? 'Champions' : 'Champion'} for ${getForkDisplayName(group.forkName)}`}>
                           <div className="flex items-center gap-1 text-xs text-slate-400 dark:text-slate-400 cursor-help shrink-0">
                             <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">

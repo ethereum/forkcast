@@ -286,7 +286,7 @@ export const EipCard: React.FC<EipCardProps> = ({ eip, forkName, handleExternalL
         {forkName.toLowerCase() === 'glamsterdam' && (() => {
           const forkRelationship = eip.forkRelationships.find(fr => fr.forkName.toLowerCase() === forkName.toLowerCase());
           const champions = forkRelationship?.champions;
-          const hasChampions = champions && champions.length > 0;
+          const hasChampions = champions && champions.length > 0 && champions.some(c => c.name);
           const hasAnyContactInfo = champions?.some(c => c.discord || c.telegram || c.email);
 
           return (

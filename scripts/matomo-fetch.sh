@@ -30,6 +30,9 @@ fetch() {
     echo "ERROR: Matomo returned an API error for ${name}: $(jq -r '.message // "unknown error"' "$output")" >&2
     exit 1
   fi
+  # Sanitize strings: truncate to 200 chars, collapse newlines (defense against prompt injection via user-controlled fields)
+  jq 'walk(if type == "string" then .[:200] | gsub("[\\n\\r]"; " ") else . end)' "$output" > "${output}.tmp" \
+    && mv "${output}.tmp" "$output"
 }
 
 # Previous 2 completed weeks

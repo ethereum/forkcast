@@ -3,20 +3,53 @@ name: Weekly Matomo Digest
 on:
   schedule:
     - cron: '0 14 * * 1' # Every Monday at 14:00 UTC
-  workflow_dispatch: {}
+  workflow_dispatch:
+    inputs:
+      dry_run:
+        type: boolean
+        default: false
 
 jobs:
   post-digest:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
         with:
-          node-version: '20'
-      - name: Post Matomo digest to Mattermost
-        run: node scripts/post-matomo-digest.mjs
+          fetch-depth: 0
+          persist-credentials: false
+      - name: Fetch Matomo data
+        run: bash scripts/matomo-fetch.sh
         env:
           MATOMO_URL: ${{ secrets.MATOMO_URL }}
           MATOMO_TOKEN: ${{ secrets.MATOMO_TOKEN }}
           MATOMO_SITE_ID: ${{ secrets.MATOMO_SITE_ID }}
+      - name: Fetch git context
+        run: |
+          mkdir -p /tmp/git
+          git log --since="3 months ago" --format="commit %h%nAuthor: %an%nDate: %ad%n%n%w(0,4,4)%B" --date=short > /tmp/git/log.txt
+          git log --since="2 weeks ago" --stat --format="commit %h — %s (%ad)%n" --date=short > /tmp/git/recent-changes.txt
+          git shortlog -sn --since="3 months ago" > /tmp/git/contributors.txt
+      - name: Install Claude Code
+        run: npm install -g @anthropic-ai/claude-code
+      - name: Generate analytics report
+        # No Bash tool — pattern matching on command strings cannot prevent shell metacharacter
+        # injection (e.g. "git log; curl evil.com"), so we pre-fetch git data instead.
+        run: |
+          claude -p "$(cat scripts/matomo-digest-prompt.txt)" \
+            --tools "Read,Glob,Grep" \
+            --allowedTools "Read,Glob,Grep" \
+            --add-dir /tmp/matomo \
+            --add-dir /tmp/git \
+            --model claude-sonnet-4-6 \
+            --max-turns 15 \
+            > /tmp/report.md
+        env:
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+      - name: Post analytics report
+        if: ${{ inputs.dry_run != true }}
+        run: bash scripts/mattermost-post.sh /tmp/report.md
+        env:
           MATTERMOST_WEBHOOK_URL: ${{ secrets.MATTERMOST_WEBHOOK_URL }}
+      - name: Print report (dry run)
+        if: ${{ inputs.dry_run == true }}
+        run: cat /tmp/report.md

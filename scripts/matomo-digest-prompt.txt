@@ -17,9 +17,15 @@ Pre-fetched Matomo API responses are in `/tmp/matomo/`. Each file is a separate 
 
 Multi-week files use date-range keys like `"2026-03-02,2026-03-08"`. Parse these to derive week labels (e.g., "Mar 02-08"). All periods are completed weeks — the current incomplete week is never included. The more recent key is the last completed week.
 
-You also have access to the git repository. Use `git log`, `git diff`, etc. to review recent changes — this helps contextualize the analytics data (e.g., a traffic spike may correlate with a feature launch, or a suggested improvement may already be in progress).
+Pre-fetched git history is in `/tmp/git/`:
 
-Read all the JSON files and check recent git history before writing anything.
+- `log.txt` — full commit log (hash, author, date, full commit message) for the last 3 months
+- `recent-changes.txt` — commits from the last 2 weeks with file-level diffstats
+- `contributors.txt` — contributor commit counts for the last 3 months
+
+Use this to contextualize the analytics data (e.g., a traffic spike may correlate with a feature launch, or a suggested improvement may already be in progress).
+
+Read all the JSON files and git context before writing anything.
 
 Your output is the report. Follow this structure EXACTLY:
 
@@ -62,9 +68,9 @@ Cover the most impactful items from: top pages, traffic sources, referrers, enga
 
 ### 7. Verification
 
-- [ ] Verified git access — latest commit: `<hash>` — `<subject>`
+- [ ] Verified git context — latest commit from `log.txt`: `<hash>` — `<subject>`
 
-Fill in the hash and subject from `git log -1 --format="%h — %s"`. Check the box only if you actually ran the command.
+Fill in the hash and subject from the first entry in `/tmp/git/log.txt`. Check the box only if you actually read the file.
 
 ### Formatting rules
 

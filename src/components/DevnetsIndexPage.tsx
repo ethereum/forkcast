@@ -136,7 +136,7 @@ function SeriesCard({ item }: { item: DevnetCardItem }) {
         {item.categoryKey}
       </h4>
       {item.description && (
-        <p className="text-xs text-slate-500 dark:text-slate-400 line-clamp-2 leading-relaxed">
+        <p className="text-xs text-slate-500 dark:text-slate-400 line-clamp-3 leading-relaxed" title={item.description}>
           {item.description}
         </p>
       )}
@@ -176,7 +176,7 @@ function InactiveCard({ item }: { item: InactiveDevnetSeries }) {
         {item.categoryKey}
       </h4>
       {item.description && (
-        <p className="text-xs text-slate-500 dark:text-slate-400 line-clamp-2 leading-relaxed">
+        <p className="text-xs text-slate-500 dark:text-slate-400 line-clamp-3 leading-relaxed" title={item.description}>
           {item.description}
         </p>
       )}

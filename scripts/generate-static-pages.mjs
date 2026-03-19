@@ -151,9 +151,38 @@ function generateStaticPage(route, title, description) {
   return html;
 }
 
+function escapeXml(value) {
+  return String(value)
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&apos;');
+}
+
+function buildSitemapXml(routes) {
+  const uniqueRoutes = Array.from(new Set(routes));
+  const urls = uniqueRoutes.map((route) => {
+    const normalizedRoute = route === '/' ? '/' : `/${route.replace(/^\/+/, '')}`;
+    const loc = normalizedRoute === '/'
+      ? 'https://forkcast.org/'
+      : `https://forkcast.org${normalizedRoute}`;
+    return `  <url><loc>${escapeXml(loc)}</loc></url>`;
+  });
+
+  return [
+    '<?xml version="1.0" encoding="UTF-8"?>',
+    '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">',
+    ...urls,
+    '</urlset>',
+    '',
+  ].join('\n');
+}
+
 // Create static pages for all routes
 function generateAllPages() {
   const distDir = path.join(__dirname, '..', 'dist');
+  const sitemapRoutes = ['/'];
 
   // Check if dist directory exists
   if (!fs.existsSync(distDir)) {
@@ -174,6 +203,7 @@ function generateAllPages() {
     const html = generateStaticPage(page.path, page.title, page.description);
     const outputPath = path.join(pagePath, 'index.html');
     fs.writeFileSync(outputPath, html);
+    sitemapRoutes.push(page.path);
     console.log(`  ✓ ${page.path}`);
   });
 
@@ -195,6 +225,7 @@ function generateAllPages() {
     const html = generateStaticPage(upgrade.path, upgrade.title, upgrade.description);
     const outputPath = path.join(currentPath, 'index.html');
     fs.writeFileSync(outputPath, html);
+    sitemapRoutes.push(upgrade.path);
     console.log(`  ✓ ${upgrade.path}`);
   });
 
@@ -211,6 +242,7 @@ function generateAllPages() {
     'Browse all Ethereum Improvement Proposals tracked on Forkcast. Filter by status, network upgrade, and type.'
   );
   fs.writeFileSync(path.join(eipsIndexPath, 'index.html'), eipsIndexHtml);
+  sitemapRoutes.push('eips');
   console.log('  ✓ eips/index.html');
 
   // Generate calls index page
@@ -226,6 +258,7 @@ function generateAllPages() {
     'Browse Ethereum protocol development calls including AllCoreDevs Consensus, Execution, and Testing meetings.'
   );
   fs.writeFileSync(path.join(callsIndexPath, 'index.html'), callsIndexHtml);
+  sitemapRoutes.push('calls');
   console.log('  ✓ calls/index.html');
 
   // Generate individual call pages
@@ -250,6 +283,7 @@ function generateAllPages() {
     const html = generateStaticPage(fullPath, title, description);
     const outputPath = path.join(currentPath, 'index.html');
     fs.writeFileSync(outputPath, html);
+    sitemapRoutes.push(fullPath);
   });
   console.log(`\n📞 Generated ${protocolCalls.length} call pages`);
 
@@ -287,6 +321,7 @@ function generateAllPages() {
     const html = generateStaticPage(fullPath, title, description);
     const outputPath = path.join(eipPath, 'index.html');
     fs.writeFileSync(outputPath, html);
+    sitemapRoutes.push(fullPath);
   });
   console.log(`📋 Generated ${eips.length} EIP pages`);
 
@@ -306,9 +341,14 @@ function generateAllPages() {
 
       const html = generateStaticPage(fullPath, title, description);
       fs.writeFileSync(path.join(specPath, 'index.html'), html);
+      sitemapRoutes.push(fullPath);
     });
     console.log(`  Generated ${devnetSpecs.length} devnet spec pages`);
   }
+
+  const sitemapXml = buildSitemapXml(sitemapRoutes);
+  fs.writeFileSync(path.join(distDir, 'sitemap.xml'), sitemapXml);
+  console.log('\n🗺️  Generated sitemap.xml');
 
   console.log('\n✨ Static pages generated successfully!');
 }

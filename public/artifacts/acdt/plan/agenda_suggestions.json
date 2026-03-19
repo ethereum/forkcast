@@ -1,61 +1,61 @@
 {
   "series": "ACDT",
-  "generated": "2026-03-12",
-  "for_call": "ACDT #74",
+  "generated": "2026-03-19",
+  "for_call": "ACDT #75",
   "suggestions": [
     {
-      "topic": "PTC committee caching decision for ePBS DevNet-0",
+      "topic": "bal-devnet-3 EIP-8037 consensus bugs and hash divergence resolution",
       "priority": "high",
-      "rationale": "Decision required this week (ACDT #73, March 9). Attestations testing blocked until resolved; proposed fix is 256KB cache in beacon state.",
-      "related_eips": [],
-      "source": "deferred_decision"
-    },
-    {
-      "topic": "BAL DevNet-3 launch status and EIP-8037 consensus bugs",
-      "priority": "high",
-      "rationale": "DevNet-3 was targeting March 11 launch but ACDT #73 revealed multiple cross-client consensus issues with EIP-8037. Teams flagged deep complexity concerns. Status check critical.",
+      "rationale": "ACDT #74 reported EVM fuzzing causing hash mismatches across implementations, with CREATE/CALL operations breaking BAL hash divergence in Nimbus/Reth. DevNet-3 cannot progress until these critical consensus bugs are resolved.",
       "related_eips": [],
       "source": "devnet_update"
     },
     {
-      "topic": "ePBS DevNet-0 testing scope: withdrawals, deposits, blobs",
+      "topic": "PTC committee caching decision for ePBS",
       "priority": "high",
-      "rationale": "ACDT #73 set action to test these features locally before live testing. DevNet-0 needs validation beyond basic finalization before advancing to DevNet-1.",
-      "related_eips": [],
-      "source": "open_action_item"
-    },
-    {
-      "topic": "SSZ Engine API content-type negotiation proposal",
-      "priority": "medium",
-      "rationale": "Deferred to ACD for approval (ACDT #73). Proof-of-concept implemented across 6 clients. Addresses serialization bottleneck identified in Fusaka blob-devnet-0.",
+      "rationale": "Deferred from ACDT #73 with 'this week' deadline (passed). ACDT #74 mentioned Alpha4 with PTC lookahead for epbs-devnet-1, but no explicit decision was documented. This blocks attestation testing.",
       "related_eips": [],
       "source": "deferred_decision"
     },
     {
-      "topic": "Gas repricing final numbers timeline update",
-      "priority": "medium",
-      "rationale": "Originally targeted end of March (ACDT #69), but ACDT #71 reported test definition issues causing delays past month-end. Teams need updated timeline with 2 weeks left in March.",
-      "related_eips": [],
-      "source": "deferred_decision"
-    },
-    {
-      "topic": "perf-devnet-3 sync issues and 5-Gigagas testing results",
-      "priority": "medium",
-      "rationale": "ACDT #73 noted Reth/Nethermind/Besu sync issues and out-of-memory problems at 5 Gigagas. Critical data for validating gas limit roadmap beyond 150M.",
+      "topic": "epbs-devnet-0 stability and devnet-1 timeline",
+      "priority": "high",
+      "rationale": "ACDT #74 showed Teku cannot sync or propose, exits non-functional. Need status update on fixes and determine readiness for epbs-devnet-1 launch with Alpha4/PTC lookahead.",
       "related_eips": [],
       "source": "devnet_update"
     },
     {
-      "topic": "EIP-8037 implementation complexity feedback",
+      "topic": "bal-devnet-3 SFI eligibility after stability window",
       "priority": "medium",
-      "rationale": "Multiple teams (Geth, Nethermind) expressed strong concerns about EIP-8037 complexity in ACDT #73. 'Tendrils affecting everything' and 'disliked from complexity standpoint.' May need scope reconsideration.",
+      "rationale": "ACDT #74 decided bal-devnet-3 EIPs eligible for SFI one week after stability. If devnet-3 achieves stability this week, EIPs 7708, 7778, 7843, 8024 could be discussed (though final decision at ACD).",
       "related_eips": [],
-      "source": "ongoing_discussion"
+      "source": "deferred_decision"
     },
     {
-      "topic": "BAL parallel I/O optimization results",
+      "topic": "Fusaka blob-devnet-0 testnet rollout readiness",
+      "priority": "medium",
+      "rationale": "ACDT #74 reported partial cells spec finalized but Prysm bugs blocking progress. Testnet rollout planned once clients optimistic. Need status on Prysm fixes and validator subset rollout timeline.",
+      "related_eips": [],
+      "source": "devnet_update"
+    },
+    {
+      "topic": "perf-devnet-3 sync issues and 5 Gigagas testing results",
+      "priority": "medium",
+      "rationale": "ACDT #73 reported Reth/Nethermind/Besu sync issues and OOM problems at 5 Gigagas. ACDT #74 showed bal-devnet-2 achieving 100% participation. Need updates on whether sync/memory issues are resolved.",
+      "related_eips": [],
+      "source": "devnet_update"
+    },
+    {
+      "topic": "SSZ engine API implementation status and ACD discussion timing",
       "priority": "low",
-      "rationale": "ACDT #73 noted Nethermind/Reth not seeing major benefits yet from parallel I/O. DevNet-2 has dedicated benchmarking nodes; update on findings would inform optimization priorities.",
+      "rationale": "ACDT #73 deferred final approval to ACD. Giulio's proof-of-concept implemented across multiple clients. If implementation progresses, determine when to bring to ACD for formal decision.",
+      "related_eips": [],
+      "source": "deferred_decision"
+    },
+    {
+      "topic": "EIP-8037 complexity concerns and DevNet-4 scope discussion",
+      "priority": "low",
+      "rationale": "ACDT #73 revealed deep implementation concerns (Marius: 'deeply complex', Ben: 'tendrils affecting everything'). With DevNet-3 bugs ongoing and dynamic version deferred to DevNet-4, discuss whether 8037 scope should be reconsidered.",
       "related_eips": [],
       "source": "ongoing_discussion"
     }

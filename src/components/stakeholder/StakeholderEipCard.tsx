@@ -60,7 +60,7 @@ export const StakeholderEipCard: React.FC<StakeholderEipCardProps> = ({
               href={eip.discussionLink}
               target="_blank"
               rel="noopener noreferrer"
-              onClick={() => handleExternalLinkClick('discussion', eip.discussionLink)}
+              onClick={() => handleExternalLinkClick('discussion', eip.discussionLink ?? '')}
               className="text-slate-400 hover:text-slate-600 dark:text-slate-400 dark:hover:text-slate-300 transition-colors"
             >
               forum

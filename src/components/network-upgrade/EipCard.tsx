@@ -116,7 +116,7 @@ export const EipCard: React.FC<EipCardProps> = ({ eip, forkName, handleExternalL
                       href={eip.discussionLink}
                       target="_blank"
                       rel="noopener noreferrer"
-                      onClick={() => handleExternalLinkClick('discussion', eip.discussionLink)}
+                      onClick={() => handleExternalLinkClick('discussion', eip.discussionLink ?? '')}
                       className="text-slate-400 hover:text-slate-600 dark:text-slate-400 dark:hover:text-slate-300 transition-colors cursor-pointer relative group"
                     >
                       <div className="relative w-7 h-7">

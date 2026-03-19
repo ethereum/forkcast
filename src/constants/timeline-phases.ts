@@ -1,10 +1,9 @@
-export interface TimelinePhase {
-  id: string;
-  title: string;
-  dateRange: string;
-  description: string;
-  status: 'completed' | 'current' | 'upcoming';
-}
+import type {
+  TimelinePhase,
+  ProcessPhase,
+  ForkProgress,
+  MacroPhaseConfig
+} from '../types/timeline';
 
 export const GLAMSTERDAM_TIMELINE_PHASES: TimelinePhase[] = [
   {
@@ -40,7 +39,7 @@ export const GLAMSTERDAM_TIMELINE_PHASES: TimelinePhase[] = [
     title: 'CFI → SFI EIP Decisions',
     dateRange: 'Date TBD',
     description: 'As Glamsterdam devnets begin, final decisions on which CFI EIPs will be included in the upgrade\'s devnet.',
-    status: 'current'
+    status: 'in-progress'
   }
 ];
 
@@ -126,7 +125,7 @@ export const HEGOTA_TIMELINE_PHASES: TimelinePhase[] = [
     title: 'Headliner Discussion & Finalization',
     dateRange: 'Feb 5 - Mar 12',
     description: 'ACD evaluates candidate headliners, solicits community feedback, and finalizes decisions.',
-    status: 'current'
+    status: 'in-progress'
   },
   {
     id: 'non-headliner-proposals',
@@ -150,54 +149,6 @@ export const HEGOTA_TIMELINE_PHASES: TimelinePhase[] = [
     status: 'upcoming'
   }
 ];
-
-export interface ProcessPhase {
-  id: string;
-  title: string;
-  duration: string;
-  owner: string[];
-  checklist: string[];
-  deliverables: string[];
-  notes?: string;
-}
-
-export interface DevnetDetail {
-  name: string;
-  status: 'completed' | 'in-progress' | 'upcoming';
-  date?: string;
-  projectedDate?: string;
-}
-
-export interface TestnetDetail {
-  name: string;
-  status: 'completed' | 'in-progress' | 'upcoming' | 'deprecated';
-  date?: string;
-  projectedDate?: string;
-}
-
-export interface SubstepDetail {
-  name: string;
-  status: 'completed' | 'in-progress' | 'upcoming';
-  date?: string;
-  projectedDate?: string;
-}
-
-export interface ForkPhaseProgress {
-  phaseId: string;
-  status: 'completed' | 'in-progress' | 'upcoming';
-  actualStartDate?: string;
-  actualEndDate?: string;
-  projectedDate?: string;
-  progressNotes?: string;
-  devnets?: DevnetDetail[];
-  testnets?: TestnetDetail[];
-  substeps?: SubstepDetail[];
-}
-
-export interface ForkProgress {
-  forkName: string;
-  phases: ForkPhaseProgress[];
-}
 
 export const FUSAKA_PROGRESS: ForkProgress = {
   forkName: 'Fusaka',
@@ -520,14 +471,6 @@ export const UPGRADE_PROCESS_PHASES: ProcessPhase[] = [
     notes: 'Schedule Wed monitoring. Need ~60-70% adoption. 2-week minimum window.'
   }
 ];
-
-export type MacroPhase = 'headliners' | 'scoping' | 'devnets' | 'testnets' | 'mainnet';
-
-export interface MacroPhaseConfig {
-  id: MacroPhase;
-  label: string;
-  description: string;
-}
 
 export const MACRO_PHASES: MacroPhaseConfig[] = [
   { id: 'headliners', label: 'Headliners', description: 'Fork focus definition & headliner selection' },

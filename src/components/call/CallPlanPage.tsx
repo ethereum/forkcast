@@ -10,6 +10,56 @@ import { networkUpgrades } from '../../data/upgrades';
 import { getPendingProposalsForFork, type PendingProposal } from '../../data/pending-proposals';
 import { fetchUpcomingCalls, type UpcomingCall } from '../../utils/github';
 import { StructuredDecisionContent, EipLinkWithTooltip } from './KeyDecisionsSection';
+import { getMacroPhaseForUpgrade, getMacroPhaseSummary } from '../../utils/macroPhase';
+import { FORK_PROGRESS_MAP } from '../../constants/timeline-phases';
+import { getUpgradeStatusColor } from '../../utils/colors';
+import MacroPhaseBar from '../ui/MacroPhaseBar';
+import type { NetworkUpgrade } from '../../data/upgrades';
+
+function getNextDeadline(
+  upgrade: NetworkUpgrade
+): { deadline: string; description: string; label: 'Next' | 'Completed' } | null {
+  const progress = FORK_PROGRESS_MAP[upgrade.id];
+  if (!progress) return null;
+
+  if (upgrade.status === 'Live') {
+    return { deadline: upgrade.activationDate, description: 'Mainnet activation', label: 'Completed' };
+  }
+
+  const currentPhase = progress.phases.find(p => p.status === 'in-progress');
+
+  if (currentPhase?.phaseId === 'development' && currentPhase.devnets) {
+    const inProgressDevnet = currentPhase.devnets.find(d => d.status === 'in-progress');
+    if (inProgressDevnet?.projectedDate) {
+      return { deadline: inProgressDevnet.projectedDate, description: `${inProgressDevnet.name} target`, label: 'Next' };
+    }
+    const nextDevnet = currentPhase.devnets.find(d => d.status === 'upcoming');
+    if (nextDevnet?.projectedDate) {
+      return { deadline: nextDevnet.projectedDate, description: `${nextDevnet.name} launch`, label: 'Next' };
+    }
+  }
+
+  if (currentPhase?.phaseId === 'headliner-selection' && currentPhase.substeps) {
+    const selectionStep = currentPhase.substeps.find(s => s.name === 'Selection Deadline' && s.status === 'in-progress');
+    if (selectionStep?.projectedDate) {
+      return { deadline: selectionStep.projectedDate, description: 'Headliner selection deadline', label: 'Next' };
+    }
+  }
+
+  const upcomingPhase = progress.phases.find(p => p.status === 'upcoming');
+  if (upcomingPhase?.projectedDate) {
+    const phaseLabels: Record<string, string> = {
+      'headliner-selection': 'Headliner selection',
+      'eip-selection': 'EIP scoping',
+      'development': 'Devnet-0',
+      'public-testnets': 'Testnet deployment',
+      'mainnet-deployment': 'Mainnet activation'
+    };
+    return { deadline: upcomingPhase.projectedDate, description: phaseLabels[upcomingPhase.phaseId] || upcomingPhase.phaseId, label: 'Next' };
+  }
+
+  return null;
+}
 
 interface TldrData {
   meeting: string;
@@ -180,6 +230,7 @@ const CallPlanPage: React.FC = () => {
   const currentSeries = SERIES_OPTIONS.find(o => o.key === type)!;
   const [expandedSections, setExpandedSections] = useState<Record<string, boolean>>({
     agenda: true,
+    'cycle-status': true,
   });
 
   const toggleSection = (key: string) => {
@@ -194,6 +245,14 @@ const CallPlanPage: React.FC = () => {
   };
 
   const typeLabel = type ? (callTypeNames[type as CallType] || type.toUpperCase()) : '';
+
+  const displayUpgrades = useMemo(() => {
+    const liveUpgrades = networkUpgrades
+      .filter(u => u.status === 'Live')
+      .sort((a, b) => new Date(b.activationDate).getTime() - new Date(a.activationDate).getTime());
+    const activeUpgrades = networkUpgrades.filter(u => u.status === 'Upcoming' || u.status === 'Planning');
+    return [...liveUpgrades.slice(0, 1), ...activeUpgrades];
+  }, []);
 
   const eipMap = useMemo(() => {
     const map = new Map<number, EIP>();
@@ -293,7 +352,7 @@ const CallPlanPage: React.FC = () => {
     setAgendaSuggestions(null);
     setEipThreads(null);
     setCallTldrs([]);
-    setExpandedSections({ agenda: true });
+    setExpandedSections({ agenda: true, 'cycle-status': true });
 
     const fetchData = async () => {
       // Fetch upcoming call (non-blocking)
@@ -496,6 +555,71 @@ const CallPlanPage: React.FC = () => {
                     YouTube
                   </a>
                 )}
+              </div>
+            </div>
+          </div>
+        )}
+
+        {/* Upgrade Cycle Status */}
+        {displayUpgrades.length > 0 && (
+          <div className={`mb-5 ${sectionCard}`}>
+            <button onClick={() => toggleSection('cycle-status')} className={sectionHeader}>
+              <SectionChevron isOpen={isSectionOpen('cycle-status')} />
+              <h2 className={sectionTitle}>Upgrade Cycle Status</h2>
+              <span className={`${sectionMeta} ml-auto`}>
+                {displayUpgrades.length} upgrades
+              </span>
+            </button>
+            <div className={`grid transition-all duration-300 ease-in-out ${
+              isSectionOpen('cycle-status') ? 'grid-rows-[1fr] opacity-100' : 'grid-rows-[0fr] opacity-0'
+            }`}>
+              <div className="overflow-hidden">
+                <div className={sectionBody}>
+                  <div className="space-y-4 pt-3">
+                    {displayUpgrades.map(upgrade => {
+                      const macroPhase = getMacroPhaseForUpgrade(upgrade);
+                      const progress = FORK_PROGRESS_MAP[upgrade.id];
+                      const summary = getMacroPhaseSummary(upgrade, progress);
+                      const nextDeadline = getNextDeadline(upgrade);
+                      const isLive = upgrade.status === 'Live';
+
+                      return (
+                        <div key={upgrade.id} className="space-y-2.5">
+                          <div className="flex items-center justify-between">
+                            <div>
+                              <Link
+                                to={`/upgrade/${upgrade.id}`}
+                                className="text-sm font-semibold text-slate-900 dark:text-slate-100 hover:text-purple-600 dark:hover:text-purple-400 transition-colors"
+                              >
+                                {upgrade.name.replace(' Upgrade', '')}
+                              </Link>
+                              <span className={`ml-2 inline-flex items-center px-1.5 py-0.5 rounded text-xs font-medium ${getUpgradeStatusColor(upgrade.status)}`}>
+                                {upgrade.status}
+                              </span>
+                            </div>
+                            {nextDeadline && (
+                              <div className="text-right">
+                                <p className="text-xs text-slate-500 dark:text-slate-400">
+                                  {nextDeadline.label}: {nextDeadline.description}
+                                </p>
+                                <p className="text-xs font-medium text-slate-700 dark:text-slate-300">
+                                  {nextDeadline.deadline}
+                                </p>
+                              </div>
+                            )}
+                          </div>
+
+                          <div className="space-y-1">
+                            <MacroPhaseBar currentPhase={macroPhase} shipped={isLive} />
+                            <p className="text-xs text-slate-500 dark:text-slate-400 leading-relaxed">
+                              {summary}
+                            </p>
+                          </div>
+                        </div>
+                      );
+                    })}
+                  </div>
+                </div>
               </div>
             </div>
           </div>

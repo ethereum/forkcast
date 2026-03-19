@@ -1,4 +1,4 @@
-import { ForkProgress, DevnetDetail, TestnetDetail } from '../../constants/timeline-phases';
+import type { ForkProgress, DevnetDetail, TestnetDetail } from '../../types/timeline';
 
 // Phase duration type
 export interface PhaseDurations {

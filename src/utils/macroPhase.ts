@@ -1,6 +1,5 @@
-import type { MacroPhase } from '../constants/timeline-phases';
+import type { MacroPhase, ForkProgress } from '../types/timeline';
 import { FORK_PROGRESS_MAP } from '../constants/timeline-phases';
-import type { ForkProgress } from '../constants/timeline-phases';
 import type { NetworkUpgrade } from '../data/upgrades';
 
 export function deriveMacroPhase(progress: ForkProgress): MacroPhase {

@@ -1,5 +1,5 @@
 import React from 'react';
-import { TimelinePhase } from '../constants/timeline-phases';
+import type { TimelinePhase } from '../types/timeline';
 
 /**
  * Calculate the position for the "we are here" marker on the network upgrade timeline
@@ -36,7 +36,7 @@ export const getPhaseStatusIcon = (status: TimelinePhase['status']): React.React
           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
         </svg>
       );
-    case 'current':
+    case 'in-progress':
       return (
         <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 7l5 5m0 0l-5 5m5-5H6" />

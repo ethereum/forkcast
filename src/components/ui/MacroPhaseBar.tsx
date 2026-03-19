@@ -1,5 +1,5 @@
 import { MACRO_PHASES } from '../../constants/timeline-phases';
-import type { MacroPhase } from '../../constants/timeline-phases';
+import type { MacroPhase } from '../../types/timeline';
 import { Tooltip } from './Tooltip';
 
 interface MacroPhaseBarProps {

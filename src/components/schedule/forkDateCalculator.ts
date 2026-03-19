@@ -131,6 +131,30 @@ export function calculateForkDates(
   };
 }
 
+// Calculate the soonest mainnet date given a Devnet-0 start date
+export function calculateSoonestMainnetDate(
+  devnet0Start: Date,
+  devnetCount: number = DEFAULT_PHASE_DURATIONS.DEVNET_COUNT,
+  durations: PhaseDurations = DEFAULT_PHASE_DURATIONS
+): Date {
+  const daysFromDevnet0 =
+    (devnetCount - 1) * durations.DEVNET_DURATION +
+    durations.DEVNET_TO_SEPOLIA +
+    durations.SEPOLIA_TO_HOODI +
+    durations.HOODI_TO_MAINNET;
+  const mainnet = new Date(devnet0Start);
+  mainnet.setDate(mainnet.getDate() + daysFromDevnet0);
+  return mainnet;
+}
+
+// Format a Date as 'YYYY-MM-DD'
+export function formatDateISO(date: Date): string {
+  const y = date.getFullYear();
+  const m = String(date.getMonth() + 1).padStart(2, '0');
+  const d = String(date.getDate()).padStart(2, '0');
+  return `${y}-${m}-${d}`;
+}
+
 export interface ForkProgressOptions {
   isHistorical?: boolean;
   headlinerProposalDeadlineOverride?: Date;

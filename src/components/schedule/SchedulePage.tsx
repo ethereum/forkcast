@@ -4,7 +4,7 @@ import { FUSAKA_PROGRESS, GLAMSTERDAM_PROGRESS, HEGOTA_PROGRESS, UPGRADE_PROCESS
 import { useMetaTags } from '../../hooks/useMetaTags';
 import ThemeToggle from '../ui/ThemeToggle';
 import AnalysisNav from '../ui/AnalysisNav';
-import { generateForkProgress, parseLocalDate, parseShortDate, daysBetween, DEFAULT_PHASE_DURATIONS, PhaseDurations } from './forkDateCalculator';
+import { generateForkProgress, parseLocalDate, parseShortDate, daysBetween, DEFAULT_PHASE_DURATIONS, PhaseDurations, calculateSoonestMainnetDate, formatDateISO } from './forkDateCalculator';
 import ForkGanttChart from './ForkGanttChart';
 import EditableDateCell from './EditableDateCell';
 
@@ -23,8 +23,8 @@ interface PlanningTableState {
 }
 
 const DEFAULT_STATE: PlanningTableState = {
-  glamsterdamMainnetDate: '2026-07-01',
-  hegotaMainnetDate: '2027-01-15',
+  glamsterdamMainnetDate: formatDateISO(calculateSoonestMainnetDate(new Date(2026, 3, 15), 5)),
+  hegotaMainnetDate: '2027-03-01',
   glamsterdamDevnetCount: 5,
   hegotaDevnetCount: 5,
   lockedDates: {},
@@ -175,7 +175,7 @@ const SchedulePage: React.FC = () => {
   const dynamicHegotaProjection = useMemo(() => {
     const generated = generateForkProgress('Hegota', parseLocalDate(hegotaMainnetDate), {
       headlinerProposalDeadlineOverride: new Date(2026, 1, 4), // February 4, 2026
-      headlinerSelectionDeadlineOverride: new Date(2026, 1, 26), // February 26, 2026
+      headlinerSelectionDeadlineOverride: new Date(2026, 2, 26), // March 26, 2026
       devnetCount: hegotaDevnetCount,
       durations: phaseDurations,
     });

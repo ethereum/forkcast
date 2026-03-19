@@ -1,5 +1,5 @@
 import { ClientTeamPerspective } from '../types/eip';
-import type { MacroPhase } from '../constants/timeline-phases';
+import type { MacroPhase } from '../types/timeline';
 
 export interface ActivationDetails {
   blockNumber: number;

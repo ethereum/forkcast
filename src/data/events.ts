@@ -131,19 +131,3 @@ export const timelineEvents: TimelineEvent[] = [
   }
 ];
 
-/**
- * Parse a date string (either YYYY-MM-DD or YYYY-MM-DD HH:MM:SS UTC format)
- * Returns a Date object set to midnight local time for the given date.
- */
-export function parseEventDate(dateStr: string): Date {
-  // Handle UTC datetime format: "YYYY-MM-DD HH:MM:SS"
-  if (dateStr.includes(' ')) {
-    const utcDate = new Date(dateStr.replace(' ', 'T') + 'Z');
-    // Return the UTC date portion as local midnight
-    return new Date(utcDate.getUTCFullYear(), utcDate.getUTCMonth(), utcDate.getUTCDate());
-  }
-  // Handle simple date format: "YYYY-MM-DD"
-  const [year, month, day] = dateStr.split('-').map(Number);
-  return new Date(year, month - 1, day);
-}
-

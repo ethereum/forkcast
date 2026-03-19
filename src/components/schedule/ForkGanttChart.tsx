@@ -1,5 +1,5 @@
 import React, { useMemo } from 'react';
-import { ForkProgress } from '../../constants/timeline-phases';
+import type { ForkProgress } from '../../types/timeline';
 import { parseShortDate } from './forkDateCalculator';
 
 interface ForkGanttChartProps {

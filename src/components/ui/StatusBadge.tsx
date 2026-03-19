@@ -45,7 +45,7 @@ export const StatusBadge: React.FC<StatusBadgeProps> = ({
         switch (status) {
           case 'completed':
             return 'bg-emerald-100 text-emerald-800 border-emerald-200';
-          case 'current':
+          case 'in-progress':
             return 'bg-purple-100 text-purple-800 border-purple-200';
           case 'upcoming':
             return 'bg-slate-100 text-slate-600 border-slate-200';

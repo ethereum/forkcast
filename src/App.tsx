@@ -20,6 +20,25 @@ import { useAnalytics } from './hooks/useAnalytics';
 import { ThemeProvider } from './contexts/ThemeContext';
 import ExternalRedirect from './components/ExternalRedirect';
 
+const stripTrailingSlashes = (p: string): string =>
+  p === '/' ? '/' : p.replace(/\/+$/, '');
+
+const normalizePath = (targetPath: string): string => {
+  const url = new URL(targetPath, window.location.origin);
+  return `${stripTrailingSlashes(url.pathname)}${url.search}${url.hash}`;
+};
+
+const getTrackedPageName = (pathname: string, search: string): string | null => {
+  const normalizedPath = stripTrailingSlashes(pathname);
+  const searchParams = new URLSearchParams(search);
+
+  if ((pathname !== '/' && /\/+$/.test(pathname)) || searchParams.has('redirect')) {
+    return null;
+  }
+
+  return normalizedPath;
+};
+
 function RedirectHandler() {
   const navigate = useNavigate();
   const location = useLocation();
@@ -28,17 +47,14 @@ function RedirectHandler() {
     // Check for redirect parameter from 404.html
     const urlParams = new URLSearchParams(location.search);
     const redirect = urlParams.get('redirect');
+    const currentPath = `${location.pathname}${location.search}${location.hash}`;
+    const normalizedPath = normalizePath(redirect || currentPath);
 
-    if (redirect) {
-      // Remove the redirect parameter and navigate to the target path
-      urlParams.delete('redirect');
-      const newSearch = urlParams.toString();
-      const newPath = redirect + (newSearch ? '?' + newSearch : '');
-
+    if (redirect || normalizedPath !== currentPath) {
       // Use replace to avoid adding to browser history
-      navigate(newPath, { replace: true });
+      navigate(normalizedPath, { replace: true });
     }
-  }, [navigate, location.search]);
+  }, [navigate, location.pathname, location.search, location.hash]);
 
   return null;
 }
@@ -46,15 +62,18 @@ function RedirectHandler() {
 function AnalyticsTracker() {
   const location = useLocation();
   const { trackPageView } = useAnalytics();
+  const pageName = getTrackedPageName(location.pathname, location.search);
+
   useEffect(() => {
+    if (!pageName) {
+      return;
+    }
+
     // Track page views when route changes in SPA
-    const pageName = location.pathname === '/'
-      ? '/'
-      : location.pathname.replace(/\/+$/, '');
     const pageTitle = document.title;
 
     trackPageView(pageName, pageTitle);
-  }, [location.pathname, trackPageView]);
+  }, [pageName, trackPageView]);
 
   return null;
 }

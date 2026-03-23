@@ -1,63 +1,63 @@
 {
   "series": "ACDC",
-  "generated": "2026-03-16",
-  "for_call": "ACDC #176",
+  "generated": "2026-03-23",
+  "for_call": "ACDC #177",
   "suggestions": [
     {
-      "topic": "ePBS DevNet-0 status and launch readiness assessment",
+      "topic": "PTC fix decision for ePBS DevNet 1",
       "priority": "high",
-      "rationale": "End of February deadline has passed. Multiple clients (Lighthouse, Teku, Prysm) were targeting this timeline. Critical to assess whether DevNet-0 launched, identify blockers, and confirm next steps for DevNet-1.",
-      "related_eips": [],
-      "source": "ongoing_discussion"
-    },
-    {
-      "topic": "ePBS fork choice complexity: invalid branch removal in OptimisticSync",
-      "priority": "high",
-      "rationale": "Explicitly deferred from DevNet0 to DevNet1 in ACDC #173. This is a non-trivial fork-choice issue that was flagged as highly complex and needs resolution before DevNet1 can proceed.",
+      "rationale": "PRs 4992 and 5020 required review with decision deadline Monday March 24 (ACDT). This fix forces DevNet 1 and is the only hard fork requirement blocking Glamsterdam DevNet 0 mid-April target.",
       "related_eips": [],
       "source": "deferred_decision"
     },
     {
-      "topic": "Variable PTC deadline specification resolution",
+      "topic": "ePBS DevNet 0 status and critical bug fixes",
+      "priority": "high",
+      "rationale": "Multiple critical issues from ACDC #176: Lighthouse exit processing breaks chain, Prysm FCU payload hash issues, Nimbus/Teku/Grandine connectivity problems. DevNet 0 needs stabilization before mid-April DevNet 1 target.",
+      "related_eips": [],
+      "source": "devnet_update"
+    },
+    {
+      "topic": "4788 backfilling strategy and protocol impact",
+      "priority": "high",
+      "rationale": "ACDC #176 identified that 4788 will have gaps for empty payloads under ePBS. Action item to contact Lido, Rocketpool, EigenLayer on impact and analyze proof complexity. Critical for ePBS production readiness.",
+      "related_eips": [],
+      "source": "open_action_item"
+    },
+    {
+      "topic": "Partial slot proofs implementation status",
+      "priority": "high",
+      "rationale": "ACDC #173 established that ePBS cannot ship without partial slot proofs in all clients. ACDC #174 showed DevNet with Lighthouse/Prism only. Teku, Lodestar, Nimbus implementations remain incomplete despite being critical blocker.",
+      "related_eips": [],
+      "source": "open_action_item"
+    },
+    {
+      "topic": "Glamsterdam DevNet 0 timeline and readiness",
       "priority": "medium",
-      "rationale": "PR remains open with ongoing discussion since ACDC #175. This specification detail needs closure to finalize ePBS implementation requirements across clients.",
+      "rationale": "Mid-April target (before Interop) requires resolving PTC fix, stabilizing current DevNet 0, and ensuring 2-3 clients are production-ready. Needs explicit go/no-go decision.",
+      "related_eips": [],
+      "source": "ongoing_discussion"
+    },
+    {
+      "topic": "SSZ Engine API adoption path",
+      "priority": "medium",
+      "rationale": "ACDC #176 showed significant blob performance gains with SSZ transport but debate on scope: ship immediately vs full Engine API redesign. ELs want semantic fixes (FCU bundling, deterministic validity). Requires coordination with ACDE.",
       "related_eips": [],
       "source": "deferred_decision"
     },
     {
-      "topic": "Cell-level deltas deployment timeline and pre-Amsterdam readiness",
+      "topic": "Hegotá non-headliner proposal window",
       "priority": "medium",
-      "rationale": "ACDC #174 indicated this optimization is backwards compatible and can deploy pre-Amsterdam. Multiple clients near completion. Worth checking if this can be included in Glamsterdam or if it remains a post-Amsterdam feature.",
+      "rationale": "ACDC #176 stated non-headliner window opens after EL headliner decision (expected March 26 ACDE). Need to establish timeline and process for CL-side proposals like EIP-8148 (custom sweep threshold).",
       "related_eips": [],
       "source": "ongoing_discussion"
     },
     {
-      "topic": "FOCIL (EIP-7805) implementation progress for Hegotá",
-      "priority": "medium",
-      "rationale": "Selected as Hegotá headliner in ACDC #175. With 8/11 clients having prototypes, progress update on full implementation status and any emerging challenges would help timeline planning.",
-      "related_eips": [],
-      "source": "ongoing_discussion"
-    },
-    {
-      "topic": "Glamsterdam timeline and scope finalization",
-      "priority": "medium",
-      "rationale": "ACDC #173 proposed summer fork (June-August). With ePBS DevNet-0 timeline now clear, can reassess whether Glamsterdam maintains this schedule and what the realistic scope is given ePBS complexity.",
-      "related_eips": [],
-      "source": "ongoing_discussion"
-    },
-    {
-      "topic": "Fork choice compliance test coverage expansion",
+      "topic": "Cell-level deltas deployment readiness",
       "priority": "low",
-      "rationale": "ACDC #172 noted tests only in Teku with plans to add ePBS coverage. With ePBS DevNets progressing, worth checking if other clients have integrated these tests or if gaps remain.",
+      "rationale": "ACDC #174 showed Blob DevNet Zero stable for 2 weeks with Lighthouse nearly done, Prism in review, Lodestar debugging. Can deploy pre-Amsterdam with backwards compatibility. Status update on remaining implementations.",
       "related_eips": [],
-      "source": "open_action_item"
-    },
-    {
-      "topic": "Partial slot proofs implementation status across remaining clients",
-      "priority": "low",
-      "rationale": "ACDC #173 established that ePBS cannot ship without partial slot proofs in all clients. DevNet launched with Lighthouse/Prism, but Teku, Lodestar, and Nimbus status unclear. Informational check on progress.",
-      "related_eips": [],
-      "source": "open_action_item"
+      "source": "ongoing_discussion"
     }
   ]
 }

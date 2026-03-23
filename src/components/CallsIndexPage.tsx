@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { Link, useSearchParams } from 'react-router-dom';
 import { Logo } from './ui/Logo';
 import ThemeToggle from './ui/ThemeToggle';
@@ -7,12 +7,44 @@ import { timelineEvents, type TimelineEvent } from '../data/events';
 import { fetchUpcomingCalls, type UpcomingCall } from '../utils/github';
 import GlobalCallSearch from './GlobalCallSearch';
 
+const FILTER_OPTIONS = [
+  { value: 'all', label: 'All' },
+  { value: 'acd', label: 'ACD' },
+  { value: 'acdc', label: 'ACDC' },
+  { value: 'acde', label: 'ACDE' },
+  { value: 'acdt', label: 'ACDT' },
+  { value: 'breakouts', label: 'Breakouts' }
+];
+
+const FILTER_ACTIVE_COLORS: Record<string, string> = {
+  all: 'bg-slate-600 dark:bg-slate-400 text-white dark:text-slate-900',
+  acd: 'bg-indigo-600 dark:bg-indigo-500 text-white dark:text-white',
+  acdc: 'bg-blue-600 dark:bg-blue-500 text-white dark:text-white',
+  acde: 'bg-sky-600 dark:bg-sky-500 text-white dark:text-white',
+  acdt: 'bg-cyan-600 dark:bg-cyan-500 text-white dark:text-white',
+  breakouts: 'bg-yellow-600 dark:bg-yellow-500 text-white dark:text-yellow-950'
+};
+
+const FILTER_INACTIVE_COLORS: Record<string, string> = {
+  all: 'bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-400 hover:bg-slate-200 dark:hover:bg-slate-700',
+  acd: 'bg-indigo-50 dark:bg-indigo-950/30 text-indigo-700 dark:text-indigo-400 hover:bg-indigo-100 dark:hover:bg-indigo-900/30',
+  acdc: 'bg-blue-50 dark:bg-blue-950/30 text-blue-700 dark:text-blue-400 hover:bg-blue-100 dark:hover:bg-blue-900/30',
+  acde: 'bg-sky-50 dark:bg-sky-950/30 text-sky-700 dark:text-sky-400 hover:bg-sky-100 dark:hover:bg-sky-900/30',
+  acdt: 'bg-cyan-50 dark:bg-cyan-950/30 text-cyan-700 dark:text-cyan-400 hover:bg-cyan-100 dark:hover:bg-cyan-900/30',
+  breakouts: 'bg-yellow-50 dark:bg-yellow-950/30 text-yellow-700 dark:text-yellow-400 hover:bg-yellow-100 dark:hover:bg-yellow-900/30'
+};
+
+const ACD_TYPES = ['acdc', 'acde', 'acdt'];
+
 const CallsIndexPage: React.FC = () => {
   const [searchParams, setSearchParams] = useSearchParams();
   const selectedFilter = searchParams.get('filter') || 'all';
+  const selectedBreakoutType = searchParams.get('breakoutType') || '';
   const showEvents = searchParams.get('events') !== 'false';
   const [upcomingCalls, setUpcomingCalls] = useState<UpcomingCall[]>([]);
   const [searchOpen, setSearchOpen] = useState(false);
+  const [breakoutDropdownOpen, setBreakoutDropdownOpen] = useState(false);
+  const breakoutDropdownRef = useRef<HTMLDivElement>(null);
 
   const calls = protocolCalls;
 
@@ -43,8 +75,40 @@ const CallsIndexPage: React.FC = () => {
     return () => window.removeEventListener('keydown', handleKeyDown);
   }, []);
 
-  // ACD call types (everything else is a breakout)
-  const acdTypes = ['acdc', 'acde', 'acdt'];
+  // Auto-open breakout dropdown when entering breakouts view
+  useEffect(() => {
+    if (selectedFilter === 'breakouts') {
+      setBreakoutDropdownOpen(true);
+    }
+  }, [selectedFilter]);
+
+  // Close breakout dropdown on outside click
+  useEffect(() => {
+    const handleMouseDown = (e: MouseEvent) => {
+      if (breakoutDropdownRef.current && !breakoutDropdownRef.current.contains(e.target as Node)) {
+        setBreakoutDropdownOpen(false);
+      }
+    };
+    document.addEventListener('mousedown', handleMouseDown);
+    return () => document.removeEventListener('mousedown', handleMouseDown);
+  }, []);
+
+  const acdTypes = ACD_TYPES;
+
+  // Get unique breakout types for the dropdown (excluding one-offs, which get their own entry)
+  const breakoutTypes = Array.from(new Set([
+    ...calls.filter(call => !acdTypes.includes(call.type) && !isOneOffCall(call.type)).map(call => call.type),
+    ...upcomingCalls.filter(call => !acdTypes.includes(call.type) && !isOneOffCall(call.type)).map(call => call.type),
+  ])).sort((a, b) => (callTypeNames[a as CallType] || a).localeCompare(callTypeNames[b as CallType] || b));
+
+  const hasOneOffCalls = calls.some(call => isOneOffCall(call.type));
+
+  // Helper to check if a call matches the selected breakout sub-filter
+  const matchesBreakoutType = (callType: string): boolean => {
+    if (!selectedBreakoutType) return true;
+    if (selectedBreakoutType === 'one-off') return isOneOffCall(callType);
+    return callType === selectedBreakoutType;
+  };
 
   // Filter and sort calls and events
   const filteredCalls = selectedFilter === 'all'
@@ -52,7 +116,7 @@ const CallsIndexPage: React.FC = () => {
     : selectedFilter === 'acd'
     ? calls.filter(call => acdTypes.includes(call.type))
     : selectedFilter === 'breakouts'
-    ? calls.filter(call => !acdTypes.includes(call.type))
+    ? calls.filter(call => !acdTypes.includes(call.type) && matchesBreakoutType(call.type))
     : calls.filter(call => call.type === selectedFilter);
 
   // Filter upcoming calls based on selected filter
@@ -61,7 +125,7 @@ const CallsIndexPage: React.FC = () => {
     : selectedFilter === 'acd'
     ? upcomingCalls.filter(call => acdTypes.includes(call.type))
     : selectedFilter === 'breakouts'
-    ? upcomingCalls.filter(call => !acdTypes.includes(call.type))
+    ? upcomingCalls.filter(call => !acdTypes.includes(call.type) && matchesBreakoutType(call.type))
     : upcomingCalls.filter(call => call.type === selectedFilter);
 
   // Combine calls, upcoming calls, and events into timeline items
@@ -74,14 +138,12 @@ const CallsIndexPage: React.FC = () => {
 
   const sortedItems = [...timelineItems].sort((a, b) => b.date.localeCompare(a.date));
 
-  const filterOptions = [
-    { value: 'all', label: 'All' },
-    { value: 'acd', label: 'ACD' },
-    { value: 'acdc', label: 'ACDC' },
-    { value: 'acde', label: 'ACDE' },
-    { value: 'acdt', label: 'ACDT' },
-    { value: 'breakouts', label: 'Breakouts' }
-  ];
+  const isBreakoutsExpanded = selectedFilter === 'breakouts';
+  const breakoutLabel = selectedBreakoutType === 'one-off'
+    ? 'One-Off Calls'
+    : selectedBreakoutType
+    ? (callTypeNames[selectedBreakoutType as CallType] || selectedBreakoutType.toUpperCase())
+    : 'All Breakouts';
 
   return (
     <div className="min-h-screen bg-slate-50 dark:bg-slate-900">
@@ -136,46 +198,123 @@ const CallsIndexPage: React.FC = () => {
 
           {/* Filter buttons and events toggle */}
           <div className="flex items-center justify-between mt-4 gap-2">
-            <div className="flex gap-1.5 overflow-x-auto scrollbar-hide flex-nowrap sm:flex-wrap">
-              {filterOptions.map((option) => {
-                // Define colors for each filter type
-                const activeColors = {
-                  all: 'bg-slate-600 dark:bg-slate-400 text-white dark:text-slate-900',
-                  acd: 'bg-indigo-600 dark:bg-indigo-500 text-white dark:text-white',
-                  acdc: 'bg-blue-600 dark:bg-blue-500 text-white dark:text-white',
-                  acde: 'bg-sky-600 dark:bg-sky-500 text-white dark:text-white',
-                  acdt: 'bg-cyan-600 dark:bg-cyan-500 text-white dark:text-white',
-                  breakouts: 'bg-yellow-600 dark:bg-yellow-500 text-white dark:text-yellow-950'
-                };
-
-                const inactiveColors = {
-                  all: 'bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-400 hover:bg-slate-200 dark:hover:bg-slate-700',
-                  acd: 'bg-indigo-50 dark:bg-indigo-950/30 text-indigo-700 dark:text-indigo-400 hover:bg-indigo-100 dark:hover:bg-indigo-900/30',
-                  acdc: 'bg-blue-50 dark:bg-blue-950/30 text-blue-700 dark:text-blue-400 hover:bg-blue-100 dark:hover:bg-blue-900/30',
-                  acde: 'bg-sky-50 dark:bg-sky-950/30 text-sky-700 dark:text-sky-400 hover:bg-sky-100 dark:hover:bg-sky-900/30',
-                  acdt: 'bg-cyan-50 dark:bg-cyan-950/30 text-cyan-700 dark:text-cyan-400 hover:bg-cyan-100 dark:hover:bg-cyan-900/30',
-                  breakouts: 'bg-yellow-50 dark:bg-yellow-950/30 text-yellow-700 dark:text-yellow-400 hover:bg-yellow-100 dark:hover:bg-yellow-900/30'
-                };
-
-                return (
+            <div className={`flex items-center gap-1.5 flex-nowrap sm:flex-wrap ${isBreakoutsExpanded ? '' : 'overflow-x-auto scrollbar-hide'}`}>
+              {isBreakoutsExpanded ? (
+                <>
+                  {/* Back button to collapse */}
                   <button
-                    key={option.value}
                     onClick={() => setSearchParams(prev => {
                       const next = new URLSearchParams(prev);
-                      if (option.value === 'all') next.delete('filter');
-                      else next.set('filter', option.value);
+                      next.delete('filter');
+                      next.delete('breakoutType');
                       return next;
                     })}
-                    className={`px-2.5 py-1 text-xs font-medium rounded-md transition-all whitespace-nowrap flex-shrink-0 ${
-                      selectedFilter === option.value
-                        ? activeColors[option.value as keyof typeof activeColors]
-                        : inactiveColors[option.value as keyof typeof inactiveColors]
-                    }`}
+                    className="px-2.5 py-1 text-xs font-medium rounded-md transition-all whitespace-nowrap flex-shrink-0 bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-400 hover:bg-slate-200 dark:hover:bg-slate-700"
+                    aria-label="Back to all filters"
                   >
-                    {option.label}
+                    ←
                   </button>
-                );
-              })}
+                  {/* Breakout type dropdown */}
+                  <div className="relative" ref={breakoutDropdownRef}>
+                    <button
+                      onClick={() => setBreakoutDropdownOpen(!breakoutDropdownOpen)}
+                      className="font-medium text-sm border-b-2 border-yellow-400 dark:border-yellow-500 text-yellow-700 dark:text-yellow-300 hover:border-yellow-500 dark:hover:border-yellow-400 transition-colors inline-flex items-baseline gap-1"
+                    >
+                      {breakoutLabel}
+                      <svg
+                        className={`w-3 h-3 transition-transform ${breakoutDropdownOpen ? 'rotate-180' : ''}`}
+                        fill="none"
+                        stroke="currentColor"
+                        viewBox="0 0 24 24"
+                      >
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+                      </svg>
+                    </button>
+                    {breakoutDropdownOpen && (
+                      <div className="absolute top-full left-0 mt-1 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded shadow-lg py-1 min-w-[200px] z-10">
+                        <button
+                          onClick={() => {
+                            setSearchParams(prev => {
+                              const next = new URLSearchParams(prev);
+                              next.delete('breakoutType');
+                              return next;
+                            });
+                            setBreakoutDropdownOpen(false);
+                          }}
+                          className={`w-full text-left px-4 py-2 text-sm transition-colors ${
+                            !selectedBreakoutType
+                              ? 'bg-yellow-50 dark:bg-yellow-900/20 text-yellow-700 dark:text-yellow-300'
+                              : 'text-slate-700 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-700'
+                          }`}
+                        >
+                          All Breakouts
+                        </button>
+                        {breakoutTypes.map((type) => (
+                          <button
+                            key={type}
+                            onClick={() => {
+                              setSearchParams(prev => {
+                                const next = new URLSearchParams(prev);
+                                next.set('breakoutType', type);
+                                return next;
+                              });
+                              setBreakoutDropdownOpen(false);
+                            }}
+                            className={`w-full text-left px-4 py-2 text-sm transition-colors ${
+                              selectedBreakoutType === type
+                                ? 'bg-yellow-50 dark:bg-yellow-900/20 text-yellow-700 dark:text-yellow-300'
+                                : 'text-slate-700 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-700'
+                            }`}
+                          >
+                            {callTypeNames[type as CallType] || type.toUpperCase()}
+                          </button>
+                        ))}
+                        {hasOneOffCalls && (
+                          <button
+                            onClick={() => {
+                              setSearchParams(prev => {
+                                const next = new URLSearchParams(prev);
+                                next.set('breakoutType', 'one-off');
+                                return next;
+                              });
+                              setBreakoutDropdownOpen(false);
+                            }}
+                            className={`w-full text-left px-4 py-2 text-sm transition-colors ${
+                              selectedBreakoutType === 'one-off'
+                                ? 'bg-yellow-50 dark:bg-yellow-900/20 text-yellow-700 dark:text-yellow-300'
+                                : 'text-slate-700 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-700'
+                            }`}
+                          >
+                            One-Off Calls
+                          </button>
+                        )}
+                      </div>
+                    )}
+                  </div>
+                </>
+              ) : (
+                <>
+                  {FILTER_OPTIONS.map((option) => (
+                    <button
+                      key={option.value}
+                      onClick={() => setSearchParams(prev => {
+                        const next = new URLSearchParams(prev);
+                        if (option.value === 'all') next.delete('filter');
+                        else next.set('filter', option.value);
+                        next.delete('breakoutType');
+                        return next;
+                      })}
+                      className={`px-2.5 py-1 text-xs font-medium rounded-md transition-all whitespace-nowrap flex-shrink-0 ${
+                        selectedFilter === option.value
+                          ? FILTER_ACTIVE_COLORS[option.value]
+                          : FILTER_INACTIVE_COLORS[option.value]
+                      }`}
+                    >
+                      {option.label}
+                    </button>
+                  ))}
+                </>
+              )}
             </div>
 
             {/* Events toggle */}

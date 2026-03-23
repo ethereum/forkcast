@@ -6,6 +6,15 @@ Sets video/transcript sync offsets for newly synced protocol calls. Run after "s
 
 After the `sync-call-assets.yml` workflow commits new call artifacts, livestreamed calls (acdc, acde, acdt) ship with `null` sync offsets — the video and transcript play but aren't aligned. Non-livestreamed calls default to `00:00:00`, which is usually correct but may need adjustment if there's dead air at the start. This skill walks through setting the correct offsets.
 
+## Install
+
+The `.claude/` directory is gitignored (per-user config), so skills need to be installed locally. Copy the skill file into your local Claude Code skills directory:
+
+```sh
+mkdir -p .claude/skills/sync-offsets
+cp docs/skills/sync-offsets.md .claude/skills/sync-offsets/SKILL.md
+```
+
 ## How to invoke
 
 ```
@@ -43,4 +52,3 @@ Each call's `config.json` in `public/artifacts/{type}/{date}_{number}/`:
 ## Related
 
 - [Asset pipeline docs](../acdbot-forkcast-asset-pipeline.md) — full pipeline overview including the [Video/Transcript Sync](../acdbot-forkcast-asset-pipeline.md#videotranscript-sync) section
-- Skill source: `.claude/skills/sync-offsets/SKILL.md`

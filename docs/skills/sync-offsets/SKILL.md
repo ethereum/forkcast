@@ -47,11 +47,14 @@ Ask the user to check each call page on the dev server and confirm sync looks go
 4. Clean up: remove the worktree with `git worktree remove --force` (force is needed because `npm install` leaves untracked files).
 5. Tell the user to merge the PR.
 
-### Step 7: Post-merge (ACD calls only)
+### Step 7: Post-merge — share on Discord
 
-If any of the synced calls are ACD calls (acdc, acde, acdt), tell the user to post the Forkcast link in the ACD Discord thread:
+After the PR is merged, tell the user to share the Forkcast link on Discord:
 
-- Forkcast link format: `https://forkcast.org/calls/{type}/{number}`
+- **ACD calls** (acdc, acde, acdt): post in the Eth R&D `#allcoredev` channel
+- **Breakout calls** (all others): post in the corresponding breakout channel on Eth R&D Discord
+
+Link format: `https://forkcast.org/calls/{type}/{number}` (zero-pad the number to 3 digits)
 
 ### Step 8: Done
 

@@ -56,6 +56,8 @@ After the PR is merged, tell the user to share the Forkcast link on Discord:
 
 Link format: `https://forkcast.org/calls/{type}/{number}` (zero-pad the number to 3 digits)
 
+Remind the user to remove the preview image embed after posting — it keeps the message less obtrusive in the channel.
+
 ### Step 8: Done
 
 Congratulate the user on completing the sync with a short celebratory message and emoji.

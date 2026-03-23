@@ -163,6 +163,23 @@ function parseCallFromTitle(title: string, githubUrl: string, issueNumber: numbe
     };
   }
 
+  // Try to match PQTS pattern: "Post Quantum transaction signature (PQTS) Breakout #5, April 01, 2026"
+  const pqtsMatch = title.match(/\(PQTS\).*?#(\d+),\s*(.+)/i);
+  if (pqtsMatch) {
+    const [, number, dateStr] = pqtsMatch;
+    const date = parseCallDate(dateStr.trim());
+    if (!date) return null;
+
+    return {
+      type: 'pqts',
+      title: title.trim(),
+      date,
+      number: number.padStart(3, '0'),
+      githubUrl,
+      issueNumber
+    };
+  }
+
   // Try to match PQ Interop pattern: "PQ Interop #1, March 4, 2026"
   const pqiMatch = title.match(/PQ.?Interop.*?#(\d+),\s*(.+)/i);
   if (pqiMatch) {
@@ -255,8 +272,8 @@ export async function fetchUpcomingCalls(): Promise<UpcomingCall[]> {
           parsedCalls.push(call);
           foundTypes.add(call.type);
 
-          // Stop once we have one of each type (ACDC, ACDE, ACDT, FOCIL, BAL, ePBS, RPC, zkEVM, PQI, FCR)
-          if (foundTypes.size === 10) break;
+          // Stop once we have one of each type (ACDC, ACDE, ACDT, FOCIL, BAL, ePBS, RPC, zkEVM, PQTS, PQI, FCR)
+          if (foundTypes.size === 11) break;
         }
       }
     }

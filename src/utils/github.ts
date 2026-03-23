@@ -16,6 +16,7 @@ interface GitHubIssue {
   created_at: string;
   state: string;
   number: number;
+  body?: string;
 }
 
 interface GitHubComment {
@@ -48,7 +49,12 @@ async function fetchYouTubeFromIssue(issueNumber: number): Promise<string | unde
 //           "EIP-7732 Breakout Room Call #27, November 7, 2025"
 //           "FOCIL Breakout #22, October 21, 2025"
 //           "EIP-7928 Breakout #5, Oct 22, 2025"
-function parseCallFromTitle(title: string, githubUrl: string, issueNumber: number): Omit<UpcomingCall, 'youtubeUrl'> | null {
+function parseCallFromTitle(
+  title: string,
+  githubUrl: string,
+  issueNumber: number,
+  issueBody?: string
+): Omit<UpcomingCall, 'youtubeUrl'> | null {
   // Try to match ACD* patterns first (ACDC, ACDE, ACDT)
   const acdMatch = title.match(/\(ACD([CET])\)\s*#(\d+),\s*(.+)/i);
 
@@ -164,10 +170,10 @@ function parseCallFromTitle(title: string, githubUrl: string, issueNumber: numbe
   }
 
   // Try to match PQTS pattern: "Post Quantum transaction signature (PQTS) Breakout #5, April 01, 2026"
-  const pqtsMatch = title.match(/\(PQTS\).*?#(\d+),\s*(.+)/i);
+  const pqtsMatch = title.match(/\(PQTS\).*?#(\d+)(?:,\s*(.+))?/i);
   if (pqtsMatch) {
     const [, number, dateStr] = pqtsMatch;
-    const date = parseCallDate(dateStr.trim());
+    const date = dateStr ? parseCallDate(dateStr.trim()) : (issueBody ? parseCallDate(issueBody) : null);
     if (!date) return null;
 
     return {
@@ -263,7 +269,7 @@ export async function fetchUpcomingCalls(): Promise<UpcomingCall[]> {
     const foundTypes = new Set<string>();
 
     for (const issue of issues) {
-      const call = parseCallFromTitle(issue.title, issue.html_url, issue.number);
+      const call = parseCallFromTitle(issue.title, issue.html_url, issue.number, issue.body);
 
       if (call && call.date >= today && !foundTypes.has(call.type)) {
         // Check if this call already exists in completed calls

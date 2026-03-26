@@ -1,63 +1,63 @@
 {
   "series": "ACDT",
-  "generated": "2026-03-19",
-  "for_call": "ACDT #75",
+  "generated": "2026-03-26",
+  "for_call": "ACDT #76",
   "suggestions": [
     {
-      "topic": "bal-devnet-3 EIP-8037 consensus bugs and hash divergence resolution",
+      "topic": "bal-devnet-3 stability and readiness assessment",
       "priority": "high",
-      "rationale": "ACDT #74 reported EVM fuzzing causing hash mismatches across implementations, with CREATE/CALL operations breaking BAL hash divergence in Nimbus/Reth. DevNet-3 cannot progress until these critical consensus bugs are resolved.",
-      "related_eips": [],
-      "source": "devnet_update"
-    },
-    {
-      "topic": "PTC committee caching decision for ePBS",
-      "priority": "high",
-      "rationale": "Deferred from ACDT #73 with 'this week' deadline (passed). ACDT #74 mentioned Alpha4 with PTC lookahead for epbs-devnet-1, but no explicit decision was documented. This blocks attestation testing.",
-      "related_eips": [],
-      "source": "deferred_decision"
-    },
-    {
-      "topic": "epbs-devnet-0 stability and devnet-1 timeline",
-      "priority": "high",
-      "rationale": "ACDT #74 showed Teku cannot sync or propose, exits non-functional. Need status update on fixes and determine readiness for epbs-devnet-1 launch with Alpha4/PTC lookahead.",
-      "related_eips": [],
-      "source": "devnet_update"
-    },
-    {
-      "topic": "bal-devnet-3 SFI eligibility after stability window",
-      "priority": "medium",
-      "rationale": "ACDT #74 decided bal-devnet-3 EIPs eligible for SFI one week after stability. If devnet-3 achieves stability this week, EIPs 7708, 7778, 7843, 8024 could be discussed (though final decision at ACD).",
-      "related_eips": [],
-      "source": "deferred_decision"
-    },
-    {
-      "topic": "Fusaka blob-devnet-0 testnet rollout readiness",
-      "priority": "medium",
-      "rationale": "ACDT #74 reported partial cells spec finalized but Prysm bugs blocking progress. Testnet rollout planned once clients optimistic. Need status on Prysm fixes and validator subset rollout timeline.",
-      "related_eips": [],
-      "source": "devnet_update"
-    },
-    {
-      "topic": "perf-devnet-3 sync issues and 5 Gigagas testing results",
-      "priority": "medium",
-      "rationale": "ACDT #73 reported Reth/Nethermind/Besu sync issues and OOM problems at 5 Gigagas. ACDT #74 showed bal-devnet-2 achieving 100% participation. Need updates on whether sync/memory issues are resolved.",
-      "related_eips": [],
-      "source": "devnet_update"
-    },
-    {
-      "topic": "SSZ engine API implementation status and ACD discussion timing",
-      "priority": "low",
-      "rationale": "ACDT #73 deferred final approval to ACD. Giulio's proof-of-concept implemented across multiple clients. If implementation progresses, determine when to bring to ACD for formal decision.",
-      "related_eips": [],
-      "source": "deferred_decision"
-    },
-    {
-      "topic": "EIP-8037 complexity concerns and DevNet-4 scope discussion",
-      "priority": "low",
-      "rationale": "ACDT #73 revealed deep implementation concerns (Marius: 'deeply complex', Ben: 'tendrils affecting everything'). With DevNet-3 bugs ongoing and dynamic version deferred to DevNet-4, discuss whether 8037 scope should be reconsidered.",
+      "rationale": "Extensive test failures remain (Geth 49, Besu 19, Nethermind/Reth 400+). With minor spec changes deferred to devnet-4, need to determine if devnet-3 can be stabilized or should transition to devnet-4.",
       "related_eips": [],
       "source": "ongoing_discussion"
+    },
+    {
+      "topic": "blob-devnet-0 trunk branch instability resolution",
+      "priority": "high",
+      "rationale": "Nethermind and Erigon failing to stay at head on trunk branches. Requires stable releases with GetBlobV3 instead of unstable trunk branches to proceed with testnet deployment.",
+      "related_eips": [],
+      "source": "devnet_update"
+    },
+    {
+      "topic": "ePBS devnet-1 specification and launch timeline",
+      "priority": "high",
+      "rationale": "ACDT #75 targeted spec release end-of-week (March 27). Alpha4 with PTC lookahead likely required. Need status update on spec completion and client readiness for devnet-1 launch.",
+      "related_eips": [],
+      "source": "ongoing_discussion"
+    },
+    {
+      "topic": "Batch I/O prefetch flag for benchmarking",
+      "priority": "medium",
+      "rationale": "Marked as urgently needed from Nethermind and Erigon in ACDT #75 for BAL benchmarking isolation. Flag must isolate prefetch optimization without disabling other BAL optimizations.",
+      "related_eips": [],
+      "source": "open_action_item"
+    },
+    {
+      "topic": "Glamsterdam-devnet-0 planning vs bal-devnet-4",
+      "priority": "medium",
+      "rationale": "ACDT #75 proposed replacing bal-devnet-4 with Glamsterdam-devnet-0. With multiple items deferred to devnet-4 (dynamic 8037, minor spec changes), need to clarify naming and scope for next BAL iteration.",
+      "related_eips": [],
+      "source": "ongoing_discussion"
+    },
+    {
+      "topic": "perf-devnet-3 client sync issues and 5 Gigagas testing",
+      "priority": "medium",
+      "rationale": "Geth synced successfully, but Reth/Nethermind/Besu experiencing sync issues. 5 Gigagas testing revealing out-of-memory issues. State bloat testing approaching 4TB target with depth-based worst cases.",
+      "related_eips": [],
+      "source": "devnet_update"
+    },
+    {
+      "topic": "Frame transaction mempool strategy decision",
+      "priority": "low",
+      "rationale": "Breakout scheduled for March 25 (day before this call). If breakout occurred, need to confirm Strategy 2 (canonical paymaster) vs Strategy 1 (self-relaying) resolution and next steps.",
+      "related_eips": [],
+      "source": "open_action_item"
+    },
+    {
+      "topic": "SSZ Engine API ACD approval status",
+      "priority": "low",
+      "rationale": "Deferred to ACD in ACDT #73 (March 9). Giulio implemented POC across 6 clients. Check if ACD has provided final approval for optional implementation via content-type headers.",
+      "related_eips": [],
+      "source": "deferred_decision"
     }
   ]
 }

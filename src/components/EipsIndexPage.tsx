@@ -23,6 +23,8 @@ const EipsIndexPage: React.FC = () => {
   const [sortDirection, setSortDirection] = useState<SortDirection>('desc');
   const [mobileFiltersOpen, setMobileFiltersOpen] = useState(false);
   const [searchModalOpen, setSearchModalOpen] = useState(false);
+  const [currentPage, setCurrentPage] = useState(1);
+  const PAGE_SIZE = 50;
 
   // Global keyboard shortcut for search (Cmd/Ctrl+F)
   useEffect(() => {
@@ -234,6 +236,18 @@ const EipsIndexPage: React.FC = () => {
   };
 
   const hasActiveFilters = statusFilters.size > 0 || forkFilters.size > 0 || categoryFilters.size > 0 || stageFilters.size > 0 || layerFilters.size > 0 || headlinerFilters.size > 0;
+
+  // Reset to page 1 when filters or sort changes
+  useEffect(() => {
+    setCurrentPage(1);
+  }, [statusFilters, forkFilters, categoryFilters, stageFilters, layerFilters, headlinerFilters, sortField, sortDirection]);
+
+  // Pagination
+  const totalPages = Math.max(1, Math.ceil(filteredAndSortedEips.length / PAGE_SIZE));
+  const paginatedEips = filteredAndSortedEips.slice(
+    (currentPage - 1) * PAGE_SIZE,
+    currentPage * PAGE_SIZE,
+  );
 
   // Lock body scroll when filters modal is open
   React.useEffect(() => {
@@ -677,7 +691,7 @@ const EipsIndexPage: React.FC = () => {
                 </tr>
               </thead>
               <tbody className="divide-y divide-slate-200 dark:divide-slate-700">
-                {filteredAndSortedEips.map(eip => {
+                {paginatedEips.map(eip => {
                   const title = getLaymanTitle(eip);
                   const isTitleLong = title.length > 60;
 
@@ -832,7 +846,7 @@ const EipsIndexPage: React.FC = () => {
 
         {/* Card List - Mobile */}
         <div className="md:hidden space-y-3">
-          {filteredAndSortedEips.map(eip => {
+          {paginatedEips.map(eip => {
             const mostRecentFork = eip.forkRelationships.length > 0
               ? eip.forkRelationships[eip.forkRelationships.length - 1]
               : null;
@@ -909,6 +923,29 @@ const EipsIndexPage: React.FC = () => {
             );
           })}
         </div>
+
+        {/* Pagination */}
+        {totalPages > 1 && (
+          <div className="flex items-center justify-between mt-4 px-2">
+            <button
+              onClick={() => setCurrentPage(p => Math.max(1, p - 1))}
+              disabled={currentPage === 1}
+              className="px-4 py-2 text-sm font-medium rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-700 dark:text-slate-300 disabled:opacity-40 disabled:cursor-not-allowed hover:bg-slate-50 dark:hover:bg-slate-700 transition-colors"
+            >
+              Previous
+            </button>
+            <span className="text-sm text-slate-500 dark:text-slate-400">
+              Page {currentPage} of {totalPages}
+            </span>
+            <button
+              onClick={() => setCurrentPage(p => Math.min(totalPages, p + 1))}
+              disabled={currentPage === totalPages}
+              className="px-4 py-2 text-sm font-medium rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-700 dark:text-slate-300 disabled:opacity-40 disabled:cursor-not-allowed hover:bg-slate-50 dark:hover:bg-slate-700 transition-colors"
+            >
+              Next
+            </button>
+          </div>
+        )}
 
         {/* Empty State */}
         {filteredAndSortedEips.length === 0 && (

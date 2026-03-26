@@ -23,8 +23,9 @@ const readJsonIfExists = (filePath) => {
   }
 };
 
+// Build call corpus
 const calls = JSON.parse(fs.readFileSync(CALLS_FILE, 'utf8'));
-const corpus = calls.map(({ type, date, number }) => {
+const callCorpus = calls.map(({ type, date, number }) => {
   const basePath = path.join(ARTIFACTS_DIR, type, `${date}_${number}`);
   return {
     type,
@@ -36,14 +37,15 @@ const corpus = calls.map(({ type, date, number }) => {
   };
 });
 
+const corpus = callCorpus;
 const serializedCorpus = JSON.stringify(corpus);
 const sha256 = createHash('sha256').update(serializedCorpus).digest('hex');
 const metadata = {
   sha256,
-  calls: corpus.length,
+  calls: callCorpus.length,
   bytes: Buffer.byteLength(serializedCorpus, 'utf8')
 };
 
 fs.writeFileSync(OUTPUT_FILE, serializedCorpus);
 fs.writeFileSync(META_OUTPUT_FILE, JSON.stringify(metadata));
-console.log(`✓ Compiled ${corpus.length} calls to ${OUTPUT_FILE}`);
+console.log(`✓ Compiled ${callCorpus.length} calls to ${OUTPUT_FILE}`);

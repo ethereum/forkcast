@@ -123,6 +123,9 @@ const HomePage = () => {
           <p className="text-base text-slate-600 dark:text-slate-400 max-w-2xl mx-auto leading-relaxed">
             See what's on the horizon and how it impacts you.
           </p>
+          <p className="mt-2 text-sm font-mono text-fuchsia-500 dark:text-fuchsia-400 animate-pulse">
+            beep boop, netlify env var test (no toml)
+          </p>
         </div>
 
         {/* Upgrades Carousel */}

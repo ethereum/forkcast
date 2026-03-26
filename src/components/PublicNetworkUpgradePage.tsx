@@ -36,14 +36,14 @@ import {
   EipCard
 } from './network-upgrade';
 
-// Upgrade page display modes - controls which sections are visible
-// headlinerSelection: Only shows Headliner Proposals section (hides Overview and EIP stage sections)
+// Upgrade page display modes control which sections are visible.
+// headlinerSelection hides the overview and stage-grouped EIP sections.
 type UpgradePageMode = 'default' | 'headlinerSelection';
 
-// Determine the display mode for a given fork
 const getUpgradePageMode = (forkName: string): UpgradePageMode => {
-  void forkName; // will be used when a future fork enters headliner selection
-  return 'default';
+  // Keep per-fork mode overrides as data so future forks can opt into a mode in one place.
+  const upgradePageModeByFork: Readonly<Partial<Record<string, UpgradePageMode>>> = {};
+  return upgradePageModeByFork[forkName.toLowerCase()] ?? 'default';
 };
 
 interface PublicNetworkUpgradePageProps {

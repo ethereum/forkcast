@@ -42,7 +42,7 @@ type UpgradePageMode = 'default' | 'headlinerSelection';
 
 const getUpgradePageMode = (forkName: string): UpgradePageMode => {
   // Keep per-fork mode overrides as data so future forks can opt into a mode in one place.
-  const upgradePageModeByFork: Readonly<Partial<Record<string, UpgradePageMode>>> = {};
+  const upgradePageModeByFork: Partial<Record<string, UpgradePageMode>> = {};
   return upgradePageModeByFork[forkName.toLowerCase()] ?? 'default';
 };
 

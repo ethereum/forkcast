@@ -76,36 +76,31 @@ export const OverviewSection: React.FC<OverviewSectionProps> = ({
         </div>
       </div>
 
-      {/* Headliner discussion notice for Hegota */}
+      {/* Headliner selection notice for Hegota */}
       {forkName.toLowerCase() === 'hegota' && (
-        <div className="p-4 bg-gradient-to-r from-amber-50 to-orange-50 dark:from-amber-900/20 dark:to-orange-900/20 border-2 border-amber-200 dark:border-amber-700 rounded">
+        <div className="p-4 mb-6 bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-700 rounded">
           <div className="flex items-start gap-3">
-            <svg className="w-5 h-5 text-amber-600 dark:text-amber-400 mt-0.5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11 5.882V19.24a1.76 1.76 0 01-3.417.592l-2.147-6.15M18 13a3 3 0 100-6M5.436 13.683A4.001 4.001 0 017 6h1.832c4.1 0 7.625-1.234 9.168-3v14c-1.543-1.766-5.067-3-9.168-3H7a3.988 3.988 0 01-1.564-.317z" />
+            <svg className="w-5 h-5 text-blue-500 dark:text-blue-400 mt-0.5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
             </svg>
             <div>
-              <h4 className="font-medium text-amber-900 dark:text-amber-100 text-sm mb-1">Headliner Discussion in Progress</h4>
-              <p className="text-amber-800 dark:text-amber-200 text-xs leading-relaxed mb-3">
-                The headliner proposal window has closed. ACD is now evaluating candidates and gathering community feedback. Follow the discussion on the{' '}
+              <h4 className="font-medium text-blue-900 dark:text-blue-100 text-sm mb-1">Headliner Selection Complete</h4>
+              <p className="text-blue-800 dark:text-blue-200 text-xs leading-relaxed">
+                Headliner selection process has concluded with{' '}
+                <a href="#eip-7805" className="text-blue-600 dark:text-blue-300 underline decoration-1 underline-offset-2 hover:text-blue-800 dark:hover:text-blue-100">FOCIL (EIP-7805)</a>
+                {' '}being SFI'd as a headliner and{' '}
+                <a href="#eip-8141" className="text-blue-600 dark:text-blue-300 underline decoration-1 underline-offset-2 hover:text-blue-800 dark:hover:text-blue-100">Frame Transaction (EIP-8141)</a>
+                {' '}being CFI'd. The window for non-headliner EIP proposals has not yet been defined. Follow updates on the{' '}
                 <a
                   href="https://ethereum-magicians.org/t/eip-8081-hegota-network-upgrade-meta-thread/26876"
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="text-amber-600 dark:text-amber-300 underline decoration-1 underline-offset-2 hover:text-amber-800 dark:hover:text-amber-100"
+                  className="text-blue-600 dark:text-blue-300 underline decoration-1 underline-offset-2 hover:text-blue-800 dark:hover:text-blue-100"
                 >
                   Ethereum Magicians meta thread
                 </a>
                 .
               </p>
-              <a
-                href="/rank"
-                className="inline-flex items-center gap-1.5 px-2 py-1.5 text-xs font-medium rounded border border-amber-300 dark:border-amber-600 bg-amber-100 dark:bg-amber-900/30 text-amber-700 dark:text-amber-300 hover:bg-amber-200 dark:hover:bg-amber-900/50 transition-colors"
-              >
-                Create Your Ranking
-                <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
-                </svg>
-              </a>
             </div>
           </div>
         </div>
@@ -125,9 +120,8 @@ export const OverviewSection: React.FC<OverviewSectionProps> = ({
         </div>
       )}
 
-      {/* Stage counts grid - hidden for Hegota during headliner selection */}
-      {forkName.toLowerCase() !== 'hegota' && (
-        <div className={status === 'Live' ? 'grid grid-cols-1 md:grid-cols-3 gap-4' : 'grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4'}>
+      {/* Stage counts grid */}
+      <div className={status === 'Live' ? 'grid grid-cols-1 md:grid-cols-3 gap-4' : 'grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4'}>
           {/* Live status info box - only for Live upgrades */}
           {status === 'Live' && (
             <div className="flex flex-col items-center justify-center p-4 rounded bg-emerald-50 dark:bg-emerald-900/20 border border-emerald-200 dark:border-emerald-700">
@@ -190,7 +184,6 @@ export const OverviewSection: React.FC<OverviewSectionProps> = ({
             </a>
           )}
         </div>
-      )}
     </div>
   );
 };

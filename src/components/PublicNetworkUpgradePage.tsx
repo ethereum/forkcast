@@ -42,10 +42,7 @@ type UpgradePageMode = 'default' | 'headlinerSelection';
 
 // Determine the display mode for a given fork
 const getUpgradePageMode = (forkName: string): UpgradePageMode => {
-  // Hegota is currently in headliner selection phase
-  if (forkName.toLowerCase() === 'hegota') {
-    return 'headlinerSelection';
-  }
+  void forkName; // will be used when a future fork enters headliner selection
   return 'default';
 };
 
@@ -353,7 +350,7 @@ const PublicNetworkUpgradePage: React.FC<PublicNetworkUpgradePageProps> = ({
     ] : []),
 
     // Headliner Proposals section - for default mode (like Glamsterdam), show at bottom
-    ...(pageMode !== 'headlinerSelection' && forkName.toLowerCase() === 'glamsterdam' ? getHeadlinerProposalsTocItems() : []),
+    ...(pageMode !== 'headlinerSelection' && (forkName.toLowerCase() === 'glamsterdam' || forkName.toLowerCase() === 'hegota') ? getHeadlinerProposalsTocItems() : []),
   ];
 
   const scrollToSection = (sectionId: string) => {
@@ -446,7 +443,7 @@ const PublicNetworkUpgradePage: React.FC<PublicNetworkUpgradePageProps> = ({
             onSearchChange={setSearchQuery}
             layerFilter={layerFilter}
             onLayerFilterChange={setLayerFilter}
-            showLayerFilter={pageMode === 'headlinerSelection' || forkName.toLowerCase() === 'glamsterdam'}
+            showLayerFilter={pageMode === 'headlinerSelection' || forkName.toLowerCase() === 'glamsterdam' || forkName.toLowerCase() === 'hegota'}
           />
 
           <div className="flex-1 min-w-0">
@@ -529,11 +526,6 @@ const PublicNetworkUpgradePage: React.FC<PublicNetworkUpgradePageProps> = ({
                   stageEips = stageEips.filter(eip => !isUnselectedHeadlinerCandidate(eip, forkName));
                 }
 
-                // For Hegota during headliner evaluation, exclude all headliner candidates from regular sections
-                // They will be shown in the dedicated Headliner Proposals section
-                if (forkName.toLowerCase() === 'hegota') {
-                  stageEips = stageEips.filter(eip => !wasHeadlinerCandidate(eip, forkName));
-                }
 
                 // Apply layer and search filters
                 stageEips = filterEips(stageEips);
@@ -697,7 +689,7 @@ const PublicNetworkUpgradePage: React.FC<PublicNetworkUpgradePageProps> = ({
                 const headlinerEips = filterEips(eips.filter(eip => wasHeadlinerCandidate(eip, forkName)));
                 const filteredPendingProposals = getPendingProposalsForFork(forkName);
                 const totalProposals = headlinerEips.length + filteredPendingProposals.length;
-                const showSection = (pageMode === 'headlinerSelection' || forkName.toLowerCase() === 'glamsterdam') && totalProposals > 0;
+                const showSection = (pageMode === 'headlinerSelection' || forkName.toLowerCase() === 'glamsterdam' || forkName.toLowerCase() === 'hegota') && totalProposals > 0;
 
                 if (!showSection) return null;
 

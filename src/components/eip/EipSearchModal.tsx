@@ -1,9 +1,10 @@
-import { useState, useEffect, useMemo, useRef } from 'react';
+import { useState, useEffect, useRef, useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { eipsData } from '../../data/eips';
 import { EIP } from '../../types/eip';
 import { getLaymanTitle, getProposalPrefix } from '../../utils';
 import { debounce } from '../../utils/debounce';
+import { eipSpecSearchService } from '../../services/eipSpecSearch';
 
 interface EipSearchModalProps {
   isOpen: boolean;
@@ -193,6 +194,9 @@ function searchEips(
     .slice(0, 50);
 }
 
+// Build a lookup map once for merging spec results with metadata results
+const eipById = new Map(eipsData.map((eip) => [eip.id, eip]));
+
 export default function EipSearchModal({ isOpen, onClose, initialQuery = '' }: EipSearchModalProps) {
   const [query, setQuery] = useState(initialQuery);
   const [results, setResults] = useState<EipSearchResult[]>([]);
@@ -206,14 +210,66 @@ export default function EipSearchModal({ isOpen, onClose, initialQuery = '' }: E
   const resultsContainerRef = useRef<HTMLDivElement>(null);
   const navigate = useNavigate();
 
-  // Debounced search function
+  // Warm up the spec search index when modal opens
+  useEffect(() => {
+    if (isOpen) {
+      eipSpecSearchService.warmup();
+    }
+  }, [isOpen]);
+
+  // Combined metadata + spec search (debounced)
   const performSearch = useMemo(
     () =>
-      debounce((searchQuery: string, currentFilters: EipSearchFilters) => {
-        const searchResults = searchEips(searchQuery, eipsData, currentFilters);
-        setResults(searchResults);
+      debounce(async (searchQuery: string, currentFilters: EipSearchFilters) => {
+        const metadataResults = searchEips(searchQuery, eipsData, currentFilters);
+
+        // Spec search only applies when there's a text query
+        const queryTerms = searchQuery.trim().split(/\s+/).filter((t) => t.length > 0);
+        if (queryTerms.length === 0) {
+          setResults(metadataResults);
+          return;
+        }
+
+        // Show metadata results immediately, then merge spec results
+        setResults(metadataResults);
+
+        let specResults: { eipId: number; score: number }[] = [];
+        try {
+          specResults = await eipSpecSearchService.search(searchQuery);
+        } catch {
+          // Index not available — metadata-only results are fine
+          return;
+        }
+
+        if (specResults.length === 0) return;
+
+        // Merge: boost metadata results that also match spec, add spec-only hits
+        const metaById = new Map(metadataResults.map((r) => [r.eip.id, r]));
+        const merged = [...metadataResults];
+
+        for (const spec of specResults) {
+          const existing = metaById.get(spec.eipId);
+          if (existing) {
+            existing.matchScore += SEARCH_WEIGHTS.description * 0.5;
+            if (!existing.matchedFields.includes('spec')) {
+              existing.matchedFields.push('spec');
+            }
+          } else {
+            const eip = eipById.get(spec.eipId);
+            if (eip && passesFilters(eip, currentFilters)) {
+              merged.push({
+                eip,
+                matchScore: spec.score,
+                matchedFields: ['spec'],
+              });
+            }
+          }
+        }
+
+        merged.sort((a, b) => b.matchScore - a.matchScore);
+        setResults(merged.slice(0, 50));
       }, 150),
-    []
+    [],
   );
 
   // Trigger search on query or filter change
@@ -335,6 +391,7 @@ export default function EipSearchModal({ isOpen, onClose, initialQuery = '' }: E
       'author': 'author',
       'benefits': 'benefits',
       'northStars': 'north stars',
+      'spec': 'spec',
     };
     return displayMap[field] || field;
   };
@@ -365,7 +422,7 @@ export default function EipSearchModal({ isOpen, onClose, initialQuery = '' }: E
               type="text"
               value={query}
               onChange={(e) => setQuery(e.target.value)}
-              placeholder="Search EIPs by title, author, description..."
+              placeholder="Search EIPs by title, author, spec content..."
               className="flex-1 bg-transparent text-slate-900 dark:text-slate-100 placeholder-slate-400 dark:placeholder-slate-400 outline-none text-base min-h-[44px] sm:min-h-0"
             />
             <button
@@ -529,7 +586,7 @@ export default function EipSearchModal({ isOpen, onClose, initialQuery = '' }: E
                 <span className="px-2 py-1 bg-slate-100 dark:bg-slate-700 rounded">title</span>
                 <span className="px-2 py-1 bg-slate-100 dark:bg-slate-700 rounded">author</span>
                 <span className="px-2 py-1 bg-slate-100 dark:bg-slate-700 rounded">description</span>
-                <span className="px-2 py-1 bg-slate-100 dark:bg-slate-700 rounded">benefits</span>
+                <span className="px-2 py-1 bg-slate-100 dark:bg-slate-700 rounded">spec</span>
               </div>
             </div>
           )}

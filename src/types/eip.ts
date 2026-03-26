@@ -42,7 +42,7 @@ export interface EIP {
   type: string;
   category?: string;
   createdDate: string;
-  discussionLink: string;
+  discussionLink?: string;
   reviewer?: string;
   layer?: 'EL' | 'CL';
   collection?: string;
@@ -67,7 +67,7 @@ export interface EIP {
     elClients: { impact?: string, description: string };
   };
   benefits?: string[];
-  tradeoffs?: string[];
+  tradeoffs?: string[] | null;
 }
 
 export type InclusionStage =

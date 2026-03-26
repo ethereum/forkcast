@@ -123,16 +123,16 @@ export const HEGOTA_TIMELINE_PHASES: TimelinePhase[] = [
   {
     id: 'headliner-discussion',
     title: 'Headliner Discussion & Finalization',
-    dateRange: 'Feb 5 - Mar 12',
+    dateRange: 'Feb 5 - Mar 26',
     description: 'ACD evaluates candidate headliners, solicits community feedback, and finalizes decisions.',
-    status: 'in-progress'
+    status: 'completed'
   },
   {
     id: 'non-headliner-proposals',
     title: 'Non-Headliner EIP Proposals',
     dateRange: 'TBD',
-    description: 'Non-headliner EIPs can now be proposed for inclusion in Hegotá.',
-    status: 'upcoming'
+    description: 'Non-headliner EIPs can be proposed for inclusion in Hegotá. Proposal window not yet defined.',
+    status: 'in-progress'
   },
   {
     id: 'cfi-decisions',
@@ -281,10 +281,10 @@ export const HEGOTA_PROGRESS: ForkProgress = {
   phases: [
     {
       phaseId: 'headliner-selection',
-      status: 'in-progress',
+      status: 'completed',
       actualStartDate: 'Jan 8, 2026',
-      projectedDate: 'Q1-Q2 2026',
-      progressNotes: 'Headliner discussion in progress, selection deadline Mar 12, 2026',
+      actualEndDate: 'Mar 26, 2026',
+      progressNotes: 'FOCIL (EIP-7805) SFI\'d as headliner, Frame Transaction (EIP-8141) CFI\'d as non-headliner',
       substeps: [
         {
           name: 'Proposal Deadline',
@@ -293,8 +293,8 @@ export const HEGOTA_PROGRESS: ForkProgress = {
         },
         {
           name: 'Selection Deadline',
-          status: 'in-progress',
-          projectedDate: 'Mar 12, 2026'
+          status: 'completed',
+          date: 'Mar 26, 2026'
         }
       ]
     },
@@ -302,7 +302,7 @@ export const HEGOTA_PROGRESS: ForkProgress = {
       phaseId: 'eip-selection',
       status: 'upcoming',
       projectedDate: 'Q2-Q3 2026',
-      progressNotes: 'Opens after headliner finalization',
+      progressNotes: 'Non-headliner EIP proposal window not yet defined',
       substeps: [
         {
           name: 'PFI Deadline',

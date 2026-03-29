@@ -1,4 +1,5 @@
 import { protocolCalls, type CallType } from '../data/calls';
+import { formatISODate } from './date';
 
 export interface UpcomingCall {
   type: CallType;
@@ -258,7 +259,7 @@ export async function fetchUpcomingCalls(): Promise<UpcomingCall[]> {
 
     const issues: GitHubIssue[] = await response.json();
     const parsedCalls: Omit<UpcomingCall, 'youtubeUrl'>[] = [];
-    const today = new Date().toISOString().split('T')[0];
+    const today = formatISODate(new Date());
 
     // Create a set of completed call identifiers (type + number)
     const completedCallIds = new Set(

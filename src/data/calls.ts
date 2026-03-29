@@ -1,4 +1,5 @@
 import generatedCalls from './protocol-calls.generated.json';
+import { formatISODate } from '../utils/date';
 
 export type CallType = 'acdc' | 'acde' | 'acdt' | 'epbs' | 'bal' | 'focil' | 'price' | 'tli' | 'pqts' | 'rpc' | 'zkevm' | 'etm' | 'awd' | 'pqi' | 'fcr';
 
@@ -53,7 +54,7 @@ export const eipCallTypes: Record<number, CallType> = {
 
 // Get previous and next calls for a given type
 export const getCallNavigation = (type: string): { previous: Call | null; next: Call | null } => {
-  const today = new Date().toISOString().split('T')[0];
+  const today = formatISODate(new Date());
   const calls = protocolCalls
     .filter(c => c.type === type)
     .sort((a, b) => a.date.localeCompare(b.date));

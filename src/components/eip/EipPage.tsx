@@ -18,6 +18,7 @@ import { Logo } from '../ui/Logo';
 import { EipTimeline } from './EipTimeline';
 import { EipSearch } from './EipSearch';
 import EipSearchModal from './EipSearchModal';
+import { isSearchHotkey } from '../search/searchShortcuts';
 import {
   eipCallTypes,
   callTypeNames,
@@ -119,8 +120,8 @@ export const EipPage: React.FC = () => {
 
   // Keyboard navigation
   const handleKeyDown = useCallback((e: KeyboardEvent) => {
-    // Handle Cmd/Ctrl+F for search
-    if ((e.metaKey || e.ctrlKey) && e.key === 'f') {
+    // Handle Cmd/Ctrl+K for search
+    if (isSearchHotkey(e)) {
       e.preventDefault();
       setSearchModalOpen(true);
       return;

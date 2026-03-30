@@ -53,18 +53,32 @@ const UpgradeCarousel = ({ upgrades }: UpgradeCarouselProps) => {
           {summary}
         </p>
 
-        <div
-          className={`text-xs mt-4 ${upgrade.disabled ? 'text-slate-400 dark:text-slate-400' : 'text-slate-500 dark:text-slate-400'}`}
-        >
-          <span className="font-medium">
-            {isLive ? 'Activated:' : 'Target:'}
-          </span>{' '}
-          {upgrade.activationDate}
-        </div>
+        {upgrade.activationDate && (
+          <div
+            className={`text-xs mt-4 ${upgrade.disabled ? 'text-slate-400 dark:text-slate-400' : 'text-slate-500 dark:text-slate-400'}`}
+          >
+            <span className="font-medium">
+              {isLive ? 'Activated:' : 'Target:'}
+            </span>{' '}
+            {upgrade.activationDate}
+          </div>
+        )}
       </div>
     );
 
-    if (upgrade.disabled) {
+    if (upgrade.disabled && upgrade.externalLink) {
+      return (
+        <a
+          key={upgrade.path}
+          href={upgrade.externalLink}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg p-6 opacity-60 hover:opacity-80 hover:shadow-md dark:hover:shadow-slate-700/20 hover:border-purple-300 dark:hover:border-purple-600 block h-full"
+        >
+          {cardContent}
+        </a>
+      );
+    } else if (upgrade.disabled) {
       return (
         <div
           key={upgrade.path}
@@ -108,7 +122,19 @@ const UpgradeCarousel = ({ upgrades }: UpgradeCarouselProps) => {
       </div>
     );
 
-    if (upgrade.disabled) {
+    if (upgrade.disabled && upgrade.externalLink) {
+      return (
+        <a
+          key={upgrade.path}
+          href={upgrade.externalLink}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg px-4 py-3 opacity-60 hover:opacity-80 hover:shadow-md dark:hover:shadow-slate-700/20 hover:border-purple-300 dark:hover:border-purple-600 block"
+        >
+          {cardContent}
+        </a>
+      );
+    } else if (upgrade.disabled) {
       return (
         <div
           key={upgrade.path}

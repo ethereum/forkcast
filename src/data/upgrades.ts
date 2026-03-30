@@ -21,9 +21,32 @@ export interface NetworkUpgrade {
   activationDetails?: ActivationDetails;
   macroPhaseOverride?: MacroPhase;
   highlights?: string;
+  externalLink?: string;
 }
 
 export const networkUpgrades: NetworkUpgrade[] = [
+  {
+    id: 'previous-upgrades',
+    path: '/upgrade/previous-upgrades',
+    name: 'Previous Upgrades',
+    description: 'A complete history of all Ethereum network upgrades from the early days to the present.',
+    tagline: 'Explore the full history of Ethereum network upgrades.',
+    status: 'Live',
+    activationDate: '',
+    disabled: true,
+    externalLink: 'https://ethereum.org/history'
+  },
+  {
+    id: 'the-merge',
+    path: '/upgrade/the-merge',
+    name: 'The Merge',
+    description: 'Transition to proof of stake, replacing energy-intensive proof-of-work mining with a more sustainable consensus mechanism.',
+    tagline: 'Transition to proof of stake.',
+    status: 'Live',
+    activationDate: 'Sep 15, 2022',
+    disabled: true,
+    externalLink: 'https://ethereum.org/roadmap/merge/'
+  },
   {
     id: 'shapella',
     path: '/upgrade/shapella',
@@ -33,7 +56,8 @@ export const networkUpgrades: NetworkUpgrade[] = [
     status: 'Live',
     activationDate: 'Apr 12, 2023',
     disabled: true,
-    highlights: 'Staking withdrawals (EIP-4895)'
+    highlights: 'Staking withdrawals (EIP-4895)',
+    externalLink: 'https://eips.ethereum.org/EIPS/eip-7568'
   },
   {
     id: 'dencun',
@@ -44,7 +68,8 @@ export const networkUpgrades: NetworkUpgrade[] = [
     status: 'Live',
     activationDate: 'Mar 13, 2024',
     disabled: true,
-    highlights: 'Proto-danksharding / blobs (EIP-4844)'
+    highlights: 'Proto-danksharding / blobs (EIP-4844)',
+    externalLink: 'https://eips.ethereum.org/EIPS/eip-7569'
   },
   {
     id: 'pectra',

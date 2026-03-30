@@ -100,69 +100,71 @@ function App() {
         <RedirectHandler />
         <AnalyticsTracker />
         <ScrollToTop />
-        <div className="scanlines" />
-        <Routes>
-          <Route path="/" element={<HomePage />} />
-          <Route path="/schedule" element={<SchedulePage />} />
-          <Route path="/upgrade/pectra" element={
-            <PublicNetworkUpgradePage
-              forkName="Pectra"
-              displayName={pectraUpgrade.name}
-              description={pectraUpgrade.description}
-              status={pectraUpgrade.status}
-              activationDate={pectraUpgrade.activationDate}
-              metaEipLink={pectraUpgrade.metaEipLink}
-              activationDetails={pectraUpgrade.activationDetails}
-            />
-          } />
-          <Route path="/upgrade/fusaka" element={
-            <PublicNetworkUpgradePage
-              forkName="Fusaka"
-              displayName={fusakaUpgrade.name}
-              description={fusakaUpgrade.description}
-              status={fusakaUpgrade.status}
-              activationDate={fusakaUpgrade.activationDate}
-              metaEipLink={fusakaUpgrade.metaEipLink}
-              activationDetails={fusakaUpgrade.activationDetails}
-            />
-          } />
-          <Route path="/upgrade/glamsterdam" element={
-            <PublicNetworkUpgradePage
-              forkName="Glamsterdam"
-              displayName={glamsterdamUpgrade.name}
-              description={glamsterdamUpgrade.description}
-              status={glamsterdamUpgrade.status}
-              activationDate={glamsterdamUpgrade.activationDate}
-              metaEipLink={glamsterdamUpgrade.metaEipLink}
-              clientTeamPerspectives={glamsterdamUpgrade.clientTeamPerspectives}
-            />
-          } />
-          <Route path="/upgrade/glamsterdam/stakeholders" element={<StakeholderUpgradePage forkName="Glamsterdam" />} />
-          <Route path="/upgrade/hegota" element={
-            <PublicNetworkUpgradePage
-              forkName="Hegota"
-              displayName={hegotaUpgrade.name}
-              description={hegotaUpgrade.description}
-              status={hegotaUpgrade.status}
-              activationDate={hegotaUpgrade.activationDate}
-              metaEipLink={hegotaUpgrade.metaEipLink}
-            />
-          } />
-          <Route path="/rank" element={<RankPage />} />
-          <Route path="/calls" element={<CallsIndexPage />} />
-          <Route path="/agenda" element={<CallPlanPage />} />
-          <Route path="/calls/*" element={<CallPage />} />
-          <Route path="/feedback" element={<ExternalRedirect />} />
-          <Route path="/eips" element={<EipsIndexPage />} />
-          <Route path="/eips/:id" element={<EipPage />} />
-          <Route path="/complexity" element={<ComplexityPage />} />
-          <Route path="/priority" element={<PrioritizationPage />} />
-          <Route path="/devnets/:id" element={<DevnetSpecPage />} />
-          <Route path="/devnets" element={<DevnetsIndexPage />} />
-          <Route path="/decisions" element={<DecisionsPage />} />
-          {/* Catch-all route that redirects to home page */}
-          <Route path="*" element={<Navigate to="/" replace />} />
-        </Routes>
+        <div className="scanlines" aria-hidden="true" />
+        <main>
+          <Routes>
+            <Route path="/" element={<HomePage />} />
+            <Route path="/schedule" element={<SchedulePage />} />
+            <Route path="/upgrade/pectra" element={
+              <PublicNetworkUpgradePage
+                forkName="Pectra"
+                displayName={pectraUpgrade.name}
+                description={pectraUpgrade.description}
+                status={pectraUpgrade.status}
+                activationDate={pectraUpgrade.activationDate}
+                metaEipLink={pectraUpgrade.metaEipLink}
+                activationDetails={pectraUpgrade.activationDetails}
+              />
+            } />
+            <Route path="/upgrade/fusaka" element={
+              <PublicNetworkUpgradePage
+                forkName="Fusaka"
+                displayName={fusakaUpgrade.name}
+                description={fusakaUpgrade.description}
+                status={fusakaUpgrade.status}
+                activationDate={fusakaUpgrade.activationDate}
+                metaEipLink={fusakaUpgrade.metaEipLink}
+                activationDetails={fusakaUpgrade.activationDetails}
+              />
+            } />
+            <Route path="/upgrade/glamsterdam" element={
+              <PublicNetworkUpgradePage
+                forkName="Glamsterdam"
+                displayName={glamsterdamUpgrade.name}
+                description={glamsterdamUpgrade.description}
+                status={glamsterdamUpgrade.status}
+                activationDate={glamsterdamUpgrade.activationDate}
+                metaEipLink={glamsterdamUpgrade.metaEipLink}
+                clientTeamPerspectives={glamsterdamUpgrade.clientTeamPerspectives}
+              />
+            } />
+            <Route path="/upgrade/glamsterdam/stakeholders" element={<StakeholderUpgradePage forkName="Glamsterdam" />} />
+            <Route path="/upgrade/hegota" element={
+              <PublicNetworkUpgradePage
+                forkName="Hegota"
+                displayName={hegotaUpgrade.name}
+                description={hegotaUpgrade.description}
+                status={hegotaUpgrade.status}
+                activationDate={hegotaUpgrade.activationDate}
+                metaEipLink={hegotaUpgrade.metaEipLink}
+              />
+            } />
+            <Route path="/rank" element={<RankPage />} />
+            <Route path="/calls" element={<CallsIndexPage />} />
+            <Route path="/agenda" element={<CallPlanPage />} />
+            <Route path="/calls/*" element={<CallPage />} />
+            <Route path="/feedback" element={<ExternalRedirect />} />
+            <Route path="/eips" element={<EipsIndexPage />} />
+            <Route path="/eips/:id" element={<EipPage />} />
+            <Route path="/complexity" element={<ComplexityPage />} />
+            <Route path="/priority" element={<PrioritizationPage />} />
+            <Route path="/devnets/:id" element={<DevnetSpecPage />} />
+            <Route path="/devnets" element={<DevnetsIndexPage />} />
+            <Route path="/decisions" element={<DecisionsPage />} />
+            {/* Catch-all route that redirects to home page */}
+            <Route path="*" element={<Navigate to="/" replace />} />
+          </Routes>
+        </main>
       </Router>
     </ThemeProvider>
   );

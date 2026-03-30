@@ -317,9 +317,9 @@ function DevnetPageLayout({
           </div>
         </div>
       </header>
-      <main className="max-w-4xl mx-auto px-4 py-8">
+      <div className="max-w-4xl mx-auto px-4 py-8">
         {children}
-      </main>
+      </div>
     </div>
   );
 }

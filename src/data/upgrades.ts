@@ -22,6 +22,7 @@ export interface NetworkUpgrade {
   macroPhaseOverride?: MacroPhase;
   highlights?: string;
   externalLink?: string;
+  hideProgressBar?: boolean;
 }
 
 export const networkUpgrades: NetworkUpgrade[] = [
@@ -34,14 +35,15 @@ export const networkUpgrades: NetworkUpgrade[] = [
     status: 'Live',
     activationDate: '',
     disabled: true,
-    externalLink: 'https://ethereum.org/history'
+    externalLink: 'https://ethereum.org/history',
+    hideProgressBar: true
   },
   {
     id: 'the-merge',
     path: '/upgrade/the-merge',
     name: 'The Merge',
-    description: 'Transition to proof of stake, replacing energy-intensive proof-of-work mining with a more sustainable consensus mechanism.',
-    tagline: 'Transition to proof of stake.',
+    description: 'Transition to Proof of Stake, replacing energy-intensive proof-of-work mining with a more sustainable consensus mechanism.',
+    tagline: 'Transition to Proof of Stake.',
     status: 'Live',
     activationDate: 'Sep 15, 2022',
     disabled: true,

@@ -43,9 +43,11 @@ const UpgradeCarousel = ({ upgrades }: UpgradeCarouselProps) => {
         </h2>
 
         {/* Progress bar */}
-        <div className="mb-4">
-          <MacroPhaseBar currentPhase={macroPhase} shipped={isLive} />
-        </div>
+        {!upgrade.hideProgressBar && (
+          <div className="mb-4">
+            <MacroPhaseBar currentPhase={macroPhase} shipped={isLive} />
+          </div>
+        )}
 
         <p
           className={`text-sm leading-relaxed flex-grow ${upgrade.disabled ? 'text-slate-400 dark:text-slate-400' : 'text-slate-600 dark:text-slate-300'}`}
@@ -118,7 +120,9 @@ const UpgradeCarousel = ({ upgrades }: UpgradeCarouselProps) => {
             {upgrade.activationDate}
           </div>
         </div>
-        <MacroPhaseBar currentPhase={macroPhase} shipped={isLive} />
+        {!upgrade.hideProgressBar && (
+          <MacroPhaseBar currentPhase={macroPhase} shipped={isLive} />
+        )}
       </div>
     );
 

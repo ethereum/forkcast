@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useRef, useMemo, useCallback } from 'react';
+import { highlightMatch } from '../search/highlightMatch';
 
 interface SearchResult {
   type: 'transcript' | 'chat' | 'agenda' | 'action';
@@ -473,35 +474,6 @@ const CallSearch: React.FC<CallSearchProps> = ({
       default:
         return 'text-slate-600 dark:text-slate-400 bg-slate-100 dark:bg-slate-900/50';
     }
-  };
-
-  const highlightMatch = (text: string, query: string) => {
-    if (!query.trim()) return text;
-
-    const queryWords = query.trim().split(/\s+/).filter(w => w.length > 0);
-    if (queryWords.length === 0) return text;
-
-    // Create a pattern that matches any of the query words
-    const pattern = queryWords
-      .map(word => word.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'))
-      .join('|');
-
-    const parts = text.split(new RegExp(`(${pattern})`, 'gi'));
-
-    return (
-      <>
-        {parts.map((part, i) => {
-          const isMatch = queryWords.some(word =>
-            part.toLowerCase() === word.toLowerCase()
-          );
-          return isMatch ? (
-            <mark key={i} className="bg-yellow-200 dark:bg-yellow-500/80 text-slate-800 dark:text-slate-900 font-medium">{part}</mark>
-          ) : (
-            <span key={i}>{part}</span>
-          );
-        })}
-      </>
-    );
   };
 
   if (!isOpen) {

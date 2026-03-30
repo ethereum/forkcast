@@ -6,6 +6,8 @@ import { protocolCalls, callTypeNames, isOneOffCall, type Call, type CallType } 
 import { timelineEvents, type TimelineEvent } from '../data/events';
 import { fetchUpcomingCalls, type UpcomingCall } from '../utils/github';
 import GlobalCallSearch from './GlobalCallSearch';
+import { SearchTriggerButton } from './search/SearchUi';
+import { isSearchHotkey } from './search/searchShortcuts';
 
 const FILTER_OPTIONS = [
   { value: 'all', label: 'All' },
@@ -65,7 +67,7 @@ const CallsIndexPage: React.FC = () => {
   // Keyboard shortcut for search
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
-      if ((e.metaKey || e.ctrlKey) && e.key === 'f') {
+      if (isSearchHotkey(e)) {
         e.preventDefault();
         setSearchOpen(true);
       }
@@ -148,32 +150,9 @@ const CallsIndexPage: React.FC = () => {
   return (
     <div className="min-h-screen bg-slate-50 dark:bg-slate-900">
       <div className="max-w-3xl mx-auto px-6 py-8">
-        <div className="mb-6 relative">
-          <div className="absolute top-0 right-0 flex items-center gap-2">
-            <button
-              onClick={() => setSearchOpen(true)}
-              className="p-2 rounded-lg bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 transition-colors"
-              aria-label="Search all calls"
-              title="Search (⌘F)"
-            >
-              <svg
-                className="w-5 h-5 text-slate-700 dark:text-slate-300"
-                fill="none"
-                stroke="currentColor"
-                viewBox="0 0 24 24"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth={2}
-                  d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
-                />
-              </svg>
-            </button>
-            <ThemeToggle />
-          </div>
+        <div className="mb-6">
           <Logo size="md" className="mb-4" />
-          <div className="flex items-center justify-between">
+          <div className="flex items-start justify-between gap-3">
             <div>
               <h1 className="text-xl font-semibold text-slate-900 dark:text-slate-100">Protocol Calendar</h1>
               <a
@@ -185,14 +164,13 @@ const CallsIndexPage: React.FC = () => {
                 Full calendar ↗
               </a>
             </div>
-            <div className="hidden sm:block text-sm text-slate-500 dark:text-slate-400">
-              {filteredCalls.length} calls
-              {filteredUpcomingCalls.length > 0 && (
-                <span> • {filteredUpcomingCalls.length} upcoming</span>
-              )}
-              {showEvents && timelineEvents.length > 0 && (
-                <span> • {timelineEvents.length} events</span>
-              )}
+            <div className="flex items-center gap-3">
+              <SearchTriggerButton
+                onOpen={() => setSearchOpen(true)}
+                placeholder="Search calls..."
+                ariaLabel="Search calls"
+              />
+              <ThemeToggle />
             </div>
           </div>
 

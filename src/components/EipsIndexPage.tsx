@@ -6,6 +6,7 @@ import { eipsData } from '../data/eips';
 import { getProposalPrefix, getLaymanTitle, getInclusionStage, isHeadlinerInAnyFork, wasHeadlinerCandidateInAnyFork, getEipLayer } from '../utils/eip';
 import { EipSearch } from './eip/EipSearch';
 import EipSearchModal from './eip/EipSearchModal';
+import { isSearchHotkey } from './search/searchShortcuts';
 import { Tooltip } from './ui';
 import { networkUpgrades } from '../data/upgrades';
 
@@ -26,10 +27,10 @@ const EipsIndexPage: React.FC = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const PAGE_SIZE = 50;
 
-  // Global keyboard shortcut for search (Cmd/Ctrl+F)
+  // Global keyboard shortcut for search (Cmd/Ctrl+K)
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
-      if ((e.metaKey || e.ctrlKey) && e.key === 'f') {
+      if (isSearchHotkey(e)) {
         e.preventDefault();
         setSearchModalOpen(true);
       }
@@ -967,4 +968,3 @@ const EipsIndexPage: React.FC = () => {
 };
 
 export default EipsIndexPage;
-

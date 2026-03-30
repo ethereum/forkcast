@@ -5,6 +5,15 @@ import { EIP } from '../../types/eip';
 import { getLaymanTitle, getProposalPrefix } from '../../utils';
 import { debounce } from '../../utils/debounce';
 import { eipSpecSearchService } from '../../services/eipSpecSearch';
+import { highlightMatch } from '../search/highlightMatch';
+import {
+  SearchDialog,
+  SearchDialogSearchRow,
+  SearchEmptyState,
+  SearchFilterButton,
+  SearchFilterSelect,
+  SearchKeycap,
+} from '../search/SearchUi';
 
 interface EipSearchModalProps {
   isOpen: boolean;
@@ -326,35 +335,6 @@ export default function EipSearchModal({ isOpen, onClose, initialQuery = '' }: E
     setSelectedIndex(0);
   }, [results]);
 
-  // Highlight matching text
-  const highlightMatch = (text: string, searchQuery: string) => {
-    if (!searchQuery.trim()) return text;
-
-    const queryWords = searchQuery.trim().split(/\s+/).filter(w => w.length > 0);
-    if (queryWords.length === 0) return text;
-
-    const pattern = queryWords
-      .map(word => word.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'))
-      .join('|');
-
-    const parts = text.split(new RegExp(`(${pattern})`, 'gi'));
-
-    return (
-      <>
-        {parts.map((part, i) => {
-          const isMatch = queryWords.some(word =>
-            part.toLowerCase() === word.toLowerCase()
-          );
-          return isMatch ? (
-            <mark key={i} className="bg-yellow-200 dark:bg-yellow-500/80 text-slate-800 dark:text-slate-900 font-medium">{part}</mark>
-          ) : (
-            <span key={i}>{part}</span>
-          );
-        })}
-      </>
-    );
-  };
-
   // Get status color
   const getStatusColor = (status: string) => {
     switch (status) {
@@ -396,99 +376,65 @@ export default function EipSearchModal({ isOpen, onClose, initialQuery = '' }: E
     return displayMap[field] || field;
   };
 
-  if (!isOpen) return null;
-
   const hasActiveFilters = filters.forkName !== 'all' || filters.forkStatus !== 'all' || filters.layer !== 'all';
   const showResults = query.trim().length > 0 || hasActiveFilters;
 
   return (
-    <div className="fixed inset-0 z-50 flex items-start justify-center pt-4 sm:pt-20 px-2 sm:px-4">
-      {/* Backdrop */}
-      <div
-        className="absolute inset-0 bg-slate-900/50 backdrop-blur-sm"
-        onClick={onClose}
-      />
+    <SearchDialog isOpen={isOpen} onClose={onClose} maxWidthClassName="max-w-3xl">
+      <div className="border-b border-slate-200 dark:border-slate-700">
+        <SearchDialogSearchRow
+          inputRef={inputRef}
+          value={query}
+          onChange={setQuery}
+          placeholder="Search EIPs..."
+          onClose={() => {
+            onClose();
+            setQuery('');
+          }}
+        />
 
-      {/* Search Modal */}
-      <div className="relative w-full max-w-3xl bg-white dark:bg-slate-800 rounded-xl shadow-2xl overflow-hidden animate-[slideDown_0.2s_ease-out] max-h-[90vh] sm:max-h-none">
-        {/* Search Header */}
-        <div className="border-b border-slate-200 dark:border-slate-700">
-          <div className="flex items-center gap-3 p-3 sm:p-4">
-            <svg className="w-5 h-5 text-slate-400 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
-            </svg>
-            <input
-              ref={inputRef}
-              type="text"
-              value={query}
-              onChange={(e) => setQuery(e.target.value)}
-              placeholder="Search EIPs by title, author, spec content..."
-              className="flex-1 bg-transparent text-slate-900 dark:text-slate-100 placeholder-slate-400 dark:placeholder-slate-400 outline-none text-base min-h-[44px] sm:min-h-0"
-            />
-            <button
-              onClick={() => { onClose(); setQuery(''); }}
-              className="text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 p-2 -m-2 touch-manipulation"
+        <div className="px-4 pb-4">
+          <div className="flex items-center gap-2 overflow-x-auto">
+            <SearchFilterSelect
+              value={filters.forkName}
+              onChange={(forkName) => setFilters((current) => ({ ...current, forkName }))}
             >
-              <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
-              </svg>
-              <span className="sr-only">Close</span>
-            </button>
-          </div>
-
-          {/* Filters */}
-          <div className="px-3 sm:px-4 pb-3 space-y-2">
-            {/* Row 1: Fork and Status */}
-            <div className="flex items-center gap-2 overflow-x-auto">
-              <select
-                value={filters.forkName}
-                onChange={(e) => setFilters(f => ({ ...f, forkName: e.target.value }))}
-                className="px-2.5 py-1.5 rounded text-xs font-medium bg-slate-100 dark:bg-slate-700 text-slate-600 dark:text-slate-400 border-0 outline-none cursor-pointer"
-              >
-                <option value="all">All Forks</option>
-                {ACTIVE_FORKS.map(fork => (
-                  <option key={fork} value={fork}>{getForkDisplayName(fork)}</option>
-                ))}
-              </select>
-
-              <div className="h-3 w-px bg-slate-300 dark:bg-slate-600" />
-
-              <select
-                value={filters.forkStatus}
-                onChange={(e) => setFilters(f => ({ ...f, forkStatus: e.target.value }))}
-                className="px-2.5 py-1.5 rounded text-xs font-medium bg-slate-100 dark:bg-slate-700 text-slate-600 dark:text-slate-400 border-0 outline-none cursor-pointer"
-              >
-                <option value="all">All Statuses</option>
-                {FORK_STATUSES.map(status => (
-                  <option key={status} value={status}>{status}</option>
-                ))}
-              </select>
-
-              <div className="h-3 w-px bg-slate-300 dark:bg-slate-600" />
-
-              {/* Layer Pills - keep as buttons since only 2 options */}
-              {(['all', ...LAYERS] as const).map(layer => (
-                <button
-                  key={layer}
-                  onClick={() => setFilters(f => ({ ...f, layer }))}
-                  className={`px-2.5 py-1.5 rounded text-xs font-medium transition-colors whitespace-nowrap ${
-                    filters.layer === layer
-                      ? 'bg-blue-100 dark:bg-blue-900/30 text-blue-700 dark:text-blue-300'
-                      : 'bg-slate-100 dark:bg-slate-700 text-slate-600 dark:text-slate-400 hover:bg-slate-200 dark:hover:bg-slate-600'
-                  }`}
-                >
-                  {layer === 'all' ? 'All Layers' : layer}
-                </button>
+              <option value="all">All Forks</option>
+              {ACTIVE_FORKS.map(fork => (
+                <option key={fork} value={fork}>{getForkDisplayName(fork)}</option>
               ))}
-            </div>
+            </SearchFilterSelect>
+
+            <SearchFilterSelect
+              value={filters.forkStatus}
+              onChange={(forkStatus) => setFilters((current) => ({ ...current, forkStatus }))}
+            >
+              <option value="all">All Statuses</option>
+              {FORK_STATUSES.map(status => (
+                <option key={status} value={status}>{status}</option>
+              ))}
+            </SearchFilterSelect>
+
+            <div className="mx-1 h-5 w-px bg-slate-200 dark:bg-slate-600" />
+
+            {(['all', ...LAYERS] as const).map(layer => (
+              <SearchFilterButton
+                key={layer}
+                active={filters.layer === layer}
+                onClick={() => setFilters((current) => ({ ...current, layer }))}
+                tone="blue"
+              >
+                {layer === 'all' ? 'All Layers' : layer}
+              </SearchFilterButton>
+            ))}
           </div>
         </div>
+      </div>
 
-        {/* Search Results */}
-        <div
-          ref={resultsContainerRef}
-          className="max-h-96 sm:max-h-96 overflow-y-auto"
-        >
+      <div
+        ref={resultsContainerRef}
+        className="max-h-[60vh] overflow-y-auto sm:max-h-96"
+      >
           {showResults && results.length === 0 ? (
             <div className="p-8 text-center text-slate-500 dark:text-slate-400">
               <p className="text-sm">No EIPs found</p>
@@ -569,9 +515,7 @@ export default function EipSearchModal({ isOpen, onClose, initialQuery = '' }: E
                       {/* Enter hint for selected */}
                       <div className="hidden sm:flex items-center w-8 justify-center flex-shrink-0">
                         {isSelected && (
-                          <kbd className="px-1.5 py-0.5 text-xs font-semibold text-slate-500 bg-slate-100 dark:bg-slate-700 dark:text-slate-400 border border-slate-200 dark:border-slate-600 rounded">
-                            ↵
-                          </kbd>
+                          <SearchKeycap>↵</SearchKeycap>
                         )}
                       </div>
                     </div>
@@ -580,41 +524,34 @@ export default function EipSearchModal({ isOpen, onClose, initialQuery = '' }: E
               })}
             </div>
           ) : (
-            <div className="p-8 text-center text-slate-400 dark:text-slate-400">
-              <p className="text-sm mb-3">Search EIPs or use filters to browse</p>
-              <div className="flex flex-wrap justify-center gap-2 max-w-xs mx-auto text-xs">
-                <span className="px-2 py-1 bg-slate-100 dark:bg-slate-700 rounded">title</span>
-                <span className="px-2 py-1 bg-slate-100 dark:bg-slate-700 rounded">author</span>
-                <span className="px-2 py-1 bg-slate-100 dark:bg-slate-700 rounded">description</span>
-                <span className="px-2 py-1 bg-slate-100 dark:bg-slate-700 rounded">spec</span>
-              </div>
-            </div>
+            <SearchEmptyState
+              description="Search EIPs or use filters to browse"
+              items={['Title', 'Author', 'Description', 'Spec']}
+            />
           )}
-        </div>
+      </div>
 
-        {/* Footer */}
-        {showResults && results.length > 0 && (
-          <div className="border-t border-slate-200 dark:border-slate-700 px-3 sm:px-4 py-2 flex items-center justify-between text-xs text-slate-500 dark:text-slate-400">
-            <div className="flex items-center gap-2 sm:gap-4">
-              <span>{results.length} result{results.length !== 1 ? 's' : ''}</span>
-              <div className="hidden sm:flex items-center gap-4">
-                <span className="flex items-center gap-1">
-                  <kbd className="px-1 py-0.5 bg-slate-100 dark:bg-slate-700 border border-slate-200 dark:border-slate-600 rounded text-xs">↑↓</kbd>
-                  Navigate
-                </span>
-                <span className="flex items-center gap-1">
-                  <kbd className="px-1 py-0.5 bg-slate-100 dark:bg-slate-700 border border-slate-200 dark:border-slate-600 rounded text-xs">↵</kbd>
-                  Open
-                </span>
-                <span className="flex items-center gap-1">
-                  <kbd className="px-1 py-0.5 bg-slate-100 dark:bg-slate-700 border border-slate-200 dark:border-slate-600 rounded text-xs">esc</kbd>
-                  Close
-                </span>
-              </div>
+      {showResults && results.length > 0 && (
+        <div className="flex items-center justify-between border-t border-slate-200 px-4 py-2 text-xs text-slate-500 dark:border-slate-700 dark:text-slate-400">
+          <div className="flex items-center gap-2 sm:gap-4">
+            <span>{results.length} result{results.length !== 1 ? 's' : ''}</span>
+            <div className="hidden sm:flex items-center gap-4">
+              <span className="flex items-center gap-1">
+                <SearchKeycap>↑↓</SearchKeycap>
+                Navigate
+              </span>
+              <span className="flex items-center gap-1">
+                <SearchKeycap>↵</SearchKeycap>
+                Open
+              </span>
+              <span className="flex items-center gap-1">
+                <SearchKeycap>esc</SearchKeycap>
+                Close
+              </span>
             </div>
           </div>
-        )}
-      </div>
-    </div>
+        </div>
+      )}
+    </SearchDialog>
   );
 }

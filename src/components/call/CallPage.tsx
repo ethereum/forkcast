@@ -11,6 +11,7 @@ import { fetchUpcomingCalls } from '../../utils/github';
 import { useMetaTags } from '../../hooks/useMetaTags';
 import { eipsData } from '../../data/eips';
 import { EIP, ForkRelationship, KeyDecision } from '../../types/eip';
+import { isSearchHotkey, useSearchShortcutLabel } from '../search/searchShortcuts';
 
 // Mapping of breakout call types to their associated EIP IDs
 const BREAKOUT_EIP_MAP: Record<string, number> = {
@@ -123,11 +124,7 @@ const CallPage: React.FC = () => {
     () => window.matchMedia(TALL_SCREEN_QUERY).matches
   );
 
-  // Detect OS for keyboard shortcut display
-  const isMac = typeof navigator !== 'undefined' ?
-    (navigator.userAgent.indexOf('Mac') !== -1 || navigator.userAgent.indexOf('iPhone') !== -1 || navigator.userAgent.indexOf('iPad') !== -1) :
-    false;
-  const searchShortcut = isMac ? '⌘F' : 'Ctrl+F';
+  const searchShortcut = useSearchShortcutLabel();
   const isDesktopExpanded = isLargeScreen && isVideoExpanded;
 
   useEffect(() => {
@@ -313,10 +310,10 @@ const CallPage: React.FC = () => {
     }
   }, [selectedSearchResult, player, callConfig, callData]);
 
-  // Keyboard shortcut to open search (Cmd/Ctrl + F)
+  // Keyboard shortcut to open search (Cmd/Ctrl + K)
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
-      if ((e.metaKey || e.ctrlKey) && e.key === 'f') {
+      if (isSearchHotkey(e)) {
         e.preventDefault();
         setIsSearchOpen(true);
         if (player && isPlaying) {

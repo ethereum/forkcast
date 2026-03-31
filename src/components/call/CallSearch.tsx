@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef, useMemo, useCallback } from 'react';
-import { highlightMatch } from '../search/highlightMatch';
+import { SearchQueryProvider, SearchMatch } from '../search/SearchUi';
 
 interface SearchResult {
   type: 'transcript' | 'chat' | 'agenda' | 'action';
@@ -481,6 +481,7 @@ const CallSearch: React.FC<CallSearchProps> = ({
   }
 
   return (
+    <SearchQueryProvider query={query}>
     <div className="fixed inset-0 z-50 flex items-start justify-center pt-4 sm:pt-20 px-2 sm:px-4">
       {/* Backdrop */}
       <div
@@ -587,11 +588,11 @@ const CallSearch: React.FC<CallSearchProps> = ({
                         </span>
                       </div>
                       <p className="text-sm sm:text-sm text-base text-slate-900 dark:text-slate-100 line-clamp-3 sm:line-clamp-2 leading-relaxed">
-                        {highlightMatch(result.text, query)}
+                        <SearchMatch>{result.text}</SearchMatch>
                       </p>
                       {showContext && result.context && (
                         <div className="text-xs text-slate-500 dark:text-slate-400 mt-1 line-clamp-2 sm:line-clamp-1">
-                          {highlightMatch(result.context, query)}
+                          <SearchMatch>{result.context}</SearchMatch>
                         </div>
                       )}
                     </div>
@@ -649,6 +650,7 @@ const CallSearch: React.FC<CallSearchProps> = ({
         )}
       </div>
     </div>
+    </SearchQueryProvider>
   );
 };
 

@@ -5,7 +5,6 @@ import { EIP } from '../../types/eip';
 import { getLaymanTitle, getProposalPrefix } from '../../utils';
 import { debounce } from '../../utils/debounce';
 import { eipSpecSearchService } from '../../services/eipSpecSearch';
-import { highlightMatch } from '../search/highlightMatch';
 import {
   SearchDialog,
   SearchDialogSearchRow,
@@ -13,6 +12,7 @@ import {
   SearchFilterButton,
   SearchFilterSelect,
   SearchKeycap,
+  SearchMatch,
 } from '../search/SearchUi';
 
 interface EipSearchModalProps {
@@ -380,7 +380,7 @@ export default function EipSearchModal({ isOpen, onClose, initialQuery = '' }: E
   const showResults = query.trim().length > 0 || hasActiveFilters;
 
   return (
-    <SearchDialog isOpen={isOpen} onClose={onClose} maxWidthClassName="max-w-3xl">
+    <SearchDialog isOpen={isOpen} onClose={onClose} query={query} maxWidthClassName="max-w-3xl">
       <div className="border-b border-slate-200 dark:border-slate-700">
         <SearchDialogSearchRow
           inputRef={inputRef}
@@ -474,13 +474,13 @@ export default function EipSearchModal({ isOpen, onClose, initialQuery = '' }: E
                       {/* Content */}
                       <div className="flex-1 min-w-0">
                         <div className="text-sm font-medium text-slate-900 dark:text-slate-100 line-clamp-1 mb-1">
-                          {highlightMatch(title, query)}
+                          <SearchMatch>{title}</SearchMatch>
                         </div>
 
                         {/* Description */}
                         {eip.description && (
                           <p className="text-xs text-slate-600 dark:text-slate-400 line-clamp-2 leading-relaxed mb-2">
-                            {highlightMatch(eip.description, query)}
+                            <SearchMatch>{eip.description}</SearchMatch>
                           </p>
                         )}
 

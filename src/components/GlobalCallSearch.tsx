@@ -3,12 +3,12 @@ import { Link } from 'react-router-dom';
 import { searchIndexService } from '../services/searchIndex';
 import { formatDate } from '../utils/date';
 import { debounce } from '../utils/debounce';
-import { highlightMatch } from './search/highlightMatch';
 import {
   SearchDialog,
   SearchDialogSearchRow,
   SearchFilterButton,
   SearchKeycap,
+  SearchMatch,
 } from './search/SearchUi';
 
 interface GlobalSearchResult {
@@ -207,7 +207,7 @@ export default function GlobalCallSearch({ isOpen, onClose, initialQuery = '' }:
   };
 
   return (
-    <SearchDialog isOpen={isOpen} onClose={onClose} maxWidthClassName="max-w-4xl">
+    <SearchDialog isOpen={isOpen} onClose={onClose} query={query} maxWidthClassName="max-w-4xl">
       <div className="border-b border-slate-200 dark:border-slate-700">
         <SearchDialogSearchRow
           inputRef={inputRef}
@@ -312,7 +312,7 @@ export default function GlobalCallSearch({ isOpen, onClose, initialQuery = '' }:
 
                         {/* Text */}
                         <p className="text-sm sm:text-sm text-base text-slate-900 dark:text-slate-100 line-clamp-3 sm:line-clamp-2 leading-relaxed">
-                          {highlightMatch(result.text, query)}
+                          <SearchMatch>{result.text}</SearchMatch>
                         </p>
                       </div>
 

@@ -11,7 +11,7 @@ import { fetchUpcomingCalls } from '../../utils/github';
 import { useMetaTags } from '../../hooks/useMetaTags';
 import { eipsData } from '../../data/eips';
 import { EIP, ForkRelationship, KeyDecision } from '../../types/eip';
-import { isSearchHotkey, useSearchShortcutLabel } from '../search/searchShortcuts';
+import { isSearchHotkey, getSearchShortcutLabel } from '../search/searchShortcuts';
 
 // Mapping of breakout call types to their associated EIP IDs
 const BREAKOUT_EIP_MAP: Record<string, number> = {
@@ -124,7 +124,7 @@ const CallPage: React.FC = () => {
     () => window.matchMedia(TALL_SCREEN_QUERY).matches
   );
 
-  const searchShortcut = useSearchShortcutLabel();
+  const searchShortcut = getSearchShortcutLabel();
   const isDesktopExpanded = isLargeScreen && isVideoExpanded;
 
   useEffect(() => {

@@ -1,5 +1,5 @@
 import { useState, useEffect, useMemo, useRef } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { searchIndexService } from '../services/searchIndex';
 import { formatDate } from '../utils/date';
 import { debounce } from '../utils/debounce';
@@ -10,6 +10,7 @@ import {
   SearchKeycap,
   SearchMatch,
 } from './search/SearchUi';
+import { getSearchTypeIcon, getSearchTypeColor } from './search/searchShortcuts';
 
 interface GlobalSearchResult {
   callType: string;
@@ -21,7 +22,6 @@ interface GlobalSearchResult {
   timestamp: string;
   speaker?: string;
   text: string;
-  matchScore?: number;
 }
 
 interface GlobalCallSearchProps {
@@ -31,6 +31,7 @@ interface GlobalCallSearchProps {
 }
 
 export default function GlobalCallSearch({ isOpen, onClose, initialQuery = '' }: GlobalCallSearchProps) {
+  const navigate = useNavigate();
   const [query, setQuery] = useState(initialQuery);
   const [results, setResults] = useState<GlobalSearchResult[]>([]);
   const [loading, setLoading] = useState(false);
@@ -105,7 +106,6 @@ export default function GlobalCallSearch({ isOpen, onClose, initialQuery = '' }:
             timestamp: result.timestamp,
             speaker: result.speaker,
             text: result.text,
-            matchScore: 0
           }));
 
           const limitedResults = formattedResults.slice(0, 200);
@@ -146,13 +146,13 @@ export default function GlobalCallSearch({ isOpen, onClose, initialQuery = '' }:
         e.preventDefault();
         const result = results[selectedIndex];
         const url = `${result.callPath}?search=${encodeURIComponent(query)}&timestamp=${result.timestamp}&type=${result.type}&text=${encodeURIComponent(result.text)}`;
-        window.location.href = url;
+        navigate(url);
       }
     };
 
     window.addEventListener('keydown', handleKeyDown);
     return () => window.removeEventListener('keydown', handleKeyDown);
-  }, [isOpen, onClose, results, selectedIndex, query]);
+  }, [isOpen, onClose, results, selectedIndex, query, navigate]);
 
   // Scroll selected result into view
   useEffect(() => {
@@ -176,35 +176,6 @@ export default function GlobalCallSearch({ isOpen, onClose, initialQuery = '' }:
     setSelectedIndex(0);
   }, [results]);
 
-  const getTypeIcon = (type: GlobalSearchResult['type']) => {
-    switch (type) {
-      case 'transcript':
-        return '📝';
-      case 'chat':
-        return '💬';
-      case 'agenda':
-        return '📋';
-      case 'action':
-        return '✅';
-      default:
-        return '📄';
-    }
-  };
-
-  const getTypeColor = (type: GlobalSearchResult['type']) => {
-    switch (type) {
-      case 'transcript':
-        return 'text-blue-600 dark:text-blue-400 bg-blue-100 dark:bg-blue-900/50';
-      case 'chat':
-        return 'text-purple-600 dark:text-purple-400 bg-purple-100 dark:bg-purple-900/50';
-      case 'agenda':
-        return 'text-amber-600 dark:text-amber-400 bg-amber-100 dark:bg-amber-900/50';
-      case 'action':
-        return 'text-green-600 dark:text-green-400 bg-green-100 dark:bg-green-900/50';
-      default:
-        return 'text-slate-600 dark:text-slate-400 bg-slate-100 dark:bg-slate-900/50';
-    }
-  };
 
   return (
     <SearchDialog isOpen={isOpen} onClose={onClose} query={query} maxWidthClassName="max-w-4xl">
@@ -281,8 +252,8 @@ export default function GlobalCallSearch({ isOpen, onClose, initialQuery = '' }:
                   >
                     <div className="flex items-start gap-3">
                       {/* Type Badge */}
-                      <span className={`inline-flex items-center justify-center w-10 h-10 sm:w-8 sm:h-8 rounded-lg text-sm flex-shrink-0 ${getTypeColor(result.type)}`}>
-                        {getTypeIcon(result.type)}
+                      <span className={`inline-flex items-center justify-center w-10 h-10 sm:w-8 sm:h-8 rounded-lg text-sm flex-shrink-0 ${getSearchTypeColor(result.type)}`}>
+                        {getSearchTypeIcon(result.type)}
                       </span>
 
                       {/* Content */}

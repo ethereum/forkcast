@@ -1,5 +1,5 @@
 import { createContext, useContext, type ReactNode, type RefObject } from 'react';
-import { useSearchShortcutLabel } from './searchShortcuts';
+import { getSearchShortcutLabel } from './searchShortcuts';
 
 const SearchQueryContext = createContext('');
 
@@ -12,7 +12,6 @@ export function SearchMatch({ children }: { children: string }) {
   if (!query.trim()) return <>{children}</>;
 
   const queryWords = query.trim().split(/\s+/).filter((w) => w.length > 0);
-  if (queryWords.length === 0) return <>{children}</>;
 
   const pattern = queryWords
     .map((word) => word.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'))
@@ -69,7 +68,7 @@ export function SearchTriggerButton({
   ariaLabel,
   className,
 }: SearchTriggerButtonProps) {
-  const shortcutLabel = useSearchShortcutLabel();
+  const shortcutLabel = getSearchShortcutLabel();
 
   return (
     <button

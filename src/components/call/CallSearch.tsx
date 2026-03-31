@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useRef, useMemo, useCallback } from 'react';
 import { SearchQueryProvider, SearchMatch } from '../search/SearchUi';
+import { getSearchTypeIcon, getSearchTypeColor } from '../search/searchShortcuts';
 
 interface SearchResult {
   type: 'transcript' | 'chat' | 'agenda' | 'action';
@@ -446,35 +447,6 @@ const CallSearch: React.FC<CallSearchProps> = ({
     }
   };
 
-  const getTypeIcon = (type: SearchResult['type']) => {
-    switch (type) {
-      case 'transcript':
-        return '📝';
-      case 'chat':
-        return '💬';
-      case 'agenda':
-        return '📋';
-      case 'action':
-        return '✅';
-      default:
-        return '📄';
-    }
-  };
-
-  const getTypeColor = (type: SearchResult['type']) => {
-    switch (type) {
-      case 'transcript':
-        return 'text-blue-600 dark:text-blue-400 bg-blue-100 dark:bg-blue-900/50';
-      case 'chat':
-        return 'text-purple-600 dark:text-purple-400 bg-purple-100 dark:bg-purple-900/50';
-      case 'agenda':
-        return 'text-amber-600 dark:text-amber-400 bg-amber-100 dark:bg-amber-900/50';
-      case 'action':
-        return 'text-green-600 dark:text-green-400 bg-green-100 dark:bg-green-900/50';
-      default:
-        return 'text-slate-600 dark:text-slate-400 bg-slate-100 dark:bg-slate-900/50';
-    }
-  };
 
   if (!isOpen) {
     return null;
@@ -559,7 +531,7 @@ const CallSearch: React.FC<CallSearchProps> = ({
             <div className="py-2">
               {searchResults.map((result, index) => (
                 <button
-                  key={index}
+                  key={`${result.type}-${result.originalIndex}`}
                   onClick={() => handleResultClick(result.timestamp, result)}
                   onMouseEnter={() => setSelectedIndex(index)}
                   className={`w-full text-left px-3 sm:px-4 py-4 sm:py-3 hover:bg-slate-50 dark:hover:bg-slate-700/30 transition-colors touch-manipulation ${
@@ -568,8 +540,8 @@ const CallSearch: React.FC<CallSearchProps> = ({
                 >
                   <div className="flex items-start gap-3">
                     {/* Type Badge */}
-                    <span className={`inline-flex items-center justify-center w-10 h-10 sm:w-8 sm:h-8 rounded-lg text-sm flex-shrink-0 ${getTypeColor(result.type)}`}>
-                      {getTypeIcon(result.type)}
+                    <span className={`inline-flex items-center justify-center w-10 h-10 sm:w-8 sm:h-8 rounded-lg text-sm flex-shrink-0 ${getSearchTypeColor(result.type)}`}>
+                      {getSearchTypeIcon(result.type)}
                     </span>
 
                     {/* Content */}

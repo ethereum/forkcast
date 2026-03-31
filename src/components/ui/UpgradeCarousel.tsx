@@ -284,7 +284,7 @@ const UpgradeCarousel = ({ upgrades }: UpgradeCarouselProps) => {
                   onClick={() => setMobileExpanded(!mobileExpanded)}
                   className="w-full py-2.5 text-sm font-medium text-slate-500 dark:text-slate-400 hover:text-purple-600 dark:hover:text-purple-400 transition-colors flex items-center justify-center gap-1.5"
                 >
-                  {mobileExpanded ? 'Show less' : `Show all upgrades (${reversed.length})`}
+                  {mobileExpanded ? 'Show less' : 'Show all upgrades'}
                   <svg
                     className={`w-4 h-4 transition-transform duration-200 ${mobileExpanded ? 'rotate-180' : ''}`}
                     fill="none"

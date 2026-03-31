@@ -1,5 +1,43 @@
-import type { ReactNode, RefObject } from 'react';
+import { createContext, useContext, type ReactNode, type RefObject } from 'react';
 import { useSearchShortcutLabel } from './searchShortcuts';
+
+const SearchQueryContext = createContext('');
+
+export function SearchQueryProvider({ query, children }: { query: string; children: ReactNode }) {
+  return <SearchQueryContext.Provider value={query}>{children}</SearchQueryContext.Provider>;
+}
+
+export function SearchMatch({ children }: { children: string }) {
+  const query = useContext(SearchQueryContext);
+  if (!query.trim()) return <>{children}</>;
+
+  const queryWords = query.trim().split(/\s+/).filter((w) => w.length > 0);
+  if (queryWords.length === 0) return <>{children}</>;
+
+  const pattern = queryWords
+    .map((word) => word.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'))
+    .join('|');
+
+  const parts = children.split(new RegExp(`(${pattern})`, 'gi'));
+
+  return (
+    <>
+      {parts.map((part, i) => {
+        const isMatch = queryWords.some((word) => part.toLowerCase() === word.toLowerCase());
+        return isMatch ? (
+          <mark
+            key={i}
+            className="bg-yellow-200 dark:bg-yellow-500/80 text-slate-800 dark:text-slate-900 font-medium"
+          >
+            {part}
+          </mark>
+        ) : (
+          <span key={i}>{part}</span>
+        );
+      })}
+    </>
+  );
+}
 
 const joinClasses = (...classes: Array<string | false | null | undefined>) =>
   classes.filter(Boolean).join(' ');
@@ -66,6 +104,7 @@ export function SearchTriggerButton({
 interface SearchDialogProps {
   isOpen: boolean;
   onClose: () => void;
+  query: string;
   maxWidthClassName?: string;
   children: ReactNode;
 }
@@ -73,27 +112,30 @@ interface SearchDialogProps {
 export function SearchDialog({
   isOpen,
   onClose,
+  query,
   maxWidthClassName = 'max-w-4xl',
   children,
 }: SearchDialogProps) {
   if (!isOpen) return null;
 
   return (
-    <div className="fixed inset-0 z-50 flex items-start justify-center px-2 pt-4 sm:px-4 sm:pt-20">
-      <div
-        className="absolute inset-0 bg-slate-900/50 backdrop-blur-sm"
-        onClick={onClose}
-      />
+    <SearchQueryProvider query={query}>
+      <div className="fixed inset-0 z-50 flex items-start justify-center px-2 pt-4 sm:px-4 sm:pt-20">
+        <div
+          className="absolute inset-0 bg-slate-900/50 backdrop-blur-sm"
+          onClick={onClose}
+        />
 
-      <div
-        className={joinClasses(
-          'relative w-full overflow-hidden rounded-2xl bg-white shadow-2xl animate-[slideDown_0.2s_ease-out] max-h-[90vh] dark:bg-slate-800',
-          maxWidthClassName,
-        )}
-      >
-        {children}
+        <div
+          className={joinClasses(
+            'relative w-full overflow-hidden rounded-2xl bg-white shadow-2xl animate-[slideDown_0.2s_ease-out] max-h-[90vh] dark:bg-slate-800',
+            maxWidthClassName,
+          )}
+        >
+          {children}
+        </div>
       </div>
-    </div>
+    </SearchQueryProvider>
   );
 }
 

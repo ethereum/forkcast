@@ -14,16 +14,40 @@ export interface NetworkUpgrade {
   description: string;
   tagline: string;
   status: 'Live' | 'Upcoming' | 'Planning' | 'Research';
-  activationDate: string;
+  activationDate?: string;
   disabled: boolean;
   metaEipLink?: string;
   clientTeamPerspectives?: ClientTeamPerspective[];
   activationDetails?: ActivationDetails;
   macroPhaseOverride?: MacroPhase;
   highlights?: string;
+  externalLink?: string;
+  hideProgressBar?: boolean;
 }
 
 export const networkUpgrades: NetworkUpgrade[] = [
+  {
+    id: 'previous-upgrades',
+    path: '/upgrade/previous-upgrades',
+    name: 'Previous Upgrades',
+    description: 'A complete history of all Ethereum network upgrades from the early days to the present.',
+    tagline: 'Explore the full history of Ethereum network upgrades.',
+    status: 'Live',
+    disabled: true,
+    externalLink: 'https://ethereum.org/history',
+    hideProgressBar: true
+  },
+  {
+    id: 'the-merge',
+    path: '/upgrade/the-merge',
+    name: 'The Merge',
+    description: 'Transition to Proof of Stake, replacing energy-intensive proof-of-work mining with a more sustainable consensus mechanism.',
+    tagline: 'Transition to Proof of Stake.',
+    status: 'Live',
+    activationDate: 'Sep 15, 2022',
+    disabled: true,
+    externalLink: 'https://ethereum.org/roadmap/merge/'
+  },
   {
     id: 'shapella',
     path: '/upgrade/shapella',
@@ -33,7 +57,8 @@ export const networkUpgrades: NetworkUpgrade[] = [
     status: 'Live',
     activationDate: 'Apr 12, 2023',
     disabled: true,
-    highlights: 'Staking withdrawals (EIP-4895)'
+    highlights: 'Staking withdrawals (EIP-4895)',
+    externalLink: 'https://eips.ethereum.org/EIPS/eip-7568'
   },
   {
     id: 'dencun',
@@ -44,7 +69,8 @@ export const networkUpgrades: NetworkUpgrade[] = [
     status: 'Live',
     activationDate: 'Mar 13, 2024',
     disabled: true,
-    highlights: 'Proto-danksharding / blobs (EIP-4844)'
+    highlights: 'Proto-danksharding / blobs (EIP-4844)',
+    externalLink: 'https://eips.ethereum.org/EIPS/eip-7569'
   },
   {
     id: 'pectra',
@@ -84,7 +110,7 @@ export const networkUpgrades: NetworkUpgrade[] = [
     path: '/upgrade/glamsterdam',
     name: 'Glamsterdam Upgrade',
     description: 'Major network upgrade featuring Block-level Access Lists and ePBS. Named after the combination of "Amsterdam" (execution layer upgrade, named after the previous Devconnect location) and "Gloas" (consensus layer upgrade, named after a star).',
-    tagline: 'Enhancing Ethereum with Block-level Access Lists and ePBS for big efficiency and scalability gains.',
+    tagline: 'Scoping complete, implemented EIPs are being tested on devnets',
     status: 'Upcoming',
     activationDate: '2026',
     disabled: false,
@@ -163,10 +189,11 @@ export const networkUpgrades: NetworkUpgrade[] = [
     path: '/upgrade/hegota',
     name: 'Hegotá Upgrade',
     description: 'Future network upgrade currently in early planning stages. Named after the combination of "Heze" (consensus layer upgrade, named after a star) and "Bogotá" (execution layer upgrade, named after a Devcon location).',
-    tagline: 'Post-Glamsterdam network upgrade in early planning.',
+    tagline: 'Headliner selection concluded: FOCIL SFI\'d, Frame Tx CFI\'d',
     status: 'Planning',
     activationDate: 'TBD',
     disabled: false,
+    macroPhaseOverride: 'scoping',
     metaEipLink: 'https://ethereum-magicians.org/t/eip-8081-hegota-network-upgrade-meta-thread/26876'
   }
 ];

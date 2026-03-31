@@ -5,6 +5,13 @@ import { FORK_PROGRESS_MAP } from '../../constants/timeline-phases';
 import { getMacroPhaseForUpgrade, getMacroPhaseSummary } from '../../utils/macroPhase';
 import MacroPhaseBar from './MacroPhaseBar';
 
+const ExternalLinkIcon = ({ className }: { className: string }) => (
+  <svg className={className} fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2}
+      d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
+  </svg>
+);
+
 interface UpgradeCarouselProps {
   upgrades: NetworkUpgrade[];
 }
@@ -36,16 +43,23 @@ const UpgradeCarousel = ({ upgrades }: UpgradeCarouselProps) => {
 
     const cardContent = (
       <div className="flex flex-col h-full">
-        <h2
-          className={`text-xl font-medium leading-tight mb-4 ${upgrade.disabled ? 'text-slate-500 dark:text-slate-400' : 'text-slate-900 dark:text-slate-100'}`}
-        >
-          {upgrade.name}
-        </h2>
+        <div className="flex items-start justify-between mb-4">
+          <h2
+            className={`text-xl font-medium leading-tight ${upgrade.disabled ? 'text-slate-500 dark:text-slate-400' : 'text-slate-900 dark:text-slate-100'}`}
+          >
+            {upgrade.name}
+          </h2>
+          {upgrade.externalLink && (
+            <ExternalLinkIcon className="w-4 h-4 shrink-0 mt-0.5 ml-2 text-slate-400 dark:text-slate-500" />
+          )}
+        </div>
 
         {/* Progress bar */}
-        <div className="mb-4">
-          <MacroPhaseBar currentPhase={macroPhase} shipped={isLive} />
-        </div>
+        {!upgrade.hideProgressBar && (
+          <div className="mb-4">
+            <MacroPhaseBar currentPhase={macroPhase} shipped={isLive} />
+          </div>
+        )}
 
         <p
           className={`text-sm leading-relaxed flex-grow ${upgrade.disabled ? 'text-slate-400 dark:text-slate-400' : 'text-slate-600 dark:text-slate-300'}`}
@@ -53,18 +67,33 @@ const UpgradeCarousel = ({ upgrades }: UpgradeCarouselProps) => {
           {summary}
         </p>
 
-        <div
-          className={`text-xs mt-4 ${upgrade.disabled ? 'text-slate-400 dark:text-slate-400' : 'text-slate-500 dark:text-slate-400'}`}
-        >
-          <span className="font-medium">
-            {isLive ? 'Activated:' : 'Target:'}
-          </span>{' '}
-          {upgrade.activationDate}
-        </div>
+        {upgrade.activationDate && (
+          <div
+            className={`text-xs mt-4 ${upgrade.disabled ? 'text-slate-400 dark:text-slate-400' : 'text-slate-500 dark:text-slate-400'}`}
+          >
+            <span className="font-medium">
+              {isLive ? 'Activated:' : 'Target:'}
+            </span>{' '}
+            {upgrade.activationDate}
+          </div>
+        )}
       </div>
     );
 
-    if (upgrade.disabled) {
+    if (upgrade.disabled && upgrade.externalLink) {
+      return (
+        <a
+          key={upgrade.path}
+          href={upgrade.externalLink}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg p-6 hover:shadow-md dark:hover:shadow-slate-700/20 hover:border-purple-300 dark:hover:border-purple-600 block h-full"
+        >
+          {cardContent}
+        </a>
+      );
+    } else if (upgrade.disabled) {
+      // Disabled cards without an external link are dimmed — no destination to navigate to
       return (
         <div
           key={upgrade.path}
@@ -92,23 +121,45 @@ const UpgradeCarousel = ({ upgrades }: UpgradeCarouselProps) => {
 
     const cardContent = (
       <div>
-        <div className="flex items-center justify-between mb-2">
+        <div className={`flex items-center justify-between ${!upgrade.hideProgressBar ? 'mb-2' : ''}`}>
           <h2
             className={`text-base font-medium truncate ${upgrade.disabled ? 'text-slate-500 dark:text-slate-400' : 'text-slate-900 dark:text-slate-100'}`}
           >
             {upgrade.name}
           </h2>
-          <div
-            className={`text-xs shrink-0 ml-3 ${upgrade.disabled ? 'text-slate-400 dark:text-slate-400' : 'text-slate-500 dark:text-slate-400'}`}
-          >
-            {upgrade.activationDate}
+          <div className="flex items-center shrink-0 ml-3 gap-1.5">
+            {upgrade.activationDate && (
+              <span
+                className={`text-xs ${upgrade.disabled ? 'text-slate-400 dark:text-slate-400' : 'text-slate-500 dark:text-slate-400'}`}
+              >
+                {upgrade.activationDate}
+              </span>
+            )}
+            {upgrade.externalLink && (
+              <ExternalLinkIcon className="w-3.5 h-3.5 text-slate-400 dark:text-slate-500" />
+            )}
           </div>
         </div>
-        <MacroPhaseBar currentPhase={macroPhase} shipped={isLive} />
+        {!upgrade.hideProgressBar && (
+          <MacroPhaseBar currentPhase={macroPhase} shipped={isLive} />
+        )}
       </div>
     );
 
-    if (upgrade.disabled) {
+    if (upgrade.disabled && upgrade.externalLink) {
+      return (
+        <a
+          key={upgrade.path}
+          href={upgrade.externalLink}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg px-4 py-3 hover:shadow-md dark:hover:shadow-slate-700/20 hover:border-purple-300 dark:hover:border-purple-600 block"
+        >
+          {cardContent}
+        </a>
+      );
+    } else if (upgrade.disabled) {
+      // Disabled cards without an external link are dimmed — no destination to navigate to
       return (
         <div
           key={upgrade.path}

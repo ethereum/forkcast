@@ -27,8 +27,10 @@ export function getMacroPhaseForUpgrade(upgrade: NetworkUpgrade): MacroPhase {
 export function getMacroPhaseSummary(upgrade: NetworkUpgrade, progress?: ForkProgress): string {
   if (upgrade.status === 'Live') {
     if (upgrade.highlights) return upgrade.highlights;
-    return upgrade.tagline;
+    if (upgrade.tagline) return upgrade.tagline;
   }
+
+  if (upgrade.tagline) return upgrade.tagline;
 
   if (progress) {
     // Find the current active phase and return its progressNotes

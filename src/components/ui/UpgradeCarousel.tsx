@@ -20,6 +20,7 @@ const UpgradeCarousel = ({ upgrades }: UpgradeCarouselProps) => {
   const visibleCount = 3;
   const maxIndex = Math.max(0, upgrades.length - visibleCount);
   const [currentIndex, setCurrentIndex] = useState(maxIndex);
+  const [mobileExpanded, setMobileExpanded] = useState(false);
 
   const goToPrevious = () => {
     setCurrentIndex((prev) => Math.max(0, prev - 1));
@@ -272,7 +273,31 @@ const UpgradeCarousel = ({ upgrades }: UpgradeCarouselProps) => {
 
       {/* Mobile Compact List - hidden on desktop, reversed so newest is on top */}
       <div className="lg:hidden space-y-3">
-        {[...upgrades].reverse().map((upgrade) => renderCompactCard(upgrade))}
+        {(() => {
+          const reversed = [...upgrades].reverse();
+          const mobileVisible = mobileExpanded ? reversed : reversed.slice(0, visibleCount);
+          return (
+            <>
+              {mobileVisible.map((upgrade) => renderCompactCard(upgrade))}
+              {reversed.length > visibleCount && (
+                <button
+                  onClick={() => setMobileExpanded(!mobileExpanded)}
+                  className="w-full py-2.5 text-sm font-medium text-slate-500 dark:text-slate-400 hover:text-purple-600 dark:hover:text-purple-400 transition-colors flex items-center justify-center gap-1.5"
+                >
+                  {mobileExpanded ? 'Show less' : `Show all upgrades (${reversed.length})`}
+                  <svg
+                    className={`w-4 h-4 transition-transform duration-200 ${mobileExpanded ? 'rotate-180' : ''}`}
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+                  </svg>
+                </button>
+              )}
+            </>
+          );
+        })()}
       </div>
     </>
   );

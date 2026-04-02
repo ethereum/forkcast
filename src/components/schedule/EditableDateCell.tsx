@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { parseLocalDate, parseShortDate } from './forkDateCalculator';
+import { formatISODate } from '../../utils/date';
 
 export interface EditableDateCellProps {
   fork: string;
@@ -52,7 +53,7 @@ const EditableDateCell: React.FC<EditableDateCellProps> = ({
   const toInputFormat = (dateStr: string): string => {
     const parsed = parseShortDate(dateStr);
     if (!parsed) return '';
-    return parsed.toISOString().split('T')[0];
+    return formatISODate(parsed);
   };
 
   // Convert "YYYY-MM-DD" to "MMM DD, YYYY" for display

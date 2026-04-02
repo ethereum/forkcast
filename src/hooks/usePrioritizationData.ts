@@ -2,6 +2,7 @@ import { useMemo } from 'react';
 import { PrioritizationData, EipAggregateStance } from '../types/prioritization';
 import { eipsData } from '../data/eips';
 import { calculateEipAggregate } from '../utils/prioritization';
+import { formatISODate } from '../utils/date';
 
 // Import the JSON data directly
 import glamsterdamData from '../data/prioritization/glamsterdam.json';
@@ -25,7 +26,7 @@ export function usePrioritizationData(fork: string = 'glamsterdam'): UsePrioriti
     // Return empty data for unsupported forks
     return {
       fork,
-      lastUpdated: new Date().toISOString().split('T')[0],
+      lastUpdated: formatISODate(new Date()),
       eips: [],
     };
   }, [fork]);

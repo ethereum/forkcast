@@ -1,63 +1,63 @@
 {
   "series": "ACDT",
-  "generated": "2026-03-26",
-  "for_call": "ACDT #76",
+  "generated": "2026-04-02",
+  "for_call": "ACDT #77",
   "suggestions": [
     {
-      "topic": "bal-devnet-3 stability and readiness assessment",
+      "topic": "BAL DevNet 3 stability and EIP-8037 2D gas orphaned blocks issue",
       "priority": "high",
-      "rationale": "Extensive test failures remain (Geth 49, Besu 19, Nethermind/Reth 400+). With minor spec changes deferred to devnet-4, need to determine if devnet-3 can be stabilized or should transition to devnet-4.",
-      "related_eips": [],
-      "source": "ongoing_discussion"
-    },
-    {
-      "topic": "blob-devnet-0 trunk branch instability resolution",
-      "priority": "high",
-      "rationale": "Nethermind and Erigon failing to stay at head on trunk branches. Requires stable releases with GetBlobV3 instead of unstable trunk branches to proceed with testnet deployment.",
+      "rationale": "DevNet 3 has critical consensus bugs with blocks exceeding gas limits in 2D accounting (ACDT #76). With April 1st launch target passed and Glamsterdam DevNet 0 scheduled for April 15, this is blocking forward progress.",
       "related_eips": [],
       "source": "devnet_update"
     },
     {
-      "topic": "ePBS devnet-1 specification and launch timeline",
+      "topic": "Glamsterdam DevNet 0 launch readiness (BAL + ePBS merge)",
       "priority": "high",
-      "rationale": "ACDT #75 targeted spec release end-of-week (March 27). Alpha4 with PTC lookahead likely required. Need status update on spec completion and client readiness for devnet-1 launch.",
-      "related_eips": [],
-      "source": "ongoing_discussion"
-    },
-    {
-      "topic": "Batch I/O prefetch flag for benchmarking",
-      "priority": "medium",
-      "rationale": "Marked as urgently needed from Nethermind and Erigon in ACDT #75 for BAL benchmarking isolation. Flag must isolate prefetch optimization without disabling other BAL optimizations.",
-      "related_eips": [],
-      "source": "open_action_item"
-    },
-    {
-      "topic": "Glamsterdam-devnet-0 planning vs bal-devnet-4",
-      "priority": "medium",
-      "rationale": "ACDT #75 proposed replacing bal-devnet-4 with Glamsterdam-devnet-0. With multiple items deferred to devnet-4 (dynamic 8037, minor spec changes), need to clarify naming and scope for next BAL iteration.",
-      "related_eips": [],
-      "source": "ongoing_discussion"
-    },
-    {
-      "topic": "perf-devnet-3 client sync issues and 5 Gigagas testing",
-      "priority": "medium",
-      "rationale": "Geth synced successfully, but Reth/Nethermind/Besu experiencing sync issues. 5 Gigagas testing revealing out-of-memory issues. State bloat testing approaching 4TB target with depth-based worst cases.",
+      "rationale": "April 15 target (fallback April 22) approaching. External builder API testing required before merge, and both BAL DevNet 3 and ePBS DevNet 1 need stability confirmation. Critical path dependencies need coordination.",
       "related_eips": [],
       "source": "devnet_update"
     },
     {
-      "topic": "Frame transaction mempool strategy decision",
-      "priority": "low",
-      "rationale": "Breakout scheduled for March 25 (day before this call). If breakout occurred, need to confirm Strategy 2 (canonical paymaster) vs Strategy 1 (self-relaying) resolution and next steps.",
+      "topic": "ePBS DevNet 1 status and external builder API testing scope",
+      "priority": "high",
+      "rationale": "DevNet 1 launched March 31 with Alpha 4 spec. ACDT #76 decided external builder API must be tested in isolation before BAL+ePBS merge, but testing plan and success criteria not defined.",
+      "related_eips": [],
+      "source": "devnet_update"
+    },
+    {
+      "topic": "EIP-8136 (partial cells) inclusion decision for Glamsterdam",
+      "priority": "medium",
+      "rationale": "Proposed for Glamsterdam inclusion in ACDT #76. Prysm/Lighthouse trunk-ready by end of April with 300K validator test planned. Needs ACD discussion per SFI process.",
+      "related_eips": [],
+      "source": "new_proposal"
+    },
+    {
+      "topic": "Blob DevNet 0 client readiness and GetBlobV3 stable releases",
+      "priority": "medium",
+      "rationale": "ACDT #75 identified trunk branch instability with Nethermind/Erigon failing to stay at head. Stable releases with GetBlobV3 needed before broader testnet deployment.",
+      "related_eips": [],
+      "source": "devnet_update"
+    },
+    {
+      "topic": "ETH/70 requirement clarification for Glamsterdam",
+      "priority": "medium",
+      "rationale": "ACDT #76 noted ETH/70 required if gas limit exceeds 80M, but optional for BAL DevNet 3. With Glamsterdam DevNet 0 scope locked, need final decision on inclusion and implementation timeline.",
+      "related_eips": [],
+      "source": "ongoing_discussion"
+    },
+    {
+      "topic": "Beacon API PRs review status: proposal preference SSE (#593) and envelope creation (#584)",
+      "priority": "medium",
+      "rationale": "Required for ePBS external builder implementation. CL teams assigned review in ACDT #76 with no follow-up. Blocking external builder API testing.",
       "related_eips": [],
       "source": "open_action_item"
     },
     {
-      "topic": "SSZ Engine API ACD approval status",
+      "topic": "EIP-8037 client coordination person assignments",
       "priority": "low",
-      "rationale": "Deferred to ACD in ACDT #73 (March 9). Giulio implemented POC across 6 clients. Check if ACD has provided final approval for optional implementation via content-type headers.",
+      "rationale": "Action item from ACDT #76 to assign one person per EL team for 8037 coordination. May already be resolved via Discord/async channels, but worth quick confirmation.",
       "related_eips": [],
-      "source": "deferred_decision"
+      "source": "open_action_item"
     }
   ]
 }

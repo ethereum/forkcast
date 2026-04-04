@@ -1,7 +1,5 @@
 import React, { useState, useMemo, useEffect } from 'react';
 import { Link } from 'react-router-dom';
-import { Logo } from './ui/Logo';
-import ThemeToggle from './ui/ThemeToggle';
 import { eipsData } from '../data/eips';
 import { getProposalPrefix, getLaymanTitle, getInclusionStage, isHeadlinerInAnyFork, wasHeadlinerCandidateInAnyFork, getEipLayer } from '../utils/eip';
 import { EipSearch } from './eip/EipSearch';
@@ -366,11 +364,7 @@ const EipsIndexPage: React.FC = () => {
     <div className="min-h-screen bg-slate-50 dark:bg-slate-900 text-slate-900 dark:text-slate-100 p-6">
       <div className="max-w-7xl mx-auto">
         {/* Header */}
-        <div className="mb-6 relative">
-          <div className="absolute top-0 right-0">
-            <ThemeToggle />
-          </div>
-          <Logo size="md" className="mb-8" />
+        <div className="mb-6">
           <div className="flex items-center justify-between gap-3">
             <h1 className="text-xl font-semibold text-slate-900 dark:text-slate-100">
               EIP Directory

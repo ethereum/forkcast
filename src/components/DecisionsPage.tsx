@@ -1,7 +1,5 @@
 import React, { useState, useEffect, useMemo } from 'react';
 import { Link } from 'react-router-dom';
-import { Logo } from './ui/Logo';
-import ThemeToggle from './ui/ThemeToggle';
 import { protocolCalls, Call } from '../data/calls';
 import { KeyDecision, EIP } from '../types/eip';
 import { eipsData } from '../data/eips';
@@ -101,11 +99,7 @@ const DecisionsPage: React.FC = () => {
     <div className="min-h-screen bg-slate-50 dark:bg-slate-900 text-slate-900 dark:text-slate-100 p-6">
       <div className="max-w-4xl mx-auto">
         {/* Header */}
-        <div className="mb-6 relative">
-          <div className="absolute top-0 right-0">
-            <ThemeToggle />
-          </div>
-          <Logo size="md" className="mb-4" />
+        <div className="mb-6">
           <h1 className="text-xl font-semibold text-slate-900 dark:text-slate-100 mb-2">
             Key Decisions
           </h1>

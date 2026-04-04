@@ -1,11 +1,9 @@
 import React, { useEffect, useState, useRef } from 'react';
 import { Link, useSearchParams } from 'react-router-dom';
 import { eipsData } from '../../data/eips';
-import { Logo } from '../ui/Logo';
 import { useMetaTags } from '../../hooks/useMetaTags';
 import { useAnalytics } from '../../hooks/useAnalytics';
 import { EIP } from '../../types';
-import ThemeToggle from '../ui/ThemeToggle';
 import { StakeholderEipCard } from './StakeholderEipCard';
 import { filterEipsForStakeholder, groupByInclusionStage } from '../../utils/stakeholder';
 
@@ -111,10 +109,6 @@ export const StakeholderUpgradePage: React.FC<StakeholderUpgradePageProps> = ({ 
       <div className="max-w-2xl mx-auto">
         {/* Header */}
         <div className="mb-8">
-          <div className="mb-12 flex justify-between items-start">
-            <Logo size="lg" />
-            <ThemeToggle />
-          </div>
           <Link
             to={`/upgrade/${forkName.toLowerCase()}`}
             className="text-slate-500 hover:text-slate-700 dark:text-slate-400 dark:hover:text-slate-200 mb-4 inline-block text-sm"

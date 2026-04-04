@@ -10,7 +10,6 @@ import {
 import { useAnalytics } from "../hooks/useAnalytics";
 import { eipsData } from "../data/eips";
 import { getPendingProposalsForFork, PendingProposal } from "../data/pending-proposals";
-import ThemeToggle from "./ui/ThemeToggle";
 
 const ChampionDisplay: React.FC<{ champions?: Champion[] }> = ({ champions }) => {
   if (!champions || champions.length === 0 || !champions.some(c => c.name)) return null;
@@ -688,9 +687,6 @@ const RankPage: React.FC = () => {
             <h1 className="font-semibold text-slate-900 dark:text-slate-100 text-center truncate max-w-full overflow-hidden text-base sm:text-xl">
               Hegota Headliner Tier Maker
             </h1>
-            <div className="sm:absolute sm:right-0 sm:top-1/2 sm:-translate-y-1/2">
-              <ThemeToggle />
-            </div>
           </div>
         </div>
       </div>

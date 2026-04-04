@@ -1,6 +1,5 @@
 import React, { useState, useMemo, useEffect } from 'react';
 import { Link } from 'react-router-dom';
-import { Logo } from './ui/Logo';
 import { eipsData } from '../data/eips';
 import { useComplexityData, getComplexityForEip } from '../hooks/useComplexityData';
 import { getComplexityTierColor, getComplexityTierEmoji } from '../utils/complexity';
@@ -8,7 +7,6 @@ import { getInclusionStage, getLaymanTitle, getProposalPrefix, getSpecificationU
 import { getInclusionStageColor } from '../utils/colors';
 import { InclusionStage } from '../types';
 import { useMetaTags } from '../hooks/useMetaTags';
-import ThemeToggle from './ui/ThemeToggle';
 import AnalysisNav from './ui/AnalysisNav';
 import { ComplexityTier } from '../types';
 
@@ -206,11 +204,7 @@ const ComplexityPage: React.FC = () => {
     <div className="min-h-screen bg-slate-50 dark:bg-slate-900 text-slate-900 dark:text-slate-100 p-6">
       <div className="max-w-7xl mx-auto">
         {/* Header */}
-        <div className="mb-6 relative">
-          <div className="absolute top-0 right-0">
-            <ThemeToggle />
-          </div>
-          <Logo size="md" className="mb-8" />
+        <div className="mb-6">
           <div className="flex items-center gap-3 mb-2">
             <h1 className="text-xl font-semibold text-slate-900 dark:text-slate-100">
               Test Complexity Analysis

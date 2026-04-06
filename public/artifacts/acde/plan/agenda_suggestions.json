@@ -1,63 +1,63 @@
 {
   "series": "ACDE",
-  "generated": "2026-03-30",
+  "generated": "2026-04-06",
   "for_call": "ACDE #234",
   "suggestions": [
     {
-      "topic": "bal-devnet-3 launch status and EIP-8037 readiness",
+      "topic": "EIP-8037 state creation cost repricing: resolution and DevNet-3 readiness",
       "priority": "high",
-      "rationale": "DevNet-3 was blocked in ACDE #232 due to clients not being ready for EIP-8037. ACDE #233 targeted 'early next week' launch (late March). Critical to confirm whether the devnet launched successfully and if the EIP-8037 implementation complexity issues (gas accounting alignment with 7928/7778, refund logic, state gas reservoir) were resolved.",
+      "rationale": "DevNet-3 has been blocked since March 12 due to EIP-8037 implementation complexity and alignment issues with EIP-7928. A repricing breakout was scheduled for March 19 to resolve gas accounting complexity, but no confirmation of resolution appears in ACDE #233. This is blocking devnet progress.",
+      "related_eips": [],
+      "source": "deferred_decision"
+    },
+    {
+      "topic": "bal-devnet-3 launch status and revised timeline",
+      "priority": "high",
+      "rationale": "DevNet-3 was originally planned for early March, then blocked by EIP-8037 implementation gaps. Most clients reported not being ready as of March 12. Need status update on client readiness and new launch target.",
       "related_eips": [],
       "source": "devnet_update"
     },
     {
-      "topic": "EIP-8070 (Sparse Mempool) client implementation feedback",
-      "priority": "high",
-      "rationale": "EIP-8070 was CFI'd in ACDE #233 with an explicit action item for all client teams to review the proposal and assess complexity. Geth has a prototype complete. This is a recent CFI requiring synchronous discussion of implementation feasibility across clients.",
+      "topic": "Gas repricing implementation progress: 18 operations baseline and EIP-7976 status",
+      "priority": "medium",
+      "rationale": "ACDE #233 identified 18 operations needing repricing to achieve 60 Mgas/s baseline. EIP-7976 (call data gas increase to 64) enables 670M gas blocks but implementation status across clients is unclear. Need progress check before devnet inclusion.",
+      "related_eips": [],
+      "source": "ongoing_discussion"
+    },
+    {
+      "topic": "EIP-8070 Sparse Mempool: client feedback and CFI viability",
+      "priority": "medium",
+      "rationale": "CFI'd in ACDE #233 with Geth prototype complete. Action item assigned for all client teams to review complexity assessment. Need feedback to determine if it should remain CFI or be descoped.",
       "related_eips": [],
       "source": "open_action_item"
     },
     {
-      "topic": "Gas repricing progress: EIP-7976 and EIP-7904 readiness for devnet testing",
-      "priority": "high",
-      "rationale": "ACDE #233 discussed targeting 60 Mgas/s baseline with ~18 operations needing repricing. EIP-7976 (call data gas to 64) enables 670M gas blocks, and EIP-7904 compute repricing affects 6.8M transactions. Both are critical for Glamsterdam scope and need devnet inclusion planning. Repricing breakout was scheduled for March 19 to resolve 8037/7928 alignment—status update needed.",
+      "topic": "Frame transactions (EIP-8141) implementation roadmap as non-headliner",
+      "priority": "medium",
+      "rationale": "CFI'd for Hegotá as non-headliner in ACDE #233 after rejection as headliner. Mempool doc published with Strategy 2 recommended. Need clarity on implementation timeline, testing plan, and which clients are committing to implement.",
       "related_eips": [],
       "source": "ongoing_discussion"
     },
     {
-      "topic": "Frame transactions (EIP-8141) devnet inclusion plan",
+      "topic": "ePBS DevNet-0 relaunch with PTSC changes post-withdrawal fixes",
       "priority": "medium",
-      "rationale": "EIP-8141 was CFI'd as a non-headliner for Hegotá in ACDE #233. Frame tx mempool doc published with Strategy 2 recommended, and native batching with atomic revert was highlighted as a key feature. Next step is determining devnet testing approach and client implementation timelines.",
-      "related_eips": [],
-      "source": "ongoing_discussion"
-    },
-    {
-      "topic": "ePBS DevNet-0 relaunch and PTSC changes integration",
-      "priority": "medium",
-      "rationale": "ePBS DevNet-0 was broken by withdrawals in ACDE #233, with a relaunch planned incorporating PTSC changes. FOCIL was CFI'd for Hegotá, making ePBS testing critical path. Status update on relaunch and validator/builder functionality needed.",
+      "rationale": "DevNet-0 was broken by withdrawals as of ACDE #233, with relaunch planned including PTSC changes. Need status update on fixes and relaunch timeline, especially given FOCIL is now CFI'd for Hegotá.",
       "related_eips": [],
       "source": "devnet_update"
     },
     {
-      "topic": "Scheme transactions (EIP-8XXX) as alternative AA proposal",
+      "topic": "Hegotá fork scope finalization and devnet consolidation strategy",
       "priority": "medium",
-      "rationale": "Scheme transactions were proposed in ACDE #233 as a simpler AA alternative to Frame transactions. Given strong community support for AA and Hegotá's non-headliner AA theme, this proposal warrants initial discussion and comparison with EIP-8141.",
+      "rationale": "With headliner decision complete (no headliner, FOCIL + AA theme), need to finalize full Hegotá scope (CFI → Included transitions) and plan devnet consolidation strategy across bal-devnet-3+, epbs-devnet, and potential integration testing.",
+      "related_eips": [],
+      "source": "ongoing_discussion"
+    },
+    {
+      "topic": "Scheme transactions (EIP-8XXX) presentation as alternative AA approach",
+      "priority": "low",
+      "rationale": "Mentioned in ACDE #233 as simpler AA alternative to Frame transactions. If still under consideration for Hegotá or I-Star, community may want initial presentation and discussion.",
       "related_eips": [],
       "source": "new_proposal"
-    },
-    {
-      "topic": "Gas repricing stakeholder outreach survey results",
-      "priority": "low",
-      "rationale": "ACDE #233 included an action item to review gas repricing outreach survey results and stakeholder feedback. While important for context, this is informational and doesn't require urgent synchronous discussion unless blocking decisions emerge.",
-      "related_eips": [],
-      "source": "open_action_item"
-    },
-    {
-      "topic": "Hegotá fork scope finalization and devnet timeline",
-      "priority": "low",
-      "rationale": "With no EL headliner selected and FOCIL CFI'd on the CL side, Hegotá's scope is taking shape around AA (EIP-8141), repricing (7976, 7904, 8037), and P2P updates (ETH/70, ETH/71). A consolidated view of confirmed scope and remaining open questions would help align teams, but this is more informational than blocking.",
-      "related_eips": [],
-      "source": "ongoing_discussion"
     }
   ]
 }

@@ -1,8 +1,9 @@
 import React, { useState, useMemo, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { eipsData } from '../../data/eips';
-import { useComplexityData, getComplexityForEip, getComplexityTierColor, getComplexityTierEmoji } from '../../domain/complexity';
-import type { EipComplexity } from '../../domain/complexity';
+import { useComplexityData, getComplexityForEip } from '../../domain/complexity/useComplexityData';
+import { getComplexityTierColor, getComplexityTierEmoji } from '../../domain/complexity/complexity';
+import type { EipComplexity } from '../../domain/complexity/types';
 import { usePrioritizationData } from '../../hooks/usePrioritizationData';
 import { getScoreColor } from '../../utils/prioritization';
 import { getInclusionStage, getLaymanTitle, getProposalPrefix } from '../../utils';

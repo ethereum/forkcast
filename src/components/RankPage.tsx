@@ -4,7 +4,7 @@ import { EIP, Champion } from "../types/eip";
 import {
   getLaymanTitle,
   getProposalPrefix,
-  getHeadlinerLayer,
+  getEipLayer,
   wasHeadlinerCandidate,
 } from "../utils/eip";
 import { useAnalytics } from "../hooks/useAnalytics";
@@ -78,7 +78,7 @@ const TIERS: Tier[] = [
 // Helper function to get layer for a tier item
 const getItemLayer = (item: TierItem): 'EL' | 'CL' | null => {
   if (item.eip) {
-    return getHeadlinerLayer(item.eip);
+    return getEipLayer(item.eip);
   }
   if (item.pendingProposal) {
     return item.pendingProposal.layer;

@@ -1,4 +1,4 @@
-import { ComplexityAnchor, EipComplexity, ComplexityTier } from '../types/complexity';
+import { ComplexityAnchor, EipComplexity, ComplexityTier } from './types';
 
 /**
  * Parse STEEL complexity assessment markdown to extract scores

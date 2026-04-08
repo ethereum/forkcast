@@ -65,23 +65,9 @@ export const isHeadliner = (eip: EIP, forkName?: string): boolean => {
 };
 
 /**
- * Get the layer (EL/CL) for a headliner EIP
- */
-export const getHeadlinerLayer = (eip: EIP): 'EL' | 'CL' | null => {
-  return eip.layer || null;
-};
-
-/**
- * Get the layer (EL/CL) for any EIP
+ * Get the layer (EL/CL) for an EIP
  */
 export const getEipLayer = (eip: EIP): 'EL' | 'CL' | null => {
-  return eip.layer || null;
-};
-
-/**
- * Get the layer for an EIP
- */
-export const getPrimaryEipLayer = (eip: EIP): 'EL' | 'CL' | null => {
   return eip.layer || null;
 };
 

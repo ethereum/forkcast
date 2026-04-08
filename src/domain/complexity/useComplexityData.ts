@@ -1,11 +1,6 @@
 import { useState, useEffect, useCallback } from 'react';
-import { EipComplexity } from '../types/complexity';
-import { parseComplexityMarkdown } from '../utils/complexity';
-
-interface GitHubFileEntry {
-  name: string;
-  download_url: string;
-}
+import { EipComplexity } from './types';
+import { parseComplexityMarkdown } from './complexity';
 
 interface UseComplexityDataResult {
   complexityMap: Map<number, EipComplexity>;
@@ -21,6 +16,11 @@ let cachedAvailableEips: number[] | null = null;
 
 const GITHUB_API_URL = 'https://api.github.com/repos/ethsteel/pm/contents/complexity_assessments/EIPs';
 const RAW_CONTENT_BASE = 'https://raw.githubusercontent.com/ethsteel/pm/main/complexity_assessments/EIPs';
+
+interface GitHubFileEntry {
+  name: string;
+  download_url: string;
+}
 
 /**
  * Hook to fetch and parse STEEL complexity assessments from GitHub

@@ -1,14 +1,13 @@
 import React, { useState, useMemo, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { eipsData } from '../../data/eips';
-import { useComplexityData, getComplexityForEip } from '../../hooks/useComplexityData';
+import { useComplexityData, getComplexityForEip, getComplexityTierColor, getComplexityTierEmoji } from '../../domain/complexity';
+import type { EipComplexity } from '../../domain/complexity';
 import { usePrioritizationData } from '../../hooks/usePrioritizationData';
-import { getComplexityTierColor, getComplexityTierEmoji } from '../../utils/complexity';
 import { getScoreColor } from '../../utils/prioritization';
 import { getInclusionStage, getLaymanTitle, getProposalPrefix } from '../../utils';
 import { getInclusionStageColor } from '../../utils/colors';
 import { InclusionStage } from '../../types';
-import { EipComplexity } from '../../types/complexity';
 import { EipAggregateStance } from '../../types/prioritization';
 import devnetDataRaw from '../../data/devnets/glamsterdam.json';
 import { getDevnetSpec } from '../../data/devnet-specs';

@@ -10,7 +10,7 @@ import {
   getSpecificationUrl,
   parseMarkdownLinks,
   parseAuthors,
-  getPrimaryEipLayer,
+  getEipLayer,
 } from '../../utils';
 import { Tooltip } from '../ui';
 import ThemeToggle from '../ui/ThemeToggle';
@@ -74,7 +74,7 @@ export const EipPage: React.FC = () => {
 
   const eipId = parseInt(id || '', 10);
   const eip = eipsData.find((e) => e.id === eipId);
-  const layer = eip ? getPrimaryEipLayer(eip) : null;
+  const layer = eip ? getEipLayer(eip) : null;
   const callType = eipCallTypes[eipId];
   const callNav = callType ? getCallNavigation(callType) : null;
 

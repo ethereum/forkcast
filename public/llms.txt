@@ -18,11 +18,31 @@ Individual EIP documents are served as static markdown:
 ### Call artifacts
 Call artifacts are served as static files organized by series and call number:
 - Pattern: `/artifacts/{series}/{date}_{number}/{file}`
-- Example: /artifacts/acde/2025-05-22_212/transcript.vtt
+- Example: /artifacts/acde/2026-04-09_234/tldr.json
 
-Available files per call vary but may include: `transcript.vtt`, `transcript_corrected.vtt`, `chat.txt`, `config.json`, `tldr.json`, `key_decisions.json`, `agenda_suggestions.json`, `eip_threads.json`, `open_action_items.json`, `deferred_decisions.json`.
+Available files per call vary but may include:
+- `tldr.json` - Structured highlights grouped by topic, with timestamps
+- `key_decisions.json` - Decisions made during the call, with EIP references
+- `transcript.vtt` / `transcript_corrected.vtt` - Full call transcript
+- `chat.txt` - Chat log
+- `config.json` - Call metadata
 
-Series include: acdc, acde, acdt, awd, bal, epbs, etm, fcr, focil, pqi, pqts, price, rpc, tli, zkevm.
+Recent ACDE and ACDC calls (from ~Oct 2025 onward) include `tldr.json` and `key_decisions.json`. Older calls only have transcripts and chat logs.
+
+### Call planning artifacts
+Each series has a `plan/` directory with upcoming agenda context:
+- Pattern: `/artifacts/{series}/plan/{file}`
+- Example: /artifacts/acde/plan/open_action_items.json
+- Files: `agenda_suggestions.json`, `deferred_decisions.json`, `eip_threads.json`, `open_action_items.json`
+
+### Finding recent calls
+The call index (`protocol-calls.generated.json`) is only in the source repo, not served as a static file. To discover recent calls, either:
+1. Fetch from GitHub: `gh api repos/ethereum/forkcast/contents/src/data/protocol-calls.generated.json`
+2. Or construct artifact paths directly — the two main series are:
+   - **acde** (All Core Devs - Execution): biweekly, numbered 208+, e.g. `/artifacts/acde/2026-04-09_234/`
+   - **acdc** (All Core Devs - Consensus): biweekly, numbered 154+, e.g. `/artifacts/acdc/2026-03-19_176/`
+
+Other series: acdt, awd, bal, epbs, etm, fcr, focil, pqi, pqts, price, rpc, tli, zkevm.
 
 ## Structured data (GitHub source)
 
@@ -39,12 +59,15 @@ Access these via the GitHub API: `gh api repos/ethereum/forkcast/contents/src/da
 
 ## Quick reference
 
-| Want                     | How                                                         |
-| ------------------------ | ----------------------------------------------------------- |
-| Single EIP spec          | `GET /eips/{number}.md`                                     |
-| Call transcript          | `GET /artifacts/{series}/{date}_{number}/transcript.vtt`    |
-| Call summary/decisions   | `GET /artifacts/{series}/{date}_{number}/key_decisions.json` |
-| All upgrades + statuses  | GitHub: `src/data/upgrades.ts`                              |
-| Full EIP index           | GitHub: `src/data/eips/`                                    |
-| Event timeline           | GitHub: `src/data/events.ts`                                |
-| Pending proposals        | GitHub: `src/data/pending-proposals.ts`                     |
+| Want                     | How                                                          |
+| ------------------------ | ------------------------------------------------------------ |
+| Single EIP spec          | `GET /eips/{number}.md`                                      |
+| Recent call TLDR         | `GET /artifacts/acde/{date}_{number}/tldr.json`              |
+| Recent call decisions    | `GET /artifacts/acde/{date}_{number}/key_decisions.json`     |
+| Call transcript          | `GET /artifacts/{series}/{date}_{number}/transcript.vtt`     |
+| Upcoming agenda context  | `GET /artifacts/{series}/plan/open_action_items.json`        |
+| All upgrades + statuses  | GitHub: `src/data/upgrades.ts`                               |
+| Full call index          | GitHub: `src/data/protocol-calls.generated.json`             |
+| Full EIP index           | GitHub: `src/data/eips/`                                     |
+| Event timeline           | GitHub: `src/data/events.ts`                                 |
+| Pending proposals        | GitHub: `src/data/pending-proposals.ts`                      |

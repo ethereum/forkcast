@@ -1,20 +1,50 @@
-Forkcast is a static Ethereum upgrade tracker focused on EIPs, protocol calls, devnets, and upgrade planning.
-It exposes public route pages plus machine-readable JSON and transcript artifacts for calls and status tracking.
+# Forkcast: Ethereum Upgrade Tracker
 
-# Key entry points
+> Source: https://github.com/ethereum/forkcast
 
-- [EIP directory](https://forkcast.org/eips)
-- [Protocol calls](https://forkcast.org/calls)
-- [Devnet tracker](https://forkcast.org/devnets)
-- [Key decisions](https://forkcast.org/decisions)
-- [Agenda planner](https://forkcast.org/agenda)
-- [Recent EIP stage changes JSON](https://forkcast.org/api/eip-stage-changes.json)
+Forkcast tracks EIPs, protocol calls, devnets, and upgrade planning for Ethereum network upgrades.
 
-# Call artifacts
+## Important: This is a Single Page Application
 
-Call pages live under `/calls/{type}/{number}`.
-Public call assets are served under `/artifacts/{series}/{date}_{number}/` and may include `transcript_corrected.vtt`, `transcript.vtt`, `chat.txt`, `tldr.json`, `key_decisions.json`, and `config.json`.
+Forkcast is a client-side rendered SPA. Route URLs like `/eips`, `/calls`, `/devnets`, `/decisions`, and `/agenda` return an empty HTML shell with no content. Do not fetch these routes expecting data.
 
-# EIP data
+## Static files you CAN fetch
 
-EIP spec markdown is served at `/eips/{number}.md` (e.g., `/eips/1153.md`).
+### EIP specs (Markdown)
+Individual EIP documents are served as static markdown:
+- Pattern: `/eips/{number}.md`
+- Example: /eips/1153.md
+
+### Call artifacts
+Call artifacts are served as static files organized by series and call number:
+- Pattern: `/artifacts/{series}/{date}_{number}/{file}`
+- Example: /artifacts/acde/2025-05-22_212/transcript.vtt
+
+Available files per call vary but may include: `transcript.vtt`, `transcript_corrected.vtt`, `chat.txt`, `config.json`, `tldr.json`, `key_decisions.json`, `agenda_suggestions.json`, `eip_threads.json`, `open_action_items.json`, `deferred_decisions.json`.
+
+Series include: acdc, acde, acdt, awd, bal, epbs, etm, fcr, focil, pqi, pqts, price, rpc, tli, zkevm.
+
+## Structured data (GitHub source)
+
+The full structured dataset lives in the source repo under `src/data/`:
+
+- `upgrades.ts` - All network upgrades with statuses, dates, and client team perspectives
+- `events.ts` - Timeline of devnets, testnets, and mainnet activations
+- `pending-proposals.ts` - Proposals not yet assigned EIP numbers
+- `eips.ts` / `eips/` - EIP metadata as JSON (one file per EIP)
+- `calls.ts` - Protocol call series definitions
+- `protocol-calls.generated.json` - Full index of all protocol calls
+
+Access these via the GitHub API: `gh api repos/ethereum/forkcast/contents/src/data/upgrades.ts`
+
+## Quick reference
+
+| Want                     | How                                                         |
+| ------------------------ | ----------------------------------------------------------- |
+| Single EIP spec          | `GET /eips/{number}.md`                                     |
+| Call transcript          | `GET /artifacts/{series}/{date}_{number}/transcript.vtt`    |
+| Call summary/decisions   | `GET /artifacts/{series}/{date}_{number}/key_decisions.json` |
+| All upgrades + statuses  | GitHub: `src/data/upgrades.ts`                              |
+| Full EIP index           | GitHub: `src/data/eips/`                                    |
+| Event timeline           | GitHub: `src/data/events.ts`                                |
+| Pending proposals        | GitHub: `src/data/pending-proposals.ts`                     |

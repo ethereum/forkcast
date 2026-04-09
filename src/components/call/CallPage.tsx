@@ -7,7 +7,7 @@ import CallSearch from './CallSearch';
 import ThemeToggle from '../ui/ThemeToggle';
 import { Logo } from '../ui/Logo';
 import { protocolCalls, callTypeNames, isOneOffCall, type CallType } from '../../data/calls';
-import { fetchUpcomingCalls } from '../../utils/github';
+import { fetchUpcomingCalls } from '../../domain/calls/upcomingCalls';
 import { useMetaTags } from '../../hooks/useMetaTags';
 import { eipsData } from '../../data/eips';
 import { EIP, ForkRelationship, KeyDecision } from '../../types/eip';

@@ -37,8 +37,7 @@ const callCorpus = calls.map(({ type, date, number }) => {
   };
 });
 
-const corpus = callCorpus;
-const serializedCorpus = JSON.stringify(corpus);
+const serializedCorpus = JSON.stringify(callCorpus);
 const sha256 = createHash('sha256').update(serializedCorpus).digest('hex');
 const metadata = {
   sha256,

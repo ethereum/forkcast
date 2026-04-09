@@ -24,7 +24,7 @@ import {
   callTypeNames,
   getCallNavigation,
 } from '../../data/calls';
-import { fetchUpcomingCalls, type UpcomingCall } from '../../utils/github';
+import { fetchUpcomingCalls, type UpcomingCall } from '../../domain/calls/upcomingCalls';
 
 const LazyEipMarkdown = lazy(() =>
   Promise.all([import('react-markdown'), import('remark-gfm')]).then(

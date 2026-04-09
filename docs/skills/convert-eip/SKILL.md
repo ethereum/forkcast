@@ -1,14 +1,19 @@
-# Convert EIP
+---
+name: convert-eip
+description: Convert an EIP proposed for the current fork into forkcast JSON format. Use when adding a new EIP to the tracker.
+---
+
+## Convert EIP to forkcast format
 
 Convert an EIP proposed for the current fork (e.g., Glamsterdam, Hegota) into forkcast JSON format.
 
-## Schema
+### Schema
 
 Get the current schema:
 - Type definitions: `src/types/eip.ts`
 - Example EIPs: `src/data/eips/*.json`
 
-## Writing Guidelines
+### Writing Guidelines
 
 - **description**: max 80 words, match the EIP abstract as closely as possible
 - **laymanDescription**: max 60 words, plain language for non-technical readers
@@ -27,7 +32,7 @@ Get the current schema:
 
 For descriptions, impacts, and benefits: be as factual and true to the resources as possible. Do not speculate. Do not shoehorn impacts if none exist. Do not assume any information. Return output in code format, without citations.
 
-## Required Inputs
+### Step 1: Gather inputs
 
 Ask user to fill in and paste:
 
@@ -40,7 +45,7 @@ status: (optional, e.g. "Proposed" or "Considered" - leave blank if none)
 context: (optional eth r&d discord context)
 ```
 
-### Status & Presentation History
+#### Status & Presentation History
 
 **statusHistory**: Add if user provides status or transcript has explicit status change. Don't infer—leave empty if uncertain.
 
@@ -52,18 +57,18 @@ context: (optional eth r&d discord context)
 
 Do not add `timestamp` fields unless you are sure they refer accurately to the start time.
 
-### Headliner Flags
+#### Headliner Flags
 
 If the user provides a headliner URL (i.e., `headliner` is not "no"), set:
 - `isHeadliner`: `false`
 - `wasHeadlinerCandidate`: `true`
 - For the call presentation, use `headliner_presentation` (not `debate` or `presentation`)
 
-## Automated Resource Gathering
+### Step 2: Fetch resources
 
 Use the EIP number to gather all resources:
 
-### 1. Raw EIP (Latest from Master)
+#### 2a. Raw EIP (Latest from Master)
 
 Fetch the current version from master:
 ```bash
@@ -72,7 +77,7 @@ gh api '/repos/ethereum/EIPs/contents/EIPS/eip-{EIP_NUMBER}.md' --jq '.content' 
 
 If this 404s (unmerged EIP), fall back to fetching from the PR branch instead. Find the PR, get the head SHA, and fetch from that ref.
 
-### 2. Commit History
+#### 2b. Commit History
 
 Get all commits that modified this EIP:
 ```bash
@@ -81,7 +86,7 @@ gh api '/repos/ethereum/EIPs/commits?path=EIPS/eip-{EIP_NUMBER}.md' --jq '.[] | 
 
 Review these to understand how the EIP evolved. The original "Add EIP" commit is typically the last/oldest one.
 
-### 3. Original PR Discussion
+#### 2c. Original PR Discussion
 
 Find the original PR from the first commit:
 ```bash
@@ -106,7 +111,7 @@ gh api /repos/ethereum/EIPs/pulls/{PR_NUMBER}/reviews --jq '.[] | {user: .user.l
 
 **Important**: Verify you found the original "Add EIP" PR (title should start with "Add EIP"). If not found, ask the user for the original PR link.
 
-### 4. Eth Magicians Discussion
+#### 2d. Eth Magicians Discussion
 
 **Do NOT use WebFetch** - it summarizes and loses detail. Use the JSON API directly:
 ```bash
@@ -121,7 +126,8 @@ Extract the topic slug and ID from the `discussions-to` URL (e.g., `eip-7807-ssz
 
 **Note**: Discourse only returns the first 20 posts by default. For threads with many posts, fetch the latest posts by using the post IDs from `post_stream.stream` (which contains all IDs) and requesting the most recent ones via `?post_ids[]=`.
 
-### 4a. Headliner Proposal
+#### 2e. Headliner Proposal
+
 If user provides a headliner URL, fetch it with the same JSON API approach:
 ```bash
 curl -s "https://ethereum-magicians.org/t/{TOPIC_SLUG}/{TOPIC_ID}.json" | jq '.post_stream.posts[] | {username, created_at, cooked}'
@@ -129,26 +135,29 @@ curl -s "https://ethereum-magicians.org/t/{TOPIC_SLUG}/{TOPIC_ID}.json" | jq '.p
 
 Extract the **post date** from `created_at`. Do not assume it matches the call date.
 
-### 5. Call Transcript
+#### 2f. Call Transcript
+
 Glob: `public/artifacts/{call_type}/*{number}*/**`. Prefer `transcript_corrected.vtt`, fall back to `transcript.vtt`. Grep for the EIP number or title to find relevant discussion.
 
-### 6. Related EIPs
+#### 2g. Related EIPs
+
 If the EIP has a `requires` field, fetch those using the same method.
 
-### 7. Champion Name
+#### 2h. Champion Name
+
 Extract from the EIP `author` field (the name before the GitHub handle). Discord handle comes from user input.
 
-## Pre-Generation Check
+### Step 3: Pre-generation check
 
 Before generating JSON, verify you have enough information for all required fields. If missing critical info (e.g., can't determine layer, no clear benefits from sources), ask user before proceeding.
 
-## Output
+### Step 4: Generate output
 
 Generate files in this order:
-1. `src/data/eips/{EIP_NUMBER}-context.md` - context file first (raw data)
+1. `src/data/eips/{EIP_NUMBER}-context.md` - context file first (raw data, local reference only, not committed)
 2. `src/data/eips/{EIP_NUMBER}.json` - EIP JSON second (synthesized from context)
 
-### Context File Format
+#### Context File Format
 
 The context file preserves the FULL raw data used to generate the EIP. **Every section must include its source URL or file path** so readers can trace where each excerpt came from.
 
@@ -207,7 +216,7 @@ Source: Eth R&D Discord (user-provided)
 {summaries of required EIPs with links}
 ```
 
-## Validation
+### Step 5: Validate
 
 Run the compile script to verify the generated EIP is valid:
 
@@ -223,18 +232,16 @@ npm run validate-eips -- --eip {EIP_NUMBER} --fix
 
 If there are errors in either step, fix them before reporting success.
 
-## Summary & PR
-
-After completing the conversion, report to user with this structured summary. Use the same format for the PR body.
+### Step 6: PR
 
 **Important**: Only commit the `.json` file. Do not commit the `*-context.md` file—it is for local reference only.
 
 **PR Title**: `Add EIP-{number}: {title}`
 
-**PR Body / Summary**:
+**PR Body**:
 ```
 > [!NOTE]
-> This PR was generated with `prompts/convert-eip.md` (see [convert-eip.md](https://github.com/ethereum/forkcast/blob/main/prompts/convert-eip.md)).
+> This PR was generated with the `convert-eip` skill (see [SKILL.md](https://github.com/ethereum/forkcast/blob/main/docs/skills/convert-eip/SKILL.md)).
 
 ## EIP-{number}: {title}
 
@@ -262,6 +269,6 @@ Ported to forkcast format.
 - **Headliner**: {yes/no}
 ```
 
-## Retrospective
+### Step 7: Retrospective
 
-After completing the PR, review the run for any friction: missing guidance, incorrect defaults, assumptions that needed correction, or steps that broke. Present a hyphenated list of issues to the user and offer to patch this SOP to address them.
+After completing the PR, review the run for any friction: missing guidance, incorrect defaults, assumptions that needed correction, or steps that broke. Present a hyphenated list of issues to the user and offer to patch this skill to address them.

@@ -352,20 +352,32 @@ const HomePage = () => {
         {/* Footer */}
         <div className="mt-16 text-center text-sm text-slate-500 dark:text-slate-400">
           <div className="mb-6">
-            <div className="w-16 h-16 mx-auto mb-3 flex items-center justify-center">
+            <a
+              href="https://ps.ethereum.foundation"
+              target="_blank"
+              rel="noopener noreferrer"
+              onClick={() => handleExternalLinkClick('team_website', 'https://ps.ethereum.foundation')}
+              className="w-16 h-16 mx-auto mb-3 flex items-center justify-center"
+            >
               <img
                 src="/blobby-gradient-red.svg"
                 alt="Ethereum Foundation Protocol Support team logo"
                 className="w-16 h-16 hover:invert dark:invert dark:hover:invert-0 transition-all duration-500"
               />
-            </div>
+            </a>
             <div className="text-center">
               <p className="text-sm italic text-slate-500 dark:text-slate-400">
-                An experiment by
+                Brought to you by
               </p>
-              <p className="text-lg font-light text-slate-700 dark:text-slate-300">
+              <a
+                href="https://ps.ethereum.foundation"
+                target="_blank"
+                rel="noopener noreferrer"
+                onClick={() => handleExternalLinkClick('team_website', 'https://ps.ethereum.foundation')}
+                className="text-lg font-light text-slate-700 dark:text-slate-300 hover:text-slate-900 dark:hover:text-slate-100 transition-colors duration-200"
+              >
                 EF Protocol Support
-              </p>
+              </a>
             </div>
           </div>
           <div className="flex items-center justify-center gap-4">

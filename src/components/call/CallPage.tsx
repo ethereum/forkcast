@@ -4,8 +4,6 @@ import YouTube, { YouTubeProps } from 'react-youtube';
 import ChatLog from './ChatLog';
 import TldrSummary from './TldrSummary';
 import CallSearch from './CallSearch';
-import ThemeToggle from '../ui/ThemeToggle';
-import { Logo } from '../ui/Logo';
 import { protocolCalls, callTypeNames, isOneOffCall, type CallType } from '../../data/calls';
 import { fetchUpcomingCalls } from '../../utils/github';
 import { useMetaTags } from '../../hooks/useMetaTags';
@@ -917,15 +915,7 @@ const CallPage: React.FC = () => {
   if (!callData) {
     return (
       <div className="min-h-screen bg-slate-50 dark:bg-slate-900 text-slate-900 dark:text-slate-100">
-        {/* Header */}
-        <div className="bg-white dark:bg-slate-800 border-b border-slate-200 dark:border-slate-700 sticky top-0 z-10">
-          <div className="max-w-4xl mx-auto px-4 sm:px-6 py-2">
-            <div className="flex items-center justify-between">
-              <Logo size="sm" />
-              <ThemeToggle />
-            </div>
-          </div>
-        </div>
+        {/* Header spacer - GlobalNav handles navigation */}
 
         {/* Content */}
         <div className="max-w-4xl mx-auto px-6 py-16">
@@ -1341,38 +1331,30 @@ const CallPage: React.FC = () => {
   return (
     <div className="min-h-screen bg-slate-50 dark:bg-slate-900 text-slate-900 dark:text-slate-100">
       {/* Compact Header */}
-      <div className="bg-white dark:bg-slate-800 border-b border-slate-200 dark:border-slate-700 sticky top-0 z-10">
+      <div className="bg-white dark:bg-slate-800 border-b border-slate-200 dark:border-slate-700 sticky top-12 z-10">
         <div className={layout.header}>
           {/* Mobile Layout */}
           <div className="sm:hidden flex items-center justify-between">
             <div className="flex items-center gap-2">
-              <Logo size="xs" />
               <span className="text-xs text-slate-600 dark:text-slate-400">
                 {getCallTypeLabel()}{oneOff ? '' : ` #${callData.number}`}
               </span>
             </div>
-            <div className="flex items-center gap-2">
-              <Link
-                to="/calls"
-                className="text-xs text-slate-600 dark:text-slate-400"
-              >
-                ← Back
-              </Link>
-              <ThemeToggle />
-            </div>
+            <Link
+              to="/calls"
+              className="text-xs text-slate-600 dark:text-slate-400"
+            >
+              ← Back
+            </Link>
           </div>
 
           {/* Desktop Layout */}
           <div className="hidden sm:flex items-center justify-between">
-            <div className="flex items-center gap-3">
-              <Logo size="sm" />
-              <div className="text-slate-300 dark:text-slate-600">|</div>
-              <div className="flex items-center gap-2">
-                <h1 className="text-sm font-semibold text-slate-900 dark:text-slate-100">
-                  {getCallTypeLabel()}{oneOff ? '' : ` #${callData.number}`}
-                </h1>
-                <span className="text-sm text-slate-500 dark:text-slate-400">• {callData.date}</span>
-              </div>
+            <div className="flex items-center gap-2">
+              <h1 className="text-sm font-semibold text-slate-900 dark:text-slate-100">
+                {getCallTypeLabel()}{oneOff ? '' : ` #${callData.number}`}
+              </h1>
+              <span className="text-sm text-slate-500 dark:text-slate-400">• {callData.date}</span>
             </div>
             <div className="flex items-center gap-3">
               <Link
@@ -1394,7 +1376,6 @@ const CallPage: React.FC = () => {
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
                 </svg>
               </button>
-              <ThemeToggle />
             </div>
           </div>
         </div>

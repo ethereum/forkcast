@@ -4,9 +4,7 @@ import { getRecentCalls, isOneOffCall, callTypeNames, type CallType } from '../d
 import { eipsData } from '../data/eips';
 import { useAnalytics } from '../hooks/useAnalytics';
 import { getProposalPrefix, getLaymanTitle, getInclusionStage } from '../utils/eip';
-import ThemeToggle from './ui/ThemeToggle';
 import UpgradeCarousel from './ui/UpgradeCarousel';
-import { Logo } from './ui/Logo';
 
 const HomePage = () => {
   const upgrades = networkUpgrades;
@@ -112,11 +110,7 @@ const HomePage = () => {
     <div className="min-h-screen bg-slate-50 dark:bg-slate-900 text-slate-900 dark:text-slate-100 p-6">
       <div className="max-w-4xl mx-auto">
         {/* Header */}
-        <div className="mb-12 text-center relative">
-          <div className="absolute top-0 right-0">
-            <ThemeToggle />
-          </div>
-          <Logo size="2xl" className="mb-4" />
+        <div className="mb-8 text-center">
           <h2 className="text-xl font-light text-slate-700 dark:text-slate-300 tracking-tight">
             Ethereum Upgrade Tracker
           </h2>
@@ -250,13 +244,71 @@ const HomePage = () => {
           </div>
         </div>
 
-        {/* Planning Tools Section */}
+        {/* Glamsterdam Analysis Section */}
         <div className="mt-12">
-          <div className="flex items-center justify-between mb-4">
-            <h2 className="text-xl font-medium text-slate-900 dark:text-slate-100">
-              Planning Tools
-            </h2>
+          <div className="border border-purple-200 dark:border-purple-800/50 rounded-xl p-5 bg-purple-50/30 dark:bg-purple-950/10">
+            <div className="flex items-center gap-2 mb-4">
+              <h2 className="text-lg font-medium text-slate-900 dark:text-slate-100">
+                Glamsterdam Analysis
+              </h2>
+              <span className="px-2 py-0.5 text-xs font-medium bg-purple-100 text-purple-700 dark:bg-purple-900/30 dark:text-purple-300 rounded">
+                Upcoming
+              </span>
+            </div>
+
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              <Link
+                to="/priority"
+                className="group flex items-start gap-3 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg p-4 hover:shadow-md dark:hover:shadow-slate-700/20 hover:border-purple-300 dark:hover:border-purple-600"
+              >
+                <div className="flex-shrink-0 w-9 h-9 bg-purple-100 dark:bg-purple-900/40 rounded-lg flex items-center justify-center text-purple-600 dark:text-purple-400">
+                  <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
+                  </svg>
+                </div>
+                <div className="flex-1 min-w-0">
+                  <h3 className="text-sm font-medium text-slate-900 dark:text-slate-100 mb-1">
+                    Client Priority
+                  </h3>
+                  <p className="text-xs text-slate-600 dark:text-slate-400">
+                    How do Besu, Geth, Nethermind, Erigon, Reth, and other teams rank Glamsterdam EIPs?
+                  </p>
+                </div>
+                <svg className="w-5 h-5 text-slate-400 group-hover:text-purple-500 flex-shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                </svg>
+              </Link>
+
+              <Link
+                to="/complexity"
+                className="group flex items-start gap-3 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg p-4 hover:shadow-md dark:hover:shadow-slate-700/20 hover:border-purple-300 dark:hover:border-purple-600"
+              >
+                <div className="flex-shrink-0 w-9 h-9 bg-amber-100 dark:bg-amber-900/40 rounded-lg flex items-center justify-center text-amber-600 dark:text-amber-400">
+                  <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
+                  </svg>
+                </div>
+                <div className="flex-1 min-w-0">
+                  <h3 className="text-sm font-medium text-slate-900 dark:text-slate-100 mb-1">
+                    Test Complexity
+                  </h3>
+                  <p className="text-xs text-slate-600 dark:text-slate-400">
+                    STEEL team complexity assessments for each Glamsterdam EIP. Low/Medium/High effort tiers.
+                  </p>
+                </div>
+                <svg className="w-5 h-5 text-slate-400 group-hover:text-purple-500 flex-shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                </svg>
+              </Link>
+            </div>
           </div>
+        </div>
+
+        {/* Protocol-Wide Tools Section */}
+        <div className="mt-8">
+          <h2 className="text-lg font-medium text-slate-900 dark:text-slate-100 mb-4">
+            Protocol-Wide Tools
+          </h2>
 
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <Link
@@ -270,54 +322,10 @@ const HomePage = () => {
               </div>
               <div className="flex-1 min-w-0">
                 <h3 className="text-sm font-medium text-slate-900 dark:text-slate-100 mb-1">
-                  Schedule
+                  ACD Planning Sandbox
                 </h3>
                 <p className="text-xs text-slate-600 dark:text-slate-400">
-                  Plan fork timelines with adjustable milestones
-                </p>
-              </div>
-              <svg className="w-5 h-5 text-slate-400 group-hover:text-purple-500 flex-shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
-              </svg>
-            </Link>
-
-            <Link
-              to="/priority"
-              className="group flex items-start gap-3 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg p-4 hover:shadow-md dark:hover:shadow-slate-700/20 hover:border-purple-300 dark:hover:border-purple-600"
-            >
-              <div className="flex-shrink-0 w-9 h-9 bg-purple-100 dark:bg-purple-900/40 rounded-lg flex items-center justify-center text-purple-600 dark:text-purple-400">
-                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
-                </svg>
-              </div>
-              <div className="flex-1 min-w-0">
-                <h3 className="text-sm font-medium text-slate-900 dark:text-slate-100 mb-1">
-                  Client Priority
-                </h3>
-                <p className="text-xs text-slate-600 dark:text-slate-400">
-                  Aggregated client team stances on EIPs
-                </p>
-              </div>
-              <svg className="w-5 h-5 text-slate-400 group-hover:text-purple-500 flex-shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
-              </svg>
-            </Link>
-
-            <Link
-              to="/complexity"
-              className="group flex items-start gap-3 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg p-4 hover:shadow-md dark:hover:shadow-slate-700/20 hover:border-purple-300 dark:hover:border-purple-600"
-            >
-              <div className="flex-shrink-0 w-9 h-9 bg-amber-100 dark:bg-amber-900/40 rounded-lg flex items-center justify-center text-amber-600 dark:text-amber-400">
-                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
-                </svg>
-              </div>
-              <div className="flex-1 min-w-0">
-                <h3 className="text-sm font-medium text-slate-900 dark:text-slate-100 mb-1">
-                  Test Complexity
-                </h3>
-                <p className="text-xs text-slate-600 dark:text-slate-400">
-                  STEEL team complexity assessments per EIP
+                  Model fork timelines for Glamsterdam and Hegota. Adjust phases and target dates.
                 </p>
               </div>
               <svg className="w-5 h-5 text-slate-400 group-hover:text-purple-500 flex-shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -339,7 +347,29 @@ const HomePage = () => {
                   Devnet Tracker
                 </h3>
                 <p className="text-xs text-slate-600 dark:text-slate-400">
-                  Combined complexity, support, and inclusion status
+                  Active devnet series across Glamsterdam, Fusaka, and more. Specs and client support.
+                </p>
+              </div>
+              <svg className="w-5 h-5 text-slate-400 group-hover:text-purple-500 flex-shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+              </svg>
+            </Link>
+
+            <Link
+              to="/decisions"
+              className="group flex items-start gap-3 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg p-4 hover:shadow-md dark:hover:shadow-slate-700/20 hover:border-purple-300 dark:hover:border-purple-600 sm:col-span-2"
+            >
+              <div className="flex-shrink-0 w-9 h-9 bg-slate-100 dark:bg-slate-700 rounded-lg flex items-center justify-center text-slate-600 dark:text-slate-400">
+                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4" />
+                </svg>
+              </div>
+              <div className="flex-1 min-w-0">
+                <h3 className="text-sm font-medium text-slate-900 dark:text-slate-100 mb-1">
+                  Key Decisions
+                </h3>
+                <p className="text-xs text-slate-600 dark:text-slate-400">
+                  Key decisions from AllCoreDevs meetings, aggregated in reverse-chronological order.
                 </p>
               </div>
               <svg className="w-5 h-5 text-slate-400 group-hover:text-purple-500 flex-shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">

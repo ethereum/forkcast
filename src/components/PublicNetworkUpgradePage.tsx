@@ -2,7 +2,6 @@ import React, { useEffect, useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { eipsData } from '../data/eips';
 import { getPendingProposalsForFork } from '../data/pending-proposals';
-import { Logo } from './ui/Logo';
 import { useMetaTags } from '../hooks/useMetaTags';
 import { useAnalytics } from '../hooks/useAnalytics';
 import { EIP, ClientTeamPerspective, InclusionStage } from '../types';
@@ -23,7 +22,6 @@ import {
 } from '../utils/colors';
 import { ActivationDetails } from '../data/upgrades';
 import { Tooltip, CopyLinkButton } from './ui';
-import ThemeToggle from './ui/ThemeToggle';
 import {
   NetworkUpgradeTimeline,
   FusakaTimeline,
@@ -372,10 +370,6 @@ const PublicNetworkUpgradePage: React.FC<PublicNetworkUpgradePageProps> = ({
       <div className="max-w-4xl mx-auto">
         {/* Header */}
         <div className="mb-8">
-          <div className="mb-12 flex justify-between items-start">
-            <Logo size="lg" />
-            <ThemeToggle />
-          </div>
           <Link to="/" className="text-slate-600 hover:text-slate-800 dark:text-slate-300 dark:hover:text-slate-100 mb-6 inline-block text-sm font-medium">
             ← All Network Upgrades
           </Link>

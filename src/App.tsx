@@ -19,6 +19,7 @@ import { getUpgradeById } from './data/upgrades';
 import { useAnalytics } from './hooks/useAnalytics';
 import { ThemeProvider } from './contexts/ThemeContext';
 import ExternalRedirect from './components/ExternalRedirect';
+import GlobalNav from './components/ui/GlobalNav';
 
 const stripTrailingSlashes = (p: string): string =>
   p === '/' ? '/' : p.replace(/\/+$/, '');
@@ -101,6 +102,7 @@ function App() {
         <AnalyticsTracker />
         <ScrollToTop />
         <div className="scanlines" aria-hidden="true" />
+        <GlobalNav />
         <main>
           <Routes>
             <Route path="/" element={<HomePage />} />

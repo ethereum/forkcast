@@ -2,15 +2,15 @@ import React, { useState, useMemo, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { Logo } from './ui/Logo';
 import { eipsData } from '../data/eips';
-import { useComplexityData, getComplexityForEip } from '../hooks/useComplexityData';
-import { getComplexityTierColor, getComplexityTierEmoji } from '../utils/complexity';
+import { useComplexityData, getComplexityForEip } from '../domain/complexity/useComplexityData';
+import { getComplexityTierColor, getComplexityTierEmoji } from '../domain/complexity/complexity';
+import type { ComplexityTier } from '../domain/complexity/types';
 import { getInclusionStage, getLaymanTitle, getProposalPrefix, getSpecificationUrl } from '../utils';
 import { getInclusionStageColor } from '../utils/colors';
 import { InclusionStage } from '../types';
 import { useMetaTags } from '../hooks/useMetaTags';
 import ThemeToggle from './ui/ThemeToggle';
 import AnalysisNav from './ui/AnalysisNav';
-import { ComplexityTier } from '../types';
 
 type SortField = 'eip' | 'complexity' | 'tier' | 'stage';
 type SortDirection = 'asc' | 'desc';

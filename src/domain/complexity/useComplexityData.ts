@@ -1,6 +1,6 @@
 import { useState, useEffect, useCallback } from 'react';
-import { EipComplexity } from '../types/complexity';
-import { parseComplexityMarkdown } from '../utils/complexity';
+import { EipComplexity } from './types';
+import { parseComplexityMarkdown } from './complexity';
 
 interface GitHubFileEntry {
   name: string;

@@ -1,54 +1,61 @@
 {
   "series": "ACDC",
-  "generated": "2026-04-06",
+  "generated": "2026-04-13",
   "for_call": "ACDC #177",
   "suggestions": [
     {
-      "topic": "Glamsterdam DevNet 0 status and mid-April launch readiness",
+      "topic": "ePBS DevNet 0/1 status and PTC fix implementation",
       "priority": "high",
-      "rationale": "DevNet 0 was targeted for mid-April (before Interop) as of ACDC #176. With April 6 approaching the deadline, teams need to confirm launch readiness or adjust timeline.",
+      "rationale": "DevNet 0 was targeted for mid-April and had critical bugs (Lighthouse exits, Prysm FCU issues). PTC fix decision was deferred to March 24 ACDT but outcome not reported. This is blocking progress to DevNet 1.",
+      "related_eips": [],
+      "source": "devnet_update"
+    },
+    {
+      "topic": "Glamsterdam DevNet 0 launch readiness",
+      "priority": "high",
+      "rationale": "Target was mid-April before Interop. As of today (April 13), this deadline is imminent. Need confirmation of readiness across ePBS, BALs, and other Glamsterdam components.",
       "related_eips": [],
       "source": "ongoing_discussion"
     },
     {
-      "topic": "ePBS critical issues resolution: PTC fix, 4788 gaps, reorg handling",
-      "priority": "high",
-      "rationale": "ACDC #176 identified multiple blocking issues for ePBS DevNet 1, including the PTC fix forcing a hard fork, 4788 payload gaps requiring stakeholder feedback, and engine API reorg semantics. These need status updates.",
-      "related_eips": [],
-      "source": "ongoing_discussion"
-    },
-    {
-      "topic": "SSZ Engine API implementation decision following PR 764 review",
+      "topic": "BAL DevNet status and SFI consideration",
       "priority": "medium",
-      "rationale": "ACDC #176 surfaced significant debate on whether to ship SSZ transport immediately vs. redesign entire Engine API. This was deferred to ACDE for cross-team discussion and needs CL perspective.",
+      "rationale": "BAL DevNet 2 SFI was scheduled for discussion on ACDE March 26, with implementation still ongoing across CL clients (Nimbus, Teku, Grandine). Status update needed before Glamsterdam DevNet 0.",
+      "related_eips": [],
+      "source": "ongoing_discussion"
+    },
+    {
+      "topic": "SSZ Engine API implementation and redesign scope",
+      "priority": "medium",
+      "rationale": "PR 764 showed significant blob performance gains but sparked debate about shipping SSZ transport immediately vs full Engine API redesign. ELs requested semantic fixes (FCU bundling, deterministic validity). Decision needed for Glamsterdam timeline.",
       "related_eips": [],
       "source": "deferred_decision"
     },
     {
-      "topic": "Cell-level deltas deployment timeline and Glamsterdam inclusion",
+      "topic": "EIP-4788 parent hash backfilling under ePBS",
       "priority": "medium",
-      "rationale": "ACDC #174 reported Blob DevNet Zero running stable with multiple implementations in progress. As a backwards-compatible optimization that can deploy pre-Amsterdam, teams should confirm deployment plans.",
+      "rationale": "4788 will have gaps for empty payloads under ePBS. Stokes was tasked with contacting Lido, Rocketpool, and EigenLayer on impact analysis. Update needed on protocol preferences and proof complexity.",
       "related_eips": [],
-      "source": "ongoing_discussion"
+      "source": "open_action_item"
     },
     {
-      "topic": "FOCIL (Hegotá headliner) implementation progress across clients",
+      "topic": "Hegotá non-headliner EIP proposal window",
       "priority": "medium",
-      "rationale": "FOCIL was selected as Hegotá headliner in ACDC #175. ACDC #176 mentioned non-headliner proposal window opens after EL headliner decision. Teams should provide implementation status updates.",
+      "rationale": "ACDC #176 mentioned proposal window opens after EL headliner decision (expected last week). EIP-8148 (custom sweep threshold) was proposed as candidate. Need to formally open CFI process.",
       "related_eips": [],
       "source": "ongoing_discussion"
     },
     {
-      "topic": "Hegotá non-headliner proposals following EL decision",
+      "topic": "Cell-level deltas deployment timeline",
       "priority": "low",
-      "rationale": "ACDC #176 noted that non-headliner proposal window opens after EL headliner decision next week (late March). If EL headliner was decided, CL teams should discuss corresponding proposals like EIP-8148 (custom sweep threshold).",
+      "rationale": "Lighthouse nearly done, Prism in review, Lodestar debugging as of Feb 5. Can deploy pre-Amsterdam with progressive rollout. Update on implementation completion across clients.",
       "related_eips": [],
       "source": "ongoing_discussion"
     },
     {
-      "topic": "Partial slot proofs implementation status (Teku, Lodestar, Nimbus)",
+      "topic": "Partial slot proofs implementation completion",
       "priority": "low",
-      "rationale": "ACDC #173 established that ePBS cannot ship without partial slot proofs in all clients. ACDC #174 reported Lighthouse/Prism implementations in DevNet, but Teku/Lodestar/Nimbus status remains unclear.",
+      "rationale": "ACDC #173 stated ePBS cannot ship without partial slot proofs in all clients. DevNet launched with Lighthouse/Prism, but Teku, Lodestar, Nimbus completion status unclear.",
       "related_eips": [],
       "source": "open_action_item"
     }

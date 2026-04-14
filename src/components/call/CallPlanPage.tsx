@@ -8,7 +8,7 @@ import { KeyDecision, EIP } from '../../types/eip';
 import { eipsData } from '../../data/eips';
 import { networkUpgrades } from '../../data/upgrades';
 import { getPendingProposalsForFork, type PendingProposal } from '../../data/pending-proposals';
-import { fetchUpcomingCalls, type UpcomingCall } from '../../utils/github';
+import { fetchUpcomingCalls, type UpcomingCall } from '../../domain/calls/upcomingCalls';
 import { StructuredDecisionContent, EipLinkWithTooltip } from './KeyDecisionsSection';
 
 interface TldrData {
@@ -155,6 +155,7 @@ const CallPlanPage: React.FC = () => {
   const dropdownRef = useRef<HTMLDivElement>(null);
   const [callTldrs, setCallTldrs] = useState<CallTldr[]>([]);
   const [nextCall, setNextCall] = useState<UpcomingCall | null>(null);
+  const [nextCallLoading, setNextCallLoading] = useState(false);
   const [openActionItems, setOpenActionItems] = useState<OpenActionItemsData | null>(null);
   const [deferredDecisions, setDeferredDecisions] = useState<DeferredDecisionsData | null>(null);
   const [agendaSuggestions, setAgendaSuggestions] = useState<AgendaSuggestionsData | null>(null);
@@ -282,12 +283,14 @@ const CallPlanPage: React.FC = () => {
   useEffect(() => {
     if (!type) {
       setLoading(false);
+      setNextCallLoading(false);
       return;
     }
 
     // Reset state when series changes
     setLoading(true);
     setNextCall(null);
+    setNextCallLoading(true);
     setOpenActionItems(null);
     setDeferredDecisions(null);
     setAgendaSuggestions(null);
@@ -302,7 +305,8 @@ const CallPlanPage: React.FC = () => {
           const match = calls.find(c => c.type === type);
           if (match) setNextCall(match);
         })
-        .catch(() => {});
+        .catch(() => {})
+        .finally(() => setNextCallLoading(false));
 
       // Fetch plan artifacts (non-blocking)
       fetch(`/artifacts/${type}/plan/open_action_items.json`)
@@ -454,6 +458,11 @@ const CallPlanPage: React.FC = () => {
           <p className="text-sm text-slate-500 dark:text-slate-400">
             Planning context from recent {typeLabel} calls.
           </p>
+          {nextCallLoading && (
+            <p className="mt-1 text-xs text-slate-500 dark:text-slate-400">
+              Loading fresh upcoming call details...
+            </p>
+          )}
         </div>
 
         {/* Next Call Card */}

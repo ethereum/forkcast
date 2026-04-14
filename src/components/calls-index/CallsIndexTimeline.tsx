@@ -82,13 +82,13 @@ const SECTION_STYLES: Record<
     placeholderClasses: 'border-amber-300/80 bg-white/70 text-slate-600 dark:border-amber-800 dark:bg-slate-900/40 dark:text-slate-300'
   },
   future: {
-    label: 'Future Dates',
+    label: 'Future Events',
     shellClasses: 'rounded-lg border border-emerald-200/70 bg-emerald-50/60 p-4 dark:border-emerald-900/50 dark:bg-emerald-950/10',
     pillClasses: 'bg-emerald-100 text-emerald-800 dark:bg-emerald-900/40 dark:text-emerald-200',
     placeholderClasses: 'border-emerald-300/80 bg-white/70 text-slate-600 dark:border-emerald-800 dark:bg-slate-900/40 dark:text-slate-300'
   },
   previous: {
-    label: 'Previous Dates',
+    label: 'Previous Events',
     shellClasses: 'rounded-lg border border-slate-200 bg-white/70 p-4 dark:border-slate-800 dark:bg-slate-900/40',
     pillClasses: 'bg-slate-200 text-slate-700 dark:bg-slate-800 dark:text-slate-200',
     placeholderClasses: 'border-slate-300/80 bg-white/70 text-slate-600 dark:border-slate-800 dark:bg-slate-900/40 dark:text-slate-300'

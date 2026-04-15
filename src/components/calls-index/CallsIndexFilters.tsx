@@ -31,7 +31,6 @@ const FILTER_INACTIVE_COLORS: Record<string, string> = {
 interface CallsIndexFiltersProps {
   selectedFilter: string;
   selectedBreakoutType: string;
-  showEvents: boolean;
   breakoutDropdownOpen: boolean;
   breakoutDropdownRef: RefObject<HTMLDivElement | null>;
   breakoutLabel: string;
@@ -41,13 +40,11 @@ interface CallsIndexFiltersProps {
   onBackToAllFilters: () => void;
   onToggleBreakoutDropdown: () => void;
   onSelectBreakoutType: (breakoutType: string | null) => void;
-  onToggleEvents: () => void;
 }
 
 export const CallsIndexFilters = ({
   selectedFilter,
   selectedBreakoutType,
-  showEvents,
   breakoutDropdownOpen,
   breakoutDropdownRef,
   breakoutLabel,
@@ -57,12 +54,11 @@ export const CallsIndexFilters = ({
   onBackToAllFilters,
   onToggleBreakoutDropdown,
   onSelectBreakoutType,
-  onToggleEvents
 }: CallsIndexFiltersProps) => {
   const isBreakoutsExpanded = selectedFilter === 'breakouts';
 
   return (
-    <div className="mt-4 flex items-center justify-between gap-2">
+    <div className="mt-4">
       <div className={`flex items-center gap-1.5 flex-nowrap sm:flex-wrap ${isBreakoutsExpanded ? '' : 'overflow-x-auto scrollbar-hide'}`}>
         {isBreakoutsExpanded ? (
           <>
@@ -147,18 +143,6 @@ export const CallsIndexFilters = ({
           </>
         )}
       </div>
-
-      <button
-        onClick={onToggleEvents}
-        className={`flex items-center gap-1.5 rounded-md px-2.5 py-1 text-xs font-medium transition-all ${
-          showEvents
-            ? 'bg-slate-600 text-white dark:bg-slate-400 dark:text-slate-900'
-            : 'bg-slate-100 text-slate-600 hover:bg-slate-200 dark:bg-slate-800 dark:text-slate-400 dark:hover:bg-slate-700'
-        }`}
-      >
-        <div className={`h-1.5 w-1.5 rounded-full ${showEvents ? 'bg-white dark:bg-slate-900' : 'bg-slate-500 dark:bg-slate-400'}`}></div>
-        <span>{showEvents ? 'Hide Events' : 'Show Events'}</span>
-      </button>
     </div>
   );
 };

@@ -25,7 +25,6 @@ const CallsIndexPage: React.FC = () => {
   const [searchParams, setSearchParams] = useSearchParams();
   const selectedFilter = searchParams.get('filter') || 'all';
   const selectedBreakoutType = searchParams.get('breakoutType') || '';
-  const showEvents = searchParams.get('events') !== 'false';
   const [upcomingCalls, setUpcomingCalls] = useState<UpcomingCall[]>([]);
   const [upcomingCallsLoading, setUpcomingCallsLoading] = useState(true);
   const [searchOpen, setSearchOpen] = useState(false);
@@ -112,9 +111,9 @@ const CallsIndexPage: React.FC = () => {
     return [
       ...filteredCalls,
       ...filteredUpcomingCalls,
-      ...(showEvents ? timelineEvents : [])
+      ...timelineEvents
     ];
-  }, [filteredCalls, filteredUpcomingCalls, showEvents]);
+  }, [filteredCalls, filteredUpcomingCalls]);
 
   const viewerTimeZone = useMemo(() => Intl.DateTimeFormat().resolvedOptions().timeZone, []);
   const todayDateString = getTodayDateString(new Date(), viewerTimeZone);
@@ -159,7 +158,6 @@ const CallsIndexPage: React.FC = () => {
           <CallsIndexFilters
             selectedFilter={selectedFilter}
             selectedBreakoutType={selectedBreakoutType}
-            showEvents={showEvents}
             breakoutDropdownOpen={breakoutDropdownOpen}
             breakoutDropdownRef={breakoutDropdownRef}
             breakoutLabel={breakoutLabel}
@@ -185,12 +183,6 @@ const CallsIndexPage: React.FC = () => {
                 else next.delete('breakoutType');
               });
               setBreakoutDropdownOpen(false);
-            }}
-            onToggleEvents={() => {
-              updateSearchParams((next) => {
-                if (showEvents) next.set('events', 'false');
-                else next.delete('events');
-              });
             }}
           />
         </div>

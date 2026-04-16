@@ -1,54 +1,61 @@
 {
   "series": "ACDT",
-  "generated": "2026-04-09",
-  "for_call": "ACDT #77",
+  "generated": "2026-04-16",
+  "for_call": "ACDT #78",
   "suggestions": [
     {
-      "topic": "BAL DevNet 3 EIP-8037 blocker resolution",
+      "topic": "EIP-2780 inclusion decision for bal-devnet-4",
       "priority": "high",
-      "rationale": "EIP-8037 causing orphaned blocks across all clients due to 2D gas accounting issues (blocks exceeding limits). DevNet 3 launch was targeting April 1 but appears blocked. Need coordination assignments and cross-client fixes.",
+      "rationale": "Deferred from ACDT #77 with explicit revisit 'next Monday' (today). Decision needed on whether to include transaction base cost breakdown in bal-devnet-4 before April 29 deadline.",
+      "related_eips": [],
+      "source": "deferred_decision"
+    },
+    {
+      "topic": "bal-devnet-3 gas accounting divergence resolution",
+      "priority": "high",
+      "rationale": "Critical blocker: Geth/Nethermind fork on state gas reservoir overflow treatment. Needs resolution before bal-devnet-4 launch (target April 29). EIP-8037 breakout scheduled but status unclear.",
       "related_eips": [],
       "source": "devnet_update"
     },
     {
-      "topic": "Glamsterdam DevNet 0 launch readiness check",
+      "topic": "epbs-devnet-2 planning and beacon state changes",
       "priority": "high",
-      "rationale": "Target date is April 15 (6 days away, fallback April 22). Requires stable BAL DevNet 3 + EPBS DevNet 1 + external builder API testing. Need confirmation of merge prerequisites and timeline feasibility.",
+      "rationale": "epbs-devnet-1 broken since launch. Devnet-2 blocked on beacon state changes. Need to unblock ePBS testing path and clarify timeline for external builder API testing before Glamsterdam merge.",
       "related_eips": [],
       "source": "devnet_update"
     },
     {
-      "topic": "EPBS DevNet 1 status and external builder API testing",
-      "priority": "high",
-      "rationale": "DevNet 1 launched March 31 with Alpha 4 spec. External builder API must be tested in isolation before merging with BAL. Need status update on builder API implementation across CL teams and testing completion.",
-      "related_eips": [],
-      "source": "ongoing_discussion"
-    },
-    {
-      "topic": "Blob DevNet 0 trunk release timeline for Nethermind/Erigon",
+      "topic": "ePBS range sync proposal review",
       "priority": "medium",
-      "rationale": "Both clients failing to stay at head on trunk branches due to missing stable GetBlobV3 releases. Prysm/Lighthouse targeting end of April for trunk-ready implementations. Need concrete release plans.",
-      "related_eips": [],
-      "source": "devnet_update"
-    },
-    {
-      "topic": "EIP-8136 (partial cells) inclusion decision for Glamsterdam",
-      "priority": "medium",
-      "rationale": "Proposed for Glamsterdam inclusion on March 30. Prysm/Lighthouse implementing partial cells for 300K validator test by end of April. Need ACD-level discussion on fork scope.",
-      "related_eips": [],
-      "source": "new_proposal"
-    },
-    {
-      "topic": "BAL benchmarking flags delivery (Nethermind/Erigon)",
-      "priority": "medium",
-      "rationale": "Urgent batch I/O prefetch flag request from March 23 still open. Required to isolate prefetch optimization from other BAL improvements for accurate performance testing. No confirmation of delivery in subsequent meetings.",
+      "rationale": "Potuz to write up proposal for CL-only range sync without payload validation. EL teams need to review security implications async. Significant architectural change affecting sync performance and security model.",
       "related_eips": [],
       "source": "open_action_item"
     },
     {
-      "topic": "Beacon API reviews for ePBS infrastructure (PRs #593, #584)",
+      "topic": "bal-devnet-4 scope finalization and launch timeline",
+      "priority": "medium",
+      "rationale": "Spec created with EIP-7976, EIP-7981 confirmed. Points 3-6 in design doc still need discussion. Launch target April 29 (before interop) requires locking scope soon.",
+      "related_eips": [],
+      "source": "ongoing_discussion"
+    },
+    {
+      "topic": "Glamsterdam DevNet 0 status and readiness",
+      "priority": "medium",
+      "rationale": "Original target April 15 (fallback April 22) has passed. Requires stable bal-devnet-3 + working epbs-devnet with external builder API tested. Need revised timeline given current blockers.",
+      "related_eips": [],
+      "source": "devnet_update"
+    },
+    {
+      "topic": "EIP-8136 partial cells inclusion in Glamsterdam",
       "priority": "low",
-      "rationale": "Two infrastructure PRs for proposal preference SSE events and envelope creation APIs assigned for review on March 30. Required for external builder implementation but no blocking impact on current devnets.",
+      "rationale": "Proposed in ACDT #76 for Glamsterdam with 300K validator testnet planned. Prysm/Lighthouse trunk-ready by end of April. May need formal inclusion decision.",
+      "related_eips": [],
+      "source": "new_proposal"
+    },
+    {
+      "topic": "Beacon API reviews: proposal preference SSE and envelope creation",
+      "priority": "low",
+      "rationale": "Two beacon-APIs PRs (#593, #584) assigned for CL team review in ACDT #76. No status updates in ACDT #77. Required for external builder implementation.",
       "related_eips": [],
       "source": "open_action_item"
     }

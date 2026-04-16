@@ -69,20 +69,19 @@ const PublicNetworkUpgradePage: React.FC<PublicNetworkUpgradePageProps> = ({
 }) => {
   // Determine display mode for this upgrade page
   const pageMode = getUpgradePageMode(forkName);
+  const showLayerFilter = pageMode === 'headlinerSelection' || forkName.toLowerCase() === 'glamsterdam' || forkName.toLowerCase() === 'hegota';
 
   const [searchParams, setSearchParams] = useSearchParams();
   const layerParam = searchParams.get('layer');
-  const initialLayerFilter: 'all' | 'EL' | 'CL' =
-    layerParam === 'EL' || layerParam === 'CL' ? layerParam : 'all';
-  const initialSearchQuery = searchParams.get('filter') ?? '';
+  const layerFilter: 'all' | 'EL' | 'CL' =
+    showLayerFilter && (layerParam === 'EL' || layerParam === 'CL') ? layerParam : 'all';
+  const searchQuery = searchParams.get('filter') ?? '';
 
   const [eips, setEips] = useState<EIP[]>([]);
   const [activeSection, setActiveSection] = useState<string>('overview');
   const [isDeclinedExpanded, setIsDeclinedExpanded] = useState(false);
   // In headlinerSelection mode, expand by default since it's the main content
   const [isHeadlinerProposalsExpanded, setIsHeadlinerProposalsExpanded] = useState(pageMode === 'headlinerSelection');
-  const [layerFilter, setLayerFilter] = useState<'all' | 'EL' | 'CL'>(initialLayerFilter);
-  const [searchQuery, setSearchQuery] = useState(initialSearchQuery);
 
   // Ensure headliner proposals are expanded when entering headlinerSelection mode
   useEffect(() => {
@@ -92,11 +91,24 @@ const PublicNetworkUpgradePage: React.FC<PublicNetworkUpgradePageProps> = ({
   }, [pageMode]);
   const location = useLocation();
 
+  useEffect(() => {
+    if (showLayerFilter || !layerParam) return;
+
+    setSearchParams(
+      (prev) => {
+        const next = new URLSearchParams(prev);
+        next.delete('layer');
+        return next;
+      },
+      { replace: true }
+    );
+  }, [layerParam, setSearchParams, showLayerFilter]);
+
   const updateFilterParams = (nextLayer: 'all' | 'EL' | 'CL', nextQuery: string) => {
     setSearchParams(
       (prev) => {
         const next = new URLSearchParams(prev);
-        if (nextLayer === 'all') {
+        if (!showLayerFilter || nextLayer === 'all') {
           next.delete('layer');
         } else {
           next.set('layer', nextLayer);
@@ -113,12 +125,10 @@ const PublicNetworkUpgradePage: React.FC<PublicNetworkUpgradePageProps> = ({
   };
 
   const handleLayerFilterChange = (filter: 'all' | 'EL' | 'CL') => {
-    setLayerFilter(filter);
     updateFilterParams(filter, searchQuery);
   };
 
   const handleSearchChange = (query: string) => {
-    setSearchQuery(query);
     updateFilterParams(layerFilter, query);
   };
   const { trackUpgradeView, trackLinkClick } = useAnalytics();
@@ -479,7 +489,7 @@ const PublicNetworkUpgradePage: React.FC<PublicNetworkUpgradePageProps> = ({
             onSearchChange={handleSearchChange}
             layerFilter={layerFilter}
             onLayerFilterChange={handleLayerFilterChange}
-            showLayerFilter={pageMode === 'headlinerSelection' || forkName.toLowerCase() === 'glamsterdam' || forkName.toLowerCase() === 'hegota'}
+            showLayerFilter={showLayerFilter}
           />
 
           <div className="flex-1 min-w-0">

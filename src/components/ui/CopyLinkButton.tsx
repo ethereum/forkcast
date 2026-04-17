@@ -15,7 +15,7 @@ export const CopyLinkButton: React.FC<CopyLinkButtonProps> = ({
   const [copiedSection, setCopiedSection] = useState<string | null>(null);
 
   const copyLinkToClipboard = (sectionId: string) => {
-    const url = `${window.location.origin}${window.location.pathname}#${sectionId}`;
+    const url = `${window.location.origin}${window.location.pathname}${window.location.search}#${sectionId}`;
     navigator.clipboard.writeText(url).then(() => {
       setCopiedSection(sectionId);
       // Clear the copied state after 2 seconds

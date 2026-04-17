@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Link, useLocation } from 'react-router-dom';
+import { Link, useLocation, useNavigate, useSearchParams } from 'react-router-dom';
 import { eipsData } from '../data/eips';
 import { getPendingProposalsForFork } from '../data/pending-proposals';
 import { Logo } from './ui/Logo';
@@ -46,6 +46,29 @@ const getUpgradePageMode = (forkName: string): UpgradePageMode => {
   return upgradePageModeByFork[forkName.toLowerCase()] ?? 'default';
 };
 
+const normalizeFilterParams = (
+  params: URLSearchParams,
+  showLayerFilter: boolean,
+  nextLayer: 'all' | 'EL' | 'CL',
+  nextQuery: string
+) => {
+  const next = new URLSearchParams(params);
+
+  if (!showLayerFilter || nextLayer === 'all') {
+    next.delete('layer');
+  } else {
+    next.set('layer', nextLayer);
+  }
+
+  if (!nextQuery.trim()) {
+    next.delete('filter');
+  } else {
+    next.set('filter', nextQuery);
+  }
+
+  return next;
+};
+
 interface PublicNetworkUpgradePageProps {
   forkName: string;
   displayName: string;
@@ -69,13 +92,20 @@ const PublicNetworkUpgradePage: React.FC<PublicNetworkUpgradePageProps> = ({
 }) => {
   // Determine display mode for this upgrade page
   const pageMode = getUpgradePageMode(forkName);
+  const showLayerFilter = pageMode === 'headlinerSelection' || forkName.toLowerCase() === 'glamsterdam' || forkName.toLowerCase() === 'hegota';
+  const navigate = useNavigate();
+  const location = useLocation();
+  const [searchParams] = useSearchParams();
+  const layerParam = searchParams.get('layer');
+  const layerFilter: 'all' | 'EL' | 'CL' =
+    showLayerFilter && (layerParam === 'EL' || layerParam === 'CL') ? layerParam : 'all';
+  const searchQuery = searchParams.get('filter') ?? '';
 
   const [eips, setEips] = useState<EIP[]>([]);
   const [activeSection, setActiveSection] = useState<string>('overview');
   const [isDeclinedExpanded, setIsDeclinedExpanded] = useState(false);
   // In headlinerSelection mode, expand by default since it's the main content
   const [isHeadlinerProposalsExpanded, setIsHeadlinerProposalsExpanded] = useState(pageMode === 'headlinerSelection');
-  const [layerFilter, setLayerFilter] = useState<'all' | 'EL' | 'CL'>('all');
 
   // Ensure headliner proposals are expanded when entering headlinerSelection mode
   useEffect(() => {
@@ -83,9 +113,29 @@ const PublicNetworkUpgradePage: React.FC<PublicNetworkUpgradePageProps> = ({
       setIsHeadlinerProposalsExpanded(true);
     }
   }, [pageMode]);
-  const [searchQuery, setSearchQuery] = useState('');
-  const location = useLocation();
   const { trackUpgradeView, trackLinkClick } = useAnalytics();
+
+  const updateFilterParams = (nextLayer: 'all' | 'EL' | 'CL', nextQuery: string) => {
+    const nextParams = normalizeFilterParams(searchParams, showLayerFilter, nextLayer, nextQuery);
+    const nextSearch = nextParams.toString();
+
+    navigate(
+      {
+        pathname: location.pathname,
+        search: nextSearch ? `?${nextSearch}` : '',
+        hash: location.hash,
+      },
+      { replace: true }
+    );
+  };
+
+  const handleLayerFilterChange = (filter: 'all' | 'EL' | 'CL') => {
+    updateFilterParams(filter, searchQuery);
+  };
+
+  const handleSearchChange = (query: string) => {
+    updateFilterParams(layerFilter, query);
+  };
 
   // Update meta tags for SEO and social sharing
   useMetaTags({
@@ -440,10 +490,10 @@ const PublicNetworkUpgradePage: React.FC<PublicNetworkUpgradePageProps> = ({
             activeSection={activeSection}
             onSectionClick={scrollToSection}
             searchQuery={searchQuery}
-            onSearchChange={setSearchQuery}
+            onSearchChange={handleSearchChange}
             layerFilter={layerFilter}
-            onLayerFilterChange={setLayerFilter}
-            showLayerFilter={pageMode === 'headlinerSelection' || forkName.toLowerCase() === 'glamsterdam' || forkName.toLowerCase() === 'hegota'}
+            onLayerFilterChange={handleLayerFilterChange}
+            showLayerFilter={showLayerFilter}
           />
 
           <div className="flex-1 min-w-0">

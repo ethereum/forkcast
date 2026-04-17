@@ -50,7 +50,7 @@ You receive the full TLDR (highlights, action items, decisions, targets). Classi
 
 - Multiple EIPs with the SAME action → one entry, all EIP numbers in \`eips\` array.
 - DIFFERENT actions in one decision string → separate entries per action.
-- Extract EIP numbers as integers from "EIP-1234", "EIP1234", or contextual references. Resolve well-known proposal names to their EIP numbers (e.g., FOCIL = 7805, ePBS = 7732, PeerDAS = 7594). Resolve ETH/XX aliases using the "Known Aliases" section if provided.
+- Extract EIP numbers as integers from "EIP-1234", "EIP1234", or contextual references. Resolve well-known proposal names to their EIP numbers (e.g., BAL = 7928, FOCIL = 7805, ePBS = 7732, PeerDAS = 7594). Resolve ETH/XX aliases using the "Known Aliases" section if provided.
 - \`original_text\` and \`timestamp\` must be copied verbatim from input.
 - If no EIP numbers can be identified, set \`eips\` to \`[]\`.
 - Rejecting a technical change *to* an EIP (not the EIP itself) → \`other\`.

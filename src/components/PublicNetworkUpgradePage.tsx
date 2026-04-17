@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Link, useLocation, useSearchParams } from 'react-router-dom';
+import { Link, useLocation, useNavigate, useSearchParams } from 'react-router-dom';
 import { eipsData } from '../data/eips';
 import { getPendingProposalsForFork } from '../data/pending-proposals';
 import { Logo } from './ui/Logo';
@@ -46,6 +46,29 @@ const getUpgradePageMode = (forkName: string): UpgradePageMode => {
   return upgradePageModeByFork[forkName.toLowerCase()] ?? 'default';
 };
 
+const normalizeFilterParams = (
+  params: URLSearchParams,
+  showLayerFilter: boolean,
+  nextLayer: 'all' | 'EL' | 'CL',
+  nextQuery: string
+) => {
+  const next = new URLSearchParams(params);
+
+  if (!showLayerFilter || nextLayer === 'all') {
+    next.delete('layer');
+  } else {
+    next.set('layer', nextLayer);
+  }
+
+  if (!nextQuery.trim()) {
+    next.delete('filter');
+  } else {
+    next.set('filter', nextQuery);
+  }
+
+  return next;
+};
+
 interface PublicNetworkUpgradePageProps {
   forkName: string;
   displayName: string;
@@ -70,8 +93,9 @@ const PublicNetworkUpgradePage: React.FC<PublicNetworkUpgradePageProps> = ({
   // Determine display mode for this upgrade page
   const pageMode = getUpgradePageMode(forkName);
   const showLayerFilter = pageMode === 'headlinerSelection' || forkName.toLowerCase() === 'glamsterdam' || forkName.toLowerCase() === 'hegota';
-
-  const [searchParams, setSearchParams] = useSearchParams();
+  const navigate = useNavigate();
+  const location = useLocation();
+  const [searchParams] = useSearchParams();
   const layerParam = searchParams.get('layer');
   const layerFilter: 'all' | 'EL' | 'CL' =
     showLayerFilter && (layerParam === 'EL' || layerParam === 'CL') ? layerParam : 'all';
@@ -89,36 +113,17 @@ const PublicNetworkUpgradePage: React.FC<PublicNetworkUpgradePageProps> = ({
       setIsHeadlinerProposalsExpanded(true);
     }
   }, [pageMode]);
-  const location = useLocation();
-
-  useEffect(() => {
-    if (showLayerFilter || !layerParam) return;
-
-    setSearchParams(
-      (prev) => {
-        const next = new URLSearchParams(prev);
-        next.delete('layer');
-        return next;
-      },
-      { replace: true }
-    );
-  }, [layerParam, setSearchParams, showLayerFilter]);
+  const { trackUpgradeView, trackLinkClick } = useAnalytics();
 
   const updateFilterParams = (nextLayer: 'all' | 'EL' | 'CL', nextQuery: string) => {
-    setSearchParams(
-      (prev) => {
-        const next = new URLSearchParams(prev);
-        if (!showLayerFilter || nextLayer === 'all') {
-          next.delete('layer');
-        } else {
-          next.set('layer', nextLayer);
-        }
-        if (!nextQuery.trim()) {
-          next.delete('filter');
-        } else {
-          next.set('filter', nextQuery);
-        }
-        return next;
+    const nextParams = normalizeFilterParams(searchParams, showLayerFilter, nextLayer, nextQuery);
+    const nextSearch = nextParams.toString();
+
+    navigate(
+      {
+        pathname: location.pathname,
+        search: nextSearch ? `?${nextSearch}` : '',
+        hash: location.hash,
       },
       { replace: true }
     );
@@ -131,7 +136,6 @@ const PublicNetworkUpgradePage: React.FC<PublicNetworkUpgradePageProps> = ({
   const handleSearchChange = (query: string) => {
     updateFilterParams(layerFilter, query);
   };
-  const { trackUpgradeView, trackLinkClick } = useAnalytics();
 
   // Update meta tags for SEO and social sharing
   useMetaTags({

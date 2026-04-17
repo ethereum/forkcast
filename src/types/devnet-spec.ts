@@ -1,4 +1,4 @@
-export type EipDevnetStatus = 'updated' | 'new' | 'new_optional' | null;
+export type EipDevnetStatus = 'updated' | 'new' | 'new_optional' | 'optional' | null;
 export type ClientSupportStatus =
   | 'supported'
   | 'not_supported'

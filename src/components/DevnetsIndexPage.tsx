@@ -141,16 +141,6 @@ function SeriesCard({ item }: { item: DevnetCardItem }) {
         </p>
       )}
       <div className="space-y-1 mt-auto pt-1 border-t border-slate-100 dark:border-slate-700/50">
-        {item.activeKeys.map((key) => (
-          <div key={key}>
-            <Link
-              to={`/devnets/${key}`}
-              className="text-xs font-mono font-medium text-purple-600 hover:text-purple-800 dark:text-purple-400 dark:hover:text-purple-300 transition-colors"
-            >
-              {key}
-            </Link>
-          </div>
-        ))}
         {item.upcomingSpecId && (
           <div className="flex items-center gap-1.5">
             <Link
@@ -164,6 +154,16 @@ function SeriesCard({ item }: { item: DevnetCardItem }) {
             </span>
           </div>
         )}
+        {item.activeKeys.map((key) => (
+          <div key={key}>
+            <Link
+              to={`/devnets/${key}`}
+              className="text-xs font-mono font-medium text-purple-600 hover:text-purple-800 dark:text-purple-400 dark:hover:text-purple-300 transition-colors"
+            >
+              {key}
+            </Link>
+          </div>
+        ))}
       </div>
     </div>
   );

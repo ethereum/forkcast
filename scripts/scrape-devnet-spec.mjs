@@ -38,13 +38,13 @@ function parseTitle(md) {
 
 function parseAnnouncements(md) {
   const announcements = [];
-  const infoBlockRegex = /:::info\n([\s\S]*?):::/g;
+  const infoBlockRegex = /:::(?:info|success|warning)\n([\s\S]*?):::/g;
   let match;
   while ((match = infoBlockRegex.exec(md)) !== null) {
     let text = match[1].trim();
     // Strip leading emoji shortcodes like :mega:, :exclamation:, etc.
     text = text.replace(/^:[a-z_]+:\s*/i, '');
-    // Strip leading unicode emoji (❗, 📢, etc.)
+    // Strip leading unicode emoji (❗, 📢, ✅, etc.)
     text = text.replace(/^[\u{2000}-\u{3300}\u{FE00}-\u{FEFF}\u{1F000}-\u{1FFFF}]\s*/u, '');
     if (text) announcements.push(text);
   }
@@ -57,6 +57,7 @@ function parseStatusCell(text) {
   if ((t.includes(':new:') || t.includes('🆕')) && /optional/i.test(t))
     return 'new_optional';
   if (t.includes(':new:') || t.includes('🆕')) return 'new';
+  if (/^optional$/i.test(t)) return 'optional';
   return null;
 }
 
@@ -75,7 +76,12 @@ function parseEipTable(md) {
 
     eips.push({
       number: parseInt(numberStr, 10),
-      title: title.trim().replace(/\s*:[a-z_]+:\s*/gi, ' ').trim(),
+      title: title
+        .trim()
+        .replace(/\s*:[a-z_]+:\s*/gi, ' ')
+        .replace(/\*\*/g, '')
+        .replace(/\s+/g, ' ')
+        .trim(),
       status,
       url: url.trim(),
     });
@@ -206,7 +212,10 @@ async function main() {
       md,
       /## Execution Layer Client Support|### Implementation tracker EL/,
     ),
-    clClientSupport: parseClientMatrix(md, /### Implementation tracker CL/),
+    clClientSupport: parseClientMatrix(
+      md,
+      /## Consensus Layer Client Support|## Consensus Layer Support|### Implementation tracker CL/,
+    ),
     specReferences: parseSpecReferences(md),
   };
 

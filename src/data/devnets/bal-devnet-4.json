@@ -1,18 +1,20 @@
 {
-  "id": "bal-devnet-3",
-  "title": "bal-devnet-3",
-  "sourceUrl": "https://notes.ethereum.org/@ethpandaops/bal-devnet-3",
-  "scrapedAt": "2026-04-16T15:44:02.077Z",
+  "id": "bal-devnet-4",
+  "title": "bal-devnet-4",
+  "sourceUrl": "https://notes.ethereum.org/@ethpandaops/bal-devnet-4",
+  "scrapedAt": "2026-04-16T15:44:03.497Z",
   "announcements": [
-    "bal-devnet-3 targets to launch 08 April 2026.",
-    "EL clients: please add flags to enable/disable BAL optimizations batch/parallel io and parallel execution.",
-    "EL clients: **EIP-8037** will be using a hardcoded value for the **cost per state byte of 1174**. This aligns with a block gas limit of 100M, the value being set for the devnet. The cost per state byte value of 1174 will be a treated as a fork constant for this devnet and not depend on the block gas limit. For the next devnet we will use the full EIP variant where the cpsb will depend on the block gas limit."
+    "bal-devnet-4 target launch: **22.04**.",
+    "EIP-8037: bal-devnet-4 switches from the **static** `cost_per_state_byte = 1174` used in bal-devnet-3 to the **full EIP variant** where `cpsb` is **derived from the block gas limit** (quantized via `CPSB_SIGNIFICANT_BITS = 5`, `CPSB_OFFSET = 9578`).",
+    "Primary focus of this devnet is **EIP-8037 stabilization**: picking up the spec clarifications, follow-up tests, and the spec decisions from the [state gas accounting review](https://github.com/misilva73/evm-gas-repricings/blob/main/reports/eip-8037/spec_review_state_gas_accounting.md).",
+    "**EIP-7976 and EIP-7981 must be implemented** by all EL clients for bal-devnet-4. Both were added post-ACDT; spec/test side is ready, client implementations are the remaining gate.",
+    "**All 7 EIP-8037 state gas accounting decisions resolved** at Glamsterdam Repricing Breakout #6 (2026-04-15). [Recording](https://www.youtube.com/watch?v=U8RvbLPX188). See \"Changes vs. bal-devnet-3\" below for the full decision list."
   ],
   "eips": [
     {
       "number": 7708,
       "title": "ETH transfers emit a log",
-      "status": "updated",
+      "status": null,
       "url": "https://eips.ethereum.org/EIPS/eip-7708"
     },
     {
@@ -30,38 +32,50 @@
     {
       "number": 7928,
       "title": "Block-Level Access Lists",
-      "status": "updated",
+      "status": null,
       "url": "https://eips.ethereum.org/EIPS/eip-7928"
     },
     {
       "number": 7954,
       "title": "Increase Maximum Contract Size",
-      "status": "new",
+      "status": null,
       "url": "https://eips.ethereum.org/EIPS/eip-7954"
     },
     {
       "number": 7975,
-      "title": "eth/70 - partial block receipt lists",
-      "status": "new_optional",
+      "title": "eth/70 – partial block receipt lists",
+      "status": "optional",
       "url": "https://eips.ethereum.org/EIPS/eip-7975"
     },
     {
       "number": 8024,
       "title": "Backward compatible SWAPN, DUPN, EXCHANGE",
-      "status": "updated",
+      "status": null,
       "url": "https://eips.ethereum.org/EIPS/eip-8024"
     },
     {
       "number": 8037,
-      "title": "State Creation Gas Cost Increase - static value 1174",
-      "status": "new",
+      "title": "State Creation Gas Cost Increase — dynamic `cpsb`",
+      "status": "updated",
       "url": "https://eips.ethereum.org/EIPS/eip-8037"
     },
     {
       "number": 8159,
-      "title": "eth/71 - Block Access List Exchange",
-      "status": "new_optional",
+      "title": "eth/71 – Block Access List Exchange",
+      "status": "optional",
       "url": "https://eips.ethereum.org/EIPS/eip-8159"
+    },
+    {
+      "number": 7976,
+      "title": "Increase Calldata Floor Cost (64/64)",
+      "status": "new",
+      "url": "https://eips.ethereum.org/EIPS/eip-7976"
+    },
+    {
+      "number": 7981,
+      "title": "Increase Access List Cost",
+      "status": "new",
+      "url": "https://eips.ethereum.org/EIPS/eip-7981"
     }
   ],
   "elClientSupport": {
@@ -150,7 +164,7 @@
           "Nethermind": "supported",
           "Erigon": "not_supported",
           "Nimbus-EL": "not_supported",
-          "Ethrex": "not_supported"
+          "Ethrex": "supported"
         }
       },
       {
@@ -168,15 +182,41 @@
       },
       {
         "eipNumber": 8037,
-        "label": "8037 (stateIncr)",
+        "label": "8037 (dyn-cpsb)",
         "support": {
-          "Geth": "supported",
-          "Besu": "supported",
-          "Reth": "supported",
-          "Nethermind": "supported",
-          "Erigon": "supported",
-          "Nimbus-EL": "supported",
-          "Ethrex": "supported"
+          "Geth": "in_progress",
+          "Besu": "in_progress",
+          "Reth": "in_progress",
+          "Nethermind": "in_progress",
+          "Erigon": "in_progress",
+          "Nimbus-EL": "in_progress",
+          "Ethrex": "in_progress"
+        }
+      },
+      {
+        "eipNumber": 7976,
+        "label": "7976 (Calldata)",
+        "support": {
+          "Geth": "in_progress",
+          "Besu": "in_progress",
+          "Reth": "in_progress",
+          "Nethermind": "in_progress",
+          "Erigon": "in_progress",
+          "Nimbus-EL": "in_progress",
+          "Ethrex": "in_progress"
+        }
+      },
+      {
+        "eipNumber": 7981,
+        "label": "7981 (AL Cost)",
+        "support": {
+          "Geth": "in_progress",
+          "Besu": "in_progress",
+          "Reth": "in_progress",
+          "Nethermind": "in_progress",
+          "Erigon": "in_progress",
+          "Nimbus-EL": "in_progress",
+          "Ethrex": "in_progress"
         }
       },
       {
@@ -189,7 +229,7 @@
           "Nethermind": "not_supported",
           "Erigon": "not_supported",
           "Nimbus-EL": "not_supported",
-          "Ethrex": "not_supported"
+          "Ethrex": "in_progress"
         }
       }
     ]
@@ -227,8 +267,8 @@
       "url": "https://github.com/ethereum/consensus-specs/releases/tag/v1.6.1"
     },
     "executionSpecs": {
-      "version": "bal@v5.6.0",
-      "url": "https://github.com/ethereum/execution-spec-tests/releases/tag/bal@v5.6.0"
+      "version": "bal@v5.6.1",
+      "url": "https://github.com/ethereum/execution-spec-tests/releases/tag/bal@v5.6.1"
     }
   }
 }

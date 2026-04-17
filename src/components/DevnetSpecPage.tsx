@@ -28,15 +28,24 @@ function StatusBadge({ status }: { status: EipDevnetStatus }) {
     new_optional:
       'bg-green-100 text-green-800 dark:bg-green-900/40 dark:text-green-300',
   };
+  const optionalStyle =
+    'bg-slate-100 text-slate-600 dark:bg-slate-700 dark:text-slate-400';
   if (status === 'new_optional') {
     return (
       <span className="inline-flex gap-1">
         <span className={`inline-block px-2 py-0.5 rounded text-xs font-medium ${styles.new}`}>
           New
         </span>
-        <span className="inline-block px-2 py-0.5 rounded text-xs font-medium bg-slate-100 text-slate-600 dark:bg-slate-700 dark:text-slate-400">
+        <span className={`inline-block px-2 py-0.5 rounded text-xs font-medium ${optionalStyle}`}>
           Optional
         </span>
+      </span>
+    );
+  }
+  if (status === 'optional') {
+    return (
+      <span className={`inline-block px-2 py-0.5 rounded text-xs font-medium ${optionalStyle}`}>
+        Optional
       </span>
     );
   }

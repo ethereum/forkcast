@@ -168,19 +168,20 @@ function parseClientMatrix(md, sectionPattern) {
 function parseSpecLine(md, label) {
   // Match the line starting with **Label:** and find a markdown link or bare URL on it
   const lineMatch = md.match(
-    new RegExp(`\\*\\*${label}:?\\*\\*[^\\n]*`),
+    new RegExp(`\\*\\*${label}:?\\*\\*([^\\n]*)`),
   );
   if (!lineMatch) return null;
-  const line = lineMatch[0];
+  const line = lineMatch[1].trim();
+  const primary = line.split(/\.\s+Current\b| — | – /i)[0].trim();
 
   // Try markdown link: [version](url)
-  const linkMatch = line.match(/\[`?([^`\]]+)`?\]\((https?:\/\/[^\s)]+)\)/);
+  const linkMatch = primary.match(/\[`?([^`\]]+)`?\]\((https?:\/\/[^\s)]+)\)/);
   if (linkMatch) {
     return { version: linkMatch[1].trim(), url: linkMatch[2].trim() };
   }
 
   // Try bare URL
-  const bareMatch = line.match(/(https?:\/\/\S+)/);
+  const bareMatch = primary.match(/(https?:\/\/\S+)/);
   if (bareMatch) {
     const url = bareMatch[1].trim();
     const tagMatch = url.match(/\/tag\/(.+?)$/);

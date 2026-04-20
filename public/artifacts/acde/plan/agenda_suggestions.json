@@ -1,63 +1,63 @@
 {
   "series": "ACDE",
-  "generated": "2026-04-13",
+  "generated": "2026-04-20",
   "for_call": "ACDE #235",
   "suggestions": [
     {
-      "topic": "Glamsterdam DevNet 0/1 launch decision following ePBS stability assessment",
+      "topic": "Glamsterdam DevNet 0/1 launch status and ePBS stability assessment",
       "priority": "high",
-      "rationale": "Decision point was Monday April 14 (yesterday). Need to confirm whether ePBS was stable enough to proceed with Glamsterdam DevNet 0 or if bal-devnet-4 with dynamic EIP-8037 is needed instead.",
+      "rationale": "ACDE #234 set Monday (April 14) as decision point for ePBS stability to determine DevNet 0 vs bal-devnet-4 path. Need confirmation of which path was taken and current testing status.",
       "related_eips": [],
       "source": "deferred_decision"
     },
     {
-      "topic": "Account Abstraction proposal alignment and path forward",
+      "topic": "EIP-8037 dynamic cost spec and gas accounting edge cases resolution",
       "priority": "high",
-      "rationale": "AA breakout was scheduled post-#234. Frame transactions are CFI'd as non-headliner, Wallet Title Deeds proposal was presented, and Scheme transactions (EIP-8XXX) were introduced. Need to clarify which AA proposals are actively being pursued for Hegotá and resolve mempool strategy concerns.",
-      "related_eips": [],
-      "source": "ongoing_discussion"
-    },
-    {
-      "topic": "EIP-8037 state creation cost specification clarifications",
-      "priority": "high",
-      "rationale": "DevNet-3 testing revealed edge cases with spillover gas and state refunds. Dynamic cost spec is planned for bal-devnet-4. Need to confirm specification is stable enough for broader DevNet testing.",
+      "rationale": "DevNet 3 discovered edge cases with spillover gas and state refunds. DevNet 4 planned with dynamic cost spec but dependent on ePBS stability decision. Critical blocker for Glamsterdam progression.",
       "related_eips": [],
       "source": "devnet_update"
     },
     {
-      "topic": "ePBS DevNet-1 blocker resolution and relaunch timeline",
+      "topic": "Account Abstraction proposal alignment and breakout call scheduling",
       "priority": "high",
-      "rationale": "DevNet-1 had multiple consensus bugs, peering issues, and client disconnections as of #234. Critical for Glamsterdam merge decision and overall fork progress.",
+      "rationale": "AA breakout was requested in #234 to align on path forward after Frame transactions CFI'd as non-headliner. Strong community support exists but clients divided on approach. Needs coordination before proposals diverge further.",
       "related_eips": [],
-      "source": "devnet_update"
+      "source": "deferred_decision"
     },
     {
-      "topic": "History pruning minimum retention target consensus",
+      "topic": "Gas repricing EIPs readiness for DevNet inclusion",
       "priority": "medium",
-      "rationale": "Discussion ongoing in History Expirator channel per #234 action item. Emerging consensus around 1 month minimum but needs formal decision. Relates to EIP-4444 and broader archive node strategy.",
+      "rationale": "ACDE #234 proposed gas repricing EIPs for DevNet 0 with final version in DevNet 1. Need status on EIP-7976, EIP-7904, and other repricing proposals targeting 60 Mgas/s baseline.",
       "related_eips": [],
       "source": "ongoing_discussion"
     },
     {
-      "topic": "Gas repricing EIPs readiness for Glamsterdam DevNet-1",
+      "topic": "Engine API changes for ePBS and checkpoint sync",
       "priority": "medium",
-      "rationale": "18 operations targeting 60 Mgas/s baseline were outlined in #233. If ePBS stable and DevNet-0 proceeds, need to confirm which repricing EIPs (7976, 7904, etc.) are ready for rapid DevNet-1 inclusion.",
-      "related_eips": [],
-      "source": "devnet_update"
-    },
-    {
-      "topic": "Engine API changes for ePBS: FCU shortcut removal and checkpoint sync zero hashes",
-      "priority": "medium",
-      "rationale": "Two engine API changes were discussed in #234: allowing zero safe/finalized block hashes for checkpoint sync, and removing FCU shortcut to enable payload reorgs within 32 blocks. Need implementation status from client teams.",
+      "rationale": "Two engine API changes discussed in #234: allowing zero safe/finalized block hash for checkpoint sync, and removing FCU shortcut for ePBS payload reorgs. Need CFI decision and implementation timeline.",
       "related_eips": [],
       "source": "ongoing_discussion"
     },
     {
-      "topic": "EIP-8070 Sparse Mempool client implementation feedback",
+      "topic": "History pruning minimum retention period consensus",
+      "priority": "medium",
+      "rationale": "ACDE #234 showed consensus emerging around 1 month minimum history retention (plus unfinalized blocks). Action item to continue discussion in Discord, but synchronous alignment may be needed before EIP finalization.",
+      "related_eips": [],
+      "source": "ongoing_discussion"
+    },
+    {
+      "topic": "EIP-8070 Sparse Mempool client feedback and implementation status",
       "priority": "low",
-      "rationale": "CFI'd in #233 with Geth prototype complete. Feedback was requested from other client teams but no updates provided in #234. May have been handled async, but worth confirming status.",
+      "rationale": "CFI'd in #233 with Geth prototype complete. Feedback requested from other clients but no updates in #234. Low priority unless blocking issues emerge.",
       "related_eips": [],
       "source": "open_action_item"
+    },
+    {
+      "topic": "SSZ over REST for engine API performance improvements",
+      "priority": "low",
+      "rationale": "Proposed in #234 as non-consensus performance optimization for engine API. Informational discussion to gauge client interest and implementation feasibility.",
+      "related_eips": [],
+      "source": "new_proposal"
     }
   ]
 }

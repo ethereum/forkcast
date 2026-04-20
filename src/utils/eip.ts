@@ -88,6 +88,9 @@ export const getProposalPrefix = (eip: EIP): ProposalType => {
   return 'EIP';
 };
 
+export const getSummaryDescription = (eip: EIP): string =>
+  eip.laymanDescription || eip.description;
+
 /**
  * Get the specification URL for an EIP
  */

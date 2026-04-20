@@ -12,6 +12,7 @@ import {
   getLaymanTitle,
   getProposalPrefix,
   getSpecificationUrl,
+  getSummaryDescription,
   wasHeadlinerCandidate,
   isUnselectedHeadlinerCandidate,
   sortByLayer,
@@ -594,7 +595,6 @@ const PublicNetworkUpgradePage: React.FC<PublicNetworkUpgradePageProps> = ({
                   // If both are same type (both headliner or both not), sort by EIP number
                   return a.id - b.id;
                 });
-
                 const stageId = stage.toLowerCase().replace(/\s+/g, '-');
                 const isDeclinedStage = stage === 'Declined for Inclusion';
 
@@ -646,8 +646,6 @@ const PublicNetworkUpgradePage: React.FC<PublicNetworkUpgradePageProps> = ({
                     ) : (
                       <div className="space-y-6">
                         {sortedStageEips.map(eip => {
-                          if (!eip.laymanDescription) return null;
-
                           const eipId = `eip-${eip.id}`;
 
                           // For declined EIPs, show simplified view
@@ -661,7 +659,7 @@ const PublicNetworkUpgradePage: React.FC<PublicNetworkUpgradePageProps> = ({
                                       <span>{eip.title}</span>
                                     </h3>
                                     <p className="text-slate-700 dark:text-slate-300 text-sm leading-relaxed">
-                                      {eip.description}
+                                      {getSummaryDescription(eip)}
                                     </p>
                                   </div>
                                   <div className="flex items-center gap-2 ml-4">
@@ -806,10 +804,9 @@ const PublicNetworkUpgradePage: React.FC<PublicNetworkUpgradePageProps> = ({
                           if (layerSort !== 0) return layerSort;
                           return a.id - b.id;
                         })
-                        .map(eip => {
-                          if (!eip.laymanDescription) return null;
-                          return <EipCard key={eip.id} eip={eip} forkName={forkName} handleExternalLinkClick={handleExternalLinkClick} />;
-                        })
+                        .map(eip => (
+                          <EipCard key={eip.id} eip={eip} forkName={forkName} handleExternalLinkClick={handleExternalLinkClick} />
+                        ))
                       }
 
                       {/* Pending Proposals - forum discussions without EIP numbers yet */}

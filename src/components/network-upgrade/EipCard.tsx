@@ -8,6 +8,7 @@ import {
   getLaymanTitle,
   getProposalPrefix,
   getSpecificationUrl,
+  getSummaryDescription,
   parseMarkdownLinks,
   getEipLayer,
 } from '../../utils';
@@ -175,7 +176,7 @@ export const EipCard: React.FC<EipCardProps> = ({ eip, forkName, handleExternalL
       {/* Description */}
       <div className="">
         <p className="text-slate-700 dark:text-slate-300 text-sm leading-relaxed">
-          {parseMarkdownLinks(eip.laymanDescription || '')}
+          {parseMarkdownLinks(getSummaryDescription(eip))}
         </p>
 
         <div className="mt-3 text-xs space-x-3">

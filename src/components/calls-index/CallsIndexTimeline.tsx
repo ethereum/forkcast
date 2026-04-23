@@ -26,7 +26,8 @@ const CALL_TYPE_BORDER_COLORS: Record<CallType, string> = {
   etm: 'border-l-purple-500 dark:border-l-purple-400',
   awd: 'border-l-lime-500 dark:border-l-lime-400',
   pqi: 'border-l-emerald-500 dark:border-l-emerald-400',
-  fcr: 'border-l-teal-500 dark:border-l-teal-400'
+  fcr: 'border-l-teal-500 dark:border-l-teal-400',
+  aa: 'border-l-indigo-500 dark:border-l-indigo-400'
 };
 
 const CALL_TYPE_BADGE_COLORS: Record<CallType, string> = {
@@ -44,7 +45,8 @@ const CALL_TYPE_BADGE_COLORS: Record<CallType, string> = {
   etm: 'bg-purple-100 dark:bg-purple-900/30 text-purple-700 dark:text-purple-300',
   awd: 'bg-lime-100 dark:bg-lime-900/30 text-lime-700 dark:text-lime-300',
   pqi: 'bg-emerald-100 dark:bg-emerald-900/30 text-emerald-700 dark:text-emerald-300',
-  fcr: 'bg-teal-100 dark:bg-teal-900/30 text-teal-700 dark:text-teal-300'
+  fcr: 'bg-teal-100 dark:bg-teal-900/30 text-teal-700 dark:text-teal-300',
+  aa: 'bg-indigo-100 dark:bg-indigo-900/30 text-indigo-700 dark:text-indigo-300'
 };
 
 const FALLBACK_BORDER_COLOR = 'border-l-slate-400 dark:border-l-slate-500';

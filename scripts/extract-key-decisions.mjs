@@ -41,7 +41,7 @@ You receive the full TLDR (highlights, action items, decisions, targets). Classi
 
 ## Types
 
-- **stage_change**: EIP moves to a new inclusion stage. Set \`stage_change.to\` to one of: "Considered" (CFI), "Scheduled" (SFI), "Declined" (DFI), "Included", "Withdrawn".
+- **stage_change**: EIP moves to a new inclusion stage. Set \`stage_change.to\` to one of: "Proposed" (PFI), "Considered" (CFI), "Scheduled" (SFI), "Declined" (DFI), "Included", "Withdrawn".
 - **devnet_inclusion**: A specific EIP being added to or scoped into a devnet for the first time. The decision must name the EIP(s) being included. Do NOT use this type when the EIP is the defining proposal of that devnet's workstream (e.g., EIP-7732 in epbs-devnet-0) — that is tautological. Devnet timeline, launch date, spec version targeting, spec freeze, or general status updates → \`other\`. Set \`devnet\` to the full lowercase identifier with workstream prefix (e.g., "bal-devnet-3", "epbs-devnet-0"). Infer the prefix from highlight categories, meeting context, or surrounding discussion. Never output bare "devnet-N".
 - **headliner_selected**: EIP selected as fork headliner. Set \`fork\` to the fork name.
 - **other**: Everything else.
@@ -121,6 +121,7 @@ const VALID_TYPES = new Set([
   'other',
 ]);
 const VALID_STAGES = new Set([
+  'Proposed',
   'Considered',
   'Scheduled',
   'Included',

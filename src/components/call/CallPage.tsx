@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef, useCallback, useMemo } from 'react';
-import { Link, useParams, useLocation, useNavigate } from 'react-router-dom';
+import { Link, useParams, useLocation, useNavigate, useSearchParams } from 'react-router-dom';
 import YouTube, { YouTubeProps } from 'react-youtube';
 import ChatLog from './ChatLog';
 import TldrSummary from './TldrSummary';
@@ -104,29 +104,27 @@ const CallPage: React.FC = () => {
   const [loading, setLoading] = useState(true);
   const [isUpcoming, setIsUpcoming] = useState(false);
 
+  const [searchParams, setSearchParams] = useSearchParams();
+
   const breakoutsForCall = useMemo(
     () => (callPath ? breakouts.filter(b => b.parentPath === callPath) : []),
     [callPath],
   );
 
   // URL-driven so the tab selection is shareable. Unknown values fall through to main call.
-  const activeBreakoutKind = useMemo<BreakoutKind | null>(() => {
-    const param = new URLSearchParams(location.search).get('breakout');
-    return breakoutsForCall.some(b => b.kind === param) ? (param as BreakoutKind) : null;
-  }, [location.search, breakoutsForCall]);
-
-  const activeBreakout = useMemo(
-    () => breakoutsForCall.find(b => b.kind === activeBreakoutKind) ?? null,
-    [breakoutsForCall, activeBreakoutKind],
-  );
+  const activeBreakout = useMemo(() => {
+    const param = searchParams.get('breakout');
+    return breakoutsForCall.find(b => b.kind === param) ?? null;
+  }, [searchParams, breakoutsForCall]);
 
   const setActiveBreakoutKind = useCallback((kind: BreakoutKind | null) => {
-    const params = new URLSearchParams(location.search);
-    if (kind) params.set('breakout', kind);
-    else params.delete('breakout');
-    const search = params.toString();
-    navigate({ pathname: location.pathname, search: search ? `?${search}` : '' });
-  }, [location.search, location.pathname, navigate]);
+    setSearchParams(prev => {
+      const next = new URLSearchParams(prev);
+      if (kind) next.set('breakout', kind);
+      else next.delete('breakout');
+      return next;
+    });
+  }, [setSearchParams]);
 
   const [summaryExpanded, setSummaryExpanded] = useState(false);
   const transcriptRef = useRef<HTMLDivElement>(null);
@@ -435,7 +433,7 @@ const CallPage: React.FC = () => {
             if (content.trim() && !content.trimStart().startsWith('<!')) chatContent = content;
           }
           setCallData({
-            type: activeBreakout.kind.toUpperCase(),
+            type: activeBreakout.kind,
             date: '',
             number: '',
             chatContent,
@@ -1030,6 +1028,7 @@ const CallPage: React.FC = () => {
 
 
   const oneOff = isOneOffCall(callData.type.toLowerCase());
+  const callNumberSuffix = !oneOff && callData.number ? ` #${callData.number}` : '';
 
   const getCallTypeLabel = () => {
     if (matchingCall?.name) return matchingCall.name;
@@ -1135,7 +1134,7 @@ const CallPage: React.FC = () => {
 
   const renderBreakoutTabs = () => {
     if (breakoutsForCall.length === 0) return null;
-    const pillBase = 'px-3 py-1 rounded-full text-xs font-medium transition-colors cursor-pointer';
+    const pillBase = 'px-3 py-1 rounded-full text-xs font-medium transition-colors';
     const pillActive = 'bg-blue-600 text-white hover:bg-blue-700';
     const pillInactive = 'bg-slate-100 dark:bg-slate-700 text-slate-600 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-600';
     return (
@@ -1146,12 +1145,12 @@ const CallPage: React.FC = () => {
         <button
           type="button"
           onClick={() => setActiveBreakoutKind(null)}
-          className={`${pillBase} ${!activeBreakoutKind ? pillActive : pillInactive}`}
+          className={`${pillBase} ${!activeBreakout ? pillActive : pillInactive}`}
         >
           Main Call
         </button>
         {breakoutsForCall.map(b => {
-          const isActive = activeBreakoutKind === b.kind;
+          const isActive = activeBreakout?.kind === b.kind;
           return (
             <button
               key={b.kind}
@@ -1200,7 +1199,7 @@ const CallPage: React.FC = () => {
         <div className={isWorkspaceView ? 'border-t border-slate-200 pt-3 dark:border-slate-700' : 'border-t border-slate-200 pt-3 dark:border-slate-700'}>
           <div className="flex flex-wrap items-center gap-x-4 gap-y-2 text-sm">
             <h2 className="text-base font-semibold text-slate-900 dark:text-slate-100">
-              {getCallTypeLabel()}{!oneOff && callData.number ? ` #${callData.number}` : ''}
+              {getCallTypeLabel()}{callNumberSuffix}
             </h2>
             {callData.date && (
               <>
@@ -1439,7 +1438,7 @@ const CallPage: React.FC = () => {
             <div className="flex items-center gap-2">
               <Logo size="xs" />
               <span className="text-xs text-slate-600 dark:text-slate-400">
-                {getCallTypeLabel()}{!oneOff && callData.number ? ` #${callData.number}` : ''}
+                {getCallTypeLabel()}{callNumberSuffix}
               </span>
             </div>
             <div className="flex items-center gap-2">
@@ -1460,7 +1459,7 @@ const CallPage: React.FC = () => {
               <div className="text-slate-300 dark:text-slate-600">|</div>
               <div className="flex items-center gap-2">
                 <h1 className="text-sm font-semibold text-slate-900 dark:text-slate-100">
-                  {getCallTypeLabel()}{!oneOff && callData.number ? ` #${callData.number}` : ''}
+                  {getCallTypeLabel()}{callNumberSuffix}
                 </h1>
                 {callData.date && (
                   <span className="text-sm text-slate-500 dark:text-slate-400">• {callData.date}</span>

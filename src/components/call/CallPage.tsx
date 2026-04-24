@@ -7,6 +7,7 @@ import CallSearch from './CallSearch';
 import ThemeToggle from '../ui/ThemeToggle';
 import { Logo } from '../ui/Logo';
 import { protocolCalls, callTypeNames, isOneOffCall, type CallType } from '../../data/calls';
+import { breakouts, breakoutLabels, type BreakoutKind } from '../../data/breakouts';
 import { fetchUpcomingCalls } from '../../domain/calls/upcomingCalls';
 import { useMetaTags } from '../../hooks/useMetaTags';
 import { eipsData } from '../../data/eips';
@@ -102,6 +103,31 @@ const CallPage: React.FC = () => {
   const [callConfig, setCallConfig] = useState<CallConfig | null>(null);
   const [loading, setLoading] = useState(true);
   const [isUpcoming, setIsUpcoming] = useState(false);
+
+  const breakoutsForCall = useMemo(
+    () => (callPath ? breakouts.filter(b => b.parentPath === callPath) : []),
+    [callPath],
+  );
+
+  // URL-driven so the tab selection is shareable. Unknown values fall through to main call.
+  const activeBreakoutKind = useMemo<BreakoutKind | null>(() => {
+    const param = new URLSearchParams(location.search).get('breakout');
+    return breakoutsForCall.some(b => b.kind === param) ? (param as BreakoutKind) : null;
+  }, [location.search, breakoutsForCall]);
+
+  const activeBreakout = useMemo(
+    () => breakoutsForCall.find(b => b.kind === activeBreakoutKind) ?? null,
+    [breakoutsForCall, activeBreakoutKind],
+  );
+
+  const setActiveBreakoutKind = useCallback((kind: BreakoutKind | null) => {
+    const params = new URLSearchParams(location.search);
+    if (kind) params.set('breakout', kind);
+    else params.delete('breakout');
+    const search = params.toString();
+    navigate({ pathname: location.pathname, search: search ? `?${search}` : '' });
+  }, [location.search, location.pathname, navigate]);
+
   const [summaryExpanded, setSummaryExpanded] = useState(false);
   const transcriptRef = useRef<HTMLDivElement>(null);
   const chatLogRef = useRef<HTMLDivElement>(null);
@@ -399,6 +425,32 @@ const CallPage: React.FC = () => {
       // Issue-number URLs are handled by the redirect effect
       if (normalizedPath && !normalizedPath.includes('/') && /^\d+$/.test(normalizedPath)) return;
 
+      // Breakout sub-calls have only video + chat; bypass the ACDT-shaped loading path.
+      if (activeBreakout) {
+        try {
+          const chatResponse = await fetch(`/artifacts/${activeBreakout.artifactDir}/chat.txt`);
+          let chatContent: string | undefined;
+          if (chatResponse.ok) {
+            const content = await chatResponse.text();
+            if (content.trim() && !content.trimStart().startsWith('<!')) chatContent = content;
+          }
+          setCallData({
+            type: activeBreakout.kind.toUpperCase(),
+            date: '',
+            number: '',
+            chatContent,
+            videoUrl: activeBreakout.videoUrl,
+          });
+          setCallConfig(null);
+          setIsUpcoming(false);
+        } catch (error) {
+          console.error('Failed to load breakout data:', error);
+        } finally {
+          setLoading(false);
+        }
+        return;
+      }
+
       try {
         // Parse the call path (e.g., "acdc/154")
         const [type, number] = callPath.split('/');
@@ -567,7 +619,7 @@ const CallPage: React.FC = () => {
     };
 
     loadCallData();
-  }, [callPath, normalizedPath, location.state]);
+  }, [callPath, normalizedPath, location.state, activeBreakout]);
 
   // Clean up interval on unmount
   useEffect(() => {
@@ -1081,11 +1133,46 @@ const CallPage: React.FC = () => {
     </div>
   );
 
+  const renderBreakoutTabs = () => {
+    if (breakoutsForCall.length === 0) return null;
+    const pillBase = 'px-3 py-1 rounded-full text-xs font-medium transition-colors cursor-pointer';
+    const pillActive = 'bg-blue-600 text-white hover:bg-blue-700';
+    const pillInactive = 'bg-slate-100 dark:bg-slate-700 text-slate-600 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-600';
+    return (
+      <div className="flex items-center gap-2 flex-wrap pb-3 mb-3 border-b border-slate-200 dark:border-slate-700 flex-shrink-0">
+        <span className="text-xs font-medium text-slate-500 dark:text-slate-400 mr-1">
+          Breakouts:
+        </span>
+        <button
+          type="button"
+          onClick={() => setActiveBreakoutKind(null)}
+          className={`${pillBase} ${!activeBreakoutKind ? pillActive : pillInactive}`}
+        >
+          Main Call
+        </button>
+        {breakoutsForCall.map(b => {
+          const isActive = activeBreakoutKind === b.kind;
+          return (
+            <button
+              key={b.kind}
+              type="button"
+              onClick={() => setActiveBreakoutKind(b.kind)}
+              className={`${pillBase} ${isActive ? pillActive : pillInactive}`}
+            >
+              {breakoutLabels[b.kind]}
+            </button>
+          );
+        })}
+      </div>
+    );
+  };
+
   const renderVideoSection = () => (
     <div
       className={`bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg p-4 shadow-sm hover:shadow-md transition-shadow ${isWorkspaceView ? 'flex h-full flex-col' : ''}`}
       style={isWorkspaceView ? { height: showSummaryInColumn ? DESKTOP_SIDEBAR_PANE_HEIGHT : DESKTOP_WORKSPACE_HEIGHT } : undefined}
     >
+      {renderBreakoutTabs()}
       <div className={isWorkspaceView ? 'flex min-h-0 flex-1 flex-col' : 'flex flex-col gap-4'}>
         {/* Video Player */}
         <div className={isWorkspaceView ? 'min-h-0 flex-1' : ''}>
@@ -1113,13 +1200,17 @@ const CallPage: React.FC = () => {
         <div className={isWorkspaceView ? 'border-t border-slate-200 pt-3 dark:border-slate-700' : 'border-t border-slate-200 pt-3 dark:border-slate-700'}>
           <div className="flex flex-wrap items-center gap-x-4 gap-y-2 text-sm">
             <h2 className="text-base font-semibold text-slate-900 dark:text-slate-100">
-              {getCallTypeLabel()}{oneOff ? '' : ` #${callData.number}`}
+              {getCallTypeLabel()}{!oneOff && callData.number ? ` #${callData.number}` : ''}
             </h2>
-            <span className="text-slate-300 dark:text-slate-600 hidden sm:inline">|</span>
-            <div className="flex items-center gap-1.5">
-              <span className="text-slate-500 dark:text-slate-400">📅</span>
-              <span className="text-slate-700 dark:text-slate-200 font-medium">{callData.date}</span>
-            </div>
+            {callData.date && (
+              <>
+                <span className="text-slate-300 dark:text-slate-600 hidden sm:inline">|</span>
+                <div className="flex items-center gap-1.5">
+                  <span className="text-slate-500 dark:text-slate-400">📅</span>
+                  <span className="text-slate-700 dark:text-slate-200 font-medium">{callData.date}</span>
+                </div>
+              </>
+            )}
             {callConfig?.issue && (
               <>
                 <span className="text-slate-300 dark:text-slate-600 hidden sm:inline">|</span>
@@ -1290,13 +1381,13 @@ const CallPage: React.FC = () => {
               );
             })}
         </div>
-      ) : isUpcoming ? (
+      ) : isUpcoming || activeBreakout ? (
         <div className={`flex flex-col items-center justify-center text-center ${isWorkspaceView ? 'flex-1' : 'py-12'}`}>
           <svg className="w-10 h-10 text-amber-400 dark:text-amber-500 mb-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
           </svg>
           <p className="text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">Transcript pending</p>
-          <p className="text-xs text-slate-500 dark:text-slate-400">The transcript will be available after the call</p>
+          <p className="text-xs text-slate-500 dark:text-slate-400">{activeBreakout ? 'Transcripts for breakouts are not yet processed' : 'The transcript will be available after the call'}</p>
         </div>
       ) : (
         <div className={`flex flex-col items-center justify-center text-center ${isWorkspaceView ? 'flex-1' : 'py-12'}`}>
@@ -1348,7 +1439,7 @@ const CallPage: React.FC = () => {
             <div className="flex items-center gap-2">
               <Logo size="xs" />
               <span className="text-xs text-slate-600 dark:text-slate-400">
-                {getCallTypeLabel()}{oneOff ? '' : ` #${callData.number}`}
+                {getCallTypeLabel()}{!oneOff && callData.number ? ` #${callData.number}` : ''}
               </span>
             </div>
             <div className="flex items-center gap-2">
@@ -1369,9 +1460,11 @@ const CallPage: React.FC = () => {
               <div className="text-slate-300 dark:text-slate-600">|</div>
               <div className="flex items-center gap-2">
                 <h1 className="text-sm font-semibold text-slate-900 dark:text-slate-100">
-                  {getCallTypeLabel()}{oneOff ? '' : ` #${callData.number}`}
+                  {getCallTypeLabel()}{!oneOff && callData.number ? ` #${callData.number}` : ''}
                 </h1>
-                <span className="text-sm text-slate-500 dark:text-slate-400">• {callData.date}</span>
+                {callData.date && (
+                  <span className="text-sm text-slate-500 dark:text-slate-400">• {callData.date}</span>
+                )}
               </div>
             </div>
             <div className="flex items-center gap-3">

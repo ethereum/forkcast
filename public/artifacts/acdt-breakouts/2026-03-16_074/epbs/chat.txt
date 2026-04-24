@@ -1,0 +1,98 @@
+08:01:20	FLCL:	gm
+08:01:35	nixo:	gm
+08:06:56	Barnabas:	wouldn’t this be better to do in the breakout room?
+08:09:10	Stefan Starflinger:	https://notes.ethereum.org/@ethpandaops/bal-devnet-2
+08:09:59	FLCL:	Are new tests planned?
+08:10:52	spencer:	Replying to "Are new tests planned?":
+We'll have another release but it wont change much. Just a single test case.
+08:10:58	jochem-brouwer:	If fuzzing and then network breaks then it means testing coverage is missing?
+08:12:36	spencer:	Replying to "Are new tests planned?":
+This is the test case mentioned by dragan: `tests/amsterdam/eip7954_increase_max_contract_size/test_max_initcode_size.py::test_max_initcode_size_gas_metering_via_create[fork_Amsterdam-create_opcode_CREATE-state_test-short_one_gas]`
+08:13:10	Toni Wahrstätter:	To add to jochem's qu., any specific EIPs that break?
+08:13:14	Stefan Starflinger:	Replying to "If fuzzing and then network breaks then it means t...":
+yes and no, not all tests are being passed yet
+08:13:33	terence:	Prysm is not ready yet, we need to merge a PR, give us 2 days
+08:13:35	terence:	For exit
+08:13:40	felipe:	Replying to "If fuzzing and then network breaks then it means t...":
+https://hive.ethpandaops.io/ should we add a run for bal-devnet-3 here to track client status?
+08:14:15	terence:	Yes, can we do alpha4
+08:14:28	nflaig:	did some updates to our checkpoint cache serving @Barnabas should be fine to add to checkpoint-z again
+08:15:14	Stefan Starflinger:	Replying to "To add to jochem's qu., any specific EIPs that bre...":
+8037 gas accounting causing BAL hash missmatch
+08:16:32	Barnabas:	I’d propose SFI-ing:
+7708
+7778
+7843
+8024
+08:18:42	Stefan Starflinger:	Replying to "To add to jochem's qu., any specific EIPs that bre...":
+For example: CREATE, CALL-with-value, or precompile calls. Nimbus records different storage/account accesses than geth for these operations. Simple eoatx passes. Only evm-fuzz triggers the divergence.
+08:19:41	nixo:	i think if ACDE/C is responsible, we can be a bit more proactive there
+08:20:11	Barnabas:	Screenshot2026_03_16_152006.jpg
+08:20:12	FLCL:	Replying to "Are new tests planned?":
+Ty!
+08:20:17	Stefan Starflinger:	Replying to "To add to jochem's qu., any specific EIPs that bre...":
+Erigon — EIP-8037 Block Gas Overflow (Single-Dimensional Pool)
+08:21:09	Barnabas:	I’d do SFI devnet 3 maybe a week after its been stable
+08:21:11	Barnabas:	also I
+08:22:24	Stefan Starflinger:	Replying to "To add to jochem's qu., any specific EIPs that bre...":
+reth: Bug likely in how CREATE/CREATE2 tracks code changes or how storage reads vs writes are classified during contract deployment. The hash is computed by alloy compute_block_access_list_hash() which is shared, so the divergence is in the BAL
+08:23:01	spencer:	Replying to "I’d propose SFI-ing: 7708 7778 7843 8024":
+Will aim to add draft PR to update 7723 aligning on what we have spoke about. Few interactions and in passing devnet etc
+08:23:05	Barnabas:	"Fully baked”
+08:23:29	Barnabas:	Replying to "I’d propose SFI-ing: 7708 7778 7843 8024":
+7773 you mean?
+08:23:50	Potuz:	how?
+08:23:53	spencer:	Replying to "I’d propose SFI-ing: 7708 7778 7843 8024":
+both :)
+08:23:57	terence:	Too high tech for me
+08:23:59	wolovim:	I think hosts can record locally - plz do that if you have the UI for it 🙂
+08:24:32	nixo:	i’m recording
+08:26:32	Stefan Bratanov:	I was supposed to look into it in more detail, but fixing other bugs, don't have a strong opinion
+08:27:37	nflaig:	slightly lean towards having the cache outside of state so it's not part of hashing
+08:32:26	terence:	There’s not much change btw alpha3 to alpha2 so we should just wait for PTC for devnet1 imo
+08:34:58	Barnabas:	do we have anyone from nimbus ?
+08:35:11	Eitan Seri-Levi:	LH would rather stay on devnet-0 for now. We’re hoping to stabilize our fork choice impl and introduce checkpoint sync  soon
+08:36:50	nflaig:	lodestar should be serving envelopes by range too but I think we checkpoint synced all nodes besides lodestar-geth-1 and are not backfilling
+08:37:04	Barnabas:	can you checkpoint sync nimbus?
+08:38:50	Eitan Seri-Levi:	LH is serving payloads by range they just might not b canonical lol
+08:39:01	Barnabas:	we have watchtower disabled on lodestar/lighthouse/prysm
+08:39:03	Stefan Bratanov:	we can serve by range, just not finalized ones
+08:39:08	terence:	Prysm should serve canonical payload by range
+08:39:31	Barnabas:	we could restart a few prysm nodes with genesis sync?
+08:39:39	Sam:	I forgot to mention, Nimbus was being rate limited quite often before.
+08:39:54	nflaig:	@Barnabas you can also sync lodestar-2 and lodestar-3 from genesis (maybe one by one)
+08:39:55	Sam:	*by Prysm
+08:40:05	Barnabas:	sure
+08:40:16	Sam:	It is better now since I limited the number of requests.
+08:41:05	Barnabas:	Ok. We can stick to devnet-0, and do the new devnet with PTC decision
+08:44:06	nflaig:	not us
+08:44:16	terence:	Not prysm
+08:45:28	Enrico Del Fante (tbenr):	All good
+08:46:24	Parithosh Jayanthi:	This will all change with the testing endpoint right?
+08:46:51	Parithosh Jayanthi:	Cause then eels can just specify txs and outcomes, the rest benchmarkoor/hive can do
+08:47:37	Kamil Chodoła:	Yeah this is already being specd on hwo to make EELS stateful with testing endpoint.
+But until then we have the old battletested gas-benchmark mechanism
+08:49:50	FLCL:	Depending on what is goal. Do we need faster execution?
+08:53:57	Łukasz Rozmej:	In terms of BAL size this would be just a simple list of transaction indexes for optimal execution order
+08:54:45	Parithosh Jayanthi:	Last 5 mins btw
+08:54:52	Parithosh Jayanthi:	cc @Toni Wahrstätter
+08:55:06	Stefan Starflinger:	I thought the benchmarks are executed against the state of either mainnet or bloatnet not against the actual shadowfork?
+08:55:20	Stefan Starflinger:	otherwise we have the mempool?
+08:55:32	Łukasz Rozmej:	Replying to "In terms of BAL size this would be just a simple l...":
+so basically if we added this we can focusing on benchmarking best cases, as worst cases and best cases would be more or less the same
+08:56:28	jochem-brouwer:	Replying to "I thought the benchmarks are executed against the ...":
+It's not a shadowfork, it runs on top of bloatnet which is stalled, so no networking
+08:56:58	Stefan Starflinger:	Replying to "I thought the benchmarks are executed against the ...":
+stalled?
+08:57:12	jochem-brouwer:	Replying to "I thought the benchmarks are executed against the ...":
+Yes all benchs run on top of the snapshot block
+08:57:18	jochem-brouwer:	Replying to "I thought the benchmarks are executed against the ...":
+So there is no networking
+08:57:52	Stefan Starflinger:	Replying to "I thought the benchmarks are executed against the ...":
+So they run without a shadow fork?
+08:57:55	Stefan Starflinger:	Replying to "I thought the benchmarks are executed against the ...":
+just with a snapshot
+08:58:16	jochem-brouwer:	Replying to "I thought the benchmarks are executed against the ...":
+Yes, sorry for using the term shadowfork because it is confusing. In my mind shadowfork = fork of network, but in this case it is "just" a snapshot indeed
+09:00:30	Łukasz Rozmej:	can you write eip number?
+09:00:45	jochem-brouwer:	https://eips.ethereum.org/EIPS/eip-8189

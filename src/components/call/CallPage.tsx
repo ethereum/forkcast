@@ -95,10 +95,17 @@ const CallPage: React.FC = () => {
       const issueNum = parseInt(normalizedPath);
       const byIssue = protocolCalls.find(c => c.issue === issueNum);
       if (byIssue) {
-        navigate(`/calls/${byIssue.path}`, { replace: true });
+        navigate(
+          {
+            pathname: `/calls/${byIssue.path}`,
+            search: location.search,
+            hash: location.hash,
+          },
+          { replace: true },
+        );
       }
     }
-  }, [normalizedPath, navigate]);
+  }, [location.hash, location.search, normalizedPath, navigate]);
 
   const [callData, setCallData] = useState<CallData | null>(null);
   const [callConfig, setCallConfig] = useState<CallConfig | null>(null);

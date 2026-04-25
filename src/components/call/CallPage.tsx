@@ -180,7 +180,7 @@ const CallPage: React.FC = () => {
     return protocolCalls.find(c => c.type === callData.type.toLowerCase() && c.number === callData.number) ?? null;
   }, [callData]);
   const callName = callData
-    ? (matchingCall?.name || `${callTypeNames[callData.type.toLowerCase() as CallType] || callData.type}${isOneOffCall(callData.type.toLowerCase()) ? '' : ` #${callData.number}`}`)
+    ? (matchingCall?.name || `${callTypeNames[callData.type.toLowerCase() as CallType] || callData.type}${!isOneOffCall(callData.type.toLowerCase()) && callData.number ? ` #${callData.number}` : ''}`)
     : 'Call';
   useMetaTags({
     title: `${callName} | Forkcast`,

@@ -217,12 +217,12 @@ const CallPage: React.FC = () => {
 
   // Handle search parameters from URL for direct navigation
   useEffect(() => {
-    const searchParams = new URLSearchParams(location.search);
-    const searchQuery = searchParams.get('search');
-    const timestamp = searchParams.get('timestamp');
-    const type = searchParams.get('type');
-    const text = searchParams.get('text');
-    const chatTimestamp = searchParams.get('chat');
+    const urlParams = new URLSearchParams(location.search);
+    const searchQuery = urlParams.get('search');
+    const timestamp = urlParams.get('timestamp');
+    const type = urlParams.get('type');
+    const text = urlParams.get('text');
+    const chatTimestamp = urlParams.get('chat');
 
     if ((searchQuery && timestamp && type && text) || chatTimestamp) {
       hasNavigatedToSearchResult.current = false;
@@ -1066,6 +1066,11 @@ const CallPage: React.FC = () => {
     return callTypeNames[type] || callData.type;
   };
 
+  // Breakout views inherit the parent ACDT's identity so headers don't lose context.
+  const headerLabel = activeBreakout
+    ? `${parentType.toUpperCase()} #${parentNumber} — ${breakoutLabels[activeBreakout.kind]} Breakout`
+    : `${getCallTypeLabel()}${callNumberSuffix}`;
+
   // Get associated EIP info for breakout calls
   const getBreakoutEipInfo = (): { eip: EIP; latestFork: ForkRelationship | null } | null => {
     const callType = callData.type.toLowerCase();
@@ -1231,7 +1236,7 @@ const CallPage: React.FC = () => {
         <div className={isWorkspaceView ? 'border-t border-slate-200 pt-3 dark:border-slate-700' : 'border-t border-slate-200 pt-3 dark:border-slate-700'}>
           <div className="flex flex-wrap items-center gap-x-4 gap-y-2 text-sm">
             <h2 className="text-base font-semibold text-slate-900 dark:text-slate-100">
-              {getCallTypeLabel()}{callNumberSuffix}
+              {headerLabel}
             </h2>
             {callData.date && (
               <>
@@ -1476,7 +1481,7 @@ const CallPage: React.FC = () => {
             <div className="flex items-center gap-2">
               <Logo size="xs" />
               <span className="text-xs text-slate-600 dark:text-slate-400">
-                {getCallTypeLabel()}{callNumberSuffix}
+                {headerLabel}
               </span>
             </div>
             <div className="flex items-center gap-2">
@@ -1497,7 +1502,7 @@ const CallPage: React.FC = () => {
               <div className="text-slate-300 dark:text-slate-600">|</div>
               <div className="flex items-center gap-2">
                 <h1 className="text-sm font-semibold text-slate-900 dark:text-slate-100">
-                  {getCallTypeLabel()}{callNumberSuffix}
+                  {headerLabel}
                 </h1>
                 {callData.date && (
                   <span className="text-sm text-slate-500 dark:text-slate-400">• {callData.date}</span>

@@ -107,8 +107,8 @@ const CallPage: React.FC = () => {
   const [searchParams, setSearchParams] = useSearchParams();
 
   const breakoutsForCall = useMemo(
-    () => (callPath ? breakouts.filter(b => b.parentPath === callPath) : []),
-    [callPath],
+    () => (normalizedPath ? breakouts.filter(b => b.parentPath === normalizedPath) : []),
+    [normalizedPath],
   );
 
   // URL-driven so the tab selection is shareable. Unknown values fall through to main call.
@@ -418,9 +418,10 @@ const CallPage: React.FC = () => {
   }, [callConfig, syncOffsetSeconds]);
 
   useEffect(() => {
+    let cancelled = false;
     const loadCallData = async () => {
       if (!callPath) {
-        setLoading(false);
+        if (!cancelled) setLoading(false);
         return;
       }
 
@@ -431,9 +432,11 @@ const CallPage: React.FC = () => {
       if (activeBreakout) {
         try {
           const chatResponse = await fetch(`/artifacts/${activeBreakout.artifactDir}/chat.txt`);
+          if (cancelled) return;
           let chatContent: string | undefined;
           if (chatResponse.ok) {
             const content = await chatResponse.text();
+            if (cancelled) return;
             if (content.trim() && !content.trimStart().startsWith('<!')) chatContent = content;
           }
           setCallData({
@@ -446,16 +449,16 @@ const CallPage: React.FC = () => {
           setCallConfig(null);
           setIsUpcoming(false);
         } catch (error) {
-          console.error('Failed to load breakout data:', error);
+          if (!cancelled) console.error('Failed to load breakout data:', error);
         } finally {
-          setLoading(false);
+          if (!cancelled) setLoading(false);
         }
         return;
       }
 
       try {
         // Parse the call path (e.g., "acdc/154")
-        const [type, number] = callPath.split('/');
+        const [type, number] = (normalizedPath ?? callPath).split('/');
 
         // Map from simplified URL to artifact folder path
         // We need to find the matching call from our data to get the date
@@ -467,6 +470,7 @@ const CallPage: React.FC = () => {
           // Check if this is an upcoming call from route state
           const locationState = location.state as UpcomingCallState | null;
           if (locationState?.upcoming) {
+            if (cancelled) return;
             // Set minimal call data with YouTube URL for upcoming call
             setCallData({
               type: type?.toUpperCase() || '',
@@ -487,6 +491,7 @@ const CallPage: React.FC = () => {
           // Direct navigation — try fetching upcoming calls from GitHub
           try {
             const upcomingCalls = await fetchUpcomingCalls();
+            if (cancelled) return;
             const upcomingMatch = upcomingCalls.find(
               call => call.type === type && call.number === number
             );
@@ -509,8 +514,10 @@ const CallPage: React.FC = () => {
             // Fall through to "not found"
           }
 
-          console.error('Call not found:', callPath);
-          setLoading(false);
+          if (!cancelled) {
+            console.error('Call not found:', callPath);
+            setLoading(false);
+          }
           return;
         }
 
@@ -523,8 +530,10 @@ const CallPage: React.FC = () => {
         // may return 200 with index.html for missing files
         let chatContent: string | undefined;
         const chatResponse = await fetch(`/artifacts/${artifactPath}/chat.txt`);
+        if (cancelled) return;
         if (chatResponse.ok) {
           const content = await chatResponse.text();
+          if (cancelled) return;
           if (content.trim() && !content.trimStart().startsWith('<!')) {
             chatContent = content;
           }
@@ -535,16 +544,20 @@ const CallPage: React.FC = () => {
         // may return 200 with index.html for missing files
         let transcriptContent: string | undefined;
         const correctedResponse = await fetch(`/artifacts/${artifactPath}/transcript_corrected.vtt`);
+        if (cancelled) return;
         if (correctedResponse.ok) {
           const content = await correctedResponse.text();
+          if (cancelled) return;
           if (content.trimStart().startsWith('WEBVTT')) {
             transcriptContent = content;
           }
         }
         if (!transcriptContent) {
           const transcriptResponse = await fetch(`/artifacts/${artifactPath}/transcript.vtt`);
+          if (cancelled) return;
           if (transcriptResponse.ok) {
             const content = await transcriptResponse.text();
+            if (cancelled) return;
             if (content.trimStart().startsWith('WEBVTT')) {
               transcriptContent = content;
             }
@@ -553,10 +566,12 @@ const CallPage: React.FC = () => {
 
         // Load tldr if it exists
         const tldrResponse = await fetch(`/artifacts/${artifactPath}/tldr.json`);
+        if (cancelled) return;
         let tldrData = undefined;
         if (tldrResponse.ok) {
           try {
             tldrData = await tldrResponse.json();
+            if (cancelled) return;
           } catch (e) {
             console.warn('Failed to parse tldr.json:', e);
           }
@@ -565,9 +580,11 @@ const CallPage: React.FC = () => {
         // Load key decisions if they exist
         let keyDecisions: KeyDecision[] | undefined;
         const keyDecisionsResponse = await fetch(`/artifacts/${artifactPath}/key_decisions.json`);
+        if (cancelled) return;
         if (keyDecisionsResponse.ok) {
           try {
             const kdData = await keyDecisionsResponse.json();
+            if (cancelled) return;
             keyDecisions = kdData?.key_decisions;
           } catch (e) {
             console.warn('Failed to parse key_decisions.json:', e);
@@ -576,10 +593,12 @@ const CallPage: React.FC = () => {
 
         // Load config file if it exists
         const configResponse = await fetch(`/artifacts/${artifactPath}/config.json`);
+        if (cancelled) return;
         let config: CallConfig | null = null;
         if (configResponse.ok) {
           try {
             config = await configResponse.json();
+            if (cancelled) return;
             setCallConfig(config);
           } catch (e) {
             console.warn('Failed to parse config.json:', e);
@@ -594,7 +613,9 @@ const CallPage: React.FC = () => {
           videoUrl = config.videoUrl;
         } else {
           const videoResponse = await fetch(`/artifacts/${artifactPath}/video.txt`);
+          if (cancelled) return;
           videoUrl = videoResponse.ok ? (await videoResponse.text()).trim() : undefined;
+          if (cancelled) return;
         }
 
         // Fallback for testing if no URL found
@@ -614,13 +635,16 @@ const CallPage: React.FC = () => {
         });
 
       } catch (error) {
-        console.error('Failed to load call data:', error);
+        if (!cancelled) console.error('Failed to load call data:', error);
       } finally {
-        setLoading(false);
+        if (!cancelled) setLoading(false);
       }
     };
 
     loadCallData();
+    return () => {
+      cancelled = true;
+    };
   }, [callPath, normalizedPath, location.state, activeBreakout]);
 
   // Clean up interval on unmount

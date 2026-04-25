@@ -1,6 +1,6 @@
-// ACDT breakout sub-calls. Deliberately separate from the standalone BAL/ePBS
-// series in protocolCalls — these are not episodes of those series, they're
-// sub-calls that only exist as tabs on their parent ACDT page.
+// ACDT breakout sub-calls. Deliberately separate from breakout series
+// (BAL, ePBS, etc.) in protocolCalls — those are standalone call series;
+// these only exist as tabs on their parent ACDT page.
 
 export type BreakoutKind = 'bal' | 'epbs';
 

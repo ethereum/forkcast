@@ -1139,9 +1139,6 @@ const CallPage: React.FC = () => {
     const pillInactive = 'bg-slate-100 dark:bg-slate-700 text-slate-600 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-600';
     return (
       <div className="flex items-center gap-2 flex-wrap pb-3 mb-3 border-b border-slate-200 dark:border-slate-700 flex-shrink-0">
-        <span className="text-xs font-medium text-slate-500 dark:text-slate-400 mr-1">
-          Breakouts:
-        </span>
         <button
           type="button"
           onClick={() => setActiveBreakoutKind(null)}
@@ -1149,6 +1146,10 @@ const CallPage: React.FC = () => {
         >
           Main Call
         </button>
+        <span className="text-slate-300 dark:text-slate-600 mx-1">|</span>
+        <span className="text-xs font-medium text-slate-500 dark:text-slate-400 mr-1">
+          Breakouts:
+        </span>
         {breakoutsForCall.map(b => {
           const isActive = activeBreakout?.kind === b.kind;
           return (

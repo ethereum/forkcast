@@ -1,98 +1,260 @@
-08:01:20	FLCL:	gm
-08:01:35	nixo:	gm
-08:06:56	Barnabas:	wouldn’t this be better to do in the breakout room?
-08:09:10	Stefan Starflinger:	https://notes.ethereum.org/@ethpandaops/bal-devnet-2
-08:09:59	FLCL:	Are new tests planned?
-08:10:52	spencer:	Replying to "Are new tests planned?":
-We'll have another release but it wont change much. Just a single test case.
-08:10:58	jochem-brouwer:	If fuzzing and then network breaks then it means testing coverage is missing?
-08:12:36	spencer:	Replying to "Are new tests planned?":
-This is the test case mentioned by dragan: `tests/amsterdam/eip7954_increase_max_contract_size/test_max_initcode_size.py::test_max_initcode_size_gas_metering_via_create[fork_Amsterdam-create_opcode_CREATE-state_test-short_one_gas]`
-08:13:10	Toni Wahrstätter:	To add to jochem's qu., any specific EIPs that break?
-08:13:14	Stefan Starflinger:	Replying to "If fuzzing and then network breaks then it means t...":
-yes and no, not all tests are being passed yet
-08:13:33	terence:	Prysm is not ready yet, we need to merge a PR, give us 2 days
-08:13:35	terence:	For exit
-08:13:40	felipe:	Replying to "If fuzzing and then network breaks then it means t...":
-https://hive.ethpandaops.io/ should we add a run for bal-devnet-3 here to track client status?
-08:14:15	terence:	Yes, can we do alpha4
-08:14:28	nflaig:	did some updates to our checkpoint cache serving @Barnabas should be fine to add to checkpoint-z again
-08:15:14	Stefan Starflinger:	Replying to "To add to jochem's qu., any specific EIPs that bre...":
-8037 gas accounting causing BAL hash missmatch
-08:16:32	Barnabas:	I’d propose SFI-ing:
-7708
-7778
-7843
-8024
-08:18:42	Stefan Starflinger:	Replying to "To add to jochem's qu., any specific EIPs that bre...":
-For example: CREATE, CALL-with-value, or precompile calls. Nimbus records different storage/account accesses than geth for these operations. Simple eoatx passes. Only evm-fuzz triggers the divergence.
-08:19:41	nixo:	i think if ACDE/C is responsible, we can be a bit more proactive there
-08:20:11	Barnabas:	Screenshot2026_03_16_152006.jpg
-08:20:12	FLCL:	Replying to "Are new tests planned?":
-Ty!
-08:20:17	Stefan Starflinger:	Replying to "To add to jochem's qu., any specific EIPs that bre...":
-Erigon — EIP-8037 Block Gas Overflow (Single-Dimensional Pool)
-08:21:09	Barnabas:	I’d do SFI devnet 3 maybe a week after its been stable
-08:21:11	Barnabas:	also I
-08:22:24	Stefan Starflinger:	Replying to "To add to jochem's qu., any specific EIPs that bre...":
-reth: Bug likely in how CREATE/CREATE2 tracks code changes or how storage reads vs writes are classified during contract deployment. The hash is computed by alloy compute_block_access_list_hash() which is shared, so the divergence is in the BAL
-08:23:01	spencer:	Replying to "I’d propose SFI-ing: 7708 7778 7843 8024":
-Will aim to add draft PR to update 7723 aligning on what we have spoke about. Few interactions and in passing devnet etc
-08:23:05	Barnabas:	"Fully baked”
-08:23:29	Barnabas:	Replying to "I’d propose SFI-ing: 7708 7778 7843 8024":
-7773 you mean?
-08:23:50	Potuz:	how?
-08:23:53	spencer:	Replying to "I’d propose SFI-ing: 7708 7778 7843 8024":
-both :)
-08:23:57	terence:	Too high tech for me
-08:23:59	wolovim:	I think hosts can record locally - plz do that if you have the UI for it 🙂
-08:24:32	nixo:	i’m recording
-08:26:32	Stefan Bratanov:	I was supposed to look into it in more detail, but fixing other bugs, don't have a strong opinion
-08:27:37	nflaig:	slightly lean towards having the cache outside of state so it's not part of hashing
-08:32:26	terence:	There’s not much change btw alpha3 to alpha2 so we should just wait for PTC for devnet1 imo
-08:34:58	Barnabas:	do we have anyone from nimbus ?
-08:35:11	Eitan Seri-Levi:	LH would rather stay on devnet-0 for now. We’re hoping to stabilize our fork choice impl and introduce checkpoint sync  soon
-08:36:50	nflaig:	lodestar should be serving envelopes by range too but I think we checkpoint synced all nodes besides lodestar-geth-1 and are not backfilling
-08:37:04	Barnabas:	can you checkpoint sync nimbus?
-08:38:50	Eitan Seri-Levi:	LH is serving payloads by range they just might not b canonical lol
-08:39:01	Barnabas:	we have watchtower disabled on lodestar/lighthouse/prysm
-08:39:03	Stefan Bratanov:	we can serve by range, just not finalized ones
-08:39:08	terence:	Prysm should serve canonical payload by range
-08:39:31	Barnabas:	we could restart a few prysm nodes with genesis sync?
-08:39:39	Sam:	I forgot to mention, Nimbus was being rate limited quite often before.
-08:39:54	nflaig:	@Barnabas you can also sync lodestar-2 and lodestar-3 from genesis (maybe one by one)
-08:39:55	Sam:	*by Prysm
-08:40:05	Barnabas:	sure
-08:40:16	Sam:	It is better now since I limited the number of requests.
-08:41:05	Barnabas:	Ok. We can stick to devnet-0, and do the new devnet with PTC decision
-08:44:06	nflaig:	not us
-08:44:16	terence:	Not prysm
-08:45:28	Enrico Del Fante (tbenr):	All good
-08:46:24	Parithosh Jayanthi:	This will all change with the testing endpoint right?
-08:46:51	Parithosh Jayanthi:	Cause then eels can just specify txs and outcomes, the rest benchmarkoor/hive can do
-08:47:37	Kamil Chodoła:	Yeah this is already being specd on hwo to make EELS stateful with testing endpoint.
-But until then we have the old battletested gas-benchmark mechanism
-08:49:50	FLCL:	Depending on what is goal. Do we need faster execution?
-08:53:57	Łukasz Rozmej:	In terms of BAL size this would be just a simple list of transaction indexes for optimal execution order
-08:54:45	Parithosh Jayanthi:	Last 5 mins btw
-08:54:52	Parithosh Jayanthi:	cc @Toni Wahrstätter
-08:55:06	Stefan Starflinger:	I thought the benchmarks are executed against the state of either mainnet or bloatnet not against the actual shadowfork?
-08:55:20	Stefan Starflinger:	otherwise we have the mempool?
-08:55:32	Łukasz Rozmej:	Replying to "In terms of BAL size this would be just a simple l...":
-so basically if we added this we can focusing on benchmarking best cases, as worst cases and best cases would be more or less the same
-08:56:28	jochem-brouwer:	Replying to "I thought the benchmarks are executed against the ...":
-It's not a shadowfork, it runs on top of bloatnet which is stalled, so no networking
-08:56:58	Stefan Starflinger:	Replying to "I thought the benchmarks are executed against the ...":
-stalled?
-08:57:12	jochem-brouwer:	Replying to "I thought the benchmarks are executed against the ...":
-Yes all benchs run on top of the snapshot block
-08:57:18	jochem-brouwer:	Replying to "I thought the benchmarks are executed against the ...":
-So there is no networking
-08:57:52	Stefan Starflinger:	Replying to "I thought the benchmarks are executed against the ...":
-So they run without a shadow fork?
-08:57:55	Stefan Starflinger:	Replying to "I thought the benchmarks are executed against the ...":
-just with a snapshot
-08:58:16	jochem-brouwer:	Replying to "I thought the benchmarks are executed against the ...":
-Yes, sorry for using the term shadowfork because it is confusing. In my mind shadowfork = fork of network, but in this case it is "just" a snapshot indeed
-09:00:30	Łukasz Rozmej:	can you write eip number?
-09:00:45	jochem-brouwer:	https://eips.ethereum.org/EIPS/eip-8189
+08:24:40	Barnabas:	the PTC, you mean?
+08:24:41	Potuz:	Yeah. As far as I know, there's only one… two items in the agenda. The first one is…
+08:24:47	Potuz:	We need to decide what to do with the PTC.
+08:24:51	Potuz:	Um, I haven't heard any…
+08:24:54	Potuz:	Any feedback is not really clear, uh,
+08:24:57	Potuz:	There are two open PRs, it's not clear if we're…
+08:25:01	Potuz:	willing to do a third one, if we're gonna choose one of those two. I want to hear what planets
+08:25:07	Potuz:	have to say about those
+08:25:22	Potuz:	No one has an opinion, I can probably put people on the spot.
+08:25:37	nflaig:	I mean, for loads, so we are fine with either of the PRs right now, I think, um, and C is preferring the…
+08:25:46	nflaig:	What was it, uh, 4992?
+08:25:48	nflaig:	I think I have implemented that in Lodestar in this…
+08:25:53	nflaig:	It's fine for us.
+08:25:56	nflaig:	Um, yeah, but just to note that we will still need to serve the whole epoch worth of PTC duties or assignments,
+08:26:04	nflaig:	So, um, lazily computing per slot will likely…
+08:26:09	nflaig:	not be possible. That's something people are considering, unless we change something in the, um…
+08:26:17	nflaig:	the Beacon API spec, but I think for duties, this… I think we need to serve the whole epoch, maybe.
+08:26:24	nflaig:	someone has bots there, but that would be the first time if we…
+08:26:29	nflaig:	only can serve a duty at the start of the slot.
+08:26:39	Potuz:	Uh, we are… I mean, I think this… this two PRs are completely independent of the Ducci thing.
+08:26:44	Potuz:	Uh, both of them allow you to
+08:26:47	Potuz:	cash and serve duties at the beginning of the epoch, for the whole epoch?
+08:26:53	Potuz:	Um, I think mostly the question here is whether or not
+08:26:59	Potuz:	Uh, we want to cache
+08:27:02	Potuz:	in the state are not the full epoch.
+08:27:06	Potuz:	to serve those duties.
+08:27:16	Potuz:	So, I guess…
+08:27:18	Enrico Del Fante (tbenr):	Is there any…
+08:27:18	Potuz:	I don't know if Teku hasn't seen this, perhaps Enrico, you've seen it?
+08:27:22	Enrico Del Fante (tbenr):	No, no, not yet, but I'm…
+08:27:26	Enrico Del Fante (tbenr):	And wonder what is the benefit of having…
+08:27:29	Enrico Del Fante (tbenr):	those information in the state?
+08:27:33	Enrico Del Fante (tbenr):	Rather than cashing us out outside of it.
+08:27:37	Potuz:	Yeah, so let me just quickly go over what the issue is that Nico found.
+08:27:43	Potuz:	Uh, the PTC is…
+08:27:45	Potuz:	Now, dependent on the effective balance,
+08:27:49	Potuz:	And the last slot of an epoch, you'd see at the stations are being sent,
+08:27:56	Potuz:	And the PTC committee that is being computed for that slot might not be valid, might not be the same.
+08:28:03	Potuz:	In the next slot, when we just call getPTC with the current helper.
+08:28:09	Potuz:	Because the state has changed
+08:28:12	Potuz:	the effective balances.
+08:28:13	Potuz:	So we need to somehow cash in the state, at the very least, that situation.
+08:28:18	Potuz:	So the last slot, the last slot from the previous epoch.
+08:28:23	Potuz:	There are two options. One is…
+08:28:26	Potuz:	to cache the entire previous epoch and the entire current epoch,
+08:28:31	Potuz:	on the state. And the other option is to cache
+08:28:36	Potuz:	the… just previous slots and current slots in the state
+08:28:39	Potuz:	There are other options we could explore, like just, for example, caching only the last slot of an epoch, and there's trade-offs there that I don't want to even get there.
+08:28:48	Potuz:	Uh, but between these two particular PRs, either caching the full epoch,
+08:28:53	Potuz:	Uh, for the previous one and the current one, versus just the full slot.
+08:28:56	Potuz:	For the previous slot on the current slot.
+08:28:59	Potuz:	The trade-off is either one trade's
+08:29:04	Potuz:	size in the state.
+08:29:05	Potuz:	Uh, it's 8 kilobytes on 1 versus 256 kilobytes.
+08:29:12	Potuz:	on the state that would be added on every single state,
+08:29:15	Potuz:	But, on the other hand,
+08:29:19	Potuz:	The advantage of caching the full epoch is that anyways, we're going to have that cache in memory,
+08:29:26	Potuz:	And the problem is bugs of the form keeping that cache in memory that we have,
+08:29:31	Potuz:	in sync with the state that we use to validate.
+08:29:35	Potuz:	So if we actually have it in the state, then we're sure not to have those problems of synchronizing
+08:29:41	Potuz:	caches in memory with the state that we're using.
+08:29:44	Potuz:	So, the question is whether or not that synchronization safety
+08:29:49	Potuz:	is worth having 250CX… 256 extra kilobytes in the state.
+08:29:59	Enrico Del Fante (tbenr):	I
+08:30:09	Potuz:	Uh, as Nico said, this issue of, like, hashing,
+08:30:12	Potuz:	Hash and I… I doubt very much that hashing is an issue.
+08:30:16	Potuz:	Because this cache will only change once an epoch, so I actually suspect that hashing is worse.
+08:30:22	Potuz:	on the per-slot situation than the per-eepoch situation?
+08:30:33	Potuz:	I mean, we're sure to rehash
+08:30:36	Potuz:	when we change every slot,
+08:30:38	Potuz:	And we're sure only to rehash an epoch transition.
+08:30:42	Potuz:	when we change the
+08:30:58	Potuz:	My feeling is that people haven't seen this in detail, so we're not really…
+08:31:03	Potuz:	ready to make a decision here, and it's an easy change, so… and we are in no rush
+08:31:08	Potuz:	I guess I'll pass, perhaps, before to Barnabas.
+08:31:12	Potuz:	We should decide what to do with DevNet 1, when tech was going to be ready, when Nimbus is going to be ready,
+08:31:18	Potuz:	Um, if we keep them at zero going for longer,
+08:31:22	Potuz:	I would propose not to make a decision on this issue until we actually need it.
+08:31:29	Barnabas:	Yeah, so what we can actually just do is, um…
+08:31:32	Barnabas:	There's already a bunch of other changes in Alpha 3.
+08:31:36	Barnabas:	So, I was… I would actually just propose that the PTC change could wait for W2.
+08:31:42	Barnabas:	Um, we just go ahead with the smaller changes in, uh, DevNet 1, and we're still…
+08:31:48	Barnabas:	trying to, uh, launch maybe next week with that?
+08:31:52	Potuz:	So, I'll… I'll disagree with this. I don't understand why
+08:31:53	Barnabas:	Or ideally this week?
+08:31:57	Potuz:	I mean, unless there's a hard fork, I don't see why we should be changing the DevNet.
+08:32:02	Potuz:	So the BTC thing is a hard form, that's why we actually need it.
+08:32:07	Potuz:	Uh, and I would expect this change to actually be on DevNet 1.
+08:32:11	Potuz:	But I don't see any reasons to ship a definite one without a hard fork.
+08:32:21	Barnabas:	I'm also happy to just include, uh, all the changes in the net zero.
+08:32:26	Barnabas:	Uh, it's just a lot more messy. And, um…
+08:32:31	Potuz:	Why so? It isn't…
+08:32:33	Potuz:	Isn't all of them not hard forks?
+08:32:37	Barnabas:	That's… that's not… that's not really, like, this… this pack changes in terms of which kind of spec versioning we are targeting.
+08:32:37	Potuz:	If the spec doesn't change, what's the problem?
+08:32:44	Barnabas:	Like, we said that we're gonna be targeting Alpha 1 for Definite Zero, and then Office 3 for DevNet 2.
+08:32:50	Barnabas:	Or whatever. Uh, if you're gonna be saying that we're gonna be targeting, you know, off of one, uh…
+08:32:57	Barnabas:	or Office 3 now for Debnazero.
+08:32:59	Barnabas:	It can be done, but it's just a lot more messy in terms of, uh, people knowing what version that they should be targeting.
+08:33:10	Barnabas:	that, like, not everybody is so hands-on with EPPS that, uh…
+08:33:14	Barnabas:	They keep track of all of it, unless there's a new actual DevNet happening.
+08:33:20	Barnabas:	It's definitely for bookkeeping reasons, uh, that I would push for a…
+08:33:24	Barnabas:	I'm sure I knew that.
+08:33:27	Barnabas:	But if everybody's on board on just rolling out the new alpha version in the current DevNet, then that also works for me.
+08:33:34	Barnabas:	I just want to make sure that, you know,
+08:33:38	Barnabas:	I'm not sure if, for example, we have a client there from every single team here.
+08:33:43	Barnabas:	to make this decision, uh, but if we do, then, uh, then we could just make the decision about that here.
+08:33:55	Potuz:	Do we have a timeline for when TECHO and Nimbus are going to be able to join?
+08:34:05	Stefan Bratanov:	Um, yeah, I'm still…
+08:34:09	Stefan Bratanov:	We have, uh…
+08:34:12	Stefan Bratanov:	issues with, uh, networking.
+08:34:16	Stefan Bratanov:	Um, so yeah, we're looking at those.
+08:34:22	Stefan Bratanov:	And I have some version of checkpoints in which I will march.
+08:34:25	Stefan Bratanov:	A bit later?
+08:34:28	Stefan Bratanov:	So, yeah, I hope in the next couple of days we have…
+08:34:32	Stefan Bratanov:	Something.
+08:34:38	Enrico Del Fante (tbenr):	Yeah, the actual problem is that the issue that we have is not fully understood, so…
+08:34:44	Enrico Del Fante (tbenr):	Well, yeah.
+08:34:46	Enrico Del Fante (tbenr):	We don't know.
+08:34:48	Enrico Del Fante (tbenr):	To be fair. I don't know if you agree, Stefan, but…
+08:34:53	Enrico Del Fante (tbenr):	Yeah, hopefully it will be…
+08:34:55	Enrico Del Fante (tbenr):	in the coming days, when we found the problem, and…
+08:34:59	Enrico Del Fante (tbenr):	will be stable there.
+08:35:03	Potuz:	Is there anyone from Nimbus here that didn't say?
+08:35:08	Sam:	Yes, this is Sam from Nimbus.
+08:35:12	Sam:	So, yeah, it's…
+08:35:13	Sam:	Is it in my audio?
+08:35:17	Sam:	work? Yes, this seems to be.
+08:35:18	Potuz:	Yep, we can hear
+08:35:19	Sam:	Yeah, so… yeah, so, uh, my current… our current status is, um, we…
+08:35:25	Sam:	We have tests with Katosis locally that's…
+08:35:30	Sam:	the… the thinking, which means calling by range,
+08:35:35	Sam:	to request envelope is working.
+08:35:39	Sam:	On DevNet, it seems to be having a lot of ease to not sure, is it PRISM, or…
+08:35:46	Sam:	Because right now, I'm still not quite sure which clients provide
+08:35:50	Sam:	envelope pi range.
+08:35:53	Sam:	But it seems like if…
+08:35:55	Sam:	For some reason, if Nimbus successfully requests envelopes from Prism, I guess,
+08:36:01	Sam:	And…
+08:36:03	Sam:	After a period of time, Berism seems to be… will have
+08:36:09	Sam:	disconnected from all the peers or… or what… whatever reason, I'm not quite sure.
+08:36:15	Sam:	But yeah, after that, we kind of…
+08:36:19	Sam:	not able to sing.
+08:36:21	Sam:	And… and we also…
+08:36:23	Potuz:	Wait, wait, I didn't understand this. The fact that prison gets isolated, why… how…
+08:36:26	Sam:	All right.
+08:36:28	Potuz:	should that affect your syncing?
+08:36:32	Sam:	Because we have not done the syncing yet.
+08:36:35	Sam:	we still have been…
+08:36:38	Potuz:	But even if that were the case, so you're not connecting at all to other clients that are serving,
+08:36:39	Sam:	Bill and thousands?
+08:36:44	Sam:	Yeah, because it seems like bar ranges seems like…
+08:36:49	Sam:	It is the most stable if we request it.
+08:36:52	Sam:	We're in prison, but not…
+08:36:55	Sam:	other clients, we find that
+08:36:58	Sam:	One client, I'm not sure which one,
+08:37:02	Sam:	A return…
+08:37:04	Sam:	zero emphasis from by range.
+08:37:07	Sam:	But we got all the blocks from there.
+08:37:10	Sam:	So, it's also making us not quite able to sing.
+08:37:15	Sam:	So, yeah, that's still case one, but we start looking into the checkpoint thing.
+08:37:21	Sam:	Which, we're still having some issues because we didn't implement that.
+08:37:26	Sam:	Yeah, it's both defined zero, and I…
+08:37:29	Sam:	We still having some issues on the…
+08:37:34	Sam:	on getting data to fill in the database, so yeah, that's the…
+08:37:40	Sam:	We are trying to fix.
+08:37:46	Sam:	we tried. I mean…
+08:37:47	Potuz:	You know, we… we can… we can discuss. I don't…
+08:37:49	Sam:	to another.
+08:37:51	Potuz:	I don't think prisons should be the one that is giving you zero payloads, because I'm experiencing this myself.
+08:37:55	Sam:	Yeah, not… not PRISM, that…
+08:37:57	Sam:	I believe not that it's not prison, but I'm not sure which one.
+08:38:00	Potuz:	Um, and it shouldn't be the case that if
+08:38:02	Potuz:	Prism is downscoring you somehow, and not serving you anything.
+08:38:06	Potuz:	It shouldn't be the case that you can't sync. You should still be able to receive
+08:38:11	Potuz:	Even from Lighthouse payloads.
+08:38:14	Sam:	Yeah, I will have to check, but it's not quite stable right now.
+08:38:21	Sam:	at least from local… I mean, if I test locally with ketosis, it's working quite stably, but
+08:38:29	Sam:	There might be some edge cases that I didn't catch in…
+08:38:33	Sam:	indefinite, so I will still have to check.
+08:38:39	Potuz:	All right, and so Nikos confirming that Bluestar should be serving envelopes by range. Uh, is that now live on the DevNet, Nico, or is it something that you have in your branch and haven't
+08:38:52	Potuz:	uh, shipping.
+08:38:54	nflaig:	Uh, no, it should be live since last week… last week, I think, but we also checkpoint zoomed a bunch of notes, so they are not actually serving that. Uh, we only synced one node from Genesis.
+08:39:06	Potuz:	Yeah, this is the problem that… that's why I'm trying not to, uh…
+08:39:11	Potuz:	I'm trying not to restart presence notes because of the same reason. I don't want to lose history yet.
+08:39:18	Potuz:	Uh, Ayton is saying, uh…
+08:39:22	Potuz:	Can you… can you just speak up, Eitan, on your preference?
+08:39:24	Eitan Seri-Levi:	Yeah, oh yeah, no, Lighthouse is serving envelopes in a range, um, they're just not guaranteed to be canonical, um…
+08:39:31	Eitan Seri-Levi:	We have a… we have a small bug in our implementation where we're not checking if the payload's canonical when we serve it.
+08:39:39	Potuz:	Uh, yeah, I'll get back to you in a second about this, because I'll have a complaint. But, um…
+08:39:45	Potuz:	Can you say something about, like, this issue of, like, moving to DevNet 1, or staying on DevNet Zero?
+08:39:50	Eitan Seri-Levi:	Oh, yeah, uh, I think for us…
+08:39:53	Eitan Seri-Levi:	Uh, Devin and staying on Devin at Zero makes sense. I mean, we already brought up that it's not a hard fork, uh, the spec changes for Alpha 3.
+08:39:59	Eitan Seri-Levi:	Um, and we're working right now on trying to stabilize our Forb Choice implementation, and…
+08:40:05	Eitan Seri-Levi:	introduce Check Point Sync, and…
+08:40:06	Eitan Seri-Levi:	If we try to launch DevNet 1, like, next week,
+08:40:10	Eitan Seri-Levi:	Um, that… there's just gonna be churn involved that's just gonna slow us down from…
+08:40:15	Eitan Seri-Levi:	doing, I think, what's more important for us right now, so I would rather stay on Devon at Zero if possible.
+08:40:22	Potuz:	That's good. How about Lodestar?
+08:40:27	nflaig:	Um, yeah, for us, it's also fine to keep the current definite.
+08:40:32	nflaig:	So there's a lot of code review we still need to do, which is probably gonna take most of our time.
+08:40:38	Potuz:	It's… it seems to me that that's the most reasonable thing, also, for Prism.
+08:40:43	Potuz:	Uh, we have a lot of bugs, we can't restart now on an existing DB, we can't checkpoint sync, or we can sync from Genesis, but
+08:40:51	Potuz:	We're having trouble restarting, and I think it's going to take us a few days even to look at the current known bugs.
+08:40:58	Potuz:	So I'd suggest we keep Devon at zero.
+08:41:01	Potuz:	That also gives time to tackle and Nimbus to catch up, because they know what's running now on .NET Zero.
+08:41:07	Potuz:	And let's not worry about MNET1 until…
+08:41:10	Potuz:	we actually fixed everything we can do on DevNet Zero.
+08:41:16	Potuz:	Um, on the peering side,
+08:41:20	Potuz:	Uh, and this is my personal grudge, but this is… it's kind of making our life much harder to debug.
+08:41:27	Potuz:	I don't know if I should remove the downscoring, or I'm just…
+08:41:31	Potuz:	Put it again, but the reason is… the thing is the following.
+08:41:35	Potuz:	Uh, I am requesting blocks and payloads from peers,
+08:41:40	Potuz:	And… and I check the consistency of both the blocks and the payloads,
+08:41:46	Potuz:	So if the blocks don't follow
+08:41:50	Potuz:	the parent roots hash check.
+08:41:52	Potuz:	I downscore the peer.
+08:41:55	Potuz:	If the payloads don't follow the parent chain, like,
+08:41:59	Potuz:	each payload parent hash is the hash of the next payload.
+08:42:03	Potuz:	Uh, I downscored the peer that gave us that. I suspect that no… I haven't seen a problem here.
+08:42:10	Potuz:	But, if the same peer gives us blocks,
+08:42:14	Potuz:	and gives us payloads, I downscore the peer that doesn't give me this in a consistent manner.
+08:42:20	Potuz:	So there are two cases in which I'm downscoring everyone.
+08:42:24	Potuz:	One is peers that serve me as sunset.
+08:42:27	Potuz:	They certainly pay blocks, and they don't serve me payloads. They say that they have zero payloads for the…
+08:42:33	Potuz:	For that range, then I immediately disconnect those peers, because that's malicious behavior.
+08:42:40	Potuz:	And something similar is happening, I suspect, now with Lighthouse, in which…
+08:42:45	Potuz:	the… the blocks do not agree with the payload chain.
+08:42:51	Potuz:	Uh, so I'm not sure what to do, if this is going to take a long time to fix,
+08:42:57	Potuz:	it might be better if I just top-down scoring for now, and then…
+08:43:02	Potuz:	brain-serted when clients are ready, but I'm just…
+08:43:05	Potuz:	giving a heads up that, uh, we are… as soon as…
+08:43:08	Potuz:	Britain goes out of, uh…
+08:43:11	Potuz:	out of sync for a little bit, then we're isolated because we end up downscoring because everyone is sending
+08:43:17	Potuz:	Um, send an just inconsistent payloads.
+08:43:19	Potuz:	It might be even the prism is serving inconsistent payloads, because we ran out of peers, so it seems that we're not even peering with present.
+08:43:29	Eitan Seri-Levi:	Yeah, so Lighth… Lighthouse has a fix for this. The issue with us is we just don't have checkpoint sync yet.
+08:43:34	Eitan Seri-Levi:	Um, but we… we have the fix, like, we know what it is, um, so as soon as we have Checkpoint Sync,
+08:43:41	Eitan Seri-Levi:	we'll push that up, but I won't down-score you if you don't downscore me.
+08:43:47	Potuz:	I see. Yeah, but it's most probably what's happening is that, uh, we are downscoring Lighthouse, and this…
+08:43:52	Potuz:	this is what's, uh, giving us isolated. So, can I ask if people are backfilling?
+08:43:59	Potuz:	Can you guys serve payloads and blocks if you backfill them?
+08:44:10	Potuz:	Okay, so Nick was saying that not LOSA.
+08:44:14	Potuz:	I suspect we also aren't doing this.
+08:44:17	Potuz:	I'm not aware, yeah. So Terrence is confirming the president is also not doing this.
+08:44:21	Eitan Seri-Levi:	Yeah, Lighthouse is not.
+08:44:21	Potuz:	Yeah, I… your roads are not. Yeah, so, Barnabas, I think the only safe way of keeping testing here is we fix everything we have,
+08:44:31	Potuz:	Um, we try to be in a situation in which we can restart nodes and serve historical data, otherwise it's useless.
+08:44:46	Potuz:	All right, that's a wrap. I'll… I'll ask async, then, on the PTC stuff, since there's no rush.
+08:44:52	Potuz:	But please, give it some time and choose one of the two. It's a matter of, like, size on the state versus…
+08:44:59	Potuz:	Um, versus having the full cash or not on the state.
+08:45:08	Potuz:	I don't think there's absolutely anything else to discuss in this meeting. Do you guys have anything to…?
+08:45:15	Potuz:	To add?
+08:45:23	Potuz:	Right, then I think we can wrap it up.
+08:45:30	Potuz:	Alright, see you guys.
+08:45:32	Eitan Seri-Levi:	So yeah,
+08:45:34	Potuz:	Love that
+08:45:36	nflaig:	Yeah.
+09:00:49	Toni Wahrstätter:	Perfect, thanks for posting the AP, Jochen.
+09:00:53	Toni Wahrstätter:	And then, I would say, we're done, and thanks, everyone.

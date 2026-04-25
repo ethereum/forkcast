@@ -107,8 +107,8 @@ const CallPage: React.FC = () => {
   const [searchParams, setSearchParams] = useSearchParams();
 
   const breakoutsForCall = useMemo(
-    () => (callPath ? breakouts.filter(b => b.parentPath === callPath) : []),
-    [callPath],
+    () => (normalizedPath ? breakouts.filter(b => b.parentPath === normalizedPath) : []),
+    [normalizedPath],
   );
 
   // URL-driven so the tab selection is shareable. Unknown values fall through to main call.

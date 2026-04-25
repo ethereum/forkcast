@@ -261,8 +261,8 @@ const CallPage: React.FC = () => {
   // Handle navigation to selected search result when player is ready.
   // Breakout pages intentionally have no callConfig, so don't gate on it.
   useEffect(() => {
-    const canNavigateWithoutPlayer = activeBreakout && selectedSearchResult?.type === 'chat';
-    if (selectedSearchResult && (player || canNavigateWithoutPlayer) && callData && !hasNavigatedToSearchResult.current) {
+    const isBreakoutChatResult = Boolean(activeBreakout && selectedSearchResult?.type === 'chat');
+    if (selectedSearchResult && (player || isBreakoutChatResult) && callData && !hasNavigatedToSearchResult.current) {
       const { timestamp, type } = selectedSearchResult;
 
       // Mark that we've navigated to prevent duplicate seeks
@@ -286,18 +286,21 @@ const CallPage: React.FC = () => {
         adjustedTime = transcriptSeconds - offset;
       }
 
-      // Seek video to timestamp - check if player has seekTo method
-      // Wait a bit for player to be fully ready
-      setTimeout(() => {
-        try {
-          if (player && typeof player.seekTo === 'function' && callData.videoUrl) {
-            player.seekTo(adjustedTime);
-            setCurrentVideoTime(adjustedTime);
+      // Breakout chat timestamps come from Zoom export wall-clock times, not video offsets.
+      if (!isBreakoutChatResult) {
+        // Seek video to timestamp - check if player has seekTo method
+        // Wait a bit for player to be fully ready
+        setTimeout(() => {
+          try {
+            if (player && typeof player.seekTo === 'function' && callData.videoUrl) {
+              player.seekTo(adjustedTime);
+              setCurrentVideoTime(adjustedTime);
+            }
+          } catch (error) {
+            console.warn('Error seeking video:', error);
           }
-        } catch (error) {
-          console.warn('Error seeking video:', error);
-        }
-      }, 100);
+        }, 100);
+      }
 
       // Scroll to the entry after DOM is ready
       setTimeout(() => {
@@ -909,6 +912,20 @@ const CallPage: React.FC = () => {
   };
 
   const handleTranscriptClick = (timestamp: string, searchResult?: { text: string; type: string }) => {
+    if (activeBreakout && searchResult?.type === 'chat') {
+      setSelectedSearchResult({
+        timestamp,
+        text: searchResult.text,
+        type: searchResult.type,
+      });
+
+      const targetEntry = chatLogRef.current?.querySelector(`[data-chat-timestamp="${timestamp}"]`) as HTMLElement;
+      if (targetEntry) {
+        scrollChatToEntry(targetEntry);
+      }
+      return;
+    }
+
     if (player) {
       const adjustedTime = getAdjustedVideoTime(timestamp);
       player.seekTo(adjustedTime);

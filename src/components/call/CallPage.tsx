@@ -61,6 +61,7 @@ interface UpcomingCallState {
 const DESKTOP_WORKSPACE_HEIGHT = 'clamp(40rem, calc(100vh - 7rem), 72rem)';
 const DESKTOP_SIDEBAR_PANE_HEIGHT = `calc((${DESKTOP_WORKSPACE_HEIGHT} - 1rem) / 2)`;
 const TALL_SCREEN_QUERY = '(min-height: 1000px) and (min-width: 1200px) and (max-width: 1600px)';
+const SURFACE_DEEP_LINK_QUERY_KEYS = ['search', 'timestamp', 'type', 'text', 'chat'] as const;
 
 const LAYOUT_DEFAULT = {
   header: 'max-w-[1800px] mx-auto px-4 sm:px-6 xl:px-8 2xl:px-10 py-2',
@@ -104,7 +105,7 @@ const CallPage: React.FC = () => {
   const [loading, setLoading] = useState(true);
   const [isUpcoming, setIsUpcoming] = useState(false);
 
-  const [searchParams, setSearchParams] = useSearchParams();
+  const [searchParams] = useSearchParams();
 
   const breakoutsForCall = useMemo(
     () => (normalizedPath ? breakouts.filter(b => b.parentPath === normalizedPath) : []),
@@ -118,13 +119,19 @@ const CallPage: React.FC = () => {
   }, [searchParams, breakoutsForCall]);
 
   const setActiveBreakoutKind = useCallback((kind: BreakoutKind | null) => {
-    setSearchParams(prev => {
-      const next = new URLSearchParams(prev);
-      if (kind) next.set('breakout', kind);
-      else next.delete('breakout');
-      return next;
+    const next = new URLSearchParams(searchParams);
+    for (const key of SURFACE_DEEP_LINK_QUERY_KEYS) {
+      next.delete(key);
+    }
+    if (kind) next.set('breakout', kind);
+    else next.delete('breakout');
+
+    navigate({
+      pathname: location.pathname,
+      search: next.toString() ? `?${next.toString()}` : '',
+      hash: '',
     });
-  }, [setSearchParams]);
+  }, [location.pathname, navigate, searchParams]);
 
   const [summaryExpanded, setSummaryExpanded] = useState(false);
   const transcriptRef = useRef<HTMLDivElement>(null);
@@ -223,20 +230,26 @@ const CallPage: React.FC = () => {
     const type = urlParams.get('type');
     const text = urlParams.get('text');
     const chatTimestamp = urlParams.get('chat');
+    const hasSearchResult = Boolean(searchQuery && timestamp && type && text);
 
-    if ((searchQuery && timestamp && type && text) || chatTimestamp) {
+    if (!hasSearchResult && !chatTimestamp) {
+      setInitialSearchQuery('');
+      setSelectedSearchResult(null);
       hasNavigatedToSearchResult.current = false;
+      return;
     }
 
-    if (searchQuery && timestamp && type && text) {
+    hasNavigatedToSearchResult.current = false;
+
+    if (hasSearchResult) {
       // Store the search query for initialization (but don't open search modal)
-      setInitialSearchQuery(searchQuery);
+      setInitialSearchQuery(searchQuery!);
 
       // Set up highlighting - use the actual result text, not the search query
       setSelectedSearchResult({
-        timestamp,
-        text: decodeURIComponent(text),
-        type
+        timestamp: timestamp!,
+        text: decodeURIComponent(text!),
+        type: type!,
       });
 
       // Auto-expand summary for agenda/action items
@@ -246,6 +259,8 @@ const CallPage: React.FC = () => {
 
       // We'll handle the video seek and scroll after everything is loaded
       // This will be done in a separate effect once the player and callConfig are ready
+    } else {
+      setInitialSearchQuery('');
     }
 
     // Handle direct chat link (format: ?chat=00:05:28)
@@ -621,6 +636,15 @@ const CallPage: React.FC = () => {
     };
 
     let cancelled = false;
+    setLoading(true);
+    setCallData(null);
+    setCallConfig(null);
+    setIsUpcoming(false);
+    setPlayer(null);
+    setCurrentVideoTime(0);
+    setIsPlaying(false);
+    lastHighlightedTimestampRef.current = null;
+
     loadCallData().then(result => {
       if (cancelled) return;
       if (result) {

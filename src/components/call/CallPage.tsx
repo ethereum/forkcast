@@ -222,6 +222,11 @@ const CallPage: React.FC = () => {
     const timestamp = searchParams.get('timestamp');
     const type = searchParams.get('type');
     const text = searchParams.get('text');
+    const chatTimestamp = searchParams.get('chat');
+
+    if ((searchQuery && timestamp && type && text) || chatTimestamp) {
+      hasNavigatedToSearchResult.current = false;
+    }
 
     if (searchQuery && timestamp && type && text) {
       // Store the search query for initialization (but don't open search modal)
@@ -244,7 +249,6 @@ const CallPage: React.FC = () => {
     }
 
     // Handle direct chat link (format: ?chat=00:05:28)
-    const chatTimestamp = searchParams.get('chat');
     if (chatTimestamp) {
       setSelectedSearchResult({
         timestamp: chatTimestamp,
@@ -254,9 +258,11 @@ const CallPage: React.FC = () => {
     }
   }, [location.search]);
 
-  // Handle navigation to selected search result when player is ready
+  // Handle navigation to selected search result when player is ready.
+  // Breakout pages intentionally have no callConfig, so don't gate on it.
   useEffect(() => {
-    if (selectedSearchResult && player && callConfig && callData && !hasNavigatedToSearchResult.current) {
+    const canNavigateWithoutPlayer = activeBreakout && selectedSearchResult?.type === 'chat';
+    if (selectedSearchResult && (player || canNavigateWithoutPlayer) && callData && !hasNavigatedToSearchResult.current) {
       const { timestamp, type } = selectedSearchResult;
 
       // Mark that we've navigated to prevent duplicate seeks
@@ -336,7 +342,7 @@ const CallPage: React.FC = () => {
         }
       }, 500); // Wait for DOM to be ready
     }
-  }, [selectedSearchResult, player, callConfig, callData]);
+  }, [selectedSearchResult, player, callConfig, callData, activeBreakout]);
 
   // Keyboard shortcut to open search (Cmd/Ctrl + K)
   useEffect(() => {

@@ -179,9 +179,13 @@ const CallPage: React.FC = () => {
     if (!callData) return null;
     return protocolCalls.find(c => c.type === callData.type.toLowerCase() && c.number === callData.number) ?? null;
   }, [callData]);
-  const callName = callData
+  const baseName = callData
     ? (matchingCall?.name || `${callTypeNames[callData.type.toLowerCase() as CallType] || callData.type}${!isOneOffCall(callData.type.toLowerCase()) && callData.number ? ` #${callData.number}` : ''}`)
     : 'Call';
+  const [parentType, parentNumber] = callPath?.split('/') ?? [];
+  const callName = activeBreakout
+    ? `${parentType.toUpperCase()} #${parentNumber} (${breakoutLabels[activeBreakout.kind]} Breakout)`
+    : baseName;
   useMetaTags({
     title: `${callName} | Forkcast`,
     description: `Notes and recording for ${callName}`,

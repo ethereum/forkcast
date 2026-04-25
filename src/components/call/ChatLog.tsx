@@ -16,16 +16,31 @@ interface ChatLogProps {
   } | null;
   selectedSearchResult?: {timestamp: string, text: string, type: string} | null;
   onTimestampClick?: (timestamp: string) => void;
+  allowTimestampNavigation?: boolean;
 }
 
-const ChatLog: React.FC<ChatLogProps> = ({ content, syncConfig, selectedSearchResult, onTimestampClick }) => {
+const ChatLog: React.FC<ChatLogProps> = ({
+  content,
+  syncConfig,
+  selectedSearchResult,
+  onTimestampClick,
+  allowTimestampNavigation = true,
+}) => {
   const [copiedTimestamp, setCopiedTimestamp] = useState<string | null>(null);
 
   // --- Copy link to a specific chat message ---
   const copyMessageLink = (timestamp: string, event: React.MouseEvent) => {
     event.stopPropagation(); // Don't trigger video seek
-    const url = `${window.location.origin}${window.location.pathname}?chat=${timestamp}`;
-    navigator.clipboard.writeText(url).then(() => {
+    const url = new URL(window.location.href);
+    const breakout = url.searchParams.get('breakout');
+    url.search = '';
+    if (breakout) {
+      url.searchParams.set('breakout', breakout);
+    }
+    url.searchParams.set('chat', timestamp);
+    url.hash = '';
+
+    navigator.clipboard.writeText(url.toString()).then(() => {
       setCopiedTimestamp(timestamp);
       setTimeout(() => setCopiedTimestamp(null), 2000);
     });
@@ -39,7 +54,7 @@ const ChatLog: React.FC<ChatLogProps> = ({ content, syncConfig, selectedSearchRe
       return;
     }
 
-    if (onTimestampClick && timestamp !== '00:00:00') {
+    if (allowTimestampNavigation && onTimestampClick && timestamp !== '00:00:00') {
       onTimestampClick(timestamp);
     }
   };
@@ -375,13 +390,14 @@ const ChatLog: React.FC<ChatLogProps> = ({ content, syncConfig, selectedSearchRe
         const replies = parentToReplies.get(key);
         const isParentWithReplies = replies && replies.length > 0;
         const isSelectedSearch = selectedSearchResult?.timestamp === message.timestamp && selectedSearchResult?.type === 'chat';
+        const isTimestampClickable = allowTimestampNavigation && message.timestamp !== '00:00:00';
         return (
           <div key={index} className="space-y-1">
             {/* Message */}
             <div
               data-chat-timestamp={message.timestamp}
               onClick={(e) => handleChatEntryClick(e, message.timestamp)}
-              className={`group hover:bg-slate-50 dark:hover:bg-slate-700/30 py-1 px-2 -mx-2 rounded transition-colors cursor-pointer
+              className={`group hover:bg-slate-50 dark:hover:bg-slate-700/30 py-1 px-2 -mx-2 rounded transition-colors ${isTimestampClickable ? 'cursor-pointer' : ''}
                 ${isSelectedSearch ? 'bg-yellow-50 dark:bg-yellow-900/20 border-l-2 border-yellow-500 rounded-r-md' : ''}
               `}
             >

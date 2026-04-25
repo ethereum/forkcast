@@ -1416,7 +1416,13 @@ const CallPage: React.FC = () => {
       <h2 className="text-sm font-semibold text-slate-900 dark:text-slate-100 mb-3">Chat Logs</h2>
       {callData.chatContent ? (
         <div ref={chatLogRef} className={`overflow-y-auto pr-2 ${isWorkspaceView ? 'min-h-0 flex-1' : 'max-h-[400px]'}`}>
-          <ChatLog content={callData.chatContent} syncConfig={callConfig?.sync} selectedSearchResult={selectedSearchResult} onTimestampClick={handleTranscriptClick} />
+          <ChatLog
+            content={callData.chatContent}
+            syncConfig={callConfig?.sync}
+            selectedSearchResult={selectedSearchResult}
+            onTimestampClick={handleTranscriptClick}
+            allowTimestampNavigation={!activeBreakout}
+          />
         </div>
       ) : isUpcoming ? (
         <div className={`flex flex-col items-center justify-center text-center ${isWorkspaceView ? 'flex-1' : 'py-12'}`}>

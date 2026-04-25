@@ -418,14 +418,13 @@ const CallPage: React.FC = () => {
   }, [callConfig, syncOffsetSeconds]);
 
   useEffect(() => {
-    const loadCallData = async () => {
-      if (!callPath) {
-        setLoading(false);
-        return;
-      }
+    // Issue-number URLs are handled by the redirect effect — leave loading set.
+    if (normalizedPath && !normalizedPath.includes('/') && /^\d+$/.test(normalizedPath)) return;
 
-      // Issue-number URLs are handled by the redirect effect
-      if (normalizedPath && !normalizedPath.includes('/') && /^\d+$/.test(normalizedPath)) return;
+    type LoadResult = { callData: CallData; callConfig: CallConfig | null; isUpcoming: boolean };
+
+    const loadCallData = async (): Promise<LoadResult | null> => {
+      if (!callPath) return null;
 
       // Breakout sub-calls have only video + chat; bypass the ACDT-shaped loading path.
       if (activeBreakout) {
@@ -436,21 +435,21 @@ const CallPage: React.FC = () => {
             const content = await chatResponse.text();
             if (content.trim() && !content.trimStart().startsWith('<!')) chatContent = content;
           }
-          setCallData({
-            type: activeBreakout.kind,
-            date: '',
-            number: '',
-            chatContent,
-            videoUrl: activeBreakout.videoUrl,
-          });
-          setCallConfig(null);
-          setIsUpcoming(false);
+          return {
+            callData: {
+              type: activeBreakout.kind,
+              date: '',
+              number: '',
+              chatContent,
+              videoUrl: activeBreakout.videoUrl,
+            },
+            callConfig: null,
+            isUpcoming: false,
+          };
         } catch (error) {
           console.error('Failed to load breakout data:', error);
-        } finally {
-          setLoading(false);
+          return null;
         }
-        return;
       }
 
       try {
@@ -467,21 +466,16 @@ const CallPage: React.FC = () => {
           // Check if this is an upcoming call from route state
           const locationState = location.state as UpcomingCallState | null;
           if (locationState?.upcoming) {
-            // Set minimal call data with YouTube URL for upcoming call
-            setCallData({
-              type: type?.toUpperCase() || '',
-              date: locationState.date,
-              number: number || '',
-              videoUrl: locationState.youtubeUrl
-              // No chatContent, transcriptContent, summaryData, etc.
-            });
-            setCallConfig({
-              videoUrl: locationState.youtubeUrl,
-              issue: locationState.issueNumber
-            });
-            setIsUpcoming(true);
-            setLoading(false);
-            return;
+            return {
+              callData: {
+                type: type?.toUpperCase() || '',
+                date: locationState.date,
+                number: number || '',
+                videoUrl: locationState.youtubeUrl,
+              },
+              callConfig: { videoUrl: locationState.youtubeUrl, issue: locationState.issueNumber },
+              isUpcoming: true,
+            };
           }
 
           // Direct navigation — try fetching upcoming calls from GitHub
@@ -491,27 +485,23 @@ const CallPage: React.FC = () => {
               call => call.type === type && call.number === number
             );
             if (upcomingMatch) {
-              setCallData({
-                type: type?.toUpperCase() || '',
-                date: upcomingMatch.date,
-                number: number || '',
-                videoUrl: upcomingMatch.youtubeUrl
-              });
-              setCallConfig({
-                videoUrl: upcomingMatch.youtubeUrl,
-                issue: upcomingMatch.issueNumber
-              });
-              setIsUpcoming(true);
-              setLoading(false);
-              return;
+              return {
+                callData: {
+                  type: type?.toUpperCase() || '',
+                  date: upcomingMatch.date,
+                  number: number || '',
+                  videoUrl: upcomingMatch.youtubeUrl,
+                },
+                callConfig: { videoUrl: upcomingMatch.youtubeUrl, issue: upcomingMatch.issueNumber },
+                isUpcoming: true,
+              };
             }
           } catch {
             // Fall through to "not found"
           }
 
           console.error('Call not found:', callPath);
-          setLoading(false);
-          return;
+          return null;
         }
 
         // Construct the artifact path with date_number format
@@ -580,7 +570,6 @@ const CallPage: React.FC = () => {
         if (configResponse.ok) {
           try {
             config = await configResponse.json();
-            setCallConfig(config);
           } catch (e) {
             console.warn('Failed to parse config.json:', e);
           }
@@ -602,25 +591,39 @@ const CallPage: React.FC = () => {
           videoUrl = 'https://www.youtube.com/watch?v=wF0gWBHZdu8';
         }
 
-        setCallData({
-          type: type?.toUpperCase() || '',
-          date: date || '',
-          number: number || '',
-          chatContent,
-          transcriptContent,
-          videoUrl,
-          tldrData,
-          keyDecisions
-        });
-
+        return {
+          callData: {
+            type: type?.toUpperCase() || '',
+            date: date || '',
+            number: number || '',
+            chatContent,
+            transcriptContent,
+            videoUrl,
+            tldrData,
+            keyDecisions,
+          },
+          callConfig: config,
+          isUpcoming: false,
+        };
       } catch (error) {
         console.error('Failed to load call data:', error);
-      } finally {
-        setLoading(false);
+        return null;
       }
     };
 
-    loadCallData();
+    let cancelled = false;
+    loadCallData().then(result => {
+      if (cancelled) return;
+      if (result) {
+        setCallData(result.callData);
+        setCallConfig(result.callConfig);
+        setIsUpcoming(result.isUpcoming);
+      }
+      setLoading(false);
+    });
+    return () => {
+      cancelled = true;
+    };
   }, [callPath, normalizedPath, location.state, activeBreakout]);
 
   // Clean up interval on unmount
@@ -1182,6 +1185,7 @@ const CallPage: React.FC = () => {
         <div className={isWorkspaceView ? 'min-h-0 flex-1' : ''}>
           <div className={`relative overflow-hidden rounded-lg ${isWorkspaceView ? 'h-full min-h-0' : 'aspect-video'}`}>
             <YouTube
+              key={extractYouTubeId(callData.videoUrl!)}
               videoId={extractYouTubeId(callData.videoUrl!)}
               className="absolute inset-0 h-full w-full"
               iframeClassName="w-full h-full rounded-lg"

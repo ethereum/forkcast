@@ -7,7 +7,7 @@ import CallSearch from './CallSearch';
 import ThemeToggle from '../ui/ThemeToggle';
 import { Logo } from '../ui/Logo';
 import { protocolCalls, callTypeNames, isOneOffCall, type CallType } from '../../data/calls';
-import { breakouts, breakoutLabels, type BreakoutKind } from '../../data/breakouts';
+import { breakouts, breakoutLabels, type Breakout, type BreakoutKind } from '../../data/breakouts';
 import { fetchUpcomingCalls } from '../../domain/calls/upcomingCalls';
 import { useMetaTags } from '../../hooks/useMetaTags';
 import { eipsData } from '../../data/eips';
@@ -58,6 +58,8 @@ interface UpcomingCallState {
   issueNumber: number;
 }
 
+type LoadResult = { callData: CallData; callConfig: CallConfig | null; isUpcoming: boolean };
+
 const DESKTOP_WORKSPACE_HEIGHT = 'clamp(40rem, calc(100vh - 7rem), 72rem)';
 const DESKTOP_SIDEBAR_PANE_HEIGHT = `calc((${DESKTOP_WORKSPACE_HEIGHT} - 1rem) / 2)`;
 const TALL_SCREEN_QUERY = '(min-height: 1000px) and (min-width: 1200px) and (max-width: 1600px)';
@@ -83,6 +85,176 @@ const LAYOUT_EXPANDED = {
   chatSection: '',
 };
 
+const isIssueRedirectPath = (path: string | undefined): path is string =>
+  Boolean(path && !path.includes('/') && /^\d+$/.test(path));
+
+const timestampToSeconds = (timestamp: string | null | undefined): number => {
+  if (!timestamp) return 0;
+  const parts = timestamp.split(':');
+  if (parts.length !== 3) return 0;
+  const [hours, minutes, seconds] = parts.map(p => parseFloat(p));
+  return hours * 3600 + minutes * 60 + seconds;
+};
+
+const formatTimestamp = (timestamp: string): string => timestamp.split('.')[0];
+
+const secondsToTimestamp = (totalSeconds: number): string => {
+  const sign = totalSeconds < 0 ? '-' : '';
+  const absSeconds = Math.abs(totalSeconds);
+  const hours = Math.floor(absSeconds / 3600);
+  const minutes = Math.floor((absSeconds % 3600) / 60);
+  const seconds = Math.floor(absSeconds % 60);
+
+  return `${sign}${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+};
+
+const getAdjustedVideoTimeForConfig = (transcriptTimestamp: string, callConfig: CallConfig | null): number => {
+  const transcriptSeconds = timestampToSeconds(formatTimestamp(transcriptTimestamp));
+  if (callConfig?.sync?.transcriptStartTime && callConfig?.sync?.videoStartTime) {
+    const offset = timestampToSeconds(callConfig.sync.transcriptStartTime) - timestampToSeconds(callConfig.sync.videoStartTime);
+    return transcriptSeconds - offset;
+  }
+  return transcriptSeconds;
+};
+
+const extractYouTubeId = (url: string): string => {
+  const patterns = [
+    /(?:youtube\.com\/watch\?v=|youtu\.be\/|youtube\.com\/embed\/)([^&\n?#]+)/,
+    /^([^&\n?#]+)$/,
+  ];
+
+  for (const pattern of patterns) {
+    const match = url.match(pattern);
+    if (match) return match[1];
+  }
+
+  console.log('Could not extract YouTube ID, using:', url);
+  return url;
+};
+
+const scrollEntryIntoContainer = (container: HTMLElement, entryElement: HTMLElement) => {
+  const containerHeight = container.clientHeight;
+  const containerRect = container.getBoundingClientRect();
+  const entryRect = entryElement.getBoundingClientRect();
+  const entryOffsetFromContainerTop = entryRect.top - containerRect.top + container.scrollTop;
+  const targetScrollTop = entryOffsetFromContainerTop - (containerHeight * 0.1);
+  const maxScroll = Math.max(0, container.scrollHeight - containerHeight);
+  const finalScrollTop = Math.max(0, Math.min(targetScrollTop, maxScroll));
+
+  container.scrollTo({
+    top: finalScrollTop,
+    behavior: 'smooth',
+  });
+};
+
+const readTextArtifact = async (path: string, isValid: (content: string) => boolean): Promise<string | undefined> => {
+  const response = await fetch(`/artifacts/${path}`);
+  if (!response.ok) return undefined;
+  const content = await response.text();
+  return isValid(content) ? content : undefined;
+};
+
+const readJsonArtifact = async <T,>(path: string, label: string): Promise<T | undefined> => {
+  const response = await fetch(`/artifacts/${path}`);
+  if (!response.ok) return undefined;
+  try {
+    return await response.json();
+  } catch (error) {
+    console.warn(`Failed to parse ${label}:`, error);
+    return undefined;
+  }
+};
+
+const isChatArtifact = (content: string) => Boolean(content.trim()) && !content.trimStart().startsWith('<!');
+const isVttArtifact = (content: string) => content.trimStart().startsWith('WEBVTT');
+const isPlainTextArtifact = (content: string) => Boolean(content.trim()) && !content.trimStart().startsWith('<!');
+
+const upcomingLoadResult = (
+  type: string | undefined,
+  number: string | undefined,
+  date: string,
+  youtubeUrl: string | undefined,
+  issueNumber: number,
+): LoadResult => ({
+  callData: {
+    type: type?.toUpperCase() || '',
+    date,
+    number: number || '',
+    videoUrl: youtubeUrl,
+  },
+  callConfig: { videoUrl: youtubeUrl, issue: issueNumber },
+  isUpcoming: true,
+});
+
+const loadBreakoutCallData = async (breakout: Breakout): Promise<LoadResult> => ({
+  callData: {
+    type: breakout.kind,
+    date: '',
+    number: '',
+    chatContent: await readTextArtifact(`${breakout.artifactDir}/chat.txt`, isChatArtifact),
+    videoUrl: breakout.videoUrl,
+  },
+  callConfig: null,
+  isUpcoming: false,
+});
+
+const loadMainCallData = async (
+  callPath: string,
+  locationState: UpcomingCallState | null,
+): Promise<LoadResult | null> => {
+  const [type, number] = callPath.split('/');
+  const matchingCall = protocolCalls.find(call => call.type === type && call.number === number);
+
+  if (!matchingCall) {
+    if (locationState?.upcoming) {
+      return upcomingLoadResult(type, number, locationState.date, locationState.youtubeUrl, locationState.issueNumber);
+    }
+
+    try {
+      const upcomingCalls = await fetchUpcomingCalls();
+      const upcomingMatch = upcomingCalls.find(call => call.type === type && call.number === number);
+      if (upcomingMatch) {
+        return upcomingLoadResult(type, number, upcomingMatch.date, upcomingMatch.youtubeUrl, upcomingMatch.issueNumber);
+      }
+    } catch {
+      // Fall through to "not found".
+    }
+
+    console.error('Call not found:', callPath);
+    return null;
+  }
+
+  const artifactPath = `${type}/${matchingCall.date}_${number}`;
+  const chatContent = await readTextArtifact(`${artifactPath}/chat.txt`, isChatArtifact);
+  const transcriptContent =
+    await readTextArtifact(`${artifactPath}/transcript_corrected.vtt`, isVttArtifact) ??
+    await readTextArtifact(`${artifactPath}/transcript.vtt`, isVttArtifact);
+  const tldrData = await readJsonArtifact<TldrData>(`${artifactPath}/tldr.json`, 'tldr.json');
+  const keyDecisionsData = await readJsonArtifact<{ key_decisions?: KeyDecision[] }>(
+    `${artifactPath}/key_decisions.json`,
+    'key_decisions.json',
+  );
+  const config = await readJsonArtifact<CallConfig>(`${artifactPath}/config.json`, 'config.json') ?? null;
+  const videoText = config?.videoUrl
+    ? undefined
+    : await readTextArtifact(`${artifactPath}/video.txt`, isPlainTextArtifact);
+
+  return {
+    callData: {
+      type: type?.toUpperCase() || '',
+      date: matchingCall.date || '',
+      number: number || '',
+      chatContent,
+      transcriptContent,
+      videoUrl: config?.videoUrl ?? videoText?.trim() ?? 'https://www.youtube.com/watch?v=wF0gWBHZdu8',
+      tldrData,
+      keyDecisions: keyDecisionsData?.key_decisions,
+    },
+    callConfig: config,
+    isUpcoming: false,
+  };
+};
+
 const CallPage: React.FC = () => {
   const { '*': callPath } = useParams();
   const location = useLocation();
@@ -91,7 +263,7 @@ const CallPage: React.FC = () => {
   // Redirect issue-number URLs (e.g., /calls/1954) to the canonical path
   const normalizedPath = callPath?.replace(/\/+$/, '');
   useEffect(() => {
-    if (normalizedPath && !normalizedPath.includes('/') && /^\d+$/.test(normalizedPath)) {
+    if (isIssueRedirectPath(normalizedPath)) {
       const issueNum = parseInt(normalizedPath);
       const byIssue = protocolCalls.find(c => c.issue === issueNum);
       if (byIssue) {
@@ -280,95 +452,6 @@ const CallPage: React.FC = () => {
     }
   }, [location.search]);
 
-  // Handle navigation to selected search result when player is ready.
-  // Breakout pages intentionally have no callConfig, so don't gate on it.
-  useEffect(() => {
-    const isBreakoutChatResult = Boolean(activeBreakout && selectedSearchResult?.type === 'chat');
-    if (selectedSearchResult && (player || isBreakoutChatResult) && callData && !hasNavigatedToSearchResult.current) {
-      const { timestamp, type } = selectedSearchResult;
-
-      // Mark that we've navigated to prevent duplicate seeks
-      hasNavigatedToSearchResult.current = true;
-
-      // Helper to convert timestamp for video seek
-      const timestampToSecs = (ts: string): number => {
-        const parts = ts.split(':');
-        if (parts.length !== 3) return 0;
-        const [hours, minutes, seconds] = parts.map(p => parseFloat(p));
-        return hours * 3600 + minutes * 60 + seconds;
-      };
-
-      // Calculate adjusted time for video
-      const transcriptSeconds = timestampToSecs(timestamp.split('.')[0]);
-      let adjustedTime = transcriptSeconds;
-
-      if (callConfig?.sync?.transcriptStartTime && callConfig?.sync?.videoStartTime) {
-        const offset = timestampToSecs(callConfig.sync.transcriptStartTime) -
-                      timestampToSecs(callConfig.sync.videoStartTime);
-        adjustedTime = transcriptSeconds - offset;
-      }
-
-      // Breakout chat timestamps come from Zoom export wall-clock times, not video offsets.
-      if (!isBreakoutChatResult) {
-        // Seek video to timestamp - check if player has seekTo method
-        // Wait a bit for player to be fully ready
-        setTimeout(() => {
-          try {
-            if (player && typeof player.seekTo === 'function' && callData.videoUrl) {
-              player.seekTo(adjustedTime);
-              setCurrentVideoTime(adjustedTime);
-            }
-          } catch (error) {
-            console.warn('Error seeking video:', error);
-          }
-        }, 100);
-      }
-
-      // Scroll to the entry after DOM is ready
-      setTimeout(() => {
-        if (type === 'transcript' && transcriptRef.current) {
-          const targetEntry = transcriptRef.current.querySelector(`[data-timestamp="${timestamp}"]`) as HTMLElement;
-          if (targetEntry) {
-            const container = transcriptRef.current;
-            const containerHeight = container.clientHeight;
-            const containerRect = container.getBoundingClientRect();
-            const entryRect = targetEntry.getBoundingClientRect();
-            const entryOffsetFromContainerTop = entryRect.top - containerRect.top + container.scrollTop;
-            const targetScrollTop = entryOffsetFromContainerTop - (containerHeight * 0.1);
-            const maxScroll = Math.max(0, container.scrollHeight - containerHeight);
-            const finalScrollTop = Math.max(0, Math.min(targetScrollTop, maxScroll));
-
-            container.scrollTo({
-              top: finalScrollTop,
-              behavior: 'smooth'
-            });
-          }
-        } else if (type === 'chat' && chatLogRef.current) {
-          // Wait a bit longer for chat to render since it's more complex
-          setTimeout(() => {
-            const targetEntry = chatLogRef.current?.querySelector(`[data-chat-timestamp="${timestamp}"]`) as HTMLElement;
-
-            if (targetEntry && chatLogRef.current) {
-              const container = chatLogRef.current;
-              const containerHeight = container.clientHeight;
-              const containerRect = container.getBoundingClientRect();
-              const entryRect = targetEntry.getBoundingClientRect();
-              const entryOffsetFromContainerTop = entryRect.top - containerRect.top + container.scrollTop;
-              const targetScrollTop = entryOffsetFromContainerTop - (containerHeight * 0.1);
-              const maxScroll = Math.max(0, container.scrollHeight - containerHeight);
-              const finalScrollTop = Math.max(0, Math.min(targetScrollTop, maxScroll));
-
-              container.scrollTo({
-                top: finalScrollTop,
-                behavior: 'smooth'
-              });
-            }
-          }, 500); // Extra delay for chat rendering
-        }
-      }, 500); // Wait for DOM to be ready
-    }
-  }, [selectedSearchResult, player, callConfig, callData, activeBreakout]);
-
   // Keyboard shortcut to open search (Cmd/Ctrl + K)
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
@@ -385,262 +468,14 @@ const CallPage: React.FC = () => {
     return () => window.removeEventListener('keydown', handleKeyDown);
   }, [player, isPlaying]);
 
-  // Convert timestamp string to seconds for comparison
-  const timestampToSeconds = (timestamp: string | null | undefined): number => {
-    if (!timestamp) return 0;
-    const parts = timestamp.split(':');
-    if (parts.length !== 3) return 0;
-    const [hours, minutes, seconds] = parts.map(p => parseFloat(p));
-    return hours * 3600 + minutes * 60 + seconds;
-  };
-
-  // Calculate offset in seconds if config is available and has valid sync times
-  const syncOffsetSeconds = callConfig?.sync?.transcriptStartTime && callConfig?.sync?.videoStartTime
-    ? timestampToSeconds(callConfig.sync.transcriptStartTime) - timestampToSeconds(callConfig.sync.videoStartTime)
-    : 0;
-
-  // Helper function to format timestamp
-  const formatTimestamp = (timestamp: string): string => {
-    // Convert "00:04:05.754" to "00:04:05"
-    return timestamp.split('.')[0];
-  };
-
-  // Convert seconds back to timestamp format
-  const secondsToTimestamp = (totalSeconds: number): string => {
-    const sign = totalSeconds < 0 ? '-' : '';
-    const absSeconds = Math.abs(totalSeconds);
-    const hours = Math.floor(absSeconds / 3600);
-    const minutes = Math.floor((absSeconds % 3600) / 60);
-    const seconds = Math.floor(absSeconds % 60);
-
-    return `${sign}${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
-  };
-
-  const extractYouTubeId = (url: string): string => {
-    // Handle various YouTube URL formats
-    const patterns = [
-      /(?:youtube\.com\/watch\?v=|youtu\.be\/|youtube\.com\/embed\/)([^&\n?#]+)/,
-      /^([^&\n?#]+)$/ // Just the ID
-    ];
-
-    for (const pattern of patterns) {
-      const match = url.match(pattern);
-      if (match) {
-        return match[1];
-      }
-    }
-
-    console.log('Could not extract YouTube ID, using:', url);
-    return url; // Fallback to the original string
-  };
-
   // Apply sync offset to convert transcript time to video time
   const getAdjustedVideoTime = useCallback((transcriptTimestamp: string): number => {
-    const transcriptSeconds = timestampToSeconds(formatTimestamp(transcriptTimestamp));
-
-    // Calculate offset from current config state
-    if (callConfig?.sync?.transcriptStartTime && callConfig?.sync?.videoStartTime) {
-      const offset = timestampToSeconds(callConfig.sync.transcriptStartTime) - timestampToSeconds(callConfig.sync.videoStartTime);
-      return transcriptSeconds - offset;
-    }
-
-    // Fallback to pre-calculated offset if config not available
-    return transcriptSeconds - syncOffsetSeconds;
-  }, [callConfig, syncOffsetSeconds]);
+    return getAdjustedVideoTimeForConfig(transcriptTimestamp, callConfig);
+  }, [callConfig]);
 
   useEffect(() => {
     // Issue-number URLs are handled by the redirect effect — leave loading set.
-    if (normalizedPath && !normalizedPath.includes('/') && /^\d+$/.test(normalizedPath)) return;
-
-    type LoadResult = { callData: CallData; callConfig: CallConfig | null; isUpcoming: boolean };
-
-    const loadCallData = async (): Promise<LoadResult | null> => {
-      if (!callPath) return null;
-
-      // Breakout sub-calls have only video + chat; bypass the ACDT-shaped loading path.
-      if (activeBreakout) {
-        try {
-          const chatResponse = await fetch(`/artifacts/${activeBreakout.artifactDir}/chat.txt`);
-          let chatContent: string | undefined;
-          if (chatResponse.ok) {
-            const content = await chatResponse.text();
-            if (content.trim() && !content.trimStart().startsWith('<!')) chatContent = content;
-          }
-          return {
-            callData: {
-              type: activeBreakout.kind,
-              date: '',
-              number: '',
-              chatContent,
-              videoUrl: activeBreakout.videoUrl,
-            },
-            callConfig: null,
-            isUpcoming: false,
-          };
-        } catch (error) {
-          console.error('Failed to load breakout data:', error);
-          return null;
-        }
-      }
-
-      try {
-        // Parse the call path (e.g., "acdc/154")
-        const [type, number] = callPath.split('/');
-
-        // Map from simplified URL to artifact folder path
-        // We need to find the matching call from our data to get the date
-        const matchingCall = protocolCalls.find(
-          call => call.type === type && call.number === number
-        );
-
-        if (!matchingCall) {
-          // Check if this is an upcoming call from route state
-          const locationState = location.state as UpcomingCallState | null;
-          if (locationState?.upcoming) {
-            return {
-              callData: {
-                type: type?.toUpperCase() || '',
-                date: locationState.date,
-                number: number || '',
-                videoUrl: locationState.youtubeUrl,
-              },
-              callConfig: { videoUrl: locationState.youtubeUrl, issue: locationState.issueNumber },
-              isUpcoming: true,
-            };
-          }
-
-          // Direct navigation — try fetching upcoming calls from GitHub
-          try {
-            const upcomingCalls = await fetchUpcomingCalls();
-            const upcomingMatch = upcomingCalls.find(
-              call => call.type === type && call.number === number
-            );
-            if (upcomingMatch) {
-              return {
-                callData: {
-                  type: type?.toUpperCase() || '',
-                  date: upcomingMatch.date,
-                  number: number || '',
-                  videoUrl: upcomingMatch.youtubeUrl,
-                },
-                callConfig: { videoUrl: upcomingMatch.youtubeUrl, issue: upcomingMatch.issueNumber },
-                isUpcoming: true,
-              };
-            }
-          } catch {
-            // Fall through to "not found"
-          }
-
-          console.error('Call not found:', callPath);
-          return null;
-        }
-
-        // Construct the artifact path with date_number format
-        const artifactPath = `${type}/${matchingCall.date}_${number}`;
-        const date = matchingCall.date;
-
-        // Load chat logs
-        // Note: We validate content doesn't start with HTML because SPA dev servers
-        // may return 200 with index.html for missing files
-        let chatContent: string | undefined;
-        const chatResponse = await fetch(`/artifacts/${artifactPath}/chat.txt`);
-        if (chatResponse.ok) {
-          const content = await chatResponse.text();
-          if (content.trim() && !content.trimStart().startsWith('<!')) {
-            chatContent = content;
-          }
-        }
-
-        // Load transcript (prefer corrected version if available)
-        // Note: We validate content starts with "WEBVTT" because SPA dev servers
-        // may return 200 with index.html for missing files
-        let transcriptContent: string | undefined;
-        const correctedResponse = await fetch(`/artifacts/${artifactPath}/transcript_corrected.vtt`);
-        if (correctedResponse.ok) {
-          const content = await correctedResponse.text();
-          if (content.trimStart().startsWith('WEBVTT')) {
-            transcriptContent = content;
-          }
-        }
-        if (!transcriptContent) {
-          const transcriptResponse = await fetch(`/artifacts/${artifactPath}/transcript.vtt`);
-          if (transcriptResponse.ok) {
-            const content = await transcriptResponse.text();
-            if (content.trimStart().startsWith('WEBVTT')) {
-              transcriptContent = content;
-            }
-          }
-        }
-
-        // Load tldr if it exists
-        const tldrResponse = await fetch(`/artifacts/${artifactPath}/tldr.json`);
-        let tldrData = undefined;
-        if (tldrResponse.ok) {
-          try {
-            tldrData = await tldrResponse.json();
-          } catch (e) {
-            console.warn('Failed to parse tldr.json:', e);
-          }
-        }
-
-        // Load key decisions if they exist
-        let keyDecisions: KeyDecision[] | undefined;
-        const keyDecisionsResponse = await fetch(`/artifacts/${artifactPath}/key_decisions.json`);
-        if (keyDecisionsResponse.ok) {
-          try {
-            const kdData = await keyDecisionsResponse.json();
-            keyDecisions = kdData?.key_decisions;
-          } catch (e) {
-            console.warn('Failed to parse key_decisions.json:', e);
-          }
-        }
-
-        // Load config file if it exists
-        const configResponse = await fetch(`/artifacts/${artifactPath}/config.json`);
-        let config: CallConfig | null = null;
-        if (configResponse.ok) {
-          try {
-            config = await configResponse.json();
-          } catch (e) {
-            console.warn('Failed to parse config.json:', e);
-          }
-        } else {
-          console.log('No config.json found - highlighting disabled');
-        }
-
-        // Determine video URL: config > video.txt > fallback
-        let videoUrl: string | undefined;
-        if (config?.videoUrl) {
-          videoUrl = config.videoUrl;
-        } else {
-          const videoResponse = await fetch(`/artifacts/${artifactPath}/video.txt`);
-          videoUrl = videoResponse.ok ? (await videoResponse.text()).trim() : undefined;
-        }
-
-        // Fallback for testing if no URL found
-        if (!videoUrl) {
-          videoUrl = 'https://www.youtube.com/watch?v=wF0gWBHZdu8';
-        }
-
-        return {
-          callData: {
-            type: type?.toUpperCase() || '',
-            date: date || '',
-            number: number || '',
-            chatContent,
-            transcriptContent,
-            videoUrl,
-            tldrData,
-            keyDecisions,
-          },
-          callConfig: config,
-          isUpcoming: false,
-        };
-      } catch (error) {
-        console.error('Failed to load call data:', error);
-        return null;
-      }
-    };
+    if (isIssueRedirectPath(normalizedPath)) return;
 
     let cancelled = false;
     setLoading(true);
@@ -652,15 +487,28 @@ const CallPage: React.FC = () => {
     setIsPlaying(false);
     lastHighlightedTimestampRef.current = null;
 
-    loadCallData().then(result => {
-      if (cancelled) return;
-      if (result) {
-        setCallData(result.callData);
-        setCallConfig(result.callConfig);
-        setIsUpcoming(result.isUpcoming);
-      }
-      setLoading(false);
-    });
+    const locationState = location.state as UpcomingCallState | null;
+    const loadCallData = activeBreakout
+      ? loadBreakoutCallData(activeBreakout)
+      : callPath
+        ? loadMainCallData(callPath, locationState)
+        : Promise.resolve(null);
+
+    loadCallData
+      .then(result => {
+        if (cancelled) return;
+        if (result) {
+          setCallData(result.callData);
+          setCallConfig(result.callConfig);
+          setIsUpcoming(result.isUpcoming);
+        }
+      })
+      .catch(error => {
+        console.error('Failed to load call data:', error);
+      })
+      .finally(() => {
+        if (!cancelled) setLoading(false);
+      });
     return () => {
       cancelled = true;
     };
@@ -754,63 +602,61 @@ const CallPage: React.FC = () => {
     };
   }, [callData]);
 
-  const scrollTranscriptToEntry = (entryElement: HTMLElement) => {
+  const scrollTranscriptToEntry = useCallback((entryElement: HTMLElement) => {
     if (!transcriptRef.current) return;
 
-    const container = transcriptRef.current;
-    const containerHeight = container.clientHeight;
-    const containerRect = container.getBoundingClientRect();
-    const entryRect = entryElement.getBoundingClientRect();
-
-    // Calculate entry position relative to container's scroll area
-    const entryOffsetFromContainerTop = entryRect.top - containerRect.top + container.scrollTop;
-
-    // Position entry at 10% from top of viewport
-    const targetScrollTop = entryOffsetFromContainerTop - (containerHeight * 0.1);
-
-    // Ensure we don't scroll past boundaries
-    const maxScroll = Math.max(0, container.scrollHeight - containerHeight);
-    const finalScrollTop = Math.max(0, Math.min(targetScrollTop, maxScroll));
-
-    // Mark as programmatic scroll
     isProgrammaticScrollRef.current = true;
-
-    // Smooth scroll within container only
-    container.scrollTo({
-      top: finalScrollTop,
-      behavior: 'smooth'
-    });
-
-    // Reset flag after scroll completes
+    scrollEntryIntoContainer(transcriptRef.current, entryElement);
     setTimeout(() => {
       isProgrammaticScrollRef.current = false;
     }, 500);
-  };
+  }, []);
 
-  const scrollChatToEntry = (entryElement: HTMLElement) => {
+  const scrollChatToEntry = useCallback((entryElement: HTMLElement) => {
     if (!chatLogRef.current) return;
+    scrollEntryIntoContainer(chatLogRef.current, entryElement);
+  }, []);
 
-    const container = chatLogRef.current;
-    const containerHeight = container.clientHeight;
-    const containerRect = container.getBoundingClientRect();
-    const entryRect = entryElement.getBoundingClientRect();
+  // Handle navigation to selected search result when player is ready.
+  // Breakout pages intentionally have no callConfig, so chat anchors do not wait for the player.
+  useEffect(() => {
+    const isBreakoutChatResult = Boolean(activeBreakout && selectedSearchResult?.type === 'chat');
+    if (!selectedSearchResult || (!player && !isBreakoutChatResult) || !callData || hasNavigatedToSearchResult.current) {
+      return;
+    }
 
-    // Calculate entry position relative to container's scroll area
-    const entryOffsetFromContainerTop = entryRect.top - containerRect.top + container.scrollTop;
+    const { timestamp, type } = selectedSearchResult;
+    hasNavigatedToSearchResult.current = true;
 
-    // Position entry at 10% from top of viewport
-    const targetScrollTop = entryOffsetFromContainerTop - (containerHeight * 0.1);
+    if (!isBreakoutChatResult) {
+      const adjustedTime = getAdjustedVideoTime(timestamp);
+      setTimeout(() => {
+        try {
+          if (player && typeof player.seekTo === 'function' && callData.videoUrl) {
+            player.seekTo(adjustedTime);
+            setCurrentVideoTime(adjustedTime);
+          }
+        } catch (error) {
+          console.warn('Error seeking video:', error);
+        }
+      }, 100);
+    }
 
-    // Ensure we don't scroll past boundaries
-    const maxScroll = Math.max(0, container.scrollHeight - containerHeight);
-    const finalScrollTop = Math.max(0, Math.min(targetScrollTop, maxScroll));
+    setTimeout(() => {
+      if (type === 'transcript') {
+        const targetEntry = transcriptRef.current?.querySelector(`[data-timestamp="${timestamp}"]`) as HTMLElement | null;
+        if (targetEntry) scrollTranscriptToEntry(targetEntry);
+        return;
+      }
 
-    // Smooth scroll within container only
-    container.scrollTo({
-      top: finalScrollTop,
-      behavior: 'smooth'
-    });
-  };
+      if (type === 'chat') {
+        setTimeout(() => {
+          const targetEntry = chatLogRef.current?.querySelector(`[data-chat-timestamp="${timestamp}"]`) as HTMLElement | null;
+          if (targetEntry) scrollChatToEntry(targetEntry);
+        }, 500);
+      }
+    }, 500);
+  }, [selectedSearchResult, player, callData, activeBreakout, getAdjustedVideoTime, scrollTranscriptToEntry, scrollChatToEntry]);
 
   // Auto-scroll transcript to highlighted entry
   useEffect(() => {
@@ -858,7 +704,7 @@ const CallPage: React.FC = () => {
         scrollTranscriptToEntry(entryParent);
       }
     }
-  }, [currentVideoTime, isPlaying, callConfig, isUserScrollingTranscript, isDesktopExpanded]);
+  }, [currentVideoTime, isPlaying, callConfig, isUserScrollingTranscript, isDesktopExpanded, scrollTranscriptToEntry]);
 
   useEffect(() => {
     lastHighlightedTimestampRef.current = null;

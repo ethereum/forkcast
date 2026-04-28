@@ -435,12 +435,20 @@ const PublicNetworkUpgradePage: React.FC<PublicNetworkUpgradePageProps> = ({
           <div className="border-b border-slate-200 dark:border-slate-700 pb-8">
             <div className="flex flex-col lg:flex-row lg:items-start lg:justify-between">
               <div className="flex-1">
-                <div className="flex items-center gap-3 mb-3">
-                  <h1 className="text-3xl font-light text-slate-900 dark:text-slate-100 tracking-tight">{displayName}</h1>
-                  <CopyLinkButton
-                    sectionId="upgrade"
-                    title="Copy link to this upgrade"
-                  />
+                <div className="flex items-center justify-between lg:justify-start gap-3 mb-3">
+                  <h1 className="text-3xl font-light text-slate-900 dark:text-slate-100 tracking-tight">
+                    <span className="lg:hidden">{displayName.replace(/ Upgrade$/, '')}</span>
+                    <span className="hidden lg:inline">{displayName}</span>
+                  </h1>
+                  <span className={`lg:hidden px-3 py-1 text-xs font-medium rounded ${getUpgradeStatusColor(status)}`}>
+                    {status}
+                  </span>
+                  <div className="hidden lg:flex items-center">
+                    <CopyLinkButton
+                      sectionId="upgrade"
+                      title="Copy link to this upgrade"
+                    />
+                  </div>
                 </div>
                 <p className="text-base text-slate-600 dark:text-slate-300 mb-2 leading-relaxed max-w-2xl">{description}</p>
                 {metaEipLink && (
@@ -474,7 +482,7 @@ const PublicNetworkUpgradePage: React.FC<PublicNetworkUpgradePageProps> = ({
                   </div>
                 )}
               </div>
-              <div className="mt-6 lg:mt-0">
+              <div className="hidden lg:block">
                 <span className={`px-3 py-1 text-xs font-medium rounded ${getUpgradeStatusColor(status)}`}>
                   {status}
                 </span>

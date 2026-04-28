@@ -1,11 +1,10 @@
 import React from 'react';
-import { EIP, ClientTeamPerspective } from '../../types';
+import { EIP } from '../../types';
 import {
   getInclusionStage,
 } from '../../utils';
 import { ActivationDetails } from '../../data/upgrades';
 import { CopyLinkButton } from '../ui/CopyLinkButton';
-import { ClientPerspectives } from './ClientPerspectives';
 
 interface OverviewSectionProps {
   eips: EIP[];
@@ -13,8 +12,6 @@ interface OverviewSectionProps {
   status: string;
   activationDate?: string;
   onStageClick: (stageId: string) => void;
-  clientTeamPerspectives?: ClientTeamPerspective[];
-  onExternalLinkClick?: (linkType: string, url: string) => void;
   activationDetails?: ActivationDetails;
 }
 
@@ -24,9 +21,7 @@ export const OverviewSection: React.FC<OverviewSectionProps> = ({
   status,
   activationDate,
   onStageClick,
-  clientTeamPerspectives,
   activationDetails,
-  onExternalLinkClick,
 }) => {
   // For Live upgrades, only show Included (declined is replaced by activation details)
   const stageStats = status === 'Live'
@@ -106,22 +101,22 @@ export const OverviewSection: React.FC<OverviewSectionProps> = ({
         </div>
       )}
 
-      {/* Client Perspectives for candidate EIPs (Glamsterdam only) */}
-      {forkName.toLowerCase() === 'glamsterdam' && clientTeamPerspectives && (
-        <div className="mb-6">
-          <ClientPerspectives
-            perspectives={clientTeamPerspectives}
-            type="candidate"
-            onLinkClick={(url: string) => {
-              window.open(url, '_blank');
-              onExternalLinkClick?.('client_perspective_candidate', url);
-            }}
-          />
+      {/* Scoping notice for Glamsterdam */}
+      {forkName.toLowerCase() === 'glamsterdam' && (
+        <div className="p-4 mb-6 bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-700 rounded">
+          <div className="flex items-start gap-3">
+            <svg className="w-5 h-5 text-blue-500 dark:text-blue-400 mt-0.5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+            </svg>
+            <p className="text-blue-800 dark:text-blue-200 text-xs leading-relaxed">
+              Candidate EIPs are being fine-tuned, implemented, and tested on closed devnets. This process will determine which EIPs get Scheduled for Inclusion.
+            </p>
+          </div>
         </div>
       )}
 
       {/* Stage counts grid */}
-      <div className={status === 'Live' ? 'grid grid-cols-1 md:grid-cols-3 gap-4' : 'grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4'}>
+      <div className={status === 'Live' ? 'grid grid-cols-1 md:grid-cols-3 gap-4' : 'grid grid-cols-2 md:grid-cols-2 lg:grid-cols-4 gap-4'}>
           {/* Live status info box - only for Live upgrades */}
           {status === 'Live' && (
             <div className="flex flex-col items-center justify-center p-4 rounded bg-emerald-50 dark:bg-emerald-900/20 border border-emerald-200 dark:border-emerald-700">

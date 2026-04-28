@@ -269,7 +269,7 @@ export const EipPage: React.FC = () => {
 
             {/* Description */}
             <p className="mt-4 text-slate-700 dark:text-slate-300 leading-relaxed">
-              {parseMarkdownLinks(eip.laymanDescription || eip.description)}
+              {parseMarkdownLinks(eip.description)}
             </p>
 
             {/* Breakout Call */}

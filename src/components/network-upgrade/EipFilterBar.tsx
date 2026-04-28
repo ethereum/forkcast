@@ -1,5 +1,4 @@
 import React from 'react';
-import { Tooltip } from '../ui';
 
 type LayerFilter = 'all' | 'EL' | 'CL';
 
@@ -49,42 +48,39 @@ export const EipFilterBar: React.FC<EipFilterBarProps> = ({
       {/* Layer filter */}
       {showLayerFilter && onLayerFilterChange && (
         <div className="flex gap-1 mb-3 px-0.5">
-          <Tooltip text="Show all EIPs" position="bottom" className="flex-1">
-            <button
-              onClick={() => onLayerFilterChange('all')}
-              className={`w-full px-2 py-1 text-xs font-medium rounded border transition-colors cursor-pointer ${
-                layerFilter === 'all'
-                  ? 'border-slate-400 text-slate-700 bg-white dark:border-slate-400 dark:text-slate-200 dark:bg-slate-700'
-                  : 'border-slate-200 text-slate-500 bg-white hover:border-slate-300 dark:border-slate-600 dark:text-slate-400 dark:bg-slate-800 dark:hover:border-slate-500'
-              }`}
-            >
-              All
-            </button>
-          </Tooltip>
-          <Tooltip text="Execution Layer" position="bottom" className="flex-1">
-            <button
-              onClick={() => onLayerFilterChange('EL')}
-              className={`w-full px-2 py-1 text-xs font-medium rounded border transition-colors cursor-pointer ${
-                layerFilter === 'EL'
-                  ? 'bg-indigo-100 text-indigo-700 border-indigo-200 dark:bg-indigo-900/20 dark:text-indigo-300 dark:border-indigo-600'
-                  : 'border-slate-200 text-slate-500 bg-white hover:border-slate-300 dark:border-slate-600 dark:text-slate-400 dark:bg-slate-800 dark:hover:border-slate-500'
-              }`}
-            >
-              EL
-            </button>
-          </Tooltip>
-          <Tooltip text="Consensus Layer" position="bottom" className="flex-1">
-            <button
-              onClick={() => onLayerFilterChange('CL')}
-              className={`w-full px-2 py-1 text-xs font-medium rounded border transition-colors cursor-pointer ${
-                layerFilter === 'CL'
-                  ? 'bg-teal-100 text-teal-700 border-teal-200 dark:bg-teal-900/20 dark:text-teal-300 dark:border-teal-600'
-                  : 'border-slate-200 text-slate-500 bg-white hover:border-slate-300 dark:border-slate-600 dark:text-slate-400 dark:bg-slate-800 dark:hover:border-slate-500'
-              }`}
-            >
-              CL
-            </button>
-          </Tooltip>
+          <button
+            onClick={() => onLayerFilterChange('all')}
+            title="Show all EIPs"
+            className={`flex-1 px-2 py-1 text-xs font-medium rounded border transition-colors cursor-pointer ${
+              layerFilter === 'all'
+                ? 'border-slate-400 text-slate-700 bg-white dark:border-slate-400 dark:text-slate-200 dark:bg-slate-700'
+                : 'border-slate-200 text-slate-500 bg-white hover:border-slate-300 dark:border-slate-600 dark:text-slate-400 dark:bg-slate-800 dark:hover:border-slate-500'
+            }`}
+          >
+            All
+          </button>
+          <button
+            onClick={() => onLayerFilterChange('EL')}
+            title="Execution Layer"
+            className={`flex-1 px-2 py-1 text-xs font-medium rounded border transition-colors cursor-pointer ${
+              layerFilter === 'EL'
+                ? 'bg-indigo-100 text-indigo-700 border-indigo-200 dark:bg-indigo-900/20 dark:text-indigo-300 dark:border-indigo-600'
+                : 'border-slate-200 text-slate-500 bg-white hover:border-slate-300 dark:border-slate-600 dark:text-slate-400 dark:bg-slate-800 dark:hover:border-slate-500'
+            }`}
+          >
+            EL
+          </button>
+          <button
+            onClick={() => onLayerFilterChange('CL')}
+            title="Consensus Layer"
+            className={`flex-1 px-2 py-1 text-xs font-medium rounded border transition-colors cursor-pointer ${
+              layerFilter === 'CL'
+                ? 'bg-teal-100 text-teal-700 border-teal-200 dark:bg-teal-900/20 dark:text-teal-300 dark:border-teal-600'
+                : 'border-slate-200 text-slate-500 bg-white hover:border-slate-300 dark:border-slate-600 dark:text-slate-400 dark:bg-slate-800 dark:hover:border-slate-500'
+            }`}
+          >
+            CL
+          </button>
         </div>
       )}
 

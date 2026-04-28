@@ -32,6 +32,7 @@ import {
   HegotaTimeline,
   PectraTimeline,
   TableOfContents,
+  EipFilterBar,
   OverviewSection,
   ClientPerspectives,
   EipCard
@@ -484,6 +485,19 @@ const PublicNetworkUpgradePage: React.FC<PublicNetworkUpgradePageProps> = ({
         </div>
 
         <NetworkUpgradeTimeline currentForkName={forkName} />
+
+        {/* Mobile-only filter bar — the desktop sidebar (lg+) handles this */}
+        <div className="lg:hidden mb-4">
+          <EipFilterBar
+            searchQuery={searchQuery}
+            onSearchChange={handleSearchChange}
+            layerFilter={layerFilter}
+            onLayerFilterChange={handleLayerFilterChange}
+            showLayerFilter={showLayerFilter}
+            matchCount={filterEips(eips).length}
+            totalEipCount={filterEipsByLayer(eips).length}
+          />
+        </div>
 
         <div className="flex gap-8">
           <TableOfContents

@@ -15,21 +15,12 @@ const makeEip = (overrides: Partial<EIP> = {}): EIP => ({
 });
 
 describe('getSummaryDescription', () => {
-  it('uses laymanDescription when present', () => {
+  it('returns the EIP description', () => {
     const eip = makeEip({
-      description: 'Technical fallback',
+      description: 'The EIP description',
       laymanDescription: 'Reader-friendly summary',
     });
 
-    expect(getSummaryDescription(eip)).toBe('Reader-friendly summary');
-  });
-
-  it('falls back to description when laymanDescription is missing', () => {
-    const eip = makeEip({
-      description: 'Technical fallback',
-      laymanDescription: undefined,
-    });
-
-    expect(getSummaryDescription(eip)).toBe('Technical fallback');
+    expect(getSummaryDescription(eip)).toBe('The EIP description');
   });
 });

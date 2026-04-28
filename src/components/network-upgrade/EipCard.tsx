@@ -13,8 +13,9 @@ import {
   getEipLayer,
 } from '../../utils';
 import { Tooltip, CopyLinkButton } from '../ui';
-import { useButterflyData } from '../../hooks/useButterflyData';
-import { ClientTestingProgress } from './ClientTestingProgress';
+// Butterfly view disabled — data is stale. Uncomment to re-enable.
+// import { useButterflyData } from '../../hooks/useButterflyData';
+// import { ClientTestingProgress } from './ClientTestingProgress';
 
 interface EipCardProps {
   eip: EIP;
@@ -28,8 +29,8 @@ export const EipCard: React.FC<EipCardProps> = ({ eip, forkName, handleExternalL
   const [showChampionDetails, setShowChampionDetails] = useState(false);
   const [isExpanded, setIsExpanded] = useState(false);
 
-  // Fetch butterfly data for EIP 7928
-  const { data: butterflyData, loading: butterflyLoading, error: butterflyError } = useButterflyData(eip.id, forkName);
+  // Butterfly view disabled — data is stale. Uncomment to re-enable.
+  // const { data: butterflyData, loading: butterflyLoading, error: butterflyError } = useButterflyData(eip.id, forkName);
 
   const hasMissingTradeoffs = !eip.tradeoffs || eip.tradeoffs.length === 0;
 
@@ -371,7 +372,7 @@ export const EipCard: React.FC<EipCardProps> = ({ eip, forkName, handleExternalL
           );
         })()}
 
-        {/* Client Testing Progress (EIP 7928) */}
+        {/* Butterfly view disabled — data is stale. Uncomment to re-enable.
         {eip.id === 7928 && !butterflyLoading && (
           <>
             {butterflyData && <ClientTestingProgress data={butterflyData} />}
@@ -389,6 +390,7 @@ export const EipCard: React.FC<EipCardProps> = ({ eip, forkName, handleExternalL
             )}
           </>
         )}
+        */}
 
         {/* Benefits - Always visible */}
         {eip.benefits && eip.benefits.length > 0 && (

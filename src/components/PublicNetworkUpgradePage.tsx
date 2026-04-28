@@ -520,8 +520,6 @@ const PublicNetworkUpgradePage: React.FC<PublicNetworkUpgradePageProps> = ({
                 status={status}
                 activationDate={activationDate}
                 onStageClick={scrollToSection}
-                clientTeamPerspectives={clientTeamPerspectives}
-                onExternalLinkClick={handleExternalLinkClick}
                 activationDetails={activationDetails}
               />
 

@@ -19,6 +19,7 @@ import { getUpgradeById } from './data/upgrades';
 import { useAnalytics } from './hooks/useAnalytics';
 import { ThemeProvider } from './contexts/ThemeContext';
 import ExternalRedirect from './components/ExternalRedirect';
+import { AnnouncementBanner } from './components/ui';
 
 const stripTrailingSlashes = (p: string): string =>
   p === '/' ? '/' : p.replace(/\/+$/, '');
@@ -101,6 +102,17 @@ function App() {
         <AnalyticsTracker />
         <ScrollToTop />
         <div className="scanlines" aria-hidden="true" />
+        <AnnouncementBanner
+          storageKey="epf7-banner-dismissed"
+          title="Ethereum Protocol Fellowship (EPF) Cohort 7 — Applications open until May 13"
+          links={[
+            {
+              url: 'https://blog.ethereum.org/2026/04/30/epf-7',
+              label: 'Learn more',
+              primary: true,
+            },
+          ]}
+        />
         <main>
           <Routes>
             <Route path="/" element={<HomePage />} />

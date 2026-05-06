@@ -149,10 +149,11 @@ const SchedulePage: React.FC = () => {
       ...generated,
       phases: generated.phases.map((phase, idx) => {
         const staticPhase = GLAMSTERDAM_PROGRESS.phases[idx];
+        let merged = phase;
         if (staticPhase?.substeps) {
-          return {
-            ...phase,
-            substeps: phase.substeps?.map((substep, substepIdx) => {
+          merged = {
+            ...merged,
+            substeps: merged.substeps?.map((substep, substepIdx) => {
               const staticSubstep = staticPhase.substeps?.[substepIdx];
               // Use actual date if it exists (completed milestone)
               if (staticSubstep?.date) {
@@ -167,7 +168,24 @@ const SchedulePage: React.FC = () => {
             })
           };
         }
-        return phase;
+        if (staticPhase?.devnets) {
+          merged = {
+            ...merged,
+            devnets: merged.devnets?.map((devnet, devnetIdx) => {
+              const staticDevnet = staticPhase.devnets?.[devnetIdx];
+              if (staticDevnet?.date) {
+                return {
+                  ...devnet,
+                  status: staticDevnet.status,
+                  date: staticDevnet.date,
+                  projectedDate: staticDevnet.date
+                };
+              }
+              return devnet;
+            })
+          };
+        }
+        return merged;
       })
     };
   }, [glamsterdamMainnetDate, glamsterdamDevnetCount, phaseDurations]);

@@ -11,14 +11,15 @@ const upgrade = getUpgradeById('glamsterdam')!;
 interface TabItem {
   path: string;
   label: string;
+  mobileLabel: string;
 }
 
 const tabs: TabItem[] = [
-  { path: '/upgrade/glamsterdam', label: 'Overview' },
-  { path: '/upgrade/glamsterdam/stakeholders', label: 'Stakeholders' },
-  { path: '/upgrade/glamsterdam/candidates', label: 'Devnet Tracker' },
-  { path: '/upgrade/glamsterdam/priority', label: 'Client Priority' },
-  { path: '/upgrade/glamsterdam/complexity', label: 'Test Complexity' },
+  { path: '/upgrade/glamsterdam', label: 'Overview', mobileLabel: 'Overview' },
+  { path: '/upgrade/glamsterdam/stakeholders', label: 'Stakeholders', mobileLabel: 'Stakeholders' },
+  { path: '/upgrade/glamsterdam/candidates', label: 'Devnet Tracker', mobileLabel: 'Devnets' },
+  { path: '/upgrade/glamsterdam/priority', label: 'Client Priority', mobileLabel: 'Priority' },
+  { path: '/upgrade/glamsterdam/complexity', label: 'Test Complexity', mobileLabel: 'Complexity' },
 ];
 
 const GlamsterdamUpgradePage: React.FC = () => {
@@ -89,20 +90,23 @@ const GlamsterdamUpgradePage: React.FC = () => {
           </div>
 
           {/* Tab bar — replaces the border-b line */}
-          <div className="flex gap-6 border-b border-slate-200 dark:border-slate-700 mt-4">
-            {tabs.map((tab) => (
-              <Link
-                key={tab.path}
-                to={tab.path}
-                className={`pb-2 text-sm font-medium transition-colors border-b-2 -mb-px ${
-                  isActive(tab.path)
-                    ? 'border-purple-600 dark:border-purple-400 text-purple-700 dark:text-purple-300'
-                    : 'border-transparent text-slate-500 dark:text-slate-400 hover:text-slate-700 dark:hover:text-slate-200 hover:border-slate-300 dark:hover:border-slate-500'
-                }`}
-              >
-                {tab.label}
-              </Link>
-            ))}
+          <div className="overflow-x-auto -mx-6 px-6 mt-4">
+            <div className="flex gap-6 border-b border-slate-200 dark:border-slate-700 min-w-max">
+              {tabs.map((tab) => (
+                <Link
+                  key={tab.path}
+                  to={tab.path}
+                  className={`pb-2 text-sm font-medium transition-colors border-b-2 -mb-px whitespace-nowrap ${
+                    isActive(tab.path)
+                      ? 'border-purple-600 dark:border-purple-400 text-purple-700 dark:text-purple-300'
+                      : 'border-transparent text-slate-500 dark:text-slate-400 hover:text-slate-700 dark:hover:text-slate-200 hover:border-slate-300 dark:hover:border-slate-500'
+                  }`}
+                >
+                  <span className="sm:hidden">{tab.mobileLabel}</span>
+                  <span className="hidden sm:inline">{tab.label}</span>
+                </Link>
+              ))}
+            </div>
           </div>
         </div>
 

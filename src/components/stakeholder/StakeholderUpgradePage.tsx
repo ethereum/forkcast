@@ -22,9 +22,11 @@ type StakeholderKey = typeof STAKEHOLDER_OPTIONS[number]['key'];
 
 interface StakeholderUpgradePageProps {
   forkName: string;
+  /** When true, omit the page shell (Logo, ThemeToggle, back link) for embedding inside a layout. */
+  embedded?: boolean;
 }
 
-export const StakeholderUpgradePage: React.FC<StakeholderUpgradePageProps> = ({ forkName }) => {
+export const StakeholderUpgradePage: React.FC<StakeholderUpgradePageProps> = ({ forkName, embedded = false }) => {
   const [searchParams, setSearchParams] = useSearchParams();
   const viewParam = searchParams.get('view') as StakeholderKey | null;
   const [selectedStakeholder, setSelectedStakeholder] = useState<StakeholderKey>(
@@ -106,21 +108,24 @@ export const StakeholderUpgradePage: React.FC<StakeholderUpgradePageProps> = ({ 
     },
   ];
 
-  return (
-    <div className="min-h-screen bg-slate-50 dark:bg-slate-900 text-slate-900 dark:text-slate-100 p-6">
+  const content = (
       <div className="max-w-2xl mx-auto">
         {/* Header */}
         <div className="mb-8">
-          <div className="mb-12 flex justify-between items-start">
-            <Logo size="lg" />
-            <ThemeToggle />
-          </div>
-          <Link
-            to={`/upgrade/${forkName.toLowerCase()}`}
-            className="text-slate-500 hover:text-slate-700 dark:text-slate-400 dark:hover:text-slate-200 mb-4 inline-block text-sm"
-          >
-            ← Back to {forkName}
-          </Link>
+          {!embedded && (
+            <>
+              <div className="mb-12 flex justify-between items-start">
+                <Logo size="lg" />
+                <ThemeToggle />
+              </div>
+              <Link
+                to={`/upgrade/${forkName.toLowerCase()}`}
+                className="text-slate-500 hover:text-slate-700 dark:text-slate-400 dark:hover:text-slate-200 mb-4 inline-block text-sm"
+              >
+                ← Back to {forkName}
+              </Link>
+            </>
+          )}
 
           <h1 className="text-2xl font-light text-slate-900 dark:text-slate-100 tracking-tight mb-2">
             {forkName} for{' '}
@@ -232,6 +237,13 @@ export const StakeholderUpgradePage: React.FC<StakeholderUpgradePageProps> = ({ 
           })}
         </div>
       </div>
+  );
+
+  if (embedded) return content;
+
+  return (
+    <div className="min-h-screen bg-slate-50 dark:bg-slate-900 text-slate-900 dark:text-slate-100 p-6">
+      {content}
     </div>
   );
 };

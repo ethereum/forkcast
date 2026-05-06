@@ -80,6 +80,10 @@ interface PublicNetworkUpgradePageProps {
   metaEipLink?: string;
   clientTeamPerspectives?: ClientTeamPerspective[];
   activationDetails?: ActivationDetails;
+  /** When true, omit the page shell (Logo, ThemeToggle, back link) for embedding inside a layout. */
+  embedded?: boolean;
+  /** When true, also omit the header section (title, description, meta-eip link). */
+  skipHeader?: boolean;
 }
 
 const PublicNetworkUpgradePage: React.FC<PublicNetworkUpgradePageProps> = ({
@@ -90,7 +94,9 @@ const PublicNetworkUpgradePage: React.FC<PublicNetworkUpgradePageProps> = ({
   activationDate,
   metaEipLink,
   clientTeamPerspectives,
-  activationDetails
+  activationDetails,
+  embedded = false,
+  skipHeader = false
 }) => {
   // Determine display mode for this upgrade page
   const pageMode = getUpgradePageMode(forkName);
@@ -419,19 +425,23 @@ const PublicNetworkUpgradePage: React.FC<PublicNetworkUpgradePageProps> = ({
     trackLinkClick(linkType, url);
   };
 
-  return (
-    <div className="min-h-screen bg-slate-50 dark:bg-slate-900 text-slate-900 dark:text-slate-100 p-6">
+  const content = (
       <div className="max-w-4xl mx-auto">
         {/* Header */}
         <div className="mb-8">
-          <div className="mb-12 flex justify-between items-start">
-            <Logo size="lg" />
-            <ThemeToggle />
-          </div>
-          <Link to="/" className="text-slate-600 hover:text-slate-800 dark:text-slate-300 dark:hover:text-slate-100 mb-6 inline-block text-sm font-medium">
-            ← All Network Upgrades
-          </Link>
+          {!embedded && (
+            <>
+              <div className="mb-12 flex justify-between items-start">
+                <Logo size="lg" />
+                <ThemeToggle />
+              </div>
+              <Link to="/" className="text-slate-600 hover:text-slate-800 dark:text-slate-300 dark:hover:text-slate-100 mb-6 inline-block text-sm font-medium">
+                ← All Network Upgrades
+              </Link>
+            </>
+          )}
 
+          {!skipHeader && (
           <div className="border-b border-slate-200 dark:border-slate-700 pb-8">
             <div className="flex flex-col lg:flex-row lg:items-start lg:justify-between">
               <div className="flex-1">
@@ -490,6 +500,7 @@ const PublicNetworkUpgradePage: React.FC<PublicNetworkUpgradePageProps> = ({
             </div>
 
           </div>
+          )}
         </div>
 
         <NetworkUpgradeTimeline currentForkName={forkName} />
@@ -908,6 +919,13 @@ const PublicNetworkUpgradePage: React.FC<PublicNetworkUpgradePageProps> = ({
           </div>
         </div>
       </div>
+  );
+
+  if (embedded) return content;
+
+  return (
+    <div className="min-h-screen bg-slate-50 dark:bg-slate-900 text-slate-900 dark:text-slate-100 p-6">
+      {content}
     </div>
   );
 };

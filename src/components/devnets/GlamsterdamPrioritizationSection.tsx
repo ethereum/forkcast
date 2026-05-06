@@ -30,52 +30,10 @@ const devnetData = devnetDataRaw as {
   }>;
 };
 
-type SortField = 'eip' | 'complexity' | 'support' | 'stage' | 'devnets' | 'weighted';
+type SortField = 'eip' | 'complexity' | 'support' | 'stage' | 'devnets';
 type SortDirection = 'asc' | 'desc';
 
-const MAX_STANCES = 11;
 const GAS_REPRICING_EIPS = new Set([2780, 7778, 7904, 7976, 7981, 8037, 8038]);
-
-function calculateConfidence(stanceCount: number): number {
-  return 0.5 + 0.5 * (stanceCount / MAX_STANCES);
-}
-
-function calculateComplexityDiscount(complexityScore: number | null): number {
-  return complexityScore !== null
-    ? 1 / (1 + complexityScore / 20)
-    : 0.67;
-}
-
-function calculateWeightedScore(
-  avgSupport: number | null | undefined,
-  stanceCount: number,
-  complexityScore: number | null
-): number | null {
-  if (avgSupport === null || avgSupport === undefined) return null;
-  const confidenceFactor = calculateConfidence(stanceCount);
-  const complexityDiscount = calculateComplexityDiscount(complexityScore);
-  return avgSupport * confidenceFactor * complexityDiscount;
-}
-
-function getWeightedScoreTooltip(
-  avgSupport: number | null | undefined,
-  stanceCount: number,
-  complexityScore: number | null,
-  weightedScore: number | null
-): string {
-  if (avgSupport === null || avgSupport === undefined || weightedScore === null) {
-    return 'No support data available';
-  }
-  const confidence = calculateConfidence(stanceCount);
-  const discount = calculateComplexityDiscount(complexityScore);
-  const parts = [
-    `${avgSupport.toFixed(1)} support`,
-    `× ${confidence.toFixed(2)} confidence (${stanceCount}/${MAX_STANCES} teams)`,
-    `× ${discount.toFixed(2)} testing complexity ${complexityScore !== null ? `(score: ${complexityScore})` : '(no data)'}`,
-    `= ${weightedScore.toFixed(2)}`
-  ];
-  return parts.join('\n');
-}
 
 interface DevnetInfo {
   id: string;
@@ -102,7 +60,6 @@ interface CombinedEipData {
   priority: EipAggregateStance | null;
   layer: 'EL' | 'CL' | null;
   devnets: DevnetInfo[];
-  weightedScore: number | null;
 }
 
 function buildDevnetMap(activeKeys: Set<string>): Map<number, DevnetInfo[]> {
@@ -152,13 +109,12 @@ function getDevnetColor(headliner: string): string {
 }
 
 const GlamsterdamPrioritizationSection: React.FC = () => {
-  const [sortField, setSortField] = useState<SortField>('weighted');
+  const [sortField, setSortField] = useState<SortField>('support');
   const [sortDirection, setSortDirection] = useState<SortDirection>('desc');
   const [hideExcluded, setHideExcluded] = useState(true);
   const [hideInDevnet, setHideInDevnet] = useState(false);
   const [stageFilter, setStageFilter] = useState<string>('all');
   const [layerFilter, setLayerFilter] = useState<'all' | 'EL' | 'CL'>('all');
-  const [showScoringInfo, setShowScoringInfo] = useState(false);
   const [filtersModalOpen, setFiltersModalOpen] = useState(false);
   const { complexityMap, loading: complexityLoading, refetch } = useComplexityData();
 
@@ -218,12 +174,7 @@ const GlamsterdamPrioritizationSection: React.FC = () => {
       const stage = getInclusionStage(eip, 'glamsterdam');
       const devnets = devnetMap.get(eip.id) || [];
       const layer = eip.layer || null;
-      const weightedScore = calculateWeightedScore(
-        priority?.averageScore,
-        priority?.stanceCount || 0,
-        complexity?.totalScore ?? null
-      );
-      return { eipId: eip.id, title: getLaymanTitle(eip), stage, complexity, priority, layer, devnets, weightedScore };
+      return { eipId: eip.id, title: getLaymanTitle(eip), stage, complexity, priority, layer, devnets };
     });
   }, [complexityMap, priorityAggregates, devnetMap]);
 
@@ -279,15 +230,6 @@ const GlamsterdamPrioritizationSection: React.FC = () => {
           const bMax = b.devnets.length > 0 ? Math.max(...b.devnets.map((d) => d.version)) : -1;
           comparison = aMax - bMax;
           if (comparison === 0) comparison = a.devnets.length - b.devnets.length;
-          break;
-        }
-        case 'weighted': {
-          const aWeighted = a.weightedScore ?? -1;
-          const bWeighted = b.weightedScore ?? -1;
-          if (aWeighted === -1 && bWeighted === -1) return 0;
-          if (aWeighted === -1) return 1;
-          if (bWeighted === -1) return -1;
-          comparison = aWeighted - bWeighted;
           break;
         }
       }
@@ -432,67 +374,6 @@ const GlamsterdamPrioritizationSection: React.FC = () => {
           Aggregated data points as a decision-making aid, not a recommendation.
         </p>
 
-        {/* Scoring Explanation */}
-        <div className="mb-4">
-          <button
-            onClick={() => setShowScoringInfo(!showScoringInfo)}
-            className="flex items-center gap-2 text-sm text-slate-600 dark:text-slate-400 hover:text-purple-600 dark:hover:text-purple-400 transition-colors"
-          >
-            <svg
-              className={`w-4 h-4 transition-transform ${showScoringInfo ? 'rotate-90' : ''}`}
-              fill="none"
-              stroke="currentColor"
-              viewBox="0 0 24 24"
-            >
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
-            </svg>
-            How is the Weighted Score calculated?
-          </button>
-
-          {showScoringInfo && (
-            <div className="mt-3 p-4 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg text-sm">
-              <p className="text-slate-700 dark:text-slate-300 mb-3">
-                The <span className="font-medium text-purple-600 dark:text-purple-400">Weighted Score</span> combines support, confidence, and testing complexity into a single metric. Higher scores indicate EIPs that are well-supported, well-vetted, and have lower testing overhead.
-              </p>
-
-              <div className="space-y-3">
-                <div className="flex items-start gap-3">
-                  <div className="w-6 h-6 rounded-full bg-emerald-100 dark:bg-emerald-900/30 flex items-center justify-center text-emerald-700 dark:text-emerald-300 text-xs font-medium shrink-0">1</div>
-                  <div>
-                    <div className="font-medium text-slate-800 dark:text-slate-200">Average Support</div>
-                    <div className="text-slate-600 dark:text-slate-400">How much do client teams want this? (1-5 scale from prioritization data)</div>
-                  </div>
-                </div>
-
-                <div className="flex items-start gap-3">
-                  <div className="w-6 h-6 rounded-full bg-blue-100 dark:bg-blue-900/30 flex items-center justify-center text-blue-700 dark:text-blue-300 text-xs font-medium shrink-0">2</div>
-                  <div>
-                    <div className="font-medium text-slate-800 dark:text-slate-200">Confidence Factor <span className="font-normal text-slate-500">(0.5 - 1.0)</span></div>
-                    <div className="text-slate-600 dark:text-slate-400">How many teams have weighed in? More opinions = more confidence in the average. An EIP with 8/11 teams responding is more reliable than one with 2/11.</div>
-                  </div>
-                </div>
-
-                <div className="flex items-start gap-3">
-                  <div className="w-6 h-6 rounded-full bg-amber-100 dark:bg-amber-900/30 flex items-center justify-center text-amber-700 dark:text-amber-300 text-xs font-medium shrink-0">3</div>
-                  <div>
-                    <div className="font-medium text-slate-800 dark:text-slate-200">Testing Complexity Discount <span className="font-normal text-slate-500">(0.4 - 1.0)</span></div>
-                    <div className="text-slate-600 dark:text-slate-400">How much testing effort is required? Based on <a href="https://github.com/ethsteel/pm" target="_blank" rel="noopener noreferrer" className="text-purple-600 dark:text-purple-400 hover:underline">STEEL</a> assessments of testing complexity (not implementation complexity). Lower scores get higher multipliers. An EIP with score 5 keeps ~80% of its value; one with score 30 keeps ~40%.</div>
-                  </div>
-                </div>
-              </div>
-
-              <div className="mt-4 pt-3 border-t border-slate-200 dark:border-slate-700">
-                <div className="text-slate-600 dark:text-slate-400">
-                  <span className="font-medium text-slate-700 dark:text-slate-300">Example:</span> An EIP with 4.0 support from 8 teams and testing complexity score 10:
-                </div>
-                <div className="mt-1 font-mono text-xs text-slate-500 dark:text-slate-400">
-                  4.0 &times; 0.86 (8/11 teams) &times; 0.67 (testing complexity 10) = <span className="text-purple-600 dark:text-purple-400 font-medium">2.31</span>
-                </div>
-              </div>
-            </div>
-          )}
-        </div>
-
         {/* Toolbar */}
         <div className="bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg p-4">
           <div className="flex flex-wrap items-center gap-x-4 gap-y-3">
@@ -586,19 +467,6 @@ const GlamsterdamPrioritizationSection: React.FC = () => {
                       </span>
                     )}
                   </div>
-                  {item.weightedScore !== null && (
-                    <span
-                      className={`inline-block px-2 py-0.5 text-xs font-medium rounded ${getScoreColor(Math.round(item.weightedScore))}`}
-                      title={getWeightedScoreTooltip(
-                        item.priority?.averageScore,
-                        item.priority?.stanceCount || 0,
-                        item.complexity?.totalScore ?? null,
-                        item.weightedScore
-                      )}
-                    >
-                      {item.weightedScore.toFixed(2)}
-                    </span>
-                  )}
                 </div>
                 <p className="text-sm text-slate-900 dark:text-slate-100 mb-3">
                   {item.title}
@@ -701,22 +569,12 @@ const GlamsterdamPrioritizationSection: React.FC = () => {
                 <th className="px-4 py-3 text-center text-sm font-medium text-slate-700 dark:text-slate-300">
                   Stances
                 </th>
-                <th
-                  className="px-4 py-3 text-center text-sm font-medium text-slate-700 dark:text-slate-300 cursor-pointer hover:bg-slate-100 dark:hover:bg-slate-600/50"
-                  onClick={() => handleSort('weighted')}
-                  title="Support × Confidence × Testing Complexity Discount"
-                >
-                  <div className="flex items-center justify-center gap-2">
-                    Weighted
-                    <SortIcon field="weighted" />
-                  </div>
-                </th>
               </tr>
             </thead>
             <tbody className="divide-y divide-slate-200 dark:divide-slate-700">
               {sortedData.length === 0 ? (
                 <tr>
-                  <td colSpan={8} className="px-4 py-8 text-center text-slate-500 dark:text-slate-400">
+                  <td colSpan={7} className="px-4 py-8 text-center text-slate-500 dark:text-slate-400">
                     No EIPs found
                   </td>
                 </tr>
@@ -806,23 +664,6 @@ const GlamsterdamPrioritizationSection: React.FC = () => {
                           </span>
                         ) : (
                           <span className="text-xs text-slate-400 dark:text-slate-400">0</span>
-                        )}
-                      </td>
-                      <td className="px-4 py-3 text-center">
-                        {item.weightedScore !== null ? (
-                          <span
-                            className={`inline-block px-2 py-0.5 text-xs font-medium rounded cursor-help ${getScoreColor(Math.round(item.weightedScore))}`}
-                            title={getWeightedScoreTooltip(
-                              item.priority?.averageScore,
-                              item.priority?.stanceCount || 0,
-                              item.complexity?.totalScore ?? null,
-                              item.weightedScore
-                            )}
-                          >
-                            {item.weightedScore.toFixed(2)}
-                          </span>
-                        ) : (
-                          <span className="text-xs text-slate-400 dark:text-slate-400">&mdash;</span>
                         )}
                       </td>
                     </tr>

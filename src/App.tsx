@@ -10,9 +10,11 @@ import { SchedulePage } from './components/schedule';
 import { EipPage } from './components/eip';
 import EipsIndexPage from './components/EipsIndexPage';
 import { StakeholderUpgradePage } from './components/stakeholder';
-import ComplexityPage from './components/ComplexityPage';
-import PrioritizationPage from './components/PrioritizationPage';
 import DevnetsIndexPage from './components/DevnetsIndexPage';
+import GlamsterdamHubPage from './components/GlamsterdamHubPage';
+import EipCandidatesTab from './components/glamsterdam/EipCandidatesTab';
+import ClientPriorityTab from './components/glamsterdam/ClientPriorityTab';
+import TestComplexityTab from './components/glamsterdam/TestComplexityTab';
 import DevnetSpecPage from './components/DevnetSpecPage';
 import DecisionsPage from './components/DecisionsPage';
 import { getUpgradeById } from './data/upgrades';
@@ -168,8 +170,13 @@ function App() {
             <Route path="/feedback" element={<ExternalRedirect />} />
             <Route path="/eips" element={<EipsIndexPage />} />
             <Route path="/eips/:id" element={<EipPage />} />
-            <Route path="/complexity" element={<ComplexityPage />} />
-            <Route path="/priority" element={<PrioritizationPage />} />
+            <Route path="/glamsterdam" element={<GlamsterdamHubPage />}>
+              <Route index element={<EipCandidatesTab />} />
+              <Route path="priority" element={<ClientPriorityTab />} />
+              <Route path="complexity" element={<TestComplexityTab />} />
+            </Route>
+            <Route path="/priority" element={<Navigate to="/glamsterdam/priority" replace />} />
+            <Route path="/complexity" element={<Navigate to="/glamsterdam/complexity" replace />} />
             <Route path="/devnets/:id" element={<DevnetSpecPage />} />
             <Route path="/devnets" element={<DevnetsIndexPage />} />
             <Route path="/decisions" element={<DecisionsPage />} />

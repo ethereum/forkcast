@@ -5,7 +5,7 @@ import ThemeToggle from './ui/ThemeToggle';
 import AnalysisNav from './ui/AnalysisNav';
 import { useMetaTags } from '../hooks/useMetaTags';
 import { useDevnetNetworks } from '../hooks/useDevnetNetworks';
-import { getDevnetSpec, getAllDevnetSpecIds } from '../data/devnet-specs';
+import { getAllDevnetSpecIds } from '../data/devnet-specs';
 import type { ActiveDevnetSeries, InactiveDevnetSeries } from '../types/devnet-networks';
 
 const GlamsterdamPrioritizationSection = lazy(
@@ -88,26 +88,6 @@ function buildCardItems(activeSeries: ActiveDevnetSeries[]): DevnetCardItem[] {
       upcomingSpecId: upcomingSpec?.id ?? null,
     };
   });
-
-  // Add spec-only categories not present in networks.json
-  const seenCategories = new Set(activeSeries.map((s) => s.categoryKey));
-
-  for (const specId of allSpecIds) {
-    const parsed = parseSpecId(specId);
-    if (!parsed || seenCategories.has(parsed.category)) continue;
-    seenCategories.add(parsed.category);
-
-    const spec = getDevnetSpec(specId);
-    if (!spec) continue;
-
-    items.push({
-      categoryKey: parsed.category,
-      displayName: `${parsed.category.toUpperCase()} Devnets`,
-      description: spec.announcements[0] || '',
-      activeKeys: [],
-      upcomingSpecId: spec.id,
-    });
-  }
 
   items.sort((a, b) => a.displayName.localeCompare(b.displayName));
   return items;

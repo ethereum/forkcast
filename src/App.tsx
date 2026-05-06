@@ -9,9 +9,10 @@ import CallPlanPage from './components/call/CallPlanPage';
 import { SchedulePage } from './components/schedule';
 import { EipPage } from './components/eip';
 import EipsIndexPage from './components/EipsIndexPage';
-import { StakeholderUpgradePage } from './components/stakeholder';
 import DevnetsIndexPage from './components/DevnetsIndexPage';
-import GlamsterdamHubPage from './components/GlamsterdamHubPage';
+import GlamsterdamUpgradePage from './components/GlamsterdamUpgradePage';
+import OverviewTab from './components/glamsterdam/OverviewTab';
+import StakeholdersTab from './components/glamsterdam/StakeholdersTab';
 import EipCandidatesTab from './components/glamsterdam/EipCandidatesTab';
 import ClientPriorityTab from './components/glamsterdam/ClientPriorityTab';
 import TestComplexityTab from './components/glamsterdam/TestComplexityTab';
@@ -93,7 +94,6 @@ function ScrollToTop() {
 
 function App() {
   const fusakaUpgrade = getUpgradeById('fusaka')!;
-  const glamsterdamUpgrade = getUpgradeById('glamsterdam')!;
   const hegotaUpgrade = getUpgradeById('hegota')!;
   const pectraUpgrade = getUpgradeById('pectra')!;
 
@@ -141,18 +141,13 @@ function App() {
                 activationDetails={fusakaUpgrade.activationDetails}
               />
             } />
-            <Route path="/upgrade/glamsterdam" element={
-              <PublicNetworkUpgradePage
-                forkName="Glamsterdam"
-                displayName={glamsterdamUpgrade.name}
-                description={glamsterdamUpgrade.description}
-                status={glamsterdamUpgrade.status}
-                activationDate={glamsterdamUpgrade.activationDate}
-                metaEipLink={glamsterdamUpgrade.metaEipLink}
-                clientTeamPerspectives={glamsterdamUpgrade.clientTeamPerspectives}
-              />
-            } />
-            <Route path="/upgrade/glamsterdam/stakeholders" element={<StakeholderUpgradePage forkName="Glamsterdam" />} />
+            <Route path="/upgrade/glamsterdam" element={<GlamsterdamUpgradePage />}>
+              <Route index element={<OverviewTab />} />
+              <Route path="stakeholders" element={<StakeholdersTab />} />
+              <Route path="candidates" element={<EipCandidatesTab />} />
+              <Route path="priority" element={<ClientPriorityTab />} />
+              <Route path="complexity" element={<TestComplexityTab />} />
+            </Route>
             <Route path="/upgrade/hegota" element={
               <PublicNetworkUpgradePage
                 forkName="Hegota"
@@ -170,13 +165,14 @@ function App() {
             <Route path="/feedback" element={<ExternalRedirect />} />
             <Route path="/eips" element={<EipsIndexPage />} />
             <Route path="/eips/:id" element={<EipPage />} />
-            <Route path="/glamsterdam" element={<GlamsterdamHubPage />}>
-              <Route index element={<EipCandidatesTab />} />
-              <Route path="priority" element={<ClientPriorityTab />} />
-              <Route path="complexity" element={<TestComplexityTab />} />
-            </Route>
-            <Route path="/priority" element={<Navigate to="/glamsterdam/priority" replace />} />
-            <Route path="/complexity" element={<Navigate to="/glamsterdam/complexity" replace />} />
+            <Route path="/glamsterdam" element={<Navigate to="/upgrade/glamsterdam/candidates" replace />} />
+            <Route path="/glamsterdam/priority" element={<Navigate to="/upgrade/glamsterdam/priority" replace />} />
+            <Route path="/glamsterdam/complexity" element={<Navigate to="/upgrade/glamsterdam/complexity" replace />} />
+            <Route path="/priority" element={<Navigate to="/upgrade/glamsterdam/priority" replace />} />
+            <Route path="/complexity" element={<Navigate to="/upgrade/glamsterdam/complexity" replace />} />
+            <Route path="/upgrade/glamsterdam/devnets" element={<Navigate to="/upgrade/glamsterdam/candidates" replace />} />
+            <Route path="/upgrade/glamsterdam/devnets/priority" element={<Navigate to="/upgrade/glamsterdam/priority" replace />} />
+            <Route path="/upgrade/glamsterdam/devnets/complexity" element={<Navigate to="/upgrade/glamsterdam/complexity" replace />} />
             <Route path="/devnets/:id" element={<DevnetSpecPage />} />
             <Route path="/devnets" element={<DevnetsIndexPage />} />
             <Route path="/decisions" element={<DecisionsPage />} />

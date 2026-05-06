@@ -9,7 +9,6 @@ interface NavItem {
 
 const navItems: NavItem[] = [
   { path: '/schedule', label: 'Schedule', description: 'ACD planning' },
-  { path: '/glamsterdam', label: 'Glamsterdam', description: 'Fork analysis' },
   { path: '/devnets', label: 'Devnets', description: 'Active devnets' },
 ];
 

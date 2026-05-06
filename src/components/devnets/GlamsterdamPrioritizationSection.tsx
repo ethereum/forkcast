@@ -360,18 +360,9 @@ const GlamsterdamPrioritizationSection: React.FC = () => {
         </div>
       )}
 
-      {/* EIP Candidates Section */}
       <div className="mb-4">
-        <div className="flex items-center justify-between mb-2">
-          <h2 className="text-lg font-semibold text-slate-900 dark:text-slate-100">
-            EIP Candidates
-          </h2>
-          <span className="text-sm text-slate-500 dark:text-slate-400">
-            {sortedData.length} {sortedData.length === 1 ? 'EIP' : 'EIPs'}
-          </span>
-        </div>
         <p className="text-sm text-slate-500 dark:text-slate-400 mb-4">
-          Aggregated data points as a decision-making aid, not a recommendation.
+          Aggregated data points as a devnet inclusion decision-making aid, not a recommendation.
         </p>
 
         {/* Toolbar */}
@@ -685,11 +676,11 @@ const GlamsterdamPrioritizationSection: React.FC = () => {
           {' \u2022 '}
           Prioritization data from client team publications
           {' \u2022 '}
-          <Link to="/glamsterdam/complexity" className="underline hover:text-slate-600 dark:hover:text-slate-300">
+          <Link to="/upgrade/glamsterdam/complexity" className="underline hover:text-slate-600 dark:hover:text-slate-300">
             Full complexity view
           </Link>
           {' \u2022 '}
-          <Link to="/glamsterdam/priority" className="underline hover:text-slate-600 dark:hover:text-slate-300">
+          <Link to="/upgrade/glamsterdam/priority" className="underline hover:text-slate-600 dark:hover:text-slate-300">
             Full priority view
           </Link>
         </p>

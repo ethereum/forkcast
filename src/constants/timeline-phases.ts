@@ -251,7 +251,7 @@ export const GLAMSTERDAM_PROGRESS: ForkProgress = {
         { name: 'Devnet-0', status: 'completed', date: 'Apr 24, 2026' },
         { name: 'Devnet-1', status: 'completed', date: 'Apr 29, 2026' },
         { name: 'Devnet-2', status: 'completed', date: 'May 1, 2026' },
-        { name: 'Devnet-3', status: 'upcoming', projectedDate: 'Q2 2026' },
+        { name: 'Devnet-3', status: 'completed', date: 'May 6, 2026' },
         { name: 'Devnet-4', status: 'upcoming', projectedDate: 'Q2 2026' },
         { name: 'Devnet-5', status: 'upcoming', projectedDate: 'Q2 2026' }
       ]

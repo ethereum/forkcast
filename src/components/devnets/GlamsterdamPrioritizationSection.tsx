@@ -10,6 +10,7 @@ import { getInclusionStage, getLaymanTitle, getProposalPrefix } from '../../util
 import { getInclusionStageColor } from '../../utils/colors';
 import { InclusionStage } from '../../types';
 import { EipAggregateStance } from '../../types/prioritization';
+import { useDevnetNetworks } from '../../hooks/useDevnetNetworks';
 import devnetDataRaw from '../../data/devnets/glamsterdam.json';
 
 
@@ -19,7 +20,7 @@ const devnetData = devnetDataRaw as {
   devnets: Array<{
     id: string;
     type: string;
-    headliner: string;
+    headliner?: string;
     version: number;
     launchDate: string;
     eips: number[];
@@ -86,6 +87,13 @@ interface DevnetInfo {
   optional?: boolean;
 }
 
+/** Derive a headliner label from the devnet id (e.g. "glamsterdam-devnet-0" → "GLAMSTERDAM"). */
+function deriveHeadliner(devnet: { id: string; headliner?: string }): string {
+  if (devnet.headliner) return devnet.headliner;
+  const match = devnet.id.match(/^(.+)-devnet-\d+$/);
+  return match ? match[1].toUpperCase() : devnet.id.toUpperCase();
+}
+
 interface CombinedEipData {
   eipId: number;
   title: string;
@@ -97,15 +105,16 @@ interface CombinedEipData {
   weightedScore: number | null;
 }
 
-function buildDevnetMap(): Map<number, DevnetInfo[]> {
+function buildDevnetMap(activeKeys: Set<string>): Map<number, DevnetInfo[]> {
   const map = new Map<number, DevnetInfo[]>();
   for (const devnet of devnetData.devnets) {
+    if (!activeKeys.has(devnet.id)) continue;
     for (const eipId of devnet.eips) {
       const existing = map.get(eipId) || [];
       existing.push({
         id: devnet.id,
         type: devnet.type,
-        headliner: devnet.headliner,
+        headliner: deriveHeadliner(devnet),
         version: devnet.version,
         launchDate: devnet.launchDate,
         isTarget: devnet.isTarget,
@@ -117,7 +126,7 @@ function buildDevnetMap(): Map<number, DevnetInfo[]> {
       existing.push({
         id: devnet.id,
         type: devnet.type,
-        headliner: devnet.headliner,
+        headliner: deriveHeadliner(devnet),
         version: devnet.version,
         launchDate: devnet.launchDate,
         isTarget: devnet.isTarget,
@@ -128,8 +137,6 @@ function buildDevnetMap(): Map<number, DevnetInfo[]> {
   }
   return map;
 }
-
-const devnetMap = buildDevnetMap();
 
 function getDevnetColor(headliner: string): string {
   switch (headliner.toUpperCase()) {
@@ -177,6 +184,17 @@ const GlamsterdamPrioritizationSection: React.FC = () => {
   };
 
   const { aggregates: priorityAggregates } = usePrioritizationData('glamsterdam');
+  const { activeSeries } = useDevnetNetworks();
+
+  const devnetMap = useMemo(() => {
+    const activeKeys = new Set<string>();
+    for (const series of activeSeries) {
+      for (const key of series.activeKeys) {
+        activeKeys.add(key);
+      }
+    }
+    return buildDevnetMap(activeKeys);
+  }, [activeSeries]);
 
   const stageOptions = [
     'Included',
@@ -207,7 +225,7 @@ const GlamsterdamPrioritizationSection: React.FC = () => {
       );
       return { eipId: eip.id, title: getLaymanTitle(eip), stage, complexity, priority, layer, devnets, weightedScore };
     });
-  }, [complexityMap, priorityAggregates]);
+  }, [complexityMap, priorityAggregates, devnetMap]);
 
   const filteredData = useMemo(() => {
     let result = combinedData;
@@ -657,7 +675,7 @@ const GlamsterdamPrioritizationSection: React.FC = () => {
                   onClick={() => handleSort('devnets')}
                 >
                   <div className="flex items-center gap-2">
-                    Devnets
+                    Active Devnets
                     <SortIcon field="devnets" />
                   </div>
                 </th>
@@ -826,11 +844,11 @@ const GlamsterdamPrioritizationSection: React.FC = () => {
           {' \u2022 '}
           Prioritization data from client team publications
           {' \u2022 '}
-          <Link to="/complexity" className="underline hover:text-slate-600 dark:hover:text-slate-300">
+          <Link to="/glamsterdam/complexity" className="underline hover:text-slate-600 dark:hover:text-slate-300">
             Full complexity view
           </Link>
           {' \u2022 '}
-          <Link to="/priority" className="underline hover:text-slate-600 dark:hover:text-slate-300">
+          <Link to="/glamsterdam/priority" className="underline hover:text-slate-600 dark:hover:text-slate-300">
             Full priority view
           </Link>
         </p>

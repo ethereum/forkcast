@@ -283,7 +283,7 @@ const HomePage = () => {
             </Link>
 
             <Link
-              to="/priority"
+              to="/glamsterdam/priority"
               className="group flex items-start gap-3 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg p-4 hover:shadow-md dark:hover:shadow-slate-700/20 hover:border-purple-300 dark:hover:border-purple-600"
             >
               <div className="flex-shrink-0 w-9 h-9 bg-purple-100 dark:bg-purple-900/40 rounded-lg flex items-center justify-center text-purple-600 dark:text-purple-400">
@@ -305,7 +305,7 @@ const HomePage = () => {
             </Link>
 
             <Link
-              to="/complexity"
+              to="/glamsterdam/complexity"
               className="group flex items-start gap-3 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg p-4 hover:shadow-md dark:hover:shadow-slate-700/20 hover:border-purple-300 dark:hover:border-purple-600"
             >
               <div className="flex-shrink-0 w-9 h-9 bg-amber-100 dark:bg-amber-900/40 rounded-lg flex items-center justify-center text-amber-600 dark:text-amber-400">

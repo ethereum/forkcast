@@ -32,7 +32,7 @@ export default function AnnouncementBanner({
 
   return (
     <div className="bg-purple-50 dark:bg-slate-800 border-b border-purple-200 dark:border-purple-700">
-      <div className="max-w-4xl mx-auto px-6 py-3">
+      <div className="max-w-4xl mx-auto px-6 sm:px-0 py-3">
         <div className="flex items-start justify-between gap-2">
           <div className="flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-4">
             <span className="text-sm font-medium text-slate-900 dark:text-slate-100">

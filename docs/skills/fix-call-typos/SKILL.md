@@ -11,23 +11,27 @@ The "correct" approach would be to fix upstream and re-run the pipeline. In prac
 
 See `docs/acdbot-forkcast-asset-pipeline.md` for the full asset pipeline overview.
 
-### Step 0: Prereqs
+### Step 0: Locate both repos
 
-The user must have both repos checked out locally. Defaults:
-- Forkcast: `/Users/lucy/fun/forkcast` (or a worktree under it)
-- PM: `/Users/lucy/fun/pm`
+This skill is invoked from inside a Forkcast checkout (or a worktree of one). It also needs the PM repo (`ethereum/pm`).
 
-If either is missing, ask the user where they live before proceeding.
+1. **Forkcast root** — resolve via `git worktree list --porcelain | head -2 | awk '/^worktree/ {print $2; exit}'` from the current directory. This returns the main checkout path even when invoked from a worktree.
+2. **PM root** — first try the sibling next to forkcast: `<dirname-of-forkcast-root>/pm`. Verify it's a clone of `ethereum/pm`:
+   ```sh
+   git -C <candidate> remote get-url origin
+   ```
+   Expect a URL ending in `ethereum/pm` (HTTPS or SSH). If the sibling check fails, ask the user via `AskUserQuestion` for the absolute path to their PM clone, then validate the same way.
+3. Refer to these throughout the rest of the skill as `<forkcast>` and `<pm>`. Don't hardcode them in commands; resolve once at the start and reuse.
 
-Open a worktree off `origin/main` for the forkcast side so the user's current branch isn't disturbed (`git fetch origin main && git worktree add …`). Work directly in `pm/` — that repo doesn't typically need a worktree, but pull `main` first.
+Then open a worktree off `origin/main` on the forkcast side so the user's current branch isn't disturbed (`git -C <forkcast> fetch origin main && git -C <forkcast> worktree add <tmp-path> origin/main`). Work in PM directly — pull `master` first (`git -C <pm> checkout master && git -C <pm> pull --ff-only`).
 
 ### Step 1: Identify the call
 
 Ask the user for:
 
 1. **Call slug + number** (e.g., `pqi/038`, `acdc/177`). This determines:
-   - Forkcast path: `public/artifacts/{slug}/{date}_{number_padded}/`
-   - PM path: `.github/ACDbot/artifacts/{pm_series}/{date}_{number_padded}/` — the PM series name often differs from the forkcast slug. Check `SERIES_TO_TYPE` in `forkcast/scripts/sync-call-assets.mjs` for the mapping (e.g., `pqi` ↔ `pqinterop`, `price` ↔ `glamsterdamrepricings`). Core series (`acdc`, `acde`, `acdt`) pass through unchanged.
+   - Forkcast path: `<forkcast>/public/artifacts/{slug}/{date}_{number_padded}/`
+   - PM path: `<pm>/.github/ACDbot/artifacts/{pm_series}/{date}_{number_padded}/` — the PM series name often differs from the forkcast slug. Check `SERIES_TO_TYPE` in `<forkcast>/scripts/sync-call-assets.mjs` for the mapping (e.g., `pqi` ↔ `pqinterop`, `price` ↔ `glamsterdamrepricings`). Core series (`acdc`, `acde`, `acdt`) pass through unchanged.
 
 Resolve the absolute paths and confirm both directories exist before continuing.
 
@@ -65,7 +69,7 @@ Generally unsafe: real names (`Jim`), common English words (`Dream`), short ambi
 
 ### Step 5: Update PM `ethereum_vocab.yaml`
 
-File: `pm/.github/ACDbot/scripts/asset_pipeline/ethereum_vocab.yaml`.
+File: `<pm>/.github/ACDbot/scripts/asset_pipeline/ethereum_vocab.yaml`.
 
 1. **New vocab terms** — add to the relevant section (`clients.execution`, `clients.consensus`, `clients.lean`, `acronyms`, `technical_terms`, etc.). If a new category is needed (e.g., a new ecosystem of clients), add a new subsection.
 2. **Safe error patterns** — append to `error_patterns:` as `- WrongForm: RightForm`.
@@ -74,7 +78,7 @@ File: `pm/.github/ACDbot/scripts/asset_pipeline/ethereum_vocab.yaml`.
 
 ### Step 6: Fix the artifacts in Forkcast
 
-In the forkcast worktree, edit `public/artifacts/{slug}/{date}_{number}/`:
+In the forkcast worktree, edit `<forkcast>/public/artifacts/{slug}/{date}_{number}/`:
 
 1. **`transcript_corrected.vtt`** — apply every typo correction. For multi-token corruptions (e.g., `ReamZeem eats Lambda` for what was meant as "Ream, Zeam, Ethlambda"), do the long unique replacement *first*, then run the single-word substitutions. Use `Edit` with `replace_all: true` for safe global swaps; use scoped `Edit` for one-line fixes (like the `Jim → Gean` case).
 2. **`tldr.json`** — apply the same replacements where applicable.
@@ -85,7 +89,7 @@ After editing, grep the file again for any remaining instance of every typo stri
 
 ### Step 7: Mirror the fixes into PM
 
-The PM repo holds the upstream copy of these same artifacts at `.github/ACDbot/artifacts/{pm_series}/{date}_{number}/`. Before your edits these files were byte-identical to the forkcast copies (they're produced by the pipeline and the sync script just downloads them). The simplest correct move is to `cp` the four edited files (vtt, tldr, changelog, key_decisions if it exists) from forkcast to PM.
+The PM repo holds the upstream copy of these same artifacts at `<pm>/.github/ACDbot/artifacts/{pm_series}/{date}_{number}/`. Before your edits these files were byte-identical to the forkcast copies (they're produced by the pipeline and the sync script just downloads them). The simplest correct move is to `cp` the four edited files (vtt, tldr, changelog, key_decisions if it exists) from `<forkcast>` to `<pm>`.
 
 Verify with `diff` afterwards — both copies should be identical.
 

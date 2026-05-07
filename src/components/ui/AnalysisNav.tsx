@@ -9,9 +9,7 @@ interface NavItem {
 
 const navItems: NavItem[] = [
   { path: '/schedule', label: 'Schedule', description: 'ACD planning' },
-  { path: '/priority', label: 'Client Priority', description: 'Team stances' },
-  { path: '/complexity', label: 'Test Complexity', description: 'STEEL scores' },
-  { path: '/devnets', label: 'Devnet Tracker', description: 'Combined view' },
+  { path: '/devnets', label: 'Devnets', description: 'Active devnets' },
 ];
 
 const AnalysisNav: React.FC = () => {
@@ -22,7 +20,9 @@ const AnalysisNav: React.FC = () => {
   return (
     <div className="flex items-center gap-1 p-1 bg-slate-100 dark:bg-slate-800 rounded-lg w-fit">
       {navItems.map((item) => {
-        const isActive = pathname === item.path;
+        const isActive = item.path === '/'
+          ? pathname === '/'
+          : pathname === item.path || pathname.startsWith(item.path + '/');
         return (
           <Link
             key={item.path}

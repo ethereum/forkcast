@@ -248,10 +248,10 @@ export const GLAMSTERDAM_PROGRESS: ForkProgress = {
       projectedDate: 'Q2 2026',
       progressNotes: 'Scoping complete, implemented EIPs are being tested on devnets',
       devnets: [
-        { name: 'Devnet-0', status: 'completed', date: 'Feb 5, 2026' },
-        { name: 'Devnet-1', status: 'in-progress', projectedDate: 'Q1 2026' },
-        { name: 'Devnet-2', status: 'upcoming', projectedDate: 'Q1 2026' },
-        { name: 'Devnet-3', status: 'upcoming', projectedDate: 'Q1-Q2 2026' },
+        { name: 'Devnet-0', status: 'completed', date: 'Apr 24, 2026' },
+        { name: 'Devnet-1', status: 'completed', date: 'Apr 29, 2026' },
+        { name: 'Devnet-2', status: 'completed', date: 'May 1, 2026' },
+        { name: 'Devnet-3', status: 'completed', date: 'May 6, 2026' },
         { name: 'Devnet-4', status: 'upcoming', projectedDate: 'Q2 2026' },
         { name: 'Devnet-5', status: 'upcoming', projectedDate: 'Q2 2026' }
       ]

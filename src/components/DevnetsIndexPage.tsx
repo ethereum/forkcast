@@ -1,16 +1,12 @@
-import React, { useState, lazy, Suspense } from 'react';
+import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { Logo } from './ui/Logo';
 import ThemeToggle from './ui/ThemeToggle';
 import AnalysisNav from './ui/AnalysisNav';
 import { useMetaTags } from '../hooks/useMetaTags';
 import { useDevnetNetworks } from '../hooks/useDevnetNetworks';
-import { getDevnetSpec, getAllDevnetSpecIds } from '../data/devnet-specs';
+import { getAllDevnetSpecIds } from '../data/devnet-specs';
 import type { ActiveDevnetSeries, InactiveDevnetSeries } from '../types/devnet-networks';
-
-const GlamsterdamPrioritizationSection = lazy(
-  () => import('./devnets/GlamsterdamPrioritizationSection')
-);
 
 const CATEGORY_TEXT_COLORS: Record<string, string> = {
   // Glamsterdam — active fork, unique colors per series
@@ -88,26 +84,6 @@ function buildCardItems(activeSeries: ActiveDevnetSeries[]): DevnetCardItem[] {
       upcomingSpecId: upcomingSpec?.id ?? null,
     };
   });
-
-  // Add spec-only categories not present in networks.json
-  const seenCategories = new Set(activeSeries.map((s) => s.categoryKey));
-
-  for (const specId of allSpecIds) {
-    const parsed = parseSpecId(specId);
-    if (!parsed || seenCategories.has(parsed.category)) continue;
-    seenCategories.add(parsed.category);
-
-    const spec = getDevnetSpec(specId);
-    if (!spec) continue;
-
-    items.push({
-      categoryKey: parsed.category,
-      displayName: `${parsed.category.toUpperCase()} Devnets`,
-      description: spec.announcements[0] || '',
-      activeKeys: [],
-      upcomingSpecId: spec.id,
-    });
-  }
 
   items.sort((a, b) => a.displayName.localeCompare(b.displayName));
   return items;
@@ -191,7 +167,6 @@ function InactiveCard({ item }: { item: InactiveDevnetSeries }) {
 
 const DevnetsIndexPage: React.FC = () => {
   const { activeSeries, inactiveSeries, loading, error } = useDevnetNetworks();
-  const [glamsterdamOpen, setGlamsterdamOpen] = useState(false);
   const [showInactive, setShowInactive] = useState(false);
   const cardItems = buildCardItems(activeSeries);
   const isForkAffiliated = (key: string) =>
@@ -307,40 +282,6 @@ const DevnetsIndexPage: React.FC = () => {
 
         </div>
 
-        {/* Glamsterdam EIP Prioritization - collapsible */}
-        <div className="mb-8">
-          <button
-            onClick={() => setGlamsterdamOpen(!glamsterdamOpen)}
-            className="w-full flex items-center justify-between px-4 py-3 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg hover:bg-slate-50 dark:hover:bg-slate-700/30 transition-colors cursor-pointer"
-          >
-            <h2 className="text-lg font-semibold text-slate-900 dark:text-slate-100">
-              Glamsterdam EIP Prioritization
-            </h2>
-            <svg
-              className={`w-5 h-5 text-slate-400 transition-transform duration-200 ${glamsterdamOpen ? 'rotate-180' : ''}`}
-              fill="none"
-              stroke="currentColor"
-              viewBox="0 0 24 24"
-            >
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
-            </svg>
-          </button>
-
-          {glamsterdamOpen && (
-            <div className="mt-4">
-              <Suspense fallback={
-                <div className="flex items-center justify-center py-12">
-                  <svg className="w-6 h-6 text-purple-500 animate-spin" fill="none" viewBox="0 0 24 24">
-                    <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
-                    <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" />
-                  </svg>
-                </div>
-              }>
-                <GlamsterdamPrioritizationSection />
-              </Suspense>
-            </div>
-          )}
-        </div>
       </div>
     </div>
   );

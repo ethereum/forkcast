@@ -1,0 +1,2714 @@
+WEBVTT
+
+1
+00:02:12.430 --> 00:02:13.540
+nixo: Morning, Josh.
+
+2
+00:02:15.260 --> 00:02:16.250
+Josh Davis: I think so.
+
+3
+00:02:17.450 --> 00:02:19.290
+nixo: Can you make me a co-host?
+
+4
+00:02:19.670 --> 00:02:20.330
+Josh Davis: Yeah.
+
+5
+00:02:20.770 --> 00:02:21.330
+nixo: Thanks.
+
+6
+00:04:44.610 --> 00:04:45.320
+lightclient: Hello.
+
+7
+00:04:47.560 --> 00:04:48.710
+nixo: Hello, hello?
+
+8
+00:05:55.740 --> 00:05:58.840
+nixo: GM, guys, we'll get started in just a few minutes.
+
+9
+00:07:05.840 --> 00:07:09.170
+nixo: Okay, Josh, are we ready to start streaming?
+
+10
+00:07:12.450 --> 00:07:14.120
+Josh Davis: You are alive!
+
+11
+00:07:14.620 --> 00:07:15.550
+nixo: Great.
+
+12
+00:07:15.840 --> 00:07:23.149
+nixo: Good morning or afternoon. This is All Core Devs, number 236. It's May 7th.
+
+13
+00:07:23.920 --> 00:07:36.330
+nixo: Today we're going to talk about the… a little bit about the progress that came out of the Svalbard interop. There is a blog.ethereum.org blog post on that if you want to catch up.
+
+14
+00:07:36.560 --> 00:07:38.420
+nixo: We'll go over some…
+
+15
+00:07:38.580 --> 00:07:47.539
+nixo: other changes that, came out of the progress, or that are being proposed that came out of the progress, that happened in Svalbard, and then we'll go over some proposals for
+
+16
+00:07:47.790 --> 00:07:56.469
+nixo: I go to non-headliner proposals, AA update, and, an engine API schema fix.
+
+17
+00:07:56.820 --> 00:08:04.540
+nixo: Do we want to start with, Barnabas? You want to give an update on the Svalbard progress and some devnet updates?
+
+18
+00:08:05.550 --> 00:08:07.680
+Barnabas: Sure. Can you guys hear me well?
+
+19
+00:08:08.370 --> 00:08:09.260
+nixo: Yep.
+
+20
+00:08:09.540 --> 00:08:24.099
+Barnabas: Yeah, so we started out, with answering devnet 0, on the second day of in the interop. We basically included, all the, Ball devnet 5 changes and, ePBS.
+
+21
+00:08:24.450 --> 00:08:29.280
+Barnabas: And then we basically, went onwards, from there.
+
+22
+00:08:29.620 --> 00:08:32.630
+Barnabas: We quickly had some issues, and then we launched,
+
+23
+00:08:32.870 --> 00:08:37.850
+Barnabas: Glamsterdam didn't won, just a day or two later, and
+
+24
+00:08:38.480 --> 00:08:46.930
+Barnabas: In devnet 2, that was two days after that, we also added a new EIP on the CL side,
+
+25
+00:08:47.710 --> 00:08:50.519
+Barnabas: I'm just gonna put all the links here.
+
+26
+00:08:51.720 --> 00:08:53.280
+Barnabas: With the notes,
+
+27
+00:08:54.210 --> 00:09:02.970
+Barnabas: So the new EIP was the, EIP 8061, which is increasing the exit and consolidation churn limits.
+
+28
+00:09:03.270 --> 00:09:11.599
+Barnabas: We also discussed to, possibly DFI 8080, on the sales side, so…
+
+29
+00:09:12.290 --> 00:09:20.530
+Barnabas: we haven't made an explicit decision during the interrupt, but maybe this is something we can discuss next week on the ACDC.
+
+30
+00:09:21.070 --> 00:09:40.449
+Barnabas: Regarding any other CR changes, we decided not to push forward during the interop week on the forward-compatible, consensus data structures on the, 7688, and we decided not to move forward with AD45 during the interopweek,
+
+31
+00:09:40.560 --> 00:09:44.969
+Barnabas: Which is the slash valid, exclude slash validators from proposing.
+
+32
+00:09:46.000 --> 00:09:51.949
+Barnabas: Regarding the ER side, there has been a bunch of progress, especially,
+
+33
+00:09:53.710 --> 00:10:11.950
+Barnabas: 8037. There has been lots of back and forth, and hopefully we can now, have a finalized pack, with finalized numbers, but I will, probably pass the mic to someone that is more familiar with, the 8037 changes.
+
+34
+00:10:12.640 --> 00:10:21.969
+Barnabas: We have, currently, Docker Access, Ball.net 6 up and running, with the old, Lighthouse and Lodestar images.
+
+35
+00:10:22.150 --> 00:10:29.270
+Barnabas: That has been quite stable, and we have Glamsterdam devnet 3, which is basically the same spec as Glamsterdam devnet 2.
+
+36
+00:10:30.880 --> 00:10:43.010
+Barnabas: But we can actually keep an eye on it now. This morning, I have started the P2P bids, using Builder, and it seems like, Lighthouse was unable to stay at the head, and
+
+37
+00:10:43.120 --> 00:10:48.210
+Barnabas: They seem to have some issues thinking, At this point.
+
+38
+00:10:48.750 --> 00:10:51.919
+Barnabas: That's the latest on Glamsterdam demonstrate.
+
+39
+00:10:56.600 --> 00:11:02.459
+nixo: Great, thanks. Stefan, do you want to, talk about ball dubnets?
+
+40
+00:11:02.840 --> 00:11:04.180
+nixo: Prior restoring, small person.
+
+41
+00:11:04.180 --> 00:11:10.019
+Stefan Starflinger: Yeah, sure. So, just a quick recap, we,
+
+42
+00:11:10.050 --> 00:11:29.649
+Stefan Starflinger: did some accounting change for 8037 that we went back on during Svalbard, and so we moved quickly from Baldefinite 4, up to Baldefinite 6. And Baldefinite 6 is going pretty well at the moment, but there are still some issues that were found.
+
+43
+00:11:29.730 --> 00:11:35.000
+Stefan Starflinger: And I linked most of them in the agenda, so I will share a link here.
+
+44
+00:11:35.160 --> 00:11:38.090
+Stefan Starflinger: If someone wants to look in more detail.
+
+45
+00:11:38.250 --> 00:11:47.610
+Stefan Starflinger: And then, the idea is now to move to BioDefNet 7, with a new testing release, and that addresses most of the fixes.
+
+46
+00:11:47.630 --> 00:12:00.020
+Stefan Starflinger: That were found, and, to also include the, optimizations for the benchmarks, so that we have one stable, performant,
+
+47
+00:12:00.530 --> 00:12:14.820
+Stefan Starflinger: execution side branch. It's still called ball definite, but it includes all the EL changes, which is a little bit confusing. But then, this should be the final, ball definite, so EL side only.
+
+48
+00:12:14.820 --> 00:12:22.250
+Stefan Starflinger: a branch, before we only continue with Gamstrom devnets, branches,
+
+49
+00:12:22.420 --> 00:12:24.979
+Stefan Starflinger: And there is one ask that,
+
+50
+00:12:25.100 --> 00:12:41.479
+Stefan Starflinger: Ben made, and I just summarized it here a little bit, is maybe we should have a debug get block receipts, because the gas accounting is becoming more complicated with different variables, especially the split between regular and state gas.
+
+51
+00:12:41.480 --> 00:12:45.610
+Stefan Starflinger: It would be very good for debugging to understand how much
+
+52
+00:12:45.610 --> 00:12:56.589
+Stefan Starflinger: state and how much regular gas was used. This doesn't necessarily need to surface to the user, but it would be good to have something like this as a debug endpoint, and I just kind of,
+
+53
+00:12:57.060 --> 00:13:08.259
+Stefan Starflinger: created a recommendation of how it could look like. Maybe later, if clients want to speak on it or have some more specific suggestions, that would be great.
+
+54
+00:13:09.450 --> 00:13:14.000
+Felix (Geth): Sorry, could it also just be added to the receipt? Sorry, sorry, sorry.
+
+55
+00:13:14.680 --> 00:13:19.110
+Felix (Geth): Nick, can we somehow surface it? We could also just surface it in the block, no.
+
+56
+00:13:21.300 --> 00:13:24.790
+Ben Adams: I mean, we could… we could do, but then,
+
+57
+00:13:25.280 --> 00:13:27.230
+Ben Adams: It's a… it's a lot more field.
+
+58
+00:13:28.620 --> 00:13:32.790
+Ben Adams: But I think it might be helpful for users to work out where they spend all that.
+
+59
+00:13:44.950 --> 00:13:55.489
+Stefan Starflinger: I don't know, I think we should take this async somewhere to discuss it. I'm not sure where exactly the best place for it is yet, but I think it's something that we do need.
+
+60
+00:13:59.020 --> 00:14:04.349
+nixo: Okay, great. Stefan, can I just assume that you'll put that in the, EL?
+
+61
+00:14:04.470 --> 00:14:09.180
+nixo: EL channel and, R&D, where people can go to discuss it.
+
+62
+00:14:10.320 --> 00:14:11.190
+Stefan Starflinger: Yes.
+
+63
+00:14:14.270 --> 00:14:20.450
+nixo: Any other updates on devnets, Salbard, or, like, 8037?
+
+64
+00:14:21.130 --> 00:14:22.050
+nixo: Maria.
+
+65
+00:14:23.740 --> 00:14:29.320
+Maria Silva: Yeah, so I just wanted to clarify something quickly. So, we are…
+
+66
+00:14:29.820 --> 00:14:44.259
+Maria Silva: working on Vol devnet 7 for next week, but at this point, we still have some clients working on some optimizations, and those should still be merged to Vol devnet 3.
+
+67
+00:14:45.440 --> 00:14:57.869
+Maria Silva: So, we are working on Ball devnet 7, with the fixes from 8037, and that should then, at some point next week, become our EL stable branch, but until then, for the clients that are
+
+68
+00:14:57.870 --> 00:15:08.150
+Maria Silva: working on the optimization still from last week, please merge them to Ball devnet3 so we can see the results on Benchmarker.
+
+69
+00:15:12.700 --> 00:15:21.950
+Maria Silva: Sorry, I think I'm… I may have missed some of the numbers there, but essentially, it's, like, merge optimizations to Paul devnet 3 until we have
+
+70
+00:15:22.270 --> 00:15:24.049
+Maria Silva: all devnet 7 stable.
+
+71
+00:15:29.280 --> 00:15:30.870
+nixo: Great. Thanks.
+
+72
+00:15:31.510 --> 00:15:36.930
+nixo: Alright, any devnets Svalbard 8037?
+
+73
+00:15:37.900 --> 00:15:39.330
+nixo: Otherwise, we'll move on.
+
+74
+00:15:41.290 --> 00:15:48.340
+nixo: Okay, so in that vein, just, like, some, process.
+
+75
+00:15:48.650 --> 00:15:54.359
+nixo: We had talked about, an SFI definition change, at…
+
+76
+00:15:54.500 --> 00:16:03.289
+nixo: Svalbard, at one of the sessions, I had brought this up on a call, about a month ago to look through this SFI definition.
+
+77
+00:16:03.470 --> 00:16:11.630
+nixo: I have made the final changes, reflected… that reflected that discussion. If there are no,
+
+78
+00:16:12.530 --> 00:16:16.680
+nixo: Objections, I'll move to get that, merged in the next…
+
+79
+00:16:17.340 --> 00:16:33.300
+nixo: day or two. And then, based on that definition, I think that, DancerAtops had a list of EIPs, that could be, moved from CFI to SFI, that would
+
+80
+00:16:33.500 --> 00:16:45.939
+nixo: help both ecosystem participants know that these are the EIPs that are most likely to go in, they're being worked on, they're quite stable, there's, like, a set of four criteria in that SFI definition.
+
+81
+00:16:46.440 --> 00:16:56.089
+nixo: And he did a draft proposal, or a draft PR to, move those to SFI in 773, so if there are any…
+
+82
+00:16:56.510 --> 00:17:00.130
+nixo: Objections to that, please comment on that, PR.
+
+83
+00:17:00.830 --> 00:17:04.570
+nixo: Otherwise we'll get that, we'll get that merged by the end of this week.
+
+84
+00:17:06.319 --> 00:17:07.410
+nixo: Tony?
+
+85
+00:17:09.770 --> 00:17:13.339
+Toni Wahrstätter: Yeah, regarding… regarding the process, I mean, I brought it up in the…
+
+86
+00:17:13.579 --> 00:17:21.760
+Toni Wahrstätter: swipeout session, the only thing we should, think about is, how do we then decide what to put on devnets and whatnot.
+
+87
+00:17:21.890 --> 00:17:29.139
+Toni Wahrstätter: Because this is one of the criterias in that, in those four points, and we don't really have a process for that right now.
+
+88
+00:17:29.520 --> 00:17:37.739
+nixo: Yes, I actually, I think that, you may have missed earlier this year, we did actually make a prioritization list for,
+
+89
+00:17:38.000 --> 00:17:49.260
+nixo: for the CFIs that are in Glamsterdam. We didn't, like, put it anywhere, we just discussed it on a call once, and I think 8037 was number one on that list.
+
+90
+00:17:49.260 --> 00:17:49.810
+Toni Wahrstätter: I'm sure
+
+91
+00:17:50.630 --> 00:18:01.860
+Toni Wahrstätter: It's on forecast, right? I mean, I know that… I know the priorization… okay, but there was a priorization with the tiers on fork… on forecast.
+
+92
+00:18:01.970 --> 00:18:06.050
+Toni Wahrstätter: And… We didn't really, go…
+
+93
+00:18:06.240 --> 00:18:16.290
+Toni Wahrstätter: with the… with the order we had on forecast, we were randomly, like, chosen EIPs that we put on the devnet. For example, 8047 was, like, the second
+
+94
+00:18:16.760 --> 00:18:26.260
+Toni Wahrstätter: lowest prioritized, EIP by clients, but we still agreed it's, like, important. So I think we… we should either not overcomplicate things and just
+
+95
+00:18:26.430 --> 00:18:32.649
+Toni Wahrstätter: Keep the freedom there, and put things on a definite that we think, when we think it's the right time.
+
+96
+00:18:33.650 --> 00:18:34.910
+Toni Wahrstätter: Yeah.
+
+97
+00:18:35.240 --> 00:18:39.179
+Toni Wahrstätter: I don't think we should directly go by the prior list.
+
+98
+00:18:39.690 --> 00:18:46.439
+nixo: So the, the prioritization list, it was, is not on forecast,
+
+99
+00:18:46.670 --> 00:18:59.599
+nixo: I will link it somewhere, but we can… I think we're not gonna have to CFI or, like, prioritize a CFI list again until we get to the final, list for Hegota, so we can…
+
+100
+00:18:59.740 --> 00:19:09.079
+nixo: discuss if this is still, like, a controversial, move, but I think it does help the testing teams decide what goes in, and I…
+
+101
+00:19:09.530 --> 00:19:29.250
+nixo: the criteria listed there was that the… basically the facilitators work with the testing team, to create that prioritization list, propose it on oral core devs, make any changes the clients, think are more appropriate, and then that's quite a flexible list. So that's just reflecting what the clients
+
+102
+00:19:29.370 --> 00:19:34.119
+nixo: think, the ordering should be what's,
+
+103
+00:19:35.280 --> 00:19:38.510
+nixo: Based on what can't… what can go in, what's,
+
+104
+00:19:39.120 --> 00:19:48.300
+nixo: able to, be implemented, what's important to implement, not just what's easiest, not just what's more… most desired.
+
+105
+00:19:48.810 --> 00:19:57.750
+nixo: And then, put that in the… in the meta. And I think the idea is that's flexible. That's not, like, a… a rule set if things change.
+
+106
+00:19:57.870 --> 00:20:10.880
+nixo: later on, then we can move things up and down that prioritization list, but it just helps the testing teams figure out what should go in. And I think that we can bring that at ACD if anybody thinks that an EIP is misplaced on that list.
+
+107
+00:20:15.690 --> 00:20:16.830
+nixo: Pooja?
+
+108
+00:20:19.610 --> 00:20:34.620
+Pooja Ranjan: While we are addressing the PR11475, which talks about the specific condition, I would like to request to kindly look into the PR11006, which actually talks about
+
+109
+00:20:34.870 --> 00:20:50.959
+Pooja Ranjan: an important part of this Proposal 7723. So, basically, there is a difference between EIP stage… status and EIP stages, so I… I believe that it has not been correctly documented in the proposal, and the
+
+110
+00:20:50.960 --> 00:21:04.180
+Pooja Ranjan: PR suggests that we should actually update statuses with stages wherever applicable, wherever it is related to network upgrade, not the EIP standardization process. So, just wanted to bring it to attention.
+
+111
+00:21:06.480 --> 00:21:13.269
+nixo: Okay, great. That is in the chat, if you have any, preferences on
+
+112
+00:21:13.690 --> 00:21:17.609
+nixo: that wording, please go comment on that, on that PR.
+
+113
+00:21:20.640 --> 00:21:28.269
+nixo: If… no objections, then we'll move to, SFI those EIPs.
+
+114
+00:21:29.120 --> 00:21:36.499
+nixo: most of those are in… I think all of them are in devnets. There was a comment that 8037 is not…
+
+115
+00:21:37.940 --> 00:21:44.359
+nixo: But the argument for that was a… the amount of work that has been done during Glamsterdam, and the fact that it is.
+
+116
+00:21:44.360 --> 00:21:45.110
+Marius Van Der Wijden (M): Mmm.
+
+117
+00:21:45.110 --> 00:21:46.240
+nixo: Excellent.
+
+118
+00:21:46.700 --> 00:21:48.460
+Marius Van Der Wijden (M): He meant 8038.
+
+119
+00:21:48.950 --> 00:21:49.590
+nixo: Oh.
+
+120
+00:21:49.590 --> 00:21:54.770
+Marius Van Der Wijden (M): 88 is not under DEFNet, and it shouldn't be SFI at this point, but 8037 is.
+
+121
+00:21:55.450 --> 00:21:58.950
+nixo: Okay, yeah, 8037, 8038 is not on that list.
+
+122
+00:22:02.700 --> 00:22:04.770
+Ben Adams: Yeah, I… off by 100.
+
+123
+00:22:05.320 --> 00:22:06.020
+nixo: Okay.
+
+124
+00:22:07.390 --> 00:22:16.250
+nixo: Okay, we'll move on, to 80-70 changes. Camille, are you here?
+
+125
+00:22:17.310 --> 00:22:18.610
+Kamil Salakhiev: Yep, I'm here.
+
+126
+00:22:19.110 --> 00:22:30.139
+Kamil Salakhiev: Yeah, just want to quickly highlight, yeah, changes to 8070. Yeah, we've had a good progress in Svalbard, discussing sparse blog posts.
+
+127
+00:22:30.270 --> 00:22:40.829
+Kamil Salakhiev: Yeah, so we merged already the changes required in Engine API, basically introducing Git blocks before, and some updates for Fortress Updated.
+
+128
+00:22:40.950 --> 00:22:44.970
+Kamil Salakhiev: calls, yeah, so the last piece remaining is,
+
+129
+00:22:45.150 --> 00:22:51.959
+Kamil Salakhiev: yeah, make some final changes to 8070 EIP to kind of narrow down, the…
+
+130
+00:22:52.110 --> 00:23:00.249
+Kamil Salakhiev: behavior for the builder, and, yeah, also just highlight these engine API changes. So please take a look,
+
+131
+00:23:00.360 --> 00:23:11.590
+Kamil Salakhiev: Yes, I believe Geth's team is actively working already, on the AIP, and, Nethermine and Besso, yeah, also.
+
+132
+00:23:11.840 --> 00:23:15.949
+Kamil Salakhiev: Kinda, either working or considering to start working on that soon, so…
+
+133
+00:23:16.100 --> 00:23:20.559
+Kamil Salakhiev: Yeah, as soon as it's implemented in more clients, yeah, we can schedule for the upcoming devnets.
+
+134
+00:23:21.190 --> 00:23:24.559
+Kamil Salakhiev: Yeah, so please take a look. Thanks.
+
+135
+00:23:28.580 --> 00:23:29.489
+nixo: Great, thanks.
+
+136
+00:23:32.220 --> 00:23:39.189
+nixo: Tony, do you want to talk about clarifying the min-rec depth, without rethinking?
+
+137
+00:23:41.520 --> 00:23:45.780
+Toni Wahrstätter: Yeah, this was one of the points we discussed, at Interrupt 2.
+
+138
+00:23:46.220 --> 00:23:56.489
+Toni Wahrstätter: Basically, how far do we want EL clients to reorg back in case of a deep reorg without triggering resync?
+
+139
+00:23:56.780 --> 00:24:04.570
+Toni Wahrstätter: And I think some clients, like GEF, are prepared to re-og back quite, quite, quite many blocks.
+
+140
+00:24:04.700 --> 00:24:08.239
+Toni Wahrstätter: Whereas other clients can only react back, like, a few epochs.
+
+141
+00:24:08.460 --> 00:24:11.850
+Toni Wahrstätter: And it would be great if we can align on the number there.
+
+142
+00:24:12.120 --> 00:24:24.429
+Toni Wahrstätter: And there have been multiple numbers proposed, for example, the 128 blocks, which was the minimum there. Then there was the week subjectivity period, so about 15 to 16 days.
+
+143
+00:24:24.870 --> 00:24:28.149
+Toni Wahrstätter: I think Jasek also proposed
+
+144
+00:24:28.330 --> 00:24:31.630
+Toni Wahrstätter: To have it more like 38 days, which is…
+
+145
+00:24:32.510 --> 00:24:43.100
+Toni Wahrstätter: Which is, with the inactivity leak kicking in, the amount of time we need to restore finality when 70% of the network are offline.
+
+146
+00:24:43.520 --> 00:24:50.940
+Toni Wahrstätter: So, we don't need to resolve that today in the call, but it would be great if people can look into this agenda item, and we can resolve
+
+147
+00:24:51.490 --> 00:24:55.920
+Toni Wahrstätter: This, and have yields align on that number.
+
+148
+00:25:01.120 --> 00:25:05.749
+nixo: Is there a deadline by which, we sort of need to have that sorted?
+
+149
+00:25:06.250 --> 00:25:16.489
+Toni Wahrstätter: So, in theory, we should have sorted it today, I would say, because, Reox could have many times, and I think many clients would today just trigger, sync.
+
+150
+00:25:17.250 --> 00:25:33.550
+Toni Wahrstätter: I think GEF is basically ready, because Marius was at some point saying GEF can react back, like, 90K blocks or something. That would be roughly the week's objectivity period. I would just ask other clients to, look into this.
+
+151
+00:25:33.680 --> 00:25:40.320
+Toni Wahrstätter: And then figure out, like, what to best do in order to not fall back into SnapSync.
+
+152
+00:25:40.450 --> 00:25:47.370
+Toni Wahrstätter: I know that sometimes it might take a while to restore the old state by going through the state divs and apply them.
+
+153
+00:25:47.590 --> 00:25:55.520
+Toni Wahrstätter: But this might be better than just returning an error to the CO. So better we miss a few blocks than we fall back into SnapSync.
+
+154
+00:25:57.870 --> 00:25:58.620
+nixo: Karim?
+
+155
+00:26:03.770 --> 00:26:04.629
+nixo: Kareem, did you…
+
+156
+00:26:04.630 --> 00:26:05.100
+Karim T. (matkt): Huh, yeah.
+
+157
+00:26:05.100 --> 00:26:06.520
+nixo: Raise your hand. Yeah, okay.
+
+158
+00:26:06.520 --> 00:26:12.579
+Karim T. (matkt): No, I said we have a pair in Bezo for that, but as I said, it would be nice to really have a…
+
+159
+00:26:12.910 --> 00:26:21.809
+Karim T. (matkt): a test with a shadow fork, even if it's not something we will run a long time, just to see the behavior of the different clients in a real,
+
+160
+00:26:22.090 --> 00:26:38.530
+Karim T. (matkt): real environment, with a good test close to the reality. Because, yeah, we have a PR today, but it's difficult. We can't do a big rollback, but we need also to check after the rollback, to roll forward with the new head and see how…
+
+161
+00:26:38.790 --> 00:26:40.439
+Karim T. (matkt): Or the client will,
+
+162
+00:26:41.120 --> 00:26:46.089
+Karim T. (matkt): work correctly with the CL, etc, so I think it would be nice to have a test.
+
+163
+00:26:46.670 --> 00:26:50.149
+Karim T. (matkt): To verify that we are working correctly in this case.
+
+164
+00:26:51.560 --> 00:26:55.719
+Karim T. (matkt): And maybe it will help to define the right amount of block.
+
+165
+00:26:56.060 --> 00:27:03.169
+Karim T. (matkt): Like that, if we have a test, we can try different, reorg size and decide what is the best.
+
+166
+00:27:05.420 --> 00:27:10.699
+nixo: Potus… I'm gonna call him POTUS before Felix, because POTUS couldn't raise his hand before.
+
+167
+00:27:11.610 --> 00:27:16.929
+Potuz: Oh, yeah, I just want to make a quick comment on the issue of reorging back. I think…
+
+168
+00:27:17.090 --> 00:27:25.439
+Potuz: So this is a problem that happens on EPBS, that we might send an FCU to a previous chain on the EL side.
+
+169
+00:27:25.590 --> 00:27:26.450
+Potuz: But…
+
+170
+00:27:26.550 --> 00:27:45.949
+Potuz: I think you guys should read this post that I posted on the chat. I think we should avoid completely, and we should even probably forbid an FCU to, without payload attributes to roll back. That means these reorg's bags are only relevant to building the next block.
+
+171
+00:27:45.950 --> 00:28:03.470
+Potuz: they're not relevant for the user that is following the chain, and it's not really relevant for the CL client to send an FCU without payload attributes to go back in the chain. So I think this shouldn't really affect users. We should never try to roll back the chain, live.
+
+172
+00:28:03.720 --> 00:28:16.850
+Potuz: on… yeah, so on regular sync. This should be only used by the proposer of the next block to trigger block production. So only builders and proposers should use this rollback, and not… no one else.
+
+173
+00:28:17.060 --> 00:28:17.610
+Marius Van Der Wijden (M): But…
+
+174
+00:28:17.770 --> 00:28:25.650
+Marius Van Der Wijden (M): photos, that means we would need to have this reorg within the proposing window, within the 12 seconds, right? And this is not possible.
+
+175
+00:28:26.540 --> 00:28:37.500
+Potuz: Yes, so… so what will happen is that the proposer will find out at the, later in the slot that, his head has just rolled back.
+
+176
+00:28:37.520 --> 00:28:49.109
+Potuz: And it will only roll back by one block. Actually, it needs to… it can roll back, and in the event of an attack, of a majority attack, it can roll back up to the justified checkpoint, and not more than that.
+
+177
+00:28:49.540 --> 00:28:55.190
+Potuz: But if there's no one that has a majority of the stake that is malicious, we can only roll back one block.
+
+178
+00:28:55.930 --> 00:29:01.500
+Potuz: And it's only for the proposer to say, you need to build me a block reorgan the last payload.
+
+179
+00:29:05.950 --> 00:29:13.230
+Mikhail Kalinin: I have a question, Potos. You were saying a bit different stuff before, when we were discussing this change.
+
+180
+00:29:13.760 --> 00:29:16.059
+Mikhail Kalinin: So… What is the finish?
+
+181
+00:29:16.060 --> 00:29:17.520
+Potuz: that I said differently.
+
+182
+00:29:17.790 --> 00:29:34.219
+Mikhail Kalinin: Oh, I mean, like, that, now you're saying that, basically we don't need to do, to do, revert on the same, I mean, like, reorgan on the same chain, deeply back, even if we are syncing, right? Well…
+
+183
+00:29:34.220 --> 00:29:34.820
+Potuz: Duh.
+
+184
+00:29:34.820 --> 00:29:47.739
+Mikhail Kalinin: Yeah, but before… but before that, you were kind of, like, saying that, we have to… we need to… we need this revert, up to a finalized checkpoint. I'm just wondering if anything has changed in that time.
+
+185
+00:29:47.740 --> 00:29:55.719
+Potuz: Nothing. The spec is the spec. So, formally, we can have a reorg, nothing is finalized, no payload is finalized.
+
+186
+00:29:56.090 --> 00:30:03.250
+Potuz: until… It's actually finalized, so we can… in theory, you can always reorder back all payloads.
+
+187
+00:30:03.730 --> 00:30:10.480
+Potuz: In practice, the proposer is the only one that should trigger this, and the proposer
+
+188
+00:30:10.630 --> 00:30:20.599
+Potuz: In practice, and even in theory, for the proposer, can only reorg back up to justified, because no proposer would reorg its own justified checkpoint.
+
+189
+00:30:22.020 --> 00:30:31.739
+Potuz: So that's one thing. And the… the other thing is that it's… if you're not under… the only way of reorging more than one block is if there's a malicious majority.
+
+190
+00:30:36.880 --> 00:30:37.610
+nixo: Felix?
+
+191
+00:30:39.820 --> 00:30:45.719
+Marius Van Der Wijden (M): Are you still… are you still talking about reorgs within the canonical chain, or are you talking.
+
+192
+00:30:45.720 --> 00:30:54.679
+Potuz: Yeah, yeah, it's only within the canonical chain, but the post that I want you guys to read is that the important thing about this is it's that the user should never see this.
+
+193
+00:30:54.840 --> 00:30:57.109
+Potuz: So, but a user that is following the chain?
+
+194
+00:30:57.580 --> 00:31:01.980
+Potuz: see a reor back on the EL. Only the proposer should see such a reor back.
+
+195
+00:31:01.980 --> 00:31:02.650
+Marius Van Der Wijden (M): Yes.
+
+196
+00:31:02.650 --> 00:31:05.619
+Felix (Geth): Talking a little bit about something else, yeah.
+
+197
+00:31:05.620 --> 00:31:09.790
+Marius Van Der Wijden (M): Yeah, we're talking about, any reorg, not in the canonical chain.
+
+198
+00:31:10.200 --> 00:31:13.390
+Potuz: Yeah, that's a different story. That should be up to finalize, in theory.
+
+199
+00:31:13.800 --> 00:31:31.739
+Felix (Geth): Yeah, so we are… what I wanted to just give a quick overview, maybe this topic can also be settled later. So there is an EIP proposed, I'm not sure, I think, Tony, you proposed it, that basically clarifies the expected reorg
+
+200
+00:31:31.930 --> 00:31:33.050
+Felix (Geth): window.
+
+201
+00:31:33.120 --> 00:31:52.259
+Felix (Geth): that clients have to support, and I think that is a good direction to go in, because in the past, we have just completely left it up to the client. And this has led to the situation where there are some clients that cannot reorg very far, and others that can reorg very far. So in Get, we always had this,
+
+202
+00:31:52.320 --> 00:32:10.870
+Felix (Geth): opinion that we have to be able to support very long reorgs in case the chain will actually hit this. However, it is important to consider that a very long reorg in the chain would also have a significant user disruption.
+
+203
+00:32:10.940 --> 00:32:15.379
+Felix (Geth): Like, regardless, if this happens, the chain is gonna be under heavy attack.
+
+204
+00:32:15.710 --> 00:32:29.249
+Felix (Geth): Still, it is good to clarify it, because in case of such an attack, we have to be able to recover quickly, and the only way to do that is if the clients don't fall into the snap sync. Because in the case of a sinking chain.
+
+205
+00:32:29.250 --> 00:32:41.889
+Felix (Geth): over a chain being attacked, the snap sync efficiency will also degrade. So we have seen this in the past with testnet incidents, where even getting clients to sync is the main issue. So what we would ask is that clients
+
+206
+00:32:41.890 --> 00:32:49.950
+Felix (Geth): extend their reorg window, and this EIP doesn't. However, just as a quick comment also about how GET handles this.
+
+207
+00:32:49.950 --> 00:33:04.429
+Felix (Geth): it's not actually required for clients to have the state, like, all the way back. That would make them an archive node, and that's not really the goal of requiring this. And it's also not said that reorging back the chain like many blocks has to be a particularly fast operation.
+
+208
+00:33:04.430 --> 00:33:07.519
+Felix (Geth): We… it doesn't have to be instant. It's just…
+
+209
+00:33:07.520 --> 00:33:17.779
+Felix (Geth): that it has to be supported at all. So I think one thing is we could… we should really start, to create some tests that exercises this.
+
+210
+00:33:17.780 --> 00:33:28.889
+Felix (Geth): and also see how the clients behave, just so that they have this theoretical capability. And then we can just see where it goes from there, like, what we can all agree on. But this, like.
+
+211
+00:33:28.890 --> 00:33:41.109
+Felix (Geth): 38 days period or something sounds pretty reasonable to me, because if there's a natural limit in the beacon chain for how far back it could theoretically reorg at all, we could just use that limit, and that should be fine.
+
+212
+00:33:43.850 --> 00:33:45.540
+nixo: Marius, is your hand still up?
+
+213
+00:33:51.140 --> 00:33:52.530
+nixo: Okay, POTUS.
+
+214
+00:33:53.350 --> 00:34:07.209
+Potuz: Just from the engineering perspective, I'm a little bit confused. Wouldn't… wouldn't this in the happy case be a no change? Like, you… if you're finalizing, then it should be fine, you should be able to reorg the last 64 blocks, or whatever.
+
+215
+00:34:07.210 --> 00:34:15.270
+Potuz: And if you're… if we are not finalizing only in that situation, you trigger being a… sort of like an archive node since that point.
+
+216
+00:34:16.040 --> 00:34:34.689
+Felix (Geth): It's not about being archived node, this is just about the client being able to walk the chain back to an earlier state. In GET, this is achieved by storing reverse diffs of the state up to a certain depth, and we need those reverse diffs just to be able to walk the chain back in the theoretical case. It's not fast to do this.
+
+217
+00:34:34.699 --> 00:34:43.089
+Potuz: Yeah, no, I understand, but my point is that you don't even need to store anything if you're finalizing. You never need to reor back if you're finalizing.
+
+218
+00:34:43.780 --> 00:34:50.030
+Felix (Geth): Yeah, this is kind of true. We could, in theory, truncate also these reverse tips to the finalization point. That's correct.
+
+219
+00:34:50.290 --> 00:35:07.139
+Felix (Geth): So if we are certain that, like, there will never ever be a situation where we have to reset back to a point before finalized, then yes. In theory, you can delete everything before the finalized. But you have to be prepared in the client for a situation where finalization is not working.
+
+220
+00:35:17.520 --> 00:35:19.890
+nixo: Great. Do we want to…
+
+221
+00:35:20.590 --> 00:35:23.790
+nixo: take this off saying, er,
+
+222
+00:35:23.970 --> 00:35:29.459
+nixo: offline and, discuss it maybe in that EIP PR?
+
+223
+00:35:32.180 --> 00:35:41.180
+Felix (Geth): It would be good to get more statements from clients. I mean, the execution clients are all here, so… and you guys should all know, like, what are the limits of the org.
+
+224
+00:35:41.760 --> 00:35:45.870
+Felix (Geth): So, just to hear it from people, what's the situation, what do you think about it?
+
+225
+00:35:46.020 --> 00:35:49.889
+Felix (Geth): It's not a… not a slow… you can just have a quick run of thickness.
+
+226
+00:35:50.080 --> 00:36:01.309
+Łukasz Rozmej: So we are… we are working on supporting, reorg up to finalization barrier to make it dynamic, and that's our goal, and it will be then arbitrarily long, as… as… as…
+
+227
+00:36:02.020 --> 00:36:03.940
+Łukasz Rozmej: Where the finalization barrier is.
+
+228
+00:36:06.790 --> 00:36:24.340
+Karim T. (matkt): In Bizzle, we have something similar to GET. We have the trilog with the prior version of each account and slot and the new value, so we just have to apply this trilog to rollback, and we already have a printing mechanism that is not removing trilog.
+
+229
+00:36:24.850 --> 00:36:31.140
+Karim T. (matkt): Before finalization, so as soon as we have a finalization, we can start running the whole try log.
+
+230
+00:36:31.390 --> 00:36:35.629
+Karim T. (matkt): But before that, we are keeping this dry log. We just have to…
+
+231
+00:36:35.950 --> 00:36:38.589
+Karim T. (matkt): To modify the logic, to not have a…
+
+232
+00:36:38.740 --> 00:36:43.269
+Karim T. (matkt): out of memory, if you have a deep preyorg, and we have a PR for that.
+
+233
+00:36:43.700 --> 00:36:48.120
+Karim T. (matkt): But, thanks to that, we should not have any really limitation.
+
+234
+00:36:48.230 --> 00:36:48.910
+Karim T. (matkt): Oh.
+
+235
+00:36:49.220 --> 00:36:57.700
+Karim T. (matkt): can choose a big number, it will not be a problem, I think. But we need two tests, I think it just… if you have a test, we'll be… we'll be more confident.
+
+236
+00:37:04.130 --> 00:37:17.310
+Andrew Ashikhmin: In Erigon, the default is that we can only unwind to 512 blocks, so we probably need to make some changes to support extremely long reorgs.
+
+237
+00:37:25.360 --> 00:37:26.970
+nixo: Do we have anyone from rest?
+
+238
+00:37:34.130 --> 00:37:35.410
+nixo: Go ahead, Corinne.
+
+239
+00:37:35.760 --> 00:37:49.319
+Karim T. (matkt): I just wanted to say something. In Bezoo, in order to manage the deep reorog, what we are doing is to do this rollback by batch, so we are applying an amount of shredog, we are persisting this state, and
+
+240
+00:37:49.560 --> 00:37:59.820
+Karim T. (matkt): restart applying a batch of trial, etc. Like that, we can, remove the issue of out-of-memory if we have a really, big, big reorg.
+
+241
+00:38:04.220 --> 00:38:11.200
+emma (reth): From the Reth side, we couldn't handle the one month at the moment. We'd need to make some changes.
+
+242
+00:38:17.770 --> 00:38:19.589
+nixo: Are those blocking changes?
+
+243
+00:38:22.990 --> 00:38:26.319
+emma (reth): Mmm… I think it would just be a bit of work for us.
+
+244
+00:38:27.050 --> 00:38:28.190
+emma (reth): So, it depends.
+
+245
+00:38:29.400 --> 00:38:31.429
+emma (reth): On, like, when you need it.
+
+246
+00:38:37.320 --> 00:38:41.699
+emma (reth): But yeah, it would be super slow for us, like, Felix is saying from Gath.
+
+247
+00:38:54.100 --> 00:39:06.709
+Toni Wahrstätter: Yeah, so can we do, my feeling is that clients are all more or less, ready for that until Glamsterdam, so I think as of Glamsterdam, we can assume that EL clients will be able to react back the
+
+248
+00:39:06.860 --> 00:39:15.590
+Toni Wahrstätter: 38 days, which is the number that Yasek proposed, which is the inactivity leak, with 70% of the nodes being offline, and then restoring finality.
+
+249
+00:39:16.200 --> 00:39:22.619
+Toni Wahrstätter: Then I would update the EIP. Currently, it has the weak subjectivity period in it, and I would update it to the
+
+250
+00:39:23.080 --> 00:39:25.760
+Toni Wahrstätter: I think it was roughly 38 days,
+
+251
+00:39:26.250 --> 00:39:30.520
+Toni Wahrstätter: That we would then have to, react back at the maximum.
+
+252
+00:39:42.800 --> 00:39:48.990
+nixo: Is there any other client besides Reth who doesn't feel like, this is… Currently doable?
+
+253
+00:39:53.750 --> 00:40:04.170
+Andrew Ashikhmin: Well, it's probably doable, but as I said, for Erigon, we have to make some changes and to do the testing, so right now, probably doesn't work out of the box.
+
+254
+00:40:04.450 --> 00:40:07.240
+Andrew Ashikhmin: It's, everything is doable, but…
+
+255
+00:40:07.800 --> 00:40:15.050
+Andrew Ashikhmin: we… it seems that we have a lot of things, required for Glamstaden. We try to do it, of course, but, you know.
+
+256
+00:40:15.300 --> 00:40:22.509
+Andrew Ashikhmin: Like, let's not repeat our mistakes with Pectra when we had to split it into two works.
+
+257
+00:40:24.080 --> 00:40:38.880
+Toni Wahrstätter: Yeah, I agree, this doesn't even need a hard fork, in my opinion. Like, this is something we should just agree that we want to move towards to, but this is nothing that can break a consensus here, so we don't necessarily need to do it with Glamsterdam.
+
+258
+00:40:39.270 --> 00:40:50.510
+Toni Wahrstätter: But yeah, we can just say, okay, we agree that we want to get there as fast as possible, and if we have it at Glamstadom, great, and if we don't, then sometime after Glamstadum.
+
+259
+00:40:52.520 --> 00:40:54.160
+emma (reth): Yeah, I think that's reasonable.
+
+260
+00:40:54.320 --> 00:40:55.590
+emma (reth): From roughside.
+
+261
+00:40:59.630 --> 00:41:00.349
+nixo: You're welcome.
+
+262
+00:41:01.930 --> 00:41:11.420
+jochem-brouwer: Yeah, I wanted to quickly ask, because I saw that in Hive, this is possible to test, but since this is, like, a very deep reorg, is this directly supported? Because I would like to…
+
+263
+00:41:11.470 --> 00:41:23.489
+jochem-brouwer: help testing this, and also, because this is mainly about the performance, but this is also part of, like, a benchmark or whatever, but I think this is, like, very handy to… to see what the impact is on these kind of attacks.
+
+264
+00:41:32.970 --> 00:41:33.840
+nixo: Otis…
+
+265
+00:41:34.730 --> 00:41:47.309
+Potuz: Am I correct that the danger here is that if I receive such a block, and everyone that becomes, I send new payload, I get an accepted, because they verified the block hash.
+
+266
+00:41:47.310 --> 00:41:58.009
+Potuz: and then for some reason, it becomes my head, then every client that cannot actually execute that reorg becomes optimistic. So, in principle, we could just immediately stall the chain.
+
+267
+00:41:58.160 --> 00:42:02.490
+Potuz: If every CL says, this is the head, and we're all optimistic, is that the case?
+
+268
+00:42:05.910 --> 00:42:11.580
+Mikhail Kalinin: It depends on what status the EL will return in the response to that reorg.
+
+269
+00:42:13.460 --> 00:42:31.500
+Potuz: But I haven't triggered the reorg yet. I just sent new payload, and it's a… it's based on a very, very old guy. So I assume that the EL does not execute it, it just tells me syncing, or accepted whatever was the original one. And then I… then I can actually just send an FCU to it.
+
+270
+00:42:33.040 --> 00:42:41.950
+Potuz: If the Yale has not finished executing, it will tell me syncing, I will just change my head to that, and then suddenly we're all dead because we're optimistic, all of us.
+
+271
+00:42:42.490 --> 00:42:45.830
+Potuz: That's my reading of what you guys are telling me happens.
+
+272
+00:42:55.620 --> 00:42:56.450
+Potuz: I mean, in…
+
+273
+00:42:56.850 --> 00:43:05.190
+Potuz: I don't care that it's too slow. It could take, like, 6 hours, but as long as the block is actually executed, we can just… we don't lose slightness.
+
+274
+00:43:06.040 --> 00:43:11.360
+Marius Van Der Wijden (M): Yeah, like, for gas, it is being executed, it just takes a long time.
+
+275
+00:43:11.570 --> 00:43:17.559
+Marius Van Der Wijden (M): And we can only do 90,000 blocks instead of 120,000 blocks.
+
+276
+00:43:18.320 --> 00:43:26.640
+Marius Van Der Wijden (M): So, we… like, for us, it's just a parameter change, but other clients don't have that capability yet, at all.
+
+277
+00:43:29.770 --> 00:43:37.759
+Mikhail Kalinin: But if… so you have to execute a block, but before that, you have to… to obtain the state, right?
+
+278
+00:43:38.260 --> 00:43:42.280
+Mikhail Kalinin: Which is kind of, like, 100,000 blocks ago.
+
+279
+00:43:43.810 --> 00:43:47.539
+Mikhail Kalinin: I mean, like, it diverges from the state that you have
+
+280
+00:43:47.920 --> 00:43:54.409
+Mikhail Kalinin: 100,000 blocks ago, so you have to apply reverse diffs, and then execute a block. Is that correct?
+
+281
+00:43:54.770 --> 00:43:56.030
+Marius Van Der Wijden (M): Yes, exactly.
+
+282
+00:43:56.640 --> 00:44:01.390
+Mikhail Kalinin: So, and I saw in the chat that it will take about 6 hours, right?
+
+283
+00:44:06.000 --> 00:44:11.259
+Marius Van Der Wijden (M): I think… So, like, we have to also test that.
+
+284
+00:44:11.920 --> 00:44:19.510
+Mikhail Kalinin: All right, and yeah, see, so in which status will be responded in the engine API in this case?
+
+285
+00:44:20.680 --> 00:44:23.579
+Mikhail Kalinin: If it's gonna be, like, sinking, then…
+
+286
+00:44:25.110 --> 00:44:31.489
+Mikhail Kalinin: And then it becomes the head. What Podit is saying, then, all CL nodes that
+
+287
+00:44:32.850 --> 00:44:36.220
+Mikhail Kalinin: Got into this situation, we'll be optimistic.
+
+288
+00:44:43.740 --> 00:44:49.779
+Marius Van Der Wijden (M): If I understand Sino correctly, we don't return anything, we just… We just do the reorg.
+
+289
+00:44:50.080 --> 00:44:52.510
+Marius Van Der Wijden (M): And then at some point, we return.
+
+290
+00:44:52.860 --> 00:44:54.129
+Marius Van Der Wijden (M): Accept at all.
+
+291
+00:44:54.390 --> 00:44:55.250
+Marius Van Der Wijden (M): Pilot.
+
+292
+00:44:56.470 --> 00:45:00.520
+Potuz: But I think on new payload, you should return immediately, without executing.
+
+293
+00:45:00.900 --> 00:45:07.689
+Marius Van Der Wijden (M): Yeah, yeah, on new… no, no, this is on blockch just updated. This is only if you really force us to do… to execute this block.
+
+294
+00:45:08.770 --> 00:45:11.820
+Marius Van Der Wijden (M): A new payload, we just can just ignore it.
+
+295
+00:45:22.710 --> 00:45:25.189
+Marius Van Der Wijden (M): This, this can only happen in the case
+
+296
+00:45:25.360 --> 00:45:30.670
+Marius Van Der Wijden (M): Where the CL node says, this is our current block.
+
+297
+00:45:30.780 --> 00:45:37.319
+Marius Van Der Wijden (M): And that can only happen if there's… Either non-finality going on.
+
+298
+00:45:37.690 --> 00:45:40.250
+Marius Van Der Wijden (M): Or a majority is malicious.
+
+299
+00:45:43.120 --> 00:46:01.740
+Potuz: then can I suggest that we agree on, if we are in such a situation, we decide that all clients should either return syncing, or all clients should execute and not return anything, so not to have a split there? If everyone returns syncing, then we all become optimistic, and then we wait until someone can actually execute it.
+
+300
+00:46:01.840 --> 00:46:06.719
+Potuz: And if everyone doesn't return anything, then the reorg is not even performed.
+
+301
+00:46:07.390 --> 00:46:17.090
+Potuz: Because we can't… we do not, change head until the EL tells us. We actually time out, and we would consider that block as not imported.
+
+302
+00:46:37.980 --> 00:46:39.830
+nixo: Okay.
+
+303
+00:46:39.980 --> 00:46:46.420
+nixo: Do we have any other open questions around this? Because I feel like we maybe aren't going to get to the number.
+
+304
+00:46:46.730 --> 00:46:54.440
+nixo: the option that we want to choose today, but we have agreed that testing is needed, and it sounds like Joachim and Mario can work on testing.
+
+305
+00:47:01.570 --> 00:47:02.590
+nixo: Okay.
+
+306
+00:47:02.590 --> 00:47:10.020
+Toni Wahrstätter: Apart from that, it would be great if… I mean, Yasek already looked into that. I looked into the number today a bit too, but if we can…
+
+307
+00:47:10.600 --> 00:47:17.940
+Toni Wahrstätter: That might work async, if we get more confirmation that, those 38 days might actually be the right number there.
+
+308
+00:47:25.130 --> 00:47:25.950
+nixo: Great.
+
+309
+00:47:25.950 --> 00:47:31.219
+Toni Wahrstätter: I will update the EIP, right after the call, and then I can drop it into the CL.
+
+310
+00:47:31.380 --> 00:47:32.130
+Toni Wahrstätter: Cheat.
+
+311
+00:47:32.820 --> 00:47:33.530
+nixo: Perfect.
+
+312
+00:47:34.860 --> 00:47:40.389
+nixo: Okay, we're gonna move on to 8254.
+
+313
+00:47:40.870 --> 00:47:43.210
+nixo: This…
+
+314
+00:47:43.440 --> 00:47:50.910
+nixo: I think was a Barnabas and Marius topic. Do you guys… or do either of you guys want to talk about it?
+
+315
+00:47:53.130 --> 00:48:01.300
+Barnabas: Yeah, so the main concern, came from the initiative to raise the gas limit in Grand Sterdam to 200 million, gas.
+
+316
+00:48:01.360 --> 00:48:13.869
+Barnabas: Which will basically allow us to exceed the 8,192, deposits in a single slot transaction, which will basically make all the CLs fail.
+
+317
+00:48:14.300 --> 00:48:27.399
+Barnabas: there's a few ways to, get around this. One of them is, get rid of the limit. The other one is to, enforce the limit on the ES side, and,
+
+318
+00:48:27.930 --> 00:48:31.200
+Barnabas: Yeah, we could just also increase the limit, or decrease the limit.
+
+319
+00:48:31.790 --> 00:48:34.069
+Barnabas: This is basically what we should discuss.
+
+320
+00:48:38.880 --> 00:48:48.560
+nixo: So, to be clear, this would be a new EIP in Glamsterdam, in order to… enable…
+
+321
+00:48:49.120 --> 00:48:49.790
+Barnabas: Yeah.
+
+322
+00:48:50.330 --> 00:48:51.000
+nixo: Okay.
+
+323
+00:49:01.710 --> 00:49:14.679
+Marius Van Der Wijden (M): Yeah, so, the A2 platform, the one that Barnabas is proposing, basically says that we have to count every, deposit, and if,
+
+324
+00:49:15.060 --> 00:49:15.700
+Marius Van Der Wijden (M): above.
+
+325
+00:49:16.240 --> 00:49:17.389
+Felix (Geth): In Liechtenberg.
+
+326
+00:49:20.880 --> 00:49:21.440
+Marius Van Der Wijden (M): Huh?
+
+327
+00:49:24.650 --> 00:49:26.680
+nixo: Go ahead, Marius, I think that was an accident.
+
+328
+00:49:27.570 --> 00:49:39.779
+Marius Van Der Wijden (M): Oh, okay. We have to… we have to count every deposit, and, and then, at every… after every transaction, we have… we have to check whether… whether,
+
+329
+00:49:40.020 --> 00:49:47.339
+Marius Van Der Wijden (M): Whether this transaction can still fit in, or if it can't, and then we have to move it out, and then… so yeah, it…
+
+330
+00:49:47.950 --> 00:49:53.760
+Marius Van Der Wijden (M): Makes block building quite a bit harder. For block verification, we can choose to either…
+
+331
+00:49:53.980 --> 00:49:59.079
+Marius Van Der Wijden (M): Verify the limit after every transaction, so we can verify the limit after the end of the block.
+
+332
+00:49:59.320 --> 00:50:13.529
+Marius Van Der Wijden (M): Verifying it after every transaction has the advantage that we can arrow out earlier. Verifying it at the end of the block means we will, in the worst case, spend more time
+
+333
+00:50:13.670 --> 00:50:18.520
+Marius Van Der Wijden (M): But it's much easier to implement. Yep.
+
+334
+00:50:19.100 --> 00:50:22.629
+Marius Van Der Wijden (M): I… I'm not a big fan.
+
+335
+00:50:23.100 --> 00:50:24.820
+Marius Van Der Wijden (M): I had the idea of just…
+
+336
+00:50:25.870 --> 00:50:30.519
+Marius Van Der Wijden (M): Just, deleting every deposit that goes over a certain number.
+
+337
+00:50:31.330 --> 00:50:35.720
+Marius Van Der Wijden (M): And just, yeah. But that is, griefable.
+
+338
+00:50:35.990 --> 00:50:39.690
+Marius Van Der Wijden (M): Another idea, and it has…
+
+339
+00:50:40.040 --> 00:50:46.570
+Marius Van Der Wijden (M): gained some laughs in the chat, but it's actually a serious idea, would be to switch out the deposit contract
+
+340
+00:50:46.800 --> 00:50:51.539
+Marius Van Der Wijden (M): With a different deposit contract that, that codes a limit per block.
+
+341
+00:50:51.670 --> 00:50:58.399
+Marius Van Der Wijden (M): And, Then we would actually limit it
+
+342
+00:50:58.530 --> 00:51:02.340
+Marius Van Der Wijden (M): Where it makes sense, because right now the idea is to limit it
+
+343
+00:51:03.020 --> 00:51:14.979
+Marius Van Der Wijden (M): in that… in the single part that… where it doesn't make sense, and that is the EL, it would make sense to either limit it on the deposit contract, or to limit it in the CL. Yeah.
+
+344
+00:51:20.960 --> 00:51:23.770
+Barnabas: How would you propose to limit it on this scale?
+
+345
+00:51:30.010 --> 00:51:34.780
+Felix (Geth): I can give a comment, sorry, for earlier audio issue. So,
+
+346
+00:51:35.320 --> 00:51:40.519
+Felix (Geth): for… we can either reject the block on the CL by just validating that there are
+
+347
+00:51:40.760 --> 00:51:43.030
+Felix (Geth): not more than X.
+
+348
+00:51:43.270 --> 00:51:44.810
+Felix (Geth): Number of requests?
+
+349
+00:51:44.940 --> 00:51:56.019
+Felix (Geth): However, this is a bit awkward because it creates a new invalidity condition for the block on the CL side only, so it's kind of like, basically, we would have to modify the fork choice to say that this block will never be…
+
+350
+00:51:56.240 --> 00:51:58.480
+Felix (Geth): You know, in the… in the active fork.
+
+351
+00:51:58.790 --> 00:52:00.310
+Felix (Geth): So this is possible.
+
+352
+00:52:00.440 --> 00:52:06.309
+Felix (Geth): Or, I was also wondering what it would take to raise the limit on CL site.
+
+353
+00:52:15.280 --> 00:52:24.540
+Ben Adams: We'd also need to change, not the validation rules, but the building rules, so that It doesn't…
+
+354
+00:52:24.810 --> 00:52:35.620
+Ben Adams: The CLs then reject the block, moves to another EL, which overstuffs the deposits, which then gets rejected, which moves to another EL, which then overstuffs the deposits.
+
+355
+00:52:36.290 --> 00:52:40.999
+Ben Adams: Otherwise, we'd halt by just doing the same thing again and again.
+
+356
+00:52:50.370 --> 00:52:51.080
+nixo: Tony?
+
+357
+00:52:52.520 --> 00:52:56.780
+Toni Wahrstätter: Yeah, I agree that this makes block building a little bit more complicated, because
+
+358
+00:52:56.940 --> 00:53:16.179
+Toni Wahrstätter: you would basically introduce a new, cycle problem, where one transaction could basically consume, for example, all 512 deposits, and then you can't really append more transactions into the block. So we basically, in addition to the gas limit, we would have another,
+
+359
+00:53:16.590 --> 00:53:32.570
+Toni Wahrstätter: very arbitrary limit that you can't even statically see, like we do for block transactions, for example, that we have the same problem, but we can at least statically see it from looking at the transaction, which is not the case here.
+
+360
+00:53:32.940 --> 00:53:38.919
+Toni Wahrstätter: But yeah, it feels like Banabas EIP is the simplest thing to do by just, capping it, and…
+
+361
+00:53:39.100 --> 00:53:48.930
+Toni Wahrstätter: EL clients would just abort block building, or not append any more transactions if we hit it. Just for context, this almost never happened in the past, so I think we had two blocks
+
+362
+00:53:49.130 --> 00:53:55.150
+Toni Wahrstätter: That actually went over the 512. So this is really an edge case we're talking about here.
+
+363
+00:53:55.420 --> 00:53:58.580
+Toni Wahrstätter: So I would prefer a very simple solution here.
+
+364
+00:54:03.680 --> 00:54:04.600
+nixo: Mars?
+
+365
+00:54:04.940 --> 00:54:08.980
+Marius Van Der Wijden (M): Yeah, quick question. Pluto seems to be…
+
+366
+00:54:09.090 --> 00:54:20.319
+Marius Van Der Wijden (M): worried about builder deposits. I have no idea how they work, and whether they will run into the same problem, so it would be…
+
+367
+00:54:20.560 --> 00:54:24.650
+Marius Van Der Wijden (M): Are they also deposited via the deposit contract?
+
+368
+00:54:25.570 --> 00:54:26.170
+Barnabas: Yes.
+
+369
+00:54:30.660 --> 00:54:31.140
+Marius Van Der Wijden (M): Included.
+
+370
+00:54:31.140 --> 00:54:40.479
+Potuz: So, from the perspective of DL, they're just the same, they're normal deposits, so for block building, I guess it's… you're not gonna recognize this.
+
+371
+00:54:40.480 --> 00:54:51.640
+Potuz: But the problem is that on the CL, we might actually need to do a signature verification immediately on the block as we are importing it, which is not something that we do for normal deposits, for validators.
+
+372
+00:54:51.640 --> 00:55:01.640
+Potuz: So this… in that sense, what, what Tony said, which is fright, we only had, like, one of few blocks with this many deposits, like, 512 would be more than fine.
+
+373
+00:55:01.660 --> 00:55:10.909
+Potuz: My fear is that, A, for builder deposits, we do not know if we can actually survive 512 deposits, as we did for validators.
+
+374
+00:55:10.960 --> 00:55:22.949
+Potuz: Because for those validators, we didn't need to immediately verify signatures. We put them in a queue, and then later on, we… on a churn, we verified those signatures. For builders, we would like to do this on demand immediately.
+
+375
+00:55:22.950 --> 00:55:31.239
+Potuz: which I'm not sure we can handle. And second, we do expect, at the fork boundary to get a lot of deposits for builders.
+
+376
+00:55:31.740 --> 00:55:43.280
+Potuz: So, I would not discount this problem of builder deposits. So, if there is a word in which we can cap this, the building time on the EL, that would be great.
+
+377
+00:56:09.070 --> 00:56:17.349
+nixo: Okay, great. Do we wanna do… is there any opposition to PFI-ing that to 7773?
+
+378
+00:56:19.450 --> 00:56:23.570
+nixo: And then, it sounds like they're… Sorry?
+
+379
+00:56:23.850 --> 00:56:37.039
+Peter Miller: Yeah, can I just clarify? It would seem to me that if you do this, there's a denial-of-service attack, where people have… you send a transaction that spends loads of gas.
+
+380
+00:56:37.330 --> 00:56:40.619
+Peter Miller: And then, after spending that gas.
+
+381
+00:56:40.840 --> 00:56:44.489
+Peter Miller: Turns out to not be inclusible, because it makes a ridiculous number of deposits.
+
+382
+00:56:45.450 --> 00:56:47.000
+Toni Wahrstätter: So I'm like…
+
+383
+00:56:47.640 --> 00:56:53.089
+Peter Miller: I'm quite wary of doing this. I'm like, can we not, like, find a way… basically, I…
+
+384
+00:56:53.510 --> 00:57:04.709
+Peter Miller: Because currently, we have a rule that you can tell, cheaply and statically, whether a transaction is includeable. And once you pass that check, you can include the transaction in the block.
+
+385
+00:57:05.210 --> 00:57:12.810
+Peter Miller: I'm very skeptical that it would be a good idea to act… to add a condition for block validity that violates that principle.
+
+386
+00:57:13.250 --> 00:57:20.760
+Peter Miller: So we should… it… the transaction should fail in some way, and still be includeable, if it busts this cap.
+
+387
+00:57:21.150 --> 00:57:24.840
+Peter Miller: Just getting to the end of a transaction and go, oh, sorry, you couldn't include that.
+
+388
+00:57:25.810 --> 00:57:30.939
+Peter Miller: doesn't, like, align with the basic principles that the EL goes through.
+
+389
+00:57:32.070 --> 00:57:32.800
+nixo: Tommy?
+
+390
+00:57:34.010 --> 00:57:46.800
+Toni Wahrstätter: Yeah, what Peter is saying is true. So basically, this is exactly the problem that… and what Marius was proposing would fix it, basically switch out the deposit contract, because then we would essentially have the transaction revert in case
+
+391
+00:57:46.880 --> 00:57:57.380
+Toni Wahrstätter: the maximum deposit number is reached. Otherwise, EL clients would have to find a way, for example, just abort block production at some point if they
+
+392
+00:57:57.580 --> 00:58:04.119
+Toni Wahrstätter: Keep trying to append transactions to the payload, and the block turns invalid because the maximum deposit is reached.
+
+393
+00:58:06.860 --> 00:58:07.600
+nixo: Felix.
+
+394
+00:58:08.560 --> 00:58:11.409
+Felix (Geth): I just want to give the quick note that,
+
+395
+00:58:11.830 --> 00:58:23.319
+Felix (Geth): we already have such a condition in the form of the maximum block size. So even currently, the builder has to be aware of… No, actually, yeah, so the builder has to be aware of, like.
+
+396
+00:58:23.700 --> 00:58:26.380
+Felix (Geth): How big is the block that it's currently building?
+
+397
+00:58:26.750 --> 00:58:34.579
+Felix (Geth): But it's a bit… it's, like, kind of goes in this direction also, but it… so we do have to verify that condition while… while building.
+
+398
+00:58:39.100 --> 00:58:48.069
+nixo: Okay, just to sort of time box this, do I understand that this is, like, the biggest blocker right now towards, 200 million gas?
+
+399
+00:58:49.660 --> 00:58:50.960
+nixo: For Glamsterdam?
+
+400
+00:58:51.320 --> 00:58:54.529
+Barnabas: Yeah, we could… we could safely do 190.
+
+401
+00:58:54.930 --> 00:59:00.260
+Barnabas: But, as soon as we go over 193, we are gonna have issues.
+
+402
+00:59:01.050 --> 00:59:08.569
+nixo: Marius, if, your, your alternative, direction, would that be a different EIP, or would that be 8254?
+
+403
+00:59:08.830 --> 00:59:09.450
+nixo: Oh, boy.
+
+404
+00:59:09.850 --> 00:59:11.070
+nixo: just to age by far.
+
+405
+00:59:11.880 --> 00:59:20.899
+Marius Van Der Wijden (M): So… the problem… well, it seems like even 190 is too much, because CLs cannot handle more than 512.
+
+406
+00:59:21.410 --> 00:59:22.330
+Marius Van Der Wijden (M): -Oh.
+
+407
+00:59:22.540 --> 00:59:27.660
+Marius Van Der Wijden (M): More than a couple of builder, builder, signatures.
+
+408
+00:59:28.000 --> 00:59:29.530
+Marius Van Der Wijden (M): So, I don't know.
+
+409
+00:59:31.730 --> 00:59:42.830
+nixo: Can we, propose 8294 to Glamsterdam and have this open as a… as a way to address this one last blocker, and have people…
+
+410
+00:59:43.020 --> 00:59:48.740
+nixo: Discussed this async about how to fix this one last blocker to 200 million.
+
+411
+00:59:54.660 --> 00:59:55.940
+nixo: Felix?
+
+412
+01:00:00.580 --> 01:00:02.020
+Felix (Geth): The way I should have lowered my…
+
+413
+01:00:02.850 --> 01:00:06.120
+nixo: Okay. Okay, I will,
+
+414
+01:00:06.840 --> 01:00:19.149
+nixo: Barnabas, if you want to PFI 8254 to 7773, and we'll have it in the PFI, not CFI, just to indicate that there are open questions that need to be addressed.
+
+415
+01:00:19.330 --> 01:00:22.889
+nixo: Because we would definitely like to get that floor of $200 million.
+
+416
+01:00:23.340 --> 01:00:25.299
+nixo: If possible.
+
+417
+01:00:27.140 --> 01:00:27.820
+nixo: Right.
+
+418
+01:00:28.040 --> 01:00:38.279
+nixo: Let's move on to, pavel has two items, related to self-destruct, one Glamstream related, and I think one, general.
+
+419
+01:00:38.440 --> 01:00:40.619
+nixo: Pavel, do you want to take the mic?
+
+420
+01:00:40.850 --> 01:00:42.589
+Paweł Bylica: Yes, hello?
+
+421
+01:00:43.290 --> 01:00:52.890
+Paweł Bylica: So I'll start with, EIP8246, which proposes to
+
+422
+01:00:53.100 --> 01:00:56.360
+Paweł Bylica: Remove the burn feature of self-destruct.
+
+423
+01:00:57.400 --> 01:01:00.020
+Paweł Bylica: So…
+
+424
+01:01:00.550 --> 01:01:09.290
+Paweł Bylica: not going into, like, very, very much into details, the service track has, like, multiple things it does at the end, but,
+
+425
+01:01:09.450 --> 01:01:14.730
+Paweł Bylica: It can also burn if, if… If you target,
+
+426
+01:01:15.540 --> 01:01:19.199
+Paweł Bylica: the EF transfer to yourself, and
+
+427
+01:01:19.570 --> 01:01:33.000
+Paweł Bylica: And the main motivation why we would like to remove that is the other AP, AP7708, which emits logs for transfers and also emits logs for burn events.
+
+428
+01:01:33.140 --> 01:01:44.079
+Paweł Bylica: So, kind of contrary to the CIP, I propose that instead of emitting logs for the burn events, we actually get rid of burn events from EVM.
+
+429
+01:01:44.560 --> 01:01:47.620
+Paweł Bylica: And that's, like, the main motivation of this EIP.
+
+430
+01:01:48.020 --> 01:01:53.909
+Paweł Bylica: How this is done is basically we… We try to,
+
+431
+01:01:54.270 --> 01:02:04.770
+Paweł Bylica: persist the balance of the account. So, distraction might not be, like, complete in the end. We can… we might be left with the,
+
+432
+01:02:04.940 --> 01:02:11.639
+Paweł Bylica: With the accounts that… Will be empty, but will have, some balance left.
+
+433
+01:02:12.510 --> 01:02:18.060
+Paweł Bylica: So yeah, so that's basically, like, rough overview.
+
+434
+01:02:18.470 --> 01:02:29.359
+Paweł Bylica: of the CAP, and… Proposing this, rightfully triggered the question if we can completely remove, self-destruct.
+
+435
+01:02:30.270 --> 01:02:35.710
+Paweł Bylica: And I think… Should be clarified what the complete removal means.
+
+436
+01:02:35.980 --> 01:02:41.040
+Paweł Bylica: It's not like the service tracking structure will stop working, it will…
+
+437
+01:02:41.240 --> 01:02:45.530
+Paweł Bylica: Still do some stuff, but in the limited factor.
+
+438
+01:02:45.690 --> 01:02:49.489
+Paweł Bylica: So, I think the agreement is that,
+
+439
+01:02:50.090 --> 01:02:58.970
+Paweł Bylica: it will behave as, sometimes called, send all instructions, so we'll still send EF to the targeted address.
+
+440
+01:02:59.360 --> 01:03:05.860
+Paweł Bylica: And will terminate the execution of a call at this point, as it does currently.
+
+441
+01:03:06.550 --> 01:03:12.840
+Paweł Bylica: And thus has been proposed previously, and we kind of… head to…
+
+442
+01:03:13.260 --> 01:03:20.630
+Paweł Bylica: Went back to some defensive positions, and we removed Self-destruct partly.
+
+443
+01:03:20.820 --> 01:03:30.860
+Paweł Bylica: But still, in the case, an account is created in the same transaction, ServeDestruct kind of behaves as historically it was designed.
+
+444
+01:03:32.420 --> 01:03:35.319
+Paweł Bylica: Okay, so, so yeah, that's basically…
+
+445
+01:03:36.250 --> 01:03:38.919
+Paweł Bylica: Like, intro to this part, and
+
+446
+01:03:40.430 --> 01:03:48.630
+Paweł Bylica: I collected some data about self-distract usage, in the current mainnet.
+
+447
+01:03:49.120 --> 01:03:54.599
+Paweł Bylica: And I can give some details, but basically this is available already.
+
+448
+01:03:54.940 --> 01:04:01.469
+Paweł Bylica: So I can send the link to the AP, the first one mentioned, and the…
+
+449
+01:04:03.050 --> 01:04:07.410
+Paweł Bylica: And my, like, brief report about self-destruct usage.
+
+450
+01:04:12.110 --> 01:04:18.689
+Paweł Bylica: And if there are no questions so far, I can go over, like, basic,
+
+451
+01:04:18.880 --> 01:04:21.830
+Paweł Bylica: like, some overview of the data I collected.
+
+452
+01:04:29.360 --> 01:04:34.840
+Paweł Bylica: Okay, so there's no questions so far, so,
+
+453
+01:04:35.160 --> 01:04:42.340
+Paweł Bylica: So I… I collected all the self-destruct events since, for the last 5 million blocks.
+
+454
+01:04:43.210 --> 01:04:44.640
+Paweł Bylica: And,
+
+455
+01:04:46.440 --> 01:04:58.329
+Paweł Bylica: And the, this, like, yeah, the block 20 million happened right after Cancun, so this was the point where we modified some of these tracks already.
+
+456
+01:04:58.660 --> 01:05:03.330
+Paweł Bylica: So we have the… all the events that happened in these 5 million blocks.
+
+457
+01:05:03.740 --> 01:05:17.449
+Paweł Bylica: And the usage of the… I mean, the usage of the service track actually, increases, although the… the deprecation notice that we… we kind of notified users of, previously.
+
+458
+01:05:17.860 --> 01:05:21.450
+Paweł Bylica: So absolute values go up,
+
+459
+01:05:21.750 --> 01:05:36.430
+Paweł Bylica: If we compare that with the gas limit, I can say, roughly, it stays on the same level, so we might want to attribute the increase of usage to the gas limit increase.
+
+460
+01:05:36.670 --> 01:05:41.230
+Paweł Bylica: Although we can also identify, like, more unique users,
+
+461
+01:05:41.370 --> 01:05:44.370
+Paweł Bylica: Coming for this pattern, so that's one thing.
+
+462
+01:05:44.680 --> 01:05:52.869
+Paweł Bylica: In general, there was, like, five, well, this was half a million events that happened, within these 5 million blocks.
+
+463
+01:05:53.580 --> 01:05:58.559
+Paweł Bylica: And if we consider, like,
+
+464
+01:05:59.470 --> 01:06:03.679
+Paweł Bylica: the context where self-destruct is completely removed,
+
+465
+01:06:03.850 --> 01:06:12.719
+Paweł Bylica: That would, that would cause creation of additional foi… 400,000 accounts.
+
+466
+01:06:13.460 --> 01:06:17.220
+Paweł Bylica: Some of them would have… Would have some…
+
+467
+01:06:17.490 --> 01:06:22.180
+Paweł Bylica: code, and the code is actually very small. It's, our,
+
+468
+01:06:22.280 --> 01:06:32.490
+Paweł Bylica: combines into around 3 megabytes of additional code. So the number of accounts are quite big, I would say. The number of codes is, like, tiny.
+
+469
+01:06:34.880 --> 01:06:50.380
+Paweł Bylica: And why people use it, I'm not currently sure. I tried to classify this, I mean, categorize the usage, and I have some idea how to do it, but well, there's not so much time to do so, so far.
+
+470
+01:06:51.140 --> 01:06:53.239
+Paweł Bylica: And finally,
+
+471
+01:06:54.100 --> 01:07:04.309
+Paweł Bylica: So, so the, so the gas, gas schedule, so the users already pay for the creation of their account, and they don't get any refund, coming from the service track.
+
+472
+01:07:04.770 --> 01:07:13.580
+Paweł Bylica: So, like, there's not… from our perspective, like, the kind of protocol devs is not really issue.
+
+473
+01:07:13.800 --> 01:07:18.639
+Paweł Bylica: So, even if the account will remain in the state, someone paid for them.
+
+474
+01:07:21.940 --> 01:07:38.540
+Paweł Bylica: And within this event of self-destruct, like, majority of this would work as it is right now. So basically, the only difference would be that there were some Duster counts remaining after transactions, but the workflow will not be broken.
+
+475
+01:07:39.000 --> 01:07:55.180
+Paweł Bylica: So only 12% of this, usage would be broken, and this only happens with… if any of these schemes reuse the same address, because the next time you want to create account on the address, and
+
+476
+01:07:55.270 --> 01:08:01.419
+Paweł Bylica: It wasn't, and if it's not properly self-destructed, it means the creation will fail.
+
+477
+01:08:01.950 --> 01:08:10.910
+Paweł Bylica: this is 12% of all of these, events, but still, I think this is the part we'll need to, like, dig into.
+
+478
+01:08:11.800 --> 01:08:19.750
+Paweł Bylica: And, yeah, so basically, that's the overview. My personal comment is that
+
+479
+01:08:20.040 --> 01:08:28.219
+Paweł Bylica: from the usage patterns, I kind of find some, like, elegance into this that they actually clear after themselves.
+
+480
+01:08:28.630 --> 01:08:33.959
+Paweł Bylica: Because many of these… many of these, usage is basically, like.
+
+481
+01:08:34.920 --> 01:08:45.450
+Paweł Bylica: create… just create, like, a top-level account, do some scripting, and then serve this track. There are definitely other ways to do so, but yeah, this is kind of, like…
+
+482
+01:08:45.910 --> 01:08:52.849
+Paweł Bylica: At least, it doesn't cause unnecessary state decrease in this in this region, I mean…
+
+483
+01:08:52.990 --> 01:08:59.629
+Paweł Bylica: Yeah, so that's… that's it. And, I think that's… that's all for… from me for now.
+
+484
+01:09:02.460 --> 01:09:03.080
+nixo: Peter?
+
+485
+01:09:04.870 --> 01:09:06.960
+Peter Miller: Yeah, firstly,
+
+486
+01:09:07.050 --> 01:09:15.399
+Peter Miller: Thank you, that's, incredibly helpful, and I really appreciate that you've gone to the effort of producing this data that we can look at.
+
+487
+01:09:15.470 --> 01:09:22.540
+Peter Miller: I basically agree with you about the whole wasted account. We currently…
+
+488
+01:09:22.540 --> 01:09:36.049
+Peter Miller: charge people for creating accounts that get self-destructed in the same transaction, and then we don't refund them that if the account gets self-destructed. We don't care if such accounts end up in the state because they've paid for them.
+
+489
+01:09:36.920 --> 01:09:41.720
+Peter Miller: I find the fact that you've located 60,000 transactions.
+
+490
+01:09:42.420 --> 01:09:45.839
+Peter Miller: In two years, that would fail.
+
+491
+01:09:46.370 --> 01:09:48.849
+Peter Miller: If we removed self-destruct.
+
+492
+01:09:49.020 --> 01:10:06.049
+Peter Miller: makes me skeptical that we'd be persuaded to do it. Like, I think I agree, everyone agrees that if we could just get rid of self-destruct, we would absolutely like to do this. But the only reason we kept self-destruct is because users told us that it would break stuff.
+
+493
+01:10:06.710 --> 01:10:12.199
+Peter Miller: If we didn't… if we removed it entirely, and that this was basically the only use case.
+
+494
+01:10:12.660 --> 01:10:20.359
+Peter Miller: And we've historically observed a very extreme policy on changing things that might break current users.
+
+495
+01:10:20.810 --> 01:10:25.069
+Peter Miller: And there are a lot of candidates for things that we would remove.
+
+496
+01:10:25.380 --> 01:10:28.489
+Peter Miller: If we were happy to, like, break the occasional user.
+
+497
+01:10:28.780 --> 01:10:39.649
+Peter Miller: So, I just don't see how it's viable to remove same-transaction self-destruct, given that there are 30,000 cases a year
+
+498
+01:10:39.750 --> 01:10:46.829
+Peter Miller: Of people actively relying on it, as in their contracts and transactions would break if they didn't use it.
+
+499
+01:10:47.820 --> 01:10:49.870
+Peter Miller: Which is my understanding from your statistics.
+
+500
+01:10:54.970 --> 01:10:58.379
+Paweł Bylica: Yeah, I can… I can… I wanted to raise my hand, but I…
+
+501
+01:10:58.610 --> 01:11:10.459
+Paweł Bylica: I lost where the button is, but anyway, yeah. So, like, I have two comments. One, all of this data is available if someone wants to do, like, further analysis or anything like that.
+
+502
+01:11:10.770 --> 01:11:17.820
+Paweł Bylica: Secondly, I think this… this situation is not so dramatic as it sounds.
+
+503
+01:11:18.250 --> 01:11:26.310
+Paweł Bylica: Is that my observation, although I'm… I don't feel as an expert on, like, usage analysis of… of… of contracts.
+
+504
+01:11:26.580 --> 01:11:29.900
+Paweł Bylica: So many of these usage are still kind of scripts.
+
+505
+01:11:30.690 --> 01:11:36.110
+Paweł Bylica: So, you kind of make a decision to send it, and the moment you create a transaction.
+
+506
+01:11:36.490 --> 01:11:38.839
+Paweł Bylica: And the other part of the usage
+
+507
+01:11:39.430 --> 01:11:51.729
+Paweł Bylica: is some kind of, like, operation, like, operator doing some stuff with a factory, but the… this operator kind of can be identified as an EOA. So.
+
+508
+01:11:52.600 --> 01:12:00.110
+Paweł Bylica: It's… it's actually also, like, kind of decides to use a contract that has this pattern in their,
+
+509
+01:12:00.930 --> 01:12:06.989
+Paweł Bylica: and the moment it sends a transaction, so I think there's a way to migrate that. It's not like a…
+
+510
+01:12:07.660 --> 01:12:14.709
+Paweł Bylica: Yeah, so… so I kind of find it this… this pattern… It's basically some, like, helper…
+
+511
+01:12:15.120 --> 01:12:24.289
+Paweł Bylica: scalper EVM bytecode, but I… I kind of feel there's a way to migrate existing users.
+
+512
+01:12:24.410 --> 01:12:31.700
+Paweł Bylica: how ex… how… yeah, how to notify them, how to identify them, it's kind of… yeah, I don't know, but
+
+513
+01:12:31.870 --> 01:12:41.580
+Paweł Bylica: yeah, if… if you dig… yeah, if you go deeper into data and, like, the usage patterns, I think we can identify some… some ways, but…
+
+514
+01:12:41.750 --> 01:12:46.749
+Paweł Bylica: Yeah, kind of agree also that, well, it would… we would need to at least
+
+515
+01:12:46.980 --> 01:12:51.779
+Paweł Bylica: Make sure we actually find all of the cases that we need to, handle.
+
+516
+01:12:55.060 --> 01:13:04.269
+nixo: Okay. Paul, can I… is it accurate to say that, 8246 is being proposed for Glamstrom to enable 7708, and then…
+
+517
+01:13:04.400 --> 01:13:08.329
+nixo: Removing self-destruct is a… is a longer-term,
+
+518
+01:13:08.540 --> 01:13:16.109
+nixo: goal that might be for Hegota, and maybe needs a little bit more analysis into other,
+
+519
+01:13:17.230 --> 01:13:17.780
+nixo: He's…
+
+520
+01:13:17.970 --> 01:13:25.520
+Paweł Bylica: Yeah, I think that's not accurate, because we also had discussion with the testing team, and
+
+521
+01:13:25.800 --> 01:13:30.669
+Paweł Bylica: I think if you want to completely remove self-destruct, and we…
+
+522
+01:13:31.050 --> 01:13:40.699
+Paweł Bylica: I think the moment of Glamsterdam is also a good one, because it simplifies other AIPs, to my understanding, but
+
+523
+01:13:41.360 --> 01:13:45.279
+Paweł Bylica: Maybe some… someone from the testing can comment on this.
+
+524
+01:13:57.120 --> 01:14:11.540
+Peter Miller: I think that the, evidence, having looked at the data for these two AIPs that you've produced, is that removing the self-destruct, burn is at the level where it's unlikely to create any real breakage, and
+
+525
+01:14:11.830 --> 01:14:15.650
+Peter Miller: it is somewhat annoying, so I would be quite supportive of that.
+
+526
+01:14:15.860 --> 01:14:28.099
+Peter Miller: like, removing self-destruct entirely, given that it has actual users who will experience at least some breakage, is going to require, like, long-term research, and definitely can't make it into Glamstam.
+
+527
+01:14:30.380 --> 01:14:31.190
+nixo: Mario?
+
+528
+01:14:31.620 --> 01:14:42.549
+Mario Vega: Yeah, I could comment quickly on the testing. Yeah, it definitely will be nice, but I feel like if UX is gonna break in some… at some, to some degree with this change.
+
+529
+01:14:42.820 --> 01:14:43.920
+Mario Vega: It's… it's…
+
+530
+01:14:43.980 --> 01:14:54.849
+Mario Vega: I mean, the nice part would be that, local access list and 837 would never have to interact with self-destruct. That's very nice, because we will remove a lot of cases where this is like a…
+
+531
+01:14:54.850 --> 01:15:16.100
+Mario Vega: a problem to testing, but we have already, like, test cases for that, so we're not really removing work from us. It's like, basically, we're just simplifying the change, which is good. But I feel like, I mean, yeah, I do agree with the point that it's maybe too short notice. So, for us, I feel I'm leaning towards the
+
+532
+01:15:16.270 --> 01:15:20.010
+Mario Vega: the burn… the burn removal. I think, I think it's a nice middle point.
+
+533
+01:15:27.520 --> 01:15:34.420
+nixo: it seems like there's con… there's, some support for that, based on the emoji reacts in the chat.
+
+534
+01:15:35.290 --> 01:15:42.220
+nixo: Powell, does that sound good? And if yes, do you want to, do a PR to…
+
+535
+01:15:42.380 --> 01:15:44.390
+nixo: CFI that in 82…
+
+536
+01:15:45.590 --> 01:15:46.110
+Paweł Bylica: Yeah, yeah.
+
+537
+01:15:46.290 --> 01:15:46.820
+nixo: Yes.
+
+538
+01:15:46.820 --> 01:15:48.710
+Paweł Bylica: Sure, you can do that.
+
+539
+01:15:50.520 --> 01:15:58.609
+nixo: Are… is there any, opposition to… to going straight to CFI for that, EIP, given that it,
+
+540
+01:15:59.280 --> 01:16:01.130
+nixo: It seems to have broad support.
+
+541
+01:16:04.820 --> 01:16:05.740
+nixo: Great.
+
+542
+01:16:06.600 --> 01:16:09.970
+nixo: If not, we'll move on to Hegota.
+
+543
+01:16:13.050 --> 01:16:20.490
+nixo: Okay, we have a couple proposals for Hegota and an AA update from my client. Do we want to start off…
+
+544
+01:16:20.830 --> 01:16:23.879
+nixo: With 7709.
+
+545
+01:16:24.200 --> 01:16:25.660
+nixo: From Ignacio.
+
+546
+01:16:27.310 --> 01:16:33.229
+ignacio: Yeah, sure, I have 3 slides, to present this, so it should be pretty quick.
+
+547
+01:16:34.600 --> 01:16:40.780
+ignacio: Give me a second… Can you see my… Screen.
+
+548
+01:16:42.430 --> 01:16:43.070
+nixo: Yep.
+
+549
+01:16:44.130 --> 01:16:44.700
+ignacio: Cool.
+
+550
+01:16:44.810 --> 01:16:50.479
+ignacio: Yeah, so I wanted to, propose 7709 for Hegota.
+
+551
+01:16:51.080 --> 01:16:52.860
+ignacio: And I said.
+
+552
+01:16:53.150 --> 01:17:02.119
+ignacio: TLDR of what this EIP is proposing today, and he'll know when… whenever he has to execute a block hash up call.
+
+553
+01:17:02.820 --> 01:17:10.869
+ignacio: It, resolves the result, by using, any memory cache of the last 256 block hashes.
+
+554
+01:17:11.490 --> 01:17:17.220
+ignacio: And that's, justified by the current price of BlockHash, which is 20 gas.
+
+555
+01:17:18.460 --> 01:17:29.739
+ignacio: And what the EIP is, proposing is that, at the protocol level, we decide to resolve, block hash values, via an S load.
+
+556
+01:17:29.970 --> 01:17:35.930
+ignacio: Against the system contract of EIP2935 that was activated in Prague.
+
+557
+01:17:36.380 --> 01:17:43.959
+ignacio: Because the system contract is storing the history of the more than 8,000, block hashes,
+
+558
+01:17:44.780 --> 01:17:53.550
+ignacio: So, since block hash in-window size is the last 256 values, this can be a result from the…
+
+559
+01:17:53.880 --> 01:17:56.880
+ignacio: The storage try of the system contract.
+
+560
+01:17:57.680 --> 01:18:06.350
+ignacio: So the reason why, I'm proposing this is that block hash not being resolved from this system contracts.
+
+561
+01:18:06.470 --> 01:18:11.720
+ignacio: Create some complications for creating the execution witness for stateless environments.
+
+562
+01:18:12.730 --> 01:18:27.159
+ignacio: So if you're trying to execute a block statelessly, and this block contains a block hash execution of code at any point in the transaction list, the stateless client should receive
+
+563
+01:18:27.260 --> 01:18:30.329
+ignacio: This value, and approve that this value is correct.
+
+564
+01:18:30.880 --> 01:18:41.640
+ignacio: So, since block hash is, a kind of stateful opcode that is not really being resolved from the tries.
+
+565
+01:18:42.400 --> 01:18:48.830
+ignacio: This creates some complications whenever this execution width is constructed in a stateful EL, because
+
+566
+01:18:48.990 --> 01:18:54.450
+ignacio: For other state-to-log opcodes, like slowed or balanced,
+
+567
+01:18:55.040 --> 01:19:01.039
+ignacio: the Yale State Tracker usually will be aware of this axis happening, so…
+
+568
+01:19:01.160 --> 01:19:10.279
+ignacio: Creating an MPT proof for that stateful access is pretty natural, but for plug hash, it's not really the case.
+
+569
+01:19:10.980 --> 01:19:18.150
+ignacio: And the execution witness construction needs, like, an exceptional path to really resolve this.
+
+570
+01:19:18.280 --> 01:19:21.570
+ignacio: Because it's not, like, formally estate access.
+
+571
+01:19:21.760 --> 01:19:29.959
+ignacio: So, that's basically the gist of the motivation for this.
+
+572
+01:19:30.060 --> 01:19:37.080
+ignacio: So it's basically making block hash not be, like, an exception compared to other opcodes that are stateful.
+
+573
+01:19:39.270 --> 01:19:46.349
+ignacio: the, kind of, main concern that this EIP can have is what is the UX impact, because
+
+574
+01:19:46.740 --> 01:19:55.210
+ignacio: making block hash be resolved via an S-load to a system contract basically means that we have to reprice it to… to…
+
+575
+01:19:55.490 --> 01:19:57.679
+ignacio: To be aligned with what is happening.
+
+576
+01:19:57.870 --> 01:20:08.220
+ignacio: So that means that, we will be moving to the current 20 gas, price to an S-load cost, so it might be cold or warm,
+
+577
+01:20:08.540 --> 01:20:12.990
+ignacio: Depending if the… if the block hash is, repeated or not.
+
+578
+01:20:13.700 --> 01:20:21.419
+ignacio: So that's a decent amount of price change. Like, in the worst case, it would be around, like a…
+
+579
+01:20:21.720 --> 01:20:30.140
+ignacio: A lot of… a lot of change for users. And actually, if EIP8038,
+
+580
+01:20:30.650 --> 01:20:42.669
+ignacio: happens, this will be even more than today. The final numbers of DCIPs are not really yet decided, but probably we will expect a big change, so…
+
+581
+01:20:42.800 --> 01:20:46.370
+ignacio: Yeah, this might… might make things worse.
+
+582
+01:20:46.640 --> 01:20:54.300
+ignacio: So, I'm planning to run a replay analysis of historic blocks to really understand which is the UX impact.
+
+583
+01:20:54.520 --> 01:20:57.230
+ignacio: Probably I will try to wait until AT38.
+
+584
+01:20:57.480 --> 01:21:03.169
+ignacio: has some final-ish numbers, and we can try to understand which is the UX impact.
+
+585
+01:21:03.770 --> 01:21:10.349
+ignacio: I wrote some, deeper… analysis around DCIP, some implications.
+
+586
+01:21:10.680 --> 01:21:15.549
+ignacio: So here's the link if anyone is, interested,
+
+587
+01:21:16.640 --> 01:21:20.770
+ignacio: I also write the specs and tests in the execution specs repo.
+
+588
+01:21:22.630 --> 01:21:29.609
+ignacio: So yeah, I will share the slides, the link to the slides in the chat, so anyone can look at them.
+
+589
+01:21:31.000 --> 01:21:33.010
+ignacio: And, yep, that's mainly it.
+
+590
+01:21:37.420 --> 01:21:38.150
+nixo: Felix?
+
+591
+01:21:40.300 --> 01:21:59.959
+Felix (Geth): Yeah, sorry, I just have a quick question. So, is it… you are giving the main motivation for this change that, the stateless client would have to be aware of the hash, but is it not reasonable to expect that the stateless client should be aware of the last 256 block hashes in the history? I feel like this is a very obvious
+
+592
+01:22:00.330 --> 01:22:09.679
+Felix (Geth): I mean, most status clients will be aware of it. You would really, really, really have to have a client that is, like, completely unaware of the chain in order to not have this.
+
+593
+01:22:11.440 --> 01:22:16.140
+ignacio: Right, so the idea here is that the stateless client doesn't really have to…
+
+594
+01:22:16.430 --> 01:22:25.170
+ignacio: doesn't really need, like, memory about the previous blocks that were executed, so I want, like, the execution witness to be self-contained.
+
+595
+01:22:25.620 --> 01:22:29.889
+ignacio: Regarding… What is needed to execute the block?
+
+596
+01:22:30.350 --> 01:22:37.159
+ignacio: Because if not, you need an execution witness plus some kind of memory of the last Blogs that happen.
+
+597
+01:22:38.540 --> 01:22:56.380
+Felix (Geth): Yes, I understand this. I was just wondering, like, what kind of client would that be? Because most, like I said, most clients that are participating in the chain at all, even very, very lightweight ones, would have knowledge of the chain. I'm just, like, really wondering, like, it's… I feel like a very narrow case for a client. I mean, there's more like a…
+
+598
+01:22:56.720 --> 01:22:59.300
+Felix (Geth): philosophical change, I guess, that you're trying to…
+
+599
+01:23:03.690 --> 01:23:14.299
+ignacio: Yeah, I think this is mainly about just making the execution witness just have all the information that is needed for executing the block statelessly.
+
+600
+01:23:14.660 --> 01:23:19.270
+ignacio: It's just basically that, and not having assumptions about,
+
+601
+01:23:19.790 --> 01:23:23.110
+ignacio: These stateless clients having knowledge about what happened.
+
+602
+01:23:23.520 --> 01:23:29.380
+ignacio: Like, previously. So it's like a pure function, circus client.
+
+603
+01:23:34.670 --> 01:23:35.390
+nixo: Oh.
+
+604
+01:23:38.190 --> 01:23:48.459
+Paweł Bylica: Yeah, so I think this is not, like, super fancy change, but it makes the witness very much consistent and self-contained.
+
+605
+01:23:48.570 --> 01:23:57.229
+Paweł Bylica: Like, for example, you can pin this… this element in the storage to the block hash root, block state hash root, right?
+
+606
+01:23:57.400 --> 01:24:05.100
+Paweł Bylica: Otherwise, you would need to have, like, the hash chain of blocks to prove that the values are correct.
+
+607
+01:24:05.230 --> 01:24:10.639
+Paweł Bylica: And for that, you would need to block headers to actually hash them, and so on. So…
+
+608
+01:24:10.750 --> 01:24:15.870
+Paweł Bylica: Yeah, there's nothing we cannot do right now, but it just makes it nicer.
+
+609
+01:24:16.580 --> 01:24:21.569
+Paweł Bylica: And then, like, the witness is only about status, nothing like external elements there.
+
+610
+01:24:23.600 --> 01:24:30.049
+nixo: Peter, and then I'm gonna time Alex this so we have enough time for the last 3 items on the agenda.
+
+611
+01:24:30.480 --> 01:24:49.110
+Peter Miller: Yeah, that makes sense. I was just quickly going to say this is a very small change, but the benefits really are quite substantial. If we get rid of this, we're pretty much going to be in a position where you can validate a block with only the current block and its body, the parent header, and the state.
+
+612
+01:24:49.530 --> 01:24:52.800
+Peter Miller: And currently, you require
+
+613
+01:24:52.950 --> 01:24:59.730
+Peter Miller: the last 512 headers, and there's no good reason for this. Now we have this contract, so this is a very sensible change.
+
+614
+01:25:02.990 --> 01:25:10.870
+nixo: Great. Let's move on to, EIP8253. Jokam, do you wanna… Take the mic.
+
+615
+01:25:10.870 --> 01:25:14.330
+jochem-brouwer: Yes, yes, yes, let me also share my screen.
+
+616
+01:25:14.750 --> 01:25:17.730
+jochem-brouwer: Okay, I also have some slides. Can you see my screen?
+
+617
+01:25:19.080 --> 01:25:19.860
+nixo: Yep.
+
+618
+01:25:20.140 --> 01:25:36.249
+jochem-brouwer: Okay, cool. So this is about… I was beaten this one, so let's… let's go. This is about ERP 8253, remove EIP used back in accounts, and the context of this is also about ERP7610 on ERP by Gary and Martin.
+
+619
+01:25:36.250 --> 01:25:51.550
+jochem-brouwer: which is… which I've PFI'd for a glance at them. It is still in PFI, because this is somewhat, I would not say controversial, but okay, let's get… let's get into those points in a later slide. So, if we go back in time, at, well, nine and a half years ago.
+
+620
+01:25:51.550 --> 01:26:08.809
+jochem-brouwer: at change start, we could create contracts which did not start with non-0, but that was actually… sorry, that did not start with nonce 1, but the contract creation was then always 0. And, this leads to a specific kind of account, which was only possible to create before Spurious Dragon.
+
+621
+01:26:08.900 --> 01:26:17.070
+jochem-brouwer: This is an account where the code is empty, you have zero nons, but the storage is non-empty, and this leads to problems when you check for contact collisions.
+
+622
+01:26:17.210 --> 01:26:30.059
+jochem-brouwer: Because EIP784, which defines how you check for contact collisions, that says, okay, you should check the months and the code, and that should be zero, and it should be empty, so it does not check for the empty storage.
+
+623
+01:26:30.060 --> 01:26:38.889
+jochem-brouwer: And this is what was introduced by 7610, because this is not specified in the protocol yet. But this condition is theoretically possible.
+
+624
+01:26:40.260 --> 01:26:51.110
+jochem-brouwer: As previous vegan, we introduced EIP161, this is the state clearing EIP, and this bumps the standard conflict norms to 1 to mark these accounts.
+
+625
+01:26:51.760 --> 01:27:00.600
+jochem-brouwer: 224 of these accounts existed at Spurious Dragon, and 28 accounts of them exist today, which I will call the fossil accounts.
+
+626
+01:27:00.600 --> 01:27:12.960
+jochem-brouwer: The ones which were removed, so the difference of these 2 on the 24 and the 28, these, it's actually no balance, and these are then empty by the definition of EIP161, and these were then deleted from the state already.
+
+627
+01:27:13.350 --> 01:27:33.320
+jochem-brouwer: So, about ERP67610, the argument against is that the address collision cannot happen in practice, because this would… well, you need to do some… well, it's a theoretical attack. And there's also, like, this extra runtime code, because you have an empty storage foot check on creation, which might need an extra disk lookup.
+
+628
+01:27:33.320 --> 01:27:41.370
+jochem-brouwer: regarding on the database layout, or you can check against a hard-coded list of existing accounts, which GEF has currently moved to. It's this,
+
+629
+01:27:41.370 --> 01:27:42.150
+jochem-brouwer: VR.
+
+630
+01:27:42.250 --> 01:27:54.310
+jochem-brouwer: to Gav, which is already merged, so there's now not the storage with Jack anymore, but the list check. And this list, I've checked it, I've also checked this against the list which I got at this ERP, and it's the same list, so that's good.
+
+631
+01:27:54.420 --> 01:28:01.289
+jochem-brouwer: Okay, so about this ERP… It's this pull request, which I will share here in the chat.
+
+632
+01:28:01.590 --> 01:28:05.610
+jochem-brouwer: Because it's this one… okay, yes.
+
+633
+01:28:05.790 --> 01:28:09.440
+jochem-brouwer: It's this… VR, which I don't seen the chat.
+
+634
+01:28:09.610 --> 01:28:16.260
+jochem-brouwer: Okay, so at the fork block, what we do is we bump the launch of all the accounts which have zero launch, no code.
+
+635
+01:28:16.290 --> 01:28:30.570
+jochem-brouwer: And non-empty storage, so there is at least one key with a non-zero value which exists in the storage fee of this account. And the balance is non-zero because of this argument which I just made, because all the empty accounts have been cleared by this ERP7523.
+
+636
+01:28:30.570 --> 01:28:39.089
+jochem-brouwer: The nonce is bumped before running the system contracts, so, yeah, also before any transactions. The non-spump is reflected in the book access list.
+
+637
+01:28:39.210 --> 01:28:52.959
+jochem-brouwer: There are the 28 non-perms, and this converts the previous dragon accounts, the fossil accounts, to accounts which can also be created now, because this is… has no code.
+
+638
+01:28:53.110 --> 01:29:01.140
+jochem-brouwer: But they write the stories in the init code, and per ERP161, the non-stage created account is at least 1. So why should we do this?
+
+639
+01:29:01.140 --> 01:29:16.139
+jochem-brouwer: This makes ERP7610 obsolete, because the ERP7684 collision check is not sufficient, because it is not possible to pay these accounts anymore, where we have, like, this weird situation where we have storage, but we also have zero nodes.
+
+640
+01:29:16.300 --> 01:29:18.279
+jochem-brouwer: Which was his point.
+
+641
+01:29:18.720 --> 01:29:34.690
+jochem-brouwer: It removes the pre-spirious dragon type of accounts from state, which is not possible to create anymore. It removes specific code at clients to handle these accounts. It removes also this type of accounts from state, so you can maybe do some kind of nice database layout optimizations.
+
+642
+01:29:34.690 --> 01:29:47.119
+jochem-brouwer: And it removes this, well, this special handling of these accounts, also in the testing suite, and the best point I want to raise is this simplifies the protocol, and it makes us all happy.
+
+643
+01:29:47.380 --> 01:29:50.370
+jochem-brouwer: Okay, that's lost my… points.
+
+644
+01:29:57.100 --> 01:30:13.700
+nixo: Great, thank you very much. Peter, I know you have a comment to make, but, we have two more things to get through. Light client, just real quick, do you feel like 5 minutes is enough to… or 4 minutes is enough to give an AA update, or do you want to kick it to the next one? Because if you want to kick it to the next one, we can…
+
+645
+01:30:13.890 --> 01:30:16.220
+nixo: do some questions on Yochum's presentation.
+
+646
+01:30:17.550 --> 01:30:19.760
+lightclient: I can go very quickly.
+
+647
+01:30:20.460 --> 01:30:25.940
+nixo: Okay. Real quick, though, Joachim, if anybody wants to discuss this, where's the right place to go?
+
+648
+01:30:27.080 --> 01:30:30.220
+jochem-brouwer: That's to execution depth at R&D.
+
+649
+01:30:30.710 --> 01:30:31.400
+jochem-brouwer: Okay.
+
+650
+01:30:31.790 --> 01:30:32.540
+jochem-brouwer: Yep.
+
+651
+01:30:33.280 --> 01:30:33.950
+nixo: Thank you.
+
+652
+01:30:36.140 --> 01:30:37.820
+nixo: Matt, the mic is yours.
+
+653
+01:30:39.220 --> 01:30:39.870
+lightclient: Thanks.
+
+654
+01:30:40.270 --> 01:30:53.689
+lightclient: Yeah, so I got a chance to talk to a lot of you guys in Small Bar last week. We had one major session where we discussed some high-level AA goals and constraints. This was kind of separate of
+
+655
+01:30:53.870 --> 01:30:58.870
+lightclient: How do we achieve these things? And I was more focused on, like, what exactly are we trying to achieve?
+
+656
+01:30:59.230 --> 01:31:04.579
+lightclient: posted the HackMD with the result of that session in the chat.
+
+657
+01:31:05.110 --> 01:31:08.709
+lightclient: And from there, had a lot of other conversations with people.
+
+658
+01:31:08.830 --> 01:31:12.570
+lightclient: More focused on the frame transaction proposal.
+
+659
+01:31:12.840 --> 01:31:18.969
+lightclient: And we are still working on figuring out what the right spec is that can make everybody happy.
+
+660
+01:31:19.420 --> 01:31:25.429
+lightclient: One specific spec item we spent a lot of time talking about was the 2D nonces, and we ended up deciding that we would just
+
+661
+01:31:25.730 --> 01:31:28.639
+lightclient: Proposed the 2D nonce.
+
+662
+01:31:29.630 --> 01:31:32.649
+lightclient: mechanism for frame transactions, this separate EIP.
+
+663
+01:31:32.850 --> 01:31:34.990
+lightclient: For now, and see…
+
+664
+01:31:35.260 --> 01:31:43.160
+lightclient: if, you know, what the feasibility of actually including this together with the frame transaction, in a GoTo would be.
+
+665
+01:31:44.150 --> 01:31:48.310
+lightclient: But yeah, I'm happy to answer any questions here offline.
+
+666
+01:31:48.870 --> 01:31:55.350
+lightclient: But otherwise, we'll just keep working on the spec for the next week or so, and then hopefully get to implementing some prototypes.
+
+667
+01:32:02.730 --> 01:32:04.270
+nixo: Thanks for the update.
+
+668
+01:32:04.950 --> 01:32:10.780
+nixo: Mercy, do you… you wanted to go over your engine API V2 scheme effects?
+
+669
+01:32:11.670 --> 01:32:12.370
+nixo: Mercy here.
+
+670
+01:32:12.370 --> 01:32:22.720
+Mercy Boma Naps-Nkari: No, I just wanted to bring it up so that, Codex can make a decision on it and also approve the PR. And also on this one,
+
+671
+01:32:23.130 --> 01:32:28.679
+Mercy Boma Naps-Nkari: We'll be removing this so that people are aware of this. This plan for PR788.
+
+672
+01:32:29.160 --> 01:32:30.130
+Mercy Boma Naps-Nkari: Thank you.
+
+673
+01:32:36.030 --> 01:32:43.160
+nixo: Thank you. That is all of the items on the agenda. Thank you guys for coming.
+
+674
+01:32:43.260 --> 01:32:44.530
+nixo: See you in two weeks.
+
+675
+01:32:45.460 --> 01:32:46.150
+lightclient: Thanks.
+
+676
+01:32:47.040 --> 01:32:48.399
+jochem-brouwer: Bye-bye. Thank you.
+
+677
+01:32:50.750 --> 01:32:51.590
+Mikhail Kalinin: Bye.
+
+678
+01:32:52.490 --> 01:32:53.469
+Toni Wahrstätter: Bye bye.
+

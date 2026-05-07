@@ -1,63 +1,56 @@
 {
   "series": "ACDT",
-  "generated": "2026-04-30",
+  "generated": "2026-05-07",
   "for_call": "ACDT #79",
   "suggestions": [
     {
-      "topic": "Glamsterdam DevNet 0 launch readiness and execution-apis PR #770 status",
+      "topic": "Glamsterdam DevNet 0 launch status and readiness",
       "priority": "high",
-      "rationale": "ACDT #78 set end-of-week targets for PR #770 implementation and DevNet 4/Glamsterdam DevNet 0 launch. This is now overdue and blocking the first merged BAL+ePBS devnet.",
+      "rationale": "DevNet was targeted for April 15 (with fallback April 22). ACDT #78 indicated end-of-week readiness for BAL DevNet 4/Glamsterdam DevNet 0 with execution-apis PR #770. No status update in last 2+ weeks; critical to confirm if launch occurred or identify blockers.",
       "related_eips": [],
-      "source": "devnet_update"
+      "source": "ongoing_discussion"
     },
     {
-      "topic": "EIP-8037 full implementation status across clients",
+      "topic": "ePBS range sync security analysis outcome",
       "priority": "high",
-      "rationale": "BAL DevNet 3 had gas accounting disagreements between Geth/Nethermind. DevNet 4 spec included full EIP-8037 with dynamic state costs by end of last week. Need confirmation all clients aligned on the specification.",
-      "related_eips": [],
-      "source": "devnet_update"
-    },
-    {
-      "topic": "ePBS range sync security analysis results",
-      "priority": "high",
-      "rationale": "ACDT #78 tasked EL teams with analyzing security implications of CL syncing without payload envelopes. This is a critical architectural decision affecting ePBS devnet security model.",
+      "rationale": "EL teams were assigned in ACDT #78 (April 20) to analyze security implications of CL syncing without payload envelopes. This is a fundamental architectural decision for ePBS that affects sync behavior and must be resolved before production.",
       "related_eips": [],
       "source": "open_action_item"
     },
     {
       "topic": "epbs-devnet-1 status and path to devnet-2",
-      "priority": "medium",
-      "rationale": "ACDT #77 reported epbs-devnet-1 broken since launch, with devnet-2 planned after beacon state changes. No updates provided in ACDT #78.",
+      "priority": "high",
+      "rationale": "epbs-devnet-1 was reported broken since launch in ACDT #77 (April 13), with devnet-2 planned after beacon state changes. No updates provided in ACDT #78; needs resolution before ePBS can merge with BAL in Glamsterdam.",
       "related_eips": [],
       "source": "devnet_update"
     },
     {
-      "topic": "Blob Delta Serum devnet expansion beyond Prysm/Lighthouse",
+      "topic": "EIP-8037 gas accounting resolution across clients",
       "priority": "medium",
-      "rationale": "ACDT #78 noted only Prysm and Lighthouse deployed with partial cells. Need status on when other clients (Teku, Lodestar, Nimbus) will join to validate EIP-8136 broadly.",
+      "rationale": "bal-devnet-3 forked on gas accounting disagreements (state gas reservoir overflow treatment) in April. Full EIP-8037 was included in bal-devnet-4, but client consensus on implementation details needs confirmation.",
       "related_eips": [],
       "source": "devnet_update"
     },
     {
-      "topic": "EIP-2780 final decision for Glamsterdam scope",
+      "topic": "Blob DevNet Zero rollout plan",
       "priority": "medium",
-      "rationale": "Deferred from ACDT #77 for reassessment in ACDT #78, but not mentioned. Need explicit decision on whether this remains in Glamsterdam or is deferred to a later fork.",
+      "rationale": "ACDT #76 targeted Prysm/Lighthouse trunk-ready by end of April with 300K validators. ACDT #78 showed only Prysm/Lighthouse deployed. Update needed on broader rollout to other CLs and partial cells (EIP-8136) production readiness.",
       "related_eips": [],
-      "source": "deferred_decision"
+      "source": "devnet_update"
     },
     {
-      "topic": "BAL benchmarking results with batch I/O prefetch flag",
-      "priority": "low",
-      "rationale": "ACDT #75 urgently requested this flag from Nethermind/Erigon for benchmarking, but no follow-up. If completed async, results would inform BAL optimization strategy.",
+      "topic": "Execution-apis PR #770 implementation status",
+      "priority": "medium",
+      "rationale": "Required by end-of-week April 20 for DevNet 4 launch, enabling EL reorg within canonical chain for ePBS (32-block limit debate). Critical for Glamsterdam DevNet 0; needs confirmation across EL clients.",
       "related_eips": [],
-      "source": "open_action_item"
+      "source": "ongoing_discussion"
     },
     {
-      "topic": "Frame transaction mempool implementation strategy update",
+      "topic": "EIP-7976 and EIP-7981 testing results",
       "priority": "low",
-      "rationale": "ACDT #75 scheduled a breakout for mempool discussion (Strategy 2 canonical paymaster approach). No evidence this occurred; may need status update if work progressed async.",
+      "rationale": "Included in bal-devnet-4 as simple data EIPs (ACDT #77). Should receive brief status update on any issues discovered during devnet testing.",
       "related_eips": [],
-      "source": "open_action_item"
+      "source": "devnet_update"
     }
   ]
 }

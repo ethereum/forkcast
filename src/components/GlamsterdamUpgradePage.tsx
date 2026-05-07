@@ -17,7 +17,7 @@ interface TabItem {
 const tabs: TabItem[] = [
   { path: '/upgrade/glamsterdam', label: 'Overview', mobileLabel: 'Overview' },
   { path: '/upgrade/glamsterdam/stakeholders', label: 'Stakeholders', mobileLabel: 'Stakeholders' },
-  { path: '/upgrade/glamsterdam/candidates', label: 'Devnet Tracker', mobileLabel: 'Devnets' },
+  { path: '/upgrade/glamsterdam/candidates', label: 'Devnet Inclusion', mobileLabel: 'Devnets' },
   { path: '/upgrade/glamsterdam/priority', label: 'Client Priority', mobileLabel: 'Priority' },
   { path: '/upgrade/glamsterdam/complexity', label: 'Test Complexity', mobileLabel: 'Complexity' },
 ];

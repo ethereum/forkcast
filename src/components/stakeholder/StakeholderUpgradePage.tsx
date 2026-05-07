@@ -108,135 +108,163 @@ export const StakeholderUpgradePage: React.FC<StakeholderUpgradePageProps> = ({ 
     },
   ];
 
-  const content = (
-      <div className="max-w-2xl mx-auto">
-        {/* Header */}
-        <div className="mb-8">
-          {!embedded && (
-            <>
-              <div className="mb-12 flex justify-between items-start">
-                <Logo size="lg" />
-                <ThemeToggle />
-              </div>
-              <Link
-                to={`/upgrade/${forkName.toLowerCase()}`}
-                className="text-slate-500 hover:text-slate-700 dark:text-slate-400 dark:hover:text-slate-200 mb-4 inline-block text-sm"
-              >
-                ← Back to {forkName}
-              </Link>
-            </>
-          )}
+  const sidebar = (
+    <nav className={embedded ? 'flex flex-row md:flex-col gap-1.5 md:gap-0.5 flex-wrap md:w-48 md:flex-shrink-0' : ''}>
+      {STAKEHOLDER_OPTIONS.map(option => (
+        <button
+          key={option.key}
+          onClick={() => handleStakeholderChange(option.key)}
+          className={`text-left px-3 py-1.5 text-sm rounded-md transition-colors ${
+            option.key === selectedStakeholder
+              ? 'bg-purple-50 dark:bg-purple-900/20 text-purple-700 dark:text-purple-300 font-medium'
+              : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800'
+          }`}
+        >
+          {option.label}
+        </button>
+      ))}
+    </nav>
+  );
 
-          <h1 className="text-2xl font-light text-slate-900 dark:text-slate-100 tracking-tight mb-2">
-            {forkName} for{' '}
-            <div className="inline-block relative" ref={dropdownRef}>
-              <button
-                onClick={() => setIsDropdownOpen(!isDropdownOpen)}
-                className="font-light text-2xl border-b-2 border-purple-300 dark:border-purple-600 text-purple-700 dark:text-purple-300 hover:border-purple-400 dark:hover:border-purple-500 transition-colors inline-flex items-baseline gap-1"
-              >
-                {currentOption.label}
-                <svg
-                  className={`w-4 h-4 transition-transform ${isDropdownOpen ? 'rotate-180' : ''}`}
-                  fill="none"
-                  stroke="currentColor"
-                  viewBox="0 0 24 24"
-                >
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
-                </svg>
-              </button>
-              {isDropdownOpen && (
-                <div className="absolute top-full left-0 mt-1 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded shadow-lg py-1 min-w-[200px] z-10">
-                  {STAKEHOLDER_OPTIONS.map(option => (
+  const eipContent = (
+    <>
+      {/* Empty State */}
+      {totalCount === 0 && (
+        <div className="text-center py-12">
+          <p className="text-slate-500 dark:text-slate-400 text-sm">
+            No EIPs with documented {currentOption.label.toLowerCase()} impact found for {forkName}.
+          </p>
+        </div>
+      )}
+
+      {/* Sections */}
+      <div className="space-y-8">
+        {sections.map(({ id, title, hint, eips: sectionEips, accentColor, countColor, collapsible }) => {
+          if (sectionEips.length === 0) return null;
+
+          const isCollapsed = collapsible && !isPfiExpanded;
+
+          return (
+            <section key={id}>
+              {/* Section header */}
+              <div className={`border-l-4 ${accentColor} pl-4 mb-4`}>
+                <div className="flex items-baseline gap-2">
+                  <h2 className="text-lg font-medium text-slate-900 dark:text-slate-100">
+                    {title}
+                  </h2>
+                  <span className={`text-sm ${countColor}`}>
+                    ({sectionEips.length})
+                  </span>
+                  {collapsible && (
                     <button
-                      key={option.key}
-                      onClick={() => {
-                        handleStakeholderChange(option.key);
-                        setIsDropdownOpen(false);
-                      }}
-                      className={`w-full text-left px-4 py-2 text-sm transition-colors ${
-                        option.key === selectedStakeholder
-                          ? 'bg-purple-50 dark:bg-purple-900/20 text-purple-700 dark:text-purple-300'
-                          : 'text-slate-700 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-700'
-                      }`}
+                      onClick={() => setIsPfiExpanded(!isPfiExpanded)}
+                      className="text-sm text-slate-400 hover:text-slate-600 dark:text-slate-400 dark:hover:text-slate-300 ml-2"
                     >
-                      {option.label}
+                      {isPfiExpanded ? 'collapse' : 'expand'}
                     </button>
+                  )}
+                </div>
+                <p className="text-sm text-slate-500 dark:text-slate-400 mt-1">
+                  {hint}
+                </p>
+              </div>
+
+              {/* EIP list */}
+              {isCollapsed ? (
+                <button
+                  onClick={() => setIsPfiExpanded(true)}
+                  className="text-sm text-slate-500 hover:text-slate-700 dark:text-slate-400 dark:hover:text-slate-200 pl-4"
+                >
+                  {sectionEips.length} EIP{sectionEips.length !== 1 ? 's' : ''} under review →
+                </button>
+              ) : (
+                <div className="pl-4">
+                  {sectionEips.map(eip => (
+                    <StakeholderEipCard
+                      key={eip.id}
+                      eip={eip}
+                      stakeholderKey={selectedStakeholder}
+                      handleExternalLinkClick={handleExternalLinkClick}
+                    />
                   ))}
                 </div>
               )}
-            </div>
-          </h1>
-          <p className="text-slate-600 dark:text-slate-400 text-sm">
-            EIPs that may affect you, grouped by inclusion certainty.
-          </p>
-        </div>
-
-        {/* Empty State */}
-        {totalCount === 0 && (
-          <div className="text-center py-12">
-            <p className="text-slate-500 dark:text-slate-400 text-sm">
-              No EIPs with documented {currentOption.label.toLowerCase()} impact found for {forkName}.
-            </p>
-          </div>
-        )}
-
-        {/* Sections */}
-        <div className="space-y-8">
-          {sections.map(({ id, title, hint, eips: sectionEips, accentColor, countColor, collapsible }) => {
-            if (sectionEips.length === 0) return null;
-
-            const isCollapsed = collapsible && !isPfiExpanded;
-
-            return (
-              <section key={id}>
-                {/* Section header */}
-                <div className={`border-l-4 ${accentColor} pl-4 mb-4`}>
-                  <div className="flex items-baseline gap-2">
-                    <h2 className="text-lg font-medium text-slate-900 dark:text-slate-100">
-                      {title}
-                    </h2>
-                    <span className={`text-sm ${countColor}`}>
-                      ({sectionEips.length})
-                    </span>
-                    {collapsible && (
-                      <button
-                        onClick={() => setIsPfiExpanded(!isPfiExpanded)}
-                        className="text-sm text-slate-400 hover:text-slate-600 dark:text-slate-400 dark:hover:text-slate-300 ml-2"
-                      >
-                        {isPfiExpanded ? 'collapse' : 'expand'}
-                      </button>
-                    )}
-                  </div>
-                  <p className="text-sm text-slate-500 dark:text-slate-400 mt-1">
-                    {hint}
-                  </p>
-                </div>
-
-                {/* EIP list */}
-                {isCollapsed ? (
-                  <button
-                    onClick={() => setIsPfiExpanded(true)}
-                    className="text-sm text-slate-500 hover:text-slate-700 dark:text-slate-400 dark:hover:text-slate-200 pl-4"
-                  >
-                    {sectionEips.length} EIP{sectionEips.length !== 1 ? 's' : ''} under review →
-                  </button>
-                ) : (
-                  <div className="pl-4">
-                    {sectionEips.map(eip => (
-                      <StakeholderEipCard
-                        key={eip.id}
-                        eip={eip}
-                        stakeholderKey={selectedStakeholder}
-                        handleExternalLinkClick={handleExternalLinkClick}
-                      />
-                    ))}
-                  </div>
-                )}
-              </section>
-            );
-          })}
-        </div>
+            </section>
+          );
+        })}
       </div>
+    </>
+  );
+
+  const content = embedded ? (
+    <div className="flex flex-col md:flex-row gap-6">
+      {sidebar}
+      <div className="flex-1 min-w-0">
+        <p className="text-sm text-slate-500 dark:text-slate-400 mb-4">
+          EIPs that may affect <span className="font-semibold text-slate-900 dark:text-slate-100">{currentOption.label.toLowerCase()}</span>, grouped by inclusion certainty.
+        </p>
+        {eipContent}
+      </div>
+    </div>
+  ) : (
+    <div className="max-w-2xl mx-auto">
+      {/* Header */}
+      <div className="mb-8">
+        <div className="mb-12 flex justify-between items-start">
+          <Logo size="lg" />
+          <ThemeToggle />
+        </div>
+        <Link
+          to={`/upgrade/${forkName.toLowerCase()}`}
+          className="text-slate-500 hover:text-slate-700 dark:text-slate-400 dark:hover:text-slate-200 mb-4 inline-block text-sm"
+        >
+          ← Back to {forkName}
+        </Link>
+        <h1 className="text-2xl font-light text-slate-900 dark:text-slate-100 tracking-tight mb-2">
+          {forkName} for{' '}
+          <div className="inline-block relative" ref={dropdownRef}>
+            <button
+              onClick={() => setIsDropdownOpen(!isDropdownOpen)}
+              className="font-light text-2xl border-b-2 border-purple-300 dark:border-purple-600 text-purple-700 dark:text-purple-300 hover:border-purple-400 dark:hover:border-purple-500 transition-colors inline-flex items-baseline gap-1"
+            >
+              {currentOption.label}
+              <svg
+                className={`w-4 h-4 transition-transform ${isDropdownOpen ? 'rotate-180' : ''}`}
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+              </svg>
+            </button>
+            {isDropdownOpen && (
+              <div className="absolute top-full left-0 mt-1 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded shadow-lg py-1 min-w-[200px] z-10">
+                {STAKEHOLDER_OPTIONS.map(option => (
+                  <button
+                    key={option.key}
+                    onClick={() => {
+                      handleStakeholderChange(option.key);
+                      setIsDropdownOpen(false);
+                    }}
+                    className={`w-full text-left px-4 py-2 text-sm transition-colors ${
+                      option.key === selectedStakeholder
+                        ? 'bg-purple-50 dark:bg-purple-900/20 text-purple-700 dark:text-purple-300'
+                        : 'text-slate-700 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-700'
+                    }`}
+                  >
+                    {option.label}
+                  </button>
+                ))}
+              </div>
+            )}
+          </div>
+        </h1>
+        <p className="text-slate-600 dark:text-slate-400 text-sm">
+          EIPs that may affect you, grouped by inclusion certainty.
+        </p>
+      </div>
+      {eipContent}
+    </div>
   );
 
   if (embedded) return content;

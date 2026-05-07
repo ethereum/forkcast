@@ -89,7 +89,7 @@ export interface KeyDecision {
   type: KeyDecisionType;
   eips: number[];
   stage_change?: {
-    to: 'Considered' | 'Scheduled' | 'Included' | 'Declined' | 'Withdrawn';
+    to: 'Proposed' | 'Considered' | 'Scheduled' | 'Included' | 'Declined' | 'Withdrawn';
   };
   devnet?: string;
   fork?: string;

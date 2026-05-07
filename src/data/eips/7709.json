@@ -8,6 +8,67 @@
   "category": "Core",
   "createdDate": "2024-05-18",
   "discussionLink": "https://ethereum-magicians.org/t/eip-7709-read-blockhash-opcode-from-storage-and-adjust-gas-cost/20052",
-  "forkRelationships": [],
-  "tradeoffs": null
+  "reviewer": "bot",
+  "layer": "EL",
+  "forkRelationships": [
+    {
+      "forkName": "Hegota",
+      "statusHistory": [],
+      "isHeadliner": false,
+      "presentationHistory": [
+        {
+          "type": "presentation",
+          "call": "acde/236",
+          "date": "2026-05-07"
+        }
+      ],
+      "champions": [
+        {
+          "name": "Ignacio Hagopian"
+        }
+      ]
+    }
+  ],
+  "laymanDescription": "Reading recent block hashes via the BLOCKHASH opcode currently relies on a special protocol shortcut. This change makes it work like any other storage read, using the EIP-2935 history contract, with matching gas costs. It removes a special case and helps stateless and proving systems treat block hashes uniformly.",
+  "northStarAlignment": {
+    "scaleL1": {
+      "description": "Aligns BLOCKHASH with normal state-access machinery, simplifying witness construction for stateless execution and proving systems."
+    }
+  },
+  "stakeholderImpacts": {
+    "endUsers": {
+      "description": "Transactions calling BLOCKHASH for in-window ancestors will pay materially more gas than today, potentially raising fees in affected use-cases."
+    },
+    "appDevs": {
+      "description": "Contracts and apps relying on cheap BLOCKHASH must be updated to account for SLOAD-style cold/warm gas costs; some may break or need redesign."
+    },
+    "walletDevs": {
+      "description": "Gas estimation for transactions touching BLOCKHASH must reflect the new cold/warm storage pricing."
+    },
+    "toolingInfra": {
+      "description": "Gas estimators, simulators, debuggers, and static analyzers must update BLOCKHASH cost models to use SLOAD cold/warm semantics."
+    },
+    "layer2s": {
+      "description": "Removes a protocol special case, simplifying execution witness construction and verification for stateless and proving-oriented L2 systems."
+    },
+    "stakersNodes": {
+      "description": "No direct operational impact beyond running updated execution clients."
+    },
+    "clClients": {
+      "description": "No impact; this is an execution-layer change."
+    },
+    "elClients": {
+      "description": "Narrow change: route in-window BLOCKHASH through EIP-2935 storage with cold/warm SLOAD gas accounting and access tracking."
+    }
+  },
+  "benefits": [
+    "Removes BLOCKHASH as a protocol special case",
+    "Aligns gas cost with the actual storage resource accessed",
+    "Simplifies witness construction for stateless execution",
+    "Keeps recent block hashes consistent with state-access pricing"
+  ],
+  "tradeoffs": [
+    "Significantly increases BLOCKHASH cost; may break contracts relying on previous low pricing",
+    "Requires EIP-2935 active for at least 256 blocks before activation, or genesis activation"
+  ]
 }

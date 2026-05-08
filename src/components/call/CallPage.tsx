@@ -88,11 +88,9 @@ const LAYOUT_EXPANDED = {
 const isIssueRedirectPath = (path: string | undefined): path is string =>
   Boolean(path && !path.includes('/') && /^\d+$/.test(path));
 
-const CALL_TYPE_FILTER_ALIASES = new Set(['acd', 'breakouts']);
-
 const isCallTypeFilterPath = (path: string | undefined): path is string => {
   if (!path || path.includes('/') || /^\d+$/.test(path)) return false;
-  return CALL_TYPE_FILTER_ALIASES.has(path) || protocolCalls.some(c => c.type === path);
+  return protocolCalls.some(c => c.type === path);
 };
 
 const timestampToSeconds = (timestamp: string | null | undefined): number => {

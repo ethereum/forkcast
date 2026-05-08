@@ -88,6 +88,11 @@ const LAYOUT_EXPANDED = {
 const isIssueRedirectPath = (path: string | undefined): path is string =>
   Boolean(path && !path.includes('/') && /^\d+$/.test(path));
 
+const isCallTypeFilterPath = (path: string | undefined): path is string => {
+  if (!path || path.includes('/') || /^\d+$/.test(path)) return false;
+  return protocolCalls.some(c => c.type === path);
+};
+
 const timestampToSeconds = (timestamp: string | null | undefined): number => {
   if (!timestamp) return 0;
   const parts = timestamp.split(':');
@@ -260,7 +265,8 @@ const CallPage: React.FC = () => {
   const location = useLocation();
   const navigate = useNavigate();
 
-  // Redirect issue-number URLs (e.g., /calls/1954) to the canonical path
+  // Redirect issue-number URLs (e.g., /calls/1954) to the canonical path,
+  // and call-type-only URLs (e.g., /calls/acde) to the filtered index.
   const normalizedPath = callPath?.replace(/\/+$/, '');
   useEffect(() => {
     if (isIssueRedirectPath(normalizedPath)) {
@@ -276,6 +282,15 @@ const CallPage: React.FC = () => {
           { replace: true },
         );
       }
+    } else if (isCallTypeFilterPath(normalizedPath)) {
+      navigate(
+        {
+          pathname: '/calls',
+          search: `?filter=${normalizedPath}`,
+          hash: location.hash,
+        },
+        { replace: true },
+      );
     }
   }, [location.hash, location.search, normalizedPath, navigate]);
 
@@ -474,8 +489,8 @@ const CallPage: React.FC = () => {
   }, [callConfig]);
 
   useEffect(() => {
-    // Issue-number URLs are handled by the redirect effect — leave loading set.
-    if (isIssueRedirectPath(normalizedPath)) return;
+    // Issue-number and call-type URLs are handled by the redirect effect — leave loading set.
+    if (isIssueRedirectPath(normalizedPath) || isCallTypeFilterPath(normalizedPath)) return;
 
     let cancelled = false;
     setLoading(true);

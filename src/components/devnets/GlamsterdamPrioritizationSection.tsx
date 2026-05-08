@@ -676,11 +676,11 @@ const GlamsterdamPrioritizationSection: React.FC = () => {
           {' \u2022 '}
           Prioritization data from client team publications
           {' \u2022 '}
-          <Link to="/upgrade/glamsterdam/complexity" className="underline hover:text-slate-600 dark:hover:text-slate-300">
+          <Link to="/upgrade/glamsterdam/test-complexity" className="underline hover:text-slate-600 dark:hover:text-slate-300">
             Full complexity view
           </Link>
           {' \u2022 '}
-          <Link to="/upgrade/glamsterdam/priority" className="underline hover:text-slate-600 dark:hover:text-slate-300">
+          <Link to="/upgrade/glamsterdam/client-priority" className="underline hover:text-slate-600 dark:hover:text-slate-300">
             Full priority view
           </Link>
         </p>

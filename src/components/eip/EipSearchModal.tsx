@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef, useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { eipsData } from '../../data/eips';
+import { eipsData, eipById } from '../../data/eips';
 import { EIP } from '../../types/eip';
 import { getLaymanTitle, getProposalPrefix } from '../../utils';
 import { debounce } from '../../utils/debounce';
@@ -202,9 +202,6 @@ function searchEips(
     .sort((a, b) => b.matchScore - a.matchScore)
     .slice(0, 50);
 }
-
-// Build a lookup map once for merging spec results with metadata results
-const eipById = new Map(eipsData.map((eip) => [eip.id, eip]));
 
 export default function EipSearchModal({ isOpen, onClose, initialQuery = '' }: EipSearchModalProps) {
   const [query, setQuery] = useState(initialQuery);

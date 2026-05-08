@@ -13,8 +13,6 @@ import {
   getEipLayer,
 } from '../../utils';
 import { Tooltip } from '../ui';
-import ThemeToggle from '../ui/ThemeToggle';
-import { Logo } from '../ui/Logo';
 import { EipTimeline } from './EipTimeline';
 import { EipSearch } from './EipSearch';
 import EipSearchModal from './EipSearchModal';
@@ -159,23 +157,19 @@ export const EipPage: React.FC = () => {
 
   return (
     <div className="min-h-screen bg-slate-50 dark:bg-slate-900 text-slate-900 dark:text-slate-100 p-6">
-      <div className="max-w-3xl mx-auto">
+      <div className="max-w-4xl mx-auto">
         {/* Site Header */}
-        <div className="mb-6 flex items-center justify-between">
-          <Logo size="md" />
-          <div className="flex items-center gap-3">
-            <Link
-              to="/eips"
-              className="inline-flex items-center gap-1.5 text-sm text-slate-600 dark:text-slate-400 hover:text-purple-600 dark:hover:text-purple-400 transition-colors"
-            >
-              <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
-              </svg>
-              <span>All EIPs</span>
-            </Link>
-            <EipSearch onOpen={() => setSearchModalOpen(true)} />
-            <ThemeToggle />
-          </div>
+        <div className="mb-6 flex items-center justify-between gap-3">
+          <Link
+            to="/eips"
+            className="inline-flex items-center gap-1.5 text-sm text-slate-600 dark:text-slate-400 hover:text-purple-600 dark:hover:text-purple-400 transition-colors"
+          >
+            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
+            </svg>
+            <span>All EIPs</span>
+          </Link>
+          <EipSearch onOpen={() => setSearchModalOpen(true)} />
         </div>
 
         {/* Main Card */}

@@ -1,10 +1,8 @@
 import React, { useState, useEffect, useMemo } from 'react';
 import { Link } from 'react-router-dom';
-import { Logo } from './ui/Logo';
-import ThemeToggle from './ui/ThemeToggle';
 import { protocolCalls, Call } from '../data/calls';
-import { KeyDecision, EIP } from '../types/eip';
-import { eipsData } from '../data/eips';
+import { KeyDecision } from '../types/eip';
+import { eipById } from '../data/eips';
 import { StructuredDecisionContent } from './call/KeyDecisionsSection';
 import { useMetaTags } from '../hooks/useMetaTags';
 
@@ -45,13 +43,6 @@ const DecisionsPage: React.FC = () => {
     url: 'https://forkcast.org/decisions',
   });
 
-  const eipMap = useMemo(() => {
-    const map = new Map<number, EIP>();
-    for (const eip of eipsData) {
-      map.set(eip.id, eip);
-    }
-    return map;
-  }, []);
 
   useEffect(() => {
     const fetchAllDecisions = async () => {
@@ -101,11 +92,7 @@ const DecisionsPage: React.FC = () => {
     <div className="min-h-screen bg-slate-50 dark:bg-slate-900 text-slate-900 dark:text-slate-100 p-6">
       <div className="max-w-4xl mx-auto">
         {/* Header */}
-        <div className="mb-6 relative">
-          <div className="absolute top-0 right-0">
-            <ThemeToggle />
-          </div>
-          <Logo size="md" className="mb-4" />
+        <div className="mb-6">
           <h1 className="text-xl font-semibold text-slate-900 dark:text-slate-100 mb-2">
             Key Decisions
           </h1>
@@ -173,7 +160,7 @@ const DecisionsPage: React.FC = () => {
                         className="text-sm before:content-['→'] before:mr-2 before:text-slate-400 dark:before:text-slate-500 text-slate-600 dark:text-slate-400"
                       >
                         {isStructured
-                          ? <StructuredDecisionContent decision={decision} eipMap={eipMap} />
+                          ? <StructuredDecisionContent decision={decision} eipMap={eipById} />
                           : decision.original_text
                         }
                       </li>

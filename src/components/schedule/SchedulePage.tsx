@@ -1,9 +1,6 @@
 import React, { useState, useMemo, useEffect } from 'react';
-import { Logo } from '../ui/Logo';
 import { FUSAKA_PROGRESS, GLAMSTERDAM_PROGRESS, HEGOTA_PROGRESS, UPGRADE_PROCESS_PHASES } from '../../constants/timeline-phases';
 import { useMetaTags } from '../../hooks/useMetaTags';
-import ThemeToggle from '../ui/ThemeToggle';
-import AnalysisNav from '../ui/AnalysisNav';
 import { generateForkProgress, parseLocalDate, parseShortDate, daysBetween, DEFAULT_PHASE_DURATIONS, PhaseDurations, calculateSoonestMainnetDate, formatDateISO } from './forkDateCalculator';
 import ForkGanttChart from './ForkGanttChart';
 import EditableDateCell from './EditableDateCell';
@@ -327,11 +324,7 @@ const SchedulePage: React.FC = () => {
     <div className="min-h-screen bg-slate-50 dark:bg-slate-900 text-slate-900 dark:text-slate-100 p-6">
       <div className="max-w-7xl mx-auto">
         {/* Header */}
-        <div className="mb-6 relative">
-          <div className="absolute top-0 right-0">
-            <ThemeToggle />
-          </div>
-          <Logo size="md" className="mb-8" />
+        <div className="mb-6">
           <h1 className="text-xl font-semibold text-slate-900 dark:text-slate-100 mb-2">
             ACD Planning Sandbox
           </h1>
@@ -341,9 +334,6 @@ const SchedulePage: React.FC = () => {
           <p className="mt-1 text-xs text-slate-500 dark:text-slate-400">
             Edit and lock dates to explore planning scenarios. Changes are saved automatically to your browser.
           </p>
-          <div className="mt-4">
-            <AnalysisNav />
-          </div>
         </div>
 
         {/* Mobile Notice Banner */}

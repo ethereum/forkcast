@@ -41,19 +41,14 @@ const devnetSpecs = getDevnetSpecs();
 // Define standalone pages with their metadata
 const standalonePages = [
   {
+    path: 'upgrades',
+    title: 'Network Upgrades - Forkcast',
+    description: 'Catalog of Ethereum network upgrades - in progress, live, and historical.',
+  },
+  {
     path: 'schedule',
     title: 'ACD Planning Sandbox - Forkcast',
     description: 'Internal planning tool for ACD participants. Explore hypothetical upgrade timelines.',
-  },
-  {
-    path: 'complexity',
-    title: 'EIP Test Complexity Analysis - Forkcast',
-    description: 'Analyze EIP complexity scores from the STEEL team to help scope network upgrades.',
-  },
-  {
-    path: 'priority',
-    title: 'Client Prioritization - Forkcast',
-    description: 'Aggregate view of Ethereum client team stances on EIPs proposed for network upgrades.',
   },
   {
     path: 'devnets',
@@ -93,6 +88,21 @@ const upgrades = [
     path: 'upgrade/glamsterdam/stakeholders',
     title: 'Glamsterdam by Stakeholder - Forkcast',
     description: 'EIPs relevant to app developers, wallet devs, L2s, and other stakeholders in the Glamsterdam upgrade.',
+  },
+  {
+    path: 'upgrade/glamsterdam/devnet-inclusion',
+    title: 'Glamsterdam Devnet Inclusion - Forkcast',
+    description: 'Devnet inclusion status for EIPs proposed for the Glamsterdam network upgrade.',
+  },
+  {
+    path: 'upgrade/glamsterdam/client-priority',
+    title: 'Glamsterdam Client Priority - Forkcast',
+    description: 'Aggregate view of Ethereum client team stances on EIPs proposed for Glamsterdam.',
+  },
+  {
+    path: 'upgrade/glamsterdam/test-complexity',
+    title: 'Glamsterdam Test Complexity - Forkcast',
+    description: 'Analyze STEEL test complexity assessments for EIPs proposed for Glamsterdam.',
   },
   {
     path: 'upgrade/hegota',

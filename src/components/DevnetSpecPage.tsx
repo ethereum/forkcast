@@ -1,7 +1,5 @@
 import { useEffect, useCallback, type ReactNode } from 'react';
 import { useParams, Navigate, Link, useNavigate } from 'react-router-dom';
-import { Logo } from './ui/Logo';
-import ThemeToggle from './ui/ThemeToggle';
 import { useMetaTags } from '../hooks/useMetaTags';
 import { getDevnetSpec, getDevnetSeriesSiblings } from '../data/devnet-specs';
 import { useDevnetNetworks, getNetworkEntry, getNetworkMetadata } from '../hooks/useDevnetNetworks';
@@ -278,18 +276,15 @@ function DevnetPageLayout({
   });
 
   return (
-    <div className="min-h-screen bg-white dark:bg-slate-900">
-      <header className="border-b border-slate-200 dark:border-slate-700">
-        <div className="max-w-4xl mx-auto px-4 py-4 flex items-center justify-between">
-          <div className="flex items-center gap-4">
-            <Logo size="sm" />
-            <Link
-              to="/devnets"
-              className="text-sm text-slate-500 hover:text-slate-700 dark:text-slate-400 dark:hover:text-slate-200 transition-colors"
-            >
-              &larr; Back to Devnets
-            </Link>
-          </div>
+    <div className="min-h-screen bg-white dark:bg-slate-900 text-slate-900 dark:text-slate-100 p-6">
+      <div className="max-w-4xl mx-auto">
+        <div className="mb-6 flex items-center justify-between gap-3">
+          <Link
+            to="/devnets"
+            className="text-sm text-slate-500 hover:text-slate-700 dark:text-slate-400 dark:hover:text-slate-200 transition-colors"
+          >
+            &larr; Back to Devnets
+          </Link>
           <div className="flex items-center gap-3">
             {(prev || next) && (
               <nav className="flex items-center gap-1 text-sm">
@@ -322,11 +317,8 @@ function DevnetPageLayout({
                 )}
               </nav>
             )}
-            <ThemeToggle />
           </div>
         </div>
-      </header>
-      <div className="max-w-4xl mx-auto px-4 py-8">
         {children}
       </div>
     </div>

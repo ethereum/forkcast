@@ -1,7 +1,5 @@
 import { useState, useEffect, useRef, useMemo } from 'react';
 import { useSearchParams } from 'react-router-dom';
-import { Logo } from './ui/Logo';
-import ThemeToggle from './ui/ThemeToggle';
 import { protocolCalls, callTypeNames, isOneOffCall, type CallType } from '../data/calls';
 import { timelineEvents } from '../data/events';
 import { fetchUpcomingCalls, type UpcomingCall } from '../domain/calls/upcomingCalls';
@@ -130,10 +128,9 @@ const CallsIndexPage: React.FC = () => {
     : 'All Breakouts';
 
   return (
-    <div className="min-h-screen bg-slate-50 dark:bg-slate-900">
-      <div className="max-w-3xl mx-auto px-6 py-8">
+    <div className="min-h-screen bg-slate-50 dark:bg-slate-900 p-6">
+      <div className="max-w-4xl mx-auto">
         <div className="mb-6">
-          <Logo size="md" className="mb-4" />
           <div className="flex items-start justify-between gap-3">
             <div>
               <h1 className="text-xl font-semibold text-slate-900 dark:text-slate-100">Protocol Calendar</h1>
@@ -146,14 +143,11 @@ const CallsIndexPage: React.FC = () => {
                 Full calendar ↗
               </a>
             </div>
-            <div className="flex items-center gap-3">
-              <SearchTriggerButton
-                onOpen={() => setSearchOpen(true)}
-                placeholder="Search calls..."
-                ariaLabel="Search calls"
-              />
-              <ThemeToggle />
-            </div>
+            <SearchTriggerButton
+              onOpen={() => setSearchOpen(true)}
+              placeholder="Search calls..."
+              ariaLabel="Search calls"
+            />
           </div>
           <CallsIndexFilters
             selectedFilter={selectedFilter}

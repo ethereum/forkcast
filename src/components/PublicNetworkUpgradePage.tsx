@@ -2,7 +2,6 @@ import React, { useEffect, useState } from 'react';
 import { Link, useLocation, useNavigate, useSearchParams } from 'react-router-dom';
 import { eipsData } from '../data/eips';
 import { getPendingProposalsForFork } from '../data/pending-proposals';
-import { Logo } from './ui/Logo';
 import { useMetaTags } from '../hooks/useMetaTags';
 import { useAnalytics } from '../hooks/useAnalytics';
 import { EIP, ClientTeamPerspective, InclusionStage } from '../types';
@@ -24,7 +23,6 @@ import {
 } from '../utils/colors';
 import { ActivationDetails } from '../data/upgrades';
 import { Tooltip, CopyLinkButton } from './ui';
-import ThemeToggle from './ui/ThemeToggle';
 import {
   NetworkUpgradeTimeline,
   FusakaTimeline,
@@ -430,15 +428,9 @@ const PublicNetworkUpgradePage: React.FC<PublicNetworkUpgradePageProps> = ({
         {/* Header */}
         <div className="mb-8">
           {!embedded && (
-            <>
-              <div className="mb-12 flex justify-between items-start">
-                <Logo size="lg" />
-                <ThemeToggle />
-              </div>
-              <Link to="/" className="text-slate-600 hover:text-slate-800 dark:text-slate-300 dark:hover:text-slate-100 mb-6 inline-block text-sm font-medium">
-                ← All Network Upgrades
-              </Link>
-            </>
+            <Link to="/upgrades" className="text-slate-600 hover:text-slate-800 dark:text-slate-300 dark:hover:text-slate-100 mb-6 inline-block text-sm font-medium">
+              ← All Network Upgrades
+            </Link>
           )}
 
           {!skipHeader && (
@@ -475,20 +467,6 @@ const PublicNetworkUpgradePage: React.FC<PublicNetworkUpgradePageProps> = ({
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
                       </svg>
                     </a>
-                  </div>
-                )}
-                {forkName.toLowerCase() === 'glamsterdam' && (
-                  <div className="mb-4">
-                    <Link
-                      to={`/upgrade/${forkName.toLowerCase()}/stakeholders`}
-                      className="inline-flex items-center gap-1.5 text-sm text-slate-600 hover:text-slate-800 dark:text-slate-400 dark:hover:text-slate-200 transition-colors"
-                    >
-                      <span className="text-slate-400 dark:text-slate-400">View by stakeholder:</span>
-                      <span className="underline decoration-1 underline-offset-2">App Developers, Wallet Devs, L2s...</span>
-                      <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 7l5 5m0 0l-5 5m5-5H6" />
-                      </svg>
-                    </Link>
                   </div>
                 )}
               </div>

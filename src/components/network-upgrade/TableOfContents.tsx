@@ -82,7 +82,7 @@ export const TableOfContents: React.FC<TableOfContentsProps> = ({
 
   return (
     <div className="hidden lg:block w-64 flex-shrink-0">
-      <div className="sticky top-6 overflow-y-auto overflow-x-hidden max-h-[calc(100vh-3rem)] z-[9999]">
+      <div className="sticky top-20 overflow-y-auto overflow-x-hidden max-h-[calc(100vh-5rem)]">
         <div className="flex items-center justify-between mb-4">
           <h3 className="text-sm font-semibold text-slate-900 dark:text-slate-100 uppercase tracking-wide">Contents</h3>
           <Tooltip text="Scroll to top" position="bottom">

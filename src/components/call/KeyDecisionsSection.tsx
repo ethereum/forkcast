@@ -1,8 +1,8 @@
-import React, { useState, useMemo } from 'react';
+import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { KeyDecision, EIP } from '../../types/eip';
 import { getKeyDecisionTagColor } from '../../utils/colors';
-import { eipsData } from '../../data/eips';
+import { eipById } from '../../data/eips';
 
 interface SyncConfig {
   transcriptStartTime: string | null;
@@ -233,15 +233,6 @@ const KeyDecisionsSection: React.FC<KeyDecisionsSectionProps> = ({
   syncConfig,
   selectedSearchResult,
 }) => {
-  // Build EIP lookup map once
-  const eipMap = useMemo(() => {
-    const map = new Map<number, EIP>();
-    for (const eip of eipsData) {
-      map.set(eip.id, eip);
-    }
-    return map;
-  }, []);
-
   const timestampToSeconds = (timestamp: string | null | undefined): number => {
     if (!timestamp) return 0;
     const parts = timestamp.split(':');
@@ -294,7 +285,7 @@ const KeyDecisionsSection: React.FC<KeyDecisionsSectionProps> = ({
                 : 'hover:text-slate-900 dark:hover:text-slate-100'
             }`}>
               {isStructured
-                ? <StructuredDecisionContent decision={decision} eipMap={eipMap} />
+                ? <StructuredDecisionContent decision={decision} eipMap={eipById} />
                 : decision.original_text
               }
             </span>

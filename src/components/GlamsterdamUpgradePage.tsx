@@ -1,30 +1,32 @@
-import React from 'react';
+import React, { useLayoutEffect, useRef } from 'react';
 import { Link, Outlet, useLocation } from 'react-router-dom';
-import { Logo } from './ui/Logo';
-import ThemeToggle from './ui/ThemeToggle';
 import { useMetaTags } from '../hooks/useMetaTags';
 import { getUpgradeById } from '../data/upgrades';
 import { getUpgradeStatusColor } from '../utils/colors';
+import { isPathActive, normalizePathname } from '../utils/path';
 
 const upgrade = getUpgradeById('glamsterdam')!;
 
 interface TabItem {
   path: string;
   label: string;
-  mobileLabel: string;
 }
 
 const tabs: TabItem[] = [
-  { path: '/upgrade/glamsterdam', label: 'Overview', mobileLabel: 'Overview' },
-  { path: '/upgrade/glamsterdam/stakeholders', label: 'Stakeholders', mobileLabel: 'Stakeholders' },
-  { path: '/upgrade/glamsterdam/candidates', label: 'Devnet Inclusion', mobileLabel: 'Devnets' },
-  { path: '/upgrade/glamsterdam/priority', label: 'Client Priority', mobileLabel: 'Priority' },
-  { path: '/upgrade/glamsterdam/complexity', label: 'Test Complexity', mobileLabel: 'Complexity' },
+  { path: '/upgrade/glamsterdam', label: 'Overview' },
+  { path: '/upgrade/glamsterdam/stakeholders', label: 'Stakeholders' },
+  { path: '/upgrade/glamsterdam/devnet-inclusion', label: 'Devnet Inclusion' },
+  { path: '/upgrade/glamsterdam/client-priority', label: 'Client Priority' },
+  { path: '/upgrade/glamsterdam/test-complexity', label: 'Test Complexity' },
 ];
+
+const isTabActive = (pathname: string, tabPath: string) =>
+  tabPath === '/upgrade/glamsterdam' ? pathname === tabPath : isPathActive(pathname, tabPath);
 
 const GlamsterdamUpgradePage: React.FC = () => {
   const location = useLocation();
-  const pathname = location.pathname.replace(/\/$/, '') || '/';
+  const pathname = normalizePathname(location.pathname);
+  const activeTabRef = useRef<HTMLAnchorElement>(null);
 
   useMetaTags({
     title: 'Glamsterdam Upgrade - Forkcast',
@@ -32,23 +34,17 @@ const GlamsterdamUpgradePage: React.FC = () => {
     url: 'https://forkcast.org/upgrade/glamsterdam',
   });
 
-  const isActive = (tabPath: string) => {
-    if (tabPath === '/upgrade/glamsterdam') {
-      return pathname === tabPath;
-    }
-    return pathname === tabPath || pathname.startsWith(tabPath + '/');
-  };
+  useLayoutEffect(() => {
+    const activeEl = activeTabRef.current;
+    activeEl?.scrollIntoView({ block: 'nearest', inline: 'center' });
+  }, [pathname]);
 
   return (
     <div className="min-h-screen bg-slate-50 dark:bg-slate-900 text-slate-900 dark:text-slate-100 p-6">
       <div className="max-w-4xl mx-auto">
         {/* Header */}
         <div className="mb-8">
-          <div className="mb-12 flex justify-between items-start">
-            <Logo size="lg" />
-            <ThemeToggle />
-          </div>
-          <Link to="/" className="text-slate-600 hover:text-slate-800 dark:text-slate-300 dark:hover:text-slate-100 mb-6 inline-block text-sm font-medium">
+          <Link to="/upgrades" className="text-slate-600 hover:text-slate-800 dark:text-slate-300 dark:hover:text-slate-100 mb-6 inline-block text-sm font-medium">
             ← All Network Upgrades
           </Link>
 
@@ -89,23 +85,27 @@ const GlamsterdamUpgradePage: React.FC = () => {
             </div>
           </div>
 
-          {/* Tab bar — replaces the border-b line */}
-          <div className="overflow-x-auto -mx-6 px-6 mt-4">
-            <div className="flex gap-6 border-b border-slate-200 dark:border-slate-700 min-w-max">
-              {tabs.map((tab) => (
-                <Link
-                  key={tab.path}
-                  to={tab.path}
-                  className={`pb-2 text-sm font-medium transition-colors border-b-2 -mb-px whitespace-nowrap ${
-                    isActive(tab.path)
-                      ? 'border-purple-600 dark:border-purple-400 text-purple-700 dark:text-purple-300'
-                      : 'border-transparent text-slate-500 dark:text-slate-400 hover:text-slate-700 dark:hover:text-slate-200 hover:border-slate-300 dark:hover:border-slate-500'
-                  }`}
-                >
-                  <span className="sm:hidden">{tab.mobileLabel}</span>
-                  <span className="hidden sm:inline">{tab.label}</span>
-                </Link>
-              ))}
+          <div className="-mx-6 mt-4">
+            <div className="overflow-x-auto px-6 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
+              <div className="flex gap-6 border-b border-slate-200 dark:border-slate-700 min-w-max">
+                {tabs.map((tab) => {
+                  const active = isTabActive(pathname, tab.path);
+                  return (
+                    <Link
+                      key={tab.path}
+                      to={tab.path}
+                      ref={active ? activeTabRef : undefined}
+                      className={`pb-2 text-sm font-medium transition-colors border-b-2 -mb-px whitespace-nowrap ${
+                        active
+                          ? 'border-purple-600 dark:border-purple-400 text-purple-700 dark:text-purple-300'
+                          : 'border-transparent text-slate-500 dark:text-slate-400 hover:text-slate-700 dark:hover:text-slate-200 hover:border-slate-300 dark:hover:border-slate-500'
+                      }`}
+                    >
+                      {tab.label}
+                    </Link>
+                  );
+                })}
+              </div>
             </div>
           </div>
         </div>

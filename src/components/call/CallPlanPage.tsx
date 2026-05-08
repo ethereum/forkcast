@@ -1,11 +1,9 @@
 import { useState, useEffect, useMemo, useRef } from 'react';
 import { Link, useSearchParams } from 'react-router-dom';
-import { Logo } from '../ui/Logo';
-import ThemeToggle from '../ui/ThemeToggle';
 import { protocolCalls, callTypeNames, Call, type CallType } from '../../data/calls';
 import { useMetaTags } from '../../hooks/useMetaTags';
 import { KeyDecision, EIP } from '../../types/eip';
-import { eipsData } from '../../data/eips';
+import { eipsData, eipById as eipMap } from '../../data/eips';
 import { networkUpgrades } from '../../data/upgrades';
 import { getPendingProposalsForFork, type PendingProposal } from '../../data/pending-proposals';
 import { fetchUpcomingCalls, type UpcomingCall } from '../../domain/calls/upcomingCalls';
@@ -195,14 +193,6 @@ const CallPlanPage: React.FC = () => {
   };
 
   const typeLabel = type ? (callTypeNames[type as CallType] || type.toUpperCase()) : '';
-
-  const eipMap = useMemo(() => {
-    const map = new Map<number, EIP>();
-    for (const eip of eipsData) {
-      map.set(eip.id, eip);
-    }
-    return map;
-  }, []);
 
   // Compute EIPs pending discussion for active upgrades
   const { pendingEips, pendingProposals } = useMemo(() => {
@@ -414,11 +404,7 @@ const CallPlanPage: React.FC = () => {
     <div className="min-h-screen bg-slate-50 dark:bg-slate-900 text-slate-900 dark:text-slate-100 p-6">
       <div className="max-w-4xl mx-auto">
         {/* Header */}
-        <div className="mb-8 relative">
-          <div className="absolute top-0 right-0">
-            <ThemeToggle />
-          </div>
-          <Logo size="md" className="mb-4" />
+        <div className="mb-8">
           <h1 className="text-xl font-semibold text-slate-900 dark:text-slate-100 mb-2">
             <span className="font-normal opacity-80">Agenda Planner for</span>{' '}
             <div className="inline-block relative" ref={dropdownRef}>

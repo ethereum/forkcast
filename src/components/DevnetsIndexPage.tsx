@@ -1,8 +1,5 @@
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
-import { Logo } from './ui/Logo';
-import ThemeToggle from './ui/ThemeToggle';
-import AnalysisNav from './ui/AnalysisNav';
 import { useMetaTags } from '../hooks/useMetaTags';
 import { useDevnetNetworks } from '../hooks/useDevnetNetworks';
 import { getAllDevnetSpecIds } from '../data/devnet-specs';
@@ -190,13 +187,9 @@ const DevnetsIndexPage: React.FC = () => {
 
   return (
     <div className="min-h-screen bg-slate-50 dark:bg-slate-900 text-slate-900 dark:text-slate-100 p-6">
-      <div className="max-w-7xl mx-auto">
+      <div className="max-w-4xl mx-auto">
         {/* Header */}
-        <div className="mb-6 relative">
-          <div className="absolute top-0 right-0">
-            <ThemeToggle />
-          </div>
-          <Logo size="md" className="mb-8" />
+        <div className="mb-6">
           <div className="flex items-center gap-3 mb-2">
             <h1 className="text-xl font-semibold text-slate-900 dark:text-slate-100">
               Devnet Tracker
@@ -205,9 +198,6 @@ const DevnetsIndexPage: React.FC = () => {
           <p className="text-sm text-slate-500 dark:text-slate-400">
             Active devnet series from ethPandaOps and Glamsterdam EIP prioritization data.
           </p>
-          <div className="mt-4">
-            <AnalysisNav />
-          </div>
         </div>
 
         {/* Devnet Series */}

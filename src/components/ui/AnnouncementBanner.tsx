@@ -31,48 +31,46 @@ export default function AnnouncementBanner({
   }
 
   return (
-    <div className="bg-purple-50 dark:bg-slate-800 border-b border-purple-200 dark:border-purple-700">
-      <div className="max-w-4xl mx-auto px-6 sm:px-0 py-3">
-        <div className="flex items-start justify-between gap-2">
-          <div className="flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-4">
-            <span className="text-sm font-medium text-slate-900 dark:text-slate-100">
-              {title}
-            </span>
-            <div className="flex items-center gap-2">
-              {links.map((link) =>
-                link.primary ? (
-                  <a
-                    key={link.url}
-                    href={link.url}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="inline-flex items-center gap-1.5 text-xs font-medium bg-purple-600 hover:bg-purple-700 text-white rounded-md px-3 py-1.5 transition-colors"
-                  >
-                    {link.label}
-                    <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
-                    </svg>
-                  </a>
-                ) : (
-                  <a
-                    key={link.url}
-                    href={link.url}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="inline-flex items-center gap-1 text-xs text-purple-600 dark:text-purple-400 hover:text-purple-800 dark:hover:text-purple-300 transition-colors"
-                  >
-                    {link.label}
-                    <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
-                    </svg>
-                  </a>
-                )
-              )}
-            </div>
+    <div className="bg-purple-50 dark:bg-slate-800 border-b border-purple-200 dark:border-purple-700 px-6">
+      <div className="max-w-4xl mx-auto py-3">
+        <div className="grid grid-cols-[minmax(0,1fr)_auto] items-start gap-x-3 gap-y-2 md:flex md:items-center">
+          <span className="min-w-0 text-sm font-medium leading-5 text-slate-900 dark:text-slate-100 md:flex-1">
+            {title}
+          </span>
+          <div className="col-start-1 row-start-2 flex shrink-0 items-center gap-2 md:ml-auto">
+            {links.map((link) =>
+              link.primary ? (
+                <a
+                  key={link.url}
+                  href={link.url}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="inline-flex shrink-0 items-center gap-1.5 whitespace-nowrap text-xs font-medium bg-purple-600 hover:bg-purple-700 text-white rounded-md px-3 py-1.5 transition-colors"
+                >
+                  {link.label}
+                  <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
+                  </svg>
+                </a>
+              ) : (
+                <a
+                  key={link.url}
+                  href={link.url}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="inline-flex shrink-0 items-center gap-1 whitespace-nowrap text-xs text-purple-600 dark:text-purple-400 hover:text-purple-800 dark:hover:text-purple-300 transition-colors"
+                >
+                  {link.label}
+                  <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
+                  </svg>
+                </a>
+              )
+            )}
           </div>
           <button
             onClick={handleDismiss}
-            className="p-1 rounded hover:bg-purple-200/60 dark:hover:bg-slate-700 text-slate-600 dark:text-slate-300 hover:text-slate-900 dark:hover:text-slate-100 transition-colors flex-shrink-0"
+            className="col-start-2 row-start-1 p-1 rounded hover:bg-purple-200/60 dark:hover:bg-slate-700 text-slate-600 dark:text-slate-300 hover:text-slate-900 dark:hover:text-slate-100 transition-colors flex-shrink-0"
             aria-label="Dismiss banner"
           >
             <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">

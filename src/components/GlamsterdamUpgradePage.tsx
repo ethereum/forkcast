@@ -86,7 +86,7 @@ const GlamsterdamUpgradePage: React.FC = () => {
           </div>
 
           <div className="-mx-6 mt-4">
-            <div className="overflow-x-auto px-6 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
+            <div className="overflow-x-auto px-6 pb-3">
               <div className="flex gap-6 border-b border-slate-200 dark:border-slate-700 min-w-max">
                 {tabs.map((tab) => {
                   const active = isTabActive(pathname, tab.path);

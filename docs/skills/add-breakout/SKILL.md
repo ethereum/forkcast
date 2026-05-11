@@ -5,7 +5,7 @@ description: Onboard a brand-new breakout call series across ethereum/pm (truste
 
 ## Add a new breakout series
 
-A breakout series requires changes in **two repos**: `ethereum/pm` (where the bot lives and the issue template lives) and `forkcast` (where calls render). This skill covers the pm side and the cross-repo handoff. The Forkcast-side changes are covered by the `add-series` skill — invoke that for steps 2 and 3 of the changes.
+A breakout series requires changes in **two repos**: `ethereum/pm` (where the bot lives and the issue template lives) and `forkcast` (where calls render). This skill covers the pm side and the cross-repo handoff. Invoke the `add-series` skill for the Forkcast-side file edits.
 
 Reference commit for the pm-side pattern: `6e572f83` ("acdbot: introduce native aa breakout"). Reference commit for adding to the trusted list: `14a86086` ("acdbot: add to trusted list for pqi").
 
@@ -21,7 +21,7 @@ You need:
 - **Series config key** — lowercased, no-spaces version of the display name used as the pm config key (e.g., `p2pnetworking`, `nativeaa`, `encryptthemempool`). Derive and confirm with the user.
 - **Forkcast type abbreviation** — short slug used in Forkcast URLs/folders (e.g., `p2p`, `aa`, `pqi`). Existing values are in `src/data/calls.ts` `CallType`. Confirm with the user — this is the `add-series` "Short type key" input.
 - **Tailwind color** for the badge/border (used by `add-series`). Pick an unused color from the existing palettes in `src/components/calls-index/CallsIndexTimeline.tsx`.
-- **YouTube playlist ID** (recommended upfront) — ask the user to create an empty `<Display Name>` playlist on the EF YouTube channel before opening the PR. YouTube Studio → Content → Playlists → New playlist; **Public** visibility. The ID is the segment between `/playlist/` and `/videos` in the Studio URL (or after `list=` on youtube.com). All EF playlist IDs start with `PLJqWcTqh_zK…` — useful sanity check they're on the right channel. If the user can't create it now, leave as `null`; they can land a follow-up PR later.
+- **YouTube playlist ID** (recommended upfront) — ask the user to create an empty playlist named after the series and share the playlist ID. If they can't create it now, leave as `null` and they can land a follow-up PR later.
 
 ### Step 2: Locate the pm checkout
 
@@ -31,7 +31,7 @@ The user typically has `ethereum/pm` checked out at `../pm` relative to forkcast
 
 All four files live under `../pm/.github/`:
 
-1. **`workflows/protocol-call-workflow.yml`** — append the facilitator's GitHub username (lowercase) to the `trustedContributors` array. This authorizes them to trigger the bot.
+1. **`workflows/protocol-call-workflow.yml`** — append the facilitator's GitHub username (lowercase) to the `trustedContributors` array. This authorizes them to trigger the bot. **Verify the exact GitHub account with the user before adding** — this list grants bot permissions, so a typo or impersonated handle is a security concern, not just a correctness one.
 
 2. **`ACDbot/call_series_config.yml`** — add a new entry under `call_series:` just before the `one-off:` block. Shape:
    ```yaml
@@ -55,7 +55,7 @@ All four files live under `../pm/.github/`:
    <LabelName>:
     - "^(.*<regex pattern>.*)"
    ```
-   The regex should match plausible issue title phrasings — usually the display name and one short alias. Note the file does not end with a trailing newline; preserve that.
+   Match the existing file's indent style: one space before the `-` (unusual but consistent with the rest of the file). The regex should match plausible issue title phrasings — usually the display name and one short alias. Note the file does not end with a trailing newline; preserve that.
 
 ### Step 4: Make the Forkcast-side edits via `add-series`
 
@@ -70,8 +70,10 @@ Skip `add-series` Step 5 ("Verify artifacts exist") and Step 6 ("Update `protoco
 
 ### Step 5: Open both PRs
 
-- **pm PR**: branch `acdbot/<series>-breakout`, title `acdbot: introduce <series> breakout`. Push to the user's `fork` remote and open PR against `ethereum/pm:master`.
-- **Forkcast PR**: branch `add-<series>-breakout`, title `add <series> breakout series`. Push to the user's `dionysuzx` remote and open PR against `ethereum/forkcast:main`.
+- **pm PR**: branch `acdbot/<series>-breakout`, title `acdbot: introduce <series> breakout`, against `ethereum/pm:master`.
+- **Forkcast PR**: branch `add-<series>-breakout`, title `add <series> breakout series`, against `ethereum/forkcast:main`.
+
+Use whichever remote the user pushes their fork branches to (check `git remote -v` if unsure).
 
 The Forkcast PR is safe to merge before any call exists — all new entries are latent until a record with the new type lands in `protocol-calls.generated.json`. The pm PR is the gating dependency: the facilitator can't open their first issue until the dropdown option exists.
 

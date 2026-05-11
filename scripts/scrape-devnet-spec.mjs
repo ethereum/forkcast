@@ -247,14 +247,18 @@ async function main() {
         `Referenced spec ${sameSpecAs} not found at ${refPath}. Scrape it first.`,
       );
     }
-    const { genesisTime: _inherited, ...refSpec } = JSON.parse(readFileSync(refPath, 'utf-8'));
+    const refSpec = JSON.parse(readFileSync(refPath, 'utf-8'));
     spec = {
-      ...refSpec,
       id,
       title: parseTitle(md),
       sourceUrl: `https://notes.ethereum.org/@ethpandaops/${id}`,
       scrapedAt: new Date().toISOString(),
       sameSpecAs,
+      announcements: [],
+      eips: refSpec.eips,
+      elClientSupport: { clients: [], matrix: [] },
+      clClientSupport: { clients: [], matrix: [] },
+      specReferences: refSpec.specReferences,
     };
     console.log(`  (uses same spec as ${sameSpecAs})`);
   } else {

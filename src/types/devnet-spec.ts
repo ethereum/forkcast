@@ -36,6 +36,8 @@ export interface DevnetSpec {
   scrapedAt: string;
   /** When set, this devnet reuses the spec of another devnet (by ID). */
   sameSpecAs?: string;
+  /** Unix timestamp (seconds) of the devnet genesis, from cartographoor. */
+  genesisTime?: number;
   announcements: string[];
   eips: DevnetSpecEip[];
   elClientSupport: ClientSupportMatrix;

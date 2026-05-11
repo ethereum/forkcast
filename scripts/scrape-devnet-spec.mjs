@@ -23,12 +23,27 @@ if (!/^[a-z0-9-]+$/.test(id)) {
 }
 
 const DOWNLOAD_URL = `https://notes.ethereum.org/@ethpandaops/${id}/download`;
+const NETWORKS_URL =
+  'https://ethpandaops-platform-production-cartographoor.ams3.digitaloceanspaces.com/networks.json';
 
 async function fetchMarkdown() {
   console.log(`Fetching ${DOWNLOAD_URL}`);
   const res = await fetch(DOWNLOAD_URL);
   if (!res.ok) throw new Error(`HTTP ${res.status} fetching ${DOWNLOAD_URL}`);
   return res.text();
+}
+
+/** Fetch genesis time (unix seconds) from the cartographoor networks.json. */
+async function fetchGenesisTime() {
+  try {
+    const res = await fetch(NETWORKS_URL);
+    if (!res.ok) return null;
+    const data = await res.json();
+    const entry = data.networks?.[id];
+    return entry?.genesisConfig?.genesisTime ?? null;
+  } catch {
+    return null;
+  }
 }
 
 function parseTitle(md) {
@@ -216,7 +231,10 @@ function parseSameSpecAs(md) {
 }
 
 async function main() {
-  const md = await fetchMarkdown();
+  const [md, genesisTime] = await Promise.all([
+    fetchMarkdown(),
+    fetchGenesisTime(),
+  ]);
 
   const sameSpecAs = parseSameSpecAs(md);
 
@@ -240,12 +258,19 @@ async function main() {
     };
     console.log(`  (uses same spec as ${sameSpecAs})`);
   } else {
+    let announcements = parseAnnouncements(md);
+    // Drop "targets to launch" announcements when we know the actual genesis time
+    if (genesisTime) {
+      announcements = announcements.filter(
+        (a) => !/targets to launch/i.test(a),
+      );
+    }
     spec = {
       id,
       title: parseTitle(md),
       sourceUrl: `https://notes.ethereum.org/@ethpandaops/${id}`,
       scrapedAt: new Date().toISOString(),
-      announcements: parseAnnouncements(md),
+      announcements,
       eips: parseEipTable(md),
       elClientSupport: parseClientMatrix(
         md,
@@ -257,6 +282,16 @@ async function main() {
       ),
       specReferences: parseSpecReferences(md),
     };
+  }
+
+  // Store genesis time if available (from cartographoor or previously scraped)
+  if (genesisTime) {
+    spec.genesisTime = genesisTime;
+    // Filter "targets to launch" announcements now that we have the real date
+    spec.announcements = spec.announcements.filter(
+      (a) => !/targets to launch/i.test(a),
+    );
+    console.log(`  genesis time: ${new Date(genesisTime * 1000).toISOString()}`);
   }
 
   if (!existsSync(OUTPUT_DIR)) mkdirSync(OUTPUT_DIR, { recursive: true });

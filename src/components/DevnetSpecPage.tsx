@@ -360,6 +360,19 @@ function DevnetSpecContent({ spec, networkEntry, metadata }: { spec: DevnetSpec;
               View Source
             </a>
             <span>&middot;</span>
+            {spec.genesisTime && (
+              <>
+                <span>
+                  Launched{' '}
+                  {new Date(spec.genesisTime * 1000).toLocaleDateString('en-US', {
+                    year: 'numeric',
+                    month: 'short',
+                    day: 'numeric',
+                  })}
+                </span>
+                <span>&middot;</span>
+              </>
+            )}
             <span>
               Scraped{' '}
               {new Date(spec.scrapedAt).toLocaleDateString('en-US', {

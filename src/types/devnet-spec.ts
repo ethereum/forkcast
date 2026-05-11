@@ -34,6 +34,8 @@ export interface DevnetSpec {
   title: string;
   sourceUrl: string;
   scrapedAt: string;
+  /** When set, this devnet reuses the spec of another devnet (by ID). */
+  sameSpecAs?: string;
   announcements: string[];
   eips: DevnetSpecEip[];
   elClientSupport: ClientSupportMatrix;

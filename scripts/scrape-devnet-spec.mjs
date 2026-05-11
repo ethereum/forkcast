@@ -247,7 +247,7 @@ async function main() {
         `Referenced spec ${sameSpecAs} not found at ${refPath}. Scrape it first.`,
       );
     }
-    const refSpec = JSON.parse(readFileSync(refPath, 'utf-8'));
+    const { genesisTime: _inherited, ...refSpec } = JSON.parse(readFileSync(refPath, 'utf-8'));
     spec = {
       ...refSpec,
       id,
@@ -258,19 +258,12 @@ async function main() {
     };
     console.log(`  (uses same spec as ${sameSpecAs})`);
   } else {
-    let announcements = parseAnnouncements(md);
-    // Drop "targets to launch" announcements when we know the actual genesis time
-    if (genesisTime) {
-      announcements = announcements.filter(
-        (a) => !/targets to launch/i.test(a),
-      );
-    }
     spec = {
       id,
       title: parseTitle(md),
       sourceUrl: `https://notes.ethereum.org/@ethpandaops/${id}`,
       scrapedAt: new Date().toISOString(),
-      announcements,
+      announcements: parseAnnouncements(md),
       eips: parseEipTable(md),
       elClientSupport: parseClientMatrix(
         md,

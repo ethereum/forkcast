@@ -83,7 +83,7 @@ Print this verbatim:
 - [ ] **Once Zoom account exists**: add the facilitator as a co-host on the zoom-bot account.
 - [ ] **Facilitator opens the first issue**: ask them to open the first call issue themselves in `ethereum/pm` using the `Protocol Call` template, selecting the new series from the dropdown with Autopilot enabled. Letting them open it means they can edit the agenda directly.
 - [ ] **YouTube playlist**: if not already wired up in the initial PR, create an empty `<Display Name>` playlist on the EF YouTube channel and open a follow-up PR setting `youtube_playlist_id` in `call_series_config.yml`. Doing this before the first call means the bot uploads the inaugural recording into the playlist automatically.
-- [ ] **Discord channel** (optional): if the series wants a dedicated channel, request one from the Eth R&D Discord admins.
+- [ ] **Discord channel**: first check whether an existing Eth R&D channel already fits (most breakouts do — e.g., a networking series can usually live in an existing networking channel). Only request a new channel if no existing one is a reasonable home; the goal is to keep the channel list from growing indefinitely. If a new channel is genuinely needed, ask the Eth R&D Discord admins.
 
 ### Step 7: Done
 

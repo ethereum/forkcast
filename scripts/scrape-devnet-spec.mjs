@@ -4,7 +4,7 @@
  * Usage: node scripts/scrape-devnet-spec.mjs bal-devnet-3
  */
 
-import { writeFileSync, existsSync, mkdirSync } from 'fs';
+import { writeFileSync, readFileSync, existsSync, mkdirSync } from 'fs';
 import { dirname, join } from 'path';
 import { fileURLToPath } from 'url';
 
@@ -199,26 +199,65 @@ function parseSpecReferences(md) {
   };
 }
 
+/**
+ * Detect pages that say "same spec as [other-devnet](url)".
+ * Returns the referenced devnet ID if found, otherwise null.
+ * Prefers the link text over the URL slug (pages sometimes have copy-paste URL errors).
+ */
+function parseSameSpecAs(md) {
+  const match = md.match(
+    /same spec as \[([^\]]+)\]\(https?:\/\/notes\.ethereum\.org\/@ethpandaops\/([a-z0-9-]+)\)/i,
+  );
+  if (!match) return null;
+  const linkText = match[1].trim();
+  const urlSlug = match[2];
+  // Use link text if it looks like a valid devnet ID, otherwise fall back to URL slug
+  return /^[a-z0-9-]+-devnet-\d+$/.test(linkText) ? linkText : urlSlug;
+}
+
 async function main() {
   const md = await fetchMarkdown();
 
-  const spec = {
-    id,
-    title: parseTitle(md),
-    sourceUrl: `https://notes.ethereum.org/@ethpandaops/${id}`,
-    scrapedAt: new Date().toISOString(),
-    announcements: parseAnnouncements(md),
-    eips: parseEipTable(md),
-    elClientSupport: parseClientMatrix(
-      md,
-      /## Execution Layer Client Support|### Implementation tracker EL/,
-    ),
-    clClientSupport: parseClientMatrix(
-      md,
-      /## Consensus Layer Client Support|## Consensus Layer Support|### Implementation tracker CL/,
-    ),
-    specReferences: parseSpecReferences(md),
-  };
+  const sameSpecAs = parseSameSpecAs(md);
+
+  let spec;
+  if (sameSpecAs) {
+    // This page reuses another devnet's spec — copy its data
+    const refPath = join(OUTPUT_DIR, `${sameSpecAs}.json`);
+    if (!existsSync(refPath)) {
+      throw new Error(
+        `Referenced spec ${sameSpecAs} not found at ${refPath}. Scrape it first.`,
+      );
+    }
+    const refSpec = JSON.parse(readFileSync(refPath, 'utf-8'));
+    spec = {
+      ...refSpec,
+      id,
+      title: parseTitle(md),
+      sourceUrl: `https://notes.ethereum.org/@ethpandaops/${id}`,
+      scrapedAt: new Date().toISOString(),
+      sameSpecAs,
+    };
+    console.log(`  (uses same spec as ${sameSpecAs})`);
+  } else {
+    spec = {
+      id,
+      title: parseTitle(md),
+      sourceUrl: `https://notes.ethereum.org/@ethpandaops/${id}`,
+      scrapedAt: new Date().toISOString(),
+      announcements: parseAnnouncements(md),
+      eips: parseEipTable(md),
+      elClientSupport: parseClientMatrix(
+        md,
+        /## Execution Layer Client Support|### Implementation tracker EL/,
+      ),
+      clClientSupport: parseClientMatrix(
+        md,
+        /## Consensus Layer Client Support|## Consensus Layer Support|### Implementation tracker CL/,
+      ),
+      specReferences: parseSpecReferences(md),
+    };
+  }
 
   if (!existsSync(OUTPUT_DIR)) mkdirSync(OUTPUT_DIR, { recursive: true });
 

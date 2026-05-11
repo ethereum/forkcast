@@ -371,6 +371,19 @@ function DevnetSpecContent({ spec, networkEntry, metadata }: { spec: DevnetSpec;
           </div>
         </div>
 
+        {/* Same-spec notice */}
+        {spec.sameSpecAs && (
+          <div className="mb-8 rounded-lg bg-slate-50 dark:bg-slate-800/50 border border-slate-200 dark:border-slate-700 px-4 py-3 text-sm text-slate-600 dark:text-slate-400">
+            This devnet used the same spec as{' '}
+            <Link
+              to={`/devnets/${spec.sameSpecAs}`}
+              className="text-purple-600 hover:text-purple-800 dark:text-purple-400 dark:hover:text-purple-300 font-medium transition-colors"
+            >
+              {spec.sameSpecAs}
+            </Link>.
+          </div>
+        )}
+
         {/* Announcements */}
         {spec.announcements.length > 0 && (
           <section className="mb-8 rounded-lg bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 text-sm text-blue-900 dark:text-blue-200 overflow-hidden divide-y divide-blue-200 dark:divide-blue-800">

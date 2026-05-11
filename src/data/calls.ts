@@ -1,7 +1,7 @@
 import generatedCalls from './protocol-calls.generated.json';
 import { getTodayDateString } from '../utils/localDate';
 
-export type CallType = 'acdc' | 'acde' | 'acdt' | 'epbs' | 'bal' | 'focil' | 'price' | 'tli' | 'pqts' | 'rpc' | 'zkevm' | 'etm' | 'awd' | 'pqi' | 'fcr' | 'aa';
+export type CallType = 'acdc' | 'acde' | 'acdt' | 'epbs' | 'bal' | 'focil' | 'price' | 'tli' | 'pqts' | 'rpc' | 'zkevm' | 'etm' | 'awd' | 'pqi' | 'fcr' | 'aa' | 'p2p';
 
 export interface Call {
   type: string;
@@ -30,6 +30,7 @@ export const callTypeNames: Record<CallType, string> = {
   pqi: 'PQ Interop',
   fcr: 'Fast Confirmation Rule',
   aa: 'Native Account Abstraction',
+  p2p: 'P2P Networking',
 };
 
 export const protocolCalls: Call[] = generatedCalls as Call[];

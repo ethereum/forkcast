@@ -148,7 +148,8 @@ const HomePage = () => {
     awd: 'bg-lime-100 dark:bg-lime-900/30 text-lime-700 dark:text-lime-300',
     pqi: 'bg-emerald-100 dark:bg-emerald-900/30 text-emerald-700 dark:text-emerald-300',
     fcr: 'bg-teal-100 dark:bg-teal-900/30 text-teal-700 dark:text-teal-300',
-    aa: 'bg-indigo-100 dark:bg-indigo-900/30 text-indigo-700 dark:text-indigo-300'
+    aa: 'bg-indigo-100 dark:bg-indigo-900/30 text-indigo-700 dark:text-indigo-300',
+    p2p: 'bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-300'
   };
 
   return (

@@ -21,6 +21,7 @@ You need:
 - **Series config key** — lowercased, no-spaces version of the display name used as the pm config key (e.g., `p2pnetworking`, `nativeaa`, `encryptthemempool`). Derive and confirm with the user.
 - **Forkcast type abbreviation** — short slug used in Forkcast URLs/folders (e.g., `p2p`, `aa`, `pqi`). Existing values are in `src/data/calls.ts` `CallType`. Confirm with the user — this is the `add-series` "Short type key" input.
 - **Tailwind color** for the badge/border (used by `add-series`). Pick an unused color from the existing palettes in `src/components/calls-index/CallsIndexTimeline.tsx`.
+- **YouTube playlist ID** (recommended upfront) — ask the user to create an empty `<Display Name>` playlist on the EF YouTube channel before opening the PR. YouTube Studio → Content → Playlists → New playlist; **Public** visibility. The ID is the segment between `/playlist/` and `/videos` in the Studio URL (or after `list=` on youtube.com). All EF playlist IDs start with `PLJqWcTqh_zK…` — useful sanity check they're on the right channel. If the user can't create it now, leave as `null`; they can land a follow-up PR later.
 
 ### Step 2: Locate the pm checkout
 
@@ -36,7 +37,7 @@ All four files live under `../pm/.github/`:
    ```yaml
      <series-key>:
        display_name: "<Display Name>"
-       youtube_playlist_id: null
+       youtube_playlist_id: "<PLJqWcTqh_zK...>"  # or null if not yet created
        discord_webhook_env: null
        autopilot_defaults:
          duration: <60|90>
@@ -45,7 +46,7 @@ All four files live under `../pm/.github/`:
          display_zoom_link_in_invite: true
          external_meeting_link: false
    ```
-   `youtube_playlist_id` stays `null` — Protocol Support creates the playlist later and updates this field.
+   Use the YouTube playlist ID gathered in Step 1 if available. If left `null`, land a follow-up PR (`acdbot: wire up <series> youtube playlist`) once the playlist exists — see PR pattern at commit `a125cd3f`.
 
 3. **`ISSUE_TEMPLATE/protocol-call-form.yml`** — add the display name to the `Call Series` dropdown `options:`. The list is mostly alphabetical — insert accordingly.
 
@@ -81,7 +82,7 @@ Print this verbatim:
 - [ ] **Zoom account**: open an issue in the EF devops repo requesting a Zoom account for the facilitator. Required so the bot can assign them host role on the EF zoom-bot.
 - [ ] **Once Zoom account exists**: add the facilitator as a co-host on the zoom-bot account.
 - [ ] **Facilitator opens the first issue**: ask them to open the first call issue themselves in `ethereum/pm` using the `Protocol Call` template, selecting the new series from the dropdown with Autopilot enabled. Letting them open it means they can edit the agenda directly.
-- [ ] **YouTube playlist** (after first recording): Protocol Support creates a YouTube playlist and updates `youtube_playlist_id` in `call_series_config.yml`.
+- [ ] **YouTube playlist**: if not already wired up in the initial PR, create an empty `<Display Name>` playlist on the EF YouTube channel and open a follow-up PR setting `youtube_playlist_id` in `call_series_config.yml`. Doing this before the first call means the bot uploads the inaugural recording into the playlist automatically.
 - [ ] **Discord channel** (optional): if the series wants a dedicated channel, request one from the Eth R&D Discord admins.
 
 ### Step 7: Done

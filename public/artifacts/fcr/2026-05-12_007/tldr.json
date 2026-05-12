@@ -1,0 +1,77 @@
+{
+  "meeting": "Fast Confirmation Rule (FCR) #7 - May 12, 2026",
+  "highlights": {
+    "client_updates": [
+      {
+        "timestamp": "00:08:15",
+        "highlight": "Lodestar: FCR implementation deployed on 5+ nodes for over a week; PR under team review, expected merge within a week"
+      },
+      {
+        "timestamp": "00:14:26",
+        "highlight": "Grandine: Two pre-existing bugs identified post-spec-merge \u2014 relative epoch helper rejecting lookups and unrealized justified checkpoints on fork chains; fix expected by Friday"
+      },
+      {
+        "timestamp": "00:16:59",
+        "highlight": "Nimbus shipped FCR enabled by default, then disabled it after discovering Nethermind safe-head incompatibility with engine API spec; FCR will be re-enabled once Nethermind fix is released"
+      },
+      {
+        "timestamp": "00:17:31",
+        "highlight": "Nethermind fix for safe-head engine API bug merged (PR #11187) but not yet released"
+      }
+    ],
+    "spec_and_testing": [
+      {
+        "timestamp": "00:19:26",
+        "highlight": "Main FCR spec PR merged; not yet gGLOSSS-compatible \u2014 work in progress to abstract fork choice layer so FCR works across forks"
+      },
+      {
+        "timestamp": "00:11:43",
+        "highlight": "Spec tests exist for minimal preset only; mainnet preset tests under consideration but constrained by 6-hour CI time limit"
+      },
+      {
+        "timestamp": "00:30:07",
+        "highlight": "Beacon API PR #598 merged: adds FCR confirmed-block events (block root + slot) to event stream"
+      }
+    ],
+    "research_updates": [
+      {
+        "timestamp": "00:24:46",
+        "highlight": "FCR research paper nearly ready for publication; pending review of latest feedback round"
+      }
+    ],
+    "metrics_and_observability": [
+      {
+        "timestamp": "00:27:37",
+        "highlight": "Lodestar already tracks confirmed block slot and finalized slot; distance calculable in Grafana"
+      },
+      {
+        "timestamp": "00:32:35",
+        "highlight": "Dora explorer proposed to be extended to display most-recently confirmed block on devnets"
+      }
+    ]
+  },
+  "action_items": [
+    {
+      "timestamp": "00:27:49",
+      "action": "Open PR defining standard FCR metrics (confirmed slot distance, restarts, runtime) for cross-client alignment",
+      "owner": "Mikhail Kalinin"
+    },
+    {
+      "timestamp": "00:15:33",
+      "action": "Add Grandine (Mercy) to Fast Confirmation Telegram group",
+      "owner": "Mikhail Kalinin"
+    }
+  ],
+  "decisions": [
+    {
+      "timestamp": "00:20:42",
+      "decision": "FCR spec will be made gGLOSSS-compatible via fork choice abstraction layer refactor; if infeasible, spec will be made fork-aware instead"
+    }
+  ],
+  "targets": [
+    {
+      "timestamp": "00:31:41",
+      "target": "Next FCR call in approximately two weeks"
+    }
+  ]
+}

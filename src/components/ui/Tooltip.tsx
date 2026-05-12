@@ -1,4 +1,5 @@
 import React, { useState, useRef } from 'react';
+import { createPortal } from 'react-dom';
 
 interface TooltipProps {
   children: React.ReactNode;
@@ -59,13 +60,14 @@ export const Tooltip: React.FC<TooltipProps> = ({
       onMouseLeave={() => setIsVisible(false)}
     >
       {children}
-      {isVisible && (
+      {isVisible && createPortal(
         <span
-          className="bg-white dark:bg-slate-800 border-2 border-purple-300 dark:border-purple-600 text-slate-900 dark:text-slate-100 text-xs px-3 py-1.5 rounded-lg whitespace-nowrap z-[9999] shadow-xl block"
+          className="bg-white dark:bg-slate-800 border-2 border-purple-300 dark:border-purple-600 text-slate-900 dark:text-slate-100 text-xs px-3 py-1.5 rounded-lg whitespace-nowrap z-[9999] shadow-xl block pointer-events-none"
           style={getTooltipStyle()}
         >
           {content || text}
-        </span>
+        </span>,
+        document.body
       )}
     </span>
   );

@@ -175,9 +175,9 @@ Use the table below as a checklist. Every new series requires all of these chang
 |---|------|-----------|
 | 1 | `src/data/calls.ts` | Add the short code to the `CallType` union and add a `name: 'Display Name'` entry to `callTypeNames`. If the series has an associated EIP, add it to `eipCallTypes`. |
 | 2 | `scripts/sync-call-assets.mjs` | Add the short code to `KNOWN_TYPES`. If the PM series name differs from the short code (it usually does for breakouts), add a mapping in `SERIES_TO_TYPE`. |
-| 3 | `src/components/CallsIndexPage.tsx` | Add the short code with a color to all four color maps: `upcomingCallTypeColors`, `upcomingCallTypeBadgeColors`, `callTypeColors`, `callTypeBadgeColors`. |
+| 3 | `src/components/calls-index/CallsIndexTimeline.tsx` | Add the short code with a color to both maps: `CALL_TYPE_BORDER_COLORS`, `CALL_TYPE_BADGE_COLORS`. |
 | 4 | `src/components/HomePage.tsx` | Add the short code to the `callTypeBadgeColors` map. |
-| 5 | `src/utils/github.ts` | Add the short code to the `UpcomingCall.type` union. Add a regex matcher in `parseCallFromTitle` for the GitHub issue title format. Increment the `foundTypes.size` limit. |
+| 5 | `src/domain/calls/upcomingCalls.ts` | Add an entry to `UPCOMING_CALL_SERIES_TO_TYPE`, keyed by the lowercased `### Call Series` value (e.g. `'encrypt the mempool'`). |
 
 ### Naming conventions
 
@@ -188,7 +188,7 @@ Use the table below as a checklist. Every new series requires all of these chang
 
 ### Verifying
 
-After making all changes, run `npx tsc --noEmit` — the `Record<CallType, string>` types will catch any maps you missed. Then run the sync script to confirm the new series is recognized:
+After making all changes, run `npx tsc --noEmit` — the `Record<CallType, string>` types will catch any maps you missed. `SERIES_TO_TYPE` and `UPCOMING_CALL_SERIES_TO_TYPE` are not type-enforced; verify those by hand. Then run the sync script to confirm the new series is recognized:
 
 ```sh
 node scripts/sync-call-assets.mjs

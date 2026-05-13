@@ -40,6 +40,12 @@ const UPCOMING_CALL_SERIES_TO_TYPE: Record<string, CallType> = {
   'rpc standards': 'rpc',
   'focil breakout': 'focil',
   'eip-7928 breakout room': 'bal',
+  'eip-7732 breakout room': 'epbs',
+  'glamsterdam repricings': 'price',
+  'trustless log index': 'tli',
+  'encrypt the mempool': 'etm',
+  'native account abstraction': 'aa',
+  'p2p networking': 'p2p',
 };
 
 // Fetch YouTube URL from issue comments

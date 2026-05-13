@@ -58,8 +58,12 @@ interface UpcomingCallState {
 
 type LoadResult = { callData: CallData; callConfig: CallConfig | null; isUpcoming: boolean };
 
+// Subtract nav (3.5rem) + content padding (2rem) + breathing room (1.5rem)
 const DESKTOP_WORKSPACE_HEIGHT = 'clamp(40rem, calc(100vh - 7rem), 72rem)';
+// Also accounts for collapsible summary bar (~3rem) + grid gap (1rem) below workspace
+const DESKTOP_WORKSPACE_HEIGHT_WITH_BAR = 'clamp(35rem, calc(100vh - 10.5rem), 68rem)';
 const DESKTOP_SIDEBAR_PANE_HEIGHT = `calc((${DESKTOP_WORKSPACE_HEIGHT} - 1rem) / 2)`;
+const DESKTOP_SIDEBAR_PANE_HEIGHT_WITH_BAR = `calc((${DESKTOP_WORKSPACE_HEIGHT_WITH_BAR} - 1rem) / 2)`;
 const TALL_SCREEN_QUERY = '(min-height: 1000px) and (min-width: 1200px) and (max-width: 1600px)';
 const SURFACE_DEEP_LINK_QUERY_KEYS = ['search', 'timestamp', 'type', 'text', 'chat'] as const;
 
@@ -1026,6 +1030,9 @@ const CallPage: React.FC<CallPageProps> = ({ isSearchOpen, setIsSearchOpen, sear
   const isExpandedVideo = isDesktopExpanded && Boolean(callData.videoUrl);
   const isWorkspaceView = !isExpandedVideo && isLargeScreen && Boolean(callData.videoUrl);
   const showSummaryInColumn = isWorkspaceView && isTallScreen && Boolean(callData.tldrData);
+  const hasCollapsibleSummary = isWorkspaceView && !showSummaryInColumn && Boolean(callData.tldrData);
+  const effectiveWorkspaceHeight = hasCollapsibleSummary ? DESKTOP_WORKSPACE_HEIGHT_WITH_BAR : DESKTOP_WORKSPACE_HEIGHT;
+  const effectiveSidebarHeight = hasCollapsibleSummary ? DESKTOP_SIDEBAR_PANE_HEIGHT_WITH_BAR : DESKTOP_SIDEBAR_PANE_HEIGHT;
   const layout = isExpandedVideo ? LAYOUT_EXPANDED : LAYOUT_DEFAULT;
 
   const renderSummaryHeader = () => callData.tldrData && (
@@ -1093,7 +1100,7 @@ const CallPage: React.FC<CallPageProps> = ({ isSearchOpen, setIsSearchOpen, sear
   const renderVideoSection = () => (
     <div
       className={`bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg p-4 shadow-sm hover:shadow-md transition-shadow ${isWorkspaceView ? 'flex h-full flex-col' : ''}`}
-      style={isWorkspaceView ? { height: showSummaryInColumn ? DESKTOP_SIDEBAR_PANE_HEIGHT : DESKTOP_WORKSPACE_HEIGHT } : undefined}
+      style={isWorkspaceView ? { height: showSummaryInColumn ? effectiveSidebarHeight : effectiveWorkspaceHeight } : undefined}
     >
       {renderBreakoutTabs()}
       <div className={isWorkspaceView ? 'flex min-h-0 flex-1 flex-col' : 'flex flex-col gap-4'}>
@@ -1246,7 +1253,7 @@ const CallPage: React.FC<CallPageProps> = ({ isSearchOpen, setIsSearchOpen, sear
   const renderTranscriptCard = () => (
     <div
       className={`bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg p-4 shadow-sm hover:shadow-md transition-shadow ${isWorkspaceView ? 'flex min-h-0 flex-col' : ''}`}
-      style={isWorkspaceView ? { height: DESKTOP_SIDEBAR_PANE_HEIGHT } : undefined}
+      style={isWorkspaceView ? { height: effectiveSidebarHeight } : undefined}
     >
       <h2 className="text-sm font-semibold text-slate-900 dark:text-slate-100 mb-3">Transcript</h2>
       {callData.transcriptContent?.trim() ? (
@@ -1327,7 +1334,7 @@ const CallPage: React.FC<CallPageProps> = ({ isSearchOpen, setIsSearchOpen, sear
   const renderChatCard = () => (
     <div
       className={`bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg p-4 shadow-sm hover:shadow-md transition-shadow ${isWorkspaceView ? 'flex min-h-0 flex-col' : ''}`}
-      style={isWorkspaceView ? { height: DESKTOP_SIDEBAR_PANE_HEIGHT } : undefined}
+      style={isWorkspaceView ? { height: effectiveSidebarHeight } : undefined}
     >
       <h2 className="text-sm font-semibold text-slate-900 dark:text-slate-100 mb-3">Chat Logs</h2>
       {callData.chatContent ? (
@@ -1400,7 +1407,7 @@ const CallPage: React.FC<CallPageProps> = ({ isSearchOpen, setIsSearchOpen, sear
           {showSummaryInColumn && callData.tldrData && (
             <div
               className="lg:col-start-1 lg:row-start-2"
-              style={{ height: DESKTOP_SIDEBAR_PANE_HEIGHT }}
+              style={{ height: effectiveSidebarHeight }}
             >
               <div className="bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg shadow-sm hover:shadow-md transition-shadow h-full flex flex-col">
                 <div className="px-4 py-3 flex-shrink-0">

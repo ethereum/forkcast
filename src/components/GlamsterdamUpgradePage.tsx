@@ -14,10 +14,8 @@ interface TabItem {
 
 const tabs: TabItem[] = [
   { path: '/upgrade/glamsterdam', label: 'Overview' },
+  { path: '/upgrade/glamsterdam/eips', label: 'EIP X-ray' },
   { path: '/upgrade/glamsterdam/stakeholders', label: 'Stakeholders' },
-  { path: '/upgrade/glamsterdam/devnet-inclusion', label: 'Devnet Inclusion' },
-  { path: '/upgrade/glamsterdam/client-priority', label: 'Client Priority' },
-  { path: '/upgrade/glamsterdam/test-complexity', label: 'Test Complexity' },
 ];
 
 const isTabActive = (pathname: string, tabPath: string) =>
@@ -30,8 +28,10 @@ const GlamsterdamUpgradePage: React.FC = () => {
 
   useMetaTags({
     title: 'Glamsterdam Upgrade - Forkcast',
-    description: 'Glamsterdam network upgrade: overview, stakeholder impact, EIP candidates, client prioritization, and test complexity.',
-    url: 'https://forkcast.org/upgrade/glamsterdam',
+    description: pathname === '/upgrade/glamsterdam/eips'
+      ? 'Browse Glamsterdam EIPs by inclusion stage, active devnets, test complexity, and client priority.'
+      : 'Glamsterdam network upgrade overview, timeline, and related EIPs.',
+    url: `https://forkcast.org${pathname}`,
   });
 
   useLayoutEffect(() => {
@@ -39,12 +39,14 @@ const GlamsterdamUpgradePage: React.FC = () => {
     activeEl?.scrollIntoView({ block: 'nearest', inline: 'center' });
   }, [pathname]);
 
+  const isWideSurface = pathname === '/upgrade/glamsterdam/eips';
+
   return (
-    <div className="min-h-screen bg-slate-50 dark:bg-slate-900 text-slate-900 dark:text-slate-100 p-6">
-      <div className="max-w-4xl mx-auto">
+    <div className="min-h-screen bg-slate-50 px-4 py-6 text-slate-900 dark:bg-slate-900 dark:text-slate-100 sm:p-6">
+      <div className={`${isWideSurface ? 'max-w-7xl' : 'max-w-4xl'} mx-auto`}>
         {/* Header */}
-        <div className="mb-8">
-          <Link to="/upgrades" className="text-slate-600 hover:text-slate-800 dark:text-slate-300 dark:hover:text-slate-100 mb-6 inline-block text-sm font-medium">
+        <div className="mb-4">
+          <Link to="/upgrades" className="text-slate-600 hover:text-slate-800 dark:text-slate-300 dark:hover:text-slate-100 mb-4 inline-block text-sm font-medium">
             ← All Network Upgrades
           </Link>
 
@@ -60,7 +62,6 @@ const GlamsterdamUpgradePage: React.FC = () => {
                     {upgrade.status}
                   </span>
                 </div>
-                <p className="text-base text-slate-600 dark:text-slate-300 mb-2 leading-relaxed max-w-2xl">{upgrade.description}</p>
                 {upgrade.metaEipLink && (
                   <div className="mb-4">
                     <a
@@ -85,9 +86,9 @@ const GlamsterdamUpgradePage: React.FC = () => {
             </div>
           </div>
 
-          <div className="-mx-6 mt-4">
-            <div className="overflow-x-auto px-6 pb-3">
-              <div className="flex gap-6 border-b border-slate-200 dark:border-slate-700 min-w-max">
+          <div className="-mx-4 mt-3 sm:-mx-6">
+            <div className="overflow-x-auto px-4 pb-2 sm:px-6">
+              <div className="flex min-w-max gap-6">
                 {tabs.map((tab) => {
                   const active = isTabActive(pathname, tab.path);
                   return (

@@ -12,11 +12,9 @@ import EipsIndexPage from './components/EipsIndexPage';
 import DevnetsIndexPage from './components/DevnetsIndexPage';
 import UpgradesIndexPage from './components/UpgradesIndexPage';
 import GlamsterdamUpgradePage from './components/GlamsterdamUpgradePage';
+import EipsTab from './components/glamsterdam/EipsTab';
 import OverviewTab from './components/glamsterdam/OverviewTab';
 import StakeholdersTab from './components/glamsterdam/StakeholdersTab';
-import EipCandidatesTab from './components/glamsterdam/EipCandidatesTab';
-import ClientPriorityTab from './components/glamsterdam/ClientPriorityTab';
-import TestComplexityTab from './components/glamsterdam/TestComplexityTab';
 import DevnetSpecPage from './components/DevnetSpecPage';
 import DecisionsPage from './components/DecisionsPage';
 import { getUpgradeById } from './data/upgrades';
@@ -163,10 +161,12 @@ function App() {
             } />
             <Route path="/upgrade/glamsterdam" element={<GlamsterdamUpgradePage />}>
               <Route index element={<OverviewTab />} />
+              <Route path="overview" element={<Navigate to="/upgrade/glamsterdam" replace />} />
+              <Route path="eips" element={<EipsTab />} />
               <Route path="stakeholders" element={<StakeholdersTab />} />
-              <Route path="devnet-inclusion" element={<EipCandidatesTab />} />
-              <Route path="client-priority" element={<ClientPriorityTab />} />
-              <Route path="test-complexity" element={<TestComplexityTab />} />
+              <Route path="devnet-inclusion" element={<Navigate to="/upgrade/glamsterdam/eips" replace />} />
+              <Route path="client-priority" element={<Navigate to="/upgrade/glamsterdam/eips" replace />} />
+              <Route path="test-complexity" element={<Navigate to="/upgrade/glamsterdam/eips" replace />} />
             </Route>
             <Route path="/upgrade/hegota" element={
               <PublicNetworkUpgradePage
@@ -185,17 +185,17 @@ function App() {
             <Route path="/eips" element={<EipsIndexPage />} />
             <Route path="/eips/:id" element={<EipPage />} />
             <Route path="/glamsterdam" element={<Navigate to="/upgrade/glamsterdam" replace />} />
-            <Route path="/glamsterdam/priority" element={<Navigate to="/upgrade/glamsterdam/client-priority" replace />} />
-            <Route path="/glamsterdam/complexity" element={<Navigate to="/upgrade/glamsterdam/test-complexity" replace />} />
-            <Route path="/priority" element={<Navigate to="/upgrade/glamsterdam/client-priority" replace />} />
-            <Route path="/complexity" element={<Navigate to="/upgrade/glamsterdam/test-complexity" replace />} />
-            {/* Legacy Glamsterdam tab URLs redirect to the current tab slugs. */}
-            <Route path="/upgrade/glamsterdam/candidates" element={<Navigate to="/upgrade/glamsterdam/devnet-inclusion" replace />} />
-            <Route path="/upgrade/glamsterdam/priority" element={<Navigate to="/upgrade/glamsterdam/client-priority" replace />} />
-            <Route path="/upgrade/glamsterdam/complexity" element={<Navigate to="/upgrade/glamsterdam/test-complexity" replace />} />
-            <Route path="/upgrade/glamsterdam/devnets" element={<Navigate to="/upgrade/glamsterdam/devnet-inclusion" replace />} />
-            <Route path="/upgrade/glamsterdam/devnets/priority" element={<Navigate to="/upgrade/glamsterdam/client-priority" replace />} />
-            <Route path="/upgrade/glamsterdam/devnets/complexity" element={<Navigate to="/upgrade/glamsterdam/test-complexity" replace />} />
+            <Route path="/glamsterdam/priority" element={<Navigate to="/upgrade/glamsterdam/eips" replace />} />
+            <Route path="/glamsterdam/complexity" element={<Navigate to="/upgrade/glamsterdam/eips" replace />} />
+            <Route path="/priority" element={<Navigate to="/upgrade/glamsterdam/eips" replace />} />
+            <Route path="/complexity" element={<Navigate to="/upgrade/glamsterdam/eips" replace />} />
+            {/* Legacy Glamsterdam metadata URLs now redirect to the consolidated EIPs explorer. */}
+            <Route path="/upgrade/glamsterdam/candidates" element={<Navigate to="/upgrade/glamsterdam/eips" replace />} />
+            <Route path="/upgrade/glamsterdam/priority" element={<Navigate to="/upgrade/glamsterdam/eips" replace />} />
+            <Route path="/upgrade/glamsterdam/complexity" element={<Navigate to="/upgrade/glamsterdam/eips" replace />} />
+            <Route path="/upgrade/glamsterdam/devnets" element={<Navigate to="/upgrade/glamsterdam/eips" replace />} />
+            <Route path="/upgrade/glamsterdam/devnets/priority" element={<Navigate to="/upgrade/glamsterdam/eips" replace />} />
+            <Route path="/upgrade/glamsterdam/devnets/complexity" element={<Navigate to="/upgrade/glamsterdam/eips" replace />} />
             <Route path="/devnets/:id" element={<DevnetSpecPage />} />
             <Route path="/devnets" element={<DevnetsIndexPage />} />
             <Route path="/decisions" element={<DecisionsPage />} />

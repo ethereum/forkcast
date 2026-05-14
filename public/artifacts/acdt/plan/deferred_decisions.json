@@ -1,32 +1,14 @@
 {
   "series": "ACDT",
-  "generated": "2026-05-07",
+  "generated": "2026-05-14",
   "lookback_calls": [
-    "ACDT #74",
     "ACDT #75",
     "ACDT #76",
     "ACDT #77",
-    "ACDT #78"
+    "ACDT #78",
+    "ACDT #79"
   ],
   "deferred": [
-    {
-      "topic": "SFI status decisions for BAL devnet EIPs",
-      "deferred_in": "ACDT #74",
-      "deferred_date": "2026-03-16",
-      "expected_revisit": "ACD (not ACDT)",
-      "revisited": false,
-      "revisited_in": null,
-      "outcome": "Explicitly deferred to ACD; not within ACDT scope"
-    },
-    {
-      "topic": "Minor EIP-8037 spec changes",
-      "deferred_in": "ACDT #75",
-      "deferred_date": "2026-03-23",
-      "expected_revisit": "bal-devnet-4",
-      "revisited": true,
-      "revisited_in": "ACDT #77",
-      "outcome": "bal-devnet-4 spec created with remaining 8037 issues; full implementation in ACDT #78"
-    },
     {
       "topic": "Variable PTC deadline for ePBS",
       "deferred_in": "ACDT #75",
@@ -34,25 +16,43 @@
       "expected_revisit": "post-fork if needed",
       "revisited": false,
       "revisited_in": null,
-      "outcome": "Non-consensus feature; postponed indefinitely"
+      "outcome": null
     },
     {
-      "topic": "EIP-2780 inclusion in bal-devnet-4",
+      "topic": "Minor EIP-8037 spec changes for bal-devnet-3",
+      "deferred_in": "ACDT #75",
+      "deferred_date": "2026-03-23",
+      "expected_revisit": "bal-devnet-4",
+      "revisited": true,
+      "revisited_in": "ACDT #77",
+      "outcome": "bal-devnet-4 spec created with full EIP-8037 including dynamic state costs; incorporated by ACDT #78"
+    },
+    {
+      "topic": "EIP-2780 (transaction base cost breakdown) for bal-devnet-4",
       "deferred_in": "ACDT #77",
       "deferred_date": "2026-04-13",
       "expected_revisit": "next Monday (April 20)",
       "revisited": true,
       "revisited_in": "ACDT #78",
-      "outcome": "Not mentioned in ACDT #78; implicitly excluded from bal-devnet-4 scope"
+      "outcome": "Not mentioned in ACDT #78; effectively dropped in favor of stability before interop"
     },
     {
-      "topic": "ePBS range sync proposal security review",
-      "deferred_in": "ACDT #77",
-      "deferred_date": "2026-04-13",
-      "expected_revisit": "async review by EL teams",
-      "revisited": true,
-      "revisited_in": "ACDT #78",
-      "outcome": "Discussed further in ACDT #78; EL teams assigned to analyze security implications"
+      "topic": "Builder deposit spam mitigation (PR 5223: 8192 epoch withdrawability delay)",
+      "deferred_in": "ACDT #79",
+      "deferred_date": "2026-05-11",
+      "expected_revisit": "after signature verification benchmarks presented at ACDC",
+      "revisited": false,
+      "revisited_in": null,
+      "outcome": null
+    },
+    {
+      "topic": "SSZ deposit limit increase (PR 5224)",
+      "deferred_in": "ACDT #79",
+      "deferred_date": "2026-05-11",
+      "expected_revisit": "until progressive lists implementation",
+      "revisited": false,
+      "revisited_in": null,
+      "outcome": "Decision to close PR and use DevNet gas cap <200M as interim solution"
     }
   ]
 }

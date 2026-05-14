@@ -60,8 +60,8 @@ type LoadResult = { callData: CallData; callConfig: CallConfig | null; isUpcomin
 
 // Subtract nav (3.5rem) + content padding (2rem) + breathing room (1.5rem)
 const DESKTOP_WORKSPACE_HEIGHT = 'clamp(40rem, calc(100vh - 7rem), 72rem)';
-// Also accounts for collapsible summary bar (~3rem) + grid gap (1rem) below workspace
-const DESKTOP_WORKSPACE_HEIGHT_WITH_BAR = 'clamp(35rem, calc(100vh - 10.5rem), 68rem)';
+// Keep the collapsed summary card inside short desktop viewports, including when the announcement banner is visible.
+const DESKTOP_WORKSPACE_HEIGHT_WITH_BAR = 'clamp(28rem, calc(100svh - 13.75rem), 68rem)';
 const DESKTOP_SIDEBAR_PANE_HEIGHT = `calc((${DESKTOP_WORKSPACE_HEIGHT} - 1rem) / 2)`;
 const DESKTOP_SIDEBAR_PANE_HEIGHT_WITH_BAR = `calc((${DESKTOP_WORKSPACE_HEIGHT_WITH_BAR} - 1rem) / 2)`;
 const TALL_SCREEN_QUERY = '(min-height: 1000px) and (min-width: 1200px) and (max-width: 1600px)';
@@ -1073,17 +1073,19 @@ const CallPage: React.FC<CallPageProps> = ({ isSearchOpen, setIsSearchOpen, sear
     setSummaryExpanded(willExpand);
 
     requestAnimationFrame(() => {
-      if (willExpand) {
-        summaryCardRef.current?.scrollIntoView({
-          behavior: getPageScrollBehavior(),
-          block: 'start',
-        });
-        return;
-      }
+      requestAnimationFrame(() => {
+        if (willExpand) {
+          summaryCardRef.current?.scrollIntoView({
+            behavior: getPageScrollBehavior(),
+            block: 'start',
+          });
+          return;
+        }
 
-      window.scrollTo({
-        top: 0,
-        behavior: getPageScrollBehavior(),
+        window.scrollTo({
+          top: 0,
+          behavior: getPageScrollBehavior(),
+        });
       });
     });
   };

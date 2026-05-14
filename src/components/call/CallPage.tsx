@@ -60,12 +60,13 @@ type LoadResult = { callData: CallData; callConfig: CallConfig | null; isUpcomin
 
 // Subtract nav (3.5rem) + content padding (2rem) + breathing room (1.5rem)
 const DESKTOP_WORKSPACE_HEIGHT = 'clamp(40rem, calc(100vh - 7rem), 72rem)';
-// Also accounts for collapsible summary bar (~3rem) + grid gap (1rem) below workspace
-const DESKTOP_WORKSPACE_HEIGHT_WITH_BAR = 'clamp(35rem, calc(100vh - 10.5rem), 68rem)';
+// Keep the collapsed summary card inside short desktop viewports, including when the announcement banner is visible.
+const DESKTOP_WORKSPACE_HEIGHT_WITH_BAR = 'clamp(28rem, calc(100svh - 13.75rem), 68rem)';
 const DESKTOP_SIDEBAR_PANE_HEIGHT = `calc((${DESKTOP_WORKSPACE_HEIGHT} - 1rem) / 2)`;
 const DESKTOP_SIDEBAR_PANE_HEIGHT_WITH_BAR = `calc((${DESKTOP_WORKSPACE_HEIGHT_WITH_BAR} - 1rem) / 2)`;
 const TALL_SCREEN_QUERY = '(min-height: 1000px) and (min-width: 1200px) and (max-width: 1600px)';
 const SURFACE_DEEP_LINK_QUERY_KEYS = ['search', 'timestamp', 'type', 'text', 'chat'] as const;
+const SUMMARY_CONTENT_ID = 'call-summary-content';
 
 const LAYOUT_DEFAULT = {
   header: 'max-w-[1800px] mx-auto px-4 sm:px-6 xl:px-8 2xl:px-10 py-2',
@@ -153,6 +154,9 @@ const scrollEntryIntoContainer = (container: HTMLElement, entryElement: HTMLElem
     behavior: 'smooth',
   });
 };
+
+const getPageScrollBehavior = (): ScrollBehavior =>
+  window.matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth';
 
 const readTextArtifact = async (path: string, isValid: (content: string) => boolean): Promise<string | undefined> => {
   const response = await fetch(`/artifacts/${path}`);
@@ -336,6 +340,7 @@ const CallPage: React.FC<CallPageProps> = ({ isSearchOpen, setIsSearchOpen, sear
   }, [location.pathname, navigate, searchParams]);
 
   const [summaryExpanded, setSummaryExpanded] = useState(false);
+  const summaryCardRef = useRef<HTMLDivElement>(null);
   const transcriptRef = useRef<HTMLDivElement>(null);
   const chatLogRef = useRef<HTMLDivElement>(null);
   const [isUserScrollingTranscript, setIsUserScrollingTranscript] = useState(false);
@@ -1062,6 +1067,29 @@ const CallPage: React.FC<CallPageProps> = ({ isSearchOpen, setIsSearchOpen, sear
     </div>
   );
 
+  const handleSummaryToggle = () => {
+    const willExpand = !summaryExpanded;
+
+    setSummaryExpanded(willExpand);
+
+    requestAnimationFrame(() => {
+      requestAnimationFrame(() => {
+        if (willExpand) {
+          summaryCardRef.current?.scrollIntoView({
+            behavior: getPageScrollBehavior(),
+            block: 'start',
+          });
+          return;
+        }
+
+        window.scrollTo({
+          top: 0,
+          behavior: getPageScrollBehavior(),
+        });
+      });
+    });
+  };
+
   const renderBreakoutTabs = () => {
     if (breakoutsForCall.length === 0) return null;
     const pillBase = 'px-3 py-1 rounded-full text-xs font-medium transition-colors';
@@ -1422,10 +1450,15 @@ const CallPage: React.FC<CallPageProps> = ({ isSearchOpen, setIsSearchOpen, sear
 
           {!showSummaryInColumn && callData.tldrData && (
             <div className={layout.summarySection}>
-              <div className="bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg shadow-sm hover:shadow-md transition-shadow">
+              <div
+                ref={summaryCardRef}
+                className="scroll-mt-20 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg shadow-sm hover:shadow-md transition-shadow"
+              >
                 <button
-                  onClick={() => setSummaryExpanded(!summaryExpanded)}
-                  className="w-full px-4 py-3 flex items-center justify-between text-left hover:bg-slate-50 dark:hover:bg-slate-700/30 transition-colors rounded-t-lg cursor-pointer"
+                  onClick={handleSummaryToggle}
+                  className={`w-full px-4 py-3 flex items-center justify-between text-left hover:bg-slate-50 dark:hover:bg-slate-700/30 transition-colors cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500/40 ${summaryExpanded ? 'rounded-t-lg' : 'rounded-lg'}`}
+                  aria-expanded={summaryExpanded}
+                  aria-controls={SUMMARY_CONTENT_ID}
                 >
                   {renderSummaryHeader()}
                   <svg
@@ -1438,7 +1471,10 @@ const CallPage: React.FC<CallPageProps> = ({ isSearchOpen, setIsSearchOpen, sear
                   </svg>
                 </button>
                 {summaryExpanded && (
-                  <div className="border-t border-slate-200 dark:border-slate-700 transition-opacity duration-500 ease-out opacity-0 animate-[fadeIn_0.5s_ease-out_forwards]">
+                  <div
+                    id={SUMMARY_CONTENT_ID}
+                    className="border-t border-slate-200 dark:border-slate-700 transition-opacity duration-500 ease-out opacity-0 animate-[fadeIn_0.5s_ease-out_forwards]"
+                  >
                     {renderSummaryContent()}
                   </div>
                 )}

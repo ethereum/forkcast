@@ -1,0 +1,106 @@
+{
+  "meeting": "ACDC #178 - May 14, 2026",
+  "highlights": {
+    "glamsterdam_devnet_scoping": [
+      {
+        "timestamp": "00:07:19",
+        "highlight": "ETH/70 and ETH/71 confirmed for Glamsterdam devnet-4; ETH/72 deferred to blob devnets pending spec freeze"
+      },
+      {
+        "timestamp": "00:13:51",
+        "highlight": "Target gas limit field moving from EL flag to CL-supplied payload attribute (consensus-specs #5235, execution-apis #796); EL devs asked to review before Monday"
+      },
+      {
+        "timestamp": "00:19:39",
+        "highlight": "Consensus-specs #5223 (withdrawability delay for builder deposits) and #5236 (bid validation against target gas limit) also required for devnet-4"
+      },
+      {
+        "timestamp": "00:23:43",
+        "highlight": "Dual-deadline PRs (#5212, #5210) to be merged now with matching deadlines; reorg enforcement deferred until all clients implement"
+      }
+    ],
+    "builder_deposits": [
+      {
+        "timestamp": "00:40:22",
+        "highlight": "Prysm benchmarks: 8,192 deposits batch-verified in ~800ms; worst-case (all invalid) ~6s; pre-processing cache proposed as fix"
+      },
+      {
+        "timestamp": "00:45:25",
+        "highlight": "Gas limit to be capped at 190M for devnet-4 to avoid 8,193 overflow; 7688 (forward-compatible SSZ) planned for later devnet to lift cap"
+      },
+      {
+        "timestamp": "00:46:00",
+        "highlight": "Client optimizations (not a new deposit contract) agreed as the path forward for builder deposit processing"
+      }
+    ],
+    "ssz_engine_api": [
+      {
+        "timestamp": "00:47:12",
+        "highlight": "Two competing SSZ Engine API proposals: Barnabas (REST transport only, no naming changes) vs. Marius (full naming refactor); Nethermind has shipped Barnabas approach with 5-10x JSON speedup"
+      },
+      {
+        "timestamp": "00:52:39",
+        "highlight": "Decision deferred to ACDE/ACDT; feature remains optional and not tied to a hard fork"
+      }
+    ],
+    "hegota_eips": [
+      {
+        "timestamp": "00:54:20",
+        "highlight": "Sukun presented committee attestation broadcast spec (ethp2p #5): batching sigs, reducing gossip overhead, lowering mesh D to 4; targets 4x committee size increase enabling 8-slot epochs; proposed for Hegota"
+      },
+      {
+        "timestamp": "01:13:53",
+        "highlight": "EIP-8025 (optional execution proofs / zkEVM) presented by EF zkEVM team; opt-in only, no consensus gating; Lighthouse and Prysm implementations exist; proposed for Hegota"
+      },
+      {
+        "timestamp": "01:35:22",
+        "highlight": "Two EIPs not reached today (return deposits for distinct credentials; custom suite thresholds) deferred to next ACDC"
+      }
+    ]
+  },
+  "action_items": [
+    {
+      "timestamp": "00:21:01",
+      "action": "EL devs review and approve execution-apis #796 (target gas limit in payload attributes) before Monday",
+      "owner": "EL teams"
+    },
+    {
+      "timestamp": "00:44:01",
+      "action": "Lighthouse to share deposit-processing benchmark branch (matching Prysm glamsterdam-devnet-3-deposits branch)",
+      "owner": "Lighthouse (kingy_sigp)"
+    },
+    {
+      "timestamp": "01:12:26",
+      "action": "Review EIP-8025 and provide feedback; read updated EIP PR (#11604) not the stale merged version",
+      "owner": "All CL/EL teams"
+    }
+  ],
+  "decisions": [
+    {
+      "timestamp": "00:09:36",
+      "decision": "ETH/70 and ETH/71 included in Glamsterdam devnet-4; ETH/72 stays on blob devnets only"
+    },
+    {
+      "timestamp": "00:22:48",
+      "decision": "All gas-limit and dual-deadline spec changes (consensus-specs #5223, #5235, #5236, #5212, #5210) target Glamsterdam devnet-4"
+    },
+    {
+      "timestamp": "00:46:00",
+      "decision": "Builder deposit overflow fix: cap gas limit to 190M for devnet-4; rely on EIP-7688 in a later devnet to remove cap"
+    },
+    {
+      "timestamp": "00:32:51",
+      "decision": "Dual-deadline PRs to be merged today by Justin with same deadline values; no code changes required yet from other clients"
+    }
+  ],
+  "targets": [
+    {
+      "timestamp": "00:36:50",
+      "target": "bal-devnet-7 launches Monday; Glamsterdam devnet-4 targets EOW (day or two after)"
+    },
+    {
+      "timestamp": "00:33:05",
+      "target": "Glamsterdam alpha-8 spec release as soon as possible to enable devnet-4 targeting"
+    }
+  ]
+}

@@ -1,0 +1,499 @@
+00:04:18	Pooja Ranjan:	gm
+00:05:52	Justin Traglia:	Gm
+00:06:05	Francesco Risitano:	gm
+00:06:57	spencer:	Happy ACD day!
+00:07:00	Potuz:	gm
+00:07:03	David (dionysuz):	gm
+00:07:38	Barnabas:	https://github.com/ethereum/pm/issues/2028
+00:08:11	Parithosh Jayanthi:	https://github.com/ethereum/execution-apis/pull/774
+00:08:11	FLCL:	eth/72 also plz optionally
+00:09:02	Potuz:	what is eth/72? that we need to do something?
+00:09:18	FLCL:	https://eips.ethereum.org/EIPS/eip-8070
+00:09:20	Potuz:	ahh alright, that's fine for us
+00:09:43	Kamil Salakhiev:	when blob devnet 0 is scheduled?
+00:09:51	Ansgar Dietrichs:	unfortunately can’t stay for most of the call, just wanted to drop in for the vibes :-)
+
+wishing you all a wonderful call!
+00:09:56	David (dionysuz):	Reacted to "unfortunately can’t ..." with ❤️
+00:10:01	Potuz:	Reacted to "unfortunately can’t ..." with ❤️
+00:10:04	Barnabas:	Replying to "when blob devnet 0 i..."
+
+it’s already running
+00:10:09	Stefan Starflinger:	Reacted to "unfortunately can’t stay for most of the call, just wanted to drop in for the vibes :-)
+
+wishing you all a wonderful call!" with ❤️
+00:10:15	Toni Wahrstätter:	Reacted to unfortunately can’t ... with "❤️"
+00:10:21	Francesco Risitano:	Reacted to "unfortunately can’t ..." with ❤️
+00:10:21	Ben Edgington:	Reacted to "unfortunately can’t ..." with ❤️
+00:10:39	Bosul Mun:	I’m sorry what are we discussing ?
+00:10:56	Parithosh Jayanthi:	Replying to "I’m sorry what are w..."
+
+Eth/72 and the PR here: https://github.com/ethereum/execution-apis/pull/774
+00:10:56	Łukasz Rozmej:	I think eth/72 - sparse blob pool is still in flight in terms of spec?
+00:11:02	kingy_sigp:	Reacted to "unfortunately can’t ..." with ❤️
+00:11:03	Stefan Starflinger:	bal-devnet-7 has eth/70 and eth/71 as a requirement fyi
+00:11:12	Łukasz Rozmej:	Reacted to "bal-devnet-7 has eth..." with 👍
+00:11:13	Barnabas:	Replying to "I think eth/72 - spa..."
+
+is it?
+00:11:20	Toni Wahrstätter:	Reacted to bal-devnet-7 has eth... with "👍"
+00:11:48	Łukasz Rozmej:	Replying to "I think eth/72 - spa..."
+
+IDK @FLCL recent comments to me was that it is not final
+00:11:54	Parithosh Jayanthi:	Reacted to "bal-devnet-7 has eth/70 and eth/71 as a requirement fyi" with 👍
+00:12:10	Łukasz Rozmej:	Replying to "I think eth/72 - spa..."
+
+He leads this from our side
+00:12:20	Iván | ethrex:	Reacted to "bal-devnet-7 has eth..." with 👍
+00:12:22	Łukasz Rozmej:	Replying to "I think eth/72 - spa..."
+
+we do have some implementation
+00:12:29	Barnabas:	Reacted to "bal-devnet-7 has eth..." with 👍
+00:12:41	Kamil Salakhiev:	FYI Sparse blobpool latest EIP update is here (it reflects reflect execution API 774 changes) https://github.com/ethereum/EIPs/pull/11444 
+
+Please check that
+00:13:05	Łukasz Rozmej:	Reacted to "Screenshot2026_05_14_100801.jpg" with 👍
+00:13:21	Potuz:	+1
+00:13:30	FLCL:	Imho it can't be named exactly frozen unless we widely test it and in big networks across implementations
+00:13:30	Łukasz Rozmej:	Replying to "I think eth/72 - spa..."
+
+optionally is fine as early testing, but not mandatory
+00:13:46	Potuz:	I want that and also the bid changes
+00:13:55	Barnabas:	fcu4 with targetgas
+00:14:18	FLCL:	Replying to "I think eth/72 - spa..."
+
+and try to attack it also maybe
+00:14:29	Potuz:	ideally we want that decided today and it should be very easy on the EL side
+00:14:53	Barnabas:	PR we are discussing: https://github.com/ethereum/consensus-specs/pull/5235
+00:15:24	Toni Wahrstätter:	Btw, that's the eth/71 PR for devp2p. Some have reviewed it already, felix is also on it, but would then be great to have a few more eyes on it and get it merged:
+https://github.com/ethereum/devp2p/pull/264
+00:15:41	Potuz:	https://github.com/ethereum/consensus-specs/pull/5236
+00:15:43	terence:	Target  here does not mean limit / 2 like today right? 
+It literally means the limit
+00:15:49	Potuz:	This needs to be in that devnet too
+00:16:09	Potuz:	@terence it's not gas target is gas limit target
+00:16:16	Potuz:	or rather target gas limit
+00:16:21	Potuz:	instead of gas target
+00:16:29	Nico Flaig:	suggested_gas_limit?
+00:16:36	Nico Flaig:	or preferred_gas_limit?
+00:16:56	Łukasz Rozmej:	TARGET_GAS_LIMIT
+00:17:00	FLCL:	Reacted to "TARGET_GAS_LIMIT" with 👍
+00:17:03	CPerezz:	Reacted to "TARGET_GAS_LIMIT" with 👍
+00:17:05	Potuz:	Reacted to "TARGET_GAS_LIMIT" with 👍
+00:17:06	Parithosh Jayanthi:	Reacted to "TARGET_GAS_LIMIT" with 👍
+00:17:22	Nico Flaig:	Reacted to "TARGET_GAS_LIMIT" with 👍
+00:17:26	Justin Traglia:	Reacted to "TARGET_GAS_LIMIT" with 👍
+00:17:48	Barnabas:	silence = agreement 😂
+00:17:49	Mario Vega:	What happens if there’s no configured target in the CL? Does it just send zero?
+00:17:55	Barnabas:	thats how decisions made for all ELs
+00:17:59	spencer:	Reacted to "silence = agreemen..." with ➕
+00:18:01	Barnabas:	client’s default?
+00:18:06	Toni Wahrstätter:	Replying to "Target  here does no..." 
+
+ Right, it's more "target to push the gas limit towards"
+00:18:21	Potuz:	all clients have a default
+00:18:29	Potuz:	today we send it to the builder
+00:18:37	Justin Traglia:	Might want to quickly mention these two:
+
+https://github.com/ethereum/consensus-specs/pull/5223
+https://github.com/ethereum/consensus-specs/pull/5227
+00:18:38	Ben Adams:	Set your defaults; 300M for reference ;)
+00:18:57	Stefan Starflinger:	Reacted to "Set your defaults; 300M for reference ;)" with ❤️
+00:19:02	Mario Vega:	Reacted to "Set your defaults; 3..." with 🔥
+00:19:16	CPerezz:	Reacted to "Set your defaults; 3..." with 👀
+00:19:53	Nico Flaig:	CL devs can approve here https://github.com/ethereum/consensus-specs/pull/5235 
+
+EL devs can approve here https://github.com/ethereum/execution-apis/pull/796
+00:20:33	Parithosh Jayanthi:	Replying to "CL devs can approve ..."
+
+https://github.com/ethereum/consensus-specs/pull/5223
+00:20:42	Parithosh Jayanthi:	Replying to "CL devs can approve ..."
+
+https://github.com/ethereum/consensus-specs/pull/5236
+00:21:10	Mario Vega:	All CLs need to introduce a brand new flag right?
+00:21:17	Barnabas:	no?
+00:21:22	Nico Flaig:	we already have this
+00:21:31	Nico Flaig:	from a user pov, nothing changes either
+00:21:36	Barnabas:	Reacted to "from a user pov, not..." with 👍
+00:22:59	terence:	When devnet4?
+00:23:02	Potuz:	should be trivial on our part
+00:23:07	spencer:	Reacted to "When devnet4?" with ➕
+00:23:07	Barnabas:	Replying to "When devnet4?"
+
+EOW?
+00:23:13	terence:	Replying to "When devnet4?"
+
+Sure
+00:23:17	Barnabas:	Reacted to "Sure" with 🚢
+00:23:18	CPerezz:	Reacted to "Sure" with 🎉
+00:23:22	terence:	Replying to "When devnet4?"
+
+But merge the spec prs first
+00:23:22	Mario Vega:	Reacted to "Sure" with 🚢
+00:23:25	Nico Flaig:	Reacted to "Sure" with 🚢
+00:23:26	Barnabas:	Reacted to "But merge the spec p..." with 😂
+00:24:10	Parithosh Jayanthi:	Could someone post the dual deadline PR?
+00:24:12	Barnabas:	which pr are you talking about potuz?
+00:24:24	Justin Traglia:	https://github.com/ethereum/consensus-specs/pull/5212
+00:24:30	Parithosh Jayanthi:	Reacted to "But merge the spec prs first" with 😂
+00:24:40	spencer:	Replying to "When devnet4?"
+
+what el branch are you using? bal-devnet-7 launches next monday right?
+00:25:03	terence:	https://github.com/ethereum/consensus-specs/pull/5210
+00:25:17	Justin Traglia:	They sound reasonable to me, but we need other clients to weigh in.
+00:26:24	Justin Traglia:	@Potuz I like the idea of using the same deadlines initially, then tweaking later. Could you make this change?
+00:26:43	Nico Flaig:	lgtm
+00:27:01	Dustin:	General skepicism of merging a mechanism specifically designed to be disabled
+00:27:09	Dustin:	(dual deadlines)
+00:27:09	Potuz:	would we need two PRs? then? I'd ask if we're fine with 6 seconds already @Justin Traglia cause we're mostly sending immediately now anyway
+00:27:29	Potuz:	I wanted to reply to Dustin lol :)
+00:27:52	kingy_sigp:	lgtm
+00:28:59	Toni Wahrstätter:	The EL needs a number for setting the  appropriate gas limit. So CLs agreeing on an execution time ELs are guaranteed is necessary, so specing it makes sense, even if it's not a consensus rule.
+00:29:19	Iván | ethrex:	Reacted to "Sure" with 🚢
+00:30:09	Justin Traglia:	Replying to "@Potuz I like the id..."
+
+Not a strong opinion on this btw. I just thought it would give clients more time to implement this, since it wouldn’t block the new devnet.
+00:31:17	Barnabas:	We usually go from spec to tooling
+00:31:43	Justin Traglia:	Reacted to "We usually go from s..." with 👍
+00:32:36	Potuz:	@Toni Wahrstätter I think the EL should really be working with 6 seconds execution for benches
+00:32:48	Potuz:	this is a very reasonable target as discussed in Svalbard
+00:32:57	Potuz:	we need to make sure that all clients do fit in that though
+00:33:05	Barnabas:	alpha 8 by tomorrow?
+00:33:24	Justin Traglia:	Replying to "alpha 8 by tomorrow?"
+
+As soon as possible 🙂
+00:33:34	Toni Wahrstätter:	Reacted to @Toni Wahrstätter I ... with "🙏"
+00:33:43	Barnabas:	Reacted to "As soon as possible ..." with 🚢
+00:33:49	Justin Traglia:	https://github.com/ethereum/consensus-specs/pull/5227
+00:34:13	Potuz:	Replying to "@Toni Wahrstätter I ..."
+
+The question is that with this we should also be working with a max of 2 seconds for broadcasting at the moment
+00:34:36	Potuz:	Replying to "@Toni Wahrstätter I ..."
+
+So we would need to make sure of these boundaries and check if this is reasonable
+00:36:01	terence:	The nice thing is you can delete these code after the fork in subsequent release
+00:36:09	Justin Traglia:	Reacted to "The nice thing is yo..." with 👍
+00:36:14	Potuz:	Reacted to "The nice thing is yo..." with 👍
+00:36:28	Toni Wahrstätter:	Replying to "@Toni Wahrstätter I ..." 
+
+ Yeah, we should make sure to have "enough" time for propagation and would then set the gas limit based on the worst-case execution time ELs have
+00:36:56	Potuz:	Replying to "The nice thing is yo..."
+
+I think it's useful anyway right? we just keep the pending queue with a prevalidated sig-checks and then processing pending deposits becomes faster
+00:36:59	CPerezz:	Replying to "@Toni Wahrstätter I ..."
+
+We are working on this on the repricing-side too
+00:37:17	Potuz:	Reacted to "We are working on th..." with 👏
+00:37:46	CPerezz:	Replying to "@Toni Wahrstätter I ..."
+
+Together with the P2P team.
+
+Hopefully we get some results soon. Already started at: https://github.com/ethpandaops/benchmarkoor/pull/236
+00:38:18	spencer:	Can discuss 5 scoping in ACDT
+00:38:23	Potuz:	I would prefer we stop adding features and we complete implementations? dealing with full blob propagation and start actually testing forkchoice?
+00:38:26	Barnabas:	Reacted to "Can discuss 5 scopin..." with 👍
+00:38:37	Potuz:	we haven't done a single test of attestation accuracy and forkchoice testing
+00:39:18	Parithosh Jayanthi:	https://github.com/ethereum/EIPs/pull/11607
+00:40:15	Toni Wahrstätter:	The only EL solution is to change the deposit contract.
+So this should be solved on the CL somehow
+00:41:02	Etan (Nimbus):	One issue about deposit time is that most of the effort for Pectra was for hypothetical ZK VMs that want to prove beacon STF. Why did we reduce the number of attestations just to now make it way worse than it ever was? Just add a queue haha
+00:41:31	Etan (Nimbus):	we don’t need churn limits, just a signature ratelimit
+00:41:34	Barnabas:	queue doesn’t solve the 8193 overflow issue
+00:41:44	Etan (Nimbus):	Replying to "One issue about depo..."
+
+the overflow issue is just pending 7688
+00:41:45	Parithosh Jayanthi:	Replying to "One issue about depo..."
+
+*8193
+00:41:59	Barnabas:	Reacted to "*8193" with 👍
+00:42:03	Etan (Nimbus):	Replying to "One issue about depo..."
+
+like, set gas limit to a way that avoids the problem, then go 7688
+00:42:20	Nico Flaig:	Reacted to "As soon as possible ..." with 🚢
+00:42:38	Nico Flaig:	Reacted to "The nice thing is yo..." with 👍
+00:43:29	Barnabas:	we probably want these benches from everyone
+00:43:39	Barnabas:	prysm/teku should be ready, wanna hear from others
+00:43:42	terence:	glamsterdam-denvet-3-deposits
+00:44:15	kingy_sigp:	yeah we can do that
+00:45:46	Etan (Nimbus):	where are clients on 7688? can add your branch to kurtosis https://github.com/ethereum/consensus-specs/pull/4630#issuecomment-4377125436
+00:46:51	Parithosh Jayanthi:	https://github.com/ethereum/execution-apis/pull/793 
+
+https://github.com/ethereum/execution-apis/pull/764
+00:47:35	Potuz:	can you describe the difference in the two PRs? why are they two different proposals?
+00:48:12	Barnabas:	Replying to "can you describe the..."
+
+Marius wants to refactor the whole engine api
+00:48:29	Potuz:	we strongly support merging this. And I'll switch out of geth unless they implement this :)
+00:48:44	FLCL:	We need help from a CL, a solid implementation we could test against
+00:49:40	Barnabas:	Reacted to "We need help from a ..." with 💯
+00:50:19	FLCL:	we support all stuff like progressive containers also
+00:50:23	Barnabas:	Replying to "we strongly support ..."
+
+prysm implementation wen?
+00:51:28	Łukasz Rozmej:	we support both SSZ and JSON at the same time
+00:51:30	Potuz:	Replying to "we strongly support ..."
+
+there's a PR by Giulio under review, not sure of the status of that, seems that Nethermind opened a PR on top of that PR so it may be difficult to review and may be faster if we work this from scratch or get Nethermind + Erigon to agree to merge first
+00:51:45	Barnabas:	Reacted to "there's a PR by Giul..." with 👍
+00:53:14	Łukasz Rozmej:	This isn't urgent so we can wait for discusion to ACDT and ACDE
+00:53:18	lightclient:	What was the question?
+00:53:33	Barnabas:	Replying to "What was the questio..."
+
+how married are you to https://github.com/ethereum/execution-apis/pull/793 ?
+00:53:37	Dustin:	Replying to "can you describe t..."
+
+yes it could use some refactoring
+00:53:52	lightclient:	I don’t think there is a team position
+00:53:53	Barnabas:	Replying to "can you describe the..."
+
+could we do this as a two step process tho?
+00:54:00	Barnabas:	Replying to "can you describe the..."
+
+lets get ssz in first, then do the refactor?
+00:54:05	Barnabas:	Reacted to "I don’t think there ..." with 👍
+00:54:06	lightclient:	But will discuss internally before ACDT
+00:54:25	Dustin:	Replying to "can you describe t..."
+
+a lot of the SSZ urgency seems to be due to slow JSON parsers
+00:54:26	lightclient:	Replying to "can you describe the..."
+
+I think jacek also wanted to refactor?
+00:54:33	Parithosh Jayanthi:	https://github.com/ethp2p/ethp2p/pull/5
+00:54:35	Dustin:	Replying to "can you describe t..."
+
+yeah
+00:57:12	Łukasz Rozmej:	Reacted to "But will discuss int..." with 👍
+00:59:21	Potuz:	let's get rid entirely of IHAVE IWANT for attestations please
+01:01:28	Łukasz Rozmej:	Replying to "can you describe the..."
+
+We thought we had a very fast JSON RPC parser and in our synthetic testing routing though REST + SSZ is still 5x-10x faster (!)
+01:02:12	Barnabas:	Replying to "can you describe the..."
+
+yeah JSON parsing is the biggest bottleneck by far for every EL / CLs
+01:03:10	Łukasz Rozmej:	Replying to "can you describe the..."
+
+and we have AVX optimized json parser (numbers are from AVX-256, on AVX-512 path it might be only 2.5x-5x faster)
+01:03:38	Barnabas:	whats the rollout plan for ethp2p? Is the idea to have ethp2p implemented by h* and cut over to it from libp2p at the fork transition, or do we plan to have both implemented and both running for a fork?
+01:03:52	Łukasz Rozmej:	but good AVX-512 in only on Zen 5 CPU's
+01:03:54	Francesco Risitano:	Replying to "can you describe the..."
+
+Json also has approx 2x overhead on payload size because it encodes bytes as hex nibbles which impacts transport
+01:04:02	Greg K | Lido:	Reacted to "whats the rollout ..." with 👍
+01:04:12	Łukasz Rozmej:	Reacted to "Json also has approx..." with 👍
+01:05:43	Parithosh Jayanthi:	Time boxing to 5mins from now. Please keep your questions ready!
+01:06:05	Potuz:	I have like 10 😁
+01:06:20	Will Corcoran:	Reacted to "I have like 10 😁" with 🤣
+01:06:45	Greg K | Lido:	How does this affect the fast finality roadmap?
+01:07:17	Ben Edgington:	Replying to "How does this affect..."
+
+Yes, this is useful/necessary.
+01:07:20	Parithosh Jayanthi:	Reacted to "I have like 10 😁" with 🤣
+01:08:38	Greg K | Lido:	As an incremental step, or even long term? MEaning, 4-slot rounds could be 2-slot rounds or 128K attester cap could be 256K attester cap?
+01:08:50	Greg K | Lido:	Reacted to "Yes, this is usefu..." with 👍
+01:10:19	Ben Edgington:	Replying to "How does this affect..."
+
+I'm not thinking in terms of attester caps right now. This would allow finality voting rounds to be shortened.
+01:10:36	Greg K | Lido:	Reacted to "I'm not thinking i..." with 👍
+01:11:01	Greg K | Lido:	Replying to "How does this affe..."
+
+U mean currently, from 13 mins to ~6.5?
+01:11:47	Barnabas:	ethp2p
+[Full message cannot be displayed on this version]
+01:11:56	Ben Edgington:	Replying to "How does this affect..."
+
+Yes, and maybe better once we have decoupled consensus - there is more space in the slot for finality votes.
+01:12:02	Greg K | Lido:	Reacted to "Yes, and maybe bet..." with 👍
+01:12:19	Potuz:	ooooor we could just simply deprecate and exit 0x01 vals :D
+01:12:37	Bosul Mun:	Reacted to "ethp2p" with 😂
+01:12:47	Barnabas:	Replying to "ooooor we could just..."
+
+oh
+01:12:51	Parithosh Jayanthi:	https://github.com/frisitano/EIPs/blob/feat/eip8025/EIPS/eip-8025.md
+01:12:55	Francesco Risitano:	EIP8025
+Slides: https://frisitano.github.io/slides/presentations/eip8025-acdc-proposal-2026-05-14/index.html#1
+EIP: https://github.com/frisitano/EIPs/blob/feat/eip8025/EIPS/eip-8025.md
+EIP PR: https://github.com/ethereum/EIPs/pull/11604
+01:12:55	Barnabas:	Replying to "ooooor we could just..."
+
+sounds like I need to write an EIP
+01:13:01	Sukun Tarachandani:	Reacted to "I'm not thinking in ..." with 👍
+01:13:34	Parithosh Jayanthi:	Timeboxing to 15 mins, please have questions prepared
+01:13:34	Justin Traglia:	Reacted to "ooooor we could just..." with 😅
+01:13:50	Parithosh Jayanthi:	Replying to "ooooor we could just..."
+
+So we leave the poor 0x00 Vals alone right?
+01:14:01	Barnabas:	Replying to "ooooor we could just..."
+
+there aren’t too many of those
+01:14:14	Potuz:	Replying to "ooooor we could just..."
+
+did we ping Vitalik to change his 😁?
+01:14:15	lightclient:	if it’s optional does it need to be in a hardfork?
+01:14:33	Potuz:	Reacted to "if it’s optional doe..." with 👍
+01:14:38	Barnabas:	Replying to "ooooor we could just..."
+
+just straight up rug
+01:14:38	Greg K | Lido:	Reacted to "if it’s optional ..." with 👍
+01:14:44	lightclient:	just ship it
+01:14:47	Parithosh Jayanthi:	Reacted to "if it’s optional does it need to be in a hardfork?" with 👍
+01:14:49	lightclient:	(optionally)
+01:15:17	Potuz:	Replying to "if it’s optional doe..."
+
+I think the main question is how comfortable are we allowing such nodes attesting
+01:15:29	Mario Vega:	Reacted to "I think the main que..." with 👀
+01:15:33	lightclient:	Replying to "if it’s optional does it need to be in a hardfork?"
+
+how comfortable are you?
+01:15:41	ignacio:	In the slides soon we'll touch a bit on this OP question.
+01:16:11	Potuz:	Replying to "if it’s optional doe..."
+
+zero, I need to study to try to understand and verify the validity of the verifier :)
+01:16:21	lightclient:	Reacted to "zero, I need to study to try to understand and verify the validity of the verifier :)" with 💕
+01:16:22	Barnabas:	Replying to "if it’s optional doe..."
+
+I mean optional proofs excplictly say that you still need to run an EL to attest
+01:16:29	Mario Vega:	Reacted to "zero, I need to stud..." with 💕
+01:16:30	Potuz:	Replying to "if it’s optional doe..."
+
+question is how many people are capable of vouching for this today
+01:16:49	Justin Traglia:	Reacted to "(optionally)" with 😄
+01:16:59	Satyajit:	Reacted to "(optionally)" with 😄
+01:17:35	Potuz:	Replying to "if it’s optional doe..."
+
+@Barnabas if this is optional for full nodes that's more than fine to me. In some sense even not verifying the payload at all is kinda reasonable for a full node that trusts validators.
+01:18:05	Potuz:	Replying to "if it’s optional doe..."
+
+so verifying the proof is a net positive
+01:18:26	Parithosh Jayanthi:	Reacted to "(optionally)" with 😄
+01:18:51	Potuz:	Replying to "if it’s optional doe..."
+
+but shis slide says "validators"
+01:19:01	Barnabas:	Replying to "if it’s optional doe..."
+
+full nodes can just run optimisic mode already no?
+01:19:17	Iván | ethrex:	Reacted to "In the slides soon w..." with 👍
+01:19:21	Jihoon:	Replying to "if it’s optional doe..."
+
+The proof verification is an additional work that you'd do if you opt-in. When the proof and the EL disagree, you follow what the EL says.
+01:19:43	Jihoon:	Replying to "if it’s optional doe..."
+
+https://ethereum.github.io/consensus-specs/_features/eip8025/beacon-chain/
+01:20:04	Potuz:	Replying to "if it’s optional doe..."
+
+so is it just for testing?
+01:20:27	Jihoon:	Replying to "if it’s optional doe..."
+
+Mainly for metrics AFAIU
+01:20:34	Potuz:	Reacted to "Mainly for metrics A..." with 👍
+01:21:23	Barnabas:	Replying to "if it’s optional doe..."
+
+I argue to make it highly recommended, but not needed. https://github.com/ethereum/consensus-specs/pull/5151
+01:22:17	Potuz:	Is the PR based on Gloas or Fulu?
+01:22:45	Parithosh Jayanthi:	Fulu afaik
+01:22:51	Jihoon:	Replying to "Is the PR based on G..."
+
+Fulu. People were waiting for Glam to be stablized.
+01:23:02	Barnabas:	Reacted to "Fulu. People were wa..." with 💯
+01:23:17	Mario Vega:	Reacted to "Fulu. People were wa..." with 💯
+01:23:18	ignacio:	can you hear me?
+01:23:20	Toni Wahrstätter:	Would it need everyone to propagate proofs or only those validators that want to opt-in?
+01:23:22	Parithosh Jayanthi:	7 mins left for the topic and it’d be nice to do questions too🙂
+01:23:26	Louis:	Replying to "can you hear me?"
+
+no
+01:23:39	Potuz:	Replying to "Is the PR based on G..."
+
+yeah just looking, Gloas should make it better right?
+01:23:46	Potuz:	Replying to "Is the PR based on G..."
+
+cause you get more time to broadcast
+01:23:56	donnoh | L2BEAT:	Reacted to "yeah just looking, Gloas should make it better right?" with 👍
+01:24:11	Kevaundray Wedderburn:	Replying to "Would it need everyo..."
+
+Only those that opt in
+01:24:38	Toni Wahrstätter:	Reacted to Only those that opt ... with "👍"
+01:24:44	Jihoon:	Replying to "Is the PR based on G..."
+
+Of course, but I don't think there will be any significant change other than proof propagation time. The main change is verifying execution proof after calling newPayload.
+01:25:19	Potuz:	Replying to "Is the PR based on G..."
+
+yeah the spec shouldn't change much I assume, but you get about 9 seconds instead of 2
+01:25:35	Iván | ethrex:	Reacted to "Only those that opt ..." with 👍
+01:25:49	Parithosh Jayanthi:	Could we mostly stick to CL implications for this call?
+01:25:53	Barnabas:	Replying to "Is the PR based on G..."
+
+single 5090 does proof generation in about 6s now with 1tx
+01:26:05	Potuz:	Replying to "Is the PR based on G..."
+
+I'm talking about attesters
+01:26:18	Potuz:	Replying to "Is the PR based on G..."
+
+The builder will provide the proofs in the future
+01:26:33	Barnabas:	Replying to "Is the PR based on G..."
+
+assuming we gonna have mandatory proofs
+01:26:56	Potuz:	Replying to "Could we mostly stic..."
+
+this is useful though
+01:27:17	Parithosh Jayanthi:	Yeah I can add some more time for the topic today, I doubt we can cover all questions even then
+01:27:32	raxhvl:	to understand the eip, please read the eip - ignacio, 2026
+01:27:45	spencer:	Reacted to "to understand the ..." with 😄
+01:27:48	Bharath:	Reacted to "to understand the ei..." with 😎
+01:27:49	Sukun Tarachandani:	Reacted to "to understand the ei..." with 😄
+01:27:54	Potuz:	Reacted to "to understand the ei..." with 😄
+01:27:57	Parithosh Jayanthi:	Reacted to "to understand the eip, please read the eip - ignacio, 2026" with 😄
+01:27:58	Toni Wahrstätter:	Reacted to to understand the ei... with "😎"
+01:27:59	Ladislaus:	Hat auf "to understand the ei..." mit 😄 reagiert
+01:28:00	donnoh | L2BEAT:	Reacted to "assuming we gonna have mandatory proofs" with 😁
+01:28:19	donnoh | L2BEAT:	Replying to "Is the PR based on Gloas or Fulu?"
+
+i hope we can get mandatory proofs for rollups at least :p
+01:28:35	cody:	Reacted to "to understand the ..." with 😎
+01:28:40	donnoh | L2BEAT:	Reacted to "to understand the eip, please read the eip - ignacio, 2026" with 😄
+01:28:40	Potuz:	Replying to "Is the PR based on G..."
+
+what does this mean?
+01:28:40	Barnabas:	can we standardize the name? 
+
+is it zkevm or zkvm?
+01:28:40	donnoh | L2BEAT:	Reacted to "to understand the eip, please read the eip - ignacio, 2026" with 😎
+01:28:53	Barnabas:	Reacted to "to understand the ei..." with 😄
+01:28:54	Parithosh Jayanthi:	Reacted to "can we standardize the name? 
+
+is it zkevm or zkvm?" with 🤪
+01:29:03	Toni Wahrstätter:	Replying to "Is the PR based on G..." 
+
+ We'd do it to test things, but on standard nodes, and not on validators, right?
+Otherwises, if they have to download and verify the proof + reexecute, they might attest too late?
+01:29:25	lightclient:	Reacted to "can we standardize the name? 
+
+is it zkevm or zkvm?" with 🤪
+01:29:30	donnoh | L2BEAT:	Replying to "Is the PR based on Gloas or Fulu?"
+
+native rollups / native proof verification @Potuz
+01:29:38	ignacio:	Reacted to "to understand the ei..." with 😄
+01:29:44	lightclient:	i didn’t catch why it needs protocol changes for an optional mechanism
+01:30:35	Potuz:	can we make it explicit that vals that opt in still need the EL to run? And that also validators should not wait to the proof verification to attest?
+01:30:39	Iván | ethrex:	Reacted to "i hope we can get ma..." with 👍
+01:30:56	Barnabas:	its currently in the spec yes (first part, not sure about the second)
+01:31:42	cody:	Replying to "can we standardize..."
+
+zkevm = zkvm + guest program. team name is zkevm, effort is zkevm, some things like certain standards are properly zkvm. note i have not capitalized anything😉
+01:31:43	Potuz:	Replying to "can we make it expli..."
+
+it seems to be locking on newPayload
+01:31:44	Toni Wahrstätter:	But they still engage in propagating proofs, which might slow down blob + payload download and upload. No validator should use it, only non-validating nodes
+01:31:50	lightclient:	thanks!
+01:31:50	Iván | ethrex:	Reacted to "zkevm = zkvm + guest..." with ❤️
+01:31:59	donnoh | L2BEAT:	Replying to "i didn’t catch why it needs protocol changes for an optional mechanism"
+
+maybe it makes sense to make an option mandatory to be provided? (speculating)
+01:32:06	Jihoon:	Replying to "can we make it expli..."
+
+How does LH prototype handle this? @Francesco Risitano
+01:32:16	donnoh | L2BEAT:	Reacted to "can we standardize the name? 
+
+is it zkevm or zkvm?" with 🤪
+01:32:27	donnoh | L2BEAT:	Reacted to "zkevm = zkvm + guest program. team name is zkevm, effort is zkevm, some things like certain standards are properly zkvm. note i have not capitalized anything😉" with ❤️
+01:33:22	Potuz:	thanks that was the reason that I was asking for newPayload
+01:33:33	ignacio:	Reacted to "thanks!" with 🙏

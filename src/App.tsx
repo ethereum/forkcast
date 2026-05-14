@@ -23,7 +23,6 @@ import { getUpgradeById } from './data/upgrades';
 import { useAnalytics } from './hooks/useAnalytics';
 import { ThemeProvider } from './contexts/ThemeContext';
 import ExternalRedirect from './components/ExternalRedirect';
-import { AnnouncementBanner } from './components/ui';
 import SiteNav, { type SiteNavProps } from './components/ui/SiteNav';
 
 const stripTrailingSlashes = (p: string): string =>
@@ -97,17 +96,6 @@ function ScrollToTop() {
 function SiteLayout({ children, navProps }: { children?: ReactNode; navProps?: SiteNavProps }) {
   return (
     <>
-      <AnnouncementBanner
-        storageKey="epf7-banner-dismissed"
-        title="Ethereum Protocol Fellowship (EPF) Cohort 7 — Applications open until May 13"
-        links={[
-          {
-            url: 'https://blog.ethereum.org/2026/04/30/epf-7',
-            label: 'Learn more',
-            primary: true,
-          },
-        ]}
-      />
       <SiteNav {...navProps} />
       <main>
         {children ?? <Outlet />}

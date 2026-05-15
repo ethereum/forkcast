@@ -4,10 +4,22 @@ import { eipsData } from '../../data/eips';
 import { useComplexityData, getComplexityForEip } from '../../domain/complexity/useComplexityData';
 import { getComplexityTierColor, getComplexityTierEmoji } from '../../domain/complexity/complexity';
 import type { ComplexityTier } from '../../domain/complexity/types';
-import { getInclusionStage, getLaymanTitle, getProposalPrefix, getSpecificationUrl, getStageAbbreviation } from '../../utils';
+import {
+  getInclusionStage,
+  getInclusionStageSortRank,
+  getLaymanTitle,
+  getProposalPrefix,
+  getSpecificationUrl,
+  getStageAbbreviation,
+} from '../../utils';
 import { getInclusionStageColor } from '../../utils/colors';
 import { InclusionStage } from '../../types';
-import { getTestCountForEip, getTestDirectoryUrl } from '../../domain/execution-spec-tests/testCounts';
+import {
+  compareExecutionSpecTestCounts,
+  getExecutionSpecTestCaseCount,
+  getExecutionSpecTestCountForEip,
+  getExecutionSpecTestDirectoryUrl,
+} from '../../domain/execution-specs/execution-specs';
 
 type SortField = 'eip' | 'complexity' | 'tier' | 'stage' | 'tests';
 type SortDirection = 'asc' | 'desc';
@@ -63,7 +75,7 @@ const TestComplexityTab: React.FC = () => {
       eip,
       layer,
       complexity: getComplexityForEip(complexityMap, eip.id),
-      testCount: getTestCountForEip(eip.id),
+      testCount: getExecutionSpecTestCountForEip(eip.id),
     }));
   }, [forkEips, complexityMap]);
 
@@ -116,24 +128,12 @@ const TestComplexityTab: React.FC = () => {
           break;
         }
         case 'tests': {
-          const casesA = a.testCount ? (a.testCount.testCases ?? a.testCount.testFunctions) : 0;
-          const casesB = b.testCount ? (b.testCount.testCases ?? b.testCount.testFunctions) : 0;
-          comparison = casesA - casesB;
-          break;
+          return compareExecutionSpecTestCounts(a.testCount, b.testCount, sortDirection);
         }
         case 'stage': {
-          const stageOrder: Record<string, number> = {
-            'Included': 1,
-            'Scheduled for Inclusion': 2,
-            'Considered for Inclusion': 3,
-            'Proposed for Inclusion': 4,
-            'Declined for Inclusion': 5,
-            'Withdrawn': 6,
-            'Unknown': 7,
-          };
           const stageA = getInclusionStage(a.eip, SELECTED_FORK);
           const stageB = getInclusionStage(b.eip, SELECTED_FORK);
-          comparison = (stageOrder[stageA] || 99) - (stageOrder[stageB] || 99);
+          comparison = getInclusionStageSortRank(stageA) - getInclusionStageSortRank(stageB);
           break;
         }
       }
@@ -462,12 +462,12 @@ const TestComplexityTab: React.FC = () => {
                         </span>
                         {testCount && (
                           <a
-                            href={getTestDirectoryUrl(testCount)}
+                            href={getExecutionSpecTestDirectoryUrl(testCount)}
                             target="_blank"
                             rel="noopener noreferrer"
                             className="text-xs text-blue-600 dark:text-blue-400"
                           >
-                            {testCount.testCases ?? testCount.testFunctions} cases / {testCount.testFunctions} fn
+                            {getExecutionSpecTestCaseCount(testCount)} cases / {testCount.testFunctions} fn
                           </a>
                         )}
                       </div>
@@ -656,13 +656,13 @@ const TestComplexityTab: React.FC = () => {
                     <td className="px-3 py-3 text-center">
                       {testCount ? (
                         <a
-                          href={getTestDirectoryUrl(testCount)}
+                          href={getExecutionSpecTestDirectoryUrl(testCount)}
                           target="_blank"
                           rel="noopener noreferrer"
                           className="inline-grid grid-cols-[auto_auto] gap-x-1 text-xs leading-tight group"
                         >
                           <span className="text-right tabular-nums font-medium text-blue-700 dark:text-blue-300 group-hover:text-blue-900 dark:group-hover:text-blue-200 transition-colors">
-                            {testCount.testCases ?? testCount.testFunctions}
+                            {getExecutionSpecTestCaseCount(testCount)}
                           </span>
                           <span className="text-left font-medium text-blue-700 dark:text-blue-300 group-hover:text-blue-900 dark:group-hover:text-blue-200 transition-colors">
                             cases

@@ -1,6 +1,6 @@
 import { RatingSystem, ClientStance, EipAggregateStance } from '../types/prioritization';
 import { EIP } from '../types/eip';
-import { getInclusionStage, getLaymanTitle } from './index';
+import { getInclusionStage, getInclusionStageSortRank, getLaymanTitle } from './index';
 
 /**
  * Normalize a raw rating to a 1-5 scale based on the rating system
@@ -310,16 +310,7 @@ export function sortEipAggregates(
         comparison = a.stanceCount - b.stanceCount;
         break;
       case 'stage': {
-        const stageOrder: Record<string, number> = {
-          'Included': 1,
-          'Scheduled for Inclusion': 2,
-          'Considered for Inclusion': 3,
-          'Proposed for Inclusion': 4,
-          'Declined for Inclusion': 5,
-          'Withdrawn': 6,
-          'Unknown': 7,
-        };
-        comparison = (stageOrder[a.inclusionStage] ?? 99) - (stageOrder[b.inclusionStage] ?? 99);
+        comparison = getInclusionStageSortRank(a.inclusionStage) - getInclusionStageSortRank(b.inclusionStage);
         // If same stage, sort by stance count (more stances first)
         if (comparison === 0) {
           return b.stanceCount - a.stanceCount;

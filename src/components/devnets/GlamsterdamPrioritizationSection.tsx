@@ -6,13 +6,24 @@ import { getComplexityTierColor, getComplexityTierEmoji } from '../../domain/com
 import type { EipComplexity } from '../../domain/complexity/types';
 import { usePrioritizationData } from '../../hooks/usePrioritizationData';
 import { getScoreColor } from '../../utils/prioritization';
-import { getInclusionStage, getLaymanTitle, getProposalPrefix, getStageAbbreviation } from '../../utils';
+import {
+  getInclusionStage,
+  getInclusionStageSortRank,
+  getLaymanTitle,
+  getProposalPrefix,
+  getStageAbbreviation,
+} from '../../utils';
 import { getInclusionStageColor } from '../../utils/colors';
 import { InclusionStage } from '../../types';
 import { EipAggregateStance } from '../../types/prioritization';
 import { useDevnetNetworks } from '../../hooks/useDevnetNetworks';
-import { getTestCountForEip, getTestDirectoryUrl } from '../../domain/execution-spec-tests/testCounts';
-import type { EipTestCount } from '../../domain/execution-spec-tests/types';
+import {
+  compareExecutionSpecTestCounts,
+  getExecutionSpecTestCaseCount,
+  getExecutionSpecTestCountForEip,
+  getExecutionSpecTestDirectoryUrl,
+  type ExecutionSpecTestCount,
+} from '../../domain/execution-specs/execution-specs';
 import devnetDataRaw from '../../data/devnets/glamsterdam.json';
 
 
@@ -62,7 +73,7 @@ interface CombinedEipData {
   priority: EipAggregateStance | null;
   layer: 'EL' | 'CL' | null;
   devnets: DevnetInfo[];
-  testCount: EipTestCount | null;
+  testCount: ExecutionSpecTestCount | null;
 }
 
 function buildDevnetMap(activeKeys: Set<string>): Map<number, DevnetInfo[]> {
@@ -177,7 +188,7 @@ const GlamsterdamPrioritizationSection: React.FC = () => {
       const stage = getInclusionStage(eip, 'glamsterdam');
       const devnets = devnetMap.get(eip.id) || [];
       const layer = eip.layer || null;
-      const testCount = getTestCountForEip(eip.id);
+      const testCount = getExecutionSpecTestCountForEip(eip.id);
       return { eipId: eip.id, title: getLaymanTitle(eip), stage, complexity, priority, layer, devnets, testCount };
     });
   }, [complexityMap, priorityAggregates, devnetMap]);
@@ -222,11 +233,7 @@ const GlamsterdamPrioritizationSection: React.FC = () => {
           break;
         }
         case 'stage': {
-          const stageOrder: Record<string, number> = {
-            'Included': 1, 'Scheduled for Inclusion': 2, 'Considered for Inclusion': 3,
-            'Proposed for Inclusion': 4, 'Declined for Inclusion': 5, 'Withdrawn': 6, 'Unknown': 7,
-          };
-          comparison = (stageOrder[a.stage] || 99) - (stageOrder[b.stage] || 99);
+          comparison = getInclusionStageSortRank(a.stage) - getInclusionStageSortRank(b.stage);
           break;
         }
         case 'devnets': {
@@ -237,13 +244,7 @@ const GlamsterdamPrioritizationSection: React.FC = () => {
           break;
         }
         case 'tests': {
-          const aCount = a.testCount?.testCases ?? a.testCount?.testFunctions ?? -1;
-          const bCount = b.testCount?.testCases ?? b.testCount?.testFunctions ?? -1;
-          if (aCount === -1 && bCount === -1) return 0;
-          if (aCount === -1) return 1;
-          if (bCount === -1) return -1;
-          comparison = aCount - bCount;
-          break;
+          return compareExecutionSpecTestCounts(a.testCount, b.testCount, sortDirection);
         }
       }
       return sortDirection === 'asc' ? comparison : -comparison;
@@ -493,12 +494,12 @@ const GlamsterdamPrioritizationSection: React.FC = () => {
                     <div className="flex items-center gap-1">
                       <span className="text-slate-400 dark:text-slate-400">Tests:</span>
                       <a
-                        href={getTestDirectoryUrl(item.testCount)}
+                        href={getExecutionSpecTestDirectoryUrl(item.testCount)}
                         target="_blank"
                         rel="noopener noreferrer"
                         className="px-1.5 py-0.5 rounded bg-blue-100 text-blue-700 dark:bg-blue-900/20 dark:text-blue-300"
                       >
-                        {item.testCount.testCases ?? item.testCount.testFunctions}
+                        {getExecutionSpecTestCaseCount(item.testCount)}
                       </a>
                     </div>
                   )}
@@ -567,7 +568,7 @@ const GlamsterdamPrioritizationSection: React.FC = () => {
                 <th
                   className="px-4 py-3 text-center text-sm font-medium text-slate-700 dark:text-slate-300 cursor-pointer hover:bg-slate-100 dark:hover:bg-slate-600/50"
                   onClick={() => handleSort('tests')}
-                  title="Test function count from execution-spec-tests"
+                  title="Test count from execution-specs"
                 >
                   <div className="flex items-center justify-center gap-2">
                     Tests
@@ -669,13 +670,13 @@ const GlamsterdamPrioritizationSection: React.FC = () => {
                       <td className="px-4 py-3 text-center">
                         {item.testCount ? (
                           <a
-                            href={getTestDirectoryUrl(item.testCount)}
+                            href={getExecutionSpecTestDirectoryUrl(item.testCount)}
                             target="_blank"
                             rel="noopener noreferrer"
                             className="inline-block px-2 py-0.5 text-xs font-medium rounded bg-blue-100 text-blue-700 dark:bg-blue-900/20 dark:text-blue-300 hover:bg-blue-200 dark:hover:bg-blue-900/40 transition-colors"
-                            title={`${item.testCount.testCases ?? item.testCount.testFunctions} test cases (${item.testCount.testFunctions} functions in ${item.testCount.testFiles} files)`}
+                            title={`${getExecutionSpecTestCaseCount(item.testCount)} test cases (${item.testCount.testFunctions} functions in ${item.testCount.testFiles} files)`}
                           >
-                            {item.testCount.testCases ?? item.testCount.testFunctions}
+                            {getExecutionSpecTestCaseCount(item.testCount)}
                           </a>
                         ) : (
                           <span className="text-xs text-slate-400 dark:text-slate-400">&mdash;</span>
@@ -722,7 +723,7 @@ const GlamsterdamPrioritizationSection: React.FC = () => {
         <p>
           Test data from{' '}
           <a href="https://github.com/ethereum/execution-specs" target="_blank" rel="noopener noreferrer" className="underline hover:text-slate-600 dark:hover:text-slate-300">
-            execution-spec-tests
+            execution-specs
           </a>
           {' \u2022 '}
           Complexity data from{' '}

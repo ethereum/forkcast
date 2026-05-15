@@ -122,24 +122,6 @@ export const wasHeadlinerCandidate = (eip: EIP, forkName?: string): boolean => {
   return true;
 };
 
-export const getEipIdFromHash = (hash: string): number | null => {
-  const match = /^#eip-(\d+)$/.exec(hash);
-  if (!match) return null;
-
-  const eipId = Number(match[1]);
-  return Number.isSafeInteger(eipId) ? eipId : null;
-};
-
-export interface UpgradeAnchorExpansionState {
-  declined: boolean;
-  headlinerProposals: boolean;
-}
-
-export const getUpgradeAnchorExpansionState = (eip: EIP, forkName?: string): UpgradeAnchorExpansionState => ({
-  declined: getInclusionStage(eip, forkName) === 'Declined for Inclusion',
-  headlinerProposals: wasHeadlinerCandidate(eip, forkName),
-});
-
 /**
  * Check if an EIP was a headliner candidate but was NOT selected
  * (i.e., it should appear in the Headliner Proposals section, not in regular stages)

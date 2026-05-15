@@ -15,9 +15,7 @@ import {
   wasHeadlinerCandidate,
   isUnselectedHeadlinerCandidate,
   sortByLayer,
-  getEipIdFromHash,
-  getEipLayer,
-  getUpgradeAnchorExpansionState
+  getEipLayer
 } from '../utils';
 import {
   getInclusionStageColor,
@@ -69,6 +67,13 @@ const normalizeFilterParams = (
   }
 
   return next;
+};
+
+const ANCHOR_SCROLL_OFFSET = 80;
+
+const scrollToElement = (element: HTMLElement) => {
+  const top = element.getBoundingClientRect().top + window.scrollY - ANCHOR_SCROLL_OFFSET;
+  window.scrollTo({ top, behavior: 'smooth' });
 };
 
 interface PublicNetworkUpgradePageProps {
@@ -176,17 +181,16 @@ const PublicNetworkUpgradePage: React.FC<PublicNetworkUpgradePageProps> = ({
 
   // Expand collapsed sections before scrolling to an EIP anchor inside them.
   useEffect(() => {
-    const anchorEipId = getEipIdFromHash(location.hash);
-    if (anchorEipId === null) return;
+    const match = /^#eip-(\d+)$/.exec(location.hash);
+    if (!match) return;
 
-    const anchorEip = eips.find(eip => eip.id === anchorEipId);
+    const anchorEip = eips.find(eip => eip.id === Number(match[1]));
     if (!anchorEip) return;
 
-    const expansion = getUpgradeAnchorExpansionState(anchorEip, forkName);
-    if (expansion.declined) {
+    if (getInclusionStage(anchorEip, forkName) === 'Declined for Inclusion') {
       setIsDeclinedExpanded(true);
     }
-    if (expansion.headlinerProposals) {
+    if (wasHeadlinerCandidate(anchorEip, forkName)) {
       setIsHeadlinerProposalsExpanded(true);
     }
   }, [location.hash, eips, forkName]);
@@ -199,7 +203,7 @@ const PublicNetworkUpgradePage: React.FC<PublicNetworkUpgradePageProps> = ({
       const scrollTimer = setTimeout(() => {
         const element = document.getElementById(hash);
         if (element) {
-          element.scrollIntoView({ behavior: 'smooth', block: 'start' });
+          scrollToElement(element);
           setActiveSection(hash);
         }
       }, 100);
@@ -432,7 +436,7 @@ const PublicNetworkUpgradePage: React.FC<PublicNetworkUpgradePageProps> = ({
   const scrollToSection = (sectionId: string) => {
     const element = document.getElementById(sectionId);
     if (element) {
-      element.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      scrollToElement(element);
       // Update URL hash
       window.history.pushState(null, '', `#${sectionId}`);
       setActiveSection(sectionId);

@@ -1,0 +1,111 @@
+{
+  "meeting": "RPC Standards #21 - February 23, 2026",
+  "highlights": {
+    "versioning_proposal": [
+      {
+        "timestamp": "00:02:13",
+        "highlight": "V1.0.0 versioning proposal covers 71 methods through Cancun fork"
+      },
+      {
+        "timestamp": "00:06:05",
+        "highlight": "GitHub release process can proceed; Felix will create V1 release"
+      },
+      {
+        "timestamp": "00:08:36",
+        "highlight": "Test runner will target released version instead of latest"
+      },
+      {
+        "timestamp": "00:09:00",
+        "highlight": "Block timestamp added to transaction object; tests need updating"
+      },
+      {
+        "timestamp": "00:11:00",
+        "highlight": "Documentation versioning requires GitHub Actions updates for version selector"
+      }
+    ],
+    "error_code_standardization": [
+      {
+        "timestamp": "00:31:41",
+        "highlight": "X-error-groups extension enables native validation without additional tooling"
+      },
+      {
+        "timestamp": "00:36:25",
+        "highlight": "Spec generation now uses Go tools; translation validates errors during build"
+      },
+      {
+        "timestamp": "00:39:27",
+        "highlight": "Error groups won't be embedded in final OpenRPC JSON; validation moves to build process"
+      }
+    ],
+    "testing_infrastructure": [
+      {
+        "timestamp": "00:48:45",
+        "highlight": "Current conformance testing setup works well; tests tied to specific chain state"
+      },
+      {
+        "timestamp": "00:51:06",
+        "highlight": "I.O. file interpreter library may move to execution-apis repository for reuse"
+      }
+    ],
+    "stalled_prs": [
+      {
+        "timestamp": "00:56:33",
+        "highlight": "GraphQL API considered unmaintained; removal being evaluated"
+      },
+      {
+        "timestamp": "01:00:01",
+        "highlight": "Old stalled PRs should be recreated fresh without baggage"
+      },
+      {
+        "timestamp": "01:03:44",
+        "highlight": "New proposals should be introduced one-per-ACDE for better voting success"
+      }
+    ]
+  },
+  "action_items": [
+    {
+      "timestamp": "00:09:00",
+      "action": "Update RPC tests to include block timestamp in transaction object",
+      "owner": "Felix"
+    },
+    {
+      "timestamp": "00:11:43",
+      "action": "Implement docs versioning with version selector in GitHub Actions",
+      "owner": "Zane/Documentation team"
+    },
+    {
+      "timestamp": "00:32:30",
+      "action": "Update Go toolchain to support error code validation during spec build",
+      "owner": "Felix/EF team"
+    },
+    {
+      "timestamp": "01:06:01",
+      "action": "Recreate stalled PRs as fresh proposals; introduce one per ACDE call",
+      "owner": "Mercy"
+    }
+  ],
+  "decisions": [
+    {
+      "timestamp": "00:06:45",
+      "decision": "Max use gas (PR #746) deferred from V1; not ready for initial release"
+    },
+    {
+      "timestamp": "00:39:09",
+      "decision": "X-error-groups won't be embedded in published OpenRPC; validation at build time only"
+    },
+    {
+      "timestamp": "00:56:57",
+      "decision": "GraphQL tests and potentially GraphQL API itself to be deprecated/removed"
+    },
+    {
+      "timestamp": "01:02:35",
+      "decision": "Stalled PRs (tx pool, receipt proof, etc.) require EIP process; close old PRs"
+    }
+  ],
+  "targets": [
+    {
+      "timestamp": "00:06:27",
+      "target": "V1.0.0 release after test regressions fixed and client pass rates restored"
+    }
+  ]
+}

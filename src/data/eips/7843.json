@@ -1,20 +1,23 @@
 {
   "id": 7843,
   "title": "EIP-7843: SLOTNUM opcode",
-  "status": "Review",
-  "description": "Opcode to get the current slot number.",
+  "status": "Draft",
+  "description": "Opcode to get the current slot number",
   "author": "Marc Harvey-Hill (@Marchhill)",
   "type": "Standards Track",
   "category": "Core",
   "createdDate": "2024-12-06",
   "discussionLink": "https://ethereum-magicians.org/t/eip-7843-slotnum-opcode/22234",
   "reviewer": "staff",
+  "layer": "EL",
   "forkRelationships": [
     {
       "forkName": "Fusaka",
       "statusHistory": [
         {
-          "status": "Declined"
+          "status": "Declined",
+          "call": null,
+          "date": null
         }
       ]
     },
@@ -22,19 +25,28 @@
       "forkName": "Glamsterdam",
       "statusHistory": [
         {
-          "status": "Proposed"
+          "status": "Proposed",
+          "call": null,
+          "date": null
         },
         {
           "status": "Considered",
           "call": "acde/225",
           "date": "2025-12-04"
+        },
+        {
+          "status": "Scheduled",
+          "call": "acde/236",
+          "date": "2026-05-07",
+          "timestamp": 804
         }
       ],
-      "layer": "EL",
-      "champion": {
-        "name": "Marc Harvey-Hill",
-        "discord": "marchhill"
-      }
+      "champions": [
+        {
+          "name": "Marc Harvey-Hill",
+          "discord": "marchhill"
+        }
+      ]
     }
   ],
   "laymanDescription": "Let contracts directly read the current slot number cheaply, removing timestamp math and reducing breakage if Ethereum's slot duration changes later.",
@@ -74,5 +86,6 @@
     "Cheaper than proving slot via EIP-4788; simple 2-gas opcode call.",
     "Slot number available directly in block header and engine API.",
     "No added proving complexity; similar to TIMESTAMP for ZK-VMs."
-  ]
+  ],
+  "tradeoffs": null
 }

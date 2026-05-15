@@ -1,20 +1,23 @@
 {
   "id": 7973,
-  "title": "Warm Account Write Metering",
+  "title": "EIP-7973: Warm Account Write Metering",
   "status": "Draft",
-  "description": "This EIP introduces warm metering for account writes. If an account's nonce, balance or codehash is changed multiple times in one transaction, subsequent writes are cheaper because the state root update is only charged once.",
+  "description": "Introduce warm account writes, decreasing the cost of writing to an account after the first write.",
   "author": "Charles Cooper (@charles-cooper), Maria Silva (@misilva73), Ben Adams (@benaadams)",
   "type": "Standards Track",
   "category": "Core",
   "createdDate": "2025-06-14",
   "discussionLink": "https://ethereum-magicians.org/t/eip-7973-warm-account-write-metering/25907",
   "reviewer": "bot",
+  "layer": "EL",
   "forkRelationships": [
     {
       "forkName": "Glamsterdam",
       "statusHistory": [
         {
-          "status": "Proposed"
+          "status": "Proposed",
+          "call": null,
+          "date": null
         },
         {
           "status": "Declined",
@@ -22,11 +25,12 @@
           "date": "2025-12-18"
         }
       ],
-      "layer": "EL",
-      "champion": {
-        "name": "Charles Cooper",
-        "discord": "big_tech_sux"
-      }
+      "champions": [
+        {
+          "name": "Charles Cooper",
+          "discord": "big_tech_sux"
+        }
+      ]
     }
   ],
   "laymanDescription": "Changes gas rules so once an account is updated in a transaction, later updates to it are cheaper, aligning fees with actual state-root work and reducing the penalty for repeated ETH transfers or future value-transfer opcodes.",
@@ -61,5 +65,6 @@
     "Brings account update costs closer to the actual cost of computing state root changes.",
     "Reduces disparity between multiple native ETH transfers and analogous token transfers in a single transaction.",
     "Avoids unfair gas penalties for future value-transfer opcodes that repeatedly update account balances."
-  ]
+  ],
+  "tradeoffs": null
 }

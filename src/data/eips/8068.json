@@ -1,20 +1,23 @@
 {
   "id": 8068,
-  "title": "Neutral effective balance design",
+  "title": "EIP-8068: Neutral effective balance design",
   "status": "Draft",
-  "description": "This EIP proposes a neutral effective balance design to ensure 0x01 (skimming) and 0x02 (compounding) validators receive equal yields by adjusting hysteresis thresholds, resetting EB after withdrawals, and preventing gaming to support stake consolidation.",
+  "description": "Make the effective balance calculation neutral so that 0x01 and 0x02 validators receive the same yield, thus facilitating consolidation.",
   "author": "Anders Elowsson (@anderselowsson)",
   "type": "Standards Track",
   "category": "Core",
   "createdDate": "2025-10-28",
   "discussionLink": "https://ethereum-magicians.org/t/eip-8068-neutral-effective-balance-design/26015",
   "reviewer": "bot",
+  "layer": "CL",
   "forkRelationships": [
     {
       "forkName": "Glamsterdam",
       "statusHistory": [
         {
-          "status": "Proposed"
+          "status": "Proposed",
+          "call": null,
+          "date": null
         },
         {
           "status": "Declined",
@@ -22,11 +25,12 @@
           "date": "2025-11-13"
         }
       ],
-      "layer": "CL",
-      "champion": {
-        "name": "Anders Elowsson",
-        "discord": "anderselowsson"
-      }
+      "champions": [
+        {
+          "name": "Anders Elowsson",
+          "discord": "anderselowsson"
+        }
+      ]
     }
   ],
   "laymanDescription": "Makes staking treat 'skimmed' and 'compounding' validators the same by tweaking effective balance rules, so operators can consolidate without losing yield.",
@@ -61,5 +65,6 @@
     "Improves capital efficiency for compounding validators.",
     "Removes hysteresis-gaming opportunities.",
     "Supports stake consolidation toward fast finality."
-  ]
+  ],
+  "tradeoffs": null
 }

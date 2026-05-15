@@ -1,27 +1,36 @@
 {
   "id": 8051,
-  "title": "Precompile for ML-DSA signature verification",
+  "title": "EIP-8051: Precompile for ML-DSA signature verification",
   "status": "Draft",
-  "description": "Introduces two precompiled contracts implementing NIST's ML-DSA and ML-DSA-ETH for post-quantum signature verification.",
+  "description": "Precompiled contracts for FIPS-204 ML-DSA signature verification and an EVM-optimized variant",
   "author": "Renaud Dubois (@rdubois-crypto), Simon Masson (@simonmasson)",
   "type": "Standards Track",
   "category": "Core",
   "createdDate": "2025-10-15",
   "discussionLink": "https://ethereum-magicians.org/t/eip-8051-ml-dsa-verification/25857",
   "reviewer": "expert",
+  "layer": "EL",
   "forkRelationships": [
     {
       "forkName": "Glamsterdam",
       "statusHistory": [
         {
-          "status": "Proposed"
+          "status": "Proposed",
+          "call": null,
+          "date": null
+        },
+        {
+          "status": "Declined",
+          "call": "acde/228",
+          "date": "2026-01-15"
         }
       ],
-      "layer": "EL",
-      "champion": {
-        "name": "Danno Ferrin",
-        "discord": "_shemnon"
-      }
+      "champions": [
+        {
+          "name": "Danno Ferrin",
+          "discord": "_shemnon"
+        }
+      ]
     }
   ],
   "laymanDescription": "Adds two precompiles for signature verification that are safe against Quantum Computer analysis. One is an NIST standard FIPS-204 whereas the other replaces the XOF with Keccak, which is more accessible to EVM implementation.",
@@ -64,5 +73,6 @@
     "Eth optimized variant of FIPS-206",
     "Hardness assumptions secure against quantum adversaries",
     "Integrates with EIP-7932 algorithmic transaction framework"
-  ]
+  ],
+  "tradeoffs": null
 }

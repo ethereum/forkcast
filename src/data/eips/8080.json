@@ -1,14 +1,15 @@
 {
   "id": 8080,
-  "title": "Let exits use the consolidation queue",
+  "title": "EIP-8080: Let exits use the consolidation queue",
   "status": "Draft",
-  "description": "Allows validator exits to be routed through the consolidation queue, reusing consolidation churn so the protocol can process more exits, democratizing access to an unintended liquidity benefit while preserving existing security guarantees.",
+  "description": "Allows exits to use consolidation queue, democratizing access to an unintended feature, improving liquidity while preserving security.",
   "author": "Francesco D'Amato (@fradamt)",
   "type": "Standards Track",
   "category": "Core",
   "createdDate": "2025-11-13",
-  "discussionLink": "https://ethereum-magicians.org/t/eip-9999-let-exits-use-the-consolidation-queue/26552",
+  "discussionLink": "https://ethereum-magicians.org/t/eip-8080-let-exits-use-the-consolidation-queue/26552",
   "reviewer": "bot",
+  "layer": "CL",
   "forkRelationships": [
     {
       "forkName": "Glamsterdam",
@@ -19,11 +20,12 @@
           "date": "2025-12-11"
         }
       ],
-      "layer": "CL",
-      "champion": {
-        "name": "Francesco D'Amato",
-        "discord": "fradamt"
-      }
+      "champions": [
+        {
+          "name": "Francesco D'Amato",
+          "discord": "fradamt"
+        }
+      ]
     }
   ],
   "laymanDescription": "Changes how validator exits are queued by letting them share capacity with the consolidation queue. Removes an advantage for very large validators and lets more stakers exit or rebalance quickly without weakening security.",
@@ -58,5 +60,6 @@
     "Increases effective exit capacity by reusing consolidation churn when demand from exits is high.",
     "Maintains existing security assumptions by reallocating churn without changing overall safety parameters.",
     "Improves staking liquidity, helping operators and liquid staking tokens manage exits during demand spikes."
-  ]
+  ],
+  "tradeoffs": null
 }

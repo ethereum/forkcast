@@ -1,0 +1,50 @@
+00:06:50	Fireflies.ai Notetaker Butta:	Butta invited Fireflies.ai here to record & take notes. View Security & Privacy info: https://fireflies.ai/policy
+
+Type:
+'/ff leave' - Remove Fireflies
+
+View Realtime notes here: https://app.fireflies.ai/live/01KHR42M2NYEMQ7MHK5YSPRC0A?ref=live_chat
+00:07:25	Maria Silva:	https://github.com/ethereum/pm/issues/1935
+00:08:46	Maria Silva:	Here is the PR: https://github.com/ethereum/EIPs/pull/11332
+00:09:18	Guru:	https://github.com/ethereum/EIPs/pull/11332
+00:15:09	Ameziane Hamlat:	There is an interaction with eip-8037 on the case of creating a new account on eth transfers for example
+00:15:32	Maria Silva:	Replying to "There is an interact..."
+
+100%
+00:15:47	jochem-brouwer:	I put this on EthMag:
+
+Also regarding performance, currently to read accounts 2600 gas is charged for cold ones. If this is reduced to 500 gas for cold ones without code, then this means we can now read more than 5 times account from disk than previously. Together with block level access lists (which have to add these accounts) this is likely very undesired.
+00:16:05	spencer-tb:	Reacted to "There is an interact..." with 😿
+00:31:20	Luis Pinto | Besu:	+1 on that
+00:42:25	Ameziane Hamlat:	With the repricing, if SSTORE doesn’t have access to the reservoir, a lot of contracts won’t work anymore because of the repricing
+00:42:55	Dragan Rakita:	Reacted to "With the repricing, ..." with 👍
+00:43:37	spencer-tb:	Happy with Option 1 (for testing too)
+00:48:54	Toni Wahrstätter:	Am I right that under 2780, calling BALANCE on an account with no code costs effectively 200 gas (500+2000-2300)?
+00:49:16	jochem-brouwer:	Replying to "Am I right that un..."
+
+Why minus stipend?
+00:49:29	jochem-brouwer:	Replying to "Am I right that un..."
+
+Stipend is added if value > 0
+00:49:42	spencer-tb:	https://github.com/ethereum/execution-specs/pull/2181
+00:49:46	jochem-brouwer:	Replying to "Am I right that un..."
+
+Or what is this 2300?
+00:50:14	Toni Wahrstätter:	Replying to "Am I right that unde..." 
+
+ You get the stipend back if the callee has no code
+00:50:47	Maria Silva:	Replying to "https://github.com/e..."
+
+This is also the PR for the subcell reservoir mechanics
+00:51:59	Toni Wahrstätter:	https://ethresear.ch/t/worst-case-block-size-and-calldata-repricing-for-glamsterdam/23895
+00:56:51	jochem-brouwer:	So these parties effected will economically want to bundle their calldata txs with compute txs I think?
+00:59:44	Toni Wahrstätter:	Replying to "So these parties eff..." 
+
+ This was already the case simce pectra yeah. It's not practical though, that's why it didn't happen. But yeah, if they do so, it wouldn't be bad. The block size would be reduced while less qould be affected.
+01:00:06	Butta:	https://gasrepricing.com/ 
+https://x.com/EFprotocol/status/2023756291756453961
+01:00:14	jochem-brouwer:	Reacted to "This was already t..." with 👍
+01:00:23	Toni Wahrstätter:	Replying to "So these parties eff..." 
+
+ Eip-7623 and 7976 have this concern in the security consideration section
+01:01:44	jochem-brouwer:	Reacted to "Eip-7623 and 7976 ..." with 👍

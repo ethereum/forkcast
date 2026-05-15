@@ -1,0 +1,882 @@
+WEBVTT
+
+16
+00:08:19.820 --> 00:08:26.859
+Justin Traglia: All right, thank you. Hello, everyone. Welcome to ePBS Breakout Call 26.
+
+17
+00:08:27.990 --> 00:08:39.389
+Justin Traglia: To jump right in, I'd like to state that there is a new consensus specifications release, Beta.1, which I believe we have decided to use, for DevNet0.
+
+18
+00:08:39.770 --> 00:08:42.350
+Justin Traglia: Epbs DevNet Zero, that is.
+
+19
+00:08:43.409 --> 00:08:53.399
+Justin Traglia: Yep. There are some open PRs, and there were quite a few close PRs this week. I'm not gonna go into each and every one of these, but feel free to review if you want.
+
+20
+00:08:54.530 --> 00:09:03.519
+Justin Traglia: There… yeah, just some open testing PRs, and then I've personally started reviewing the specs and just fixing up, random things that I see.
+
+21
+00:09:04.120 --> 00:09:09.609
+Justin Traglia: And there are starred, though, there still are two open, like, to-do.
+
+22
+00:09:09.820 --> 00:09:14.259
+Justin Traglia: Things that need to be fixed if anyone wants to make a PR.
+
+23
+00:09:16.030 --> 00:09:24.099
+Justin Traglia: Okay, I guess we can just jump right into, updates from client teams. Is there anyone from prison that can give us an update?
+
+24
+00:09:27.640 --> 00:09:51.489
+terence: Let's see… we haven't really merged anything to develop, unfortunately, because we're, like, blocked by Fusaka release, and we wanted to wait for the new spec, because of the data column side card. We added a slot, and then we changed the field location for the slot, so we wanted to wait until that before with formal reviewing, and
+
+25
+00:09:51.700 --> 00:10:05.999
+terence: And the merging that to develop. So we were able to finally start reviewing that yesterday. So, hopefully, once that's merged, we'll see more PRs getting much developed, but we have about, like.
+
+26
+00:10:06.000 --> 00:10:25.780
+terence: 8 open PRs right now that's actually implementing the beacon Chin.MD and passing SPED tests, so hopefully it's just a matter of reviewing and merging that, then we can start working on, say, four choice in parallel, P2P in parallel, validated on the spec in parallel, and getting ready for Definite Zero.
+
+27
+00:10:25.780 --> 00:10:31.369
+terence: But yeah, but I would say majority of the process right now, progress is blocked by merging into development.
+
+28
+00:10:33.040 --> 00:10:36.920
+Justin Traglia: Got it. That makes sense. But that's great.
+
+29
+00:10:38.340 --> 00:10:41.269
+Justin Traglia: Promise that they're both traveling this weekend, I see.
+
+30
+00:10:42.100 --> 00:10:47.899
+Justin Traglia: Okay, thank you. Is there anyone from Lighthouse here? Maybe Mark? They can give an update?
+
+31
+00:10:49.790 --> 00:11:02.449
+ethDreamer (Mark): Yeah, I mean, progress is ongoing. We're in… working on block processing right now, and some people are joining the effort, so hopefully that should accelerate.
+
+32
+00:11:02.770 --> 00:11:04.580
+ethDreamer (Mark): But yeah, still a ways off.
+
+33
+00:11:06.620 --> 00:11:07.390
+Justin Traglia: Got it.
+
+34
+00:11:07.660 --> 00:11:11.989
+Justin Traglia: And, any other updates, Shane? I think you're also part of Lighthouse, right?
+
+35
+00:11:12.890 --> 00:11:32.769
+Shane Moore: Hey, yeah, just echoing what Mark said, and we are starting to at least, get some PRs into, like, a conga line of, PRs, so it's supposed to, you know, going straight into, like, a develop branch, kind of, taking it as, like, first starting with the types, for containers, and then we'll have for it.
+
+36
+00:11:34.410 --> 00:11:35.730
+Shane Moore: We are in the Congo line.
+
+37
+00:11:36.470 --> 00:11:37.730
+Shane Moore: load processing.
+
+38
+00:11:38.810 --> 00:11:44.180
+Shane Moore: in the end, when we're ready, we'll merge all that into a developed branch. So, a little bit more,
+
+39
+00:11:44.860 --> 00:11:46.970
+Shane Moore: sequential, I guess.
+
+40
+00:11:48.310 --> 00:11:55.129
+Justin Traglia: Got it. Thank you. Alright, who from tech who would like to get an update?
+
+41
+00:11:56.740 --> 00:12:07.439
+Stefan Bratanov: Yeah, I can give an update. We've been merging… merging a couple of things to master, in Teku, making some progress.
+
+42
+00:12:08.610 --> 00:12:09.410
+Stefan Bratanov: Yeah.
+
+43
+00:12:10.190 --> 00:12:18.090
+Stefan Bratanov: pretty much that's it. A few things here and there, but majority… I think I haven't started on fork choice or any database changes, so…
+
+44
+00:12:18.740 --> 00:12:22.539
+Stefan Bratanov: I can't speak much about when we would be ready for deadlines.
+
+45
+00:12:23.430 --> 00:12:24.490
+Justin Traglia: Yeah, no worries.
+
+46
+00:12:25.080 --> 00:12:28.010
+Justin Traglia: I don't see anyone from Nimbus here.
+
+47
+00:12:28.170 --> 00:12:29.080
+Justin Traglia: Correct.
+
+48
+00:12:31.510 --> 00:12:35.440
+Justin Traglia: Okay, could someone from Lodestar, or Caleb?
+
+49
+00:12:35.820 --> 00:12:36.690
+Caleb: Hi.
+
+50
+00:12:37.130 --> 00:12:48.470
+Caleb: So I'm Caleb. I'm working on this stuff on Nimbus. I'm joining the team soon, officially. So I've been merging a couple of stops to the unstable branch,
+
+51
+00:12:48.870 --> 00:12:58.669
+Caleb: I think we just have the networking aspect to complete. We're about 70% there. We are yet to touch for choice at all.
+
+52
+00:12:59.650 --> 00:13:03.680
+Caleb: But soon, I guess. So that's it from us.
+
+53
+00:13:04.470 --> 00:13:05.220
+Justin Traglia: Okay.
+
+54
+00:13:05.550 --> 00:13:07.289
+Justin Traglia: Thank you, and you're welcome.
+
+55
+00:13:08.130 --> 00:13:09.330
+Caleb: Thank you.
+
+56
+00:13:09.840 --> 00:13:13.779
+Justin Traglia: Okay, I guess load start next. Who wants to have an update?
+
+57
+00:13:15.190 --> 00:13:23.509
+NC: Hey, so LOSAR, we have, implemented everything in the… well, at least the first half of the state transition.
+
+58
+00:13:23.630 --> 00:13:28.680
+NC: So everything from EPUB processing, block processing, except for the,
+
+59
+00:13:28.840 --> 00:13:31.700
+NC: Processing the execution payload envelope.
+
+60
+00:13:31.960 --> 00:13:37.949
+NC: And we are passing, about two-thirds of the operations spec us.
+
+61
+00:13:38.180 --> 00:13:41.459
+NC: So we need to continue to debug, like, what's wrong.
+
+62
+00:13:41.860 --> 00:13:45.179
+NC: And afterwards, we'll touch the other stuff, such as fork choice.
+
+63
+00:13:46.900 --> 00:13:47.590
+Justin Traglia: Okay.
+
+64
+00:13:48.690 --> 00:13:52.029
+Justin Traglia: Thank you. And last but not least, Grand Dean.
+
+65
+00:13:52.780 --> 00:13:57.889
+Saulius Grigaitis | Grandine: Yeah, so we are also progressing on UPBS implementation.
+
+66
+00:13:58.020 --> 00:14:09.010
+Saulius Grigaitis | Grandine: But I think we likely are, like, a few weeks from implementing it. So yeah, there is good progress, but we still need to do a lot.
+
+67
+00:14:12.410 --> 00:14:13.390
+Justin Traglia: Okay.
+
+68
+00:14:13.600 --> 00:14:15.290
+Justin Traglia: Thank you, everyone.
+
+69
+00:14:15.920 --> 00:14:19.289
+Justin Traglia: I guess we can jump into the next agenda item.
+
+70
+00:14:20.130 --> 00:14:24.450
+Justin Traglia: Mehdi, would you like to talk about your proposed changes to attestation data?
+
+71
+00:14:25.320 --> 00:14:27.789
+Mehdi Aouadi: Yeah, sure.
+
+72
+00:14:28.070 --> 00:14:37.670
+Mehdi Aouadi: So yeah, basically, I wanted to, to, to address the issue with the, attestation data index field.
+
+73
+00:14:37.920 --> 00:14:49.719
+Mehdi Aouadi: Where basically we have… we have a field named index, that doesn't hold an index at all, and so in Elekta, we chose to hard, code it to zero.
+
+74
+00:14:50.050 --> 00:14:56.049
+Mehdi Aouadi: To avoid the complexity. And now we are using it to signal the payload status.
+
+75
+00:14:56.290 --> 00:15:01.750
+Mehdi Aouadi: Which is, to me, very confusing, from a spec perspective.
+
+76
+00:15:02.270 --> 00:15:06.769
+Mehdi Aouadi: And, even from an implementation perspective, it could be really
+
+77
+00:15:07.190 --> 00:15:12.800
+Mehdi Aouadi: Hard to handle, since, we could end up, like, doing a lot of,
+
+78
+00:15:13.050 --> 00:15:25.519
+Mehdi Aouadi: of checks, to check, which fork we're in, to know how to, to consume that field, basically. So, yeah, my proposal is to rename it to Payload Statues.
+
+79
+00:15:25.710 --> 00:15:33.990
+Mehdi Aouadi: And for simplicity, I kept the same type, which is UN64, to avoid any SSE serialization
+
+80
+00:15:34.100 --> 00:15:41.750
+Mehdi Aouadi: added complexity. So, yeah, basically that's, that's my proposal.
+
+81
+00:15:47.650 --> 00:15:49.639
+Justin Traglia: Thank you. I don't know if it's…
+
+82
+00:15:49.980 --> 00:15:56.519
+Justin Traglia: I mean, have we ever renamed a field before in the consensus specs? I don't know how difficult that is for teams.
+
+83
+00:15:57.160 --> 00:15:58.790
+Justin Traglia: If it's difficult at all.
+
+84
+00:15:58.790 --> 00:16:11.050
+Mehdi Aouadi: Yeah, I mean, renaming the field would be the same thing as… it basically, I guess, it means introducing a new container, because it's, like, like, removing a field or adding a new one.
+
+85
+00:16:11.160 --> 00:16:23.229
+Mehdi Aouadi: So, and that was one of the, arguments against this change, because it could, imply adding new… a new GlowOS container for the attestation data.
+
+86
+00:16:23.530 --> 00:16:26.069
+Justin Traglia: But to be honest, I mean.
+
+87
+00:16:26.300 --> 00:16:31.740
+Mehdi Aouadi: There is added complexity, anyway, if we keep it like that.
+
+88
+00:16:31.960 --> 00:16:51.479
+Mehdi Aouadi: like, checking the fork each time to know how to consume the index field, would definitely add complexity and confusion in the code. And adding a new container also would add some boilerplate code, but I guess that
+
+89
+00:16:53.110 --> 00:17:05.540
+Mehdi Aouadi: it's worth the effort, in my opinion, because it makes the spec really clear and less confusing, and I'd personally prefer that approach, since either way, we would have some added complexity, so…
+
+90
+00:17:05.859 --> 00:17:07.730
+Mehdi Aouadi: Yeah, that's my take on it.
+
+91
+00:17:09.940 --> 00:17:10.700
+Justin Traglia: Got it.
+
+92
+00:17:10.950 --> 00:17:12.979
+Justin Traglia: How do others feel about this?
+
+93
+00:17:14.300 --> 00:17:20.440
+Enrico Del Fante (tbenr): Yeah, I think… I'm com- coming from the…
+
+94
+00:17:21.050 --> 00:17:24.509
+Enrico Del Fante (tbenr): Difficulties, let's call it like that.
+
+95
+00:17:24.930 --> 00:17:35.849
+Enrico Del Fante (tbenr): After Electra, that we had a lot of long-tail bugs associated to… Index field, specifically.
+
+96
+00:17:37.360 --> 00:17:48.729
+Enrico Del Fante (tbenr): Due to the fact that from the code perspective, everything referring to that was perfectly fine, but then the interpretation of it, changed it.
+
+97
+00:17:48.850 --> 00:17:53.089
+Enrico Del Fante (tbenr): And, nothing was breaking.
+
+98
+00:17:53.320 --> 00:17:59.760
+Enrico Del Fante (tbenr): But it was, actually, and I think it was the source of several
+
+99
+00:18:00.020 --> 00:18:03.319
+Enrico Del Fante (tbenr): bugs, I don't think only in Tegu.
+
+100
+00:18:04.100 --> 00:18:04.959
+Enrico Del Fante (tbenr): To a f…
+
+101
+00:18:05.630 --> 00:18:18.010
+Enrico Del Fante (tbenr): Facing those changes early by changing the underlining data structure forces us to deal with these things.
+
+102
+00:18:18.190 --> 00:18:23.580
+Enrico Del Fante (tbenr): Earlier, and once things work, we have the guarantees that everything is fine.
+
+103
+00:18:23.900 --> 00:18:28.740
+Enrico Del Fante (tbenr): Plus, we have a better… spec, reading.
+
+104
+00:18:29.720 --> 00:18:33.680
+Enrico Del Fante (tbenr): So, I think worth, worth,
+
+105
+00:18:34.090 --> 00:18:38.030
+Enrico Del Fante (tbenr): Discussing this and evaluating clearly this.
+
+106
+00:18:52.700 --> 00:18:57.060
+Justin Traglia: How do others… How do other devs from other teams feel?
+
+107
+00:19:00.080 --> 00:19:01.510
+Justin Traglia: Otis, how do you feel?
+
+108
+00:19:03.010 --> 00:19:09.739
+potuz: Yeah, I'm very strongly against this, but I mean, it's not a hill that I'm willing to die for.
+
+109
+00:19:10.070 --> 00:19:14.990
+potuz: So if other teams want to make this change, I'm happy, but
+
+110
+00:19:15.370 --> 00:19:23.770
+potuz: For us, it's really a nightmare to include… to change these containers. I definitely recognize that the spec becomes much nicer.
+
+111
+00:19:23.880 --> 00:19:25.520
+potuz: Or at least less ugly.
+
+112
+00:19:26.450 --> 00:19:29.090
+potuz: And this is already, like, spec depth.
+
+113
+00:19:29.300 --> 00:19:33.149
+potuz: from Electra that we probably should have changed it.
+
+114
+00:19:33.560 --> 00:19:36.390
+potuz: Because then we actually did
+
+115
+00:19:36.650 --> 00:19:40.770
+potuz: Have to change a lot of the attestation paths.
+
+116
+00:19:41.310 --> 00:19:47.980
+potuz: So probably then it would have been a little extra, Complexity and implementation.
+
+117
+00:19:48.270 --> 00:20:03.940
+potuz: And it was worth it. But this time, I don't see how… how can it possibly be worth it? I don't know how Teco manages this, and how is this issue of, like, checking the fork or not, but the way we process attestations is we get an attestation.
+
+118
+00:20:04.140 --> 00:20:08.040
+potuz: And to be able to deserialize it.
+
+119
+00:20:08.550 --> 00:20:13.070
+potuz: We need to know, essentially, in which kind of fork we are.
+
+120
+00:20:13.410 --> 00:20:22.559
+potuz: Because, well, we have a different container, with a list of or not for elect or not, but after we deserialize it.
+
+121
+00:20:22.680 --> 00:20:31.690
+potuz: we… we just run a simple check. I mean, this attestation is of this type, or this attestation is of that type, and we send it to the corresponding processing,
+
+122
+00:20:31.840 --> 00:20:33.160
+potuz: processing function.
+
+123
+00:20:33.270 --> 00:20:46.710
+potuz: the only thing that would change now with the current status is just add one extra line. If the attestation data slot is after the… after the glow as fork.
+
+124
+00:20:46.710 --> 00:20:54.460
+potuz: to send it to process at the station in Gloas, which is an entirely new function. And if it's before, then you just send it to the previous function that you had.
+
+125
+00:20:54.610 --> 00:21:07.669
+potuz: So it's just a single line, and I don't care… I mean, within that function, which is the gloss function, you're gonna treat the index one way, and without this function, you're gonna treat it, and the index check that it's 0 if it's pre-electra, if it's Electra.
+
+126
+00:21:07.910 --> 00:21:21.839
+potuz: So I don't see how that extra complexity is going to be saved. We anyways need to implement this new helper function that is the process attestation in Gloas, and you anyways need to do this branching, depending on the fork that you are.
+
+127
+00:21:22.030 --> 00:21:40.080
+potuz: So the extra complexity that would come from changing the attestation data type is a lot of boilerplate. Well, for us, at least, it's just an incredibly large amount of boilerplate. We're gonna need to add interfaces for the attestation data, which… that we currently don't have, because we're gonna have, like, different types that will need to
+
+128
+00:21:40.080 --> 00:21:44.310
+potuz: To implement that interface of the attestation data type.
+
+129
+00:21:57.210 --> 00:21:58.590
+potuz: Did I get kicked out.
+
+130
+00:21:59.060 --> 00:22:01.479
+Justin Traglia: It looks like he got dropped for a second.
+
+131
+00:22:01.480 --> 00:22:08.259
+potuz: I don't know where I stopped, but anyway, so… at least from my point of view, I don't see how
+
+132
+00:22:08.360 --> 00:22:24.330
+potuz: adding this, it's not increasing difficulty, and strictly increasing difficulty, without removing any of the difficulty. And I don't see how it can prevent bugs of the form of, like, how do you deal with the index, because you do the branching before this.
+
+133
+00:22:24.370 --> 00:22:33.719
+potuz: You do the branching on to which function you are… you're processing the attestation before, you need to check what the value of the index is.
+
+134
+00:22:34.040 --> 00:22:40.510
+potuz: But again, I mean, even though I'm strongly opposed to this, because I do feel like for us it's going to be a lot of complexity.
+
+135
+00:22:40.720 --> 00:22:49.290
+potuz: If other teams, besides just Deco, want to have this, I'm happy. I'm happy not to die on this hill.
+
+136
+00:22:50.010 --> 00:23:09.589
+ethDreamer (Mark): I… like, Lighthouse could do this as well internally in our codebase, and have a, like… I mean, we have a process for changing data structures from one fork to another, because we've done it many times, and as we saw with Electra, that changing the attestation
+
+137
+00:23:12.020 --> 00:23:20.679
+ethDreamer (Mark): just the attestation, not even the attestation data, was already a lot. If we changed the attestation data, we would have to do more.
+
+138
+00:23:20.860 --> 00:23:30.020
+ethDreamer (Mark): And then we would need to… I mean, we could leverage the fact that we've already changed the attestation. It wouldn't be quite as difficult the second time, but…
+
+139
+00:23:30.600 --> 00:23:31.730
+ethDreamer (Mark): Still, like…
+
+140
+00:23:33.150 --> 00:23:39.359
+ethDreamer (Mark): I mean, we didn't change this in Electra because it was a bunch of extra work, and we could change… and…
+
+141
+00:23:39.520 --> 00:23:43.030
+ethDreamer (Mark): we're adding a bunch of extra work now. Yes, it's…
+
+142
+00:23:43.540 --> 00:23:48.159
+ethDreamer (Mark): Like, the fact that it's named index is inelegant, but you're adding…
+
+143
+00:23:49.150 --> 00:23:56.090
+ethDreamer (Mark): I don't know, I don't think the juice is worth the squeeze. Like… Is it cleaner? Yes.
+
+144
+00:23:56.330 --> 00:23:58.580
+ethDreamer (Mark): But, yeah, it's just…
+
+145
+00:23:59.370 --> 00:24:06.560
+ethDreamer (Mark): like, if we didn't do it in Electra, I don't see a reason to do it now. Yeah, kind of echoing what Poda said.
+
+146
+00:24:07.200 --> 00:24:09.540
+ethDreamer (Mark): We have so many things to do, man.
+
+147
+00:24:09.830 --> 00:24:12.350
+ethDreamer (Mark): And this is a small inelegance.
+
+148
+00:24:12.480 --> 00:24:13.320
+ethDreamer (Mark): Which…
+
+149
+00:24:15.060 --> 00:24:20.750
+ethDreamer (Mark): If we ever need to change the… like, if there ever comes a time where we need to change the attestation data.
+
+150
+00:24:21.230 --> 00:24:23.700
+ethDreamer (Mark): that is when I would propose we fix it.
+
+151
+00:24:29.080 --> 00:24:29.900
+Justin Traglia: Thank you.
+
+152
+00:24:30.580 --> 00:24:32.239
+Justin Traglia: Yes, Aliens?
+
+153
+00:24:33.140 --> 00:24:44.280
+Saulius Grigaitis | Grandine: Yeah, so for Grandina, it also would be hard to implement such change, and maybe a little…
+
+154
+00:24:44.520 --> 00:24:53.559
+Saulius Grigaitis | Grandine: a bit less than the new attestation type we had in Elektra, but we would be against
+
+155
+00:24:54.140 --> 00:24:59.979
+Saulius Grigaitis | Grandine: This change, just because of the huge complexity in the codebase.
+
+156
+00:25:00.100 --> 00:25:01.709
+Saulius Grigaitis | Grandine: So, I mean…
+
+157
+00:25:02.400 --> 00:25:10.670
+Saulius Grigaitis | Grandine: Likely, at least our opinion is that it's… it's too little value compared to the… so much hassle in the codebase.
+
+158
+00:25:15.690 --> 00:25:19.180
+Justin Traglia: Okay. Thank you all.
+
+159
+00:25:19.320 --> 00:25:25.879
+Justin Traglia: I think I liked Mark's idea of, like, if and when we need to change attestation data in the future, we…
+
+160
+00:25:26.170 --> 00:25:28.890
+Justin Traglia: Push fixing this until then.
+
+161
+00:25:29.010 --> 00:25:33.759
+Justin Traglia: So that would mean not including this in Coas right now.
+
+162
+00:25:34.510 --> 00:25:35.260
+Justin Traglia: Huh.
+
+163
+00:25:35.370 --> 00:25:37.120
+Justin Traglia: Does that sound fine to everyone?
+
+164
+00:25:43.250 --> 00:25:44.110
+Justin Traglia: Alrighty.
+
+165
+00:25:44.620 --> 00:25:49.230
+Justin Traglia: Maddie, thank you for the PR, but please close it whenever you have time.
+
+166
+00:25:52.010 --> 00:25:56.919
+Justin Traglia: Next agenda item, I guess, would be Mark's topic.
+
+167
+00:25:57.340 --> 00:25:59.710
+Justin Traglia: Mark, do you want to bring this up again?
+
+168
+00:26:00.790 --> 00:26:04.089
+ethDreamer (Mark): Yeah, I mean, I was just looking at the gossip…
+
+169
+00:26:04.300 --> 00:26:09.320
+ethDreamer (Mark): conditions for payloads, and notice we didn't have one
+
+170
+00:26:09.590 --> 00:26:12.749
+ethDreamer (Mark): About… oh, this is for beacon blocks,
+
+171
+00:26:13.560 --> 00:26:20.440
+ethDreamer (Mark): And I put the relevant pieces for beacon blocks in there. I should have linked also the gossip conditions for payloads, but,
+
+172
+00:26:20.670 --> 00:26:25.439
+ethDreamer (Mark): Let me see if I can find that real quick, because I have it opened in one of these tabs here.
+
+173
+00:26:26.120 --> 00:26:28.360
+ethDreamer (Mark): Give me one… Certain…
+
+174
+00:26:31.320 --> 00:26:37.780
+ethDreamer (Mark): Okay. It's not… I have too many tabs open, but we just don't have a,
+
+175
+00:26:38.960 --> 00:26:40.359
+ethDreamer (Mark): We don't have, like.
+
+176
+00:26:40.510 --> 00:26:48.089
+ethDreamer (Mark): a condition like this for payloads, and I'm wondering if we need one. Maybe we don't, but…
+
+177
+00:26:49.110 --> 00:26:56.140
+ethDreamer (Mark): you know, we could have one, and I was wondering if it was intentionally excluded. Here we go, here's the gossip conditions for payloads.
+
+178
+00:26:56.530 --> 00:27:03.600
+ethDreamer (Mark): And I'm wondering if we intentionally excluded this or not. Like, we…
+
+179
+00:27:05.110 --> 00:27:09.450
+ethDreamer (Mark): We just have that the envelopes block route has been seen.
+
+180
+00:27:10.320 --> 00:27:19.260
+ethDreamer (Mark): Right, we don't have that… this is, like, a timely payload, or… I mean, we do have that the slots are equal, but there's just… there's nothing regarding…
+
+181
+00:27:19.260 --> 00:27:27.810
+potuz: But doesn't it preclude the condition? The first condition is about, like, a block being from the future, right? A block from the future slot.
+
+182
+00:27:27.810 --> 00:27:28.340
+ethDreamer (Mark): Yes.
+
+183
+00:27:28.340 --> 00:27:33.310
+potuz: And you couldn't have seen a blog From a future slot.
+
+184
+00:27:33.450 --> 00:27:38.710
+potuz: Therefore, if you only import your payload after you've seen a block, then you.
+
+185
+00:27:38.710 --> 00:27:39.440
+ethDreamer (Mark): Nothing.
+
+186
+00:27:39.440 --> 00:27:43.869
+potuz: you're not importing a payload from the future. So I think this is implied already.
+
+187
+00:27:44.020 --> 00:27:51.059
+ethDreamer (Mark): I suppose, yeah. And what was the second condition? Oh, maximum clock disparity, yeah. So…
+
+188
+00:27:51.330 --> 00:27:53.159
+ethDreamer (Mark): And the second condition was…
+
+189
+00:27:54.020 --> 00:28:02.410
+ethDreamer (Mark): greater than finalized slot, so that would… I guess, do we have a condition that says we can't receive a payload, like an older payload?
+
+190
+00:28:02.610 --> 00:28:07.509
+ethDreamer (Mark): That we have… we have something blocking the future payloads, do we have an older payload that we're…
+
+191
+00:28:07.940 --> 00:28:09.720
+ethDreamer (Mark): Not going to be accepting.
+
+192
+00:28:16.700 --> 00:28:25.179
+potuz: Oh, so the second condition is about a block being older than the latest finalized one. We just don't take it over GoSip, right?
+
+193
+00:28:25.180 --> 00:28:25.980
+ethDreamer (Mark): Right.
+
+194
+00:28:26.710 --> 00:28:39.120
+potuz: Yeah, so I think… I think this is… this is a good one. We should… we should add a line saying that, if the block route is later than the latest finalized, then we don't gossip the payload for that block route.
+
+195
+00:28:39.640 --> 00:28:40.450
+ethDreamer (Mark): Okay.
+
+196
+00:28:40.450 --> 00:28:41.470
+potuz: That's a good catch.
+
+197
+00:28:42.920 --> 00:28:44.270
+Justin Traglia: Yep, agreed.
+
+198
+00:28:44.640 --> 00:28:47.530
+Justin Traglia: What do you open a PR for this, Mark?
+
+199
+00:28:47.770 --> 00:28:48.540
+ethDreamer (Mark): Sure.
+
+200
+00:28:49.030 --> 00:28:50.340
+Justin Traglia: Okay, thank you.
+
+201
+00:28:53.730 --> 00:29:00.359
+Justin Traglia: I think that's it for the agenda today. Is there anything anyone would like to talk about before we end the call?
+
+202
+00:29:03.860 --> 00:29:11.359
+Shane Moore: Yeah, I'm just curious for, like, DevConnect, if there's any ideas for, like, interop, EPBS stuff, maybe things we haven't really sorted out, like…
+
+203
+00:29:11.500 --> 00:29:14.289
+Shane Moore: dual PTC deadlines and things like that.
+
+204
+00:29:19.780 --> 00:29:23.089
+Justin Traglia: I'm unaware of anything, but we should definitely get a group together.
+
+205
+00:29:23.280 --> 00:29:25.679
+Justin Traglia: To, like, discuss all this kind of stuff.
+
+206
+00:29:27.350 --> 00:29:28.090
+potuz: Yeah.
+
+207
+00:29:28.090 --> 00:29:29.140
+Shane Moore: Yeah. Service available.
+
+208
+00:29:29.140 --> 00:29:46.330
+potuz: ideas on the deadlines, on the dual deadlines. It'd be nice to get ideas on the numbers, but I think this whole business of the pre-option problem put influence there. So I think it's going to take us time to be in a place where we're actually benchmarking what's the right numbers for those.
+
+209
+00:29:50.220 --> 00:29:53.240
+ethDreamer (Mark): Yeah, I have another questionnaire for this, too, actually.
+
+210
+00:29:58.790 --> 00:29:59.580
+Justin Traglia: Okay.
+
+211
+00:29:59.580 --> 00:30:00.050
+ethDreamer (Mark): atmosphere.
+
+212
+00:30:01.400 --> 00:30:06.420
+Justin Traglia: Pretty much we're done with this, but I'll work… I'll talk with, like, POTUS and Shane and try to get something organized.
+
+213
+00:30:06.420 --> 00:30:11.499
+ethDreamer (Mark): My… okay, so my question is, if we are doing this second validation that it's greater than the…
+
+214
+00:30:11.770 --> 00:30:13.730
+ethDreamer (Mark): finalized slot. Well…
+
+215
+00:30:16.290 --> 00:30:24.639
+ethDreamer (Mark): I don't know, that's an interesting… because we have a payload timeliness committee, and payloads have to be timely. I guess blocks do, too.
+
+216
+00:30:25.550 --> 00:30:39.329
+ethDreamer (Mark): I don't know. I have to wonder why this is a… this is only restricting blocks on gossip to being greater than the finalized checkpoint, and not anything more recent than that, given that blocks themselves should be timely.
+
+217
+00:30:39.630 --> 00:30:49.759
+ethDreamer (Mark): And is that condition the same? Like, is that modified at all between blocks and payloads because we have a payload timeliness committee? Like, can we make a tighter assumption about how
+
+218
+00:30:50.110 --> 00:30:54.149
+ethDreamer (Mark): Far back the boundary is with payloads, is my question.
+
+219
+00:30:54.150 --> 00:30:57.240
+potuz: why… I don't understand, I mean, this,
+
+220
+00:30:57.500 --> 00:31:04.760
+potuz: the timeliness of the payload or not has nothing to do with the propagation of the payload, right? So we want to be propagating payloads
+
+221
+00:31:05.000 --> 00:31:08.419
+potuz: Because that's a branching port choice that we want to see.
+
+222
+00:31:08.840 --> 00:31:13.710
+potuz: I mean, the timeliness or not of it, I think it's independent. This is something about, like, boosting
+
+223
+00:31:13.890 --> 00:31:17.119
+potuz: Or, or allowing for payments, but,
+
+224
+00:31:17.250 --> 00:31:22.729
+potuz: But I think we do want to be able to propagate branches that we hadn't seen.
+
+225
+00:31:23.600 --> 00:31:25.279
+ethDreamer (Mark): Yeah, okay.
+
+226
+00:31:25.280 --> 00:31:28.610
+potuz: older than finalized has to do with the fact that we are not anywhere.
+
+227
+00:31:28.610 --> 00:31:29.959
+ethDreamer (Mark): It's going to advance on that one.
+
+228
+00:31:29.960 --> 00:31:32.740
+potuz: branch that is contending with our finalization.
+
+229
+00:31:32.740 --> 00:31:34.000
+ethDreamer (Mark): Okay, yep.
+
+230
+00:31:34.710 --> 00:31:37.240
+ethDreamer (Mark): Yeah, I was just thinking through that, because…
+
+231
+00:31:38.670 --> 00:31:41.110
+ethDreamer (Mark): I, yeah. Okay, that makes sense.
+
+232
+00:31:48.730 --> 00:31:50.740
+Justin Traglia: Anything else from anyone?
+
+233
+00:32:00.980 --> 00:32:06.190
+Justin Traglia: Alrighty, thank you everyone for joining. Talk to you all again in two weeks.
+
+234
+00:32:06.860 --> 00:32:07.490
+potuz: Thank you, guys.
+
+235
+00:32:11.950 --> 00:32:12.660
+Justin Traglia: Bye, bro.
+

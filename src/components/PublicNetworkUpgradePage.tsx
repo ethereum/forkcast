@@ -1,24 +1,30 @@
-import React, { useEffect, useState, useLayoutEffect } from 'react';
-import { Link, useLocation } from 'react-router-dom';
+import React, { useEffect, useState } from 'react';
+import { Link, useLocation, useNavigate, useSearchParams } from 'react-router-dom';
 import { eipsData } from '../data/eips';
+import { getPendingProposalsForFork } from '../data/pending-proposals';
 import { useMetaTags } from '../hooks/useMetaTags';
 import { useAnalytics } from '../hooks/useAnalytics';
-import { EIP, ClientTeamPerspective } from '../types';
+import { EIP, ClientTeamPerspective, InclusionStage } from '../types';
 import {
   getInclusionStage,
   isHeadliner,
   getLaymanTitle,
   getProposalPrefix,
   getSpecificationUrl,
+  getSummaryDescription,
   wasHeadlinerCandidate,
-  getEipLayer
+  isUnselectedHeadlinerCandidate,
+  sortByLayer,
+  getEipIdFromHash,
+  getEipLayer,
+  getUpgradeAnchorExpansionState
 } from '../utils';
 import {
   getInclusionStageColor,
   getUpgradeStatusColor
 } from '../utils/colors';
+import { ActivationDetails } from '../data/upgrades';
 import { Tooltip, CopyLinkButton } from './ui';
-import ThemeToggle from './ui/ThemeToggle';
 import {
   NetworkUpgradeTimeline,
   FusakaTimeline,
@@ -26,10 +32,44 @@ import {
   HegotaTimeline,
   PectraTimeline,
   TableOfContents,
+  EipFilterBar,
   OverviewSection,
   ClientPerspectives,
   EipCard
 } from './network-upgrade';
+
+// Upgrade page display modes control which sections are visible.
+// headlinerSelection hides the overview and stage-grouped EIP sections.
+type UpgradePageMode = 'default' | 'headlinerSelection';
+
+const getUpgradePageMode = (forkName: string): UpgradePageMode => {
+  // Keep per-fork mode overrides as data so future forks can opt into a mode in one place.
+  const upgradePageModeByFork: Partial<Record<string, UpgradePageMode>> = {};
+  return upgradePageModeByFork[forkName.toLowerCase()] ?? 'default';
+};
+
+const normalizeFilterParams = (
+  params: URLSearchParams,
+  showLayerFilter: boolean,
+  nextLayer: 'all' | 'EL' | 'CL',
+  nextQuery: string
+) => {
+  const next = new URLSearchParams(params);
+
+  if (!showLayerFilter || nextLayer === 'all') {
+    next.delete('layer');
+  } else {
+    next.set('layer', nextLayer);
+  }
+
+  if (!nextQuery.trim()) {
+    next.delete('filter');
+  } else {
+    next.set('filter', nextQuery);
+  }
+
+  return next;
+};
 
 interface PublicNetworkUpgradePageProps {
   forkName: string;
@@ -39,6 +79,11 @@ interface PublicNetworkUpgradePageProps {
   activationDate?: string;
   metaEipLink?: string;
   clientTeamPerspectives?: ClientTeamPerspective[];
+  activationDetails?: ActivationDetails;
+  /** When true, omit the page shell (Logo, ThemeToggle, back link) for embedding inside a layout. */
+  embedded?: boolean;
+  /** When true, also omit the header section (title, description, meta-eip link). */
+  skipHeader?: boolean;
 }
 
 const PublicNetworkUpgradePage: React.FC<PublicNetworkUpgradePageProps> = ({
@@ -48,16 +93,57 @@ const PublicNetworkUpgradePage: React.FC<PublicNetworkUpgradePageProps> = ({
   status,
   activationDate,
   metaEipLink,
-  clientTeamPerspectives
+  clientTeamPerspectives,
+  activationDetails,
+  embedded = false,
+  skipHeader = false
 }) => {
+  // Determine display mode for this upgrade page
+  const pageMode = getUpgradePageMode(forkName);
+  const showLayerFilter = pageMode === 'headlinerSelection' || forkName.toLowerCase() === 'glamsterdam' || forkName.toLowerCase() === 'hegota';
+  const navigate = useNavigate();
+  const location = useLocation();
+  const [searchParams] = useSearchParams();
+  const layerParam = searchParams.get('layer');
+  const layerFilter: 'all' | 'EL' | 'CL' =
+    showLayerFilter && (layerParam === 'EL' || layerParam === 'CL') ? layerParam : 'all';
+  const searchQuery = searchParams.get('filter') ?? '';
+
   const [eips, setEips] = useState<EIP[]>([]);
   const [activeSection, setActiveSection] = useState<string>('overview');
   const [isDeclinedExpanded, setIsDeclinedExpanded] = useState(false);
-  const [isHeadlinerProposalsExpanded, setIsHeadlinerProposalsExpanded] = useState(false);
-  const [layerFilter, setLayerFilter] = useState<'all' | 'EL' | 'CL'>('all');
-  const [searchQuery, setSearchQuery] = useState('');
-  const location = useLocation();
+  // In headlinerSelection mode, expand by default since it's the main content
+  const [isHeadlinerProposalsExpanded, setIsHeadlinerProposalsExpanded] = useState(pageMode === 'headlinerSelection');
+
+  // Ensure headliner proposals are expanded when entering headlinerSelection mode
+  useEffect(() => {
+    if (pageMode === 'headlinerSelection') {
+      setIsHeadlinerProposalsExpanded(true);
+    }
+  }, [pageMode]);
   const { trackUpgradeView, trackLinkClick } = useAnalytics();
+
+  const updateFilterParams = (nextLayer: 'all' | 'EL' | 'CL', nextQuery: string) => {
+    const nextParams = normalizeFilterParams(searchParams, showLayerFilter, nextLayer, nextQuery);
+    const nextSearch = nextParams.toString();
+
+    navigate(
+      {
+        pathname: location.pathname,
+        search: nextSearch ? `?${nextSearch}` : '',
+        hash: location.hash,
+      },
+      { replace: true }
+    );
+  };
+
+  const handleLayerFilterChange = (filter: 'all' | 'EL' | 'CL') => {
+    updateFilterParams(filter, searchQuery);
+  };
+
+  const handleSearchChange = (query: string) => {
+    updateFilterParams(layerFilter, query);
+  };
 
   // Update meta tags for SEO and social sharing
   useMetaTags({
@@ -81,64 +167,87 @@ const PublicNetworkUpgradePage: React.FC<PublicNetworkUpgradePageProps> = ({
     trackUpgradeView(forkName);
   }, [forkName, trackUpgradeView]);
 
-  // Expand sections if URL hash points to an EIP inside them
+  // Scroll to top when navigating to page (unless there's a hash)
   useEffect(() => {
-    const hash = location.hash;
-    const match = hash.match(/^#eip-(\d+)$/);
+    if (!location.hash) {
+      window.scrollTo(0, 0);
+    }
+  }, [location.pathname, location.hash]);
 
-    if (match && eips.length > 0) {
-      const eipId = parseInt(match[1]);
-      const targetEip = eips.find(e => e.id === eipId);
+  // Expand collapsed sections before scrolling to an EIP anchor inside them.
+  useEffect(() => {
+    const anchorEipId = getEipIdFromHash(location.hash);
+    if (anchorEipId === null) return;
 
-      if (targetEip) {
-        // Define collapsible sections with their predicate logic and state setters.
-        // This ensures the configuration is unified and type-safe.
-        const collapsibleSections = [
-          {
-            shouldExpand: (e: EIP) => getInclusionStage(e, forkName) === 'Declined for Inclusion',
-            setExpanded: setIsDeclinedExpanded
-          },
-          {
-            shouldExpand: (e: EIP) => wasHeadlinerCandidate(e, forkName),
-            setExpanded: setIsHeadlinerProposalsExpanded
-          }
-        ];
+    const anchorEip = eips.find(eip => eip.id === anchorEipId);
+    if (!anchorEip) return;
 
-        // Invariant: any hash-linked EIP must exist in the DOM at render time.
-        // Collapsed sections must be expanded before anchor scroll occurs.
-        collapsibleSections.forEach(section => {
-          if (section.shouldExpand(targetEip)) {
-            section.setExpanded(true);
-          }
-        });
-      }
+    const expansion = getUpgradeAnchorExpansionState(anchorEip, forkName);
+    if (expansion.declined) {
+      setIsDeclinedExpanded(true);
+    }
+    if (expansion.headlinerProposals) {
+      setIsHeadlinerProposalsExpanded(true);
     }
   }, [location.hash, eips, forkName]);
 
   // Handle URL hash on component mount and location changes
-  useLayoutEffect(() => {
+  useEffect(() => {
     const hash = location.hash.substring(1); // Remove the # symbol
     if (hash) {
-      const element = document.getElementById(hash);
-      if (element) {
-        element.scrollIntoView({ behavior: 'smooth', block: 'start' });
-      }
+      // Small delay to ensure DOM is ready
+      const scrollTimer = setTimeout(() => {
+        const element = document.getElementById(hash);
+        if (element) {
+          element.scrollIntoView({ behavior: 'smooth', block: 'start' });
+          setActiveSection(hash);
+        }
+      }, 100);
+      return () => clearTimeout(scrollTimer);
     }
   }, [location.hash, eips, isDeclinedExpanded, isHeadlinerProposalsExpanded]);
 
   // Intersection Observer for TOC
   useEffect(() => {
+    // Track all currently visible sections
+    const visibleSections = new Set<string>();
+
     const observer = new IntersectionObserver(
       (entries) => {
         entries.forEach((entry) => {
           if (entry.isIntersecting) {
-            setActiveSection(entry.target.id);
+            visibleSections.add(entry.target.id);
+          } else {
+            visibleSections.delete(entry.target.id);
           }
         });
+
+        // Find the visible section closest to the top of the viewport
+        if (visibleSections.size > 0) {
+          let closestSection: string | null = null;
+          let closestDistance = Infinity;
+
+          visibleSections.forEach((id) => {
+            const element = document.getElementById(id);
+            if (element) {
+              const rect = element.getBoundingClientRect();
+              // Use the distance from the top of the viewport
+              const distance = Math.abs(rect.top);
+              if (distance < closestDistance) {
+                closestDistance = distance;
+                closestSection = id;
+              }
+            }
+          });
+
+          if (closestSection) {
+            setActiveSection(closestSection);
+          }
+        }
       },
       {
-        threshold: 0.3,
-        rootMargin: '0px'
+        threshold: 0.1,
+        rootMargin: '-10% 0px -70% 0px'
       }
     );
 
@@ -154,7 +263,7 @@ const PublicNetworkUpgradePage: React.FC<PublicNetworkUpgradePageProps> = ({
   // Filter EIPs by layer
   const filterEipsByLayer = (eipsList: EIP[]) => {
     if (layerFilter === 'all') return eipsList;
-    return eipsList.filter(eip => getEipLayer(eip, forkName) === layerFilter);
+    return eipsList.filter(eip => getEipLayer(eip) === layerFilter);
   };
 
   // Filter EIPs by search query
@@ -174,26 +283,87 @@ const PublicNetworkUpgradePage: React.FC<PublicNetworkUpgradePageProps> = ({
     return filterEipsBySearch(filterEipsByLayer(eipsList));
   };
 
-  // Generate TOC items
+  // Helper to generate Headliner Proposals TOC items
+  const getHeadlinerProposalsTocItems = (includeIndividualItems: boolean = false) => {
+    const headlinerProposals = filterEipsByLayer(eips.filter(eip => wasHeadlinerCandidate(eip, forkName)));
+    const pendingProposals = getPendingProposalsForFork(forkName)
+      .filter(p => layerFilter === 'all' || p.layer === layerFilter);
+    const totalCount = headlinerProposals.length + pendingProposals.length;
+
+    if (totalCount === 0) return [];
+
+    // For default mode (Glamsterdam), just show the section header
+    if (!includeIndividualItems) {
+      return [
+        { id: 'headliner-proposals', label: 'Headliner Proposals', type: 'section' as const, count: totalCount }
+      ];
+    }
+
+    // For headlinerSelection mode, show individual items
+    const headlinerItems = headlinerProposals
+      .sort((a, b) => {
+        const layerSort = sortByLayer({ layer: getEipLayer(a) }, { layer: getEipLayer(b) });
+        if (layerSort !== 0) return layerSort;
+        return a.id - b.id;
+      })
+      .map(eip => {
+        const proposalPrefix = getProposalPrefix(eip);
+        const layer = getEipLayer(eip);
+        return {
+          id: `eip-${eip.id}`,
+          label: `☆ ${proposalPrefix}-${eip.id}: ${getLaymanTitle(eip)}`,
+          type: 'eip' as const,
+          count: null as number | null,
+          layer: layer as 'EL' | 'CL' | null
+        };
+      });
+
+    const pendingItems = pendingProposals
+      .sort((a, b) => {
+        const layerSort = sortByLayer(a, b);
+        if (layerSort !== 0) return layerSort;
+        return a.title.localeCompare(b.title);
+      })
+      .map(proposal => ({
+        id: `pending-${proposal.id}`,
+        label: `☆ ${proposal.title}`,
+        type: 'eip' as const,
+        count: null as number | null,
+        layer: proposal.layer as 'EL' | 'CL' | null
+      }));
+
+    return [
+      { id: 'headliner-proposals', label: 'Headliner Proposals', type: 'section' as const, count: totalCount },
+      ...headlinerItems,
+      ...pendingItems
+    ];
+  };
+
+  // Generate TOC items based on pageMode
   const tocItems = [
+    // Overview - always shown
     { id: 'overview', label: 'Overview', type: 'section' as const, count: null as number | null },
+
     // Add timeline section for forks that have one
     ...(['glamsterdam', 'fusaka', 'pectra', 'hegota'].includes(forkName.toLowerCase()) ? [
       { id: `${forkName.toLowerCase()}-timeline`, label: 'Timeline', type: 'section' as const, count: null as number | null }
     ] : []),
 
-    // Show EIP sections for all forks (including Glamsterdam)
-    // For Live upgrades, only show Included and Declined for Inclusion
-    ...[
+    // Headliner Proposals section - for headlinerSelection mode, show at top (after timeline) with individual items
+    ...(pageMode === 'headlinerSelection' ? getHeadlinerProposalsTocItems(true) : []),
+
+    // EIP stage sections - hidden in headlinerSelection mode
+    ...(pageMode !== 'headlinerSelection' ? [
       ...(status === 'Live'
         ? ['Included', 'Declined for Inclusion']
         : ['Included', 'Scheduled for Inclusion', 'Considered for Inclusion', 'Proposed for Inclusion', 'Declined for Inclusion']
       ).flatMap(stage => {
-          // For Glamsterdam, exclude headliners from "Proposed for Inclusion" since they have their own section
+          // For Glamsterdam, exclude unselected headliner candidates from stage sections since they have their own section
+          // Selected headliners (isHeadliner=true) should still appear in their respective stages
           let stageEips = eips.filter(eip => {
             const matchesStage = getInclusionStage(eip, forkName) === stage;
-            if (forkName.toLowerCase() === 'glamsterdam' && stage === 'Proposed for Inclusion') {
-              return matchesStage && !isHeadliner(eip, forkName);
+            if (forkName.toLowerCase() === 'glamsterdam') {
+              return matchesStage && !isUnselectedHeadlinerCandidate(eip, forkName);
             }
             return matchesStage;
           });
@@ -240,7 +410,7 @@ const PublicNetworkUpgradePage: React.FC<PublicNetworkUpgradePageProps> = ({
               : '★';
 
             const proposalPrefix = getProposalPrefix(eip);
-            const layer = getEipLayer(eip, forkName);
+            const layer = getEipLayer(eip);
 
             return {
               id: `eip-${eip.id}`,
@@ -253,18 +423,10 @@ const PublicNetworkUpgradePage: React.FC<PublicNetworkUpgradePageProps> = ({
 
           return [stageItem, ...eipItems];
         }),
+    ] : []),
 
-      // Add headliner candidates section for Glamsterdam if there are any
-      ...(forkName.toLowerCase() === 'glamsterdam' ? (() => {
-        const headlinerProposals = filterEipsByLayer(eips.filter(eip => wasHeadlinerCandidate(eip, forkName)));
-        return headlinerProposals.length > 0 ? [{
-          id: 'headliner-proposals',
-          label: 'Headliner Proposals',
-          type: 'section' as const,
-          count: headlinerProposals.length
-        }] : [];
-      })() : []),
-    ]
+    // Headliner Proposals section - for default mode (like Glamsterdam), show at bottom
+    ...(pageMode !== 'headlinerSelection' && (forkName.toLowerCase() === 'glamsterdam' || forkName.toLowerCase() === 'hegota') ? getHeadlinerProposalsTocItems() : []),
   ];
 
   const scrollToSection = (sectionId: string) => {
@@ -281,30 +443,34 @@ const PublicNetworkUpgradePage: React.FC<PublicNetworkUpgradePageProps> = ({
     trackLinkClick(linkType, url);
   };
 
-  return (
-    <div className="min-h-screen bg-slate-50 dark:bg-slate-900 text-slate-900 dark:text-slate-100 p-6">
+  const content = (
       <div className="max-w-4xl mx-auto">
         {/* Header */}
         <div className="mb-8">
-          <div className="mb-6 flex justify-between items-start">
-            <Link to="/" className="text-3xl font-serif bg-gradient-to-r from-purple-600 via-blue-600 to-purple-800 bg-clip-text text-transparent hover:from-purple-700 hover:via-blue-700 hover:to-purple-900 transition-all duration-200 tracking-tight">
-              Forkcast
+          {!embedded && (
+            <Link to="/upgrades" className="text-slate-600 hover:text-slate-800 dark:text-slate-300 dark:hover:text-slate-100 mb-6 inline-block text-sm font-medium">
+              ← All Network Upgrades
             </Link>
-            <ThemeToggle />
-          </div>
-          <Link to="/" className="text-slate-600 hover:text-slate-800 dark:text-slate-300 dark:hover:text-slate-100 mb-6 inline-block text-sm font-medium">
-            ← All Network Upgrades
-          </Link>
+          )}
 
+          {!skipHeader && (
           <div className="border-b border-slate-200 dark:border-slate-700 pb-8">
             <div className="flex flex-col lg:flex-row lg:items-start lg:justify-between">
               <div className="flex-1">
-                <div className="flex items-center gap-3 mb-3">
-                  <h1 className="text-3xl font-light text-slate-900 dark:text-slate-100 tracking-tight">{displayName}</h1>
-                  <CopyLinkButton
-                    sectionId="upgrade"
-                    title="Copy link to this upgrade"
-                  />
+                <div className="flex items-center justify-between lg:justify-start gap-3 mb-3">
+                  <h1 className="text-3xl font-light text-slate-900 dark:text-slate-100 tracking-tight">
+                    <span className="lg:hidden">{displayName.replace(/ Upgrade$/, '')}</span>
+                    <span className="hidden lg:inline">{displayName}</span>
+                  </h1>
+                  <span className={`lg:hidden px-3 py-1 text-xs font-medium rounded ${getUpgradeStatusColor(status)}`}>
+                    {status}
+                  </span>
+                  <div className="hidden lg:flex items-center">
+                    <CopyLinkButton
+                      sectionId="upgrade"
+                      title="Copy link to this upgrade"
+                    />
+                  </div>
                 </div>
                 <p className="text-base text-slate-600 dark:text-slate-300 mb-2 leading-relaxed max-w-2xl">{description}</p>
                 {metaEipLink && (
@@ -324,40 +490,31 @@ const PublicNetworkUpgradePage: React.FC<PublicNetworkUpgradePageProps> = ({
                   </div>
                 )}
               </div>
-              <div className="mt-6 lg:mt-0">
+              <div className="hidden lg:block">
                 <span className={`px-3 py-1 text-xs font-medium rounded ${getUpgradeStatusColor(status)}`}>
                   {status}
                 </span>
               </div>
             </div>
 
-            <div className="mt-2">
-              <p className="text-xs text-slate-400 dark:text-slate-500 italic max-w-xl">
-              Forkcast is an ongoing experiment by the Protocol Support team to make the network upgrade process more accessible. Have feedback? Contact{' '}
-                <a
-                  href="mailto:nixo@ethereum.org"
-                  onClick={() => handleExternalLinkClick('email_contact', 'mailto:nixo@ethereum.org')}
-                  className="text-slate-500 hover:text-slate-700 dark:text-slate-400 dark:hover:text-slate-200 underline decoration-1 underline-offset-2"
-                >
-                  nixo
-                </a>
-                {' '}or{' '}
-                <a
-                  href="https://x.com/wolovim"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  onClick={() => handleExternalLinkClick('twitter_contact', 'https://x.com/wolovim')}
-                  className="text-slate-500 hover:text-slate-700 dark:text-slate-400 dark:hover:text-slate-200 underline decoration-1 underline-offset-2"
-                >
-                  @wolovim
-                </a>
-                .
-              </p>
-            </div>
           </div>
+          )}
         </div>
 
         <NetworkUpgradeTimeline currentForkName={forkName} />
+
+        {/* Mobile-only filter bar — the desktop sidebar (lg+) handles this */}
+        <div className="lg:hidden mb-4">
+          <EipFilterBar
+            searchQuery={searchQuery}
+            onSearchChange={handleSearchChange}
+            layerFilter={layerFilter}
+            onLayerFilterChange={handleLayerFilterChange}
+            showLayerFilter={showLayerFilter}
+            matchCount={filterEips(eips).length}
+            totalEipCount={filterEipsByLayer(eips).length}
+          />
+        </div>
 
         <div className="flex gap-8">
           <TableOfContents
@@ -365,22 +522,22 @@ const PublicNetworkUpgradePage: React.FC<PublicNetworkUpgradePageProps> = ({
             activeSection={activeSection}
             onSectionClick={scrollToSection}
             searchQuery={searchQuery}
-            onSearchChange={setSearchQuery}
+            onSearchChange={handleSearchChange}
             layerFilter={layerFilter}
-            onLayerFilterChange={setLayerFilter}
-            showLayerFilter={forkName.toLowerCase() === 'glamsterdam'}
+            onLayerFilterChange={handleLayerFilterChange}
+            showLayerFilter={showLayerFilter}
           />
 
           <div className="flex-1 min-w-0">
             <div className="space-y-8">
+              {/* Overview Section */}
               <OverviewSection
                 eips={filterEipsByLayer(eips)}
                 forkName={forkName}
                 status={status}
                 activationDate={activationDate}
                 onStageClick={scrollToSection}
-                clientTeamPerspectives={clientTeamPerspectives}
-                onExternalLinkClick={handleExternalLinkClick}
+                activationDetails={activationDetails}
               />
 
               {/* Timeline Section */}
@@ -426,9 +583,9 @@ const PublicNetworkUpgradePage: React.FC<PublicNetworkUpgradePageProps> = ({
                 );
               })()}
 
-              {/* EIPs Grouped by Stage */}
+              {/* EIPs Grouped by Stage - hidden in headlinerSelection mode */}
               {/* For Live upgrades, only show Included and Declined for Inclusion */}
-              {(status === 'Live'
+              {pageMode !== 'headlinerSelection' && (status === 'Live'
                 ? [
                     { stage: 'Included', description: 'EIPs that are part of the activated upgrade on mainnet.' },
                     { stage: 'Declined for Inclusion', description: 'EIPs that were proposed, but ultimately declined for inclusion in the upgrade for various reasons. They may be reconsidered for future upgrades.' }
@@ -443,10 +600,12 @@ const PublicNetworkUpgradePage: React.FC<PublicNetworkUpgradePageProps> = ({
               ).map(({ stage, description }) => {
                 let stageEips = eips.filter(eip => getInclusionStage(eip, forkName) === stage);
 
-                // For Glamsterdam, exclude headliners from "Proposed for Inclusion" since they have their own section
-                if (forkName.toLowerCase() === 'glamsterdam' && stage === 'Proposed for Inclusion') {
-                  stageEips = stageEips.filter(eip => !isHeadliner(eip, forkName));
+                // For Glamsterdam, exclude unselected headliner candidates since they have their own section
+                // Selected headliners should still appear in their respective stages
+                if (forkName.toLowerCase() === 'glamsterdam') {
+                  stageEips = stageEips.filter(eip => !isUnselectedHeadlinerCandidate(eip, forkName));
                 }
+
 
                 // Apply layer and search filters
                 stageEips = filterEips(stageEips);
@@ -465,7 +624,6 @@ const PublicNetworkUpgradePage: React.FC<PublicNetworkUpgradePageProps> = ({
                   // If both are same type (both headliner or both not), sort by EIP number
                   return a.id - b.id;
                 });
-
                 const stageId = stage.toLowerCase().replace(/\s+/g, '-');
                 const isDeclinedStage = stage === 'Declined for Inclusion';
 
@@ -474,7 +632,7 @@ const PublicNetworkUpgradePage: React.FC<PublicNetworkUpgradePageProps> = ({
                     <div className="border-b border-slate-200 dark:border-slate-700 pb-4">
                       <div className="flex items-center gap-3 mb-2">
                         <h2 className="text-xl font-medium text-slate-900 dark:text-slate-100">{stage}</h2>
-                        <span className={`px-2 py-1 text-xs font-medium rounded ${getInclusionStageColor(stage as any)}`}>
+                        <span className={`px-2 py-1 text-xs font-medium rounded ${getInclusionStageColor(stage as InclusionStage)}`}>
                           {stageEips.length} EIP{stageEips.length !== 1 ? 's' : ''}
                         </span>
                         {isDeclinedStage && (
@@ -517,8 +675,6 @@ const PublicNetworkUpgradePage: React.FC<PublicNetworkUpgradePageProps> = ({
                     ) : (
                       <div className="space-y-6">
                         {sortedStageEips.map(eip => {
-                          if (!eip.laymanDescription) return null;
-
                           const eipId = `eip-${eip.id}`;
 
                           // For declined EIPs, show simplified view
@@ -528,11 +684,11 @@ const PublicNetworkUpgradePage: React.FC<PublicNetworkUpgradePageProps> = ({
                                 <div className="flex items-start justify-between">
                                   <div className="flex-1">
                                     <h3 className="text-base font-medium text-slate-900 dark:text-slate-100 leading-tight mb-2">
-                                      <span className="text-slate-400 dark:text-slate-500 text-sm font-mono mr-2">{getProposalPrefix(eip)}-{eip.id}</span>
+                                      <span className="text-slate-400 dark:text-slate-400 text-sm font-mono mr-2">{getProposalPrefix(eip)}-{eip.id}</span>
                                       <span>{eip.title}</span>
                                     </h3>
                                     <p className="text-slate-700 dark:text-slate-300 text-sm leading-relaxed">
-                                      {eip.description}
+                                      {getSummaryDescription(eip)}
                                     </p>
                                   </div>
                                   <div className="flex items-center gap-2 ml-4">
@@ -542,8 +698,8 @@ const PublicNetworkUpgradePage: React.FC<PublicNetworkUpgradePageProps> = ({
                                           href={eip.discussionLink}
                                           target="_blank"
                                           rel="noopener noreferrer"
-                                          onClick={() => handleExternalLinkClick('discussion', eip.discussionLink)}
-                                          className="text-slate-400 hover:text-slate-600 dark:text-slate-500 dark:hover:text-slate-300 transition-colors cursor-pointer relative group"
+                                          onClick={() => handleExternalLinkClick('discussion', eip.discussionLink ?? '')}
+                                          className="text-slate-400 hover:text-slate-600 dark:text-slate-400 dark:hover:text-slate-200 transition-colors cursor-pointer relative group"
                                         >
                                           <div className="relative w-7 h-7">
                                             <img
@@ -570,7 +726,7 @@ const PublicNetworkUpgradePage: React.FC<PublicNetworkUpgradePageProps> = ({
                                         target="_blank"
                                         rel="noopener noreferrer"
                                         onClick={() => handleExternalLinkClick('specification', getSpecificationUrl(eip))}
-                                        className="text-slate-400 hover:text-slate-600 dark:text-slate-500 dark:hover:text-slate-300 transition-colors cursor-pointer relative group"
+                                        className="text-slate-400 hover:text-slate-600 dark:text-slate-400 dark:hover:text-slate-200 transition-colors cursor-pointer relative group"
                                       >
                                         <div className="relative w-7 h-7">
                                           <img
@@ -605,14 +761,22 @@ const PublicNetworkUpgradePage: React.FC<PublicNetworkUpgradePageProps> = ({
                 );
               })}
 
-              {/* Headliner Proposals Section (for Glamsterdam) */}
-              {forkName.toLowerCase() === 'glamsterdam' && filterEips(eips.filter(eip => wasHeadlinerCandidate(eip, forkName))).length > 0 && (
+              {/* Headliner Proposals Section - shown in headlinerSelection mode or for forks with historical candidates */}
+              {(() => {
+                const headlinerEips = filterEips(eips.filter(eip => wasHeadlinerCandidate(eip, forkName)));
+                const filteredPendingProposals = getPendingProposalsForFork(forkName);
+                const totalProposals = headlinerEips.length + filteredPendingProposals.length;
+                const showSection = (pageMode === 'headlinerSelection' || forkName.toLowerCase() === 'glamsterdam' || forkName.toLowerCase() === 'hegota') && totalProposals > 0;
+
+                if (!showSection) return null;
+
+                return (
                 <div className="space-y-6" id="headliner-proposals" data-section>
                   <div className="border-b border-slate-200 dark:border-slate-700 pb-4">
                     <div className="flex items-center gap-3 mb-2">
                       <h2 className="text-xl font-medium text-slate-900 dark:text-slate-100">Headliner Proposals</h2>
                       <span className="px-2 py-1 text-xs font-medium rounded bg-purple-100 text-purple-700 dark:bg-purple-900/20 dark:text-purple-300">
-                        {filterEips(eips.filter(eip => wasHeadlinerCandidate(eip, forkName))).length} EIP{filterEips(eips.filter(eip => wasHeadlinerCandidate(eip, forkName))).length !== 1 ? 's' : ''}
+                        {totalProposals} proposal{totalProposals !== 1 ? 's' : ''}
                       </span>
                       <button
                         onClick={() => setIsHeadlinerProposalsExpanded(!isHeadlinerProposalsExpanded)}
@@ -635,14 +799,14 @@ const PublicNetworkUpgradePage: React.FC<PublicNetworkUpgradePageProps> = ({
                       />
                     </div>
                     <p className="text-sm text-slate-600 dark:text-slate-300 max-w-3xl">
-                      Headliners are the most important features to include in each network upgrade. The community considered the following headliner proposals.
+                      Headliners are the most important features to include in each network upgrade. {pageMode === 'headlinerSelection' ? 'The following headliner proposals are under consideration.' : 'The community considered the following headliner proposals.'}
                     </p>
                   </div>
 
                   {!isHeadlinerProposalsExpanded ? (
                     <div className="bg-purple-50 dark:bg-purple-900/10 border border-purple-200 dark:border-purple-600 rounded p-4">
                       <p className="text-sm text-slate-600 dark:text-slate-300">
-                        {filterEips(eips.filter(eip => wasHeadlinerCandidate(eip, forkName))).length} headliner proposal{filterEips(eips.filter(eip => wasHeadlinerCandidate(eip, forkName))).length !== 1 ? 's' : ''} were considered for inclusion in this network upgrade.
+                        {totalProposals} headliner proposal{totalProposals !== 1 ? 's' : ''} {pageMode === 'headlinerSelection' ? 'are under consideration for' : 'were considered for inclusion in'} this network upgrade.
                         <button
                           onClick={() => setIsHeadlinerProposalsExpanded(true)}
                           className="ml-1 text-purple-700 hover:text-purple-900 dark:text-purple-300 dark:hover:text-purple-100 underline decoration-1 underline-offset-2 transition-colors"
@@ -665,25 +829,84 @@ const PublicNetworkUpgradePage: React.FC<PublicNetworkUpgradePageProps> = ({
                       {filterEips(eips)
                         .filter(eip => wasHeadlinerCandidate(eip, forkName))
                         .sort((a, b) => {
-                          const layerA = getEipLayer(a, forkName);
-                          const layerB = getEipLayer(b, forkName);
-
-                          // Sort by layer first (EL before CL)
-                          if (layerA === 'EL' && layerB === 'CL') return -1;
-                          if (layerA === 'CL' && layerB === 'EL') return 1;
-
-                          // Then sort by EIP number within each layer
+                          const layerSort = sortByLayer({ layer: getEipLayer(a) }, { layer: getEipLayer(b) });
+                          if (layerSort !== 0) return layerSort;
                           return a.id - b.id;
                         })
-                        .map(eip => {
-                          if (!eip.laymanDescription) return null;
-                          return <EipCard key={eip.id} eip={eip} forkName={forkName} handleExternalLinkClick={handleExternalLinkClick} />;
+                        .map(eip => (
+                          <EipCard key={eip.id} eip={eip} forkName={forkName} handleExternalLinkClick={handleExternalLinkClick} />
+                        ))
+                      }
+
+                      {/* Pending Proposals - forum discussions without EIP numbers yet */}
+                      {getPendingProposalsForFork(forkName)
+                        .filter(proposal => layerFilter === 'all' || proposal.layer === layerFilter)
+                        .sort((a, b) => {
+                          const layerSort = sortByLayer(a, b);
+                          if (layerSort !== 0) return layerSort;
+                          return a.title.localeCompare(b.title);
                         })
+                        .map(proposal => (
+                          <article
+                            key={proposal.id}
+                            id={`pending-${proposal.id}`}
+                            data-section
+                            className="bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-600 rounded p-8"
+                          >
+                            <header className="border-b border-slate-100 dark:border-slate-700 pb-6 mb-6">
+                              <div className="flex items-center gap-3">
+                                <h3 className="text-base font-medium text-slate-900 dark:text-slate-100 leading-tight flex-1">
+                                  <span className="text-slate-400 dark:text-slate-400 text-sm font-mono mr-2">Pending</span>
+                                  <span>{proposal.title}</span>
+                                  <Tooltip text={proposal.layer === 'EL' ? 'Primarily impacts Execution Layer' : 'Primarily impacts Consensus Layer'}>
+                                    <span className={`px-2 py-1 text-xs font-medium rounded ml-2 relative -top-px ${
+                                      proposal.layer === 'EL'
+                                        ? 'bg-indigo-100 text-indigo-700 dark:bg-indigo-900/20 dark:text-indigo-300 border border-indigo-200 dark:border-indigo-600'
+                                        : 'bg-teal-100 text-teal-700 dark:bg-teal-900/20 dark:text-teal-300 border border-teal-200 dark:border-teal-600'
+                                    }`}>
+                                      {proposal.layer}
+                                    </span>
+                                  </Tooltip>
+                                </h3>
+                                <Tooltip text="View forum discussion">
+                                  <a
+                                    href={proposal.forumLink}
+                                    target="_blank"
+                                    rel="noopener noreferrer"
+                                    onClick={() => handleExternalLinkClick('pending_proposal', proposal.forumLink)}
+                                    className="text-slate-400 hover:text-slate-600 dark:text-slate-400 dark:hover:text-slate-200 transition-colors cursor-pointer relative group"
+                                  >
+                                    <div className="relative w-7 h-7">
+                                      <img
+                                        src="/eth-mag.png"
+                                        alt="Ethereum Magicians"
+                                        className="w-7 h-7 opacity-90 dark:opacity-70"
+                                      />
+                                      <svg
+                                        className="absolute -bottom-0.5 -right-0.5 w-4 h-4 opacity-0 group-hover:opacity-100 transition-opacity"
+                                        fill="none"
+                                        stroke="currentColor"
+                                        strokeWidth="2"
+                                        viewBox="0 0 24 24"
+                                      >
+                                        <path strokeLinecap="round" strokeLinejoin="round" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
+                                      </svg>
+                                    </div>
+                                  </a>
+                                </Tooltip>
+                              </div>
+                            </header>
+                            <p className="text-slate-700 dark:text-slate-300 text-sm leading-relaxed">
+                              {proposal.description}
+                            </p>
+                          </article>
+                        ))
                       }
                     </div>
                   )}
                 </div>
-              )}
+                );
+              })()}
             </div>
 
             {eips.length === 0 && forkName.toLowerCase() !== 'hegota' && (
@@ -694,6 +917,13 @@ const PublicNetworkUpgradePage: React.FC<PublicNetworkUpgradePageProps> = ({
           </div>
         </div>
       </div>
+  );
+
+  if (embedded) return content;
+
+  return (
+    <div className="min-h-screen bg-slate-50 dark:bg-slate-900 text-slate-900 dark:text-slate-100 p-6">
+      {content}
     </div>
   );
 };

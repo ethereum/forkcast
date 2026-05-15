@@ -1,20 +1,23 @@
 {
   "id": 6404,
-  "title": "SSZ transactions",
+  "title": "EIP-6404: SSZ transactions",
   "status": "Draft",
-  "description": "This EIP defines a migration process of EIP-2718 Recursive-Length Prefix (RLP) transactions to Simple Serialize (SSZ).",
+  "description": "Migration of RLP transactions to SSZ",
   "author": "Etan Kissling (@etan-status), Gajinder Singh (@g11tech), Vitalik Buterin (@vbuterin)",
   "type": "Standards Track",
   "category": "Core",
   "createdDate": "2023-01-30",
   "discussionLink": "https://ethereum-magicians.org/t/eip-6404-ssz-transactions/12783",
   "reviewer": "bot",
+  "layer": "EL",
   "forkRelationships": [
     {
       "forkName": "Glamsterdam",
       "statusHistory": [
         {
-          "status": "Proposed"
+          "status": "Proposed",
+          "call": null,
+          "date": null
         },
         {
           "status": "Declined",
@@ -22,11 +25,12 @@
           "date": "2025-12-04"
         }
       ],
-      "layer": "EL",
-      "champion": {
-        "name": "Etan Kissling",
-        "discord": "etan_status"
-      }
+      "champions": [
+        {
+          "name": "Etan Kissling",
+          "discord": "etan_status"
+        }
+      ]
     }
   ],
   "laymanDescription": "Moves Ethereum transactions from RLP to SSZ. This changes serialization and the block header's transactions_root, enabling more efficient proofs and future flexibility. Users should see no behavioral change.",
@@ -61,5 +65,6 @@
     "Better partial hashing and verification of data",
     "Aligns execution and consensus around SSZ",
     "Improves forward compatibility for transaction changes"
-  ]
+  ],
+  "tradeoffs": null
 }

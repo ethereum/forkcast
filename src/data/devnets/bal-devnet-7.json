@@ -1,0 +1,154 @@
+{
+  "id": "bal-devnet-7",
+  "title": "bal-devnet-7",
+  "sourceUrl": "https://notes.ethereum.org/@ethpandaops/bal-devnet-7",
+  "scrapedAt": "2026-05-15T07:18:25.903Z",
+  "announcements": [
+    "bal-devnet-7 target launch: **Monday 18.05** (subject to ACDT today).",
+    "**Last `bal-` prefixed devnet.** Consolidates the bal-devnet-3 optimisations with the EIP-8037 spec changes finalised since bal-devnet-6 — confirmed in [`tests-bal@v7.0.0`](https://github.com/ethereum/execution-specs/releases/tag/tests-bal@v7.0.0). Future devnet releases will be prefixed `glamsterdam-`.",
+    "**EIP-8037 final shape** — all spec changes for the EIP land here, pulled from four EIPs PRs: [#11573](https://github.com/ethereum/EIPs/pull/11573) (fixed CPSB + frame accounting, **merged**), [#11606](https://github.com/ethereum/EIPs/pull/11606) (SELFDESTRUCT charges, **merged**), [#11611](https://github.com/ethereum/EIPs/pull/11611) (bal-devnet-6 bug fixes, open), [#11616](https://github.com/ethereum/EIPs/pull/11616) (parameter recalibration, open). EELS reference branch: [`devnets/bal/7`](https://github.com/ethereum/execution-specs/tree/devnets/bal/7).",
+    "**Parameters:** `cost_per_state_byte` **`1174 → 1530`** (fixed), `STATE_BYTES_PER_NEW_ACCOUNT` `112 → 120`, `STATE_BYTES_PER_STORAGE_SET` `32 → 64`, `STATE_BYTES_PER_AUTH_BASE` unchanged at `23`. `SYSTEM_CALL_GAS_LIMIT` raised from `30M` to `30M + STATE_BYTES_PER_STORAGE_SET × CPSB × SYSTEM_MAX_SSTORES_PER_CALL` (`SYSTEM_MAX_SSTORES_PER_CALL = 16`); the extra is allocated to `state_gas_reservoir` so system calls cannot OOG on state-gas growth alone.",
+    "**eth/70 (EIP-7975) and eth/71 (EIP-8159) are now mandatory** — moved from `optional` after the SFI check in #block-access-lists (2026-05-08). Every EL must support both for bal-devnet-7."
+  ],
+  "eips": [
+    {
+      "number": 7708,
+      "title": "ETH transfers emit a log (incl. CREATE/CREATE2)",
+      "status": null,
+      "url": "https://eips.ethereum.org/EIPS/eip-7708"
+    },
+    {
+      "number": 7778,
+      "title": "Block Gas Accounting without Refunds",
+      "status": null,
+      "url": "https://eips.ethereum.org/EIPS/eip-7778"
+    },
+    {
+      "number": 7843,
+      "title": "SLOTNUM opcode",
+      "status": null,
+      "url": "https://eips.ethereum.org/EIPS/eip-7843"
+    },
+    {
+      "number": 7928,
+      "title": "Block-Level Access Lists",
+      "status": null,
+      "url": "https://eips.ethereum.org/EIPS/eip-7928"
+    },
+    {
+      "number": 7954,
+      "title": "Increase Maximum Contract Size",
+      "status": null,
+      "url": "https://eips.ethereum.org/EIPS/eip-7954"
+    },
+    {
+      "number": 7975,
+      "title": "eth/70 – partial block receipt lists",
+      "status": null,
+      "url": "https://eips.ethereum.org/EIPS/eip-7975"
+    },
+    {
+      "number": 7976,
+      "title": "Increase Calldata Floor Cost (64/64)",
+      "status": null,
+      "url": "https://eips.ethereum.org/EIPS/eip-7976"
+    },
+    {
+      "number": 7981,
+      "title": "Increase Access List Cost",
+      "status": null,
+      "url": "https://eips.ethereum.org/EIPS/eip-7981"
+    },
+    {
+      "number": 8024,
+      "title": "Backward compatible SWAPN, DUPN, EXCHANGE",
+      "status": null,
+      "url": "https://eips.ethereum.org/EIPS/eip-8024"
+    },
+    {
+      "number": 8037,
+      "title": "State Creation Gas — CPSB=1530, system-call gas bump, halt/revert + SELFDESTRUCT refunds",
+      "status": "updated",
+      "url": "https://eips.ethereum.org/EIPS/eip-8037"
+    },
+    {
+      "number": 8159,
+      "title": "eth/71 – Block Access List Exchange",
+      "status": null,
+      "url": "https://eips.ethereum.org/EIPS/eip-8159"
+    }
+  ],
+  "elClientSupport": {
+    "clients": [
+      "Geth",
+      "Besu",
+      "Reth",
+      "Nethermind",
+      "Erigon",
+      "Nimbus-EL",
+      "Ethrex"
+    ],
+    "matrix": [
+      {
+        "eipNumber": 7708,
+        "label": "7708 / 7778 / 7843 / 7928 / 7954 / 7976 / 7981 / 8024",
+        "support": {
+          "Geth": "supported",
+          "Besu": "supported",
+          "Reth": "supported",
+          "Nethermind": "supported",
+          "Erigon": "supported",
+          "Nimbus-EL": "supported",
+          "Ethrex": "supported"
+        }
+      },
+      {
+        "eipNumber": 7975,
+        "label": "7975 (eth/70 — required)",
+        "support": {
+          "Geth": "supported",
+          "Besu": "supported",
+          "Reth": "supported",
+          "Nethermind": "supported",
+          "Erigon": "supported",
+          "Nimbus-EL": "supported",
+          "Ethrex": "supported"
+        }
+      },
+      {
+        "eipNumber": 8037,
+        "label": "8037 (CPSB=1530 + #11611)",
+        "support": {
+          "Geth": "in_progress",
+          "Besu": "in_progress",
+          "Reth": "in_progress",
+          "Nethermind": "in_progress",
+          "Erigon": "in_progress",
+          "Nimbus-EL": "in_progress",
+          "Ethrex": "in_progress"
+        }
+      },
+      {
+        "eipNumber": 8159,
+        "label": "8159 (eth/71 — required)",
+        "support": {
+          "Geth": ":hammer: (draft PR)",
+          "Besu": "supported",
+          "Reth": ":hammer: (newPayload wiring)",
+          "Nethermind": "supported",
+          "Erigon": "supported",
+          "Nimbus-EL": "supported",
+          "Ethrex": ":hammer: (in review)"
+        }
+      }
+    ]
+  },
+  "clClientSupport": {
+    "clients": [],
+    "matrix": []
+  },
+  "specReferences": {
+    "consensusSpecs": null,
+    "executionSpecs": null
+  }
+}

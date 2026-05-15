@@ -1,0 +1,1842 @@
+WEBVTT
+
+1
+00:00:08.290 --> 00:00:09.339
+jochem-brouwer: Hey, I hate it.
+
+2
+00:00:10.480 --> 00:00:11.170
+Ben Adams: Yay.
+
+3
+00:00:11.170 --> 00:00:11.720
+jochem-brouwer: Right.
+
+4
+00:00:12.500 --> 00:00:13.280
+Dragan Rakita: Hello.
+
+5
+00:00:17.830 --> 00:00:18.730
+jochem-brouwer: Where are you?
+
+6
+00:00:21.540 --> 00:00:22.360
+Maria Silva: Okay.
+
+7
+00:00:23.910 --> 00:00:31.329
+Maria Silva: Sorry, I was a bit late, and I think the call would only start after I join, I guess?
+
+8
+00:00:38.550 --> 00:00:40.249
+Maria Silva: Sorry for the delay.
+
+9
+00:00:41.730 --> 00:00:47.949
+Maria Silva: Yeah, I wrote a message in the threads, see if more people join, and then we can… we can kick off.
+
+10
+00:00:51.760 --> 00:00:58.120
+Maria Silva: And we have a big docket today, so let's see if we can cover all topics.
+
+11
+00:01:06.740 --> 00:01:13.650
+Maria Silva: I'll just share the agenda here, so everyone is aware.
+
+12
+00:01:15.550 --> 00:01:20.049
+Maria Silva: Maybe we can wait one more minute, and then we'll… we'll go.
+
+13
+00:01:47.330 --> 00:02:05.330
+Maria Silva: Okay, so maybe we can, kick off. I don't see more people joining. So the first, topic on the agenda is EIP8037, so the state creation does cause increase, and for here we have a couple of updates, and then a couple of open
+
+14
+00:02:05.430 --> 00:02:08.499
+Maria Silva: topics, that I wanted to discuss, so…
+
+15
+00:02:08.949 --> 00:02:20.450
+Maria Silva: First, just an update, the Steel team has released the latest, spec, so this one now, doesn't have the…
+
+16
+00:02:20.470 --> 00:02:29.230
+Maria Silva: refunds for self-destruct. The EIP on that is not yet, updated, so it's something I'll, I'll do.
+
+17
+00:02:29.360 --> 00:02:35.320
+Maria Silva: And maybe I can share my screen so it's a bit easier to go through.
+
+18
+00:02:35.390 --> 00:02:52.150
+Maria Silva: Essentially, this is the… the new release. So I… I… I do have these two PRs on the… on the, on the EIP. The first one was to focus on, the, open issues we had from BAL devnet 6.
+
+19
+00:02:52.150 --> 00:02:55.560
+Maria Silva: But this one still needs to be updated to remove the…
+
+20
+00:02:55.780 --> 00:03:06.400
+Maria Silva: refunds from Self-Destruct, and then the second one was more about updating the parameters, the…
+
+21
+00:03:06.400 --> 00:03:18.200
+Maria Silva: the exact numbers, and there's two components to these. So, first is fixing the cost per byte to a value that would be, like, the
+
+22
+00:03:18.270 --> 00:03:23.760
+Maria Silva: closer to the… what we actually do on the final Amsterdam fork.
+
+23
+00:03:24.040 --> 00:03:27.849
+Maria Silva: And the second one is just changing some…
+
+24
+00:03:28.340 --> 00:03:41.390
+Maria Silva: Parameters to make them more consistent with the state access, cost increase, and also the 2780, so the intrinsic transaction gas.
+
+25
+00:03:41.610 --> 00:03:44.070
+Maria Silva: Changes,
+
+26
+00:03:45.350 --> 00:03:52.730
+Maria Silva: And I think one thing I wanted to bring up on this one, so I haven't yet, I'm not sure if you all
+
+27
+00:03:52.880 --> 00:04:04.820
+Maria Silva: have seen the numbers, but I think it would be nice to have, like, a discussion on if the level of increases look alright. So, what I ended up doing is,
+
+28
+00:04:07.280 --> 00:04:13.609
+Maria Silva: Maybe I can just… Air… What we have here?
+
+29
+00:04:16.360 --> 00:04:27.000
+Maria Silva: So, essentially, now, we are targeting a growth of 120 gigabytes per year, so this would be, like, a worst-case state growth.
+
+30
+00:04:27.260 --> 00:04:35.690
+Maria Silva: With a block limit of 150. So what this would mean is that I would expect, maybe in the beginning.
+
+31
+00:04:35.770 --> 00:04:38.920
+Maria Silva: Right after the…
+
+32
+00:04:38.960 --> 00:04:51.739
+Maria Silva: the fork, for us to have lower, limits, so it will be actually a bit overpriced. And then at the end, or closer to the next fork, it would be more towards the
+
+33
+00:04:51.750 --> 00:05:02.359
+Maria Silva: bigger block limit, so it would be maybe slightly underpriced, so we could have, in theory, a bit higher than this growth rate. But again, this is, like, a worst case.
+
+34
+00:05:02.600 --> 00:05:06.429
+Maria Silva: And, with this sort of,
+
+35
+00:05:06.900 --> 00:05:11.410
+Maria Silva: Numbers, the level of increases we would see would be…
+
+36
+00:05:11.520 --> 00:05:14.130
+Maria Silva: So maybe I can show it…
+
+37
+00:05:15.650 --> 00:05:28.459
+Maria Silva: Where is it? It's here. So I have for a new account, this would be a 7-time increase for a new slot, a 5-time increase, and for a contract deployment, an 8-time
+
+38
+00:05:28.610 --> 00:05:29.730
+Maria Silva: Increase.
+
+39
+00:05:30.290 --> 00:05:49.390
+Maria Silva: This seems like a lot, but you then… you kind of turn it into a cost in ETH, based on the base fee we have right now, which we still expect the base fee to go down with the increased, with the increased, block limit, and, it's actually not horrible.
+
+40
+00:05:51.570 --> 00:06:03.960
+Maria Silva: So yeah, I'm curious to see, like, if you have any opinions on these. Are these… do these numbers seem okay? So this would be a cost per state bite of around $1,500.
+
+41
+00:06:05.870 --> 00:06:15.420
+Maria Silva: And also curious, like, just to… just to double check, in the current spec, are we already using these, or are we still using the old cost per byte?
+
+42
+00:06:17.980 --> 00:06:23.470
+Stefan Starflinger: For Paradefinite 7, I think I updated it to this new version.
+
+43
+00:06:24.450 --> 00:06:25.770
+Maria Silva: Okay, perfect.
+
+44
+00:06:26.760 --> 00:06:31.979
+Maria Silva: But yeah, curious to hear your thoughts here, or…
+
+45
+00:06:33.420 --> 00:06:41.850
+Maria Silva: If there's no strong opposition to this, I guess we should just keep with this, and then update if there are any concerns.
+
+46
+00:06:42.360 --> 00:06:43.449
+Maria Silva: Go, Ben.
+
+47
+00:06:44.080 --> 00:06:50.910
+Ben Adams: So… Proposal, we're doing the 64 kilobyte.
+
+48
+00:06:51.030 --> 00:06:51.920
+Ben Adams: deployment.
+
+49
+00:06:53.260 --> 00:06:58.280
+Ben Adams: Would that be a problem with, the block gas size.
+
+50
+00:07:02.320 --> 00:07:07.209
+Maria Silva: I don't think so, right? So we are increasing the blog size.
+
+51
+00:07:07.410 --> 00:07:08.870
+Maria Silva: So this should be…
+
+52
+00:07:09.000 --> 00:07:18.320
+Maria Silva: So this cost has both the new account costs, and then the majority of it is actually the size of the contract.
+
+53
+00:07:18.430 --> 00:07:22.460
+Maria Silva: So, if we were just to assume… let me just see…
+
+54
+00:07:23.760 --> 00:07:29.319
+Maria Silva: So this is a 2.5 times increase, so 37K times…
+
+55
+00:07:29.560 --> 00:07:33.970
+Maria Silva: to 5, so it would be around the 92K.
+
+56
+00:07:35.240 --> 00:07:38.250
+Maria Silva: So, it should be fine, I guess.
+
+57
+00:07:38.850 --> 00:07:39.390
+Ben Adams: With that.
+
+58
+00:07:39.390 --> 00:07:40.330
+Maria Silva: Between the blog post.
+
+59
+00:07:40.330 --> 00:07:44.840
+Ben Adams: Does that mean if you deployed a 64 kilobyte contract?
+
+60
+00:07:46.110 --> 00:07:49.410
+Ben Adams: You'd use an entire,
+
+61
+00:07:51.620 --> 00:07:57.549
+Ben Adams: Entire, yeah, full block. So nobody would be able to do any other state.
+
+62
+00:07:57.730 --> 00:07:58.749
+Ben Adams: That'd be true.
+
+63
+00:07:59.960 --> 00:08:08.249
+Maria Silva: Let me see, I would… if we had the 1… 1,000 block limit, yes.
+
+64
+00:08:11.400 --> 00:08:12.909
+Maria Silva: Oh, sorry, okay.
+
+65
+00:08:15.940 --> 00:08:17.350
+Maria Silva: Go, Jocham!
+
+66
+00:08:19.470 --> 00:08:27.910
+jochem-brouwer: Yeah, so this number for the 24KB contracted plugin, that is only, the cost for paying for this
+
+67
+00:08:28.750 --> 00:08:30.240
+jochem-brouwer: creation, right?
+
+68
+00:08:31.170 --> 00:08:33.470
+Maria Silva: Yeah, only creation.
+
+69
+00:08:34.549 --> 00:08:37.839
+jochem-brouwer: Yeah, okay, we also have to take into account that this does not…
+
+70
+00:08:38.049 --> 00:08:41.229
+jochem-brouwer: Not leave any room for internet codes or data.
+
+71
+00:08:41.369 --> 00:08:51.379
+jochem-brouwer: I think that's fine, because we… for deploying it, we would need, like, 100 million gas, so… that's fine, but yeah, then one block would have, like, this deployment.
+
+72
+00:08:52.280 --> 00:08:52.780
+Maria Silva: Yes.
+
+73
+00:08:53.450 --> 00:08:54.330
+jochem-brouwer: Okay, cool.
+
+74
+00:08:57.290 --> 00:08:58.280
+Maria Silva: Go Ben?
+
+75
+00:08:58.750 --> 00:09:06.620
+Ben Adams: I'm… I am… Quite interested in, the proposal from…
+
+76
+00:09:08.140 --> 00:09:11.249
+Ben Adams: I can't remember the name slipping me… of,
+
+77
+00:09:11.960 --> 00:09:15.370
+Ben Adams: Not… not necessarily for now.
+
+78
+00:09:15.990 --> 00:09:21.249
+Ben Adams: For the proposal of deduplication, i.e. if the code hash already exists.
+
+79
+00:09:21.460 --> 00:09:23.299
+Ben Adams: You don't get charged.
+
+80
+00:09:25.000 --> 00:09:25.829
+Ben Adams: bug code.
+
+81
+00:09:28.220 --> 00:09:30.110
+Maria Silva: So, how would that help here?
+
+82
+00:09:31.500 --> 00:09:32.090
+Ben Adams: Pretty sure.
+
+83
+00:09:32.090 --> 00:09:34.070
+Maria Silva: Applying existing code, right?
+
+84
+00:09:34.580 --> 00:09:38.490
+Ben Adams: Yeah, so a lot of code is just copies of,
+
+85
+00:09:39.080 --> 00:09:43.130
+Ben Adams: already… code that already exists. So, for instance, if you are…
+
+86
+00:09:43.800 --> 00:09:48.450
+Ben Adams: creating a new Uniswap pool, it's… it's…
+
+87
+00:09:48.800 --> 00:09:55.410
+Ben Adams: it just creates an identical create 2 of code that's already on… on the chain, but you all get charged
+
+88
+00:09:55.590 --> 00:09:58.239
+Ben Adams: In this… in this case, for Uniswap.
+
+89
+00:09:58.450 --> 00:10:01.420
+Ben Adams: B3, Paul, I think you got charged 38.
+
+90
+00:10:02.380 --> 00:10:03.740
+Ben Adams: Million gas.
+
+91
+00:10:04.370 --> 00:10:07.479
+Ben Adams: Even though it doesn't actually deploy any code.
+
+92
+00:10:08.140 --> 00:10:08.760
+Maria Silva: Right.
+
+93
+00:10:09.430 --> 00:10:20.450
+Maria Silva: Yeah, I think that was the proposal that Carlos initially had, that was declined for Glamsterdam, but for sure, we can definitely try to revisit it for the next work.
+
+94
+00:10:21.360 --> 00:10:21.890
+Ben Adams: Yeah.
+
+95
+00:10:33.900 --> 00:10:37.400
+Ben Adams: The current proposal's, like, kind of junky.
+
+96
+00:10:40.070 --> 00:10:41.420
+Ben Adams: I don't think it's right.
+
+97
+00:10:42.840 --> 00:10:43.400
+Maria Silva: Right.
+
+98
+00:10:43.670 --> 00:10:50.430
+Dragan Rakita: Yeah, I think, if we…
+
+99
+00:10:50.710 --> 00:10:59.650
+Dragan Rakita: assume that we can read all the deployed contracts by the code hash. I think it's more complex than
+
+100
+00:10:59.970 --> 00:11:06.750
+Dragan Rakita: then we… like, it's… I think it's complexity a lot higher than… than the peaches.
+
+101
+00:11:07.080 --> 00:11:18.070
+Dragan Rakita: So, that means that everybody needs to take care of an amount of the bytecode, basically, there are inside the table, and to take care if delegation is happening or not.
+
+102
+00:11:18.350 --> 00:11:23.560
+Dragan Rakita: So I think it becomes really hard and complex to basically.
+
+103
+00:11:24.430 --> 00:11:32.200
+Dragan Rakita: to implement that. Basically, if the contract is already, deployed, Do not charge.
+
+104
+00:11:32.330 --> 00:11:33.790
+Dragan Rakita: The gas again.
+
+105
+00:11:34.990 --> 00:11:37.370
+Dragan Rakita: I like idea, but single complexity is higher.
+
+106
+00:11:38.340 --> 00:11:43.120
+Maria Silva: Right, and I think that was also one of the reasons why it was… it didn't went through.
+
+107
+00:11:43.240 --> 00:11:45.490
+Maria Silva: So yeah.
+
+108
+00:11:46.580 --> 00:12:00.210
+Maria Silva: But I would say, I think the worry of the contract deployments filling up a block, I think, should be alleviated once we do the full pricing. Like, if we had
+
+109
+00:12:00.340 --> 00:12:06.069
+Maria Silva: The price for state creation have an independent base fee.
+
+110
+00:12:06.220 --> 00:12:14.540
+Maria Silva: from the other costs, then we could even lift the block limit. Like, the block limit wouldn't need to take into consideration
+
+111
+00:12:14.760 --> 00:12:21.820
+Maria Silva: state creation gas, and that would actually help a lot, right? Like, now things would make sense, like, you only feel
+
+112
+00:12:21.950 --> 00:12:41.640
+Maria Silva: the space in the block with the regular gas, which is the actual in-the-moment execution costs, and then the state growth is fully controlled by this dynamic base fee that, kind of makes things more expensive as we hit… as we move away from our long-term growth target.
+
+113
+00:12:41.990 --> 00:12:48.740
+Maria Silva: So I do see the potential issues of right now having this, but I think it will be…
+
+114
+00:12:49.110 --> 00:12:54.250
+Maria Silva: I'm hoping that it will be, like, a temporary quirk.
+
+115
+00:13:00.530 --> 00:13:02.479
+Maria Silva: Cool. Any more comments here?
+
+116
+00:13:07.550 --> 00:13:16.350
+Maria Silva: Okay, so I think what I will do… so, the release is out, so that's, good, so I will…
+
+117
+00:13:16.350 --> 00:13:31.730
+Maria Silva: merge these, parameters, then I will, finalize the fixes to the previous one, and then merge everything, so we have, like, a consistent, EIP, and then I'll let you guys know when everything is merged.
+
+118
+00:13:31.920 --> 00:13:36.299
+Maria Silva: I think theirs was also,
+
+119
+00:13:36.460 --> 00:13:50.010
+Maria Silva: a question on, adding a debug, like, add more debug information around, EIP-8037. I, I think, Stefan, you proposed this, PR.
+
+120
+00:13:50.140 --> 00:13:53.120
+Maria Silva: Or you kind of, like, added these up, like, these…
+
+121
+00:13:53.420 --> 00:13:58.140
+Maria Silva: Proposal for, what it should be… Added.
+
+122
+00:13:58.800 --> 00:14:05.609
+Maria Silva: So curious to know if, like, is there anything we should discuss here, or are…
+
+123
+00:14:05.740 --> 00:14:08.620
+Maria Silva: People mostly align on what to do here.
+
+124
+00:14:09.630 --> 00:14:10.430
+Stefan Starflinger: Oh…
+
+125
+00:14:10.640 --> 00:14:17.970
+Stefan Starflinger: I've iterated a little bit on it, and I think it would make sense to have such an endpoint.
+
+126
+00:14:18.220 --> 00:14:25.820
+Stefan Starflinger: But I don't think that there is agreement yet on exactly how it should be, and if it should maybe be in the tracer.
+
+127
+00:14:26.160 --> 00:14:36.279
+Stefan Starflinger: In the end, but I think, like, my proposal is pretty straightforward. It's not, I think, too, disjoint with the current implementation.
+
+128
+00:14:36.420 --> 00:14:46.059
+Stefan Starflinger: So it would be a little bit faster, I would argue, than implementing a gas accounting tracer. But yeah, I'm curious to hear
+
+129
+00:14:46.240 --> 00:14:48.000
+Stefan Starflinger: What clients think.
+
+130
+00:14:48.100 --> 00:14:49.490
+Stefan Starflinger: Of the proposal.
+
+131
+00:14:52.330 --> 00:14:53.509
+Maria Silva: Oh, sorry, I was…
+
+132
+00:14:53.810 --> 00:15:00.739
+Maria Silva: Thinking I was opening one thing and opening another. But yeah, I'm curious also to hear is, like, how do you guys feel about this one?
+
+133
+00:15:02.700 --> 00:15:08.319
+Ben Adams: I interrupt when… We had,
+
+134
+00:15:09.000 --> 00:15:13.980
+Ben Adams: consensus issues, it was really hard to… Workout.
+
+135
+00:15:14.500 --> 00:15:24.320
+Ben Adams: Where the clients disagreed, so… I'm… I'm very… I'd be very appreciative of… Such a… such an API.
+
+136
+00:15:31.100 --> 00:15:34.759
+Dragan Rakita: I think the state gas is valuable.
+
+137
+00:15:34.950 --> 00:15:38.910
+Dragan Rakita: But does it mean that we are adding new field to our seat?
+
+138
+00:15:40.340 --> 00:15:50.440
+Dragan Rakita: And… if you're not adding new field to receipt, that means we need to execute, not just return receipt, but execute reception to get receipt back.
+
+139
+00:15:51.170 --> 00:15:54.919
+Dragan Rakita: I think this is the, I think adding…
+
+140
+00:15:55.190 --> 00:16:06.360
+Dragan Rakita: field for state gas makes sense, but I wouldn't add other fields, like cumulative gas, regular gas, and everything else, because everything can be assumed from the state gas.
+
+141
+00:16:08.950 --> 00:16:22.169
+Stefan Starflinger: I see that point, but also, like, this isn't, like, something in the normal receipt call, I just want to say that's, like, a debug, a new debug method that didn't exist before.
+
+142
+00:16:22.400 --> 00:16:26.919
+Stefan Starflinger: So it shouldn't conflict with the existing receipt, call.
+
+143
+00:16:26.950 --> 00:16:36.540
+Stefan Starflinger: And it should provide more debug information that… and I think it's better if it's declarative, and we don't have to derive everything.
+
+144
+00:16:36.540 --> 00:16:47.850
+Stefan Starflinger: and implicit than if everything is implicit, so that's why I was a little bit more verbose in the proposal, because if you look at it, and you don't know exactly how to derive each of the fields.
+
+145
+00:16:48.100 --> 00:16:51.100
+Stefan Starflinger: then I think it's more valuable.
+
+146
+00:16:51.350 --> 00:16:54.210
+Stefan Starflinger: And it shouldn't be more effort in the implementation.
+
+147
+00:16:54.670 --> 00:16:59.120
+Dragan Rakita: If this is the point, then I would just add the two traces.
+
+148
+00:16:59.470 --> 00:17:10.239
+Dragan Rakita: I'm not exactly sure what's the format of the tracer, but if there is some output at the end that, like, summarizes the gases of basic data spend, I would add it there.
+
+149
+00:17:10.440 --> 00:17:14.530
+Dragan Rakita: Because it could get confusing if there is some additional RPC that
+
+150
+00:17:14.800 --> 00:17:18.390
+Dragan Rakita: Adds additional field to receive that receipt doesn't have.
+
+151
+00:17:18.690 --> 00:17:24.299
+Dragan Rakita: And only way to get the fields is basically to execute the section. It can get confusing.
+
+152
+00:17:27.310 --> 00:17:33.160
+Ben Adams: I mean, that… The downside of that is the prices are… Pretty big.
+
+153
+00:17:33.650 --> 00:17:34.350
+Ben Adams: Good.
+
+154
+00:17:35.040 --> 00:17:37.860
+Ben Adams: If you just wanna… Check the Gospels.
+
+155
+00:17:42.820 --> 00:17:48.330
+Stefan Starflinger: And my goal with the proposal was that you shouldn't have to re-execute the transaction.
+
+156
+00:17:48.480 --> 00:17:52.460
+Stefan Starflinger: That was actually my aim, but I guess that might not be the case.
+
+157
+00:17:53.340 --> 00:17:58.990
+Dragan Rakita: Yeah, this is not the case. It's basically additional field if this additional field needs to be side their seats.
+
+158
+00:17:59.190 --> 00:18:06.569
+Dragan Rakita: If it is inside receipt, then should be omitted from the receipt route, state route? Not state route, but receipt route.
+
+159
+00:18:07.580 --> 00:18:09.319
+Dragan Rakita: So yeah, there's complication there.
+
+160
+00:18:10.260 --> 00:18:16.340
+Ben Adams: Yeah, I think you'd need to re-execute, so it would only work at… Recently, huh?
+
+161
+00:18:16.810 --> 00:18:20.449
+Ben Adams: Basically. Well, unless you have an archive name.
+
+162
+00:18:20.760 --> 00:18:33.390
+Dragan Rakita: I don't know the traces by heart. Does… do Tracer have, like, the last JSON output that specifies the end gas that's used?
+
+163
+00:18:33.590 --> 00:18:38.050
+Dragan Rakita: If there is something like that, maybe that's a good place to add those fields.
+
+164
+00:18:42.270 --> 00:18:49.310
+Ben Adams: Yeah, but then you have, like, every single opcode, and… potentially stack, and… Yeah, it's a…
+
+165
+00:18:50.920 --> 00:18:52.630
+Ben Adams: This is a very big.
+
+166
+00:18:53.910 --> 00:18:54.700
+Dragan Rakita: Yeah, I see.
+
+167
+00:18:58.780 --> 00:19:01.929
+Luis Pinto | Besu: But it's just an extra field and number,
+
+168
+00:19:02.230 --> 00:19:06.950
+Luis Pinto | Besu: I think the worst ones are the storage and the memory.
+
+169
+00:19:07.150 --> 00:19:15.129
+Luis Pinto | Besu: But yeah, as long as clients are consistent across execution, that they show the same…
+
+170
+00:19:15.380 --> 00:19:21.990
+Luis Pinto | Besu: state gas, should be okay. I actually like, as well, the tracer approach.
+
+171
+00:19:22.460 --> 00:19:28.390
+Ben Adams: Okay, but my, my, okay, so my main issue is you have a consensus issue on the block.
+
+172
+00:19:29.220 --> 00:19:32.830
+Ben Adams: So you have to do… Trace block.
+
+173
+00:19:32.960 --> 00:19:38.040
+Ben Adams: Which is, in order to find out where you've gone wrong, which transaction's gone wrong.
+
+174
+00:19:38.350 --> 00:19:48.280
+Ben Adams: So you have the… Maximal possible trace in order to do that, which is, like, potentially… Hundreds of megabytes.
+
+175
+00:19:48.740 --> 00:19:56.530
+Ben Adams: Whereas if you had it as just receipts, you could say, oh, I went off on this transaction, now I can trace
+
+176
+00:19:56.630 --> 00:19:58.800
+Ben Adams: That individual transaction, for instance.
+
+177
+00:20:01.830 --> 00:20:10.870
+Dragan Rakita: Just idea, should we add additional fee to the Traces API to specify just get me output of execution?
+
+178
+00:20:11.060 --> 00:20:13.310
+Dragan Rakita: Omit topcode level.
+
+179
+00:20:14.110 --> 00:20:15.229
+Dragan Rakita: Or something like that.
+
+180
+00:20:16.680 --> 00:20:25.299
+Dragan Rakita: opcode call, I will just get me output. I'm not exactly sure, I'll ask the team after this, just to, like, figure out what they think is better.
+
+181
+00:20:25.990 --> 00:20:30.009
+Dragan Rakita: But I don't think the putting field decider seat is a good idea.
+
+182
+00:20:35.800 --> 00:20:43.419
+Maria Silva: Okay, so, maybe to move forward on this, we can continue to iterate async, so it seems like there's no…
+
+183
+00:20:43.560 --> 00:20:53.249
+Maria Silva: clear resolution here, and then we can probably… maybe this is something we can bring if we have some time on ACDT next week. Would that be okay?
+
+184
+00:20:59.930 --> 00:21:04.799
+Maria Silva: Okay, perfect. So before moving on to the other EIPs, I just wanted to have, like, a
+
+185
+00:21:04.990 --> 00:21:10.950
+Maria Silva: A quick check, like, how are client implementations going on? Going for…
+
+186
+00:21:11.260 --> 00:21:26.449
+Maria Silva: BAL devnet 7, and how are we in timelines for launching the DevNet? Yeah, I don't know, Stefan, do you want to start with DevNet, and then maybe we can go client by client and ask for the ones that are here.
+
+187
+00:21:27.290 --> 00:21:41.140
+Stefan Starflinger: Yeah, sure, on my side, I'm preparing local testing now, so I've set up the Hive tests, the Hive Test Quick, and the long one, the quick one should be running now with the new test release as well.
+
+188
+00:21:41.460 --> 00:21:46.189
+Stefan Starflinger: So we should have results on health.ethpandaOps.io soon.
+
+189
+00:21:46.420 --> 00:21:51.730
+Stefan Starflinger: And I'm, I will be starting kurtosis testing, I think,
+
+190
+00:21:51.940 --> 00:21:55.150
+Stefan Starflinger: Today, but it would also be good to know how far clients are.
+
+191
+00:22:00.250 --> 00:22:02.869
+Stefan Starflinger: Perfect. Maybe so. Yep, sorry.
+
+192
+00:22:03.610 --> 00:22:06.810
+Maria Silva: Yeah, maybe, Ben, do you want to start?
+
+193
+00:22:07.710 --> 00:22:10.530
+Ben Adams: I, we've just, merged…
+
+194
+00:22:11.270 --> 00:22:20.170
+Ben Adams: just before the call to BAL devnet 7, and also our master branch, the… 710 changes.
+
+195
+00:22:20.850 --> 00:22:26.260
+Ben Adams: Because they were… They did produce different results, I believe, too.
+
+196
+00:22:26.420 --> 00:22:28.259
+Ben Adams: That brings, like, a little better.
+
+197
+00:22:32.660 --> 00:22:33.280
+Ben Adams: Perfect.
+
+198
+00:22:33.280 --> 00:22:34.000
+Maria Silva: Okay.
+
+199
+00:22:34.320 --> 00:22:35.950
+Ben Adams: Anything else to be expected?
+
+200
+00:22:37.600 --> 00:22:41.110
+Maria Silva: Right, cool. Dragan, do you want to go next?
+
+201
+00:22:42.320 --> 00:22:47.890
+Dragan Rakita: Yeah, I was mostly passing 7.00 version.
+
+202
+00:22:48.840 --> 00:22:54.640
+Dragan Rakita: I had problem with Saddestruct, but 710, I think there is problem with authorization list.
+
+203
+00:22:54.980 --> 00:22:56.739
+Dragan Rakita: I think we should change that.
+
+204
+00:22:56.890 --> 00:23:02.180
+Dragan Rakita: Yeah, I have… I have changes in the code.
+
+205
+00:23:02.830 --> 00:23:09.209
+Dragan Rakita: And… Yeah, I think, I think the new spec release should be made.
+
+206
+00:23:10.730 --> 00:23:15.480
+Maria Silva: Okay, so is that this thread that you started, latest test, introduce additional check?
+
+207
+00:23:15.980 --> 00:23:26.210
+Dragan Rakita: Yeah. Basically, the… I need confirmation from the Steel team, but we shouldn't check the… if code exists or not.
+
+208
+00:23:26.630 --> 00:23:30.579
+Dragan Rakita: We should just check if code hash is 0 or not.
+
+209
+00:23:31.190 --> 00:23:32.849
+Dragan Rakita: Do you like different tracks?
+
+210
+00:23:36.550 --> 00:23:42.010
+spencer: So that this would be doing an entirely different check, instead of doing both checks.
+
+211
+00:23:44.240 --> 00:23:53.290
+Dragan Rakita: Yeah, you will… you would just… you, as I've seen it in the spec code, you're loading the account, you're loading the code, and checking if that code exists.
+
+212
+00:23:53.680 --> 00:24:01.050
+Dragan Rakita: But what I am… But what the AIP is saying, you need to check only code hash 50.
+
+213
+00:24:02.400 --> 00:24:03.520
+Dragan Rakita: Kietrac empty.
+
+214
+00:24:05.410 --> 00:24:09.830
+Dragan Rakita: that's… yeah, I think this is the bug. And additionally, the…
+
+215
+00:24:10.140 --> 00:24:18.209
+Dragan Rakita: But I said, I CC'd you, Maria. I think we should check if the authorization address is zero.
+
+216
+00:24:18.610 --> 00:24:21.769
+Dragan Rakita: That means that delegation is going to be removed.
+
+217
+00:24:22.320 --> 00:24:27.830
+Dragan Rakita: This means if this happens, we should refund the bytecode.
+
+218
+00:24:28.650 --> 00:24:34.469
+Maria Silva: Right, yeah, I will definitely add that to the EIP with the fixes for self-destruct.
+
+219
+00:24:35.040 --> 00:24:37.119
+Dragan Rakita: Yeah, those two things are missing.
+
+220
+00:24:39.600 --> 00:24:45.139
+Maria Silva: Perfect. Luis and Daniel, do you want to go next?
+
+221
+00:24:46.200 --> 00:24:48.629
+Daniel Lehrner (Besu): Yeah, I can give an update.
+
+222
+00:24:48.940 --> 00:25:05.810
+Daniel Lehrner (Besu): So I'm working on the 7.10 release of the test, and I think we are down to 3 failing tests, so most of the changes have been done. I'm debugging the…
+
+223
+00:25:06.170 --> 00:25:07.570
+Daniel Lehrner (Besu): The remaining 3.
+
+224
+00:25:08.470 --> 00:25:09.340
+Daniel Lehrner (Besu): Currently.
+
+225
+00:25:09.670 --> 00:25:20.970
+Daniel Lehrner (Besu): So, it looks… yeah. By tomorrow, I don't know, we either change the tests, we make these changes to the specs that Dragon mentioned, and…
+
+226
+00:25:21.550 --> 00:25:25.650
+Daniel Lehrner (Besu): If not, I just implemented how the specs are right now.
+
+227
+00:25:29.210 --> 00:25:34.519
+Maria Silva: Okay, thank you. Spencer and Felipe, do you have anything on your side, or are you guys good?
+
+228
+00:25:38.390 --> 00:25:39.930
+spencer: I think we can,
+
+229
+00:25:40.040 --> 00:25:47.430
+spencer: chat async, about the issue Dragan mentioned in the thread in the Steel server, and then we can,
+
+230
+00:25:47.560 --> 00:25:51.320
+spencer: I think it's like a… tiny change, so I think…
+
+231
+00:25:52.050 --> 00:25:54.959
+spencer: I think we should build to just add the change.
+
+232
+00:25:55.320 --> 00:25:59.180
+spencer: I think maybe change one… one or two tests, and then retag.
+
+233
+00:26:00.790 --> 00:26:01.890
+Maria Silva: Perfect. Sounds good.
+
+234
+00:26:01.890 --> 00:26:13.140
+felipe: Yeah, yeah, I think that's good on my end, too. I think this change might be semantically the same in the spec, the way it's written, but I agree that, like, we should check the code hash instead.
+
+235
+00:26:13.540 --> 00:26:17.089
+felipe: Yeah, maybe, maybe async is best.
+
+236
+00:26:17.380 --> 00:26:19.480
+felipe: To follow up here. Dragon.
+
+237
+00:26:22.360 --> 00:26:33.389
+Maria Silva: Perfect. Good. So, should we move on to the other topics, or is there anything related to EIP-8037 that, anyone wants to bring up?
+
+238
+00:26:38.720 --> 00:26:55.640
+Maria Silva: Okay, so if not, then I'll just give a quick update on 2780, so the intrinsic transaction gas reduction. So I have, this PR open to update the EIP.
+
+239
+00:26:56.930 --> 00:27:00.819
+Maria Silva: And essentially, what it's doing is,
+
+240
+00:27:00.940 --> 00:27:04.150
+Maria Silva: aligning, and I can show you the…
+
+241
+00:27:04.400 --> 00:27:12.030
+Maria Silva: current draft, so I still need to update the rationale and,
+
+242
+00:27:13.450 --> 00:27:27.000
+Maria Silva: the rationale section and the motivation section, but the specs are mostly done. So the main changes here were, aligning how
+
+243
+00:27:27.200 --> 00:27:32.789
+Maria Silva: The parameters are defined with both AD37 and 8038.
+
+244
+00:27:33.100 --> 00:27:48.109
+Maria Silva: And then also updating the values with the current values we have for rights and accesses. So, essentially, what I did here was, based on the current gas prices, like, we don't have
+
+245
+00:27:48.110 --> 00:27:56.190
+Maria Silva: Like, a specific gas cost for, for instance, an account, right? But we can derive it from what a call costs.
+
+246
+00:27:56.370 --> 00:28:08.459
+Maria Silva: if you have a call with value. And so I had done already these, derivations within 8038, and so what I did in this EIP was just move those into the
+
+247
+00:28:08.650 --> 00:28:26.950
+Maria Silva: this EIP, and then updated the values. I also simplified the bit the way that the intrinsic costs are now computed, so a key thing was, based on current benchmarks from state access, the cost of loading a contract versus an EOA,
+
+248
+00:28:27.130 --> 00:28:30.870
+Maria Silva: It's not that difference? That different, I mean.
+
+249
+00:28:31.260 --> 00:28:45.690
+Maria Silva: And so the, like, having the separation between the different costs, if the account has cold versus doesn't have cold, would, was actually a bit tricky, because you needed to load the account before charging it.
+
+250
+00:28:45.850 --> 00:28:53.550
+Maria Silva: And so there was, like, some complication where you would charge the worst case, and then,
+
+251
+00:28:54.570 --> 00:28:58.520
+Maria Silva: After you load it, you kind of, like, Update the volume.
+
+252
+00:28:59.170 --> 00:29:17.580
+Maria Silva: or I'm… maybe I'm… it could be, like, you charge the minimum, and then you kind of add on top if the account has called something like this. But essentially, there was, like, some complication, because you needed to load the account before knowing how much you would charge. And so I think we should only have that if there's actually, like, a clear
+
+253
+00:29:17.720 --> 00:29:23.860
+Maria Silva: gain, or, like, it's very different in terms of performance, and so far, it doesn't feel like it is. If
+
+254
+00:29:24.290 --> 00:29:37.479
+Maria Silva: After optimizations for state access stabilize a bit, if we figure out that actually there is a big change, then we can maybe change it again. But at this point, the implementation is a bit simpler.
+
+255
+00:29:37.880 --> 00:29:43.790
+Maria Silva: One of the bigger consequences here is that if you just
+
+256
+00:29:43.870 --> 00:30:01.440
+Maria Silva: translate the current formulas to the values I had, so I think one thing is, like, the previous EIP was attributing a cost of account rights that was too low, based on what the… how it currently costs for calls and things like this.
+
+257
+00:30:01.500 --> 00:30:07.350
+Maria Silva: So when we… when you actually use the… the… the current costs, the…
+
+258
+00:30:07.430 --> 00:30:14.899
+Maria Silva: the total that you get for, like, for instance, a need transfer to an existing EOA is actually already $23K.
+
+259
+00:30:15.320 --> 00:30:22.360
+Maria Silva: And so, I think… Yeah.
+
+260
+00:30:23.290 --> 00:30:28.630
+Maria Silva: I don't think this would be doable, so we need to kind of figure out
+
+261
+00:30:30.060 --> 00:30:34.390
+Maria Silva: How we changed this, so… I think one point is, so…
+
+262
+00:30:34.640 --> 00:30:42.900
+Maria Silva: First thing is, like, the way that this transaction-based cost is derived is based on this… He's…
+
+263
+00:30:43.100 --> 00:30:46.579
+Maria Silva: Like, we are essentially breaking down how
+
+264
+00:30:46.870 --> 00:30:58.699
+Maria Silva: what the basic cost of a transaction is doing, and so we have, like, an easy recover type cost, and then we have an account access and an account right for the sender.
+
+265
+00:30:59.400 --> 00:31:04.140
+Maria Silva: And I think, first thing is, like, these now cost 3K,
+
+266
+00:31:04.360 --> 00:31:18.859
+Maria Silva: But I would expect this to actually be much lower. And one reason is, like, based on the compute benchmarks we are doing, easy recovery would actually be much, much cheaper. And we are not changing this value for this fork, but
+
+267
+00:31:18.860 --> 00:31:26.450
+Maria Silva: We could have a different transaction-based cost here, if we just assume, like, we'll benchmark these, and this would be
+
+268
+00:31:26.480 --> 00:31:31.620
+Maria Silva: Like, a value that is derived from benchmarks instead of just getting it from
+
+269
+00:31:32.350 --> 00:31:39.660
+Maria Silva: op codes and current costs we already have. So this could be one source of things that get cheaper
+
+270
+00:31:39.720 --> 00:31:52.780
+Maria Silva: Another thing is, on the account rights, the current performance for clients is very, very bad, but I would expect, actually, this to be the one that gets the biggest boost from the state root calculation.
+
+271
+00:31:52.780 --> 00:31:59.930
+Maria Silva: So this is one of the areas of EIP-8038 that I would expect the biggest improvement, so it could also be that we can do some…
+
+272
+00:31:59.970 --> 00:32:02.370
+Maria Silva: More reduction here.
+
+273
+00:32:02.530 --> 00:32:08.090
+Maria Silva: But yeah, I think, like, now I'm, I'm pushing for,
+
+274
+00:32:08.320 --> 00:32:16.329
+Maria Silva: Luis and Johann, they are, working on these also so we can have, like, tests, that run on top of state.
+
+275
+00:32:16.390 --> 00:32:34.940
+Maria Silva: That we can use to then benchmark, these, ETH transfer costs, and so we can get, a better view on, how should we price these things. But yeah, so this is, like, the current status of this. Yeah, Ben, you have your end. Do you have anything to add here?
+
+276
+00:32:35.630 --> 00:32:43.639
+Ben Adams: The, the name of the IAP is… essentially wrong.
+
+277
+00:32:44.110 --> 00:32:47.699
+Ben Adams: Since it's reduced. But I do think it's a problem.
+
+278
+00:32:49.010 --> 00:32:54.279
+Ben Adams: If we go higher than, 21K death.
+
+279
+00:32:54.730 --> 00:33:00.269
+Ben Adams: Because people were complaining it would be a problem if we went lower, but going higher is even more problematic.
+
+280
+00:33:01.460 --> 00:33:09.439
+Maria Silva: For sure, for sure. And I… that's why I'm pushing for… for the benchmarks, like, I'm still optimistic that actually this should be lower.
+
+281
+00:33:09.760 --> 00:33:18.540
+Maria Silva: If it's not, this could actually be a reason for us to target the lower anchor, and not doing the 100 million gas per second.
+
+282
+00:33:20.860 --> 00:33:29.010
+Maria Silva: Yeah, because I don't think it's feasible that these things get… like, they transfer to existing OAs get an increase,
+
+283
+00:33:29.190 --> 00:33:32.700
+Maria Silva: And if this is the actual cost, then I think we have a problem.
+
+284
+00:33:33.720 --> 00:33:38.760
+Ben Adams: And also on… There was a no-code code.
+
+285
+00:33:39.120 --> 00:33:44.069
+Ben Adams: Differentiator, and you're saying that they're the same?
+
+286
+00:33:44.950 --> 00:33:52.250
+Ben Adams: But… That seems strange…
+
+287
+00:33:52.990 --> 00:34:00.620
+Ben Adams: I understand empirically it might be the same, but it does seem strange, because one… Cluster load code.
+
+288
+00:34:01.650 --> 00:34:07.640
+Ben Adams: start up the EVM, run a little bit of EVM, And…
+
+289
+00:34:08.010 --> 00:34:11.679
+Ben Adams: Finish versus one that's just increasing the balance.
+
+290
+00:34:12.530 --> 00:34:17.530
+Ben Adams: So, maybe ELs are missing an optimization there.
+
+291
+00:34:18.070 --> 00:34:20.609
+Ben Adams: Are they, like, always trying to run some code?
+
+292
+00:34:21.600 --> 00:34:22.820
+Ben Adams: Even if it's empty.
+
+293
+00:34:22.820 --> 00:34:23.429
+Maria Silva: So…
+
+294
+00:34:23.850 --> 00:34:40.360
+Maria Silva: to make it clear, what I'm… what I'm specifically saying is, like, when we measure the access costs for, and we do this, like, in EIP-8038, we are doing this with things like balance, calls.
+
+295
+00:34:40.480 --> 00:34:48.109
+Maria Silva: Xcode size, Xcode hash, like, these sort of opcodes. When we measure on that level, then
+
+296
+00:34:48.320 --> 00:34:52.409
+Maria Silva: If you are targeting an account with codes versus an EOA,
+
+297
+00:34:52.560 --> 00:35:05.100
+Maria Silva: it's not that they are the same, they are not the same, like, contracts still are a bit more expensive, but they are not, like, super more expensive. Like, I… the numbers I'm seeing right now, I don't think they…
+
+298
+00:35:05.610 --> 00:35:09.299
+Maria Silva: justify the added complexity to the EIP.
+
+299
+00:35:09.750 --> 00:35:16.940
+Maria Silva: But this could change, like, as I've… as I think you are all aware, like, the optimizations are not…
+
+300
+00:35:17.470 --> 00:35:24.670
+Maria Silva: yet close to be ready for state taxes, and especially for the state route calculation, I feel.
+
+301
+00:35:24.900 --> 00:35:26.950
+Maria Silva: And so…
+
+302
+00:35:28.010 --> 00:35:35.490
+Maria Silva: things could… could change down the line, but I think from what I'm seeing right now, I don't think there's a benefit. Like, the benefit doesn't…
+
+303
+00:35:35.950 --> 00:35:38.230
+Maria Silva: justify the complexity, I feel.
+
+304
+00:35:41.350 --> 00:35:42.649
+Maria Silva: Does it make sense?
+
+305
+00:35:46.680 --> 00:35:47.760
+Ben Adams: Yeah, potentially.
+
+306
+00:35:51.410 --> 00:36:05.319
+Maria Silva: Yeah, but I'm hoping that we can start seeing some results on benchmarking for ETH transfers, so that then we can maybe have, like, a more grounded discussion here. Go, Johan.
+
+307
+00:36:05.960 --> 00:36:09.559
+jochem-brouwer: Yeah, about the… the benchmark part,
+
+308
+00:36:09.970 --> 00:36:24.369
+jochem-brouwer: I will address this after the call, because the specific case, or the specific suspected worst case that we want to investigate here is that the senders are all distinct, and that the receivers are also all distinct.
+
+309
+00:36:24.550 --> 00:36:32.209
+jochem-brouwer: Right. And we also want that the senders and the receivers are cold, in the sense that we have to load… we have to force-load them from the disk.
+
+310
+00:36:34.440 --> 00:36:35.400
+Maria Silva: It's correct.
+
+311
+00:36:35.700 --> 00:36:41.660
+Ben Adams: Can the EOA contract also use all distinct code hashes?
+
+312
+00:36:42.140 --> 00:36:59.889
+jochem-brouwer: Yes, this is already part of what we will do is we will do this on top of YochumNet. We have deployed 135,000 contracts there, which are all unique. The only problem with that approach is that this is a jump test analysis contract.
+
+313
+00:36:59.890 --> 00:37:07.729
+jochem-brouwer: So the execution time of these contracts might, that involves the jump test analysis. This might… Make…
+
+314
+00:37:07.740 --> 00:37:09.300
+jochem-brouwer: the contracts
+
+315
+00:37:09.310 --> 00:37:28.670
+jochem-brouwer: coded targets run slightly longer than we expect, but I think this is a very good, case to test, because if it turns out that the pricing is then, well, good enough, I would say, which would target below $21,000, I think.
+
+316
+00:37:30.120 --> 00:37:37.469
+jochem-brouwer: Then this is fine, because this would then be the worst case, also with the added runtime for the jump test analysis, if that makes sense.
+
+317
+00:37:45.550 --> 00:37:49.450
+Maria Silva: Perfect, yeah, so I guess I'll…
+
+318
+00:37:49.680 --> 00:38:07.769
+Maria Silva: continue to give updates on these as they arise, but I think for now, I will… in terms of EIP, my goal is, to kind of, like, wrap up the… actually, I'm uncertain about whether I should already update the motivation and things, because I don't think…
+
+319
+00:38:08.030 --> 00:38:19.460
+Maria Silva: I mean, I don't want to change everything to say that there'll be a cost increase and then not having the cost… so having a cost decrease, at the end, and then we need to change it back, so…
+
+320
+00:38:19.940 --> 00:38:31.649
+Maria Silva: yeah, I'm kind of, like, tempted to keep the rationale and the motivation as it is, but yeah, I'll have a think about it. Maybe I'll just keep the PR open for now.
+
+321
+00:38:34.650 --> 00:38:44.039
+Maria Silva: But yeah, so this is on 2780, is there any question or comment on 2780, or should we move to the next point?
+
+322
+00:38:44.900 --> 00:38:57.770
+Stefan Starflinger: I have one concern. It's that, the EOA transfers, they don't, charge, state gas without $27.80.
+
+323
+00:38:58.310 --> 00:39:05.290
+Stefan Starflinger: So, that's kind of something we have to keep in mind, because right now 2780
+
+324
+00:39:05.510 --> 00:39:10.319
+Stefan Starflinger: It feels like it has a pretty big rewrite, and it's changing it, because the main…
+
+325
+00:39:10.430 --> 00:39:14.859
+Stefan Starflinger: Reason for it was to reduce the intrinsic gas, which is not happening.
+
+326
+00:39:15.040 --> 00:39:18.089
+Stefan Starflinger: And so, I don't know, it might be worth considering.
+
+327
+00:39:18.700 --> 00:39:23.420
+Stefan Starflinger: adding to 8037, that EOA transfers
+
+328
+00:39:23.690 --> 00:39:28.940
+Stefan Starflinger: Should, charge state gas, and not just having it in 2780.
+
+329
+00:39:32.520 --> 00:39:33.230
+Maria Silva: Hmm.
+
+330
+00:39:34.820 --> 00:39:39.519
+Maria Silva: So you, you are saying that in a world where we… so…
+
+331
+00:39:40.020 --> 00:39:43.729
+Maria Silva: Let me just open it again. So what you are saying is, like.
+
+332
+00:39:44.640 --> 00:39:48.279
+Maria Silva: Ugh, I shouldn't do this, wait.
+
+333
+00:39:53.350 --> 00:39:59.429
+Maria Silva: So, in a world where we actually get to, like, an EOA costing exactly 21,
+
+334
+00:39:59.920 --> 00:40:03.689
+Maria Silva: So I, I don't think the…
+
+335
+00:40:04.170 --> 00:40:09.700
+Maria Silva: let me just view file. So I don't think it's realistic for us to say that this would be…
+
+336
+00:40:10.210 --> 00:40:21.540
+Maria Silva: like, above 21K, because I don't think that's… that's… that's doable, so if either this is not the actual performance, and these can be reduced.
+
+337
+00:40:21.930 --> 00:40:33.880
+Maria Silva: Or, if this is the actual performance, then we'll have to reduce the targets so that we keep at the 21K. And so, in the world where this is 21K,
+
+338
+00:40:35.230 --> 00:40:38.049
+Maria Silva: I think they're still…
+
+339
+00:40:39.640 --> 00:40:55.710
+Maria Silva: I would guess there's still the benefit of having e-transfers have a more, like, specific cost to them, that is not just the cost from state creation, but I agree that then maybe they're the kind of, like.
+
+340
+00:40:56.220 --> 00:41:10.170
+Maria Silva: benefit of this would be slightly reduced, so what you are saying is, like, in that case, you think we should drop this EIP and just move… like, we're still additionally charge state creation, but that would be now part of 8037.
+
+341
+00:41:10.450 --> 00:41:11.710
+Maria Silva: Is correct?
+
+342
+00:41:11.950 --> 00:41:23.189
+Stefan Starflinger: Yeah, I'm just wanting to reduce the dependency a little bit, so that, I mean, AD37 by itself has a big, kind of,
+
+343
+00:41:23.450 --> 00:41:32.270
+Stefan Starflinger: worst case, where people just have the possibility to send EOA transactions, and not having to, use the state gas.
+
+344
+00:41:32.440 --> 00:41:41.690
+Stefan Starflinger: And, 2780 fixes that, but, it's difficult to… to, like…
+
+345
+00:41:41.860 --> 00:41:53.109
+Stefan Starflinger: really know if 2780 will make it into Glamsterdam or Hegota, because it's… it's taking the time, and I don't want to decide if or what, but I just want to make sure that
+
+346
+00:41:53.290 --> 00:42:01.320
+Stefan Starflinger: We don't get into a situation where we have to ship 2780, because it's the only thing that fixes 8037.
+
+347
+00:42:05.380 --> 00:42:08.640
+Maria Silva: How does anyone… know about that.
+
+348
+00:42:21.170 --> 00:42:25.819
+Maria Silva: Okay, no strong opinions there. So I, I, I don't know, I still think that…
+
+349
+00:42:26.850 --> 00:42:36.360
+Maria Silva: if we reach that point, we should do that change then. I don't think we should pre… preemptively do it now. Like, if we figure out that
+
+350
+00:42:36.800 --> 00:42:49.480
+Maria Silva: it doesn't make sense to change anything on ETH transfers besides the adding state creation, then I'm happy to then update 8037, rather than doing right now,
+
+351
+00:42:49.730 --> 00:42:54.800
+Maria Silva: I mean, I'm… I… I still think this EIP is valuable, and I will push it to Florida.
+
+352
+00:42:54.800 --> 00:43:13.219
+Stefan Starflinger: Yeah, that's not what I'm saying. Like, I don't want, like, also, if we can get a better version of 2780 at a later time, I think that would be more valuable than having it rushed just to plug the hole that is in 8037, that's all I'm saying.
+
+353
+00:43:13.690 --> 00:43:17.839
+Stefan Starflinger: I think it's valuable, just, I don't want us to have to rush it, either.
+
+354
+00:43:19.180 --> 00:43:26.230
+Maria Silva: Yeah. I mean, I don't… I don't feel we are rushing it. I mean, I think we have everything in place to get the…
+
+355
+00:43:26.460 --> 00:43:38.590
+Maria Silva: the benchmarking ready. To me, it's more like the state optimizations are the things that are mostly blocking repricings now, more than, like, the additional
+
+356
+00:43:38.740 --> 00:43:47.340
+Maria Silva: like, the addition of this test for us to see the values. I think it's mostly, like, 8038 and 2780 will have, like.
+
+357
+00:43:47.730 --> 00:43:49.460
+Maria Silva: placeholder…
+
+358
+00:43:50.120 --> 00:44:03.129
+Maria Silva: values until optimizations are stable, and that's a reality we need to… we need to live with, but I don't think this is also a possibility to… it's also a possibility to not do him, because if we don't, then we cannot raise the gas limit, so…
+
+359
+00:44:03.480 --> 00:44:05.739
+Maria Silva: Yeah, I, I, yeah, I don't…
+
+360
+00:44:07.400 --> 00:44:12.600
+Maria Silva: I don't see this being a big, like, blocker on the fork at this point.
+
+361
+00:44:15.510 --> 00:44:17.659
+Maria Silva: Does these make sense? Yeah?
+
+362
+00:44:20.220 --> 00:44:27.699
+Maria Silva: Cool. But yeah, so I think I'll just keep this PR open for now, and then, we can…
+
+363
+00:44:28.090 --> 00:44:35.389
+Maria Silva: iterating on it. Anything else for 2780, or should we move to the next point?
+
+364
+00:44:45.060 --> 00:44:58.660
+Maria Silva: Okay, perfect. Then on 8038, so I just wanted to give a quick update here as well. So I have, this PR that was, already merged. I can show you the…
+
+365
+00:44:58.660 --> 00:45:14.919
+Maria Silva: the general idea here was, again, in line with the updates I was showing to 2780, was just making sure all the final parameters for this EIP are aligned with both 2780 and 8037.
+
+366
+00:45:14.960 --> 00:45:25.349
+Maria Silva: And the key takeaway here is that, again, we still don't have the final numbers, but there will be some rewrites on some,
+
+367
+00:45:25.960 --> 00:45:31.240
+Maria Silva: on some gas parameters, so it's not just, like, a repricing thing.
+
+368
+00:45:31.390 --> 00:45:39.260
+Maria Silva: And again, this is also because EIP-8037 and 2780 kind of also require it.
+
+369
+00:45:39.390 --> 00:45:46.620
+Maria Silva: But it's just making everything aligned, and I think my realization here was that
+
+370
+00:45:47.110 --> 00:45:56.689
+Maria Silva: we'll only get… I mean, I don't think we'll get numbers, like, in the next week or something, but it's still… I feel like it's…
+
+371
+00:45:56.850 --> 00:46:01.950
+Maria Silva: it still may… Valuable to sort of include already these changes.
+
+372
+00:46:02.150 --> 00:46:04.850
+Maria Silva: Indefinite, and then…
+
+373
+00:46:05.190 --> 00:46:12.520
+Maria Silva: Once we have the numbers, we just update the numbers, but the work of refactoring these parameters is already done.
+
+374
+00:46:12.660 --> 00:46:21.930
+Maria Silva: And so the EIP is already updated. It doesn't have the values, of course, but for a DevNet, we could just use the current values and do just the…
+
+375
+00:46:22.090 --> 00:46:28.060
+Maria Silva: the mmm… The refactoring of the names and stuff.
+
+376
+00:46:28.200 --> 00:46:33.300
+Maria Silva: And then that would also align with 8037 and 2780.
+
+377
+00:46:33.490 --> 00:46:38.949
+Maria Silva: And… and yeah, this is the key thing. Another change to the EIP is, like, I've added these
+
+378
+00:46:39.290 --> 00:46:56.310
+Maria Silva: tables with, like, the different S-store cases, and what should be charged, and also for accounts, more of a description of what should happen there, and for authorizations as well. So I hope that then testing and specs will be easier to work out.
+
+379
+00:46:56.360 --> 00:47:04.909
+Maria Silva: And also, for the rationale, I'm just adding here more information about the benchmarks and how things are calculated, but that's… that's mostly it.
+
+380
+00:47:05.260 --> 00:47:13.589
+Maria Silva: And in terms of benchmarking, I don't think there's, any major updates since the
+
+381
+00:47:14.350 --> 00:47:28.880
+Maria Silva: Since the latest, numbers we got after Interop, so my understanding is, like, clients are still working on their optimizations, and we'll have to wait and see how they… they… they perform.
+
+382
+00:47:29.760 --> 00:47:36.190
+Maria Silva: Right? And I think that also leads a bit into the DevNet inclusion discussion, so…
+
+383
+00:47:36.550 --> 00:47:47.909
+Maria Silva: My understanding, I'm not sure if I'm right, Spencer, but was it on ACDT we decided to continue the discussion on ACDC, or is it for the next ACDT?
+
+384
+00:47:49.780 --> 00:48:00.540
+spencer: So my understanding from ACDT on Monday was that we were gonna chat about what to include async for discussion on ACDC.
+
+385
+00:48:01.140 --> 00:48:02.240
+spencer: Mmm.
+
+386
+00:48:02.450 --> 00:48:05.350
+spencer: Because I think Parry's running… running that call.
+
+387
+00:48:05.910 --> 00:48:07.949
+spencer: And Barry also ran ACDT.
+
+388
+00:48:09.320 --> 00:48:28.809
+Maria Silva: Okay, okay, got it. So unfortunately, I won't be able to join ACDC tomorrow, but I… I think I've already put this in the thread. Like, I do feel that there's a benefit in including 8038 and 2780 with the current numbers, so that we can work on
+
+389
+00:48:28.920 --> 00:48:29.990
+Maria Silva: the…
+
+390
+00:48:30.440 --> 00:48:41.699
+Maria Silva: variable refactoring, and then once the numbers are done, we just have, like, constant updates, which should be much, much simpler.
+
+391
+00:48:41.880 --> 00:48:44.790
+Maria Silva: Yeah, curious to also hear your thoughts there.
+
+392
+00:48:45.800 --> 00:48:47.409
+Maria Silva: Gold dragon?
+
+393
+00:48:48.820 --> 00:48:52.629
+Dragan Rakita: Maybe we could even, like…
+
+394
+00:48:53.190 --> 00:49:05.559
+Dragan Rakita: Use the best case numbers, just to see that it is changed, and just to verify the clients agree with the change, and then update numbers later when we get better ones.
+
+395
+00:49:06.530 --> 00:49:14.400
+Dragan Rakita: I'm not exactly sure if this is just going to change some constants, or introduce some new mechanism, I still need to look in detail at 838.
+
+396
+00:49:15.720 --> 00:49:17.840
+Dragan Rakita: So, I think changing…
+
+397
+00:49:18.050 --> 00:49:27.579
+Dragan Rakita: to any numbers that is different than the current numbers, and testing that in the spec, then other clients, just pass the tests, would be valuable.
+
+398
+00:49:27.810 --> 00:49:32.169
+Dragan Rakita: I'm not sure if this is a good idea or not, but it's something that I'm thinking right now.
+
+399
+00:49:33.150 --> 00:49:49.310
+Maria Silva: Right. I say in terms of what actually changes, so I think a big thing is, like, the formula for a store, I think, is slightly different, because you have, like, previously we had this, like.
+
+400
+00:49:49.700 --> 00:49:52.770
+Maria Silva: Storage set that included both…
+
+401
+00:49:53.250 --> 00:50:02.230
+Maria Silva: a rights and the state creation, and then, like, there was, like, this thing where you would charge, like.
+
+402
+00:50:03.080 --> 00:50:10.359
+Maria Silva: In some cases, you would charge both, like, a cold axe, like, a right, and then a warm.
+
+403
+00:50:10.560 --> 00:50:17.590
+Maria Silva: At the same time, you write, like, you would also access… like, you also charge a cold access, so there was, like, some…
+
+404
+00:50:17.700 --> 00:50:27.710
+Maria Silva: some, like, options here in this table where you charge, like, an additional warm access in some cases. And so I think
+
+405
+00:50:28.540 --> 00:50:33.420
+Maria Silva: the way I put it here, I think now is a bit more separated, like, you always charge…
+
+406
+00:50:33.650 --> 00:50:45.009
+Maria Silva: cold either, you either charge cold or warm, and then on top, if you are writing a new value, you charge storage write, and then you also charge the…
+
+407
+00:50:45.020 --> 00:50:54.100
+Maria Silva: state creation costs, which, now essentially just covers the state growth components. And previously, we had, like, some
+
+408
+00:50:54.310 --> 00:50:59.749
+Maria Silva: interactions between, like, a set would also be, like.
+
+409
+00:50:59.920 --> 00:51:07.849
+Maria Silva: We'll also include the access cost and the write cost, so I think these things were not separate, they were merged into the… into a single
+
+410
+00:51:08.230 --> 00:51:11.580
+Maria Silva: Per… it was single, gas.
+
+411
+00:51:11.690 --> 00:51:17.990
+Maria Silva: parameter, and now these things are sort of separated. So I think this is, like, the main difference. I…
+
+412
+00:51:18.220 --> 00:51:24.750
+Maria Silva: We had, like, this storage right, which had both access and write, and now we just have these things separated.
+
+413
+00:51:25.980 --> 00:51:40.279
+Maria Silva: But yeah, but I tried to make it as clear as possible with this table, and cover all scenarios, but yeah, happy to also hear your thoughts. On the account side, the main difference is on Create, because now Create has this separation between
+
+414
+00:51:40.280 --> 00:51:49.590
+Maria Silva: what is the state gas cost, and then the execution cost, which I'm… I'm encoding into this create access, gas costs.
+
+415
+00:51:51.350 --> 00:52:03.819
+Maria Silva: And… yeah, the rest is mostly okay. I think for the… yeah, for the Xcode size, these also are charged an additional warm access, that was, not done before.
+
+416
+00:52:04.110 --> 00:52:13.590
+Maria Silva: And for authorizations, I don't think much changes, so I think it's mostly… Okay.
+
+417
+00:52:13.590 --> 00:52:19.609
+Dragan Rakita: I think a big question is how this aligns with previous mechanisms that we had.
+
+418
+00:52:20.790 --> 00:52:26.630
+Maria Silva: So, I think the biggest difference will be a store, I feel. But my underst… like, from…
+
+419
+00:52:27.370 --> 00:52:31.890
+Maria Silva: my personal opinion, I think it will be slightly easier to reason about, because now.
+
+420
+00:52:31.890 --> 00:52:32.409
+Dragan Rakita: Yeah, it is.
+
+421
+00:52:32.410 --> 00:52:40.650
+Maria Silva: access costs and the write costs are separated things. You don't have, like, these weird, GASP parameters that
+
+422
+00:52:40.890 --> 00:52:47.309
+Maria Silva: have these, two bundled together, so I think it would be a bit easier to… to sync.
+
+423
+00:52:50.710 --> 00:52:55.989
+Maria Silva: But yeah, but this to say that there will be some refactoring, so it's not just a constant change.
+
+424
+00:52:56.170 --> 00:52:58.840
+Maria Silva: constant value change.
+
+425
+00:53:11.450 --> 00:53:13.589
+Maria Silva: Okay, any more comments here?
+
+426
+00:53:28.900 --> 00:53:31.519
+Dragan Rakita: When are they planned?
+
+427
+00:53:31.880 --> 00:53:35.970
+Dragan Rakita: A glimpse to them, definite, next to authorities.
+
+428
+00:53:38.870 --> 00:53:42.830
+Maria Silva: I'm not sure, to be honest. I don't know, do you know, Stefan?
+
+429
+00:53:45.750 --> 00:53:47.419
+Stefan Starflinger: When water is planned? Sorry.
+
+430
+00:53:48.050 --> 00:53:52.149
+Maria Silva: To launch the next, Glamsterdam DevNet, so, DevNet.
+
+431
+00:53:52.150 --> 00:54:00.409
+Stefan Starflinger: So in the spec, it, definite… oh, the glass will be indefinite. I don't know exactly when Definite 4 will launch at the moment.
+
+432
+00:54:00.960 --> 00:54:04.000
+Dragan Rakita: Should we do it in bold DevNet or Glamsterdam devnet?
+
+433
+00:54:06.550 --> 00:54:17.290
+Stefan Starflinger: So the, two new EIPs, I think they would go into the Glamsterdam devnets that are not yet, because the idea is to have BAL devnet 7 as the last one.
+
+434
+00:54:17.970 --> 00:54:28.079
+Stefan Starflinger: And the other EIPs, from what I've been seeing, but correct me if I'm wrong, are not as much, or not too much work.
+
+435
+00:54:28.590 --> 00:54:36.310
+Stefan Starflinger: That, it should not be possible, or necessarily needs its own, El-specific Defnut.
+
+436
+00:54:36.740 --> 00:54:42.240
+Dragan Rakita: It's fine, it's a lot smaller scope than 8037, 8038 and…
+
+437
+00:54:42.800 --> 00:54:46.409
+Dragan Rakita: 278d is a lot smaller.
+
+438
+00:54:47.150 --> 00:54:47.940
+Dragan Rakita: That's fine.
+
+439
+00:54:50.500 --> 00:54:52.549
+Maria Silva: Marci, do you want to add anything?
+
+440
+00:54:53.700 --> 00:55:06.080
+Mercy Boma Naps-Nkari: Yeah, sorry, I joined late, so I don't know if the discussion, it has been pointed out, but I just wanted to get clarification on, the PR for the block, gets blocked receipt.
+
+441
+00:55:08.050 --> 00:55:14.820
+Mercy Boma Naps-Nkari: So, the .io files, I wanted to know if, we are considering merging this.
+
+442
+00:55:15.320 --> 00:55:17.410
+Mercy Boma Naps-Nkari: Because of the .io files.
+
+443
+00:55:22.670 --> 00:55:30.530
+Stefan Starflinger: I think at the moment, was it, with the receipts? The PR from me, the 800?
+
+444
+00:55:33.480 --> 00:55:36.480
+Maria Silva: Yeah, I think that's what Marcie's asking about, yes.
+
+445
+00:55:36.480 --> 00:55:42.700
+Stefan Starflinger: Yeah, I think we don't have an agreement yet on that PR, so it's still pending.
+
+446
+00:55:42.980 --> 00:55:47.580
+Stefan Starflinger: on what exactly we will do. It seems there's also agreement to add it to the tracer.
+
+447
+00:55:49.970 --> 00:55:59.530
+Mercy Boma Naps-Nkari: Okay, because what I wanted to point out was, because I was trying to look over the PR and then add it to our next call for JSNROPC, and I noticed that, the .io files are sort of,
+
+448
+00:55:59.710 --> 00:56:10.730
+Mercy Boma Naps-Nkari: manually generated, and I was trying to… I'm not sure if any client has it implemented yet, because for the .io files to be, generated properly, get needs to sort of,
+
+449
+00:56:10.900 --> 00:56:12.170
+Mercy Boma Naps-Nkari: run it.
+
+450
+00:56:13.030 --> 00:56:15.060
+Mercy Boma Naps-Nkari: I don't know if what I'm saying is making sense.
+
+451
+00:56:15.910 --> 00:56:19.839
+Stefan Starflinger: Yeah, yeah, it doesn't make sense, but it's not, I think we can…
+
+452
+00:56:19.980 --> 00:56:27.440
+Stefan Starflinger: revisit that in a little bit, or you can add it to the… to the thread. I can share it, that information.
+
+453
+00:56:28.830 --> 00:56:29.440
+Mercy Boma Naps-Nkari: Okay.
+
+454
+00:56:31.420 --> 00:56:32.690
+Mercy Boma Naps-Nkari: That's all, thank you.
+
+455
+00:56:43.620 --> 00:56:46.630
+Maria Silva: Okay, any more comments before we wrap up?
+
+456
+00:57:00.510 --> 00:57:04.610
+Maria Silva: Okay, if not, we can,
+
+457
+00:57:05.050 --> 00:57:11.530
+Maria Silva: wrap up the call. Thank you all for joining, and yeah, we'll see you, soon.
+
+458
+00:57:14.120 --> 00:57:14.750
+jochem-brouwer: Thanks, Haul.
+
+459
+00:57:14.750 --> 00:57:16.540
+spencer: Yes, thanks.
+
+460
+00:57:16.770 --> 00:57:17.720
+Stefan Starflinger: Thank you.
+

@@ -1,20 +1,23 @@
 {
   "id": 8071,
-  "title": "Prevent using consolidations as withdrawals",
+  "title": "EIP-8071: Prevent using consolidations as withdrawals",
   "status": "Draft",
-  "description": "Cancels a consolidation request if processing it would push the target validator's effective balance above the maximum, which would otherwise withdraw excess balance when the consolidation queue is faster than the exit queue.",
+  "description": "Cancels consolidation if the max effective balance of the target validator will be exceeded, preventing the withdrawal of the unused balance",
   "author": "Mikhail Kalinin (@mkalinin), Francesco D'Amato (@fradamt)",
   "type": "Standards Track",
   "category": "Core",
   "createdDate": "2025-10-29",
   "discussionLink": "https://ethereum-magicians.org/t/eip-8071-prevent-using-consolidations-as-withdrawals/26037",
   "reviewer": "bot",
+  "layer": "CL",
   "forkRelationships": [
     {
       "forkName": "Glamsterdam",
       "statusHistory": [
         {
-          "status": "Proposed"
+          "status": "Proposed",
+          "call": null,
+          "date": null
         },
         {
           "status": "Declined",
@@ -22,11 +25,12 @@
           "date": "2025-11-27"
         }
       ],
-      "layer": "CL",
-      "champion": {
-        "name": "Francesco D'Amato",
-        "discord": "fradamt"
-      }
+      "champions": [
+        {
+          "name": "Francesco D'Amato",
+          "discord": "fradamt"
+        }
+      ]
     }
   ],
   "laymanDescription": "Prevents consolidation requests that would push the target validator's effective balance above the maximum.",
@@ -59,5 +63,6 @@
   "benefits": [
     "Prevents using consolidation queue as a faster, unintended withdrawal path.",
     "Aligns consolidation behavior with its intended purpose instead of behaving like exits."
-  ]
+  ],
+  "tradeoffs": null
 }

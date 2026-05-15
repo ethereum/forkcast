@@ -2,19 +2,22 @@
   "id": 2926,
   "title": "EIP-2926: Chunk-Based Code Merkleization",
   "status": "Draft",
-  "description": "Specifies a fixed-sized chunk-based Merkleization of contract code to reduce block witness sizes and enable stateless clients",
+  "description": "Introduce code-chunking in an MPT context.",
   "author": "Sina Mahmoodi (@s1na), Alex Beregszaszi (@axic), Guillaume Ballet (@gballet), Jochem Brouwer (@jochem-brouwer), Ignacio Hagopian (@jsign)",
   "type": "Standards Track",
   "category": "Core",
   "createdDate": "2020-08-25",
-  "discussionLink": "https://ethereum-magicians.org/t/the-case-for-including-code-chunking-eip-2926-in-glamsterdam/25089",
+  "discussionLink": "https://ethereum-magicians.org/t/eip-2926-chunk-based-code-merkleization/4555",
   "reviewer": "expert",
+  "layer": "EL",
   "forkRelationships": [
     {
       "forkName": "Glamsterdam",
       "statusHistory": [
         {
-          "status": "Proposed"
+          "status": "Proposed",
+          "call": null,
+          "date": null
         },
         {
           "status": "Declined",
@@ -22,11 +25,12 @@
           "date": "2025-12-18"
         }
       ],
-      "layer": "EL",
-      "champion": {
-        "name": "Guillaume Ballet",
-        "discord": "gballet"
-      }
+      "champions": [
+        {
+          "name": "Guillaume Ballet",
+          "discord": "gballet"
+        }
+      ]
     }
   ],
   "laymanDescription": "Breaks smart contract bytecode into fixed-size chunks stored in a Merkle Patricia Trie, reducing network bandwidth for block proof and resource consumption for real-time proving.",
@@ -66,5 +70,6 @@
     "Enable stateless clients to fetch only accessed code chunks, reducing network bandwidth.",
     "Allow for the removal of the code size limit.",
     "Reduction in size for any proof containing partial code reads"
-  ]
+  ],
+  "tradeoffs": null
 }

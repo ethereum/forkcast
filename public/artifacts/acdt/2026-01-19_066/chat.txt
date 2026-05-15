@@ -1,0 +1,443 @@
+00:06:44	jochem-brouwer:	gm gm
+00:06:52	Stefan Starflinger:	gm
+00:07:00	Justin Traglia:	Gm
+00:08:51	Stefan Starflinger:	https://github.com/ethereum/pm/issues/1878
+00:09:04	Parithosh Jayanthi:	https://github.com/ethereum/pm/issues/1878#issuecomment-3759492134
+00:10:43	spencer-tb:	Lets keep it in then if CLs are happy!
+00:10:52	Mario Vega:	Reacted to "Lets keep it in then..." with 👍🏼
+00:10:53	Barnabas:	Reacted to "Lets keep it in then..." with 👍
+00:11:10	Parithosh Jayanthi:	https://github.com/ethereum/EIPs/pull/11094
+00:11:34	Marc:	Reacted to "Lets keep it in then…" with 👍🏾
+00:11:45	Marius van der Wijden:	iirc lightclient was against this PR?
+00:12:08	felipe:	Reacted to "Lets keep it in th..." with 👍🏼
+00:12:57	Stefan Starflinger:	CL changes required for EIP 7843 https://github.com/ChainSafe/lodestar/pull/8736
+00:12:58	Parithosh Jayanthi:	https://github.com/ethereum/execution-specs/pull/1401#issuecomment-3759373893
+00:13:00	Toni Wahrstätter:	Context regarding EIP-7778: https://discord.com/channels/595666850260713488/688075293562503241/1461678093289656524
+00:14:43	Stefan Starflinger:	Reacted to "Lets keep it in then..." with 👍🏾
+00:15:52	Justin Traglia:	Replying to "CL changes required ..."
+
+There’s a specs PR too: https://github.com/ethereum/consensus-specs/pull/4840
+00:17:32	Marius van der Wijden:	I would prefer to change the receipts to add a second field
+00:17:44	Francesco:	I think EIP-8037 will also necessitate some change there, since block level accounting diverges from tx level accounting. Would be good to double check that the chosen solution works for it too (e.g. adding a second field would)
+00:17:50	Ben Adams:	Replying to "I would prefer to ch..."
+
+replace logsBloom?
+00:18:27	Marius van der Wijden:	Reacted to "I think EIP-8037 w..." with 👍
+00:18:30	Ben Adams:	Replying to "I would prefer to ch..."
+
+Since that's not a used field anyway
+00:18:32	Francesco:	Replying to "I think EIP-8037 wil..."
+
+(Most likely I think it’s the same exact problem and whichever solution should work for both EIPs, but should just double check)
+00:18:35	Guru:	Replying to "I would prefer to ch..."
+
+The way it is currently specd out, I think the proposal is to create a new field
+00:18:56	Marius van der Wijden:	Replying to "I would prefer to ..."
+
+I also prefer a second field
+00:19:05	Marius van der Wijden:	Replying to "I would prefer to ..."
+
+Over reusing an existing field
+00:19:16	Guru:	Reacted to "I also prefer a seco..." with 👍
+00:19:34	Parithosh Jayanthi:	https://github.com/ethereum/EIPs/pull/9003
+00:19:50	Toni Wahrstätter:	Reacted to I would prefer to ch... with "👍"
+00:19:50	frangio:	has EIP-8024 already been discussed?
+00:20:03	frangio:	Reacted to "nope" with 👍
+00:20:12	Parithosh Jayanthi:	Ah wait, sorry it has been
+00:20:17	Guru:	Replying to "has EIP-8024 already..."
+
+Yes
+00:20:29	Toni Wahrstätter:	Replying to "I would prefer to ch..." 
+
+ Great, that's how it's speced right now. Sounds like we're good to go ahead with this 👍🏼
+00:20:46	Guru:	Reacted to "Great, that's how it..." with 👍
+00:22:33	Parithosh Jayanthi:	https://github.com/ethereum/EIPs/pull/9003#discussion_r2696677181
+00:23:20	frangio:	Replying to "has EIP-8024 alrea..."
+
+does anyone mind summarizing? i joined late and want to make sure there's understanding that we wouldn't merge the currently open PR
+00:24:25	frangio:	Replying to "has EIP-8024 alrea..."
+
+that would be my preference anyway
+00:24:47	Jonny Rhea:	Replying to "has EIP-8024 already..."
+
+I believe it was decided to not go with the push postfix.
+00:24:59	frangio:	Reacted to "I believe it was d..." with 👍
+00:25:17	Parithosh Jayanthi:	https://github.com/ethereum/pm/issues/1878#issuecomment-3759492134
+00:26:14	Potuz:	Re: ePBS, it looks like the spec is finally frozen in what spectest vectors are concerned at least. We are now actively merging on Prysm's develop branch. Terence has about 9 PRs open that are being reviewed and they should all be merged in the next 2/3 days. Not sure about dates for kurtosis runs yet.
+00:26:22	Łukasz Rozmej:	7708 now behaves same as in eth_simulate?
+00:26:38	Barnabas:	Replying to "Re: ePBS, it looks l..."
+
+sounds like kurtosis runs are also scheduled for wednesday then 😄
+00:26:45	Marius van der Wijden:	Replying to "Re: ePBS, it looks..."
+
+What are the final timings?
+00:26:58	Potuz:	Replying to "Re: ePBS, it looks l..."
+
+what part of "not sure..." wasn't clear :)
+00:27:21	Justin Traglia:	Replying to "Re: ePBS, it looks l..."
+
+Yup. We could include the following fix into the devnet-0 specs, but it shouldn’t be necessary since we’re not testing builders on devnet-0.
+
+Reserve space for one validator sweep withdrawal: https://github.com/ethereum/consensus-specs/pull/4832
+00:27:28	Marius van der Wijden:	Replying to "Re: ePBS, it looks..."
+
+I mean for the slot
+00:27:52	Marius van der Wijden:	Replying to "Re: ePBS, it looks..."
+
+attestation timeline, ptc deadline etc
+00:27:55	Barnabas:	Replying to "Re: ePBS, it looks l..."
+
+https://github.com/ethereum/consensus-specs/blob/master/configs/mainnet.yaml#L102-L110
+00:27:57	Stefan Starflinger:	EIP-8024 moved to devnet-3
+
+EIP-7843 included in devnet-2
+EIP-7778 included in devnet-2
+EIP-7708 included in devnet-2
+00:28:10	Barnabas:	https://notes.ethereum.org/@ethpandaops/bal-devnet-2
+00:28:24	Toni Wahrstätter:	Reacted to EIP-8024 moved to de... with "👍"
+00:28:30	Guru:	Reacted to "https://notes.ethere..." with 👍
+00:28:47	Jen:	Reacted to "EIP-8024 moved to de..." with 👍
+00:28:57	felix (eest):	Reacted to "EIP-8024 moved to ..." with 👍
+00:29:04	Jen:	Reacted to "https://notes.ethere..." with 👍
+00:29:19	Parithosh Jayanthi:	Reacted to "EIP-8024 moved to de..." with 👍
+00:30:48	Mario Vega:	Replying to "EIP-8024 moved to de..."
+
+EIP-8024 was completely moved or only the PR? I understood that only the changes were pushed but not sure
+00:30:55	Justin Traglia:	Variable PTC deadline: https://github.com/ethereum/consensus-specs/pull/4843
+00:31:03	Jonny Rhea:	Replying to "EIP-8024 moved to de..."
+
+@Mario Vega that’s what I thought too
+00:31:26	Barnabas:	these are all 1-3 lines changes in the config.yaml right?
+00:31:30	Ansgar Dietrichs:	+1 to the idea of a variable PTC deadline
+00:31:35	Francesco:	Reacted to "these are all 1-3 li..." with 👍
+00:31:44	Dustin:	Replying to "these are all 1-3 ..."
+
+not variable PTC
+00:31:55	Ansgar Dietrichs:	also +1 to Potuz’ comments on making these timings dependent on real world data
+00:32:01	Justin Traglia:	Reacted to "also +1 to Potuz’ co..." with 👍
+00:32:16	spencer-tb:	Replying to "EIP-8024 moved to de..."
+
+I think the PR!
+00:32:50	Stefan Starflinger:	Replying to "EIP-8024 moved to de..."
+
+I understood that the whole EIP was moved to devnet-3
+00:33:04	Parithosh Jayanthi:	Replying to "EIP-8024 moved to de..."
+
+Just PR
+00:33:06	Parithosh Jayanthi:	Replying to "EIP-8024 moved to de..."
+
+EIP is included
+00:33:34	Mario Vega:	Reacted to "EIP is included" with 👍🏼
+00:33:49	Enrico Del Fante (tbenr):	Reacted to "also +1 to Potuz’ co..." with 👍
+00:34:18	Potuz:	11 days? no way for Prysm
+00:34:32	Jonny Rhea:	Replying to "EIP-8024 moved to de..."
+
+Okay to clarify…we are not going with the push postfix on devnet2, but might be considered for devnet3?  Cc @frangio
+00:34:32	Enrico Del Fante (tbenr):	I don’t think we can, too
+00:34:37	Dustin:	and if they're "farthest ahead"...
+00:34:53	Barnabas:	prysm should be the farthest ahead
+00:35:07	Dustin:	the whole thing is Prysm's creation
+00:35:09	Potuz:	I don't think so, I suspect Teku is way before
+00:36:13	Dustin:	does that introduce more complexity though?
+00:36:23	Justin Traglia:	Reacted to "does that introduce ..." with 👍
+00:36:23	Matthew Keil:	Sadly I think It does
+00:36:29	Enrico Del Fante (tbenr):	Reacted to "does that introduce ..." with 👍
+00:36:46	nflaig:	Reacted to "does that introduce ..." with 👍
+00:36:53	Barnabas:	we could limit the scope for devnet 0
+00:36:57	Stefan Starflinger:	Reacted to "EIP is included" with 👍🏼
+00:37:24	Dustin:	the PTC deadline etc still creates more than 3 intervals
+00:37:31	Parithosh Jayanthi:	https://notes.ethereum.org/@ethpandaops/epbs-devnet-0
+00:37:48	frangio:	personally i feel relatively strongly against this PR now. i'm writing down my reasoning
+00:38:06	Mario Vega:	Reacted to "personally i feel re..." with 👍🏼
+00:38:30	felix (eest):	Reacted to "EIP is included" with 👍🏼
+00:38:45	Jonny Rhea:	Reacted to "personally i feel re..." with 👍🏼
+00:38:50	Guru:	Reacted to "EIP is included" with 👍🏼
+00:38:59	Jonny Rhea:	Reacted to "EIP is included" with 👍🏼
+00:39:08	Parithosh Jayanthi:	Reacted to "personally i feel re..." with 👍🏼
+00:39:25	Marius van der Wijden:	8037 explainer: https://notes.ethereum.org/@MariusVanDerWijden/SJD3CGdSbx
+Clarification to the eip: https://github.com/ethereum/EIPs/pull/11107
+00:41:20	Parithosh Jayanthi:	Unmuted but we can’t hear you
+00:41:24	felix (eest):	maybe just VERY quiet
+00:41:27	Marius van der Wijden:	1 sec
+00:41:29	Parithosh Jayanthi:	Reacted to "maybe just VERY quie..." with 😂
+00:41:31	Ansgar Dietrichs:	Reacted to "maybe just VERY quie..." with 😭
+00:41:32	Barnabas:	Reacted to "maybe just VERY quie..." with 😂
+00:41:33	Potuz:	@Justin Traglia Where/when can we make a decision on 4826 and 4817? I'd like a version of both be merged as soon as possible. Same for 4843 although the mechanism should be changed IMO to be on the validator.md file instead of a helper building the attestation. I think we should decide on those three soon and this call will not work. Can we set either a sync time on Discord or just decide there?
+00:41:33	Parithosh Jayanthi:	micDAO
+00:41:35	Marcin Sobczak:	Reacted to "maybe just VERY quie..." with 😂
+00:41:36	Mario Vega:	Reacted to "maybe just VERY quie..." with 😂
+00:41:37	Marc:	Reacted to "maybe just VERY quie…" with 😂
+00:41:38	jochem-brouwer:	Heeft gereageerd op "micDAO" met 😂
+00:41:40	Barnabas:	Reacted to "micDAO" with 😂
+00:41:41	nixo:	Reacted to "micDAO" with 🎤
+00:41:41	butta:	Reacted to "micDAO" with 😂
+00:41:42	butta:	Reacted to "micDAO" with 🎤
+00:41:43	jochem-brouwer:	Heeft gereageerd op "micDAO" met 🎤
+00:41:46	felix (eest):	Reacted to "micDAO" with 🎤
+00:41:46	felix (eest):	Reacted to "micDAO" with 😂
+00:41:47	Satyajit:	Reacted to "micDAO" with 🎤
+00:41:49	felipe:	Reacted to "micDAO" with 😂
+00:41:49	butta:	Reacted to "micDAO" with 🎙️
+00:41:49	felipe:	Reacted to "micDAO" with 🎤
+00:41:51	felipe:	Reacted to "micDAO" with 🎙️
+00:41:54	nixo:	Reacted to "micDAO" with 🎙️
+00:41:54	Bhargava:	Reacted to micDAO with "🎤"
+00:41:55	nixo:	Reacted to "micDAO" with 😂
+00:42:01	CPerezz:	Reacted to "micDAO" with 😂
+00:42:02	CPerezz:	Reacted to "micDAO" with 🎤
+00:42:03	spencer-tb:	Reacted to "micDAO" with 🎤
+00:42:13	marek:	Reacted to "micDAO" with 🎤
+00:42:15	Barnabas:	Replying to "micDAO"
+
+we should launch a fundraiser for Marius to get him a new laptop/mic.
+00:42:22	Francesco:	Replying to "@Justin Traglia Wher..."
+
+Fwiw I am happy to revert having the helper if that’s a biocker
+00:42:25	spencer-tb:	Reacted to "we should launch a f..." with 😆
+00:42:26	Parithosh Jayanthi:	Reacted to "we should launch a f..." with 😆
+00:42:27	felipe:	Reacted to "we should launch a..." with 😆
+00:42:27	marek:	Reacted to "we should launch a f..." with 😆
+00:42:28	Yassine Ferhane:	Reacted to "we should launch a f..." with 😆
+00:42:31	butta:	Reacted to "we should launch a f..." with 😆
+00:42:48	Raúl Kripalani:	Reacted to "we should launch a f..." with 😆
+00:42:50	Raúl Kripalani:	Reacted to "micDAO" with 😂
+00:42:53	felix (eest):	Reacted to "we should launch a..." with 😆
+00:43:02	Barnabas:	Replying to "micDAO"
+
+we should launch a fundraiser to swap out Marius for a better/more technical Marius
+00:43:05	Ansgar Dietrichs:	just to clarify, I might have said “separate metering for contract deployments” - but I meant “separate metering for all state growth operations, specifically to keep contract deployments possible”
+00:43:07	Parithosh Jayanthi:	Reacted to "we should launch a f..." with 😂
+00:43:09	Potuz:	Replying to "@Justin Traglia Wher..."
+
+I think it makes the DA bit a bit complicated, we can merge as-is, and then deal with the bit later, but I'm pretty sure that we will need to remove the helper when we do so
+00:43:13	Anders Elowsson:	Reacted to "just to clarify, I m..." with 👍
+00:43:16	mhaas.eth:	Reacted to "just to clarify, I..." with 👍
+00:43:17	Jonny Rhea:	Reacted to "we should launch a f..." with 😂
+00:43:19	butta:	Replying to "micDAO"
+
+nobody told me you are good with jokes, barnabas
+00:43:21	Marius van der Wijden:	Reacted to we should launch a f... with "😂"
+00:43:24	Parithosh Jayanthi:	Reacted to "nobody told me you a..." with 😂
+00:43:33	Potuz:	Replying to "@Justin Traglia Wher..."
+
+I would rather include these changes earlier than later so that we can have some form of testing of the logic early enough.
+00:44:00	nixo:	Reacted to "nobody told me you a..." with 😂
+00:44:01	Łukasz Rozmej:	One thing from me  TARGET_STATE_GROWTH_PER_YEAR  should be a BPO parameter, so we can easily adjust it.
+00:44:02	Parithosh Jayanthi:	Replying to "micDAO"
+
+Wasting his talents by having him lift things at panda HQ
+00:44:10	nixo:	Reacted to "Wasting his talents ..." with 🐼
+00:44:11	butta:	Reacted to "Wasting his talents ..." with 🥸
+00:44:18	nixo:	Reacted to "we should launch a f..." with 😂
+00:44:23	Potuz:	Reacted to "One thing from me  T..." with 👍
+00:44:41	Justin Traglia:	Replying to "@Justin Traglia Wher..."
+
+Yeah this call doesn’t feel like the appropriate place to discuss these in detail. I would prefer to discuss (async) these in threads on discord, come to consensus there, and then make the final call here.
+00:44:49	Parithosh Jayanthi:	Reacted to "Yeah this call doesn..." with 👍🏽
+00:44:55	Anders Elowsson:	Replying to "One thing from me  T..."
+
+In this case we should remove the scaling with the gas limit
+00:45:03	Anders Elowsson:	Replying to "One thing from me  T..."
+
+This would simplify a lot of things
+00:45:20	Maria Silva:	Reacted to "One thing from me  T..." with 👍
+00:45:29	Anders Elowsson:	Replying to "One thing from me  T..."
+
+SGPO
+00:45:30	Ansgar Dietrichs:	any single tx can never be heavier to execute than the 16M limit. so I don’t think this should be a regression
+00:45:35	Potuz:	Replying to "@Justin Traglia Wher..."
+
+That works for me, just that Julian's PR has been up for a while. He mentioned he will have some numbers to have a better behaved constant (between 0 and the current 18 days)
+00:46:14	Toni Wahrstätter:	As I understood it, it wouldn't worsen execution parallelization in the worst-case. Instead of 4 max-size txs writing new state, you could only have one in a block.
+00:46:45	Ansgar Dietrichs:	Reacted to "As I understood it, ..." with 👍
+00:46:48	Ben Adams:	Replying to "As I understood it, ..."
+
+wouldn't that worsen it? 😅
+00:46:50	Francesco:	As mentioned in discord, there is no way to “parallelize state growth”. We have the tx gas limit because we can parallelize compute etc… but we just can’t do that with “state creation"
+00:46:54	Francesco:	Reacted to "As I understood it, ..." with 👍
+00:47:10	Justin Traglia:	Replying to "@Justin Traglia Wher..."
+
+I feel like 4817 (onboard builders at the fork) could be merged now. Could we make a decision on this here today?
+00:47:19	Ansgar Dietrichs:	Replying to "As I understood it, ..."
+
+worsen it in what way? the block costs as much as a full block otherwise, but is as fast to execute as a single 16M tx
+00:47:22	Ansgar Dietrichs:	Replying to "As I understood it, ..."
+
+that’s fine
+00:47:25	Justin Traglia:	Reacted to "That works for me, j..." with 👍
+00:47:26	Anders Elowsson:	Replying to "As mentioned in disc..."
+
+..and don’t need to?
+00:47:36	Francesco:	Reacted to "worsen it in what wa..." with 👍
+00:47:41	Ben Adams:	Replying to "As I understood it, ..."
+
+min tx count before is 3.75; after is 1
+00:47:52	Ansgar Dietrichs:	Replying to "As I understood it, ..."
+
+but what is that min tx count useful for?
+00:47:54	Francesco:	Replying to "As I understood it, ..."
+
+Min tx count is not a useful thing to care about in itself
+00:48:17	Łukasz Rozmej:	Replying to "One thing from me  T..."
+
+hm… disagree
+00:48:26	Ben Adams:	Replying to "As I understood it, ..."
+
+means paralellization of 1 rather than 4
+00:48:29	Francesco:	Replying to "As I understood it, ..."
+
+What we care about is: if a block consumes n x 16.7M regular gas, it has to have at least n txs
+00:48:31	Luis Pinto | Besu:	Reacted to "One thing from me  T..." with 👍
+00:48:54	Francesco:	Replying to "As I understood it, ..."
+
+means paralellization of 1 rather than 4
+
+It doesn’t matter, because in that case the tx is still only 16.7Mgas
+00:49:02	Ameziane Hamlat:	Transaction state creation limit should go in hand with gas limit 👌
+00:49:45	Potuz:	Replying to "@Justin Traglia Wher..."
+
+I'm happy to merge that, couldn't find a bug yet
+00:50:16	Justin Traglia:	Replying to "@Justin Traglia Wher..."
+
+Cool, please bring it up at the end of the call.
+00:50:26	Justin Traglia:	Replying to "@Justin Traglia Wher..."
+
+If there’s time.
+00:51:42	Potuz:	Replying to "@Justin Traglia Wher..."
+
+cc @Parithosh Jayanthi 
+00:51:45	CPerezz:	But can a corner case that might not happen (and has no strong issues/concern) kill the entire EIP which is beneficial ?
+00:51:47	Parithosh Jayanthi:	Reacted to "cc @Parithosh Jayant..." with 👍🏽
+00:52:12	Parithosh Jayanthi:	Replying to "@Justin Traglia Wher..."
+
+Bharath has a topic, that’s the only other one left
+00:52:17	Parithosh Jayanthi:	Replying to "@Justin Traglia Wher..."
+
+So there might be time depending on how long he takes
+00:52:27	CPerezz:	Is there any real alternative besides just do nothing and hope for the best?
+00:52:30	Marius van der Wijden:	Feels like the changes to the other eips that we are still discussing are in similar size as what we expect here
+00:52:36	Ben Adams:	Just highlighting is weird ux :)
+00:52:38	Bharath:	Replying to "@Justin Traglia Wher..."
+
+It is on absorbing MEV-Boost into clients. I am happy to discuss that with folks async
+00:52:52	Marius van der Wijden:	E.g. the receipts changes and push changes
+00:53:15	Potuz:	Replying to "@Justin Traglia Wher..."
+
+it's fine to have that one here and the PR on Discord, doesn't look like there's gonna be time for either anyway :)
+00:53:19	butta:	thx markus!
+00:53:21	Bharath:	Replying to "@Justin Traglia Wher..."
+
+Potuz and Tersec have given feedback on my PR and I can discuss it async and we can don’t have to drag the call for this. We can pick it up in ACDC if required
+00:53:26	Marius van der Wijden:	Marcus is from ethOS
+00:53:33	Ben Adams:	Will need to change headers and receipts also for this EIP to surface the stategas use
+00:54:20	Marius van der Wijden:	Replying to "Will need to change ..." 
+
+ Receipts yes, header not really
+00:54:28	Francesco:	If a smart contract would break because of dynamic cost, it will break with repricings
+00:54:36	mhaas.eth:	Reacted to "Marcus is from eth..." with ❤️
+00:54:39	Parithosh Jayanthi:	Reacted to "If a smart contract ..." with 👍🏽
+00:54:48	Marius van der Wijden:	This would mean we would need to hard fork a few times a year
+00:55:30	Francesco:	Replying to "Will need to change ..."
+
+What would you need to add to the header? Imo we should change gasUsed to be max(regularGas, stateGas) (what the EIP calls gasMetered)
+00:55:59	Francesco:	Replying to "Will need to change ..."
+
+I implemented the EIP in the execution-specs and didn’t really see a reason to change the header
+00:56:19	Ansgar Dietrichs:	one question then: if we go ahead with CFI today, would people prefer to iterate purely async, or would there be use in a breakout call on this?
+00:56:20	Ben Adams:	Replying to "Will need to change ..."
+
+information loss just storing max()
+00:57:00	Ben Adams:	Reacted to "one question then: i..." with 👍
+00:57:12	Marius van der Wijden:	Replying to "one question then: i..." 
+
+ Breakout rooms continue until morale improves
+00:57:18	Ben Adams:	Replying to "one question then: i..."
+
+Ok to CFI
+00:57:25	Marius van der Wijden:	Reacted to one question then: i... with "👍"
+00:57:32	Ameziane Hamlat:	Let’s CFI it and discuss it more later
+00:57:35	Parithosh Jayanthi:	Reacted to "Breakout rooms conti..." with 😂
+00:57:39	nixo:	Reacted to "Breakout rooms conti..." with 😂
+00:57:56	Francesco:	Breakout call seems useful, there’s some details to discuss (e.g. exact way to split up the prices, whether there should be a header change, receipts…)
+00:58:02	Ameziane Hamlat:	Reacted to "Breakout call seems ..." with 💯
+00:58:04	Maria Silva:	Reacted to "Breakout call seems ..." with 💯
+00:58:09	Mario Vega:	Reacted to "Breakout call seems ..." with 👍🏼
+00:58:14	Marius van der Wijden:	Reacted to Let’s CFI it and dis... with "👍"
+00:58:19	Marius van der Wijden:	Reacted to Breakout call seems ... with "💯"
+00:58:35	Parithosh Jayanthi:	Reacted to "Breakout call seems ..." with 💯
+00:58:38	Anders Elowsson:	Let’s keep an open mind on SGPO hardforks also. It can be very useful
+00:58:49	Anders Elowsson:	Reacted to "Breakout call seems ..." with 💯
+00:59:00	felipe:	Reacted to "Breakout rooms con..." with 😂
+00:59:08	Francesco:	final_final_v2_definitive
+00:59:10	Jen:	Reacted to "Breakout call seems ..." with 👍🏼
+00:59:15	Maria Silva:	Reacted to "final_final_v2_defin..." with 😂
+00:59:16	nixo:	Reacted to "final_final_v2_defin..." with 😂
+00:59:17	felix (eest):	Reacted to "final_final_v2_def..." with 😂
+00:59:20	frangio:	Reacted to "final_final_v2_def..." with 😂
+00:59:21	Justin Traglia:	Reacted to "final_final_v2_defin..." with 😂
+00:59:26	Leo:	Reacted to "final_final_v2_def..." with 😂
+00:59:39	felipe:	Reacted to "final_final_v2_def..." with 😂
+01:00:04	Satyajit:	Reacted to "final_final_v2_def..." with 😂
+01:00:21	Dustin:	the basic question I'd have is, is this really a "spec" thing?
+01:00:33	Dustin:	i.e. multiplexing setup
+01:00:38	Parithosh Jayanthi:	Reacted to "final_final_v2_defin..." with 😂
+01:01:08	Ansgar Dietrichs:	Reacted to "Ok to CFI" with 🎉
+01:01:28	Barnabas:	I basically want to yeet mev boost if we can
+01:01:40	Justin Traglia:	Reacted to "I basically want to ..." with 👍
+01:01:46	Dustin:	and I'd wonder scope-wise, e.g. extend to https://www.commit-boost.org/ ?
+01:02:08	Dustin:	CL clients implement the builder API now
+01:02:11	CPerezz:	Reacted to "Just highlighting is..." with 👍
+01:02:13	Dustin:	mev-boost is a bulider-API proxy
+01:02:24	Dustin:	that exists today
+01:02:25	Dustin:	right now
+01:02:27	Ameziane Hamlat:	Replying to "As I understood it, ..."
+
+But it is taking the whole block, so no place to other transactions to be included in that block
+01:03:05	Francesco:	Replying to "As I understood it, ..."
+
+Even with the tx gas limit, I can simply buy out all gas in the block. Why does it matter if I do it with one tx or 4?
+01:03:23	Luis Pinto | Besu:	Replying to "As I understood it, ..."
+
+Transaction parallelisation
+01:05:00	Francesco:	Replying to "As I understood it, ..."
+
+Can you say exactly what your concern is with that? The block we’re talking about has a single tx but it consumes only 16.7Mgas, we don’t need to parallelize anything
+01:05:06	Ben Adams:	BALs can do the internal tx IO parallelised so isn't such a problem (for a validator) and the builder who builds the BAL chooses to put it in (so additional effort in building the BAL is on them)
+01:05:17	Ameziane Hamlat:	Replying to "As I understood it, ..."
+
+Even with the tx gas limit, I can simply buy out all gas in the block. Why does it matter if I do it with one tx or 4?
+
+Yes, but you cannot guarantee that you’re going to use the whole block gas limit because transactions can go in different blocks, where with one transaction, you’re sure to use the whole gas of 1 block
+01:05:20	Francesco:	Replying to "As I understood it, ..."
+
+It’s the same as a post-BAL block that only contains a single tx because the builder wants it so
+01:06:19	Potuz:	I completely agree, we just need to specify the builder API and the only change is that we now can connect to many endpoints instead of one and it should not be speced how to connect to many endpoints
+01:07:09	Potuz:	@Dustin a hard request from the community was to standardize client flags so that operators can set the same flags across different clients
+01:07:13	Potuz:	things like min-bid, etc
+01:07:23	Potuz:	those things should be standardized on the builder API
+01:07:36	Ameziane Hamlat:	Replying to "As I understood it, ..."
+
+That’s actually for me what shouldn’t happen, having 1 tx consuming the whole block.
+01:07:42	Ben Adams:	Replying to "As I understood it, ..."
+
+Also you can put a whole bunch of additional txs in that only update state; even if all the state growth gas has been used
+01:07:51	Francesco:	Reacted to "Also you can put a w..." with 👍
+01:08:19	Dustin:	Replying to "those things shoul..."
+
+the current approach ties this in to the builder proxy? i.e. the config gets unified there
+01:08:22	Francesco:	Replying to "As I understood it, ..."
+
+That’s actually for me what shouldn’t happen, having 1 tx consuming the whole block.
+
+Why? It was like this until Fusaka, and it’s not why we introduced the tx gas limit. Plus, builders can always just buy out a whole block
+01:08:33	Dustin:	Replying to "those things shoul..."
+
+(whether that proxy is named mev-boost or commit boost)
+01:08:40	Justin Traglia:	Yeah we’ll talk on discord
+01:08:48	Francesco:	Replying to "As I understood it, ..."
+
+Anyway, do we agree that the concern isn’t about parallelization?
+01:08:51	Bharath:	Replying to "those things should ..."
+
+Agreed that builder muxing is mostly implementation details. We probably want to standardize params like min-bid, bid-boost flags etc. Most of the PR specifies params like min-bid, bid-boost, max-trusted-bid etc
+01:08:52	Justin Traglia:	Bye everyone!

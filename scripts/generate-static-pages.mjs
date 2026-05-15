@@ -12,41 +12,58 @@ function getEips() {
   return JSON.parse(fileContent);
 }
 
-// Read and parse the calls data from TypeScript file
+// Read and parse the calls data from generated JSON file
 function getProtocolCalls() {
-  const callsFilePath = path.join(__dirname, '..', 'src', 'data', 'calls.ts');
+  const callsFilePath = path.join(__dirname, '..', 'src', 'data', 'protocol-calls.generated.json');
   const fileContent = fs.readFileSync(callsFilePath, 'utf-8');
+  return JSON.parse(fileContent);
+}
 
-  // Extract the protocolCalls array from the TypeScript file
-  const match = fileContent.match(/export const protocolCalls.*?=\s*(\[[\s\S]*?\]);/);
-  if (!match) {
-    throw new Error('Could not find protocolCalls in calls.ts');
-  }
-
-  // Parse the array (it's already valid JavaScript syntax)
-  const callsArrayString = match[1]
-    .replace(/type:\s*'(\w+)'/g, 'type: "$1"')
-    .replace(/date:\s*'([\d-]+)'/g, 'date: "$1"')
-    .replace(/number:\s*'(\d+)'/g, 'number: "$1"')
-    .replace(/path:\s*'([^']+)'/g, 'path: "$1"');
-
-  try {
-    return eval(callsArrayString);
-  } catch (e) {
-    console.error('Failed to parse calls array:', e);
-    throw e;
-  }
+// Read and parse devnet spec JSON files
+function getDevnetSpecs() {
+  const devnetsDir = path.join(__dirname, '..', 'src', 'data', 'devnets');
+  if (!fs.existsSync(devnetsDir)) return [];
+  return fs.readdirSync(devnetsDir)
+    .filter(f => f.endsWith('.json'))
+    .map(f => {
+      const content = JSON.parse(fs.readFileSync(path.join(devnetsDir, f), 'utf-8'));
+      // Only include devnet spec files (have id, no upgrade field)
+      if (content.id && !content.upgrade) return content;
+      return null;
+    })
+    .filter(Boolean);
 }
 
 const protocolCalls = getProtocolCalls();
 const eips = getEips();
+const devnetSpecs = getDevnetSpecs();
 
 // Define standalone pages with their metadata
 const standalonePages = [
   {
+    path: 'upgrades',
+    title: 'Network Upgrades - Forkcast',
+    description: 'Catalog of Ethereum network upgrades - in progress, live, and historical.',
+  },
+  {
     path: 'schedule',
     title: 'ACD Planning Sandbox - Forkcast',
     description: 'Internal planning tool for ACD participants. Explore hypothetical upgrade timelines.',
+  },
+  {
+    path: 'devnets',
+    title: 'Devnet Prioritization - Forkcast',
+    description: 'Track devnet inclusion status, test complexity, and client support for EIPs in upcoming network upgrades.',
+  },
+  {
+    path: 'decisions',
+    title: 'Key Decisions - Forkcast',
+    description: 'Key decisions from Ethereum AllCoreDevs meetings.',
+  },
+  {
+    path: 'agenda',
+    title: 'Agenda Planner - Forkcast',
+    description: 'Agenda planning for Ethereum AllCoreDevs facilitators. Suggested topics, open action items, deferred decisions, and EIP discussion history.',
   },
 ];
 
@@ -68,6 +85,26 @@ const upgrades = [
     description: 'Enhancing Ethereum with Block-level Access Lists and ePBS for big efficiency and scalability gains.',
   },
   {
+    path: 'upgrade/glamsterdam/stakeholders',
+    title: 'Glamsterdam by Stakeholder - Forkcast',
+    description: 'EIPs relevant to app developers, wallet devs, L2s, and other stakeholders in the Glamsterdam upgrade.',
+  },
+  {
+    path: 'upgrade/glamsterdam/devnet-inclusion',
+    title: 'Glamsterdam Devnet Inclusion - Forkcast',
+    description: 'Devnet inclusion status for EIPs proposed for the Glamsterdam network upgrade.',
+  },
+  {
+    path: 'upgrade/glamsterdam/client-priority',
+    title: 'Glamsterdam Client Priority - Forkcast',
+    description: 'Aggregate view of Ethereum client team stances on EIPs proposed for Glamsterdam.',
+  },
+  {
+    path: 'upgrade/glamsterdam/test-complexity',
+    title: 'Glamsterdam Test Complexity - Forkcast',
+    description: 'Analyze STEEL test complexity assessments for EIPs proposed for Glamsterdam.',
+  },
+  {
     path: 'upgrade/hegota',
     title: 'Hegotá Upgrade - Forkcast',
     description: 'Post-Glamsterdam network upgrade in early planning.',
@@ -75,31 +112,31 @@ const upgrades = [
 ];
 
 // Get full type name for calls
-function getCallTypeName(type) {
-  switch(type.toUpperCase()) {
-    case 'ACDC': return 'All Core Devs Consensus';
-    case 'ACDE': return 'All Core Devs Execution';
-    case 'ACDT': return 'All Core Devs Testing';
-    default: return type;
-  }
+const callTypeNames = {
+  acdc: 'AllCoreDevs - Consensus',
+  acde: 'AllCoreDevs - Execution',
+  acdt: 'AllCoreDevs - Testing',
+  epbs: 'ePBS Breakout',
+  bal: 'BAL Breakout',
+  focil: 'FOCIL Breakout',
+  price: 'Glamsterdam Repricings',
+  tli: 'Trustless Log Index',
+  pqts: 'Post Quantum Transaction Signatures',
+  rpc: 'RPC Standards',
+  zkevm: 'L1-zkEVM Breakout',
+  etm: 'Encrypt The Mempool',
+  awd: 'AllWalletDevs',
+  pqi: 'PQ Interop',
+  fcr: 'Fast Confirmation Rule',
+};
+
+function getCallTypeName(call) {
+  return call.name || callTypeNames[call.type.toLowerCase()] || call.type;
 }
 
 // Get EIP proposal prefix (EIP or RIP)
 function getProposalPrefix(eip) {
   return eip.collection === 'RIP' ? 'RIP' : 'EIP';
-}
-
-// Get layman title for EIP
-function getLaymanTitle(eip) {
-  if (eip.title) {
-    // Remove "EIP-XXXX:" or "RIP-XXXX:" prefix if present
-    const match = eip.title.match(/^(?:EIP|RIP)-\d+:\s*(.+)$/);
-    if (match) {
-      return match[1];
-    }
-    return eip.title;
-  }
-  return `Proposal ${eip.id}`;
 }
 
 // Function to generate HTML with proper meta tags for each route
@@ -124,9 +161,38 @@ function generateStaticPage(route, title, description) {
   return html;
 }
 
+function escapeXml(value) {
+  return String(value)
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&apos;');
+}
+
+function buildSitemapXml(routes) {
+  const uniqueRoutes = Array.from(new Set(routes));
+  const urls = uniqueRoutes.map((route) => {
+    const normalizedRoute = route === '/' ? '/' : `/${route.replace(/^\/+/, '')}`;
+    const loc = normalizedRoute === '/'
+      ? 'https://forkcast.org/'
+      : `https://forkcast.org${normalizedRoute}`;
+    return `  <url><loc>${escapeXml(loc)}</loc></url>`;
+  });
+
+  return [
+    '<?xml version="1.0" encoding="UTF-8"?>',
+    '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">',
+    ...urls,
+    '</urlset>',
+    '',
+  ].join('\n');
+}
+
 // Create static pages for all routes
 function generateAllPages() {
   const distDir = path.join(__dirname, '..', 'dist');
+  const sitemapRoutes = ['/'];
 
   // Check if dist directory exists
   if (!fs.existsSync(distDir)) {
@@ -147,6 +213,7 @@ function generateAllPages() {
     const html = generateStaticPage(page.path, page.title, page.description);
     const outputPath = path.join(pagePath, 'index.html');
     fs.writeFileSync(outputPath, html);
+    sitemapRoutes.push(page.path);
     console.log(`  ✓ ${page.path}`);
   });
 
@@ -168,8 +235,25 @@ function generateAllPages() {
     const html = generateStaticPage(upgrade.path, upgrade.title, upgrade.description);
     const outputPath = path.join(currentPath, 'index.html');
     fs.writeFileSync(outputPath, html);
+    sitemapRoutes.push(upgrade.path);
     console.log(`  ✓ ${upgrade.path}`);
   });
+
+  // Generate EIPs index page
+  console.log('\n📋 Generating EIPs index:');
+  const eipsIndexPath = path.join(distDir, 'eips');
+  if (!fs.existsSync(eipsIndexPath)) {
+    fs.mkdirSync(eipsIndexPath, { recursive: true });
+  }
+
+  const eipsIndexHtml = generateStaticPage(
+    'eips',
+    'EIP Directory - Forkcast',
+    'Browse all Ethereum Improvement Proposals tracked on Forkcast. Filter by status, network upgrade, and type.'
+  );
+  fs.writeFileSync(path.join(eipsIndexPath, 'index.html'), eipsIndexHtml);
+  sitemapRoutes.push('eips');
+  console.log('  ✓ eips/index.html');
 
   // Generate calls index page
   console.log('\n📞 Generating calls index:');
@@ -181,13 +265,13 @@ function generateAllPages() {
   const callsIndexHtml = generateStaticPage(
     'calls',
     'Protocol Calls - Forkcast',
-    'Browse Ethereum protocol development calls including All Core Devs Consensus, Execution, and Testing meetings.'
+    'Browse Ethereum protocol development calls including AllCoreDevs Consensus, Execution, and Testing meetings.'
   );
   fs.writeFileSync(path.join(callsIndexPath, 'index.html'), callsIndexHtml);
+  sitemapRoutes.push('calls');
   console.log('  ✓ calls/index.html');
 
   // Generate individual call pages
-  console.log('\n📞 Generating individual call pages:');
   protocolCalls.forEach(call => {
     const fullPath = `calls/${call.path}`;
     const routeParts = fullPath.split('/');
@@ -202,18 +286,35 @@ function generateAllPages() {
     });
 
     // Generate and write the HTML file
-    const typeName = getCallTypeName(call.type);
-    const title = `${typeName} #${call.number} - Forkcast`;
-    const description = `Watch ${typeName} call #${call.number} from ${call.date}.`;
+    const typeName = getCallTypeName(call);
+    const title = call.name ? `${typeName} - Forkcast` : `${typeName} #${call.number} - Forkcast`;
+    const description = call.name ? `Watch ${typeName} from ${call.date}.` : `Watch ${typeName} call #${call.number} from ${call.date}.`;
 
     const html = generateStaticPage(fullPath, title, description);
     const outputPath = path.join(currentPath, 'index.html');
     fs.writeFileSync(outputPath, html);
-    console.log(`  ✓ ${fullPath}`);
+    sitemapRoutes.push(fullPath);
   });
+  console.log(`\n📞 Generated ${protocolCalls.length} call pages`);
+
+  // Generate issue-number alias pages (e.g., /calls/1954 → same meta as canonical)
+  let issuePages = 0;
+  protocolCalls.forEach(call => {
+    if (!call.issue) return;
+    const issuePath = path.join(distDir, 'calls', String(call.issue));
+    if (!fs.existsSync(issuePath)) {
+      fs.mkdirSync(issuePath, { recursive: true });
+    }
+    const typeName = getCallTypeName(call);
+    const title = call.name ? `${typeName} - Forkcast` : `${typeName} #${call.number} - Forkcast`;
+    const description = call.name ? `Watch ${typeName} from ${call.date}.` : `Watch ${typeName} call #${call.number} from ${call.date}.`;
+    const html = generateStaticPage(`calls/${call.issue}`, title, description);
+    fs.writeFileSync(path.join(issuePath, 'index.html'), html);
+    issuePages++;
+  });
+  console.log(`🔗 Generated ${issuePages} issue-number alias pages`);
 
   // Generate individual EIP pages
-  console.log('\n📋 Generating EIP pages:');
   eips.forEach(eip => {
     const fullPath = `eips/${eip.id}`;
     const eipPath = path.join(distDir, 'eips', String(eip.id));
@@ -230,8 +331,34 @@ function generateAllPages() {
     const html = generateStaticPage(fullPath, title, description);
     const outputPath = path.join(eipPath, 'index.html');
     fs.writeFileSync(outputPath, html);
-    console.log(`  ✓ ${fullPath}`);
+    sitemapRoutes.push(fullPath);
   });
+  console.log(`📋 Generated ${eips.length} EIP pages`);
+
+  // Generate devnet spec pages
+  if (devnetSpecs.length > 0) {
+    console.log('\n🧪 Generating devnet spec pages:');
+    devnetSpecs.forEach(spec => {
+      const fullPath = `devnets/${spec.id}`;
+      const specPath = path.join(distDir, 'devnets', spec.id);
+
+      if (!fs.existsSync(specPath)) {
+        fs.mkdirSync(specPath, { recursive: true });
+      }
+
+      const title = `${spec.title} - Forkcast`;
+      const description = `Devnet spec for ${spec.id}: EIP list, client implementation status, and spec references.`;
+
+      const html = generateStaticPage(fullPath, title, description);
+      fs.writeFileSync(path.join(specPath, 'index.html'), html);
+      sitemapRoutes.push(fullPath);
+    });
+    console.log(`  Generated ${devnetSpecs.length} devnet spec pages`);
+  }
+
+  const sitemapXml = buildSitemapXml(sitemapRoutes);
+  fs.writeFileSync(path.join(distDir, 'sitemap.xml'), sitemapXml);
+  console.log('\n🗺️  Generated sitemap.xml');
 
   console.log('\n✨ Static pages generated successfully!');
 }

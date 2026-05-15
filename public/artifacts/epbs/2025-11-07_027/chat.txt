@@ -1,0 +1,26 @@
+00:08:35	terence:	6am : (
+00:08:40	Mehdi Aouadi:	Reacted to "6am : (" with 🙈
+00:09:57	potuz:	https://github.com/ethereum/consensus-specs/pull/4728
+00:10:00	potuz:	last minute one
+00:12:39	terence:	i think we want to update the test to assert the line committeed randao vs payload randao
+00:12:43	potuz:	caleb?
+00:12:51	potuz:	ah Caleb logged in and left
+00:16:20	Francesco:	Also might just be nice for ex-post transparency of the auction
+00:16:51	Justin Traglia:	Yeah that’s my issue with it too
+00:17:37	Francesco:	Other option could also be to just add a single bit, that says whether or not the value should be protocol enforced or not
+00:17:58	Francesco:	value  (same as now)
+ enforce_payment: bool
+00:19:03	Francesco:	Replying to " value  (same as now..."
+
+(And of course if  enforce_payment  is not set the state transition just ignores the value)
+00:21:17	terence:	i wonder if execution api (not engine api)already support this today, for example  if you know the index of tx? or check the balance of an account pre or post block.. minus if you have withdrawal amount
+00:31:26	Francesco:	Personally I wouldn’t care too much one way or another because anyway the balance changes between epochs are bounded and quite small
+00:31:55	Francesco:	Using new balances could be thought of as a very slight security reduction
+00:39:14	Francesco:	Assuming someone has deeply thought about it being where it is now in the first place 😆
+00:39:44	Justin Traglia:	Reacted to "Assuming someone has..." with 😅
+00:41:29	terence:	+1 in the bid
+00:42:12	terence:	can we add a test to this plz
+00:45:20	terence:	no preference for me
+00:46:27	Francesco:	el_payment
+00:46:30	potuz:	bid.trustme_bro_value
+00:46:43	potuz:	el_payment is good

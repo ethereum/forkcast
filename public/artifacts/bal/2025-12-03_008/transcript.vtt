@@ -1,0 +1,2586 @@
+WEBVTT
+
+1
+00:02:50.370 --> 00:02:54.769
+Toni Wahrstätter: Hello, everyone. Let's wait for one or two more minutes.
+
+2
+00:02:54.880 --> 00:02:58.280
+Toni Wahrstätter: Give people some time to… Sure.
+
+3
+00:05:04.000 --> 00:05:07.110
+Toni Wahrstätter: Perfect. I think we can get started.
+
+4
+00:05:09.760 --> 00:05:10.809
+Akash | ECH: Real life.
+
+5
+00:05:14.880 --> 00:05:23.320
+Toni Wahrstätter: Great! Welcome, everyone. Today is December the 3rd, EAP7928 breakout call number 8.
+
+6
+00:05:24.470 --> 00:05:43.949
+Toni Wahrstätter: Let's get started. I just posted the agenda into the chat. Today, it's very lightweight, I would say. We have 3 topics to discuss, starting with one change in the specs and the EAP, more a clarification around how to treat, calls that send value but run out of gas.
+
+7
+00:05:44.620 --> 00:05:52.199
+Toni Wahrstätter: The second one is storing the block of access list in the block body versus not storing them.
+
+8
+00:05:52.540 --> 00:05:57.249
+Toni Wahrstätter: We discussed it already last time, but wanted to double-check with everyone.
+
+9
+00:05:57.360 --> 00:06:09.230
+Toni Wahrstätter: And finally, going through, optimizations needed for the benchmarks we wanted to get in order to determine if the read values are worth it to include in the block lab access list or not.
+
+10
+00:06:13.600 --> 00:06:24.530
+Toni Wahrstätter: Perfect, and directly… let's directly jump into the first topic, which came up as there were some differences in how client implemented
+
+11
+00:06:24.680 --> 00:06:28.289
+Toni Wahrstätter: The gas accounting when it comes to coal.
+
+12
+00:06:28.910 --> 00:06:30.400
+Toni Wahrstätter: to a recall opcode.
+
+13
+00:06:30.630 --> 00:06:31.999
+Toni Wahrstätter: And basically, it…
+
+14
+00:06:32.220 --> 00:06:39.519
+Toni Wahrstätter: Depends on when do we check, when do we do the static checks, versus when do we actually go to the
+
+15
+00:06:39.630 --> 00:06:40.460
+Toni Wahrstätter: state.
+
+16
+00:06:41.150 --> 00:06:46.550
+Toni Wahrstätter: And… I will post this, PR into our chat.
+
+17
+00:06:47.480 --> 00:06:51.060
+Toni Wahrstätter: One second… There it is.
+
+18
+00:06:52.830 --> 00:06:56.329
+Toni Wahrstätter: And I'm curious what clients think about it. So right now.
+
+19
+00:06:56.630 --> 00:07:00.819
+Toni Wahrstätter: What we do is we, in the specs, we now make sure that
+
+20
+00:07:01.220 --> 00:07:14.059
+Toni Wahrstätter: We first check all the static checks, which is memory expansion, access costs, and the transfer costs, and only if they succeed, we go to disk. And the tests showed, like, differences between
+
+21
+00:07:14.210 --> 00:07:21.210
+Toni Wahrstätter: I think it was between, Beso and REF versus Geth. I think Geth did something different there.
+
+22
+00:07:21.520 --> 00:07:29.610
+Toni Wahrstätter: And I wanted to double-check with, clients, if this is something we can agree on, how it's now defined in the EAP.
+
+23
+00:07:51.800 --> 00:07:54.929
+Toni Wahrstätter: I think it only needed changes for GAF, right?
+
+24
+00:07:55.400 --> 00:07:59.039
+Toni Wahrstätter: Is Jared on the call? Maybe Jared,
+
+25
+00:07:59.360 --> 00:08:03.820
+Toni Wahrstätter: Do you have some insights there, or is this something you guys are about to change?
+
+26
+00:08:04.470 --> 00:08:08.130
+Jared Wasinger: I just joined, what, what, what are you talking about here?
+
+27
+00:08:08.130 --> 00:08:19.330
+Toni Wahrstätter: Yeah, it was the topic with the call, so basically, checking all the static gas costs around, memory expansion, access cost and transfer cost before actually doing the state access.
+
+28
+00:08:20.330 --> 00:08:30.459
+Jared Wasinger: Yeah, actually, I'm working on that right now, and I'm hoping I can get the test coverage around that, fixed pretty soon.
+
+29
+00:08:30.480 --> 00:08:44.149
+Jared Wasinger: In fact, I think that there's a possibility that that might be the cause of the chain split that we see when we try to run local DevNets between Geth and Bisu, so,
+
+30
+00:08:44.880 --> 00:08:55.789
+Jared Wasinger: hopefully fixing this also, makes the devnets more stable. But yeah, I'll have an update on that, soon. That's, like, my top priority right now.
+
+31
+00:09:01.520 --> 00:09:11.599
+Toni Wahrstätter: Awesome, thanks a lot. I'm just relaying Stefan's message here in the chat. For memory expansion, Nethermind also has an inconsistency versus Ref and Besu.
+
+32
+00:09:12.070 --> 00:09:17.110
+Toni Wahrstätter: Someone from NetherMind who is already aware of the topic, And Nicole?
+
+33
+00:09:22.480 --> 00:09:25.429
+Marc: Yeah, sorry, what was the question, sorry?
+
+34
+00:09:26.000 --> 00:09:39.289
+Toni Wahrstätter: So it's basically, in the specs so far, it didn't matter that much when you do the state access versus when you do the static checks for memory expansion, access cost, and the transfer cost.
+
+35
+00:09:39.490 --> 00:09:47.809
+Toni Wahrstätter: And what came up during the testing was that, for example, if you have a call that forwards one EV,
+
+36
+00:09:48.020 --> 00:09:52.820
+Toni Wahrstätter: But the account only has… 0.1 EV,
+
+37
+00:09:53.270 --> 00:10:00.970
+Toni Wahrstätter: Then the question is, should the target address that is about to be called, should it be included in the block level access list or not?
+
+38
+00:10:01.410 --> 00:10:13.119
+Toni Wahrstätter: And I think Beso and Rev did not include it, which seemed right, because you can do all the static checks before actually going to disk and actually accessing this account.
+
+39
+00:10:13.960 --> 00:10:18.820
+Toni Wahrstätter: So, it's… So it was probably NetherMind and Kef that
+
+40
+00:10:19.150 --> 00:10:23.330
+Toni Wahrstätter: Had this state access before doing all the static checks.
+
+41
+00:10:25.270 --> 00:10:27.159
+Marc: Right, yeah, I mean, I don't have…
+
+42
+00:10:27.470 --> 00:10:32.629
+Marc: any opinion on it, really? Like, I'm happy to change to what Bessu and Wrath are doing.
+
+43
+00:10:35.730 --> 00:10:36.730
+Toni Wahrstätter: Okay, great.
+
+44
+00:10:37.110 --> 00:10:43.430
+Toni Wahrstätter: Maybe, Belipe, as you're also on the call, is there anything you would add to this topic? Because I…
+
+45
+00:10:43.620 --> 00:10:45.840
+Toni Wahrstätter: We have been…
+
+46
+00:10:46.050 --> 00:10:51.089
+Toni Wahrstätter: Going back and forth in the specs regarding that, so is there anything you'd like to bring up?
+
+47
+00:10:52.770 --> 00:10:53.320
+felipe: to make sure.
+
+48
+00:10:53.320 --> 00:10:54.460
+Toni Wahrstätter: We don't forget.
+
+49
+00:10:56.260 --> 00:11:03.260
+felipe: No, no, I think we covered it. I am a little curious, though, because… We do have…
+
+50
+00:11:03.390 --> 00:11:07.739
+felipe: This is a test, and another mind is… Passing all of them.
+
+51
+00:11:08.570 --> 00:11:16.879
+felipe: So I'm not sure… Stefan, where they have the inconsistency.
+
+52
+00:11:19.260 --> 00:11:25.549
+Stefan Starflinger: That's for memory expansion. I'm not sure if I shared the right link.
+
+53
+00:11:25.790 --> 00:11:33.260
+Stefan Starflinger: When there are different times of, gas accounting, and never mind,
+
+54
+00:11:33.550 --> 00:11:52.330
+Stefan Starflinger: reads the target. I think it's the target. I'm not 100% sure, though, what exactly NetherMind reads before doing the memory expansion gas accounting. The other gas accounting seem to be in line with Bazel and REST, just the memory expansion seems to be a little bit delayed.
+
+55
+00:11:52.650 --> 00:11:58.439
+felipe: Yes. Okay, yeah, you didn't share the right link. This is the PR that you added a test for, and I merged.
+
+56
+00:12:05.080 --> 00:12:06.310
+felipe: I'm pretty sure.
+
+57
+00:12:07.640 --> 00:12:09.300
+felipe: Yes, exactly.
+
+58
+00:12:09.300 --> 00:12:11.020
+Stefan Starflinger: This is… this should be the right order.
+
+59
+00:12:11.190 --> 00:12:12.159
+felipe: You know…
+
+60
+00:12:13.020 --> 00:12:17.219
+Stefan Starflinger: So this is just an inconsistency I found with memory expansion.
+
+61
+00:12:17.470 --> 00:12:29.229
+Stefan Starflinger: I think that's the last thing so far, and then Netherlands should be, aligned. I think you just merged this recently, so it might not be yet in the tests, because I think you have to make a release
+
+62
+00:12:30.300 --> 00:12:31.620
+Stefan Starflinger: I'm not sure if you've done that.
+
+63
+00:12:32.350 --> 00:12:39.449
+felipe: Perfect, yeah, no, I thought we were talking about the, the state access. I remember this one. This is not yet in a release.
+
+64
+00:12:39.700 --> 00:12:43.909
+felipe: We're waiting for… One more PR…
+
+65
+00:12:44.230 --> 00:12:51.899
+felipe: And then we're… I think we're also going to be able to turn on all the old Ethereum tests with BALS, and so…
+
+66
+00:12:52.080 --> 00:12:55.480
+felipe: I'm trying to iron out some of the inconsistencies there.
+
+67
+00:12:56.020 --> 00:13:00.740
+felipe: And then we can get a release out with even more tests.
+
+68
+00:13:01.030 --> 00:13:04.590
+felipe: That we can try to get consensus with all clients on.
+
+69
+00:13:10.840 --> 00:13:17.559
+Toni Wahrstätter: Awesome, this is great to hear. So, it looks like the specs are correct, and the test should also be correct in this case.
+
+70
+00:13:17.990 --> 00:13:24.080
+Toni Wahrstätter: Because then we are basically ready to test all the clients and make sure, we are all aligned.
+
+71
+00:13:25.740 --> 00:13:44.390
+Toni Wahrstätter: Awesome. Is there anything else regarding this topic that we should discuss? It's a very interesting topic, by the way, because it's… it's nothing that broke consensus so far, but can break consensus in the future, because suddenly, like, when do we access state will become part of consensus.
+
+72
+00:13:45.000 --> 00:13:48.720
+Toni Wahrstätter: Is there anything people would like to add to this topic?
+
+73
+00:13:54.430 --> 00:13:58.930
+Ben Adams: Yeah, I think it makes sense, to do the checks.
+
+74
+00:13:59.070 --> 00:14:03.520
+Ben Adams: To bring the checks that might cause it to go out of gas.
+
+75
+00:14:03.790 --> 00:14:07.080
+Ben Adams: Before the state access, because if you're gonna go out of gas.
+
+76
+00:14:07.350 --> 00:14:09.499
+Ben Adams: You know, don't bother accessing the state.
+
+77
+00:14:09.800 --> 00:14:12.540
+Ben Adams: It makes sense from a performance standpoint.
+
+78
+00:14:20.210 --> 00:14:22.639
+Toni Wahrstätter: Yeah. Thanks a lot for that, yeah, I agree.
+
+79
+00:14:22.840 --> 00:14:31.860
+Toni Wahrstätter: Also, a lot of thumbs up here from many people, so… seems like we have a very broad agreement here, regarding this topic, which is great.
+
+80
+00:14:34.690 --> 00:14:39.669
+Toni Wahrstätter: Okay, so then I would suggest we move on to the second agenda item.
+
+81
+00:14:39.780 --> 00:14:45.509
+Toni Wahrstätter: Which is, summarized as storing the block cover access list in the block body.
+
+82
+00:14:45.660 --> 00:14:51.389
+Toni Wahrstätter: Versus not storing them in the block body, plus defining a retention period.
+
+83
+00:14:51.620 --> 00:14:56.720
+Toni Wahrstätter: And there is this comment from Lukash, if you scroll down at the agenda.
+
+84
+00:14:56.860 --> 00:15:02.400
+Toni Wahrstätter: Lukash made a very nice, summary of the pros and cons that each option brings.
+
+85
+00:15:03.020 --> 00:15:08.889
+Toni Wahrstätter: Maybe, Lukash, if you want, do you want to quickly summarize your thoughts there?
+
+86
+00:15:09.390 --> 00:15:14.360
+Łukasz Rozmej: Yeah, so this is basically simplicity versus…
+
+87
+00:15:14.620 --> 00:15:19.290
+Łukasz Rozmej: UX, probably, simplicity of implementation, and of everything.
+
+88
+00:15:19.490 --> 00:15:33.679
+Łukasz Rozmej: So, if we keep the balls in block bodies, we risk… so, we will be generally increasing the gas limit, right? So, we will be increasing block bodies already quite, quite a lot.
+
+89
+00:15:34.000 --> 00:15:44.280
+Łukasz Rozmej: And if we… if we store balls there, we probably risk increasing it at least 50% more,
+
+90
+00:15:44.400 --> 00:15:48.849
+Łukasz Rozmej: Then… than what they would already weigh, and…
+
+91
+00:15:49.020 --> 00:16:00.260
+Łukasz Rozmej: I'm not sure if I trust this number, 50%, you can, Tony, chime in, later about it. I'm, like, my gut feeling is it will be even more than 50%, but…
+
+92
+00:16:00.470 --> 00:16:07.570
+Łukasz Rozmej: that's the number you provided, so I'm… I'm not sure if I trust it, to be honest, but
+
+93
+00:16:08.110 --> 00:16:18.770
+Łukasz Rozmej: That's the problem. Another thing that you basically, for those blocks, keep kind of archived data in the block history, so…
+
+94
+00:16:19.170 --> 00:16:20.990
+Łukasz Rozmej: That seems wasteful for me.
+
+95
+00:16:21.310 --> 00:16:24.429
+Łukasz Rozmej: And…
+
+96
+00:16:25.360 --> 00:16:36.120
+Łukasz Rozmej: If you have an archive node, you probably still need to re-index this data in a different way, so again, this is quite useful for you, so you blow up doubt even more.
+
+97
+00:16:39.850 --> 00:16:50.600
+Łukasz Rozmej: Okay, good point, that balls can be then used to quickly, sync archive node later, so that's a point, to just index this data.
+
+98
+00:16:50.790 --> 00:16:57.710
+Łukasz Rozmej: So that's the pros of kicking balls. So, basically, you get…
+
+99
+00:16:57.830 --> 00:17:03.219
+Łukasz Rozmej: Kind of the best of the both worlds, so pretty fast, tip.
+
+100
+00:17:03.540 --> 00:17:04.780
+Łukasz Rozmej: processing.
+
+101
+00:17:04.930 --> 00:17:09.119
+Łukasz Rozmej: But lower resource footprint.
+
+102
+00:17:09.400 --> 00:17:17.349
+Łukasz Rozmej: But it's… if we do that, it introduces a lot of potential issues, because…
+
+103
+00:17:17.849 --> 00:17:24.739
+Łukasz Rozmej: Things like, do we actually want to sing those balls at all through DevP2P?
+
+104
+00:17:25.880 --> 00:17:35.710
+Łukasz Rozmej: If yes, then we need to create some kind of sub-protocol for it. If not, we can just ignore it.
+
+105
+00:17:37.290 --> 00:17:44.129
+Łukasz Rozmej: What if we don't have balls? We need to have a fallback mechanism of processing blocks if we don't have a ball.
+
+106
+00:17:44.600 --> 00:17:51.390
+Łukasz Rozmej: Which is fine, because we can… we can verify the… ball hash by generating it.
+
+107
+00:17:51.550 --> 00:17:57.590
+Łukasz Rozmej: While processing, but it makes things more complicated, right?
+
+108
+00:17:57.890 --> 00:18:11.209
+Łukasz Rozmej: What else? Potentially, it reduces the speed of doing things like catching up to the head of the chain, or…
+
+109
+00:18:11.330 --> 00:18:15.659
+Łukasz Rozmej: Darpc, for example, right?
+
+110
+00:18:15.940 --> 00:18:19.800
+Łukasz Rozmej: So, there are a lot of drawbacks,
+
+111
+00:18:21.130 --> 00:18:35.689
+Łukasz Rozmej: that we… that this causes. I'm not sure how balls are currently distributed on, on the P2P side, but if they are in the block bodies, they are probably just automatically distributed with blocks.
+
+112
+00:18:35.810 --> 00:18:40.489
+Łukasz Rozmej: If they weren't in the block bodies, it would have to come as a sidecar.
+
+113
+00:18:40.630 --> 00:18:53.589
+Łukasz Rozmej: Which could have potential good and bad, well, bad, it's, again, more complicated, but potentially, maybe it's easier to distribute two things that are…
+
+114
+00:18:54.310 --> 00:19:04.509
+Łukasz Rozmej: Still relatively heavily, both body and ball, rather than just one thing that is heavier, so it might actually, in the end, potentially reduce latency.
+
+115
+00:19:05.010 --> 00:19:19.930
+Łukasz Rozmej: On the P2P side, so… yeah, there's a lot of things to consider, and in my opinion, it should be, like, a conscious decision. To be honest, I was under the impression that we won't do balls in the block bodies, because that was the…
+
+116
+00:19:19.970 --> 00:19:28.639
+Łukasz Rozmej: like, when initially discussed, and I didn't, like, that, that was, like, idea I proposed.
+
+117
+00:19:28.940 --> 00:19:46.150
+Łukasz Rozmej: And then I didn't, like, pay that much attention, sorry guys, to this, because Mark is leading the charge here on the Nethermind… championing the CAP on the Nevermind front, so I recently read it and thought, okay, that…
+
+118
+00:19:46.500 --> 00:20:00.869
+Łukasz Rozmej: I'm not sure this is the best decision. It might be, but I think it needs to be a very conscious decision, what we want to do. So, just throwing this out, are we sure we want to do that?
+
+119
+00:20:00.900 --> 00:20:09.459
+Łukasz Rozmej: Because it's, like, we're increasing the history footprint probably just through increasing the gas limit, let's say, by…
+
+120
+00:20:09.550 --> 00:20:24.629
+Łukasz Rozmej: 3 to 4 times? 5 times, maybe? And then if we add balls to it, we can increase it instead of 4 or 5 times to more around even 10 times. So… do we really want to do it that big?
+
+121
+00:20:24.980 --> 00:20:26.089
+Łukasz Rozmej: That's my question.
+
+122
+00:20:31.280 --> 00:20:33.030
+Toni Wahrstätter: Yeah, thanks a lot for this summary.
+
+123
+00:20:33.240 --> 00:20:39.499
+Toni Wahrstätter: I remember, like, this has been a topic in Berlin, and right after Berlin.
+
+124
+00:20:39.680 --> 00:20:47.389
+Toni Wahrstätter: And as you already said, like, one of the strongest arguments for keeping the blocker access list in the block party was the simplicity.
+
+125
+00:20:49.170 --> 00:21:04.990
+Toni Wahrstätter: So, I remember, like, this was, by the time, the argument, why we ended up putting the ball into the block body, but I can totally see your arguments, and yeah, would be curious if other clients have an opinion on this already today.
+
+126
+00:21:06.920 --> 00:21:12.789
+mark: So, I think from an archive perspective, we're probably gonna just drop the bowels from storage.
+
+127
+00:21:13.210 --> 00:21:17.070
+mark: And the reason for that is we can reconstitute them.
+
+128
+00:21:17.960 --> 00:21:31.780
+mark: Because, effectively, we've already got the access history. We record, you know, we record that anyway, so if we need to reproduce a bowel, it's quite likely we'll just reconstitute it from our…
+
+129
+00:21:32.950 --> 00:21:34.500
+mark: From our access history.
+
+130
+00:21:35.840 --> 00:21:37.539
+mark: Because otherwise, we'll store it twice.
+
+131
+00:21:37.540 --> 00:21:40.420
+Łukasz Rozmej: Will that be on sync?
+
+132
+00:21:40.540 --> 00:21:42.310
+Łukasz Rozmej: Will you reconstitute it on Saint?
+
+133
+00:21:43.740 --> 00:21:50.160
+mark: No, we'll re… well, so here's the question is, is there going to be an RPC call that's basically getting the bow?
+
+134
+00:21:50.160 --> 00:21:54.229
+Łukasz Rozmej: Yeah, give me block body. Like, on the DevP2P.
+
+135
+00:21:54.690 --> 00:21:55.290
+mark: Yeah.
+
+136
+00:21:55.780 --> 00:21:58.060
+mark: Yeah, but that's DevP2P, not RPC.
+
+137
+00:21:58.180 --> 00:21:59.770
+mark: Is there an RPC call?
+
+138
+00:22:03.720 --> 00:22:06.129
+mark: Are people going to want to access the…
+
+139
+00:22:06.500 --> 00:22:10.149
+mark: block bodies historically, via the RPC.
+
+140
+00:22:11.130 --> 00:22:23.339
+Łukasz Rozmej: I think there is a… but I think it's a debug feature to get RLP off the block, and BAL should be there, right? But that's, like, not a normal thing to…
+
+141
+00:22:23.340 --> 00:22:31.810
+mark: Yeah, yeah, well, I'm just saying, that's… from our perspective, that's what we'd be thinking about, is there's a trade-off between storing them and reconstituting them.
+
+142
+00:22:32.140 --> 00:22:35.369
+mark: Because we'll have the information to reconstitute them.
+
+143
+00:22:35.890 --> 00:22:39.580
+mark: And… if…
+
+144
+00:22:39.710 --> 00:22:47.069
+mark: Because re-execution's actually quite cheap, right? Because we do it all the time for our PCs. So we've got this general trade-off that…
+
+145
+00:22:47.630 --> 00:22:52.220
+mark: If it doubles the disk storage, we'll probably drop them.
+
+146
+00:22:52.420 --> 00:22:53.540
+mark: for example.
+
+147
+00:22:54.720 --> 00:22:59.429
+mark: Because once you're keeping them historically, that's quite… that's quite a big disk budget.
+
+148
+00:23:00.880 --> 00:23:01.760
+Łukasz Rozmej: Yeah, exactly.
+
+149
+00:23:03.050 --> 00:23:05.189
+Łukasz Rozmej: Yeah, I think it's not doubling it.
+
+150
+00:23:05.220 --> 00:23:10.960
+Toni Wahrstätter: I think it looks like it's adding, like, 50% on top, but not 100%.
+
+151
+00:23:11.540 --> 00:23:14.400
+Łukasz Rozmej: But, yeah, this might not matter in the internet.
+
+152
+00:23:14.550 --> 00:23:17.540
+Łukasz Rozmej: This is analysis with a current gas limit, right?
+
+153
+00:23:17.740 --> 00:23:18.370
+Łukasz Rozmej: Ehh.
+
+154
+00:23:18.370 --> 00:23:22.710
+Toni Wahrstätter: No, this was already worth $45 million, so I remember, like, back then, at the very.
+
+155
+00:23:22.710 --> 00:23:23.870
+Łukasz Rozmej: At the beginning, we analyzed the.
+
+156
+00:23:23.870 --> 00:23:26.510
+Toni Wahrstätter: 30 million, and there it goes 50%.
+
+157
+00:23:26.510 --> 00:23:37.029
+Łukasz Rozmej: Tony, I don't really care. If we are 10xing the gas limit to around 300 million, that's… analysis is, in my opinion, worthless, because the gas usage pattern might completely change.
+
+158
+00:23:37.580 --> 00:23:55.259
+Toni Wahrstätter: Right, but the ball size should scale sublinearly. So the ball, because it's very well aggregated, it will never scale, super linearly. So if it was 50% extra at 30 million, it cannot become 100% at 300 million. It can only get you, like, 40% on top of it.
+
+159
+00:23:57.330 --> 00:24:04.049
+mark: Yeah, so, just to be clear, that's 40% over the top of the cost of the block with all of its transactions in it.
+
+160
+00:24:05.110 --> 00:24:05.770
+mark: Yeah.
+
+161
+00:24:05.770 --> 00:24:13.310
+Toni Wahrstätter: Yes, and I will actually have to redo this analysis, because I said in the chat, I posted the most recent analysis in the chat.
+
+162
+00:24:13.790 --> 00:24:14.670
+Toni Wahrstätter: But…
+
+163
+00:24:14.780 --> 00:24:18.419
+mark: As you can see there, the bow size is, like.
+
+164
+00:24:18.420 --> 00:24:24.279
+Toni Wahrstätter: 56… Kilobytes compressed, that's the median.
+
+165
+00:24:25.150 --> 00:24:28.949
+Toni Wahrstätter: This was not yet at 60 million, so this was still at 45 million.
+
+166
+00:24:29.490 --> 00:24:36.409
+Toni Wahrstätter: and… I just compared it with this chart that you get when you Google, like, eFroscan block size.
+
+167
+00:24:36.540 --> 00:24:43.250
+Toni Wahrstätter: And the block size there, which only considered the EL payload, was… is currently at around 120.
+
+168
+00:24:43.510 --> 00:24:45.180
+Toni Wahrstätter: plus kilobytes?
+
+169
+00:24:45.700 --> 00:25:00.620
+Toni Wahrstätter: So that's where the 50% are from. But I will definitely double-check that and provide, like, clear numbers so that we know, is it, like, closer to 50%, 100%? But right now, I would assume it's closer to 50%.
+
+170
+00:25:03.390 --> 00:25:09.890
+Toni Wahrstätter: But yeah, I'm not even sure if this changes something in this discussion here, because in the end, it's still, like, significant data.
+
+171
+00:25:11.110 --> 00:25:17.060
+Toni Wahrstätter: So yeah, curious, if we should go for the simple approach, and… Just,
+
+172
+00:25:17.200 --> 00:25:18.810
+Toni Wahrstätter: Keep them in the block party.
+
+173
+00:25:19.140 --> 00:25:22.500
+Toni Wahrstätter: And then drop them, and be able to recompute them.
+
+174
+00:25:27.610 --> 00:25:37.040
+draganrakita: Just to add here, I talked with the red team. Basically, we are supporting from dropping the ball from the block.
+
+175
+00:25:37.840 --> 00:25:44.610
+draganrakita: And for us, it is simpler solution for the ball to not be included in the block, not all the way around.
+
+176
+00:25:45.690 --> 00:25:52.020
+draganrakita: And, yeah, I'm echoing the thing about the database size and complexity on the P2P.
+
+177
+00:25:52.460 --> 00:25:53.370
+draganrakita: So…
+
+178
+00:25:53.790 --> 00:26:03.669
+mark: From red point of view, dropping ball from the block makes a lot of sense, and it's something that we would like to see.
+
+179
+00:26:06.010 --> 00:26:10.480
+mark: I mean, it is a trade-off for syncing, though, so… You know.
+
+180
+00:26:10.970 --> 00:26:13.260
+mark: Because if you're… if you're a syncing node.
+
+181
+00:26:13.580 --> 00:26:16.450
+mark: you probably want the bowels on DevP2P.
+
+182
+00:26:17.670 --> 00:26:18.060
+draganrakita: That's true.
+
+183
+00:26:18.060 --> 00:26:19.310
+mark: I'm… yeah.
+
+184
+00:26:20.050 --> 00:26:25.480
+mark: I'm just pointing out that from our perspective, we've effectively got the same data stored.
+
+185
+00:26:25.840 --> 00:26:30.790
+mark: Because we store… Accesses per transaction in our database.
+
+186
+00:26:31.110 --> 00:26:32.020
+mark: So…
+
+187
+00:26:32.230 --> 00:26:38.359
+mark: We just physically won't store the bowel, we'll reproduce it, because we've got an optimized version of it already.
+
+188
+00:26:39.280 --> 00:26:45.980
+mark: which I'm… I'm point… I'm not… I think we're relatively neutral for that reason, is basically what I'm saying.
+
+189
+00:26:50.390 --> 00:26:59.119
+mark: I think, you know, at an implementation level, we probably won't physically store the bowel in our database, but we will be able to reconstitute it if somebody asks for it.
+
+190
+00:27:02.710 --> 00:27:07.410
+mark: And I would expect anybody who's syncing will want the bow, because it'll speed syncing up.
+
+191
+00:27:08.380 --> 00:27:18.360
+Karim T.: I see a real benefit to have a block access list also during a sync, because, as I said in the chat, if you don't have to replay a block, you don't…
+
+192
+00:27:18.540 --> 00:27:26.589
+Karim T.: have to, to get all of the EVM4 version, so I think it's real benefit. We will not have bulk from the Genesis, but…
+
+193
+00:27:26.700 --> 00:27:33.949
+Karim T.: It's, it's still a good thing to not have to replay all of the block from the ball fork.
+
+194
+00:27:34.220 --> 00:27:43.730
+Łukasz Rozmej: Okay, guys, but what kind of syncing are we talking about? Because if we are getting new payloads, we will be getting the balls with them, right? But do we need them on the FP2P?
+
+195
+00:27:47.160 --> 00:27:50.279
+mark: Yeah, I think it's if you're doing dev P2P recovery.
+
+196
+00:27:51.670 --> 00:27:53.319
+mark: Is what I'm talking about.
+
+197
+00:27:53.590 --> 00:27:57.920
+mark: If you're a… if you're doing a backward download via DevP2P.
+
+198
+00:27:59.240 --> 00:28:01.190
+mark: It's quite useful to have the bowels.
+
+199
+00:28:02.170 --> 00:28:14.499
+Łukasz Rozmej: Okay, but for example, we would have to store them in our, like, especially non-archive nodes. We don't have a way of reproducing them as easily, we don't store the archive node as…
+
+200
+00:28:14.660 --> 00:28:25.410
+Łukasz Rozmej: as Ref and Aragon, so… we cannot guarantee them. If we want to drop them, we drop them, and we can have a retention period.
+
+201
+00:28:25.690 --> 00:28:28.489
+Łukasz Rozmej: But we cannot guarantee to have them.
+
+202
+00:28:33.680 --> 00:28:42.210
+Ben Adams: I mean, for… for syncing, so… so what would… what are the benefits? Say we have a retention period of, like, 256 blocks or something.
+
+203
+00:28:42.640 --> 00:28:49.369
+Ben Adams: What are the benefits of keeping them? So if you snap sync, there's no benefit to them.
+
+204
+00:28:49.560 --> 00:28:57.620
+Jared Wasinger: The benefit is that you don't need to heal, you can just download the range of blocks with access lists, and…
+
+205
+00:28:57.890 --> 00:28:58.800
+Jared Wasinger: Once you…
+
+206
+00:28:58.800 --> 00:28:59.310
+Ben Adams: Dude.
+
+207
+00:28:59.590 --> 00:29:03.169
+Ben Adams: If you've got, like, the last 256, you can't snap-sync.
+
+208
+00:29:03.320 --> 00:29:05.889
+Ben Adams: Further back than that, because you're too far away from the head.
+
+209
+00:29:08.130 --> 00:29:13.699
+Jared Wasinger: Yeah, I guess that's why the retention period would need to be…
+
+210
+00:29:14.620 --> 00:29:19.660
+Jared Wasinger: The suggested retention period would need to be reasonably long, right?
+
+211
+00:29:21.040 --> 00:29:25.439
+Ben Adams: Yeah, but only, like… 256 blocks, or something.
+
+212
+00:29:28.290 --> 00:29:29.860
+Ben Adams: It doesn't need to be.
+
+213
+00:29:30.700 --> 00:29:32.710
+mark: Yeah, that's not very long.
+
+214
+00:29:32.870 --> 00:29:33.680
+mark: Right.
+
+215
+00:29:34.230 --> 00:29:37.500
+Ben Adams: Yeah, because you won't be able to get the steak.
+
+216
+00:29:38.560 --> 00:29:44.810
+Łukasz Rozmej: Well, we should… we should keep them up to finalization barrier, to be honest, right?
+
+217
+00:29:45.640 --> 00:29:46.510
+Łukasz Rozmej: Maybe.
+
+218
+00:29:47.250 --> 00:29:50.779
+Ben Adams: Yeah, but that's even… that's even less. That's, like, 64 blocks.
+
+219
+00:29:50.780 --> 00:29:56.470
+Łukasz Rozmej: Yeah, yeah, but… no, the finalization barrier is, like, can move… Right?
+
+220
+00:29:56.470 --> 00:30:08.239
+draganrakita: How… how can this be enforced on the P2P? We are talking about the limit of the last 10 blocks while the syncing is happening, and we don't exactly know
+
+221
+00:30:09.810 --> 00:30:13.819
+draganrakita: Like, what kind of number are we talking about?
+
+222
+00:30:15.950 --> 00:30:18.730
+Ben Adams: Okay, well, hey, say a week.
+
+223
+00:30:20.340 --> 00:30:22.869
+Ben Adams: I'm just beyond that.
+
+224
+00:30:23.190 --> 00:30:26.350
+Ben Adams: Period. Is there any benefit?
+
+225
+00:30:27.000 --> 00:30:30.330
+Ben Adams: I mean, I can see an archive node, yes, but…
+
+226
+00:30:31.580 --> 00:30:32.290
+draganrakita: We don't need it.
+
+227
+00:30:32.290 --> 00:30:33.920
+Ben Adams: So they're quite rare, they're quite rare.
+
+228
+00:30:34.590 --> 00:30:39.900
+draganrakita: From Brett's side, we don't want Bolt to be transmitted over P2P.
+
+229
+00:30:40.150 --> 00:30:43.680
+draganrakita: You're just fine having it in engine, and that's it.
+
+230
+00:30:43.680 --> 00:30:48.590
+Łukasz Rozmej: So, so there are… there are other things, right? So, if we are definitely, like.
+
+231
+00:30:49.130 --> 00:30:55.489
+Łukasz Rozmej: Our node hanged, we are restarting it, we are several thousand or 10,000 blocks behind.
+
+232
+00:30:55.670 --> 00:31:00.920
+Łukasz Rozmej: Then, when we… okay, we won't get that from new payloads, probably.
+
+233
+00:31:02.870 --> 00:31:10.280
+Łukasz Rozmej: So we need to go through… DevP2P, probably, right? So we are getting the blocks. Now, the blocks are very big.
+
+234
+00:31:10.910 --> 00:31:23.929
+Łukasz Rozmej: So, if we are single-threadly just replaying them, it might take quite a long time to catch up, right? So that's without balls, right? So that's a problem, potentially.
+
+235
+00:31:24.200 --> 00:31:32.460
+Łukasz Rozmej: That the catching up process will be way slower. If we don't have a ball, and we need to reprocess something, it is way slower.
+
+236
+00:31:34.300 --> 00:31:42.490
+Łukasz Rozmej: Another problem is that how the balls will be now distributed. If they are going as a CL sidecar, this is now a CL change.
+
+237
+00:31:42.620 --> 00:31:55.880
+Łukasz Rozmej: And we need to involve more CL devs into prototyping that, into speccing that, and it increases complexity on their side. So generally, it increases complexity a lot, if we… if we drop the balls.
+
+238
+00:31:55.990 --> 00:31:58.100
+Łukasz Rozmej: But… yeah.
+
+239
+00:31:58.200 --> 00:31:59.300
+Łukasz Rozmej: That's kind of it.
+
+240
+00:32:00.790 --> 00:32:04.820
+Ben Adams: But we can… we can delete them from… From the block itself.
+
+241
+00:32:05.080 --> 00:32:07.800
+Ben Adams: And change the… RPL.
+
+242
+00:32:10.720 --> 00:32:13.340
+Łukasz Rozmej: Not sure if I understood.
+
+243
+00:32:14.100 --> 00:32:21.649
+Ben Adams: Well, the… as I understand it, we're not… we're not, generating a hash multiple times. We're not…
+
+244
+00:32:22.110 --> 00:32:26.320
+Ben Adams: You've got the bowel hash, which is the hash of the bell, and the header, but then you're not…
+
+245
+00:32:26.500 --> 00:32:30.329
+Ben Adams: You're not rehashing the entire block to get a block hash.
+
+246
+00:32:30.970 --> 00:32:34.539
+Ben Adams: You know what I mean, it's the sum of all the hash… it's the hash of all the hashes.
+
+247
+00:32:34.750 --> 00:32:38.029
+Ben Adams: So, you can just erase it from the lock at some point.
+
+248
+00:32:38.030 --> 00:32:39.970
+Łukasz Rozmej: Oh, okay, yeah, you could, you could.
+
+249
+00:32:40.100 --> 00:32:48.319
+Łukasz Rozmej: Okay, so maybe it comes from… okay, so we now have, like, a storage and networking part, but that would kind of…
+
+250
+00:32:49.660 --> 00:32:55.570
+draganrakita: Doesn't… couldn't ball, like, behave something like sidecar?
+
+251
+00:32:56.210 --> 00:32:59.689
+draganrakita: I'm not exactly sure about CL details there.
+
+252
+00:32:59.900 --> 00:33:05.010
+draganrakita: That shouldn't be acted like sidecars, the blobs are currently… done.
+
+253
+00:33:05.220 --> 00:33:06.260
+mark: Yeah, so…
+
+254
+00:33:07.570 --> 00:33:13.690
+mark: I guess the question is, are you talking about dropping them from the EL, or dropping them from the EL and the seal?
+
+255
+00:33:17.050 --> 00:33:20.259
+Ben Adams: Because the CL has the EL block as…
+
+256
+00:33:20.260 --> 00:33:21.810
+mark: Yeah, yeah, yeah, yeah.
+
+257
+00:33:23.640 --> 00:33:26.030
+draganrakita: CL will still need to have them.
+
+258
+00:33:29.250 --> 00:33:31.859
+Łukasz Rozmej: I would drop in both, because…
+
+259
+00:33:31.860 --> 00:33:32.790
+mark: Yeah, but is it…
+
+260
+00:33:32.790 --> 00:33:36.980
+draganrakita: Maybe. I'm not sure, I'm not sure… maybe not, my comment's not good.
+
+261
+00:33:43.720 --> 00:33:47.910
+mark: Yeah, because I… well, sorry, I'm just thinking this through now from a…
+
+262
+00:33:48.300 --> 00:33:56.809
+mark: Kaplan archive node, it'll have… so we might drop them from the Aragon archive, but end up having to keep them in the,
+
+263
+00:33:57.250 --> 00:34:00.320
+mark: In the… in the CL archive.
+
+264
+00:34:00.430 --> 00:34:01.670
+mark: Which is interesting.
+
+265
+00:34:05.330 --> 00:34:14.410
+Ben Adams: How… how much do CLs outside of archives normally keep? I mean, do they keep all the box forever?
+
+266
+00:34:15.440 --> 00:34:17.630
+mark: I don't know that… yeah, that's a good question.
+
+267
+00:34:20.929 --> 00:34:23.489
+Ben Adams: Well, do they already have something like Full Force?
+
+268
+00:34:32.179 --> 00:34:34.030
+mark: Well, I guess that's a question we should ask.
+
+269
+00:34:34.170 --> 00:34:36.780
+mark: So I… I don't know, because basically.
+
+270
+00:34:37.830 --> 00:34:42.069
+mark: how our use case is archiving, and I think we just keep everything.
+
+271
+00:34:42.250 --> 00:34:45.489
+mark: So… I'm not sure what everybody else does.
+
+272
+00:34:52.000 --> 00:34:55.679
+Ben Adams: Because I know they do the, checkpoint sync, then.
+
+273
+00:35:00.730 --> 00:35:04.760
+Ben Adams: But I don't know, beyond that, what they do with their books.
+
+274
+00:35:06.800 --> 00:35:21.170
+Łukasz Rozmej: But if CLs keep it, we are definitely more than 10x-ing the storage requirements, and even if we have a retention period of 44s, like, half a year or something, that still will be quite a big amount.
+
+275
+00:35:27.830 --> 00:35:31.789
+mark: Yeah, so I think it's an open question. You need to check with the CL devs.
+
+276
+00:35:32.620 --> 00:35:34.939
+mark: I mean, they might not have even thought about it yet.
+
+277
+00:35:37.630 --> 00:35:42.030
+Łukasz Rozmej: Anyone from Bezu or GeF want to chime in? I'm not sure if anyone here…
+
+278
+00:35:46.120 --> 00:35:49.680
+Karim T.: In Bezos' side, I think we need,
+
+279
+00:35:50.590 --> 00:35:53.619
+Karim T.: A minimum amount of block accesses for SnapSync.
+
+280
+00:35:55.490 --> 00:36:00.550
+Karim T.: as I said, I see some benefit to have block access… all of the block accessories, but…
+
+281
+00:36:00.750 --> 00:36:02.699
+Karim T.: It's increasing the size.
+
+282
+00:36:03.220 --> 00:36:23.050
+Łukasz Rozmej: So, for SnapSync, I don't see this as a problem, because I expect block access lists will be coming through new payloads, right? So you get a new payload, you start snap syncing from that new payload as your pivot for snap syncing, and you can accumulate all those balls, or apply them on the fly while you snap sync.
+
+283
+00:36:23.130 --> 00:36:30.190
+Łukasz Rozmej: And then you finish SnapSync, you go to the healing, verify you have everything or not, and be done, right? So…
+
+284
+00:36:30.190 --> 00:36:34.690
+Karim T.: If you don't have everything, you need to find a way to retrieve what is missing.
+
+285
+00:36:35.290 --> 00:36:36.920
+Łukasz Rozmej: If you don't have what?
+
+286
+00:36:37.220 --> 00:36:38.859
+Karim T.: If you don't have everything.
+
+287
+00:36:39.140 --> 00:36:40.089
+Karim T.: Who you guys?
+
+288
+00:36:40.090 --> 00:36:42.689
+Łukasz Rozmej: That would be normal healing, right? That would be normal healing.
+
+289
+00:36:43.290 --> 00:36:43.920
+Karim T.: Hmm.
+
+290
+00:36:44.360 --> 00:36:50.150
+Łukasz Rozmej: But you generally should have everything, unless your CL didn't send you the new payloads, right?
+
+291
+00:36:50.330 --> 00:36:51.450
+Łukasz Rozmej: At some point.
+
+292
+00:36:51.980 --> 00:36:55.520
+Łukasz Rozmej: Because that's how you will get Baal on the…
+
+293
+00:36:56.080 --> 00:37:01.760
+Łukasz Rozmej: train tip, and during the snap sync, you are following the train tip and repivoting, so…
+
+294
+00:37:02.080 --> 00:37:06.920
+Łukasz Rozmej: I don't see this as a problem for SnapSync, right? It can be…
+
+295
+00:37:06.920 --> 00:37:11.680
+Jared Wasinger: We're back… How far back will the CL give you new payloads?
+
+296
+00:37:12.130 --> 00:37:17.479
+Jared Wasinger: Like, if you… if you stop your EL node and then reconnect to the CL.
+
+297
+00:37:18.250 --> 00:37:22.700
+Łukasz Rozmej: So, if we stop EL node, we generally restart SnapSync from scratch.
+
+298
+00:37:23.480 --> 00:37:25.899
+Karim T.: At least that would never mind us, I don't think…
+
+299
+00:37:25.900 --> 00:37:26.900
+Jared Wasinger: Yeah, but I mean…
+
+300
+00:37:27.890 --> 00:37:28.850
+Łukasz Rozmej: Mbezu, okay.
+
+301
+00:37:28.850 --> 00:37:29.390
+Karim T.: No.
+
+302
+00:37:31.660 --> 00:37:37.200
+Jared Wasinger: Yeah, I guess I'm wondering, like, if there's a lapse in the… like, will the…
+
+303
+00:37:37.860 --> 00:37:42.759
+Jared Wasinger: Will the CL node give you new payloads for, like.
+
+304
+00:37:42.760 --> 00:37:53.160
+Łukasz Rozmej: Yeah, I don't know, but generally, if it doesn't, for some relatively small amount period of time, the healing at the end of SnapSync should just handle it, right?
+
+305
+00:37:53.400 --> 00:37:53.820
+Karim T.: Yeah, but…
+
+306
+00:37:53.820 --> 00:37:56.690
+Łukasz Rozmej: There will be a problem if that's a big period of time.
+
+307
+00:37:56.690 --> 00:38:09.190
+Karim T.: For Bezoo, it will change significantly, because, for example, we have a healing of the tree that is general fast, but we have the flat dB healing that can take more times.
+
+308
+00:38:09.230 --> 00:38:17.120
+Karim T.: several hours, so if we have block access lists, it could be really fast. If we are just missing one block access list, we'll have to do a…
+
+309
+00:38:17.180 --> 00:38:26.449
+Karim T.: old healing version, and it will take a lot of time. So it will be a huge difference, just for example, because we are missing one block access list.
+
+310
+00:38:26.800 --> 00:38:34.169
+Łukasz Rozmej: Hey, but we could have then a retention period in ELs of, let's say, a day of block access list, and that should be…
+
+311
+00:38:34.810 --> 00:38:35.540
+Łukasz Rozmej: Fine.
+
+312
+00:38:36.180 --> 00:38:41.450
+Karim T.: Yeah, if we have this minimum retention, and we have a way to retrieve that, yeah, it should be okay.
+
+313
+00:38:43.140 --> 00:38:45.729
+Jared Wasinger: So, I guess from Gat's side,
+
+314
+00:38:45.840 --> 00:38:50.410
+Jared Wasinger: we, like, I voiced before that we want…
+
+315
+00:38:51.780 --> 00:39:01.980
+Jared Wasinger: We would be in favor of some retention period that enables a reasonable probability of… of, of… of…
+
+316
+00:39:02.170 --> 00:39:20.330
+Jared Wasinger: successfully syncing and using the BALs to heal without, needing the heal phase, and also, I think, like, if we're gonna scale the gas limit to hundreds and hundreds of millions, it… there's… like, the healing phase could become a bottleneck there, so…
+
+317
+00:39:20.390 --> 00:39:29.670
+Jared Wasinger: keeping… so, using BALs as an avenue to, sort of, address this…
+
+318
+00:39:30.260 --> 00:39:36.319
+Jared Wasinger: scaling bottleneck with the syncing is important, I think. So, I mean, we…
+
+319
+00:39:37.110 --> 00:39:46.610
+Jared Wasinger: we would like them… well, I say we, but it's mostly just me. I think they should be, retained for some period of time, and also transmitted.
+
+320
+00:39:47.460 --> 00:39:49.550
+Jared Wasinger: over DevP2P.
+
+321
+00:39:50.670 --> 00:39:58.000
+Karim T.: I see also, but maybe it will be okay with a genu pod, but for example, if you stop your node and you restart your node after sometimes.
+
+322
+00:39:58.230 --> 00:40:04.789
+Karim T.: Instead of doing, backwarding and executing everything, you can also use block accesses to reach the head.
+
+323
+00:40:05.670 --> 00:40:09.650
+Karim T.: But maybe in this case, we'll have a genu pair outside. It'll be okay.
+
+324
+00:40:11.510 --> 00:40:17.639
+Jared Wasinger: Yeah, I think… I think that, my…
+
+325
+00:40:17.750 --> 00:40:24.000
+Jared Wasinger: like, what I envision the retention period being, like, sort of tuned for is, like, the…
+
+326
+00:40:25.600 --> 00:40:34.310
+Jared Wasinger: To capture enough, portion of the cases where maybe people, like, have some kind of a network event that prevents them from
+
+327
+00:40:34.470 --> 00:40:36.580
+Jared Wasinger: sinking… I… I…
+
+328
+00:40:36.690 --> 00:40:42.709
+Jared Wasinger: I think there's always gonna be… if we have a retention period at all, there's always gonna be a case where somebody
+
+329
+00:40:43.000 --> 00:40:46.869
+Jared Wasinger: Turns off their node, it powers it back on, and they're kind of…
+
+330
+00:40:47.010 --> 00:40:53.040
+Jared Wasinger: out of luck, because they're just too far behind the chain, and they would need to restart the SnapSync, but…
+
+331
+00:40:55.820 --> 00:40:59.980
+Karim T.: And also, yeah, backward sync, it's using P2P, so…
+
+332
+00:41:00.300 --> 00:41:07.569
+Karim T.: Yeah, it would be nice, for example, in order to sync, when you restart your node, having this block access list.
+
+333
+00:41:09.950 --> 00:41:15.370
+Łukasz Rozmej: One downside of this is actually, I think the complexity increases
+
+334
+00:41:15.810 --> 00:41:19.569
+Łukasz Rozmej: Quite substantially, and this might be…
+
+335
+00:41:21.500 --> 00:41:24.720
+Łukasz Rozmej: Not sure if I would say delaying, because we don't have,
+
+336
+00:41:25.100 --> 00:41:32.739
+Łukasz Rozmej: Time, but require more effort, and potentially, delivering the forks slower.
+
+337
+00:41:35.540 --> 00:41:43.249
+Jared Wasinger: I mean, are you saying that implementing the… the… The replacement for the…
+
+338
+00:41:43.600 --> 00:41:47.409
+Jared Wasinger: healing phase in addition to the… yeah, okay, so…
+
+339
+00:41:48.810 --> 00:42:01.170
+Łukasz Rozmej: Yeah, like, just handling all the cases of baclovastasis available, not available, having some retention period, having, the FP2P that might transmit them, might not transmit them.
+
+340
+00:42:01.170 --> 00:42:11.940
+Łukasz Rozmej: Having CLs potentially having a sidecar for them, right? It's complexity over complexity over complexity, having a way of process blocks with and without them.
+
+341
+00:42:12.080 --> 00:42:17.100
+Łukasz Rozmej: Potentially might be needed, so… a lot of complexity, right?
+
+342
+00:42:17.900 --> 00:42:32.140
+Jared Wasinger: Yeah, for sure. I think whatever we decide on, I mean, because we can always… if we could create a… if we could figure out a way to avoid ballooning the complexity of the current EIP further, and then kind of push the…
+
+343
+00:42:32.470 --> 00:42:34.269
+Jared Wasinger: The question of…
+
+344
+00:42:36.840 --> 00:42:47.990
+Jared Wasinger: Yeah, I mean, I think we should go with whatever the simplest option right now that keeps the future open for potentially replacing SnapSync.
+
+345
+00:42:48.900 --> 00:42:54.100
+Karim T.: Yeah, I think it's more, just to define if you want to keep block access lists
+
+346
+00:42:54.250 --> 00:42:57.920
+Karim T.: During a specific window, and after each client.
+
+347
+00:42:58.050 --> 00:43:13.199
+Karim T.: will do what they want. If they want to use this block access list to implement new features, new optimization, but it's not really related to the fork, we can have just the block access list consensus to say, okay, we are keeping block access list during a window.
+
+348
+00:43:13.370 --> 00:43:20.050
+Karim T.: a specific window, and after, client can add more optimization later, etc, so we are just…
+
+349
+00:43:20.200 --> 00:43:24.009
+Karim T.: Opening the door to more optimization and features, but…
+
+350
+00:43:24.240 --> 00:43:28.430
+Karim T.: I don't think it will delay, the… the fork.
+
+351
+00:43:28.890 --> 00:43:32.679
+Łukasz Rozmej: Well, the second thing is how it should be, you know…
+
+352
+00:43:33.090 --> 00:43:41.830
+Łukasz Rozmej: transmitted, right? Should it be with block bodies, like it is now, or should it be as a sidecar? And that complicates the CL site, right?
+
+353
+00:43:51.750 --> 00:43:59.210
+Ben Adams: We probably should just follow up with CLs and see what their… Retention on boxes.
+
+354
+00:43:59.450 --> 00:44:05.220
+Ben Adams: That was… Rather than having them trying to understand the EL payload.
+
+355
+00:44:06.440 --> 00:44:11.340
+Ben Adams: Cause if we… if we expire them in… block.
+
+356
+00:44:11.710 --> 00:44:17.429
+Ben Adams: Say, after some… some time, the… if the CL… Just keeping that.
+
+357
+00:44:17.990 --> 00:44:18.880
+Ben Adams: Forever.
+
+358
+00:44:19.030 --> 00:44:19.790
+Ben Adams: Ben.
+
+359
+00:44:20.340 --> 00:44:22.160
+Ben Adams: Yeah, it doesn't completely solve growth.
+
+360
+00:44:27.030 --> 00:44:29.380
+Toni Wahrstätter: Mmm… Dragon, you have your hand up?
+
+361
+00:44:29.630 --> 00:44:39.590
+draganrakita: Yeah, just wanted to add, if the ballots are needed for the snap sync, maybe adding the additional endpoint to the snap sync protocol is maybe way forward.
+
+362
+00:44:40.390 --> 00:44:44.710
+draganrakita: It can be like, get me the ball of this block hash.
+
+363
+00:44:47.090 --> 00:44:50.880
+draganrakita: Because what I'm hearing is, this…
+
+364
+00:44:51.300 --> 00:44:54.079
+draganrakita: It's mostly needed for those snap syncing.
+
+365
+00:44:54.880 --> 00:45:02.899
+draganrakita: Or the best use case for the ball that people want to use it is for the snap singing, or recovery from snap singing.
+
+366
+00:45:15.360 --> 00:45:16.240
+Toni Wahrstätter: Okay.
+
+367
+00:45:16.410 --> 00:45:22.050
+Toni Wahrstätter: And let me just quickly summarize what we just discussed. So it feels like,
+
+368
+00:45:22.190 --> 00:45:32.330
+Toni Wahrstätter: the status quo will just stay the same for now. We will keep the block lab access system, the block body, and the main argument is the simplicity it comes with.
+
+369
+00:45:32.440 --> 00:45:42.469
+Toni Wahrstätter: Because removing it from the block body would mean… would mean, like, all the things that Lucas, just iterated on, like defining retention periods.
+
+370
+00:45:42.740 --> 00:45:47.600
+Toni Wahrstätter: Having different paths for what to do if the ball is there or not.
+
+371
+00:45:48.270 --> 00:45:55.219
+Toni Wahrstätter: And then we will also check with, the CEOs what their opinion is on the topic, but of course, we should
+
+372
+00:45:55.490 --> 00:46:00.860
+Toni Wahrstätter: like, the CL side of this work will already be quite big and quite complex, so…
+
+373
+00:46:01.180 --> 00:46:03.770
+Toni Wahrstätter: If there is a way.
+
+374
+00:46:03.920 --> 00:46:14.739
+Toni Wahrstätter: of course, must be efficient, but if there is a way that we don't need to create new sidecasts for the CL, it will definitely be beneficial for Glamstadom.
+
+375
+00:46:15.400 --> 00:46:16.360
+Toni Wahrstätter: You effin'?
+
+376
+00:46:18.210 --> 00:46:23.229
+Ben Adams: Yeah, I just think, one thing to check with CLs is what their
+
+377
+00:46:23.480 --> 00:46:29.860
+Ben Adams: retention period on blocks is… is it forever? Or do they have, like, a mechanism to expire?
+
+378
+00:46:31.490 --> 00:46:37.790
+Ben Adams: But I do think if we keep the bells, then it's going to cause more pressure to bring up
+
+379
+00:46:38.300 --> 00:46:45.550
+Ben Adams: The 4-4's expiry time, so… Have… have blocks expiring much faster.
+
+380
+00:46:45.710 --> 00:46:47.349
+Łukasz Rozmej: think regardless.
+
+381
+00:46:47.950 --> 00:46:54.280
+Łukasz Rozmej: It will. This would be a very, pressure on… for Force.
+
+382
+00:46:54.970 --> 00:46:57.630
+Łukasz Rozmej: If we want to increase the gas limit a lot.
+
+383
+00:46:59.420 --> 00:47:06.990
+mark: Yeah, so I guess the question is, given the current 4-4's retention period, what's the…
+
+384
+00:47:07.170 --> 00:47:11.379
+mark: What's the, you know, how much more disk, in practice, do you end up needing?
+
+385
+00:47:12.140 --> 00:47:18.049
+mark: Right, if it's… you're saying it's 40% of the current blocks? It potentially is?
+
+386
+00:47:19.790 --> 00:47:25.330
+Toni Wahrstätter: Yeah, might be an optimistic guess, so if you want to be pessimistic, I would do with a 50%.
+
+387
+00:47:26.820 --> 00:47:37.969
+Łukasz Rozmej: Yeah, it would be good to have some kind of calculations with different block gas limits, right? What kind of things you need for, and what's the expected growth for…
+
+388
+00:47:38.450 --> 00:47:46.080
+Łukasz Rozmej: What, 100 megahs and… 200, 300, right? And just… Showing that.
+
+389
+00:47:46.210 --> 00:47:49.499
+Łukasz Rozmej: Because… The numbers might be huge.
+
+390
+00:47:51.040 --> 00:47:52.309
+mark: That's the simplest…
+
+391
+00:47:52.940 --> 00:47:54.239
+Toni Wahrstätter: Yeah, go ahead, Mark.
+
+392
+00:47:54.240 --> 00:47:57.439
+mark: I was gonna say, the simplest way of dealing with it is just to
+
+393
+00:47:57.590 --> 00:48:07.709
+mark: say, after bowels, there's a shorter retention period. I'm just thinking in terms of managing the EIP, because it does sound like there's a lot of work if you start… if we start dropping things now.
+
+394
+00:48:10.520 --> 00:48:14.970
+mark: Whereas, by keeping things, we're just, like, punting the problem.
+
+395
+00:48:15.570 --> 00:48:16.550
+mark: Basically.
+
+396
+00:48:19.430 --> 00:48:22.630
+Ben Adams: I assume it would just… just… rather than…
+
+397
+00:48:22.660 --> 00:48:23.340
+mark: Expiring.
+
+398
+00:48:23.340 --> 00:48:27.129
+Ben Adams: thing would be just to say the bells can be optional.
+
+399
+00:48:28.980 --> 00:48:30.580
+mark: That's true.
+
+400
+00:48:37.420 --> 00:48:39.949
+mark: Yeah, and in practice, that's optional across…
+
+401
+00:48:40.800 --> 00:48:48.389
+mark: dev P2P, right? Because that's the use case that you'd be using them, is when you're syncing them. When you're syncing, you may or may not get BALs.
+
+402
+00:48:49.260 --> 00:48:52.170
+mark: And then if you don't get a bow, you're just gonna have to do a full.
+
+403
+00:48:52.330 --> 00:48:53.460
+mark: execution.
+
+404
+00:48:58.830 --> 00:49:01.649
+Karim T.: Not adding complexity in this case, because we…
+
+405
+00:49:03.120 --> 00:49:06.849
+Karim T.: We need to manage to kind of, sync, depending on
+
+406
+00:49:07.670 --> 00:49:10.310
+Karim T.: If we have block X, this is all not swoopy-tookie.
+
+407
+00:49:11.300 --> 00:49:12.370
+mark: That is true, yeah.
+
+408
+00:49:13.750 --> 00:49:19.240
+Ben Adams: Yeah, but you still need the capability to execute a… execute a block anyway.
+
+409
+00:49:24.590 --> 00:49:29.950
+Ben Adams: Unless you're just ignoring processing and flying bells in the… in the main…
+
+410
+00:49:34.160 --> 00:49:35.979
+Ben Adams: new form of ZK.
+
+411
+00:49:37.950 --> 00:49:39.830
+mark: Yeah.
+
+412
+00:49:42.050 --> 00:49:46.400
+mark: Yeah, then you keep the bell and drop the… drop the… drop the transactions.
+
+413
+00:49:56.340 --> 00:50:08.080
+mark: I mean, to some extent, that's a reason for… for not doing anything at the moment, till it's kind of… you let it bed in, because you… you could theoretically end up with a set of… a class of nodes that just… just want the bowels.
+
+414
+00:50:08.540 --> 00:50:10.340
+mark: They don't care about the transactions.
+
+415
+00:50:13.440 --> 00:50:17.849
+Karim T.: But technically, yes, you need to equal translation just to validate the block, but
+
+416
+00:50:17.960 --> 00:50:21.399
+Karim T.: In all of the other cases, you can just use block access list.
+
+417
+00:50:23.420 --> 00:50:31.160
+Łukasz Rozmej: What are the case… what are the other cases? Well, you can probably assume beyond finalization barrier, you don't need to execute the block.
+
+418
+00:50:31.450 --> 00:50:35.229
+Karim T.: Now, before all of the block,
+
+419
+00:50:35.730 --> 00:50:38.640
+Karim T.: Before the… after the finalization, I'm saying.
+
+420
+00:50:40.200 --> 00:50:48.560
+Karim T.: So, yeah, as I said, backward sync, all of the sync, so when you need to reach the head, reach the last finalized block.
+
+421
+00:50:49.200 --> 00:50:53.779
+Karim T.: So… as I said, archive node, or something like that.
+
+422
+00:51:00.280 --> 00:51:05.709
+mark: Yeah, so as I was saying, I think archive nodes need to just store the data anyway, but they're a special case.
+
+423
+00:51:11.710 --> 00:51:17.130
+Łukasz Rozmej: The archive node requirements after increasing gas limit to 300 or something will be…
+
+424
+00:51:17.640 --> 00:51:23.239
+mark: Yeah, yeah, that's the problem. Yeah, yeah. So, I mean, there's a bigger problem here, is once you've got a massive,
+
+425
+00:51:23.360 --> 00:51:26.429
+mark: Once you… once we've got more states.
+
+426
+00:51:26.920 --> 00:51:37.799
+mark: I think, you know, it's part of what we're thinking about is what does an archive node look like after this? And it will get to a point where it's impossible, you know, it's virtually impossible to have
+
+427
+00:51:37.970 --> 00:51:42.199
+mark: You need an archive virtualized in order to support the data growth.
+
+428
+00:51:43.700 --> 00:51:44.550
+mark: Hmm.
+
+429
+00:51:44.550 --> 00:51:46.649
+Łukasz Rozmej: Whatever that means.
+
+430
+00:51:46.650 --> 00:51:48.819
+mark: It means you're not storing everything on one machine.
+
+431
+00:51:49.180 --> 00:51:50.450
+Łukasz Rozmej: Okay, okay, so this…
+
+432
+00:51:50.450 --> 00:51:50.909
+mark: you get to that.
+
+433
+00:51:50.910 --> 00:51:51.550
+Łukasz Rozmej: Okay.
+
+434
+00:51:51.550 --> 00:51:53.150
+mark: Yeah, distributed archive, yeah.
+
+435
+00:51:54.850 --> 00:51:58.619
+mark: I think is where… I mean, I just think that's where we're gonna end up, basically.
+
+436
+00:52:00.340 --> 00:52:03.129
+Łukasz Rozmej: But the latency would be really bad.
+
+437
+00:52:04.080 --> 00:52:06.340
+mark: It depends on your…
+
+438
+00:52:06.660 --> 00:52:13.240
+mark: Yeah, so that's the… that's the… that's the design space. It's like, can you… can you…
+
+439
+00:52:13.860 --> 00:52:21.050
+mark: can you end up with an archive node where you can dis… I mean, it's a bit like… it's a version of the stateless client problem.
+
+440
+00:52:21.230 --> 00:52:27.480
+mark: Right? Because you've got… You've got network latency, not just this latency, to take into account.
+
+441
+00:52:31.610 --> 00:52:33.120
+mark: But, yeah.
+
+442
+00:52:34.010 --> 00:52:42.640
+Toni Wahrstätter: So, do we agree that we keep the balls as is for now? Or… Yeah, Ben?
+
+443
+00:52:42.930 --> 00:52:51.700
+Ben Adams: Yeah, I think… I think the summary, since there's… there's a couple extra use cases, like, you might want to drop the transactions, keep the valve.
+
+444
+00:52:52.140 --> 00:52:59.540
+Ben Adams: Then… Yeah, it might be better to not make the perfect the enemy of the good.
+
+445
+00:52:59.940 --> 00:53:05.640
+Ben Adams: keep them in the… in the blocks for now, and then revisit in a… in another EIP.
+
+446
+00:53:05.820 --> 00:53:08.459
+Ben Adams: When we see how everything plays out.
+
+447
+00:53:09.150 --> 00:53:19.179
+Toni Wahrstätter: Yeah, this is my feeling, too. And just, to answer the question from Jagan in the chat, like, what is the as-is case? It's keeping the block of access list in the block body.
+
+448
+00:53:19.540 --> 00:53:21.600
+Toni Wahrstätter: And not having them as a sidecurve.
+
+449
+00:53:23.250 --> 00:53:35.039
+Łukasz Rozmej: So, my gut feeling is that we need a better analysis on numbers, and come back with numbers, and then see how many people yell at us that this is unacceptable numbers.
+
+450
+00:53:35.780 --> 00:53:37.380
+Łukasz Rozmej: In terms of storage growth.
+
+451
+00:53:37.910 --> 00:53:40.660
+draganrakita: How would that affect P2P?
+
+452
+00:53:40.860 --> 00:53:43.270
+draganrakita: Or database, or painting.
+
+453
+00:53:47.900 --> 00:53:50.470
+Łukasz Rozmej: Well, everything will bloat, right, by the size of the bone.
+
+454
+00:53:51.230 --> 00:53:52.779
+draganrakita: That's what I'm saying.
+
+455
+00:53:53.710 --> 00:53:54.989
+Łukasz Rozmej: That's the current design.
+
+456
+00:53:58.030 --> 00:54:00.110
+draganrakita: That's not that great.
+
+457
+00:54:00.300 --> 00:54:02.829
+Łukasz Rozmej: Yes, exactly, that's why I brought it up.
+
+458
+00:54:03.590 --> 00:54:06.500
+draganrakita: Yeah, yeah, I know. I, I, basically, my…
+
+459
+00:54:07.450 --> 00:54:16.399
+draganrakita: Cleased my mind from the Berlin, interrupt that we did, we decided that the ball was going to be dropped, and I had that mindset from that time.
+
+460
+00:54:18.040 --> 00:54:22.810
+draganrakita: So, yeah, I'm not sure if it's a good decision to… like…
+
+461
+00:54:24.430 --> 00:54:26.700
+draganrakita: To have balls inside the block body.
+
+462
+00:54:27.270 --> 00:54:40.280
+Łukasz Rozmej: So, in my opinion, we should postpone decision by a few weeks, gather more data, gather more projections, talk with more people, talk with CL people, what do they think, talk with,
+
+463
+00:54:40.710 --> 00:54:50.880
+Łukasz Rozmej: people that are more focused on… other parts of scaling, too, like, lusanskar here, probably…
+
+464
+00:54:51.210 --> 00:54:54.159
+Łukasz Rozmej: Not… what does he think about it?
+
+465
+00:54:55.390 --> 00:55:05.930
+Łukasz Rozmej: Yeah, talk with Ansgard, talk with, maybe some, also, other people that think about storage. Not sure if there are other people that are outside of this…
+
+466
+00:55:06.080 --> 00:55:10.080
+Łukasz Rozmej: Outside of this meeting that are focused on storage that much.
+
+467
+00:55:11.010 --> 00:55:13.070
+Łukasz Rozmej: But get also sections.
+
+468
+00:55:14.140 --> 00:55:22.050
+draganrakita: In general, the feel that I get from this call is that it's this useful for the snap syncing, or the syncing on the tip.
+
+469
+00:55:22.240 --> 00:55:27.179
+draganrakita: But I think it's not worth it, because it will blow up the database.
+
+470
+00:55:28.160 --> 00:55:28.870
+mark: 100.
+
+471
+00:55:28.870 --> 00:55:30.469
+draganrakita: In case it will… it will…
+
+472
+00:55:30.470 --> 00:55:34.820
+mark: Blowing out the database is just an implementation detail.
+
+473
+00:55:35.020 --> 00:55:43.799
+mark: Right, because I think, effectively, what we're saying is that the RLP of the bodies that you get across DevP2P will include the bowels.
+
+474
+00:55:44.720 --> 00:55:47.160
+mark: Whether it bloats, I…
+
+475
+00:55:47.360 --> 00:55:54.289
+Łukasz Rozmej: No, it isn't a implementation detail, because basically you say each node is an archive node, regardless if you want it or not.
+
+476
+00:55:55.990 --> 00:56:02.549
+Łukasz Rozmej: Because if you need to serve balls through DevP2P, you need to kind of have an archive node for those blocks.
+
+477
+00:56:02.550 --> 00:56:03.439
+draganrakita: AI sucks.
+
+478
+00:56:04.130 --> 00:56:11.450
+Łukasz Rozmej: So you, like, for us, if we don't do archive node, this kind of use case just becomes extent. It doesn't work.
+
+479
+00:56:11.450 --> 00:56:14.450
+mark: Right, because you've got to re-execute the block to get the…
+
+480
+00:56:14.850 --> 00:56:17.680
+Łukasz Rozmej: Yeah, and I don't have state, I already pruned the state.
+
+481
+00:56:17.680 --> 00:56:18.840
+mark: Heh, right.
+
+482
+00:56:19.240 --> 00:56:24.069
+Łukasz Rozmej: So, our kind of validator-optimized setup Just doesn't work.
+
+483
+00:56:26.080 --> 00:56:31.359
+draganrakita: To be honest, I was a little surprised that we store balls in the block, and…
+
+484
+00:56:31.490 --> 00:56:34.010
+draganrakita: That was the reason, what Lucas said.
+
+485
+00:56:34.330 --> 00:56:38.739
+Łukasz Rozmej: Well, it's… the AIP says that both are part of the block body.
+
+486
+00:56:39.730 --> 00:56:41.510
+Łukasz Rozmej: Currently. That's the current…
+
+487
+00:56:42.060 --> 00:56:47.250
+draganrakita: I just thought that that'd need to be updated. Okay.
+
+488
+00:56:47.250 --> 00:56:53.830
+mark: If you… yeah, but if you've got a validator-optimized node, surely you can't serve the blocks, either.
+
+489
+00:56:54.790 --> 00:56:57.190
+Łukasz Rozmej: Well, depends on the…
+
+490
+00:56:57.190 --> 00:57:00.399
+mark: Because if you prune the blocks, you can't deliver them.
+
+491
+00:57:00.400 --> 00:57:07.630
+Łukasz Rozmej: Yeah, it depends on the lever optimization, but, you know, 44s, dictate us how much
+
+492
+00:57:08.310 --> 00:57:09.859
+Łukasz Rozmej: We need to serve, right?
+
+493
+00:57:10.220 --> 00:57:16.960
+mark: Yeah, yeah, so that's what I was saying, I think the question is, in a 4-4s retention period.
+
+494
+00:57:17.830 --> 00:57:23.480
+mark: How much practically more disk space does that add to a minimal node?
+
+495
+00:57:23.730 --> 00:57:26.320
+Łukasz Rozmej: Well, 50% on the blog bodies.
+
+496
+00:57:26.810 --> 00:57:28.839
+Ben Adams: Even if the sales are storing.
+
+497
+00:57:29.130 --> 00:57:30.070
+Ben Adams: It's…
+
+498
+00:57:30.160 --> 00:57:37.500
+Łukasz Rozmej: Oh, CLs don't… so you're unstarting it in non-archive node, right? So, it's fine for them on non-archive node.
+
+499
+00:57:40.380 --> 00:57:43.770
+Łukasz Rozmej: So don't worry about that, that's only an archive note question for them.
+
+500
+00:57:44.100 --> 00:57:45.790
+Łukasz Rozmej: If they are storing it.
+
+501
+00:57:51.780 --> 00:57:52.559
+mark: It's not pissed.
+
+502
+00:57:54.030 --> 00:57:58.480
+Łukasz Rozmej: Yeah, so I think everyone wants to more or less drop them.
+
+503
+00:58:00.350 --> 00:58:06.249
+Łukasz Rozmej: But… It complicates stuff, potentially.
+
+504
+00:58:06.690 --> 00:58:12.839
+Toni Wahrstätter: And dropping them comes necessarily with taking them out of the block body, right?
+
+505
+00:58:14.450 --> 00:58:15.780
+Łukasz Rozmej: Well…
+
+506
+00:58:16.770 --> 00:58:26.190
+Łukasz Rozmej: either that or saying block body is optional… has optional balls, right? In certain circumstances, right? Because this block body is kind of…
+
+507
+00:58:26.990 --> 00:58:32.230
+Łukasz Rozmej: what comes from CL, block body is what we transmit through DevP2P, so…
+
+508
+00:58:35.010 --> 00:58:41.199
+Toni Wahrstätter: And also, like, dropping them, which means we have to put them in a sidecar, right?
+
+509
+00:58:43.010 --> 00:58:45.360
+Łukasz Rozmej: Maybe? Yeah, probably.
+
+510
+00:58:47.070 --> 00:58:51.959
+Ben Adams: Not, not necessarily. We just erase them from the block.
+
+511
+00:58:52.410 --> 00:58:53.190
+Ben Adams: You know.
+
+512
+00:58:53.410 --> 00:58:58.520
+Ben Adams: After a retention period, go back to the block, load it, remove the bow, save it.
+
+513
+00:58:58.700 --> 00:59:05.519
+Łukasz Rozmej: But then you have, kind of, two block bodies formats, with balls or with opals. Yeah. Block bodies can live… can live…
+
+514
+00:59:05.840 --> 00:59:09.189
+Łukasz Rozmej: In both states, right? Which is also might be fine, but…
+
+515
+00:59:10.370 --> 00:59:19.229
+Łukasz Rozmej: trade-offs, right? Also, question mark, if for CLs it wouldn't be more beneficial to transmit block body and bulk separately for latency.
+
+516
+00:59:20.040 --> 00:59:20.780
+Łukasz Rozmej: I don't know.
+
+517
+00:59:22.560 --> 00:59:28.520
+Toni Wahrstätter: Yeah, this was what I was thinking of initially. Like, you… we keep them in the block body, and you can still erase them.
+
+518
+00:59:32.700 --> 00:59:37.680
+Toni Wahrstätter: Because then we would not need to activate the CO to have a new set car.
+
+519
+00:59:38.430 --> 00:59:39.080
+Łukasz Rozmej: That's…
+
+520
+00:59:39.400 --> 00:59:47.570
+Łukasz Rozmej: that's doable, just needs to be specified, right? Right now, I didn't see anything from it in the AP, I think, so…
+
+521
+00:59:49.300 --> 00:59:57.689
+Toni Wahrstätter: Right, yeah, this doesn't exist yet. So, how would… what would you say… how would we best specify this? So, we would basically say there is a…
+
+522
+00:59:57.800 --> 00:59:59.820
+Toni Wahrstätter: A given retention period.
+
+523
+00:59:59.960 --> 01:00:02.890
+Toni Wahrstätter: And after that, you can… you can delete them from…
+
+524
+01:00:02.890 --> 01:00:09.629
+Łukasz Rozmej: period, blog bot, these could be, like, transmitted through DevP2P without it, right?
+
+525
+01:00:09.750 --> 01:00:10.919
+Łukasz Rozmej: Something like that.
+
+526
+01:00:13.020 --> 01:00:13.730
+Łukasz Rozmej: And we need.
+
+527
+01:00:13.730 --> 01:00:14.460
+Toni Wahrstätter: Is this…
+
+528
+01:00:14.460 --> 01:00:19.840
+Łukasz Rozmej: potentially mark that there is a null there, so there will be probably a null pointer where Bowles is, right?
+
+529
+01:00:20.880 --> 01:00:21.560
+Łukasz Rozmej: Just to…
+
+530
+01:00:21.560 --> 01:00:23.940
+Toni Wahrstätter: Is this something other clients are fun with, too?
+
+531
+01:00:28.070 --> 01:00:30.250
+draganrakita: I need to track, but seems okay.
+
+532
+01:00:32.530 --> 01:00:34.009
+Karim T.: Yeah, it's a good trade-off.
+
+533
+01:00:35.920 --> 01:00:38.020
+Milos: I have a question,
+
+534
+01:00:38.290 --> 01:00:48.299
+Milos: Would… if we would switch, like, if we would make a progress on the 4-4s and do some kind of, like, a rolling window, 4-4s, would that solve all these problems?
+
+535
+01:00:49.670 --> 01:00:52.100
+Milos: And we can keep it in a body in that case?
+
+536
+01:00:52.400 --> 01:00:59.150
+Ben Adams: I would put pressure on making that rolling window very, sure.
+
+537
+01:01:00.010 --> 01:01:00.860
+Ben Adams: Shorter.
+
+538
+01:01:01.950 --> 01:01:11.419
+Milos: I mean, why does it need to be specifically short? Any kind of, like… currently, the 4-4s dictates you have to keep it since merge.
+
+539
+01:01:11.550 --> 01:01:13.539
+Milos: So even something that is, like.
+
+540
+01:01:13.790 --> 01:01:18.899
+Milos: I don't know, a couple of months, or even a year, would definitely significantly help with,
+
+541
+01:01:19.260 --> 01:01:25.180
+Milos: with this, and sure, you can go shorter, but I don't think you need to be super short in any kind of form.
+
+542
+01:01:26.450 --> 01:01:30.439
+Łukasz Rozmej: I think at the moment we're keeping since the merge.
+
+543
+01:01:30.580 --> 01:01:31.560
+Ben Adams: Is that right?
+
+544
+01:01:32.250 --> 01:01:38.309
+Milos: No, I'm thinking, actually, going to some rolling window where we keep only the last, I don't know, since the last,
+
+545
+01:01:39.240 --> 01:01:43.890
+Milos: maybe… I don't know, 3 months, or how much is,
+
+546
+01:01:44.260 --> 01:01:51.089
+Milos: subjectivity period, or something like that. So, going to, like, last couple of months of worth of
+
+547
+01:01:51.900 --> 01:01:54.519
+Milos: Bodies and receipts and balls.
+
+548
+01:01:55.190 --> 01:01:56.120
+Milos: And keep from…
+
+549
+01:01:56.120 --> 01:02:14.309
+Łukasz Rozmej: From my perspective, one, yeah, it could be a workaround, right? You still need to keep it, you still don't really need those balls, really, in practice, in any way, because they can be regenerated from those blocks.
+
+550
+01:02:14.510 --> 01:02:30.870
+Łukasz Rozmej: And archive nodes still need to either double the data, because they still need to keep it properly, or they will actually still remove it internally and regenerate it, so… which they will probably do. So, it's…
+
+551
+01:02:30.980 --> 01:02:41.720
+Łukasz Rozmej: like… Trying to ignore the problem where, like, say it's an implementation detail problem, which… It's fine.
+
+552
+01:02:43.020 --> 01:02:46.170
+Łukasz Rozmej: But… yeah, I'm not sure.
+
+553
+01:02:48.730 --> 01:03:04.640
+draganrakita: Regenerating would be a problem, in general, because you can DDoS the P2P, or drop, or not respond a lot of P2P requests, because it's not just, like, fetching something from the database, it is execute in that block. If there's few blocks, that would be fine.
+
+554
+01:03:04.640 --> 01:03:07.090
+mark: Depends how you… depends how you store the data.
+
+555
+01:03:07.660 --> 01:03:12.560
+Łukasz Rozmej: Yeah, you could probably fetch it and just compile it from the fetch data, or something.
+
+556
+01:03:16.010 --> 01:03:19.019
+draganrakita: You're still for the ball, at least from…
+
+557
+01:03:19.950 --> 01:03:25.260
+draganrakita: I'm not sure about… I'm not sure if Aragon stores the read.
+
+558
+01:03:25.760 --> 01:03:27.389
+Łukasz Rozmej: I… yeah, that's exactly…
+
+559
+01:03:27.390 --> 01:03:28.110
+draganrakita: Pro.
+
+560
+01:03:28.110 --> 01:03:30.910
+Łukasz Rozmej: I wanted to say that the Ridley's is the problem, because the right
+
+561
+01:03:31.180 --> 01:03:42.080
+Łukasz Rozmej: Yeah. So it's actually, question mark, do we have read symbols? Because if we do, then, yeah, the only thing is re-executing, and if we don't, then…
+
+562
+01:03:42.200 --> 01:03:46.529
+Łukasz Rozmej: Then you can probably compile it from the archive data.
+
+563
+01:03:46.930 --> 01:03:50.820
+draganrakita: Then you're basically forcing everybody to have, like, archive kind of note.
+
+564
+01:03:50.820 --> 01:03:56.180
+Łukasz Rozmej: Exactly. Yeah, that's not that great. There was a reason why it's dropping, yeah.
+
+565
+01:03:57.270 --> 01:03:59.809
+draganrakita: It opens, like, all of these…
+
+566
+01:04:00.300 --> 01:04:12.660
+mark: Yeah, so I… yeah, I agree. If you start doing this stuff with bowels, which is why I sort of said at the beginning we're neutral, but other people probably aren't, because
+
+567
+01:04:13.690 --> 01:04:16.669
+mark: If you do start having to do this, it's a big piece of work.
+
+568
+01:04:16.870 --> 01:04:18.750
+mark: That's the problem, basically.
+
+569
+01:04:18.930 --> 01:04:23.079
+mark: Because you have… you end up having to have incremental data… an incremental data store.
+
+570
+01:04:23.640 --> 01:04:26.059
+mark: Which is not an insignificant amount of work.
+
+571
+01:04:27.360 --> 01:04:36.700
+mark: And it feels like dropping them, given the status quo, because presumably everybody at the moment can process
+
+572
+01:04:36.810 --> 01:04:38.310
+mark: Blocks without bowels.
+
+573
+01:04:38.710 --> 01:04:42.029
+mark: Right. So the implementation cost is quite small.
+
+574
+01:04:43.790 --> 01:04:48.100
+Łukasz Rozmej: Well, the problem is that we are currently processing small blocks without bowels.
+
+575
+01:04:48.100 --> 01:04:48.820
+mark: Yeah, yeah.
+
+576
+01:04:48.820 --> 01:05:08.759
+Łukasz Rozmej: And we'll be processing huge blocks with all balls. So, for example, I'm currently implementing block STM-like processing regardless of balls, and I expect we will be processing them relatively quickly, but yeah, it still complicates things, right?
+
+577
+01:05:11.750 --> 01:05:12.250
+mark: Yeah.
+
+578
+01:05:12.250 --> 01:05:13.330
+Łukasz Rozmej: Can be huge.
+
+579
+01:05:13.430 --> 01:05:18.150
+draganrakita: It's even bigger than the archive node, because we have additional reads.
+
+580
+01:05:22.990 --> 01:05:30.619
+Toni Wahrstätter: Yeah, this seems like a topic that we definitely want to discuss, next time, on the next, breakout call in two weeks again.
+
+581
+01:05:31.100 --> 01:05:39.250
+Toni Wahrstätter: I would suggest we… Don't change the EAP for now, and get more information, especially on the size.
+
+582
+01:05:40.180 --> 01:05:47.830
+Toni Wahrstätter: But also, if it feels like we will definitely have to go the path, of having the balls as a sidecar.
+
+583
+01:05:48.300 --> 01:05:51.549
+Toni Wahrstätter: Then, of course, the better, the earlier the better.
+
+584
+01:05:51.700 --> 01:05:54.319
+Toni Wahrstätter: we change something and involve the CL.
+
+585
+01:05:56.970 --> 01:05:57.590
+Ben Adams: I'm just…
+
+586
+01:05:57.590 --> 01:05:58.149
+Toni Wahrstätter: So someone…
+
+587
+01:05:58.850 --> 01:05:59.410
+Ben Adams: Just to…
+
+588
+01:05:59.410 --> 01:06:00.379
+Toni Wahrstätter: Sure, go ahead.
+
+589
+01:06:01.060 --> 01:06:03.219
+Ben Adams: I'm, like, not entirely serious.
+
+590
+01:06:03.640 --> 01:06:05.019
+Ben Adams: Oh, but it could be.
+
+591
+01:06:05.170 --> 01:06:09.369
+Ben Adams: Reserve one… one blob per block for…
+
+592
+01:06:09.540 --> 01:06:12.979
+Ben Adams: One, yeah, one blob per block for,
+
+593
+01:06:13.790 --> 01:06:17.239
+Ben Adams: about… we already have a mechanism to do a sidecar.
+
+594
+01:06:17.240 --> 01:06:26.140
+Toni Wahrstätter: Yeah, I mean, technically, it would work like this, right? You would just create a new sidecar, and then the ball would come in that sidecar, probably need a new
+
+595
+01:06:26.320 --> 01:06:27.680
+Toni Wahrstätter: Gossip topic?
+
+596
+01:06:29.140 --> 01:06:32.720
+Ben Adams: Yeah, but it could be… it could actually be a lot… a blob.
+
+597
+01:06:35.160 --> 01:06:38.759
+Łukasz Rozmej: But then you have to differentiate, etc, probably.
+
+598
+01:06:39.140 --> 01:06:39.680
+Łukasz Rozmej: Messy.
+
+599
+01:06:39.680 --> 01:06:40.340
+Milos: Thank you.
+
+600
+01:06:40.890 --> 01:06:49.349
+Milos: can be a blob, because if you do, like, a peer does, and clients don't download entire blogs now, you break that.
+
+601
+01:06:49.650 --> 01:06:57.869
+Toni Wahrstätter: Yeah, it would not be, like, a real blob where you do, like, KCG stuff with it. It would just be a blob of data that is, like.
+
+602
+01:06:58.700 --> 01:07:02.610
+Toni Wahrstätter: Transmitted separately from the block body.
+
+603
+01:07:04.160 --> 01:07:14.229
+Toni Wahrstätter: Is there any to-do for the EAP right now, until we resolve that? Should I clarify anything in the EAP already? Like, regarding…
+
+604
+01:07:14.950 --> 01:07:23.000
+Toni Wahrstätter: Because it feels like there is also some confusion in the chat around what does it actually mean if we keep the ball in the block body.
+
+605
+01:07:23.250 --> 01:07:27.760
+Toni Wahrstätter: can we just erase it out there?
+
+606
+01:07:28.330 --> 01:07:32.189
+Toni Wahrstätter: After some retention period, or is that not even possible?
+
+607
+01:07:32.520 --> 01:07:45.340
+Ben Adams: Yeah, because the… the block hash is the hash of the hash in header, isn't it? So, it's not… you don't… you don't hash all the hashes and then rehash the RLP.
+
+608
+01:07:47.060 --> 01:07:51.660
+Ben Adams: So you should be able to erase it. And then, when you re-execute the block.
+
+609
+01:07:52.070 --> 01:07:58.139
+Ben Adams: You generate the bell anyway, so that you can verify that… It's correct.
+
+610
+01:07:58.350 --> 01:08:00.599
+Ben Adams: And it hashes to the bowel hash.
+
+611
+01:08:00.970 --> 01:08:05.400
+Ben Adams: So, you know, there's already… you already regenerated it, so you could delete it.
+
+612
+01:08:06.440 --> 01:08:08.199
+Toni Wahrstätter: Right, yeah, I get that.
+
+613
+01:08:08.300 --> 01:08:11.870
+Toni Wahrstätter: Yeah, this seems like, to me, at least for now, like, the…
+
+614
+01:08:12.190 --> 01:08:14.689
+Toni Wahrstätter: the best solution we have, right? And…
+
+615
+01:08:15.350 --> 01:08:19.499
+Toni Wahrstätter: If, like, if… and the second best would then be the… the sidecarve.
+
+616
+01:08:21.300 --> 01:08:26.799
+Toni Wahrstätter: Which, of course, would come with a lot of complexity, because I remember, like, this was a discussion at the beginning.
+
+617
+01:08:26.950 --> 01:08:30.179
+Toni Wahrstätter: Ball in the block body versus ball in the side curve.
+
+618
+01:08:30.529 --> 01:08:31.580
+Toni Wahrstätter: And…
+
+619
+01:08:31.950 --> 01:08:40.409
+Toni Wahrstätter: By the time selders were involved, and many people, also networking people, were all for keeping them in the block body for simplicity.
+
+620
+01:08:45.490 --> 01:08:50.489
+Ben Adams: Just to follow up on your question, I don't think you should change the EIP at this stage.
+
+621
+01:08:53.529 --> 01:08:54.869
+Toni Wahrstätter: Okay, yep.
+
+622
+01:08:56.079 --> 01:09:01.179
+Toni Wahrstätter: Yeah, we're already at the very end of this call anyway, we're already over time,
+
+623
+01:09:01.439 --> 01:09:07.189
+Toni Wahrstätter: I will definitely put that topic on agenda for the next breakout call in two weeks again. Is there any…
+
+624
+01:09:07.469 --> 01:09:13.449
+Toni Wahrstätter: Last words that people… Wanna say anything else we should, we should, add to that?
+
+625
+01:09:15.420 --> 01:09:21.519
+mark: Yeah, so the only thing is, I'll… between now and the next call, I'm going to look at how much we care about reads.
+
+626
+01:09:21.689 --> 01:09:28.050
+mark: Because I think we should probably include the, do we want reeds in the bow in that overall conversation?
+
+627
+01:09:28.930 --> 01:09:39.110
+Toni Wahrstätter: Yeah, this was also on the agenda for today, and to make… to summarize it very quick, what we need to benchmark the reads is basically the batch I.O. implementation.
+
+628
+01:09:39.340 --> 01:09:58.919
+Toni Wahrstätter: So before, we don't know how much we get from reads, we wanted to test it on actual client implementations, and for that, we need two optimizations, the parallel execution and the parallel I.O, because then we can create, like, worst-case blocks and test how much faster are we actually, verifying those worst-case blocks.
+
+629
+01:09:58.920 --> 01:09:59.240
+mark: Yeah, so…
+
+630
+01:09:59.240 --> 01:10:00.980
+Toni Wahrstätter: Having the wreaths and don't having…
+
+631
+01:10:01.110 --> 01:10:15.450
+mark: Yeah, I didn't want to have the call. I'm just saying what came out of this conversation for me was these two questions are actually a bit related, certainly from an Aragon implementation point of view, because that's a good point. I don't think we're recording reads.
+
+632
+01:10:15.700 --> 01:10:19.920
+mark: which I hadn't… I'd forgotten about the read stuff, so…
+
+633
+01:10:23.120 --> 01:10:25.129
+mark: I need to do some research, basically.
+
+634
+01:10:31.530 --> 01:10:37.790
+Toni Wahrstätter: Okay, anything else we need to discuss? Otherwise, I would say we end the call, we're over time anyway.
+
+635
+01:10:38.310 --> 01:10:44.799
+raxhvl: Yeah, I'll quickly go over the comment that Ben had for using ZAR for…
+
+636
+01:10:45.010 --> 01:10:47.740
+raxhvl: storing nuns. I think so ZAR, essentially.
+
+637
+01:10:47.740 --> 01:10:50.709
+Toni Wahrstätter: Now, let's do that next, let's clarify that async.
+
+638
+01:10:51.020 --> 01:10:55.689
+Toni Wahrstätter: Because this was already a discussion point at some point, I would say we clarified that, I think.
+
+639
+01:10:55.960 --> 01:10:56.480
+raxhvl: Alright, Sean.
+
+640
+01:10:56.480 --> 01:10:58.319
+Toni Wahrstätter: Because we're already 10 minutes over time.
+
+641
+01:11:01.420 --> 01:11:01.870
+Łukasz Rozmej: Hurry!
+
+642
+01:11:01.870 --> 01:11:07.700
+Toni Wahrstätter: Then fi… Thanks, everyone. No, it was… it was a great discussion. Thanks, everyone, and…
+
+643
+01:11:08.170 --> 01:11:11.200
+Toni Wahrstätter: See you at the next breakout call in two weeks.
+
+644
+01:11:12.860 --> 01:11:13.380
+draganrakita: Bye.
+
+645
+01:11:13.380 --> 01:11:14.690
+Stefan Starflinger: Thank you. Bye.
+
+646
+01:11:14.690 --> 01:11:15.160
+Łukasz Rozmej: Bye.
+

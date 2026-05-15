@@ -1,20 +1,42 @@
-import React, { useState, useEffect } from 'react';
-import { Link } from 'react-router-dom';
-import ThemeToggle from './ui/ThemeToggle';
-import { protocolCalls, type Call } from '../data/calls';
-import { timelineEvents, type TimelineEvent } from '../data/events';
-import { fetchUpcomingCalls, type UpcomingCall } from '../utils/github';
+import { useState, useEffect, useRef, useMemo } from 'react';
+import { useSearchParams } from 'react-router-dom';
+import { protocolCalls, callTypeNames, isOneOffCall, type CallType } from '../data/calls';
+import { timelineEvents } from '../data/events';
+import { fetchUpcomingCalls, type UpcomingCall } from '../domain/calls/upcomingCalls';
 import GlobalCallSearch from './GlobalCallSearch';
+import { SearchTriggerButton } from './search/SearchUi';
+import { isSearchHotkey } from './search/searchShortcuts';
+import { buildTimelineDateSections } from '../domain/calls/timeline';
+import { getTodayDateString } from '../utils/localDate';
+import { CallsIndexFilters } from './calls-index/CallsIndexFilters';
+import { CallsIndexTimeline } from './calls-index/CallsIndexTimeline';
+
+const ACD_TYPES = ['acdc', 'acde', 'acdt'];
+
+const matchesSelectedBreakoutType = (callType: string, selectedBreakoutType: string): boolean => {
+  if (!selectedBreakoutType) return true;
+  if (selectedBreakoutType === 'one-off') return isOneOffCall(callType);
+  return callType === selectedBreakoutType;
+};
 
 const CallsIndexPage: React.FC = () => {
-  const [selectedFilter, setSelectedFilter] = useState<string>('all');
-  const [showEvents, setShowEvents] = useState<boolean>(true);
+  const [searchParams, setSearchParams] = useSearchParams();
+  const selectedFilter = searchParams.get('filter') || 'all';
+  const selectedBreakoutType = searchParams.get('breakoutType') || '';
   const [upcomingCalls, setUpcomingCalls] = useState<UpcomingCall[]>([]);
+  const [upcomingCallsLoading, setUpcomingCallsLoading] = useState(true);
   const [searchOpen, setSearchOpen] = useState(false);
+  const [breakoutDropdownOpen, setBreakoutDropdownOpen] = useState(false);
+  const breakoutDropdownRef = useRef<HTMLDivElement>(null);
 
-  const calls = protocolCalls;
+  const updateSearchParams = (update: (next: URLSearchParams) => void) => {
+    setSearchParams((prev) => {
+      const next = new URLSearchParams(prev);
+      update(next);
+      return next;
+    });
+  };
 
-  // Fetch upcoming calls on component mount
   useEffect(() => {
     const loadUpcomingCalls = async () => {
       try {
@@ -22,16 +44,17 @@ const CallsIndexPage: React.FC = () => {
         setUpcomingCalls(upcoming);
       } catch (error) {
         console.error('Failed to load upcoming calls:', error);
+      } finally {
+        setUpcomingCallsLoading(false);
       }
     };
 
     loadUpcomingCalls();
   }, []);
 
-  // Keyboard shortcut for search
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
-      if ((e.metaKey || e.ctrlKey) && e.key === 'f') {
+      if (isSearchHotkey(e)) {
         e.preventDefault();
         setSearchOpen(true);
       }
@@ -41,372 +64,126 @@ const CallsIndexPage: React.FC = () => {
     return () => window.removeEventListener('keydown', handleKeyDown);
   }, []);
 
-  // Filter and sort calls and events
-  const filteredCalls = selectedFilter === 'all'
-    ? calls
-    : calls.filter(call => call.type === selectedFilter);
+  useEffect(() => {
+    if (selectedFilter === 'breakouts') {
+      setBreakoutDropdownOpen(true);
+    }
+  }, [selectedFilter]);
 
-  // Filter upcoming calls based on selected filter
-  const filteredUpcomingCalls = selectedFilter === 'all'
+  useEffect(() => {
+    const handleMouseDown = (e: MouseEvent) => {
+      if (breakoutDropdownRef.current && !breakoutDropdownRef.current.contains(e.target as Node)) {
+        setBreakoutDropdownOpen(false);
+      }
+    };
+    document.addEventListener('mousedown', handleMouseDown);
+    return () => document.removeEventListener('mousedown', handleMouseDown);
+  }, []);
+
+  const breakoutTypes = useMemo(() => Array.from(new Set([
+    ...protocolCalls.filter(call => !ACD_TYPES.includes(call.type) && !isOneOffCall(call.type)).map(call => call.type),
+    ...upcomingCalls.filter(call => !ACD_TYPES.includes(call.type) && !isOneOffCall(call.type)).map(call => call.type),
+  ])).sort((a, b) => (callTypeNames[a as CallType] || a).localeCompare(callTypeNames[b as CallType] || b)), [upcomingCalls]);
+
+  const hasOneOffCalls = useMemo(() => protocolCalls.some(call => isOneOffCall(call.type)), []);
+
+  const filteredCalls = useMemo(() => selectedFilter === 'all'
+    ? protocolCalls
+    : selectedFilter === 'acd'
+    ? protocolCalls.filter(call => ACD_TYPES.includes(call.type))
+    : selectedFilter === 'breakouts'
+    ? protocolCalls.filter(call => !ACD_TYPES.includes(call.type) && matchesSelectedBreakoutType(call.type, selectedBreakoutType))
+    : protocolCalls.filter(call => call.type === selectedFilter),
+  [selectedFilter, selectedBreakoutType]);
+
+  const filteredUpcomingCalls = useMemo(() => selectedFilter === 'all'
     ? upcomingCalls
-    : upcomingCalls.filter(call => call.type === selectedFilter);
+    : selectedFilter === 'acd'
+    ? upcomingCalls.filter(call => ACD_TYPES.includes(call.type))
+    : selectedFilter === 'breakouts'
+    ? upcomingCalls.filter(call => !ACD_TYPES.includes(call.type) && matchesSelectedBreakoutType(call.type, selectedBreakoutType))
+    : upcomingCalls.filter(call => call.type === selectedFilter),
+  [upcomingCalls, selectedFilter, selectedBreakoutType]);
 
-  // Combine calls, upcoming calls, and events into timeline items
-  type TimelineItem = Call | TimelineEvent | UpcomingCall;
-  const timelineItems: TimelineItem[] = [
-    ...filteredCalls,
-    ...filteredUpcomingCalls, // Add filtered upcoming calls to timeline
-    ...(showEvents ? timelineEvents : []) // Show events based on toggle
-  ];
+  const timelineItems = useMemo(() => {
+    return [
+      ...filteredCalls,
+      ...filteredUpcomingCalls,
+      ...timelineEvents
+    ];
+  }, [filteredCalls, filteredUpcomingCalls]);
 
-  const sortedItems = [...timelineItems].sort((a, b) => b.date.localeCompare(a.date));
+  const viewerTimeZone = useMemo(() => Intl.DateTimeFormat().resolvedOptions().timeZone, []);
+  const todayDateString = getTodayDateString(new Date(), viewerTimeZone);
 
-  const filterOptions = [
-    { value: 'all', label: 'All' },
-    { value: 'acdc', label: 'ACDC' },
-    { value: 'acde', label: 'ACDE' },
-    { value: 'acdt', label: 'ACDT' }
-  ];
+  const dateSections = useMemo(
+    () => buildTimelineDateSections(timelineItems, todayDateString, upcomingCallsLoading, viewerTimeZone),
+    [timelineItems, todayDateString, upcomingCallsLoading, viewerTimeZone]
+  );
+
+  const breakoutLabel = selectedBreakoutType === 'one-off'
+    ? 'One-Off Calls'
+    : selectedBreakoutType
+    ? (callTypeNames[selectedBreakoutType as CallType] || selectedBreakoutType.toUpperCase())
+    : 'All Breakouts';
 
   return (
-    <div className="min-h-screen bg-slate-50 dark:bg-slate-900">
-      <div className="max-w-3xl mx-auto px-6 py-8">
-        <div className="mb-6 relative">
-          <div className="absolute top-0 right-0">
-            <ThemeToggle />
-          </div>
-          <Link to="/" className="text-2xl font-serif bg-gradient-to-r from-purple-600 via-blue-600 to-purple-800 bg-clip-text text-transparent hover:from-purple-700 hover:via-blue-700 hover:to-purple-900 transition-all duration-200 tracking-tight inline-block mb-2">
-            Forkcast
-          </Link>
-          <div className="flex items-center justify-between">
-            <h1 className="text-xl font-semibold text-slate-900 dark:text-slate-100">Protocol Calendar</h1>
-            <div className="flex items-center gap-3">
-              {/* Search Button */}
-              <button
-                onClick={() => setSearchOpen(true)}
-                className="flex items-center gap-2 px-3 py-1.5 text-sm bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-400 rounded-lg hover:bg-slate-200 dark:hover:bg-slate-700 transition-colors"
-                aria-label="Search all calls"
+    <div className="min-h-screen bg-slate-50 dark:bg-slate-900 p-6">
+      <div className="max-w-4xl mx-auto">
+        <div className="mb-6">
+          <div className="flex items-start justify-between gap-3">
+            <div>
+              <h1 className="text-xl font-semibold text-slate-900 dark:text-slate-100">Protocol Calendar</h1>
+              <a
+                href="https://calendar.google.com/calendar/embed?src=c_upaofong8mgrmrkegn7ic7hk5s%40group.calendar.google.com"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-xs text-slate-500 dark:text-slate-400 hover:text-slate-700 dark:hover:text-slate-300 transition-colors"
               >
-                <svg
-                  className="w-4 h-4"
-                  fill="none"
-                  stroke="currentColor"
-                  viewBox="0 0 24 24"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth={2}
-                    d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
-                  />
-                </svg>
-                <span className="hidden sm:inline">Search</span>
-                <kbd className="hidden sm:inline-flex items-center gap-1 px-1.5 py-0.5 text-xs bg-slate-200 dark:bg-slate-700 rounded">
-                  <span className="text-[10px]">⌘</span>F
-                </kbd>
-              </button>
-
-              <div className="text-sm text-slate-500 dark:text-slate-400">
-                {filteredCalls.length} calls
-                {filteredUpcomingCalls.length > 0 && (
-                  <span> • {filteredUpcomingCalls.length} upcoming</span>
-                )}
-                {showEvents && timelineEvents.length > 0 && (
-                  <span> • {timelineEvents.length} events</span>
-                )}
-              </div>
+                Full calendar ↗
+              </a>
             </div>
+            <SearchTriggerButton
+              onOpen={() => setSearchOpen(true)}
+              placeholder="Search calls..."
+              ariaLabel="Search calls"
+            />
           </div>
-
-          {/* Filter buttons and events toggle */}
-          <div className="flex items-center justify-between mt-4 flex-wrap gap-2">
-            <div className="flex gap-1.5 flex-wrap">
-              {filterOptions.map((option) => {
-                // Define colors for each filter type
-                const activeColors = {
-                  all: 'bg-slate-600 dark:bg-slate-400 text-white dark:text-slate-900',
-                  acdc: 'bg-purple-500 dark:bg-purple-400 text-white dark:text-purple-950',
-                  acde: 'bg-blue-500 dark:bg-blue-400 text-white dark:text-blue-950',
-                  acdt: 'bg-green-500 dark:bg-green-400 text-white dark:text-green-950'
-                };
-
-                const inactiveColors = {
-                  all: 'bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-400 hover:bg-slate-200 dark:hover:bg-slate-700',
-                  acdc: 'bg-purple-50 dark:bg-purple-950/30 text-purple-600 dark:text-purple-400 hover:bg-purple-100 dark:hover:bg-purple-900/30',
-                  acde: 'bg-blue-50 dark:bg-blue-950/30 text-blue-600 dark:text-blue-400 hover:bg-blue-100 dark:hover:bg-blue-900/30',
-                  acdt: 'bg-green-50 dark:bg-green-950/30 text-green-600 dark:text-green-400 hover:bg-green-100 dark:hover:bg-green-900/30'
-                };
-
-                return (
-                  <button
-                    key={option.value}
-                    onClick={() => setSelectedFilter(option.value)}
-                    className={`px-2.5 py-1 text-xs font-medium rounded-md transition-all ${
-                      selectedFilter === option.value
-                        ? activeColors[option.value as keyof typeof activeColors]
-                        : inactiveColors[option.value as keyof typeof inactiveColors]
-                    }`}
-                  >
-                    {option.label}
-                  </button>
-                );
-              })}
-            </div>
-
-            {/* Events toggle */}
-            <button
-              onClick={() => setShowEvents(!showEvents)}
-              className={`flex items-center gap-1.5 px-2.5 py-1 text-xs font-medium rounded-md transition-all ${
-                showEvents
-                  ? 'bg-slate-600 dark:bg-slate-400 text-white dark:text-slate-900'
-                  : 'bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-400 hover:bg-slate-200 dark:hover:bg-slate-700'
-              }`}
-            >
-              <div className={`w-1.5 h-1.5 rounded-full ${showEvents ? 'bg-white dark:bg-slate-900' : 'bg-slate-500 dark:bg-slate-400'}`}></div>
-              <span>{showEvents ? 'Hide Events' : 'Show Events'}</span>
-            </button>
-          </div>
-        </div>
-
-        {/* Timeline container with vertical line */}
-        <div className="relative pl-12">
-          {/* Vertical timeline line */}
-          <div className="absolute left-10 top-0 bottom-0 w-px bg-gradient-to-b from-slate-200 via-slate-300 to-slate-200 dark:from-slate-700 dark:via-slate-600 dark:to-slate-700"></div>
-
-          <div className="space-y-3">
-            {(() => {
-              let lastMonthYear = '';
-              const now = new Date();
-              let hasCrossedToday = false;
-
-              // Helper to check if an item is upcoming, using datetime for events when available
-              const isItemUpcoming = (item: TimelineItem): boolean => {
-                if (item.type === 'event' && (item as TimelineEvent).datetime) {
-                  const eventTime = new Date((item as TimelineEvent).datetime!.replace(' ', 'T') + 'Z');
-                  return eventTime > now;
-                }
-                // For items without datetime, use end of day comparison
-                const [year, month, day] = item.date.split('-').map(Number);
-                const itemDate = new Date(year, month - 1, day, 23, 59, 59);
-                return itemDate > now;
-              };
-
-              return sortedItems.map((item, index) => {
-                // Parse date as local time for display
-                const [year, month, day] = item.date.split('-').map(Number);
-                const itemDate = new Date(year, month - 1, day);
-                const monthYear = itemDate.toLocaleDateString('en-US', { month: 'long', year: 'numeric' });
-                const monthName = itemDate.toLocaleDateString('en-US', { month: 'short' });
-                const yearString = itemDate.toLocaleDateString('en-US', { year: 'numeric' });
-                const showMonthLabel = monthYear !== lastMonthYear;
-
-                if (showMonthLabel) {
-                  lastMonthYear = monthYear;
-                }
-
-                // Check if we need to show the today divider
-                const isUpcoming = isItemUpcoming(item);
-                const wasPreviousUpcoming = index > 0 ? isItemUpcoming(sortedItems[index - 1]) : true;
-                const showTodayDivider = !hasCrossedToday && wasPreviousUpcoming && !isUpcoming;
-
-                if (showTodayDivider) {
-                  hasCrossedToday = true;
-                }
-
-                return (
-                  <React.Fragment key={`item-${index}`}>
-                    {showTodayDivider && (
-                      <div className="relative my-6 ml-2 flex items-center gap-3">
-                        <div className="text-[10px] font-bold text-amber-600 dark:text-amber-400 uppercase tracking-wider whitespace-nowrap">
-                          Today
-                        </div>
-                        <div className="flex-1 h-px bg-gradient-to-r from-amber-400 to-transparent dark:from-amber-500 dark:to-transparent"></div>
-                      </div>
-                    )}
-                    <div className="relative">
-                    {/* Month label - absolutely positioned */}
-                    {showMonthLabel && (
-                      <div className="absolute left-[-3rem] top-0 w-8 flex flex-col items-start">
-                        <div className="sticky top-8">
-                          <span className="text-[11px] font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider [writing-mode:vertical-lr] rotate-180">
-                            {monthName}
-                          </span>
-                          <span className="text-[10px] font-semibold text-slate-400 dark:text-slate-500 [writing-mode:vertical-lr] rotate-180 mt-1">
-                            {yearString}
-                          </span>
-                        </div>
-                      </div>
-                    )}
-
-                    {/* Timeline connector - horizontal line from timeline to item */}
-                    <div className="absolute left-[-0.5rem] top-1/2 -translate-y-1/2 w-2 h-px bg-slate-300 dark:bg-slate-600"></div>
-
-                    {/* Timeline item */}
-                    <div className="ml-2">
-                    {(() => {
-                        // Render timeline event
-                        if (item.type === 'event') {
-                          const event = item as TimelineEvent;
-                          const eventColors = {
-                            'mainnet': 'from-emerald-500 to-green-600',
-                            'testnet': 'from-teal-500 to-cyan-600',
-                            milestone: 'from-blue-500 to-indigo-600',
-                            announcement: 'from-purple-500 to-violet-600',
-                            devnet: 'from-orange-500 to-amber-600'
-                          };
-
-                          const eventBorderColors = {
-                            'mainnet': 'border-emerald-500',
-                            'testnet': 'border-teal-500',
-                            milestone: 'border-blue-500',
-                            announcement: 'border-purple-500',
-                            devnet: 'border-orange-500'
-                          };
-
-                          return (
-                            <div
-                              key={`event-${event.date}-${event.title}`}
-                              className="relative pl-8 py-2.5 opacity-75 hover:opacity-90 transition-opacity"
-                            >
-                              {/* Mainnet events get a double-circle effect */}
-                              {event.category === 'mainnet' && (
-                                <div className={`absolute left-2 top-1/2 -translate-y-1/2 w-4 h-4 rounded-full border-2 ${
-                                  isUpcoming ? 'border-emerald-400' : 'border-emerald-500'
-                                }`}></div>
-                              )}
-                              <div className={`absolute left-3 top-1/2 -translate-y-1/2 rounded-full ${
-                                isUpcoming
-                                  ? `w-2 h-2 border-2 ${eventBorderColors[event.category]}`
-                                  : `w-2 h-2 bg-gradient-to-r ${eventColors[event.category]}`
-                              }`}></div>
-                              <div className="flex items-center justify-between">
-                                <div className="flex items-center gap-2">
-                                  <span className={`text-sm font-medium ${
-                                    event.category === 'mainnet'
-                                      ? 'text-slate-800 dark:text-slate-200'
-                                      : 'text-slate-700 dark:text-slate-300'
-                                  }`}>
-                                    {event.title}
-                                  </span>
-                                  {isUpcoming && (
-                                    <div className="hidden sm:flex items-center gap-1.5">
-                                      <div className="w-1.5 h-1.5 rounded-full bg-slate-400 dark:bg-slate-500"></div>
-                                      <span className="text-xs text-slate-500 dark:text-slate-400">Upcoming</span>
-                                    </div>
-                                  )}
-                                </div>
-                                <div className="text-xs text-slate-500 dark:text-slate-400 font-medium">
-                                  {event.date}
-                                </div>
-                              </div>
-                            </div>
-                          );
-                        }
-
-                        // Check if it's an upcoming call
-                        if ('githubUrl' in item) {
-                          const upcomingCall = item as UpcomingCall;
-
-                          // Define colors for upcoming calls - same colors as completed but with dashed border
-                          const upcomingCallTypeColors = {
-                            acdc: 'border-l-purple-500 dark:border-l-purple-400',
-                            acde: 'border-l-blue-500 dark:border-l-blue-400',
-                            acdt: 'border-l-green-500 dark:border-l-green-400'
-                          };
-
-                          const upcomingCallTypeBadgeColors = {
-                            acdc: 'bg-purple-100 dark:bg-purple-900/30 text-purple-700 dark:text-purple-300',
-                            acde: 'bg-blue-100 dark:bg-blue-900/30 text-blue-700 dark:text-blue-300',
-                            acdt: 'bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-300'
-                          };
-
-                          return (
-                            <a
-                              key={`upcoming-${upcomingCall.type}-${upcomingCall.number}`}
-                              href={upcomingCall.githubUrl}
-                              target="_blank"
-                              rel="noopener noreferrer"
-                              className={`block bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg p-3 hover:shadow-md dark:hover:shadow-slate-700/20 transition-all hover:border-slate-300 dark:hover:border-slate-600 group border-l-3 ${upcomingCallTypeColors[upcomingCall.type]}`}
-                              style={{ borderLeftStyle: 'dashed' }}
-                            >
-                              <div className="flex items-center justify-between">
-                                <div className="flex items-center gap-3">
-                                  <span className={`text-xs font-medium px-2 py-0.5 rounded-full ${upcomingCallTypeBadgeColors[upcomingCall.type]}`}>
-                                    {upcomingCall.type.toUpperCase()}
-                                  </span>
-                                  <div className="text-sm font-medium text-slate-900 dark:text-slate-100">
-                                    Meeting #{upcomingCall.number}
-                                  </div>
-                                  <div className="text-sm text-slate-600 dark:text-slate-400">
-                                    {upcomingCall.date}
-                                  </div>
-                                  {isUpcoming && (
-                                    <div className="hidden sm:flex items-center gap-1.5 ml-2">
-                                      <div className="w-1.5 h-1.5 rounded-full bg-emerald-500"></div>
-                                      <span className="text-xs text-emerald-600 dark:text-emerald-400 font-medium">Upcoming</span>
-                                    </div>
-                                  )}
-                                </div>
-                                <div className="text-slate-400 dark:text-slate-500 group-hover:text-slate-600 dark:group-hover:text-slate-300 transition-colors">
-                                  ↗
-                                </div>
-                              </div>
-                            </a>
-                          );
-                        }
-
-                        // Render completed call
-                        const call = item as Call;
-
-                        // Define colors for each call type
-                        const callTypeColors = {
-                          acdc: 'border-l-purple-500 dark:border-l-purple-400',
-                          acde: 'border-l-blue-500 dark:border-l-blue-400',
-                          acdt: 'border-l-green-500 dark:border-l-green-400'
-                        };
-
-                        const callTypeBadgeColors = {
-                          acdc: 'bg-purple-100 dark:bg-purple-900/30 text-purple-700 dark:text-purple-300',
-                          acde: 'bg-blue-100 dark:bg-blue-900/30 text-blue-700 dark:text-blue-300',
-                          acdt: 'bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-300'
-                        };
-
-                        return (
-                          <Link
-                            key={call.path}
-                            to={`/calls/${call.path}`}
-                            className={`block bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg p-3 hover:shadow-md dark:hover:shadow-slate-700/20 transition-all hover:border-slate-300 dark:hover:border-slate-600 group border-l-4 ${callTypeColors[call.type]}`}
-                          >
-                            <div className="flex items-center justify-between">
-                              <div className="flex items-center gap-3">
-                                <span className={`text-xs font-medium px-2 py-0.5 rounded-full ${callTypeBadgeColors[call.type]}`}>
-                                  {call.type.toUpperCase()}
-                                </span>
-                                <div className="text-sm font-medium text-slate-900 dark:text-slate-100">
-                                  Meeting #{call.number}
-                                </div>
-                                <div className="text-sm text-slate-600 dark:text-slate-400">
-                                  {call.date}
-                                </div>
-                              </div>
-                              <div className="text-slate-400 dark:text-slate-500 group-hover:text-slate-600 dark:group-hover:text-slate-300 transition-colors">
-                                →
-                              </div>
-                            </div>
-                          </Link>
-                        );
-                    })()}
-                    </div>
-                    </div>
-                  </React.Fragment>
-                );
+          <CallsIndexFilters
+            selectedFilter={selectedFilter}
+            selectedBreakoutType={selectedBreakoutType}
+            breakoutDropdownOpen={breakoutDropdownOpen}
+            breakoutDropdownRef={breakoutDropdownRef}
+            breakoutLabel={breakoutLabel}
+            breakoutTypes={breakoutTypes}
+            hasOneOffCalls={hasOneOffCalls}
+            onSelectFilter={(filter) => {
+              updateSearchParams((next) => {
+                if (filter === 'all') next.delete('filter');
+                else next.set('filter', filter);
+                next.delete('breakoutType');
               });
-            })()}
-          </div>
+            }}
+            onBackToAllFilters={() => {
+              updateSearchParams((next) => {
+                next.delete('filter');
+                next.delete('breakoutType');
+              });
+            }}
+            onToggleBreakoutDropdown={() => setBreakoutDropdownOpen((open) => !open)}
+            onSelectBreakoutType={(breakoutType) => {
+              updateSearchParams((next) => {
+                if (breakoutType) next.set('breakoutType', breakoutType);
+                else next.delete('breakoutType');
+              });
+              setBreakoutDropdownOpen(false);
+            }}
+          />
         </div>
+
+        <CallsIndexTimeline sections={dateSections} />
       </div>
 
-      {/* Global Search Modal */}
       <GlobalCallSearch
         isOpen={searchOpen}
         onClose={() => setSearchOpen(false)}

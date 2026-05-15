@@ -1,0 +1,44 @@
+{
+  "meeting_topic": "EIP-7928 Breakout #10, Jan 14, 2026",
+  "meeting_start_time": "2026-01-14T13:57:31Z",
+  "meeting_end_time": "2026-01-14T15:13:13Z",
+  "summary_start_time": "2026-01-14T13:57:32Z",
+  "summary_end_time": "2026-01-14T14:59:25Z",
+  "summary_created_time": "2026-01-14T15:13:56Z",
+  "summary_last_modified_time": "2026-01-14T16:48:39Z",
+  "summary_overview": "The team reviewed progress on DevNet 1 and discussed potential EIP implementations for DevNet 2, while considering the need for batch reading and block access list features. They explored various testing approaches and benchmarking methods for these new implementations, with concerns raised about timeline delays due to client progress. The team agreed to reassess the DevNet 2 launch timeline after reviewing EIP implementations and testing updates, while also discussing performance improvements and potential optimizations for transaction verification.",
+  "summary_details": [
+    {
+      "label": "DevNet Stability and EIP Planning",
+      "summary": "The team discussed updates on DevNet 1, where Nethermind reported stability after resolving syncing issues and successfully running EVM fuzzer and Uniswap transactions without errors. The group then considered adding four EIPs to DevNet 2, including slot EIPs and transfer lock EIPs, but debated whether to proceed given the current state of the network."
+    },
+    {
+      "label": "Batch Reading Implementation Progress",
+      "summary": "The team discussed the implementation of batch reading for block access lists, with Besu having a first implementation ready for testing next week. Jared noted that Geth is focusing on merging existing BAL changes to the master branch, but hasn't started work on batch reading yet. Toni highlighted that batch reading is crucial for benchmarking state locations and finalizing the BAL design, as it's currently blocking some repricing work. The team agreed to potentially adjust the January 21st deadline for devnet 2, depending on client progress with batch reading implementation."
+    },
+    {
+      "label": "Devnet BAL Implementation and Testing",
+      "summary": "The team discussed the timing and implementation of block access lists (BALs) and batch I/O for the devnet, with Karim and Toni agreeing that 21 for devnet might be too soon. Barnabas raised concerns about the need for proper benchmarking, suggesting that final numbers for devnet 2 might take weeks or months to achieve. The team also discussed the need to separate block access lists from the block body and the impact of this change on RLP tests. Felipe and Karim explored potential solutions for testing the new system, including the possibility of using a separate file for BALs. \u0141ukasz proposed a benchmarking approach using SLOAD operations to measure the effectiveness of state locations and BAL size. Toni explained that state locations are important for determining the value of batch reading and could impact repricing EIPs. The team agreed to continue discussions on these topics and to explore solutions for testing the new system."
+    },
+    {
+      "label": "Parallel Transaction Benchmarking Challenges",
+      "summary": "The team discussed benchmarking parallel transaction execution and state access efficiency. They explored challenges in creating reliable benchmarks, including the need for snapshot mainnet state and the difficulty of replaying blocks consistently across clients. The group also considered the differences between devnet-1 and devnet-2 environments for benchmarking purposes, with Stefan noting that devnet-1 could continue running for benchmarking while devnet-2 focuses on optimizations not yet implemented. The team agreed to further discuss how to measure state read and write benefits, with Jochem Brouwer taking this into consideration for future benchmarking efforts."
+    },
+    {
+      "label": "Devnet 2 Launch and Timeline",
+      "summary": "The team discussed the scope and timeline for devnet 2, focusing on implementing four EIPs that do not require benchmarking. Barnabas emphasized that these EIPs should be implemented regardless of repricing values, which should be a separate discussion. The group agreed to launch devnet 2 next week, with the possibility of rolling out parallel I/O changes soon after. Karim and Jared expressed concerns about delays in client implementation, leading to a consensus to delay the devnet launch to ensure proper completion of necessary changes."
+    },
+    {
+      "label": "DevNet 2 Timeline and Updates",
+      "summary": "The team discussed the timeline for DevNet 2, agreeing to reassess on the 21st after reviewing progress on implementing four EIPs, with Toni noting that if more time is needed, the launch will be delayed. They also reviewed changes to BlockLab access lists, which were moved out of the execution block and are now separate but still part of the execution payload, and discussed JSON RPC method updates. Toni highlighted the need for further clarification on access list implementation, referencing a new section in the EIP that specifies when accounts are added to the list for different opcodes. The team agreed to continue monitoring progress on EIP implementations and testing updates, with Felipe requested to provide a testing update focusing on DevNet 2."
+    },
+    {
+      "label": "Performance and Feature Implementation Updates",
+      "summary": "The team discussed performance improvements and the implementation of Glamsterdam features, with Barnabas emphasizing the need for dedicated personnel for each task. Felipe provided an update on test coverage improvements and the inclusion of old Ethereum tests in the ExecutionPo repository. The group debated the necessity of engine_getBALsByHashV1 and engine_getBALsByRangeV1 methods for DevNet 2, with Toni and Jared exploring potential use cases and implementation challenges. Josh introduced the idea of outsourcing transaction verification to trusted nodes, which could significantly reduce the computational load on RPC providers. The team agreed to continue discussions on this optimization in the BlockLab AccessList Discord channel and potentially explore RPC standardization."
+    }
+  ],
+  "next_steps": [
+    "Reth: Fix syncing issue on devnet 1",
+    "Client teams: Review new EIP section clarifying what \"access\" means for each opcode"
+  ]
+}

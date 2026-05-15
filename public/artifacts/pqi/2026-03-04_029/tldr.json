@@ -1,0 +1,116 @@
+{
+  "meeting": "Post-Quantum (PQ) Interop #29 - March 4, 2026",
+  "highlights": {
+    "devnet_3_status": [
+      {
+        "timestamp": "00:00:30",
+        "highlight": "5-client interop achieved: Zeam, Ream, Lantern, Ethlambda, leanSpec"
+      },
+      {
+        "timestamp": "00:00:54",
+        "highlight": "DevNet-3 merged to main in Zeam; ready for long-running testnet"
+      },
+      {
+        "timestamp": "00:04:51",
+        "highlight": "Checkpoint sync issues resolved across clients; further stability testing needed"
+      }
+    ],
+    "devnet_4_progress": [
+      {
+        "timestamp": "00:01:30",
+        "highlight": "DevNet-4 spec PR up for review; recursive aggregation via leanMultisig"
+      },
+      {
+        "timestamp": "00:02:15",
+        "highlight": "Blocked on LeanSig ZK-friendly encoding implementation for recursive aggregation"
+      },
+      {
+        "timestamp": "00:13:09",
+        "highlight": "ZK-friendly encoding not yet implemented; timeline uncertain due to workload"
+      }
+    ],
+    "devnet_5_design": [
+      {
+        "timestamp": "00:21:55",
+        "highlight": "DevNet-5 proposal: sign both block and proposer attestation using recursive aggregation"
+      },
+      {
+        "timestamp": "00:24:10",
+        "highlight": "Security concern: current proofs are succinct but not zero-knowledge"
+      },
+      {
+        "timestamp": "00:30:52",
+        "highlight": "Alternative: aggregate signatures with different messages per party using Snarks"
+      },
+      {
+        "timestamp": "00:37:21",
+        "highlight": "Consensus: use separate keys for proposer/attester; simplest secure approach"
+      }
+    ],
+    "infrastructure": [
+      {
+        "timestamp": "00:16:00",
+        "highlight": "Subnet count hardcoded as 1; needs config-based approach for multi-subnet testing"
+      },
+      {
+        "timestamp": "00:19:45",
+        "highlight": "Plan to scale validators beyond minimal counts for realistic testing"
+      },
+      {
+        "timestamp": "00:48:03",
+        "highlight": "DevNet recovered from 500-slot stall to 2,500 slots via checkpoint sync"
+      }
+    ],
+    "organizational": [
+      {
+        "timestamp": "00:04:17",
+        "highlight": "Kamil stepping down as Quadrivium CEO; joining Ethereum Foundation"
+      },
+      {
+        "timestamp": "00:50:30",
+        "highlight": "Fort Mode event April (analogous to Beam Day); focus on consensus research"
+      }
+    ]
+  },
+  "action_items": [
+    {
+      "timestamp": "00:01:21",
+      "action": "Review DevNet-4 spec PR and provide feedback",
+      "owner": "All client teams"
+    },
+    {
+      "timestamp": "00:16:30",
+      "action": "Move subnet count from hardcoded to chain config",
+      "owner": "Anshal (Zeam)"
+    },
+    {
+      "timestamp": "00:42:17",
+      "action": "Spec DevNet-5 with separate proposer/attester keys approach",
+      "owner": "Spec team"
+    }
+  ],
+  "decisions": [
+    {
+      "timestamp": "00:37:30",
+      "decision": "DevNet-5 will use separate keys for block proposing and attesting (not ZK approach)"
+    },
+    {
+      "timestamp": "00:39:43",
+      "decision": "Short-term: use even/odd XMSS indices; long-term: dual key system with independent lifetimes"
+    },
+    {
+      "timestamp": "00:46:05",
+      "decision": "Do not assume zero-knowledge properties for consensus layer design"
+    }
+  ],
+  "targets": [
+    {
+      "timestamp": "00:01:03",
+      "target": "End of week - DevNet-4 spec completion target"
+    },
+    {
+      "timestamp": "00:09:14",
+      "target": "This week - Gene team wrapping up DevNet-2 work"
+    }
+  ]
+}

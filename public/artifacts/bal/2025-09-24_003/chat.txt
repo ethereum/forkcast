@@ -1,0 +1,58 @@
+00:04:51	Carl Beekhuizen:	gm gm
+00:04:55	felipe:	gm
+00:07:18	jochem-brouwer:	gm
+00:14:52	Marc:	is there analysis of how large the BAL would be with much higher gas limits?
+00:16:12	Toni Wahrstaetter:	Replying to "is there analysis of..."
+
+they scale quite linearly, there's an size analysis on blockaccesslist.xyz, if you scroll down to the post of Maria
+00:16:21	Karim T.:	It will not impact performance to compute this new trie also ? All the hashes of the intermediate node
+00:16:22	Marc:	Reacted to "they scale quite lin…" with 👍🏾
+00:16:55	jochem-brouwer:	All the BALs and whistles :)
+00:16:57	Jason Vranek:	tried to summarize the argument for preconfs here https://hackmd.io/rY776_v6T8u9vqzzJCtGPg?view
+00:17:00	felipe:	Reacted to "All the BALs and w..." with 😂
+00:17:03	Jared Wasinger:	Reacted to "All the BALs and whi..." with 😂
+00:17:15	Marius van der Wijden:	Replying to "It will not impact..."
+
+Its pretty small, so not really important
+00:17:29	Marius van der Wijden:	I also lean weakly against it
+00:17:54	Karim T.:	I will prefer something simple also
+00:18:20	draganrakita:	Reacted to "I will prefer someth..." with 👍
+00:19:07	Łukasz Rozmej:	I'm late to the party, reading the proposal….
+00:19:52	Karim T.:	Reacted to "Its pretty small, so..." with 👍
+00:19:57	mirgee:	Reacted to "tried to summarize t..." with 👍
+00:23:37	draganrakita:	Why do we need special case for selfdestruct, it does not remove the storage?
+00:24:15	draganrakita:	Yeah forgot about it
+00:24:36	draganrakita:	Just having read of account makes sense
+00:24:44	felipe:	I guess the argument is to save space in the BAL then? If there is no use for distinguishing between these cases, I think this makes sense.
+00:25:51	raxhvl:	The state changes for self destruct will be at cache layer and doesn't really write to state.
+00:27:10	Karim T.:	Why not adding this slot as a read ?
+00:28:01	draganrakita:	Reacted to "Why not adding this ..." with 👍
+00:29:20	felipe:	We have a PR for [self-destruct] open too. We will wait for spec changes and add these expectations to the tests before merging.
+00:29:47	Łukasz Rozmej:	On prev topic: I like the BAL root in header, but to have final opinion about it I would have to see some more detailed spec. I agree that it increases complexity, but not sure how much. We could ship it later, but depending on the final complexity could be shipped now.
+00:30:34	Łukasz Rozmej:	we don't need precompiles in BALs
+00:31:22	Łukasz Rozmej:	Geth tracks precompiles access internally, but Nethermind currently doesn't
+00:32:40	Jared Wasinger:	Replying to "On prev topic: I lik..."
+
+Without linking it via the hash in the header, you have no guarantee that a MiTM doesn’t modify the BAL and make the block invalid
+00:33:42	draganrakita:	For BALANCE opcode you would be missing precompile
+00:34:02	draganrakita:	Or any opcode that fetched this from account
+00:34:18	raxhvl:	Reacted to Or any opcode that f... with "👍"
+00:37:06	Łukasz Rozmej:	ah to be honest not that much difference
+00:37:16	draganrakita:	I don’t like two types of behavior like that
+00:37:29	Karim T.:	Reacted to "I don’t like two typ..." with ➕
+00:37:31	raxhvl:	Reacted to I don’t like two typ... with "➕"
+00:37:43	Jared Wasinger:	Reacted to "I don’t like two typ..." with ➕
+00:38:26	Ishika:	Reacted to "I don’t like two ..." with ➕
+00:40:16	Łukasz Rozmej:	Replying to "On prev topic: I lik..."
+
+yeah but that should be cheap?
+00:41:06	Toni Wahrstaetter:	I guess you'd need that on eht block-level (with the post-storage roots of accounts after that block) instead of the tx-level?
+00:42:08	Karim T.:	I think it’s a good idea to have the modified storage root
+00:47:19	Jared Wasinger:	Replying to "On prev topic: I lik..."
+
+true
+00:47:46	Jared Wasinger:	Replying to "On prev topic: I lik..."
+
+Also, the BAL should be committed to in the block hash.  So having it in the header seems natural to me
+00:49:01	Ishika:	thanks that will be helpful
+00:49:06	felipe:	Reacted to "thanks that will b..." with 👍

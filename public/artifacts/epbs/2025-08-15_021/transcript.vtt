@@ -1,0 +1,1750 @@
+WEBVTT
+
+1
+00:02:08.419 --> 00:02:09.440
+Potuz: Hello!
+
+2
+00:02:12.160 --> 00:02:13.309
+Akash | ECH: able to lose.
+
+3
+00:02:13.480 --> 00:02:14.290
+Justin Traglia: Hey, POTUS.
+
+4
+00:02:14.290 --> 00:02:18.189
+Potuz: Good, you can hear me. I was… yeah, I'm having trouble.
+
+5
+00:02:18.450 --> 00:02:24.710
+Potuz: I'm in a very small place in the middle of nowhere. I wasn't sure if the internet would be good enough.
+
+6
+00:02:25.580 --> 00:02:27.319
+Justin Traglia: You sound better than normal, actually.
+
+7
+00:02:27.770 --> 00:02:30.480
+Potuz: Haha, interesting.
+
+8
+00:02:33.210 --> 00:02:42.189
+Potuz: Yeah, so typically I connect from home, where my node is taking all of my bandwidth. I think after Fusaka, I'm not gonna be able to get into any calls.
+
+9
+00:02:44.440 --> 00:02:47.870
+Justin Traglia: I can relate, my upload… my internet sucks.
+
+10
+00:03:30.030 --> 00:03:31.340
+Akash | ECH: Hepatus?
+
+11
+00:03:32.290 --> 00:03:32.980
+Potuz: Yep.
+
+12
+00:03:33.380 --> 00:03:36.889
+Akash | ECH: I'm helping with the stream today, so let me know whenever you're ready.
+
+13
+00:03:38.240 --> 00:03:47.199
+Potuz: Sure. It's gonna… it's gonna be a while, I think we need to wait a few minutes to see if someone shows up. It's not even time yet.
+
+14
+00:03:47.890 --> 00:03:49.090
+Akash | ECH: Okay, no problem.
+
+15
+00:04:10.910 --> 00:04:15.770
+Potuz: Well, so I'm hoping that… let me ping, just in case, I'm gonna ping Francesco.
+
+16
+00:05:21.290 --> 00:05:26.320
+Potuz: Alright, I did my… my peer pressure in Francesco. I think he's just gonna show up soon.
+
+17
+00:05:27.770 --> 00:05:29.489
+Potuz: And we need at least…
+
+18
+00:05:37.190 --> 00:05:38.380
+Potuz: Yeah.
+
+19
+00:05:39.180 --> 00:05:39.870
+Potuz: Hmm.
+
+20
+00:05:39.870 --> 00:05:44.009
+Justin Traglia: Did you message about it on the ETH R&D Discord?
+
+21
+00:05:44.490 --> 00:05:54.539
+Potuz: No, no, no, I just… oh, yeah, I did mention… I did measure… mention the call in the… in the entire R&D, but… but I also… but I pinged him personally, I pinged Francesco personally.
+
+22
+00:05:54.690 --> 00:05:55.620
+Potuz: But I…
+
+23
+00:05:55.790 --> 00:06:00.700
+Potuz: I think Stefan said that he's coming, and that's… so it really is good to wait for him.
+
+24
+00:06:01.600 --> 00:06:02.400
+Potuz: Kiss.
+
+25
+00:06:03.030 --> 00:06:07.830
+Potuz: He's the only other one that is actually implementing this.
+
+26
+00:06:08.670 --> 00:06:14.680
+Justin Traglia: Yeah, it'd be nice if we had a glass, dash CL and dash el, tag now.
+
+27
+00:06:17.770 --> 00:06:20.619
+Justin Traglia: Like there is for free soccer, I guess it'd be Amsterdam.
+
+28
+00:06:20.620 --> 00:06:25.220
+Potuz: Oh, I see, I see, for Glamster then. Oh, that's… that's actually a cool thing, yeah.
+
+29
+00:06:25.700 --> 00:06:26.479
+Justin Traglia: I'll ask for that.
+
+30
+00:06:26.480 --> 00:06:30.239
+Potuz: Yeah, so Barnabas was trying to do this, and…
+
+31
+00:06:30.910 --> 00:06:41.429
+Potuz: And it's kind of like, yeah… I mean, it… I assume that it's fine if we just add all of Prism to that. I think no one is gonna complain to get tagged.
+
+32
+00:06:45.270 --> 00:06:47.030
+Potuz: Alright, I think we're…
+
+33
+00:06:47.650 --> 00:06:58.359
+Potuz: we have the people that are actually coding, and we have Francesco, who's gonna explain us something, so we can start today. Akash, you were asking when to start recording. Now it's…
+
+34
+00:06:58.770 --> 00:07:00.500
+Potuz: You're alive.
+
+35
+00:07:01.080 --> 00:07:02.570
+Potuz: Alright, perfect, thanks.
+
+36
+00:07:02.790 --> 00:07:10.000
+Potuz: Welcome to… I don't really know which number it is, let's see… it is…
+
+37
+00:07:10.900 --> 00:07:16.020
+Potuz: Phone call number 21, the breakout for EPBS number 21.
+
+38
+00:07:16.270 --> 00:07:23.659
+Potuz: We have some few items in the agenda, some are actually… might actually be complicated, so… so let's start with the easiest ones.
+
+39
+00:07:23.830 --> 00:07:30.859
+Potuz: The ones that are already merged. We, are going to sample PTC
+
+40
+00:07:31.320 --> 00:07:50.030
+Potuz: by stake, so proportional to the stake that they have. The original, sampling that we implemented first was just simply counting, taking a number of validators from the, from the Beacon Committee, that, was rightly so pointed that it was, not compatible with MaxCB.
+
+41
+00:07:50.400 --> 00:07:56.600
+Potuz: And now we're sampling it by stake. I think this has already been merged, it was a PR by Francesco.
+
+42
+00:07:57.280 --> 00:08:12.440
+Potuz: But we still will count the votes individually. So, you are selected or not to participate according to your stake, but when you vote, your vote counts as 1, and the threshold, we still have it currently at 50%.
+
+43
+00:08:12.770 --> 00:08:25.739
+Potuz: I don't know if this might change for DA, we might use a different number for DA, or still use 50% for DA, but once we revise the Fulu, and we count, and we add
+
+44
+00:08:25.780 --> 00:08:34.410
+Potuz: the DA presence on the PTC at the station, we might have, like, independent thresholds even on this side.
+
+45
+00:08:34.770 --> 00:08:37.759
+Potuz: I don't know if anyone has a comment on this.
+
+46
+00:08:46.990 --> 00:08:54.499
+Potuz: Okay, good. So, let's move on to the next item. Okay, so this is something that Francesco brought up.
+
+47
+00:08:55.370 --> 00:08:58.909
+Potuz: Which is whether or not to commit the state route in the payload envelope.
+
+48
+00:08:59.840 --> 00:09:02.279
+Potuz: So there's two problems here.
+
+49
+00:09:02.570 --> 00:09:19.470
+Potuz: One is the fact that… well, there is a commitment for a state route that might not be useful, and I'm happy to remove that. But then there's a broader, question, which is whether or not we want to commit to the full envelope or not.
+
+50
+00:09:19.520 --> 00:09:30.090
+Potuz: And, yeah, so Francesco is here. He was arguing to commit to the full envelope. I don't know if you want to mention this, or if someone else has a comment about this.
+
+51
+00:09:32.870 --> 00:09:42.829
+Francesco: Yeah, I mean, I could just briefly say, I don't know, I don't have any, like, super deep reason to say that I think we should do this, it's mostly just, …
+
+52
+00:09:43.210 --> 00:09:49.770
+Francesco: if there's no reason not to commit to the envelope, I'd rather do it so that there's no question that,
+
+53
+00:09:49.980 --> 00:09:58.299
+Francesco: there's only gonna be a single envelope, and you can just check that against the commitment. There's no ability for the builder to inject, like, multiple envelopes.
+
+54
+00:09:58.610 --> 00:10:03.340
+Francesco: that's basically it. Then yeah, if, I can see that
+
+55
+00:10:03.460 --> 00:10:18.650
+Francesco: in the future, we might move away from, even being able to commit to the envelope, so maybe it doesn't make sense to try to start with that. Like, it might be that… I mean, it seems to me like in the first version of PPS, it should be possible to commit to the envelope, but…
+
+56
+00:10:18.700 --> 00:10:25.199
+Francesco: Maybe it doesn't make sense to try to have this kind of guarantee if we're gonna probably lose it in the future.
+
+57
+00:10:25.260 --> 00:10:28.200
+Francesco: … So yeah, that's it.
+
+58
+00:10:31.280 --> 00:10:36.989
+Potuz: Right. … Does anyone else have a feeling about this?
+
+59
+00:10:37.880 --> 00:10:40.720
+Potuz: Oh, Barnabas is here! Wow, we're getting serious.
+
+60
+00:10:46.260 --> 00:10:55.320
+Potuz: Okay, so I can… I mean, my opinion on the topic is that we definitely will not commit to the envelope in the future.
+
+61
+00:10:55.490 --> 00:11:01.460
+Potuz: We are hoping We couldn't clear out slot auctions, which is an issue.
+
+62
+00:11:01.630 --> 00:11:02.860
+Bruno Mazorra: And….
+
+63
+00:11:02.860 --> 00:11:08.010
+Potuz: Committing to the envelope is what's causing the current problem that we have with the…
+
+64
+00:11:08.590 --> 00:11:16.199
+Potuz: with a free option problem. So, if we ever find a way of actually not committing at all to the envelope, that would be good.
+
+65
+00:11:16.430 --> 00:11:25.300
+Potuz: Having said, so, I do agree that there's no strong reason to actually do a state transition and agree on the state route.
+
+66
+00:11:25.630 --> 00:11:28.089
+Potuz: So I don't mind removing the…
+
+67
+00:11:28.230 --> 00:11:30.719
+Potuz: The… the state route from here.
+
+68
+00:11:30.940 --> 00:11:37.560
+Potuz: I don't know if anyone has an argument as to why the state route was there. I just added it.
+
+69
+00:11:37.660 --> 00:11:38.820
+Potuz: Because…
+
+70
+00:11:39.400 --> 00:11:53.759
+Potuz: That's something we do whenever we change the state in consensus, and I just wanted to repeat what the state transition function is for consensus and the payload, but I don't see any strong argument as to why we need to have the state route.
+
+71
+00:11:54.050 --> 00:11:59.670
+Potuz: in the end, I mean, committed, and computed, and checked against, we can remove that assert.
+
+72
+00:12:00.380 --> 00:12:15.650
+Potuz: But I don't think we should commit to the payload, and it's just because of that argument, that if we ever find a way of not committing, we want to use it, and I'm not sure how easy it would be to remove that commitment.
+
+73
+00:12:16.270 --> 00:12:27.130
+Potuz: Once we have it. Like, it's… it's code that we hope we… we can remove it, and it's… if it's easier not to change it in the future, that's gonna be better not to have it now, not to change it now.
+
+74
+00:12:42.230 --> 00:12:46.619
+Potuz: Yes, so Francesco's, yes, pointing out correctly that,
+
+75
+00:12:46.930 --> 00:13:00.899
+Potuz: that, yes, the builder would need to be, to be computing the state route on the CL, on the critical path, and it's… it's a non-trivial commitment, and I'm told that any millisecond actually counts. So I do agree with that, with this.
+
+76
+00:13:01.570 --> 00:13:09.820
+Potuz: So I would propose to remove the state route, remove that assertion, unless someone figures out that it's actually needed.
+
+77
+00:13:11.400 --> 00:13:23.969
+Potuz: But I would prefer if we don't commit to the payload for now, until we realize, at least until we evaluate whether or not it's going to be trivial or not, removing that commitment later on.
+
+78
+00:13:35.910 --> 00:13:39.180
+Potuz: Right, I don't see any pushbacks, nor…
+
+79
+00:13:44.210 --> 00:13:50.760
+Potuz: Alright, so I don't see any pushbacks, nor… in favor, and I'm…
+
+80
+00:13:50.980 --> 00:13:56.670
+Potuz: I shouldn't be a moderator here, because I'm very biased on the topic, so… but anyways, …
+
+81
+00:13:56.820 --> 00:14:00.520
+Potuz: I'll ask to have another moderator in the future.
+
+82
+00:14:00.710 --> 00:14:10.039
+Potuz: in future meetings, but I think it seems reasonable to me to, to remove that commitment… this statement, remove the commitment to the state route, and…
+
+83
+00:14:10.470 --> 00:14:18.149
+Potuz: Keep the commitment… keep the commitment to the hash and not the full pay envelope for a while, at least, until we figure it out.
+
+84
+00:14:18.310 --> 00:14:20.259
+Potuz: If it's trivial or not to remove it.
+
+85
+00:14:23.570 --> 00:14:24.430
+Potuz: Alright.
+
+86
+00:14:25.260 --> 00:14:27.080
+Potuz: So, the next topic
+
+87
+00:14:27.650 --> 00:14:39.460
+Potuz: Let me skip it for now, because we need to have… I mean, I forced Francesco to be here, so let's, let's ask him to explain the changes to Proposal Boost.
+
+88
+00:14:39.760 --> 00:14:40.860
+Potuz: …
+
+89
+00:14:41.310 --> 00:14:53.060
+Potuz: which is to better handle electrification, and this is something that we want to port even to Phase 0, if I understand correctly, and it's independent of EPVS, although it's going to be better to have it on EPVS, …
+
+90
+00:14:53.240 --> 00:14:57.140
+Potuz: So, I'll give the floor to Francesco to explain these changes.
+
+91
+00:14:58.750 --> 00:15:04.220
+Francesco: Okay, yeah, maybe let me share screen…
+
+92
+00:15:08.680 --> 00:15:09.850
+Francesco: onto them…
+
+93
+00:15:20.990 --> 00:15:26.930
+Francesco: Yeah, so, first of all, yeah, do you see the, this VS Code thing?
+
+94
+00:15:27.430 --> 00:15:28.690
+Potuz: I conceive well.
+
+95
+00:15:29.860 --> 00:15:40.540
+Francesco: Okay, so one thing is sort of independent of… … EPVS, and it's…
+
+96
+00:15:41.120 --> 00:15:51.009
+Francesco: this one? So, I mean, yeah, this is just to help permit to update Proposal Boost Fruit, which would have happened otherwise here.
+
+97
+00:15:51.390 --> 00:16:07.500
+Francesco: And the new thing is basically, you don't just check if, a block is timely and, is the first block, before updating proposer, boost route. You also…
+
+98
+00:16:07.600 --> 00:16:16.789
+Francesco: basically check if the proposer is the one that… so this part, you only update if the proposer is the same as on the canonical chain.
+
+99
+00:16:16.790 --> 00:16:35.099
+Francesco: So yeah, you basically just, like, get your head state updated up to the current slot, and then check if the Proposer Index is the right one. To me, this seems just, like, basically a bug with ProposerBoost. Like, it basically allows that someone comes in with whatever block from some…
+
+100
+00:16:35.320 --> 00:16:50.839
+Francesco: forgotten branch, and, I mean, it has to be, like, descending from the finalized, but still, it can be done, and it can have a completely different proposer sequence, and it just forces you to update your proposer boost, and then you're not gonna update it for a real block.
+
+101
+00:16:51.120 --> 00:16:54.310
+Francesco: Of the actual proposer, like, as long as this block comes first.
+
+102
+00:16:55.050 --> 00:16:56.219
+Francesco: So, yeah, this…
+
+103
+00:16:56.630 --> 00:17:10.999
+Francesco: again, completely independently of EPVS, and this is why it's in Phase 0, seems to me just like a pure, like, proposer boost bug that we should fix. I don't have an opinion exactly on when this should be fixed, …
+
+104
+00:17:11.740 --> 00:17:13.590
+Francesco: I mean, I think it's… it's…
+
+105
+00:17:13.990 --> 00:17:17.429
+Francesco: not nice, like, in principle, it is pretty easy to exploit, …
+
+106
+00:17:17.670 --> 00:17:29.070
+Francesco: it's not, like, the end of the world, because, you know, exploiting it by itself kind of doesn't really do anything. To, like, exploit it meaningfully. You need to also be doing the kind of things that Proposal Boost is meant to prevent.
+
+107
+00:17:29.320 --> 00:17:32.940
+Francesco: But it's also not… yeah, like, it's… it's…
+
+108
+00:17:33.510 --> 00:17:41.840
+Francesco: I think it's a meaningful problem, like, if you control a validator and are able to do this, like, if you manage to have
+
+109
+00:17:43.370 --> 00:17:52.909
+Francesco: control a certain slot, and also manage to control, like, a fictional proposer for the following slot, which I think should be easy if you just,
+
+110
+00:17:53.300 --> 00:18:03.909
+Francesco: grind some kind of, grind assignments on some made-up branch, then you can basically do, like, an exanta reorg, like, you just essentially deactivate RoserBoost.
+
+111
+00:18:04.540 --> 00:18:11.100
+Francesco: So I, I, yeah, I think it would be better to fix it, like, sooner rather than later. I don't know in terms of, …
+
+112
+00:18:11.520 --> 00:18:22.160
+Francesco: you know, if this needs a coordinated, release, or if it can just be independently done. I don't know, last time that there was a proposal boost… I mean, one proposer boost was introduced without a coordinator release.
+
+113
+00:18:22.170 --> 00:18:38.909
+Francesco: a whole mess happened, so, you know, maybe we should just do a coordinates release, in which case, I don't know. I am not sure what's the earliest point that makes sense. Maybe, the first VPO after Fusaka, like, … the first VPO that is not scheduled with Fusaka might…
+
+114
+00:18:38.910 --> 00:18:45.129
+Francesco: Makes sense. But anyway, so this is one thing, and again, it's not super related to EPBS.
+
+115
+00:18:45.490 --> 00:18:58.710
+Francesco: And then other things, about the handling of… Proposal boosts and equivocations, here. So…
+
+116
+00:18:59.190 --> 00:19:09.750
+Francesco: the kind of point, is to… yeah, I'll show you what, but let me first say, I guess, what is the point? The point is basically
+
+117
+00:19:10.190 --> 00:19:25.279
+Francesco: to defend against the… actually, yeah, maybe before going forward with this, let's just pause for a second, and I don't know if anyone has comments about the proposer boost update, let's first talk about that.
+
+118
+00:19:25.860 --> 00:19:28.880
+Francesco: Like, the, the, you know, initial privilege update.
+
+119
+00:19:42.660 --> 00:19:50.190
+Potuz: So, Francesco, I can point that… so, as I was saying in the chat, in Prism, we are subject to this bug.
+
+120
+00:19:50.190 --> 00:20:05.790
+Potuz: But I think it can only be triggered, not by a random proposal. I got worried when I first heard about this, because in principle, anyone can actually just grind and see, well, if I build a block on top of this other very old block.
+
+121
+00:20:05.950 --> 00:20:10.310
+Potuz: And I imagine that there was such a branch, then I would, …
+
+122
+00:20:10.440 --> 00:20:20.340
+Potuz: Then I would be the proposer now, and I just propose, and notes would sync it. So if we're finalizing, of course, it doesn't happen, but if we're not finalizing, this in principle can happen.
+
+123
+00:20:20.620 --> 00:20:24.530
+Potuz: But I think Prism will not even attempt to sync such a block.
+
+124
+00:20:25.380 --> 00:20:33.609
+Potuz: So… so we aren't subject to such a thing, but if we are forked, yes, then we… this can be exploited for us.
+
+125
+00:20:35.550 --> 00:20:39.110
+Francesco: And why would you ignore, such a blog?
+
+126
+00:20:39.110 --> 00:20:42.879
+Potuz: This was an issue that when we were being dossed by these blocks.
+
+127
+00:20:43.040 --> 00:20:58.079
+Potuz: I think it proved that we can ignore them on gossip, but request them and sync them if we request such a block. So if we sync a child… if we see a child for such a block, we would sync it immediately.
+
+128
+00:20:59.160 --> 00:21:02.619
+Francesco: Or do you….
+
+129
+00:21:02.620 --> 00:21:08.939
+Potuz: Or an adaptation, exactly. So if we see anything that refers to such a block, we would immediately sync it, because we keep those blocks.
+
+130
+00:21:09.530 --> 00:21:14.549
+Potuz: But if it's just coming out of nowhere from gossip, we would just hold them.
+
+131
+00:21:14.970 --> 00:21:20.530
+Francesco: Okay, but then, I mean, if it is actually an attack, then someone can just attest to the block, and then… Yeah, that's.
+
+132
+00:21:20.530 --> 00:21:34.610
+Potuz: Yes, but that, yeah, the question is not to prevent from attacks, but to prevent from bugs. So clients that are buggy, typically they just randomly submit a block on top of a very old head that they had, because they were struggling.
+
+133
+00:21:42.170 --> 00:21:49.180
+Francesco: Okay, so I see… but yeah, I mean, just to clarify, I would… I mostly be…
+
+134
+00:21:49.390 --> 00:21:55.099
+Francesco: worry about this as an attack vector. I mean, not, like, not overly worried, but yeah, …
+
+135
+00:21:55.430 --> 00:22:02.630
+Francesco: But, yeah, it would definitely be good to be sure that it's not something that can accidentally cause problems, because that probably would be even worse.
+
+136
+00:22:02.760 --> 00:22:08.940
+Francesco: But I guess, you know, it hasn't caused problems for years. Well, maybe we don't know, but allegedly.
+
+137
+00:22:09.280 --> 00:22:14.480
+Francesco: But anyway, I see Justin is saying, ideally, would we fix it for Saka? Yeah, I mean, I guess it's just…
+
+138
+00:22:15.290 --> 00:22:18.620
+Francesco: … I don't know how people feel about
+
+139
+00:22:19.410 --> 00:22:26.380
+Francesco: making this change, before Fusaka releases. I also don't have a good understanding of, like, how
+
+140
+00:22:26.870 --> 00:22:38.479
+Francesco: you know, simple it is for people to do this. I mean, I would assume it is simple, like, clients, I guess, do already, like, would know what this proposer is, like this, …
+
+141
+00:22:39.330 --> 00:22:40.000
+Francesco: …
+
+142
+00:22:40.660 --> 00:22:47.159
+Francesco: kind of expected proposal for the head state. I would assume clients already have that, so I would assume it's quite simple.
+
+143
+00:22:47.480 --> 00:22:48.160
+Francesco: ….
+
+144
+00:22:52.890 --> 00:22:58.759
+Potuz: Yeah, the fix is just a couple of lines for us. We have the… we have the full state, so it's very trivial.
+
+145
+00:23:00.550 --> 00:23:09.799
+Francesco: Okay, so anyway, I don't want to hijack this call with this too much, since it's actually not really about EPBS, so yeah, I guess now that people are aware, we can then discuss maybe offline.
+
+146
+00:23:10.000 --> 00:23:13.620
+Francesco: Okay, so then, yeah, for the rest, …
+
+147
+00:23:14.630 --> 00:23:18.639
+Francesco: And now let's go back here, so there's a few things.
+
+148
+00:23:19.160 --> 00:23:27.389
+Francesco: One is this, … We'll actually go here… where's the store?
+
+149
+00:23:27.570 --> 00:23:35.309
+Francesco: Yeah, so I'm kind of interchanging this block timeliness thing, which is, also used as part of the browser boost.
+
+150
+00:23:35.360 --> 00:23:53.259
+Francesco: to record if something has come on time, to kind of have now two deadlines. One deadline would be the same as before, and then the new deadline would be the PTC deadline. Yeah, this is just basically recording whether… whether something came… whether a block came before the…
+
+151
+00:23:53.260 --> 00:24:00.230
+Francesco: PTC deadline. And the point of that is that we basically want to treat,
+
+152
+00:24:01.230 --> 00:24:13.369
+Francesco: early equivocations in, like, a particular way. So the whole thing is about, yeah, what we do with equivocations, and the kind of case that we're worried about is,
+
+153
+00:24:13.790 --> 00:24:21.160
+Francesco: Mmm, basically when, … Equivocations show up, late.
+
+154
+00:24:21.200 --> 00:24:33.589
+Francesco: So they… they can, in principle, get a… trick the builder to release. Like, everything looks fine for the builder, the builder releases, but an equivocation shows up late, and then Proposer Boost is used
+
+155
+00:24:33.600 --> 00:24:47.320
+Francesco: to, try to actually get the equivocating block to become canonical. So, like, basically, if you think about the rule that we have for builders to release, the rule is release if
+
+156
+00:24:47.330 --> 00:25:01.199
+Francesco: 40%… you see 40% of the weight. I mean, then, I don't know, builders might do something different, but at least this is the rule that's supposed to kind of ensure that builders have all the nice properties, and it fails in this specific way. I think it's the only way in which it fails.
+
+157
+00:25:01.200 --> 00:25:08.219
+Francesco: Which is, like, yeah, you could see 40% of the weight. That feels like it prevents you from being reorged through
+
+158
+00:25:08.220 --> 00:25:25.320
+Francesco: proposer boost, but then actually an equivocating block shows up, and now the, kind of, next proposer can anchor on that block with their proposer boost, and then sprinkle in on top of that some weight, and still reorge. So that's basically the annoying case.
+
+159
+00:25:25.350 --> 00:25:40.849
+Francesco: And, okay, there's a few things that go into trying to fix this. That's from pretty0. So, one thing is, in Get ProposerHead, there is now,
+
+160
+00:25:42.230 --> 00:25:52.860
+Francesco: this, proposed revocation, check, where you basically figure out, If the…
+
+161
+00:25:52.860 --> 00:26:12.229
+Francesco: the block in question is equivocation, just, like, there's two blocks from the same proposer, and then in that case, you have more lenient conditions to be doing the reorg. So, like, you know, these are all the conditions that you normally would check to do a proposer boost reorg, whereas
+
+162
+00:26:12.230 --> 00:26:14.920
+Francesco: You would do it, …
+
+163
+00:26:14.920 --> 00:26:27.750
+Francesco: just with this, like, basically just if the head is weak, and it's the right time. Like, as long… whenever you see, like, a weak equivocation, you basically aggressively try to reorg it.
+
+164
+00:26:27.880 --> 00:26:36.930
+Francesco: … So this is for, kind of, to establish, like, an honest, reorgan behavior that's supposed to,
+
+165
+00:26:37.230 --> 00:26:44.169
+Francesco: Like, it was establishing that the honest behavior is not to extend, weak equivocations, essentially.
+
+166
+00:26:44.810 --> 00:26:56.300
+Francesco: And then… so, yeah, that's one thing. Once we have this, then we can also change the testing behavior in such a way that,
+
+167
+00:26:57.260 --> 00:27:14.020
+Francesco: basically, if the proposer violates this rule, it can essentially guess is punished, like, the testers will try not to attest to proposers that appear not to have followed this rule, essentially. And, yeah, so this would go…
+
+168
+00:27:14.490 --> 00:27:17.880
+Francesco: here… yeah, go ahead.
+
+169
+00:27:18.410 --> 00:27:36.630
+Potuz: So… so… so you want to… the attesters for the next lot would check if there is a reorg of a week ahead, but they didn't see an equivocation, then they would just check the other, the other statements if… if they were all true, and if some of them weren't true, then you wouldn't attest for this?
+
+170
+00:27:37.300 --> 00:27:39.769
+Francesco: I mean, maybe just, like…
+
+171
+00:27:39.980 --> 00:27:50.129
+Francesco: Let me, let me just go through this, like, should apply proposer boost, and then it should be clear what the testers are supposed to do. Yeah, but yeah, this is what the proposer is supposed to do, it's, it's like…
+
+172
+00:27:50.130 --> 00:28:13.390
+Francesco: basically just boils down to reorg weekly heads, so that's meant to be, like, the honest proposer behavior. So what are testers supposed to do? Yeah, this should apply proposer boost, it just goes into, into get weight here, so it's, it's, you kind of update the proposer boost independently of all of this, but then you only apply it based on, on this function, once it comes to actually computing the, the, the fourth choice.
+
+173
+00:28:13.410 --> 00:28:17.649
+Francesco: So, yeah, basically, …
+
+174
+00:28:18.790 --> 00:28:27.789
+Francesco: everything up here is… I mean, yeah, so this was the only… the only thing that you had before, and then there's… there's all this kind of stuff that's added.
+
+175
+00:28:28.460 --> 00:28:36.110
+Francesco: So, you always apply it if the parent is not from the previous slot. This is basically because the…
+
+176
+00:28:36.310 --> 00:28:41.930
+Francesco: attack that we're concerned with is just, for, for the purpose of,
+
+177
+00:28:42.230 --> 00:28:50.989
+Francesco: you know, this builder kind of good properties, is when the, yeah, the parent block is just from the previous slot. …
+
+178
+00:28:51.270 --> 00:29:02.749
+Francesco: And, yeah, if the parent is, not weak, you always apply it, so it's only, kind of, weak, blocks that you, you might…
+
+179
+00:29:02.820 --> 00:29:17.520
+Francesco: take a second look at. If a block is not weak, meaning it has more than 20% of the weight, you just always apply it, just like before. And then this is basically the only part that's actually different. If something is from the previous slot and weak.
+
+180
+00:29:18.160 --> 00:29:20.460
+Francesco: And there are equivocations.
+
+181
+00:29:21.000 --> 00:29:34.969
+Francesco: accept everything, and there are equipped locations, then… so, yeah, basically, you only apply it if there are antiquity locations. If there are equations, you don't apply for rosor Boost in this case. So it's basically saying, okay, imagine that there is, like.
+
+182
+00:29:35.730 --> 00:29:44.220
+Francesco: a strong block, or, like, a not weak block, A, and then a weak block B from the last slot.
+
+183
+00:29:44.220 --> 00:29:58.499
+Francesco: attesters will only be able to apply a proposer boost to A, the one that's not weak. They will not apply proposer boost to B, so if, like, something shows up out of nowhere, it's an equivalocation and it's weak, that one is…
+
+184
+00:29:58.500 --> 00:30:07.819
+Francesco: cannot be chosen by the proposer. Or, like, the proposer can't choose it, they're not supposed to, like, this is saying, don't choose it, because it's weak and it's in publication.
+
+185
+00:30:07.960 --> 00:30:17.970
+Francesco: But if they do choose it, it doesn't get proposal used, so that's basically the point. Like, when you do have such a situation with multiple equations.
+
+186
+00:30:18.470 --> 00:30:28.860
+Francesco: the… the proposer is kind of, not supposed to choose any weak one, and if they do… if they do, they don't get the support of the testers, or at least of proposer boost. Yes?
+
+187
+00:30:29.530 --> 00:30:34.050
+Potuz: So… so in principle, it doesn't force them, but I think it would
+
+188
+00:30:34.290 --> 00:30:39.809
+Potuz: likely force clients to use this honest reorg feature.
+
+189
+00:30:39.810 --> 00:30:43.279
+Francesco: There are some clients that are not using Get ProposerHead.
+
+190
+00:30:43.910 --> 00:30:47.060
+Francesco: Yeah, this is meant to not be optional, anymore.
+
+191
+00:30:47.540 --> 00:30:57.999
+Francesco: Yeah, so, yeah, I mean, okay, no, this is suggesting things about the order. Yeah, I don't know where it says that this is… whether this is optional or not, but yeah, it's not supposed to be optional. …
+
+192
+00:30:59.960 --> 00:31:01.109
+Francesco: Which, I mean, I think we.
+
+193
+00:31:01.110 --> 00:31:08.269
+Potuz: We have Stefan here. Did Teku implement this? Because there's a few clients… I thought Teku, for example, did not implement this.
+
+194
+00:31:09.120 --> 00:31:13.589
+Stefan Bratanov: I'm pretty sure we implemented this, but I have to double-check it.
+
+195
+00:31:14.910 --> 00:31:29.409
+Francesco: But yeah, I mean, I think you're right that not all clients implement to the release, I don't know which do. But anyway, I… I mean, I always thought that this would need to become, non-optional, because, for example, right now, that's how Fossil is supposed to work as well.
+
+196
+00:31:29.660 --> 00:31:34.010
+Francesco: I mean, even there, it's, like, would be fine to be auctioned as long as, like.
+
+197
+00:31:34.970 --> 00:31:39.729
+Francesco: There's enough people that are doing this, so that it's not, like, an empty thread, but it's…
+
+198
+00:31:39.920 --> 00:31:48.359
+Francesco: Yeah, even in that case, it feels like some… like, every honest validator should be trying to enforce the inclusion list, and they would be doing it this way.
+
+199
+00:31:48.490 --> 00:31:49.760
+Francesco: …
+
+200
+00:31:50.200 --> 00:32:03.759
+Francesco: yeah, I mean, you could have different conditions for that specifically, but anyway, I don't know, I think it would be best to have this not be optional, and yeah, for this case, I think it would be necessary, because otherwise, I think you can probably…
+
+201
+00:32:04.070 --> 00:32:05.220
+Francesco: …
+
+202
+00:32:05.590 --> 00:32:11.789
+Francesco: screw the proposer, like, if they're not doing this expected thing, and they kind of just choose whichever of the…
+
+203
+00:32:12.340 --> 00:32:14.190
+Francesco: Of the two.
+
+204
+00:32:14.420 --> 00:32:20.739
+Francesco: It might… yeah, not sure, but I think this might… this might be, like, an attack vector… vector against the proposer.
+
+205
+00:32:25.940 --> 00:32:44.299
+Francesco: Oh, and yeah, I mean, here, there's this block timeliness thing that I was mentioning. It's just you only consider early equivocations, specifically to protect the proposer. So, like, here you're trying to get all the equivocations for… for the previous slot, or, like, equivocations that,
+
+206
+00:32:44.820 --> 00:33:02.639
+Francesco: kind of coincide with the parent, like, from the same proposer, etc. And you only consider the early ones, such that the proposer is supposed to have seen them. Like, you don't want to consider blocks that you just got, like, very late, because then the proposer would not have had a chance to see them.
+
+207
+00:33:02.640 --> 00:33:05.150
+Francesco: So that's why we need that timeliness thing.
+
+208
+00:33:05.150 --> 00:33:06.300
+Francesco: Mmm…
+
+209
+00:33:06.770 --> 00:33:17.940
+Francesco: this is basically most of it, but yeah, I know it's not super, like, it's also not super easy to explain, so I don't know. I guess, yeah, if people have questions, …
+
+210
+00:33:20.420 --> 00:33:34.770
+Francesco: Yeah, I don't know. If there's something that's unclear, tell me, I can try to re-explain it, or if you have a question, or… I don't know, we can also move on and do whatever else the call wants to cover, and then we can talk about this async.
+
+211
+00:33:35.540 --> 00:33:42.310
+Potuz: It sounds incredibly simple and reasonable to me, but it's… and it's very simple because we already have.
+
+212
+00:33:42.310 --> 00:33:45.919
+Francesco: everything here implemented. I'm not sure how simple it would be.
+
+213
+00:33:46.260 --> 00:33:54.730
+Potuz: for clients that don't implement the honest reorg, because that was not trivial for us to implement. So once we set up the Honest Reorg feature.
+
+214
+00:33:55.360 --> 00:34:04.300
+Potuz: implementing this is trivial. Although, even if you don't have the honest rear feature, I think the changes to Proposal Boost should also be trivial to implement for clients.
+
+215
+00:34:05.790 --> 00:34:12.560
+Potuz: I mean, not the… not the get proposer head, but the changes to Proposal Boost itself should be very simple, too.
+
+216
+00:34:13.120 --> 00:34:14.120
+Potuz: to implement.
+
+217
+00:34:26.239 --> 00:34:29.180
+Potuz: So, the plan is that you'll open a PR,
+
+218
+00:34:29.480 --> 00:34:37.360
+Potuz: for EPBS with this, and that PR will backport it to Phase 0. I mean, the other part would be backported to phase 0.
+
+219
+00:34:39.620 --> 00:34:45.790
+Francesco: Yeah, I mean, I guess maybe I would separate, the first thing that I was talking about, the…
+
+220
+00:34:45.909 --> 00:34:54.439
+Francesco: sort of bug fix for ProposerBoost, so I'll maybe open a PR for that independently.
+
+221
+00:34:54.570 --> 00:35:10.249
+Francesco: But I don't know. I definitely would like to hear more input on, like, what people want to do with this, when. And then, yeah, I can open a PR for the rest of it. I guess I'll wait for the rebase, probably, to be done.
+
+222
+00:35:10.760 --> 00:35:19.719
+Justin Traglia: If you, backport that fix to Phase 0, how will you pretty much tell clients to coordinate on the fix for, like, Fusaka or BPO?
+
+223
+00:35:20.080 --> 00:35:21.030
+Justin Traglia: 1.
+
+224
+00:35:24.590 --> 00:35:25.560
+Justin Traglia: Do you have any ideas?
+
+225
+00:35:25.560 --> 00:35:30.010
+Potuz: we coordinated this thing? I mean, is it really exploitable in any way?
+
+226
+00:35:30.810 --> 00:35:31.870
+Justin Traglia: I don't know.
+
+227
+00:35:32.130 --> 00:35:37.869
+Francesco: I mean, I… do you mean exploitable specifically if it's not coordinated? ….
+
+228
+00:35:37.870 --> 00:35:47.800
+Potuz: Right, so if some clients ship it and some clients don't, and then we're gonna see validators trying to slash themselves by equivocating, and… it's kind of weird.
+
+229
+00:35:48.350 --> 00:36:00.260
+Francesco: I mean, I don't know if… yeah, not sure, it's not obvious, but, like, when we did ship Proposal Boost, there was that whole, like, 7-block reorg caused by Proposal Boost being, like, 50%.
+
+230
+00:36:00.260 --> 00:36:00.985
+Potuz: ….
+
+231
+00:36:01.850 --> 00:36:10.770
+Francesco: So, I don't know, that's, I mean, that would be my apprehension, that, yeah, if, like, I mean, that was, I think, like, a fairly unlucky thing as well, but, ….
+
+232
+00:36:13.150 --> 00:36:21.250
+Justin Traglia: If… if it does need to be coordinated, I would think it might need to go in, like, the Fulu specs, and then after Fulu, we can backport it to Phase 0. But, ….
+
+233
+00:36:21.250 --> 00:36:22.910
+Francesco: Okay, right.
+
+234
+00:36:22.910 --> 00:36:25.269
+Justin Traglia: I'm not entirely sure. I'd have to think about this.
+
+235
+00:36:25.490 --> 00:36:30.559
+Francesco: Yeah, I… I don't know how to determine if it needs to be coordinated, to be honest.
+
+236
+00:36:32.520 --> 00:36:46.650
+Francesco: yeah, I think given that maybe there isn't, like, you know, it probably doesn't make a difference to do it in a month versus, like, whenever food ships, maybe it might as well be coordinated if people are okay with that, but….
+
+237
+00:36:48.800 --> 00:36:53.009
+Justin Traglia: Yeah, I mean, it seems pretty simple, and if it's a bug fix, it's important.
+
+238
+00:36:55.220 --> 00:36:57.260
+Justin Traglia: Yeah, and easy to be coordinated.
+
+239
+00:37:06.430 --> 00:37:08.950
+Potuz: Alright, is there any other comments on this?
+
+240
+00:37:15.640 --> 00:37:17.599
+Potuz: All right, great. Thanks, Francesco.
+
+241
+00:37:19.030 --> 00:37:25.710
+Potuz: We have a couple of more items. One is very simple, too, so let's go with the simplest ones first.
+
+242
+00:37:25.950 --> 00:37:34.079
+Potuz: Enforcing non-zero bids for builders that are not self-building. So, for blocks that are not self-building.
+
+243
+00:37:34.830 --> 00:37:35.670
+Potuz: …
+
+244
+00:37:35.810 --> 00:37:46.719
+Potuz: I can see one reason why to do this, and it also, like, simplifies other parts of code, and the reason is that when… when we have a blog that is not self-building.
+
+245
+00:37:46.850 --> 00:37:55.349
+Potuz: then we generate… we make changes on the state. We add… first, when you sync a block, we add a pending payment to the beacon state.
+
+246
+00:37:55.350 --> 00:38:07.270
+Potuz: And then when we sync the payload, we add a withdrawal. We take that pending pay… payment, and we add a withdrawal in the beacon stage. And it'd be very awkward to have these things with value zero.
+
+247
+00:38:08.050 --> 00:38:16.000
+Potuz: … Adjusting, we're clearly rejecting zero-value bits in relays.
+
+248
+00:38:16.120 --> 00:38:24.529
+Potuz: Yes, correct. Yes, there are no zero-value bits, and we're going to reject zero-value bits anyways over P2P as well.
+
+249
+00:38:24.790 --> 00:38:42.829
+Potuz: The thing with having zero-value bids is that it could be useful for people that want to go off-protocol, and there's an argument to be made of, like, actively keeping support for off-protocol bids. It's not something that I would be happy to support on Prism, but some other clients might want to support blind signing.
+
+250
+00:38:43.180 --> 00:38:54.380
+Potuz: And I'm not sure if it's useful for them to have this. So, there is an argument of, like, having zero value bids to go off protocol and receive the payment off protocol.
+
+251
+00:38:58.390 --> 00:38:59.400
+Potuz: So…
+
+252
+00:38:59.850 --> 00:39:06.969
+Potuz: Yeah, I don't know. I don't know if there's a pushback into enforcing that this value is non-zero. Otherwise, I would like to, like, remove
+
+253
+00:39:07.120 --> 00:39:15.359
+Potuz: Add paths to not add value zero operations, like pending payments with value zero and withdrawals with value 0.
+
+254
+00:39:15.650 --> 00:39:19.930
+Potuz: Of course, it's kind of silly, because you can still add these things with one way, and that's it.
+
+255
+00:39:20.070 --> 00:39:21.900
+Potuz: But… anyways.
+
+256
+00:39:27.600 --> 00:39:30.870
+Potuz: Like, asserting it to be non-zero is just one line.
+
+257
+00:39:36.010 --> 00:39:38.359
+Justin Traglia: I'm in favor of the assert.
+
+258
+00:39:39.880 --> 00:39:51.070
+Potuz: it makes tests… so this appeared because of Terrence's PR for tests, and it makes tests much easier to think about. It makes tests more robust.
+
+259
+00:40:02.290 --> 00:40:08.709
+Potuz: Yes, that comment, yeah, that's correct. If you want to go off protocol anyways, you can do it with one way, I just…
+
+260
+00:40:09.380 --> 00:40:14.610
+Potuz: It was just an issue of, like, … Yeah, making their life easier.
+
+261
+00:40:15.670 --> 00:40:20.610
+Potuz: But if no one… if no one is against, asserting that the bid is non-zero.
+
+262
+00:40:20.940 --> 00:40:23.450
+Potuz: That's something I would prefer as well.
+
+263
+00:40:23.710 --> 00:40:27.309
+Francesco: So, this is just for non-self-building, right?
+
+264
+00:40:27.310 --> 00:40:31.760
+Potuz: Yes, self-building needs to be zero. Self-building is important that it is zero.
+
+265
+00:40:34.220 --> 00:40:42.060
+Francesco: Okay, then, like, if you want to go out of protocol, you can also just have the proposer just pretend to self-build, so I think it's not….
+
+266
+00:40:42.060 --> 00:40:51.380
+Potuz: Yes, so that was my way of going off protocol. That was my proposal, that you keep it exactly the same as it is now with MapBoost, and then the proposer signs everything.
+
+267
+00:40:51.570 --> 00:40:58.660
+Potuz: But then, Mark came with a… with a system for… that… that would be good to have, like, different signatures.
+
+268
+00:40:59.260 --> 00:41:09.670
+Potuz: … Have the relay sign the payload and the envelope, and then have the proposer sign the consensus block.
+
+269
+00:41:17.320 --> 00:41:23.289
+Francesco: Okay, then I guess, I don't know, it's a question of, do we care about that, plus not needing to…
+
+270
+00:41:23.480 --> 00:41:32.819
+Francesco: be a builder, as whoever is on the other side of this. So, like, you maybe… I don't know, maybe you could do it in a way where you don't even need to…
+
+271
+00:41:33.610 --> 00:41:45.250
+Francesco: Yeah, I don't know. I don't know. I mean, it seems like if you have to be a builder anyway, then yeah, you could just submit, like, a really small bid, and it doesn't make a difference. Like, it would only be useful if you could actually not even be a builder.
+
+272
+00:41:45.560 --> 00:41:51.869
+Potuz: Yeah, but then, yeah, so if… that would break staking pool. So we don't want to take bids from things that are not builders.
+
+273
+00:41:52.820 --> 00:41:58.460
+Francesco: Okay, then I think you… yeah, it's… I don't know, I don't see any reason not to just enforce greater than zero.
+
+274
+00:42:01.300 --> 00:42:02.030
+Potuz: Alright?
+
+275
+00:42:02.900 --> 00:42:05.310
+Potuz: So those were the easy ones.
+
+276
+00:42:05.900 --> 00:42:13.919
+Potuz: Let's go to the two. There's one which is about, asymmetric payments for the free option problem. I see Bruno is here.
+
+277
+00:42:14.100 --> 00:42:18.520
+Potuz: Let me just mention quickly what, what this would be.
+
+278
+00:42:18.780 --> 00:42:25.710
+Potuz: The idea would be to somehow penalize builders that don't …
+
+279
+00:42:26.390 --> 00:42:45.860
+Potuz: penalized asymmetrically. Builders that, don't get their payload included. So if you… if you… you bid for, say, 5, and your payload is included, then, well, you pay 5, but if your payload is not included, then you would pay something different.
+
+280
+00:42:46.150 --> 00:42:49.759
+Potuz: And, probably 7, something like this.
+
+281
+00:42:50.900 --> 00:42:59.990
+Potuz: Now, there's reasons to do this, which have to do with this free option problem, to try to penalize withholding the payload.
+
+282
+00:43:00.390 --> 00:43:06.579
+Potuz: But it's… I think it's too early to find out exactly what sort of asymmetric payment do we want.
+
+283
+00:43:06.940 --> 00:43:14.679
+Potuz: I just wanted to point out that it is very simple to implement one way of asymmetric payments, would be to
+
+284
+00:43:15.020 --> 00:43:23.610
+Potuz: return part of the bid to the builder when we process the payload. So if the bid is for, like, say, 10,
+
+285
+00:43:24.100 --> 00:43:34.130
+Potuz: Then, we put a pending payment for 10, because anyways, there's no money being taken out of the balance from the builder at that stage.
+
+286
+00:43:34.890 --> 00:43:50.209
+Potuz: We put a payment… a pending payment for 10, and when we process the payload, we… anyways, we remove that pending payment when we process the payload immediately, but then, instead of transferring the withdrawal for 10 to the proposer, we transfer a withdrawal for 7, for example.
+
+287
+00:43:50.560 --> 00:43:59.700
+Potuz: In that way, the proposer gets 7 out of 10 when the payload is, … is, …
+
+288
+00:44:00.750 --> 00:44:13.559
+Potuz: well, it's included, and it gets 10 when the payload is not included. So this would make it more expensive to bid for the option, to exercise the option and not proposing.
+
+289
+00:44:14.150 --> 00:44:24.299
+Potuz: So the option is there to have this, but I think it's just too early to figure out a way, an effective way, of knowing what function should it be.
+
+290
+00:44:24.300 --> 00:44:35.410
+Potuz: Should it be a function of the… a percentage of the bid? It should be quadratic on the bid, it should be something on… a function of the bid that we do not know yet. I think we need to experiment more.
+
+291
+00:44:35.410 --> 00:44:42.170
+Potuz: And know exactly the extents of these problems, of the… of the free option problem, also know…
+
+292
+00:44:42.170 --> 00:44:56.069
+Potuz: what are going to be the timelines of the PTC commitment to committed so that the deadlines also determine how likely this option is to be exercised. So I think we should eventually do something about this, but probably
+
+293
+00:44:56.420 --> 00:45:05.460
+Potuz: after we have better numbers on… on what the timelines are going to be for deadlines? I'm not sure. Perhaps Bruno can say something about this?
+
+294
+00:45:06.960 --> 00:45:16.999
+Bruno Mazorra: Yeah, yeah, sure. I mean, of course, it's too early to say, right? We are doing some internal experiments right now with the data we have.
+
+295
+00:45:17.590 --> 00:45:28.419
+Bruno Mazorra: And yeah, one of the questions you had… a very interesting question you had in the previous meeting, essentially, was how pegged is the option value to the
+
+296
+00:45:28.540 --> 00:45:34.939
+Bruno Mazorra: … value of the block. And right now, what we see, it's, like.
+
+297
+00:45:35.160 --> 00:45:42.820
+Bruno Mazorra: not even, like, it's not very related, it's, like, has a lot of variance, no correlation at all, or mostly not correlation.
+
+298
+00:45:43.010 --> 00:45:50.750
+Bruno Mazorra: And so we… right now, but very preliminary conclusions, is that, just, …
+
+299
+00:45:51.030 --> 00:45:56.509
+Bruno Mazorra: The slash… the penalty to be some proportion of the bid wouldn't be that useful.
+
+300
+00:45:57.020 --> 00:46:02.120
+Bruno Mazorra: Of course, that's biased to the data we have right now, so… yeah. …
+
+301
+00:46:02.750 --> 00:46:14.200
+Bruno Mazorra: Other things that we could do is, like, or we mentioned in previous calls, is do something that it's… it depends on previous rounds, and depends on previous information. Also, for example, we could have a target, right? A target of, like.
+
+302
+00:46:14.230 --> 00:46:24.179
+Bruno Mazorra: when the off-free option is not used. Let's say 99.9% of the times, the free option shouldn't be used, that should be a target. If it's 0.1%, it's not that bad.
+
+303
+00:46:24.420 --> 00:46:42.860
+Bruno Mazorra: And we did this target trying to have the minimal slashing possible… minimal penalty possible. Why we like that? Because the smaller the penalty, the more… the lower the barriers to entry, right? That's for builders, and also the bids will be more competitive, because it wouldn't be budget constrained.
+
+304
+00:46:43.000 --> 00:46:45.000
+Bruno Mazorra: So I think that's…
+
+305
+00:46:45.600 --> 00:46:57.489
+Bruno Mazorra: research direction that we are currently doing, but yeah, everything is very in preliminary stage. We cannot have conclusions right now on what to implement or not.
+
+306
+00:46:57.930 --> 00:46:59.809
+Bruno Mazorra: But yeah.
+
+307
+00:47:00.650 --> 00:47:02.279
+Bruno Mazorra: That's more or less the summary.
+
+308
+00:47:03.790 --> 00:47:04.600
+Potuz: Thanks.
+
+309
+00:47:04.940 --> 00:47:12.780
+Potuz: I just want to mention that even if we don't go with a proportion of the bid, like, having, for example.
+
+310
+00:47:13.510 --> 00:47:29.769
+Potuz: said that you want to have a function that looks like 5-way, or 5 ETH plus 10% of the bid, then the way we would… we could implement such a thing, such a function would be… we enforce that the bid is at least 5 ETH.
+
+311
+00:47:30.330 --> 00:47:40.920
+Potuz: and then we just return to the builder, we return 5 ETH minus the whatever percentage is, and then we get that sort of, like, linear function.
+
+312
+00:47:41.150 --> 00:47:47.510
+Potuz: So I think any kind of function can be implemented as a refund mechanism in a simple way.
+
+313
+00:47:47.930 --> 00:47:54.940
+Potuz: … it's just… I think I'll be… I just wanted to have…
+
+314
+00:47:55.230 --> 00:48:12.050
+Potuz: out there that we can implement these mechanisms, but I would wait for researchers like you guys to tell us, we believe this is the best way of, like, penalty mechanism that we have, and these are going to be the actual numbers of this option before we start implementing these things.
+
+315
+00:48:14.590 --> 00:48:22.129
+Bruno Mazorra: Okay, and do you think it's possible to use, previous slots if they were missed or not, for example?
+
+316
+00:48:22.270 --> 00:48:26.430
+Bruno Mazorra: As data points to define the function, or you think that's a no-no?
+
+317
+00:48:28.100 --> 00:48:36.720
+Potuz: So, as I mentioned in the flashbots, I mean, and Francesca's here, I think we've had a similar discussion before. So.
+
+318
+00:48:36.760 --> 00:48:45.049
+Potuz: Generally speaking, when we do a state transition function, we try to not, to not depend on previous
+
+319
+00:48:45.050 --> 00:49:02.300
+Potuz: data. So this thing is, we want to have a pure function that takes a state, takes a block, and then it gives us a new state. So the way to maintain that sort of signature and still use information from previous slots would be to add that information that we need to the beacon state itself.
+
+320
+00:49:03.140 --> 00:49:04.250
+Potuz: …
+
+321
+00:49:04.290 --> 00:49:22.929
+Potuz: So… so we could… we could use this. There could be some pushbacks. I mean, as always, there's a trade-off. Like, if the… if the problem of the free option is very serious, and it becomes trivial by adding, say, the information of how many slots were missing in the last 10 slots, then I think it's an easy trade-off.
+
+322
+00:49:22.970 --> 00:49:27.900
+Potuz: If the problem is not so serious, then we might get… we might see a pushback.
+
+323
+00:49:28.430 --> 00:49:38.050
+Potuz: But it is possible, and it is actually simple to implement those things. Like, if the information you need is how many slots were missing before, or, …
+
+324
+00:49:38.330 --> 00:49:46.360
+Potuz: Or the bits for the previous slots, these kind of things. Those… that information is… it's easy to add to the state.
+
+325
+00:49:47.130 --> 00:49:55.769
+Potuz: So it's not hard to implement, but it's better if we don't need to add it, because it's a point where we might have a bug and then have a consensus failure.
+
+326
+00:50:05.960 --> 00:50:06.720
+Bruno Mazorra: Okay.
+
+327
+00:50:07.010 --> 00:50:07.860
+Bruno Mazorra: Thanks.
+
+328
+00:50:13.860 --> 00:50:24.730
+Potuz: Does anyone have an opinion on this, on this issue, or in general about the free option problem? I mean, now whether we've reached that, it's probably a good time to talk about that.
+
+329
+00:50:34.460 --> 00:50:37.399
+Bruno Mazorra: I mean, a question I actually have is…
+
+330
+00:50:37.860 --> 00:50:49.320
+Bruno Mazorra: what's a reasonable target? Like, if it's fine if it's… the option is used 0.1%, it's fine if it's used 0.01% of times, like, what do you think is a reasonable target?
+
+331
+00:50:50.500 --> 00:50:51.949
+Potuz: I've no clue.
+
+332
+00:50:52.100 --> 00:50:54.219
+Potuz: I think it's…
+
+333
+00:50:54.540 --> 00:51:05.719
+Potuz: So the trade-off is about, so whatever… so if I assume the following, let's put a simplified problem. One simplification of the problem is that
+
+334
+00:51:05.800 --> 00:51:18.969
+Potuz: I assume that there's no free option problem on the payload, which is not true. There will be a free option problem on the payload, because we cannot make the time to reveal actually zero. We can make it very, very small, but not actual zero.
+
+335
+00:51:19.300 --> 00:51:29.829
+Potuz: But let's suppose that there's no free option on the payload, on the deadline on the payload, then the only thing that matters is the distance between the deadline for the payload and the deadline to the blocks.
+
+336
+00:51:30.720 --> 00:51:40.649
+Potuz: And … now, that time gives direct impact on how many blobs… the blob number that we can have. So I think the trade-off is…
+
+337
+00:51:40.650 --> 00:51:51.690
+Potuz: Economic incentives for roll-ups, and blob number versus these missing blocks that would appear, if the free option is, is exercisable.
+
+338
+00:51:52.250 --> 00:51:56.390
+Potuz: So that's… that's literally the trade-off on whatever system, with or without EPBNs.
+
+339
+00:51:57.000 --> 00:51:58.790
+Potuz: So I think, …
+
+340
+00:51:59.840 --> 00:52:09.309
+Potuz: if you make that… if you analyze these two things, then you might get to a number that people might consider reasonable. But I… yeah, I have no opinion on this.
+
+341
+00:52:26.800 --> 00:52:27.810
+Potuz: Alright.
+
+342
+00:52:27.940 --> 00:52:34.310
+Potuz: … Okay, so… I don't know if anyone…
+
+343
+00:52:35.010 --> 00:52:40.839
+Potuz: This free option problem is something that people are actively working on.
+
+344
+00:52:41.000 --> 00:52:45.009
+Potuz: And we… we do respect to have changes because of this.
+
+345
+00:52:45.220 --> 00:52:53.080
+Potuz: And if we find a good mitigation, I'm hoping that we will implement it. The most drastic thing would be to have the two deadlines together.
+
+346
+00:52:53.200 --> 00:52:57.239
+Potuz: Which we always have an option. I'm hoping that that's preventable.
+
+347
+00:52:59.300 --> 00:53:00.160
+Potuz: Oh.
+
+348
+00:53:00.740 --> 00:53:10.659
+Potuz: Alright, so unless someone voices up, I want to move to the last item on the agenda, which is the discussion about inclusion.
+
+349
+00:53:11.210 --> 00:53:12.300
+Potuz: I'm sorry.
+
+350
+00:53:12.470 --> 00:53:27.119
+Shane Moore: Shane, I'm helping, Mark over at Lighthouse with, planning EPBS. And, when you mentioned the idea of pushing the two deadlines together, that would be, like, worst case scenario, right? And, I'm curious if… I remember reading from, like, a Shudder post.
+
+351
+00:53:27.280 --> 00:53:41.380
+Shane Moore: maybe, like, a month or so ago, where they had this idea of, like, builder builds the payload, signs the header, and then encrypts the payload under some, like, threshold public key that's tied to that, slots committee. So, like, if the committee members hold
+
+352
+00:53:41.470 --> 00:53:55.890
+Shane Moore: some key share after that reveal window gets hit. If the builder didn't reveal, then, like, any party can collect enough of these, like, partial decryptions to reconstruct the payload. It sounds a bit more complex, but, I mean, in theory, like, then…
+
+353
+00:53:56.000 --> 00:54:09.300
+Shane Moore: you don't really have the free option problem anymore, right? Like, you're able to, reconstruct the payload from, like, the partial, committee members at that point. Not sure if that's something you guys talked about in the past, this is my first time joining this call, but …
+
+354
+00:54:09.510 --> 00:54:15.699
+Shane Moore: Curious if it's something at all being considered, or if we're, like, pretty set on asymmetric payments is the way to go.
+
+355
+00:54:17.870 --> 00:54:22.120
+Potuz: This was proposed, it has never been discussed here, actually.
+
+356
+00:54:24.410 --> 00:54:27.989
+Shane Moore: Yeah, it's like a silent threshold encryption, like, concept.
+
+357
+00:54:29.240 --> 00:54:35.429
+Shane Moore: And I would have to do more research myself to, like, fully understand it, but yeah, I think it just means more, like, work for committees.
+
+358
+00:54:36.500 --> 00:54:40.590
+Shane Moore: And probably more, like, overhead for gossiping as well.
+
+359
+00:54:44.090 --> 00:54:56.309
+Potuz: Yeah, threshold encryption typically has this problem of, like, you need to prove also the existence or not of the keys, and then you have to have some sort of consensus on what was revealed and what wasn't.
+
+360
+00:54:58.240 --> 00:55:06.449
+Potuz: But yeah, so this… we've never discussed this. If there's a serious proposal with this, it would be nice to analyze it and have a good…
+
+361
+00:55:06.630 --> 00:55:07.859
+Potuz: description here.
+
+362
+00:55:08.570 --> 00:55:13.539
+Shane Moore: I'll post, like, what I found, just post about it. It's, like, later on in it.
+
+363
+00:55:17.470 --> 00:55:36.520
+Potuz: By the way, so I know that when we started doing this thing with EPBS, people on the EL, particularly Justin, pointed that it would be very nice to have encrypted payloads with this, since we now decoupled this, because we can probably use this to…
+
+364
+00:55:36.750 --> 00:55:42.940
+Potuz: To even have some privacy on transactions, so to… as a primitive for privacy, at least short-term privacy.
+
+365
+00:55:43.160 --> 00:55:44.420
+Potuz: of transactions.
+
+366
+00:55:57.330 --> 00:55:59.759
+Potuz: Alright, so, …
+
+367
+00:56:03.680 --> 00:56:21.780
+Potuz: Okay, so we can probably move on to the next, to the last topic. Well, I'll add two topics. One is going to be very short, but the next one is this discussion on inclusion. So today, we have a miracle proof that the blob is included in a block.
+
+368
+00:56:22.270 --> 00:56:35.350
+Potuz: This avoids checking a signature twice, otherwise we would need to check signatures on the sidecars, but also it allows us to sync a blob before we get the block.
+
+369
+00:56:36.110 --> 00:56:53.409
+Potuz: For data columns, it's more evident. We… data columns, we have… we ship them with the header, with the block header, and with all of the KCG commitments, and then we can verify the proofs of the KCG commitments, and…
+
+370
+00:56:53.520 --> 00:57:01.160
+Potuz: We can verify the signature from the proposer, because we have the header, we can just hash it and verify the signature of the proposer.
+
+371
+00:57:01.380 --> 00:57:14.599
+Potuz: And then we have a Merkle proof of the inclusion of all the KCG commitments in that block. So if we get one sidecar before the block, we can make this validation, and we already have the signature verification for the block.
+
+372
+00:57:14.600 --> 00:57:25.920
+Potuz: from the proposer, and we don't need to verify it again. And there's a lot of code that went into doing… into optimizing for both scenarios, where we get a sidecar before, or where we get the block before.
+
+373
+00:57:26.120 --> 00:57:31.319
+Potuz: Now, on EPBS, it seems to me that all of this overhead is just tech debt.
+
+374
+00:57:31.610 --> 00:57:33.170
+Potuz: We are…
+
+375
+00:57:33.510 --> 00:57:46.310
+Potuz: we were guaranteed to see a block before, because the blobs wouldn't be even known which blobs should be included, because the builder needs to know them afterwards. Except the edge case of self-building.
+
+376
+00:57:47.650 --> 00:57:59.779
+Potuz: So I think it's pretty safe, and also because, since we have much more time, we can actually wait until we sync the consensus block before even trying to sync, sidecars.
+
+377
+00:58:00.110 --> 00:58:04.700
+Potuz: So, it seems to me that the most reasonable thing to do would be to just remove.
+
+378
+00:58:04.950 --> 00:58:09.750
+Potuz: both the Merkle proof, the Beacon block header from the…
+
+379
+00:58:09.930 --> 00:58:26.860
+Potuz: from the column side cards, and when you get a column sidecard, you verify the KCG proofs, you know that the KCG commitments are good, and now you already have a route for the KCG commitments on the BCOM block. So you can just verify that the block
+
+380
+00:58:27.010 --> 00:58:28.520
+Potuz: Actually committed to that.
+
+381
+00:58:29.150 --> 00:58:37.770
+Potuz: Anyways, the payload envelope has the beacon block route, and it is true that we would need to add the become block root to the sidecar.
+
+382
+00:58:38.340 --> 00:58:42.089
+Potuz: So that you know which vehicle blockade this sidecar belongs to.
+
+383
+00:58:42.730 --> 00:58:51.140
+Potuz: But that would be my… my… my… I know that this adds to the spec, because it changes now the full spec.
+
+384
+00:58:51.440 --> 00:58:59.409
+Potuz: And I hadn't set my mind to rebase, EPBS on top of Fulu, so this… only we noticed this, this week.
+
+385
+00:59:00.270 --> 00:59:05.509
+Potuz: But I just wanted… I mean, I don't want to make a decision on this now, but I wanted to point out that I think it's…
+
+386
+00:59:05.790 --> 00:59:08.369
+Potuz: It's much better if we remove all of this crap.
+
+387
+00:59:16.520 --> 00:59:22.310
+Potuz: And I know since there's a lot of code into dealing with this situation, it might be even worse
+
+388
+00:59:22.410 --> 00:59:39.209
+Potuz: like, removing it, but I want to give one attenuation that Casey from my team pointed out, which is, this is not really going to be tech debt, because once you finalize something, you don't ever need to, again, verify these things, and this is data that is pruned eventually.
+
+389
+00:59:39.370 --> 00:59:44.450
+Potuz: So, after we finalized the first glamster Epoch.
+
+390
+00:59:44.730 --> 00:59:53.279
+Potuz: And we're after, like, the syncing phase for these blobs, we can just remove all of this… we can remove all of this code from our clients.
+
+391
+01:00:03.270 --> 01:00:05.350
+Potuz: Can you mention this comment, Terrence?
+
+392
+01:00:08.360 --> 01:00:25.520
+terence: Right, so I think, like, Francesca also mentioned on Discord that, like, eventually we're moving from column-based gossiping to, like, cell-based gossiping, so when you do cell-based gossiping, then it's a brand new object anyway, then you just move it there. But I guess the question is timeline, right? Like, if we're gonna do…
+
+393
+01:00:25.540 --> 01:00:36.429
+terence: cell-based gossiping, which I don't know, maybe in G-Star or, like, H star 4, then we just remove it there. We don't, like, we basically don't even worry about this, like, data column at all.
+
+394
+01:00:36.560 --> 01:00:38.729
+terence: So, I don't know what the time frame is.
+
+395
+01:00:41.480 --> 01:00:44.999
+Francesco: Yeah, so, I mean, one thing there actually is, …
+
+396
+01:00:45.310 --> 01:00:48.699
+Francesco: I'm… might have spoken too soon in the sense that, like.
+
+397
+01:00:49.750 --> 01:01:07.019
+Francesco: I mean, we probably do want to do some form of cell gossiping, but it might be that it's not directly by changing what the, let's say, gossips up level object is. Like, the data column sidecar might still exist, and it's more that
+
+398
+01:01:07.220 --> 01:01:20.719
+Francesco: Gossip Sub would, like, internally have this, like, concept of partial messages, so I don't know. I'm not entirely sure how to think about this right now, but yeah. In either case, I think it probably would be fine to…
+
+399
+01:01:21.100 --> 01:01:22.260
+Francesco: To remove this.
+
+400
+01:01:23.810 --> 01:01:35.199
+terence: Yeah, yeah, I don't have a strong opinion, I think, yeah, I think removing it is good. It just, there's more API-related changes to keep in mind, because it's not gonna be a new object.
+
+401
+01:01:39.550 --> 01:01:58.259
+Potuz: So I think that a question is, what do we want to have for zero DevNet? I mean, Stefan said that they are going to start implementing Inteco. We are going to start implementing soon in Prism. Certainly, it should be based on… rebased on top of Fulu.
+
+402
+01:01:58.470 --> 01:02:06.850
+Potuz: And then the question is, what's gonna be more work for us to keep the… the… There's this verification.
+
+403
+01:02:07.260 --> 01:02:08.270
+Potuz: …
+
+404
+01:02:09.750 --> 01:02:24.979
+Potuz: that is currently done on Fulu, keep it for EPBS, or remove it entirely. And I… I don't know yet. I think we should have this discussion again, but it might be the case that removing it's actually simple… is simpler.
+
+405
+01:02:25.160 --> 01:02:38.659
+Potuz: One of the biggest problems that I foresee for… of this rebase to Fulu is the fact that the KCG commitments are no longer coming with the Beacon block, and all of our code assumes that the KCG commitments are in the become block.
+
+406
+01:02:38.780 --> 01:02:49.549
+Potuz: Again, this is, again, something different, but I… but I also was proposing to keep the KCG commitments in the block, so therefore, they should come in the bid, because of this problem.
+
+407
+01:02:50.140 --> 01:02:53.459
+Potuz: Because it might make it easier for us to implement.
+
+408
+01:02:53.940 --> 01:02:59.489
+Potuz: But that would make also the bits much larger if we have 72 blobs.
+
+409
+01:02:59.690 --> 01:03:04.029
+Potuz: So I don't want to stress the P2P stack where every validator can send bids.
+
+410
+01:03:04.180 --> 01:03:15.689
+Potuz: if we are postpullo and we see we have hundreds of blobs, we're gonna be seeing bids with hundreds of KGG commitments. That was the reason to only have the root, originally.
+
+411
+01:03:15.800 --> 01:03:25.529
+Potuz: So, I don't know, I think we should revisit this when we start implementing, and then make a decision then of whether or not we remove these proofs or not, because…
+
+412
+01:03:26.130 --> 01:03:34.600
+Potuz: It could be a lot of work to just rehash, to keep this proofing mechanism, where everything is moved out of the beacon block.
+
+413
+01:03:43.810 --> 01:03:45.720
+Potuz: Oh, crap, we're just…
+
+414
+01:03:46.000 --> 01:04:05.980
+Potuz: on the hour. The last item I wanted to mention is that if we are going to continue having these calls, we need to have a moderator that is not so biased and passionately involved in the CIP as I am. I look forward to seeing… and the best candidate was Justin that just left.
+
+415
+01:04:06.070 --> 01:04:14.369
+Potuz: So I'm hoping to see some candidates… someone to propose themselves, on R&D to be the moderators for these calls.
+
+416
+01:04:29.570 --> 01:04:30.500
+Potuz: Alright.
+
+417
+01:04:31.030 --> 01:04:33.829
+Potuz: Does anyone have any comments before we go?
+
+418
+01:04:37.090 --> 01:04:39.029
+Barnabas: When do we want DevNet Zero?
+
+419
+01:04:39.190 --> 01:04:49.630
+Potuz: Haha, I didn't want to go over the hour, but that was the right question. Yes, I don't know. I would target it October. I… I think we can have it by end of October, beginning of November.
+
+420
+01:04:50.020 --> 01:04:51.669
+Potuz: Does that sound good?
+
+421
+01:04:51.820 --> 01:04:54.779
+Potuz: … I think Terrence proposed this.
+
+422
+01:05:01.040 --> 01:05:06.190
+Potuz: We are having to deal with Barnabas already.
+
+423
+01:05:06.590 --> 01:05:09.250
+Potuz: Stefan, do you have any… any guests?
+
+424
+01:05:09.550 --> 01:05:16.889
+Stefan Bratanov: Yeah, I think end of October seems better. I think our main thing is that we want to work on master, so…
+
+425
+01:05:17.170 --> 01:05:19.940
+Stefan Bratanov: Will to take things a bit slowly.
+
+426
+01:05:21.370 --> 01:05:32.039
+Potuz: Yeah, so that's a blocker for us as well. I don't want… I wouldn't want to be working on EPVS on top of a branch of Prism. I would want to work on EPVS on top of developing Prism.
+
+427
+01:05:32.310 --> 01:05:41.719
+Stefan Bratanov: Yeah, I mean, we'll still have, like, most of the changes in master, and then if we need some quick DevNet, we can start a branch, but I don't want to…
+
+428
+01:05:42.080 --> 01:05:47.320
+Stefan Bratanov: Rush, and just have a brunch, which then would be a pain too much later.
+
+429
+01:05:48.080 --> 01:05:51.539
+Stefan Bratanov: So, I think at end of October seems to….
+
+430
+01:05:52.400 --> 01:05:54.740
+Potuz: Okay, sounds like a good target for me.
+
+431
+01:05:55.240 --> 01:06:09.139
+Potuz: I think we can have it. Then, if we are going to start implementing soon, then I would schedule a call for two weeks from now, so to see if we have an idea of whether or not… I mean, this issue of the inclusion proofs and things like this.
+
+432
+01:06:09.670 --> 01:06:13.320
+Potuz: Because that's something that I think would be a lot of code.
+
+433
+01:06:20.610 --> 01:06:22.700
+Potuz: Alright guys, thank you for coming.
+
+434
+01:06:24.800 --> 01:06:28.770
+Potuz: And thank you for those, that were forced into showing up here.
+
+435
+01:06:32.290 --> 01:06:33.380
+Potuz: See you next time.
+
+436
+01:06:33.680 --> 01:06:34.850
+Stefan Bratanov: Alright.
+
+437
+01:06:35.100 --> 01:06:35.930
+Bruno Mazorra: See you.
+

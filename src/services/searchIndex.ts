@@ -1,4 +1,37 @@
-import { protocolCalls } from '../data/calls';
+interface CallInfo {
+  type: string;
+  date: string;
+  number: string;
+}
+
+interface SearchCorpusCall extends CallInfo {
+  transcript: string | null;
+  chat: string | null;
+  tldr: TldrData | null;
+}
+
+interface SearchCorpusMeta {
+  sha256: string;
+}
+
+interface TldrHighlightItem {
+  timestamp: string;
+  highlight: string;
+}
+
+interface TldrActionItem {
+  timestamp: string;
+  action: string;
+  owner: string;
+}
+
+interface TldrData {
+  meeting: string;
+  highlights: { [category: string]: TldrHighlightItem[] };
+  action_items: TldrActionItem[];
+  decisions: { timestamp: string; decision: string }[];
+  targets: { timestamp: string; target: string }[];
+}
 
 export interface IndexedContent {
   callType: string;
@@ -30,6 +63,10 @@ class SearchIndexService {
   private readonly MAX_INDEX_AGE = 24 * 60 * 60 * 1000; // 24 hours
 
   private constructor() {}
+
+  private isIndexExpired(index: SearchIndex): boolean {
+    return Date.now() - index.lastUpdated > this.MAX_INDEX_AGE;
+  }
 
   static getInstance(): SearchIndexService {
     if (!SearchIndexService.instance) {
@@ -70,13 +107,21 @@ class SearchIndexService {
   }
 
   // Load index from IndexedDB
-  private async loadFromStorage(): Promise<SearchIndex | null> {
+  private async loadFromStorage(expectedCorpusHash?: string): Promise<SearchIndex | null> {
     try {
       const db = await this.openDB();
       const transaction = db.transaction([this.STORE_NAME], 'readonly');
       const store = transaction.objectStore(this.STORE_NAME);
 
-      const data = await new Promise<any>((resolve, reject) => {
+      interface StoredIndex {
+        version: string;
+        documents: IndexedContent[];
+        invertedIndex: Record<string, number[]>;
+        callIndex: Record<string, number[]>;
+        lastUpdated: number;
+        corpusHash?: string;
+      }
+      const data = await new Promise<StoredIndex | undefined>((resolve, reject) => {
         const request = store.get('index');
         request.onsuccess = () => resolve(request.result);
         request.onerror = () => reject(request.error);
@@ -88,7 +133,15 @@ class SearchIndexService {
 
       // Check version and age
       if (data.version !== this.INDEX_VERSION) return null;
-      if (Date.now() - data.lastUpdated > this.MAX_INDEX_AGE) return null;
+      if (expectedCorpusHash) {
+        if (data.corpusHash !== expectedCorpusHash) return null;
+      } else if (Date.now() - data.lastUpdated > this.MAX_INDEX_AGE) {
+        // Fallback freshness check if metadata isn't available.
+        return null;
+      }
+
+      // When corpus hash matches, treat the loaded index as fresh for this session.
+      const effectiveLastUpdated = expectedCorpusHash ? Date.now() : data.lastUpdated;
 
       // Reconstruct Maps from stored data
       const index: SearchIndex = {
@@ -97,7 +150,7 @@ class SearchIndexService {
           Object.entries(data.invertedIndex).map(([key, value]) => [key, new Set(value as number[])])
         ),
         callIndex: new Map(Object.entries(data.callIndex)),
-        lastUpdated: data.lastUpdated
+        lastUpdated: effectiveLastUpdated
       };
 
       return index;
@@ -108,7 +161,7 @@ class SearchIndexService {
   }
 
   // Save index to IndexedDB
-  private async saveToStorage(index: SearchIndex): Promise<void> {
+  private async saveToStorage(index: SearchIndex, corpusHash?: string): Promise<void> {
     try {
       const data = {
         version: this.INDEX_VERSION,
@@ -117,7 +170,8 @@ class SearchIndexService {
           Array.from(index.invertedIndex.entries()).map(([key, value]) => [key, Array.from(value)])
         ),
         callIndex: Object.fromEntries(index.callIndex.entries()),
-        lastUpdated: index.lastUpdated
+        lastUpdated: index.lastUpdated,
+        corpusHash
       };
 
       const db = await this.openDB();
@@ -136,8 +190,55 @@ class SearchIndexService {
     }
   }
 
+  private async fetchCorpusMeta(): Promise<SearchCorpusMeta | null> {
+    try {
+      const response = await fetch('/search-corpus.meta.json', { cache: 'no-cache' });
+      if (!response.ok) return null;
+
+      const data = await response.json();
+      if (!data || typeof data.sha256 !== 'string') return null;
+
+      return { sha256: data.sha256 };
+    } catch (error) {
+      console.warn('Unable to load search corpus metadata:', error);
+      return null;
+    }
+  }
+
+  private async sha256Hex(content: string): Promise<string | null> {
+    const subtle = globalThis.crypto?.subtle;
+    if (!subtle) return null;
+
+    try {
+      const bytes = new TextEncoder().encode(content);
+      const digest = await subtle.digest('SHA-256', bytes);
+      return Array.from(new Uint8Array(digest))
+        .map(byte => byte.toString(16).padStart(2, '0'))
+        .join('');
+    } catch (error) {
+      console.warn('Unable to hash search corpus payload:', error);
+      return null;
+    }
+  }
+
+  private async fetchCorpus(cache: RequestCache = 'default'): Promise<{ corpus: SearchCorpusCall[]; hash: string | null }> {
+    const response = await fetch('/search-corpus.json', { cache });
+    if (!response.ok) {
+      throw new Error(`Failed to fetch search corpus: ${response.status} ${response.statusText}`);
+    }
+
+    const rawCorpus = await response.text();
+    const parsed = JSON.parse(rawCorpus);
+    if (!Array.isArray(parsed)) {
+      throw new Error('Invalid search corpus format');
+    }
+
+    const hash = await this.sha256Hex(rawCorpus);
+    return { corpus: parsed as SearchCorpusCall[], hash };
+  }
+
   // Build the search index
-  async buildIndex(onProgress?: (progress: number) => void): Promise<SearchIndex> {
+  async buildIndex(onProgress?: (progress: number) => void, corpusHash?: string): Promise<SearchIndex> {
     const index: SearchIndex = {
       documents: [],
       invertedIndex: new Map(),
@@ -145,94 +246,54 @@ class SearchIndexService {
       lastUpdated: Date.now()
     };
 
-    const totalCalls = protocolCalls.length;
+    let { corpus, hash: fetchedHash } = await this.fetchCorpus('no-cache');
+    let resolvedCorpusHash = corpusHash;
+
+    if (corpusHash && !fetchedHash) {
+      console.warn('Search corpus hash unavailable; falling back to TTL-based cache validation.');
+      resolvedCorpusHash = undefined;
+    }
+
+    if (corpusHash && fetchedHash && fetchedHash !== corpusHash) {
+      // One forced reload to handle transient cache inconsistency during deploy.
+      const retry = await this.fetchCorpus('reload');
+      corpus = retry.corpus;
+      fetchedHash = retry.hash;
+
+      if (fetchedHash !== corpusHash) {
+        console.warn('Search corpus hash mismatch after reload; falling back to TTL-based cache validation.');
+        resolvedCorpusHash = undefined;
+      }
+    }
+
+    const totalCalls = corpus.length;
+
+    if (totalCalls === 0) {
+      if (onProgress) onProgress(100);
+      await this.saveToStorage(index, resolvedCorpusHash);
+      return index;
+    }
+
     let processedCalls = 0;
 
-    for (const call of protocolCalls) {
+    for (const call of corpus) {
       const callKey = `${call.type}_${call.date}_${call.number}`;
       const callDocIndices: number[] = [];
 
       try {
-        // Fetch all content for this call
-        const baseUrl = `/artifacts/${call.type}/${call.date}_${call.number}`;
-
-        const [transcript, chat, agenda, tldr] = await Promise.all([
-          fetch(`${baseUrl}/transcript.vtt`).then(res => res.ok ? res.text() : null).catch(() => null),
-          fetch(`${baseUrl}/chat.txt`).then(res => res.ok ? res.text() : null).catch(() => null),
-          fetch(`${baseUrl}/agenda.json`).then(res => res.ok ? res.json() : null).catch(() => null),
-          fetch(`${baseUrl}/tldr.json`).then(res => res.ok ? res.json() : null).catch(() => null)
-        ]);
-
         // Process transcript
-        if (transcript) {
-          const entries = this.parseTranscriptForIndex(transcript, call);
-          entries.forEach(entry => {
-            const docIndex = index.documents.length;
-            index.documents.push(entry);
-            callDocIndices.push(docIndex);
-
-            // Update inverted index
-            entry.tokens.forEach(token => {
-              if (!index.invertedIndex.has(token)) {
-                index.invertedIndex.set(token, new Set());
-              }
-              index.invertedIndex.get(token)!.add(docIndex);
-            });
-          });
+        if (call.transcript) {
+          this.addEntriesToIndex(index, callDocIndices, this.parseTranscriptForIndex(call.transcript, call));
         }
 
         // Process chat
-        if (chat) {
-          const entries = this.parseChatForIndex(chat, call);
-          entries.forEach(entry => {
-            const docIndex = index.documents.length;
-            index.documents.push(entry);
-            callDocIndices.push(docIndex);
-
-            // Update inverted index
-            entry.tokens.forEach(token => {
-              if (!index.invertedIndex.has(token)) {
-                index.invertedIndex.set(token, new Set());
-              }
-              index.invertedIndex.get(token)!.add(docIndex);
-            });
-          });
-        }
-
-        // Process agenda (includes action items)
-        if (agenda?.agenda) {
-          const entries = this.parseAgendaForIndex(agenda, call);
-          entries.forEach(entry => {
-            const docIndex = index.documents.length;
-            index.documents.push(entry);
-            callDocIndices.push(docIndex);
-
-            // Update inverted index
-            entry.tokens.forEach(token => {
-              if (!index.invertedIndex.has(token)) {
-                index.invertedIndex.set(token, new Set());
-              }
-              index.invertedIndex.get(token)!.add(docIndex);
-            });
-          });
+        if (call.chat) {
+          this.addEntriesToIndex(index, callDocIndices, this.parseChatForIndex(call.chat, call));
         }
 
         // Process TLDR (highlights, action items, decisions, targets)
-        if (tldr) {
-          const entries = this.parseTldrForIndex(tldr, call);
-          entries.forEach(entry => {
-            const docIndex = index.documents.length;
-            index.documents.push(entry);
-            callDocIndices.push(docIndex);
-
-            // Update inverted index
-            entry.tokens.forEach(token => {
-              if (!index.invertedIndex.has(token)) {
-                index.invertedIndex.set(token, new Set());
-              }
-              index.invertedIndex.get(token)!.add(docIndex);
-            });
-          });
+        if (call.tldr) {
+          this.addEntriesToIndex(index, callDocIndices, this.parseTldrForIndex(call.tldr, call));
         }
 
         // Update call index
@@ -251,13 +312,28 @@ class SearchIndexService {
     }
 
     // Save to storage
-    await this.saveToStorage(index);
+    await this.saveToStorage(index, resolvedCorpusHash);
 
     return index;
   }
 
+  private addEntriesToIndex(index: SearchIndex, callDocIndices: number[], entries: IndexedContent[]): void {
+    entries.forEach(entry => {
+      const docIndex = index.documents.length;
+      index.documents.push(entry);
+      callDocIndices.push(docIndex);
+
+      entry.tokens.forEach(token => {
+        if (!index.invertedIndex.has(token)) {
+          index.invertedIndex.set(token, new Set());
+        }
+        index.invertedIndex.get(token)!.add(docIndex);
+      });
+    });
+  }
+
   // Parse transcript for indexing
-  private parseTranscriptForIndex(content: string, call: any): IndexedContent[] {
+  private parseTranscriptForIndex(content: string, call: CallInfo): IndexedContent[] {
     const lines = content.split('\n');
     const results: IndexedContent[] = [];
 
@@ -312,7 +388,7 @@ class SearchIndexService {
   }
 
   // Parse chat for indexing
-  private parseChatForIndex(content: string, call: any): IndexedContent[] {
+  private parseChatForIndex(content: string, call: CallInfo): IndexedContent[] {
     const lines = content.split('\n').filter(line => line.trim());
     const results: IndexedContent[] = [];
 
@@ -352,79 +428,32 @@ class SearchIndexService {
     return results;
   }
 
-  // Parse agenda for indexing
-  private parseAgendaForIndex(agendaData: any, call: any): IndexedContent[] {
+  // Parse TLDR for indexing (highlights, action items, decisions, targets)
+  private parseTldrForIndex(tldrData: TldrData, call: CallInfo): IndexedContent[] {
     const results: IndexedContent[] = [];
 
-    agendaData.agenda.forEach((section: any) => {
-      section.items?.forEach((item: any) => {
-        // Index agenda item itself
-        if (item.title || item.summary) {
-          // Use title as the text for matching, but include both title and summary in tokens for searching
-          const searchText = [item.title, item.summary].filter(Boolean).join(' ');
+    // Index highlights (categorized agenda items)
+    if (tldrData.highlights) {
+      const allHighlights: TldrHighlightItem[] = Object.values(tldrData.highlights).flat();
+      allHighlights.forEach(item => {
+        if (item.highlight) {
           results.push({
             callType: call.type,
             callDate: call.date,
             callNumber: call.number,
             type: 'agenda',
-            timestamp: item.start_timestamp || '00:00:00',
-            text: item.title, // Store just the title for matching in AgendaSummary
-            tokens: this.tokenize(searchText), // But index both title and summary for search
-            normalizedText: this.normalize(searchText)
+            timestamp: item.timestamp || '00:00:00',
+            text: item.highlight,
+            tokens: this.tokenize(item.highlight),
+            normalizedText: this.normalize(item.highlight)
           });
         }
-
-        // Index action items within this agenda item
-        if (item.action_items && Array.isArray(item.action_items)) {
-          item.action_items.forEach((actionItem: any) => {
-            if (actionItem.what) {
-              results.push({
-                callType: call.type,
-                callDate: call.date,
-                callNumber: call.number,
-                type: 'action',
-                timestamp: actionItem.timestamp || item.start_timestamp || '00:00:00',
-                speaker: actionItem.who,
-                text: actionItem.what,
-                tokens: this.tokenize(actionItem.what + ' ' + (actionItem.who || '')),
-                normalizedText: this.normalize(actionItem.what)
-              });
-            }
-          });
-        }
-      });
-    });
-
-    return results;
-  }
-
-  // Parse TLDR for indexing (highlights, action items, decisions, targets)
-  private parseTldrForIndex(tldrData: any, call: any): IndexedContent[] {
-    const results: IndexedContent[] = [];
-
-    // Index highlights (categorized agenda items)
-    if (tldrData.highlights) {
-      Object.values(tldrData.highlights).forEach((categoryHighlights: any) => {
-        categoryHighlights.forEach((item: any) => {
-          if (item.highlight) {
-            results.push({
-              callType: call.type,
-              callDate: call.date,
-              callNumber: call.number,
-              type: 'agenda',
-              timestamp: item.timestamp || '00:00:00',
-              text: item.highlight,
-              tokens: this.tokenize(item.highlight),
-              normalizedText: this.normalize(item.highlight)
-            });
-          }
-        });
       });
     }
 
     // Index action items
-    if (tldrData.action_items && Array.isArray(tldrData.action_items)) {
-      tldrData.action_items.forEach((item: any) => {
+    if (tldrData.action_items) {
+      tldrData.action_items.forEach(item => {
         if (item.action) {
           results.push({
             callType: call.type,
@@ -442,8 +471,8 @@ class SearchIndexService {
     }
 
     // Index decisions as agenda items
-    if (tldrData.decisions && Array.isArray(tldrData.decisions)) {
-      tldrData.decisions.forEach((item: any) => {
+    if (tldrData.decisions) {
+      tldrData.decisions.forEach(item => {
         if (item.decision) {
           results.push({
             callType: call.type,
@@ -460,8 +489,8 @@ class SearchIndexService {
     }
 
     // Index targets as agenda items
-    if (tldrData.targets && Array.isArray(tldrData.targets)) {
-      tldrData.targets.forEach((item: any) => {
+    if (tldrData.targets) {
+      tldrData.targets.forEach(item => {
         if (item.target) {
           results.push({
             callType: call.type,
@@ -559,29 +588,35 @@ class SearchIndexService {
 
   // Get or build the index
   async getIndex(): Promise<SearchIndex> {
-    // Return existing index if available
-    if (this.index) {
+    // Return existing index if available and fresh.
+    if (this.index && !this.isIndexExpired(this.index)) {
       return this.index;
     }
 
-    // Return ongoing index build if in progress
-    if (this.indexPromise) {
-      return this.indexPromise;
+    // Avoid serving stale in-memory indexes.
+    this.index = null;
+
+    // Single-flight: one load/build flow shared across concurrent callers.
+    if (!this.indexPromise) {
+      this.indexPromise = (async () => {
+        const corpusMeta = await this.fetchCorpusMeta();
+        const expectedCorpusHash = corpusMeta?.sha256;
+
+        const storedIndex = await this.loadFromStorage(expectedCorpusHash);
+        if (storedIndex) {
+          this.index = storedIndex;
+          return storedIndex;
+        }
+
+        const builtIndex = await this.buildIndex(undefined, expectedCorpusHash);
+        this.index = builtIndex;
+        return builtIndex;
+      })().finally(() => {
+        this.indexPromise = null;
+      });
     }
 
-    // Try loading from storage
-    const storedIndex = await this.loadFromStorage();
-    if (storedIndex) {
-      this.index = storedIndex;
-      return storedIndex;
-    }
-
-    // Build new index
-    this.indexPromise = this.buildIndex();
-    this.index = await this.indexPromise;
-    this.indexPromise = null;
-
-    return this.index;
+    return this.indexPromise;
   }
 
   // Force rebuild the index
@@ -604,13 +639,14 @@ class SearchIndexService {
       console.error('Error clearing index:', error);
     }
 
-    await this.buildIndex(onProgress);
+    const corpusMeta = await this.fetchCorpusMeta();
+    this.index = await this.buildIndex(onProgress, corpusMeta?.sha256);
   }
 
   // Check if index needs rebuilding
   needsRebuild(): boolean {
     if (!this.index) return true;
-    return Date.now() - this.index.lastUpdated > this.MAX_INDEX_AGE;
+    return this.isIndexExpired(this.index);
   }
 
   // Get index statistics

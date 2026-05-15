@@ -1,0 +1,28 @@
+00:05:52	Toni Wahrstaetter:	Agenda:
+https://github.com/ethereum/pm/issues/1708
+00:10:03	Karim T.:	Non only the key location but also the values of the key we are reading in this case for stateless
+00:19:26	Jared Wasinger:	Did you mean reads overall or just the tx index karim?
+00:22:52	Karim T.:	It could be in a next step, when BAL v1 is working correctly thinking about a next step
+00:22:54	Jared Wasinger:	Worst-case disk read blocks would be interesting
+00:23:13	Jared Wasinger:	Reacted to "It could be in a nex..." with 👍
+00:23:26	Jared Wasinger:	Replying to "It could be in a nex..."
+
+Yeah, we can always update the format in a future fork
+00:23:45	Toni Wahrstaetter:	Replying to "Worst-case disk read..."
+
+yeah agree, or worst-case exeuction (e.g. modexp)
+00:23:47	Karim T.:	Replying to "Did you mean reads o..."
+
+Reads overall, if you want to use it for running a transaction on a node without the state
+00:24:05	Toni Wahrstaetter:	Replying to "It could be in a nex..."
+
+agree yeah
+00:24:34	Sophia Gold:	Generally you use GPUs or ASICs for proving and the execution remains on CPU
+00:27:05	Ishika:	Have no strong opinion as of now abt including indices,will talk with the reth team and add :)
+00:27:11	Karim T.:	I think for ZK if you want to run your block in riscv and generate the trace. It will be a stateless execution so you need read values + write + code not only read index
+00:30:15	Karim T.:	I think using BAL for ZK trace generation will be nice. But it should be not in production for the moment as ZK trace is far for being in production on mainnet
+00:33:05	Som | Erigon:	Also saves the 2 seconds before proving can begin
+00:37:27	Karim T.:	I think it’s too soon to think about modification of BAL for ZK , nothing is really defined , it’s still research
+00:37:57	Carl Beekhuizen:	Reacted to "I think it’s too soo..." with 👍
+00:38:17	felipe:	Reacted to "I think it’s too ..." with 👍
+00:49:13	felipe:	Thanks

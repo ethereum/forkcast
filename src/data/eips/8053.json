@@ -1,20 +1,23 @@
 {
   "id": 8053,
-  "title": "Milli-gas for High-precision Gas Metering",
+  "title": "EIP-8053: Milli-gas for High-precision Gas Metering",
   "status": "Draft",
-  "description": "Adds `milli-gas` as the EVM's internal gas accounting unit, reducing rounding errors without impacting UX.",
+  "description": "Adds `milli-gas` as the EVM’s internal gas accounting unit, reducing rounding errors without impacting UX",
   "author": "Maria Silva (@misilva73)",
   "type": "Standards Track",
   "category": "Core",
   "createdDate": "2025-10-17",
   "discussionLink": "https://ethereum-magicians.org/t/eip-8053-milli-gas-counter-for-high-precision-gas-metering/25946",
   "reviewer": "expert",
+  "layer": "EL",
   "forkRelationships": [
     {
       "forkName": "Glamsterdam",
       "statusHistory": [
         {
-          "status": "Proposed"
+          "status": "Proposed",
+          "call": null,
+          "date": null
         },
         {
           "status": "Declined",
@@ -22,11 +25,12 @@
           "date": "2025-12-04"
         }
       ],
-      "layer": "EL",
-      "champion": {
-        "name": "Maria Silva",
-        "discord": "misilva73"
-      }
+      "champions": [
+        {
+          "name": "Maria Silva",
+          "discord": "misilva73"
+        }
+      ]
     }
   ],
   "laymanDescription": "Counts gas in thousandths (milli-gas) during EVM execution for finer precision, then rounds to normal gas at transaction end. Fees and limits stay the same, so users and apps shouldn't notice changes.",
@@ -66,5 +70,6 @@
     "Keeps fees and gas limits unchanged",
     "Preserves user and application UX",
     "Introduces precision without contract changes"
-  ]
+  ],
+  "tradeoffs": null
 }

@@ -1,20 +1,23 @@
 {
   "id": 8059,
-  "title": "Gas Units Rebase for High-precision Metering",
+  "title": "EIP-8059: Gas Units Rebase for High-precision Metering",
   "status": "Draft",
-  "description": "Gas parameters and variables are increased to a factor of `REBASE_FACTOR` to reduce rounding errors without major changes to the EVM.",
+  "description": "Gas parameters and variables are increased to a factor of `REBASE_FACTOR` to reduce rounding errors without major changes to the EVM",
   "author": "Maria Silva (@misilva73)",
   "type": "Standards Track",
   "category": "Core",
   "createdDate": "2025-10-22",
   "discussionLink": "https://ethereum-magicians.org/t/eip-8059-gas-rebase-for-high-precision-gas-metering/25945",
   "reviewer": "expert",
+  "layer": "EL",
   "forkRelationships": [
     {
       "forkName": "Glamsterdam",
       "statusHistory": [
         {
-          "status": "Proposed"
+          "status": "Proposed",
+          "call": null,
+          "date": null
         },
         {
           "status": "Declined",
@@ -22,11 +25,12 @@
           "date": "2025-12-04"
         }
       ],
-      "layer": "EL",
-      "champion": {
-        "name": "Maria Silva",
-        "discord": "misilva73"
-      }
+      "champions": [
+        {
+          "name": "Maria Silva",
+          "discord": "misilva73"
+        }
+      ]
     }
   ],
   "laymanDescription": "This proposal rebases Ethereum's gas unit by a factor of 1,000 to enable high-precision metering without fractional gas. All gas-related parameters and variables are increased by that factor.",
@@ -66,5 +70,6 @@
     "Reduces rounding errors when repricing EVM operations.",
     "Future-proofs gas costs as hardware improves and state access stays costly.",
     "Avoids major changes to internal EVM logic."
-  ]
+  ],
+  "tradeoffs": null
 }

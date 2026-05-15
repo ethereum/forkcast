@@ -1,0 +1,134 @@
+00:14:56	nixo:	gm
+00:15:01	Louis:	gm
+00:15:26	spencer-tb:	/gm
+00:17:01	Mario Vega:	https://github.com/ethereum/pm/issues/1865
+00:19:32	Barnabas:	https://github.com/ethereum/beacon-metrics/pull/21
+00:22:13	Barnabas:	https://dune.com/queries/3757544/6319515
+00:22:22	Łukasz Rozmej:	Should we wait with BPO3 until the demand increases?
+00:22:33	Matthew Keil:	Yes, I think its prudent
+00:22:33	Justin Florentine (Besu):	what do we do if it starts hitting target but its all spam?
+00:23:12	Łukasz Rozmej:	Replying to "what do we do if it ..."
+
+Is it our role to judge what is spam or not?
+00:23:23	Justin Florentine (Besu):	Replying to "what do we do if it ..."
+
+i'm honestly not sure
+00:23:53	Justin Traglia:	What target/max numbers are we going to push for? 24/32?
+00:24:02	Łukasz Rozmej:	Replying to "what do we do if it ..."
+
+so I think the answer is generally no, but yes on the edges - so I think it depends how the fees look
+00:24:11	Barnabas:	Replying to "What target/max numb..."
+
+TBD
+00:24:14	Justin Florentine (Besu):	Replying to "what do we do if it ..."
+
+but i think we're getting to the point that agreeing to increase it might be that judgement
+00:24:35	Justin Traglia:	Replying to "What target/max numb..."
+
+Yeah I was just curious. Makes sense.
+00:25:18	Justin Florentine (Besu):	Replying to "what do we do if it ..."
+
+i think fees is a good enough answer for me
+00:28:13	Stefan Starflinger:	Reth holiday also afaik
+00:28:21	Mario Vega:	Reacted to "Reth holiday also af..." with 👍🏼
+00:28:41	Potuz:	Replying to "what do we do if it ..."
+
+It’ s a tricky situation. To be the Devil’s advocate why should main net validators be stressed by lowering the blob gas price just to get spam. This is something that should be really dealt with at the L2 level, if L2s start pumping the gas limit to the point that only one operator in the world can run their nodes, they could easily take all of L1’s blob space. 
+
+I don’t advocate for us making a decision on what’s spam and what’ s not, but there should be a push back against L2s needlessly becoming BSC.
+00:28:47	Potuz:	Replying to "what do we do if it ..."
+
+On the back of L1 validators.
+00:30:10	Justin Traglia:	Releases:
+https://github.com/ethereum/consensus-specs/releases/tag/v1.7.0-alpha.0
+https://github.com/ethereum/consensus-specs/releases/tag/v1.7.0-alpha.1
+New withdrawals discussion:
+https://discord.com/channels/595666850260713488/1460267494026510420/1460267497495466097
+Open PRs that need to be reviewed:
+https://github.com/ethereum/consensus-specs/pull/4792 
+https://github.com/ethereum/consensus-specs/pull/4817
+https://github.com/ethereum/consensus-specs/pull/4772 
+https://github.com/ethereum/consensus-specs/pull/4826
+00:31:02	Barnabas:	We should aim for alpha 1 release for the devnet, otherwise everyone will have to implement a broken phase 0 changes.
+00:31:56	Potuz:	Are we making technical discussions/decisions in this call or will we have a breakout?
+00:32:01	Potuz:	jinx
+00:32:41	Barnabas:	Replying to "Are we making techni..."
+
+this is the place imo
+00:33:21	Potuz:	Reacted to "this is the place im..." with 👍
+00:36:33	Dmitrii Shmatko:	Reacted to "i think fees is a go..." with 👍
+00:37:48	Barnabas:	sgtm, I just wanna avoid having too different behaviour between clients
+00:38:27	Potuz:	Yeah if we go that route we need to specify that
+00:38:30	Potuz:	Cause that affects scores
+00:38:49	Barnabas:	how big is a bid ?
+00:42:33	Justin Traglia:	Replying to "how big is a bid ?"
+
+~328 bytes
+00:44:36	Enrico Del Fante (tbenr):	Not yet 🙂
+00:44:57	Justin Traglia:	Reacted to "Not yet 🙂" with 👍
+00:45:13	NC:	This doesn’t need to be included for devnet 0 does it?
+00:45:37	Barnabas:	Replying to "This doesn’t need to..."
+
+no
+00:45:53	Barnabas:	Replying to "This doesn’t need to..."
+
+alpha 1 is the new target for devnet 0
+00:46:25	Barnabas:	Replying to "This doesn’t need to..."
+
+if we agree to include this down the road it can become the scope of a future devnet
+00:47:26	Potuz:	I think we’ll end up having to have a breakout anyway this call is probably not good enough to discuss technical details like these
+00:47:33	Mario Vega:	Reacted to "I think we’ll end up..." with 👍🏼
+00:47:59	Justin Traglia:	For the next one, we should discuss it on discord.
+00:48:10	Potuz:	We did for most of them
+00:52:38	Marius van der Wijden:	But isn't that just a ci problem?
+00:54:29	Marius van der Wijden:	So you want to merge the epbs stuff directly into master?
+00:54:59	Barnabas:	prysm already does
+00:55:19	Potuz:	Replying to "So you want to merge..."
+
+Yes, we want to be merging into our develop branch
+00:55:32	Marius van der Wijden:	Replying to "So you want to merge..." 
+
+ This is not a very pipeline-able approach
+00:55:50	Mario Vega:	https://github.com/ethereum/execution-specs/issues?q=is%3Aissue%20state%3Aopen%20milestone%3Aamsterdam
+00:56:06	Potuz:	Replying to "So you want to merge..."
+
+We already have prototyped this before and it’s really the only way of getting production code out there. Teku and Nimbus are doing the same
+00:56:08	Potuz:	Replying to "So you want to merge..."
+
+Not sure about LH
+00:57:00	Mario Vega:	7778, 7708, 7843, 8024
+00:57:16	Barnabas:	Are these EL only changes?
+00:57:43	Marius van der Wijden:	Replying to "So you want to merge..." 
+
+ What we usually do is build it on a separate branch and then upstream it in chunks to the mainline. Thus we can enable the new tests on the branch and the old tests on master and we switch over once everything is in master
+00:58:00	Marius van der Wijden:	Replying to "So you want to merge..." 
+
+ And we continuously rebase the fork
+00:58:31	Łukasz Rozmej:	we have SLOTNUM: https://github.com/NethermindEth/nethermind/pull/7981
+00:58:57	Łukasz Rozmej:	but looks stale, need to update it
+00:59:29	Mario Vega:	Reacted to "we have SLOTNUM: htt..." with 👍🏼
+01:00:03	felipe:	Reacted to "we have SLOTNUM: h..." with 👍🏼
+01:00:28	Marius van der Wijden:	The eth transfer one is the most complex should be tackled first
+01:00:45	Barnabas:	ETA on impl these  ?
+01:02:07	Barnabas:	lets aim for jan 21 for devnet 2
+01:02:33	spencer-tb:	Reacted to "lets aim for jan 21 ..." with ❤️
+01:02:36	Mario Vega:	Reacted to "lets aim for jan 21 ..." with ❤️
+01:02:46	Stefan Starflinger:	Reacted to "lets aim for jan 21 …" with 👍
+01:02:52	felipe:	Reacted to "lets aim for jan 2..." with 👍
+01:03:00	Marius van der Wijden:	Can you post in the acd channel the four eips that should be implemented first
+01:03:11	Mario Vega:	Reacted to "Can you post in the ..." with 👍🏼
+01:03:50	Marius van der Wijden:	I don't think going to 75m or any gas increase right now is important
+01:04:06	Marius van der Wijden:	We should focus on repricings imho
+01:04:12	Marius van der Wijden:	And eth70
+01:06:06	Potuz:	@Kamil Chodoła what’s the difference in execution+broadcast time from 60 to 75 on the same node you’re measuring?
+01:06:13	Mario Vega:	https://github.com/ethereum/execution-apis/pull/710
+01:07:20	Kamil Chodoła:	Replying to "@Kamil Chodoła wh..."
+
+Benchmarks for now are only execution focused and we test on 100 Mgas blocks.
+
+We convert the data captured into MGas/s and make assumptions based on that
+01:08:50	Mario Vega:	https://github.com/ethereum/execution-apis/pull/650
+01:13:53	Simsonraj Easvarasakthi:	https://github.com/ethereum/execution-apis/pull/650 
+https://github.com/simsonraj/eth-err-tests/blob/master/reports/geth-local.log.csv
+01:14:24	Justin Traglia:	Bye everyone
+01:14:30	Simsonraj Easvarasakthi:	thank you everyone

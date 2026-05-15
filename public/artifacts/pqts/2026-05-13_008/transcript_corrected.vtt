@@ -1,0 +1,742 @@
+WEBVTT
+
+1
+00:02:43.960 --> 00:02:46.619
+Antonio Sanso: Hi everyone, as this will wait a few more minutes.
+
+2
+00:02:47.780 --> 00:02:48.850
+Matteo Vicari: Hi, Antonio.
+
+3
+00:02:49.500 --> 00:02:50.030
+Alessandro Baiocchi: Right.
+
+4
+00:04:13.490 --> 00:04:15.789
+Antonio Sanso: Couple of more minutes, and then we'll start.
+
+5
+00:05:18.380 --> 00:05:20.840
+conduition: Hello, microphone checking, anybody hear me?
+
+6
+00:05:21.400 --> 00:05:22.460
+Antonio Sanso: Perfectly.
+
+7
+00:05:22.860 --> 00:05:28.489
+conduition: Awesome. I'm just gonna share my screen now to set up the presentation. Do you guys want to do anything first?
+
+8
+00:05:28.490 --> 00:05:30.660
+Antonio Sanso: No, no, you can go ahead.
+
+9
+00:05:31.150 --> 00:05:31.740
+conduition: Awesome.
+
+10
+00:05:31.740 --> 00:05:36.309
+Antonio Sanso: I usually do a quick presentation myself, but just back from some trips, and
+
+11
+00:05:36.630 --> 00:05:38.809
+Antonio Sanso: I didn't manage this time.
+
+12
+00:05:46.640 --> 00:05:49.450
+conduition: Can everybody see that? The, slideshow?
+
+13
+00:05:50.980 --> 00:05:52.020
+Antonio Sanso: Isn't it?
+
+14
+00:05:54.190 --> 00:05:55.340
+conduition: Wicked, okay.
+
+15
+00:06:06.450 --> 00:06:13.010
+Antonio Sanso: Alright, let's start, actually. Welcome, everyone, to the post-quantum transaction signature breakout call number 8.
+
+16
+00:06:14.850 --> 00:06:28.000
+Antonio Sanso: it might be a bit different than usual. I've been traveling, so I didn't just do a quick presentation at the beginning, and we got as well a cancellation, so we might be shorter than usual, but I'm really happy to have here
+
+17
+00:06:28.050 --> 00:06:39.599
+Antonio Sanso: condition that is showing a bit of, some optimization. If people follow these, these calls, or the post-quantum, transaction signatures,
+
+18
+00:06:39.700 --> 00:06:59.610
+Antonio Sanso: a story we have seen that we have been kind of slowly migrating towards hash-based signatures, and I hope to see… today to see a really nice optimization. I already read the article of condition, it's some really nice piece of work, and thanks a lot for sharing this.
+
+19
+00:07:00.580 --> 00:07:02.399
+Antonio Sanso: You can switch yours.
+
+20
+00:07:04.080 --> 00:07:13.120
+conduition: Oh, thanks so much, Antonio. I, I think of this as more of a hacky trick than a nice optimization. But we'll see what you guys think.
+
+21
+00:07:13.430 --> 00:07:20.229
+conduition: So, hi everyone. I'm conduition. I am a freelance, independent cryptographic engineer and security researcher.
+
+22
+00:07:20.460 --> 00:07:25.270
+conduition: And recently my work has been focusing a lot on post-quantum signatures, and
+
+23
+00:07:25.390 --> 00:07:28.699
+conduition: In that effort, I came up with this idea called hypertree pruning.
+
+24
+00:07:28.910 --> 00:07:46.470
+conduition: This is an optimization to the SPHINCS+ signature algorithm, so before we get too deep into the weeds here, we should probably talk about SPHINCS+ first. I'm gonna guess that a lot of you are already familiar with it, but just to make sure we're all on the same page, and anybody watching the YouTube video would be later, I'm just gonna go over it again.
+
+25
+00:07:46.720 --> 00:07:56.360
+conduition: SPHINCS+ is a hash-based stateless signature algorithm that's been standardized by NIST. It uses very conservative cryptographic assumptions, which we hope are post-quantum secure.
+
+26
+00:07:56.650 --> 00:08:11.139
+conduition: It's built out of a hypertree structure, and this is kind of a tree of trees, a tree of Merkle trees that are arranged into different layers, where each layer of the tree signs the layer below using a Winternitz one-time signature key pair.
+
+27
+00:08:12.300 --> 00:08:27.110
+conduition: The bottom level, at the very bottom of the Hypertree, is used to certify a set of FORS key pairs, where each 4 as key pair can be used to sign an actual message, like, say, a transaction, something that we care about for the purposes of the cryptosystem.
+
+28
+00:08:27.420 --> 00:08:37.500
+conduition: The verifier will follow the signatures and a set of Merkle authentication pads all the way back up the hypertree to the very root of the root tree.
+
+29
+00:08:37.710 --> 00:08:44.540
+conduition: And this root hash of the root tree is our public key. So for key generation, all we need to do is generate just the root tree.
+
+30
+00:08:44.740 --> 00:08:49.160
+conduition: And for signing, we only need to generate the trees that are used for the signatures.
+
+31
+00:08:49.970 --> 00:09:05.229
+conduition: And depending on the size of the overall hypertree, we have a given signature budget. And if we exceed this budget, if we create more than this many signatures, then the security of the key pair will start to degrade below a certain threshold, say, 128 bits.
+
+32
+00:09:05.770 --> 00:09:17.239
+conduition: Now, for SLH-DSA, for example, that budget is typically quite large, 2 to the 64, but there are other parameter sets, and if you decrease the size of the parameter sets, you get lower budgets.
+
+33
+00:09:17.900 --> 00:09:19.209
+conduition: Now, SPHINCS+ is great.
+
+34
+00:09:19.540 --> 00:09:27.829
+conduition: But it's also very slow, especially for signing and key generation. The main reason why is because of the Winternitz one-time signature system.
+
+35
+00:09:28.240 --> 00:09:44.920
+conduition: If you profile SPHINCS+, you'll see that over 90% of the runtime is dominated by Winternitz key generation, and most of those are for Winternitz keys that you never use, because you have to generate all of the leaves of this tree, even if you don't use them for certification signatures.
+
+36
+00:09:45.500 --> 00:09:50.230
+conduition: Now, there are many ways known in the literature to optimize SPHINCS+.
+
+37
+00:09:50.450 --> 00:10:09.690
+conduition: For example, there's algorithmic modifications, like SPHINCS+ plus C, or SPHINCS+ Alpha, and these give you mild speedups, as well as better signature sizes, but they're all incompatible with each other. If you have an SLH DSA verifier, they can't verify a SPHINCS+ plus C signature, for instance, and vice versa.
+
+38
+00:10:10.530 --> 00:10:29.260
+conduition: But better are hardware techniques. These make better use of available hardware on whatever platform you're on, to run the same algorithms faster. You're squeezing better performance out of the same algorithms, and this can result in better speedups, orders of magnitude better, actually.
+
+39
+00:10:29.310 --> 00:10:40.620
+conduition: Some of my recent work on Vulkan has shown you can actually improve on the reference implementation by more than an order of magnitude, and you get another order of magnitude speedup if you can use a GPU.
+
+40
+00:10:41.180 --> 00:10:52.230
+conduition: And this is great, but it doesn't work on very weak or embedded systems. Say, hardware wallets, which is something, as cryptocurrency developers, we tend to care quite a bit about.
+
+41
+00:10:52.450 --> 00:10:54.599
+conduition: So this leaves an unaddressed use case.
+
+42
+00:10:54.990 --> 00:11:09.449
+conduition: Now, it's not looking good for the benchmarks of the current generation of hardware wallets. Ledger and Trezor both take on the order of minutes to produce an SLH DSA signature, and key generation is also not that great either.
+
+43
+00:11:10.070 --> 00:11:15.509
+conduition: And the good news here is that of those two algorithms, key generation is the only one we urgently care about.
+
+44
+00:11:15.750 --> 00:11:26.630
+conduition: Signing can be kicked down the road because, thankfully, we don't believe that there is a quantum computer available today to threaten us, and so we can continue using elliptic curves, for now.
+
+45
+00:11:26.890 --> 00:11:43.439
+conduition: And hopefully the next generation of hardware wallets can be better optimized for signing. But key generation we do need. We want to be able to start migrating people over to post-quantum signature key pairs today, even if they continue to use elliptic curves as their primary daily spending.
+
+46
+00:11:43.470 --> 00:11:49.640
+conduition: In Bitcoin specifically, we're hoping to have post-quantum fallback keys that use a,
+
+47
+00:11:49.880 --> 00:11:54.859
+conduition: a second taproot leaf, with the new pay-to-Merkle root address format.
+
+48
+00:11:54.980 --> 00:12:06.170
+conduition: And this way, people can start moving their money over, but still be using elliptic curves to spend today. And then, after Q-Day, they can switch over to a post-quantum scheme, if they haven't migrated to something else by then.
+
+49
+00:12:07.110 --> 00:12:19.579
+conduition: So this is the idea from whence hypertree Pruning was born. Hypertree pruning is a way of trading off signature budget in exchange for faster performance, specifically of KeyGen, but also you can do the same for signing.
+
+50
+00:12:19.840 --> 00:12:24.590
+conduition: In order to understand how it works, let's zoom in on XMSS.
+
+51
+00:12:24.810 --> 00:12:37.530
+conduition: XMSS is a very key building block of SPHINCS+, and it essentially consists of a set of one-time signature key pairs, OTS keys, which you hash, and then join into a Merkle root structure.
+
+52
+00:12:37.650 --> 00:12:53.290
+conduition: And the Merkle root of that tree is your public key. And to create a signature, you select an OTS key pair, you create a signature, and then you construct a Merkle proof that proves that that OTS key is part of your XMSS tree.
+
+53
+00:12:54.090 --> 00:12:59.270
+conduition: Now, the downside of this construction is you can only issue a fixed number of signatures for a given key pair.
+
+54
+00:12:59.940 --> 00:13:09.940
+conduition: Once all of your OTS keys are used, you can't make any more signatures, so you have a fixed budget, it's finite, and once you exceed it, you instantly break the security of the scheme.
+
+55
+00:13:10.700 --> 00:13:24.600
+conduition: Now, the other downside to this is that if you want to increase your budget, you need to generate more OTS keys, and that can get very performance-intensive quickly, especially if you use Winternitz for your OTS system.
+
+56
+00:13:25.540 --> 00:13:36.399
+conduition: And, one way to perhaps mitigate this, if you don't need so many signatures, but if the verifier expects you to have a tree of a certain height, is you could prune some of those OTS keys.
+
+57
+00:13:37.260 --> 00:13:48.870
+conduition: This saves you the work of, oh, perhaps I should go back. What I mean by pruning here is you replace the hash of the OTS key with some pseudo-random garbage data.
+
+58
+00:13:49.070 --> 00:14:06.239
+conduition: To the verifier, this looks the same as the hash of an OTS key. They can't tell the difference between the hash of a valid key and just some pseudo-random garbage. This saves you the work of generating the OTS key pair, and it does not change your signature format. And so the verifier's algorithm is unchanged.
+
+59
+00:14:07.160 --> 00:14:16.549
+conduition: Now, this, of course, has a drawback. It means you have one less key pair for your signature budget, and maybe this is an acceptable trade-off.
+
+60
+00:14:16.920 --> 00:14:24.060
+conduition: Perhaps the verifier expects you to have a tree that has a very large size, but you don't actually need to create that many signatures.
+
+61
+00:14:24.480 --> 00:14:29.469
+conduition: Now, if you take this idea to its logical conclusion, you'll end up with maximal pruning.
+
+62
+00:14:29.700 --> 00:14:39.130
+conduition: With a maximally pruned XMSS tree, you've removed every OTS key but one, and this is basically just a one-time signature scheme with extra steps.
+
+63
+00:14:39.670 --> 00:14:45.280
+conduition: And if you can avoid doing this, you should, because it really doesn't add anything to the OTS scheme.
+
+64
+00:14:46.190 --> 00:14:50.829
+conduition: But, this is very useful if you apply it to SPHINCS+.
+
+65
+00:14:51.620 --> 00:14:59.350
+conduition: If you were to maximally prune the root tree of a SPHINCS+ hypertree, KeyGen becomes now very fast.
+
+66
+00:14:59.600 --> 00:15:03.100
+conduition: Because now you'll only need to generate a single Winternitz key.
+
+67
+00:15:03.320 --> 00:15:06.509
+conduition: And then a couple of surrogate hashes, which are very quick.
+
+68
+00:15:08.330 --> 00:15:20.350
+conduition: Now, this does mean that you've decreased the size of the Hypertree overall, because now there are no Winternitz keys other than that one that you've left behind, that can be used to certify other levels of the Hypertree.
+
+69
+00:15:20.770 --> 00:15:27.320
+conduition: This means when you're signing, you have to grind to find a randomizer that routes through that one unpruned Winternitz leaf.
+
+70
+00:15:27.980 --> 00:15:41.079
+conduition: It also means that you now have many fewer FORS key pairs at the bottom level of the tree. And so, when you create signatures, each of those remaining FORS key pairs is far more likely to be used.
+
+71
+00:15:41.160 --> 00:15:48.870
+conduition: And accordingly, you have to create fewer signatures overall to get the same level of security. So, your signature budget must drop.
+
+72
+00:15:49.720 --> 00:16:03.910
+conduition: Now, the upside to all of this is that the verifier's behavior is still unchanged, as in XMSS. You don't need to worry about the verifier, because they can't tell the difference between the surrogate hashes and the actual OTS key hashes.
+
+73
+00:16:05.890 --> 00:16:09.920
+conduition: Now let's look at an example to see what kind of performance gains we can get from this idea.
+
+74
+00:16:10.310 --> 00:16:17.199
+conduition: So, with SLH-DSA128S parameter set, we have XMSS trees of height 9,
+
+75
+00:16:17.450 --> 00:16:22.760
+conduition: That means there are 512 Winternitz keys per tree, including the root tree.
+
+76
+00:16:22.910 --> 00:16:31.299
+conduition: So you can prune 511, at most, of those leaves from the root tree. This gives about 500 times faster key gen.
+
+77
+00:16:31.730 --> 00:16:35.219
+conduition: And also a slight performance improvement on signing.
+
+78
+00:16:35.750 --> 00:16:41.849
+conduition: The drawback is that your signature budget drops from 2 to the 64 down to 2 to the 55.
+
+79
+00:16:41.880 --> 00:17:00.280
+conduition: It's a big drop. It's by a factor of 512. And the reason is because you only have one 512th as many FORS keys now. So the remaining ones are each 512 times more likely to be used, and therefore you can only produce one 512th as many signatures overall.
+
+80
+00:17:01.120 --> 00:17:04.329
+conduition: So, what I've all just described there is
+
+81
+00:17:04.579 --> 00:17:11.070
+conduition: Targeted mainly at improving key generation performance. But we can also use this technique to improve signing.
+
+82
+00:17:11.319 --> 00:17:23.199
+conduition: Now, I'll skip the part where I explain why this is the case, but the… turns out the optimal way to improve signing performance with pruning is if you use what I call balanced pruning.
+
+83
+00:17:23.319 --> 00:17:28.830
+conduition: This is where you prune each tree across each layer of the hypertree equally.
+
+84
+00:17:29.270 --> 00:17:38.860
+conduition: By removing the same number of Winternitz keys from every tree across every layer, you get the optimal performance improvement relative to the cost of grinding.
+
+85
+00:17:39.560 --> 00:17:49.479
+conduition: For example, if you were to, as I've shown in this diagram here, prune half of all the Winternitz keys in every tree, this would improve your signing performance by a factor of 2.
+
+86
+00:17:49.620 --> 00:17:52.310
+conduition: In other words, it would have the signing runtime.
+
+87
+00:17:52.690 --> 00:18:03.960
+conduition: Key generation performance would also be halved, because key generation is a subset of signing, and the root tree is the only thing you need to generate, and so there's only half as many Winternitz keys you need to generate.
+
+88
+00:18:04.580 --> 00:18:12.410
+conduition: And again, just like with root tree pruning, the verifier's behavior is unchanged here. They don't notice that you're doing this at all.
+
+89
+00:18:14.270 --> 00:18:32.569
+conduition: Now, there's a security footgun to what I've just described, which is, if you reuse a secret key with either different pruning techniques or with and without pruning, you can end up using the same Winternitz keys to sign different XMSS routes, which will result in forgeries.
+
+90
+00:18:32.700 --> 00:18:47.880
+conduition: No good. So, to make sure you don't do that, you can either use dedicated key pairs for each pruning technique that you want to use, say, one key pair for balanced pruning, one key pair for maximal root tree pruning, and so on.
+
+91
+00:18:48.790 --> 00:18:59.869
+conduition: Or you use domain separation, where you have different hash functions to generate different Winternitz keys for each of your different, pruning techniques.
+
+92
+00:19:01.220 --> 00:19:07.910
+conduition: But, that's pretty much all for the technique. It's pretty minimal. So I'm gonna go over
+
+93
+00:19:08.090 --> 00:19:11.470
+conduition: The high-level trade-offs
+
+94
+00:19:11.830 --> 00:19:24.390
+conduition: HyperTree pruning is a… a new trade-off dimension, essentially. It gives you a way of sacrificing signature budget in exchange for better performance, and you can balance that performance between signing and key generation.
+
+95
+00:19:24.630 --> 00:19:30.690
+conduition: You can go for really, really fast key generation, or you can go for a little bit faster signing.
+
+96
+00:19:30.950 --> 00:19:47.739
+conduition: And the verification algorithms aren't affected by this trade-off at all. So this is great if you had, say, a single parameter set that's been enshrined in consensus, and now you have a really weedy hardware platform that has to satisfy that parameter set. Well, that hardware wallet could,
+
+97
+00:19:47.790 --> 00:19:54.089
+conduition: Use pruning to get better performance. And for a hardware wallet, that's a worthwhile trade-off to make.
+
+98
+00:19:54.090 --> 00:20:09.090
+conduition: Because every time the user signs a transaction, they have to manually interact with the device, so it's reasonable to expect that such a device wouldn't produce that many signatures. We certainly don't need 2 to the 64. Even 2 to the 55 is probably overkill.
+
+99
+00:20:10.100 --> 00:20:20.729
+conduition: Now, this generalizes as well to any HyperTree-based cryptosystem, such as XMSS Multitree, and perhaps other HyperTree-based cryptosystems that might be invented in the future.
+
+100
+00:20:21.620 --> 00:20:30.590
+conduition: Now, there are drawbacks, of course. As I've shown before, pruned and unpruned keys are incompatible, and it can be security footgun if you're not careful.
+
+101
+00:20:30.790 --> 00:20:44.310
+conduition: Speaking of security footguns, I could very easily foresee developers misusing this if they prune too heavily, especially for software wallets, where you can essentially create an unbound number of signatures without user interaction.
+
+102
+00:20:44.480 --> 00:20:46.169
+conduition: Depending on the context.
+
+103
+00:20:46.610 --> 00:20:55.130
+conduition: So, if you sacrifice too much security, signature budget, you could end up with, users who lower their key pairs too much, or…
+
+104
+00:20:55.620 --> 00:20:58.830
+conduition: Or other potential, unknown unknowns.
+
+105
+00:20:59.990 --> 00:21:16.699
+conduition: Now, this also affects privacy, because although I've said that, to an honest verifier, pruning is indistinguishable, it is distinguishable to an observant verifier who knows about pruning, and wants to specifically identify and fingerprint wallets that use it.
+
+106
+00:21:17.060 --> 00:21:19.620
+conduition: For example, with root tree pruning.
+
+107
+00:21:19.960 --> 00:21:28.279
+conduition: If you observe many signatures from the same key pair, you'll notice they keep reusing the same, top-level tree leaf.
+
+108
+00:21:28.600 --> 00:21:31.839
+conduition: And that can be identified over time, probabilistically.
+
+109
+00:21:32.940 --> 00:21:39.759
+conduition: And of course, the other thing worth mentioning is that hypertree pruning isn't as efficient as just selecting a better parameter set.
+
+110
+00:21:39.960 --> 00:21:46.519
+conduition: Like, maximal root tree pruning is essentially the same as just having a hypertree of one fewer layer.
+
+111
+00:21:47.300 --> 00:21:55.459
+conduition: So, you really would be better off if you could just random, or if you could just arbitrarily select different parameter sets on the verifier.
+
+112
+00:21:55.650 --> 00:22:06.039
+conduition: However, that said, if the verifier is static, then hypertree pruning is a great way of trading off, budget for performance, in order to please the verifier.
+
+113
+00:22:07.100 --> 00:22:19.920
+conduition: Alright, and that's it, but there… I did skip a few things in this talk. I didn't talk about why balanced pruning is the best strategy to optimize signing performance. I didn't explain how grinding affects performance.
+
+114
+00:22:20.120 --> 00:22:23.569
+conduition: And I didn't explain how different parameter sets work with this.
+
+115
+00:22:23.900 --> 00:22:30.800
+conduition: So, in order to answer all these questions, you can see my article. It's posted right here, but I'd be glad to take any questions if we have any extra time.
+
+116
+00:22:32.610 --> 00:22:35.459
+Antonio Sanso: Thanks a lot. Actually, I have a few questions, if you don't mind.
+
+117
+00:22:35.570 --> 00:22:42.109
+Antonio Sanso: Great, great presentation, by the way. You described as a hack, I think it's a really useful one.
+
+118
+00:22:43.060 --> 00:22:50.770
+Antonio Sanso: You probably are aware of the last, request for comment of this, let's call it SPHINCS+ Minus, where…
+
+119
+00:22:50.910 --> 00:23:02.590
+Antonio Sanso: the budget was reduced from 264 to 224. Of course, like, your technique applies there as well, and I wonder…
+
+120
+00:23:02.950 --> 00:23:05.580
+Antonio Sanso: In a hypothetical scenario, people use it.
+
+121
+00:23:05.750 --> 00:23:16.379
+Antonio Sanso: and let's say they reduce from $224 with the pruning the budget, I don't know, to 216, if there's a way for the hardware
+
+122
+00:23:16.690 --> 00:23:22.850
+Antonio Sanso: 2… Actually… Warn that you are actually consuming the budget?
+
+123
+00:23:25.240 --> 00:23:31.440
+conduition: That would be a staple scheme, essentially, and that is something that we're considering, especially in the Bitcoin world.
+
+124
+00:23:31.550 --> 00:23:47.669
+conduition: You would need to maintain a counter of how many signatures you use, or you could optionally refer to the blockchain, which has been discussed before, but in many cases, that's not reliable as a source of truth, since you don't know for sure how many signatures have been published. You only know how many are on-chain.
+
+125
+00:23:47.840 --> 00:23:52.939
+conduition: The other thing worth mentioning about those parameter sets is that they use a single layer.
+
+126
+00:23:53.070 --> 00:23:56.289
+conduition: The main advantage of Hypertree pruning is
+
+127
+00:23:56.570 --> 00:24:04.830
+conduition: That there are multiple layers, and so if you prune one layer, say, the root tree, which makes for faster key generation, then
+
+128
+00:24:04.870 --> 00:24:19.219
+conduition: you only need to generate, like, maybe one or two or a few Winternitz keys at the root tree, but then the rest of your layers could still be intact, and you would still get the rapid growth of your hypertree from thence onwards. If you only have one layer.
+
+129
+00:24:19.250 --> 00:24:26.549
+conduition: you only get to prune that one layer, so, you know, signing and keygen would be improved by the same factor,
+
+130
+00:24:26.970 --> 00:24:37.689
+conduition: And it's… I'm not sure, I haven't done the math on it, but I imagine the performance savings might be less significant compared to what they would be for a hypertree of multiple layers.
+
+131
+00:24:41.020 --> 00:24:43.869
+Antonio Sanso: Thanks, makes a lot of sense. Is anyone else?
+
+132
+00:24:44.010 --> 00:24:45.130
+Antonio Sanso: Have any questions?
+
+133
+00:24:48.140 --> 00:24:50.649
+Antonio Sanso: If you don't want to speak in the chat will be as well good.
+
+134
+00:25:03.050 --> 00:25:05.699
+Antonio Sanso: Right, we get just a few comments.
+
+135
+00:25:05.950 --> 00:25:10.979
+Antonio Sanso: again, I was saying already at the beginning, today is a kind of special
+
+136
+00:25:11.210 --> 00:25:17.389
+Antonio Sanso: occurrence. We were supposed to have another presentation that was postponed for 2 weeks.
+
+137
+00:25:17.640 --> 00:25:22.949
+Antonio Sanso: I don't have a lot more on the agenda, unless if someone wants to discuss about a specific topic.
+
+138
+00:25:23.150 --> 00:25:32.040
+Antonio Sanso: I also wanted to point out, if you're interested in the topic of Quantum computers, They were,
+
+139
+00:25:32.270 --> 00:25:37.919
+Antonio Sanso: in Rome, a few nice presentations, and some panel, specifically was…
+
+140
+00:25:38.260 --> 00:25:44.549
+Antonio Sanso: presentation and a panel… so the presentation by Justin Drake, and the panel,
+
+141
+00:25:45.360 --> 00:25:53.940
+Antonio Sanso: Danbon and Justin Drake at ETHPrague, and there was as well a panel of Danbon and Justin Drake at ETH Summit. Videos are available.
+
+142
+00:25:54.220 --> 00:25:58.089
+Antonio Sanso: If you're into the topic of quantum computers and how
+
+143
+00:25:58.690 --> 00:26:02.279
+Antonio Sanso: Quick, they can arrive, this will be a good way.
+
+144
+00:26:02.420 --> 00:26:05.620
+Antonio Sanso: To… to… a good, a good way to learn.
+
+145
+00:26:06.760 --> 00:26:12.350
+Antonio Sanso: I see another question here for condition. Did you also bench the masked version?
+
+146
+00:26:15.040 --> 00:26:19.659
+conduition: But when you say the masked version, does that mean the pruned version?
+
+147
+00:26:20.440 --> 00:26:22.759
+conduition: I'm assuming so.
+
+148
+00:26:24.150 --> 00:26:31.150
+conduition: The benchmarking? No, I haven't implemented it. And that's mainly because I just didn't have the time.
+
+149
+00:26:31.440 --> 00:26:35.880
+conduition: The, idea is mostly aimed at, hardware wallets, so…
+
+150
+00:26:36.280 --> 00:26:48.550
+conduition: the first thing that I would probably want to do is implement it on a software wallet, and then start looking at talking to hardware wallet developers about this. I presented this idea to Ledger and Trezor. I haven't heard back from them on it yet.
+
+151
+00:26:48.830 --> 00:26:56.049
+conduition: Now, as for benchmarking it, it's pretty easy to figure out what the relative performance gains would be.
+
+152
+00:26:56.220 --> 00:26:58.259
+conduition: You would just first…
+
+153
+00:26:58.430 --> 00:27:07.300
+conduition: Isolate the performance of the FORS, the few times signature scheme, and just leave that off to the side, because that scheme is unaffected by pruning.
+
+154
+00:27:07.450 --> 00:27:21.390
+conduition: And then you would take the remaining runtime of the algorithm and, slice it up according to how many Winternitz keys that you prune. So, for example, with KeyGen, if you prune maximally of the root tree.
+
+155
+00:27:21.610 --> 00:27:36.970
+conduition: you get, only 1 out of 512 keys. So, because Winternitz dominates the runtime in Hypertree, you can deduce that key generation will be about 512 times faster.
+
+156
+00:27:37.910 --> 00:27:56.030
+conduition: And as for signing, because FORS is still a factor, you first take your HyperTree signing runtime, which is a subset of the signing procedure, and then you slice that up according to how many Winternitz keys you've pruned, so say if you pruned, half of all the keys in a HyperTree.
+
+157
+00:27:56.030 --> 00:28:02.680
+conduition: Then you could assume the runtime will be about half, and then you add the 4 as signing time on top of that.
+
+158
+00:28:02.730 --> 00:28:14.120
+conduition: It's pretty easy math, surprisingly, because there's… Winternitz is absolutely the dominating factor. It doesn't actually, other factors don't affect the signing performance nearly as much.
+
+159
+00:28:18.670 --> 00:28:19.400
+Antonio Sanso: Alright.
+
+160
+00:28:20.220 --> 00:28:22.510
+Antonio Sanso: There's a question for you, okay.
+
+161
+00:28:22.990 --> 00:28:38.249
+Antonio Sanso: Will both EL and CL use the same PQS algorithm as SPHINCS+? Alan, I can already answer here, no. Because, for a consensus, we can actually keep the state. So consensus, we already know, is using XMSS.
+
+162
+00:28:38.970 --> 00:28:43.900
+Antonio Sanso: So, in that case, we can release statful signatures. This is not the case for Yale.
+
+163
+00:28:46.160 --> 00:28:48.159
+Antonio Sanso: I hope it answers your question.
+
+164
+00:28:49.260 --> 00:28:54.990
+conduition: So one interesting question that affects whether hypertree pruning is worthwhile would be.
+
+165
+00:28:55.100 --> 00:29:03.230
+conduition: whether your verifiers are flexible or not. If your verifiers are flexible and you can dictate parameter sets more flexibly.
+
+166
+00:29:03.230 --> 00:29:17.490
+conduition: the temperature pruning just isn't that relevant to you. But if your verifiers are fixed, well, then it does become quite useful, because then, your verifiers might have a very large parameter set that they expect you to satisfy, and your signers might not be able to if they're on constrained platforms.
+
+167
+00:29:17.860 --> 00:29:27.190
+conduition: I see someone's asking about side channel attacks here. I'm actually not that familiar with the masked version you're talking about.
+
+168
+00:29:27.470 --> 00:29:38.820
+conduition: But, whatever, masking that you're applying to SPHINCS+ can equally be applied to, a pruned signer, just as well.
+
+169
+00:29:38.820 --> 00:29:48.379
+conduition: And I imagine that whatever effect on performance masking might have, the same performance effects will apply to hypertree pruning at the same constant factor.
+
+170
+00:29:55.910 --> 00:29:56.590
+Antonio Sanso: Right.
+
+171
+00:29:58.070 --> 00:29:59.330
+Antonio Sanso: Any other question?
+
+172
+00:30:00.460 --> 00:30:05.369
+Antonio Sanso: Must not be necessarily a question about presentation of today, but if you have anything in mind, just…
+
+173
+00:30:06.290 --> 00:30:08.510
+Antonio Sanso: Or you want to comment on something?
+
+174
+00:30:08.840 --> 00:30:12.520
+Antonio Sanso: Otherwise, for today, just… we'll wrap here, and…
+
+175
+00:30:12.900 --> 00:30:15.760
+Antonio Sanso: And again, I apologize for the… for the short trick.
+
+176
+00:30:16.330 --> 00:30:17.450
+Antonio Sanso: occurrence.
+
+177
+00:30:19.060 --> 00:30:21.749
+conduition: Yeah, this is great. Thanks for inviting me, Antonio, I really appreciate it.
+
+178
+00:30:21.750 --> 00:30:38.059
+Antonio Sanso: It was really nice, and to be fair, I had a lot of fun reading your previous article as well. It's pretty… a lot of details, so I had to… I, like, I started reading, but was a pointer at your previous write-up before, and I used the time to read as well.
+
+179
+00:30:38.170 --> 00:30:42.969
+Antonio Sanso: For people that are interested in the gritty details, I recommend it. It's really nice.
+
+180
+00:30:45.210 --> 00:30:53.839
+conduition: Yeah, if you're interested in the really nerdy details of why balanced pruning is a thing, and why it's the best strategy, that's the biggest part that I left out here. And that's actually, like.
+
+181
+00:30:54.000 --> 00:31:00.930
+conduition: I spent way too much time, and had way too much fun working that out, so… go check it out! And thanks for, thanks for listening to me.
+
+182
+00:31:00.930 --> 00:31:07.119
+Antonio Sanso: Looking forward to your next ideas. And, I'll thank everyone for attending, I'll see you in two weeks.
+
+183
+00:31:08.650 --> 00:31:09.610
+Antonio Sanso: It's been a pleasure.
+
+184
+00:31:09.610 --> 00:31:10.470
+conduition: Thanks, everyone.
+
+185
+00:31:10.470 --> 00:31:11.250
+Antonio Sanso: Bye.
+

@@ -1,27 +1,36 @@
 {
   "id": 7971,
-  "title": "Hard Limits for Transient Storage",
+  "title": "EIP-7971: Hard Limits for Transient Storage",
   "status": "Draft",
-  "description": "Decrease costs for TLOAD and TSTORE with a transaction-global limit.",
+  "description": "Decrease costs for TLOAD and TSTORE with a transaction-global limit",
   "author": "Charles Cooper (@charles-cooper), Ben Adams (@benaadams), Maria Silva (@misilva73), Jochem Brouwer (@jochem-brouwer)",
   "type": "Standards Track",
   "category": "Core",
   "createdDate": "2025-06-12",
   "discussionLink": "https://ethereum-magicians.org/t/add-eip-hard-limit-and-cost-reduction-for-transient-storage-allocation/24542",
   "reviewer": "expert",
+  "layer": "EL",
   "forkRelationships": [
     {
       "forkName": "Glamsterdam",
       "statusHistory": [
         {
-          "status": "Proposed"
+          "status": "Proposed",
+          "call": null,
+          "date": null
+        },
+        {
+          "status": "Declined",
+          "call": "acde/228",
+          "date": "2026-01-15"
         }
       ],
-      "layer": "EL",
-      "champion": {
-        "name": "Maria Silva",
-        "discord": "misilva73"
-      }
+      "champions": [
+        {
+          "name": "Maria Silva",
+          "discord": "misilva73"
+        }
+      ]
     }
   ],
   "laymanDescription": "Makes transient storage cheaper and sets a hard cap on how much can be used per transaction. This reduces gas for common patterns while protecting nodes from excessive memory use.",
@@ -61,5 +70,6 @@
     "Per-transaction cap prevents excessive transient memory use",
     "Encourages transient-storage patterns without persistent writes",
     "Simplifies cost reasoning for compilers and tooling"
-  ]
+  ],
+  "tradeoffs": null
 }

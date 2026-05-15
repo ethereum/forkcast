@@ -1,20 +1,23 @@
 {
   "id": 7668,
   "title": "EIP-7668: Remove bloom filters",
-  "status": "Draft",
-  "description": "Proposes to remove bloom filters from Ethereum's execution blocks and receipts.",
+  "status": "Stagnant",
+  "description": "Remove bloom filters from the execution block",
   "author": "Vitalik Buterin (@vbuterin)",
   "type": "Standards Track",
   "category": "Core",
   "createdDate": "2024-03-31",
   "discussionLink": "https://ethereum-magicians.org/t/eip-7653-remove-bloom-filters/19447",
   "reviewer": "staff",
+  "layer": "EL",
   "forkRelationships": [
     {
       "forkName": "Fusaka",
       "statusHistory": [
         {
-          "status": "Declined"
+          "status": "Declined",
+          "call": null,
+          "date": null
         }
       ]
     },
@@ -22,14 +25,22 @@
       "forkName": "Glamsterdam",
       "statusHistory": [
         {
-          "status": "Proposed"
+          "status": "Proposed",
+          "call": null,
+          "date": null
+        },
+        {
+          "status": "Declined",
+          "call": "acde/227",
+          "date": "2026-01-05"
         }
       ],
-      "layer": "EL",
-      "champion": {
-        "name": "Jochem Brouwer",
-        "discord": "jochembrouwer"
-      }
+      "champions": [
+        {
+          "name": "Jochem Brouwer",
+          "discord": "jochembrouwer"
+        }
+      ]
     }
   ],
   "laymanDescription": "Bloom filters were supposed to provide log filters for applications but they do not work as originally intended. Under this EIP, the field is not entirely removed but needs to be empty. Applications should seek alternative and decentralized solution to fetching relevant logs.",
@@ -62,5 +73,6 @@
   "benefits": [
     "Simplifies the protocol by removing outdated bloom filter mechanism.",
     "Encourages development of alternative decentralized querying solutions."
-  ]
+  ],
+  "tradeoffs": null
 }

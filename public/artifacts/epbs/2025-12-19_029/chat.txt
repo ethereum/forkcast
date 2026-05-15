@@ -1,0 +1,60 @@
+00:10:37	Chris Haug:	gm
+00:10:42	Justin Traglia:	gm
+00:10:47	Caleb:	gm
+00:10:49	Subhasish:	gm
+00:12:02	Stefan Starflinger:	gm
+00:19:21	Justin Traglia:	Also sorry, forgot to share the agenda: https://github.com/ethereum/pm/issues/1835
+00:20:01	terence:	+1 im confused what the request is
+00:22:10	Justin Traglia:	Is this something we need to standardize/specify?
+00:25:21	Justin Traglia:	https://github.com/ethereum/consensus-specs/pull/4777
+00:27:00	nflaig:	in favor of having this
+00:29:47	Justin Traglia:	https://github.com/ethereum/consensus-specs/pull/4792
+00:30:40	Stefan Starflinger:	Reacted to "https://github.com/e..." with 👍
+00:31:29	Yassine Ferhane:	Reacted to "https://github.com/e..." with 👍
+00:31:47	Yassine Ferhane:	In favor
+00:31:54	Francesco:	Does it matter if the increase is high? The expected usage of this is more just a fallback
+00:32:39	Francesco:	Yeah that’s what I mean, I wouldn’t expect high-frequency bidding to happen there
+00:32:51	Francesco:	Replying to "Yeah that’s what I m..."
+
+And if there’s a case when bidding must happen through p2p, I guess we take the hit
+00:34:10	Justin Traglia:	https://github.com/ethereum/consensus-specs/pull/4788
+00:35:16	Lorenzo:	strongly in favour from the builder side
+00:36:05	nflaig:	just deposit 1 ETH if you want that
+00:36:31	Francesco:	And anyone could now put down 1 ETH and become a builder
+00:37:55	Francesco:	Hopefully client teams can run 1 ETH builders 👀
+00:38:01	Justin Traglia:	Reacted to "Hopefully client tea..." with 👍
+00:38:07	Francesco:	Replying to "Hopefully client tea..."
+
+At least Potuz lol
+00:38:11	Justin Traglia:	Reacted to "At least Potuz lol" with 🙂
+00:38:14	Chris Haug:	Reacted to "At least Potuz lol" with 😁
+00:38:18	Colin Kelly:	For the X% greater than the previous bid, are block builders fine with having to potentially "cancel" prior blocks by submitting a higher bid?
+00:38:51	Lorenzo:	Replying to "For the X% greater..."
+
+Yes that's expected
+00:38:57	Colin Kelly:	Reacted to "Yes that's expected" with 👍
+00:39:32	Colin Kelly:	Replying to "For the X% greater..."
+
+oh I'm surprised they're fine with it. But thats great then.
+00:40:06	Lorenzo:	Replying to "For the X% greater..."
+
+Unless I'm misunderstanding your question, this is exactly what happens every time you bid higher no?
+00:40:16	Francesco:	@Justin Traglia could you summarize open questions on the PR, if any?
+00:40:24	Justin Traglia:	Replying to "@Justin Traglia coul..."
+
+Yes
+00:42:17	Justin Traglia:	https://github.com/ethereum/consensus-specs/pull/4788#discussion_r2629133388
+00:42:46	Francesco:	Builder exits take 18 days, so not sure if that really counts as “sensitive to be in sync"
+00:43:49	NC:	It really depends how much this p2p bids mechanism is used if we need to have pubkey/index cache for builder
+00:45:03	Colin Kelly:	Replying to "For the X% greater..."
+
+Oh some builders exposed to CEX txs might need to quickly remove the CEX txs from their blocks if the tx is no longer wanted by the CEXs. And since the block no longer contains the CEXs its at a much lower value.
+00:45:40	Justin Traglia:	https://github.com/ethereum/consensus-specs/pull/4788#discussion_r2634599814
+00:47:00	Lorenzo:	Replying to "For the X% greater..."
+
+I see, but the issue is that actual cancels would not be enforceable anyways in p2p. Since there's no way to invalidate your prior bid
+00:47:44	Colin Kelly:	Reacted to "I see, but the iss..." with 👍
+00:49:34	Francesco:	What’s the purpose?
+00:49:35	Justin Traglia:	https://github.com/ethereum/consensus-specs/pull/4788#discussion_r2622901736
+00:51:08	Bharath:	https://github.com/ethereum/builder-specs/pull/138
+00:51:19	Justin Traglia:	Reacted to "https://github.com/e..." with 👀

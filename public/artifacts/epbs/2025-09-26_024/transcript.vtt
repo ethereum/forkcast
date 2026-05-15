@@ -1,0 +1,610 @@
+WEBVTT
+
+1
+00:02:28.910 --> 00:02:30.140
+Pooja Ranjan: Hello, Justin.
+
+2
+00:02:32.600 --> 00:02:34.390
+Justin Traglia: Hey, Pooja, how's it going?
+
+3
+00:02:35.280 --> 00:02:41.430
+Pooja Ranjan: Doing well, thank you. Justin, I'm assuming you are gonna run the, Call today.
+
+4
+00:02:41.810 --> 00:02:44.669
+Justin Traglia: I am, and for the future as well.
+
+5
+00:02:44.900 --> 00:03:00.750
+Pooja Ranjan: Okay, awesome. I may not be able to continue for the whole of the call, like, towards the end of the call, so Akash from ECH Team will be here, so let him know whenever you're ready to stream over, and he would be taking care of streaming today.
+
+6
+00:03:01.220 --> 00:03:02.920
+Justin Traglia: Okay, sounds good, thank you.
+
+7
+00:03:03.210 --> 00:03:03.760
+Pooja Ranjan: Thank you.
+
+8
+00:03:48.570 --> 00:03:52.180
+Justin Traglia: Would it be okay if I started to share my screen right now?
+
+9
+00:03:52.590 --> 00:03:53.810
+Justin Traglia: What's the agenda?
+
+10
+00:03:53.810 --> 00:03:54.849
+Pooja Ranjan: Yeah, sure.
+
+11
+00:04:54.730 --> 00:04:59.299
+Pooja Ranjan: Akash, can you please make the pre-stream started so we can confirm?
+
+12
+00:05:03.310 --> 00:05:05.860
+Akash | ECH: Yep. EPA online.
+
+13
+00:05:06.240 --> 00:05:09.239
+Akash | ECH: That's pretty extreme.
+
+14
+00:05:10.890 --> 00:05:11.250
+Pooja Ranjan: Cool.
+
+15
+00:05:11.250 --> 00:05:12.799
+Justin Traglia: Cool. Thank you.
+
+16
+00:05:55.180 --> 00:05:58.839
+Justin Traglia: Hello, those who just joined, just a few more minutes.
+
+17
+00:06:22.130 --> 00:06:25.449
+Justin Traglia: Good morning, good morning. Just a couple more minutes.
+
+18
+00:07:17.830 --> 00:07:19.690
+Justin Traglia: Good morning, Terrence.
+
+19
+00:07:20.260 --> 00:07:20.970
+terence: Good morning.
+
+20
+00:07:20.970 --> 00:07:21.730
+Justin Traglia: One…
+
+21
+00:07:22.200 --> 00:07:22.760
+terence: Just a day.
+
+22
+00:07:22.760 --> 00:07:23.170
+Justin Traglia: started.
+
+23
+00:07:23.170 --> 00:07:24.710
+terence: He'll be 5 minutes late.
+
+24
+00:07:25.130 --> 00:07:26.940
+terence: But we can start… okay.
+
+25
+00:07:28.490 --> 00:07:29.289
+Justin Traglia: Sounds good.
+
+26
+00:07:33.920 --> 00:07:35.230
+Justin Traglia: Good morning, Stephan.
+
+27
+00:07:35.410 --> 00:07:36.200
+Stefan Bratanov: Thanks.
+
+28
+00:07:42.710 --> 00:07:45.519
+Justin Traglia: Alright, Akash, could you start the stream?
+
+29
+00:07:47.600 --> 00:07:48.840
+Akash | ECH: Yeah, VLA.
+
+30
+00:07:49.590 --> 00:07:50.620
+Justin Traglia: Great, thank you.
+
+31
+00:07:51.200 --> 00:07:55.830
+Justin Traglia: Hi everyone. Welcome to EPBS Breakout Call 24.
+
+32
+00:07:56.400 --> 00:07:59.330
+Justin Traglia: Let me share the agenda in the chat real quick.
+
+33
+00:08:02.030 --> 00:08:03.240
+Justin Traglia: Just shared.
+
+34
+00:08:04.660 --> 00:08:14.769
+Justin Traglia: I think I'd like to start by announcing that there is a new, specs release, spec release, Beta.0, which has a bunch of updates for EPBS.
+
+35
+00:08:15.920 --> 00:08:24.060
+Justin Traglia: In the agenda, I've listed open PRs and merged PRs. Many of the merged PRs are included in this release.
+
+36
+00:08:25.980 --> 00:08:35.509
+Justin Traglia: Terrence, would you like to go over some of the open, testing PRs that you have for EPBS, and, like, what the status is of those?
+
+37
+00:08:35.909 --> 00:08:44.959
+terence: Yeah, so, I think the only one we don't have in block operation is process withdraw.
+
+38
+00:08:45.019 --> 00:08:53.479
+terence: And frankly, I was a bit hesitant to work on it a couple weeks ago because of… I wasn't sure if there would be changes or…
+
+39
+00:08:53.479 --> 00:09:12.659
+terence: on the, yet expected withdrawal function, and that function is pretty convoluted. Right now, there, there's a four, there's three, four, there's three, for loops within the same function, so I wasn't sure if there's gonna be any refactorial changes to that, but sounds like there's gonna be no change to that. Francesco mentioned that.
+
+40
+00:09:12.739 --> 00:09:20.519
+terence: And, so I can continue working on it, or anyone is willing to free to pick this up. It's a really…
+
+41
+00:09:20.609 --> 00:09:24.499
+terence: difficult unit tests to write. I have to be very careful.
+
+42
+00:09:24.669 --> 00:09:31.719
+terence: Given all the conditions, because there is, because besides builder withdrawal, there's also partial withdrawal.
+
+43
+00:09:31.719 --> 00:09:45.949
+terence: And then there's process withdraw right after. So there's edge cases you can think of, like, what happens if the balance run out, blah blah blah blah blah, right? So, yeah, I'm happy to continue working on it, but anyone more than free to pick this up.
+
+44
+00:09:45.949 --> 00:09:49.609
+terence: And 4 Choice Pass is another one that's,
+
+45
+00:09:49.769 --> 00:10:05.349
+terence: I wouldn't say it's low priority, but, like, I'd rather focus on prism work, implementation for DeathNet Zero than the for-sure test, but that's not some… but that's something that we should not neglect. It's also very important, given the…
+
+46
+00:10:05.379 --> 00:10:17.889
+terence: edge cases, that's because of… now you have this notion of anti-slaw. So, when a… when a proposal builds on the previous block.
+
+47
+00:10:17.939 --> 00:10:33.249
+terence: when a proposal builds on the head, there is, like, this option of, like, what is the root and what is the block hash, basically. And that's… and that also makes for choice tests a little tricky. You also have to consider the PTC status as well.
+
+48
+00:10:33.249 --> 00:10:45.569
+terence: And, yeah, so I have… last time I made sure I have a HackMD, I also shared that with all the edge cases. I want feedback, but I haven't gotten the feedback. And that's something that I think, like,
+
+49
+00:10:45.719 --> 00:10:55.979
+terence: Definitely, like, Mikel or, like, Roberto from the EF to also take a look as well, because they are the experts on that, yeah. So those are the two open ones.
+
+50
+00:10:56.109 --> 00:11:01.959
+terence: Yeah, and but right now, I'm focusing mostly on Prism Definite Zero work.
+
+51
+00:11:02.900 --> 00:11:13.039
+Justin Traglia: Oh, cool. Yeah, I forgot about the refactoring of process withdrawals. I'll need to talk with Stokes about whether or not he wants to do that soon, sooner or later.
+
+52
+00:11:13.540 --> 00:11:22.290
+Justin Traglia: And, I agree that focusing on PRISM implementation for DevNet Zero is probably a higher priority than the fork choice test at the moment.
+
+53
+00:11:24.120 --> 00:11:30.629
+Justin Traglia: Cool, thank you. And I guess this leads well into implementation updates from clients.
+
+54
+00:11:30.750 --> 00:11:33.760
+Justin Traglia: Terrence, again, at… what are the… what's the status?
+
+55
+00:11:33.760 --> 00:11:56.829
+terence: Yeah, so I'm just implementing Definite Zero. I have, like, a few PRs out, the porters need to review that, and, yeah, so, I mean, I don't know if we're on track, it's kind of too early to tell for our end of October, but, yeah, we're definitely working very hard to get there. So, yeah, so we're implementing everything that's Beta Zero right now.
+
+56
+00:11:56.920 --> 00:12:03.319
+terence: And, yeah, I think in two weeks we'll… I think in two weeks, we'll have a better idea of where we are.
+
+57
+00:12:05.230 --> 00:12:06.549
+Justin Traglia: Awesome, thank you.
+
+58
+00:12:06.780 --> 00:12:09.929
+Justin Traglia: I don't think there's anyone from Lighthouse here, is there?
+
+59
+00:12:12.880 --> 00:12:19.039
+Justin Traglia: Alright, in that case, Techyu, Stefan, what's the… do you have any status updates for your.
+
+60
+00:12:20.110 --> 00:12:26.150
+Stefan Bratanov: Yeah, sure. So… Yeah, we've done all the containers for Beta Zero.
+
+61
+00:12:26.550 --> 00:12:32.149
+Stefan Bratanov: And, most of the blog posting is done.
+
+62
+00:12:32.690 --> 00:12:37.130
+Stefan Bratanov: Passing the reference tests, most of them,
+
+63
+00:12:37.810 --> 00:12:40.949
+Stefan Bratanov: But yeah, there's still quite a lot of work, so…
+
+64
+00:12:41.750 --> 00:12:46.160
+Stefan Bratanov: In… I think in two weeks also, we'll have, more updates.
+
+65
+00:12:47.820 --> 00:12:48.410
+Stefan Bratanov: Hopefully.
+
+66
+00:12:48.410 --> 00:12:49.969
+Justin Traglia: Cool. Thank you.
+
+67
+00:12:51.400 --> 00:12:54.140
+Justin Traglia: I don't think there's anyone from Nimbus here.
+
+68
+00:12:54.430 --> 00:12:57.449
+Justin Traglia: So Lodestar, Anka?
+
+69
+00:13:01.240 --> 00:13:10.439
+nflaig: We did a bunch of preparations, mostly, like, got the BPS changes done, was quite a big refactoring,
+
+70
+00:13:10.950 --> 00:13:19.670
+nflaig: In terms of EPBS stuff, we did the containers, what else? All the constants, a lot of boiler blading.
+
+71
+00:13:19.820 --> 00:13:22.400
+nflaig: I'm not sure if NC has more updates.
+
+72
+00:13:28.120 --> 00:13:33.570
+NC: No, I'm just fixing up, some of the types, in the lowest star code base.
+
+73
+00:13:35.010 --> 00:13:37.270
+NC: But yeah, it's still pretty early for us.
+
+74
+00:13:39.040 --> 00:13:42.060
+Justin Traglia: Okay. Yep, that seems… that's fine.
+
+75
+00:13:42.490 --> 00:13:47.170
+Justin Traglia: And then, I guess Grantine, do you guys have any status updates?
+
+76
+00:13:47.300 --> 00:13:48.839
+Justin Traglia: For your implementation?
+
+77
+00:13:49.480 --> 00:14:06.489
+Subhasish | Grandine(EPF): Yeah, so, mostly, the changes have been made, related to a beacon chain, so, I have, I've worked on, the, implementing the containers, and then the helper function, functions related to it.
+
+78
+00:14:06.540 --> 00:14:13.960
+Subhasish | Grandine(EPF): Apart from that, I'm, making some progress related to, the state transition functions.
+
+79
+00:14:14.230 --> 00:14:25.130
+Subhasish | Grandine(EPF): I think, the particular, one that was taken out of process block was giving a bit of trouble, but, yeah. And, we're,
+
+80
+00:14:25.250 --> 00:14:40.669
+Subhasish | Grandine(EPF): We're looking forward to, making sense of the folk choice changes, because, it's, our own implementation is, a bit different from others, so, yeah, we're working on that.
+
+81
+00:14:42.920 --> 00:14:44.749
+Justin Traglia: Great, great, thank you.
+
+82
+00:14:46.090 --> 00:14:54.799
+Justin Traglia: Yeah, I think the next two weeks will be… or in two weeks will be further along, and it'll be more interesting. And, welcome, POTUS, no worries about being late.
+
+83
+00:14:55.910 --> 00:15:07.490
+Justin Traglia: Next up on the agenda is just to reiterate… reiterate plans for EPMS DevNet Zero. It will be based on the Beta Zero specifications, and I've added a note here.
+
+84
+00:15:07.920 --> 00:15:19.289
+Justin Traglia: from Barnabas to, provide an ePBS-devnet-0 branch for ETH PandaOps, whenever you can, but preferably by the end of October.
+
+85
+00:15:23.230 --> 00:15:26.250
+Justin Traglia: Okay, moving on one more time,
+
+86
+00:15:26.440 --> 00:15:35.969
+Justin Traglia: There was a question in the EPBS Discord from Stefan about whether or not Datacom's headcar needed a slot field. Are there any updates on that?
+
+87
+00:15:38.430 --> 00:15:49.720
+Stefan Bratanov: Not really, it was just an observation, so in Datacom's sidecar object, in TechCo, we have a get slot, which basically gets the slot from the header right now, and it's used in
+
+88
+00:15:49.860 --> 00:15:51.229
+Stefan Bratanov: Quite a few places.
+
+89
+00:15:51.470 --> 00:15:57.150
+Stefan Bratanov: around tests and other places, so I'm not sure what the impact is yet for us,
+
+90
+00:15:58.250 --> 00:16:05.029
+Stefan Bratanov: But I think for now, it's okay to just ignore that and probably come back to it later. I think for DevNet0,
+
+91
+00:16:05.650 --> 00:16:08.790
+Stefan Bratanov: We're gonna run without any blobs anyways, so…
+
+92
+00:16:09.410 --> 00:16:11.430
+Stefan Bratanov: No, not a big issue for now.
+
+93
+00:16:11.980 --> 00:16:13.710
+Justin Traglia: Okay. Potus.
+
+94
+00:16:14.170 --> 00:16:22.289
+Potuz: Yeah, actually, something that I raised a long time ago, but we still haven't had time to look into.
+
+95
+00:16:22.910 --> 00:16:33.219
+Potuz: I'm worried about the code from Fulu. When we designed the PBS, and when we implemented it, it was on top of Electra. And in Fusaka, the…
+
+96
+00:16:33.360 --> 00:16:40.690
+Potuz: I mean, we have all of these blobs that… with the KCG commitments, that are coming in the block.
+
+97
+00:16:40.890 --> 00:17:00.730
+Potuz: And the KCG commitments are no longer coming from the block… in the block. In the spec, this is not a problem, because we never need to access them. But in implementation, it seems to me… I looked briefly in PRISM, and it seems to me that it's very insidious, the fact that we look for the KCG commitments in the PICOM block.
+
+98
+00:17:00.980 --> 00:17:09.799
+Potuz: And this is not going to work on EPBS, so I suspect that this is also going to be a big pain when trying to rebase,
+
+99
+00:17:10.240 --> 00:17:12.440
+Potuz: EPBS on top of Fuloop.
+
+100
+00:17:14.490 --> 00:17:15.840
+Stefan Bratanov: Oh yeah, for sure.
+
+101
+00:17:16.210 --> 00:17:17.980
+Stefan Bratanov: I think we've had the same…
+
+102
+00:17:18.140 --> 00:17:25.439
+Stefan Bratanov: issue. I mean, not an issue, but I remember when I did the EPBS interrupt for Teco, I changed it a lot of places.
+
+103
+00:17:26.720 --> 00:17:31.049
+Stefan Bratanov: To… Get it from the envelope rather than the block.
+
+104
+00:17:31.050 --> 00:17:44.439
+Potuz: Right, we could do this for blobs on Electra, because we already had it on Develop, but then all of the Fusaka branch, all of the Fusaka implementation was being carried in a different branch, which now merged into Develop.
+
+105
+00:17:44.640 --> 00:17:58.690
+Potuz: And changing all of that to get… to take the ACG commitments out of the block, I don't know how bad that's gonna be. Terrence probably has already worked that out, so I'm probably talking out of an empty statement. Perhaps Terrence already solved this.
+
+106
+00:18:06.590 --> 00:18:09.299
+Justin Traglia: Terrence says, haven't solved it yet.
+
+107
+00:18:09.840 --> 00:18:12.639
+Justin Traglia: Okay, interesting, we can follow up on that.
+
+108
+00:18:16.030 --> 00:18:28.490
+Justin Traglia: Okay, anything else about the data column sidecar, structure? I guess we can figure this out, if it's… if it's necessary to have the slot field and include that in the next release, and then for the next DevNet.
+
+109
+00:18:30.020 --> 00:18:31.380
+Justin Traglia: If necessary.
+
+110
+00:18:33.430 --> 00:18:40.080
+Justin Traglia: Okay, I guess there's one other item on the agenda, which is a note from POTUS about
+
+111
+00:18:40.340 --> 00:18:45.159
+Justin Traglia: The fact that it's impossible to keep latest execution payload header in the beacon state.
+
+112
+00:18:45.680 --> 00:18:47.150
+Justin Traglia: Just a reminder.
+
+113
+00:18:47.300 --> 00:18:50.069
+Justin Traglia: And POTUS, do you want to talk any… any more about that?
+
+114
+00:18:50.070 --> 00:18:58.599
+Potuz: This is just a notice for people that are implementing, if you're looking at this, the… well, the latest release already has this. It's a… it was a PR by Francesco.
+
+115
+00:18:58.620 --> 00:19:18.189
+Potuz: We had this discussion with 3 different options. Rename only the latest payload header to being latest payload bid. Then there was an option that Terrence implemented that was move the payload bid as a new member, and make the payload header empty.
+
+116
+00:19:18.220 --> 00:19:37.330
+Potuz: And then there was this other one that was trying to keep the payload header with all of the information, because having an empty one didn't make any sense, and I agree. We… everyone agreed that having an empty one didn't make any sense, so we say, okay, let's… last time we had a breakout, we agreed on keeping the full payload header, but it's still
+
+117
+00:19:37.360 --> 00:19:56.149
+Potuz: That was a stupid decision, because, the payload header commits to the root, to the stage root, which cannot be known before, so there's a circle… a circular dependency there, so we cannot really have the latest payload header with the current functionality.
+
+118
+00:19:56.680 --> 00:20:02.179
+Potuz: Therefore, the only two options are having an empty one, or just
+
+119
+00:20:02.240 --> 00:20:21.569
+Potuz: reusing the position, and we decided to just reuse the position. So this is more or less… this is more a heads up for Lodestar, because Lodestar complained about removing fields. This is changing the payload header by a different one, which is the bid. If this is too much of a problem to Lodestar, we can see what to do.
+
+120
+00:20:26.540 --> 00:20:29.779
+Justin Traglia: Cool, thank you. And, NC, thumbs up.
+
+121
+00:20:31.260 --> 00:20:36.769
+Justin Traglia: I guess that's it for the agenda. Is there anything else that anyone else would want to talk about?
+
+122
+00:20:40.990 --> 00:20:43.050
+Potuz: There was a comment today about SSN.
+
+123
+00:20:43.210 --> 00:20:45.540
+Potuz: I think it was also NC?
+
+124
+00:20:48.570 --> 00:20:54.569
+NC: Yeah, I was just trying to run, the Beta Zeros, as a Z static test.
+
+125
+00:20:54.870 --> 00:20:56.930
+NC: So,
+
+126
+00:20:57.840 --> 00:21:05.929
+NC: I saw there is a, fork choice node, container in the static test. I'm not sure if that's intentional.
+
+127
+00:21:09.700 --> 00:21:11.010
+Justin Traglia: Probably not.
+
+128
+00:21:11.920 --> 00:21:13.270
+Justin Traglia: But I can double check.
+
+129
+00:21:13.540 --> 00:21:25.499
+Potuz: Yeah, it was a good catch. I think it's probably… we need to remove it now. The only place where I can see it might be useful to have it as an SSS object is in the Beacon API when we dumped the fork choice.
+
+130
+00:21:25.940 --> 00:21:29.139
+Potuz: But currently, that's not even specified, so…
+
+131
+00:21:32.200 --> 00:21:35.639
+Justin Traglia: Yeah, we can… I think we can convert it to a data class.
+
+132
+00:21:35.970 --> 00:21:39.150
+Justin Traglia: So that it's not a SSC object.
+
+133
+00:21:39.560 --> 00:21:40.900
+Justin Traglia: I can look into it.
+
+134
+00:21:44.920 --> 00:21:46.300
+Justin Traglia: Anything else?
+
+135
+00:21:46.920 --> 00:21:47.850
+Justin Traglia: From anyone?
+
+136
+00:21:55.380 --> 00:21:58.420
+Potuz: The race is on, we already are merging to develop.
+
+137
+00:21:58.830 --> 00:21:59.590
+Justin Traglia: Yeah, absolutely.
+
+138
+00:21:59.590 --> 00:22:02.429
+Potuz: Now we need to… we're racing to see who implements first.
+
+139
+00:22:04.880 --> 00:22:06.220
+Justin Traglia: Yep, yep.
+
+140
+00:22:06.220 --> 00:22:07.740
+Stefan Bratanov: Is there a price, or…
+
+141
+00:22:10.640 --> 00:22:12.100
+Justin Traglia: Bragging rights.
+
+142
+00:22:13.100 --> 00:22:14.320
+Stefan Bratanov: Yeah, fair enough.
+
+143
+00:22:15.490 --> 00:22:16.620
+Stefan Bratanov: Twitter post.
+
+144
+00:22:17.130 --> 00:22:18.109
+Justin Traglia: Ha, yes.
+
+145
+00:22:19.830 --> 00:22:23.509
+Justin Traglia: Okay, I'll let you guys get back to developing then.
+
+146
+00:22:23.640 --> 00:22:25.400
+Justin Traglia: I'll talk to you guys in 2 weeks.
+
+147
+00:22:26.040 --> 00:22:26.520
+terence: Thank you!
+
+148
+00:22:26.520 --> 00:22:27.240
+Justin Traglia: Hi, everyone.
+
+149
+00:22:27.240 --> 00:22:29.430
+Potuz: Thank you, guys, I'm sorry for being so late.
+
+150
+00:22:29.430 --> 00:22:29.980
+NC: Thank you guys.
+
+151
+00:22:29.980 --> 00:22:30.530
+Justin Traglia: fine.
+
+152
+00:22:30.930 --> 00:22:31.620
+nflaig: Yeah.
+

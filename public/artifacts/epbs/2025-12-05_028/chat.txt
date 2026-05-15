@@ -1,0 +1,454 @@
+00:01:29	Potuz:	GM
+00:02:07	Barnabas:	haven’t been to this many meetings with potuz as this week.
+00:02:51	terence:	Replying to "haven’t been to this..."
+
+welcome to my life
+00:03:16	Potuz:	we haven't slept last week because of Fusaka
+00:03:36	Barnabas:	Replying to "we haven't slept las..."
+
+excuses
+00:03:40	Barnabas:	Reacted to "welcome to my life" with 😂
+00:04:22	Enrico Del Fante (tbenr):	Reacted to "we haven't slept las..." with 🥹
+00:04:45	stokes:	there was some link confusion
+00:04:51	stokes:	i’ll try to ferry ppl over
+00:05:04	Potuz:	yeah that will delay people coming in for a while
+00:05:34	Yassine Ferhane:	Reacted to "there was some link ..." with 👍
+00:05:40	Justin Traglia:	Reacted to "i’ll try to ferry pp..." with 👍
+00:07:08	Potuz:	Reacted to "excuses" with 😆
+00:08:03	stokes:	maybe stop sharing?
+00:08:08	stokes:	yeah idk may help
+00:08:11	alex:	smart to put trustless last on the agenda 😅
+00:11:05	stokes:	correlation across slots?
+00:11:11	Potuz:	yes
+00:11:36	stokes:	Replying to "yes"
+hmm my mental model is that the time window is more per-slot
+00:11:58	Barnabas:	This feels super complex to test.
+00:12:01	stokes:	Replying to "yes"
+i think the jargon is that it is an ergodic process
+00:12:19	terence:	Replying to "This feels super com..."
+
+why?
+00:12:31	Potuz:	https://ethresear.ch/t/dynamic-penalties-for-epbs/23472
+00:12:32	alex:	is it correlation per builder or across all?
+00:12:42	Potuz:	Replying to "is it per builder or..."
+
+across all
+00:12:46	stokes:	Replying to "This feels super com…"
+yeah i don’t think it’s that bad in isolation 
+
+the concern is more just putting more stuff into a single eip
+00:12:48	alex:	Reacted to "across all" with 👍
+00:12:49	Potuz:	Replying to "is it correlation pe..."
+
+otherwise you just shift addresses
+00:13:04	Potuz:	I checked the spec and it seems fully specified to me. It is a complex change though
+00:13:07	alex:	Replying to "is it correlation pe..."
+
+makes sense. the stake would be a bit of a barrier i guess, but perhaps not enough 👍.
+00:13:15	Dustin:	Replying to "This feels super c..."
+
+I guess the claim is that it'd be an integral part of 7732?
+00:13:24	Potuz:	but it is kudos to see a proposal that is fully specified and justified from research to full python code
+00:13:31	stokes:	Reacted to "but it is kudos to s…" with 👍
+00:13:32	Justin Traglia:	Reacted to "but it is kudos to s..." with 👍
+00:13:34	alex:	Reacted to "but it is kudos to s..." with 👍
+00:13:35	Yassine Ferhane:	Reacted to "but it is kudos to s..." with 👍
+00:13:37	Barnabas:	Replying to "This feels super com..."
+
+How would orphaned blocks be handled for penalties?
+00:13:37	Potuz:	liffe would be easier if all proposals are like this one :)
+00:13:40	Max:	Reacted to "but it is kudos to s..." with 👍
+00:13:42	stokes:	Reacted to "liffe would be easie…" with 😂
+00:13:42	DA | Flashbots:	Reacted to "but it is kudos to s..." with 👍
+00:13:51	Subhasish:	Reacted to "but it is kudos to..." with 👍
+00:13:52	alex:	Reacted to "liffe would be easie..." with 😂
+00:14:00	Eitan:	Reacted to "but it is kudos to s…" with 👍
+00:14:02	stokes:	Replying to "This feels super com…"
+i would imagine you ignore them
+00:14:05	brunoflashbots:	Reacted to "liffe would be easie..." with 😂
+00:14:06	Justin Traglia:	Reacted to "liffe would be easie..." with 😂
+00:14:11	stokes:	Replying to "This feels super com…"
+but then a builder could try to influence fork choice
+00:14:22	stokes:	Replying to "This feels super com…"
+to get around the penalty
+00:14:33	Barnabas:	Replying to "This feels super com..."
+
+Penalty calculation would be part of forkchoice?
+00:14:34	terence:	Replying to "This feels super com..."
+
+state transition function can tell if its an orphaned block vs a block with missing committed payload
+00:14:40	Potuz:	Replying to "This feels super com..."
+
+how does the builder influence forkchoice?
+00:14:52	alex:	Reacted to "but then a builder c..." with 👀
+00:15:30	Potuz:	Replying to "This feels super com..."
+
+and @Barnabas no, penalty is STF, not forkchoice
+00:15:47	Barnabas:	Reacted to "and @Barnabas no, pe..." with 👍
+00:16:03	Potuz:	Reacted to "state transition fun..." with 👍
+00:16:31	Bharath:	Reacted to "liffe would be easie..." with 😂
+00:17:52	Barnabas:	Would non finalization effect the penalty value at all?
+00:18:01	Potuz:	not
+00:25:33	terence:	wouldnt builder grief proposer then?
+00:25:38	Justin Traglia:	Reacted to "wouldnt builder grie..." with 👍
+00:25:41	DA | Flashbots:	Reacted to "wouldnt builder grie..." with 👍
+00:26:20	brunoflashbots:	I think in that case the builder/relay should refund the block proposer.
+00:29:01	Barnabas:	I think we should aim to have liveness, and accept that fact that it might cost people money.
+00:30:57	Justin Traglia:	Reacted to "I think we should ai..." with 👍
+00:31:16	christophschlegel:	Reacted to "I think we should ai..." with 👍
+00:31:59	brunoflashbots:	Reacted to "I think we should ai..." with 👍
+00:32:26	alex:	interesting point actually. for us we have options to stake. but what about relays that proposers want to use that are not able or willing to stake the 32ETH?
+00:32:35	terence:	why do you need to send the block with bid back to builder vs just boradcast it over p2p?
+00:32:52	Barnabas:	Replying to "interesting point ac..."
+
+they shouldn’t be a relay, if they not willing to put up 32ETH
+00:33:04	DA | Flashbots:	Reacted to "they shouldn’t be a ..." with ➕
+00:33:06	Justin Traglia:	Reacted to "they shouldn’t be a ..." with ➕
+00:33:07	Potuz:	yeah it does not make sense
+00:33:10	Dustin:	Reacted to "they shouldn’t be..." with ➕
+00:33:36	Potuz:	Reacted to "they shouldn’t be a ..." with ➕
+00:33:45	alex:	Replying to "interesting point ac..."
+
+based on? if that’s what the proposer wants, i’m not sure i follow why we’d block them from doing so. happy to just take a link to prior writing by someone.
+00:34:12	Dustin:	why have to sign the payload envelope? the builder should be signing
+00:34:13	alex:	Replying to "interesting point ac..."
+
+this is less my argument for what we “should” do, more what may create an incentive to fork clients 😅
+00:34:27	nflaig:	Replying to "why do you need to s..."
+
+we shouldn't, I don't think there are any major changes required to builder api `getHeader` is still fine as is, just need to change the type
+
+and we can get rid of `submitBlindedBlock` as it's not strictly necessary
+00:34:32	Dustin:	I mean, sign something. but this is the proposer allowing its sig to be used
+00:34:33	Potuz:	It seems to me that the agenda should have been changed...
+00:34:37	terence:	thats for off protocol builder, i think he meant to sign the bid
+00:34:41	Justin Traglia:	Replying to "It seems to me that ..."
+
+How so?
+00:34:55	Dustin:	Replying to "why have to sign t..."
+
+I thought he specifically said the envelope, but ok, can be clarified
+00:35:01	Justin Traglia:	Replying to "It seems to me that ..."
+
+Doing trustless payments talk first?
+00:35:04	Potuz:	Replying to "It seems to me that ..."
+
+dealing with blinded objects does not make sense in the current spec, so this only makes sense to discuss if we move to unstaked builders
+00:35:12	ethDreamer (Mark):	Replying to "It seems to me that ..."
+
+There are no need for blinded objects
+00:35:27	ethDreamer (Mark):	Replying to "It seems to me that ..."
+
+That was a consequence of not having block payload separation
+00:35:27	Lorenzo:	Replying to "why do you need to..."
+
+could be both? builder has an incentive to invest in p2p distribution similar reasoning as https://github.com/ethereum/builder-specs/issues/119#issuecomment-3199858239
+00:35:34	Dustin:	Replying to "It seems to me tha..."
+
+yeah the unblinded one already goes out
+00:35:40	ethDreamer (Mark):	Replying to "It seems to me that ..."
+
+Now that we have this, we can do relays without blinded objects
+00:35:58	Potuz:	Replying to "why do you need to s..."
+
+yes it will be naturally both, but anyway the builder would want to wait for distribution
+00:36:05	Potuz:	Replying to "why do you need to s..."
+
+before submitting the payload to p2p
+00:36:28	Lorenzo:	yep meant the builder could help with the inital gossip of the signed header as well
+00:36:40	Potuz:	Reacted to "yep meant the builde..." with 👍
+00:37:12	terence:	Replying to "why do you need to s..."
+
+keep in mind consensus block is very small comparing to execution payload so p2p distribution optimization may not be necessary, we can do more testing here though
+00:37:47	nflaig:	Replying to "why do you need to s..."
+
+yes, could keep submitting beacon block api as well to allow builder to help propagation
+00:39:51	Bharath:	For off-protocol builder, the proposer acts as if they self-build. So the proposer is technically the builder. So the proposer needs to sign the payload envelope
+00:40:24	Bharath:	Replying to "why have to sign the..."
+
+In the case where the proposer talks to the staked builder, the proposer doesn’t have to touch the payload envelope at all
+00:40:37	Milos:	What are the main objections to trustless payments?
+00:40:44	Bharath:	Replying to "why have to sign the..."
+
+Off-protocol builders things get slightly trickier here
+00:42:08	Bharath:	Reacted to "we shouldn't, I don'..." with 👍
+00:42:43	NC:	Replying to "What are the main ob..."
+
+The whole ePBS doesn’t prevent people from going off-protocol, and we sfi ePBS mostly because of scaling benefit it brings by restructuring slot, not because of trustless payment
+00:43:17	Caleb:	Reacted to "The whole ePBS doe..." with 👍
+00:43:21	Max:	Reacted to "The whole ePBS doesn..." with 👍
+00:43:30	Bharath:	Replying to "It seems to me that ..."
+
+I think we will have to blind the execution payload in the envelope when we talk to unstaked builders right? We don’t have to do payload blinding if we only talk to builders which are staked
+00:43:48	Barnabas:	The reason we use relays is because we can’t directly go to builders.
+00:44:01	Potuz:	Replying to "It seems to me that ..."
+
+we hopefully never again need to talk to unstaked builders
+00:44:18	Bharath:	Replying to "It seems to me that ..."
+
+Yup me too, but I m not sure if that will happen
+00:44:21	Justin Traglia:	It’s not really ePBS without trustless payments. The trustless payments isn’t really that complicated. Less trust in the system the better.
+00:44:50	Potuz:	Wow I was not expecting to see the OFAC angle on the record
+00:45:03	Eitan:	IMO Yesterday was a good example of why trustless payments is a good thing. When the circuit breaker triggered the network started producing local blocks. As local building becomes more expensive from a resource/bandwidth context this becomes dangerous. With trustless payments we’d never have to revert to local building
+00:45:04	Bharath:	Replying to "It seems to me that ..."
+
+The builder-api with staked builders stays the same as the status quo today. But with off-protocol builders, blinding will be required IMO
+00:45:14	NC:	Replying to "It’s not really ePBS..."
+
+But extra efforts required for implementing and testing it so we meet the 6 month fork cadence
+00:45:22	Bharath:	Reacted to "IMO Yesterday was a ..." with 👍
+00:45:26	DA | Flashbots:	Reacted to "IMO Yesterday was a ..." with 💯
+00:45:31	Potuz:	Reacted to "IMO Yesterday was a ..." with 💯
+00:45:39	Justin Traglia:	Replying to "It’s not really ePBS..."
+
+At this point, removing trustless payments will delay things more.
+00:45:56	Milos:	Reacted to "IMO Yesterday was ..." with 💯
+00:46:03	.:	Reacted to "IMO Yesterday was ..." with 💯
+00:46:05	Justin Traglia:	Reacted to "IMO Yesterday was a ..." with 💯
+00:46:22	Lorenzo:	Replying to "It’s not really e..."
+
+would be good to understand this point better, according to some CL devs the complexity is low but havent heard from many / not sure if all have started implementing
+00:47:03	Subhasish:	Reacted to "IMO Yesterday was ..." with 💯
+00:47:36	Potuz:	that's a feature not a bug
+00:48:15	christophschlegel:	If private bids are desired by builders, relays could offer them as well
+00:48:35	Barnabas:	Why do we need relays?
+00:48:38	Bharath:	Replying to "why do you need to s..."
+
+Also the builder will require the beacon_block_root to build the execution payload envelope
+00:49:04	Potuz:	Replying to "Why do we need relay..."
+
+apparently because validators want to censor OFAC transactions
+00:49:18	Bharath:	Replying to "why do you need to s..."
+
+The builder could either listen to the gossip topic for the beacon block but getting it via the builder-api would be faster
+00:49:42	Bharath:	Replying to "why do you need to s..."
+
+The builder could broadcast the ExecutionPayloadEnvelope faster and also aid in beacon block disemmination
+00:50:03	nflaig:	Replying to "IMO Yesterday was a ..."
+
+but in case the network is unstable we might have less than 60% attestation quorum in which case payments cannot be guruanteed, so you would likely wanna local build anyways?
+00:50:26	Potuz:	Replying to "IMO Yesterday was a ..."
+
+you are guaranteed payments if they are included
+00:50:44	Lorenzo:	Replying to "Why do we need rel..."
+
+validators will censor whether there are relays or not
+00:51:43	Dustin:	well, it's something that's touted in lists of MEV relays today
+00:51:51	nflaig:	Replying to "IMO Yesterday was a ..."
+
+but that's out of the control of the proposer, so it's no longer "trustless"
+00:51:56	Dustin:	it's not really a secret some people want OFAC compliance
+00:52:17	Potuz:	that's fine, but the protocol making protocol decisions to keep this service and favor it is absolutely crazy
+00:54:14	Cayman Nava:	The current design of trustless payments is not enforceable and folks have noted that the mechanism won't always be used. Doesn't sound like a robust design. The EIP should split out the entire staked-builder and trustless payment flow to allow for more research with better properties. This will derisk the scaling benefits of the slot restructuring / block/payload split.
+00:54:16	Barnabas:	We need to look at what is good for Ethereum. OFAC requirements is absolutely not a point of view Ethereum should ever consider. If it is, we have lost the battle.
+00:55:15	Barnabas:	If you are here because you trying to protect your “business”. Or afraid that you going to go out of business because a feature that Ethereum wants to introduce to make the protocol itself better, then its also not something that Ethereum should need to worry about imo.
+00:55:16	Lorenzo:	Replying to "We need to look at..."
+
+I think this is missing the point, the point is that because (sadly) some validators are censoring, the effect will be a more centralized builder market
+00:55:22	Potuz:	Replying to "The current design o..."
+
+how is it not enforceable?
+00:55:35	christophschlegel:	Replying to "The current design o..."
+
+What is the problem of it not always being used? It’s already valuable to have the option to use it
+00:55:50	Potuz:	Reacted to "What is the problem ..." with 👍
+00:56:26	Justin Traglia:	Reacted to "If you are here beca..." with 👍
+00:56:38	Dustin:	Replying to "The current design..."
+
+Have never understood the "it won't always be used, don't provide it" argument
+00:56:40	alex:	Replying to "If you are here beca..."
+
+yea that’s not the worry. the worry is that it is good for proposers to be able to source blocks from many builders. and this will likely result in fewer builders.
+00:56:42	NC:	Replying to "The current design o..."
+
+The problem is we want the slot restructuring to pave road for 6s slot. This has nothing to do with trustless  payment
+00:56:47	Lorenzo:	Reacted to "yea that’s not th..." with 👍
+00:56:49	Eitan:	Replying to "The current design o…"
+At the very least it is very valuable as a fallback mechanism
+00:56:52	Dustin:	Replying to "The current design..."
+
+"we" want various things
+00:57:02	Potuz:	ePBS is completely open, the arguments being put forward is that removing gatekeepers actually makes for a closed system and this does not make sense
+00:57:07	Dustin:	Replying to "The current design..."
+
+Speaking personally, scaling was secondary to me
+00:57:15	george:	Replying to "If you are here be..."
+
+would note that as a builder it is net better for us to be enshrined... What im saying here is that there are some validators that require preferences other than pure bid value and if there are no relays there to offer this service they will connect directly to builders and potentially enshrine those builders
+00:57:37	Dustin:	Replying to "The current design..."
+
+(caveat, in this particular way not speaking for Nimbus)
+00:57:40	Justin Traglia:	FYI I am okay with staying on the call to continue discussing this. Sorry, there wasn’t enough time allocated to this.
+00:57:41	alex:	Replying to "If you are here beca..."
+
+(or both are true in this case, we think this may be bad for relays, and bad for 87% of proposers that seem to prefer trusting one relay to get blocks from many builders)
+00:58:01	Eitan:	Reacted to "If you are here beca…" with 👍
+00:58:35	Barnabas:	Reacted to "FYI I am okay with s..." with 👍
+00:58:36	george:	Replying to "ePBS is completely..."
+
+In the past few years of relays have there been any examples of them gatekeeping?
+00:58:39	Dustin:	Reacted to "FYI I am okay with..." with 👍
+00:58:40	Justin Traglia:	Reacted to "Have never understoo..." with 👍
+00:58:47	Justin Traglia:	Reacted to "At the very least it..." with 👍
+00:58:54	Max:	You can’t enforce it. Mike Neuder spent quite a bit of time going around in circles on the topic.
+00:59:11	Stefan Starflinger:	Reacted to "If you are here beca…" with 👍
+00:59:12	NC:	Reacted to "You can’t enforce it..." with 👍
+00:59:19	alex:	Reacted to "FYI I am okay with s..." with 👍
+00:59:24	Dustin:	Replying to "You can’t enforce..."
+
+if people want to fake-self-build how is that ever "enforceable"?
+00:59:29	Eitan:	Replying to "ePBS is completely o…"
+they definitely have the ability to gate keep regardless if they have or not in the past
+00:59:31	Potuz:	Replying to "You can’t enforce it..."
+
+yes which is fantastic to see the same people that cosigned the paper of Mike about relays not dissapearing, not saying that ePBS will make them dissapear
+00:59:42	Caleb:	Reacted to "FYI I am okay with..." with 👍
+00:59:45	Lorenzo:	would trustless payments be SFI'd as its own EIP if it were not bundled with the slot restructuring?
+00:59:45	ethDreamer (Mark):	Reacted to "yes which is fantast..." with 👍
+00:59:48	Max:	Replying to "You can’t enforce it..."
+
+The question is whether there is an incentive to do this, now and in the future.
+00:59:50	Yassine Ferhane:	Reacted to "they definitely have..." with ➕
+00:59:56	Dustin:	Replying to "You can’t enforce..."
+
+short of removing self-building entirely, which is even worse
+01:00:08	Stefan Starflinger:	Reacted to "I think we should ai…" with 👍
+01:00:16	Stefan Starflinger:	Reacted to "liffe would be easie…" with 😂
+01:00:25	ethDreamer (Mark):	Replying to "You can’t enforce it..."
+
+Self-building will likely go away in the future when L1 execution requires proofs
+01:00:27	Stefan Starflinger:	Reacted to "but it is kudos to s…" with 👍
+01:00:29	NC:	Replying to "would trustless paym..."
+
+Yea that’s a good angle to think about this
+01:01:00	Dustin:	Replying to "You can’t enforce..."
+
+yeah, some years from now
+01:01:26	george:	Replying to "ePBS is completely..."
+
+fair point.  But there have been examples of proposers gatekeeping. So if we move the whitelist to proposers that I think worse
+01:02:28	alex:	i will say i think epbs does a pretty good job of supporting trusted payments right now. still some open questions but i see little reason to bypass today. not sure we’d ever have to remove it as specced. i’d be more worried we keep implementing things we don’t need (contested).
+01:04:19	Justin Traglia:	I am 🙂
+01:04:22	Barnabas:	I am
+01:04:27	Stefan Starflinger:	I am
+01:06:33	Potuz:	even if they aren't used in the default case, the mere existence of them is already good enough for liveness and resilience
+01:06:44	Bharath:	Reacted to "even if they aren't ..." with 👍
+01:06:53	Milos:	Reacted to "even if they aren'..." with 👍
+01:06:57	Justin Traglia:	Reacted to "even if they aren't ..." with 👍
+01:07:13	Barnabas:	Reacted to "even if they aren't ..." with 👍
+01:07:24	Lorenzo:	dont get this point tbh
+01:07:27	Eitan:	Reacted to "even if they aren't …" with 👍
+01:07:58	Dustin:	Reacted to "even if they aren'..." with 👍
+01:08:16	terence:	you can use execution payment
+01:08:26	brunoflashbots:	Sorry, small caveat. Trusteless payments either happens off-chain or the relay makes the builder set permisioned.
+01:09:12	alex:	@brunoflashbots can you clarify, trustless payments will happen off chain? today there seems to be a lot of trust involved actually.
+01:09:39	alex:	Replying to "Sorry, small caveat...."
+
+ah, yea that is true. but you’re saying that is reason to build it into the protocol?
+01:10:20	alex:	Replying to "Sorry, small caveat...."
+
+that seems a bit of a quick decision 😅 . there is a lot we could build.
+01:10:36	alex:	Replying to "Sorry, small caveat...."
+
+if the cost was high i’d agree, but haven’t seen a clear argument why.
+01:10:51	george:	relays can receive the full block so will be the one responsible for delivering the full payload
+01:10:58	terence:	btw we are 10 mins over time, and we should have a next step before wrapping up this call
+01:11:09	Justin Traglia:	Replying to "btw we are 10 mins o..."
+
+Yeah good idea.
+01:11:12	Barnabas:	I haven’t got a single argument why the protocol shouldn’t have trustless payments implemented as an option. 
+
+OFAC required validators are still going exist, and they can still use a relay, or they can go directly to a builder. This is fine. Ideally once FOCIL is around, all validators that require OFAC will just simply go away, as they actually are not a net benefit for the health of the network.
+01:11:13	Justin Traglia:	Replying to "btw we are 10 mins o..."
+
+Let’s try to wrap up.
+01:11:22	Lorenzo:	Reacted to "btw we are 10 mins..." with 👍
+01:11:31	Potuz:	it'd be nice to run a temp monitor so that Alex Stokes has something to go on on ACDC
+01:11:50	Justin Traglia:	Reacted to "it'd be nice to run ..." with 👍
+01:12:03	NC:	Replying to "I haven’t got a sing..."
+
+But is this the design that everyone agree when we sfi'ed 7732?
+01:12:33	Potuz:	Replying to "I haven’t got a sing..."
+
+not everyone, but this IS the design that was SFId
+01:13:06	Justin Traglia:	Replying to "it'd be nice to run ..."
+
+I’m not exactly sure how to do the temp check. Any suggestions?
+01:13:10	Justin Traglia:	Replying to "it'd be nice to run ..."
+
+Maybe a message here?
+01:13:18	Justin Traglia:	Replying to "it'd be nice to run ..."
+
+In this thread.
+01:13:19	Potuz:	Replying to "it'd be nice to run ..."
+
+ask @stokes 
+01:13:23	Potuz:	Replying to "it'd be nice to run ..."
+
+no clue
+01:14:00	alex:	Reacted to "not everyone, but th..." with 👍
+01:14:01	Potuz:	Replying to "it'd be nice to run ..."
+
+Prysm is for not removing trustless payments... (if some say they aren't they'll get yelled at)
+01:14:06	nflaig:	Replying to "I haven’t got a sing..."
+
+the claim for a long time has been that trustless payments is required for pipelining which is not true, so we never had a honest discussion about trustless payments and whether it's good to include it or not. But we are having that discussion now :)
+01:14:19	Eitan:	Reacted to "Prysm is for not rem…" with 😂
+01:14:24	Pawan Dhananjay:	Reacted to "Prysm is for not rem..." with 😂
+01:14:34	stokes:	i am
+01:14:34	terence:	he probably left
+01:14:36	terence:	oh
+01:14:39	stokes:	one sec
+01:14:40	Barnabas:	Reacted to "he probably left" with 😂
+01:15:04	Lorenzo:	Reacted to "the claim for a lo..." with 👍
+01:15:16	Justin Traglia:	Reacted to "Prysm is for not rem..." with 😂
+01:15:29	stokes:	for a temp check, i’d be curious for each client team to say if they think we should keep as-is or take out trustless payments
+01:15:39	Potuz:	happy someone is saying the obvious
+01:16:02	stokes:	i think all of the community voices here say take them out (except for some of
+the flashbots voices?)
+01:16:08	terence:	is current status good enough for ethereum though?
+01:16:18	Dustin:	Replying to "i think all of the..."
+
+community voices == relay voices?
+01:16:30	brunoflashbots:	Replying to "i think all of the c..."
+
+XD
+01:16:30	Potuz:	Again the reasons to have them have been spelled out, the purpose of this meeting is to have a reason to remove them
+01:16:30	Dustin:	Replying to "i think all of the..."
+
+they're part of the community, yes
+01:16:38	Potuz:	not to explain reasons to have them
+01:16:43	DA | Flashbots:	Replying to "i think all of the c..."
+
+Flashbots has no set opinion.
+01:16:46	Lorenzo:	Replying to "i think all of the..."
+
+builders, node operators (few of them that i spoke to)
+01:16:48	stokes:	Replying to "i think all of the c…"
+relays, builders
+01:16:50	Barnabas:	Reacted to "not to explain reaso..." with 👍
+01:17:00	Dustin:	Replying to "i think all of the..."
+
+oh I guess I counted Titan as both
+01:17:06	stokes:	yes
+01:17:10	Caleb:	the more options the better though, as long as secutiry can be guaranteed
+01:17:21	alex:	right, would love to have this conversation. it seems v contentious which benefits it brings. i will agree they’ve been explored and shared by many previously 👍.
+01:18:00	stokes:	Replying to "i think all of the c…"
+yeah staking pools can also have a view on this
+01:18:12	stokes:	Replying to "i think all of the c…"
+i think @Potuz has been talking to lido tho
+01:18:17	stokes:	Replying to "i think all of the c…"
+as an example
+01:18:35	Potuz:	Replying to "i think all of the c..."
+
+I have talked to a lot of community members
+01:18:41	stokes:	Reacted to "I have talked to a l…" with 👍
+01:18:42	Potuz:	Replying to "i think all of the c..."
+
+didn't want to bring them here
+01:18:50	Potuz:	Replying to "i think all of the c..."
+
+because it wasn't about keeping them
+01:18:55	Potuz:	Replying to "i think all of the c..."
+
+but to find out why to remove them

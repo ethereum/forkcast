@@ -1,0 +1,96 @@
+{
+  "meeting": "BAL #001 - 2025-08-27",
+  "highlights": {
+    "implementation_progress": [
+      {
+        "timestamp": "00:08:38",
+        "highlight": "Geth: Full EIP-7928 implementation complete except reads; ready for devnet"
+      },
+      {
+        "timestamp": "00:09:55",
+        "highlight": "Geth benchmarks show 2.6x average speedup, state root calc remains slowest"
+      },
+      {
+        "timestamp": "00:24:57",
+        "highlight": "QuarkChain benchmarks show 2x average, 33x worst-case speedup with 32 cores"
+      },
+      {
+        "timestamp": "00:45:55",
+        "highlight": "Besu: Protocol support complete, engine API and spec updates pending"
+      },
+      {
+        "timestamp": "00:47:12",
+        "highlight": "Erigon: 2-4 weeks to devnet readiness with parallel execution engine"
+      },
+      {
+        "timestamp": "00:49:00",
+        "highlight": "Reth: Engine API changes in progress, reads/writes already recording"
+      },
+      {
+        "timestamp": "00:50:14",
+        "highlight": "Nethermind: Construction/serialization prototyped, parallelization more complex"
+      }
+    ],
+    "testing_progress": [
+      {
+        "timestamp": "00:37:04",
+        "highlight": "Python test framework (EAST/EALS) working with 5 basic tests"
+      },
+      {
+        "timestamp": "00:42:07",
+        "highlight": "Hive integration dashboard tracking client adoption live on CI"
+      }
+    ],
+    "specification_decisions": [
+      {
+        "timestamp": "00:10:40",
+        "highlight": "State location reads remain under discussion; parallel I/O benefits unclear"
+      },
+      {
+        "timestamp": "00:48:32",
+        "highlight": "Worst-case blocks may need reads to prevent single-thread blocking on late I/O"
+      },
+      {
+        "timestamp": "00:52:02",
+        "highlight": "RLP encoding confirmed over SSZ; simpler, smaller, existing client support"
+      }
+    ]
+  },
+  "action_items": [
+    {
+      "timestamp": "00:32:19",
+      "action": "Benchmark reads implementation: batch vs on-demand loading performance",
+      "owner": "Jared (Geth)"
+    },
+    {
+      "timestamp": "00:41:47",
+      "action": "Evaluate worst-case performance without reads before removal decision",
+      "owner": "All client teams"
+    },
+    {
+      "timestamp": "00:41:54",
+      "action": "Submit new edge case tests via PR to checklist markdown",
+      "owner": "All client developers"
+    }
+  ],
+  "decisions": [
+    {
+      "timestamp": "00:52:20",
+      "decision": "Keep state location reads in spec pending benchmark results"
+    },
+    {
+      "timestamp": "00:53:05",
+      "decision": "Use RLP encoding for block access lists (not SSZ)"
+    }
+  ],
+  "targets": [
+    {
+      "timestamp": "00:55:17",
+      "target": "Next breakout call in 2 weeks (September 10, 2025)"
+    },
+    {
+      "timestamp": "00:55:31",
+      "target": "bal-devnet-0 target: 3 weeks (mid-September 2025)"
+    }
+  ]
+}

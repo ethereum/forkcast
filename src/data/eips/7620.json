@@ -1,23 +1,26 @@
 {
   "id": 7620,
   "title": "EIP-7620: EOF Contract Creation",
-  "status": "Draft",
+  "status": "Stagnant",
   "description": "Introduce `EOFCREATE` and `RETURNCODE` instructions",
   "author": "Alex Beregszaszi (@axic), Paweł Bylica (@chfast), Andrei Maiboroda (@gumb0), Piotr Dobaczewski (@pdobacz)",
   "type": "Standards Track",
   "category": "Core",
   "createdDate": "2024-02-12",
-  "discussionLink": "https://ethereum-magicians.org/t/eip-7620-eof-contract-creation/18590",
+  "discussionLink": "https://ethereum-magicians.org/t/eip-7620-eof-contract-creation-instructions/18625",
   "reviewer": "bot",
   "forkRelationships": [
     {
       "forkName": "Fusaka",
       "statusHistory": [
         {
-          "status": "Declined"
+          "status": "Declined",
+          "call": null,
+          "date": null
         }
       ]
     }
   ],
-  "laymanDescription": "This introduces new contract creation instructions for EOF contracts: EOFCREATE and RETURNCODE, which replace the legacy CREATE/CREATE2 instructions. Since EOF removes code observability (the ability to inspect and manipulate code), the old creation methods don't work. EOFCREATE creates contracts using pre-validated subcontainers within the factory contract, maintaining security while enabling factory patterns. RETURNCODE allows the initialization code to specify which subcontainer becomes the deployed contract and append additional data. This preserves the factory contract use case while maintaining EOF's code non-observability guarantees."
+  "laymanDescription": "This introduces new contract creation instructions for EOF contracts: EOFCREATE and RETURNCODE, which replace the legacy CREATE/CREATE2 instructions. Since EOF removes code observability (the ability to inspect and manipulate code), the old creation methods don't work. EOFCREATE creates contracts using pre-validated subcontainers within the factory contract, maintaining security while enabling factory patterns. RETURNCODE allows the initialization code to specify which subcontainer becomes the deployed contract and append additional data. This preserves the factory contract use case while maintaining EOF's code non-observability guarantees.",
+  "tradeoffs": null
 }

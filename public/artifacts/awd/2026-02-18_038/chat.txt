@@ -1,0 +1,50 @@
+00:05:01	patrick:	Gm gm
+00:11:47	Sam:	https://eips.ethereum.org/EIPS/eip-7730
+00:14:04	lcastillo:	https://github.com/ethereum/ERCs/blob/master/assets/erc-7730/example-main.json
+00:23:47	Sam:	How are params names assigned? Would something like "erc7730:tokenPath" be a valid name?
+
+How about format? Would an ordered array be better than a single string, where the wallet picks the first format it recognizes?
+00:25:09	patrick:	A question of mine for later… feel free to ignore for now.
+
+So ABIs aren’t enough because why? I don’t fully understand the logic there. Is it because we have to be sure the ABI is correct? Using your proposed solution is mainly just saying “this is the correct ABI for X contract, and here is how you read the parameters”… yes? 
+
+Like if a malicious token had a “transfer(address to, uint256 amount)”, but it actually removed tokens from the  address to , your solution would have those developers would just update the  intent  field of the json. Do I have that right?
+
+I think I talked myself into remembering why this proposal is good. But the “ABIs can’t be trusted” feels a little weak, just more like “ABIs are hard to read” feels more correct no?
+00:26:46	Hester Bruikman:	Thanks for presenting this work Laurent!
+00:29:49	Mercy Boma Naps-Nkari:	https://github.com/ethereum/execution-apis/pull/704
+00:31:00	lcastillo:	@Sam params are assigned in the function name itself, which is in the form of a human readable ABI, which makes parameters names unambiguous. A parameter path like "#.tokenPath" would be valid if tokanPath appears as a parameter name in the human readbale ABI
+00:31:23	Humarkx:	Reacted to "@Sam params are a..." with 👍
+00:32:21	lcastillo:	For formats we never really found a use case in which multiple formats would make sense for a single parameter, but if we ever see this case it would be a possible addition
+00:33:00	Sam:	Replying to "@Sam params are a..."
+
+I'll continue on the discussion thread
+00:34:17	lcastillo:	@patrick indeed the issue to solve is more ABI is insufficient to represent the data to the user, more than untrusted.
+In fact 7730 itself doesn't solve the trust issue, a rogue contract could easily misrepresent its parameters. Which is why the governance topic with a way to audit 7730 files vs contract implementation is super important for us
+00:35:05	patrick:	Reacted to "@patrick indeed the ..." with 👍
+00:35:56	Nicolas Consigny:	Is there a link for both the proposal and for the hardware device presented ? 
+
+This is https://gist.github.com/nailkhaf/d81c73327fefdb76fdad847035ddbc82#file-architecture-overview-md  
+
+right ?
+00:44:19	Kirill Pimenov:	We've just made the whole repo public: https://github.com/Kalapaja/clear-signing
+00:44:50	Kirill Pimenov:	Gist above is correct, but is more of a "one-pager"
+00:45:49	Michael Curry:	Reacted to "We've just made the ..." with 👍
+00:50:11	Nicolas Consigny:	Nice demo, congrats !
+00:50:19	Michael Curry:	Reacted to "Nice demo, congrats ..." with 👏
+00:50:22	Sam:	Reacted to "Nice demo, congrat..." with 👏
+00:50:28	Hester Bruikman:	Impressive live demo
+00:50:30	Hester Bruikman:	Reacted to "Nice demo, congrats ..." with 👏
+00:50:33	Sam:	+1
+00:51:09	patrick:	Reacted to "Nice demo, congrats ..." with 👏
+00:52:09	Loring:	Reacted to "Nice demo, congrats ..." with 👏
+00:53:23	Loring:	EIP-8105 (Universal Enshrined Encrypted Mempool) 
+https://eips.ethereum.org/EIPS/eip-8105
+00:57:05	Mercy Boma Naps-Nkari:	👋 We've opened an EthMagicians thread on repo & endpoint-level versioning for the JSON-RPC API. If you build on or interact with the API, we'd love your input before we finalize v1 check it out and share your thoughts!  https://ethereum-magicians.org/t/repo-endpoint-level-versioning-for-the-json-rpc-api-seeking-community/27765?u=bomanaps  thank you
+00:57:48	Michael Curry:	Reacted to "👋 We've opened an E..." with 👍
+00:58:32	Loring:	I’m at @LoringHarkness on Telegram
+00:58:48	lcastillo:	Thanks everyone!
+00:58:50	Hester Bruikman:	Thanks all!
+00:58:54	Loring:	Thank you all!
+00:58:55	Nail:	Thanks!
+00:58:57	patrick:	Thanks all

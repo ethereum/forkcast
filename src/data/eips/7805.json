@@ -1,28 +1,23 @@
 {
   "id": 7805,
-  "title": "EIP-7805: Fork-Choice Inclusion Lists (FOCIL)",
+  "title": "EIP-7805: Fork-choice enforced Inclusion Lists (FOCIL)",
   "status": "Draft",
-  "description": "Fork-Choice enforced Inclusion Lists improve improve censorship resistance by enable multiple proposer to force-include transactions in Ethereum blocks.",
-  "author": "Thomas Thiery (@soispoke) <thomas.thiery@ethereum.org>, Francesco D'Amato <francesco.damato@ethereum.org>, Julian Ma <julian.ma@ethereum.org>, Barnabé Monnot <barnabe.monnot@ethereum.org>, Terence Tsao <ttsao@offchainlabs.com>, Jacob Kaufmann <jacob.kaufmann@ethereum.org>, Jihoon Song <jihoonsong.dev@gmail.com>",
+  "description": "Allow a committee of validators to force-include a set of transactions in every block",
+  "author": "Thomas Thiery (@soispoke) <thomas.thiery@ethereum.org>, Francesco D'Amato <francesco.damato@ethereum.org>, Julian Ma <julian.ma@ethereum.org>, Barnabé Monnot <barnabe.monnot@ethereum.org>, Terence Tsao <ttsao@offchainlabs.com>, Jacob Kaufmann <jacob.kaufmann@ethereum.org>, Jihoon Song <jihoon.song@ethereum.org>",
   "type": "Standards Track",
   "category": "Core",
-  "createdDate": "2024-05-15",
+  "createdDate": "2024-11-01",
   "discussionLink": "https://ethereum-magicians.org/t/eip-7805-committee-based-fork-choice-enforced-inclusion-lists-focil/21578",
   "reviewer": "bot",
+  "layer": "CL",
   "forkRelationships": [
-    {
-      "forkName": "Fusaka",
-      "statusHistory": [
-        {
-          "status": "Declined"
-        }
-      ]
-    },
     {
       "forkName": "Glamsterdam",
       "statusHistory": [
         {
-          "status": "Considered"
+          "status": "Considered",
+          "call": null,
+          "date": null
         },
         {
           "status": "Declined",
@@ -32,12 +27,24 @@
       ],
       "isHeadliner": false,
       "wasHeadlinerCandidate": true,
-      "headlinerDiscussionLink": "https://ethereum-magicians.org/t/eip-7805-fork-choice-inclusion-lists-focil-as-a-candidate-for-glamsterdam/24342",
-      "layer": "CL",
-      "champion": {
-        "name": "soispoke",
-        "discord": "soispoke"
-      }
+      "presentationHistory": [
+        {
+          "type": "headliner_proposal",
+          "link": "https://ethereum-magicians.org/t/eip-7805-fork-choice-inclusion-lists-focil-as-a-candidate-for-glamsterdam/24342",
+          "date": "2025-05-26"
+        },
+        {
+          "date": "2025-05-29",
+          "type": "headliner_presentation",
+          "call": "acdc/158"
+        }
+      ],
+      "champions": [
+        {
+          "name": "soispoke",
+          "discord": "soispoke"
+        }
+      ]
     },
     {
       "forkName": "Hegota",
@@ -46,15 +53,33 @@
           "status": "Considered",
           "call": "acdc/171",
           "date": "2025-12-11"
+        },
+        {
+          "status": "Scheduled",
+          "call": "acdc/175",
+          "date": "2026-02-19"
         }
       ],
+      "isHeadliner": true,
       "wasHeadlinerCandidate": true,
-      "headlinerDiscussionLink": "https://ethereum-magicians.org/t/eip-7805-fork-choice-inclusion-lists-focil-as-a-candidate-for-glamsterdam/24342",
-      "layer": "CL",
-      "champion": {
-        "name": "soispoke",
-        "discord": "soispoke"
-      }
+      "presentationHistory": [
+        {
+          "type": "headliner_proposal",
+          "link": "https://ethereum-magicians.org/t/hegota-headliner-proposal-focil-eip-7805/27604",
+          "date": "2026-01-27"
+        },
+        {
+          "type": "headliner_presentation",
+          "call": "acdc/174",
+          "date": "2026-02-05"
+        }
+      ],
+      "champions": [
+        {
+          "name": "soispoke",
+          "discord": "soispoke"
+        }
+      ]
     }
   ],
   "laymanDescription": "FOCIL empowers multiple validators to mandate the inclusion of specific transactions in each block, thereby improving the network's censorship resistance properties.",
@@ -99,5 +124,6 @@
     "Provides strong censorship resistance guarantees",
     "Ensures fair access to block space for all users",
     "Strengthens Ethereum's credible neutrality"
-  ]
+  ],
+  "tradeoffs": null
 }

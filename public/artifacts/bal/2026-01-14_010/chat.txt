@@ -1,0 +1,165 @@
+00:06:10	jochem-brouwer:	Agenda: https://github.com/ethereum/pm/issues/1857
+00:06:16	Karim T. (matkt):	The sound is not very good
+00:06:32	Karim T. (matkt):	yes
+00:08:45	Stefan Starflinger:	summarized here: https://notes.ethereum.org/@ethpandaops/bal-devnet-2
+00:11:08	Boma’s iPhone :	I have a question on pr 726 will Geth change the naming like to eth_get… instead of debug so to match the spec
+00:12:44	Marc:	on nethermind side haven’t worked on batch read, focused on parallel execution and state application atm
+00:13:50	Barnabas:	is this batch IO stuff defined in a new PR or its a “client implementation detail” and there is no spec for it?
+00:14:16	Toni Wahrstätter:	Replying to "is this batch IO stu..." 
+
+ More a client implementation/optimization
+00:14:33	Barnabas:	Reacted to "More a client implem..." with 👍
+00:14:45	Karim T. (matkt):	It seems 21 for devnet will be too soon
+00:15:16	bhartnett:	For Nimbus EL we have just started work on parallel execution. Batch reads will likely come after that.
+00:15:31	Barnabas:	are we 100% blocked on those benchmarks for the other EIPs?
+00:16:07	Dragan Rakita:	Replying to "are we 100% blocked ..."
+
+Good question, imo we are not, but not sure what others think?
+00:16:18	Jared Wasinger:	Replying to "I have a question on..."
+
+Yes.  I will include that change in the next devnet
+00:16:22	Toni Wahrstätter:	Replying to "are we 100% blocked ..." 
+
+ For final numbers, yeah.
+And we want to figure out if the state locations are actually worth it
+00:16:28	Łukasz Rozmej:	to be honest we need parallel execution and batch reading to assess it properly as parallel execution is somewhat parallel reading
+00:16:43	Jared Wasinger:	Reacted to "to be honest we need..." with 💯
+00:16:48	Toni Wahrstätter:	Reacted to to be honest we need... with "💯"
+00:16:51	Stefan Starflinger:	Reacted to "to be honest we need..." with 💯
+00:16:51	bhartnett:	Reacted to "to be honest we ne..." with 💯
+00:16:52	Barnabas:	Replying to "are we 100% blocked ..."
+
+I don’t think we care about final numbers on devnet 2
+00:17:01	Marc:	Reacted to "to be honest we need…" with 💯
+00:17:26	Barnabas:	Replying to "are we 100% blocked ..."
+
+we should focus on implementing the numbers proposed in the EIPs, then if the values will have to be adjusted based on some benchmarking results we should make a change to the EIP, and roll out the change in the following devnet.
+00:17:52	jochem-brouwer:	How does the client import it? I think for RLP tests there is a block import flag? So this would add extra functionality because it would change the interface
+00:18:00	Łukasz Rozmej:	Do we have some good replayable BAL's benchmarks?
+00:18:05	Barnabas:	Replying to "are we 100% blocked ..."
+
+BALs without parallel io shouldn’t be blocking any other EIPs to be included. If we want the final numbers for devnet 2 then we might need to wait weeks if not months. I don’t think its reasonable to get the proper benchmark results in a week.
+00:18:55	Karim T. (matkt):	Replying to "How does the client ..."
+
+Yes it’s block import using flag . So we will have to change that
+00:19:12	Karim T. (matkt):	Reacted to "to be honest we need..." with 💯
+00:19:59	Karim T. (matkt):	Do we need also state root in background as state root computation will also do some read in order to have intermediate trie node and impact IO
+00:20:42	Łukasz Rozmej:	Replying to "to be honest we need..."
+
+it is useful but we could probably measure it separately, so not crucial
+00:21:26	felipe:	Replying to "How does the clien..."
+
+Yes I think the interface will have to change. We will have to figure out the best way to do this for clients.
+00:24:07	Karim T. (matkt):	We need to use snapshot mainnet state and run this transaction on top of that
+00:25:10	Karim T. (matkt):	I think mainnet state is better we see different behavior on bloat net so it will not show us the behavior on mainnet
+00:25:44	Stefan Starflinger:	Whats the difference of having these benchmarks on devnet-1 vs devnet-2?
+00:25:54	Barnabas:	Replying to "Whats the difference..."
+
+nothing 😄
+00:25:59	Barnabas:	Replying to "Whats the difference..."
+
+Thats why my hand is raised
+00:26:04	Stefan Starflinger:	Replying to "Whats the difference..."
+
+we can leave devnet-1 running for benchmarking
+00:26:18	Stefan Starflinger:	Reacted to "Thats why my hand is..." with 👍
+00:26:32	Toni Wahrstätter:	Replying to "Whats the difference..." 
+
+ We need the optimizations for the benchmarks which aren't implemented yet
+00:26:39	Barnabas:	Replying to "Whats the difference..."
+
+we don’t
+00:26:45	Barnabas:	Replying to "Whats the difference..."
+
+not for devnet 2
+00:27:00	Barnabas:	Replying to "Whats the difference..."
+
+none of the proposed EIPs for the next devnet are repricing EIPs
+00:28:25	Barnabas:	https://notes.ethereum.org/@ethpandaops/bal-devnet-2
+00:29:03	Stefan Starflinger:	How do clients feel about merging the optimizations into bal-devnet-1?
+00:29:53	Łukasz Rozmej:	CFI is not SFI
+00:30:00	Karim T. (matkt):	Replying to "How do clients feel ..."
+
+Not a problem for Besu side, we already have // and state root in background on the devnet-1 branch
+00:31:30	Stefan Starflinger:	Also if we keep bal-devnet-1 for optimizations testing is easier as the BAL is still in the block body
+00:32:46	Marc:	note on 7843 some small CL changes are needed so maybe would make sense to add in later devnet
+00:32:52	Barnabas:	well get to it
+00:33:14	Barnabas:	Replying to "note on 7843 some sm..."
+
+let me check with lodestar if they would be happy to add it
+00:33:23	Marc:	Reacted to "let me check with lo…" with 👍🏾
+00:33:53	Marc:	Replying to "note on 7843 some sm…"
+cool, I am also working on implementing and clarifying a few of the details around engine api changes
+00:34:38	Stefan Starflinger:	sounds good
+00:35:17	jochem-brouwer:	Antwoord verzenden naar "Do we have some go..."
+
+For the storage slot bench test, proposal would be: txs split up where we SLOAD(0), where then loop storage is laid out in such way that each slot points to the next one e.g. 1->2->3->4->5. Loop does a lot of SLOADs, checks if gas left > some value (50k), if not the SSTORE(0, last slot), we init the loop as SLOAD(0)
+Final value depends on how much SLOADs were done during these txs. All SLOADs are unique. Bench done on mainnet fork / bloatnet (2x mainnet size). Bench with both storage slots added to BAL and removed. Output is difference in BAL size, and the execution speed. Would give a good measurement to how worth this is.
+
+Will not work if clients have some kind of greedy mechanism to load the storage of a contract from disk (since address is in BAL) and put it in cache
+00:36:01	Jared Wasinger:	What performance are clients seeing with BALs vs main net?
+00:36:41	Jared Wasinger:	Assuming people are replaying main net blocks to benchmark their bal impls
+00:38:23	Toni Wahrstätter:	https://github.com/ethereum/pm/issues/1857
+00:40:07	Karim T. (matkt):	Replying to "What performance are..."
+
+Wanted to do some tests using a shadow fork of mainnet with tx pool mirroring but I was waiting for some tools. I think Barnabas Is working on it
+00:40:08	Barnabas:	I would really like to urge teams to have a dedicated person for performance improvements and a dedicated person for implementing glamsterdam features. These two improvements need to happen parallel and one can’t be a blocker for the other. If you are working on parallel io improvements, you shouldn’t be looking at SLOTNUM opcode implemention and vice versa. 
+We have too many EIPs to have a single dedicated person for perf & EIP implementation.
+00:40:43	Jared Wasinger:	Replying to "I would really like ..."
+
+In the case of BALs, the two can’t really be decoupled
+00:41:57	bhartnett:	Do we need engine_getBALsByHashV1 and engine_getBALsByRangeV1 for devnet 2?
+00:42:08	Stefan Starflinger:	Reacted to "Do we need engine_ge..." with 👍
+00:42:32	felipe:	Reacted to "Do we need engine_..." with 👍
+00:43:18	Barnabas:	Replying to "I would really like ..."
+
+In that case you probably need another person working on the other EIPs.
+00:44:35	Karim T. (matkt):	Yes the same I think I missed something regarding this APIs
+00:47:53	Stefan Starflinger:	Replying to "Do we need engine_ge..."
+
+is this call used for syncing?
+00:50:29	Stefan Starflinger:	Replying to "Do we need engine_ge..."
+
+The BAL is expected to be provided until the weak subjectivity period
+00:54:31	Barnabas:	Replying to "Do we need engine_ge..."
+
+should we add these methods into https://github.com/ethereum/execution-apis/blob/main/src/engine/amsterdam.md  ?
+00:54:51	Barnabas:	Replying to "Do we need engine_ge..."
+
+I can’t seem to find a PR for this
+00:55:17	Jared Wasinger:	Very feasible to do this
+00:55:29	Barnabas:	Replying to "Do we need engine_ge..."
+
+ah 727
+00:55:31	Toni Wahrstätter:	Replying to "Do we need engine_ge..." 
+
+ There's a pr yeah
+00:55:35	Josh | OP Labs:	Reacted to "Very feasible to d..." with ❤️
+00:55:38	Toni Wahrstätter:	Replying to "Do we need engine_ge..." 
+
+ Ah great, you found it
+00:56:39	Jared Wasinger:	Replying to "Very feasible to do ..."
+
+Iiuc the idea is to have an npc method to have a node blindly apply a BAL on top of the state without actually executing
+00:57:05	Toni Wahrstätter:	Reacted to Very feasible to do ... with "❤️"
+00:57:17	Jared Wasinger:	Replying to "Very feasible to do ..."
+
+It can be done, but the specifics need to be worked out as it’s a dangerous functionality
+00:57:25	Josh | OP Labs:	Reacted to "It can be done, bu..." with 👍
+00:57:33	Teddy Knox | OP:	Reacted to "Very feasible to do ..." with ❤️
+00:58:02	Karim T. (matkt):	If you want more info https://consensys.io/blog/besu-fleet-the-future-of-rpc-scaling
+00:58:32	Josh | OP Labs:	Reacted to "If you want more i..." with ❤️
+00:58:39	Guru:	Reacted to "If you want more inf..." with ❤️
+00:59:07	Barnabas:	rpc standard call maybe?
+00:59:24	felipe:	Reacted to "rpc standard call ..." with 💯
+00:59:29	Josh | OP Labs:	Reacted to "rpc standard call ..." with 👍
+01:00:26	Stefan Starflinger:	Reacted to "rpc standard call ma..." with 👍
+01:01:31	Po:	Reacted to "If you want more inf..." with ❤️
+01:01:44	jochem-brouwer:	Great timing :)
+01:01:48	jochem-brouwer:	Bye all! :)
+01:04:28	Fireflies.ai Notetaker Gustavo:	Gustavo invited Fireflies.ai here to record & take notes. View Security & Privacy info: https://fireflies.ai/policy
+
+Type:
+'/ff leave' - Remove Fireflies
+
+View Realtime notes here: https://app.fireflies.ai/live/01KESFHA5Z1RVTD9AV2P3PCGVR?ref=live_chat

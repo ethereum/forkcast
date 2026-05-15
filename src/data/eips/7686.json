@@ -1,20 +1,23 @@
 {
   "id": 7686,
-  "title": "Linear EVM memory limits",
-  "status": "Draft",
-  "description": "Add a hard memory limit equal to the gas limit of the current context. Make the maximum gas cost of a sub-call depend on the memory used in the current context. The two rules together ensure that a transaction with N gas can use at most N bytes of memory.",
+  "title": "EIP-7686: Linear EVM memory limits",
+  "status": "Stagnant",
+  "description": "Adjust memory limits and gas limits of sub-calls to create a clear linear bound on how much total memory an EVM execution can consume",
   "author": "Vitalik Buterin (@vbuterin)",
   "type": "Standards Track",
   "category": "Core",
   "createdDate": "2024-04-15",
   "discussionLink": "https://ethereum-magicians.org/t/eip-7686-linear-evm-memory-limits/19448",
   "reviewer": "bot",
+  "layer": "EL",
   "forkRelationships": [
     {
       "forkName": "Glamsterdam",
       "statusHistory": [
         {
-          "status": "Proposed"
+          "status": "Proposed",
+          "call": null,
+          "date": null
         },
         {
           "status": "Declined",
@@ -22,11 +25,12 @@
           "date": "2025-12-18"
         }
       ],
-      "layer": "EL",
-      "champion": {
-        "name": "Carl Beekhuizen",
-        "discord": "carlbeek"
-      }
+      "champions": [
+        {
+          "name": "Carl Beekhuizen",
+          "discord": "carlbeek"
+        }
+      ]
     }
   ],
   "laymanDescription": "This proposal ties how much EVM memory a transaction can use directly to its gas. It simplifies memory pricing rules so each unit of gas corresponds to at most one byte of memory, making worst-case resource use easier to understand for operators and developers.",
@@ -61,5 +65,6 @@
     "Simplifies EVM memory pricing by removing the quadratic term from the cost function.",
     "Makes worst-case resource usage easier to estimate for EVM executions and client operators.",
     "Aligns call-gas limits with memory usage, avoiding unbounded memory growth across nested sub-calls."
-  ]
+  ],
+  "tradeoffs": null
 }

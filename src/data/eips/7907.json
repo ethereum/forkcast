@@ -2,19 +2,22 @@
   "id": 7907,
   "title": "EIP-7907: Meter Contract Code Size And Increase Limit",
   "status": "Draft",
-  "description": "Increases the contract code size limit introduced in EIP-170 and adds a gas metering to code loading",
-  "author": "Charles Cooper (@charles-cooper), Qi Zhou (@qizhou)",
+  "description": "Increases the contract code size limit introduced in EIP-170 and adds gas metering to code loading",
+  "author": "Charles Cooper (@charles-cooper), Qi Zhou (@qizhou), Matt (@lightclient), Dragan Rakita (@rakita)",
   "type": "Standards Track",
   "category": "Core",
   "createdDate": "2025-03-14",
   "discussionLink": "https://ethereum-magicians.org/t/eip-remove-contract-size-limit/23156",
   "reviewer": "staff",
+  "layer": "EL",
   "forkRelationships": [
     {
       "forkName": "Fusaka",
       "statusHistory": [
         {
-          "status": "Declined"
+          "status": "Declined",
+          "call": null,
+          "date": null
         }
       ]
     },
@@ -22,14 +25,22 @@
       "forkName": "Glamsterdam",
       "statusHistory": [
         {
-          "status": "Proposed"
+          "status": "Proposed",
+          "call": null,
+          "date": null
+        },
+        {
+          "status": "Declined",
+          "call": "acde/228",
+          "date": "2026-01-15"
         }
       ],
-      "layer": "EL",
-      "champion": {
-        "name": "Charles Cooper",
-        "telegram": "big_tech_sux"
-      }
+      "champions": [
+        {
+          "name": "Charles Cooper",
+          "telegram": "big_tech_sux"
+        }
+      ]
     }
   ],
   "laymanDescription": "Increases the contract code size limit from 24KB to 256KB and introduces gas metering for larger contracts. This will enable developers to deploy larger files and applications in a single contract instead of more complex multi contract architecture.",
@@ -71,5 +82,6 @@
     "Enables much larger smart contracts (10x size increase)",
     "Eliminates complex multi-contract workarounds for dapp developers",
     "Saves gas on operations that would otherwise require cross contract calls"
-  ]
+  ],
+  "tradeoffs": null
 }

@@ -1,4 +1,5 @@
 export * from './ClientPerspectives';
+export * from './EipFilterBar';
 export * from './ClientTeamPerspectives';
 export * from './ClientTestingProgress';
 export * from './EipCard';

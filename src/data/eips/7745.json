@@ -1,27 +1,36 @@
 {
   "id": 7745,
-  "title": "Trustless log index",
+  "title": "EIP-7745: Trustless log and transaction index",
   "status": "Draft",
-  "description": "Introduces a Merkle-tree-based log index that replaces header bloom filters. All log values share a global index space, with sparse two-dimensional filter maps enabling efficient, provable searches over limited data and returning accurate block and transaction locations for candidates.",
+  "description": "An efficient, light client and DHT friendly replacement for block header bloom filters",
   "author": "Zsolt Felföldi (@zsfelfoldi)",
   "type": "Standards Track",
   "category": "Core",
   "createdDate": "2024-07-17",
   "discussionLink": "https://ethereum-magicians.org/t/eip-7745-two-dimensional-log-filter-data-structure/20580",
   "reviewer": "bot",
+  "layer": "EL",
   "forkRelationships": [
     {
       "forkName": "Glamsterdam",
       "statusHistory": [
         {
-          "status": "Proposed"
+          "status": "Proposed",
+          "call": null,
+          "date": null
+        },
+        {
+          "status": "Declined",
+          "call": "acde/227",
+          "date": "2026-01-05"
         }
       ],
-      "layer": "EL",
-      "champion": {
-        "name": "Felföldi Zsolt",
-        "discord": "zsfelfoldi"
-      }
+      "champions": [
+        {
+          "name": "Felföldi Zsolt",
+          "discord": "zsfelfoldi"
+        }
+      ]
     }
   ],
   "laymanDescription": "Ethereum currently uses bloom filters in each block header to help search event logs, but they are inefficient today. This proposal replaces them with a new Merkle-based log index that uses moderate extra consensus data yet greatly reduces bandwidth and computation for finding events, especially for light clients and indexing services.",
@@ -56,5 +65,6 @@
     "Maintains consistently low false positive rates even as block gas limits and log volumes increase.",
     "Reduces bandwidth for log-event discovery by orders of magnitude compared with existing per-block bloom filters.",
     "Provides precise block and transaction positions for candidate hits, minimizing unnecessary receipt fetches during log queries."
-  ]
+  ],
+  "tradeoffs": null
 }

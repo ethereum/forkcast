@@ -2,26 +2,35 @@
   "id": 8058,
   "title": "EIP-8058: Contract Bytecode Deduplication Discount",
   "status": "Draft",
-  "description": "Introduces a gas discount for deploying duplicate contract bytecode by leveraging EIP-2930 access lists.",
+  "description": "Reduces gas costs for deploying duplicate contract bytecode via access-list based mechanism",
   "author": "Carlos Perez (@CPerezz), Wei Han Ng (@weiihann), Guillaume Ballet (@gballet)",
   "type": "Standards Track",
   "category": "Core",
   "createdDate": "2025-10-22",
   "discussionLink": "https://ethereum-magicians.org/t/eip-8058-contract-bytecode-deduplication-discount/25933",
   "reviewer": "bot",
+  "layer": "EL",
   "forkRelationships": [
     {
       "forkName": "Glamsterdam",
       "statusHistory": [
         {
-          "status": "Proposed"
+          "status": "Proposed",
+          "call": null,
+          "date": null
+        },
+        {
+          "status": "Declined",
+          "call": "acde/227",
+          "date": "2026-01-05"
         }
       ],
-      "layer": "EL",
-      "champion": {
-        "name": "Carlos Perez",
-        "discord": "CPerezz.eth"
-      }
+      "champions": [
+        {
+          "name": "Carlos Perez",
+          "discord": "CPerezz.eth"
+        }
+      ]
     }
   ],
   "laymanDescription": "If you deploy a contract that's exactly the same as one that already exists and you include that existing contract's address in your transaction's access list, you don't pay the per-byte code deposit again—the new contract just points to the already-stored code.",
@@ -57,5 +66,6 @@
     "No new transaction format or reverse indexes; reuses EIP-2930 infrastructure.",
     "Can yield major savings when GAS_CODE_DEPOSIT is high (e.g., under EIP-8037).",
     "Encourages bytecode reuse and efficient factory/clone patterns."
-  ]
+  ],
+  "tradeoffs": null
 }

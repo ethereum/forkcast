@@ -1,0 +1,47 @@
+{
+  "meeting_topic": "All Core Devs - Testing (ACDT) #66, January 19, 2026",
+  "meeting_start_time": "2026-01-19T13:53:34Z",
+  "meeting_end_time": "2026-01-19T15:02:38Z",
+  "summary_start_time": "2026-01-19T13:53:34Z",
+  "summary_end_time": "2026-01-19T15:02:30Z",
+  "summary_created_time": "2026-01-19T15:03:56Z",
+  "summary_last_modified_time": "2026-01-19T16:38:04Z",
+  "summary_overview": "The team reviewed and discussed various Ethereum Improvement Proposals (EIPs) for inclusion in DevNet 2, including updates on block-level access, transaction receipts, and state growth strategies. They made decisions about specific EIP implementations and agreed to update the specs page with relevant caveats while aiming for a local devnet version with simplified scope. The conversation ended with discussions about dynamic pricing impacts and MEV-Boost functionality, with plans to continue further conversations asynchronously.",
+  "summary_details": [
+    {
+      "label": "DevNet Access and EIP Updates",
+      "summary": "The team discussed updates on block-level access with devnets, focusing on syncing fixes and stable performance with EVM fuzzing and Uniswap trades. They decided to keep EIP 7843, an Engine API change, in DevNet 2 since Lodestar has already merged the PR, and Barnabas confirmed that Lighthouse updates would be ready soon. The team also agreed to deny the inclusion of EIP 8024, a switch encoding change, in DevNet 2 for now, and to revisit it on ACD if necessary. Finally, Tony presented EIP 7778 for alignment on specs, but the transcript ends before further discussion."
+    },
+    {
+      "label": "Transaction Receipts and EIP Updates",
+      "summary": "The team discussed changes to transaction receipts, focusing on gas usage accounting and EIP-7778 implementation. Toni proposed adding a new field to receipts to track gas spent post-refund, which received general agreement from Ben and Daniel, though Parithosh suggested moving it to DevNet 2 for broader testing. The team also reviewed EIP-7708, deciding to keep the system address and merge the PR as-is, with Spencer confirming the address choice was reasonable for now. Stefan indicated DevNet 2 would likely launch around Wednesday, pending PR merges and client readiness, with Potuz noting Prysm's develop branch was actively merging PRs for the spec."
+    },
+    {
+      "label": "Ethereum Devnet Testing Strategy",
+      "summary": "The team discussed the status of various Ethereum clients for devnet testing, with Prysm and Teku appearing to be the most advanced. They agreed to aim for a local devnet version with simplified scope, excluding external builders and P2P broadcast of bids, while EIPs 7843, 7778, 7708, and 8024 were confirmed for inclusion in devnet-2. The team decided to update the specs page with these caveats and to aim for a local devnet version to begin testing, with a timeline of a few weeks rather than the initially suggested 11 days."
+    },
+    {
+      "label": "Glamsterdam State Growth Strategy Discussion",
+      "summary": "The meeting focused on discussing EIP 8037, which proposes a strategy for state growth in Glamsterdam. The group decided to CFI (Consensus Fallback Implementation) the EIP as-is, with plans to iterate on it asynchronously. They also discussed the potential impact of dynamic pricing on smart contracts and agreed to gather more feedback from the developer community. Additionally, there was a brief discussion about absorbing MEV-Boost functionality into clients for Glamsterdam, with some uncertainty about the scope of specification needed. The conversation ended with plans to continue discussions asynchronously in various channels."
+    }
+  ],
+  "next_steps": [
+    "Stefan: Share the Lodestar PR for EIP 7843 in the chat",
+    "Barnabas: Follow up with Pawan on Lighthouse devnet 2 ready branch",
+    "Toni: Create test cases for the new receipt format with EIP 7778 changes for devnet 2",
+    "Ben and team: Merge the EIP 7708 PRs so teams can follow what's canonical",
+    "Spencer: Merge required PRs based on decisions from the call",
+    "Stefan: Have everything ready to launch devnet 2 around Wednesday, set glass fork for later",
+    "Client teams: Ping Stefan as soon as images are ready for local devnets",
+    "Client teams: Review and comment on EIP 7778 changes on Execution Dev Discord",
+    "Client teams: Provide devnet 2 ready releases by Wednesday at the latest, or reach out to Stefan if more time is needed",
+    "Prysm team: Merge PRs for local processing of blocks and Gossip objects in the next 2-3 days",
+    "Parithosh and team: Update the ePBS specs page with caveats about no external builders and no P2P broadcast of bids",
+    "Testing teams: Get together and start making testing plans for ePBS",
+    "Marius and team: Iterate on EIP 8037 points discussed, both internally within DEF and with broader community",
+    "Marius: Schedule a call for further discussion on EIP 8037",
+    "Marius and team: Reach out to app developers and community to understand potential issues with dynamic costs in EIP 8037",
+    "Bharath: Forward the Payload Builders channel thread to continue discussion on MEV boost deprecation",
+    "Potuz and Justin: Discuss PR 4817 on the CL consensus dev chat"
+  ]
+}

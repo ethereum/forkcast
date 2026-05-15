@@ -1,0 +1,381 @@
+00:00:15	butta:	gmgm
+00:00:29	nixo:	gm
+00:01:27	Potuz:	gm
+00:01:44	stokes:	Gm
+00:02:03	Justin Traglia:	Gm
+00:02:14	nixo:	hmmmm, i don’t see josh
+00:02:18	nixo:	let me call him rq
+00:02:33	Felix (Geth):	which Josh
+00:02:50	nixo:	davis, he streams the calls
+00:03:31	nixo:	thank you, pooja!
+00:04:48	Łukasz Rozmej:	TooManyCallsException
+00:05:12	Łukasz Rozmej:	Replying to "TooManyCallsExceptio..."
+
+maybe better naming would be CallBufferOverflowException?
+00:05:44	Ameziane Hamlat:	Reacted to "TooManyCallsExceptio..." with 😂
+00:05:52	Mehdi Aouadi:	Reacted to "TooManyCallsExceptio..." with 😂
+00:06:14	Antonio Sanso:	https://github.com/ethereum/pm/issues/1889
+00:06:41	Luis Pinto | Besu:	@Maria Silva Will we be moving all the content from ACDT to this new breakout?
+00:06:52	Kevaundray Wedderburn:	PQ: https://github.com/ethereum/pm/issues/1889 
+L1-zkEVM : https://github.com/ethereum/pm/issues/1900
+00:07:12	Luca Donno | L2BEAT:	Reacted to "PQ: https://github.c..." with ❤️
+00:07:26	Stefan Starflinger:	https://notes.ethereum.org/@ethpandaops/bal-devnet-2
+00:08:54	Maria Silva:	Replying to "@Maria Silva Will we..."
+
+The idea is to have a more focussed discussion for repricings that don’t fit in ACDT.
+00:09:04	Luis Pinto | Besu:	Reacted to "The idea is to have ..." with 👍
+00:09:09	Stefan Starflinger:	Reacted to "PQ: https://github.c..." with ❤️
+00:09:26	Marc:	Reacted to "TooManyCallsExceptio…" with 😂
+00:14:43	Jared Wasinger:	We can use bal to replace the healing phase
+00:14:46	Jared Wasinger:	In snap sync
+00:17:37	Ansgar Dietrichs:	the different optimizations target different operations:
+state writes: parallel state root calculation
+state reads: batch reads
+compute: parallel execution
+
+so if we launch the fork without any of these supported, that specific type of operation would have to be more expensive
+00:18:21	Jared Wasinger:	Geth will have batch io by the time devnet 2 launches
+00:19:39	Csaba:	It’s still HW and bandwidth dependent. A client “not keeping up” under minimum resource requirements might still keep up with more resources.
+00:20:18	Toni Wahrstätter:	here's an updated table about the optimization readiness:
+https://discord.com/channels/595666850260713488/1364000387195076608/1466431329167216650
+00:20:40	Toni Wahrstätter:	This is CL sync though
+00:20:48	Stefan Starflinger:	Reacted to "Geth will have batch..." with 👍
+00:21:17	Toni Wahrstätter:	Until the WSP the CL will do the sync. Only after the WSP clients may fallback to snap sync and can then use the optimization
+00:22:15	Dustin:	if specific optimizations will be effectively required, it would be better to document them explicitly
+00:22:23	Łukasz Rozmej:	Reacted to "if specific optimiza..." with 👍
+00:23:21	Toni Wahrstätter:	BAL summary: no need to wait for benchmarking for repricing. Besu and Geth are ready, having all optimizations for the critical path (but have to double check with them if it's a benchmark-able version yet).
+cc @Maria Silva 
+00:23:55	Maria Silva:	Reacted to "BAL summary: no need..." with 👍
+00:24:30	jochem-brouwer:	Heeft gereageerd op "BAL summary: no ne..." met 👍
+00:25:01	Jen:	Reacted to "if specific optimiza..." with 👍
+00:25:07	상구 한:	Reacted to "BAL summary: no need..." with 👍
+00:25:32	Luca Donno | L2BEAT:	Reacted to "if specific optimiza..." with 👍
+00:26:05	Stefan Starflinger:	Replying to "if specific optimiza..."
+
+Added tonis table to https://notes.ethereum.org/@ethpandaops/bal-devnet-2 #Client-BAL-features
+00:26:38	Stefan Starflinger:	What limits would we run into?
+00:27:09	vitalik:	with 60/60 calldata floor, 10m size limit does not trigger until 600m gas
+00:27:20	jochem-brouwer:	We need the new eth protocol if we go higher than something like 75 Mgas due to the receipt size
+00:27:30	Csaba:	Replying to "if specific optimiza..."
+
+It feels strange to me to mandate specific implementation details, instead of mandating performance requirements.
+00:27:34	Toni Wahrstätter:	There could be the 10 MiB RLP size limit (if we don't put the calldata repricing in too). But we can avoid hitting it by just not spamming big-calldata blocks
+00:27:55	Marius van der Wijden:	Replying to "We need the new et..."
+
+eth/70 will need to be shipped with a hf, to make sure all nodes are updated
+00:28:39	jochem-brouwer:	Antwoord verzenden naar "We need the new et..."
+
+Which EIP is this? For some reason I can't find it
+00:28:44	Toni Wahrstätter:	Replying to "if specific optimiza..."
+
+Agree with Csaba, they should be described as possible optimizations and we do the benchmarking on optimized clients but in the end, clients are free to optimize how they want and if you get to the same speed as other clients without parallism, fine :)
+00:29:06	jochem-brouwer:	Antwoord verzenden naar "We need the new et..."
+
+Nvm found it
+00:29:12	Marius van der Wijden:	Replying to "We need the new et..."
+
+https://eips.ethereum.org/EIPS/eip-7975 Its in the networking category
+00:29:24	Francesco:	Replying to "if specific optimiza..."
+
+Well, as long as you don’t do it by e.g. doing it optimistically instead of using the BAL, which won’t deal with the worst case
+00:29:50	Francesco:	Replying to "if specific optimiza..."
+
+Performance requirements have to be defined quite strictly
+00:30:48	jochem-brouwer:	Antwoord verzenden naar "We need the new et..."
+
+Yup, thanks :)
+
+I thought this was already proposed for Glamsterdam. Does it need to be shipped with a hf? Technically not right, eth/70 is somewhat opt-in, but mandatory once we raise gas limit above that 10 MB receipt threshold
+00:31:28	vitalik:	I don't like this because it makes "is empty" part of the de facto storage interface
+00:31:52	vitalik:	imo we should keep the storage interface ro a clean get(key), set(key, val)
+00:32:06	Csaba:	Replying to "if specific optimiza..."
+
+I agree, it should be strict. It should be on worst case, and on specific test cases. But “having implemented a vaguely defined technique” is I think worse in many ways.
+00:32:57	vitalik:	(I guess we also have a "next" operator for tree transitions but that's an exceptional case)
+00:33:04	Łukasz Rozmej:	famous last words ;)
+00:34:32	vitalik:	hmm I see, triggerable at 2**80 cost, quantum won't help much but classical compute growth would
+00:35:34	vitalik:	with tree transition emptiness becomes unverifiable
+00:35:44	Danno Ferrin - Tectonic.xyz:	Every other client has implemented this EIP
+00:35:50	Dragan Rakita:	Reacted to "hmm I see, triggerab..." with 👍
+00:35:58	Marius van der Wijden:	Reacted to "Every other client..." with 👍
+00:36:55	Csaba:	Replying to "if specific optimiza..."
+
+I can have parallelism, yet a mutex that effectively makes it not work in parallel.
+To specify it well I’m afraid we would be going into so much language specific details, that we would loose some of the advantages of having all these implementations.
+00:38:06	Danno Ferrin - Tectonic.xyz:	2^80 is not terribly good securty as it is.
+00:38:12	Francesco:	Reacted to "I agree, it should b..." with 👍
+00:38:18	Etan (Nimbus):	isn’t 20 bytes 2^160?
+00:38:31	Francesco:	Reacted to "I can have paralleli..." with 👍
+00:38:35	Dragan Rakita:	Current difference for the clients is if they are passing steel test or not, this needs crafted test to trigger
+00:38:52	Dragan Rakita:	Reth didn’t implemented it for example
+00:39:08	Danno Ferrin - Tectonic.xyz:	Replying to "isn’t 20 bytes 2^160..."
+
+square root attack exist s classiclly.  grover’s (quantum) is another square root
+00:39:27	Danno Ferrin - Tectonic.xyz:	Replying to "Reth didn’t implemen..."
+
+And reth is the only one
+00:40:25	felipe:	Reacted to "I agree, it should..." with 👍
+00:40:51	Etan (Nimbus):	Reacted to "square root attack e..." with ❤️
+00:41:05	vitalik:	Replying to "isn’t 20 bytes 2^..."
+
+grover needa cube root to find collision
+00:41:34	jochem-brouwer:	If we would rewrite ETH spec we would include this rule. The behavior is currently not specified, so we have undefined behavior. Which is not nice. We know if this situation is triggered we will get a chain split between reth and other clients.
+00:41:41	vitalik:	Replying to "isn’t 20 bytes 2^..."
+
+so, 2**53,multiplied by whatever the quantum overhead is (almost certainly crazy high at first)
+00:43:42	Mario Vega:	Replying to "Reth didn’t implemen..."
+
+@Danno Ferrin - Tectonic.xyz could you share the name of the test that triggered this pls? just if you have it on hand if not is ok
+00:45:22	Dragan Rakita:	Replying to "Reth didn’t implemen..."
+
+@Mario Vega I think @Jen have added description in hive for all tests that we skip. List should be somewhere there
+00:45:22	Marius van der Wijden:	We have it implemented in geth already. Also heavily in the dfi camp
+00:45:56	Danno Ferrin - Tectonic.xyz:	Replying to "Reth didn’t implemen..."
+
+https://github.com/ethereum/execution-spec-tests/blob/main/tests/paris/eip7610_create_collision/test_initcollision.py
+00:46:06	Łukasz Rozmej:	Reacted to "We have it implement..." with 👍
+00:46:10	Łukasz Rozmej:	Replying to "We have it implement..."
+
+same in Nethermind
+00:46:10	Danno Ferrin - Tectonic.xyz:	It was actually part of the Paris tests if that commit is correct.
+00:46:12	Stefan Starflinger:	Reacted to "We have it implement..." with 👍
+00:46:14	Marius van der Wijden:	Replying to "We have it impleme..."
+
+7 authors for a cli flag
+00:46:38	CPerezz:	Reacted to "7 authors for a cli ..." with 👀
+00:46:40	Etan (Nimbus):	Replying to "We have it implement..."
+
+“author” is just write access on the eip
+00:46:59	Marius van der Wijden:	Replying to "We have it impleme..."
+
+Sounds like airdrop farming to me 🤪
+00:47:20	FLCL:	Replying to "We have it implement..."
+
+Airdrops still exist?
+00:47:24	Etan (Nimbus):	Reacted to "Airdrops still exist..." with 😂
+00:47:29	Danno Ferrin - Tectonic.xyz:	Replying to "Reth didn’t implemen..."
+
+So if 7610 is formally pulled we will need new tests.
+00:47:32	Csaba:	Reacted to "Airdrops still exist..." with 😂
+00:47:39	Dragan Rakita:	Reacted to "7 authors for a cli ..." with 😂
+00:47:44	Jen:	Replying to "Reth didn’t implemen..."
+
+For reference: I added a TLDR to describe the problem statement in our hive test failures https://github.com/paradigmxyz/reth/blob/70bfdafd26905a19beb22bc1db7012494919fa22/.github/scripts/hive/expected_failures.yaml#L46
+00:47:50	Luis Pinto | Besu:	Same case as the RPC standardization
+00:48:11	Justin Florentine (Besu):	Reacted to "Same case as the RPC..." with ➕
+00:48:12	Luca Donno | L2BEAT:	Reacted to "Airdrops still exist..." with 😂
+00:48:14	felipe:	Reacted to "Airdrops still exi..." with 😂
+00:48:52	Łukasz Rozmej:	Reacted to "7 authors for a cli ..." with 😂
+00:48:56	Łukasz Rozmej:	Reacted to "Airdrops still exist..." with 😂
+00:49:04	Stefan Starflinger:	Reacted to "Airdrops still exist..." with 😂
+00:50:01	Danno Ferrin - Tectonic.xyz:	This specific test is the storage collision - https://github.com/ethereum/execution-spec-tests/blob/main/tests/paris/eip7610_create_collision/test_initcollision.py#L102
+00:51:58	felipe:	Reacted to "This specific test..." with 👍
+00:53:21	Felix (Geth):	omg this slide design...
+00:53:24	felipe:	Replying to "Reth didn’t imple..."
+
+Just putting the current link to it here, since execution-spec-tests is no more :)
+ 
+https://github.com/ethereum/execution-specs/blob/590bc9f045baacca112ef56e4fe0769eed8b76d3/tests/paris/eip7610_create_collision/test_initcollision.py#L117
+00:53:34	Łukasz Rozmej:	maybe we should go 1 by 1 with discussion?
+00:54:03	Kevaundray Wedderburn:	Replying to "We have it implement..."
+
+Sorry was having some issues — I think its okay to DFI if most clients have it implemented — it was meant to be implemented pre-Fusaka so this was meant to be a forcing function for it
+00:54:25	Dragan Rakita:	Reacted to "Airdrops still exist..." with 😂
+00:57:08	nixo:	can we get the presentation link? :)
+00:59:34	FLCL:	Replying to "We have it implement..."
+
+(actually want to say big thanks to everyone who helps via protocol guild / via airdrops, it really helps to make debugging of state root mismatches way less stressful, we will win together)
+01:00:52	Łukasz Rozmej:	Can you show the slide with the bandwith?
+01:00:53	Felix (Geth):	I think we all support gaps somehow but it's not great how they are handled.
+01:00:57	Potuz:	Reacted to "7 authors for a cli ..." with 😂
+01:01:14	Potuz:	Reacted to "Airdrops still exist..." with 😂
+01:02:20	Łukasz Rozmej:	share slides please!
+01:05:37	lightclient:	What key system does this use?
+01:05:56	vitalik:	sounds like it's abstracted, any key system is allowed?
+01:06:17	Justin Florentine (Besu):	Replying to "What key system does..."
+
+it is an abstraction, so it is flexible.
+01:06:28	vitalik:	so this makes the key provider a last looker, which makes them MEV-bearing
+01:06:37	Marius van der Wijden:	Reacted to "so this makes the ..." with 👍
+01:06:41	Etan (Nimbus):	Reacted to "so this makes the ke..." with 👍
+01:06:45	Łukasz Rozmej:	So for historical sync/archive node/sync from p2p you need to download block and keys? So Keys would need to be storred and included in ERA formmats?
+01:06:48	Csaba:	My slides on EIP-8077 and EIP-8094
+https://drive.google.com/file/d/1qbYfroCds8_DCpVfzM1qm2HKjYLDntu9/view?usp=sharing
+01:06:48	상구 한:	Reacted to "so this makes the ke..." with 👍
+01:06:56	Ansgar Dietrichs:	Reacted to "My slides on EIP-807..." with 🙏
+01:07:25	vitalik:	technically even the "decryption" metaphor is a suggestion
+01:07:38	vitalik:	the key providera could just do hash preimage reveal
+01:07:45	Justin Florentine (Besu):	Reacted to "the key providera co..." with ➕
+01:08:24	vitalik:	which further underlines that this is an mev bearing last looker role and will get *boosted :D
+01:08:44	lightclient:	Does this leak tx meta data?
+01:08:51	lightclient:	Replying to "Does this leak tx me..."
+
+Nonce, gas limit, etc
+01:09:01	Anders Elowsson:	Three things to discuss:
+
+Not compatible with BALs
+Key providers may not know whether payload becomes canonical at time of propagating keys.
+Game theory of trust graph.
+01:09:11	Etan (Nimbus):	who pays if the tx ends up failing due to not enough balance / skipped nonce etc?
+01:09:39	Ansgar Dietrichs:	to make it through all 3 headliner proposals, I will timebox each to 10min, so ~2min left for this one
+01:09:42	Potuz:	Replying to "Three things to disc..."
+
+4. Key presence being part of consensus or not
+01:10:20	DA | Flashbots:	Replying to "Three things to disc..."
+
+First thought, trust graph seems to have much stronger network effects than OFAs
+01:10:46	Łukasz Rozmej:	Replying to "who pays if the tx e..."
+
+I think this is the same as for normal txs
+01:10:49	Anders Elowsson:	I have been working on a generalisation of sealed transactions for a while that indeed delays the execution to the next slot. Sharing a draft here that might be interesting. Not fully ready to publish yet: https://notes.ethereum.org/@anderselowsson/LUCID-v7
+01:10:59	DA | Flashbots:	Is this just for mev bearing transactions? Execution quality will be hard to compete with gains from backrunning in OFAs
+01:11:18	Potuz:	doesn't leaking the tx gas payer  lose a lot of the applications for encrypted txs?
+01:11:30	Justin Florentine (Besu):	Replying to "Does this leak tx me..."
+
+new tx type has a sub-envelope that has added metadata, yes.
+01:11:49	Potuz:	Replying to "Does this leak tx me..."
+
+Ah my question fits better here 
+> doesn't leaking the tx gas payer lose a lot of the applications for encrypted txs?
+01:12:01	lightclient:	Reacted to "Ah my question fits ..." with 👍
+01:12:13	Justin Florentine (Besu):	Reacted to "I think this is the ..." with ➕
+01:12:27	Anders Elowsson:	Replying to "Does this leak tx me..."
+
+In LUCID linked above it is hidden
+01:12:29	Jannik Luhn:	For more on EIP-8105, we’re hosting a discussion session next week, Tuesday, ACDE time: https://meet.google.com/ccw-dwbm-mai
+01:12:41	lightclient:	https://eips.ethereum.org/EIPS/eip-8141
+01:12:44	Anders Elowsson:	Replying to "Does this leak tx me..."
+
+Sender of sealed transaction and revealed transaction can differ
+01:12:59	Justin Florentine (Besu):	Replying to "Is this just for mev..."
+
+yes, backrunning isn't really addressed.
+01:13:09	Potuz:	Replying to "Does this leak tx me..."
+
+the same can be applied here it seems
+01:13:22	Chris Haug:	Replying to "For more on EIP-8105..."
+
+is there a cal event for it?
+01:13:44	Anders Elowsson:	Replying to "Does this leak tx me..."
+
+Yeah
+01:14:09	Jannik Luhn:	Replying to "which further underl..."
+
+yes, I would expect builders selling this slot to backrunners
+01:14:20	jochem-brouwer:	Antwoord verzenden naar "For more on EIP-81..."
+
+Could you add a protocol calendar item for this?
+01:14:30	DA | Flashbots:	Reacted to "yes, I would expect ..." with 👀
+01:15:21	jochem-brouwer:	Antwoord verzenden naar "For more on EIP-81..."
+
+To do so, open an issue in https://github.com/ethereum/pm/issues
+01:16:16	DA | Flashbots:	Replying to "which further underl..."
+
+fwiw bottom of the block is a bit less important for backrunning these days; since OFAs have grown and now it just happens directly behind transactions in most cases
+01:17:05	Marius van der Wijden:	Damn, doesn't sound easy
+01:17:42	Ansgar Dietrichs:	I think we won’t have a choice but to ship some version of native AA eventually for pq readiness. So to me the main question here is “is this the right variant” and “is it the right time”
+01:17:48	Jannik Luhn:	Replying to "Three things to disc..."
+
+1: BALs could be generated by the next builder, but yes, there’s a brief time in which they are not available
+2: yes, but key providers could listen to attestation and only release when they see enough of them. Also, via the key vlaidation function, they can make keys only valid for a single slot, in order to prevent replaying the (now decrypted) transaction
+01:17:55	Łukasz Rozmej:	Reacted to "Damn, doesn't sound ..." with 😱
+01:18:20	Marius van der Wijden:	Reacted to "I think we won’t ..." with 👍
+01:18:24	Peter:	Reacted to "I think we won’t hav..." with 👍
+01:18:30	Jannik Luhn:	Replying to "who pays if the tx e..."
+
+The fee is paid as part of the envelope execution. If the encrypted part fails, there’s no refund.
+01:18:58	frangio:	how does this look in the mempool?
+01:19:08	Potuz:	I love the fact that this EL headliner doesn't touch the CL :)
+01:19:12	FLCL:	Does it need blobs?
+01:19:17	lightclient:	Reacted to "Does it need blobs?" with ❤️
+01:19:19	Tamaghna Choudhuri:	Reacted to "I love the fact that..." with 😂
+01:19:22	spencer-tb:	Reacted to "I love the fact that..." with 😂
+01:19:26	stokes:	Reacted to "I love the fact that…" with 👌
+01:19:30	felipe:	Reacted to "I love the fact th..." with 😂
+01:19:31	Felix (Geth):	Replying to "Does it need blobs?"
+
+yes
+01:19:38	felix (eest):	Reacted to "I love the fact th..." with 😂
+01:19:39	상구 한:	Reacted to "I think we won’t hav..." with 👍
+01:19:43	Felix (Geth):	Replying to "Does it need blobs?"
+
+because it is a replacement for all tx
+01:19:44	Enrico Del Fante (tbenr):	Reacted to "I love the fact that..." with 💯
+01:19:46	Dragan Rakita:	Reacted to "I love the fact that..." with 😂
+01:19:50	Ansgar Dietrichs:	Replying to "I think we won’t hav..."
+
+my intuition is on “is it the right time” - yes.
+on “is this the right variant” - I don’t have an opinion yet
+01:20:08	Anders Elowsson:	Replying to "Three things to disc..."
+
+Without BALs, these transactions cannot be executed under parallelisation guarantees correct?
+I agree with second point, but then the transactor would have to leak what they want to do in the future, which is still not ideal.
+01:20:15	Ansgar Dietrichs:	I think the comparison to 7702 is less relevant, more relevant is 4337
+01:20:55	lightclient:	Also 7702 has much more than 5k txs per day. Weekly successful user op is in the 1m range
+01:21:26	Jannik Luhn:	Replying to "doesn't leaking the ..."
+
+I don’t think this is an issue for frontrunning protection which is the main goal, only for censorship resistance. And for these cases, the gas payer does not have to be the same address as the payload signer, so there can be relayers or some other misdirection
+01:21:43	Ansgar Dietrichs:	Replying to "Also 7702 has much m..."
+
+maybe difference is in delegation txs vs then usage of these delegations?
+01:21:49	lightclient:	Replying to "Also 7702 has much m..."
+
+Could be
+01:21:56	CPerezz:	PQ-readiness + Privacy through AA are 2 things that significantly improve ethereum over any other financial infra existing today. Not even banks are PQ-ready. And this would be a huge differentiator.
+
+It definitely looks like a must-ship together with FOCIL
+01:22:12	lightclient:	Replying to "Also 7702 has much m..."
+
+Main net numbers here: https://www.bundlebear.com/eip7702-overview/ethereum
+01:22:34	lightclient:	Reacted to "PQ-readiness + Priva..." with 👍
+01:22:48	Toni Wahrstätter:	Reacted to PQ-readiness + Priva... with "👍"
+01:22:53	Jannik Luhn:	Replying to "Does this leak tx me..."
+
+yes, the envelope signer and the payload signer can be different
+01:23:14	Daniel Lehrner (Besu):	I checked this dashboard for 7702: https://dune.com/wintermute_research/eip7702
+01:23:17	Jannik Luhn:	Replying to "For more on EIP-8105..."
+
+will do
+01:23:40	Chris Haug:	Reacted to "will do" with ❤️
+01:24:07	Jannik Luhn:	Replying to "which further underl..."
+
+interesting!
+01:24:25	Potuz:	will this EIP make the one for encrypted mempools more powerful to allow for arbitrary signing?
+01:25:30	Jannik Luhn:	Replying to "which further underl..."
+
+One aspect that makes it a bit more complicated is some time passes between the block building and last possible key revelation, so external markets might have moved
+01:25:56	felix (eest):	Reacted to "PQ-readiness + Pri..." with 👍
+01:26:04	Ansgar Dietrichs:	if we want to do this, it definitely needs to be headliner imo. not just because of implementation complexity, but also because it would require a big concentrated push on ecosystem education and adoption
+01:26:17	Daniel Lehrner (Besu):	Reacted to "if we want to do thi..." with 👍
+01:26:23	frangio:	Reacted to "if we want to do t..." with 👍
+01:26:26	Luca Donno | L2BEAT:	Reacted to "PQ-readiness + Priva..." with 👍
+01:26:34	stokes:	Reacted to "if we want to do thi…" with 👍
+01:26:47	Marius van der Wijden:	Replying to "I checked this das..."
+
+I love the breakdown, 70% crime
+01:26:48	Luca Donno | L2BEAT:	Reacted to "if we want to do thi..." with 👍
+01:27:00	FLCL:	Reacted to "because it is a repl..." with 🫡
+01:28:41	marissa:	Reacted to "if we want to do thi…" with 👍
+01:29:06	Alex Forshtat:	Reacted to "if we want to do thi..." with 👍
+01:29:10	Mario Havel:	Replying to "if we want to do t..."
+
+Makes sense to me as headliner to promote security and UX
+01:29:58	marissa:	Replying to "if we want to do thi…"
+Yes it’s worth talking about what the plan is on the ecosystem education and adoption side.
+01:30:24	Marius van der Wijden:	I am all for binary engine api and binary el rpc (somehting we have been looking into already)
+01:30:27	Kevaundray Wedderburn:	I’m in favour of this, especially replacing the engine API with SSZ
+01:30:33	jochem-brouwer:	Heeft gereageerd op "I’m in favour of ..." met 👍
+01:30:41	Tamaghna Choudhuri:	Reacted to "I am all for binary ..." with 🎉
+01:30:43	CPerezz:	Reacted to "I’m in favour of thi..." with 👍
+01:30:55	FLCL:	Reacted to "I am all for binary ..." with 🎉
+01:30:59	FLCL:	Reacted to "I’m in favour of thi..." with 👍
+01:31:13	FLCL:	:lfg:
+01:31:16	Pooja Ranjan:	No mic needed, 
+Please also note that there are a few Fusaka-related EIPs that are still awaiting author responses, as listed here:
+https://github.com/ethereum/pm/issues/1883#issuecomment-3817808224
+
+
+Requesting the authors to review and close the pending items at the earliest, so we can close Fusaka's open items. Thank you.
+01:31:24	lightclient:	Replying to "I checked this dashb..."
+
+I’m honestly not sure how the numbers are so far apart

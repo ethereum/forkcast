@@ -1,0 +1,48 @@
+00:12:10	Stefan Starflinger:	BAL is part of the block it’s required right?
+00:12:46	Jared Wasinger:	It’s required to follow the chain at the tip
+00:12:54	Jared Wasinger:	But it will be served by the CL over the engine api
+00:13:38	Stefan Starflinger:	What about providing them via RPC?
+00:13:55	Stefan Starflinger:	The balance changes are interesting for users
+00:14:13	draganrakita:	If they are optional in p2p, that would work
+00:14:42	Stefan Starflinger:	Is full sync still supported by clients as a fallback?
+00:16:23	Jared Wasinger:	yes
+00:16:50	Ben Adams:	full sync you can reconstruct the bals and then compare to the hash
+00:17:08	Stefan Starflinger:	Sounds very expensive
+00:17:28	Jared Wasinger:	I haven’t looked into them yet
+00:17:37	Ben Adams:	you contruct the bal anyway to verify
+00:17:43	draganrakita:	Same here, didn’t look, will send it to team
+00:17:53	Karim T.:	Replying to "full sync you can re..."
+
+Yes but it’s very long
+00:18:11	draganrakita:	I will be fine without metrics in devnet0
+00:18:17	Jared Wasinger:	Reacted to "I will be fine witho..." with 👍
+00:19:14	Stefan Starflinger:	Replying to "full sync you can re…"
+Yeah the receiving client sure but then also the sending client needs to recreate them
+00:19:17	Łukasz Rozmej:	Debug logs with diffs only!
+00:19:30	Toni Wahrstätter:	Reacted to I will be fine witho... with "👍"
+00:19:33	Ben Adams:	Diffs rather than hash mismatch
+00:19:39	Ben Adams:	Reacted to "Debug logs with di..." with 👍
+00:19:50	Jared Wasinger:	Reacted to "Debug logs with diff..." with 👍
+00:19:51	devconnect:	Reacted to "Diffs rather than ..." with 💯
+00:19:55	Toni Wahrstätter:	Reacted to Debug logs with diff... with "👍"
+00:19:57	Toni Wahrstätter:	Reacted to Diffs rather than ha... with "💯"
+00:19:58	devconnect:	Reacted to "Debug logs with di..." with 👍
+00:21:34	draganrakita:	Reacted to "Debug logs with diff..." with 👍
+00:21:34	draganrakita:	Reacted to "Diffs rather than ha..." with 💯
+00:21:41	Karim T.:	What we do if the order is different.
+00:21:47	Karim T.:	But content is the same
+00:22:09	Karim T.:	For the hash
+00:23:05	Karim T.:	👍
+00:23:52	Stefan Starflinger:	Any updates on including generatedBlockAccessList in the debug_badBlock call?
+00:28:12	Stefan Starflinger:	👍🏼
+00:28:19	Stefan Starflinger:	And nethermind?
+00:31:20	devconnect:	Yes I will look into the remaining fails this week
+00:31:28	devconnect:	(felipe)
+00:34:30	draganrakita:	I like idea that we have all io access be bounded by size of the block
+00:36:04	Karim T.:	Only adding the read of the transaction that are exceeding a certain amount of SLOAD
+00:50:20	Ben Adams:	Is at EthClient Summit
+00:54:12	Karim T.:	Bloat devnet with BAL
+00:55:06	Stefan Starflinger:	Shouldn’t it be possible to get this kind of insight with kurtosis ethereum package and if not what is missing?
+00:57:39	Jared Wasinger:	Should be straightforward for geth
+00:58:28	Karim T.:	Not difficult for Besu
+01:02:06	Karim T.:	For the moment we don’t have yet prefetching of the read from BAL. Do we want that for the next devnet or later ?

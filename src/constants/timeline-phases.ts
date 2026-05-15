@@ -1,10 +1,9 @@
-export interface TimelinePhase {
-  id: string;
-  title: string;
-  dateRange: string;
-  description: string;
-  status: 'completed' | 'current' | 'upcoming';
-}
+import type {
+  TimelinePhase,
+  ProcessPhase,
+  ForkProgress,
+  MacroPhaseConfig
+} from '../types/timeline';
 
 export const GLAMSTERDAM_TIMELINE_PHASES: TimelinePhase[] = [
   {
@@ -33,14 +32,14 @@ export const GLAMSTERDAM_TIMELINE_PHASES: TimelinePhase[] = [
     title: 'Non-Headliner EIP CFI Decisions',
     dateRange: 'Sep 4 & 11',
     description: 'ACDC and ACDE calls select which Proposed for Inclusion EIPs advance to Considered for Inclusion.',
-    status: 'current'
+    status: 'completed'
   },
   {
     id: 'cfi-to-sfi',
     title: 'CFI → SFI EIP Decisions',
     dateRange: 'Date TBD',
     description: 'As Glamsterdam devnets begin, final decisions on which CFI EIPs will be included in the upgrade\'s devnet.',
-    status: 'upcoming'
+    status: 'in-progress'
   }
 ];
 
@@ -119,21 +118,21 @@ export const HEGOTA_TIMELINE_PHASES: TimelinePhase[] = [
     title: 'Fork Focus Discussion & Headliner Proposals',
     dateRange: 'Jan 8 - Feb 4',
     description: 'ACD calls focus on discussing Hegotá\'s high-level goals. Headliner champions present proposals.',
-    status: 'current'
+    status: 'completed'
   },
   {
     id: 'headliner-discussion',
     title: 'Headliner Discussion & Finalization',
-    dateRange: 'Feb 5 - Feb 26',
+    dateRange: 'Feb 5 - Mar 26',
     description: 'ACD evaluates candidate headliners, solicits community feedback, and finalizes decisions.',
-    status: 'upcoming'
+    status: 'completed'
   },
   {
     id: 'non-headliner-proposals',
     title: 'Non-Headliner EIP Proposals',
-    dateRange: 'TBD',
-    description: 'Non-headliner EIPs can now be proposed for inclusion in Hegotá.',
-    status: 'upcoming'
+    dateRange: 'Apr 9 - TBD',
+    description: 'Non-headliner EIPs can be proposed for inclusion in Hegotá. Window opens April 9th, deadline TBD.',
+    status: 'in-progress'
   },
   {
     id: 'cfi-decisions',
@@ -150,54 +149,6 @@ export const HEGOTA_TIMELINE_PHASES: TimelinePhase[] = [
     status: 'upcoming'
   }
 ];
-
-export interface ProcessPhase {
-  id: string;
-  title: string;
-  duration: string;
-  owner: string[];
-  checklist: string[];
-  deliverables: string[];
-  notes?: string;
-}
-
-export interface DevnetDetail {
-  name: string;
-  status: 'completed' | 'in-progress' | 'upcoming';
-  date?: string;
-  projectedDate?: string;
-}
-
-export interface TestnetDetail {
-  name: string;
-  status: 'completed' | 'in-progress' | 'upcoming' | 'deprecated';
-  date?: string;
-  projectedDate?: string;
-}
-
-export interface SubstepDetail {
-  name: string;
-  status: 'completed' | 'in-progress' | 'upcoming';
-  date?: string;
-  projectedDate?: string;
-}
-
-export interface ForkPhaseProgress {
-  phaseId: string;
-  status: 'completed' | 'in-progress' | 'upcoming';
-  actualStartDate?: string;
-  actualEndDate?: string;
-  projectedDate?: string;
-  progressNotes?: string;
-  devnets?: DevnetDetail[];
-  testnets?: TestnetDetail[];
-  substeps?: SubstepDetail[];
-}
-
-export interface ForkProgress {
-  forkName: string;
-  phases: ForkPhaseProgress[];
-}
 
 export const FUSAKA_PROGRESS: ForkProgress = {
   forkName: 'Fusaka',
@@ -273,10 +224,10 @@ export const GLAMSTERDAM_PROGRESS: ForkProgress = {
     },
     {
       phaseId: 'eip-selection',
-      status: 'in-progress',
+      status: 'completed',
       actualStartDate: 'Aug 2025',
-      projectedDate: 'Dec 2025',
-      progressNotes: 'PFI deadline completed, CFI/SFI decisions ongoing',
+      actualEndDate: 'Jan 29, 2026',
+      progressNotes: 'PFI and CFI deadlines completed, SFI decisions finalized',
       substeps: [
         {
           name: 'PFI Deadline',
@@ -285,21 +236,22 @@ export const GLAMSTERDAM_PROGRESS: ForkProgress = {
         },
         {
           name: 'CFI Deadline',
-          status: 'upcoming',
-          projectedDate: 'Dec 15, 2025'
+          status: 'completed',
+          date: 'Jan 29, 2026'
         }
       ]
     },
     {
       phaseId: 'development',
-      status: 'upcoming',
-      projectedDate: 'Q1-Q2 2026',
-      progressNotes: 'Devnets expected to begin Q1 2026',
+      status: 'in-progress',
+      actualStartDate: 'Feb 2026',
+      projectedDate: 'Q2 2026',
+      progressNotes: 'Scoping complete, implemented EIPs are being tested on devnets',
       devnets: [
-        { name: 'Devnet-0', status: 'upcoming', projectedDate: 'Q1 2026' },
-        { name: 'Devnet-1', status: 'upcoming', projectedDate: 'Q1 2026' },
-        { name: 'Devnet-2', status: 'upcoming', projectedDate: 'Q1 2026' },
-        { name: 'Devnet-3', status: 'upcoming', projectedDate: 'Q1-Q2 2026' },
+        { name: 'Devnet-0', status: 'completed', date: 'Apr 24, 2026' },
+        { name: 'Devnet-1', status: 'completed', date: 'Apr 29, 2026' },
+        { name: 'Devnet-2', status: 'completed', date: 'May 1, 2026' },
+        { name: 'Devnet-3', status: 'completed', date: 'May 6, 2026' },
         { name: 'Devnet-4', status: 'upcoming', projectedDate: 'Q2 2026' },
         { name: 'Devnet-5', status: 'upcoming', projectedDate: 'Q2 2026' }
       ]
@@ -324,24 +276,25 @@ export const GLAMSTERDAM_PROGRESS: ForkProgress = {
   ]
 };
 
-export const HEGOTA_PROJECTION: ForkProgress = {
+export const HEGOTA_PROGRESS: ForkProgress = {
   forkName: 'Hegota',
   phases: [
     {
       phaseId: 'headliner-selection',
-      status: 'upcoming',
-      projectedDate: 'Q1-Q2 2026',
-      progressNotes: 'Headliner review debate: timing depends on Glamsterdam progress',
+      status: 'completed',
+      actualStartDate: 'Jan 8, 2026',
+      actualEndDate: 'Mar 26, 2026',
+      progressNotes: 'FOCIL (EIP-7805) SFI\'d as headliner, Frame Transaction (EIP-8141) CFI\'d as non-headliner',
       substeps: [
         {
           name: 'Proposal Deadline',
-          status: 'upcoming',
-          projectedDate: 'Q1 2026'
+          status: 'completed',
+          date: 'Feb 4, 2026'
         },
         {
           name: 'Selection Deadline',
-          status: 'upcoming',
-          projectedDate: 'Q2 2026'
+          status: 'completed',
+          date: 'Mar 26, 2026'
         }
       ]
     },
@@ -349,7 +302,7 @@ export const HEGOTA_PROJECTION: ForkProgress = {
       phaseId: 'eip-selection',
       status: 'upcoming',
       projectedDate: 'Q2-Q3 2026',
-      progressNotes: 'Opens after headliner finalization',
+      progressNotes: 'Non-headliner EIP proposal window opens April 9th, deadline TBD',
       substeps: [
         {
           name: 'PFI Deadline',
@@ -518,3 +471,17 @@ export const UPGRADE_PROCESS_PHASES: ProcessPhase[] = [
     notes: 'Schedule Wed monitoring. Need ~60-70% adoption. 2-week minimum window.'
   }
 ];
+
+export const MACRO_PHASES: MacroPhaseConfig[] = [
+  { id: 'headliners', label: 'Headliners', description: 'Fork focus definition & headliner selection' },
+  { id: 'scoping', label: 'Scoping', description: 'Non-headliner EIP selection (PFI/CFI/SFI)' },
+  { id: 'devnets', label: 'Devnets', description: 'Client implementation across devnets (0 through N)' },
+  { id: 'testnets', label: 'Testnets', description: 'Public testnet deployments (Sepolia, Hoodi)' },
+  { id: 'mainnet', label: 'Mainnet', description: 'Mainnet activation' },
+];
+
+export const FORK_PROGRESS_MAP: Record<string, ForkProgress> = {
+  fusaka: FUSAKA_PROGRESS,
+  glamsterdam: GLAMSTERDAM_PROGRESS,
+  hegota: HEGOTA_PROGRESS,
+};

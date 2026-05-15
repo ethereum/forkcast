@@ -1,32 +1,42 @@
 {
   "id": 7981,
-  "title": "EIP-7981: Increase access list cost",
+  "title": "EIP-7981: Increase Access List Cost",
   "status": "Draft",
-  "description": "This EIP charges additional gas for non-zero and zero bytes in access lists to prevent circumvention of gas pricing rules and ensure fair costs.",
+  "description": "Price access lists for data to reduce maximum block size",
   "author": "Toni Wahrstätter (@nerolation)",
   "type": "Standards Track",
   "category": "Core",
   "createdDate": "2024-12-27",
   "discussionLink": "https://ethereum-magicians.org/t/eip-7981-increase-access-list-cost/24680",
   "reviewer": "bot",
+  "layer": "EL",
   "forkRelationships": [
     {
       "forkName": "Glamsterdam",
       "statusHistory": [
         {
-          "status": "Proposed"
+          "status": "Proposed",
+          "call": null,
+          "date": null
         },
         {
           "status": "Considered",
           "call": "acde/226",
           "date": "2025-12-18"
+        },
+        {
+          "status": "Scheduled",
+          "call": "acde/236",
+          "date": "2026-05-07",
+          "timestamp": 804
         }
       ],
-      "layer": "EL",
-      "champion": {
-        "name": "Toni Wahrstätter",
-        "discord": "nero_eth"
-      }
+      "champions": [
+        {
+          "name": "Toni Wahrstätter",
+          "discord": "nero_eth"
+        }
+      ]
     }
   ],
   "laymanDescription": "Adjusts transaction costs for access lists to balance gas fees and prevent block size inflation.",
@@ -61,5 +71,6 @@
     "Increases network stability by reducing maximum block size through reduced incentive to use large access lists.",
     "Encourages fairer transaction costs across users by preventing underutilization of pricing structures.",
     "Maintains compatibility with existing EIP-2930 while introducing necessary changes to the access list gas calculations."
-  ]
+  ],
+  "tradeoffs": null
 }

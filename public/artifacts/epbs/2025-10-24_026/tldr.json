@@ -1,0 +1,100 @@
+{
+  "meeting": "EPBS #026 - 2025-10-24",
+  "highlights": {
+    "specifications": [
+      {
+        "timestamp": "00:08:27",
+        "highlight": "Consensus specs v1.6.0-beta.1 released; designated for ePBS DevNet Zero"
+      },
+      {
+        "timestamp": "00:08:39",
+        "highlight": "Two open TODO items remain: merkle proof tests and pending payment epoch asserts"
+      }
+    ],
+    "client_updates": [
+      {
+        "timestamp": "00:09:51",
+        "highlight": "Prysm: 8 PRs implementing beacon chain passing spec tests; blocked on Fusaka release"
+      },
+      {
+        "timestamp": "00:11:02",
+        "highlight": "Lighthouse: Block processing in progress; multiple devs now contributing"
+      },
+      {
+        "timestamp": "00:12:08",
+        "highlight": "Teku: Progress on master merges; fork choice and database work not yet started"
+      },
+      {
+        "timestamp": "00:13:23",
+        "highlight": "Lodestar: State transition ~70% done; passing 2/3 operations tests; fork choice pending"
+      },
+      {
+        "timestamp": "00:13:58",
+        "highlight": "Grandine: Several weeks away from ePBS implementation completion"
+      }
+    ],
+    "proposed_changes": [
+      {
+        "timestamp": "00:14:28",
+        "decision": "Proposal to rename 'index' to 'payload_status' in AttestationData rejected"
+      },
+      {
+        "timestamp": "00:19:12",
+        "highlight": "Multiple teams cite high implementation complexity for attestation data container changes"
+      },
+      {
+        "timestamp": "00:24:02",
+        "highlight": "Consensus: Defer attestation data cleanup until next required structural change"
+      }
+    ],
+    "gossip_validation": [
+      {
+        "timestamp": "00:26:00",
+        "highlight": "Missing gossip validation: payloads should reject blocks older than finalized checkpoint"
+      }
+    ],
+    "organizational": [
+      {
+        "timestamp": "00:29:12",
+        "highlight": "DevConnect attendance: minimal Prysm/Teku/Grandine presence; interop planning needed"
+      }
+    ]
+  },
+  "action_items": [
+    {
+      "timestamp": "00:14:49",
+      "action": "Close PR #4655 (payload_status field addition to AttestationData)",
+      "owner": "Mehdi"
+    },
+    {
+      "timestamp": "00:26:49",
+      "action": "Add gossip condition: reject payloads for blocks older than finalized checkpoint",
+      "owner": "Mark"
+    },
+    {
+      "timestamp": "00:29:23",
+      "action": "Organize DevConnect ePBS interop session (dual deadlines, pre-emption topics)",
+      "owner": "Justin/Potuz/Shane"
+    }
+  ],
+  "decisions": [
+    {
+      "timestamp": "00:08:27",
+      "decision": "Consensus specs v1.6.0-beta.1 approved for ePBS DevNet Zero implementation"
+    },
+    {
+      "timestamp": "00:24:32",
+      "decision": "Rejected renaming 'index' to 'payload_status' in AttestationData due to implementation complexity"
+    },
+    {
+      "timestamp": "00:26:39",
+      "decision": "Add validation: payloads must have block_root > latest finalized checkpoint"
+    }
+  ],
+  "targets": [
+    {
+      "timestamp": "00:32:06",
+      "target": "November 7, 2025 - Next EPBS breakout call"
+    }
+  ]
+}

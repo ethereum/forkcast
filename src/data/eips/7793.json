@@ -1,20 +1,23 @@
 {
   "id": 7793,
   "title": "EIP-7793: Conditional Transactions",
-  "status": "Draft",
-  "description": "Transactions that only executes at a specific index and slot.",
+  "status": "Stagnant",
+  "description": "Transactions that only executes at a specific index and slot",
   "author": "Marc Harvey-Hill (@Marchhill), Ahmad Bitar (@smartprogrammer93)",
   "type": "Standards Track",
   "category": "Core",
   "createdDate": "2024-10-17",
   "discussionLink": "https://ethereum-magicians.org/t/eip-7793-asserttxindex-opcode/21513",
   "reviewer": "staff",
+  "layer": "EL",
   "forkRelationships": [
     {
       "forkName": "Fusaka",
       "statusHistory": [
         {
-          "status": "Declined"
+          "status": "Declined",
+          "call": null,
+          "date": null
         }
       ]
     },
@@ -22,14 +25,22 @@
       "forkName": "Glamsterdam",
       "statusHistory": [
         {
-          "status": "Proposed"
+          "status": "Proposed",
+          "call": null,
+          "date": null
+        },
+        {
+          "status": "Declined",
+          "call": "acde/228",
+          "date": "2026-01-15"
         }
       ],
-      "layer": "EL",
-      "champion": {
-        "name": "Marc Harvey-Hill",
-        "discord": "marchhill"
-      }
+      "champions": [
+        {
+          "name": "Marc Harvey-Hill",
+          "discord": "marchhill"
+        }
+      ]
     }
   ],
   "laymanDescription": "Adds support for conditional transaction that is only valid at a chosen spot in a block, improving support for encrypted mempools.",
@@ -70,5 +81,6 @@
   "benefits": [
     "Enforces mempool ordering, preventing builder reordering and frontrunning.",
     "Provides TXINDEX opcode for onchain verification of declared conditional transaction index."
-  ]
+  ],
+  "tradeoffs": null
 }

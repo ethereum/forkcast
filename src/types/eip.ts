@@ -9,14 +9,21 @@ export interface ForkRelationship {
   forkName: string;
   statusHistory: Array<{
     status: 'Proposed' | 'Considered' | 'Scheduled' | 'Declined' | 'Included' | 'Withdrawn';
-    call?: `${'acdc' | 'acde' | 'acdt'}/${number}`;
-    date?: string;
+    call: `${'acdc' | 'acde' | 'acdt'}/${number}` | null;
+    date: string | null;
+    timestamp?: number; // Seconds into the call recording video
   }>; // Ordered oldest -> newest
   isHeadliner?: boolean;
   wasHeadlinerCandidate?: boolean;
-  headlinerDiscussionLink?: string;
-  layer?: string;
-  champion?: Champion;
+  /** Maximum 2 champions allowed */
+  champions?: Champion[];
+  presentationHistory?: Array<{
+    type: 'headliner_proposal' | 'headliner_presentation' | 'presentation' | 'debate';
+    call?: `${'acdc' | 'acde' | 'acdt'}/${number}`;
+    link?: string;
+    date: string;
+    timestamp?: number; // Seconds into the call recording video
+  }>;
 }
 
 export interface Champion {
@@ -35,9 +42,12 @@ export interface EIP {
   type: string;
   category?: string;
   createdDate: string;
-  discussionLink: string;
+  discussionLink?: string;
   reviewer?: string;
+  layer?: 'EL' | 'CL';
   collection?: string;
+  /** Override for EIPs not yet merged into ethereum/EIPs (default URL would 404). */
+  specificationUrl?: string;
   forkRelationships: ForkRelationship[];
   laymanDescription?: string;
   northStars?: string[];
@@ -57,7 +67,7 @@ export interface EIP {
     elClients: { impact?: string, description: string };
   };
   benefits?: string[];
-  tradeoffs?: string[];
+  tradeoffs?: string[] | null;
 }
 
 export type InclusionStage =
@@ -70,3 +80,18 @@ export type InclusionStage =
   | 'Unknown';
 
 export type ProposalType = 'EIP' | 'RIP';
+
+export type KeyDecisionType = 'stage_change' | 'devnet_inclusion' | 'headliner_selected' | 'other';
+
+export interface KeyDecision {
+  original_text: string;
+  timestamp: string;
+  type: KeyDecisionType;
+  eips: number[];
+  stage_change?: {
+    to: 'Proposed' | 'Considered' | 'Scheduled' | 'Included' | 'Declined' | 'Withdrawn';
+  };
+  devnet?: string;
+  fork?: string;
+  context?: string;
+}

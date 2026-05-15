@@ -1,0 +1,326 @@
+WEBVTT
+
+1
+00:02:43.480 --> 00:02:46.369
+Jihoon: Hey guys, I think we can wait a few more minutes.
+
+2
+00:03:32.160 --> 00:03:33.870
+Jihoon: Alright, I think we can kick it off.
+
+3
+00:03:36.090 --> 00:03:40.609
+Jihoon: So, hello everyone, welcome to FOCIL Breakout 29.
+
+4
+00:03:41.160 --> 00:03:45.480
+Jihoon: First off, FOCIL has SFI for Pectra.
+
+5
+00:03:45.680 --> 00:03:49.340
+Jihoon: Thank you everyone who has been working on and supporting FOCIL.
+
+6
+00:03:50.560 --> 00:03:58.040
+Jihoon: In response to that, I've realized also spec on Gloas, and then promoted it to here. As he…
+
+7
+00:03:58.700 --> 00:04:05.729
+Jihoon: Here I was referring to CL spec, execution specs, and Engine APIs, or…
+
+8
+00:04:06.270 --> 00:04:15.830
+Jihoon: still outdated, but I don't expect any meaningful changes there, to be honest. I'm still discussing with spec maintainers.
+
+9
+00:04:16.029 --> 00:04:19.220
+Jihoon: On how to go about that rebasing.
+
+10
+00:04:20.890 --> 00:04:26.190
+Jihoon: Let me quickly share the link to the… as he's back.
+
+11
+00:04:33.900 --> 00:04:42.150
+Jihoon: Yeah, here's a spec, and… The gist of the spec change is… So…
+
+12
+00:04:42.630 --> 00:04:48.019
+Jihoon: let's say if you're in slot N, and when we receive a peak on block.
+
+13
+00:04:48.210 --> 00:04:57.059
+Jihoon: or near the attestation deadline for slot N, we call it get head, right? And if there was a payload for slot N minus 1,
+
+14
+00:04:57.210 --> 00:05:00.990
+Jihoon: We get to decide whether to extend that payload or not.
+
+15
+00:05:01.860 --> 00:05:08.930
+Jihoon: So any PBS, we rework a payload when half of PTC vote against it.
+
+16
+00:05:09.350 --> 00:05:16.320
+Jihoon: the beacon block for slot N was timely, and it chose to reorog the payload for slot N-1.
+
+17
+00:05:16.930 --> 00:05:21.929
+Jihoon: In here, we… let me fossil add a new condition that
+
+18
+00:05:22.080 --> 00:05:26.559
+Jihoon: If the payload was not IL compliant, we just reorgan.
+
+19
+00:05:27.430 --> 00:05:36.049
+Jihoon: So, with this condition, when a payload was not IL compliant, attesters don't vote for it, and a proposer doesn't extend it.
+
+20
+00:05:36.490 --> 00:05:48.660
+Jihoon: And yeah, that's the… I think that's the main change of the fossil spec. So, yep, that's it. That's for the spec update. Do we have any questions or any other updates?
+
+21
+00:06:16.950 --> 00:06:22.130
+Jihoon: Alright, thank… We don't have any questions.
+
+22
+00:06:22.360 --> 00:06:24.560
+Jihoon: Do we have any development updates?
+
+23
+00:06:30.230 --> 00:06:34.329
+Fabio Di Fabio: Not a real update, but, on a Besu.
+
+24
+00:06:35.250 --> 00:06:37.959
+Fabio Di Fabio: We are starting this week.
+
+25
+00:06:39.310 --> 00:06:46.540
+Fabio Di Fabio: Necessary activities for… integrating FOCIL to Besu.
+
+26
+00:06:47.940 --> 00:06:59.780
+Jihoon: Nice, will it gonna be… on top of… Glamsterdam? Or… Fusaka?
+
+27
+00:07:02.260 --> 00:07:08.530
+Fabio Di Fabio: It… On top of Glamsterdam, yes. Because we are…
+
+28
+00:07:09.600 --> 00:07:17.390
+Fabio Di Fabio: already many EIP for Glamsterdam that are our main, so… we usually… Right.
+
+29
+00:07:17.490 --> 00:07:20.140
+Fabio Di Fabio: To keep all the new features on Maine.
+
+30
+00:07:20.690 --> 00:07:25.769
+Fabio Di Fabio: As quickly as possible, and so you should be on top of that.
+
+31
+00:07:27.580 --> 00:07:28.580
+Jihoon: Nice, nice.
+
+32
+00:07:32.720 --> 00:07:35.680
+Jihoon: Okay, so… Yeah, it's really good to hear it.
+
+33
+00:07:35.910 --> 00:07:41.190
+Jihoon: And I think the next step forward Ahead of us, but be…
+
+34
+00:07:41.390 --> 00:07:45.749
+Jihoon: besides the spec updates, I think it will be a spec test, so that
+
+35
+00:07:45.900 --> 00:07:50.019
+Jihoon: We can provide test factors for clients.
+
+36
+00:07:50.130 --> 00:07:54.200
+Jihoon: So… Yeah, if we can have…
+
+37
+00:07:54.620 --> 00:08:00.150
+Jihoon: best prototype on top of Glamsterdam, then… I think it…
+
+38
+00:08:00.520 --> 00:08:03.009
+Jihoon: It will really come in handy when we test.
+
+39
+00:08:03.410 --> 00:08:07.139
+Jihoon: Possible. So, yeah, really good to hear it.
+
+40
+00:08:13.610 --> 00:08:19.210
+Jihoon: Okay, if we don't have any other updates, then…
+
+41
+00:08:19.990 --> 00:08:22.430
+Jihoon: We can go ahead and wrap up this call.
+
+42
+00:08:28.360 --> 00:08:37.119
+Jihoon: By the way, nico, we have a PBS implementation on Lodestar. Do you think…
+
+43
+00:08:37.970 --> 00:08:40.070
+Jihoon: Is it gonna make sense to…
+
+44
+00:08:40.549 --> 00:08:44.989
+Jihoon: implement fossil on top of it, or is it still premature?
+
+45
+00:08:45.440 --> 00:09:02.270
+nflaig: Right now, it's not yet possible, because we have not yet merged everything into our unstable. That's on the ePBS DevNet Zero. So, I think we need to clean that up first a bit, and get it, more reviewed and cleaned up.
+
+46
+00:09:02.270 --> 00:09:10.759
+nflaig: And then we can rebase our fossil branch against that, because it's based on unstable branch right now, not the ePBS devnet.
+
+47
+00:09:12.650 --> 00:09:13.559
+Jihoon: As it.
+
+48
+00:09:13.960 --> 00:09:20.769
+nflaig: But yeah, maybe, 2 weeks or something? Maybe we can try to rebase it on clause.
+
+49
+00:09:23.020 --> 00:09:32.590
+Jihoon: do we… wait for… Like, field deafness, or, like, deafness zero would be fine to rebase fossil.
+
+50
+00:09:35.830 --> 00:09:51.130
+nflaig: Yeah, I think the devnet zero scope, should cover everything for fossil. I don't think anything we add in later… oh, wait, maybe not. It doesn't cover the PTC, so we don't, want to implement that in devnet zero.
+
+51
+00:09:53.000 --> 00:09:54.779
+nflaig: So maybe devnet one.
+
+52
+00:09:58.300 --> 00:09:59.140
+Jihoon: I see.
+
+53
+00:09:59.300 --> 00:10:01.460
+Jihoon: So… Yeah, silly.
+
+54
+00:10:01.960 --> 00:10:08.399
+Jihoon: It's not… far out, so it would be, I don't know, a few weeks or 1 or 2 months.
+
+55
+00:10:11.360 --> 00:10:19.219
+nflaig: Yeah, I think at least from our side, we would like to have something, before the Interop. I think that's doable.
+
+56
+00:10:21.570 --> 00:10:22.570
+Jihoon: Sounds great.
+
+57
+00:10:28.220 --> 00:10:35.559
+Jihoon: Okay, thanks for sharing the updates. If we don't have any other updates, then we can…
+
+58
+00:10:36.490 --> 00:10:38.970
+Jihoon: Rabbias called Oli.
+
+59
+00:10:42.720 --> 00:10:48.090
+Jihoon: Alright, thank you guys, have a great rest of your day, and see you guys in 2 weeks!
+
+60
+00:10:49.450 --> 00:10:51.180
+Fabio Di Fabio: Thank you. Oh, bye.
+
+61
+00:10:51.180 --> 00:10:56.010
+Jihoon: Yeah, Palette did share something on the chat, I'm sorry I didn't see it.
+
+62
+00:10:56.510 --> 00:11:00.330
+Jihoon: Maybe, you wanna share something, Pelot?
+
+63
+00:11:00.360 --> 00:11:11.030
+Pelle Krabbenhoeft: Yeah, I can talk for a quick second. These two charts are just what I've seen so far using the block-native data, which has been a lot easier to work with, but basically…
+
+64
+00:11:11.030 --> 00:11:21.789
+Pelle Krabbenhoeft: The overview is with the top fee IL building, we're looking at about 85% for the zero slot delay, so the current implementation, and then…
+
+65
+00:11:23.280 --> 00:11:32.840
+Pelle Krabbenhoeft: We… Moving to the two-slot delay, it changes by about the same amount as I was talking last week. Let me just pull it up.
+
+66
+00:11:35.270 --> 00:11:47.139
+Pelle Krabbenhoeft: Yeah, you're going from 84% of the transactions in the inclusion list are included in the next spot, block already, and then with the delays, it gets up to 85.
+
+67
+00:11:47.520 --> 00:12:05.009
+Pelle Krabbenhoeft: So, not too much of a difference there. And… I found some more issues with this, so this is just a sneak peek, but, just wanted to show this off as well. And then, actual censored inclusion lists are also about the same as the
+
+68
+00:12:05.080 --> 00:12:18.540
+Pelle Krabbenhoeft: XL… XL data I shared last time, but the inclusion rates are a lot higher with this block native data, so I'm assuming… so I have some more testing to do, but we're looking at about 95%
+
+69
+00:12:18.540 --> 00:12:26.350
+Pelle Krabbenhoeft: of transactions included in these inclusion lists with the top fee, building structure.
+
+70
+00:12:26.420 --> 00:12:29.819
+Pelle Krabbenhoeft: Are essentially a waste of bandwidth, but yeah.
+
+71
+00:12:32.560 --> 00:12:34.790
+Jihoon: Okay, great. Yeah. Thanks for sharing.
+
+72
+00:12:35.660 --> 00:12:36.540
+Jihoon: Nice.
+
+73
+00:12:38.250 --> 00:12:45.830
+Jihoon: So, I think the idea would be…
+
+74
+00:12:46.010 --> 00:12:56.890
+Jihoon: Sorry, I haven't read your document fully, but I guess the plan is to update the script to get more precise data?
+
+75
+00:12:57.690 --> 00:13:08.680
+Pelle Krabbenhoeft: Yeah, there was an issue with the config, and just due to the volume of all the data, it's taking my laptop a couple days to process, so, it's kind of just waiting on that, really.
+
+76
+00:13:12.050 --> 00:13:12.700
+Jihoon: Cool.
+
+77
+00:13:12.930 --> 00:13:13.720
+Jihoon: Yeah.
+
+78
+00:13:14.050 --> 00:13:15.229
+Jihoon: Thanks for sharing.
+
+79
+00:13:19.260 --> 00:13:26.580
+Jihoon: Alright, I think we can really go ahead and wrap this call. Alright, thank you guys. Stay in 2 weeks. Thank you.
+
+80
+00:13:26.580 --> 00:13:27.250
+Pelle Krabbenhoeft: Thank you.
+
+81
+00:13:29.410 --> 00:13:30.090
+Jihoon: Bye-bye.
+

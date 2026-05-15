@@ -1,0 +1,810 @@
+WEBVTT
+
+1
+00:08:26.110 --> 00:08:27.030
+Pablo Deymo | Lambda: Hello, bro.
+
+2
+00:09:42.800 --> 00:09:44.260
+Thomas Coratger: Hello, everyone.
+
+3
+00:09:48.620 --> 00:09:49.250
+T. Wambsgans: Alright.
+
+4
+00:09:52.680 --> 00:09:53.360
+Yann Vonlanthen: Hello.
+
+5
+00:10:11.010 --> 00:10:13.200
+Thomas Coratger: So, let's get started.
+
+6
+00:10:22.190 --> 00:10:28.660
+Thomas Coratger: So, welcome to post-quantum interrupt number… 39?
+
+7
+00:10:29.120 --> 00:10:32.370
+Thomas Coratger: We will start with a client update.
+
+8
+00:10:32.650 --> 00:10:40.340
+Thomas Coratger: And then I would like to talk about different points, mainly DevNet 5,
+
+9
+00:10:41.290 --> 00:10:49.750
+Thomas Coratger: the pros and cons of going through 3S… still going through 3SF Mini, VS, switching to Goldfish.
+
+10
+00:10:50.320 --> 00:10:53.990
+Thomas Coratger: a bit of stabilization around LeanSpec.
+
+11
+00:10:54.100 --> 00:11:13.330
+Thomas Coratger: And a new repo that has just been created by Justine Traglia about, potentially outsourcing the cryptography spec, in LIN, LIN is a language in 4, in a specific repo. But first, let's start with client updates. So, Zeam.
+
+12
+00:11:15.680 --> 00:11:16.840
+Gajinder Singh: Thanks, Thoma.
+
+13
+00:11:17.230 --> 00:11:23.590
+Gajinder Singh: So we have been working on squishing the issues that we are seeing on running,
+
+14
+00:11:23.880 --> 00:11:28.250
+Gajinder Singh: multi-subnet, network with Zeam and other
+
+15
+00:11:28.610 --> 00:11:36.370
+Gajinder Singh: Clients are aggregator, and we are almost there, still working out on a few of the H cases, debugging them.
+
+16
+00:11:36.720 --> 00:11:52.480
+Gajinder Singh: We also plan to… so we are stable quite a bit as of now, and we also then plan to start scale, to start scaling the number of validators, so run our multi-client subnet and start
+
+17
+00:11:52.800 --> 00:12:01.519
+Gajinder Singh: scaling validators to 128, and then basically debug fix those issues. In the meantime, we have also been working
+
+18
+00:12:01.690 --> 00:12:06.049
+Gajinder Singh: on the DevNet device spec, I believe, the spec PR
+
+19
+00:12:06.260 --> 00:12:10.939
+Gajinder Singh: Will be up by tomorrow, most likely, if not today.
+
+20
+00:12:11.410 --> 00:12:21.429
+Gajinder Singh: And we have also been trying to identify… identify the mattresses that we need to add for the RAT in order to
+
+21
+00:12:21.840 --> 00:12:28.480
+Gajinder Singh: In order to basically… Bring up if there are any performance issues that
+
+22
+00:12:28.580 --> 00:12:34.640
+Gajinder Singh: The nodes can see doing various… processing various,
+
+23
+00:12:35.460 --> 00:12:42.789
+Gajinder Singh: processing various horde paths, and that is something that we will also upstream to LeanSpec.
+
+24
+00:12:43.270 --> 00:12:45.719
+Gajinder Singh: If we find that relevant.
+
+25
+00:12:46.170 --> 00:12:48.699
+Gajinder Singh: So that's mostly our update.
+
+26
+00:12:52.740 --> 00:12:56.319
+Thomas Coratger: Okay, that's great, thank you. Ream?
+
+27
+00:12:57.060 --> 00:13:10.929
+Shariq Naiyer: How's it going, guys? So, we've been… we've been working on, adding the lean spec test to Hive, so that has been completed. I don't know if Colby is here, and if he… he would like to show something about it, but I believe…
+
+28
+00:13:10.930 --> 00:13:20.760
+Shariq Naiyer: I believe all the other clients have… most of the other clients have integrated the, HiveSpec, the spec test runner in… and, all their,
+
+29
+00:13:21.040 --> 00:13:37.640
+Shariq Naiyer: all their tests are… most of the tests are passing for most of the clients, so… so the Ream, ETH, Lambda, and Lean, from what I see, have integrated the HiveSpec runners. I urge the clients to integrate that, spec test runner as well.
+
+30
+00:13:38.430 --> 00:13:57.229
+Shariq Naiyer: on a… we also added the endpoint for serving the checkpoint block and anchor block, as was added to the spec. On a different note, I have been, like, we have been running DevNets from the bottom up, and
+
+31
+00:13:57.910 --> 00:14:07.309
+Shariq Naiyer: So, I was running Zeam, Zeam, Ethlambda in two subnets. Ethlambda wasn't finalizing. I found the issue in Zeam, I've made a PR, and
+
+32
+00:14:07.620 --> 00:14:19.020
+Shariq Naiyer: I built… I built, Zeam with… I built Zeam… a new image of Zeam with these fixes, and I've shared my findings, and we were able to finalize to about… let's see…
+
+33
+00:14:19.370 --> 00:14:42.849
+Shariq Naiyer: about 4700 slots. It could have been my RAM that… that was capping out at this point, but we were… we were at head at 6900 slots, and so this was… this was fairly stable, so I've now added Grandinee to the mix. What I see is Grandinee's image is not ready, so I'll add someone else to the mix, and I'm going bottom up, so I… I'm at 3 clients right now.
+
+34
+00:14:42.850 --> 00:14:58.769
+Shariq Naiyer: I'm feeling comfortable with these 3 clients. I found an issue, I reported the issue, and I created a PR. I'm gonna go to 4 clients, 5 clients, and I believe we have, like, 8 clients in total, and we can be sure that 8 clients interop to each other well, and…
+
+35
+00:14:58.770 --> 00:15:10.049
+Shariq Naiyer: So, Partha is going a top-up approach, where he's… a top-down approach, where he's running all the clients and seeing how they perform. I'm going bottom-up, so at some point, we'll converge, and we'll have… we'll have definite stability.
+
+36
+00:15:10.910 --> 00:15:13.670
+Shariq Naiyer: So, I believe that's all from my end.
+
+37
+00:15:17.620 --> 00:15:20.799
+Thomas Coratger: Great, thanks a lot. Qlean.
+
+38
+00:15:23.820 --> 00:15:29.379
+Ruslan Tushov: Hello. We're looking into fixing Hive tests.
+
+39
+00:15:29.720 --> 00:15:32.240
+Ruslan Tushov: Currently, that's all.
+
+40
+00:15:32.720 --> 00:15:33.660
+Ruslan Tushov: Thank you.
+
+41
+00:15:35.710 --> 00:15:42.280
+Ruslan Tushov: I meant, testing Qlean, under… when running under the tests.
+
+42
+00:15:44.050 --> 00:15:50.920
+Thomas Coratger: Okay, great. You, you mean, the… the test vectors from the lean spec, or other tests from Ive?
+
+43
+00:15:51.970 --> 00:15:54.340
+Ruslan Tushov: Sorry, hive tests, yes?
+
+44
+00:15:55.310 --> 00:15:56.100
+Thomas Coratger: Okay.
+
+45
+00:15:57.750 --> 00:16:00.190
+Thomas Coratger: Thank you, Lantern.
+
+46
+00:16:00.590 --> 00:16:12.389
+Mihir Faujdar: Yep. Hi, Thomas. Hi, everyone. So basically, last week, we were able to, integrate the new version of LibP2P, in Lantern.
+
+47
+00:16:13.810 --> 00:16:22.990
+Mihir Faujdar: So, like, the whole purpose of that is to interrupt better at the gossip player. So this new library is compatible with the Shadow Simulator tool.
+
+48
+00:16:23.110 --> 00:16:33.390
+Mihir Faujdar: And it can interrupt with Go and Go Lipidoppy and Rusty PDP, for some of the gossip tests. And basically, since then,
+
+49
+00:16:33.640 --> 00:16:52.489
+Mihir Faujdar: I've been wor- like, the urgent priority right now is to, increase our Hive test coverage, so we're all green, and currently, just testing out the integration of the newlywi library, and yeah, hopefully it should,
+
+50
+00:16:52.490 --> 00:16:57.720
+Mihir Faujdar: intro better with, certain clients like Qlean, and Gean.
+
+51
+00:16:58.020 --> 00:17:06.229
+Mihir Faujdar: Yeah, I will post an update once the image is ready, in the Telegram chat. Thank you.
+
+52
+00:17:09.740 --> 00:17:13.000
+Thomas Coratger: That's great, thank you. Ethlambda?
+
+53
+00:17:14.880 --> 00:17:16.650
+Pablo Deymo | Lambda: Hello? Hello?
+
+54
+00:17:16.960 --> 00:17:21.009
+Pablo Deymo | Lambda: We were working on integrating the full logarization.
+
+55
+00:17:21.359 --> 00:17:28.760
+Pablo Deymo | Lambda: We will publish a new devnet 5 tag, talker image, later this week.
+
+56
+00:17:29.450 --> 00:17:35.229
+Pablo Deymo | Lambda: We integrated, with, Hive's, new Spectre suite.
+
+57
+00:17:35.550 --> 00:17:38.449
+Pablo Deymo | Lambda: And we are passing almost all of them.
+
+58
+00:17:39.520 --> 00:17:45.529
+Pablo Deymo | Lambda: We added a new finalized blog endpoint for the checkpoint sync.
+
+59
+00:17:45.870 --> 00:17:54.249
+Pablo Deymo | Lambda: Also, the tick interval metric and mesh peer count, from lean metrics.
+
+60
+00:17:54.520 --> 00:17:58.960
+Pablo Deymo | Lambda: And we also updated the CLI option names.
+
+61
+00:17:59.270 --> 00:18:03.110
+Pablo Deymo | Lambda: To match the… the linguistic start documentation.
+
+62
+00:18:04.410 --> 00:18:12.660
+Pablo Deymo | Lambda: So, that's it, our update, and we will continue working on the devnet 5 spec spec and that related things. Thank you.
+
+63
+00:18:15.060 --> 00:18:17.060
+Thomas Coratger: Great, thank you, Gean.
+
+64
+00:18:19.750 --> 00:18:27.509
+shaaibu suleiman | gean: Yes, hello. Yeah, so we've been running, devnet 4, and, alongside that, also.
+
+65
+00:18:27.820 --> 00:18:34.350
+shaaibu suleiman | gean: Fixing a couple of, Hive tests, on our own ends, to make sure they pass.
+
+66
+00:18:34.520 --> 00:18:43.320
+shaaibu suleiman | gean: We also integrated, the spec test, runner. We just released, a new image, not very long.
+
+67
+00:18:43.480 --> 00:18:54.910
+shaaibu suleiman | gean: And, also we've been looking at, your proposal for devnet 5, and all. So yeah, basically, that's it from our own ends. Thank you.
+
+68
+00:18:57.830 --> 00:19:01.460
+Thomas Coratger: Great, thank you. Lighthouse?
+
+69
+00:19:06.570 --> 00:19:07.790
+Thomas Coratger: Grandine.
+
+70
+00:19:11.990 --> 00:19:21.289
+Mercy Boma Naps-Nkari: Good afternoon. So, we're currently working on the CPU issue we had, and then we'll release an image on it, in a couple of hours.
+
+71
+00:19:21.410 --> 00:19:39.180
+Mercy Boma Naps-Nkari: And then on the Hive test features, we will also, make a release. Although, we'll be defer… we will be failing, around 11 tests, that will be an intentional fail, due to, we don't have a DB yet, so if we kind of, like, silently lose every head vote race, it will…
+
+72
+00:19:39.550 --> 00:19:45.850
+Mercy Boma Naps-Nkari: cause, the same CPU issue we are trying to solve, so…
+
+73
+00:19:46.160 --> 00:19:51.470
+Mercy Boma Naps-Nkari: Out of all the tests, we are going to intentionally fill around 11 of it.
+
+74
+00:19:51.710 --> 00:19:52.699
+Mercy Boma Naps-Nkari: Thank you.
+
+75
+00:19:57.040 --> 00:19:59.900
+Thomas Coratger: Amazing, Nimbus.
+
+76
+00:20:03.650 --> 00:20:06.250
+Thomas Coratger: Okay, did I miss anyone?
+
+77
+00:20:09.900 --> 00:20:23.859
+Thomas Coratger: Okay, great. So, from a research perspective, and, what I… we wanted to talk there, so I have, like, a couple of points. First, we were, like, in… in Rome, last week.
+
+78
+00:20:24.040 --> 00:20:34.589
+Thomas Coratger: some of us are still in Rome, for ZK event, so everything related to ZK Summit, ZK Proof, and OroCrypt.
+
+79
+00:20:35.210 --> 00:20:37.630
+Thomas Coratger: So…
+
+80
+00:20:37.960 --> 00:20:47.550
+Thomas Coratger: this has been mostly, like, presentation, discussion, and conferences around, like, ZK SNAR proof system, and PCS and cryptography.
+
+81
+00:20:48.690 --> 00:21:01.279
+Thomas Coratger: For more verification as well. Nothing really new on this end that you should be aware of, except the fact that LIN, as a language, is progressing quite fast.
+
+82
+00:21:01.460 --> 00:21:06.130
+Thomas Coratger: there has been, like, a lot of presentation.
+
+83
+00:21:06.180 --> 00:21:25.639
+Thomas Coratger: especially from, like, the side of EVM ISM, with the assembly that you can then formal verify in Lean, and also there has been, like, a dedicated day to Arclib that is a library in Lean to a formal verification piece of cryptography.
+
+84
+00:21:25.780 --> 00:21:39.699
+Thomas Coratger: some stuff like this. Also, a huge focus on post-quantum with the presentation of Justine, about all of the post-quantum effort and natural atoms, for the quantum computer.
+
+85
+00:21:40.310 --> 00:21:43.270
+Thomas Coratger: So that is basically it.
+
+86
+00:21:43.510 --> 00:21:48.919
+Thomas Coratger: Then, we had a bunch of discussion around the spec and everything.
+
+87
+00:21:49.450 --> 00:22:06.619
+Thomas Coratger: So I think that this is good that DevNet 5 spec, PR is coming soon, as you mentioned, Gadjinder, because this will be, like, our main focus right now, especially the part related to, PQ, so the…
+
+88
+00:22:06.630 --> 00:22:12.560
+Thomas Coratger: Recursive aggregation with a single proof posted on chain will be, like, our next focus.
+
+89
+00:22:12.790 --> 00:22:19.170
+Thomas Coratger: Then I think that for the 3SF Mini VS Goldfish, we should maybe wait a bit.
+
+90
+00:22:19.480 --> 00:22:26.680
+Thomas Coratger: if our 3SF Mini is pretty stable right now. Maybe we should just keep with it.
+
+91
+00:22:26.870 --> 00:22:37.219
+Thomas Coratger: It depends. If Goldfish simplifies things, then we should move to Goldfish, but if it complexifies things, then we should maybe not move,
+
+92
+00:22:37.360 --> 00:22:38.830
+Thomas Coratger: Right, right now.
+
+93
+00:22:39.110 --> 00:22:43.609
+Thomas Coratger: So, yes, that was basically it.
+
+94
+00:22:43.760 --> 00:22:50.840
+Thomas Coratger: Then, as we discussed last week, I hope that we can enter, after just this change.
+
+95
+00:22:51.040 --> 00:23:10.609
+Thomas Coratger: a phase of stabilization, where you guys can iterate over all of the tests, and all of the running DevNets, and the debugging stuff, stabilize a bit, like, all of the networking parts, the DB part, the Docker images, all of this.
+
+96
+00:23:10.990 --> 00:23:13.830
+Thomas Coratger: Also, in the… in the specification.
+
+97
+00:23:13.970 --> 00:23:20.960
+Thomas Coratger: Up to now, we had a lot of different PRs coming from various points, and a lot of,
+
+98
+00:23:22.480 --> 00:23:35.190
+Thomas Coratger: a lot of new ones coming each day with a high velocity. Now I hope that we will enter a bit of a stabilization phase, where we can spend more time trying to think about all of the aspects of the spec.
+
+99
+00:23:35.190 --> 00:23:45.839
+Thomas Coratger: Trying to modernize it a bit more, trying to debug some potential existing failures that we have not seen before in the spec and all of this. Yeah, Gajinder, please?
+
+100
+00:23:47.390 --> 00:23:56.969
+Gajinder Singh: Yeah, I sort of agree with the plan that, after a single block proof, we should enter stabilization phase, but in my eyes, the stabilization phase should…
+
+101
+00:23:57.140 --> 00:24:14.309
+Gajinder Singh: also have execution as the integration, because then we can basically go to the larger community and say that, okay, the clients which are already there, they can start looking at the spec, they can start integrating and do it, because from what I understand, one of the hurdles that
+
+102
+00:24:14.360 --> 00:24:25.310
+Gajinder Singh: They have is that we don't have any execution integration, and once we have that, basically, you know, we will become full stack in the real sense that this is basically how we are.
+
+103
+00:24:25.450 --> 00:24:28.300
+Gajinder Singh: Proposing, to…
+
+104
+00:24:28.470 --> 00:24:46.859
+Gajinder Singh: to upgrade the consensus layer, right? So without execution, I think seeing… entering stabilization phase would be a bit immature, or in other words, I think that integration execution… integration of the execution is part of the stabilization phase itself.
+
+105
+00:24:49.680 --> 00:24:51.730
+Thomas Coratger: I see what you mean.
+
+106
+00:24:52.720 --> 00:25:07.439
+Thomas Coratger: I don't exactly know, because if this had, like, more complexity, and it will probably have, since this is, like, another integration, maybe this will introduce more bugs, both into the spec and into all of the clients.
+
+107
+00:25:07.690 --> 00:25:19.980
+Thomas Coratger: while… in fact, what I want to see is, like, an EVR simulation of the PQ signatures. And so, for example, we have never tested a DevNets.
+
+108
+00:25:20.110 --> 00:25:23.760
+Thomas Coratger: with, for example, 10K validators.
+
+109
+00:25:23.900 --> 00:25:32.029
+Thomas Coratger: We have never done that, and so I would love to see how the attestation propagates through the network, how the aggregation is going.
+
+110
+00:25:32.380 --> 00:25:51.990
+Thomas Coratger: and everything like that. Related to this, we had, like, the new framework that is LeanBench, that is now moved into the Lean Ethereum organization, so that we can see a bit more clearly all of the benchmark of all what we are doing. And so, all of that, just to say that,
+
+111
+00:25:53.160 --> 00:26:02.559
+Thomas Coratger: what I would love to see is, like, for example, like, a DevNet training with 10K validators to see how the PQ is going.
+
+112
+00:26:02.670 --> 00:26:05.049
+Thomas Coratger: And I am not sure that.
+
+113
+00:26:05.050 --> 00:26:05.480
+Gajinder Singh: Who's that?
+
+114
+00:26:05.480 --> 00:26:07.599
+Thomas Coratger: we need execution. Not sure, right?
+
+115
+00:26:07.600 --> 00:26:08.150
+Gajinder Singh: Rush.
+
+116
+00:26:08.660 --> 00:26:13.719
+Gajinder Singh: Right, so increasing the validated account, that is already now sort of…
+
+117
+00:26:13.780 --> 00:26:32.260
+Gajinder Singh: the next, important thing for us. We are already planning to bump the validator count to 128 in DevNet for itself, and then basically go further than that. So, I think in DevNet 5, we will definitely go very aggressive on increasing the validator count.
+
+118
+00:26:32.280 --> 00:26:41.530
+Gajinder Singh: And I mean, so… so we will… we might have a longer testing DevNet life cycle for sure, but I think we need…
+
+119
+00:26:42.070 --> 00:26:46.680
+Gajinder Singh: Execution integration as part of our stabilization phase, so that
+
+120
+00:26:47.130 --> 00:26:52.329
+Gajinder Singh: We can basically say to other clients that, okay, come integrate with us, and we can, for example…
+
+121
+00:26:52.450 --> 00:27:04.119
+Gajinder Singh: do optional or mandatory proofs, right? So… so in that sense, I think the evolution towards the stabilization phase, in my eyes, will be basically to integrate the
+
+122
+00:27:04.190 --> 00:27:14.209
+Gajinder Singh: current stack that is already out there. But yes, I do agree that the next step is definitely to increase the validated account, which is sort of already
+
+123
+00:27:14.500 --> 00:27:18.059
+Gajinder Singh: our emphasis going even into DevNet for itself.
+
+124
+00:27:19.830 --> 00:27:27.700
+Thomas Coratger: Maybe we should… we can discuss that async, but my guess is that we should have, like, a number in mind.
+
+125
+00:27:27.930 --> 00:27:45.549
+Thomas Coratger: And we want to simulate this number of validators, and before this hasn't been simulated, then we don't move further. For example, I know that you said the increasing number of validators, but maybe, for example, we should target, I don't know, 1K or 10K validators?
+
+126
+00:27:45.750 --> 00:27:50.100
+Thomas Coratger: And we do the simulation, and before we are there.
+
+127
+00:27:50.210 --> 00:27:53.079
+Thomas Coratger: we don't move further. So that's…
+
+128
+00:27:53.340 --> 00:28:04.739
+Thomas Coratger: because my fear, like, my sensation is that we will potentially have modification to be done, maybe on the cryptography side of things, to reduce the proof. That will be super difficult, but…
+
+129
+00:28:04.740 --> 00:28:15.529
+Thomas Coratger: Maybe that is something. Or maybe we will have modification to do on the peer-to-peer layer. For example, changing Gossip Sub, integrating SP2P broadcasts.
+
+130
+00:28:15.560 --> 00:28:18.370
+Thomas Coratger: These kind of things, to maybe…
+
+131
+00:28:18.370 --> 00:28:18.909
+Gajinder Singh: get canceled.
+
+132
+00:28:18.910 --> 00:28:25.440
+Thomas Coratger: improve the value is, and so maybe we could do that before integrating the execution.
+
+133
+00:28:25.710 --> 00:28:43.509
+Gajinder Singh: So, I'll tell you my reason for asking an execution integration is because we can have, then, a full validator lifecycle, where the validator deposits can happen and exits can happen, and that way we'll be able to launch a public DevNet. So, it is sort of part of stabilization.
+
+134
+00:28:43.760 --> 00:29:02.680
+Gajinder Singh: itself. So, in that sense, I do agree with you. We basically first need to keep scaling the number of validators, and as a part of stabilization effort, you can call it phase two, we should basically do the integration and bring in the full validator lifecycle, where we end up launching a public devnet
+
+135
+00:29:02.760 --> 00:29:11.919
+Gajinder Singh: In the phase 2, right? So, I think without launching a public devnet, we won't be able to claim that we have stability.
+
+136
+00:29:14.960 --> 00:29:15.800
+Thomas Coratger: I agree.
+
+137
+00:29:15.860 --> 00:29:32.210
+Thomas Coratger: Yeah, definitely, I agree. Yeah, maybe we can discuss async in the group to have, like, more heads into it, to how many validators do we want before going to execution. Maybe this is a smaller number,
+
+138
+00:29:32.260 --> 00:29:35.129
+Thomas Coratger: And then, yeah, we can move to this kind of stuff.
+
+139
+00:29:35.150 --> 00:29:53.090
+Thomas Coratger: After, like, of course, we have, like, a couple of stuff to be feature-complete, we can add goldfish, maybe now, maybe later, I don't know, this is also to be discussed, I think, as a function of stability. For example, I don't want to introduce goldfish right now if it causes
+
+140
+00:29:53.090 --> 00:29:55.799
+Thomas Coratger: Hundreds of bug in each of your clients.
+
+141
+00:29:55.800 --> 00:30:06.820
+Thomas Coratger: this is a nonsense, because I prefer increasing the number of validators, see what's happened, instead of just adding goldfish and introducing thousands of bugs in each of your clients.
+
+142
+00:30:07.290 --> 00:30:19.930
+Thomas Coratger: But, of course, like, if everything is okay… is going… is looking great, if we can have, like, a proper DevNet with no bug, with, like, 1K validators and all of these, then, of course we can progress, we can…
+
+143
+00:30:19.930 --> 00:30:29.399
+Thomas Coratger: develop the spec more, we can introduce goldfish, we can even introduce finality gadgets, we can experiment over different finality gadgets, even.
+
+144
+00:30:31.200 --> 00:30:39.070
+Thomas Coratger: we can do several stuff. We can also, like, see about how we can modify a bit,
+
+145
+00:30:39.610 --> 00:31:00.420
+Thomas Coratger: the P2P layer with the new East P2P repo by the team of Raul. We can also check other stuff, like, for example, what is the appropriate slot time? Is 4 seconds the right choice, or maybe another one, I don't know. Yeah, we can explore all of this stuff, of course, if everything is going right.
+
+146
+00:31:00.420 --> 00:31:00.950
+Gajinder Singh: Nope.
+
+147
+00:31:01.090 --> 00:31:10.459
+Gajinder Singh: Right, right. So, I totally agree with you. From… on ETH P2P, in ETH P2P, I… my understanding, what I got from
+
+148
+00:31:10.700 --> 00:31:16.310
+Gajinder Singh: from, the discussions we had at ACD was that
+
+149
+00:31:16.570 --> 00:31:20.970
+Gajinder Singh: It is a bit further away, so, I mean…
+
+150
+00:31:21.260 --> 00:31:29.890
+Gajinder Singh: I would basically wait for them to be ready, and before basically start introducing them, and that totally makes sense, so what…
+
+151
+00:31:30.160 --> 00:31:50.099
+Gajinder Singh: we can do… so 3SF for now is stable in sense of how it works and how clients are supposed to behave, and I believe that most of us now have an intuitive understanding of how it's behaving and what we should be doing. We have also solved various bugs in spec as well as in clients regarding that. So, in that sense.
+
+152
+00:31:50.130 --> 00:31:53.290
+Gajinder Singh: I think, yes, we should not touch
+
+153
+00:31:53.510 --> 00:32:03.119
+Gajinder Singh: consensus, till we scale to a big number of validators, and I will even say till we also integrate execution, because once we have
+
+154
+00:32:03.390 --> 00:32:15.720
+Gajinder Singh: this integration, then basically we will be able to do a public DevNets, and that point, I guess, would be better suited to…
+
+155
+00:32:15.890 --> 00:32:26.850
+Gajinder Singh: test out different consensus mechanisms that we might want to plug in, and different gadgets that we might want to plug in, because we want to get closer to
+
+156
+00:32:26.950 --> 00:32:30.030
+Gajinder Singh: Real network conditions as much as possible.
+
+157
+00:32:30.130 --> 00:32:34.179
+Gajinder Singh: And, yeah, so… so that way, I think public…
+
+158
+00:32:35.050 --> 00:32:41.480
+Gajinder Singh: Testnet would be a higher priority, and then we can definitely go towards the heartbeat.
+
+159
+00:32:43.390 --> 00:32:57.260
+Thomas Coratger: I agree, this sounds like a plan. I will review, like, in priority, like, the new DevNet 5 spec PR, once this is done, of course. That will be my top priority.
+
+160
+00:32:59.150 --> 00:33:10.719
+Thomas Coratger: Also, I wanted, like, maybe, Emil, you can give a word about LeanVM, and maybe your start and stuff that you have learned at ZKProof and all of this, so, yeah.
+
+161
+00:33:12.690 --> 00:33:15.380
+T. Wambsgans: Hi, yeah.
+
+162
+00:33:15.640 --> 00:33:27.229
+T. Wambsgans: I've been trying to make it work on Goldilocks, because it would be ideal for a bunch of reasons. It's another prime field.
+
+163
+00:33:27.370 --> 00:33:35.780
+T. Wambsgans: But the performance is, like, more than 2x worth, so for now, we stick with Cole Albert.
+
+164
+00:33:35.920 --> 00:33:38.120
+T. Wambsgans: But ideally, in the future.
+
+165
+00:33:38.420 --> 00:33:47.200
+T. Wambsgans: should be better if we can switch to Goldilocks for security, and better to addicity, and a bunch of other reasons.
+
+166
+00:33:47.480 --> 00:33:54.339
+T. Wambsgans: And also, I'm… so, right now, the DevNet5 branch on Lin Multisig should be usable.
+
+167
+00:33:54.510 --> 00:33:58.420
+T. Wambsgans: And I'm clueless if everything is available
+
+168
+00:33:58.840 --> 00:34:03.020
+T. Wambsgans: to be used properly with the new Type 1, Type 2.
+
+169
+00:34:03.220 --> 00:34:12.280
+T. Wambsgans: API, so please let me know if there is anything missing. I can add any function that you need to make your life easier.
+
+170
+00:34:12.639 --> 00:34:14.060
+T. Wambsgans: That's it for me, thanks.
+
+171
+00:34:18.219 --> 00:34:27.089
+Thomas Coratger: Great, yeah, I guess that we will see these details for DevNet 5 once we have, like, the DevNet 5 PR.
+
+172
+00:34:27.209 --> 00:34:36.899
+Thomas Coratger: On the specs, since we will need for this to bump the bindings, we will see if everything is working as expected.
+
+173
+00:34:37.499 --> 00:34:48.189
+Thomas Coratger: I wanted also, like, to give a word about, this new repository that is called Cryptographic Specs, that I have shared in the issue.
+
+174
+00:34:48.509 --> 00:34:56.779
+Thomas Coratger: This is just for now, like, a placeholder. There is nothing inside, but in fact, this is something that has been set up by Justine Traglia.
+
+175
+00:34:56.919 --> 00:35:00.969
+Thomas Coratger: I'm sure you're all familiar with him, but he's the one who
+
+176
+00:35:01.129 --> 00:35:19.559
+Thomas Coratger: is leading, like, the Beacon consensus specification effort right now. So this is a lean for a repository, basically, in order, like, to… to try to start an effort about speccing out the cryptography in lean.
+
+177
+00:35:19.869 --> 00:35:33.929
+Thomas Coratger: Why? Because Lean is this super cool form of verification language where you can formally verify things in order to, like, ensure that your software has no bugs.
+
+178
+00:35:33.929 --> 00:35:40.339
+Thomas Coratger: As long as you have, like, written down the specification properly in that equation with the mass.
+
+179
+00:35:41.259 --> 00:35:48.549
+Thomas Coratger: But the idea there, basically, is to extract, maybe… this is still ongoing discussion, so I am not sure that this will happen at all, but…
+
+180
+00:35:48.649 --> 00:36:00.029
+Thomas Coratger: I wanted to update you about this. So, here the point is to maybe outsource the cryptographic stuff, so, for example, SSD, for example, Poseidon.
+
+181
+00:36:00.029 --> 00:36:11.549
+Thomas Coratger: or XMSS, or in the future, LeanVM, into this kind of specification, and then create bindings in Python that are also in the same repository.
+
+182
+00:36:11.649 --> 00:36:26.479
+Thomas Coratger: to, to be available to use directly in any Python repo. So that, for example, this will let us use these bindings inside the spec, and so technically, we could remove
+
+183
+00:36:26.519 --> 00:36:39.359
+Thomas Coratger: Poseidon, or SSZ, or XMSS, from the Python spec, because we will just use the bindings that we are sure are secure due to formal verification of LIN.
+
+184
+00:36:39.649 --> 00:36:57.999
+Thomas Coratger: So, yeah, that is a nice effort. We don't know right now if this will happen or not, how… in which time frame, what will be, like, the focus, who will do that, and all of this, but we are still discussing that internally at DEF, and this is definitely a possibility.
+
+185
+00:36:58.109 --> 00:37:01.119
+Thomas Coratger: From my perspective, obviously, like, this is super cool.
+
+186
+00:37:01.649 --> 00:37:07.959
+Thomas Coratger: Because now we will have, like, a proper formal specification of all of those cryptographic pieces.
+
+187
+00:37:08.239 --> 00:37:22.449
+Thomas Coratger: And we can remove a lot of lines of code in Python, of course, because we will remove all of the tests and all of the specification in general, because we just use bindings from an external source that we are sure is secure due to formal verification.
+
+188
+00:37:23.809 --> 00:37:38.609
+Thomas Coratger: So yeah, that is also another piece of news, so that is basically it. Maybe, Katya or Porta, do you want to add some stuff about metrics, if you have stuff in mind, or anything?
+
+189
+00:37:40.410 --> 00:37:56.590
+Parthasarathy Ramanujam: Nothing specific, actually. So, as Kajinder already reported, we ran multi… two, subnet DevNet for past couple of days. There has been a few crashes, and aggregation still continues to be a problem, for a few clients.
+
+190
+00:37:56.650 --> 00:38:12.090
+Parthasarathy Ramanujam: And I've been… I haven't, collated the metrics completely, but I've noticed, in few cases, the aggregations do not complete within a slot interval. They take probably up to 3 to 4 seconds. So I'm still investigating what is the
+
+191
+00:38:12.660 --> 00:38:20.770
+Parthasarathy Ramanujam: cause, and is this across the board, or only for specific clients? So, I'll share more details once I have a finalized… I mean, I finished the analysis.
+
+192
+00:38:25.530 --> 00:38:26.580
+Thomas Coratger: Okay, great.
+
+193
+00:38:27.420 --> 00:38:32.969
+Thomas Coratger: Anything else that we missed, or anything?
+
+194
+00:38:37.450 --> 00:38:44.379
+Thomas Coratger: Okay, great, guys. Then, next step will be, like, the DevNet 5 PR in the spec.
+
+195
+00:38:44.630 --> 00:38:47.209
+Thomas Coratger: So that will be great.
+
+196
+00:38:47.500 --> 00:38:57.410
+Thomas Coratger: And, then we can discuss directly on the spec, and then we will try to enter this kind of,
+
+197
+00:38:57.930 --> 00:39:02.829
+Thomas Coratger: Stabilization slash, scaling the number of validators face.
+
+198
+00:39:02.970 --> 00:39:07.239
+Thomas Coratger: So, yeah, see you around. Thanks a lot, guys, for attending the call.
+
+199
+00:39:07.360 --> 00:39:08.960
+Thomas Coratger: Bye-bye, see you next week.
+
+200
+00:39:09.170 --> 00:39:10.279
+Shariq Naiyer: You guys have a good one.
+
+201
+00:39:11.130 --> 00:39:11.920
+T. Wambsgans: Bye.
+
+202
+00:39:12.110 --> 00:39:13.370
+Pablo Deymo | Lambda: My wife is you?
+

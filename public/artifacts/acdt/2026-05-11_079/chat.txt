@@ -1,0 +1,252 @@
+00:03:13	potuz:	gm
+00:03:44	jochem-brouwer:	gm gm
+00:03:45	nixo:	gm
+00:03:47	Mario Vega:	gm 🙂
+00:03:49	Enrico Del Fante (tbenr):	gm
+00:03:58	Mario Havel:	gMonday
+00:04:01	Justin Traglia:	Gm
+00:04:02	Toni Wahrstätter:	what an agenda today
+00:04:03	Akash | ECH:	gm gm
+00:04:12	potuz:	crap can't hear anything.
+00:04:19	Mikhail Kalinin:	Me too
+00:04:32	Dragan Rakita:	Is anyone talking? 🙂
+00:04:37	Toni Wahrstätter:	not right now
+00:04:37	Mikhail Kalinin:	Reacted to "Is anyone talking? 🙂" with 😃
+00:04:46	Toni Wahrstätter:	but now
+00:04:47	danceratopz:	sssh
+00:04:53	Dragan Rakita:	Reacted to "not right now" with 😂
+00:05:08	jochem-brouwer:	my sound has been tested and it has passed the test
+00:05:17	Mikhail Kalinin:	Reacted to "my sound has been tested and it has passed the test" with 👏
+00:05:46	Dragan Rakita:	Reacted to "my sound has been te..." with 👏
+00:06:40	Parithosh Jayanthi:	Interop recap: https://blog.ethereum.org/2026/05/02/soldogn-interop-recap
+00:07:48	Stefan Starflinger:	https://gist.github.com/qu0b/f3f905cadee4464a1a941838a5a5fadb
+00:09:23	Potuz:	Just managed to log in here, @Barnabas I don’t think we finalized anything invalid
+00:09:37	Potuz:	Client’s aren’t serving the right payloads though it seems
+00:09:40	Mario Vega:	Reacted to "my sound has been te..." with 👏
+00:10:32	Enrico Del Fante (tbenr):	Replying to "Client’s aren’t serv..."
+
+On finalized slots or recent hot payloads?
+00:11:11	Potuz:	Replying to "Client’s aren’t serv..."
+
+We’re unable to sync unfinalized
+00:11:20	Jihoon:	I can share Hegota testing later
+00:11:49	jochem-brouwer:	Heeft gereageerd op "I can share Hegota..." met 💙
+00:15:17	Barnabas:	anyone can see a way to recover devnet 3?
+00:15:27	Parithosh Jayanthi:	Fixing sync seems like it would do the trick?
+00:15:37	Nico Flaig:	Replying to "Client’s aren’t serv..."
+
+still debugging on lodestar side trying to sync a node from last checkpoint right now
+
+was working on friday, now it's much harder
+00:15:50	Potuz:	I think also Prysm has a bug trying to serve payloads it doesn’t have
+00:15:59	Parithosh Jayanthi:	https://github.com/ethereum/consensus-specs/pull/5223
+00:18:21	Mikhail Kalinin:	You can’t cap without a queue
+00:18:43	Dustin:	the question is where the queue would be, yeah, CL or EL
+00:19:06	Potuz:	The queue on the CL seems safe
+00:19:13	Potuz:	But I just don’t think it solves the issue
+00:20:41	Barnabas:	whats the worst case? 
+1 valid followed by 1 invalid?
+00:20:52	Potuz:	A few invalid in random places
+00:21:00	Potuz:	But that is a very expensive attack
+00:21:08	Potuz:	So that’s fine
+00:21:11	Potuz:	The problem is valid ones
+00:21:14	Mikhail Kalinin:	If all CL devs are fine with potentially thousands sig verifications per slot then I am fine to have no cap
+00:22:33	Justin Traglia:	We should just lower the gas limit 😅(jk)
+00:23:03	Barnabas:	is there a way to have the evm execute the builder deposits sig verification without a new deposit contract?
+00:24:55	Dustin:	Get a flash loan
+00:25:00	Potuz:	Reacted to "Get a flash loan" with 🤣
+00:25:02	Justin Traglia:	Reacted to "Get a flash loan" with 🤣
+00:25:04	spencer:	Reacted to "Get a flash loan" with 🤣
+00:25:31	Parithosh Jayanthi:	Reacted to "Get a flash loan" with 🤣
+00:26:40	Parithosh Jayanthi:	https://github.com/ethereum/consensus-specs/pull/5224
+00:29:15	Kevaundray Wedderburn:	Cost for pairing should be about 1ms
+00:29:53	Barnabas:	could this pairing “job” not be paired somehow with the deposit itself?
+00:29:57	Kevaundray Wedderburn:	Yeah if you batch, then you would essentially do a binary search to find the invalid signature, so logN number of pairings (worse case), where N is the size of the batch
+00:30:27	jochem-brouwer:	Can we make a new contract which verifies this and then sends it to the original deposit contract?
+00:30:40	jochem-brouwer:	Antwoord verzenden naar "Can we make a new ..."
+
+ah wait nvm if we still support sending to OG contract this defeats the purpose
+00:30:45	Barnabas:	Replying to "Can we make a new co..."
+
+thats a big change
+00:30:51	Potuz:	Replying to "Can we make a new co..."
+
+We can, but the original contract can still be reached.
+00:30:54	Potuz:	Replying to "Can we make a new co..."
+
+A jinx
+00:31:08	jochem-brouwer:	Antwoord verzenden naar "Can we make a new ..."
+
+yeah throwing around random ideas 😅
+00:31:25	Potuz:	Replying to "Can we make a new co..."
+
+A new contract that verifies for the builder as Barnabas suggested works
+00:31:28	jochem-brouwer:	Heeft gereageerd op "We can, but the or..." met 👍
+00:31:31	jochem-brouwer:	Heeft gereageerd op "thats a big change" met 🤠
+00:31:39	Potuz:	Replying to "Can we make a new co..."
+
+But it’s not an easy change
+00:32:01	Potuz:	Just throwing it out there but raising the min deposit also solves this 🙂
+00:32:08	jochem-brouwer:	Heeft gereageerd op "A new contract tha..." met 👍
+00:32:15	jochem-brouwer:	Heeft gereageerd op "Just throwing it o..." met 👍
+00:32:24	Barnabas:	Replying to "Just throwing it out..."
+
+not on devnets
+00:32:28	Barnabas:	Replying to "Just throwing it out..."
+
+we are rich on devnets/testnets
+00:32:33	Potuz:	Replying to "Just throwing it out..."
+
+lol
+00:32:38	Parithosh Jayanthi:	https://github.com/ethereum/execution-apis/pull/794
+00:34:42	Potuz:	@Parithosh Jayanthi are we talking about the gas limit issue?
+00:34:46	Potuz:	That should be in the general part
+00:35:02	Potuz:	Is Nico here?
+00:35:28	Nico Flaig:	Barnabas knows it too
+00:35:35	Potuz:	Reacted to "Barnabas knows it too" with 👍
+00:35:49	Nico Flaig:	https://github.com/ethereum/pm/issues/2038#issuecomment-4420608861
+00:36:28	brechy:	Reacted to "Yeah if you batch, t..." with 👍
+00:36:46	Toni Wahrstätter:	just for my understanding. The gas limit in the bid is the preference (what is configured using a flag) and not the +/- 1/1024 gas limit?
+00:37:19	Dustin:	Well, ELs typically have flags for this
+00:37:31	Nico Flaig:	Replying to "Well, ELs typically ..."
+
+but they are static
+00:38:21	Dustin:	EL then CL
+00:38:22	Dustin:	I think
+00:38:31	Bharath Vedartham:	Replying to "just for my understanding. The gas limit in the bid is the preference (what is configured using a flag) and not the +/- 1/1024 gas limit?"
+
+The spec mentions that the limit in the bid is the same as the gas limit in the payload https://github.com/ethereum/consensus-specs/blob/031e521f0a82b0e475ecfc13f79dd251a6284fc2/specs/gloas/builder.md?plain=1#L125
+00:38:32	Potuz:	Reacted to "EL then CL" with 👍
+00:38:38	Cayman Nava:	Reacted to "EL then CL" with 👍
+00:38:41	Nico Flaig:	https://github.com/ethereum/execution-apis/pull/608
+00:38:51	Bharath Vedartham:	Replying to "just for my understanding. The gas limit in the bid is the preference (what is configured using a flag) and not the +/- 1/1024 gas limit?"
+
+So i believe would be the current gas limit
+00:39:09	brechy:	Replying to "Cost for pairing sho..."
+
+This is in the case of single invalid signature but could be problematic in the scenario of many bad signatures
+00:41:11	Toni Wahrstätter:	I assume the gas limit we pass over from the CL to the EL is still the preferred one and the EL takes care of the 1/1024 rule still
+00:41:17	Giulio:	I agree with Marius
+00:41:20	jochem-brouwer:	Heeft gereageerd op "I assume the gas l..." met 👍
+00:41:39	Nico Flaig:	we need to separate these 2 topics, 1) is about building the payload, and 2) is about who validates it (as potuz is saying)
+00:43:58	Barnabas:	why should the bid have the gas limit in it at all?
+00:44:38	Toni Wahrstätter:	Replying to "why should the bid h..."
+
+you would want to select a payload that does what you configured your validator to do (increase or decrease it)
+00:45:23	Barnabas:	Replying to "why should the bid h..."
+
+send the bid in the proposer preferences, any bid over that proposer preference should be invalid no?
+00:45:29	Toni Wahrstätter:	Are the proposer preferences updated everytime when a validator sets a new gas limit using the flag?
+00:47:05	Ben Adams:	So CL target is hard constraint now?
+00:47:16	Potuz:	It is now a constraint as well
+00:47:33	Potuz:	We reject the builder’s header if it doesn’t give us something compatible
+00:50:53	Marius Van Der Wijden (M):	I don't understand what the el need to change now?
+00:51:36	Nico Flaig:	but who validates the calculated gas limit in gloas? @Potuz 
+00:51:37	Marius Van Der Wijden (M):	Sgtm
+00:52:20	Potuz:	Reacted to "Sgtm" with ❤️
+00:52:44	Ben Adams:	Spicy
+00:52:47	Potuz:	Barnabas the dictator
+00:52:51	Justin Traglia:	Reacted to "Barnabas the dictato..." with 😅
+00:53:22	Potuz:	Replying to "but who validates th..."
+
+What validation Nico? The validation that it is compatible with the previous block is done by the EL
+00:53:29	Toni Wahrstätter:	The EL should never use the value received through fcu for making the +/- 1/1024 rule stricter than it is. It should just be used for local building. But for validating, ELs shouldn't care up the gas limit going up or down, only that the 1/1024 rule is obeyed.
+00:53:36	Potuz:	Replying to "but who validates th..."
+
+The validation that it was compatible with the preference should be in the CL
+00:53:39	Ben Adams:	I there an EIP for BPO style @Barnabas ?
+00:53:45	jochem-brouwer:	If we have to schedule an emergency gas limit downgrade then this is harder to do, so I dont think we should do BPO-like forks for this
+00:53:47	Nico Flaig:	Replying to "but who validates th..."
+
+but we are not passing the target gas limit to the EL during validation
+00:53:54	Barnabas:	Replying to "I there an EIP for B..."
+
+can make one
+00:53:56	Dustin:	BPO-like forks have significant costs on the deployment/testing/etc side, due to needing new client releases or similar.
+
+BPOs are hardforks.
+00:54:16	Ben Adams:	Reacted to "can make one" with 👍
+00:54:18	Potuz:	Replying to "but who validates th..."
+
+The EL only validates 1559
+00:54:25	nixo:	Reacted to "Spicy" with 🌶️
+00:54:30	Potuz:	Replying to "but who validates th..."
+
+We validate the compatibility with the target
+00:54:32	jochem-brouwer:	Antwoord verzenden naar "If we have to sche..."
+
+I like simplifying the protocol but for now I do not think I like this idea
+00:54:32	Nico Flaig:	Replying to "but who validates th..."
+
+how can they do that without knowing what the target gas limit is?
+00:54:34	Potuz:	Replying to "but who validates th..."
+
+That is my proposal
+00:54:58	Potuz:	Replying to "but who validates th..."
+
+1559 doesn’t care about the target only cares that the gas limit hasn’t changed that much
+00:55:29	Nico Flaig:	Replying to "but who validates th..."
+
+but how do you know if builder adhered to the proposers target gas limit then?
+00:58:49	pawan:	Don’t CLs do this target check against builder block already?
+00:59:05	Parithosh Jayanthi:	Choosing to continue on this topic in lieu of devnet scoping today. We can do devnet scoping async/on ACDC this week as a topic.
+01:00:04	Potuz:	I think what Toni’s saying is my favorite, but it’s not clear if others in the CL want this
+01:00:24	Potuz:	Replying to "Don’t CLs do this ta..."
+
+Yes we do
+01:00:35	Potuz:	Replying to "Don’t CLs do this ta..."
+
+That’s why I think it should not be a contentious issue for us
+01:00:44	pawan:	Reacted to "That’s why I think i..." with 👍
+01:01:26	Nico Flaig:	there is a PR https://github.com/ethereum/execution-apis/pull/608
+01:01:39	nixo:	lol
+01:02:08	Marius Van Der Wijden (M):	You stick your head out, you get whacked
+01:02:18	Parithosh Jayanthi:	Reacted to "You stick your head out, you get whacked" with 😂
+01:02:22	felipe:	Reacted to You stick your head ... with "😂"
+01:02:27	Eitan Seri-Levi:	Reacted to "You stick your head out, you get whacked" with 😂
+01:02:29	Parithosh Jayanthi:	“Your reward for good work is more work”
+01:02:29	Jared Wasinger:	Reacted to "You stick your head ..." with 😂
+01:02:35	jochem-brouwer:	volunteering is non-optional
+01:02:44	nixo:	Reacted to "You stick your head out, you get whacked" with 😂
+01:02:49	nixo:	Reacted to "“Your reward for good work is more work”" with 😅
+01:03:44	Potuz:	It’s in the EIP ( at least that’s what I copied )
+01:03:56	jochem-brouwer:	gas limit bound defined by yellow paper
+01:04:12	emma (reth):	Reacted to "You stick your head ..." with 😂
+01:04:15	jochem-brouwer:	Antwoord verzenden naar "gas limit bound de..."
+
+(part of protocol since chainstart / before EIP-1559)
+01:04:59	Nico Flaig:	I think this is also ok, but we shuld define the calculation in the CL spec in that case, it's a simple algorithm
+01:05:16	Potuz:	Replying to "I think this is also..."
+
+Yeah, I can do that one if you want
+01:05:34	Parithosh Jayanthi:	We’re overtime, but choosing to continue today in case anyone wants to drop off!
+01:06:36	Toni Wahrstätter:	I'm for the CL checking the increase/decrease and keep the EL only caring about 1/1024 (no matter of the direction)
+01:06:42	jochem-brouwer:	Heeft gereageerd op "I'm for the CL che..." met 👍
+01:06:48	Potuz:	I can draft that PR
+01:06:53	Nico Flaig:	Reacted to "I can draft that PR" with 👍
+01:06:54	Barnabas:	https://github.com/ethereum/EIPs/pull/11644
+01:06:58	Nico Flaig:	Reacted to "Yeah, I can do that ..." with 👍
+01:07:00	Potuz:	Conditioned to Nico’s doing the engine API
+01:07:05	Barnabas:	Replying to "https://github.com/e..."
+
+https://ethereum-magicians.org/t/eip-xxxxx-gas-limit-schedule-gpo/28494
+01:07:11	jochem-brouwer:	Antwoord verzenden naar "https://github.com..."
+
+wew this is fast
+01:07:24	Barnabas:	Replying to "https://github.com/e..."
+
+gpo ftw
+01:07:27	Parithosh Jayanthi:	Replying to "https://github.com/e..."
+
+Claude works fast
+01:07:31	Barnabas:	Replying to "https://github.com/e..."
+
+psst
+01:07:37	Cayman Nava:	Reacted to "Conditioned to Nico’..." with 😂
+01:07:41	Barnabas:	Reacted to "Conditioned to Nico’..." with 😂
+01:07:48	Nico Flaig:	Replying to "Conditioned to Nico’..."
+
+will do, don't worry, can you fix the devnet please
+01:07:55	Potuz:	Reacted to "will do, don't worry, can you fix the devnet please" with 🤣
+01:07:57	Cayman Nava:	Reacted to "will do, don't worry..." with 🤣
+01:07:57	Parithosh Jayanthi:	Reacted to "will do, don't worry, can you fix the devnet please" with 🤣

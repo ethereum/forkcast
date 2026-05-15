@@ -4,19 +4,22 @@ If you see incorrect information about an EIP's impacts or benefits, content-onl
 
 ## Development Setup
 
+**With Docker:**
+
 ```bash
-# Install dependencies
-npm install
-
-# Start development server
-npm run dev
-
-# Build for production
-npm run build
-
-# Preview production build
-npm run preview
+make docker-dev
 ```
+
+**Without Docker:**
+
+```bash
+make install
+make dev
+```
+
+Open http://localhost:5173 in your browser.
+
+Run `make help` for all available commands.
 
 ## Deployment
 

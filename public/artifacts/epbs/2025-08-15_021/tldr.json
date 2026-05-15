@@ -1,0 +1,105 @@
+{
+  "meeting": "EPBS #021 - 2025-08-15",
+  "highlights": {
+    "ptc_sampling_and_commitments": [
+      {
+        "timestamp": "00:07:36",
+        "highlight": "PTC sampling by stake merged; votes count individually with 50% threshold"
+      },
+      {
+        "timestamp": "00:08:54",
+        "highlight": "State root commitment removed from payload envelope; hash commitment retained"
+      }
+    ],
+    "proposer_boost_changes": [
+      {
+        "timestamp": "00:14:58",
+        "highlight": "Proposer boost bug fix: verify proposer index matches canonical chain"
+      },
+      {
+        "timestamp": "00:18:16",
+        "highlight": "New equivocation handling: aggressive reorg of weak equivocations"
+      },
+      {
+        "timestamp": "00:28:16",
+        "highlight": "Proposer boost not applied to weak equivocating blocks"
+      },
+      {
+        "timestamp": "00:35:04",
+        "highlight": "Get proposer head becomes non-optional for all clients"
+      }
+    ],
+    "builder_bid_requirements": [
+      {
+        "timestamp": "00:37:25",
+        "highlight": "Non-zero bids enforced for external builders; simplifies state changes"
+      }
+    ],
+    "free_option_problem": [
+      {
+        "timestamp": "00:42:05",
+        "highlight": "Asymmetric payment mechanism discussed; too early for specific implementation"
+      },
+      {
+        "timestamp": "00:45:17",
+        "highlight": "Option value shows little correlation to block value in preliminary research"
+      }
+    ],
+    "data_availability_changes": [
+      {
+        "timestamp": "00:56:03",
+        "highlight": "Proposal to remove Merkle proofs from column sidecars for EPBS"
+      },
+      {
+        "timestamp": "01:00:25",
+        "highlight": "Cell-based gossiping may retain data column sidecars with internal partial messages"
+      }
+    ],
+    "organizational": [
+      {
+        "timestamp": "01:04:05",
+        "highlight": "New moderator needed for future EPBS calls"
+      }
+    ]
+  },
+  "action_items": [
+    {
+      "timestamp": "00:14:58",
+      "action": "Open PR for proposer boost bug fix and backport to Phase 0",
+      "owner": "Francesco"
+    },
+    {
+      "timestamp": "00:55:09",
+      "action": "Post threshold encryption proposal details in R&D channel",
+      "owner": "Shane"
+    }
+  ],
+  "decisions": [
+    {
+      "timestamp": "00:09:41",
+      "decision": "State root commitment removed from payload envelope"
+    },
+    {
+      "timestamp": "00:14:18",
+      "decision": "Payload envelope hash commitment retained (not full envelope)"
+    },
+    {
+      "timestamp": "00:35:04",
+      "decision": "Get proposer head becomes mandatory for all clients"
+    },
+    {
+      "timestamp": "00:39:05",
+      "decision": "Non-zero bids required for external builders"
+    }
+  ],
+  "targets": [
+    {
+      "timestamp": "01:04:19",
+      "target": "End of October - DevNet Zero launch target"
+    },
+    {
+      "timestamp": "01:06:16",
+      "target": "Two weeks - Next EPBS call to discuss implementation progress"
+    }
+  ]
+}

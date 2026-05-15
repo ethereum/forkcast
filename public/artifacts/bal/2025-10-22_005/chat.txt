@@ -1,0 +1,34 @@
+00:08:24	Carl Beekhuizen:	gm gm
+00:08:54	Toni Wahrstaetter:	Agenda: https://github.com/ethereum/pm/issues/1771
+00:14:26	raxhvl:	I think balance change to coinbase should be treated like any other account, so zero-value transfer should be included. Just to not have an account level exception.
+00:14:37	Marc:	if coinbase is touched by opcode like BALANCE it’s included right?
+00:15:07	Toni Wahrstaetter:	Replying to "if coinbase is touch..."
+
+right yeah. but for zero value reward you might not even need to load it
+00:15:57	Soubhik:	Reacted to "I think balance chan..." with 👍
+00:16:22	draganrakita:	So:
+No tx, no coinbase (except it is withdrawal I think)
+Some tx, always coinbase (read or write)
+00:16:54	raxhvl:	@draganrakita no tx no coinbase yes. Because coinbaise is tagged to tx.
+00:16:55	Łukasz Rozmej:	I joined bit late, can you reitarate?
+00:17:07	Jared Wasinger:	Always include sounds okay to me too
+00:17:10	draganrakita:	Reacted to "@draganrakita no tx ..." with 👍
+00:18:17	Karim T.:	I think it’s better to include It
+00:21:58	draganrakita:	@Jared Wasinger @Karim T. ?
+00:23:25	Karim T.:	Don’t have a strong opinion . Not sure about the best solution
+00:25:01	Jared Wasinger:	Yeah block reward is on CL side so empty block, coinable wouldn’t be touched
+00:25:05	Jared Wasinger:	That’s where I was getting confused
+00:25:12	draganrakita:	Reacted to "Yeah block reward is..." with 👍
+00:25:33	raxhvl:	Coinbase is excluded if there are no tx. (system operation to coinbase for example withdrawal is as usual)
+00:25:40	draganrakita:	Reacted to "Coinbase is excluded..." with 👍
+00:26:08	Karim T.:	Could you repeat again just to be sure
+00:37:34	Soubhik:	Reacted to "Coinbase is excluded..." with 👍
+00:39:00	draganrakita:	I would like to have it
+00:39:02	felipe:	I have to jump. Thanks all. Will catch up on recording.
+00:39:03	Jared Wasinger:	We should have it
+00:39:23	raxhvl:	We'll have the tests this week.
+00:40:05	draganrakita:	There are few tests with zero reward. Have linked them in disccord
+00:40:22	raxhvl:	On it Dragan! Will get those included
+00:40:28	draganrakita:	Reacted to "On it Dragan! Will g..." with ❤️
+00:40:39	Soubhik:	Reacted to "On it Dragan! Will g..." with ❤️
+00:40:44	Stefan Starflinger:	thanks

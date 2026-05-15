@@ -1,27 +1,36 @@
 {
   "id": 8032,
-  "title": "EIP-8032: Size-Based Storage Gas Pricing ",
+  "title": "EIP-8032: Size-Based Storage Gas Pricing",
   "status": "Draft",
-  "description": "Proposes dynamic pricing for SSTORE operations based on contract storage size, aimed at reducing state bloat.",
-  "author": "Guillaume Ballet (@gballet)",
+  "description": "Makes `SSTORE` gas cost scale with a contract's storage size to discourage state bloat.",
+  "author": "Guillaume Ballet (@gballet), Carlos Perez (@CPerezz), Matan Prasma (@KanExtension), Wei Han Ng (@weiihann)",
   "type": "Standards Track",
   "category": "Core",
   "createdDate": "2025-09-29",
   "discussionLink": "https://ethereum-magicians.org/t/the-case-for-eip-8032-in-glamsterdam-tree-depth-based-storage-gas-pricing/25619",
   "reviewer": "bot",
+  "layer": "EL",
   "forkRelationships": [
     {
       "forkName": "Glamsterdam",
       "statusHistory": [
         {
-          "status": "Proposed"
+          "status": "Proposed",
+          "call": null,
+          "date": null
+        },
+        {
+          "status": "Declined",
+          "call": "acde/228",
+          "date": "2026-01-15"
         }
       ],
-      "layer": "EL",
-      "champion": {
-        "name": "Guillaume Ballet",
-        "discord": "gballet"
-      }
+      "champions": [
+        {
+          "name": "Guillaume Ballet",
+          "discord": "gballet"
+        }
+      ]
     }
   ],
   "laymanDescription": "Adjusts gas costs for SSTORE operations based on how much data a contract holds, incentivizing efficient storage management.",
@@ -56,5 +65,6 @@
     "Aligns storage costs with actual usage, promoting healthier network sustainability.",
     "Facilitates better resource allocation across the Ethereum ecosystem.",
     "Simplifies decision-making for contract storage management."
-  ]
+  ],
+  "tradeoffs": null
 }

@@ -8,12 +8,14 @@ import {
   getLaymanTitle,
   getProposalPrefix,
   getSpecificationUrl,
+  getSummaryDescription,
   parseMarkdownLinks,
   getEipLayer,
 } from '../../utils';
 import { Tooltip, CopyLinkButton } from '../ui';
-import { useButterflyData } from '../../hooks/useButterflyData';
-import { ClientTestingProgress } from './ClientTestingProgress';
+// Butterfly view disabled — data is stale. Uncomment to re-enable.
+// import { useButterflyData } from '../../hooks/useButterflyData';
+// import { ClientTestingProgress } from './ClientTestingProgress';
 
 interface EipCardProps {
   eip: EIP;
@@ -23,18 +25,14 @@ interface EipCardProps {
 
 export const EipCard: React.FC<EipCardProps> = ({ eip, forkName, handleExternalLinkClick }) => {
   const eipId = `eip-${eip.id}`;
-  const layer = getEipLayer(eip, forkName);
+  const layer = getEipLayer(eip);
   const [showChampionDetails, setShowChampionDetails] = useState(false);
   const [isExpanded, setIsExpanded] = useState(false);
 
-  // Fetch butterfly data for EIP 7928
-  const { data: butterflyData, loading: butterflyLoading, error: butterflyError } = useButterflyData(eip.id, forkName);
+  // Butterfly view disabled — data is stale. Uncomment to re-enable.
+  // const { data: butterflyData, loading: butterflyLoading, error: butterflyError } = useButterflyData(eip.id, forkName);
 
-  // Check if there's expandable content
-  const hasExpandableContent =
-    (eip.stakeholderImpacts && Object.keys(eip.stakeholderImpacts).length > 0) ||
-    (eip.tradeoffs && eip.tradeoffs.length > 0) ||
-    (eip.northStarAlignment?.scaleL1 || eip.northStarAlignment?.scaleBlobs || eip.northStarAlignment?.improveUX);
+  const hasMissingTradeoffs = !eip.tradeoffs || eip.tradeoffs.length === 0;
 
   return (
     <article key={eip.id} className={`bg-white dark:bg-slate-800 border rounded p-8 ${
@@ -43,12 +41,12 @@ export const EipCard: React.FC<EipCardProps> = ({ eip, forkName, handleExternalL
         : 'border-slate-200 dark:border-slate-600'
     }`} id={eipId} data-section>
       {/* Header */}
-      <header className="border-b border-slate-100 dark:border-slate-700 pb-6 mb-6">
+      <header className="border-b border-slate-200 dark:border-slate-400 pb-6 mb-6">
         <div className="flex flex-col lg:flex-row lg:items-start lg:justify-between">
           <div className="flex-1">
             <div className="flex items-center gap-3 group relative">
               {/* Anchor link - positioned absolutely in the left margin */}
-              <div className="absolute -left-5 top-1/2 -translate-y-1/2 opacity-0 group-hover:opacity-100 transition-opacity duration-200">
+              <div className="absolute -left-5 top-0 bottom-0 flex items-center opacity-0 group-hover:opacity-100 transition-opacity duration-200">
                 <CopyLinkButton
                   sectionId={eipId}
                   title={`Copy link to this section`}
@@ -56,56 +54,60 @@ export const EipCard: React.FC<EipCardProps> = ({ eip, forkName, handleExternalL
                 />
               </div>
 
-              <h3 className="text-xl font-medium text-slate-900 dark:text-slate-100 leading-tight flex-1">
-                {isHeadliner(eip, forkName) && (
-                  <Tooltip
-                    text={(() => {
-                      const inclusionStage = getInclusionStage(eip, forkName);
-                      const isSFI = inclusionStage === 'Scheduled for Inclusion';
-                      if (forkName.toLowerCase() === 'glamsterdam') {
-                        return isSFI
-                          ? "Selected headliner feature"
-                          : "Proposed headliner feature";
-                      }
-                      return "Headliner feature";
-                    })()}
-                    className="inline-block cursor-pointer"
-                  >
-                    <span
-                      className="text-purple-400 hover:text-purple-600 dark:text-purple-500 dark:hover:text-purple-400 mr-2 transition-colors cursor-help"
-                    >
-                      {(() => {
+              <div className="flex-1">
+                <div className="flex items-center gap-2 mb-1">
+                  {isHeadliner(eip, forkName) && (
+                    <Tooltip
+                      text={(() => {
                         const inclusionStage = getInclusionStage(eip, forkName);
                         const isSFI = inclusionStage === 'Scheduled for Inclusion';
-                        return forkName.toLowerCase() === 'glamsterdam'
-                          ? (isSFI ? '★' : '☆')
-                          : '★';
+                        if (forkName.toLowerCase() === 'glamsterdam') {
+                          return isSFI
+                            ? "Selected headliner feature"
+                            : "Proposed headliner feature";
+                        }
+                        return "Headliner feature";
                       })()}
-                    </span>
-                  </Tooltip>
-                )}
-                <Link
-                  to={`/eips/${eip.id}`}
-                  className="text-slate-400 dark:text-slate-500 hover:text-purple-600 dark:hover:text-purple-400 text-sm font-mono mr-2 relative -top-px transition-colors"
-                >
-                  {getProposalPrefix(eip)}-{eip.id}
-                </Link>
-                <span>{getLaymanTitle(eip)}</span>
-                {layer && (
-                  <Tooltip
-                    text={layer === 'EL' ? 'Primarily impacts Execution Layer' : 'Primarily impacts Consensus Layer'}
-                    className="inline-block"
+                      className="inline-block cursor-pointer"
+                    >
+                      <span
+                        className="text-purple-400 hover:text-purple-600 dark:text-purple-500 dark:hover:text-purple-400 transition-colors cursor-help"
+                      >
+                        {(() => {
+                          const inclusionStage = getInclusionStage(eip, forkName);
+                          const isSFI = inclusionStage === 'Scheduled for Inclusion';
+                          return forkName.toLowerCase() === 'glamsterdam'
+                            ? (isSFI ? '★' : '☆')
+                            : '★';
+                        })()}
+                      </span>
+                    </Tooltip>
+                  )}
+                  <Link
+                    to={`/eips/${eip.id}`}
+                    className="text-slate-400 dark:text-slate-400 hover:text-purple-600 dark:hover:text-purple-400 text-xs font-mono transition-colors underline decoration-1 underline-offset-2"
                   >
-                    <span className={`px-2 py-1 text-xs font-medium rounded ml-2 relative -top-px ${
-                      layer === 'EL'
-                        ? 'bg-indigo-100 text-indigo-700 dark:bg-indigo-900/20 dark:text-indigo-300 border border-indigo-200 dark:border-indigo-600'
-                        : 'bg-teal-100 text-teal-700 dark:bg-teal-900/20 dark:text-teal-300 border border-teal-200 dark:border-teal-600'
-                    }`}>
-                      {layer}
-                    </span>
-                  </Tooltip>
-                )}
-              </h3>
+                    {getProposalPrefix(eip)}-{eip.id}
+                  </Link>
+                  {layer && (
+                    <Tooltip
+                      text={layer === 'EL' ? 'Primarily impacts Execution Layer' : 'Primarily impacts Consensus Layer'}
+                      className="inline-block"
+                    >
+                      <span className={`px-2 py-0.5 text-xs leading-none font-medium rounded relative -top-px ${
+                        layer === 'EL'
+                          ? 'bg-indigo-100 text-indigo-700 dark:bg-indigo-900/20 dark:text-indigo-300 border border-indigo-200 dark:border-indigo-600'
+                          : 'bg-teal-100 text-teal-700 dark:bg-teal-900/20 dark:text-teal-300 border border-teal-200 dark:border-teal-600'
+                      }`}>
+                        {layer}
+                      </span>
+                    </Tooltip>
+                  )}
+                </div>
+                <h3 className="text-lg font-medium text-slate-900 dark:text-slate-100 leading-snug">
+                  {getLaymanTitle(eip)}
+                </h3>
+              </div>
 
               {/* External links - always visible on the right */}
               <div className="flex items-center gap-2 relative top-0.5 ml-auto">
@@ -116,8 +118,8 @@ export const EipCard: React.FC<EipCardProps> = ({ eip, forkName, handleExternalL
                       href={eip.discussionLink}
                       target="_blank"
                       rel="noopener noreferrer"
-                      onClick={() => handleExternalLinkClick('discussion', eip.discussionLink)}
-                      className="text-slate-400 hover:text-slate-600 dark:text-slate-500 dark:hover:text-slate-300 transition-colors cursor-pointer relative group"
+                      onClick={() => handleExternalLinkClick('discussion', eip.discussionLink ?? '')}
+                      className="text-slate-400 hover:text-slate-600 dark:text-slate-400 dark:hover:text-slate-300 transition-colors cursor-pointer relative group"
                     >
                       <div className="relative w-7 h-7">
                         <img
@@ -146,7 +148,7 @@ export const EipCard: React.FC<EipCardProps> = ({ eip, forkName, handleExternalL
                     target="_blank"
                     rel="noopener noreferrer"
                     onClick={() => handleExternalLinkClick('specification', getSpecificationUrl(eip))}
-                    className="text-slate-400 hover:text-slate-600 dark:text-slate-500 dark:hover:text-slate-300 transition-colors cursor-pointer relative group"
+                    className="text-slate-400 hover:text-slate-600 dark:text-slate-400 dark:hover:text-slate-300 transition-colors cursor-pointer relative group"
                   >
                     <div className="relative w-7 h-7">
                       <img
@@ -175,7 +177,7 @@ export const EipCard: React.FC<EipCardProps> = ({ eip, forkName, handleExternalL
       {/* Description */}
       <div className="">
         <p className="text-slate-700 dark:text-slate-300 text-sm leading-relaxed">
-          {parseMarkdownLinks(eip.laymanDescription || '')}
+          {parseMarkdownLinks(getSummaryDescription(eip))}
         </p>
 
         <div className="mt-3 text-xs space-x-3">
@@ -198,6 +200,67 @@ export const EipCard: React.FC<EipCardProps> = ({ eip, forkName, handleExternalL
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
               </svg>
             </a>
+          )}
+
+          {/* ePBS Explainer Resources (EIP 7732) */}
+          {eip.id === 7732 && (
+            <>
+              <span className="inline-flex items-center gap-1">
+                <span className="text-slate-500 dark:text-slate-400">Explainers:</span>
+                <a
+                  href="https://www.potuz.net/posts/gloas-annotated-1/"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    if (window._paq) {
+                      window._paq.push(['trackEvent', 'External Link', 'epbs_explainer', 'beacon_chain']);
+                    }
+                  }}
+                  className="inline-flex items-center gap-1 text-purple-600 hover:text-purple-800 dark:text-purple-400 dark:hover:text-purple-300 underline decoration-1 underline-offset-2 transition-colors"
+                >
+                  Beacon
+                  <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
+                  </svg>
+                </a>
+                <a
+                  href="https://www.potuz.net/posts/gloas-annotated-pubsub/"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    if (window._paq) {
+                      window._paq.push(['trackEvent', 'External Link', 'epbs_explainer', 'pubsub']);
+                    }
+                  }}
+                  className="inline-flex items-center gap-1 text-purple-600 hover:text-purple-800 dark:text-purple-400 dark:hover:text-purple-300 underline decoration-1 underline-offset-2 transition-colors"
+                >
+                  Gossip
+                  <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
+                  </svg>
+                </a>
+                <a
+                  href="https://www.potuz.net/posts/gloas-annotated-forkchoice/"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    if (window._paq) {
+                      window._paq.push(['trackEvent', 'External Link', 'epbs_explainer', 'forkchoice']);
+                    }
+                  }}
+                  className="inline-flex items-center gap-1 text-purple-600 hover:text-purple-800 dark:text-purple-400 dark:hover:text-purple-300 underline decoration-1 underline-offset-2 transition-colors"
+                >
+                  Forkchoice
+                  <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
+                  </svg>
+                </a>
+              </span>
+              <span className="text-slate-400 dark:text-slate-400">|</span>
+            </>
           )}
 
           {/* Headliner Discussion Link */}
@@ -224,20 +287,24 @@ export const EipCard: React.FC<EipCardProps> = ({ eip, forkName, handleExternalL
         {/* Champion Information */}
         {forkName.toLowerCase() === 'glamsterdam' && (() => {
           const forkRelationship = eip.forkRelationships.find(fr => fr.forkName.toLowerCase() === forkName.toLowerCase());
-          const champion = forkRelationship?.champion;
+          const champions = forkRelationship?.champions;
+          const hasChampions = champions && champions.length > 0 && champions.some(c => c.name);
+          const hasAnyContactInfo = champions?.some(c => c.discord || c.telegram || c.email);
 
           return (
             <div className="mt-4">
-              {champion ? (
+              {hasChampions ? (
                 <>
                   <div className="inline-flex items-center gap-2">
-                    <span className="text-xs text-slate-500 dark:text-slate-400 font-medium">Champion:</span>
+                    <span className="text-xs text-slate-500 dark:text-slate-400 font-medium">
+                      {champions.length > 1 ? 'Champions:' : 'Champion:'}
+                    </span>
                     <button
                       onClick={() => setShowChampionDetails(!showChampionDetails)}
                       className="inline-flex items-center gap-1.5 text-xs text-slate-700 dark:text-slate-300 hover:text-slate-900 dark:hover:text-slate-100 transition-colors group"
                     >
-                      <span className="font-medium">{champion.name}</span>
-                      {(champion.discord || champion.telegram || champion.email) && (
+                      <span className="font-medium">{champions.map(c => c.name).join(' & ')}</span>
+                      {hasAnyContactInfo && (
                         <svg
                           className={`w-3.5 h-3.5 text-slate-400 group-hover:text-slate-600 dark:group-hover:text-slate-200 transition-all ${showChampionDetails ? 'rotate-180' : ''}`}
                           fill="none"
@@ -250,37 +317,46 @@ export const EipCard: React.FC<EipCardProps> = ({ eip, forkName, handleExternalL
                     </button>
                   </div>
 
-                  {(champion.discord || champion.telegram || champion.email) && (
+                  {hasAnyContactInfo && (
                     <div
                       className={`grid transition-all duration-300 ease-in-out ${
                         showChampionDetails ? 'grid-rows-[1fr] opacity-100' : 'grid-rows-[0fr] opacity-0'
                       }`}
                     >
                       <div className="overflow-hidden">
-                        <div className="mt-2 ml-4 space-y-1.5 bg-slate-50 dark:bg-slate-700/50 rounded px-3 py-2">
-                          {champion.discord && (
-                            <div className="flex items-center gap-2 text-xs">
-                              <span className="text-slate-500 dark:text-slate-400">Discord:</span>
-                              <span className="font-mono text-slate-700 dark:text-slate-300">{champion.discord}</span>
-                            </div>
-                          )}
-                          {champion.telegram && (
-                            <div className="flex items-center gap-2 text-xs">
-                              <span className="text-slate-500 dark:text-slate-400">Telegram:</span>
-                              <span className="font-mono text-slate-700 dark:text-slate-300">{champion.telegram}</span>
-                            </div>
-                          )}
-                          {champion.email && (
-                            <div className="flex items-center gap-2 text-xs">
-                              <span className="text-slate-500 dark:text-slate-400">Email:</span>
-                              <a
-                                href={`mailto:${champion.email}`}
-                                className="font-mono text-blue-600 dark:text-blue-400 hover:underline"
-                              >
-                                {champion.email}
-                              </a>
-                            </div>
-                          )}
+                        <div className="mt-2 ml-4 space-y-3 bg-slate-50 dark:bg-slate-700 rounded px-3 py-2">
+                          {champions
+                            .filter(c => c.discord || c.telegram || c.email)
+                            .map((champion, idx) => (
+                              <div key={idx} className="space-y-1.5">
+                                {champions.length > 1 && (
+                                  <div className="text-xs font-medium text-slate-600 dark:text-slate-300">{champion.name}</div>
+                                )}
+                                {champion.discord && (
+                                  <div className="flex items-center gap-2 text-xs">
+                                    <span className="text-slate-500 dark:text-slate-400">Discord:</span>
+                                    <span className="font-mono text-slate-700 dark:text-slate-300">{champion.discord}</span>
+                                  </div>
+                                )}
+                                {champion.telegram && (
+                                  <div className="flex items-center gap-2 text-xs">
+                                    <span className="text-slate-500 dark:text-slate-400">Telegram:</span>
+                                    <span className="font-mono text-slate-700 dark:text-slate-300">{champion.telegram}</span>
+                                  </div>
+                                )}
+                                {champion.email && (
+                                  <div className="flex items-center gap-2 text-xs">
+                                    <span className="text-slate-500 dark:text-slate-400">Email:</span>
+                                    <a
+                                      href={`mailto:${champion.email}`}
+                                      className="font-mono text-blue-600 dark:text-blue-400 hover:underline"
+                                    >
+                                      {champion.email}
+                                    </a>
+                                  </div>
+                                )}
+                              </div>
+                            ))}
                         </div>
                       </div>
                     </div>
@@ -296,7 +372,7 @@ export const EipCard: React.FC<EipCardProps> = ({ eip, forkName, handleExternalL
           );
         })()}
 
-        {/* Client Testing Progress (EIP 7928) */}
+        {/* Butterfly view disabled — data is stale. Uncomment to re-enable.
         {eip.id === 7928 && !butterflyLoading && (
           <>
             {butterflyData && <ClientTestingProgress data={butterflyData} />}
@@ -314,6 +390,7 @@ export const EipCard: React.FC<EipCardProps> = ({ eip, forkName, handleExternalL
             )}
           </>
         )}
+        */}
 
         {/* Benefits - Always visible */}
         {eip.benefits && eip.benefits.length > 0 && (
@@ -331,22 +408,20 @@ export const EipCard: React.FC<EipCardProps> = ({ eip, forkName, handleExternalL
         )}
 
         {/* Expand/Collapse Button */}
-        {hasExpandableContent && (
-          <button
-            onClick={() => setIsExpanded(!isExpanded)}
-            className="mt-4 flex items-center gap-1.5 text-xs text-slate-500 hover:text-slate-700 dark:text-slate-400 dark:hover:text-slate-200 transition-colors"
+        <button
+          onClick={() => setIsExpanded(!isExpanded)}
+          className="mt-4 flex items-center gap-1.5 text-xs text-slate-500 hover:text-slate-700 dark:text-slate-400 dark:hover:text-slate-200 transition-colors"
+        >
+          <svg
+            className={`w-4 h-4 transition-transform duration-200 ${isExpanded ? 'rotate-180' : ''}`}
+            fill="none"
+            stroke="currentColor"
+            viewBox="0 0 24 24"
           >
-            <svg
-              className={`w-4 h-4 transition-transform duration-200 ${isExpanded ? 'rotate-180' : ''}`}
-              fill="none"
-              stroke="currentColor"
-              viewBox="0 0 24 24"
-            >
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
-            </svg>
-            <span>{isExpanded ? 'Show less' : 'Show more'}</span>
-          </button>
-        )}
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+          </svg>
+          <span>{isExpanded ? 'Show less' : 'Show more'}</span>
+        </button>
       </div>
 
       {/* Expandable Content */}
@@ -357,6 +432,25 @@ export const EipCard: React.FC<EipCardProps> = ({ eip, forkName, handleExternalL
       >
         <div className="overflow-hidden">
           <div className="mt-8 space-y-8">
+        {/* Trade-offs & Considerations */}
+        <div>
+          <h4 className="text-sm font-semibold text-slate-900 dark:text-slate-100 mb-4 uppercase tracking-wide">Trade-offs & Considerations</h4>
+          {hasMissingTradeoffs ? (
+            <p className="text-sm text-slate-500 dark:text-slate-400 italic">
+              No trade-offs documented yet.
+            </p>
+          ) : (
+            <ul className="space-y-2">
+              {eip.tradeoffs!.map((tradeoff, index) => (
+                <li key={index} className="flex items-start text-sm">
+                  <span className="text-amber-600 dark:text-amber-400 mr-3 mt-0.5 text-xs">●</span>
+                  <span className="text-slate-700 dark:text-slate-300">{tradeoff}</span>
+                </li>
+              ))}
+            </ul>
+          )}
+        </div>
+
         {/* Stakeholder Impact */}
         {eip.stakeholderImpacts && Object.keys(eip.stakeholderImpacts).length > 0 && (
           <div>
@@ -376,31 +470,16 @@ export const EipCard: React.FC<EipCardProps> = ({ eip, forkName, handleExternalL
                   };
 
                   return (
-                    <div key={stakeholder} className="bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-600 rounded p-4">
-                      <h5 className="font-semibold text-slate-900 dark:text-slate-100 text-xs mb-3 border-b border-slate-100 dark:border-slate-700 pb-2">
+                    <div key={stakeholder} className="bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-600 rounded p-4 overflow-hidden">
+                      <h5 className="font-semibold text-slate-900 dark:text-slate-100 text-sm mb-3 border-b border-slate-100 dark:border-slate-700 pb-2">
                         {stakeholderNames[stakeholder as keyof typeof stakeholderNames]}
                       </h5>
-                      <p className="text-slate-700 dark:text-slate-300 text-xs leading-relaxed">{impact.description}</p>
+                      <p className="text-slate-700 dark:text-slate-300 text-sm leading-relaxed break-words">{impact.description}</p>
                     </div>
                   );
                 })}
               </div>
             </div>
-          </div>
-        )}
-
-        {/* Trade-offs & Considerations */}
-        {eip.tradeoffs && eip.tradeoffs.length > 0 && (
-          <div>
-            <h4 className="text-sm font-semibold text-slate-900 dark:text-slate-100 mb-4 uppercase tracking-wide">Trade-offs & Considerations</h4>
-            <ul className="space-y-2">
-              {eip.tradeoffs.map((tradeoff, index) => (
-                <li key={index} className="flex items-start text-sm">
-                  <span className="text-amber-600 dark:text-amber-400 mr-3 mt-0.5 text-xs">⚠</span>
-                  <span className="text-slate-700 dark:text-slate-300">{tradeoff}</span>
-                </li>
-              ))}
-            </ul>
           </div>
         )}
 

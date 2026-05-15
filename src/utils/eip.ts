@@ -34,6 +34,7 @@ export const getInclusionStage = (eip: EIP, forkName?: string): InclusionStage =
 
 /**
  * Get the headliner discussion link for an EIP in a specific fork
+ * Looks for a headliner_proposal entry in presentationHistory
  */
 export const getHeadlinerDiscussionLink = (eip: EIP, forkName?: string): string | null => {
   if (!forkName) return null;
@@ -41,7 +42,14 @@ export const getHeadlinerDiscussionLink = (eip: EIP, forkName?: string): string 
   const forkRelationship = eip.forkRelationships.find(fork =>
     fork.forkName.toLowerCase() === forkName.toLowerCase()
   );
-  return forkRelationship?.headlinerDiscussionLink || null;
+
+  if (!forkRelationship?.presentationHistory) return null;
+
+  const headlinerProposal = forkRelationship.presentationHistory.find(
+    p => p.type === 'headliner_proposal'
+  );
+
+  return headlinerProposal?.link || null;
 };
 
 /**
@@ -57,27 +65,10 @@ export const isHeadliner = (eip: EIP, forkName?: string): boolean => {
 };
 
 /**
- * Get the layer (EL/CL) for a headliner EIP in a specific fork
+ * Get the layer (EL/CL) for an EIP
  */
-export const getHeadlinerLayer = (eip: EIP, forkName?: string): string | null => {
-  if (!forkName) return null;
-
-  const forkRelationship = eip.forkRelationships.find(fork =>
-    fork.forkName.toLowerCase() === forkName.toLowerCase()
-  );
-  return forkRelationship?.layer || null;
-};
-
-/**
- * Get the layer (EL/CL) for any EIP in a specific fork
- */
-export const getEipLayer = (eip: EIP, forkName?: string): 'EL' | 'CL' | null => {
-  if (!forkName) return null;
-
-  const forkRelationship = eip.forkRelationships.find(fork =>
-    fork.forkName.toLowerCase() === forkName.toLowerCase()
-  );
-  return forkRelationship?.layer as 'EL' | 'CL' | null || null;
+export const getEipLayer = (eip: EIP): 'EL' | 'CL' | null => {
+  return eip.layer || null;
 };
 
 /**
@@ -97,10 +88,16 @@ export const getProposalPrefix = (eip: EIP): ProposalType => {
   return 'EIP';
 };
 
+export const getSummaryDescription = (eip: EIP): string =>
+  eip.description;
+
 /**
  * Get the specification URL for an EIP
  */
 export const getSpecificationUrl = (eip: EIP): string => {
+  if (eip.specificationUrl) {
+    return eip.specificationUrl;
+  }
   if (eip.title.startsWith('RIP-')) {
     return `https://github.com/ethereum/RIPs/blob/master/RIPS/rip-${eip.id}.md`;
   }
@@ -116,7 +113,71 @@ export const wasHeadlinerCandidate = (eip: EIP, forkName?: string): boolean => {
   const forkRelationship = eip.forkRelationships.find(fork =>
     fork.forkName.toLowerCase() === forkName.toLowerCase()
   );
-  return forkRelationship?.wasHeadlinerCandidate || false;
+  if (!forkRelationship?.wasHeadlinerCandidate) return false;
+
+  // Exclude withdrawn proposals
+  const latestStatus = forkRelationship.statusHistory[forkRelationship.statusHistory.length - 1]?.status;
+  if (latestStatus === 'Withdrawn') return false;
+
+  return true;
+};
+
+export const getEipIdFromHash = (hash: string): number | null => {
+  const match = /^#eip-(\d+)$/.exec(hash);
+  if (!match) return null;
+
+  const eipId = Number(match[1]);
+  return Number.isSafeInteger(eipId) ? eipId : null;
+};
+
+export interface UpgradeAnchorExpansionState {
+  declined: boolean;
+  headlinerProposals: boolean;
+}
+
+export const getUpgradeAnchorExpansionState = (eip: EIP, forkName?: string): UpgradeAnchorExpansionState => ({
+  declined: getInclusionStage(eip, forkName) === 'Declined for Inclusion',
+  headlinerProposals: wasHeadlinerCandidate(eip, forkName),
+});
+
+/**
+ * Check if an EIP was a headliner candidate but was NOT selected
+ * (i.e., it should appear in the Headliner Proposals section, not in regular stages)
+ */
+export const isUnselectedHeadlinerCandidate = (eip: EIP, forkName?: string): boolean => {
+  if (!forkName) return false;
+  return wasHeadlinerCandidate(eip, forkName) && !isHeadliner(eip, forkName);
+};
+
+/**
+ * Sort comparator for ordering by layer (EL first, then CL)
+ */
+export const sortByLayer = <T extends { layer?: 'EL' | 'CL' | string | null }>(a: T, b: T): number => {
+  const layerA = a.layer;
+  const layerB = b.layer;
+  if (layerA === 'EL' && layerB === 'CL') return -1;
+  if (layerA === 'CL' && layerB === 'EL') return 1;
+  return 0;
+};
+
+/**
+ * Check if an EIP is a selected headliner in ANY fork
+ */
+export const isHeadlinerInAnyFork = (eip: EIP): boolean => {
+  return eip.forkRelationships.some(fork => fork.isHeadliner === true);
+};
+
+/**
+ * Check if an EIP was a headliner candidate in ANY fork (but not selected in any)
+ */
+export const wasHeadlinerCandidateInAnyFork = (eip: EIP): boolean => {
+  // If selected in any fork, this returns false
+  if (isHeadlinerInAnyFork(eip)) return false;
+  return eip.forkRelationships.some(fork => {
+    if (!fork.wasHeadlinerCandidate) return false;
+    const latestStatus = fork.statusHistory[fork.statusHistory.length - 1]?.status;
+    return latestStatus !== 'Withdrawn';
+  });
 };
 
 /**

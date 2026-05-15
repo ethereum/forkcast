@@ -1,0 +1,130 @@
+{
+  "meeting": "BAL #006 - November 5, 2025",
+  "highlights": {
+    "specification_changes": [
+      {
+        "timestamp": "00:06:06",
+        "highlight": "Withdrawals tracking bug fixed; coinbase handling clarified in specs"
+      },
+      {
+        "timestamp": "00:29:15",
+        "highlight": "Gas charging split PR needed before stable test release"
+      },
+      {
+        "timestamp": "00:32:25",
+        "highlight": "Specs will charge gas before tracking to prevent out-of-gas edge cases"
+      }
+    ],
+    "testing_progress": [
+      {
+        "timestamp": "00:26:20",
+        "highlight": "Old fork tests failing across clients; expected due to spec changes"
+      },
+      {
+        "timestamp": "00:27:27",
+        "highlight": "Geth also not passing old fork tests; awaiting next patch release"
+      },
+      {
+        "timestamp": "00:35:21",
+        "highlight": "Clients should run EVM-fuzz spammer scenario in testnets"
+      }
+    ],
+    "performance_optimization": [
+      {
+        "timestamp": "00:07:20",
+        "highlight": "Gas used list proposed for BAL to optimize transaction scheduling"
+      },
+      {
+        "timestamp": "00:11:00",
+        "highlight": "Worst-case: 60M gas transaction delays ~50% vs perfect scheduling"
+      },
+      {
+        "timestamp": "00:12:12",
+        "highlight": "Dragan: 50% speedup difference not worth added complexity"
+      },
+      {
+        "timestamp": "00:36:14",
+        "highlight": "State reads debate: Gary's benchmarks show 8-10x improvement with BAL reads"
+      },
+      {
+        "timestamp": "00:42:04",
+        "highlight": "Read performance plateaus at 32 threads; 10x gain vs 4 threads"
+      },
+      {
+        "timestamp": "00:51:01",
+        "highlight": "Keep reads in BAL for now; revisit with larger state benchmarks"
+      }
+    ],
+    "client_updates": [
+      {
+        "timestamp": "00:26:00",
+        "highlight": "Geth: Ready except coinbase tracking issue remains unresolved"
+      },
+      {
+        "timestamp": "00:27:04",
+        "highlight": "Besu: Passing Amsterdam tests; old fork failures likely test config"
+      },
+      {
+        "timestamp": "00:28:01",
+        "highlight": "Nethermind: Going through new test release; checking failures"
+      },
+      {
+        "timestamp": "00:28:18",
+        "highlight": "Reth: No pending items; ready for DevNet after test validation"
+      },
+      {
+        "timestamp": "00:28:41",
+        "highlight": "Erigon: Implementation testing; many Hive fails need investigation"
+      }
+    ],
+    "debugging_infrastructure": [
+      {
+        "timestamp": "01:02:40",
+        "highlight": "Besu has debug endpoint for BAL comparison; useful for mismatch analysis"
+      },
+      {
+        "timestamp": "01:04:40",
+        "highlight": "Geth debug_getBlockAccessList returns JSON-encoded BAL by block number/hash"
+      }
+    ],
+    "organizational": [
+      {
+        "timestamp": "01:01:22",
+        "highlight": "In-person BAL session during DevConnect; date TBD with remote access"
+      }
+    ]
+  },
+  "action_items": [
+    {
+      "timestamp": "00:33:07",
+      "action": "Toni to extract refactoring from PR; Felipe's gas-charge split goes first",
+      "owner": "Toni/Felipe"
+    },
+    {
+      "timestamp": "00:42:28",
+      "action": "Client teams reproduce Gary's read benchmarks with doubled state size",
+      "owner": "All client teams"
+    },
+    {
+      "timestamp": "01:04:56",
+      "action": "Stefan to share debug endpoint spec example in research channel",
+      "owner": "Stefan"
+    }
+  ],
+  "decisions": [
+    {
+      "timestamp": "00:14:36",
+      "decision": "Gas used list proposal deferred; default is exclusion from BAL"
+    },
+    {
+      "timestamp": "00:56:49",
+      "decision": "Keep state reads in BAL pending additional benchmarks and devnet testing"
+    }
+  ],
+  "targets": [
+    {
+      "timestamp": "01:05:06",
+      "target": "Next breakout call in two weeks (November 19, 2025)"
+    }
+  ]
+}

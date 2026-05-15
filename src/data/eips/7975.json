@@ -1,0 +1,67 @@
+{
+  "id": 7975,
+  "title": "EIP-7975: eth/70 - partial block receipt lists",
+  "status": "Draft",
+  "description": "Adds a facility for paginating block receipts in the p2p protocol",
+  "author": "Felix Lange <fjl@ethereum.org>, Jochem Brouwer (@jochem-brouwer), Giulio Rebuffo (@Giulio2002)",
+  "type": "Standards Track",
+  "category": "Networking",
+  "createdDate": "2025-06-16",
+  "discussionLink": "https://ethereum-magicians.org/t/eip-7975-eth-70-partial-block-receipt-lists/24658",
+  "reviewer": "bot",
+  "layer": "EL",
+  "forkRelationships": [
+    {
+      "forkName": "Glamsterdam",
+      "statusHistory": [
+        {
+          "status": "Considered",
+          "call": "acde/230",
+          "date": "2026-02-12"
+        }
+      ],
+      "champions": [
+        {
+          "name": "Marius Van Der Wijden",
+          "discord": "mariusvanderwijden"
+        }
+      ]
+    }
+  ],
+  "laymanDescription": "When Ethereum processes more transactions per block, the receipts can get too large to send in one network message. This lets nodes request receipts in smaller chunks, preventing sync failures as the network scales.",
+  "stakeholderImpacts": {
+    "endUsers": {
+      "description": "No direct impact. Enables future gas limit increases without sync issues."
+    },
+    "appDevs": {
+      "description": "No direct impact. Internal networking change only."
+    },
+    "walletDevs": {
+      "description": "No direct impact. Internal networking change only."
+    },
+    "toolingInfra": {
+      "description": "Node operators benefit from more reliable sync at higher gas limits."
+    },
+    "layer2s": {
+      "description": "No direct impact. May enable higher L1 throughput they can leverage."
+    },
+    "stakersNodes": {
+      "description": "Required upgrade to maintain sync capability as gas limit increases."
+    },
+    "clClients": {
+      "description": "No changes required. EL networking protocol only."
+    },
+    "elClients": {
+      "description": "Moderate complexity. New message format, pagination logic, partial receipt validation."
+    }
+  },
+  "benefits": [
+    "Prevents sync failures as block gas limit increases beyond 83M",
+    "Enables safe scaling of Ethereum L1 throughput",
+    "Backward compatible with eth/69 during rollout"
+  ],
+  "tradeoffs": [
+    "Requires coordinated client upgrade across all EL implementations",
+    "Partial receipts cannot be verified until complete list received"
+  ]
+}

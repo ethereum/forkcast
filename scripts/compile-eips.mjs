@@ -60,6 +60,9 @@ function compileEips() {
         errors.push(`${file}:\n${errorMessages}`);
       }
 
+      // Exclude EIPs with "Moved" status (e.g., ERCs moved to their own repo)
+      if (eip.status === 'Moved') continue;
+
       eips.push(eip);
     } catch (error) {
       console.error(`Error reading/parsing ${file}:`, error.message);

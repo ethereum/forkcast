@@ -1,27 +1,36 @@
 {
   "id": 7872,
-  "title": "Max blob flag for local builders",
-  "status": "Draft",
-  "description": "Adds a flag to the block builder to let operators configure a maximum number of blobs per locally built block. This is an execution-layer–only change.",
+  "title": "EIP-7872: Max blob flag for local builders",
+  "status": "Review",
+  "description": "Adds a flag to set the maximum number of blobs a local builder will put in a block",
   "author": "Francesco D'Amato <francesco.damato@ethereum.org>, Kevaundray Wedderburn (@kevaundray), Toni Wahrstätter (@nerolation), Alex Stokes (@ralexstokes), Ben Adams (@benaadams), Gajinder Singh (@g11tech), Dustin (@tersec)",
-  "type": "Standards Track",
+  "type": "Meta",
   "category": "Core",
   "createdDate": "2025-01-30",
   "discussionLink": "https://ethereum-magicians.org/t/max-blob-flags-for-local-builders/22734",
   "reviewer": "bot",
+  "layer": "EL",
   "forkRelationships": [
     {
       "forkName": "Glamsterdam",
       "statusHistory": [
         {
-          "status": "Proposed"
+          "status": "Proposed",
+          "call": null,
+          "date": null
+        },
+        {
+          "status": "Declined",
+          "call": "acde/229",
+          "date": "2026-01-29"
         }
       ],
-      "layer": "EL",
-      "champion": {
-        "name": "Kevaundray Wedderburn",
-        "discord": "kevaundray"
-      }
+      "champions": [
+        {
+          "name": "Kevaundray Wedderburn",
+          "discord": "kevaundray"
+        }
+      ]
     }
   ],
   "laymanDescription": "Lets node operators set a cap on how many blob-carrying transactions their local builder includes in a block, helping bandwidth-constrained setups avoid overfilling blocks with blobs.",
@@ -56,5 +65,6 @@
     "Mitigates blob availability risks on low bandwidth.",
     "EL-only change with limited surface area.",
     "No changes to transaction or consensus formats."
-  ]
+  ],
+  "tradeoffs": null
 }

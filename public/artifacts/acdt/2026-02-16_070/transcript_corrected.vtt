@@ -1,0 +1,1426 @@
+WEBVTT
+
+1
+00:04:32.100 --> 00:04:36.470
+Barnabas: Hello, everybody. Let's just give it another minute or two, then we can get started.
+
+2
+00:05:14.560 --> 00:05:23.069
+Barnabas: All right, good morning, everyone. Welcome to all Core Devs testing call number 70 on the 16th of February.
+
+3
+00:05:23.280 --> 00:05:25.320
+Barnabas: Let's get right into it.
+
+4
+00:05:26.520 --> 00:05:37.060
+Barnabas: Number one, on the agenda is, Steel Fusaka and, partial sales update, and I got Bob V3 implementation update.
+
+5
+00:05:37.940 --> 00:05:45.550
+Barnabas: Can we hear, an update from all the consensus layer clients, how they… what kind of progress they made in the past weeks?
+
+6
+00:05:46.140 --> 00:05:49.780
+Barnabas: Whether they are ready to be onboarded on, Blob DevNet Zero?
+
+7
+00:06:01.090 --> 00:06:03.419
+Barnabas: Currently, we have Lighthouse and Prism.
+
+8
+00:06:05.310 --> 00:06:11.049
+Barnabas: close to ready. Maybe we have someone from Teku that they could give us an update?
+
+9
+00:06:21.510 --> 00:06:22.920
+Barnabas: Or Nimbus?
+
+10
+00:06:25.980 --> 00:06:31.180
+Dustin: Sure, yeah. LibP2P for us is pretty much ready, so…
+
+11
+00:06:31.410 --> 00:06:38.199
+Dustin: Now we're trying to get in the rest, in, but that's… That was just,
+
+12
+00:06:39.200 --> 00:06:43.140
+Dustin: Last week, that, that… Got to a usable state.
+
+13
+00:06:48.030 --> 00:06:52.220
+Barnabas: Tldr is, we currently have…
+
+14
+00:06:52.360 --> 00:06:59.450
+Barnabas: about 20 notes, each of the notes, or half of the notes are super notes, half of the notes are full notes.
+
+15
+00:06:59.600 --> 00:07:10.220
+Barnabas: There's not that many validators, and I have latency added of 80 milliseconds between each of the nodes, and
+
+16
+00:07:10.350 --> 00:07:18.240
+Barnabas: the MEV node that is publishing the private blobs is limited to maximum of two peers.
+
+17
+00:07:19.440 --> 00:07:26.699
+Barnabas: So, here we are basically trying to mimic a very, very poorly performing network,
+
+18
+00:07:26.760 --> 00:07:41.180
+Barnabas: with added latency and multiple hops in order for us to be able to see the results of GitLab's history without having the GitLab V2 eagerly pushing all the GitLab information out.
+
+19
+00:07:44.090 --> 00:07:51.650
+Barnabas: This is not full pure gas, this is just a partial cells, our escape.
+
+20
+00:07:52.260 --> 00:07:56.989
+Barnabas: The four pages, I think that's still a research topic.
+
+21
+00:08:04.120 --> 00:08:16.630
+Barnabas: Anyway, I think we can do, like, a proper bigger test once we have onboarded more consensus layer clients. Hopefully, in the next week or two, we can onboard Teco and Nimbus.
+
+22
+00:08:17.000 --> 00:08:20.859
+Barnabas: Maybe a couple of weeks later, others as well?
+
+23
+00:08:21.650 --> 00:08:27.039
+Barnabas: Anyone else, would have client updates regarding, partial cell stuff?
+
+24
+00:08:35.780 --> 00:08:43.670
+Barnabas: Yeah, we can take a look at that offline. I haven't looked into the network, today yet.
+
+25
+00:08:51.020 --> 00:08:55.489
+Barnabas: If no more client updates, then maybe we can move on to Glamsterdam.
+
+26
+00:08:56.220 --> 00:08:58.840
+Barnabas: And block-level access list update.
+
+27
+00:08:59.230 --> 00:09:05.979
+Barnabas: We had a couple of bugs, throughout the weekend. Stefan has reached out to all the clients regarding the specific bugs.
+
+28
+00:09:07.620 --> 00:09:18.820
+Barnabas: For now, we have reverted into a previous comment that was working. We currently have 100% participation, but hopefully those bugs can be fixed by the, reached out client.
+
+29
+00:09:19.600 --> 00:09:24.940
+Barnabas: Do we have any other, updates regarding local access list?
+
+30
+00:09:27.980 --> 00:09:30.700
+Toni Wahrstätter: Yes, I have a short update.
+
+31
+00:09:30.970 --> 00:09:31.700
+Barnabas: Nope.
+
+32
+00:09:31.700 --> 00:09:44.219
+Toni Wahrstätter: In the last breakout call, we discussed, how we want to deal with a potential DOS vector. Basically, what happens if a malicious builder would fill the block lab access list with a lot of garbage storage reads.
+
+33
+00:09:44.750 --> 00:10:00.639
+Toni Wahrstätter: And the easiest fix for that was basically to have a hard cap on the items in the block club access list. So this would be a hard cap that would not be limiting to block builders, because you would always first hit the gas limit before you hit
+
+34
+00:10:00.790 --> 00:10:05.640
+Toni Wahrstätter: the max… Ball item limit, so this is, like.
+
+35
+00:10:06.060 --> 00:10:10.579
+Toni Wahrstätter: Only a safety guard against, against a malicious builder.
+
+36
+00:10:10.980 --> 00:10:15.809
+Toni Wahrstätter: I posted the PR, against the EAP into the agenda.
+
+37
+00:10:15.970 --> 00:10:18.399
+Barnabas: Yeah, I just, posted it here as well, in the chat.
+
+38
+00:10:18.400 --> 00:10:29.809
+Toni Wahrstätter: Perfect. Yeah, so if you look at it, there's one thing, so in the PR, I say gas available, but this should actually be the gas, limit, so I have to fix that.
+
+39
+00:10:30.300 --> 00:10:41.620
+Toni Wahrstätter: Also, one thing, in the current PR, we incorporate the max withdrawals and the max consolidation into the formula, which is not super clean, in my opinion, so…
+
+40
+00:10:41.960 --> 00:10:51.230
+Toni Wahrstätter: This is probably one of the things we want to discuss in the… we can discuss today or in the next breakout call, but essentially how we could simplify that formula.
+
+41
+00:10:51.430 --> 00:10:54.969
+Toni Wahrstätter: And… One important thing here is…
+
+42
+00:10:55.260 --> 00:11:03.339
+Toni Wahrstätter: We currently assume that the minimum cost to have an item in the bowl is 2,000 gas, which comes from
+
+43
+00:11:03.570 --> 00:11:09.150
+Toni Wahrstätter: Putting a storage key on the 2930 access list, and then accessing it.
+
+44
+00:11:09.720 --> 00:11:15.939
+Toni Wahrstätter: Which costs another 100 guests, on top of the $1,900 that you pay for the access list, slot.
+
+45
+00:11:17.270 --> 00:11:26.029
+Toni Wahrstätter: And this might be not needed anymore, or could be simplified if we go for EAP7981, which…
+
+46
+00:11:26.210 --> 00:11:28.699
+Toni Wahrstätter: Adds a cost on top of the access lists.
+
+47
+00:11:28.910 --> 00:11:32.790
+Toni Wahrstätter: on the 2930 access lists makes them more expensive.
+
+48
+00:11:33.250 --> 00:11:39.939
+Toni Wahrstätter: Thus, the minimum cost to put an item onto the ball will increase for that.
+
+49
+00:11:40.340 --> 00:11:43.810
+Toni Wahrstätter: So there's probably some simplifications that will be done.
+
+50
+00:11:44.300 --> 00:11:55.129
+Toni Wahrstätter: To this PR, I saw it was automatically merged by now, but, yeah, just as a heads up, I think clients have already implemented something, like this.
+
+51
+00:11:55.470 --> 00:11:57.159
+Toni Wahrstätter: But it will change.
+
+52
+00:11:57.330 --> 00:12:01.289
+Toni Wahrstätter: This is nothing that will affect Definite 2 or Definite 3, I would say.
+
+53
+00:12:01.640 --> 00:12:07.600
+Toni Wahrstätter: We want to have that check, by definite free, so there will be tests ready by the time
+
+54
+00:12:08.850 --> 00:12:12.559
+Toni Wahrstätter: But yeah, just as a heads up that there will be some changes coming.
+
+55
+00:12:15.390 --> 00:12:20.449
+Barnabas: Thank you. Anyone else has any other,
+
+56
+00:12:21.100 --> 00:12:26.289
+Barnabas: Changes, open questions that we still have to discuss regarding blocked access list?
+
+57
+00:12:26.360 --> 00:12:34.290
+Toni Wahrstätter: Maybe let me just add quick question. Marius, you're referring… is this question directed to me? Like, what is the max gas limit this could support?
+
+58
+00:12:34.290 --> 00:12:35.020
+Marius van der Wijden: Yes.
+
+59
+00:12:35.790 --> 00:12:46.530
+Toni Wahrstätter: Okay, yeah, so the… yeah, the formula uses the gas limit, so it will just scale with the gas limit. Currently, the simplest approach would be you take the gas limit and you divide it by 2,000,
+
+60
+00:12:46.610 --> 00:13:01.059
+Toni Wahrstätter: And this is then the maximum items we can have in the block of access list. Of course, there are some items that are for free. For example, state divs coming from withdrawals or consolidations, because no one pays for them, actually.
+
+61
+00:13:01.180 --> 00:13:04.509
+Toni Wahrstätter: So, those are currently subtracted in the formula.
+
+62
+00:13:05.470 --> 00:13:11.500
+Toni Wahrstätter: And, yeah, if someone has suggestions how to implement that, simply.
+
+63
+00:13:11.740 --> 00:13:17.169
+Toni Wahrstätter: Without using those two constants, the max withdrawal and the max consolidation.
+
+64
+00:13:17.410 --> 00:13:25.749
+Toni Wahrstätter: I'm open to hear them. But I would say the simplest would probably be we do something like gas limit divided by 2,000,
+
+65
+00:13:25.990 --> 00:13:27.759
+Toni Wahrstätter: And just cap it at that.
+
+66
+00:13:28.370 --> 00:13:29.730
+Toni Wahrstätter: Yeah.
+
+67
+00:13:30.630 --> 00:13:42.800
+Toni Wahrstätter: Just to make sure that we're not limiting… the goal is to not introduce any new constraints, so the gas limit should be the only constraint here, and we don't want to create, like, a complicated situation for builders here.
+
+68
+00:13:48.670 --> 00:13:49.420
+Barnabas: Right.
+
+69
+00:13:53.020 --> 00:13:56.720
+Barnabas: What is the… what is the problem with using those values?
+
+70
+00:13:57.760 --> 00:14:08.169
+Toni Wahrstätter: In my opinion, it's just not super clean, because those values are defined in CL EAPs, so it's the max withdrawals of 16 and the max consolidations of 2.
+
+71
+00:14:08.220 --> 00:14:19.170
+Toni Wahrstätter: And it will then always need updates in the future. Every time when we introduce new state changes from system contracts, we would also have to update this number.
+
+72
+00:14:19.970 --> 00:14:22.079
+Toni Wahrstätter: and… Yeah, also if we…
+
+73
+00:14:22.080 --> 00:14:23.910
+Barnabas: Increase level.
+
+74
+00:14:25.650 --> 00:14:30.740
+Toni Wahrstätter: I'm not sure, I'm not sure, but I would assume the simplest would just be to simplify
+
+75
+00:14:30.950 --> 00:14:32.480
+Toni Wahrstätter: The formula.
+
+76
+00:14:32.590 --> 00:14:44.810
+Toni Wahrstätter: By just not using those constants, and we should be fine too, because we don't… it's just for preventing DOS from an invalid block. So it's not like a super serious attack.
+
+77
+00:14:45.090 --> 00:14:47.570
+Toni Wahrstätter: But definitely something we have to,
+
+78
+00:14:48.060 --> 00:14:50.889
+Toni Wahrstätter: We have to make sure that we are not, vulnerable.
+
+79
+00:14:56.360 --> 00:14:57.060
+Barnabas: Makes sense.
+
+80
+00:15:10.820 --> 00:15:20.130
+Barnabas: I have some other comment, that it should be possible to construct a block, which violates this constraint, because then you will have invalid AVM execution.
+
+81
+00:15:20.890 --> 00:15:24.060
+Barnabas: Jason, do you want to also add something else?
+
+82
+00:15:26.800 --> 00:15:31.489
+jochem-brouwer: Yeah, I just wanted to note it, because this constraint
+
+83
+00:15:31.720 --> 00:15:37.220
+jochem-brouwer: It's basically a check which you do on quickly invalidating the blocked over access list.
+
+84
+00:15:37.370 --> 00:15:46.920
+jochem-brouwer: But it should not be interpreted as, like, a constraint which should be checked in the EVM, because you cannot constrict such a block-level exit list.
+
+85
+00:15:54.630 --> 00:16:08.550
+Toni Wahrstätter: Yeah, exactly. This will be something outside. When clients receive the block level access list over the engine API, this constraint can directly be enforced. So you would directly count how many items does the Block Love Access List have.
+
+86
+00:16:08.600 --> 00:16:22.430
+Toni Wahrstätter: And if the number of items is already unrealistic compared, with respect to the gas limit, then clients should invalidate the block immediately, without even starting execution. And this is why we need a
+
+87
+00:16:22.630 --> 00:16:28.319
+Toni Wahrstätter: We need to agree on the formula here in order to make sure that all clients invalidate that block early.
+
+88
+00:16:33.140 --> 00:16:39.649
+Barnabas: Okay. Well, let's target to check this in the next DevNet, I think, and put it in the scope of DevNet Street.
+
+89
+00:16:40.720 --> 00:16:46.200
+Barnabas: Then there's one more open question regarding an execution API, question.
+
+90
+00:16:47.710 --> 00:16:51.269
+Barnabas: Tony, maybe you can also give us an update regarding this, Pierre?
+
+91
+00:16:53.950 --> 00:16:56.110
+Toni Wahrstätter: Yes, let me quickly pull it up.
+
+92
+00:17:01.140 --> 00:17:08.780
+Toni Wahrstätter: Okay, this was the… JSON RPC methods, right? The JSRPC methods were simplified, so…
+
+93
+00:17:09.119 --> 00:17:12.669
+Toni Wahrstätter: We don't use by block number or by block.
+
+94
+00:17:13.220 --> 00:17:14.910
+Toni Wahrstätter: hash?
+
+95
+00:17:15.310 --> 00:17:16.390
+Toni Wahrstätter: Anymore?
+
+96
+00:17:17.930 --> 00:17:32.639
+Toni Wahrstätter: No, sorry, we, we now use block number or tag, or hash in the JSON RPC. I saw from Karim and Barget that they already approved those changes.
+
+97
+00:17:33.500 --> 00:17:42.489
+Toni Wahrstätter: Yeah, I think we have an agreement that we go for this. I already updated the description, the PR, so yeah, please have a look, and…
+
+98
+00:17:42.990 --> 00:17:51.630
+Toni Wahrstätter: would be great to get those implemented for Definite 3. Also, one change compared to DEFNET2 would be that we don't return the…
+
+99
+00:17:51.920 --> 00:18:03.510
+Toni Wahrstätter: RLP bytes in the response, because this is a user-facing method, so it would be great if we returned the JSON-encoded block of access list.
+
+100
+00:18:03.740 --> 00:18:09.329
+Toni Wahrstätter: And the PR, you link in the chat is already, up-to-date with that.
+
+101
+00:18:14.100 --> 00:18:14.990
+Barnabas: Thank you.
+
+102
+00:18:16.340 --> 00:18:21.030
+Barnabas: Does anyone else have… Anything to add to this, or the previous PR?
+
+103
+00:18:25.330 --> 00:18:34.250
+Barnabas: In case not, maybe we can ask Erigon regarding their readiness for… Balled up into?
+
+104
+00:18:35.950 --> 00:18:46.099
+Andrew Ashikhmin: Right, so, yeah, we're getting closer, so I think it will still take us a few days. My estimation is that by the end of this week, we'll be ready.
+
+105
+00:18:48.960 --> 00:18:56.990
+Barnabas: These, the EIPs, or the PRs that we were discussing today, are going to be scoped for the next DevNet.
+
+106
+00:18:57.270 --> 00:19:01.129
+Barnabas: So you don't need to have these, to be onboarded for that material yet.
+
+107
+00:19:01.930 --> 00:19:16.320
+Andrew Ashikhmin: Right. So, and, the, is get block access list by hash and by number, the, the previous, the previous variant, is it also not part of DevNet2?
+
+108
+00:19:16.620 --> 00:19:23.070
+Barnabas: No, like, it's… it doesn't really matter, because it's, no service is using this yet.
+
+109
+00:19:23.440 --> 00:19:24.540
+Barnabas: Okay.
+
+110
+00:19:24.540 --> 00:19:25.250
+Andrew Ashikhmin: Excellent.
+
+111
+00:19:26.360 --> 00:19:40.470
+Andrew Ashikhmin: Okay, got it. Yes, so we are basically… we're working on… we have some draft implementation of everything, but there are still some test failures, so we are working on fixing those.
+
+112
+00:19:42.630 --> 00:19:43.880
+Barnabas: Great, thank you.
+
+113
+00:19:44.680 --> 00:19:53.280
+Barnabas: Would we have any other updates from CI clients that would want to be onboarded in October Access List DeW2?
+
+114
+00:20:07.820 --> 00:20:12.699
+Barnabas: Doesn't sound like it. So maybe we can move on to the next topic.
+
+115
+00:20:12.810 --> 00:20:14.820
+Barnabas: Which would be gas limit changes.
+
+116
+00:20:15.090 --> 00:20:24.449
+Barnabas: the ETH70 update, last week we launched a new DevNet called NFT DevNet 10, where we activated ETH70.
+
+117
+00:20:25.150 --> 00:20:28.259
+Barnabas: Hmm… maybe someone from…
+
+118
+00:20:29.860 --> 00:20:34.479
+Barnabas: Oh, is that Marius, maybe? Can you give us an update, regarding how this network is going?
+
+119
+00:20:35.270 --> 00:20:42.000
+Marius van der Wijden: Sure. So, NFT DevNet 10 was launched, and it has some transactions that
+
+120
+00:20:42.650 --> 00:20:48.930
+Marius van der Wijden: are not able, like, you cannot sync them anymore if you are Snap-syncing, because the receipts are too large.
+
+121
+00:20:49.190 --> 00:20:52.850
+Marius van der Wijden: And we have confirmed Netherland and Gath
+
+122
+00:20:53.110 --> 00:20:59.319
+Marius van der Wijden: Current masses are not able to sync the network, and with the ETH70, they are.
+
+123
+00:20:59.520 --> 00:21:06.200
+Marius van der Wijden: If you are a client that is trying to implement ETH70, you can just
+
+124
+00:21:06.350 --> 00:21:10.930
+Marius van der Wijden: yeah, basically use NFT DevNet 10…
+
+125
+00:21:11.050 --> 00:21:15.840
+Marius van der Wijden: In order to, verify that your client is able to…
+
+126
+00:21:20.160 --> 00:21:21.090
+Marius van der Wijden: W.
+
+127
+00:21:23.040 --> 00:21:29.690
+Fabio Di Fabio: Yeah, on Beto's side, I want to share the progress. I'm able to sync the network. I'm…
+
+128
+00:21:30.110 --> 00:21:33.700
+Fabio Di Fabio: with, externally, so I'm connecting to the DevNet.
+
+129
+00:21:35.220 --> 00:21:41.489
+Fabio Di Fabio: And I'm finalizing the code, so I can also join directly the DevNet.
+
+130
+00:21:41.890 --> 00:21:48.590
+Fabio Di Fabio: I think these, this week, middle of week, we should be able to… To join the network.
+
+131
+00:21:49.960 --> 00:21:50.930
+Marius van der Wijden: Very nice.
+
+132
+00:21:55.320 --> 00:22:05.389
+Marius van der Wijden: I think, Reth and Erigon are not… it's not super high on their priority list, because… they,
+
+133
+00:22:07.150 --> 00:22:10.769
+Marius van der Wijden: Pull nodes, so they will sync everything anyway.
+
+134
+00:22:12.780 --> 00:22:13.740
+Marius van der Wijden: But…
+
+135
+00:22:14.360 --> 00:22:23.959
+Marius van der Wijden: It would also be nice for them to serve ETH70. And also, ETH70 is now a prerequisite for ETH71.
+
+136
+00:22:24.690 --> 00:22:30.609
+Marius van der Wijden: Eth71, adds a method to get block access lists.
+
+137
+00:22:31.110 --> 00:22:39.380
+Marius van der Wijden: And, yes. So, if you want to be, spec compliant,
+
+138
+00:22:39.570 --> 00:22:46.729
+Marius van der Wijden: Erigon and Reth, you also should implement ETH70, and then ETH71 for, I think.
+
+139
+00:22:47.250 --> 00:22:49.819
+Marius van der Wijden: We decided to move it to Definite 3, right?
+
+140
+00:22:50.540 --> 00:22:51.810
+Marius van der Wijden: Oh, definitely.
+
+141
+00:22:53.510 --> 00:22:54.730
+Toni Wahrstätter: Yeah, exactly.
+
+142
+00:23:01.700 --> 00:23:06.810
+FLCL: From Nethermine's side, we are testing.
+
+143
+00:23:07.230 --> 00:23:19.549
+FLCL: with, more corner cases. I see now that, either guest sense, nulls, or we, read it as,
+
+144
+00:23:20.100 --> 00:23:27.790
+FLCL: like, now a race, and block is empty, so I'm trying to figure out it now.
+
+145
+00:23:28.050 --> 00:23:34.209
+FLCL: And, we'll test, more pairs, like, synchronizing from
+
+146
+00:23:35.060 --> 00:23:38.770
+FLCL: Another mind, another mind, guest another mind, and so on.
+
+147
+00:23:39.210 --> 00:23:43.060
+FLCL: Another thing is,
+
+148
+00:23:43.380 --> 00:23:51.350
+FLCL: Whether we should split packets… should split receipts that are not, like, very big, but still significant.
+
+149
+00:23:51.580 --> 00:23:58.890
+FLCL: For now, I implemented it in such way that if
+
+150
+00:24:00.060 --> 00:24:07.880
+FLCL: Something's bigger than one sort of, 10 megabytes,
+
+151
+00:24:08.450 --> 00:24:13.290
+FLCL: We can split it… split it… And, yeah.
+
+152
+00:24:18.830 --> 00:24:30.920
+Barnabas: Alright, so just to recap, for local accessories.f3, we're gonna be adding the, the EIP…
+
+153
+00:24:31.120 --> 00:24:37.620
+Barnabas: changes for, the DOS attack. We're gonna be adding the ETH71.
+
+154
+00:24:37.840 --> 00:24:44.209
+Barnabas: Where 870 is the, prerequisite, and we're gonna be adding the new,
+
+155
+00:24:44.630 --> 00:24:48.339
+Barnabas: RPC call, just an RPC call, that we just discussed.
+
+156
+00:24:48.640 --> 00:24:52.579
+Barnabas: Is there any other change that we expect for Plotin of Access List 3?
+
+157
+00:24:57.620 --> 00:25:10.539
+Toni Wahrstätter: I don't think so. Don't think so. Only the optimizations, so we wanted to have all the optimizations for… I mean, this is independent from definite 3. We wanted to have them some… sometime between Definite 2 and Definite 3 to make sure that
+
+158
+00:25:10.660 --> 00:25:13.319
+Toni Wahrstätter: We can finish the benchmarking.
+
+159
+00:25:13.640 --> 00:25:18.669
+Toni Wahrstätter: But apart from that, maybe the engine API methods, right? There are still the engine API methods.
+
+160
+00:25:19.640 --> 00:25:22.480
+Toni Wahrstätter: That are also in the scope for DevNet3.
+
+161
+00:25:28.770 --> 00:25:29.620
+Barnabas: Yes, Fabio?
+
+162
+00:25:30.540 --> 00:25:33.140
+Fabio Di Fabio: Yeah, I was, thinking about…
+
+163
+00:25:33.280 --> 00:25:40.150
+Fabio Di Fabio: having, both ETH70 and the ETH71 in the same,
+
+164
+00:25:40.410 --> 00:25:45.020
+Fabio Di Fabio: bold DevNet 3, does it make sense to just use
+
+165
+00:25:45.670 --> 00:25:49.119
+Fabio Di Fabio: Merge them together, and have only one…
+
+166
+00:25:49.230 --> 00:25:52.010
+Fabio Di Fabio: new version of the P2P protocol.
+
+167
+00:25:57.580 --> 00:26:01.900
+Fabio Di Fabio: It's not a big deal, just to avoid having… Double.
+
+168
+00:26:02.890 --> 00:26:09.359
+Fabio Di Fabio: to just, deprecate, ETH70.
+
+169
+00:26:11.090 --> 00:26:13.599
+Fabio Di Fabio: As soon as we have TH71.
+
+170
+00:26:14.810 --> 00:26:21.750
+Barnabas: I think the idea was that ETH70 is, ready to be activated without any implied access list code.
+
+171
+00:26:22.660 --> 00:26:27.670
+Fabio Di Fabio: So, before Glamstadam, Okay, makes sense, yes.
+
+172
+00:26:38.470 --> 00:26:44.860
+Barnabas: Regarding timelines, hopefully we can launch the MS3 sometime next week.
+
+173
+00:26:45.000 --> 00:26:47.340
+Barnabas: Maybe middle of next week?
+
+174
+00:26:51.610 --> 00:26:53.540
+Barnabas: Maybe 25th of February?
+
+175
+00:26:57.400 --> 00:27:00.270
+Barnabas: Cette un pose a… Target?
+
+176
+00:27:00.690 --> 00:27:02.720
+Barnabas: Would everyone be okay with that?
+
+177
+00:27:05.500 --> 00:27:12.040
+Marius van der Wijden: kind of depends on the other EIPs. If we want to add the other EIPs, I would…
+
+178
+00:27:12.420 --> 00:27:16.720
+Marius van der Wijden: Probably… I think we would probably need a bit more time.
+
+179
+00:27:17.460 --> 00:27:22.630
+Marius van der Wijden: If we just say, ETH71 and…
+
+180
+00:27:22.940 --> 00:27:25.799
+Marius van der Wijden: And the diff… the changes to Bell.
+
+181
+00:27:25.960 --> 00:27:29.509
+Marius van der Wijden: Then I think next week should be fine for us.
+
+182
+00:27:31.300 --> 00:27:32.850
+Barnabas: Alright,
+
+183
+00:27:33.000 --> 00:27:41.949
+Barnabas: Regarding the scope, I completely missed last week's all core devs call. What was the decision there? Which EIPs would be making it into DevNet Street?
+
+184
+00:27:47.770 --> 00:27:48.530
+Barnabas: Okay.
+
+185
+00:27:53.110 --> 00:27:54.740
+Barnabas: So the… was that the one?
+
+186
+00:27:57.460 --> 00:28:04.120
+Toni Wahrstätter: If I remember correctly, there was 8037 and another one. I forgot which one it was now.
+
+187
+00:28:10.550 --> 00:28:14.789
+Ansgar Dietrichs: Yeah, as Maria's saying, the, contract says one,
+
+188
+00:28:14.870 --> 00:28:30.710
+Ansgar Dietrichs: Exactly. 7954. And then I think, if I can remember correctly, that one, though, I would double-check with people, is that we hadn't made a call yet whether, possibly, we already have E70, E71 ready. I think that one we just wanted to see.
+
+189
+00:28:30.990 --> 00:28:31.820
+Ansgar Dietrichs: Right?
+
+190
+00:28:36.240 --> 00:28:38.480
+Barnabas: Yeah, that sounds good. Ben?
+
+191
+00:28:39.350 --> 00:28:47.369
+Ben Adams: There were a few EIP adjustments as well, like… Changing how… Was it swap-in work?
+
+192
+00:28:49.400 --> 00:28:52.710
+Ben Adams: Which I think need to be.
+
+193
+00:28:52.980 --> 00:28:55.839
+Ben Adams: scheduled to the change on the fly.
+
+194
+00:28:58.340 --> 00:29:00.680
+Barnabas: Perfect. Would you have a PR for that?
+
+195
+00:29:01.400 --> 00:29:06.570
+Ben Adams: I think it was a comment on the last… I see the… I'm not sure.
+
+196
+00:29:07.020 --> 00:29:18.769
+Ansgar Dietrichs: And yes, sorry, I wasn't aware that I should look into this before this call, but from my memory, I think there was one suggestion at which that was actually rejected, and the other one was just put up for discussion, so I don't think it was decided yet.
+
+197
+00:29:19.210 --> 00:29:23.080
+Ansgar Dietrichs: It's my understanding, but… Maybe I misremember.
+
+198
+00:29:26.680 --> 00:29:30.290
+Barnabas: Yeah, I can… I can dig that up after the call and, put together a…
+
+199
+00:29:30.560 --> 00:29:33.869
+Barnabas: spec sheet for the next 3. And then we can,
+
+200
+00:29:34.100 --> 00:29:38.340
+Barnabas: Maybe discuss timelines for, on this next week.
+
+201
+00:29:38.760 --> 00:29:48.329
+Barnabas: Let's… let's just try to have everything implemented, 1837 and 7954, and, deeds 17 and 71 as well.
+
+202
+00:29:48.580 --> 00:29:57.259
+Barnabas: And then, let's see if we can still, keep the target date next week, Wednesday. And if it's too tight, then, we just push it maybe a week.
+
+203
+00:29:57.580 --> 00:29:59.290
+Barnabas: to the first week of March.
+
+204
+00:30:02.290 --> 00:30:03.870
+Barnabas: If that sounds good.
+
+205
+00:30:24.420 --> 00:30:28.190
+Barnabas: Mario, would you like to share your concern?
+
+206
+00:30:29.390 --> 00:30:34.560
+Mario Vega: Yeah, I mean, it's… it seems like an easy change, but do we still have to refill the tests with the…
+
+207
+00:30:34.760 --> 00:30:36.270
+Mario Vega: 8037?
+
+208
+00:30:36.450 --> 00:30:47.570
+Mario Vega: To be honest, I'm out of the loop on the status of this, in terms of tests, so I will have to check with the team to see if we have done any meaningful progress.
+
+209
+00:30:48.270 --> 00:30:50.759
+Mario Vega: But yeah, I'm still concerned.
+
+210
+00:30:52.080 --> 00:30:56.469
+Barnabas: Okay, does that mean that you would prefer to… yeah, Spencer?
+
+211
+00:30:57.560 --> 00:31:04.759
+spencer-tb: Yeah, sorry, so, we have, like, a specs PR up for 8037, no tests yet, so I do…
+
+212
+00:31:04.970 --> 00:31:09.819
+spencer-tb: share the same concern as Mario, and I think there are some kind of small…
+
+213
+00:31:09.950 --> 00:31:15.370
+spencer-tb: spec changes that might be needed for some EIP interactions, so I think
+
+214
+00:31:16.360 --> 00:31:19.950
+spencer-tb: Maybe I can comment, or,
+
+215
+00:31:20.090 --> 00:31:30.349
+spencer-tb: start a thread in Discord with, some of these potential spec changes, or even create PR, and then we can get movement there. But yeah, I do share similar, concerns with Mario.
+
+216
+00:31:30.670 --> 00:31:32.960
+spencer-tb: And just, yeah, because we haven't got tests yet.
+
+217
+00:31:34.130 --> 00:31:40.529
+Barnabas: Right, would you guys prefer if we just push AD37 outside of the scope of this?
+
+218
+00:31:43.170 --> 00:31:56.620
+Mario Vega: I don't want to push anything out of scope that was decided on ICD. I think we can start, like, pushing for the tests. I mean, the most concerning part is that,
+
+219
+00:31:56.940 --> 00:31:59.559
+Mario Vega: So, some tests are definitely gonna break.
+
+220
+00:32:00.010 --> 00:32:06.260
+Mario Vega: I mean, what… we can… we can assess whether it's too many, and just,
+
+221
+00:32:06.500 --> 00:32:13.539
+Mario Vega: take them off the release, for example, that could be one possibility. So we only fill the tests that don't… do not break, and we can,
+
+222
+00:32:13.750 --> 00:32:17.919
+Mario Vega: run, make a release for the clients to consume, for the tree.
+
+223
+00:32:18.350 --> 00:32:21.699
+Mario Vega: But still, it feels a little bit rushed to me, in my opinion, yeah.
+
+224
+00:32:22.300 --> 00:32:23.690
+Mario Vega: Yep.
+
+225
+00:32:27.990 --> 00:32:34.209
+Barnabas: Yeah, so Marius' suggestion would be to push it to the first week of March, or remove the EIP.
+
+226
+00:32:35.360 --> 00:32:40.839
+Barnabas: I would just say that let's try to aim for the 4th of March instead of the 25th of February.
+
+227
+00:32:41.080 --> 00:32:43.149
+Barnabas: And try to ship everything.
+
+228
+00:32:46.380 --> 00:32:50.019
+Barnabas: Would that… Make it better for the testing team as well?
+
+229
+00:32:51.200 --> 00:32:52.540
+Mario Vega: Yeah, absolutely, absolutely.
+
+230
+00:32:52.860 --> 00:32:53.770
+Barnabas: Thank you.
+
+231
+00:33:00.580 --> 00:33:08.670
+Barnabas: Regarding another… was it simulate V1, so we would want to have it simulate,
+
+232
+00:33:09.090 --> 00:33:13.909
+Barnabas: Just an appreciated to every single EL client by Divino Street as well.
+
+233
+00:33:15.170 --> 00:33:20.440
+Barnabas: Hopefully, this can also be done. Obviously, that's not a breaking request, but…
+
+234
+00:33:20.580 --> 00:33:26.020
+Barnabas: It's something that's gonna really help us, do some benchmarking.
+
+235
+00:33:27.200 --> 00:33:29.330
+Barnabas: So, please try to get that done as well.
+
+236
+00:33:34.160 --> 00:33:46.489
+Barnabas: And, yeah, Ansgar also mentioned that if 70 would be part of Dentistry, where clients can still support it, or they can still participate even without supporting the protocol.
+
+237
+00:33:47.050 --> 00:33:48.420
+Barnabas: So, yeah.
+
+238
+00:33:48.770 --> 00:33:51.610
+Barnabas: I mean, we don't have to stress test, basically.
+
+239
+00:33:51.990 --> 00:33:58.719
+Barnabas: those big receipts on, Business 3. I think we have a dedicated network for that, that's good enough.
+
+240
+00:33:59.120 --> 00:34:09.449
+Barnabas: I think 871, Mmm… Last time I checked, I think guest also didn't have its limit.
+
+241
+00:34:10.370 --> 00:34:12.840
+Barnabas: But I can… I can double-check it, Marius.
+
+242
+00:34:14.989 --> 00:34:20.479
+Barnabas: There was the daily hive test that's running to test for these endpoints.
+
+243
+00:34:27.730 --> 00:34:32.480
+Barnabas: Yeah, I can… I can get back to that, mars.
+
+244
+00:34:33.690 --> 00:34:39.690
+Barnabas: Regarding implementing 871, whether we want this in demonstrope or not.
+
+245
+00:34:40.239 --> 00:34:42.370
+Barnabas: What is the ER's take on this?
+
+246
+00:34:53.170 --> 00:34:54.219
+Marius van der Wijden: Sorry, Egan?
+
+247
+00:34:55.230 --> 00:34:59.739
+Barnabas: Would you guys prefer to have it 71 in the scope of DevNet Street?
+
+248
+00:35:06.640 --> 00:35:14.280
+Marius van der Wijden: I don't know, it depends on… I think it kind of depends on the clients that have not implemented ETH70 yet, because they will have
+
+249
+00:35:14.540 --> 00:35:15.950
+Marius van der Wijden: To do much more.
+
+250
+00:35:16.190 --> 00:35:17.030
+Marius van der Wijden: work.
+
+251
+00:35:18.680 --> 00:35:27.319
+Andrew Ashikhmin: Yeah, I would prefer if 71 to be postponed, because, yeah, it will be too much to implement both.
+
+252
+00:35:30.230 --> 00:35:30.740
+Barnabas: Annuity.
+
+253
+00:35:30.740 --> 00:35:32.540
+Andrew Ashikhmin: We have everything done before.
+
+254
+00:35:35.870 --> 00:35:42.770
+Barnabas: Yeah, so it's RESH and Erigon, right, that have not yet implemented E70. Anyone from RESH can also comment on it?
+
+255
+00:35:44.950 --> 00:35:50.899
+Jen: Yeah, I think we provided an image. Let me get back to you. I don't see any blockers for Y70 for us.
+
+256
+00:35:51.970 --> 00:35:53.250
+Barnabas: Right. Okay.
+
+257
+00:35:54.180 --> 00:36:01.660
+Barnabas: So if it's only Erigon, then I would actually suggest that we keep it in the scope of DevNet 3.
+
+258
+00:36:02.310 --> 00:36:07.610
+Barnabas: And, possibly launch without Erigon, for the next 3 as well, and then,
+
+259
+00:36:07.940 --> 00:36:17.109
+Barnabas: previously have 4 clients at Genesis time, and then we can add everyone down the line when the implementation for them is complete as well.
+
+260
+00:36:17.810 --> 00:36:24.020
+Karim T. (matkt): Well, just on the Bizu side, we have it, but for the moment, we are not passing half tests, so…
+
+261
+00:36:24.540 --> 00:36:30.309
+Karim T. (matkt): I don't know if we have the complete implementation, or if we need to add some fixes.
+
+262
+00:36:30.490 --> 00:36:32.679
+Karim T. (matkt): But yeah, just wanted to share that.
+
+263
+00:36:38.380 --> 00:36:45.959
+Ben Adams: Erigons, fine for sinking, aren't they? Because they don't actually care about the receipt. It's just for serving. That would be the problem.
+
+264
+00:36:46.140 --> 00:36:46.960
+Ben Adams: Is that correct?
+
+265
+00:36:47.480 --> 00:36:51.169
+Barnabas: Right, but that's for 870. We are not talking about 871.
+
+266
+00:36:51.610 --> 00:36:52.129
+Ben Adams: Oh, sure, sure.
+
+267
+00:36:52.780 --> 00:36:54.500
+Barnabas: Oh wait, that's also optional.
+
+268
+00:36:55.440 --> 00:37:07.120
+Marius van der Wijden: Yeah, it's… ETH71 is… is… provides the way of, like, querying dials from other nodes, and that is only used for sync improvements, right, Tony?
+
+269
+00:37:09.880 --> 00:37:14.520
+Toni Wahrstätter: Yes, exactly. So, we might not need it, but definitely, I guess.
+
+270
+00:37:14.590 --> 00:37:16.640
+Marius van der Wijden: Then it's optional.
+
+271
+00:37:17.230 --> 00:37:17.970
+Barnabas: somewhere.
+
+272
+00:37:18.110 --> 00:37:24.579
+Barnabas: Then we're gonna put it in the optional bucket, and then whoever, implements it is good, and whoever's not.
+
+273
+00:37:24.740 --> 00:37:25.470
+Barnabas: Not.
+
+274
+00:37:26.170 --> 00:37:29.019
+Barnabas: So that's… Let's keep it at that.
+
+275
+00:37:31.450 --> 00:37:35.799
+Barnabas: Okay, anything else regarding local access list?
+
+276
+00:37:41.300 --> 00:37:47.230
+Barnabas: If not, then maybe we can move on to the sales side, EPBS or not.
+
+277
+00:37:48.740 --> 00:37:53.580
+Barnabas: Do we have any client updates from… Any sales teams?
+
+278
+00:37:57.260 --> 00:38:00.719
+Stefan Bratanov: I can speak from Techo.
+
+279
+00:38:01.230 --> 00:38:03.209
+Stefan Bratanov: Making a little bit of progress.
+
+280
+00:38:06.260 --> 00:38:09.759
+Stefan Bratanov: So we implemented the Beacon API for the execution payload.
+
+281
+00:38:10.280 --> 00:38:16.429
+Stefan Bratanov: But at the moment, we don't support finalized retrieval of execution payloads.
+
+282
+00:38:17.080 --> 00:38:21.659
+Stefan Bratanov: So I guess for DemNet0, that'll be good, so that nodes can sync.
+
+283
+00:38:22.190 --> 00:38:26.219
+Stefan Bratanov: Yeah, I'm making progress, but still not there yet.
+
+284
+00:38:29.960 --> 00:38:33.429
+Barnabas: When would you expect the code to be ready?
+
+285
+00:38:35.510 --> 00:38:42.139
+Stefan Bratanov: Maybe we can have some version in the next couple of weeks, I guess.
+
+286
+00:38:43.490 --> 00:38:53.020
+Stefan Bratanov: And then polish it from there. But, yeah, maybe in the next call, the next testing call, I'll be able to provide better…
+
+287
+00:38:53.530 --> 00:38:55.339
+Stefan Bratanov: Timeline for that?
+
+288
+00:38:57.580 --> 00:38:58.240
+Barnabas: Nope.
+
+289
+00:38:59.190 --> 00:39:06.130
+Barnabas: Yeah, because the original idea was to have our desktop by mid-February, which is basically in two days.
+
+290
+00:39:06.290 --> 00:39:09.139
+Barnabas: So that is probably not reasonable for Taku.
+
+291
+00:39:09.930 --> 00:39:17.880
+Stefan Bratanov: I don't think so. Well, we can have some cock version, but I would like something more complete, so…
+
+292
+00:39:18.040 --> 00:39:20.819
+Stefan Bratanov: Yeah, I think it'll be another week, at least.
+
+293
+00:39:21.460 --> 00:39:22.130
+Barnabas: Okay.
+
+294
+00:39:23.790 --> 00:39:25.199
+Barnabas: Anyone from prison?
+
+295
+00:39:37.150 --> 00:39:38.390
+Barnabas: Or lighthouse?
+
+296
+00:39:39.440 --> 00:39:48.129
+Gaia: Yeah, for Lighthouse, we have a DevNet Zero branch that we've been testing locally in, like, a Lighthouse-only Kurtosis network.
+
+297
+00:39:48.350 --> 00:39:52.760
+Gaia: we're working through some bugs. I think we got block production working, but…
+
+298
+00:39:53.000 --> 00:39:59.139
+Gaia: Somewhere along the lines of, gossip envelope processing and importing, there's a bug.
+
+299
+00:39:59.730 --> 00:40:08.910
+Gaia: So we're working on fixing that, and we're hoping by the end of the week, we'll be ready to, like, interop locally with another client, maybe, like, Consensor or something.
+
+300
+00:40:09.350 --> 00:40:13.259
+Gaia: But yeah, I don't think we'll be ready for February 18th either.
+
+301
+00:40:21.320 --> 00:40:23.939
+Barnabas: Okay, thank you. Nimbus?
+
+302
+00:40:26.000 --> 00:40:34.760
+Dustin: Sure. So, I… we have, I mean, Alpha 2 specs, we have block broadcasting, we have most things where
+
+303
+00:40:35.060 --> 00:40:48.800
+Dustin: starting to work on a fork twice, I know that's not, sort of, super high priority for this, but envelope… the, sort of, the frontier for us right now is really, the envelope… things like envelope syncing. So yeah,
+
+304
+00:40:48.910 --> 00:40:56.309
+Dustin: Yeah, the gossip stuff we should have, but this is now things like the, sinking, and if the…
+
+305
+00:40:57.870 --> 00:41:02.880
+Dustin: Backfilling, sort of, of it, when we… when we miss one.
+
+306
+00:41:03.070 --> 00:41:13.039
+Dustin: through RecRISP, things like this. So, that's… Yeah, I would say, yeah, not…
+
+307
+00:41:14.310 --> 00:41:19.169
+Dustin: Two days for… two or three days, yeah, not… not gonna, happen.
+
+308
+00:41:19.290 --> 00:41:21.830
+Dustin: But… Yeah, well…
+
+309
+00:41:22.760 --> 00:41:32.220
+Dustin: I mean, the other thing is that we have been trying to, test on kurtosis and running into, some of the same,
+
+310
+00:41:32.650 --> 00:41:42.440
+Dustin: sort of issues that other clients have reported. I've linked this in a couple places, and I know the steel, the AllCL steel, steel channel.
+
+311
+00:41:42.790 --> 00:41:46.830
+Dustin: So, yeah, and we…
+
+312
+00:41:47.380 --> 00:42:01.969
+Dustin: well, I say we, I… it was… this would be… Caleb, I guess, would be the one who's been… who has tried this since, and I don't know what the outcome was, but I know that it was, a little challenging. We were kind of blocked in proceeding to find out
+
+313
+00:42:02.170 --> 00:42:08.589
+Dustin: how far we… how well it worked, because it just ran into some of the issues on the EL,
+
+314
+00:42:08.760 --> 00:42:10.379
+Dustin: Sort of mock side.
+
+315
+00:42:11.600 --> 00:42:12.960
+Dustin: That was earlier today.
+
+316
+00:42:13.850 --> 00:42:16.500
+Barnabas: That should be fixed, no, I think.
+
+317
+00:42:17.200 --> 00:42:17.880
+Dustin: Okay.
+
+318
+00:42:18.080 --> 00:42:18.800
+Dustin: Yep.
+
+319
+00:42:21.480 --> 00:42:22.470
+Barnabas: Thank you.
+
+320
+00:42:24.460 --> 00:42:26.040
+Barnabas: Luther?
+
+321
+00:42:28.260 --> 00:42:36.979
+nflaig: So we are having fork Choice, fully implemented, but still needs to be merged. There are a few, outstanding PRs we need to merge.
+
+322
+00:42:37.020 --> 00:42:51.459
+nflaig: But once that's done, the main part that's missing is just wiring everything up, so the block import works, which will be the major work still left. Yeah. I think we'll also need more than two days for that.
+
+323
+00:42:51.870 --> 00:42:53.729
+nflaig: It's probably 1 or 2 weeks.
+
+324
+00:42:55.930 --> 00:42:56.880
+Barnabas: Brendan?
+
+325
+00:43:05.050 --> 00:43:07.759
+Barnabas: Nobody from grinding around.
+
+326
+00:43:07.870 --> 00:43:09.890
+Barnabas: Nobody from prison, I guess?
+
+327
+00:43:24.380 --> 00:43:30.579
+Barnabas: Okay, anybody else has anything else to add, to EPPS.0?
+
+328
+00:43:37.010 --> 00:43:40.710
+Barnabas: Now, this morning, I was actually able to get a consensor
+
+329
+00:43:40.910 --> 00:43:44.640
+Barnabas: To pass all the tests and, able to…
+
+330
+00:43:44.830 --> 00:43:51.479
+Barnabas: do the epoch transition into glass without any balls, just the APBS stuff.
+
+331
+00:43:52.870 --> 00:44:00.710
+Barnabas: Yeah, it's a very unperforming Python client that I webcoded, and are this working?
+
+332
+00:44:01.300 --> 00:44:06.919
+Barnabas: Also, it cannot appear to any other normal client, so it's not really production ready.
+
+333
+00:44:08.640 --> 00:44:10.170
+Barnabas: Oh, yeah.
+
+334
+00:44:10.760 --> 00:44:14.760
+Barnabas: Next topic would be stable out.
+
+335
+00:44:14.880 --> 00:44:20.780
+Barnabas: Regarding Perf. Is anyone on the call regarding that?
+
+336
+00:44:26.610 --> 00:44:30.859
+Barnabas: I know Netherland had a database issue.
+
+337
+00:44:31.680 --> 00:44:34.790
+Barnabas: Maybe we can get an update on the latest.
+
+338
+00:44:38.230 --> 00:44:41.160
+Marius van der Wijden: Yeah, I think the network is dead right now, right?
+
+339
+00:44:41.610 --> 00:44:44.240
+Marius van der Wijden: At least that was my, my last,
+
+340
+00:44:45.370 --> 00:44:52.090
+Marius van der Wijden: last, what I read is basically… All clients…
+
+341
+00:44:52.290 --> 00:44:55.530
+Marius van der Wijden: died, but never mind made it the furthest.
+
+342
+00:44:55.910 --> 00:45:06.890
+Marius van der Wijden: And, so now NetherMind also died, and we have a chain that is finalized, where we don't have the blocks anymore, because no EL client was able to keep up.
+
+343
+00:45:07.460 --> 00:45:14.409
+Marius van der Wijden: And, now the only way of doing that is, to basically re-og the chain.
+
+344
+00:45:14.620 --> 00:45:17.269
+Marius van der Wijden: And, create a new consensus layer.
+
+345
+00:45:17.440 --> 00:45:20.729
+Marius van der Wijden: Otherwise, we would have to unfinalize something.
+
+346
+00:45:23.010 --> 00:45:23.640
+Barnabas: Right.
+
+347
+00:45:24.950 --> 00:45:30.959
+Barnabas: Let's discuss this offline then. I think we might need to do a relaunch of the CL chain then.
+
+348
+00:45:34.360 --> 00:45:34.930
+Marius van der Wijden: Yep.
+
+349
+00:45:37.470 --> 00:45:40.690
+Barnabas: Okay, that was the agenda for today.
+
+350
+00:45:42.020 --> 00:45:44.680
+Barnabas: Unless anyone else has anything else to add?
+
+351
+00:45:45.830 --> 00:45:47.539
+Barnabas: I can call it a bit early today.
+
+352
+00:45:54.350 --> 00:45:55.390
+Marius van der Wijden: Take care, y'all.
+
+353
+00:45:56.830 --> 00:45:58.840
+Barnabas: Thanks, everyone, for coming.
+
+354
+00:45:59.410 --> 00:46:00.510
+Barnabas: See you all next week.
+
+355
+00:46:01.700 --> 00:46:02.340
+Mario Vega: Thank you, bye.
+
+356
+00:46:04.200 --> 00:46:05.340
+Toni Wahrstätter: Thank you, bye-bye.
+

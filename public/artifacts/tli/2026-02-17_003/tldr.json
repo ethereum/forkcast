@@ -1,0 +1,65 @@
+{
+  "meeting": "Trustless Log Index Breakout #3 - February 17, 2026",
+  "highlights": {
+    "zkp_architecture": [
+      {
+        "timestamp": "00:07:40",
+        "highlight": "Index tables generated synchronously per block, merged asynchronously into bigger tables"
+      },
+      {
+        "timestamp": "00:12:40",
+        "highlight": "Protocol will hash only up to 64-block tables; larger tables proven off-chain"
+      },
+      {
+        "timestamp": "00:15:22",
+        "highlight": "Full history lookup estimated at 40KB proof size with log-squared complexity"
+      },
+      {
+        "timestamp": "00:26:00",
+        "highlight": "Recursive proofs needed to aggregate work from multiple provers without perfect coordination"
+      }
+    ],
+    "implementation_approach": [
+      {
+        "timestamp": "00:29:20",
+        "highlight": "Draft specification published in Go; will need Rust rewrite for production"
+      },
+      {
+        "timestamp": "00:35:19",
+        "highlight": "ZKVM can internally handle recursive proofs; unclear if all expose public API"
+      },
+      {
+        "timestamp": "00:56:36",
+        "highlight": "SHA-2 or SHA-3 recommended as starting point; ZKVMs have accelerators for both"
+      },
+      {
+        "timestamp": "01:00:09",
+        "highlight": "Separate proof logic: core table merging vs recursive proof aggregation"
+      }
+    ],
+    "proof_system_details": [
+      {
+        "timestamp": "00:42:13",
+        "highlight": "STARK proofs ~1MB but post-quantum; SNARK proofs <1KB but not post-quantum"
+      },
+      {
+        "timestamp": "00:45:21",
+        "highlight": "Several hundred KB STARK proofs acceptable for hourly updates; no on-chain verification needed"
+      }
+    ]
+  },
+  "action_items": [
+    {
+      "timestamp": "00:29:20",
+      "action": "Review draft table proof specification in Go (gologin deux table-proof branch)",
+      "owner": "ZK researchers"
+    },
+    {
+      "timestamp": "00:41:07",
+      "action": "Experiment with eth-act/ere framework for ZKVM abstraction",
+      "owner": "Zsolt"
+    }
+  ],
+  "decisions": [],
+  "targets": []
+}

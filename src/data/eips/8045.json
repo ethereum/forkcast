@@ -1,20 +1,23 @@
 {
   "id": 8045,
-  "title": "Exclude slashed validators from proposing",
+  "title": "EIP-8045: Exclude slashed validators from proposing",
   "status": "Draft",
-  "description": "This EIP proposes a modification to the beacon chain proposer selection process to exclude slashed validators from being selected as proposers.",
+  "description": "Modify proposer selection to exclude slashed validators, improving network resilience and performance after mass slashings",
   "author": "Francesco D'Amato (@fradamt), Barnabas Busa (@barnabasbusa)",
   "type": "Standards Track",
   "category": "Core",
   "createdDate": "2025-10-16",
   "discussionLink": "https://ethereum-magicians.org/t/eip-8045-exclude-slashed-validators-from-proposing/25850",
   "reviewer": "bot",
+  "layer": "CL",
   "forkRelationships": [
     {
       "forkName": "Glamsterdam",
       "statusHistory": [
         {
-          "status": "Proposed"
+          "status": "Proposed",
+          "call": null,
+          "date": null
         },
         {
           "status": "Considered",
@@ -22,11 +25,12 @@
           "date": "2025-11-27"
         }
       ],
-      "layer": "CL",
-      "champion": {
-        "name": "Barnabas Busa",
-        "discord": "barnabasbusa"
-      }
+      "champions": [
+        {
+          "name": "Barnabas Busa",
+          "discord": "barnabasbusa"
+        }
+      ]
     }
   ],
   "laymanDescription": "After a slashing event, punished validators can still be scheduled to propose blocks, causing missed slots and slow recovery. This change simply skips slashed validators so healthy ones keep proposing and the chain keeps running.",
@@ -61,5 +65,6 @@
     "Improves chain resilience and recovery during network disruptions.",
     "Prevents wasting proposer slots on already slashed validators.",
     "Reduces prolonged degraded performance while slashed validators exit."
-  ]
+  ],
+  "tradeoffs": null
 }

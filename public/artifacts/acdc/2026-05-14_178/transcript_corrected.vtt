@@ -1,0 +1,2574 @@
+WEBVTT
+
+1
+00:03:52.670 --> 00:03:54.080
+Parithosh Jayanthi: Hello, wherever you want.
+
+2
+00:05:49.180 --> 00:05:53.299
+Parithosh Jayanthi: Let's wait another minute for everyone to join, and then we can start off.
+
+3
+00:06:56.530 --> 00:06:59.109
+Parithosh Jayanthi: Okay, let's start off.
+
+4
+00:07:00.500 --> 00:07:16.449
+Parithosh Jayanthi: So we want to start today with, DevNet scoping. We're gonna start with Glamsterdam, DevNet 4, and one of the first agenda items… oh yeah, before I start off, Josh, etc, are we streaming? Are we good to go?
+
+5
+00:07:16.640 --> 00:07:17.530
+Josh Davis: Yep, you're good.
+
+6
+00:07:18.310 --> 00:07:19.320
+Parithosh Jayanthi: Okay, perfect.
+
+7
+00:07:19.660 --> 00:07:34.520
+Parithosh Jayanthi: Yeah, so the first agenda items, Glamsterdam DevNet for scoping. Can someone give us a status update on ETH70 and ETH71? I think Tony proposed it to be included in the next DevNet.
+
+8
+00:07:39.030 --> 00:07:54.549
+Toni Wahrstätter: Yes, I can do so. I think both are ready, I can definitely tell so for ETH71, but what I hear, ETH70 is ready too, and all clients have implemented it. For ETH71, we had it on earlier about definites already, so…
+
+9
+00:07:54.950 --> 00:07:56.750
+Toni Wahrstätter: Yeah, things are good to go.
+
+10
+00:08:00.410 --> 00:08:11.130
+Parithosh Jayanthi: Okay, and I think Bozel had an associated PR with engine get blobs v4, right? I think that's the execution API PR I'm listing here.
+
+11
+00:08:17.340 --> 00:08:18.310
+Parithosh Jayanthi: Is there…
+
+12
+00:08:19.000 --> 00:08:29.410
+Barnabas: The main issue we did 782 is, we currently do not send any blobs on Amsterdam, because, Lighthouse, for example, cannot handle blob transactions yet.
+
+13
+00:08:31.160 --> 00:08:40.499
+Barnabas: So, there's really no benefit in including 2. Also, it is not yet implemented by any client on the CR side, as far as I know.
+
+14
+00:08:40.789 --> 00:08:48.880
+Barnabas: It's, only implemented by Geth and Nethermind on the ER side, so it's also lacking support on the ER side.
+
+15
+00:08:49.170 --> 00:09:03.360
+Barnabas: We could say optionally to include it, in case, you just want to start merging in stuff, but I would not, I would not require it. Also, I just see no benefit for including it for granted.
+
+16
+00:09:06.450 --> 00:09:12.579
+Barnabas: put it based on top of, got blobV3, and…
+
+17
+00:09:12.890 --> 00:09:19.120
+Barnabas: And this is just adding GetBots before, basically. Functionally, it's the same for the CSI.
+
+18
+00:09:21.290 --> 00:09:27.530
+Barnabas: Yeah, it's, it's implemented by Prysm and Lighthouse, so far on blob.net Zero.
+
+19
+00:09:28.250 --> 00:09:35.079
+Barnabas: But I would actually prefer to roll it out on blob.net0, rather than… And transfer them.nets.
+
+20
+00:09:36.750 --> 00:09:44.469
+Parithosh Jayanthi: Okay, how about we include each 70 and ETH71, and then keep 72 for blob DevNets? Would that work?
+
+21
+00:09:46.770 --> 00:09:49.370
+Barnabas: Yeah, sure. Blobdev.0 is already running.
+
+22
+00:09:55.400 --> 00:10:13.020
+Parithosh Jayanthi: Okay, and I see that the Execution API PR has already been merged, so people can coordinate with you, Barnabas, about inclusion and block DevNet 0 for EATH72, and for Glamsterdam DevNet 4, we would, include ETH70 and ETH71.
+
+23
+00:10:16.060 --> 00:10:22.330
+Barnabas: Yeah, it's… it's gonna be a bit of a mess, because we don't have Gloas on Blob Devna Zero.
+
+24
+00:10:22.460 --> 00:10:28.720
+Barnabas: So I'm not sure how 872 would work if it depends on 871, which depends on Amsterdam.
+
+25
+00:10:30.950 --> 00:10:39.130
+Barnabas: So we'll need to launch, Love Design, which is based on top of, Gloas.
+
+26
+00:10:40.940 --> 00:10:45.749
+Barnabas: I'm tested there. But for that, we would need support for… from Lighthouse as well.
+
+27
+00:10:46.060 --> 00:10:52.450
+Barnabas: And Lighthouse would need to support blob transactions for that. And at that point, we might as well include it for our glamsterdom.net.
+
+28
+00:10:52.850 --> 00:10:57.009
+Barnabas: So, it's a bit of a… A bedlock situation.
+
+29
+00:10:59.080 --> 00:11:05.789
+Parithosh Jayanthi: Okay, but for this, it sounds like we can also just wait for a bit more maturity on the Glamstad and DevNet side before adding it, right?
+
+30
+00:11:08.000 --> 00:11:15.290
+Parithosh Jayanthi: And I think Pozel has been looking into getting some support so that we can get some early tests in for each 72.
+
+31
+00:11:23.430 --> 00:11:27.790
+Barnabas: Mozu, could you verify if the spec is already frozen?
+
+32
+00:11:28.900 --> 00:11:32.780
+Bosul Mun: I'm sorry, waldo's still Christian.
+
+33
+00:11:33.440 --> 00:11:40.739
+Barnabas: Is the specification for 872, is it already frozen? Is it done? Or do we expect any more changes to it?
+
+34
+00:11:41.530 --> 00:11:50.849
+Bosul Mun: No, I… Have some local changes, and it's… the, the overall… This pack is gone.
+
+35
+00:11:51.420 --> 00:11:54.580
+Bosul Mun: Some… just some, details.
+
+36
+00:11:59.000 --> 00:12:08.540
+Barnabas: Do we have a… yeah, could we get those details ironed out and finalize the scope of 872, and then we can get, client teams to actually look at implementing it?
+
+37
+00:12:10.850 --> 00:12:11.470
+Bosul Mun: Yes.
+
+38
+00:12:16.670 --> 00:12:26.370
+Parithosh Jayanthi: Okay, but then it sounds like we're all aligned. Stefan also posted that block-level access list DevNet 7 has ETH70 and ETH71 as a requirement.
+
+39
+00:12:26.580 --> 00:12:31.919
+Parithosh Jayanthi: So it makes sense to also include it in Glamsterdam DevNetCycle, so we don't feature Drift.
+
+40
+00:12:35.910 --> 00:12:43.280
+Parithosh Jayanthi: And then EATH72 will still get some work from Bozel, and once the spec is frozen, we can discuss including it.
+
+41
+00:12:47.940 --> 00:12:50.509
+Parithosh Jayanthi: Any comments or questions on this?
+
+42
+00:12:58.370 --> 00:12:58.910
+Parithosh Jayanthi: Okay.
+
+43
+00:12:58.910 --> 00:13:03.600
+Barnabas: So, the engine fork Trace Update V4,
+
+44
+00:13:05.290 --> 00:13:12.830
+Barnabas: That will probably have to be changed, based on today's call, on this PR, on 11444.
+
+45
+00:13:13.130 --> 00:13:16.620
+Barnabas: If we end up including the target gas limit in it.
+
+46
+00:13:21.360 --> 00:13:33.009
+Parithosh Jayanthi: Yeah, I actually wanted to have that as the next topic, so maybe we can just continue into that. Do you wanna, is Nico on the call, or do you want to introduce the topic panelists?
+
+47
+00:13:36.260 --> 00:13:38.649
+Barnabas: I hope Nicole is on the call.
+
+48
+00:13:39.400 --> 00:13:41.379
+Nico Flaig: I'm here, I'm here.
+
+49
+00:13:41.380 --> 00:13:41.820
+Parithosh Jayanthi: Okay.
+
+50
+00:13:41.820 --> 00:13:45.460
+Nico Flaig: So what was it about the engine API change?
+
+51
+00:13:45.540 --> 00:13:51.239
+Parithosh Jayanthi: It's about the add target gas limit to payload attributes. So, you have two PRs.
+
+52
+00:13:52.150 --> 00:13:59.589
+Parithosh Jayanthi: consensus specs, and the other to the execution API. Could you introduce it, and then we can start discussing it?
+
+53
+00:13:59.900 --> 00:14:03.980
+Nico Flaig: So I guess the engine API PR has all the relevant context.
+
+54
+00:14:04.250 --> 00:14:09.960
+Nico Flaig: So essentially what it does, I listed the three main points in DPR itself.
+
+55
+00:14:10.360 --> 00:14:21.200
+Nico Flaig: is that, currently… or yeah, the status quo is basically we have a static flag on the EL side to configure the gas limit, and we have it on the CL side.
+
+56
+00:14:21.450 --> 00:14:39.830
+Nico Flaig: With this change, we basically moved the, gas limit, like, the target gas, to the CL only, and when you prepare payload, you… the CL will pass the target gas limit. So that means, it's easier for operators. It also means that
+
+57
+00:14:40.200 --> 00:14:48.919
+Nico Flaig: It allows, to configure per validator, so you can have different, different configs, per public key.
+
+58
+00:14:48.920 --> 00:15:02.670
+Nico Flaig: And also, for cloors, we will need this if we want to use vanilla ELs as builders, because the clock you produce, or the payload, rather, needs to adhere to the gas limit of the proposer.
+
+59
+00:15:02.940 --> 00:15:14.380
+Nico Flaig: And the static flag won't work here, because you need to… you might need to use a different gas limit per slot, basically, when you prepare payload and submit a bid.
+
+60
+00:15:18.890 --> 00:15:32.640
+Nico Flaig: So yeah, I mean, this is mostly pending, because we need some approvals from EL devs. I think from the CL side, it's pretty… we got a lot of feedback, and I didn't see anyone that is not in support of this.
+
+61
+00:15:35.500 --> 00:15:47.110
+Parithosh Jayanthi: Yeah, I guess we would still bring it up on ACDE one more time, unless it's extremely urgent to merge it in soon, but, has any ELDev looked into this yet?
+
+62
+00:15:48.600 --> 00:15:51.129
+Parithosh Jayanthi: Do you guys already get the problem?
+
+63
+00:15:51.320 --> 00:15:53.870
+Parithosh Jayanthi: Or the reason why we want to include this change?
+
+64
+00:16:02.000 --> 00:16:05.229
+Barnabas: Yeah, the target word might be a bit misleading here.
+
+65
+00:16:06.170 --> 00:16:08.489
+Barnabas: Could we maybe use a different word for it?
+
+66
+00:16:18.200 --> 00:16:19.370
+Parithosh Jayanthi: Tony?
+
+67
+00:16:21.160 --> 00:16:31.109
+Toni Wahrstätter: Yeah, maybe just to clarify, so what would happen is the EL clients could then deprecate their, flags for the minor setting the gas limit.
+
+68
+00:16:31.180 --> 00:16:46.409
+Toni Wahrstätter: And instead, the gas limit would come from the CL, but not the final gas limit that includes, like, obeying the 1 over 1024 rule, but the gas limit that the validator wants to get to. For example.
+
+69
+00:16:46.490 --> 00:17:02.339
+Toni Wahrstätter: we are at 60 million, and a validator wants $150 million, then the value getting to the EL would include the $150 million. So, ELs would then pick that value and would have to adjust the gas limit that they put into the block accordingly.
+
+70
+00:17:03.230 --> 00:17:09.170
+Toni Wahrstätter: And I think, yeah… Gas… the target gas limit, sounds like a good name for it.
+
+71
+00:17:13.520 --> 00:17:24.490
+Parithosh Jayanthi: Is this okay for the ELs? Because then you guys can, like Tony said, deprecate all of your gas limit flags, and you're fully reliant on the CL to provide you the gas limit.
+
+72
+00:17:37.290 --> 00:17:47.480
+Parithosh Jayanthi: Okay, if there's no objection on this front, is there anything on the CL side? Any issues, etc, that we still need to talk about?
+
+73
+00:17:58.540 --> 00:18:05.490
+Parithosh Jayanthi: Yeah, maybe to Mario's point, what happens if there's no configured target on the CL?
+
+74
+00:18:06.590 --> 00:18:14.739
+Parithosh Jayanthi: I would assume that clients ship with a default, so unless the validator overrides the default, it would use the default in the client, right?
+
+75
+00:18:21.230 --> 00:18:28.179
+Barnabas: Yeah, so just to be clear, I think this should be then… 60 million.
+
+76
+00:18:28.390 --> 00:18:31.000
+Barnabas: Currently, right? Not the 30 million target.
+
+77
+00:18:33.210 --> 00:18:34.560
+Parithosh Jayanthi: Exactly, yeah.
+
+78
+00:18:37.450 --> 00:18:43.579
+Łukasz Rozmej: So, one potential alternative is just to take the parent's block gas limit and don't change it at all.
+
+79
+00:18:48.780 --> 00:18:53.509
+Parithosh Jayanthi: But then, how would you signal as a validator that you want the gas limit to change?
+
+80
+00:18:54.010 --> 00:18:55.540
+Parithosh Jayanthi: If you use a time block.
+
+81
+00:18:55.990 --> 00:18:57.230
+Łukasz Rozmej: Well, through CO.
+
+82
+00:18:57.960 --> 00:18:59.849
+Łukasz Rozmej: I mean, if your seal doesn't supply it.
+
+83
+00:19:00.310 --> 00:19:01.949
+Parithosh Jayanthi: Okay, got it, got it.
+
+84
+00:19:03.220 --> 00:19:05.220
+Barnabas: This should be a mandatory field, I think.
+
+85
+00:19:07.080 --> 00:19:11.089
+Parithosh Jayanthi: Yeah, I think so too. I think it should just be part of the required fields.
+
+86
+00:19:12.700 --> 00:19:13.840
+Parithosh Jayanthi: porters?
+
+87
+00:19:15.110 --> 00:19:27.389
+Potuz: Yeah, so there are two PRs, one that I mentioned in the chat, another one that Justin mentioned in the chat. One is about, changing the… the bid validation, for… over P2P.
+
+88
+00:19:27.830 --> 00:19:35.060
+Potuz: To do the computation to check that it's compatible with the target that the proposal preference expressed.
+
+89
+00:19:35.320 --> 00:19:39.229
+Potuz: I think we need this together with Nico's PR on the engine.
+
+90
+00:19:39.670 --> 00:19:43.309
+Potuz: And so this is exactly what we talked about in ACDC.
+
+91
+00:19:43.490 --> 00:19:50.749
+Potuz: And the other one is, changing the withdrawability delay for builder deposits, for builders.
+
+92
+00:19:51.010 --> 00:19:54.949
+Potuz: Which, I don't know if it's merged, but it's a…
+
+93
+00:19:55.160 --> 00:20:02.299
+Potuz: is, 5223 that Justin just merged and just posted in the chat. I think those two should be on the next DevNet, for sure.
+
+94
+00:20:06.320 --> 00:20:07.380
+Justin Traglia: I agree.
+
+95
+00:20:07.580 --> 00:20:09.479
+Justin Traglia: I would like to merge the two.
+
+96
+00:20:10.420 --> 00:20:15.569
+Parithosh Jayanthi: Okay, so this is consensus specs 5223 as well as 5227, right?
+
+97
+00:20:16.090 --> 00:20:21.039
+Potuz: No, it's… the first one is a little bit up in the chat, it's 5236.
+
+98
+00:20:23.540 --> 00:20:32.939
+Parithosh Jayanthi: Okay, let me just summarize all the required EIPs. So it's a tool that, requires PRs, so it's a tool that Nico posted.
+
+99
+00:20:33.120 --> 00:20:38.100
+Parithosh Jayanthi: 5223, as well as 5236.
+
+100
+00:20:44.870 --> 00:20:54.609
+Parithosh Jayanthi: Okay, I guess from the EL devs… on the CL dev side, there seems to be no pushback, right? Is there any CL dev that doesn't want this change?
+
+101
+00:21:02.740 --> 00:21:13.160
+Parithosh Jayanthi: Okay, then, I guess it's mainly a question of EL Devs. It would be great if, EL devs could have a look before Monday and already start approving the PR to indicate support.
+
+102
+00:21:14.370 --> 00:21:23.440
+Parithosh Jayanthi: And to Mario's point, I don't think they would need to introduce a new flag, because they currently send this information to the builder.
+
+103
+00:21:24.280 --> 00:21:28.749
+Parithosh Jayanthi: So instead of sending it to the builder, they would send it via the engine API to the ER.
+
+104
+00:21:34.970 --> 00:21:43.990
+Potuz: But it's important that the EL does implement this, because otherwise it's going to break something like a Barat's tool to send bids.
+
+105
+00:21:44.140 --> 00:21:51.879
+Potuz: Because now we're gonna put the bid… in the bid, we're gonna put the target that is mentioned, by the EL.
+
+106
+00:21:52.010 --> 00:21:55.280
+Potuz: And that's, well… one, that one.
+
+107
+00:21:55.280 --> 00:22:00.520
+Barnabas: The engine API will have a mismatch if the CLs are pushing this field, no?
+
+108
+00:22:01.480 --> 00:22:03.390
+Barnabas: Not like, we're gonna notice.
+
+109
+00:22:03.390 --> 00:22:15.250
+Potuz: Well, so the thing is that the ELs should deprecate their flag, and actually just not listen anymore to their flag. If we send something over FCU, but then they return a block with the gas limit.
+
+110
+00:22:15.250 --> 00:22:23.530
+Potuz: That was, because of their default flag, then we might have a mismatch there, and we're only going to see it on propagation of bits.
+
+111
+00:22:24.370 --> 00:22:32.440
+Barnabas: No, we can check this on this new pair as well. We're gonna be able to see that very quickly. We can verify that, quite easily, I think.
+
+112
+00:22:36.100 --> 00:22:38.820
+Parithosh Jayanthi: Yeah, this seems relatively straightforward to test as well.
+
+113
+00:22:39.320 --> 00:22:43.809
+Potuz: Yeah, no, to test is fine, it's just… I don't want this to be broken from the start.
+
+114
+00:22:43.810 --> 00:22:44.450
+Parithosh Jayanthi: Yes.
+
+115
+00:22:45.560 --> 00:22:46.509
+Parithosh Jayanthi: Yeah, I agree.
+
+116
+00:22:48.650 --> 00:22:56.969
+Parithosh Jayanthi: We agreed that we wait on all of these changes for Glamsterdam down at 4, so all of these changes go into the next DevNet.
+
+117
+00:22:57.850 --> 00:22:58.550
+Barnabas: Yep.
+
+118
+00:23:01.180 --> 00:23:11.919
+Parithosh Jayanthi: Okay, then, I guess priority would be, EL devs to have a look at these changes ASAP, and leave approvals on the PRs.
+
+119
+00:23:17.710 --> 00:23:20.830
+Parithosh Jayanthi: And we can bring it up again on Monday if there's any questions.
+
+120
+00:23:24.490 --> 00:23:25.770
+Parithosh Jayanthi: Yeah, potents.
+
+121
+00:23:26.420 --> 00:23:43.909
+Potuz: Could we merge dual deadlines and even put the… if we want to keep the timelines as today, just put the same timelines for the payload availability and the DA availability, so that that requires no code changes on clients, but I would want to have already merged dual deadlines so that we can actually start benching soon.
+
+122
+00:23:44.830 --> 00:23:48.069
+Potuz: This is a sort of, like, a requirement if we want to cap
+
+123
+00:23:48.490 --> 00:23:59.339
+Potuz: Well, I guess for those… if you guys are not following, the… there is a problem if a payload executes into the next slot.
+
+124
+00:23:59.510 --> 00:24:11.529
+Potuz: in which any builder can actually reorg the next block, and we cannot solve this, on the consensus side. We need to cap execution in such a way that payloads cannot execute into the next lot.
+
+125
+00:24:11.640 --> 00:24:30.489
+Potuz: And the way to do this is by just not allowing gas limits that would execute into the next lot. And the only way to do this is by reorging late payloads. And the only way to, like, enable this in a reasonable way is by having these dual deadlines as well. Otherwise, today, we just have 3 seconds.
+
+126
+00:24:31.710 --> 00:24:34.310
+Parithosh Jayanthi: Could you link which PR this is?
+
+127
+00:24:34.680 --> 00:24:35.460
+Barnabas: Just near that.
+
+128
+00:24:35.460 --> 00:24:36.070
+Parithosh Jayanthi: Okay.
+
+129
+00:24:36.470 --> 00:24:41.310
+Parithosh Jayanthi: Use different deadlines for payload and blob data availability.
+
+130
+00:24:41.480 --> 00:24:47.189
+Potuz: There's two of them. One is that, and the other one is forcing the proposer to reorg.
+
+131
+00:24:47.350 --> 00:24:53.670
+Potuz: I am… we will have an implementation for this in Prysm as soon as the other clients,
+
+132
+00:24:53.700 --> 00:25:01.449
+Potuz: have… as soon as we are allowed to, like, start reorging blocks. Today, the DevNet is not stable enough that we can actually test this.
+
+133
+00:25:01.450 --> 00:25:16.180
+Potuz: But I would want to have these PRs already merged in the spec, so that it's not a hard fork, and we can just start reorging blocks, and we can just start, sending these different timelines and PTC attestations whenever everyone has already implemented them.
+
+134
+00:25:20.880 --> 00:25:21.740
+Parithosh Jayanthi: Attorney?
+
+135
+00:25:23.320 --> 00:25:34.590
+Toni Wahrstätter: Yeah, I would very much support that, because the dual deadline seems like it gives us a lot of scaling for trading off a little bit of time for worst-case propagation time, but we have enough for that anyway.
+
+136
+00:25:34.800 --> 00:25:45.119
+Toni Wahrstätter: So, yeah, very supportive. The only thing I was wondering is, why would we ever end up in a situation where we execute into the next slot, assuming…
+
+137
+00:25:45.250 --> 00:26:01.799
+Toni Wahrstätter: we know exactly how much time we have for the execution. Basically, when we set the dual deadline, for example, let's say it's at 8 seconds, then we know we have exactly 4 seconds until the next slot, and based on that, we would never pick a gas limit
+
+138
+00:26:01.970 --> 00:26:05.760
+Toni Wahrstätter: That would end up with a worst-case execution time longer than 4 seconds.
+
+139
+00:26:05.760 --> 00:26:16.410
+Potuz: Yeah, no, that's absolutely fine. It's just that today we're testing already on, by default, on 200 million, and that's far more than the 3 seconds we have now to execute them.
+
+140
+00:26:18.670 --> 00:26:20.930
+Toni Wahrstätter: Okay, great, perfect. Yep.
+
+141
+00:26:29.830 --> 00:26:36.860
+Parithosh Jayanthi: I guess the main feedback here is from the other CL teams, right? Has any other CL team looked into this?
+
+142
+00:26:37.090 --> 00:26:38.699
+Parithosh Jayanthi: Are there opinions?
+
+143
+00:26:46.460 --> 00:26:49.690
+Parithosh Jayanthi: Okay, Nico said it looks good to him,
+
+144
+00:26:50.360 --> 00:26:54.560
+Parithosh Jayanthi: Yeah, Justin also said it looks good, but needs clients to weigh in.
+
+145
+00:27:14.540 --> 00:27:20.050
+Parithosh Jayanthi: Dustin, could you expand on a mechanism designed to be disabled?
+
+146
+00:27:22.770 --> 00:27:24.190
+Dustin: Sure, yeah.
+
+147
+00:27:24.710 --> 00:27:26.690
+Dustin: So, yeah…
+
+148
+00:27:26.930 --> 00:27:42.249
+Dustin: I want to be very clear that I'm not… this is not for, against, or around, etc, dual deadlines in any specific way, what I'm… what I'm saying. This is a more, quasi-process point to a degree. What it is, is that…
+
+149
+00:27:42.840 --> 00:27:56.640
+Dustin: if POTUS is introducing this as, let's not change… no Ys of code need changing, etc, fine, but then there's no value in the spec and changing either. If the spec,
+
+150
+00:27:56.990 --> 00:28:04.709
+Dustin: And if he wants to start the benchmarking, which, again, that sounds… that sounds great, but then it's effectively custom, because…
+
+151
+00:28:04.920 --> 00:28:18.140
+Dustin: by… exactly by saying none of the code needs to change, that this is quasi-hard fork material. I mean, it's, you know, we're in DevNet territory, so hard fork doesn't mean quite as much here right now, but,
+
+152
+00:28:18.390 --> 00:28:29.400
+Dustin: So it's… it's one or the other, but trying to pretend that, oh, the mechanism's there, but it's not implemented, but actually, the spec is there, so it's okay, we can start using it, is incoherent.
+
+153
+00:28:29.580 --> 00:28:35.739
+Dustin: I either have it be real, or don't bother with the spec change. That's my position.
+
+154
+00:28:39.060 --> 00:28:40.480
+Parithosh Jayanthi: Yeah, photos?
+
+155
+00:28:51.620 --> 00:28:55.029
+Parithosh Jayanthi: I guess photos was mainly responding to…
+
+156
+00:28:55.030 --> 00:29:01.740
+Potuz: Oh, I'm sorry, I was muted. So, the point is that the deadline
+
+157
+00:29:01.820 --> 00:29:15.139
+Potuz: As in the CIP and this dual deadline, and even just the PTC deadline itself, is completely irrelevant at the moment. And the reason that it's completely irrelevant at the moment is that we are all ignoring PTC.
+
+158
+00:29:15.140 --> 00:29:25.070
+Potuz: we just build on top of whatever our head is. So if we see the payload, regardless of whatever PTC did, we are going to build on top of the full payload.
+
+159
+00:29:25.070 --> 00:29:39.819
+Potuz: So, changing the deadline or not, enforcing it or not, it's just completely irrelevant at the moment. And it only is going to start mattering when we actually start reorging blocks that the PTC voted against.
+
+160
+00:29:40.110 --> 00:29:46.010
+Potuz: So… so that's… that's the reason why I am… I don't mind any sort of deadline we put.
+
+161
+00:29:46.180 --> 00:29:55.370
+Potuz: Having said so, I do think that we need to put different deadlines instead of the same deadline as I suggested, and as Justin mentioned.
+
+162
+00:29:55.470 --> 00:30:07.140
+Potuz: And the reason, again, is that today, it's irrelevant. We are not using it. And anyways, on any testing that we're doing on DevNet, the payload is being revealed at second zero with the block.
+
+163
+00:30:07.400 --> 00:30:11.040
+Potuz: So… so it's not going to change if we put it at 6 seconds.
+
+164
+00:30:16.100 --> 00:30:25.350
+Dustin: Okay, sure. I mean, again, I'm not against dual deadlines, and I understand, sort of, the reasoning here.
+
+165
+00:30:26.280 --> 00:30:29.390
+Dustin: there's a… The… hmm.
+
+166
+00:30:30.970 --> 00:30:40.929
+Dustin: Okay, to the degree that this is, as you're saying, kind of ignored already, then it's kind of… there's a no-op aspect or quality to it, yes. I agree with that.
+
+167
+00:30:42.520 --> 00:30:50.809
+Dustin: However, this is… explicitly asking for… I don't… I guess I don't know what… if…
+
+168
+00:30:50.920 --> 00:31:02.910
+Dustin: I'll start over. If one is going to have to customize this anyway to do benchmarking, because as you say, nobody has been implementing it, or maybe some people have, but it's not broadly implemented, then…
+
+169
+00:31:02.910 --> 00:31:14.289
+Dustin: what is the gain in having it in spec one way or the other? Because you're not going to get interoperability across a DevNet at that point. You're going to be doing some custom thing with one or maybe two clients.
+
+170
+00:31:14.960 --> 00:31:17.040
+Dustin: So what does it matter whether it's in the SPAC conversion?
+
+171
+00:31:17.040 --> 00:31:27.759
+Potuz: Oh, no, I wanted to have it in the specs so that we start running now without any changes, and when every client… because I want to give time to clients to merge this.
+
+172
+00:31:27.760 --> 00:31:41.520
+Potuz: So we… I don't want to delay the DevNet 4 because of this, but if we agree that this is going to be there, we launch DevNet 4, whenever we get a green light, because every client already has implemented this correctly, then we're going to start reorging payloads.
+
+173
+00:31:43.070 --> 00:31:45.880
+Dustin: Okay, sure, I… Okay.
+
+174
+00:31:46.190 --> 00:31:51.450
+Parithosh Jayanthi: I guess it's more of a blocker for when we start the testing, but not for when we launch the DevNet, right?
+
+175
+00:31:52.510 --> 00:32:03.060
+Potuz: Exactly. I don't want to delay the DevNet, but as soon as everyone tells me we're already good with this, we're gonna start reorging blocks and actually checking this… actually benchmarking this.
+
+176
+00:32:03.350 --> 00:32:03.860
+Parithosh Jayanthi: Yeah.
+
+177
+00:32:04.180 --> 00:32:06.090
+Parithosh Jayanthi: Makes sense. Barnabas?
+
+178
+00:32:06.660 --> 00:32:12.479
+Barnabas: Yeah, so just for Dustin's point, we usually go from spec to the tooling side, so…
+
+179
+00:32:12.750 --> 00:32:23.999
+Barnabas: If there's a new value that needs to be tested eventually, then it's better to be in the spec than not be in the spec, because we usually don't add the fields until they are merged into the spec.
+
+180
+00:32:24.180 --> 00:32:32.000
+Barnabas: So, if we know that we want to be, you know, testing this in the coming weeks, we should actually merge it in, and then we can add support
+
+181
+00:32:32.190 --> 00:32:36.369
+Barnabas: For these fields in all of our toolings, and then we can, start,
+
+182
+00:32:36.670 --> 00:32:41.880
+Barnabas: Moving those, fields around in, like, glutosis and on the debts as well.
+
+183
+00:32:41.990 --> 00:32:44.050
+Barnabas: Without requiring a hard work.
+
+184
+00:32:46.750 --> 00:32:47.370
+Dustin: Okay.
+
+185
+00:32:50.800 --> 00:32:57.010
+Parithosh Jayanthi: Yeah, okay, sounds good to me. Then, Justin, would you be able to merge them in today?
+
+186
+00:32:58.610 --> 00:32:59.999
+Justin Traglia: Yep, I think we can.
+
+187
+00:33:01.000 --> 00:33:01.890
+Parithosh Jayanthi: Thank you.
+
+188
+00:33:06.300 --> 00:33:12.020
+Parithosh Jayanthi: Yeah, I'm guessing there's also going to be a spec release, and then we can target the new spec release for the next appnet.
+
+189
+00:33:15.640 --> 00:33:22.610
+Parithosh Jayanthi: Sounds good. The next, is there anything else to discuss on this agenda item?
+
+190
+00:33:27.470 --> 00:33:31.970
+Justin Traglia: There was a note I wanted to, merge about…
+
+191
+00:33:32.320 --> 00:33:37.250
+Justin Traglia: Pre-validating pending deposit signatures. I can try to find the PR.
+
+192
+00:33:39.130 --> 00:33:43.770
+Justin Traglia: Pretty much I realized that if there were a lot of new
+
+193
+00:33:44.280 --> 00:33:50.919
+Justin Traglia: I've loaded deposits at the fork, it might, Stall some clients.
+
+194
+00:33:52.940 --> 00:33:58.940
+Justin Traglia: I would just like, some reviews on this, and if it's a good idea, we can merge it. Or just a suggestion.
+
+195
+00:34:05.990 --> 00:34:12.320
+Barnabas: I mean, you could technically make a deposit right now with Xerox03 credentials, right? So… Following.
+
+196
+00:34:12.650 --> 00:34:13.520
+Barnabas: cash live.
+
+197
+00:34:14.250 --> 00:34:16.000
+Justin Traglia: No, because,
+
+198
+00:34:16.409 --> 00:34:24.629
+Justin Traglia: Sorry, it would have to be in the pending deposit queue at the time of the fork. If you made the deposit now, it would be processed well before class.
+
+199
+00:34:24.900 --> 00:34:26.529
+Justin Traglia: And it would actually just be lost.
+
+200
+00:34:27.050 --> 00:34:30.099
+Barnabas: I mean, we have a 4-month… queue right now.
+
+201
+00:34:31.219 --> 00:34:34.189
+Justin Traglia: Oh, I mean, if you think, oh, yeah, maybe.
+
+202
+00:34:42.130 --> 00:34:47.500
+Parithosh Jayanthi: Yeah, please have a look at that PR, and I guess the note can also be merged in.
+
+203
+00:34:48.120 --> 00:34:50.109
+Parithosh Jayanthi: If there's no pushback.
+
+204
+00:34:51.920 --> 00:34:56.290
+Justin Traglia: Yeah, maybe. It's also not critical. You can always see this later.
+
+205
+00:34:57.460 --> 00:34:58.340
+Parithosh Jayanthi: For sure.
+
+206
+00:35:01.110 --> 00:35:04.430
+Parithosh Jayanthi: The next big agenda item… oh, sorry.
+
+207
+00:35:04.670 --> 00:35:06.240
+Parithosh Jayanthi: Did anyone want to say something?
+
+208
+00:35:06.730 --> 00:35:13.070
+Barnabas: Yeah, so the entry queue right now is 63 days, so I'm just not sure how big of a…
+
+209
+00:35:13.180 --> 00:35:16.630
+Barnabas: Cash we are prepared to work with here.
+
+210
+00:35:18.950 --> 00:35:26.959
+Barnabas: We don't know, like, how the queue system is gonna go, and may not in the incoming weeks and months, so this might be a bit more hard than…
+
+211
+00:35:26.960 --> 00:35:29.640
+Potuz: We start putting them as soon as we put them in the queue.
+
+212
+00:35:30.220 --> 00:35:41.330
+Potuz: As soon as we process a deposit request, we can just start, like, validating signatures right there on the free time, and just make sure that we keep them in the queue already tagged. That's an easy change.
+
+213
+00:35:42.850 --> 00:35:43.440
+Justin Traglia: Yep.
+
+214
+00:35:45.010 --> 00:35:45.680
+Barnabas: Sure.
+
+215
+00:35:50.810 --> 00:35:51.860
+Parithosh Jayanthi: Yeah, Spencer?
+
+216
+00:35:53.680 --> 00:36:06.060
+spencer: Yeah, I just wanted to ask a question, because I'm a bit, a bit confused on, like, where the EL side fits in with, DevNet. So, this new DevNet now, Glamsterdam DevNet 4,
+
+217
+00:36:06.570 --> 00:36:13.049
+spencer: I'm assuming is going to use the BAL DevNet 7 branches for the EL, or is it using the…
+
+218
+00:36:13.340 --> 00:36:17.839
+spencer: about DevNet free branches, and is this DevNet mostly to test the CL?
+
+219
+00:36:18.330 --> 00:36:22.669
+spencer: And then I'm assuming the next Devon after that, Glamsterdam Devon at 5.
+
+220
+00:36:23.090 --> 00:36:26.179
+spencer: We'll have the remaining ELE IPs included.
+
+221
+00:36:28.320 --> 00:36:36.240
+Barnabas: It really depends on how people bought the 7 will go. If we still see some 80, 73,
+
+222
+00:36:36.700 --> 00:36:44.659
+Barnabas: issues, then we're just gonna run again with a single DL, because there's no point of debugging two different issues on the same DevNet.
+
+223
+00:36:47.070 --> 00:36:50.590
+Barnabas: So, depending on when Ball 117 launches,
+
+224
+00:36:51.210 --> 00:36:54.590
+Barnabas: I think Stefan mentioned that they want to launch on Monday.
+
+225
+00:36:54.860 --> 00:37:00.810
+Barnabas: We could possibly launch, either a few hours after that, or on Tuesday.
+
+226
+00:37:03.680 --> 00:37:10.759
+spencer: Awesome, nice. So is it safe to assume that the remaining EL EIPs will be included in a Glamsterdam DevNet 5?
+
+227
+00:37:13.270 --> 00:37:14.629
+Barnabas: Yeah, I would not think…
+
+228
+00:37:14.630 --> 00:37:15.870
+Parithosh Jayanthi: Everything is…
+
+229
+00:37:16.220 --> 00:37:29.079
+Parithosh Jayanthi: Yeah, I think if everything is stable on PAL 7, and we're able to merge it into Glamsterdam 4 is also stable, then let's assume that the remaining EIPs go into Amsterdam 5.
+
+230
+00:37:30.410 --> 00:37:31.399
+spencer: Thanks, awesome.
+
+231
+00:37:33.480 --> 00:37:39.389
+Barnabas: Also, it would be nice to discuss if we want to include anything else in Glamsterdam 5 on the CL side.
+
+232
+00:37:40.490 --> 00:37:42.870
+Barnabas: the remaining CLR period.
+
+233
+00:37:44.600 --> 00:37:48.399
+Parithosh Jayanthi: Yeah, but I'm guessing we can do this in the next CDC.
+
+234
+00:37:50.440 --> 00:37:52.039
+Barnabas: I think it would be good to…
+
+235
+00:37:52.270 --> 00:37:59.270
+Barnabas: to set out a target, because realistically, by the next ACDC, we want to have devnet 5 up and running already.
+
+236
+00:38:00.210 --> 00:38:06.620
+Barnabas: or very close to it, so it would be nice to know which EIP we're going to be working towards in the next few weeks.
+
+237
+00:38:11.540 --> 00:38:21.829
+Parithosh Jayanthi: Yeah, that's fair. I just don't have it on the agenda item for what comes in next. Maybe we can do this on ACDC, so we have some time to prepare for it.
+
+238
+00:38:25.020 --> 00:38:35.629
+Parithosh Jayanthi: And also, we just have a lot to test, so I would stop… I kind of follow Porter's message here. I think there's a lot of implementation and features to test.
+
+239
+00:38:35.780 --> 00:38:39.020
+Parithosh Jayanthi: If we keep adding more stuff, then we're already kind of…
+
+240
+00:38:39.520 --> 00:38:44.250
+Parithosh Jayanthi: We're chasing a moving target, and at some point, we have to start testing what we have.
+
+241
+00:38:51.180 --> 00:39:02.230
+Parithosh Jayanthi: The next agenda item I had was, relating to builder deposits. So, we've already discussed, increased withdrawability delay is gonna go in.
+
+242
+00:39:02.430 --> 00:39:09.390
+Parithosh Jayanthi: But there's also two EIPs, one second, there's…
+
+243
+00:39:10.420 --> 00:39:20.589
+Parithosh Jayanthi: There's the cap deposit request per block EIP? Do we… do you want to introduce that, Barnabis? I've mentioned the EIP yet.
+
+244
+00:39:22.640 --> 00:39:23.650
+Barnabas: Yeah, so…
+
+245
+00:39:23.870 --> 00:39:33.690
+Barnabas: The CIP basically proposes that we're gonna be limiting the number of deposit transactions on the ES side, instead of on the CR side, and
+
+246
+00:39:33.980 --> 00:39:40.469
+Barnabas: multiple people raised that this could lead to different kind of those factors on the side, and…
+
+247
+00:39:40.620 --> 00:39:43.579
+Barnabas: It would be rather difficult to implement it.
+
+248
+00:39:43.720 --> 00:39:45.699
+Barnabas: In an efficient manner.
+
+249
+00:39:45.940 --> 00:39:50.279
+Barnabas: So, I'm not sure if this is still, the best idea going forward.
+
+250
+00:39:54.570 --> 00:40:05.469
+Parithosh Jayanthi: Okay, maybe as an introduction to the topic, we're still missing the data for making… for knowing how big of a problem it is, right, with builder deposits?
+
+251
+00:40:06.320 --> 00:40:14.420
+Parithosh Jayanthi: As far as I know, only Teku has a log line that prints out how long they take to process the deposits, and we're not… we don't have the data from the other clients.
+
+252
+00:40:15.850 --> 00:40:16.790
+Barnabas: Never gone.
+
+253
+00:40:20.550 --> 00:40:21.689
+Parithosh Jayanthi: Yeah, Terrence?
+
+254
+00:40:22.380 --> 00:40:41.369
+terence: I think benchmarking or, having a more complete design around this over the last few days. So, I think from where we are standing, and keep in mind that the machine I'm using this is like an M1Mat, so it's slightly more powerful than what typically people use, is that
+
+255
+00:40:41.710 --> 00:40:50.659
+terence: for 8,000 deposit, 8,192, I can batch verify everything in, like, 800 milliseconds already.
+
+256
+00:40:50.760 --> 00:41:03.859
+terence: And then if there is failure, then I think the most optimal algorithm I found is, essentially, you essentially, batch verify in the chart size of 8, and then you just recursively, and that…
+
+257
+00:41:03.980 --> 00:41:14.429
+terence: get us to, say, if today there is, like… I think… I found the worst case is, say, today, if all signatures are failing, then it will take about 6 seconds to verify that.
+
+258
+00:41:14.620 --> 00:41:16.189
+terence: And,
+
+259
+00:41:16.520 --> 00:41:27.940
+terence: And, so, so, so that's one thing that I have, is the dashboard verifying number. The second thing I have is that I added, post-processing cache.
+
+260
+00:41:27.980 --> 00:41:36.549
+terence: Meaning that as soon as you get a payload, you can already start verifying the deposit, and just… and just cash the result, right?
+
+261
+00:41:36.680 --> 00:41:41.969
+terence: And so that kind of depends on when the payload is revealed. So if today the payload is revealed.
+
+262
+00:41:42.350 --> 00:41:46.340
+terence: At the 6-second mark, then it's probably fine.
+
+263
+00:41:46.360 --> 00:42:00.870
+terence: But if the tailor's revealed much later, then there is a chance that, basically, that we will not finish, and the proposal of the next slot will not have enough time to, like, propose a block. But that also assumes the attacker
+
+264
+00:42:00.870 --> 00:42:06.379
+terence: will have to make ML deposits, so, like, essentially, burn some ETH.
+
+265
+00:42:06.380 --> 00:42:20.649
+terence: In order to, do this. But yeah, but I guess, like, in the happy case, it's perfectly fine. In the unhappy case, where it's up to how many invalid deposits are there, then the next proposal may be screwed.
+
+266
+00:42:22.690 --> 00:42:31.450
+Parithosh Jayanthi: How are you getting the processing times from Prysm? Is there a branch or something that we can run? Because we have reference hardware,
+
+267
+00:42:31.500 --> 00:42:43.680
+Parithosh Jayanthi: We can probably add in a search law test for having invalids, and then benchmark, now we would have potentially two plans to benchmark, PRISM as well as Teku, and we have a few more numbers to work off of.
+
+268
+00:42:43.680 --> 00:42:55.540
+terence: Yeah, so it's in the branch that I've shared in the Discord. I think it was in the thread or something, it's called Glamster then.net3Deposit. I will type the branch name in the chat right now.
+
+269
+00:42:56.220 --> 00:43:00.720
+Parithosh Jayanthi: Okay, perfect. So… yeah. Banavas?
+
+270
+00:43:00.880 --> 00:43:05.120
+Barnabas: Can you imagine this is not just merged into your Amsterdamnest 3 branch?
+
+271
+00:43:05.120 --> 00:43:13.509
+terence: I don't, like, merge, like, code that, like, I'm not, like, 100% sure into Definitely, so I think what I will end up doing is…
+
+272
+00:43:13.510 --> 00:43:28.209
+terence: like, I don't know, like, how urgent you guys think this is, like, can you guys live with a separate bench for a few days? Then… and then I will open PRs for review and get those merged, and you will be much cleaner from our end. Yeah, so… so, yeah, basically, you let me know how…
+
+273
+00:43:28.370 --> 00:43:32.650
+terence: urgent this is, like… I'm happy either way.
+
+274
+00:43:34.530 --> 00:43:37.330
+Parithosh Jayanthi: Yeah, I think a few days is perfectly fine, so we can watch.
+
+275
+00:43:37.330 --> 00:43:37.780
+terence: I'll go for it.
+
+276
+00:43:37.780 --> 00:43:39.590
+Parithosh Jayanthi: Branch for a few days.
+
+277
+00:43:41.280 --> 00:43:49.169
+Parithosh Jayanthi: We'll probably just start testing and benchmarking, with Prysm and Teku, and then add the other clients.
+
+278
+00:43:51.720 --> 00:43:53.110
+Parithosh Jayanthi: And regarding…
+
+279
+00:43:53.110 --> 00:43:56.810
+Barnabas: from others as well, if they are making progress on this.
+
+280
+00:44:01.730 --> 00:44:06.680
+Parithosh Jayanthi: Yeah, is someone from Lighthouse around? Would we also be able to get a Lighthouse branch for this?
+
+281
+00:44:18.350 --> 00:44:28.390
+Parithosh Jayanthi: Okay, perfect. I think there's a Discord thread, Kingy, could you post the branch when you have one over there? We just need processing times from Lighthouse, and then we should have…
+
+282
+00:44:28.560 --> 00:44:32.200
+Parithosh Jayanthi: Everything to gather the benchmark numbers.
+
+283
+00:44:40.830 --> 00:44:54.589
+Parithosh Jayanthi: Okay, I guess the next follow-up question is for the overflow issue. One option is, of course, fixing it via 7688, so that's forward compatible, structures.
+
+284
+00:44:55.170 --> 00:44:59.380
+Parithosh Jayanthi: But is there any other options we have on the CL side?
+
+285
+00:45:02.840 --> 00:45:04.499
+Parithosh Jayanthi: I know that there were discussions even.
+
+286
+00:45:04.500 --> 00:45:05.040
+Barnabas: I'm doing.
+
+287
+00:45:05.040 --> 00:45:05.720
+Parithosh Jayanthi: soon.
+
+288
+00:45:06.470 --> 00:45:15.630
+Barnabas: we could increase it to, like, a million or whatever, but I would prefer not to introduce a new variable when we're gonna be just removing it,
+
+289
+00:45:15.800 --> 00:45:21.689
+Barnabas: 87688. So I would just say that for Glenser, I'm definitely not,
+
+290
+00:45:21.860 --> 00:45:25.770
+Barnabas: 4. We're gonna cap the gas limit to $190 million.
+
+291
+00:45:25.990 --> 00:45:31.190
+Barnabas: And then we're not gonna be able to reach this. Nobody can accidentally trigger it.
+
+292
+00:45:31.440 --> 00:45:37.279
+Barnabas: And then, once we include, 7688, possibly in…
+
+293
+00:45:37.410 --> 00:45:44.099
+Barnabas: 5, or 6, or 7, or wherever we decide to include it, then we can actually push the gas limit up to 200 mil.
+
+294
+00:45:46.450 --> 00:45:53.099
+Parithosh Jayanthi: Okay, sounds good. Anything else on builder deposits?
+
+295
+00:46:01.940 --> 00:46:04.890
+Parithosh Jayanthi: Great, Jeanette, yeah, go ahead.
+
+296
+00:46:04.890 --> 00:46:10.129
+Justin Traglia: Oh, sorry. I was gonna say, I think Terrence has proven that it's not strictly necessary to have a
+
+297
+00:46:10.800 --> 00:46:15.729
+Justin Traglia: queued the builder deposits. I think that client optimizations
+
+298
+00:46:15.960 --> 00:46:18.040
+Justin Traglia: Is the path we should take.
+
+299
+00:46:21.090 --> 00:46:24.950
+Parithosh Jayanthi: Yeah, I definitely like that more than a new deposit contract path.
+
+300
+00:46:31.840 --> 00:46:42.780
+Parithosh Jayanthi: Great. Okay, the next agenda item is, adding SSZ to Engine API, and there were two, proposals.
+
+301
+00:46:43.430 --> 00:46:49.140
+Parithosh Jayanthi: one from Marius, and one from… Barnabas?
+
+302
+00:46:49.990 --> 00:46:51.460
+Parithosh Jayanthi: Has,
+
+303
+00:46:53.880 --> 00:47:00.560
+Parithosh Jayanthi: And is this something that you want to propose for the next DevNet, or is this something we can delay a decision on?
+
+304
+00:47:01.120 --> 00:47:12.319
+Barnabas: This is an optional thing, so anyone can optionally include it or not. I know that Nethermind now has merged it in to their master branch already, so that's,
+
+305
+00:47:12.440 --> 00:47:15.150
+Barnabas: That's actually from trading an ETL.
+
+306
+00:47:15.430 --> 00:47:18.040
+Barnabas: Teams as well, so I'm actually quite surprised.
+
+307
+00:47:20.410 --> 00:47:31.979
+Łukasz Rozmej: If I can add something, yes, we merged it to our master branch, we also supplied a few PR changes on top of Julio's changes to Prysm.
+
+308
+00:47:32.310 --> 00:47:41.479
+Łukasz Rozmej: Which we tested it with, because, the spec changed, between Julio's initial proof of concept there.
+
+309
+00:47:41.870 --> 00:47:57.149
+Łukasz Rozmej: And we achieved, actually, quite a big improvement over JSON, around 5 to 10x, depending on, scenarios, on a very, like, congested scenarios, on very, like, heavy scenarios of,
+
+310
+00:47:57.610 --> 00:48:03.000
+Łukasz Rozmej: I think get blobs, and… get payload.
+
+311
+00:48:04.090 --> 00:48:06.819
+Łukasz Rozmej: Those are the ones we tested.
+
+312
+00:48:12.450 --> 00:48:18.260
+Parithosh Jayanthi: Yeah, Barnabas, can you first explain the difference between the two PRs?
+
+313
+00:48:19.370 --> 00:48:27.639
+Barnabas: Yeah, so my PR is basically, translating the whole, existing API structure into REST.
+
+314
+00:48:28.270 --> 00:48:37.210
+Barnabas: And, using basically the same names at the same, endpoints, just, using a different, virtually…
+
+315
+00:48:37.630 --> 00:48:40.200
+Barnabas: type how you would do in Rust.
+
+316
+00:48:40.340 --> 00:48:43.870
+Barnabas: And, Marius basically wants to,
+
+317
+00:48:44.770 --> 00:48:56.120
+Barnabas: use named fork, so, like, instead of, instead of engine new payload version 1 or 2, it would just be, like, Amsterdam Payload. And,
+
+318
+00:48:56.120 --> 00:49:07.839
+Barnabas: Osaka payload, and he would want to basically back-implement it for Cancun, he said, but yeah, he didn't even specify how far he wants to back implement it.
+
+319
+00:49:08.080 --> 00:49:15.779
+Barnabas: And my proposal would be basically to implement all the versions, all the way back to all, version 1 for everything.
+
+320
+00:49:21.020 --> 00:49:21.750
+Parithosh Jayanthi: Lucas?
+
+321
+00:49:21.750 --> 00:49:37.919
+Łukasz Rozmej: One more comment from us, it was easier to go with Barnabas version without changing the spec at all, because it… we reused the same types internally, and only did a different transport layer and the coding layer, and it was relatively easy to implement.
+
+322
+00:49:38.210 --> 00:49:41.040
+Łukasz Rozmej: So it was fairly straightforward to add.
+
+323
+00:49:41.480 --> 00:49:43.310
+Łukasz Rozmej: And the…
+
+324
+00:49:43.960 --> 00:49:57.120
+Łukasz Rozmej: doing SSZ in a… because we have our own library and our generators for SSZ, so doing SSZ for us was relatively hard, although, Alexei is working on SSZ for, for…
+
+325
+00:49:57.340 --> 00:50:12.900
+Łukasz Rozmej: years now, so we are in a good place, but it was still relatively not easy, and also we made it in a relatively optimal way, so we also, like, serialized and deserialized directly from the wire, so…
+
+326
+00:50:12.970 --> 00:50:19.990
+Łukasz Rozmej: Yeah, without, like, copying buffers, so… because we wanted to do this for performance, so…
+
+327
+00:50:20.700 --> 00:50:27.780
+Łukasz Rozmej: not touching the actual structure of engineering API made it a lot easier for us, and we could focus on those concerns.
+
+328
+00:50:32.490 --> 00:50:45.410
+Parithosh Jayanthi: Yeah, that sounds, good. I guess the main… it also sounds to me that Barnabas' approach would be way easier and quicker for clients, as opposed to Marius's, but,
+
+329
+00:50:45.470 --> 00:50:55.439
+Parithosh Jayanthi: maybe for now, since it's optional anyway, if there's any CL with some spare capacity, would you guys be able to work with Nethermind to…
+
+330
+00:50:55.580 --> 00:50:59.269
+Parithosh Jayanthi: Prototype, try out both options, and see which one you like more.
+
+331
+00:50:59.890 --> 00:51:06.979
+Parithosh Jayanthi: And then we can make a decision in the future. Yeah, I like that it's optional, that we don't have to tie it to a hard fork, or…
+
+332
+00:51:07.400 --> 00:51:09.679
+Parithosh Jayanthi: So I tried for DevNet or anything.
+
+333
+00:51:11.700 --> 00:51:19.599
+Barnabas: It would be actually quite interesting to see, DevNet deploying both SSZ and, GSM with, like,
+
+334
+00:51:20.200 --> 00:51:23.539
+Barnabas: Different versions, and see if you can actually see
+
+335
+00:51:24.150 --> 00:51:25.870
+Barnabas: a huge benefit, and I would.
+
+336
+00:51:26.840 --> 00:51:31.740
+Parithosh Jayanthi: I'd assume that you'll notice the big benefit once we start doing a lot of blob spamming.
+
+337
+00:51:32.210 --> 00:51:33.070
+Barnabas: Right, yep.
+
+338
+00:51:38.810 --> 00:51:49.260
+Parithosh Jayanthi: Yeah, okay, Potos said there's another PR under review, and… Okay, so we.
+
+339
+00:51:49.260 --> 00:51:56.829
+Potuz: No, no, no, this is just in the implementation for Prysm. Julio opened this a while ago, and then Nethermind, on top of that, fixed
+
+340
+00:51:57.090 --> 00:52:04.830
+Potuz: the PR from Julio, and there's several team members, I think they are here in the call that are reviewing those PRs.
+
+341
+00:52:06.100 --> 00:52:12.670
+Parithosh Jayanthi: Okay, awesome. Then it would be really nice to see the next Glamsterdam.net, so we can actually see some real numbers.
+
+342
+00:52:12.830 --> 00:52:23.089
+Parithosh Jayanthi: And in the meantime, if someone has strong opinions about if you want to refactor the entire naming scheme, then please speak up, but otherwise, I guess we go the lazy approach.
+
+343
+00:52:26.520 --> 00:52:27.050
+Barnabas: Yep.
+
+344
+00:52:27.460 --> 00:52:35.840
+Barnabas: My main question would be whether we want to start merging this in, now that we have a client implementation, and then iterate maybe on top of that.
+
+345
+00:52:39.180 --> 00:52:50.269
+Parithosh Jayanthi: I guess the main objection against merging it in is we don't know if we, which approach we want to go with. If we want to rename the whole thing, or if we want to just add SSZ on top.
+
+346
+00:52:52.010 --> 00:52:58.420
+Barnabas: Maybe someone from Gas can speak on behalf of Marcus? I'm not sure if you guys discussed this internally.
+
+347
+00:53:06.730 --> 00:53:19.790
+Parithosh Jayanthi: Yeah, since this isn't a blocker, maybe we can just leave it as is, and then collect some more opinions, and yeah, agreed with you, add it to the ACDC agenda, and then we can, merge it in once we have the
+
+348
+00:53:20.160 --> 00:53:21.649
+Parithosh Jayanthi: Once we have consensus.
+
+349
+00:53:22.290 --> 00:53:34.989
+Parithosh Jayanthi: To LightClient, the question is if, there's two PRs for the engine API for, SSZ-ing it. One reimagines the whole thing, and the other one just essentially
+
+350
+00:53:35.180 --> 00:53:42.409
+Parithosh Jayanthi: renames stuff and adds SSZ. So which one… does Gets have a strong position on which one they want?
+
+351
+00:53:57.180 --> 00:54:01.870
+Parithosh Jayanthi: Okay, let's move on from the topic,
+
+352
+00:54:02.050 --> 00:54:05.849
+Parithosh Jayanthi: Yeah, we can bring it up in ACDC and take it up there.
+
+353
+00:54:06.630 --> 00:54:09.790
+Parithosh Jayanthi: Any other Glamsterdam topics for today?
+
+354
+00:54:20.580 --> 00:54:32.259
+Parithosh Jayanthi: Okay, then let's move on to Hegota. The first item on the Hegota agenda was, committee attestation broadcast specification.
+
+355
+00:54:32.520 --> 00:54:37.019
+Parithosh Jayanthi: This is from Sukun. Is Sukun on the call to introduce it?
+
+356
+00:54:38.180 --> 00:54:39.610
+Sukun Tarachandani: Aw, hey guys, hi.
+
+357
+00:54:41.560 --> 00:54:43.090
+Sukun Tarachandani: You can hear it.
+
+358
+00:54:43.090 --> 00:54:44.540
+Parithosh Jayanthi: Yeah, go ahead, yeah.
+
+359
+00:54:45.690 --> 00:54:48.890
+Sukun Tarachandani: Declanation…
+
+360
+00:54:52.990 --> 00:54:56.550
+Sukun Tarachandani: Yeah, you can see my browser…
+
+361
+00:54:57.580 --> 00:55:01.890
+Sukun Tarachandani: So yeah, first, just to… briefly.
+
+362
+00:55:02.360 --> 00:55:10.639
+Sukun Tarachandani: give a background of the current attestation thing, it'll, like, be very quick. I presented some of this work at the interop, I'll just go through all of this quickly.
+
+363
+00:55:10.890 --> 00:55:17.629
+Sukun Tarachandani: And the aim here is to basically increase the subnet sizes, like the committee sizes in subnets which we use for attestations.
+
+364
+00:55:18.030 --> 00:55:25.339
+Sukun Tarachandani: And to increase them by 4X, at least, so that we can cut down the epoch time by 4, basically.
+
+365
+00:55:25.740 --> 00:55:27.640
+Sukun Tarachandani: And get to 8 slots per epoch.
+
+366
+00:55:28.090 --> 00:55:41.210
+Sukun Tarachandani: To do that, basically, what we need is to just to reduce bandwidth used for attestation propagation. Like, attestations are the reason why epochs are 32 slots. Like, rest of the traffic flow
+
+367
+00:55:41.330 --> 00:55:45.280
+Sukun Tarachandani: does not really change within the slot. Like, the only thing that
+
+368
+00:55:45.420 --> 00:55:50.549
+Sukun Tarachandani: Is the bottleneck is how much time we have for attestation propagation, and, like, how many
+
+369
+00:55:51.430 --> 00:56:09.519
+Sukun Tarachandani: validators are voting on a committee, and, like, how quickly can we disseminate them and aggregate their votes? Okay. So, like, Gossip Sock currently works with a mesh size which is, of 8, and a mesh peer is basically someone whom you would always forward your messages to, like, this
+
+370
+00:56:09.770 --> 00:56:17.439
+Sukun Tarachandani: is not a push-pull thing, you just always push everything to your mesh peers, and every heartbeat 700MS, you do a…
+
+371
+00:56:18.650 --> 00:56:25.689
+Sukun Tarachandani: basically sync with some set of your peers who are not your MeSH peers, and tell them these are the list of attestations I have.
+
+372
+00:56:25.890 --> 00:56:34.410
+Sukun Tarachandani: And that peer subsequently can request those attestations from you. Like, they are called I Have I Wants, but, like, that is generally, like, that is the mechanism here.
+
+373
+00:56:34.760 --> 00:56:40.749
+Sukun Tarachandani: A brief overview of what's happening currently is that all beacon nodes subscribe to two subnets.
+
+374
+00:56:41.030 --> 00:56:42.260
+Sukun Tarachandani: So…
+
+375
+00:56:43.460 --> 00:56:52.270
+Sukun Tarachandani: Oh, and this, basically, subscription stays for roughly a day. Like, they're supposed to stay in a subnet for a day, provide a stable backbone.
+
+376
+00:56:52.490 --> 00:56:58.300
+Sukun Tarachandani: And then every slot, a different committee of validators will vote on that subnet.
+
+377
+00:56:58.600 --> 00:57:07.500
+Sukun Tarachandani: Importantly, these validators are not participating in exchanging these messages to other peers. Like, they are just voting on the subnet. They will pick
+
+378
+00:57:07.860 --> 00:57:25.499
+Sukun Tarachandani: one of these nodes on the subnet, and just give them their message that this is my attestation, and these subnet peers, like, take care of, like, forwarding to everyone in the attestation in the subnet. The whole point of having the subnet is that there are 16… 16-ish, I think, like, yeah, it depends on that specific store.
+
+379
+00:57:25.560 --> 00:57:29.290
+Sukun Tarachandani: Validators who are given aggregator duties.
+
+380
+00:57:30.110 --> 00:57:39.779
+Sukun Tarachandani: who are also part of the subnet, and the entire subnet only exists to be anonymized… to anonymize the aggregators, so that you don't just DOS these 16 nodes on them.
+
+381
+00:57:39.920 --> 00:57:49.769
+Sukun Tarachandani: on the network, okay? But other than that, subnet nodes play no real important role here, like, and the smaller the subnet, the better. Like, if 128 is
+
+382
+00:57:50.190 --> 00:57:57.459
+Sukun Tarachandani: Nodes are enough for us in a subnet to anonymize, like, we should keep it at 128, not increase it to have more beaker nodes joining the subnet.
+
+383
+00:57:58.500 --> 00:58:06.070
+Sukun Tarachandani: So, jumping into, like, the proposed changes, and, like, why current system is inefficient, and how we can improve this thing greatly.
+
+384
+00:58:06.200 --> 00:58:15.550
+Sukun Tarachandani: So, basically, yeah, the biggest inefficiency is that we send every message independently, so every message has a test station data and the signature.
+
+385
+00:58:15.780 --> 00:58:25.210
+Sukun Tarachandani: And this roughly comes out to about 200 bytes in total, 220. And then, on top of it, you have the gossip subtopic name, so this goes to 270.
+
+386
+00:58:25.410 --> 00:58:38.529
+Sukun Tarachandani: And, like, on the wire, you'll also have IP packet sizes and all, like, so that adds another 40, but it's not counted in the measurement. And we simply proposed this idea that wait for a few milliseconds, like 20 to 50,
+
+387
+00:58:38.750 --> 00:58:50.860
+Sukun Tarachandani: and then basically batch all the attestations that you have with the… which are attesting to the same attestation data, and just send their list of signatures, along with, like, their validator ID, committee IDs.
+
+388
+00:58:51.890 --> 00:58:58.100
+Sukun Tarachandani: Oh, okay. So, this basically reduces the data transferred over the subnet to half.
+
+389
+00:58:58.320 --> 00:58:59.090
+Sukun Tarachandani: Okay.
+
+390
+00:58:59.480 --> 00:59:06.889
+Sukun Tarachandani: Oh… Moving on, there is another inefficiency in Gossip Sub, which is this part that I mentioned, that
+
+391
+00:59:07.020 --> 00:59:11.619
+Sukun Tarachandani: For non-mesh peers, you will send your gossip, I have, I want things.
+
+392
+00:59:11.740 --> 00:59:17.810
+Sukun Tarachandani: And, the list of messages that you exchange with your peers, every heartbeat.
+
+393
+00:59:18.870 --> 00:59:23.930
+Sukun Tarachandani: They take 20 bytes per attestation, but we can do much better
+
+394
+00:59:24.050 --> 00:59:26.889
+Sukun Tarachandani: What we can do here is to…
+
+395
+00:59:27.660 --> 00:59:36.539
+Sukun Tarachandani: We can basically only send attestation data along with the bitlist of validators who are attesting to that attestation data.
+
+396
+00:59:36.840 --> 00:59:40.830
+Sukun Tarachandani: Okay, I don't have the details… oh, okay, yeah, I have it in the slide.
+
+397
+00:59:42.250 --> 00:59:43.840
+Sukun Tarachandani: Yeah.
+
+398
+00:59:43.990 --> 00:59:57.810
+Sukun Tarachandani: And so, this change reduces the total, basically, gossip happening on the subnet from, like, 10KB times the number of PLV gossip to, to about 220 bytes. Like, no, it's this total number just negligible.
+
+399
+00:59:58.110 --> 01:00:05.789
+Sukun Tarachandani: And, like, on, running beacon node, I am measuring that about 30% of the traffic is off this gossip, basically.
+
+400
+01:00:06.430 --> 01:00:10.999
+Sukun Tarachandani: Oh, yeah, so that is another thing to review or improve here.
+
+401
+01:00:11.380 --> 01:00:17.609
+Sukun Tarachandani: Similarly, Gossip Sub has this topic that we send on with every message that we send, which is, like, 40 bytes.
+
+402
+01:00:17.890 --> 01:00:19.480
+Sukun Tarachandani: And so…
+
+403
+01:00:20.100 --> 01:00:29.189
+Sukun Tarachandani: We can cut this down to either 0 or 4. Like, if we make a bigger change, we can cut this down to 0. If we make a smaller change, we'll cut this down to 4.
+
+404
+01:00:29.490 --> 01:00:31.740
+Sukun Tarachandani: I'm not seeing the chart, if there are any.
+
+405
+01:00:32.110 --> 01:00:34.400
+Sukun Tarachandani: Comments people want to see notes.
+
+406
+01:00:34.520 --> 01:00:35.640
+Sukun Tarachandani: Stay at home.
+
+407
+01:00:37.380 --> 01:00:39.699
+Parithosh Jayanthi: We can do comments at the end if you want.
+
+408
+01:00:40.250 --> 01:00:41.999
+Sukun Tarachandani: Yeah, sure, and that also works.
+
+409
+01:00:43.320 --> 01:00:47.850
+Sukun Tarachandani: Yeah, the other thing is that our D value is high, 8 is pretty high.
+
+410
+01:00:48.230 --> 01:00:59.259
+Sukun Tarachandani: We can… like, anything between 4 to 6 should be fine for us, like, which I'll share the numbers later on. D value is basically your mesh size. These are the piers you will unconditionally forward to.
+
+411
+01:00:59.490 --> 01:01:04.789
+Sukun Tarachandani: And so, this number is always D-1, because as soon as you receive a message which is unique for you.
+
+412
+01:01:05.230 --> 01:01:18.419
+Sukun Tarachandani: you will queue it to all your other peers, other peers, I mean, I mean, you will exclude the guy who gave you the message, but everyone else will be just in queue. So you'll just eventually end up forwarding to D-1 peers always.
+
+413
+01:01:18.740 --> 01:01:24.110
+Sukun Tarachandani: 8 is pretty high, you can cut it down to 4, and, like, yeah, I think 4 is good.
+
+414
+01:01:25.910 --> 01:01:30.319
+Sukun Tarachandani: So, like, to give some background about, like, what
+
+415
+01:01:31.590 --> 01:01:40.990
+Sukun Tarachandani: how to think about this number and how to think about, like, the time of propagation for attestations. It's like a function of the subnet size and the committee size.
+
+416
+01:01:41.290 --> 01:01:43.509
+Sukun Tarachandani: The more committee members you have.
+
+417
+01:01:43.920 --> 01:01:58.630
+Sukun Tarachandani: the more data you have to transfer over the subnet, right? And this increases your, like, transmit time, which is, like, the total time it takes for you to put things onto the wire. Like, it's roughly the amount of data you transfer by your bandwidth.
+
+418
+01:01:58.720 --> 01:02:08.840
+Sukun Tarachandani: On the other hand, there is another factor, which is subnet size, that if you have a smaller subnet, your graph is small, your graph diameter is small.
+
+419
+01:02:09.100 --> 01:02:18.690
+Sukun Tarachandani: And so, it's just faster to propagate within the subnet. Like, to think of it this way, if the subnet size were 2, it would just take you one hop to send it over across to your peer.
+
+420
+01:02:18.810 --> 01:02:24.899
+Sukun Tarachandani: So, yeah. And then, if you increase your subnet side, it's actually worse for latency.
+
+421
+01:02:25.080 --> 01:02:27.040
+Sukun Tarachandani: But you do want some…
+
+422
+01:02:27.240 --> 01:02:32.580
+Sukun Tarachandani: threshold amount of subnet to anonymize the aggregators, in our case, not chain that property.
+
+423
+01:02:32.660 --> 01:02:48.580
+Sukun Tarachandani: And so, I have this proposal which does all of these changes. It's currently in each P2P. I will move the consensus changes into the consensus spectia, but roughly, this is the idea, basically, that we have this attestation data.
+
+424
+01:02:48.860 --> 01:02:59.209
+Sukun Tarachandani: And rather than sending it again and again, you send it… you… the attestation data once, and just send a list of signatures, which are signing to it, and a bit list for
+
+425
+01:02:59.920 --> 01:03:09.189
+Sukun Tarachandani: who is… who… the signatures, basically, who are the validators who have sent those signatures. And same way for gossip, you send the attestation data with
+
+426
+01:03:09.430 --> 01:03:15.020
+Sukun Tarachandani: which attestations you have, and basically which attestations you want from the peer.
+
+427
+01:03:15.440 --> 01:03:22.339
+Sukun Tarachandani: The current proposal builds on top of the partial messages proposal, which is being done for blocks.
+
+428
+01:03:22.860 --> 01:03:24.000
+Sukun Tarachandani: Oh…
+
+429
+01:03:24.340 --> 01:03:33.740
+Sukun Tarachandani: I intend to try a custom protocol as well, and then see. The benefit of partial messages is that we get backwards compatibility very well.
+
+430
+01:03:34.580 --> 01:03:39.309
+Sukun Tarachandani: Because you will share your mesh peers with peers who don't support partial messages.
+
+431
+01:03:39.520 --> 01:03:51.740
+Sukun Tarachandani: And you may potentially be able to just deploy it anytime you like, sort of, like, after testing, of course. But it does not need to be coupled to a fork, and, like, it's just much easier to deploy that with.
+
+432
+01:03:53.140 --> 01:03:58.819
+Sukun Tarachandani: Yeah, so now for some, like, numbers, basically, as to, like, the simulation numbers.
+
+433
+01:03:59.330 --> 01:04:06.350
+Sukun Tarachandani: Yeah, so this is… The red line that you see here, which is, like, the current state of
+
+434
+01:04:06.890 --> 01:04:16.920
+Sukun Tarachandani: And these numbers roughly correspond to a correspond to current mainnet. There are 500 members in a subnet, and 500 committee validators who vote on that subnet, okay?
+
+435
+01:04:17.750 --> 01:04:29.390
+Sukun Tarachandani: And yeah, so the proposed design is the blue curve, the current thing is the red curve, and we move from about, yeah, 800-ish for maximum propagation to around 500 to 600 demos.
+
+436
+01:04:30.030 --> 01:04:36.430
+Sukun Tarachandani: We get the expected, basically, reduction, ignore the idealist here.
+
+437
+01:04:36.550 --> 01:04:38.519
+Sukun Tarachandani: a bunch of things I was trying.
+
+438
+01:04:38.850 --> 01:04:43.579
+Sukun Tarachandani: from, yeah, basically 1.2 MB cent per…
+
+439
+01:04:44.820 --> 01:04:48.250
+Sukun Tarachandani: Mesh to about, yeah, one-third of it, basically.
+
+440
+01:04:48.690 --> 01:04:55.700
+Sukun Tarachandani: Because of all of these improvements that we showed before, and, like, primarily because, like, we reduced the gossip overhead also brought.
+
+441
+01:04:56.820 --> 01:04:57.600
+Sukun Tarachandani: Okay.
+
+442
+01:04:58.400 --> 01:05:15.769
+Sukun Tarachandani: So then, this is basically the simulation for 1000 validators, voting on the subnet. So basically, no subnet assignment is changing. We're just saying we reduced the slot size, basically the epoch size by half, so we have twice the number of validators voting in the committee.
+
+443
+01:05:17.070 --> 01:05:26.329
+Sukun Tarachandani: And we basically get this curve, like, D equal to 8 curve, which now has shifted from previously 500 MS to around 600 MS.
+
+444
+01:05:26.660 --> 01:05:30.310
+Sukun Tarachandani: And more importantly, if we reduce the mesh…
+
+445
+01:05:30.510 --> 01:05:37.920
+Sukun Tarachandani: like, fan outside, like, the V value, we are now getting, like, much better numbers. Basically, this reduces the bandwidth used to.
+
+446
+01:05:39.290 --> 01:05:52.110
+Sukun Tarachandani: And, like, yeah, if you have 2,000 validators voting in the committee, you get much better numbers with, like, 4 peers in your mesh. But the important point is we can… we roughly get the same
+
+447
+01:05:52.550 --> 01:06:03.369
+Sukun Tarachandani: performance with 2,000 validators in this new system on a committee as we got on… as we get in the current system with 500 validators. So, yeah, it's a…
+
+448
+01:06:03.760 --> 01:06:06.740
+Sukun Tarachandani: Plausible paths to, like, reducing the epoch a lot.
+
+449
+01:06:08.600 --> 01:06:22.099
+Sukun Tarachandani: That's about it. I just want to highlight it. Basically, I would like to propose it for Agata, at least, and I'll try to make it in such a way that it's backwards compatible, so we can just deploy it without a fork.
+
+450
+01:06:22.480 --> 01:06:27.020
+Sukun Tarachandani: And, yeah, there are some of the other steps.
+
+451
+01:06:27.350 --> 01:06:27.830
+Sukun Tarachandani: updated.
+
+452
+01:06:27.830 --> 01:06:31.849
+Parithosh Jayanthi: A couple of, questions. Sukun, do you want to maybe take those? We wanted to.
+
+453
+01:06:31.850 --> 01:06:32.330
+Sukun Tarachandani: gimbal.
+
+454
+01:06:32.330 --> 01:06:36.599
+Parithosh Jayanthi: for 5 minutes from now, and then there's a few more EIPs to discuss today.
+
+455
+01:06:37.350 --> 01:06:38.060
+Sukun Tarachandani: Yes.
+
+456
+01:06:38.460 --> 01:06:41.180
+Sukun Tarachandani: Okay, do people just want to ask?
+
+457
+01:06:42.270 --> 01:06:58.410
+Potuz: Oh, I have… I have a bunch of questions. I very much like this, and I think the high-level discussion we should be having is as an approach for faster finality. It's contentious… it's contenting this thing of, like, having more,
+
+458
+01:06:58.570 --> 01:07:12.890
+Potuz: committee members per slot, and having less slots per epoch with shortening the slot. And I very much like this approach of shortening the number of slots per epoch. What I do worry, though, is how does this play, for example, with the faster confirmation rule?
+
+459
+01:07:12.890 --> 01:07:22.349
+Potuz: If we get a less stable vote… voting per slot, then perhaps this would make the fast confirmation less effective.
+
+460
+01:07:22.720 --> 01:07:42.469
+Potuz: And today, we could, presumably, with the current status, be confirming or getting a good signal that we're final with just one slot. But if we go with this, it's not really clear to me how it would affect. It would be good to have numbers as to what is the vote, how the vote effectiveness is going to be changing.
+
+461
+01:07:44.210 --> 01:07:49.960
+Sukun Tarachandani: That's right, and I will consider it. I don't have any analysis here, but intuitively.
+
+462
+01:07:50.100 --> 01:07:56.059
+Sukun Tarachandani: Like, say if we just moved to, like, cutting the number of Slots by half.
+
+463
+01:07:56.580 --> 01:08:08.229
+Sukun Tarachandani: The system would have actually better transmission properties than the current system, and, like, the fast confirmation rule should work better with this one. Like, it in no way degrades it from the current status quo.
+
+464
+01:08:08.550 --> 01:08:16.150
+Sukun Tarachandani: Though, yeah, we… it's a fair question that maybe putting it at 4x might be a stretch, and yeah, that requires a bit more analysis.
+
+465
+01:08:16.710 --> 01:08:40.279
+Potuz: And just quickly, the other two is that on the technical side, I don't really understand this thing of, like, trying to make better the I want, and I have. If, in Svalbard, you guys told us that it's essentially useless today, and even if we drop it, the only thing that would matter is that some aggregator might not get some good, single attestations. I would just drop the entire system, instead of, like, trying to make it better.
+
+466
+01:08:40.450 --> 01:08:55.139
+Potuz: And the other one that I wanted to highlight is that on the attestation data, if you're going to be changing it, we should really study dropping completely the checkpoint, the target checkpoint, and the source route, because those can be derived from the block route itself.
+
+467
+01:08:55.140 --> 01:09:01.470
+Potuz: At the cost of not being able to slash invalid attestations that are anyways useless, because they're not on-chain.
+
+468
+01:09:04.359 --> 01:09:12.889
+Sukun Tarachandani: I can consider that, yes. So both of them, like, intuitively, I felt that I have and I once probably help these nodes
+
+469
+01:09:13.199 --> 01:09:26.829
+Sukun Tarachandani: were not, like, in Europe and US, and, like, I was just really finding it difficult to paint the mesh, because, like, over time, we have these subtle rewards and gossips up for giving you a good message, like, giving you the first to deliver a message that
+
+470
+01:09:27.089 --> 01:09:43.109
+Sukun Tarachandani: meshes tend to move towards, like, your nearby peers. So, intuitively, I think I have and I won't help those peers, but I would like to, like, measure it on the mainnet and then take a call. So, but yeah, I am on board for it, of course. If it does not help, you should just remove it.
+
+471
+01:09:43.249 --> 01:09:51.169
+Sukun Tarachandani: What was the second point? Yeah, in terms of attestation data, I will also consider that. Basically, yeah, actually, for the…
+
+472
+01:09:51.169 --> 01:10:03.369
+Sukun Tarachandani: I have an I want GOS, and we actually don't want the whole attestation data, right? We want the checkpoint. But it's fair that, yeah, if we just get the spinal blocks both, get us correct, and I guess it also simplifies things a bit.
+
+473
+01:10:04.069 --> 01:10:07.809
+Sukun Tarachandani: So, yeah, that is a great part. I'll… I'll take startup.
+
+474
+01:10:11.689 --> 01:10:17.999
+Sukun Tarachandani: Okay, answer other questions? Barnabas, what's the rollout plan for ETH B2B?
+
+475
+01:10:18.169 --> 01:10:22.109
+Sukun Tarachandani: I actually don't have a good answer to that, but
+
+476
+01:10:24.639 --> 01:10:40.589
+Sukun Tarachandani: you'll have some amount of overlap with LibP2P, I think it feels like, or I think if we don't have a lip P2P overlap, we need a way to say, this is how you run gossips over each P2P, which might be also a fair transition plan, but nothing's finalized here, so I don't have a good…
+
+477
+01:10:40.689 --> 01:10:41.429
+Sukun Tarachandani: Ow.
+
+478
+01:10:41.639 --> 01:10:43.319
+Sukun Tarachandani: Answer to your question.
+
+479
+01:10:44.699 --> 01:10:45.639
+Sukun Tarachandani: I don't know.
+
+480
+01:10:46.029 --> 01:10:49.039
+Sukun Tarachandani: What are the other questions? Does anyone want to go ahead?
+
+481
+01:10:49.680 --> 01:11:01.660
+Barnabas: Just for the rollout plan, I would actually recommend to basically have some feature flags to enable the different, like, P2P and disable P2P, or enable both at the same time.
+
+482
+01:11:01.840 --> 01:11:12.260
+Barnabas: And that way, we can actually just test if, everything is going smoothly, and we don't, like, require twice the bandwidth, to send stuff on it, P2P and on
+
+483
+01:11:12.500 --> 01:11:16.120
+Barnabas: the P2P, ever on… in production.
+
+484
+01:11:18.200 --> 01:11:28.709
+Sukun Tarachandani: Yeah, I think that's a good point. Like, Jasek also mentioned that we have, like, 5 networks now, or something, if we introduce ETP2P along and everything else in parallel. So, yeah, that's a fair argument.
+
+485
+01:11:29.150 --> 01:11:42.889
+Sukun Tarachandani: On how does this affect the fast finality roadmap? In general, it does not affect much if we are doing a decoupled consensus thing. What will help, like, I removed that slide because it wasn't relevant to what I'm proposing for Hegota, but is that
+
+486
+01:11:43.120 --> 01:11:59.989
+Sukun Tarachandani: This method actually is fast enough for, like, aggregating 8,000 committee members in, like, 2 seconds, so it will actually help a lot in a decoupled consensus where the finality chain has a completely different slot, where you just have a lot more committee members voting on a slot.
+
+487
+01:12:00.530 --> 01:12:02.550
+Sukun Tarachandani: But using just the same method.
+
+488
+01:12:05.120 --> 01:12:07.429
+Sukun Tarachandani: Does that answer your question, Greg?
+
+489
+01:12:09.340 --> 01:12:10.350
+Greg K | Lido: Yes, thanks.
+
+490
+01:12:11.310 --> 01:12:11.890
+Sukun Tarachandani: Okay.
+
+491
+01:12:12.110 --> 01:12:18.889
+Sukun Tarachandani: Yeah, I think that's it, like, I just wanted to highlight that we are working on this, please, like…
+
+492
+01:12:19.060 --> 01:12:25.349
+Sukun Tarachandani: talk to me, whatever feedback you have, or if you have any questions, yeah. And I'd like to propose it for Hegota.
+
+493
+01:12:26.850 --> 01:12:40.110
+Parithosh Jayanthi: Awesome. Thank you. So we would still wait for 2 weeks, before we accept it, I guess? But yeah, if there's any questions, etc, please reach out to Sukun.
+
+494
+01:12:40.250 --> 01:12:41.910
+Parithosh Jayanthi: Yeah.
+
+495
+01:12:44.680 --> 01:12:55.980
+Parithosh Jayanthi: The next item on the agenda is, EIP8025 from Optional Proofs. Is there… .
+
+496
+01:12:57.030 --> 01:12:58.310
+Francesco Risitano: Yep, I'm…
+
+497
+01:12:58.310 --> 01:13:01.380
+Parithosh Jayanthi: Is that English? Yeah. Yes, Francesca, go ahead.
+
+498
+01:13:01.380 --> 01:13:01.810
+Francesco Risitano: Can you hear me?
+
+499
+01:13:01.810 --> 01:13:03.290
+Parithosh Jayanthi: Jessica, go ahead. Yes.
+
+500
+01:13:03.290 --> 01:13:06.599
+Francesco Risitano: Yeah, okay, cool. Let me share my slides.
+
+501
+01:13:08.860 --> 01:13:10.390
+Francesco Risitano: Can you see the slides?
+
+502
+01:13:12.300 --> 01:13:13.539
+Parithosh Jayanthi: Yes, looks good.
+
+503
+01:13:13.970 --> 01:13:20.820
+Francesco Risitano: Perfect. Yeah, so it'll be, myself and Ignacio, presenting this. We're both,
+
+504
+01:13:20.890 --> 01:13:37.830
+Francesco Risitano: part of the, EF, ZK EVM team. The ZK EVM team have been kind of collaborating with the broader community for some time of this… on this effort, and I will kind of provide an update on the status of that progress,
+
+505
+01:13:38.070 --> 01:13:43.540
+Francesco Risitano: at least on the CR side, and then Ignacio would do the same on the… on the EOS side, so…
+
+506
+01:13:43.760 --> 01:13:53.789
+Francesco Risitano: Yeah, the proposal here is to include EIP 8025 in, Hegota, and it is, an optional proofs EIP.
+
+507
+01:13:55.720 --> 01:14:04.800
+Francesco Risitano: So, TLDR, on a high level, the EIP essentially covers the introduction of execution proofs into the protocol.
+
+508
+01:14:04.910 --> 01:14:17.560
+Francesco Risitano: So an execution proof is essentially a cryptographic proof that allows a validator to, efficiently assert the validity of an execution payload.
+
+509
+01:14:18.880 --> 01:14:37.760
+Francesco Risitano: So we introduced this cryptographic proof into the protocol with two additional modes. Now, it should be noted that these modes are opt-in. This is a completely optional EIP, so standard validator mechanics are unchanged if they don't opt-in.
+
+510
+01:14:37.870 --> 01:14:53.530
+Francesco Risitano: The two modes are proof generating mode and, proof verifying mode. So, for the proof generating node, essentially an active validator will kind of enable this mode on their beacon node.
+
+511
+01:14:53.590 --> 01:15:12.640
+Francesco Risitano: And whenever they receive a block, they validate it via re-execution, and then they will make a request to the proof engine, which I will kind of describe in more detail later, but essentially there's this component called the proof engine, which is responsible for both generating and verifying proofs.
+
+512
+01:15:12.640 --> 01:15:26.109
+Francesco Risitano: So the active validator will, yeah, request the proofs from the proof engine. There's an external proof node, which, you know, potentially has GPUs and, and other kind of hardware required to generate these proofs.
+
+513
+01:15:26.410 --> 01:15:40.090
+Francesco Risitano: The proofs will be returned back from the proof node to the proof engine, and subsequently to the, beacon node, essentially the validator, who will sign the proof, and subsequently gossip, the proof on the
+
+514
+01:15:40.090 --> 01:15:52.419
+Francesco Risitano: on a new execution-proof, gossip topic. Then the second mode is, proof verifying mode. So you've got another node which is… which is opted in to, to verify proofs.
+
+515
+01:15:52.520 --> 01:16:09.330
+Francesco Risitano: So, this node will essentially receive the proof over the gossip topic, and it will send the proof to the proof engine, which will subsequently, send the proof to the proof node to be verified. And yeah, that's kind of the high-level flow.
+
+516
+01:16:09.430 --> 01:16:17.109
+Francesco Risitano: we, as I say, this is opt-in, and in addition to the standard, kind of,
+
+517
+01:16:17.120 --> 01:16:32.470
+Francesco Risitano: duties and, node operations, so we… we still expect that, nodes will do re-execution in addition to these additional modes. Yeah, and I'll dive into the reason for that later.
+
+518
+01:16:32.540 --> 01:16:35.920
+Francesco Risitano: But just to give some context in regards to the motivation.
+
+519
+01:16:36.120 --> 01:16:53.319
+Francesco Risitano: The key benefit of this is that, we make payload, validation sublinear and stateless. So, specifically, it's sublinear in the gas limit and the state size. So this has nice properties in regards to the hardware requirements for nodes.
+
+520
+01:16:53.490 --> 01:17:12.150
+Francesco Risitano: And the implication of this, kind of sublinear relationship is the fact that, payload validity or payload validation is, remains accessible even with, gas limit and, state growth increases, or state increases, state size increases.
+
+521
+01:17:12.530 --> 01:17:26.899
+Francesco Risitano: In regards to why optional, the technology is still relatively novel. There has been a lot of development and progress over the past few years, but in the first instance, we'd like this to be optional, such that we can kind of
+
+522
+01:17:26.960 --> 01:17:38.560
+Francesco Risitano: Collect data and, build confidence in the system, make optimizations, etc, before we do, you know, potentially, enshrine this in a future hard fork.
+
+523
+01:17:39.440 --> 01:17:56.809
+Francesco Risitano: In addition to that, we, we don't want the, this proof verification, to be load-bearing on consensus. We essentially want this to… as a, as a phase where we can build confidence and,
+
+524
+01:17:57.050 --> 01:18:06.550
+Francesco Risitano: Yeah, just kind of test out the various components of the stack before we enshrine and make this load bearing on fork choice and consensus.
+
+525
+01:18:06.790 --> 01:18:09.919
+Francesco Risitano: So wine, Hegota,
+
+526
+01:18:10.020 --> 01:18:18.299
+Francesco Risitano: the… the tech… as it's mentioned, the technology has matured, substantially over the past few years. L2s have deployed
+
+527
+01:18:18.360 --> 01:18:35.110
+Francesco Risitano: roll-ups, and they've had them operating in production for a number of years now, and, proof systems have, improved in regards to efficiency and performance to a point where, real-time proving is a practical reality. So…
+
+528
+01:18:35.330 --> 01:18:48.400
+Francesco Risitano: Yep, that's the first point. In addition to that, as I said on the previous slide, this is kind of the first step towards enshrining. So, like, the general community would be
+
+529
+01:18:48.800 --> 01:18:56.760
+Francesco Risitano: Would have more confidence and be more comfortable with enshrining, proofs, execution proofs.
+
+530
+01:18:56.960 --> 01:19:06.960
+Francesco Risitano: Once we have data to kind of… and evidence to, to prove the fact that this is, in fact, you know, reasonable direction and sound.
+
+531
+01:19:08.670 --> 01:19:20.860
+Francesco Risitano: in regards to, kind of, the status, we have, both the consensus layer and execution layer specs, defined and largely settled. I suspect that once we get some more eyes on this.
+
+532
+01:19:20.860 --> 01:19:29.139
+Francesco Risitano: you know, we may have some questions or disagreements which we can resolve, but I don't expect them to be huge divergences to what we currently have.
+
+533
+01:19:29.310 --> 01:19:42.009
+Francesco Risitano: We also have both consensus layer implementations and execution layer implementations, so, the stack is reasonably… is maturing, it's in a pretty good state as is.
+
+534
+01:19:42.060 --> 01:19:55.609
+Francesco Risitano: And yeah, it's fully opt-in, so in regards to validators that do not opt-in to either of these modes, there's no changes, no implications on, you know, on performance.
+
+535
+01:19:57.000 --> 01:20:12.120
+Francesco Risitano: Just a high level on the consensus layer. As I mentioned, we have the two modes, proof generating mode, proof verifying mode. I provided a link to the specs here, if anybody wants to, to review them or provide feedback.
+
+536
+01:20:12.240 --> 01:20:26.329
+Francesco Risitano: We have two client implementations. Internally, we've worked on a Lighthouse implementation in Rust, and the Prysm team, Manu specifically, has kindly, supported us on this effort with an implementation in PRISM.
+
+537
+01:20:26.740 --> 01:20:44.000
+Francesco Risitano: We have deployed some ephemeral DevNets, so we have a DevNet, we've spun up some DevNets with, Kurtosis, and we've performed, some, some interop between the two clients, in addition to having a, a GPU-based prover.
+
+538
+01:20:44.530 --> 01:21:01.070
+Francesco Risitano: So just to provide a bit more context on the proof engine, the proof engine can be considered analogous to the execution engine. So, where the execution engine is a payload validity oracle of sorts, that uses re-execution for.
+
+539
+01:21:01.090 --> 01:21:06.460
+Francesco Risitano: uses re-execution as the backend. The proof engine uses execution proofs.
+
+540
+01:21:06.570 --> 01:21:17.150
+Francesco Risitano: The Proof Engines API is modeled on the Engine API. This is intentional to make the integration into the protocol relatively seamless.
+
+541
+01:21:17.350 --> 01:21:26.910
+Francesco Risitano: So it has methods for, verifying proofs, requesting proofs, and also, for notifying of fork choice updates,
+
+542
+01:21:27.590 --> 01:21:42.370
+Francesco Risitano: We have, the kind of the core type that we introduce is this signed execution proof. So this is the proof that is generated by an opt-in proof generating node, essentially a validator who signs the proof and then gossips it on the subnet.
+
+543
+01:21:42.680 --> 01:21:55.229
+Francesco Risitano: On the request response domain, we have 3 new, methods, so proofs by range, proofs by route, and execution proof status. And then for discovery, we introduce a
+
+544
+01:21:55.230 --> 01:22:06.139
+Francesco Risitano: an additional key-value pair, which is e-proof, and that just signals to peers that, we are, you know, we support the… we support execution proofs.
+
+545
+01:22:07.910 --> 01:22:27.450
+Francesco Risitano: Just quickly to touch on infrastructure, we have collaborated with PandaOps, and implemented support for this EIP, in addition to, GPU prover support, so it's in a relatively good state, and it's pretty, efficient and nice to deploy this, the deployed network, DevNet, sorry.
+
+546
+01:22:27.460 --> 01:22:42.330
+Francesco Risitano: In regards to observability, we've implemented observability, so, essentially Prometheus, metrics for, both ZKBoost, which is the, Prover backend, and, Lighthouse as well.
+
+547
+01:22:42.590 --> 01:22:50.610
+Francesco Risitano: We have, block explorer… block explorer modifications where we can, kind of observe these proofs.
+
+548
+01:22:50.860 --> 01:22:57.429
+Francesco Risitano: And I've also provided links in case anybody wants to run, one of these DevNets.
+
+549
+01:22:59.750 --> 01:23:03.090
+Francesco Risitano: I'll hand over to Ignacio for the EOS stuff.
+
+550
+01:23:14.710 --> 01:23:16.370
+Francesco Risitano: Ignacio, are you there?
+
+551
+01:23:25.170 --> 01:23:27.139
+Parithosh Jayanthi: We can't hear you, Ignacio.
+
+552
+01:23:29.480 --> 01:23:35.160
+Francesco Risitano: Yeah, maybe, maybe I can, I can cover… his section.
+
+553
+01:23:35.160 --> 01:23:36.060
+ignacio: Hear me now?
+
+554
+01:23:36.350 --> 01:23:36.810
+Parithosh Jayanthi: Yes.
+
+555
+01:23:37.060 --> 01:23:37.640
+Francesco Risitano: Perfect.
+
+556
+01:23:37.640 --> 01:23:43.479
+ignacio: Oh, sorry. Yeah, I will touch briefly on the execution layer side of the EIP.
+
+557
+01:23:43.920 --> 01:23:52.680
+ignacio: On the execution layer, we have to define, mainly what is the program that we are proving execution.
+
+558
+01:23:52.970 --> 01:24:08.659
+ignacio: Because at the end of the day, from the CL perspective, what we are trying to swap is, the engine API call to execute… to validate a payload with a cryptographic proof that this execution was done correctly.
+
+559
+01:24:09.600 --> 01:24:15.660
+ignacio: So, the high-level parts of the guest program, which is this program that we are proving execution.
+
+560
+01:24:15.990 --> 01:24:20.899
+ignacio: Are the input validation of the program and transformation.
+
+561
+01:24:21.290 --> 01:24:30.310
+ignacio: Into the correct input for the, state transition function that we already know, and we have already a spec in the execution specs repo.
+
+562
+01:24:30.820 --> 01:24:37.470
+ignacio: And finally, we have to do some public commitments to these inputs, such that the proof verifier can understand
+
+563
+01:24:37.740 --> 01:24:42.909
+ignacio: Which inputs were used, in this guest program execution.
+
+564
+01:24:43.170 --> 01:24:50.030
+ignacio: So, basically, the program that's being proven is a stateless Validation of an execution payload.
+
+565
+01:24:51.180 --> 01:24:55.669
+ignacio: So apart from the program itself, we also,
+
+566
+01:24:56.710 --> 01:25:03.890
+ignacio: define which is this input, from the guest program. This call, we call this the stateless input type.
+
+567
+01:25:04.360 --> 01:25:16.399
+ignacio: And basically, what this stateless input type has is what you already can imagine, what you already know is our inputs in the engine new payload RPC.
+
+568
+01:25:16.580 --> 01:25:19.750
+ignacio: So, you have the execution payload and some extra fields.
+
+569
+01:25:20.160 --> 01:25:26.819
+ignacio: But it also contains cryptographically verifiable data that is required for execution.
+
+570
+01:25:27.320 --> 01:25:37.689
+ignacio: This is mainly because a guest program that runs inside a CD VM is a pure function, so it does not have access to a database, to… with the whole state.
+
+571
+01:25:37.790 --> 01:25:45.310
+ignacio: So, all the data that is required for execution, such as storage slot values, or balances, or things like that.
+
+572
+01:25:45.760 --> 01:25:47.960
+ignacio: Should also be provided as inputs.
+
+573
+01:25:48.570 --> 01:25:58.670
+ignacio: And not only it is required to receive the input, the raw values, but also requires to be provided the data to verify that this data is correct.
+
+574
+01:25:59.780 --> 01:26:07.280
+ignacio: So, the specs also contains, yeah, a full definition of what… how this data is provided.
+
+575
+01:26:07.610 --> 01:26:25.710
+ignacio: And the main goal here to fully spec the guest program and the inputs is to reduce complexity on running provers, because there's a reasonable chance that we will require multiple crews using different guest program implementations, in the same way that today we have different ELs.
+
+576
+01:26:26.360 --> 01:26:30.179
+ignacio: And if each guest program receives different inputs.
+
+577
+01:26:30.500 --> 01:26:38.250
+ignacio: That simply complicates, generating proofs, because you might need, like, different libraries to construct the correct input for the proof.
+
+578
+01:26:39.230 --> 01:26:44.570
+ignacio: And another pretty obvious benefit of standardizing the input is that
+
+579
+01:26:44.870 --> 01:26:52.180
+ignacio: This is the stable boundary that we need to properly create tests in the execution specs repo.
+
+580
+01:26:52.370 --> 01:27:00.290
+ignacio: Such that we are sure that we are covering all the important angles of new logic, for the guest program execution.
+
+581
+01:27:01.030 --> 01:27:04.670
+ignacio: So, probably the first…
+
+582
+01:27:05.230 --> 01:27:13.669
+ignacio: good step for people to understand this EIP is to just read the IP. We have been iterating on that these last days, and it's in a really good new shape.
+
+583
+01:27:13.900 --> 01:27:23.480
+ignacio: But if you know… if you want to know, like, further details, here we have some links to the spec. No, just go to the previous one.
+
+584
+01:27:25.370 --> 01:27:32.529
+ignacio: so, yeah, so you can see here, like, more detailed, structs of the,
+
+585
+01:27:32.750 --> 01:27:38.809
+ignacio: definitions in the spec. We also have a bunch of tests already that cover
+
+586
+01:27:39.020 --> 01:27:43.020
+ignacio: Most of the, important angles of,
+
+587
+01:27:43.430 --> 01:27:49.849
+ignacio: The guest program doing, validations correctly, and with correct and incorrect input.
+
+588
+01:27:49.980 --> 01:27:59.020
+ignacio: We are also doing releases, which are usually based on the… on the latest, valid DevNet, so this is trying to always.
+
+589
+01:27:59.230 --> 01:28:04.170
+ignacio: simplified ELs running these new tests on their main working branch.
+
+590
+01:28:04.560 --> 01:28:06.860
+ignacio: So, maybe… now, next slide.
+
+591
+01:28:08.470 --> 01:28:14.070
+ignacio: So if you want to join the discussion about EIP, we have monthly zkEVM breakup calls.
+
+592
+01:28:14.550 --> 01:28:16.729
+ignacio: So here we leave the link.
+
+593
+01:28:17.040 --> 01:28:29.409
+ignacio: Also, in the R&D Discord server, we have two main channels for discussions. We have the L1 zkEVM channel, which is mainly focused on concrete zkEVM infrastructure discussions.
+
+594
+01:28:29.960 --> 01:28:37.999
+ignacio: And we have the L1 zkEVM protocol channel channel, where we usually discuss CL and EL-related,
+
+595
+01:28:38.290 --> 01:28:40.510
+ignacio: topics about this EIP.
+
+596
+01:28:41.070 --> 01:28:52.279
+ignacio: If you want to read the latest version of the EAP, we leave the unopened PR that is still under review. Please try to read this new version instead of the currently active one.
+
+597
+01:28:52.530 --> 01:28:54.260
+ignacio: Because it's a bit stale.
+
+598
+01:28:54.590 --> 01:29:02.329
+ignacio: And yeah, you can also drop your thoughts or questions in the If Magicians thread. And usually, we also…
+
+599
+01:29:02.570 --> 01:29:12.970
+ignacio: write articles about this topic, mainly touching in other dimensions, such as security, in our team's website and blog.
+
+600
+01:29:13.160 --> 01:29:20.070
+ignacio: So, yeah, you are also invited to read that, that thing.
+
+601
+01:29:21.080 --> 01:29:21.900
+ignacio: Yeah.
+
+602
+01:29:21.900 --> 01:29:31.920
+Parithosh Jayanthi: Do we want to do some questions? I think we still have 5 minutes on time. I'm happy to end the call today with just questions on the topic.
+
+603
+01:29:32.580 --> 01:29:33.670
+ignacio: Yeah, sounds good.
+
+604
+01:29:41.310 --> 01:29:45.929
+Parithosh Jayanthi: Open floor for people. So, if anyone has questions, please speak up.
+
+605
+01:29:47.180 --> 01:29:56.769
+Parithosh Jayanthi: Yeah, I guess, that plant has a question, what would… he didn't catch why we would need protocol changes for an optional mechanism?
+
+606
+01:29:58.470 --> 01:30:08.280
+ignacio: Right, I think this is a really good question, and probably the main one that we have been receiving from people. The way we think about this is that
+
+607
+01:30:08.660 --> 01:30:13.340
+ignacio: Doing this change requires a lot of work.
+
+608
+01:30:13.800 --> 01:30:16.369
+ignacio: on two things. The first one is…
+
+609
+01:30:16.720 --> 01:30:20.390
+ignacio: For example, in the execution spec,
+
+610
+01:30:20.540 --> 01:30:30.679
+ignacio: work for EIP. It also requires a lot of changes in the testing framework and main architecture of how a lot of tooling works.
+
+611
+01:30:31.060 --> 01:30:41.690
+ignacio: And… I see also, asking for scheduling an EIP into a forecast, having a slice of capacity of
+
+612
+01:30:41.900 --> 01:30:43.250
+ignacio: many themes.
+
+613
+01:30:43.680 --> 01:30:54.980
+ignacio: To really look into this stuff, because there are some, like, architectural changes that requires, also capacity from other people, and
+
+614
+01:30:55.480 --> 01:31:04.230
+ignacio: I think, like, trying to do this in a one go in a single fork will be quite challenging, and it makes things pretty hard.
+
+615
+01:31:04.420 --> 01:31:08.599
+ignacio: And I think the other reason is… We want to…
+
+616
+01:31:09.080 --> 01:31:18.609
+ignacio: gather much more real data about how this would work in the real network. So, we are trying to
+
+617
+01:31:18.860 --> 01:31:21.609
+ignacio: Do as much work as possible.
+
+618
+01:31:21.920 --> 01:31:35.009
+ignacio: To discover, like, more unknown unknowns that we might be missing, and trying to push this as, like, as an optional feature into the network is…
+
+619
+01:31:35.440 --> 01:31:39.189
+ignacio: The best way to do this without putting at risk,
+
+620
+01:31:39.710 --> 01:31:45.300
+ignacio: You know, main comp… main core part of how the network works.
+
+621
+01:31:50.150 --> 01:31:59.449
+Parithosh Jayanthi: Okay, thank you. Yeah, that makes sense. It's mostly about teams allocating time, effort, testing effort, and so on for the feature in the slotted fork, right?
+
+622
+01:32:01.360 --> 01:32:04.270
+Parithosh Jayanthi: Portals, do you want to go next?
+
+623
+01:32:04.270 --> 01:32:15.029
+Potuz: Is the verification of the proof, the reply that it's verified or not, does it come as in the reply to new payload call to the engine, or does it come separate?
+
+624
+01:32:15.930 --> 01:32:20.569
+Francesco Risitano: No, that, that comes separate, so the, the, notify new payload
+
+625
+01:32:20.720 --> 01:32:24.459
+Francesco Risitano: Essentially just makes the proof engine aware of the payload.
+
+626
+01:32:24.470 --> 01:32:42.419
+Francesco Risitano: But the actual verification of the proof is a different, it's a different path. So let me just show you on this… so, yeah, notify a new payload, that just lets the proof engine know that a new payload has arrived, such that when the verify execution proof,
+
+627
+01:32:42.770 --> 01:33:02.319
+Francesco Risitano: path is invoked via the receipt of an execution proof, it can associate the two via a, via a commitment, but in any… in any case, it can… it can associate the two. And just on the question in the chat, there is no gating of attestation on…
+
+628
+01:33:02.360 --> 01:33:20.299
+Francesco Risitano: proof verification, so as far as I'm aware, the gate for attestation is validity, the validity of the block to be… the block has to… the payload has to be verified, before an attestation is made, and the fork choice,
+
+629
+01:33:20.380 --> 01:33:35.939
+Francesco Risitano: block validity is exclusively gated by re-execution. So, and this notify new payload is fire and forget. There's no, yeah, there's no actual verification done here, it's just a notification, essentially.
+
+630
+01:33:46.950 --> 01:33:49.729
+Parithosh Jayanthi: Thank you, Barnabas, and then Tony?
+
+631
+01:34:01.450 --> 01:34:02.750
+Parithosh Jayanthi: Okay, Tony?
+
+632
+01:34:04.680 --> 01:34:16.529
+Toni Wahrstätter: Why would we do that for validators and not for full nodes, assuming that, validators would then opt into propagating additional objects over the wire, and could be slowed down through that?
+
+633
+01:34:19.700 --> 01:34:39.180
+Francesco Risitano: So, I'm not sure if I completely understand the question, but, all nodes can certainly opt in to be ver… they can opt in to the proof verifying mode. The reason that we want the proof generating mode to be done by a validator is primarily for DOS.
+
+634
+01:34:39.320 --> 01:34:43.690
+Francesco Risitano: Such that we can have a validator kind of sign the proof.
+
+635
+01:34:44.070 --> 01:34:50.750
+Francesco Risitano: But… yeah, that's kind of the general intuition. I'm not sure if that answered the question.
+
+636
+01:34:59.340 --> 01:35:05.759
+Toni Wahrstätter: Yeah, thanks a lot, and we can also take it async as we reach the end of the call, but thanks a lot, I think I get it.
+
+637
+01:35:07.510 --> 01:35:22.920
+Parithosh Jayanthi: Yeah, thank you guys for presenting. There were two EIPs we didn't get to today that we can start off with next week. We have return deposits for distinct credentials and custom suite thresholds for validators, but we'll push that to the next ACDC.
+
+638
+01:35:23.730 --> 01:35:27.140
+Parithosh Jayanthi: Thank you everyone for coming, and see you next time.
+
+639
+01:35:29.300 --> 01:35:29.920
+Potuz: Come on, too.
+
+640
+01:35:30.820 --> 01:35:31.899
+Toni Wahrstätter: Thanks, everyone. Bye-bye.
+
+641
+01:35:32.400 --> 01:35:32.980
+Louis: Goodbye.
+
+642
+01:35:32.980 --> 01:35:34.959
+Potuz: It was a great work, Barry.
+
+643
+01:35:35.380 --> 01:35:36.700
+Parithosh Jayanthi: Thank you so much.
+

@@ -1,5 +1,6 @@
 import React, { useMemo } from 'react';
 import { Tooltip } from '../ui';
+import { EipFilterBar } from './EipFilterBar';
 
 interface TOCItem {
   id: string;
@@ -81,7 +82,7 @@ export const TableOfContents: React.FC<TableOfContentsProps> = ({
 
   return (
     <div className="hidden lg:block w-64 flex-shrink-0">
-      <div className="sticky top-6 overflow-y-auto max-h-[calc(100vh-3rem)] z-[9999]">
+      <div className="sticky top-20 max-h-[calc(100vh-6rem)] flex flex-col">
         <div className="flex items-center justify-between mb-4">
           <h3 className="text-sm font-semibold text-slate-900 dark:text-slate-100 uppercase tracking-wide">Contents</h3>
           <Tooltip text="Scroll to top" position="bottom">
@@ -97,84 +98,23 @@ export const TableOfContents: React.FC<TableOfContentsProps> = ({
           </Tooltip>
         </div>
 
-        {/* Search input */}
-        <div className="relative mb-3 px-0.5">
-          <input
-            type="text"
-            placeholder="Filter EIPs..."
-            value={searchQuery}
-            onChange={(e) => onSearchChange(e.target.value)}
-            className="w-full px-3 py-1.5 text-sm border border-slate-200 dark:border-slate-600 rounded-md bg-white dark:bg-slate-700 text-slate-900 dark:text-slate-100 placeholder-slate-400 dark:placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent"
-          />
-          {searchQuery && (
-            <button
-              onClick={() => onSearchChange('')}
-              className="absolute right-2 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 dark:hover:text-slate-300"
-              aria-label="Clear search"
-            >
-              <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
-              </svg>
-            </button>
-          )}
-        </div>
+        <EipFilterBar
+          searchQuery={searchQuery}
+          onSearchChange={onSearchChange}
+          layerFilter={layerFilter}
+          onLayerFilterChange={onLayerFilterChange}
+          showLayerFilter={showLayerFilter}
+          matchCount={matchCount}
+          totalEipCount={totalEipCount}
+        />
 
-        {/* Layer filter */}
-        {showLayerFilter && onLayerFilterChange && (
-          <div className="flex gap-1 mb-3 px-0.5">
-            <Tooltip text="Show all EIPs" position="bottom" className="flex-1">
-              <button
-                onClick={() => onLayerFilterChange('all')}
-                className={`w-full px-2 py-1 text-xs font-medium rounded border transition-colors cursor-pointer ${
-                  layerFilter === 'all'
-                    ? 'border-slate-400 text-slate-700 bg-white dark:border-slate-400 dark:text-slate-200 dark:bg-slate-700'
-                    : 'border-slate-200 text-slate-500 bg-white hover:border-slate-300 dark:border-slate-600 dark:text-slate-400 dark:bg-slate-800 dark:hover:border-slate-500'
-                }`}
-              >
-                All
-              </button>
-            </Tooltip>
-            <Tooltip text="Execution Layer" position="bottom" className="flex-1">
-              <button
-                onClick={() => onLayerFilterChange('EL')}
-                className={`w-full px-2 py-1 text-xs font-medium rounded border transition-colors cursor-pointer ${
-                  layerFilter === 'EL'
-                    ? 'bg-indigo-100 text-indigo-700 border-indigo-200 dark:bg-indigo-900/20 dark:text-indigo-300 dark:border-indigo-600'
-                    : 'border-slate-200 text-slate-500 bg-white hover:border-slate-300 dark:border-slate-600 dark:text-slate-400 dark:bg-slate-800 dark:hover:border-slate-500'
-                }`}
-              >
-                EL
-              </button>
-            </Tooltip>
-            <Tooltip text="Consensus Layer" position="bottom" className="flex-1">
-              <button
-                onClick={() => onLayerFilterChange('CL')}
-                className={`w-full px-2 py-1 text-xs font-medium rounded border transition-colors cursor-pointer ${
-                  layerFilter === 'CL'
-                    ? 'bg-teal-100 text-teal-700 border-teal-200 dark:bg-teal-900/20 dark:text-teal-300 dark:border-teal-600'
-                    : 'border-slate-200 text-slate-500 bg-white hover:border-slate-300 dark:border-slate-600 dark:text-slate-400 dark:bg-slate-800 dark:hover:border-slate-500'
-                }`}
-              >
-                CL
-              </button>
-            </Tooltip>
-          </div>
-        )}
-
-        {/* Search results count */}
-        {searchQuery && (
-          <p className="text-xs text-slate-500 dark:text-slate-400 mb-2 px-1">
-            {matchCount === 0 ? 'No matches' : `${matchCount} of ${totalEipCount} EIPs`}
-          </p>
-        )}
-
-        <nav className="space-y-1">
+        <nav className="min-h-0 flex-1 space-y-1 overflow-y-auto overflow-x-hidden pr-2 [scrollbar-gutter:stable]">
           {filteredItems.map((item) => {
             const button = (
               <button
                 key={item.id}
                 onClick={() => onSectionClick(item.id)}
-                className={`w-full text-left rounded transition-colors ${
+                className={`w-full text-left rounded transition-colors overflow-hidden ${
                   item.type === 'section'
                     ? `px-3 py-2 text-sm ${
                         activeSection === item.id
@@ -188,10 +128,10 @@ export const TableOfContents: React.FC<TableOfContentsProps> = ({
                       }`
                 }`}
               >
-                <div className="flex items-center justify-between">
-                  <span className={item.type === 'eip' ? 'truncate' : ''}>{item.label}</span>
+                <div className="flex items-center justify-between min-w-0">
+                  <span className={item.type === 'eip' ? 'truncate min-w-0' : ''}>{item.label}</span>
                   {item.count && !searchQuery && (
-                    <span className="text-xs text-slate-400 dark:text-slate-500 flex-shrink-0 ml-2">{item.count}</span>
+                    <span className="text-xs text-slate-400 dark:text-slate-400 flex-shrink-0 ml-2">{item.count}</span>
                   )}
                 </div>
               </button>
@@ -214,7 +154,7 @@ export const TableOfContents: React.FC<TableOfContentsProps> = ({
               );
 
               return (
-                <Tooltip key={item.id} content={tooltipContent} position="right">
+                <Tooltip key={item.id} content={tooltipContent} position="right" block>
                   {button}
                 </Tooltip>
               );

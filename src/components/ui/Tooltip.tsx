@@ -1,4 +1,5 @@
 import React, { useState, useRef } from 'react';
+import { createPortal } from 'react-dom';
 
 interface TooltipProps {
   children: React.ReactNode;
@@ -6,6 +7,7 @@ interface TooltipProps {
   content?: React.ReactNode;
   className?: string;
   position?: 'top' | 'bottom' | 'right';
+  block?: boolean;
 }
 
 export const Tooltip: React.FC<TooltipProps> = ({
@@ -13,10 +15,11 @@ export const Tooltip: React.FC<TooltipProps> = ({
   text,
   content,
   className = '',
-  position = 'top'
+  position = 'top',
+  block = false
 }) => {
   const [isVisible, setIsVisible] = useState(false);
-  const triggerRef = useRef<HTMLDivElement>(null);
+  const triggerRef = useRef<HTMLSpanElement>(null);
 
   const getTooltipStyle = (): React.CSSProperties => {
     if (!triggerRef.current) return {};
@@ -50,21 +53,22 @@ export const Tooltip: React.FC<TooltipProps> = ({
   };
 
   return (
-    <div
+    <span
       ref={triggerRef}
-      className={`relative ${className}`}
+      className={`relative ${block ? 'block' : 'inline-block'} ${className}`}
       onMouseEnter={() => setIsVisible(true)}
       onMouseLeave={() => setIsVisible(false)}
     >
       {children}
-      {isVisible && (
-        <div
-          className="bg-white dark:bg-slate-800 border-2 border-purple-300 dark:border-purple-600 text-slate-900 dark:text-slate-100 text-xs px-3 py-1.5 rounded-lg whitespace-nowrap z-[9999] shadow-xl"
+      {isVisible && createPortal(
+        <span
+          className="bg-white dark:bg-slate-800 border-2 border-purple-300 dark:border-purple-600 text-slate-900 dark:text-slate-100 text-xs px-3 py-1.5 rounded-lg whitespace-nowrap z-[9999] shadow-xl block pointer-events-none"
           style={getTooltipStyle()}
         >
           {content || text}
-        </div>
+        </span>,
+        document.body
       )}
-    </div>
+    </span>
   );
 };

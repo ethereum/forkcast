@@ -1,20 +1,23 @@
 {
   "id": 8070,
-  "title": "Sparse Blobpool",
+  "title": "EIP-8070: eth/72 - Sparse Blobpool",
   "status": "Draft",
-  "description": "Introduces a sparse blobpool for the Execution Layer that fetches full payloads for blob-carrying transactions with probability 0.15 and otherwise samples custody-aligned cells, reusing the Consensus Layer custody set to reduce average blobpool bandwidth by about 4x while preserving data availability.",
+  "description": "Introduce custody-aligned sampling in the EL blobpool to vacate bandwidth",
   "author": "Raúl Kripalani (@raulk), Bosul Mun (@healthykim), Francesco D'Amato (@fradamt), Csaba Kiraly (@cskiraly), Felix Lange (@fjl), Marios Ioannou (@mariosioannou-create), Alex Stokes (@ralexstokes)",
   "type": "Standards Track",
-  "category": "Core",
+  "category": "Networking",
   "createdDate": "2025-10-29",
   "discussionLink": "https://ethereum-magicians.org/t/eip-8070-sparse-blobpool/26023",
   "reviewer": "bot",
+  "layer": "EL",
   "forkRelationships": [
     {
       "forkName": "Glamsterdam",
       "statusHistory": [
         {
-          "status": "Proposed"
+          "status": "Proposed",
+          "call": null,
+          "date": null
         },
         {
           "status": "Considered",
@@ -22,11 +25,12 @@
           "date": "2025-12-04"
         }
       ],
-      "layer": "EL",
-      "champion": {
-        "name": "Raúl Kripalani",
-        "discord": "raulvk"
-      }
+      "champions": [
+        {
+          "name": "Raúl Kripalani",
+          "discord": "raulvk"
+        }
+      ]
     }
   ],
   "laymanDescription": "Ethereum nodes fully download only some blob transactions and sample the exact blob pieces the consensus layer cares about, cutting Execution Layer bandwidth roughly fourfold while keeping blob transactions moving.",
@@ -61,5 +65,6 @@
     "Keeps CL and EL sampling aligned for DA checks.",
     "Preserves stochastic blobpool without complex sharding.",
     "Supports future BPO fork throughput increases."
-  ]
+  ],
+  "tradeoffs": null
 }

@@ -1,0 +1,57 @@
+{
+  "meeting": "Post Quantum Transaction Signature (PQTS) Breakout #8",
+  "highlights": {
+    "sphincs_plus_hypertree_pruning": [
+      {
+        "timestamp": "00:07:04",
+        "highlight": "Conduition presented 'hypertree pruning': trades SPHINCS+ signature budget for faster KeyGen/signing, with no verifier changes required"
+      },
+      {
+        "timestamp": "00:14:51",
+        "highlight": "Maximal root-tree pruning yields ~500x faster KeyGen (SLH-DSA-128S); budget drops from 2^64 to 2^55"
+      },
+      {
+        "timestamp": "00:17:23",
+        "highlight": "Balanced pruning (equal pruning across all layers) is optimal for signing speedup; halving keys halves signing and KeyGen time"
+      },
+      {
+        "timestamp": "00:20:59",
+        "highlight": "Key drawbacks: pruned/unpruned keys are incompatible; reuse across pruning modes risks forgery; observable fingerprinting of pruned wallets"
+      },
+      {
+        "timestamp": "00:19:46",
+        "highlight": "Primary use case: constrained hardware wallets (Ledger/Trezor take minutes for SLH-DSA); acceptable budget reduction for low-frequency signers"
+      }
+    ],
+    "el_cl_pq_algorithm_split": [
+      {
+        "timestamp": "00:28:22",
+        "highlight": "EL and CL will NOT use the same PQ algorithm: CL can use stateful XMSS; EL requires stateless scheme (SPHINCS+)"
+      }
+    ],
+    "organizational": [
+      {
+        "timestamp": "00:25:17",
+        "highlight": "One presentation cancelled/postponed; next call in two weeks"
+      },
+      {
+        "timestamp": "00:25:32",
+        "highlight": "Recommended viewing: Justin Drake and Danbon panels on quantum timelines from ETHPrague and ETH Summit (videos available)"
+      }
+    ]
+  },
+  "action_items": [
+    {
+      "timestamp": "00:26:48",
+      "action": "Conduition to implement hypertree pruning in software wallet and engage Ledger/Trezor on hardware wallet integration",
+      "owner": "conduition"
+    }
+  ],
+  "decisions": [
+    {
+      "timestamp": "00:28:22",
+      "decision": "CL uses stateful XMSS; EL uses stateless SPHINCS+-based scheme \u2014 confirmed separate PQ algorithms per layer"
+    }
+  ],
+  "targets": []
+}

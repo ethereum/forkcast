@@ -1,0 +1,116 @@
+{
+  "meeting": "ACDT #70 - February 16, 2026",
+  "highlights": {
+    "fork_status_and_schedule": [
+      {
+        "timestamp": "00:06:01",
+        "highlight": "Fusaka blob-devnet-0 running with 20 nodes; Lighthouse/Prism ready, Teku/Nimbus in progress"
+      },
+      {
+        "timestamp": "00:09:05",
+        "highlight": "Glamsterdam bal-devnet-2 had bugs over weekend; reverted to stable commit, 100% participation restored"
+      },
+      {
+        "timestamp": "00:32:00",
+        "highlight": "DevNet-3 scope: EIP-8037, EIP-7954, ETH/70, ETH/71 (optional), simulate_v1 RPC"
+      },
+      {
+        "timestamp": "00:34:16",
+        "highlight": "DevNet-3 launch pushed from Feb 25 to March 4 due to testing needs"
+      }
+    ],
+    "testing_progress": [
+      {
+        "timestamp": "00:20:52",
+        "highlight": "NFT-devnet-10 (ETH/70) launched; Geth/Nethermind confirm sync impossible without ETH/70 for large receipts"
+      },
+      {
+        "timestamp": "00:23:00",
+        "highlight": "Besu syncing NFT-devnet-10 externally; expects to join network mid-week"
+      },
+      {
+        "timestamp": "00:30:17",
+        "highlight": "EIP-8037 testing concerns: many existing tests will break, need refill assessment"
+      }
+    ],
+    "bal_updates": [
+      {
+        "timestamp": "00:09:31",
+        "highlight": "BAL DOS protection: hard cap on items added via PR 11234; formula may simplify with EIP-7981"
+      },
+      {
+        "timestamp": "00:16:41",
+        "highlight": "JSON-RPC methods simplified to use block number/tag/hash; return JSON instead of RLP"
+      },
+      {
+        "timestamp": "00:22:40",
+        "highlight": "ETH/71 adds BAL query method; scoped as optional for DevNet-3"
+      }
+    ],
+    "epbs_updates": [
+      {
+        "timestamp": "00:38:01",
+        "highlight": "EPBS devnet-0: All CL clients need 1-2 weeks; Feb 18 target unrealistic"
+      },
+      {
+        "timestamp": "00:39:06",
+        "highlight": "Lighthouse fixing gossip/import bug; ready for local interop by week end"
+      },
+      {
+        "timestamp": "00:43:44",
+        "highlight": "Consensor reference implementation passed all tests; epoch transition working"
+      }
+    ],
+    "state_bloat": [
+      {
+        "timestamp": "00:44:14",
+        "highlight": "Perf-devnet-2 dead: all EL clients died, finalized chain without available blocks"
+      }
+    ]
+  },
+  "action_items": [
+    {
+      "timestamp": "00:15:03",
+      "action": "Review/approve BAL DOS protection PR 11234",
+      "owner": "All EL teams"
+    },
+    {
+      "timestamp": "00:16:41",
+      "action": "Review execution-apis PRs 726 and 727 for DevNet-3",
+      "owner": "All EL teams"
+    },
+    {
+      "timestamp": "00:33:23",
+      "action": "Publish DevNet-3 specification document",
+      "owner": "Barnabas"
+    }
+  ],
+  "decisions": [
+    {
+      "timestamp": "00:18:10",
+      "decision": "BAL DOS protection constraint enforced outside EVM at block receipt time"
+    },
+    {
+      "timestamp": "00:18:55",
+      "decision": "BAL DOS protection formula targets DevNet-3, not DevNet-2"
+    },
+    {
+      "timestamp": "00:31:36",
+      "decision": "DevNet-3 launch moved from February 25 to March 4"
+    },
+    {
+      "timestamp": "00:36:49",
+      "decision": "ETH/71 scoped as optional for DevNet-3; clients can participate without it"
+    },
+    {
+      "timestamp": "00:45:03",
+      "decision": "Perf-devnet-2 requires CL chain relaunch due to finalized state loss"
+    }
+  ],
+  "targets": [
+    {
+      "timestamp": "00:34:16",
+      "target": "March 4 - Glamsterdam bal-devnet-3 with EIP-8037, 7954, ETH/70, optional ETH/71"
+    }
+  ]
+}

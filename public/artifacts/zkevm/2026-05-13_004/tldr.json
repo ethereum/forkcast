@@ -1,0 +1,120 @@
+{
+  "meeting": "L1-zkEVM breakout #04 - May 13, 2026",
+  "highlights": {
+    "cl_integration": [
+      {
+        "timestamp": "00:08:13",
+        "highlight": "Prysm now supports 3 modes: proof generation (via ZKBoost), proof verification, and EL-less verify-only mode"
+      },
+      {
+        "timestamp": "00:11:33",
+        "highlight": "Optional proof spec still based on Fulu; plan to migrate to Gloas soon"
+      },
+      {
+        "timestamp": "00:11:46",
+        "highlight": "Lighthouse and Prysm Kurtosis interop devnet running; devnet launch targeting next week"
+      },
+      {
+        "timestamp": "00:15:52",
+        "highlight": "Max proof size bumped to 400 KiB (interim); likely to exceed 1 MB before prover optimization; ZisK already below 400 KB"
+      },
+      {
+        "timestamp": "00:17:04",
+        "highlight": "Validator proof re-signing proposal deprecated; peer scoring deemed sufficient for DOS prevention"
+      }
+    ],
+    "spec_and_witness": [
+      {
+        "timestamp": "00:25:17",
+        "highlight": "Spec/test release 0.34 adds block test engine format and execution witness compliance dashboard"
+      },
+      {
+        "timestamp": "00:26:33",
+        "highlight": "Next release (imminent) adds schema ID prefix to guest input bytes, chain config in stateless input, and proper public key field population"
+      },
+      {
+        "timestamp": "00:30:39",
+        "highlight": "EIP-7709 proposed at last ACDE for Hegota; simplifies BlockHash resolution in execution witness"
+      },
+      {
+        "timestamp": "00:31:12",
+        "highlight": "Execution witness fixtures found a bug in a BAL implementation, validating test coverage value"
+      }
+    ],
+    "guest_program_optimization": [
+      {
+        "timestamp": "00:34:13",
+        "highlight": "eFrex/ZISK profiling yielded up to 26% reduction in AIR costs: 21% from switching to precompile hash calls; ~0.5% from removing rayon/sync overhead"
+      },
+      {
+        "timestamp": "00:36:27",
+        "highlight": "SSZ serialization rewrite of execution witness planned to replace archive format"
+      }
+    ],
+    "zkvm_guest_api_standardization": [
+      {
+        "timestamp": "00:37:39",
+        "highlight": "5 standards accepted: RISC-V target (RV64IM), I/O interface, Crypto Accelerator API, termination semantics, memory layout"
+      },
+      {
+        "timestamp": "00:38:50",
+        "highlight": "Two new standards in review: misaligned jump must cause abnormal termination (no rounding); vendor runtime spec (static lib + linker script)"
+      },
+      {
+        "timestamp": "00:41:10",
+        "highlight": "U256 acceleration benchmarked on ZISK: multiplication 2-6x gain, but addition/subtraction mixed or slower; impact on 500 real blocks negligible \u2014 not yet standardized"
+      },
+      {
+        "timestamp": "00:53:14",
+        "highlight": "Nethermind ZKVM effectively first to fully comply with unaligned-access standard per Cody's testing"
+      }
+    ],
+    "infrastructure_and_verification": [
+      {
+        "timestamp": "00:46:07",
+        "highlight": "ZKBoost config simplified in Kurtosis package: prover image and guest program links now resolved automatically"
+      },
+      {
+        "timestamp": "00:46:31",
+        "highlight": "Nexus verifier crate separated from prover and integrated directly into ZKBoost; prover container no longer needed for verify-only mode"
+      },
+      {
+        "timestamp": "00:50:25",
+        "highlight": "Formal RISC-V semantics verification of ZISK proving system in progress; external review targeted within weeks"
+      }
+    ]
+  },
+  "action_items": [
+    {
+      "timestamp": "00:18:41",
+      "action": "Execution-APIs PR for witness retrieval (withWitness boolean + executionWitness return field) needs review from EL teams",
+      "owner": "EL teams"
+    },
+    {
+      "timestamp": "00:20:09",
+      "action": "Contribute to open issue on proof type encoding to support generic guest/ZKVM combinations (e.g., native rollup use cases)",
+      "owner": "Community / L2 teams"
+    },
+    {
+      "timestamp": "00:44:25",
+      "action": "ZKVM teams to review and opine on Keccak-F permutation accelerator PR vs. full Keccak function interface",
+      "owner": "ZKVM teams"
+    }
+  ],
+  "decisions": [
+    {
+      "timestamp": "00:17:21",
+      "decision": "Validator proof re-signing proposal deprecated; peer scoring is sufficient for DOS prevention"
+    }
+  ],
+  "targets": [
+    {
+      "timestamp": "00:11:57",
+      "target": "zkEVM CL integration devnet launch targeting next week"
+    },
+    {
+      "timestamp": "00:26:16",
+      "target": "Spec/test release 0.35 (with schema ID, chain config, pubkey fixes) targeting today or tomorrow"
+    }
+  ]
+}

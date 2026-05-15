@@ -1,0 +1,104 @@
+{
+  "meeting": "ACDT #053 - September 15, 2025",
+  "highlights": {
+    "fork_status_and_schedule": [
+      {
+        "timestamp": "00:08:00",
+        "highlight": "Fusaka devnet-5 launched Wed 2025-09-10; 3 BPOs completed, next Tues 06:32 UTC"
+      },
+      {
+        "timestamp": "00:08:19",
+        "highlight": "BPO progression: 9\u219212\u219215\u219213 max blobs; next targets 48, then 72"
+      }
+    ],
+    "critical_infrastructure": [
+      {
+        "timestamp": "00:17:50",
+        "highlight": "Devnet-3 experiencing unplanned non-finality; dropped from 78% to 63% participation"
+      },
+      {
+        "timestamp": "00:31:23",
+        "highlight": "Geth/Erigon/Reth enforce 16M gas limit on eth_call, breaking UI functionality"
+      }
+    ],
+    "client_updates": [
+      {
+        "timestamp": "00:09:40",
+        "highlight": "Nimbus: verify_cells_proofs inconsistent across clients; related to ckzg library versions"
+      },
+      {
+        "timestamp": "00:11:38",
+        "highlight": "Nethermind: reorg bug with incorrect parent selection from different forks; fix testing"
+      },
+      {
+        "timestamp": "00:13:05",
+        "highlight": "Nimbus can't run alpha.6 tests without ckzg 2.1.2; Teku reverted and disabled tests"
+      },
+      {
+        "timestamp": "00:15:00",
+        "highlight": "Justin Traglia: Point-at-infinity commitments not handled properly in latest ckzg release"
+      }
+    ],
+    "testing_progress": [
+      {
+        "timestamp": "00:15:38",
+        "highlight": "Felix verified EL configs pre-launch using new eth_config command in execution-spec-tests"
+      },
+      {
+        "timestamp": "00:19:59",
+        "highlight": "ConsumeSync simulator live on Hive; tests EL sync for EIP-7934 RLP limit"
+      },
+      {
+        "timestamp": "00:22:51",
+        "highlight": "Fusaka dashboard: ~20K tests for PragueToOsaka/Osaka/BPO transitions; mainly non-critical fails"
+      },
+      {
+        "timestamp": "00:23:19",
+        "highlight": "Ethereum general state tests migrated to execution-spec-tests framework and running in Hive"
+      }
+    ],
+    "organizational": [
+      {
+        "timestamp": "00:16:33",
+        "highlight": "Watchtower not running for devnet-5; manual image updates required via ethpandaops"
+      },
+      {
+        "timestamp": "00:28:23",
+        "highlight": "Block-level access lists: next breakout Wed; awaiting first CL implementation for testing"
+      }
+    ]
+  },
+  "action_items": [
+    {
+      "timestamp": "00:15:00",
+      "action": "Fix point-at-infinity handling in ckzg and publish new release",
+      "owner": "Justin Traglia"
+    },
+    {
+      "timestamp": "00:17:50",
+      "action": "Investigate devnet-3 unplanned non-finality cause",
+      "owner": "ethpandaops"
+    },
+    {
+      "timestamp": "00:32:23",
+      "action": "Fix eth_call regression enforcing gas limits on read-only methods",
+      "owner": "Geth, Erigon, Reth teams"
+    }
+  ],
+  "decisions": [
+    {
+      "timestamp": "00:23:50",
+      "decision": "EIP-7825 transaction gas limit not applied to eth_call read-only operations"
+    }
+  ],
+  "targets": [
+    {
+      "timestamp": "00:08:34",
+      "target": "September 16, 06:32 UTC - Next BPO on fusaka-devnet-5 (to 48 max blobs)"
+    },
+    {
+      "timestamp": "00:28:23",
+      "target": "End of month - Block-level access lists devnet launch"
+    }
+  ]
+}

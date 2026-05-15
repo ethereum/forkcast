@@ -1,0 +1,226 @@
+00:09:30	Sophia Gold:	gm
+00:10:11	Pooja Ranjan:	We are live !
+00:12:01	Justin Traglia:	agenda: https://github.com/ethereum/pm/issues/1744
+00:14:19	potuz:	The only one from LH I see here in Shane I think
+00:14:38	Ansgar Dietrichs:	end of october might be nice to not get into devconnect related rush? not sure how many people here will attend devconnect ofc, seems many are skipping this year
+00:15:20	Stefan Bratanov:	We can try devnet without any execution payload processing, all empty blocks
+00:16:25	Ansgar Dietrichs:	Replying to "end of october might..."
+
+but yes agree, not sure it’s a realistic target
+00:16:35	potuz:	@Stefan Bratanov In my experience adding payload processing doesn't add complexity to the devnet, the problem is payload propagation that gave us a huge headache in our previous interop with you
+00:17:13	Justin Traglia:	@Shane Moore would you like to give a lighthouse update?
+00:17:32	Shane Moore:	Hi, yep, can go next
+00:17:36	Justin Traglia:	Reacted to "Hi, yep, can go next" with 👍
+00:17:50	Stefan Bratanov:	Reacted to @Stefan Bratanov In ... with "👍"
+00:17:50	potuz:	Ahh you meant no execution requests @Stefan Bratanov ? yeah that I agree
+00:19:01	Stefan Bratanov:	Replying to "Ahh you meant no exe..." 
+
+ Ah no I meant just no payload propagation, just fake local bids, but can't see too much benefit for that
+00:20:04	potuz:	Replying to "Ahh you meant no exe..."
+
+we will do only local bids, but you still need to propagate the payload envelope
+00:20:07	Ansgar Dietrichs:	already related to the unconditional payments topic - even in case we decide it should be split into a separate EIP, are clients closer to having devnet-0 with or without unconditional payments in that case?
+
+could decide to keep it in for devnet-0 either way, if that would make getting to devnet ready quicker for clients
+00:20:39	nflaig:	same pattern in Lodestar, having slot in container would be good to have
+00:20:40	potuz:	the EIP only exists with unconditional payments, there's no EIP without it, it needs to be fully specified
+00:21:03	terence:	i can open a pr after the call, should be easy
+00:21:11	terence:	we should do it for devnet0
+00:21:16	Stefan Bratanov:	We can just have no blobs for devnet0
+00:21:23	Justin Traglia:	Reacted to "We can just have no ..." with 👍
+00:21:46	Shane Moore:	Reacted to "We can just have no ..." with 👍
+00:21:53	Subhasish | Grandine(EPF):	Reacted to "We can just have n..." with 👍
+00:22:20	terence:	it's very easy to add it, the sooner we do it the better
+00:22:46	potuz:	Reacted to "We can just have no ..." with 👍
+00:22:58	potuz:	Replying to "We can just have no ..."
+
+yeah exactly I think this iis a noop anyway
+00:25:06	Stefan Bratanov:	Replying to "Ahh you meant no exe..." 
+
+ That's the most difficult portion of code in my opinion which needs good design (having two states for the same block root), so realistically would be hard to achieve that end of October, let's see in two weeks what is the progress
+00:29:39	potuz:	Are you trying to highjack the full SFI process and go back to remove it and puit the highliner process to trash?
+00:31:04	Ansgar Dietrichs:	to be clear, my motivation is (mostly) unrelated to trusted payments
+00:37:24	Ansgar Dietrichs:	you mean ePBS as a whole? that will definitely be in Glamsterdam :-)
+00:38:22	stokes:	i do think we are just analyzing the different design decisions before finalizing the spec
+00:38:30	potuz:	Replying to "you mean ePBS as a w..."
+
+ePBS ONLY exists the way it's specified now
+00:38:40	Chris Haug:	Reacted to "i do think we are ju..." with 👍
+00:38:43	stokes:	i don’t think anyone is trying to sabotage the ACD process
+00:38:45	Ansgar Dietrichs:	apologies for coming in without much context, I also only heard about this proposal on acd last week, and was ooo this week, so couldn’t prepare for the call. I think one week is very short for making this decision
+00:39:31	potuz:	Replying to "i do think we are ju..."
+
+what ae the other design decisions? there is NO OTHER design except handwavy versions of people that actually haven't even read this one to not realize the problems of trying to remove the compromises of this design
+00:40:30	Trent:	What’s the article Lorenzo?
+00:40:45	Ansgar Dietrichs:	so my understanding is there is two elements:
+staked builders
+unconditional payments
+
+the two questions I see:
+is staked builders really necessary for the scaling / slot restructuring part of ePBS?
+what extra complexity do these two elements each bring? both in specs, but crucially also for the overall building pipeline
+00:40:49	Chris Haug:	Replying to "What’s the article L..."
+
+https://titanbuilder.substack.com/p/builders-and-relays-in-epbs
+00:40:54	Lin Oshitani | Nethermind:	Probably this one: https://titanbuilder.substack.com/p/builders-and-relays-in-epbs
+00:41:01	Trent:	Reacted to "https://titanbuilder..." with 🙏
+00:41:09	stokes:	ability to have trusted payments
+​should builders be staked or not
+placement of deadlines to mitigate free option problems
+
+are some design decisions that i see
+00:41:25	terence:	in the trusted scheme, off protocol payment, what's the captital efficiency argument?
+00:41:30	Ansgar Dietrichs:	Replying to "so my understanding ..."
+
+my understanding of potuz’ view:
+staked builders is necesarry either way
+unconditional payments is very little specs complexity
+00:41:39	terence:	same as today, the only diff is 32 eth deposit to be a validator
+00:42:25	stokes:	Replying to "i do think we are ju…"
+i hear you there may be subtleties that imply we need the current spec but then we all need time to get up to speed
+00:44:31	terence:	smaller builder (dont want to stake) can still use the relayer which is staked for 32eth
+00:44:38	Justin Traglia:	Reacted to "smaller builder can ..." with 👍
+00:44:43	potuz:	Reacted to "smaller builder (don..." with 👍
+00:45:10	Shane Moore:	Reacted to "smaller builder (don..." with 👍
+00:48:04	Ansgar Dietrichs:	it feels like we don’t really have an informed basis for a decision today - or rather, no one in favor of a change (including me) has put in the work necessary yet.
+
+I don’t think it’s clear yet that the proposal is a bad idea though, so I would prefer for us to wait for the decision until next acdc at least. with the understanding that default outcome is no change to ePBS, trustless payments (and staked builders) stay in.
+00:48:05	Shane Moore:	“If trusted routes fail or are blacklisted, ePBS’s trustless path remains: take a regular on-protocol bid from a staked builder and get paid via pending-payments/withdrawals. That’s exactly the “keep options open” argument for not removing trustless payments from the spec.” 
+- https://hackmd.io/@blockshane/BJJL43T2le
+00:48:46	stokes:	Replying to "it feels like we don…"
+i don’t think we were going to make a decision on this today
+00:49:02	Ansgar Dietrichs:	Replying to "it feels like we don..."
+
+I saw people express a preference for doing so
+00:49:12	Ansgar Dietrichs:	Replying to "it feels like we don..."
+
+but if that’s not on the table, great
+00:49:15	Sophia Gold:	Replying to "so my understandin..."
+
+Sorry, I missed why staked builder are necessary for the pipelining benefits
+00:49:32	potuz:	Replying to "so my understanding ..."
+
+you need a signature
+00:49:55	Sophia Gold:	Replying to "so my understandin..."
+
+Wouldn't it be the same as today with the proposer blind signing a header?
+00:50:11	Lorenzo:	In terms of having a fallback, what is the advantage of p2p bids vs local building?
+00:50:11	potuz:	Replying to "so my understanding ..."
+
+that requires dealing with unbundling in a safe way
+00:50:47	Francesco:	Replying to "it feels like we don..." 
+
+ Having trustless payments in protocol seems quite different from not allowing operators to decide which builders they want to get bids from. Feels like it would make everyone's life easier if operators could just choose? Why would they need to do it with some weird boost?
+00:51:03	Sophia Gold:	Replying to "so my understandin..."
+
+That would be more of a problem than it is today?
+00:52:14	Ansgar Dietrichs:	Replying to "it feels like we don..."
+
+@Francesco was this meant to be a top level comment?
+00:52:34	Francesco:	Replying to "[Full message cannot be displayed on this version]" 
+
+ Yes I am from phone
+00:52:46	stokes:	Replying to "In terms of having a…"
+you allow easier entry for builders into the market
+00:53:05	stokes:	Replying to "In terms of having a…"
+it’s far more permissionless than any configuration with a relay
+00:53:08	terence:	p2p allows anyone with 32 eth to be a builder without opening up rpc end points and advertising to proposers to use it
+00:53:41	Justin Traglia:	Replying to "it feels like we don..."
+
+@Francesco would you like to talk about this?
+00:53:52	Lorenzo:	Reacted to "it’s far more per..." with 👍
+00:54:37	Barnabé Monnot:	strawman pipelining: there is only the validator releasing a beacon block committing to an exec payload, and the payload later on, both signed by them. what is wrong with this?
+00:54:47	potuz:	@Francesco so you don't disagree with "I blacklist every builder except these ones"
+00:56:39	Sophia Gold:	Replying to "strawman pipelinin..."
+
+Yes, I still don't understand the argument why this is unsafe
+01:00:47	Francesco:	Doesn't have to be proposer self signing, could still be signed by the builder but it just isn't staked
+01:00:59	Ansgar Dietrichs:	right, without staked builders you need to keep the current relay architecture
+01:01:08	Francesco:	(though it's not super clear what the signature is useful for at that point)
+01:01:42	terence:	Replying to "strawman pipelining:..."
+
+i think one argument here is "this is a change" and the change here is "not easy" either
+01:02:37	Ansgar Dietrichs:	DOSing with which message? the payload would come with proposer signature, no?
+01:02:50	Justin Traglia:	Yeah not sure about smaller stakes for builders
+01:02:50	Ansgar Dietrichs:	and the bid would just be builder <> relay <> proposer like today
+01:03:12	terence:	questions to builders, do you not like the stake part? or not like the running the validator infra part? or both
+01:03:32	Barnabé Monnot:	Replying to "strawman pipelining:..."
+
+Well it removes trustless payments, staked builders, all the builder-related infra (e.g, p2p exec bids etc) so agree it could be complex but hard for me to say how big the delta is, seems quite significant. no builder entity in code too
+01:03:50	potuz:	Replying to "DOSing with which me..."
+
+yes this was a reply to Francesco, if we go with the proposer's signature
+01:03:51	DA | Flashbots:	Replying to "questions to builder..."
+
+We’re fine with it.
+01:03:53	potuz:	Replying to "DOSing with which me..."
+
+then we n
+01:04:01	potuz:	Replying to "DOSing with which me..."
+
+then we have to do a back and forth again
+01:04:04	potuz:	Replying to "DOSing with which me..."
+
+for unbundling
+01:04:17	terence:	Reacted to "We’re fine with it." with 👍
+01:04:28	Ansgar Dietrichs:	so wait, was the confusion here that potuz was talking about a version where bids would still travel on the p2p? I think everyone else was talking about just sticking with today’s relay architecture as-is, no new bid p2p at all
+01:04:42	Greg K | Lido:	Reacted to "Yes, I still don't..." with 👍
+01:04:55	Barnabé Monnot:	Replying to "DOSing with which me..."
+
+that back and forth unbundling is on the proposer though, and in fact proposer could even blind sign early so the relay can release asap
+01:05:09	Barnabé Monnot:	Reacted to "so wait, was the con..." with 👍
+01:05:15	Sophia Gold:	Reacted to "so wait, was the c..." with 👍
+01:05:21	stokes:	Replying to "so wait, was the con…"
+i think potuz feels the p2p option is worth having
+01:05:33	Lorenzo:	Replying to "questions to build..."
+
+I would say that if most payments are trusted on the EL, then the builder is only nominally staked don't think would be an issue. Main issue would be if builders were required to keep the balance for payments on the CL since can be a large amount of capital
+01:05:33	Barnabé Monnot:	Replying to "so wait, was the con..."
+
+this, this is what we should be comparing against, a completely PBS-free version, not a half-free version
+01:05:36	stokes:	Replying to "so wait, was the con…"
+but maybe i shouldn’t speak for him
+01:05:43	Sophia Gold:	Reacted to "this, this is what..." with 👍
+01:05:54	Ansgar Dietrichs:	Replying to "so wait, was the con..."
+
+that’s what I am thinking about with the “scalining-only part of ePBS”.
+
+and then a separate EIP for:
+bid p2p
+staked builders
+trustless payments
+01:06:14	Barnabé Monnot:	Reacted to "that’s what I am thi..." with ➕
+01:06:20	terence:	Replying to "strawman pipelining:..."
+
+ah, but some of us are viewing p2p exec bids as a "feature", and worth the tradeoff, maybe that's the disagreement
+01:06:26	Ansgar Dietrichs:	Replying to "so wait, was the con..."
+
+to me that’s the only sensible way to split ePBS into two
+01:06:46	Barnabé Monnot:	Replying to "strawman pipelining:..."
+
+well it’s a feature but a market change feature, that people disagree with, wrt benefits and costs
+01:06:51	Barnabé Monnot:	Replying to "strawman pipelining:..."
+
+not a pipelining feature
+01:07:04	potuz:	Replying to "so wait, was the con..."
+
+no Ansgar, the p2p side is kinda irrelevant to me
+01:07:21	terence:	ouch, adding an new attestation container is a pain in #$#$ for prysm
+01:07:31	Lin Oshitani | Nethermind:	Replying to "questions to builder..."
+
+If anyone won't like it, I imagine it will be small builders that won't be in this call.
+01:07:56	potuz:	Replying to "so wait, was the con..."
+
+and as I said a gazillion times, staked builders (as lorenzo is putting here too) specially if they don't churn, it's not a problem. The complication of the EIP along those sides are minimal
+01:08:02	potuz:	Replying to "so wait, was the con..."
+
+compared to the sheer change of separating
+01:08:07	terence:	Replying to "questions to builder..."
+
+smaller builders can still use relayer, assuming there's a staked relayer
+01:08:20	Lin Oshitani | Nethermind:	Replying to "questions to builder..."
+
+True, good point
+01:08:23	Ansgar Dietrichs:	Replying to "so wait, was the con..."
+
+ah hm, then I still come out of this with confusion around staked builders

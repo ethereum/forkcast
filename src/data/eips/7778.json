@@ -1,32 +1,42 @@
 {
   "id": 7778,
-  "title": "EIP-7778: Block Gas Limit Accounting without Refunds",
+  "title": "EIP-7778: Block Gas Accounting without Refunds",
   "status": "Draft",
-  "description": "Prevents block gas limit circumvention by excluding refunds from block accounting; preserves user transaction incentives semantics.",
+  "description": "Prevent Block Gas Limit Circumvention by Excluding Refunds from Block Gas Accounting",
   "author": "Ben Adams (@benaadams), Toni Wahrstätter (@nerolation)",
   "type": "Standards Track",
   "category": "Core",
   "createdDate": "2024-10-01",
   "discussionLink": "https://ethereum-magicians.org/t/eip-7778-prevent-block-gas-smuggling/21234",
   "reviewer": "staff",
+  "layer": "EL",
   "forkRelationships": [
     {
       "forkName": "Glamsterdam",
       "statusHistory": [
         {
-          "status": "Proposed"
+          "status": "Proposed",
+          "call": null,
+          "date": null
         },
         {
           "status": "Considered",
           "call": "acde/225",
           "date": "2025-12-04"
+        },
+        {
+          "status": "Scheduled",
+          "call": "acde/236",
+          "date": "2026-05-07",
+          "timestamp": 804
         }
       ],
-      "layer": "EL",
-      "champion": {
-        "name": "Toni Wahrstätter",
-        "discord": "nero_eth"
-      }
+      "champions": [
+        {
+          "name": "Toni Wahrstätter",
+          "discord": "nero_eth"
+        }
+      ]
     }
   ],
   "laymanDescription": "Closes a loophole where gas refunds let blocks pack extra work. Refunds still reduce user costs, but don't shrink the block's counted gas. Aligns block size with real EVM work and reduces worst-case block-size variance.",
@@ -66,5 +76,6 @@
     "Prevents refund-based circumvention of block limits.",
     "Reduces worst-case block size variance.",
     "Improves node execution predictability and safety."
-  ]
+  ],
+  "tradeoffs": null
 }

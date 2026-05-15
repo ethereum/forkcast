@@ -1,0 +1,72 @@
+00:01:00	spencer:	hi hi! :D
+00:01:15	Maria Silva:	https://github.com/ethereum/pm/issues/2048
+00:07:51	Dragan Rakita:	Full block with one tx that deploys one big contract 😄
+00:08:20	Dragan Rakita:	For 200M block limit is becomes okay
+00:09:22	Dragan Rakita:	Do not remember but didn’t we push bytecode to 32kb, don’t remember if 64kb have passed?
+00:09:36	jochem-brouwer:	64kb not passed afaik, good point
+00:09:41	jochem-brouwer:	so 32kb for now
+00:09:44	Dragan Rakita:	Reacted to "so 32kb for now" with 👍
+00:09:51	jochem-brouwer:	i think 64kb idea is for hegota
+00:09:56	Dragan Rakita:	Reacted to "i think 64kb idea is..." with 👍
+00:10:01	Luis Pinto | Besu:	Yes but Giulio came with some benchmarks across clients that 64KB is actually OK so dunno if that’s gonna be pushed
+00:10:15	Luis Pinto | Besu:	Next fork yes, nonetheless I think we need to take that into account so keep changing costs is not ideal
+00:11:01	jochem-brouwer:	this this shows we need to solve the state problem in general also. a block only deploying a big contract does not make sense from ux side
+00:12:24	Ben Adams:	64kB is proposed as param update on current eip
+00:13:02	Dragan Rakita:	lgtm
+00:13:43	Stefan Starflinger:	Raise the maximum contract code size from 24KiB to 32KiB and initcode size from 48KiB to 64KiB.
+https://eips.ethereum.org/EIPS/eip-7954
+00:13:48	Stefan Starflinger:	is included
+00:13:54	Dragan Rakita:	Reacted to "Raise the maximum co..." with 👍
+00:14:05	Ben Adams:	Reacted to "Raise the maximum co..." with 👍
+00:14:20	Dragan Rakita:	There is different proposal to bump it to 64/128KiB
+00:14:44	felipe:	64/128KiB bump https://github.com/ethereum/EIPs/pull/11540/
+00:15:12	Stefan Starflinger:	https://github.com/ethereum/execution-apis/pull/800
+00:21:10	Dragan Rakita:	Yeah having this state gas data is helpful
+00:21:18	Luis Pinto | Besu:	Reacted to "Yeah having this state gas data is helpful" with 👍
+00:21:35	Ben Adams:	Reacted to "64/128KiB bump https..." with 👍
+00:22:42	Stefan Starflinger:	ah also eth/70 and eth/71 are now required for bal-devnet-7
+00:26:00	Dragan Rakita:	One line bcs
+00:26:24	Dragan Rakita:	sure
+00:29:44	Ben Adams:	if loading code and executing some vm isn't different to just updating account trie is odd?
+00:32:47	Louis:	If anyone want to check the benchmark implementation: https://github.com/ethereum/execution-specs/pull/2837
+00:33:31	jochem-brouwer:	Antwoord verzenden naar "If anyone want to ..."
+
+we need to ensure that the sender accounts are cold and inject these accounts in the prestate. now the senders are prefunded and are thus in memory cache
+00:33:39	jochem-brouwer:	Antwoord verzenden naar "If anyone want to ..."
+
+i can address this after the call
+00:34:54	jochem-brouwer:	Antwoord verzenden naar "If anyone want to ..."
+
+(cold = forced read from disk)
+00:38:27	Louis:	Replying to "If anyone want to ch..."
+
+Okay I understand, should I still move on merging the current one.
+Let’s discuss async
+00:38:36	jochem-brouwer:	Heeft gereageerd op "Okay I understand,..." met 👍
+00:44:18	jochem-brouwer:	Yup, agreed
+00:44:34	jochem-brouwer:	I will fast track shipping state optimization tooling so clients can iterate faster on this
+00:44:41	jochem-brouwer:	(for benchmarks)
+00:48:42	jochem-brouwer:	yer ship it, so clients only have to edit the numbers
+00:49:00	spencer:	would be in favor of 8038/2780 for sure
+00:50:25	felipe:	Reacted to "would be in favor ..." with 👍
+00:53:50	jochem-brouwer:	bal-devnet-next 😁
+00:53:55	spencer:	glam-devnet-4?
+00:54:02	spencer:	tmo!
+00:54:05	spencer:	:T
+00:54:26	jochem-brouwer:	Heeft gereageerd op "tmo!" met 🛳️
+00:54:26	Dragan Rakita:	That is fine
+00:55:21	felipe:	how does the access cost for SSTORE differ from / interact with the stipend cost?
+00:55:36	Marius van der Wijden:	I don't think we should change receipts tbh
+00:55:46	Dragan Rakita:	Reacted to "I don't think we sho..." with 👍
+00:56:01	Dragan Rakita:	Definitely not change receipts
+00:56:09	Luis Pinto | Besu:	Yeah this means receipts will have this data forever, right?
+00:56:28	felipe:	Replying to "how does the acces..."
+
+ah I see this, nm
+00:56:37	Marius van der Wijden:	There's no need to expose these internals to the users. I would prefer to standardize tracing for state gas instead
+00:56:43	Maria Silva:	Reacted to "ah I see this, nm" with 👍
+00:56:49	Luis Pinto | Besu:	Reacted to "There's no need to expose these internals to the users. I would prefer to standardize tracing for state gas instead" with ➕
+00:56:51	jochem-brouwer:	Heeft gereageerd op "There's no need to..." met ➕
+00:56:56	felipe:	Reacted to "There's no need to..." with ➕
+00:56:56	Dragan Rakita:	Reacted to "There's no need to e..." with ➕
+00:57:04	Stefan Starflinger:	@Mercy Boma Naps-Nkari https://discord.com/channels/595666850260713488/753271902520213625/1504031282026250321

@@ -1,0 +1,782 @@
+WEBVTT
+
+1
+00:06:18.370 --> 00:06:19.250
+Toni Wahrstaetter: Hello.
+
+2
+00:06:22.320 --> 00:06:23.250
+Pooja Ranjan: Hey, Tony.
+
+3
+00:06:23.780 --> 00:06:25.900
+Pooja Ranjan: See you now Thank you.
+
+4
+00:08:39.440 --> 00:08:44.430
+Pooja Ranjan: Tony, for some reason, the streaming is interrupted by Restream.
+
+5
+00:08:44.670 --> 00:08:49.330
+Pooja Ranjan: I need few more seconds to create a new stream link and share it in the group chat.
+
+6
+00:08:49.920 --> 00:08:55.370
+Toni Wahrstaetter: Okay, perfect, yeah. Let's wait a few mo- we wanted to wait a few more minutes anyway.
+
+7
+00:08:55.560 --> 00:08:58.130
+Toni Wahrstaetter: Give people some time to join solo.
+
+8
+00:08:58.480 --> 00:08:59.200
+Toni Wahrstaetter: Great.
+
+9
+00:10:15.570 --> 00:10:19.430
+Toni Wahrstaetter: Okay, how are we doing with the streaming link?
+
+10
+00:10:21.330 --> 00:10:30.109
+Pooja Ranjan: I just shared in the chat, it seems to be working, but I… can someone else confirm if they can see the pre-streaming?
+
+11
+00:10:35.950 --> 00:10:37.460
+jochem-brouwer: Yep, I can see it.
+
+12
+00:10:38.810 --> 00:10:41.610
+Pooja Ranjan: Awesome. I'm gonna move over the stream now.
+
+13
+00:10:43.210 --> 00:10:45.100
+Toni Wahrstaetter: Perfect, thank you very much.
+
+14
+00:10:46.020 --> 00:10:52.560
+Toni Wahrstaetter: Welcome, everyone! Today, we have the fourth EAP7928 breakout call.
+
+15
+00:10:52.670 --> 00:10:54.579
+Toni Wahrstaetter: It's October the 8th.
+
+16
+00:10:55.150 --> 00:11:01.750
+Toni Wahrstaetter: And we have a rather lightweight agenda today. So, first, we wanted to talk about
+
+17
+00:11:01.950 --> 00:11:13.939
+Toni Wahrstaetter: What we couldn't finish, or what we couldn't, take a decision on, two weeks ago, namely the topic of block-level access list hash versus block-level access list root.
+
+18
+00:11:15.000 --> 00:11:15.980
+Toni Wahrstaetter: Then…
+
+19
+00:11:16.130 --> 00:11:28.089
+Toni Wahrstaetter: I'm hoping we can get some updates from clients about progress, about, yeah, testing, and how everything is going. And finally, we can talk about,
+
+20
+00:11:28.870 --> 00:11:35.589
+Toni Wahrstaetter: Yeah, definite, and how we get to a first block access list definite as soon as possible.
+
+21
+00:11:37.980 --> 00:11:55.570
+Toni Wahrstaetter: Great, let's start into the discussion with BlockHub Access List Hash versus BlockHub Access List Route, and I would be curious, if clients have, like, changed their opinion or updated their opinion last week. The default was, more on the
+
+22
+00:11:56.030 --> 00:12:09.389
+Toni Wahrstaetter: keep it as is site, so that we keep the block lab access list as it is, and consider moving to a block lab access list route in the future, when partial stateless nodes become a more important thing.
+
+23
+00:12:10.140 --> 00:12:19.820
+Toni Wahrstaetter: But, yeah, the pre-confirmation team shared their work with everyone here, so I'm curious what clients think about this topic.
+
+24
+00:12:39.420 --> 00:12:42.689
+Toni Wahrstaetter: If there is no update, then I would just assume that…
+
+25
+00:12:42.920 --> 00:12:45.999
+Toni Wahrstaetter: We just stick with the block lab access list hash.
+
+26
+00:12:46.230 --> 00:12:48.859
+Toni Wahrstaetter: And don't change it at this point.
+
+27
+00:13:05.700 --> 00:13:06.560
+Toni Wahrstaetter: Great.
+
+28
+00:13:06.780 --> 00:13:08.800
+Toni Wahrstaetter: Then let's keep it as is.
+
+29
+00:13:08.910 --> 00:13:16.589
+Toni Wahrstaetter: Before we get into, client updates, I wanted to bring up this point by March Hill in the Discord.
+
+30
+00:13:16.730 --> 00:13:26.949
+Toni Wahrstaetter: Namely, he wanted to… open the discussion around precompiles. We already discussed, how we treat precompiles.
+
+31
+00:13:27.350 --> 00:13:29.379
+Toni Wahrstaetter: A few calls ago.
+
+32
+00:13:29.640 --> 00:13:34.440
+Toni Wahrstaetter: But I would still want to give Marshall the opportunity.
+
+33
+00:13:34.650 --> 00:13:36.649
+Toni Wahrstaetter: To voice this opinion here.
+
+34
+00:13:38.450 --> 00:13:45.259
+Marc: Yeah, I just wanted to quickly bring this up. So yeah, most people were against it last time, but,
+
+35
+00:13:45.410 --> 00:13:48.099
+Marc: I just kind of had a look into the code to see
+
+36
+00:13:48.270 --> 00:14:00.140
+Marc: sort of what it'd be like to implement this way. And it just seems cleaner to me to not include the precompiles if they're… they're just called, or if you take, like, the code size.
+
+37
+00:14:00.250 --> 00:14:07.750
+Marc: or copy code, then in all these cases, or certainly never mind code, like, this doesn't access the state at all.
+
+38
+00:14:08.060 --> 00:14:13.739
+Marc: So whereas for all of the other block accessor stuff, like, you can quite neatly do it by just…
+
+39
+00:14:14.050 --> 00:14:25.479
+Marc: sort of, you know, noting the change whenever you kind of go into the state. This goes down, like, a different code path, so… I mean, it's doable, but it just seems a bit more, like.
+
+40
+00:14:25.620 --> 00:14:31.670
+Marc: ugly to me. But yeah, I'm not sure if anyone else agrees with that, but I'm happy to go either way, really.
+
+41
+00:14:37.190 --> 00:14:40.529
+Toni Wahrstaetter: Yeah, I can definitely see the rational behind this.
+
+42
+00:14:40.830 --> 00:14:42.240
+Toni Wahrstaetter: Essentially.
+
+43
+00:14:42.620 --> 00:15:01.849
+Toni Wahrstaetter: we would never have a precompile included in the block live access list with empty changes, where nothing changes. Things like balance changes are still possible, and that would then essentially be the only way a precompile could ever be included in the Block Live Access List, if I… if I'm not wrong here.
+
+44
+00:15:02.150 --> 00:15:10.240
+Toni Wahrstaetter: And we would then just remove all pre-compiled addresses from the block of access list if there are no changes,
+
+45
+00:15:10.930 --> 00:15:17.850
+Toni Wahrstaetter: Related to it. So this would be, just a description to look from it, from a different angle.
+
+46
+00:15:27.510 --> 00:15:36.030
+Jared Wasinger: I feel like, And I need to look into this, but I feel like if the…
+
+47
+00:15:37.130 --> 00:15:47.080
+Jared Wasinger: If, the target account of this operation, of whatever one of these operations is.
+
+48
+00:15:47.340 --> 00:15:56.809
+Jared Wasinger: A precompile, and these fall under the… EIP2929, cold…
+
+49
+00:15:57.160 --> 00:16:05.750
+Jared Wasinger: account, like, load, cost model, if that makes sense. I feel like it might make sense to…
+
+50
+00:16:07.050 --> 00:16:10.139
+Jared Wasinger: to do what Mark is saying here.
+
+51
+00:16:12.100 --> 00:16:14.140
+Jared Wasinger: Yeah.
+
+52
+00:16:14.700 --> 00:16:21.879
+Toni Wahrstaetter: Yeah, just… just to add what I just said, because I think, Rokita, correct?
+
+53
+00:16:22.000 --> 00:16:25.759
+Toni Wahrstaetter: Dragon corrected me correctly there, because…
+
+54
+00:16:26.190 --> 00:16:30.610
+Toni Wahrstaetter: Also, if we call, like, balance on a precompile, we still want the…
+
+55
+00:16:31.000 --> 00:16:44.199
+Toni Wahrstaetter: we still want, the balance… we still want the precompile in the blocker access list, right? So, essentially, we are now talking about differentiating between certain opcodes when it comes to precompiles.
+
+56
+00:16:46.830 --> 00:16:49.170
+Jared Wasinger: Yeah, we definitely shouldn't do that.
+
+57
+00:16:49.670 --> 00:16:50.290
+draganrakita: Yeah.
+
+58
+00:16:51.660 --> 00:17:02.340
+draganrakita: On one hand, I understand that the compiler should be formed, and we should have those accounts available, but on the hand, I would like to be… for block level X, to be, like.
+
+59
+00:17:02.860 --> 00:17:08.230
+draganrakita: covering everything. If we touch account, it should be inside block access list.
+
+60
+00:17:11.660 --> 00:17:16.319
+Marc: Yeah, I mean, the point that I'm making here is, like, in these cases, you're not actually, like.
+
+61
+00:17:16.420 --> 00:17:23.370
+Marc: touching the state or any accounts. So let's say, like, in Nevermind, it goes down, like, a completely different, code path.
+
+62
+00:17:23.540 --> 00:17:28.420
+Marc: And it's nothing that you would… Need when executing, either.
+
+63
+00:17:29.540 --> 00:17:37.850
+Marc: But that wouldn't be the case for, like, balance or, you know, anything else except for those specific ones where it doesn't touch the state.
+
+64
+00:17:39.340 --> 00:17:44.039
+draganrakita: Yeah, I think… External cord size, external cord is…
+
+65
+00:17:44.870 --> 00:17:53.069
+draganrakita: those up codes are not that great, but they are needed. So yeah, I would stick to… Having, like.
+
+66
+00:17:53.300 --> 00:17:58.270
+draganrakita: Let's include everything, just to not make… Different rules around it.
+
+67
+00:17:58.800 --> 00:17:59.660
+draganrakita: But, yeah.
+
+68
+00:18:03.950 --> 00:18:06.339
+Toni Wahrstaetter: I'm… just echoing what…
+
+69
+00:18:06.790 --> 00:18:14.829
+Toni Wahrstaetter: Karim is also saying in the chat, agreeing with Jagan, for the sake of, yeah, lower complexity.
+
+70
+00:18:19.810 --> 00:18:24.919
+Marc: Yeah, I mean, I'm happy to go with that. It's just, like, as it depends on the codebase. For us, it's like…
+
+71
+00:18:25.040 --> 00:18:30.309
+Marc: Slightly more complexity to actually add them, but, like, still negligible, so it's just…
+
+72
+00:18:30.530 --> 00:18:32.629
+Marc: Whatever works best for everyone, I guess.
+
+73
+00:18:39.040 --> 00:18:48.300
+Toni Wahrstaetter: Awesome, then just to… to summarize that, regarding precompiles, we will include the precompiles if they are called in any upcode.
+
+74
+00:18:48.740 --> 00:18:56.450
+Toni Wahrstaetter: No matter what, which means that we will have precompiles in the block lab access list with completely empty.
+
+75
+00:18:56.690 --> 00:19:02.060
+Toni Wahrstaetter: changes. For example, if you call the balance opcode on a precompile.
+
+76
+00:19:05.100 --> 00:19:06.010
+Toni Wahrstaetter: Great.
+
+77
+00:19:10.020 --> 00:19:19.420
+Toni Wahrstaetter: Perfect. Is there anything else that you wanted to bring up… to bring up regarding this, point, or regarding the changes you, proposed for the EOP?
+
+78
+00:19:21.300 --> 00:19:31.380
+Marc: Yeah, I can quickly mention, so there's this other change that I suggested, around an edge case with balance changes.
+
+79
+00:19:31.650 --> 00:19:44.000
+Marc: So, specifically in the case that we have, a transaction, and an account's balance changes in that transaction, but goes back to what it was before the transaction.
+
+80
+00:19:44.290 --> 00:19:50.559
+Marc: I think in this case, we shouldn't record in the, block-level access list.
+
+81
+00:19:52.110 --> 00:19:59.769
+Marc: And to me, this just seems a bit more consistent with how we handle zero-value transfers and also self-destruct.
+
+82
+00:19:59.900 --> 00:20:08.629
+Marc: Because if we don't do it this way, like, we have these other special cases where if we… if we kind of change it, then it all just falls under this rule, which seems kind of nice.
+
+83
+00:20:11.130 --> 00:20:26.100
+Toni Wahrstaetter: Yeah, yeah, I totally agree with this, and this is actually how it should have been handled from the beginning. So, in the specs, it was always correct, but you are right that in the EAP, it was kind of poorly formulated, where it was not 100% clear.
+
+84
+00:20:26.270 --> 00:20:33.519
+Toni Wahrstaetter: So… I would assume the clients already handled that correctly, and we also had tests for that.
+
+85
+00:20:33.900 --> 00:20:40.339
+Toni Wahrstaetter: So what I would propose is that we just, merge your pull requester, and maybe we can…
+
+86
+00:20:40.510 --> 00:20:46.780
+Toni Wahrstaetter: slightly changed the wording there. I, proposed some, some small changes there.
+
+87
+00:20:47.630 --> 00:20:59.589
+Toni Wahrstaetter: But yeah, curious, what clients are actually doing in such cases for transactions where the initial balance is the same as the post balance in the specs, those were already excluded.
+
+88
+00:21:03.070 --> 00:21:05.150
+Jared Wasinger: You're in Geth, we exclude them.
+
+89
+00:21:12.430 --> 00:21:18.160
+Marc: It would also be good to cover this in the test, because I think… at the moment.
+
+90
+00:21:18.290 --> 00:21:23.959
+Marc: Nethermine doesn't actually do it this way, but I can't see any test that it's failing, so I think…
+
+91
+00:21:24.340 --> 00:21:26.570
+Marc: We should, add something for that.
+
+92
+00:21:37.590 --> 00:21:48.000
+Toni Wahrstaetter: Yeah, let me ask Rahul and Felipe, and I see they're both on the call, maybe some one of you can give us an update, would also work async if you…
+
+93
+00:21:48.280 --> 00:21:50.500
+Toni Wahrstaetter: Don't want to put you on the spot here.
+
+94
+00:21:53.880 --> 00:21:57.839
+raxhvl: I'll review that and update on… update in the channel.
+
+95
+00:21:59.290 --> 00:22:05.770
+Toni Wahrstaetter: Okay, great. Yeah, would be great if we… if we get a test case for that, just to make sure that…
+
+96
+00:22:06.010 --> 00:22:07.890
+Toni Wahrstaetter: We're handling that correctly.
+
+97
+00:22:14.310 --> 00:22:22.830
+draganrakita: Sorry, I'm… I didn't follow at the beginning. This is about setting, for example, Balance the…
+
+98
+00:22:23.490 --> 00:22:25.440
+draganrakita: Zero balance to some target.
+
+99
+00:22:25.690 --> 00:22:27.179
+draganrakita: This is the kid.
+
+100
+00:22:27.530 --> 00:22:31.160
+Toni Wahrstaetter: This is, for example, a zero-value transfer.
+
+101
+00:22:31.450 --> 00:22:35.349
+Toni Wahrstaetter: But it's also the case if you have a transaction.
+
+102
+00:22:35.910 --> 00:22:39.680
+Toni Wahrstaetter: and you send one EV somewhere else.
+
+103
+00:22:39.890 --> 00:22:45.660
+Toni Wahrstaetter: Or you call a contract, the contract sends one ETH out, and then receives one ETH in the same transaction.
+
+104
+00:22:45.790 --> 00:22:47.199
+draganrakita: Okay, in this case.
+
+105
+00:22:47.200 --> 00:22:52.880
+Toni Wahrstaetter: There was a balance change, but they zero each other out, and that's why we don't include them.
+
+106
+00:22:53.210 --> 00:22:57.839
+draganrakita: Okay, that makes sense. It's not included in the write set, but it's included as the read.
+
+107
+00:22:58.990 --> 00:23:02.459
+draganrakita: Exactly, yeah. Yeah, okay, cool, that makes sense.
+
+108
+00:23:07.850 --> 00:23:11.020
+Toni Wahrstaetter: Awesome. Yeah, I see Kareem also confirms that…
+
+109
+00:23:11.340 --> 00:23:13.709
+Toni Wahrstaetter: For peace, it's also read perfect.
+
+110
+00:23:14.870 --> 00:23:21.680
+Toni Wahrstaetter: Yeah, we have many of those, cases also around, reverted transactions, 7702,
+
+111
+00:23:21.790 --> 00:23:30.710
+Toni Wahrstaetter: What else was there? System contract stuff, if I remember correctly, where we sometimes have to convert changes to reads?
+
+112
+00:23:30.860 --> 00:23:32.490
+Toni Wahrstaetter: At least in the specs.
+
+113
+00:23:32.730 --> 00:23:40.499
+Toni Wahrstaetter: But yeah, for most of those edge cases, we have tests already, and this is one that we will definitely add.
+
+114
+00:23:46.900 --> 00:23:47.750
+Toni Wahrstaetter: Great.
+
+115
+00:23:47.930 --> 00:23:53.459
+Toni Wahrstaetter: Is there any other open topic that we should discuss before we get to client updates?
+
+116
+00:23:57.950 --> 00:24:02.859
+felipe: I wanted to just mention the 7702 changes in the spec.
+
+117
+00:24:03.500 --> 00:24:08.089
+felipe: Tony, I think you have a PR up for my branch that's open in the spec side.
+
+118
+00:24:08.540 --> 00:24:14.959
+felipe: And I made a couple small changes there for some new tests that I added, if you could take a look.
+
+119
+00:24:15.090 --> 00:24:16.510
+felipe: And we can chat async.
+
+120
+00:24:18.310 --> 00:24:20.850
+Toni Wahrstaetter: Perfect, yeah, I will take a look.
+
+121
+00:24:21.850 --> 00:24:22.980
+Toni Wahrstaetter: Thank you very much.
+
+122
+00:24:23.410 --> 00:24:24.430
+felipe: Awesome, yeah.
+
+123
+00:24:26.880 --> 00:24:28.159
+Toni Wahrstaetter: Yeah, Katya?
+
+124
+00:24:28.810 --> 00:24:39.429
+Katya: Hi everyone, I'm Katya, I'm working on metric specs, so I also opened an issue regarding biometric specs, so…
+
+125
+00:24:39.670 --> 00:24:43.960
+Katya: I would like to hear from you later in the…
+
+126
+00:24:44.130 --> 00:24:50.479
+Katya: channel, so your ideas, maybe, so I put some metrics, which can be standardized.
+
+127
+00:24:50.750 --> 00:25:03.949
+Katya: And if some of the clients are ready to build them, so we can have them, the dashboards and Cortosis, and for dev notes as well, so please let me know. I will share it also in the
+
+128
+00:25:04.060 --> 00:25:07.429
+Katya: Discord channel. Thank you.
+
+129
+00:25:11.350 --> 00:25:13.139
+Toni Wahrstaetter: Awesome, thank you very much.
+
+130
+00:25:14.170 --> 00:25:15.210
+Toni Wahrstaetter: Sounds good.
+
+131
+00:25:18.080 --> 00:25:20.270
+Toni Wahrstaetter: Great, is there any other topic?
+
+132
+00:25:20.480 --> 00:25:21.910
+Toni Wahrstaetter: Someone wants to race.
+
+133
+00:25:35.200 --> 00:25:41.029
+Toni Wahrstaetter: If not, we can also start, going through the clients and… Checking client updates.
+
+134
+00:25:41.180 --> 00:25:48.860
+Toni Wahrstaetter: And then, yeah, we can already start discussing when we want to do a first definet, maybe.
+
+135
+00:25:49.350 --> 00:25:51.390
+Toni Wahrstaetter: Maybe we start with you, Charit?
+
+136
+00:25:54.090 --> 00:26:02.309
+Jared Wasinger: Yeah, sure. Not too much to report on the get side,
+
+137
+00:26:02.580 --> 00:26:15.810
+Jared Wasinger: In the sense that it's relevant to people outside the Geth team. Basically, the last, week and a half or two have been consumed by refactoring our,
+
+138
+00:26:16.130 --> 00:26:23.440
+Jared Wasinger: Implementation to be more clean and to get it into a mergeable state.
+
+139
+00:26:23.560 --> 00:26:34.769
+Jared Wasinger: I've been working a lot on making sure that this new refactored implementation is going to work in a local DevNets setup.
+
+140
+00:26:37.200 --> 00:26:41.860
+Jared Wasinger: so yeah, that's it.
+
+141
+00:26:43.990 --> 00:26:48.749
+Toni Wahrstaetter: Awesome. When would you say, would you be ready for, first FDAT?
+
+142
+00:26:56.840 --> 00:27:04.410
+Jared Wasinger: soon? It's at the point where, I mean, it…
+
+143
+00:27:04.690 --> 00:27:11.229
+Jared Wasinger: I think it's very close, but it's just a matter of ironing out,
+
+144
+00:27:11.350 --> 00:27:16.340
+Jared Wasinger: these issues that pop up when I try to run it, so… I mean…
+
+145
+00:27:17.200 --> 00:27:25.940
+Jared Wasinger: maybe a day or two. It's kind of hard to give a firm answer. I doubt it would… I doubt it would take
+
+146
+00:27:26.280 --> 00:27:28.470
+Jared Wasinger: A week or more, though.
+
+147
+00:27:31.860 --> 00:27:33.449
+Toni Wahrstaetter: Great, thanks for the update.
+
+148
+00:27:33.880 --> 00:27:36.370
+Toni Wahrstaetter: Let's continue on with Netherland.
+
+149
+00:27:38.540 --> 00:27:41.330
+Marc: I, so…
+
+150
+00:27:41.550 --> 00:27:51.520
+Marc: I fixed some issue that was, causing, Nethermine to… or the BALS… NetherMind BALS implementation to not run in the Hive tests.
+
+151
+00:27:51.890 --> 00:27:55.889
+Marc: So now it's passing most of the tests on the tracker.
+
+152
+00:27:56.250 --> 00:28:02.980
+Marc: And there's a few that are still failing around a few edge cases, so I'm just working through those and fixing them.
+
+153
+00:28:06.330 --> 00:28:07.440
+Toni Wahrstaetter: Thanks a lot.
+
+154
+00:28:09.580 --> 00:28:12.980
+Toni Wahrstaetter: Let's continue on with… Ruh.
+
+155
+00:28:16.020 --> 00:28:31.310
+Ishika: So we ran the new sets of the tests, and had some issues with how, the balances were stored in case of a non-change test, and we fixed it, and we also ran some
+
+156
+00:28:31.500 --> 00:28:44.970
+Ishika: test concerning IP2930, and yeah, we now have the BAL DevNet 0 branch in red, and the new tests that are added, didn't get a chance to look into it.
+
+157
+00:28:45.130 --> 00:28:46.050
+Ishika: So…
+
+158
+00:28:46.200 --> 00:28:53.289
+Ishika: We'll look into it soon, and also have a bit of refactoring on the part of the code we have implemented so far.
+
+159
+00:28:57.010 --> 00:29:03.540
+Toni Wahrstaetter: Awesome, thanks. This also sounds, like, very close to being able to participate in the first FNet, right?
+
+160
+00:29:18.480 --> 00:29:21.070
+Toni Wahrstaetter: Let's continue on with Aragon.
+
+161
+00:29:22.340 --> 00:29:29.850
+Mark Holt: Yeah, so… we are… Just finalizing our implementation,
+
+162
+00:29:30.050 --> 00:29:35.349
+Mark Holt: I'm expecting to get a branch that we can merge probably on Monday next week.
+
+163
+00:29:35.660 --> 00:29:38.199
+Mark Holt: And then…
+
+164
+00:29:38.340 --> 00:29:44.429
+Mark Holt: I guess by the end of the week, we'd aim to get the hive tests all passing, now…
+
+165
+00:29:44.890 --> 00:29:50.729
+Mark Holt: I think the way that we've done the implementation, we have basically a parallel engine running that we've been
+
+166
+00:29:50.970 --> 00:29:56.159
+Mark Holt: kind of merging over the last week or so. We now need to put the bowel stuff on top of it.
+
+167
+00:29:56.450 --> 00:30:01.350
+Mark Holt: Having had a look at the, It's the…
+
+168
+00:30:01.940 --> 00:30:08.309
+Mark Holt: the Discord chat, although I haven't particularly participated in it. I think most of the issues that we're
+
+169
+00:30:09.150 --> 00:30:16.280
+Mark Holt: that people are raising, we've also had and kind of fixed in our implementation, so I would hope
+
+170
+00:30:16.420 --> 00:30:20.429
+Mark Holt: will be in… A good position by the end of next week.
+
+171
+00:30:20.670 --> 00:30:25.309
+Mark Holt: So I think probably the week after, we would be ready to join a DevNet.
+
+172
+00:30:27.990 --> 00:30:29.549
+Toni Wahrstaetter: Great, thank you very much.
+
+173
+00:30:30.450 --> 00:30:32.100
+Toni Wahrstaetter: and peso.
+
+174
+00:30:34.220 --> 00:30:47.460
+Karim T.: So, so we are passing all of the bul tests, block access tests. We… we did some tests with GET on a local devnet, so the block built by Bezo are accepted by GET.
+
+175
+00:30:47.570 --> 00:30:48.780
+Karim T.: And to get…
+
+176
+00:30:48.940 --> 00:30:55.049
+Karim T.: built by… there's a blog built by Ketta, accepted by Bizzou, so it seems that for the moment it's working.
+
+177
+00:30:55.170 --> 00:30:59.860
+Karim T.: So we created a branch, for the new DevNet.
+
+178
+00:31:00.180 --> 00:31:13.329
+Karim T.: Just, it seems that we have some issue with the Hive test, but I don't think it's related to block access list, we just have to understand what is the problem. But, I think Bezu is really, yes, for the… for the DevNet.
+
+179
+00:31:17.350 --> 00:31:18.250
+Toni Wahrstaetter: Amazing.
+
+180
+00:31:18.480 --> 00:31:22.410
+Toni Wahrstaetter: Yeah, we're getting really close to a first definite hit, it seems like.
+
+181
+00:31:25.240 --> 00:31:27.430
+Toni Wahrstaetter: Yeah, great work, everyone.
+
+182
+00:31:27.550 --> 00:31:30.660
+Toni Wahrstaetter: Is there anything else we should discuss today?
+
+183
+00:31:43.730 --> 00:31:44.760
+Toni Wahrstaetter: Great.
+
+184
+00:31:44.890 --> 00:31:49.700
+Toni Wahrstaetter: I will then double-check with PandaOps regarding First DevNet, and…
+
+185
+00:31:50.800 --> 00:31:54.049
+Toni Wahrstaetter: Nothing needed for that, but looks like we might.
+
+186
+00:31:54.260 --> 00:31:56.999
+Toni Wahrstaetter: Get to a first definite next week, sometime.
+
+187
+00:31:58.890 --> 00:31:59.930
+Toni Wahrstaetter: Amazing.
+
+188
+00:32:00.300 --> 00:32:04.980
+Toni Wahrstaetter: If there is nothing else, then I would say we can…
+
+189
+00:32:05.390 --> 00:32:07.990
+Toni Wahrstaetter: And the call a little earlier today.
+
+190
+00:32:14.160 --> 00:32:15.110
+Toni Wahrstaetter: Awesome.
+
+191
+00:32:15.460 --> 00:32:20.380
+Toni Wahrstaetter: Then, thanks everyone, and see you at the next breakout call in two weeks.
+
+192
+00:32:22.070 --> 00:32:23.220
+Marc: By the way.
+
+193
+00:32:23.380 --> 00:32:24.430
+felipe: Thanks, bye.
+
+194
+00:32:24.760 --> 00:32:27.020
+Ishika: Bye.
+
+195
+00:32:27.020 --> 00:32:27.370
+draganrakita: What?
+

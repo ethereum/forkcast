@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { parseLocalDate, parseShortDate } from './forkDateCalculator';
+import { formatISODate } from '../../utils/date';
 
 export interface EditableDateCellProps {
   fork: string;
@@ -52,7 +53,7 @@ const EditableDateCell: React.FC<EditableDateCellProps> = ({
   const toInputFormat = (dateStr: string): string => {
     const parsed = parseShortDate(dateStr);
     if (!parsed) return '';
-    return parsed.toISOString().split('T')[0];
+    return formatISODate(parsed);
   };
 
   // Convert "YYYY-MM-DD" to "MMM DD, YYYY" for display
@@ -98,7 +99,7 @@ const EditableDateCell: React.FC<EditableDateCellProps> = ({
   // Not editable (Fusaka or N/A)
   if (!isEditable) {
     if (!calculatedDate) {
-      return <span className="text-slate-400 dark:text-slate-500 text-sm italic">N/A</span>;
+      return <span className="text-slate-400 dark:text-slate-400 text-sm italic">N/A</span>;
     }
     return (
       <div className="flex items-center gap-1">
@@ -110,7 +111,7 @@ const EditableDateCell: React.FC<EditableDateCellProps> = ({
         <div className={`text-slate-700 dark:text-slate-300 text-sm ${dateWidth}`}>
           {displayDate}
         </div>
-        <span className={`text-xs ${gapWidth} text-right ${gapIsNegative ? 'text-red-600 dark:text-red-400 font-semibold' : gapIsWarning ? 'text-amber-600 dark:text-amber-400 font-medium' : 'text-slate-400 dark:text-slate-500'}`}>
+        <span className={`text-xs ${gapWidth} text-right ${gapIsNegative ? 'text-red-600 dark:text-red-400 font-semibold' : gapIsWarning ? 'text-amber-600 dark:text-amber-400 font-medium' : 'text-slate-400 dark:text-slate-400'}`}>
           {gapText || ''}
         </span>
         <span className={iconWidth}></span>
@@ -128,7 +129,7 @@ const EditableDateCell: React.FC<EditableDateCellProps> = ({
         <div className={`text-slate-700 dark:text-slate-300 text-sm ${dateWidth}`}>
           {displayDate}
         </div>
-        <span className={`text-xs ${gapWidth} text-right ${gapIsNegative ? 'text-red-600 dark:text-red-400 font-semibold' : gapIsWarning ? 'text-amber-600 dark:text-amber-400 font-medium' : 'text-slate-400 dark:text-slate-500'}`}>
+        <span className={`text-xs ${gapWidth} text-right ${gapIsNegative ? 'text-red-600 dark:text-red-400 font-semibold' : gapIsWarning ? 'text-amber-600 dark:text-amber-400 font-medium' : 'text-slate-400 dark:text-slate-400'}`}>
           {gapText || ''}
         </span>
         <span className={iconWidth}></span>
@@ -146,7 +147,7 @@ const EditableDateCell: React.FC<EditableDateCellProps> = ({
         <div className={`text-sm ${dateWidth} ${isOverdue ? 'text-red-600 dark:text-red-400 font-semibold' : 'text-slate-700 dark:text-slate-300'}`}>
           {displayDate}
         </div>
-        <span className={`text-xs ${gapWidth} text-right ${gapIsNegative ? 'text-red-600 dark:text-red-400 font-semibold' : gapIsWarning ? 'text-amber-600 dark:text-amber-400 font-medium' : 'text-slate-400 dark:text-slate-500'}`}>
+        <span className={`text-xs ${gapWidth} text-right ${gapIsNegative ? 'text-red-600 dark:text-red-400 font-semibold' : gapIsWarning ? 'text-amber-600 dark:text-amber-400 font-medium' : 'text-slate-400 dark:text-slate-400'}`}>
           {gapText || ''}
         </span>
         <span className={`${iconWidth} text-xs text-purple-500 text-center`} title="Date from meta thread">
@@ -192,7 +193,7 @@ const EditableDateCell: React.FC<EditableDateCellProps> = ({
       >
         {displayDate}
       </div>
-      <span className={`text-xs ${gapWidth} text-right ${gapIsNegative ? 'text-red-600 dark:text-red-400 font-semibold' : gapIsWarning ? 'text-amber-600 dark:text-amber-400 font-medium' : 'text-slate-400 dark:text-slate-500'}`}>
+      <span className={`text-xs ${gapWidth} text-right ${gapIsNegative ? 'text-red-600 dark:text-red-400 font-semibold' : gapIsWarning ? 'text-amber-600 dark:text-amber-400 font-medium' : 'text-slate-400 dark:text-slate-400'}`}>
         {gapText || ''}
       </span>
       <button

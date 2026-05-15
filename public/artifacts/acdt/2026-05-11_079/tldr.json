@@ -1,0 +1,145 @@
+{
+  "meeting": "ACDT #79 - May 11, 2026",
+  "highlights": {
+    "interop_recap": [
+      {
+        "timestamp": "00:06:02",
+        "highlight": "Glamsterdam DevNet 3 unstable; Lighthouse sync issues, Teku envelope problems"
+      },
+      {
+        "timestamp": "00:08:08",
+        "highlight": "bal-devnet-6 near finalization; bal-devnet-7 will incorporate benchmarking optimizations"
+      },
+      {
+        "timestamp": "00:08:59",
+        "highlight": "Repricing: preliminary numbers for 7904/8038; optimizations ongoing, final EIPs next week"
+      },
+      {
+        "timestamp": "00:10:37",
+        "highlight": "FOCIL DevNet achieved interop during event; more Hegota testing planned"
+      }
+    ],
+    "epbs_sync_issues": [
+      {
+        "timestamp": "00:11:45",
+        "highlight": "Prysm downscoring peers serving incompatible block/payload ranges during sync"
+      },
+      {
+        "timestamp": "00:13:29",
+        "highlight": "Teku potentially serving payloads for non-canonical blocks; investigation needed"
+      },
+      {
+        "timestamp": "00:14:39",
+        "highlight": "Sync issues prevent DevNet 3 recovery; may require DevNet 4"
+      }
+    ],
+    "builder_deposit_spam": [
+      {
+        "timestamp": "00:16:05",
+        "highlight": "PR 5223: Raise min builder withdrawability delay to 8192 epochs"
+      },
+      {
+        "timestamp": "00:17:15",
+        "highlight": "Testing needed: spam deposits to verify if delay extension solves verification DoS"
+      },
+      {
+        "timestamp": "00:20:02",
+        "highlight": "Lighthouse: 8192 signatures take ~700ms valid, 1s+ with invalids (M1)"
+      },
+      {
+        "timestamp": "00:23:17",
+        "highlight": "Attack cost estimate: $250k for 5-slot spam at 3% interest (2-month lock)"
+      },
+      {
+        "timestamp": "00:24:30",
+        "highlight": "Social slashing main deterrent; economic barrier considered low"
+      },
+      {
+        "timestamp": "00:25:43",
+        "highlight": "Repricing adds only 40% cost increase; not significant spam mitigation"
+      },
+      {
+        "timestamp": "00:27:26",
+        "highlight": "Alternative: EVM signature verification in new contract (caps by gas limit)"
+      }
+    ],
+    "ssz_limits": [
+      {
+        "timestamp": "00:29:15",
+        "highlight": "PR 5224: Raise SSZ deposit limit to 1M to prevent deserialization failures"
+      },
+      {
+        "timestamp": "00:31:05",
+        "highlight": "Decision: Don't merge temporary fix; run DevNet at 150M gas until progressive lists"
+      }
+    ],
+    "gas_limit_coordination": [
+      {
+        "timestamp": "00:36:28",
+        "highlight": "Problem: EL/CL gas limit preferences not synchronized; affects ePBS bid validation"
+      },
+      {
+        "timestamp": "00:40:11",
+        "highlight": "Proposal: CL sends target gas limit via FCU; EL applies 1/1024 rule"
+      },
+      {
+        "timestamp": "00:42:49",
+        "highlight": "CL validates builder bids against target; EL validates EIP-1559 consensus rules"
+      },
+      {
+        "timestamp": "00:50:59",
+        "highlight": "Bid gas limit = target (from preferences), not calculated payload limit"
+      },
+      {
+        "timestamp": "00:52:53",
+        "highlight": "EL deprecates gas limit flag; accepts target via payload attributes only"
+      },
+      {
+        "timestamp": "00:56:06",
+        "highlight": "Alternative rejected: BPO-style hard-coded gas limits (loses emergency adjustment)"
+      }
+    ]
+  },
+  "action_items": [
+    {
+      "timestamp": "00:17:32",
+      "action": "Validate signature verification benchmarks; present cost analysis at ACDC",
+      "owner": "Justin Traglia"
+    },
+    {
+      "timestamp": "01:01:25",
+      "action": "Update engine API PR 608 with target gas limit in payload attributes",
+      "owner": "Nico Flaig"
+    },
+    {
+      "timestamp": "01:06:06",
+      "action": "Draft consensus spec PR for CL gas limit validation logic",
+      "owner": "Potuz"
+    },
+    {
+      "timestamp": "01:07:09",
+      "action": "Update consensus spec: bid.gasLimit validation against target (not calculated)",
+      "owner": "Bharath Vedartham"
+    }
+  ],
+  "decisions": [
+    {
+      "timestamp": "00:31:50",
+      "decision": "Close PR 5224 (SSZ limit raise); run DevNet <200M gas until progressive lists"
+    },
+    {
+      "timestamp": "00:53:36",
+      "decision": "CL validates target adherence; EL validates EIP-1559 rules only"
+    },
+    {
+      "timestamp": "01:00:24",
+      "decision": "Bid gas limit = target from preferences; payload gas limit = calculated"
+    }
+  ],
+  "targets": [
+    {
+      "timestamp": "00:09:23",
+      "target": "Next week - Final repricing EIP numbers for 7904"
+    }
+  ]
+}

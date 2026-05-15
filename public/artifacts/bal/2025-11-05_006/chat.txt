@@ -1,0 +1,84 @@
+00:03:41	Pooja Ranjan:	gm
+00:03:43	Ishika:	hello
+00:04:10	Po:	Reacted to "hello" with ❤️
+00:06:14	Toni Wahrstaetter:	https://github.com/ethereum/pm/issues/1787
+00:08:54	Karim T.:	Gas used or number of read per transaction ?
+00:09:03	Jared Wasinger:	Gas used
+00:09:52	Karim T.:	Asking if it will be better to track the amount of read instead . Maybe not
+00:11:23	Karim T.:	Maybe we need more tests and push that in another  fork
+00:16:45	mirgee:	Doesn't optimizing execution result in practical benefit only if state root computation isn't the bottleneck anymore?
+00:16:51	raxhvl:	If we wanted we could infer computational effort by just size of state access
+00:18:15	Toni Wahrstaetter:	Replying to "If we wanted we coul..."
+
+yeah this works better than gas limit. I analyzed that once
+00:18:52	draganrakita:	Is this about fast failing on gas mismatch?
+00:21:30	draganrakita:	Even gas is not reliable to say that Tx is going to take N amount of time to execute
+00:22:39	draganrakita:	If tx uses N gas it does not mean it will take M ms, it can revert at the start and take M/100 ms to execute
+00:24:01	Gary Rong:	but in this case it's a bonus for block execution? it's supposed to use m ms but it ends up with m/100 ms to complete N gas
+00:24:14	Gary Rong:	We actually only care about the worst case
+00:24:17	mirgee:	Doesn’t gas account for storage growth as well, not just execution time?
+00:25:37	Stefan Starflinger:	https://notes.ethereum.org/@ethpandaops/bal-devnet-0
+00:25:53	draganrakita:	Replying to "We actually only car..."
+
+True, just adding a comment about reliability of used gas
+00:26:20	Karim T.:	Also last version of BAL tests are failing much more with the old forks
+00:27:27	Jared Wasinger:	Get also doesn’t pass the old fork tests
+00:27:35	Ishika:	Reacted to "Also last version ..." with ➕
+00:27:36	Jared Wasinger:	*geth
+00:29:15	mirgee:	I think there are some known issues with the tests which should be corrected in the next patch release?
+00:29:28	Karim T.:	Because when I see the number of failing tests for each clients I will prefer to have more passing tests before https://hive.ethpandaops.io/#/group/bal
+00:29:53	draganrakita:	I have list on test that fail on v1.4.0 here:
+https://discord.com/channels/595666850260713488/1434985857823146059/1435007236563931166
+00:30:32	draganrakita:	Would assume all/most of them are test problems
+00:31:46	Toni Wahrstaetter:	This is the PR re this:
+https://github.com/ethereum/execution-specs/commit/79ce5c4a49fd86a35204695487cd1c7cecfc4f03
+00:32:25	mirgee:	Reacted to "Because when see the..." with 👍
+00:32:49	felipe:	This is the gas charge split https://github.com/ethereum/execution-specs/pull/1751
+00:33:07	raxhvl:	Mark we created a thread on R&D to help Erigon with testing, feel free to post any questions related to testing.
+
+https://discord.com/channels/595666850260713488/1435636875321933885
+00:34:58	Stefan Starflinger:	For testing can clients please run the evm-fuzz scenario of the spamoor in their kurtosis testnets
+00:35:21	draganrakita:	I feel that revm is in good place regarding BAL. So if people want to run blockchain tests, they can install rust, clone revm repo (use rakita/bal branch), and run  cargo run -p revme — btest path_to_test . On BAL missmatch it should print out full BAL
+00:35:33	raxhvl:	Reacted to I feel that revm is ... with "👍"
+00:35:45	Stefan Starflinger:	Reacted to "I feel that revm is …" with 👍
+00:35:52	Ishika:	Reacted to "I feel that revm i..." with ❤️
+00:36:14	Gary Rong:	https://hackmd.io/@bFEBbZiVSAO0IURh9qzEFg/S1Y-mjBkWe
+00:38:05	felipe:	Reacted to "I feel that revm i..." with ❤️
+00:39:27	felipe:	Printing the full bal is ideal thank you for that. How is this branch different from `bal-devnet-0`, where we're aligning that branch name for all clients?
+00:40:06	Po:	Reacted to "I feel that revm is ..." with ❤️
+00:40:23	felipe:	Replying to "I feel that revm i..."
+
+ah this is revm, got it
+00:40:34	draganrakita:	Reacted to "ah this is revm, got..." with 👍
+00:41:17	Po:	Reacted to "https://hackmd.io/@b..." with ❤️
+00:42:04	felipe:	Reacted to "https://hackmd.io/..." with ❤️
+00:42:19	Stefan Starflinger:	Replying to "https://notes.ethere…"
+Besu also has a debug endpoint to get a disagreeing block and the generated bal by besu. Useful for comparing. Added it to the above doc
+00:42:35	draganrakita:	Replying to "I feel that revm is ..."
+
+Here is example of output: https://gist.github.com/rakita/e1e2d0dd26d9ab878235ff2be5defa94
+00:42:47	draganrakita:	Claude is amazing for this kind of work 😄
+00:42:55	Po:	What's the random read throughput limit on this SSD?
+00:43:13	felipe:	Reacted to "Here is example of..." with 🔥
+00:48:16	Gary Rong:	For batch read over the raw SSD, the qps is 570218.58
+00:51:01	Po:	okay,  seems the ssd's bandwidth is 2G/s. Say it we test it with FIO in 4k read size
+00:51:35	draganrakita:	While we are talking about number of cores, we should have minimum spec number for it. Something like, recommending 4 cores, similar how ram and disk are recommended.
+00:52:02	Toni Wahrstaetter:	https://eips.ethereum.org/EIPS/eip-7870
+00:52:33	draganrakita:	Makes sense
+00:53:10	draganrakita:	Reacted to "https://eips.ethereu..." with 👍
+00:54:26	felipe:	Reacted to "While we are talki..." with 👍
+00:54:58	Po:	Reacted to "https://eips.ethereu..." with 👍
+00:55:27	Marc:	maybe will complicate testing if we delay decision too late
+00:57:03	Po:	Reacted to "While we are talking..." with 👍
+00:57:34	felipe:	Reacted to "https://eips.ether..." with 👍
+00:59:40	felipe:	I wanted to bring up debugging in this session. It would be very useful if we had the full bal in debug logs from all clients when there is a mismatch. In some cases we are only getting the hash mismatch which makes it difficult to track / compare test BALs vs the client BAL to see where the issue may be.
+01:01:18	mirgee:	Reacted to "While we are talking..." with 👍
+01:01:32	Ishika:	Reacted to "I wanted to bring ..." with 👍
+01:01:49	mirgee:	Reacted to "I wanted to bring up..." with 👍
+01:02:05	raxhvl:	Reacted to I wanted to bring up... with "👍"
+01:04:40	Jared Wasinger:	Geth has a debug method for getting a JSON-encoded BAL via block number or hash
+01:04:47	Jared Wasinger:	debug_getBlockAccessList
+01:04:56	Po:	Reacted to " debug_getBlockAcces..." with 👍
+01:04:58	raxhvl:	Reacted to  debug_getBlockAcces... with "👍"
+01:05:04	felipe:	Reacted to "debug_getBlockAcce..." with 👍
+01:05:10	Stefan Starflinger:	Reacted to " debug_getBlockAcces…" with 👍

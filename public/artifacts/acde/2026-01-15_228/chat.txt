@@ -1,0 +1,734 @@
+00:04:15	nixo:	gm lol
+00:04:22	stokes:	gm
+00:04:27	Mario Vega:	lol gm
+00:04:34	Renaud-ZKNOX:	gm
+00:05:02	CPerezz:	@Ben Adams love the pic!
+00:05:19	Ben Adams:	Reacted to "@Ben Adams love the ..." with 💜
+00:05:28	Ansgar Dietrichs:	agenda: https://github.com/ethereum/pm/issues/1867
+00:05:33	Justin Florentine (Besu):	bens really got his prompt dialed in. very consistent style.
+00:05:41	Dragan Rakita:	Reacted to "bens really got his ..." with 😂
+00:05:56	Ben Adams:	Reacted to "bens really got his ..." with 😂
+00:07:09	Barnabas:	We gonna hear from Lodestar on monday to let us know if its easy to add.
+00:07:13	Phil Ngo:	Reacted to "We gonna hear from L..." with 👍
+00:07:15	Barnabas:	Unless any other CL team is happy to step up
+00:07:48	stokes:	It’s just sending the slot across the engine API? I would expect its pretty straightforward
+00:07:58	Dragan Rakita:	Syncing with CL can be a overhead on release/versioning side, would remove it from scope, it is small EIP in general.
+00:08:05	Barnabas:	Replying to "It’s just sending th..."
+
+it is a straightforward change but its a change none the less
+00:08:07	spencer-tb:	Reacted to "Unless any other CL ..." with ➕
+00:08:37	stokes:	Reacted to "it is a straightforw..." with 👍
+00:08:43	nixo:	“tech illiterate” that group lol
+00:08:47	Marius van der Wijden:	Slotnum is the only one that requires el/cl right?
+00:08:51	Mario Vega:	Reacted to "Slotnum is the only ..." with 👍🏼
+00:08:53	Parithosh Jayanthi:	Reacted to "“tech illiterate” th..." with 😂
+00:08:57	Marius van der Wijden:	Maybe we can pull this one out
+00:08:59	Dragan Rakita:	Reacted to "Slotnum is the only ..." with 👍🏼
+00:09:04	Mario Vega:	Replying to "Slotnum is the only ..."
+
+Three remaining are EL only
+00:09:08	Stefan Starflinger:	https://github.com/ChainSafe/lodestar/pull/8747 this is the change required according to claude
+00:09:11	stokes:	Replying to "It’s just sending th..."
+
+I am surprised the 4788 route is that expensive given how cheap gas is getting (towards the EIP in particular)
+00:09:15	Guru:	Reacted to "Slotnum is the only ..." with 👍🏼
+00:09:16	Marius van der Wijden:	But also there is a question about rebasing the other eips on top a moving bal target
+00:11:18	Toni Wahrstätter:	https://github.com/ethereum/execution-specs/pull/1401#event-22068883264
+00:11:37	Barnabas:	Reacted to "Slotnum is the only ..." with 👍🏼
+00:13:43	Łukasz Rozmej:	will this break any receipt users?
+00:14:12	Marius van der Wijden:	Sorry again in writing:
+We want the receipt to contain the used gas not including the refunds?
+00:14:17	frangio:	https://ethereum-magicians.org/t/evm-immediates/25605#p-62704-option-22-no-changes-to-jumpdest-analysis-5
+00:14:54	Ansgar Dietrichs:	Replying to "Sorry again in writi..."
+
+should we come back to this or can we clarify in chat / async?
+00:15:05	Marius van der Wijden:	Replying to "Sorry again in wri..."
+
+async please
+00:15:11	Ansgar Dietrichs:	Reacted to "async please" with 👍
+00:15:13	frangio:	https://github.com/ethereum/EIPs/pull/11085
+00:16:56	Toni Wahrstätter:	Replying to "Sorry again in writi..."
+
+For BALs, if we want to use the receipt to enforce the block gas limit, it would be handy to have the gas_used BEFORE refunds.
+If we say receipt (with the cumulative gas used) is user facing (e.g. eth_getTransactionReceipt) we can do the gas_used AFTER refunds - however, then you cannot use the receipt for validating the block gas limit being obeyed (as you would need to know the refunds of txs for that)
+00:17:24	Marius van der Wijden:	Reacted to "For BALs, if we wa..." with 👍
+00:17:55	Marius van der Wijden:	Replying to "Sorry again in wri..."
+
+We use the gas before refunds now, right? So I think its fine that the users don't have that
+00:18:25	Radek | solidity:	Personally like postfix push version. It would make possible to easily add new opcodes using immediate arguments.
+00:19:20	Toni Wahrstätter:	today we use gas after refund.
+
+As 7778 is spec'ed today, we use max(
+tx_gas_used_before_refund, calldata_floor_gas_cost
+) for block gas accounting
+00:19:31	Dragan Rakita:	Do you prefer first or second format?
+00:19:46	Toni Wahrstätter:	Replying to "Sorry again in writi..."
+
+@Andrew Ashikhmin this might also clarify your question regarding 7623 <> 7778
+00:20:08	Radek | solidity:	which one is first?
+00:20:33	Justin Florentine (Besu):	existing bitoacking
+00:20:42	Justin Florentine (Besu):	bitpacking, per the EIP
+00:20:45	Dragan Rakita:	First == EIP, second == SWAPN PUSH2 0x0000
+00:21:10	Radek | solidity:	second. postfix push 🙂
+00:21:21	Dragan Rakita:	Reacted to "second. postfix push..." with ❤️
+00:21:39	Radek | solidity:	so basically PUSHX tells you immediate size
+00:21:49	Radek | solidity:	for future
+00:21:50	frangio:	Replying to "First == EIP, seco..."
+
+it would be PUSH1 strictly IMO
+00:22:15	spencer-tb:	https://github.com/ethereum/EIPs/pull/9003
+00:22:28	Justin Florentine (Besu):	why not introduce IMDN instead of overloading PUSHN ?
+00:23:03	Dragan Rakita:	Reacted to "it would be PUSH1 st..." with 👍
+00:23:04	frangio:	Replying to "why not introduce ..."
+
+not possible, it changes jumpdest analysis and is not backward compatible
+00:23:12	Parithosh Jayanthi:	Should we time box and discuss the rest async?
+00:23:14	Radek | solidity:	Reacted to "not possible, it cha..." with 👍
+00:23:28	danceratopz:	About defining the devnet-2 scope. Will scope a devnet on Monday that we aim to launch on Wednesday? Or when is devnet-2 launch?
+
+Scoping the devnet today would help prioritize testing efforts (and a test fixture release).
+00:23:54	frangio:	Replying to "why not introduce ..."
+
+but if we go with PUSH-postifx option, we could have a convention where the PUSH* opcodes are rendered as IMDN* in assembly/disassembly
+00:23:59	Radek | solidity:	Replying to "why not introduce IM..."
+
+PUSH is a hack but I would say the best we can have now w/o EOF 🙂
+00:24:16	Dragan Rakita:	Reacted to "but if we go with PU..." with 👍
+00:24:25	Barnabas:	Replying to "About defining the d..."
+
+I don’t think ACDE is the place for this.
+00:24:36	Barnabas:	Replying to "About defining the d..."
+
+We still have many open questions about other EIPs whether they should be scheduled or not.
+00:24:40	Dragan Rakita:	Replying to "why not introduce IM..."
+
+PUSH is a lot more structured way to use immediates.
+00:24:46	Dragan Rakita:	Reacted to "PUSH is a hack but I..." with 👍
+00:24:58	Barnabas:	Replying to "About defining the d..."
+
+Maybe we can discuss these open questions in the end if we still have some time leftover but ideally ACDT should be the place to finalize scopes
+00:25:03	vitalik:	postfix push means that you can jump onto that (normally inoperative) push, right?
+00:25:18	Radek | solidity:	Replying to "why not introduce IM..."
+
+Sorry. Have we decided? I missed this part of the call
+00:25:27	Justin Florentine (Besu):	Replying to "why not introduce IM..."
+
+why does it break jumpdest analysis, because it's effectively a 3 byte opcode?
+00:25:29	danceratopz:	Reacted to Maybe we can discuss... with "👍"
+00:25:34	frangio:	Replying to "postfix push means..."
+
+no because there is no JUMPDEST that allows that jump
+00:25:50	spencer-tb:	Reacted to "Maybe we can discuss..." with 👍
+00:26:28	frangio:	Replying to "why not introduce ..."
+
+it's explained here: https://ethereum-magicians.org/t/evm-immediates/25605
+00:26:29	vitalik:	Replying to "postfix push means..."
+
+aaaah right, I was thinking about generic pushdata
+00:26:29	Radek | solidity:	Replying to "why not introduce IM..."
+
+I think it’s more about that it will require a change there.
+00:27:31	Justin Florentine (Besu):	Reacted to "it's explained here:..." with 👍
+00:27:54	Barnabas:	whoever loaded that notes.ethereum.org page, DO NOT refresh, as hackmd site is down, so if you refresh we gonna lose the tracker 😄
+00:28:08	Trent:	Everyone increases their volume and then ansgar is going to crash in at full volume 😅
+00:28:09	donnoh | L2BEAT:	Reacted to "whoever loaded that ..." with 😂
+00:28:13	Carl Beekhuizen:	Reacted to "whoever loaded that ..." with 😂
+00:28:16	fig:	Reacted to "whoever loaded that ..." with 😂
+00:28:21	Wei Han Ng:	Reacted to "Everyone increases t..." with 😂
+00:28:22	nixo:	Reacted to "whoever loaded that ..." with 😂
+00:28:22	Ansgar Dietrichs:	“measure state growth on a different axis than computation” - computation here includes normal i/o (read/write), so just the state creation is separate
+00:28:23	Carl Beekhuizen:	Reacted to "Everyone increases t..." with 😅
+00:28:24	Parithosh Jayanthi:	Reacted to "Everyone increases t..." with 😂
+00:28:26	Sanggu:	Reacted to "Everyone increases t..." with 😂
+00:28:26	felix (eest):	Reacted to "Everyone increases..." with 😂
+00:28:27	donnoh | L2BEAT:	Reacted to "Everyone increases t..." with 😂
+00:28:34	vitalik:	I would call SSTORE 312.5 gas per byte, info-theoretically an sstore adds ∼64 bytes (worst case) to state size
+00:28:40	Mario Vega:	Reacted to "whoever loaded that ..." with 😂
+00:28:55	spencer-tb:	Reacted to "Everyone increases t..." with 😂
+00:28:57	Ansgar Dietrichs:	Replying to "Everyone increases t..."
+
+I’ll make sure to whisper
+00:29:01	Danno Ferrin - Tectonic.xyz:	Multidimensional gas by another name. This uncouples storage limits from computation limits. 👍
+00:29:01	Trent:	Reacted to "I’ll make sure to wh..." with ❤️
+00:29:03	Justin Florentine (Besu):	Replying to "why not introduce IM..."
+
+ahhhh it's the masking thank you.
+00:29:06	nixo:	Reacted to "I’ll make sure to wh..." with ❤️
+00:29:15	nixo:	Reacted to "Everyone increases t..." with 😅
+00:29:26	CPerezz:	Replying to "I would call SSTORE ..."
+
+Yes. That was my mistake to not account keys also..
+00:29:27	Dragan Rakita:	Reacted to "whoever loaded that ..." with 😂
+00:29:36	Mario Havel:	Reacted to "Everyone increases..." with 😅
+00:29:42	CPerezz:	Replying to "I would call SSTORE ..."
+
+Will update the site to reflect this
+00:29:42	Anders Elowsson:	We essentially do not want the expected relative increase in consumed state gas to encroach on the regular gas limit, since it would harm our general scaling efforts
+00:30:34	Ansgar Dietrichs:	Replying to "Multidimensional gas..."
+
+yes but in a very lightweight variant, hopefully much simpler than full multidim gas
+00:31:36	vitalik:	this extra state gas reservoir is nice, as when we do full multidim it's a backwards compatible way to allow calls to still leave behind some resources in case the child fails (ie. gas observability use cases will still work)
+00:31:49	Danno Ferrin - Tectonic.xyz:	Replying to "Multidimensional gas..."
+
+but we don’t get indepedently floating limits/costs, which also means we don’t get people cornering the market on storage becaus they can.
+00:31:51	vitalik:	we should charge 5000 (storg
+00:32:04	vitalik:	Replying to "we should charge 5..."
+
+storage edit gas)
+00:32:10	Ansgar Dietrichs:	Reacted to "we should charge 500..." with 👍
+00:32:49	CPerezz:	Reacted to "we should charge 500..." with 👍
+00:32:57	frangio:	Reacted to "ahhhh it's the mas..." with 👍
+00:33:36	Maria Silva:	Why is it hacky?
+00:33:46	Ansgar Dietrichs:	if we don’t put this into Glamsterdam, we will risk being at 1TB yearly state growth rate by the end of this year :-)
+00:33:53	felipe:	Reacted to "whoever loaded tha..." with 😂
+00:34:05	felipe:	Reacted to "Everyone increases..." with 😂
+00:34:06	vitalik:	the alternative is we change storage creation costs from
+00:34:09	Łukasz Rozmej:	Replying to "if we don’t put this..."
+
+or we don't increase gas limit
+00:34:10	felipe:	Reacted to "I’ll make sure to..." with ❤️
+00:34:20	vitalik:	200 per byte 25000 per account 20000 per slot
+00:34:29	Ansgar Dietrichs:	Replying to "if we don’t put this..."
+
+right, but then all of
+ePBS
+BALs
+repricings
+are useless
+00:34:30	vitalik:	to 300 100000 80000
+00:34:37	Marius van der Wijden:	Replying to "if we don’t put t..."
+
+Both not great outcomes
+00:34:50	marek:	Replying to "if we don’t put this..."
+
+of course, we should increase gas limit :)
+00:34:54	vitalik:	the main challenge with multidim in the evm is that you have to have a way to snake it through child calls
+00:35:07	Marius van der Wijden:	Replying to "the main challenge..."
+
+Its actually not that bad
+00:35:12	Łukasz Rozmej:	Replying to "if we don’t put this..."
+
+what is the main problem 16M tx gas limit?
+00:35:27	CPerezz:	Replying to "200 per byte 25000 p..."
+
+Accounts are the highest priority IMO. Base already has an issue with state root recompilation due to the insane account trie they hold.
+
+And this only gets worse
+(Though avg. depth doesn’t. Which definitely mitigates)
+00:35:29	Anders Elowsson:	There is EIP-8075 that is less hacky, but it requires two additional header variables etc.
+00:35:45	Marius van der Wijden:	Replying to "the main challenge..."
+
+Its much less worse than having to reprice every 6 months
+00:35:49	Dragan Rakita:	Replying to "if we don’t put this..."
+
+If you increase gas price per new byte in bytecode you would not be able to deploy 24kb byte codes.
+00:35:53	vitalik:	Replying to "the main challenge..."
+
+indeed, and this eip is basically doing a big portion of that work :D
+00:36:04	CPerezz:	Replying to "if we don’t put this..."
+
+You can leave byte code aside. (I’ll justify later)
+00:36:11	Anders Elowsson:	Replying to "There is EIP-8075 th..."
+
+The endgame multidimensional fee market requires us to handle gas introspection.
+00:36:11	Ameziane Hamlat:	Reacted to "If you increase gas ..." with 👍
+00:36:13	Łukasz Rozmej:	Reacted to "You can leave byte c..." with 👍
+00:36:16	Dragan Rakita:	Reacted to "You can leave byte c..." with 👍
+00:36:21	Toni Wahrstätter:	Regarding EIP-7778, clarified the interaction with EIP-7623 in the EIP:
+https://github.com/ethereum/EIPs/pull/11090 
+
+cc @Ben Adams @Andrew Ashikhmin @Marius van der Wijden 
+00:37:05	Marius van der Wijden:	Also full fully-dimensional gas would require new transaction types etc.
+00:37:11	Andrew Ashikhmin:	Reacted to "Regarding EIP-7778, ..." with 👍
+00:37:51	danceratopz:	Don't forget to shout, Marius.
+00:37:53	CPerezz:	Marius, you need to review your pulse audio config for the mic.
+00:37:57	felipe:	yell louder
+00:38:07	Barnabas:	micdao
+00:38:11	Justin Florentine (Besu):	nothing. i got nothing
+00:38:14	CPerezz:	Reacted to "micdao" with 😂
+00:38:24	Marius van der Wijden:	This seems to me the best solution given the tradeoffs we have
+00:38:24	donnoh | L2BEAT:	Reacted to "micdao" with 😂
+00:39:05	Marius van der Wijden:	Only speaking for myself atm
+00:39:16	Dragan Rakita:	Change looks like it is in good direction, would CFI
+00:39:21	Marius van der Wijden:	Well "speaking"
+00:39:25	Guru:	Reacted to "Regarding EIP-7778, ..." with 👍
+00:39:37	donnoh | L2BEAT:	Reacted to "Well "speaking"" with 😁
+00:39:39	Josh Davis:	Reacted to "Well "speaking"" with 😁
+00:39:43	nixo:	yelling quietly for yourself
+00:40:10	danceratopz:	Replying to "About defining the d..."
+
+Ah hackmd is backup and it says end of january, i thought it said Wed 21st Jan :) Then it's fine to complete scoping in ACDT on Mon.
+
+https://notes.ethereum.org/@ethpandaops/bal-devnet-2
+00:41:12	Guru:	Reacted to "Ah hackmd is backup ..." with 👍
+00:41:45	spencer-tb:	Reacted to "Ah hackmd is backup ..." with 👍
+00:42:16	Justin Florentine (Besu):	that sounds like something i wouldn't be worried about ttrying to remove later
+00:42:18	Ansgar Dietrichs:	the main worry about the proposal by Vitalik is that we could in principle see very high state growth through contract code (because that would be 3x underpriced)
+00:42:20	CPerezz:	We need some handle on state growth until we decide how do we tackle it (expiry etc…)
+
+And this seems the simplest solution that we can always “revert” or “update”
+00:42:24	Marius van der Wijden:	Reacted to "the main worry abo..." with 👍
+00:42:32	Marius van der Wijden:	Reacted to "We need some handl..." with 👍
+00:42:34	Carl Beekhuizen:	Reacted to "We need some handle ..." with 👍
+00:42:35	Danno Ferrin - Tectonic.xyz:	(a) no change (b) much higher fixed cost (c) cost floating with gas limit.
+
+No change is an existential risk to upping the gas limit further.
+00:42:39	Carl Beekhuizen:	Reacted to "the main worry about..." with 👍
+00:42:39	Sanggu:	Reacted to "We need some handle ..." with 👍
+00:42:46	Anders Elowsson:	This is an alternative that exists: https://eips.ethereum.org/EIPS/eip-8075
+
+I like it but it adds 2 header variables etc
+00:42:47	Luis Pinto | Besu:	Reacted to "We need some handle ..." with 👍
+00:42:55	CPerezz:	Replying to "the main worry about..."
+
+Code has been free to deploy almost forever. Why is it an issue now when everybody deploys duplicated code?
+00:43:01	Ansgar Dietrichs:	Reacted to "(a) no change (b) mu..." with 👍
+00:43:12	Anders Elowsson:	Replying to "This is an alternati..."
+
+Apparently it is too complex as I have understood it
+00:43:27	CPerezz:	Replying to "This is an alternati..."
+
+What are your takes on the tradeoffs?
+00:44:01	Maria Silva:	Replying to "the main worry about..."
+
+The difference would be even large, so the potential for attack is much higher
+00:44:10	Anders Elowsson:	Replying to "This is an alternati..."
+
+It adds 2 header variables. It allows us to target a specific state growth and guarantees fulls scaling. It requires implementing a 4844 mechanism for the state gas price
+00:44:25	Marius van der Wijden:	Replying to "This is an alterna..."
+
+Also it breaks the gas opcode
+00:44:43	Anders Elowsson:	Replying to "This is an alternati..."
+
+No
+00:44:56	CPerezz:	Reacted to "It adds 2 header var..." with 👍
+00:44:57	Anders Elowsson:	Replying to "This is an alternati..."
+
+@Marius van der Wijden What do you mean by this?
+00:45:44	Justin Florentine (Besu):	is there a link to the slides @Marius van der Wijden presented?
+00:45:57	Mario Vega:	Reacted to "is there a link to t..." with ➕
+00:46:00	Łukasz Rozmej:	So one thing to consider - by making state growth much pricier, while keeping 16M tx gas account limit, arn't we hindering usability, making individual transaction not being able to support some scenarios that are today supported?
+00:46:00	Ameziane Hamlat:	Reacted to "is there a link to t..." with ➕
+00:46:03	Sanggu:	Reacted to "is there a link to t..." with ➕
+00:46:06	Łukasz Rozmej:	Reacted to "is there a link to t..." with ➕
+00:46:07	Marius van der Wijden:	https://docs.google.com/presentation/d/1zRVR-tziS0Z0IACiDlcOPOUmkPdaBvjE-b10yH35iOY/edit?usp=sharing
+00:46:14	Marius van der Wijden:	yes exactly, thats why we need the multidimensional metering
+00:46:16	Justin Florentine (Besu):	Reacted to "https://docs.google...." with 🫂
+00:46:33	Justin Florentine (Besu):	Reacted to "So one thing to cons..." with ➕
+00:46:50	Maria Silva:	No, because state creation costs do not count to the 16M limit
+00:46:52	frangio:	Reacted to "is there a link to..." with ➕
+00:47:00	Barnabas:	ACDT
+00:47:05	Toni Wahrstätter:	that's were the metering would help. We could allow large contract deployments (using more than 16.78M gas) while still keeping the 7825 tx gas limit
+00:47:11	marek:	Reacted to "ACDT" with 👍
+00:47:12	Ameziane Hamlat:	ACDT would be great
+00:47:16	Justin Florentine (Besu):	Reacted to "ACDT" with 👍
+00:47:21	Justin Florentine (Besu):	Reacted to "ACDT would be great" with ➕
+00:47:27	Carson | STEEL:	Reacted to "ACDT" with 👍
+00:47:29	Ameziane Hamlat:	Reacted to "ACDT" with 👍
+00:47:37	Ben Adams:	Reacted to "ACDT" with 👍
+00:47:40	Dragan Rakita:	Reacted to "ACDT" with 👍
+00:48:03	donnoh | L2BEAT:	Reacted to "https://docs.google...." with ❤️
+00:48:55	Marius van der Wijden:	I don't think we should do conditional transactions edit: in glamsterdam
+00:49:11	Carl Beekhuizen:	Reacted to "I don't think we sho..." with ➕
+00:49:15	Mario Vega:	Reacted to "I don't think we sho..." with ➕
+00:49:17	Dragan Rakita:	Reacted to "I don't think we sho..." with ➕
+00:49:18	donnoh | L2BEAT:	Reacted to "I don't think we sho..." with ➕
+00:49:19	felix (eest):	Reacted to "I don't think we s..." with ➕
+00:49:59	Parithosh Jayanthi:	Reacted to "I don't think we sho..." with ➕
+00:50:31	marek:	Reacted to "I don't think we sho..." with 👍
+00:51:03	Ansgar Dietrichs:	oh of course NOW marius is loud… :-)
+00:51:09	felix (eest):	Reacted to "oh of course NOW m..." with 🤣
+00:51:10	Mario Vega:	Reacted to "oh of course NOW mar..." with 🤣
+00:51:12	Sanggu:	Reacted to "oh of course NOW mar..." with 🤣
+00:51:13	Justin Traglia:	Reacted to "oh of course NOW mar..." with 🤣
+00:51:16	Carl Beekhuizen:	Reacted to "oh of course NOW mar..." with 🎉
+00:51:18	Justin Traglia:	Reacted to "oh of course NOW mar..." with 🎉
+00:51:24	Toni Wahrstätter:	Reacted to "oh of course NOW mar..." with 🤣
+00:51:24	Pooja Ranjan:	Reacted to "oh of course NOW mar..." with 🤣
+00:52:07	Łukasz Rozmej:	Reacted to "oh of course NOW mar..." with 🤣
+00:52:12	marek:	Reacted to "oh of course NOW mar..." with 🤣
+00:52:52	Łukasz Rozmej:	Replying to "So one thing to cons..."
+
+how that effects estimateGas?
+00:53:11	Barnabas:	Reacted to "oh of course NOW mar..." with 🤣
+00:53:38	danceratopz:	Reacted to oh of course NOW mar... with "🤣"
+00:53:55	Parithosh Jayanthi:	Reacted to "oh of course NOW mar..." with 🤣
+00:54:41	Marius van der Wijden:	Replying to "I don't think we s..."
+
+Can we timebox this?
+00:54:45	Felix (Geth):	would it work with just the opcode?
+00:56:21	felipe:	Reacted to "oh of course NOW m..." with 🤣
+00:56:36	felipe:	Reacted to "I don't think we s..." with ➕
+00:56:59	spencer-tb:	Reacted to "oh of course NOW mar..." with 🤣
+00:57:00	Marius van der Wijden:	While I like the idea, I think Glamsterdam already has a lot of more impactful EVM improvements
+00:57:23	Luis Pinto | Besu:	Besu has this implemented but would be ok to DFI since there’s no one shouting for it
+00:57:31	Renaud-ZKNOX:	PQ Signatures for Ethereum
+ML-DSA (Dilithium): NIST standard, ZK-friendly, ~2.4 KB sigs, HW wallet impl done. Con: 40x larger than ECDSA.
+FALCON: Smallest (~666 B), L2/EVM friendly (separable hash-to-domain). Needs ORAM for RAM limits, harder on constrained HW (working on it).
+SPHINCS+: Hash-based only, huge sigs (8-49 KB). Justin Drake's team working on reduced stateful version. Cons: stateful, not web2 compatible.
+TL;DR: ML-DSA = pragmatic choice for AA + HW wallets (~13M gas). FALCON = more complexity but cheaper (~6M gas). SPHINCS+ = large but worth separate precompile for Consensus Layer.
+00:58:01	Anders Elowsson:	This is a document on options that exist for EIP-8037: 
+
+https://notes.ethereum.org/@anderselowsson/3-paradigms-for-state-creation-repricing
+
+As was mentioned already on the call, an important thing to remember is that the actual tracking of state creation is something that we will always have use for going forward.
+00:58:21	CPerezz:	Reacted to "This is a document o..." with ❤️
+00:58:53	Justin Florentine (Besu):	Reacted to "This is a document o..." with ❤️
+00:59:06	vitalik:	we really need to get better at treating all EVM feature additions as having a cost (on all future EVM impl developers ever) and not treat them as free :P
+00:59:25	vitalik:	Replying to "we really need to ..."
+
+speaking generally
+00:59:57	frangio:	Replying to "we really need to ..."
+
+we hardly treat them as free, there are a lot of evm features that were rejected for this fork
+00:59:58	donnoh | L2BEAT:	Reacted to "we really need to ge..." with 👍
+01:00:17	Justin Florentine (Besu):	Replying to "we really need to ge..."
+
+you can have feature points scaled to the protocol guild treasury 🙂
+01:00:24	spencer-tb:	Reacted to "you can have feature..." with ❤️
+01:00:40	Marius van der Wijden:	I personally think its too early to make a decision on which pq sig scheme we want to support. Don't want another blake, keccak, ecAdd, ecMul, ecPairing, ...
+01:00:46	vitalik:	Replying to "we really need to ..."
+
+5x the state creation gas on new opcodes/precompiles
+01:00:48	Carl Beekhuizen:	Replying to "we really need to ge..."
+
+@frangio mostly due to the one-time cost, not the ongoing maintenance
+01:01:02	frangio:	Reacted to "@frangio mostly du..." with 👍
+01:01:03	Dragan Rakita:	Replying to "PQ Signatures for Et..."
+
+This is good summary
+01:01:08	Danno Ferrin - Tectonic.xyz:	Replying to "I personally think i..."
+
+There is no way on earth we support just one.  We need to make many avaialble
+01:01:09	Sanggu:	Reacted to "PQ Signatures for Et..." with 👍
+01:01:29	Justin Florentine (Besu):	Reacted to "There is no way on e..." with ➕
+01:01:32	Sanggu:	Reacted to "There is no way on e..." with ➕
+01:01:40	Ansgar Dietrichs:	Replying to "I personally think i..."
+
+I agree though, I personally would rather see a coordinated fork with multiple integrated pq features, instead of having them trickle into the EVM one-by-one
+01:01:43	FLCL:	Reacted to "PQ Signatures for Et..." with 👍
+01:01:54	Benedikt Wagner:	Reacted to "I agree though, I pe..." with 👍
+01:01:56	Antonio Sanso:	Reacted to "I agree though, I pe..." with 👍
+01:01:56	Ben Adams:	Reacted to "I agree though, I pe..." with 👍
+01:01:56	Danno Ferrin - Tectonic.xyz:	The buzzword is “Cryptographic Agility” that gives us bult in escape hatches if replacement crypto algorithms have their own security iseuss
+01:02:01	Benedikt Wagner:	Reacted to "This is good summary" with 👍
+01:02:24	felipe:	Reacted to "There is no way on..." with 👍
+01:02:25	Toni Wahrstätter:	Replying to "So one thing to cons..."
+
+I assume we could have estimateGas return {gas, stateGas}
+01:02:28	Luis Pinto | Besu:	Reacted to "There is no way on e..." with ➕
+01:02:46	Justin Traglia:	Reacted to "There is no way on e..." with ➕
+01:03:27	Benedikt Wagner:	Replying to "PQ Signatures for Et..."
+
+Also note: NIST is delaying standardizing Falcon
+01:03:35	Justin Florentine (Besu):	a precompile feels like a pretty mild committment to me
+01:03:48	Łukasz Rozmej:	Replying to "So one thing to cons..."
+
+ok my stance:Keep state growth pricing as isDo modest gas increases, where state growth increase is acceptableFocus on repricing compute down where possible
+01:04:16	Łukasz Rozmej:	Replying to "So one thing to cons..."
+
+you basically get same results without the complexity (and marketing number)
+01:04:20	Dragan Rakita:	Replying to "PQ Signatures for Et..."
+
+Is the falcon the one that uses floats?
+01:05:20	Ansgar Dietrichs:	danno do you still have your hand up?
+01:05:25	Benedikt Wagner:	Replying to "PQ Signatures for Et..."
+
+Yes, Falcon uses floats
+01:05:42	Dragan Rakita:	Reacted to "Yes, Falcon uses flo..." with 👍
+01:05:45	Dragan Rakita:	Reacted to "PQ Signatures for Et..." with 👍
+01:05:47	Danno Ferrin - Tectonic.xyz:	Replying to "danno do you still h..."
+
+when did zoom get rid of auto-lower
+01:05:51	Justin Florentine (Besu):	Replying to "PQ Signatures for Et..."
+
+internally or across the signature boundary?
+01:05:56	Marius van der Wijden:	Reacted to "I agree though, I ..." with 👍
+01:06:01	CPerezz:	Don’t the gas limit increases and compute repricings allow to skip precompiles? It would be A LOT better to have these things implemented in solidity in a contract and not affecting the protocol
+01:06:35	Ansgar Dietrichs:	Replying to "danno do you still h..."
+
+yes the zoom behavior somehow got worse there
+01:06:43	Dragan Rakita:	Replying to "PQ Signatures for Et..."
+
+It is internally, have read something that it was hard to audit bcs of it.
+01:07:01	CPerezz:	Replying to "Don’t the gas limit ..."
+
+Ie. If we can make it to 100/150M gas limit and we have super cheap compute, what prevents us from just not going precompile and let people implement this as a solidity lib contract or similar?
+01:07:08	iPhone:	For pricing it, would we evaluate it against some zkEVMs too?
+01:07:15	Carl Beekhuizen:	Reacted to "For pricing it, woul..." with 👍
+01:07:31	Dragan Rakita:	tldr for me, to early for this kind of precompile
+01:07:37	Marius van der Wijden:	Replying to "Don’t the gas lim..."
+
+I hope we get to a 300-700M gas limit soon™️
+01:07:44	CPerezz:	Reacted to "I hope we get to a 3..." with 👀
+01:08:02	donnoh | L2BEAT:	Reacted to "I hope we get to a 3..." with 👀
+01:08:18	vitalik:	Replying to "Don’t the gas lim..."
+
+imo the right balance is simd
+01:08:34	vitalik:	Replying to "Don’t the gas lim..."
+
+that lets you do the hard parts of all lattice stuff
+01:08:50	Benedikt Wagner:	Replying to "PQ Signatures for Et..."
+
+@Justin Florentine (Besu) what does that mean? Signatures and keys should be objects that we never open and that are only consumed by the algorithms of the signature scheme
+01:09:17	Renaud-ZKNOX:	yep as ed25519 is better than k1
+01:09:29	Renaud-ZKNOX:	(r1 sorry)
+01:09:35	Łukasz Rozmej:	Replying to "So one thing to cons..."
+
+Another approach is to increase tx cap - make it configurable parameter - BPO like and adjust it to gat limit
+01:10:00	CPerezz:	Replying to "Don’t the gas limit ..."
+
+Do we have any numbers on perf/gas costs for these if implemented in solidity?? 
+
+Maybe this gives light already on whether SIMD is a must or no (as SIMD would be really tricky to support in EVM considering all the variety of hosts that run it). 
+
+Also ZKEVM proving SIMD is a thing?
+01:10:01	Benedikt Wagner:	Agree with Antonio!
+01:10:02	Justin Florentine (Besu):	Replying to "PQ Signatures for Et..."
+
+yes exactly. i.e. if falcon only uses floats internally, i don't really care.
+01:10:03	Danno Ferrin - Tectonic.xyz:	Replying to "PQ Signatures for Et..."
+
+Floats are used for the signature generation and key generation.  Verifying a signature is all integers.  But the use of floats makes stuff like HD derivation a little squirly
+01:10:04	Renaud-ZKNOX:	But it must be investigated
+01:10:20	Łukasz Rozmej:	Replying to "So one thing to cons..."
+
+@Marius van der Wijden WDYT?
+01:10:25	Dragan Rakita:	Reacted to "Floats are used for ..." with 👀
+01:10:27	Fab:	I agree with Antonio. Also keep in mind that pre-quantum signatures have been tested for years, these sigs here are very new. Web2 solves the problem by deploying dual solutions where both a classical and a post-quantum resistant sigs must be used in pair. I am not sure this is an option here.
+01:10:35	Benedikt Wagner:	Reacted to "Floats are used for ..." with 👍
+01:10:54	Renaud-ZKNOX:	Well, we are relying on KZG, which is far newer than LWE and NTRU
+01:11:09	Maria Silva:	Replying to "So one thing to cons..."
+
+“Focus on repricing compute down where possible” -> isn’t this much more work than 8037?
+01:11:13	Fab:	Indeed I've never been a fan of KZG, lol
+01:11:16	vitalik:	Replying to "Don’t the gas lim..."
+
+the point of simd is not just to use literal simd features of cpus, it's do reduce the ratio of evm interpreter overhead to computation, so you get large speedups even from "naive" impls
+01:11:19	Benedikt Wagner:	Replying to "Well, we are relying..."
+
+Valid point
+01:11:20	Renaud-ZKNOX:	but yes for sure Accounts will be hybrid
+01:11:46	Maria Silva:	Replying to "So one thing to cons..."
+
+“Keep state growth pricing as is” -> if we do this, we won’t be able to use the gains from BALs and ePBS
+01:11:47	Felix (Geth):	Replying to "I agree with Anton..."
+
+It's an option with account abstraction
+01:11:56	felipe:	Reacted to "I agree though, I ..." with 👍
+01:12:04	Fab:	Replying to "Well, we are relying..."
+
+Indeed I've never been a fan of KZG, lol
+01:12:34	CPerezz:	Reacted to "the point of simd is..." with 👍
+01:12:41	Ben Adams:	Replying to "So one thing to cons..."
+
+Suggesting 300MGas before H*? 🤔
+01:13:04	Maria Silva:	Replying to "So one thing to cons..."
+
+BTW, we are already at a growth rate of 100 GiB per year at 60M gas limit. I don’t think we can continue to increase the gas limit without making state growth more expensive
+01:13:09	Łukasz Rozmej:	Replying to "So one thing to cons..."
+
+maybe more work, but less protocol complexity that stays forever, end result the same
+01:13:19	Anders Elowsson:	Replying to "So one thing to cons..."
+
+@Łukasz Rozmej If you reprice compute down, state gas will still take up a larger proportion of the gas limit. It’s the same effect as increase the price of state gas essentially.
+01:13:48	Łukasz Rozmej:	Replying to "So one thing to cons..."
+
+yes but 16M gas limit per tx is the problem
+01:13:58	Łukasz Rozmej:	Replying to "So one thing to cons..."
+
+either we move it too, or we do this dancing around it
+01:14:07	Łukasz Rozmej:	Replying to "So one thing to cons..."
+
+with big complexity increases
+01:16:12	Maria Silva:	Replying to "So one thing to cons..."
+
+Also, we cannot make compute operations cheap enough go get the same gain as making state creation more expensive and increasing the block limit
+01:16:30	Maria Silva:	Replying to "So one thing to cons..."
+
+So, we either make state more expensive or we limit scalability
+01:16:34	Dragan Rakita:	We are fine to DFI it
+01:16:57	Łukasz Rozmej:	Replying to "So one thing to cons..."
+
+ok why not increase tx gas cap then and be done with it easily?
+01:19:12	Maria Silva:	Replying to "So one thing to cons..."
+
+Because we lose on the parallelization gains from BALs. Now the worse case block will not be at 16M sized txs, but a higher limit
+01:19:21	Maria Silva:	Replying to "So one thing to cons..."
+
+So, we loose scalability anyway
+01:19:45	Marius van der Wijden:	I think a simple bump is pretty dangerous
+01:20:19	Marius van der Wijden:	Replying to "I think a simple b..."
+
+My preference is to (1) do nothing (2) go with 7907
+01:20:48	Marius van der Wijden:	Replying to "I think a simple b..."
+
+(3) do code chunking
+(4) do the simple bump
+01:21:32	Ansgar Dietrichs:	the two relevant EIPs:
+https://eips.ethereum.org/EIPS/eip-7907 
+https://eips.ethereum.org/EIPS/eip-7954
+01:21:58	Guillaume:	Replying to "I think a simple bum..."
+
+bump it's not dangerous as per Carlos data, also happy to do nothing
+01:22:11	vitalik:	Replying to "I think a simple b..."
+
+what size of bump? what about 32k?
+01:22:13	Miguel Tenorio:	Reacted to "“tech illiterate” th..." with 👍
+01:22:18	Ansgar Dietrichs:	one main takeaway for me from this analysis:
+mostly constant time for any code loads below 10KB
+mostly linear time for additional code loads above 10KB
+01:22:19	Luis Pinto | Besu:	My thoughts on this one:
+We should not just test with Geth but other clients before we make a decision regarding the right size to go with
+We should test EXTCODECOPY instead as some clients might have some optimisations to cache the code size in the DB
+01:22:24	Marius van der Wijden:	Replying to "I think a simple b..."
+
+That presumes a 60M gas limit
+01:22:36	Guillaume:	Replying to "I think a simple bum..."
+
+32k looks safe
+01:22:42	Wei Han Ng:	Reacted to "My thoughts on this ..." with 👍
+01:23:09	Justin Florentine (Besu):	Reacted to "My thoughts on this ..." with 👍
+01:23:23	Guillaume:	Replying to "I think a simple bum..."
+
+I wouldn't go for 64kb personally
+01:23:38	Dragan Rakita:	Reacted to "32k looks safe" with 👍
+01:23:39	Marius van der Wijden:	Replying to "I think a simple b..."
+
+A 32k bump will mean either big contracts will be underpriced by 25% or smaller contracts will pay 25% more than they should be paying
+01:24:23	Guillaume:	that's going to be the case as long as you don't have something like 2926
+01:24:41	CPerezz:	There’s no reason for not going to 64kb
+01:24:58	CPerezz:	Again, Geth with enabled cache would perform infinitely better (and its the default case)
+01:25:32	CPerezz:	Replying to "I think a simple bum..."
+
+The “it’s dangerous” claims aren’t backed by data at all. 
+
+I mean, why we make arguments that go directly against the data we took??
+01:25:43	Dragan Rakita:	Reacted to "The “it’s dangerous”..." with 👍
+01:26:22	CPerezz:	Replying to "I think a simple bum..."
+
+If we want 500MGas, then ok. We need to be careful. But if we target 100-150M gas for H*, I don;’t think this is an issue
+01:26:40	Marius van der Wijden:	Replying to "I think a simple b..."
+
+If we are trying to price the contract code more accurately, then this will be a problem
+01:27:38	Ansgar Dietrichs:	for context, the 60 MGas/s is the target on the compute side pre BAL speedup (expected ~3x).
+
+But (large) contract loads don’t get a BAL speedup, so the performance target there would be more 180 MGas/s
+01:27:43	CPerezz:	Replying to "I think a simple bum..."
+
+We will still be able to do it. And reduce the time it takes for users to get this feature
+01:27:45	Marius van der Wijden:	Replying to "I think a simple b..."
+
+And yes, we might be able to go to 500MGas. BAL and EPBS alone would give us that
+01:28:43	Ansgar Dietrichs:	we will reprice contract loads anyway, so these performance considerations are not a blocker for a bump. e.g. going to 32 KB will just mean that all contract loads will have to be 33% more expensive than they would otherwise be
+01:28:45	Marius van der Wijden:	I'm a fan of 2926
+01:29:08	Ansgar Dietrichs:	Replying to "I'm a fan of 2926"
+
+we will not revisit that decision today :-)
+01:29:09	CPerezz:	Replying to "we will reprice cont..."
+
+Exactly! And with a simple bump we can always go for more complex repricings
+01:29:12	CPerezz:	Replying to "we will reprice cont..."
+
+In the future
+01:29:53	Dragan Rakita:	Reacted to "we will not revisit ..." with 😂
+01:30:54	Toni Wahrstätter:	Every small contract would be punished because we'd have to price it for the worst-case scenario. Agree with maria, this is a big hit
+01:31:43	Marius van der Wijden:	I think we want less refunds not more
+01:31:51	Ben Adams:	Reacted to "I think we want less..." with 👍
+01:31:53	Luis Pinto | Besu:	Replying to "I'm a fan of 2926"
+
+Also a fan of 2926 that fixes the problem at the root. Leaning towards small bump for now to 32KB with no other changes
+01:31:58	Justin Florentine (Besu):	Reacted to "I think we want less..." with 👍
+01:32:07	Luis Pinto | Besu:	Reacted to "I think we want less..." with 👍
+01:32:19	Carson | STEEL:	Reacted to "I think we want less..." with 👍
+01:32:33	Guillaume:	Reacted to "I think we want less..." with 👍
+01:32:46	Guru:	Reacted to "I think we want less..." with 👍
+01:32:50	Greg K | Lido:	32KB is still not a big bump, 7907 suggested 48KB, right?
+01:33:02	donnoh | L2BEAT:	Reacted to "I think we want less..." with 👍
+01:33:29	CPerezz:	EXACTLY!
+01:33:51	Ansgar Dietrichs:	Replying to "32KB is still not a ..."
+
+yes, but because 7907 can charge for it, the bump makes it free
+01:33:57	Dragan Rakita:	Any kind of contract size bump is desirable, simples bump to 32kb looks safe (supported with data) and it is conservative, EIP-7907 is even more conservative but it requires some changes.
+
+32kb is 80/20 win
+01:34:11	CPerezz:	Reacted to "Any kind of contract..." with 👍
+01:34:14	Felix (Geth):	it's the inflation bump
+01:34:17	Greg K | Lido:	Reacted to "yes, but because 7..." with 👍
+01:34:20	Maria Silva:	Without 7907, we would be doing something to help with dev experience, at the cost of scalability for everyone.
+01:34:20	Carl Beekhuizen:	To be clear, shipping 7954 means that every contract call will now be 32% more expensive
+01:34:23	Mario Vega:	Reacted to "Any kind of contract..." with 👍
+01:34:24	Justin Florentine (Besu):	i think they go to 32 as soon as Solidity/Vyper update
+01:34:26	CPerezz:	Replying to "Any kind of contract..."
+
+I think 48 is also safe. I can get the specific data if needed
+01:34:39	Ben Adams:	Cost increase isn't in the spec?
+01:34:44	Carl Beekhuizen:	We are making every user’s experience worse to help devs
+01:34:48	Daniel Lehrner (Besu):	We have 24kb limit since more than 9 years. I think it’s time to increase
+01:34:50	Dragan Rakita:	Replying to "Any kind of contract..."
+
+Any kind of bump is a win!
+01:34:52	Marius van der Wijden:	Yes we are trading off ux for very few developers with cost for every user
+01:35:11	Greg K | Lido:	Reacted to "We have 24kb limit..." with 👍
+01:35:18	CPerezz:	Replying to "Without 7907, we wou..."
+
+Why does this hurt scalability at all? This is a simple change backed by data vs. a more complex change that has no data collected on. 
+
+We can always reprice in the future this simple bump. But it’s much harder to come back from the complex metering
+01:35:21	Marius van der Wijden:	Not a hill I want to die on
+01:35:22	Carl Beekhuizen:	Reacted to "Yes we are trading o..." with 💯
+01:35:30	nixo:	https://eips.ethereum.org/EIPS/eip-7954
+01:36:16	Carl Beekhuizen:	I (Carl) think this a big mistake to be CFIing it
+01:36:42	Maria Silva:	Replying to "Without 7907, we wou..."
+
+We need to always price contract calls on the worse case (we will be doing it in glamsterdam). This means that all contract calls are priced at the performance for the largest contract size
+01:36:59	Josh Davis:	**CFI**
+7954
+
+**DFI**
+7793
+5920
+8051
+7971
+8032
+7907
+7903
+
+**Delay**
+8037 - delayed to ACDT (Jan 19)
+01:37:20	Marius van der Wijden:	Initcode to 64k
+01:37:30	Marius van der Wijden:	Replying to "Initcode to 64k"
+
+DFI the uncapping
+01:37:35	Dragan Rakita:	Reacted to "Initcode to 64k" with 👍
+01:37:36	nixo:	Reacted to "**CFI**
+7954
+
+**DFI*..." with 🙏
+01:37:39	CPerezz:	Reacted to "Initcode to 64k" with 👍
+01:37:47	Ben Adams:	Reacted to "DFI the uncapping" with 👍
+01:37:48	Maria Silva:	Replying to "Without 7907, we wou..."
+
+If that is 32kb instead of 24kn, then the price will be 33% more expensive, so we fit 33% less contract calls
+01:38:19	Ben Adams:	Replying to "Without 7907, we wou..."
+
+technically there isn't any price increase in spec
+01:38:33	Luis Pinto | Besu:	Reacted to "DFI the uncapping" with 👍
+01:38:43	Maria Silva:	Replying to "Without 7907, we wou..."
+
+This will be done in 8038
+01:39:03	Carl Beekhuizen:	Replying to "Without 7907, we wou..."
+
+It has to be done, otherwise it’s a DOS vector
+01:39:04	Maria Silva:	Replying to "Without 7907, we wou..."
+
+We will fix the price of all state access based on the formance of each operations after the glamsterdam fork
+01:39:18	Maria Silva:	Replying to "Without 7907, we wou..."
+
+*performance
+01:39:28	CPerezz:	Replying to "Without 7907, we wou..."
+
+It’s not a DOS vector..
+01:39:33	CPerezz:	Replying to "Without 7907, we wou..."
+
+It’s insane to consider it a DOS

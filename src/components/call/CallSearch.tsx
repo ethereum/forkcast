@@ -1,4 +1,6 @@
 import React, { useState, useEffect, useRef, useMemo, useCallback } from 'react';
+import { SearchQueryProvider, SearchMatch } from '../search/SearchUi';
+import { getSearchTypeIcon, getSearchTypeColor } from '../search/searchShortcuts';
 
 interface SearchResult {
   type: 'transcript' | 'chat' | 'agenda' | 'action';
@@ -10,18 +12,34 @@ interface SearchResult {
   originalIndex: number;
 }
 
+interface TldrHighlightItem {
+  timestamp: string;
+  highlight: string;
+}
+
+interface TldrActionItem {
+  timestamp: string;
+  action: string;
+  owner: string;
+}
+
+interface TldrData {
+  meeting: string;
+  highlights: { [category: string]: TldrHighlightItem[] };
+  action_items: TldrActionItem[];
+  decisions: { timestamp: string; decision: string }[];
+  targets: { timestamp: string; target: string }[];
+}
+
 interface CallSearchProps {
   transcriptContent?: string;
   chatContent?: string;
-  agendaData?: any;
-  summaryData?: any;
-  tldrData?: any;
+  tldrData?: TldrData;
   onResultClick?: (timestamp: string, searchResult?: SearchResult) => void;
   syncConfig?: {
-    transcriptStartTime: string;
-    videoStartTime: string;
+    transcriptStartTime: string | null;
+    videoStartTime: string | null;
   };
-  currentVideoTime?: number;
   isOpen: boolean;
   setIsOpen: (isOpen: boolean) => void;
   initialQuery?: string;
@@ -30,12 +48,9 @@ interface CallSearchProps {
 const CallSearch: React.FC<CallSearchProps> = ({
   transcriptContent,
   chatContent,
-  agendaData,
-  summaryData: _summaryData, // Keep for future use
   tldrData,
   onResultClick,
   syncConfig,
-  currentVideoTime: _currentVideoTime = 0, // Keep for future use
   isOpen,
   setIsOpen,
   initialQuery = '',
@@ -143,7 +158,7 @@ const CallSearch: React.FC<CallSearchProps> = ({
       const match = line.match(/^(\d{2}:\d{2}:\d{2})\t(.+?)\t(.*)$/);
 
       if (match) {
-        const [_, timestamp, speaker, message] = match;
+        const [, timestamp, speaker, message] = match;
 
         // Skip reaction messages
         if (message.startsWith('Reacted to') || message.startsWith('Heeft gereageerd op')) {
@@ -311,11 +326,10 @@ const CallSearch: React.FC<CallSearchProps> = ({
       });
     }
 
-    // Search agenda topics - prioritize tldrData if available
+    // Search agenda topics from tldr highlights
     if (tldrData && (selectedFilter === 'all' || selectedFilter === 'agenda')) {
-      // Search highlights from tldr
-      const allHighlights = Object.values(tldrData.highlights).flat() as any[];
-      allHighlights.forEach((item: any, index: number) => {
+      const allHighlights: TldrHighlightItem[] = Object.values(tldrData.highlights).flat();
+      allHighlights.forEach((item, index) => {
         const highlightLower = item.highlight.toLowerCase();
 
         let score = 0;
@@ -346,22 +360,24 @@ const CallSearch: React.FC<CallSearchProps> = ({
           });
         }
       });
-    } else if (agendaData && (selectedFilter === 'all' || selectedFilter === 'agenda')) {
-      const allItems = agendaData.agenda.flatMap((section: any) => section.items);
-      allItems.forEach((item: any, index: number) => {
-        const titleLower = item.title.toLowerCase();
-        const summaryLower = item.summary.toLowerCase();
+    }
+
+    // Search action items from tldr
+    if (tldrData?.action_items && (selectedFilter === 'all' || selectedFilter === 'action')) {
+      tldrData.action_items.forEach((action, index) => {
+        const actionLower = action.action.toLowerCase();
+        const ownerLower = (action.owner || '').toLowerCase();
 
         let score = 0;
         let hasMatch = false;
 
-        if (titleLower.includes(queryLower) || summaryLower.includes(queryLower)) {
+        if (actionLower.includes(queryLower) || ownerLower.includes(queryLower)) {
           score += 10;
           hasMatch = true;
         }
 
         const allWordsPresent = queryWords.every(word =>
-          titleLower.includes(word) || summaryLower.includes(word)
+          actionLower.includes(word) || ownerLower.includes(word)
         );
         if (allWordsPresent) {
           score += 5;
@@ -369,103 +385,18 @@ const CallSearch: React.FC<CallSearchProps> = ({
         }
 
         queryWords.forEach(word => {
-          if (titleLower.includes(word)) score += 3;
-          if (summaryLower.includes(word)) score += 2;
+          if (actionLower.includes(word)) score += 2;
+          if (ownerLower.includes(word)) score += 3;
         });
 
         if (hasMatch || score > 0) {
           results.push({
-            type: 'agenda',
-            timestamp: item.start_timestamp,
-            text: item.title,
-            context: item.summary,
-            matchScore: score + (item.decision ? 2 : 0), // Bonus for decisions
+            type: 'action',
+            timestamp: action.timestamp,
+            speaker: action.owner,
+            text: action.action,
+            matchScore: score + 5, // Bonus for action items
             originalIndex: index,
-          });
-        }
-      });
-    }
-
-    // Search action items - prioritize tldrData if available
-    if (tldrData && (selectedFilter === 'all' || selectedFilter === 'action')) {
-      if (tldrData.action_items) {
-        tldrData.action_items.forEach((action: any, index: number) => {
-          const actionLower = action.action.toLowerCase();
-          const ownerLower = (action.owner || '').toLowerCase();
-
-          let score = 0;
-          let hasMatch = false;
-
-          if (actionLower.includes(queryLower) || ownerLower.includes(queryLower)) {
-            score += 10;
-            hasMatch = true;
-          }
-
-          const allWordsPresent = queryWords.every(word =>
-            actionLower.includes(word) || ownerLower.includes(word)
-          );
-          if (allWordsPresent) {
-            score += 5;
-            hasMatch = true;
-          }
-
-          queryWords.forEach(word => {
-            if (actionLower.includes(word)) score += 2;
-            if (ownerLower.includes(word)) score += 3;
-          });
-
-          if (hasMatch || score > 0) {
-            results.push({
-              type: 'action',
-              timestamp: action.timestamp,
-              speaker: action.owner,
-              text: action.action,
-              matchScore: score + 5, // Bonus for action items
-              originalIndex: index,
-            });
-          }
-        });
-      }
-    } else if (agendaData && (selectedFilter === 'all' || selectedFilter === 'action')) {
-      const allItems = agendaData.agenda.flatMap((section: any) => section.items);
-      allItems.forEach((item: any) => {
-        if (item.action_items) {
-          item.action_items.forEach((action: any, index: number) => {
-            const whatLower = action.what.toLowerCase();
-            const whoLower = (action.who || '').toLowerCase();
-
-            let score = 0;
-            let hasMatch = false;
-
-            if (whatLower.includes(queryLower) || whoLower.includes(queryLower)) {
-              score += 10;
-              hasMatch = true;
-            }
-
-            const allWordsPresent = queryWords.every(word =>
-              whatLower.includes(word) || whoLower.includes(word)
-            );
-            if (allWordsPresent) {
-              score += 5;
-              hasMatch = true;
-            }
-
-            queryWords.forEach(word => {
-              if (whatLower.includes(word)) score += 2;
-              if (whoLower.includes(word)) score += 3;
-            });
-
-            if (hasMatch || score > 0) {
-              results.push({
-                type: 'action',
-                timestamp: action.timestamp || item.start_timestamp,
-                speaker: action.who,
-                text: action.what,
-                context: `From: ${item.title}`,
-                matchScore: score + 5, // Bonus for action items
-                originalIndex: index,
-              });
-            }
           });
         }
       });
@@ -480,7 +411,7 @@ const CallSearch: React.FC<CallSearchProps> = ({
     });
 
     return results;
-  }, [transcriptContent, chatContent, agendaData, tldrData, selectedFilter]);
+  }, [transcriptContent, chatContent, tldrData, selectedFilter, syncConfig]);
 
   const searchResults = useMemo(() => searchContent(query), [searchContent, query]);
 
@@ -516,70 +447,13 @@ const CallSearch: React.FC<CallSearchProps> = ({
     }
   };
 
-  const getTypeIcon = (type: SearchResult['type']) => {
-    switch (type) {
-      case 'transcript':
-        return '📝';
-      case 'chat':
-        return '💬';
-      case 'agenda':
-        return '📋';
-      case 'action':
-        return '✅';
-      default:
-        return '📄';
-    }
-  };
-
-  const getTypeColor = (type: SearchResult['type']) => {
-    switch (type) {
-      case 'transcript':
-        return 'text-blue-600 dark:text-blue-400 bg-blue-100 dark:bg-blue-900/50';
-      case 'chat':
-        return 'text-purple-600 dark:text-purple-400 bg-purple-100 dark:bg-purple-900/50';
-      case 'agenda':
-        return 'text-amber-600 dark:text-amber-400 bg-amber-100 dark:bg-amber-900/50';
-      case 'action':
-        return 'text-green-600 dark:text-green-400 bg-green-100 dark:bg-green-900/50';
-      default:
-        return 'text-slate-600 dark:text-slate-400 bg-slate-100 dark:bg-slate-900/50';
-    }
-  };
-
-  const highlightMatch = (text: string, query: string) => {
-    if (!query.trim()) return text;
-
-    const queryWords = query.trim().split(/\s+/).filter(w => w.length > 0);
-    if (queryWords.length === 0) return text;
-
-    // Create a pattern that matches any of the query words
-    const pattern = queryWords
-      .map(word => word.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'))
-      .join('|');
-
-    const parts = text.split(new RegExp(`(${pattern})`, 'gi'));
-
-    return (
-      <>
-        {parts.map((part, i) => {
-          const isMatch = queryWords.some(word =>
-            part.toLowerCase() === word.toLowerCase()
-          );
-          return isMatch ? (
-            <mark key={i} className="bg-yellow-200 dark:bg-yellow-500/80 text-slate-800 dark:text-slate-900 font-medium">{part}</mark>
-          ) : (
-            <span key={i}>{part}</span>
-          );
-        })}
-      </>
-    );
-  };
 
   if (!isOpen) {
     return null;
   }
 
   return (
+    <SearchQueryProvider query={query}>
     <div className="fixed inset-0 z-50 flex items-start justify-center pt-4 sm:pt-20 px-2 sm:px-4">
       {/* Backdrop */}
       <div
@@ -602,7 +476,7 @@ const CallSearch: React.FC<CallSearchProps> = ({
               onChange={(e) => setQuery(e.target.value)}
               onKeyDown={handleKeyDown}
               placeholder="Search transcript, chat, agenda..."
-              className="flex-1 bg-transparent text-slate-900 dark:text-slate-100 placeholder-slate-400 dark:placeholder-slate-500 outline-none text-base sm:text-base text-lg min-h-[44px] sm:min-h-0"
+              className="flex-1 bg-transparent text-slate-900 dark:text-slate-100 placeholder-slate-400 dark:placeholder-slate-400 outline-none text-base sm:text-base text-lg min-h-[44px] sm:min-h-0"
             />
             <button
               onClick={() => { setIsOpen(false); setQuery(''); }}
@@ -657,7 +531,7 @@ const CallSearch: React.FC<CallSearchProps> = ({
             <div className="py-2">
               {searchResults.map((result, index) => (
                 <button
-                  key={index}
+                  key={`${result.type}-${result.originalIndex}`}
                   onClick={() => handleResultClick(result.timestamp, result)}
                   onMouseEnter={() => setSelectedIndex(index)}
                   className={`w-full text-left px-3 sm:px-4 py-4 sm:py-3 hover:bg-slate-50 dark:hover:bg-slate-700/30 transition-colors touch-manipulation ${
@@ -666,8 +540,8 @@ const CallSearch: React.FC<CallSearchProps> = ({
                 >
                   <div className="flex items-start gap-3">
                     {/* Type Badge */}
-                    <span className={`inline-flex items-center justify-center w-10 h-10 sm:w-8 sm:h-8 rounded-lg text-sm flex-shrink-0 ${getTypeColor(result.type)}`}>
-                      {getTypeIcon(result.type)}
+                    <span className={`inline-flex items-center justify-center w-10 h-10 sm:w-8 sm:h-8 rounded-lg text-sm flex-shrink-0 ${getSearchTypeColor(result.type)}`}>
+                      {getSearchTypeIcon(result.type)}
                     </span>
 
                     {/* Content */}
@@ -686,11 +560,11 @@ const CallSearch: React.FC<CallSearchProps> = ({
                         </span>
                       </div>
                       <p className="text-sm sm:text-sm text-base text-slate-900 dark:text-slate-100 line-clamp-3 sm:line-clamp-2 leading-relaxed">
-                        {highlightMatch(result.text, query)}
+                        <SearchMatch>{result.text}</SearchMatch>
                       </p>
                       {showContext && result.context && (
                         <div className="text-xs text-slate-500 dark:text-slate-400 mt-1 line-clamp-2 sm:line-clamp-1">
-                          {highlightMatch(result.context, query)}
+                          <SearchMatch>{result.context}</SearchMatch>
                         </div>
                       )}
                     </div>
@@ -708,7 +582,7 @@ const CallSearch: React.FC<CallSearchProps> = ({
               ))}
             </div>
           ) : (
-            <div className="p-8 text-center text-slate-400 dark:text-slate-500">
+            <div className="p-8 text-center text-slate-400 dark:text-slate-400">
               <p className="text-sm mb-3">Start typing to search across:</p>
               <div className="grid grid-cols-2 gap-3 max-w-xs mx-auto text-left">
                 <div className="flex items-center gap-2 text-xs">
@@ -748,6 +622,7 @@ const CallSearch: React.FC<CallSearchProps> = ({
         )}
       </div>
     </div>
+    </SearchQueryProvider>
   );
 };
 

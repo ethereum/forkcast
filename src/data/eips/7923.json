@@ -2,19 +2,22 @@
   "id": 7923,
   "title": "EIP-7923: Linear, Page-Based Memory Costing",
   "status": "Draft",
-  "description": "Linearize memory pricing and replace the current quadratic formula with a page-based cost model.",
+  "description": "Linearize Memory Costing and replace the current quadratic formula with a page-based cost model.",
   "author": "Charles Cooper (@charles-cooper), Qi Zhou (@qizhou)",
   "type": "Standards Track",
   "category": "Core",
   "createdDate": "2025-03-27",
   "discussionLink": "https://ethereum-magicians.org/t/eip-linearize-memory-costing/23290",
   "reviewer": "staff",
+  "layer": "EL",
   "forkRelationships": [
     {
       "forkName": "Glamsterdam",
       "statusHistory": [
         {
-          "status": "Proposed"
+          "status": "Proposed",
+          "call": null,
+          "date": null
         },
         {
           "status": "Declined",
@@ -22,11 +25,12 @@
           "date": "2025-12-18"
         }
       ],
-      "layer": "EL",
-      "champion": {
-        "name": "Charles Cooper",
-        "telegram": "big_tech_sux"
-      }
+      "champions": [
+        {
+          "name": "Charles Cooper",
+          "telegram": "big_tech_sux"
+        }
+      ]
     }
   ],
   "laymanDescription": "Linearizes EVM memory with 4KB pages: 100-gas allocation, 6-gas thrash, 64MB cap. Contracts that hit quadratic expansion limits finish with the same logic but steadier gas usage, allowing for more efficient memory management and predicatble gas costs.",
@@ -68,5 +72,6 @@
     "Replaces quadratic memory expansion with linear, page-based costing for predictable gas.",
     "Provides support for virtual memory addressing, unlocking heap/stack separation in high-level smart contract languages.",
     "Providing developers with better ways to manage memory, similar to other architectures."
-  ]
+  ],
+  "tradeoffs": null
 }

@@ -1,7 +1,7 @@
 {
   "id": 3670,
   "title": "EIP-3670: EOF - Code Validation",
-  "status": "Review",
+  "status": "Stagnant",
   "description": "Validate EOF bytecode for correctness at the time of deployment.",
   "author": "Alex Beregszaszi (@axic), Andrei Maiboroda (@gumb0), Paweł Bylica (@chfast)",
   "type": "Standards Track",
@@ -14,7 +14,9 @@
       "forkName": "Fusaka",
       "statusHistory": [
         {
-          "status": "Declined"
+          "status": "Declined",
+          "call": null,
+          "date": null
         }
       ]
     },
@@ -22,13 +24,18 @@
       "forkName": "Pectra",
       "statusHistory": [
         {
-          "status": "Considered"
+          "status": "Considered",
+          "call": null,
+          "date": null
         },
         {
-          "status": "Declined"
+          "status": "Declined",
+          "call": null,
+          "date": null
         }
       ]
     }
   ],
-  "laymanDescription": "This adds strict validation rules for EOF smart contracts when they're deployed. It rejects contracts with invalid bytecode, such as incomplete PUSH instructions or undefined opcodes. It also removes deprecated instructions like CALLCODE and SELFDESTRUCT from EOF contracts. This validation only happens once at deployment time and only affects new EOF contracts - existing legacy contracts remain unchanged. The goal is to make bytecode more predictable and easier to reason about, while ensuring all EVM implementations handle code the same way."
+  "laymanDescription": "This adds strict validation rules for EOF smart contracts when they're deployed. It rejects contracts with invalid bytecode, such as incomplete PUSH instructions or undefined opcodes. It also removes deprecated instructions like CALLCODE and SELFDESTRUCT from EOF contracts. This validation only happens once at deployment time and only affects new EOF contracts - existing legacy contracts remain unchanged. The goal is to make bytecode more predictable and easier to reason about, while ensuring all EVM implementations handle code the same way.",
+  "tradeoffs": null
 }

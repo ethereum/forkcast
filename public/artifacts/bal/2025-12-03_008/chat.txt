@@ -1,0 +1,93 @@
+00:02:57	Stefan Starflinger:	Hello
+00:05:01	Toni Wahrstaetter:	https://github.com/ethereum/pm/issues/1822
+00:05:48	Łukasz Rozmej:	famous last words...
+00:06:57	Toni Wahrstaetter:	https://github.com/ethereum/EIPs/pull/10866
+00:08:50	Stefan Starflinger:	for memory expansion nethermind also has a inconsistency vs reth and besu https://github.com/ethereum/execution-specs/pull/1825
+00:10:46	Ben Adams:	Makes sense to delay disk access
+00:11:01	Ben Adams:	If going to fail anyway
+00:11:44	Toni Wahrstätter:	Reacted to famous last words... with "🔥"
+00:12:07	Stefan Starflinger:	https://github.com/ethereum/execution-specs/pull/1825
+00:15:17	felipe:	Reacted to "https://github.com..." with 💯
+00:16:34	Karim T.:	BAL in the history could be a fast way to sync an archive node after BAL
+00:17:10	Toni Wahrstaetter:	This was the latest BAL size analysis but lacks a comparison to the block size:
+https://github.com/nerolation/eth-bal-analysis/blob/main/reports/eip-7928-analysis.md 
+
+I assumed the block size is 120 KiB (based on a dashboard from etherscan).
+But can double-check that number
+00:19:18	Ben Adams:	puts more pressure/incentive to drop blocks via 4444 to always keep BALs so historic blocks would become less available?
+00:19:52	Karim T.:	Reacted to "puts more pressure/i..." with ➕
+00:22:42	Karim T.:	I think that block datas are going to grow enormously anyway. I think 4444 might be the solution, as Ben said
+00:25:24	Karim T.:	The fact that with BAL we can synchronize an archive node more quickly is a real plus. Archive nodes will become increasingly difficult to resynchronize, and having this capability can, for example, allow synchronization of an archive node without needing all versions of the EVM fork .
+00:33:11	Ben Adams:	BALs in blobs :)
+00:45:04	Jared Wasinger:	Yeah we want to bound the healing phase
+00:45:47	Karim T.:	I see also regarding backward sync , not need to replay block . So snap protocol I don’t know , but specific P2P message why not
+00:47:16	Karim T.:	No need to keep evm history if we have all BALs ^^ the fix to legacy code
+00:47:39	Stefan Starflinger:	Storage is cheaper than RAM now 🙃
+00:47:46	Ben Adams:	Reacted to "Storage is cheaper t..." with 😂
+00:52:48	draganrakita:	What is as is?
+00:53:03	Toni Wahrstaetter:	keep them in the block body, no sidecar
+00:54:13	Ben Adams:	Still think we need to check with CLs to see what they do with historic blocks. If they keep them all then is x2
+00:56:31	Ben Adams:	A poor archive node (just storage) as don't have the initial state
+00:58:23	draganrakita:	Dropping them simplifies the things for Reth
+00:59:25	raxhvl:	But the block hash gets invalidated if we remove bal later?
+00:59:53	Ben Adams:	No because block hash is hash of the hashes
+01:00:07	Karim T.:	I think keep them with a retention period is the good tradeoff
+01:00:11	Ben Adams:	Don't rehash the entire block as rlp?
+01:00:54	Stefan Starflinger:	Replying to "No because block has..."
+
+Yeah, this is something that confused me also, I was under the assumption that anything that is specified in the block body would be included in the block hash calculation
+01:01:28	Karim T.:	So if we replay an old block we need to accept a block without BAL but if we want to execute a recent block we should fail if BAL is missing ?
+01:02:24	Toni Wahrstaetter:	Replying to "So if we replay an o..."
+
+yeah that's my understanding too
+01:02:49	Karim T.:	Replying to "So if we replay an o..."
+
+So we need to have a specific logic to change the rule depending on where you are in the chain
+01:02:53	Ben Adams:	Replying to "No because block has..."
+
+but you get the BAL back from executing block (as you need to recreate the BAL to verify BAL hash)
+01:03:03	Karim T.:	Replying to "So if we replay an o..."
+
+Seems tricky
+01:03:06	Jared Wasinger:	Replying to "So if we replay an o..."
+
+If you get the block from the CL, it has the sidecar (BAL)
+01:03:12	Jared Wasinger:	Replying to "So if we replay an o..."
+
+And the sidecar isn’t persisted
+01:03:27	Karim T.:	Replying to "So if we replay an o..."
+
+Hum yes ok
+01:03:28	raxhvl:	Replying to "No because block has..." 
+
+ Right.
+01:03:29	Jared Wasinger:	Replying to "So if we replay an o..."
+
+That’s my understanding of dropping BALs from the block.  Works exactly like blob txs
+01:03:32	Stefan Starflinger:	Replying to "No because block has..."
+
+yeah 100%, this makes it a bit tricky to understand
+01:03:42	Toni Wahrstaetter:	Replying to "So if we replay an o..."
+
+my understanding is we don't need a sidecar in this case
+01:04:12	Ben Adams:	Replying to "So if we replay an o..."
+
+Blob BALs :)
+01:04:53	Ben Adams:	Replying to "So if we replay an o..."
+
+1 blob reserved per blockThough I'm not entirely serious
+01:05:32	Stefan Starflinger:	Replying to "So if we replay an o..."
+
+system Blobs
+01:05:49	Ben Adams:	Reacted to "system Blobs" with 👀
+01:06:32	Stefan Starflinger:	Replying to "So if we replay an o..."
+
+blob without size limits :D
+01:07:23	Łukasz Rozmej:	famous last words...told you it won't be "quick discussion" :P
+01:07:33	Stefan Starflinger:	Reacted to "famous last words......" with 😁
+01:07:38	Toni Wahrstaetter:	Reacted to "famous last words......" with 😁
+01:07:41	felipe:	Reacted to "famous last words...." with 😁
+01:08:05	Marc:	Reacted to "famous last words...…" with 😁
+01:08:09	Łukasz Rozmej:	we didn't even get to topic number 3
+01:08:43	Ben Adams:	Reacted to "famous last words......" with 😁
+01:10:25	Karim T.:	Still working on batch reading IO, we have // working still need to clean the PR

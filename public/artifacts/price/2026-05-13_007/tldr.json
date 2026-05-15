@@ -1,0 +1,96 @@
+{
+  "meeting": "Glamsterdam Repricings #7 - May 13, 2026",
+  "highlights": {
+    "eip_8037_state_creation_costs": [
+      {
+        "timestamp": "00:04:00",
+        "highlight": "Target: 120 GB/year worst-case state growth, 150M block limit; new account 7x, new slot 5x, contract deploy 8x increase"
+      },
+      {
+        "timestamp": "00:23:06",
+        "highlight": "Two spec bugs identified: check code hash == 0 (not code existence), and refund bytecode on delegation removal via zero-address authorization"
+      },
+      {
+        "timestamp": "00:53:31",
+        "highlight": "EIP-8038 and EIP-2780 to be included in glamsterdam-devnet-4 with placeholder numbers; constant updates follow once benchmarks stabilize"
+      }
+    ],
+    "eip_2780_intrinsic_gas": [
+      {
+        "timestamp": "00:30:14",
+        "highlight": "Current formula yields ~23K gas for ETH transfer to existing EOA\u2014exceeding 21K baseline; benchmarks needed before finalizing values"
+      },
+      {
+        "timestamp": "00:38:22",
+        "highlight": "Stefan flagged risk: avoid shipping 2780 only to plug 8037 gap; prefer correct version over rushed one"
+      }
+    ],
+    "eip_8038_state_access_repricing": [
+      {
+        "timestamp": "00:49:49",
+        "highlight": "SSTORE formula refactored: cold/warm access and state-creation costs now separated; all SSTORE scenarios covered in new table"
+      }
+    ],
+    "debug_api_for_state_gas": [
+      {
+        "timestamp": "00:16:54",
+        "highlight": "No consensus on debug endpoint approach; options are new debug RPC method vs. adding state gas summary to tracer output; changing receipts rejected by multiple teams"
+      }
+    ],
+    "testing_progress": [
+      {
+        "timestamp": "00:21:27",
+        "highlight": "Besu down to 3 failing tests on 7.10 release; Hive quick tests running; Kurtosis testing starting same day"
+      },
+      {
+        "timestamp": "00:21:41",
+        "highlight": "eth/70 and eth/71 now required for bal-devnet-7"
+      },
+      {
+        "timestamp": "00:36:05",
+        "highlight": "ETH transfer benchmark will use YochumNet (135K unique contracts); sender accounts must be cold (forced disk read)\u2014fix pending"
+      }
+    ]
+  },
+  "action_items": [
+    {
+      "timestamp": "00:20:43",
+      "action": "Bring state gas debug API design (RPC vs. tracer) to ACDT next week",
+      "owner": "Maria Silva"
+    },
+    {
+      "timestamp": "00:23:14",
+      "action": "Update EIP-8037: remove self-destruct refunds, fix code-hash check, add delegation-removal refund",
+      "owner": "Maria Silva / Steel team"
+    },
+    {
+      "timestamp": "00:36:09",
+      "action": "Fix ETH transfer benchmark so sender accounts are cold (force disk reads); fast-track state optimization tooling",
+      "owner": "jochem-brouwer / Louis"
+    }
+  ],
+  "decisions": [
+    {
+      "timestamp": "00:23:06",
+      "decision": "EIP-8037 spec: check code hash == 0 (not code existence); refund bytecode on zero-address authorization removal"
+    },
+    {
+      "timestamp": "00:55:36",
+      "decision": "No changes to receipts for state gas data; standardize via tracing instead"
+    },
+    {
+      "timestamp": "00:48:28",
+      "decision": "Include EIP-8038 and EIP-2780 in next Glamsterdam devnet with current placeholder numbers"
+    }
+  ],
+  "targets": [
+    {
+      "timestamp": "00:53:52",
+      "target": "glamsterdam-devnet-4 \u2014 next Glamsterdam devnet; timing TBD"
+    },
+    {
+      "timestamp": "00:21:27",
+      "target": "bal-devnet-7 \u2014 planned as last BAL-only devnet"
+    }
+  ]
+}

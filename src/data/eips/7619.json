@@ -2,19 +2,22 @@
   "id": 7619,
   "title": "EIP-7619: Precompile Falcon512 generic verifier",
   "status": "Draft",
-  "description": "Proposes adding a precompile for Falcon-512, a post-quantum digital signature algorithm",
+  "description": "Add precompiled contract that allows generic signature verifications using Falcon512 postquantum algorithm",
   "author": "Erick Pacheco Pedraza (@eum602), Marcos Allende <mallende@lacnet.com>, Diego Lopez León <dieguitoll@gmail.com>",
   "type": "Standards Track",
   "category": "Core",
   "createdDate": "2023-07-03",
   "discussionLink": "https://ethereum-magicians.org/t/falcon-512-precompiled-generic-signature-verifier/18569",
   "reviewer": "expert",
+  "layer": "EL",
   "forkRelationships": [
     {
       "forkName": "Glamsterdam",
       "statusHistory": [
         {
-          "status": "Proposed"
+          "status": "Proposed",
+          "call": null,
+          "date": null
         },
         {
           "status": "Declined",
@@ -22,11 +25,12 @@
           "date": "2025-12-04"
         }
       ],
-      "layer": "EL",
-      "champion": {
-        "name": "Danno Ferrin",
-        "discord": "_shemnon"
-      }
+      "champions": [
+        {
+          "name": "Danno Ferrin",
+          "discord": "_shemnon"
+        }
+      ]
     }
   ],
   "laymanDescription": "Provide cost-efficient (ecrecover cost not MGas) verification of Falcon-512 signatures, one of the Post-Quantum Signatures being standardized by NIST.",
@@ -69,5 +73,6 @@
     "Quantum resistance for Ethereum signatures",
     "No protocol redesign required",
     "Compatible with existing EVM infrastructure"
-  ]
+  ],
+  "tradeoffs": null
 }

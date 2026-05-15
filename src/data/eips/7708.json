@@ -1,32 +1,42 @@
 {
   "id": 7708,
-  "title": "ETH transfers emit a log",
-  "status": "Stagnant",
-  "description": "All ETH-transfers, including transactions, CALL and SELFDESTRUCT, emit a log so ETH movements are detectable via a single, standard mechanism.",
-  "author": "Vitalik Buterin (@vbuterin), Peter Davies (@petertdavies)",
+  "title": "EIP-7708: ETH transfers and burns emit a log",
+  "status": "Draft",
+  "description": "All ETH transfers and burns emit a log",
+  "author": "Vitalik Buterin (@vbuterin), Peter Davies (@petertdavies), Etan Kissling (@etan-status), Gajinder Singh (@g11tech), Carson (@carsons-eels), Jared Wasinger (@jwasinger)",
   "type": "Standards Track",
   "category": "Core",
   "createdDate": "2024-05-17",
   "discussionLink": "https://ethereum-magicians.org/t/eip-7708-eth-transfers-emit-a-log/20034",
   "reviewer": "bot",
+  "layer": "EL",
   "forkRelationships": [
     {
       "forkName": "Glamsterdam",
       "statusHistory": [
         {
-          "status": "Proposed"
+          "status": "Proposed",
+          "call": null,
+          "date": null
         },
         {
           "status": "Considered",
           "call": "acde/225",
           "date": "2025-12-04"
+        },
+        {
+          "status": "Scheduled",
+          "call": "acde/236",
+          "date": "2026-05-07",
+          "timestamp": 804
         }
       ],
-      "layer": "EL",
-      "champion": {
-        "name": "Carl Beekhuizen",
-        "discord": "carlbeek"
-      }
+      "champions": [
+        {
+          "name": "Carl Beekhuizen",
+          "discord": "carlbeek"
+        }
+      ]
     }
   ],
   "laymanDescription": "Make every ETH transfer—including from contracts and SELFDESTRUCT—emit an event log. Apps and explorers can track ETH movements uniformly, similar to ERC-20 transfers, improving deposit detection and reducing ad-hoc tracing.",
@@ -61,5 +71,6 @@
     "Reduces reliance on tracing for ETH balance change detection.",
     "Improves deposit handling for smart contract wallet senders.",
     "Simplifies indexing and analytics for ETH movement."
-  ]
+  ],
+  "tradeoffs": null
 }

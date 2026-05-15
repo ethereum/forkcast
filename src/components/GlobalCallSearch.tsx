@@ -1,8 +1,16 @@
 import { useState, useEffect, useMemo, useRef } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { searchIndexService } from '../services/searchIndex';
 import { formatDate } from '../utils/date';
 import { debounce } from '../utils/debounce';
+import {
+  SearchDialog,
+  SearchDialogSearchRow,
+  SearchFilterButton,
+  SearchKeycap,
+  SearchMatch,
+} from './search/SearchUi';
+import { getSearchTypeIcon, getSearchTypeColor } from './search/searchShortcuts';
 
 interface GlobalSearchResult {
   callType: string;
@@ -14,7 +22,6 @@ interface GlobalSearchResult {
   timestamp: string;
   speaker?: string;
   text: string;
-  matchScore?: number;
 }
 
 interface GlobalCallSearchProps {
@@ -24,11 +31,11 @@ interface GlobalCallSearchProps {
 }
 
 export default function GlobalCallSearch({ isOpen, onClose, initialQuery = '' }: GlobalCallSearchProps) {
+  const navigate = useNavigate();
   const [query, setQuery] = useState(initialQuery);
   const [results, setResults] = useState<GlobalSearchResult[]>([]);
   const [loading, setLoading] = useState(false);
   const [indexBuilding, setIndexBuilding] = useState(false);
-  const [indexProgress, setIndexProgress] = useState(0);
   const [selectedIndex, setSelectedIndex] = useState(0);
   const [filterType, setFilterType] = useState<'all' | 'transcript' | 'chat' | 'agenda' | 'action'>('all');
   const [callTypeFilter, setCallTypeFilter] = useState<'all' | 'ACDC' | 'ACDE' | 'ACDT'>('all');
@@ -38,21 +45,37 @@ export default function GlobalCallSearch({ isOpen, onClose, initialQuery = '' }:
 
   // Initialize search index on mount
   useEffect(() => {
+    if (!isOpen) {
+      setIndexBuilding(false);
+      return;
+    }
+
+    let cancelled = false;
+
     const initIndex = async () => {
       const stats = searchIndexService.getStats();
-      if (!stats || searchIndexService.needsRebuild()) {
+      const needsBuild = !stats || searchIndexService.needsRebuild();
+
+      if (needsBuild) {
         setIndexBuilding(true);
-        await searchIndexService.rebuildIndex((progress) => {
-          setIndexProgress(progress);
-        });
-        setIndexBuilding(false);
-        setIndexProgress(0);
+      }
+
+      try {
+        await searchIndexService.getIndex();
+      } catch (error) {
+        console.error('Failed to initialize search index:', error);
+      } finally {
+        if (!cancelled) {
+          setIndexBuilding(false);
+        }
       }
     };
 
-    if (isOpen) {
-      initIndex();
-    }
+    void initIndex();
+
+    return () => {
+      cancelled = true;
+    };
   }, [isOpen]);
 
   // Debounced search function
@@ -69,7 +92,7 @@ export default function GlobalCallSearch({ isOpen, onClose, initialQuery = '' }:
         try {
           const searchResults = await searchIndexService.search(searchQuery, {
             callType: callType === 'all' ? undefined : callType as 'ACDC' | 'ACDE' | 'ACDT',
-            contentType: contentType === 'all' ? undefined : contentType as any,
+            contentType: contentType === 'all' ? undefined : contentType as 'transcript' | 'chat' | 'agenda' | 'action',
             limit: 500
           });
 
@@ -83,7 +106,6 @@ export default function GlobalCallSearch({ isOpen, onClose, initialQuery = '' }:
             timestamp: result.timestamp,
             speaker: result.speaker,
             text: result.text,
-            matchScore: 0
           }));
 
           const limitedResults = formattedResults.slice(0, 200);
@@ -124,13 +146,13 @@ export default function GlobalCallSearch({ isOpen, onClose, initialQuery = '' }:
         e.preventDefault();
         const result = results[selectedIndex];
         const url = `${result.callPath}?search=${encodeURIComponent(query)}&timestamp=${result.timestamp}&type=${result.type}&text=${encodeURIComponent(result.text)}`;
-        window.location.href = url;
+        navigate(url);
       }
     };
 
     window.addEventListener('keydown', handleKeyDown);
     return () => window.removeEventListener('keydown', handleKeyDown);
-  }, [isOpen, onClose, results, selectedIndex, query]);
+  }, [isOpen, onClose, results, selectedIndex, query, navigate]);
 
   // Scroll selected result into view
   useEffect(() => {
@@ -154,163 +176,62 @@ export default function GlobalCallSearch({ isOpen, onClose, initialQuery = '' }:
     setSelectedIndex(0);
   }, [results]);
 
-  if (!isOpen) return null;
-
-  const getTypeIcon = (type: GlobalSearchResult['type']) => {
-    switch (type) {
-      case 'transcript':
-        return '📝';
-      case 'chat':
-        return '💬';
-      case 'agenda':
-        return '📋';
-      case 'action':
-        return '✅';
-      default:
-        return '📄';
-    }
-  };
-
-  const getTypeColor = (type: GlobalSearchResult['type']) => {
-    switch (type) {
-      case 'transcript':
-        return 'text-blue-600 dark:text-blue-400 bg-blue-100 dark:bg-blue-900/50';
-      case 'chat':
-        return 'text-purple-600 dark:text-purple-400 bg-purple-100 dark:bg-purple-900/50';
-      case 'agenda':
-        return 'text-amber-600 dark:text-amber-400 bg-amber-100 dark:bg-amber-900/50';
-      case 'action':
-        return 'text-green-600 dark:text-green-400 bg-green-100 dark:bg-green-900/50';
-      default:
-        return 'text-slate-600 dark:text-slate-400 bg-slate-100 dark:bg-slate-900/50';
-    }
-  };
-
-  const highlightMatch = (text: string, searchQuery: string) => {
-    if (!searchQuery.trim()) return text;
-
-    const queryWords = searchQuery.trim().split(/\s+/).filter(w => w.length > 0);
-    if (queryWords.length === 0) return text;
-
-    const pattern = queryWords
-      .map(word => word.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'))
-      .join('|');
-
-    const parts = text.split(new RegExp(`(${pattern})`, 'gi'));
-
-    return (
-      <>
-        {parts.map((part, i) => {
-          const isMatch = queryWords.some(word =>
-            part.toLowerCase() === word.toLowerCase()
-          );
-          return isMatch ? (
-            <mark key={i} className="bg-yellow-200 dark:bg-yellow-500/80 text-slate-800 dark:text-slate-900 font-medium">{part}</mark>
-          ) : (
-            <span key={i}>{part}</span>
-          );
-        })}
-      </>
-    );
-  };
-
 
   return (
-    <div className="fixed inset-0 z-50 flex items-start justify-center pt-4 sm:pt-20 px-2 sm:px-4">
-      {/* Backdrop */}
-      <div
-        className="absolute inset-0 bg-slate-900/50 backdrop-blur-sm"
-        onClick={onClose}
-      />
+    <SearchDialog isOpen={isOpen} onClose={onClose} query={query} maxWidthClassName="max-w-4xl">
+      <div className="border-b border-slate-200 dark:border-slate-700">
+        <SearchDialogSearchRow
+          inputRef={inputRef}
+          value={query}
+          onChange={setQuery}
+          placeholder="Search calls..."
+          onClose={() => {
+            onClose();
+            setQuery('');
+          }}
+          loading={loading}
+        />
 
-      {/* Search Modal */}
-      <div className="relative w-full max-w-4xl bg-white dark:bg-slate-800 rounded-xl sm:rounded-xl rounded-t-xl shadow-2xl overflow-hidden animate-[slideDown_0.2s_ease-out] max-h-[90vh] sm:max-h-none">
-        {/* Search Header */}
-        <div className="border-b border-slate-200 dark:border-slate-700">
-          <div className="flex items-center gap-3 p-3 sm:p-4">
-            <svg className="w-5 h-5 sm:w-5 sm:h-5 text-slate-400 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
-            </svg>
-            <input
-              ref={inputRef}
-              type="text"
-              value={query}
-              onChange={(e) => setQuery(e.target.value)}
-              placeholder="Search across all calls..."
-              className="flex-1 bg-transparent text-slate-900 dark:text-slate-100 placeholder-slate-400 dark:placeholder-slate-500 outline-none text-base sm:text-base text-lg min-h-[44px] sm:min-h-0"
-            />
-            {loading && (
-              <div className="w-5 h-5 border-2 border-blue-500 border-t-transparent rounded-full animate-spin" />
-            )}
-            <button
-              onClick={() => { onClose(); setQuery(''); }}
-              className="text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 p-2 -m-2 touch-manipulation"
+        <div className="flex items-center gap-2 overflow-x-auto px-4 pb-4">
+          {(['all', 'transcript', 'chat', 'agenda', 'action'] as const).map(filter => (
+            <SearchFilterButton
+              key={filter}
+              active={filterType === filter}
+              onClick={() => setFilterType(filter)}
+              tone="blue"
             >
-              <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
-              </svg>
-              <span className="sr-only">Close</span>
-            </button>
-          </div>
+              {filter === 'all' ? 'All' : filter.charAt(0).toUpperCase() + filter.slice(1)}
+            </SearchFilterButton>
+          ))}
 
-          {/* Filters */}
-          <div className="flex items-center gap-2 px-3 sm:px-4 pb-3 overflow-x-auto">
-            <div className="flex items-center gap-2 flex-nowrap">
-              {/* Content Type Filters */}
-              {(['all', 'transcript', 'chat', 'agenda', 'action'] as const).map(filter => (
-                <button
-                  key={filter}
-                  onClick={() => setFilterType(filter)}
-                  className={`px-3 py-2 rounded-full text-xs sm:text-xs font-medium transition-colors whitespace-nowrap min-h-[36px] touch-manipulation ${
-                    filterType === filter
-                      ? 'bg-blue-100 dark:bg-blue-900/30 text-blue-700 dark:text-blue-300'
-                      : 'bg-slate-100 dark:bg-slate-700 text-slate-600 dark:text-slate-400 hover:bg-slate-200 dark:hover:bg-slate-600'
-                  }`}
-                >
-                  {filter === 'all' ? 'All' : filter.charAt(0).toUpperCase() + filter.slice(1)}
-                </button>
-              ))}
+          <div className="mx-1 h-5 w-px bg-slate-200 dark:bg-slate-600" />
 
-              {/* Call Type Filters */}
-              <div className="h-4 w-px bg-slate-300 dark:bg-slate-600 mx-1" />
-              {(['all', 'ACDC', 'ACDE', 'ACDT'] as const).map(filter => (
-                <button
-                  key={filter}
-                  onClick={() => setCallTypeFilter(filter)}
-                  className={`px-3 py-2 rounded-full text-xs sm:text-xs font-medium transition-colors whitespace-nowrap min-h-[36px] touch-manipulation ${
-                    callTypeFilter === filter
-                      ? 'bg-purple-100 dark:bg-purple-900/30 text-purple-700 dark:text-purple-300'
-                      : 'bg-slate-100 dark:bg-slate-700 text-slate-600 dark:text-slate-400 hover:bg-slate-200 dark:hover:bg-slate-600'
-                  }`}
-                >
-                  {filter === 'all' ? 'All Calls' : filter}
-                </button>
-              ))}
-            </div>
-          </div>
-
-          {/* Index Building Progress */}
-          {indexBuilding && (
-            <div className="px-3 sm:px-4 pb-3">
-              <div className="flex items-center justify-between text-sm text-slate-500 dark:text-slate-400 mb-2">
-                <span>Building search index...</span>
-                <span>{Math.round(indexProgress)}%</span>
-              </div>
-              <div className="w-full bg-slate-200 rounded-full h-1.5 dark:bg-slate-700">
-                <div
-                  className="bg-blue-600 h-1.5 rounded-full transition-all duration-300"
-                  style={{ width: `${indexProgress}%` }}
-                />
-              </div>
-            </div>
-          )}
+          {(['all', 'ACDC', 'ACDE', 'ACDT'] as const).map(filter => (
+            <SearchFilterButton
+              key={filter}
+              active={callTypeFilter === filter}
+              onClick={() => setCallTypeFilter(filter)}
+              tone="purple"
+            >
+              {filter === 'all' ? 'All Calls' : filter}
+            </SearchFilterButton>
+          ))}
         </div>
 
-        {/* Search Results */}
-        <div
-          ref={resultsContainerRef}
-          className="max-h-96 sm:max-h-96 max-h-[60vh] overflow-y-auto"
-        >
+        {indexBuilding && (
+          <div className="px-4 pb-4">
+            <div className="flex items-center gap-2 text-sm text-slate-500 dark:text-slate-400">
+              <div className="h-4 w-4 rounded-full border-2 border-blue-500 border-t-transparent animate-spin" />
+              <span>Building search index...</span>
+            </div>
+          </div>
+        )}
+      </div>
+
+      <div
+        ref={resultsContainerRef}
+        className="max-h-[60vh] overflow-y-auto sm:max-h-96"
+      >
           {query && results.length === 0 && !loading && !indexBuilding ? (
             <div className="p-8 text-center text-slate-500 dark:text-slate-400">
               <p className="text-sm">No results found for "{query}"</p>
@@ -331,8 +252,8 @@ export default function GlobalCallSearch({ isOpen, onClose, initialQuery = '' }:
                   >
                     <div className="flex items-start gap-3">
                       {/* Type Badge */}
-                      <span className={`inline-flex items-center justify-center w-10 h-10 sm:w-8 sm:h-8 rounded-lg text-sm flex-shrink-0 ${getTypeColor(result.type)}`}>
-                        {getTypeIcon(result.type)}
+                      <span className={`inline-flex items-center justify-center w-10 h-10 sm:w-8 sm:h-8 rounded-lg text-sm flex-shrink-0 ${getSearchTypeColor(result.type)}`}>
+                        {getSearchTypeIcon(result.type)}
                       </span>
 
                       {/* Content */}
@@ -362,16 +283,14 @@ export default function GlobalCallSearch({ isOpen, onClose, initialQuery = '' }:
 
                         {/* Text */}
                         <p className="text-sm sm:text-sm text-base text-slate-900 dark:text-slate-100 line-clamp-3 sm:line-clamp-2 leading-relaxed">
-                          {highlightMatch(result.text, query)}
+                          <SearchMatch>{result.text}</SearchMatch>
                         </p>
                       </div>
 
-                      {/* Navigate hint - hide on mobile */}
+                        {/* Navigate hint - hide on mobile */}
                       <div className="hidden sm:flex items-center w-8 justify-center">
                         {isSelected && (
-                          <kbd className="px-1.5 py-0.5 text-xs font-semibold text-slate-500 bg-slate-100 dark:bg-slate-700 dark:text-slate-400 border border-slate-200 dark:border-slate-600 rounded">
-                            ↵
-                          </kbd>
+                          <SearchKeycap>↵</SearchKeycap>
                         )}
                       </div>
                     </div>
@@ -380,7 +299,7 @@ export default function GlobalCallSearch({ isOpen, onClose, initialQuery = '' }:
               })}
             </div>
           ) : (
-            <div className="p-8 text-center text-slate-400 dark:text-slate-500">
+            <div className="p-8 text-center text-slate-400 dark:text-slate-400">
               <p className="text-sm mb-3">Start typing to search across all calls</p>
               <div className="grid grid-cols-2 gap-3 max-w-xs mx-auto text-left">
                 <div className="flex items-center gap-2 text-xs">
@@ -398,32 +317,30 @@ export default function GlobalCallSearch({ isOpen, onClose, initialQuery = '' }:
               </div>
             </div>
           )}
-        </div>
+      </div>
 
-        {/* Footer */}
-        {query && results.length > 0 && (
-          <div className="border-t border-slate-200 dark:border-slate-700 px-3 sm:px-4 py-2 flex items-center justify-between text-xs text-slate-500 dark:text-slate-400">
-            <div className="flex items-center gap-2 sm:gap-4">
-              <span>{searchStats?.shown || results.length} result{(searchStats?.shown || results.length) !== 1 ? 's' : ''}</span>
-              {searchStats && searchStats.shown < searchStats.total && (
-                <span className="text-amber-600 dark:text-amber-400">
-                  of {searchStats.total}
-                </span>
-              )}
-              <div className="hidden sm:flex items-center gap-4">
-                <span className="flex items-center gap-1">
-                  <kbd className="px-1 py-0.5 bg-slate-100 dark:bg-slate-700 border border-slate-200 dark:border-slate-600 rounded text-xs">↑↓</kbd>
-                  Navigate
-                </span>
-                <span className="flex items-center gap-1">
-                  <kbd className="px-1 py-0.5 bg-slate-100 dark:bg-slate-700 border border-slate-200 dark:border-slate-600 rounded text-xs">↵</kbd>
-                  Open
-                </span>
-              </div>
+      {query && results.length > 0 && (
+        <div className="flex items-center justify-between border-t border-slate-200 px-4 py-2 text-xs text-slate-500 dark:border-slate-700 dark:text-slate-400">
+          <div className="flex items-center gap-2 sm:gap-4">
+            <span>{searchStats?.shown || results.length} result{(searchStats?.shown || results.length) !== 1 ? 's' : ''}</span>
+            {searchStats && searchStats.shown < searchStats.total && (
+              <span className="text-amber-600 dark:text-amber-400">
+                of {searchStats.total}
+              </span>
+            )}
+            <div className="hidden sm:flex items-center gap-4">
+              <span className="flex items-center gap-1">
+                <SearchKeycap>↑↓</SearchKeycap>
+                Navigate
+              </span>
+              <span className="flex items-center gap-1">
+                <SearchKeycap>↵</SearchKeycap>
+                Open
+              </span>
             </div>
           </div>
-        )}
-      </div>
-    </div>
+        </div>
+      )}
+    </SearchDialog>
   );
 }

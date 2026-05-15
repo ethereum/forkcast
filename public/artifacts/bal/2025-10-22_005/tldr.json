@@ -1,0 +1,98 @@
+{
+  "meeting": "BAL #005 - 2025-10-22",
+  "highlights": {
+    "coinbase_handling": [
+      {
+        "timestamp": "00:10:07",
+        "highlight": "Coinbase included in BAL if tx exists (even zero-tip); excluded if no tx"
+      },
+      {
+        "timestamp": "00:12:03",
+        "highlight": "Zero-tip tx touches Coinbase via EIP-161; differs from empty block (no touch)"
+      },
+      {
+        "timestamp": "00:16:54",
+        "highlight": "Decision: Include Coinbase as read when touched; exclude in empty blocks"
+      }
+    ],
+    "testing_progress": [
+      {
+        "timestamp": "00:28:51",
+        "highlight": "Clients passing 89% of test cases; 10% incomplete due to missing exception handling"
+      },
+      {
+        "timestamp": "00:29:31",
+        "highlight": "New test release planned with Coinbase updates and system operations"
+      }
+    ],
+    "client_updates": [
+      {
+        "timestamp": "00:32:06",
+        "highlight": "Geth: Shifting focus to state root calculation performance optimization"
+      },
+      {
+        "timestamp": "00:33:14",
+        "highlight": "Besu: Passing all tests; implementing state root in background; planning mainnet shadow fork"
+      },
+      {
+        "timestamp": "00:34:48",
+        "highlight": "Nethermind: Found consensus issues post-Genesis despite 100% test pass rate"
+      },
+      {
+        "timestamp": "00:36:28",
+        "highlight": "Erigon: First PR merged to main; DevNet Zero branch ready by Friday"
+      }
+    ],
+    "organizational": [
+      {
+        "timestamp": "00:38:14",
+        "highlight": "DevNet 0 launch delayed ~1 week; targeting end of week/early next week"
+      },
+      {
+        "timestamp": "00:39:03",
+        "highlight": "Coinbase modifications will be included in DevNet 0"
+      }
+    ]
+  },
+  "action_items": [
+    {
+      "timestamp": "00:19:32",
+      "action": "Update specs and EIP for Coinbase always-include-when-touched rule",
+      "owner": "Toni"
+    },
+    {
+      "timestamp": "00:19:32",
+      "action": "Update test cases for new Coinbase handling logic",
+      "owner": "Rahul"
+    },
+    {
+      "timestamp": "00:40:05",
+      "action": "Create tests for empty block, zero-tip tx, regular block scenarios",
+      "owner": "Rahul"
+    }
+  ],
+  "decisions": [
+    {
+      "timestamp": "00:25:01",
+      "decision": "Coinbase included in BAL when transactions exist (even zero-tip); excluded in empty blocks without system operations"
+    }
+  ],
+  "targets": [
+    {
+      "timestamp": "00:29:23",
+      "target": "Late this week - Missing test framework exceptions completed"
+    },
+    {
+      "timestamp": "00:36:49",
+      "target": "Tomorrow/Friday - Erigon DevNet Zero branch creation"
+    },
+    {
+      "timestamp": "00:38:35",
+      "target": "End of week - DevNet 0 launch with Coinbase modifications"
+    },
+    {
+      "timestamp": "00:40:39",
+      "target": "In 2 weeks - Next EIP-7928 breakout call"
+    }
+  ]
+}

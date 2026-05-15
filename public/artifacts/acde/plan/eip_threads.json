@@ -1,0 +1,340 @@
+{
+  "series": "ACDE",
+  "generated": "2026-03-09",
+  "lookback_calls": [
+    "ACDE #227",
+    "ACDE #228",
+    "ACDE #229",
+    "ACDE #230",
+    "ACDE #231"
+  ],
+  "eip_threads": [
+    {
+      "eip": 2780,
+      "title": "Reduce intrinsic transaction gas",
+      "fork": "Glamsterdam",
+      "stage": "CFI",
+      "thread": [],
+      "current_state": "No recent discussion in provided meetings.",
+      "open_questions": []
+    },
+    {
+      "eip": 7610,
+      "title": "Revert creation in case of non-empty storage",
+      "fork": "Glamsterdam",
+      "stage": "CFI",
+      "thread": [
+        {
+          "call": "ACDE #229",
+          "date": "2025-01-30",
+          "summary": "EIP-7610 remains CFI for Glamsterdam despite unresolved implementation divergence between clients."
+        }
+      ],
+      "current_state": "CFI status maintained but implementation inconsistencies across clients remain unaddressed.",
+      "open_questions": [
+        "How will implementation divergence be resolved before mainnet?"
+      ]
+    },
+    {
+      "eip": 7708,
+      "title": "ETH transfers and burns emit a log",
+      "fork": "Glamsterdam",
+      "stage": "CFI",
+      "thread": [
+        {
+          "call": "ACDE #228",
+          "date": "2025-01-16",
+          "summary": "PR pending for log address/topic decisions; clarifications needed on implementation details."
+        }
+      ],
+      "current_state": "CFI with pending PR to finalize log address and topic design decisions.",
+      "open_questions": [
+        "What address and topics will be used in the emitted logs?"
+      ]
+    },
+    {
+      "eip": 7778,
+      "title": "Block Gas Accounting without Refunds",
+      "fork": "Glamsterdam",
+      "stage": "CFI",
+      "thread": [
+        {
+          "call": "ACDE #228",
+          "date": "2025-01-16",
+          "summary": "Clarified that cumulative gas should reflect block-level accounting, not user-level costs; PR under review for interaction with EIP-7623."
+        }
+      ],
+      "current_state": "CFI with clarification that cumulative gas reflects block accounting; PR addresses EIP-7623 interaction.",
+      "open_questions": [
+        "How does this interact with other gas accounting changes in the fork?"
+      ]
+    },
+    {
+      "eip": 7807,
+      "title": "SSZ execution blocks",
+      "fork": "Hegota",
+      "stage": "Candidate",
+      "thread": [
+        {
+          "call": "ACDE #230",
+          "date": "2026-02-12",
+          "summary": "Proposed as one of the Hegotá headliner candidates."
+        },
+        {
+          "call": "ACDE #231",
+          "date": "2026-02-26",
+          "summary": "Reth considers SSZ to have low benefit-to-work ratio; Nimbus EL prefers SSZ with Frame, acceptable without; Geth views it as not mature enough; remains under consideration pending two-week discussion."
+        }
+      ],
+      "current_state": "Remains a headliner candidate for Hegotá, but faces skepticism from several clients about maturity and benefit-to-work ratio.",
+      "open_questions": [
+        "Is the maturity level sufficient for inclusion?",
+        "What is the concrete benefit versus implementation cost?"
+      ]
+    },
+    {
+      "eip": 7843,
+      "title": "SLOTNUM opcode",
+      "fork": "Glamsterdam",
+      "stage": "CFI",
+      "thread": [
+        {
+          "call": "ACDE #228",
+          "date": "2025-01-16",
+          "summary": "bal-devnet-2 scope delayed due to CL changes causing debate around EIP-7843."
+        }
+      ],
+      "current_state": "CFI but caused delays in bal-devnet-2 due to consensus layer implementation debates.",
+      "open_questions": [
+        "Have the CL implementation concerns been resolved?"
+      ]
+    },
+    {
+      "eip": 7904,
+      "title": "Compute Gas Cost Increase",
+      "fork": "Glamsterdam",
+      "stage": "CFI",
+      "thread": [],
+      "current_state": "No recent discussion in provided meetings.",
+      "open_questions": []
+    },
+    {
+      "eip": 7954,
+      "title": "Increase Maximum Contract Size",
+      "fork": "Glamsterdam",
+      "stage": "CFI",
+      "thread": [
+        {
+          "call": "ACDE #227",
+          "date": "2025-01-06",
+          "summary": "Contract size limit decision pushed one week; if no progress, options narrowed to 32KB bump or nothing."
+        },
+        {
+          "call": "ACDE #228",
+          "date": "2025-01-16",
+          "summary": "CFI'd to bump contract limit from 24KB to 32KB and initcode to 64KB; code reads scale sublinearly (128x size = 8.5x read time)."
+        },
+        {
+          "call": "ACDE #230",
+          "date": "2026-02-12",
+          "summary": "Included in DevNet-3 scope alongside EIP-8037."
+        },
+        {
+          "call": "ACDE #231",
+          "date": "2026-02-26",
+          "summary": "Part of bal-devnet-3 launching next Wednesday; testing contract size increase."
+        }
+      ],
+      "current_state": "CFI and included in bal-devnet-3 for testing; contract limit 32KB, initcode 64KB.",
+      "open_questions": []
+    },
+    {
+      "eip": 7975,
+      "title": "eth/70 - partial block receipt lists",
+      "fork": "Glamsterdam",
+      "stage": "CFI",
+      "thread": [
+        {
+          "call": "ACDE #230",
+          "date": "2026-02-12",
+          "summary": "ETH/70 CFI'd for Glamsterdam and added to DevNet-3 spec; nft-devnet-10 available for testing with multiple clients."
+        },
+        {
+          "call": "ACDE #231",
+          "date": "2026-02-26",
+          "summary": "nft-devnet-10 testing EIP-870 P2P protocol with increased header sizes; bal-devnet-3 includes optional 870 support."
+        }
+      ],
+      "current_state": "CFI for Glamsterdam; actively being tested in nft-devnet-10 and optional in bal-devnet-3.",
+      "open_questions": []
+    },
+    {
+      "eip": 7976,
+      "title": "Increase Calldata Floor Cost",
+      "fork": "Glamsterdam",
+      "stage": "CFI",
+      "thread": [],
+      "current_state": "No recent discussion in provided meetings.",
+      "open_questions": []
+    },
+    {
+      "eip": 7981,
+      "title": "Increase Access List Cost",
+      "fork": "Glamsterdam",
+      "stage": "CFI",
+      "thread": [],
+      "current_state": "No recent discussion in provided meetings.",
+      "open_questions": []
+    },
+    {
+      "eip": 7997,
+      "title": "Deterministic Factory Predeploy",
+      "fork": "Glamsterdam",
+      "stage": "CFI",
+      "thread": [
+        {
+          "call": "ACDE #227",
+          "date": "2025-01-06",
+          "summary": "CFI'd for Glamsterdam after Geth argued it's a low-complexity community ask."
+        }
+      ],
+      "current_state": "CFI for Glamsterdam; accepted as low-complexity community request.",
+      "open_questions": []
+    },
+    {
+      "eip": 8024,
+      "title": "Backward compatible SWAPN, DUPN, EXCHANGE",
+      "fork": "Glamsterdam",
+      "stage": "CFI",
+      "thread": [
+        {
+          "call": "ACDE #228",
+          "date": "2025-01-16",
+          "summary": "Bitpacking vs postfix PUSH encoding decision scheduled for Monday; clients asked for feedback before then."
+        },
+        {
+          "call": "ACDE #230",
+          "date": "2026-02-12",
+          "summary": "Push-postfix encoding change rejected; branchless normalization approach under review."
+        }
+      ],
+      "current_state": "CFI with push-postfix encoding rejected; branchless normalization being reviewed as alternative.",
+      "open_questions": [
+        "Has the branchless normalization approach been finalized?"
+      ]
+    },
+    {
+      "eip": 8037,
+      "title": "State Creation Gas Cost Increase",
+      "fork": "Glamsterdam",
+      "stage": "CFI",
+      "thread": [
+        {
+          "call": "ACDE #227",
+          "date": "2025-01-06",
+          "summary": "State growth EIP-8037 decision pushed to next week due to holiday delays."
+        },
+        {
+          "call": "ACDE #228",
+          "date": "2025-01-16",
+          "summary": "Proposes separate state gas budget tied to block gas limit; Vitalik alternative suggests static repricing (contracts 300K, storage 80K, accounts 100K); decision deferred to Monday ACDT."
+        },
+        {
+          "call": "ACDE #230",
+          "date": "2026-02-12",
+          "summary": "Included in DevNet-3 scope alongside EIP-7954; BAL optimizations prioritized before data repricing."
+        },
+        {
+          "call": "ACDE #231",
+          "date": "2026-02-26",
+          "summary": "Downscoped to static value increase only for devnet-3; cost_per_state_byte = 1174 at 100M block gas limit."
+        }
+      ],
+      "current_state": "CFI and in bal-devnet-3 with simplified static pricing approach (1174 cost per state byte at 100M gas limit).",
+      "open_questions": [
+        "Will the full separate state gas budget approach be reconsidered later?"
+      ]
+    },
+    {
+      "eip": 8038,
+      "title": "State-access gas cost update",
+      "fork": "Glamsterdam",
+      "stage": "CFI",
+      "thread": [],
+      "current_state": "No recent discussion in provided meetings.",
+      "open_questions": []
+    },
+    {
+      "eip": 8070,
+      "title": "Sparse Blobpool",
+      "fork": "Glamsterdam",
+      "stage": "CFI",
+      "thread": [],
+      "current_state": "No recent discussion in provided meetings.",
+      "open_questions": []
+    },
+    {
+      "eip": 8105,
+      "title": "Universal Enshrined Encrypted Mempool",
+      "fork": "Hegota",
+      "stage": "Candidate",
+      "thread": [
+        {
+          "call": "ACDE #230",
+          "date": "2026-02-12",
+          "summary": "Proposed as one of four EL headliner candidates for Hegotá."
+        },
+        {
+          "call": "ACDE #231",
+          "date": "2026-02-26",
+          "summary": "EIP-8105 withdrawn by champions who now endorse Lucid as the consolidated encrypted mempool proposal."
+        }
+      ],
+      "current_state": "Withdrawn; champions have consolidated support behind Lucid encrypted mempool proposal.",
+      "open_questions": []
+    },
+    {
+      "eip": 8141,
+      "title": "Frame Transaction",
+      "fork": "Hegota",
+      "stage": "Candidate",
+      "thread": [
+        {
+          "call": "ACDE #230",
+          "date": "2026-02-12",
+          "summary": "Proposed as Hegotá headliner candidate; Approve propagation redesigned for proxy compatibility."
+        },
+        {
+          "call": "ACDE #231",
+          "date": "2026-02-26",
+          "summary": "Main debate centers on Frame vs no EL headliner; Geth prefers Frame; Besu considers it acceptable; Erigon likes it; Nethermind finds it too complex; Reth considers it over-engineered; Nimbus prefers it with SSZ but acceptable alone; removes protocol signature requirements entirely and enables privacy pools without centralized relayers."
+        }
+      ],
+      "current_state": "Leading headliner candidate with mixed client support; removes protocol signature requirements and enables privacy pools.",
+      "open_questions": [
+        "Is the complexity justified by the benefits?",
+        "Can consensus be reached before the March 12 deadline?"
+      ]
+    },
+    {
+      "eip": 8159,
+      "title": "eth/71 - Block Access List Exchange",
+      "fork": "Glamsterdam",
+      "stage": "CFI",
+      "thread": [
+        {
+          "call": "ACDE #230",
+          "date": "2026-02-12",
+          "summary": "ETH/71 CFI'd for Glamsterdam alongside ETH/70."
+        },
+        {
+          "call": "ACDE #231",
+          "date": "2026-02-26",
+          "summary": "bal-devnet-2 testing local access lists; optional 871 support in bal-devnet-3."
+        }
+      ],
+      "current_state": "CFI for Glamsterdam; being tested in bal-devnet-2 and optionally available in bal-devnet-3.",
+      "open_questions": []
+    }
+  ]
+}

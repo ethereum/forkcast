@@ -1,0 +1,87 @@
+00:03:57	potuz:	GM
+00:05:58	terence:	gm
+00:06:02	Chris Haug:	gm
+00:06:11	terence:	naa that one is not opened
+00:08:56	Justin Traglia:	https://github.com/ethereum/pm/issues/1714
+00:09:22	Justin Traglia:	https://github.com/ethereum/consensus-specs/pull/4525
+00:14:41	potuz:	can do those today in a bit
+00:17:41	Francesco:	I think that’d be my preferred option as well, even if we think that the header is not particularly useful
+00:17:56	Stefan Bratanov:	yeah sounds good
+00:22:08	potuz:	same for us
+00:23:09	Shane Moore:	https://github.com/ethereum/beacon-APIs/pull/552
+00:23:38	terence:	fork choice test cases: https://hackmd.io/@tchain/BkhU9DM_gx 
+feedback welcome
+00:23:49	Justin Traglia:	Reacted to "fork choice test cas..." with 👍
+00:24:26	potuz:	The people that are typically picky about APIs:
+- Jacek
+- Etan
+- Dustin
+- Paul Harris
+00:24:36	potuz:	not a coincidence it's mostly Nimbus :)
+00:25:11	potuz:	FWIW that beacon API looks good to me.
+00:26:26	potuz:	Nico also says v4 would be better
+00:26:37	Justin Traglia:	Reacted to "not a coincidence it..." with 😂
+00:27:33	Stefan Bratanov:	yeah I mentioned it before I think in our chat v4 sounds better
+00:28:52	Chris Haug:	Jim is retired now
+00:28:58	terence:	yeah lol
+00:28:58	Chris Haug:	mainly Chris Berry on vouch side now
+00:29:13	terence:	naa he left a while ago
+00:29:21	potuz:	wow
+00:29:24	potuz:	did not know this
+00:29:29	Luca | Serenita:	Vero uses the block value too 🙂
+00:29:34	potuz:	I'm feeling like a dinosaur
+00:30:15	Justin Traglia:	Reacted to "I'm feeling like a d..." with 😂
+00:33:36	Justin Traglia:	https://hackmd.io/XUQhAwAKRhi3vo4yFq13EQ
+00:34:16	potuz:	why would we need to specify this?
+00:35:01	Shane Moore:	Reacted to "FWIW that beacon API..." with 🔥
+00:35:05	Shane Moore:	Reacted to "Nico also says v4 wo..." with 💯
+00:35:10	Shane Moore:	Reacted to "yeah I mentioned it ..." with 💯
+00:38:50	potuz:	Buildernet would be very viable for this
+00:39:03	potuz:	I do not know what are the regulatory conditions and the such
+00:39:10	potuz:	but something like Buildernet is very feasible
+00:43:29	Francesco:	I don’t understand what’s the point of this versus just accepting signed 0-value bids, with real bid value specified outside of the protocol bid. It requires the builder/relay to be staked, but that doesn’t seem like a big deal, it can just be 32 ETH
+00:44:03	potuz:	yeah that would be the simplest way
+00:44:10	potuz:	but people argue that they don't want to be staked
+00:45:17	Lorenzo:	How would the value be specified? like in a header?
+00:45:44	potuz:	could be a sidecar, and I definitely disagree with Francesco on this :)
+00:46:10	Bharath:	Probably would be an off chain agreement ?
+00:46:40	Francesco:	Replying to "but people argue tha..."
+
+I doubt that people have a problem with staking 32 ETH?
+00:46:44	potuz:	yes, it needs to be a trusted builder
+00:46:55	Francesco:	Replying to "but people argue tha..."
+
+(Especially if the bid does not put that stake at risk at all)
+00:47:08	Lorenzo:	Replying to "but people argue t..."
+
+yep agreed
+00:47:28	Lorenzo:	Replying to "but people argue t..."
+
+my point was mainly about client support
+00:48:43	terence:	the only reason is to something like: https://ethresear.ch/t/payload-chunking/23008/2 
+but it's pretty side tracked
+00:51:02	owen:	For a validator to become a builder I assume they upgrade withdrawal creds. Does this happen in the first block following the fork? If so can that block be built by a builder or would that block need to be a self build?
+00:52:14	Justin Traglia:	Replying to "For a validator to b..."
+
+Good question. I believe the first block would need to be a self built block. Cred changes could go into the first block at the fork, but it wouldn’t really take effect until the next slot. Right?
+00:52:30	Justin Traglia:	Replying to "For a validator to b..."
+
+Maybe next epoch.
+00:53:01	Justin Traglia:	Replying to "For a validator to b..."
+
+Can bring this up after the current discussion.
+00:54:17	Justin Traglia:	Replying to "For a validator to b..."
+
+Maybe it’s possible to have a 0x03 validator prior to gloss.
+00:54:23	Justin Traglia:	Replying to "For a validator to b..."
+
+*gloas
+00:55:24	owen:	Replying to "For a validator to..."
+
+that would be ideal
+00:56:54	Bharath:	No registrations is very nice haha
+00:57:12	potuz:	that's nice to know
+00:57:14	Justin Traglia:	Reacted to "No registrations is ..." with 😄
+00:57:50	Stefan Bratanov:	Reacted to "No registrations is ..." with 😄
+00:58:56	potuz:	@Lorenzo you're not worried about other builders hitting your endpoint requesting bids?
+00:59:02	owen:	Would be good if titan relay or builder was ready to go from the fork

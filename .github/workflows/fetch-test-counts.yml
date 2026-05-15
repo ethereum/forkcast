@@ -1,0 +1,66 @@
+name: Fetch Test Counts
+
+on:
+  schedule:
+    - cron: '0 6 * * *' # once daily at 06:00 UTC
+  workflow_dispatch:
+
+jobs:
+  collect:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      actions: write
+
+    steps:
+      - name: Checkout forkcast
+        uses: actions/checkout@v6
+
+      - name: Checkout execution-specs
+        uses: actions/checkout@v6
+        with:
+          repository: ethereum/execution-specs
+          path: execution-specs
+          fetch-depth: 0
+
+      - name: Set up uv
+        uses: astral-sh/setup-uv@v6
+        with:
+          python-version: '3.12'
+
+      - name: Install execution-specs
+        working-directory: execution-specs
+        run: uv sync
+
+      - name: Collect test counts
+        run: uv run --project execution-specs python scripts/collect-test-counts.py execution-specs src/data/execution-spec-test-counts.json
+
+      - name: Check for changes
+        id: changes
+        run: |
+          if git diff --quiet src/data/execution-spec-test-counts.json; then
+            echo "has_changes=false" >> $GITHUB_OUTPUT
+          else
+            echo "has_changes=true" >> $GITHUB_OUTPUT
+          fi
+
+      - name: Commit and push
+        if: steps.changes.outputs.has_changes == 'true'
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add src/data/execution-spec-test-counts.json
+          git commit -m "sync: update execution-spec test counts"
+          git push
+
+      - name: Trigger deploy
+        if: steps.changes.outputs.has_changes == 'true'
+        uses: actions/github-script@v7
+        with:
+          script: |
+            await github.rest.actions.createWorkflowDispatch({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              workflow_id: 'deploy.yml',
+              ref: 'main'
+            });

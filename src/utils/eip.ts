@@ -32,6 +32,21 @@ export const getInclusionStage = (eip: EIP, forkName?: string): InclusionStage =
   }
 };
 
+const STAGE_ABBREVIATIONS: Record<string, string> = {
+  'Included': 'Incl',
+  'Scheduled for Inclusion': 'SFI',
+  'Considered for Inclusion': 'CFI',
+  'Proposed for Inclusion': 'PFI',
+  'Declined for Inclusion': 'DFI',
+  'Withdrawn': 'W',
+};
+
+/**
+ * Get the short abbreviation for an inclusion stage (e.g., "SFI" for "Scheduled for Inclusion")
+ */
+export const getStageAbbreviation = (stage: string): string =>
+  STAGE_ABBREVIATIONS[stage] || stage;
+
 /**
  * Get the headliner discussion link for an EIP in a specific fork
  * Looks for a headliner_proposal entry in presentationHistory

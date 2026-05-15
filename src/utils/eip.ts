@@ -1,5 +1,44 @@
 import { EIP, ForkRelationship, InclusionStage, ProposalType } from '../types/eip';
 
+type ForkStatus = ForkRelationship['statusHistory'][number]['status'];
+
+const INCLUSION_STAGE_BY_STATUS: Record<ForkStatus, InclusionStage> = {
+  Proposed: 'Proposed for Inclusion',
+  Considered: 'Considered for Inclusion',
+  Scheduled: 'Scheduled for Inclusion',
+  Declined: 'Declined for Inclusion',
+  Included: 'Included',
+  Withdrawn: 'Withdrawn',
+};
+
+const INCLUSION_STAGE_LABELS: Record<InclusionStage, string> = {
+  'Included': 'Included',
+  'Scheduled for Inclusion': 'SFI',
+  'Considered for Inclusion': 'CFI',
+  'Proposed for Inclusion': 'PFI',
+  'Declined for Inclusion': 'DFI',
+  'Withdrawn': 'Withdrawn',
+  'Unknown': 'Unknown',
+};
+
+const INCLUSION_STAGE_ORDER: InclusionStage[] = [
+  'Included',
+  'Scheduled for Inclusion',
+  'Considered for Inclusion',
+  'Proposed for Inclusion',
+  'Declined for Inclusion',
+  'Withdrawn',
+  'Unknown',
+];
+
+const inclusionStageRanks = new Map(
+  INCLUSION_STAGE_ORDER.map((stage, index) => [stage, index + 1])
+);
+
+function isInclusionStage(stage: string): stage is InclusionStage {
+  return inclusionStageRanks.has(stage as InclusionStage);
+}
+
 /**
  * Get the inclusion stage for an EIP in a specific fork
  */
@@ -14,38 +53,17 @@ export const getInclusionStage = (eip: EIP, forkName?: string): InclusionStage =
 
   const status = forkRelationship.statusHistory[forkRelationship.statusHistory.length - 1].status;
 
-  switch (status) {
-    case 'Proposed':
-      return 'Proposed for Inclusion';
-    case 'Considered':
-      return 'Considered for Inclusion';
-    case 'Scheduled':
-      return 'Scheduled for Inclusion';
-    case 'Declined':
-      return 'Declined for Inclusion';
-    case 'Included':
-      return 'Included';
-    case 'Withdrawn':
-      return 'Withdrawn';
-    default:
-      return 'Unknown';
-  }
-};
-
-const STAGE_ABBREVIATIONS: Record<string, string> = {
-  'Included': 'Incl',
-  'Scheduled for Inclusion': 'SFI',
-  'Considered for Inclusion': 'CFI',
-  'Proposed for Inclusion': 'PFI',
-  'Declined for Inclusion': 'DFI',
-  'Withdrawn': 'W',
+  return INCLUSION_STAGE_BY_STATUS[status] ?? 'Unknown';
 };
 
 /**
- * Get the short abbreviation for an inclusion stage (e.g., "SFI" for "Scheduled for Inclusion")
+ * Get the compact display label for an inclusion stage.
  */
 export const getStageAbbreviation = (stage: string): string =>
-  STAGE_ABBREVIATIONS[stage] || stage;
+  isInclusionStage(stage) ? INCLUSION_STAGE_LABELS[stage] : stage;
+
+export const getInclusionStageSortRank = (stage: string): number =>
+  isInclusionStage(stage) ? inclusionStageRanks.get(stage)! : 99;
 
 /**
  * Get the headliner discussion link for an EIP in a specific fork

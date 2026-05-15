@@ -82,27 +82,17 @@ const upgrades = [
   {
     path: 'upgrade/glamsterdam',
     title: 'Glamsterdam Upgrade - Forkcast',
-    description: 'Enhancing Ethereum with Block-level Access Lists and ePBS for big efficiency and scalability gains.',
+    description: 'Glamsterdam network upgrade overview, timeline, and related EIPs.',
+  },
+  {
+    path: 'upgrade/glamsterdam/eips',
+    title: 'Glamsterdam EIP X-ray - Forkcast',
+    description: 'Browse Glamsterdam EIPs by inclusion stage, active devnets, test complexity, and client priority.',
   },
   {
     path: 'upgrade/glamsterdam/stakeholders',
     title: 'Glamsterdam by Stakeholder - Forkcast',
     description: 'EIPs relevant to app developers, wallet devs, L2s, and other stakeholders in the Glamsterdam upgrade.',
-  },
-  {
-    path: 'upgrade/glamsterdam/devnet-inclusion',
-    title: 'Glamsterdam Devnet Inclusion - Forkcast',
-    description: 'Devnet inclusion status for EIPs proposed for the Glamsterdam network upgrade.',
-  },
-  {
-    path: 'upgrade/glamsterdam/client-priority',
-    title: 'Glamsterdam Client Priority - Forkcast',
-    description: 'Aggregate view of Ethereum client team stances on EIPs proposed for Glamsterdam.',
-  },
-  {
-    path: 'upgrade/glamsterdam/test-complexity',
-    title: 'Glamsterdam Test Complexity - Forkcast',
-    description: 'Analyze STEEL test complexity assessments for EIPs proposed for Glamsterdam.',
   },
   {
     path: 'upgrade/hegota',

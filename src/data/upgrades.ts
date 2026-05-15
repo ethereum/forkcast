@@ -109,7 +109,7 @@ export const networkUpgrades: NetworkUpgrade[] = [
     id: 'glamsterdam',
     path: '/upgrade/glamsterdam',
     name: 'Glamsterdam Upgrade',
-    description: 'Major network upgrade featuring Block-level Access Lists and ePBS. Named after the combination of "Amsterdam" (execution layer upgrade, named after the previous Devconnect location) and "Gloas" (consensus layer upgrade, named after a star).',
+    description: 'Scoping and devnet testing for Glamsterdam EIPs, including Block-level Access Lists, ePBS, and candidate proposals.',
     tagline: 'Scoping complete, implemented EIPs are being tested on devnets',
     status: 'Upcoming',
     activationDate: '2026',

@@ -69,6 +69,22 @@ const normalizeFilterParams = (
   return next;
 };
 
+const ANCHOR_SCROLL_GAP = 24;
+
+const getAnchorScrollOffset = () => {
+  const stickyHeader = document.querySelector('header.sticky');
+  if (!(stickyHeader instanceof HTMLElement)) {
+    return 80;
+  }
+
+  return stickyHeader.getBoundingClientRect().height + ANCHOR_SCROLL_GAP;
+};
+
+const scrollToElement = (element: HTMLElement) => {
+  const top = element.getBoundingClientRect().top + window.scrollY - getAnchorScrollOffset();
+  window.scrollTo({ top, behavior: 'smooth' });
+};
+
 interface PublicNetworkUpgradePageProps {
   forkName: string;
   displayName: string;
@@ -172,20 +188,37 @@ const PublicNetworkUpgradePage: React.FC<PublicNetworkUpgradePageProps> = ({
     }
   }, [location.pathname, location.hash]);
 
+  // Expand collapsed sections before scrolling to an EIP anchor inside them.
+  useEffect(() => {
+    const match = /^#eip-(\d+)$/.exec(location.hash);
+    if (!match) return;
+
+    const anchorEip = eips.find(eip => eip.id === Number(match[1]));
+    if (!anchorEip) return;
+
+    if (getInclusionStage(anchorEip, forkName) === 'Declined for Inclusion') {
+      setIsDeclinedExpanded(true);
+    }
+    if (wasHeadlinerCandidate(anchorEip, forkName)) {
+      setIsHeadlinerProposalsExpanded(true);
+    }
+  }, [location.hash, eips, forkName]);
+
   // Handle URL hash on component mount and location changes
   useEffect(() => {
     const hash = location.hash.substring(1); // Remove the # symbol
     if (hash) {
       // Small delay to ensure DOM is ready
-      setTimeout(() => {
+      const scrollTimer = setTimeout(() => {
         const element = document.getElementById(hash);
         if (element) {
-          element.scrollIntoView({ behavior: 'smooth', block: 'start' });
+          scrollToElement(element);
           setActiveSection(hash);
         }
       }, 100);
+      return () => clearTimeout(scrollTimer);
     }
-  }, [location.hash, eips]);
+  }, [location.hash, eips, isDeclinedExpanded, isHeadlinerProposalsExpanded]);
 
   // Intersection Observer for TOC
   useEffect(() => {
@@ -412,7 +445,7 @@ const PublicNetworkUpgradePage: React.FC<PublicNetworkUpgradePageProps> = ({
   const scrollToSection = (sectionId: string) => {
     const element = document.getElementById(sectionId);
     if (element) {
-      element.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      scrollToElement(element);
       // Update URL hash
       window.history.pushState(null, '', `#${sectionId}`);
       setActiveSection(sectionId);

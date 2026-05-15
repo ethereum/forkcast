@@ -69,10 +69,19 @@ const normalizeFilterParams = (
   return next;
 };
 
-const ANCHOR_SCROLL_OFFSET = 80;
+const ANCHOR_SCROLL_GAP = 24;
+
+const getAnchorScrollOffset = () => {
+  const stickyHeader = document.querySelector('header.sticky');
+  if (!(stickyHeader instanceof HTMLElement)) {
+    return 80;
+  }
+
+  return stickyHeader.getBoundingClientRect().height + ANCHOR_SCROLL_GAP;
+};
 
 const scrollToElement = (element: HTMLElement) => {
-  const top = element.getBoundingClientRect().top + window.scrollY - ANCHOR_SCROLL_OFFSET;
+  const top = element.getBoundingClientRect().top + window.scrollY - getAnchorScrollOffset();
   window.scrollTo({ top, behavior: 'smooth' });
 };
 

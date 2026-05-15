@@ -4,11 +4,12 @@ import { eipsData } from '../../data/eips';
 import { useComplexityData, getComplexityForEip } from '../../domain/complexity/useComplexityData';
 import { getComplexityTierColor, getComplexityTierEmoji } from '../../domain/complexity/complexity';
 import type { ComplexityTier } from '../../domain/complexity/types';
-import { getInclusionStage, getLaymanTitle, getProposalPrefix, getSpecificationUrl } from '../../utils';
+import { getInclusionStage, getLaymanTitle, getProposalPrefix, getSpecificationUrl, getStageAbbreviation } from '../../utils';
 import { getInclusionStageColor } from '../../utils/colors';
 import { InclusionStage } from '../../types';
+import { getTestCountForEip, getTestDirectoryUrl } from '../../domain/execution-spec-tests/testCounts';
 
-type SortField = 'eip' | 'complexity' | 'tier' | 'stage';
+type SortField = 'eip' | 'complexity' | 'tier' | 'stage' | 'tests';
 type SortDirection = 'asc' | 'desc';
 type FilterTier = 'all' | 'Low' | 'Medium' | 'High' | 'unassessed';
 
@@ -62,6 +63,7 @@ const TestComplexityTab: React.FC = () => {
       eip,
       layer,
       complexity: getComplexityForEip(complexityMap, eip.id),
+      testCount: getTestCountForEip(eip.id),
     }));
   }, [forkEips, complexityMap]);
 
@@ -113,6 +115,12 @@ const TestComplexityTab: React.FC = () => {
           comparison = tierOrder[a.complexity.tier] - tierOrder[b.complexity.tier];
           break;
         }
+        case 'tests': {
+          const casesA = a.testCount ? (a.testCount.testCases ?? a.testCount.testFunctions) : 0;
+          const casesB = b.testCount ? (b.testCount.testCases ?? b.testCount.testFunctions) : 0;
+          comparison = casesA - casesB;
+          break;
+        }
         case 'stage': {
           const stageOrder: Record<string, number> = {
             'Included': 1,
@@ -161,7 +169,7 @@ const TestComplexityTab: React.FC = () => {
       setSortDirection((d) => (d === 'asc' ? 'desc' : 'asc'));
     } else {
       setSortField(field);
-      setSortDirection('asc');
+      setSortDirection(field === 'tests' ? 'desc' : 'asc');
     }
   };
 
@@ -383,9 +391,9 @@ const TestComplexityTab: React.FC = () => {
             No EIPs found for this fork
           </div>
         ) : (
-          sortedEips.map(({ eip, layer, complexity }) => {
+          sortedEips.map(({ eip, layer, complexity, testCount }) => {
             const stage = getInclusionStage(eip, SELECTED_FORK) as InclusionStage;
-            const shortStage = stage.replace(' for Inclusion', '');
+            const shortStage = getStageAbbreviation(stage);
             const isExpanded = expandedEip === eip.id;
 
             return (
@@ -413,7 +421,7 @@ const TestComplexityTab: React.FC = () => {
                             {layer}
                           </span>
                         )}
-                        <span className={`px-1.5 py-0.5 text-[10px] rounded ${getInclusionStageColor(stage)}`}>
+                        <span className={`px-1.5 py-0.5 text-[10px] rounded ${getInclusionStageColor(stage)}`} title={stage}>
                           {shortStage}
                         </span>
                       </div>
@@ -439,9 +447,7 @@ const TestComplexityTab: React.FC = () => {
                           </svg>
                         </>
                       ) : (
-                        <span className="text-xs text-slate-400 dark:text-slate-400 italic">
-                          Not assessed
-                        </span>
+                        <span className="text-xs text-slate-400 dark:text-slate-400">&mdash;</span>
                       )}
                     </div>
                   </div>
@@ -450,9 +456,21 @@ const TestComplexityTab: React.FC = () => {
                 {isExpanded && complexity && (
                   <div className="px-4 pb-4 pt-2 border-t border-slate-100 dark:border-slate-700">
                     <div className="flex items-center justify-between mb-3">
-                      <span className="text-xs text-slate-500 dark:text-slate-400">
-                        {complexity.anchors.filter((a) => a.score > 0).length}/{complexity.anchors.length} anchors scored
-                      </span>
+                      <div className="flex items-center gap-3">
+                        <span className="text-xs text-slate-500 dark:text-slate-400">
+                          {complexity.anchors.filter((a) => a.score > 0).length}/{complexity.anchors.length} anchors scored
+                        </span>
+                        {testCount && (
+                          <a
+                            href={getTestDirectoryUrl(testCount)}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="text-xs text-blue-600 dark:text-blue-400"
+                          >
+                            {testCount.testCases ?? testCount.testFunctions} cases / {testCount.testFunctions} fn
+                          </a>
+                        )}
+                      </div>
                       <a
                         href={complexity.assessmentUrl}
                         target="_blank"
@@ -517,33 +535,42 @@ const TestComplexityTab: React.FC = () => {
                 Title
               </th>
               <th
-                className="px-4 py-3 text-left text-sm font-medium text-slate-700 dark:text-slate-300 cursor-pointer hover:bg-slate-100 dark:hover:bg-slate-600/50"
+                className="px-3 py-3 text-center text-sm font-medium text-slate-700 dark:text-slate-300 cursor-pointer hover:bg-slate-100 dark:hover:bg-slate-600/50"
                 onClick={() => handleSort('stage')}
               >
-                <div className="flex items-center gap-2">
+                <div className="flex items-center justify-center gap-1">
                   Stage
                   <SortIcon field="stage" />
                 </div>
               </th>
               <th
-                className="px-4 py-3 text-left text-sm font-medium text-slate-700 dark:text-slate-300 cursor-pointer hover:bg-slate-100 dark:hover:bg-slate-600/50"
+                className="px-3 py-3 text-center text-sm font-medium text-slate-700 dark:text-slate-300 cursor-pointer hover:bg-slate-100 dark:hover:bg-slate-600/50"
                 onClick={() => handleSort('tier')}
               >
-                <div className="flex items-center gap-2">
+                <div className="flex items-center justify-center gap-1">
                   Tier
                   <SortIcon field="tier" />
                 </div>
               </th>
               <th
-                className="px-4 py-3 text-right text-sm font-medium text-slate-700 dark:text-slate-300 cursor-pointer hover:bg-slate-100 dark:hover:bg-slate-600/50"
+                className="px-3 py-3 text-center text-sm font-medium text-slate-700 dark:text-slate-300 cursor-pointer hover:bg-slate-100 dark:hover:bg-slate-600/50"
                 onClick={() => handleSort('complexity')}
               >
-                <div className="flex items-center justify-end gap-2">
+                <div className="flex items-center justify-center gap-1">
                   Score
                   <SortIcon field="complexity" />
                 </div>
               </th>
-              <th className="px-4 py-3 text-center text-sm font-medium text-slate-700 dark:text-slate-300">
+              <th
+                className="px-3 py-3 text-center text-sm font-medium text-slate-700 dark:text-slate-300 cursor-pointer hover:bg-slate-100 dark:hover:bg-slate-600/50"
+                onClick={() => handleSort('tests')}
+              >
+                <div className="flex items-center justify-center gap-1">
+                  Tests
+                  <SortIcon field="tests" />
+                </div>
+              </th>
+              <th className="px-3 py-3 text-center text-sm font-medium text-slate-700 dark:text-slate-300">
                 Details
               </th>
             </tr>
@@ -551,18 +578,18 @@ const TestComplexityTab: React.FC = () => {
           <tbody className="divide-y divide-slate-200 dark:divide-slate-700">
             {loading && sortedEips.length === 0 ? (
               <tr>
-                <td colSpan={6} className="px-4 py-8 text-center text-slate-500 dark:text-slate-400">
+                <td colSpan={7} className="px-4 py-8 text-center text-slate-500 dark:text-slate-400">
                   Loading complexity data...
                 </td>
               </tr>
             ) : sortedEips.length === 0 ? (
               <tr>
-                <td colSpan={6} className="px-4 py-8 text-center text-slate-500 dark:text-slate-400">
+                <td colSpan={7} className="px-4 py-8 text-center text-slate-500 dark:text-slate-400">
                   No EIPs found for this fork
                 </td>
               </tr>
             ) : (
-              sortedEips.map(({ eip, layer, complexity }) => (
+              sortedEips.map(({ eip, layer, complexity, testCount }) => (
                 <React.Fragment key={eip.id}>
                   <tr className="hover:bg-slate-50 dark:hover:bg-slate-700/30">
                     <td className="px-4 py-3">
@@ -594,35 +621,59 @@ const TestComplexityTab: React.FC = () => {
                         {getLaymanTitle(eip)}
                       </Link>
                     </td>
-                    <td className="px-4 py-3">
+                    <td className="px-3 py-3 text-center">
                       {(() => {
                         const stage = getInclusionStage(eip, SELECTED_FORK) as InclusionStage;
-                        const shortStage = stage.replace(' for Inclusion', '');
+                        const shortStage = getStageAbbreviation(stage);
                         return (
-                          <span className={`inline-block px-2 py-0.5 text-xs rounded ${getInclusionStageColor(stage)}`}>
+                          <span className={`inline-block px-2 py-0.5 text-xs rounded ${getInclusionStageColor(stage)}`} title={stage}>
                             {shortStage}
                           </span>
                         );
                       })()}
                     </td>
-                    <td className="px-4 py-3">
+                    <td className="px-3 py-3 text-center">
                       {complexity ? (
                         <span
                           className={`inline-flex items-center gap-1 px-2 py-1 text-xs font-medium rounded ${getComplexityTierColor(complexity.tier)}`}
+                          title={complexity.tier}
                         >
-                          {getComplexityTierEmoji(complexity.tier)} {complexity.tier}
+                          {getComplexityTierEmoji(complexity.tier)}
                         </span>
                       ) : (
-                        <span className="text-xs text-slate-400 dark:text-slate-400 italic">
-                          Not assessed
-                        </span>
+                        <span className="text-xs text-slate-400 dark:text-slate-400">&mdash;</span>
                       )}
                     </td>
-                    <td className="px-4 py-3 text-right">
+                    <td className="px-3 py-3 text-center">
                       {complexity ? (
                         <span className="font-mono text-sm text-slate-700 dark:text-slate-300">
                           {complexity.totalScore}
                         </span>
+                      ) : (
+                        <span className="text-slate-400 dark:text-slate-400">&mdash;</span>
+                      )}
+                    </td>
+                    <td className="px-3 py-3 text-center">
+                      {testCount ? (
+                        <a
+                          href={getTestDirectoryUrl(testCount)}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="inline-grid grid-cols-[auto_auto] gap-x-1 text-xs leading-tight group"
+                        >
+                          <span className="text-right tabular-nums font-medium text-blue-700 dark:text-blue-300 group-hover:text-blue-900 dark:group-hover:text-blue-200 transition-colors">
+                            {testCount.testCases ?? testCount.testFunctions}
+                          </span>
+                          <span className="text-left font-medium text-blue-700 dark:text-blue-300 group-hover:text-blue-900 dark:group-hover:text-blue-200 transition-colors">
+                            cases
+                          </span>
+                          <span className="text-right tabular-nums text-slate-500 dark:text-slate-400">
+                            {testCount.testFunctions}
+                          </span>
+                          <span className="text-left text-slate-500 dark:text-slate-400">
+                            fns
+                          </span>
+                        </a>
                       ) : (
                         <span className="text-slate-400 dark:text-slate-400">&mdash;</span>
                       )}
@@ -650,7 +701,7 @@ const TestComplexityTab: React.FC = () => {
                   </tr>
                   {expandedEip === eip.id && complexity && (
                     <tr className="bg-slate-50 dark:bg-slate-800/50">
-                      <td colSpan={6} className="px-4 py-4">
+                      <td colSpan={7} className="px-4 py-4">
                         <div className="space-y-3">
                           <div className="flex items-center justify-between">
                             <div className="flex items-center gap-3">

@@ -10,7 +10,7 @@ import {
   SortDirection,
 } from '../../utils/prioritization';
 import { getInclusionStageColor } from '../../utils/colors';
-import { getProposalPrefix, getSpecificationUrl } from '../../utils';
+import { getProposalPrefix, getSpecificationUrl, getStageAbbreviation } from '../../utils';
 import { eipsData } from '../../data/eips';
 import { InclusionStage } from '../../types';
 import { EipAggregateStance, ClientStance } from '../../types/prioritization';
@@ -369,7 +369,7 @@ const ClientPriorityTab: React.FC = () => {
           sortedAggregates.map((agg) => {
             const eip = eipsData.find((e) => e.id === agg.eipId);
             const isExpanded = expandedEip === agg.eipId;
-            const shortStage = agg.inclusionStage.replace(' for Inclusion', '');
+            const shortStage = getStageAbbreviation(agg.inclusionStage);
 
             return (
               <div
@@ -395,7 +395,7 @@ const ClientPriorityTab: React.FC = () => {
                             {agg.layer}
                           </span>
                         )}
-                        <span className={`px-1.5 py-0.5 text-[10px] rounded ${getInclusionStageColor(agg.inclusionStage as InclusionStage)}`}>
+                        <span className={`px-1.5 py-0.5 text-[10px] rounded ${getInclusionStageColor(agg.inclusionStage as InclusionStage)}`} title={agg.inclusionStage}>
                           {shortStage}
                         </span>
                       </div>
@@ -546,7 +546,7 @@ interface TableRowProps {
 
 const TableRow: React.FC<TableRowProps> = ({ agg, elClients, clClients, isExpanded, onToggle }) => {
   const eip = eipsData.find((e) => e.id === agg.eipId);
-  const shortStage = agg.inclusionStage.replace(' for Inclusion', '');
+  const shortStage = getStageAbbreviation(agg.inclusionStage);
 
   return (
     <>
@@ -581,7 +581,7 @@ const TableRow: React.FC<TableRowProps> = ({ agg, elClients, clClients, isExpand
           </Link>
         </td>
         <td className="px-4 py-3">
-          <span className={`inline-block px-2 py-0.5 text-xs rounded ${getInclusionStageColor(agg.inclusionStage as InclusionStage)}`}>
+          <span className={`inline-block px-2 py-0.5 text-xs rounded ${getInclusionStageColor(agg.inclusionStage as InclusionStage)}`} title={agg.inclusionStage}>
             {shortStage}
           </span>
         </td>

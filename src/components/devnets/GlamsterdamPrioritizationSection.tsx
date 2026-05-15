@@ -6,11 +6,13 @@ import { getComplexityTierColor, getComplexityTierEmoji } from '../../domain/com
 import type { EipComplexity } from '../../domain/complexity/types';
 import { usePrioritizationData } from '../../hooks/usePrioritizationData';
 import { getScoreColor } from '../../utils/prioritization';
-import { getInclusionStage, getLaymanTitle, getProposalPrefix } from '../../utils';
+import { getInclusionStage, getLaymanTitle, getProposalPrefix, getStageAbbreviation } from '../../utils';
 import { getInclusionStageColor } from '../../utils/colors';
 import { InclusionStage } from '../../types';
 import { EipAggregateStance } from '../../types/prioritization';
 import { useDevnetNetworks } from '../../hooks/useDevnetNetworks';
+import { getTestCountForEip, getTestDirectoryUrl } from '../../domain/execution-spec-tests/testCounts';
+import type { EipTestCount } from '../../domain/execution-spec-tests/types';
 import devnetDataRaw from '../../data/devnets/glamsterdam.json';
 
 
@@ -30,7 +32,7 @@ const devnetData = devnetDataRaw as {
   }>;
 };
 
-type SortField = 'eip' | 'complexity' | 'support' | 'stage' | 'devnets';
+type SortField = 'eip' | 'complexity' | 'support' | 'stage' | 'devnets' | 'tests';
 type SortDirection = 'asc' | 'desc';
 
 const GAS_REPRICING_EIPS = new Set([2780, 7778, 7904, 7976, 7981, 8037, 8038]);
@@ -60,6 +62,7 @@ interface CombinedEipData {
   priority: EipAggregateStance | null;
   layer: 'EL' | 'CL' | null;
   devnets: DevnetInfo[];
+  testCount: EipTestCount | null;
 }
 
 function buildDevnetMap(activeKeys: Set<string>): Map<number, DevnetInfo[]> {
@@ -174,7 +177,8 @@ const GlamsterdamPrioritizationSection: React.FC = () => {
       const stage = getInclusionStage(eip, 'glamsterdam');
       const devnets = devnetMap.get(eip.id) || [];
       const layer = eip.layer || null;
-      return { eipId: eip.id, title: getLaymanTitle(eip), stage, complexity, priority, layer, devnets };
+      const testCount = getTestCountForEip(eip.id);
+      return { eipId: eip.id, title: getLaymanTitle(eip), stage, complexity, priority, layer, devnets, testCount };
     });
   }, [complexityMap, priorityAggregates, devnetMap]);
 
@@ -230,6 +234,15 @@ const GlamsterdamPrioritizationSection: React.FC = () => {
           const bMax = b.devnets.length > 0 ? Math.max(...b.devnets.map((d) => d.version)) : -1;
           comparison = aMax - bMax;
           if (comparison === 0) comparison = a.devnets.length - b.devnets.length;
+          break;
+        }
+        case 'tests': {
+          const aCount = a.testCount?.testCases ?? a.testCount?.testFunctions ?? -1;
+          const bCount = b.testCount?.testCases ?? b.testCount?.testFunctions ?? -1;
+          if (aCount === -1 && bCount === -1) return 0;
+          if (aCount === -1) return 1;
+          if (bCount === -1) return -1;
+          comparison = aCount - bCount;
           break;
         }
       }
@@ -303,7 +316,7 @@ const GlamsterdamPrioritizationSection: React.FC = () => {
                   <div>
                     <h3 className="text-sm font-semibold text-slate-700 dark:text-slate-300 mb-3">Inclusion Stage</h3>
                     <div className="flex flex-wrap gap-2">
-                      {[{ value: 'all', label: 'All Stages' }, ...stageOptions.map(s => ({ value: s, label: s.replace(' for Inclusion', '') }))].map(({ value, label }) => {
+                      {[{ value: 'all', label: 'All Stages' }, ...stageOptions.map(s => ({ value: s, label: getStageAbbreviation(s) }))].map(({ value, label }) => {
                         const isSelected = stageFilter === value;
                         return (
                           <button
@@ -463,8 +476,8 @@ const GlamsterdamPrioritizationSection: React.FC = () => {
                   {item.title}
                 </p>
                 <div className="flex flex-wrap gap-1.5 mb-3">
-                  <span className={`inline-block px-2 py-0.5 text-[10px] rounded ${getInclusionStageColor(item.stage as InclusionStage)}`}>
-                    {item.stage.replace(' for Inclusion', '')}
+                  <span className={`inline-block px-2 py-0.5 text-[10px] rounded ${getInclusionStageColor(item.stage as InclusionStage)}`} title={item.stage}>
+                    {getStageAbbreviation(item.stage)}
                   </span>
                   {item.devnets.map((devnet) => (
                     <span
@@ -476,9 +489,22 @@ const GlamsterdamPrioritizationSection: React.FC = () => {
                   ))}
                 </div>
                 <div className="flex items-center gap-4 text-xs text-slate-500 dark:text-slate-400">
+                  {item.testCount && (
+                    <div className="flex items-center gap-1">
+                      <span className="text-slate-400 dark:text-slate-400">Tests:</span>
+                      <a
+                        href={getTestDirectoryUrl(item.testCount)}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="px-1.5 py-0.5 rounded bg-blue-100 text-blue-700 dark:bg-blue-900/20 dark:text-blue-300"
+                      >
+                        {item.testCount.testCases ?? item.testCount.testFunctions}
+                      </a>
+                    </div>
+                  )}
                   {item.complexity && (
                     <div className="flex items-center gap-1">
-                      <span className="text-slate-400 dark:text-slate-400">Test:</span>
+                      <span className="text-slate-400 dark:text-slate-400">Complexity:</span>
                       <span className={`px-1.5 py-0.5 rounded ${getComplexityTierColor(item.complexity.tier)}`}>
                         {getComplexityTierEmoji(item.complexity.tier)} {item.complexity.totalScore}
                       </span>
@@ -540,6 +566,16 @@ const GlamsterdamPrioritizationSection: React.FC = () => {
                 </th>
                 <th
                   className="px-4 py-3 text-center text-sm font-medium text-slate-700 dark:text-slate-300 cursor-pointer hover:bg-slate-100 dark:hover:bg-slate-600/50"
+                  onClick={() => handleSort('tests')}
+                  title="Test function count from execution-spec-tests"
+                >
+                  <div className="flex items-center justify-center gap-2">
+                    Tests
+                    <SortIcon field="tests" />
+                  </div>
+                </th>
+                <th
+                  className="px-4 py-3 text-center text-sm font-medium text-slate-700 dark:text-slate-300 cursor-pointer hover:bg-slate-100 dark:hover:bg-slate-600/50"
                   onClick={() => handleSort('complexity')}
                   title="Testing complexity score from STEEL"
                 >
@@ -565,7 +601,7 @@ const GlamsterdamPrioritizationSection: React.FC = () => {
             <tbody className="divide-y divide-slate-200 dark:divide-slate-700">
               {sortedData.length === 0 ? (
                 <tr>
-                  <td colSpan={7} className="px-4 py-8 text-center text-slate-500 dark:text-slate-400">
+                  <td colSpan={8} className="px-4 py-8 text-center text-slate-500 dark:text-slate-400">
                     No EIPs found
                   </td>
                 </tr>
@@ -607,8 +643,8 @@ const GlamsterdamPrioritizationSection: React.FC = () => {
                         </span>
                       </td>
                       <td className="px-4 py-3">
-                        <span className={`inline-block px-2 py-0.5 text-xs rounded ${getInclusionStageColor(item.stage as InclusionStage)}`}>
-                          {item.stage.replace(' for Inclusion', '')}
+                        <span className={`inline-block px-2 py-0.5 text-xs rounded ${getInclusionStageColor(item.stage as InclusionStage)}`} title={item.stage}>
+                          {getStageAbbreviation(item.stage)}
                         </span>
                       </td>
                       <td className="px-4 py-3">
@@ -626,6 +662,21 @@ const GlamsterdamPrioritizationSection: React.FC = () => {
                                 </span>
                               ))}
                           </div>
+                        ) : (
+                          <span className="text-xs text-slate-400 dark:text-slate-400">&mdash;</span>
+                        )}
+                      </td>
+                      <td className="px-4 py-3 text-center">
+                        {item.testCount ? (
+                          <a
+                            href={getTestDirectoryUrl(item.testCount)}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="inline-block px-2 py-0.5 text-xs font-medium rounded bg-blue-100 text-blue-700 dark:bg-blue-900/20 dark:text-blue-300 hover:bg-blue-200 dark:hover:bg-blue-900/40 transition-colors"
+                            title={`${item.testCount.testCases ?? item.testCount.testFunctions} test cases (${item.testCount.testFunctions} functions in ${item.testCount.testFiles} files)`}
+                          >
+                            {item.testCount.testCases ?? item.testCount.testFunctions}
+                          </a>
                         ) : (
                           <span className="text-xs text-slate-400 dark:text-slate-400">&mdash;</span>
                         )}
@@ -669,6 +720,11 @@ const GlamsterdamPrioritizationSection: React.FC = () => {
       {/* Footer */}
       <div className="mt-8 text-center text-xs text-slate-400 dark:text-slate-400">
         <p>
+          Test data from{' '}
+          <a href="https://github.com/ethereum/execution-specs" target="_blank" rel="noopener noreferrer" className="underline hover:text-slate-600 dark:hover:text-slate-300">
+            execution-spec-tests
+          </a>
+          {' \u2022 '}
           Complexity data from{' '}
           <a href="https://github.com/ethsteel/pm" target="_blank" rel="noopener noreferrer" className="underline hover:text-slate-600 dark:hover:text-slate-300">
             STEEL

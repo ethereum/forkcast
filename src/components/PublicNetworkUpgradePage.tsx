@@ -15,7 +15,9 @@ import {
   wasHeadlinerCandidate,
   isUnselectedHeadlinerCandidate,
   sortByLayer,
-  getEipLayer
+  getEipIdFromHash,
+  getEipLayer,
+  getUpgradeAnchorExpansionState
 } from '../utils';
 import {
   getInclusionStageColor,
@@ -172,20 +174,38 @@ const PublicNetworkUpgradePage: React.FC<PublicNetworkUpgradePageProps> = ({
     }
   }, [location.pathname, location.hash]);
 
+  // Expand collapsed sections before scrolling to an EIP anchor inside them.
+  useEffect(() => {
+    const anchorEipId = getEipIdFromHash(location.hash);
+    if (anchorEipId === null) return;
+
+    const anchorEip = eips.find(eip => eip.id === anchorEipId);
+    if (!anchorEip) return;
+
+    const expansion = getUpgradeAnchorExpansionState(anchorEip, forkName);
+    if (expansion.declined) {
+      setIsDeclinedExpanded(true);
+    }
+    if (expansion.headlinerProposals) {
+      setIsHeadlinerProposalsExpanded(true);
+    }
+  }, [location.hash, eips, forkName]);
+
   // Handle URL hash on component mount and location changes
   useEffect(() => {
     const hash = location.hash.substring(1); // Remove the # symbol
     if (hash) {
       // Small delay to ensure DOM is ready
-      setTimeout(() => {
+      const scrollTimer = setTimeout(() => {
         const element = document.getElementById(hash);
         if (element) {
           element.scrollIntoView({ behavior: 'smooth', block: 'start' });
           setActiveSection(hash);
         }
       }, 100);
+      return () => clearTimeout(scrollTimer);
     }
-  }, [location.hash, eips]);
+  }, [location.hash, eips, isDeclinedExpanded, isHeadlinerProposalsExpanded]);
 
   // Intersection Observer for TOC
   useEffect(() => {

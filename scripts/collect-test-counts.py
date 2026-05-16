@@ -22,8 +22,6 @@ from pathlib import Path
 REPO = "ethereum/execution-specs"
 FORK_NAME = "amsterdam"
 
-PYTEST_INI = "packages/testing/src/execution_testing/cli/pytest_commands/pytest_ini_files/pytest-fill.ini"
-
 
 def git(repo_path: str, *args: str) -> subprocess.CompletedProcess:
     return subprocess.run(
@@ -132,20 +130,22 @@ def count_test_functions(repo_path: str, dir_name: str) -> int:
 
 
 def collect_test_cases(repo_path: str, dir_name: str) -> int | None:
-    """Run pytest --collect-only to get the real parametrized test count."""
-    test_path = str(Path(repo_path) / "tests" / FORK_NAME / dir_name)
-    ini_path = str(Path(repo_path) / PYTEST_INI)
+    """Run `fill --collect-only -m blockchain_test` to get distinct test count.
 
-    if not Path(ini_path).exists():
-        print(f"  WARNING: pytest ini not found at {ini_path}")
-        return None
+    Uses the `fill` command (not plain pytest) so that custom markers like
+    blockchain_test are registered.  Only blockchain_test variants are counted
+    because all state tests also generate blockchain tests, so this avoids
+    double-counting.
+    """
+    test_path = str(Path(repo_path) / "tests" / FORK_NAME / dir_name)
 
     try:
         result = subprocess.run(
             [
                 "uv", "run", "--project", repo_path,
-                "pytest", "--collect-only", "-q",
-                "-c", ini_path,
+                "fill", "--collect-only",
+                "-m", "blockchain_test",
+                f"--fork={FORK_NAME.capitalize()}",
                 test_path,
             ],
             capture_output=True,
@@ -161,8 +161,8 @@ def collect_test_cases(repo_path: str, dir_name: str) -> int | None:
         # Try to extract count from output even on error
         pass
 
-    # Parse the summary line: "N tests collected" or "N test collected"
-    summary_match = re.search(r"(\d+) tests? collected", result.stdout)
+    # Parse the summary line: "N tests collected" or "N/M tests collected (X deselected)"
+    summary_match = re.search(r"(\d+)(?:/\d+)? tests? collected", result.stdout)
     if summary_match:
         return int(summary_match.group(1))
 

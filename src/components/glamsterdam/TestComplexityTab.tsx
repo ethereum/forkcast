@@ -3,7 +3,6 @@ import { Link } from 'react-router-dom';
 import { eipsData } from '../../data/eips';
 import { useComplexityData, getComplexityForEip } from '../../domain/complexity/useComplexityData';
 import { getComplexityTierColor, getComplexityTierEmoji } from '../../domain/complexity/complexity';
-import type { ComplexityTier } from '../../domain/complexity/types';
 import {
   getInclusionStage,
   getInclusionStageSortRank,
@@ -21,7 +20,7 @@ import {
   getExecutionSpecTestDirectoryUrl,
 } from '../../domain/execution-specs/execution-specs';
 
-type SortField = 'eip' | 'complexity' | 'tier' | 'stage' | 'tests';
+type SortField = 'eip' | 'complexity' | 'stage' | 'tests';
 type SortDirection = 'asc' | 'desc';
 type FilterTier = 'all' | 'Low' | 'Medium' | 'High' | 'unassessed';
 
@@ -115,18 +114,6 @@ const TestComplexityTab: React.FC = () => {
           if (!b.complexity) return -1;
           comparison = a.complexity.totalScore - b.complexity.totalScore;
           break;
-        case 'tier': {
-          if (!a.complexity && !b.complexity) return 0;
-          if (!a.complexity) return 1;
-          if (!b.complexity) return -1;
-          const tierOrder: Record<ComplexityTier, number> = {
-            Low: 1,
-            Medium: 2,
-            High: 3,
-          };
-          comparison = tierOrder[a.complexity.tier] - tierOrder[b.complexity.tier];
-          break;
-        }
         case 'tests': {
           return compareExecutionSpecTestCounts(a.testCount, b.testCount, sortDirection);
         }
@@ -144,7 +131,7 @@ const TestComplexityTab: React.FC = () => {
 
   // Calculate summary stats
   const stats = useMemo(() => {
-    const assessed = eipsWithComplexity.filter((e) => e.complexity);
+    const assessed = filteredEips.filter((e) => e.complexity);
 
     const tierCounts = { Low: 0, Medium: 0, High: 0 };
     let totalScore = 0;
@@ -157,12 +144,12 @@ const TestComplexityTab: React.FC = () => {
     }
 
     return {
-      total: eipsWithComplexity.length,
+      total: filteredEips.length,
       assessed: assessed.length,
       tierCounts,
       totalScore,
     };
-  }, [eipsWithComplexity]);
+  }, [filteredEips]);
 
   const handleSort = (field: SortField) => {
     if (sortField === field) {
@@ -210,7 +197,7 @@ const TestComplexityTab: React.FC = () => {
         <span className="text-red-600 dark:text-red-400"> High &ge;20</span>
       </p>
       <p className="text-xs text-slate-500 dark:text-slate-400 mb-6">
-        Scores reflect testing effort, not implementation complexity. Early estimations subject to change.
+        Scores reflect testing effort, not implementation complexity. Early estimations subject to change. Test vector counts vary by EIP scope and parametrization; fewer vectors does not imply poor coverage, and more vectors does not imply greater EIP complexity.
       </p>
 
       {/* Toolbar */}
@@ -545,19 +532,10 @@ const TestComplexityTab: React.FC = () => {
               </th>
               <th
                 className="px-3 py-3 text-center text-sm font-medium text-slate-700 dark:text-slate-300 cursor-pointer hover:bg-slate-100 dark:hover:bg-slate-600/50"
-                onClick={() => handleSort('tier')}
-              >
-                <div className="flex items-center justify-center gap-1">
-                  Tier
-                  <SortIcon field="tier" />
-                </div>
-              </th>
-              <th
-                className="px-3 py-3 text-center text-sm font-medium text-slate-700 dark:text-slate-300 cursor-pointer hover:bg-slate-100 dark:hover:bg-slate-600/50"
                 onClick={() => handleSort('complexity')}
               >
                 <div className="flex items-center justify-center gap-1">
-                  Score
+                  Complexity
                   <SortIcon field="complexity" />
                 </div>
               </th>
@@ -578,13 +556,13 @@ const TestComplexityTab: React.FC = () => {
           <tbody className="divide-y divide-slate-200 dark:divide-slate-700">
             {loading && sortedEips.length === 0 ? (
               <tr>
-                <td colSpan={7} className="px-4 py-8 text-center text-slate-500 dark:text-slate-400">
+                <td colSpan={6} className="px-4 py-8 text-center text-slate-500 dark:text-slate-400">
                   Loading complexity data...
                 </td>
               </tr>
             ) : sortedEips.length === 0 ? (
               <tr>
-                <td colSpan={7} className="px-4 py-8 text-center text-slate-500 dark:text-slate-400">
+                <td colSpan={6} className="px-4 py-8 text-center text-slate-500 dark:text-slate-400">
                   No EIPs found for this fork
                 </td>
               </tr>
@@ -634,23 +612,11 @@ const TestComplexityTab: React.FC = () => {
                     </td>
                     <td className="px-3 py-3 text-center">
                       {complexity ? (
-                        <span
-                          className={`inline-flex items-center gap-1 px-2 py-1 text-xs font-medium rounded ${getComplexityTierColor(complexity.tier)}`}
-                          title={complexity.tier}
-                        >
-                          {getComplexityTierEmoji(complexity.tier)}
+                        <span className={`inline-flex items-center gap-1 px-2 py-0.5 text-xs font-medium rounded ${getComplexityTierColor(complexity.tier)}`}>
+                          {getComplexityTierEmoji(complexity.tier)} {complexity.totalScore}
                         </span>
                       ) : (
                         <span className="text-xs text-slate-400 dark:text-slate-400">&mdash;</span>
-                      )}
-                    </td>
-                    <td className="px-3 py-3 text-center">
-                      {complexity ? (
-                        <span className="font-mono text-sm text-slate-700 dark:text-slate-300">
-                          {complexity.totalScore}
-                        </span>
-                      ) : (
-                        <span className="text-slate-400 dark:text-slate-400">&mdash;</span>
                       )}
                     </td>
                     <td className="px-3 py-3 text-center">
@@ -701,7 +667,7 @@ const TestComplexityTab: React.FC = () => {
                   </tr>
                   {expandedEip === eip.id && complexity && (
                     <tr className="bg-slate-50 dark:bg-slate-800/50">
-                      <td colSpan={7} className="px-4 py-4">
+                      <td colSpan={6} className="px-4 py-4">
                         <div className="space-y-3">
                           <div className="flex items-center justify-between">
                             <div className="flex items-center gap-3">

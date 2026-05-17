@@ -1,11 +1,14 @@
 {
-  "id": "glamsterdam-devnet-0",
-  "title": "glamsterdam-devnet-0",
-  "sourceUrl": "https://notes.ethereum.org/@ethpandaops/glamsterdam-devnet-0",
-  "scrapedAt": "2026-05-17T07:07:07.435Z",
+  "id": "glamsterdam-devnet-4",
+  "title": "glamsterdam-devnet-4",
+  "sourceUrl": "https://notes.ethereum.org/@ethpandaops/glamsterdam-devnet-4",
+  "scrapedAt": "2026-05-17T07:07:12.247Z",
   "announcements": [
-    "glamsterdam-devnet-0 targets to launch on the 24th of April 2026.",
-    "EL clients: **EIP-8037** ~~will switch from hard coded **cost per state byte** to a variable cost based on the block gas limit. Similar to bal-devnet-3 or 4.~~ Will stay static."
+    "glamsterdam-devnet-4 targets to launch in late May 2026.",
+    "**First `glamsterdam-` prefixed CL+EL devnet** combining `consensus-specs` **v1.7.0-alpha.8** with the **bal-devnet-7** EL feature set, plus the new `targetGasLimit` engine API field ([execution-apis#796](https://github.com/ethereum/execution-apis/pull/796) ↔ [consensus-specs#5235](https://github.com/ethereum/consensus-specs/pull/5235)).",
+    "**`targetGasLimit` on `PayloadAttributesV4`** — CL now passes the per-validator target gas limit to the EL on `engine_forkchoiceUpdatedV4`, replacing the static EL-side flag. CL also enforces `target_gas_limit` consistency with the block's `gas_limit` (CL PR-5236).",
+    "**EIP-8037 final shape:** `cost_per_state_byte` **1174 → 1530** (fixed), `STATE_BYTES_PER_NEW_ACCOUNT` 112 → 120, `STATE_BYTES_PER_STORAGE_SET` 32 → 64. `SYSTEM_CALL_GAS_LIMIT` raised so system calls can't OOG on state-gas alone. Reference block gas limit raised 96M → **150M**.",
+    "**eth/70 (EIP-7975) and eth/71 (EIP-8159) are now mandatory** — every EL must implement both (promoted from optional in bal-devnet-7)."
   ],
   "eips": [
     {
@@ -47,19 +50,19 @@
     {
       "number": 7975,
       "title": "eth/70 - partial block receipt lists",
-      "status": "optional",
+      "status": null,
       "url": "https://eips.ethereum.org/EIPS/eip-7975"
     },
     {
       "number": 7976,
       "title": "Increase Calldata Floor Cost (64/64)",
-      "status": "new",
+      "status": null,
       "url": "https://eips.ethereum.org/EIPS/eip-7976"
     },
     {
       "number": 7981,
       "title": "Increase Access List Cost",
-      "status": "new",
+      "status": null,
       "url": "https://eips.ethereum.org/EIPS/eip-7981"
     },
     {
@@ -69,9 +72,15 @@
       "url": "https://eips.ethereum.org/EIPS/eip-8024"
     },
     {
+      "number": 8061,
+      "title": "Increase exit and consolidation churn",
+      "status": "updated",
+      "url": "https://eips.ethereum.org/EIPS/eip-8061"
+    },
+    {
       "number": 8159,
       "title": "eth/71 - Block Access List Exchange",
-      "status": "updated",
+      "status": null,
       "url": "https://eips.ethereum.org/EIPS/eip-8159"
     }
   ],
@@ -88,85 +97,20 @@
     "matrix": [
       {
         "eipNumber": 7708,
-        "label": "7708 (ETH Logs)",
+        "label": "7708 / 7778 / 7843 / 7928 / 7954 / 7976 / 7981 / 8024",
         "support": {
           "Geth": "supported",
           "Besu": "supported",
           "Reth": "supported",
           "Nethermind": "supported",
           "Erigon": "supported",
-          "Nimbus-EL": "supported",
-          "Ethrex": "supported"
-        }
-      },
-      {
-        "eipNumber": 7778,
-        "label": "7778 (Gas Refunds)",
-        "support": {
-          "Geth": "supported",
-          "Besu": "supported",
-          "Reth": "supported",
-          "Nethermind": "supported",
-          "Erigon": "supported",
-          "Nimbus-EL": "supported",
-          "Ethrex": "supported"
-        }
-      },
-      {
-        "eipNumber": 7843,
-        "label": "7843 (SLOTNUM)",
-        "support": {
-          "Geth": "supported",
-          "Besu": "supported",
-          "Reth": "supported",
-          "Nethermind": "supported",
-          "Erigon": "supported",
-          "Nimbus-EL": "supported",
-          "Ethrex": "supported"
-        }
-      },
-      {
-        "eipNumber": 7928,
-        "label": "7928 (BAL)",
-        "support": {
-          "Geth": "supported",
-          "Besu": "supported",
-          "Reth": "supported",
-          "Nethermind": "supported",
-          "Erigon": "supported",
-          "Nimbus-EL": "supported",
-          "Ethrex": "supported"
-        }
-      },
-      {
-        "eipNumber": 7954,
-        "label": "7954 (MContract)",
-        "support": {
-          "Geth": "not_supported",
-          "Besu": "not_supported",
-          "Reth": "not_supported",
-          "Nethermind": "not_supported",
-          "Erigon": "not_supported",
           "Nimbus-EL": "supported",
           "Ethrex": "supported"
         }
       },
       {
         "eipNumber": 7975,
-        "label": "7975 (eth/70)",
-        "support": {
-          "Geth": "supported",
-          "Besu": "in_progress",
-          "Reth": "not_supported",
-          "Nethermind": "supported",
-          "Erigon": "not_supported",
-          "Nimbus-EL": "not_supported",
-          "Ethrex": "not_supported"
-        }
-      },
-      {
-        "eipNumber": 8024,
-        "label": "8024 (SWAPN/DUPN)",
+        "label": "7975 (eth/70 — required)",
         "support": {
           "Geth": "supported",
           "Besu": "supported",
@@ -179,28 +123,28 @@
       },
       {
         "eipNumber": 8037,
-        "label": "8037 (stateIncr)",
+        "label": "8037 (CPSB=1530 + #11611)",
         "support": {
-          "Geth": "supported",
-          "Besu": "not_supported",
-          "Reth": "not_supported",
-          "Nethermind": "not_supported",
-          "Erigon": "not_supported",
-          "Nimbus-EL": "supported",
-          "Ethrex": "supported"
+          "Geth": "in_progress",
+          "Besu": "in_progress",
+          "Reth": "in_progress",
+          "Nethermind": "in_progress",
+          "Erigon": "in_progress",
+          "Nimbus-EL": "in_progress",
+          "Ethrex": "in_progress"
         }
       },
       {
         "eipNumber": 8159,
-        "label": "8159 (eth/71)",
+        "label": "8159 (eth/71 — required)",
         "support": {
-          "Geth": "not_supported",
-          "Besu": "not_supported",
-          "Reth": "not_supported",
-          "Nethermind": "not_supported",
-          "Erigon": "not_supported",
-          "Nimbus-EL": "not_supported",
-          "Ethrex": "not_supported"
+          "Geth": "in_progress",
+          "Besu": "supported",
+          "Reth": "in_progress",
+          "Nethermind": "supported",
+          "Erigon": "supported",
+          "Nimbus-EL": "supported",
+          "Ethrex": "in_progress"
         }
       },
       {
@@ -214,6 +158,19 @@
           "Erigon": "not_supported",
           "Nimbus-EL": "not_supported",
           "Ethrex": "not_supported"
+        }
+      },
+      {
+        "eipNumber": 0,
+        "label": "engine: `targetGasLimit` (#796)",
+        "support": {
+          "Geth": "in_progress",
+          "Besu": "in_progress",
+          "Reth": "in_progress",
+          "Nethermind": "in_progress",
+          "Erigon": "in_progress",
+          "Nimbus-EL": "in_progress",
+          "Ethrex": "in_progress"
         }
       }
     ]
@@ -229,21 +186,36 @@
         "eipNumber": 7928,
         "label": "EIP-7928",
         "support": {
-          "Lodestar": "glamsterdam-devnet-0",
-          "Lighthouse": "unknown",
-          "Prysm": "unknown"
+          "Lodestar": "supported",
+          "Lighthouse": "supported",
+          "Prysm": "glamsterdam-devnet-0"
+        }
+      },
+      {
+        "eipNumber": 0,
+        "label": "alpha.8 rebase",
+        "support": {
+          "Lodestar": "in_progress",
+          "Lighthouse": "in_progress",
+          "Prysm": "in_progress"
+        }
+      },
+      {
+        "eipNumber": 5235,
+        "label": "`target_gas_limit` (#5235)",
+        "support": {
+          "Lodestar": "in_progress",
+          "Lighthouse": "in_progress",
+          "Prysm": "in_progress"
         }
       }
     ]
   },
   "specReferences": {
     "consensusSpecs": {
-      "version": "v1.7.0-alpha.5",
-      "url": "https://github.com/ethereum/consensus-specs/releases/tag/v1.7.0-alpha.5"
+      "version": "v1.7.0-alpha.8",
+      "url": "https://github.com/ethereum/consensus-specs/releases/tag/v1.7.0-alpha.8"
     },
-    "executionSpecs": {
-      "version": "bal@v5.6.1",
-      "url": "https://github.com/ethereum/execution-spec-tests/releases/tag/bal@v5.6.1"
-    }
+    "executionSpecs": null
   }
 }

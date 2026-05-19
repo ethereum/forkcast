@@ -21,10 +21,18 @@ interface EipCardProps {
   eip: EIP;
   forkName: string;
   handleExternalLinkClick: (linkType: string, url: string) => void;
+  cardId?: string;
+  showCopyLink?: boolean;
 }
 
-export const EipCard: React.FC<EipCardProps> = ({ eip, forkName, handleExternalLinkClick }) => {
-  const eipId = `eip-${eip.id}`;
+export const EipCard: React.FC<EipCardProps> = ({
+  eip,
+  forkName,
+  handleExternalLinkClick,
+  cardId,
+  showCopyLink = true
+}) => {
+  const eipId = cardId ?? `eip-${eip.id}`;
   const layer = getEipLayer(eip);
   const [showChampionDetails, setShowChampionDetails] = useState(false);
   const [isExpanded, setIsExpanded] = useState(false);
@@ -46,13 +54,15 @@ export const EipCard: React.FC<EipCardProps> = ({ eip, forkName, handleExternalL
           <div className="flex-1">
             <div className="flex items-center gap-3 group relative">
               {/* Anchor link - positioned absolutely in the left margin */}
-              <div className="absolute -left-5 top-0 bottom-0 flex items-center opacity-0 group-hover:opacity-100 transition-opacity duration-200">
-                <CopyLinkButton
-                  sectionId={eipId}
-                  title={`Copy link to this section`}
-                  size="sm"
-                />
-              </div>
+              {showCopyLink && (
+                <div className="absolute -left-5 top-0 bottom-0 flex items-center opacity-0 group-hover:opacity-100 transition-opacity duration-200">
+                  <CopyLinkButton
+                    sectionId={eipId}
+                    title={`Copy link to this section`}
+                    size="sm"
+                  />
+                </div>
+              )}
 
               <div className="flex-1">
                 <div className="flex items-center gap-2 mb-1">

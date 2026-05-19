@@ -79,7 +79,7 @@ describe('getUpgradeAnchorExpansionState', () => {
     });
   });
 
-  it('expands headliner proposals for headliner candidate anchors', () => {
+  it('expands headliner proposals for unselected headliner candidate anchors', () => {
     const eip = makeEip({
       forkRelationships: [
         {
@@ -97,6 +97,26 @@ describe('getUpgradeAnchorExpansionState', () => {
     expect(getUpgradeAnchorExpansionState(eip, 'Glamsterdam')).toEqual({
       declined: true,
       headlinerProposals: true,
+    });
+  });
+
+  it('does not expand headliner proposals for selected headliner anchors', () => {
+    const eip = makeEip({
+      forkRelationships: [
+        {
+          forkName: 'Glamsterdam',
+          wasHeadlinerCandidate: true,
+          isHeadliner: true,
+          statusHistory: [
+            { status: 'Scheduled', call: null, date: null },
+          ],
+        },
+      ],
+    });
+
+    expect(getUpgradeAnchorExpansionState(eip, 'Glamsterdam')).toEqual({
+      declined: false,
+      headlinerProposals: false,
     });
   });
 });

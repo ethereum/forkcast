@@ -155,6 +155,15 @@ export const wasHeadlinerCandidate = (eip: EIP, forkName?: string): boolean => {
   return true;
 };
 
+/**
+ * Check if an EIP was a headliner candidate but was NOT selected
+ * (i.e., it should appear in the Headliner Proposals section, not in regular stages)
+ */
+export const isUnselectedHeadlinerCandidate = (eip: EIP, forkName?: string): boolean => {
+  if (!forkName) return false;
+  return wasHeadlinerCandidate(eip, forkName) && !isHeadliner(eip, forkName);
+};
+
 export const getEipIdFromHash = (hash: string): number | null => {
   const match = /^#eip-(\d+)$/.exec(hash);
   if (!match) return null;
@@ -170,17 +179,8 @@ export interface UpgradeAnchorExpansionState {
 
 export const getUpgradeAnchorExpansionState = (eip: EIP, forkName?: string): UpgradeAnchorExpansionState => ({
   declined: getInclusionStage(eip, forkName) === 'Declined for Inclusion',
-  headlinerProposals: wasHeadlinerCandidate(eip, forkName),
+  headlinerProposals: isUnselectedHeadlinerCandidate(eip, forkName),
 });
-
-/**
- * Check if an EIP was a headliner candidate but was NOT selected
- * (i.e., it should appear in the Headliner Proposals section, not in regular stages)
- */
-export const isUnselectedHeadlinerCandidate = (eip: EIP, forkName?: string): boolean => {
-  if (!forkName) return false;
-  return wasHeadlinerCandidate(eip, forkName) && !isHeadliner(eip, forkName);
-};
 
 /**
  * Sort comparator for ordering by layer (EL first, then CL)

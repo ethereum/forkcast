@@ -1,4 +1,4 @@
-import React, { useEffect, useLayoutEffect, useState } from 'react';
+import React, { useCallback, useEffect, useLayoutEffect, useRef, useState } from 'react';
 import { Link, useLocation, useNavigate, useSearchParams } from 'react-router-dom';
 import { eipsData } from '../data/eips';
 import { getPendingProposalsForFork } from '../data/pending-proposals';
@@ -128,6 +128,7 @@ const PublicNetworkUpgradePage: React.FC<PublicNetworkUpgradePageProps> = ({
   const [eips, setEips] = useState<EIP[]>([]);
   const [activeSection, setActiveSection] = useState<string>('overview');
   const [isDeclinedExpanded, setIsDeclinedExpanded] = useState(false);
+  const lastScrolledHashRef = useRef<string | null>(null);
   // In headlinerSelection mode, expand by default since it's the main content
   const [isHeadlinerProposalsExpanded, setIsHeadlinerProposalsExpanded] = useState(pageMode === 'headlinerSelection');
 
@@ -161,6 +162,26 @@ const PublicNetworkUpgradePage: React.FC<PublicNetworkUpgradePageProps> = ({
     updateFilterParams(layerFilter, query);
   };
 
+  const getAnchorExpansionForHash = useCallback(() => {
+    const anchorEipId = getEipIdFromHash(location.hash);
+    if (anchorEipId === null) return null;
+
+    const anchorEip = eips.find(eip => eip.id === anchorEipId);
+    if (!anchorEip) return null;
+
+    return getUpgradeAnchorExpansionState(anchorEip, forkName);
+  }, [eips, forkName, location.hash]);
+
+  const isAnchorExpansionApplied = useCallback(() => {
+    const expansion = getAnchorExpansionForHash();
+    if (!expansion) return true;
+
+    return (
+      (!expansion.declined || isDeclinedExpanded) &&
+      (!expansion.headlinerProposals || isHeadlinerProposalsExpanded)
+    );
+  }, [getAnchorExpansionForHash, isDeclinedExpanded, isHeadlinerProposalsExpanded]);
+
   // Update meta tags for SEO and social sharing
   useMetaTags({
     title: `${displayName} - Forkcast`,
@@ -191,37 +212,44 @@ const PublicNetworkUpgradePage: React.FC<PublicNetworkUpgradePageProps> = ({
   }, [location.pathname, location.hash]);
 
   // Expand collapsed sections before scrolling to an EIP anchor inside them.
-  useEffect(() => {
-    const anchorEipId = getEipIdFromHash(location.hash);
-    if (anchorEipId === null) return;
+  useLayoutEffect(() => {
+    const expansion = getAnchorExpansionForHash();
+    if (!expansion) return;
 
-    const anchorEip = eips.find(eip => eip.id === anchorEipId);
-    if (!anchorEip) return;
-
-    const expansion = getUpgradeAnchorExpansionState(anchorEip, forkName);
     if (expansion.declined) {
       setIsDeclinedExpanded(true);
     }
     if (expansion.headlinerProposals) {
       setIsHeadlinerProposalsExpanded(true);
     }
-  }, [location.hash, eips, forkName]);
+  }, [getAnchorExpansionForHash]);
 
-  // Handle URL hash on component mount and location changes
+  // Scroll after any required anchor expansion has rendered.
   useLayoutEffect(() => {
     const hash = location.hash.substring(1); // Remove the # symbol
-    if (hash) {
-      // Small delay to ensure DOM is ready
-      const scrollTimer = setTimeout(() => {
-        const element = document.getElementById(hash);
-        if (element) {
-          scrollToElement(element, 'auto');
-          setActiveSection(hash);
-        }
-      }, 100);
-      return () => clearTimeout(scrollTimer);
+    if (!hash) {
+      lastScrolledHashRef.current = null;
+      return;
     }
-  }, [location.pathname, location.hash, eips, isDeclinedExpanded, isHeadlinerProposalsExpanded]);
+
+    if (!isAnchorExpansionApplied()) {
+      return;
+    }
+
+    const element = document.getElementById(hash);
+    if (!element) {
+      return;
+    }
+
+    const scrollKey = `${location.pathname}${location.search}${location.hash}`;
+    if (lastScrolledHashRef.current === scrollKey) {
+      return;
+    }
+
+    scrollToElement(element, 'auto');
+    setActiveSection(hash);
+    lastScrolledHashRef.current = scrollKey;
+  }, [location.pathname, location.search, location.hash, eips, isAnchorExpansionApplied]);
 
   // Intersection Observer for TOC
   useEffect(() => {
@@ -297,6 +325,22 @@ const PublicNetworkUpgradePage: React.FC<PublicNetworkUpgradePageProps> = ({
   // Combined filter function
   const filterEips = (eipsList: EIP[]) => {
     return filterEipsBySearch(filterEipsByLayer(eipsList));
+  };
+
+  const isEipRenderedInStageSections = (eip: EIP) => {
+    if (pageMode === 'headlinerSelection') return false;
+
+    const displayedStages = status === 'Live'
+      ? ['Included', 'Declined for Inclusion']
+      : ['Included', 'Scheduled for Inclusion', 'Considered for Inclusion', 'Proposed for Inclusion', 'Declined for Inclusion'];
+    const stage = getInclusionStage(eip, forkName);
+
+    if (!displayedStages.includes(stage)) return false;
+    if (forkName.toLowerCase() === 'glamsterdam' && isUnselectedHeadlinerCandidate(eip, forkName)) {
+      return false;
+    }
+
+    return filterEips([eip]).length > 0;
   };
 
   // Helper to generate Headliner Proposals TOC items
@@ -849,9 +893,19 @@ const PublicNetworkUpgradePage: React.FC<PublicNetworkUpgradePageProps> = ({
                           if (layerSort !== 0) return layerSort;
                           return a.id - b.id;
                         })
-                        .map(eip => (
-                          <EipCard key={eip.id} eip={eip} forkName={forkName} handleExternalLinkClick={handleExternalLinkClick} />
-                        ))
+                        .map(eip => {
+                          const isDuplicateStageCard = isEipRenderedInStageSections(eip);
+                          return (
+                            <EipCard
+                              key={eip.id}
+                              eip={eip}
+                              forkName={forkName}
+                              handleExternalLinkClick={handleExternalLinkClick}
+                              cardId={isDuplicateStageCard ? `headliner-proposal-eip-${eip.id}` : undefined}
+                              showCopyLink={!isDuplicateStageCard}
+                            />
+                          );
+                        })
                       }
 
                       {/* Pending Proposals - forum discussions without EIP numbers yet */}

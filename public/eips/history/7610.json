@@ -1,0 +1,53 @@
+{
+  "eipId": 7610,
+  "commits": [
+    {
+      "sha": "7707fe333322ed68d1b5efa50bdb4f35909255a7",
+      "date": "2025-11-06T01:04:36Z",
+      "message": "Update EIP-7610: Clarify the relationship between the EIP-7610 and EIP-7702",
+      "author": "rjl493456442",
+      "prNumber": null,
+      "patch": "@@ -23,12 +23,12 @@ If a contract creation is attempted due to a creation transaction, the `CREATE`\n \n This EIP amends [EIP-684](./eip-684.md) with one extra condition, requiring empty storage for contract deployment.\n \n+This EIP will not affect [EIP-7702](./eip-7702.md), since the authority's nonce is always incremented after an authorization is applied, which conflicts with the condition required for contract deployment.\n+\n ## Rationale\n \n EIP-684 defines two conditions for contract deployment: the destination address must have zero nonce and zero code length. Unfortunately, this is not sufficient. Before [EIP-161](./eip-161.md) was applied, the nonce of a newly deployed contract remained set to zero. Therefore, it was entirely possible to create a contract with a zero nonce and zero code length but with non-empty storage, if slots were set in the constructor. There exists 28 such contracts on Ethereum mainnet at this time.\n \n-As one of the core tenets of smart contracts is that its code will not change, even if the code is zero length. The contract creation must be rejected in such instance.\n-\n ## Backwards Compatibility\n \n This is an execution layer upgrade, and so it requires a hard fork."
+    },
+    {
+      "sha": "fa587161f3f3b8ade481c5fc6478ad25c3518a90",
+      "date": "2025-09-29T00:06:02Z",
+      "message": "Update EIP-7610: fixed typos in EIPS/eip-7610.md",
+      "author": "CreeptoGengar",
+      "prNumber": null,
+      "patch": "@@ -27,7 +27,7 @@ This EIP amends [EIP-684](./eip-684.md) with one extra condition, requiring empt\n \n EIP-684 defines two conditions for contract deployment: the destination address must have zero nonce and zero code length. Unfortunately, this is not sufficient. Before [EIP-161](./eip-161.md) was applied, the nonce of a newly deployed contract remained set to zero. Therefore, it was entirely possible to create a contract with a zero nonce and zero code length but with non-empty storage, if slots were set in the constructor. There exists 28 such contracts on Ethereum mainnet at this time.\n \n-As one of the core tenets of smart contracts is that its code will not change, even if the code is zero length. The contract creation must be rejected in such instanace.\n+As one of the core tenets of smart contracts is that its code will not change, even if the code is zero length. The contract creation must be rejected in such instance.\n \n ## Backwards Compatibility\n \n@@ -41,7 +41,7 @@ Refilling the existing tests will provide sufficient coverage for this EIP.\n \n ## Security Considerations\n \n-This EIP is a security upgrade: it enforces the imutability of deployed code.\n+This EIP is a security upgrade: it enforces the immutability of deployed code.\n \n ## Copyright\n "
+    },
+    {
+      "sha": "fd89c8f734f4ddd6abee784cf91cf8e38e117d75",
+      "date": "2024-11-07T08:14:40Z",
+      "message": "Update EIP-7610: Move to Last Call",
+      "author": "timbeiko",
+      "prNumber": null,
+      "patch": "@@ -4,7 +4,8 @@ title: Revert creation in case of non-empty storage\n description: Revert contract creation if address already has the non-empty storage\n author: Gary Rong (@rjl493456442), Martin Holst Swende (@holiman)\n discussions-to: https://ethereum-magicians.org/t/eip-revert-creation-in-case-of-non-empty-storage/18452\n-status: Review\n+status: Last Call\n+last-call-deadline: 2024-11-20\n type: Standards Track\n category: Core\n created: 2024-02-02"
+    },
+    {
+      "sha": "df5ce1cbddcb06a59e8a6f873204beb0c40a6b24",
+      "date": "2024-07-23T14:21:45Z",
+      "message": "Update EIP-7610: Move to Review",
+      "author": "timbeiko",
+      "prNumber": null,
+      "patch": "@@ -4,7 +4,7 @@ title: Revert creation in case of non-empty storage\n description: Revert contract creation if address already has the non-empty storage\n author: Gary Rong (@rjl493456442), Martin Holst Swende (@holiman)\n discussions-to: https://ethereum-magicians.org/t/eip-revert-creation-in-case-of-non-empty-storage/18452\n-status: Draft\n+status: Review\n type: Standards Track\n category: Core\n created: 2024-02-02"
+    },
+    {
+      "sha": "dc288af4e30e2244ce1a92aad89b25531a885123",
+      "date": "2024-07-19T11:38:04Z",
+      "message": "Update EIP-7610: Point to correct EIP-161",
+      "author": "jochem-brouwer",
+      "prNumber": null,
+      "patch": "@@ -24,7 +24,7 @@ This EIP amends [EIP-684](./eip-684.md) with one extra condition, requiring empt\n \n ## Rationale\n \n-EIP-684 defines two conditions for contract deployment: the destination address must have zero nonce and zero code length. Unfortunately, this is not sufficient. Before [EIP-158](./eip-158.md) was applied, the nonce of a newly deployed contract remained set to zero. Therefore, it was entirely possible to create a contract with a zero nonce and zero code length but with non-empty storage, if slots were set in the constructor. There exists 28 such contracts on Ethereum mainnet at this time.\n+EIP-684 defines two conditions for contract deployment: the destination address must have zero nonce and zero code length. Unfortunately, this is not sufficient. Before [EIP-161](./eip-161.md) was applied, the nonce of a newly deployed contract remained set to zero. Therefore, it was entirely possible to create a contract with a zero nonce and zero code length but with non-empty storage, if slots were set in the constructor. There exists 28 such contracts on Ethereum mainnet at this time.\n \n As one of the core tenets of smart contracts is that its code will not change, even if the code is zero length. The contract creation must be rejected in such instanace.\n "
+    },
+    {
+      "sha": "d21656a0f46b33323e0784785cf5439677a84f3b",
+      "date": "2024-04-08T17:21:03Z",
+      "message": "Add EIP: Revert creation in case of non-empty storage",
+      "author": "rjl493456442",
+      "prNumber": null,
+      "patch": "@@ -0,0 +1,47 @@\n+---\n+eip: 7610\n+title: Revert creation in case of non-empty storage\n+description: Revert contract creation if address already has the non-empty storage\n+author: Gary Rong (@rjl493456442), Martin Holst Swende (@holiman)\n+discussions-to: https://ethereum-magicians.org/t/eip-revert-creation-in-case-of-non-empty-storage/18452\n+status: Draft\n+type: Standards Track\n+category: Core\n+created: 2024-02-02\n+---\n+\n+## Abstract\n+\n+This EIP causes contract creation to throw an error when attempted at an address with pre-existing storage.\n+\n+## Specification\n+\n+The key words \"MUST\", \"MUST NOT\", \"REQUIRED\", \"SHALL\", \"SHALL NOT\", \"SHOULD\", \"SHOULD NOT\", \"RECOMMENDED\", \"NOT RECOMMENDED\", \"MAY\", and \"OPTIONAL\" in this document are to be interpreted as described in RFC 2119 and RFC 8174.\n+\n+If a contract creation is attempted due to a creation transaction, the `CREATE` opcode, the `CREATE2` opcode, or any other reason, and the destination address already has either a nonzero nonce, a nonzero code length, or non-empty storage, then the creation MUST throw as if the first byte in the init code were an invalid opcode. This change MUST apply retroactively for all existing blocks.\n+\n+This EIP amends [EIP-684](./eip-684.md) with one extra condition, requiring empty storage for contract deployment.\n+\n+## Rationale\n+\n+EIP-684 defines two conditions for contract deployment: the destination address must have zero nonce and zero code length. Unfortunately, this is not sufficient. Before [EIP-158](./eip-158.md) was applied, the nonce of a newly deployed contract remained set to zero. Therefore, it was entirely possible to create a contract with a zero nonce and zero code length but with non-empty storage, if slots were set in the constructor. There exists 28 such contracts on Ethereum mainnet at this time.\n+\n+As one of the core tenets of smart contracts is that its code will not change, even if the code is zero length. The contract creation must be rejected in such instanace.\n+\n+## Backwards Compatibility\n+\n+This is an execution layer upgrade, and so it requires a hard fork.\n+\n+## Test Cases\n+\n+There exists quite a number of tests in the ethereum tests repo as well as in the execution spec tests, which test the scenario of deployment to targets with non-empty storage. These tests have been considered problematic in the past; Reth and EELS both intentionally implement a version of the account reset solely to pass the tests. Py-evm declared the situation impossible and never implemented account reset.\n+\n+Refilling the existing tests will provide sufficient coverage for this EIP.\n+\n+## Security Considerations\n+\n+This EIP is a security upgrade: it enforces the imutability of deployed code.\n+\n+## Copyright\n+\n+Copyright and related rights waived via [CC0](../LICENSE.md)."
+    }
+  ]
+}

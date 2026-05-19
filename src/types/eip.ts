@@ -95,3 +95,17 @@ export interface KeyDecision {
   fork?: string;
   context?: string;
 }
+
+export interface EipSpecCommit {
+  sha: string;
+  date: string;
+  message: string;
+  author: string;
+  prNumber: number | null;
+  patch?: string;
+}
+
+export interface EipSpecHistory {
+  eipId: number;
+  commits: EipSpecCommit[];
+}

@@ -1,0 +1,216 @@
+{
+  "eipId": 7688,
+  "commits": [
+    {
+      "sha": "f2e6d7fb01194d590e16fcdcae8061d06cf1a7f1",
+      "date": "2026-05-19T16:56:56Z",
+      "message": "Update EIP-7688: Rebase requirements to be based on Fusaka",
+      "author": "etan-status",
+      "prNumber": null,
+      "patch": "@@ -8,7 +8,7 @@ status: Review\n type: Standards Track\n category: Core\n created: 2024-04-15\n-requires: 6110, 7002, 7251, 7495, 7549, 7569, 7916\n+requires: 7495, 7607, 7916\n ---\n \n ## Abstract"
+    },
+    {
+      "sha": "aea03b391168915770667f3564c445e7de589a17",
+      "date": "2026-05-19T16:11:43Z",
+      "message": "Update EIP-7688: Improve wording / address nits",
+      "author": "etan-status",
+      "prNumber": null
+    },
+    {
+      "sha": "19f03bc45b9fa63fe434f9ad7fdc2b82f174cc2f",
+      "date": "2026-05-19T14:57:40Z",
+      "message": "Update EIP-7688: Resolve the 'cleanup opportunities' section",
+      "author": "etan-status",
+      "prNumber": null
+    },
+    {
+      "sha": "9eb1fadbc0941fbc877294c5d647c30fb42c5bfb",
+      "date": "2026-05-19T13:55:59Z",
+      "message": "Update EIP-7688: Add rationale for Validator remaining Container",
+      "author": "etan-status",
+      "prNumber": null
+    },
+    {
+      "sha": "5f4a908c019f83e5d8dc00abccba37c312fca02f",
+      "date": "2026-05-18T19:53:51Z",
+      "message": "Update EIP-7688: Suggest constants for network message size bounds",
+      "author": "etan-status",
+      "prNumber": null
+    },
+    {
+      "sha": "d2fb2b2e6104e7484f552bf142c500a9d2a6ef4e",
+      "date": "2026-05-05T20:31:25Z",
+      "message": "Update EIP-7688: Make Transaction progressive",
+      "author": "etan-status",
+      "prNumber": null,
+      "patch": "@@ -72,7 +72,9 @@ The following types SHALL be converted to `ProgressiveContainer`:\n   - The `attesting_indices` field is redefined to use `ProgressiveList`\n - [`ExecutionPayload`](https://github.com/ethereum/consensus-specs/blob/b5c3b619887c7850a8c1d3540b471092be73ad84/specs/deneb/beacon-chain.md#executionpayload)\n   - The `transactions` and `withdrawals` fields are redefined to use `ProgressiveList`\n-  - The `MAX_TRANSACTIONS_PER_PAYLOAD` (1M) limit is no longer enforced (the limit is unreachable with `MAX_PAYLOAD_SIZE` 10 MB)\n+  - The `MAX_TRANSACTIONS_PER_PAYLOAD` (1M) limit is no longer enforced\n+- [`Transaction`](https://github.com/ethereum/consensus-specs/blob/b5c3b619887c7850a8c1d3540b471092be73ad84/specs/bellatrix/beacon-chain.md#custom-types) is redefined as `ProgressiveByteList`\n+  - The `MAX_BYTES_PER_TRANSACTION` (1 GB) limit is no longer enforced\n - [`ExecutionRequests`](https://github.com/ethereum/consensus-specs/blob/b5c3b619887c7850a8c1d3540b471092be73ad84/specs/electra/beacon-chain.md#executionrequests)\n   - The `deposits`, `withdrawals` and `consolidations` fields are redefined to use `ProgressiveList`\n - [`BeaconBlockBody`](https://github.com/ethereum/consensus-specs/blob/b5c3b619887c7850a8c1d3540b471092be73ad84/specs/electra/beacon-chain.md#beaconblockbody)\n@@ -111,7 +113,6 @@ These types are used as part of the `ProgressiveContainer` definitions, and, as\n | [`SignedVoluntaryExit`](https://github.com/ethereum/consensus-specs/blob/b5c3b619887c7850a8c1d3540b471092be73ad84/specs/phase0/beacon-chain.md#signedvoluntaryexit) | Tuple of voluntary exit request and its signature |\n | [`SyncAggregate`](https://github.com/ethereum/consensus-specs/blob/b5c3b619887c7850a8c1d3540b471092be73ad84/specs/altair/beacon-chain.md#syncaggregate) | Cryptographic type representing an aggregate sync committee signature |\n | [`ExecutionAddress`](https://github.com/ethereum/consensus-specs/blob/b5c3b619887c7850a8c1d3540b471092be73ad84/specs/bellatrix/beacon-chain.md#custom-types) | Byte vector containing an account address on the execution layer |\n-| [`Transaction`](https://github.com/ethereum/consensus-specs/blob/b5c3b619887c7850a8c1d3540b471092be73ad84/specs/bellatrix/beacon-chain.md#custom-types) | Byte list containing an RLP encoded transaction |\n | [`WithdrawalIndex`](https://github.com/ethereum/consensus-specs/blob/b5c3b619887c7850a8c1d3540b471092be73ad84/specs/capella/beacon-chain.md#custom-types) | Unique index of a withdrawal from any validator's balance to the execution layer |\n | [`Withdrawal`](https://github.com/ethereum/consensus-specs/blob/b5c3b619887c7850a8c1d3540b471092be73ad84/specs/capella/beacon-chain.md#withdrawal) | Withdrawal from a beacon chain validator's balance to the execution layer |\n | [`DepositRequest`](https://github.com/ethereum/consensus-specs/blob/b5c3b619887c7850a8c1d3540b471092be73ad84/specs/electra/beacon-chain.md#depositrequest) | Tuple of flattened deposit data and its sequential index |"
+    },
+    {
+      "sha": "53a85823f374965161ab1b711a0ee3084db8d6c0",
+      "date": "2025-12-30T09:24:03Z",
+      "message": "Update EIP-7688: Fix field naming and wording",
+      "author": "showmespinet",
+      "prNumber": null,
+      "patch": "@@ -74,7 +74,7 @@ The following types SHALL be converted to `ProgressiveContainer`:\n   - The `transactions` and `withdrawals` fields are redefined to use `ProgressiveList`\n   - The `MAX_TRANSACTIONS_PER_PAYLOAD` (1M) limit is no longer enforced (the limit is unreachable with `MAX_PAYLOAD_SIZE` 10 MB)\n - [`ExecutionRequests`](https://github.com/ethereum/consensus-specs/blob/b5c3b619887c7850a8c1d3540b471092be73ad84/specs/electra/beacon-chain.md#executionrequests)\n-  - The `deposits`, `withdrawals` and `consolidation` fields are redefined to use `ProgressiveList`\n+  - The `deposits`, `withdrawals` and `consolidations` fields are redefined to use `ProgressiveList`\n - [`BeaconBlockBody`](https://github.com/ethereum/consensus-specs/blob/b5c3b619887c7850a8c1d3540b471092be73ad84/specs/electra/beacon-chain.md#beaconblockbody)\n   - The `proposer_slashings`, `attester_slashings`, `attestations`, `deposits`, `voluntary_exits` and `bls_to_execution_changes` fields are redefined to use `ProgressiveList`\n - [`BeaconState`](https://github.com/ethereum/consensus-specs/blob/b5c3b619887c7850a8c1d3540b471092be73ad84/specs/electra/beacon-chain.md#beaconstate)\n@@ -184,7 +184,7 @@ For other requests (withdrawal / consolidation requests), a shared total limit b\n \n #### `BeaconBlockHeader`\n \n-The `BeaconBlockHeader` is currently proposed to be kept as is. Updating the `BeaconBlockHeader` to `ProgressiveContainer` is tricky as is breaks `hash_tree_root(latest_block_header)` in the `BeaconState`. One option could be to store `latest_block_header_root` separately, possibly also incorporating the block proposer signature into the hash to avoid proposer signature checks while backfilling historical blocks.\n+The `BeaconBlockHeader` is currently proposed to be kept as is. Updating the `BeaconBlockHeader` to `ProgressiveContainer` is tricky as it breaks `hash_tree_root(latest_block_header)` in the `BeaconState`. One option could be to store `latest_block_header_root` separately, possibly also incorporating the block proposer signature into the hash to avoid proposer signature checks while backfilling historical blocks.\n \n #### `Validator`\n "
+    },
+    {
+      "sha": "95a263d15ccbbad813fd002666d7c753a126280c",
+      "date": "2025-12-02T16:31:52Z",
+      "message": "Update EIP-7688: Move to Review",
+      "author": "etan-status",
+      "prNumber": null,
+      "patch": "@@ -4,7 +4,7 @@ title: Forward compatible consensus data structures\n description: Transition consensus SSZ data structures to ProgressiveContainer\n author: Etan Kissling (@etan-status), Cayman (@wemeetagain)\n discussions-to: https://ethereum-magicians.org/t/eip-7688-forward-compatible-consensus-data-structures/19673\n-status: Draft\n+status: Review\n type: Standards Track\n category: Core\n created: 2024-04-15"
+    },
+    {
+      "sha": "92a822fba7d243a8ee6038b80bfb45e59dd3b4f7",
+      "date": "2025-11-05T13:01:55Z",
+      "message": "Update EIP-7688: Correct ProgressiveContainer reference",
+      "author": "parraddise",
+      "prNumber": null,
+      "patch": "@@ -133,7 +133,7 @@ Applying this EIP breaks `hash_tree_root` and Merkle tree verifiers a single tim\n \n ### Can this be applied retroactively?\n \n-While `Profile` serializes in the same way as the legacy `Container`, the merkleization and `hash_tree_root` of affected data structures changes. Therefore, verifiers that wish to process Merkle proofs of legacy variants still need to support the corresponding legacy schemes.\n+While `ProgressiveContainer` serializes in the same way as the legacy `Container`, the merkleization and `hash_tree_root` of affected data structures changes. Therefore, verifiers that wish to process Merkle proofs of legacy variants still need to support the corresponding legacy schemes.\n \n ### Immutability\n "
+    },
+    {
+      "sha": "cfb56cc2fef7d780f89c1f3890d64425f684ea2a",
+      "date": "2025-10-12T09:12:54Z",
+      "message": "Update EIP-7688: Update eip-7688.md",
+      "author": "pendrue",
+      "prNumber": null,
+      "patch": "@@ -188,7 +188,7 @@ The `BeaconBlockHeader` is currently proposed to be kept as is. Updating the `Be\n \n #### `Validator`\n \n-The `Validator` container is currently proposed to be kept as is. Updating the `Validator` to `ProgressiveContainer` would add an extra hash for each validator; validators are mostly immutable so rarely need to be re-hashed. With a conversion, implementations may have to incrementally construct the new `Validator` entries ahead of the fork when validator counts are high. It should be evaluated whether the hashing overhead is worth a clean transition to future fields, e.g., for holding postquantum keys. Also consider that that such a transition may also involve a new hash function, which is a breaking change to the Merkle proofs, so generalized indices do not have to be stable across that transition.\n+The `Validator` container is currently proposed to be kept as is. Updating the `Validator` to `ProgressiveContainer` would add an extra hash for each validator; validators are mostly immutable so rarely need to be re-hashed. With a conversion, implementations may have to incrementally construct the new `Validator` entries ahead of the fork when validator counts are high. It should be evaluated whether the hashing overhead is worth a clean transition to future fields, e.g., for holding postquantum keys. Also consider that such a transition may also involve a new hash function, which is a breaking change to the Merkle proofs, so generalized indices do not have to be stable across that transition.\n \n ## Backwards Compatibility\n "
+    },
+    {
+      "sha": "148db0a7caa981448e1cc7b0cbbded60fa8ea92a",
+      "date": "2025-10-02T02:26:15Z",
+      "message": "Update EIP-7688: Refer to correct EIP for 6110 refs",
+      "author": "etan-status",
+      "prNumber": null,
+      "patch": "@@ -152,7 +152,7 @@ With `ProgressiveContainer`, stable Merkleization requires these rules to become\n \n #### `BeaconState`\n \n-- The `eth1_data`, `eth1_data_votes`, `eth1_deposit_index` and `deposit_requests_start_index` fields could be dropped as they are no longer needed post Fulu.\n+- The `eth1_data`, `eth1_data_votes`, `eth1_deposit_index` and `deposit_requests_start_index` fields could be dropped as they are no longer needed after the [EIP-6110](./eip-6110.md#eth1data-poll-deprecation) transition period finishes.\n - `historical_summaries` could be redefined to use `ProgressiveList` and also integrate the historical `historical_roots` data by merging in full `HistoricalSummary` data from an archive (`historical_root` is frozen since Capella), simplifying access to historical block and state roots.\n \n #### `Attestation`"
+    },
+    {
+      "sha": "f84409415728844ea0057f559cb03b11dc196132",
+      "date": "2025-10-01T23:02:39Z",
+      "message": "Update EIP-7688: Add security considerations and add blob lists",
+      "author": "etan-status",
+      "prNumber": null,
+      "patch": "@@ -76,9 +76,10 @@ The following types SHALL be converted to `ProgressiveContainer`:\n - [`ExecutionRequests`](https://github.com/ethereum/consensus-specs/blob/b5c3b619887c7850a8c1d3540b471092be73ad84/specs/electra/beacon-chain.md#executionrequests)\n   - The `deposits`, `withdrawals` and `consolidation` fields are redefined to use `ProgressiveList`\n - [`BeaconBlockBody`](https://github.com/ethereum/consensus-specs/blob/b5c3b619887c7850a8c1d3540b471092be73ad84/specs/electra/beacon-chain.md#beaconblockbody)\n-  - The `proposer_slashings`, `attester_slashings`, `attestations`, `deposits`, `voluntary_exits`, `bls_to_execution_changes` and `blob_kzg_commitments` fields are redefined to use `ProgressiveList`\n+  - The `proposer_slashings`, `attester_slashings`, `attestations`, `deposits`, `voluntary_exits` and `bls_to_execution_changes` fields are redefined to use `ProgressiveList`\n - [`BeaconState`](https://github.com/ethereum/consensus-specs/blob/b5c3b619887c7850a8c1d3540b471092be73ad84/specs/electra/beacon-chain.md#beaconstate)\n   - The `validators`, `balances`, `previous_epoch_participation`, `current_epoch_participation`, `inactivity_scores`, `pending_deposits`, `pending_partial_withdrawals` and `pending_consolidations` fields are redefined to use `ProgressiveList`\n+- The `blob_kzg_commitments`, `kzg_proofs` and `column` fields are redefined to use `ProgressiveList`\n \n ### Immutable types\n \n@@ -195,7 +196,11 @@ Existing Merkle proof verifiers need to be updated to support the new Merkle tre\n \n ## Security Considerations\n \n-None\n+Before this EIP, all `List` types had a fixed upper bound, enabling implementations to reject messages exceeding that size early. With `ProgressiveList`, that is no longer possible, as there is no more maximum message size. Instead, the length checks have to be implemented as part of P2P gossip validation, and as part of the state transition logic. However, many of the limits are not practically reachable (e.g., the gas limit is reached before the maximum payload size). Further note that SSZ is simple enough that clever implementations could still enforce those length checks on the serialized data, before fully decoding it.\n+\n+All data inbound via libp2p is decrypted, then uncompressed with Snappy, then hashed with `MESSAGE_DOMAIN_VALID_SNAPPY` / `MESSAGE_DOMAIN_INVALID_SNAPPY` prefix depending on whether the decompression worked to compute the libp2p message ID, while honoring a global `MAX_PAYLOAD_SIZE` message size limit. This has to be done even if the underlying SSZ data ends up being invalid.\n+\n+As SSZ does not use variable-length encoding, it does not have uncontrolled blowup (no 1 byte becomes 100 MB). Therefore, attempting to decode a `MAX_PAYLOAD_SIZE` message before checking dynamic `List` limits does not decrease security. Any intentional DoS attacks can already target a heavier portion of the processing pipeline (e.g., by sending invalid BLS signatures, or by sending invalid Snappy data that still needs to be hashed to compute the message ID). Therefore, the EIP does not notably impact security.\n \n ## Copyright\n "
+    },
+    {
+      "sha": "360ef59657a062a8f09b42a61b753506c4f49634",
+      "date": "2025-09-26T09:21:06Z",
+      "message": "Update EIP-7688: Add notes for ExecutionPayload and ExecutionRequests",
+      "author": "etan-status",
+      "prNumber": null
+    },
+    {
+      "sha": "d0de8bd93595b247e6841e3161cbc2918403c2e1",
+      "date": "2025-09-19T09:14:43Z",
+      "message": "Update EIP-7688: Add IndexedAttestation as cleanup opportunity",
+      "author": "etan-status",
+      "prNumber": null,
+      "patch": "@@ -158,6 +158,19 @@ With `ProgressiveContainer`, stable Merkleization requires these rules to become\n \n - The `committee_bits` is defined as a `Bitvector`, but the top bits are forced to 0 based on `get_committee_count_per_slot(state, data.target.epoch)`. It could be re-defined as a `ProgressiveBitlist`.\n \n+#### `IndexedAttestation`\n+\n+The `attesting_indices` are limited to [`MAX_VALIDATORS_PER_COMMITTEE * MAX_COMMITTEES_PER_SLOT`](https://github.com/ethereum/consensus-specs/blob/b5c3b619887c7850a8c1d3540b471092be73ad84/specs/electra/beacon-chain.md#indexedattestation), which is insufficient when the `IndexedAttestation` is formed from [`SingleAttestation`](https://github.com/ethereum/consensus-specs/blob/b5c3b619887c7850a8c1d3540b471092be73ad84/specs/electra/beacon-chain.md#singleattestation) traffic. `SingleAttestation` allows validators that are not assigned to a slot to produce signatures that are not aggregatable into an `Attestation` (as such validators are not assigned), but that are still slashable.\n+\n+Further, [`MAX_ATTESTER_SLASHINGS_ELECTRA`](https://github.com/ethereum/consensus-specs/blob/b5c3b619887c7850a8c1d3540b471092be73ad84/specs/electra/beacon-chain.md#max-operations-per-block) at 1 limits inclusion delay of slashings in non-finality scenarios with a lot of forks where slashings happen across multiple different `AttestationData` values.\n+\n+Limits could be rethought to be based on actual resource usage, e.g., by limiting:\n+\n+- The total number of `attesting_indices` across all `AttesterSlashing` (shared total)\n+- The total number of signature checks across all `AttesterSlashing`, `ProposerSlashing`, `VoluntaryExit`, and `SignedBLSToExecutionChange` messages\n+\n+Limiting totals rather than individual resource limits would allow extra attester slashings to be included at the cost of potentially delaying inclusion of a couple altruistic messages (if there even are any `VoluntaryExit` / `SignedBLSToExecutionChange` messages at that time), thus increasing security and block packing efficiency.\n+\n #### `BeaconBlockHeader`\n \n Updating the `BeaconBlockHeader` to `ProgressiveContainer` is tricky as is breaks `hash_tree_root(latest_block_header)` in the `BeaconState`. One option could be to store `latest_block_header_root` separately, possibly also incorporating the block proposer signature into the hash to avoid proposer signature checks while backfilling historical blocks."
+    },
+    {
+      "sha": "94af9bb708ca55b89ad97b1eabdccb28f568c6c7",
+      "date": "2025-09-17T13:53:22Z",
+      "message": "Update EIP-7688: Move committee_bits to cleanup opportunities",
+      "author": "etan-status",
+      "prNumber": null,
+      "patch": "@@ -68,7 +68,6 @@ The following types SHALL be converted to `ProgressiveContainer`:\n \n - [`Attestation`](https://github.com/ethereum/consensus-specs/blob/b5c3b619887c7850a8c1d3540b471092be73ad84/specs/electra/beacon-chain.md#attestation)\n   - The `aggregation_bits` field is redefined to use `ProgressiveBitlist`\n-  - The `committee_bits` field is redefined to use `ProgressiveBitlist`\n - [`IndexedAttestation`](https://github.com/ethereum/consensus-specs/blob/b5c3b619887c7850a8c1d3540b471092be73ad84/specs/electra/beacon-chain.md#indexedattestation)\n   - The `attesting_indices` field is redefined to use `ProgressiveList`\n - [`ExecutionPayload`](https://github.com/ethereum/consensus-specs/blob/b5c3b619887c7850a8c1d3540b471092be73ad84/specs/deneb/beacon-chain.md#executionpayload)\n@@ -148,18 +147,22 @@ Furthermore, new fields have to be appended at the end of `ProgressiveContainer`\n \n With `ProgressiveContainer`, stable Merkleization requires these rules to become strict.\n \n-### Cleanup opportunity\n+### Cleanup opportunities\n \n-Several fields in the `BeaconState` are no longer relevant in current specification versions.\n+#### `BeaconState`\n \n - The `eth1_data`, `eth1_data_votes`, `eth1_deposit_index` and `deposit_requests_start_index` fields could be dropped as they are no longer needed post Fulu.\n - `historical_summaries` could be redefined to use `ProgressiveList` and also integrate the historical `historical_roots` data by merging in full `HistoricalSummary` data from an archive (`historical_root` is frozen since Capella), simplifying access to historical block and state roots.\n \n-### `BeaconBlockHeader`?\n+#### `Attestation`\n+\n+- The `committee_bits` is defined as a `Bitvector`, but the top bits are forced to 0 based on `get_committee_count_per_slot(state, data.target.epoch)`. It could be re-defined as a `ProgressiveBitlist`.\n+\n+#### `BeaconBlockHeader`\n \n Updating the `BeaconBlockHeader` to `ProgressiveContainer` is tricky as is breaks `hash_tree_root(latest_block_header)` in the `BeaconState`. One option could be to store `latest_block_header_root` separately, possibly also incorporating the block proposer signature into the hash to avoid proposer signature checks while backfilling historical blocks.\n \n-### `Validator`?\n+#### `Validator`\n \n Updating the `Validator` to `ProgressiveContainer` would add an extra hash for each validator; validators are mostly immutable so rarely need rehashing. Due to the large hash count, implementations may have to incrementally construct the new `Validator` entries ahead of the fork. It should be evaluated whether the hashing overhead is worth a clean transition to future fields, e.g., for holding postquantum keys.\n "
+    },
+    {
+      "sha": "89d746cc86b8b7332050331baf91777a2fee3031",
+      "date": "2025-09-16T12:53:36Z",
+      "message": "Update EIP-7688: Also make committee bits progressive",
+      "author": "etan-status",
+      "prNumber": null,
+      "patch": "@@ -68,6 +68,7 @@ The following types SHALL be converted to `ProgressiveContainer`:\n \n - [`Attestation`](https://github.com/ethereum/consensus-specs/blob/b5c3b619887c7850a8c1d3540b471092be73ad84/specs/electra/beacon-chain.md#attestation)\n   - The `aggregation_bits` field is redefined to use `ProgressiveBitlist`\n+  - The `committee_bits` field is redefined to use `ProgressiveBitlist`\n - [`IndexedAttestation`](https://github.com/ethereum/consensus-specs/blob/b5c3b619887c7850a8c1d3540b471092be73ad84/specs/electra/beacon-chain.md#indexedattestation)\n   - The `attesting_indices` field is redefined to use `ProgressiveList`\n - [`ExecutionPayload`](https://github.com/ethereum/consensus-specs/blob/b5c3b619887c7850a8c1d3540b471092be73ad84/specs/deneb/beacon-chain.md#executionpayload)"
+    },
+    {
+      "sha": "de33cd5e3599cb09f8c8b8fcb08d80f48257cf28",
+      "date": "2025-08-04T13:38:45Z",
+      "message": "Update EIP-6404: Use correct Python syntax for active_fields",
+      "author": "etan-status",
+      "prNumber": null,
+      "patch": "@@ -29,7 +29,7 @@ The key words \"MUST\", \"MUST NOT\", \"REQUIRED\", \"SHALL\", \"SHALL NOT\", \"SHOULD\", \"S\n \n ### `Container` conversion\n \n-`Container` types that are expected to evolve over forks SHALL be redefined as `ProgressiveContainer[active_fields=[1] * len(type.fields())]`.\n+`Container` types that are expected to evolve over forks SHALL be redefined as `ProgressiveContainer(active_fields=[1] * len(type.fields()))`.\n \n For example, given a type in the old fork:\n \n@@ -42,7 +42,7 @@ class Foo(Container):\n This type can be converted to support stable Merkleization in the new fork:\n \n ```python\n-class Foo(ProgressiveContainer[active_fields=[1, 1]]):\n+class Foo(ProgressiveContainer(active_fields=[1, 1])):\n     a: uint8\n     b: uint16\n ```"
+    },
+    {
+      "sha": "20674997972fceccb613a08720c5a42448d56464",
+      "date": "2025-07-01T10:14:32Z",
+      "message": "Update EIP-7688: Adopt `ProgressiveContainer` / `ProgressiveList`",
+      "author": "etan-status",
+      "prNumber": null
+    },
+    {
+      "sha": "565882cf0997844708d47752eae563f2db7f0744",
+      "date": "2025-04-15T03:32:04Z",
+      "message": "Update EIP-7495: Move to Draft",
+      "author": "etan-status",
+      "prNumber": null,
+      "patch": "@@ -4,7 +4,7 @@ title: Forward compatible consensus data structures\n description: Transition consensus SSZ data structures to StableContainer\n author: Etan Kissling (@etan-status), Cayman (@wemeetagain)\n discussions-to: https://ethereum-magicians.org/t/eip-7688-forward-compatible-consensus-data-structures/19673\n-status: Review\n+status: Draft\n type: Standards Track\n category: Core\n created: 2024-04-15"
+    },
+    {
+      "sha": "167b4b57da0d050127cb93acf5858e8d3b028cc3",
+      "date": "2025-02-10T16:05:08Z",
+      "message": "Update EIP-6404: Bump links to tagged beta spec version",
+      "author": "etan-status",
+      "prNumber": null
+    },
+    {
+      "sha": "2ccac851e7c0389e393f761a5c34d9c8af15e8ff",
+      "date": "2024-10-11T11:05:15Z",
+      "message": "Update EIP-7495: Rename `PendingBalanceDeposit` > `PendingDeposit`",
+      "author": "etan-status",
+      "prNumber": null
+    },
+    {
+      "sha": "815286789ae0f715eda3df83d12c0f8141dba023",
+      "date": "2024-09-23T14:03:07Z",
+      "message": "Update EIP-7688: Adjustments for `v1.5.0-alpha.6` specs",
+      "author": "etan-status",
+      "prNumber": null,
+      "patch": "@@ -97,6 +97,7 @@ These types are used as part of the `StableContainer` definitions, and, as they\n | `MAX_ATTESTATION_FIELDS` | `uint64(2**3)` (= 8) | Maximum number of fields to which `StableAttestation` can ever grow in the future |\n | `MAX_INDEXED_ATTESTATION_FIELDS` | `uint64(2**3)` (= 8) | Maximum number of fields to which `StableIndexedAttestation` can ever grow in the future |\n | `MAX_EXECUTION_PAYLOAD_FIELDS` | `uint64(2**6)` (= 64) | Maximum number of fields to which `StableExecutionPayload` can ever grow in the future |\n+| `MAX_EXECUTION_REQUESTS_FIELDS` | `uint64(2**4)` (= 16) | Maximum number of fields to which `StableExecutionRequests` can ever grow in the future |\n | `MAX_BEACON_BLOCK_BODY_FIELDS` | `uint64(2**6)` (= 64) | Maximum number of fields to which `StableBeaconBlockBody` can ever grow in the future |\n | `MAX_BEACON_STATE_FIELDS` | `uint64(2**7)` (= 128) | Maximum number of fields to which `StableBeaconState` can ever grow in the future |\n \n@@ -143,11 +144,6 @@ class StableExecutionPayload(StableContainer[MAX_EXECUTION_PAYLOAD_FIELDS]):\n     withdrawals: Optional[List[Withdrawal, MAX_WITHDRAWALS_PER_PAYLOAD]]  # [New in Capella]\n     blob_gas_used: Optional[uint64]  # [New in Deneb:EIP4844]\n     excess_blob_gas: Optional[uint64]  # [New in Deneb:EIP4844]\n-    deposit_requests: Optional[List[DepositRequest, MAX_DEPOSIT_REQUESTS_PER_PAYLOAD]]  # [New in Electra:EIP6110]\n-    # [New in Electra:EIP7002:EIP7251]\n-    withdrawal_requests: Optional[List[WithdrawalRequest, MAX_WITHDRAWAL_REQUESTS_PER_PAYLOAD]]\n-    # [New in Electra:EIP7251]\n-    consolidation_requests: Optional[List[ConsolidationRequest, MAX_CONSOLIDATION_REQUESTS_PER_PAYLOAD]]\n \n class StableExecutionPayloadHeader(StableContainer[MAX_EXECUTION_PAYLOAD_FIELDS]):\n     parent_hash: Optional[Hash32]\n@@ -167,9 +163,11 @@ class StableExecutionPayloadHeader(StableContainer[MAX_EXECUTION_PAYLOAD_FIELDS]\n     withdrawals_root: Optional[Root]  # [New in Capella]\n     blob_gas_used: Optional[uint64]  # [New in Deneb:EIP4844]\n     excess_blob_gas: Optional[uint64]  # [New in Deneb:EIP4844]\n-    deposit_requests_root: Optional[Root]  # [New in Electra:EIP6110]\n-    withdrawal_requests_root: Optional[Root]  # [New in Electra:EIP7002:EIP7251]\n-    consolidation_requests_root: Optional[Root]  # [New in Electra:EIP7251]\n+\n+class StableExecutionRequests(StableContainer[MAX_EXECUTION_REQUESTS_FIELDS]):\n+    deposits: Optional[List[DepositRequest, MAX_DEPOSIT_REQUESTS_PER_PAYLOAD]]  # [New in Electra:EIP6110]\n+    withdrawals: Optional[List[WithdrawalRequest, MAX_WITHDRAWAL_REQUESTS_PER_PAYLOAD]]  # [New in Electra:EIP7002:EIP7251]\n+    consolidations: Optional[List[ConsolidationRequest, MAX_CONSOLIDATION_REQUESTS_PER_PAYLOAD]]  # [New in Electra:EIP7251]\n \n class StableBeaconBlockBody(StableContainer[MAX_BEACON_BLOCK_BODY_FIELDS]):\n     randao_reveal: Optional[BLSSignature]\n@@ -184,6 +182,7 @@ class StableBeaconBlockBody(StableContainer[MAX_BEACON_BLOCK_BODY_FIELDS]):\n     execution_payload: Optional[StableExecutionPayload]  # [New in Bellatrix]\n     bls_to_execution_changes: Optional[List[SignedBLSToExecutionChange, MAX_BLS_TO_EXECUTION_CHANGES]]  # [New in Capella]\n     blob_kzg_commitments: Optional[List[KZGCommitment, MAX_BLOB_COMMITMENTS_PER_BLOCK]]  # [New in Deneb:EIP4844]\n+    execution_requests: Optional[StableExecutionRequests]  # [New in Electra]\n \n class StableBeaconState(StableContainer[MAX_BEACON_STATE_FIELDS]):\n     # Versioning\n@@ -256,6 +255,9 @@ class ExecutionPayload(Profile[StableExecutionPayload]):\n class ExecutionPayloadHeader(Profile[StableExecutionPayloadHeader]):\n     ...\n \n+class ExecutionRequests(Profile[StableExecutionRequests]):\n+    ...\n+\n class BeaconBlockBody(Profile[StableBeaconBlockBody]):\n     ...\n "
+    },
+    {
+      "sha": "a73b0c4fd7a7253090555a43fe22f0ea6c5d44a3",
+      "date": "2024-07-09T14:16:09Z",
+      "message": "Update EIP-7688: Move to Review",
+      "author": "etan-status",
+      "prNumber": null,
+      "patch": "@@ -4,7 +4,7 @@ title: Forward compatible consensus data structures\n description: Transition consensus SSZ data structures to StableContainer\n author: Etan Kissling (@etan-status), Cayman (@wemeetagain)\n discussions-to: https://ethereum-magicians.org/t/eip-7688-forward-compatible-consensus-data-structures/19673\n-status: Draft\n+status: Review\n type: Standards Track\n category: Core\n created: 2024-04-15"
+    },
+    {
+      "sha": "8d74fc3a6b52b0c199423c683db370e24b77a12a",
+      "date": "2024-06-26T09:47:24Z",
+      "message": "Update EIP-7688: Bump for consensus-specs `v1.5.0-alpha.3`",
+      "author": "etan-status",
+      "prNumber": null
+    },
+    {
+      "sha": "df0d2d029b66ae6829e0ea7d1cbeae1b1da8674f",
+      "date": "2024-05-30T18:03:35Z",
+      "message": "Update EIP-7688: Document types considered immutable",
+      "author": "etan-status",
+      "prNumber": null
+    },
+    {
+      "sha": "e95cfaaab79c5e68ecc32e90024ba20ac55cb8c6",
+      "date": "2024-05-16T14:06:20Z",
+      "message": "Update EIP-7688: Adopt `Profile`, and match EIP-7549 `Atetstation` order",
+      "author": "etan-status",
+      "prNumber": null
+    },
+    {
+      "sha": "8fda943c25dfecb670dcc68c2fc666462c11ebd1",
+      "date": "2024-05-14T06:24:37Z",
+      "message": "Update EIP-7688: Include EIP-7549 attestation data structure changes",
+      "author": "etan-status",
+      "prNumber": null
+    },
+    {
+      "sha": "a639237e18b24102f30df80f3bc9ce089a4c6c65",
+      "date": "2024-05-05T19:38:57Z",
+      "message": "Add EIP: Forward compatible consensus data structures",
+      "author": "etan-status",
+      "prNumber": null
+    }
+  ]
+}

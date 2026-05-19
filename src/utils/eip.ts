@@ -164,6 +164,24 @@ export const isUnselectedHeadlinerCandidate = (eip: EIP, forkName?: string): boo
   return wasHeadlinerCandidate(eip, forkName) && !isHeadliner(eip, forkName);
 };
 
+export const getEipIdFromHash = (hash: string): number | null => {
+  const match = /^#eip-(\d+)$/.exec(hash);
+  if (!match) return null;
+
+  const eipId = Number(match[1]);
+  return Number.isSafeInteger(eipId) ? eipId : null;
+};
+
+export interface UpgradeAnchorExpansionState {
+  declined: boolean;
+  headlinerProposals: boolean;
+}
+
+export const getUpgradeAnchorExpansionState = (eip: EIP, forkName?: string): UpgradeAnchorExpansionState => ({
+  declined: getInclusionStage(eip, forkName) === 'Declined for Inclusion',
+  headlinerProposals: isUnselectedHeadlinerCandidate(eip, forkName),
+});
+
 /**
  * Sort comparator for ordering by layer (EL first, then CL)
  */

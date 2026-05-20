@@ -1,0 +1,547 @@
+{
+  "eipId": 7928,
+  "commits": [
+    {
+      "sha": "22b2e961fbb28cd0976271b3afb1b7895a025542",
+      "date": "2026-05-14T07:40:36Z",
+      "message": "Update EIP-7928: Fix contract creation wording",
+      "author": "nerolation",
+      "prNumber": null,
+      "patch": "@@ -99,7 +99,7 @@ It **MUST** include:\n     - Targets of `BALANCE`, `EXTCODESIZE`, `EXTCODECOPY`, `EXTCODEHASH` opcodes\n     - Targets of `CALL`, `CALLCODE`, `DELEGATECALL`, `STATICCALL` (even if they revert; see [Gas Validation Before State Access](#gas-validation-before-state-access) for inclusion conditions)\n     - Target addresses of `CREATE`/`CREATE2` if the target account is accessed\n-    - Deployed contract addresses from calls with initcode to empty addresses (e.g., calling `0x0` with initcode)\n+    - Deployed contract addresses from creation transactions, i.e. transactions with an empty `to` field, which are always included since the deployment address is unconditionally accessed during transaction setup\n     - Transaction sender and recipient addresses (even for zero-value transfers)\n     - Beneficiary addresses for `SELFDESTRUCT`\n     - System contract addresses accessed during pre/post-execution; the system caller address, `SYSTEM_ADDRESS` (`0xfffffffffffffffffffffffffffffffffffffffe`), MUST NOT be included unless it experiences state access itself"
+    },
+    {
+      "sha": "645099785a50a0c9eb568496fffc2a8978b3e9f4",
+      "date": "2026-04-20T23:50:20Z",
+      "message": "Update EIP-7928: Change block access list index to uint32",
+      "author": "nerolation",
+      "prNumber": null,
+      "patch": "@@ -51,7 +51,7 @@ Address = bytes20  # 20-byte Ethereum address\n StorageKey = uint256  # Storage slot key\n StorageValue = uint256  # Storage value\n Bytecode = bytes  # Variable-length contract bytecode\n-BlockAccessIndex = uint64  # Block access index (0 for pre-execution, 1..n for transactions, n+1 for post-execution)\n+BlockAccessIndex = uint32  # Block access index (0 for pre-execution, 1..n for transactions, n+1 for post-execution)\n Balance = uint256  # Post-transaction balance in wei\n Nonce = uint64  # Account nonce\n "
+    },
+    {
+      "sha": "5ba661a10afbfd4b2f66ee9cd7480678b435e9e3",
+      "date": "2026-04-19T05:11:12Z",
+      "message": "Update EIP-7928: Change uint16 block access index to uint64 and clarify CL-side",
+      "author": "nerolation",
+      "prNumber": null,
+      "patch": "@@ -51,7 +51,7 @@ Address = bytes20  # 20-byte Ethereum address\n StorageKey = uint256  # Storage slot key\n StorageValue = uint256  # Storage value\n Bytecode = bytes  # Variable-length contract bytecode\n-BlockAccessIndex = uint16  # Block access index (0 for pre-execution, 1..n for transactions, n+1 for post-execution)\n+BlockAccessIndex = uint64  # Block access index (0 for pre-execution, 1..n for transactions, n+1 for post-execution)\n Balance = uint256  # Post-transaction balance in wei\n Nonce = uint64  # Account nonce\n \n@@ -299,7 +299,7 @@ When processing a block:\n 3. The EL executes the block and generates the actual BAL\n 4. If the generated BAL doesn't match the provided BAL, the block is invalid (the hash in the header would be wrong)\n \n-The execution layer provides the RLP-encoded `blockAccessList` to the consensus layer via the Engine API. The consensus layer then computes the SSZ `hash_tree_root` for storage in the `ExecutionPayload`.\n+The execution layer provides the RLP-encoded `blockAccessList` to the consensus layer via the Engine API. The consensus layer stores it as a field in the SSZ `ExecutionPayload` container. For long-term storage, the full `blockAccessList` bytes MAY be pruned and replaced by the field's SSZ `hash_tree_root`, preserving the Merkle commitment within the `ExecutionPayload` tree.\n \n **Retrieval methods** for historical BALs:\n "
+    },
+    {
+      "sha": "af481a64b9bf555699ac5e3030c1b3921dfc383f",
+      "date": "2026-03-19T14:05:05Z",
+      "message": "Update EIP-7928: Fix contradicting claim about fee recipient",
+      "author": "nerolation",
+      "prNumber": null,
+      "patch": "@@ -101,7 +101,6 @@ It **MUST** include:\n     - Target addresses of `CREATE`/`CREATE2` if the target account is accessed\n     - Deployed contract addresses from calls with initcode to empty addresses (e.g., calling `0x0` with initcode)\n     - Transaction sender and recipient addresses (even for zero-value transfers)\n-    - COINBASE address if the block contains transactions or withdrawals to the COINBASE address\n     - Beneficiary addresses for `SELFDESTRUCT`\n     - System contract addresses accessed during pre/post-execution; the system caller address, `SYSTEM_ADDRESS` (`0xfffffffffffffffffffffffffffffffffffffffe`), MUST NOT be included unless it experiences state access itself\n     - Withdrawal recipient addresses, regardless of whether the withdrawal amount is non-zero\n@@ -236,7 +235,7 @@ The following special cases require addresses to be included with empty changes\n - Zero-value transfer recipients\n - Calling a same-transaction SELFDESTRUCT on an address that had a zero pre-transaction balance\n \n-Zero-value block reward recipients **MUST NOT** trigger a balance change in the block access list and **MUST NOT** cause the recipient address to be included as a read (e.g. without changes). Zero-value block reward recipients **MUST** only be included with a balance change in blocks where the reward is greater than zero.\n+A zero-value block reward **MUST NOT** trigger a balance change in the block access list and **MUST NOT**, by itself, cause the recipient address to be included. The recipient **MUST** still be included if it is accessed for other reasons (e.g., transaction fee accounting).\n \n #### Code\n \n@@ -253,7 +252,7 @@ Record **post‑transaction nonces** for:\n \n ### Edge Cases (Normative)\n \n-- **COINBASE / Fee Recipient:** The COINBASE address **MUST** be included if it experiences any state change. It **MUST NOT** be included for blocks with no transactions, provided there are no other state changes (e.g., from [EIP-4895](./eip-4895.md) withdrawals). If the COINBASE reward is zero, the COINBASE address **MUST** be included as a *read*.\n+- **COINBASE / Fee Recipient:** The COINBASE address follows the same inclusion rules as any other account. It is included when accessed (e.g., during transaction fee accounting) and excluded when not accessed (e.g., empty blocks with no relevant withdrawals).\n - **Precompiled contracts:** Precompiles **MUST** be included when accessed. If a precompile receives value, it is recorded with a balance change. Otherwise, it is included with empty change lists.\n - **SENDALL:** For positive-value selfdestructs, the sender and beneficiary are recorded with a balance change.\n - **SELFDESTRUCT (in-transaction):** Accounts destroyed within a transaction **MUST** be included in `AccountChanges` without nonce or code changes. However, if the account had a positive balance pre-transaction, the balance change to zero **MUST** be recorded. Storage keys within the self-destructed contracts that were modified or read **MUST** be included as a `storage_reads` entry. "
+    },
+    {
+      "sha": "00c6dbd1c7f24a3c474bf28a04efb667ac97c62d",
+      "date": "2026-03-16T21:02:46Z",
+      "message": "Update EIP-7928: Add Felipe, Rahul and Stefan as co-authors",
+      "author": "nerolation",
+      "prNumber": null,
+      "patch": "@@ -2,7 +2,7 @@\n eip: 7928\n title: Block-Level Access Lists\n description: Enforced block access lists with state locations and post-transaction state diffs\n-author: Toni Wahrstätter (@nerolation), Dankrad Feist (@dankrad), Francesco D`Amato (@fradamt), Jochem Brouwer (@jochem-brouwer), Ignacio Hagopian (@jsign)\n+author: Toni Wahrstätter (@nerolation), Dankrad Feist (@dankrad), Francesco D`Amato (@fradamt), Jochem Brouwer (@jochem-brouwer), Ignacio Hagopian (@jsign), Felipe Selmo (@fselmo), Rahul (@raxhvl), Stefan (@qu0b)\n discussions-to: https://ethereum-magicians.org/t/eip-7928-block-level-access-lists/23337\n status: Draft\n type: Standards Track"
+    },
+    {
+      "sha": "72e88aaa72ea79bf36ab8bc415e7af3624700ad0",
+      "date": "2026-02-20T18:49:06Z",
+      "message": "Update EIP-7928: clarify stf without BAL",
+      "author": "nerolation",
+      "prNumber": null,
+      "patch": "@@ -313,7 +313,9 @@ The EL MUST retain BALs for at least the duration of the weak subjectivity perio\n \n ### State Transition Function\n \n-The state transition function must validate that the provided BAL matches the actual state accesses:\n+The state transition function must validate that the provided BAL matches the actual state accesses.\n+\n+**Implementation Note:** The BAL itself does not need to enter the state transition function. Implementations MAY validate by generating a virtual BAL during execution, hashing it, and comparing against the `block_access_list_hash` in the header. This is the approach used in the execution-specs reference implementation.\n \n ```python \n def validate_block(execution_payload, block_header):"
+    },
+    {
+      "sha": "5d60ba8680ce18aed488cfd655e6f3b597a5218b",
+      "date": "2026-02-20T08:27:05Z",
+      "message": "Update EIP-7928: clarify BAL items must be unique",
+      "author": "nerolation",
+      "prNumber": null,
+      "patch": "@@ -173,7 +173,7 @@ Note: Delegated accounts cannot be empty, so `GAS_NEW_ACCOUNT` never applies whe\n \n `SSTORE` performs an implicit read of the current storage value for gas calculation. The `GAS_CALL_STIPEND` check prevents this state access when operating within the call stipend. If `SSTORE` fails this check, the storage slot MUST NOT appear in `storage_reads` or `storage_changes`.\n \n-### Ordering and Determinism\n+### Ordering, Uniqueness and Determinism\n \n The following ordering rules **MUST** apply:\n \n@@ -182,6 +182,14 @@ The following ordering rules **MUST** apply:\n - **storage_reads**: Lexicographic by storage key\n - **balance_changes, nonce_changes, code_changes**: By block access index (ascending)\n \n+The following uniqueness constraints **MUST** hold:\n+\n+- Each address **MUST** appear exactly once in `BlockAccessList`.\n+- Each storage key **MUST** appear at most once in `storage_changes` per account.\n+- Each storage key **MUST** appear at most once in `storage_reads` per account.\n+- A storage key **MUST NOT** appear in both `storage_changes` and `storage_reads` for the same account.\n+- Each `block_access_index` **MUST** appear at most once per change list (`balance_changes`, `nonce_changes`, `code_changes`, and per-slot `StorageChange` list).\n+\n ### BlockAccessIndex Assignment\n \n `BlockAccessIndex` values **MUST** be assigned as follows:"
+    },
+    {
+      "sha": "d9face84afd64a1fba0fd672de83d1398c8fe1c4",
+      "date": "2026-02-19T09:02:13Z",
+      "message": "Update EIP-7928: simplify capping of block-level access list",
+      "author": "nerolation",
+      "prNumber": null,
+      "patch": "@@ -113,20 +113,18 @@ Entries from an [EIP-2930](./eip-2930.md) access list **MUST NOT** be included a\n \n ### Block Access List Size Constraint\n \n-The block access list is constrained by available gas rather than a fixed maximum number of items. The constraint is defined as:\n+The block access list is constrained by the block gas limit rather than a fixed maximum number of items. The constraint is defined as:\n \n ```\n-bal_items * ITEM_COST <= available_gas + system_allowance\n+bal_items <= block_gas_limit // ITEM_COST\n ```\n \n Where:\n \n-- `bal_items = storage_reads + addresses`\n-- `ITEM_COST = GAS_WARM_ACCESS + TX_ACCESS_LIST_STORAGE_KEY_COST`\n-- `available_gas = block_gas_limit - tx_count * TX_BASE_COST`\n-- `system_allowance = (15 + 3 * (MAX_WITHDRAWAL_REQUESTS_PER_BLOCK + MAX_CONSOLIDATION_REQUESTS_PER_BLOCK)) * ITEM_COST`\n+- `bal_items = storage_keys + addresses`\n+- `ITEM_COST = 2000`\n \n-The `storage_reads` is the total number of storage accesses across all accounts, and `addresses` is the total number of unique addresses accessed in the block. The `system_allowance` term accounts for system contract accesses that occur outside of user transactions. `MAX_WITHDRAWAL_REQUESTS_PER_BLOCK` is defined in [EIP-7002](./eip-7002.md) and `MAX_CONSOLIDATION_REQUESTS_PER_BLOCK` is defined in [EIP-7251](./eip-7251.md).\n+The `storage_keys` is the total number of storage keys across all accounts, and `addresses` is the total number of unique addresses accessed in the block. With [EIP-7981](./eip-7981.md), the cheapest way to add an item to the BAL is a cold `SLOAD` at `COLD_SLOAD_COST` (2100, as defined in [EIP-2929](./eip-2929.md)). `ITEM_COST` is set deliberately below this minimum to create a buffer of approximately `block_gas_limit / 42000` extra items, which absorbs BAL entries from system contract execution (e.g., [EIP-2935](./eip-2935.md), [EIP-4788](./eip-4788.md), [EIP-7002](./eip-7002.md), [EIP-7251](./eip-7251.md)) and withdrawal recipients ([EIP-4895](./eip-4895.md)) that do not consume block gas.\n \n ### Gas Validation Before State Access\n \n@@ -262,8 +260,8 @@ Record **post‑transaction nonces** for:\n - **EIP‑4895 (Consensus layer withdrawals):** Recipients are recorded with their final balance after the withdrawal.\n - **EIP‑2935 (block hash):** Record system contract storage diffs of the **single** updated storage slot in the ring buffer.\n - **EIP‑4788 (beacon root):** Record system contract storage diffs of the **two** updated storage slots in the ring buffer.\n-- **EIP‑7002 (withdrawals):** Record system contract storage diffs of storage slots **0–3** (4 slots) after the dequeuing call.\n-- **EIP‑7251 (consolidations):** Record system contract storage diffs of storage slots **0–3** (4 slots) after the dequeuing call.\n+- **EIP‑7002 (withdrawals):** Record system contract storage diffs of storage slots **0–3** (4 slots) after the dequeuing call. The dequeue also reads up to 3 × `MAX_WITHDRAWAL_REQUESTS_PER_BLOCK` queue data slots (from slot 4 onward), which appear as storage_reads.\n+- **EIP‑7251 (consolidations):** Record system contract storage diffs of storage slots **0–3** (4 slots) after the dequeuing call. The dequeue also reads up to 4 × `MAX_CONSOLIDATION_REQUESTS_PER_BLOCK` queue data slots (from slot 4 onward), which appear as storage_reads.\n \n ### Engine API\n "
+    },
+    {
+      "sha": "b7aedd8a1545ffb0d0ed088fbfbb0fc5419e0ed4",
+      "date": "2026-02-17T16:21:12Z",
+      "message": "Update EIP-7928: Clarify anti-dos measure for invalid, bloated BALs",
+      "author": "nerolation",
+      "prNumber": null,
+      "patch": "@@ -561,6 +561,23 @@ Validating access lists and balance diffs adds validation overhead but is essent\n \n Increased block size impacts propagation but overhead (~70 KiB average) is reasonable for performance gains.\n \n+### Early Rejection of Malicious BALs\n+\n+Since `storage_reads` entries are not mapped to specific transaction indices, their validity can only be confirmed after executing all transactions. A malicious proposer could exploit this by declaring phantom storage reads that are never accessed, forcing clients into unnecessary I/O prefetching and significant data download while the block remains unrejectable until completion.\n+\n+To mitigate this, clients SHOULD enforce a gas-budget feasibility check at transaction boundaries. Let:\n+\n+- `R_remaining` = number of declared storage reads not yet accessed\n+- `G_remaining` = remaining block gas\n+\n+The following invariant must hold:\n+\n+```\n+G_remaining >= R_remaining * 2000\n+```\n+\n+Where 2000 is the minimum gas cost for a storage read (via [EIP-2930](./eip-2930.md) access lists: 1900 upfront + 100 warm read). If this check fails, the block can be rejected immediately as invalid, since insufficient gas remains to access the declared reads. This check SHOULD be performed periodically (e.g., every 8 transactions) to enable early rejection without impacting parallel execution.\n+\n ## Copyright\n \n Copyright and related rights waived via [CC0](../LICENSE.md)."
+    },
+    {
+      "sha": "f1b1370a4100b90e797be361a9387fc099715fff",
+      "date": "2026-02-16T13:52:15Z",
+      "message": "Update EIP-7928: cap max items in BAL",
+      "author": "nerolation",
+      "prNumber": null,
+      "patch": "@@ -111,6 +111,23 @@ Addresses with no state changes **MUST** still be present with empty change list\n \n Entries from an [EIP-2930](./eip-2930.md) access list **MUST NOT** be included automatically. Only addresses and storage slots that are actually touched or changed during execution are recorded.\n \n+### Block Access List Size Constraint\n+\n+The block access list is constrained by available gas rather than a fixed maximum number of items. The constraint is defined as:\n+\n+```\n+bal_items * ITEM_COST <= available_gas + system_allowance\n+```\n+\n+Where:\n+\n+- `bal_items = storage_reads + addresses`\n+- `ITEM_COST = GAS_WARM_ACCESS + TX_ACCESS_LIST_STORAGE_KEY_COST`\n+- `available_gas = block_gas_limit - tx_count * TX_BASE_COST`\n+- `system_allowance = (15 + 3 * (MAX_WITHDRAWAL_REQUESTS_PER_BLOCK + MAX_CONSOLIDATION_REQUESTS_PER_BLOCK)) * ITEM_COST`\n+\n+The `storage_reads` is the total number of storage accesses across all accounts, and `addresses` is the total number of unique addresses accessed in the block. The `system_allowance` term accounts for system contract accesses that occur outside of user transactions. `MAX_WITHDRAWAL_REQUESTS_PER_BLOCK` is defined in [EIP-7002](./eip-7002.md) and `MAX_CONSOLIDATION_REQUESTS_PER_BLOCK` is defined in [EIP-7251](./eip-7251.md).\n+\n ### Gas Validation Before State Access\n \n State-accessing opcodes perform gas validation in two phases:"
+    },
+    {
+      "sha": "fad1a1acab0a433970e47e0b73a4f8a28c220675",
+      "date": "2026-02-03T08:48:16Z",
+      "message": "Update EIP-7928: clarify access",
+      "author": "nerolation",
+      "prNumber": null,
+      "patch": "@@ -29,7 +29,7 @@ This proposal enforces access lists at the block level, enabling:\n \n ### Block Structure Modification\n \n-We introduce a new field to the block header, `block_access_list_hash`, which contains the Keccak-256 hash of the RLP-encoded block access list. When no state changes are present, this field is the hash of an empty rlp list `0x1dcc4de8dec75d7aab85b567b6ccd41ad312451b948a7413f0a142fd40d49347`, i.e. `keccak256(rlp.encode([]))`.\n+We introduce a new field to the block header, `block_access_list_hash`, which contains the Keccak-256 hash of the RLP-encoded block access list. When no state changes are present, this field is the hash of an empty RLP list `0x1dcc4de8dec75d7aab85b567b6ccd41ad312451b948a7413f0a142fd40d49347`, i.e. `keccak256(rlp.encode([]))`.\n \n ```python\n class Header:\n@@ -98,10 +98,10 @@ It **MUST** include:\n   \n     - Targets of `BALANCE`, `EXTCODESIZE`, `EXTCODECOPY`, `EXTCODEHASH` opcodes\n     - Targets of `CALL`, `CALLCODE`, `DELEGATECALL`, `STATICCALL` (even if they revert; see [Gas Validation Before State Access](#gas-validation-before-state-access) for inclusion conditions)\n-    - Target addresses of `CREATE`/`CREATE2` (even when creation fails)\n+    - Target addresses of `CREATE`/`CREATE2` if the target account is accessed\n     - Deployed contract addresses from calls with initcode to empty addresses (e.g., calling `0x0` with initcode)\n     - Transaction sender and recipient addresses (even for zero-value transfers)\n-    - COINBASE address if the block contains transactions or withdrawals\n+    - COINBASE address if the block contains transactions or withdrawals to the COINBASE address\n     - Beneficiary addresses for `SELFDESTRUCT`\n     - System contract addresses accessed during pre/post-execution; the system caller address, `SYSTEM_ADDRESS` (`0xfffffffffffffffffffffffffffffffffffffffe`), MUST NOT be included unless it experiences state access itself\n     - Withdrawal recipient addresses, regardless of whether the withdrawal amount is non-zero\n@@ -208,7 +208,7 @@ For unaltered account balances:\n \n If an account’s balance changes during a transaction, but its post-transaction balance is equal to its pre-transaction balance, then the change **MUST NOT** be recorded in `balance_changes`. The sender and recipient address **MUST** be included in `AccountChanges`.\n \n-This includes the following special cases where addresses **MUST** be included with empty changes if no other state changes occur. This includes:\n+The following special cases require addresses to be included with empty changes if no other state changes occur:\n \n - Zero-value transfer recipients\n - Calling a same-transaction SELFDESTRUCT on an address that had a zero pre-transaction balance\n@@ -233,7 +233,7 @@ Record **post‑transaction nonces** for:\n - **COINBASE / Fee Recipient:** The COINBASE address **MUST** be included if it experiences any state change. It **MUST NOT** be included for blocks with no transactions, provided there are no other state changes (e.g., from [EIP-4895](./eip-4895.md) withdrawals). If the COINBASE reward is zero, the COINBASE address **MUST** be included as a *read*.\n - **Precompiled contracts:** Precompiles **MUST** be included when accessed. If a precompile receives value, it is recorded with a balance change. Otherwise, it is included with empty change lists.\n - **SENDALL:** For positive-value selfdestructs, the sender and beneficiary are recorded with a balance change.\n-- **SELFDESTRUCT (in-transaction):** Accounts destroyed within a transaction **MUST** be included in `AccountChanges` without nonce or code changes. However, if the account had a positive balance pre-transaction, the balance change to zero **MUST** be recorded. Storage keys within the self-destructed contracts that were modified or read **MUST** be included as a `storage_read`. \n+- **SELFDESTRUCT (in-transaction):** Accounts destroyed within a transaction **MUST** be included in `AccountChanges` without nonce or code changes. However, if the account had a positive balance pre-transaction, the balance change to zero **MUST** be recorded. Storage keys within the self-destructed contracts that were modified or read **MUST** be included as a `storage_reads` entry. \n - **Accessed but unchanged:** Include the address with empty changes (e.g., targets of `EXTCODEHASH`, `EXTCODESIZE`, `BALANCE`, `STATICCALL`, etc.).\n - **Zero‑value transfers / Unchanged balance in transaction:** Include the address; omit from `balance_changes`.\n - **Gas refunds:** Record the **final** balance of the sender after each transaction.\n@@ -511,7 +511,7 @@ This design variant was chosen for several key reasons:\n \n ### BAL Size Considerations (60m block gas limit)\n \n-**Average  BAL size**: ~72.4 KiB (compressed)\n+**Average BAL size**: ~72.4 KiB (compressed)\n \n - Storage writes: ~29.2 KiB (40.3%)\n - Storage reads: ~18.7 KiB (25.8%)"
+    },
+    {
+      "sha": "78143cb526938f7ce9176afe7b0be8af4a3c7ef8",
+      "date": "2026-01-27T08:22:22Z",
+      "message": "Update EIP-7928: Further clarify access",
+      "author": "nerolation",
+      "prNumber": null,
+      "patch": "@@ -97,8 +97,7 @@ It **MUST** include:\n   - Addresses accessed without state changes, including:\n   \n     - Targets of `BALANCE`, `EXTCODESIZE`, `EXTCODECOPY`, `EXTCODEHASH` opcodes\n-    - Targets of `CALL`, `CALLCODE`, `DELEGATECALL`, `STATICCALL` (even if they revert)\n-    - Note: For call operations (`CALL`, `CALLCODE`, `DELEGATECALL`, `STATICCALL`), the target address is only included in the BAL if gas checks (memory expansion, access cost, transfer cost) pass; if gas shortage causes the operation to fail before state access, the target address MUST NOT be included.\n+    - Targets of `CALL`, `CALLCODE`, `DELEGATECALL`, `STATICCALL` (even if they revert; see [Gas Validation Before State Access](#gas-validation-before-state-access) for inclusion conditions)\n     - Target addresses of `CREATE`/`CREATE2` (even when creation fails)\n     - Deployed contract addresses from calls with initcode to empty addresses (e.g., calling `0x0` with initcode)\n     - Transaction sender and recipient addresses (even for zero-value transfers)\n@@ -112,6 +111,53 @@ Addresses with no state changes **MUST** still be present with empty change list\n \n Entries from an [EIP-2930](./eip-2930.md) access list **MUST NOT** be included automatically. Only addresses and storage slots that are actually touched or changed during execution are recorded.\n \n+### Gas Validation Before State Access\n+\n+State-accessing opcodes perform gas validation in two phases:\n+\n+- **Pre-state validation**: Gas costs determinable without state access (memory expansion, base opcode cost, warm/cold access cost)\n+- **Post-state validation**: Gas costs requiring state access (account existence, [EIP-7702](./eip-7702.md) delegation resolution)\n+\n+Pre-state validation MUST pass before any state access occurs. If pre-state validation fails, the target resource (address or storage slot) is never accessed and MUST NOT be included in the BAL.\n+\n+Once pre-state validation passes, the target is accessed and included in the BAL. Post-state costs are then calculated; their order is implementation-defined since the target has already been accessed.\n+\n+The following table specifies pre-state validation costs in addition to the base opcode cost (gas constants as defined in [EIP-2929](./eip-2929.md)):\n+\n+| Instruction | Pre-state Validation |\n+|-------------|----------------------|\n+| `BALANCE` | `access_cost` |\n+| `SELFBALANCE` | None (accesses current contract, always warm) |\n+| `EXTCODESIZE` | `access_cost` |\n+| `EXTCODEHASH` | `access_cost` |\n+| `EXTCODECOPY` | `access_cost` + `memory_expansion` |\n+| `CALL` | `access_cost` + `memory_expansion` + `GAS_CALL_VALUE` (if value > 0) |\n+| `CALLCODE` | `access_cost` + `memory_expansion` + `GAS_CALL_VALUE` (if value > 0) |\n+| `DELEGATECALL` | `access_cost` + `memory_expansion` |\n+| `STATICCALL` | `access_cost` + `memory_expansion` |\n+| `CREATE` | `memory_expansion` + `INITCODE_WORD_COST` + `GAS_CREATE` |\n+| `CREATE2` | `memory_expansion` + `INITCODE_WORD_COST` + `GAS_KECCAK256_WORD` + `GAS_CREATE` |\n+| `SLOAD` | `access_cost` |\n+| `SSTORE` | More than `GAS_CALL_STIPEND` available |\n+| `SELFDESTRUCT` | `GAS_SELF_DESTRUCT` + `access_cost` |\n+\n+Where:\n+\n+- `access_cost`: For account-accessing opcodes: `COLD_ACCOUNT_ACCESS_COST` if cold, `WARM_STORAGE_READ_COST` if warm. For storage-accessing opcodes (`SLOAD`): `COLD_SLOAD_COST` if cold, `WARM_STORAGE_READ_COST` if warm.\n+- `memory_expansion`: Gas cost to expand memory for input/output regions\n+\n+Post-state costs (e.g., `GAS_NEW_ACCOUNT` for calls to empty accounts, `GAS_SELF_DESTRUCT_NEW_ACCOUNT` if beneficiary does not exist) do not affect BAL inclusion since the target has already been accessed.\n+\n+#### EIP-7702 Delegation\n+\n+When a call target has an [EIP-7702](./eip-7702.md) delegation, the target is accessed to resolve the delegation. If a delegation exists, the delegated address requires its own `access_cost` check before being accessed. If this check fails, the delegated address MUST NOT appear in the BAL, though the original call target is included (having been accessed to resolve the delegation).\n+\n+Note: Delegated accounts cannot be empty, so `GAS_NEW_ACCOUNT` never applies when resolving delegations.\n+\n+#### SSTORE\n+\n+`SSTORE` performs an implicit read of the current storage value for gas calculation. The `GAS_CALL_STIPEND` check prevents this state access when operating within the call stipend. If `SSTORE` fails this check, the storage slot MUST NOT appear in `storage_reads` or `storage_changes`.\n+\n ### Ordering and Determinism\n \n The following ordering rules **MUST** apply:"
+    },
+    {
+      "sha": "ac65351d4b681a288a400326183066fbcb6eb3dd",
+      "date": "2026-01-22T12:38:27Z",
+      "message": "Update EIP-7928: move BAL into response engine_getPayloadBodiesV2",
+      "author": "nerolation",
+      "prNumber": null,
+      "patch": "@@ -233,10 +233,12 @@ When processing a block:\n \n The execution layer provides the RLP-encoded `blockAccessList` to the consensus layer via the Engine API. The consensus layer then computes the SSZ `hash_tree_root` for storage in the `ExecutionPayload`.\n \n-**Retrieval methods** for historical BALs (similar to `engine_getPayloadBodiesByHashV1`):\n+**Retrieval methods** for historical BALs:\n \n-- `engine_getBALsByHashV1`: Array of block hashes → Array of RLP-encoded BALs\n-- `engine_getBALsByRangeV1`: Start block number, count → Array of RLP-encoded BALs\n+- `engine_getPayloadBodiesByHashV2`: Returns `ExecutionPayloadBodyV2` objects containing transactions, withdrawals, and `blockAccessList`\n+- `engine_getPayloadBodiesByRangeV2`: Returns `ExecutionPayloadBodyV2` objects containing transactions, withdrawals, and `blockAccessList`\n+\n+The `blockAccessList` field contains the RLP-encoded BAL or `null` for pre-Amsterdam blocks or when data has been pruned.\n \n The EL MUST retain BALs for at least the duration of the weak subjectivity period (`=3533 epochs`) to support synchronization with re-execution after being offline for less than the WSP.\n "
+    },
+    {
+      "sha": "fb92e842cfb4463d151877028e4837f9c177184d",
+      "date": "2026-01-21T05:59:04Z",
+      "message": "Update EIP-7928: clarify account touching for coinbase and withdrawal targets",
+      "author": "jwasinger",
+      "prNumber": null,
+      "patch": "@@ -102,10 +102,10 @@ It **MUST** include:\n     - Target addresses of `CREATE`/`CREATE2` (even when creation fails)\n     - Deployed contract addresses from calls with initcode to empty addresses (e.g., calling `0x0` with initcode)\n     - Transaction sender and recipient addresses (even for zero-value transfers)\n-    - COINBASE address when receiving transaction fees\n+    - COINBASE address if the block contains transactions or withdrawals\n     - Beneficiary addresses for `SELFDESTRUCT`\n     - System contract addresses accessed during pre/post-execution; the system caller address, `SYSTEM_ADDRESS` (`0xfffffffffffffffffffffffffffffffffffffffe`), MUST NOT be included unless it experiences state access itself\n-    - Withdrawal recipient addresses\n+    - Withdrawal recipient addresses, regardless of whether the withdrawal amount is non-zero\n     - Precompiled contracts when called or accessed\n \n Addresses with no state changes **MUST** still be present with empty change lists."
+    },
+    {
+      "sha": "f397e6ce2dfd15b6ea26e00fdaa228920fa13e5e",
+      "date": "2025-12-29T14:20:03Z",
+      "message": "Update EIP-7928: clarify spurious entry detection and fix typos",
+      "author": "nerolation",
+      "prNumber": null,
+      "patch": "@@ -117,7 +117,7 @@ Entries from an [EIP-2930](./eip-2930.md) access list **MUST NOT** be included a\n The following ordering rules **MUST** apply:\n \n - **Accounts**: Lexicographic by address\n-- **storage_changes**: Slots lexicographic by storage key; within each slot, changes by block access index index (ascending)\n+- **storage_changes**: Slots lexicographic by storage key; within each slot, changes by block access index (ascending)\n - **storage_reads**: Lexicographic by storage key\n - **balance_changes, nonce_changes, code_changes**: By block access index (ascending)\n \n@@ -238,7 +238,7 @@ The execution layer provides the RLP-encoded `blockAccessList` to the consensus\n - `engine_getBALsByHashV1`: Array of block hashes → Array of RLP-encoded BALs\n - `engine_getBALsByRangeV1`: Start block number, count → Array of RLP-encoded BALs\n \n-The EL MUST retain BALs for at least the duration the weak subjectivity period (`=3533 epochs`) to support synchronization with re-execution after being offline for less than the WSP.\n+The EL MUST retain BALs for at least the duration of the weak subjectivity period (`=3533 epochs`) to support synchronization with re-execution after being offline for less than the WSP.\n \n ### State Transition Function\n \n@@ -332,7 +332,7 @@ def build_bal(accesses):\n     return bal\n ```\n \n-The BAL MUST be complete and accurate. Missing or spurious entries invalidate the block.\n+The BAL MUST be complete and accurate. Missing or spurious entries invalidate the block. Spurious entries MAY be detected by validating BAL indices, which MUST never be higher than `len(transactions) + 1`.\n \n Clients MAY invalidate immediately if any transaction exceeds declared state.\n "
+    },
+    {
+      "sha": "ed02a9464d989a00a9bd22347568e3207b5438af",
+      "date": "2025-12-25T10:03:18Z",
+      "message": "Update EIP-7928: Clarify wording around 7702",
+      "author": "nerolation",
+      "prNumber": null,
+      "patch": "@@ -195,7 +195,7 @@ Record **post‑transaction nonces** for:\n - **Exceptional halts:** Record the **final** nonce and balance of the sender, and the **final** balance of the fee recipient after each transaction. State changes from the reverted call are discarded, but all accessed addresses **MUST** be included. If no changes remain, addresses are included with empty lists; if storage was read, the corresponding keys **MUST** appear in `storage_reads`.\n - **Pre‑execution system contract calls:** All state changes **MUST** use `block_access_index = 0`.\n - **Post‑execution system contract calls:** All state changes **MUST** use `block_access_index = len(transactions) + 1`.\n-- **EIP-7702 Delegations:** The authority address **MUST** be included with the nonce and code changes after any successful delegation set, reset, or update. Additionally it **MUST** be included with an empty change set if authorization fails, but the authority address has already been added to `accessed_addresses` (as defined in [EIP-2929](./eip-2929.md)). The delegation target **MUST NOT** be included during delegation creation and **MUST** be included when loaded as a call target under authority execution.\n+- **EIP-7702 Delegations:** The authority address **MUST** be included with nonce and code changes after any successful delegation set, update, or clear. If authorization fails after the authority address has been loaded and added to `accessed_addresses` (per [EIP-2929](./eip-2929.md)), it **MUST** still be included with an empty change set; if authorization fails before the authority is loaded, it **MUST NOT** be included. The delegation target **MUST NOT** be included during delegation creation or modification and MUST only be included once it is actually loaded as an execution target (e.g., via `CALL`/`CALLCODE`/`DELEGATECALL`/`STATICCALL` under authority execution).\n - **EIP‑4895 (Consensus layer withdrawals):** Recipients are recorded with their final balance after the withdrawal.\n - **EIP‑2935 (block hash):** Record system contract storage diffs of the **single** updated storage slot in the ring buffer.\n - **EIP‑4788 (beacon root):** Record system contract storage diffs of the **two** updated storage slots in the ring buffer."
+    },
+    {
+      "sha": "f7efd2acb666456d5e9237e02a8de5f54547e0ee",
+      "date": "2025-12-16T23:37:29Z",
+      "message": "Update EIP-7928: fix linter issues",
+      "author": "nerolation",
+      "prNumber": null,
+      "patch": "@@ -225,6 +225,7 @@ The Engine API is extended with new structures and methods to support block-leve\n **Block processing flow:**\n \n When processing a block:\n+\n 1. The EL receives the BAL in the ExecutionPayload\n 2. The EL computes `block_access_list_hash = keccak256(blockAccessList)` and includes it in the block header\n 3. The EL executes the block and generates the actual BAL\n@@ -233,10 +234,11 @@ When processing a block:\n The execution layer provides the RLP-encoded `blockAccessList` to the consensus layer via the Engine API. The consensus layer then computes the SSZ `hash_tree_root` for storage in the `ExecutionPayload`.\n \n **Retrieval methods** for historical BALs (similar to `engine_getPayloadBodiesByHashV1`):\n+\n - `engine_getBALsByHashV1`: Array of block hashes → Array of RLP-encoded BALs\n - `engine_getBALsByRangeV1`: Start block number, count → Array of RLP-encoded BALs\n \n-The EL MUST retain BALs for at least the duration until the last finalized checkpoint to support synchronization from the latest finalized checkpoint performing re-execution on the EL.\n+The EL MUST retain BALs for at least the duration the weak subjectivity period (`=3533 epochs`) to support synchronization with re-execution after being offline for less than the WSP.\n \n ### State Transition Function\n \n@@ -462,6 +464,7 @@ This design variant was chosen for several key reasons:\n ### BAL Size Considerations (60m block gas limit)\n \n **Average  BAL size**: ~72.4 KiB (compressed)\n+\n - Storage writes: ~29.2 KiB (40.3%)\n - Storage reads: ~18.7 KiB (25.8%)\n - Balance diffs: ~6.7 KiB (9.2%)"
+    },
+    {
+      "sha": "0d1e88bcf8de24a5f8a58dd52b237616a756babf",
+      "date": "2025-12-16T21:49:04Z",
+      "message": "Update EIP-7928: update missing components in size analysis and update sizes in eip with 60m block gas",
+      "author": "nerolation",
+      "prNumber": null,
+      "patch": "@@ -459,17 +459,17 @@ This design variant was chosen for several key reasons:\n \n 5. **RLP encoding**: Native Ethereum encoding format, maintains compatibility with existing infrastructure.\n \n-### Block Size Considerations\n-\n-Block size impact (historical analysis at 36 million block gas limit):\n-\n-- Average: ~40 KiB (compressed)\n-- Balance diffs: ~4.5 KiB (compressed)\n-- Storage diffs: ~33.88 KiB (compressed)\n-- Nonce diffs: ~0.02 KiB (compressed)\n-- Code diffs: ~0.6 KiB (compressed)\n-- Worst-case (36m gas): ~0.93 MiB\n-- Worst-case balance diffs: ~0.12 MiB\n+### BAL Size Considerations (60m block gas limit)\n+\n+**Average  BAL size**: ~72.4 KiB (compressed)\n+- Storage writes: ~29.2 KiB (40.3%)\n+- Storage reads: ~18.7 KiB (25.8%)\n+- Balance diffs: ~6.7 KiB (9.2%)\n+- Nonce diffs: ~1.1 KiB (1.5%)\n+- Code diffs: ~1.2 KiB (1.6%)\n+- Account addresses (with diffs): ~7.7 KiB (10.7%)\n+- Touched-only addresses: ~3.5 KiB (4.8%)\n+- RLP encoding overhead: ~4.4 KiB (6.1%)\n \n Smaller than current worst-case calldata blocks.\n "
+    },
+    {
+      "sha": "e0c70bd6a51e53525297601bf9d8244391d7e825",
+      "date": "2025-12-16T18:31:24Z",
+      "message": "Update EIP-7928: Remove BAL from EL block and further specify engine api interaction",
+      "author": "nerolation",
+      "prNumber": null
+    },
+    {
+      "sha": "08055c3a5b98b7665774ee866ca42de2f3fbf8e8",
+      "date": "2025-12-15T09:08:59Z",
+      "message": "Update EIP-7928: Update `CodeData` to use `Bytecode`",
+      "author": "jihoonsong",
+      "prNumber": null,
+      "patch": "@@ -65,7 +65,7 @@ BalanceChange = [BlockAccessIndex, Balance]\n NonceChange = [BlockAccessIndex, Nonce]\n \n # CodeChange: [block_access_index, new_code]\n-CodeChange = [BlockAccessIndex, CodeData]\n+CodeChange = [BlockAccessIndex, Bytecode]\n \n # SlotChanges: [slot, [changes]]\n # All changes to a single storage slot"
+    },
+    {
+      "sha": "c8f453f504f0c3c9ad44af08d01b58ae210502df",
+      "date": "2025-12-12T04:48:56Z",
+      "message": "Update EIP-7928: fix analysis, using more blocks",
+      "author": "nerolation",
+      "prNumber": null,
+      "patch": "@@ -460,7 +460,7 @@ Block size impact (historical analysis):\n \n Smaller than current worst-case calldata blocks.\n \n-An empirical analysis has been done [here](../assets/eip-7928/bal_size_analysis.md). An updated analysis for a 60 million block gas limit can be found [here](../assets/eip-7928/bal_size_analysis_60m.md)\n+An empirical analysis has been done [here](../assets/eip-7928/bal_size_analysis.md). An updated analysis for a 60 million block gas limit can be found [here](../assets/eip-7928/bal_size_analysis_60m.md).\n \n ### Asynchronous Validation\n "
+    },
+    {
+      "sha": "42a64362448487e1e671791448d7d1e728ef0c47",
+      "date": "2025-12-11T15:28:03Z",
+      "message": "Update EIP-7928: Clarify initcode call",
+      "author": "nerolation",
+      "prNumber": null,
+      "patch": "@@ -99,6 +99,7 @@ It **MUST** include:\n     - Targets of `CALL`, `CALLCODE`, `DELEGATECALL`, `STATICCALL` (even if they revert)\n     - Note: For call operations (`CALL`, `CALLCODE`, `DELEGATECALL`, `STATICCALL`), the target address is only included in the BAL if gas checks (memory expansion, access cost, transfer cost) pass; if gas shortage causes the operation to fail before state access, the target address MUST NOT be included.\n     - Target addresses of `CREATE`/`CREATE2` (even when creation fails)\n+    - Deployed contract addresses from calls with initcode to empty addresses (e.g., calling `0x0` with initcode)\n     - Transaction sender and recipient addresses (even for zero-value transfers)\n     - COINBASE address when receiving transaction fees\n     - Beneficiary addresses for `SELFDESTRUCT`"
+    },
+    {
+      "sha": "293d1a708b7e504b4823c04aab727bdd63ad2c2c",
+      "date": "2025-12-10T21:03:25Z",
+      "message": "Update EIP-7928: Clarify system contract caller",
+      "author": "nerolation",
+      "prNumber": null,
+      "patch": "@@ -102,7 +102,7 @@ It **MUST** include:\n     - Transaction sender and recipient addresses (even for zero-value transfers)\n     - COINBASE address when receiving transaction fees\n     - Beneficiary addresses for `SELFDESTRUCT`\n-    - System contract addresses accessed during pre/post-execution\n+    - System contract addresses accessed during pre/post-execution; the system caller address, `SYSTEM_ADDRESS` (`0xfffffffffffffffffffffffffffffffffffffffe`), MUST NOT be included unless it experiences state access itself\n     - Withdrawal recipient addresses\n     - Precompiled contracts when called or accessed\n "
+    },
+    {
+      "sha": "c6a485b4b797f452b5ff7ebbfd082a16ce5abaa7",
+      "date": "2025-12-09T19:25:29Z",
+      "message": "Update EIP-7928: Add updated BAL size analysis for 60M gas",
+      "author": "nerolation",
+      "prNumber": null,
+      "patch": "@@ -459,7 +459,7 @@ Block size impact (historical analysis):\n \n Smaller than current worst-case calldata blocks.\n \n-An empirical analysis has been done [here](../assets/eip-7928/bal_size_analysis.md).\n+An empirical analysis has been done [here](../assets/eip-7928/bal_size_analysis.md). An updated analysis for a 60 million block gas limit can be found [here](../assets/eip-7928/bal_size_analysis_60m.md)\n \n ### Asynchronous Validation\n "
+    },
+    {
+      "sha": "6f8ac7b8e8504d93b2f4b363944ad61f0234c99a",
+      "date": "2025-12-02T21:49:25Z",
+      "message": "Update EIP-7928: Clarify gas accounting sequence for BALs",
+      "author": "nerolation",
+      "prNumber": null,
+      "patch": "@@ -97,6 +97,7 @@ It **MUST** include:\n   \n     - Targets of `BALANCE`, `EXTCODESIZE`, `EXTCODECOPY`, `EXTCODEHASH` opcodes\n     - Targets of `CALL`, `CALLCODE`, `DELEGATECALL`, `STATICCALL` (even if they revert)\n+    - Note: For call operations (`CALL`, `CALLCODE`, `DELEGATECALL`, `STATICCALL`), the target address is only included in the BAL if gas checks (memory expansion, access cost, transfer cost) pass; if gas shortage causes the operation to fail before state access, the target address MUST NOT be included.\n     - Target addresses of `CREATE`/`CREATE2` (even when creation fails)\n     - Transaction sender and recipient addresses (even for zero-value transfers)\n     - COINBASE address when receiving transaction fees"
+    },
+    {
+      "sha": "6c6b1e72412460d9888e47f3549b2c926cf13b19",
+      "date": "2025-11-26T19:09:39Z",
+      "message": "Update EIP-7928: Update StorageKey and StorageValue type definitions",
+      "author": "bhartnett",
+      "prNumber": null,
+      "patch": "@@ -47,8 +47,8 @@ BALs use RLP encoding following the pattern: `address -> field -> block_access_i\n ```python\n # Type aliases for RLP encoding\n Address = bytes20  # 20-byte Ethereum address\n-StorageKey = bytes32  # 32-byte storage slot key\n-StorageValue = bytes32  # 32-byte storage value\n+StorageKey = uint256  # Storage slot key\n+StorageValue = uint256  # Storage value\n Bytecode = bytes  # Variable-length contract bytecode\n BlockAccessIndex = uint16  # Block access index (0 for pre-execution, 1..n for transactions, n+1 for post-execution)\n Balance = uint256  # Post-transaction balance in wei"
+    },
+    {
+      "sha": "7b818e59dccaad7aa1e464943191e4c762b1eda0",
+      "date": "2025-10-31T12:20:26Z",
+      "message": "Update EIP-7928: Update Address, StorageKey and StorageValue type definitions",
+      "author": "bhartnett",
+      "prNumber": null,
+      "patch": "@@ -46,10 +46,10 @@ BALs use RLP encoding following the pattern: `address -> field -> block_access_i\n \n ```python\n # Type aliases for RLP encoding\n-Address = bytes  # 20-byte Ethereum address\n-StorageKey = bytes  # 32-byte storage slot key\n-StorageValue = bytes  # 32-byte storage value\n-CodeData = bytes  # Variable-length contract bytecode\n+Address = bytes20  # 20-byte Ethereum address\n+StorageKey = bytes32  # 32-byte storage slot key\n+StorageValue = bytes32  # 32-byte storage value\n+Bytecode = bytes  # Variable-length contract bytecode\n BlockAccessIndex = uint16  # Block access index (0 for pre-execution, 1..n for transactions, n+1 for post-execution)\n Balance = uint256  # Post-transaction balance in wei\n Nonce = uint64  # Account nonce\n@@ -144,7 +144,7 @@ Note: Implementations MUST check the pre-transaction value to correctly distingu\n \n #### Balance (`balance_changes`)\n \n-Record **post‑transaction** balances (`uint128`) for:\n+Record **post‑transaction** balances (`uint256`) for:\n \n - Transaction **senders** (gas + value).\n - Transaction **recipients** (only if `value > 0`)."
+    },
+    {
+      "sha": "af4d0bbb478059e50943cb107c751904bff3be4d",
+      "date": "2025-10-23T14:36:30Z",
+      "message": "Update EIP-7928: Clarify COINBASE tracking in BAL",
+      "author": "nerolation",
+      "prNumber": null,
+      "patch": "@@ -99,7 +99,7 @@ It **MUST** include:\n     - Targets of `CALL`, `CALLCODE`, `DELEGATECALL`, `STATICCALL` (even if they revert)\n     - Target addresses of `CREATE`/`CREATE2` (even when creation fails)\n     - Transaction sender and recipient addresses (even for zero-value transfers)\n-    - Coinbase address when receiving transaction fees\n+    - COINBASE address when receiving transaction fees\n     - Beneficiary addresses for `SELFDESTRUCT`\n     - System contract addresses accessed during pre/post-execution\n     - Withdrawal recipient addresses\n@@ -151,13 +151,13 @@ Record **post‑transaction** balances (`uint128`) for:\n - CALL/CALLCODE **senders** (value).\n - CALL/CALLCODE **recipients** (only if `value > 0`).\n - CREATE/CREATE2 recipients (only if `value > 0`).\n-- **Coinbase** (rewards + fees).\n+- **COINBASE** (rewards + fees).\n - **SELFDESTRUCT/SENDALL** beneficiaries.\n - **Withdrawal recipients** (system withdrawals, [EIP-4895](./eip-4895.md)).\n \n For unaltered account balances:\n \n-If an account’s balance changes during a transaction, but its post-transaction balance is equal to its pre-transaction balance, then the change **MUST NOT** be recorded in `balance_changes`. The sender and recipient address (including the coinbase) **MUST** be included in `AccountChanges`.\n+If an account’s balance changes during a transaction, but its post-transaction balance is equal to its pre-transaction balance, then the change **MUST NOT** be recorded in `balance_changes`. The sender and recipient address **MUST** be included in `AccountChanges`.\n \n This includes the following special cases where addresses **MUST** be included with empty changes if no other state changes occur. This includes:\n \n@@ -181,6 +181,7 @@ Record **post‑transaction nonces** for:\n \n ### Edge Cases (Normative)\n \n+- **COINBASE / Fee Recipient:** The COINBASE address **MUST** be included if it experiences any state change. It **MUST NOT** be included for blocks with no transactions, provided there are no other state changes (e.g., from [EIP-4895](./eip-4895.md) withdrawals). If the COINBASE reward is zero, the COINBASE address **MUST** be included as a *read*.\n - **Precompiled contracts:** Precompiles **MUST** be included when accessed. If a precompile receives value, it is recorded with a balance change. Otherwise, it is included with empty change lists.\n - **SENDALL:** For positive-value selfdestructs, the sender and beneficiary are recorded with a balance change.\n - **SELFDESTRUCT (in-transaction):** Accounts destroyed within a transaction **MUST** be included in `AccountChanges` without nonce or code changes. However, if the account had a positive balance pre-transaction, the balance change to zero **MUST** be recorded. Storage keys within the self-destructed contracts that were modified or read **MUST** be included as a `storage_read`. \n@@ -404,7 +405,7 @@ Resulting BAL (RLP structure):\n         [[2, 1]],  # nonce_changes: new contract nonce\n         [[2, b'\\x60\\x80\\x60\\x40...']]  # code_changes: deployed bytecode\n     ],\n-    [ # AccountChanges for 0xeeee... (Coinbase)\n+    [ # AccountChanges for 0xeeee... (COINBASE)\n         0xeeee...,\n         [],  # storage_changes\n         [],  # storage_reads"
+    },
+    {
+      "sha": "68efdc9c86ea6465239e6fb469378cfbc05990b3",
+      "date": "2025-10-19T17:55:09Z",
+      "message": "Update EIP-7928: Clarify block reward wording again",
+      "author": "nerolation",
+      "prNumber": null,
+      "patch": "@@ -164,7 +164,7 @@ This includes the following special cases where addresses **MUST** be included w\n - Zero-value transfer recipients\n - Calling a same-transaction SELFDESTRUCT on an address that had a zero pre-transaction balance\n \n-Zero-value block reward recipients **MUST NOT** be included without changes. Zero-value block reward recipients **MUST** be included for blocks where rewards > 0. \n+Zero-value block reward recipients **MUST NOT** trigger a balance change in the block access list and **MUST NOT** cause the recipient address to be included as a read (e.g. without changes). Zero-value block reward recipients **MUST** only be included with a balance change in blocks where the reward is greater than zero.\n \n #### Code\n "
+    },
+    {
+      "sha": "775c98c4d8e4a62ac1f1619042125ff7b9a76795",
+      "date": "2025-10-16T14:36:11Z",
+      "message": "Update EIP-7928: clarify coinbase + upper limit constants",
+      "author": "nerolation",
+      "prNumber": null,
+      "patch": "@@ -54,13 +54,6 @@ BlockAccessIndex = uint16  # Block access index (0 for pre-execution, 1..n for t\n Balance = uint256  # Post-transaction balance in wei\n Nonce = uint64  # Account nonce\n \n-# Constants; chosen to support a 630m block gas limit\n-MAX_TXS = 30_000\n-MAX_SLOTS = 300_000\n-MAX_ACCOUNTS = 300_000\n-MAX_CODE_SIZE = 24_576  # Maximum contract bytecode size in bytes as defined in EIP-170\n-MAX_CODE_CHANGES = 1\n-\n # Core change structures (RLP encoded as lists)\n # StorageChange: [block_access_index, new_value]\n StorageChange = [BlockAccessIndex, StorageValue]\n@@ -170,7 +163,8 @@ This includes the following special cases where addresses **MUST** be included w\n \n - Zero-value transfer recipients\n - Calling a same-transaction SELFDESTRUCT on an address that had a zero pre-transaction balance\n-- Zero-value block reward recipients\n+\n+Zero-value block reward recipients **MUST NOT** be included without changes. Zero-value block reward recipients **MUST** be included for blocks where rewards > 0. \n \n #### Code\n "
+    },
+    {
+      "sha": "8d1fa390193ecbc21e1b5736a107aadc00342aaf",
+      "date": "2025-10-14T21:26:26Z",
+      "message": "Update EIP-7928: Clarify bal entry ordering",
+      "author": "nerolation",
+      "prNumber": null,
+      "patch": "@@ -120,9 +120,10 @@ Entries from an [EIP-2930](./eip-2930.md) access list **MUST NOT** be included a\n \n The following ordering rules **MUST** apply:\n \n-- **Addresses:** lexicographic (bytewise).\n-- **Storage keys:** lexicographic within each account.\n-- **Block access indices:** ascending within each change list.\n+- **Accounts**: Lexicographic by address\n+- **storage_changes**: Slots lexicographic by storage key; within each slot, changes by block access index index (ascending)\n+- **storage_reads**: Lexicographic by storage key\n+- **balance_changes, nonce_changes, code_changes**: By block access index (ascending)\n \n ### BlockAccessIndex Assignment\n "
+    },
+    {
+      "sha": "cb7d3ec59ab77aed4eed2a18a1c9d50b43f9c0dd",
+      "date": "2025-10-14T20:29:44Z",
+      "message": "Update EIP-7928: Cite eip 170",
+      "author": "nerolation",
+      "prNumber": null,
+      "patch": "@@ -58,7 +58,7 @@ Nonce = uint64  # Account nonce\n MAX_TXS = 30_000\n MAX_SLOTS = 300_000\n MAX_ACCOUNTS = 300_000\n-MAX_CODE_SIZE = 24_576  # Maximum contract bytecode size in bytes\n+MAX_CODE_SIZE = 24_576  # Maximum contract bytecode size in bytes as defined in EIP-170\n MAX_CODE_CHANGES = 1\n \n # Core change structures (RLP encoded as lists)"
+    },
+    {
+      "sha": "f6c05d8827f22d4cb50fffcf7bbd10d1b45e85e1",
+      "date": "2025-10-14T12:41:42Z",
+      "message": "Update EIP-7928: Engine api clarification",
+      "author": "nerolation",
+      "prNumber": null,
+      "patch": "@@ -47,7 +47,7 @@ BALs use RLP encoding following the pattern: `address -> field -> block_access_i\n ```python\n # Type aliases for RLP encoding\n Address = bytes  # 20-byte Ethereum address\n-StorageKey = bytes  # 32-byte storage slot key  \n+StorageKey = bytes  # 32-byte storage slot key\n StorageValue = bytes  # 32-byte storage value\n CodeData = bytes  # Variable-length contract bytecode\n BlockAccessIndex = uint16  # Block access index (0 for pre-execution, 1..n for transactions, n+1 for post-execution)\n@@ -205,13 +205,25 @@ Record **post‑transaction nonces** for:\n \n ### Engine API\n \n-The execution layer computes:\n+The Engine API is extended with new structures and methods to support block-level access lists:\n \n-```\n-block_access_list_hash = keccak256(rlp.encode(block_access_list))\n-```\n+**ExecutionPayloadV4** extends ExecutionPayloadV3 with:\n+\n+- `blockAccessList`: RLP-encoded block access list\n+\n+**engine_newPayloadV5** validates execution payloads:\n+\n+- Accepts ExecutionPayloadV4 structure\n+- Validates that computed access list matches provided `blockAccessList`\n+- Returns `INVALID` if access list is malformed or doesn't match\n+\n+**engine_getPayloadV6** builds execution payloads:\n+\n+- Returns ExecutionPayloadV4 structure\n+- Collects all account accesses and state changes during transaction execution\n+- Populates `blockAccessList` field with RLP-encoded access list\n \n-and provides **both** `block_access_list` and `block_access_list_hash` in the `ExecutionPayload` to the consensus layer, which stores them without modification.\n+The execution layer provides the RLP-encoded `blockAccessList` to the consensus layer via the Engine API. The consensus layer then computes the SSZ `hash_tree_root` for storage in the `ExecutionPayloadHeader`.\n \n ### State Transition Function\n "
+    },
+    {
+      "sha": "3a1baa18422f5bbbb1bc96af95b4b80375e8f2e8",
+      "date": "2025-10-13T11:46:27Z",
+      "message": "Update EIP-7928: Add further clarification for unaltered balances",
+      "author": "nerolation",
+      "prNumber": null,
+      "patch": "@@ -112,7 +112,6 @@ It **MUST** include:\n     - Withdrawal recipient addresses\n     - Precompiled contracts when called or accessed\n \n-\n Addresses with no state changes **MUST** still be present with empty change lists.\n \n Entries from an [EIP-2930](./eip-2930.md) access list **MUST NOT** be included automatically. Only addresses and storage slots that are actually touched or changed during execution are recorded.\n@@ -155,11 +154,22 @@ Record **post‑transaction** balances (`uint128`) for:\n \n - Transaction **senders** (gas + value).\n - Transaction **recipients** (only if `value > 0`).\n+- CALL/CALLCODE **senders** (value).\n+- CALL/CALLCODE **recipients** (only if `value > 0`).\n+- CREATE/CREATE2 recipients (only if `value > 0`).\n - **Coinbase** (rewards + fees).\n - **SELFDESTRUCT/SENDALL** beneficiaries.\n - **Withdrawal recipients** (system withdrawals, [EIP-4895](./eip-4895.md)).\n \n-**Zero‑value transfers:** **MUST NOT** be recorded in `balance_changes`, but the corresponding addresses **MUST** still be included with empty `AccountChanges`.\n+For unaltered account balances:\n+\n+If an account’s balance changes during a transaction, but its post-transaction balance is equal to its pre-transaction balance, then the change **MUST NOT** be recorded in `balance_changes`. The sender and recipient address (including the coinbase) **MUST** be included in `AccountChanges`.\n+\n+This includes the following special cases where addresses **MUST** be included with empty changes if no other state changes occur. This includes:\n+\n+- Zero-value transfer recipients\n+- Calling a same-transaction SELFDESTRUCT on an address that had a zero pre-transaction balance\n+- Zero-value block reward recipients\n \n #### Code\n \n@@ -180,13 +190,13 @@ Record **post‑transaction nonces** for:\n - **SENDALL:** For positive-value selfdestructs, the sender and beneficiary are recorded with a balance change.\n - **SELFDESTRUCT (in-transaction):** Accounts destroyed within a transaction **MUST** be included in `AccountChanges` without nonce or code changes. However, if the account had a positive balance pre-transaction, the balance change to zero **MUST** be recorded. Storage keys within the self-destructed contracts that were modified or read **MUST** be included as a `storage_read`. \n - **Accessed but unchanged:** Include the address with empty changes (e.g., targets of `EXTCODEHASH`, `EXTCODESIZE`, `BALANCE`, `STATICCALL`, etc.).\n-- **Zero‑value transfers:** Include the address; omit from `balance_changes`.\n+- **Zero‑value transfers / Unchanged balance in transaction:** Include the address; omit from `balance_changes`.\n - **Gas refunds:** Record the **final** balance of the sender after each transaction.\n - **Block rewards:** Record the **final** balance of the fee recipient after each transaction.\n - **Exceptional halts:** Record the **final** nonce and balance of the sender, and the **final** balance of the fee recipient after each transaction. State changes from the reverted call are discarded, but all accessed addresses **MUST** be included. If no changes remain, addresses are included with empty lists; if storage was read, the corresponding keys **MUST** appear in `storage_reads`.\n - **Pre‑execution system contract calls:** All state changes **MUST** use `block_access_index = 0`.\n - **Post‑execution system contract calls:** All state changes **MUST** use `block_access_index = len(transactions) + 1`.\n-- **EIP-7702 Delegations:** The authority address **MUST** be included with the nonce and code changes after any successful delegation set, reset, or update, and **MUST** also be included with an empty change set if authorization fails due to an invalid nonce. The delegation target **MUST NOT** be included during delegation creation and **MUST** be included when loaded as a call target under authority execution.\n+- **EIP-7702 Delegations:** The authority address **MUST** be included with the nonce and code changes after any successful delegation set, reset, or update. Additionally it **MUST** be included with an empty change set if authorization fails, but the authority address has already been added to `accessed_addresses` (as defined in [EIP-2929](./eip-2929.md)). The delegation target **MUST NOT** be included during delegation creation and **MUST** be included when loaded as a call target under authority execution.\n - **EIP‑4895 (Consensus layer withdrawals):** Recipients are recorded with their final balance after the withdrawal.\n - **EIP‑2935 (block hash):** Record system contract storage diffs of the **single** updated storage slot in the ring buffer.\n - **EIP‑4788 (beacon root):** Record system contract storage diffs of the **two** updated storage slots in the ring buffer."
+    },
+    {
+      "sha": "27d7c9e30f44fbedc2c675d65409a81316248729",
+      "date": "2025-10-04T09:17:18Z",
+      "message": "Update EIP-7928: Clarify EIP 7702",
+      "author": "nerolation",
+      "prNumber": null,
+      "patch": "@@ -163,7 +163,7 @@ Record **post‑transaction** balances (`uint128`) for:\n \n #### Code\n \n-Track **post‑transaction runtime bytecode** for deployed or modified contracts, and **delegation indicators** as defined in [EIP-7702](./eip-7702.md).\n+Track **post‑transaction runtime bytecode** for deployed or modified contracts, and **delegation indicators** for successful delegations as defined in [EIP-7702](./eip-7702.md).\n \n #### Nonce\n \n@@ -186,7 +186,7 @@ Record **post‑transaction nonces** for:\n - **Exceptional halts:** Record the **final** nonce and balance of the sender, and the **final** balance of the fee recipient after each transaction. State changes from the reverted call are discarded, but all accessed addresses **MUST** be included. If no changes remain, addresses are included with empty lists; if storage was read, the corresponding keys **MUST** appear in `storage_reads`.\n - **Pre‑execution system contract calls:** All state changes **MUST** use `block_access_index = 0`.\n - **Post‑execution system contract calls:** All state changes **MUST** use `block_access_index = len(transactions) + 1`.\n-- **EIP-7702 Delegations:** Authority addresses that set delegations **MUST** be included with their code changes. The delegated-to contract address **MUST** only be included when actually accessed (e.g., during CALL/DELEGATECALL execution), not when the delegation is initially set. For reset delegations, the authority's code change to empty is recorded.\n+- **EIP-7702 Delegations:** The authority address **MUST** be included with the nonce and code changes after any successful delegation set, reset, or update, and **MUST** also be included with an empty change set if authorization fails due to an invalid nonce. The delegation target **MUST NOT** be included during delegation creation and **MUST** be included when loaded as a call target under authority execution.\n - **EIP‑4895 (Consensus layer withdrawals):** Recipients are recorded with their final balance after the withdrawal.\n - **EIP‑2935 (block hash):** Record system contract storage diffs of the **single** updated storage slot in the ring buffer.\n - **EIP‑4788 (beacon root):** Record system contract storage diffs of the **two** updated storage slots in the ring buffer."
+    },
+    {
+      "sha": "35748d5bbda41b0de484c4cd8fa0fd0643fe1b33",
+      "date": "2025-09-29T11:11:38Z",
+      "message": "Update EIP-7928: Further clarify balance changes for in-transaction self-destruct",
+      "author": "nerolation",
+      "prNumber": null,
+      "patch": "@@ -178,7 +178,7 @@ Record **post‑transaction nonces** for:\n \n - **Precompiled contracts:** Precompiles **MUST** be included when accessed. If a precompile receives value, it is recorded with a balance change. Otherwise, it is included with empty change lists.\n - **SENDALL:** For positive-value selfdestructs, the sender and beneficiary are recorded with a balance change.\n-- **SELFDESTRUCT (in-transaction):** Accounts destroyed within a transaction **MUST** be included in `AccountChanges` without balance, nonce or code changes. Storage keys within the self-destructed contracts that were modified or read **MUST** be included as a `storage_read`.\n+- **SELFDESTRUCT (in-transaction):** Accounts destroyed within a transaction **MUST** be included in `AccountChanges` without nonce or code changes. However, if the account had a positive balance pre-transaction, the balance change to zero **MUST** be recorded. Storage keys within the self-destructed contracts that were modified or read **MUST** be included as a `storage_read`. \n - **Accessed but unchanged:** Include the address with empty changes (e.g., targets of `EXTCODEHASH`, `EXTCODESIZE`, `BALANCE`, `STATICCALL`, etc.).\n - **Zero‑value transfers:** Include the address; omit from `balance_changes`.\n - **Gas refunds:** Record the **final** balance of the sender after each transaction."
+    },
+    {
+      "sha": "613fcc426884471ddb91e263a2cf68da51da141f",
+      "date": "2025-09-26T09:46:49Z",
+      "message": "Update EIP-7928: further clarify state access tracking",
+      "author": "nerolation",
+      "prNumber": null,
+      "patch": "@@ -98,9 +98,20 @@ BlockAccessList = List[AccountChanges]\n **`BlockAccessList`** is the set of all addresses accessed during block execution. \n \n It **MUST** include:\n+ \n+  - Addresses with state changes (storage, balance, nonce, or code).\n+  - Addresses accessed without state changes, including:\n+  \n+    - Targets of `BALANCE`, `EXTCODESIZE`, `EXTCODECOPY`, `EXTCODEHASH` opcodes\n+    - Targets of `CALL`, `CALLCODE`, `DELEGATECALL`, `STATICCALL` (even if they revert)\n+    - Target addresses of `CREATE`/`CREATE2` (even when creation fails)\n+    - Transaction sender and recipient addresses (even for zero-value transfers)\n+    - Coinbase address when receiving transaction fees\n+    - Beneficiary addresses for `SELFDESTRUCT`\n+    - System contract addresses accessed during pre/post-execution\n+    - Withdrawal recipient addresses\n+    - Precompiled contracts when called or accessed\n \n-- Addresses with state changes (storage, balance, nonce, or code).\n-- Addresses accessed without state changes (e.g., `STATICCALL` targets, `BALANCE` opcode targets).\n \n Addresses with no state changes **MUST** still be present with empty change lists.\n \n@@ -134,7 +145,9 @@ The following ordering rules **MUST** apply:\n - **Reads include:**\n \n   - Slots accessed via `SLOAD` that are not written.\n-  - Slots written with unchanged values (i.e., `SSTORE` that re‑stores the same value).\n+  - Slots written with unchanged values (i.e., `SSTORE` where post-value equals pre-value, also known as \"no-op writes\").\n+\n+Note: Implementations MUST check the pre-transaction value to correctly distinguish between actual writes and no-op writes.\n \n #### Balance (`balance_changes`)\n \n@@ -173,6 +186,7 @@ Record **post‑transaction nonces** for:\n - **Exceptional halts:** Record the **final** nonce and balance of the sender, and the **final** balance of the fee recipient after each transaction. State changes from the reverted call are discarded, but all accessed addresses **MUST** be included. If no changes remain, addresses are included with empty lists; if storage was read, the corresponding keys **MUST** appear in `storage_reads`.\n - **Pre‑execution system contract calls:** All state changes **MUST** use `block_access_index = 0`.\n - **Post‑execution system contract calls:** All state changes **MUST** use `block_access_index = len(transactions) + 1`.\n+- **EIP-7702 Delegations:** Authority addresses that set delegations **MUST** be included with their code changes. The delegated-to contract address **MUST** only be included when actually accessed (e.g., during CALL/DELEGATECALL execution), not when the delegation is initially set. For reset delegations, the authority's code change to empty is recorded.\n - **EIP‑4895 (Consensus layer withdrawals):** Recipients are recorded with their final balance after the withdrawal.\n - **EIP‑2935 (block hash):** Record system contract storage diffs of the **single** updated storage slot in the ring buffer.\n - **EIP‑4788 (beacon root):** Record system contract storage diffs of the **two** updated storage slots in the ring buffer."
+    },
+    {
+      "sha": "ad2c1e15fd58522c4824a8217f0c52d1b81d21e4",
+      "date": "2025-09-25T09:30:00Z",
+      "message": "Update EIP-7928: Clarify BAL for precompiles",
+      "author": "nerolation",
+      "prNumber": null,
+      "patch": "@@ -163,6 +163,7 @@ Record **post‑transaction nonces** for:\n \n ### Edge Cases (Normative)\n \n+- **Precompiled contracts:** Precompiles **MUST** be included when accessed. If a precompile receives value, it is recorded with a balance change. Otherwise, it is included with empty change lists.\n - **SENDALL:** For positive-value selfdestructs, the sender and beneficiary are recorded with a balance change.\n - **SELFDESTRUCT (in-transaction):** Accounts destroyed within a transaction **MUST** be included in `AccountChanges` without balance, nonce or code changes. Storage keys within the self-destructed contracts that were modified or read **MUST** be included as a `storage_read`.\n - **Accessed but unchanged:** Include the address with empty changes (e.g., targets of `EXTCODEHASH`, `EXTCODESIZE`, `BALANCE`, `STATICCALL`, etc.)."
+    },
+    {
+      "sha": "115b460c3953133941348d208aa2beae5a663fd6",
+      "date": "2025-09-25T06:06:59Z",
+      "message": "Update EIP-7928: Clarify self destruct",
+      "author": "nerolation",
+      "prNumber": null,
+      "patch": "@@ -163,8 +163,8 @@ Record **post‑transaction nonces** for:\n \n ### Edge Cases (Normative)\n \n-- **SENDALL:** Beneficiary is recorded as a balance change.\n-- **SELFDESTRUCT (in-transaction):** Accounts destroyed within a transaction **MUST** include a `NonceChange` with `new_nonce = 0`, a `CodeChange` with `new_code = ''`, and a `BalanceChange` with `post_balance = 0` at that transaction’s `block_access_index`. This combination is the canonical signal of selfdestruct.\n+- **SENDALL:** For positive-value selfdestructs, the sender and beneficiary are recorded with a balance change.\n+- **SELFDESTRUCT (in-transaction):** Accounts destroyed within a transaction **MUST** be included in `AccountChanges` without balance, nonce or code changes. Storage keys within the self-destructed contracts that were modified or read **MUST** be included as a `storage_read`.\n - **Accessed but unchanged:** Include the address with empty changes (e.g., targets of `EXTCODEHASH`, `EXTCODESIZE`, `BALANCE`, `STATICCALL`, etc.).\n - **Zero‑value transfers:** Include the address; omit from `balance_changes`.\n - **Gas refunds:** Record the **final** balance of the sender after each transaction."
+    },
+    {
+      "sha": "057987423e93d49eeaa99e9d42a0cee8966d4c99",
+      "date": "2025-09-23T16:38:11Z",
+      "message": "Update EIP-7928: clarify selfdestruct in same transaction behavior",
+      "author": "nerolation",
+      "prNumber": null,
+      "patch": "@@ -163,7 +163,8 @@ Record **post‑transaction nonces** for:\n \n ### Edge Cases (Normative)\n \n-- **SELFDESTRUCT/SENDALL:** Beneficiary is recorded as a balance change.\n+- **SENDALL:** Beneficiary is recorded as a balance change.\n+- **SELFDESTRUCT (in-transaction):** Accounts destroyed within a transaction **MUST** include a `NonceChange` with `new_nonce = 0`, a `CodeChange` with `new_code = ''`, and a `BalanceChange` with `post_balance = 0` at that transaction’s `block_access_index`. This combination is the canonical signal of selfdestruct.\n - **Accessed but unchanged:** Include the address with empty changes (e.g., targets of `EXTCODEHASH`, `EXTCODESIZE`, `BALANCE`, `STATICCALL`, etc.).\n - **Zero‑value transfers:** Include the address; omit from `balance_changes`.\n - **Gas refunds:** Record the **final** balance of the sender after each transaction."
+    },
+    {
+      "sha": "7c028ae22339ca223a16acdc22f07718c5469910",
+      "date": "2025-09-22T11:53:11Z",
+      "message": "Update EIP-7928: Further clarify reverts",
+      "author": "nerolation",
+      "prNumber": null,
+      "patch": "@@ -168,7 +168,7 @@ Record **post‑transaction nonces** for:\n - **Zero‑value transfers:** Include the address; omit from `balance_changes`.\n - **Gas refunds:** Record the **final** balance of the sender after each transaction.\n - **Block rewards:** Record the **final** balance of the fee recipient after each transaction.\n-- **Exceptional halts:** Record the **final** nonce and balance of the sender, and the **final** balance of the fee recipient after each transaction.\n+- **Exceptional halts:** Record the **final** nonce and balance of the sender, and the **final** balance of the fee recipient after each transaction. State changes from the reverted call are discarded, but all accessed addresses **MUST** be included. If no changes remain, addresses are included with empty lists; if storage was read, the corresponding keys **MUST** appear in `storage_reads`.\n - **Pre‑execution system contract calls:** All state changes **MUST** use `block_access_index = 0`.\n - **Post‑execution system contract calls:** All state changes **MUST** use `block_access_index = len(transactions) + 1`.\n - **EIP‑4895 (Consensus layer withdrawals):** Recipients are recorded with their final balance after the withdrawal.\n@@ -283,7 +283,7 @@ def build_bal(accesses):\n \n The BAL MUST be complete and accurate. Missing or spurious entries invalidate the block.\n \n-Clients MUST validate by comparing execution-gathered accesses (per [EIP-2929](./eip-2929.md)) with the BAL.\n+Clients MAY validate by comparing execution-gathered accesses with the BAL.\n \n Clients MAY invalidate immediately if any transaction exceeds declared state.\n \n@@ -306,8 +306,7 @@ Example block:\n - Withdrawal of 100 ETH to Eve (0xabcd...)\n - EIP-7002 and EIP-7251 omitted for simplicity.\n \n-Note: Pre-execution system contract uses block_access_index = 0\n-      Post-execution withdrawal uses block_access_index = 3 (len(transactions) + 1)\n+Note: Pre-execution system contract uses block_access_index = 0. Post-execution withdrawal uses block_access_index = 3 (len(transactions) + 1)\n \n Resulting BAL (RLP structure):\n "
+    },
+    {
+      "sha": "923722a9ba1a5ed88479a02ebe16eac0447a2bba",
+      "date": "2025-09-19T14:20:18Z",
+      "message": "Update EIP-7928: Clarify expectations when no state changes are present",
+      "author": "fselmo",
+      "prNumber": null
+    },
+    {
+      "sha": "667c51fa84bd62c149894e135438884fa20f5619",
+      "date": "2025-08-22T08:14:11Z",
+      "message": "Update EIP-7928: Make specification section clearer with dedicated sections.",
+      "author": "nerolation",
+      "prNumber": null
+    },
+    {
+      "sha": "91529b376fc31ce154190e5e748b268365e3f26f",
+      "date": "2025-08-18T13:35:10Z",
+      "message": "Update EIP-7928: Fix sys contract address in example",
+      "author": "nerolation",
+      "prNumber": null,
+      "patch": "@@ -157,7 +157,7 @@ Example block:\n \n **Pre-execution:**\n \n-- EIP-2935: Store parent hash at block hash contract (0x0000...0001)\n+- EIP-2935: Store parent hash at block hash contract (0x0000F90827F1C53a10cb7A02335B175320002935)\n - EIP-7002: Omitted for simplicity.\n \n **Transactions:**\n@@ -178,8 +178,8 @@ Resulting BAL (RLP structure):\n ```python\n [\n     # Addresses are sorted lexicographically\n-    [ # AccountChanges for 0x0000000000000000000000000000000000000001 (Block hash contract)\n-        0x0000000000000000000000000000000000000001,\n+    [ # AccountChanges for 0x0000F90827F1C53a10cb7A02335B175320002935 (Block hash contract)\n+        0x0000F90827F1C53a10cb7A02335B175320002935,\n         [ # storage_changes\n             [b'\\x00...\\x0f\\xa0', [[0, b'...']]]  # slot, [[block_access_index, parent_hash]]\n         ],"
+    },
+    {
+      "sha": "1e2741c16890472e1d6d6f7b5f11c7c196609b99",
+      "date": "2025-08-16T07:38:45Z",
+      "message": "Update EIP-7928: Update system contract handling and move from ssz to rlp",
+      "author": "nerolation",
+      "prNumber": null
+    },
+    {
+      "sha": "346fbe44617dfeb83298c117cad7b6370a53abbf",
+      "date": "2025-08-14T11:36:59Z",
+      "message": "Update EIP-7928: Update System Contract Handling",
+      "author": "nerolation",
+      "prNumber": null
+    },
+    {
+      "sha": "293637c061f62268fb9c8bda42b110f2f5ce3b7b",
+      "date": "2025-08-11T11:55:51Z",
+      "message": "Update EIP-7928: Fix mistake in tx_index of system contracts",
+      "author": "nerolation",
+      "prNumber": null,
+      "patch": "@@ -172,10 +172,10 @@ Nonce changes record post-transaction nonces for EOA senders, contracts that per\n - **STATICCALL/Read-only opcodes**: Include targets with empty changes\n - **Exceptional halts**: Final nonce and balance of sender and balance of fee recipient recorded after each transactions\n - **Consensus layer withdrawals**: Recipients recorded with final balance after withdrawal\n-- **System contracts**: All state changes from system contracts use tx_index = len(transactions) + 1\n+- **System contracts**: All state changes from system contracts use tx_index = len(transactions)\n - **EIP-7002 withdrawals**: System contract storage diffs of the storage slots 0-3 (4 slots) after dequeuing call\n - **EIP-7251 consolidations**: System contract storage diffs of the storage slots 0-3 (4 slots) after dequeuing call\n-- **EIP-2935 block hash**: ` BLOCKHASH_STORAGE_ADDRESS` storage containing new parent_hash\n+- **EIP-2935 block hash**: `BLOCKHASH_STORAGE_ADDRESS` storage containing new parent_hash\n - **EIP-4788 beacon root**: `BEACON_ROOTS_ADDRESS` storage containing new parent_beacon_root\n \n ### Concrete Example\n@@ -186,7 +186,7 @@ Example block:\n 2. Charlie (0xcccc...) calls factory (0xffff...) deploying contract at 0xdddd...\n 3. System contracts: parent hash storage, beacon root storage, withdrawal to Eve (0xeeee...)\n \n-Note: System contract state changes use tx_index = 3 (len(transactions) + 1)\n+Note: System contract state changes use tx_index = 2 (len(transactions))\n \n Resulting BAL:\n \n@@ -273,7 +273,7 @@ BlockAccessList(\n                 SlotChanges(\n                     slot=b'\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x0f\\xa0',  # slot = (block.number - 1) % 8191\n                     changes=[\n-                        StorageChange(tx_index=3, new_value=b'...')  # Parent block hash\n+                        StorageChange(tx_index=2, new_value=b'...')  # Parent block hash\n                     ]\n                 )\n             ],\n@@ -288,7 +288,7 @@ BlockAccessList(\n                 SlotChanges(\n                     slot=b'\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x30\\x39',\n                     changes=[\n-                        StorageChange(tx_index=3, new_value=b'...')  # System tx_index\n+                        StorageChange(tx_index=2, new_value=b'...')  # System tx_index\n                     ]\n                 )\n             ],\n@@ -301,7 +301,7 @@ BlockAccessList(\n             address=0xabcd...,  # Eve (withdrawal recipient)\n             storage_changes=[],\n             storage_reads=[],\n-            balance_changes=[BalanceChange(tx_index=3, post_balance=0x0000000000000005f5e100)],  # 100 ETH withdrawal\n+            balance_changes=[BalanceChange(tx_index=2, post_balance=0x0000000000000005f5e100)],  # 100 ETH withdrawal\n             nonce_changes=[],\n             code_changes=[]\n         )\n@@ -321,7 +321,7 @@ def validate_bal(block):\n     collected_accesses = {}\n     \n     # Process pre-execution system contracts (parent hashes, beacon roots)\n-    system_tx_index = len(block.transactions) + 1\n+    system_tx_index = len(block.transactions)\n     process_system_contracts_pre(block, collected_accesses, system_tx_index)\n     \n     # Execute transactions and track all state accesses\n@@ -476,7 +476,7 @@ This design variant was chosen for several key reasons:\n \n 2. **Storage values for writes**: Post-execution values enable state reconstruction during sync without individual proofs against state root.\n \n-3. **Overhead analysis**: Historical data shows ~40 KiB average BAL size with ~4.5 KiB for balance diffs - reasonable for performance gains.\n+3. **Overhead analysis**: Historical data shows ~40 KiB average BAL size.\n \n 4. **Transaction independence**: 60-80% of transactions access disjoint storage slots, enabling effective parallelization.\n "
+    },
+    {
+      "sha": "e8bf55aa9a3736b38b229f7396f51aca164be430",
+      "date": "2025-08-11T07:31:38Z",
+      "message": "Update EIP-7928: Clarify 7702 delegation indicators",
+      "author": "nerolation",
+      "prNumber": null,
+      "patch": "@@ -156,7 +156,7 @@ Balance changes record post-transaction balances (`uint128`) for:\n \n Zero-value transfers: NOT recorded in `balance_changes` but addresses MUST be included with empty `AccountChanges`.\n \n-Code changes track post-transaction runtime bytecode for deployed/modified contracts.\n+Code changes track post-transaction runtime bytecode for deployed/modified contracts and delegation indicators from [EIP-7702](./eip-7702.md).\n \n Nonce changes record post-transaction nonces for EOA senders, contracts that performed a successful `CREATE` or `CREATE2` operation, deployed contracts and [EIP-7702](./eip-7792.md) authorities.\n "
+    },
+    {
+      "sha": "577232c6d1aba03e21677b538e9076a54c5f0ff6",
+      "date": "2025-08-05T12:02:21Z",
+      "message": "Update EIP-7928: Add details on how to handle system contracts",
+      "author": "nerolation",
+      "prNumber": null
+    },
+    {
+      "sha": "59be93753454b530b063d6d1b8c9acbff4116fe5",
+      "date": "2025-07-31T13:42:40Z",
+      "message": "Update EIP-7928: add system contract logic",
+      "author": "nerolation",
+      "prNumber": null
+    },
+    {
+      "sha": "0c7642c35918df23f7c96888702e3620b869af47",
+      "date": "2025-07-22T07:35:13Z",
+      "message": "Update EIP-7928: Fix missing nonce change in Concrete Example",
+      "author": "nerolation",
+      "prNumber": null,
+      "patch": "@@ -155,7 +155,7 @@ Zero-value transfers: NOT recorded in `balance_changes` but addresses MUST be in\n \n Code changes track post-transaction runtime bytecode for deployed/modified contracts.\n \n-Nonce changes record post-transaction nonces for senders, contracts that performed a successful `CREATE` or `CREATE2` operation, deployed contracts and [EIP-7702](./eip-7792.md) authorities.\n+Nonce changes record post-transaction nonces for EOA senders, contracts that performed a successful `CREATE` or `CREATE2` operation, deployed contracts and [EIP-7702](./eip-7792.md) authorities.\n \n ### Important Implementation Details\n \n@@ -186,7 +186,7 @@ BlockAccessList(\n             storage_changes=[],\n             storage_reads=[],\n             balance_changes=[BalanceChange(tx_index=0, post_balance=0x00000000000000029a241a)],  # 50 ETH remaining\n-            nonce_changes=[],  # EOA nonce changes are not recorded\n+            nonce_changes=[NonceChange(tx_index=0, new_nonce=10)],  # EOA nonce after transaction\n             code_changes=[]\n         ),\n         AccountChanges(\n@@ -202,15 +202,15 @@ BlockAccessList(\n             storage_changes=[],\n             storage_reads=[],\n             balance_changes=[BalanceChange(tx_index=1, post_balance=0x0000000000000001bc16d67)],  # After gas\n-            nonce_changes=[],  # EOA nonce changes are not recorded\n+            nonce_changes=[NonceChange(tx_index=1, new_nonce=5)],  # EOA nonce after transaction\n             code_changes=[]\n         ),\n         AccountChanges(\n             address=0xdddd...,  # Deployed contract\n             storage_changes=[],\n             storage_reads=[],\n             balance_changes=[],\n-            nonce_changes=[],  # New contracts start with nonce 1 (not recorded)\n+            nonce_changes=[NonceChange(tx_index=1, new_nonce=1)],  # New contracts start with nonce 1\n             code_changes=[CodeChange(tx_index=1, new_code=b'\\x60\\x80\\x60\\x40...')]\n         ),\n         AccountChanges("
+    },
+    {
+      "sha": "076df39b70162d37c8cb0f5962ec068e393144a6",
+      "date": "2025-07-18T08:13:04Z",
+      "message": "Update EIP-7928: Add statically inferrable nonce changes back",
+      "author": "nerolation",
+      "prNumber": null,
+      "patch": "@@ -144,7 +144,7 @@ Storage reads:\n \n Slots both read and written (with changed values) appear only in `storage_changes`.\n \n-Balance changes record post-transaction balances (uint128`) for:\n+Balance changes record post-transaction balances (`uint128`) for:\n \n - Transaction senders (gas + value)\n - Recipients\n@@ -155,7 +155,7 @@ Zero-value transfers: NOT recorded in `balance_changes` but addresses MUST be in\n \n Code changes track post-transaction runtime bytecode for deployed/modified contracts.\n \n-Nonce changes record post-transaction nonces for contracts that performed a successful `CREATE` or `CREATE2` operation.\n+Nonce changes record post-transaction nonces for senders, contracts that performed a successful `CREATE` or `CREATE2` operation, deployed contracts and [EIP-7702](./eip-7792.md) authorities.\n \n ### Important Implementation Details\n \n@@ -167,6 +167,7 @@ Nonce changes record post-transaction nonces for contracts that performed a succ\n - **Gas refunds**: Final balance of sender recorded after each transactions\n - **Block rewards**: Final balance of fee recipient recorded after each transactions\n - **STATICCALL/Read-only opcodes**: Include targets with empty changes\n+- **Exceptional halts**: Final nonce and balance of sender and balance of fee recipient recorded after each transactions\n \n ### Concrete Example\n "
+    },
+    {
+      "sha": "46f29129db955fb56dddfed72efbdd41b030f5ac",
+      "date": "2025-07-09T06:12:46Z",
+      "message": "Update EIP-7928: Modify CodeChanges List to allow a max of 1",
+      "author": "nerolation",
+      "prNumber": null,
+      "patch": "@@ -59,6 +59,7 @@ MAX_TXS = 30_000\n MAX_SLOTS = 300_000\n MAX_ACCOUNTS = 300_000\n MAX_CODE_SIZE = 24_576  # Maximum contract bytecode size in bytes\n+MAX_CODE_CHANGES = 1\n \n # Core change structures (no redundant keys)\n class StorageChange(Container):\n@@ -106,10 +107,10 @@ class AccountChanges(Container):\n     # Nonce changes ([tx_index -> new_nonce])\n     nonce_changes: List[NonceChange, MAX_TXS]\n     \n-    # Code changes ([tx_index -> new_code]) - typically 0 or 1\n-    code_changes: List[CodeChange, MAX_TXS]\n+    # Code changes ([tx_index -> new_code])\n+    code_changes: List[CodeChange, MAX_CODE_CHANGES]\n \n-# Block-level structure (simple list of account changes)\n+# Block-level structure\n class BlockAccessList(Container):\n     \"\"\"\n     Block Access List\n@@ -137,42 +138,34 @@ Storage writes include:\n \n Storage reads:\n \n-- Slots accessed via SLOAD but not written\n-- Slots written with unchanged values (SSTORE with same value)\n+- Slots accessed via `SLOAD` but not written\n+- Slots written with unchanged values (`SSTORE` with same value)\n - Slots in pre-state but not written\n \n Slots both read and written (with changed values) appear only in `storage_changes`.\n \n-Balance changes record post-transaction balances (uint128) for:\n+Balance changes record post-transaction balances (uint128`) for:\n \n - Transaction senders (gas + value)\n - Recipients\n - Coinbase (rewards + fees)\n - SELFDESTRUCT beneficiaries\n \n-Zero-value transfers: NOT recorded in balance_changes but addresses MUST be included with empty AccountChanges.\n+Zero-value transfers: NOT recorded in `balance_changes` but addresses MUST be included with empty `AccountChanges`.\n \n Code changes track post-transaction runtime bytecode for deployed/modified contracts.\n \n-Nonce changes record post-transaction nonces for contracts that performed successful CREATE/CREATE2.\n-\n-Excluded (statically inferrable):\n-\n-- EOA nonce increments\n-- New contracts (always nonce 1)\n-- Failed CREATE/CREATE2\n-- EIP-7702 delegations\n+Nonce changes record post-transaction nonces for contracts that performed a successful `CREATE` or `CREATE2` operation.\n \n ### Important Implementation Details\n \n #### Edge Cases\n \n - **SELFDESTRUCT**: Beneficiary recorded as balance change\n-- **Accessed but unchanged**: Include with empty changes (EXTCODEHASH, EXTCODESIZE, BALANCE targets)\n+- **Accessed but unchanged**: Include with empty changes (`EXTCODEHASH`, `EXTCODESIZE`, `BALANCE` targets)\n - **Zero-value transfers**: Include address, omit from balance_changes\n-- **Failed transactions**: Excluded from BAL\n-- **Gas refunds**: Final balance recorded\n-- **Block rewards**: Included in coinbase balance\n+- **Gas refunds**: Final balance of sender recorded after each transactions\n+- **Block rewards**: Final balance of fee recipient recorded after each transactions\n - **STATICCALL/Read-only opcodes**: Include targets with empty changes\n \n ### Concrete Example\n@@ -411,20 +404,21 @@ This design variant was chosen for several key reasons:\n \n 2. **Storage values for writes**: Post-execution values enable state reconstruction during sync without individual proofs against state root.\n \n-3. **Balance and nonce tracking**: Essential for parallel execution. Nonce tracking handles CREATE/CREATE2 edge cases where contracts increase nonce without being transaction senders.\n-\n-4. **Overhead analysis**: Historical data shows ~40 KiB average BAL size with ~9.6 KiB for balance diffs - reasonable for performance gains.\n+3. **Overhead analysis**: Historical data shows ~40 KiB average BAL size with ~4.5 KiB for balance diffs - reasonable for performance gains.\n \n-5. **Transaction independence**: 60-80% of transactions access disjoint storage slots, enabling effective parallelization.\n+4. **Transaction independence**: 60-80% of transactions access disjoint storage slots, enabling effective parallelization.\n \n-6. **SSZ encoding**: Enables efficient merkle proofs for light clients. SSZ BAL embedded as opaque bytes in RLP block for compatibility.\n+5. **SSZ encoding**: Enables efficient Merkle proofs for light clients. SSZ BAL embedded as opaque bytes in RLP block for compatibility.\n \n ### Block Size Considerations\n \n Block size impact (historical analysis):\n \n - Average: ~40 KiB (compressed)\n-- Balance diffs: ~9.6 KiB\n+- Balance diffs: ~4.5 KiB (compressed)\n+- Storage diffs: ~33.88 KiB (compressed)\n+- Nonce diffs: ~0.02 KiB (compressed)\n+- Code diffs: ~0.6 KiB (compressed)\n - Worst-case (36m gas): ~0.93 MiB\n - Worst-case balance diffs: ~0.12 MiB\n "
+    },
+    {
+      "sha": "187226bbfef68ad908db2cb0eea579da7e86cd58",
+      "date": "2025-07-03T13:07:12Z",
+      "message": "Update EIP-7928: don't enclose individual storage reads in a container",
+      "author": "jwasinger",
+      "prNumber": null,
+      "patch": "@@ -87,10 +87,6 @@ class SlotChanges(Container):\n     slot: StorageKey\n     changes: List[StorageChange, MAX_TXS]  # Only changes, no redundant slot\n \n-class SlotRead(Container):\n-    \"\"\"Read-only access to a storage slot (no changes)\"\"\"\n-    slot: StorageKey\n-\n # Account-level mapping (groups all account changes)\n class AccountChanges(Container):\n     \"\"\"\n@@ -101,7 +97,8 @@ class AccountChanges(Container):\n     \n     # Storage changes (slot -> [tx_index -> new_value])\n     storage_changes: List[SlotChanges, MAX_SLOTS]\n-    storage_reads: List[SlotRead, MAX_SLOTS]\n+    # Read-only storage keys\n+    storage_reads: List[StorageKey, MAX_SLOTS]\n     \n     # Balance changes ([tx_index -> post_balance])\n     balance_changes: List[BalanceChange, MAX_TXS]\n@@ -251,7 +248,7 @@ BlockAccessList(\n         AccountChanges(\n             address=0x1111...,  # Contract accessed via STATICCALL or BALANCE opcode\n             storage_changes=[],\n-            storage_reads=[SlotRead(slot=b'\\x00...\\x05')],  # Read slot 5\n+            storage_reads=b'\\x00...\\x05',  # Read slot 5\n             balance_changes=[],\n             nonce_changes=[],\n             code_changes=[]\n@@ -380,7 +377,7 @@ def build_block_access_list(account_data):\n         ]\n         \n         # Include pure reads and unchanged writes (excluded from storage_writes)\n-        storage_reads = [SlotRead(slot=slot) for slot in data['storage_reads'] \n+        storage_reads = [slot for slot in data['storage_reads'] \n                         if slot not in data['storage_writes']]\n         \n         account_changes_list.append(AccountChanges("
+    },
+    {
+      "sha": "35732baa14cfea785d9c58d5f18033392b7ed886",
+      "date": "2025-06-30T12:08:14Z",
+      "message": "Update EIP-7928: polish language",
+      "author": "nerolation",
+      "prNumber": null,
+      "patch": "@@ -16,7 +16,7 @@ This EIP introduces Block-Level Access Lists (BALs) that record all accounts and\n \n ## Motivation\n \n-Transaction execution cannot be efficiently parallelized without knowing in advance which addresses and storage slots will be accessed. While [EIP-2930](./eip-2930.md) introduced optional transaction access lists, they are not enforced.\n+Transaction execution cannot be parallelized without knowing in advance which addresses and storage slots will be accessed. While [EIP-2930](./eip-2930.md) introduced optional transaction access lists, they are not enforced.\n \n This proposal enforces access lists at the block level, enabling:\n \n@@ -115,7 +115,7 @@ class AccountChanges(Container):\n # Block-level structure (simple list of account changes)\n class BlockAccessList(Container):\n     \"\"\"\n-    Efficient Block Access List\n+    Block Access List\n     \"\"\"\n     account_changes: List[AccountChanges, MAX_ACCOUNTS]\n ```"
+    },
+    {
+      "sha": "4f7412a730d43138baf41856efe245e09e4cc037",
+      "date": "2025-06-28T10:46:47Z",
+      "message": "Update EIP-7928: Add assets folder with analysis",
+      "author": "nerolation",
+      "prNumber": null,
+      "patch": "@@ -433,6 +433,8 @@ Block size impact (historical analysis):\n \n Smaller than current worst-case calldata blocks.\n \n+An empirical analysis has been done [here](../assets/eip-7928/bal_size_analysis.md).\n+\n ### Asynchronous Validation\n \n BAL verification occurs alongside parallel IO and EVM operations without delaying block processing."
+    },
+    {
+      "sha": "5cff3c4c11d2e06a269ade5b9ca005bb674f6b5f",
+      "date": "2025-06-27T18:36:09Z",
+      "message": "Update EIP-7928: More compact structure",
+      "author": "nerolation",
+      "prNumber": null
+    },
+    {
+      "sha": "a761452193d69a5e783da2d4f9410dca0212a6bf",
+      "date": "2025-06-23T10:16:42Z",
+      "message": "Update EIP-7928: Fix BAL type definition",
+      "author": "raxhvl",
+      "prNumber": null,
+      "patch": "@@ -110,13 +110,13 @@ class AccountNonceDiff(Container):\n     address: Address\n     changes: List[TxNonceDiff, MAX_TXS]\n \n-NonceDiffs = List[AccountNonceDiff, MAX_TXS]\n+NonceDiffs = List[AccountNonceDiff, MAX_ACCOUNTS]\n \n # Block-level Access List structure\n class BlockAccessList(Container):\n     account_accesses: AccountAccessList\n     balance_diffs: BalanceDiffs\n-    code_diffs: AccountCodeDiffs\n+    code_diffs: CodeDiffs\n     nonce_diffs: NonceDiffs\n ```\n \n@@ -154,7 +154,7 @@ def state_transition(block):\n         for address, nonce in nonce_info:\n             if address not in computed_nonce_diffs:\n                 computed_nonce_diffs[address] = []\n-            computed_nonce_diffs[address].push((idx, nonce))\n+            computed_nonce_diffs[address].append((idx, nonce))\n \n         # Execute transaction and collect state accesses and diffs\n         accessed, balances, codes = execute_transaction(tx)"
+    },
+    {
+      "sha": "e929ba3c772d65048ec63eae5008b17c0d699c0d",
+      "date": "2025-06-21T06:24:12Z",
+      "message": "Update EIP-7928: specify nonce diffs as post-tx nonces for contract accounts which modified their nonce",
+      "author": "jwasinger",
+      "prNumber": null,
+      "patch": "@@ -43,7 +43,7 @@ We introduce three new components in the block body:\n 1. A Block Access List (BAL) that maps transactions to accessed storage locations and post-execution values for writes.\n 2. Balance Diffs that track every address touched by value transfers along with the balance deltas.\n 3. Code Diffs that track every address and the deployed code to it.\n-4. Nonce Diffs that record the pre-block nonces of contracts using `CREATE` or `CREATE2` within the block.\n+4. Nonce Diffs that record the post-transaction nonces of accounts which invoke `CREATE` or `CREATE2`.\n \n ### SSZ Data Structures\n \n@@ -104,7 +104,7 @@ CodeDiffs = List[AccountCodeDiff, MAX_ACCOUNTS]\n # Nonce Diff structures\n class TxNonceDiff(Container):\n     tx_index: TxIndex\n-    nonce_before: Nonce # nonce value before transaction execution\n+    nonce_after: Nonce # nonce value after transaction execution\n \n class AccountNonceDiff(Container):\n     address: Address\n@@ -135,7 +135,7 @@ Each entry MUST include the transaction index and the signed balance delta per a\n The `CodeDiff` structure tracks every deployed/changed contract with it's post-transaction runtime byte code.\n Each entry MUST include the transaction index and the contract bytecode for each transaction with a contract deployment.\n \n-The `NonceDiffs` structure MUST record the pre-transaction nonce values for all `CREATE` and `CREATE2` deployer accounts and the deployed contracts in the block. This includes nonce increases that occur at the deployer contract even when deployments using `CREATE` or `CREATE2` revert, as specified in [EIP-7610](./eip-7610.md).\n+The `NonceDiffs` structure MUST record the post-transaction nonce values for all accounts whose nonces were increased as a result of a successful `CREATE`/`CREATE2` invocation.\n \n ### State Transition Function\n \n@@ -153,7 +153,8 @@ def state_transition(block):\n         nonce_info = get_nonce_info(tx)\n         for address, nonce in nonce_info:\n             if address not in computed_nonce_diffs:\n-                computed_nonce_diffs[address] = nonce\n+                computed_nonce_diffs[address] = []\n+            computed_nonce_diffs[address].push((idx, nonce))\n \n         # Execute transaction and collect state accesses and diffs\n         accessed, balances, codes = execute_transaction(tx)"
+    },
+    {
+      "sha": "e178cfc6999bf2a159112af73e4568701e325c9c",
+      "date": "2025-06-19T15:13:35Z",
+      "message": "Update EIP-7928: specify that nonce diffs are recorded per-transaction",
+      "author": "jwasinger",
+      "prNumber": null,
+      "patch": "@@ -102,11 +102,15 @@ class AccountCodeDiff(Container):\n CodeDiffs = List[AccountCodeDiff, MAX_ACCOUNTS]\n \n # Nonce Diff structures\n-class AccountNonce(Container):\n-    address: Address  # account address\n-    nonce_before: Nonce  # nonce value before transaction execution\n+class TxNonceDiff(Container):\n+    tx_index: TxIndex\n+    nonce_before: Nonce # nonce value before transaction execution\n+\n+class AccountNonceDiff(Container):\n+    address: Address\n+    changes: List[TxNonceDiff, MAX_TXS]\n \n-NonceDiffs = List[AccountNonce, MAX_TXS]\n+NonceDiffs = List[AccountNonceDiff, MAX_TXS]\n \n # Block-level Access List structure\n class BlockAccessList(Container):\n@@ -120,7 +124,7 @@ The `BlockAccessList` is a deduplicated list of accessed addresses. For each add\n \n Addresses and storage keys MUST be ordered lexicographically. Transaction indices MUST be ordered in ascending order.\n \n-For writes, each `SlotAccess` MUST contain an ordered list of transaction indices that accessed this key, and the final storage value after the last access. Transactions with writes that do not change the storage value MUST NOT contain a `value_after`.\n+For writes, each `SlotAccess` MUST contain an ordered list of transaction indices that accessed this key, and the final value of the slot at the end of the transaction. Transactions with writes that do not change the storage value MUST NOT contain a `value_after`.\n \n For reads, each `SlotAccess` MUST contain an empty `accesses` list.\n "
+    },
+    {
+      "sha": "828e5493db76aa0e61660e4a0d38e582c0f4c0a5",
+      "date": "2025-06-13T10:07:05Z",
+      "message": "Update EIP-7928: add ordering details and pre-tx nonces",
+      "author": "nerolation",
+      "prNumber": null,
+      "patch": "@@ -104,7 +104,7 @@ CodeDiffs = List[AccountCodeDiff, MAX_ACCOUNTS]\n # Nonce Diff structures\n class AccountNonce(Container):\n     address: Address  # account address\n-    nonce_before: Nonce  # nonce value before block execution\n+    nonce_before: Nonce  # nonce value before transaction execution\n \n NonceDiffs = List[AccountNonce, MAX_TXS]\n \n@@ -117,6 +117,9 @@ class BlockAccessList(Container):\n ```\n \n The `BlockAccessList` is a deduplicated list of accessed addresses. For each address, it MUST contain a list of accessed storage keys. \n+\n+Addresses and storage keys MUST be ordered lexicographically. Transaction indices MUST be ordered in ascending order.\n+\n For writes, each `SlotAccess` MUST contain an ordered list of transaction indices that accessed this key, and the final storage value after the last access. Transactions with writes that do not change the storage value MUST NOT contain a `value_after`.\n \n For reads, each `SlotAccess` MUST contain an empty `accesses` list."
+    },
+    {
+      "sha": "b9988a7dde81e114da7b150504a1e53656efd080",
+      "date": "2025-06-11T13:46:12Z",
+      "message": "Update EIP-7928: inconsistencies in SSZ structures",
+      "author": "rkrasiuk",
+      "prNumber": null,
+      "patch": "@@ -97,7 +97,7 @@ class CodeChange(Container):\n \n class AccountCodeDiff(Container):\n     address: Address\n-    changes: CodeChange\n+    change: CodeChange\n \n CodeDiffs = List[AccountCodeDiff, MAX_ACCOUNTS]\n \n@@ -106,7 +106,7 @@ class AccountNonce(Container):\n     address: Address  # account address\n     nonce_before: Nonce  # nonce value before block execution\n \n-NonceDiffs = List[AccountNonceDiff, MAX_TXS]\n+NonceDiffs = List[AccountNonce, MAX_TXS]\n \n # Block-level Access List structure\n class BlockAccessList(Container):"
+    },
+    {
+      "sha": "c300b8afc0ab51d425bd83f4e8b59986137a05f5",
+      "date": "2025-06-10T09:33:27Z",
+      "message": "Update EIP-7928: add header field for bal hash to block",
+      "author": "nerolation",
+      "prNumber": null,
+      "patch": "@@ -28,6 +28,16 @@ BALs map transactions to `(address, storage key, value)` tuples and include bala\n \n ### Block Structure Modification\n \n+We introduce a new field to the block header:\n+\n+```python\n+class Header:\n+    # Existing fields\n+    ...\n+    \n+    bal_hash: Hash32\n+```\n+\n We introduce three new components in the block body:\n \n 1. A Block Access List (BAL) that maps transactions to accessed storage locations and post-execution values for writes.\n@@ -98,6 +108,7 @@ class AccountNonce(Container):\n \n NonceDiffs = List[AccountNonceDiff, MAX_TXS]\n \n+# Block-level Access List structure\n class BlockAccessList(Container):\n     account_accesses: AccountAccessList\n     balance_diffs: BalanceDiffs"
+    },
+    {
+      "sha": "81228bc691a994426928aa1a1332d3903164ad26",
+      "date": "2025-06-10T09:12:34Z",
+      "message": "Update EIP-7928: make explicit that the BAL is its own field in the block, remove SSZ encoding as a requirement for BAL verification",
+      "author": "jwasinger",
+      "prNumber": null,
+      "patch": "@@ -65,7 +65,7 @@ class AccountAccess(Container):\n     address: Address\n     accesses: List[SlotAccess, MAX_SLOTS]\n \n-BlockAccessList = List[AccountAccess, MAX_ACCOUNTS]\n+AccountAccessList = List[AccountAccess, MAX_ACCOUNTS]\n \n # Balance Diff structures\n BalanceDelta = ByteVector(12)  # signed, two's complement encoding\n@@ -97,6 +97,12 @@ class AccountNonce(Container):\n     nonce_before: Nonce  # nonce value before block execution\n \n NonceDiffs = List[AccountNonceDiff, MAX_TXS]\n+\n+class BlockAccessList(Container):\n+    account_accesses: AccountAccessList\n+    balance_diffs: BalanceDiffs\n+    code_diffs: AccountCodeDiffs\n+    nonce_diffs: NonceDiffs\n ```\n \n The `BlockAccessList` is a deduplicated list of accessed addresses. For each address, it MUST contain a list of accessed storage keys. \n@@ -148,10 +154,10 @@ def state_transition(block):\n             computed_code_diffs.setdefault(addr, []).append((idx, code))\n \n     # Validate block data\n-    assert block.block_access_list == encode_ssz_access_list(computed_access_list, computed_code_diffs)\n-    assert block.balance_diffs == encode_ssz_balance_diffs(computed_balance_diffs)\n-    assert block.code_diffs == encode_ssz_code_diffs(computed_code_diffs)\n-    assert block.nonce_diffs == encode_ssz_nonce_diffs(computed_nonce_diffs)\n+    assert block.access_list.block_access_list == computed_access_list\n+    assert block.access_list.balance_diffs == computed_balance_diffs\n+    assert block.access_list.code_diffs == computed_code_diffs\n+    assert block.access_list.nonce_diffs == computed_nonce_diffs\n ```\n \n The BAL MUST be complete and accurate. It MUST NOT contain too few entries (missing accesses) or too many entries (spurious accesses). Any missing or extra entries in the access list, balance diffs, or nonce diffs MUST result in block invalidation."
+    },
+    {
+      "sha": "30b0e30602d7916bf41530e4cb0453049367bf46",
+      "date": "2025-06-06T11:35:57Z",
+      "message": "Update EIP-7928: Code change",
+      "author": "nerolation",
+      "prNumber": null,
+      "patch": "@@ -87,7 +87,7 @@ class CodeChange(Container):\n \n class AccountCodeDiff(Container):\n     address: Address\n-    changes: List[CodeChange, MAX_TXS]\n+    changes: CodeChange\n \n CodeDiffs = List[AccountCodeDiff, MAX_ACCOUNTS]\n "
+    },
+    {
+      "sha": "db35f392222fbb3561b85b4f056ff6868085cc67",
+      "date": "2025-06-06T09:50:02Z",
+      "message": "Update EIP-7928: remove code field, add code diff",
+      "author": "nerolation",
+      "prNumber": null,
+      "patch": "@@ -64,7 +64,6 @@ class SlotAccess(Container):\n class AccountAccess(Container):\n     address: Address\n     accesses: List[SlotAccess, MAX_SLOTS]\n-    code: List[byte, MAX_CODE_SIZE]  # field for contract bytecode\n \n BlockAccessList = List[AccountAccess, MAX_ACCOUNTS]\n \n@@ -84,15 +83,15 @@ BalanceDiffs = List[AccountBalanceDiff, MAX_ACCOUNTS]\n # Code Diff structures\n class CodeChange(Container):\n     tx_index: TxIndex\n-    new_code: CodeData\n+    new_code: CodeData # runtime bytecode of newly deployed contract\n \n class AccountCodeDiff(Container):\n     address: Address\n     changes: List[CodeChange, MAX_TXS]\n \n CodeDiffs = List[AccountCodeDiff, MAX_ACCOUNTS]\n \n-# Pre-transaction nonce structures\n+# Nonce Diff structures\n class AccountNonce(Container):\n     address: Address  # account address\n     nonce_before: Nonce  # nonce value before block execution"
+    },
+    {
+      "sha": "0efb59d99c4485fdd9d073c7556debde1ce18c61",
+      "date": "2025-06-03T06:35:44Z",
+      "message": "Update EIP-7928: convert contract code field from union type to list of bytes",
+      "author": "jwasinger",
+      "prNumber": null,
+      "patch": "@@ -64,7 +64,7 @@ class SlotAccess(Container):\n class AccountAccess(Container):\n     address: Address\n     accesses: List[SlotAccess, MAX_SLOTS]\n-    code: Union[ByteVector(MAX_CODE_SIZE), None]  # Optional field for contract bytecode\n+    code: List[byte, MAX_CODE_SIZE]  # field for contract bytecode\n \n BlockAccessList = List[AccountAccess, MAX_ACCOUNTS]\n "
+    },
+    {
+      "sha": "439df2ca403358f9ab87e14433f58b326c2f64c0",
+      "date": "2025-06-01T07:54:47Z",
+      "message": "Update EIP-7863: Update EIP-7863 and EIP-7928 with small changes",
+      "author": "nerolation",
+      "prNumber": null
+    },
+    {
+      "sha": "1ee4cac92df6b6f18ff625b8f8f977bdc80d88d7",
+      "date": "2025-05-06T13:30:21Z",
+      "message": "Add EIP: Block-Level Access Lists",
+      "author": "nerolation",
+      "prNumber": null
+    }
+  ]
+}

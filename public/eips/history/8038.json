@@ -1,0 +1,98 @@
+{
+  "eipId": 8038,
+  "commits": [
+    {
+      "sha": "8a7fb54ef1ea87abd6e81a8ea234dbb794f7fdd8",
+      "date": "2026-05-19T12:11:38Z",
+      "message": "Update EIP-8038: Update write cost condition in SSTORE formula",
+      "author": "rakita",
+      "prNumber": null,
+      "patch": "@@ -50,7 +50,7 @@ Upon activation of this EIP, the following parameters of the gas model are intro\n In addition, the `SSTORE` cost formula is updated to include the following independent costs:\n \n 1. Access costs: `COLD_STORAGE_ACCESS` or `WARM_ACCESS`, depending on whether the storage slot is cold or warm.\n-2. Write cost: additionally charge `STORAGE_WRITE` if the new value is different from the original value.\n+2. Write cost: additionally charge `STORAGE_WRITE` if the new value is different from the present value and the present value equals the original value (First time change).\n 3. State creation cost: additionally charge `GAS_STORAGE_SET` (per [EIP-8037](./eip-8037.md)) if the original value is zero, the current value is zero, and the new value is non-zero.\n \n Refunds are also updated as follows:"
+    },
+    {
+      "sha": "391a31b38e933a30eca4dc8ad0e26f87cd42ae88",
+      "date": "2026-05-13T16:14:09Z",
+      "message": "Update EIP-8038: Quick fixes",
+      "author": "misilva73",
+      "prNumber": null,
+      "patch": "@@ -66,9 +66,9 @@ Cases and their corresponding costs are detailed in the table below:\n \n | Original value | Current value | New value | Access status | Description | Regular-gas charges/refunds | State-gas charges/refills |\n | :---: | :---: | :---: | :---: | :---: | :---: | :---: |\n-| 0 | 0 | x | Cold | New slot | `COLD_STORAGE_ACCESS` + `STORAGE_WRITE` charged | `STATE_BYTES_PER_STORAGE_SET × CPSB` charged |\n-| 0 | 0 | x | Warm | New slot | `WARM_ACCESS` + `STORAGE_WRITE` charged | `STATE_BYTES_PER_STORAGE_SET × CPSB` charged |\n-| 0 | x | 0 | Warm | Cleared slot, zero at transaction start | `WARM_ACCESS` charged, `STORAGE_WRITE` refunded | `STATE_BYTES_PER_STORAGE_SET × CPSB` refilled |\n+| 0 | 0 | x | Cold | New slot | `COLD_STORAGE_ACCESS` + `STORAGE_WRITE` charged | `GAS_STORAGE_SET` charged |\n+| 0 | 0 | x | Warm | New slot | `WARM_ACCESS` + `STORAGE_WRITE` charged | `GAS_STORAGE_SET` charged |\n+| 0 | x | 0 | Warm | Cleared slot, zero at transaction start | `WARM_ACCESS` charged, `STORAGE_WRITE` refunded | `GAS_STORAGE_SET` refilled |\n | x | x | 0 | Warm | Cleared slot, non-zero at transaction start | `WARM_ACCESS` charged, `STORAGE_CLEAR_REFUND` refunded | no state-gas adjustments |\n | x | x | y | Cold | Existing slot, updated to new value | `COLD_STORAGE_ACCESS` + `STORAGE_WRITE` charged | no state-gas adjustments |\n | x | x | y | Warm | Existing slot, updated to new value | `WARM_ACCESS` + `STORAGE_WRITE` charged | no state-gas adjustments |\n@@ -85,9 +85,7 @@ For `CALL` and `CALLCODE` operations, `CALL_VALUE` is set to `ACCOUNT_WRITE + CA\n \n #### `CREATE`/`CREATE2`\n \n-`CREATE` and `CREATE2` operations don't have explicit warm/cold pricing. Instead, they are charged `CREATE_ACCESS` in regular-gas and `STATE_BYTES_PER_NEW_ACCOUNT x CPSB` in state-gas.\n-\n-`CREATE_ACCESS` is defined as `ACCOUNT_WRITE` + `COLD_STORAGE_ACCESS`.\n+`CREATE` and `CREATE2` operations don't have explicit warm/cold pricing. Instead, they are charged `CREATE_ACCESS` in regular-gas and `GAS_NEW_ACCOUNT` in state-gas (per [EIP-8037](./eip-8037.md)). `CREATE_ACCESS` is defined as `ACCOUNT_WRITE` + `COLD_STORAGE_ACCESS`.\n \n Note: this definition does not exactly match the legacy decomposition shown in footnote ³ of the Parameters table (`GAS_CREATE` - `GAS_NEW_ACCOUNT` = 7,000). The pre-existing accounting in the protocol is not internally consistent here, and this EIP keeps the discrepancy rather than attempting to reconcile it.\n "
+    },
+    {
+      "sha": "85fe2077e4498e7d5c7fcf979961ad4aac8e6fbd",
+      "date": "2026-05-13T13:39:09Z",
+      "message": "Update EIP-8038: Align with 8037 and clarify spec & rationale",
+      "author": "misilva73",
+      "prNumber": null
+    },
+    {
+      "sha": "f9b43a9f8bca83362a26cf091f1db08005a625a9",
+      "date": "2026-03-20T08:31:55Z",
+      "message": "Update EIP-8038: correct HTML comment syntax",
+      "author": "librazium",
+      "prNumber": null,
+      "patch": "@@ -43,7 +43,7 @@ The following parameters of the gas model are updated:\n | `ACCESS_LIST_STORAGE_KEY_COST` | 1,900 | TBD | TBD | `SSTORE` and `SLOAD`|\n | `ACCESS_LIST_ADDRESS_COST` | 2,400 | TBD | TBD | `*CALL` opcodes, `BALANCE`, `SELFDESTRUCT` and `EXT*` opcodes |\n \n-<-- TODO -->\n+<!-- TODO -->\n \n ### `EXT*` family update\n \n@@ -63,7 +63,7 @@ else:\n \n This proposal does not yet have finalized numbers. To achieve this, we require stateful benchmarks, which are currently in development. Once we collect that data, we will set the final numbers.\n \n-<-- TODO -->\n+<!-- TODO -->\n \n ### Special case for `EXTCODESIZE` and `EXTCODECOPY`\n "
+    },
+    {
+      "sha": "c3f1742498f52873b4d0675c73a9988645d8c594",
+      "date": "2026-02-18T08:25:51Z",
+      "message": "Update EIP-8038: Remove incorrect requires header",
+      "author": "BitcoinPro9246",
+      "prNumber": null,
+      "patch": "@@ -8,7 +8,6 @@ status: Draft\n type: Standards Track\n category: Core\n created: 2025-10-03\n-requires: 2926, 7928, 8032\n ---\n \n ## Abstract"
+    },
+    {
+      "sha": "3004926a47d2f0b0d0b032c4b044d2d089e4db66",
+      "date": "2026-02-14T17:22:41Z",
+      "message": "Update EIP-8038: Improve language clarity",
+      "author": "showmespinet",
+      "prNumber": null,
+      "patch": "@@ -79,7 +79,7 @@ Differently from other account read operations, `EXTCODESIZE` and `EXTCODECOPY`\n \n ### Interaction with [EIP-2926](./eip-2926.md)\n \n-[EIP-2926](./eip-2926.md) proposes to change how code is store in the state trie. One of the changes of this proposal is to include the code size as a new field in the account object (`codeSize`). With this change, the code size can be directly accessed with a single read to the database and thus `EXTCODESIZE` should maintain its previous cost formula, without including the additional `GAS_WARM_ACCESS`.\n+[EIP-2926](./eip-2926.md) proposes to change how code is stored in the state trie. One of the changes of this proposal is to include the code size as a new field in the account object (`codeSize`). With this change, the code size can be directly accessed with a single read to the database and thus `EXTCODESIZE` should maintain its previous cost formula, without including the additional `GAS_WARM_ACCESS`.\n \n ### Interaction with [EIP-7928](./eip-7928.md)\n "
+    },
+    {
+      "sha": "0a044eddf2c944d292cadbc3811594a24281d1d5",
+      "date": "2026-01-21T08:25:58Z",
+      "message": "Update EIP-8038: Fix grammar errors",
+      "author": "alizfara112",
+      "prNumber": null,
+      "patch": "@@ -32,7 +32,7 @@ Upon activation of this EIP, the following parameters of the gas model are renam\n | `GAS_STORAGE_UPDATE` | `GAS_COLD_STORAGE_WRITE` |\n | `GAS_COLD_SLOAD` | `GAS_COLD_STORAGE_ACCESS` |\n \n-The following parameters of the gas model updated:\n+The following parameters of the gas model are updated:\n \n | **Parameter** | **Current value** | **New value** | **Increase** |**Operations affected** |\n |:---:|:---:|:---:|:---:|:---:|\n@@ -68,7 +68,7 @@ This proposal does not yet have finalized numbers. To achieve this, we require s\n \n ### Special case for `EXTCODESIZE` and `EXTCODECOPY`\n \n-Differently from other account read operations, `EXTCODESIZE` and `EXTCODECOPY` make two reads to the database. The first read is the same, where the object of the target account is loaded. This object includes the account's `nonce`, `balance`, `codeHash` and `storageRoot`. Then, these operations do another read to collect either the code size of the bytecode of the account. This second read is to an already warmed account, and thus we propose to price it as `GAS_WARM_ACCESS` for consistency.\n+Differently from other account read operations, `EXTCODESIZE` and `EXTCODECOPY` make two reads to the database. The first read is the same, where the object of the target account is loaded. This object includes the account's `nonce`, `balance`, `codeHash` and `storageRoot`. Then, these operations do another read to collect either the code size or the bytecode of the account. This second read is to an already warmed account, and thus we propose to price it as `GAS_WARM_ACCESS` for consistency.\n \n ### Interaction with [EIP-8032](./eip-8032.md)\n "
+    },
+    {
+      "sha": "541172c8acbfd26a1bf2334ad6830e967a085542",
+      "date": "2026-01-21T08:25:22Z",
+      "message": "Update EIP-8038: fix relative links",
+      "author": "grumi54",
+      "prNumber": null,
+      "patch": "@@ -13,7 +13,7 @@ requires: 2926, 7928, 8032\n \n ## Abstract\n \n-This EIP updates the gas cost of state-access operations to reflect Ethereum’s larger state and the consequent slowdown of these operations. It raises the base costs for `GAS_STORAGE_UPDATE`, `GAS_COLD_SLOAD`, and `GAS_COLD_ACCOUNT_ACCESS` and updates the access cost for `EXTCODESIZE` and `EXTCODECOPY`. The design coordinates with EIP-8032: before EIP-8032, parameters assume worst-case contract size; after EIP-8032, they assume worst-case up to `ACTIVATION_THRESHOLD`, with additional depth-based scaling beyond.\n+This EIP updates the gas cost of state-access operations to reflect Ethereum's larger state and the consequent slowdown of these operations. It raises the base costs for `GAS_STORAGE_UPDATE`, `GAS_COLD_SLOAD`, and `GAS_COLD_ACCOUNT_ACCESS` and updates the access cost for `EXTCODESIZE` and `EXTCODECOPY`. The design coordinates with [EIP-8032](./eip-8032.md): before EIP-8032, parameters assume worst-case contract size; after EIP-8032, they assume worst-case up to `ACTIVATION_THRESHOLD`, with additional depth-based scaling beyond.\n \n ## Motivation\n "
+    },
+    {
+      "sha": "f84df7ab0c7aa4ee9a0804ec9a9becd36db066a1",
+      "date": "2026-01-21T08:07:18Z",
+      "message": "Update EIP-8038: Fix EIP cross-reference link format in EIP-8038",
+      "author": "lmorett1",
+      "prNumber": null
+    },
+    {
+      "sha": "a691b7ad1a10043c9ac6cc1853f87d8cde48a35a",
+      "date": "2025-10-24T09:51:29Z",
+      "message": "Update EIP-8038: State-access gas cost update",
+      "author": "misilva73",
+      "prNumber": null,
+      "patch": "@@ -1,9 +1,9 @@\n ---\n eip: 8038\n-title: State-access gas cost increase\n+title: State-access gas cost update\n description: Increases the gas cost of state-access operations to reflect Ethereum’s larger state\n author: Maria Silva (@misilva73), Wei Han Ng (@weiihann), Ansgar Dietrichs (@adietrichs)\n-discussions-to: https://ethereum-magicians.org/t/eip-8038-further-increase-in-state-access-costs/25693\n+discussions-to: https://ethereum-magicians.org/t/eip-8038-state-access-gas-cost-update/25693\n status: Draft\n type: Standards Track\n category: Core\n@@ -23,17 +23,31 @@ Additionally, `EXTCODESIZE` and `EXTCODECOPY` have the same access cost as `BALA\n \n ## Specification\n \n-Upon activation of this EIP, the following parameters of the gas model are updated:\n+### Parameters\n+\n+Upon activation of this EIP, the following parameters of the gas model are renamed:\n+\n+| **Parameter** | **New name** |\n+|:---:|:---:|\n+| `GAS_STORAGE_UPDATE` | `GAS_COLD_STORAGE_WRITE` |\n+| `GAS_COLD_SLOAD` | `GAS_COLD_STORAGE_ACCESS` |\n+\n+The following parameters of the gas model updated:\n \n | **Parameter** | **Current value** | **New value** | **Increase** |**Operations affected** |\n |:---:|:---:|:---:|:---:|:---:|\n-| `GAS_STORAGE_UPDATE` | 5,000 | TBD | TBD | `SSTORE` |\n-| `GAS_COLD_SLOAD` | 2,100 | TBD | TBD | `SSTORE` and `SLOAD` |\n+| `GAS_COLD_STORAGE_WRITE` | 5,000 | TBD | TBD | `SSTORE` |\n+| `GAS_COLD_STORAGE_ACCESS` | 2,100 | TBD | TBD | `SSTORE` and `SLOAD` |\n | `GAS_COLD_ACCOUNT_ACCESS` | 2,600 | TBD | TBD | `*CALL` opcodes, `BALANCE`, `SELFDESTRUCT` and `EXT*` opcodes |\n | `GAS_WARM_ACCESS` | 100 | TBD | TBD | `SSTORE`, `SLOAD`, `*CALL` opcodes, `BALANCE` and `EXT*` opcodes |\n+| `GAS_STORAGE_CLEAR_REFUND` | 4,800 | TBD | TBD | `SSTORE` |\n+| `ACCESS_LIST_STORAGE_KEY_COST` | 1,900 | TBD | TBD | `SSTORE` and `SLOAD`|\n+| `ACCESS_LIST_ADDRESS_COST` | 2,400 | TBD | TBD | `*CALL` opcodes, `BALANCE`, `SELFDESTRUCT` and `EXT*` opcodes |\n \n <-- TODO -->\n \n+### `EXT*` family update\n+\n Besides these parameter changes, the gas cost formula for `EXTCODESIZE` and `EXTCODECOPY` is updated to include an additional `GAS_WARM_ACCESS`:\n \n ```python\n@@ -58,7 +72,7 @@ Differently from other account read operations, `EXTCODESIZE` and `EXTCODECOPY`\n \n ### Interaction with [EIP-8032](eip-8032.md)\n \n-[EIP-8032](eip-8032.md) proposes modifying the `SSTORE` cost formula to account for the storage size of a contract. This is a more accurate method for pricing storage writes. It allows writes to smaller contracts to be cheaper than writes to large contracts, which helps with scaling and is fairer to users. However, [EIP-8032](eip-8032.md) is not yet scheduled for inclusion in a fork, and, as such, this proposal considers two cases for setting the values of `GAS_STORAGE_UPDATE` and `GAS_COLD_SLOAD`:\n+[EIP-8032](eip-8032.md) proposes modifying the `SSTORE` cost formula to account for the storage size of a contract. This is a more accurate method for pricing storage writes. It allows writes to smaller contracts to be cheaper than writes to large contracts, which helps with scaling and is fairer to users. However, [EIP-8032](eip-8032.md) is not yet scheduled for inclusion in a fork, and, as such, this proposal considers two cases for setting the values of `GAS_COLD_STORAGE_WRITE` and `GAS_COLD_STORAGE_ACCESS`:\n \n 1. Before [EIP-8032](eip-8032.md). In this case, we set the parameters assuming a worst-case contract size, which makes state-accessing operations more expensive, independently of the contract size.\n 2. After [EIP-8032](eip-8032.md). In this case, we set the parameters assuming the worst-case until `ACTIVATION_THRESHOLD`, which is the parameter in [EIP-8032](eip-8032.md) that triggers the depth-based cost. This means that contract sizes below the threshold have the same access costs, while contracts above the threshold get exponentially more expensive with increasing size.\n@@ -84,7 +98,7 @@ Users can maintain their usual workflows without modification, as wallet and RPC\n \n ## Security Considerations\n \n-Increasing the cost of state access operations could impact the usability of certain applications. More analysis is needed to understand the potential effects on various dApps and user behaviors.\n+Changing the cost of state access operations could impact the usability of certain applications. More analysis is needed to understand the potential effects on various dApps and user behaviors.\n \n ## Copyright\n "
+    },
+    {
+      "sha": "856781eaaa855d3a59cb3db82cf217ef0945beff",
+      "date": "2025-10-24T08:04:21Z",
+      "message": "Update EIP-8038: correct terminology in EIP-8038 backwards compatibility section",
+      "author": "hawkadrian",
+      "prNumber": null,
+      "patch": "@@ -75,10 +75,10 @@ Differently from other account read operations, `EXTCODESIZE` and `EXTCODECOPY`\n \n This is a backwards-incompatible gas repricing that requires a scheduled network upgrade.\n \n-Wallet developers and node operators MUST update gas estimation handling to accommodate the new calldata cost rules. Specifically:\n+Wallet developers and node operators MUST update gas estimation handling to accommodate the new state access cost rules. Specifically:\n \n - Wallets: Wallets using `eth_estimateGas` MUST be updated to ensure that they correctly account for the updated gas parameters. Failure to do so could result in underestimating gas, leading to failed transactions.\n-- Node Software: RPC methods such as `eth_estimateGas` MUST incorporate the updated formula for gas calculation with the new floor cost values.\n+- Node Software: RPC methods such as `eth_estimateGas` MUST incorporate the updated formula for gas calculation with the new state access cost values.\n \n Users can maintain their usual workflows without modification, as wallet and RPC updates will handle these changes.\n "
+    },
+    {
+      "sha": "2023b9c1519e390ef0b97ac96df796a154d9223d",
+      "date": "2025-10-08T11:34:45Z",
+      "message": "Add EIP: State-access gas cost increase",
+      "author": "misilva73",
+      "prNumber": null
+    }
+  ]
+}

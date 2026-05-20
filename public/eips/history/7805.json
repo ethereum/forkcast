@@ -1,0 +1,75 @@
+{
+  "eipId": 7805,
+  "commits": [
+    {
+      "sha": "9a345f96c2295a678b0ce33e94d41276ddb3fdef",
+      "date": "2026-02-20T09:49:39Z",
+      "message": "Update EIP-7805: update engine API changes",
+      "author": "jihoonsong",
+      "prNumber": null,
+      "patch": "@@ -108,7 +108,7 @@ For each transaction `T` in ILs, perform the following:\n We make the following changes to the engine API:\n \n - Add `engine_getInclusionListV1` endpoint to retrieve an IL from the `ExecutionEngine`.\n-- Add `engine_updatePayloadWithInclusionListV1` endpoint to update a payload with the IL that should be used to build the block. This takes as an argument an 8-byte `payloadId` of the ongoing payload build process, along with the IL itself.\n+- Modify `engine_forkchoiceUpdated` endpoint to update a payload with the IL that should be used to build the block. `payloadAttributes` is extended to include the IL.\n - Modify `engine_newPayload` endpoint to include a parameter for transactions in ILs determined by the IL committee member. If the IL is not satisfied an `INCLUSION_LIST_UNSATISFIED` status must be returned.\n \n #### IL Building"
+    },
+    {
+      "sha": "e192fd7c607542499a68df029940819f471037bc",
+      "date": "2026-02-03T07:42:43Z",
+      "message": "Update EIP-7805: Change author's email",
+      "author": "jihoonsong",
+      "prNumber": null,
+      "patch": "@@ -2,7 +2,7 @@\n eip: 7805\n title: Fork-choice enforced Inclusion Lists (FOCIL)\n description: Allow a committee of validators to force-include a set of transactions in every block\n-author: Thomas Thiery (@soispoke) <thomas.thiery@ethereum.org>, Francesco D'Amato <francesco.damato@ethereum.org>, Julian Ma <julian.ma@ethereum.org>, Barnabé Monnot <barnabe.monnot@ethereum.org>, Terence Tsao <ttsao@offchainlabs.com>, Jacob Kaufmann <jacob.kaufmann@ethereum.org>, Jihoon Song <jihoonsong.dev@gmail.com>\n+author: Thomas Thiery (@soispoke) <thomas.thiery@ethereum.org>, Francesco D'Amato <francesco.damato@ethereum.org>, Julian Ma <julian.ma@ethereum.org>, Barnabé Monnot <barnabe.monnot@ethereum.org>, Terence Tsao <ttsao@offchainlabs.com>, Jacob Kaufmann <jacob.kaufmann@ethereum.org>, Jihoon Song <jihoon.song@ethereum.org>\n discussions-to: https://ethereum-magicians.org/t/eip-7805-committee-based-fork-choice-enforced-inclusion-lists-focil/21578\n status: Draft\n type: Standards Track"
+    },
+    {
+      "sha": "c492bd79366ebb10d07374379031daff4aa9e39a",
+      "date": "2025-10-08T10:58:30Z",
+      "message": "Update EIP-7805: reflect the latest engine APIs spec change",
+      "author": "jihoonsong",
+      "prNumber": null,
+      "patch": "@@ -101,15 +101,15 @@ For each transaction `T` in ILs, perform the following:\n \n   - If `T` is invalid, then continue to the next transaction. \n   \n-  - If `T` is valid, terminate process and return an `INVALID_INCLUSION_LIST` error.\n+  - If `T` is valid, terminate process and return an `INCLUSION_LIST_UNSATISFIED` status.\n \n #### Engine API Changes\n \n We make the following changes to the engine API:\n \n - Add `engine_getInclusionListV1` endpoint to retrieve an IL from the `ExecutionEngine`.\n - Add `engine_updatePayloadWithInclusionListV1` endpoint to update a payload with the IL that should be used to build the block. This takes as an argument an 8-byte `payloadId` of the ongoing payload build process, along with the IL itself.\n-- Modify `engine_newPayload` endpoint to include a parameter for transactions in ILs determined by the IL committee member. If the IL is not satisfied an `INVALID_INCLUSION_LIST` error must be returned.\n+- Modify `engine_newPayload` endpoint to include a parameter for transactions in ILs determined by the IL committee member. If the IL is not satisfied an `INCLUSION_LIST_UNSATISFIED` status must be returned.\n \n #### IL Building\n "
+    },
+    {
+      "sha": "b2b74250990514a53f2bda289c9ff45aa6282fcf",
+      "date": "2025-06-27T10:07:48Z",
+      "message": "Update EIP-7805: Use `MAX_TRANSACTIONS_PER_PAYLOAD` for the max length of IL transactions",
+      "author": "jihoonsong",
+      "prNumber": null,
+      "patch": "@@ -141,7 +141,7 @@ class InclusionList(Container):\n     slot: Slot\n     validator_index: ValidatorIndex\n     inclusion_list_committee_root: Root\n-    transactions: List[Transaction, MAX_TRANSACTIONS_PER_INCLUSION_LIST]\n+    transactions: List[Transaction, MAX_TRANSACTIONS_PER_PAYLOAD]\n ```\n \n ```python"
+    },
+    {
+      "sha": "bac85936a0175ea85a34fced9eb591c79cb857d8",
+      "date": "2025-06-02T17:46:59Z",
+      "message": "Update EIP-7805: expand on EL changes",
+      "author": "Marchhill",
+      "prNumber": null
+    },
+    {
+      "sha": "9f047ab7d9a19d4c188f8a1cda5164f3539eb999",
+      "date": "2025-03-13T10:58:15Z",
+      "message": "fix 7805 asset dir",
+      "author": "SamWilsn",
+      "prNumber": null,
+      "patch": "@@ -29,7 +29,7 @@ In an effort to shield the Ethereum validator set from centralizing forces, the\n \n FOCIL is a committee-based, fork-choice enforced inclusion list (IL) design that improves upon previous IL mechanisms and block co-creation proposals. It addresses issues related to bribing/extortion attacks, IL equivocation, account abstraction (AA), and transaction invalidation.\n \n-![FOCIL diagram](../assets/eip-FOCIL/diagram_FOCIL.png)\n+![FOCIL diagram](../assets/eip-7805/diagram_FOCIL.png)\n \n ### Roles And Participants\n "
+    },
+    {
+      "sha": "a34d0be790f3b12aaf9758e71f3a2970aad4057e",
+      "date": "2025-01-12T19:25:36Z",
+      "message": "Update EIP-7805: maximum inclusion list size is in bytes",
+      "author": "nflaig",
+      "prNumber": null,
+      "patch": "@@ -40,7 +40,7 @@ This section outlines the workflow of FOCIL, detailing the roles and responsibil\n - **`Slot N`, `t=0 to 8s`**:\n IL committee members construct their ILs by including transactions pending in the public mempool, and broadcast them over the P2P network after processing the block for `slot N` and confirming it as the head. If no block is received by `t=7s`, they should run `get_head` and build and release their ILs based on the node’s local head.\n \n-  By default, ILs are built by selecting raw transactions from the public mempool, ordered by priority fees, up to the IL’s maximum size in bits of `MAX_BYTES_PER_INCLUSION_LIST = 8 KiB` per IL. Additional rules can be optionally applied to maximize censorship resistance, such as prioritizing valid transactions that have been pending in the mempool the longest.\n+  By default, ILs are built by selecting raw transactions from the public mempool, ordered by priority fees, up to the IL’s maximum size in bytes of `MAX_BYTES_PER_INCLUSION_LIST = 8 KiB` per IL. Additional rules can be optionally applied to maximize censorship resistance, such as prioritizing valid transactions that have been pending in the mempool the longest.\n \n #### Validators\n \n@@ -103,7 +103,7 @@ For each transaction `T` in ILs, perform the following:\n \n 3. Execute `T` on state `S`. Assert that the execution of `T` fails.\n \n-If `B` is full, the process terminates. Also note that we do not need to reset the state to `S`, since the only way for a transaction to alter the state is for it to execute sucessfully, in which case the block is invalid, and so the block will not be applied to the state.\n+If `B` is full, the process terminates. Also note that we do not need to reset the state to `S`, since the only way for a transaction to alter the state is for it to execute successfully, in which case the block is invalid, and so the block will not be applied to the state.\n \n We make the following changes to the engine API:\n "
+    },
+    {
+      "sha": "ca581e38eec22c10a48bf3663070d95e982f850e",
+      "date": "2024-12-16T11:58:00Z",
+      "message": "Update EIP-7805: Add explicit references to `MAX_BYTES_PER_INCLUSION_LIST`",
+      "author": "soispoke",
+      "prNumber": null,
+      "patch": "@@ -40,7 +40,7 @@ This section outlines the workflow of FOCIL, detailing the roles and responsibil\n - **`Slot N`, `t=0 to 8s`**:\n IL committee members construct their ILs by including transactions pending in the public mempool, and broadcast them over the P2P network after processing the block for `slot N` and confirming it as the head. If no block is received by `t=7s`, they should run `get_head` and build and release their ILs based on the node’s local head.\n \n-  By default, ILs are built by selecting raw transactions from the public mempool, ordered by priority fees, up to the IL’s maximum size in bits of 8 KB per IL. Additional rules can be optionally applied to maximize censorship resistance, such as prioritizing valid transactions that have been pending in the mempool the longest.\n+  By default, ILs are built by selecting raw transactions from the public mempool, ordered by priority fees, up to the IL’s maximum size in bits of `MAX_BYTES_PER_INCLUSION_LIST = 8 KiB` per IL. Additional rules can be optionally applied to maximize censorship resistance, such as prioritizing valid transactions that have been pending in the mempool the longest.\n \n #### Validators\n \n@@ -79,7 +79,7 @@ When validators receive ILs from the P2P network, they perform a series of valid\n 3. Received two or fewer ILs from this IL committee member (see IL equivocation section below).\n 4. The IL is correctly signed by the validator.\n 5. The validator is part of the IL committee.\n-6. The size of a IL does not exceed the maximum size allowed (e.g., 8 KB).\n+6. The size of a IL does not exceed the maximum size allowed (e.g., `MAX_BYTES_PER_INCLUSION_LIST = 8 KiB`).\n \n ## Specification\n "
+    },
+    {
+      "sha": "d923fca9f37b682b91cb1608cee2bce9815d1de5",
+      "date": "2024-11-08T04:38:05Z",
+      "message": "Add EIP: Fork-choice enforced Inclusion Lists (FOCIL)",
+      "author": "soispoke",
+      "prNumber": null
+    }
+  ]
+}

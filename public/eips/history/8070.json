@@ -1,0 +1,42 @@
+{
+  "eipId": 8070,
+  "commits": [
+    {
+      "sha": "64d1b463e1c75884c995f81d8ffab40401acbcaa",
+      "date": "2026-05-19T18:24:18Z",
+      "message": "Update EIP-8070: Update EIP-8070",
+      "author": "kamilsa",
+      "prNumber": null
+    },
+    {
+      "sha": "ea725b44a1ab60147814f8f0ddd5e26f74ce0643",
+      "date": "2026-04-16T15:16:04Z",
+      "message": "Update EIP-8070: Prefix title with eth/72 protocol version",
+      "author": "barnabasbusa",
+      "prNumber": null,
+      "patch": "@@ -1,6 +1,6 @@\n ---\n eip: 8070\n-title: Sparse Blobpool\n+title: eth/72 - Sparse Blobpool\n description: Introduce custody-aligned sampling in the EL blobpool to vacate bandwidth\n author: Raúl Kripalani (@raulk), Bosul Mun (@healthykim), Francesco D'Amato (@fradamt), Csaba Kiraly (@cskiraly), Felix Lange (@fjl), Marios Ioannou (@mariosioannou-create), Alex Stokes (@ralexstokes)\n discussions-to: https://ethereum-magicians.org/t/eip-8070-sparse-blobpool/26023"
+    },
+    {
+      "sha": "255e414069dd4e4f707c136d5923103251ab865e",
+      "date": "2026-04-15T11:59:40Z",
+      "message": "Update EIP-8070: Rename protocol version to eth/72 and fix typos",
+      "author": "barnabasbusa",
+      "prNumber": null
+    },
+    {
+      "sha": "66ad6b9a9f750e8e4f742ffe83fd38fa65f26da8",
+      "date": "2026-04-09T06:32:24Z",
+      "message": "Update EIP-8070: Remove per-request column cap",
+      "author": "healthykim",
+      "prNumber": null,
+      "patch": "@@ -63,7 +63,7 @@ Upon receiving a `NewPooledTransactionHashes` announcement containing a previous\n If the node is a provider, and the announcing peer signaled full availability, the node MUST request the signed transaction and full blob data from that peer via `GetPooledTransactions` and `GetCells` with an all-ones `cell_mask` bitmap. Upon successful retrieval and validation (as per [EIP-7594](./eip-7594.md)), the node MUST in turn announce the transaction hash to its peers via `NewPooledTransactionHashes`, also with an all-ones `cell_mask`.\n \n **Sampler role.**\n-If the node is a sampler, the node MUST only request the transaction payload via `GetPooledTransactions`. It SHOULD await to observe at least 2 distinct provider announcements, and to successfully receive and validate the signed transaction, before acting further. It then MUST request custody-aligned cells from peers that announced overlapping availability, including providers. When fetching from a provider, the node MUST request `C_extra` random columns in addition to its custody set (see \"Sampling noise\" in Rationale). The node MUST request no more than `C_req` columns per request, at all times.\n+If the node is a sampler, the node MUST only request the transaction payload via `GetPooledTransactions`. It SHOULD await to observe at least 2 distinct provider announcements, and to successfully receive and validate the signed transaction, before acting further. It then MUST request custody-aligned cells from peers that announced overlapping availability, including providers. When fetching from a provider, the node MUST request `C_extra` random columns in addition to its custody set (see \"Sampling noise\" in Rationale). The responder MAY truncate its `Cells` response depending on its current capacity, returning fewer cells than requested.\n \n **Ensuring fairness.**\n Nodes MAY keep a record of the frequency of full payload fetches made by each peer, relative to their sampling requests. Nodes MAY elect to disconnect peers who exceed some locally-determined fairness heuristic. Such heuristics are not object of standardization.\n@@ -146,7 +146,6 @@ Response:\n - **Reconstruction threshold**: 64 cells required for Reed-Solomon decoding\n - **Minimum providers to sample**: minimum 2 providers should be observed before sampling\n - **Extra random columns per request**: `C_extra = 1`\n-- **Maximum columns per request**: `C_req = 8`\n \n ## Rationale\n "
+    },
+    {
+      "sha": "14c7ad3c5742a619985020e66a3336b24c83d039",
+      "date": "2025-10-31T00:20:43Z",
+      "message": "Add EIP: Sparse Blobpool",
+      "author": "raulk",
+      "prNumber": null
+    }
+  ]
+}

@@ -1,0 +1,29 @@
+{
+  "eipId": 7954,
+  "commits": [
+    {
+      "sha": "83509e66344741895858ad756f9e3d290e5a88f4",
+      "date": "2026-01-20T18:23:32Z",
+      "message": "Update EIP-7954: Move to Draft",
+      "author": "benaadams",
+      "prNumber": null,
+      "patch": "@@ -2,9 +2,9 @@\n eip: 7954\n title: Increase Maximum Contract Size\n description: Raise the maximum contract code size from 24KiB to 32KiB and initcode size from 48KiB to 64KiB.\n-author: Giulio Rebuffo (@Giulio2002), Ben Adams (@badams)\n+author: Giulio Rebuffo (@Giulio2002), Ben Adams (@benaadams)\n discussions-to: https://ethereum-magicians.org/t/increase-maximum-contract-size-to-48kb/24509\n-status: Stagnant\n+status: Draft\n type: Standards Track\n category: Core\n created: 2025-06-09"
+    },
+    {
+      "sha": "e43e899bb103f267a7844599c7cd3226518b519d",
+      "date": "2026-01-18T00:29:01Z",
+      "message": "(bot 1272989785) moving EIPS/eip-7954.md to stagnant (#10986)",
+      "author": "eth-bot",
+      "prNumber": 10986,
+      "patch": "@@ -4,7 +4,7 @@ title: Increase Maximum Contract Size\n description: Raise the maximum contract code size from 24KiB to 32KiB and initcode size from 48KiB to 64KiB.\n author: Giulio Rebuffo (@Giulio2002), Ben Adams (@badams)\n discussions-to: https://ethereum-magicians.org/t/increase-maximum-contract-size-to-48kb/24509\n-status: Draft\n+status: Stagnant\n type: Standards Track\n category: Core\n created: 2025-06-09"
+    },
+    {
+      "sha": "210666499e3939653f91652c4f695a3e2fa1aadd",
+      "date": "2025-06-23T06:37:40Z",
+      "message": "Add EIP: Increase Maximum Contract Size",
+      "author": "Giulio2002",
+      "prNumber": null,
+      "patch": "@@ -0,0 +1,43 @@\n+---\n+eip: 7954\n+title: Increase Maximum Contract Size\n+description: Raise the maximum contract code size from 24KiB to 32KiB and initcode size from 48KiB to 64KiB.\n+author: Giulio Rebuffo (@Giulio2002), Ben Adams (@badams)\n+discussions-to: https://ethereum-magicians.org/t/increase-maximum-contract-size-to-48kb/24509\n+status: Draft\n+type: Standards Track\n+category: Core\n+created: 2025-06-09\n+requires: 170, 3860\n+---\n+\n+## Abstract\n+\n+This EIP proposes to raise the maximum allowed size for contract code deployed on Ethereum from 24,576 bytes to 32,768 bytes.\n+\n+## Motivation\n+\n+The current 24KiB contract size limit can be restrictive for complex contracts and applications. Increasing the limit to 32KiB allows for more feature-rich contracts while maintaining reasonable constraints on block and state growth.\n+\n+## Specification\n+\n+1. Update the [EIP-170](./eip-170.md) contract code size limit of 24KiB (`0x6000` bytes) to 32KiB (`0x8000` bytes).\n+2. Update the [EIP-3860](./eip-3860.md) initcode size limit of 48KiB (`0xC000` bytes) to 64KiB (`0x10000` bytes).\n+\n+## Rationale\n+\n+- **Developer Flexibility:** Enables more complex contracts and features.\n+- **Backward Compatibility:** Existing contracts are unaffected.\n+- **Simplicity:** Only the size limit is changed, with no other protocol modifications.\n+\n+## Backwards Compatibility\n+\n+This change is not backwards compatible and must be activated via a network upgrade (hard fork). Contracts larger than 24KiB, up to 32KiB, will be deployable after activation.\n+\n+## Security Considerations\n+\n+A higher contract size limit may marginally increase the risk of denial-of-service attacks via large contracts, but the new limit remains conservative.\n+\n+## Copyright\n+\n+Copyright and related rights waived via [CC0](../LICENSE.md)."
+    }
+  ]
+}

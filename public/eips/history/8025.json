@@ -1,0 +1,21 @@
+{
+  "eipId": 8025,
+  "commits": [
+    {
+      "sha": "1bfe1b98512fda03ba4e7b870b6878608354f739",
+      "date": "2026-04-26T00:44:08Z",
+      "message": "(bot 1272989785) moving EIPS/eip-8025.md to stagnant (#11517)",
+      "author": "eth-bot",
+      "prNumber": 11517,
+      "patch": "@@ -4,7 +4,7 @@ title: Optional Execution Proofs\n description: Introducing optional execution proofs on the consensus layer\n author: Kevaundray Wedderburn (@kevaundray), Justin Drake (@JustinDrake) <justin@ethereum.org>\n discussions-to: https://ethereum-magicians.org/t/eip-optional-execution-proofs/25500\n-status: Draft\n+status: Stagnant\n type: Standards Track\n category: Core\n created: 2025-09-17"
+    },
+    {
+      "sha": "3a87e0d37c94905e628b43927d4f5e6ba6442d9e",
+      "date": "2025-09-17T16:43:25Z",
+      "message": "Add EIP: Optional Execution Proofs",
+      "author": "kevaundray",
+      "prNumber": null,
+      "patch": "@@ -0,0 +1,61 @@\n+---\n+eip: 8025\n+title: Optional Execution Proofs\n+description: Introducing optional execution proofs on the consensus layer\n+author: Kevaundray Wedderburn (@kevaundray), Justin Drake (@JustinDrake) <justin@ethereum.org>\n+discussions-to: https://ethereum-magicians.org/t/eip-optional-execution-proofs/25500\n+status: Draft\n+type: Standards Track\n+category: Core\n+created: 2025-09-17\n+---\n+\n+## Abstract\n+\n+Optional execution proofs allow beacon nodes to verify the validity of the execution payload within a beacon block without running an execution layer client. The execution proofs are sent over the consensus layer's peer-to-peer network.\n+\n+## Motivation\n+\n+Optional execution proofs reduce the hardware and bandwidth requirements that are needed for an attester to verify a beacon block. Moreover, the cost to verify to a block no longer grows with the gas limit.\n+\n+Since these are optional, protocol upgrades cannot be based on the improvements in this EIP. This EIP allows us to safely test execution proofs without making it explicitly consensus critical.\n+\n+## Specification\n+\n+This is a consensus layer change only. \n+\n+Validators will now be able to enable two new modes:\n+\n+- zkEVM Proof generating\n+- Stateless validation\n+\n+When a proof generating node receives a beacon block, they will create the necessary proofs for the execution payload in the block and re-propagate them on the specified subnets.\n+\n+When a stateless validating node receives a beacon block, they will check to see if they have already received a valid execution proof for that execution payload from the specified subnet.\n+\n+The detailed specifications are in the consensus-specs repository.\n+\n+The key words \"MUST\", \"MUST NOT\", \"REQUIRED\", \"SHALL\", \"SHALL NOT\", \"SHOULD\", \"SHOULD NOT\", \"RECOMMENDED\", \"NOT RECOMMENDED\", \"MAY\", and \"OPTIONAL\" in this document are to be interpreted as described in RFC 2119 and RFC 8174.\n+\n+## Rationale\n+\n+ <-- TODO -->\n+\n+## Backwards Compatibility\n+\n+This is backwards compatible and does not require a hardfork.\n+\n+## Test Cases\n+\n+<-- TODO -->\n+\n+## Reference Implementation\n+<-- TODO -->\n+\n+## Security Considerations\n+\n+ <-- TODO -->\n+\n+## Copyright\n+\n+Copyright and related rights waived via [CC0](../LICENSE.md)."
+    }
+  ]
+}

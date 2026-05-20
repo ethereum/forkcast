@@ -1,0 +1,207 @@
+{
+  "eipId": 8141,
+  "commits": [
+    {
+      "sha": "0b19715637bb81a43e0d208f2b78899795356306",
+      "date": "2026-05-14T19:59:32Z",
+      "message": "Update EIP-8141: Add EXPIRY_VERIFIER frame for tx expiry",
+      "author": "nerolation",
+      "prNumber": null
+    },
+    {
+      "sha": "8b61fdc45aa9ccf08cac2df03ec21d34e7b3f936",
+      "date": "2026-05-12T18:05:03Z",
+      "message": "Update EIP-8141: Support atomic batching with any frames (#11652)",
+      "author": "derekchiang",
+      "prNumber": 11652,
+      "patch": "@@ -92,7 +92,7 @@ The `flags` field configures additional execution constraints. Bit positions are\n | Flag bits | Meaning                      | Valid with  |\n |-----------|------------------------------| ----------- |\n | 0-1       | Approval scope               | Any mode    |\n-| 2         | Atomic batch                 | SENDER mode |\n+| 2         | Atomic batch                 | Any mode    |\n \n The `Valid with` column indicates the mode under which the flag is valid. If a flag is not valid under the current mode, the transaction is invalid.\n \n@@ -118,11 +118,9 @@ for frame in tx.frames:\n     total_frame_gas += frame.gas_limit\n     assert total_frame_gas <= 2**64 - 1\n \n-    # Atomic batch flag (bit 2 of flags) is only valid with SENDER mode, and next frame must also be SENDER.\n+    # Atomic batch flag (bit 2 of flags) requires a subsequent frame to batch with.\n     if frame.flags & ATOMIC_BATCH_FLAG:\n-        assert frame.mode == SENDER                    # must be SENDER\n         assert i + 1 < len(tx.frames)                  # must not be last frame\n-        assert tx.frames[i + 1].mode == SENDER         # next frame must be SENDER\n ```\n \n #### Receipt Encoding\n@@ -179,8 +177,8 @@ Then for each frame:\n     - Execute the frame as a `STATICCALL`, disallowing state manipulation.\n       - Only `APPROVE` can modify the state or transaction context in `VERIFY`.\n     - If the frame does not successfully call `APPROVE`, the transaction is invalid.\n-3. If frame has mode `SENDER` and it fails, unroll associated atomic batch.\n-    - An **atomic batch** is a maximal contiguous sequence of `SENDER` frames `[i, j]` where `j > i`, frames `i` through `j - 1` have `ATOMIC_BATCH_FLAG` set, and frame `j` does not have `ATOMIC_BATCH_FLAG` set.\n+3. If a frame is part of an atomic batch and it fails, unroll the associated atomic batch.\n+    - An **atomic batch** is a maximal contiguous sequence of frames `[i, j]` where `j > i`, frames `i` through `j - 1` have `ATOMIC_BATCH_FLAG` set, and frame `j` does not have `ATOMIC_BATCH_FLAG` set.\n     - When a frame in the batch fails, the state must be rolled back to the condition it was immediately before the atomic batch began. All remaining frames in the atomic batch are skipped.\n     - Since skipped frames are not executed, the gas value allotted to them is refunded at the end of the transaction.\n     - If the frame does not have an associated atomic batch, further special\n@@ -464,8 +462,9 @@ To be accepted into the public mempool, a frame transaction must satisfy the fol\n     - `self_verify` must call `APPROVE(APPROVE_EXECUTION_AND_PAYMENT)`.\n     - `only_verify` must call `APPROVE(APPROVE_EXECUTION)`.\n 4. `pay` must execute in `VERIFY` mode and successfully call `APPROVE(APPROVE_PAYMENT)`.\n-5. The sum of `gas_limit` values across the validation prefix must not exceed `MAX_VERIFY_GAS`.\n-6. Nodes should stop simulation immediately once `payer` has been set.\n+5. No frame in the validation prefix may have the `ATOMIC_BATCH_FLAG` set.\n+6. The sum of `gas_limit` values across the validation prefix must not exceed `MAX_VERIFY_GAS`.\n+7. Nodes should stop simulation immediately once `payer` has been set.\n \n #### Canonical Paymaster Exception\n \n@@ -630,9 +629,9 @@ Future optimizations based on pre-announcing state elements a transaction will t\n \n ### Atomic batching\n \n-Atomic batching allows multiple `SENDER` frames to be grouped into a single all-or-nothing unit. This is useful when a sequence of calls is only meaningful if all succeed together, such as an approval followed by a swap, or a series of interdependent state changes. Without this feature, a revert in one frame would leave the preceding frames' state changes applied, potentially leaving the account in an undesirable intermediate state.\n+Atomic batching allows multiple frames to be grouped into a single all-or-nothing unit. This is useful when a sequence of calls is only meaningful if all succeed together, such as an approval followed by a swap, or a series of interdependent state changes. Without this feature, a revert in one frame would leave the preceding frames' state changes applied, potentially leaving the account in an undesirable intermediate state.\n \n-Using a flag to indicate atomic batches saves us from having to introduce a new mode. Batches are identified purely by consecutive `SENDER` frames with the flag set, terminated by a `SENDER` frame without it. This design enables consecutive atomic batches since the batch boundary is clearly indicated by the `SENDER` frame without the flag.\n+Using a flag to indicate atomic batches saves us from having to introduce a new mode. Batches are identified purely by consecutive frames with the flag set, terminated by a frame without it. This design enables consecutive atomic batches since the batch boundary is clearly indicated by the frame without the flag.\n \n ### Per-frame cost\n "
+    },
+    {
+      "sha": "235d5056eea9df33be7517a9c48872cd2eca2971",
+      "date": "2026-05-11T19:00:32Z",
+      "message": "Update EIP-8141: Frames cleanup (#11621)",
+      "author": "lightclient",
+      "prNumber": 11621
+    },
+    {
+      "sha": "d56e73ada787162d8a366267e549bd27484699e3",
+      "date": "2026-05-05T19:46:40Z",
+      "message": "Update EIP-8141: Disable EIP-3607 check for frame transactions (#11272)",
+      "author": "Thegaram",
+      "prNumber": 11272,
+      "patch": "@@ -8,7 +8,7 @@ status: Draft\n type: Standards Track\n category: Core\n created: 2026-01-29\n-requires: 1559, 2718, 4844\n+requires: 1559, 2718, 3607, 4844\n ---\n \n ## Abstract\n@@ -741,6 +741,12 @@ available_paymaster_balance = state.balance(paymaster) - reserved_pending_cost(p\n \n When a new canonical block is accepted, the node removes any included frame transactions from the public mempool, updates paymaster reservations accordingly, and identifies the remaining pending transactions whose tracked dependencies were touched by the block. This includes at least transactions for the same sender, transactions whose recorded sender storage slots changed, and transactions that reference a canonical paymaster instance whose balance, code, or delayed-withdrawal state changed. The node then re-simulates the validation prefix of only those affected transactions against the new head and evicts any transaction that no longer satisfies the public mempool rules.\n \n+#### Transaction origination\n+\n+Do not apply the restriction put in place by [EIP-3607](./eip-3607.md) to frame transactions.\n+Specifically, `SENDER` frames originate calls where `tx.sender` is a contract account.\n+Validation logic for other transaction types remains unchanged, i.e. the transaction is only valid if the sender account's code is either empty or a valid delegation indicator.\n+\n ## Rationale\n \n ### Canonical signature hash"
+    },
+    {
+      "sha": "a62036355813649d8e71e24dca2fff677e768f71",
+      "date": "2026-04-30T12:05:53Z",
+      "message": "Update EIP-8141: Relax mempool rules to not require a specific factory (#11567)",
+      "author": "derekchiang",
+      "prNumber": 11567
+    },
+    {
+      "sha": "d3a30ad46317d3ef89267fc78b27a9bc58135900",
+      "date": "2026-04-29T09:50:01Z",
+      "message": "Update EIP-8141: remove the rlp call batch for default account",
+      "author": "lightclient",
+      "prNumber": null,
+      "patch": "@@ -406,10 +406,7 @@ When using frame transactions with EOAs that have neither code nor an [EIP-7702]\n     - Otherwise revert.\n   - Call `APPROVE(allowed_scope)`.\n - If `mode` is `SENDER`:\n-  - If `resolved_target != tx.sender`, return successfully with empty data. This matches a call to an empty-code account; any top-level `frame.value` transfer has already been applied by the frame call itself.\n-  - Otherwise, read `frame.data` as RLP encoding of `calls = [[target, value, data]]`.\n-  - For each call in `calls`, execute the call with `msg.sender = tx.sender`.\n-    - If any call reverts, revert the frame.\n+  - Revert the frame.\n - If `mode` is `DEFAULT`:\n   - Revert the frame.\n \n@@ -484,17 +481,7 @@ def default_code(frame, tx):\n         APPROVE(allowed_scope)\n \n     elif mode == SENDER:\n-        if resolved_target != tx.sender:\n-            # Empty-code account behavior: succeed immediately. Any top-level\n-            # frame.value transfer has already been applied by the frame call.\n-            return\n-\n-        # frame.data layout: RLP-encoded [[target, value, data], ...]\n-        calls = rlp_decode(frame.data)\n-        for call_target, call_value, call_data in calls:\n-            result = evm_call(caller=tx.sender, to=call_target, value=call_value, data=call_data)\n-            if result.reverted:\n-                revert()\n+        revert()\n \n     elif mode == DEFAULT:\n         revert()"
+    },
+    {
+      "sha": "9da8dd815e80e8dc87b3d3c6dcce486b811347bc",
+      "date": "2026-04-29T09:44:06Z",
+      "message": "Update EIP-8141: allow payer to approve before sender\" (#11579)",
+      "author": "lightclient",
+      "prNumber": 11579
+    },
+    {
+      "sha": "778fcc1dfd1b1d7fb9a33d8111744efa3b0dd631",
+      "date": "2026-04-28T17:56:29Z",
+      "message": "Update EIP-8141: allow payer to approve before sender",
+      "author": "lightclient",
+      "prNumber": null
+    },
+    {
+      "sha": "6319ea6c8253729676f014dbf7f9bbd3f319f7f9",
+      "date": "2026-04-22T02:31:46Z",
+      "message": "Update EIP-8141: mix in transaction type to the sighash",
+      "author": "derekchiang",
+      "prNumber": null,
+      "patch": "@@ -171,7 +171,7 @@ def compute_sig_hash(tx: FrameTx) -> Hash:\n     for i, frame in enumerate(tx_copy.frames):\n         if frame.mode == VERIFY:\n             tx_copy.frames[i].data = Bytes()\n-    return keccak(rlp(tx_copy))\n+    return keccak(bytes([FRAME_TX_TYPE]) + rlp(tx_copy))\n ```\n \n ### New Opcodes"
+    },
+    {
+      "sha": "a74eab9893682038712f7d10846e486ddcb6d8b5",
+      "date": "2026-04-16T20:25:54Z",
+      "message": "Update EIP-8141: add value field to frame",
+      "author": "lightclient",
+      "prNumber": null
+    },
+    {
+      "sha": "131df0a65558113e5bc1cdcd79c29bb3d844a7e5",
+      "date": "2026-04-14T19:07:01Z",
+      "message": "Update EIP-8141: Tighten spec (#11521)",
+      "author": "benaadams",
+      "prNumber": 11521
+    },
+    {
+      "sha": "3d84bbaab62ea0b16072d5c315f50fddccc40a3b",
+      "date": "2026-04-08T17:26:11Z",
+      "message": "Update EIP-8141: Add EIP-1559 to requires header",
+      "author": "BonyHanter83",
+      "prNumber": null,
+      "patch": "@@ -8,7 +8,7 @@ status: Draft\n type: Standards Track\n category: Core\n created: 2026-01-29\n-requires: 2718, 4844\n+requires: 1559, 2718, 4844\n ---\n \n ## Abstract"
+    },
+    {
+      "sha": "5aa66fab4c58f050e26618de163319cb257576c8",
+      "date": "2026-03-26T05:21:32Z",
+      "message": "Update EIP-8141: update default code to match the latest spec",
+      "author": "derekchiang",
+      "prNumber": null
+    },
+    {
+      "sha": "bdf407dc5a78b8ddec97a668334b9a4b017f6def",
+      "date": "2026-03-25T23:46:21Z",
+      "message": "Update EIP-8141: add mempool policy",
+      "author": "lightclient",
+      "prNumber": null
+    },
+    {
+      "sha": "d5ff279f290e686b44f9ffebbd22dccb2643319f",
+      "date": "2026-03-25T23:24:58Z",
+      "message": "Update EIP-8141: add support for atomic batching",
+      "author": "derekchiang",
+      "prNumber": null
+    },
+    {
+      "sha": "ee66073462f5c0f5db43353b5ce4183a72157327",
+      "date": "2026-03-13T23:31:13Z",
+      "message": "Update EIP-8141: add @derekchiang as a coauthor",
+      "author": "derekchiang",
+      "prNumber": null,
+      "patch": "@@ -2,7 +2,7 @@\n eip: 8141\n title: Frame Transaction\n description: Add frame abstraction for transaction validation, execution, and gas payment\n-author: Vitalik Buterin (@vbuterin), lightclient (@lightclient), Felix Lange (@fjl), Yoav Weiss (@yoavw), Alex Forshtat (@forshtat), Dror Tirosh (@drortirosh), Shahaf Nacson (@shahafn)\n+author: Vitalik Buterin (@vbuterin), lightclient (@lightclient), Felix Lange (@fjl), Yoav Weiss (@yoavw), Alex Forshtat (@forshtat), Dror Tirosh (@drortirosh), Shahaf Nacson (@shahafn), Derek Chiang (@derekchiang)\n discussions-to: https://ethereum-magicians.org/t/frame-transaction/27617\n status: Draft\n type: Standards Track"
+    },
+    {
+      "sha": "6b9954ee712ef3c973fe1c31b16e16a212280930",
+      "date": "2026-03-13T00:58:16Z",
+      "message": "Update EIP-8141: fix bit indices",
+      "author": "fjl",
+      "prNumber": null,
+      "patch": "@@ -60,7 +60,7 @@ If no blobs are included, `blob_versioned_hashes` must be an empty list and `max\n The `mode` of each frame sets the context of execution. It allows the protocol to identify\n the purpose of the frame within the execution loop.\n \n-The execution mode of a frame is identified by the lower bits (< 8) of the `mode` field.\n+The execution mode of a frame is identified by the lower bits (<= 8) of the `mode` field.\n The modes are explained in detail below.\n \n | `mode & 0xFF` | Name           | Summary                                    |\n@@ -88,12 +88,12 @@ Frame executes as regular call where the caller address is `sender`. This mode e\n \n ##### Approval Bits\n \n-The upper bits (>= 8) of `mode` configure the execution environment.\n+The upper bits (> 8) of `mode` configure the execution environment.\n \n | Mode bit | Meaning                      |\n |----------|------------------------------|\n-| 8        | APPROVE of execution allowed |\n-| 9        | APPROVE of payment allowed   |\n+| 9        | APPROVE of execution allowed |\n+| 10       | APPROVE of payment allowed   |\n \n #### Constraints\n \n@@ -158,7 +158,7 @@ The `scope` operand must be one of the following values:\n \n Any other value results in an exceptional halt.\n \n-Usabe `scope` operands are constrained by bits 8 and 9 of the `frame.mode`, and using\n+Usabe `scope` operands are constrained by bits 9 and 10 of the `frame.mode`, and using\n a non-allowed scope also results in an exceptional halt.\n \n - If `(frame.mode>>8) & 3 == 1`, only scope `0x0` can be used."
+    },
+    {
+      "sha": "df2a272178b5fde1df63c60f71c9c86dcd6e6b7b",
+      "date": "2026-03-12T14:08:59Z",
+      "message": "Update EIP-8141: add approval bits to frame",
+      "author": "fjl",
+      "prNumber": null,
+      "patch": "@@ -55,15 +55,20 @@ frames = [[mode, target, gas_limit, data], ...]\n \n If no blobs are included, `blob_versioned_hashes` must be an empty list and `max_fee_per_blob_gas` must be `0`.\n \n-#### Modes\n+#### Frame Modes\n \n-There are three modes:\n+The `mode` of each frame sets the context of execution. It allows the protocol to identify\n+the purpose of the frame within the execution loop.\n \n-| Mode | Name           | Summary                                                   |\n-| ---- | -------------- | --------------------------------------------------------- |\n-|    0 | `DEFAULT`      | Execute frame as `ENTRY_POINT`                            |\n-|    1 | `VERIFY`       | Frame identifies as transaction validation                |\n-|    2 | `SENDER`       | Execute frame as `sender`                                 |\n+The execution mode of a frame is identified by the lower bits (< 8) of the `mode` field.\n+The modes are explained in detail below.\n+\n+| `mode & 0xFF` | Name           | Summary                                    |\n+|---------------|----------------|--------------------------------------------|\n+| 0             | `DEFAULT` mode | Execute frame as `ENTRY_POINT`             |\n+| 1             | `VERIFY` mode  | Frame identifies as transaction validation |\n+| 2             | `SENDER` mode  | Execute frame as `sender`                  |\n+| 3..255        | reserved       |\n \n ##### `DEFAULT` Mode\n \n@@ -81,6 +86,15 @@ Frames in this mode will have their data elided from signature hash calculation\n \n Frame executes as regular call where the caller address is `sender`. This mode effectively acts on behalf of the transaction sender and can only be used after explicitly approved.\n \n+##### Approval Bits\n+\n+The upper bits (>= 8) of `mode` configure the execution environment.\n+\n+| Mode bit | Meaning                      |\n+|----------|------------------------------|\n+| 8        | APPROVE of execution allowed |\n+| 9        | APPROVE of payment allowed   |\n+\n #### Constraints\n \n Some validity constraints can be determined statically. They are outlined below:\n@@ -135,14 +149,22 @@ If the currently executing account is not `frame.target` (i.e. if `ADDRESS != fr\n \n ##### Scope Operand\n \n-The scope operand must be one of the following values:\n+The `scope` operand must be one of the following values:\n \n-1. `0x0`: Approval of execution - the sender contract approves future frames calling on its behalf. Only valid when `frame.target` equals `tx.sender`.\n+1. `0x0`: Approval of execution - the sender contract approves future frames calling on its behalf.\n+   - Note this is only valid when `frame.target` equals `tx.sender`.\n 2. `0x1`: Approval of payment - the contract approves paying the total gas cost for the transaction.\n 3. `0x2`: Approval of execution and payment - combines both `0x0` and `0x1`.\n \n Any other value results in an exceptional halt.\n \n+Usabe `scope` operands are constrained by bits 8 and 9 of the `frame.mode`, and using\n+a non-allowed scope also results in an exceptional halt.\n+\n+- If `(frame.mode>>8) & 3 == 1`, only scope `0x0` can be used.\n+- If `(frame.mode>>8) & 3 == 2`, only scope `0x1` can be used.\n+- If `(frame.mode>>8) & 3 == 3`, scope `0x0`, `0x1` or `0x2` can be used.\n+\n ##### Behavior\n \n The behavior of `APPROVE` is defined as follows:"
+    },
+    {
+      "sha": "a0c3bbd8bf01aa1a79375be4fdb34b97e2a443c7",
+      "date": "2026-03-12T12:30:27Z",
+      "message": "Update EIP-8141: clean up frame access opcodes",
+      "author": "fjl",
+      "prNumber": null
+    },
+    {
+      "sha": "fe432142194f3f93573a563cb34c7ae57338d9c9",
+      "date": "2026-03-10T13:31:15Z",
+      "message": "Update EIP-8141: Add EOA support",
+      "author": "derekchiang",
+      "prNumber": null
+    },
+    {
+      "sha": "52933c256c22419a0ee711bf4397462c5e25c0d1",
+      "date": "2026-03-02T19:15:28Z",
+      "message": "Update EIP-8141: Fix some issues with EIP-8141",
+      "author": "derekchiang",
+      "prNumber": null,
+      "patch": "@@ -121,7 +121,9 @@ def compute_sig_hash(tx: FrameTx) -> Hash:\n \n #### `APPROVE` opcode (`0xaa`)\n \n-The `APPROVE` opcode is like `RETURN (0xf3)`. It exits the current context successfully and updates the transaction-scoped approval context based on the `scope` operand. It can only be called when `CALLER == frame.target`, otherwise it results in an exceptional halt.\n+The `APPROVE` opcode is like `RETURN (0xf3)`. It exits the current context successfully and updates the transaction-scoped approval context based on the `scope` operand.\n+\n+If the currently executing account is not `frame.target` (i.e. if `ADDRESS != frame.target`), `APPROVE` reverts.\n \n ##### Stack\n \n@@ -145,18 +147,18 @@ Any other value results in an exceptional halt.\n \n The behavior of `APPROVE` is defined as follows:\n \n-- If `APPROVE` is called when `CALLER != frame.target`, revert.\n+- If `ADDRESS != frame.target`, revert.\n - For scopes `0`,`1`, and `2`, execute the following:\n     - `0x0`: Set `sender_approved = true`.\n         - If `sender_approved` was already set, revert the frame.\n-        - If `CALLER` != `tx.sender`, revert the frame.\n+        - If `frame.target` != `tx.sender`, revert the frame.\n     - `0x1`: Increment the sender's nonce, collect the total gas cost of the transaction from the account, and set `payer_approved = true`.\n-        - If payer_approved` was already set, revert the frame.\n+        - If `payer_approved` was already set, revert the frame.\n         - If `frame.target` has insufficient balance, revert the frame.\n         - If `sender_approved == false`, revert the frame.\n-   - `0x2`: `sender_approved = true`, increment the sender's nonce, collect the total gas cost of the transaction from `frame.target`, and set `payer_approved = true`.\n+    - `0x2`: Set `sender_approved = true`, increment the sender's nonce, collect the total gas cost of the transaction from `frame.target`, and set `payer_approved = true`.\n         - If `sender_approved` or `payer_approved` was already set, revert the frame.\n-        - If `CALLER` != `tx.sender`, revert the frame.\n+        - If `frame.target` != `tx.sender`, revert the frame.\n         - If `frame.target` has insufficient balance, revert the frame.\n \n #### `TXPARAM*` opcodes\n@@ -215,6 +217,7 @@ Then for each call frame:\n    - If mode is `DEFAULT` or `VERIFY`:\n        - Set the `caller` to `ENTRY_POINT`.\n    - The `ORIGIN` opcode returns frame `caller` throughout all call depths.\n+   - If a frame's execution reverts, its state changes are discarded and execution proceeds to the next frame.\n 2. If frame has mode `VERIFY` and the frame did not successfully call `APPROVE`, the transaction is invalid.\n \n After executing all frames, verify that `payer_approved == true`. If it is, refund any unpaid gas to the gas payer. If it is not, the whole transaction is invalid.\n@@ -271,7 +274,7 @@ The `frame.data` of `VERIFY` frames is elided from the signature hash. This is d\n \n ### `APPROVE` calling convention\n \n-Originally `APPROVE` was meant to extend the space of return statuses from 0 and j 1 today to 0 to 4. However, this would mean smart accounts deployed today would not beable to modify their contract code to return with a different value at the top level. For this reason, we've chosen behavior above: `APPROVE` terminates the executing frame successfully like `RETURN`, but it actually updates the transaction scoped values `sender_approved` and `payer_approved` during execution. It is still required that only the sender can toggle the `sender_approved` to `true`. Only the `frame.target` can call `APPROVE` generally, because it can allow the transaction pool and other frames to better reason about `VERIFY` mode frames.\n+Originally `APPROVE` was meant to extend the space of return statuses from 0 and 1 today to 0 to 4. However, this would mean smart accounts deployed today would not be able to modify their contract code to return with a different value at the top level. For this reason, we've chosen behavior above: `APPROVE` terminates the executing frame successfully like `RETURN`, but it actually updates the transaction scoped values `sender_approved` and `payer_approved` during execution. It is still required that only the sender can toggle the `sender_approved` to `true`. Only the `frame.target` can call `APPROVE` generally, because it can allow the transaction pool and other frames to better reason about `VERIFY` mode frames.\n \n ### Payer in receipt\n "
+    },
+    {
+      "sha": "7f73d2f3521850ee81d5bd09483b2f7ec1bd5b29",
+      "date": "2026-02-11T17:28:58Z",
+      "message": "Update EIP-8141: fix typo",
+      "author": "lightclient",
+      "prNumber": null,
+      "patch": "@@ -215,7 +215,7 @@ Then for each call frame:\n    - If mode is `DEFAULT` or `VERIFY`:\n        - Set the `caller` to `ENTRY_POINT`.\n    - The `ORIGIN` opcode returns frame `caller` throughout all call depths.\n-2. If frame has mode `VERIFY` and the frame did successfully call `APPROVE`, the transaction is invalid.\n+2. If frame has mode `VERIFY` and the frame did not successfully call `APPROVE`, the transaction is invalid.\n \n After executing all frames, verify that `payer_approved == true`. If it is, refund any unpaid gas to the gas payer. If it is not, the whole transaction is invalid.\n "
+    },
+    {
+      "sha": "c30b9c6ee5fa3832d8d66521cb774d394ecf63a1",
+      "date": "2026-02-10T17:07:44Z",
+      "message": "Update EIP-8141: relax requirement that APPROVE must be called by top level call frame",
+      "author": "lightclient",
+      "prNumber": null
+    },
+    {
+      "sha": "162dfd1f1a573dc496acfec6d29106eae17bbf5a",
+      "date": "2026-02-09T17:17:17Z",
+      "message": "Fix links",
+      "author": "SamWilsn",
+      "prNumber": null,
+      "patch": "@@ -43,7 +43,7 @@ In doing so, it realizes the original vision of account abstraction: unlinking a\n \n ### New Transaction Type\n \n-A new [EIP-2718](./eip-2718) transaction with type `FRAME_TX_TYPE` is introduced. Transactions of this type are referred to as \"Frame transactions\".\n+A new [EIP-2718](./eip-2718.md) transaction with type `FRAME_TX_TYPE` is introduced. Transactions of this type are referred to as \"Frame transactions\".\n \n The payload is defined as the RLP serialization of the following:\n "
+    },
+    {
+      "sha": "187d1ceb7b5ba639a95e3e9d254a1c07c43707cd",
+      "date": "2026-01-29T20:20:54Z",
+      "message": "Update EIP-8141: Fix status field number",
+      "author": "kevaundray",
+      "prNumber": null,
+      "patch": "@@ -183,7 +183,7 @@ Each `TXPARAM*` opcode takes two extra stack input values before the `CALLDATA*`\n Notes:\n \n - 0x03 and 0x04 have a possible future extension to allow indices for multidimensional gas.\n-- The `status` field (0x16) returns `0` for failure or `1` for success.\n+- The `status` field (0x15) returns `0` for failure or `1` for success.\n - Out-of-bounds access for frame index (`>= len(frames)`) and blob index results in an exceptional halt.\n - Invalid `in1` values (not defined in the table above) result in an exceptional halt.\n - The `data` field (0x12) returns size 0 value when called on a frame with `VERIFY` set."
+    },
+    {
+      "sha": "723c9ca2d4604d70390e8312ee899b48cb0411b5",
+      "date": "2026-01-29T09:43:49Z",
+      "message": "Update EIP-8141: fix typos",
+      "author": "fjl",
+      "prNumber": null,
+      "patch": "@@ -65,7 +65,7 @@ There are three modes:\n |    1 | `VERIFY`       | Frame identifies as transaction validation                |\n |    2 | `SENDER`       | Execute frame as `sender`                                 |\n \n-#### `DEFAULT` Mode\n+##### `DEFAULT` Mode\n \n Frame executes as regular call where the caller address is `ENTRY_POINT`.\n \n@@ -112,7 +112,8 @@ With the frame transaction, the signature may be at an arbitrary location in the\n ```python\n def compute_sig_hash(tx: FrameTx) -> Hash:\n     for i, frame in enumerate(tx.frames):\n-        tx.frames[i].data = Bytes()\n+        if frame.mode == VERIFY:\n+            tx.frames[i].data = Bytes()\n     return keccak(rlp(tx))\n ```\n "
+    },
+    {
+      "sha": "6f46a8ce2d3f811f772aa4a3bc6e978e8d531e68",
+      "date": "2026-01-29T05:57:03Z",
+      "message": "Add EIP: Frame Transaction",
+      "author": "fjl",
+      "prNumber": null
+    }
+  ]
+}

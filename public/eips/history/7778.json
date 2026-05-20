@@ -1,0 +1,83 @@
+{
+  "eipId": 7778,
+  "commits": [
+    {
+      "sha": "3929b1aab57b493417eccec7457d1485eccb9768",
+      "date": "2026-01-28T11:40:54Z",
+      "message": "Update EIP-7778: Revert back to not having a receipt field",
+      "author": "nerolation",
+      "prNumber": null,
+      "patch": "@@ -31,18 +31,16 @@ This mechanism can be exploited to perform more operations in a block than the g\n ### Gas Accounting Changes\n \n 1. **User Gas Accounting (Unchanged):**\n+\n    - Users continue to receive gas refunds for operations that qualify (e.g., setting storage to zero)\n    - Transaction gas: `gas_spent = max(tx_gas_used - gas_refund, calldata_floor_gas_cost)`\n \n 2. **Block Gas Accounting (Modified):**\n+\n    - When calculating gas for block gas limit enforcement, refunds are not subtracted\n    - Block gas accounting becomes: `block.gas_used += max(tx_gas_used, calldata_floor_gas_cost)` (incorporating the calldata floor from [EIP-7623](./eip-7623.md))\n    - Storage discounts that reflect actual reduced computational work (e.g., warm storage access, reverting to original values) remain applied to block gas accounting\n \n-3. **Receipt Changes:**\n-   - `cumulative_gas_used`: Now uses gas before refunds, matching block gas accounting\n-   - New field `gas_spent`: Gas actually spent by the transaction after refunds (what the user pays)\n-\n ## Rationale\n \n ### Aligning Gas Limits with Computational Work\n@@ -56,7 +54,7 @@ Users still receive gas refunds, maintaining incentives for efficient state mana\n ## Backwards Compatibility\n \n - This change is not backwards compatible and requires a hard fork\n-- Receipt structure changes: `cumulative_gas_used` semantics change and new `gas_spent` field is added\n+- User and developer experience for individual transactions remains unchanged\n - Block producers need to adjust their transaction selection algorithms to account for the new gas accounting rules\n \n ## Test Cases\n@@ -69,9 +67,9 @@ Users still receive gas refunds, maintaining incentives for efficient state mana\n    - Construct blocks with varying amounts of refundable operations\n    - Ensure blocks cannot exceed gas limits through refund mechanisms\n \n-3. **Receipt Fields:**\n-   - Verify `cumulative_gas_used` reflects gas before refunds\n-   - Verify `gas_spent` reflects gas after refunds (user cost)\n+3. **Transaction Gas vs Block Gas:**\n+   - Verify that transaction costs for users remain unchanged\n+   - Confirm block gas accounting properly excludes refunds\n \n ## Security Considerations\n "
+    },
+    {
+      "sha": "5f39588a18582804d63a59ee8cc1d3dba1fc0d68",
+      "date": "2026-01-21T15:34:47Z",
+      "message": "Update EIP-7778: clarify that user gas accounting remains unchanged",
+      "author": "yperbasis",
+      "prNumber": null,
+      "patch": "@@ -30,12 +30,16 @@ This mechanism can be exploited to perform more operations in a block than the g\n \n ### Gas Accounting Changes\n \n-1. **Block Gas Accounting (Modified):**\n+1. **User Gas Accounting (Unchanged):**\n+   - Users continue to receive gas refunds for operations that qualify (e.g., setting storage to zero)\n+   - Transaction gas: `gas_spent = max(tx_gas_used - gas_refund, calldata_floor_gas_cost)`\n+\n+2. **Block Gas Accounting (Modified):**\n    - When calculating gas for block gas limit enforcement, refunds are not subtracted\n    - Block gas accounting becomes: `block.gas_used += max(tx_gas_used, calldata_floor_gas_cost)` (incorporating the calldata floor from [EIP-7623](./eip-7623.md))\n    - Storage discounts that reflect actual reduced computational work (e.g., warm storage access, reverting to original values) remain applied to block gas accounting\n \n-2. **Receipt Changes:**\n+3. **Receipt Changes:**\n    - `cumulative_gas_used`: Now uses gas before refunds, matching block gas accounting\n    - New field `gas_spent`: Gas actually spent by the transaction after refunds (what the user pays)\n "
+    },
+    {
+      "sha": "af1a46dfb4b24fb4bc62b8a13a22621ddedd5513",
+      "date": "2026-01-19T16:30:45Z",
+      "message": "Update EIP-7778: add new receipt field for gas_spent",
+      "author": "nerolation",
+      "prNumber": null,
+      "patch": "@@ -30,15 +30,15 @@ This mechanism can be exploited to perform more operations in a block than the g\n \n ### Gas Accounting Changes\n \n-1. **User and Receipt Gas Accounting (Unchanged):**\n-   - Users continue to receive gas refunds for operations that qualify (e.g., setting storage to zero)\n-   - Transaction and receipt gas: `gas_used = max(tx_gas_used - gas_refund, calldata_floor_gas_cost)`\n-\n-2. **Block Gas Accounting (Modified):**\n+1. **Block Gas Accounting (Modified):**\n    - When calculating gas for block gas limit enforcement, refunds are not subtracted\n    - Block gas accounting becomes: `block.gas_used += max(tx_gas_used, calldata_floor_gas_cost)` (incorporating the calldata floor from [EIP-7623](./eip-7623.md))\n    - Storage discounts that reflect actual reduced computational work (e.g., warm storage access, reverting to original values) remain applied to block gas accounting\n \n+2. **Receipt Changes:**\n+   - `cumulative_gas_used`: Now uses gas before refunds, matching block gas accounting\n+   - New field `gas_spent`: Gas actually spent by the transaction after refunds (what the user pays)\n+\n ## Rationale\n \n ### Aligning Gas Limits with Computational Work\n@@ -52,7 +52,7 @@ Users still receive gas refunds, maintaining incentives for efficient state mana\n ## Backwards Compatibility\n \n - This change is not backwards compatible and requires a hard fork\n-- User and developer experience for individual transactions remains unchanged\n+- Receipt structure changes: `cumulative_gas_used` semantics change and new `gas_spent` field is added\n - Block producers need to adjust their transaction selection algorithms to account for the new gas accounting rules\n \n ## Test Cases\n@@ -65,9 +65,9 @@ Users still receive gas refunds, maintaining incentives for efficient state mana\n    - Construct blocks with varying amounts of refundable operations\n    - Ensure blocks cannot exceed gas limits through refund mechanisms\n \n-3. **Transaction Gas vs Block Gas:**\n-   - Verify that transaction costs for users remain unchanged\n-   - Confirm block gas accounting properly excludes refunds\n+3. **Receipt Fields:**\n+   - Verify `cumulative_gas_used` reflects gas before refunds\n+   - Verify `gas_spent` reflects gas after refunds (user cost)\n \n ## Security Considerations\n "
+    },
+    {
+      "sha": "5903a619bf35ac3f6519cb85622667be1c9f16a5",
+      "date": "2026-01-16T06:34:39Z",
+      "message": "Update EIP-7778: Clarify gas accounting for receipts",
+      "author": "nerolation",
+      "prNumber": null,
+      "patch": "@@ -30,20 +30,15 @@ This mechanism can be exploited to perform more operations in a block than the g\n \n ### Gas Accounting Changes\n \n-1. **User Gas Costs (Unchanged):**\n+1. **User and Receipt Gas Accounting (Unchanged):**\n    - Users continue to receive gas refunds for operations that qualify (e.g., setting storage to zero)\n-   - The transaction gas cost remains: `tx.gas_used = gas_used - gas_refund`\n-   - Note: Since receipts store the post-refund `gas_used` value, validating block gas limits using receipts requires tracking refunds during transaction execution and adding them back to each transaction's `gas_used` when computing cumulative block gas usage\n+   - Transaction and receipt gas: `gas_used = max(tx_gas_used - gas_refund, calldata_floor_gas_cost)`\n \n 2. **Block Gas Accounting (Modified):**\n    - When calculating gas for block gas limit enforcement, refunds are not subtracted\n-   - Block gas accounting becomes: `block.gas_used += gas_used` (without subtracting refunds)\n+   - Block gas accounting becomes: `block.gas_used += max(tx_gas_used, calldata_floor_gas_cost)` (incorporating the calldata floor from [EIP-7623](./eip-7623.md))\n    - Storage discounts that reflect actual reduced computational work (e.g., warm storage access, reverting to original values) remain applied to block gas accounting\n \n-### Block Gas Limit Enforcement\n-\n-The sum of unrefunded gas used by all transactions must not exceed the block gas limit. This ensures the block gas limit accurately reflects the computational and storage workload\n-\n ## Rationale\n \n ### Aligning Gas Limits with Computational Work"
+    },
+    {
+      "sha": "82d8f97b1371115fad7ff45a10a842e1044199fe",
+      "date": "2026-01-13T17:09:12Z",
+      "message": "Update EIP-7778: correct license, improve wording",
+      "author": "nerolation",
+      "prNumber": null,
+      "patch": "@@ -42,27 +42,23 @@ This mechanism can be exploited to perform more operations in a block than the g\n \n ### Block Gas Limit Enforcement\n \n-- The sum of unrefunded gas used by all transactions must not exceed the block gas limit\n-- This ensures the block gas limit accurately reflects the computational and storage workload\n+The sum of unrefunded gas used by all transactions must not exceed the block gas limit. This ensures the block gas limit accurately reflects the computational and storage workload\n \n ## Rationale\n \n ### Aligning Gas Limits with Computational Work\n \n-- The block gas limit is designed to constrain the computational load per block\n-- Gas refunds were introduced to incentivize \"cleaning up\" the state, not to allow exceeding computational limits\n-- By excluding refunds from block gas accounting, we ensure the block gas limit effectively constrains computational load\n+The block gas limit is designed to constrain the computational load per block. Gas refunds were introduced to incentivize \"cleaning up\" the state, not to allow exceeding computational limits. By excluding refunds from block gas accounting, we ensure the block gas limit effectively constrains computational load\n \n ### Preserving User Incentives\n \n-- Users still receive gas refunds, maintaining incentives for efficient state management\n-- Only the accounting for block-level constraints changes, not the economics for individual users\n+Users still receive gas refunds, maintaining incentives for efficient state management. Only the accounting for block-level constraints changes, not the economics for individual users\n \n ## Backwards Compatibility\n \n - This change is not backwards compatible and requires a hard fork\n - User and developer experience for individual transactions remains unchanged\n-- Only block producers need to adjust their transaction selection algorithms to account for the new gas accounting rules\n+- Block producers need to adjust their transaction selection algorithms to account for the new gas accounting rules\n \n ## Test Cases\n \n@@ -86,4 +82,4 @@ This mechanism can be exploited to perform more operations in a block than the g\n \n ## Copyright\n \n-Copyright and related rights waived via CC0 1.0 Universal.\n+Copyright and related rights waived via [CC0](../LICENSE.md)."
+    },
+    {
+      "sha": "3a8ab8c6bc1a4df8f413d198005e2a1b09577621",
+      "date": "2025-12-04T23:21:25Z",
+      "message": "Update EIP-7778: Clarify receipts gas_used",
+      "author": "nerolation",
+      "prNumber": null,
+      "patch": "@@ -33,6 +33,7 @@ This mechanism can be exploited to perform more operations in a block than the g\n 1. **User Gas Costs (Unchanged):**\n    - Users continue to receive gas refunds for operations that qualify (e.g., setting storage to zero)\n    - The transaction gas cost remains: `tx.gas_used = gas_used - gas_refund`\n+   - Note: Since receipts store the post-refund `gas_used` value, validating block gas limits using receipts requires tracking refunds during transaction execution and adding them back to each transaction's `gas_used` when computing cumulative block gas usage\n \n 2. **Block Gas Accounting (Modified):**\n    - When calculating gas for block gas limit enforcement, refunds are not subtracted"
+    },
+    {
+      "sha": "9f795ed2983dc76b5c6138a507751d2a760030e3",
+      "date": "2025-09-03T08:03:05Z",
+      "message": "Update EIP-7778: improve title",
+      "author": "nerolation",
+      "prNumber": null,
+      "patch": "@@ -1,6 +1,6 @@\n ---\n eip: 7778\n-title: Block Gas Limit Accounting without Refunds\n+title: Block Gas Accounting without Refunds\n description: Prevent Block Gas Limit Circumvention by Excluding Refunds from Block Gas Accounting\n author: Ben Adams (@benaadams), Toni Wahrstätter (@nerolation)\n discussions-to: https://ethereum-magicians.org/t/eip-7778-prevent-block-gas-smuggling/21234"
+    },
+    {
+      "sha": "b18c23c9f03f53f20903fa9f537694862ac987e8",
+      "date": "2025-06-09T08:45:46Z",
+      "message": "Update EIP-7778: Move to Draft",
+      "author": "nerolation",
+      "prNumber": null
+    },
+    {
+      "sha": "02d3e12b6cd7f9e1ec6fdd45ede682cc9dcf2864",
+      "date": "2025-04-27T00:24:51Z",
+      "message": "(bot 1272989785) moving EIPS/eip-7778.md to stagnant (#9604)",
+      "author": "eth-bot",
+      "prNumber": 9604,
+      "patch": "@@ -4,7 +4,7 @@ title: Prevent Block Gas Smuggling\n description: Exclude Discounts & Refunds for Block GasLimit Enforcement\n author: Ben Adams (@benaadams)\n discussions-to: https://ethereum-magicians.org/t/eip-7778-prevent-block-gas-smuggling/21234\n-status: Draft\n+status: Stagnant\n type: Standards Track\n category: Core\n created: 2024-10-01"
+    },
+    {
+      "sha": "a4c28b13dddab767190adf1bcfe7ff79dfeb20d2",
+      "date": "2024-10-04T17:55:44Z",
+      "message": "Add EIP: Prevent Block Gas Smuggling",
+      "author": "benaadams",
+      "prNumber": null
+    }
+  ]
+}

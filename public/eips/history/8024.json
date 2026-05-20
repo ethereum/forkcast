@@ -1,0 +1,83 @@
+{
+  "eipId": 8024,
+  "commits": [
+    {
+      "sha": "c0aa8d79038e0bf60ab8f15ff32ef17ba3b80882",
+      "date": "2026-02-25T15:46:37Z",
+      "message": "Update EIP-8024: Document decoding range",
+      "author": "frangio",
+      "prNumber": null,
+      "patch": "@@ -77,10 +77,12 @@ The auxiliary functions `decode_single` and `decode_pair` are defined by the fol\n \n ```python\n def decode_single(x: int) -> int:\n+    \"\"\"Returns n with 17 <= n <= 235.\"\"\"\n     assert 0 <= x <= 90 or 128 <= x <= 255\n     return (x + 145) % 256\n \n def decode_pair(x: int) -> tuple[int, int]:\n+    \"\"\"Returns (n, m) with 1 <= n <= 14 and n < m <= 30 - n.\"\"\"\n     assert 0 <= x <= 81 or 128 <= x <= 255\n     k = x ^ 143\n     q, r = divmod(k, 16)\n@@ -98,7 +100,7 @@ def encode_single(n: int) -> int:\n     return (n + 111) % 256\n \n def encode_pair(n: int, m: int) -> int:\n-    assert 1 <= n <= 14 and n < m <= 29 and n + m <= 30\n+    assert 1 <= n < m and n + m <= 30\n     if m <= 16:\n         q, r = n - 1, m - 1\n     else:"
+    },
+    {
+      "sha": "d0b75a60e8b8cd79048a439c78fb3b3d1c3c9adb",
+      "date": "2026-02-25T13:39:44Z",
+      "message": "Update EIP-8024: Switch to branchless normalization and extend EXCHANGE",
+      "author": "frangio",
+      "prNumber": null
+    },
+    {
+      "sha": "05146bfcf2a3b0b5962b289ab2bd79b706a45906",
+      "date": "2026-02-07T01:32:09Z",
+      "message": "Update EIP-8024: Improve rationale",
+      "author": "frangio",
+      "prNumber": null,
+      "patch": "@@ -121,13 +121,17 @@ Allowing dynamic selection of the arguments to swap or dup could be used to prev\n \n ### Disallowed immediate range\n \n-Allowing the encoding of the immediate operand to take the values `0x5b` or `0x60` to `0x7f` would create a backwards incompatibility. These values correspond to the `JUMPDEST` and `PUSH1` to `PUSH32` opcodes. Consider the bytecode sequence `e6 5b` that currently decodes to `INVALID JUMPDEST`. If the `DUPN` opcode accepted any subsequent byte as an immediate, once the instruction is introduced to the EVM the same bytecode sequence would then decode to `DUPN 0x5b`, eliminating a previously present `JUMPDEST` and possibly invalidating jumps necessary for the functioning of the contract. A similar thing can happen with push opcodes, for example, `e6 60 5b` would transform from `INVALID PUSH1 0x5b` to `DUPN 0x60 JUMPDEST` upon introduction of such an instruction, creating a new valid jump target. Furthermore, this may have a cascading effect on arbitrarily many subsequent instructions.\n+A property the EVM has is that it's not possible to jump to the middle of an instruction. In order to guarantee this property, the immediate operands of `PUSH*` instructions are masked from jumpdest analysis so that the occurrence of `0x5b` in them is not mistaken for a `JUMPDEST` instruction, which should be considered a valid jump target elsewhere.\n \n-Since the EVM doesn't offer a dedicated section for data, arbitrary data may be embedded in code and serve as immutable data storage accessed via `CODECOPY`. Therefore, we must assume that arbitrary byte sequences may be found in contracts that have been deployed or are \"counterfactual\" deployments-in-waiting.\n+The new instructions in this EIP preserve this property without changing jumpdest analysis by making it invalid for their immediates to contain `0x5b`, in addition to `0x60` to `0x7f` (`PUSH1` to `PUSH32`) since those would cause the subsequent instructions to be masked.\n \n-The current version of the EIP is designed to uphold the following backwards compatibility guarantee: every possible execution trace on a given bytecode that does not attempt to execute an undefined opcode must continue to produce the same effect after the introduction of an instruction. No new `JUMPDEST`s must be created in a given bytecode by the introduction of an instruction and none may be removed.\n+The alternative, changing jumpdest analysis to introduce new masked opcodes, would create a backwards incompatibility if done without bytecode versioning (EOF). Consider the bytecode sequence `e6 5b` that decodes to `INVALID JUMPDEST` prior to this EIP, and thus contains a valid jump target. If an instruction `DUPN x` were introduced with encoding `e6 {x}` (opcode immediately followed by operand), and jumpdest analysis changed to mask the operand to `e6`, the same bytecode sequence `e6 5b` would then decode to `DUPN 0x5b`. As a result of the upgrade, `e6` would become an invalid jump target, breaking contracts that include this sequence. The opposite can happen with push opcodes, for example, `e6 60 5b` would transform from `INVALID PUSH1 0x5b` to `DUPN 0x60 JUMPDEST`, creating a new valid jump target. Furthermore, this may have a cascading effect on arbitrarily many subsequent instructions.\n \n-While it would be safe to allow the values `0x5c` to `0x5f`, these were also omitted to simplify decoding, and wouldn't significantly increase the reachable stack items.\n+Since the EVM doesn't offer a dedicated section for data, arbitrary data may be embedded in code and serve as immutable data storage accessed via `CODECOPY`. Therefore, we must assume that arbitrary byte sequences may be found in contracts that have been deployed or are included in transactions yet to be published on chain.\n+\n+This EIP is designed to uphold the following backwards compatibility guarantee: every possible execution trace on a given bytecode that does not attempt to execute an undefined opcode must continue to produce the same effect after the introduction of an instruction. No new `JUMPDEST`s must be created in a given bytecode by the introduction of an instruction and none may be removed.\n+\n+This encoding can be reused in future instructions with immediate operands, although it is not necessary if the range of the operand naturally does not include the bytes `0x5b` (`JUMPDEST`) or `0x60` (`PUSH1`) to `0x7f` (`PUSH32`), in which case masking is not necessary.\n \n ### `EXCHANGE` immediate\n "
+    },
+    {
+      "sha": "0f224ab230ffbdcfa28aa69b8aa78e20fe293360",
+      "date": "2026-01-16T13:58:14Z",
+      "message": "Update EIP-8024: Add tests for the specified behavior at end of code (#11095)",
+      "author": "jrhea",
+      "prNumber": 11095,
+      "patch": "@@ -176,8 +176,11 @@ This has no effect on contracts that would never attempt to execute the opcodes\n ### Execution\n \n - `60016000808080808080808080808080808080e600` results in 18 stack items, the top of the stack valued 1, the bottom of the stack valued 1, the rest valued 0\n+  - `60016000808080808080808080808080808080e6` at the end of the code is equivalent to above\n - `600160008080808080808080808080808080806002e700` results in 18 stack items, the top of the stack valued 1, the bottom of the stack valued 2, the rest valued 0\n+  - `600160008080808080808080808080808080806002e7` at the end of the code is equivalent to above\n - `600060016002e801` results in 3 stack items, from top to bottom: [2, 0, 1]\n+- `600060006000600060006000600060006000600060006000600060006000600060006000600060006000600060006000600060006000600060016002e8` results in 30 stack items, the top of the stack valued 2, the bottom of the stack valued 1, the rest valued 0\n - `e75b` reverts \n - `600456e65b` executes successfully (`PUSH 04 JUMP INVALID_DUPN JUMPDEST`)\n - `600060006000e80115` results in 3 stack items, the top of the stack valued 1, the rest valued 0"
+    },
+    {
+      "sha": "099cdbc4d8c83a2d04b086b93453bb525301091e",
+      "date": "2026-01-15T14:26:30Z",
+      "message": "Update EIP-8024: Specify behavior at end of code",
+      "author": "frangio",
+      "prNumber": null,
+      "patch": "@@ -67,7 +67,9 @@ Formally, when `code[pc]` is one of these opcodes, the VM executes as follows:\n     5. Swap `stack[top - n]` and `stack[top - m]`.\n     6. Set `pc = pc + 2`.\n \n-> `top` denotes the index of the value at the top of the stack.\n+`code[pc + 1]` evaluates to `0` if beyond the end of the code, matching `PUSH` behavior.\n+\n+`top` denotes the index of the value at the top of the stack.\n \n `JUMPDEST` analysis is unchanged. In particular, if `code[i]` is at an instruction boundary and is one of these opcodes, and `code[i + 1]` is `0x5b` (`JUMPDEST`), then `code[i + 1]` is a valid jump target. Note that in this case the execution of `code[i]` would halt at step 2 above (because `x = code[i + 1] = 0x5b = 91`). Disassemblers must decode such `code[i]` as `INVALID` (or `INVALID_DUPN`, etc.) and `code[i + 1]` as `JUMPDEST`.\n "
+    },
+    {
+      "sha": "0377ea19d4d7e0cffeded97e01ce4d5293e83260",
+      "date": "2025-12-11T01:59:50Z",
+      "message": "Update EIP-8024: Add test case for exceptional halt",
+      "author": "frangio",
+      "prNumber": null,
+      "patch": "@@ -179,6 +179,7 @@ This has no effect on contracts that would never attempt to execute the opcodes\n - `e75b` reverts \n - `600456e65b` executes successfully (`PUSH 04 JUMP INVALID_DUPN JUMPDEST`)\n - `600060006000e80115` results in 3 stack items, the top of the stack valued 1, the rest valued 0\n+- `6000808080808080808080808080808080e600` results in exceptional halt\n \n ## Security Considerations\n "
+    },
+    {
+      "sha": "dcbc74e19eb66678144dcc43ec40d1ac660843d6",
+      "date": "2025-12-11T01:20:09Z",
+      "message": "Update EIP-8024: Add explicit halting conditions",
+      "author": "frangio",
+      "prNumber": null,
+      "patch": "@@ -45,22 +45,25 @@ Formally, when `code[pc]` is one of these opcodes, the VM executes as follows:\n - `DUPN`:\n     1. Charge 3 gas.\n     2. Let `x = code[pc + 1]`.\n-    3. If `90 < x < 128` revert, consuming all gas.\n+    3. If `90 < x < 128`, halt with exceptional failure.\n     4. Let `n = decode_single(x)`.\n+    5. If `n > len(stack)`, halt with exceptional failure.\n     5. Push `stack[top - n + 1]` on the stack.\n     6. Set `pc = pc + 2`.\n - `SWAPN`:\n     1. Charge 3 gas.\n     2. Let `x = code[pc + 1]`.\n-    3. If `90 < x < 128` revert, consuming all gas.\n+    3. If `90 < x < 128`, halt with exceptional failure.\n     4. Let `n = decode_single(x)`.\n+    5. If `n + 1 > len(stack)`, halt with exceptional failure.\n     5. Swap `stack[top - n]` and `stack[top]`.\n     6. Set `pc = pc + 2`.\n - `EXCHANGE`:\n     1. Charge 3 gas.\n     2. Let `x = code[pc + 1]`.\n-    3. If `79 < x < 128` revert, consuming all gas.\n+    3. If `79 < x < 128`, halt with exceptional failure.\n     4. Let `n, m = decode_pair(x)`.\n+    5. If `m + 1 > len(stack)`, halt with exceptional failure.\n     5. Swap `stack[top - n]` and `stack[top - m]`.\n     6. Set `pc = pc + 2`.\n "
+    },
+    {
+      "sha": "5e6b0c27237e369623376cbfc02d887848e9c21b",
+      "date": "2025-12-01T19:08:43Z",
+      "message": "Update EIP-8024: Add test case for PC increment",
+      "author": "frangio",
+      "prNumber": null,
+      "patch": "@@ -175,6 +175,7 @@ This has no effect on contracts that would never attempt to execute the opcodes\n - `600060016002e801` results in 3 stack items, from top to bottom: [2, 0, 1]\n - `e75b` reverts \n - `600456e65b` executes successfully (`PUSH 04 JUMP INVALID_DUPN JUMPDEST`)\n+- `600060006000e80115` results in 3 stack items, the top of the stack valued 1, the rest valued 0\n \n ## Security Considerations\n "
+    },
+    {
+      "sha": "db5c483ea122c6735cd92ff135de985f0e9253e2",
+      "date": "2025-11-04T03:54:51Z",
+      "message": "Update EIP-8024: Fix pair encoding to match intent",
+      "author": "frangio",
+      "prNumber": null,
+      "patch": "@@ -83,9 +83,9 @@ def decode_pair(x: int) -> tuple[int, int]:\n     k = x if x <= 79 else x - 48\n     q, r = divmod(k, 16)\n     if q < r:\n-        return q + 2, r + 2\n+        return q + 1, r + 1\n     else:\n-        return r + 2, 30 - q\n+        return r + 1, 29 - q\n ```\n \n Assemblers and compilers must emit a 1-byte immediate after each of these opcodes that decodes to the required `n, m` operands. For reference, this can be done by `encode_single` and `encode_pair`:\n@@ -99,11 +99,11 @@ def encode_single(n: int) -> int:\n         return n + 20\n \n def encode_pair(n: int, m: int) -> int:\n-    assert 2 <= n <= 14 and n < m <= 30 and n + m <= 32\n-    if m <= 17:\n-        q, r = n - 2, m - 2\n+    assert 1 <= n <= 13 and n < m <= 29 and n + m <= 30\n+    if m <= 16:\n+        q, r = n - 1, m - 1\n     else:\n-        q, r = 30 - m, n - 2\n+        q, r = 29 - m, n - 1\n     k = 16 * q + r\n     return k if k <= 79 else k + 48\n ```\n@@ -130,6 +130,8 @@ A previous formulation of `EXCHANGE` allowed swapping stack elements only if the\n \n In addition, the exact formulation was chosen to make `decode_pair` a simple function using only basic arithmetic, bitwise operations (division by 16), and few branches. A small trade-off in the number of addressable pairs was made to reduce the number of necessary branches; this implies some of the immediate range is not allocated, and it could be used to add a dozen more addressable pairs at the cost of more decoding complexity, potentially in a future network upgrade.\n \n+Finally, note that the operands in the assembly instruction `EXCHANGE n m` appear \"off by one\", i.e. it operates on the stack elements at depths `n + 1` and `m + 1`. These offsets were chosen to match the `SWAP` and `SWAPN` opcodes such that `EXCHANGE n m` has an effect equivalent to the sequence `SWAP{n} SWAP{m} SWAP{n}`.\n+\n ### Size of immediate operand\n \n For `DUPN` and `SWAPN` a 16-bit size was considered to accommodate the full stack space of 1024 items, however:\n@@ -162,8 +164,8 @@ This has no effect on contracts that would never attempt to execute the opcodes\n - `e6605b` is `[INVALID_DUPN, PUSH1 0x5b]`\n - `e7610000` is `[INVALID_SWAPN, PUSH2 0x0000]`\n - `e65f` is `[INVALID_DUPN, PUSH0]`\n-- `e812` is `[EXCHANGE 3 4]`\n-- `e8d0` is `[EXCHANGE 2 20]`\n+- `e812` is `[EXCHANGE 2 3]`\n+- `e8d0` is `[EXCHANGE 1 19]`\n - `e850` is `[INVALID_EXCHANGE, POP]`\n \n ### Execution"
+    },
+    {
+      "sha": "28578c7ba0e3c7831a91a9784e85ce9b400c29a8",
+      "date": "2025-09-17T17:24:56Z",
+      "message": "Add EIP: Backward compatible SWAPN, DUPN, EXCHANGE",
+      "author": "frangio",
+      "prNumber": null
+    }
+  ]
+}

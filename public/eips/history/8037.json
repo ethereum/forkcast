@@ -1,0 +1,155 @@
+{
+  "eipId": 8037,
+  "commits": [
+    {
+      "sha": "b549622cc0e9f1f4db83848c5daa6f91e9f650a1",
+      "date": "2026-05-13T16:26:19Z",
+      "message": "Update EIP-8037: Fix bugs from bal-devnet-6",
+      "author": "misilva73",
+      "prNumber": null
+    },
+    {
+      "sha": "34258fc205d83fe2d560b91814057041dfbbb5f9",
+      "date": "2026-05-13T15:02:09Z",
+      "message": "Update EIP-8037: Update parameters and rationale section",
+      "author": "misilva73",
+      "prNumber": null
+    },
+    {
+      "sha": "1d1e455c9e43b1e400b58b5475eac8a636f83555",
+      "date": "2026-05-06T08:16:00Z",
+      "message": "Update EIP-8037: Clarify SELFDESTRUCT charges",
+      "author": "misilva73",
+      "prNumber": null,
+      "patch": "@@ -45,11 +45,13 @@ Upon activation of this EIP, the following parameters of the gas model are updat\n |---|---|---|---|---|\n | `GAS_CREATE` | 32,000 | `STATE_BYTES_PER_NEW_ACCOUNT x CPSB` | 9,000 (assuming same as `GAS_CALL_VALUE`)  | `CREATE`, `CREATE2`, contract creation txs |\n | `GAS_CODE_DEPOSIT` | 200/byte | `CPSB` per byte | `6 × ceil(len/32)` (hash cost) | `CREATE`, `CREATE2`, contract creation txs |\n-| `GAS_NEW_ACCOUNT` | 25,000 | `STATE_BYTES_PER_NEW_ACCOUNT x CPSB` | 0 (already has `GAS_CALL_VALUE` 9,000) | `CALL*` |\n+| `GAS_NEW_ACCOUNT` | 25,000 | `STATE_BYTES_PER_NEW_ACCOUNT x CPSB` | 0 (already has `GAS_CALL_VALUE` 9,000) | `CALL*`, `SELFDESTRUCT` |\n | `GAS_STORAGE_SET` | 20,000 | `STATE_BYTES_PER_STORAGE_SET x CPSB` | 2,900 (`GAS_STORAGE_UPDATE - GAS_COLD_SLOAD`) | `SSTORE` |\n | `PER_EMPTY_ACCOUNT_COST` | 25,000 | `STATE_BYTES_PER_NEW_ACCOUNT x CPSB` | 0 (included in `PER_AUTH_BASE_COST`) | EOA delegation |\n | `PER_AUTH_BASE_COST` | 12,500 | `STATE_BYTES_PER_AUTH_BASE x CPSB` | 7,500 | EOA delegation |\n \n+`SELFDESTRUCT_NEW_ACCOUNT` is removed and replaced by `GAS_NEW_ACCOUNT`.\n+\n The values assigned to regular gas will be updated based on [EIP-8038](./eip-8038.md).\n \n The `PER_AUTH_BASE_COST` regular gas of 7,500 is derived from [EIP-7702](./eip-7702.md)'s cost analysis, excluding the code deployment cost (now charged as state gas):\n@@ -135,12 +137,15 @@ State-gas accounting for `SSTORE` is performed at the end of the opcode executio\n |---|---|\n | `CALL*` with value to non-existent account | `STATE_BYTES_PER_NEW_ACCOUNT × CPSB` charged |\n | `CREATE`/`CREATE2` with bytecode size of `L` | `(STATE_BYTES_PER_NEW_ACCOUNT + L) × CPSB` charged |\n+| `SELFDESTRUCT` where balance transfer creates a new account | `STATE_BYTES_PER_NEW_ACCOUNT × CPSB` charged |\n \n State-gas accounting for `CALL*` and `CREATE`/`CREATE2` operations is performed at the end of successful call frames. The respective call frame reverts or halts exceptionally, no state-gas is charged for the new account.\n \n-##### Gas accounting for `SELFDESTRUCT`\n+Charges for account creation with `SELFDESTRUCT` are charged at the point where it executes.\n+\n+##### State gas refills for `SELFDESTRUCT`\n \n-`SELFDESTRUCT` does not produce a state-gas effect at the point in which it executes. Its accounting is deferred to the end of the transaction. For each account that was created during the transaction, `SELFDESTRUCT`ed, and is now being removed:\n+`SELFDESTRUCT` does not produce a state-gas refills at the point in which it executes. Its accounting is deferred to the end of the transaction. For each account that was created during the transaction, `SELFDESTRUCT`ed, and is now being removed:\n \n - The state gas previously charged for the account creation (`STATE_BYTES_PER_NEW_ACCOUNT × CPSB`), the code deposit (`L × CPSB` where `L` is the deployed code length), and every storage slot that was charged as new on that account during the transaction (`STATE_BYTES_PER_STORAGE_SET × CPSB` per slot) is refunded directly to `state_gas_reservoir` and the `execution_state_gas_used` decreases by the same amount.\n - These refunds are not subject to the 20% refund cap."
+    },
+    {
+      "sha": "80c580b2ad323eb2797058801467b160ae2d5968",
+      "date": "2026-05-04T08:21:48Z",
+      "message": "Update EIP-8037: fixed CPSB + frame accounting",
+      "author": "misilva73",
+      "prNumber": null
+    },
+    {
+      "sha": "9493cd502540bb5b50e01aa3708835fb87fce0bc",
+      "date": "2026-04-20T07:33:54Z",
+      "message": "Update EIP-8037: Clarify SSTORE restoration refund rollback semantics",
+      "author": "spencer-tb",
+      "prNumber": null,
+      "patch": "@@ -197,6 +197,8 @@ When a storage slot is set to a non-zero value and then restored to zero within\n - State gas: `32 × cost_per_state_byte` is refunded directly to `state_gas_reservoir` (and `execution_state_gas_used` is decremented). The refund happens immediately at the X to 0 SSTORE, not via `refund_counter`. This ensures the full state gas amount is returned regardless of the 20% refund cap.\n - Regular gas: `GAS_STORAGE_UPDATE - GAS_COLD_SLOAD - GAS_WARM_ACCESS` is added to `refund_counter`, subject to the 20% cap.\n \n+The state gas refund is scoped to the frame that executes the X to 0 SSTORE, and propagates to an ancestor frame only if all intervening frames return successfully. On **revert** or **exceptional halt** of the applying frame or of any ancestor frame the refund has reached, the refund's credit to `state_gas_reservoir` and its decrement of `execution_state_gas_used` are undone at that frame and are not inherited by its parent. As a result, whenever any frame in the chain experiences a **revert** or **exceptional halt**, the 0 to X to 0 refund contributes nothing to `state_gas_reservoir` or `execution_state_gas_used`, consistent with the principle that state gas is only refunded when no state was actually grown.\n+\n The net cost after refund is `GAS_WARM_ACCESS`, consistent with pre-[EIP-8037](./eip-8037.md) `SSTORE` restoration behavior.\n \n ### State gas on frame failure"
+    },
+    {
+      "sha": "fabf144654d9ab2374aeb1bbf4ffde1aebb99935",
+      "date": "2026-04-20T03:21:21Z",
+      "message": "Update EIP-8037: add per-dimension block gas limit check",
+      "author": "misilva73",
+      "prNumber": null,
+      "patch": "@@ -93,6 +93,20 @@ max(intrinsic_regular_gas, calldata_floor_gas_cost) > TX_MAX_GAS_LIMIT\n \n `validate_transaction` also returns `intrinsic_regular_gas`, `intrinsic_state_gas`, and `calldata_floor_gas_cost`.\n \n+After this check, inclusion of a transaction in a block additionally requires that, for each gas dimension, the cumulative gas used of all previous transactions added to the transaction's contribution must not exceed the block gas limit. This contribution is assumed as the worst case for each dimension, before actually executing the transaction. Specifically, `check_transaction` is updated to:\n+\n+```python\n+regular_gas_available = block_env.block_gas_limit - block_output.block_regular_gas_used\n+state_gas_available = block_env.block_gas_limit - block_output.block_state_gas_used\n+# ...\n+if min(TX_MAX_GAS_LIMIT, tx.gas - intrinsic_state_gas) > regular_gas_available:\n+    raise GasUsedExceedsLimitError(\"gas used exceeds limit\")\n+if tx.gas - intrinsic_regular_gas > state_gas_available:\n+    raise GasUsedExceedsLimitError(\"gas used exceeds limit\")\n+```\n+\n+`intrinsic_regular_gas` and `intrinsic_state_gas` must be passed to `check_transaction` to perform the regular gas availability check.\n+\n #### Transaction-level gas accounting (reservoir model)\n \n Since transactions have a single gas limit parameter (`tx.gas`), gas accounting is enforced through a **reservoir model**, in which `gas_left` and `state_gas_reservoir` are initialized as follows:\n@@ -118,7 +132,7 @@ The two counters are returned by the transaction output. Besides the two counter\n \n #### Pre-state and post-state gas validation\n \n-[EIP-7928](./eip-7928.md) defines two-phase gas validation for state-accessing opcodes: pre-state costs (determinable without state access) and post-state costs (requiring state access). Pre-state validation must pass before any state access occurs. Under the reservoir model, both regular and state gas portions of pre-state costs must be satisfiable; regular gas is checked against `gas_left`, state gas against `state_gas_reservoir` (then `gas_left`). If either check fails, the state access does not occur.\n+During execution, [EIP-7928](./eip-7928.md) defines two-phase gas validation for state-accessing opcodes: pre-state costs (determinable without state access) and post-state costs (requiring state access). Pre-state validation must pass before any state access occurs. Under the reservoir model, both regular and state gas portions of pre-state costs must be satisfiable; regular gas is checked against `gas_left`, state gas against `state_gas_reservoir` (then `gas_left`). If either check fails, the state access does not occur.\n \n The cost parameters introduced by this EIP map to validation phases as follows:\n "
+    },
+    {
+      "sha": "4f0332706351a67eae4adf1bfac880dfb412d237",
+      "date": "2026-04-17T15:07:26Z",
+      "message": "Update EIP-8037: more state gas accounting changes",
+      "author": "spencer-tb",
+      "prNumber": null
+    },
+    {
+      "sha": "26d056fe537a6b1393bb6936210384045177fbd6",
+      "date": "2026-04-17T07:23:07Z",
+      "message": "Update EIP-8037: Refund state gas on all frame failures including top level",
+      "author": "qu0b",
+      "prNumber": null
+    },
+    {
+      "sha": "2d317791dfadd9f701423fd6c2af60e12a308065",
+      "date": "2026-04-14T13:07:21Z",
+      "message": "Update EIP-8037: clarify spillover state gas still increments execution_state_gas_used",
+      "author": "qu0b",
+      "prNumber": null,
+      "patch": "@@ -108,7 +108,7 @@ state_gas_reservoir = execution_gas - gas_left\n The `state_gas_reservoir` holds gas that exceeds the [EIP-7825](./eip-7825.md)'s budget. The two counters operate as follows:\n \n - **Regular gas** charges deduct from `gas_left` only.\n-- **State gas** charges deduct from `state_gas_reservoir` first; when the reservoir is exhausted, from `gas_left`.\n+- **State gas** charges deduct from `state_gas_reservoir` first; when the reservoir is exhausted, from `gas_left`. The charge increments `execution_state_gas_used` by its full amount regardless of whether it was satisfied from the reservoir, from `gas_left`, or partially from both; a state gas charge never increments `execution_regular_gas_used`.\n - When an opcode requires both regular and state gas, the regular gas charge MUST be applied first. If the regular gas charge triggers an out-of-gas error, the state gas charge is not applied.\n - The `GAS` opcode returns `gas_left` only (excluding the reservoir).\n - The reservoir is passed **in full** to child frames (no 63/64 rule). On child success, the remaining `state_gas_reservoir` is returned to the parent. On child **revert** or **exceptional halt**, all state gas consumed by the child, both from the reservoir and any that spilled into `gas_left`, is restored to the parent's reservoir. On child **exceptional halt**, only `gas_left` is consumed (zeroed). State gas is fully preserved on failure because state changes are reverted, so no state was actually grown."
+    },
+    {
+      "sha": "7df0a62ca4255f22a72603595c7a5312649f6e47",
+      "date": "2026-03-20T08:29:54Z",
+      "message": "Update EIP-8037: Align with EIP-7928 Gas Validation Phases",
+      "author": "nerolation",
+      "prNumber": null,
+      "patch": "@@ -116,6 +116,21 @@ The `state_gas_reservoir` holds gas that exceeds the [EIP-7825](./eip-7825.md)'s\n \n The two counters are returned by the transaction output. Besides the two counters, the EVM also keeps track of `execution_state_gas_used` and `execution_regular_gas_used` during transaction execution. `state_gas` costs are added to `execution_state_gas_used` while `regular_gas` costs are added to `execution_regular_gas_used`. These two counters are also returned by the transaction output.\n \n+#### Pre-state and post-state gas validation\n+\n+[EIP-7928](./eip-7928.md) defines two-phase gas validation for state-accessing opcodes: pre-state costs (determinable without state access) and post-state costs (requiring state access). Pre-state validation must pass before any state access occurs. Under the reservoir model, both regular and state gas portions of pre-state costs must be satisfiable; regular gas is checked against `gas_left`, state gas against `state_gas_reservoir` (then `gas_left`). If either check fails, the state access does not occur.\n+\n+The cost parameters introduced by this EIP map to validation phases as follows:\n+\n+| Cost Parameter | Validation Phase | State Gas | Regular Gas |\n+|---|---|---|---|\n+| `GAS_CREATE` | Pre-state | 112 × `cpsb` | 9,000 |\n+| `GAS_CODE_DEPOSIT` | Post-state (on deployment success) | `cpsb` × L | 6 × ⌈L/32⌉ |\n+| `GAS_NEW_ACCOUNT` | Post-state (requires account existence check) | 112 × `cpsb` | 0 |\n+| `GAS_STORAGE_SET` | Post-state (requires reading current value) | 32 × `cpsb` | 2,900 |\n+\n+For `SSTORE`, the `GAS_CALL_STIPEND` pre-state check ([EIP-7928](./eip-7928.md)) applies to `gas_left` only, excluding the `state_gas_reservoir`.\n+\n #### Transaction gas used\n \n At the end of transaction execution, the gas used before and after refunds is defined as:\n@@ -204,7 +219,6 @@ When a contract creation transaction or opcode (`CREATE`/`CREATE2`) is executed,\n SUCCESS_PATH_TOTAL_GAS =\n     GAS_CREATE\n   + initcode_execution_cost\n-  + (GAS_NEW_ACCOUNT if account is new else 0)\n   + GAS_CODE_DEPOSIT * L\n   + HASH_COST(L)\n "
+    },
+    {
+      "sha": "48566ad265a5c2bb981e520a9b8e17ed9921b8a8",
+      "date": "2026-03-18T21:51:09Z",
+      "message": "Update EIP-8037: clarify regular gas must be charged before state gas",
+      "author": "spencer-tb",
+      "prNumber": null,
+      "patch": "@@ -109,6 +109,7 @@ The `state_gas_reservoir` holds gas that exceeds the [EIP-7825](./eip-7825.md)'s\n \n - **Regular gas** charges deduct from `gas_left` only.\n - **State gas** charges deduct from `state_gas_reservoir` first; when the reservoir is exhausted, from `gas_left`.\n+- When an opcode requires both regular and state gas, the regular gas charge MUST be applied first. If the regular gas charge triggers an out-of-gas error, the state gas charge is not applied.\n - The `GAS` opcode returns `gas_left` only (excluding the reservoir).\n - The reservoir is passed **in full** to child frames (no 63/64 rule). On child success, the remaining `state_gas_reservoir` is returned to the parent. On child **revert** or **exceptional halt**, all state gas consumed by the child, both from the reservoir and any that spilled into `gas_left`, is restored to the parent's reservoir. On child **exceptional halt**, only `gas_left` is consumed (zeroed). State gas is fully preserved on failure because state changes are reverted, so no state was actually grown.\n - On **exceptional halt**, remaining `gas_left` is attributed to `execution_regular_gas_used` and set to zero (all regular gas consumed), consistent with existing EVM out-of-gas semantics. The `state_gas_reservoir` is not consumed, it is returned to the parent frame or preserved at the top level for refund, consistent with the principle that state gas pays for long-term state growth which does not occur on failure. System transactions are not subject to the `TX_MAX_GAS_LIMIT` cap, their entire `execution_gas` is placed in `gas_left` with `state_gas_reservoir = 0`."
+    },
+    {
+      "sha": "de0ad9db93813d9883302ec1517be668ed195cf3",
+      "date": "2026-03-06T15:59:36Z",
+      "message": "Update EIP-8037: clarify reservoir mechanics",
+      "author": "spencer-tb",
+      "prNumber": null
+    },
+    {
+      "sha": "2e6dc063300f1c7e893cd0d435168b05c9db8e0b",
+      "date": "2026-02-10T14:46:12Z",
+      "message": "Update EIP-8037: Add quantization, reservoir model, and refine gas accounting",
+      "author": "misilva73",
+      "prNumber": null
+    },
+    {
+      "sha": "70328117d9a9e8a8fc958270792fac40c435ea1e",
+      "date": "2026-02-06T08:54:52Z",
+      "message": "Update EIP-8037: update leftover old value",
+      "author": "fradamt",
+      "prNumber": null,
+      "patch": "@@ -142,7 +142,7 @@ FAILURE_PATH_TOTAL_GAS =\n \n ### Deriving the cost per byte\n \n-The variable `cost_per_state_byte` is a dynamic parameter that depends on the block gas limit. The idea is to have a cost that scales as the block gas limit increases, thus avoiding excessive state growth. To compute this variable, we target a specific state growth per year, which we set to 75 GiB. Then, we assume this growth rate is achieved at an average gas utilization.\n+The variable `cost_per_state_byte` is a dynamic parameter that depends on the block gas limit. The idea is to have a cost that scales as the block gas limit increases, thus avoiding excessive state growth. To compute this variable, we target a specific state growth per year, which we set to 100 GiB. Then, we assume this growth rate is achieved at an average gas utilization.\n \n With multidimensional metering, blocks can be filled up to 50% of the target for both regular gas and state gas. Thus, we consider that on average, blocks can use half of the entire available gas in the block for state creation. This leads to a total of `(gas_limit/2) * 7200 * 365` gas units used for state creation in a year. Dividing this by the target state growth per year gives us the cost per byte of state created.\n "
+    },
+    {
+      "sha": "ed46fdbb28081b05f0f8535bf5891051999533d5",
+      "date": "2026-01-29T10:19:37Z",
+      "message": "Update EIP-8037: Update EIP-8037 requires header",
+      "author": "jenniferzelo",
+      "prNumber": null,
+      "patch": "@@ -8,7 +8,7 @@ status: Draft\n type: Standards Track\n category: Core\n created: 2025-10-01\n-requires: 2780\n+requires: 2780, 7702, 7825, 8011\n ---\n \n ## Abstract"
+    },
+    {
+      "sha": "b0adb33638b54b00a3e69ac983c89f1ce9b19f22",
+      "date": "2026-01-19T14:34:53Z",
+      "message": "Update EIP-8037: clarify regular gas costs for state creation operations",
+      "author": "fradamt",
+      "prNumber": null,
+      "patch": "@@ -41,16 +41,28 @@ cost_per_state_byte = np.ceil(((gas_limit/2) * 7200 * 365) / TARGET_STATE_GROWTH\n \n ### Parameter changes\n \n-Upon activation of this EIP, the following parameters of the gas model are updated:\n-\n-| **Parameter** | **Current value** | **New value** | **Operations affected** |\n-|:---:|:---:|:---:|:---:|:---:|\n-| `GAS_CREATE` | 32,000 | 112 x `cost_per_state_byte` | `CREATE`, `CREATE2`, contract creation txs |\n-| `GAS_CODE_DEPOSIT` | 200 | `cost_per_state_byte`  | `CREATE`, `CREATE2`, contract creation txs |\n-| `GAS_NEW_ACCOUNT` | 25,000 | 112 x `cost_per_state_byte` | `CALL*` |\n-| `GAS_STORAGE_SET` | 20,000 | 32 x `cost_per_state_byte` | `SSTORE` |\n-| `PER_EMPTY_ACCOUNT_COST` | 25,000 | 112 x `cost_per_state_byte` | EOA delegation |\n-| `PER_AUTH_BASE_COST` | 12,500 | 23 x `cost_per_state_byte` | EOA delegation |\n+Upon activation of this EIP, the following parameters of the gas model are updated. The \"New State Gas\" column shows the state gas cost (charged to the `state_gas` dimension), while the \"New Regular Gas\" column shows additional regular gas costs that accompany the state gas charge.\n+\n+| **Parameter** | **Current** | **New State Gas** | **New Regular Gas** | **Operations affected** |\n+|---|---|---|---|---|\n+| `GAS_CREATE` | 32,000 | 112 × `cpsb` | tbd | `CREATE`, `CREATE2`, contract creation txs |\n+| `GAS_CODE_DEPOSIT` | 200/byte | `cpsb` per byte | `6 × ceil(len/32)` (hash cost) | `CREATE`, `CREATE2`, contract creation txs |\n+| `GAS_NEW_ACCOUNT` | 25,000 | 112 × `cpsb` | — (already has `GAS_CALL_VALUE` 9,000) | `CALL*` |\n+| `GAS_STORAGE_SET` | 20,000 | 32 × `cpsb` | 2,900 (`GAS_STORAGE_UPDATE - GAS_COLD_SLOAD`) | `SSTORE` |\n+| `PER_EMPTY_ACCOUNT_COST` | 25,000 | 112 × `cpsb` | — (included in `PER_AUTH_BASE_COST`) | EOA delegation |\n+| `PER_AUTH_BASE_COST` | 12,500 | 23 × `cpsb` | 7,500 | EOA delegation |\n+\n+Where `cpsb` = `cost_per_state_byte`.\n+\n+The `PER_AUTH_BASE_COST` regular gas of 7,500 is derived from [EIP-7702](./eip-7702.md)'s cost analysis, excluding the code deployment cost (now charged as state gas):\n+\n+- Calldata cost: ~1,616 (101 bytes × 16)\n+- Recovering authority address (ecrecover): 3,000\n+- Reading nonce and code of authority (cold access): 2,600\n+- Storing values in already warm account: 200\n+- ~~Code deployment cost: 4,600 (200 × 23)~~ → now in state gas\n+\n+Total regular gas: 1,616 + 3,000 + 2,600 + 200 ≈ 7,500\n \n In addition, `GAS_SELF_DESTRUCT_NEW_ACCOUNT` is removed and replaced by `GAS_NEW_ACCOUNT`.\n "
+    },
+    {
+      "sha": "e733f8fc7b319ec7c777785431b28127699db236",
+      "date": "2026-01-06T15:43:38Z",
+      "message": "Update EIP-8037: ",
+      "author": "misilva73",
+      "prNumber": null
+    },
+    {
+      "sha": "dee539a58f206ce2a3bf08130605adf50938c40f",
+      "date": "2025-10-28T10:20:33Z",
+      "message": "Update EIP-8037: State Creation Gas Cost Increase",
+      "author": "misilva73",
+      "prNumber": null,
+      "patch": "@@ -35,12 +35,13 @@ Upon activation of this EIP, the following parameters of the gas model are updat\n | :-----------------------------: | :---------------: | :-----------: | :----------: | :----------------------------------------: |\n |          `GAS_CREATE`           |      32,000       |    212,800    |     6.7x     | `CREATE`, `CREATE2`, contract creation txs |\n |       `GAS_CODE_DEPOSIT`        |        200        |     1,900     |     9.5x     | `CREATE`, `CREATE2`, contract creation txs |\n-|        `GAS_NEW_ACCOUNT`        |      25,000       |    212,800    |     8.5x     |              New EOA funding               |\n-| `GAS_SELF_DESTRUCT_NEW_ACCOUNT` |      25,000       |    212,800    |     8.5x     |              `SELF_DESTRUCT`               |\n+|        `GAS_NEW_ACCOUNT`        |      25,000       |    212,800    |     8.5x     |                   `CALL*`                  |\n |        `GAS_STORAGE_SET`        |      20,000       |    60,800     |      3x      |                  `SSTORE`                  |\n |    `PER_EMPTY_ACCOUNT_COST`     |      25,000       |    212,800    |     8.5x     |               EOA delegation               |\n |      `PER_AUTH_BASE_COST`       |      12,500       |    43,700     |     3.5x     |               EOA delegation               |\n \n+In addition, `GAS_SELF_DESTRUCT_NEW_ACCOUNT` is removed and replaced by `GAS_NEW_ACCOUNT`\n+\n ### Multidimensional metering for code deposit gas\n \n Besides the parameter changes, this proposal introduces an independent metering for the code deposit costs. The specification is derived from [EIP-8011](./eip-8011.md). However, it only requires two dimensions, namely, `gas` and `code_deposit_gas`.\n@@ -123,7 +124,6 @@ An independent metering of the code deposit costs allows to lift this limit for\n \n This proposal is consistent with the multidimensional gas metering introduced in [EIP-8011](./eip-8011.md). However, it only requires two dimensions, namely, `gas` and `code_deposit_gas`. If [EIP-8011](./eip-8011.md) is not implemented, a two-dimensional version of [EIP-8011](./eip-8011.md) is still required.\n \n-\n ## Backwards Compatibility\n \n This is a backwards-incompatible gas repricing that requires a scheduled network upgrade.\n@@ -151,10 +151,10 @@ New slot:\n \n 24kB contract deployment (new account):\n \n-- OLD: 0.5 Gwei x (32,000 + 25,000 + 200 × 24,576) x 4,000 USD = 9.9584 USD\n-- NEW: 0.5 Gwei x (212,800 + 212,800 + 4,608 + 1,900 × 24,576) x 4,000 USD = 94.254 USD\n+- OLD: 0.5 Gwei x (32,000 + 200 × 24,576) x 4,000 USD = 9.894 USD\n+- NEW: 0.5 Gwei x (212,800 + 4,608 + 1,900 × 24,576) x 4,000 USD = 93.824 USD\n \n-Note: The NEW calculation includes `GAS_CREATE` (212,800), `GAS_NEW_ACCOUNT` (212,800), `HASH_COST` (6 × 768 = 4,608 for 24,576 bytes), and `GAS_CODE_DEPOSIT` (1,900 × 24,576). We ignore transaction intrinsic costs (21k gas units), call data costs, and the costs of additional opcodes and scaffolding needed to execute such transactions.\n+Note: The NEW calculation includes `GAS_CREATE` (212,800), `HASH_COST` (6 × 768 = 4,608 for 24,576 bytes), and `GAS_CODE_DEPOSIT` (1,900 × 24,576). We ignore transaction intrinsic costs (21k gas units), call data costs, and the costs of additional opcodes and scaffolding needed to execute such transactions.\n \n ## Security Considerations\n "
+    },
+    {
+      "sha": "4e9dba1082fbd729d3d8f66d8538f14f7e3a363a",
+      "date": "2025-10-22T14:28:38Z",
+      "message": "Update EIP-8037: Clarify gas accounting for contract deployment",
+      "author": "CPerezz",
+      "prNumber": null
+    },
+    {
+      "sha": "c47ae3be2144ac32c0eb9238b01b005b188139e2",
+      "date": "2025-10-07T21:20:16Z",
+      "message": "Add EIP: State Creation Gas Cost Increase",
+      "author": "misilva73",
+      "prNumber": null
+    }
+  ]
+}

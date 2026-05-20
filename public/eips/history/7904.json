@@ -1,0 +1,42 @@
+{
+  "eipId": 7904,
+  "commits": [
+    {
+      "sha": "88ea82a69e4fa2c545267a055d173542ed0bdc39",
+      "date": "2026-02-09T15:03:24Z",
+      "message": "Update EIP-7904: Update 7904 - new methodology + preliminary numbers",
+      "author": "misilva73",
+      "prNumber": null
+    },
+    {
+      "sha": "67be9657ce4a25e0b20906691a956031d9230804",
+      "date": "2026-01-21T08:17:28Z",
+      "message": "Update EIP-7904: correct opcode table order and reference implementat…",
+      "author": "clarenew",
+      "prNumber": null,
+      "patch": "@@ -121,9 +121,9 @@ The key words \"MUST\", \"MUST NOT\", \"REQUIRED\", \"SHALL\", \"SHALL NOT\", \"SHOULD\", \"S\n | 0x58        | PC             |                                                                     2 |                                                                   BASE_OPCODE_COST |\n | 0x59        | MSIZE          |                                                                     2 |                                                                   BASE_OPCODE_COST |\n | 0x5A        | GAS            |                                                                     2 |                                                                   BASE_OPCODE_COST |\n+| 0x5B        | JUMPDEST       |                                                                     1 |                                                                   BASE_OPCODE_COST |\n | 0x5C        | TLOAD          |                                                                   100 |                                                             WARM_STORAGE_READ_COST |\n | 0x5D        | TSTORE         |                                                                   100 |                                                             WARM_STORAGE_READ_COST |\n-| 0x5B        | JUMPDEST       |                                                                     1 |                                                                   BASE_OPCODE_COST |\n | 0x5E        | MCOPY          |                       3 + 3 \\* data_word_size + memory_expansion_cost |    BASE_OPCODE_COST + COPY_PER_WORD_COST \\* data_word_size + memory_expansion_cost |\n | 0x5F        | PUSH0          |                                                                     2 |                                                                   BASE_OPCODE_COST |\n | 0x60 - 0x7F | PUSHx          |                                                                     3 |                                                                   BASE_OPCODE_COST |\n@@ -289,7 +289,7 @@ func newRepricedInstructionSet() JumpTable {\n   instructionSet[TSTORE].constantGas = WarmStorageReadCost\n \n   validateAndFillMaxStack(&instructionSet)\n- return instructionSet\n+  return instructionSet\n }\n \n func memoryGasCost(mem *Memory, newMemSize uint64) (uint64, error) {"
+    },
+    {
+      "sha": "3d88e02a87466efcdcfe5c1bdc0188d48f9cc713",
+      "date": "2025-11-26T08:48:08Z",
+      "message": "Update EIP-7904: Align WarmStorageReadCost with spec (5 gas)",
+      "author": "phrwlk",
+      "prNumber": null,
+      "patch": "@@ -266,7 +266,7 @@ const (\n   RepricedGasMidStep          uint64 = 3\n \n   //overrides\n-  WarmStorageReadCost uint64 = 100 // WARM_STORAGE_READ_COST\n+  WarmStorageReadCost uint64 = 5 // WARM_STORAGE_READ_COST\n   ExpGas              uint64 = 2  // Once per EXP instruction\n   ExpByteGas          uint64 = 4  // One per byte of the EXP exponent\n   CopyGas             uint64 = 1  // One per word of the copied code"
+    },
+    {
+      "sha": "4e92b6c3e0e055cb88891343b1fd6c2b1e14b2ae",
+      "date": "2025-09-11T10:40:14Z",
+      "message": "Update EIP-7904: simplify the proposal",
+      "author": "JacekGlen",
+      "prNumber": null
+    },
+    {
+      "sha": "3a4a08689d5eda893147f39d9e79c8a496dfe013",
+      "date": "2025-05-15T17:17:24Z",
+      "message": "Add EIP: General Repricing",
+      "author": "JacekGlen",
+      "prNumber": null
+    }
+  ]
+}

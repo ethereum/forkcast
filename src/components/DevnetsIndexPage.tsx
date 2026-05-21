@@ -67,7 +67,7 @@ function parseSpecId(id: string): { category: string; version: number } | null {
  * - Active series get an upcomingSpecId if a local spec exists with a higher version.
  * - Spec-only series (no active networks at all) are synthesised as upcoming cards.
  */
-function buildCardItems(activeSeries: ActiveDevnetSeries[]): DevnetCardItem[] {
+function buildCardItems(activeSeries: ActiveDevnetSeries[], inactiveSeries: InactiveDevnetSeries[]): DevnetCardItem[] {
   const allSpecIds = getAllDevnetSpecIds();
 
   // Start with a copy of every active series, enriched with upcoming spec info
@@ -81,6 +81,20 @@ function buildCardItems(activeSeries: ActiveDevnetSeries[]): DevnetCardItem[] {
       upcomingSpecId: upcomingSpec?.id ?? null,
     };
   });
+
+  // Promote inactive series that have a spec beyond the highest version ever deployed
+  for (const s of inactiveSeries) {
+    const upcomingSpec = findUpcomingSpec(allSpecIds, s.categoryKey, s.highestKnownVersion ?? -1);
+    if (upcomingSpec) {
+      items.push({
+        categoryKey: s.categoryKey,
+        displayName: s.displayName,
+        description: s.description,
+        activeKeys: [],
+        upcomingSpecId: upcomingSpec.id,
+      });
+    }
+  }
 
   items.sort((a, b) => a.displayName.localeCompare(b.displayName));
   return items;
@@ -165,7 +179,7 @@ function InactiveCard({ item }: { item: InactiveDevnetSeries }) {
 const DevnetsIndexPage: React.FC = () => {
   const { activeSeries, inactiveSeries, loading, error } = useDevnetNetworks();
   const [showInactive, setShowInactive] = useState(false);
-  const cardItems = buildCardItems(activeSeries);
+  const cardItems = buildCardItems(activeSeries, inactiveSeries);
   const isForkAffiliated = (key: string) =>
     GLAMSTERDAM_CATEGORIES.has(key) || FUSAKA_CATEGORIES.has(key) || PECTRA_CATEGORIES.has(key) || DENCUN_CATEGORIES.has(key);
   const glamsterdamCards = cardItems.filter((c) => GLAMSTERDAM_CATEGORIES.has(c.categoryKey));
@@ -173,11 +187,13 @@ const DevnetsIndexPage: React.FC = () => {
   const pectraCards = cardItems.filter((c) => PECTRA_CATEGORIES.has(c.categoryKey));
   const dencunCards = cardItems.filter((c) => DENCUN_CATEGORIES.has(c.categoryKey));
   const generalCards = cardItems.filter((c) => !isForkAffiliated(c.categoryKey));
-  const glamsterdamInactive = inactiveSeries.filter((c) => GLAMSTERDAM_CATEGORIES.has(c.categoryKey));
-  const fusakaInactive = inactiveSeries.filter((c) => FUSAKA_CATEGORIES.has(c.categoryKey));
-  const pectraInactive = inactiveSeries.filter((c) => PECTRA_CATEGORIES.has(c.categoryKey));
-  const dencunInactive = inactiveSeries.filter((c) => DENCUN_CATEGORIES.has(c.categoryKey));
-  const generalInactive = inactiveSeries.filter((c) => !isForkAffiliated(c.categoryKey));
+  const promotedKeys = new Set(cardItems.filter((c) => c.activeKeys.length === 0).map((c) => c.categoryKey));
+  const remainingInactive = inactiveSeries.filter((c) => !promotedKeys.has(c.categoryKey));
+  const glamsterdamInactive = remainingInactive.filter((c) => GLAMSTERDAM_CATEGORIES.has(c.categoryKey));
+  const fusakaInactive = remainingInactive.filter((c) => FUSAKA_CATEGORIES.has(c.categoryKey));
+  const pectraInactive = remainingInactive.filter((c) => PECTRA_CATEGORIES.has(c.categoryKey));
+  const dencunInactive = remainingInactive.filter((c) => DENCUN_CATEGORIES.has(c.categoryKey));
+  const generalInactive = remainingInactive.filter((c) => !isForkAffiliated(c.categoryKey));
 
   useMetaTags({
     title: 'Devnet Tracker - Forkcast',

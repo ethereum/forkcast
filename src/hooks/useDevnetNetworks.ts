@@ -54,6 +54,21 @@ function findActiveNetworks(
   return results;
 }
 
+/** Find the highest version number across all networks (any status) for a category. */
+function findHighestVersion(
+  categoryKey: string,
+  networks: Record<string, NetworkEntry>,
+): number | null {
+  let max: number | null = null;
+  for (const key of Object.keys(networks)) {
+    const match = key.match(new RegExp(`^${categoryKey}-.*-(\\d+)$`));
+    if (!match) continue;
+    const version = parseInt(match[1], 10);
+    if (max === null || version > max) max = version;
+  }
+  return max;
+}
+
 export function useDevnetNetworks(): UseDevnetNetworksResult {
   const [activeSeries, setActiveSeries] = useState<ActiveDevnetSeries[]>(cachedSeries || []);
   const [inactiveSeries, setInactiveSeries] = useState<InactiveDevnetSeries[]>(cachedInactive || []);
@@ -80,6 +95,7 @@ export function useDevnetNetworks(): UseDevnetNetworksResult {
             categoryKey,
             displayName: meta.displayName,
             description: meta.description,
+            highestKnownVersion: findHighestVersion(categoryKey, data.networks),
           });
           continue;
         }

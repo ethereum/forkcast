@@ -1,63 +1,63 @@
 {
   "series": "ACDT",
-  "generated": "2026-05-14",
-  "for_call": "ACDT #80",
+  "generated": "2026-05-21",
+  "for_call": "ACDT #81",
   "suggestions": [
     {
-      "topic": "Glamsterdam DevNet 3 recovery path: launch DevNet 4 or fix sync issues",
+      "topic": "REST-SSZ Engine API decision: PR #764 vs #793",
       "priority": "high",
-      "rationale": "DevNet 3 remains unstable with Lighthouse sync issues and Teku envelope problems. Decision needed on whether to abandon and move to DevNet 4 or continue debugging.",
-      "related_eips": [],
-      "source": "ongoing_discussion"
-    },
-    {
-      "topic": "ePBS sync security implications: CL syncing without payload envelope validation",
-      "priority": "high",
-      "rationale": "ACDT #78 action for EL teams to analyze security of CL sync without payload envelopes remains open. ACDT #79 mentioned sync issues persist, blocking DevNet progress.",
-      "related_eips": [],
-      "source": "open_action_item"
-    },
-    {
-      "topic": "Builder deposit spam mitigation decision after signature verification benchmarks",
-      "priority": "high",
-      "rationale": "ACDT #79 deferred PR 5223 (8192 epoch delay) pending benchmarks from Justin Traglia to be presented at ACDC. This directly affects ePBS security.",
+      "rationale": "Decision was explicitly deferred to ACDE Thursday (May 21). This is a blocking technical decision affecting client implementation strategy, and ACDT needs to align on the outcome or confirm implementation status.",
       "related_eips": [],
       "source": "deferred_decision"
     },
     {
-      "topic": "Engine API PR 608 and consensus spec updates for gas limit coordination",
-      "priority": "medium",
-      "rationale": "ACDT #79 decided CL validates target adherence while EL validates EIP-1559 rules. Three PRs assigned (Nico Flaig, Potuz, Bharath) need status updates.",
+      "topic": "bal-devnet-7 launch status and test results",
+      "priority": "high",
+      "rationale": "Devnet was targeting May 18-19 launch with tests-bal@v7.2.0 as a gate. Multiple clients were still pending (Besu missing tests, Geth mid-week). Need confirmation of launch success and client participation.",
+      "related_eips": [],
+      "source": "devnet_update"
+    },
+    {
+      "topic": "State access optimization progress and benchmarking for final repricing",
+      "priority": "high",
+      "rationale": "ACDT #80 emphasized urgency: client teams must report optimization status (batch I/O, state root calculation) as a blocker for final EIP-8038/2780 repricing numbers. This directly gates glamsterdam-devnet-5 scope.",
       "related_eips": [],
       "source": "open_action_item"
     },
     {
-      "topic": "bal-devnet-7 scope: incorporate repricing and benchmarking optimizations",
+      "topic": "glamsterdam-devnet-4 readiness with engine API gas limit changes",
       "priority": "medium",
-      "rationale": "ACDT #79 mentioned bal-devnet-6 near finalization with bal-devnet-7 planned for optimizations. Final repricing EIP numbers for 7904/8038 expected this week.",
+      "rationale": "Devnet-4 requires separate client branches due to engine API PR #796 (gas limit coordination for ePBS). Nethermind and Erigon completed; other clients' status unclear. Need launch timeline confirmation.",
+      "related_eips": [],
+      "source": "devnet_update"
+    },
+    {
+      "topic": "Builder deposit spam mitigation: testing results and ACDC cost analysis",
+      "priority": "medium",
+      "rationale": "PR 5223 (8192 epoch delay) was deferred pending signature verification benchmarks and cost analysis presentation at ACDC. Justin Traglia was tasked with presenting findings; need update on economic viability and alternative approaches.",
+      "related_eips": [],
+      "source": "deferred_decision"
+    },
+    {
+      "topic": "EPBS sync security implications and Prysm/Teku issues",
+      "priority": "medium",
+      "rationale": "Multiple meetings discussed ePBS range sync without payload envelopes. ACDT #79 reported Prysm peer downscoring and Teku envelope problems preventing glamsterdam-devnet-3 recovery. EL teams were analyzing security implications but no resolution reported.",
       "related_eips": [],
       "source": "ongoing_discussion"
     },
     {
-      "topic": "Hegotá DevNet testing: FOCIL integration status",
+      "topic": "glamsterdam-devnet-5 scope finalization",
       "priority": "medium",
-      "rationale": "ACDT #79 reported FOCIL DevNet achieved interop with more Hegotá testing planned. Update needed on progress and any blockers.",
+      "rationale": "Devnet-5 is targeted to include EIP-8038, EIP-2780, EIP-8246, and EIP-7954 with placeholder numbers pending benchmarks. Need to confirm which EIPs are ready and set realistic launch timeline based on benchmark completion.",
       "related_eips": [],
-      "source": "devnet_update"
+      "source": "ongoing_discussion"
     },
     {
-      "topic": "Batch I/O prefetch flag for BAL benchmarking",
+      "topic": "eth/71 devp2p PR #264 merge status",
       "priority": "low",
-      "rationale": "ACDT #75 action for Nethermind/Erigon remains unconfirmed despite benchmarking discussions continuing through ACDT #79. May have been completed async without explicit call mention.",
+      "rationale": "Mandatory for bal-devnet-7 launch (May 18-19). Felix/client teams were tasked with review and merge. Likely resolved async but worth confirming to close the loop.",
       "related_eips": [],
       "source": "open_action_item"
-    },
-    {
-      "topic": "Blob Delta Serum devnet status: expand beyond Prysm/Lighthouse",
-      "priority": "low",
-      "rationale": "ACDT #78 reported only Prysm and Lighthouse deployed with partial cells. Informational update on whether other clients have joined or timeline for expansion.",
-      "related_eips": [],
-      "source": "devnet_update"
     }
   ]
 }

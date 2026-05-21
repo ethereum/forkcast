@@ -47,6 +47,13 @@ function StatusBadge({ status }: { status: EipDevnetStatus }) {
       </span>
     );
   }
+  if (status === 'required') {
+    return (
+      <span className="inline-block px-2 py-0.5 rounded text-xs font-medium bg-red-100 text-red-800 dark:bg-red-900/40 dark:text-red-300">
+        Required
+      </span>
+    );
+  }
   const labels: Record<string, string> = {
     updated: 'Updated',
     new: 'New',

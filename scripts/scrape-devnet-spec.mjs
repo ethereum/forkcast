@@ -73,6 +73,9 @@ function parseStatusCell(text) {
     return 'new_optional';
   if (t.includes(':new:') || t.includes('🆕')) return 'new';
   if (/^optional$/i.test(t)) return 'optional';
+  if (t.includes(':exclamation:') || t.includes('❗')) {
+    if (/required/i.test(t)) return 'required';
+  }
   return null;
 }
 
@@ -83,11 +86,11 @@ function parseEipTable(md) {
   //   B) | status_emoji | [EIP-NNNN](url) | title |  (emoji before EIP link)
   const eips = [];
   const rowRegex =
-    /\|([^[]*?)\[EIP-(\d+)\]\((https?:\/\/[^\s)]+)\)\s*\|\s*([^|]+?)\s*\|\s*([^|\n]*)/g;
+    /\|([^[\n]*?)\[EIP-(\d+)\]\((https?:\/\/[^\s)]+)\)\s*\|\s*([^|\n]+)[^\S\n]*(?:\|[^\S\n]*([^|\n]*))?/g;
   let match;
   while ((match = rowRegex.exec(md)) !== null) {
     const [, preEip, numberStr, url, title, postTitle] = match;
-    const status = parseStatusCell(preEip) || parseStatusCell(postTitle);
+    const status = parseStatusCell(preEip) || (postTitle ? parseStatusCell(postTitle) : null);
 
     eips.push({
       number: parseInt(numberStr, 10),

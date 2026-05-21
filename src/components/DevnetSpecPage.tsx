@@ -357,7 +357,7 @@ function DevnetSpecContent({ spec, networkEntry, metadata }: { spec: DevnetSpec;
               rel="noopener noreferrer"
               className="hover:text-purple-600 dark:hover:text-purple-400 transition-colors underline decoration-1 underline-offset-2"
             >
-              View Source
+              View Specification
             </a>
             <span>&middot;</span>
             {spec.genesisTime && (

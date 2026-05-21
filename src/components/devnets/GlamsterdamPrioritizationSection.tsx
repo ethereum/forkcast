@@ -16,7 +16,6 @@ import {
 import { getInclusionStageColor } from '../../utils/colors';
 import { InclusionStage } from '../../types';
 import { EipAggregateStance } from '../../types/prioritization';
-import { useDevnetNetworks } from '../../hooks/useDevnetNetworks';
 import {
   compareExecutionSpecTestCounts,
   getExecutionSpecTestCaseCount,
@@ -24,45 +23,26 @@ import {
   getExecutionSpecTestDirectoryUrl,
   type ExecutionSpecTestCount,
 } from '../../domain/execution-specs/execution-specs';
-import devnetDataRaw from '../../data/devnets/glamsterdam.json';
-
-
-const devnetData = devnetDataRaw as {
-  upgrade: string;
-  lastUpdated: string;
-  devnets: Array<{
-    id: string;
-    type: string;
-    headliner?: string;
-    version: number;
-    launchDate: string;
-    eips: number[];
-    updatedEips?: number[];
-    optionalEips?: number[];
-    isTarget?: boolean;
-  }>;
-};
+import { getAllDevnetSpecIds, getDevnetSpec } from '../../data/devnet-specs';
 
 type SortField = 'eip' | 'complexity' | 'support' | 'stage' | 'devnets' | 'tests';
 type SortDirection = 'asc' | 'desc';
 
 const GAS_REPRICING_EIPS = new Set([2780, 7778, 7904, 7976, 7981, 8037, 8038]);
 
+const GLAMSTERDAM_SERIES = new Set(['bal', 'epbs', 'glamsterdam']);
+
 interface DevnetInfo {
   id: string;
-  type: string;
   headliner: string;
   version: number;
-  launchDate?: string;
-  isTarget?: boolean;
-  optional?: boolean;
 }
 
-/** Derive a headliner label from the devnet id (e.g. "glamsterdam-devnet-0" → "GLAMSTERDAM"). */
-function deriveHeadliner(devnet: { id: string; headliner?: string }): string {
-  if (devnet.headliner) return devnet.headliner;
-  const match = devnet.id.match(/^(.+)-devnet-\d+$/);
-  return match ? match[1].toUpperCase() : devnet.id.toUpperCase();
+/** Parse "bal-devnet-3" → { series: "bal", version: 3 } */
+function parseDevnetId(id: string): { series: string; version: number } | null {
+  const match = id.match(/^(.+)-devnet-(\d+)$/);
+  if (!match) return null;
+  return { series: match[1], version: parseInt(match[2], 10) };
 }
 
 interface CombinedEipData {
@@ -76,35 +56,39 @@ interface CombinedEipData {
   testCount: ExecutionSpecTestCount | null;
 }
 
-function buildDevnetMap(activeKeys: Set<string>): Map<number, DevnetInfo[]> {
+/**
+ * For each EIP, find the most recent devnet per series that includes it.
+ * Sources data from scraped spec files so new devnets appear automatically.
+ */
+function buildDevnetMap(): Map<number, DevnetInfo[]> {
+  // Find the latest spec per glamsterdam-affiliated series
+  const latestBySeriesMap = new Map<string, { id: string; series: string; version: number }>();
+  for (const specId of getAllDevnetSpecIds()) {
+    const parsed = parseDevnetId(specId);
+    if (!parsed || !GLAMSTERDAM_SERIES.has(parsed.series)) continue;
+    const existing = latestBySeriesMap.get(parsed.series);
+    if (!existing || parsed.version > existing.version) {
+      latestBySeriesMap.set(parsed.series, { id: specId, ...parsed });
+    }
+  }
+
+  // Build EIP → DevnetInfo[] from the latest spec per series
+  const raw = new Map<number, Map<string, DevnetInfo>>();
+  for (const entry of latestBySeriesMap.values()) {
+    const spec = getDevnetSpec(entry.id);
+    if (!spec) continue;
+    const headliner = entry.series.toUpperCase();
+    const info: DevnetInfo = { id: entry.id, headliner, version: entry.version };
+
+    for (const eip of spec.eips) {
+      if (!raw.has(eip.number)) raw.set(eip.number, new Map());
+      raw.get(eip.number)!.set(headliner, info);
+    }
+  }
+
   const map = new Map<number, DevnetInfo[]>();
-  for (const devnet of devnetData.devnets) {
-    if (!activeKeys.has(devnet.id)) continue;
-    for (const eipId of devnet.eips) {
-      const existing = map.get(eipId) || [];
-      existing.push({
-        id: devnet.id,
-        type: devnet.type,
-        headliner: deriveHeadliner(devnet),
-        version: devnet.version,
-        launchDate: devnet.launchDate,
-        isTarget: devnet.isTarget,
-      });
-      map.set(eipId, existing);
-    }
-    for (const eipId of devnet.optionalEips || []) {
-      const existing = map.get(eipId) || [];
-      existing.push({
-        id: devnet.id,
-        type: devnet.type,
-        headliner: deriveHeadliner(devnet),
-        version: devnet.version,
-        launchDate: devnet.launchDate,
-        isTarget: devnet.isTarget,
-        optional: true,
-      });
-      map.set(eipId, existing);
-    }
+  for (const [eipId, byHeadliner] of raw) {
+    map.set(eipId, Array.from(byHeadliner.values()));
   }
   return map;
 }
@@ -154,17 +138,8 @@ const GlamsterdamPrioritizationSection: React.FC = () => {
   };
 
   const { aggregates: priorityAggregates } = usePrioritizationData('glamsterdam');
-  const { activeSeries } = useDevnetNetworks();
 
-  const devnetMap = useMemo(() => {
-    const activeKeys = new Set<string>();
-    for (const series of activeSeries) {
-      for (const key of series.activeKeys) {
-        activeKeys.add(key);
-      }
-    }
-    return buildDevnetMap(activeKeys);
-  }, [activeSeries]);
+  const devnetMap = useMemo(() => buildDevnetMap(), []);
 
   const stageOptions = [
     'Included',
@@ -481,12 +456,13 @@ const GlamsterdamPrioritizationSection: React.FC = () => {
                     {getStageAbbreviation(item.stage)}
                   </span>
                   {item.devnets.map((devnet) => (
-                    <span
+                    <Link
                       key={devnet.id}
-                      className={`inline-block px-1.5 py-0.5 text-[10px] font-medium rounded ${getDevnetColor(devnet.headliner)}`}
+                      to={`/devnets/${devnet.id}`}
+                      className={`inline-block px-1.5 py-0.5 text-[10px] font-medium rounded hover:opacity-80 transition-opacity ${getDevnetColor(devnet.headliner)}`}
                     >
                       {devnet.id}
-                    </span>
+                    </Link>
                   ))}
                 </div>
                 <div className="flex items-center gap-4 text-xs text-slate-500 dark:text-slate-400">
@@ -561,7 +537,7 @@ const GlamsterdamPrioritizationSection: React.FC = () => {
                   onClick={() => handleSort('devnets')}
                 >
                   <div className="flex items-center gap-2">
-                    Active Devnets
+                    Devnets
                     <SortIcon field="devnets" />
                   </div>
                 </th>
@@ -654,13 +630,14 @@ const GlamsterdamPrioritizationSection: React.FC = () => {
                             {item.devnets
                               .sort((a, b) => a.version - b.version)
                               .map((devnet) => (
-                                <span
+                                <Link
                                   key={devnet.id}
-                                  className={`inline-block px-1.5 py-0.5 text-[10px] font-medium rounded ${getDevnetColor(devnet.headliner)}`}
-                                  title={devnet.optional ? `${devnet.id} (optional)` : devnet.id}
+                                  to={`/devnets/${devnet.id}`}
+                                  className={`inline-block px-1.5 py-0.5 text-[10px] font-medium rounded hover:opacity-80 transition-opacity ${getDevnetColor(devnet.headliner)}`}
+                                  title={devnet.id}
                                 >
-                                  {devnet.id}{devnet.optional ? '*' : ''}
-                                </span>
+                                  {devnet.id}
+                                </Link>
                               ))}
                           </div>
                         ) : (

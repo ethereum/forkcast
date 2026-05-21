@@ -69,6 +69,8 @@ export interface InactiveDevnetSeries {
   categoryKey: string;
   displayName: string;
   description: string;
+  /** Highest version number ever seen for this category (active or inactive), or null. */
+  highestKnownVersion: number | null;
 }
 
 /** Processed type used by components */

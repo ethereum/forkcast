@@ -291,9 +291,14 @@ async function main() {
     console.log(`  genesis time: ${new Date(genesisTime * 1000).toISOString()}`);
   }
 
-  if (!existsSync(OUTPUT_DIR)) mkdirSync(OUTPUT_DIR, { recursive: true });
-
+  // Preserve the `canceled` flag from the existing file if present
   const outPath = join(OUTPUT_DIR, `${id}.json`);
+  if (existsSync(outPath)) {
+    const existing = JSON.parse(readFileSync(outPath, 'utf-8'));
+    if (existing.canceled) spec.canceled = true;
+  }
+
+  if (!existsSync(OUTPUT_DIR)) mkdirSync(OUTPUT_DIR, { recursive: true });
   writeFileSync(outPath, JSON.stringify(spec, null, 2) + '\n');
   console.log(`Wrote ${outPath}`);
 }

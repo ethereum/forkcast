@@ -7,7 +7,8 @@ function isDevnetSpec(obj: unknown): obj is DevnetSpec {
     typeof obj === 'object' &&
     obj !== null &&
     'id' in obj &&
-    !('upgrade' in obj)
+    !('upgrade' in obj) &&
+    !(obj as Record<string, unknown>).canceled
   );
 }
 

@@ -26,39 +26,228 @@ import {
 } from '../../data/calls';
 import { fetchUpcomingCalls, type UpcomingCall } from '../../domain/calls/upcomingCalls';
 
+function slugify(text: string) {
+  return text.toLowerCase().replace(/[^\w\s-]/g, '').replace(/\s+/g, '-');
+}
+
+function stripMarkdownInline(text: string) {
+  return text
+    .replace(/\[([^\]]+)\]\([^)]+\)/g, '$1')  // [text](url) → text
+    .replace(/`([^`]+)`/g, '$1')                // `code` → code
+    .replace(/\*\*([^*]+)\*\*/g, '$1')          // **bold** → bold
+    .replace(/\*([^*]+)\*/g, '$1')              // *italic* → italic
+    .replace(/_([^_]+)_/g, '$1');               // _italic_ → italic
+}
+
+/** Parse lines into heading indices and fence-aware regions. Used by both normalizeHeadings and extractHeadings. */
+function parseMarkdownLines(markdown: string) {
+  const lines = markdown.split('\n');
+  let inFence = false;
+  const headingLines: { index: number; level: number; text: string }[] = [];
+  for (let i = 0; i < lines.length; i++) {
+    if (/^```/.test(lines[i])) {
+      inFence = !inFence;
+      continue;
+    }
+    if (inFence) continue;
+    const m = lines[i].match(/^(#{1,6})\s+(.+)$/);
+    if (m) {
+      headingLines.push({ index: i, level: m[1].length, text: m[2] });
+    }
+  }
+  return { lines, headingLines };
+}
+
+function normalizeHeadings(markdown: string) {
+  const { lines, headingLines } = parseMarkdownLines(markdown);
+  if (headingLines.length === 0) return markdown;
+  const minLevel = Math.min(...headingLines.map((h) => h.level));
+  const shift = minLevel - 2;
+  if (shift === 0) return markdown;
+  for (const h of headingLines) {
+    lines[h.index] = lines[h.index].replace(/^(#{1,6})(\s)/, (_, hashes: string, space: string) => {
+      const newLevel = Math.max(2, Math.min(6, hashes.length - shift));
+      return '#'.repeat(newLevel) + space;
+    });
+  }
+  return lines.join('\n');
+}
+
+function deduplicateSlug(slug: string, seen: Map<string, number>) {
+  const count = seen.get(slug) ?? 0;
+  seen.set(slug, count + 1);
+  return count === 0 ? slug : `${slug}-${count}`;
+}
+
+function extractHeadings(markdown: string) {
+  const { headingLines } = parseMarkdownLines(markdown);
+  const headings: { level: number; text: string; id: string; number: string }[] = [];
+  const counters = [0, 0, 0]; // h2, h3, h4
+  const seen = new Map<string, number>();
+  for (const h of headingLines) {
+    if (h.level < 2 || h.level > 4) continue;
+    const idx = h.level - 2;
+    counters[idx]++;
+    for (let i = idx + 1; i < counters.length; i++) counters[i] = 0;
+    const number = counters.slice(0, idx + 1).join('.');
+    const text = stripMarkdownInline(h.text);
+    const id = deduplicateSlug(slugify(text), seen);
+    headings.push({ level: h.level, text, id, number });
+  }
+  return headings;
+}
+
+
+function CopyButton({ codeRef }: { codeRef: React.RefObject<HTMLPreElement | null> }) {
+  const [copied, setCopied] = React.useState(false);
+  return (
+    <button
+      onClick={() => {
+        const text = codeRef.current?.textContent || '';
+        navigator.clipboard.writeText(text).then(() => {
+          setCopied(true);
+          setTimeout(() => setCopied(false), 2000);
+        });
+      }}
+      className="eip-copy-btn"
+      title="Copy code"
+    >
+      {copied ? '✓' : 'Copy'}
+    </button>
+  );
+}
+
+function CodeBlock({ children, ...rest }: React.ComponentPropsWithoutRef<'pre'>) {
+  const codeRef = React.useRef<HTMLPreElement>(null);
+  return (
+    <div className="eip-code-block">
+      <CopyButton codeRef={codeRef} />
+      <pre ref={codeRef} {...rest}>{children}</pre>
+    </div>
+  );
+}
+
+function reactNodeToText(node: React.ReactNode): string {
+  if (typeof node === 'string') return node;
+  if (typeof node === 'number') return String(node);
+  if (Array.isArray(node)) return node.map(reactNodeToText).join('');
+  if (node && typeof node === 'object' && 'props' in node) {
+    return reactNodeToText((node as React.ReactElement<{ children?: React.ReactNode }>).props.children);
+  }
+  return '';
+}
+
+function HeadingWithAnchor({ level, children, slugMap, ...rest }: { level: number; children: React.ReactNode; slugMap: Map<string, number> } & React.ComponentPropsWithoutRef<'h2'>) {
+  const text = reactNodeToText(children);
+  const id = deduplicateSlug(slugify(text), slugMap);
+  const Tag = `h${level}` as 'h2' | 'h3' | 'h4';
+  return (
+    <Tag id={id} className="group" {...rest}>
+      {children}
+      <a href={`#${id}`} className="eip-heading-anchor" aria-hidden="true">#</a>
+    </Tag>
+  );
+}
+
 const LazyEipMarkdown = lazy(() =>
   Promise.all([import('react-markdown'), import('remark-gfm')]).then(
     ([{ default: ReactMarkdown }, { default: remarkGfm }]) => ({
-      default: ({ children, navigate }: { children: string; navigate: (path: string) => void }) => {
+      default: ({ children: rawChildren, navigate }: { children: string; navigate: (path: string) => void }) => {
+        const children = normalizeHeadings(rawChildren);
         const eipLinkPattern = /(?:\.\/eip-|\.\.\/EIPS\/eip-|https?:\/\/eips\.ethereum\.org\/EIPS\/eip-)(\d+)(?:\.md)?/;
+        const headings = extractHeadings(children);
+        const slugMap = new Map<string, number>();
         return (
-          <ReactMarkdown
-            remarkPlugins={[remarkGfm]}
-            components={{
-              a: ({ href, children: linkChildren, ...rest }) => {
-                if (href) {
-                  const match = href.match(eipLinkPattern);
-                  if (match) {
-                    return (
-                      <a
-                        {...rest}
-                        href={`/eips/${match[1]}`}
-                        onClick={(e) => {
-                          e.preventDefault();
-                          navigate(`/eips/${match[1]}`);
-                        }}
-                      >
-                        {linkChildren}
-                      </a>
-                    );
+          <>
+            {headings.length >= 4 && (
+              <details className="eip-toc">
+                <summary>Table of contents</summary>
+                <nav>
+                  <ul>
+                    {(() => {
+                      const items: React.ReactNode[] = [];
+                      let i = 0;
+                      while (i < headings.length) {
+                        const h = headings[i];
+                        if (h.level === 2) {
+                          const subs: typeof headings = [];
+                          let j = i + 1;
+                          while (j < headings.length && headings[j].level > 2) {
+                            subs.push(headings[j]);
+                            j++;
+                          }
+                          items.push(
+                            <li key={h.id} className="eip-toc-2">
+                              <a href={`#${h.id}`}>
+                                <span className="eip-toc-number">{h.number}</span>
+                                {h.text}
+                              </a>
+                              {subs.length > 0 && (
+                                <span className="eip-toc-subs">
+                                  {subs.map((s) => (
+                                    <a key={s.id} href={`#${s.id}`} className="eip-toc-sub">
+                                      {s.text}
+                                    </a>
+                                  ))}
+                                </span>
+                              )}
+                            </li>
+                          );
+                          i = j;
+                        } else {
+                          i++;
+                        }
+                      }
+                      return items;
+                    })()}
+                  </ul>
+                </nav>
+              </details>
+            )}
+            <ReactMarkdown
+              remarkPlugins={[remarkGfm]}
+              components={{
+                a: ({ href, children: linkChildren, ...rest }) => {
+                  if (href) {
+                    const match = href.match(eipLinkPattern);
+                    if (match) {
+                      return (
+                        <a
+                          {...rest}
+                          href={`/eips/${match[1]}`}
+                          onClick={(e) => {
+                            e.preventDefault();
+                            navigate(`/eips/${match[1]}`);
+                          }}
+                        >
+                          {linkChildren}
+                        </a>
+                      );
+                    }
                   }
-                }
-                return <a href={href} target="_blank" rel="noopener noreferrer" {...rest}>{linkChildren}</a>;
-              },
-            }}
-          >
-            {children}
-          </ReactMarkdown>
+                  return <a href={href} target="_blank" rel="noopener noreferrer" {...rest}>{linkChildren}</a>;
+                },
+                img: ({ src, alt, ...rest }) => {
+                  let resolvedSrc = src;
+                  if (src && src.startsWith('../assets/')) {
+                    resolvedSrc = `https://raw.githubusercontent.com/ethereum/EIPs/master/${src.replace('../', '')}`;
+                  }
+                  return <img src={resolvedSrc} alt={alt || ''} {...rest} />;
+                },
+                table: ({ children: tableChildren, ...rest }) => (
+                  <div className="eip-table-wrapper">
+                    <table {...rest}>{tableChildren}</table>
+                  </div>
+                ),
+                pre: (props) => <CodeBlock {...props} />,
+                h2: ({ children: hChildren, ...rest }) => <HeadingWithAnchor level={2} slugMap={slugMap} {...rest}>{hChildren}</HeadingWithAnchor>,
+                h3: ({ children: hChildren, ...rest }) => <HeadingWithAnchor level={3} slugMap={slugMap} {...rest}>{hChildren}</HeadingWithAnchor>,
+                h4: ({ children: hChildren, ...rest }) => <HeadingWithAnchor level={4} slugMap={slugMap} {...rest}>{hChildren}</HeadingWithAnchor>,
+              }}
+            >
+              {children}
+            </ReactMarkdown>
+          </>
         );
       },
     }),
@@ -96,7 +285,8 @@ export const EipPage: React.FC = () => {
   type ViewMode = typeof validTabs[number];
   const defaultTab: ViewMode = hasAnalysis ? 'analysis' : 'spec';
   const tabParam = searchParams.get('tab') as ViewMode | null;
-  const viewMode: ViewMode = tabParam && validTabs.includes(tabParam) ? tabParam : defaultTab;
+  const hasHash = typeof window !== 'undefined' && window.location.hash.length > 1;
+  const viewMode: ViewMode = tabParam && validTabs.includes(tabParam) ? tabParam : hasHash ? 'spec' : defaultTab;
 
   const setViewMode = (mode: ViewMode) => {
     const next = new URLSearchParams(searchParams);
@@ -167,6 +357,24 @@ export const EipPage: React.FC = () => {
     window.addEventListener('keydown', handleKeyDown);
     return () => window.removeEventListener('keydown', handleKeyDown);
   }, [handleKeyDown]);
+
+  useEffect(() => {
+    if (viewMode === 'spec' && specContent && !specLoading && window.location.hash) {
+      const id = window.location.hash.slice(1);
+      // Retry to account for lazy-loaded renderer
+      let attempts = 0;
+      const tryScroll = () => {
+        const el = document.getElementById(id);
+        if (el) {
+          el.scrollIntoView({ behavior: 'smooth' });
+        } else if (attempts < 5) {
+          attempts++;
+          setTimeout(tryScroll, 200);
+        }
+      };
+      setTimeout(tryScroll, 100);
+    }
+  }, [viewMode, specContent, specLoading]);
 
   useMetaTags({
     title: eip ? `${getProposalPrefix(eip)}-${eip.id}: ${getLaymanTitle(eip)} - Forkcast` : 'EIP Not Found - Forkcast',
@@ -530,7 +738,7 @@ export const EipPage: React.FC = () => {
                     prose-a:text-purple-600 dark:prose-a:text-purple-400
                     prose-code:text-sm prose-code:text-slate-800 prose-code:bg-slate-100 dark:prose-code:text-slate-200 dark:prose-code:bg-slate-700 prose-code:px-1 prose-code:py-0.5 prose-code:rounded
                     prose-pre:bg-slate-100 dark:prose-pre:bg-slate-700/50 prose-pre:border prose-pre:border-slate-200 dark:prose-pre:border-slate-600
-                    prose-table:text-sm prose-th:bg-slate-50 dark:prose-th:bg-slate-700/50
+                    prose-blockquote:not-italic
                     prose-img:rounded-lg prose-img:border prose-img:border-slate-200 dark:prose-img:border-slate-600"
                   >
                     <Suspense fallback={<div className="text-sm text-slate-500">Loading renderer...</div>}>

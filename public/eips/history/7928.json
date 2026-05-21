@@ -2,6 +2,22 @@
   "eipId": 7928,
   "commits": [
     {
+      "sha": "1505de07519930e6af4f97439d8042ae37858d50",
+      "date": "2026-05-21T12:56:03Z",
+      "message": "Update EIP-7928: clarify CREATE inclusion and storage no-op handling",
+      "author": "holgerd77",
+      "prNumber": null,
+      "patch": "@@ -98,7 +98,7 @@ It **MUST** include:\n   \n     - Targets of `BALANCE`, `EXTCODESIZE`, `EXTCODECOPY`, `EXTCODEHASH` opcodes\n     - Targets of `CALL`, `CALLCODE`, `DELEGATECALL`, `STATICCALL` (even if they revert; see [Gas Validation Before State Access](#gas-validation-before-state-access) for inclusion conditions)\n-    - Target addresses of `CREATE`/`CREATE2` if the target account is accessed\n+    - Target addresses of `CREATE`/`CREATE2` only once the EVM accesses the computed address: on post-access out-of-gas, on creation collision, or when creation setup increments the new account's nonce; not on address computation alone, nor when creation fails before access (e.g. insufficient sender balance for the endowment, nonce overflow, or call stack depth limit)\n     - Deployed contract addresses from creation transactions, i.e. transactions with an empty `to` field, which are always included since the deployment address is unconditionally accessed during transaction setup\n     - Transaction sender and recipient addresses (even for zero-value transfers)\n     - Beneficiary addresses for `SELFDESTRUCT`\n@@ -217,7 +217,7 @@ The following uniqueness constraints **MUST** hold:\n   - Slots accessed via `SLOAD` that are not written.\n   - Slots written with unchanged values (i.e., `SSTORE` where post-value equals pre-value, also known as \"no-op writes\").\n \n-Note: Implementations MUST check the pre-transaction value to correctly distinguish between actual writes and no-op writes.\n+Note: Implementations MUST compare each write against the storage value as of immediately before the current `block_access_index` (i.e., the cumulative state from all prior indices, falling back to the pre-block state) to correctly distinguish between actual writes and no-op writes. A no-op write MUST NOT remove `storage_changes` entries from earlier indices for the same slot.\n \n #### Balance (`balance_changes`)\n "
+    },
+    {
+      "sha": "4675100a434334520190019488e9ca94dcda2141",
+      "date": "2026-05-21T07:57:40Z",
+      "message": "Update EIP-7928: Clarify edge case aorund 7702 insufficient gas",
+      "author": "nerolation",
+      "prNumber": null,
+      "patch": "@@ -164,7 +164,13 @@ Post-state costs (e.g., `GAS_NEW_ACCOUNT` for calls to empty accounts, `GAS_SELF\n \n #### EIP-7702 Delegation\n \n-When a call target has an [EIP-7702](./eip-7702.md) delegation, the target is accessed to resolve the delegation. If a delegation exists, the delegated address requires its own `access_cost` check before being accessed. If this check fails, the delegated address MUST NOT appear in the BAL, though the original call target is included (having been accessed to resolve the delegation).\n+When a call target has an [EIP-7702](./eip-7702.md) delegation, the target is accessed to resolve the delegation. The delegated address is loaded, and MUST appear in the BAL, only if **all** of the following hold:\n+\n+- Sufficient gas remains to cover the delegated address's own `access_cost`.\n+- For value-transferring `CALL` or `CALLCODE`, the sender's balance covers the value transfer (`sender_balance >= value`).\n+- The call stack depth limit is not violated.\n+\n+If any of these checks fails, the delegated address is not loaded and MUST NOT appear in the BAL. The original call target is still included, having been accessed to resolve the delegation.\n \n Note: Delegated accounts cannot be empty, so `GAS_NEW_ACCOUNT` never applies when resolving delegations.\n "
+    },
+    {
       "sha": "22b2e961fbb28cd0976271b3afb1b7895a025542",
       "date": "2026-05-14T07:40:36Z",
       "message": "Update EIP-7928: Fix contract creation wording",

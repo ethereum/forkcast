@@ -2,6 +2,14 @@
   "eipId": 7954,
   "commits": [
     {
+      "sha": "1dc9bc870f864d7ad1095fc73ba8ca098d02c732",
+      "date": "2026-05-21T16:40:22Z",
+      "message": "Update EIP-7954: Raise contract code size to 64KiB",
+      "author": "Giulio2002",
+      "prNumber": null,
+      "patch": "@@ -1,7 +1,7 @@\n ---\n eip: 7954\n title: Increase Maximum Contract Size\n-description: Raise the maximum contract code size from 24KiB to 32KiB and initcode size from 48KiB to 64KiB.\n+description: Raise the maximum contract code size from 24KiB to 64KiB and initcode size from 48KiB to 128KiB.\n author: Giulio Rebuffo (@Giulio2002), Ben Adams (@benaadams)\n discussions-to: https://ethereum-magicians.org/t/increase-maximum-contract-size-to-48kb/24509\n status: Draft\n@@ -13,16 +13,16 @@ requires: 170, 3860\n \n ## Abstract\n \n-This EIP proposes to raise the maximum allowed size for contract code deployed on Ethereum from 24,576 bytes to 32,768 bytes.\n+This EIP proposes to raise the maximum allowed size for contract code deployed on Ethereum from 24,576 bytes to 65,536 bytes, and to raise the initcode size limit from 49,152 bytes to 131,072 bytes.\n \n ## Motivation\n \n-The current 24KiB contract size limit can be restrictive for complex contracts and applications. Increasing the limit to 32KiB allows for more feature-rich contracts while maintaining reasonable constraints on block and state growth.\n+The current 24KiB contract size limit can be restrictive for complex contracts and applications. Increasing the limit to 64KiB allows for more feature-rich contracts while maintaining reasonable constraints on block and state growth.\n \n ## Specification\n \n-1. Update the [EIP-170](./eip-170.md) contract code size limit of 24KiB (`0x6000` bytes) to 32KiB (`0x8000` bytes).\n-2. Update the [EIP-3860](./eip-3860.md) initcode size limit of 48KiB (`0xC000` bytes) to 64KiB (`0x10000` bytes).\n+1. Update the [EIP-170](./eip-170.md) contract code size limit of 24KiB (`0x6000` bytes) to 64KiB (`0x10000` bytes).\n+2. Update the [EIP-3860](./eip-3860.md) initcode size limit of 48KiB (`0xC000` bytes) to 128KiB (`0x20000` bytes).\n \n ## Rationale\n \n@@ -32,7 +32,7 @@ The current 24KiB contract size limit can be restrictive for complex contracts a\n \n ## Backwards Compatibility\n \n-This change is not backwards compatible and must be activated via a network upgrade (hard fork). Contracts larger than 24KiB, up to 32KiB, will be deployable after activation.\n+This change is not backwards compatible and must be activated via a network upgrade (hard fork). Contracts larger than 24KiB, up to 64KiB, will be deployable after activation.\n \n ## Security Considerations\n "
+    },
+    {
       "sha": "83509e66344741895858ad756f9e3d290e5a88f4",
       "date": "2026-01-20T18:23:32Z",
       "message": "Update EIP-7954: Move to Draft",

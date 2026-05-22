@@ -1026,12 +1026,14 @@ const CallPlanPage: React.FC = () => {
                                           return (
                                             <li
                                               key={index}
-                                              className="text-sm before:content-['\2192'] before:mr-2 before:text-slate-400 dark:before:text-slate-500 text-slate-600 dark:text-slate-400"
+                                              className="arrow-list-item text-sm text-slate-600 dark:text-slate-400"
                                             >
-                                              {isStructured
-                                                ? <StructuredDecisionContent decision={decision} eipMap={eipMap} />
-                                                : decision.original_text
-                                              }
+                                              <span className="arrow-list-content">
+                                                {isStructured
+                                                  ? <StructuredDecisionContent decision={decision} eipMap={eipMap} />
+                                                  : decision.original_text
+                                                }
+                                              </span>
                                             </li>
                                           );
                                         })}
@@ -1041,9 +1043,11 @@ const CallPlanPage: React.FC = () => {
                                         {tldrData.decisions.map((decision, index) => (
                                           <li
                                             key={index}
-                                            className="text-sm before:content-['\2192'] before:mr-2 before:text-slate-400 dark:before:text-slate-500 text-slate-600 dark:text-slate-400"
+                                            className="arrow-list-item text-sm text-slate-600 dark:text-slate-400"
                                           >
-                                            {decision.decision}
+                                            <span className="arrow-list-content">
+                                              {decision.decision}
+                                            </span>
                                           </li>
                                         ))}
                                       </ul>

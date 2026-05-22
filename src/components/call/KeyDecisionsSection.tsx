@@ -277,20 +277,22 @@ const KeyDecisionsSection: React.FC<KeyDecisionsSectionProps> = ({
           <li
             key={index}
             onClick={(e) => handleTimestampClick(decision.timestamp, e)}
-            className="text-sm cursor-pointer group before:content-['→'] before:mr-2 before:text-slate-400 dark:before:text-slate-500 text-slate-600 dark:text-slate-400"
+            className="arrow-list-item text-sm cursor-pointer group text-slate-600 dark:text-slate-400"
           >
-            <span className={`rounded px-1 py-0.5 transition-colors inline ${
-              isSelected
-                ? 'bg-yellow-50 dark:bg-yellow-900/50 text-slate-900 dark:text-slate-100'
-                : 'hover:text-slate-900 dark:hover:text-slate-100'
-            }`}>
-              {isStructured
-                ? <StructuredDecisionContent decision={decision} eipMap={eipById} />
-                : decision.original_text
-              }
-            </span>
-            <span className="text-xs text-slate-400 dark:text-slate-500 ml-1 opacity-0 group-hover:opacity-100 transition-opacity">
-              {getDisplayTimestamp(decision.timestamp)}
+            <span className="arrow-list-content">
+              <span className={`rounded px-1 py-0.5 transition-colors inline ${
+                isSelected
+                  ? 'bg-yellow-50 dark:bg-yellow-900/50 text-slate-900 dark:text-slate-100'
+                  : 'hover:text-slate-900 dark:hover:text-slate-100'
+              }`}>
+                {isStructured
+                  ? <StructuredDecisionContent decision={decision} eipMap={eipById} />
+                  : decision.original_text
+                }
+              </span>
+              <span className="text-xs text-slate-400 dark:text-slate-500 ml-1 opacity-0 group-hover:opacity-100 transition-opacity">
+                {getDisplayTimestamp(decision.timestamp)}
+              </span>
             </span>
           </li>
         );

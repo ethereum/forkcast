@@ -167,6 +167,27 @@
 
 /* Custom dark mode styles for the application */
 @layer components {
+  .arrow-list-item {
+    display: grid;
+    grid-template-columns: 1rem minmax(0, 1fr);
+    column-gap: 0.5rem;
+    align-items: start;
+  }
+
+  .arrow-list-item::before {
+    content: '→';
+    color: var(--color-slate-400);
+  }
+
+  .dark .arrow-list-item::before {
+    color: var(--color-slate-500);
+  }
+
+  .arrow-list-content {
+    min-width: 0;
+    overflow-wrap: anywhere;
+  }
+
   .dark .bg-slate-50 {
     background-color: #000004;
   }

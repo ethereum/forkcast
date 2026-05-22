@@ -214,17 +214,19 @@ const TldrSummary: React.FC<TldrSummaryProps> = ({
                     <li
                       key={index}
                       onClick={(e) => handleTimestampClick(decision.timestamp, e)}
-                      className="text-sm cursor-pointer group before:content-['→'] before:mr-2 before:text-slate-400 dark:before:text-slate-500 text-slate-600 dark:text-slate-400"
+                      className="arrow-list-item text-sm cursor-pointer group text-slate-600 dark:text-slate-400"
                     >
-                      <span className={`rounded px-1 py-0.5 transition-colors inline ${
-                        isSelected
-                          ? 'bg-yellow-50 dark:bg-yellow-900/50 text-slate-900 dark:text-slate-100'
-                          : 'hover:text-slate-900 dark:hover:text-slate-100'
-                      }`}>
-                        {decision.decision}
-                      </span>
-                      <span className="text-xs text-slate-400 dark:text-slate-500 ml-1 opacity-0 group-hover:opacity-100 transition-opacity">
-                        {getDisplayTimestamp(decision.timestamp)}
+                      <span className="arrow-list-content">
+                        <span className={`rounded px-1 py-0.5 transition-colors inline ${
+                          isSelected
+                            ? 'bg-yellow-50 dark:bg-yellow-900/50 text-slate-900 dark:text-slate-100'
+                            : 'hover:text-slate-900 dark:hover:text-slate-100'
+                        }`}>
+                          {decision.decision}
+                        </span>
+                        <span className="text-xs text-slate-400 dark:text-slate-500 ml-1 opacity-0 group-hover:opacity-100 transition-opacity">
+                          {getDisplayTimestamp(decision.timestamp)}
+                        </span>
                       </span>
                     </li>
                   );
@@ -248,17 +250,19 @@ const TldrSummary: React.FC<TldrSummaryProps> = ({
                   <li
                     key={index}
                     onClick={(e) => handleTimestampClick(item.timestamp, e)}
-                    className="text-sm cursor-pointer group before:content-['→'] before:mr-2 before:text-slate-400 dark:before:text-slate-500 text-slate-600 dark:text-slate-400"
+                    className="arrow-list-item text-sm cursor-pointer group text-slate-600 dark:text-slate-400"
                   >
-                    <span className={`rounded px-1 py-0.5 transition-colors inline ${
-                      isSelected
-                        ? 'bg-yellow-50 dark:bg-yellow-900/50 text-slate-900 dark:text-slate-100'
-                        : 'hover:text-slate-900 dark:hover:text-slate-100'
-                    }`}>
-                      <span className="font-normal">{item.owner}:</span> {item.action}
-                    </span>
-                    <span className="text-xs text-slate-400 dark:text-slate-400 ml-1 opacity-0 group-hover:opacity-100 transition-opacity">
-                      {getDisplayTimestamp(item.timestamp)}
+                    <span className="arrow-list-content">
+                      <span className={`rounded px-1 py-0.5 transition-colors inline ${
+                        isSelected
+                          ? 'bg-yellow-50 dark:bg-yellow-900/50 text-slate-900 dark:text-slate-100'
+                          : 'hover:text-slate-900 dark:hover:text-slate-100'
+                      }`}>
+                        <span className="font-normal">{item.owner}:</span> {item.action}
+                      </span>
+                      <span className="text-xs text-slate-400 dark:text-slate-400 ml-1 opacity-0 group-hover:opacity-100 transition-opacity">
+                        {getDisplayTimestamp(item.timestamp)}
+                      </span>
                     </span>
                   </li>
                 );
@@ -281,17 +285,19 @@ const TldrSummary: React.FC<TldrSummaryProps> = ({
                   <li
                     key={index}
                     onClick={(e) => handleTimestampClick(target.timestamp, e)}
-                    className="text-sm cursor-pointer group before:content-['→'] before:mr-2 before:text-slate-400 dark:before:text-slate-500 text-slate-600 dark:text-slate-400"
+                    className="arrow-list-item text-sm cursor-pointer group text-slate-600 dark:text-slate-400"
                   >
-                    <span className={`rounded px-1 py-0.5 transition-colors inline ${
-                      isSelected
-                        ? 'bg-yellow-50 dark:bg-yellow-900/50 text-slate-900 dark:text-slate-100'
-                        : 'hover:text-slate-900 dark:hover:text-slate-100'
-                    }`}>
-                      {target.target}
-                    </span>
-                    <span className="text-xs text-slate-400 dark:text-slate-400 ml-1 opacity-0 group-hover:opacity-100 transition-opacity">
-                      {getDisplayTimestamp(target.timestamp)}
+                    <span className="arrow-list-content">
+                      <span className={`rounded px-1 py-0.5 transition-colors inline ${
+                        isSelected
+                          ? 'bg-yellow-50 dark:bg-yellow-900/50 text-slate-900 dark:text-slate-100'
+                          : 'hover:text-slate-900 dark:hover:text-slate-100'
+                      }`}>
+                        {target.target}
+                      </span>
+                      <span className="text-xs text-slate-400 dark:text-slate-400 ml-1 opacity-0 group-hover:opacity-100 transition-opacity">
+                        {getDisplayTimestamp(target.timestamp)}
+                      </span>
                     </span>
                   </li>
                 );

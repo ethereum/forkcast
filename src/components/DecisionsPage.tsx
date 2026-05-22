@@ -157,12 +157,14 @@ const DecisionsPage: React.FC = () => {
                     return (
                       <li
                         key={index}
-                        className="text-sm before:content-['→'] before:mr-2 before:text-slate-400 dark:before:text-slate-500 text-slate-600 dark:text-slate-400"
+                        className="arrow-list-item text-sm text-slate-600 dark:text-slate-400"
                       >
-                        {isStructured
-                          ? <StructuredDecisionContent decision={decision} eipMap={eipById} />
-                          : decision.original_text
-                        }
+                        <span className="arrow-list-content">
+                          {isStructured
+                            ? <StructuredDecisionContent decision={decision} eipMap={eipById} />
+                            : decision.original_text
+                          }
+                        </span>
                       </li>
                     );
                   })}

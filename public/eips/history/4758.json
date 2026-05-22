@@ -1,0 +1,36 @@
+{
+  "eipId": 4758,
+  "commits": [
+    {
+      "sha": "1a0895b7f5adb56df83ca27aa15381ef0705aa74",
+      "date": "2023-09-12T21:50:46Z",
+      "message": "EIP-4758 stagnant (2023-Sep-1st@15.40.6) (#7566)",
+      "author": "eth-bot",
+      "prNumber": 7566,
+      "patch": "@@ -4,7 +4,7 @@ title: Deactivate SELFDESTRUCT\n description: Deactivate SELFDESTRUCT by changing it to SENDALL, which does recover all funds to the caller but does not delete any code or storage.\n author: Guillaume Ballet (@gballet), Vitalik Buterin (@vbuterin), Dankrad Feist (@dankrad)\n discussions-to: https://ethereum-magicians.org/t/eip-4758-deactivate-selfdestruct/8710\n-status: Review\n+status: Stagnant\n type: Standards Track\n category: Core\n created: 2022-02-03"
+    },
+    {
+      "sha": "b9529eb0fb4d88fa4f9fb7cce7e787a1979ca8ce",
+      "date": "2022-11-28T13:16:42Z",
+      "message": "Update 4758: Move to Review (#6041)",
+      "author": "dankrad",
+      "prNumber": 6041,
+      "patch": "@@ -4,7 +4,7 @@ title: Deactivate SELFDESTRUCT\n description: Deactivate SELFDESTRUCT by changing it to SENDALL, which does recover all funds to the caller but does not delete any code or storage.\n author: Guillaume Ballet (@gballet), Vitalik Buterin (@vbuterin), Dankrad Feist (@dankrad)\n discussions-to: https://ethereum-magicians.org/t/eip-4758-deactivate-selfdestruct/8710\n-status: Draft\n+status: Review\n type: Standards Track\n category: Core\n created: 2022-02-03\n@@ -29,7 +29,7 @@ This EIP implements this change. Applications that only use `SELFDESTRUCT` to re\n \n Getting rid of the `SELFDESTRUCT` opcode has been considered in the past, and there are currently no strong reasons to use it. Disabling it will be a requirement for statelessness.\n \n-## Backward Compatibility\n+## Backwards Compatibility\n \n This EIP requires a hard fork, since it modifies consensus rules.\n \n@@ -38,10 +38,11 @@ Few applications are affected by this change. The only use that breaks is where\n ## Security Considerations\n \n The following applications of `SELFDESTRUCT` will be broken and applications that use it in this way are not safe anymore:\n-1. Any use where `SELFDESTRUCT` is used to burn non-ETH token balances, such as ERC20, inside a contract. We do not know of any such use (since it can easily be done by sending to a burn address this seems an unlikely way to use `SELFDESTRUCT`)\n+\n+1. Any use where `SELFDESTRUCT` is used to burn non-ETH token balances, such as [EIP-20](./eip-20.md)), inside a contract. We do not know of any such use (since it can easily be done by sending to a burn address this seems an unlikely way to use `SELFDESTRUCT`)\n 2. Where `CREATE2` is used to redeploy a contract in the same place. There are two ways in which this can fail:\n-    - The destruction prevents the contract from being used outside of a certain context. For example, the contract allows anyone to withdraw funds, but `SELFDESTRUCT` is used at the end of an operation to prevent others from doing this. This type of operation can easily be modified to not depend on `SELFDESTRUCT`.\n-    - The `SELFDESTRUCT` operation is used in order to make a contract upgradable. This is not supported anymore and delegates should be used.\n+    * The destruction prevents the contract from being used outside of a certain context. For example, the contract allows anyone to withdraw funds, but `SELFDESTRUCT` is used at the end of an operation to prevent others from doing this. This type of operation can easily be modified to not depend on `SELFDESTRUCT`.\n+    * The `SELFDESTRUCT` operation is used in order to make a contract upgradable. This is not supported anymore and delegates should be used.\n \n \n ## Copyright"
+    },
+    {
+      "sha": "9e393a79d9937f579acbdcb234a67869259d5a96",
+      "date": "2022-05-06T07:29:09Z",
+      "message": "Force usage of included LICENSE file (#5055)",
+      "author": "Pandapip1",
+      "prNumber": 5055
+    },
+    {
+      "sha": "7591860285068070ddf97ea310369bf99b21acfc",
+      "date": "2022-03-28T01:34:42Z",
+      "message": "EIP-4758: Deactivate selfdestruct (#4758)",
+      "author": "dankrad",
+      "prNumber": 4758,
+      "patch": "@@ -0,0 +1,49 @@\n+---\n+eip: 4758\n+title: Deactivate SELFDESTRUCT\n+description: Deactivate SELFDESTRUCT by changing it to SENDALL, which does recover all funds to the caller but does not delete any code or storage.\n+author: Guillaume Ballet (@gballet), Vitalik Buterin (@vbuterin), Dankrad Feist (@dankrad)\n+discussions-to: https://ethereum-magicians.org/t/eip-4758-deactivate-selfdestruct/8710\n+status: Draft\n+type: Standards Track\n+category: Core\n+created: 2022-02-03\n+---\n+\n+## Abstract\n+\n+This EIP renames the `SELFDESTRUCT` opcode to `SENDALL`, and replaces its functionality. The new functionality will be only to send all Ether in the account to the caller.\n+\n+## Motivation\n+\n+The `SELFDESTRUCT` opcode requires large changes to the state of an account, in particular removing all code and storage. This will not be possible in the future with Verkle trees: Each account will be stored in many different account keys, which will not be obviously connected to the root account.\n+\n+This EIP implements this change. Applications that only use `SELFDESTRUCT` to retrieve funds will still work.\n+\n+## Specification\n+\n+ * The `SELFDESTRUCT` opcode is renamed to `SENDALL`, and now only immediately moves all ETH in the account to the target; it no longer destroys code or storage or alters the nonce\n+ * All refunds related to `SELFDESTRUCT` are removed\n+\n+## Rationale\n+\n+Getting rid of the `SELFDESTRUCT` opcode has been considered in the past, and there are currently no strong reasons to use it. Disabling it will be a requirement for statelessness.\n+\n+## Backward Compatibility\n+\n+This EIP requires a hard fork, since it modifies consensus rules.\n+\n+Few applications are affected by this change. The only use that breaks is where a contract is re-created at the same address using `CREATE2` (after a `SELFDESTRUCT`).\n+\n+## Security Considerations\n+\n+The following applications of `SELFDESTRUCT` will be broken and applications that use it in this way are not safe anymore:\n+1. Any use where `SELFDESTRUCT` is used to burn non-ETH token balances, such as ERC20, inside a contract. We do not know of any such use (since it can easily be done by sending to a burn address this seems an unlikely way to use `SELFDESTRUCT`)\n+2. Where `CREATE2` is used to redeploy a contract in the same place. There are two ways in which this can fail:\n+    - The destruction prevents the contract from being used outside of a certain context. For example, the contract allows anyone to withdraw funds, but `SELFDESTRUCT` is used at the end of an operation to prevent others from doing this. This type of operation can easily be modified to not depend on `SELFDESTRUCT`.\n+    - The `SELFDESTRUCT` operation is used in order to make a contract upgradable. This is not supported anymore and delegates should be used.\n+\n+\n+## Copyright\n+\n+Copyright and related rights waived via [CC0](https://creativecommons.org/publicdomain/zero/1.0/)."
+    }
+  ]
+}

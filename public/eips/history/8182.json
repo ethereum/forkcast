@@ -1,0 +1,133 @@
+{
+  "eipId": 8182,
+  "commits": [
+    {
+      "sha": "29b7c4c0dcf9f819472627a8b1d4f7f2467a4392",
+      "date": "2026-05-14T18:51:22Z",
+      "message": "Update EIP-8182: Update EIP-8182",
+      "author": "RogerPodacter",
+      "prNumber": null
+    },
+    {
+      "sha": "560d4139557dc3ee6baf3d74daa29fc4e2283ed6",
+      "date": "2026-05-07T20:44:06Z",
+      "message": "Update EIP-8182: Update EIP-8182",
+      "author": "RogerPodacter",
+      "prNumber": null,
+      "patch": "@@ -13,7 +13,7 @@ requires: 20\n \n ## Abstract\n \n-This EIP introduces protocol-level private ETH and compatible [ERC-20](./eip-20.md) transfers with public deposits and withdrawals, implemented as a system contract. Deposits insert notes for hidden owner identifiers through a proof-free contract path. Private transfers and withdrawals spend existing notes through a split-proof architecture that separates protocol invariants from permissionless authentication. The system contract has no on-chain upgrade mechanism and can only be replaced by a hard fork.\n+This EIP introduces private ETH and [ERC-20](./eip-20.md) transfers via a shielded-pool system contract. The pool does not mandate a single spend-authorization method: each user registers their own (e.g., ECDSA signature, passkey). Beyond installing the shielded-pool system contract at fork activation, this EIP introduces no new precompile, opcode, transaction type, or other change to the Ethereum protocol.\n \n ## Motivation\n \n@@ -1185,6 +1185,8 @@ A deposit-only pause triggered by a consensus-layer flag was considered and reje\n \n ### Split Proof Architecture and Private Auth-Policy Registration\n \n+The complexity of pluggable auth via a private policy registry is the cost of avoiding worse complexity: managing specific auth methods at the protocol level would freeze users to one scheme or require a hard fork per addition, with all the governance overhead that implies. The current design keeps the spec stable while letting auth methods evolve permissionlessly.\n+\n Pool invariants live in the fork-managed pool circuit, verified by the system contract (Section 5.5); auth verification lives in user-registered `authVerifier` contracts, deployable permissionlessly. A malicious auth verifier can only risk users registered at its address — the pool circuit independently enforces value conservation, nullifiers, deterministic note-secret derivation, and auth-policy checks. Adding a new auth method is one `registerAuthPolicy` call with no fund transfers and no anonymity-set fragmentation, because the registry hides the user-to-verifier mapping: registration leaves are `poseidon(AUTH_POLICY_DOMAIN, uint160(user), policyCommitment)` with `authVerifier` and `authDataCommitment` blinded under a user secret; revocation is keyed by `leafPosition` and `msg.sender`-gated; events emit no verifier data. A random `nonce` keeps `transactionIntentDigest` from being brute-forced to confirm intent fields, and `blindingFactor` hides the registered auth data in `blindedAuthCommitment`. Both are bound by the auth proof's authorization relation.\n \n ### Hardware Wallet Support"
+    },
+    {
+      "sha": "e26b4cd9a27c9bef696b1d3ff57100800dd5fb7e",
+      "date": "2026-05-07T18:43:03Z",
+      "message": "Update EIP-8182: Update EIP-8182",
+      "author": "RogerPodacter",
+      "prNumber": null
+    },
+    {
+      "sha": "2be51b4844284b9b30c22e5aa3c68e9b2c1b8670",
+      "date": "2026-05-05T20:04:11Z",
+      "message": "Update EIP-8182: Update EIP-8182",
+      "author": "RogerPodacter",
+      "prNumber": null
+    },
+    {
+      "sha": "8f4e867e229d5781f33739f5088fc6f1dc3b0c8c",
+      "date": "2026-04-29T20:38:08Z",
+      "message": "Update EIP-8182: Update EIP-8182",
+      "author": "RogerPodacter",
+      "prNumber": null,
+      "patch": "@@ -658,7 +658,7 @@ A dedicated precompile embeds the canonical Groth16/BN254 verification key and v\n * **Input**: `abi.encode(proof, publicInputs)` — 256-byte Groth16/BN254 proof `(A, B, C)`, plus the 21-field `PublicInputs` struct of Section 5.3 ABI-encoded as 21 `uint256` values in declaration order.\n * **Output**: 32 bytes; `uint256(1)` on success, `uint256(0)` on any failure. MUST NOT revert.\n * **Failure modes**: malformed proof, any public input `>= p` (Section 3.5), any G1/G2 point off-curve or not in the prime-order subgroup, pairing-equation failure.\n-* **Gas cost**: `1_000_000`.\n+* **Gas cost**: `300_000`. A snarkjs-generated Solidity Groth16 verifier with 21 public inputs measures `~335_000` gas in the reference implementation, dominated by calls to the bn256 precompiles (`ECADD`, `ECMUL`, `ECPAIRING`). A native precompile performs the same curve operations without EVM dispatch overhead and can fuse the 21 public-input scalar multiplications into a single multi-scalar-multiplication, so `300_000` sits comfortably below the EVM-equivalent ceiling.\n * **Verification key**: pinned by [`pool_vk.bin`](../assets/eip-8182/pool_vk.bin) and [`pool_vk.sha256`](../assets/eip-8182/pool_vk.sha256), in the standard Groth16/BN254 layout (`α ∈ G1`; `β, γ, δ ∈ G2`; `IC[0..21] ∈ G1`). Clients MUST verify the embedded VK against the pinned digest at install time.\n \n ### 6. Registries"
+    },
+    {
+      "sha": "fe89def1d01d9ad7ef67f630e06136e6c280f221",
+      "date": "2026-04-29T20:03:08Z",
+      "message": "Update EIP-8182: Update EIP-8182",
+      "author": "RogerPodacter",
+      "prNumber": null
+    },
+    {
+      "sha": "37298c5d3e9fe33c76882bc7da27575f0c400bc4",
+      "date": "2026-04-28T18:43:23Z",
+      "message": "Update EIP-8182: Update EIP-8182",
+      "author": "RogerPodacter",
+      "prNumber": null
+    },
+    {
+      "sha": "c27545d11067299cb8d6d2bb553b51f41ae3027a",
+      "date": "2026-04-23T16:11:44Z",
+      "message": "Update EIP-8182: Update EIP-8182",
+      "author": "RogerPodacter",
+      "prNumber": null
+    },
+    {
+      "sha": "824923770e798916994e47e564026b0fa1043a12",
+      "date": "2026-04-22T01:07:56Z",
+      "message": "Update EIP-8182: Update EIP-8182",
+      "author": "RogerPodacter",
+      "prNumber": null
+    },
+    {
+      "sha": "4ac4793c9e8240e1363cdabc33318af664a6b51f",
+      "date": "2026-04-21T18:02:01Z",
+      "message": "Update EIP-8182: Update EIP-8182 to use ML-KEM-768 for note delivery",
+      "author": "RogerPodacter",
+      "prNumber": null
+    },
+    {
+      "sha": "ed8274a9e4a7ff6c5fd181dcb305b2f1d0b8eb43",
+      "date": "2026-04-20T21:40:33Z",
+      "message": "Update EIP-8182: Update EIP-8182",
+      "author": "RogerPodacter",
+      "prNumber": null
+    },
+    {
+      "sha": "d1040a4c1c6b68ba1c63a35305d08d6cc75b4797",
+      "date": "2026-04-20T21:18:41Z",
+      "message": "Update EIP-8182: Update EIP-8182",
+      "author": "RogerPodacter",
+      "prNumber": null
+    },
+    {
+      "sha": "a88180f7613eea0f4e9d8e78cc503422f4ed2ff7",
+      "date": "2026-04-03T19:46:10Z",
+      "message": "Update EIP-8182: Update EIP-8182",
+      "author": "RogerPodacter",
+      "prNumber": null
+    },
+    {
+      "sha": "41095dcc574c5b7d8c8e30e667f510cb628bd767",
+      "date": "2026-03-28T16:39:14Z",
+      "message": "Update EIP-8182: Update EIP-8182",
+      "author": "RogerPodacter",
+      "prNumber": null
+    },
+    {
+      "sha": "a36476bb69d408773353091f27ffc7ea50916cbc",
+      "date": "2026-03-25T17:32:25Z",
+      "message": "Update EIP-8182: Update EIP-8182",
+      "author": "RogerPodacter",
+      "prNumber": null
+    },
+    {
+      "sha": "494a4fe1532060a601030411ea486f0f27401aa4",
+      "date": "2026-03-23T18:47:28Z",
+      "message": "Update EIP-8182: Update EIP-8182",
+      "author": "RogerPodacter",
+      "prNumber": null
+    },
+    {
+      "sha": "dfed12ad168f58998331a7a2bc78825e8bc69401",
+      "date": "2026-03-18T19:46:31Z",
+      "message": "Update EIP-8182: add delivery-key registry, X-Wing baseline scheme, remove delegated registration",
+      "author": "RogerPodacter",
+      "prNumber": null
+    },
+    {
+      "sha": "f35e7bc112c5fabd2cf8e18dee1b0fbfb3f81654",
+      "date": "2026-03-17T16:08:01Z",
+      "message": "Add EIP: Private ETH and ERC-20 Transfers",
+      "author": "RogerPodacter",
+      "prNumber": null
+    }
+  ]
+}

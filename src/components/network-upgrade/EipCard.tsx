@@ -14,6 +14,7 @@ import {
   getForkRelationship,
 } from '../../utils';
 import { Tooltip, CopyLinkButton } from '../ui';
+import { EipNotice } from '../eip/EipNotice';
 // Butterfly view disabled — data is stale. Uncomment to re-enable.
 // import { useButterflyData } from '../../hooks/useButterflyData';
 // import { ClientTestingProgress } from './ClientTestingProgress';
@@ -38,6 +39,7 @@ export const EipCard: React.FC<EipCardProps> = ({
   const [showChampionDetails, setShowChampionDetails] = useState(false);
   const [isExpanded, setIsExpanded] = useState(false);
   const forkRelationship = getForkRelationship(eip, forkName);
+  const notice = forkRelationship?.notice;
 
   // Butterfly view disabled — data is stale. Uncomment to re-enable.
   // const { data: butterflyData, loading: butterflyLoading, error: butterflyError } = useButterflyData(eip.id, forkName);
@@ -188,6 +190,8 @@ export const EipCard: React.FC<EipCardProps> = ({
 
       {/* Description */}
       <div className="">
+        {notice && <EipNotice notice={notice} className="mb-4" />}
+
         <p className="text-slate-700 dark:text-slate-300 text-sm leading-relaxed">
           {parseMarkdownLinks(getSummaryDescription(eip))}
         </p>

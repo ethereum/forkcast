@@ -11,6 +11,7 @@ import {
   getSummaryDescription,
   parseMarkdownLinks,
   getEipLayer,
+  getForkRelationship,
 } from '../../utils';
 import { Tooltip, CopyLinkButton } from '../ui';
 // Butterfly view disabled — data is stale. Uncomment to re-enable.
@@ -36,6 +37,7 @@ export const EipCard: React.FC<EipCardProps> = ({
   const layer = getEipLayer(eip);
   const [showChampionDetails, setShowChampionDetails] = useState(false);
   const [isExpanded, setIsExpanded] = useState(false);
+  const forkRelationship = getForkRelationship(eip, forkName);
 
   // Butterfly view disabled — data is stale. Uncomment to re-enable.
   // const { data: butterflyData, loading: butterflyLoading, error: butterflyError } = useButterflyData(eip.id, forkName);
@@ -296,7 +298,6 @@ export const EipCard: React.FC<EipCardProps> = ({
 
         {/* Champion Information */}
         {forkName.toLowerCase() === 'glamsterdam' && (() => {
-          const forkRelationship = eip.forkRelationships.find(fr => fr.forkName.toLowerCase() === forkName.toLowerCase());
           const champions = forkRelationship?.champions;
           const hasChampions = champions && champions.length > 0 && champions.some(c => c.name);
           const hasAnyContactInfo = champions?.some(c => c.discord || c.telegram || c.email);

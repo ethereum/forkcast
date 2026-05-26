@@ -14,6 +14,7 @@ import {
 } from '../../utils';
 import { Tooltip } from '../ui';
 import { EipTimeline } from './EipTimeline';
+import { EipNotice } from './EipNotice';
 import { EipSearch } from './EipSearch';
 import EipSearchModal from './EipSearchModal';
 import { EipSpecHistory } from './EipSpecHistory';
@@ -390,6 +391,10 @@ export const EipPage: React.FC = () => {
     trackLinkClick(linkType, url);
   };
 
+  const notices = eip.forkRelationships.flatMap((forkRelationship) =>
+    forkRelationship.notice ? [forkRelationship.notice] : [],
+  );
+
   return (
     <div className="min-h-screen bg-slate-50 dark:bg-slate-900 text-slate-900 dark:text-slate-100 p-6">
       <div className="max-w-4xl mx-auto">
@@ -497,6 +502,10 @@ export const EipPage: React.FC = () => {
             </div>
 
             {/* Description */}
+            {notices.map((notice, index) => (
+              <EipNotice key={index} notice={notice} className="mt-4" />
+            ))}
+
             <p className="mt-4 text-slate-700 dark:text-slate-300 leading-relaxed">
               {parseMarkdownLinks(eip.description)}
             </p>

@@ -36,7 +36,7 @@ export const EipNotice: React.FC<EipNoticeProps> = ({ notice, className = '', ti
     <div className={`rounded border p-4 ${NOTICE_CLASSES.container} ${className}`}>
       <div className="flex items-start gap-3">
         <svg
-          className={`mt-0.5 h-4 w-4 flex-shrink-0 ${NOTICE_CLASSES.icon}`}
+          className={`mt-0.5 h-5 w-5 flex-shrink-0 ${NOTICE_CLASSES.icon}`}
           fill="none"
           stroke="currentColor"
           strokeWidth="2"
@@ -50,8 +50,8 @@ export const EipNotice: React.FC<EipNoticeProps> = ({ notice, className = '', ti
           />
         </svg>
         <div className="min-w-0">
-          <p className={`text-sm font-semibold ${NOTICE_CLASSES.title}`}>{title ?? notice.title}</p>
-          <p className={`mt-1 text-sm leading-relaxed ${NOTICE_CLASSES.text}`}>
+          <p className={`text-xs font-medium leading-relaxed ${NOTICE_CLASSES.title}`}>{title ?? notice.title}</p>
+          <p className={`mt-1 text-xs leading-relaxed ${NOTICE_CLASSES.text}`}>
             {parseMarkdownLinks(notice.text)}
           </p>
           {callReference && (

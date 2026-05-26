@@ -400,6 +400,8 @@ export const EipPage: React.FC = () => {
     return <Navigate to="/" replace />;
   }
 
+  const requiredEipIds = eip.requires ?? [];
+
   const handleExternalLinkClick = (linkType: string, url: string) => {
     trackLinkClick(linkType, url);
   };
@@ -496,8 +498,8 @@ export const EipPage: React.FC = () => {
             </p>
 
             {/* Authors & Requires */}
-            <div className="mt-3 text-sm text-slate-500 dark:text-slate-400">
-              <span>
+            <div className="mt-3 space-y-2 text-sm text-slate-500 dark:text-slate-400">
+              <div>
                 Authors:{' '}
                 {parseAuthors(eip.author).map((author, index, arr) => (
                   <span key={index}>
@@ -516,17 +518,15 @@ export const EipPage: React.FC = () => {
                     {index < arr.length - 1 && ', '}
                   </span>
                 ))}
-              </span>
-              {eip.requires && eip.requires.length > 0 && (
-                <>
-                  <span className="mx-2 text-slate-300 dark:text-slate-600">|</span>
-                  <span className="text-xs inline-flex items-center gap-1.5 flex-wrap">
-                    Requires:{' '}
-                    {eip.requires.map((reqId, i) => {
+              </div>
+              {requiredEipIds.length > 0 && (
+                <div className="flex flex-wrap items-baseline gap-x-1.5 gap-y-1">
+                  <span>Requires:</span>
+                  <span className="inline-flex flex-wrap items-baseline gap-x-1.5 gap-y-1">
+                    {requiredEipIds.map((reqId, i) => {
                       const reqEip = eipById.get(reqId);
                       return (
                         <span key={reqId} className="inline-flex items-center">
-                          {i > 0 && <span className="mr-1.5">,</span>}
                           {reqEip ? (
                             <Link
                               to={`/eips/${reqId}`}
@@ -562,11 +562,12 @@ export const EipPage: React.FC = () => {
                               EIP-{reqId}
                             </a>
                           )}
+                          {i < requiredEipIds.length - 1 && <span>,</span>}
                         </span>
                       );
                     })}
                   </span>
-                </>
+                </div>
               )}
             </div>
 
@@ -608,11 +609,11 @@ export const EipPage: React.FC = () => {
           </header>
 
           {/* View mode tabs */}
-          <div className="flex border-b border-slate-200 dark:border-slate-700">
+          <div className="flex overflow-x-auto border-b border-slate-200 dark:border-slate-700">
             {hasAnalysis && (
               <button
                 onClick={() => setViewMode('analysis')}
-                className={`px-6 py-3 text-sm font-medium transition-colors ${
+                className={`shrink-0 px-6 py-3 text-sm font-medium transition-colors ${
                   viewMode === 'analysis'
                     ? 'text-purple-600 dark:text-purple-400 border-b-2 border-purple-600 dark:border-purple-400'
                     : 'text-slate-500 dark:text-slate-400 hover:text-slate-700 dark:hover:text-slate-300'
@@ -623,7 +624,7 @@ export const EipPage: React.FC = () => {
             )}
             <button
               onClick={() => setViewMode('spec')}
-              className={`px-6 py-3 text-sm font-medium transition-colors ${
+              className={`shrink-0 px-6 py-3 text-sm font-medium transition-colors ${
                 viewMode === 'spec'
                   ? 'text-purple-600 dark:text-purple-400 border-b-2 border-purple-600 dark:border-purple-400'
                   : 'text-slate-500 dark:text-slate-400 hover:text-slate-700 dark:hover:text-slate-300'
@@ -633,7 +634,7 @@ export const EipPage: React.FC = () => {
             </button>
             <button
               onClick={() => setViewMode('history')}
-              className={`px-6 py-3 text-sm font-medium transition-colors ${
+              className={`shrink-0 px-6 py-3 text-sm font-medium transition-colors ${
                 viewMode === 'history'
                   ? 'text-purple-600 dark:text-purple-400 border-b-2 border-purple-600 dark:border-purple-400'
                   : 'text-slate-500 dark:text-slate-400 hover:text-slate-700 dark:hover:text-slate-300'
@@ -644,7 +645,7 @@ export const EipPage: React.FC = () => {
             {hasDependents && (
               <button
                 onClick={() => setViewMode('dependents')}
-                className={`px-6 py-3 text-sm font-medium transition-colors ${
+                className={`shrink-0 px-6 py-3 text-sm font-medium transition-colors ${
                   viewMode === 'dependents'
                     ? 'text-purple-600 dark:text-purple-400 border-b-2 border-purple-600 dark:border-purple-400'
                     : 'text-slate-500 dark:text-slate-400 hover:text-slate-700 dark:hover:text-slate-300'
@@ -897,7 +898,7 @@ export const EipPage: React.FC = () => {
       {/* Hover card for required EIPs */}
       {hoveredReq && reqTooltipPos && createPortal(
         <div
-          className="fixed z-50 pointer-events-none"
+          className="hidden md:block fixed z-50 pointer-events-none"
           style={{
             left: reqTooltipPos.x,
             top: reqTooltipPos.y,

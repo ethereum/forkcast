@@ -10,7 +10,8 @@ const EIPS_DIR = path.join(__dirname, '../src/data/eips');
 const OFFICIAL_EIP_BASE_URL = 'https://raw.githubusercontent.com/ethereum/EIPs/refs/heads/master/EIPS/eip-';
 
 // Fields to compare between local and official
-const FIELDS_TO_CHECK = ['title', 'description', 'author', 'status', 'category', 'createdDate', 'type'];
+const FIELDS_TO_CHECK = ['title', 'description', 'author', 'status', 'category', 'createdDate', 'type', 'discussionLink', 'requires'];
+const OPTIONAL_METADATA_FIELDS = new Set(['category', 'discussionLink', 'requires']);
 
 // Rate limiting: delay between requests (ms)
 const REQUEST_DELAY = 200;
@@ -158,6 +159,12 @@ function normalize(str) {
   return str.toString().trim().replace(/\s+/g, ' ');
 }
 
+function formatValue(value) {
+  if (value === undefined || value === null) return '(empty)';
+  if (Array.isArray(value)) return value.join(', ');
+  return value;
+}
+
 /**
  * Compare a field between local and official
  */
@@ -171,8 +178,8 @@ function compareField(fieldName, localValue, officialValue) {
 
   return {
     field: fieldName,
-    local: localValue || '(empty)',
-    official: officialValue || '(empty)',
+    local: formatValue(localValue),
+    official: formatValue(officialValue),
   };
 }
 
@@ -224,6 +231,8 @@ function updateLocalEip(eipNumber, localEip, officialMapped) {
       }
     } else if (officialMapped[field] !== undefined && officialMapped[field] !== null) {
       updated[field] = officialMapped[field];
+    } else if (OPTIONAL_METADATA_FIELDS.has(field) && field in updated) {
+      delete updated[field];
     }
   }
 
@@ -315,7 +324,7 @@ async function validateMetadata() {
 
     for (const field of FIELDS_TO_CHECK) {
       let localValue = localEip[field];
-      let officialValue = officialMapped[field];
+      const officialValue = officialMapped[field];
 
       // Special handling for title (local has "EIP-XXXX:" prefix)
       if (field === 'title') {

@@ -17,6 +17,12 @@ export interface ForkRelationship {
   wasHeadlinerCandidate?: boolean;
   /** Maximum 2 champions allowed */
   champions?: Champion[];
+  notice?: {
+    title: string;
+    text: string;
+    call?: `${'acdc' | 'acde' | 'acdt'}/${number}`;
+    timestamp?: number;
+  };
   presentationHistory?: Array<{
     type: 'headliner_proposal' | 'headliner_presentation' | 'presentation' | 'debate';
     call?: `${'acdc' | 'acde' | 'acdt'}/${number}`;

@@ -53,6 +53,23 @@
         },
         "isHeadliner": { "type": "boolean" },
         "wasHeadlinerCandidate": { "type": "boolean" },
+        "notice": {
+          "type": "object",
+          "required": ["title", "text"],
+          "additionalProperties": false,
+          "properties": {
+            "title": { "type": "string" },
+            "text": { "type": "string" },
+            "call": {
+              "type": "string",
+              "pattern": "^(acdc|acde|acdt)/[0-9]+$"
+            },
+            "timestamp": {
+              "type": "integer",
+              "description": "Seconds into the call recording video"
+            }
+          }
+        },
         "champions": {
           "type": "array",
           "items": { "$ref": "#/$defs/Champion" },

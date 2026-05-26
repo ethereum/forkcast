@@ -1,4 +1,5 @@
 import React from 'react';
+import { Link } from 'react-router-dom';
 import { EIP } from '../../types';
 import {
   getInclusionStage,
@@ -130,13 +131,12 @@ export const OverviewSection: React.FC<OverviewSectionProps> = ({
           notice={notice}
           className="mb-6"
           title={
-            <button
-              type="button"
-              onClick={() => onStageClick(`eip-${eip.id}`)}
-              className="text-left underline decoration-1 underline-offset-2 hover:text-amber-700 dark:hover:text-amber-50"
+            <Link
+              to={`/eips/${eip.id}`}
+              className="underline decoration-1 underline-offset-2 hover:text-amber-700 dark:hover:text-amber-50"
             >
               {getProposalPrefix(eip)}-{eip.id}: {getLaymanTitle(eip)}
-            </button>
+            </Link>
           }
         />
       ))}

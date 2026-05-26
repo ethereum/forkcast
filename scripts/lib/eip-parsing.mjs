@@ -36,6 +36,27 @@ export function parseFrontmatter(content) {
   return frontmatter;
 }
 
+function parseRequires(value) {
+  if (value === undefined || value === null) return [];
+
+  const raw = String(value).trim();
+  if (raw === '') return [];
+
+  return raw.split(',').map((part) => {
+    const trimmed = part.trim();
+    if (!/^\d+$/.test(trimmed)) {
+      throw new Error(`Invalid requires EIP number: ${trimmed}`);
+    }
+
+    const eipNumber = Number(trimmed);
+    if (!Number.isSafeInteger(eipNumber) || eipNumber <= 0) {
+      throw new Error(`Invalid requires EIP number: ${trimmed}`);
+    }
+
+    return eipNumber;
+  });
+}
+
 /**
  * Map official frontmatter keys to local schema keys
  */
@@ -49,5 +70,6 @@ export function mapOfficialToLocal(official) {
     createdDate: official.created,
     type: official.type,
     discussionLink: official['discussions-to'] || undefined,
+    ...(official.requires && { requires: parseRequires(official.requires) }),
   };
 }

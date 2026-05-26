@@ -172,6 +172,19 @@ export const getEipIdFromHash = (hash: string): number | null => {
   return Number.isSafeInteger(eipId) ? eipId : null;
 };
 
+export const buildDependentsMap = (eips: EIP[]): Map<number, EIP[]> => {
+  const map = new Map<number, EIP[]>();
+  for (const eip of eips) {
+    if (eip.requires) {
+      for (const reqId of eip.requires) {
+        if (!map.has(reqId)) map.set(reqId, []);
+        map.get(reqId)!.push(eip);
+      }
+    }
+  }
+  return map;
+};
+
 export interface UpgradeAnchorExpansionState {
   declined: boolean;
   headlinerProposals: boolean;

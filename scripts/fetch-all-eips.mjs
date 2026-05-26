@@ -15,7 +15,7 @@ const BATCH_DELAY = 200;
 
 // Official metadata fields that are always synced from upstream.
 // All other fields (forkRelationships, laymanDescription, benefits, etc.) are preserved.
-const METADATA_FIELDS = ['title', 'description', 'author', 'status', 'category', 'createdDate', 'type', 'discussionLink'];
+const METADATA_FIELDS = ['title', 'description', 'author', 'status', 'category', 'createdDate', 'type', 'discussionLink', 'requires'];
 
 // EIPs with status "Moved" (e.g., ERCs moved to their own repo) are excluded
 const EXCLUDED_STATUSES = new Set(['Moved']);
@@ -89,6 +89,7 @@ function buildNewEipJson(eipNumber, mapped) {
     ...(mapped.category && { category: mapped.category }),
     createdDate: mapped.createdDate || '',
     ...(mapped.discussionLink && { discussionLink: mapped.discussionLink }),
+    ...(mapped.requires?.length && { requires: mapped.requires }),
     forkRelationships: [],
     tradeoffs: null,
   };

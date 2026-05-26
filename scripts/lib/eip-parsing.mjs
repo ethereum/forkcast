@@ -40,6 +40,10 @@ export function parseFrontmatter(content) {
  * Map official frontmatter keys to local schema keys
  */
 export function mapOfficialToLocal(official) {
+  const requires = official.requires
+    ? official.requires.split(',').map(s => parseInt(s.trim(), 10)).filter(n => !isNaN(n))
+    : undefined;
+
   return {
     title: official.title,
     description: official.description,
@@ -49,5 +53,6 @@ export function mapOfficialToLocal(official) {
     createdDate: official.created,
     type: official.type,
     discussionLink: official['discussions-to'] || undefined,
+    ...(requires?.length && { requires }),
   };
 }

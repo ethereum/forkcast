@@ -46,6 +46,7 @@ export interface EIP {
   reviewer?: string;
   layer?: 'EL' | 'CL';
   collection?: string;
+  requires?: number[];
   /** Override for EIPs not yet merged into ethereum/EIPs (default URL would 404). */
   specificationUrl?: string;
   forkRelationships: ForkRelationship[];

@@ -1,5 +1,7 @@
 import React, { useEffect, useMemo, useCallback, useState, lazy, Suspense } from 'react';
+import { createPortal } from 'react-dom';
 import { Link, useParams, Navigate, useNavigate, useSearchParams } from 'react-router-dom';
+import { EIP } from '../../types/eip';
 import { eipsData } from '../../data/eips';
 import { useMetaTags } from '../../hooks/useMetaTags';
 import { useAnalytics } from '../../hooks/useAnalytics';
@@ -11,12 +13,14 @@ import {
   parseMarkdownLinks,
   parseAuthors,
   getEipLayer,
+  buildDependentsMap,
 } from '../../utils';
 import { Tooltip } from '../ui';
 import { EipTimeline } from './EipTimeline';
 import { EipSearch } from './EipSearch';
 import EipSearchModal from './EipSearchModal';
 import { EipSpecHistory } from './EipSpecHistory';
+import { EipDependents } from './EipDependents';
 import { useEipHistory } from '../../hooks/useEipHistory';
 import { isSearchHotkey } from '../search/searchShortcuts';
 import {
@@ -254,6 +258,8 @@ const LazyEipMarkdown = lazy(() =>
   ),
 );
 
+const dependentsMap = buildDependentsMap(eipsData);
+
 export const EipPage: React.FC = () => {
   const { id } = useParams<{ id: string }>();
   const { trackLinkClick } = useAnalytics();
@@ -261,6 +267,8 @@ export const EipPage: React.FC = () => {
   const [searchParams, setSearchParams] = useSearchParams();
   const [searchModalOpen, setSearchModalOpen] = useState(false);
   const [upcomingCall, setUpcomingCall] = useState<UpcomingCall | null>(null);
+  const [hoveredReq, setHoveredReq] = useState<EIP | null>(null);
+  const [reqTooltipPos, setReqTooltipPos] = useState<{ x: number; y: number } | null>(null);
 
   const eipId = parseInt(id || '', 10);
   const eip = eipsData.find((e) => e.id === eipId);
@@ -280,13 +288,17 @@ export const EipPage: React.FC = () => {
     ),
   );
 
+  const dependents = dependentsMap.get(eipId) || [];
+  const hasDependents = dependents.length > 0;
+
   // View mode derived from URL ?tab= param
-  const validTabs = ['analysis', 'spec', 'history'] as const;
+  const validTabs = ['analysis', 'spec', 'dependents', 'history'] as const;
   type ViewMode = typeof validTabs[number];
   const defaultTab: ViewMode = hasAnalysis ? 'analysis' : 'spec';
   const tabParam = searchParams.get('tab') as ViewMode | null;
   const hasHash = typeof window !== 'undefined' && window.location.hash.length > 1;
-  const viewMode: ViewMode = tabParam && validTabs.includes(tabParam) ? tabParam : hasHash ? 'spec' : defaultTab;
+  const isValidTab = tabParam && validTabs.includes(tabParam) && (tabParam !== 'dependents' || hasDependents);
+  const viewMode: ViewMode = isValidTab ? tabParam : hasHash ? 'spec' : defaultTab;
 
   const setViewMode = (mode: ViewMode) => {
     const next = new URLSearchParams(searchParams);
@@ -433,26 +445,6 @@ export const EipPage: React.FC = () => {
                 <h1 className="text-2xl font-medium text-slate-900 dark:text-slate-100 leading-tight">
                   {getLaymanTitle(eip)}
                 </h1>
-                <p className="mt-2 text-sm text-slate-500 dark:text-slate-400">
-                  Authors:{' '}
-                  {parseAuthors(eip.author).map((author, index, arr) => (
-                    <span key={index}>
-                      {author.handle ? (
-                        <Tooltip text={`${author.handle} (click to copy)`} className="inline">
-                          <span
-                            className="cursor-pointer hover:text-slate-700 dark:hover:text-slate-200"
-                            onClick={() => navigator.clipboard.writeText(author.handle!)}
-                          >
-                            {author.name}
-                          </span>
-                        </Tooltip>
-                      ) : (
-                        <span>{author.name}</span>
-                      )}
-                      {index < arr.length - 1 && ', '}
-                    </span>
-                  ))}
-                </p>
               </div>
 
               {/* External links */}
@@ -500,6 +492,70 @@ export const EipPage: React.FC = () => {
             <p className="mt-4 text-slate-700 dark:text-slate-300 leading-relaxed">
               {parseMarkdownLinks(eip.description)}
             </p>
+
+            {/* Authors & Requires */}
+            <div className="mt-3 text-sm text-slate-500 dark:text-slate-400">
+              <span>
+                Authors:{' '}
+                {parseAuthors(eip.author).map((author, index, arr) => (
+                  <span key={index}>
+                    {author.handle ? (
+                      <Tooltip text={`${author.handle} (click to copy)`} className="inline">
+                        <span
+                          className="cursor-pointer hover:text-slate-700 dark:hover:text-slate-200"
+                          onClick={() => navigator.clipboard.writeText(author.handle!)}
+                        >
+                          {author.name}
+                        </span>
+                      </Tooltip>
+                    ) : (
+                      <span>{author.name}</span>
+                    )}
+                    {index < arr.length - 1 && ', '}
+                  </span>
+                ))}
+              </span>
+              {eip.requires && eip.requires.length > 0 && (
+                <>
+                  <span className="mx-2 text-slate-300 dark:text-slate-600">|</span>
+                  <span className="text-xs inline-flex items-center gap-1.5 flex-wrap">
+                    Requires:{' '}
+                    {eip.requires.map((reqId, i) => {
+                      const reqEip = eipsData.find((e) => e.id === reqId);
+                      return (
+                        <span key={reqId} className="inline-flex items-center">
+                          {i > 0 && <span className="mr-1.5">,</span>}
+                          <Link
+                            to={`/eips/${reqId}`}
+                            className="font-mono hover:text-slate-700 dark:hover:text-slate-200 transition-colors"
+                            style={{ borderBottom: '1px dotted currentColor' }}
+                            onMouseEnter={(e) => {
+                              if (!reqEip) return;
+                              const rect = e.currentTarget.getBoundingClientRect();
+                              const tooltipWidth = 360;
+                              const padding = 8;
+                              let x = rect.left + rect.width / 2 - tooltipWidth / 2;
+                              if (x + tooltipWidth > window.innerWidth - padding) {
+                                x = window.innerWidth - tooltipWidth - padding;
+                              }
+                              if (x < padding) x = padding;
+                              setHoveredReq(reqEip);
+                              setReqTooltipPos({ x, y: rect.bottom + padding });
+                            }}
+                            onMouseLeave={() => {
+                              setHoveredReq(null);
+                              setReqTooltipPos(null);
+                            }}
+                          >
+                            EIP-{reqId}
+                          </Link>
+                        </span>
+                      );
+                    })}
+                  </span>
+                </>
+              )}
+            </div>
 
             {/* Breakout Call */}
             {callType && (callNav?.previous || upcomingCall) && (
@@ -572,6 +628,19 @@ export const EipPage: React.FC = () => {
             >
               History
             </button>
+            {hasDependents && (
+              <button
+                onClick={() => setViewMode('dependents')}
+                className={`px-6 py-3 text-sm font-medium transition-colors ${
+                  viewMode === 'dependents'
+                    ? 'text-purple-600 dark:text-purple-400 border-b-2 border-purple-600 dark:border-purple-400'
+                    : 'text-slate-500 dark:text-slate-400 hover:text-slate-700 dark:hover:text-slate-300'
+                }`}
+              >
+                Dependents
+                <span className="ml-1.5 text-xs text-slate-400 dark:text-slate-400">{dependents.length}</span>
+              </button>
+            )}
           </div>
 
           {/* Body Content */}
@@ -749,6 +818,10 @@ export const EipPage: React.FC = () => {
               </>
             )}
 
+            {viewMode === 'dependents' && (
+              <EipDependents dependents={dependents} />
+            )}
+
             {viewMode === 'history' && (
               <EipSpecHistory
                 eipId={eipId}
@@ -807,6 +880,38 @@ export const EipPage: React.FC = () => {
         isOpen={searchModalOpen}
         onClose={() => setSearchModalOpen(false)}
       />
+
+      {/* Hover card for required EIPs */}
+      {hoveredReq && reqTooltipPos && createPortal(
+        <div
+          className="fixed z-50 pointer-events-none"
+          style={{
+            left: reqTooltipPos.x,
+            top: reqTooltipPos.y,
+            maxWidth: 360,
+          }}
+        >
+          <div className="bg-white dark:bg-slate-800 border-2 border-purple-300 dark:border-purple-600 rounded-lg shadow-2xl p-4">
+            <div className="flex items-start gap-2 mb-2">
+              <span className="text-sm font-mono font-bold text-purple-600 dark:text-purple-400">
+                {getProposalPrefix(hoveredReq)}-{hoveredReq.id}
+              </span>
+              <span className="px-2 py-0.5 text-xs font-medium rounded bg-slate-100 dark:bg-slate-700 text-slate-600 dark:text-slate-300">
+                {hoveredReq.status}
+              </span>
+            </div>
+            <h4 className="text-sm font-semibold text-slate-900 dark:text-slate-100 mb-2">
+              {getLaymanTitle(hoveredReq)}
+            </h4>
+            {hoveredReq.description && (
+              <p className="text-xs text-slate-600 dark:text-slate-300 leading-relaxed">
+                {hoveredReq.description}
+              </p>
+            )}
+          </div>
+        </div>,
+        document.body,
+      )}
     </div>
   );
 };

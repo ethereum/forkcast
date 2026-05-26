@@ -8,7 +8,6 @@ interface TOCItem {
   type: 'section' | 'eip';
   count: number | null;
   layer?: 'EL' | 'CL' | null;
-  warning?: boolean;
 }
 
 type LayerFilter = 'all' | 'EL' | 'CL';
@@ -124,12 +123,8 @@ export const TableOfContents: React.FC<TableOfContentsProps> = ({
                       }`
                     : `px-6 py-1.5 text-xs cursor-pointer ${
                         activeSection === item.id
-                          ? item.warning
-                            ? 'bg-amber-50 text-amber-800 dark:bg-amber-900/10 dark:text-amber-200 font-medium'
-                            : 'bg-purple-50 text-purple-700 dark:bg-purple-900/10 dark:text-purple-300 font-medium'
-                          : item.warning
-                            ? 'text-amber-700 dark:text-amber-300 hover:text-amber-900 dark:hover:text-amber-100 hover:bg-amber-50 dark:hover:bg-amber-900/10'
-                            : 'text-slate-500 dark:text-slate-400 hover:text-slate-700 dark:hover:text-slate-200 hover:bg-slate-50 dark:hover:bg-slate-700/50'
+                          ? 'bg-purple-50 text-purple-700 dark:bg-purple-900/10 dark:text-purple-300 font-medium'
+                          : 'text-slate-500 dark:text-slate-400 hover:text-slate-700 dark:hover:text-slate-200 hover:bg-slate-50 dark:hover:bg-slate-700/50'
                       }`
                 }`}
               >

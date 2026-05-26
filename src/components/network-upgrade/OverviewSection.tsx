@@ -2,9 +2,13 @@ import React from 'react';
 import { EIP } from '../../types';
 import {
   getInclusionStage,
+  getForkRelationship,
+  getLaymanTitle,
+  getProposalPrefix,
 } from '../../utils';
 import { ActivationDetails } from '../../data/upgrades';
 import { CopyLinkButton } from '../ui/CopyLinkButton';
+import { EipNotice } from '../eip/EipNotice';
 
 interface OverviewSectionProps {
   eips: EIP[];
@@ -23,6 +27,11 @@ export const OverviewSection: React.FC<OverviewSectionProps> = ({
   onStageClick,
   activationDetails,
 }) => {
+  const forkNotices = eips.flatMap((eip) => {
+    const notice = getForkRelationship(eip, forkName)?.notice;
+    return notice ? [{ eip, notice }] : [];
+  });
+
   // For Live upgrades, only show Included (declined is replaced by activation details)
   const stageStats = status === 'Live'
     ? [
@@ -114,6 +123,25 @@ export const OverviewSection: React.FC<OverviewSectionProps> = ({
           </div>
         </div>
       )}
+
+      {forkNotices.map(({ eip, notice }) => (
+        <EipNotice
+          key={`${eip.id}-${notice.title}`}
+          notice={notice}
+          className="mb-6"
+          title={
+            <>
+              {notice.title}:{' '}
+              <a
+                href={`#eip-${eip.id}`}
+                className="underline decoration-1 underline-offset-2 hover:text-amber-700 dark:hover:text-amber-50"
+              >
+                {getProposalPrefix(eip)}-{eip.id}: {getLaymanTitle(eip)}
+              </a>
+            </>
+          }
+        />
+      ))}
 
       {/* Stage counts grid */}
       <div className={status === 'Live' ? 'grid grid-cols-1 md:grid-cols-3 gap-4' : 'grid grid-cols-2 md:grid-cols-2 lg:grid-cols-4 gap-4'}>

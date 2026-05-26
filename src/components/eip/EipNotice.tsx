@@ -1,3 +1,4 @@
+import type { ReactNode } from 'react';
 import { Link } from 'react-router-dom';
 import { ForkRelationship } from '../../types';
 import { parseMarkdownLinks } from '../../utils';
@@ -7,6 +8,7 @@ type EipNoticeData = NonNullable<ForkRelationship['notice']>;
 interface EipNoticeProps {
   notice: EipNoticeData;
   className?: string;
+  title?: ReactNode;
 }
 
 const NOTICE_CLASSES = {
@@ -27,7 +29,7 @@ function formatCallReference(call: string, timestamp?: number): { display: strin
   };
 }
 
-export const EipNotice: React.FC<EipNoticeProps> = ({ notice, className = '' }) => {
+export const EipNotice: React.FC<EipNoticeProps> = ({ notice, className = '', title }) => {
   const callReference = notice.call ? formatCallReference(notice.call, notice.timestamp) : null;
 
   return (
@@ -48,7 +50,7 @@ export const EipNotice: React.FC<EipNoticeProps> = ({ notice, className = '' }) 
           />
         </svg>
         <div className="min-w-0">
-          <p className={`text-sm font-semibold ${NOTICE_CLASSES.title}`}>{notice.title}</p>
+          <p className={`text-sm font-semibold ${NOTICE_CLASSES.title}`}>{title ?? notice.title}</p>
           <p className={`mt-1 text-sm leading-relaxed ${NOTICE_CLASSES.text}`}>
             {parseMarkdownLinks(notice.text)}
           </p>

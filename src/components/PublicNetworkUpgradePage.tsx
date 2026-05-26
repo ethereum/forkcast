@@ -17,8 +17,7 @@ import {
   sortByLayer,
   getEipIdFromHash,
   getUpgradeAnchorExpansionState,
-  getEipLayer,
-  getForkRelationship
+  getEipLayer
 } from '../utils';
 import {
   getInclusionStageColor,
@@ -344,8 +343,6 @@ const PublicNetworkUpgradePage: React.FC<PublicNetworkUpgradePageProps> = ({
     return filterEips([eip]).length > 0;
   };
 
-  const hasForkNotice = (eip: EIP) => Boolean(getForkRelationship(eip, forkName)?.notice);
-
   // Helper to generate Headliner Proposals TOC items
   const getHeadlinerProposalsTocItems = (includeIndividualItems: boolean = false) => {
     const headlinerProposals = filterEipsByLayer(eips.filter(eip => wasHeadlinerCandidate(eip, forkName)));
@@ -372,15 +369,12 @@ const PublicNetworkUpgradePage: React.FC<PublicNetworkUpgradePageProps> = ({
       .map(eip => {
         const proposalPrefix = getProposalPrefix(eip);
         const layer = getEipLayer(eip);
-        const hasNotice = hasForkNotice(eip);
-        const marker = hasNotice ? '*' : '☆';
         return {
           id: `eip-${eip.id}`,
-          label: `${marker} ${proposalPrefix}-${eip.id}: ${getLaymanTitle(eip)}`,
+          label: `☆ ${proposalPrefix}-${eip.id}: ${getLaymanTitle(eip)}`,
           type: 'eip' as const,
           count: null as number | null,
-          layer: layer as 'EL' | 'CL' | null,
-          warning: hasNotice
+          layer: layer as 'EL' | 'CL' | null
         };
       });
 
@@ -467,7 +461,6 @@ const PublicNetworkUpgradePage: React.FC<PublicNetworkUpgradePageProps> = ({
           // For all other stages, show individual EIPs
           const eipItems = sortedEips.map(eip => {
             const isHeadlinerEip = isHeadliner(eip, forkName);
-            const hasNotice = hasForkNotice(eip);
             const inclusionStage = getInclusionStage(eip, forkName);
             const isSFI = inclusionStage === 'Scheduled for Inclusion';
 
@@ -478,15 +471,13 @@ const PublicNetworkUpgradePage: React.FC<PublicNetworkUpgradePageProps> = ({
 
             const proposalPrefix = getProposalPrefix(eip);
             const layer = getEipLayer(eip);
-            const marker = isHeadlinerEip ? starSymbol : hasNotice ? '*' : '';
 
             return {
               id: `eip-${eip.id}`,
-              label: `${marker ? `${marker} ` : ''}${proposalPrefix}-${eip.id}: ${getLaymanTitle(eip)}`,
+              label: `${isHeadlinerEip ? `${starSymbol} ` : ''}${proposalPrefix}-${eip.id}: ${getLaymanTitle(eip)}`,
               type: 'eip' as const,
               count: null as number | null,
-              layer: layer as 'EL' | 'CL' | null,
-              warning: hasNotice
+              layer: layer as 'EL' | 'CL' | null
             };
           });
 

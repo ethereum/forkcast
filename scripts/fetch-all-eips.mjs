@@ -13,9 +13,10 @@ const MANIFEST_PATH = path.join(EIPS_MD_DIR, 'manifest.json');
 const BATCH_SIZE = 5;
 const BATCH_DELAY = 200;
 
-// Official metadata fields that are always synced from upstream.
+// Official metadata fields that are synced from upstream.
 // All other fields (forkRelationships, laymanDescription, benefits, etc.) are preserved.
 const METADATA_FIELDS = ['title', 'description', 'author', 'status', 'category', 'createdDate', 'type', 'discussionLink', 'requires'];
+const OPTIONAL_METADATA_FIELDS = new Set(['category', 'discussionLink', 'requires']);
 
 // EIPs with status "Moved" (e.g., ERCs moved to their own repo) are excluded
 const EXCLUDED_STATUSES = new Set(['Moved']);
@@ -103,6 +104,14 @@ function normalize(str) {
   return str.toString().trim().replace(/\s+/g, ' ');
 }
 
+function officialMetadataValue(field, eipNumber, mapped) {
+  if (field === 'title') {
+    return `EIP-${eipNumber}: ${mapped.title || ''}`;
+  }
+
+  return mapped[field];
+}
+
 /**
  * Update an existing EIP's official metadata fields, preserving all other fields.
  * Returns true if any field changed.
@@ -112,15 +121,16 @@ function updateExistingEip(eipNumber, existing, mapped) {
   let changed = false;
 
   for (const field of METADATA_FIELDS) {
-    let officialValue;
-    if (field === 'title') {
-      officialValue = `EIP-${eipNumber}: ${mapped.title || ''}`;
-    } else {
-      officialValue = mapped[field];
-    }
+    const officialValue = officialMetadataValue(field, eipNumber, mapped);
 
-    // Skip undefined/null official values (don't erase local data)
-    if (officialValue === undefined || officialValue === null) continue;
+    // Optional upstream metadata should be removed locally when upstream omits it.
+    if (officialValue === undefined || officialValue === null) {
+      if (OPTIONAL_METADATA_FIELDS.has(field) && field in updated) {
+        delete updated[field];
+        changed = true;
+      }
+      continue;
+    }
 
     if (normalize(existing[field]) !== normalize(officialValue)) {
       updated[field] = officialValue;

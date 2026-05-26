@@ -2,7 +2,7 @@ import React, { useEffect, useMemo, useCallback, useState, lazy, Suspense } from
 import { createPortal } from 'react-dom';
 import { Link, useParams, Navigate, useNavigate, useSearchParams } from 'react-router-dom';
 import { EIP } from '../../types/eip';
-import { eipsData } from '../../data/eips';
+import { eipById, eipsData } from '../../data/eips';
 import { useMetaTags } from '../../hooks/useMetaTags';
 import { useAnalytics } from '../../hooks/useAnalytics';
 import { useEipMarkdown } from '../../hooks/useEipMarkdown';
@@ -259,6 +259,8 @@ const LazyEipMarkdown = lazy(() =>
 );
 
 const dependentsMap = buildDependentsMap(eipsData);
+const requiredEipSpecUrl = (eipId: number): string => `https://eips.ethereum.org/EIPS/eip-${eipId}`;
+const requiredEipLinkClassName = 'font-mono hover:text-slate-700 dark:hover:text-slate-200 transition-colors';
 
 export const EipPage: React.FC = () => {
   const { id } = useParams<{ id: string }>();
@@ -521,34 +523,45 @@ export const EipPage: React.FC = () => {
                   <span className="text-xs inline-flex items-center gap-1.5 flex-wrap">
                     Requires:{' '}
                     {eip.requires.map((reqId, i) => {
-                      const reqEip = eipsData.find((e) => e.id === reqId);
+                      const reqEip = eipById.get(reqId);
                       return (
                         <span key={reqId} className="inline-flex items-center">
                           {i > 0 && <span className="mr-1.5">,</span>}
-                          <Link
-                            to={`/eips/${reqId}`}
-                            className="font-mono hover:text-slate-700 dark:hover:text-slate-200 transition-colors"
-                            style={{ borderBottom: '1px dotted currentColor' }}
-                            onMouseEnter={(e) => {
-                              if (!reqEip) return;
-                              const rect = e.currentTarget.getBoundingClientRect();
-                              const tooltipWidth = 360;
-                              const padding = 8;
-                              let x = rect.left + rect.width / 2 - tooltipWidth / 2;
-                              if (x + tooltipWidth > window.innerWidth - padding) {
-                                x = window.innerWidth - tooltipWidth - padding;
-                              }
-                              if (x < padding) x = padding;
-                              setHoveredReq(reqEip);
-                              setReqTooltipPos({ x, y: rect.bottom + padding });
-                            }}
-                            onMouseLeave={() => {
-                              setHoveredReq(null);
-                              setReqTooltipPos(null);
-                            }}
-                          >
-                            EIP-{reqId}
-                          </Link>
+                          {reqEip ? (
+                            <Link
+                              to={`/eips/${reqId}`}
+                              className={requiredEipLinkClassName}
+                              style={{ borderBottom: '1px dotted currentColor' }}
+                              onMouseEnter={(e) => {
+                                const rect = e.currentTarget.getBoundingClientRect();
+                                const tooltipWidth = 360;
+                                const padding = 8;
+                                let x = rect.left + rect.width / 2 - tooltipWidth / 2;
+                                if (x + tooltipWidth > window.innerWidth - padding) {
+                                  x = window.innerWidth - tooltipWidth - padding;
+                                }
+                                if (x < padding) x = padding;
+                                setHoveredReq(reqEip);
+                                setReqTooltipPos({ x, y: rect.bottom + padding });
+                              }}
+                              onMouseLeave={() => {
+                                setHoveredReq(null);
+                                setReqTooltipPos(null);
+                              }}
+                            >
+                              EIP-{reqId}
+                            </Link>
+                          ) : (
+                            <a
+                              href={requiredEipSpecUrl(reqId)}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              className={requiredEipLinkClassName}
+                              style={{ borderBottom: '1px dotted currentColor' }}
+                            >
+                              EIP-{reqId}
+                            </a>
+                          )}
                         </span>
                       );
                     })}

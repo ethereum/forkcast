@@ -25,6 +25,9 @@ jobs:
       - name: Scrape devnet specs
         run: node scripts/scrape-all-devnet-specs.mjs
 
+      - name: Sync devnet launch dates
+        run: node scripts/sync-devnet-launches.mjs
+
       - name: Check for changes
         id: changes
         run: |
@@ -39,7 +42,7 @@ jobs:
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
-          git add src/data/devnets/
+          git add src/data/devnets/ src/data/generated/devnet-launches.json
           git commit -m "sync: scrape devnet specs"
           git push
 

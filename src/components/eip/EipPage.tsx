@@ -391,14 +391,22 @@ export const EipPage: React.FC = () => {
     }
   }, [viewMode, specContent, specLoading]);
 
+  // PR-only EIPs don't have a meaningful local page — redirect to the PR
+  const prRedirectUrl = eip?.specificationUrl?.includes('/pull/') ? eip.specificationUrl : null;
+  useEffect(() => {
+    if (prRedirectUrl) {
+      window.location.href = prRedirectUrl;
+    }
+  }, [prRedirectUrl]);
+
   useMetaTags({
     title: eip ? `${getProposalPrefix(eip)}-${eip.id}: ${getLaymanTitle(eip)} - Forkcast` : 'EIP Not Found - Forkcast',
     description: eip?.description || 'Ethereum Improvement Proposal details',
     url: `https://forkcast.org/eips/${id}`,
   });
 
-  if (!eip) {
-    return <Navigate to="/" replace />;
+  if (!eip || prRedirectUrl) {
+    return prRedirectUrl ? null : <Navigate to="/" replace />;
   }
 
   const requiredEipIds = eip.requires ?? [];

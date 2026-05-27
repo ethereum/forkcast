@@ -46,7 +46,7 @@ const EipsIndexPage: React.FC = () => {
     const stageSet = new Set<string>();
     const layerSet = new Set<string>();
 
-    eipsData.forEach(eip => {
+    eipsData.filter(eip => !eip.specificationUrl?.includes('/pull/')).forEach(eip => {
       if (eip.status) statusSet.add(eip.status);
       // Add category or type since we display category || type
       const typeValue = eip.category || eip.type;
@@ -113,7 +113,7 @@ const EipsIndexPage: React.FC = () => {
 
   // Filter and sort EIPs
   const filteredAndSortedEips = useMemo(() => {
-    let filtered = eipsData;
+    let filtered = eipsData.filter(eip => !eip.specificationUrl?.includes('/pull/'));
 
     // Apply status filter
     if (statusFilters.size > 0) {

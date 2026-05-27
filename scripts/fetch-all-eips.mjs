@@ -138,6 +138,12 @@ function updateExistingEip(eipNumber, existing, mapped) {
     }
   }
 
+  // Clean up specificationUrl when EIP is now on master
+  if (updated.specificationUrl?.includes('/ethereum/EIPs/pull/')) {
+    delete updated.specificationUrl;
+    changed = true;
+  }
+
   return { updated, changed };
 }
 

@@ -314,8 +314,8 @@ function generateAllPages() {
   });
   console.log(`🔗 Generated ${issuePages} issue-number alias pages`);
 
-  // Generate individual EIP pages
-  eips.forEach(eip => {
+  // Generate individual EIP pages (skip PR-only EIPs)
+  eips.filter(eip => !eip.specificationUrl?.includes('/pull/')).forEach(eip => {
     const fullPath = `eips/${eip.id}`;
     const eipPath = path.join(distDir, 'eips', String(eip.id));
 

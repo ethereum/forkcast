@@ -241,7 +241,7 @@ If there are errors in either step, fix them before reporting success.
 **PR Body**:
 ```
 > [!NOTE]
-> This PR was generated with the `convert-eip` skill (see [SKILL.md](https://github.com/ethereum/forkcast/blob/main/docs/skills/convert-eip/SKILL.md)).
+> This PR was generated with the `convert-eip` skill (see [SKILL.md](https://github.com/ethereum/forkcast/blob/main/.agents/skills/convert-eip/SKILL.md)).
 
 ## EIP-{number}: {title}
 

@@ -27,6 +27,11 @@ jobs:
       - name: Fetch EIPs
         run: node scripts/fetch-all-eips.mjs
 
+      - name: Fetch EIP PRs
+        run: node scripts/fetch-eip-prs.mjs
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
       - name: Fetch EIP spec history
         run: node scripts/fetch-eip-history.mjs
         env:

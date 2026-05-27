@@ -21,6 +21,10 @@ Open http://localhost:5173 in your browser.
 
 Run `make help` for all available commands.
 
+## Agent Skills
+
+Project skills live in `.agents/skills/<skill-name>/SKILL.md`. This is the canonical cross-agent location. `.claude/skills` is a relative symlink to that directory so Claude Code loads the same skills without duplicating files.
+
 ## Deployment
 
 The site automatically deploys to GitHub Pages when changes are merged into the `main` branch.

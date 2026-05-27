@@ -29,6 +29,11 @@ function formatDate(unixSeconds) {
   });
 }
 
+function formatDateISO(unixSeconds) {
+  const d = new Date(unixSeconds * 1000);
+  return d.toISOString().slice(0, 10);
+}
+
 const result = {};
 
 for (const series of SERIES) {
@@ -45,7 +50,7 @@ for (const series of SERIES) {
     if (spec.genesisTime * 1000 > Date.now()) continue;
 
     const version = parseInt(file.replace(prefix, '').replace('.json', ''), 10);
-    launches.push({ version, date: formatDate(spec.genesisTime) });
+    launches.push({ version, date: formatDate(spec.genesisTime), dateISO: formatDateISO(spec.genesisTime) });
   }
 
   launches.sort((a, b) => a.version - b.version);

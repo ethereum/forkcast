@@ -1,3 +1,5 @@
+import devnetLaunches from './generated/devnet-launches.json';
+
 export interface TimelineEvent {
   type: 'event';
   date: string; // YYYY-MM-DD format for sorting/display
@@ -5,6 +7,22 @@ export interface TimelineEvent {
   title: string;
   category: 'mainnet' | 'testnet' | 'milestone' | 'announcement' | 'devnet';
 }
+
+const FORK_DISPLAY_NAMES: Record<string, string> = {
+  glamsterdam: 'Glamsterdam',
+  hegota: 'Hegotá',
+};
+
+const generatedDevnetEvents: TimelineEvent[] = Object.entries(
+  devnetLaunches as Record<string, { version: number; date: string; dateISO: string }[]>,
+).flatMap(([fork, launches]) =>
+  launches.map((l) => ({
+    type: 'event' as const,
+    date: l.dateISO,
+    title: `${FORK_DISPLAY_NAMES[fork] ?? fork} Devnet-${l.version} Launches`,
+    category: 'devnet' as const,
+  })),
+);
 
 export const timelineEvents: TimelineEvent[] = [
   {
@@ -128,6 +146,7 @@ export const timelineEvents: TimelineEvent[] = [
     datetime: '2026-01-07 01:01:11',
     title: 'BPO2 on Mainnet (14/21 blobs)',
     category: 'mainnet'
-  }
+  },
+  ...generatedDevnetEvents,
 ];
 

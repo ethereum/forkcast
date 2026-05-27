@@ -364,7 +364,7 @@ function enrichDevnetDates(progress: ForkProgress, forkKey: string): ForkProgres
         devnets: phase.devnets.map(devnet => {
           const version = parseInt(devnet.name.replace('Devnet-', ''), 10);
           const launch = launches.find(l => l.version === version);
-          if (launch && devnet.status !== 'completed') {
+          if (launch) {
             return { ...devnet, status: 'completed' as const, date: launch.date };
           }
           return devnet;

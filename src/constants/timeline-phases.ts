@@ -4,6 +4,7 @@ import type {
   ForkProgress,
   MacroPhaseConfig
 } from '../types/timeline';
+import devnetLaunches from '../data/generated/devnet-launches.json';
 
 export const GLAMSTERDAM_TIMELINE_PHASES: TimelinePhase[] = [
   {
@@ -200,7 +201,7 @@ export const FUSAKA_PROGRESS: ForkProgress = {
 };
 
 // Glamsterdam progress with actual dates for completed milestones
-export const GLAMSTERDAM_PROGRESS: ForkProgress = {
+const RAW_GLAMSTERDAM_PROGRESS: ForkProgress = {
   forkName: 'Glamsterdam',
   phases: [
     {
@@ -276,7 +277,7 @@ export const GLAMSTERDAM_PROGRESS: ForkProgress = {
   ]
 };
 
-export const HEGOTA_PROGRESS: ForkProgress = {
+const RAW_HEGOTA_PROGRESS: ForkProgress = {
   forkName: 'Hegota',
   phases: [
     {
@@ -349,6 +350,32 @@ export const HEGOTA_PROGRESS: ForkProgress = {
     }
   ]
 };
+
+function enrichDevnetDates(progress: ForkProgress, forkKey: string): ForkProgress {
+  const launches = (devnetLaunches as Record<string, { version: number; date: string }[]>)[forkKey] ?? [];
+  if (!launches.length) return progress;
+
+  return {
+    ...progress,
+    phases: progress.phases.map(phase => {
+      if (phase.phaseId !== 'development' || !phase.devnets) return phase;
+      return {
+        ...phase,
+        devnets: phase.devnets.map(devnet => {
+          const version = parseInt(devnet.name.replace('Devnet-', ''), 10);
+          const launch = launches.find(l => l.version === version);
+          if (launch && devnet.status !== 'completed') {
+            return { ...devnet, status: 'completed' as const, date: launch.date };
+          }
+          return devnet;
+        }),
+      };
+    }),
+  };
+}
+
+export const GLAMSTERDAM_PROGRESS = enrichDevnetDates(RAW_GLAMSTERDAM_PROGRESS, 'glamsterdam');
+export const HEGOTA_PROGRESS = enrichDevnetDates(RAW_HEGOTA_PROGRESS, 'hegota');
 
 export const UPGRADE_PROCESS_PHASES: ProcessPhase[] = [
   {

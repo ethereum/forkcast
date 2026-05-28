@@ -2,6 +2,7 @@ import fs from 'fs';
 import path from 'path';
 import { fileURLToPath } from 'url';
 import { parseFrontmatter, mapOfficialToLocal } from './lib/eip-parsing.mjs';
+import { getPendingPullRequestNumber } from './eip-record-sync.mjs';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -98,15 +99,6 @@ function filterEips(eips, options) {
 }
 
 /**
- * Extract PR number from a GitHub PR URL
- */
-function extractPrNumber(url) {
-  if (!url) return null;
-  const match = url.match(/github\.com\/ethereum\/EIPs\/pull\/(\d+)/);
-  return match ? match[1] : null;
-}
-
-/**
  * Fetch official EIP from GitHub (master branch, falling back to open PR)
  */
 async function fetchOfficialEIP(eipNumber, localEip) {
@@ -115,8 +107,8 @@ async function fetchOfficialEIP(eipNumber, localEip) {
     const response = await fetch(url);
     if (!response.ok) {
       if (response.status === 404) {
-        // Try fetching from an open PR if the local EIP has a specificationUrl
-        const prNumber = extractPrNumber(localEip?.specificationUrl);
+        // Try fetching from an open PR if the local EIP is still pending.
+        const prNumber = getPendingPullRequestNumber(localEip);
         if (prNumber) {
           return fetchEIPFromPR(eipNumber, prNumber);
         }

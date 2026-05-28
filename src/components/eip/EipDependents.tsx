@@ -1,7 +1,7 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { EIP } from '../../types/eip';
-import { getProposalPrefix, getLaymanTitle } from '../../utils';
+import { getProposalPrefix, getLaymanTitle, getSpecificationUrl, isPendingEip } from '../../utils';
 
 interface EipDependentsProps {
   dependents: EIP[];
@@ -17,7 +17,7 @@ export const EipDependents: React.FC<EipDependentsProps> = ({ dependents }) => {
       </p>
       <div className="space-y-2">
         {sorted.map((eip) => {
-          const isPr = eip.specificationUrl?.includes('/pull/');
+          const isPr = isPendingEip(eip);
           const cardClasses = "block bg-slate-50 dark:bg-slate-700/50 border border-slate-200 dark:border-slate-600 rounded-lg p-4 hover:border-purple-400 dark:hover:border-purple-500 transition-colors";
           const content = (
             <>
@@ -49,7 +49,7 @@ export const EipDependents: React.FC<EipDependentsProps> = ({ dependents }) => {
           return isPr ? (
             <a
               key={eip.id}
-              href={eip.specificationUrl}
+              href={getSpecificationUrl(eip)}
               target="_blank"
               rel="noopener noreferrer"
               className={cardClasses}

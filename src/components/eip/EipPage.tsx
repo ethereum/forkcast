@@ -14,6 +14,7 @@ import {
   parseAuthors,
   getEipLayer,
   buildDependentsMap,
+  isPendingEip,
 } from '../../utils';
 import { Tooltip } from '../ui';
 import { EipTimeline } from './EipTimeline';
@@ -392,7 +393,7 @@ export const EipPage: React.FC = () => {
   }, [viewMode, specContent, specLoading]);
 
   // PR-only EIPs don't have a meaningful local page — redirect to the PR
-  const prRedirectUrl = eip?.specificationUrl?.includes('/pull/') ? eip.specificationUrl : null;
+  const prRedirectUrl = eip && isPendingEip(eip) ? getSpecificationUrl(eip) : null;
   useEffect(() => {
     if (prRedirectUrl) {
       window.location.href = prRedirectUrl;

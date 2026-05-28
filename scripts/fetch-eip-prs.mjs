@@ -188,9 +188,12 @@ async function processPr(prNumber, headers, trackedEipIds, requiresFilter) {
       );
     }
 
-    // Skip non-numeric EIP numbers (TBD, XXXX, etc.)
+    // Skip placeholder EIP numbers (TBD, XXXX, 9999, etc.)
     const eipField = frontmatter.eip;
     if (eipField && !/^\d+$/.test(String(eipField).trim())) {
+      continue;
+    }
+    if (eipNumber === 9999) {
       continue;
     }
 

@@ -7,19 +7,19 @@ If you see incorrect information about an EIP's impacts or benefits, content-onl
 **With Docker:**
 
 ```bash
-make docker-dev
+just docker-dev
 ```
 
 **Without Docker:**
 
 ```bash
-make install
-make dev
+just install
+just dev
 ```
 
 Open http://localhost:5173 in your browser.
 
-Run `make help` for all available commands.
+Run `just help` for all available commands.
 
 ## Agent Skills
 

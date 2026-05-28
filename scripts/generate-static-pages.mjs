@@ -38,6 +38,10 @@ const protocolCalls = getProtocolCalls();
 const eips = getEips();
 const devnetSpecs = getDevnetSpecs();
 
+function isPendingEip(eip) {
+  return Boolean(eip.pendingPullRequest);
+}
+
 // Define standalone pages with their metadata
 const standalonePages = [
   {
@@ -315,7 +319,8 @@ function generateAllPages() {
   console.log(`🔗 Generated ${issuePages} issue-number alias pages`);
 
   // Generate individual EIP pages (skip PR-only EIPs)
-  eips.filter(eip => !eip.specificationUrl?.includes('/pull/')).forEach(eip => {
+  const staticEips = eips.filter(eip => !isPendingEip(eip));
+  staticEips.forEach(eip => {
     const fullPath = `eips/${eip.id}`;
     const eipPath = path.join(distDir, 'eips', String(eip.id));
 
@@ -333,7 +338,7 @@ function generateAllPages() {
     fs.writeFileSync(outputPath, html);
     sitemapRoutes.push(fullPath);
   });
-  console.log(`📋 Generated ${eips.length} EIP pages`);
+  console.log(`📋 Generated ${staticEips.length} EIP pages`);
 
   // Generate devnet spec pages
   if (devnetSpecs.length > 0) {

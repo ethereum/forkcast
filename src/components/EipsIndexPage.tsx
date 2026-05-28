@@ -1,7 +1,7 @@
 import React, { useState, useMemo, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { eipsData } from '../data/eips';
-import { getProposalPrefix, getLaymanTitle, getInclusionStage, isHeadlinerInAnyFork, wasHeadlinerCandidateInAnyFork, getEipLayer } from '../utils/eip';
+import { getProposalPrefix, getLaymanTitle, getInclusionStage, isHeadlinerInAnyFork, wasHeadlinerCandidateInAnyFork, getEipLayer, isPendingEip } from '../utils/eip';
 import { EipSearch } from './eip/EipSearch';
 import EipSearchModal from './eip/EipSearchModal';
 import { isSearchHotkey } from './search/searchShortcuts';
@@ -46,7 +46,7 @@ const EipsIndexPage: React.FC = () => {
     const stageSet = new Set<string>();
     const layerSet = new Set<string>();
 
-    eipsData.filter(eip => !eip.specificationUrl?.includes('/pull/')).forEach(eip => {
+    eipsData.filter(eip => !isPendingEip(eip)).forEach(eip => {
       if (eip.status) statusSet.add(eip.status);
       // Add category or type since we display category || type
       const typeValue = eip.category || eip.type;
@@ -113,7 +113,7 @@ const EipsIndexPage: React.FC = () => {
 
   // Filter and sort EIPs
   const filteredAndSortedEips = useMemo(() => {
-    let filtered = eipsData.filter(eip => !eip.specificationUrl?.includes('/pull/'));
+    let filtered = eipsData.filter(eip => !isPendingEip(eip));
 
     // Apply status filter
     if (statusFilters.size > 0) {

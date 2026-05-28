@@ -39,6 +39,11 @@ export interface Champion {
   email?: string;
 }
 
+export interface PendingPullRequest {
+  number: number;
+  url: string;
+}
+
 export interface EIP {
   id: number;
   title: string;
@@ -53,8 +58,9 @@ export interface EIP {
   layer?: 'EL' | 'CL';
   collection?: string;
   requires?: number[];
-  /** Override for EIPs not yet merged into ethereum/EIPs (default URL would 404). */
+  /** Override for non-standard specification URLs. */
   specificationUrl?: string;
+  pendingPullRequest?: PendingPullRequest;
   forkRelationships: ForkRelationship[];
   laymanDescription?: string;
   northStars?: string[];

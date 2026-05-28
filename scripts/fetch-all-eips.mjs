@@ -3,6 +3,11 @@ import path from 'path';
 import { createHash } from 'crypto';
 import { fileURLToPath } from 'url';
 import { parseFrontmatter, mapOfficialToLocal } from './lib/eip-parsing.mjs';
+import {
+  buildNewEipJson,
+  EXCLUDED_STATUSES,
+  updateExistingEip,
+} from './eip-record-sync.mjs';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -12,14 +17,6 @@ const EIPS_MD_DIR = path.join(__dirname, '../public/eips');
 const MANIFEST_PATH = path.join(EIPS_MD_DIR, 'manifest.json');
 const BATCH_SIZE = 5;
 const BATCH_DELAY = 200;
-
-// Official metadata fields that are synced from upstream.
-// All other fields (forkRelationships, laymanDescription, benefits, etc.) are preserved.
-const METADATA_FIELDS = ['title', 'description', 'author', 'status', 'category', 'createdDate', 'type', 'discussionLink', 'requires'];
-const OPTIONAL_METADATA_FIELDS = new Set(['category', 'discussionLink', 'requires']);
-
-// EIPs with status "Moved" (e.g., ERCs moved to their own repo) are excluded
-const EXCLUDED_STATUSES = new Set(['Moved']);
 
 function parseArgs() {
   const args = process.argv.slice(2);
@@ -74,77 +71,6 @@ async function fetchEipContent(eipNumber) {
     return { error: `HTTP ${response.status}` };
   }
   return { content: await response.text() };
-}
-
-/**
- * Build a new EIP JSON object for a brand-new EIP.
- */
-function buildNewEipJson(eipNumber, mapped) {
-  return {
-    id: eipNumber,
-    title: `EIP-${eipNumber}: ${mapped.title || ''}`,
-    status: mapped.status || 'Unknown',
-    description: mapped.description || '',
-    author: mapped.author || '',
-    type: mapped.type || 'Standards Track',
-    ...(mapped.category && { category: mapped.category }),
-    createdDate: mapped.createdDate || '',
-    ...(mapped.discussionLink && { discussionLink: mapped.discussionLink }),
-    ...(mapped.requires?.length && { requires: mapped.requires }),
-    forkRelationships: [],
-    tradeoffs: null,
-  };
-}
-
-/**
- * Normalize strings for comparison (trim, collapse whitespace).
- */
-function normalize(str) {
-  if (!str) return '';
-  return str.toString().trim().replace(/\s+/g, ' ');
-}
-
-function officialMetadataValue(field, eipNumber, mapped) {
-  if (field === 'title') {
-    return `EIP-${eipNumber}: ${mapped.title || ''}`;
-  }
-
-  return mapped[field];
-}
-
-/**
- * Update an existing EIP's official metadata fields, preserving all other fields.
- * Returns true if any field changed.
- */
-function updateExistingEip(eipNumber, existing, mapped) {
-  const updated = { ...existing };
-  let changed = false;
-
-  for (const field of METADATA_FIELDS) {
-    const officialValue = officialMetadataValue(field, eipNumber, mapped);
-
-    // Optional upstream metadata should be removed locally when upstream omits it.
-    if (officialValue === undefined || officialValue === null) {
-      if (OPTIONAL_METADATA_FIELDS.has(field) && field in updated) {
-        delete updated[field];
-        changed = true;
-      }
-      continue;
-    }
-
-    if (normalize(existing[field]) !== normalize(officialValue)) {
-      updated[field] = officialValue;
-      changed = true;
-    }
-  }
-
-  // Clean up specificationUrl when EIP is now on master
-  if (updated.specificationUrl?.includes('/ethereum/EIPs/pull/')) {
-    delete updated.specificationUrl;
-    changed = true;
-  }
-
-  return { updated, changed };
 }
 
 async function main() {
@@ -229,7 +155,9 @@ Options:
           jsonChanged = true;
         } else {
           const existing = JSON.parse(fs.readFileSync(filePath, 'utf8'));
-          const { updated, changed } = updateExistingEip(eipNumber, existing, mapped);
+          const { updated, changed } = updateExistingEip(eipNumber, existing, mapped, {
+            clearPendingPullRequest: true,
+          });
           if (changed) {
             fs.writeFileSync(filePath, JSON.stringify(updated, null, 2) + '\n');
             jsonChanged = true;

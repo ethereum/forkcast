@@ -2,9 +2,11 @@ import { describe, expect, it } from 'vitest';
 import {
   getEipIdFromHash,
   getInclusionStageSortRank,
+  getSpecificationUrl,
   getStageAbbreviation,
   getSummaryDescription,
   getUpgradeAnchorExpansionState,
+  isPendingEip,
 } from './eip';
 import type { EIP } from '../types';
 
@@ -28,6 +30,31 @@ describe('getSummaryDescription', () => {
     });
 
     expect(getSummaryDescription(eip)).toBe('The EIP description');
+  });
+});
+
+describe('pending EIP pull request', () => {
+  it('uses the explicit pending pull request as the specification URL', () => {
+    const eip = makeEip({
+      pendingPullRequest: {
+        number: 11726,
+        url: 'https://github.com/ethereum/EIPs/pull/11726',
+      },
+    });
+
+    expect(isPendingEip(eip)).toBe(true);
+    expect(getSpecificationUrl(eip)).toBe(
+      'https://github.com/ethereum/EIPs/pull/11726',
+    );
+  });
+
+  it('keeps canonical EIP URLs separate from pending pull request state', () => {
+    const eip = makeEip({ id: 8141, title: 'EIP-8141: Frame Transactions' });
+
+    expect(isPendingEip(eip)).toBe(false);
+    expect(getSpecificationUrl(eip)).toBe(
+      'https://eips.ethereum.org/EIPS/eip-8141',
+    );
   });
 });
 

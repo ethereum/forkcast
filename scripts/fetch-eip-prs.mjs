@@ -2,6 +2,12 @@ import fs from 'fs';
 import path from 'path';
 import { fileURLToPath } from 'url';
 import { parseFrontmatter, mapOfficialToLocal } from './lib/eip-parsing.mjs';
+import {
+  buildNewEipJson,
+  getPendingPullRequestNumber,
+  pendingPullRequest,
+  updateExistingEip,
+} from './eip-record-sync.mjs';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -41,7 +47,8 @@ function loadPrManifest() {
     return { lastRun: null, prs: {} };
   }
   try {
-    return JSON.parse(fs.readFileSync(PR_MANIFEST_PATH, 'utf8'));
+    const manifest = JSON.parse(fs.readFileSync(PR_MANIFEST_PATH, 'utf8'));
+    return { lastRun: manifest.lastRun ?? null, prs: manifest.prs ?? {} };
   } catch {
     return { lastRun: null, prs: {} };
   }
@@ -98,16 +105,46 @@ async function fetchOpenPrs(headers, lastRun) {
   return allPrs;
 }
 
+async function fetchPrState(prNumber, headers) {
+  const url = `https://api.github.com/repos/ethereum/EIPs/pulls/${prNumber}`;
+  const response = await fetch(url, { headers });
+  if (!response.ok) {
+    throw new Error(`Failed to fetch PR #${prNumber}: HTTP ${response.status}`);
+  }
+
+  const pr = await response.json();
+  return {
+    number: pr.number,
+    state: pr.state,
+    updatedAt: pr.updated_at,
+  };
+}
+
 /**
  * Fetch file list for a PR and return added EIP filenames.
  */
 async function fetchPrEipFiles(prNumber, headers) {
-  const url = `https://api.github.com/repos/ethereum/EIPs/pulls/${prNumber}/files?per_page=100`;
-  const response = await fetch(url, { headers });
-  if (!response.ok) return [];
+  const allFiles = [];
+  let page = 1;
 
-  const files = await response.json();
-  return files
+  while (true) {
+    const url = `https://api.github.com/repos/ethereum/EIPs/pulls/${prNumber}/files?per_page=100&page=${page}`;
+    const response = await fetch(url, { headers });
+    if (!response.ok) {
+      throw new Error(
+        `Failed to fetch files for PR #${prNumber}: HTTP ${response.status}`,
+      );
+    }
+
+    const files = await response.json();
+    allFiles.push(...files);
+    if (files.length < 100) break;
+
+    page++;
+    await sleep(BATCH_DELAY);
+  }
+
+  return allFiles
     .filter(
       (f) =>
         f.status === 'added' && /^EIPS\/eip-\d+\.md$/.test(f.filename),
@@ -124,29 +161,12 @@ async function fetchPrEipFiles(prNumber, headers) {
 async function fetchEipFromPrBranch(prNumber, eipNumber, headers) {
   const url = `https://raw.githubusercontent.com/ethereum/EIPs/refs/pull/${prNumber}/head/EIPS/eip-${eipNumber}.md`;
   const response = await fetch(url, { headers });
-  if (!response.ok) return null;
+  if (!response.ok) {
+    throw new Error(
+      `Failed to fetch EIP-${eipNumber} from PR #${prNumber}: HTTP ${response.status}`,
+    );
+  }
   return await response.text();
-}
-
-/**
- * Build a new EIP JSON object for an EIP from a PR.
- */
-function buildNewEipJson(eipNumber, mapped, prNumber) {
-  return {
-    id: eipNumber,
-    title: `EIP-${eipNumber}: ${mapped.title || ''}`,
-    status: mapped.status || 'Unknown',
-    description: mapped.description || '',
-    author: mapped.author || '',
-    type: mapped.type || 'Standards Track',
-    ...(mapped.category && { category: mapped.category }),
-    createdDate: mapped.createdDate || '',
-    ...(mapped.discussionLink && { discussionLink: mapped.discussionLink }),
-    ...(mapped.requires?.length && { requires: mapped.requires }),
-    specificationUrl: `https://github.com/ethereum/EIPs/pull/${prNumber}`,
-    forkRelationships: [],
-    tradeoffs: null,
-  };
 }
 
 /**
@@ -154,16 +174,19 @@ function buildNewEipJson(eipNumber, mapped, prNumber) {
  */
 async function processPr(prNumber, headers, trackedEipIds, requiresFilter) {
   const eipNumbers = await fetchPrEipFiles(prNumber, headers);
-  if (eipNumbers.length === 0) return [];
+  if (eipNumbers.length === 0) return { eipNumbers: [] };
 
-  const processed = [];
+  const candidates = [];
 
   for (const eipNumber of eipNumbers) {
     const content = await fetchEipFromPrBranch(prNumber, eipNumber, headers);
-    if (!content) continue;
 
     const frontmatter = parseFrontmatter(content);
-    if (!frontmatter) continue;
+    if (!frontmatter) {
+      throw new Error(
+        `Could not parse frontmatter for EIP-${eipNumber} in PR #${prNumber}`,
+      );
+    }
 
     // Skip non-numeric EIP numbers (TBD, XXXX, etc.)
     const eipField = frontmatter.eip;
@@ -180,40 +203,87 @@ async function processPr(prNumber, headers, trackedEipIds, requiresFilter) {
       if (!referencesTracked) continue;
     }
 
-    // Create or update the EIP JSON
+    candidates.push({ eipNumber, mapped });
+    await sleep(200);
+  }
+
+  const actions = [];
+  const processed = [];
+  const pendingPr = pendingPullRequest(prNumber);
+
+  for (const { eipNumber, mapped } of candidates) {
     const filePath = path.join(EIPS_DIR, `${eipNumber}.json`);
-    const prUrl = `https://github.com/ethereum/EIPs/pull/${prNumber}`;
 
     if (fs.existsSync(filePath)) {
       const existing = JSON.parse(fs.readFileSync(filePath, 'utf8'));
-      // Only update if it doesn't already exist on master (no specificationUrl means it's merged)
-      if (!existing.specificationUrl) {
+      const existingPrNumber = getPendingPullRequestNumber(existing);
+
+      if (!existingPrNumber) {
         console.log(
           `  EIP-${eipNumber}: already exists on master, skipping PR update`,
         );
         continue;
       }
-      // Update specificationUrl and metadata
-      existing.specificationUrl = prUrl;
-      if (mapped.title)
-        existing.title = `EIP-${eipNumber}: ${mapped.title}`;
-      if (mapped.status) existing.status = mapped.status;
-      if (mapped.description) existing.description = mapped.description;
-      if (mapped.author) existing.author = mapped.author;
-      if (mapped.requires?.length) existing.requires = mapped.requires;
-      fs.writeFileSync(filePath, JSON.stringify(existing, null, 2) + '\n');
-      console.log(`  Updated EIP-${eipNumber} from PR #${prNumber}`);
+
+      const { updated, changed } = updateExistingEip(eipNumber, existing, mapped, {
+        pendingPullRequest: pendingPr,
+      });
+      if (changed) {
+        actions.push({ type: 'update', eipNumber, filePath, eip: updated });
+      }
     } else {
-      const eipJson = buildNewEipJson(eipNumber, mapped, prNumber);
-      fs.writeFileSync(filePath, JSON.stringify(eipJson, null, 2) + '\n');
-      console.log(`  Created EIP-${eipNumber} from PR #${prNumber}`);
+      const eipJson = buildNewEipJson(eipNumber, mapped, {
+        pendingPullRequest: pendingPr,
+      });
+      actions.push({ type: 'create', eipNumber, filePath, eip: eipJson });
     }
 
     processed.push(eipNumber);
-    await sleep(200);
   }
 
-  return processed;
+  for (const action of actions) {
+    fs.writeFileSync(action.filePath, JSON.stringify(action.eip, null, 2) + '\n');
+    const verb = action.type === 'create' ? 'Created' : 'Updated';
+    console.log(`  ${verb} EIP-${action.eipNumber} from PR #${prNumber}`);
+  }
+
+  return { eipNumbers: processed };
+}
+
+function removePendingEipFilesForPr(prNumber, eipNumbers, reason) {
+  let removed = 0;
+
+  for (const eipNumber of eipNumbers) {
+    const filePath = path.join(EIPS_DIR, `${eipNumber}.json`);
+    if (!fs.existsSync(filePath)) continue;
+
+    const existing = JSON.parse(fs.readFileSync(filePath, 'utf8'));
+    if (getPendingPullRequestNumber(existing) !== Number(prNumber)) {
+      console.log(
+        `  Preserving EIP-${eipNumber}; it is no longer pending on PR #${prNumber}`,
+      );
+      continue;
+    }
+
+    fs.unlinkSync(filePath);
+    removed++;
+    console.log(`  Removed EIP-${eipNumber} from PR #${prNumber} (${reason})`);
+  }
+
+  return removed;
+}
+
+function removePendingEipsForPr(manifest, prNumber, reason) {
+  const entry = manifest.prs[prNumber];
+  if (!entry) return 0;
+
+  const removed = removePendingEipFilesForPr(
+    prNumber,
+    entry.eipNumbers,
+    reason,
+  );
+  delete manifest.prs[prNumber];
+  return removed;
 }
 
 async function main() {
@@ -247,13 +317,8 @@ Environment:
   // Single PR mode: skip requires filter, skip manifest
   if (options.singlePr) {
     console.log(`Fetching EIPs from PR #${options.singlePr}...`);
-    const eipNumbers = await processPr(
-      options.singlePr,
-      headers,
-      null,
-      false,
-    );
-    if (eipNumbers.length === 0) {
+    const result = await processPr(options.singlePr, headers, null, false);
+    if (result.eipNumbers.length === 0) {
       console.log('No new EIP files found in this PR.');
     }
     console.log('\nDone! Run "npm run compile-eips" to rebuild the EIP data.');
@@ -273,8 +338,10 @@ Environment:
   const openPrs = await fetchOpenPrs(headers, manifest.lastRun);
   console.log(`Found ${openPrs.length} PRs to check.`);
 
-  const openPrNumbers = new Set(openPrs.map((pr) => pr.number));
+  const updatedOpenPrNumbers = new Set(openPrs.map((pr) => pr.number));
   let created = 0;
+  let removed = 0;
+  let processingErrors = 0;
 
   // Process PRs in batches
   for (let i = 0; i < openPrs.length; i += BATCH_SIZE) {
@@ -282,27 +349,57 @@ Environment:
     const results = await Promise.all(
       batch.map(async (pr) => {
         try {
-          const eipNumbers = await processPr(
+          const result = await processPr(
             pr.number,
             headers,
             trackedEipIds,
             true,
           );
-          return { prNumber: pr.number, updatedAt: pr.updatedAt, eipNumbers };
+          return {
+            prNumber: pr.number,
+            updatedAt: pr.updatedAt,
+            eipNumbers: result.eipNumbers,
+          };
         } catch (err) {
           console.error(`  Error processing PR #${pr.number}: ${err.message}`);
-          return { prNumber: pr.number, updatedAt: pr.updatedAt, eipNumbers: [] };
+          processingErrors++;
+          return {
+            prNumber: pr.number,
+            updatedAt: pr.updatedAt,
+            eipNumbers: [],
+            error: true,
+          };
         }
       }),
     );
 
     for (const r of results) {
+      if (r.error) continue;
+
       if (r.eipNumbers.length > 0) {
+        const previousEntry = manifest.prs[r.prNumber];
+        if (previousEntry) {
+          const currentEipNumbers = new Set(r.eipNumbers);
+          const staleEipNumbers = (previousEntry.eipNumbers ?? []).filter(
+            (eipNumber) => !currentEipNumbers.has(eipNumber),
+          );
+          removed += removePendingEipFilesForPr(
+            r.prNumber,
+            staleEipNumbers,
+            'no longer qualifies',
+          );
+        }
         manifest.prs[r.prNumber] = {
           updatedAt: r.updatedAt,
           eipNumbers: r.eipNumbers,
         };
         created += r.eipNumbers.length;
+      } else {
+        removed += removePendingEipsForPr(
+          manifest,
+          r.prNumber,
+          'no longer references tracked EIPs',
+        );
       }
     }
 
@@ -315,14 +412,31 @@ Environment:
     }
   }
 
-  // Cleanup: warn about PRs in manifest that are no longer open
+  if (processingErrors > 0) {
+    throw new Error(
+      `Failed to process ${processingErrors} PR(s); refusing to update ${path.basename(PR_MANIFEST_PATH)}.`,
+    );
+  }
+
+  // Reconcile manifest entries that may have closed since the last run.
   for (const prNumber of Object.keys(manifest.prs)) {
-    if (!openPrNumbers.has(parseInt(prNumber, 10))) {
-      const entry = manifest.prs[prNumber];
-      console.warn(
-        `\nWarning: PR #${prNumber} (EIPs: ${entry.eipNumbers.join(', ')}) is no longer in the open PR list. It may have been merged or closed.`,
-      );
+    const numericPrNumber = Number(prNumber);
+    if (updatedOpenPrNumbers.has(numericPrNumber)) continue;
+
+    try {
+      const state = await fetchPrState(numericPrNumber, headers);
+      if (state.state !== 'open') {
+        removed += removePendingEipsForPr(
+          manifest,
+          numericPrNumber,
+          `PR is ${state.state}`,
+        );
+      }
+    } catch (err) {
+      console.warn(`\nWarning: ${err.message}`);
     }
+
+    await sleep(BATCH_DELAY);
   }
 
   // Save manifest
@@ -332,7 +446,8 @@ Environment:
   console.log('\n');
   console.log('Done!');
   if (created > 0) console.log(`  EIPs created/updated from PRs: ${created}`);
-  else console.log('  No new EIPs found in open PRs.');
+  if (removed > 0) console.log(`  Stale PR EIPs removed: ${removed}`);
+  if (created === 0 && removed === 0) console.log('  No new EIPs found in open PRs.');
 }
 
 main().catch((err) => {

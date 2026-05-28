@@ -18,6 +18,7 @@
     "layer": { "type": "string" },
     "collection": { "type": "string" },
     "specificationUrl": { "type": "string" },
+    "pendingPullRequest": { "$ref": "#/$defs/PendingPullRequest" },
     "requires": { "type": "array", "items": { "type": "integer" } },
     "laymanDescription": { "type": "string" },
     "northStars": {
@@ -42,6 +43,15 @@
     "stakeholderImpacts": { "$ref": "#/$defs/StakeholderImpacts" }
   },
   "$defs": {
+    "PendingPullRequest": {
+      "type": "object",
+      "required": ["number", "url"],
+      "additionalProperties": false,
+      "properties": {
+        "number": { "type": "integer" },
+        "url": { "type": "string" }
+      }
+    },
     "ForkRelationship": {
       "type": "object",
       "required": ["forkName", "statusHistory"],

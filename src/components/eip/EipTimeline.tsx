@@ -226,7 +226,7 @@ export const EipTimeline: React.FC<EipTimelineProps> = ({ eip }) => {
                       {group.champions && group.champions.length > 0 && group.champions.some(c => c.name) && (
                         <Tooltip text={`${group.champions.length > 1 ? 'Champions' : 'Champion'} for ${getForkDisplayName(group.forkName)}`}>
                           <div className="flex min-w-0 max-w-full items-start gap-1 text-xs text-slate-400 dark:text-slate-400 cursor-help sm:items-center sm:shrink-0">
-                            <svg className="w-3 h-3 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <svg className="mt-0.5 w-3 h-3 shrink-0 sm:mt-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
                             </svg>
                             <span className="min-w-0 break-words">{group.champions.map(c => c.name).join(' & ')}</span>
@@ -238,7 +238,7 @@ export const EipTimeline: React.FC<EipTimelineProps> = ({ eip }) => {
                     {/* Sub-items with dot-and-line */}
                     {allItems.length > 0 && (
                       <div className="mt-1.5 ml-2 relative">
-                        <div className="absolute left-[3px] -top-1.5 w-0.5 h-3 bg-slate-200 dark:bg-slate-700" />
+                        <div className="absolute left-[3px] -top-2 bottom-1 w-0.5 bg-slate-200 dark:bg-slate-700" />
                         {allItems.map((item, idx) => {
                           const isLastChild = idx === allItems.length - 1;
 
@@ -247,11 +247,8 @@ export const EipTimeline: React.FC<EipTimelineProps> = ({ eip }) => {
                             const entryColors = statusColors[entry.status] || statusColors.Proposed;
                             return (
                               <div key={`status-${idx}`} className={`relative flex items-start gap-2.5 ${isLastChild ? '' : 'pb-2.5'}`}>
-                                <div className="relative mt-1 w-2 shrink-0 self-stretch">
-                                  <div className={`w-2 h-2 rounded-full ${entryColors.dot}`} />
-                                  {!isLastChild && (
-                                    <div className="absolute left-[3px] top-2 bottom-[-10px] w-0.5 bg-slate-200 dark:bg-slate-700" />
-                                  )}
+                                <div className="relative mt-1 w-2 shrink-0">
+                                  <div className={`relative z-10 w-2 h-2 rounded-full ${entryColors.dot}`} />
                                 </div>
                                 <div className="min-w-0 flex-1 leading-tight">
                                   <span className={`text-xs ${entryColors.text}`}>
@@ -309,11 +306,8 @@ export const EipTimeline: React.FC<EipTimelineProps> = ({ eip }) => {
 
                             return (
                               <div key={`pres-${idx}`} className={`relative flex items-start gap-2.5 ${isLastChild ? '' : 'pb-2.5'}`}>
-                                <div className="relative mt-1 w-2 shrink-0 self-stretch">
-                                  <div className="w-2 h-2 rounded-full bg-slate-300 dark:bg-slate-600" />
-                                  {!isLastChild && (
-                                    <div className="absolute left-[3px] top-2 bottom-[-10px] w-0.5 bg-slate-200 dark:bg-slate-700" />
-                                  )}
+                                <div className="relative mt-1 w-2 shrink-0">
+                                  <div className="relative z-10 w-2 h-2 rounded-full bg-slate-300 dark:bg-slate-600" />
                                 </div>
                                 <div className="min-w-0 flex-1 leading-tight">
                                   <span className="text-xs text-slate-500 dark:text-slate-400">

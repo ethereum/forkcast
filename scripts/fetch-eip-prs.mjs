@@ -334,6 +334,10 @@ Environment:
     `Last run: ${manifest.lastRun || 'never'}`,
   );
 
+  // Capture the watermark before fetching so PRs updated during the run
+  // are not skipped on the next run.
+  const syncStartedAt = new Date().toISOString();
+
   console.log('Fetching open PRs from ethereum/EIPs...');
   const openPrs = await fetchOpenPrs(headers, manifest.lastRun);
   console.log(`Found ${openPrs.length} PRs to check.`);
@@ -439,8 +443,9 @@ Environment:
     await sleep(BATCH_DELAY);
   }
 
-  // Save manifest
-  manifest.lastRun = new Date().toISOString();
+  // Save manifest — use the pre-fetch watermark so PRs updated during
+  // processing are re-checked on the next run.
+  manifest.lastRun = syncStartedAt;
   fs.writeFileSync(PR_MANIFEST_PATH, JSON.stringify(manifest, null, 2) + '\n');
 
   console.log('\n');

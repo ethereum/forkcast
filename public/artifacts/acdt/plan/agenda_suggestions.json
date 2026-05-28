@@ -1,63 +1,63 @@
 {
   "series": "ACDT",
-  "generated": "2026-05-21",
+  "generated": "2026-05-28",
   "for_call": "ACDT #81",
   "suggestions": [
     {
       "topic": "REST-SSZ Engine API decision: PR #764 vs #793",
       "priority": "high",
-      "rationale": "Decision was explicitly deferred to ACDE Thursday (May 21). This is a blocking technical decision affecting client implementation strategy, and ACDT needs to align on the outcome or confirm implementation status.",
+      "rationale": "Deferred from ACDT #80 to ACDE Thursday, but likely needs ACDT follow-up. Nethermind and Erigon already merged #764; this creates implementation divergence risk if decision changes.",
       "related_eips": [],
       "source": "deferred_decision"
     },
     {
-      "topic": "bal-devnet-7 launch status and test results",
+      "topic": "bal-devnet-7 and glamsterdam-devnet-4 status update",
       "priority": "high",
-      "rationale": "Devnet was targeting May 18-19 launch with tests-bal@v7.2.0 as a gate. Multiple clients were still pending (Besu missing tests, Geth mid-week). Need confirmation of launch success and client participation.",
+      "rationale": "bal-devnet-7 targeted launch May 18-19; glamsterdam-devnet-4 requires separate branches with engine API gas limit changes (PR #796). Need confirmation of launch status, client readiness, and any blockers discovered.",
       "related_eips": [],
       "source": "devnet_update"
     },
     {
-      "topic": "State access optimization progress and benchmarking for final repricing",
+      "topic": "State access optimization benchmarking results",
       "priority": "high",
-      "rationale": "ACDT #80 emphasized urgency: client teams must report optimization status (batch I/O, state root calculation) as a blocker for final EIP-8038/2780 repricing numbers. This directly gates glamsterdam-devnet-5 scope.",
+      "rationale": "ACDT #80 emphasized urgency: batch I/O and state root optimizations are blockers for final repricing numbers. Client teams were asked to report status in BAL Discord. These benchmarks gate EIP-7904 inclusion decision and final EIP-8038/2780 values.",
+      "related_eips": [],
+      "source": "ongoing_discussion"
+    },
+    {
+      "topic": "glamsterdam-devnet-5 scope and timeline",
+      "priority": "medium",
+      "rationale": "EIP-8038, EIP-2780, EIP-8246, and EIP-7954 all target devnet-5 with placeholder numbers. Need to confirm scope, benchmark-dependent final values, and launch timeline. Code size limit (32/48/64KB) requires benchmarking before finalizing.",
+      "related_eips": [],
+      "source": "ongoing_discussion"
+    },
+    {
+      "topic": "EIP-7904 (compute repricing) inclusion decision",
+      "priority": "medium",
+      "rationale": "ACDT #80 noted most clients exceed 100M gas/s post-BAL optimizations, making EIP-7904 tentatively unnecessary. However, decision is gated on completing benchmarks. Need formal go/no-go based on latest data.",
+      "related_eips": [],
+      "source": "ongoing_discussion"
+    },
+    {
+      "topic": "ePBS range sync security analysis",
+      "priority": "medium",
+      "rationale": "Open since ACDT #77 with action items in #78 and #79. Proposal allows CL sync without payload envelopes, creating security implications for EL validation. Writeup and formal EL team review still pending.",
       "related_eips": [],
       "source": "open_action_item"
     },
     {
-      "topic": "glamsterdam-devnet-4 readiness with engine API gas limit changes",
-      "priority": "medium",
-      "rationale": "Devnet-4 requires separate client branches due to engine API PR #796 (gas limit coordination for ePBS). Nethermind and Erigon completed; other clients' status unclear. Need launch timeline confirmation.",
-      "related_eips": [],
-      "source": "devnet_update"
-    },
-    {
-      "topic": "Builder deposit spam mitigation: testing results and ACDC cost analysis",
-      "priority": "medium",
-      "rationale": "PR 5223 (8192 epoch delay) was deferred pending signature verification benchmarks and cost analysis presentation at ACDC. Justin Traglia was tasked with presenting findings; need update on economic viability and alternative approaches.",
-      "related_eips": [],
-      "source": "deferred_decision"
-    },
-    {
-      "topic": "EPBS sync security implications and Prysm/Teku issues",
-      "priority": "medium",
-      "rationale": "Multiple meetings discussed ePBS range sync without payload envelopes. ACDT #79 reported Prysm peer downscoring and Teku envelope problems preventing glamsterdam-devnet-3 recovery. EL teams were analyzing security implications but no resolution reported.",
-      "related_eips": [],
-      "source": "ongoing_discussion"
-    },
-    {
-      "topic": "glamsterdam-devnet-5 scope finalization",
-      "priority": "medium",
-      "rationale": "Devnet-5 is targeted to include EIP-8038, EIP-2780, EIP-8246, and EIP-7954 with placeholder numbers pending benchmarks. Need to confirm which EIPs are ready and set realistic launch timeline based on benchmark completion.",
-      "related_eips": [],
-      "source": "ongoing_discussion"
-    },
-    {
-      "topic": "eth/71 devp2p PR #264 merge status",
+      "topic": "glamsterdam-devnet-3 sync issues resolution",
       "priority": "low",
-      "rationale": "Mandatory for bal-devnet-7 launch (May 18-19). Felix/client teams were tasked with review and merge. Likely resolved async but worth confirming to close the loop.",
+      "rationale": "ACDT #79 reported Lighthouse sync issues, Teku envelope problems, and peer downscoring preventing recovery. May have required devnet-4. Need status update on whether issues were resolved or devnet was abandoned.",
       "related_eips": [],
-      "source": "open_action_item"
+      "source": "devnet_update"
+    },
+    {
+      "topic": "Builder deposit spam mitigation approach",
+      "priority": "low",
+      "rationale": "ACDT #79 discussed PR 5223 (8192 epoch delay) with cost analysis showing $250k attack cost considered low. Alternative EVM signature verification proposed. Justin Traglia tasked with presenting benchmarks at ACDC, but no resolution in ACDT series yet.",
+      "related_eips": [],
+      "source": "deferred_decision"
     }
   ]
 }

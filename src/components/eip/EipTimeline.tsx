@@ -175,6 +175,8 @@ export const EipTimeline: React.FC<EipTimelineProps> = ({ eip }) => {
           <div className="relative">
             {forkGroups.map((group, groupIndex) => {
               const isLastNode = !hasCreatedDate && groupIndex === forkGroups.length - 1;
+              const visibleChampions = group.champions?.filter(c => c.name) ?? [];
+              const hasVisibleChampions = visibleChampions.length > 0;
 
               // Merge and sort status history and presentations chronologically
               const allItems = [
@@ -210,7 +212,7 @@ export const EipTimeline: React.FC<EipTimelineProps> = ({ eip }) => {
                       <div className="w-0.5 flex-1 bg-slate-200 dark:bg-slate-700 mb-[-4px]" />
                     )}
                     {/* Horizontal line to fork badge */}
-                    <div className="absolute left-2.5 top-[9px] w-3 h-0.5 bg-slate-200 dark:bg-slate-700" />
+                    <div className="absolute left-2.5 top-[9px] w-2 h-0.5 bg-slate-200 dark:bg-slate-700" />
                   </div>
 
                   {/* Content */}
@@ -223,13 +225,13 @@ export const EipTimeline: React.FC<EipTimelineProps> = ({ eip }) => {
                       >
                         {getForkDisplayName(group.forkName)}
                       </Link>
-                      {group.champions && group.champions.length > 0 && group.champions.some(c => c.name) && (
-                        <Tooltip text={`${group.champions.length > 1 ? 'Champions' : 'Champion'} for ${getForkDisplayName(group.forkName)}`}>
+                      {hasVisibleChampions && (
+                        <Tooltip text={`${visibleChampions.length > 1 ? 'Champions' : 'Champion'} for ${getForkDisplayName(group.forkName)}`}>
                           <div className="flex min-w-0 max-w-full items-start gap-1 text-xs text-slate-400 dark:text-slate-400 cursor-help sm:items-center sm:shrink-0">
                             <svg className="mt-0.5 w-3 h-3 shrink-0 sm:mt-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
                             </svg>
-                            <span className="min-w-0 break-words">{group.champions.map(c => c.name).join(' & ')}</span>
+                            <span className="min-w-0 break-words">{visibleChampions.map(c => c.name).join(' & ')}</span>
                           </div>
                         </Tooltip>
                       )}
@@ -238,7 +240,7 @@ export const EipTimeline: React.FC<EipTimelineProps> = ({ eip }) => {
                     {/* Sub-items with dot-and-line */}
                     {allItems.length > 0 && (
                       <div className="mt-1.5 ml-2 relative">
-                        <div className="absolute left-[3px] -top-2 bottom-1 w-0.5 bg-slate-200 dark:bg-slate-700" />
+                        <div className={`absolute left-[3px] ${hasVisibleChampions ? 'top-0.5' : '-top-1.5'} bottom-1 w-0.5 bg-slate-200 dark:bg-slate-700`} />
                         {allItems.map((item, idx) => {
                           const isLastChild = idx === allItems.length - 1;
 

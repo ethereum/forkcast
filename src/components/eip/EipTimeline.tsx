@@ -240,7 +240,6 @@ export const EipTimeline: React.FC<EipTimelineProps> = ({ eip }) => {
                     {/* Sub-items with dot-and-line */}
                     {allItems.length > 0 && (
                       <div className="mt-1.5 ml-2 relative">
-                        <div className={`absolute left-[3px] ${hasVisibleChampions ? 'top-0.5' : '-top-1.5'} bottom-1 w-0.5 bg-slate-200 dark:bg-slate-700`} />
                         {allItems.map((item, idx) => {
                           const isLastChild = idx === allItems.length - 1;
 
@@ -249,8 +248,11 @@ export const EipTimeline: React.FC<EipTimelineProps> = ({ eip }) => {
                             const entryColors = statusColors[entry.status] || statusColors.Proposed;
                             return (
                               <div key={`status-${idx}`} className={`relative flex items-start gap-2.5 ${isLastChild ? '' : 'pb-2.5'}`}>
-                                <div className="relative mt-1 w-2 shrink-0">
+                                <div className="relative mt-1 w-2 shrink-0 self-stretch">
                                   <div className={`relative z-10 w-2 h-2 rounded-full ${entryColors.dot}`} />
+                                  {!isLastChild && (
+                                    <div className="absolute left-[3px] top-2 bottom-[-18px] w-0.5 bg-slate-200 dark:bg-slate-700" />
+                                  )}
                                 </div>
                                 <div className="min-w-0 flex-1 leading-tight">
                                   <span className={`text-xs ${entryColors.text}`}>
@@ -308,8 +310,11 @@ export const EipTimeline: React.FC<EipTimelineProps> = ({ eip }) => {
 
                             return (
                               <div key={`pres-${idx}`} className={`relative flex items-start gap-2.5 ${isLastChild ? '' : 'pb-2.5'}`}>
-                                <div className="relative mt-1 w-2 shrink-0">
+                                <div className="relative mt-1 w-2 shrink-0 self-stretch">
                                   <div className="relative z-10 w-2 h-2 rounded-full bg-slate-300 dark:bg-slate-600" />
+                                  {!isLastChild && (
+                                    <div className="absolute left-[3px] top-2 bottom-[-18px] w-0.5 bg-slate-200 dark:bg-slate-700" />
+                                  )}
                                 </div>
                                 <div className="min-w-0 flex-1 leading-tight">
                                   <span className="text-xs text-slate-500 dark:text-slate-400">

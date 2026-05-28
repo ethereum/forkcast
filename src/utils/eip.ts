@@ -124,10 +124,18 @@ export const getProposalPrefix = (eip: EIP): ProposalType => {
 export const getSummaryDescription = (eip: EIP): string =>
   eip.description;
 
+export const isPendingEip = (
+  eip: EIP,
+): eip is EIP & { pendingPullRequest: NonNullable<EIP['pendingPullRequest']> } =>
+  Boolean(eip.pendingPullRequest);
+
 /**
  * Get the specification URL for an EIP
  */
 export const getSpecificationUrl = (eip: EIP): string => {
+  if (isPendingEip(eip)) {
+    return eip.pendingPullRequest.url;
+  }
   if (eip.specificationUrl) {
     return eip.specificationUrl;
   }

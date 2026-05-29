@@ -8,6 +8,8 @@
   "category": "Core",
   "createdDate": "2025-09-17",
   "discussionLink": "https://ethereum-magicians.org/t/eip-optional-execution-proofs/25500",
+  "reviewer": "bot",
+  "layer": "CL",
   "forkRelationships": [
     {
       "forkName": "Hegota",
@@ -38,5 +40,47 @@
       ]
     }
   ],
-  "tradeoffs": null
+  "laymanDescription": "Normally every validator must replay each block's transactions against the full Ethereum state to check it is valid — costly work that grows with the chain. This optional add-on lets volunteer nodes produce compact cryptographic proofs that others can verify cheaply, without holding the state. It is fully opt-in and changes no consensus rules.",
+  "northStarAlignment": {
+    "scaleL1": {
+      "description": "Stateless, sublinear payload verification decouples a node's validation cost from the gas limit and state size, supporting a higher-throughput L1 without raising validator hardware requirements."
+    }
+  },
+  "stakeholderImpacts": {
+    "endUsers": {
+      "description": "No direct impact; the mechanism is opt-in and changes no consensus rules, transaction behaviour, or fees."
+    },
+    "appDevs": {
+      "description": "No impact; introduces no new opcodes, gas changes, or contract-level semantics."
+    },
+    "walletDevs": {
+      "description": "No impact; no transaction format or RPC changes affecting wallets."
+    },
+    "toolingInfra": {
+      "description": "New proof-node and prover infrastructure, plus gossip and req/resp tooling, needed to generate, serve, and verify execution proofs."
+    },
+    "layer2s": {
+      "description": "L2s reusing the maturing stateless guest, witness format, and proving stack could benefit, though nothing is required of them."
+    },
+    "stakersNodes": {
+      "description": "Opt-in: proof-verifying nodes gain cheap stateless validation; proof-generating validators take on extra bandwidth and heavy proving costs."
+    },
+    "clClients": {
+      "description": "Substantial opt-in work: new gossip topic, ProofEngine interface, req/resp protocols, ENR key, and an out-of-state-transition proof handler."
+    },
+    "elClients": {
+      "description": "Implement the stateless guest program, execution witness construction, SSZ stateless input/output schema, and host-side input assembly."
+    }
+  },
+  "benefits": [
+    "Stateless, sublinear verification decouples node cost from gas limit and state size",
+    "Lowers the hardware floor for validators, broadening participation and decentralisation",
+    "Fully opt-in: no hardfork or consensus rule changes required",
+    "Lets the proving stack mature on live network without risking fork choice"
+  ],
+  "tradeoffs": [
+    "Proof generation stays demanding; the prover set may concentrate even as verification broadens",
+    "No incentives for proof-generating nodes; relies on altruistic provers",
+    "Adds gossip bandwidth and client implementation complexity for opted-in nodes"
+  ]
 }

@@ -1,7 +1,7 @@
 import React, { useState, useMemo, useEffect } from 'react';
 import { FUSAKA_PROGRESS, GLAMSTERDAM_PROGRESS, HEGOTA_PROGRESS, UPGRADE_PROCESS_PHASES } from '../../constants/timeline-phases';
 import { useMetaTags } from '../../hooks/useMetaTags';
-import { generateForkProgress, parseLocalDate, parseShortDate, daysBetween, DEFAULT_PHASE_DURATIONS, PhaseDurations, calculateSoonestMainnetDate, formatDateISO } from './forkDateCalculator';
+import { generateForkProgress, parseLocalDate, parseShortDate, daysBetween, DEFAULT_PHASE_DURATIONS, PhaseDurations } from './forkDateCalculator';
 import ForkGanttChart from './ForkGanttChart';
 import EditableDateCell from './EditableDateCell';
 
@@ -20,9 +20,9 @@ interface PlanningTableState {
 }
 
 const DEFAULT_STATE: PlanningTableState = {
-  glamsterdamMainnetDate: formatDateISO(calculateSoonestMainnetDate(new Date(2026, 3, 15), 5)),
+  glamsterdamMainnetDate: '2026-08-26',
   hegotaMainnetDate: '2027-03-01',
-  glamsterdamDevnetCount: 6,
+  glamsterdamDevnetCount: 7,
   hegotaDevnetCount: 5,
   lockedDates: {},
   phaseDurations: DEFAULT_PHASE_DURATIONS,

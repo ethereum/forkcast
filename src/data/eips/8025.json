@@ -31,7 +31,8 @@
       ],
       "champions": [
         {
-          "name": "Francesco Risitano"
+          "name": "Francesco Risitano",
+          "discord": "taulepton_"
         },
         {
           "name": "Ignacio Hagopian",
@@ -40,10 +41,10 @@
       ]
     }
   ],
-  "laymanDescription": "Normally every validator must replay each block's transactions against the full Ethereum state to check it is valid — costly work that grows with the chain. This optional add-on lets volunteer nodes produce compact cryptographic proofs that others can verify cheaply, without holding the state. It is fully opt-in and changes no consensus rules.",
+  "laymanDescription": "Normally every validator must replay each block's transactions against the full Ethereum state to check it is valid - costly work that grows with the gas limit. This feature lets volunteer nodes produce small cryptographic proofs that others can verify cheaply, without holding the state. It is fully opt-in and changes no consensus rules.",
   "northStarAlignment": {
     "scaleL1": {
-      "description": "Stateless, sublinear payload verification decouples a node's validation cost from the gas limit and state size, supporting a higher-throughput L1 without raising validator hardware requirements."
+      "description": "Stateless, sublinear payload verification decouples a node's validation cost from the gas limit and state size, eventually supporting a higher-throughput L1 without raising validator hardware requirements."
     }
   },
   "stakeholderImpacts": {
@@ -63,7 +64,7 @@
       "description": "L2s reusing the maturing stateless guest, witness format, and proving stack could benefit, though nothing is required of them."
     },
     "stakersNodes": {
-      "description": "Opt-in: proof-verifying nodes gain cheap stateless validation; proof-generating validators take on extra bandwidth and heavy proving costs."
+      "description": "Opt-in: proof-verifying nodes gain additional stateless validation; proof-generating nodes take on extra bandwidth and proving costs."
     },
     "clClients": {
       "description": "Substantial opt-in work: new gossip topic, ProofEngine interface, req/resp protocols, ENR key, and an out-of-state-transition proof handler."
@@ -74,12 +75,11 @@
   },
   "benefits": [
     "Stateless, sublinear verification decouples node cost from gas limit and state size",
-    "Lowers the hardware floor for validators, broadening participation and decentralisation",
-    "Fully opt-in: no hardfork or consensus rule changes required",
-    "Lets the proving stack mature on live network without risking fork choice"
+    "First step towards lowering the hardware floor for validators, broadening participation and decentralisation",
+    "Fully opt-in: no consensus rule changes required",
+    "Lets the proving stack mature under mainnet conditions & allows for gathering data and surface unknown unknowns without putting any load-bearing part of the network at risk"
   ],
   "tradeoffs": [
-    "Proof generation stays demanding; the prover set may concentrate even as verification broadens",
     "No incentives for proof-generating nodes; relies on altruistic provers",
     "Adds gossip bandwidth and client implementation complexity for opted-in nodes"
   ]

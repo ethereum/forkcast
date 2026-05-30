@@ -23,7 +23,9 @@ import { EipSearch } from './EipSearch';
 import EipSearchModal from './EipSearchModal';
 import { EipSpecHistory } from './EipSpecHistory';
 import { EipDependents } from './EipDependents';
+import { EipFaq } from './EipFaq';
 import { useEipHistory } from '../../hooks/useEipHistory';
+import { useEipFaq } from '../../hooks/useEipFaq';
 import { isSearchHotkey } from '../search/searchShortcuts';
 import {
   eipCallTypes,
@@ -260,6 +262,10 @@ const LazyEipMarkdown = lazy(() =>
   ),
 );
 
+// Experimental: the FAQ tab is currently scoped to a single EIP. This is the
+// one gate to flip (or remove) when extending it to other proposals.
+const FAQ_EIP_ID = 8025;
+
 const dependentsMap = buildDependentsMap(eipsData);
 const requiredEipSpecUrl = (eipId: number): string => `https://eips.ethereum.org/EIPS/eip-${eipId}`;
 const requiredEipLinkClassName = 'font-mono hover:text-slate-700 dark:hover:text-slate-200 transition-colors';
@@ -294,14 +300,15 @@ export const EipPage: React.FC = () => {
 
   const dependents = dependentsMap.get(eipId) || [];
   const hasDependents = dependents.length > 0;
+  const hasFaq = eipId === FAQ_EIP_ID;
 
   // View mode derived from URL ?tab= param
-  const validTabs = ['analysis', 'spec', 'dependents', 'history'] as const;
+  const validTabs = ['analysis', 'spec', 'dependents', 'history', 'faq'] as const;
   type ViewMode = typeof validTabs[number];
   const defaultTab: ViewMode = hasAnalysis ? 'analysis' : 'spec';
   const tabParam = searchParams.get('tab') as ViewMode | null;
   const hasHash = typeof window !== 'undefined' && window.location.hash.length > 1;
-  const isValidTab = tabParam && validTabs.includes(tabParam) && (tabParam !== 'dependents' || hasDependents);
+  const isValidTab = tabParam && validTabs.includes(tabParam) && (tabParam !== 'dependents' || hasDependents) && (tabParam !== 'faq' || hasFaq);
   const viewMode: ViewMode = isValidTab ? tabParam : hasHash ? 'spec' : defaultTab;
 
   const setViewMode = (mode: ViewMode) => {
@@ -316,6 +323,7 @@ export const EipPage: React.FC = () => {
 
   const { content: specContent, loading: specLoading, error: specError } = useEipMarkdown(eipId, viewMode === 'spec');
   const { history, loading: historyLoading, error: historyError } = useEipHistory(eipId, viewMode === 'history');
+  const { content: faqContent, loading: faqLoading, error: faqError } = useEipFaq(eipId, viewMode === 'faq');
 
   // Get sorted EIPs for navigation
   const sortedEips = useMemo(() => [...eipsData].sort((a, b) => a.id - b.id), []);
@@ -660,6 +668,18 @@ export const EipPage: React.FC = () => {
             >
               History
             </button>
+            {hasFaq && (
+              <button
+                onClick={() => setViewMode('faq')}
+                className={`shrink-0 px-6 py-3 text-sm font-medium transition-colors ${
+                  viewMode === 'faq'
+                    ? 'text-purple-600 dark:text-purple-400 border-b-2 border-purple-600 dark:border-purple-400'
+                    : 'text-slate-500 dark:text-slate-400 hover:text-slate-700 dark:hover:text-slate-300'
+                }`}
+              >
+                FAQ
+              </button>
+            )}
             {hasDependents && (
               <button
                 onClick={() => setViewMode('dependents')}
@@ -860,6 +880,14 @@ export const EipPage: React.FC = () => {
                 history={history}
                 loading={historyLoading}
                 error={historyError}
+              />
+            )}
+
+            {viewMode === 'faq' && (
+              <EipFaq
+                content={faqContent}
+                loading={faqLoading}
+                error={faqError}
               />
             )}
           </div>

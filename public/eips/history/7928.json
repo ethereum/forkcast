@@ -2,6 +2,14 @@
   "eipId": 7928,
   "commits": [
     {
+      "sha": "cb1364d60e14a24fe1a94d4303661cdbf8c68271",
+      "date": "2026-06-01T07:21:32Z",
+      "message": "Update EIP-7928: Disallow empty change set for storage slot",
+      "author": "raxhvl",
+      "prNumber": null,
+      "patch": "@@ -194,6 +194,7 @@ The following uniqueness constraints **MUST** hold:\n - Each storage key **MUST** appear at most once in `storage_reads` per account.\n - A storage key **MUST NOT** appear in both `storage_changes` and `storage_reads` for the same account.\n - Each `block_access_index` **MUST** appear at most once per change list (`balance_changes`, `nonce_changes`, `code_changes`, and per-slot `StorageChange` list).\n+- Each `SlotChanges` entry **MUST** contain at least one `StorageChange`.\n \n ### BlockAccessIndex Assignment\n "
+    },
+    {
       "sha": "50dffe76061bf5896b585b97248eda6430990a76",
       "date": "2026-05-22T18:38:14Z",
       "message": "Update EIP-7928: add GAS_COPY to EXTCODECOPY",

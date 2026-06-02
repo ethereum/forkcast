@@ -20,6 +20,12 @@
     "specificationUrl": { "type": "string" },
     "pendingPullRequest": { "$ref": "#/$defs/PendingPullRequest" },
     "requires": { "type": "array", "items": { "type": "integer" } },
+    "faq": {
+      "type": "array",
+      "items": { "$ref": "#/$defs/FaqItem" },
+      "minItems": 1,
+      "maxItems": 20
+    },
     "laymanDescription": { "type": "string" },
     "northStars": {
       "type": "array",
@@ -50,6 +56,23 @@
       "properties": {
         "number": { "type": "integer" },
         "url": { "type": "string" }
+      }
+    },
+    "FaqItem": {
+      "type": "object",
+      "required": ["question", "answer"],
+      "additionalProperties": false,
+      "properties": {
+        "question": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 200
+        },
+        "answer": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 5000
+        }
       }
     },
     "ForkRelationship": {

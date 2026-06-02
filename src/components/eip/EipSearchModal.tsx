@@ -42,6 +42,7 @@ const SEARCH_WEIGHTS = {
   author: 15,
   benefits: 10,
   northStars: 10,
+  faq: 8,
 };
 
 // Active forks in reverse chronological order
@@ -160,7 +161,24 @@ function calculateMatchScore(
     }
   }
 
+  // FAQ match
+  if (eip.faq?.length) {
+    const faq = eip.faq
+      .map((item) => `${item.question} ${item.answer}`)
+      .join(' ')
+      .toLowerCase();
+    if (queryTerms.some(term => faq.includes(term))) {
+      totalScore += SEARCH_WEIGHTS.faq;
+      matchedFields.push('faq');
+    }
+  }
+
   return { score: totalScore, matchedFields };
+}
+
+function getResultPath(result: EipSearchResult): string {
+  const faqOnlyMatch = result.matchedFields.length === 1 && result.matchedFields[0] === 'faq';
+  return faqOnlyMatch ? `/eips/${result.eip.id}?tab=faq` : `/eips/${result.eip.id}`;
 }
 
 function searchEips(
@@ -300,7 +318,7 @@ export default function EipSearchModal({ isOpen, onClose, initialQuery = '' }: E
         setSelectedIndex(prev => Math.max(prev - 1, 0));
       } else if (e.key === 'Enter' && results[selectedIndex]) {
         e.preventDefault();
-        navigate(`/eips/${results[selectedIndex].eip.id}`);
+        navigate(getResultPath(results[selectedIndex]));
         onClose();
         setQuery('');
       }
@@ -368,6 +386,7 @@ export default function EipSearchModal({ isOpen, onClose, initialQuery = '' }: E
       'author': 'author',
       'benefits': 'benefits',
       'northStars': 'north stars',
+      'faq': 'FAQ',
       'spec': 'spec',
     };
     return displayMap[field] || field;
@@ -453,7 +472,7 @@ export default function EipSearchModal({ isOpen, onClose, initialQuery = '' }: E
                   <button
                     key={eip.id}
                     onClick={() => {
-                      navigate(`/eips/${eip.id}`);
+                      navigate(getResultPath(result));
                       onClose();
                       setQuery('');
                     }}
@@ -523,7 +542,7 @@ export default function EipSearchModal({ isOpen, onClose, initialQuery = '' }: E
           ) : (
             <SearchEmptyState
               description="Search EIPs or use filters to browse"
-              items={['Title', 'Author', 'Description', 'Spec']}
+              items={['Title', 'Author', 'Description', 'FAQ', 'Spec']}
             />
           )}
       </div>

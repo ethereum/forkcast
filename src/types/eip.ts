@@ -44,6 +44,11 @@ export interface PendingPullRequest {
   url: string;
 }
 
+export interface EipFaqItem {
+  question: string;
+  answer: string;
+}
+
 export interface EIP {
   id: number;
   title: string;
@@ -62,6 +67,7 @@ export interface EIP {
   specificationUrl?: string;
   pendingPullRequest?: PendingPullRequest;
   forkRelationships: ForkRelationship[];
+  faq?: EipFaqItem[];
   laymanDescription?: string;
   northStars?: string[];
   northStarAlignment?: {

@@ -61,7 +61,7 @@ const index = [];
 if (fs.existsSync(EIPS_MD_DIR)) {
   const mdFiles = fs
     .readdirSync(EIPS_MD_DIR)
-    .filter((f) => f.endsWith('.md'))
+    .filter((f) => /^\d+\.md$/.test(f))
     .sort((a, b) => parseInt(a) - parseInt(b));
 
   for (const file of mdFiles) {

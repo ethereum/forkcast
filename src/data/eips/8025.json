@@ -10,6 +10,48 @@
   "discussionLink": "https://ethereum-magicians.org/t/eip-optional-execution-proofs/25500",
   "reviewer": "bot",
   "layer": "CL",
+  "faq": [
+    {
+      "question": "What's in EIP-8025?",
+      "answer": "EIP-8025 introduces a consensus-layer mechanism by which beacon nodes can verify the validity of an *execution payload* using execution proofs (aka zkEVM proofs) received over the P2P network, rather than purely re-executing locally.\n\nThe EIP **defines two new opt-in node roles**, expressed in the spec as modes a node enables independently or together:\n\n* **Provers** (proof-generating mode) altruistically produce zkEVM proofs for each block's execution and gossip them.\n* **zkAttesters**, also called stateless attesters (proof-verifying mode), verify received zkEVM proofs as a supplementary check on payload validity.\n\nEIP-8025 lives primarily on the consensus layer, but it also introduces an execution-layer artifact: the *guest program*, the block-execution logic that runs inside a zkVM and constitutes the computation the prover proves.\n\nThe EVM itself is not modified; existing EL clients continue producing payloads as before.\n\nImportantly, validating nodes who do not opt in see no change."
+    },
+    {
+      "question": "What problem does it solve?",
+      "answer": "It makes payload validation sublinear in the gas limit and the state size, and stateless.\n\nThe practical implication is that payload validation remains accessible to nodes even as the gas limit grows and state size increases, because the cost of verifying a zkEVM proof does not scale with either."
+    },
+    {
+      "question": "Why optional first?",
+      "answer": "An L1-zkEVM is a **substantial shift in how blocks are validated** on Ethereum, and the surface area touches many parts of the protocol stack: execution, consensus, cryptography, networking, economics, governance, and more.\n\nMaking EIP-8025 **non-consensus-critical** lets the network test real-time zkEVM proving and verifying under mainnet conditions with only a subset of attesters opting in.\n\nIn this optional phase, attestation duties are still driven by the EL client's re-execution of payloads, with **proofs serving as a supplementary check** rather than the sole source of validity. A node that has opted in but hasn't received enough valid proofs in time simply attests as it does today.\n\nThis preserves a **robust fallback** if proofs are late, missing, or buggy, and it is the rational stance for an individual zkAttester: **proving is altruistic during the optional phase**, and missed or late proofs translate into missed timeliness rewards."
+    },
+    {
+      "question": "Why does an optional feature need protocol-level changes?",
+      "answer": "The work needed to land this is large: execution spec changes, testing-framework changes, and tooling changes. This is **hard to accomplish and risky in a single hard fork** while also making proofs mandatory at the same time. Splitting it across forks, optional first and potentially mandatory later, is more tractable.\n\nMoreover, scheduling it as an EIP **forces dedicated capacity from multiple stakeholders** to look at it seriously, which is needed because the architectural surface is non-trivial.\n\nShipping it as an optional feature is also the **safest way to gather real mainnet data** and surface unknown unknowns without putting any load-bearing part of the network at risk."
+    },
+    {
+      "question": "Is it \"zkEVM\" or \"zkVM\"?",
+      "answer": "Both, depending on which layer of the stack you mean.\n\nA **zkVM** is a general-purpose virtual machine, typically RISC-V or a similar minimal ISA, whose execution can be proven inside a proof system. It knows nothing about Ethereum; it just executes whatever program you compile for it and produces a proof that the program ran correctly on the given inputs. ZisK, Jolt, and LambdaVM are all examples of zkVMs.\n\nA **zkEVM** is what you get when you run an EVM implementation *as a guest program* inside a zkVM. The guest in EIP-8025 is exactly this: a stateless EVM payload verifier, written against the execution specs, compiled to run inside a zkVM. So the rough equation is **zkEVM = zkVM + EVM guest program**.\n\nA practical implication of this split: the zkVM and the EVM guest program can evolve independently. You can swap the zkVM, for example by moving from one proof system to another, without changing the guest program, and you can upgrade the guest program, for example to handle a new EVM fork, without changing the zkVM. EIP-8025's multi-proof-type support leans on exactly this separation."
+    },
+    {
+      "question": "What are the two new opt-in node modes?",
+      "answer": "**Proof-generating mode** is opted into by an active validator, which takes on the role of a *proof-proposer*. When a new beacon block arrives, the validator asks its proof engine to generate proofs of the configured types, signs each returned proof, and broadcasts it on the new execution-proof gossip topic.\n\nThe actual cryptographic proving work is delegated to an external proof node/prover behind the *proof engine*; the validator's job is to trigger generation, sign the result, and broadcast.\n\n**Proof-verifying mode** is opted into by any node, validator or not. The node listens on the gossip topic, runs the standard gossip validation rules, and asks its *proof engine* to verify each proof it receives."
+    },
+    {
+      "question": "If I opt in as a full node or validator, do I still need to run an EL?",
+      "answer": "Yes. Optional proofs do not replace the EL. Re-execution remains the validity oracle for attestation and fork choice; the proof is additional work done only if you opt in."
+    },
+    {
+      "question": "What happens if the proof verification disagrees with the EL?",
+      "answer": "The EL is authoritative. Proof verification is currently a separate, non-load-bearing path. It does not affect attestation, fork choice, or block validity."
+    },
+    {
+      "question": "Should validators opt in?",
+      "answer": "There are a few points to consider here:\n\n* Downloading and gossiping proofs is additional work and could slow opted-in validators down on the propagation path, with knock-on effects on peers.\n* Proving is altruistic and missed or late proofs translate into missed timeliness rewards for validators.\n\nHowever, while excluding validators would minimize risk it would also reduce what can be learned, because validator hardware profiles differ from full-node hardware profiles, and one of the goals is precisely to understand those.\n\nThe plan is to communicate carefully which validators are recommended to enable the feature, ideally a small percentage with above-baseline resources, not everyone turning it on blindly."
+    },
+    {
+      "question": "Why propose for Hegota?",
+      "answer": "ZK **technology has significantly matured**. Proving stacks have been running in production on L2s/rollups for years. As a logical continuation of the rollup-centric roadmap, the idea is to make L1 a rollup itself.\n\nMoreover, both CL and EL **specs for EIP-8025 are largely settled**, and both already have **functioning client implementations**. As a fully opt-in change, inclusion in Hegota is **low-risk**: validators that don't enable either mode see no change to behavior, bandwidth, or attestation duties.\n\nJust as important, proposing the EIP now anchors the work inside the protocol upgrade process, where it needs to live. Very practically, client teams, zkVM teams, tooling maintainers, and spec writers should feel empowered to **allocate sustained resources** to working on zkVMs, *guest programs*, execution witness generation, and the surrounding test infrastructure.\n\nWhether and when proofs eventually become protocol-native and *mandatory* is a separate decision for a later EIP and a later fork, at which point attesters won't be required to run a stateful EL client anymore, dramatically reducing the cost of running a verifying node."
+    }
+  ],
   "forkRelationships": [
     {
       "forkName": "Hegota",

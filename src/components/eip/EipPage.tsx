@@ -23,6 +23,7 @@ import { EipSearch } from './EipSearch';
 import EipSearchModal from './EipSearchModal';
 import { EipSpecHistory } from './EipSpecHistory';
 import { EipDependents } from './EipDependents';
+import { EipFaq } from './EipFaq';
 import { useEipHistory } from '../../hooks/useEipHistory';
 import { isSearchHotkey } from '../search/searchShortcuts';
 import {
@@ -294,15 +295,18 @@ export const EipPage: React.FC = () => {
 
   const dependents = dependentsMap.get(eipId) || [];
   const hasDependents = dependents.length > 0;
+  const hasFaq = Boolean(eip?.faq?.length);
 
   // View mode derived from URL ?tab= param
-  const validTabs = ['analysis', 'spec', 'dependents', 'history'] as const;
+  const validTabs = ['analysis', 'spec', 'dependents', 'history', 'faq'] as const;
   type ViewMode = typeof validTabs[number];
   const defaultTab: ViewMode = hasAnalysis ? 'analysis' : 'spec';
   const tabParam = searchParams.get('tab') as ViewMode | null;
   const hasHash = typeof window !== 'undefined' && window.location.hash.length > 1;
-  const isValidTab = tabParam && validTabs.includes(tabParam) && (tabParam !== 'dependents' || hasDependents);
-  const viewMode: ViewMode = isValidTab ? tabParam : hasHash ? 'spec' : defaultTab;
+  const hasQParam = searchParams.has('q');
+  const hasFaqQuestionParam = tabParam === 'faq' && hasQParam && hasFaq;
+  const isValidTab = tabParam && validTabs.includes(tabParam) && (tabParam !== 'dependents' || hasDependents) && (tabParam !== 'faq' || hasFaq);
+  const viewMode: ViewMode = hasFaqQuestionParam ? 'faq' : isValidTab ? tabParam : hasHash ? 'spec' : defaultTab;
 
   const setViewMode = (mode: ViewMode) => {
     const next = new URLSearchParams(searchParams);
@@ -310,6 +314,9 @@ export const EipPage: React.FC = () => {
       next.delete('tab');
     } else {
       next.set('tab', mode);
+    }
+    if (mode !== 'faq') {
+      next.delete('q');
     }
     setSearchParams(next, { replace: true });
   };
@@ -324,6 +331,7 @@ export const EipPage: React.FC = () => {
   const nextEip = currentIndex < sortedEips.length - 1 ? sortedEips[currentIndex + 1] : null;
 
   const prevIdRef = React.useRef(id);
+  const tabBarRef = React.useRef<HTMLDivElement>(null);
   useEffect(() => {
     window.scrollTo(0, 0);
     // Reset to default tab only when navigating to a different EIP
@@ -335,6 +343,16 @@ export const EipPage: React.FC = () => {
     prevIdRef.current = id;
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [id]);
+
+  // Scroll tab bar into view when deep-linking to a FAQ question
+  useEffect(() => {
+    if (hasFaqQuestionParam && tabBarRef.current) {
+      requestAnimationFrame(() => {
+        tabBarRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      });
+    }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
 
   // Fetch upcoming breakout call if this EIP has one
@@ -627,7 +645,7 @@ export const EipPage: React.FC = () => {
           </header>
 
           {/* View mode tabs */}
-          <div className="flex overflow-x-auto border-b border-slate-200 dark:border-slate-700">
+          <div ref={tabBarRef} className="flex overflow-x-auto border-b border-slate-200 dark:border-slate-700">
             {hasAnalysis && (
               <button
                 onClick={() => setViewMode('analysis')}
@@ -660,6 +678,18 @@ export const EipPage: React.FC = () => {
             >
               History
             </button>
+            {hasFaq && (
+              <button
+                onClick={() => setViewMode('faq')}
+                className={`shrink-0 px-6 py-3 text-sm font-medium transition-colors ${
+                  viewMode === 'faq'
+                    ? 'text-purple-600 dark:text-purple-400 border-b-2 border-purple-600 dark:border-purple-400'
+                    : 'text-slate-500 dark:text-slate-400 hover:text-slate-700 dark:hover:text-slate-300'
+                }`}
+              >
+                FAQ
+              </button>
+            )}
             {hasDependents && (
               <button
                 onClick={() => setViewMode('dependents')}
@@ -861,6 +891,10 @@ export const EipPage: React.FC = () => {
                 loading={historyLoading}
                 error={historyError}
               />
+            )}
+
+            {viewMode === 'faq' && (
+              <EipFaq items={eip.faq ?? []} />
             )}
           </div>
         </article>

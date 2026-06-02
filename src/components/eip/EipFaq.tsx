@@ -1,4 +1,5 @@
-import React, { lazy, Suspense } from 'react';
+import React, { lazy, Suspense, useEffect, useRef, useState } from 'react';
+import { useSearchParams } from 'react-router-dom';
 import type { EipFaqItem } from '../../types/eip';
 
 // FAQ answers are short prose (links/bold/lists), so a bare markdown renderer is
@@ -36,6 +37,43 @@ interface EipFaqProps {
 }
 
 export const EipFaq: React.FC<EipFaqProps> = ({ items }) => {
+  const [searchParams] = useSearchParams();
+  const qParam = searchParams.get('q');
+  const linkedIndex = qParam !== null ? parseInt(qParam, 10) - 1 : null;
+  const validLinkedIndex = linkedIndex !== null && linkedIndex >= 0 && linkedIndex < items.length ? linkedIndex : null;
+
+  const [openIndex, setOpenIndex] = useState<number | null>(validLinkedIndex ?? 0);
+  const [highlightIndex, setHighlightIndex] = useState<number | null>(validLinkedIndex);
+  const itemRefs = useRef<Map<number, HTMLDivElement>>(new Map());
+  const didScroll = useRef(false);
+
+  useEffect(() => {
+    if (validLinkedIndex !== null && !didScroll.current) {
+      setOpenIndex(validLinkedIndex);
+      // Wait a tick for the accordion to open, then scroll
+      requestAnimationFrame(() => {
+        itemRefs.current.get(validLinkedIndex)?.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      });
+      didScroll.current = true;
+    }
+  }, [validLinkedIndex]);
+
+  const toggle = (index: number) => {
+    setOpenIndex((prev) => (prev === index ? null : index));
+    setHighlightIndex(null);
+  };
+
+  const [copiedIndex, setCopiedIndex] = useState<number | null>(null);
+
+  const copyLink = (index: number) => {
+    const url = new URL(window.location.href);
+    url.searchParams.set('tab', 'faq');
+    url.searchParams.set('q', String(index + 1));
+    navigator.clipboard.writeText(url.toString());
+    setCopiedIndex(index);
+    setTimeout(() => setCopiedIndex(null), 1500);
+  };
+
   if (items.length === 0) {
     return (
       <p className="text-sm text-slate-500 dark:text-slate-400 italic">
@@ -46,33 +84,66 @@ export const EipFaq: React.FC<EipFaqProps> = ({ items }) => {
 
   return (
     <div className="space-y-3">
-      <p className="text-sm text-slate-500 dark:text-slate-400">
-        Frequently asked questions about this proposal. Click a question to reveal its answer.
-      </p>
-      {items.map((item, index) => (
-        <details
-          key={index}
-          className="group border border-slate-200 dark:border-slate-700 rounded-lg overflow-hidden"
-        >
-          <summary className="flex items-center justify-between gap-3 cursor-pointer select-none px-4 py-3 text-sm font-medium text-slate-800 dark:text-slate-200 hover:bg-slate-50 dark:hover:bg-slate-700/40 transition-colors list-none [&::-webkit-details-marker]:hidden">
-            <span>{item.question}</span>
-            <svg
-              className="w-4 h-4 shrink-0 text-slate-400 transition-transform duration-200 group-open:rotate-180"
-              fill="none"
-              stroke="currentColor"
-              viewBox="0 0 24 24"
-              aria-hidden="true"
+      {items.map((item, index) => {
+        const isOpen = openIndex === index;
+        const isLinked = highlightIndex === index;
+        return (
+          <div
+            key={index}
+            ref={(el) => { if (el) itemRefs.current.set(index, el); }}
+            className={`rounded-lg overflow-hidden border ${isLinked ? 'border-purple-400 dark:border-purple-500 ring-1 ring-purple-400/30 dark:ring-purple-500/30' : 'border-slate-200 dark:border-slate-700'}`}
+          >
+            <button
+              type="button"
+              onClick={() => toggle(index)}
+              className="flex w-full items-center justify-between gap-3 cursor-pointer select-none px-4 py-3 text-sm font-medium text-slate-800 dark:text-slate-200 hover:bg-slate-50 dark:hover:bg-slate-700/40 transition-colors text-left"
             >
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
-            </svg>
-          </summary>
-          <div className={`px-4 pb-4 pt-3 border-t border-slate-100 dark:border-slate-700/60 ${proseClasses}`}>
-            <Suspense fallback={<div className="text-sm text-slate-500">Loading...</div>}>
-              <LazyMarkdown>{item.answer}</LazyMarkdown>
-            </Suspense>
+              <span>{item.question}</span>
+              <svg
+                className={`w-4 h-4 shrink-0 text-slate-400 transition-transform duration-200 ${isOpen ? 'rotate-180' : ''}`}
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+                aria-hidden="true"
+              >
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+              </svg>
+            </button>
+            <div
+              className={`grid transition-[grid-template-rows] duration-250 ease-in-out ${isOpen ? 'grid-rows-[1fr]' : 'grid-rows-[0fr]'}`}
+            >
+              <div className="overflow-hidden">
+                <div className={`px-4 pb-4 pt-3 border-t border-slate-100 dark:border-slate-700 bg-slate-50/60 dark:bg-slate-800/40 ${proseClasses}`}>
+                  <Suspense fallback={<div className="text-sm text-slate-500">Loading...</div>}>
+                    <LazyMarkdown>{item.answer}</LazyMarkdown>
+                  </Suspense>
+                  <button
+                    type="button"
+                    onClick={() => copyLink(index)}
+                    className="mt-3 flex items-center gap-1.5 text-xs text-slate-400 hover:text-purple-500 dark:hover:text-purple-400 transition-colors not-prose"
+                  >
+                    {copiedIndex === index ? (
+                      <>
+                        <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                        </svg>
+                        <span className="text-emerald-500 dark:text-emerald-400">Copied!</span>
+                      </>
+                    ) : (
+                      <>
+                        <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1" />
+                        </svg>
+                        <span>Copy link</span>
+                      </>
+                    )}
+                  </button>
+                </div>
+              </div>
+            </div>
           </div>
-        </details>
-      ))}
+        );
+      })}
     </div>
   );
 };

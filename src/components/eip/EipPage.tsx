@@ -303,8 +303,9 @@ export const EipPage: React.FC = () => {
   const defaultTab: ViewMode = hasAnalysis ? 'analysis' : 'spec';
   const tabParam = searchParams.get('tab') as ViewMode | null;
   const hasHash = typeof window !== 'undefined' && window.location.hash.length > 1;
+  const hasQParam = searchParams.has('q');
   const isValidTab = tabParam && validTabs.includes(tabParam) && (tabParam !== 'dependents' || hasDependents) && (tabParam !== 'faq' || hasFaq);
-  const viewMode: ViewMode = isValidTab ? tabParam : hasHash ? 'spec' : defaultTab;
+  const viewMode: ViewMode = (hasQParam && hasFaq) ? 'faq' : isValidTab ? tabParam : hasHash ? 'spec' : defaultTab;
 
   const setViewMode = (mode: ViewMode) => {
     const next = new URLSearchParams(searchParams);
@@ -326,6 +327,7 @@ export const EipPage: React.FC = () => {
   const nextEip = currentIndex < sortedEips.length - 1 ? sortedEips[currentIndex + 1] : null;
 
   const prevIdRef = React.useRef(id);
+  const tabBarRef = React.useRef<HTMLDivElement>(null);
   useEffect(() => {
     window.scrollTo(0, 0);
     // Reset to default tab only when navigating to a different EIP
@@ -337,6 +339,16 @@ export const EipPage: React.FC = () => {
     prevIdRef.current = id;
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [id]);
+
+  // Scroll tab bar into view when deep-linking to a FAQ question
+  useEffect(() => {
+    if (hasQParam && hasFaq && tabBarRef.current) {
+      requestAnimationFrame(() => {
+        tabBarRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      });
+    }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
 
   // Fetch upcoming breakout call if this EIP has one
@@ -629,7 +641,7 @@ export const EipPage: React.FC = () => {
           </header>
 
           {/* View mode tabs */}
-          <div className="flex overflow-x-auto border-b border-slate-200 dark:border-slate-700">
+          <div ref={tabBarRef} className="flex overflow-x-auto border-b border-slate-200 dark:border-slate-700">
             {hasAnalysis && (
               <button
                 onClick={() => setViewMode('analysis')}

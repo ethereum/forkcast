@@ -2,31 +2,18 @@ import React, { useState, useMemo, useEffect } from 'react';
 import { FUSAKA_PROGRESS, GLAMSTERDAM_PROGRESS, HEGOTA_PROGRESS, UPGRADE_PROCESS_PHASES } from '../../constants/timeline-phases';
 import { useMetaTags } from '../../hooks/useMetaTags';
 import { generateForkProgress, parseLocalDate, parseShortDate, daysBetween, DEFAULT_PHASE_DURATIONS, PhaseDurations } from './forkDateCalculator';
+import {
+  clearPlanningTableStateFromStorage,
+  DEFAULT_STATE,
+  loadPlanningTableStateFromStorage,
+  PlanningTableState,
+  savePlanningTableStateToStorage,
+} from './planningTableState';
 import ForkGanttChart from './ForkGanttChart';
 import EditableDateCell from './EditableDateCell';
 import { Tooltip } from '../ui';
 
-const STORAGE_KEY = 'forkcast-planning-table';
-
 type MobileFork = 'fusaka' | 'glamsterdam' | 'hegota';
-
-interface PlanningTableState {
-  glamsterdamMainnetDate: string;
-  hegotaMainnetDate: string;
-  glamsterdamDevnetCount: number;
-  hegotaDevnetCount: number;
-  lockedDates: Record<string, string>;
-  phaseDurations: PhaseDurations;
-}
-
-const DEFAULT_STATE: PlanningTableState = {
-  glamsterdamMainnetDate: '2026-09-02',
-  hegotaMainnetDate: '2027-03-01',
-  glamsterdamDevnetCount: 7,
-  hegotaDevnetCount: 5,
-  lockedDates: {},
-  phaseDurations: DEFAULT_PHASE_DURATIONS,
-};
 
 const loadPlanningTableState = (): PlanningTableState => {
   if (typeof window === 'undefined') {
@@ -34,20 +21,34 @@ const loadPlanningTableState = (): PlanningTableState => {
   }
 
   try {
-    const stored = window.localStorage.getItem(STORAGE_KEY);
-    if (!stored) {
-      return DEFAULT_STATE;
-    }
-
-    const parsed = JSON.parse(stored) as Partial<PlanningTableState>;
-    return {
-      ...DEFAULT_STATE,
-      ...parsed,
-      phaseDurations: { ...DEFAULT_PHASE_DURATIONS, ...parsed.phaseDurations },
-    };
+    return loadPlanningTableStateFromStorage(window.localStorage);
   } catch (e) {
     console.warn('Failed to load planning table state from localStorage:', e);
     return DEFAULT_STATE;
+  }
+};
+
+const savePlanningTableState = (state: PlanningTableState): void => {
+  if (typeof window === 'undefined') {
+    return;
+  }
+
+  try {
+    savePlanningTableStateToStorage(window.localStorage, state);
+  } catch (e) {
+    console.warn('Failed to save planning table state to localStorage:', e);
+  }
+};
+
+const clearPlanningTableState = (): void => {
+  if (typeof window === 'undefined') {
+    return;
+  }
+
+  try {
+    clearPlanningTableStateFromStorage(window.localStorage);
+  } catch (e) {
+    console.warn('Failed to clear planning table state from localStorage:', e);
   }
 };
 
@@ -86,11 +87,7 @@ const SchedulePage: React.FC = () => {
       phaseDurations,
     };
 
-    try {
-      window.localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
-    } catch (e) {
-      console.warn('Failed to save planning table state to localStorage:', e);
-    }
+    savePlanningTableState(state);
   }, [glamsterdamMainnetDate, hegotaMainnetDate, glamsterdamDevnetCount, hegotaDevnetCount, lockedDates, phaseDurations]);
 
   // Reset to defaults
@@ -101,7 +98,7 @@ const SchedulePage: React.FC = () => {
     setHegotaDevnetCount(DEFAULT_STATE.hegotaDevnetCount);
     setLockedDates(DEFAULT_STATE.lockedDates);
     setPhaseDurations(DEFAULT_STATE.phaseDurations);
-    window.localStorage.removeItem(STORAGE_KEY);
+    clearPlanningTableState();
   };
 
   // Update a single duration value

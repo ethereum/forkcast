@@ -1,10 +1,11 @@
 import React, { useState } from 'react';
-
-interface ChatMessage {
-  timestamp: string;
-  speaker: string;
-  message: string;
-}
+import {
+  getReplyBody,
+  getReplyQuotedText,
+  isReplyMessage,
+  parseChatTranscript,
+  type ChatMessage,
+} from '../../domain/chat/zoomChat';
 
 interface ChatLogProps {
   content: string;
@@ -107,178 +108,6 @@ const ChatLog: React.FC<ChatLogProps> = ({
     return chatSeconds - syncOffsetSeconds;
   };
 
-  const parseChatTranscript = (text: string): { messages: ChatMessage[]; reactions: Map<string, { speaker: string; emoji: string }[]> } => {
-    // Pre-process lines to merge multi-line messages
-    const rawLines = text.split('\n');
-    const processedLines: string[] = [];
-
-    for (let i = 0; i < rawLines.length; i++) {
-      const line = rawLines[i];
-
-      // If this line has a timestamp, it's a new message
-      if (/^\d{2}:\d{2}:\d{2}\t/.test(line)) {
-        processedLines.push(line);
-      } else if (line.trim()) {
-        // This line doesn't have a timestamp, so it's a continuation
-        // Find the last line with content to merge with
-        let targetIndex = processedLines.length - 1;
-        while (targetIndex >= 0 && !processedLines[targetIndex].trim()) {
-          targetIndex--;
-        }
-
-        if (targetIndex >= 0) {
-          const lastNonEmptyLine = processedLines[targetIndex];
-          // Don't merge if the last line is a "Replying to" header - treat the next line as the reply content
-          // Handle both English and Dutch formats
-          if (/:\tReplying to/.test(lastNonEmptyLine) || /:\tAntwoord verzenden naar/.test(lastNonEmptyLine)) {
-            // This is the actual reply content, merge it with the "Replying to" line
-            // Normalize Dutch format to English
-            let normalizedLine = lastNonEmptyLine;
-            if (/:\tAntwoord verzenden naar/.test(lastNonEmptyLine)) {
-              normalizedLine = lastNonEmptyLine.replace(':\tAntwoord verzenden naar', ':\tReplying to');
-            }
-            processedLines[targetIndex] = `${normalizedLine.trimEnd()} → ${line.trim()}`;
-          } else {
-            // Regular multi-line content, use newline to preserve formatting
-            processedLines[targetIndex] = `${processedLines[targetIndex].trimEnd()}\n${line.trim()}`;
-          }
-        } else {
-          // No previous message found, add as new line
-          processedLines.push(line);
-        }
-      } else {
-        // Empty line - preserve it for now
-        processedLines.push(line);
-      }
-    }
-
-    const lines = processedLines.filter(line => line.trim());
-    const messages: ChatMessage[] = [];
-    const reactions = new Map<string, { speaker:string; emoji: string }[]>();
-    let lastMessageForReaction: ChatMessage | null = null;
-    for (let i = 0; i < lines.length; i++) {
-      const line = lines[i].trimEnd();
-      const match = line.match(/^(\d{2}:\d{2}:\d{2})\t(.+?):\t([\s\S]*)$/);
-      if (match) {
-        const timestamp = match[1];
-        const speaker = match[2].trim();
-        const message = match[3].trim();
-
-        // Handle "add emoji" shorthand
-        const addReactionMatch = message.match(/^add\s(.+)$/);
-        if (addReactionMatch && lastMessageForReaction) {
-          const emoji = addReactionMatch[1].trim();
-          const targetMessage = lastMessageForReaction.message;
-
-          if (!reactions.has(targetMessage)) {
-            reactions.set(targetMessage, []);
-          }
-          reactions.get(targetMessage)!.push({ speaker, emoji });
-          continue;
-        }
-
-        // Parse reactions for later display
-        if (message.startsWith('Reacted to') || message.startsWith('Heeft gereageerd op')) {
-          // Handle multiple formats:
-          // English:
-          // 1. Reacted to "message" with emoji (may have nested quotes)
-          // 2. Reacted to "message" with "emoji"
-          // 3. Reacted to message with "emoji" (no quotes around message)
-          // Dutch:
-          // 4. Heeft gereageerd op "message" met emoji
-          //
-          // Strategy: Use a greedy match that captures everything between the first quote
-          // and " with " (for English) or " met " (for Dutch), handling nested quotes and newlines
-          const reactionPatterns = [
-            // English: Match from opening quote to last " with ", then capture emoji (with multiline support)
-            /^Reacted to [""](.+?)[""] with [""](.+?)[""]$/s,  // Both quoted
-            /^Reacted to [""](.+?)[""] with (.+)$/s,  // Message quoted, emoji unquoted
-            /^Reacted to (.+?) with [""](.+?)[""]$/s,  // Message unquoted, emoji quoted
-            /^Reacted to (.+?) with (.+)$/s,  // Neither quoted
-            // Dutch format
-            /^Heeft gereageerd op [""](.+?)[""] met (.+)$/s,
-            /^Heeft gereageerd op (.+?) met [""](.+?)[""]$/s,  // Message unquoted, emoji quoted
-          ];
-
-          let matched = false;
-          for (const pattern of reactionPatterns) {
-            const reactionMatch = message.match(pattern);
-            if (reactionMatch) {
-              // Normalize the target message - handle ellipsis for truncated messages
-              // Remove any curly quotes that might be in the matched text
-              // Also normalize newlines to spaces for matching
-              let targetMessage = reactionMatch[1].replace(/[""]/g, '"').replace(/\n/g, ' ').trim();
-              const emoji = reactionMatch[2].replace(/[""]/g, '').trim();
-
-              // Attempt to find the full message text if the reaction is on a truncated message
-              const isTruncated = targetMessage.endsWith('...');
-              if (isTruncated) {
-                const searchText = targetMessage.slice(0, -3).trim();
-                const parentMessage = messages.find(m => m.message.replace(/\n/g, ' ').startsWith(searchText));
-                if (parentMessage) {
-                  targetMessage = parentMessage.message;
-                }
-              } else {
-                // For non-truncated reactions, try to match with existing messages
-                // by normalizing newlines for comparison
-                const parentMessage = messages.find(m =>
-                  m.message.replace(/\n/g, ' ').trim() === targetMessage
-                );
-                if (parentMessage) {
-                  targetMessage = parentMessage.message;
-                }
-              }
-
-              if (!reactions.has(targetMessage)) {
-                reactions.set(targetMessage, []);
-              }
-              reactions.get(targetMessage)!.push({ speaker, emoji });
-              matched = true;
-              break;
-            }
-          }
-
-          if (matched) continue;
-        }
-        // Handle "Replying to" messages (English and Dutch)
-        if (message.startsWith('Replying to') || message.startsWith('Antwoord verzenden naar')) {
-          if (i + 1 < lines.length) {
-            const nextLine = lines[i + 1];
-            // Check if next line is NOT a new timestamped message
-            if (!nextLine.match(/^\d{2}:\d{2}:\d{2}\t/)) {
-              const actualMessage = nextLine.trim();
-              if (actualMessage) {
-                // Convert Dutch format to English format for consistency
-                let normalizedMessage = message;
-                if (message.startsWith('Antwoord verzenden naar')) {
-                  normalizedMessage = message.replace('Antwoord verzenden naar', 'Replying to');
-                }
-                messages.push({
-                  timestamp,
-                  speaker,
-                  message: `${normalizedMessage} → ${actualMessage}`
-                });
-                i++; // Skip the next line since we've consumed it
-                continue;
-              }
-            }
-          }
-        }
-        // Regular messages
-        if (message) {
-          const chatMessage = {
-            timestamp,
-            speaker,
-            message
-          };
-          messages.push(chatMessage);
-          lastMessageForReaction = chatMessage;
-        }
-      }
-    }
-    return { messages, reactions };
-  };
-
   // --- Threading and rendering logic (from TranscriptModal) ---
   const { messages: allMessages, reactions } = parseChatTranscript(content);
 
@@ -295,7 +124,7 @@ const ChatLog: React.FC<ChatLogProps> = ({
   const parentMessages: ChatMessage[] = [];
   const replyMessages: ChatMessage[] = [];
   messages.forEach((msg) => {
-    if (msg.message.startsWith('Replying to') || msg.message.startsWith('Antwoord verzenden naar')) {
+    if (isReplyMessage(msg.message)) {
       replyMessages.push(msg);
     } else {
       parentMessages.push(msg);
@@ -305,14 +134,9 @@ const ChatLog: React.FC<ChatLogProps> = ({
   const virtualParents = new Map<string, ChatMessage>();
   const matchedReplies = new Set<ChatMessage>();
   replyMessages.forEach((reply) => {
-    // Handle quotes in the replied-to text by looking for the pattern more flexibly
-    // Support both English and Dutch formats
-    const englishMatch = reply.message.match(/^Replying to "(.+?)"(?:\s|$)/);
-    const dutchMatch = reply.message.match(/^Antwoord verzenden naar "(.+?)"(?:\s|$)/);
-    const match = englishMatch || dutchMatch;
+    const quotedText = getReplyQuotedText(reply.message);
 
-    if (match) {
-      const quotedText = match[1];
+    if (quotedText) {
       // Handle abbreviated quotes (ending with "...")
       const isAbbreviated = quotedText.endsWith('...');
       const searchText = isAbbreviated ? quotedText.slice(0, -3).trim() : quotedText;
@@ -340,14 +164,9 @@ const ChatLog: React.FC<ChatLogProps> = ({
     const replies: ChatMessage[] = [];
     replyMessages.forEach((reply) => {
       if (matchedReplies.has(reply)) return;
-      // Handle quotes in the replied-to text by looking for the pattern more flexibly
-      // Support both English and Dutch formats
-      const englishMatch = reply.message.match(/^Replying to "(.+?)"(?:\s|$)/);
-      const dutchMatch = reply.message.match(/^Antwoord verzenden naar "(.+?)"(?:\s|$)/);
-      const match = englishMatch || dutchMatch;
+      const quotedText = getReplyQuotedText(reply.message);
 
-      if (match) {
-        const quotedText = match[1];
+      if (quotedText) {
         // Handle abbreviated quotes (ending with "...")
         const isAbbreviated = quotedText.endsWith('...');
         const searchText = isAbbreviated ? quotedText.slice(0, -3).trim() : quotedText;
@@ -491,13 +310,7 @@ const ChatLog: React.FC<ChatLogProps> = ({
             })()}
             {/* Reply Messages */}
             {isParentWithReplies && replies!.map((reply, replyIndex) => {
-              // Extract just the actual message content after "Replying to..." or "Antwoord verzenden naar..."
-              // The message format is: "Replying to "quoted" → actual message" or "Antwoord verzenden naar "quoted" → actual message"
-              // Handle quotes in the replied-to text by using a more flexible pattern
-              const englishReplyMatch = reply.message.match(/^Replying to "(.+?)"\s*→\s*(.+)$/);
-              const dutchReplyMatch = reply.message.match(/^Antwoord verzenden naar "(.+?)"\s*→\s*(.+)$/);
-              const replyMatch = englishReplyMatch || dutchReplyMatch;
-              const actualMessage = replyMatch ? replyMatch[2] : reply.message;
+              const actualMessage = getReplyBody(reply.message) ?? reply.message;
               const isSelectedReply = selectedSearchResult?.timestamp === reply.timestamp && selectedSearchResult?.type === 'chat';
 
               // Find reactions for the reply's actual message content

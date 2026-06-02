@@ -1,10 +1,12 @@
-import React, { useState, useMemo } from 'react';
+import React, { useState, useMemo, useEffect } from 'react';
 import { FUSAKA_PROGRESS, GLAMSTERDAM_PROGRESS, HEGOTA_PROGRESS, UPGRADE_PROCESS_PHASES } from '../../constants/timeline-phases';
 import { useMetaTags } from '../../hooks/useMetaTags';
 import { generateForkProgress, parseLocalDate, parseShortDate, daysBetween, DEFAULT_PHASE_DURATIONS, PhaseDurations } from './forkDateCalculator';
 import ForkGanttChart from './ForkGanttChart';
 import EditableDateCell from './EditableDateCell';
 import { Tooltip } from '../ui';
+
+const STORAGE_KEY = 'forkcast-planning-table';
 
 type MobileFork = 'fusaka' | 'glamsterdam' | 'hegota';
 
@@ -26,6 +28,29 @@ const DEFAULT_STATE: PlanningTableState = {
   phaseDurations: DEFAULT_PHASE_DURATIONS,
 };
 
+const loadPlanningTableState = (): PlanningTableState => {
+  if (typeof window === 'undefined') {
+    return DEFAULT_STATE;
+  }
+
+  try {
+    const stored = window.localStorage.getItem(STORAGE_KEY);
+    if (!stored) {
+      return DEFAULT_STATE;
+    }
+
+    const parsed = JSON.parse(stored) as Partial<PlanningTableState>;
+    return {
+      ...DEFAULT_STATE,
+      ...parsed,
+      phaseDurations: { ...DEFAULT_PHASE_DURATIONS, ...parsed.phaseDurations },
+    };
+  } catch (e) {
+    console.warn('Failed to load planning table state from localStorage:', e);
+    return DEFAULT_STATE;
+  }
+};
+
 // Human-readable labels for duration settings
 const DURATION_LABELS: Record<keyof PhaseDurations, { label: string; description: string }> = {
   HOODI_TO_MAINNET: { label: 'Hoodi → Mainnet', description: 'Days between Hoodi testnet and mainnet' },
@@ -40,15 +65,33 @@ const DURATION_LABELS: Record<keyof PhaseDurations, { label: string; description
 };
 
 const SchedulePage: React.FC = () => {
-  const [glamsterdamMainnetDate, setGlamsterdamMainnetDate] = useState<string>(DEFAULT_STATE.glamsterdamMainnetDate);
-  const [hegotaMainnetDate, setHegotaMainnetDate] = useState<string>(DEFAULT_STATE.hegotaMainnetDate);
-  const [glamsterdamDevnetCount, setGlamsterdamDevnetCount] = useState<number>(DEFAULT_STATE.glamsterdamDevnetCount);
-  const [hegotaDevnetCount, setHegotaDevnetCount] = useState<number>(DEFAULT_STATE.hegotaDevnetCount);
-  const [lockedDates, setLockedDates] = useState<Record<string, string>>(DEFAULT_STATE.lockedDates);
-  const [phaseDurations, setPhaseDurations] = useState<PhaseDurations>(DEFAULT_STATE.phaseDurations);
+  const [initialPlanningState] = useState<PlanningTableState>(loadPlanningTableState);
+  const [glamsterdamMainnetDate, setGlamsterdamMainnetDate] = useState<string>(initialPlanningState.glamsterdamMainnetDate);
+  const [hegotaMainnetDate, setHegotaMainnetDate] = useState<string>(initialPlanningState.hegotaMainnetDate);
+  const [glamsterdamDevnetCount, setGlamsterdamDevnetCount] = useState<number>(initialPlanningState.glamsterdamDevnetCount);
+  const [hegotaDevnetCount, setHegotaDevnetCount] = useState<number>(initialPlanningState.hegotaDevnetCount);
+  const [lockedDates, setLockedDates] = useState<Record<string, string>>(initialPlanningState.lockedDates);
+  const [phaseDurations, setPhaseDurations] = useState<PhaseDurations>(initialPlanningState.phaseDurations);
   const [showSettings, setShowSettings] = useState(false);
   const [mobileFork, setMobileFork] = useState<MobileFork>('glamsterdam');
   const [mobileNoticeDismissed, setMobileNoticeDismissed] = useState(false);
+
+  useEffect(() => {
+    const state: PlanningTableState = {
+      glamsterdamMainnetDate,
+      hegotaMainnetDate,
+      glamsterdamDevnetCount,
+      hegotaDevnetCount,
+      lockedDates,
+      phaseDurations,
+    };
+
+    try {
+      window.localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+    } catch (e) {
+      console.warn('Failed to save planning table state to localStorage:', e);
+    }
+  }, [glamsterdamMainnetDate, hegotaMainnetDate, glamsterdamDevnetCount, hegotaDevnetCount, lockedDates, phaseDurations]);
 
   // Reset to defaults
   const resetPlanningTable = () => {
@@ -58,6 +101,7 @@ const SchedulePage: React.FC = () => {
     setHegotaDevnetCount(DEFAULT_STATE.hegotaDevnetCount);
     setLockedDates(DEFAULT_STATE.lockedDates);
     setPhaseDurations(DEFAULT_STATE.phaseDurations);
+    window.localStorage.removeItem(STORAGE_KEY);
   };
 
   // Update a single duration value
@@ -279,7 +323,7 @@ const SchedulePage: React.FC = () => {
             Internal planning tool for ACD facilitators, client teams, and testers. Dates shown are hypothetical projections, not commitments.
           </p>
           <p className="mt-1 text-xs text-slate-500 dark:text-slate-400">
-            Edit and lock dates to explore planning scenarios.
+            Edit and lock dates to explore planning scenarios. Changes are saved automatically to your browser.
           </p>
         </div>
 
@@ -389,7 +433,7 @@ const SchedulePage: React.FC = () => {
                     <div>
                       <h2 className="text-lg font-semibold text-slate-900 dark:text-slate-100 mb-2">Fork Timeline Planning</h2>
                       <p className="text-sm text-slate-600 dark:text-slate-300">
-                        See the cascading impacts of scheduling decisions. Click dates to adjust.
+                        See the cascading impacts of scheduling decisions. Click dates to adjust. Changes are saved automatically.
                       </p>
                     </div>
                     <div className="flex items-center gap-2">

@@ -25,7 +25,6 @@ import { EipSpecHistory } from './EipSpecHistory';
 import { EipDependents } from './EipDependents';
 import { EipFaq } from './EipFaq';
 import { useEipHistory } from '../../hooks/useEipHistory';
-import { useEipFaq } from '../../hooks/useEipFaq';
 import { isSearchHotkey } from '../search/searchShortcuts';
 import {
   eipCallTypes,
@@ -262,10 +261,6 @@ const LazyEipMarkdown = lazy(() =>
   ),
 );
 
-// Experimental: the FAQ tab is currently scoped to a single EIP. This is the
-// one gate to flip (or remove) when extending it to other proposals.
-const FAQ_EIP_ID = 8025;
-
 const dependentsMap = buildDependentsMap(eipsData);
 const requiredEipSpecUrl = (eipId: number): string => `https://eips.ethereum.org/EIPS/eip-${eipId}`;
 const requiredEipLinkClassName = 'font-mono hover:text-slate-700 dark:hover:text-slate-200 transition-colors';
@@ -300,7 +295,7 @@ export const EipPage: React.FC = () => {
 
   const dependents = dependentsMap.get(eipId) || [];
   const hasDependents = dependents.length > 0;
-  const hasFaq = eipId === FAQ_EIP_ID;
+  const hasFaq = Boolean(eip?.faq?.length);
 
   // View mode derived from URL ?tab= param
   const validTabs = ['analysis', 'spec', 'dependents', 'history', 'faq'] as const;
@@ -323,7 +318,6 @@ export const EipPage: React.FC = () => {
 
   const { content: specContent, loading: specLoading, error: specError } = useEipMarkdown(eipId, viewMode === 'spec');
   const { history, loading: historyLoading, error: historyError } = useEipHistory(eipId, viewMode === 'history');
-  const { content: faqContent, loading: faqLoading, error: faqError } = useEipFaq(eipId, viewMode === 'faq');
 
   // Get sorted EIPs for navigation
   const sortedEips = useMemo(() => [...eipsData].sort((a, b) => a.id - b.id), []);
@@ -884,11 +878,7 @@ export const EipPage: React.FC = () => {
             )}
 
             {viewMode === 'faq' && (
-              <EipFaq
-                content={faqContent}
-                loading={faqLoading}
-                error={faqError}
-              />
+              <EipFaq items={eip.faq ?? []} />
             )}
           </div>
         </article>

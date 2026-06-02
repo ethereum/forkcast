@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { parseLocalDate, parseShortDate } from './forkDateCalculator';
 import { formatISODate } from '../../utils/date';
+import { Tooltip } from '../ui';
 
 export interface EditableDateCellProps {
   fork: string;
@@ -15,6 +16,8 @@ export interface EditableDateCellProps {
   gapText?: string;
   gapIsNegative?: boolean;
   gapIsWarning?: boolean;
+  gapTooltip?: string;
+  gapType?: 'fixed' | 'variable';
   isSourceLocked?: boolean;
 }
 
@@ -31,6 +34,8 @@ const EditableDateCell: React.FC<EditableDateCellProps> = ({
   gapText,
   gapIsNegative,
   gapIsWarning,
+  gapTooltip,
+  gapType,
   isSourceLocked,
 }) => {
   const [isEditing, setIsEditing] = useState(false);
@@ -96,6 +101,34 @@ const EditableDateCell: React.FC<EditableDateCellProps> = ({
   const gapWidth = 'w-11';
   const iconWidth = 'w-5';
 
+  const gapColorClass = gapIsNegative
+    ? 'text-red-600 dark:text-red-400 font-semibold'
+    : gapIsWarning
+      ? 'text-amber-600 dark:text-amber-400 font-medium'
+      : gapType === 'variable'
+        ? 'text-blue-500 dark:text-blue-400'
+        : 'text-slate-400 dark:text-slate-400';
+
+  const renderGap = () => {
+    if (!gapText) return <span className={gapWidth}></span>;
+    const span = (
+      <span className={`text-xs ${gapWidth} text-right ${gapColorClass}`}>
+        {gapText}
+      </span>
+    );
+    if (gapTooltip) {
+      return (
+        <Tooltip text={gapTooltip} position="top">
+          <span className="inline-flex items-center gap-0.5">
+            {span}
+            <span className="hidden md:inline text-slate-400 dark:text-slate-500 text-[10px]">ⓘ</span>
+          </span>
+        </Tooltip>
+      );
+    }
+    return span;
+  };
+
   // Not editable (Fusaka or N/A)
   if (!isEditable) {
     if (!calculatedDate) {
@@ -111,9 +144,7 @@ const EditableDateCell: React.FC<EditableDateCellProps> = ({
         <div className={`text-slate-700 dark:text-slate-300 text-sm ${dateWidth}`}>
           {displayDate}
         </div>
-        <span className={`text-xs ${gapWidth} text-right ${gapIsNegative ? 'text-red-600 dark:text-red-400 font-semibold' : gapIsWarning ? 'text-amber-600 dark:text-amber-400 font-medium' : 'text-slate-400 dark:text-slate-400'}`}>
-          {gapText || ''}
-        </span>
+        {renderGap()}
         <span className={iconWidth}></span>
       </div>
     );
@@ -129,9 +160,7 @@ const EditableDateCell: React.FC<EditableDateCellProps> = ({
         <div className={`text-slate-700 dark:text-slate-300 text-sm ${dateWidth}`}>
           {displayDate}
         </div>
-        <span className={`text-xs ${gapWidth} text-right ${gapIsNegative ? 'text-red-600 dark:text-red-400 font-semibold' : gapIsWarning ? 'text-amber-600 dark:text-amber-400 font-medium' : 'text-slate-400 dark:text-slate-400'}`}>
-          {gapText || ''}
-        </span>
+        {renderGap()}
         <span className={iconWidth}></span>
       </div>
     );
@@ -141,15 +170,21 @@ const EditableDateCell: React.FC<EditableDateCellProps> = ({
   if (isSourceLocked) {
     return (
       <div className="flex items-center gap-1 group">
-        <div className={`inline-flex items-center justify-center w-4 py-0.5 rounded text-xs font-medium ${isOverdue ? 'bg-red-100 text-red-800 dark:bg-red-900/20 dark:text-red-300' : 'bg-slate-100 text-slate-600 dark:bg-slate-700 dark:text-slate-300'}`}>
-          {isOverdue ? '!' : '○'}
-        </div>
-        <div className={`text-sm ${dateWidth} ${isOverdue ? 'text-red-600 dark:text-red-400 font-semibold' : 'text-slate-700 dark:text-slate-300'}`}>
+        {isOverdue ? (
+          <Tooltip text="This date is in the past" position="top">
+            <div className="inline-flex items-center justify-center w-4 py-0.5 rounded text-xs font-medium bg-amber-100 text-amber-700 dark:bg-amber-900/20 dark:text-amber-400">
+              ⚠
+            </div>
+          </Tooltip>
+        ) : (
+          <div className="inline-flex items-center justify-center w-4 py-0.5 rounded text-xs font-medium bg-slate-100 text-slate-600 dark:bg-slate-700 dark:text-slate-300">
+            ○
+          </div>
+        )}
+        <div className={`text-sm ${dateWidth} ${isOverdue ? 'text-amber-700 dark:text-amber-400 font-medium' : 'text-slate-700 dark:text-slate-300'}`}>
           {displayDate}
         </div>
-        <span className={`text-xs ${gapWidth} text-right ${gapIsNegative ? 'text-red-600 dark:text-red-400 font-semibold' : gapIsWarning ? 'text-amber-600 dark:text-amber-400 font-medium' : 'text-slate-400 dark:text-slate-400'}`}>
-          {gapText || ''}
-        </span>
+        {renderGap()}
         <span className={`${iconWidth} text-xs text-purple-500 text-center`} title="Date from meta thread">
           🔒
         </span>
@@ -183,19 +218,25 @@ const EditableDateCell: React.FC<EditableDateCellProps> = ({
   // Display mode (editable)
   return (
     <div className="flex items-center gap-1 group">
-      <div className={`inline-flex items-center justify-center w-4 py-0.5 rounded text-xs font-medium ${isOverdue ? 'bg-red-100 text-red-800 dark:bg-red-900/20 dark:text-red-300' : 'bg-slate-100 text-slate-600 dark:bg-slate-700 dark:text-slate-300'}`}>
-        {isOverdue ? '!' : '○'}
-      </div>
+      {isOverdue ? (
+        <Tooltip text="This date is in the past" position="top">
+          <div className="inline-flex items-center justify-center w-4 py-0.5 rounded text-xs font-medium bg-amber-100 text-amber-700 dark:bg-amber-900/20 dark:text-amber-400">
+            ⚠
+          </div>
+        </Tooltip>
+      ) : (
+        <div className="inline-flex items-center justify-center w-4 py-0.5 rounded text-xs font-medium bg-slate-100 text-slate-600 dark:bg-slate-700 dark:text-slate-300">
+          ○
+        </div>
+      )}
       <div
-        className={`text-sm ${dateWidth} cursor-pointer ${isOverdue ? 'text-red-600 dark:text-red-400 font-semibold hover:text-red-700 dark:hover:text-red-300' : 'text-slate-700 dark:text-slate-300 hover:text-purple-600 dark:hover:text-purple-400'}`}
+        className={`text-sm ${dateWidth} cursor-pointer ${isOverdue ? 'text-amber-700 dark:text-amber-400 font-medium hover:text-amber-800 dark:hover:text-amber-300' : 'text-slate-700 dark:text-slate-300 hover:text-purple-600 dark:hover:text-purple-400'}`}
         onClick={handleStartEdit}
         title={isOverdue ? 'Overdue - click to edit' : 'Click to edit'}
       >
         {displayDate}
       </div>
-      <span className={`text-xs ${gapWidth} text-right ${gapIsNegative ? 'text-red-600 dark:text-red-400 font-semibold' : gapIsWarning ? 'text-amber-600 dark:text-amber-400 font-medium' : 'text-slate-400 dark:text-slate-400'}`}>
-        {gapText || ''}
-      </span>
+      {renderGap()}
       <button
         onClick={handleToggleLock}
         className={`${iconWidth} text-xs text-center transition-opacity ${isLocked ? 'text-amber-500' : 'opacity-0 group-hover:opacity-100 text-slate-400 hover:text-slate-600 dark:hover:text-slate-300'}`}

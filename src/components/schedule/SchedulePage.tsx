@@ -1,12 +1,10 @@
-import React, { useState, useMemo, useEffect } from 'react';
+import React, { useState, useMemo } from 'react';
 import { FUSAKA_PROGRESS, GLAMSTERDAM_PROGRESS, HEGOTA_PROGRESS, UPGRADE_PROCESS_PHASES } from '../../constants/timeline-phases';
 import { useMetaTags } from '../../hooks/useMetaTags';
 import { generateForkProgress, parseLocalDate, parseShortDate, daysBetween, DEFAULT_PHASE_DURATIONS, PhaseDurations } from './forkDateCalculator';
 import ForkGanttChart from './ForkGanttChart';
 import EditableDateCell from './EditableDateCell';
-
-const STORAGE_KEY = 'forkcast-planning-table';
-const MOBILE_NOTICE_KEY = 'forkcast-mobile-notice-dismissed';
+import { Tooltip } from '../ui';
 
 type MobileFork = 'fusaka' | 'glamsterdam' | 'hegota';
 
@@ -20,30 +18,12 @@ interface PlanningTableState {
 }
 
 const DEFAULT_STATE: PlanningTableState = {
-  glamsterdamMainnetDate: '2026-08-26',
+  glamsterdamMainnetDate: '2026-09-02',
   hegotaMainnetDate: '2027-03-01',
   glamsterdamDevnetCount: 7,
   hegotaDevnetCount: 5,
   lockedDates: {},
   phaseDurations: DEFAULT_PHASE_DURATIONS,
-};
-
-const loadFromStorage = (): PlanningTableState => {
-  try {
-    const stored = localStorage.getItem(STORAGE_KEY);
-    if (stored) {
-      const parsed = JSON.parse(stored);
-      // Ensure phaseDurations has all keys (in case new ones are added)
-      return {
-        ...DEFAULT_STATE,
-        ...parsed,
-        phaseDurations: { ...DEFAULT_PHASE_DURATIONS, ...parsed.phaseDurations },
-      };
-    }
-  } catch (e) {
-    console.warn('Failed to load planning table state from localStorage:', e);
-  }
-  return DEFAULT_STATE;
 };
 
 // Human-readable labels for duration settings
@@ -60,47 +40,15 @@ const DURATION_LABELS: Record<keyof PhaseDurations, { label: string; description
 };
 
 const SchedulePage: React.FC = () => {
-  const [glamsterdamMainnetDate, setGlamsterdamMainnetDate] = useState<string>(() => loadFromStorage().glamsterdamMainnetDate);
-  const [hegotaMainnetDate, setHegotaMainnetDate] = useState<string>(() => loadFromStorage().hegotaMainnetDate);
-  const [glamsterdamDevnetCount, setGlamsterdamDevnetCount] = useState<number>(() => loadFromStorage().glamsterdamDevnetCount);
-  const [hegotaDevnetCount, setHegotaDevnetCount] = useState<number>(() => loadFromStorage().hegotaDevnetCount);
-  const [lockedDates, setLockedDates] = useState<Record<string, string>>(() => loadFromStorage().lockedDates);
-  const [phaseDurations, setPhaseDurations] = useState<PhaseDurations>(() => loadFromStorage().phaseDurations);
+  const [glamsterdamMainnetDate, setGlamsterdamMainnetDate] = useState<string>(DEFAULT_STATE.glamsterdamMainnetDate);
+  const [hegotaMainnetDate, setHegotaMainnetDate] = useState<string>(DEFAULT_STATE.hegotaMainnetDate);
+  const [glamsterdamDevnetCount, setGlamsterdamDevnetCount] = useState<number>(DEFAULT_STATE.glamsterdamDevnetCount);
+  const [hegotaDevnetCount, setHegotaDevnetCount] = useState<number>(DEFAULT_STATE.hegotaDevnetCount);
+  const [lockedDates, setLockedDates] = useState<Record<string, string>>(DEFAULT_STATE.lockedDates);
+  const [phaseDurations, setPhaseDurations] = useState<PhaseDurations>(DEFAULT_STATE.phaseDurations);
   const [showSettings, setShowSettings] = useState(false);
   const [mobileFork, setMobileFork] = useState<MobileFork>('glamsterdam');
-  const [mobileNoticeDismissed, setMobileNoticeDismissed] = useState(() => {
-    try {
-      return localStorage.getItem(MOBILE_NOTICE_KEY) === 'true';
-    } catch {
-      return false;
-    }
-  });
-
-  const dismissMobileNotice = () => {
-    setMobileNoticeDismissed(true);
-    try {
-      localStorage.setItem(MOBILE_NOTICE_KEY, 'true');
-    } catch {
-      // Ignore localStorage errors
-    }
-  };
-
-  // Persist state to localStorage
-  useEffect(() => {
-    const state: PlanningTableState = {
-      glamsterdamMainnetDate,
-      hegotaMainnetDate,
-      glamsterdamDevnetCount,
-      hegotaDevnetCount,
-      lockedDates,
-      phaseDurations,
-    };
-    try {
-      localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
-    } catch (e) {
-      console.warn('Failed to save planning table state to localStorage:', e);
-    }
-  }, [glamsterdamMainnetDate, hegotaMainnetDate, glamsterdamDevnetCount, hegotaDevnetCount, lockedDates, phaseDurations]);
+  const [mobileNoticeDismissed, setMobileNoticeDismissed] = useState(false);
 
   // Reset to defaults
   const resetPlanningTable = () => {
@@ -110,7 +58,6 @@ const SchedulePage: React.FC = () => {
     setHegotaDevnetCount(DEFAULT_STATE.hegotaDevnetCount);
     setLockedDates(DEFAULT_STATE.lockedDates);
     setPhaseDurations(DEFAULT_STATE.phaseDurations);
-    localStorage.removeItem(STORAGE_KEY);
   };
 
   // Update a single duration value
@@ -332,7 +279,7 @@ const SchedulePage: React.FC = () => {
             Internal planning tool for ACD facilitators, client teams, and testers. Dates shown are hypothetical projections, not commitments.
           </p>
           <p className="mt-1 text-xs text-slate-500 dark:text-slate-400">
-            Edit and lock dates to explore planning scenarios. Changes are saved automatically to your browser.
+            Edit and lock dates to explore planning scenarios.
           </p>
         </div>
 
@@ -345,7 +292,7 @@ const SchedulePage: React.FC = () => {
               </p>
             </div>
             <button
-              onClick={dismissMobileNotice}
+              onClick={() => setMobileNoticeDismissed(true)}
               className="text-amber-600 dark:text-amber-400 hover:text-amber-800 dark:hover:text-amber-200 text-lg leading-none"
               aria-label="Dismiss notice"
             >
@@ -384,20 +331,20 @@ const SchedulePage: React.FC = () => {
           };
 
           // Helper to calculate and format gap
-          const calculateGap = (dateString: string | undefined, forkKey: 'fusaka' | 'glamsterdam' | 'hegota'): { text: string; isNegative: boolean } => {
-            if (!dateString) return { text: '', isNegative: false };
+          const calculateGap = (dateString: string | undefined, forkKey: 'fusaka' | 'glamsterdam' | 'hegota'): { text: string; isNegative: boolean; days: number | null } => {
+            if (!dateString) return { text: '', isNegative: false, days: null };
             const currentDate = parseShortDate(dateString);
-            if (!currentDate) return { text: '', isNegative: false };
+            if (!currentDate) return { text: '', isNegative: false, days: null };
 
             const prevDate = previousDates[forkKey];
             if (prevDate) {
               const gap = daysBetween(prevDate, currentDate);
               previousDates[forkKey] = currentDate;
               const isNegative = gap < 0;
-              return { text: ` (${gap >= 0 ? '+' : ''}${gap}d)`, isNegative };
+              return { text: ` (${gap >= 0 ? '+' : ''}${gap}d)`, isNegative, days: gap };
             } else {
               previousDates[forkKey] = currentDate;
-              return { text: '', isNegative: false };
+              return { text: '', isNegative: false, days: null };
             }
           };
 
@@ -442,7 +389,7 @@ const SchedulePage: React.FC = () => {
                     <div>
                       <h2 className="text-lg font-semibold text-slate-900 dark:text-slate-100 mb-2">Fork Timeline Planning</h2>
                       <p className="text-sm text-slate-600 dark:text-slate-300">
-                        See the cascading impacts of scheduling decisions. Click dates to adjust. Changes are saved automatically.
+                        See the cascading impacts of scheduling decisions. Click dates to adjust.
                       </p>
                     </div>
                     <div className="flex items-center gap-2">
@@ -604,7 +551,9 @@ const SchedulePage: React.FC = () => {
                                 </div>
                               )}
                               {phase.id === 'development' && (
-                                <span className="text-slate-500 dark:text-slate-400 text-sm">6 devnets</span>
+                                <Tooltip text="The number of devnets varies per fork and depends on the complexity of the features being implemented">
+                                  <span className="text-slate-500 dark:text-slate-400 text-sm inline-flex items-center gap-0.5">6 devnets <span className="hidden md:inline text-slate-400 dark:text-slate-500 text-[10px]">ⓘ</span></span>
+                                </Tooltip>
                               )}
                             </td>
                             <td className={`px-3 py-1.5 ${mobileFork === 'glamsterdam' ? '' : 'hidden'} md:table-cell`}>
@@ -624,7 +573,9 @@ const SchedulePage: React.FC = () => {
                               )}
                               {phase.id === 'development' && (
                                 <div className="flex items-center gap-2">
-                                  <span className="text-slate-500 dark:text-slate-400 text-sm">{glamsterdamDevnetCount} devnets</span>
+                                  <Tooltip text="The number of devnets varies per fork and depends on the complexity of the features being implemented">
+                                    <span className="text-slate-500 dark:text-slate-400 text-sm inline-flex items-center gap-0.5">{glamsterdamDevnetCount} devnets <span className="hidden md:inline text-slate-400 dark:text-slate-500 text-[10px]">ⓘ</span></span>
+                                  </Tooltip>
                                   <div className="flex items-center">
                                     <button
                                       onClick={() => setGlamsterdamDevnetCount(Math.max(1, glamsterdamDevnetCount - 1))}
@@ -661,7 +612,9 @@ const SchedulePage: React.FC = () => {
                               )}
                               {phase.id === 'development' && (
                                 <div className="flex items-center gap-2">
-                                  <span className="text-slate-500 dark:text-slate-400 text-sm">{hegotaDevnetCount} devnets</span>
+                                  <Tooltip text="The number of devnets varies per fork and depends on the complexity of the features being implemented">
+                                    <span className="text-slate-500 dark:text-slate-400 text-sm inline-flex items-center gap-0.5">{hegotaDevnetCount} devnets <span className="hidden md:inline text-slate-400 dark:text-slate-500 text-[10px]">ⓘ</span></span>
+                                  </Tooltip>
                                   <div className="flex items-center">
                                     <button
                                       onClick={() => setHegotaDevnetCount(Math.max(1, hegotaDevnetCount - 1))}
@@ -744,6 +697,7 @@ const SchedulePage: React.FC = () => {
                                   onUnlock={unlockDate}
                                   gapText={fusakaGap.text}
                                   gapIsNegative={fusakaGap.isNegative}
+                                  gapType="variable"
                                 />
                               </td>
                               <td className={`px-3 py-1.5 ${mobileFork === 'glamsterdam' ? '' : 'hidden'} md:table-cell`}>
@@ -761,6 +715,7 @@ const SchedulePage: React.FC = () => {
                                     gapText={glamsterdamDuration ? `(${glamsterdamDuration.days >= 0 ? '+' : ''}${glamsterdamDuration.days}d)` : glamsterdamGap.text}
                                     gapIsNegative={glamsterdamDuration ? glamsterdamDuration.days < 0 : glamsterdamGap.isNegative}
                                     gapIsWarning={glamsterdamDuration?.isUnderExpected && glamsterdamDuration.days >= 0}
+                                    gapType="variable"
                                   />
                                 ) : null}
                               </td>
@@ -779,6 +734,7 @@ const SchedulePage: React.FC = () => {
                                     gapText={hegotaDuration ? `(${hegotaDuration.days >= 0 ? '+' : ''}${hegotaDuration.days}d)` : hegotaGap.text}
                                     gapIsNegative={hegotaDuration ? hegotaDuration.days < 0 : hegotaGap.isNegative}
                                     gapIsWarning={hegotaDuration?.isUnderExpected && hegotaDuration.days >= 0}
+                                    gapType="variable"
                                     isSourceLocked={phase.id === 'headliner-selection' && (substep.name === 'Proposal Deadline' || substep.name === 'Selection Date')}
                                   />
                                 ) : null}
@@ -821,6 +777,7 @@ const SchedulePage: React.FC = () => {
                                           onUnlock={unlockDate}
                                           gapText={fusakaDevnetGap.text}
                                           gapIsNegative={fusakaDevnetGap.isNegative}
+                                          gapType="variable"
                                         />
                                       );
                                     })() : (
@@ -845,6 +802,7 @@ const SchedulePage: React.FC = () => {
                                           onUnlock={unlockDate}
                                           gapText={glamDevnetGap.text}
                                           gapIsNegative={glamDevnetGap.isNegative}
+                                          gapType="variable"
                                         />
                                       );
                                     })() : (
@@ -869,6 +827,7 @@ const SchedulePage: React.FC = () => {
                                           onUnlock={unlockDate}
                                           gapText={hegotaDevnetGap.text}
                                           gapIsNegative={hegotaDevnetGap.isNegative}
+                                          gapType="variable"
                                         />
                                       );
                                     })() : (
@@ -899,6 +858,14 @@ const SchedulePage: React.FC = () => {
                       const glamsterdamTestnetPhase = dynamicGlamsterdamProjection.phases.find(p => p.phaseId === 'public-testnets');
                       const hegotaTestnetPhase = dynamicHegotaProjection.phases.find(p => p.phaseId === 'public-testnets');
 
+                      const testnetGapTooltip: Record<string, string> = {
+                        'Sepolia': '30 days is needed before the first testnet for a comprehensive security review of the code',
+                        'Hoodi': 'A minimum of 14 days is needed between testnets to ensure the first testnet upgrade went smoothly',
+                      };
+                      const currentGapTooltip = testnetGapTooltip[testnet.name];
+                      const testnetMinGap: Record<string, number> = { 'Sepolia': 30, 'Hoodi': 14 };
+                      const minGap = testnetMinGap[testnet.name];
+
                       return (
                         <tr key={`testnet-${idx}`} className="hover:bg-slate-50 dark:hover:bg-slate-700/30 bg-slate-50/50 dark:bg-slate-800/50">
                           <td className="sticky left-0 bg-slate-50/50 dark:bg-slate-800/50 px-3 py-1.5 text-slate-700 dark:text-slate-300 border-r border-slate-200 dark:border-slate-600 pl-8 text-sm">
@@ -921,6 +888,7 @@ const SchedulePage: React.FC = () => {
                                   onUnlock={unlockDate}
                                   gapText={fusakaTestnetGap.text}
                                   gapIsNegative={fusakaTestnetGap.isNegative}
+                                  gapType="fixed"
                                 />
                               );
                             })()}
@@ -947,6 +915,9 @@ const SchedulePage: React.FC = () => {
                                     onUnlock={unlockDate}
                                     gapText={glamTestnetGap.text}
                                     gapIsNegative={glamTestnetGap.isNegative}
+                                    gapIsWarning={minGap != null && glamTestnetGap.days != null && glamTestnetGap.days < minGap}
+                                    gapTooltip={currentGapTooltip}
+                                    gapType="fixed"
                                   />
                                 );
                               })()
@@ -974,6 +945,9 @@ const SchedulePage: React.FC = () => {
                                     onUnlock={unlockDate}
                                     gapText={hegotaTestnetGap.text}
                                     gapIsNegative={hegotaTestnetGap.isNegative}
+                                    gapIsWarning={minGap != null && hegotaTestnetGap.days != null && hegotaTestnetGap.days < minGap}
+                                    gapTooltip={currentGapTooltip}
+                                    gapType="fixed"
                                   />
                                 );
                               })()
@@ -992,9 +966,14 @@ const SchedulePage: React.FC = () => {
                           {(() => {
                             const gap = calculateGap('Dec 3, 2025', 'fusaka');
                             return gap.text && (
-                              <span className={`text-xs ${gap.isNegative ? 'text-red-600 dark:text-red-400 font-semibold' : 'text-slate-400 dark:text-slate-400'}`}>
-                                {gap.text}
-                              </span>
+                              <Tooltip text="30 days is required to allow ecosystem participants like L2s and DAOs to prepare for the upgrade" position="top">
+                                <span className="inline-flex items-center gap-0.5">
+                                  <span className={`text-xs ${gap.isNegative ? 'text-red-600 dark:text-red-400 font-semibold' : 'text-slate-400 dark:text-slate-400'}`}>
+                                    {gap.text}
+                                  </span>
+                                  <span className="hidden md:inline text-slate-400 dark:text-slate-500 text-[10px]">ⓘ</span>
+                                </span>
+                              </Tooltip>
                             );
                           })()}
                           <span className="text-xs text-purple-600 dark:text-purple-400 font-medium">
@@ -1016,9 +995,14 @@ const SchedulePage: React.FC = () => {
                             const dateStr = glamDate.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
                             const gap = calculateGap(dateStr, 'glamsterdam');
                             return gap.text && (
-                              <span className={`text-xs ${gap.isNegative ? 'text-red-600 dark:text-red-400 font-semibold' : 'text-slate-400 dark:text-slate-400'}`}>
-                                {gap.text}
-                              </span>
+                              <Tooltip text="30 days is required to allow ecosystem participants like L2s and DAOs to prepare for the upgrade" position="top">
+                                <span className="inline-flex items-center gap-0.5">
+                                  <span className={`text-xs ${gap.isNegative ? 'text-red-600 dark:text-red-400 font-semibold' : 'text-slate-400 dark:text-slate-400'}`}>
+                                    {gap.text}
+                                  </span>
+                                  <span className="hidden md:inline text-slate-400 dark:text-slate-500 text-[10px]">ⓘ</span>
+                                </span>
+                              </Tooltip>
                             );
                           })()}
                           <span className="text-xs text-purple-600 dark:text-purple-400 font-medium">
@@ -1040,9 +1024,14 @@ const SchedulePage: React.FC = () => {
                             const dateStr = hegotaDate.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
                             const gap = calculateGap(dateStr, 'hegota');
                             return gap.text && (
-                              <span className={`text-xs ${gap.isNegative ? 'text-red-600 dark:text-red-400 font-semibold' : 'text-slate-400 dark:text-slate-400'}`}>
-                                {gap.text}
-                              </span>
+                              <Tooltip text="30 days is required to allow ecosystem participants like L2s and DAOs to prepare for the upgrade" position="top">
+                                <span className="inline-flex items-center gap-0.5">
+                                  <span className={`text-xs ${gap.isNegative ? 'text-red-600 dark:text-red-400 font-semibold' : 'text-slate-400 dark:text-slate-400'}`}>
+                                    {gap.text}
+                                  </span>
+                                  <span className="hidden md:inline text-slate-400 dark:text-slate-500 text-[10px]">ⓘ</span>
+                                </span>
+                              </Tooltip>
                             );
                           })()}
                           <span className="text-xs text-purple-600 dark:text-purple-400 font-medium">

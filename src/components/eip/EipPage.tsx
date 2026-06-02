@@ -304,8 +304,9 @@ export const EipPage: React.FC = () => {
   const tabParam = searchParams.get('tab') as ViewMode | null;
   const hasHash = typeof window !== 'undefined' && window.location.hash.length > 1;
   const hasQParam = searchParams.has('q');
+  const hasFaqQuestionParam = tabParam === 'faq' && hasQParam && hasFaq;
   const isValidTab = tabParam && validTabs.includes(tabParam) && (tabParam !== 'dependents' || hasDependents) && (tabParam !== 'faq' || hasFaq);
-  const viewMode: ViewMode = (hasQParam && hasFaq) ? 'faq' : isValidTab ? tabParam : hasHash ? 'spec' : defaultTab;
+  const viewMode: ViewMode = hasFaqQuestionParam ? 'faq' : isValidTab ? tabParam : hasHash ? 'spec' : defaultTab;
 
   const setViewMode = (mode: ViewMode) => {
     const next = new URLSearchParams(searchParams);
@@ -313,6 +314,9 @@ export const EipPage: React.FC = () => {
       next.delete('tab');
     } else {
       next.set('tab', mode);
+    }
+    if (mode !== 'faq') {
+      next.delete('q');
     }
     setSearchParams(next, { replace: true });
   };
@@ -342,7 +346,7 @@ export const EipPage: React.FC = () => {
 
   // Scroll tab bar into view when deep-linking to a FAQ question
   useEffect(() => {
-    if (hasQParam && hasFaq && tabBarRef.current) {
+    if (hasFaqQuestionParam && tabBarRef.current) {
       requestAnimationFrame(() => {
         tabBarRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' });
       });

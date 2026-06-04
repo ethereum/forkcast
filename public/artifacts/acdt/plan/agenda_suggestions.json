@@ -1,61 +1,61 @@
 {
   "series": "ACDT",
-  "generated": "2026-05-28",
-  "for_call": "ACDT #81",
+  "generated": "2026-06-04",
+  "for_call": "ACDT #82",
   "suggestions": [
     {
-      "topic": "REST-SSZ Engine API decision: PR #764 vs #793",
+      "topic": "bal-devnet-8 vs glamsterdam-devnet-6 decision",
       "priority": "high",
-      "rationale": "Deferred from ACDT #80 to ACDE Thursday, but likely needs ACDT follow-up. Nethermind and Erigon already merged #764; this creates implementation divergence risk if decision changes.",
+      "rationale": "Explicitly deferred from ACDT #81 for this week's call. Need to decide next devnet scope and whether to consolidate BAL/Glamsterdam tracks now that benchmarking on bal-devnet-7 is progressing.",
       "related_eips": [],
       "source": "deferred_decision"
     },
     {
-      "topic": "bal-devnet-7 and glamsterdam-devnet-4 status update",
+      "topic": "EIP-7928 state-access decoupling PR review and merge decision",
       "priority": "high",
-      "rationale": "bal-devnet-7 targeted launch May 18-19; glamsterdam-devnet-4 requires separate branches with engine API gas limit changes (PR #796). Need confirmation of launch status, client readiness, and any blockers discovered.",
-      "related_eips": [],
-      "source": "devnet_update"
-    },
-    {
-      "topic": "State access optimization benchmarking results",
-      "priority": "high",
-      "rationale": "ACDT #80 emphasized urgency: batch I/O and state root optimizations are blockers for final repricing numbers. Client teams were asked to report status in BAL Discord. These benchmarks gate EIP-7904 inclusion decision and final EIP-8038/2780 values.",
-      "related_eips": [],
-      "source": "ongoing_discussion"
-    },
-    {
-      "topic": "glamsterdam-devnet-5 scope and timeline",
-      "priority": "medium",
-      "rationale": "EIP-8038, EIP-2780, EIP-8246, and EIP-7954 all target devnet-5 with placeholder numbers. Need to confirm scope, benchmark-dependent final values, and launch timeline. Code size limit (32/48/64KB) requires benchmarking before finalizing.",
-      "related_eips": [],
-      "source": "ongoing_discussion"
-    },
-    {
-      "topic": "EIP-7904 (compute repricing) inclusion decision",
-      "priority": "medium",
-      "rationale": "ACDT #80 noted most clients exceed 100M gas/s post-BAL optimizations, making EIP-7904 tentatively unnecessary. However, decision is gated on completing benchmarks. Need formal go/no-go based on latest data.",
-      "related_eips": [],
-      "source": "ongoing_discussion"
-    },
-    {
-      "topic": "ePBS range sync security analysis",
-      "priority": "medium",
-      "rationale": "Open since ACDT #77 with action items in #78 and #79. Proposal allows CL sync without payload envelopes, creating security implications for EL validation. Writeup and formal EL team review still pending.",
+      "rationale": "Action item from ACDT #81 for EL teams to review before ACDE Thursday. This 100 gas pre-charge / 2500 post-charge split requires implementation changes across most clients and affects glamsterdam-devnet-6 scope.",
       "related_eips": [],
       "source": "open_action_item"
     },
     {
-      "topic": "glamsterdam-devnet-3 sync issues resolution",
-      "priority": "low",
-      "rationale": "ACDT #79 reported Lighthouse sync issues, Teku envelope problems, and peer downscoring preventing recovery. May have required devnet-4. Need status update on whether issues were resolved or devnet was abandoned.",
+      "topic": "glamsterdam-devnet-6 EL scope finalization",
+      "priority": "high",
+      "rationale": "ACDT #81 deferred all EL changes (EIP-8246, EIP-2780, EIP-8038, EIP-7954, EIP-7997) to devnet-6. Need to confirm priority order (benchmarking > 8246 > 7997) and readiness timeline, especially given bal-devnet-7 benchmarking is still ongoing.",
+      "related_eips": [],
+      "source": "deferred_decision"
+    },
+    {
+      "topic": "glamsterdam-devnet-5 status and lessons learned",
+      "priority": "medium",
+      "rationale": "CL-only devnet-5 was targeting launch as early as June 2. Need status update on stability, EIP-8045 implementation, and whether any issues emerged that affect devnet-6 planning.",
       "related_eips": [],
       "source": "devnet_update"
     },
     {
-      "topic": "Builder deposit spam mitigation approach",
+      "topic": "EIP-8037 auth refund expansion PR and EIP-2780 simplification PR decisions",
+      "priority": "medium",
+      "rationale": "ACDT #81 noted two open spec PRs: 5-rule auth refund scheme for EIP-8037 and removal of self-transfer/precompile carve-outs for EIP-2780. Both pending benchmark results but affect glamsterdam-devnet-6 scope.",
+      "related_eips": [],
+      "source": "ongoing_discussion"
+    },
+    {
+      "topic": "REST-SSZ Engine API decision outcome (PR #764 vs #793)",
+      "priority": "medium",
+      "rationale": "Deferred from ACDT #80 to ACDE Thursday (May 22). No subsequent ACDT mentions the outcome. If ACDE decided, confirm which approach was chosen and impact on glamsterdam devnet implementation.",
+      "related_eips": [],
+      "source": "deferred_decision"
+    },
+    {
+      "topic": "bal-devnet-7 benchmarking completion timeline",
+      "priority": "medium",
+      "rationale": "ACDT #81 identified benchmarking/optimizations as top EL priority and blocker for final gas cost numbers. Need update on progress and estimated completion to unblock EIP-8038 final values for devnet-6.",
+      "related_eips": [],
+      "source": "ongoing_discussion"
+    },
+    {
+      "topic": "EIP-7954 contract code size limit benchmarking results",
       "priority": "low",
-      "rationale": "ACDT #79 discussed PR 5223 (8192 epoch delay) with cost analysis showing $250k attack cost considered low. Alternative EVM signature verification proposed. Justin Traglia tasked with presenting benchmarks at ACDC, but no resolution in ACDT series yet.",
+      "rationale": "Deferred from ACDT #80 for glamsterdam-devnet-5, then pushed to devnet-6 in ACDT #81. Need benchmark results comparing 32KB/48KB/64KB before finalizing spec for devnet-6.",
       "related_eips": [],
       "source": "deferred_decision"
     }

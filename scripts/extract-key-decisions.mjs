@@ -51,7 +51,8 @@ You receive the full TLDR (highlights, action items, decisions, targets). Classi
 - Multiple EIPs with the SAME action → one entry, all EIP numbers in \`eips\` array.
 - DIFFERENT actions in one decision string → separate entries per action.
 - Extract EIP numbers as integers from "EIP-1234", "EIP1234", or contextual references. Resolve well-known proposal names to their EIP numbers (e.g., BAL = 7928, FOCIL = 7805, ePBS = 7732, PeerDAS = 7594). Resolve ETH/XX aliases using the "Known Aliases" section if provided.
-- \`original_text\` and \`timestamp\` must be copied verbatim from input.
+- \`timestamp\` must be copied verbatim from input.
+- \`original_text\`: if the entry maps 1:1 to a single input decision, copy it verbatim. If you split one input decision into multiple entries, write a concise summary for each entry covering only that entry's action (e.g., "EIP-7610 deferred from glamsterdam-devnet-6" rather than repeating the full original string).
 - If no EIP numbers can be identified, set \`eips\` to \`[]\`.
 - Rejecting a technical change *to* an EIP (not the EIP itself) → \`other\`.
 - If the original text includes a brief reason or qualifier beyond the core action (e.g., "DFI'd but clients standardize independently"), extract it into \`context\` as a short phrase (e.g., "clients to standardize independently"). \`context\` must not duplicate information already captured in other fields — no fork names (use \`fork\`), no EIP numbers (use \`eips\`), no stage names (use \`stage_change\`). Omit \`context\` when there's nothing beyond the base action.

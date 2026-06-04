@@ -279,8 +279,20 @@ function generateProtocolCallsJson(callsBySeries) {
   console.log(`\nGenerated ${GENERATED_JSON_PATH}: ${existing.length} total calls (${added} new).`);
 }
 
+function parseForceCall(args) {
+  const idx = args.indexOf('--force-call');
+  if (idx === -1 || idx + 1 >= args.length) return null;
+  const val = args[idx + 1];
+  const [type, number] = val.split('/');
+  if (!type || !number) {
+    console.error(`Invalid --force-call value "${val}". Expected format: type/number (e.g., acde/238)`);
+    process.exit(1);
+  }
+  return { type, number };
+}
+
 async function main() {
-  const force = process.argv.includes('--force');
+  const forceCall = parseForceCall(process.argv);
 
   const manifest = await fetchManifest();
   const callsBySeries = normalizeManifest(manifest);
@@ -304,9 +316,11 @@ async function main() {
         continue;
       }
 
+      const callNumber = callId.substring(callId.lastIndexOf('_') + 1);
+      const force = forceCall && forceCall.type === localType && forceCall.number === callNumber;
+
       if (await syncCall(series, localType, callId, callData, force)) {
-        const number = callId.substring(callId.lastIndexOf('_') + 1);
-        syncedPaths.push(`${localType}/${number}`);
+        syncedPaths.push(`${localType}/${callNumber}`);
         console.log(`  Synced ${callId}`);
       }
     }

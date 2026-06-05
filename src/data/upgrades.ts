@@ -191,7 +191,7 @@ export const networkUpgrades: NetworkUpgrade[] = [
     description: 'Future network upgrade currently in early planning stages. Named after the combination of "Heze" (consensus layer upgrade, named after a star) and "Bogotá" (execution layer upgrade, named after a Devcon location).',
     tagline: 'Headliner selection concluded: FOCIL SFI\'d, Frame Tx CFI\'d',
     status: 'Planning',
-    activationDate: 'TBD',
+    activationDate: '2027',
     disabled: false,
     macroPhaseOverride: 'scoping',
     metaEipLink: 'https://ethereum-magicians.org/t/eip-8081-hegota-network-upgrade-meta-thread/26876'

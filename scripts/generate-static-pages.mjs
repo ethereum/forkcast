@@ -113,6 +113,11 @@ const upgrades = [
     title: 'Hegotá Upgrade - Forkcast',
     description: 'Post-Glamsterdam network upgrade in early planning.',
   },
+  {
+    path: 'upgrade/hegota/test-complexity',
+    title: 'Hegotá Test Complexity - Forkcast',
+    description: 'Analyze STEEL test complexity assessments for EIPs proposed for Hegotá.',
+  },
 ];
 
 // Get full type name for calls

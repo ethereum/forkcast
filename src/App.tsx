@@ -17,6 +17,8 @@ import StakeholdersTab from './components/glamsterdam/StakeholdersTab';
 import EipCandidatesTab from './components/glamsterdam/EipCandidatesTab';
 import ClientPriorityTab from './components/glamsterdam/ClientPriorityTab';
 import TestComplexityTab from './components/glamsterdam/TestComplexityTab';
+import HegotaUpgradePage from './components/HegotaUpgradePage';
+import HegotaOverviewTab from './components/hegota/OverviewTab';
 import DevnetSpecPage from './components/DevnetSpecPage';
 import DecisionsPage from './components/DecisionsPage';
 import { getUpgradeById } from './data/upgrades';
@@ -124,7 +126,7 @@ function CallRouteLayout() {
 
 function App() {
   const fusakaUpgrade = getUpgradeById('fusaka')!;
-  const hegotaUpgrade = getUpgradeById('hegota')!;
+
   const pectraUpgrade = getUpgradeById('pectra')!;
 
   return (
@@ -170,16 +172,10 @@ function App() {
               <Route path="client-priority" element={<ClientPriorityTab />} />
               <Route path="test-complexity" element={<TestComplexityTab />} />
             </Route>
-            <Route path="/upgrade/hegota" element={
-              <PublicNetworkUpgradePage
-                forkName="Hegota"
-                displayName={hegotaUpgrade.name}
-                description={hegotaUpgrade.description}
-                status={hegotaUpgrade.status}
-                activationDate={hegotaUpgrade.activationDate}
-                metaEipLink={hegotaUpgrade.metaEipLink}
-              />
-            } />
+            <Route path="/upgrade/hegota" element={<HegotaUpgradePage />}>
+              <Route index element={<HegotaOverviewTab />} />
+              <Route path="test-complexity" element={<TestComplexityTab fork="hegota" />} />
+            </Route>
             <Route path="/rank" element={<RankPage />} />
             <Route path="/calls" element={<CallsIndexPage />} />
             <Route path="/agenda" element={<CallPlanPage />} />

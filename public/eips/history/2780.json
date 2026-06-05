@@ -294,5 +294,31 @@
       "prNumber": 2780,
       "patch": "@@ -0,0 +1,63 @@\n+---\n+eip: 2780\n+title: Reduce intrinsic transaction gas\n+author: Matt Garnett (@lightclient)>\n+discussions-to: https://ethereum-magicians.org/t/eip-2780-reduce-intrinsic-cost-of-transactions/4413\n+status: Draft\n+type: Standards Track\n+category: Core\n+created: 2020-07-11\n+---\n+\n+## Abstract\n+Reduce the intrinsic cost of a transaction to `16,360` gas.\n+\n+## Motivation\n+The current `21,000` gas intrinsic cost of a transaction does not accurately\n+represent the true cost of the transaction.\n+\n+## Specification\n+After `block.number >= FORK_BLOCK`, enforce an intrinsic gas cost of `16,360`.\n+\n+## Rationale\n+\n+The EVM-equivalent of transaction validation would consist mostly of ~110 bytes\n+of data and 2 x `SLOAD (0x54)`, 2 x `SSTORE (0x55)`, and an `ECRECOVER`. This\n+translates to `(16 * 110) + 2 * 800 + 2 * 5,000 (assuming account is\n+initialized) + 3000 = 16,360`. This implies that the current intrinsic cost of\n+a transaction is overpriced by `4,640` gas. Since validation is implemented\n+natively, it's possible that this is a conservative estimate.\n+\n+## Backwards Compatibility\n+TBD\n+\n+## Test Cases\n+TBD\n+\n+## Implementation\n+TBD\n+\n+## Security Considerations\n+\n+#### Increased transactions-per-block\n+Reducing the intrinsic gas of transaction will lead to an increase of\n+transactions per block. This has several consequences:\n+\n+* Historically, periods of high transaction counts has correlated with\n+  higher-than-average uncle blocks being mined. It must be determined that the\n+  new intrinsic cost `16,360` will not adversely affect.\n+\n+* The state size of Ethereum continues to grow at an unsustainable pace.\n+  Increased the transaction throughput will exasperate this problem.\n+\n+#### Storage may be accessed more than once\n+It is difficult to arrive at a fixed-cost for the intrinsic transaction fee,\n+because it's possible for clients to need to revalidate a transaction in its\n+mempool. This can be caused artificially by submitting a chain of transactions\n+and bumping the gas price of the first transaction by minimal step sizes. Since\n+the first transaction is now a \"new\" transaction, the transactions that follow\n+sequentially will need to ensure the account's balance can still afford to\n+transact.\n+\n+## Copyright\n+Copyright and related rights waived via [CC0](https://creativecommons.org/publicdomain/zero/1.0/)."
     }
+  ],
+  "openPrs": [
+    {
+      "number": 11735,
+      "title": "Update EIP-2780: precompile target and account-warming charge changes",
+      "author": "rakita",
+      "updatedAt": "2026-06-02T13:33:31Z",
+      "additions": 26,
+      "deletions": 34
+    },
+    {
+      "number": 11645,
+      "title": "Update EIP-2780: Align with 8037 and 8038",
+      "author": "misilva73",
+      "updatedAt": "2026-05-13T07:27:40Z",
+      "additions": 50,
+      "deletions": 147
+    },
+    {
+      "number": 11377,
+      "title": "Update EIP-2780: fix minor typos and wording",
+      "author": "yyakmv",
+      "updatedAt": "2026-03-04T17:58:17Z",
+      "additions": 20,
+      "deletions": 20
+    }
   ]
 }

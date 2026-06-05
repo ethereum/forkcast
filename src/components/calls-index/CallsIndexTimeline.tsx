@@ -1,4 +1,4 @@
-import { Link } from 'react-router-dom';
+import { Link } from '../../lib/navigation';
 import { callTypeNames, isOneOffCall, type Call, type CallType } from '../../data/calls';
 import { type TimelineEvent } from '../../data/events';
 import {

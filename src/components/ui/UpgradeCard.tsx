@@ -1,5 +1,5 @@
 import React from 'react';
-import { Link } from 'react-router-dom';
+import { Link } from '../../lib/navigation';
 import { NetworkUpgrade } from '../../data/upgrades';
 import { FORK_PROGRESS_MAP } from '../../constants/timeline-phases';
 import { getMacroPhaseForUpgrade, getMacroPhaseSummary } from '../../utils/macroPhase';

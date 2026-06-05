@@ -1,52 +1,70 @@
 import React, { useLayoutEffect, useRef } from 'react';
-import { Link, Outlet, useLocation } from 'react-router-dom';
-import { useMetaTags } from '../hooks/useMetaTags';
+import OverviewTab from './glamsterdam/OverviewTab';
+import StakeholdersTab from './glamsterdam/StakeholdersTab';
+import EipCandidatesTab from './glamsterdam/EipCandidatesTab';
+import ClientPriorityTab from './glamsterdam/ClientPriorityTab';
+import TestComplexityTab from './glamsterdam/TestComplexityTab';
 import { getUpgradeById } from '../data/upgrades';
 import { getUpgradeStatusColor } from '../utils/colors';
-import { isPathActive, normalizePathname } from '../utils/path';
 
 const upgrade = getUpgradeById('glamsterdam')!;
 
+export type GlamsterdamTab =
+  | 'overview'
+  | 'stakeholders'
+  | 'devnet-inclusion'
+  | 'client-priority'
+  | 'test-complexity';
+
 interface TabItem {
+  key: GlamsterdamTab;
   path: string;
   label: string;
 }
 
 const tabs: TabItem[] = [
-  { path: '/upgrade/glamsterdam', label: 'Overview' },
-  { path: '/upgrade/glamsterdam/stakeholders', label: 'Stakeholders' },
-  { path: '/upgrade/glamsterdam/devnet-inclusion', label: 'Devnet Inclusion' },
-  { path: '/upgrade/glamsterdam/client-priority', label: 'Client Priority' },
-  { path: '/upgrade/glamsterdam/test-complexity', label: 'Test Complexity' },
+  { key: 'overview', path: '/upgrade/glamsterdam', label: 'Overview' },
+  { key: 'stakeholders', path: '/upgrade/glamsterdam/stakeholders', label: 'Stakeholders' },
+  { key: 'devnet-inclusion', path: '/upgrade/glamsterdam/devnet-inclusion', label: 'Devnet Inclusion' },
+  { key: 'client-priority', path: '/upgrade/glamsterdam/client-priority', label: 'Client Priority' },
+  { key: 'test-complexity', path: '/upgrade/glamsterdam/test-complexity', label: 'Test Complexity' },
 ];
 
-const isTabActive = (pathname: string, tabPath: string) =>
-  tabPath === '/upgrade/glamsterdam' ? pathname === tabPath : isPathActive(pathname, tabPath);
+function renderTab(tab: GlamsterdamTab) {
+  switch (tab) {
+    case 'overview':
+      return <OverviewTab />;
+    case 'stakeholders':
+      return <StakeholdersTab />;
+    case 'devnet-inclusion':
+      return <EipCandidatesTab />;
+    case 'client-priority':
+      return <ClientPriorityTab />;
+    case 'test-complexity':
+      return <TestComplexityTab />;
+  }
+}
 
-const GlamsterdamUpgradePage: React.FC = () => {
-  const location = useLocation();
-  const pathname = normalizePathname(location.pathname);
+interface GlamsterdamUpgradePageProps {
+  /** Which tab this Astro route renders. Each tab is its own page. */
+  activeTab: GlamsterdamTab;
+}
+
+const GlamsterdamUpgradePage: React.FC<GlamsterdamUpgradePageProps> = ({ activeTab }) => {
   const activeTabRef = useRef<HTMLAnchorElement>(null);
 
-  useMetaTags({
-    title: 'Glamsterdam Upgrade - Forkcast',
-    description: 'Glamsterdam network upgrade: overview, stakeholder impact, EIP candidates, client prioritization, and test complexity.',
-    url: 'https://forkcast.org/upgrade/glamsterdam',
-  });
-
   useLayoutEffect(() => {
-    const activeEl = activeTabRef.current;
-    activeEl?.scrollIntoView({ block: 'nearest', inline: 'center' });
-  }, [pathname]);
+    activeTabRef.current?.scrollIntoView({ block: 'nearest', inline: 'center' });
+  }, []);
 
   return (
     <div className="min-h-screen bg-slate-50 dark:bg-slate-900 text-slate-900 dark:text-slate-100 p-6">
       <div className="max-w-4xl mx-auto">
         {/* Header */}
         <div className="mb-8">
-          <Link to="/upgrades" className="text-slate-600 hover:text-slate-800 dark:text-slate-300 dark:hover:text-slate-100 mb-6 inline-block text-sm font-medium">
+          <a href="/upgrades" className="text-slate-600 hover:text-slate-800 dark:text-slate-300 dark:hover:text-slate-100 mb-6 inline-block text-sm font-medium">
             ← All Network Upgrades
-          </Link>
+          </a>
 
           <div className="pb-0">
             <div className="flex flex-col lg:flex-row lg:items-start lg:justify-between">
@@ -89,11 +107,11 @@ const GlamsterdamUpgradePage: React.FC = () => {
             <div className="overflow-x-auto px-6 pb-3">
               <div className="flex gap-6 border-b border-slate-200 dark:border-slate-700 min-w-max">
                 {tabs.map((tab) => {
-                  const active = isTabActive(pathname, tab.path);
+                  const active = tab.key === activeTab;
                   return (
-                    <Link
-                      key={tab.path}
-                      to={tab.path}
+                    <a
+                      key={tab.key}
+                      href={tab.path}
                       ref={active ? activeTabRef : undefined}
                       className={`pb-2 text-sm font-medium transition-colors border-b-2 -mb-px whitespace-nowrap ${
                         active
@@ -102,7 +120,7 @@ const GlamsterdamUpgradePage: React.FC = () => {
                       }`}
                     >
                       {tab.label}
-                    </Link>
+                    </a>
                   );
                 })}
               </div>
@@ -111,7 +129,7 @@ const GlamsterdamUpgradePage: React.FC = () => {
         </div>
 
         {/* Tab content */}
-        <Outlet />
+        {renderTab(activeTab)}
       </div>
     </div>
   );

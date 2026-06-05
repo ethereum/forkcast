@@ -1,5 +1,5 @@
 import React, { useState, useMemo, useEffect } from 'react';
-import { Link } from 'react-router-dom';
+import { Link } from '../../lib/navigation';
 import { usePrioritizationData, getELClients, getCLClients } from '../../hooks/usePrioritizationData';
 import {
   sortEipAggregates,

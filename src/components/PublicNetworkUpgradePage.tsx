@@ -1,8 +1,7 @@
 import React, { useCallback, useEffect, useLayoutEffect, useRef, useState } from 'react';
-import { Link, useLocation, useNavigate, useSearchParams } from 'react-router-dom';
+import { Link, useLocation, useNavigate, useSearchParams } from '../lib/navigation';
 import { eipsData } from '../data/eips';
 import { getPendingProposalsForFork } from '../data/pending-proposals';
-import { useMetaTags } from '../hooks/useMetaTags';
 import { useAnalytics } from '../hooks/useAnalytics';
 import { EIP, ClientTeamPerspective, InclusionStage } from '../types';
 import {
@@ -181,13 +180,6 @@ const PublicNetworkUpgradePage: React.FC<PublicNetworkUpgradePageProps> = ({
       (!expansion.headlinerProposals || isHeadlinerProposalsExpanded)
     );
   }, [getAnchorExpansionForHash, isDeclinedExpanded, isHeadlinerProposalsExpanded]);
-
-  // Update meta tags for SEO and social sharing
-  useMetaTags({
-    title: `${displayName} - Forkcast`,
-    description: description,
-    url: `https://forkcast.org/upgrade/${forkName.toLowerCase()}`,
-  });
 
   // Filter EIPs that have relationships with this fork
   useEffect(() => {

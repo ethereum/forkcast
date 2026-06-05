@@ -1,4 +1,4 @@
-import { Link } from 'react-router-dom';
+import { Link } from '../../lib/navigation';
 
 type LogoSize = 'xs' | 'sm' | 'md' | 'lg' | 'xl' | '2xl';
 

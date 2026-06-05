@@ -201,3 +201,14 @@ export const networkUpgrades: NetworkUpgrade[] = [
 export const getUpgradeById = (id: string): NetworkUpgrade | undefined => {
   return networkUpgrades.find(upgrade => upgrade.id === id);
 };
+
+// Forks that have a public `/upgrade/{id}` page. Historical forks (e.g. Dencun,
+// Shapella) have no page, so link sites should render them as plain text rather
+// than linking to a route the static build doesn't emit (which would 404).
+const FORKS_WITH_PUBLIC_PAGE = new Set(['pectra', 'fusaka', 'hegota', 'glamsterdam']);
+
+/** Returns the `/upgrade/{id}` path for a fork, or null when it has no public page. */
+export const getUpgradePagePath = (forkName: string): string | null => {
+  const id = forkName.toLowerCase();
+  return FORKS_WITH_PUBLIC_PAGE.has(id) ? `/upgrade/${id}` : null;
+};

@@ -1,8 +1,7 @@
 import React, { useEffect, useState, useRef } from 'react';
-import { Link, useSearchParams } from 'react-router-dom';
+import { Link, useSearchParams } from '../../lib/navigation';
 import { eipsData } from '../../data/eips';
 import { Logo } from '../ui/Logo';
-import { useMetaTags } from '../../hooks/useMetaTags';
 import { useAnalytics } from '../../hooks/useAnalytics';
 import { EIP } from '../../types';
 import ThemeToggle from '../ui/ThemeToggle';
@@ -51,11 +50,6 @@ export const StakeholderUpgradePage: React.FC<StakeholderUpgradePageProps> = ({ 
 
   const currentOption = STAKEHOLDER_OPTIONS.find(o => o.key === selectedStakeholder)!;
 
-  useMetaTags({
-    title: `${forkName} for ${currentOption.label} - Forkcast`,
-    description: `EIPs relevant to ${currentOption.label.toLowerCase()} in the ${forkName} network upgrade.`,
-    url: `https://forkcast.org/upgrade/${forkName.toLowerCase()}/stakeholders?view=${selectedStakeholder}`,
-  });
 
   useEffect(() => {
     const filtered = filterEipsForStakeholder(eipsData, forkName, selectedStakeholder);

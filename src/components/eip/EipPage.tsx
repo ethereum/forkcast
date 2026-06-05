@@ -1,9 +1,8 @@
 import React, { useEffect, useMemo, useCallback, useState, lazy, Suspense } from 'react';
 import { createPortal } from 'react-dom';
-import { Link, useParams, Navigate, useNavigate, useSearchParams } from 'react-router-dom';
+import { Link, Navigate, useNavigate, useSearchParams } from '../../lib/navigation';
 import { EIP } from '../../types/eip';
 import { eipById, eipsData } from '../../data/eips';
-import { useMetaTags } from '../../hooks/useMetaTags';
 import { useAnalytics } from '../../hooks/useAnalytics';
 import { useEipMarkdown } from '../../hooks/useEipMarkdown';
 import {
@@ -265,8 +264,7 @@ const dependentsMap = buildDependentsMap(eipsData);
 const requiredEipSpecUrl = (eipId: number): string => `https://eips.ethereum.org/EIPS/eip-${eipId}`;
 const requiredEipLinkClassName = 'font-mono hover:text-slate-700 dark:hover:text-slate-200 transition-colors';
 
-export const EipPage: React.FC = () => {
-  const { id } = useParams<{ id: string }>();
+export const EipPage: React.FC<{ id: string }> = ({ id }) => {
   const { trackLinkClick } = useAnalytics();
   const navigate = useNavigate();
   const [searchParams, setSearchParams] = useSearchParams();
@@ -417,12 +415,6 @@ export const EipPage: React.FC = () => {
       window.location.href = prRedirectUrl;
     }
   }, [prRedirectUrl]);
-
-  useMetaTags({
-    title: eip ? `${getProposalPrefix(eip)}-${eip.id}: ${getLaymanTitle(eip)} - Forkcast` : 'EIP Not Found - Forkcast',
-    description: eip?.description || 'Ethereum Improvement Proposal details',
-    url: `https://forkcast.org/eips/${id}`,
-  });
 
   if (!eip || prRedirectUrl) {
     return prRedirectUrl ? null : <Navigate to="/" replace />;

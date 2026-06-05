@@ -1,7 +1,8 @@
 import React, { useEffect, useRef, useState } from 'react';
-import { Link, useLocation } from 'react-router-dom';
+import { Link } from '../../lib/navigation';
 import { Logo } from './Logo';
 import ThemeToggle from './ThemeToggle';
+import { openCallSearch } from '../../lib/callSearch';
 import { isPathActive, normalizePathname } from '../../utils/path';
 
 const NavLinkItem: React.FC<{ to: string; label: string; active: boolean }> = ({ to, label, active }) => (
@@ -62,18 +63,18 @@ const upgradeNavItems: UpgradeNavItem[] = [
   { to: '/upgrades', label: 'View all upgrades', variant: 'index' },
 ];
 
-export interface SiteNavCallActions {
-  onSearch: () => void;
-}
-
 export interface SiteNavProps {
   variant?: 'default' | 'wide';
-  callActions?: SiteNavCallActions;
+  /** Current route path, supplied by the Astro layout (replaces useLocation). */
+  currentPath?: string;
+  /** Renders the "All Calls" link + per-call search button used on call pages. */
+  enableCallSearch?: boolean;
 }
 
-const SiteNav: React.FC<SiteNavProps> = ({ variant = 'default', callActions }) => {
-  const location = useLocation();
-  const pathname = normalizePathname(location.pathname);
+const SiteNav: React.FC<SiteNavProps> = ({ variant = 'default', currentPath, enableCallSearch = false }) => {
+  const pathname = normalizePathname(
+    currentPath ?? (typeof window !== 'undefined' ? window.location.pathname : '/'),
+  );
   const [mobileOpen, setMobileOpen] = useState(false);
   const [upgradeMenuOpen, setUpgradeMenuOpen] = useState(false);
   const upgradeMenuRef = useRef<HTMLDivElement | null>(null);
@@ -84,11 +85,6 @@ const SiteNav: React.FC<SiteNavProps> = ({ variant = 'default', callActions }) =
   const navMaxWidth = isWide ? 'max-w-[1800px]' : 'max-w-4xl';
   const desktopNavDisplay = isWide ? 'hidden lg:flex' : 'hidden md:flex';
   const compactNavDisplay = isWide ? 'lg:hidden' : 'md:hidden';
-
-  useEffect(() => {
-    setMobileOpen(false);
-    setUpgradeMenuOpen(false);
-  }, [pathname]);
 
   useEffect(() => {
     if (!upgradeMenuOpen) return;
@@ -207,7 +203,7 @@ const SiteNav: React.FC<SiteNavProps> = ({ variant = 'default', callActions }) =
           </div>
 
           <div className="flex items-center gap-2">
-            {callActions && (
+            {enableCallSearch && (
               <>
                 <Link
                   to="/calls"
@@ -217,7 +213,7 @@ const SiteNav: React.FC<SiteNavProps> = ({ variant = 'default', callActions }) =
                 </Link>
                 <button
                   type="button"
-                  onClick={callActions.onSearch}
+                  onClick={openCallSearch}
                   aria-label="Search this call"
                   title="Search this call"
                   className="p-2 rounded-lg bg-slate-100 hover:bg-slate-200 dark:bg-slate-700 dark:hover:bg-slate-600 transition-colors"

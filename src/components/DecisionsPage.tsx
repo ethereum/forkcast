@@ -1,10 +1,9 @@
 import React, { useState, useEffect, useMemo } from 'react';
-import { Link } from 'react-router-dom';
+import { Link } from '../lib/navigation';
 import { protocolCalls, Call } from '../data/calls';
 import { KeyDecision } from '../types/eip';
 import { eipById } from '../data/eips';
 import { StructuredDecisionContent } from './call/KeyDecisionsSection';
-import { useMetaTags } from '../hooks/useMetaTags';
 
 interface MeetingDecisions {
   call: Call;
@@ -36,12 +35,6 @@ const DecisionsPage: React.FC = () => {
   const [meetings, setMeetings] = useState<MeetingDecisions[]>([]);
   const [loading, setLoading] = useState(true);
   const [filter, setFilter] = useState<FilterType>('all');
-
-  useMetaTags({
-    title: 'Key Decisions - Forkcast',
-    description: 'Key decisions from Ethereum AllCoreDevs meetings, aggregated in reverse-chronological order.',
-    url: 'https://forkcast.org/decisions',
-  });
 
 
   useEffect(() => {

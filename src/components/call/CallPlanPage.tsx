@@ -1,7 +1,6 @@
 import { useState, useEffect, useMemo, useRef } from 'react';
-import { Link, useSearchParams } from 'react-router-dom';
+import { Link, useSearchParams } from '../../lib/navigation';
 import { protocolCalls, callTypeNames, Call, type CallType } from '../../data/calls';
-import { useMetaTags } from '../../hooks/useMetaTags';
 import { KeyDecision, EIP } from '../../types/eip';
 import { eipsData, eipById as eipMap } from '../../data/eips';
 import { networkUpgrades } from '../../data/upgrades';
@@ -263,12 +262,6 @@ const CallPlanPage: React.FC = () => {
 
     return { pendingEips: eips, pendingProposals: proposals };
   }, [type]);
-
-  useMetaTags({
-    title: `${typeLabel} Agenda Planner - Forkcast`,
-    description: `Action items, decisions, and targets from recent ${typeLabel} calls to help plan agendas.`,
-    url: `https://forkcast.org/agenda?series=${type}`,
-  });
 
   useEffect(() => {
     if (!type) {

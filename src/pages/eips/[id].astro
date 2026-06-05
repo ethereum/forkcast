@@ -1,0 +1,29 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import { EipPage } from '../../components/eip';
+import { eipsData } from '../../data/eips';
+
+// Canonical EIP pages only — pending PR-only EIPs are external PR records and are
+// handled by configured redirects in astro.config.mjs (/eips/{pendingId} -> PR).
+export function getStaticPaths() {
+  return eipsData
+    .filter((eip) => !eip.pendingPullRequest)
+    .map((eip) => {
+      const prefix = eip.title.startsWith('RIP-') ? 'RIP' : 'EIP';
+      return {
+        params: { id: String(eip.id) },
+        props: {
+          title: `${prefix}-${eip.id} - Forkcast`,
+          description: `Description, timeline, and status of ${prefix}-${eip.id}`,
+        },
+      };
+    });
+}
+
+const id = Astro.params.id!;
+const { title, description } = Astro.props;
+---
+
+<Layout title={title} description={description}>
+  <EipPage client:only="react" id={id} />
+</Layout>

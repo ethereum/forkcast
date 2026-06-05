@@ -1,13 +1,13 @@
 import React, { useState, useEffect, useRef, useCallback, useMemo } from 'react';
-import { Link, useParams, useLocation, useNavigate, useSearchParams } from 'react-router-dom';
+import { Link, useLocation, useNavigate, useSearchParams } from '../../lib/navigation';
 import YouTube, { YouTubeProps } from 'react-youtube';
 import ChatLog from './ChatLog';
 import TldrSummary from './TldrSummary';
 import CallSearch from './CallSearch';
 import { protocolCalls, callTypeNames, isOneOffCall, type CallType } from '../../data/calls';
 import { breakouts, breakoutLabels, type Breakout, type BreakoutKind } from '../../data/breakouts';
-import { fetchUpcomingCalls } from '../../domain/calls/upcomingCalls';
-import { useMetaTags } from '../../hooks/useMetaTags';
+import { upcomingCalls } from '../../domain/calls/upcomingCalls';
+import { onOpenCallSearch } from '../../lib/callSearch';
 import { eipsData } from '../../data/eips';
 import { EIP, ForkRelationship, KeyDecision } from '../../types/eip';
 import { isSearchHotkey } from '../search/searchShortcuts';
@@ -48,10 +48,9 @@ interface CallConfig {
   };
 }
 
-interface UpcomingCallState {
-  upcoming: true;
+interface UpcomingCallMeta {
   date: string;
-  youtubeUrl: string;
+  youtubeUrl?: string;
   githubUrl: string;
   issueNumber: number;
 }
@@ -86,14 +85,6 @@ const LAYOUT_EXPANDED = {
   summarySection: 'lg:col-span-2',
   transcriptSection: '',
   chatSection: '',
-};
-
-const isIssueRedirectPath = (path: string | undefined): path is string =>
-  Boolean(path && !path.includes('/') && /^\d+$/.test(path));
-
-const isCallTypeFilterPath = (path: string | undefined): path is string => {
-  if (!path || path.includes('/') || /^\d+$/.test(path)) return false;
-  return protocolCalls.some(c => c.type === path);
 };
 
 const timestampToSeconds = (timestamp: string | null | undefined): number => {
@@ -211,24 +202,18 @@ const loadBreakoutCallData = async (breakout: Breakout): Promise<LoadResult> => 
 
 const loadMainCallData = async (
   callPath: string,
-  locationState: UpcomingCallState | null,
+  upcoming: UpcomingCallMeta | null,
 ): Promise<LoadResult | null> => {
   const [type, number] = callPath.split('/');
   const matchingCall = protocolCalls.find(call => call.type === type && call.number === number);
 
   if (!matchingCall) {
-    if (locationState?.upcoming) {
-      return upcomingLoadResult(type, number, locationState.date, locationState.youtubeUrl, locationState.issueNumber);
-    }
-
-    try {
-      const upcomingCalls = await fetchUpcomingCalls();
-      const upcomingMatch = upcomingCalls.find(call => call.type === type && call.number === number);
-      if (upcomingMatch) {
-        return upcomingLoadResult(type, number, upcomingMatch.date, upcomingMatch.youtubeUrl, upcomingMatch.issueNumber);
-      }
-    } catch {
-      // Fall through to "not found".
+    // Upcoming-call watch pages: use the metadata Astro passed from the build-time
+    // snapshot, falling back to the same snapshot if it wasn't provided.
+    const upcomingMatch =
+      upcoming ?? upcomingCalls.find(call => call.type === type && call.number === number) ?? null;
+    if (upcomingMatch) {
+      return upcomingLoadResult(type, number, upcomingMatch.date, upcomingMatch.youtubeUrl, upcomingMatch.issueNumber);
     }
 
     console.error('Call not found:', callPath);
@@ -267,44 +252,18 @@ const loadMainCallData = async (
 };
 
 interface CallPageProps {
-  isSearchOpen: boolean;
-  setIsSearchOpen: (isOpen: boolean) => void;
-  searchRequestId: number;
+  /** "series/number", e.g. "acdc/154". Supplied by the Astro route. */
+  callPath: string;
+  /** Build-time metadata for an upcoming-call watch page, if this is one. */
+  upcoming?: UpcomingCallMeta;
 }
 
-const CallPage: React.FC<CallPageProps> = ({ isSearchOpen, setIsSearchOpen, searchRequestId }) => {
-  const { '*': callPath } = useParams();
+const CallPage: React.FC<CallPageProps> = ({ callPath, upcoming }) => {
   const location = useLocation();
   const navigate = useNavigate();
+  const [isSearchOpen, setIsSearchOpen] = useState(false);
 
-  // Redirect issue-number URLs (e.g., /calls/1954) to the canonical path,
-  // and call-type-only URLs (e.g., /calls/acde) to the filtered index.
-  const normalizedPath = callPath?.replace(/\/+$/, '');
-  useEffect(() => {
-    if (isIssueRedirectPath(normalizedPath)) {
-      const issueNum = parseInt(normalizedPath);
-      const byIssue = protocolCalls.find(c => c.issue === issueNum);
-      if (byIssue) {
-        navigate(
-          {
-            pathname: `/calls/${byIssue.path}`,
-            search: location.search,
-            hash: location.hash,
-          },
-          { replace: true },
-        );
-      }
-    } else if (isCallTypeFilterPath(normalizedPath)) {
-      navigate(
-        {
-          pathname: '/calls',
-          search: `?filter=${normalizedPath}`,
-          hash: location.hash,
-        },
-        { replace: true },
-      );
-    }
-  }, [location.hash, location.search, normalizedPath, navigate]);
+  const normalizedPath = callPath.replace(/\/+$/, '');
 
   const [callData, setCallData] = useState<CallData | null>(null);
   const [callConfig, setCallConfig] = useState<CallConfig | null>(null);
@@ -392,22 +351,11 @@ const CallPage: React.FC<CallPageProps> = ({ isSearchOpen, setIsSearchOpen, sear
   // Track if we've already navigated to avoid duplicate seeks
   const hasNavigatedToSearchResult = useRef(false);
 
-  // Set meta tags for social previews
   const matchingCall = useMemo(() => {
     if (!callData) return null;
     return protocolCalls.find(c => c.type === callData.type.toLowerCase() && c.number === callData.number) ?? null;
   }, [callData]);
-  const baseName = callData
-    ? (matchingCall?.name || `${callTypeNames[callData.type.toLowerCase() as CallType] || callData.type}${!isOneOffCall(callData.type.toLowerCase()) && callData.number ? ` #${callData.number}` : ''}`)
-    : 'Call';
-  const [parentType, parentNumber] = callPath?.split('/') ?? [];
-  const callName = activeBreakout
-    ? `${parentType.toUpperCase()} #${parentNumber} (${breakoutLabels[activeBreakout.kind]} Breakout)`
-    : baseName;
-  useMetaTags({
-    title: `${callName} | Forkcast`,
-    description: `Notes and recording for ${callName}`,
-  });
+  const [parentType, parentNumber] = callPath.split('/');
 
   // Compute previous and next calls within the same series
   const { prevCall, nextCall } = useMemo(() => {
@@ -498,11 +446,14 @@ const CallPage: React.FC<CallPageProps> = ({ isSearchOpen, setIsSearchOpen, sear
     return () => window.removeEventListener('keydown', handleKeyDown);
   }, [handlePauseVideo, setIsSearchOpen]);
 
+  // The per-call search button lives in the shared nav (a separate island) and
+  // asks us to open search via a window event.
   useEffect(() => {
-    if (searchRequestId === 0) return;
-    setIsSearchOpen(true);
-    handlePauseVideo();
-  }, [searchRequestId, handlePauseVideo, setIsSearchOpen]);
+    return onOpenCallSearch(() => {
+      setIsSearchOpen(true);
+      handlePauseVideo();
+    });
+  }, [handlePauseVideo]);
 
   // Apply sync offset to convert transcript time to video time
   const getAdjustedVideoTime = useCallback((transcriptTimestamp: string): number => {
@@ -510,9 +461,6 @@ const CallPage: React.FC<CallPageProps> = ({ isSearchOpen, setIsSearchOpen, sear
   }, [callConfig]);
 
   useEffect(() => {
-    // Issue-number and call-type URLs are handled by the redirect effect — leave loading set.
-    if (isIssueRedirectPath(normalizedPath) || isCallTypeFilterPath(normalizedPath)) return;
-
     let cancelled = false;
     setLoading(true);
     setCallData(null);
@@ -523,12 +471,9 @@ const CallPage: React.FC<CallPageProps> = ({ isSearchOpen, setIsSearchOpen, sear
     setIsPlaying(false);
     lastHighlightedTimestampRef.current = null;
 
-    const locationState = location.state as UpcomingCallState | null;
     const loadCallData = activeBreakout
       ? loadBreakoutCallData(activeBreakout)
-      : callPath
-        ? loadMainCallData(callPath, locationState)
-        : Promise.resolve(null);
+      : loadMainCallData(callPath, upcoming ?? null);
 
     loadCallData
       .then(result => {
@@ -548,7 +493,7 @@ const CallPage: React.FC<CallPageProps> = ({ isSearchOpen, setIsSearchOpen, sear
     return () => {
       cancelled = true;
     };
-  }, [callPath, normalizedPath, location.state, activeBreakout]);
+  }, [callPath, activeBreakout, upcoming]);
 
   // Clean up interval on unmount
   useEffect(() => {

@@ -1,7 +1,6 @@
 import React from 'react';
-import { Link } from 'react-router-dom';
+import { Link } from '../lib/navigation';
 import { networkUpgrades, NetworkUpgrade } from '../data/upgrades';
-import { useMetaTags } from '../hooks/useMetaTags';
 import { parseShortDate } from './schedule/forkDateCalculator';
 import UpgradeCard from './ui/UpgradeCard';
 
@@ -110,12 +109,6 @@ const UpgradeRow: React.FC<UpgradeRowProps> = ({ upgrade }) => {
 };
 
 const UpgradesIndexPage: React.FC = () => {
-  useMetaTags({
-    title: 'Network Upgrades — Forkcast',
-    description: 'Catalog of Ethereum network upgrades — in progress, live, and historical.',
-    url: 'https://forkcast.org/upgrades',
-  });
-
   return (
     <div className="min-h-screen bg-slate-50 dark:bg-slate-900 text-slate-900 dark:text-slate-100 p-6">
       <div className="max-w-4xl mx-auto">

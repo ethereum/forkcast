@@ -1,0 +1,22 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import PublicNetworkUpgradePage from '../../components/PublicNetworkUpgradePage';
+import { getUpgradeById } from '../../data/upgrades';
+
+const upgrade = getUpgradeById('hegota')!;
+---
+
+<Layout
+  title="Hegotá Upgrade - Forkcast"
+  description="Post-Glamsterdam network upgrade in early planning."
+>
+  <PublicNetworkUpgradePage
+    client:only="react"
+    forkName="Hegota"
+    displayName={upgrade.name}
+    description={upgrade.description}
+    status={upgrade.status}
+    activationDate={upgrade.activationDate}
+    metaEipLink={upgrade.metaEipLink}
+  />
+</Layout>

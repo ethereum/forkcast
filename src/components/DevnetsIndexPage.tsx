@@ -1,6 +1,5 @@
 import React, { useState } from 'react';
-import { Link } from 'react-router-dom';
-import { useMetaTags } from '../hooks/useMetaTags';
+import { Link } from '../lib/navigation';
 import { useDevnetNetworks } from '../hooks/useDevnetNetworks';
 import { getAllDevnetSpecIds } from '../data/devnet-specs';
 import type { ActiveDevnetSeries, InactiveDevnetSeries } from '../types/devnet-networks';
@@ -194,12 +193,6 @@ const DevnetsIndexPage: React.FC = () => {
   const pectraInactive = remainingInactive.filter((c) => PECTRA_CATEGORIES.has(c.categoryKey));
   const dencunInactive = remainingInactive.filter((c) => DENCUN_CATEGORIES.has(c.categoryKey));
   const generalInactive = remainingInactive.filter((c) => !isForkAffiliated(c.categoryKey));
-
-  useMetaTags({
-    title: 'Devnet Tracker - Forkcast',
-    description: 'Track active Ethereum devnet series, explore specs, and monitor Glamsterdam EIP prioritization.',
-    url: 'https://forkcast.org/devnets',
-  });
 
   return (
     <div className="min-h-screen bg-slate-50 dark:bg-slate-900 text-slate-900 dark:text-slate-100 p-6">

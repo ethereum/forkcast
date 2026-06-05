@@ -1,4 +1,3 @@
-import { useState, useEffect, useCallback } from 'react';
 import type {
   NetworksJsonResponse,
   ActiveDevnetSeries,
@@ -6,9 +5,15 @@ import type {
   NetworkEntry,
   NetworkServiceUrls,
 } from '../types/devnet-networks';
+import networksSnapshotRaw from '../data/generated/devnet-networks.json';
 
-const NETWORKS_URL =
-  'https://ethpandaops-platform-production-cartographoor.ams3.digitaloceanspaces.com/networks.json';
+// The ethPandaOps cartographoor networks.json is runtime-discovered data. To keep
+// Astro's getStaticPaths() and this hydrated island in agreement about which
+// `/devnets/{id}` routes exist, both read a single build-time snapshot
+// (src/data/generated/devnet-networks.json, refreshed by snapshot-runtime-routes.mjs)
+// instead of live-fetching. That guarantees the index never links to a network-only
+// route the static build didn't emit.
+const snapshot = networksSnapshotRaw as unknown as NetworksJsonResponse;
 
 interface UseDevnetNetworksResult {
   activeSeries: ActiveDevnetSeries[];
@@ -20,18 +25,13 @@ interface UseDevnetNetworksResult {
 
 /** Lookup a specific network entry by key (e.g. "bal-devnet-3"). */
 export function getNetworkEntry(id: string): NetworkEntry | null {
-  return cachedRaw?.networks[id] ?? null;
+  return snapshot.networks[id] ?? null;
 }
 
 /** Lookup metadata for a category key (e.g. "bal"). */
 export function getNetworkMetadata(categoryKey: string) {
-  return cachedRaw?.networkMetadata[categoryKey] ?? null;
+  return snapshot.networkMetadata[categoryKey] ?? null;
 }
-
-// Module-level caches
-let cachedSeries: ActiveDevnetSeries[] | null = null;
-let cachedInactive: InactiveDevnetSeries[] | null = null;
-let cachedRaw: NetworksJsonResponse | null = null;
 
 /**
  * Given a category key (e.g. "bal") and the flat networks map,
@@ -69,77 +69,61 @@ function findHighestVersion(
   return max;
 }
 
+function buildSeries(): { activeSeries: ActiveDevnetSeries[]; inactiveSeries: InactiveDevnetSeries[] } {
+  const activeSeries: ActiveDevnetSeries[] = [];
+  const inactiveSeries: InactiveDevnetSeries[] = [];
+
+  for (const [categoryKey, meta] of Object.entries(snapshot.networkMetadata)) {
+    if (meta.stats.activeNetworks === 0) {
+      inactiveSeries.push({
+        categoryKey,
+        displayName: meta.displayName,
+        description: meta.description,
+        highestKnownVersion: findHighestVersion(categoryKey, snapshot.networks),
+      });
+      continue;
+    }
+
+    const active = findActiveNetworks(categoryKey, snapshot.networks);
+    const latest = active[0] ?? null;
+    activeSeries.push({
+      categoryKey,
+      displayName: meta.displayName,
+      description: meta.description,
+      links: meta.links,
+      activeKeys: active.map((a) => a.key),
+      latestActiveVersion: latest?.version ?? null,
+      serviceUrls: latest?.serviceUrls ?? null,
+    });
+  }
+
+  activeSeries.sort((a, b) => a.displayName.localeCompare(b.displayName));
+  inactiveSeries.sort((a, b) => a.displayName.localeCompare(b.displayName));
+
+  return { activeSeries, inactiveSeries };
+}
+
+// Derived once from the static snapshot.
+const { activeSeries, inactiveSeries } = buildSeries();
+
+/**
+ * All active devnet network keys the index can link to (e.g. "bal-devnet-3").
+ * Astro's getStaticPaths() unions this with local spec IDs so every link the
+ * island renders resolves to an emitted page. Network-only routes are the active
+ * keys without a local spec.
+ */
+export function getActiveDevnetNetworkKeys(): string[] {
+  return activeSeries.flatMap((series) => series.activeKeys);
+}
+
 export function useDevnetNetworks(): UseDevnetNetworksResult {
-  const [activeSeries, setActiveSeries] = useState<ActiveDevnetSeries[]>(cachedSeries || []);
-  const [inactiveSeries, setInactiveSeries] = useState<InactiveDevnetSeries[]>(cachedInactive || []);
-  const [loading, setLoading] = useState(!cachedSeries);
-  const [error, setError] = useState<Error | null>(null);
-
-  const fetchData = useCallback(async () => {
-    try {
-      setLoading(true);
-      setError(null);
-
-      const response = await fetch(NETWORKS_URL);
-      if (!response.ok) {
-        throw new Error(`Failed to fetch networks: ${response.status}`);
-      }
-
-      const data: NetworksJsonResponse = await response.json();
-      const series: ActiveDevnetSeries[] = [];
-      const inactive: InactiveDevnetSeries[] = [];
-
-      for (const [categoryKey, meta] of Object.entries(data.networkMetadata)) {
-        if (meta.stats.activeNetworks === 0) {
-          inactive.push({
-            categoryKey,
-            displayName: meta.displayName,
-            description: meta.description,
-            highestKnownVersion: findHighestVersion(categoryKey, data.networks),
-          });
-          continue;
-        }
-
-        const active = findActiveNetworks(categoryKey, data.networks);
-        const latest = active[0] ?? null;
-        series.push({
-          categoryKey,
-          displayName: meta.displayName,
-          description: meta.description,
-          links: meta.links,
-          activeKeys: active.map((a) => a.key),
-          latestActiveVersion: latest?.version ?? null,
-          serviceUrls: latest?.serviceUrls ?? null,
-        });
-      }
-
-      series.sort((a, b) => a.displayName.localeCompare(b.displayName));
-      inactive.sort((a, b) => a.displayName.localeCompare(b.displayName));
-
-      setActiveSeries(series);
-      setInactiveSeries(inactive);
-      cachedSeries = series;
-      cachedInactive = inactive;
-      cachedRaw = data;
-    } catch (err) {
-      setError(err instanceof Error ? err : new Error('Unknown error'));
-    } finally {
-      setLoading(false);
-    }
-  }, []);
-
-  useEffect(() => {
-    if (!cachedSeries) {
-      fetchData();
-    }
-  }, [fetchData]);
-
-  const refetch = useCallback(() => {
-    cachedSeries = null;
-    cachedInactive = null;
-    cachedRaw = null;
-    fetchData();
-  }, [fetchData]);
-
-  return { activeSeries, inactiveSeries, loading, error, refetch };
+  // Backed by the build-time snapshot, so data is available synchronously on the
+  // first render — no loading state, no runtime fetch.
+  return {
+    activeSeries,
+    inactiveSeries,
+    loading: false,
+    error: null,
+    refetch: () => {},
+  };
 }

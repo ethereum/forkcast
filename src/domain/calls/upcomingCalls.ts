@@ -1,5 +1,6 @@
 import { protocolCalls, type CallType } from '../../data/calls';
 import { formatDateInTimeZone, getTodayDateString } from '../../utils/localDate';
+import upcomingCallsSnapshot from '../../data/generated/upcoming-calls.json';
 
 export interface UpcomingCall {
   type: CallType;
@@ -11,6 +12,14 @@ export interface UpcomingCall {
   issueNumber: number;
   youtubeUrl?: string;
 }
+
+/**
+ * Build-time snapshot of upcoming calls (refreshed by snapshot-runtime-routes.mjs).
+ * Islands and Astro's getStaticPaths() both read this so the call index only links
+ * to upcoming-call watch pages the static build actually emitted. `fetchUpcomingCalls`
+ * below remains for the tested parsing path but is no longer used for routing.
+ */
+export const upcomingCalls: UpcomingCall[] = upcomingCallsSnapshot as UpcomingCall[];
 
 interface GitHubIssue {
   title: string;

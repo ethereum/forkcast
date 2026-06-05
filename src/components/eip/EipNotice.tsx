@@ -1,5 +1,5 @@
 import type { ReactNode } from 'react';
-import { Link } from 'react-router-dom';
+import { Link } from '../../lib/navigation';
 import { ForkRelationship } from '../../types';
 import { parseMarkdownLinks } from '../../utils';
 

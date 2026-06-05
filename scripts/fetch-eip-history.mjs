@@ -198,16 +198,24 @@ async function fetchAllOpenEipPrs(eipNumbers, headers) {
     if (url) await sleep(2000); // Search API: 30 req/min
   }
 
-  // For each PR, fetch its file list and group by EIP
+  // For each PR, fetch its paginated file list and group by EIP
   for (const item of allItems) {
-    const filesUrl = `https://api.github.com/repos/ethereum/EIPs/pulls/${item.number}/files?per_page=100`;
-    const filesResp = await fetch(filesUrl, { headers });
-    if (!filesResp.ok) {
-      console.warn(`  Warning: could not fetch files for PR #${item.number} (${filesResp.status})`);
-      continue;
+    const files = [];
+    let page = 1;
+    while (true) {
+      const filesUrl = `https://api.github.com/repos/ethereum/EIPs/pulls/${item.number}/files?per_page=100&page=${page}`;
+      const filesResp = await fetch(filesUrl, { headers });
+      if (!filesResp.ok) {
+        throw new Error(
+          `Failed to fetch files for PR #${item.number}: HTTP ${filesResp.status}`,
+        );
+      }
+      const pageFiles = await filesResp.json();
+      files.push(...pageFiles);
+      if (pageFiles.length < 100) break;
+      page++;
+      await sleep(100);
     }
-
-    const files = await filesResp.json();
     for (const f of files) {
       if (f.status !== 'modified') continue;
       const match = f.filename.match(/^EIPS\/eip-(\d+)\.md$/);

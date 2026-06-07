@@ -14,32 +14,6 @@ export const useAnalytics = () => {
     }
   }, []);
 
-  const trackPageView = useCallback((pageName?: string, pageTitle?: string, previousUrl?: string) => {
-    if (typeof window !== 'undefined' && window._paq) {
-      // For SPA tracking, we need to set custom URL and document title
-      const customUrl = pageName || window.location.pathname;
-      const customTitle = pageTitle || document.title;
-
-      // Set the referrer URL if provided (for SPA navigation)
-      if (previousUrl) {
-        window._paq.push(['setReferrerUrl', previousUrl]);
-      }
-
-      // Set the custom URL and document title for the new page view
-      window._paq.push(['setCustomUrl', customUrl]);
-      window._paq.push(['setDocumentTitle', customTitle]);
-
-      // Reset any previously set custom variables/dimensions for the new page
-      window._paq.push(['deleteCustomVariables', 'page']);
-
-      // Track the page view
-      window._paq.push(['trackPageView']);
-
-      // Make Matomo aware of newly added content for SPA
-      window._paq.push(['enableLinkTracking']);
-    }
-  }, []);
-
   const trackUpgradeView = useCallback((upgradeName: string) => {
     if (typeof window !== 'undefined' && window._paq) {
       // Track upgrade view as a custom event
@@ -56,7 +30,6 @@ export const useAnalytics = () => {
 
   return {
     trackEvent,
-    trackPageView,
     trackUpgradeView,
     trackLinkClick,
   };

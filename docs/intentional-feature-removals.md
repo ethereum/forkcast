@@ -21,10 +21,10 @@ Use [Astro configured redirects](https://docs.astro.build/en/reference/configura
 - `/upgrade/glamsterdam/devnets` -> `/upgrade/glamsterdam/devnet-inclusion`
 - `/upgrade/glamsterdam/devnets/priority` -> `/upgrade/glamsterdam/client-priority`
 - `/upgrade/glamsterdam/devnets/complexity` -> `/upgrade/glamsterdam/test-complexity`
+- `/calls/{github-issue-number}` -> `/calls/{series}/{number}` for every completed call. This replaces the SPA's in-React issue-number redirect; the alias map is derived from `src/data/protocol-calls.generated.json` at build time (see `src/domain/calls/callRoutes.ts`), so it stays in sync as calls are added rather than being a hand-maintained legacy artifact. One-off calls follow the same rule (e.g. `/calls/1954` -> `/calls/one-off-1954/001`).
 
 ## Removed Routes
 
-- `/calls/{github-issue-number}` aliases are removed. They require a generated issue-to-call redirect map and keep legacy alias generation in the Phase 1 foundation. Canonical call URLs remain `/calls/{series}/{number}`.
 - Unknown paths are no longer normalized into the SPA. Remove the Netlify SPA fallback in `public/_redirects` and the GitHub Pages redirect shim in `public/404.html`; unknown paths should use the real Astro 404 route at `src/pages/404.astro`.
 
 ## Changed Routes

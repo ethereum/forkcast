@@ -55,7 +55,7 @@ Phase 1 should remove that redirect behavior and replace it with real Astro-gene
 
 Aggregate filters are not new public routes in Phase 1. Keep aggregate filters as query-string state for now, including `/calls?filter=acd` and `/calls?filter=breakouts`.
 
-Do not preserve `/calls/{github-issue-number}` aliases. Those redirects require a generated issue-to-call map and would keep legacy alias generation in the phase 1 foundation. Canonical call URLs remain `/calls/{series}/{number}`.
+Preserve `/calls/{github-issue-number}` aliases as Astro configured redirects to the canonical `/calls/{series}/{number}` page (replacing the SPA's in-React issue-number redirect). The issue-to-call map is derived from the compiled call data at build time (`src/domain/calls/callRoutes.ts`), so it stays in sync as calls are added rather than being a hand-maintained legacy artifact — the same pattern as the pending-EIP redirects. Canonical call URLs remain `/calls/{series}/{number}`.
 
 ### 4. Keep React as the page body layer
 
@@ -133,7 +133,7 @@ Confirm the final build has no:
 - SPA fallback behavior.
 - `public/_redirects`.
 - SPA redirect `public/404.html`.
-- Generated legacy alias content pages, including `/calls/{github-issue-number}` pages. Astro-generated redirect output for configured redirects is allowed.
+- Generated legacy alias content pages. Astro-generated redirect output for configured redirects (including the `/calls/{github-issue-number}` aliases) is allowed.
 - SPA-specific noscript copy.
 - SPA-specific `public/llms.txt` guidance.
 - Manual `generate-static-pages.mjs` sitemap generation.

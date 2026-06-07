@@ -175,6 +175,15 @@ Use [Astro configured redirects](https://docs.astro.build/en/reference/configura
 - Concrete `/calls/{type}` paths such as `/calls/acde`, `/calls/acdc`, `/calls/acdt`, `/calls/bal`, and `/calls/epbs` become real Astro-generated scoped call index routes instead of React redirects to `/calls?filter={type}`.
 - Aggregate call filters remain query-string state in Phase 1.
 
+## Phase 2 and Beyond
+
+Follow-up work for subsequent PRs, as routes move from React bodies into more idiomatic Astro primitives:
+
+- Replace temporary `<Link to="...">` usages with normal `<a href="...">` where the link is just cross-page navigation.
+- Remove the React Router compatibility props from the temporary link helper, such as the ignored `state` / `replace`.
+- Continue narrowing the browser-location helper (`src/components/browserLocation.tsx`) so it exposes only the browser URL state hydrated islands need, not router-shaped abstractions.
+- As more routes move from React bodies into Astro, move query/hash ownership into page-specific Astro or component primitives where that becomes natural.
+
 ## Astro Docs References
 
 Use the Astro docs as the implementation reference: https://docs.astro.build

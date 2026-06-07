@@ -91,7 +91,6 @@ const mobileLinkClass = (active: boolean, isIndexLink: boolean) =>
             type="button"
             data-upgrade-trigger
             aria-haspopup="menu"
-            aria-expanded="false"
             class={`flex items-center gap-1 px-3 py-1.5 rounded-md text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-purple-500/40 ${
               upgradesActive
                 ? 'text-purple-700 dark:text-purple-300'
@@ -283,23 +282,12 @@ const mobileLinkClass = (active: boolean, isIndexLink: boolean) =>
     iconClose?.classList.toggle('hidden', !open);
   });
 
-  // Upgrade dropdown: shown via CSS hover/focus-within. Keep aria-expanded in sync
-  // and let Escape dismiss it for keyboard users.
-  const upgradeMenu = document.querySelector('[data-upgrade-menu]');
-  const upgradeTrigger = upgradeMenu?.querySelector('[data-upgrade-trigger]');
-  const setExpanded = (open: boolean) => upgradeTrigger?.setAttribute('aria-expanded', String(open));
-  upgradeMenu?.addEventListener('pointerenter', () => setExpanded(true));
-  upgradeMenu?.addEventListener('pointerleave', () => {
-    if (!upgradeMenu.contains(document.activeElement)) setExpanded(false);
-  });
-  upgradeMenu?.addEventListener('focusin', () => setExpanded(true));
-  upgradeMenu?.addEventListener('focusout', (event) => {
-    if (!upgradeMenu.contains((event as FocusEvent).relatedTarget as Node | null)) setExpanded(false);
-  });
-  upgradeMenu?.addEventListener('keydown', (event) => {
-    if ((event as KeyboardEvent).key !== 'Escape') return;
-    setExpanded(false);
-    if (document.activeElement instanceof HTMLElement) document.activeElement.blur();
+  // Upgrade dropdown opens on hover/focus-within via CSS alone. The only behavior
+  // that needs JS is Escape, which closes it by moving focus out of the menu.
+  document.querySelector('[data-upgrade-menu]')?.addEventListener('keydown', (event) => {
+    if ((event as KeyboardEvent).key === 'Escape' && document.activeElement instanceof HTMLElement) {
+      document.activeElement.blur();
+    }
   });
 
   // The per-call search button asks the CallPage island to open search (window event).

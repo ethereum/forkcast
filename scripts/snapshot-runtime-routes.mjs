@@ -12,7 +12,9 @@
  * The upcoming-call parsing rules are imported from the single source of truth in
  * src/domain/calls/upcomingCallParsing.ts (Node type-strips it on import), so the
  * tested domain parser and this build script can never drift. On a network
- * failure the previous snapshot is kept so offline and CI builds still succeed.
+ * failure, local builds keep the previous snapshot so offline work still succeeds;
+ * CI fails rather than ship stale route data (override with
+ * `ALLOW_STALE_ROUTE_SNAPSHOTS=1`).
  */
 import fs from 'node:fs';
 import path from 'node:path';
@@ -32,6 +34,12 @@ const GITHUB_ISSUES_URL =
   'https://api.github.com/repos/ethereum/pm/issues?state=open&per_page=20';
 const NETWORKS_URL =
   'https://ethpandaops-platform-production-cartographoor.ams3.digitaloceanspaces.com/networks.json';
+
+// CI/deploy builds must not silently ship a stale or empty route snapshot, so a
+// fetch failure fails the build there. Local/offline builds keep the previous
+// snapshot. ALLOW_STALE_ROUTE_SNAPSHOTS=1 opts CI back into the lenient behavior.
+const FAIL_ON_STALE =
+  process.env.CI === 'true' && process.env.ALLOW_STALE_ROUTE_SNAPSHOTS !== '1';
 
 const githubHeaders = () => {
   const headers = {
@@ -109,7 +117,16 @@ const writeJson = (file, data) => {
   fs.writeFileSync(file, `${JSON.stringify(data, null, 2)}\n`);
 };
 
-const keepExisting = (file, fallback, label) => {
+// On a fetch failure, fail the build in CI (don't ship stale/empty route data);
+// otherwise keep the previous snapshot so local/offline builds still succeed.
+const handleFetchFailure = (file, fallback, label, error) => {
+  console.warn(`  ⚠ ${label} fetch failed: ${error.message}`);
+  if (FAIL_ON_STALE) {
+    throw new Error(
+      `Refusing to build with a stale or empty ${label} snapshot in CI. ` +
+        `Fix the fetch, or set ALLOW_STALE_ROUTE_SNAPSHOTS=1 to allow the previous snapshot.`,
+    );
+  }
   if (fs.existsSync(file)) {
     console.warn(`  ↺ keeping previous ${label} snapshot`);
     return;
@@ -124,8 +141,7 @@ async function snapshotUpcomingCalls() {
     writeJson(UPCOMING_CALLS_FILE, calls);
     console.log(`  ✓ upcoming-calls.json (${calls.length} calls)`);
   } catch (error) {
-    console.warn(`  ⚠ upcoming calls fetch failed: ${error.message}`);
-    keepExisting(UPCOMING_CALLS_FILE, [], 'upcoming-calls');
+    handleFetchFailure(UPCOMING_CALLS_FILE, [], 'upcoming-calls', error);
   }
 }
 
@@ -146,12 +162,16 @@ async function snapshotNetworks() {
       `  ✓ devnet-networks.json (${Object.keys(snapshot.networks).length} networks, ${activeCount} active)`,
     );
   } catch (error) {
-    console.warn(`  ⚠ networks.json fetch failed: ${error.message}`);
-    keepExisting(NETWORKS_FILE, { networkMetadata: {}, networks: {} }, 'devnet-networks');
+    handleFetchFailure(NETWORKS_FILE, { networkMetadata: {}, networks: {} }, 'devnet-networks', error);
   }
 }
 
 fs.mkdirSync(GENERATED_DIR, { recursive: true });
 console.log('Snapshotting runtime-discovered routes...');
-await Promise.all([snapshotUpcomingCalls(), snapshotNetworks()]);
+try {
+  await Promise.all([snapshotUpcomingCalls(), snapshotNetworks()]);
+} catch (error) {
+  console.error(`✖ ${error.message}`);
+  process.exit(1);
+}
 console.log('✨ Snapshots ready.');

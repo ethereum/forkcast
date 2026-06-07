@@ -1,7 +1,6 @@
 import { useEffect, useCallback, type ReactNode } from 'react';
-import { Navigate, Link, useNavigate } from './navigation';
+import { Link, useNavigate } from './browserLocation';
 import { getDevnetSpec, getDevnetSeriesSiblings } from '../data/devnet-specs';
-import { useDevnetNetworks } from '../hooks/useDevnetNetworks';
 import { getNetworkEntry, getNetworkMetadata } from '../domain/devnets/networks';
 import { parseMarkdownLinks, parseMarkdownBold } from '../utils/markdown';
 import type {
@@ -545,7 +544,6 @@ function NetworkOnlyContent({ id, networkEntry, metadata }: { id: string; networ
 
 export default function DevnetSpecPage({ devnetId }: { devnetId: string }) {
   const id = devnetId;
-  const { loading } = useDevnetNetworks();
 
   const spec = id ? getDevnetSpec(id) : undefined;
   const networkEntry = id ? getNetworkEntry(id) : null;
@@ -562,9 +560,7 @@ export default function DevnetSpecPage({ devnetId }: { devnetId: string }) {
     return <NetworkOnlyContent id={id} networkEntry={networkEntry} metadata={metadata} />;
   }
 
-  // Still fetching — don't redirect yet
-  if (loading) return null;
-
-  // Nothing found — redirect
-  return <Navigate to="/devnets" replace />;
+  // No spec or network data for this id. getStaticPaths only emits pages for real
+  // specs and active networks, so unknown ids hit Astro's 404 and never reach here.
+  return null;
 }

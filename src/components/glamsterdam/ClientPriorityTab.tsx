@@ -1,5 +1,5 @@
 import React, { useState, useMemo, useEffect } from 'react';
-import { Link } from '../navigation';
+import { Link } from '../browserLocation';
 import { usePrioritizationData, getELClients, getCLClients } from '../../hooks/usePrioritizationData';
 import {
   sortEipAggregates,

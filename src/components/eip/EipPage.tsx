@@ -1,6 +1,6 @@
 import React, { useEffect, useMemo, useCallback, useState, lazy, Suspense } from 'react';
 import { createPortal } from 'react-dom';
-import { Link, Navigate, useNavigate, useSearchParams } from '../navigation';
+import { Link, useNavigate, useSearchParams } from '../browserLocation';
 import { EIP } from '../../types/eip';
 import { eipById, eipsData } from '../../data/eips';
 import { useAnalytics } from '../../hooks/useAnalytics';
@@ -416,8 +416,10 @@ export const EipPage: React.FC<{ id: string }> = ({ id }) => {
     }
   }, [prRedirectUrl]);
 
+  // Astro only emits pages for canonical EIPs, and a pending EIP redirects to its PR
+  // (above), so there's nothing to render in either case.
   if (!eip || prRedirectUrl) {
-    return prRedirectUrl ? null : <Navigate to="/" replace />;
+    return null;
   }
 
   const requiredEipIds = eip.requires ?? [];

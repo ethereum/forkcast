@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { useSearchParams } from '../navigation';
+import { useSearchParams } from '../browserLocation';
 import { eipsData } from '../../data/eips';
 import { useAnalytics } from '../../hooks/useAnalytics';
 import { EIP } from '../../types';

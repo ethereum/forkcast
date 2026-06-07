@@ -1,5 +1,5 @@
 import React from 'react';
-import { Link } from '../navigation';
+import { Link } from '../browserLocation';
 import { EIP } from '../../types/eip';
 import { getProposalPrefix, getLaymanTitle, getSpecificationUrl, isPendingEip } from '../../utils';
 

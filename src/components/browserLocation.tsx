@@ -1,4 +1,4 @@
-/* eslint-disable react-refresh/only-export-components -- navigation helpers (hooks + Link/Navigate) intentionally share one module */
+/* eslint-disable react-refresh/only-export-components -- browser-location helpers (hooks + Link) intentionally share one module */
 /**
  * Minimal browser-navigation helpers that replace the slice of `react-router-dom`
  * the app used, without bringing a client router into the Astro static site.
@@ -170,14 +170,3 @@ export const Link = forwardRef<HTMLAnchorElement, LinkProps>(function Link(
     </a>
   );
 });
-
-/** Declarative redirect — mirrors react-router's `<Navigate>`. */
-export const Navigate = ({ to, replace = false }: { to: To; replace?: boolean }) => {
-  useEffect(() => {
-    if (!hasWindow()) return;
-    const href = toHref(to);
-    if (replace) window.location.replace(href);
-    else window.location.assign(href);
-  }, [to, replace]);
-  return null;
-};

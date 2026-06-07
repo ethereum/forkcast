@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { useNavigate } from "./navigation";
+import { useNavigate } from "./browserLocation";
 import { EIP, Champion } from "../types/eip";
 import {
   getLaymanTitle,

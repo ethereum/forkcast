@@ -1,5 +1,5 @@
 import { useState, useEffect, useMemo, useRef } from 'react';
-import { Link, useNavigate } from './navigation';
+import { Link, useNavigate } from './browserLocation';
 import { searchIndexService } from '../services/searchIndex';
 import { formatDate } from '../utils/date';
 import { debounce } from '../utils/debounce';

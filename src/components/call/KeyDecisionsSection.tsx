@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Link } from '../navigation';
+import { Link } from '../browserLocation';
 import { KeyDecision, EIP } from '../../types/eip';
 import { getKeyDecisionTagColor } from '../../utils/colors';
 import { eipById } from '../../data/eips';

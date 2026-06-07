@@ -1,5 +1,5 @@
 import React from 'react';
-import { Link } from '../navigation';
+import { Link } from '../browserLocation';
 import { networkUpgrades } from '../../data/upgrades';
 import { calculateTimelineMarkerPosition } from '../../utils/timeline';
 

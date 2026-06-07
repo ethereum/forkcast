@@ -49,8 +49,8 @@ function callIssueRedirects() {
 }
 
 // Hand-maintained path and URL aliases, extended as routes are renamed or retired.
-// Static builds emit these as `<meta http-equiv="refresh">` pages. See
-// intentional-feature-removals.md.
+// Static builds emit these as `<meta http-equiv="refresh">` pages. See the
+// "Intentional Route Changes" section of docs/astro-migration-phase-1.md.
 const aliasRedirects = {
   '/feedback':
     'https://ethereum-magicians.org/t/community-feedback-on-non-headlining-features-in-glamsterdam/26410',

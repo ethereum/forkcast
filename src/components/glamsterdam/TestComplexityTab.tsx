@@ -24,9 +24,12 @@ type SortField = 'eip' | 'complexity' | 'stage' | 'tests';
 type SortDirection = 'asc' | 'desc';
 type FilterTier = 'all' | 'Low' | 'Medium' | 'High' | 'unassessed';
 
-const SELECTED_FORK = 'glamsterdam';
+interface TestComplexityTabProps {
+  fork?: string;
+}
 
-const TestComplexityTab: React.FC = () => {
+const TestComplexityTab: React.FC<TestComplexityTabProps> = ({ fork = 'glamsterdam' }) => {
+  const SELECTED_FORK = fork;
   const [sortField, setSortField] = useState<SortField>('complexity');
   const [sortDirection, setSortDirection] = useState<SortDirection>('desc');
   const [filterTier, setFilterTier] = useState<FilterTier>('all');
@@ -66,7 +69,7 @@ const TestComplexityTab: React.FC = () => {
         eip,
         layer: eip.layer,
       }));
-  }, []);
+  }, [SELECTED_FORK]);
 
   // Combine EIPs with complexity data
   const eipsWithComplexity = useMemo(() => {
@@ -97,7 +100,7 @@ const TestComplexityTab: React.FC = () => {
     }
 
     return result;
-  }, [eipsWithComplexity, filterTier, hideExcluded]);
+  }, [eipsWithComplexity, filterTier, hideExcluded, SELECTED_FORK]);
 
   // Apply sorting
   const sortedEips = useMemo(() => {
@@ -127,7 +130,7 @@ const TestComplexityTab: React.FC = () => {
 
       return sortDirection === 'asc' ? comparison : -comparison;
     });
-  }, [filteredEips, sortField, sortDirection]);
+  }, [filteredEips, sortField, sortDirection, SELECTED_FORK]);
 
   // Calculate summary stats
   const stats = useMemo(() => {

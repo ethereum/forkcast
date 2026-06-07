@@ -121,9 +121,16 @@ async function fetchPatchForCommit(sha, eipNumber, headers) {
       f.filename === `EIPS/eip-${eipNumber}.md` ||
       f.previous_filename === `EIPS/eip-${eipNumber}.md`,
   );
-  const patch = eipFile?.patch || null;
-  if (patch && patch.length > MAX_PATCH_SIZE) return null;
-  return patch;
+  if (!eipFile) return null;
+
+  const additions = eipFile.additions || 0;
+  const deletions = eipFile.deletions || 0;
+  const patch = eipFile.patch || null;
+
+  if (patch && patch.length > MAX_PATCH_SIZE) {
+    return { patch: null, additions, deletions };
+  }
+  return { patch, additions, deletions };
 }
 
 /**
@@ -164,6 +171,73 @@ async function fetchCommitsForEip(eipNumber, headers, since) {
   }
 
   return allCommits;
+}
+
+/**
+ * Fetch all open PRs that modify tracked EIP spec files in a single pass.
+ * Returns a Map<eipNumber, openPr[]>. Throws on search API failure so that
+ * callers preserve stale data instead of overwriting with empty results.
+ */
+async function fetchAllOpenEipPrs(eipNumbers, headers) {
+  const eipSet = new Set(eipNumbers);
+  const prsByEip = new Map();
+
+  // Paginated search for all open "Update EIP-" PRs
+  const query = `repo:ethereum/EIPs is:pr is:open "Update EIP-" in:title`;
+  let url = `https://api.github.com/search/issues?q=${encodeURIComponent(query)}&per_page=100`;
+
+  const allItems = [];
+  while (url) {
+    const response = await fetch(url, { headers });
+    if (!response.ok) {
+      throw new Error(`Search API returned ${response.status} fetching open EIP PRs`);
+    }
+    const data = await response.json();
+    allItems.push(...(data.items || []));
+    url = parseNextLink(response.headers.get('link'));
+    if (url) await sleep(2000); // Search API: 30 req/min
+  }
+
+  // For each PR, fetch its paginated file list and group by EIP
+  for (const item of allItems) {
+    const files = [];
+    let page = 1;
+    while (true) {
+      const filesUrl = `https://api.github.com/repos/ethereum/EIPs/pulls/${item.number}/files?per_page=100&page=${page}`;
+      const filesResp = await fetch(filesUrl, { headers });
+      if (!filesResp.ok) {
+        throw new Error(
+          `Failed to fetch files for PR #${item.number}: HTTP ${filesResp.status}`,
+        );
+      }
+      const pageFiles = await filesResp.json();
+      files.push(...pageFiles);
+      if (pageFiles.length < 100) break;
+      page++;
+      await sleep(100);
+    }
+    for (const f of files) {
+      if (f.status !== 'modified') continue;
+      const match = f.filename.match(/^EIPS\/eip-(\d+)\.md$/);
+      if (!match) continue;
+      const eipId = parseInt(match[1], 10);
+      if (!eipSet.has(eipId)) continue;
+
+      if (!prsByEip.has(eipId)) prsByEip.set(eipId, []);
+      prsByEip.get(eipId).push({
+        number: item.number,
+        title: item.title,
+        author: item.user?.login || 'unknown',
+        updatedAt: item.updated_at,
+        additions: f.additions || 0,
+        deletions: f.deletions || 0,
+      });
+    }
+
+    await sleep(100);
+  }
+
+  return prsByEip;
 }
 
 async function main() {
@@ -212,6 +286,19 @@ Environment:
     );
   }
 
+  // Fetch all open EIP PRs upfront (single search pass)
+  let openPrsByEip = new Map();
+  let openPrFetchFailed = false;
+  try {
+    console.log('Fetching open EIP PRs...');
+    openPrsByEip = await fetchAllOpenEipPrs(eipNumbers, headers);
+    console.log(`Found open PRs for ${openPrsByEip.size} EIPs.`);
+  } catch (err) {
+    console.error(`  Error fetching open PRs: ${err.message}`);
+    console.error('  Open PR data will be preserved as-is (not overwritten).');
+    openPrFetchFailed = true;
+  }
+
   let updated = 0;
   let skipped = 0;
   let errors = 0;
@@ -232,6 +319,18 @@ Environment:
           );
 
           if (newCommits.length === 0 && entry && historyFileExists) {
+            // No new commits — only update the file if open PR data changed
+            const existing = loadExistingHistory(eipNumber);
+            if (!openPrFetchFailed) {
+              const openPrs = openPrsByEip.get(eipNumber) || [];
+              const hadOpenPrs = (existing?.openPrs || []).length > 0;
+              if (openPrs.length > 0 || hadOpenPrs) {
+                const history = { ...existing, openPrs: openPrs.length > 0 ? openPrs : undefined };
+                if (!history.openPrs) delete history.openPrs;
+                const filePath = path.join(HISTORY_DIR, `${eipNumber}.json`);
+                fs.writeFileSync(filePath, JSON.stringify(history, null, 2) + '\n');
+              }
+            }
             return { eipNumber, skipped: true };
           }
 
@@ -245,25 +344,33 @@ Environment:
 
           // Fetch patches for new commits
           for (const commit of dedupedNew) {
-            const patch = await fetchPatchForCommit(
+            const result = await fetchPatchForCommit(
               commit.sha,
               eipNumber,
               headers,
             );
-            if (patch) commit.patch = patch;
+            if (result) {
+              if (result.patch) commit.patch = result.patch;
+              commit.additions = result.additions;
+              commit.deletions = result.deletions;
+            }
             await sleep(100);
           }
 
           // Backfill patches for existing commits missing them
           const existingCommits = existing?.commits || [];
-          const missingPatches = existingCommits.filter((c) => !c.patch);
+          const missingPatches = existingCommits.filter((c) => !c.patch && c.additions === undefined);
           for (const commit of missingPatches) {
-            const patch = await fetchPatchForCommit(
+            const result = await fetchPatchForCommit(
               commit.sha,
               eipNumber,
               headers,
             );
-            if (patch) commit.patch = patch;
+            if (result) {
+              if (result.patch) commit.patch = result.patch;
+              commit.additions = result.additions;
+              commit.deletions = result.deletions;
+            }
             await sleep(100);
           }
 
@@ -272,9 +379,19 @@ Environment:
             (a, b) => new Date(b.date).getTime() - new Date(a.date).getTime(),
           );
 
+          // Merge open PRs from the upfront fetch
+          let openPrs;
+          if (openPrFetchFailed) {
+            // Preserve existing open PR data on failure
+            openPrs = existing?.openPrs || [];
+          } else {
+            openPrs = openPrsByEip.get(eipNumber) || [];
+          }
+
           const history = {
             eipId: eipNumber,
             commits: allCommits,
+            ...(openPrs.length > 0 ? { openPrs } : {}),
           };
 
           const filePath = path.join(HISTORY_DIR, `${eipNumber}.json`);

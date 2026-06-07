@@ -122,9 +122,21 @@ export interface EipSpecCommit {
   author: string;
   prNumber: number | null;
   patch?: string;
+  additions?: number;
+  deletions?: number;
+}
+
+export interface EipOpenPr {
+  number: number;
+  title: string;
+  author: string;
+  updatedAt: string;
+  additions: number;
+  deletions: number;
 }
 
 export interface EipSpecHistory {
   eipId: number;
   commits: EipSpecCommit[];
+  openPrs?: EipOpenPr[];
 }

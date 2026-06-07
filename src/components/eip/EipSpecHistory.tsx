@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import type { EipSpecHistory as EipSpecHistoryType, EipSpecCommit } from '../../types/eip';
+import type { EipSpecHistory as EipSpecHistoryType, EipSpecCommit, EipOpenPr } from '../../types/eip';
 
 interface EipSpecHistoryProps {
   eipId: number;
@@ -106,7 +106,11 @@ const ExternalLinkIcon: React.FC = () => (
 );
 
 const CommitEntry: React.FC<{ commit: EipSpecCommit; expanded: boolean; onToggle: () => void }> = ({ commit, expanded, onToggle }) => {
-  const stats = commit.patch ? getDiffStats(commit.patch) : null;
+  const stats = commit.patch
+    ? getDiffStats(commit.patch)
+    : commit.additions !== undefined
+      ? { additions: commit.additions!, deletions: commit.deletions ?? 0 }
+      : null;
 
   return (
     <div>
@@ -177,6 +181,56 @@ const CommitEntry: React.FC<{ commit: EipSpecCommit; expanded: boolean; onToggle
   );
 };
 
+const PendingChanges: React.FC<{ openPrs: EipOpenPr[] }> = ({ openPrs }) => (
+  <div className="mb-6">
+    <h3 className="text-sm font-semibold text-amber-700 dark:text-amber-400 uppercase tracking-wide mb-3">
+      Pending Changes
+      <span className="ml-2 text-xs font-normal normal-case text-amber-600 dark:text-amber-500">
+        {openPrs.length} open {openPrs.length === 1 ? 'PR' : 'PRs'}
+      </span>
+    </h3>
+    <div className="space-y-3 rounded-lg border border-amber-200 dark:border-amber-700/50 bg-amber-50/50 dark:bg-amber-900/10 p-3">
+      {openPrs.map((pr) => (
+        <div key={pr.number} className="flex items-start justify-between gap-2">
+          <div className="min-w-0 flex-1">
+            <a
+              href={`https://github.com/ethereum/EIPs/pull/${pr.number}`}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="text-sm font-medium text-slate-900 dark:text-slate-100 hover:text-purple-600 dark:hover:text-purple-400 transition-colors leading-snug break-words inline-flex items-center gap-1"
+            >
+              {pr.title} <ExternalLinkIcon />
+            </a>
+            <div className="mt-0.5 flex flex-wrap items-center gap-x-2 text-xs text-slate-400 dark:text-slate-400">
+              <span>{formatDate(pr.updatedAt)}</span>
+              <span>
+                by{' '}
+                <a
+                  href={`https://github.com/${pr.author}`}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="hover:text-slate-700 dark:hover:text-slate-200 transition-colors"
+                >
+                  {pr.author}
+                </a>
+              </span>
+              <span className="text-slate-300 dark:text-slate-500">|</span>
+              <span className="text-amber-600 dark:text-amber-400">
+                PR #{pr.number}
+              </span>
+            </div>
+          </div>
+          <span className="shrink-0 text-xs font-mono whitespace-nowrap pt-0.5">
+            <span className="text-emerald-600 dark:text-emerald-400">+{pr.additions}</span>
+            {' '}
+            <span className="text-red-500 dark:text-red-400">-{pr.deletions}</span>
+          </span>
+        </div>
+      ))}
+    </div>
+  </div>
+);
+
 export const EipSpecHistory: React.FC<EipSpecHistoryProps> = ({
   eipId,
   history,
@@ -243,6 +297,9 @@ export const EipSpecHistory: React.FC<EipSpecHistoryProps> = ({
 
   return (
     <div className="space-y-3">
+      {history.openPrs && history.openPrs.length > 0 && (
+        <PendingChanges openPrs={history.openPrs} />
+      )}
       <div className="flex items-center justify-between">
         <h3 className="text-sm font-semibold text-slate-900 dark:text-slate-100 uppercase tracking-wide">
           Spec Change History

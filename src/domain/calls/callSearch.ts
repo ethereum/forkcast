@@ -1,7 +1,7 @@
 /**
- * The call-page search button lives in the shared site nav (its own island),
- * while the search modal lives in the CallPage island. They coordinate through a
- * window event instead of shared React state.
+ * The call-page search button lives in the shared site nav (static markup), while
+ * the search modal lives in the CallPage island. They coordinate through a window
+ * event so the nav doesn't need to share React state with the page body.
  */
 const CALL_SEARCH_EVENT = 'forkcast:open-call-search';
 

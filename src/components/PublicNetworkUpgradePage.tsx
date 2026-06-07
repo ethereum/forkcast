@@ -95,7 +95,7 @@ interface PublicNetworkUpgradePageProps {
   metaEipLink?: string;
   clientTeamPerspectives?: ClientTeamPerspective[];
   activationDetails?: ActivationDetails;
-  /** When true, omit the page shell (Logo, ThemeToggle, back link) for embedding inside a layout. */
+  /** When true, omit the standalone "All Network Upgrades" back-link for embedding inside a layout. */
   embedded?: boolean;
   /** When true, also omit the header section (title, description, meta-eip link). */
   skipHeader?: boolean;

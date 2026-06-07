@@ -14,7 +14,7 @@ import { CallsIndexTimeline } from './calls-index/CallsIndexTimeline';
 const ACD_TYPES = ['acdc', 'acde', 'acdt'];
 
 // Concrete call-type filters own a path scope (/calls/acde); aggregate filters
-// (acd, breakouts) stay query-string state on /calls. (Phase 1.)
+// (acd, breakouts) stay query-string state on /calls.
 const CONCRETE_TYPE_FILTERS = ['acdc', 'acde', 'acdt'];
 
 const matchesSelectedBreakoutType = (callType: string, selectedBreakoutType: string): boolean => {

@@ -2,8 +2,7 @@ import type { APIRoute } from 'astro';
 import { eipsData } from '../../data/eips';
 import { buildEipStageChangesPayload } from '../../domain/eips/stageChanges';
 
-// Astro emits this as a static artifact during `astro build`, replacing the old
-// post-build scripts/generate-eip-stage-changes.mjs. Served at
+// Emitted as a static artifact during `astro build`, served at
 // https://forkcast.org/api/eip-stage-changes.json.
 export const prerender = true;
 

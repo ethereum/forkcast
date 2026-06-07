@@ -1,6 +1,6 @@
 ---
 import '../index.css';
-import SiteNav from '../components/ui/SiteNav';
+import SiteNav from '../components/ui/SiteNav.astro';
 
 interface Props {
   /** Full document title, e.g. "EIP Directory - Forkcast". */
@@ -26,7 +26,6 @@ const canonical = new URL(Astro.url.pathname, site).href;
 const ogImage = image
   ? new URL(image, site).href
   : new URL('/forkcast-metacard.png?v=2', site).href;
-const currentPath = Astro.url.pathname;
 ---
 
 <!doctype html>
@@ -95,12 +94,7 @@ const currentPath = Astro.url.pathname;
       traverse and access information from this website.
     </noscript>
     <div class="scanlines" aria-hidden="true"></div>
-    <SiteNav
-      client:only="react"
-      currentPath={currentPath}
-      variant={navVariant}
-      enableCallSearch={enableCallSearch}
-    />
+    <SiteNav variant={navVariant} enableCallSearch={enableCallSearch} />
     <main>
       <slot />
     </main>

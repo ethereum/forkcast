@@ -446,8 +446,8 @@ const CallPage: React.FC<CallPageProps> = ({ callPath, upcoming }) => {
     return () => window.removeEventListener('keydown', handleKeyDown);
   }, [handlePauseVideo, setIsSearchOpen]);
 
-  // The per-call search button lives in the shared nav (a separate island) and
-  // asks us to open search via a window event.
+  // The per-call search button lives in the shared (static) nav and asks us to
+  // open search via a window event.
   useEffect(() => {
     return onOpenCallSearch(() => {
       setIsSearchOpen(true);

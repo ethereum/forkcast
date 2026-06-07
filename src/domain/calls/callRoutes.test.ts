@@ -17,9 +17,9 @@ describe('buildCallIssueRedirects', () => {
     expect(buildCallIssueRedirects([{ path: 'acde/238' }])).toEqual({});
   });
 
-  // Guards the published-URL invariant the bot asked for: every completed call with
-  // an issue keeps an alias, and issue numbers are unique (no alias collision), so a
-  // future call sync cannot silently drop or clobber a shared /calls/{issue} URL.
+  // Guards the published-URL invariant: every completed call with an issue keeps an
+  // alias and issue numbers are unique (no collision), so a call sync can't silently
+  // drop or clobber a shared /calls/{issue} URL.
   it('emits exactly one alias per completed call that has an issue', () => {
     const map = buildCallIssueRedirects(protocolCalls);
     const withIssue = protocolCalls.filter((c) => c.issue != null);

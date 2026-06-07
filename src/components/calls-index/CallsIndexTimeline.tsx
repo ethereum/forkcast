@@ -149,8 +149,8 @@ const TimelineItemCard = ({ item, sectionId }: { item: TimelineItem; sectionId: 
     );
 
     const cardClasses = `block rounded-lg border border-slate-200 border-l-3 bg-white p-3 transition-all hover:border-slate-300 hover:shadow-md group dark:border-slate-700 dark:bg-slate-800 dark:hover:border-slate-600 dark:hover:shadow-slate-700/20 ${CALL_TYPE_BORDER_COLORS[item.type]}`;
-    // Only calls the static build emitted a watch page for are linked internally;
-    // the page reads its `upcoming` data from Astro props, not navigation state.
+    // Link internally only to calls whose watch page the static build emitted;
+    // others link out to GitHub.
     if (hasUpcomingWatchPage(item)) {
       return (
         <Link

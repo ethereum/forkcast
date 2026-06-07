@@ -1,0 +1,307 @@
+---
+import { isPathActive, normalizePathname } from '../../utils/path';
+
+interface Props {
+  variant?: 'default' | 'wide';
+  /** Show the per-call search button + "All Calls" link (call pages). */
+  enableCallSearch?: boolean;
+}
+
+const { variant = 'default', enableCallSearch = false } = Astro.props;
+
+// The header renders in the initial HTML (no hydration), so the logo and links
+// paint immediately instead of waiting on React. The few interactive pieces —
+// theme toggle, mobile menu, upgrade dropdown, call-search button — are wired up
+// by the small client script below.
+const pathname = normalizePathname(Astro.url.pathname);
+
+// Wide pages use the broader app canvas; widen the nav so the logo / nav /
+// contextual actions align with the page below.
+const isWide = variant === 'wide';
+const headerPadding = isWide ? 'px-4 sm:px-6 xl:px-8 2xl:px-10' : 'px-6';
+const navMaxWidth = isWide ? 'max-w-[1800px]' : 'max-w-4xl';
+const desktopNavDisplay = isWide ? 'hidden lg:flex' : 'hidden md:flex';
+const compactNavDisplay = isWide ? 'lg:hidden' : 'md:hidden';
+
+const navItems = [
+  { to: '/eips', label: 'EIPs' },
+  { to: '/calls', label: 'Calls' },
+  { to: '/decisions', label: 'Decisions' },
+  { to: '/schedule', label: 'Schedule' },
+  { to: '/devnets', label: 'Devnets' },
+];
+
+const upgradeNavItems = [
+  { to: '/upgrade/glamsterdam', label: 'Glamsterdam', variant: 'item' },
+  { to: '/upgrade/hegota', label: 'Hegota', variant: 'item' },
+  { to: '/upgrades', label: 'View all upgrades', variant: 'index' },
+];
+
+const upgradesActive = pathname === '/upgrades' || pathname.startsWith('/upgrade/');
+
+const navLinkClass = (active: boolean) =>
+  `px-3 py-1.5 rounded-md text-sm font-medium transition-colors ${
+    active
+      ? 'text-purple-700 dark:text-purple-300'
+      : 'text-slate-600 dark:text-slate-300 hover:text-slate-900 dark:hover:text-slate-100'
+  }`;
+
+const menuLinkClass = (active: boolean, itemVariant: string) =>
+  `block rounded-md px-3 py-2 text-sm transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-purple-500/40 ${
+    active
+      ? 'bg-purple-50 text-purple-700 hover:bg-purple-100 hover:text-purple-800 dark:bg-purple-500/10 dark:text-purple-200 dark:hover:bg-purple-500/15 dark:hover:text-purple-100'
+      : itemVariant === 'index'
+        ? 'text-slate-500 hover:bg-slate-100 hover:text-slate-900 dark:text-slate-400 dark:hover:bg-slate-800/80 dark:hover:text-white'
+        : 'text-slate-700 hover:bg-slate-100 hover:text-slate-900 dark:text-slate-200 dark:hover:bg-slate-800/80 dark:hover:text-white'
+  }`;
+
+const mobileLinkClass = (active: boolean, isIndexLink: boolean) =>
+  `block rounded-md px-2 py-2 text-sm transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-purple-500/40 ${
+    active
+      ? 'font-medium text-purple-700 hover:bg-purple-50 dark:text-purple-300 dark:hover:bg-purple-500/10'
+      : isIndexLink
+        ? 'text-slate-500 hover:bg-slate-100 hover:text-slate-900 dark:text-slate-400 dark:hover:bg-slate-800/80 dark:hover:text-white'
+        : 'text-slate-700 hover:bg-slate-100 hover:text-slate-900 dark:text-slate-200 dark:hover:bg-slate-800/80 dark:hover:text-white'
+  }`;
+---
+
+<header
+  class="sticky top-0 z-30 bg-white/90 dark:bg-slate-900/90 backdrop-blur-sm border-b border-slate-200 dark:border-slate-700"
+>
+  <div class={headerPadding}>
+    <nav class={`relative ${navMaxWidth} mx-auto h-14 flex items-center justify-between gap-4`}>
+      <a href="/" class="forkcast-logo" data-astro-prefetch aria-label="Forkcast home">
+        <span class="fork-symbol text-lg" aria-hidden="true">⎇</span>
+        <img
+          src="/forkcast-logo.svg"
+          alt="Forkcast"
+          width="907"
+          height="213"
+          fetchpriority="high"
+          class="h-5 w-auto forkcast-wordmark transition-opacity duration-200"
+        />
+      </a>
+
+      {/* Absolutely centered relative to the nav so widths of logo / right-cluster don't drift it. */}
+      <div
+        class={`${desktopNavDisplay} items-center gap-1 absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2`}
+      >
+        <div class="group relative" data-upgrade-menu>
+          <button
+            type="button"
+            data-upgrade-trigger
+            aria-haspopup="menu"
+            aria-expanded="false"
+            class={`flex items-center gap-1 px-3 py-1.5 rounded-md text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-purple-500/40 ${
+              upgradesActive
+                ? 'text-purple-700 dark:text-purple-300'
+                : 'text-slate-600 dark:text-slate-300 hover:text-slate-900 dark:hover:text-slate-100'
+            }`}
+          >
+            Upgrades
+            <svg
+              class="h-3.5 w-3.5 transition-transform group-hover:rotate-180 group-focus-within:rotate-180"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+              aria-hidden="true"
+            >
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+            </svg>
+          </button>
+
+          <div
+            class="invisible absolute left-0 top-full z-40 w-44 pt-2 opacity-0 transition-opacity group-hover:visible group-hover:opacity-100 group-focus-within:visible group-focus-within:opacity-100"
+          >
+            <div
+              class="flex flex-col gap-1 rounded-lg border border-slate-200 bg-white p-1.5 shadow-lg shadow-slate-900/10 dark:border-slate-700 dark:bg-slate-900 dark:shadow-black/30"
+            >
+              {
+                upgradeNavItems.map((item) => (
+                  <div
+                    class={item.variant === 'index' ? 'border-t border-slate-200 pt-1 dark:border-slate-700' : undefined}
+                  >
+                    <a
+                      href={item.to}
+                      data-astro-prefetch
+                      class={menuLinkClass(isPathActive(pathname, item.to), item.variant)}
+                    >
+                      <span class={item.variant === 'index' ? 'font-medium' : 'font-semibold'}>{item.label}</span>
+                    </a>
+                  </div>
+                ))
+              }
+            </div>
+          </div>
+        </div>
+
+        {
+          navItems.map((item) => (
+            <a href={item.to} data-astro-prefetch class={navLinkClass(isPathActive(pathname, item.to))}>
+              {item.label}
+            </a>
+          ))
+        }
+      </div>
+
+      <div class="flex items-center gap-2">
+        {
+          enableCallSearch && (
+            <Fragment>
+              <a
+                href="/calls"
+                data-astro-prefetch
+                class="text-sm text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-200 transition-colors whitespace-nowrap"
+              >
+                ← All Calls
+              </a>
+              <button
+                type="button"
+                data-call-search
+                aria-label="Search this call"
+                title="Search this call"
+                class="p-2 rounded-lg bg-slate-100 hover:bg-slate-200 dark:bg-slate-700 dark:hover:bg-slate-600 transition-colors"
+              >
+                <svg class="w-5 h-5 text-slate-700 dark:text-slate-300" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                </svg>
+              </button>
+            </Fragment>
+          )
+        }
+
+        <button
+          type="button"
+          data-theme-toggle
+          aria-label="Toggle dark mode"
+          class="p-2 rounded-lg bg-slate-100 hover:bg-slate-200 dark:bg-slate-700 dark:hover:bg-slate-600 transition-colors"
+        >
+          {/* Moon (light mode) and sun (dark mode) icons are swapped by CSS so the
+              right one shows before the script runs — no flash. */}
+          <svg class="w-5 h-5 text-slate-700 dark:hidden" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z" />
+          </svg>
+          <svg class="w-5 h-5 text-slate-300 hidden dark:block" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z" />
+          </svg>
+        </button>
+
+        <button
+          type="button"
+          data-mobile-toggle
+          aria-label="Toggle navigation"
+          aria-expanded="false"
+          class={`${compactNavDisplay} p-2 rounded-md text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800`}
+        >
+          <svg data-icon-menu class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
+          </svg>
+          <svg data-icon-close class="w-5 h-5 hidden" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+          </svg>
+        </button>
+      </div>
+    </nav>
+  </div>
+
+  <div
+    data-mobile-panel
+    class={`hidden ${compactNavDisplay} border-t border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 ${headerPadding}`}
+  >
+    <div class={`${navMaxWidth} mx-auto py-3`}>
+      <div class="px-1 py-2 text-sm text-slate-700 dark:text-slate-200">Upgrades</div>
+      <div class="mb-3 ml-2 space-y-1 border-l border-slate-200 pl-3 dark:border-slate-700">
+        {
+          upgradeNavItems.map((item) => (
+            <div
+              class={item.variant === 'index' ? 'mt-2 border-t border-slate-200 pt-2 dark:border-slate-700' : undefined}
+            >
+              <a
+                href={item.to}
+                data-astro-prefetch
+                class={mobileLinkClass(isPathActive(pathname, item.to), item.variant === 'index')}
+              >
+                {item.label}
+              </a>
+            </div>
+          ))
+        }
+      </div>
+      {
+        navItems.map((item) => (
+          <a
+            href={item.to}
+            data-astro-prefetch
+            class={`block px-1 py-2 text-sm ${
+              isPathActive(pathname, item.to)
+                ? 'text-purple-700 dark:text-purple-300 font-medium'
+                : 'text-slate-700 dark:text-slate-200'
+            }`}
+          >
+            {item.label}
+          </a>
+        ))
+      }
+    </div>
+  </div>
+</header>
+
+<script>
+  import { openCallSearch } from '../../domain/calls/callSearch';
+
+  // Theme toggle: flip the `.dark` class that the layout's pre-paint script set,
+  // persist the choice, and broadcast it so any other island can stay in sync. The
+  // sun/moon icons are swapped by CSS, so the correct one shows before this runs.
+  const themeToggle = document.querySelector('[data-theme-toggle]');
+  const syncThemeLabel = () => {
+    const dark = document.documentElement.classList.contains('dark');
+    themeToggle?.setAttribute('aria-label', `Switch to ${dark ? 'light' : 'dark'} mode`);
+  };
+  themeToggle?.addEventListener('click', () => {
+    const dark = document.documentElement.classList.toggle('dark');
+    try {
+      localStorage.setItem('theme', dark ? 'dark' : 'light');
+    } catch {
+      // Ignore storage failures (private mode, etc.); the class still applies.
+    }
+    window.dispatchEvent(new Event('forkcast:themechange'));
+    syncThemeLabel();
+  });
+  window.addEventListener('forkcast:themechange', syncThemeLabel);
+  syncThemeLabel();
+
+  // Mobile menu: toggle the panel and swap the hamburger / close icons.
+  const mobileToggle = document.querySelector('[data-mobile-toggle]');
+  const mobilePanel = document.querySelector('[data-mobile-panel]');
+  const iconMenu = mobileToggle?.querySelector('[data-icon-menu]');
+  const iconClose = mobileToggle?.querySelector('[data-icon-close]');
+  mobileToggle?.addEventListener('click', () => {
+    if (!mobilePanel) return;
+    const open = !mobilePanel.classList.toggle('hidden');
+    mobileToggle.setAttribute('aria-expanded', String(open));
+    iconMenu?.classList.toggle('hidden', open);
+    iconClose?.classList.toggle('hidden', !open);
+  });
+
+  // Upgrade dropdown: shown via CSS hover/focus-within. Keep aria-expanded in sync
+  // and let Escape dismiss it for keyboard users.
+  const upgradeMenu = document.querySelector('[data-upgrade-menu]');
+  const upgradeTrigger = upgradeMenu?.querySelector('[data-upgrade-trigger]');
+  const setExpanded = (open: boolean) => upgradeTrigger?.setAttribute('aria-expanded', String(open));
+  upgradeMenu?.addEventListener('pointerenter', () => setExpanded(true));
+  upgradeMenu?.addEventListener('pointerleave', () => {
+    if (!upgradeMenu.contains(document.activeElement)) setExpanded(false);
+  });
+  upgradeMenu?.addEventListener('focusin', () => setExpanded(true));
+  upgradeMenu?.addEventListener('focusout', (event) => {
+    if (!upgradeMenu.contains((event as FocusEvent).relatedTarget as Node | null)) setExpanded(false);
+  });
+  upgradeMenu?.addEventListener('keydown', (event) => {
+    if ((event as KeyboardEvent).key !== 'Escape') return;
+    setExpanded(false);
+    if (document.activeElement instanceof HTMLElement) document.activeElement.blur();
+  });
+
+  // The per-call search button asks the CallPage island to open search (window event).
+  document.querySelector('[data-call-search]')?.addEventListener('click', () => openCallSearch());
+</script>

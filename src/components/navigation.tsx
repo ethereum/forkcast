@@ -6,7 +6,7 @@
  * Astro owns routing: every route is a real page. These helpers exist so React
  * islands can (a) render normal links, (b) read the current URL, and (c) update
  * query/hash state in place — without a full reload — for the deliberately
- * URL-but-not-route state Phase 1 keeps (filters, tabs, playback, search, …).
+ * URL-but-not-route state the app keeps (filters, tabs, playback, search, …).
  *
  * Navigating to a different path performs a real browser navigation (a new Astro
  * page). Changing only the query/hash on the current path updates history in

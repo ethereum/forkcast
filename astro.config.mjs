@@ -48,10 +48,10 @@ function callIssueRedirects() {
   }
 }
 
-// Hand-maintained path and URL aliases, extended as routes are renamed or retired.
+// Legacy path and URL aliases (still extended as routes are renamed or retired).
 // Static builds emit these as `<meta http-equiv="refresh">` pages. See the
 // "Intentional Route Changes" section of docs/astro-migration-phase-1.md.
-const aliasRedirects = {
+const legacyRedirects = {
   '/feedback':
     'https://ethereum-magicians.org/t/community-feedback-on-non-headlining-features-in-glamsterdam/26410',
   '/planner': '/schedule',
@@ -78,7 +78,7 @@ export default defineConfig({
     plugins: [tailwindcss()],
   },
   redirects: {
-    ...aliasRedirects,
+    ...legacyRedirects,
     ...pendingEipRedirects(),
     ...callIssueRedirects(),
   },

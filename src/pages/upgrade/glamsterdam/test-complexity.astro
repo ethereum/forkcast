@@ -1,11 +1,9 @@
 ---
 import Layout from '../../../layouts/Layout.astro';
 import GlamsterdamUpgradePage from '../../../components/GlamsterdamUpgradePage';
+import { staticPageMetadata } from '../../../domain/routes/pageMetadata';
 ---
 
-<Layout
-  title="Glamsterdam Test Complexity - Forkcast"
-  description="Analyze STEEL test complexity assessments for EIPs proposed for Glamsterdam."
->
+<Layout {...staticPageMetadata.glamsterdamTestComplexity}>
   <GlamsterdamUpgradePage client:only="react" activeTab="test-complexity" />
 </Layout>

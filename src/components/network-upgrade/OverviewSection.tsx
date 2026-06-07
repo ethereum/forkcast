@@ -1,5 +1,5 @@
 import React from 'react';
-import { Link } from '../../lib/navigation';
+import { Link } from '../navigation';
 import { EIP } from '../../types';
 import {
   getInclusionStage,

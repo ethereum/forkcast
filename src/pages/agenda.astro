@@ -1,11 +1,9 @@
 ---
 import Layout from '../layouts/Layout.astro';
 import CallPlanPage from '../components/call/CallPlanPage';
+import { staticPageMetadata } from '../domain/routes/pageMetadata';
 ---
 
-<Layout
-  title="Agenda Planner - Forkcast"
-  description="Agenda planning for Ethereum AllCoreDevs facilitators. Suggested topics, open action items, deferred decisions, and EIP discussion history."
->
+<Layout {...staticPageMetadata.agenda}>
   <CallPlanPage client:only="react" />
 </Layout>

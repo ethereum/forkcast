@@ -1,11 +1,9 @@
 ---
 import Layout from '../../layouts/Layout.astro';
 import CallsIndexPage from '../../components/CallsIndexPage';
+import { staticPageMetadata } from '../../domain/routes/pageMetadata';
 ---
 
-<Layout
-  title="Protocol Calls - Forkcast"
-  description="Browse Ethereum protocol development calls including AllCoreDevs Consensus, Execution, and Testing meetings."
->
+<Layout {...staticPageMetadata.callsIndex}>
   <CallsIndexPage client:only="react" />
 </Layout>

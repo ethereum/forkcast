@@ -1,11 +1,9 @@
 ---
 import Layout from '../../../layouts/Layout.astro';
 import HegotaUpgradePage from '../../../components/HegotaUpgradePage';
+import { staticPageMetadata } from '../../../domain/routes/pageMetadata';
 ---
 
-<Layout
-  title="Hegotá Test Complexity - Forkcast"
-  description="Analyze STEEL test complexity assessments for EIPs proposed for Hegotá."
->
+<Layout {...staticPageMetadata.hegotaTestComplexity}>
   <HegotaUpgradePage client:only="react" activeTab="test-complexity" />
 </Layout>

@@ -1,7 +1,8 @@
 import { useEffect, useCallback, type ReactNode } from 'react';
-import { Navigate, Link, useNavigate } from '../lib/navigation';
+import { Navigate, Link, useNavigate } from './navigation';
 import { getDevnetSpec, getDevnetSeriesSiblings } from '../data/devnet-specs';
-import { useDevnetNetworks, getNetworkEntry, getNetworkMetadata } from '../hooks/useDevnetNetworks';
+import { useDevnetNetworks } from '../hooks/useDevnetNetworks';
+import { getNetworkEntry, getNetworkMetadata } from '../domain/devnets/networks';
 import { parseMarkdownLinks, parseMarkdownBold } from '../utils/markdown';
 import type {
   DevnetSpec,

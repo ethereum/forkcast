@@ -1,7 +1,8 @@
 import React from 'react';
-import { Link } from '../../lib/navigation';
+import { Link } from '../navigation';
 import { EIP } from '../../types';
 import { networkUpgrades, getUpgradePagePath } from '../../data/upgrades';
+import { formatCallReference } from '../../domain/calls/callReference';
 import { Tooltip } from '../ui';
 
 interface EipTimelineProps {
@@ -79,16 +80,6 @@ const statusLabels: Record<string, string> = {
   Included: 'Included',
   Withdrawn: 'Withdrawn',
 };
-
-function formatCallReference(call: string, timestamp?: number): { display: string; link: string } {
-  const [prefix, number] = call.split('/');
-  const paddedNumber = number.padStart(3, '0');
-  const baseLink = `/calls/${prefix}/${paddedNumber}`;
-  return {
-    display: `${prefix.toUpperCase()} #${number}`,
-    link: timestamp ? `${baseLink}#t=${timestamp}` : baseLink,
-  };
-}
 
 function formatDate(dateString: string): string {
   const date = new Date(dateString + 'T00:00:00');

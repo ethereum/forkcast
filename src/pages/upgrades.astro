@@ -1,11 +1,9 @@
 ---
 import Layout from '../layouts/Layout.astro';
 import UpgradesIndexPage from '../components/UpgradesIndexPage';
+import { staticPageMetadata } from '../domain/routes/pageMetadata';
 ---
 
-<Layout
-  title="Network Upgrades - Forkcast"
-  description="Catalog of Ethereum network upgrades - in progress, live, and historical."
->
+<Layout {...staticPageMetadata.upgrades}>
   <UpgradesIndexPage client:only="react" />
 </Layout>

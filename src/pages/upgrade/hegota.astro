@@ -1,11 +1,9 @@
 ---
 import Layout from '../../layouts/Layout.astro';
 import HegotaUpgradePage from '../../components/HegotaUpgradePage';
+import { staticPageMetadata } from '../../domain/routes/pageMetadata';
 ---
 
-<Layout
-  title="Hegotá Upgrade - Forkcast"
-  description="Hegotá network upgrade: overview, EIP proposals, and test complexity."
->
+<Layout {...staticPageMetadata.hegota}>
   <HegotaUpgradePage client:only="react" activeTab="overview" />
 </Layout>

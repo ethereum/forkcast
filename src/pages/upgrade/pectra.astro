@@ -2,14 +2,12 @@
 import Layout from '../../layouts/Layout.astro';
 import PublicNetworkUpgradePage from '../../components/PublicNetworkUpgradePage';
 import { getUpgradeById } from '../../data/upgrades';
+import { staticPageMetadata } from '../../domain/routes/pageMetadata';
 
 const upgrade = getUpgradeById('pectra')!;
 ---
 
-<Layout
-  title="Pectra Upgrade - Forkcast"
-  description="Account abstraction, validator upgrades, and 2x blob throughput - making Ethereum faster and cheaper. Live on mainnet May 7, 2025."
->
+<Layout {...staticPageMetadata.pectra}>
   <PublicNetworkUpgradePage
     client:only="react"
     forkName="Pectra"

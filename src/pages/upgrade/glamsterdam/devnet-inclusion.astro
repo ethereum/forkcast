@@ -1,11 +1,9 @@
 ---
 import Layout from '../../../layouts/Layout.astro';
 import GlamsterdamUpgradePage from '../../../components/GlamsterdamUpgradePage';
+import { staticPageMetadata } from '../../../domain/routes/pageMetadata';
 ---
 
-<Layout
-  title="Glamsterdam Devnet Inclusion - Forkcast"
-  description="Devnet inclusion status for EIPs proposed for the Glamsterdam network upgrade."
->
+<Layout {...staticPageMetadata.glamsterdamDevnetInclusion}>
   <GlamsterdamUpgradePage client:only="react" activeTab="devnet-inclusion" />
 </Layout>

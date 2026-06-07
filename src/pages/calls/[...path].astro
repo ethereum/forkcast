@@ -2,7 +2,7 @@
 import Layout from '../../layouts/Layout.astro';
 import CallPage from '../../components/call/CallPage';
 import { protocolCalls, callTypeNames, type CallType } from '../../data/calls';
-import { upcomingCalls } from '../../domain/calls/upcomingCalls';
+import { upcomingCalls, hasUpcomingWatchPage } from '../../domain/calls/upcomingCalls';
 
 // Canonical call pages (/calls/{series}/{number}) for completed calls, plus
 // upcoming-call watch pages from the build-time snapshot. Single-segment paths
@@ -25,8 +25,11 @@ export function getStaticPaths() {
     paths.push({ params: { path: call.path }, props: { title, description } });
   }
 
-  // Upcoming calls that don't yet have a completed-call entry get a watch page.
+  // Upcoming calls get an internal watch page only when the index links to one
+  // (i.e. there's a video to watch); calls without one link out to the GitHub
+  // issue instead, so emitting a page for them would be an unreachable route.
   for (const call of upcomingCalls) {
+    if (!hasUpcomingWatchPage(call)) continue;
     if (protocolCalls.some((c) => c.type === call.type && c.number === call.number)) continue;
     const name = callTypeNames[call.type as CallType] || call.type;
     paths.push({

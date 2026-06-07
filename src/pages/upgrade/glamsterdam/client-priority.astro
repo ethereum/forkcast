@@ -1,11 +1,9 @@
 ---
 import Layout from '../../../layouts/Layout.astro';
 import GlamsterdamUpgradePage from '../../../components/GlamsterdamUpgradePage';
+import { staticPageMetadata } from '../../../domain/routes/pageMetadata';
 ---
 
-<Layout
-  title="Glamsterdam Client Priority - Forkcast"
-  description="Aggregate view of Ethereum client team stances on EIPs proposed for Glamsterdam."
->
+<Layout {...staticPageMetadata.glamsterdamClientPriority}>
   <GlamsterdamUpgradePage client:only="react" activeTab="client-priority" />
 </Layout>

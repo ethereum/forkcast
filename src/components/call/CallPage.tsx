@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef, useCallback, useMemo } from 'react';
-import { Link, useLocation, useNavigate, useSearchParams } from '../../lib/navigation';
+import { Link, useLocation, useNavigate, useSearchParams } from '../navigation';
 import YouTube, { YouTubeProps } from 'react-youtube';
 import ChatLog from './ChatLog';
 import TldrSummary from './TldrSummary';
@@ -7,7 +7,7 @@ import CallSearch from './CallSearch';
 import { protocolCalls, callTypeNames, isOneOffCall, type CallType } from '../../data/calls';
 import { breakouts, breakoutLabels, type Breakout, type BreakoutKind } from '../../data/breakouts';
 import { upcomingCalls } from '../../domain/calls/upcomingCalls';
-import { onOpenCallSearch } from '../../lib/callSearch';
+import { onOpenCallSearch } from '../../domain/calls/callSearch';
 import { eipsData } from '../../data/eips';
 import { EIP, ForkRelationship, KeyDecision } from '../../types/eip';
 import { isSearchHotkey } from '../search/searchShortcuts';

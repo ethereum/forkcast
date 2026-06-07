@@ -2,14 +2,12 @@
 import Layout from '../../layouts/Layout.astro';
 import PublicNetworkUpgradePage from '../../components/PublicNetworkUpgradePage';
 import { getUpgradeById } from '../../data/upgrades';
+import { staticPageMetadata } from '../../domain/routes/pageMetadata';
 
 const upgrade = getUpgradeById('fusaka')!;
 ---
 
-<Layout
-  title="Fusaka Upgrade - Forkcast"
-  description="PeerDAS enables nodes to specialize in storing subsets of data while maintaining security, dramatically increasing data capacity for Layer 2 networks. Live on mainnet Dec 3, 2025."
->
+<Layout {...staticPageMetadata.fusaka}>
   <PublicNetworkUpgradePage
     client:only="react"
     forkName="Fusaka"

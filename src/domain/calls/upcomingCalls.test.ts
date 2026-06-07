@@ -1,10 +1,10 @@
 import { describe, expect, it } from 'vitest';
+import { isUpcomingCallStillRelevant } from './upcomingCalls';
 import {
-  isUpcomingCallStillRelevant,
   resolveUpcomingCallSchedule,
   resolveUpcomingCallSeries,
   resolveUpcomingCallType
-} from './upcomingCalls';
+} from './upcomingCallParsing';
 
 describe('resolveUpcomingCallSchedule', () => {
   it('parses date and time from the body UTC Date & Time section', () => {

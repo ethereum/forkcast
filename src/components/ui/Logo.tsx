@@ -1,4 +1,4 @@
-import { Link } from '../../lib/navigation';
+import { Link } from '../navigation';
 
 type LogoSize = 'xs' | 'sm' | 'md' | 'lg' | 'xl' | '2xl';
 

@@ -1,5 +1,5 @@
 import React, { useState, useMemo, useEffect } from 'react';
-import { Link } from '../../lib/navigation';
+import { Link } from '../navigation';
 import { eipsData } from '../../data/eips';
 import { useComplexityData, getComplexityForEip } from '../../domain/complexity/useComplexityData';
 import { getComplexityTierColor, getComplexityTierEmoji } from '../../domain/complexity/complexity';

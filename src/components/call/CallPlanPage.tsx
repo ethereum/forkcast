@@ -1,11 +1,12 @@
 import { useState, useEffect, useMemo, useRef } from 'react';
-import { Link, useSearchParams } from '../../lib/navigation';
+import { Link, useSearchParams } from '../navigation';
 import { protocolCalls, callTypeNames, Call, type CallType } from '../../data/calls';
 import { KeyDecision, EIP } from '../../types/eip';
 import { eipsData, eipById as eipMap } from '../../data/eips';
 import { networkUpgrades } from '../../data/upgrades';
 import { getPendingProposalsForFork, type PendingProposal } from '../../data/pending-proposals';
 import { fetchUpcomingCalls, type UpcomingCall } from '../../domain/calls/upcomingCalls';
+import { formatCallReference } from '../../domain/calls/callReference';
 import { StructuredDecisionContent, EipLinkWithTooltip } from './KeyDecisionsSection';
 
 interface TldrData {
@@ -590,7 +591,7 @@ const CallPlanPage: React.FC = () => {
                     <span className="text-xs text-slate-500 dark:text-slate-400 shrink-0 ml-auto">
                       {lastDiscussedCall ? (
                         <Link
-                          to={`/calls/${lastDiscussedCall}`}
+                          to={formatCallReference(lastDiscussedCall).link}
                           onClick={(e) => e.stopPropagation()}
                           className="hover:text-purple-600 dark:hover:text-purple-400 transition-colors"
                         >

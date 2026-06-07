@@ -1,8 +1,8 @@
 import React, { useEffect, useRef, useState } from 'react';
-import { Link } from '../../lib/navigation';
+import { Link } from '../navigation';
 import { Logo } from './Logo';
 import ThemeToggle from './ThemeToggle';
-import { openCallSearch } from '../../lib/callSearch';
+import { openCallSearch } from '../../domain/calls/callSearch';
 import { isPathActive, normalizePathname } from '../../utils/path';
 
 const NavLinkItem: React.FC<{ to: string; label: string; active: boolean }> = ({ to, label, active }) => (

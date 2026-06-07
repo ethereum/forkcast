@@ -1,11 +1,9 @@
 ---
 import Layout from '../../../layouts/Layout.astro';
 import GlamsterdamUpgradePage from '../../../components/GlamsterdamUpgradePage';
+import { staticPageMetadata } from '../../../domain/routes/pageMetadata';
 ---
 
-<Layout
-  title="Glamsterdam Upgrade - Forkcast"
-  description="Enhancing Ethereum with Block-level Access Lists and ePBS for big efficiency and scalability gains."
->
+<Layout {...staticPageMetadata.glamsterdam}>
   <GlamsterdamUpgradePage client:only="react" activeTab="overview" />
 </Layout>

@@ -1,11 +1,9 @@
 ---
 import Layout from '../layouts/Layout.astro';
 import { SchedulePage } from '../components/schedule';
+import { staticPageMetadata } from '../domain/routes/pageMetadata';
 ---
 
-<Layout
-  title="ACD Planning Sandbox - Forkcast"
-  description="Internal planning tool for ACD participants. Explore hypothetical upgrade timelines."
->
+<Layout {...staticPageMetadata.schedule}>
   <SchedulePage client:only="react" />
 </Layout>

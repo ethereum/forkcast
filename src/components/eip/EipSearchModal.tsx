@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef, useMemo } from 'react';
-import { useNavigate } from '../../lib/navigation';
+import { useNavigate } from '../navigation';
 import { eipsData, eipById } from '../../data/eips';
 import { EIP } from '../../types/eip';
 import { getLaymanTitle, getProposalPrefix } from '../../utils';

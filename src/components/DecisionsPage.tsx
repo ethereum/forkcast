@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useMemo } from 'react';
-import { Link } from '../lib/navigation';
+import { Link } from './navigation';
 import { protocolCalls, Call } from '../data/calls';
 import { KeyDecision } from '../types/eip';
 import { eipById } from '../data/eips';

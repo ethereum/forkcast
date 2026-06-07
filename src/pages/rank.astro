@@ -1,11 +1,9 @@
 ---
 import Layout from '../layouts/Layout.astro';
 import RankPage from '../components/RankPage';
+import { staticPageMetadata } from '../domain/routes/pageMetadata';
 ---
 
-<Layout
-  title="Headliner Rankings - Forkcast"
-  description="Rank and compare headliner proposals for upcoming Ethereum network upgrades."
->
+<Layout {...staticPageMetadata.rank}>
   <RankPage client:only="react" />
 </Layout>

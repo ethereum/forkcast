@@ -1,6 +1,7 @@
 import React, { useEffect, useState, useRef } from 'react';
-import { Link, useSearchParams } from '../../lib/navigation';
+import { Link, useSearchParams } from '../navigation';
 import { eipsData } from '../../data/eips';
+import { getUpgradePagePath } from '../../data/upgrades';
 import { Logo } from '../ui/Logo';
 import { useAnalytics } from '../../hooks/useAnalytics';
 import { EIP } from '../../types';
@@ -208,12 +209,19 @@ export const StakeholderUpgradePage: React.FC<StakeholderUpgradePageProps> = ({ 
           <Logo size="lg" />
           <ThemeToggle />
         </div>
-        <Link
-          to={`/upgrade/${forkName.toLowerCase()}`}
-          className="text-slate-500 hover:text-slate-700 dark:text-slate-400 dark:hover:text-slate-200 mb-4 inline-block text-sm"
-        >
-          ← Back to {forkName}
-        </Link>
+        {/* Only link back when the fork has a public /upgrade/{id} page the static
+            build emits; otherwise omit the back-link rather than 404. */}
+        {(() => {
+          const backPath = getUpgradePagePath(forkName);
+          return backPath ? (
+            <Link
+              to={backPath}
+              className="text-slate-500 hover:text-slate-700 dark:text-slate-400 dark:hover:text-slate-200 mb-4 inline-block text-sm"
+            >
+              ← Back to {forkName}
+            </Link>
+          ) : null;
+        })()}
         <h1 className="text-2xl font-light text-slate-900 dark:text-slate-100 tracking-tight mb-2">
           {forkName} for{' '}
           <div className="inline-block relative" ref={dropdownRef}>

@@ -1,11 +1,9 @@
 ---
 import Layout from '../layouts/Layout.astro';
 import HomePage from '../components/HomePage';
+import { staticPageMetadata } from '../domain/routes/pageMetadata';
 ---
 
-<Layout
-  title="Forkcast - Ethereum Upgrade Tracker"
-  description="See what's on the horizon and how it impacts you. Track Ethereum network upgrades and explore how changes affect users, developers, and the ecosystem."
->
+<Layout {...staticPageMetadata.home}>
   <HomePage client:only="react" />
 </Layout>

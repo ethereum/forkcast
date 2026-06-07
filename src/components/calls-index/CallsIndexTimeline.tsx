@@ -1,5 +1,6 @@
-import { Link } from '../../lib/navigation';
+import { Link } from '../navigation';
 import { callTypeNames, isOneOffCall, type Call, type CallType } from '../../data/calls';
+import { hasUpcomingWatchPage } from '../../domain/calls/upcomingCalls';
 import { type TimelineEvent } from '../../data/events';
 import {
   getItemCalendarDate,
@@ -141,24 +142,19 @@ const TimelineItemCard = ({ item, sectionId }: { item: TimelineItem; sectionId: 
         <div className="flex flex-shrink-0 items-center gap-3">
           <div className="text-sm text-slate-600 dark:text-slate-400">{upcomingCallDisplayDate}</div>
           <div className="text-slate-400 transition-colors group-hover:text-slate-600 dark:text-slate-400 dark:group-hover:text-slate-300">
-            {item.youtubeUrl ? '→' : '↗'}
+            {hasUpcomingWatchPage(item) ? '→' : '↗'}
           </div>
         </div>
       </div>
     );
 
     const cardClasses = `block rounded-lg border border-slate-200 border-l-3 bg-white p-3 transition-all hover:border-slate-300 hover:shadow-md group dark:border-slate-700 dark:bg-slate-800 dark:hover:border-slate-600 dark:hover:shadow-slate-700/20 ${CALL_TYPE_BORDER_COLORS[item.type]}`;
-    if (item.youtubeUrl) {
+    // Only calls the static build emitted a watch page for are linked internally;
+    // the page reads its `upcoming` data from Astro props, not navigation state.
+    if (hasUpcomingWatchPage(item)) {
       return (
         <Link
           to={`/calls/${item.type}/${item.number}`}
-          state={{
-            upcoming: true,
-            date: item.date,
-            youtubeUrl: item.youtubeUrl,
-            githubUrl: item.githubUrl,
-            issueNumber: item.issueNumber
-          }}
           className={cardClasses}
           style={{ borderLeftStyle: 'dashed' }}
         >

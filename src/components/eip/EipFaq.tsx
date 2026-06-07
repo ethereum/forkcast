@@ -1,5 +1,5 @@
 import React, { lazy, Suspense, useEffect, useRef, useState } from 'react';
-import { useSearchParams } from '../../lib/navigation';
+import { useSearchParams } from '../navigation';
 import type { EipFaqItem } from '../../types/eip';
 
 // FAQ answers are short prose (links/bold/lists), so a bare markdown renderer is

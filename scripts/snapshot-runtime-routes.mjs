@@ -9,12 +9,11 @@
  * Islands must never link to a route that the static build did not emit, so both
  * the route generator and the UI read these snapshots — not the live endpoints.
  *
- * The normal dev/build commands read the checked-in snapshots without mutating
- * them. Run this script explicitly when route-discovered data should be refreshed;
- * deploy builds use the fresh path so production does not ship stale routes. On a
- * network failure, local refreshes keep the previous snapshot so offline work
- * still succeeds; CI fails rather than ship stale route data (override with
- * `ALLOW_STALE_ROUTE_SNAPSHOTS=1`).
+ * These are committed generated data, like the repo's other compiled artifacts.
+ * The normal dev/build commands read the checked-in files as-is; run this script
+ * (e.g. via `build:fresh`) to refresh them from the live endpoints. It writes only
+ * on a successful fetch, so a failed run leaves the committed snapshot untouched and
+ * exits non-zero — just re-run when the upstream is reachable.
  *
  * The upcoming-call parsing rules are imported from the single source of truth in
  * src/domain/calls/upcomingCallParsing.ts (Node type-strips it on import), so the
@@ -39,12 +38,6 @@ const GITHUB_ISSUES_URL =
 const NETWORKS_URL =
   'https://ethpandaops-platform-production-cartographoor.ams3.digitaloceanspaces.com/networks.json';
 
-// CI/deploy builds must not silently ship a stale or empty route snapshot, so a
-// fetch failure fails the build there. Local/offline builds keep the previous
-// snapshot. ALLOW_STALE_ROUTE_SNAPSHOTS=1 opts CI back into the lenient behavior.
-const FAIL_ON_STALE =
-  process.env.CI === 'true' && process.env.ALLOW_STALE_ROUTE_SNAPSHOTS !== '1';
-
 const githubHeaders = () => {
   const headers = {
     'User-Agent': 'forkcast-build',
@@ -53,33 +46,6 @@ const githubHeaders = () => {
   if (process.env.GITHUB_TOKEN) headers.Authorization = `Bearer ${process.env.GITHUB_TOKEN}`;
   return headers;
 };
-
-const FETCH_ATTEMPTS = 3;
-const RETRY_BASE_DELAY_MS = 500;
-
-const delay = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
-
-// Bounded retry with linear backoff. A transient network blip or upstream 5xx
-// shouldn't fail a deploy that already has a valid committed snapshot (FAIL_ON_STALE
-// turns any unrecovered failure into a hard error in CI), so absorb those here.
-// Reachable-but-non-OK responses (404, 403/429 rate-limit) are returned as-is for
-// the caller to handle — retrying them in-process won't help.
-async function fetchWithRetry(url, options) {
-  let lastError;
-  for (let attempt = 1; attempt <= FETCH_ATTEMPTS; attempt++) {
-    try {
-      const res = await fetch(url, options);
-      if (res.ok || res.status < 500 || attempt === FETCH_ATTEMPTS) return res;
-      lastError = new Error(`status ${res.status}`);
-    } catch (error) {
-      lastError = error;
-    }
-    // No backoff after the final attempt — both the 5xx and thrown-error paths exit
-    // the loop immediately so a hard failure isn't delayed before it propagates.
-    if (attempt < FETCH_ATTEMPTS) await delay(RETRY_BASE_DELAY_MS * attempt);
-  }
-  throw lastError;
-}
 
 // YYYY-MM-DD in UTC for the call's start. The runtime uses the viewer's timezone
 // to bucket calls, but the build-time snapshot must be deterministic across build
@@ -117,7 +83,7 @@ async function buildUpcomingCalls() {
     // No completed-call index yet; treat everything as potentially upcoming.
   }
 
-  const res = await fetchWithRetry(GITHUB_ISSUES_URL, { headers: githubHeaders() });
+  const res = await fetch(GITHUB_ISSUES_URL, { headers: githubHeaders() });
   if (!res.ok) throw new Error(`GitHub issues fetch failed: ${res.status}`);
   const issues = await res.json();
 
@@ -186,58 +152,31 @@ const writeJson = (file, data) => {
   fs.writeFileSync(file, `${JSON.stringify(data, null, 2)}\n`);
 };
 
-// On a fetch failure, fail the build in CI (don't ship stale/empty route data);
-// otherwise keep the previous snapshot so local/offline builds still succeed.
-const handleFetchFailure = (file, fallback, label, error) => {
-  console.warn(`  ⚠ ${label} fetch failed: ${error.message}`);
-  if (FAIL_ON_STALE) {
-    throw new Error(
-      `Refusing to build with a stale or empty ${label} snapshot in CI. ` +
-        `Fix the fetch, or set ALLOW_STALE_ROUTE_SNAPSHOTS=1 to allow the previous snapshot.`,
-    );
-  }
-  if (fs.existsSync(file)) {
-    console.warn(`  ↺ keeping previous ${label} snapshot`);
-    return;
-  }
-  writeJson(file, fallback);
-  console.warn(`  ∅ wrote empty ${label} snapshot (no previous data)`);
-};
-
 async function snapshotUpcomingCalls() {
-  try {
-    const calls = await buildUpcomingCalls();
-    writeJson(UPCOMING_CALLS_FILE, calls);
-    console.log(`  ✓ upcoming-calls.json (${calls.length} calls)`);
-  } catch (error) {
-    handleFetchFailure(UPCOMING_CALLS_FILE, [], 'upcoming-calls', error);
-  }
+  const calls = await buildUpcomingCalls();
+  writeJson(UPCOMING_CALLS_FILE, calls);
+  console.log(`  ✓ upcoming-calls.json (${calls.length} calls)`);
 }
 
 async function snapshotNetworks() {
-  try {
-    const res = await fetchWithRetry(NETWORKS_URL);
-    if (!res.ok) throw new Error(`status ${res.status}`);
-    const data = await res.json();
-    const snapshot = canonicalizeNetworksSnapshot(data);
-    writeJson(NETWORKS_FILE, snapshot);
-    const activeCount = Object.values(snapshot.networks).filter(
-      (n) => n?.status === 'active',
-    ).length;
-    console.log(
-      `  ✓ devnet-networks.json (${Object.keys(snapshot.networks).length} networks, ${activeCount} active)`,
-    );
-  } catch (error) {
-    handleFetchFailure(NETWORKS_FILE, { networkMetadata: {}, networks: {} }, 'devnet-networks', error);
-  }
+  const res = await fetch(NETWORKS_URL);
+  if (!res.ok) throw new Error(`networks fetch failed: ${res.status}`);
+  const snapshot = canonicalizeNetworksSnapshot(await res.json());
+  writeJson(NETWORKS_FILE, snapshot);
+  const activeCount = Object.values(snapshot.networks).filter((n) => n?.status === 'active').length;
+  console.log(
+    `  ✓ devnet-networks.json (${Object.keys(snapshot.networks).length} networks, ${activeCount} active)`,
+  );
 }
 
 fs.mkdirSync(GENERATED_DIR, { recursive: true });
-console.log('Snapshotting runtime-discovered routes...');
+console.log('Refreshing route snapshots...');
 try {
   await Promise.all([snapshotUpcomingCalls(), snapshotNetworks()]);
 } catch (error) {
-  console.error(`✖ ${error.message}`);
+  // We only write on a successful fetch, so the committed snapshots are left intact.
+  // Exit non-zero and re-run when the upstream is reachable.
+  console.error(`✖ snapshot refresh failed: ${error.message}`);
   process.exit(1);
 }
 console.log('✨ Snapshots ready.');

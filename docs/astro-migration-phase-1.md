@@ -55,6 +55,8 @@ Phase 1 should remove that redirect behavior and replace it with real Astro-gene
 
 Aggregate filters are not new public routes in Phase 1. Keep aggregate filters as query-string state for now, including `/calls?filter=acd` and `/calls?filter=breakouts`.
 
+Every non-one-off call type gets a real `/calls/[type]` page (so `/calls/bal`, `/calls/epbs`, etc. resolve for direct and shared links). The call index's top-level filter *buttons*, however, only path-route the ACD scopes (`/calls/acde`, `/calls/acdc`, `/calls/acdt`); breakout series (`bal`, `epbs`, `focil`, …) are surfaced through the breakout-type dropdown as query-string state (`/calls?filter=breakouts&breakoutType=bal`) rather than as top-level path-scope buttons. Promoting breakout series to top-level path-scope links is left to Phase 2.
+
 Preserve `/calls/{github-issue-number}` aliases as Astro configured redirects to the canonical `/calls/{series}/{number}` page (replacing the SPA's in-React issue-number redirect). The issue-to-call map is derived from the compiled call data at build time (`src/domain/calls/callRoutes.ts`), so it stays in sync as calls are added rather than being a hand-maintained legacy artifact — the same pattern as the pending-EIP redirects. Canonical call URLs remain `/calls/{series}/{number}`.
 
 ### 4. Keep React as the page body layer

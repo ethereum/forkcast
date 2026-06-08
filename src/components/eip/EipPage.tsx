@@ -328,19 +328,13 @@ export const EipPage: React.FC<{ id: string }> = ({ id }) => {
   const prevEip = currentIndex > 0 ? sortedEips[currentIndex - 1] : null;
   const nextEip = currentIndex < sortedEips.length - 1 ? sortedEips[currentIndex + 1] : null;
 
-  const prevIdRef = React.useRef(id);
   const tabBarRef = React.useRef<HTMLDivElement>(null);
+  // Each EIP is its own Astro page, so EIP-to-EIP navigation is a full reload that
+  // mounts this island fresh — just scroll to top on mount. (A stale ?tab= can't carry
+  // across EIPs under full-reload nav, so no cross-EIP tab reset is needed.)
   useEffect(() => {
     window.scrollTo(0, 0);
-    // Reset to default tab only when navigating to a different EIP
-    if (prevIdRef.current !== id && searchParams.has('tab')) {
-      const next = new URLSearchParams(searchParams);
-      next.delete('tab');
-      setSearchParams(next, { replace: true });
-    }
-    prevIdRef.current = id;
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [id]);
+  }, []);
 
   // Scroll tab bar into view when deep-linking to a FAQ question
   useEffect(() => {

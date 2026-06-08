@@ -18,4 +18,11 @@ describe('formatCallReference', () => {
   it('appends a timestamp hash when provided', () => {
     expect(formatCallReference('acdc/158', 1234).link).toBe('/calls/acdc/158#t=1234');
   });
+
+  it('throws on a malformed reference with no "{series}/{number}" separator', () => {
+    // Guards bad EIP data: a slashless value would otherwise emit a 404ing link.
+    expect(() => formatCallReference('acdt66')).toThrow(/Malformed call reference/);
+    expect(() => formatCallReference('acdt/')).toThrow(/Malformed call reference/);
+    expect(() => formatCallReference('/66')).toThrow(/Malformed call reference/);
+  });
 });

@@ -20,6 +20,7 @@ import {
   type AnchorHTMLAttributes,
   type ReactNode,
 } from 'react';
+import { normalizePathname } from '../utils/path';
 
 const LOCATION_EVENT = 'forkcast:locationchange';
 
@@ -102,7 +103,11 @@ export const useNavigate = () =>
     if (!hasWindow()) return;
     const href = toHref(to);
     const target = new URL(href, window.location.origin);
-    const samePath = target.pathname === window.location.pathname;
+    // Compare normalized paths so a trailing-slash directory URL (the GitHub Pages
+    // canonical form, e.g. "/calls/") still counts as the same path as a no-slash
+    // target ("/calls"); otherwise the in-place query/hash update degrades to a reload.
+    const samePath =
+      normalizePathname(target.pathname) === normalizePathname(window.location.pathname);
 
     if (samePath) {
       updateInPlace(href, Boolean(options.replace), options.state);
@@ -151,6 +156,7 @@ interface LinkProps extends Omit<AnchorHTMLAttributes<HTMLAnchorElement>, 'href'
   to: To;
   /** Ignored — kept for source-compatibility with react-router call sites. */
   state?: unknown;
+  /** Ignored — a plain anchor always pushes a history entry; kept for source-compatibility. */
   replace?: boolean;
   children?: ReactNode;
 }

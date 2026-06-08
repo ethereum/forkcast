@@ -43,6 +43,12 @@ jobs:
         run: npm ci
       - name: Build website
         run: npm run build:fresh
+        env:
+          # build:fresh refreshes the upcoming-call route snapshot from the GitHub API.
+          # Authenticate so CI uses the higher rate limit; otherwise the unauthenticated
+          # 60-req/hr-per-IP cap (CI sets FAIL_ON_STALE) could fail a deploy despite a
+          # committed snapshot.
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Setup Pages
         uses: actions/configure-pages@v6

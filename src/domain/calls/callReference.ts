@@ -16,6 +16,13 @@ export interface CallReference {
 
 export function formatCallReference(call: string, timestamp?: number): CallReference {
   const [prefix, number] = call.split('/');
+  if (!prefix || !number) {
+    // References are always "{series}/{number}". A malformed value would otherwise
+    // produce a garbled link that 404s. Fail loud with a clear message so bad EIP data
+    // surfaces (in the unit tests, or at island render in dev) instead of emitting a
+    // broken link or crashing cryptically on `undefined.padStart`.
+    throw new Error(`Malformed call reference "${call}" (expected "{series}/{number}", e.g. "acdt/66").`);
+  }
   const paddedNumber = number.padStart(3, '0');
   const baseLink = `/calls/${prefix}/${paddedNumber}`;
   return {

@@ -76,7 +76,7 @@ Two scripts run sequentially via `sync-call-assets.yml` (scheduled cron). Both l
 2. **Maps** PM series names to Forkcast short codes (i.e. `glamsterdamrepricings` → `price`, `rpcstandards` → `rpc`). Core series like `acdc`, `acde`, `acdt` pass through unchanged. The full mapping is defined in `SERIES_TO_TYPE` in `sync-call-assets.mjs` — series not in `KNOWN_TYPES` are skipped with a console warning.
 3. **Filters** — only syncs calls that have a `videoUrl` AND at least one of `tldr`, `transcript`, or `transcript_corrected`.
 4. **Downloads** new assets to `forkcast/public/artifacts/{type}/{date}_{number}/`. Skips files that already exist locally unless `--force` is passed.
-5. **Generates `config.json`** for each call — stores the issue number, video URL, and sync offsets. For livestreamed types (`acdc`, `acde`, `acdt`), sync times start as `null` (manual sync required). For all others, they default to `"00:00:00"`.
+5. **Generates `config.json`** for each call — stores the issue number, video URL, and sync offsets. For livestreamed types (`acdc`, `acde`), sync times start as `null` (manual sync required). For composed Zoom recordings (`acdt`), sync is required from PM's manifest. For all others, offsets default to `"00:00:00"`.
 6. **Updates `src/data/protocol-calls.generated.json`** — the frontend's call index, sorted by type then date. This file is additive — entries are never pruned automatically, so removing a call requires a manual edit.
 
 ### Step 2: Extract key decisions (`extract-key-decisions.mjs`)
@@ -102,7 +102,7 @@ If any files changed, the workflow commits, pushes, and triggers the `deploy.yml
 
 ### Step 4: Manual sync (livestreamed calls only)
 
-After a livestreamed call (acdc, acde, acdt) is deployed, a Forkcast engineer must manually set the sync offsets in `config.json`. The automated pipeline does not wait for this — it ships the call with `null` offsets, so the transcript and video are available but not aligned. See [Video/Transcript Sync](#videotranscript-sync) for how to set the offsets.
+After a livestreamed call (acdc, acde) is deployed, a Forkcast engineer must manually set the sync offsets in `config.json`. The automated pipeline does not wait for this — it ships the call with `null` offsets, so the transcript and video are available but not aligned. See [Video/Transcript Sync](#videotranscript-sync) for how to set the offsets.
 
 ### Forkcast artifact directory
 
@@ -125,7 +125,7 @@ Forkcast plays YouTube video alongside the VTT transcript. For playback to align
 - **`transcriptStartTime`** — when meaningful speech begins in the transcript
 - **`videoStartTime`** — the corresponding moment in the YouTube video
 
-### Livestreamed calls (acdc, acde, acdt)
+### Livestreamed calls (acdc, acde)
 
 These calls are streamed live to YouTube with intro screens, countdown timers, or pre-roll. The Zoom transcript starts recording at a different moment than the YouTube stream begins. This means the offsets must be set manually **after the call is already live on Forkcast**.
 
@@ -156,6 +156,18 @@ The call page works — you can watch the video and read the transcript — but 
    }
    ```
 4. Commit and push. The deploy workflow handles the rest.
+
+### Composed Zoom recordings (acdt)
+
+ACDT calls are uploaded from Zoom, but the published YouTube video is composed as:
+
+```text
+45s bumper + trimmed Zoom recording + 45s bumper
+```
+
+The transcript remains on the original Zoom recording clock. PM owns the composition settings, so PM publishes the generated sync offset in `manifest.json` and Forkcast copies that value into `config.json`. If an ACDT call is missing PM-provided sync metadata, the sync workflow fails instead of writing a misleading zero offset.
+
+This means `transcriptStartTime` and `videoStartTime` are expected to differ, but the sign depends on how much leading Zoom silence was trimmed. If a Forkcast engineer later adjusts the start point to skip beginning chatter, they should preserve the exact PM-generated `videoStartTime - transcriptStartTime` delta.
 
 ### Non-livestreamed calls
 

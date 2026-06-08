@@ -1,6 +1,6 @@
 import React, { useEffect, useMemo, useCallback, useState, lazy, Suspense } from 'react';
 import { createPortal } from 'react-dom';
-import { Link, useNavigate, useSearchParams } from '../browserLocation';
+import { Link, useNavigate, useSearchParams } from '../navigation';
 import { EIP } from '../../types/eip';
 import { eipById, eipsData } from '../../data/eips';
 import { useAnalytics } from '../../hooks/useAnalytics';

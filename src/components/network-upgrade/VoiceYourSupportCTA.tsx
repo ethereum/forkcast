@@ -1,5 +1,5 @@
 import React from 'react';
-import { Link } from '../browserLocation';
+import { Link } from '../navigation';
 
 interface VoiceYourSupportCTAProps {
   forkName: string;

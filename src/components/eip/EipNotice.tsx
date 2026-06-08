@@ -1,5 +1,5 @@
 import type { ReactNode } from 'react';
-import { Link } from '../browserLocation';
+import { Link } from '../navigation';
 import { ForkRelationship } from '../../types';
 import { parseMarkdownLinks } from '../../utils';
 import { formatCallReference } from '../../domain/calls/callReference';

@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Link } from '../browserLocation';
+import { Link } from '../navigation';
 import { EIP } from '../../types';
 import {
   getLaymanTitle,

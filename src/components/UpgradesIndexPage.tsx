@@ -1,5 +1,5 @@
 import React from 'react';
-import { Link } from './browserLocation';
+import { Link } from './navigation';
 import { networkUpgrades, NetworkUpgrade } from '../data/upgrades';
 import { parseShortDate } from './schedule/forkDateCalculator';
 import UpgradeCard from './ui/UpgradeCard';

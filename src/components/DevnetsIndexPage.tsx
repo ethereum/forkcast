@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Link } from './browserLocation';
+import { Link } from './navigation';
 import { useDevnetNetworks } from '../hooks/useDevnetNetworks';
 import { getAllDevnetSpecIds } from '../data/devnet-specs';
 import type { ActiveDevnetSeries, InactiveDevnetSeries } from '../types/devnet-networks';

@@ -1,4 +1,4 @@
-/* eslint-disable react-refresh/only-export-components -- browser-location helpers (hooks + Link) intentionally share one module */
+/* eslint-disable react-refresh/only-export-components -- navigation helpers (hooks + Link) intentionally share one module */
 /**
  * Minimal browser-navigation helpers that replace the slice of `react-router-dom`
  * the app used, without bringing a client router into the Astro static site.

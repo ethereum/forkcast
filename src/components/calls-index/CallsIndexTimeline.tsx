@@ -1,4 +1,4 @@
-import { Link } from '../browserLocation';
+import { Link } from '../navigation';
 import { callTypeNames, isOneOffCall, type Call, type CallType } from '../../data/calls';
 import { hasUpcomingWatchPage } from '../../domain/calls/upcomingCalls';
 import { type TimelineEvent } from '../../data/events';

@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef, useCallback, useMemo } from 'react';
-import { Link, useLocation, useNavigate, useSearchParams } from '../browserLocation';
+import { Link, useLocation, useNavigate, useSearchParams } from '../navigation';
 import YouTube, { YouTubeProps } from 'react-youtube';
 import ChatLog from './ChatLog';
 import TldrSummary from './TldrSummary';

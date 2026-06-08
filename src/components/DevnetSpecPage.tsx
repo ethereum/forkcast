@@ -1,5 +1,5 @@
 import { useEffect, useCallback, type ReactNode } from 'react';
-import { Link, useNavigate } from './browserLocation';
+import { Link, useNavigate } from './navigation';
 import { getDevnetSpec, getDevnetSeriesSiblings } from '../data/devnet-specs';
 import { getNetworkEntry, getNetworkMetadata } from '../domain/devnets/networks';
 import { parseMarkdownLinks, parseMarkdownBold } from '../utils/markdown';

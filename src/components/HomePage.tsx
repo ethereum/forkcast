@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { Link } from './browserLocation';
+import { Link } from './navigation';
 import { networkUpgrades, NetworkUpgrade } from '../data/upgrades';
 import { getRecentCalls, isOneOffCall, callTypeNames, protocolCalls, type Call, type CallType } from '../data/calls';
 import { eipsData, eipById } from '../data/eips';

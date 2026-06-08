@@ -1,5 +1,5 @@
 import React from 'react';
-import { Link } from '../browserLocation';
+import { Link } from '../navigation';
 import { EIP } from '../../types';
 import { networkUpgrades, getUpgradePagePath } from '../../data/upgrades';
 import { formatCallReference } from '../../domain/calls/callReference';

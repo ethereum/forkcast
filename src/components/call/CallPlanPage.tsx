@@ -1,5 +1,5 @@
 import { useState, useEffect, useMemo, useRef } from 'react';
-import { Link, useSearchParams } from '../browserLocation';
+import { Link, useSearchParams } from '../navigation';
 import { protocolCalls, callTypeNames, Call, type CallType } from '../../data/calls';
 import { KeyDecision, EIP } from '../../types/eip';
 import { eipsData, eipById as eipMap } from '../../data/eips';

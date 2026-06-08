@@ -1,5 +1,5 @@
 import React, { useState, useMemo, useEffect } from 'react';
-import { Link } from './browserLocation';
+import { Link } from './navigation';
 import { eipsData } from '../data/eips';
 import { getProposalPrefix, getLaymanTitle, getInclusionStage, isHeadlinerInAnyFork, wasHeadlinerCandidateInAnyFork, getEipLayer, isPendingEip } from '../utils/eip';
 import { EipSearch } from './eip/EipSearch';

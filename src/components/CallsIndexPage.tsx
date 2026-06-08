@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef, useMemo } from 'react';
-import { useSearchParams, useNavigate } from './browserLocation';
+import { useSearchParams, useNavigate } from './navigation';
 import { protocolCalls, callTypeNames, isOneOffCall, type CallType } from '../data/calls';
 import { timelineEvents } from '../data/events';
 import { upcomingCalls } from '../domain/calls/upcomingCalls';

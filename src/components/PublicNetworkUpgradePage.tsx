@@ -1,5 +1,5 @@
 import React, { useCallback, useEffect, useLayoutEffect, useRef, useState } from 'react';
-import { Link, useLocation, useNavigate, useSearchParams } from './browserLocation';
+import { Link, useLocation, useNavigate, useSearchParams } from './navigation';
 import { eipsData } from '../data/eips';
 import { getPendingProposalsForFork } from '../data/pending-proposals';
 import { useAnalytics } from '../hooks/useAnalytics';

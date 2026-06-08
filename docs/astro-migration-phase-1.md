@@ -183,7 +183,7 @@ Follow-up work for subsequent PRs, as routes move from React bodies into more id
 
 - Replace temporary `<Link to="...">` usages with normal `<a href="...">` where the link is just cross-page navigation.
 - Remove the React Router compatibility props from the temporary link helper, such as the ignored `state` / `replace`.
-- Continue narrowing the navigation helper (`src/components/navigation.tsx`) so it exposes only the browser URL state hydrated islands need, not router-shaped abstractions.
+- Continue narrowing the navigation helper (`src/components/navigation.tsx`) (and consider renaming) so it exposes only the browser URL state hydrated islands need, not router-shaped abstractions.
 - As more routes move from React bodies into Astro, move query/hash ownership into page-specific Astro or component primitives where that becomes natural.
 
 ## Astro Docs References

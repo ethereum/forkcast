@@ -148,6 +148,62 @@ export const EipLinkWithTooltip: React.FC<{
 };
 
 /**
+ * Render decision text with EIP references replaced by hoverable links.
+ *
+ * Uses decision.eips as the source of truth. For each known EIP, replaces
+ * "EIP-XXXX" or bare "XXXX" occurrences in the text with a linked preview.
+ * Any EIPs in the array that don't appear in the text at all are appended
+ * as links after the text.
+ */
+export const DecisionTextWithEipLinks: React.FC<{
+  decision: KeyDecision;
+  eipMap: Map<number, EIP>;
+}> = ({ decision, eipMap }) => {
+  const { original_text: text, eips } = decision;
+
+  if (eips.length === 0) return <>{text}</>;
+
+  // Build a regex that matches "EIP-XXXX" or bare "XXXX" for each known EIP id
+  const eipSet = new Set(eips);
+  const idPattern = eips.map(id => `EIP-${id}\\b|\\b${id}\\b`).join('|');
+  const regex = new RegExp(`(${idPattern})`, 'g');
+
+  const linkedIds = new Set<number>();
+  const parts = text.split(regex);
+
+  const rendered = parts.map((part, i) => {
+    // Check if this part matches any known EIP
+    const bareMatch = part.match(/^(?:EIP-)?(\d+)$/);
+    if (bareMatch) {
+      const id = Number(bareMatch[1]);
+      if (eipSet.has(id)) {
+        linkedIds.add(id);
+        return <EipLinkWithTooltip key={i} eipId={id} eipMap={eipMap} />;
+      }
+    }
+    return <React.Fragment key={i}>{part}</React.Fragment>;
+  });
+
+  // Append links for any EIPs not found in the text
+  const unlinked = eips.filter(id => !linkedIds.has(id));
+  if (unlinked.length === 0) return <>{rendered}</>;
+
+  return (
+    <>
+      {rendered}
+      {' ('}
+      {unlinked.map((id, i) => (
+        <React.Fragment key={id}>
+          {i > 0 && ', '}
+          <EipLinkWithTooltip eipId={id} eipMap={eipMap} />
+        </React.Fragment>
+      ))}
+      {')'}
+    </>
+  );
+};
+
+/**
  * Build the decision as a readable sentence with inline colored tag.
  *
  * Examples:
@@ -162,9 +218,9 @@ export const StructuredDecisionContent: React.FC<{
   const tagColor = getKeyDecisionTagColor(decision);
   const tagLabel = getTagLabel(decision);
 
-  // Fallback: no EIPs resolved, show original text
-  if (decision.eips.length === 0) {
-    return <>{decision.original_text}</>;
+  // For 'other' type or no EIPs, render original_text with inline EIP links
+  if (decision.type === 'other' || decision.eips.length === 0) {
+    return <DecisionTextWithEipLinks decision={decision} eipMap={eipMap} />;
   }
 
   const eipLinks = decision.eips.map((eipId, i) => (
@@ -286,7 +342,7 @@ const KeyDecisionsSection: React.FC<KeyDecisionsSectionProps> = ({
             }`}>
               {isStructured
                 ? <StructuredDecisionContent decision={decision} eipMap={eipById} />
-                : decision.original_text
+                : <DecisionTextWithEipLinks decision={decision} eipMap={eipById} />
               }
             </span>
             <span className="text-xs text-slate-400 dark:text-slate-500 ml-1 opacity-0 group-hover:opacity-100 transition-opacity">

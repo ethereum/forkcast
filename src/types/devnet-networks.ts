@@ -53,7 +53,7 @@ export interface NetworkEntry {
   path: string;
   url: string;
   status: 'active' | 'inactive' | 'unknown';
-  lastUpdated: string;
+  lastUpdated?: string;
   chainId?: number;
   serviceUrls?: NetworkServiceUrls;
   genesisConfig?: GenesisConfig;

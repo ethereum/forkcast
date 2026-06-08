@@ -1,9 +1,12 @@
 ---
 import Layout from '../../../layouts/Layout.astro';
 import GlamsterdamUpgradePage from '../../../components/GlamsterdamUpgradePage';
+import GlamsterdamUpgradeShell from '../../../components/glamsterdam/GlamsterdamUpgradeShell.astro';
 import { staticPageMetadata } from '../../../domain/routes/pageMetadata';
 ---
 
 <Layout {...staticPageMetadata.glamsterdamClientPriority}>
-  <GlamsterdamUpgradePage client:only="react" activeTab="client-priority" />
+  <GlamsterdamUpgradeShell activeTab="client-priority">
+    <GlamsterdamUpgradePage client:only="react" activeTab="client-priority" />
+  </GlamsterdamUpgradeShell>
 </Layout>

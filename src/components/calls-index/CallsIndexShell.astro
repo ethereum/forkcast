@@ -1,0 +1,314 @@
+---
+import { protocolCalls, callTypeNames, isOneOffCall, type CallType } from '../../data/calls';
+import { upcomingCalls } from '../../domain/calls/upcomingCalls';
+
+interface Props {
+  scope?: string;
+}
+
+const { scope } = Astro.props;
+
+const ACD_TYPES = ['acdc', 'acde', 'acdt'];
+
+const filterOptions = [
+  { value: 'all', label: 'All', href: '/calls' },
+  { value: 'acd', label: 'ACD', href: '/calls?filter=acd' },
+  { value: 'acdc', label: 'ACDC', href: '/calls/acdc' },
+  { value: 'acde', label: 'ACDE', href: '/calls/acde' },
+  { value: 'acdt', label: 'ACDT', href: '/calls/acdt' },
+  { value: 'breakouts', label: 'Breakouts', href: '/calls?filter=breakouts' },
+];
+
+const filterActiveClasses: Record<string, string> = {
+  all: 'bg-slate-600 dark:bg-slate-400 text-white dark:text-slate-900',
+  acd: 'bg-indigo-600 dark:bg-indigo-500 text-white dark:text-white',
+  acdc: 'bg-blue-600 dark:bg-blue-500 text-white dark:text-white',
+  acde: 'bg-sky-600 dark:bg-sky-500 text-white dark:text-white',
+  acdt: 'bg-cyan-600 dark:bg-cyan-500 text-white dark:text-white',
+  breakouts: 'bg-yellow-600 dark:bg-yellow-500 text-white dark:text-yellow-950',
+};
+
+const filterInactiveClasses: Record<string, string> = {
+  all: 'bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-400 hover:bg-slate-200 dark:hover:bg-slate-700',
+  acd: 'bg-indigo-50 dark:bg-indigo-950/30 text-indigo-700 dark:text-indigo-400 hover:bg-indigo-100 dark:hover:bg-indigo-900/30',
+  acdc: 'bg-blue-50 dark:bg-blue-950/30 text-blue-700 dark:text-blue-400 hover:bg-blue-100 dark:hover:bg-blue-900/30',
+  acde: 'bg-sky-50 dark:bg-sky-950/30 text-sky-700 dark:text-sky-400 hover:bg-sky-100 dark:hover:bg-sky-900/30',
+  acdt: 'bg-cyan-50 dark:bg-cyan-950/30 text-cyan-700 dark:text-cyan-400 hover:bg-cyan-100 dark:hover:bg-cyan-900/30',
+  breakouts: 'bg-yellow-50 dark:bg-yellow-950/30 text-yellow-700 dark:text-yellow-400 hover:bg-yellow-100 dark:hover:bg-yellow-900/30',
+};
+
+const breakoutTypes = Array.from(
+  new Set([
+    ...protocolCalls
+      .filter((call) => !ACD_TYPES.includes(call.type) && !isOneOffCall(call.type))
+      .map((call) => call.type),
+    ...upcomingCalls
+      .filter((call) => !ACD_TYPES.includes(call.type) && !isOneOffCall(call.type))
+      .map((call) => call.type),
+  ]),
+).sort((a, b) =>
+  (callTypeNames[a as CallType] || a).localeCompare(callTypeNames[b as CallType] || b),
+);
+
+const hasOneOffCalls = protocolCalls.some((call) => isOneOffCall(call.type));
+const selectedFilter = scope ?? 'all';
+const breakoutExpanded = selectedFilter === 'breakouts';
+
+const getFilterClasses = (value: string) =>
+  `flex-shrink-0 whitespace-nowrap rounded-md px-2.5 py-1 text-xs font-medium transition-all ${
+    selectedFilter === value ? filterActiveClasses[value] : filterInactiveClasses[value]
+  }`;
+---
+
+<div class="min-h-screen bg-slate-50 p-6 dark:bg-slate-900">
+  <div class="mx-auto max-w-4xl">
+    <div class="mb-6" data-calls-filter-shell data-scope={scope ?? ''}>
+      <div class="flex items-start justify-between gap-3">
+        <div>
+          <h1 class="text-xl font-semibold text-slate-900 dark:text-slate-100">Protocol Calendar</h1>
+          <a
+            href="https://calendar.google.com/calendar/embed?src=c_upaofong8mgrmrkegn7ic7hk5s%40group.calendar.google.com"
+            target="_blank"
+            rel="noopener noreferrer"
+            class="text-xs text-slate-500 transition-colors hover:text-slate-700 dark:text-slate-400 dark:hover:text-slate-300"
+          >
+            Full calendar &nearr;
+          </a>
+        </div>
+        <button
+          type="button"
+          class="inline-flex items-center gap-3 rounded-xl border border-slate-200 bg-white px-3.5 py-2.5 text-sm text-slate-500 shadow-sm transition-colors hover:bg-slate-50 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-400 dark:hover:bg-slate-700/80"
+          aria-label="Search calls"
+          title="Search (Ctrl+K)"
+          data-open-call-search
+        >
+          <svg class="h-4 w-4 flex-shrink-0 text-slate-400 dark:text-slate-500" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+          </svg>
+          <span class="hidden sm:inline">Search calls...</span>
+          <kbd
+            class="hidden items-center rounded-md border border-slate-200 bg-slate-100 px-1.5 py-0.5 text-xs font-medium text-slate-500 dark:border-slate-600 dark:bg-slate-700 dark:text-slate-300 sm:inline-flex"
+            data-search-keycap
+          >
+            Ctrl+K
+          </kbd>
+        </button>
+      </div>
+
+      <div class="mt-4">
+        <div
+          class={`items-center gap-1.5 flex-nowrap sm:flex-wrap ${breakoutExpanded ? 'hidden' : 'flex overflow-x-auto scrollbar-hide'}`}
+          data-calls-filter-list
+        >
+          {
+            filterOptions.map((option) => (
+              <a
+                href={option.href}
+                data-astro-prefetch={option.href.startsWith('/calls/') ? true : undefined}
+                data-call-filter={option.value}
+                data-active-classes={filterActiveClasses[option.value]}
+                data-inactive-classes={filterInactiveClasses[option.value]}
+                class={getFilterClasses(option.value)}
+              >
+                {option.label}
+              </a>
+            ))
+          }
+        </div>
+
+        <div
+          class={`items-center gap-1.5 flex-nowrap sm:flex-wrap ${breakoutExpanded ? 'flex' : 'hidden'}`}
+          data-breakout-filter-controls
+        >
+          <a
+            href="/calls"
+            class="flex-shrink-0 whitespace-nowrap rounded-md bg-slate-100 px-2.5 py-1 text-xs font-medium text-slate-600 transition-all hover:bg-slate-200 dark:bg-slate-800 dark:text-slate-400 dark:hover:bg-slate-700"
+            aria-label="Back to all filters"
+            data-call-filter="all"
+          >
+            &larr;
+          </a>
+          <div class="relative" data-breakout-dropdown>
+            <button
+              type="button"
+              class="inline-flex items-baseline gap-1 border-b-2 border-yellow-400 text-sm font-medium text-yellow-700 transition-colors hover:border-yellow-500 dark:border-yellow-500 dark:text-yellow-300 dark:hover:border-yellow-400"
+              data-breakout-toggle
+            >
+              <span data-breakout-label>All Breakouts</span>
+              <svg class="h-3 w-3 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true" data-breakout-caret>
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+              </svg>
+            </button>
+            <div
+              class="absolute left-0 top-full z-10 mt-1 hidden min-w-[200px] rounded border border-slate-200 bg-white py-1 shadow-lg dark:border-slate-700 dark:bg-slate-800"
+              data-breakout-menu
+            >
+              <a
+                href="/calls?filter=breakouts"
+                data-breakout-type=""
+                class="block w-full px-4 py-2 text-left text-sm transition-colors"
+              >
+                All Breakouts
+              </a>
+              {
+                breakoutTypes.map((type) => (
+                  <a
+                    href={`/calls?filter=breakouts&breakoutType=${encodeURIComponent(type)}`}
+                    data-breakout-type={type}
+                    class="block w-full px-4 py-2 text-left text-sm transition-colors"
+                  >
+                    {callTypeNames[type as CallType] || type.toUpperCase()}
+                  </a>
+                ))
+              }
+              {
+                hasOneOffCalls && (
+                  <a
+                    href="/calls?filter=breakouts&breakoutType=one-off"
+                    data-breakout-type="one-off"
+                    class="block w-full px-4 py-2 text-left text-sm transition-colors"
+                  >
+                    One-Off Calls
+                  </a>
+                )
+              }
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <slot />
+  </div>
+</div>
+
+<script>
+  const LOCATION_EVENT = 'forkcast:locationchange';
+  const CALL_SEARCH_EVENT = 'forkcast:open-call-search';
+
+  const selectedBreakoutClasses =
+    'bg-yellow-50 text-yellow-700 dark:bg-yellow-900/20 dark:text-yellow-300';
+  const unselectedBreakoutClasses =
+    'text-slate-700 hover:bg-slate-50 dark:text-slate-300 dark:hover:bg-slate-700';
+
+  const splitClasses = (classes: string | undefined) => (classes ?? '').split(/\s+/).filter(Boolean);
+
+  const setClasses = (element: Element, previous: string | undefined, next: string | undefined) => {
+    element.classList.remove(...splitClasses(previous));
+    element.classList.add(...splitClasses(next));
+  };
+
+  const readFilterState = (shell: HTMLElement) => {
+    const params = new URLSearchParams(window.location.search);
+    const scope = shell.dataset.scope;
+    return {
+      filter: scope || params.get('filter') || 'all',
+      breakoutType: scope ? '' : params.get('breakoutType') || '',
+    };
+  };
+
+  const formatBreakoutLabel = (breakoutType: string) => {
+    if (!breakoutType) return 'All Breakouts';
+    if (breakoutType === 'one-off') return 'One-Off Calls';
+    const option = document.querySelector<HTMLElement>(`[data-breakout-type="${CSS.escape(breakoutType)}"]`);
+    return option?.textContent?.trim() || breakoutType.toUpperCase();
+  };
+
+  const updateBreakoutMenu = (shell: HTMLElement, selectedBreakoutType: string) => {
+    shell.querySelectorAll<HTMLElement>('[data-breakout-type]').forEach((option) => {
+      const selected = option.dataset.breakoutType === selectedBreakoutType;
+      setClasses(
+        option,
+        selected ? unselectedBreakoutClasses : selectedBreakoutClasses,
+        selected ? selectedBreakoutClasses : unselectedBreakoutClasses,
+      );
+    });
+  };
+
+  const updateFilterShell = (shell: HTMLElement) => {
+    const { filter, breakoutType } = readFilterState(shell);
+    const expanded = filter === 'breakouts';
+    const filterList = shell.querySelector('[data-calls-filter-list]');
+    const breakoutControls = shell.querySelector('[data-breakout-filter-controls]');
+
+    filterList?.classList.toggle('hidden', expanded);
+    filterList?.classList.toggle('flex', !expanded);
+    filterList?.classList.toggle('overflow-x-auto', !expanded);
+    breakoutControls?.classList.toggle('hidden', !expanded);
+    breakoutControls?.classList.toggle('flex', expanded);
+
+    shell.querySelectorAll<HTMLElement>('[data-call-filter][data-active-classes]').forEach((link) => {
+      const activeClasses = link.dataset.activeClasses;
+      const inactiveClasses = link.dataset.inactiveClasses;
+      const selected = link.dataset.callFilter === filter;
+      setClasses(link, selected ? inactiveClasses : activeClasses, selected ? activeClasses : inactiveClasses);
+    });
+
+    const label = shell.querySelector('[data-breakout-label]');
+    if (label) label.textContent = formatBreakoutLabel(breakoutType);
+    updateBreakoutMenu(shell, breakoutType);
+  };
+
+  const setSamePathLocation = (href: string) => {
+    window.history.pushState(null, '', href);
+    window.dispatchEvent(new Event(LOCATION_EVENT));
+  };
+
+  const normalizePathname = (pathname: string) =>
+    pathname.length > 1 ? pathname.replace(/\/+$/, '') : pathname;
+
+  document.querySelectorAll<HTMLElement>('[data-calls-filter-shell]').forEach((shell) => {
+    updateFilterShell(shell);
+
+    shell.addEventListener('click', (event) => {
+      const target = event.target instanceof Element ? event.target : null;
+      if (!target) return;
+
+      const searchTrigger = target.closest('[data-open-call-search]');
+      if (searchTrigger) {
+        window.dispatchEvent(new Event(CALL_SEARCH_EVENT));
+        return;
+      }
+
+      const toggle = target.closest('[data-breakout-toggle]');
+      if (toggle) {
+        const menu = shell.querySelector('[data-breakout-menu]');
+        const caret = shell.querySelector('[data-breakout-caret]');
+        const open = menu?.classList.toggle('hidden') === false;
+        caret?.classList.toggle('rotate-180', open);
+        return;
+      }
+
+      const link = target.closest<HTMLAnchorElement>('a[href]');
+      if (!link) return;
+
+      const targetUrl = new URL(link.href);
+      if (targetUrl.origin !== window.location.origin) return;
+      if (normalizePathname(targetUrl.pathname) !== normalizePathname(window.location.pathname)) return;
+
+      event.preventDefault();
+      setSamePathLocation(`${targetUrl.pathname}${targetUrl.search}${targetUrl.hash}`);
+      updateFilterShell(shell);
+      shell.querySelector('[data-breakout-menu]')?.classList.add('hidden');
+      shell.querySelector('[data-breakout-caret]')?.classList.remove('rotate-180');
+    });
+
+    document.addEventListener('mousedown', (event) => {
+      const target = event.target instanceof Element ? event.target : null;
+      if (!target?.closest('[data-breakout-dropdown]')) {
+        shell.querySelector('[data-breakout-menu]')?.classList.add('hidden');
+        shell.querySelector('[data-breakout-caret]')?.classList.remove('rotate-180');
+      }
+    });
+  });
+
+  document.querySelectorAll('[data-search-keycap]').forEach((keycap) => {
+    const label = /Mac|iPhone|iPad/.test(navigator.userAgent) ? '⌘K' : 'Ctrl+K';
+    keycap.textContent = label;
+    keycap.closest('button')?.setAttribute('title', `Search (${label})`);
+  });
+
+  window.addEventListener('popstate', () => {
+    document.querySelectorAll<HTMLElement>('[data-calls-filter-shell]').forEach(updateFilterShell);
+  });
+</script>

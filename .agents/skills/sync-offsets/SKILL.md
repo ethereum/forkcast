@@ -17,8 +17,9 @@ This skill walks the user through setting video/transcript sync offsets for newl
 
 ### Step 2: Identify what needs sync
 
-- **Livestreamed calls** (acdc, acde, acdt): config will have `null` offsets. These always need manual sync — the video and transcript start at different times.
-- **Non-livestreamed calls** (all others): config defaults to `"00:00:00"`. These may need sync if there's dead air at the start — both offsets will be the same value since video and transcript are from the same recording.
+- **Livestreamed calls** (acdc, acde): config will have `null` offsets. These always need manual sync — the video and transcript start at different times.
+- **Composed Zoom calls** (acdt): config should have non-null PM-provided offsets. These offsets account for the bumper and transcript-based Zoom trim, and `videoStartTime` may be before or after `transcriptStartTime`. Missing PM sync is a pipeline error, not a raw-Zoom zero-sync case. If manual sync is needed to skip beginning chatter, preserve the exact generated `videoStartTime - transcriptStartTime` delta.
+- **Raw Zoom calls** (all others): config defaults to `"00:00:00"`. These may need sync if there's dead air at the start — both offsets will be the same value since video and transcript are from the same recording.
 
 ### Step 3: Get timestamps from the user
 
@@ -26,14 +27,16 @@ This skill walks the user through setting video/transcript sync offsets for newl
 2. Give the user Forkcast call page links using the actual port: `http://localhost:{port}/calls/{type}/{number}` (zero-pad the number to 3 digits)
 3. For each call, ask the user to provide:
    - **Livestreamed**: video timestamp AND transcript timestamp where the host first speaks
-   - **Non-livestreamed**: single timestamp where speech begins (or confirm `00:00:00` is fine)
+   - **Composed Zoom**: single transcript timestamp where speech should begin; calculate the video timestamp by adding the generated `videoStartTime - transcriptStartTime` difference
+   - **Raw Zoom**: single timestamp where speech begins (or confirm `00:00:00` is fine)
 4. Do NOT pre-read the transcript or suggest timestamps. Let the user match video and transcript using the call page UI.
 
 ### Step 4: Apply offsets
 
 Update each call's `config.json`:
 - **Livestreamed**: set `transcriptStartTime` and `videoStartTime` to the user's values (format: `HH:MM:SS`)
-- **Non-livestreamed**: set both `transcriptStartTime` and `videoStartTime` to the same value
+- **Composed Zoom**: set `transcriptStartTime` to the user's transcript timestamp and set `videoStartTime` to that timestamp plus the generated video/transcript difference
+- **Raw Zoom**: set both `transcriptStartTime` and `videoStartTime` to the same value
 
 ### Step 5: Verify
 

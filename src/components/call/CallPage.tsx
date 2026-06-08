@@ -158,6 +158,34 @@ const scrollEntryIntoContainer = (container: HTMLElement, entryElement: HTMLElem
 const getPageScrollBehavior = (): ScrollBehavior =>
   window.matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth';
 
+const TranscriptStatus: React.FC<{
+  status: 'pending' | 'unavailable';
+  isWorkspaceView: boolean;
+  message?: string;
+}> = ({ status, isWorkspaceView, message }) => {
+  const isPending = status === 'pending';
+  const iconClasses = isPending
+    ? 'text-amber-400 dark:text-amber-500'
+    : 'text-slate-300 dark:text-slate-600';
+  const containerClasses = `flex flex-col items-center justify-center text-center ${isWorkspaceView ? 'flex-1' : 'py-12'}`;
+
+  return (
+    <div className={containerClasses}>
+      <svg className={`w-10 h-10 mb-3 ${iconClasses}`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        {isPending ? (
+          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+        ) : (
+          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+        )}
+      </svg>
+      <p className={`${isPending ? 'font-medium text-slate-700 dark:text-slate-300 mb-1' : 'text-slate-500 dark:text-slate-400'} text-sm`}>
+        {isPending ? 'Transcript pending' : 'Transcript not available'}
+      </p>
+      {message ? <p className="text-xs text-slate-500 dark:text-slate-400">{message}</p> : null}
+    </div>
+  );
+};
+
 const readTextArtifact = async (path: string, isValid: (content: string) => boolean): Promise<string | undefined> => {
   const response = await fetch(`/artifacts/${path}`);
   if (!response.ok) return undefined;
@@ -1340,21 +1368,20 @@ const CallPage: React.FC<CallPageProps> = ({ isSearchOpen, setIsSearchOpen, sear
               );
             })}
         </div>
-      ) : isUpcoming || activeBreakout ? (
-        <div className={`flex flex-col items-center justify-center text-center ${isWorkspaceView ? 'flex-1' : 'py-12'}`}>
-          <svg className="w-10 h-10 text-amber-400 dark:text-amber-500 mb-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
-          </svg>
-          <p className="text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">Transcript pending</p>
-          <p className="text-xs text-slate-500 dark:text-slate-400">{activeBreakout ? 'Transcripts for breakouts are not yet processed' : 'The transcript will be available after the call'}</p>
-        </div>
+      ) : activeBreakout ? (
+        <TranscriptStatus
+          status="unavailable"
+          isWorkspaceView={isWorkspaceView}
+          message="Transcripts are not available (yet) for breakout calls."
+        />
+      ) : isUpcoming ? (
+        <TranscriptStatus
+          status="pending"
+          isWorkspaceView={isWorkspaceView}
+          message="The transcript will be available after the call."
+        />
       ) : (
-        <div className={`flex flex-col items-center justify-center text-center ${isWorkspaceView ? 'flex-1' : 'py-12'}`}>
-          <svg className="w-10 h-10 text-slate-300 dark:text-slate-600 mb-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
-          </svg>
-          <p className="text-sm text-slate-500 dark:text-slate-400">No transcript available</p>
-        </div>
+        <TranscriptStatus status="unavailable" isWorkspaceView={isWorkspaceView} />
       )}
     </div>
   );

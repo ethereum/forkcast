@@ -58,6 +58,14 @@ const normalizeReplyHeaderLine = (line: string): string | null => {
   return null;
 };
 
+const normalizeZoomExportLine = (line: string): string => {
+  const match = line.match(/^(\d{2}:\d{2}:\d{2})\t\s*From\s+(.+?)\s:\s?([\s\S]*)$/);
+  if (!match) return line;
+
+  const [, timestamp, speaker, message] = match;
+  return `${timestamp}\t${speaker.trim()}:\t${message}`;
+};
+
 export const isReplyMessage = (message: string): boolean =>
   message.startsWith(CANONICAL_REPLY_PREFIX);
 
@@ -121,8 +129,10 @@ export const parseChatTranscript = (text: string): ParsedChatTranscript => {
   const processedLines: string[] = [];
 
   for (const line of rawLines) {
-    if (/^\d{2}:\d{2}:\d{2}\t/.test(line)) {
-      processedLines.push(line);
+    const normalizedLine = normalizeZoomExportLine(line);
+
+    if (/^\d{2}:\d{2}:\d{2}\t/.test(normalizedLine)) {
+      processedLines.push(normalizedLine);
     } else if (line.trim()) {
       let targetIndex = processedLines.length - 1;
       while (targetIndex >= 0 && !processedLines[targetIndex].trim()) {

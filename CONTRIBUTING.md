@@ -32,30 +32,29 @@ The site automatically deploys to GitHub Pages when changes are merged into the 
 ## Project Structure
 
 ```
-forkcast-public/
+forkcast/
+├── astro.config.mjs             # Astro config, integrations, and redirects
 ├── src/
+│   ├── pages/                   # Astro routes
+│   ├── layouts/                 # Shared Astro layouts
 │   ├── components/
 │   │   └── HomePage.tsx         # Landing page with upgrade list
 │   ├── data/
 │   │   └── eips.json            # EIP data
-│   ├── App.tsx                  # Main app component with routing
-│   ├── main.tsx                 # App entry point
-│   ├── index.css                # Global styles
-│   └── vite-env.d.ts            # Vite type definitions
+│   └── index.css                # Global styles
 ├── public/                      # Static assets
 ├── package.json
-├── vite.config.ts               # Vite configuration
 └── tsconfig.json                # TypeScript configuration
 ```
 
 ## Technology Stack
 
+- **Astro** - Static site framework
 - **React** - UI framework
 - **TypeScript** - Type safety
-- **Vite** - Build tool and dev server
-- **React Router** - Client-side routing
 - **Tailwind CSS** - Styling
 - **ESLint** - Code linting
+- **Vitest** - Unit tests
 
 ## Data Structure
 

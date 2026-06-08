@@ -9,12 +9,16 @@
  * Islands must never link to a route that the static build did not emit, so both
  * the route generator and the UI read these snapshots — not the live endpoints.
  *
+ * The normal dev/build commands read the checked-in snapshots without mutating
+ * them. Run this script explicitly when route-discovered data should be refreshed;
+ * deploy builds use the fresh path so production does not ship stale routes. On a
+ * network failure, local refreshes keep the previous snapshot so offline work
+ * still succeeds; CI fails rather than ship stale route data (override with
+ * `ALLOW_STALE_ROUTE_SNAPSHOTS=1`).
+ *
  * The upcoming-call parsing rules are imported from the single source of truth in
  * src/domain/calls/upcomingCallParsing.ts (Node type-strips it on import), so the
- * tested domain parser and this build script can never drift. On a network
- * failure, local builds keep the previous snapshot so offline work still succeeds;
- * CI fails rather than ship stale route data (override with
- * `ALLOW_STALE_ROUTE_SNAPSHOTS=1`).
+ * tested domain parser and this build script can never drift.
  */
 import fs from 'node:fs';
 import path from 'node:path';
@@ -113,6 +117,33 @@ async function buildUpcomingCalls() {
 
 // --- Snapshot helpers ----------------------------------------------------------
 
+const sortObjectByKey = (object) =>
+  Object.fromEntries(Object.entries(object).sort(([a], [b]) => a.localeCompare(b)));
+
+const canonicalizeNetworksSnapshot = (raw) => {
+  const networkMetadata = {};
+  for (const [key, value] of Object.entries(raw.networkMetadata ?? {})) {
+    networkMetadata[key] = {
+      ...value,
+      stats: {
+        ...value.stats,
+        networkNames: [...(value.stats?.networkNames ?? [])].sort(),
+      },
+    };
+  }
+
+  const networks = {};
+  for (const [key, value] of Object.entries(raw.networks ?? {})) {
+    const { lastUpdated: _lastUpdated, ...stableNetwork } = value;
+    networks[key] = stableNetwork;
+  }
+
+  return {
+    networkMetadata: sortObjectByKey(networkMetadata),
+    networks: sortObjectByKey(networks),
+  };
+};
+
 const writeJson = (file, data) => {
   fs.writeFileSync(file, `${JSON.stringify(data, null, 2)}\n`);
 };
@@ -150,10 +181,7 @@ async function snapshotNetworks() {
     const res = await fetch(NETWORKS_URL);
     if (!res.ok) throw new Error(`status ${res.status}`);
     const data = await res.json();
-    const snapshot = {
-      networkMetadata: data.networkMetadata ?? {},
-      networks: data.networks ?? {},
-    };
+    const snapshot = canonicalizeNetworksSnapshot(data);
     writeJson(NETWORKS_FILE, snapshot);
     const activeCount = Object.values(snapshot.networks).filter(
       (n) => n?.status === 'active',

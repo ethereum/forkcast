@@ -1,7 +1,7 @@
 ---
 import Layout from '../../layouts/Layout.astro';
 import CallPage from '../../components/call/CallPage';
-import { protocolCalls, callTypeNames, type CallType } from '../../data/calls';
+import { protocolCalls, getCallTypeName } from '../../data/calls';
 import { upcomingCalls, hasUpcomingWatchPage } from '../../domain/calls/upcomingCalls';
 
 // Canonical call pages (/calls/{series}/{number}) for completed calls, plus
@@ -17,7 +17,7 @@ export function getStaticPaths() {
   const paths: Array<{ params: { path: string }; props: CallPageRouteProps }> = [];
 
   for (const call of protocolCalls) {
-    const name = call.name || callTypeNames[call.type as CallType] || call.type;
+    const name = call.name || getCallTypeName(call.type);
     const title = call.name ? `${name} - Forkcast` : `${name} #${call.number} - Forkcast`;
     const description = call.name
       ? `Watch ${name} from ${call.date}.`
@@ -31,7 +31,7 @@ export function getStaticPaths() {
   for (const call of upcomingCalls) {
     if (!hasUpcomingWatchPage(call)) continue;
     if (protocolCalls.some((c) => c.type === call.type && c.number === call.number)) continue;
-    const name = callTypeNames[call.type as CallType] || call.type;
+    const name = getCallTypeName(call.type);
     paths.push({
       params: { path: `${call.type}/${call.number}` },
       props: {

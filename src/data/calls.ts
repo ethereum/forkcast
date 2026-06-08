@@ -37,8 +37,12 @@ export const protocolCalls: Call[] = generatedCalls as Call[];
 
 export const isOneOffCall = (type: string): boolean => type.startsWith('one-off-');
 
+/** Display name for a call type, falling back to the raw type slug. */
+export const getCallTypeName = (type: string): string =>
+  callTypeNames[type as CallType] || type;
+
 export const getCallDisplayName = (call: Call): string =>
-  call.name || callTypeNames[call.type as CallType] || call.type;
+  call.name || getCallTypeName(call.type);
 
 // Helper to get recent calls
 export const getRecentCalls = (limit: number = 5): Call[] => {

@@ -54,6 +54,33 @@ const githubHeaders = () => {
   return headers;
 };
 
+const FETCH_ATTEMPTS = 3;
+const RETRY_BASE_DELAY_MS = 500;
+
+const delay = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
+
+// Bounded retry with linear backoff. A transient network blip or upstream 5xx
+// shouldn't fail a deploy that already has a valid committed snapshot (FAIL_ON_STALE
+// turns any unrecovered failure into a hard error in CI), so absorb those here.
+// Reachable-but-non-OK responses (404, 403/429 rate-limit) are returned as-is for
+// the caller to handle — retrying them in-process won't help.
+async function fetchWithRetry(url, options) {
+  let lastError;
+  for (let attempt = 1; attempt <= FETCH_ATTEMPTS; attempt++) {
+    try {
+      const res = await fetch(url, options);
+      if (res.ok || res.status < 500 || attempt === FETCH_ATTEMPTS) return res;
+      lastError = new Error(`status ${res.status}`);
+    } catch (error) {
+      lastError = error;
+    }
+    // No backoff after the final attempt — both the 5xx and thrown-error paths exit
+    // the loop immediately so a hard failure isn't delayed before it propagates.
+    if (attempt < FETCH_ATTEMPTS) await delay(RETRY_BASE_DELAY_MS * attempt);
+  }
+  throw lastError;
+}
+
 // YYYY-MM-DD in UTC for the call's start. The runtime uses the viewer's timezone
 // to bucket calls, but the build-time snapshot must be deterministic across build
 // machines, so relevance here is evaluated in UTC. The island re-buckets by viewer
@@ -90,7 +117,7 @@ async function buildUpcomingCalls() {
     // No completed-call index yet; treat everything as potentially upcoming.
   }
 
-  const res = await fetch(GITHUB_ISSUES_URL, { headers: githubHeaders() });
+  const res = await fetchWithRetry(GITHUB_ISSUES_URL, { headers: githubHeaders() });
   if (!res.ok) throw new Error(`GitHub issues fetch failed: ${res.status}`);
   const issues = await res.json();
 
@@ -117,8 +144,22 @@ async function buildUpcomingCalls() {
 
 // --- Snapshot helpers ----------------------------------------------------------
 
-const sortObjectByKey = (object) =>
-  Object.fromEntries(Object.entries(object).sort(([a], [b]) => a.localeCompare(b)));
+// Recursively sort object keys so the committed snapshot is byte-stable even if
+// the upstream API reorders keys within network/metadata entries (not just the
+// top-level maps). Array order is preserved — only object keys are reordered — so
+// meaningful arrays like `networkNames` (sorted explicitly below) and `links` keep
+// their order.
+const sortKeysDeep = (value) => {
+  if (Array.isArray(value)) return value.map(sortKeysDeep);
+  if (value && typeof value === 'object') {
+    return Object.fromEntries(
+      Object.entries(value)
+        .sort(([a], [b]) => a.localeCompare(b))
+        .map(([key, child]) => [key, sortKeysDeep(child)]),
+    );
+  }
+  return value;
+};
 
 const canonicalizeNetworksSnapshot = (raw) => {
   const networkMetadata = {};
@@ -138,10 +179,7 @@ const canonicalizeNetworksSnapshot = (raw) => {
     networks[key] = stableNetwork;
   }
 
-  return {
-    networkMetadata: sortObjectByKey(networkMetadata),
-    networks: sortObjectByKey(networks),
-  };
+  return sortKeysDeep({ networkMetadata, networks });
 };
 
 const writeJson = (file, data) => {
@@ -178,7 +216,7 @@ async function snapshotUpcomingCalls() {
 
 async function snapshotNetworks() {
   try {
-    const res = await fetch(NETWORKS_URL);
+    const res = await fetchWithRetry(NETWORKS_URL);
     if (!res.ok) throw new Error(`status ${res.status}`);
     const data = await res.json();
     const snapshot = canonicalizeNetworksSnapshot(data);

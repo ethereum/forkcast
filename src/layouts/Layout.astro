@@ -11,6 +11,8 @@ interface Props {
   navVariant?: 'default' | 'wide';
   /** Show the per-call search button + "All Calls" link in the nav (call pages). */
   enableCallSearch?: boolean;
+  /** Keep the page out of the index (e.g. the 404): emits robots noindex and drops the self-canonical. */
+  noindex?: boolean;
 }
 
 const {
@@ -19,6 +21,7 @@ const {
   image,
   navVariant = 'default',
   enableCallSearch = false,
+  noindex = false,
 } = Astro.props;
 
 const site = Astro.site ?? new URL('https://forkcast.org');
@@ -46,7 +49,7 @@ const ogImage = image
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>{title}</title>
     <meta name="description" content={description} />
-    <link rel="canonical" href={canonical} />
+    {noindex ? <meta name="robots" content="noindex" /> : <link rel="canonical" href={canonical} />}
 
     <!-- Open Graph / Facebook -->
     <meta property="og:type" content="website" />

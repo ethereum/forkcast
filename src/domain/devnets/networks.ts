@@ -26,6 +26,16 @@ export function getNetworkMetadata(categoryKey: string) {
   return snapshot.networkMetadata[categoryKey] ?? null;
 }
 
+// Network keys look like "{categoryKey}-{label}-{version}", e.g. "bal-devnet-3".
+// The category key comes from externally-discovered cartographoor metadata, so it
+// is escaped before being interpolated into the matcher — otherwise a key with a
+// regex metacharacter could match the wrong networks (or throw). Built once per
+// category rather than per network key.
+const escapeRegExp = (value: string): string => value.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+
+const versionMatcher = (categoryKey: string): RegExp =>
+  new RegExp(`^${escapeRegExp(categoryKey)}-.*-(\\d+)$`);
+
 /**
  * Given a category key (e.g. "bal") and the flat networks map,
  * find all active networks, sorted by version descending.
@@ -34,11 +44,12 @@ function findActiveNetworks(
   categoryKey: string,
   networks: Record<string, NetworkEntry>,
 ): Array<{ key: string; version: number; serviceUrls: NetworkServiceUrls | null }> {
+  const matcher = versionMatcher(categoryKey);
   const results: Array<{ key: string; version: number; serviceUrls: NetworkServiceUrls | null }> = [];
 
   for (const [key, entry] of Object.entries(networks)) {
     if (entry.status !== 'active') continue;
-    const match = key.match(new RegExp(`^${categoryKey}-.*-(\\d+)$`));
+    const match = key.match(matcher);
     if (!match) continue;
     results.push({ key, version: parseInt(match[1], 10), serviceUrls: entry.serviceUrls ?? null });
   }
@@ -52,9 +63,10 @@ function findHighestVersion(
   categoryKey: string,
   networks: Record<string, NetworkEntry>,
 ): number | null {
+  const matcher = versionMatcher(categoryKey);
   let max: number | null = null;
   for (const key of Object.keys(networks)) {
-    const match = key.match(new RegExp(`^${categoryKey}-.*-(\\d+)$`));
+    const match = key.match(matcher);
     if (!match) continue;
     const version = parseInt(match[1], 10);
     if (max === null || version > max) max = version;
@@ -62,22 +74,30 @@ function findHighestVersion(
   return max;
 }
 
-function buildSeries(): { activeSeries: ActiveDevnetSeries[]; inactiveSeries: InactiveDevnetSeries[] } {
+/**
+ * Pure derivation of the active/inactive devnet series from a networks snapshot.
+ * Exported so the route-shaping rules (version-descending sort, the inactive
+ * branch, version-key matching) can be unit-tested against a fixture; the
+ * module-level `activeSeries`/`inactiveSeries` apply it to the committed snapshot.
+ */
+export function buildDevnetSeries(
+  source: NetworksJsonResponse,
+): { activeSeries: ActiveDevnetSeries[]; inactiveSeries: InactiveDevnetSeries[] } {
   const activeSeries: ActiveDevnetSeries[] = [];
   const inactiveSeries: InactiveDevnetSeries[] = [];
 
-  for (const [categoryKey, meta] of Object.entries(snapshot.networkMetadata)) {
+  for (const [categoryKey, meta] of Object.entries(source.networkMetadata)) {
     if (meta.stats.activeNetworks === 0) {
       inactiveSeries.push({
         categoryKey,
         displayName: meta.displayName,
         description: meta.description,
-        highestKnownVersion: findHighestVersion(categoryKey, snapshot.networks),
+        highestKnownVersion: findHighestVersion(categoryKey, source.networks),
       });
       continue;
     }
 
-    const active = findActiveNetworks(categoryKey, snapshot.networks);
+    const active = findActiveNetworks(categoryKey, source.networks);
     const latest = active[0] ?? null;
     activeSeries.push({
       categoryKey,
@@ -97,7 +117,7 @@ function buildSeries(): { activeSeries: ActiveDevnetSeries[]; inactiveSeries: In
 }
 
 // Derived once from the static snapshot.
-export const { activeSeries, inactiveSeries } = buildSeries();
+export const { activeSeries, inactiveSeries } = buildDevnetSeries(snapshot);
 
 /**
  * All active devnet network keys the index can link to (e.g. "bal-devnet-3").

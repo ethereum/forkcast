@@ -269,6 +269,22 @@ const mobileLinkClass = (active: boolean, isIndexLink: boolean) =>
   window.addEventListener('forkcast:themechange', syncThemeLabel);
   syncThemeLabel();
 
+  // While no explicit choice is stored (the default "system" mode), follow the OS
+  // appearance live, matching the deleted ThemeContext. The layout's pre-paint
+  // script only resolves the OS preference once at load; this keeps an open tab in
+  // sync when the OS theme changes. An explicit light/dark choice always wins.
+  matchMedia('(prefers-color-scheme: dark)').addEventListener('change', (event) => {
+    let stored = null;
+    try {
+      stored = localStorage.getItem('theme');
+    } catch {
+      // Unreadable storage (private mode, etc.) counts as no explicit preference.
+    }
+    if (stored === 'dark' || stored === 'light') return;
+    document.documentElement.classList.toggle('dark', event.matches);
+    window.dispatchEvent(new Event('forkcast:themechange'));
+  });
+
   // Mobile menu: toggle the panel and swap the hamburger / close icons.
   const mobileToggle = document.querySelector('[data-mobile-toggle]');
   const mobilePanel = document.querySelector('[data-mobile-panel]');

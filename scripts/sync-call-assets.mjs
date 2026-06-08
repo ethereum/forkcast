@@ -74,7 +74,7 @@ function normalizeManifest(manifest) {
   return manifest.calls || {};
 }
 
-const LIVESTREAMED_TYPES = new Set(['acdc', 'acde', 'acdt']);
+const LIVESTREAMED_TYPES = new Set(['acdc', 'acde']);
 
 function generateConfig(callData, localType) {
   const needsManualSync = LIVESTREAMED_TYPES.has(localType);

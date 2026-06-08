@@ -152,30 +152,36 @@ const writeJson = (file, data) => {
   fs.writeFileSync(file, `${JSON.stringify(data, null, 2)}\n`);
 };
 
-async function snapshotUpcomingCalls() {
-  const calls = await buildUpcomingCalls();
-  writeJson(UPCOMING_CALLS_FILE, calls);
-  console.log(`  ✓ upcoming-calls.json (${calls.length} calls)`);
-}
-
-async function snapshotNetworks() {
+async function buildNetworksSnapshot() {
   const res = await fetch(NETWORKS_URL);
   if (!res.ok) throw new Error(`networks fetch failed: ${res.status}`);
-  const snapshot = canonicalizeNetworksSnapshot(await res.json());
-  writeJson(NETWORKS_FILE, snapshot);
-  const activeCount = Object.values(snapshot.networks).filter((n) => n?.status === 'active').length;
-  console.log(
-    `  ✓ devnet-networks.json (${Object.keys(snapshot.networks).length} networks, ${activeCount} active)`,
-  );
+  return canonicalizeNetworksSnapshot(await res.json());
 }
 
 fs.mkdirSync(GENERATED_DIR, { recursive: true });
 console.log('Refreshing route snapshots...');
 try {
-  await Promise.all([snapshotUpcomingCalls(), snapshotNetworks()]);
+  // Fetch + build both snapshots before writing either, so a partial failure leaves
+  // the committed snapshots untouched: the builds run concurrently and a rejection
+  // here propagates before any file is written.
+  const [upcomingCalls, networksSnapshot] = await Promise.all([
+    buildUpcomingCalls(),
+    buildNetworksSnapshot(),
+  ]);
+
+  writeJson(UPCOMING_CALLS_FILE, upcomingCalls);
+  console.log(`  ✓ upcoming-calls.json (${upcomingCalls.length} calls)`);
+
+  const activeCount = Object.values(networksSnapshot.networks).filter(
+    (n) => n?.status === 'active',
+  ).length;
+  writeJson(NETWORKS_FILE, networksSnapshot);
+  console.log(
+    `  ✓ devnet-networks.json (${Object.keys(networksSnapshot.networks).length} networks, ${activeCount} active)`,
+  );
 } catch (error) {
-  // We only write on a successful fetch, so the committed snapshots are left intact.
-  // Exit non-zero and re-run when the upstream is reachable.
+  // Nothing is written until both fetches succeed, so the committed snapshots are
+  // left intact. Exit non-zero and re-run when the upstream is reachable.
   console.error(`✖ snapshot refresh failed: ${error.message}`);
   process.exit(1);
 }

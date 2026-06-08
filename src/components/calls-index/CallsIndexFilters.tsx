@@ -131,7 +131,7 @@ export const CallsIndexFilters = ({
               <button
                 key={option.value}
                 onClick={() => onSelectFilter(option.value)}
-                className={`flex-shrink-0 whitespace-nowrap rounded-md px-2.5 py-1 text-xs font-medium transition-all ${
+                className={`cursor-pointer flex-shrink-0 whitespace-nowrap rounded-md px-2.5 py-1 text-xs font-medium transition-all ${
                   selectedFilter === option.value
                     ? FILTER_ACTIVE_COLORS[option.value]
                     : FILTER_INACTIVE_COLORS[option.value]

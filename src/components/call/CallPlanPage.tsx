@@ -7,7 +7,7 @@ import { eipsData, eipById as eipMap } from '../../data/eips';
 import { networkUpgrades } from '../../data/upgrades';
 import { getPendingProposalsForFork, type PendingProposal } from '../../data/pending-proposals';
 import { fetchUpcomingCalls, type UpcomingCall } from '../../domain/calls/upcomingCalls';
-import { StructuredDecisionContent, EipLinkWithTooltip } from './KeyDecisionsSection';
+import { StructuredDecisionContent, EipLinkWithTooltip, DecisionTextWithEipLinks } from './KeyDecisionsSection';
 
 interface TldrData {
   meeting: string;
@@ -1030,7 +1030,7 @@ const CallPlanPage: React.FC = () => {
                                             >
                                               {isStructured
                                                 ? <StructuredDecisionContent decision={decision} eipMap={eipMap} />
-                                                : decision.original_text
+                                                : <DecisionTextWithEipLinks decision={decision} eipMap={eipMap} />
                                               }
                                             </li>
                                           );

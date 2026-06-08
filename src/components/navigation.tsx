@@ -16,6 +16,7 @@ import {
   forwardRef,
   useCallback,
   useEffect,
+  useMemo,
   useState,
   type AnchorHTMLAttributes,
   type ReactNode,
@@ -134,7 +135,7 @@ export const useSearchParams = (): [
   (init: SearchParamsInit, options?: NavigateOptions) => void,
 ] => {
   const location = useLocation();
-  const params = new URLSearchParams(location.search);
+  const params = useMemo(() => new URLSearchParams(location.search), [location.search]);
 
   const setSearchParams = useCallback(
     (init: SearchParamsInit, options: NavigateOptions = {}) => {

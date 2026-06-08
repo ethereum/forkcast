@@ -27,6 +27,6 @@ export function formatCallReference(call: string, timestamp?: number): CallRefer
   const baseLink = `/calls/${prefix}/${paddedNumber}`;
   return {
     display: `${prefix.toUpperCase()} #${number}`,
-    link: timestamp ? `${baseLink}#t=${timestamp}` : baseLink,
+    link: timestamp != null ? `${baseLink}#t=${timestamp}` : baseLink,
   };
 }

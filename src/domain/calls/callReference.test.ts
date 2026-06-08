@@ -19,6 +19,10 @@ describe('formatCallReference', () => {
     expect(formatCallReference('acdc/158', 1234).link).toBe('/calls/acdc/158#t=1234');
   });
 
+  it('preserves an explicit zero timestamp', () => {
+    expect(formatCallReference('acdc/158', 0).link).toBe('/calls/acdc/158#t=0');
+  });
+
   it('throws on a malformed reference with no "{series}/{number}" separator', () => {
     // Guards bad EIP data: a slashless value would otherwise emit a 404ing link.
     expect(() => formatCallReference('acdt66')).toThrow(/Malformed call reference/);

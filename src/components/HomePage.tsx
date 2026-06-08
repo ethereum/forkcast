@@ -6,7 +6,7 @@ import { eipsData, eipById } from '../data/eips';
 import { useAnalytics } from '../hooks/useAnalytics';
 import { getProposalPrefix, getLaymanTitle, getInclusionStage } from '../utils/eip';
 import UpgradeCard from './ui/UpgradeCard';
-import { StructuredDecisionContent } from './call/KeyDecisionsSection';
+import { StructuredDecisionContent, DecisionTextWithEipLinks } from './call/KeyDecisionsSection';
 import { EIP, KeyDecision } from '../types/eip';
 
 const ACD_TYPES: CallType[] = ['acdc', 'acde', 'acdt'];
@@ -357,7 +357,7 @@ const HomePage = () => {
                       >
                         {isStructured
                           ? <StructuredDecisionContent decision={decision} eipMap={eipById} />
-                          : decision.original_text}
+                          : <DecisionTextWithEipLinks decision={decision} eipMap={eipById} />}
                       </li>
                     );
                   })}

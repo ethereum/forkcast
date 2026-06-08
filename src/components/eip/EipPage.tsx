@@ -320,7 +320,7 @@ export const EipPage: React.FC<{ id: string }> = ({ id }) => {
   };
 
   const { content: specContent, loading: specLoading, error: specError } = useEipMarkdown(eipId, viewMode === 'spec');
-  const { history, loading: historyLoading, error: historyError } = useEipHistory(eipId, viewMode === 'history');
+  const { history, loading: historyLoading, error: historyError } = useEipHistory(eipId, true);
 
   // Get sorted EIPs for navigation
   const sortedEips = useMemo(() => [...eipsData].sort((a, b) => a.id - b.id), []);
@@ -665,6 +665,13 @@ export const EipPage: React.FC<{ id: string }> = ({ id }) => {
               }`}
             >
               History
+              {history && history.commits.length > 0 && (
+                <span className={`ml-1.5 px-1.5 py-0.5 text-xs font-medium rounded-full ${
+                  viewMode === 'history'
+                    ? 'bg-purple-100 text-purple-700 dark:bg-purple-900/40 dark:text-purple-300'
+                    : 'bg-slate-100 text-slate-500 dark:bg-slate-700 dark:text-slate-400'
+                }`}>{history.commits.length}</span>
+              )}
             </button>
             {hasFaq && (
               <button
@@ -676,6 +683,11 @@ export const EipPage: React.FC<{ id: string }> = ({ id }) => {
                 }`}
               >
                 FAQ
+                <span className={`ml-1.5 px-1.5 py-0.5 text-xs font-medium rounded-full ${
+                  viewMode === 'faq'
+                    ? 'bg-purple-100 text-purple-700 dark:bg-purple-900/40 dark:text-purple-300'
+                    : 'bg-slate-100 text-slate-500 dark:bg-slate-700 dark:text-slate-400'
+                }`}>{eip!.faq!.length}</span>
               </button>
             )}
             {hasDependents && (
@@ -688,7 +700,11 @@ export const EipPage: React.FC<{ id: string }> = ({ id }) => {
                 }`}
               >
                 Dependents
-                <span className="ml-1.5 text-xs text-slate-400 dark:text-slate-400">{dependents.length}</span>
+                <span className={`ml-1.5 px-1.5 py-0.5 text-xs font-medium rounded-full ${
+                  viewMode === 'dependents'
+                    ? 'bg-purple-100 text-purple-700 dark:bg-purple-900/40 dark:text-purple-300'
+                    : 'bg-slate-100 text-slate-500 dark:bg-slate-700 dark:text-slate-400'
+                }`}>{dependents.length}</span>
               </button>
             )}
           </div>

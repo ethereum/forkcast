@@ -3,7 +3,7 @@ import { Link } from './navigation';
 import { protocolCalls, Call } from '../data/calls';
 import { KeyDecision } from '../types/eip';
 import { eipById } from '../data/eips';
-import { StructuredDecisionContent } from './call/KeyDecisionsSection';
+import { StructuredDecisionContent, DecisionTextWithEipLinks } from './call/KeyDecisionsSection';
 
 interface MeetingDecisions {
   call: Call;
@@ -95,15 +95,15 @@ const DecisionsPage: React.FC = () => {
         </div>
 
         {/* Filter pills */}
-        <div className="flex flex-wrap gap-2 mb-4">
+        <div className="flex flex-wrap items-center gap-1.5 mt-4 mb-4">
           {FILTER_OPTIONS.map(opt => (
             <button
               key={opt.value}
               onClick={() => setFilter(opt.value)}
-              className={`px-3 py-1.5 text-sm font-medium rounded-full transition-colors ${
+              className={`cursor-pointer whitespace-nowrap rounded-md px-2.5 py-1 text-xs font-medium transition-all ${
                 filter === opt.value
-                  ? 'bg-purple-600 text-white'
-                  : 'bg-white dark:bg-slate-800 text-slate-600 dark:text-slate-300 border border-slate-200 dark:border-slate-700 hover:border-purple-300 dark:hover:border-purple-600'
+                  ? 'bg-purple-600 dark:bg-purple-500 text-white dark:text-white'
+                  : 'bg-purple-50 dark:bg-purple-950/30 text-purple-700 dark:text-purple-400 hover:bg-purple-100 dark:hover:bg-purple-900/30'
               }`}
             >
               {opt.label}
@@ -154,7 +154,7 @@ const DecisionsPage: React.FC = () => {
                       >
                         {isStructured
                           ? <StructuredDecisionContent decision={decision} eipMap={eipById} />
-                          : decision.original_text
+                          : <DecisionTextWithEipLinks decision={decision} eipMap={eipById} />
                         }
                       </li>
                     );

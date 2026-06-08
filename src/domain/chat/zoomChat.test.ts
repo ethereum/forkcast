@@ -76,4 +76,30 @@ describe('parseChatTranscript', () => {
       { speaker: 'Chris', emoji: '👍' },
     ]);
   });
+
+  it('accepts raw Zoom chat export lines with From speaker markers', () => {
+    const { messages, reactions } = parseChatTranscript([
+      '10:46:15\t From terence : Is it by root or by roots?',
+      '10:46:45\t From terence : Replying to "Is it by root or by ..."',
+      '',
+      'By root would be very slow',
+      '10:49:47\t From Justin Traglia : Reacted to "isn\'t that what Manu..." with 🤷',
+    ].join('\n'));
+
+    expect(messages).toEqual([
+      {
+        timestamp: '10:46:15',
+        speaker: 'terence',
+        message: 'Is it by root or by roots?',
+      },
+      {
+        timestamp: '10:46:45',
+        speaker: 'terence',
+        message: 'Replying to "Is it by root or by ..." → By root would be very slow',
+      },
+    ]);
+    expect(reactions.get("isn't that what Manu...")).toEqual([
+      { speaker: 'Justin Traglia', emoji: '🤷' },
+    ]);
+  });
 });

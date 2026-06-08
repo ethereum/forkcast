@@ -318,26 +318,45 @@ Environment:
             since,
           );
 
+          const existing = loadExistingHistory(eipNumber);
+          const existingCommits = existing?.commits || [];
+
+          // Backfill stats for existing commits missing them
+          const missingPatches = existingCommits.filter((c) => !c.patch && c.additions === undefined);
+          for (const commit of missingPatches) {
+            const result = await fetchPatchForCommit(
+              commit.sha,
+              eipNumber,
+              headers,
+            );
+            if (result) {
+              if (result.patch) commit.patch = result.patch;
+              commit.additions = result.additions;
+              commit.deletions = result.deletions;
+            }
+            await sleep(100);
+          }
+
           if (newCommits.length === 0 && entry && historyFileExists) {
-            // No new commits — only update the file if open PR data changed
-            const existing = loadExistingHistory(eipNumber);
-            if (!openPrFetchFailed) {
-              const openPrs = openPrsByEip.get(eipNumber) || [];
+            // No new commits — update the file if open PR data changed or stats were backfilled
+            const needsWrite = missingPatches.length > 0;
+            if (!openPrFetchFailed || needsWrite) {
+              const openPrs = openPrFetchFailed ? (existing?.openPrs || []) : (openPrsByEip.get(eipNumber) || []);
               const hadOpenPrs = (existing?.openPrs || []).length > 0;
-              if (openPrs.length > 0 || hadOpenPrs) {
-                const history = { ...existing, openPrs: openPrs.length > 0 ? openPrs : undefined };
-                if (!history.openPrs) delete history.openPrs;
+              if (needsWrite || openPrs.length > 0 || hadOpenPrs) {
+                const history = {
+                  eipId: eipNumber,
+                  commits: existingCommits,
+                  ...(openPrs.length > 0 ? { openPrs } : {}),
+                };
                 const filePath = path.join(HISTORY_DIR, `${eipNumber}.json`);
                 fs.writeFileSync(filePath, JSON.stringify(history, null, 2) + '\n');
               }
             }
-            return { eipNumber, skipped: true };
+            return { eipNumber, skipped: true, backfilled: missingPatches.length };
           }
 
-          const existing = loadExistingHistory(eipNumber);
-          const existingShas = new Set(
-            (existing?.commits || []).map((c) => c.sha),
-          );
+          const existingShas = new Set(existingCommits.map((c) => c.sha));
           const dedupedNew = newCommits.filter(
             (c) => !existingShas.has(c.sha),
           );
@@ -357,24 +376,7 @@ Environment:
             await sleep(100);
           }
 
-          // Backfill patches for existing commits missing them
-          const existingCommits = existing?.commits || [];
-          const missingPatches = existingCommits.filter((c) => !c.patch && c.additions === undefined);
-          for (const commit of missingPatches) {
-            const result = await fetchPatchForCommit(
-              commit.sha,
-              eipNumber,
-              headers,
-            );
-            if (result) {
-              if (result.patch) commit.patch = result.patch;
-              commit.additions = result.additions;
-              commit.deletions = result.deletions;
-            }
-            await sleep(100);
-          }
-
-          const allCommits = [...dedupedNew, ...(existing?.commits || [])];
+          const allCommits = [...dedupedNew, ...existingCommits];
           allCommits.sort(
             (a, b) => new Date(b.date).getTime() - new Date(a.date).getTime(),
           );

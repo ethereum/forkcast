@@ -7,6 +7,7 @@
 import { writeFileSync, readFileSync, appendFileSync, existsSync, mkdirSync } from 'fs';
 import { dirname, join } from 'path';
 import { fileURLToPath } from 'url';
+import { generateConfig, normalizeManifest, updateConfig } from './sync-call-config.mjs';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const ROOT = join(__dirname, '..');
@@ -43,49 +44,6 @@ async function fetchManifest() {
   const response = await fetch(MANIFEST_URL);
   if (!response.ok) throw new Error(`Failed to fetch manifest: ${response.status}`);
   return response.json();
-}
-
-function normalizeManifest(manifest) {
-  if (manifest?.series && typeof manifest.series === 'object') {
-    const normalized = {};
-    for (const [series, seriesData] of Object.entries(manifest.series)) {
-      const calls = {};
-      for (const call of seriesData.calls || []) {
-        const callId = call?.path?.split('/')?.[1];
-        if (!callId) continue;
-        const resources = call.resources || {};
-        calls[callId] = {
-          has_tldr: Boolean(resources.tldr),
-          has_transcript: Boolean(resources.transcript),
-          has_corrected_transcript: Boolean(resources.transcript_corrected),
-          has_chat: Boolean(resources.chat),
-          has_transcript_changelog: Boolean(resources.changelog),
-          last_updated: call.updated || call.date || null,
-          // Metadata for config.json generation
-          issue: call.issue || null,
-          videoUrl: call.videoUrl || null
-        };
-      }
-      normalized[series] = calls;
-    }
-    return normalized;
-  }
-
-  return manifest.calls || {};
-}
-
-const LIVESTREAMED_TYPES = new Set(['acdc', 'acde', 'acdt']);
-
-function generateConfig(callData, localType) {
-  const needsManualSync = LIVESTREAMED_TYPES.has(localType);
-  return {
-    issue: callData.issue,
-    videoUrl: callData.videoUrl,
-    sync: {
-      transcriptStartTime: needsManualSync ? null : '00:00:00',
-      videoStartTime: needsManualSync ? null : '00:00:00'
-    }
-  };
 }
 
 async function downloadFile(url, destPath) {
@@ -131,23 +89,30 @@ async function syncCall(remoteSeries, localType, callId, callData, force = false
   // Handle config.json
   const configPath = join(localDir, 'config.json');
   if (!existsSync(configPath)) {
-    // Create new config from manifest data
     console.log('  Generating config.json');
     const config = generateConfig(callData, localType);
     writeFileSync(configPath, JSON.stringify(config, null, 2));
     changesMade = true;
   } else if (callData.videoUrl) {
-    // Update videoUrl if existing config has null and manifest has a value
+    let existingConfig;
     try {
-      const existingConfig = JSON.parse(readFileSync(configPath, 'utf-8'));
-      if (existingConfig.videoUrl !== callData.videoUrl) {
-        console.log('  Updating config.json videoUrl');
-        existingConfig.videoUrl = callData.videoUrl;
-        writeFileSync(configPath, JSON.stringify(existingConfig, null, 2));
-        changesMade = true;
-      }
+      existingConfig = JSON.parse(readFileSync(configPath, 'utf-8'));
     } catch (e) {
       console.log(`  Warning: Could not update config.json: ${e.message}`);
+      return changesMade;
+    }
+
+    const { config: updatedConfig, changed: configChanged } = updateConfig(existingConfig, callData, localType);
+    if (configChanged) {
+      if (existingConfig.videoUrl !== updatedConfig.videoUrl) {
+        console.log('  Updating config.json videoUrl');
+      }
+      if (existingConfig.sync !== updatedConfig.sync) {
+        console.log('  Updating config.json sync from manifest');
+      }
+
+      writeFileSync(configPath, JSON.stringify(updatedConfig, null, 2));
+      changesMade = true;
     }
   }
 

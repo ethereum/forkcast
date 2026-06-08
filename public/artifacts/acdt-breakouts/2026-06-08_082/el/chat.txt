@@ -1,0 +1,72 @@
+10:43:41	 From jochem-brouwer : you can mine the tx though
+10:44:46	 From Mario Vega : The only problem is 8037, so chains have to be cognizant of this and deploy option 2 before forking to 8037
+10:45:05	 From jochem-brouwer : want to echo frangio's point we can use (2) to deploy (3)
+10:45:30	 From Marius Van Der Wijden (M) : Which doc are we talking about?
+10:45:46	 From kclowes : https://nerolation.github.io/hegota-eip-presentations/eip-7997.html
+10:45:47	 From Toni Wahrstätter : https://nerolation.github.io/hegota-eip-presentations/eip-7997.html
+10:46:04	 From raxhvl : Also archnaids factory is hardcoded in tooling like foundry
+10:46:21	 From Łukasz Rozmej : ok maybe I don't have the context then
+10:46:35	 From Toni Wahrstätter : Replying to "Also archnaids facto..."
+
+yess, and it's the default even
+10:46:50	 From raxhvl : Replying to "ok maybe I don't hav..." 
+
+ Here is a write up on this context: Here is a write up on this: https://happychain.notion.site/xchain-deterministic-deploy
+10:47:04	 From Łukasz Rozmej : ok the downside is that if you forget abouit it you f-uped your chain
+10:47:18	 From frangio : Replying to "ok the downside is..."
+
+cant this be added in a hard fork?
+10:48:53	 From Mario Vega : Replying to "ok the downside is t..."
+
+This is why I think retaining an EIP for this is important, it signals other chains that this contract has to be deployed before forking
+10:49:21	 From jochem-brouwer : Heeft gereageerd op "This is why I thin..." met ➕
+10:49:24	 From kevaundray wedderburn : Reacted to "This is why I think retaining an EIP for this is important, it signals other chains that this contract has to be deployed before forking" with ➕
+10:49:45	 From kevaundray wedderburn : Replying to "ok the downside is that if you forget abouit it you f-uped your chain"
+
+Might be good to also signal to other chains explicitly via some announcement
+10:50:02	 From frangio : i didn't understand mario's point, can someone explain that again?
+10:50:13	 From Toni Wahrstätter : Replying to "i didn't understand ..."
+
+@Mario Vega 
+10:50:25	 From Marius Van Der Wijden (M) : Replying to "ok the downside is t..." 
+
+ Ethereum.org blog post
+10:50:26	 From kevaundray wedderburn : Replying to "i didn't understand mario's point, can someone explain that again?"
+
+Just that with an eip, we have an explicit signal to other chains
+10:50:32	 From Toni Wahrstätter : Replying to "i didn't understand ..."
+
+I understood it as, no matter where we land, we have to ship it in an eip in glam
+10:50:55	 From frangio : Replying to "i didn't understan..."
+
+it being option 2, right?
+10:51:11	 From Mario Vega : Replying to "i didn't understand ..."
+
+The EIP being in the meta Amsterdam EIP means that anyone implemeting thefork, after looking at the EIP numbers included, will look at this EIP and know that this contract has to be deployed before forking
+10:51:16	 From Mario Vega : Replying to "i didn't understand ..."
+
+Yes option 2
+10:51:17	 From Toni Wahrstätter : Replying to "i didn't understand ..."
+
+even if it's a no-op, we at least specify it in the genesis file. Draft here:
+https://github.com/nerolation/EIPs/blob/eaee46304d8c46c2c02fad963f7295d10396c6d8/EIPS/eip-8269.md
+10:51:20	 From frangio : Reacted to "The EIP being in t..." with 👍
+10:51:21	 From kevaundray wedderburn : Replying to "i didn't understand mario's point, can someone explain that again?"
+
+So before updating to glamsterdam, other chains should look at the eip and become aware that they should do option 2
+10:51:23	 From Maria Silva : ethereum/EIPs#11715
+10:51:28	 From Luis Pinto | Besu : Reviewed Gary’s PR, opened a few points but looks good to me generally
+10:51:29	 From frangio : Replying to "i didn't understan..."
+
+thanks
+10:51:30	 From kevaundray wedderburn : Reacted to "The EIP being in the meta Amsterdam EIP means that anyone implemeting thefork, after looking at the EIP numbers included, will look at this EIP and know that this contract has to be deployed before forking" with 👍
+10:51:44	 From Mario Vega : Reacted to "So before updating t..." with 👍🏼
+10:52:46	 From Maria Silva : https://hackmd.io/@bFEBbZiVSAO0IURh9qzEFg/BJmFYqCeGl
+10:55:12	 From Luis Pinto | Besu : Did not look into this either
+10:55:31	 From jochem-brouwer : I think for explicitness in the spec it should describe the gas charge order (which is rather complex) after we decide what this order actually is
+10:56:54	 From Stefan Starflinger : LGTM
+10:56:55	 From Stefan Starflinger : ship it
+10:57:44	 From raxhvl : https://github.com/ethereum/execution-specs/pull/2900
+11:00:15	 From Toni Wahrstätter : https://discord.com/channels/595666850260713488/1506543443172921464/1513542339971514499
+11:00:41	 From Toni Wahrstätter : https://github.com/ethereum/execution-specs/pull/2900
+11:01:07	 From jochem-brouwer : the situations also seem to apply the eip-8037 point we just had

@@ -10,6 +10,12 @@ export function useEipHistory(eipId: number, enabled: boolean) {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
+  // Reset to cached value (or null) whenever the EIP changes,
+  // so stale data from the previous EIP doesn't linger.
+  useEffect(() => {
+    setHistory(cache.get(eipId) ?? null);
+  }, [eipId]);
+
   useEffect(() => {
     if (!enabled) return;
 

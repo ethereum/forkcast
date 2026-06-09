@@ -382,6 +382,7 @@ const CallPage: React.FC<CallPageProps> = ({ isSearchOpen, setIsSearchOpen, sear
   const [selectedSearchResult, setSelectedSearchResult] = useState<{timestamp: string, text: string, type: string} | null>(null);
   const pollingIntervalRef = useRef<ReturnType<typeof setInterval> | undefined>(undefined);
   const [isVideoExpanded, setIsVideoExpanded] = useState(false);
+  const handledSearchRequestIdRef = useRef(0);
   const [isLargeScreen, setIsLargeScreen] = useState(
     () => window.matchMedia('(min-width: 1024px)').matches
   );
@@ -527,7 +528,8 @@ const CallPage: React.FC<CallPageProps> = ({ isSearchOpen, setIsSearchOpen, sear
   }, [handlePauseVideo, setIsSearchOpen]);
 
   useEffect(() => {
-    if (searchRequestId === 0) return;
+    if (searchRequestId === 0 || searchRequestId === handledSearchRequestIdRef.current) return;
+    handledSearchRequestIdRef.current = searchRequestId;
     setIsSearchOpen(true);
     handlePauseVideo();
   }, [searchRequestId, handlePauseVideo, setIsSearchOpen]);

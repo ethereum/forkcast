@@ -31,6 +31,34 @@ rendering (see [Verification](#verification)).
   - `client:only="react"` — last resort, only when a component genuinely cannot render
     without a browser (and fixing that is out of scope for a no-behavior-change phase).
 
+## Two conversion strategies
+
+Phase 1 deliberately used `client:only="react"` everywhere to defer SSR-enablement.
+Phase 2 applies one of two idiomatic approaches per route, both of which produce real
+static HTML for crawlers:
+
+1. **Static `.astro` rewrite** — for pure-content routes, the page body is rewritten as
+   `.astro` (zero client JS), with small `<script>`s for any leaf interactivity (filter
+   toggles, hover previews, keyboard nav). Used for `/`, `/upgrades`, `/decisions`,
+   `/devnets`, `/devnets/[id]`, `/404`.
+
+2. **SSR-rendered island (`client:load`)** — for routes whose content is interactive but
+   SSR-safe, the existing React component is server-rendered to static HTML at build time
+   and hydrated for interactivity (a normal Astro client island, not `client:only`). The
+   recipe: (a) derive build-time data synchronously (`useMemo`/lazy init instead of a
+   data-loading `useEffect`); (b) gate URL-param-derived state behind an `isHydrated` flag
+   so the client's first render matches the server HTML (no hydration mismatch on deep
+   links); (c) flip `client:only` → `client:load`. Used for every `/upgrade/...` page,
+   `/eips`, `/eips/[id]`, and `/schedule`.
+
+A few genuinely runtime-dependent routes remain `client:only` islands by design (the user
+expected some pages to stay islands): the protocol call pages (`/calls`, `/calls/[type]`,
+`/calls/[...path]`) split their timeline by the **viewer's** timezone/clock and the call
+viewer reads `window.matchMedia` at init; `/agenda` is driven by runtime artifact fetches
+keyed off the current time; `/rank` is a drag-and-drop tier ranker that derives from
+`new Date()`. SSR-rendering these would either change behavior (timezone reflow) or add no
+crawler value, so they stay client-rendered, exactly as Phase 1 left them.
+
 ## Shared primitives
 
 A small set of reusable Astro pieces replace the per-island React equivalents on the
@@ -52,52 +80,52 @@ Astro versions exist only for the static-rendered surfaces.
 - Cross-page navigation links become plain `<a>` (the Phase 1 `Link` shim is only kept where
   a component remains a React island).
 
-## Per-route decisions
+## Per-route outcomes
 
-| Route | Approach | Islands kept (directive) | Notes |
-|---|---|---|---|
-| `/upgrades` | fully static | none (Tooltip is static) | ✅ done |
-| `/404` | fully static | none | ✅ already static |
-| `/` | static shell + island | `RecentDecisions` (`client:idle`) | runtime artifact fetch stays an island; everything else (upgrades, EIPs, calls, planning, footer) is static HTML |
-| `/decisions` | static shell + island | filter pills (`client:load`) | all decisions read at build time from `key_decisions.json`, rendered static; filter toggles visibility |
-| `/devnets` | static shell + island | inactive-toggle (`client:load`) | active devnet cards static; toggle reveals inactive cards |
-| `/devnets/[id]` | fully static | keyboard-nav `<script>` | all spec/network data resolved in frontmatter; prev/next arrow-key nav is a `define:vars` script |
-| `/upgrade/pectra` | static shell + island | EIP filter/list (`client:load`) | header, timeline, notices static; the filterable EIP directory + TOC scroll-spy stays an island |
-| `/upgrade/fusaka` | static shell + island | EIP filter/list (`client:load`) | same shape as pectra |
-| `/upgrade/hegota` | static shell + island | overview EIP list (`client:load`) | static header + tab bar + timeline; content island |
-| `/upgrade/hegota/test-complexity` | static shell + island | `TestComplexityTab` (`client:load`) | live GitHub fetch ⇒ must stay island; header/tab-bar static |
-| `/upgrade/glamsterdam` | static shell + island | overview content (`client:load`) | shared `GlamsterdamPageHeader.astro` + tab bar static |
-| `/upgrade/glamsterdam/stakeholders` | static shell + island | stakeholder picker (`client:load`) | header/tab-bar static |
-| `/upgrade/glamsterdam/client-priority` | static shell + island | priority table (`client:load`) | header/tab-bar static |
-| `/upgrade/glamsterdam/devnet-inclusion` | static shell + island | prioritization table (`client:load`) | header/tab-bar static |
-| `/upgrade/glamsterdam/test-complexity` | static shell + island | `TestComplexityTab` (`client:load`) | header/tab-bar static |
-| `/eips` | static shell + island | EIP table/filters (`client:load`) | static `<h1>`/shell; the filter+sort+paginate table stays one island |
-| `/eips/[id]` | static shell + scoped islands | tab controller, spec tab, search (`client:load`) | static meta header + default-tab content; interactive tabs/spec/search are islands |
-| `/calls` | static shell + island | filter+timeline (`client:load`) | timezone-dependent today/future split ⇒ island; static `<h1>`/shell |
-| `/calls/[type]` | static shell + island | filter+timeline (`client:load`) | same as `/calls`, scoped to the type |
-| `/calls/[...path]` | thin shell + island | call workspace (`client:only`/`client:load`) | static identity header; video/transcript/chat workspace stays an island |
-| `/agenda` | static shell + island | agenda fetcher (`client:load`) | five runtime-fetched sections stay an island; header/scope static |
-| `/rank` | thin shell + island | `RankPage` (`client:load`) | drag-and-drop tier ranking is inherently an app; static disclaimer/footer extracted |
-| `/schedule` | thin shell + island | `SchedulePage` (`client:load`) | editable Gantt planner is inherently an app; static `<h1>`/subtitle extracted |
+| Route | Strategy | Notes |
+|---|---|---|
+| `/` | static `.astro` | upgrades / EIPs / calls / planning / footer + build-time "Recent Decisions" all static; analytics link events via a small script |
+| `/upgrades` | static `.astro` | `UpgradeCard.astro` + `MacroPhaseBar.astro` (static `Tooltip.astro`) |
+| `/decisions` | static `.astro` | all ACD key decisions read at build time, rendered static; type filter is a visibility-toggle script |
+| `/devnets` | static `.astro` | active cards static; "Active only" toggle is a script |
+| `/devnets/[id]` | static `.astro` | spec/network data resolved in frontmatter; arrow-key nav via `define:vars` script |
+| `/404` | static `.astro` | already static in Phase 1 |
+| `/upgrade/pectra` | SSR island (`client:load`) | full EIP directory + timeline server-rendered; `eips` via `useMemo`, filters gated behind `isHydrated` |
+| `/upgrade/fusaka` | SSR island (`client:load`) | same as pectra (shared `PublicNetworkUpgradePage`) |
+| `/upgrade/hegota` | SSR island (`client:load`) | overview tab server-rendered; tab bar + header in the React shell |
+| `/upgrade/hegota/test-complexity` | SSR island (`client:load`) | shell + tab bar server-rendered; live STEEL data still fetches on the client |
+| `/upgrade/glamsterdam` | SSR island (`client:load`) | overview tab server-rendered |
+| `/upgrade/glamsterdam/stakeholders` | SSR island (`client:load`) | EIP list server-rendered; `?view=` applied after mount (`isHydrated`) |
+| `/upgrade/glamsterdam/client-priority` | SSR island (`client:load`) | shell server-rendered; client-stance data fetches on the client |
+| `/upgrade/glamsterdam/devnet-inclusion` | SSR island (`client:load`) | prioritization table server-rendered; complexity fetches on the client |
+| `/upgrade/glamsterdam/test-complexity` | SSR island (`client:load`) | shell server-rendered; live STEEL data fetches on the client |
+| `/eips` | SSR island (`client:load`) | full EIP directory table server-rendered (default sort/filters are deterministic) |
+| `/eips/[id]` | SSR island (`client:load`) | default tab content + meta header server-rendered; `?tab=`/`#anchor` applied after mount |
+| `/schedule` | SSR island (`client:load`) | planning table + Gantt server-rendered (derives from static config); hydrates for editing |
+| `/calls` | island (`client:only`) | timeline split by **viewer** timezone/clock + filter URL state — stays client-rendered |
+| `/calls/[type]` | island (`client:only`) | same as `/calls`, scoped to the type |
+| `/calls/[...path]` | island (`client:only`) | call viewer reads `window.matchMedia` at init + YouTube player; stays client-rendered |
+| `/agenda` | island (`client:only`) | five runtime artifact fetches keyed off the current time |
+| `/rank` | island (`client:only`) | drag-and-drop tier ranker derived from `new Date()` |
 
-Three routes (`/calls/[...path]`, `/rank`, `/schedule`) are genuinely app-like and stay
-mostly-island by design — converting their interactive cores to static HTML would not serve
-the content goal and would risk behavior changes. For these we still extract the static
-shell (heading, identity, disclaimers) into `.astro` and apply the cleanups below.
+18 of the 23 routes now render their full content as static HTML (6 as `.astro`, 12 as
+SSR-rendered `client:load` islands). The remaining 5 are the genuinely runtime/timezone/drag
+dependent routes and stay `client:only` by design.
 
 ## Phase-1-and-beyond cleanups (from `astro-migration-phase-1.md`)
 
-- Replace temporary `<Link to>` with `<a href>` wherever the link is plain cross-page
-  navigation; keep `Link` only inside components that remain React islands and genuinely
-  need it.
-- Remove the React-Router compatibility props from the link helper (`state`, `replace`).
-- Narrow `components/navigation.tsx` to only the browser URL state hydrated islands need.
-- Move query/hash ownership into page-specific Astro/component primitives where natural.
-- Drop the vestigial `loading`/`error`/`refetch` fields from `useDevnetNetworks` and the dead
-  loading/error branches in `DevnetsIndexPage`.
-- Move `snapshot-routes` to a scheduled committing workflow so deploys are plain `build` off
-  committed data.
-- Update the `<noscript>` copy and `public/llms.txt` now that route bodies render static HTML.
+- ✅ Removed the React-Router compatibility props (`state`, `replace`) from the `Link` helper
+  and the dead `state` `NavigateOption`; narrowed `components/navigation.tsx`.
+- ✅ Dropped the now-vestigial `useDevnetNetworks` hook entirely (its only caller,
+  `DevnetsIndexPage`, was rewritten as `.astro`) — removing the dead loading/error branches.
+- ✅ Moved `snapshot-routes` to a scheduled committing workflow (`snapshot-routes.yml`);
+  `deploy.yml` and `predeploy` now run plain `build` off the committed snapshots.
+- ✅ Updated the `<noscript>` copy and `public/llms.txt` to reflect that most route bodies
+  now render as static HTML.
+- ✅ Within the routes converted to `.astro`, cross-page `<Link to>` became plain `<a href>`.
+  Remaining: routes still rendered as React islands continue to use `Link`/the navigation
+  helper (they genuinely read browser URL state); narrowing those further is left for when
+  each is converted. Likewise, query/hash ownership stays in the islands that remain.
 
 ## Verification
 

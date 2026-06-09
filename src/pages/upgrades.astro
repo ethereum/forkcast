@@ -1,9 +1,165 @@
 ---
 import Layout from '../layouts/Layout.astro';
-import UpgradesIndexPage from '../components/UpgradesIndexPage';
+import UpgradeCard from '../components/ui/UpgradeCard.astro';
 import { staticPageMetadata } from '../domain/routes/pageMetadata';
+import { networkUpgrades, type NetworkUpgrade } from '../data/upgrades';
+import { parseShortDate } from '../components/schedule/forkDateCalculator';
+
+const isInProgress = (u: NetworkUpgrade) => !u.disabled && u.status !== 'Live';
+
+const inProgressOrder: Partial<Record<NetworkUpgrade['status'], number>> = {
+  Upcoming: 0,
+  Planning: 1,
+  Research: 2,
+};
+
+const activationTimestamp = (u: NetworkUpgrade): number => {
+  const d = u.activationDate ? parseShortDate(u.activationDate) : null;
+  return d ? d.getTime() : -Infinity;
+};
+
+const inProgressUpgrades = networkUpgrades
+  .filter(isInProgress)
+  .sort((a, b) => (inProgressOrder[a.status] ?? 99) - (inProgressOrder[b.status] ?? 99));
+
+const liveUpgrades = networkUpgrades
+  .filter((u) => !isInProgress(u))
+  .sort((a, b) => activationTimestamp(b) - activationTimestamp(a));
 ---
 
 <Layout {...staticPageMetadata.upgrades}>
-  <UpgradesIndexPage client:only="react" />
+  <div class="min-h-screen bg-slate-50 dark:bg-slate-900 text-slate-900 dark:text-slate-100 p-6">
+    <div class="max-w-4xl mx-auto">
+      <div class="mb-8">
+        <h1 class="text-xl font-semibold text-slate-900 dark:text-slate-100 mb-2">Network Upgrades</h1>
+        <p class="text-sm text-slate-500 dark:text-slate-400">
+          Every Ethereum network upgrade Forkcast tracks — what's currently being scoped, what's live, and the
+          historical record.
+        </p>
+      </div>
+
+      {
+        inProgressUpgrades.length > 0 && (
+          <section class="mb-12">
+            <h2 class="text-lg font-semibold text-slate-900 dark:text-slate-100 mb-4">In Progress</h2>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+              {inProgressUpgrades.map((u) => (
+                <UpgradeCard upgrade={u} />
+              ))}
+            </div>
+          </section>
+        )
+      }
+
+      {
+        liveUpgrades.length > 0 && (
+          <section>
+            <h2 class="text-lg font-semibold text-slate-900 dark:text-slate-100 mb-4">Live</h2>
+            <ul class="divide-y divide-slate-200 dark:divide-slate-700 border border-slate-200 dark:border-slate-700 rounded-lg overflow-hidden bg-white dark:bg-slate-800">
+              {liveUpgrades.map((upgrade) => {
+                const isExternal = Boolean(upgrade.disabled && upgrade.externalLink);
+                const isInteractive = !upgrade.disabled || isExternal;
+                const Tag = upgrade.disabled && !isExternal ? 'div' : 'a';
+                const className = upgrade.disabled && !isExternal ? 'opacity-70' : 'block';
+                const attrs = isExternal
+                  ? { href: upgrade.externalLink, target: '_blank', rel: 'noopener noreferrer' }
+                  : upgrade.disabled
+                    ? {}
+                    : { href: upgrade.path };
+                return (
+                  <li>
+                    <Tag class={className} {...attrs}>
+                      <div
+                        class:list={[
+                          'flex items-center gap-4 px-5 py-4 transition-colors',
+                          isInteractive && 'group hover:bg-slate-50 dark:hover:bg-slate-700/40',
+                        ]}
+                      >
+                        <div class="flex-1 min-w-0">
+                          <div class="flex items-center gap-2 flex-wrap">
+                            <span
+                              class:list={[
+                                'text-sm font-medium',
+                                upgrade.disabled
+                                  ? 'text-slate-600 dark:text-slate-300'
+                                  : 'text-slate-900 dark:text-slate-100',
+                              ]}
+                            >
+                              {upgrade.name}
+                            </span>
+                            {upgrade.activationDate && (
+                              <span class="sm:hidden text-xs text-slate-500 dark:text-slate-400">
+                                · {upgrade.activationDate}
+                              </span>
+                            )}
+                          </div>
+                          <p
+                            class:list={[
+                              'text-sm truncate mt-1',
+                              upgrade.disabled
+                                ? 'text-slate-500 dark:text-slate-400'
+                                : 'text-slate-600 dark:text-slate-300',
+                            ]}
+                          >
+                            {upgrade.tagline}
+                          </p>
+                        </div>
+
+                        <span class="hidden sm:inline-block w-24 text-right text-xs text-slate-500 dark:text-slate-400 tabular-nums shrink-0">
+                          {upgrade.activationDate ?? ''}
+                        </span>
+
+                        {isInteractive && (
+                          <span
+                            class:list={[
+                              'shrink-0',
+                              upgrade.disabled
+                                ? 'text-slate-400 dark:text-slate-500'
+                                : 'text-slate-400 group-hover:text-purple-500',
+                            ]}
+                          >
+                            {isExternal ? (
+                              <svg
+                                class="w-4 h-4"
+                                fill="none"
+                                stroke="currentColor"
+                                viewBox="0 0 24 24"
+                                aria-hidden="true"
+                              >
+                                <path
+                                  stroke-linecap="round"
+                                  stroke-linejoin="round"
+                                  stroke-width="2"
+                                  d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"
+                                />
+                              </svg>
+                            ) : (
+                              <svg
+                                class="w-4 h-4"
+                                fill="none"
+                                stroke="currentColor"
+                                viewBox="0 0 24 24"
+                                aria-hidden="true"
+                              >
+                                <path
+                                  stroke-linecap="round"
+                                  stroke-linejoin="round"
+                                  stroke-width="2"
+                                  d="M9 5l7 7-7 7"
+                                />
+                              </svg>
+                            )}
+                          </span>
+                        )}
+                      </div>
+                    </Tag>
+                  </li>
+                );
+              })}
+            </ul>
+          </section>
+        )
+      }
+    </div>
+  </div>
 </Layout>

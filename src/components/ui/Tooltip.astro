@@ -1,0 +1,87 @@
+---
+/**
+ * Static hover tooltip — the Astro counterpart of the React `Tooltip`.
+ *
+ * The trigger renders as real HTML; the tooltip body lives in a `<template>` and
+ * is cloned into a single body-level layer on hover, positioned `fixed` so it
+ * escapes any transformed/overflow-clipped ancestor (the same reason the React
+ * version portaled to `document.body`). Hidden below `md` via `hidden md:block`,
+ * matching the original. Pass simple text with `text`, or richer markup via the
+ * `tooltip` slot.
+ */
+interface Props {
+  text?: string;
+  position?: 'top' | 'bottom' | 'right';
+  /** Extra classes for the trigger wrapper. */
+  class?: string;
+  /** Render the trigger wrapper as `block` instead of `inline-block`. */
+  block?: boolean;
+}
+
+const { text, position = 'top', class: className = '', block = false } = Astro.props;
+---
+
+<span
+  class:list={['relative', block ? 'block' : 'inline-block', className]}
+  data-tooltip
+  data-tooltip-position={position}
+>
+  <slot />
+  <template data-tooltip-template>
+    <span
+      class="bg-white dark:bg-slate-800 border-2 border-purple-300 dark:border-purple-600 text-slate-900 dark:text-slate-100 text-xs px-3 py-1.5 rounded-lg z-[9999] shadow-xl hidden md:block pointer-events-none max-w-64 w-max"
+    >
+      <slot name="tooltip">{text}</slot>
+    </span>
+  </template>
+</span>
+
+<script>
+  // One shared controller for every <Tooltip> on the page. Mirrors the React
+  // component's fixed-position math (6px gap, centered on the trigger).
+  const PADDING = 6;
+  let active: HTMLElement | null = null;
+
+  const place = (trigger: HTMLElement, tip: HTMLElement) => {
+    const position = trigger.getAttribute('data-tooltip-position') || 'top';
+    const rect = trigger.getBoundingClientRect();
+    const tipRect = tip.getBoundingClientRect();
+    tip.style.position = 'fixed';
+    if (position === 'right') {
+      tip.style.top = `${rect.top + rect.height / 2}px`;
+      tip.style.left = `${rect.right + PADDING}px`;
+      tip.style.transform = 'translateY(-50%)';
+    } else if (position === 'bottom') {
+      tip.style.top = `${rect.bottom + PADDING}px`;
+      tip.style.left = `${rect.left + rect.width / 2}px`;
+      tip.style.transform = 'translateX(-50%)';
+    } else {
+      tip.style.top = `${rect.top - tipRect.height - PADDING}px`;
+      tip.style.left = `${rect.left + rect.width / 2}px`;
+      tip.style.transform = 'translateX(-50%)';
+    }
+  };
+
+  const hide = () => {
+    active?.remove();
+    active = null;
+  };
+
+  const show = (trigger: HTMLElement) => {
+    const template = trigger.querySelector<HTMLTemplateElement>(':scope > [data-tooltip-template]');
+    const node = template?.content.firstElementChild?.cloneNode(true) as HTMLElement | undefined;
+    if (!node) return;
+    hide();
+    // Insert hidden, measure, then place — avoids a one-frame flash at (0,0).
+    node.style.visibility = 'hidden';
+    document.body.appendChild(node);
+    place(trigger, node);
+    node.style.visibility = '';
+    active = node;
+  };
+
+  document.querySelectorAll<HTMLElement>('[data-tooltip]').forEach((trigger) => {
+    trigger.addEventListener('mouseenter', () => show(trigger));
+    trigger.addEventListener('mouseleave', hide);
+  });
+</script>

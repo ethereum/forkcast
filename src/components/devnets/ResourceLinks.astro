@@ -1,0 +1,74 @@
+---
+import type { NetworkEntry, NetworkMetadataLink } from '../../types/devnet-networks';
+
+/** Static port of `DevnetSpecPage`'s `ResourceLinks` (+ `ResourceIcon`). */
+interface Props {
+  networkEntry: NetworkEntry | null;
+  metadataLinks: NetworkMetadataLink[] | null;
+}
+const { networkEntry, metadataLinks } = Astro.props;
+
+const ICON_PATHS: Record<string, string[]> = {
+  explorer: ['M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z'],
+  faucet: ['M12 2C12 2 6 9.5 6 14a6 6 0 0012 0c0-4.5-6-12-6-12z'],
+  code: ['M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4'],
+  signal: [
+    'M8.111 16.404a5.5 5.5 0 017.778 0M12 20h.01m-7.08-7.071c3.904-3.905 10.236-3.905 14.14 0M1.394 9.393c5.857-5.858 15.355-5.858 21.213 0',
+  ],
+  monitor: [
+    'M15 12a3 3 0 11-6 0 3 3 0 016 0z',
+    'M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z',
+  ],
+  check: ['M9 12l2 3 4-6m6 3a9 9 0 11-18 0 9 9 0 0118 0z'],
+  sync: ['M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15'],
+  document: [
+    'M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z',
+  ],
+  link: ['M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14'],
+};
+
+const serviceUrls = networkEntry?.serviceUrls;
+const genesisConfig = networkEntry?.genesisConfig;
+
+const links: Array<{ label: string; url: string; icon: string }> = [];
+if (serviceUrls?.dora) links.push({ label: 'Explorer (Dora)', url: serviceUrls.dora, icon: 'explorer' });
+if (serviceUrls?.faucet) links.push({ label: 'Faucet', url: serviceUrls.faucet, icon: 'faucet' });
+if (serviceUrls?.jsonRpc) links.push({ label: 'JSON-RPC', url: serviceUrls.jsonRpc, icon: 'code' });
+if (serviceUrls?.beaconRpc) links.push({ label: 'Beacon API', url: serviceUrls.beaconRpc, icon: 'signal' });
+if (serviceUrls?.forkmon) links.push({ label: 'Forkmon', url: serviceUrls.forkmon, icon: 'monitor' });
+if (serviceUrls?.assertoor) links.push({ label: 'Assertoor', url: serviceUrls.assertoor, icon: 'check' });
+if (serviceUrls?.checkpointSync)
+  links.push({ label: 'Checkpoint Sync', url: serviceUrls.checkpointSync, icon: 'sync' });
+const clConfig = genesisConfig?.consensusLayer?.find((f) => f.path.endsWith('/config.yaml'));
+const elGenesis = genesisConfig?.executionLayer?.find((f) => f.path.endsWith('/genesis.json'));
+if (clConfig) links.push({ label: 'CL Config', url: clConfig.url, icon: 'document' });
+if (elGenesis) links.push({ label: 'EL Genesis', url: elGenesis.url, icon: 'document' });
+if (metadataLinks) {
+  for (const link of metadataLinks) links.push({ label: link.title, url: link.url, icon: 'link' });
+}
+---
+
+{
+  links.length > 0 && (
+    <div class="mb-8">
+      <h2 class="text-xl font-bold text-slate-900 dark:text-slate-100 mb-3">Resources</h2>
+      <div class="grid grid-cols-2 sm:grid-cols-3 gap-x-6 gap-y-1">
+        {links.map(({ label, url, icon }) => (
+          <a
+            href={url}
+            target="_blank"
+            rel="noopener noreferrer"
+            class="flex items-center gap-2 py-1.5 text-sm text-slate-500 dark:text-slate-400 hover:text-purple-600 dark:hover:text-purple-400 transition-colors"
+          >
+            <svg class="w-4 h-4 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              {(ICON_PATHS[icon] || ICON_PATHS.link).map((d) => (
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d={d} />
+              ))}
+            </svg>
+            <span>{label}</span>
+          </a>
+        ))}
+      </div>
+    </div>
+  )
+}

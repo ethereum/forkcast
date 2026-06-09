@@ -1,0 +1,121 @@
+---
+import type { EipPreview } from '../../domain/decisions/decisionText';
+
+/**
+ * Shared EIP hover-preview controller for static decision text. Embeds preview data
+ * for every referenced EIP and shows a positioned card on hover of any
+ * `[data-eip-preview]` link — the build-time counterpart of `EipLinkWithTooltip`'s
+ * portal tooltip (same markup, same fixed-position math).
+ */
+interface Props {
+  eips: EipPreview[];
+}
+const { eips } = Astro.props;
+const byId = Object.fromEntries(eips.map((e) => [e.id, e]));
+// Escape "<" so the JSON island can never break out of the <script> tag.
+const json = JSON.stringify(byId).replace(/</g, '\\u003c');
+---
+
+<script type="application/json" id="eip-preview-data" is:inline set:html={json} />
+
+<script>
+  interface EipPreview {
+    id: number;
+    layer?: 'EL' | 'CL';
+    title: string;
+    description: string;
+    author: string;
+  }
+
+  const dataEl = document.getElementById('eip-preview-data');
+  const previews: Record<string, EipPreview> = dataEl ? JSON.parse(dataEl.textContent || '{}') : {};
+  let card: HTMLElement | null = null;
+
+  const removeCard = () => {
+    card?.remove();
+    card = null;
+  };
+
+  const buildCard = (eip: EipPreview): HTMLElement => {
+    const outer = document.createElement('div');
+    outer.className = 'fixed z-50';
+    outer.style.maxWidth = '360px';
+    outer.style.width = 'auto';
+
+    const inner = document.createElement('div');
+    inner.className =
+      'bg-white dark:bg-slate-800 border-2 border-purple-300 dark:border-purple-600 rounded-lg shadow-2xl p-4';
+    outer.appendChild(inner);
+
+    const head = document.createElement('div');
+    head.className = 'flex items-start gap-2 mb-2';
+    const idSpan = document.createElement('span');
+    idSpan.className = 'text-sm font-mono font-bold text-purple-600 dark:text-purple-400';
+    idSpan.textContent = `EIP-${eip.id}`;
+    head.appendChild(idSpan);
+    if (eip.layer) {
+      const layerSpan = document.createElement('span');
+      layerSpan.className =
+        'px-1.5 py-0.5 text-xs font-medium rounded ' +
+        (eip.layer === 'EL'
+          ? 'bg-indigo-100 text-indigo-700 dark:bg-indigo-900/20 dark:text-indigo-300'
+          : 'bg-teal-100 text-teal-700 dark:bg-teal-900/20 dark:text-teal-300');
+      layerSpan.textContent = eip.layer;
+      head.appendChild(layerSpan);
+    }
+    inner.appendChild(head);
+
+    const title = document.createElement('h4');
+    title.className = 'text-sm font-semibold text-slate-900 dark:text-slate-100 mb-2';
+    title.textContent = eip.title;
+    inner.appendChild(title);
+
+    if (eip.description) {
+      const desc = document.createElement('p');
+      desc.className = 'text-xs text-slate-600 dark:text-slate-300 leading-relaxed mb-2';
+      desc.textContent = eip.description;
+      inner.appendChild(desc);
+    }
+
+    if (eip.author) {
+      const author = document.createElement('div');
+      author.className = 'text-xs text-slate-500 dark:text-slate-400';
+      const label = document.createElement('span');
+      label.className = 'font-medium';
+      label.textContent = 'Author:';
+      author.appendChild(label);
+      author.appendChild(document.createTextNode(` ${eip.author}`));
+      inner.appendChild(author);
+    }
+
+    return outer;
+  };
+
+  const show = (link: HTMLElement) => {
+    const eip = previews[link.getAttribute('data-eip-preview') || ''];
+    if (!eip) return;
+    removeCard();
+    card = buildCard(eip);
+    document.body.appendChild(card);
+
+    // Position math copied verbatim from EipLinkWithTooltip.handleMouseEnter.
+    const rect = link.getBoundingClientRect();
+    const tooltipWidth = 360;
+    const tooltipHeight = 200;
+    const padding = 10;
+    let x = rect.right + padding;
+    let y = rect.top;
+    if (x + tooltipWidth > window.innerWidth - padding) x = rect.left - tooltipWidth - padding;
+    if (x < padding) x = (window.innerWidth - tooltipWidth) / 2;
+    if (y + tooltipHeight > window.innerHeight - padding) {
+      y = Math.max(padding, window.innerHeight - tooltipHeight - padding);
+    }
+    card.style.left = `${x}px`;
+    card.style.top = `${y}px`;
+  };
+
+  document.querySelectorAll<HTMLElement>('[data-eip-preview]').forEach((link) => {
+    link.addEventListener('mouseenter', () => show(link));
+    link.addEventListener('mouseleave', removeCard);
+  });
+</script>

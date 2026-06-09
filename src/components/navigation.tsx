@@ -35,7 +35,6 @@ export type To = string | Path;
 
 interface NavigateOptions {
   replace?: boolean;
-  state?: unknown;
 }
 
 const hasWindow = (): boolean => typeof window !== 'undefined';
@@ -93,9 +92,9 @@ export const useLocation = (): Location => {
  * In-place update of the URL on the current path. Pushes (or replaces) a history
  * entry and notifies subscribers without reloading the page.
  */
-const updateInPlace = (href: string, replace: boolean, state: unknown) => {
-  if (replace) window.history.replaceState(state ?? null, '', href);
-  else window.history.pushState(state ?? null, '', href);
+const updateInPlace = (href: string, replace: boolean) => {
+  if (replace) window.history.replaceState(null, '', href);
+  else window.history.pushState(null, '', href);
   notifyLocationChange();
 };
 
@@ -111,7 +110,7 @@ export const useNavigate = () =>
       normalizePathname(target.pathname) === normalizePathname(window.location.pathname);
 
     if (samePath) {
-      updateInPlace(href, Boolean(options.replace), options.state);
+      updateInPlace(href, Boolean(options.replace));
     } else if (options.replace) {
       window.location.replace(href);
     } else {
@@ -145,7 +144,7 @@ export const useSearchParams = (): [
       const next = toURLSearchParams(resolved);
       const query = next.toString();
       const href = `${window.location.pathname}${query ? `?${query}` : ''}${window.location.hash}`;
-      updateInPlace(href, Boolean(options.replace), options.state);
+      updateInPlace(href, Boolean(options.replace));
     },
     [],
   );
@@ -155,10 +154,6 @@ export const useSearchParams = (): [
 
 interface LinkProps extends Omit<AnchorHTMLAttributes<HTMLAnchorElement>, 'href'> {
   to: To;
-  /** Ignored — kept for source-compatibility with react-router call sites. */
-  state?: unknown;
-  /** Ignored — a plain anchor always pushes a history entry; kept for source-compatibility. */
-  replace?: boolean;
   children?: ReactNode;
 }
 
@@ -167,8 +162,7 @@ interface LinkProps extends Omit<AnchorHTMLAttributes<HTMLAnchorElement>, 'href'
  * correct behavior for a static multi-page site.
  */
 export const Link = forwardRef<HTMLAnchorElement, LinkProps>(function Link(
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  { to, state, replace, children, ...rest },
+  { to, children, ...rest },
   ref,
 ) {
   return (

@@ -4,9 +4,11 @@
 
 Forkcast tracks EIPs, protocol calls, devnets, and upgrade planning for Ethereum network upgrades.
 
-## Important: page content is still client-rendered
+## Page content is served as static HTML
 
-Forkcast is built with Astro, which serves a real HTML page per route with correct titles and metadata. However, in this phase the page *bodies* (the data tables, timelines, and EIP/call content) are still rendered client-side by React islands. Fetching route URLs like `/eips`, `/calls`, `/devnets`, `/decisions`, and `/agenda` returns the document shell — title, description, and navigation — but not the rendered body content. For data, use the raw artifacts and source data below.
+Forkcast is built with Astro and serves a real HTML page per route with correct titles and metadata. Most route bodies are now rendered to static HTML at build time, so fetching the URL returns the full content — no JavaScript required. This includes the home page, the EIP directory (`/eips`) and individual EIP pages (`/eips/{id}`), key decisions (`/decisions`), devnets (`/devnets`, `/devnets/{id}`), every upgrade page (`/upgrade/...`), the schedule planner (`/schedule`), and the upgrades index (`/upgrades`).
+
+A few highly interactive routes still render their *bodies* client-side (the document shell — title, description, navigation — is still served): the protocol call pages (`/calls/{series}/{number}` and the call index `/calls`), the agenda planner (`/agenda`), and the headliner ranker (`/rank`). For their underlying data, use the raw artifacts and source data below.
 
 ## Static files you CAN fetch
 

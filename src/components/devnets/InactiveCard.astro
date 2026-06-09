@@ -1,0 +1,30 @@
+---
+import type { HTMLAttributes } from 'astro/types';
+import { getCategoryTextColor } from '../../domain/devnets/devnetCards';
+import type { InactiveDevnetSeries } from '../../types/devnet-networks';
+
+type Props = { item: InactiveDevnetSeries } & HTMLAttributes<'div'>;
+const { item, ...rest } = Astro.props;
+---
+
+<div
+  {...rest}
+  class="bg-white/60 dark:bg-slate-800/40 border border-slate-200 dark:border-slate-700 rounded-lg px-4 py-3 flex flex-col gap-2 opacity-60"
+>
+  <h4 class={`text-sm font-semibold uppercase tracking-wide ${getCategoryTextColor(item.categoryKey)}`}>
+    {item.categoryKey}
+  </h4>
+  {
+    item.description && (
+      <p
+        class="text-xs text-slate-500 dark:text-slate-400 line-clamp-3 leading-relaxed"
+        title={item.description}
+      >
+        {item.description}
+      </p>
+    )
+  }
+  <div class="mt-auto pt-1 border-t border-slate-100 dark:border-slate-700/50">
+    <span class="text-xs text-slate-400 dark:text-slate-500 italic">No active networks</span>
+  </div>
+</div>

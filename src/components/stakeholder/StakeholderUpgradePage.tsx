@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import { useSearchParams } from '../navigation';
 import { eipsData } from '../../data/eips';
 import { useAnalytics } from '../../hooks/useAnalytics';
@@ -23,22 +23,32 @@ interface StakeholderUpgradePageProps {
 
 export const StakeholderUpgradePage: React.FC<StakeholderUpgradePageProps> = ({ forkName }) => {
   const [searchParams, setSearchParams] = useSearchParams();
-  const viewParam = searchParams.get('view') as StakeholderKey | null;
-  const [selectedStakeholder, setSelectedStakeholder] = useState<StakeholderKey>(
-    viewParam && STAKEHOLDER_OPTIONS.some(o => o.key === viewParam) ? viewParam : 'appDevs'
-  );
-  const [eips, setEips] = useState<EIP[]>([]);
+  // The island server-renders the default stakeholder; the ?view= param is applied
+  // after mount so the client's first render matches the server HTML.
+  const [selectedStakeholder, setSelectedStakeholder] = useState<StakeholderKey>('appDevs');
   const [isPfiExpanded, setIsPfiExpanded] = useState(false);
   const { trackUpgradeView, trackLinkClick } = useAnalytics();
 
   const currentOption = STAKEHOLDER_OPTIONS.find(o => o.key === selectedStakeholder)!;
 
+  // Derived synchronously so the island server-renders its EIP list at build time.
+  const eips = useMemo<EIP[]>(
+    () => filterEipsForStakeholder(eipsData, forkName, selectedStakeholder),
+    [forkName, selectedStakeholder],
+  );
 
   useEffect(() => {
-    const filtered = filterEipsForStakeholder(eipsData, forkName, selectedStakeholder);
-    setEips(filtered);
+    const viewParam = searchParams.get('view') as StakeholderKey | null;
+    if (viewParam && STAKEHOLDER_OPTIONS.some(o => o.key === viewParam)) {
+      setSelectedStakeholder(viewParam);
+    }
+    // Apply the URL's stakeholder once after mount.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  useEffect(() => {
     setIsPfiExpanded(false);
-  }, [forkName, selectedStakeholder]);
+  }, [selectedStakeholder]);
 
   useEffect(() => {
     trackUpgradeView(`${forkName}-${selectedStakeholder}`);

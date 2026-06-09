@@ -1,0 +1,47 @@
+---
+import { getCategoryTextColor, type DevnetCardItem } from '../../domain/devnets/devnetCards';
+
+interface Props {
+  item: DevnetCardItem;
+}
+const { item } = Astro.props;
+const linkClass =
+  'text-xs font-mono font-medium text-purple-600 hover:text-purple-800 dark:text-purple-400 dark:hover:text-purple-300 transition-colors';
+---
+
+<div
+  class="bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg px-4 py-3 flex flex-col gap-2"
+>
+  <h4 class={`text-sm font-semibold uppercase tracking-wide ${getCategoryTextColor(item.categoryKey)}`}>
+    {item.categoryKey}
+  </h4>
+  {
+    item.description && (
+      <p
+        class="text-xs text-slate-500 dark:text-slate-400 line-clamp-3 leading-relaxed"
+        title={item.description}
+      >
+        {item.description}
+      </p>
+    )
+  }
+  <div class="space-y-1 mt-auto pt-1 border-t border-slate-100 dark:border-slate-700/50">
+    {
+      item.upcomingSpecId && (
+        <div class="flex items-center gap-1.5">
+          <a href={`/devnets/${item.upcomingSpecId}`} class={linkClass}>
+            {item.upcomingSpecId}
+          </a>
+          <span class="px-1.5 py-0.5 text-[10px] font-medium bg-slate-100 text-slate-500 dark:bg-slate-700 dark:text-slate-400 rounded">
+            upcoming
+          </span>
+        </div>
+      )
+    }
+    {item.activeKeys.map((key) => (
+      <div>
+        <a href={`/devnets/${key}`} class={linkClass}>{key}</a>
+      </div>
+    ))}
+  </div>
+</div>

@@ -1,0 +1,36 @@
+---
+import type { EipDevnetStatus } from '../../types';
+
+/** Static port of `DevnetSpecPage`'s `StatusBadge` (EIP devnet status). */
+interface Props {
+  status: EipDevnetStatus;
+}
+const { status } = Astro.props;
+
+const styles: Record<string, string> = {
+  updated: 'bg-blue-100 text-blue-800 dark:bg-blue-900/40 dark:text-blue-300',
+  new: 'bg-green-100 text-green-800 dark:bg-green-900/40 dark:text-green-300',
+  new_optional: 'bg-green-100 text-green-800 dark:bg-green-900/40 dark:text-green-300',
+};
+const optionalStyle = 'bg-slate-100 text-slate-600 dark:bg-slate-700 dark:text-slate-400';
+const labels: Record<string, string> = { updated: 'Updated', new: 'New' };
+---
+
+{
+  !status ? null : status === 'new_optional' ? (
+    <span class="inline-flex gap-1">
+      <span class={`inline-block px-2 py-0.5 rounded text-xs font-medium ${styles.new}`}>New</span>
+      <span class={`inline-block px-2 py-0.5 rounded text-xs font-medium ${optionalStyle}`}>Optional</span>
+    </span>
+  ) : status === 'optional' ? (
+    <span class={`inline-block px-2 py-0.5 rounded text-xs font-medium ${optionalStyle}`}>Optional</span>
+  ) : status === 'required' ? (
+    <span class="inline-block px-2 py-0.5 rounded text-xs font-medium bg-red-100 text-red-800 dark:bg-red-900/40 dark:text-red-300">
+      Required
+    </span>
+  ) : (
+    <span class={`inline-block px-2 py-0.5 rounded text-xs font-medium ${styles[status]}`}>
+      {labels[status]}
+    </span>
+  )
+}

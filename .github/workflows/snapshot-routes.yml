@@ -1,0 +1,69 @@
+name: Snapshot Runtime Routes
+
+# Refreshes the committed route snapshots (upcoming calls from the ethereum/pm
+# GitHub issues, active devnets from the ethPandaOps cartographoor) on a schedule
+# and commits them — the same pattern as scrape-devnet-specs.yml / sync-call-assets.yml.
+# Deploys then build off these committed snapshots (plain `npm run build`), so a
+# deploy is deterministic and never blocked by a third-party outage.
+
+on:
+  schedule:
+    # Twice daily at 07:00 and 19:00 UTC (offset from the other sync workflows).
+    - cron: '0 7,19 * * *'
+  workflow_dispatch:
+
+jobs:
+  snapshot:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      actions: write
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v6
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v6
+        with:
+          node-version: '24'
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Refresh route snapshots
+        run: npm run snapshot-routes
+        env:
+          # Authenticate the GitHub API fetch for upcoming calls (higher rate limit).
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Check for changes
+        id: changes
+        run: |
+          if git diff --quiet; then
+            echo "has_changes=false" >> $GITHUB_OUTPUT
+          else
+            echo "has_changes=true" >> $GITHUB_OUTPUT
+          fi
+
+      - name: Commit and push
+        if: steps.changes.outputs.has_changes == 'true'
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add src/data/generated/upcoming-calls.json src/data/generated/devnet-networks.json
+          git commit -m "sync: refresh route snapshots"
+          git push
+
+      - name: Trigger deploy
+        if: steps.changes.outputs.has_changes == 'true'
+        uses: actions/github-script@v9
+        with:
+          script: |
+            await github.rest.actions.createWorkflowDispatch({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              workflow_id: 'deploy.yml',
+              ref: 'main'
+            });

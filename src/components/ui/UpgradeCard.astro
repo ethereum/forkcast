@@ -1,0 +1,103 @@
+---
+import type { NetworkUpgrade } from '../../data/upgrades';
+import { FORK_PROGRESS_MAP } from '../../constants/timeline-phases';
+import { getMacroPhaseForUpgrade, getMacroPhaseSummary } from '../../utils/macroPhase';
+import MacroPhaseBar from './MacroPhaseBar.astro';
+
+/** Static counterpart of the React `UpgradeCard`. */
+interface Props {
+  upgrade: NetworkUpgrade;
+  class?: string;
+}
+
+const { upgrade, class: className = '' } = Astro.props;
+
+const isLive = upgrade.status === 'Live';
+const progress = FORK_PROGRESS_MAP[upgrade.id];
+const macroPhase = getMacroPhaseForUpgrade(upgrade);
+const summary = getMacroPhaseSummary(upgrade, progress);
+
+const baseClasses =
+  'group bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg p-6 h-full block';
+const hoverClasses =
+  'hover:shadow-md dark:hover:shadow-slate-700/20 hover:border-purple-300 dark:hover:border-purple-600';
+
+const isExternal = Boolean(upgrade.disabled && upgrade.externalLink);
+
+// External link, inert div (disabled, no link), or internal link — same body in
+// each, only the wrapper element/attributes differ.
+const Wrapper = upgrade.disabled && !isExternal ? 'div' : 'a';
+const wrapperClass = isExternal
+  ? `${baseClasses} ${hoverClasses} ${className}`
+  : upgrade.disabled
+    ? `${baseClasses} opacity-60 cursor-not-allowed ${className}`
+    : `${baseClasses} ${hoverClasses} ${className}`;
+const wrapperAttrs = isExternal
+  ? { href: upgrade.externalLink, target: '_blank', rel: 'noopener noreferrer' }
+  : upgrade.disabled
+    ? {}
+    : { href: upgrade.path };
+---
+
+<Wrapper class={wrapperClass} {...wrapperAttrs}>
+  <div class="flex flex-col h-full">
+    <div class="flex items-start justify-between mb-4">
+      <h2
+        class:list={[
+          'text-xl font-medium leading-tight',
+          upgrade.disabled ? 'text-slate-500 dark:text-slate-400' : 'text-slate-900 dark:text-slate-100',
+        ]}
+      >
+        {upgrade.name}
+      </h2>
+      {
+        upgrade.externalLink && (
+          <svg
+            class="w-4 h-4 shrink-0 mt-0.5 ml-2 text-slate-400 dark:text-slate-500"
+            fill="none"
+            stroke="currentColor"
+            viewBox="0 0 24 24"
+            aria-hidden="true"
+          >
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2"
+              d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"
+            />
+          </svg>
+        )
+      }
+    </div>
+
+    {
+      !upgrade.hideProgressBar && (
+        <div class="mb-4">
+          <MacroPhaseBar currentPhase={macroPhase} shipped={isLive} />
+        </div>
+      )
+    }
+
+    <p
+      class:list={[
+        'text-sm leading-relaxed flex-grow',
+        upgrade.disabled ? 'text-slate-400 dark:text-slate-400' : 'text-slate-600 dark:text-slate-300',
+      ]}
+    >
+      {summary}
+    </p>
+
+    {
+      upgrade.activationDate && (
+        <div
+          class:list={[
+            'text-xs mt-4',
+            upgrade.disabled ? 'text-slate-400 dark:text-slate-400' : 'text-slate-500 dark:text-slate-400',
+          ]}
+        >
+          <span class="font-medium">{isLive ? 'Activated:' : 'Target:'}</span> {upgrade.activationDate}
+        </div>
+      )
+    }
+  </div>
+</Wrapper>

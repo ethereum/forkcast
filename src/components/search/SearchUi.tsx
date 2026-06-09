@@ -1,7 +1,20 @@
-import { createContext, useContext, type ReactNode, type RefObject } from 'react';
+import { createContext, useContext, useEffect, useState, type ReactNode, type RefObject } from 'react';
 import { getSearchShortcutLabel } from './searchShortcuts';
 
 const SearchQueryContext = createContext('');
+
+/**
+ * The platform shortcut label (⌘K vs Ctrl+K) depends on `navigator`, which is absent
+ * during SSR. Render the SSR-stable default first, then resolve the real label after
+ * mount, so a server-rendered (`client:load`) search trigger hydrates without mismatch.
+ */
+function useSearchShortcutLabel(): string {
+  const [label, setLabel] = useState('Ctrl+K');
+  useEffect(() => {
+    setLabel(getSearchShortcutLabel());
+  }, []);
+  return label;
+}
 
 export function SearchQueryProvider({ query, children }: { query: string; children: ReactNode }) {
   return <SearchQueryContext.Provider value={query}>{children}</SearchQueryContext.Provider>;
@@ -68,7 +81,7 @@ export function SearchTriggerButton({
   ariaLabel,
   className,
 }: SearchTriggerButtonProps) {
-  const shortcutLabel = getSearchShortcutLabel();
+  const shortcutLabel = useSearchShortcutLabel();
 
   return (
     <button

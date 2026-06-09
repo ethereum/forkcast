@@ -5,5 +5,9 @@ import { staticPageMetadata } from '../domain/routes/pageMetadata';
 ---
 
 <Layout {...staticPageMetadata.schedule}>
-  <SchedulePage client:load />
+  {/* client:only — the planning Gantt + overdue cells read the live clock (new Date())
+      during render, so server-rendering would bake a stale build-time "today" into the
+      HTML and drift from the client after midnight / across timezones. As a date-driven
+      planning sandbox (not crawler content), it stays a client island. */}
+  <SchedulePage client:only="react" />
 </Layout>

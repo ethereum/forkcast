@@ -310,11 +310,12 @@ const EipsIndexPage: React.FC = () => {
 
   // Helper to format date as YYYY-MM-DD
   const formatDate = (dateString: string) => {
-    const date = new Date(dateString);
-    const year = date.getFullYear();
-    const month = String(date.getMonth() + 1).padStart(2, '0');
-    const day = String(date.getDate()).padStart(2, '0');
-    return `${year}-${month}-${day}`;
+    // Read the calendar date straight from the string. Constructing `new Date(dateString)`
+    // would UTC-parse a date-only value and then shift it under local getters, so the same
+    // value renders off-by-one across timezones (UTC build vs the viewer's browser) — a
+    // hydration mismatch once this route is server-rendered.
+    const match = /^(\d{4})-(\d{2})-(\d{2})/.exec(dateString);
+    return match ? `${match[1]}-${match[2]}-${match[3]}` : dateString;
   };
 
   // Helper to get stage label

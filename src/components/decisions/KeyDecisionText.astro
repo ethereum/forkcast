@@ -1,0 +1,76 @@
+---
+import type { KeyDecision } from '../../types/eip';
+import { getKeyDecisionTagColor } from '../../utils/colors';
+import { getTagLabel, splitTextWithEipLinks } from '../../domain/decisions/decisionText';
+import EipPreviewLink from './EipPreviewLink.astro';
+
+/**
+ * Renders one ACD key decision as static HTML — the build-time counterpart of
+ * `StructuredDecisionContent` / `DecisionTextWithEipLinks`.
+ */
+interface Props {
+  decision: KeyDecision;
+}
+const { decision } = Astro.props;
+
+const tagColor = getKeyDecisionTagColor(decision);
+const tagLabel = getTagLabel(decision);
+const tagClass = `inline-flex items-center px-1.5 rounded text-xs font-medium ${tagColor}`;
+
+// Structured sentence (CFI/SFI/headliner/devnet) vs. free text with inline links.
+const structured = decision.type !== 'other' && decision.eips.length > 0;
+const parts = structured ? [] : splitTextWithEipLinks(decision);
+---
+
+{
+  structured ? (
+    <Fragment>
+      {decision.eips.map((id, i) => (
+        <Fragment>
+          {i > 0 && ', '}
+          <EipPreviewLink id={id} />
+        </Fragment>
+      ))}
+      {decision.type === 'headliner_selected' ? (
+        <Fragment>
+          {' selected as '}
+          <span class={tagClass}>{tagLabel}</span>
+          {decision.fork && (
+            <Fragment>
+              {'; moved to '}
+              <span class="inline-flex items-center px-1.5 rounded text-xs font-medium bg-emerald-100 text-emerald-800 dark:bg-emerald-900/30 dark:text-emerald-300">
+                SFI
+              </span>
+              {' for '}
+              {decision.fork}
+            </Fragment>
+          )}
+        </Fragment>
+      ) : decision.type === 'devnet_inclusion' ? (
+        <Fragment>
+          {' included in '}
+          <span class={tagClass}>{tagLabel}</span>
+        </Fragment>
+      ) : (
+        <Fragment>
+          {' moved to '}
+          <span class={tagClass}>{tagLabel}</span>
+          {decision.fork && (
+            <Fragment>
+              {' for '}
+              {decision.fork}
+            </Fragment>
+          )}
+        </Fragment>
+      )}
+      {decision.context && (
+        <span class="text-slate-500 dark:text-slate-400">
+          {'; '}
+          {decision.context}
+        </span>
+      )}
+    </Fragment>
+  ) : (
+    parts.map((part) => (part.kind === 'eip' ? <EipPreviewLink id={part.id} /> : part.value))
+  )
+}

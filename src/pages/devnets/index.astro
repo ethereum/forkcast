@@ -1,9 +1,88 @@
 ---
 import Layout from '../../layouts/Layout.astro';
-import DevnetsIndexPage from '../../components/DevnetsIndexPage';
 import { staticPageMetadata } from '../../domain/routes/pageMetadata';
+import { groupDevnetCards } from '../../domain/devnets/devnetCards';
+import SeriesCard from '../../components/devnets/SeriesCard.astro';
+import InactiveCard from '../../components/devnets/InactiveCard.astro';
+
+const { groups, hasInactive, isEmpty } = groupDevnetCards();
+// Render every group with any content; inactive-only groups start hidden and are
+// revealed by the "Active only" toggle (default: active only).
+const visibleGroups = groups.filter((g) => g.active.length > 0 || g.inactive.length > 0);
 ---
 
 <Layout {...staticPageMetadata.devnetsIndex}>
-  <DevnetsIndexPage client:only="react" />
+  <div class="min-h-screen bg-slate-50 dark:bg-slate-900 text-slate-900 dark:text-slate-100 p-6">
+    <div class="max-w-4xl mx-auto">
+      <div class="mb-6">
+        <div class="flex items-center gap-3 mb-2">
+          <h1 class="text-xl font-semibold text-slate-900 dark:text-slate-100">Devnet Tracker</h1>
+        </div>
+        <p class="text-sm text-slate-500 dark:text-slate-400">
+          Active devnet series from ethPandaOps and Glamsterdam EIP prioritization data.
+        </p>
+      </div>
+
+      <div class="mb-8">
+        <div class="flex items-center justify-between mb-4">
+          <h2 class="text-lg font-semibold text-slate-900 dark:text-slate-100">Devnet Series</h2>
+          {
+            hasInactive && (
+              <label class="flex items-center gap-2 cursor-pointer select-none">
+                <input
+                  type="checkbox"
+                  checked
+                  data-active-only-toggle
+                  class="w-4 h-4 rounded border-slate-300 dark:border-slate-600 text-purple-600 focus:ring-purple-500"
+                />
+                <span class="text-sm text-slate-600 dark:text-slate-300">Active only</span>
+              </label>
+            )
+          }
+        </div>
+
+        {
+          isEmpty ? (
+            <p class="text-sm text-slate-500 dark:text-slate-400 text-center py-8">No devnet series found.</p>
+          ) : (
+            <div class="space-y-6">
+              {visibleGroups.map((group) => (
+                <div
+                  data-group
+                  data-inactive-group={group.active.length === 0 ? '' : undefined}
+                  style={group.active.length === 0 ? 'display:none' : undefined}
+                >
+                  <h3
+                    class={`text-xs font-semibold uppercase tracking-wider text-slate-400 dark:text-slate-500 mb-3 pl-3 border-l-2 ${group.accent}`}
+                  >
+                    {group.label}
+                  </h3>
+                  <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
+                    {group.active.map((item) => (
+                      <SeriesCard item={item} />
+                    ))}
+                    {group.inactive.map((item) => (
+                      <InactiveCard item={item} data-inactive-card="" style="display:none" />
+                    ))}
+                  </div>
+                </div>
+              ))}
+            </div>
+          )
+        }
+      </div>
+    </div>
+  </div>
 </Layout>
+
+<script>
+  // "Active only" toggle: reveal/hide inactive series cards and inactive-only groups.
+  const checkbox = document.querySelector<HTMLInputElement>('[data-active-only-toggle]');
+  const inactiveCards = Array.from(document.querySelectorAll<HTMLElement>('[data-inactive-card]'));
+  const inactiveGroups = Array.from(document.querySelectorAll<HTMLElement>('[data-inactive-group]'));
+  checkbox?.addEventListener('change', () => {
+    const display = checkbox.checked ? 'none' : '';
+    for (const el of inactiveCards) el.style.display = display;
+    for (const el of inactiveGroups) el.style.display = display;
+  });
+</script>

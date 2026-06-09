@@ -1,9 +1,155 @@
 ---
 import Layout from '../layouts/Layout.astro';
-import DecisionsPage from '../components/DecisionsPage';
 import { staticPageMetadata } from '../domain/routes/pageMetadata';
+import { loadAcdMeetings } from '../domain/decisions/keyDecisions';
+import { collectEipPreviews } from '../domain/decisions/decisionText';
+import { eipById } from '../data/eips';
+import KeyDecisionText from '../components/decisions/KeyDecisionText.astro';
+import EipPreviewLayer from '../components/decisions/EipPreviewLayer.astro';
+
+const FILTER_OPTIONS = [
+  { value: 'all', label: 'All' },
+  { value: 'stage_change', label: 'Stage Changes' },
+  { value: 'devnet_inclusion', label: 'Devnet' },
+  { value: 'headliner_selected', label: 'Headliner' },
+  { value: 'other', label: 'Other' },
+];
+
+const PILL_BASE = 'cursor-pointer whitespace-nowrap rounded-md px-2.5 py-1 text-xs font-medium transition-all';
+const PILL_ACTIVE = 'bg-purple-600 dark:bg-purple-500 text-white dark:text-white';
+const PILL_INACTIVE =
+  'bg-purple-50 dark:bg-purple-950/30 text-purple-700 dark:text-purple-400 hover:bg-purple-100 dark:hover:bg-purple-900/30';
+
+const formatDate = (dateStr: string): string =>
+  new Date(dateStr + 'T00:00:00').toLocaleDateString('en-US', {
+    month: 'long',
+    day: 'numeric',
+    year: 'numeric',
+  });
+
+const meetings = loadAcdMeetings();
+const eipPreviews = collectEipPreviews(
+  meetings.flatMap((m) => m.decisions),
+  eipById,
+);
+
+const totalDecisions = meetings.reduce((sum, m) => sum + m.decisions.length, 0);
+const totalCalls = meetings.length;
 ---
 
 <Layout {...staticPageMetadata.decisions}>
-  <DecisionsPage client:only="react" />
+  <div class="min-h-screen bg-slate-50 dark:bg-slate-900 text-slate-900 dark:text-slate-100 p-6">
+    <div class="max-w-4xl mx-auto">
+      <div class="mb-6">
+        <h1 class="text-xl font-semibold text-slate-900 dark:text-slate-100 mb-2">Key Decisions</h1>
+        <p class="text-sm text-slate-500 dark:text-slate-400">
+          Key decisions from AllCoreDevs meetings, aggregated in reverse-chronological order.
+        </p>
+      </div>
+
+      <div class="flex flex-wrap items-center gap-1.5 mt-4 mb-4">
+        {
+          FILTER_OPTIONS.map((opt) => (
+            <button
+              type="button"
+              data-filter={opt.value}
+              class:list={[PILL_BASE, opt.value === 'all' ? PILL_ACTIVE : PILL_INACTIVE]}
+            >
+              {opt.label}
+            </button>
+          ))
+        }
+      </div>
+
+      <p class="text-xs text-slate-400 dark:text-slate-500 mb-6" data-decision-stats>
+        {totalDecisions} decision{totalDecisions !== 1 ? 's' : ''} across {totalCalls} call{
+          totalCalls !== 1 ? 's' : ''
+        }
+      </p>
+
+      <div class="space-y-6" data-meetings>
+        {
+          meetings.map(({ call, decisions }) => (
+            <div data-meeting>
+              <div class="flex items-baseline gap-2 mb-2">
+                <a
+                  href={`/calls/${call.type}/${call.number}`}
+                  class="text-sm font-semibold text-purple-600 hover:text-purple-700 dark:text-purple-400 dark:hover:text-purple-300"
+                >
+                  {call.type.toUpperCase()} #{call.number}
+                </a>
+                <span class="text-xs text-slate-400 dark:text-slate-500">{formatDate(call.date)}</span>
+              </div>
+
+              <ul class="space-y-1.5 list-none ml-0">
+                {decisions.map((decision) => (
+                  <li
+                    data-decision-type={decision.type}
+                    class="text-sm before:content-['→'] before:mr-2 before:text-slate-400 dark:before:text-slate-500 text-slate-600 dark:text-slate-400"
+                  ><KeyDecisionText decision={decision} /></li>
+                ))}
+              </ul>
+            </div>
+          ))
+        }
+      </div>
+    </div>
+  </div>
+
+  <EipPreviewLayer eips={eipPreviews} />
 </Layout>
+
+<script>
+  // Type filter: toggle visibility of decisions + meeting groups and recompute the
+  // stats line — all decision text stays in the static HTML. `!mt-0` keeps the first
+  // visible item's `space-y` margin from leaving a gap at the top when filtered.
+  const ACTIVE = 'bg-purple-600 dark:bg-purple-500 text-white dark:text-white';
+  const INACTIVE =
+    'bg-purple-50 dark:bg-purple-950/30 text-purple-700 dark:text-purple-400 hover:bg-purple-100 dark:hover:bg-purple-900/30';
+  const BASE = 'cursor-pointer whitespace-nowrap rounded-md px-2.5 py-1 text-xs font-medium transition-all';
+
+  const buttons = Array.from(document.querySelectorAll<HTMLButtonElement>('[data-filter]'));
+  const meetings = Array.from(document.querySelectorAll<HTMLElement>('[data-meeting]'));
+  const stats = document.querySelector<HTMLElement>('[data-decision-stats]');
+
+  const markFirstVisible = (els: HTMLElement[]) => {
+    let seen = false;
+    for (const el of els) {
+      const visible = el.style.display !== 'none';
+      el.classList.toggle('!mt-0', visible && !seen);
+      if (visible) seen = true;
+    }
+  };
+
+  const apply = (filter: string) => {
+    let decisionCount = 0;
+    let callCount = 0;
+    for (const meeting of meetings) {
+      const items = Array.from(meeting.querySelectorAll<HTMLElement>('[data-decision-type]'));
+      let anyVisible = false;
+      for (const item of items) {
+        const show = filter === 'all' || item.getAttribute('data-decision-type') === filter;
+        item.style.display = show ? '' : 'none';
+        if (show) {
+          anyVisible = true;
+          decisionCount += 1;
+        }
+      }
+      markFirstVisible(items);
+      meeting.style.display = anyVisible ? '' : 'none';
+      if (anyVisible) callCount += 1;
+    }
+    markFirstVisible(meetings);
+    if (stats) {
+      stats.textContent = `${decisionCount} decision${decisionCount !== 1 ? 's' : ''} across ${callCount} call${callCount !== 1 ? 's' : ''}`;
+    }
+    for (const btn of buttons) {
+      const active = btn.getAttribute('data-filter') === filter;
+      btn.className = `${BASE} ${active ? ACTIVE : INACTIVE}`;
+    }
+  };
+
+  for (const btn of buttons) {
+    btn.addEventListener('click', () => apply(btn.getAttribute('data-filter') || 'all'));
+  }
+</script>

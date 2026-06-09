@@ -295,13 +295,19 @@ export const EipPage: React.FC<{ id: string }> = ({ id }) => {
   const hasDependents = dependents.length > 0;
   const hasFaq = Boolean(eip?.faq?.length);
 
+  // The island server-renders the default tab; URL-derived tab/hash/query only apply
+  // after mount so the client's first render matches the server HTML (no hydration
+  // mismatch when landing on a ?tab=/#anchor URL).
+  const [isHydrated, setIsHydrated] = useState(false);
+  useEffect(() => setIsHydrated(true), []);
+
   // View mode derived from URL ?tab= param
   const validTabs = ['analysis', 'spec', 'dependents', 'history', 'faq'] as const;
   type ViewMode = typeof validTabs[number];
   const defaultTab: ViewMode = hasAnalysis ? 'analysis' : 'spec';
-  const tabParam = searchParams.get('tab') as ViewMode | null;
-  const hasHash = typeof window !== 'undefined' && window.location.hash.length > 1;
-  const hasQParam = searchParams.has('q');
+  const tabParam = isHydrated ? (searchParams.get('tab') as ViewMode | null) : null;
+  const hasHash = isHydrated && typeof window !== 'undefined' && window.location.hash.length > 1;
+  const hasQParam = isHydrated && searchParams.has('q');
   const hasFaqQuestionParam = tabParam === 'faq' && hasQParam && hasFaq;
   const isValidTab = tabParam && validTabs.includes(tabParam) && (tabParam !== 'dependents' || hasDependents) && (tabParam !== 'faq' || hasFaq);
   const viewMode: ViewMode = hasFaqQuestionParam ? 'faq' : isValidTab ? tabParam : hasHash ? 'spec' : defaultTab;

@@ -2,6 +2,16 @@
   "eipId": 8037,
   "commits": [
     {
+      "sha": "dfb77c2aa4a3d863e07c5f08f086a855e49345e9",
+      "date": "2026-06-08T09:05:49Z",
+      "message": "Update EIP-8037: remove the callcode for account creation cases",
+      "author": "rjl493456442",
+      "prNumber": null,
+      "patch": "@@ -45,7 +45,7 @@ Upon activation of this EIP, the following parameters of the gas model are updat\n |---|---|---|---|---|\n | `GAS_CREATE` | 32,000 | `STATE_BYTES_PER_NEW_ACCOUNT x CPSB` | `CREATE_ACCESS` | `CREATE`, `CREATE2` |\n | `GAS_CODE_DEPOSIT` | 200/byte | `CPSB` per byte | `6 × ceil(len/32)` (hash cost) | `CREATE`, `CREATE2` |\n-| `GAS_NEW_ACCOUNT` | 25,000 | `STATE_BYTES_PER_NEW_ACCOUNT x CPSB` | 0 | `CALL`, `CALLCODE`, `SELFDESTRUCT` |\n+| `GAS_NEW_ACCOUNT` | 25,000 | `STATE_BYTES_PER_NEW_ACCOUNT x CPSB` | 0 | `CALL`, `SELFDESTRUCT` |\n | `GAS_STORAGE_SET` | 20,000 | `STATE_BYTES_PER_STORAGE_SET x CPSB` | 0 | `SSTORE` |\n | `PER_EMPTY_ACCOUNT_COST` | 25,000 | `STATE_BYTES_PER_NEW_ACCOUNT x CPSB` | `ACCOUNT_WRITE` | EOA delegation |\n | `PER_AUTH_BASE_COST` | 12,500 | `STATE_BYTES_PER_AUTH_BASE x CPSB` | `REGULAR_PER_AUTH_BASE_COST` | EOA delegation |",
+      "additions": 1,
+      "deletions": 1
+    },
+    {
       "sha": "546b61a9f75c6ec508de408b4fdd6ee6f29731f3",
       "date": "2026-06-02T13:34:46Z",
       "message": "Update EIP-8037: fix typo in 8037",
@@ -14,21 +24,27 @@
       "date": "2026-06-01T09:09:46Z",
       "message": "Update EIP-8037: Calldata floor accounting alignment & call-frame refill clarification",
       "author": "misilva73",
-      "prNumber": null
+      "prNumber": null,
+      "additions": 28,
+      "deletions": 7
     },
     {
       "sha": "b549622cc0e9f1f4db83848c5daa6f91e9f650a1",
       "date": "2026-05-13T16:26:19Z",
       "message": "Update EIP-8037: Fix bugs from bal-devnet-6",
       "author": "misilva73",
-      "prNumber": null
+      "prNumber": null,
+      "additions": 24,
+      "deletions": 16
     },
     {
       "sha": "34258fc205d83fe2d560b91814057041dfbbb5f9",
       "date": "2026-05-13T15:02:09Z",
       "message": "Update EIP-8037: Update parameters and rationale section",
       "author": "misilva73",
-      "prNumber": null
+      "prNumber": null,
+      "additions": 109,
+      "deletions": 56
     },
     {
       "sha": "1d1e455c9e43b1e400b58b5475eac8a636f83555",
@@ -43,7 +59,9 @@
       "date": "2026-05-04T08:21:48Z",
       "message": "Update EIP-8037: fixed CPSB + frame accounting",
       "author": "misilva73",
-      "prNumber": null
+      "prNumber": null,
+      "additions": 124,
+      "deletions": 182
     },
     {
       "sha": "9493cd502540bb5b50e01aa3708835fb87fce0bc",
@@ -66,14 +84,18 @@
       "date": "2026-04-17T15:07:26Z",
       "message": "Update EIP-8037: more state gas accounting changes",
       "author": "spencer-tb",
-      "prNumber": null
+      "prNumber": null,
+      "additions": 28,
+      "deletions": 6
     },
     {
       "sha": "26d056fe537a6b1393bb6936210384045177fbd6",
       "date": "2026-04-17T07:23:07Z",
       "message": "Update EIP-8037: Refund state gas on all frame failures including top level",
       "author": "qu0b",
-      "prNumber": null
+      "prNumber": null,
+      "additions": 4,
+      "deletions": 4
     },
     {
       "sha": "2d317791dfadd9f701423fd6c2af60e12a308065",
@@ -104,14 +126,18 @@
       "date": "2026-03-06T15:59:36Z",
       "message": "Update EIP-8037: clarify reservoir mechanics",
       "author": "spencer-tb",
-      "prNumber": null
+      "prNumber": null,
+      "additions": 9,
+      "deletions": 8
     },
     {
       "sha": "2e6dc063300f1c7e893cd0d435168b05c9db8e0b",
       "date": "2026-02-10T14:46:12Z",
       "message": "Update EIP-8037: Add quantization, reservoir model, and refine gas accounting",
       "author": "misilva73",
-      "prNumber": null
+      "prNumber": null,
+      "additions": 145,
+      "deletions": 35
     },
     {
       "sha": "70328117d9a9e8a8fc958270792fac40c435ea1e",
@@ -142,7 +168,9 @@
       "date": "2026-01-06T15:43:38Z",
       "message": "Update EIP-8037: ",
       "author": "misilva73",
-      "prNumber": null
+      "prNumber": null,
+      "additions": 92,
+      "deletions": 54
     },
     {
       "sha": "dee539a58f206ce2a3bf08130605adf50938c40f",
@@ -157,24 +185,28 @@
       "date": "2025-10-22T14:28:38Z",
       "message": "Update EIP-8037: Clarify gas accounting for contract deployment",
       "author": "CPerezz",
-      "prNumber": null
+      "prNumber": null,
+      "additions": 53,
+      "deletions": 37
     },
     {
       "sha": "c47ae3be2144ac32c0eb9238b01b005b188139e2",
       "date": "2025-10-07T21:20:16Z",
       "message": "Add EIP: State Creation Gas Cost Increase",
       "author": "misilva73",
-      "prNumber": null
+      "prNumber": null,
+      "additions": 159,
+      "deletions": 0
     }
   ],
   "openPrs": [
     {
-      "number": 11759,
-      "title": "Update EIP-8037: remove the callcode for account creation cases",
-      "author": "rjl493456442",
-      "updatedAt": "2026-06-03T15:17:19Z",
-      "additions": 1,
-      "deletions": 1
+      "number": 11778,
+      "title": "Update EIP-8037: unfair allocation of EIP-7702 overcharges",
+      "author": "lu-pinto",
+      "updatedAt": "2026-06-08T14:09:18Z",
+      "additions": 3,
+      "deletions": 7
     },
     {
       "number": 11570,
@@ -188,7 +220,7 @@
       "number": 11715,
       "title": "Update EIP-8037: improve EIP-7702 authorization gas accounting in EIP-8037",
       "author": "rjl493456442",
-      "updatedAt": "2026-06-05T20:52:23Z",
+      "updatedAt": "2026-06-08T09:06:37Z",
       "additions": 23,
       "deletions": 5
     },

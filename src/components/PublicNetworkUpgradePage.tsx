@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useLayoutEffect, useRef, useState } from 'react';
+import React, { useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react';
 import { Link, useLocation, useNavigate, useSearchParams } from './navigation';
 import { eipsData } from '../data/eips';
 import { getPendingProposalsForFork } from '../data/pending-proposals';
@@ -119,12 +119,25 @@ const PublicNetworkUpgradePage: React.FC<PublicNetworkUpgradePageProps> = ({
   const navigate = useNavigate();
   const location = useLocation();
   const [searchParams] = useSearchParams();
-  const layerParam = searchParams.get('layer');
+  // The island server-renders the unfiltered view; URL-derived filters only apply
+  // after mount so the client's first render matches the server HTML (no hydration
+  // mismatch when landing directly on a ?filter=/?layer= URL).
+  const [isHydrated, setIsHydrated] = useState(false);
+  useEffect(() => setIsHydrated(true), []);
+  const layerParam = isHydrated ? searchParams.get('layer') : null;
   const layerFilter: 'all' | 'EL' | 'CL' =
     showLayerFilter && (layerParam === 'EL' || layerParam === 'CL') ? layerParam : 'all';
-  const searchQuery = searchParams.get('filter') ?? '';
+  const searchQuery = isHydrated ? (searchParams.get('filter') ?? '') : '';
 
-  const [eips, setEips] = useState<EIP[]>([]);
+  // Derived synchronously from the static EIP dataset so the island server-renders
+  // its full content at build time (Phase 2). forkName is stable per page.
+  const eips = useMemo<EIP[]>(
+    () =>
+      eipsData.filter((eip) =>
+        eip.forkRelationships.some((fork) => fork.forkName.toLowerCase() === forkName.toLowerCase()),
+      ),
+    [forkName],
+  );
   const [activeSection, setActiveSection] = useState<string>('overview');
   const [isDeclinedExpanded, setIsDeclinedExpanded] = useState(false);
   const lastScrolledHashRef = useRef<string | null>(null);
@@ -180,16 +193,6 @@ const PublicNetworkUpgradePage: React.FC<PublicNetworkUpgradePageProps> = ({
       (!expansion.headlinerProposals || isHeadlinerProposalsExpanded)
     );
   }, [getAnchorExpansionForHash, isDeclinedExpanded, isHeadlinerProposalsExpanded]);
-
-  // Filter EIPs that have relationships with this fork
-  useEffect(() => {
-    const filteredEips = eipsData.filter(eip =>
-      eip.forkRelationships.some(fork =>
-        fork.forkName.toLowerCase() === forkName.toLowerCase()
-      )
-    );
-    setEips(filteredEips);
-  }, [forkName]);
 
   // Track upgrade view
   useEffect(() => {

@@ -16,7 +16,7 @@ const byId = Object.fromEntries(eips.map((e) => [e.id, e]));
 const json = JSON.stringify(byId).replace(/</g, '\\u003c');
 ---
 
-<script type="application/json" id="eip-preview-data" set:html={json} />
+<script type="application/json" id="eip-preview-data" is:inline set:html={json} />
 
 <script>
   interface EipPreview {

@@ -481,7 +481,7 @@ const CallPage: React.FC<CallPageProps> = ({ callPath, upcoming }) => {
       setIsSearchOpen(true);
       handlePauseVideo();
     });
-  }, [handlePauseVideo]);
+  }, [handlePauseVideo, setIsSearchOpen]);
 
   // Apply sync offset to convert transcript time to video time
   const getAdjustedVideoTime = useCallback((transcriptTimestamp: string): number => {

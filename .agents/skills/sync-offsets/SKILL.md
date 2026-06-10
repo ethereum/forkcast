@@ -21,22 +21,34 @@ This skill walks the user through setting video/transcript sync offsets for newl
 - **Composed Zoom calls** (acdt): config should have non-null PM-provided offsets. These offsets account for the bumper and transcript-based Zoom trim, and `videoStartTime` may be before or after `transcriptStartTime`. Missing PM sync is a pipeline error, not a raw-Zoom zero-sync case. If manual sync is needed to skip beginning chatter, preserve the exact generated `videoStartTime - transcriptStartTime` delta.
 - **Raw Zoom calls** (all others): config defaults to `"00:00:00"`. These may need sync if there's dead air at the start — both offsets will be the same value since video and transcript are from the same recording.
 
-### Step 3: Get timestamps from the user
+### Step 3: Propose timestamps, then have the user confirm
 
 1. Start the dev server from the worktree: `npm run dev` (run in background). Read the dev server output to get the actual port — don't assume 5173, as it may be taken.
-2. Give the user Forkcast call page links using the actual port: `http://localhost:{port}/calls/{type}/{number}` (zero-pad the number to 3 digits)
-3. For each call, ask the user to provide:
-   - **Livestreamed**: video timestamp AND transcript timestamp where the host first speaks
-   - **Composed Zoom**: single transcript timestamp where speech should begin; calculate the video timestamp by adding the generated `videoStartTime - transcriptStartTime` difference
-   - **Raw Zoom**: single timestamp where speech begins (or confirm `00:00:00` is fine)
-4. Do NOT pre-read the transcript or suggest timestamps. Let the user match video and transcript using the call page UI.
+2. Read each call's `transcript_corrected.vtt` and find the **call-open anchor** (see heuristic below). This gives the transcript-side timestamp.
+3. Propose timestamps per call type:
+   - **Raw Zoom**: propose the single start timestamp (both `transcriptStartTime` and `videoStartTime` use it). If the host opens at the very top with no dead air, propose `00:00:00`.
+   - **Composed Zoom**: propose the transcript-side anchor as `transcriptStartTime`; compute `videoStartTime` by adding the generated `videoStartTime - transcriptStartTime` delta.
+   - **Livestreamed**: propose the transcript-side anchor as `transcriptStartTime`. You **cannot** propose `videoStartTime` — the video is a separate recording you can't watch — so ask the user to read it off the video player in the call page UI.
+4. Present the proposals in a table with the call page links (`http://localhost:{port}/calls/{type}/{number}`, zero-pad the number to 3 digits). The user confirms or corrects each by checking the UI — they don't have to hunt for the timestamps from scratch.
+
+**Call-open anchor — where to set the start:** the host's formal opening of the call, i.e. the first substantive, on-topic sentence. Usually *"Welcome to [call name] number N"* or the *"okay, let's get started / today's agenda is…"* kickoff.
+
+Skip everything before it, even though it's speech:
+- audio/mic/screen-share checks (*"can you hear me?"*, *"do you see my screen?"*)
+- meeting-link / Zoom logistics confusion
+- waiting-for-attendees chatter (*"let's wait a couple minutes"*, pinging on Telegram)
+- standalone greetings (*"hello everyone"*, *"hi Antonio"*) — **especially when followed by a silent gap** before the real opening
+
+Anchoring on "the host first addresses the group" lands ~10–15s too early; wait for the formal open.
+
+**Round the transcript start DOWN to the opening cue's start.** Once you've found the cue that contains the formal open, set `transcriptStartTime` to that cue's start time floored to the whole second (drop the milliseconds) — e.g. a cue at `00:04:05.560` → `00:04:05`. The call page filters the visible transcript with `cueStart >= transcriptStartTime` (`CallPage.tsx`), so a value that lands *inside* the opening cue (e.g. fine-tuning to `00:04:08` when the welcome cue starts at `00:04:05.560`) drops that cue entirely and the transcript starts at the *next* speaker. Never set it past the start of the cue you want to keep. For raw Zoom, `videoStartTime` takes the same floored value, so the video gains a few seconds of lead-in into the opening cue — that's expected and fine.
 
 ### Step 4: Apply offsets
 
-Update each call's `config.json`:
-- **Livestreamed**: set `transcriptStartTime` and `videoStartTime` to the user's values (format: `HH:MM:SS`)
-- **Composed Zoom**: set `transcriptStartTime` to the user's transcript timestamp and set `videoStartTime` to that timestamp plus the generated video/transcript difference
-- **Raw Zoom**: set both `transcriptStartTime` and `videoStartTime` to the same value
+Update each call's `config.json` with the confirmed timestamps (format: `HH:MM:SS`):
+- **Livestreamed**: set `transcriptStartTime` to the confirmed transcript timestamp and `videoStartTime` to the user's video timestamp
+- **Composed Zoom**: set `transcriptStartTime` to the confirmed transcript timestamp and set `videoStartTime` to that timestamp plus the generated video/transcript difference
+- **Raw Zoom**: set both `transcriptStartTime` and `videoStartTime` to the same confirmed value
 
 ### Step 5: Verify
 

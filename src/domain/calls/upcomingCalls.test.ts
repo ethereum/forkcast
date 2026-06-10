@@ -1,5 +1,11 @@
-import { describe, expect, it } from 'vitest';
-import { isUpcomingCallStillRelevant, hasUpcomingWatchPage } from './upcomingCalls';
+import { afterEach, describe, expect, it, vi } from 'vitest';
+import {
+  fetchUpcomingCallsIfAvailable,
+  isUpcomingCallStillRelevant,
+  createUpcomingWatchPagePredicate,
+  hasUpcomingVideo,
+  type UpcomingCall,
+} from './upcomingCalls';
 import {
   resolveUpcomingCallSchedule,
   resolveUpcomingCallSeries,
@@ -8,6 +14,11 @@ import {
   parseUpcomingCallFromIssue,
   extractYouTubeUrl
 } from './upcomingCallParsing';
+
+afterEach(() => {
+  vi.unstubAllGlobals();
+  vi.restoreAllMocks();
+});
 
 describe('resolveUpcomingCallSchedule', () => {
   it('parses date and time from the body UTC Date & Time section', () => {
@@ -146,13 +157,58 @@ describe('extractYouTubeUrl', () => {
   });
 });
 
-describe('hasUpcomingWatchPage', () => {
-  // Shared predicate that keeps getStaticPaths() and the call index's internal-vs-external
-  // link decision in agreement: an internal /calls/{type}/{number} page exists only when
-  // there's a video to watch.
+describe('hasUpcomingVideo', () => {
   it('is true only when the call has a video', () => {
-    expect(hasUpcomingWatchPage({ youtubeUrl: 'https://youtu.be/x' })).toBe(true);
-    expect(hasUpcomingWatchPage({ youtubeUrl: undefined })).toBe(false);
+    expect(hasUpcomingVideo({ youtubeUrl: 'https://youtu.be/x' })).toBe(true);
+    expect(hasUpcomingVideo({ youtubeUrl: undefined })).toBe(false);
+  });
+});
+
+describe('createUpcomingWatchPagePredicate', () => {
+  const upcomingCall = (call: Partial<UpcomingCall> & Pick<UpcomingCall, 'type' | 'number'>): UpcomingCall => ({
+    title: `${call.type} ${call.number}`,
+    date: '2026-03-11',
+    githubUrl: `https://github.com/ethereum/pm/issues/${call.issueNumber ?? 1}`,
+    issueNumber: call.issueNumber ?? 1,
+    ...call,
+  });
+
+  it('is true only for calls that had a video in the build-time snapshot', () => {
+    const hasWatchPage = createUpcomingWatchPagePredicate([
+      upcomingCall({ type: 'acdc', number: '166', youtubeUrl: 'https://youtu.be/x' }),
+      upcomingCall({ type: 'acde', number: '222' }),
+    ]);
+
+    expect(hasWatchPage({ type: 'acdc', number: '166' })).toBe(true);
+    expect(hasWatchPage({ type: 'acde', number: '222' })).toBe(false);
+    expect(hasWatchPage({ type: 'acdt', number: '082' })).toBe(false);
+  });
+
+  it('does not treat a live-fetched video as proof that a static route exists', () => {
+    const hasWatchPage = createUpcomingWatchPagePredicate([]);
+
+    expect(hasWatchPage({ type: 'acdc', number: '166' })).toBe(false);
+  });
+});
+
+describe('fetchUpcomingCallsIfAvailable', () => {
+  it('returns an empty list for a successful GitHub response with no upcoming calls', async () => {
+    vi.stubGlobal('fetch', vi.fn().mockResolvedValue({
+      ok: true,
+      json: async () => [],
+    }));
+
+    await expect(fetchUpcomingCallsIfAvailable()).resolves.toEqual([]);
+  });
+
+  it('returns undefined when the live GitHub fetch fails', async () => {
+    vi.spyOn(console, 'warn').mockImplementation(() => {});
+    vi.stubGlobal('fetch', vi.fn().mockResolvedValue({
+      ok: false,
+      status: 403,
+    }));
+
+    await expect(fetchUpcomingCallsIfAvailable()).resolves.toBeUndefined();
   });
 });
 

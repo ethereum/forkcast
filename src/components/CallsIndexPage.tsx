@@ -2,7 +2,11 @@ import { useState, useEffect, useRef, useMemo } from 'react';
 import { useSearchParams, useNavigate } from './navigation';
 import { protocolCalls, callTypeNames, isOneOffCall, type CallType } from '../data/calls';
 import { timelineEvents } from '../data/events';
-import { upcomingCalls } from '../domain/calls/upcomingCalls';
+import {
+  fetchUpcomingCallsIfAvailable,
+  upcomingCalls as upcomingCallsSnapshot,
+  type UpcomingCall
+} from '../domain/calls/upcomingCalls';
 import GlobalCallSearch from './GlobalCallSearch';
 import { SearchTriggerButton } from './search/SearchUi';
 import { isSearchHotkey } from './search/searchShortcuts';
@@ -35,6 +39,8 @@ const CallsIndexPage: React.FC<CallsIndexPageProps> = ({ scope }) => {
   // query filter. Aggregate filters (acd, breakouts) only ever live in the query.
   const selectedFilter = scope ?? (searchParams.get('filter') || 'all');
   const selectedBreakoutType = scope ? '' : (searchParams.get('breakoutType') || '');
+  const [upcomingCalls, setUpcomingCalls] = useState<UpcomingCall[]>(upcomingCallsSnapshot);
+  const [upcomingCallsLoading, setUpcomingCallsLoading] = useState(true);
   const [searchOpen, setSearchOpen] = useState(false);
   const [breakoutDropdownOpen, setBreakoutDropdownOpen] = useState(false);
   const breakoutDropdownRef = useRef<HTMLDivElement>(null);
@@ -52,6 +58,22 @@ const CallsIndexPage: React.FC<CallsIndexPageProps> = ({ scope }) => {
     if (breakoutType) params.set('breakoutType', breakoutType);
     navigate(`/calls?${params.toString()}`);
   };
+
+  useEffect(() => {
+    let cancelled = false;
+
+    const loadUpcomingCalls = async () => {
+      const upcoming = await fetchUpcomingCallsIfAvailable();
+      if (!cancelled && upcoming) setUpcomingCalls(upcoming);
+      if (!cancelled) setUpcomingCallsLoading(false);
+    };
+
+    loadUpcomingCalls();
+
+    return () => {
+      cancelled = true;
+    };
+  }, []);
 
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
@@ -84,7 +106,7 @@ const CallsIndexPage: React.FC<CallsIndexPageProps> = ({ scope }) => {
   const breakoutTypes = useMemo(() => Array.from(new Set([
     ...protocolCalls.filter(call => !ACD_TYPES.includes(call.type) && !isOneOffCall(call.type)).map(call => call.type),
     ...upcomingCalls.filter(call => !ACD_TYPES.includes(call.type) && !isOneOffCall(call.type)).map(call => call.type),
-  ])).sort((a, b) => (callTypeNames[a as CallType] || a).localeCompare(callTypeNames[b as CallType] || b)), []);
+  ])).sort((a, b) => (callTypeNames[a as CallType] || a).localeCompare(callTypeNames[b as CallType] || b)), [upcomingCalls]);
 
   const hasOneOffCalls = useMemo(() => protocolCalls.some(call => isOneOffCall(call.type)), []);
 
@@ -104,7 +126,7 @@ const CallsIndexPage: React.FC<CallsIndexPageProps> = ({ scope }) => {
     : selectedFilter === 'breakouts'
     ? upcomingCalls.filter(call => !ACD_TYPES.includes(call.type) && matchesSelectedBreakoutType(call.type, selectedBreakoutType))
     : upcomingCalls.filter(call => call.type === selectedFilter),
-  [selectedFilter, selectedBreakoutType]);
+  [upcomingCalls, selectedFilter, selectedBreakoutType]);
 
   const timelineItems = useMemo(() => {
     return [
@@ -118,8 +140,8 @@ const CallsIndexPage: React.FC<CallsIndexPageProps> = ({ scope }) => {
   const todayDateString = getTodayDateString(new Date(), viewerTimeZone);
 
   const dateSections = useMemo(
-    () => buildTimelineDateSections(timelineItems, todayDateString, false, viewerTimeZone),
-    [timelineItems, todayDateString, viewerTimeZone]
+    () => buildTimelineDateSections(timelineItems, todayDateString, upcomingCallsLoading, viewerTimeZone),
+    [timelineItems, todayDateString, upcomingCallsLoading, viewerTimeZone]
   );
 
   const breakoutLabel = selectedBreakoutType === 'one-off'

@@ -39,7 +39,9 @@ Skip everything before it, even though it's speech:
 - waiting-for-attendees chatter (*"let's wait a couple minutes"*, pinging on Telegram)
 - standalone greetings (*"hello everyone"*, *"hi Antonio"*) — **especially when followed by a silent gap** before the real opening
 
-Anchoring on "the host first addresses the group" lands ~10–15s too early; wait for the formal open. Precision caveat: a VTT cue's start time can be a few seconds before the opening words actually begin (the welcome may be mid-cue), so present the proposal as approximate and let the user fine-tune the exact second in the UI.
+Anchoring on "the host first addresses the group" lands ~10–15s too early; wait for the formal open.
+
+**Round the transcript start DOWN to the opening cue's start.** Once you've found the cue that contains the formal open, set `transcriptStartTime` to that cue's start time floored to the whole second (drop the milliseconds) — e.g. a cue at `00:04:05.560` → `00:04:05`. The call page filters the visible transcript with `cueStart >= transcriptStartTime` (`CallPage.tsx`), so a value that lands *inside* the opening cue (e.g. fine-tuning to `00:04:08` when the welcome cue starts at `00:04:05.560`) drops that cue entirely and the transcript starts at the *next* speaker. Never set it past the start of the cue you want to keep. For raw Zoom, `videoStartTime` takes the same floored value, so the video gains a few seconds of lead-in into the opening cue — that's expected and fine.
 
 ### Step 4: Apply offsets
 

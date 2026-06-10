@@ -1,6 +1,5 @@
 import React, { useState, useMemo } from 'react';
 import { FUSAKA_PROGRESS, GLAMSTERDAM_PROGRESS, HEGOTA_PROGRESS, UPGRADE_PROCESS_PHASES } from '../../constants/timeline-phases';
-import { useMetaTags } from '../../hooks/useMetaTags';
 import { generateForkProgress, parseLocalDate, parseShortDate, daysBetween, DEFAULT_PHASE_DURATIONS, PhaseDurations } from './forkDateCalculator';
 import ForkGanttChart from './ForkGanttChart';
 import EditableDateCell from './EditableDateCell';
@@ -260,12 +259,6 @@ const SchedulePage: React.FC = () => {
       return rest;
     });
   };
-
-  useMetaTags({
-    title: 'ACD Planning Sandbox - Forkcast',
-    description: 'Internal planning tool for Ethereum core developers. Explore hypothetical upgrade timelines - these are not committed dates.',
-    url: 'https://forkcast.org/schedule',
-  });
 
   return (
     <div className="min-h-screen bg-slate-50 dark:bg-slate-900 text-slate-900 dark:text-slate-100 p-6">

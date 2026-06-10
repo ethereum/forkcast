@@ -42,7 +42,13 @@ jobs:
       - name: Install dependencies
         run: npm ci
       - name: Build website
-        run: npm run build
+        run: npm run build:fresh
+        env:
+          # build:fresh refreshes the route snapshots from the GitHub API; authenticate
+          # so the deploy uses the higher rate limit (the unauthenticated 60-req/hr-per-IP
+          # cap could otherwise fail the fetch). If a refresh fails, the deploy fails —
+          # re-run it.
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Setup Pages
         uses: actions/configure-pages@v6

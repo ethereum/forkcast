@@ -1,5 +1,5 @@
 import React from 'react';
-import { Link } from 'react-router-dom';
+import { Link } from '../navigation';
 import { EIP } from '../../types/eip';
 import { getProposalPrefix, getLaymanTitle, getSpecificationUrl, isPendingEip } from '../../utils';
 

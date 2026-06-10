@@ -1,10 +1,13 @@
 import { describe, expect, it } from 'vitest';
+import { isUpcomingCallStillRelevant, hasUpcomingWatchPage } from './upcomingCalls';
 import {
-  isUpcomingCallStillRelevant,
   resolveUpcomingCallSchedule,
   resolveUpcomingCallSeries,
-  resolveUpcomingCallType
-} from './upcomingCalls';
+  resolveUpcomingCallType,
+  resolveUpcomingCallNumber,
+  parseUpcomingCallFromIssue,
+  extractYouTubeUrl
+} from './upcomingCallParsing';
 
 describe('resolveUpcomingCallSchedule', () => {
   it('parses date and time from the body UTC Date & Time section', () => {
@@ -114,5 +117,107 @@ describe('isUpcomingCallStillRelevant', () => {
         startTimeUtc: '2026-01-06T14:00:00Z',
       }, new Date('2026-01-07T01:30:00Z'), 'UTC')
     ).toBe(false);
+  });
+});
+
+describe('resolveUpcomingCallNumber', () => {
+  it('zero-pads the first #number in the title to match the emitted call path', () => {
+    expect(resolveUpcomingCallNumber('FOCIL Breakout #22, October 21, 2025')).toBe('022');
+    expect(resolveUpcomingCallNumber('All Core Devs - Consensus (ACDC) #166, October 2, 2025')).toBe('166');
+  });
+
+  it('returns undefined when the title has no #number', () => {
+    expect(resolveUpcomingCallNumber('FOCIL Breakout, October 21, 2025')).toBeUndefined();
+  });
+});
+
+describe('extractYouTubeUrl', () => {
+  it('extracts the watch URL from the ACDbot YouTube Live comment', () => {
+    const comments = [
+      { body: 'Some unrelated comment' },
+      { body: '✅ **YouTube Live**: [Watch Live](https://www.youtube.com/watch?v=abc123)' },
+    ];
+    expect(extractYouTubeUrl(comments)).toBe('https://www.youtube.com/watch?v=abc123');
+  });
+
+  it('returns undefined when no comment carries a YouTube link', () => {
+    expect(extractYouTubeUrl([{ body: 'just chatting' }, {}])).toBeUndefined();
+    expect(extractYouTubeUrl([])).toBeUndefined();
+  });
+});
+
+describe('hasUpcomingWatchPage', () => {
+  // Shared predicate that keeps getStaticPaths() and the call index's internal-vs-external
+  // link decision in agreement: an internal /calls/{type}/{number} page exists only when
+  // there's a video to watch.
+  it('is true only when the call has a video', () => {
+    expect(hasUpcomingWatchPage({ youtubeUrl: 'https://youtu.be/x' })).toBe(true);
+    expect(hasUpcomingWatchPage({ youtubeUrl: undefined })).toBe(false);
+  });
+});
+
+describe('parseUpcomingCallFromIssue', () => {
+  const scheduledBody = `### Call Series
+
+All Core Devs - Consensus
+
+### UTC Date & Time
+
+[October 2, 2025, 14:00 UTC](https://savvytime.com/converter/utc/oct-2-2025/2pm)`;
+
+  it('parses a scheduled issue into an upcoming call', () => {
+    expect(
+      parseUpcomingCallFromIssue({
+        title: 'All Core Devs - Consensus (ACDC) #166, October 2, 2025',
+        html_url: 'https://github.com/ethereum/pm/issues/1700',
+        number: 1700,
+        body: scheduledBody,
+      })
+    ).toEqual({
+      type: 'acdc',
+      title: 'All Core Devs - Consensus (ACDC) #166, October 2, 2025',
+      date: '2025-10-02',
+      startTimeUtc: '2025-10-02T14:00:00Z',
+      number: '166',
+      githubUrl: 'https://github.com/ethereum/pm/issues/1700',
+      issueNumber: 1700,
+    });
+  });
+
+  it('returns null without a UTC Date & Time section', () => {
+    expect(
+      parseUpcomingCallFromIssue({
+        title: 'All Core Devs - Consensus (ACDC) #166, October 2, 2025',
+        html_url: 'https://github.com/ethereum/pm/issues/1700',
+        number: 1700,
+        body: 'Agenda only, no schedule yet.',
+      })
+    ).toBeNull();
+  });
+
+  it('returns null when neither the body series nor the title yields a known type', () => {
+    expect(
+      parseUpcomingCallFromIssue({
+        title: 'Random community sync #5',
+        html_url: 'https://github.com/ethereum/pm/issues/9001',
+        number: 9001,
+        body: `### UTC Date & Time
+
+[October 2, 2025, 14:00 UTC](https://example.com)`,
+      })
+    ).toBeNull();
+  });
+
+  it('returns null when the title has no call number', () => {
+    expect(
+      parseUpcomingCallFromIssue({
+        title: 'All Core Devs - Consensus (ACDC), October 2, 2025',
+        html_url: 'https://github.com/ethereum/pm/issues/1700',
+        number: 1700,
+        body: `### UTC Date & Time
+
+[October 2, 2025, 14:00 UTC](https://example.com)`,
+      })
+    ).toBeNull();
   });
 });

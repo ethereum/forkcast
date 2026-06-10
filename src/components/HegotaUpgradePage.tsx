@@ -1,49 +1,53 @@
 import React, { useLayoutEffect, useRef } from 'react';
-import { Link, Outlet, useLocation } from 'react-router-dom';
-import { useMetaTags } from '../hooks/useMetaTags';
 import { getUpgradeById } from '../data/upgrades';
 import { getUpgradeStatusColor } from '../utils/colors';
-import { isPathActive, normalizePathname } from '../utils/path';
+import TestComplexityTab from './glamsterdam/TestComplexityTab';
+import OverviewTab from './hegota/OverviewTab';
 
 const upgrade = getUpgradeById('hegota')!;
 
+export type HegotaTab = 'overview' | 'test-complexity';
+
 interface TabItem {
+  key: HegotaTab;
   path: string;
   label: string;
 }
 
 const tabs: TabItem[] = [
-  { path: '/upgrade/hegota', label: 'Overview' },
-  { path: '/upgrade/hegota/test-complexity', label: 'Test Complexity' },
+  { key: 'overview', path: '/upgrade/hegota', label: 'Overview' },
+  { key: 'test-complexity', path: '/upgrade/hegota/test-complexity', label: 'Test Complexity' },
 ];
 
-const isTabActive = (pathname: string, tabPath: string) =>
-  tabPath === '/upgrade/hegota' ? pathname === tabPath : isPathActive(pathname, tabPath);
+function renderTab(tab: HegotaTab) {
+  switch (tab) {
+    case 'overview':
+      return <OverviewTab />;
+    case 'test-complexity':
+      return <TestComplexityTab fork="hegota" />;
+  }
+}
 
-const HegotaUpgradePage: React.FC = () => {
-  const location = useLocation();
-  const pathname = normalizePathname(location.pathname);
+interface HegotaUpgradePageProps {
+  /** Which tab this Astro route renders. Each tab is its own page. */
+  activeTab: HegotaTab;
+}
+
+const HegotaUpgradePage: React.FC<HegotaUpgradePageProps> = ({ activeTab }) => {
   const activeTabRef = useRef<HTMLAnchorElement>(null);
 
-  useMetaTags({
-    title: 'Hegotá Upgrade - Forkcast',
-    description: 'Hegotá network upgrade: overview, EIP proposals, and test complexity.',
-    url: 'https://forkcast.org/upgrade/hegota',
-  });
-
   useLayoutEffect(() => {
-    const activeEl = activeTabRef.current;
-    activeEl?.scrollIntoView({ block: 'nearest', inline: 'center' });
-  }, [pathname]);
+    activeTabRef.current?.scrollIntoView({ block: 'nearest', inline: 'center' });
+  }, []);
 
   return (
     <div className="min-h-screen bg-slate-50 dark:bg-slate-900 text-slate-900 dark:text-slate-100 p-6">
       <div className="max-w-4xl mx-auto">
         {/* Header */}
         <div className="mb-8">
-          <Link to="/upgrades" className="text-slate-600 hover:text-slate-800 dark:text-slate-300 dark:hover:text-slate-100 mb-6 inline-block text-sm font-medium">
+          <a href="/upgrades" className="text-slate-600 hover:text-slate-800 dark:text-slate-300 dark:hover:text-slate-100 mb-6 inline-block text-sm font-medium">
             ← All Network Upgrades
-          </Link>
+          </a>
 
           <div className="pb-0">
             <div className="flex flex-col lg:flex-row lg:items-start lg:justify-between">
@@ -86,11 +90,11 @@ const HegotaUpgradePage: React.FC = () => {
             <div className="overflow-x-auto px-6 pb-3">
               <div className="flex gap-6 border-b border-slate-200 dark:border-slate-700 min-w-max">
                 {tabs.map((tab) => {
-                  const active = isTabActive(pathname, tab.path);
+                  const active = tab.key === activeTab;
                   return (
-                    <Link
-                      key={tab.path}
-                      to={tab.path}
+                    <a
+                      key={tab.key}
+                      href={tab.path}
                       ref={active ? activeTabRef : undefined}
                       className={`pb-2 text-sm font-medium transition-colors border-b-2 -mb-px whitespace-nowrap ${
                         active
@@ -99,7 +103,7 @@ const HegotaUpgradePage: React.FC = () => {
                       }`}
                     >
                       {tab.label}
-                    </Link>
+                    </a>
                   );
                 })}
               </div>
@@ -108,7 +112,7 @@ const HegotaUpgradePage: React.FC = () => {
         </div>
 
         {/* Tab content */}
-        <Outlet />
+        {renderTab(activeTab)}
       </div>
     </div>
   );

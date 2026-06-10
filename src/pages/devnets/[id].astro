@@ -1,0 +1,33 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import DevnetSpecPage from '../../components/DevnetSpecPage';
+import { getAllDevnetSpecIds, getDevnetSpec } from '../../data/devnet-specs';
+import { getActiveDevnetNetworkKeys } from '../../domain/devnets/networks';
+
+// Local spec IDs plus active network IDs from the build-time networks snapshot.
+// Active keys without a local spec render network-only pages. Both getStaticPaths
+// and the island read the same snapshot, so links never point to un-emitted routes.
+export function getStaticPaths() {
+  const ids = Array.from(new Set([...getAllDevnetSpecIds(), ...getActiveDevnetNetworkKeys()]));
+
+  return ids.map((id) => {
+    const spec = getDevnetSpec(id);
+    return {
+      params: { id },
+      props: {
+        title: spec ? `${spec.title} - Forkcast` : `${id} - Forkcast`,
+        description: spec
+          ? `Devnet spec for ${id}: EIP list, client implementation status, and spec references.`
+          : `Devnet network details for ${id}.`,
+      },
+    };
+  });
+}
+
+const id = Astro.params.id!;
+const { title, description } = Astro.props;
+---
+
+<Layout title={title} description={description}>
+  <DevnetSpecPage client:only="react" devnetId={id} />
+</Layout>

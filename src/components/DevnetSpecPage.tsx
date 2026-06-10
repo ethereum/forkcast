@@ -1,8 +1,7 @@
 import { useEffect, useCallback, type ReactNode } from 'react';
-import { useParams, Navigate, Link, useNavigate } from 'react-router-dom';
-import { useMetaTags } from '../hooks/useMetaTags';
+import { Link, useNavigate } from './navigation';
 import { getDevnetSpec, getDevnetSeriesSiblings } from '../data/devnet-specs';
-import { useDevnetNetworks, getNetworkEntry, getNetworkMetadata } from '../hooks/useDevnetNetworks';
+import { getNetworkEntry, getNetworkMetadata } from '../domain/devnets/networks';
 import { parseMarkdownLinks, parseMarkdownBold } from '../utils/markdown';
 import type {
   DevnetSpec,
@@ -250,13 +249,9 @@ function ResourceLinks({ networkEntry, metadataLinks }: { networkEntry: NetworkE
 
 function DevnetPageLayout({
   id,
-  title,
-  description,
   children,
 }: {
   id: string;
-  title: string;
-  description: string;
   children: ReactNode;
 }) {
   const { prev, next } = getDevnetSeriesSiblings(id);
@@ -275,12 +270,6 @@ function DevnetPageLayout({
     window.addEventListener('keydown', handleKeyDown);
     return () => window.removeEventListener('keydown', handleKeyDown);
   }, [handleKeyDown]);
-
-  useMetaTags({
-    title: `${title} - Forkcast`,
-    description,
-    url: `https://forkcast.org/devnets/${id}`,
-  });
 
   return (
     <div className="min-h-screen bg-white dark:bg-slate-900 text-slate-900 dark:text-slate-100 p-6">
@@ -334,11 +323,7 @@ function DevnetPageLayout({
 
 function DevnetSpecContent({ spec, networkEntry, metadata }: { spec: DevnetSpec; networkEntry: NetworkEntry | null; metadata: { links: NetworkMetadataLink[] | null; description: string } | null }) {
   return (
-    <DevnetPageLayout
-      id={spec.id}
-      title={spec.title}
-      description={`Devnet spec for ${spec.id}: EIP list, client implementation status, and spec references.`}
-    >
+    <DevnetPageLayout id={spec.id}>
         {/* Title */}
         <div className="mb-8">
           <h1 className="text-3xl font-bold text-slate-900 dark:text-slate-100">
@@ -525,11 +510,7 @@ function DevnetSpecContent({ spec, networkEntry, metadata }: { spec: DevnetSpec;
 function NetworkOnlyContent({ id, networkEntry, metadata }: { id: string; networkEntry: NetworkEntry | null; metadata: { links: NetworkMetadataLink[] | null; description: string } | null }) {
 
   return (
-    <DevnetPageLayout
-      id={id}
-      title={id}
-      description={metadata?.description || `Detail page for ${id}.`}
-    >
+    <DevnetPageLayout id={id}>
       <div className="mb-8">
         <h1 className="text-3xl font-bold text-slate-900 dark:text-slate-100">
           {id}
@@ -561,10 +542,8 @@ function NetworkOnlyContent({ id, networkEntry, metadata }: { id: string; networ
   );
 }
 
-export default function DevnetSpecPage() {
-  const { id } = useParams<{ id: string }>();
-  // Trigger networks.json fetch so data is available on direct page load
-  const { loading } = useDevnetNetworks();
+export default function DevnetSpecPage({ devnetId }: { devnetId: string }) {
+  const id = devnetId;
 
   const spec = id ? getDevnetSpec(id) : undefined;
   const networkEntry = id ? getNetworkEntry(id) : null;
@@ -581,9 +560,7 @@ export default function DevnetSpecPage() {
     return <NetworkOnlyContent id={id} networkEntry={networkEntry} metadata={metadata} />;
   }
 
-  // Still fetching — don't redirect yet
-  if (loading) return null;
-
-  // Nothing found — redirect
-  return <Navigate to="/devnets" replace />;
+  // No spec or network data for this id. getStaticPaths only emits pages for real
+  // specs and active networks, so unknown ids hit Astro's 404 and never reach here.
+  return null;
 }

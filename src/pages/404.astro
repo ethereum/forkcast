@@ -1,0 +1,60 @@
+---
+import Layout from '../layouts/Layout.astro';
+
+const links = [
+  { href: '/upgrades', label: 'Network Upgrades' },
+  { href: '/eips', label: 'EIP Directory' },
+  { href: '/calls', label: 'Protocol Calls' },
+  { href: '/devnets', label: 'Devnets' },
+];
+---
+
+<Layout
+  title="Page Not Found - Forkcast"
+  description="The page you're looking for could not be found."
+  noindex
+>
+  <div class="min-h-[calc(100vh-3.5rem)] bg-slate-50 dark:bg-slate-900 flex items-center justify-center px-6 py-16">
+    <div class="w-full max-w-lg text-center">
+      <p class="font-mono text-sm font-semibold uppercase tracking-[0.3em] text-purple-600 dark:text-purple-400">
+        Error 404
+      </p>
+      <h1 class="mt-4 text-5xl font-light tracking-tight text-slate-900 dark:text-slate-100">
+        Page not found
+      </h1>
+      <p class="mt-4 text-base text-slate-600 dark:text-slate-300">
+        We couldn't find that page. It may have moved, or the link might be incorrect.
+      </p>
+
+      <div class="mt-8 flex justify-center">
+        <a
+          href="/"
+          class="inline-flex items-center gap-2 rounded-lg bg-slate-900 px-5 py-2.5 text-sm font-medium text-white transition-colors hover:bg-slate-700 dark:bg-slate-100 dark:text-slate-900 dark:hover:bg-slate-200"
+        >
+          <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18" />
+          </svg>
+          Back to Forkcast
+        </a>
+      </div>
+
+      <div class="mt-10 border-t border-slate-200 pt-6 dark:border-slate-800">
+        <p class="text-xs font-semibold uppercase tracking-[0.18em] text-slate-500 dark:text-slate-400">
+          Or jump to
+        </p>
+        <div class="mt-4 flex flex-wrap justify-center gap-2">
+          {
+            links.map((link) => (
+              <a
+                href={link.href}
+                class="rounded-md bg-slate-100 px-3 py-1.5 text-sm font-medium text-slate-700 transition-colors hover:bg-slate-200 dark:bg-slate-800 dark:text-slate-200 dark:hover:bg-slate-700"
+              >
+                {link.label}
+              </a>
+            ))
+          }
+        </div>
+      </div>
+    </div>
+  </div>
+</Layout>

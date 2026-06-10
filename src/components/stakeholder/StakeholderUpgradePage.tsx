@@ -1,11 +1,8 @@
-import React, { useEffect, useState, useRef } from 'react';
-import { Link, useSearchParams } from 'react-router-dom';
+import React, { useEffect, useState } from 'react';
+import { useSearchParams } from '../navigation';
 import { eipsData } from '../../data/eips';
-import { Logo } from '../ui/Logo';
-import { useMetaTags } from '../../hooks/useMetaTags';
 import { useAnalytics } from '../../hooks/useAnalytics';
 import { EIP } from '../../types';
-import ThemeToggle from '../ui/ThemeToggle';
 import { StakeholderEipCard } from './StakeholderEipCard';
 import { filterEipsForStakeholder, groupByInclusionStage } from '../../utils/stakeholder';
 
@@ -22,11 +19,9 @@ type StakeholderKey = typeof STAKEHOLDER_OPTIONS[number]['key'];
 
 interface StakeholderUpgradePageProps {
   forkName: string;
-  /** When true, omit the page shell (Logo, ThemeToggle, back link) for embedding inside a layout. */
-  embedded?: boolean;
 }
 
-export const StakeholderUpgradePage: React.FC<StakeholderUpgradePageProps> = ({ forkName, embedded = false }) => {
+export const StakeholderUpgradePage: React.FC<StakeholderUpgradePageProps> = ({ forkName }) => {
   const [searchParams, setSearchParams] = useSearchParams();
   const viewParam = searchParams.get('view') as StakeholderKey | null;
   const [selectedStakeholder, setSelectedStakeholder] = useState<StakeholderKey>(
@@ -34,28 +29,10 @@ export const StakeholderUpgradePage: React.FC<StakeholderUpgradePageProps> = ({ 
   );
   const [eips, setEips] = useState<EIP[]>([]);
   const [isPfiExpanded, setIsPfiExpanded] = useState(false);
-  const [isDropdownOpen, setIsDropdownOpen] = useState(false);
-  const dropdownRef = useRef<HTMLDivElement>(null);
   const { trackUpgradeView, trackLinkClick } = useAnalytics();
-
-  // Close dropdown on outside click
-  useEffect(() => {
-    const handleClickOutside = (event: MouseEvent) => {
-      if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
-        setIsDropdownOpen(false);
-      }
-    };
-    document.addEventListener('mousedown', handleClickOutside);
-    return () => document.removeEventListener('mousedown', handleClickOutside);
-  }, []);
 
   const currentOption = STAKEHOLDER_OPTIONS.find(o => o.key === selectedStakeholder)!;
 
-  useMetaTags({
-    title: `${forkName} for ${currentOption.label} - Forkcast`,
-    description: `EIPs relevant to ${currentOption.label.toLowerCase()} in the ${forkName} network upgrade.`,
-    url: `https://forkcast.org/upgrade/${forkName.toLowerCase()}/stakeholders?view=${selectedStakeholder}`,
-  });
 
   useEffect(() => {
     const filtered = filterEipsForStakeholder(eipsData, forkName, selectedStakeholder);
@@ -109,7 +86,7 @@ export const StakeholderUpgradePage: React.FC<StakeholderUpgradePageProps> = ({ 
   ];
 
   const sidebar = (
-    <nav className={embedded ? 'flex flex-row md:flex-col gap-1.5 md:gap-0.5 flex-wrap md:w-48 md:flex-shrink-0' : ''}>
+    <nav className="flex flex-row md:flex-col gap-1.5 md:gap-0.5 flex-wrap md:w-48 md:flex-shrink-0">
       {STAKEHOLDER_OPTIONS.map(option => (
         <button
           key={option.key}
@@ -196,7 +173,7 @@ export const StakeholderUpgradePage: React.FC<StakeholderUpgradePageProps> = ({ 
     </>
   );
 
-  const content = embedded ? (
+  return (
     <div className="flex flex-col md:flex-row gap-6">
       {sidebar}
       <div className="flex-1 min-w-0">
@@ -205,73 +182,6 @@ export const StakeholderUpgradePage: React.FC<StakeholderUpgradePageProps> = ({ 
         </p>
         {eipContent}
       </div>
-    </div>
-  ) : (
-    <div className="max-w-2xl mx-auto">
-      {/* Header */}
-      <div className="mb-8">
-        <div className="mb-12 flex justify-between items-start">
-          <Logo size="lg" />
-          <ThemeToggle />
-        </div>
-        <Link
-          to={`/upgrade/${forkName.toLowerCase()}`}
-          className="text-slate-500 hover:text-slate-700 dark:text-slate-400 dark:hover:text-slate-200 mb-4 inline-block text-sm"
-        >
-          ← Back to {forkName}
-        </Link>
-        <h1 className="text-2xl font-light text-slate-900 dark:text-slate-100 tracking-tight mb-2">
-          {forkName} for{' '}
-          <div className="inline-block relative" ref={dropdownRef}>
-            <button
-              onClick={() => setIsDropdownOpen(!isDropdownOpen)}
-              className="font-light text-2xl border-b-2 border-purple-300 dark:border-purple-600 text-purple-700 dark:text-purple-300 hover:border-purple-400 dark:hover:border-purple-500 transition-colors inline-flex items-baseline gap-1"
-            >
-              {currentOption.label}
-              <svg
-                className={`w-4 h-4 transition-transform ${isDropdownOpen ? 'rotate-180' : ''}`}
-                fill="none"
-                stroke="currentColor"
-                viewBox="0 0 24 24"
-              >
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
-              </svg>
-            </button>
-            {isDropdownOpen && (
-              <div className="absolute top-full left-0 mt-1 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded shadow-lg py-1 min-w-[200px] z-10">
-                {STAKEHOLDER_OPTIONS.map(option => (
-                  <button
-                    key={option.key}
-                    onClick={() => {
-                      handleStakeholderChange(option.key);
-                      setIsDropdownOpen(false);
-                    }}
-                    className={`w-full text-left px-4 py-2 text-sm transition-colors ${
-                      option.key === selectedStakeholder
-                        ? 'bg-purple-50 dark:bg-purple-900/20 text-purple-700 dark:text-purple-300'
-                        : 'text-slate-700 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-700'
-                    }`}
-                  >
-                    {option.label}
-                  </button>
-                ))}
-              </div>
-            )}
-          </div>
-        </h1>
-        <p className="text-slate-600 dark:text-slate-400 text-sm">
-          EIPs that may affect you, grouped by inclusion certainty.
-        </p>
-      </div>
-      {eipContent}
-    </div>
-  );
-
-  if (embedded) return content;
-
-  return (
-    <div className="min-h-screen bg-slate-50 dark:bg-slate-900 text-slate-900 dark:text-slate-100 p-6">
-      {content}
     </div>
   );
 };

@@ -1,9 +1,8 @@
 import React, { useEffect, useMemo, useCallback, useState, lazy, Suspense } from 'react';
 import { createPortal } from 'react-dom';
-import { Link, useParams, Navigate, useNavigate, useSearchParams } from 'react-router-dom';
+import { Link, useNavigate, useSearchParams } from '../navigation';
 import { EIP } from '../../types/eip';
 import { eipById, eipsData } from '../../data/eips';
-import { useMetaTags } from '../../hooks/useMetaTags';
 import { useAnalytics } from '../../hooks/useAnalytics';
 import { useEipMarkdown } from '../../hooks/useEipMarkdown';
 import {
@@ -265,8 +264,7 @@ const dependentsMap = buildDependentsMap(eipsData);
 const requiredEipSpecUrl = (eipId: number): string => `https://eips.ethereum.org/EIPS/eip-${eipId}`;
 const requiredEipLinkClassName = 'font-mono hover:text-slate-700 dark:hover:text-slate-200 transition-colors';
 
-export const EipPage: React.FC = () => {
-  const { id } = useParams<{ id: string }>();
+export const EipPage: React.FC<{ id: string }> = ({ id }) => {
   const { trackLinkClick } = useAnalytics();
   const navigate = useNavigate();
   const [searchParams, setSearchParams] = useSearchParams();
@@ -330,19 +328,13 @@ export const EipPage: React.FC = () => {
   const prevEip = currentIndex > 0 ? sortedEips[currentIndex - 1] : null;
   const nextEip = currentIndex < sortedEips.length - 1 ? sortedEips[currentIndex + 1] : null;
 
-  const prevIdRef = React.useRef(id);
   const tabBarRef = React.useRef<HTMLDivElement>(null);
+  // Each EIP is its own Astro page, so EIP-to-EIP navigation is a full reload that
+  // mounts this island fresh — just scroll to top on mount. (A stale ?tab= can't carry
+  // across EIPs under full-reload nav, so no cross-EIP tab reset is needed.)
   useEffect(() => {
     window.scrollTo(0, 0);
-    // Reset to default tab only when navigating to a different EIP
-    if (prevIdRef.current !== id && searchParams.has('tab')) {
-      const next = new URLSearchParams(searchParams);
-      next.delete('tab');
-      setSearchParams(next, { replace: true });
-    }
-    prevIdRef.current = id;
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [id]);
+  }, []);
 
   // Scroll tab bar into view when deep-linking to a FAQ question
   useEffect(() => {
@@ -418,14 +410,10 @@ export const EipPage: React.FC = () => {
     }
   }, [prRedirectUrl]);
 
-  useMetaTags({
-    title: eip ? `${getProposalPrefix(eip)}-${eip.id}: ${getLaymanTitle(eip)} - Forkcast` : 'EIP Not Found - Forkcast',
-    description: eip?.description || 'Ethereum Improvement Proposal details',
-    url: `https://forkcast.org/eips/${id}`,
-  });
-
+  // Astro only emits pages for canonical EIPs, and a pending EIP redirects to its PR
+  // (above), so there's nothing to render in either case.
   if (!eip || prRedirectUrl) {
-    return prRedirectUrl ? null : <Navigate to="/" replace />;
+    return null;
   }
 
   const requiredEipIds = eip.requires ?? [];

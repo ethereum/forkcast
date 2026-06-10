@@ -1,0 +1,35 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import CallsIndexPage from '../../components/CallsIndexPage';
+import { protocolCalls, getCallTypeName, isOneOffCall } from '../../data/calls';
+import { upcomingCalls } from '../../domain/calls/upcomingCalls';
+
+// Concrete call-type scopes, e.g. /calls/acde, /calls/bal. Aggregate filters
+// (acd, breakouts) stay query-string state on /calls and are not routes.
+// One-off pseudo-series (one-off-1954, …) are not a scope — the call index treats
+// them as an aggregate "one-off" filter, never a /calls/{type} link — so they are
+// excluded here to keep route generation in step with the island's link surface.
+export function getStaticPaths() {
+  const types = new Set<string>();
+  for (const call of protocolCalls) if (!isOneOffCall(call.type)) types.add(call.type);
+  for (const call of upcomingCalls) types.add(call.type);
+
+  return [...types].map((type) => {
+    const name = getCallTypeName(type);
+    return {
+      params: { type },
+      props: {
+        title: `${name} Calls - Forkcast`,
+        description: `Browse ${name} protocol calls tracked on Forkcast.`,
+      },
+    };
+  });
+}
+
+const type = Astro.params.type!;
+const { title, description } = Astro.props;
+---
+
+<Layout title={title} description={description}>
+  <CallsIndexPage client:only="react" scope={type} />
+</Layout>

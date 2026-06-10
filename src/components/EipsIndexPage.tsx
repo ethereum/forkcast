@@ -1,12 +1,12 @@
 import React, { useState, useMemo, useEffect } from 'react';
-import { Link } from 'react-router-dom';
+import { Link } from './navigation';
 import { eipsData } from '../data/eips';
 import { getProposalPrefix, getLaymanTitle, getInclusionStage, isHeadlinerInAnyFork, wasHeadlinerCandidateInAnyFork, getEipLayer, isPendingEip } from '../utils/eip';
 import { EipSearch } from './eip/EipSearch';
 import EipSearchModal from './eip/EipSearchModal';
 import { isSearchHotkey } from './search/searchShortcuts';
 import { Tooltip } from './ui';
-import { networkUpgrades } from '../data/upgrades';
+import { networkUpgrades, getUpgradePagePath } from '../data/upgrades';
 
 type SortField = 'number' | 'date' | 'status' | 'updated' | 'headliner';
 type SortDirection = 'asc' | 'desc';
@@ -260,18 +260,8 @@ const EipsIndexPage: React.FC = () => {
     };
   }, [mobileFiltersOpen]);
 
-  // Helper to get fork upgrade path
-  const getForkPath = (forkName: string): string | null => {
-    const forkMap: Record<string, string> = {
-      'Shapella': '/upgrade/shapella',
-      'Dencun': '/upgrade/dencun',
-      'Pectra': '/upgrade/pectra',
-      'Fusaka': '/upgrade/fusaka',
-      'Glamsterdam': '/upgrade/glamsterdam',
-      'Hegota': '/upgrade/hegota'
-    };
-    return forkMap[forkName] || null;
-  };
+  // Helper to get fork upgrade path (null for forks without a public page).
+  const getForkPath = (forkName: string): string | null => getUpgradePagePath(forkName);
 
   // Helper to get proper fork display name with accents
   const getForkDisplayName = (forkName: string): string => {

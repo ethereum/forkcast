@@ -1,7 +1,8 @@
 import React from 'react';
-import { Link } from 'react-router-dom';
+import { Link } from '../navigation';
 import { EIP } from '../../types';
-import { networkUpgrades } from '../../data/upgrades';
+import { networkUpgrades, getUpgradePagePath } from '../../data/upgrades';
+import { formatCallReference } from '../../domain/calls/callReference';
 import { Tooltip } from '../ui';
 
 interface EipTimelineProps {
@@ -79,16 +80,6 @@ const statusLabels: Record<string, string> = {
   Included: 'Included',
   Withdrawn: 'Withdrawn',
 };
-
-function formatCallReference(call: string, timestamp?: number): { display: string; link: string } {
-  const [prefix, number] = call.split('/');
-  const paddedNumber = number.padStart(3, '0');
-  const baseLink = `/calls/${prefix}/${paddedNumber}`;
-  return {
-    display: `${prefix.toUpperCase()} #${number}`,
-    link: timestamp ? `${baseLink}#t=${timestamp}` : baseLink,
-  };
-}
 
 function formatDate(dateString: string): string {
   const date = new Date(dateString + 'T00:00:00');
@@ -219,12 +210,20 @@ export const EipTimeline: React.FC<EipTimelineProps> = ({ eip }) => {
                   <div className={`min-w-0 flex-1 ${isLastNode ? '' : 'pb-4'}`}>
                     {/* Fork header with bordered badge */}
                     <div className="flex flex-col items-start gap-1 sm:flex-row sm:items-center sm:justify-between sm:gap-2">
-                      <Link
-                        to={`/upgrade/${group.forkName.toLowerCase()}`}
-                        className="shrink-0 text-xs font-mono font-medium px-2 py-0.5 rounded border border-slate-300 dark:border-slate-600 text-slate-600 dark:text-slate-300 hover:border-purple-400 dark:hover:border-purple-500 hover:text-purple-600 dark:hover:text-purple-400 transition-colors"
-                      >
-                        {getForkDisplayName(group.forkName)}
-                      </Link>
+                      {(() => {
+                        const forkPath = getUpgradePagePath(group.forkName);
+                        const badgeClasses = 'shrink-0 text-xs font-mono font-medium px-2 py-0.5 rounded border border-slate-300 dark:border-slate-600 text-slate-600 dark:text-slate-300';
+                        return forkPath ? (
+                          <Link
+                            to={forkPath}
+                            className={`${badgeClasses} hover:border-purple-400 dark:hover:border-purple-500 hover:text-purple-600 dark:hover:text-purple-400 transition-colors`}
+                          >
+                            {getForkDisplayName(group.forkName)}
+                          </Link>
+                        ) : (
+                          <span className={badgeClasses}>{getForkDisplayName(group.forkName)}</span>
+                        );
+                      })()}
                       {hasVisibleChampions && (
                         <Tooltip text={`${visibleChampions.length > 1 ? 'Champions' : 'Champion'} for ${getForkDisplayName(group.forkName)}`}>
                           <div className="flex min-w-0 max-w-full items-start gap-1 text-xs text-slate-400 dark:text-slate-400 cursor-help sm:items-center sm:shrink-0">

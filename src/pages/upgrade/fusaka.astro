@@ -1,0 +1,21 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import PublicNetworkUpgradePage from '../../components/PublicNetworkUpgradePage';
+import { getUpgradeById } from '../../data/upgrades';
+import { staticPageMetadata } from '../../domain/routes/pageMetadata';
+
+const upgrade = getUpgradeById('fusaka')!;
+---
+
+<Layout {...staticPageMetadata.fusaka}>
+  <PublicNetworkUpgradePage
+    client:only="react"
+    forkName="Fusaka"
+    displayName={upgrade.name}
+    description={upgrade.description}
+    status={upgrade.status}
+    activationDate={upgrade.activationDate}
+    metaEipLink={upgrade.metaEipLink}
+    activationDetails={upgrade.activationDetails}
+  />
+</Layout>

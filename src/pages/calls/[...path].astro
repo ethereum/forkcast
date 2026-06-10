@@ -1,0 +1,59 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import CallPage from '../../components/call/CallPage';
+import { protocolCalls, getCallTypeName } from '../../data/calls';
+import { upcomingCalls, hasUpcomingWatchPage } from '../../domain/calls/upcomingCalls';
+
+// Canonical call pages (/calls/{series}/{number}) for completed calls, plus
+// upcoming-call watch pages from the build-time snapshot. Single-segment paths
+// like /calls/acde are handled by the higher-priority [type].astro scope route.
+interface CallPageRouteProps {
+  title: string;
+  description: string;
+  upcoming?: { date: string; youtubeUrl?: string; githubUrl: string; issueNumber: number };
+}
+
+export function getStaticPaths() {
+  const paths: Array<{ params: { path: string }; props: CallPageRouteProps }> = [];
+
+  for (const call of protocolCalls) {
+    const name = call.name || getCallTypeName(call.type);
+    const title = call.name ? `${name} - Forkcast` : `${name} #${call.number} - Forkcast`;
+    const description = call.name
+      ? `Watch ${name} from ${call.date}.`
+      : `Watch ${name} call #${call.number} from ${call.date}.`;
+    paths.push({ params: { path: call.path }, props: { title, description } });
+  }
+
+  // Upcoming calls get an internal watch page only when the index links to one
+  // (i.e. there's a video to watch); calls without one link out to the GitHub
+  // issue instead, so emitting a page for them would be an unreachable route.
+  for (const call of upcomingCalls) {
+    if (!hasUpcomingWatchPage(call)) continue;
+    if (protocolCalls.some((c) => c.type === call.type && c.number === call.number)) continue;
+    const name = getCallTypeName(call.type);
+    paths.push({
+      params: { path: `${call.type}/${call.number}` },
+      props: {
+        title: `${name} #${call.number} - Forkcast`,
+        description: `Watch ${name} call #${call.number} from ${call.date}.`,
+        upcoming: {
+          date: call.date,
+          youtubeUrl: call.youtubeUrl,
+          githubUrl: call.githubUrl,
+          issueNumber: call.issueNumber,
+        },
+      },
+    });
+  }
+
+  return paths;
+}
+
+const callPath = Astro.params.path!;
+const { title, description, upcoming } = Astro.props;
+---
+
+<Layout title={title} description={description} navVariant="wide" enableCallSearch>
+  <CallPage client:only="react" callPath={callPath} upcoming={upcoming} />
+</Layout>

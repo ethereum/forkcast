@@ -1,8 +1,8 @@
 import { useState, useEffect, useRef, useMemo } from 'react';
-import { useSearchParams } from 'react-router-dom';
+import { useSearchParams, useNavigate } from './navigation';
 import { protocolCalls, callTypeNames, isOneOffCall, type CallType } from '../data/calls';
 import { timelineEvents } from '../data/events';
-import { fetchUpcomingCalls, type UpcomingCall } from '../domain/calls/upcomingCalls';
+import { upcomingCalls } from '../domain/calls/upcomingCalls';
 import GlobalCallSearch from './GlobalCallSearch';
 import { SearchTriggerButton } from './search/SearchUi';
 import { isSearchHotkey } from './search/searchShortcuts';
@@ -13,44 +13,45 @@ import { CallsIndexTimeline } from './calls-index/CallsIndexTimeline';
 
 const ACD_TYPES = ['acdc', 'acde', 'acdt'];
 
+// Concrete call-type filters own a path scope (/calls/acde); aggregate filters
+// (acd, breakouts) stay query-string state on /calls.
+const CONCRETE_TYPE_FILTERS = ['acdc', 'acde', 'acdt'];
+
 const matchesSelectedBreakoutType = (callType: string, selectedBreakoutType: string): boolean => {
   if (!selectedBreakoutType) return true;
   if (selectedBreakoutType === 'one-off') return isOneOffCall(callType);
   return callType === selectedBreakoutType;
 };
 
-const CallsIndexPage: React.FC = () => {
-  const [searchParams, setSearchParams] = useSearchParams();
-  const selectedFilter = searchParams.get('filter') || 'all';
-  const selectedBreakoutType = searchParams.get('breakoutType') || '';
-  const [upcomingCalls, setUpcomingCalls] = useState<UpcomingCall[]>([]);
-  const [upcomingCallsLoading, setUpcomingCallsLoading] = useState(true);
+interface CallsIndexPageProps {
+  /** Concrete call-type scope from the /calls/[type] route, e.g. "acde". */
+  scope?: string;
+}
+
+const CallsIndexPage: React.FC<CallsIndexPageProps> = ({ scope }) => {
+  const [searchParams] = useSearchParams();
+  const navigate = useNavigate();
+  // On a scoped path (/calls/acde) the type is path-owned; otherwise it's the
+  // query filter. Aggregate filters (acd, breakouts) only ever live in the query.
+  const selectedFilter = scope ?? (searchParams.get('filter') || 'all');
+  const selectedBreakoutType = scope ? '' : (searchParams.get('breakoutType') || '');
   const [searchOpen, setSearchOpen] = useState(false);
   const [breakoutDropdownOpen, setBreakoutDropdownOpen] = useState(false);
   const breakoutDropdownRef = useRef<HTMLDivElement>(null);
 
-  const updateSearchParams = (update: (next: URLSearchParams) => void) => {
-    setSearchParams((prev) => {
-      const next = new URLSearchParams(prev);
-      update(next);
-      return next;
-    });
+  // Navigate concrete types to their path scope; keep aggregate filters in the query.
+  const selectFilter = (filter: string) => {
+    if (filter === 'all') navigate('/calls');
+    else if (CONCRETE_TYPE_FILTERS.includes(filter)) navigate(`/calls/${filter}`);
+    else navigate(`/calls?filter=${filter}`);
   };
 
-  useEffect(() => {
-    const loadUpcomingCalls = async () => {
-      try {
-        const upcoming = await fetchUpcomingCalls();
-        setUpcomingCalls(upcoming);
-      } catch (error) {
-        console.error('Failed to load upcoming calls:', error);
-      } finally {
-        setUpcomingCallsLoading(false);
-      }
-    };
-
-    loadUpcomingCalls();
-  }, []);
+  const setBreakoutType = (breakoutType: string | null) => {
+    const params = new URLSearchParams();
+    params.set('filter', 'breakouts');
+    if (breakoutType) params.set('breakoutType', breakoutType);
+    navigate(`/calls?${params.toString()}`);
+  };
 
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
@@ -83,7 +84,7 @@ const CallsIndexPage: React.FC = () => {
   const breakoutTypes = useMemo(() => Array.from(new Set([
     ...protocolCalls.filter(call => !ACD_TYPES.includes(call.type) && !isOneOffCall(call.type)).map(call => call.type),
     ...upcomingCalls.filter(call => !ACD_TYPES.includes(call.type) && !isOneOffCall(call.type)).map(call => call.type),
-  ])).sort((a, b) => (callTypeNames[a as CallType] || a).localeCompare(callTypeNames[b as CallType] || b)), [upcomingCalls]);
+  ])).sort((a, b) => (callTypeNames[a as CallType] || a).localeCompare(callTypeNames[b as CallType] || b)), []);
 
   const hasOneOffCalls = useMemo(() => protocolCalls.some(call => isOneOffCall(call.type)), []);
 
@@ -103,7 +104,7 @@ const CallsIndexPage: React.FC = () => {
     : selectedFilter === 'breakouts'
     ? upcomingCalls.filter(call => !ACD_TYPES.includes(call.type) && matchesSelectedBreakoutType(call.type, selectedBreakoutType))
     : upcomingCalls.filter(call => call.type === selectedFilter),
-  [upcomingCalls, selectedFilter, selectedBreakoutType]);
+  [selectedFilter, selectedBreakoutType]);
 
   const timelineItems = useMemo(() => {
     return [
@@ -117,8 +118,8 @@ const CallsIndexPage: React.FC = () => {
   const todayDateString = getTodayDateString(new Date(), viewerTimeZone);
 
   const dateSections = useMemo(
-    () => buildTimelineDateSections(timelineItems, todayDateString, upcomingCallsLoading, viewerTimeZone),
-    [timelineItems, todayDateString, upcomingCallsLoading, viewerTimeZone]
+    () => buildTimelineDateSections(timelineItems, todayDateString, false, viewerTimeZone),
+    [timelineItems, todayDateString, viewerTimeZone]
   );
 
   const breakoutLabel = selectedBreakoutType === 'one-off'
@@ -157,25 +158,11 @@ const CallsIndexPage: React.FC = () => {
             breakoutLabel={breakoutLabel}
             breakoutTypes={breakoutTypes}
             hasOneOffCalls={hasOneOffCalls}
-            onSelectFilter={(filter) => {
-              updateSearchParams((next) => {
-                if (filter === 'all') next.delete('filter');
-                else next.set('filter', filter);
-                next.delete('breakoutType');
-              });
-            }}
-            onBackToAllFilters={() => {
-              updateSearchParams((next) => {
-                next.delete('filter');
-                next.delete('breakoutType');
-              });
-            }}
+            onSelectFilter={selectFilter}
+            onBackToAllFilters={() => navigate('/calls')}
             onToggleBreakoutDropdown={() => setBreakoutDropdownOpen((open) => !open)}
             onSelectBreakoutType={(breakoutType) => {
-              updateSearchParams((next) => {
-                if (breakoutType) next.set('breakoutType', breakoutType);
-                else next.delete('breakoutType');
-              });
+              setBreakoutType(breakoutType);
               setBreakoutDropdownOpen(false);
             }}
           />

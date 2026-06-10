@@ -1,12 +1,12 @@
 import { useState, useEffect, useMemo, useRef } from 'react';
-import { Link, useSearchParams } from 'react-router-dom';
+import { Link, useSearchParams } from '../navigation';
 import { protocolCalls, callTypeNames, Call, type CallType } from '../../data/calls';
-import { useMetaTags } from '../../hooks/useMetaTags';
 import { KeyDecision, EIP } from '../../types/eip';
 import { eipsData, eipById as eipMap } from '../../data/eips';
 import { networkUpgrades } from '../../data/upgrades';
 import { getPendingProposalsForFork, type PendingProposal } from '../../data/pending-proposals';
 import { fetchUpcomingCalls, type UpcomingCall } from '../../domain/calls/upcomingCalls';
+import { formatCallReference } from '../../domain/calls/callReference';
 import { StructuredDecisionContent, EipLinkWithTooltip, DecisionTextWithEipLinks } from './KeyDecisionsSection';
 
 interface TldrData {
@@ -263,12 +263,6 @@ const CallPlanPage: React.FC = () => {
 
     return { pendingEips: eips, pendingProposals: proposals };
   }, [type]);
-
-  useMetaTags({
-    title: `${typeLabel} Agenda Planner - Forkcast`,
-    description: `Action items, decisions, and targets from recent ${typeLabel} calls to help plan agendas.`,
-    url: `https://forkcast.org/agenda?series=${type}`,
-  });
 
   useEffect(() => {
     if (!type) {
@@ -597,7 +591,7 @@ const CallPlanPage: React.FC = () => {
                     <span className="text-xs text-slate-500 dark:text-slate-400 shrink-0 ml-auto">
                       {lastDiscussedCall ? (
                         <Link
-                          to={`/calls/${lastDiscussedCall}`}
+                          to={formatCallReference(lastDiscussedCall).link}
                           onClick={(e) => e.stopPropagation()}
                           className="hover:text-purple-600 dark:hover:text-purple-400 transition-colors"
                         >

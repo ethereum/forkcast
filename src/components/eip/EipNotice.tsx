@@ -1,7 +1,8 @@
 import type { ReactNode } from 'react';
-import { Link } from 'react-router-dom';
+import { Link } from '../navigation';
 import { ForkRelationship } from '../../types';
 import { parseMarkdownLinks } from '../../utils';
+import { formatCallReference } from '../../domain/calls/callReference';
 
 type EipNoticeData = NonNullable<ForkRelationship['notice']>;
 
@@ -18,16 +19,6 @@ const NOTICE_CLASSES = {
   text: 'text-amber-800 dark:text-amber-200',
   link: 'text-amber-700 hover:text-amber-900 dark:text-amber-300 dark:hover:text-amber-100',
 };
-
-function formatCallReference(call: string, timestamp?: number): { display: string; link: string } {
-  const [prefix, number] = call.split('/');
-  const paddedNumber = number.padStart(3, '0');
-  const baseLink = `/calls/${prefix}/${paddedNumber}`;
-  return {
-    display: `${prefix.toUpperCase()} #${number}`,
-    link: timestamp ? `${baseLink}#t=${timestamp}` : baseLink,
-  };
-}
 
 export const EipNotice: React.FC<EipNoticeProps> = ({ notice, className = '', title }) => {
   const callReference = notice.call ? formatCallReference(notice.call, notice.timestamp) : null;

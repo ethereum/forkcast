@@ -1,61 +1,61 @@
 {
   "series": "ACDT",
-  "generated": "2026-06-04",
-  "for_call": "ACDT #82",
+  "generated": "2026-06-11",
+  "for_call": "ACDT #83",
   "suggestions": [
     {
-      "topic": "bal-devnet-8 vs glamsterdam-devnet-6 decision",
+      "topic": "Glamsterdam devnet-6 launch status and readiness check",
       "priority": "high",
-      "rationale": "Explicitly deferred from ACDT #81 for this week's call. Need to decide next devnet scope and whether to consolidate BAL/Glamsterdam tracks now that benchmarking on bal-devnet-7 is progressing.",
+      "rationale": "Devnet-6 was targeted for June 10 (yesterday). Status update critical given devnet-5 instability and multiple recent failed launches.",
       "related_eips": [],
-      "source": "deferred_decision"
+      "source": "ongoing_discussion"
     },
     {
-      "topic": "EIP-7928 state-access decoupling PR review and merge decision",
+      "topic": "Root cause analysis for glamsterdam devnet-5 failures",
       "priority": "high",
-      "rationale": "Action item from ACDT #81 for EL teams to review before ACDE Thursday. This 100 gas pre-charge / 2500 post-charge split requires implementation changes across most clients and affects glamsterdam-devnet-6 scope.",
-      "related_eips": [],
-      "source": "open_action_item"
-    },
-    {
-      "topic": "glamsterdam-devnet-6 EL scope finalization",
-      "priority": "high",
-      "rationale": "ACDT #81 deferred all EL changes (EIP-8246, EIP-2780, EIP-8038, EIP-7954, EIP-7997) to devnet-6. Need to confirm priority order (benchmarking > 8246 > 7997) and readiness timeline, especially given bal-devnet-7 benchmarking is still ongoing.",
-      "related_eips": [],
-      "source": "deferred_decision"
-    },
-    {
-      "topic": "glamsterdam-devnet-5 status and lessons learned",
-      "priority": "medium",
-      "rationale": "CL-only devnet-5 was targeting launch as early as June 2. Need status update on stability, EIP-8045 implementation, and whether any issues emerged that affect devnet-6 planning.",
+      "rationale": "ACDT #82 consensus was not to recover devnet-5 without understanding root cause. Multiple clients forking, Prysm sync issues, and peer downscoring need diagnosis before devnet-7.",
       "related_eips": [],
       "source": "devnet_update"
     },
     {
-      "topic": "EIP-8037 auth refund expansion PR and EIP-2780 simplification PR decisions",
-      "priority": "medium",
-      "rationale": "ACDT #81 noted two open spec PRs: 5-rule auth refund scheme for EIP-8037 and removal of self-transfer/precompile carve-outs for EIP-2780. Both pending benchmark results but affect glamsterdam-devnet-6 scope.",
+      "topic": "bal-devnet-7 benchmarking results and final gas repricing numbers",
+      "priority": "high",
+      "rationale": "Benchmarking is the primary blocker for finalizing EIP-8038/2780/7904 gas costs. ACDT #81 indicated optimizations were ongoing; results needed before glamsterdam-devnet-7 scope can be finalized.",
       "related_eips": [],
       "source": "ongoing_discussion"
     },
     {
-      "topic": "REST-SSZ Engine API decision outcome (PR #764 vs #793)",
+      "topic": "EIP-7997 (deterministic factory) implementation approach",
       "priority": "medium",
-      "rationale": "Deferred from ACDT #80 to ACDE Thursday (May 22). No subsequent ACDT mentions the outcome. If ACDE decided, confirm which approach was chosen and impact on glamsterdam devnet implementation.",
+      "rationale": "ACDT #82 decided on Option 2 (enshrine Arachnid in Genesis), but async alignment needed on whether to modify EIP-7997 or create a new EIP. Action item for Toni/Mario/frangio.",
       "related_eips": [],
-      "source": "deferred_decision"
+      "source": "open_action_item"
     },
     {
-      "topic": "bal-devnet-7 benchmarking completion timeline",
+      "topic": "Glamsterdam devnet-7 scope planning",
       "priority": "medium",
-      "rationale": "ACDT #81 identified benchmarking/optimizations as top EL priority and blocker for final gas cost numbers. Need update on progress and estimated completion to unblock EIP-8038 final values for devnet-6.",
+      "rationale": "ACDT #81 deferred all EL changes (EIP-8246, EIP-2780, EIP-8038, EIP-7954, EIP-7997) to devnet-6, but devnet-6 was CL-only. Need to confirm devnet-7 will include these EIPs pending benchmark results.",
       "related_eips": [],
       "source": "ongoing_discussion"
     },
     {
-      "topic": "EIP-7954 contract code size limit benchmarking results",
+      "topic": "EIP-7928 state-access decoupling PR review outcome",
+      "priority": "medium",
+      "rationale": "ACDT #81 requested EL teams review PR before ACDE Thursday (June 5). No outcome reported in ACDT #82; status update needed.",
+      "related_eips": [],
+      "source": "open_action_item"
+    },
+    {
+      "topic": "SSZ Engine API implementation progress and volunteer coordination",
       "priority": "low",
-      "rationale": "Deferred from ACDT #80 for glamsterdam-devnet-5, then pushed to devnet-6 in ACDT #81. Need benchmark results comparing 32KB/48KB/64KB before finalizing spec for devnet-6.",
+      "rationale": "ACDT #82 noted Geth/Erigon implementing, Prysm/Nimbus targeted by EF intern. Action item for additional CL client to volunteer. Progress check useful but not blocking.",
+      "related_eips": [],
+      "source": "open_action_item"
+    },
+    {
+      "topic": "EIP-7688 (stable containers) timeline reassessment",
+      "priority": "low",
+      "rationale": "Deferred to devnet-7 or devnet-8 pending EPBS stability. Since devnet-5/6 struggled, may be worth revisiting timeline expectations, but not urgent until EPBS stabilizes.",
       "related_eips": [],
       "source": "deferred_decision"
     }

@@ -148,7 +148,7 @@ const TldrSummary: React.FC<TldrSummaryProps> = ({
   return (
     <div ref={containerRef} className="grid grid-cols-1 lg:grid-cols-2 gap-6">
       {/* Left Column: Highlights */}
-      <div>
+      <div className="order-2 lg:order-1">
         <div className="space-y-4">
           {Object.entries(data.highlights).map(([category, items]) => (
             <div key={category}>
@@ -189,7 +189,7 @@ const TldrSummary: React.FC<TldrSummaryProps> = ({
       </div>
 
       {/* Right Column: Decisions, Actions, Commitments */}
-      <div>
+      <div className="order-1 lg:order-2">
         <div className="space-y-6">
         {/* Decisions Made */}
         {data.decisions && data.decisions.length > 0 && (

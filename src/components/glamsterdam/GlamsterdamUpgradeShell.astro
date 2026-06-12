@@ -1,0 +1,119 @@
+---
+import { getUpgradeById } from '../../data/upgrades';
+import { getUpgradeStatusColor } from '../../utils/colors';
+
+type GlamsterdamTab =
+  | 'overview'
+  | 'stakeholders'
+  | 'devnet-inclusion'
+  | 'client-priority'
+  | 'test-complexity';
+
+interface Props {
+  activeTab: GlamsterdamTab;
+}
+
+const { activeTab } = Astro.props;
+const upgrade = getUpgradeById('glamsterdam')!;
+
+const tabs: Array<{ key: GlamsterdamTab; path: string; label: string }> = [
+  { key: 'overview', path: '/upgrade/glamsterdam', label: 'Overview' },
+  { key: 'stakeholders', path: '/upgrade/glamsterdam/stakeholders', label: 'Stakeholders' },
+  { key: 'devnet-inclusion', path: '/upgrade/glamsterdam/devnet-inclusion', label: 'Devnet Inclusion' },
+  { key: 'client-priority', path: '/upgrade/glamsterdam/client-priority', label: 'Client Priority' },
+  { key: 'test-complexity', path: '/upgrade/glamsterdam/test-complexity', label: 'Test Complexity' },
+];
+---
+
+<div class="min-h-screen bg-slate-50 p-6 text-slate-900 dark:bg-slate-900 dark:text-slate-100">
+  <div class="mx-auto max-w-4xl">
+    <div class="mb-8">
+      <a
+        href="/upgrades"
+        class="mb-6 inline-block text-sm font-medium text-slate-600 hover:text-slate-800 dark:text-slate-300 dark:hover:text-slate-100"
+      >
+        &larr; All Network Upgrades
+      </a>
+
+      <div class="pb-0">
+        <div class="flex flex-col lg:flex-row lg:items-start lg:justify-between">
+          <div class="flex-1">
+            <div class="mb-3 flex items-center justify-between gap-3 lg:justify-start">
+              <h1 class="text-3xl font-light tracking-tight text-slate-900 dark:text-slate-100">
+                <span class="lg:hidden">Glamsterdam</span>
+                <span class="hidden lg:inline">{upgrade.name}</span>
+              </h1>
+              <span class={`rounded px-3 py-1 text-xs font-medium lg:hidden ${getUpgradeStatusColor(upgrade.status)}`}>
+                {upgrade.status}
+              </span>
+            </div>
+            <p class="mb-2 max-w-2xl text-base leading-relaxed text-slate-600 dark:text-slate-300">
+              {upgrade.description}
+            </p>
+            {
+              upgrade.metaEipLink && (
+                <div class="mb-4">
+                  <a
+                    href={upgrade.metaEipLink}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    class="inline-flex items-center gap-1.5 text-sm text-purple-600 underline decoration-1 underline-offset-2 transition-colors hover:text-purple-800 dark:text-purple-400 dark:hover:text-purple-300"
+                  >
+                    View Meta EIP Discussion
+                    <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                      <path
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                        stroke-width="2"
+                        d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"
+                      />
+                    </svg>
+                  </a>
+                </div>
+              )
+            }
+          </div>
+          <div class="hidden lg:block">
+            <span class={`rounded px-3 py-1 text-xs font-medium ${getUpgradeStatusColor(upgrade.status)}`}>
+              {upgrade.status}
+            </span>
+          </div>
+        </div>
+      </div>
+
+      <div class="-mx-6 mt-4">
+        <div class="overflow-x-auto px-6 pb-3">
+          <div class="flex min-w-max gap-6 border-b border-slate-200 dark:border-slate-700">
+            {
+              tabs.map((tab) => {
+                const active = tab.key === activeTab;
+                return (
+                  <a
+                    href={tab.path}
+                    data-astro-prefetch
+                    data-active-glamsterdam-tab={active ? 'true' : undefined}
+                    class={`-mb-px whitespace-nowrap border-b-2 pb-2 text-sm font-medium transition-colors ${
+                      active
+                        ? 'border-purple-600 text-purple-700 dark:border-purple-400 dark:text-purple-300'
+                        : 'border-transparent text-slate-500 hover:border-slate-300 hover:text-slate-700 dark:text-slate-400 dark:hover:border-slate-500 dark:hover:text-slate-200'
+                    }`}
+                  >
+                    {tab.label}
+                  </a>
+                );
+              })
+            }
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <slot />
+  </div>
+</div>
+
+<script>
+  document
+    .querySelector('[data-active-glamsterdam-tab="true"]')
+    ?.scrollIntoView({ block: 'nearest', inline: 'center' });
+</script>

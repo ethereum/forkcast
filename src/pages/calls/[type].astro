@@ -1,6 +1,7 @@
 ---
 import Layout from '../../layouts/Layout.astro';
 import CallsIndexPage from '../../components/CallsIndexPage';
+import CallsIndexShell from '../../components/calls-index/CallsIndexShell.astro';
 import { protocolCalls, getCallTypeName, isOneOffCall } from '../../data/calls';
 import { upcomingCalls } from '../../domain/calls/upcomingCalls';
 
@@ -31,5 +32,7 @@ const { title, description } = Astro.props;
 ---
 
 <Layout title={title} description={description}>
-  <CallsIndexPage client:only="react" scope={type} />
+  <CallsIndexShell scope={type}>
+    <CallsIndexPage client:only="react" scope={type} />
+  </CallsIndexShell>
 </Layout>

@@ -123,6 +123,7 @@ const PublicNetworkUpgradePage: React.FC<PublicNetworkUpgradePageProps> = ({
   const layerFilter: 'all' | 'EL' | 'CL' =
     showLayerFilter && (layerParam === 'EL' || layerParam === 'CL') ? layerParam : 'all';
   const searchQuery = searchParams.get('filter') ?? '';
+  const hasActiveFilter = searchQuery.trim().length > 0 || layerFilter !== 'all';
 
   const [eips, setEips] = useState<EIP[]>([]);
   const [activeSection, setActiveSection] = useState<string>('overview');
@@ -582,17 +583,19 @@ const PublicNetworkUpgradePage: React.FC<PublicNetworkUpgradePageProps> = ({
 
           <div className="flex-1 min-w-0">
             <div className="space-y-8">
-              {/* Overview Section */}
-              <OverviewSection
-                eips={filterEipsByLayer(eips)}
-                forkName={forkName}
-                status={status}
-                activationDate={activationDate}
-                onStageClick={scrollToSection}
-                activationDetails={activationDetails}
-              />
+              {/* Overview Section — hidden when filter is active */}
+              <div className={hasActiveFilter ? 'hidden' : undefined}>
+                <OverviewSection
+                  eips={filterEipsByLayer(eips)}
+                  forkName={forkName}
+                  status={status}
+                  activationDate={activationDate}
+                  onStageClick={scrollToSection}
+                  activationDetails={activationDetails}
+                />
+              </div>
 
-              {/* Timeline Section */}
+              {/* Timeline Section — hidden when filter is active */}
               {(() => {
                 const timelineConfig: Record<string, { description: string; component: React.ReactNode }> = {
                   hegota: {
@@ -616,7 +619,7 @@ const PublicNetworkUpgradePage: React.FC<PublicNetworkUpgradePageProps> = ({
                 if (!config) return null;
                 const sectionId = `${forkName.toLowerCase()}-timeline`;
                 return (
-                  <div className="space-y-6" id={sectionId} data-section>
+                  <div className={`space-y-6${hasActiveFilter ? ' hidden' : ''}`} id={sectionId} data-section>
                     <div className="border-b border-slate-200 dark:border-slate-700 pb-4">
                       <div className="flex items-center gap-3 mb-2">
                         <h2 className="text-xl font-medium text-slate-900 dark:text-slate-100">Timeline</h2>

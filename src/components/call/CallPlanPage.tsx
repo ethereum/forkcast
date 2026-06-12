@@ -1,7 +1,7 @@
 import { useState, useEffect, useMemo, useRef } from 'react';
 import { Link, useSearchParams } from '../navigation';
 import { protocolCalls, callTypeNames, Call, type CallType } from '../../data/calls';
-import { KeyDecision, EIP } from '../../types/eip';
+import { KeyDecision, EIP, EipSpecHistory as EipSpecHistoryType, EipSpecCommit, EipOpenPr } from '../../types/eip';
 import { eipsData, eipById as eipMap } from '../../data/eips';
 import { networkUpgrades } from '../../data/upgrades';
 import { getPendingProposalsForFork, type PendingProposal } from '../../data/pending-proposals';
@@ -159,6 +159,7 @@ const CallPlanPage: React.FC = () => {
   const [agendaSuggestions, setAgendaSuggestions] = useState<AgendaSuggestionsData | null>(null);
   const [eipThreads, setEipThreads] = useState<EipThreadsData | null>(null);
   const [loading, setLoading] = useState(true);
+  const [eipHistories, setEipHistories] = useState<Map<number, EipSpecHistoryType>>(new Map());
 
   // Close dropdown on outside click
   useEffect(() => {
@@ -365,6 +366,127 @@ const CallPlanPage: React.FC = () => {
 
     fetchData();
   }, [type]);
+
+  // All EIPs in active forks (including Scheduled/Included) — used for spec change tracking
+  const allForkEips = useMemo(() => {
+    const activeUpgrades = networkUpgrades.filter(
+      u => u.status === 'Upcoming' || u.status === 'Planning'
+    );
+    const layerFilter = type ? CALL_TYPE_LAYER[type] : null;
+    const result: { eipId: number; forkName: string }[] = [];
+
+    for (const upgrade of activeUpgrades) {
+      const forkDisplayName = upgrade.name.replace(' Upgrade', '');
+      for (const eip of eipsData) {
+        if (layerFilter && eip.layer && eip.layer !== layerFilter) continue;
+        const fr = eip.forkRelationships.find(
+          r => r.forkName.toLowerCase() === forkDisplayName.toLowerCase()
+            || r.forkName.toLowerCase() === upgrade.id.toLowerCase()
+        );
+        if (!fr || fr.statusHistory.length === 0) continue;
+        const latest = fr.statusHistory[fr.statusHistory.length - 1];
+        if (['Proposed', 'Considered', 'Scheduled', 'Included'].includes(latest.status)) {
+          result.push({ eipId: eip.id, forkName: forkDisplayName });
+        }
+      }
+    }
+    return result;
+  }, [type]);
+
+  // Fetch EIP spec histories for all fork EIPs
+  const allForkEipIds = useMemo(() => {
+    const ids = new Set<number>();
+    allForkEips.forEach(e => ids.add(e.eipId));
+    return Array.from(ids);
+  }, [allForkEips]);
+
+  useEffect(() => {
+    if (allForkEipIds.length === 0) {
+      setEipHistories(new Map());
+      return;
+    }
+
+    let cancelled = false;
+
+    Promise.allSettled(
+      allForkEipIds.map(id =>
+        fetch(`/eips/history/${id}.json`)
+          .then(r => {
+            if (!r.ok) throw new Error(`HTTP ${r.status}`);
+            const ct = r.headers.get('content-type') || '';
+            if (ct.includes('text/html')) throw new Error('Not found');
+            return r.json() as Promise<EipSpecHistoryType>;
+          })
+      )
+    ).then(results => {
+      if (cancelled) return;
+      const map = new Map<number, EipSpecHistoryType>();
+      results.forEach((r, i) => {
+        if (r.status === 'fulfilled') map.set(allForkEipIds[i], r.value);
+      });
+      setEipHistories(map);
+    });
+
+    return () => { cancelled = true; };
+  }, [allForkEipIds]);
+
+  // Compute spec changes since last call
+  const specChangesSinceLastCall = useMemo((): Map<string, {
+    eipId: number;
+    eipTitle: string;
+    forkName: string;
+    recentCommits: EipSpecCommit[];
+    openPrs: EipOpenPr[];
+  }[]> => {
+    if (eipHistories.size === 0 || !type) return new Map();
+
+    // Find the most recent call date for this series
+    const typeCalls = protocolCalls
+      .filter(c => c.type === type)
+      .sort((a, b) => b.date.localeCompare(a.date));
+    const lastCallDate = typeCalls[0]?.date;
+    if (!lastCallDate) return new Map();
+
+    // Convert to Date for comparison (call date is YYYY-MM-DD)
+    const cutoff = new Date(lastCallDate + 'T00:00:00Z');
+
+    const eipEntries: {
+      eipId: number;
+      eipTitle: string;
+      forkName: string;
+      recentCommits: EipSpecCommit[];
+      openPrs: EipOpenPr[];
+    }[] = [];
+
+    for (const fe of allForkEips) {
+      const history = eipHistories.get(fe.eipId);
+      if (!history) continue;
+
+      const recentCommits = history.commits.filter(c => new Date(c.date) > cutoff);
+      const openPrs = history.openPrs ?? [];
+
+      if (recentCommits.length === 0 && openPrs.length === 0) continue;
+
+      const eip = eipMap.get(fe.eipId);
+      eipEntries.push({
+        eipId: fe.eipId,
+        eipTitle: eip ? eip.title.replace(/^EIP-\d+:\s*/, '') : `EIP-${fe.eipId}`,
+        forkName: fe.forkName,
+        recentCommits,
+        openPrs,
+      });
+    }
+
+    // Group by fork
+    const byFork = new Map<string, typeof eipEntries>();
+    for (const entry of eipEntries) {
+      const arr = byFork.get(entry.forkName) ?? [];
+      arr.push(entry);
+      byFork.set(entry.forkName, arr);
+    }
+
+    return byFork;
+  }, [eipHistories, allForkEips, type]);
 
   // Shared chevron SVG for section headers
   const SectionChevron = ({ isOpen }: { isOpen: boolean }) => (
@@ -786,6 +908,146 @@ const CallPlanPage: React.FC = () => {
                                           </span>
                                         </div>
                                       ))}
+                                    </div>
+                                  </div>
+                                </div>
+                              </div>
+                            );
+                          })()}
+
+                          {/* Spec Changes Since Last Call (within this fork's scope) */}
+                          {(() => {
+                            const forkSpecChanges = specChangesSinceLastCall.get(forkName);
+                            if (!forkSpecChanges || forkSpecChanges.length === 0) return null;
+                            const specKey = `spec-changes-${forkName.toLowerCase()}`;
+                            const totalCommits = forkSpecChanges.reduce((n, e) => n + e.recentCommits.length, 0);
+                            const totalPrs = forkSpecChanges.reduce((n, e) => n + e.openPrs.length, 0);
+                            return (
+                              <div>
+                                <button onClick={() => toggleSection(specKey)} className="cursor-pointer flex items-center gap-2 mb-2">
+                                  <SubChevron isOpen={isSectionOpen(specKey)} size="w-3 h-3" />
+                                  <span className="inline-flex items-center px-1.5 rounded text-xs font-medium bg-purple-50 text-purple-700 dark:bg-purple-900/20 dark:text-purple-300">
+                                    Spec Changes Since Last Call
+                                  </span>
+                                  <span className="text-xs text-slate-500 dark:text-slate-400">
+                                    {totalCommits} {totalCommits === 1 ? 'commit' : 'commits'}, {totalPrs} open {totalPrs === 1 ? 'PR' : 'PRs'}
+                                  </span>
+                                </button>
+                                <div className={`grid transition-all duration-300 ease-in-out ${
+                                  isSectionOpen(specKey) ? 'grid-rows-[1fr] opacity-100' : 'grid-rows-[0fr] opacity-0'
+                                }`}>
+                                  <div className="overflow-hidden">
+                                    <div className="space-y-3 pl-5">
+                                      {forkSpecChanges.map(({ eipId, eipTitle, recentCommits, openPrs }) => {
+                                        const eipKey = `spec-eip-${eipId}`;
+                                        return (
+                                          <div key={eipId}>
+                                            <button
+                                              onClick={() => toggleSection(eipKey)}
+                                              className="cursor-pointer flex items-center gap-2 text-sm text-left w-full"
+                                            >
+                                              <SubChevron isOpen={isSectionOpen(eipKey)} size="w-2.5 h-2.5" />
+                                              <EipLinkWithTooltip eipId={eipId} eipMap={eipMap} />
+                                              <span className="text-slate-700 dark:text-slate-300 truncate">{eipTitle}</span>
+                                              <span className="text-xs text-slate-400 dark:text-slate-400 shrink-0 ml-auto">
+                                                {recentCommits.length > 0 && (
+                                                  <span>{recentCommits.length} {recentCommits.length === 1 ? 'commit' : 'commits'}</span>
+                                                )}
+                                                {recentCommits.length > 0 && openPrs.length > 0 && ', '}
+                                                {openPrs.length > 0 && (
+                                                  <span className="text-amber-600 dark:text-amber-400">{openPrs.length} open {openPrs.length === 1 ? 'PR' : 'PRs'}</span>
+                                                )}
+                                              </span>
+                                            </button>
+                                            <div className={`grid transition-all duration-300 ease-in-out ${
+                                              isSectionOpen(eipKey) ? 'grid-rows-[1fr] opacity-100' : 'grid-rows-[0fr] opacity-0'
+                                            }`}>
+                                              <div className="overflow-hidden">
+                                                <div className="ml-5 mt-1.5 pl-3 border-l-2 border-slate-200 dark:border-slate-700 space-y-2">
+                                                  {openPrs.map(pr => (
+                                                    <div key={pr.number} className="flex items-start justify-between gap-2">
+                                                      <div className="min-w-0 flex-1">
+                                                        <a
+                                                          href={`https://github.com/ethereum/EIPs/pull/${pr.number}`}
+                                                          target="_blank"
+                                                          rel="noopener noreferrer"
+                                                          className="text-xs font-medium text-amber-700 dark:text-amber-400 hover:text-amber-800 dark:hover:text-amber-300 transition-colors inline-flex items-center gap-1"
+                                                        >
+                                                          PR #{pr.number}: {pr.title}
+                                                          <svg className="w-3 h-3 inline-block" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
+                                                          </svg>
+                                                        </a>
+                                                        <div className="flex items-center gap-2 text-xs text-slate-400 dark:text-slate-400 mt-0.5">
+                                                          <span>by {pr.author}</span>
+                                                          <span className="font-mono">
+                                                            <span className="text-emerald-600 dark:text-emerald-400">+{pr.additions}</span>{' '}
+                                                            <span className="text-red-500 dark:text-red-400">-{pr.deletions}</span>
+                                                          </span>
+                                                        </div>
+                                                      </div>
+                                                    </div>
+                                                  ))}
+                                                  {recentCommits.map(commit => {
+                                                    const cleaned = commit.message
+                                                      .replace(/\s*\(#\d+\)\s*$/, '').trim()
+                                                      .replace(/^(?:Update|Add|Move|Rename)\s+EIP-\d+:\s*/i, '').trim()
+                                                      .replace(/^EIP-\d+:\s*/, '').trim();
+                                                    const msg = cleaned.length > 0
+                                                      ? cleaned.charAt(0).toUpperCase() + cleaned.slice(1)
+                                                      : commit.message;
+                                                    const stats = commit.additions !== undefined
+                                                      ? { additions: commit.additions!, deletions: commit.deletions ?? 0 }
+                                                      : null;
+                                                    const commitDate = new Date(commit.date).toLocaleDateString('en-US', {
+                                                      month: 'short', day: 'numeric', year: 'numeric',
+                                                    });
+
+                                                    return (
+                                                      <div key={commit.sha} className="flex items-start justify-between gap-2">
+                                                        <div className="min-w-0 flex-1">
+                                                          <p className="text-xs text-slate-700 dark:text-slate-300 leading-snug">
+                                                            {msg}
+                                                          </p>
+                                                          <div className="flex items-center gap-2 text-xs text-slate-400 dark:text-slate-400 mt-0.5">
+                                                            <span>{commitDate}</span>
+                                                            <span>by {commit.author}</span>
+                                                            {commit.prNumber ? (
+                                                              <a
+                                                                href={`https://github.com/ethereum/EIPs/pull/${commit.prNumber}`}
+                                                                target="_blank"
+                                                                rel="noopener noreferrer"
+                                                                className="text-purple-600 dark:text-purple-400 hover:underline underline-offset-2"
+                                                              >
+                                                                PR #{commit.prNumber}
+                                                              </a>
+                                                            ) : (
+                                                              <a
+                                                                href={`https://github.com/ethereum/EIPs/commit/${commit.sha}`}
+                                                                target="_blank"
+                                                                rel="noopener noreferrer"
+                                                                className="text-purple-600 dark:text-purple-400 hover:underline underline-offset-2"
+                                                              >
+                                                                {commit.sha.slice(0, 7)}
+                                                              </a>
+                                                            )}
+                                                          </div>
+                                                        </div>
+                                                        {stats && (
+                                                          <span className="shrink-0 text-xs font-mono whitespace-nowrap pt-0.5">
+                                                            <span className="text-emerald-600 dark:text-emerald-400">+{stats.additions}</span>{' '}
+                                                            <span className="text-red-500 dark:text-red-400">-{stats.deletions}</span>
+                                                          </span>
+                                                        )}
+                                                      </div>
+                                                    );
+                                                  })}
+                                                </div>
+                                              </div>
+                                            </div>
+                                          </div>
+                                        );
+                                      })}
                                     </div>
                                   </div>
                                 </div>

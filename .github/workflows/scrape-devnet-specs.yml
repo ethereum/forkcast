@@ -2,9 +2,13 @@ name: Scrape Devnet Specs
 
 on:
   schedule:
-    # Run twice daily at 06:00 and 18:00 UTC
-    - cron: '0 6,18 * * *'
+    # Run twice daily, staggered to avoid conflicts with other sync workflows
+    - cron: '20 6,18 * * *'
   workflow_dispatch:
+
+concurrency:
+  group: sync-main
+  cancel-in-progress: false
 
 jobs:
   scrape:

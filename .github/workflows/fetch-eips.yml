@@ -5,6 +5,10 @@ on:
     - cron: '0 6,18 * * *' # twice daily at 06:00 and 18:00 UTC
   workflow_dispatch:
 
+concurrency:
+  group: sync-main
+  cancel-in-progress: false
+
 jobs:
   sync:
     runs-on: ubuntu-latest

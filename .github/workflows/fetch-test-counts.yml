@@ -2,8 +2,12 @@ name: Fetch Test Counts
 
 on:
   schedule:
-    - cron: '0 6 * * *' # once daily at 06:00 UTC
+    - cron: '10 6 * * *' # once daily at 06:10 UTC (staggered to avoid conflicts)
   workflow_dispatch:
+
+concurrency:
+  group: sync-main
+  cancel-in-progress: false
 
 jobs:
   collect:

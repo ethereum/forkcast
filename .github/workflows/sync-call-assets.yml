@@ -6,6 +6,10 @@ on:
     types: [pm-assets-updated]
   workflow_dispatch:
 
+concurrency:
+  group: sync-main
+  cancel-in-progress: false
+
 jobs:
   sync:
     runs-on: ubuntu-latest

@@ -8,6 +8,9 @@
   "category": "Core",
   "createdDate": "2026-05-22",
   "discussionLink": "https://ethereum-magicians.org/t/eip-8282-builder-execution-requests/28699",
+  "reviewer": "bot",
+  "layer": "CL",
+  "specificationUrl": "https://github.com/ethereum/EIPs/pull/11760",
   "requires": [
     7685,
     7732
@@ -16,6 +19,81 @@
     "number": 11760,
     "url": "https://github.com/ethereum/EIPs/pull/11760"
   },
-  "forkRelationships": [],
-  "tradeoffs": null
+  "forkRelationships": [
+    {
+      "forkName": "Glamsterdam",
+      "statusHistory": [
+        {
+          "status": "Considered",
+          "call": "acdt/83",
+          "date": "2026-06-15"
+        }
+      ],
+      "isHeadliner": false,
+      "wasHeadlinerCandidate": false,
+      "presentationHistory": [
+        {
+          "type": "presentation",
+          "call": "acdc/180",
+          "date": "2026-06-11"
+        },
+        {
+          "type": "debate",
+          "call": "acdt/83",
+          "date": "2026-06-15"
+        }
+      ],
+      "champions": [
+        {
+          "name": "Cayman"
+        },
+        {
+          "name": "Nico Flaig"
+        }
+      ]
+    }
+  ],
+  "laymanDescription": "EIP-7732 (ePBS) adds 'builders' as a new staked role. Today builders join and leave through the same contracts validators use. This adds dedicated deposit and exit contracts just for builders, keeping the two apart, simplifying client code, and limiting how many costly signature checks an attacker can force per block.",
+  "northStarAlignment": {
+    "scaleL1": {
+      "description": "A dedicated, rate-capped builder request bus bounds the per-block signature-verification work an attacker can force, removing a consensus-layer denial-of-service surface as block sizes grow."
+    }
+  },
+  "stakeholderImpacts": {
+    "endUsers": {
+      "description": "No visible change. This only affects how ePBS builders register and exit at the protocol level."
+    },
+    "appDevs": {
+      "description": "No direct impact. The new predeploys are builder-lifecycle infrastructure, not application-facing contracts."
+    },
+    "walletDevs": {
+      "description": "No impact. Builder onboarding is separate from user wallets and validator deposits."
+    },
+    "toolingInfra": {
+      "description": "Builder onboarding tooling must target the new deposit and exit predeploys and request types instead of the validator deposit flow."
+    },
+    "layer2s": {
+      "description": "No direct impact."
+    },
+    "stakersNodes": {
+      "description": "Builder operators onboard and exit via new contracts; exits are authorized by the cold execution address, not the hot BLS key."
+    },
+    "clClients": {
+      "description": "Moderate: route builder onboarding and exit by request type and drop the validator-path builder branches; most lifecycle logic is reused from EIP-7732."
+    },
+    "elClients": {
+      "description": "Low: the deposit and exit predeploys are near line-level copies of audited EIP-7002/7251 contracts; mainly wiring new request types into the request bus."
+    }
+  },
+  "benefits": [
+    "Decouples builder and validator registries; one key can be both",
+    "Caps per-block builder-deposit signature verifications, bounding a consensus-layer DoS surface",
+    "Authorizes builder exits via the cold execution address, not the hot BLS key",
+    "Reuses audited EIP-7002/7251 contracts, minimizing new execution-layer audit surface"
+  ],
+  "tradeoffs": [
+    "Adds two new predeploy contracts, expanding the system-contract surface",
+    "Builder exit can stall while pending bid balance is non-zero, requiring resubmission",
+    "Addresses, request-type bytes, and bytecode remain placeholders pending an independent audit"
+  ]
 }

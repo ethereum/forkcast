@@ -27,4 +27,6 @@ export const breakouts: Breakout[] = [
   { parentPath: 'acdt/078', kind: 'epbs', artifactDir: 'acdt-breakouts/2026-04-20_078/epbs', videoUrl: 'https://youtu.be/BvLC4AE3cyY' },
   { parentPath: 'acdt/082', kind: 'el',   artifactDir: 'acdt-breakouts/2026-06-08_082/el',   videoUrl: 'https://youtu.be/GZ8EHWnUx_k' },
   { parentPath: 'acdt/082', kind: 'cl',   artifactDir: 'acdt-breakouts/2026-06-08_082/cl',   videoUrl: 'https://youtu.be/WYVjX_QuIQo' },
+  { parentPath: 'acdt/083', kind: 'el',   artifactDir: 'acdt-breakouts/2026-06-15_083/el',   videoUrl: 'https://youtu.be/3k5QNb2hzKM' },
+  { parentPath: 'acdt/083', kind: 'cl',   artifactDir: 'acdt-breakouts/2026-06-15_083/cl',   videoUrl: 'https://youtu.be/dvYGLINyn-M' },
 ];

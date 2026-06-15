@@ -1,0 +1,105 @@
+10:46:22	 From Jihoon : https://github.com/ethereum/consensus-specs/pull/5348
+10:46:55	 From dan (danceratopz) : Replying to "can we announce the ..."
+
+Let's do it after 2780
+10:47:21	 From Jihoon : https://github.com/ethereum/consensus-specs/issues/5305
+10:47:30	 From Justin Traglia : Replying to "Perhaps you can walk..."
+
+Yup can do if there’s time at the end
+10:47:37	 From Enrico Del Fante (tbenr) : Reacted to "Perhaps you can walk..." with 👍
+10:52:45	 From Barnabas : why do wanna change this now ?
+10:52:51	 From Barnabas : maybe I missed the precursor
+10:53:20	 From Barnabas : can we pls focus on 8282?
+10:53:37	 From Potuz : Yeah I think it’s more important to spend time on 8282
+10:53:51	 From Potuz : This path is optional and anyone can do whatever they want since it’s not enforceable
+10:54:06	 From Barnabas : btw 8282 is not even merged in yet
+10:54:23	 From Potuz : It shouldn’t be merged
+10:54:26	 From Bharath : We dont have the discuss the builder-api stuff. I didn’t even add it to the agenda. Lets just skip it
+10:55:13	 From Jihoon : Replying to "why do wanna change ..."
+
+There is an edge case with the existing implementation. See the issue #5305.
+10:56:08	 From terence : Clients should have batch verify anyway
+10:58:15	 From Barnabas : we can safely do 512.
+10:58:23	 From Jun Song : Reacted to "we can safely do 512." with 👍
+10:58:32	 From pk910 : can we make the dequeue rate variable, so it's passed from the system call?
+that way we can adjust it later
+10:58:33	 From Barnabas : happy with 256
+10:58:46	 From terence : At least benchmark with clients first but ya we can easily handle that
+10:58:51	 From Barnabas : Replying to "can we make the dequ..."
+
+that would require a fork too right?
+10:59:07	 From pk910 : Replying to "can we make the dequ..."
+
+yea,  but not a contract change (irregular state change)
+11:00:14	 From Barnabas : why does it even need to be  0x03  ?
+11:00:21	 From terence : I prefer no cache at all
+11:00:24	 From Barnabas : if its a new system contract
+11:01:28	 From Dustin : listening to logs was very messy
+11:01:33	 From Barnabas : are we worried to fall back to local block building for two epochs during the fork?
+11:02:07	 From pk910 : but we could store the deposit slot too?
+11:02:35	 From Dustin : yeah, I don't see why the builders-at-fork is so critical
+11:04:08	 From Potuz : I think it’s 3 epochs and not 2 though.
+11:06:12	 From Dustin : yeah agree with potuz
+11:06:40	 From terence : That’s bad
+11:07:18	 From Dustin : "temporary" optimizations which have to be built, tested, and then dismantled are the most pointless
+11:08:26	 From NC : We are reusing DepositMessage here?
+11:17:37	 From cayman : Same logic from the process_voluntary_exit builder branch
+11:18:18	 From Barnabas : 8k epochs
+11:19:23	 From Barnabas : lets keep it simple as possible
+11:19:43	 From cayman : Reacted to "lets keep it simple ..." with 👍
+11:23:59	 From Nico Flaig : lgtm
+11:24:04	 From terence : Ship it
+11:24:26	 From Potuz : @terence I think what we need to do is simply enforce BLS signature validation on deposit requests for a 0x03 validator right now and that’s it
+11:26:35	 From terence : Reacted to "@terence I think what we need to do is simply enforce BLS signature validation on deposit requests for a 0x03 validator right now and that’s it" with 👍
+11:27:07	 From terence : Beacon state changes is not nice though
+11:27:17	 From Barnabas : could we not introduce a new concept of “builder-onboarding-fork-epoch” where builder-onboarding-fork-epoch = gloas-fork-epoch - 3 and it would basically activate the system contract 3 epochs before the fork?
+11:31:08	 From Barnabas : 0xB for Builder
+11:31:10	 From Barnabas : 😂
+11:31:26	 From Enrico Del Fante (tbenr) : Reacted to "0xB for Builder" with 🔥
+11:31:28	 From NC : Reacted to "0xB for Builder" with 🔥
+11:32:02	 From cayman : for validators, yes
+11:32:02	 From Dustin : not in general
+11:32:12	 From Stefan Bratanov : yeah, we have caches for both builders and validators
+11:32:17	 From Eitan Seri-Levi : Yeah we have a cache
+11:32:19	 From terence : We have pub key to indices for builder
+11:32:29	 From Dustin : we have specific optimizations
+11:32:35	 From Nico Flaig : we only have it for validators right now
+11:33:59	 From Dustin : Nimbus's gimmick for this means that we can easily add a second ... situational optimization for builders
+11:34:28	 From brechy : If a validator chooses to be a builder, will it be able to build immediately at fork boundary?
+11:34:39	 From Barnabas : Replying to "If a validator choos..."
+
+no
+11:34:49	 From brechy : Reacted to "no" with 👍
+11:35:20	 From Dustin : how important is it that there's uninterrupted builders?
+11:35:32	 From Dustin : I mean, they would prefer that it happens, sure
+11:35:34	 From cayman : lets auction off builder spots :D
+11:35:47	 From Bharath : Reacted to "lets auction off bui..." with 😂
+11:36:47	 From Dustin : no, temporary doesn't exist
+11:36:50	 From Dustin : it's permanent
+11:37:11	 From cayman : lodestar won't keep any of this optimization code
+11:37:11	 From Eitan Seri-Levi : I’ll def be deprecating this crap once we fork
+11:37:51	 From cayman : you're touching the upgrade_to_gloas fn tho...
+11:39:24	 From cayman : needs to be somehow limited, make it an auction
+11:39:26	 From NC : Permissioned builders
+11:40:23	 From Barnabas : I enjoy listening Justin 😂
+11:53:06	 From cayman : Can titan buy up the first epoch of builders? This is one sketchy thing about using timestamp+new contract to onboard.
+
+Using the old contract for onboarding was cludgy but it did let any number of builders join.
+11:53:40	 From Dustin : is this useful past the fork? it seems like an optimization which becomes less of an issue past this transition point
+11:53:47	 From Dustin : this slot/timestamp field
+11:53:48	 From cayman : Replying to "is this useful past ..."
+
+no
+11:54:01	 From Dustin : ok, this seems hard to remove later
+11:54:34	 From Dustin : just let builders skip some slots/epochs
+11:54:36	 From Dustin : it's ... fine
+11:54:51	 From Dustin : yes I am
+11:55:28	 From Justin Traglia : Reacted to "Can titan buy up the..." with 👍
+11:56:07	 From NC : Not really related: what happen if someone sends a deposit tx to builder deposit contract before the fork transition? Will EL drop it or store it somewhere so it will be put into the execution request after gloas is live?
+11:56:25	 From Barnabas : Replying to "Not really related: ..."
+
+store it
+11:56:29	 From Justin Traglia : Reacted to "store it" with 👍
+11:56:43	 From Nico Flaig : Replying to "Not really related: ..."
+
+they stay queued until the fork

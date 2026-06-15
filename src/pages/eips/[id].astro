@@ -4,11 +4,8 @@ import { EipPage } from '../../components/eip';
 import { eipsData } from '../../data/eips';
 import { getLaymanTitle, getProposalPrefix } from '../../utils/eip';
 
-// Canonical EIP pages only — pending PR-only EIPs are external PR records and are
-// handled by configured redirects in astro.config.mjs (/eips/{pendingId} -> PR).
 export function getStaticPaths() {
   return eipsData
-    .filter((eip) => !eip.pendingPullRequest)
     .map((eip) => {
       const label = `${getProposalPrefix(eip)}-${eip.id}`;
       return {

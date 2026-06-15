@@ -49,6 +49,11 @@ export interface EipFaqItem {
   answer: string;
 }
 
+export interface SupportingDocument {
+  label: string;
+  url: string;
+}
+
 export interface EIP {
   id: number;
   title: string;
@@ -87,6 +92,7 @@ export interface EIP {
   };
   benefits?: string[];
   tradeoffs?: string[] | null;
+  supportingDocuments?: SupportingDocument[];
 }
 
 export type InclusionStage =

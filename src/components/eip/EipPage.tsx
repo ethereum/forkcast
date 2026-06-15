@@ -13,7 +13,6 @@ import {
   parseAuthors,
   getEipLayer,
   buildDependentsMap,
-  isPendingEip,
 } from '../../utils';
 import { Tooltip } from '../ui';
 import { EipTimeline } from './EipTimeline';
@@ -402,17 +401,7 @@ export const EipPage: React.FC<{ id: string }> = ({ id }) => {
     }
   }, [viewMode, specContent, specLoading]);
 
-  // PR-only EIPs don't have a meaningful local page — redirect to the PR
-  const prRedirectUrl = eip && isPendingEip(eip) ? getSpecificationUrl(eip) : null;
-  useEffect(() => {
-    if (prRedirectUrl) {
-      window.location.href = prRedirectUrl;
-    }
-  }, [prRedirectUrl]);
-
-  // Astro only emits pages for canonical EIPs, and a pending EIP redirects to its PR
-  // (above), so there's nothing to render in either case.
-  if (!eip || prRedirectUrl) {
+  if (!eip) {
     return null;
   }
 
@@ -858,7 +847,7 @@ export const EipPage: React.FC<{ id: string }> = ({ id }) => {
                       rel="noopener noreferrer"
                       className="text-purple-600 dark:text-purple-400 underline underline-offset-2"
                     >
-                      View on ethereum.org
+                      {eip.pendingPullRequest ? 'View pull request' : 'View on ethereum.org'}
                     </a>
                   </p>
                 )}

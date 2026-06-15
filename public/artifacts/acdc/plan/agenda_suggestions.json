@@ -1,63 +1,63 @@
 {
   "series": "ACDC",
-  "generated": "2026-06-08",
-  "for_call": "ACDC #180",
+  "generated": "2026-06-15",
+  "for_call": "ACDC #181",
   "suggestions": [
     {
-      "topic": "EIP-8061 SFI decision (increase exit/consolidation churn)",
+      "topic": "EIP-8061 (increase exit/consolidation churn) SFI decision",
       "priority": "high",
-      "rationale": "Deferred from ACDC #179 with explicit expectation to decide at this call. Already implemented and tested since devnet-1, making it a straightforward decision.",
+      "rationale": "Deferred from ACDC #179 with explicit expectation to revisit at this call. Already implemented and tested since devnet-1.",
       "related_eips": [],
       "source": "deferred_decision"
     },
     {
-      "topic": "EIP-8080 DFI decision (exits use consolidation queue)",
+      "topic": "EIP-8080 (exits use consolidation queue) DFI decision",
       "priority": "high",
-      "rationale": "Deferred from ACDC #179 with explicit expectation to decide at this call. Intent to DFI was stated, requiring formal confirmation.",
+      "rationale": "Deferred from ACDC #179 with explicit expectation to revisit at this call. Intent to DFI was stated, awaiting final confirmation.",
       "related_eips": [],
       "source": "deferred_decision"
     },
     {
-      "topic": "EIP-8148 review and Hegota inclusion decision (custom sweep threshold)",
+      "topic": "Glamsterdam devnet-5 stability status and path to devnet-6",
       "priority": "high",
-      "rationale": "Client teams were asked to review before this call and bring data on affected Lido validator count. Proposed for Hegota (PFI) in ACDC #179, needs stage progression decision.",
-      "related_eips": [],
-      "source": "open_action_item"
-    },
-    {
-      "topic": "Glamsterdam devnet-4/5 status and path to stability",
-      "priority": "high",
-      "rationale": "Devnet-4 has been unstable since Monday before ACDC #179. Devnet-5 was planned to relaunch with same spec, with no scope increase until two weeks of stability achieved. Critical blocker for fork progress.",
+      "rationale": "ACDC #180 reported devnet-5 unstable with Grandine fork-choice bug unfixed. Decision needed on whether to relaunch devnet-5 again or proceed to devnet-6 with builder API changes.",
       "related_eips": [],
       "source": "devnet_update"
     },
     {
-      "topic": "PTC attestation cross-client bug investigation",
-      "priority": "medium",
-      "rationale": "Potuz flagged potential bug where clients may not correctly set data-available flag before deadline (ACDC #179). CL teams were asked to notify when dual-deadline and honest-reorg features are implemented for testing.",
+      "topic": "PTC attestation fork-choice behavior across multiple branches",
+      "priority": "high",
+      "rationale": "Potuz flagged serious liveness risk in ACDC #180: all clients currently use canonical head only for PTC duties, creating cross-branch attestation gaps during forks. Needs architectural decision.",
       "related_eips": [],
       "source": "ongoing_discussion"
     },
     {
-      "topic": "Builder API V4 and devnet-6 scope planning",
-      "priority": "medium",
-      "rationale": "Builder API changes (produce block V4) targeted for devnet-6, contingent on devnet-5 achieving two weeks of stability. If stability is achieved, next devnet scope needs discussion.",
+      "topic": "EIP-8282 (separate builder deposit contract) decision",
+      "priority": "high",
+      "rationale": "Deferred from ACDC #180 pending ACDT Monday review of attack scenarios. If Monday discussion favored inclusion, ACDC needs to confirm fork impact vs. delay trade-off.",
       "related_eips": [],
-      "source": "ongoing_discussion"
+      "source": "deferred_decision"
     },
     {
-      "topic": "EIP-8025 feedback (optional execution proofs / zkEVM)",
-      "priority": "low",
-      "rationale": "Presented in ACDC #178 with request for review of updated PR #11604. No feedback discussion found in ACDC #179, but this is informational and can be handled async.",
+      "topic": "EIP-8148 (custom sweep threshold) client review feedback",
+      "priority": "medium",
+      "rationale": "Proposed for Hegotá (PFI) in ACDC #179. Client teams asked to review and bring Lido validator count data; no follow-up in ACDC #180.",
       "related_eips": [],
       "source": "open_action_item"
     },
     {
-      "topic": "ACDC meeting time permanent change decision",
-      "priority": "low",
-      "rationale": "ACDC #180 is trialing 11:00 UTC start time to accommodate AEST participants. Decision needed whether to revert to original time for #181 or adopt new time permanently.",
+      "topic": "Beacon API validator state renaming (beacon-APIs #618) decision",
+      "priority": "medium",
+      "rationale": "Breaking change flagged in ACDC #180 requiring API version bump. Client teams asked to engage on tooling breakage; needs confirmation or deferral.",
       "related_eips": [],
-      "source": "deferred_decision"
+      "source": "open_action_item"
+    },
+    {
+      "topic": "submitBeaconBlock builder API (builder-specs #162) state mapping concerns",
+      "priority": "low",
+      "rationale": "Deferred in ACDC #180 pending more client implementation experience. Worth checking if any teams have new insights after further devnet work.",
+      "related_eips": [],
+      "source": "ongoing_discussion"
     }
   ]
 }

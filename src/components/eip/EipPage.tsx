@@ -705,6 +705,33 @@ export const EipPage: React.FC<{ id: string }> = ({ id }) => {
                 {/* Timeline */}
                 <EipTimeline eip={eip} />
 
+                {/* Supporting Documents */}
+                {eip.supportingDocuments && eip.supportingDocuments.length > 0 && (
+                  <section className="bg-purple-50/50 dark:bg-purple-900/10 border-l-4 border-purple-500 rounded-r-lg p-4">
+                    <h3 className="text-sm font-semibold text-purple-900 dark:text-purple-100 mb-3 uppercase tracking-wide">
+                      Resources
+                    </h3>
+                    <ul className="space-y-2">
+                      {eip.supportingDocuments.map((doc) => (
+                        <li key={doc.url}>
+                          <a
+                            href={doc.url}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            onClick={() => handleExternalLinkClick('supporting_document', doc.url)}
+                            className="inline-flex items-center gap-1 text-sm text-purple-600 hover:text-purple-800 dark:text-purple-400 dark:hover:text-purple-300 underline decoration-1 underline-offset-2 transition-colors"
+                          >
+                            {doc.label}
+                            <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
+                            </svg>
+                          </a>
+                        </li>
+                      ))}
+                    </ul>
+                  </section>
+                )}
+
                 {/* Benefits */}
                 {eip.benefits && eip.benefits.length > 0 && (
                   <section className="bg-emerald-50/50 dark:bg-emerald-900/10 border-l-4 border-emerald-500 rounded-r-lg p-4">

@@ -46,7 +46,12 @@
       "items": { "$ref": "#/$defs/ForkRelationship" }
     },
     "northStarAlignment": { "$ref": "#/$defs/NorthStarAlignment" },
-    "stakeholderImpacts": { "$ref": "#/$defs/StakeholderImpacts" }
+    "stakeholderImpacts": { "$ref": "#/$defs/StakeholderImpacts" },
+    "supportingDocuments": {
+      "type": "array",
+      "items": { "$ref": "#/$defs/SupportingDocument" },
+      "minItems": 1
+    }
   },
   "$defs": {
     "PendingPullRequest": {
@@ -220,6 +225,15 @@
       "properties": {
         "impact": { "type": "string" },
         "description": { "type": "string" }
+      }
+    },
+    "SupportingDocument": {
+      "type": "object",
+      "required": ["label", "url"],
+      "additionalProperties": false,
+      "properties": {
+        "label": { "type": "string", "minLength": 1 },
+        "url": { "type": "string", "minLength": 1 }
       }
     },
     "StakeholderImpacts": {

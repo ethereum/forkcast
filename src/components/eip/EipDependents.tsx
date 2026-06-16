@@ -1,7 +1,8 @@
 import React from 'react';
 import { Link } from '../navigation';
-import { EIP } from '../../types/eip';
-import { getProposalPrefix, getLaymanTitle, getSpecificationUrl, isPendingEip } from '../../utils';
+import { EIP, InclusionStage } from '../../types/eip';
+import { getProposalPrefix, getLaymanTitle, getSpecificationUrl, isPendingEip, getInclusionStage, getStageAbbreviation } from '../../utils';
+import { getInclusionStageColor } from '../../utils/colors';
 
 interface EipDependentsProps {
   dependents: EIP[];
@@ -19,21 +20,49 @@ export const EipDependents: React.FC<EipDependentsProps> = ({ dependents }) => {
         {sorted.map((eip) => {
           const isPr = isPendingEip(eip);
           const cardClasses = "block bg-slate-50 dark:bg-slate-700/50 border border-slate-200 dark:border-slate-600 rounded-lg p-4 hover:border-purple-400 dark:hover:border-purple-500 transition-colors";
+
+          const upgradeBadges = eip.forkRelationships
+            .map((rel) => ({
+              forkName: rel.forkName,
+              stage: getInclusionStage(eip, rel.forkName),
+            }));
+
+          const upgradeBadgeElements = upgradeBadges.length > 0 && (
+            <div className="flex items-center gap-3 flex-wrap">
+              {upgradeBadges.map(({ forkName, stage }) => (
+                <span key={forkName} className="inline-flex items-center text-xs font-medium rounded overflow-hidden">
+                    <span className="px-1.5 py-0.5 bg-slate-100 text-slate-600 dark:bg-slate-600 dark:text-slate-300">
+                      {forkName}
+                    </span>
+                    <span className={`px-1.5 py-0.5 ${getInclusionStageColor(stage as InclusionStage)}`}>
+                      {getStageAbbreviation(stage)}
+                    </span>
+                  </span>
+              ))}
+            </div>
+          );
+
           const content = (
             <>
-              <div className="flex items-center gap-2 mb-1">
-                <span className="font-mono text-sm text-slate-400 dark:text-slate-400">
-                  {getProposalPrefix(eip)}-{eip.id}
-                </span>
-                {isPr ? (
-                  <span className="px-2 py-0.5 text-xs font-medium rounded bg-amber-100 dark:bg-amber-900/30 text-amber-700 dark:text-amber-400">
-                    PR
+              <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 mb-1">
+                <div className="flex items-center gap-2">
+                  <span className="font-mono text-sm text-slate-400 dark:text-slate-400">
+                    {getProposalPrefix(eip)}-{eip.id}
                   </span>
-                ) : (
-                  <span className="px-2 py-0.5 text-xs font-medium rounded bg-slate-100 dark:bg-slate-600 text-slate-600 dark:text-slate-300">
-                    {eip.status}
-                  </span>
-                )}
+                  {isPr ? (
+                    <span className="px-2 py-0.5 text-xs font-medium rounded bg-amber-100 dark:bg-amber-900/30 text-amber-700 dark:text-amber-400">
+                      PR
+                    </span>
+                  ) : (
+                    <span className="px-2 py-0.5 text-xs font-medium rounded bg-slate-100 dark:bg-slate-600 text-slate-600 dark:text-slate-300">
+                      {eip.status}
+                    </span>
+                  )}
+                </div>
+                {/* Desktop: inline with header */}
+                <div className="hidden sm:block">
+                  {upgradeBadgeElements}
+                </div>
               </div>
               <h4 className="text-sm font-medium text-slate-900 dark:text-slate-100">
                 {getLaymanTitle(eip)}
@@ -42,6 +71,12 @@ export const EipDependents: React.FC<EipDependentsProps> = ({ dependents }) => {
                 <p className="mt-1 text-sm text-slate-500 dark:text-slate-400 line-clamp-2">
                   {eip.description}
                 </p>
+              )}
+              {/* Mobile: below description */}
+              {upgradeBadgeElements && (
+                <div className="mt-2 pt-2 border-t border-slate-200 dark:border-slate-600 sm:hidden">
+                  {upgradeBadgeElements}
+                </div>
               )}
             </>
           );

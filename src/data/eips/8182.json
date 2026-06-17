@@ -30,7 +30,54 @@
       ]
     }
   ],
-  "tradeoffs": null,
+  "laymanDescription": "Adds a protocol-managed shielded pool for private ETH and compatible ERC-20 transfers. Transfers inside the pool hide token, amount, and counterparties on-chain. Spending uses a fork-managed pool proof plus user-selected auth verifier contracts, with no admin key, proxy, pause path, or on-chain upgrade mechanism.",
+  "northStarAlignment": {
+    "improveUX": {
+      "description": "Creates a shared private-transfer base that wallets and applications can build on instead of bootstrapping isolated app-specific pools. Users can keep address- or ENS-based recipient discovery, while note ownership inside the pool is represented by hidden owner identifiers resolved by wallets or companion standards."
+    }
+  },
+  "stakeholderImpacts": {
+    "endUsers": {
+      "description": "Gain a native path for private ETH and compatible ERC-20 transfers. Users rely on wallets to manage note recovery, owner keys, auth policies, and note delivery safely."
+    },
+    "appDevs": {
+      "description": "Can build payroll, treasury, donation, and payment flows on shared privacy infrastructure instead of bootstrapping separate pools. Auth methods, disclosure workflows, and compliance tooling remain outside the core protocol and can evolve through applications or companion standards."
+    },
+    "walletDevs": {
+      "description": "Need significant new support for auth-policy registration, hidden owner identifiers, note detection and delivery, note-secret handling, proving flows, seed rotation, recovery, and private-transfer UX."
+    },
+    "toolingInfra": {
+      "description": "Indexers, explorers, and analytics tools need to track the system contract's events, note commitments, nullifiers, intent replay IDs, auth-policy updates, root histories, and opaque output-note payloads. Provenance across the shielded pool is intentionally limited."
+    },
+    "layer2s": {
+      "description": "No automatic effect unless an L2 independently adopts the same system contract, proof relation, hash parameters, activation assets, and wallet support. Without adoption, the L2 does not get the same native private-transfer path."
+    },
+    "stakersNodes": {
+      "description": "No validator-economics change. Node operators need the normal hard-fork client upgrade, and execution clients do additional work for pool transactions when the system contract is used."
+    },
+    "clClients": {
+      "description": "No direct consensus-layer logic change beyond normal hard-fork coordination; the pool, proof verification, registries, and hashing are execution-layer concerns."
+    },
+    "elClients": {
+      "description": "Implement and ship the shielded-pool system contract at activation, embedded Groth16 BN254 pool-proof verification, Poseidon2/BN254 hashing, storage transitions, root histories, nullifier and replay-ID tracking, event behavior, and gas accounting."
+    }
+  },
+  "benefits": [
+    "Creates one shared protocol-managed shielded pool for ETH and compatible ERC-20 transfers, improving the anonymity set compared with fragmented app-layer pools",
+    "Keeps pool rule changes under Ethereum hard-fork governance rather than app-level admin keys, proxies, pause controls, or on-chain upgrade hooks",
+    "Separates pool validity from spend authorization: the fork-managed pool proof enforces core invariants while permissionless auth verifier contracts can evolve without hard forks",
+    "Allows delegated proving and async signing flows without giving the prover spending authority, because authorization and pool proving are separated",
+    "Preserves address-scoped wallet UX by letting wallets resolve recipients from Ethereum addresses or ENS names to hidden owner identifiers off-chain",
+    "Limits the protocol footprint to a system contract and pool proof relation, without adding a new precompile, opcode, transaction type, or change to ERC-20 semantics"
+  ],
+  "tradeoffs": [
+    "A bug in the pool circuit, proof verification logic, or trusted setup can compromise funds held in the shielded pool; the risk is bounded to pool-held funds rather than consensus rules, the validator set, or ETH supply semantics, but remediation requires a hard fork because there is no admin key or pause path",
+    "End-to-end privacy depends on complementary wallet, note-delivery, mempool, and network-layer infrastructure outside this EIP",
+    "Nullifiers and related replay-protection records create growing state that must be retained to prevent double-spends and replayed authorizations",
+    "The pool accumulates append-only note commitments, nullifiers, and intent replay IDs that cannot be safely pruned without breaking spend or replay protection",
+    "Wallets must handle sensitive recovery and key-management flows, including non-rotatable owner nullifier keys, note-secret seeds, note detection, and note-data recovery",
+    "Groth16 BN254 keeps proofs compact and verification cheap, but it depends on a trusted setup and is not post-quantum secure; future pool-proof migration requires a hard fork"
+  ],
   "requires": [
     20
   ]

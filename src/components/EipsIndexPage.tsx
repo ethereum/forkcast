@@ -5,8 +5,8 @@ import { getProposalPrefix, getLaymanTitle, getInclusionStage, isHeadlinerInAnyF
 import { EipSearch } from './eip/EipSearch';
 import EipSearchModal from './eip/EipSearchModal';
 import { isSearchHotkey } from './search/searchShortcuts';
-import { Tooltip } from './ui';
-import { networkUpgrades, getUpgradePagePath } from '../data/upgrades';
+import { Tooltip, UpgradeStageBadge } from './ui';
+import { networkUpgrades } from '../data/upgrades';
 
 type SortField = 'number' | 'date' | 'status' | 'updated' | 'headliner';
 type SortDirection = 'asc' | 'desc';
@@ -261,7 +261,7 @@ const EipsIndexPage: React.FC = () => {
   }, [mobileFiltersOpen]);
 
   // Helper to get fork upgrade path (null for forks without a public page).
-  const getForkPath = (forkName: string): string | null => getUpgradePagePath(forkName);
+
 
   // Helper to get proper fork display name with accents
   const getForkDisplayName = (forkName: string): string => {
@@ -648,9 +648,6 @@ const EipsIndexPage: React.FC = () => {
                       </button>
                     </Tooltip>
                   </th>
-                  <th className="px-4 py-3 text-left text-xs font-semibold text-slate-600 dark:text-slate-400 uppercase tracking-wider">
-                    Stage
-                  </th>
                   <th className="px-4 py-3 text-left">
                     <button
                       onClick={() => handleSort('updated')}
@@ -713,36 +710,20 @@ const EipsIndexPage: React.FC = () => {
                         )}
                       </td>
                       <td className="px-4 py-3 whitespace-nowrap">
-                        <span className="px-2 py-1 text-xs font-medium rounded bg-slate-100 text-slate-700 dark:bg-slate-700 dark:text-slate-300">
+                        <span className="px-2 py-0.5 text-xs font-medium rounded ring-1 ring-slate-200 dark:ring-slate-500 bg-slate-100 text-slate-700 dark:bg-slate-700 dark:text-slate-300">
                           {eip.status}
                         </span>
                       </td>
                     <td className="px-4 py-3">
-                      <div className="flex flex-wrap gap-1">
+                      <div className="flex flex-wrap gap-1.5">
                         {eip.forkRelationships.length > 0 ? (
-                          // Display forks in reverse order (newest first)
-                          [...eip.forkRelationships].reverse().map((fork, idx) => {
-                            const forkPath = getForkPath(fork.forkName);
-                            const forkColor = getForkColor(fork.forkName);
-                            const displayName = getForkDisplayName(fork.forkName);
-                            return forkPath ? (
-                              <Link
-                                key={idx}
-                                to={forkPath}
-                                onClick={(e) => e.stopPropagation()}
-                                className={`px-1.5 py-0.5 text-xs font-medium rounded transition-colors ${forkColor}`}
-                              >
-                                {displayName}
-                              </Link>
-                            ) : (
-                              <span
-                                key={idx}
-                                className={`px-1.5 py-0.5 text-xs font-medium rounded ${forkColor}`}
-                              >
-                                {displayName}
-                              </span>
-                            );
-                          })
+                          [...eip.forkRelationships].reverse().map((fork) => (
+                            <UpgradeStageBadge
+                              key={fork.forkName}
+                              forkName={fork.forkName}
+                              stage={getInclusionStage(eip, fork.forkName)}
+                            />
+                          ))
                         ) : (
                           <span className="text-xs text-slate-400 dark:text-slate-400">—</span>
                         )}
@@ -773,26 +754,6 @@ const EipsIndexPage: React.FC = () => {
                         ) : wasHeadlinerCandidateInAnyFork(eip) ? (
                           <span className="text-slate-400 dark:text-slate-400" title="Proposed headliner">☆</span>
                         ) : null}
-                      </td>
-                      <td className="px-4 py-3 whitespace-nowrap">
-                        {eip.forkRelationships.length > 0 ? (
-                          (() => {
-                            // Get the most recent fork (last in array)
-                            const mostRecentFork = eip.forkRelationships[eip.forkRelationships.length - 1];
-                            const stage = getInclusionStage(eip, mostRecentFork.forkName);
-                            const label = getStageLabel(stage);
-                            const stageColor = getStageColor(stage);
-                            return label ? (
-                              <span className={`px-2 py-0.5 text-xs font-medium rounded ${stageColor}`}>
-                                {label}
-                              </span>
-                            ) : (
-                              <span className="text-xs text-slate-400 dark:text-slate-400">—</span>
-                            );
-                          })()
-                        ) : (
-                          <span className="text-xs text-slate-400 dark:text-slate-400">—</span>
-                        )}
                       </td>
                       <td className="px-4 py-3 whitespace-nowrap">
                         {eip.forkRelationships.length > 0 ? (
@@ -832,18 +793,13 @@ const EipsIndexPage: React.FC = () => {
         {/* Card List - Mobile */}
         <div className="md:hidden space-y-3">
           {paginatedEips.map(eip => {
-            const mostRecentFork = eip.forkRelationships.length > 0
+            const layer = getEipLayer(eip);
+            const latestFork = eip.forkRelationships.length > 0
               ? eip.forkRelationships[eip.forkRelationships.length - 1]
               : null;
-            const currentStage = mostRecentFork ? getInclusionStage(eip, mostRecentFork.forkName) : null;
-            const stageLabel = currentStage ? getStageLabel(currentStage) : null;
-            const stageColor = currentStage ? getStageColor(currentStage) : '';
-            const mostRecentForkColor = mostRecentFork ? getForkColor(mostRecentFork.forkName) : '';
-            const mostRecentForkDisplay = mostRecentFork ? getForkDisplayName(mostRecentFork.forkName) : '';
-            const statusWithDate = mostRecentFork
-              ? [...mostRecentFork.statusHistory].reverse().find(status => status.date)
+            const statusWithDate = latestFork
+              ? [...latestFork.statusHistory].reverse().find(status => status.date)
               : null;
-            const layer = getEipLayer(eip);
 
             return (
               <Link
@@ -862,11 +818,10 @@ const EipsIndexPage: React.FC = () => {
                       <span className="ml-1.5 text-slate-400 dark:text-slate-400" title="Proposed headliner">☆</span>
                     )}
                   </span>
-                  {/* Layer, Fork and Stage grouped together side-by-side */}
-                  <div className="flex items-center gap-1.5 flex-shrink-0">
+                  <div className="flex items-center gap-1.5 flex-wrap justify-end">
                     {layer && (
                       <span
-                        className={`px-2 py-1 text-xs font-medium rounded ${
+                        className={`px-2 py-0.5 text-xs font-medium rounded ${
                           layer === 'EL'
                             ? 'bg-indigo-100 text-indigo-700 dark:bg-indigo-900/20 dark:text-indigo-300 border border-indigo-200 dark:border-indigo-600'
                             : 'bg-teal-100 text-teal-700 dark:bg-teal-900/20 dark:text-teal-300 border border-teal-200 dark:border-teal-600'
@@ -875,18 +830,13 @@ const EipsIndexPage: React.FC = () => {
                         {layer}
                       </span>
                     )}
-                    {mostRecentFork && (
-                      <>
-                        <span className={`px-2 py-1 text-xs font-medium rounded ${mostRecentForkColor}`}>
-                          {mostRecentForkDisplay}
-                        </span>
-                        {stageLabel && (
-                          <span className={`px-2 py-1 text-xs font-medium rounded ${stageColor}`}>
-                            {stageLabel}
-                          </span>
-                        )}
-                      </>
-                    )}
+                    {eip.forkRelationships.map((fork) => (
+                      <UpgradeStageBadge
+                        key={fork.forkName}
+                        forkName={fork.forkName}
+                        stage={getInclusionStage(eip, fork.forkName)}
+                      />
+                    ))}
                   </div>
                 </div>
 

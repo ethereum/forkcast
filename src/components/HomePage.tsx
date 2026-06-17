@@ -6,6 +6,7 @@ import { eipsData, eipById } from '../data/eips';
 import { useAnalytics } from '../hooks/useAnalytics';
 import { getProposalPrefix, getLaymanTitle, getInclusionStage } from '../utils/eip';
 import UpgradeCard from './ui/UpgradeCard';
+import { UpgradeStageBadge } from './ui';
 import { StructuredDecisionContent, DecisionTextWithEipLinks } from './call/KeyDecisionsSection';
 import { EIP, KeyDecision } from '../types/eip';
 
@@ -97,40 +98,6 @@ const HomePage = () => {
     trackLinkClick(linkType, url);
   };
 
-  // Helper to get proper fork display name with accents
-  const getForkDisplayName = (forkName: string): string => {
-    const displayMap: Record<string, string> = {
-      'Hegota': 'Hegotá'
-    };
-    return displayMap[forkName] || forkName;
-  };
-
-  // Fork color helper
-  const getForkColor = (forkName: string) => {
-    // Look up the fork in networkUpgrades to get its status
-    const upgrade = networkUpgrades.find(u => u.name.includes(forkName) || u.id === forkName.toLowerCase());
-
-    if (!upgrade) {
-      // Default gray for unknown forks - with border
-      return 'bg-slate-50/50 text-slate-600 dark:bg-slate-900/30 dark:text-slate-400 border border-slate-200 dark:border-slate-700';
-    }
-
-    // Color based on upgrade status - using borders and lighter backgrounds to differentiate from stages
-    switch (upgrade.status) {
-      case 'Live':
-        // Green for live forks - with border
-        return 'bg-emerald-50/50 text-emerald-600 dark:bg-emerald-950/30 dark:text-emerald-400 border border-emerald-200 dark:border-emerald-800';
-      case 'Upcoming':
-        // Blue for upcoming forks - with border
-        return 'bg-blue-50/50 text-blue-600 dark:bg-blue-950/30 dark:text-blue-400 border border-blue-200 dark:border-blue-800';
-      case 'Planning':
-        // Purple for planning forks - with border
-        return 'bg-purple-50/50 text-purple-600 dark:bg-purple-950/30 dark:text-purple-400 border border-purple-200 dark:border-purple-800';
-      default:
-        return 'bg-slate-50/50 text-slate-600 dark:bg-slate-900/30 dark:text-slate-400 border border-slate-200 dark:border-slate-700';
-    }
-  };
-
   // Colors for call type badges
   const callTypeBadgeColors: Record<CallType, string> = {
     acdc: 'bg-blue-100 dark:bg-blue-900/30 text-blue-700 dark:text-blue-300',
@@ -199,24 +166,10 @@ const HomePage = () => {
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             {featuredEips.map((eip) => {
-              // Get the most recent fork (last in array)
-              const mostRecentFork = eip.forkRelationships.length > 0
-                ? eip.forkRelationships[eip.forkRelationships.length - 1]
-                : null;
-              const inclusionStage = mostRecentFork ? getInclusionStage(eip, mostRecentFork.forkName) : null;
-
-              // Get stage label
-              const getStageLabel = (stage: string) => {
-                switch (stage) {
-                  case 'Considered for Inclusion': return 'Considered';
-                  case 'Proposed for Inclusion': return 'Proposed';
-                  case 'Scheduled for Inclusion': return 'Scheduled';
-                  case 'Declined for Inclusion': return 'Declined';
-                  case 'Included': return 'Included';
-                  case 'Withdrawn': return 'Withdrawn';
-                  default: return stage;
-                }
-              };
+              const upgradeBadges = eip.forkRelationships.map((rel) => ({
+                forkName: rel.forkName,
+                stage: getInclusionStage(eip, rel.forkName),
+              }));
 
               return (
                 <Link
@@ -229,16 +182,9 @@ const HomePage = () => {
                       <span className="text-sm font-mono font-medium text-purple-600 dark:text-purple-400">
                         {getProposalPrefix(eip)}-{eip.id}
                       </span>
-                      {inclusionStage && inclusionStage !== 'Unknown' && (
-                        <span className="px-2 py-0.5 text-xs font-medium rounded bg-slate-100 text-slate-700 dark:bg-slate-700 dark:text-slate-300">
-                          {getStageLabel(inclusionStage)}
-                        </span>
-                      )}
-                      {mostRecentFork && (
-                        <span className={`px-2 py-0.5 text-xs font-medium rounded ${getForkColor(mostRecentFork.forkName)}`}>
-                          {getForkDisplayName(mostRecentFork.forkName)}
-                        </span>
-                      )}
+                      {upgradeBadges.map(({ forkName, stage }) => (
+                        <UpgradeStageBadge key={forkName} forkName={forkName} stage={stage} />
+                      ))}
                     </div>
                     <h3 className="text-sm font-medium text-slate-900 dark:text-slate-100 mb-1 leading-snug">
                       {getLaymanTitle(eip)}

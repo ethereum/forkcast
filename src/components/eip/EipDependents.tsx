@@ -1,8 +1,8 @@
 import React from 'react';
 import { Link } from '../navigation';
-import { EIP, InclusionStage } from '../../types/eip';
-import { getProposalPrefix, getLaymanTitle, getSpecificationUrl, isPendingEip, getInclusionStage, getStageAbbreviation } from '../../utils';
-import { getInclusionStageColor } from '../../utils/colors';
+import { EIP } from '../../types/eip';
+import { getProposalPrefix, getLaymanTitle, getSpecificationUrl, isPendingEip, getInclusionStage } from '../../utils';
+import { UpgradeStageBadge } from '../ui';
 
 interface EipDependentsProps {
   dependents: EIP[];
@@ -30,14 +30,7 @@ export const EipDependents: React.FC<EipDependentsProps> = ({ dependents }) => {
           const upgradeBadgeElements = upgradeBadges.length > 0 && (
             <div className="flex items-center gap-3 flex-wrap">
               {upgradeBadges.map(({ forkName, stage }) => (
-                <span key={forkName} className="inline-flex items-center text-xs font-medium rounded overflow-hidden">
-                    <span className="px-1.5 py-0.5 bg-slate-100 text-slate-600 dark:bg-slate-600 dark:text-slate-300">
-                      {forkName}
-                    </span>
-                    <span className={`px-1.5 py-0.5 ${getInclusionStageColor(stage as InclusionStage)}`}>
-                      {getStageAbbreviation(stage)}
-                    </span>
-                  </span>
+                <UpgradeStageBadge key={forkName} forkName={forkName} stage={stage} />
               ))}
             </div>
           );

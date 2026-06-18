@@ -17,9 +17,9 @@ interface PlanningTableState {
 }
 
 const DEFAULT_STATE: PlanningTableState = {
-  glamsterdamMainnetDate: '2026-09-02',
-  hegotaMainnetDate: '2027-03-01',
-  glamsterdamDevnetCount: 7,
+  glamsterdamMainnetDate: '2026-09-16',
+  hegotaMainnetDate: '2027-04-01',
+  glamsterdamDevnetCount: 8,
   hegotaDevnetCount: 5,
   lockedDates: {},
   phaseDurations: DEFAULT_PHASE_DURATIONS,

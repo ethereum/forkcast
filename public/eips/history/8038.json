@@ -2,6 +2,16 @@
   "eipId": 8038,
   "commits": [
     {
+      "sha": "803ee8db0088b3ace1061df85182168bf9438fc7",
+      "date": "2026-06-18T14:46:37Z",
+      "message": "Update EIP-8038: Add preliminary numbers",
+      "author": "misilva73",
+      "prNumber": null,
+      "patch": "@@ -29,15 +29,15 @@ Upon activation of this EIP, the following parameters of the gas model are intro\n \n | **Parameter** | **Description** | **Current value** | **New value** | **Increase** | **Operations affected** |\n | :---: | :---: | :---: | :---: | :---: | :---: |\n-| `COLD_ACCOUNT_ACCESS` | Cold touch of an account | 2,600 | TBD | TBD | `*CALL` opcodes, `BALANCE`, `SELFDESTRUCT`, `EXT*` opcodes, EOA delegations, contract creation txs and ETH transfers |\n-| `ACCOUNT_WRITE` | Surcharge for when writing to an account changes one account leaf value for the first time | 6,700¹ | TBD | TBD | `*CALL` opcodes, `SELFDESTRUCT`, EOA delegations and ETH transfers |\n-| `COLD_STORAGE_ACCESS` | Cold touch of a storage slot | 2,100 | TBD | TBD | `SSTORE` and `SLOAD` |\n-| `STORAGE_WRITE` | Surcharge for when writing to a storage slot changes its value for the first time | 2,800² | TBD | TBD | `SSTORE` |\n-| `WARM_ACCESS` | Touch of an already-warm account or storage slot | 100 | TBD | TBD | `SSTORE`, `SLOAD`, `*CALL` opcodes, `BALANCE` and `EXT*` opcodes |\n-| `STORAGE_CLEAR_REFUND` | Refund for clearing a storage slot | 4,800 | TBD | TBD | `SSTORE` |\n-| `CREATE_ACCESS` | State access costs for contract deployment (include account cold access and account write) | 7,000³ | TBD | TBD | `CREATE`/ `CREATE2` |\n-| `ACCESS_LIST_STORAGE_KEY_COST` | Gas charged per storage key included in a transaction's access list | 1,900 | TBD | TBD | `SSTORE` and `SLOAD` |\n-| `ACCESS_LIST_ADDRESS_COST` | Gas charged per address included in a transaction's access list | 2,400 | TBD | TBD | `*CALL` opcodes, `BALANCE`, `SELFDESTRUCT` and `EXT*` opcodes |\n+| `COLD_ACCOUNT_ACCESS` | Cold touch of an account | 2,600 | 3,000 | +15% | `*CALL` opcodes, `BALANCE`, `SELFDESTRUCT`, `EXT*` opcodes, EOA delegations, contract creation txs and ETH transfers |\n+| `ACCOUNT_WRITE` | Surcharge for when writing to an account changes one account leaf value for the first time | 6,700¹ | 8,000 | +19% | `*CALL` opcodes, `SELFDESTRUCT`, EOA delegations and ETH transfers |\n+| `COLD_STORAGE_ACCESS` | Cold touch of a storage slot | 2,100 | 3,000 | +43% | `SSTORE` and `SLOAD` |\n+| `STORAGE_WRITE` | Surcharge for when writing to a storage slot changes its value for the first time | 2,800² | 10,000 | +257% | `SSTORE` |\n+| `WARM_ACCESS` | Touch of an already-warm account or storage slot | 100 | 100 | +0% | `SSTORE`, `SLOAD`, `*CALL` opcodes, `BALANCE` and `EXT*` opcodes |\n+| `STORAGE_CLEAR_REFUND` | Refund for clearing a storage slot | 4,800 | 12,480 | +160% | `SSTORE` |\n+| `CREATE_ACCESS` | State access costs for contract deployment (include account cold access and account write) | 7,000³ | 11,000 | +57% | `CREATE`/ `CREATE2` |\n+| `ACCESS_LIST_STORAGE_KEY_COST` | Gas charged per storage key included in a transaction's access list | 1,900 | 3,000 | +58% | `SSTORE` and `SLOAD` |\n+| `ACCESS_LIST_ADDRESS_COST` | Gas charged per address included in a transaction's access list | 2,400 | 3,000 | +25% | `*CALL` opcodes, `BALANCE`, `SELFDESTRUCT` and `EXT*` opcodes |\n \n ¹: 6,700 = `CALL_VALUE` (9,000) - `CALL_STIPEND`(2,300)\n \n@@ -97,6 +97,20 @@ For `SELFDESTRUCT`, an additional charge of `ACCOUNT_WRITE` is added if a positi\n \n Besides the current access costs, `EXTCODESIZE` and `EXTCODECOPY` are charged an additional `WARM_ACCESS`.\n \n+#### Overview\n+\n+The cases for account-related operations and their corresponding costs are summarized in the table below:\n+\n+| Operation | Access charge | `ACCOUNT_WRITE` charged | Additional charge |\n+| :--- | :---: | :--- | :--- |\n+| `CALL` / `CALLCODE` | `COLD_ACCOUNT_ACCESS` or `WARM_ACCESS` | when value is transferred (via `CALL_VALUE` = `ACCOUNT_WRITE` + `CALL_STIPEND`) | — |\n+| `DELEGATECALL` / `STATICCALL` | `COLD_ACCOUNT_ACCESS` or `WARM_ACCESS` | never (no value transfer) | — |\n+| `CREATE` / `CREATE2` | `CREATE_ACCESS` (= `ACCOUNT_WRITE` + `COLD_STORAGE_ACCESS`) | always (folded into `CREATE_ACCESS`) | `GAS_NEW_ACCOUNT` in state-gas (per [EIP-8037](./eip-8037.md)) |\n+| `SELFDESTRUCT` | `COLD_ACCOUNT_ACCESS` or `WARM_ACCESS` | when a positive balance is sent to an empty account | — |\n+| `BALANCE` / `EXTCODEHASH` | `COLD_ACCOUNT_ACCESS` or `WARM_ACCESS` | never | — |\n+| `EXTCODESIZE` / `EXTCODECOPY` | `COLD_ACCOUNT_ACCESS` or `WARM_ACCESS` | never | `WARM_ACCESS` (second database read) |\n+| EOA delegation ([EIP-7702](./eip-7702.md)) | `COLD_ACCOUNT_ACCESS` or `WARM_ACCESS` per authority | per authorization (intrinsic cost) | see authorizations table below |\n+\n ### [EIP-7702](./eip-7702.md) authorizations pricing\n \n [EIP-7702](./eip-7702.md) authorizations have two separate gas costs - intrinsic costs and access costs. Intrinsic costs are computed during transaction validation, while access costs are charged during code execution. The following table summarizes these costs:",
+      "additions": 23,
+      "deletions": 9
+    },
+    {
       "sha": "8a7fb54ef1ea87abd6e81a8ea234dbb794f7fdd8",
       "date": "2026-05-19T12:11:38Z",
       "message": "Update EIP-8038: Update write cost condition in SSTORE formula",
@@ -102,14 +112,6 @@
     }
   ],
   "openPrs": [
-    {
-      "number": 11802,
-      "title": "Update EIP-8038: Add preliminary numbers",
-      "author": "misilva73",
-      "updatedAt": "2026-06-13T06:38:30Z",
-      "additions": 23,
-      "deletions": 9
-    },
     {
       "number": 10769,
       "title": "Update EIP-8038: fix grammar issues",

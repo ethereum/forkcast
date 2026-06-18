@@ -205,7 +205,7 @@ const DevnetsIndexPage: React.FC = () => {
             </h1>
           </div>
           <p className="text-sm text-slate-500 dark:text-slate-400">
-            Active devnet series from ethPandaOps and Glamsterdam EIP prioritization data.
+            Test networks managed by the <a href="https://ethpandaops.io/" target="_blank" rel="noopener noreferrer" className="text-purple-600 dark:text-purple-400 hover:underline">ethPandaOps</a> team.
           </p>
         </div>
 

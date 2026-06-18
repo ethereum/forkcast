@@ -2,7 +2,7 @@ import { useEffect, useCallback, type ReactNode } from 'react';
 import { Link, useNavigate } from './navigation';
 import { getDevnetSpec, getDevnetSeriesSiblings } from '../data/devnet-specs';
 import { getNetworkEntry, getNetworkMetadata } from '../domain/devnets/networks';
-import { parseMarkdownLinks, parseMarkdownBold } from '../utils/markdown';
+import { parseMarkdownLinks, parseMarkdownBold, containsMarkdownTable, parseMarkdownTable } from '../utils/markdown';
 import type {
   DevnetSpec,
   ClientSupportMatrix,
@@ -397,7 +397,15 @@ function DevnetSpecContent({ spec, networkEntry, metadata }: { spec: DevnetSpec;
                 <svg className="w-4 h-4 shrink-0 mt-0.5 text-blue-400 dark:text-blue-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
                 </svg>
-                <span>{parseMarkdownBold(parseMarkdownLinks(text))}</span>
+                <span>
+                  {containsMarkdownTable(text)
+                    ? parseMarkdownTable(text).map((node, j) =>
+                        typeof node === 'string'
+                          ? <span key={j}>{parseMarkdownBold(parseMarkdownLinks(node))}</span>
+                          : node
+                      )
+                    : parseMarkdownBold(parseMarkdownLinks(text))}
+                </span>
               </div>
             ))}
           </section>

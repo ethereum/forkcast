@@ -24,15 +24,15 @@ describe('resolveEipMarkdownLink', () => {
     }
   });
 
-  it('links pending EIPs to the canonical spec URL because no emitted page exists', () => {
+  it('links tracked pending EIPs internally because Forkcast emits their pages', () => {
     const eipsById = new Map([
-      [8208, { pendingPullRequest: { number: 123, url: 'https://github.com/ethereum/EIPs/pull/123' } }],
+      [8208, { id: 8208, pendingPullRequest: { number: 123, url: 'https://github.com/ethereum/EIPs/pull/123' } }],
     ]);
 
     expect(resolveEipMarkdownLink('../EIPS/eip-8208.md', eipsById)).toEqual({
-      kind: 'external',
+      kind: 'internal',
       eipId: 8208,
-      href: 'https://eips.ethereum.org/EIPS/eip-8208',
+      href: '/eips/8208',
     });
   });
 

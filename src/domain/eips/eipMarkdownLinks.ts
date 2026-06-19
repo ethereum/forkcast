@@ -1,5 +1,3 @@
-import type { EIP } from '../../types/eip';
-
 const eipReferencePattern =
   /(?:\.\/eip-|(?:\.\.\/)?EIPS\/eip-|https?:\/\/eips\.ethereum\.org\/EIPS\/eip-)(\d+)(?:\.md)?/;
 
@@ -9,7 +7,7 @@ export type EipMarkdownLinkResolution =
 
 export function resolveEipMarkdownLink(
   href: string,
-  eipsById: ReadonlyMap<number, Pick<EIP, 'pendingPullRequest'>>
+  eipsById: ReadonlyMap<number, unknown>
 ): EipMarkdownLinkResolution | null {
   const match = href.match(eipReferencePattern);
   if (!match) return null;
@@ -17,7 +15,7 @@ export function resolveEipMarkdownLink(
   const eipId = Number(match[1]);
   const target = eipsById.get(eipId);
 
-  if (target && !target.pendingPullRequest) {
+  if (target) {
     return { kind: 'internal', eipId, href: `/eips/${eipId}` };
   }
 

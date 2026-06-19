@@ -158,9 +158,10 @@ async function buildNetworksSnapshot() {
   return canonicalizeNetworksSnapshot(await res.json());
 }
 
-if (process.argv[1] === fileURLToPath(import.meta.url)) {
+async function main() {
   fs.mkdirSync(GENERATED_DIR, { recursive: true });
   console.log('Refreshing route snapshots...');
+
   try {
     // Fetch + build both snapshots before writing either, so a partial failure leaves
     // the committed snapshots untouched: the builds run concurrently and a rejection
@@ -186,5 +187,10 @@ if (process.argv[1] === fileURLToPath(import.meta.url)) {
     console.error(`✖ snapshot refresh failed: ${error.message}`);
     process.exit(1);
   }
+
   console.log('✨ Snapshots ready.');
+}
+
+if (process.argv[1] === fileURLToPath(import.meta.url)) {
+  await main();
 }

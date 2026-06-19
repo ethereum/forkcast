@@ -66,7 +66,7 @@ export function getRecentStageChanges(eips: EIP[], count = 10): EipStageChange[]
   }
 
   return eipsWithDates
-    .sort((a, b) => b.lastUpdate.getTime() - a.lastUpdate.getTime())
+    .sort((a, b) => b.lastUpdate.getTime() - a.lastUpdate.getTime() || a.eip.id - b.eip.id)
     .slice(0, count)
     .map(({ eip, lastUpdate, forkName, currentStage }) => ({
       id: eip.id,

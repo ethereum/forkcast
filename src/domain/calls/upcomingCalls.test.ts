@@ -210,6 +210,47 @@ describe('fetchUpcomingCallsIfAvailable', () => {
 
     await expect(fetchUpcomingCallsIfAvailable()).resolves.toBeUndefined();
   });
+
+  it('sorts same-date calls by issue number for deterministic snapshots', async () => {
+    const scheduledBody = (series: string) => `### Call Series
+
+${series}
+
+### UTC Date & Time
+
+[January 2, 2099, 15:00 UTC](https://savvytime.com/converter/utc/jan-2-2099/3pm)`;
+
+    vi.stubGlobal('fetch', vi.fn(async (url: string) => {
+      if (url === 'https://api.github.com/repos/ethereum/pm/issues?state=open&per_page=20') {
+        return {
+          ok: true,
+          json: async () => [
+            {
+              title: 'All Core Devs - Execution (ACDE) #999, January 2, 2099',
+              html_url: 'https://github.com/ethereum/pm/issues/101',
+              number: 101,
+              body: scheduledBody('All Core Devs - Execution'),
+            },
+            {
+              title: 'All Core Devs - Consensus (ACDC) #999, January 2, 2099',
+              html_url: 'https://github.com/ethereum/pm/issues/100',
+              number: 100,
+              body: scheduledBody('All Core Devs - Consensus'),
+            },
+          ],
+        };
+      }
+
+      return {
+        ok: true,
+        json: async () => [],
+      };
+    }));
+
+    const calls = await fetchUpcomingCallsIfAvailable();
+
+    expect(calls?.map((call) => call.issueNumber)).toEqual([100, 101]);
+  });
 });
 
 describe('parseUpcomingCallFromIssue', () => {

@@ -24,6 +24,7 @@ import { EipDependents } from './EipDependents';
 import { EipFaq } from './EipFaq';
 import { useEipHistory } from '../../hooks/useEipHistory';
 import { isSearchHotkey } from '../search/searchShortcuts';
+import { resolveEipMarkdownLink } from '../../domain/eips/eipMarkdownLinks';
 import {
   eipCallTypes,
   callTypeNames,
@@ -159,7 +160,6 @@ const LazyEipMarkdown = lazy(() =>
     ([{ default: ReactMarkdown }, { default: remarkGfm }]) => ({
       default: ({ children: rawChildren, navigate }: { children: string; navigate: (path: string) => void }) => {
         const children = normalizeHeadings(rawChildren);
-        const eipLinkPattern = /(?:\.\/eip-|\.\.\/EIPS\/eip-|https?:\/\/eips\.ethereum\.org\/EIPS\/eip-)(\d+)(?:\.md)?/;
         const headings = extractHeadings(children);
         const slugMap = new Map<string, number>();
         return (
@@ -213,22 +213,24 @@ const LazyEipMarkdown = lazy(() =>
               remarkPlugins={[remarkGfm]}
               components={{
                 a: ({ href, children: linkChildren, ...rest }) => {
-                  if (href) {
-                    const match = href.match(eipLinkPattern);
-                    if (match) {
+                  const eipLink = href ? resolveEipMarkdownLink(href, eipById) : null;
+                  if (eipLink) {
+                    if (eipLink.kind === 'internal') {
                       return (
                         <a
                           {...rest}
-                          href={`/eips/${match[1]}`}
+                          href={eipLink.href}
                           onClick={(e) => {
                             e.preventDefault();
-                            navigate(`/eips/${match[1]}`);
+                            navigate(eipLink.href);
                           }}
                         >
                           {linkChildren}
                         </a>
                       );
                     }
+
+                    return <a href={eipLink.href} target="_blank" rel="noopener noreferrer" {...rest}>{linkChildren}</a>;
                   }
                   return <a href={href} target="_blank" rel="noopener noreferrer" {...rest}>{linkChildren}</a>;
                 },

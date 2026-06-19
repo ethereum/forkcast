@@ -123,7 +123,7 @@ const fetchUpcomingCallsFromGitHub = async (): Promise<UpcomingCall[]> => {
 
   return parsedCalls
     .map((call, index): UpcomingCall => ({ ...call, youtubeUrl: youtubeUrls[index] }))
-    .sort((a, b) => a.date.localeCompare(b.date));
+    .sort((a, b) => a.date.localeCompare(b.date) || a.issueNumber - b.issueNumber);
 };
 
 // Fetch upcoming ACD calls from GitHub issues. Shares the parsing rules with the

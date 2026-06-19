@@ -10,6 +10,7 @@ import { upcomingCalls } from '../../domain/calls/upcomingCalls';
 import { onOpenCallSearch } from '../../domain/calls/callSearch';
 import { eipsData } from '../../data/eips';
 import { EIP, ForkRelationship, KeyDecision } from '../../types/eip';
+import { isHeadliner } from '../../utils/eip';
 import { isSearchHotkey } from '../search/searchShortcuts';
 
 // Mapping of breakout call types to their associated EIP IDs
@@ -1174,7 +1175,7 @@ const CallPage: React.FC<CallPageProps> = ({ callPath, upcoming }) => {
                   </Link>
                   {!isWorkspaceView && breakoutEipInfo.latestFork && (
                     <span className="text-slate-500 dark:text-slate-400">
-                      ({breakoutEipInfo.latestFork.statusHistory[breakoutEipInfo.latestFork.statusHistory.length - 1]?.status} for {breakoutEipInfo.latestFork.forkName}{breakoutEipInfo.latestFork.isHeadliner ? ', Headliner' : ''})
+                      ({breakoutEipInfo.latestFork.statusHistory[breakoutEipInfo.latestFork.statusHistory.length - 1]?.status} for {breakoutEipInfo.latestFork.forkName}{isHeadliner(breakoutEipInfo.eip, breakoutEipInfo.latestFork.forkName) ? ', Headliner' : ''})
                     </span>
                   )}
                 </div>

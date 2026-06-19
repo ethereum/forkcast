@@ -1,4 +1,11 @@
 import { EIP, ForkRelationship, InclusionStage, ProposalType } from '../types/eip';
+import { getUpgradeById } from '../data/upgrades';
+import {
+  getHeadlinerProposal,
+  hasActiveHeadlinerCandidacy,
+  hasHeadlinerHistory,
+} from '../domain/eips/headlinerHistory';
+import { isSelectedHeadlinerId } from '../domain/eips/headlinerSelection';
 
 type ForkStatus = ForkRelationship['statusHistory'][number]['status'];
 
@@ -39,6 +46,9 @@ function isInclusionStage(stage: string): stage is InclusionStage {
   return inclusionStageRanks.has(stage as InclusionStage);
 }
 
+const getForkHeadlinerSelection = (forkName?: string) =>
+  forkName ? getUpgradeById(forkName.toLowerCase())?.headlinerSelection : undefined;
+
 /**
  * Get the inclusion stage for an EIP in a specific fork
  */
@@ -67,7 +77,6 @@ export const getInclusionStageSortRank = (stage: string): number =>
 
 /**
  * Get the headliner discussion link for an EIP in a specific fork
- * Looks for a headliner_proposal entry in presentationHistory
  */
 export const getHeadlinerDiscussionLink = (eip: EIP, forkName?: string): string | null => {
   if (!forkName) return null;
@@ -76,13 +85,7 @@ export const getHeadlinerDiscussionLink = (eip: EIP, forkName?: string): string 
     fork.forkName.toLowerCase() === forkName.toLowerCase()
   );
 
-  if (!forkRelationship?.presentationHistory) return null;
-
-  const headlinerProposal = forkRelationship.presentationHistory.find(
-    p => p.type === 'headliner_proposal'
-  );
-
-  return headlinerProposal?.link || null;
+  return getHeadlinerProposal(forkRelationship)?.link || null;
 };
 
 /**
@@ -94,7 +97,7 @@ export const isHeadliner = (eip: EIP, forkName?: string): boolean => {
   const forkRelationship = eip.forkRelationships.find(fork =>
     fork.forkName.toLowerCase() === forkName.toLowerCase()
   );
-  return forkRelationship?.isHeadliner || false;
+  return Boolean(forkRelationship) && isSelectedHeadlinerId(getForkHeadlinerSelection(forkName), eip.id);
 };
 
 /**
@@ -154,7 +157,7 @@ export const wasHeadlinerCandidate = (eip: EIP, forkName?: string): boolean => {
   const forkRelationship = eip.forkRelationships.find(fork =>
     fork.forkName.toLowerCase() === forkName.toLowerCase()
   );
-  if (!forkRelationship?.wasHeadlinerCandidate) return false;
+  if (!forkRelationship || !hasActiveHeadlinerCandidacy(forkRelationship)) return false;
 
   // Exclude withdrawn proposals
   const latestStatus = forkRelationship.statusHistory[forkRelationship.statusHistory.length - 1]?.status;
@@ -218,7 +221,9 @@ export const sortByLayer = <T extends { layer?: 'EL' | 'CL' | string | null }>(a
  * Check if an EIP is a selected headliner in ANY fork
  */
 export const isHeadlinerInAnyFork = (eip: EIP): boolean => {
-  return eip.forkRelationships.some(fork => fork.isHeadliner === true);
+  return eip.forkRelationships.some(fork =>
+    isSelectedHeadlinerId(getForkHeadlinerSelection(fork.forkName), eip.id)
+  );
 };
 
 /**
@@ -228,7 +233,8 @@ export const wasHeadlinerCandidateInAnyFork = (eip: EIP): boolean => {
   // If selected in any fork, this returns false
   if (isHeadlinerInAnyFork(eip)) return false;
   return eip.forkRelationships.some(fork => {
-    if (!fork.wasHeadlinerCandidate) return false;
+    if (!hasHeadlinerHistory(fork)) return false;
+    if (!hasActiveHeadlinerCandidacy(fork)) return false;
     const latestStatus = fork.statusHistory[fork.statusHistory.length - 1]?.status;
     return latestStatus !== 'Withdrawn';
   });

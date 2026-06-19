@@ -90,8 +90,10 @@
           "type": "array",
           "items": { "$ref": "#/$defs/StatusHistoryEntry" }
         },
-        "isHeadliner": { "type": "boolean" },
-        "wasHeadlinerCandidate": { "type": "boolean" },
+        "headlinerHistory": {
+          "type": "array",
+          "items": { "$ref": "#/$defs/HeadlinerHistoryEntry" }
+        },
         "notice": {
           "type": "object",
           "required": ["title", "text"],
@@ -115,33 +117,20 @@
           "minItems": 1,
           "maxItems": 2
         },
-        "presentationHistory": {
+        "discussionHistory": {
           "type": "array",
-          "items": { "$ref": "#/$defs/PresentationHistoryEntry" }
+          "items": { "$ref": "#/$defs/DiscussionHistoryEntry" }
         }
       }
     },
-    "PresentationHistoryEntry": {
+    "DiscussionHistoryEntry": {
       "type": "object",
-      "required": ["type", "date"],
+      "required": ["call", "date"],
       "additionalProperties": false,
       "properties": {
-        "type": {
-          "type": "string",
-          "enum": [
-            "headliner_proposal",
-            "headliner_presentation",
-            "presentation",
-            "debate"
-          ],
-          "description": "Type of presentation event: headliner_proposal (forum post), headliner_presentation (initial call), presentation (regular call), debate (follow-up discussion)"
-        },
         "call": {
           "type": "string",
           "pattern": "^(acdc|acde|acdt)/[0-9]+$"
-        },
-        "link": {
-          "type": "string"
         },
         "date": {
           "type": "string",
@@ -151,23 +140,62 @@
           "type": "integer",
           "description": "Seconds into the call recording video"
         }
-      },
-      "allOf": [
+      }
+    },
+    "HeadlinerHistoryEntry": {
+      "oneOf": [
         {
-          "if": {
-            "properties": { "type": { "const": "headliner_proposal" } }
-          },
-          "then": { "required": ["link"] }
+          "type": "object",
+          "required": ["type", "link", "date"],
+          "additionalProperties": false,
+          "properties": {
+            "type": { "const": "proposed" },
+            "link": { "type": "string" },
+            "date": {
+              "type": "string",
+              "pattern": "^[0-9]{4}-[0-9]{2}-[0-9]{2}$"
+            }
+          }
         },
         {
-          "if": {
-            "properties": {
-              "type": {
-                "enum": ["headliner_presentation", "presentation", "debate"]
-              }
+          "type": "object",
+          "required": ["type", "call", "date"],
+          "additionalProperties": false,
+          "properties": {
+            "type": { "const": "presented" },
+            "call": {
+              "type": "string",
+              "pattern": "^(acdc|acde|acdt)/[0-9]+$"
+            },
+            "date": {
+              "type": "string",
+              "pattern": "^[0-9]{4}-[0-9]{2}-[0-9]{2}$"
+            },
+            "timestamp": {
+              "type": "integer",
+              "description": "Seconds into the call recording video"
             }
-          },
-          "then": { "required": ["call"] }
+          }
+        },
+        {
+          "type": "object",
+          "required": ["type"],
+          "additionalProperties": false,
+          "properties": {
+            "type": { "const": "withdrawn" },
+            "call": {
+              "type": "string",
+              "pattern": "^(acdc|acde|acdt)/[0-9]+$"
+            },
+            "date": {
+              "type": "string",
+              "pattern": "^[0-9]{4}-[0-9]{2}-[0-9]{2}$"
+            },
+            "timestamp": {
+              "type": "integer",
+              "description": "Seconds into the call recording video"
+            }
+          }
         }
       ]
     },

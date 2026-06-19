@@ -60,18 +60,18 @@ const bucketDate = (call) => {
 
 const todayUtc = () => new Date().toISOString().slice(0, 10);
 
-async function fetchYouTubeUrl(issueNumber) {
-  try {
-    const res = await fetch(
-      `https://api.github.com/repos/ethereum/pm/issues/${issueNumber}/comments`,
-      { headers: githubHeaders() },
-    );
-    if (!res.ok) return undefined;
-    return extractYouTubeUrl(await res.json());
-  } catch {
-    // Ignore — the watch page still works without an embedded video URL.
-    return undefined;
-  }
+export async function fetchYouTubeUrl(issueNumber) {
+  const res = await fetch(
+    `https://api.github.com/repos/ethereum/pm/issues/${issueNumber}/comments`,
+    { headers: githubHeaders() },
+  );
+
+  if (!res.ok) throw new Error(`GitHub issue comments fetch failed for #${issueNumber}: ${res.status}`);
+
+  // A successful comments fetch with no YouTube Live link means "no video yet".
+  // A failed comments fetch is snapshot-critical because treating it the same
+  // way could silently remove an already-emitted upcoming-call watch route.
+  return extractYouTubeUrl(await res.json());
 }
 
 async function buildUpcomingCalls() {
@@ -158,31 +158,33 @@ async function buildNetworksSnapshot() {
   return canonicalizeNetworksSnapshot(await res.json());
 }
 
-fs.mkdirSync(GENERATED_DIR, { recursive: true });
-console.log('Refreshing route snapshots...');
-try {
-  // Fetch + build both snapshots before writing either, so a partial failure leaves
-  // the committed snapshots untouched: the builds run concurrently and a rejection
-  // here propagates before any file is written.
-  const [upcomingCalls, networksSnapshot] = await Promise.all([
-    buildUpcomingCalls(),
-    buildNetworksSnapshot(),
-  ]);
+if (process.argv[1] === fileURLToPath(import.meta.url)) {
+  fs.mkdirSync(GENERATED_DIR, { recursive: true });
+  console.log('Refreshing route snapshots...');
+  try {
+    // Fetch + build both snapshots before writing either, so a partial failure leaves
+    // the committed snapshots untouched: the builds run concurrently and a rejection
+    // here propagates before any file is written.
+    const [upcomingCalls, networksSnapshot] = await Promise.all([
+      buildUpcomingCalls(),
+      buildNetworksSnapshot(),
+    ]);
 
-  writeJson(UPCOMING_CALLS_FILE, upcomingCalls);
-  console.log(`  ✓ upcoming-calls.json (${upcomingCalls.length} calls)`);
+    writeJson(UPCOMING_CALLS_FILE, upcomingCalls);
+    console.log(`  ✓ upcoming-calls.json (${upcomingCalls.length} calls)`);
 
-  const activeCount = Object.values(networksSnapshot.networks).filter(
-    (n) => n?.status === 'active',
-  ).length;
-  writeJson(NETWORKS_FILE, networksSnapshot);
-  console.log(
-    `  ✓ devnet-networks.json (${Object.keys(networksSnapshot.networks).length} networks, ${activeCount} active)`,
-  );
-} catch (error) {
-  // Nothing is written until both fetches succeed, so the committed snapshots are
-  // left intact. Exit non-zero and re-run when the upstream is reachable.
-  console.error(`✖ snapshot refresh failed: ${error.message}`);
-  process.exit(1);
+    const activeCount = Object.values(networksSnapshot.networks).filter(
+      (n) => n?.status === 'active',
+    ).length;
+    writeJson(NETWORKS_FILE, networksSnapshot);
+    console.log(
+      `  ✓ devnet-networks.json (${Object.keys(networksSnapshot.networks).length} networks, ${activeCount} active)`,
+    );
+  } catch (error) {
+    // Nothing is written until both fetches succeed, so the committed snapshots are
+    // left intact. Exit non-zero and re-run when the upstream is reachable.
+    console.error(`✖ snapshot refresh failed: ${error.message}`);
+    process.exit(1);
+  }
+  console.log('✨ Snapshots ready.');
 }
-console.log('✨ Snapshots ready.');

@@ -105,7 +105,7 @@ async function buildUpcomingCalls() {
   const youtubeUrls = await Promise.all(parsed.map((call) => fetchYouTubeUrl(call.issueNumber)));
   return parsed
     .map((call, index) => ({ ...call, youtubeUrl: youtubeUrls[index] }))
-    .sort((a, b) => a.date.localeCompare(b.date));
+    .sort((a, b) => a.date.localeCompare(b.date) || a.issueNumber - b.issueNumber);
 }
 
 // --- Snapshot helpers ----------------------------------------------------------

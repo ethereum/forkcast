@@ -81,6 +81,21 @@ describe('getRecentStageChanges', () => {
     expect(getRecentStageChanges([older, newer], 1).map((c) => c.id)).toEqual([2]);
   });
 
+  it('orders same-date changes by EIP id for deterministic output', () => {
+    const higherId = makeEip({
+      id: 2,
+      title: 'EIP-2: Higher',
+      forkRelationships: [fork('Glamsterdam', [entry('Considered', '2025-03-15')])],
+    });
+    const lowerId = makeEip({
+      id: 1,
+      title: 'EIP-1: Lower',
+      forkRelationships: [fork('Glamsterdam', [entry('Considered', '2025-03-15')])],
+    });
+
+    expect(getRecentStageChanges([higherId, lowerId]).map((c) => c.id)).toEqual([1, 2]);
+  });
+
   it('skips EIPs whose status history has no dated entry', () => {
     const eip = makeEip({
       id: 9,

@@ -12,7 +12,7 @@ import { upcomingCalls } from '../../domain/calls/upcomingCalls';
 export function getStaticPaths() {
   const types = new Set<string>();
   for (const call of protocolCalls) if (!isOneOffCall(call.type)) types.add(call.type);
-  for (const call of upcomingCalls) types.add(call.type);
+  for (const call of upcomingCalls) if (!isOneOffCall(call.type)) types.add(call.type);
 
   return [...types].map((type) => {
     const name = getCallTypeName(type);

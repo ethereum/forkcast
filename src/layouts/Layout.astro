@@ -69,13 +69,15 @@ const ogImage = image
     <meta name="twitter:image:alt" content={title} />
     <meta name="twitter:creator" content="@wolovim" />
 
-    <!-- Matomo: fires the initial pageview from the Astro shell. React handles
-         only interaction events from here on. -->
+    <!-- Matomo page views use canonical Astro route identity. Query strings
+         mostly represent UI state (tabs, filters, search, playback); track
+         query-level behavior as explicit events instead of fragmenting page URLs. -->
     <script is:inline>
       if (!['localhost', '127.0.0.1', '0.0.0.0', '::1', '[::1]'].includes(window.location.hostname)) {
         var _paq = (window._paq = window._paq || []);
         _paq.push(['setExcludedQueryParams', ['code', 'gist']]);
         _paq.push(['enableLinkTracking']);
+        _paq.push(['setCustomUrl', window.location.pathname]);
         _paq.push(['trackPageView']);
         (function () {
           var u = 'https://ethereumfoundation.matomo.cloud/';

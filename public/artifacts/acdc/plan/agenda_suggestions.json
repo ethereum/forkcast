@@ -1,63 +1,63 @@
 {
   "series": "ACDC",
-  "generated": "2026-06-15",
+  "generated": "2026-06-22",
   "for_call": "ACDC #181",
   "suggestions": [
     {
-      "topic": "EIP-8061 (increase exit/consolidation churn) SFI decision",
+      "topic": "EIP-8061 SFI and EIP-8080 DFI decisions for Hegotá",
       "priority": "high",
-      "rationale": "Deferred from ACDC #179 with explicit expectation to revisit at this call. Already implemented and tested since devnet-1.",
+      "rationale": "Both decisions were explicitly deferred to 'next ACDC (two weeks)' from ACDC #179 (May 28), making them due at ACDC #181. EIP-8061 has been tested since devnet-1; EIP-8080 needs community consensus on queue-sharing approach.",
       "related_eips": [],
       "source": "deferred_decision"
     },
     {
-      "topic": "EIP-8080 (exits use consolidation queue) DFI decision",
+      "topic": "EIP-8282 (separate builder deposit contract) decision following ACDT review",
       "priority": "high",
-      "rationale": "Deferred from ACDC #179 with explicit expectation to revisit at this call. Intent to DFI was stated, awaiting final confirmation.",
+      "rationale": "Deferred from ACDC #180 to 'ACDT Monday' (June 15) with explicit requirement for attack severity quantification and Justin's presence. Teams need to report findings on DOS attack surface vs. implementation cost tradeoff for Glamsterdam.",
       "related_eips": [],
       "source": "deferred_decision"
     },
     {
-      "topic": "Glamsterdam devnet-5 stability status and path to devnet-6",
+      "topic": "Glamsterdam devnet-5 stability update and devnet-6 planning",
       "priority": "high",
-      "rationale": "ACDC #180 reported devnet-5 unstable with Grandine fork-choice bug unfixed. Decision needed on whether to relaunch devnet-5 again or proceed to devnet-6 with builder API changes.",
+      "rationale": "DevNet-5 was unstable as of ACDC #180 due to Grandine fork-choice bug (unfixed) and Prysm peering issues. Scope freeze for devnet-6 depends on two weeks of devnet-5 stability; need status check on Grandine fix and decision on whether to proceed to devnet-6.",
       "related_eips": [],
       "source": "devnet_update"
     },
     {
-      "topic": "PTC attestation fork-choice behavior across multiple branches",
-      "priority": "high",
-      "rationale": "Potuz flagged serious liveness risk in ACDC #180: all clients currently use canonical head only for PTC duties, creating cross-branch attestation gaps during forks. Needs architectural decision.",
+      "topic": "PTC attestation fork-choice liveness concerns and cross-branch attestation strategy",
+      "priority": "medium",
+      "rationale": "Potuz flagged serious liveness risk in ACDC #180: all clients use canonical head only for PTC duties, creating zero cross-branch attestations during multi-branch forks. Lazy fix (skip PTC if not in committee) deployed but doesn't address fundamental liveness issue. Needs architectural discussion before mainnet.",
       "related_eips": [],
       "source": "ongoing_discussion"
     },
     {
-      "topic": "EIP-8282 (separate builder deposit contract) decision",
-      "priority": "high",
-      "rationale": "Deferred from ACDC #180 pending ACDT Monday review of attack scenarios. If Monday discussion favored inclusion, ACDC needs to confirm fork impact vs. delay trade-off.",
+      "topic": "EIP-8148 (custom sweep threshold) review and Hegotá inclusion decision",
+      "priority": "medium",
+      "rationale": "Proposed for Hegotá at ACDC #179 with explicit request for client review and Lido validator impact data before 'next ACDC.' Not discussed at ACDC #180 despite being due; needs confirmation of review completion and formal inclusion decision.",
+      "related_eips": [],
+      "source": "open_action_item"
+    },
+    {
+      "topic": "Beacon API validator state renaming (beacon-APIs #618) and breaking change policy",
+      "priority": "medium",
+      "rationale": "Breaking change flagged in ACDC #180: 'pending-queued' state names are outdated post-EIP-6110/7251. PR #618 open but requires ecosystem tooling input and potential API version bump. Action item assigned but no follow-up; needs coordination on breaking change timeline.",
+      "related_eips": [],
+      "source": "open_action_item"
+    },
+    {
+      "topic": "submitBeaconBlock builder API (builder-specs #162) stateful mapping concerns",
+      "priority": "low",
+      "rationale": "Deferred in ACDC #180 pending more client implementation experience. Concern raised about beacon node needing to track which builder URL supplied each bid. Not urgent but worth revisiting once devnet-6 builder integration is underway.",
       "related_eips": [],
       "source": "deferred_decision"
     },
     {
-      "topic": "EIP-8148 (custom sweep threshold) client review feedback",
-      "priority": "medium",
-      "rationale": "Proposed for Hegotá (PFI) in ACDC #179. Client teams asked to review and bring Lido validator count data; no follow-up in ACDC #180.",
-      "related_eips": [],
-      "source": "open_action_item"
-    },
-    {
-      "topic": "Beacon API validator state renaming (beacon-APIs #618) decision",
-      "priority": "medium",
-      "rationale": "Breaking change flagged in ACDC #180 requiring API version bump. Client teams asked to engage on tooling breakage; needs confirmation or deferral.",
-      "related_eips": [],
-      "source": "open_action_item"
-    },
-    {
-      "topic": "submitBeaconBlock builder API (builder-specs #162) state mapping concerns",
+      "topic": "EIP-8243 (pre-aggregating attestations at source) feasibility and benefits vs. simpler alternatives",
       "priority": "low",
-      "rationale": "Deferred in ACDC #180 pending more client implementation experience. Worth checking if any teams have new insights after further devnet work.",
+      "rationale": "Presented at ACDC #180 for Hegotá with claimed 2x wire reduction via batch-seal mechanism. Questions raised about whether benefit justifies complexity vs. just increasing aggregator count. New proposal needing initial feedback before moving forward.",
       "related_eips": [],
-      "source": "ongoing_discussion"
+      "source": "new_proposal"
     }
   ]
 }

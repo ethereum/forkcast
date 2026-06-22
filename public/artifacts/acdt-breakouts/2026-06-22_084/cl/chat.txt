@@ -1,0 +1,95 @@
+10:29:31	 From Justin Traglia : https://github.com/ethereum/beacon-APIs/pull/580 
+https://github.com/ethereum/beacon-APIs/pull/608
+10:30:42	 From Barnabas : would be good to merge in 8282 too very soon
+10:30:47	 From Bharath : Reacted to "would be good to mer..." with 👍
+10:33:25	 From Barnabas : Maybe I’m missing something but why do we care which version someone is using?
+10:35:04	 From Mikhail Kalinin : Could we rely on the self-build for 2 epochs after the fork before the first bunch of builders is finalized?
+10:35:50	 From Nico Flaig : Replying to "would be good to mer..."
+
+you want that or beacon api stuff merged? hoping cayman can do that, but we need to clean this up a lot
+10:36:18	 From Nico Flaig : Replying to "would be good to mer..."
+
+we should also discuss the contracts futher somewhere, I saw Felix commented on the asm pr
+10:36:25	 From Barnabas : Replying to "would be good to mer..."
+
+why is it an or or ? 
+ we should get both in
+10:36:41	 From Eitan Seri-Levi : Replying to "Could we rely on the self-build for 2 epochs after the fork before the first bunch of builders is finalized?"
+
+It breaks dapps that rely on private order flow (e.g. cow swap)
+10:36:48	 From Barnabas : Reacted to "It breaks dapps that rely on private order flow (e.g. cow swap)" with 💯
+10:36:50	 From Mikhail Kalinin : Reacted to "It breaks dapps that rely on private order flow (e.g. cow swap)" with 👍
+10:36:57	 From Barnabas : Replying to "Could we rely on the..."
+
+for over 20 mins
+10:36:59	 From Dustin : why would they be needing the bids to be active before the fork?
+10:37:05	 From Barnabas : Replying to "Could we rely on the..."
+
+thats quite critical
+10:37:10	 From Mikhail Kalinin : Replying to "Could we rely on the..."
+
+agree
+10:37:16	 From Dustin : the builders maybe, but the bids?
+10:38:48	 From Eitan Seri-Levi : I agree with Potuz
+10:42:47	 From Nico Flaig : before? you mean fork slot -1?
+10:42:58	 From Mikhail Kalinin : Why would builder with any creds version be prohibited from propagating a bid?
+10:43:24	 From Barnabas : how are you gonna enable the whitelist if you don’t have a fork?
+10:43:26	 From Justin Traglia : Replying to "Why would builder wi..."
+
+They might not be a “payload builder"
+10:43:46	 From Justin Traglia : Replying to "Why would builder wi..."
+
+The could be responsible for something else, eg proofs.
+10:44:01	 From NC : Replying to "Why would builder with any creds version be prohibited from propagating a bid?"
+
+I think one of the arguments is that the protocol has implied preferred builder version, and forwarding bids from builders that is not that preferred version is garbage
+10:44:54	 From Dustin : Replying to "Why would builder ..."
+
+Yeah in general the protocol tries to distinguish garbage from nongarbage
+10:45:04	 From Dustin : Replying to "Why would builder ..."
+
+and this doesn't seem possible with Potuz's proposal
+10:45:50	 From Mikhail Kalinin : Reacted to "The could be responsible for something else, eg proofs." with 👍
+10:45:56	 From Dustin : those bids can't be for 10 slots in advance today, no matter their version
+10:46:04	 From Dustin : it's not a question of builder version
+10:46:55	 From Barnabas : it also opens up a new kinda attack surface no? 
+
+We would need to start testing 0x01 type builders then too
+10:47:13	 From Eitan Seri-Levi : This will either provide zero benefit or some benefit by the h fork. But wouldn’t cause any issues.
+10:47:28	 From Potuz : Replying to "This will either pro..."
+
+Yes, this is exactly the whole point
+10:47:39	 From Potuz : Replying to "This will either pro..."
+
+I expect this to never be used, but it is just crazy not to enable it
+10:48:13	 From Dustin : Unused flexiblity, generally speaking, is a cost, testing, attack surface, etc
+10:48:51	 From terence : Same for prysm
+10:48:54	 From terence : 1 day should be enough
+10:49:00	 From Barnabas : Reacted to "1 day should be enough" with 👍
+10:50:18	 From Mikhail Kalinin : have to jump off, thx everyone
+10:50:31	 From Justin Traglia : Replying to "have to jump off, th..."
+
+See ya!
+10:50:49	 From NC : Replying to "Unused flexiblity, generally speaking, is a cost, testing, attack surface, etc"
+
+So minor cost in exchange for no or some benefit
+10:52:50	 From Eitan Seri-Levi : Will try to get to it this week
+10:52:57	 From Bharath : Reacted to "Will try to get to i..." with 👍
+10:53:37	 From Barnabas : kill it
+10:53:49	 From Justin Traglia : Reacted to "kill it" with 💀
+10:54:13	 From Barnabas : can we aim to have devnet 7 as a required devnet with builder api support? - with multiplexing
+10:55:16	 From Barnabas : coming soon
+10:55:48	 From Bharath : Reacted to "coming soon" with 🎉
+10:56:02	 From Barnabas : full ssz pipeline from el to cl to vc to builder workflow lfg
+10:56:35	 From Eitan Seri-Levi : Replying to "full ssz pipeline from el to cl to vc to builder workflow lfg"
+
+EL stable containers wen?
+10:57:15	 From Barnabas : Replying to "full ssz pipeline fr..."
+
+CL stable containers wen?
+10:57:37	 From Eitan Seri-Levi : Reacted to "CL stable containers wen?" with 🥹
+10:58:19	 From Nico Flaig : yes we are
+10:58:26	 From Eitan Seri-Levi : yes we are
+10:58:37	 From terence : lol
+10:58:53	 From Barnabas : smells like prysm 😂
+10:59:01	 From Justin Traglia : Reacted to "smells like prysm 😂" with 😄

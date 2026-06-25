@@ -2,6 +2,36 @@
   "eipId": 2780,
   "commits": [
     {
+      "sha": "992074053f12f24fed9e6d6bf6099d3a44707dca",
+      "date": "2026-06-25T15:05:59Z",
+      "message": "Update EIP-2780: account for EIP-7623 calldata floor base",
+      "author": "misilva73",
+      "prNumber": null,
+      "patch": "@@ -8,7 +8,7 @@ status: Draft\n type: Standards Track\n category: Core\n created: 2020-07-11\n-requires: 2718, 2929, 2930, 6780, 7523, 7702, 7708, 7904, 7928, 8037, 8038\n+requires: 2718, 2929, 2930, 6780, 7523, 7623, 7702, 7708, 7904, 7928, 8037, 8038\n ---\n \n ## Abstract\n@@ -107,6 +107,7 @@ Costs are split into regular gas and state gas, per [EIP-8037](./eip-8037.md). \"\n \n - **[EIP-2929](./eip-2929.md) (warm/cold accounting).** The transaction-level `tx.sender`, `tx.to`, and delegation-target charges are always cold and are not reduced by an access list. The standard EIP-2929 warm/cold model still applies to execution-level account touches, including internal `CALL`s.\n - **[EIP-2930](./eip-2930.md) (access lists).** Access lists keep their existing per-entry charges and warming semantics for execution-level touches.\n+- **[EIP-7623](./eip-7623.md) (calldata floor).** EIP-7623 floors a transaction's cost at `21,000 + TOTAL_COST_FLOOR_PER_TOKEN × tokens_in_calldata`, where the flat `21,000` is the intrinsic base this EIP decomposes. With this EIP active, that base term is replaced by the transaction's decomposed regular-gas intrinsic — the sum of the regular-gas primitives charged above (`TX_BASE_COST + COLD_ACCOUNT_ACCESS + TX_VALUE_COST + TRANSFER_LOG_COST` for value transfers, `TX_BASE_COST + CREATE_ACCESS` for contract creation) — so the floor and the floor's validity check rest on the same per-transaction base as the rest of intrinsic gas rather than a stale constant. The calldata schedule itself is unchanged; only the base the floor sits on moves. The new-account state-gas charge is metered in the separate `state_gas_reservoir` per [EIP-8037](./eip-8037.md) and does not enter the calldata floor.\n - **[EIP-7702](./eip-7702.md) (set EOA code).** `TX_BASE_COST` is unchanged even when the sender temporarily assumes code; clients must not perform a disk code load to classify the sender, since EIP-7702 provides the code inline. When `tx.to` is a delegated account, resolving the delegation loads the target's code, charged `COLD_ACCOUNT_ACCESS` on first touch or warm thereafter, following the standard EIP-2929 `accessed_addresses` model. Setting a delegation (writing the 23-byte pointer) is distinct from resolving one (reading the target's code); the resolution charge is genuine work and is not prepaid by the authorization.\n - **[EIP-7708](./eip-7708.md) (ETH transfers emit a log).** Every non-zero-value transfer to a different account emits a transfer log, priced explicitly as `TRANSFER_LOG_COST` rather than absorbed into the base.\n - **[EIP-7928](./eip-7928.md) (block-level access lists).** Intrinsic costs already account for accessing `tx.sender` and `tx.to`, so these accounts are included in the BAL even when the transaction reverts.",
+      "additions": 2,
+      "deletions": 1
+    },
+    {
+      "sha": "cfca917b621d1a14a759377529a63d28a7832c8c",
+      "date": "2026-06-25T12:54:07Z",
+      "message": "Update EIP-2780: clarify OOG handling for top-level gas charges",
+      "author": "misilva73",
+      "prNumber": null,
+      "patch": "@@ -82,6 +82,8 @@ During execution, before any opcode is executed, the recipient account is loaded\n \n Per [EIP-7523](./eip-7523.md), a post-merge state contains no empty accounts, so only a non-existent recipient creates a new account. These charges are evaluated **after** [EIP-7702](./eip-7702.md) authorizations are applied. A `tx.to` whose account is materialized by an authorization in the same transaction is therefore no longer non-existent when this phase runs, so the new-account state charge does not fire; that account's creation is already priced by the authorization's `PER_EMPTY_ACCOUNT_COST`.\n \n+These top-level charges are applied during execution, after the transaction has already been validated and its [EIP-7702](./eip-7702.md) authorizations applied. If the remaining gas is insufficient to cover them — the new-account state-gas charge when the recipient is non-existent and `tx.value > 0`, or the additional `COLD_ACCOUNT_ACCESS` when the recipient is delegated — the transaction is **not** invalidated. It is instead treated as an exceptional halt (out-of-gas): the transaction is included, the sender pays for all gas consumed, and its state changes are reverted, exactly as for any out-of-gas condition during execution. Transaction validity is decided entirely by the intrinsic gas check, which requires no state access; these charges, which do require state access (resolving recipient existence and delegation only after authorizations are applied), can therefore never retroactively invalidate an already-validated transaction.\n+\n If a contract-creation transaction's initcode reverts, the transaction remains valid. In that case `STATE_BYTES_PER_NEW_ACCOUNT × CPSB` is not charged and is refilled to the `state_gas_reservoir`, per [EIP-8037](./eip-8037.md). A plain value transfer to a new account executes no code and so cannot revert; its new-account state charge is therefore never rolled back this way.\n \n ### Transaction reference cases\n@@ -172,6 +174,7 @@ Intrinsic and top-level gas, by case:\n 7. Contract-creation transaction, `value > 0`: `24,756` regular, `183,600` state.\n 8. EIP-7702 transaction: `TX_BASE_COST` is unchanged even when the sender assumes code; access-list and authorization costs are unchanged.\n 9. Contract-creation transaction whose initcode reverts (value-bearing or not): the transaction remains valid; the `183,600` new-account state-gas charge is refilled to the reservoir.\n+10. Transaction whose gas suffices for intrinsic cost but not for the top-level charge (a value transfer to a non-existent recipient lacking gas for the new-account state charge, or a transfer to a delegated account lacking gas for the extra `COLD_ACCOUNT_ACCESS`): the transaction is valid and included, halts out-of-gas, and its state changes are reverted; it is **not** invalidated.\n \n Blocks of pure ETH transfers should be tested across all EL clients (e.g. on Perfnet) to confirm the pricing matches measured runtimes at the chosen throughput anchor.\n ",
+      "additions": 3,
+      "deletions": 0
+    },
+    {
+      "sha": "0c8a9ade8934364448850bb1ff02851f85bc5efa",
+      "date": "2026-06-25T12:27:06Z",
+      "message": "Update EIP-2780: require EIP-7523 instead of EIP-161",
+      "author": "chfast",
+      "prNumber": null,
+      "patch": "@@ -8,7 +8,7 @@ status: Draft\n type: Standards Track\n category: Core\n created: 2020-07-11\n-requires: 161, 2718, 2929, 2930, 6780, 7702, 7708, 7904, 7928, 8037, 8038\n+requires: 2718, 2929, 2930, 6780, 7523, 7702, 7708, 7904, 7928, 8037, 8038\n ---\n \n ## Abstract\n@@ -76,11 +76,11 @@ These charges replace the contract-creation transaction charges. All other intri\n \n During execution, before any opcode is executed, the recipient account is loaded and the following gas costs are charged:\n \n-- if the recipient is empty per [EIP-161](./eip-161.md) and `tx.value > 0`, charge `STATE_BYTES_PER_NEW_ACCOUNT × CPSB` in state gas;\n+- if the recipient is non-existent and `tx.value > 0`, charge `STATE_BYTES_PER_NEW_ACCOUNT × CPSB` in state gas;\n - if the recipient is an [EIP-7702](./eip-7702.md) delegated account, charge an additional `COLD_ACCOUNT_ACCESS` in regular gas;\n - otherwise, there are no charges.\n \n-These charges are evaluated **after** [EIP-7702](./eip-7702.md) authorizations are applied. A `tx.to` whose account is materialized by an authorization in the same transaction is therefore no longer EIP-161-empty when this phase runs, so the new-account state charge does not fire; that account's creation is already priced by the authorization's `PER_EMPTY_ACCOUNT_COST`.\n+Per [EIP-7523](./eip-7523.md), a post-merge state contains no empty accounts, so only a non-existent recipient creates a new account. These charges are evaluated **after** [EIP-7702](./eip-7702.md) authorizations are applied. A `tx.to` whose account is materialized by an authorization in the same transaction is therefore no longer non-existent when this phase runs, so the new-account state charge does not fire; that account's creation is already priced by the authorization's `PER_EMPTY_ACCOUNT_COST`.\n \n If a contract-creation transaction's initcode reverts, the transaction remains valid. In that case `STATE_BYTES_PER_NEW_ACCOUNT × CPSB` is not charged and is refilled to the `state_gas_reservoir`, per [EIP-8037](./eip-8037.md). A plain value transfer to a new account executes no code and so cannot revert; its new-account state charge is therefore never rolled back this way.\n \n@@ -166,7 +166,7 @@ Intrinsic and top-level gas, by case:\n 1. Self-transfer (`from == to`): `12,000`.\n 2. Zero-value transaction to any address (existing, empty, or contract): `15,000` regular (`12,000 + COLD_ACCOUNT_ACCESS`), `0` state. A self-target is `12,000`.\n 3. Value transfer to an existing EOA: `21,000` regular, `0` state.\n-4. Value transfer creating a new account (empty per EIP-161): `21,000` regular, `183,600` state.\n+4. Value transfer creating a new account (recipient non-existent): `21,000` regular, `183,600` state.\n 5. Value transfer to a 7702-delegated account: `24,000` regular plus execution.\n 6. Contract-creation transaction, `value = 0`: `23,000` regular, `183,600` state.\n 7. Contract-creation transaction, `value > 0`: `24,756` regular, `183,600` state.",
+      "additions": 4,
+      "deletions": 4
+    },
+    {
       "sha": "55fda8316009b4eb33648bbea03e19aff1e0d472",
       "date": "2026-06-18T14:40:52Z",
       "message": "Update EIP-2780: Rework as resource-based intrinsic transaction gas",
@@ -327,14 +357,6 @@
     }
   ],
   "openPrs": [
-    {
-      "number": 11735,
-      "title": "Update EIP-2780: precompile target and account-warming charge changes",
-      "author": "rakita",
-      "updatedAt": "2026-06-19T06:00:16Z",
-      "additions": 26,
-      "deletions": 34
-    },
     {
       "number": 11377,
       "title": "Update EIP-2780: fix minor typos and wording",

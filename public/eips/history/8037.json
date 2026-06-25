@@ -2,6 +2,16 @@
   "eipId": 8037,
   "commits": [
     {
+      "sha": "9b0028c57465cb0451f041b46a84ab4cb3eab2e7",
+      "date": "2026-06-25T12:13:17Z",
+      "message": "Update EIP-8037: Add explanation of 101 byte count in `REGULAR_PER_AUTH_BASE_COST`",
+      "author": "danceratopz",
+      "prNumber": null,
+      "patch": "@@ -52,7 +52,7 @@ Upon activation of this EIP, the following parameters of the gas model are updat\n \n The `REGULAR_PER_AUTH_BASE_COST` is defined as the sum of:\n \n-- Calldata cost: 1,616 (101 bytes × 16)\n+- Calldata cost: 1,616 (101 bytes × 16), where 101 is the byte size of an [EIP-7702](./eip-7702.md) authorization tuple (`chain_id` 8 + `address` 20 + `nonce` 8 + `y_parity` 1 + `r` 32 + `s` 32). This is a representative size, not a worst case, since `chain_id` is a `uint256` and may exceed 8 bytes.\n - Recovering authority address (ecRecover): `PRECOMPILE_ECRECOVER` (is updated by [EIP-7904](./eip-7904.md))\n - Reading nonce and code of authority (cold access): `COLD_ACCOUNT_ACCESS` (is updated by [EIP-8038](./eip-8038.md))\n - Storing values in an already warm account: 2 x `WARM_ACCESS`",
+      "additions": 1,
+      "deletions": 1
+    },
+    {
       "sha": "bee14641d13e369e1c0418757eedf2eb0f04e0ac",
       "date": "2026-06-18T14:52:07Z",
       "message": "Update EIP-8037: resolve EIP-7928 conflict and route state-gas refills to origin",
@@ -223,7 +233,7 @@
       "number": 11778,
       "title": "Update EIP-8037: unfair allocation of EIP-7702 overcharges",
       "author": "lu-pinto",
-      "updatedAt": "2026-06-19T11:44:14Z",
+      "updatedAt": "2026-06-22T13:27:54Z",
       "additions": 8,
       "deletions": 9
     },
@@ -234,14 +244,6 @@
       "updatedAt": "2026-06-16T07:12:10Z",
       "additions": 133,
       "deletions": 203
-    },
-    {
-      "number": 11818,
-      "title": "Update EIP-8037: Add explanation of 101 byte count in `REGULAR_PER_AUTH_BASE_COST`",
-      "author": "danceratopz",
-      "updatedAt": "2026-06-19T08:05:58Z",
-      "additions": 1,
-      "deletions": 1
     },
     {
       "number": 10542,

@@ -2,6 +2,16 @@
   "eipId": 8141,
   "commits": [
     {
+      "sha": "7e54d3de551b268eee131fa795549fb7f6850bf4",
+      "date": "2026-06-26T06:19:08Z",
+      "message": "Update EIP-8141: Restore Behavior section",
+      "author": "nerolation",
+      "prNumber": null,
+      "patch": "@@ -436,6 +436,29 @@ The `scope` operand is a bitmask. Define the following constants:\n \n `APPROVE_SCOPE_MASK` is defined as an alias for `APPROVE_EXECUTION_AND_PAYMENT`.\n \n+#### Behavior\n+\n+The behavior of `APPROVE` is defined as follows:\n+\n+- If `ADDRESS != resolved_target`, revert.\n+- Ensure that `scope` is one of the caller's allowed scopes in `frame.flags`, otherwise revert.\n+    - To check this, evaluate that `scope != 0` and `scope & ~(frame.flags & APPROVE_SCOPE_MASK) == 0`.\n+- Depending on the value of `scope`, perform the following:\n+    - For `APPROVE_EXECUTION`:\n+        - If `sender_approved == true`, revert the frame.\n+        - If `resolved_target != tx.sender`, revert the frame.\n+        - Set `sender_approved = true`.\n+    - For `APPROVE_PAYMENT`\n+        - If `payer` was already set, revert the frame.\n+        - If `resolved_target` has insufficient balance, revert the frame.\n+        - If `sender_approved == false`, revert the frame.\n+        - Increment the sender's nonce, set `payer = resolved_target`, and collect the transaction's maximum cost from `payer`,\n+    - For `APPROVE_EXECUTION_AND_PAYMENT`:\n+        - If `sender_approved` or `payer` was already set, revert the frame.\n+        - If `resolved_target` != `tx.sender`, revert the frame.\n+        - If `resolved_target` has insufficient balance, revert the frame.\n+        - Set `sender_approved = true`, increment the sender's nonce, set `payer = resolved_target`, and collect the transaction's maximum cost (`TXPARAM(0x06)`) from `payer`.\n+\n ### Introspection\n \n The instructions in this section provide the needed introspection capabilities of the new frame transaction type and the frame objects themselves, including some runtime information like the execution result status.",
+      "additions": 23,
+      "deletions": 0
+    },
+    {
       "sha": "fe0940cae2457d8a190471cc57812af96698c125",
       "date": "2026-05-22T05:08:59Z",
       "message": "Update EIP-8141: add signatures list to outer tx",
@@ -243,14 +253,6 @@
   ],
   "openPrs": [
     {
-      "number": 11810,
-      "title": "Update EIP-8141: Restore Behavior section",
-      "author": "nerolation",
-      "updatedAt": "2026-06-18T10:05:13Z",
-      "additions": 23,
-      "deletions": 0
-    },
-    {
       "number": 11814,
       "title": "Update EIP-8141: Spec cleanup and clarifications",
       "author": "morph-dev",
@@ -265,6 +267,14 @@
       "updatedAt": "2026-04-28T18:02:58Z",
       "additions": 247,
       "deletions": 104
+    },
+    {
+      "number": 11837,
+      "title": "Update EIP-8141: allow arbitrary signature data to avoid circular dependency for custom verifiers",
+      "author": "lightclient",
+      "updatedAt": "2026-06-25T21:33:52Z",
+      "additions": 44,
+      "deletions": 19
     },
     {
       "number": 11580,

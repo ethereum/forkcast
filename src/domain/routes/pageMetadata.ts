@@ -37,8 +37,8 @@ export const staticPageMetadata = {
     description: 'Key decisions from Ethereum AllCoreDevs meetings.',
   },
   rank: {
-    title: 'Headliner Rankings - Forkcast',
-    description: 'Rank and compare headliner proposals for upcoming Ethereum network upgrades.',
+    title: 'Proposal Rankings - Forkcast',
+    description: 'Rank and compare proposals for upcoming Ethereum network upgrades.',
   },
   eipsIndex: {
     title: 'EIP Directory - Forkcast',

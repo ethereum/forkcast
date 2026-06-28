@@ -6,6 +6,7 @@ import {
   getStageAbbreviation,
   getSummaryDescription,
   getUpgradeAnchorExpansionState,
+  isForkInclusionCandidate,
   isPendingEip,
 } from './eip';
 import type { EIP } from '../types';
@@ -67,6 +68,36 @@ describe('inclusion stage labels', () => {
     expect(getInclusionStageSortRank('Scheduled for Inclusion')).toBeLessThan(
       getInclusionStageSortRank('Proposed for Inclusion')
     );
+  });
+});
+
+describe('isForkInclusionCandidate', () => {
+  const withStatus = (forkName: string, ...statuses: string[]): EIP =>
+    makeEip({
+      forkRelationships: [
+        {
+          forkName,
+          wasHeadlinerCandidate: false,
+          isHeadliner: false,
+          statusHistory: statuses.map((status) => ({ status, call: null, date: null })),
+        },
+      ] as EIP['forkRelationships'],
+    });
+
+  it('includes EIPs in the inclusion funnel (proposed and beyond)', () => {
+    expect(isForkInclusionCandidate(withStatus('Hegota', 'Proposed'), 'hegota')).toBe(true);
+    expect(isForkInclusionCandidate(withStatus('Hegota', 'Considered'), 'hegota')).toBe(true);
+    expect(isForkInclusionCandidate(withStatus('Hegota', 'Scheduled'), 'hegota')).toBe(true);
+    expect(isForkInclusionCandidate(withStatus('Hegota', 'Included'), 'hegota')).toBe(true);
+  });
+
+  it('excludes declined, withdrawn, and other forks', () => {
+    expect(isForkInclusionCandidate(withStatus('Hegota', 'Declined'), 'hegota')).toBe(false);
+    expect(isForkInclusionCandidate(withStatus('Hegota', 'Withdrawn'), 'hegota')).toBe(false);
+    // Latest status wins: proposed then declined is not a candidate.
+    expect(isForkInclusionCandidate(withStatus('Hegota', 'Proposed', 'Declined'), 'hegota')).toBe(false);
+    // No relationship for the requested fork.
+    expect(isForkInclusionCandidate(withStatus('Glamsterdam', 'Proposed'), 'hegota')).toBe(false);
   });
 });
 

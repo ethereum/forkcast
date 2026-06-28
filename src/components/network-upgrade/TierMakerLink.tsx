@@ -7,7 +7,7 @@ interface TierMakerLinkProps {
 }
 
 /**
- * Inline header link to a fork's headliner tier maker (`/rank/{fork}`). Renders
+ * Inline header link to a fork's proposal tier maker (`/rank/{fork}`). Renders
  * nothing for forks without a tier maker, so it is safe to drop into any upgrade
  * page header. Styled to match the adjacent "View Meta EIP Discussion" link.
  */

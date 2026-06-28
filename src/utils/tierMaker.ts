@@ -1,7 +1,7 @@
-// Forks with a public headliner tier maker at `/rank/{fork}`. Adding one here
-// gives it a tier-maker page and an upgrade-page header link automatically; keep
-// it in sync with the forks that have headliner candidates in the EIP data.
-// `deadline`: optional submission deadline shown in the tier maker's info panel.
+// Forks with a public proposal tier maker at `/rank/{fork}`. Adding one here
+// gives it a tier-maker page and an upgrade-page header link automatically; add
+// a fork once it is actively collecting proposals for inclusion.
+// `deadline`: optional headliner submission deadline shown in the info panel.
 interface TierMakerConfig {
   deadline?: string;
 }

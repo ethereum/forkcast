@@ -10,6 +10,8 @@ import {
 import { useAnalytics } from "../hooks/useAnalytics";
 import { eipsData } from "../data/eips";
 import { getPendingProposalsForFork, PendingProposal } from "../data/pending-proposals";
+import { getUpgradeById } from "../data/upgrades";
+import { getTierMakerConfig } from "../utils/tierMaker";
 
 const ChampionDisplay: React.FC<{ champions?: Champion[] }> = ({ champions }) => {
   if (!champions || champions.length === 0 || !champions.some(c => c.name)) return null;
@@ -139,7 +141,20 @@ const truncateText = (text: string, maxLength: number): string => {
   return text.slice(0, maxLength).trim() + '...';
 };
 
-const RankPage: React.FC = () => {
+interface RankPageProps {
+  /** Lowercase upgrade id whose headliner proposals are ranked, e.g. 'hegota'. */
+  forkName: string;
+}
+
+const RankPage: React.FC<RankPageProps> = ({ forkName }) => {
+  const fork = forkName.toLowerCase();
+  const upgrade = getUpgradeById(fork);
+  // "Hegotá Upgrade" -> "Hegotá"; falls back to the id for unknown forks.
+  const displayName = (upgrade?.name ?? fork).replace(/\s+Upgrade$/, "");
+  const tierConfig = getTierMakerConfig(fork);
+  const storageKey = `${fork}-rankings`;
+  const rankPath = `/rank/${fork}`;
+
   const navigate = useNavigate();
   const { trackLinkClick, trackEvent } = useAnalytics();
   const [items, setItems] = useState<TierItem[]>([]);
@@ -159,29 +174,29 @@ const RankPage: React.FC = () => {
     typeof window !== "undefined" &&
     ("ontouchstart" in window || navigator.maxTouchPoints > 0);
 
-  // Initialize with Hegota headliner EIPs and pending proposals
+  // Initialize with this fork's headliner EIPs and pending proposals
   useEffect(() => {
-    // Get EIPs that were headliner candidates for Hegota
-    const hegotaHeadlinerEips = eipsData
-      .filter((eip) => wasHeadlinerCandidate(eip, "hegota"))
+    // Get EIPs that were headliner candidates for this fork
+    const headlinerEips = eipsData
+      .filter((eip) => wasHeadlinerCandidate(eip, fork))
       .map((eip) => ({
         id: `eip-${eip.id}`,
         eip,
         tier: null,
       }));
 
-    // Get pending proposals for Hegota
-    const hegotaPendingProposals = getPendingProposalsForFork("hegota")
+    // Get pending proposals for this fork
+    const pendingItems = getPendingProposalsForFork(fork)
       .map((proposal) => ({
         id: `pending-${proposal.id}`,
         pendingProposal: proposal,
         tier: null,
       }));
 
-    const allItems = [...hegotaHeadlinerEips, ...hegotaPendingProposals];
+    const allItems = [...headlinerEips, ...pendingItems];
 
     // Try to load saved rankings from localStorage
-    const savedRankings = localStorage.getItem("hegota-rankings");
+    const savedRankings = localStorage.getItem(storageKey);
     if (savedRankings) {
       try {
         const parsed = JSON.parse(savedRankings);
@@ -198,14 +213,14 @@ const RankPage: React.FC = () => {
     } else {
       setItems(allItems);
     }
-  }, []);
+  }, [fork, storageKey]);
 
   // Save rankings to localStorage whenever they change
   useEffect(() => {
     if (items.length > 0) {
-      localStorage.setItem("hegota-rankings", JSON.stringify(items));
+      localStorage.setItem(storageKey, JSON.stringify(items));
     }
-  }, [items]);
+  }, [items, storageKey]);
 
   // Initialize expanded collections based on layers
   useEffect(() => {
@@ -488,7 +503,7 @@ const RankPage: React.FC = () => {
     ctx.textBaseline = "middle";
 
     // Title in the center with date
-    const titleText = "Hegota Headliner Rankings";
+    const titleText = `${displayName} Headliner Rankings`;
     const titleFont = `${13 * scale}px -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif`;
     const dateFont = `${13 * scale}px -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif`;
 
@@ -511,10 +526,10 @@ const RankPage: React.FC = () => {
     ctx.fillStyle = "#f1f5f9";
     ctx.fillText(` • ${dateStamp}`, titleStartX + titleWidth, footerY1);
 
-    // Line 2: 'Make your own at forkcast.org/rank'
+    // Line 2: 'Make your own at forkcast.org/rank/{fork}'
     const prefix = "Make your own at ";
     const logo = "forkcast";
-    const suffix = ".org/rank";
+    const suffix = `.org${rankPath}`;
     ctx.font = `${
       13 * scale
     }px -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif`;
@@ -540,7 +555,7 @@ const RankPage: React.FC = () => {
         const url = URL.createObjectURL(blob);
         const a = document.createElement("a");
         a.href = url;
-        a.download = "hegota-headliner-rankings.png";
+        a.download = `${fork}-headliner-rankings.png`;
         document.body.appendChild(a);
         a.click();
         document.body.removeChild(a);
@@ -665,7 +680,7 @@ const RankPage: React.FC = () => {
 
   const handleReset = () => {
     setItems((prev) => prev.map((item) => ({ ...item, tier: null })));
-    localStorage.removeItem("hegota-rankings");
+    localStorage.removeItem(storageKey);
   };
 
   const handleExternalLinkClick = (linkType: string, url: string) => {
@@ -679,13 +694,13 @@ const RankPage: React.FC = () => {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex flex-col items-center h-auto py-3 sm:flex-row sm:justify-center sm:items-center sm:h-16 sm:py-0 relative">
             <button
-              onClick={() => navigate("/upgrade/hegota")}
+              onClick={() => navigate(`/upgrade/${fork}`)}
               className="mb-2 sm:mb-0 sm:absolute sm:left-0 sm:top-1/2 sm:-translate-y-1/2 text-slate-600 hover:text-slate-900 dark:text-slate-300 dark:hover:text-slate-100 transition-colors"
             >
-              ← Back to Hegota
+              ← Back to {displayName}
             </button>
             <h1 className="font-semibold text-slate-900 dark:text-slate-100 text-center truncate max-w-full overflow-hidden text-base sm:text-xl">
-              Hegota Headliner Tier Maker
+              {displayName} Headliner Tier Maker
             </h1>
           </div>
         </div>
@@ -723,7 +738,7 @@ const RankPage: React.FC = () => {
                 <div className="px-4 pb-4">
                   <p className="text-xs text-slate-600 dark:text-slate-300 leading-relaxed mb-4">
                     Users, node operators, app developers, core developers, and any other stakeholders
-                    are invited to voice their support for their preferred headliner proposals for the Hegota upgrade.
+                    are invited to voice their support for their preferred headliner proposals for the {displayName} upgrade.
                   </p>
                   <p className="text-xs text-slate-600 dark:text-slate-300 leading-relaxed mb-4">
                     Drag and drop (desktop) or tap-to-assign (mobile) the headliner proposals
@@ -733,34 +748,36 @@ const RankPage: React.FC = () => {
                   <p className="text-xs text-slate-600 dark:text-slate-300 leading-relaxed">
                     Download the image to share your rankings and start a conversation.{" "}
                     <a
-                      href="https://forkcast.org/upgrade/hegota"
+                      href={`/upgrade/${fork}`}
                       className="text-purple-600 hover:text-purple-700 dark:text-purple-400 dark:hover:text-purple-300"
                     >
-                      Learn more about Hegota
+                      Learn more about {displayName}
                     </a>
                     .
                   </p>
-                  <div className="mt-4 flex items-start gap-2.5 rounded-lg border border-slate-200 bg-slate-100 p-3 dark:border-slate-700 dark:bg-slate-800">
-                    <div className="flex-shrink-0 pt-0.5">
-                      <svg
-                        className="h-4 w-4 text-slate-500 dark:text-slate-400"
-                        xmlns="http://www.w3.org/2000/svg"
-                        fill="none"
-                        viewBox="0 0 24 24"
-                        strokeWidth={2}
-                        stroke="currentColor"
-                      >
-                        <path
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                          d="M11.25 11.25l.041-.02a.75.75 0 011.063.852l-.708 2.836a.75.75 0 001.063.852l.041-.021M21 12a9 9 0 11-18 0 9 9 0 0118 0zm-9-3.75h.008v.008H12v-.008z"
-                        />
-                      </svg>
+                  {tierConfig?.deadline && (
+                    <div className="mt-4 flex items-start gap-2.5 rounded-lg border border-slate-200 bg-slate-100 p-3 dark:border-slate-700 dark:bg-slate-800">
+                      <div className="flex-shrink-0 pt-0.5">
+                        <svg
+                          className="h-4 w-4 text-slate-500 dark:text-slate-400"
+                          xmlns="http://www.w3.org/2000/svg"
+                          fill="none"
+                          viewBox="0 0 24 24"
+                          strokeWidth={2}
+                          stroke="currentColor"
+                        >
+                          <path
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                            d="M11.25 11.25l.041-.02a.75.75 0 011.063.852l-.708 2.836a.75.75 0 001.063.852l.041-.021M21 12a9 9 0 11-18 0 9 9 0 0118 0zm-9-3.75h.008v.008H12v-.008z"
+                          />
+                        </svg>
+                      </div>
+                      <p className="text-xs leading-relaxed text-slate-600 dark:text-slate-300">
+                        The deadline for headliner proposal submissions was {tierConfig.deadline}.
+                      </p>
                     </div>
-                    <p className="text-xs leading-relaxed text-slate-600 dark:text-slate-300">
-                      The deadline for headliner proposal submissions was February 4th, 2025.
-                    </p>
-                  </div>
+                  )}
                 </div>
               )}
             </div>
@@ -769,7 +786,7 @@ const RankPage: React.FC = () => {
               <div className="bg-slate-800 px-4 py-3 flex items-center justify-between flex-shrink-0">
                 <h3 className="text-lg font-bold text-white">Your Rankings</h3>
                 <span className="text-sm font-mono text-slate-400">
-                  forkcast.org/rank
+                  forkcast.org{rankPath}
                 </span>
               </div>
               {/* Scrollable tier rows container */}
@@ -1127,7 +1144,7 @@ const RankPage: React.FC = () => {
 
             {hoveredItem.eip && (
               <ChampionDisplay
-                champions={hoveredItem.eip.forkRelationships.find(fork => fork.forkName.toLowerCase() === "hegota")?.champions}
+                champions={hoveredItem.eip.forkRelationships.find(fr => fr.forkName.toLowerCase() === fork)?.champions}
               />
             )}
             {hoveredItem.pendingProposal && hoveredItem.pendingProposal.champions.length > 0 && (

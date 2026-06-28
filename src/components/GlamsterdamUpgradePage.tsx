@@ -6,6 +6,7 @@ import ClientPriorityTab from './glamsterdam/ClientPriorityTab';
 import TestComplexityTab from './glamsterdam/TestComplexityTab';
 import { getUpgradeById } from '../data/upgrades';
 import { getUpgradeStatusColor } from '../utils/colors';
+import { TierMakerLink } from './network-upgrade';
 
 const upgrade = getUpgradeById('glamsterdam')!;
 
@@ -79,8 +80,8 @@ const GlamsterdamUpgradePage: React.FC<GlamsterdamUpgradePageProps> = ({ activeT
                   </span>
                 </div>
                 <p className="text-base text-slate-600 dark:text-slate-300 mb-2 leading-relaxed max-w-2xl">{upgrade.description}</p>
-                {upgrade.metaEipLink && (
-                  <div className="mb-4">
+                <div className="mb-4 flex flex-wrap items-center gap-x-5 gap-y-2">
+                  {upgrade.metaEipLink && (
                     <a
                       href={upgrade.metaEipLink}
                       target="_blank"
@@ -92,8 +93,9 @@ const GlamsterdamUpgradePage: React.FC<GlamsterdamUpgradePageProps> = ({ activeT
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
                       </svg>
                     </a>
-                  </div>
-                )}
+                  )}
+                  <TierMakerLink forkId={upgrade.id} />
+                </div>
               </div>
               <div className="hidden lg:block">
                 <span className={`px-3 py-1 text-xs font-medium rounded ${getUpgradeStatusColor(upgrade.status)}`}>

@@ -32,6 +32,9 @@ function callIssueRedirects() {
 // Static builds emit these as `<meta http-equiv="refresh">` pages. See the
 // "Intentional Route Changes" section of docs/astro-migration-phase-1.md.
 const legacyRedirects = {
+  // The tier maker is now per-fork at `/rank/{fork}`; keep the original short URL
+  // (shared publicly and baked into exported ranking images) pointing at Hegota.
+  '/rank': '/rank/hegota',
   '/feedback':
     'https://ethereum-magicians.org/t/community-feedback-on-non-headlining-features-in-glamsterdam/26410',
   '/planner': '/schedule',

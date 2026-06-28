@@ -25,7 +25,7 @@ export const VoiceYourSupportCTA: React.FC<VoiceYourSupportCTAProps> = ({ forkNa
           </div>
         </div>
         <Link
-          to="/rank"
+          to={`/rank/${forkName.toLowerCase()}`}
           className="flex-shrink-0 px-4 py-2.5 bg-purple-600 hover:bg-purple-700 text-white font-medium text-sm rounded-lg transition-colors shadow-sm hover:shadow-md flex items-center gap-2"
         >
           Create Your Ranking

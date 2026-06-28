@@ -11,3 +11,4 @@ export * from './HeadlinerOptions';
 export * from './NetworkUpgradeTimeline';
 export * from './OverviewSection';
 export * from './TableOfContents';
+export * from './TierMakerLink';

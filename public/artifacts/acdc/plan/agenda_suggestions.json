@@ -1,63 +1,63 @@
 {
   "series": "ACDC",
-  "generated": "2026-06-22",
-  "for_call": "ACDC #181",
+  "generated": "2026-06-29",
+  "for_call": "ACDC #182",
   "suggestions": [
     {
-      "topic": "EIP-8061 SFI and EIP-8080 DFI decisions for Hegotá",
+      "topic": "EIP-8061 (increase exit/consolidation churn) SFI decision",
       "priority": "high",
-      "rationale": "Both decisions were explicitly deferred to 'next ACDC (two weeks)' from ACDC #179 (May 28), making them due at ACDC #181. EIP-8061 has been tested since devnet-1; EIP-8080 needs community consensus on queue-sharing approach.",
+      "rationale": "Deferred from ACDC #179 with explicit expectation to revisit 'next ACDC (two weeks)'. Already implemented and tested since devnet-1. Overdue for stage decision.",
       "related_eips": [],
       "source": "deferred_decision"
     },
     {
-      "topic": "EIP-8282 (separate builder deposit contract) decision following ACDT review",
+      "topic": "glamsterdam-devnet-6 stability assessment and devnet-7 scoping",
       "priority": "high",
-      "rationale": "Deferred from ACDC #180 to 'ACDT Monday' (June 15) with explicit requirement for attack severity quantification and Justin's presence. Teams need to report findings on DOS attack surface vs. implementation cost tradeoff for Glamsterdam.",
-      "related_eips": [],
-      "source": "deferred_decision"
-    },
-    {
-      "topic": "Glamsterdam devnet-5 stability update and devnet-6 planning",
-      "priority": "high",
-      "rationale": "DevNet-5 was unstable as of ACDC #180 due to Grandine fork-choice bug (unfixed) and Prysm peering issues. Scope freeze for devnet-6 depends on two weeks of devnet-5 stability; need status check on Grandine fix and decision on whether to proceed to devnet-6.",
+      "rationale": "Devnet-6 launched just before ACDC #181 with Gloas fork activation. Need status update to confirm stability before devnet-7 launch (targeted mid-July). Devnet-7 scope includes consensus-specs #5399 patch and EIP-7688/8282 changes.",
       "related_eips": [],
       "source": "devnet_update"
     },
     {
-      "topic": "PTC attestation fork-choice liveness concerns and cross-branch attestation strategy",
-      "priority": "medium",
-      "rationale": "Potuz flagged serious liveness risk in ACDC #180: all clients use canonical head only for PTC duties, creating zero cross-branch attestations during multi-branch forks. Lazy fix (skip PTC if not in committee) deployed but doesn't address fundamental liveness issue. Needs architectural discussion before mainnet.",
-      "related_eips": [],
-      "source": "ongoing_discussion"
-    },
-    {
-      "topic": "EIP-8148 (custom sweep threshold) review and Hegotá inclusion decision",
-      "priority": "medium",
-      "rationale": "Proposed for Hegotá at ACDC #179 with explicit request for client review and Lido validator impact data before 'next ACDC.' Not discussed at ACDC #180 despite being due; needs confirmation of review completion and formal inclusion decision.",
-      "related_eips": [],
-      "source": "open_action_item"
-    },
-    {
-      "topic": "Beacon API validator state renaming (beacon-APIs #618) and breaking change policy",
-      "priority": "medium",
-      "rationale": "Breaking change flagged in ACDC #180: 'pending-queued' state names are outdated post-EIP-6110/7251. PR #618 open but requires ecosystem tooling input and potential API version bump. Action item assigned but no follow-up; needs coordination on breaking change timeline.",
-      "related_eips": [],
-      "source": "open_action_item"
-    },
-    {
-      "topic": "submitBeaconBlock builder API (builder-specs #162) stateful mapping concerns",
-      "priority": "low",
-      "rationale": "Deferred in ACDC #180 pending more client implementation experience. Concern raised about beacon node needing to track which builder URL supplied each bid. Not urgent but worth revisiting once devnet-6 builder integration is underway.",
+      "topic": "EIP-7688 (progressive containers) stage decision for Glamsterdam",
+      "priority": "high",
+      "rationale": "Deferred DFI decision from ACDC #181 contingent on devnet-6 stability. Three clients ready (Nimbus, Lodestar, Lighthouse), three uncertain. Targeting devnet-7; needs resolution before mid-July launch window.",
       "related_eips": [],
       "source": "deferred_decision"
     },
     {
-      "topic": "EIP-8243 (pre-aggregating attestations at source) feasibility and benefits vs. simpler alternatives",
-      "priority": "low",
-      "rationale": "Presented at ACDC #180 for Hegotá with claimed 2x wire reduction via batch-seal mechanism. Questions raised about whether benefit justifies complexity vs. just increasing aggregator count. New proposal needing initial feedback before moving forward.",
+      "topic": "EIP-8282 (builder deposit contract) constants finalization and audit scheduling",
+      "priority": "medium",
+      "rationale": "Contract update (target=8, max=64) targeting devnet-7. External audit planned for ~end of July post-devnet-7. Action item from #181 to open PR against sys-asm repo likely resolved async; need confirmation contract is final for audit.",
       "related_eips": [],
-      "source": "new_proposal"
+      "source": "ongoing_discussion"
+    },
+    {
+      "topic": "EIP-8148 (custom sweep threshold) review and Hegota inclusion decision",
+      "priority": "medium",
+      "rationale": "Proposed for Hegota in ACDC #179; client review requested. No follow-up in #180 or #181 suggests review incomplete. Lido validator impact data still pending.",
+      "related_eips": [],
+      "source": "open_action_item"
+    },
+    {
+      "topic": "PTC attestation cross-branch liveness risk and circuit breaker implementation status",
+      "priority": "medium",
+      "rationale": "Potuz flagged serious liveness risk in ACDC #180 (clients only attest canonical head for PTC). ACDC #181 confirmed circuit breakers should track missing payloads not beacon blocks. Need status update on client implementations.",
+      "related_eips": [],
+      "source": "ongoing_discussion"
+    },
+    {
+      "topic": "Hegotá headliner proposal window closure and CFI decisions",
+      "priority": "medium",
+      "rationale": "Proposal window opened ACDC #177; end date TBD based on Glamsterdam progress. With devnet-6 launched and devnet-7 targeting mid-July, time to close window and begin CFI selections for Hegotá.",
+      "related_eips": [],
+      "source": "ongoing_discussion"
+    },
+    {
+      "topic": "MPLEX deprecation timeline and client readiness",
+      "priority": "low",
+      "rationale": "ACDC #180 decided to keep MPLEX as fallback with removal ~Gloas+2 months. Lighthouse ready to drop; Teku and Nimbus need more time. Check-in on progress for coordinated removal.",
+      "related_eips": [],
+      "source": "ongoing_discussion"
     }
   ]
 }

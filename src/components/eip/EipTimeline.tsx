@@ -1,28 +1,13 @@
 import React from 'react';
 import { Link } from '../navigation';
 import { EIP } from '../../types';
-import { networkUpgrades, getUpgradePagePath } from '../../data/upgrades';
+import { networkUpgrades, getUpgradeById, getUpgradePagePath } from '../../data/upgrades';
 import { formatCallReference } from '../../domain/calls/callReference';
+import { buildEipTimelineForkGroup } from '../../domain/eips/eipTimeline';
 import { Tooltip } from '../ui';
 
 interface EipTimelineProps {
   eip: EIP;
-}
-
-interface StatusEntry {
-  status: string;
-  date?: string | null;
-  call?: string | null;
-  timestamp?: number;
-  isCurrentStatus: boolean;
-}
-
-interface PresentationEntry {
-  type: 'headliner_proposal' | 'headliner_presentation' | 'presentation' | 'debate';
-  date?: string | null;
-  call?: string | null;
-  link?: string;
-  timestamp?: number;
 }
 
 const getForkDisplayName = (forkName: string): string => {
@@ -37,8 +22,7 @@ interface ForkGroup {
   champions?: { name: string }[];
   currentStatus: string;
   isHeadliner: boolean;
-  statusHistory: StatusEntry[];
-  presentations: PresentationEntry[];
+  items: ReturnType<typeof buildEipTimelineForkGroup>['items'];
 }
 
 const statusColors: Record<string, { dot: string; text: string }> = {
@@ -101,53 +85,12 @@ export const EipTimeline: React.FC<EipTimelineProps> = ({ eip }) => {
     return getUpgradeOrder(b.forkName) - getUpgradeOrder(a.forkName);
   });
 
-  const forkGroups: ForkGroup[] = sortedForks.map((fork) => {
-    // If there are champions and no "Proposed" in history, prepend it
-    const hasProposedStep = fork.statusHistory.some(entry => entry.status === 'Proposed');
-    const hasChampions = fork.champions && fork.champions.length > 0 && fork.champions.some(c => c.name);
-    const effectiveHistory = (hasChampions && !hasProposedStep)
-      ? [{ status: 'Proposed' as const, call: null, date: null }, ...fork.statusHistory]
-      : fork.statusHistory;
-
-    // Reverse so most recent is first
-    const reversedHistory = [...effectiveHistory].reverse();
-    const currentStatus = reversedHistory[0]?.status || 'Proposed';
-
-    // Build status entries (include current status as first item)
-    const statusHistory: StatusEntry[] = reversedHistory
-      .map((entry, index) => ({
-        status: entry.status,
-        date: entry.date,
-        call: entry.call,
-        timestamp: entry.timestamp,
-        isCurrentStatus: index === 0,
-      }))
-      .filter((entry) => {
-        // Always show current status
-        if (entry.isCurrentStatus) return true;
-        const hasAttribution = entry.date || entry.call;
-        const isProposed = entry.status === 'Proposed';
-        return hasAttribution || isProposed;
-      });
-
-    // Build presentation entries
-    const presentations: PresentationEntry[] = (fork.presentationHistory || []).map(p => ({
-      type: p.type,
-      date: p.date,
-      call: p.call,
-      link: p.link,
-      timestamp: p.timestamp,
-    }));
-
-    return {
-      forkName: fork.forkName,
-      champions: fork.champions,
-      currentStatus,
-      isHeadliner: !!fork.isHeadliner,
-      statusHistory,
-      presentations,
-    };
-  });
+  const forkGroups: ForkGroup[] = sortedForks.map((fork) =>
+    buildEipTimelineForkGroup(fork, {
+      eipId: eip.id,
+      headlinerSelection: getUpgradeById(fork.forkName.toLowerCase())?.headlinerSelection,
+    })
+  );
 
   const hasCreatedDate = !!eip.createdDate;
   const totalNodes = forkGroups.length + (hasCreatedDate ? 1 : 0);
@@ -169,30 +112,7 @@ export const EipTimeline: React.FC<EipTimelineProps> = ({ eip }) => {
               const visibleChampions = group.champions?.filter(c => c.name) ?? [];
               const hasVisibleChampions = visibleChampions.length > 0;
 
-              // Merge and sort status history and presentations chronologically
-              const allItems = [
-                ...group.statusHistory.map((entry) => ({
-                  type: 'status' as const,
-                  entry,
-                  date: entry.date,
-                  isCurrentStatus: entry.isCurrentStatus
-                })),
-                ...group.presentations.map((presentation) => ({
-                  type: 'presentation' as const,
-                  presentation,
-                  date: presentation.date
-                })),
-              ].sort((a, b) => {
-                // Current status always first
-                if (a.type === 'status' && a.isCurrentStatus) return -1;
-                if (b.type === 'status' && b.isCurrentStatus) return 1;
-
-                // Then sort by date (most recent first)
-                if (!a.date && !b.date) return 0;
-                if (!a.date) return 1;
-                if (!b.date) return -1;
-                return new Date(b.date).getTime() - new Date(a.date).getTime();
-              });
+              const allItems = group.items;
 
               return (
                 <div key={group.forkName} className="relative flex gap-2.5 sm:gap-3">
@@ -243,7 +163,7 @@ export const EipTimeline: React.FC<EipTimelineProps> = ({ eip }) => {
                           const isLastChild = idx === allItems.length - 1;
 
                           if (item.type === 'status') {
-                            const entry = item.entry;
+                            const entry = item;
                             const entryColors = statusColors[entry.status] || statusColors.Proposed;
                             return (
                               <div key={`status-${idx}`} className={`relative flex items-start gap-2.5 ${isLastChild ? '' : 'pb-2.5'}`}>
@@ -299,16 +219,16 @@ export const EipTimeline: React.FC<EipTimelineProps> = ({ eip }) => {
                               </div>
                             );
                           } else {
-                            const presentation = item.presentation;
+                            const event = item;
                             const label = {
-                              'headliner_proposal': 'Headliner Proposal',
-                              'headliner_presentation': 'Headliner Presentation',
-                              'presentation': 'Presented',
-                              'debate': 'Debated',
-                            }[presentation.type] || 'Presented';
+                              headlinerProposed: 'Headliner Proposed',
+                              headlinerPresented: 'Headliner Presented',
+                              headlinerWithdrawn: 'Headliner Withdrawn',
+                              discussion: 'Discussion',
+                            }[event.kind];
 
                             return (
-                              <div key={`pres-${idx}`} className={`relative flex items-start gap-2.5 ${isLastChild ? '' : 'pb-2.5'}`}>
+                              <div key={`event-${idx}`} className={`relative flex items-start gap-2.5 ${isLastChild ? '' : 'pb-2.5'}`}>
                                 <div className="relative mt-1 w-2 shrink-0 self-stretch">
                                   <div className="relative z-10 w-2 h-2 rounded-full bg-slate-300 dark:bg-slate-600" />
                                   {!isLastChild && (
@@ -319,14 +239,14 @@ export const EipTimeline: React.FC<EipTimelineProps> = ({ eip }) => {
                                   <span className="text-xs text-slate-500 dark:text-slate-400">
                                     {label}
                                   </span>
-                                  {(presentation.date || presentation.call || presentation.link) && (
+                                  {(event.date || event.call || event.link) && (
                                     <>
                                       <span className="hidden md:inline text-xs text-slate-400 dark:text-slate-400">
                                         {' · '}
-                                        {presentation.date && formatDate(presentation.date)}
-                                        {presentation.date && (presentation.call || presentation.link) && ' · '}
-                                        {presentation.call && (() => {
-                                          const { display, link } = formatCallReference(presentation.call, presentation.timestamp);
+                                        {event.date && formatDate(event.date)}
+                                        {event.date && (event.call || event.link) && ' · '}
+                                        {event.call && (() => {
+                                          const { display, link } = formatCallReference(event.call, event.timestamp);
                                           return (
                                             <Link
                                               to={link}
@@ -336,9 +256,9 @@ export const EipTimeline: React.FC<EipTimelineProps> = ({ eip }) => {
                                             </Link>
                                           );
                                         })()}
-                                        {!presentation.call && presentation.link && (
+                                        {!event.call && event.link && (
                                           <a
-                                            href={presentation.link}
+                                            href={event.link}
                                             target="_blank"
                                             rel="noopener noreferrer"
                                             className="hover:text-purple-600 dark:hover:text-purple-400 underline decoration-slate-300 dark:decoration-slate-600 underline-offset-2 inline-flex items-center gap-1"
@@ -351,10 +271,10 @@ export const EipTimeline: React.FC<EipTimelineProps> = ({ eip }) => {
                                         )}
                                       </span>
                                       <div className="md:hidden text-xs text-slate-400 dark:text-slate-400">
-                                        {presentation.date && formatDate(presentation.date)}
-                                        {presentation.date && (presentation.call || presentation.link) && ' · '}
-                                        {presentation.call && (() => {
-                                          const { display, link } = formatCallReference(presentation.call, presentation.timestamp);
+                                        {event.date && formatDate(event.date)}
+                                        {event.date && (event.call || event.link) && ' · '}
+                                        {event.call && (() => {
+                                          const { display, link } = formatCallReference(event.call, event.timestamp);
                                           return (
                                             <Link
                                               to={link}
@@ -364,9 +284,9 @@ export const EipTimeline: React.FC<EipTimelineProps> = ({ eip }) => {
                                             </Link>
                                           );
                                         })()}
-                                        {!presentation.call && presentation.link && (
+                                        {!event.call && event.link && (
                                           <a
-                                            href={presentation.link}
+                                            href={event.link}
                                             target="_blank"
                                             rel="noopener noreferrer"
                                             className="hover:text-purple-600 dark:hover:text-purple-400 underline decoration-slate-300 dark:decoration-slate-600 underline-offset-2 inline-flex items-center gap-1"

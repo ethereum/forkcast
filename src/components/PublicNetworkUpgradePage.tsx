@@ -412,7 +412,7 @@ const PublicNetworkUpgradePage: React.FC<PublicNetworkUpgradePageProps> = ({
         : ['Included', 'Scheduled for Inclusion', 'Considered for Inclusion', 'Proposed for Inclusion', 'Declined for Inclusion']
       ).flatMap(stage => {
           // For Glamsterdam, exclude unselected headliner candidates from stage sections since they have their own section
-          // Selected headliners (isHeadliner=true) should still appear in their respective stages
+          // Selected headliners should still appear in their respective stages
           let stageEips = eips.filter(eip => {
             const matchesStage = getInclusionStage(eip, forkName) === stage;
             if (forkName.toLowerCase() === 'glamsterdam') {

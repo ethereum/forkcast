@@ -39,6 +39,7 @@ const UPCOMING_CALL_SERIES_TO_TYPE: Record<string, CallType> = {
   'encrypt the mempool': 'etm',
   'native account abstraction': 'aa',
   'p2p networking': 'p2p',
+  'ssz engine api': 'ssz',
 };
 
 const normalizeCallSeries = (series: string): string =>
@@ -92,6 +93,7 @@ const resolveUpcomingCallTypeFromTitle = (title: string): CallType | undefined =
   if (/(?:Post-Quantum\s*\(PQ\)|PQ)\s*Interop/i.test(title)) return 'pqi';
   if (/Fast Confirmation Rule|\(FCR\)/i.test(title)) return 'fcr';
   if (/All\s*Wallet\s*Devs|AllWalletDevs/i.test(title)) return 'awd';
+  if (/SSZ Engine API/i.test(title)) return 'ssz';
 
   return undefined;
 };

@@ -112,6 +112,16 @@ All Wallet Devs`;
   it('falls back to the title when the body series is missing', () => {
     expect(resolveUpcomingCallType('FOCIL Breakout #32, April 07, 2026')).toBe('focil');
   });
+
+  it('maps SSZ Engine API from the body call series', () => {
+    const body = `### Call Series
+
+SSZ Engine API`;
+
+    expect(
+      resolveUpcomingCallType('SSZ Engine API #2, July 11, 2026', body)
+    ).toBe('ssz');
+  });
 });
 
 describe('isUpcomingCallStillRelevant', () => {

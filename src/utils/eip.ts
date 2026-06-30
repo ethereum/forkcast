@@ -57,6 +57,21 @@ export const getInclusionStage = (eip: EIP, forkName?: string): InclusionStage =
 };
 
 /**
+ * Whether an EIP is a live inclusion candidate for a fork: it entered the
+ * inclusion funnel (Proposed/Considered/Scheduled/Included) and was not later
+ * declined or withdrawn. This is the set the tier maker lets people rank.
+ */
+export const isForkInclusionCandidate = (eip: EIP, forkName?: string): boolean => {
+  const stage = getInclusionStage(eip, forkName);
+  return (
+    stage === 'Proposed for Inclusion' ||
+    stage === 'Considered for Inclusion' ||
+    stage === 'Scheduled for Inclusion' ||
+    stage === 'Included'
+  );
+};
+
+/**
  * Get the compact display label for an inclusion stage.
  */
 export const getStageAbbreviation = (stage: string): string =>

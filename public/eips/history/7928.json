@@ -2,6 +2,16 @@
   "eipId": 7928,
   "commits": [
     {
+      "sha": "6666fcc044f37af693b9fd32df6e7643d6c99c4c",
+      "date": "2026-07-02T14:06:07Z",
+      "message": "Update EIP-7928: Revert 7702 tracking",
+      "author": "nerolation",
+      "prNumber": null,
+      "patch": "@@ -164,13 +164,7 @@ Post-state costs (e.g., `GAS_NEW_ACCOUNT` for calls to empty accounts, `GAS_SELF\n \n #### EIP-7702 Delegation\n \n-When a call target has an [EIP-7702](./eip-7702.md) delegation, the target is accessed to resolve the delegation. The delegated address is loaded, and MUST appear in the BAL, only if **all** of the following hold:\n-\n-- Sufficient gas remains to cover the delegated address's own `access_cost`.\n-- For value-transferring `CALL` or `CALLCODE`, the sender's balance covers the value transfer (`sender_balance >= value`).\n-- The call stack depth limit is not violated.\n-\n-If any of these checks fails, the delegated address is not loaded and MUST NOT appear in the BAL. The original call target is still included, having been accessed to resolve the delegation.\n+When a call target has an [EIP-7702](./eip-7702.md) delegation, the target is accessed to resolve the delegation, which also accesses the delegated address. The delegated address requires its own `access_cost` check before being accessed; if that gas check fails, the delegated address MUST NOT appear in the BAL. Otherwise both the original call target and the delegated address MUST appear in the BAL, including when the call subsequently fails its sender-balance (`sender_balance >= value`) or call-stack-depth check, since the delegation is resolved before those checks.\n \n Note: Delegated accounts cannot be empty, so `GAS_NEW_ACCOUNT` never applies when resolving delegations.\n ",
+      "additions": 1,
+      "deletions": 7
+    },
+    {
       "sha": "cb1364d60e14a24fe1a94d4303661cdbf8c68271",
       "date": "2026-06-01T07:21:32Z",
       "message": "Update EIP-7928: Disallow empty change set for storage slot",
@@ -598,12 +608,12 @@
   ],
   "openPrs": [
     {
-      "number": 11838,
-      "title": "Update EIP-7928: Revert 7702 tracking",
+      "number": 11854,
+      "title": "Update EIP-7928: SSTORE access cost check",
       "author": "nerolation",
-      "updatedAt": "2026-06-26T09:15:34Z",
-      "additions": 1,
-      "deletions": 7
+      "updatedAt": "2026-07-02T14:25:37Z",
+      "additions": 3,
+      "deletions": 3
     },
     {
       "number": 9873,

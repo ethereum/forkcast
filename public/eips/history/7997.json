@@ -2,6 +2,26 @@
   "eipId": 7997,
   "commits": [
     {
+      "sha": "f63ba053296dbb684aafdcfb9e4be7c972e88f5d",
+      "date": "2026-07-02T06:42:54Z",
+      "message": "Update EIP-7997: clarify nonce for irregular state transition",
+      "author": "nerolation",
+      "prNumber": null,
+      "patch": "@@ -40,7 +40,7 @@ The chain's state MUST include `FACTORY_ADDRESS` with this runtime code:\n 0x7fffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffe03601600081602082378035828234f58015156039578182fd5b8082525050506014600cf3\n ```\n \n-A chain may satisfy this requirement by any means that results in the account above: deploying the factory with an ordinary transaction (for example, its keyless creation transaction) where the chain's gas parameters permit it, including the account in the genesis state, or inserting it via an irregular state transition. Regardless of the method used, the resulting `FACTORY_ADDRESS` account MUST have the runtime code specified above. If deployed using an irregular state transition, the nonce SHOULD be set to 1.\n+A chain may satisfy this requirement by any means that results in the account above: deploying the factory with an ordinary transaction (for example, its keyless creation transaction) where the chain's gas parameters permit it, including the account in the genesis state, or inserting it via an irregular state transition. Regardless of the method used, the resulting `FACTORY_ADDRESS` account MUST have the runtime code specified above. When deployed using an irregular state transition, if the account nonce is 0, it MUST be set to 1, and if the account nonce is already nonzero, it MUST NOT be modified.\n \n This is a contract that invokes the `CREATE2` instruction ([EIP-1014](./eip-1014.md)) with a salt equal to the first 32 bytes of the call's input data, init code equal to the remaining data, and value equal to the call's value. If input data is smaller than 32 bytes, the contract will attempt to copy close to 2^256 bytes of calldata and should revert as a result. If contract creation fails (`CREATE2` outputs `0`), the call reverts with empty return data. When successful, the address is returned in exactly 20 bytes of data with no padding.\n ",
+      "additions": 1,
+      "deletions": 1
+    },
+    {
+      "sha": "0b59e164e21764ffdc5bca33ee0cf191e73b6002",
+      "date": "2026-07-02T05:27:44Z",
+      "message": "Update EIP-7997: remove specification of nonce",
+      "author": "fjl",
+      "prNumber": null,
+      "patch": "@@ -34,13 +34,13 @@ Keyless transactions have been the most successful approach. However, since such\n \n * `FACTORY_ADDRESS` = `0x4e59b44847b379578588920cA78FbF26c0B4956C`\n \n-The chain's state MUST include `FACTORY_ADDRESS` with nonce 1 and this runtime code:\n+The chain's state MUST include `FACTORY_ADDRESS` with this runtime code:\n \n ```\n 0x7fffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffe03601600081602082378035828234f58015156039578182fd5b8082525050506014600cf3\n ```\n \n-A chain may satisfy this requirement by any means that results in the account above: deploying the factory with an ordinary transaction (for example, its keyless creation transaction) where the chain's gas parameters permit it, including the account in the genesis state, or inserting it via an irregular state transition. Regardless of the method used, the resulting `FACTORY_ADDRESS` account MUST have the nonce and runtime code specified above.\n+A chain may satisfy this requirement by any means that results in the account above: deploying the factory with an ordinary transaction (for example, its keyless creation transaction) where the chain's gas parameters permit it, including the account in the genesis state, or inserting it via an irregular state transition. Regardless of the method used, the resulting `FACTORY_ADDRESS` account MUST have the runtime code specified above. If deployed using an irregular state transition, the nonce SHOULD be set to 1.\n \n This is a contract that invokes the `CREATE2` instruction ([EIP-1014](./eip-1014.md)) with a salt equal to the first 32 bytes of the call's input data, init code equal to the remaining data, and value equal to the call's value. If input data is smaller than 32 bytes, the contract will attempt to copy close to 2^256 bytes of calldata and should revert as a result. If contract creation fails (`CREATE2` outputs `0`), the call reverts with empty return data. When successful, the address is returned in exactly 20 bytes of data with no padding.\n ",
+      "additions": 2,
+      "deletions": 2
+    },
+    {
       "sha": "a0a7f5adb491fc6ad4b008f307899c30f348db22",
       "date": "2026-06-09T20:01:38Z",
       "message": "Update EIP-7997: Switch to Arachnid factory",
@@ -54,12 +74,20 @@
   ],
   "openPrs": [
     {
-      "number": 11846,
-      "title": "Update EIP-7997: remove specification of nonce",
-      "author": "fjl",
-      "updatedAt": "2026-07-01T17:03:16Z",
-      "additions": 2,
-      "deletions": 2
+      "number": 11851,
+      "title": "Update EIP-7997: clarify 7997",
+      "author": "rjl493456442",
+      "updatedAt": "2026-07-02T06:27:36Z",
+      "additions": 1,
+      "deletions": 1
+    },
+    {
+      "number": 11849,
+      "title": "Update EIP-7997: Replace Yul with mnemonics",
+      "author": "frangio",
+      "updatedAt": "2026-07-02T03:03:31Z",
+      "additions": 33,
+      "deletions": 6
     },
     {
       "number": 10847,

@@ -2,6 +2,16 @@
   "eipId": 7928,
   "commits": [
     {
+      "sha": "1b4e9a44c1fd51ffd8afe4f0c404cf51d84cff64",
+      "date": "2026-07-04T10:17:07Z",
+      "message": "Update EIP-7928: SSTORE access cost check",
+      "author": "nerolation",
+      "prNumber": null,
+      "patch": "@@ -152,12 +152,12 @@ The following table specifies pre-state validation costs in addition to the base\n | `CREATE` | `memory_expansion` + `INITCODE_WORD_COST` + `GAS_CREATE` |\n | `CREATE2` | `memory_expansion` + `INITCODE_WORD_COST` + `GAS_KECCAK256_WORD` + `GAS_CREATE` |\n | `SLOAD` | `access_cost` |\n-| `SSTORE` | More than `GAS_CALL_STIPEND` available |\n+| `SSTORE` | `access_cost`, and more than `GAS_CALL_STIPEND` available |\n | `SELFDESTRUCT` | `GAS_SELF_DESTRUCT` + `access_cost` |\n \n Where:\n \n-- `access_cost`: For account-accessing opcodes: `COLD_ACCOUNT_ACCESS_COST` if cold, `WARM_STORAGE_READ_COST` if warm. For storage-accessing opcodes (`SLOAD`): `COLD_SLOAD_COST` if cold, `WARM_STORAGE_READ_COST` if warm.\n+- `access_cost`: For account-accessing opcodes: `COLD_ACCOUNT_ACCESS_COST` if cold, `WARM_STORAGE_READ_COST` if warm. For storage-accessing opcodes (`SLOAD` and `SSTORE`): `COLD_SLOAD_COST` if cold, `WARM_STORAGE_READ_COST` if warm.\n - `memory_expansion`: Gas cost to expand memory for input/output regions\n \n Post-state costs (e.g., `GAS_NEW_ACCOUNT` for calls to empty accounts, `GAS_SELF_DESTRUCT_NEW_ACCOUNT` if beneficiary does not exist) do not affect BAL inclusion since the target has already been accessed.\n@@ -170,7 +170,7 @@ Note: Delegated accounts cannot be empty, so `GAS_NEW_ACCOUNT` never applies whe\n \n #### SSTORE\n \n-`SSTORE` performs an implicit read of the current storage value for gas calculation. The `GAS_CALL_STIPEND` check prevents this state access when operating within the call stipend. If `SSTORE` fails this check, the storage slot MUST NOT appear in `storage_reads` or `storage_changes`.\n+`SSTORE` performs an implicit read of the current storage value for gas calculation. Before this read, the frame MUST cover the storage slot's `access_cost` and MUST also satisfy the `GAS_CALL_STIPEND` sentry (`gas_left > GAS_CALL_STIPEND`); because the access cost can exceed `GAS_CALL_STIPEND` after repricing, the stipend sentry alone is no longer sufficient. If `SSTORE` fails this check, the storage slot MUST NOT appear in `storage_reads` or `storage_changes`.\n \n ### Ordering, Uniqueness and Determinism\n ",
+      "additions": 3,
+      "deletions": 3
+    },
+    {
       "sha": "6666fcc044f37af693b9fd32df6e7643d6c99c4c",
       "date": "2026-07-02T14:06:07Z",
       "message": "Update EIP-7928: Revert 7702 tracking",
@@ -607,14 +617,6 @@
     }
   ],
   "openPrs": [
-    {
-      "number": 11854,
-      "title": "Update EIP-7928: SSTORE access cost check",
-      "author": "nerolation",
-      "updatedAt": "2026-07-03T06:32:55Z",
-      "additions": 3,
-      "deletions": 3
-    },
     {
       "number": 9873,
       "title": "Update EIP-7928: Add note about linear scaling of BAL size w.r.t. `block.gasLimit`",

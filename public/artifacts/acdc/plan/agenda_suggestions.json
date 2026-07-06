@@ -1,61 +1,61 @@
 {
   "series": "ACDC",
-  "generated": "2026-06-29",
+  "generated": "2026-07-06",
   "for_call": "ACDC #182",
   "suggestions": [
     {
-      "topic": "EIP-8061 (increase exit/consolidation churn) SFI decision",
+      "topic": "glamsterdam-devnet-6 Gloas fork stability and devnet-7 readiness",
       "priority": "high",
-      "rationale": "Deferred from ACDC #179 with explicit expectation to revisit 'next ACDC (two weeks)'. Already implemented and tested since devnet-1. Overdue for stage decision.",
-      "related_eips": [],
-      "source": "deferred_decision"
-    },
-    {
-      "topic": "glamsterdam-devnet-6 stability assessment and devnet-7 scoping",
-      "priority": "high",
-      "rationale": "Devnet-6 launched just before ACDC #181 with Gloas fork activation. Need status update to confirm stability before devnet-7 launch (targeted mid-July). Devnet-7 scope includes consensus-specs #5399 patch and EIP-7688/8282 changes.",
+      "rationale": "devnet-6 launched just before #181 with Gloas fork activation during the call. Stability assessment is critical before proceeding to devnet-7 (targeted mid-July per #181). EIP-7688 DFI decision is contingent on devnet-6 stability.",
       "related_eips": [],
       "source": "devnet_update"
     },
     {
-      "topic": "EIP-7688 (progressive containers) stage decision for Glamsterdam",
+      "topic": "EIP-8061 (increase exit/consolidation churn) SFI decision",
       "priority": "high",
-      "rationale": "Deferred DFI decision from ACDC #181 contingent on devnet-6 stability. Three clients ready (Nimbus, Lodestar, Lighthouse), three uncertain. Targeting devnet-7; needs resolution before mid-July launch window.",
+      "rationale": "Deferred from #179 for a two-week revisit (expected at #180 or #181 but not addressed). Already implemented and tested since devnet-1 with intent to SFI. Overdue for final stage decision.",
       "related_eips": [],
       "source": "deferred_decision"
     },
     {
-      "topic": "EIP-8282 (builder deposit contract) constants finalization and audit scheduling",
-      "priority": "medium",
-      "rationale": "Contract update (target=8, max=64) targeting devnet-7. External audit planned for ~end of July post-devnet-7. Action item from #181 to open PR against sys-asm repo likely resolved async; need confirmation contract is final for audit.",
+      "topic": "EIP-7688 (progressive containers) DFI decision for Glamsterdam",
+      "priority": "high",
+      "rationale": "Targeted for devnet-7 in #181 but not DFI'd, with decision deferred pending devnet-6 stability. devnet-7 is ~2–3 weeks out (mid-July), so DFI decision is needed now to finalize scope.",
+      "related_eips": [],
+      "source": "deferred_decision"
+    },
+    {
+      "topic": "EIP-8282 (builder deposit contract) contract finalization and audit scheduling",
+      "priority": "high",
+      "rationale": "Updated contract (fee-per-enqueue) targets devnet-7 with external audit scheduled for end of July. Action from #181 requires PR for new contract constants (target=8, max=64) and signal for audit readiness. Need confirmation on contract finalization status.",
       "related_eips": [],
       "source": "ongoing_discussion"
     },
     {
-      "topic": "EIP-8148 (custom sweep threshold) review and Hegota inclusion decision",
+      "topic": "Beacon API PRs review status (608, 580, 606, 621, 618)",
       "priority": "medium",
-      "rationale": "Proposed for Hegota in ACDC #179; client review requested. No follow-up in #180 or #181 suggests review incomplete. Lido validator impact data still pending.",
+      "rationale": "Multiple Beacon API PRs were assigned for review by ACDT in #181. PR #618 (validator state rename) from #180 is a breaking change requiring broader ecosystem engagement. Need confirmation on review completion and merge readiness.",
       "related_eips": [],
       "source": "open_action_item"
     },
     {
-      "topic": "PTC attestation cross-branch liveness risk and circuit breaker implementation status",
+      "topic": "ePBS circuit breaker implementation status across clients",
       "priority": "medium",
-      "rationale": "Potuz flagged serious liveness risk in ACDC #180 (clients only attest canonical head for PTC). ACDC #181 confirmed circuit breakers should track missing payloads not beacon blocks. Need status update on client implementations.",
+      "rationale": "#181 decided circuit breakers should track missing payloads (not beacon blocks) with client-specific implementations acceptable. Prysm was using incorrect consensus-block-based breaker. Need status updates on client implementations before devnet-7.",
       "related_eips": [],
       "source": "ongoing_discussion"
     },
     {
-      "topic": "Hegotá headliner proposal window closure and CFI decisions",
+      "topic": "Hegota headliner proposals: EIP-8148, EIP-8243, EIP-8025 status",
       "priority": "medium",
-      "rationale": "Proposal window opened ACDC #177; end date TBD based on Glamsterdam progress. With devnet-6 launched and devnet-7 targeting mid-July, time to close window and begin CFI selections for Hegotá.",
+      "rationale": "EIP-8148 (custom sweep threshold) proposed for Hegota in #179 with client review requested but not followed up in later calls. EIP-8243 (pre-aggregating attestations) presented in #180. EIP-8025 (optional execution proofs) from #178 had no subsequent discussion. Need clarity on Hegota scope decisions.",
       "related_eips": [],
       "source": "ongoing_discussion"
     },
     {
-      "topic": "MPLEX deprecation timeline and client readiness",
+      "topic": "PTC attestation cross-branch liveness concerns",
       "priority": "low",
-      "rationale": "ACDC #180 decided to keep MPLEX as fallback with removal ~Gloas+2 months. Lighthouse ready to drop; Teku and Nimbus need more time. Check-in on progress for coordinated removal.",
+      "rationale": "Potuz flagged in #180 that all clients use canonical head only for PTC duties, creating liveness risk during network forks. Issue was not revisited in #181. May warrant discussion if devnet-6 reveals related issues.",
       "related_eips": [],
       "source": "ongoing_discussion"
     }

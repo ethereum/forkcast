@@ -65,5 +65,15 @@
       "prNumber": null,
       "patch": "@@ -0,0 +1,59 @@\n+---\n+eip: 7843\n+title: SLOT precompile\n+description: Precompile to get the current slot\n+author: Marc Harvey-Hill (@Marchhill)\n+discussions-to: https://ethereum-magicians.org/t/eip-7843-slot-precompile/22234\n+status: Draft\n+type: Standards Track\n+category: Core\n+created: 2024-12-06\n+---\n+\n+## Abstract\n+\n+This EIP proposes to add a new precompile that returns the corresponding slot for the current block.\n+\n+## Motivation\n+\n+It is currently possible to calculate the slot number from the block timestamp. However, this requires hardcoding the chain slot length into a smart contract. This would require the contract code to be changed in the event of a future change to slot length. A better approach is for the slot number to be calculated by the execution layer and exposed in a precompile.\n+\n+### Encrypted Mempools\n+\n+This precompile aims to improve support for encrypted mempools. In order to be secure, the validity of encrypted mempool transactions should be tied to the inclusion of all transactions by a proposer in the correct slot. This rule can be enforced by a smart contract using this precompile.\n+\n+## Specification\n+\n+If `block.timestamp >= TBD` a new precompiled contract `SLOT` shall be created at address `TBD`.\n+\n+`SLOT` returns as output the current slot number as an 8 byte ulong in big endian encoding.\n+\n+### Gas Cost\n+\n+The gas cost for `SLOT` is a fixed fee of `2`\n+\n+## Rationale\n+\n+### Gas Price\n+\n+The precompile is priced to match similar opcodes in the `W_base` set.\n+\n+### Precompile\n+\n+Making the feature a precompile rather than an opcode gives L2s flexibility to decide whether to implement it.\n+\n+## Backwards Compatibility\n+\n+No backward compatibility issues found.\n+\n+## Test Cases\n+\n+N/A\n+\n+## Security Considerations\n+\n+None.\n+\n+## Copyright\n+\n+Copyright and related rights waived via [CC0](../LICENSE.md)."
     }
+  ],
+  "openPrs": [
+    {
+      "number": 11867,
+      "title": "Update EIP-7843: Move to Review",
+      "author": "Marchhill",
+      "updatedAt": "2026-07-06T14:22:39Z",
+      "additions": 1,
+      "deletions": 1
+    }
   ]
 }

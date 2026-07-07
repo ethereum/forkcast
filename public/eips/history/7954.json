@@ -33,5 +33,15 @@
       "prNumber": null,
       "patch": "@@ -0,0 +1,43 @@\n+---\n+eip: 7954\n+title: Increase Maximum Contract Size\n+description: Raise the maximum contract code size from 24KiB to 32KiB and initcode size from 48KiB to 64KiB.\n+author: Giulio Rebuffo (@Giulio2002), Ben Adams (@badams)\n+discussions-to: https://ethereum-magicians.org/t/increase-maximum-contract-size-to-48kb/24509\n+status: Draft\n+type: Standards Track\n+category: Core\n+created: 2025-06-09\n+requires: 170, 3860\n+---\n+\n+## Abstract\n+\n+This EIP proposes to raise the maximum allowed size for contract code deployed on Ethereum from 24,576 bytes to 32,768 bytes.\n+\n+## Motivation\n+\n+The current 24KiB contract size limit can be restrictive for complex contracts and applications. Increasing the limit to 32KiB allows for more feature-rich contracts while maintaining reasonable constraints on block and state growth.\n+\n+## Specification\n+\n+1. Update the [EIP-170](./eip-170.md) contract code size limit of 24KiB (`0x6000` bytes) to 32KiB (`0x8000` bytes).\n+2. Update the [EIP-3860](./eip-3860.md) initcode size limit of 48KiB (`0xC000` bytes) to 64KiB (`0x10000` bytes).\n+\n+## Rationale\n+\n+- **Developer Flexibility:** Enables more complex contracts and features.\n+- **Backward Compatibility:** Existing contracts are unaffected.\n+- **Simplicity:** Only the size limit is changed, with no other protocol modifications.\n+\n+## Backwards Compatibility\n+\n+This change is not backwards compatible and must be activated via a network upgrade (hard fork). Contracts larger than 24KiB, up to 32KiB, will be deployable after activation.\n+\n+## Security Considerations\n+\n+A higher contract size limit may marginally increase the risk of denial-of-service attacks via large contracts, but the new limit remains conservative.\n+\n+## Copyright\n+\n+Copyright and related rights waived via [CC0](../LICENSE.md)."
     }
+  ],
+  "openPrs": [
+    {
+      "number": 11876,
+      "title": "Update EIP-7954: Move to Review",
+      "author": "poojaranjan",
+      "updatedAt": "2026-07-07T00:22:53Z",
+      "additions": 1,
+      "deletions": 1
+    }
   ]
 }

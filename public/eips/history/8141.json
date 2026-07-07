@@ -2,6 +2,16 @@
   "eipId": 8141,
   "commits": [
     {
+      "sha": "12cf15e3c7df7243ce10605defb71d4de22de052",
+      "date": "2026-07-06T19:03:46Z",
+      "message": "Update EIP-8141: 8141 nits",
+      "author": "lightclient",
+      "prNumber": null,
+      "patch": "@@ -379,20 +379,24 @@ def signature_gas(sig):\n \n signature_verification_cost = sum(signature_gas(sig) for sig in tx.signatures)\n \n+frame_data_cost = sum(calldata_cost(frame.data) for frame in tx.frames)\n+signature_data_cost = sum(\n+    calldata_cost(sig.signer) + calldata_cost(sig.msg) + calldata_cost(sig.signature)\n+    for sig in tx.signatures\n+)\n+\n tx_gas_limit = (\n     FRAME_TX_INTRINSIC_COST\n     + len(tx.frames) * FRAME_TX_PER_FRAME_COST\n-    + calldata_cost(rlp(tx.signatures))\n-    + calldata_cost(rlp(tx.frames))\n+    + frame_data_cost\n+    + signature_data_cost\n     + signature_verification_cost\n     + sum(frame.gas_limit for all frames)\n )\n ```\n \n Where `calldata_cost` is calculated per standard [EIP-7623](./eip-7623.md) rules.\n \n-The calldata cost for `rlp(tx.signatures)` is charged over the signature objects exactly as included in the transaction, including the scheme-dependent `signer` bytes.\n-\n The total fee is defined as:\n \n ```\n@@ -452,6 +456,7 @@ The `scope` operand is a bitmask. Define the following constants:\n \n The behavior of `APPROVE` is defined as follows:\n \n+- If the current transaction is not a frame transaction, an exceptional halt occurs.\n - If `ADDRESS != resolved_target`, revert.\n - Ensure that `scope` is one of the caller's allowed scopes in `frame.flags`, otherwise revert.\n     - To check this, evaluate that `scope != 0` and `scope & ~(frame.flags & APPROVE_SCOPE_MASK) == 0`.\n@@ -475,6 +480,8 @@ The behavior of `APPROVE` is defined as follows:\n \n The instructions in this section provide the needed introspection capabilities of the new frame transaction type and the frame objects themselves, including some runtime information like the execution result status.\n \n+The instructions in this section are defined only during the execution of a frame transaction. Executing any of them in the context of any other transaction type results in an exceptional halt.\n+\n #### `TXPARAM` Instruction `(0xb0)`\n \n This instruction gives access to transaction-scoped information. The gas cost of this operation is `2`. It takes one value from the stack, `param`, and returns the associated transaction value to the stack. See the table for the full mapping.",
+      "additions": 11,
+      "deletions": 4
+    },
+    {
       "sha": "b18941a2e3966e7f47c6faa8b51d3afef9d3bcc3",
       "date": "2026-07-06T11:30:47Z",
       "message": "Update EIP-8141: allow arbitrary signature data to avoid circular dependency for custom verifiers (#11837)",

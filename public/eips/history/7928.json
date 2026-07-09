@@ -2,6 +2,16 @@
   "eipId": 7928,
   "commits": [
     {
+      "sha": "6c666b8d646df8ea6dcef9638de7b48e3c45ab96",
+      "date": "2026-07-09T15:16:40Z",
+      "message": "Update EIP-7928: exclude the recipient when a runtime halt precedes i…",
+      "author": "nerolation",
+      "prNumber": null,
+      "patch": "@@ -100,7 +100,7 @@ It MUST include:\n     - Targets of `CALL`, `CALLCODE`, `DELEGATECALL`, `STATICCALL` (even if they revert; see [Gas Validation Before State Access](#gas-validation-before-state-access) for inclusion conditions)\n     - Target addresses of `CREATE`/`CREATE2` only once the EVM accesses the computed address: on post-access out-of-gas, on creation collision, or when creation setup increments the new account's nonce; not on address computation alone, nor when creation fails before access (e.g. insufficient sender balance for the endowment, nonce overflow, or call stack depth limit)\n     - Deployed contract addresses from creation transactions, i.e. transactions with an empty `to` field, which are always included since the deployment address is unconditionally accessed during transaction setup\n-    - Transaction sender and recipient addresses (even for zero-value transfers)\n+    - Transaction sender and recipient addresses (even for zero-value transfers), unless the transaction halts before the recipient is loaded (see **Exceptional halts**)\n     - Beneficiary addresses for `SELFDESTRUCT`\n     - System contract addresses accessed during pre/post-execution; the system caller address, `SYSTEM_ADDRESS` (`0xfffffffffffffffffffffffffffffffffffffffe`), MUST NOT be included unless it experiences state access itself\n     - Withdrawal recipient addresses, regardless of whether the withdrawal amount is non-zero\n@@ -229,7 +229,7 @@ Record **post‑transaction** balances (`uint256`) for:\n \n For unaltered account balances:\n \n-If an account’s balance changes during a transaction, but its post-transaction balance is equal to its pre-transaction balance, then the change MUST NOT be recorded in `balance_changes`. The sender and recipient address MUST be included in `AccountChanges`.\n+If an account’s balance changes during a transaction, but its post-transaction balance is equal to its pre-transaction balance, then the change MUST NOT be recorded in `balance_changes`. The sender and recipient address MUST still be included in `AccountChanges`.\n \n The following special cases require addresses to be included with empty changes if no other state changes occur:\n \n@@ -261,7 +261,7 @@ Record **post‑transaction nonces** for:\n - **Zero‑value transfers / Unchanged balance in transaction:** Include the address; omit from `balance_changes`.\n - **Gas refunds:** Record the **final** balance of the sender after each transaction.\n - **Block rewards:** Record the **final** balance of the fee recipient after each transaction.\n-- **Exceptional halts:** Record the **final** nonce and balance of the sender, and the **final** balance of the fee recipient after each transaction. State changes from the reverted call are discarded, but all accessed addresses MUST be included. If no changes remain, addresses are included with empty lists; if storage was read, the corresponding keys MUST appear in `storage_reads`.\n+- **Exceptional halts:** Record the **final** nonce and balance of the sender, and the **final** balance of the fee recipient after each transaction. State changes from the reverted call are discarded, but all accessed addresses MUST be included. If no changes remain, addresses are included with empty lists; if storage was read, the corresponding keys MUST appear in `storage_reads`. A transaction can halt on a runtime gas charge before the recipient is loaded (e.g., during [EIP-7702](./eip-7702.md) authorization processing); the recipient is then never accessed and MUST NOT be included unless accessed for another reason.\n - **Pre‑execution system contract calls:** All state changes MUST use `block_access_index = 0`.\n - **Post‑execution system contract calls:** All state changes MUST use `block_access_index = len(transactions) + 1`.\n - **EIP-7702 Delegations:** The authority address MUST be included with nonce and code changes after any successful delegation set, update, or clear. If authorization fails after the authority address has been loaded and added to `accessed_addresses` (per [EIP-2929](./eip-2929.md)), it MUST still be included with an empty change set; if authorization fails before the authority is loaded, it MUST NOT be included. The delegation target MUST NOT be included during delegation creation or modification and MUST only be included once it is actually loaded as an execution target (e.g., via `CALL`/`CALLCODE`/`DELEGATECALL`/`STATICCALL` under authority execution).",
+      "additions": 3,
+      "deletions": 3
+    },
+    {
       "sha": "9f5c44394559d065ad8260fca09703fb195f8919",
       "date": "2026-07-07T17:28:23Z",
       "message": "Update EIP-7928: Move to Review",
@@ -626,14 +636,6 @@
     }
   ],
   "openPrs": [
-    {
-      "number": 11902,
-      "title": "Update EIP-7928: exclude the recipient when a runtime halt precedes i…",
-      "author": "nerolation",
-      "updatedAt": "2026-07-08T12:23:30Z",
-      "additions": 3,
-      "deletions": 3
-    },
     {
       "number": 9873,
       "title": "Update EIP-7928: Add note about linear scaling of BAL size w.r.t. `block.gasLimit`",

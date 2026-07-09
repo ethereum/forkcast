@@ -17,8 +17,8 @@ interface PlanningTableState {
 }
 
 const DEFAULT_STATE: PlanningTableState = {
-  glamsterdamMainnetDate: '2026-09-16',
-  hegotaMainnetDate: '2027-04-01',
+  glamsterdamMainnetDate: '2026-10-07',
+  hegotaMainnetDate: '2027-05-01',
   glamsterdamDevnetCount: 8,
   hegotaDevnetCount: 5,
   lockedDates: {},
@@ -124,6 +124,13 @@ const SchedulePage: React.FC = () => {
                   projectedDate: staticDevnet.date
                 };
               }
+              if (staticDevnet?.projectedDate) {
+                return {
+                  ...devnet,
+                  status: staticDevnet.status,
+                  projectedDate: staticDevnet.projectedDate
+                };
+              }
               return devnet;
             })
           };
@@ -156,6 +163,13 @@ const SchedulePage: React.FC = () => {
                   status: staticSubstep.status,
                   date: staticSubstep.date,
                   projectedDate: staticSubstep.date
+                };
+              }
+              if (staticSubstep?.projectedDate) {
+                return {
+                  ...substep,
+                  status: staticSubstep.status,
+                  projectedDate: staticSubstep.projectedDate
                 };
               }
               return substep;
@@ -728,7 +742,7 @@ const SchedulePage: React.FC = () => {
                                     gapIsNegative={hegotaDuration ? hegotaDuration.days < 0 : hegotaGap.isNegative}
                                     gapIsWarning={hegotaDuration?.isUnderExpected && hegotaDuration.days >= 0}
                                     gapType="variable"
-                                    isSourceLocked={phase.id === 'headliner-selection' && (substep.name === 'Proposal Deadline' || substep.name === 'Selection Date')}
+                                    isSourceLocked={hegotaSubstep.status !== 'completed' && !!hegotaSubstep.date}
                                   />
                                 ) : null}
                               </td>

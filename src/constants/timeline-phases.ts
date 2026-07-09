@@ -254,7 +254,9 @@ const RAW_GLAMSTERDAM_PROGRESS: ForkProgress = {
         { name: 'Devnet-2', status: 'completed', date: 'May 1, 2026' },
         { name: 'Devnet-3', status: 'completed', date: 'May 6, 2026' },
         { name: 'Devnet-4', status: 'upcoming', projectedDate: 'Q2 2026' },
-        { name: 'Devnet-5', status: 'upcoming', projectedDate: 'Q2 2026' }
+        { name: 'Devnet-5', status: 'upcoming', projectedDate: 'Q2 2026' },
+        { name: 'Devnet-6', status: 'upcoming', projectedDate: 'Q2 2026' },
+        { name: 'Devnet-7', status: 'upcoming', projectedDate: 'Jul 15, 2026' }
       ]
     },
     {
@@ -303,17 +305,16 @@ const RAW_HEGOTA_PROGRESS: ForkProgress = {
       phaseId: 'eip-selection',
       status: 'upcoming',
       projectedDate: 'Q2-Q3 2026',
-      progressNotes: 'Non-headliner EIP proposal window opens April 9th, deadline TBD',
+      progressNotes: 'Non-headliner EIP proposal window opens April 9th',
       substeps: [
         {
           name: 'PFI Deadline',
           status: 'upcoming',
-          projectedDate: 'Q2 2026'
+          date: 'Aug 6, 2026'
         },
         {
           name: 'CFI Deadline',
-          status: 'upcoming',
-          projectedDate: 'Q3 2026'
+          status: 'upcoming'
         }
       ]
     },

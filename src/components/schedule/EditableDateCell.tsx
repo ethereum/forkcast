@@ -185,7 +185,7 @@ const EditableDateCell: React.FC<EditableDateCellProps> = ({
           {displayDate}
         </div>
         {renderGap()}
-        <span className={`${iconWidth} text-xs text-purple-500 text-center`} title="Date from meta thread">
+        <span className={`${iconWidth} text-xs text-purple-500 text-center`} title="Date determined in ACD">
           🔒
         </span>
       </div>

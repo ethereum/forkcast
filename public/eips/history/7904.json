@@ -2,6 +2,16 @@
   "eipId": 7904,
   "commits": [
     {
+      "sha": "80662f8293d85fa1594d7dc0b63c9bcd59f22383",
+      "date": "2026-07-08T19:30:12Z",
+      "message": "Update EIP-7904: Move to Review",
+      "author": "poojaranjan",
+      "prNumber": null,
+      "patch": "@@ -4,7 +4,7 @@ title: Compute Gas Cost Analysis\n description: Empirical analysis of EVM compute operation runtimes concluding that no compute gas cost needs repricing at the target throughput\n author: Jacek Glen (@JacekGlen), Lukasz Glen (@lukasz-glen), Maria Silva (@misilva73)\n discussions-to: https://ethereum-magicians.org/t/gas-cost-repricing-to-reflect-computational-complexity/23067\n-status: Draft\n+status: Review\n type: Informational\n created: 2025-02-05\n ---\n@@ -50,7 +50,7 @@ The analysis examined the 18 gas parameters listed below — the opcodes and pre\n \n Sixteen of the eighteen parameters measure cheaper than the current schedule, and one (`PRECOMPILE_BLAKE2F_PER_ROUND`) is unchanged. The only parameter that measures higher than the current schedule is the `BLAKE2F` base cost, which is currently unpriced (0 gas); the measured value of 94 gas is negligible relative to typical block gas usage and does not constitute a throughput bottleneck. On this basis, no operation is underpriced to a degree that warrants a gas-cost increase.\n \n-The [full proposal report](../assets/eip-7904/analysis/2026-06-10/new_gas_proposal.md), including per-client breakdowns and worst-case provenance, accompanies this EIP. A live, regenerated version of the analysis, together with the benchmark and estimation pipeline that produced it, is maintained in a public repository linked from the discussions-to thread.\n+The [full proposal report](../assets/eip-7904/analysis/2026-06-10/new_gas_proposal.md), including per-client breakdowns and worst-case provenance, accompanies this EIP.\n \n ## Rationale\n \n@@ -68,11 +68,11 @@ Concretely, to benchmark a single operation, different blocks are created by var\n \n Then, the Benchmarkoor tool is used to collect the needed metrics. This tool returns the total execution time of the block and the number of times each operation was executed. Each test block is run multiple times on each client to account for variability in execution time. The clients measured in the latest run are Besu, Erigon, ethrex, Geth, Nethermind, and Reth.\n \n-**What about dynamic costs?**\n+##### What about dynamic costs?\n \n Some operations have a dynamic component to their costs. For example, the `KECCAK256` opcode has a gas cost that grows with the size of the input. In these cases, the test benchmarks the operation with a range of inputs to assess how the resource costs vary with different inputs.\n \n-**What about differences between client implementations?**\n+##### What about differences between client implementations?\n \n Ultimately, we require a single cost model that is independent of the client's implementation. Although the decision may be different in a specific situation, the general rule is to take the worst client result that cannot be optimized. This means that the worst-performing client on a given operation and resource combination defines the cost of that operation for the entire network. This is the safer and most conservative choice, and it is the value reported in the table above.\n ",
+      "additions": 4,
+      "deletions": 4
+    },
+    {
       "sha": "cb113ac7eef3478af01e5825254a162221eed64f",
       "date": "2026-06-12T14:47:28Z",
       "message": "Update EIP-7904: Convert to Informational (no compute repricing needed)",
@@ -55,14 +65,6 @@
     }
   ],
   "openPrs": [
-    {
-      "number": 11883,
-      "title": "Update EIP-7904: Move to Review",
-      "author": "poojaranjan",
-      "updatedAt": "2026-07-07T17:25:12Z",
-      "additions": 4,
-      "deletions": 4
-    },
     {
       "number": 10095,
       "title": "Update EIP-7904: fix typos",

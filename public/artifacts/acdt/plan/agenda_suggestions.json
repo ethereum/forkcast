@@ -1,61 +1,61 @@
 {
   "series": "ACDT",
-  "generated": "2026-07-02",
-  "for_call": "ACDT #86",
+  "generated": "2026-07-09",
+  "for_call": "ACDT #87",
   "suggestions": [
     {
-      "topic": "glamsterdam-devnet-6 stability assessment and consolidation testing results",
+      "topic": "Glamsterdam devnet-7 launch status and stability assessment",
       "priority": "high",
-      "rationale": "Devnet-6 launched June 25 but multiple clients were offline (Prysm, Besu, Nethermind had bugs). Consolidation testing was pending. Need status update before proceeding to devnet-7 planning.",
+      "rationale": "Devnet-7 was targeted for launch today (July 9). As the designated final devnet with a mild spec freeze, confirming successful launch and initial stability is critical before proceeding with further testing or spec refinements.",
       "related_eips": [],
       "source": "devnet_update"
     },
     {
-      "topic": "Finalize glamsterdam-devnet-7 EL scope: authorization metering approach",
+      "topic": "EL spec finalization for devnet-7 (EIP-2780 floor gas, EIP-8037, EIP-8282)",
       "priority": "high",
-      "rationale": "ACDT #85 deferred this to 'this week's ACDE' (which would have been July 2). Open question on how to meter authorizations (EIP-8037 state growth + EIP-2780 transfer). Must be resolved before devnet-7 launch.",
-      "related_eips": [],
-      "source": "deferred_decision"
-    },
-    {
-      "topic": "glamsterdam-devnet-7 launch timeline and client readiness",
-      "priority": "high",
-      "rationale": "Devnet-7 scope is set (EIP-7688 on CL, EL refinements only), but launch timing and client implementation status need confirmation. Erigon and Reth branches were still pending as of June 29.",
-      "related_eips": [],
-      "source": "ongoing_discussion"
-    },
-    {
-      "topic": "EIP-8282 builder deposit contract parameters and disable-switch implementation",
-      "priority": "medium",
-      "rationale": "Decision made to keep static constants and add disable-switch, but Felix's implementation of the disable-switch needs confirmation. Also need to finalize target=8, max=64 parameters proposed by Nico.",
+      "rationale": "ACDT #86 noted remaining EL spec changes needed resolution by today. If not completed, this blocks devnet-7 launch and testing. If completed, teams need confirmation that execution-specs were released as planned.",
       "related_eips": [],
       "source": "open_action_item"
     },
     {
-      "topic": "Builder API unhappy-path testing scope for final devnet designation",
+      "topic": "Post-freeze spec change policy enforcement",
+      "priority": "high",
+      "rationale": "ACDT #86 established that only minor parameter-only changes (e.g., gas cost tweaks) are acceptable after devnet-7 launch, not structural changes. With devnet-7 live, teams need clarity on the process for proposing and approving any remaining adjustments.",
+      "related_eips": [],
+      "source": "ongoing_discussion"
+    },
+    {
+      "topic": "Nimbus fork-choice bug resolution and builder participation",
       "priority": "medium",
-      "rationale": "ACDT #84 emphasized need for builder API testing at devnet level before any 'final devnet' designation. Devnet-7 was suggested as potentially the final ePBS devnet, so testing scope should be clarified.",
+      "rationale": "ACDT #86 identified Nimbus self-building instead of using remote builder due to a fork-choice issue with a fix in progress. Confirming resolution is important for ePBS testing coverage on devnet-7.",
       "related_eips": [],
-      "source": "ongoing_discussion"
+      "source": "devnet_update"
     },
     {
-      "topic": "PTC security concern resolution for ePBS readiness",
+      "topic": "Prysm/Besu newPayload/FCU interaction fix verification",
       "priority": "medium",
-      "rationale": "ACDT #84 raised PTC security concern (voting on non-canonical forks) as potential blocker for ePBS. Was deferred to CL breakout; outcome should be shared with broader group.",
+      "rationale": "ACDT #86 documented that Prysm will revert sending multiple newPayloads without FCU, and Besu will likely revert their fix. Teams should confirm both reverts happened and devnet-7 shows no recurrence of the state inconsistency issue.",
+      "related_eips": [],
+      "source": "devnet_update"
+    },
+    {
+      "topic": "SSZ Engine API breakout takeaways and implementation timeline",
+      "priority": "medium",
+      "rationale": "ACDT #86 scheduled a Friday breakout for SSZ Engine API. With 3+ implementations ongoing but alignment incomplete (per open action item from ACDT #83), teams should share key takeaways and update on readiness timelines.",
       "related_eips": [],
       "source": "ongoing_discussion"
     },
     {
-      "topic": "SSZ Engine API implementation progress and breakout outcomes",
+      "topic": "Devnet-6 consolidation testing completion and findings",
       "priority": "low",
-      "rationale": "REST SSZ Engine API breakout call was scheduled for June 27. Multiple clients implementing (3+ implementations exist). Update on progress and alignment would be useful.",
+      "rationale": "ACDT #85 noted consolidation testing was pending for devnet-6. If completed, teams should share results; if not, understand why and whether it impacts devnet-7 confidence.",
       "related_eips": [],
-      "source": "ongoing_discussion"
+      "source": "devnet_update"
     },
     {
-      "topic": "bal-devnet-7 benchmarking results and gas repricing finalization",
+      "topic": "EIP-8282 builder deposit contract parameter choices finalization",
       "priority": "low",
-      "rationale": "ACDT #81 noted benchmarking was the primary EL blocker for final gas costs. ACDT #82 mentioned 'numbers looking good'. Should confirm if benchmarking is complete and gas costs are finalized for Glamsterdam.",
+      "rationale": "ACDT #85 decided on static constants with a disable-switch, but specific values (target/max) were still under discussion (Nico proposed 8/64). If not finalized, this may need quick resolution post-devnet-7 launch for mainnet readiness.",
       "related_eips": [],
       "source": "ongoing_discussion"
     }

@@ -1,61 +1,61 @@
 {
   "series": "ACDC",
-  "generated": "2026-07-06",
-  "for_call": "ACDC #182",
+  "generated": "2026-07-13",
+  "for_call": "ACDC #183",
   "suggestions": [
     {
-      "topic": "glamsterdam-devnet-6 Gloas fork stability and devnet-7 readiness",
+      "topic": "Glamsterdam devnet-7 launch readiness and go/no-go",
       "priority": "high",
-      "rationale": "devnet-6 launched just before #181 with Gloas fork activation during the call. Stability assessment is critical before proceeding to devnet-7 (targeted mid-July per #181). EIP-7688 DFI decision is contingent on devnet-6 stability.",
+      "rationale": "Devnet-7 was targeted for 'early next week' (week of July 14) as of ACDC #182. This call falls within that window, requiring final readiness confirmation from all client teams (Teku branch update, Grandine completion status) and a launch decision.",
       "related_eips": [],
       "source": "devnet_update"
     },
     {
-      "topic": "EIP-8061 (increase exit/consolidation churn) SFI decision",
+      "topic": "Beacon API PR #625 (ProduceBlock v4 auth config) feedback from staking pools and DVT providers",
       "priority": "high",
-      "rationale": "Deferred from #179 for a two-week revisit (expected at #180 or #181 but not addressed). Already implemented and tested since devnet-1 with intent to SFI. Overdue for final stage decision.",
-      "related_eips": [],
-      "source": "deferred_decision"
-    },
-    {
-      "topic": "EIP-7688 (progressive containers) DFI decision for Glamsterdam",
-      "priority": "high",
-      "rationale": "Targeted for devnet-7 in #181 but not DFI'd, with decision deferred pending devnet-6 stability. devnet-7 is ~2–3 weeks out (mid-July), so DFI decision is needed now to finalize scope.",
-      "related_eips": [],
-      "source": "deferred_decision"
-    },
-    {
-      "topic": "EIP-8282 (builder deposit contract) contract finalization and audit scheduling",
-      "priority": "high",
-      "rationale": "Updated contract (fee-per-enqueue) targets devnet-7 with external audit scheduled for end of July. Action from #181 requires PR for new contract constants (target=8, max=64) and signal for audit readiness. Need confirmation on contract finalization status.",
-      "related_eips": [],
-      "source": "ongoing_discussion"
-    },
-    {
-      "topic": "Beacon API PRs review status (608, 580, 606, 621, 618)",
-      "priority": "medium",
-      "rationale": "Multiple Beacon API PRs were assigned for review by ACDT in #181. PR #618 (validator state rename) from #180 is a breaking change requiring broader ecosystem engagement. Need confirmation on review completion and merge readiness.",
+      "rationale": "Marked as urgent in ACDC #182 (4 days ago) with explicit request for feedback from Lido, Rocket Pool, builders, DVT providers, and VC tooling teams. Critical for finalizing ePBS builder API before devnet-7.",
       "related_eips": [],
       "source": "open_action_item"
     },
     {
-      "topic": "ePBS circuit breaker implementation status across clients",
+      "topic": "EIP-8061 (increase exit/consolidation churn) SFI decision",
+      "priority": "high",
+      "rationale": "Deferred from ACDC #179 (May 28) with expected revisit 'in two weeks' for SFI decision. Already implemented and tested since devnet-1 per that call, but decision was never reached in subsequent meetings.",
+      "related_eips": [],
+      "source": "deferred_decision"
+    },
+    {
+      "topic": "Glamsterdam public/Mekong-style devnet scoping and timeline",
       "priority": "medium",
-      "rationale": "#181 decided circuit breakers should track missing payloads (not beacon blocks) with client-specific implementations acceptable. Prysm was using incorrect consensus-block-based breaker. Need status updates on client implementations before devnet-7.",
+      "rationale": "ACDC #182 targeted early August for public app-testing devnet, citing repricings as key driver. With devnet-7 launching this week, scoping decisions for the public testnet should begin.",
       "related_eips": [],
       "source": "ongoing_discussion"
     },
     {
-      "topic": "Hegota headliner proposals: EIP-8148, EIP-8243, EIP-8025 status",
+      "topic": "ePBS circuit breaker implementations and P2P bid attack surface",
       "priority": "medium",
-      "rationale": "EIP-8148 (custom sweep threshold) proposed for Hegota in #179 with client review requested but not followed up in later calls. EIP-8243 (pre-aggregating attestations) presented in #180. EIP-8025 (optional execution proofs) from #178 had no subsequent discussion. Need clarity on Hegota scope decisions.",
+      "rationale": "ACDC #182 showed varying approaches across clients (Teku/Lodestar builder-aware bans, Prysm trusted-builder fallback). Prysm's document on P2P sybil attack mitigation is forthcoming and should be reviewed.",
       "related_eips": [],
       "source": "ongoing_discussion"
     },
     {
-      "topic": "PTC attestation cross-branch liveness concerns",
+      "topic": "EIP-7688 (progressive containers) stability and potential DFI decision",
+      "priority": "medium",
+      "rationale": "Targeted for devnet-7 in ACDC #181 but not DFI'd; decision was to 'revisit if devnet-6 instability warrants it.' Devnet-6 showed ~80% participation with Nethermind storage issues. Status update needed before devnet-7 launch.",
+      "related_eips": [],
+      "source": "deferred_decision"
+    },
+    {
+      "topic": "EIP-8148 (custom sweep threshold for validators) review and Hegota PFI decision",
       "priority": "low",
-      "rationale": "Potuz flagged in #180 that all clients use canonical head only for PTC duties, creating liveness risk during network forks. Issue was not revisited in #181. May warrant discussion if devnet-6 reveals related issues.",
+      "rationale": "Proposed for Hegota in ACDC #179; client teams asked to review and Lido requested to provide validator-count data. Not mentioned in three subsequent calls, suggesting no blocking concerns but still awaiting formal decision.",
+      "related_eips": [],
+      "source": "open_action_item"
+    },
+    {
+      "topic": "Hegota non-headliner EIP submissions (deadline August 6)",
+      "priority": "low",
+      "rationale": "Deadline announced in ACDC #182 is three weeks away. While not urgent today, teams should be reminded to prepare proposals (e.g., EIP-8045 slashed-validator exclusion, EIP-8148 if ready).",
       "related_eips": [],
       "source": "ongoing_discussion"
     }

@@ -75,8 +75,8 @@ Two scripts run sequentially via `sync-call-assets.yml` (scheduled cron). Both l
 1. **Fetches** `manifest.json` from `https://raw.githubusercontent.com/ethereum/pm/master/.github/ACDbot/artifacts/manifest.json`.
 2. **Maps** PM series names to Forkcast short codes (i.e. `glamsterdamrepricings` → `price`, `rpcstandards` → `rpc`). Core series like `acdc`, `acde`, `acdt` pass through unchanged. The full mapping is defined in `SERIES_TO_TYPE` in `sync-call-assets.mjs` — series not in `KNOWN_TYPES` are skipped with a console warning.
 3. **Filters** — only syncs calls that have a `videoUrl` AND at least one of `tldr`, `transcript`, or `transcript_corrected`.
-4. **Downloads** new assets to `forkcast/public/artifacts/{type}/{date}_{number}/`. Skips files that already exist locally unless `--force` is passed.
-5. **Generates `config.json`** for each call — stores the issue number, video URL, and sync offsets. For livestreamed types (`acdc`, `acde`), sync times start as `null` (manual sync required). For composed Zoom recordings (`acdt`), sync is required from PM's manifest. For all others, offsets default to `"00:00:00"`.
+4. **Downloads** new assets to `forkcast/public/artifacts/{type}/{date}_{number}/`. Skips files that already exist locally unless `--force` is passed. Bundled breakout assets (e.g. the ACDT CL breakout's `transcript_cl.vtt`, `chat_cl.txt`, `tldr_cl.json`) download into the same directory as the parent call's assets.
+5. **Generates `config.json`** for each call — stores the issue number, video URL, and sync offsets. For livestreamed types (`acdc`, `acde`), sync times start as `null` (manual sync required). For all others (raw Zoom recordings, including `acdt`), offsets default to `"00:00:00"`. If the manifest entry has `breakoutVideoUrls`, a `breakouts` map is added with each breakout's video URL and zero-sync defaults.
 6. **Updates `src/data/protocol-calls.generated.json`** — the frontend's call index, sorted by type then date. This file is additive — entries are never pruned automatically, so removing a call requires a manual edit.
 
 ### Step 2: Extract key decisions (`extract-key-decisions.mjs`)
@@ -157,23 +157,41 @@ The call page works — you can watch the video and read the transcript — but 
    ```
 4. Commit and push. The deploy workflow handles the rest.
 
-### Composed Zoom recordings (acdt)
-
-ACDT calls are uploaded from Zoom, but the published YouTube video is composed as:
-
-```text
-45s bumper + trimmed Zoom recording + 45s bumper
-```
-
-The transcript remains on the original Zoom recording clock. PM owns the composition settings, so PM publishes the generated sync offset in `manifest.json` and Forkcast copies that value into `config.json`. If an ACDT call is missing PM-provided sync metadata, the sync workflow fails instead of writing a misleading zero offset.
-
-This means `transcriptStartTime` and `videoStartTime` are expected to differ, but the sign depends on how much leading Zoom silence was trimmed. If a Forkcast engineer later adjusts the start point to skip beginning chatter, they should preserve the exact PM-generated `videoStartTime - transcriptStartTime` delta.
-
 ### Non-livestreamed calls
 
-For calls recorded directly in Zoom (no live stream), the transcript and video start at the same moment. The sync script defaults both offsets to `"00:00:00"`, and no manual intervention is needed.
+For calls recorded directly in Zoom (no live stream) — including `acdt` — the transcript and video start at the same moment. The sync script defaults both offsets to `"00:00:00"`, and no manual intervention is needed.
 
 **Note:** Some non-livestreamed calls (e.g., BAL breakouts) still receive manual sync if the recording has dead air at the start. This is optional — the defaults work for most cases.
+
+**History:** From June to July 2026 ACDT videos were "composed" recordings (bumper + trimmed Zoom recording), and PM published per-call sync offsets in the manifest. That feature was removed upstream (ethereum/pm commit `62c78274`); ACDT uploads are raw Zoom recordings again.
+
+### Bundled breakouts (ACDT CL)
+
+Since ACDT 087, the CL breakout is recorded in the same Zoom meeting window as the main testing call and published as part of the same manifest entry. The manifest carries extra resources suffixed with the breakout kind (`transcript_cl.vtt`, `chat_cl.txt`, `tldr_cl.json`) plus a `breakoutVideoUrls` map:
+
+```json
+{
+  "videoUrl": "https://www.youtube.com/watch?v=main",
+  "breakoutVideoUrls": {
+    "cl": "https://www.youtube.com/watch?v=breakout"
+  }
+}
+```
+
+Forkcast downloads the suffixed assets into the parent call's artifact directory and records each breakout in the call's `config.json`:
+
+```json
+{
+  "breakouts": {
+    "cl": {
+      "videoUrl": "https://www.youtube.com/watch?v=breakout",
+      "sync": { "transcriptStartTime": "00:00:00", "videoStartTime": "00:00:00" }
+    }
+  }
+}
+```
+
+The call page reads `breakouts` from the config and renders a tab per kind with its own video, transcript, chat, and summary. Breakout videos are raw Zoom recordings, so zero sync is the default; offsets can be tuned manually per breakout just like the main call's, and the sync script preserves tuned offsets on later runs. Older ACDT breakouts (074–084) predate this pipeline and are registered manually in `src/data/breakouts.ts` with chat-only assets.
 
 ## Adding a New Call Series
 

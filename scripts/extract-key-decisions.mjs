@@ -206,18 +206,28 @@ async function callAnthropic(model, systemPrompt, userMessage) {
   return response.json();
 }
 
-async function extractKeyDecisions(meetingDir, model, force) {
-  const tldrPath = join(meetingDir, 'tldr.json');
-  const outputPath = join(meetingDir, 'key_decisions.json');
+function findTldrFiles(meetingDir) {
+  const files = [];
+  if (existsSync(join(meetingDir, 'tldr.json'))) {
+    files.push({ path: join(meetingDir, 'tldr.json'), suffix: '' });
+  }
+  for (const name of readdirSync(meetingDir)) {
+    if (name.startsWith('tldr_') && name.endsWith('.json')) {
+      const suffix = name.slice('tldr'.length, -'.json'.length); // e.g. "_cl"
+      files.push({ path: join(meetingDir, name), suffix });
+    }
+  }
+  return files;
+}
+
+async function extractKeyDecisionsForFile(meetingDir, tldrFile, model, force) {
+  const { path: tldrPath, suffix } = tldrFile;
+  const outputPath = join(meetingDir, `key_decisions${suffix}.json`);
+  const tldrName = tldrPath.split('/').pop();
 
   if (existsSync(outputPath) && !force) {
-    console.log('  key_decisions.json already exists (use --force to regenerate)');
+    console.log(`  key_decisions${suffix}.json already exists (use --force to regenerate)`);
     return 'skipped';
-  }
-
-  if (!existsSync(tldrPath)) {
-    console.log('  tldr.json not found');
-    return 'failed';
   }
 
   const tldrData = JSON.parse(readFileSync(tldrPath, 'utf-8'));
@@ -241,7 +251,7 @@ async function extractKeyDecisions(meetingDir, model, force) {
 
   const userMessage = `## Meeting\n\n${meeting}\n${aliasSection}\n## TLDR\n\n${JSON.stringify(tldrData, null, 2)}`;
 
-  console.log(`  Calling Claude API (${model}) with ${decisions.length} decision(s)...`);
+  console.log(`  ${tldrName}: calling Claude API (${model}) with ${decisions.length} decision(s)...`);
 
   try {
     const response = await callAnthropic(model, EXTRACTION_PROMPT, userMessage);
@@ -303,7 +313,7 @@ function findAllTldrDirs() {
     if (!ACD_CALL_TYPES.has(callType)) continue;
     const typeDir = join(ARTIFACTS_DIR, callType);
     for (const callId of readdirSync(typeDir)) {
-      if (existsSync(join(typeDir, callId, 'tldr.json'))) {
+      if (findTldrFiles(join(typeDir, callId)).length > 0) {
         entries.push(`${callType}/${callId}`);
       }
     }
@@ -352,28 +362,37 @@ async function main() {
       continue;
     }
 
-    if (values['dry-run']) {
-      const hasTldr = existsSync(join(meetingDir, 'tldr.json'));
-      const hasKd = existsSync(join(meetingDir, 'key_decisions.json'));
-      let decisionsCount = 0;
-      if (hasTldr) {
-        try {
-          const data = JSON.parse(readFileSync(join(meetingDir, 'tldr.json'), 'utf-8'));
-          decisionsCount = (data.decisions || []).length;
-        } catch {
-          // ignore
-        }
-      }
-      console.log(
-        `  tldr: ${hasTldr ? 'yes' : 'NO'}, key_decisions: ${hasKd ? 'exists' : 'missing'}, decisions: ${decisionsCount}`,
-      );
+    const tldrFiles = findTldrFiles(meetingDir);
+    if (tldrFiles.length === 0) {
+      console.log('  No tldr files found');
+      failed++;
       continue;
     }
 
-    const result = await extractKeyDecisions(meetingDir, values.model, values.force);
-    if (result === 'succeeded') succeeded++;
-    else if (result === 'skipped') skipped++;
-    else failed++;
+    if (values['dry-run']) {
+      let decisionsCount = 0;
+      const kdStatus = [];
+      for (const { path: fp, suffix } of tldrFiles) {
+        try {
+          const data = JSON.parse(readFileSync(fp, 'utf-8'));
+          decisionsCount += (data.decisions || []).length;
+        } catch {
+          // ignore
+        }
+        const kdPath = join(meetingDir, `key_decisions${suffix}.json`);
+        kdStatus.push(`key_decisions${suffix}: ${existsSync(kdPath) ? 'exists' : 'missing'}`);
+      }
+      const tldrNames = tldrFiles.map(f => f.path.split('/').pop()).join(', ');
+      console.log(`  tldr: ${tldrNames}, ${kdStatus.join(', ')}, decisions: ${decisionsCount}`);
+      continue;
+    }
+
+    for (const tldrFile of tldrFiles) {
+      const result = await extractKeyDecisionsForFile(meetingDir, tldrFile, values.model, values.force);
+      if (result === 'succeeded') succeeded++;
+      else if (result === 'skipped') skipped++;
+      else failed++;
+    }
   }
 
   console.log(`\nDone: ${succeeded} generated, ${skipped} skipped, ${failed} failed`);

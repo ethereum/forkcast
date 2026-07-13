@@ -1,5 +1,30 @@
 const LIVESTREAMED_TYPES = new Set(['acdc', 'acde']);
-const COMPOSED_ZOOM_TYPES = new Set(['acdt']);
+
+const ZERO_SYNC = {
+  transcriptStartTime: '00:00:00',
+  videoStartTime: '00:00:00'
+};
+
+// Breakout sessions bundled into a parent call (e.g. the ACDT CL breakout).
+// PM publishes their assets alongside the parent call's, with resource keys
+// suffixed by kind (transcript_cl, chat_cl, tldr_cl) plus breakoutVideoUrls.
+function extractBreakouts(call) {
+  const videoUrls = call.breakoutVideoUrls || {};
+  const resources = call.resources || {};
+  const breakouts = {};
+
+  for (const [kind, videoUrl] of Object.entries(videoUrls)) {
+    if (!videoUrl) continue;
+    breakouts[kind] = {
+      videoUrl,
+      has_transcript: Boolean(resources[`transcript_${kind}`]),
+      has_chat: Boolean(resources[`chat_${kind}`]),
+      has_tldr: Boolean(resources[`tldr_${kind}`])
+    };
+  }
+
+  return Object.keys(breakouts).length > 0 ? breakouts : null;
+}
 
 export function normalizeManifest(manifest) {
   if (manifest?.series && typeof manifest.series === 'object') {
@@ -20,7 +45,7 @@ export function normalizeManifest(manifest) {
           // Metadata for config.json generation
           issue: call.issue || null,
           videoUrl: call.videoUrl || null,
-          sync: call.sync || null
+          breakouts: extractBreakouts(call)
         };
       }
       normalized[series] = calls;
@@ -31,44 +56,43 @@ export function normalizeManifest(manifest) {
   return manifest.calls || {};
 }
 
-function generatedSync(callData, localType) {
-  if (callData.sync) return callData.sync;
-
-  if (COMPOSED_ZOOM_TYPES.has(localType)) {
-    throw new Error(`Missing PM-provided sync metadata for composed Zoom recording type: ${localType}`);
-  }
-
-  const needsManualSync = LIVESTREAMED_TYPES.has(localType);
-  if (needsManualSync) {
+function generatedSync(localType) {
+  if (LIVESTREAMED_TYPES.has(localType)) {
     return {
       transcriptStartTime: null,
       videoStartTime: null
     };
   }
 
-  return {
-    transcriptStartTime: '00:00:00',
-    videoStartTime: '00:00:00'
-  };
+  return { ...ZERO_SYNC };
 }
 
-function isZeroSync(sync) {
-  return sync?.transcriptStartTime === '00:00:00' && sync?.videoStartTime === '00:00:00';
-}
+function generatedBreakouts(callData) {
+  if (!callData.breakouts) return null;
 
-function needsGeneratedSync(sync) {
-  return !sync || isZeroSync(sync);
+  const breakouts = {};
+  for (const [kind, breakout] of Object.entries(callData.breakouts)) {
+    // Breakout video and transcript come from the same Zoom recording,
+    // so zero offsets are the correct default (like other raw Zoom calls).
+    breakouts[kind] = { videoUrl: breakout.videoUrl, sync: { ...ZERO_SYNC } };
+  }
+  return breakouts;
 }
 
 export function generateConfig(callData, localType) {
-  return {
+  const config = {
     issue: callData.issue,
     videoUrl: callData.videoUrl,
-    sync: generatedSync(callData, localType)
+    sync: generatedSync(localType)
   };
+
+  const breakouts = generatedBreakouts(callData);
+  if (breakouts) config.breakouts = breakouts;
+
+  return config;
 }
 
-export function updateConfig(existingConfig, callData, localType) {
+export function updateConfig(existingConfig, callData) {
   const nextConfig = { ...existingConfig };
   let configChanged = false;
 
@@ -77,11 +101,22 @@ export function updateConfig(existingConfig, callData, localType) {
     configChanged = true;
   }
 
-  if (callData.sync && needsGeneratedSync(nextConfig.sync)) {
-    nextConfig.sync = callData.sync;
-    configChanged = true;
-  } else if (COMPOSED_ZOOM_TYPES.has(localType) && needsGeneratedSync(nextConfig.sync)) {
-    throw new Error(`Missing PM-provided sync metadata for composed Zoom recording type: ${localType}`);
+  for (const [kind, breakout] of Object.entries(callData.breakouts || {})) {
+    const existingBreakout = nextConfig.breakouts?.[kind];
+    if (!existingBreakout) {
+      nextConfig.breakouts = {
+        ...nextConfig.breakouts,
+        [kind]: { videoUrl: breakout.videoUrl, sync: { ...ZERO_SYNC } }
+      };
+      configChanged = true;
+    } else if (existingBreakout.videoUrl !== breakout.videoUrl) {
+      // Preserve any manually tuned sync; only refresh the video link.
+      nextConfig.breakouts = {
+        ...nextConfig.breakouts,
+        [kind]: { ...existingBreakout, videoUrl: breakout.videoUrl }
+      };
+      configChanged = true;
+    }
   }
 
   return { config: nextConfig, changed: configChanged };

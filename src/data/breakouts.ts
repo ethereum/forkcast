@@ -1,6 +1,9 @@
-// ACDT breakout sub-calls. Deliberately separate from breakout series
-// (BAL, ePBS, etc.) in protocolCalls — those are standalone call series;
-// these only exist as sub-calls to their parent ACDT call.
+// Legacy ACDT breakout sub-calls (chat-only, manually registered).
+// Deliberately separate from breakout series (BAL, ePBS, etc.) in protocolCalls —
+// those are standalone call series; these only exist as sub-calls to their parent ACDT call.
+//
+// ACDT 087+ CL breakouts come from the PM pipeline instead: assets live alongside the
+// parent call (`transcript_cl.vtt`, etc.) and config.json lists them under `breakouts`.
 
 export type BreakoutKind = 'bal' | 'epbs' | 'el' | 'cl';
 

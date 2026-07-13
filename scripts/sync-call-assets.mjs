@@ -80,6 +80,19 @@ async function syncCall(remoteSeries, localType, callId, callData, force = false
     filesToSync.push({ remote: 'transcript.vtt', local: 'transcript.vtt' });
   }
 
+  // Bundled breakout assets (e.g. ACDT CL breakout) live alongside the parent call's
+  for (const [kind, breakout] of Object.entries(callData.breakouts || {})) {
+    if (breakout.has_tldr) {
+      filesToSync.push({ remote: `tldr_${kind}.json`, local: `tldr_${kind}.json` });
+    }
+    if (breakout.has_chat) {
+      filesToSync.push({ remote: `chat_${kind}.txt`, local: `chat_${kind}.txt` });
+    }
+    if (breakout.has_transcript) {
+      filesToSync.push({ remote: `transcript_${kind}.vtt`, local: `transcript_${kind}.vtt` });
+    }
+  }
+
   if (filesToSync.length === 0) return false;
 
   // Ensure directory exists
@@ -103,13 +116,13 @@ async function syncCall(remoteSeries, localType, callId, callData, force = false
       return changesMade;
     }
 
-    const { config: updatedConfig, changed: configChanged } = updateConfig(existingConfig, callData, localType);
+    const { config: updatedConfig, changed: configChanged } = updateConfig(existingConfig, callData);
     if (configChanged) {
       if (existingConfig.videoUrl !== updatedConfig.videoUrl) {
         console.log('  Updating config.json videoUrl');
       }
-      if (existingConfig.sync !== updatedConfig.sync) {
-        console.log('  Updating config.json sync from manifest');
+      if (existingConfig.breakouts !== updatedConfig.breakouts) {
+        console.log('  Updating config.json breakouts from manifest');
       }
 
       writeFileSync(configPath, JSON.stringify(updatedConfig, null, 2));

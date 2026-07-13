@@ -38,14 +38,28 @@ interface CallData {
   keyDecisions?: KeyDecision[];
 }
 
+interface SyncConfig {
+  transcriptStartTime: string | null;
+  videoStartTime: string | null;
+  description?: string;
+}
+
+interface BreakoutConfig {
+  videoUrl: string;
+  sync?: SyncConfig;
+}
+
 interface CallConfig {
   videoUrl?: string;
   issue?: number;
-  sync?: {
-    transcriptStartTime: string | null;
-    videoStartTime: string | null;
-    description?: string;
-  };
+  sync?: SyncConfig;
+  breakouts?: Record<string, BreakoutConfig>;
+}
+
+interface ActiveBreakout {
+  kind: string;
+  /** Legacy registry breakouts (breakouts.ts) have chat only — no transcript, TLDR, or sync. */
+  legacy: boolean;
 }
 
 interface UpcomingCallMeta {
@@ -216,7 +230,13 @@ const upcomingLoadResult = (
   isUpcoming: true,
 });
 
-const loadBreakoutCallData = async (breakout: Breakout): Promise<LoadResult> => ({
+const getArtifactPath = (callPath: string): string | null => {
+  const [type, number] = callPath.split('/');
+  const matchingCall = protocolCalls.find(call => call.type === type && call.number === number);
+  return matchingCall ? `${type}/${matchingCall.date}_${number}` : null;
+};
+
+const loadLegacyBreakoutCallData = async (breakout: Breakout): Promise<LoadResult> => ({
   callData: {
     type: breakout.kind,
     date: '',
@@ -227,6 +247,42 @@ const loadBreakoutCallData = async (breakout: Breakout): Promise<LoadResult> => 
   callConfig: null,
   isUpcoming: false,
 });
+
+// Bundled breakouts (PM pipeline, ACDT 087+): assets live alongside the parent
+// call's with `_${kind}` suffixes, and video/sync come from the parent config.
+const loadBundledBreakoutCallData = async (
+  callPath: string,
+  kind: string,
+  breakoutConfig: BreakoutConfig,
+  issue?: number,
+): Promise<LoadResult | null> => {
+  const [type, number] = callPath.split('/');
+  const artifactPath = getArtifactPath(callPath);
+  if (!artifactPath) return null;
+
+  const chatContent = await readTextArtifact(`${artifactPath}/chat_${kind}.txt`, isChatArtifact);
+  const transcriptContent = await readTextArtifact(`${artifactPath}/transcript_${kind}.vtt`, isVttArtifact);
+  const tldrData = await readJsonArtifact<TldrData>(`${artifactPath}/tldr_${kind}.json`, `tldr_${kind}.json`);
+  const keyDecisionsData = await readJsonArtifact<{ key_decisions?: KeyDecision[] }>(
+    `${artifactPath}/key_decisions_${kind}.json`,
+    `key_decisions_${kind}.json`,
+  );
+
+  return {
+    callData: {
+      type: type?.toUpperCase() || '',
+      date: artifactPath.split('/')[1].split('_')[0],
+      number: number || '',
+      chatContent,
+      transcriptContent,
+      videoUrl: breakoutConfig.videoUrl,
+      tldrData,
+      keyDecisions: keyDecisionsData?.key_decisions,
+    },
+    callConfig: { videoUrl: breakoutConfig.videoUrl, issue, sync: breakoutConfig.sync },
+    isUpcoming: false,
+  };
+};
 
 const loadMainCallData = async (
   callPath: string,
@@ -300,18 +356,27 @@ const CallPage: React.FC<CallPageProps> = ({ callPath, upcoming }) => {
 
   const [searchParams] = useSearchParams();
 
-  const breakoutsForCall = useMemo(
+  const legacyBreakoutsForCall = useMemo(
     () => (normalizedPath ? breakouts.filter(b => b.parentPath === normalizedPath) : []),
     [normalizedPath],
   );
 
   // URL-driven so the tab selection is shareable. Unknown values fall through to main call.
-  const activeBreakout = useMemo(() => {
-    const param = searchParams.get('breakout');
-    return breakoutsForCall.find(b => b.kind === param) ?? null;
-  }, [searchParams, breakoutsForCall]);
+  const breakoutParam = searchParams.get('breakout');
 
-  const setActiveBreakoutKind = useCallback((kind: BreakoutKind | null) => {
+  // Set during load: bundled breakouts are discovered from the parent call's config.json.
+  const [activeBreakout, setActiveBreakout] = useState<ActiveBreakout | null>(null);
+  const [bundledBreakoutKinds, setBundledBreakoutKinds] = useState<string[]>([]);
+
+  const breakoutKindsForCall = useMemo(() => {
+    const bundledSet = new Set(bundledBreakoutKinds);
+    const legacyKinds = legacyBreakoutsForCall
+      .map(b => b.kind as string)
+      .filter(kind => !bundledSet.has(kind));
+    return [...legacyKinds, ...bundledBreakoutKinds];
+  }, [legacyBreakoutsForCall, bundledBreakoutKinds]);
+
+  const setActiveBreakoutKind = useCallback((kind: string | null) => {
     const next = new URLSearchParams(searchParams);
     for (const key of SURFACE_DEEP_LINK_QUERY_KEYS) {
       next.delete(key);
@@ -494,18 +559,49 @@ const CallPage: React.FC<CallPageProps> = ({ callPath, upcoming }) => {
     setCallData(null);
     setCallConfig(null);
     setIsUpcoming(false);
+    setActiveBreakout(null);
+    setBundledBreakoutKinds([]);
     setPlayer(null);
     setCurrentVideoTime(0);
     setIsPlaying(false);
     lastHighlightedTimestampRef.current = null;
 
-    const loadCallData = activeBreakout
-      ? loadBreakoutCallData(activeBreakout)
-      : loadMainCallData(callPath, upcoming ?? null);
+    const loadCallData = async (): Promise<{ result: LoadResult | null; active: ActiveBreakout | null; bundledKinds: string[] }> => {
+      // The parent config lists bundled breakouts, needed for tabs on every view.
+      const artifactPath = getArtifactPath(normalizedPath);
+      const parentConfig = artifactPath
+        ? await readJsonArtifact<CallConfig>(`${artifactPath}/config.json`, 'config.json') ?? null
+        : null;
+      const bundledConfigs = parentConfig?.breakouts ?? {};
+      const bundledKinds = Object.keys(bundledConfigs);
 
-    loadCallData
-      .then(result => {
+      if (breakoutParam && bundledConfigs[breakoutParam]) {
+        const result = await loadBundledBreakoutCallData(
+          normalizedPath,
+          breakoutParam,
+          bundledConfigs[breakoutParam],
+          parentConfig?.issue,
+        );
+        return { result, active: { kind: breakoutParam, legacy: false }, bundledKinds };
+      }
+
+      const legacyBreakout = breakoutParam
+        ? legacyBreakoutsForCall.find(b => b.kind === breakoutParam) ?? null
+        : null;
+      if (legacyBreakout) {
+        const result = await loadLegacyBreakoutCallData(legacyBreakout);
+        return { result, active: { kind: legacyBreakout.kind, legacy: true }, bundledKinds };
+      }
+
+      const result = await loadMainCallData(callPath, upcoming ?? null);
+      return { result, active: null, bundledKinds };
+    };
+
+    loadCallData()
+      .then(({ result, active, bundledKinds }) => {
         if (cancelled) return;
+        setActiveBreakout(active);
+        setBundledBreakoutKinds(bundledKinds);
         if (result) {
           setCallData(result.callData);
           setCallConfig(result.callConfig);
@@ -521,7 +617,7 @@ const CallPage: React.FC<CallPageProps> = ({ callPath, upcoming }) => {
     return () => {
       cancelled = true;
     };
-  }, [callPath, activeBreakout, upcoming]);
+  }, [callPath, normalizedPath, breakoutParam, legacyBreakoutsForCall, upcoming]);
 
   // Clean up interval on unmount
   useEffect(() => {
@@ -627,9 +723,9 @@ const CallPage: React.FC<CallPageProps> = ({ callPath, upcoming }) => {
   }, []);
 
   // Handle navigation to selected search result when player is ready.
-  // Breakout pages intentionally have no callConfig, so chat anchors do not wait for the player.
+  // Legacy breakout pages intentionally have no callConfig, so chat anchors do not wait for the player.
   useEffect(() => {
-    const isBreakoutChatResult = Boolean(activeBreakout && selectedSearchResult?.type === 'chat');
+    const isBreakoutChatResult = Boolean(activeBreakout?.legacy && selectedSearchResult?.type === 'chat');
     if (!selectedSearchResult || (!player && !isBreakoutChatResult) || !callData || hasNavigatedToSearchResult.current) {
       return;
     }
@@ -792,7 +888,7 @@ const CallPage: React.FC<CallPageProps> = ({ callPath, upcoming }) => {
   };
 
   const handleTranscriptClick = (timestamp: string, searchResult?: { text: string; type: string }) => {
-    if (activeBreakout && searchResult?.type === 'chat') {
+    if (activeBreakout?.legacy && searchResult?.type === 'chat') {
       setSelectedSearchResult({
         timestamp,
         text: searchResult.text,
@@ -936,9 +1032,12 @@ const CallPage: React.FC<CallPageProps> = ({ callPath, upcoming }) => {
     return callTypeNames[type] || callData.type;
   };
 
+  const getBreakoutLabel = (kind: string): string =>
+    breakoutLabels[kind as BreakoutKind] ?? kind.toUpperCase();
+
   // Breakout views inherit the parent ACDT's identity so headers don't lose context.
   const headerLabel = activeBreakout
-    ? `${parentType.toUpperCase()} #${parentNumber} — ${breakoutLabels[activeBreakout.kind]} Breakout`
+    ? `${parentType.toUpperCase()} #${parentNumber} — ${getBreakoutLabel(activeBreakout.kind)} Breakout`
     : `${getCallTypeLabel()}${callNumberSuffix}`;
 
   // Get associated EIP info for breakout calls
@@ -1064,7 +1163,7 @@ const CallPage: React.FC<CallPageProps> = ({ callPath, upcoming }) => {
   };
 
   const renderBreakoutTabs = () => {
-    if (breakoutsForCall.length === 0) return null;
+    if (breakoutKindsForCall.length === 0) return null;
     const pillBase = 'px-3 py-1 rounded-full text-xs font-medium transition-colors';
     const pillActive = 'bg-blue-600 text-white hover:bg-blue-700';
     const pillInactive = 'bg-slate-100 dark:bg-slate-700 text-slate-600 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-600';
@@ -1081,16 +1180,16 @@ const CallPage: React.FC<CallPageProps> = ({ callPath, upcoming }) => {
         <span className="text-xs font-medium text-slate-500 dark:text-slate-400 mr-1">
           Breakouts:
         </span>
-        {breakoutsForCall.map(b => {
-          const isActive = activeBreakout?.kind === b.kind;
+        {breakoutKindsForCall.map(kind => {
+          const isActive = activeBreakout?.kind === kind;
           return (
             <button
-              key={b.kind}
+              key={kind}
               type="button"
-              onClick={() => setActiveBreakoutKind(b.kind)}
+              onClick={() => setActiveBreakoutKind(kind)}
               className={`${pillBase} ${isActive ? pillActive : pillInactive}`}
             >
-              {breakoutLabels[b.kind]}
+              {getBreakoutLabel(kind)}
             </button>
           );
         })}
@@ -1313,7 +1412,7 @@ const CallPage: React.FC<CallPageProps> = ({ callPath, upcoming }) => {
               );
             })}
         </div>
-      ) : activeBreakout ? (
+      ) : activeBreakout?.legacy ? (
         <TranscriptStatus
           status="unavailable"
           isWorkspaceView={isWorkspaceView}
@@ -1344,7 +1443,7 @@ const CallPage: React.FC<CallPageProps> = ({ callPath, upcoming }) => {
             syncConfig={callConfig?.sync}
             selectedSearchResult={selectedSearchResult}
             onTimestampClick={handleTranscriptClick}
-            allowTimestampNavigation={!activeBreakout}
+            allowTimestampNavigation={!activeBreakout?.legacy}
           />
         </div>
       ) : isUpcoming ? (

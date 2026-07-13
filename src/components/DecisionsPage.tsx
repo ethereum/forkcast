@@ -21,6 +21,7 @@ const FILTER_OPTIONS: { value: FilterType; label: string }[] = [
 ];
 
 const ACD_TYPES: string[] = ['acdc', 'acde', 'acdt'];
+const BREAKOUT_SUFFIXES: string[] = ['cl', 'el'];
 
 const formatDate = (dateStr: string): string => {
   const date = new Date(dateStr + 'T00:00:00');
@@ -41,15 +42,25 @@ const DecisionsPage: React.FC = () => {
     const fetchAllDecisions = async () => {
       const acdCalls = protocolCalls.filter(c => ACD_TYPES.includes(c.type));
 
+      const fetchKd = async (url: string): Promise<KeyDecision[]> => {
+        const response = await fetch(url);
+        if (!response.ok) return [];
+        const data = await response.json();
+        return data?.key_decisions ?? [];
+      };
+
       const results = await Promise.allSettled(
         acdCalls.map(async (call) => {
           const artifactPath = `${call.type}/${call.date}_${call.number}`;
-          const response = await fetch(`/artifacts/${artifactPath}/key_decisions.json`);
-          if (!response.ok) return null;
-          const data = await response.json();
-          const decisions: KeyDecision[] = data?.key_decisions;
-          if (!decisions || decisions.length === 0) return null;
-          return { call, decisions };
+          const urls = [`/artifacts/${artifactPath}/key_decisions.json`];
+          if (call.type === 'acdt') {
+            for (const suffix of BREAKOUT_SUFFIXES) {
+              urls.push(`/artifacts/${artifactPath}/key_decisions_${suffix}.json`);
+            }
+          }
+          const allDecisions = (await Promise.all(urls.map(fetchKd))).flat();
+          if (allDecisions.length === 0) return null;
+          return { call, decisions: allDecisions };
         })
       );
 

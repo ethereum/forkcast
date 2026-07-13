@@ -18,16 +18,15 @@ This skill walks the user through setting video/transcript sync offsets for newl
 ### Step 2: Identify what needs sync
 
 - **Livestreamed calls** (acdc, acde): config will have `null` offsets. These always need manual sync — the video and transcript start at different times.
-- **Composed Zoom calls** (acdt): config should have non-null PM-provided offsets. These offsets account for the bumper and transcript-based Zoom trim, and `videoStartTime` may be before or after `transcriptStartTime`. Missing PM sync is a pipeline error, not a raw-Zoom zero-sync case. If manual sync is needed to skip beginning chatter, preserve the exact generated `videoStartTime - transcriptStartTime` delta.
-- **Raw Zoom calls** (all others): config defaults to `"00:00:00"`. These may need sync if there's dead air at the start — both offsets will be the same value since video and transcript are from the same recording.
+- **Raw Zoom calls** (all others, including acdt): config defaults to `"00:00:00"`. These may need sync if there's dead air at the start — both offsets will be the same value since video and transcript are from the same recording.
+- **Bundled breakouts** (acdt CL, 087+): the parent call's config has a `breakouts` map with per-breakout `videoUrl` and `sync`. Each breakout is its own raw Zoom recording — treat it like a raw Zoom call, reading the anchor from `transcript_{kind}.vtt` and setting both offsets in `breakouts.{kind}.sync`. The breakout view lives at the parent call's page under `?breakout={kind}`.
 
 ### Step 3: Propose timestamps, then have the user confirm
 
 1. Start the dev server from the worktree: `npm run dev` (run in background). Read the dev server output to get the actual port — don't assume 5173, as it may be taken.
 2. Read each call's `transcript_corrected.vtt` and find the **call-open anchor** (see heuristic below). This gives the transcript-side timestamp.
 3. Propose timestamps per call type:
-   - **Raw Zoom**: propose the single start timestamp (both `transcriptStartTime` and `videoStartTime` use it). If the host opens at the very top with no dead air, propose `00:00:00`.
-   - **Composed Zoom**: propose the transcript-side anchor as `transcriptStartTime`; compute `videoStartTime` by adding the generated `videoStartTime - transcriptStartTime` delta.
+   - **Raw Zoom** (and bundled breakouts): propose the single start timestamp (both `transcriptStartTime` and `videoStartTime` use it). If the host opens at the very top with no dead air, propose `00:00:00`.
    - **Livestreamed**: propose the transcript-side anchor as `transcriptStartTime`. You **cannot** propose `videoStartTime` — the video is a separate recording you can't watch — so ask the user to read it off the video player in the call page UI.
 4. Present the proposals in a table with the call page links (`http://localhost:{port}/calls/{type}/{number}`, zero-pad the number to 3 digits). The user confirms or corrects each by checking the UI — they don't have to hunt for the timestamps from scratch.
 
@@ -47,8 +46,8 @@ Anchoring on "the host first addresses the group" lands ~10–15s too early; wai
 
 Update each call's `config.json` with the confirmed timestamps (format: `HH:MM:SS`):
 - **Livestreamed**: set `transcriptStartTime` to the confirmed transcript timestamp and `videoStartTime` to the user's video timestamp
-- **Composed Zoom**: set `transcriptStartTime` to the confirmed transcript timestamp and set `videoStartTime` to that timestamp plus the generated video/transcript difference
 - **Raw Zoom**: set both `transcriptStartTime` and `videoStartTime` to the same confirmed value
+- **Bundled breakouts**: same as raw Zoom, but write into `breakouts.{kind}.sync` in the parent call's config
 
 ### Step 5: Verify
 

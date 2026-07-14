@@ -7,6 +7,7 @@ import { networkUpgrades } from '../../data/upgrades';
 import { getPendingProposalsForFork, type PendingProposal } from '../../data/pending-proposals';
 import { fetchUpcomingCalls, type UpcomingCall } from '../../domain/calls/upcomingCalls';
 import { formatCallReference } from '../../domain/calls/callReference';
+import { getLatestHeadlinerCall } from '../../domain/eips/headlinerHistory';
 import { StructuredDecisionContent, EipLinkWithTooltip, DecisionTextWithEipLinks } from './KeyDecisionsSection';
 
 interface TldrData {
@@ -226,15 +227,16 @@ const CallPlanPage: React.FC = () => {
             lastDiscussedDate: latest.date,
             lastDiscussedCall: latest.call,
           });
-        } else if ((fr.isHeadliner || fr.wasHeadlinerCandidate) && upgrade.status === 'Planning') {
+        } else if (fr.headlinerHistory?.length && upgrade.status === 'Planning') {
           // Headliner candidates without formal PFI/CFI status
-          const lastPresentation = fr.presentationHistory?.[fr.presentationHistory.length - 1];
+          const lastHeadlinerCall = getLatestHeadlinerCall(fr);
+          const lastDiscussion = fr.discussionHistory?.[fr.discussionHistory.length - 1];
           eips.push({
             eip,
             forkName: forkDisplayName,
             currentStatus: 'Candidate',
-            lastDiscussedDate: lastPresentation?.date ?? null,
-            lastDiscussedCall: lastPresentation?.call ?? null,
+            lastDiscussedDate: lastDiscussion?.date ?? lastHeadlinerCall?.date ?? null,
+            lastDiscussedCall: lastDiscussion?.call ?? lastHeadlinerCall?.call ?? null,
           });
         }
       }

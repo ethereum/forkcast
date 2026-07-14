@@ -449,7 +449,7 @@ function loadInScopeEips(callType) {
     for (const fr of eip.forkRelationships || []) {
       const hasActiveStatus = fr.statusHistory?.length > 0 &&
         ['Proposed', 'Considered'].includes(fr.statusHistory[fr.statusHistory.length - 1].status);
-      const isCandidate = fr.isHeadliner || fr.wasHeadlinerCandidate;
+      const isCandidate = Boolean(fr.headlinerHistory?.length);
 
       if (hasActiveStatus || isCandidate) {
         const latestStatus = fr.statusHistory?.length > 0

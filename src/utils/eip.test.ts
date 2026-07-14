@@ -108,11 +108,17 @@ describe('getUpgradeAnchorExpansionState', () => {
 
   it('expands headliner proposals for unselected headliner candidate anchors', () => {
     const eip = makeEip({
+      id: 7805,
       forkRelationships: [
         {
           forkName: 'Glamsterdam',
-          wasHeadlinerCandidate: true,
-          isHeadliner: false,
+          headlinerHistory: [
+            {
+              type: 'proposed',
+              date: '2025-05-26',
+              link: 'https://example.com/headliner-proposal',
+            },
+          ],
           statusHistory: [
             { status: 'Considered', call: null, date: null },
             { status: 'Declined', call: 'acdc/171', date: '2025-12-11' },
@@ -129,11 +135,17 @@ describe('getUpgradeAnchorExpansionState', () => {
 
   it('does not expand headliner proposals for selected headliner anchors', () => {
     const eip = makeEip({
+      id: 7928,
       forkRelationships: [
         {
           forkName: 'Glamsterdam',
-          wasHeadlinerCandidate: true,
-          isHeadliner: true,
+          headlinerHistory: [
+            {
+              type: 'proposed',
+              date: '2025-05-26',
+              link: 'https://example.com/headliner-proposal',
+            },
+          ],
           statusHistory: [
             { status: 'Scheduled', call: null, date: null },
           ],

@@ -1,4 +1,4 @@
-import { ClientTeamPerspective } from '../types/eip';
+import { ClientTeamPerspective, HeadlinerSelection } from '../types/eip';
 import type { MacroPhase } from '../types/timeline';
 
 export interface ActivationDetails {
@@ -23,6 +23,7 @@ export interface NetworkUpgrade {
   highlights?: string;
   externalLink?: string;
   hideProgressBar?: boolean;
+  headlinerSelection?: HeadlinerSelection;
 }
 
 export const networkUpgrades: NetworkUpgrade[] = [
@@ -99,6 +100,12 @@ export const networkUpgrades: NetworkUpgrade[] = [
     activationDate: 'Dec 3, 2025',
     disabled: false,
     highlights: 'PeerDAS (EIP-7594), gas limit increase, introduce BPOs',
+    headlinerSelection: {
+      status: 'finalized',
+      selected: {
+        CL: 7594
+      }
+    },
     activationDetails: {
       blockNumber: 23935694,
       epochNumber: 411392,
@@ -115,6 +122,13 @@ export const networkUpgrades: NetworkUpgrade[] = [
     activationDate: '2026',
     disabled: false,
     metaEipLink: 'https://ethereum-magicians.org/t/eip-7773-glamsterdam-network-upgrade-meta-thread/21195',
+    headlinerSelection: {
+      status: 'finalized',
+      selected: {
+        EL: 7928,
+        CL: 7732
+      }
+    },
     clientTeamPerspectives: [
       {
         teamName: 'Besu',
@@ -194,7 +208,13 @@ export const networkUpgrades: NetworkUpgrade[] = [
     activationDate: '2027',
     disabled: false,
     macroPhaseOverride: 'scoping',
-    metaEipLink: 'https://ethereum-magicians.org/t/eip-8081-hegota-network-upgrade-meta-thread/26876'
+    metaEipLink: 'https://ethereum-magicians.org/t/eip-8081-hegota-network-upgrade-meta-thread/26876',
+    headlinerSelection: {
+      status: 'finalized',
+      selected: {
+        CL: 7805
+      }
+    }
   }
 ];
 

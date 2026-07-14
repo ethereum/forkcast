@@ -5,31 +5,53 @@ export interface ClientTeamPerspective {
   candidateBlogPostUrl?: string; // For non-headliner (CFI/PFI) commentary
 }
 
+export type ProtocolCallReference = `${'acdc' | 'acde' | 'acdt'}/${number}`;
+
+export type ForkStatus = 'Proposed' | 'Considered' | 'Scheduled' | 'Declined' | 'Included' | 'Withdrawn';
+
+export interface ForkStatusHistoryEntry {
+  status: ForkStatus;
+  call: ProtocolCallReference | null;
+  date: string | null;
+  timestamp?: number; // Seconds into the call recording video
+}
+
+export interface DiscussionHistoryEntry {
+  call: ProtocolCallReference;
+  date: string;
+  timestamp?: number; // Seconds into the call recording video
+}
+
+export type HeadlinerHistoryEntry =
+  | { type: 'proposed'; date: string; link: string }
+  | { type: 'presented'; date: string; call: ProtocolCallReference; timestamp?: number }
+  | { type: 'withdrawn'; date?: string; call?: ProtocolCallReference; timestamp?: number };
+
+export type HeadlinerSelectionLayer = 'EL' | 'CL';
+
+export interface HeadlinerSelection {
+  status: 'open' | 'finalized';
+  selected: Partial<Record<HeadlinerSelectionLayer, number>>;
+  decided?: {
+    date?: string;
+    call?: ProtocolCallReference;
+    timestamp?: number;
+  };
+}
+
 export interface ForkRelationship {
   forkName: string;
-  statusHistory: Array<{
-    status: 'Proposed' | 'Considered' | 'Scheduled' | 'Declined' | 'Included' | 'Withdrawn';
-    call: `${'acdc' | 'acde' | 'acdt'}/${number}` | null;
-    date: string | null;
-    timestamp?: number; // Seconds into the call recording video
-  }>; // Ordered oldest -> newest
-  isHeadliner?: boolean;
-  wasHeadlinerCandidate?: boolean;
+  statusHistory: ForkStatusHistoryEntry[]; // Ordered oldest -> newest
+  headlinerHistory?: HeadlinerHistoryEntry[]; // Ordered oldest -> newest
   /** Maximum 2 champions allowed */
   champions?: Champion[];
   notice?: {
     title: string;
     text: string;
-    call?: `${'acdc' | 'acde' | 'acdt'}/${number}`;
+    call?: ProtocolCallReference;
     timestamp?: number;
   };
-  presentationHistory?: Array<{
-    type: 'headliner_proposal' | 'headliner_presentation' | 'presentation' | 'debate';
-    call?: `${'acdc' | 'acde' | 'acdt'}/${number}`;
-    link?: string;
-    date: string;
-    timestamp?: number; // Seconds into the call recording video
-  }>;
+  discussionHistory?: DiscussionHistoryEntry[];
 }
 
 export interface Champion {
@@ -114,7 +136,7 @@ export interface KeyDecision {
   type: KeyDecisionType;
   eips: number[];
   stage_change?: {
-    to: 'Proposed' | 'Considered' | 'Scheduled' | 'Included' | 'Declined' | 'Withdrawn';
+    to: ForkStatus;
   };
   devnet?: string;
   fork?: string;

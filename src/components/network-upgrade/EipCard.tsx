@@ -47,13 +47,13 @@ export const EipCard: React.FC<EipCardProps> = ({
   const hasMissingTradeoffs = !eip.tradeoffs || eip.tradeoffs.length === 0;
 
   return (
-    <article key={eip.id} className={`bg-white dark:bg-slate-800 border rounded p-8 ${
+    <article key={eip.id} className={`bg-white dark:bg-slate-800 border rounded p-6 ${
       isHeadliner(eip, forkName)
         ? 'border-purple-200 dark:border-purple-600 shadow-sm ring-1 ring-purple-100 dark:ring-purple-900/20'
         : 'border-slate-200 dark:border-slate-600'
     }`} id={eipId} data-section>
       {/* Header */}
-      <header className="border-b border-slate-200 dark:border-slate-400 pb-6 mb-6">
+      <header className="mb-2">
         <div className="flex flex-col lg:flex-row lg:items-start lg:justify-between">
           <div className="flex-1">
             <div className="flex items-center gap-3 group relative">
@@ -189,36 +189,43 @@ export const EipCard: React.FC<EipCardProps> = ({
       </header>
 
       {/* Description */}
-      <div className="">
+      <div>
         {notice && <EipNotice notice={notice} className="mb-4" />}
 
         <p className="text-slate-700 dark:text-slate-300 text-sm leading-relaxed">
           {parseMarkdownLinks(getSummaryDescription(eip))}
         </p>
 
-        <div className="mt-3 text-xs space-x-3">
-          {/* Supporting Documents */}
-          {eip.supportingDocuments && eip.supportingDocuments.length > 0 && (
-            <>
+        {(() => {
+          const showChampions = ['glamsterdam', 'hegota'].includes(forkName.toLowerCase());
+          const champions = showChampions ? forkRelationship?.champions : undefined;
+          const hasChampions = champions && champions.length > 0 && champions.some(c => c.name);
+          const hasAnyContactInfo = champions?.some(c => c.discord || c.telegram || c.email);
+          const hasResources = eip.supportingDocuments && eip.supportingDocuments.length > 0;
+          const isHeadlinerEip = isHeadliner(eip, forkName);
+          const discussionLink = getHeadlinerDiscussionLink(eip, forkName);
+          const hasHeadlinerLink = isHeadlinerEip && discussionLink;
+
+          // Collect metadata items to render pipe separators between them
+          const items: React.ReactNode[] = [];
+
+          if (hasResources) {
+            items.push(
               <Link
+                key="resources"
                 to={`/eips/${eip.id}`}
                 onClick={(e) => e.stopPropagation()}
                 className="inline-flex items-center gap-1 text-purple-600 hover:text-purple-800 dark:text-purple-400 dark:hover:text-purple-300 underline decoration-1 underline-offset-2 transition-colors"
               >
                 Resources
               </Link>
-              {isHeadliner(eip, forkName) && getHeadlinerDiscussionLink(eip, forkName) && (
-                <span className="text-slate-400 dark:text-slate-400">|</span>
-              )}
-            </>
-          )}
+            );
+          }
 
-          {/* Headliner Discussion Link */}
-          {(() => {
-            const isHeadlinerEip = isHeadliner(eip, forkName);
-            const discussionLink = getHeadlinerDiscussionLink(eip, forkName);
-            return isHeadlinerEip && discussionLink && (
+          if (hasHeadlinerLink) {
+            items.push(
               <a
+                key="headliner"
                 href={discussionLink}
                 target="_blank"
                 rel="noopener noreferrer"
@@ -231,93 +238,99 @@ export const EipCard: React.FC<EipCardProps> = ({
                 </svg>
               </a>
             );
-          })()}
-        </div>
+          }
 
-        {/* Champion Information */}
-        {['glamsterdam', 'hegota'].includes(forkName.toLowerCase()) && (() => {
-          const champions = forkRelationship?.champions;
-          const hasChampions = champions && champions.length > 0 && champions.some(c => c.name);
-          const hasAnyContactInfo = champions?.some(c => c.discord || c.telegram || c.email);
+          if (showChampions && hasChampions) {
+            items.push(
+              <span key="champion" className="inline-flex items-center gap-1.5">
+                <span className="text-slate-400 dark:text-slate-400">
+                  {champions.length > 1 ? 'Champions:' : 'Champion:'}
+                </span>
+                <button
+                  onClick={() => setShowChampionDetails(!showChampionDetails)}
+                  className="inline-flex items-center gap-1 text-slate-600 dark:text-slate-300 hover:text-slate-900 dark:hover:text-slate-100 transition-colors group"
+                >
+                  {champions.map(c => c.name).join(' & ')}
+                  {hasAnyContactInfo && (
+                    <svg
+                      className={`w-3 h-3 text-slate-400 group-hover:text-slate-600 dark:group-hover:text-slate-200 transition-all ${showChampionDetails ? 'rotate-180' : ''}`}
+                      fill="none"
+                      stroke="currentColor"
+                      viewBox="0 0 24 24"
+                    >
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+                    </svg>
+                  )}
+                </button>
+              </span>
+            );
+          } else if (showChampions && !hasChampions) {
+            items.push(
+              <span key="champion-missing" className="inline-flex items-center gap-1.5">
+                <span className="text-slate-400 dark:text-slate-400">Champion:</span>
+                <span className="text-amber-600 dark:text-amber-400/90 italic">Not yet assigned</span>
+              </span>
+            );
+          }
+
+          if (items.length === 0) return null;
 
           return (
-            <div className="mt-4">
-              {hasChampions ? (
-                <>
-                  <div className="inline-flex items-center gap-2">
-                    <span className="text-xs text-slate-500 dark:text-slate-400 font-medium">
-                      {champions.length > 1 ? 'Champions:' : 'Champion:'}
-                    </span>
-                    <button
-                      onClick={() => setShowChampionDetails(!showChampionDetails)}
-                      className="inline-flex items-center gap-1.5 text-xs text-slate-700 dark:text-slate-300 hover:text-slate-900 dark:hover:text-slate-100 transition-colors group"
-                    >
-                      <span className="font-medium">{champions.map(c => c.name).join(' & ')}</span>
-                      {hasAnyContactInfo && (
-                        <svg
-                          className={`w-3.5 h-3.5 text-slate-400 group-hover:text-slate-600 dark:group-hover:text-slate-200 transition-all ${showChampionDetails ? 'rotate-180' : ''}`}
-                          fill="none"
-                          stroke="currentColor"
-                          viewBox="0 0 24 24"
-                        >
-                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
-                        </svg>
-                      )}
-                    </button>
-                  </div>
+            <>
+              <div className="mt-2 text-xs flex flex-wrap items-center gap-x-3 gap-y-1">
+                {items.map((item, i) => (
+                  <React.Fragment key={i}>
+                    {i > 0 && <span className="text-slate-300 dark:text-slate-600">|</span>}
+                    {item}
+                  </React.Fragment>
+                ))}
+              </div>
 
-                  {hasAnyContactInfo && (
-                    <div
-                      className={`grid transition-all duration-300 ease-in-out ${
-                        showChampionDetails ? 'grid-rows-[1fr] opacity-100' : 'grid-rows-[0fr] opacity-0'
-                      }`}
-                    >
-                      <div className="overflow-hidden">
-                        <div className="mt-2 ml-4 space-y-3 bg-slate-50 dark:bg-slate-700 rounded px-3 py-2">
-                          {champions
-                            .filter(c => c.discord || c.telegram || c.email)
-                            .map((champion, idx) => (
-                              <div key={idx} className="space-y-1.5">
-                                {champions.length > 1 && (
-                                  <div className="text-xs font-medium text-slate-600 dark:text-slate-300">{champion.name}</div>
-                                )}
-                                {champion.discord && (
-                                  <div className="flex items-center gap-2 text-xs">
-                                    <span className="text-slate-500 dark:text-slate-400">Discord:</span>
-                                    <span className="font-mono text-slate-700 dark:text-slate-300">{champion.discord}</span>
-                                  </div>
-                                )}
-                                {champion.telegram && (
-                                  <div className="flex items-center gap-2 text-xs">
-                                    <span className="text-slate-500 dark:text-slate-400">Telegram:</span>
-                                    <span className="font-mono text-slate-700 dark:text-slate-300">{champion.telegram}</span>
-                                  </div>
-                                )}
-                                {champion.email && (
-                                  <div className="flex items-center gap-2 text-xs">
-                                    <span className="text-slate-500 dark:text-slate-400">Email:</span>
-                                    <a
-                                      href={`mailto:${champion.email}`}
-                                      className="font-mono text-blue-600 dark:text-blue-400 hover:underline"
-                                    >
-                                      {champion.email}
-                                    </a>
-                                  </div>
-                                )}
+              {showChampions && hasChampions && hasAnyContactInfo && (
+                <div
+                  className={`grid transition-all duration-300 ease-in-out ${
+                    showChampionDetails ? 'grid-rows-[1fr] opacity-100' : 'grid-rows-[0fr] opacity-0'
+                  }`}
+                >
+                  <div className="overflow-hidden">
+                    <div className="mt-2 space-y-3 bg-slate-50 dark:bg-slate-700 rounded px-3 py-2">
+                      {champions
+                        .filter(c => c.discord || c.telegram || c.email)
+                        .map((champion, idx) => (
+                          <div key={idx} className="space-y-1.5">
+                            {champions.length > 1 && (
+                              <div className="text-xs font-medium text-slate-600 dark:text-slate-300">{champion.name}</div>
+                            )}
+                            {champion.discord && (
+                              <div className="flex items-center gap-2 text-xs">
+                                <span className="text-slate-500 dark:text-slate-400">Discord:</span>
+                                <span className="font-mono text-slate-700 dark:text-slate-300">{champion.discord}</span>
                               </div>
-                            ))}
-                        </div>
-                      </div>
+                            )}
+                            {champion.telegram && (
+                              <div className="flex items-center gap-2 text-xs">
+                                <span className="text-slate-500 dark:text-slate-400">Telegram:</span>
+                                <span className="font-mono text-slate-700 dark:text-slate-300">{champion.telegram}</span>
+                              </div>
+                            )}
+                            {champion.email && (
+                              <div className="flex items-center gap-2 text-xs">
+                                <span className="text-slate-500 dark:text-slate-400">Email:</span>
+                                <a
+                                  href={`mailto:${champion.email}`}
+                                  className="font-mono text-blue-600 dark:text-blue-400 hover:underline"
+                                >
+                                  {champion.email}
+                                </a>
+                              </div>
+                            )}
+                          </div>
+                        ))}
                     </div>
-                  )}
-                </>
-              ) : (
-                <div className="inline-flex items-center gap-2 bg-amber-50/80 dark:bg-amber-900/10 border border-amber-200/60 dark:border-amber-700/30 rounded px-2.5 py-1.5">
-                  <span className="text-xs text-slate-500 dark:text-slate-400 font-medium">Champion:</span>
-                  <span className="text-xs text-amber-700 dark:text-amber-400/90 italic">Not yet assigned</span>
+                  </div>
                 </div>
               )}
-            </div>
+            </>
           );
         })()}
 
@@ -341,25 +354,10 @@ export const EipCard: React.FC<EipCardProps> = ({
         )}
         */}
 
-        {/* Benefits - Always visible */}
-        {eip.benefits && eip.benefits.length > 0 && (
-          <div className="mt-6">
-            <h4 className="text-sm font-semibold text-slate-900 dark:text-slate-100 mb-3 uppercase tracking-wide">Key Benefits</h4>
-            <ul className="space-y-2">
-              {eip.benefits.map((benefit, index) => (
-                <li key={index} className="flex items-start text-sm">
-                  <span className="text-emerald-600 dark:text-emerald-400 mr-3 mt-0.5 text-xs">●</span>
-                  <span className="text-slate-700 dark:text-slate-300">{benefit}</span>
-                </li>
-              ))}
-            </ul>
-          </div>
-        )}
-
         {/* Expand/Collapse Button */}
         <button
           onClick={() => setIsExpanded(!isExpanded)}
-          className="mt-4 flex items-center gap-1.5 text-xs text-slate-500 hover:text-slate-700 dark:text-slate-400 dark:hover:text-slate-200 transition-colors"
+          className="mt-3 flex items-center gap-1.5 text-xs text-slate-500 hover:text-slate-700 dark:text-slate-400 dark:hover:text-slate-200 transition-colors"
         >
           <svg
             className={`w-4 h-4 transition-transform duration-200 ${isExpanded ? 'rotate-180' : ''}`}
@@ -380,7 +378,22 @@ export const EipCard: React.FC<EipCardProps> = ({
         }`}
       >
         <div className="overflow-hidden">
-          <div className="mt-8 space-y-8">
+          <div className="mt-6 space-y-8">
+        {/* Key Benefits */}
+        {eip.benefits && eip.benefits.length > 0 && (
+          <div>
+            <h4 className="text-sm font-semibold text-slate-900 dark:text-slate-100 mb-3 uppercase tracking-wide">Key Benefits</h4>
+            <ul className="space-y-2">
+              {eip.benefits.map((benefit, index) => (
+                <li key={index} className="flex items-start text-sm">
+                  <span className="text-emerald-600 dark:text-emerald-400 mr-3 mt-0.5 text-xs">●</span>
+                  <span className="text-slate-700 dark:text-slate-300">{benefit}</span>
+                </li>
+              ))}
+            </ul>
+          </div>
+        )}
+
         {/* Trade-offs & Considerations */}
         <div>
           <h4 className="text-sm font-semibold text-slate-900 dark:text-slate-100 mb-4 uppercase tracking-wide">Trade-offs & Considerations</h4>

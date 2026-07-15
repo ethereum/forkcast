@@ -325,7 +325,7 @@ const PublicNetworkUpgradePage: React.FC<PublicNetworkUpgradePageProps> = ({
 
     const displayedStages = status === 'Live'
       ? ['Included', 'Declined for Inclusion']
-      : ['Included', 'Scheduled for Inclusion', 'Considered for Inclusion', 'Proposed for Inclusion', 'Declined for Inclusion'];
+      : ['Included', 'Scheduled for Inclusion', 'Considered for Inclusion', 'Proposed for Inclusion', 'Informational', 'Declined for Inclusion'];
     const stage = getInclusionStage(eip, forkName);
 
     if (!displayedStages.includes(stage)) return false;
@@ -409,7 +409,7 @@ const PublicNetworkUpgradePage: React.FC<PublicNetworkUpgradePageProps> = ({
     ...(pageMode !== 'headlinerSelection' ? [
       ...(status === 'Live'
         ? ['Included', 'Declined for Inclusion']
-        : ['Included', 'Scheduled for Inclusion', 'Considered for Inclusion', 'Proposed for Inclusion', 'Declined for Inclusion']
+        : ['Included', 'Scheduled for Inclusion', 'Considered for Inclusion', 'Proposed for Inclusion', 'Informational', 'Declined for Inclusion']
       ).flatMap(stage => {
           // For Glamsterdam, exclude unselected headliner candidates from stage sections since they have their own section
           // Selected headliners (isHeadliner=true) should still appear in their respective stages
@@ -650,6 +650,7 @@ const PublicNetworkUpgradePage: React.FC<PublicNetworkUpgradePageProps> = ({
                     { stage: 'Scheduled for Inclusion', description: 'EIPs that client teams have agreed to implement in the next upgrade devnet. These are very likely to be included in the final upgrade.' },
                     { stage: 'Considered for Inclusion', description: 'EIPs that client teams are positive towards. Implementation may begin, but inclusion is not yet guaranteed.' },
                     { stage: 'Proposed for Inclusion', description: 'EIPs that have been proposed for this upgrade but are still under initial review by client teams.' },
+                    { stage: 'Informational', description: 'EIPs that provide analysis or context relevant to decisions made during this upgrade, but do not introduce code changes themselves.' },
                     { stage: 'Declined for Inclusion', description: 'EIPs that were proposed, but ultimately declined for inclusion in the upgrade for various reasons. They may be reconsidered for future upgrades.' }
                   ]
               ).map(({ stage, description }) => {

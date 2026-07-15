@@ -11,6 +11,8 @@ export const getInclusionStageColor = (stage: InclusionStage): string => {
       return 'bg-amber-100 text-amber-700 dark:bg-amber-900/20 dark:text-amber-300';
     case 'Scheduled for Inclusion':
       return 'bg-emerald-100 text-emerald-800 dark:bg-emerald-900/20 dark:text-emerald-300';
+    case 'Informational':
+      return 'bg-slate-100 text-slate-700 dark:bg-slate-700 dark:text-slate-300';
     case 'Declined for Inclusion':
       return 'bg-red-100 text-red-700 dark:bg-red-900/20 dark:text-red-300';
     case 'Included':

@@ -62,7 +62,7 @@ export const parseMarkdownLinks = (text: string): React.ReactNode[] => {
  * Check whether a string contains a markdown table (header + separator + rows).
  */
 export const containsMarkdownTable = (text: string): boolean =>
-  /\|.+\|[\r\n]+\|[-| :]+\|/.test(text);
+  /\|.+\|\s*[\r\n]+\|[-| :]+\|/.test(text);
 
 /**
  * Parse a string that may contain a markdown table into React nodes.

@@ -131,8 +131,8 @@ export const HEGOTA_TIMELINE_PHASES: TimelinePhase[] = [
   {
     id: 'non-headliner-proposals',
     title: 'Non-Headliner EIP Proposals',
-    dateRange: 'Apr 9 - TBD',
-    description: 'Non-headliner EIPs can be proposed for inclusion in Hegotá. Window opens April 9th, deadline TBD.',
+    dateRange: 'Apr 9 - Aug 6',
+    description: 'Non-headliner EIPs can be proposed for inclusion in Hegotá. Window opens April 9th, deadline August 6th.',
     status: 'in-progress'
   },
   {
@@ -303,9 +303,9 @@ const RAW_HEGOTA_PROGRESS: ForkProgress = {
     },
     {
       phaseId: 'eip-selection',
-      status: 'upcoming',
+      status: 'in-progress',
       projectedDate: 'Q2-Q3 2026',
-      progressNotes: 'Non-headliner EIP proposal window opens April 9th',
+      progressNotes: 'Non-headliner EIP proposal window: April 9th – August 6th',
       substeps: [
         {
           name: 'PFI Deadline',

@@ -3,13 +3,16 @@ import { PECTRA_TIMELINE_PHASES } from '../../constants/timeline-phases';
 import { getPhaseStatusIcon } from '../../utils/timeline';
 import { getPhaseStatusColor } from '../../utils/colors';
 import { useAnalytics } from '../../hooks/useAnalytics';
+import { useTimelineLine } from '../../hooks/useTimelineLine';
 
 export const PectraTimeline: React.FC = () => {
   const phases = PECTRA_TIMELINE_PHASES;
   const [isExpanded, setIsExpanded] = useState(false);
   const { trackLinkClick } = useAnalytics();
+  const { containerRef, lineRef, lastCircleRef } = useTimelineLine(isExpanded);
   const activeIndex = phases.findIndex(p => p.status === 'in-progress');
   const highlightIndex = activeIndex >= 0 ? activeIndex : phases.length - 1;
+  const lastPhaseId = phases[phases.length - 1].id;
 
   const handleExternalLinkClick = (linkType: string, url: string) => {
     trackLinkClick(linkType, url);
@@ -18,10 +21,10 @@ export const PectraTimeline: React.FC = () => {
   return (
     <div className="mb-4">
       <div className="bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg p-6">
-        <div className="relative">
+        <div className="relative" ref={containerRef}>
           {/* Vertical line */}
           {phases.length > 1 && (
-            <div className={`absolute left-5 top-5 bottom-5 w-0.5 bg-slate-200 dark:bg-slate-600 ${!isExpanded ? 'hidden lg:block' : ''}`} />
+            <div ref={lineRef} className={`absolute left-5 top-5 w-0.5 -translate-x-1/2 bg-slate-200 dark:bg-slate-600 ${!isExpanded ? 'hidden lg:block' : ''}`} />
           )}
 
           {/* Before-highlight phases (collapsible on mobile) */}
@@ -31,7 +34,7 @@ export const PectraTimeline: React.FC = () => {
                 <div className="space-y-8 pb-8">
                   {phases.slice(0, highlightIndex).map(phase => (
                     <div key={phase.id} className="flex items-start gap-4">
-                      <div className={`relative z-10 flex-shrink-0 w-10 h-10 rounded-full border-2 flex items-center justify-center ${getPhaseStatusColor(phase.status)}`}>
+                      <div ref={phase.id === lastPhaseId ? lastCircleRef : undefined} className={`relative z-10 flex-shrink-0 w-10 h-10 rounded-full border-2 flex items-center justify-center ${getPhaseStatusColor(phase.status)}`}>
                         <div className="absolute inset-0 rounded-full bg-white dark:bg-slate-800" />
                         <div className={`absolute inset-0 rounded-full ${getPhaseStatusColor(phase.status).match(/(bg-\S+)|(dark:bg-\S+)/g)?.join(' ')}`} />
                         <div className="relative">{getPhaseStatusIcon(phase.status)}</div>
@@ -57,7 +60,7 @@ export const PectraTimeline: React.FC = () => {
             const phase = phases[highlightIndex];
             return (
               <div className="flex items-start gap-4">
-                <div className={`relative z-10 flex-shrink-0 w-10 h-10 rounded-full border-2 flex items-center justify-center ${getPhaseStatusColor(phase.status)}`}>
+                <div ref={phase.id === lastPhaseId ? lastCircleRef : undefined} className={`relative z-10 flex-shrink-0 w-10 h-10 rounded-full border-2 flex items-center justify-center ${getPhaseStatusColor(phase.status)}`}>
                   <div className="absolute inset-0 rounded-full bg-white dark:bg-slate-800" />
                   <div className={`absolute inset-0 rounded-full ${getPhaseStatusColor(phase.status).match(/(bg-\S+)|(dark:bg-\S+)/g)?.join(' ')}`} />
                   <div className="relative">{getPhaseStatusIcon(phase.status)}</div>
@@ -82,7 +85,7 @@ export const PectraTimeline: React.FC = () => {
                 <div className="space-y-8 pt-8">
                   {phases.slice(highlightIndex + 1).map(phase => (
                     <div key={phase.id} className="flex items-start gap-4">
-                      <div className={`relative z-10 flex-shrink-0 w-10 h-10 rounded-full border-2 flex items-center justify-center ${getPhaseStatusColor(phase.status)}`}>
+                      <div ref={phase.id === lastPhaseId ? lastCircleRef : undefined} className={`relative z-10 flex-shrink-0 w-10 h-10 rounded-full border-2 flex items-center justify-center ${getPhaseStatusColor(phase.status)}`}>
                         <div className="absolute inset-0 rounded-full bg-white dark:bg-slate-800" />
                         <div className={`absolute inset-0 rounded-full ${getPhaseStatusColor(phase.status).match(/(bg-\S+)|(dark:bg-\S+)/g)?.join(' ')}`} />
                         <div className="relative">{getPhaseStatusIcon(phase.status)}</div>

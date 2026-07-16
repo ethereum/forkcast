@@ -1,61 +1,61 @@
 {
   "series": "ACDT",
-  "generated": "2026-07-09",
-  "for_call": "ACDT #87",
+  "generated": "2026-07-16",
+  "for_call": "ACDT #88",
   "suggestions": [
     {
-      "topic": "Glamsterdam devnet-7 launch status and stability assessment",
+      "topic": "Glamsterdam devnet-7 status update and stability assessment",
       "priority": "high",
-      "rationale": "Devnet-7 was targeted for launch today (July 9). As the designated final devnet with a mild spec freeze, confirming successful launch and initial stability is critical before proceeding with further testing or spec refinements.",
+      "rationale": "Devnet-7 was designated as the 'final devnet' with a mild spec freeze. Launched July 13-14, it needs a comprehensive stability check before proceeding to public testnet planning.",
       "related_eips": [],
       "source": "devnet_update"
     },
     {
-      "topic": "EL spec finalization for devnet-7 (EIP-2780 floor gas, EIP-8037, EIP-8282)",
+      "topic": "Public testnet timeline and readiness criteria",
       "priority": "high",
-      "rationale": "ACDT #86 noted remaining EL spec changes needed resolution by today. If not completed, this blocks devnet-7 launch and testing. If completed, teams need confirmation that execution-specs were released as planned.",
+      "rationale": "With devnet-7 as the final devnet, teams need to establish clear criteria for declaring it ready and timeline for launching Glamsterdam on public testnet (Holesky, Sepolia).",
+      "related_eips": [],
+      "source": "ongoing_discussion"
+    },
+    {
+      "topic": "EIP-8037 block-level floor cost fix verification",
+      "priority": "medium",
+      "rationale": "Critical bug allowing 8x expected max block size was fixed in spec 7.2 and included in devnet-7. Need confirmation that all clients implemented correctly and no edge cases remain.",
+      "related_eips": [],
+      "source": "ongoing_discussion"
+    },
+    {
+      "topic": "SSZ Engine API implementation progress and breakout call takeaways",
+      "priority": "medium",
+      "rationale": "Breakout call scheduled for July 11 (Friday after ACDT #86). Teams should share implementation status, spec alignment progress, and any blockers identified during the breakout.",
       "related_eips": [],
       "source": "open_action_item"
     },
     {
-      "topic": "Post-freeze spec change policy enforcement",
-      "priority": "high",
-      "rationale": "ACDT #86 established that only minor parameter-only changes (e.g., gas cost tweaks) are acceptable after devnet-7 launch, not structural changes. With devnet-7 live, teams need clarity on the process for proposing and approving any remaining adjustments.",
+      "topic": "PTC security concern review from CL breakout",
+      "priority": "medium",
+      "rationale": "Deferred from ACDT #84 on June 22 to CL breakout. Concern about voting on non-canonical forks was flagged as potential ePBS readiness blocker but hasn't been revisited on testing calls.",
+      "related_eips": [],
+      "source": "deferred_decision"
+    },
+    {
+      "topic": "Builder API unhappy-path testing coverage",
+      "priority": "medium",
+      "rationale": "Raised by Besu in ACDT #84 as needed before declaring any 'final devnet'. With devnet-7 now in that role, explicit confirmation of testing scope completion is needed.",
       "related_eips": [],
       "source": "ongoing_discussion"
     },
     {
-      "topic": "Nimbus fork-choice bug resolution and builder participation",
-      "priority": "medium",
-      "rationale": "ACDT #86 identified Nimbus self-building instead of using remote builder due to a fork-choice issue with a fix in progress. Confirming resolution is important for ePBS testing coverage on devnet-7.",
-      "related_eips": [],
-      "source": "devnet_update"
-    },
-    {
-      "topic": "Prysm/Besu newPayload/FCU interaction fix verification",
-      "priority": "medium",
-      "rationale": "ACDT #86 documented that Prysm will revert sending multiple newPayloads without FCU, and Besu will likely revert their fix. Teams should confirm both reverts happened and devnet-7 shows no recurrence of the state inconsistency issue.",
-      "related_eips": [],
-      "source": "devnet_update"
-    },
-    {
-      "topic": "SSZ Engine API breakout takeaways and implementation timeline",
-      "priority": "medium",
-      "rationale": "ACDT #86 scheduled a Friday breakout for SSZ Engine API. With 3+ implementations ongoing but alignment incomplete (per open action item from ACDT #83), teams should share key takeaways and update on readiness timelines.",
-      "related_eips": [],
-      "source": "ongoing_discussion"
-    },
-    {
-      "topic": "Devnet-6 consolidation testing completion and findings",
+      "topic": "EIP cleanup proposals for devnet-8 (execution gas terminology, log cost consolidation)",
       "priority": "low",
-      "rationale": "ACDT #85 noted consolidation testing was pending for devnet-6. If completed, teams should share results; if not, understand why and whether it impacts devnet-7 confidence.",
+      "rationale": "Approved in principle for devnet-8 in ACDT #87 but marked as spec-text-only changes. May not need extensive discussion unless implementation concerns arise.",
       "related_eips": [],
-      "source": "devnet_update"
+      "source": "deferred_decision"
     },
     {
-      "topic": "EIP-8282 builder deposit contract parameter choices finalization",
+      "topic": "EL test suite status across all clients",
       "priority": "low",
-      "rationale": "ACDT #85 decided on static constants with a disable-switch, but specific values (target/max) were still under discussion (Nico proposed 8/64). If not finalized, this may need quick resolution post-devnet-7 launch for mainnet readiness.",
+      "rationale": "ACDT #87 noted Besu failing ~40 repricing tests, Geth with mismatched error messages, and Reth branch delayed. Update on resolution status would confirm testing infrastructure is solid.",
       "related_eips": [],
       "source": "ongoing_discussion"
     }

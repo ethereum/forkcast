@@ -10,7 +10,7 @@ import { UpgradeStageBadge } from './ui';
 import { StructuredDecisionContent, DecisionTextWithEipLinks } from './call/KeyDecisionsSection';
 import { EIP, KeyDecision } from '../types/eip';
 
-const ACD_TYPES: CallType[] = ['acdc', 'acde', 'acdt'];
+const RECENT_DECISION_CALL_TYPES: CallType[] = ['acdt', 'acdc', 'acde'];
 
 interface RecentMeetingDecisions {
   call: Call;
@@ -34,12 +34,12 @@ const latestDatedStatusTimestamp = (eip: EIP): number | null => {
   return latest;
 };
 
-const fetchLatestMeetingDecisions = async (): Promise<RecentMeetingDecisions | null> => {
-  const acdCalls = protocolCalls
-    .filter((call) => ACD_TYPES.includes(call.type as CallType))
+const fetchLatestMeetingDecisionsForType = async (type: CallType): Promise<RecentMeetingDecisions | null> => {
+  const calls = protocolCalls
+    .filter((call) => call.type === type)
     .sort((a, b) => b.date.localeCompare(a.date));
 
-  for (const call of acdCalls) {
+  for (const call of calls) {
     try {
       const artifactPath = `${call.type}/${call.date}_${call.number}`;
       const response = await fetch(`/artifacts/${artifactPath}/key_decisions.json`);
@@ -56,6 +56,14 @@ const fetchLatestMeetingDecisions = async (): Promise<RecentMeetingDecisions | n
   }
 
   return null;
+};
+
+const fetchRecentMeetingDecisions = async (): Promise<RecentMeetingDecisions[]> => {
+  const meetings = await Promise.all(
+    RECENT_DECISION_CALL_TYPES.map((type) => fetchLatestMeetingDecisionsForType(type))
+  );
+
+  return meetings.filter((meeting): meeting is RecentMeetingDecisions => meeting !== null);
 };
 
 const quickLinks: NetworkUpgrade[] = (() => {
@@ -77,13 +85,13 @@ const featuredEips: EIP[] = (() => {
 
 const HomePage = () => {
   const recentCalls = getRecentCalls(5);
-  const [recentMeetingDecisions, setRecentMeetingDecisions] = useState<RecentMeetingDecisions | null>(null);
+  const [recentMeetingDecisions, setRecentMeetingDecisions] = useState<RecentMeetingDecisions[]>([]);
   const { trackLinkClick } = useAnalytics();
 
   useEffect(() => {
     let cancelled = false;
 
-    fetchLatestMeetingDecisions().then((result) => {
+    fetchRecentMeetingDecisions().then((result) => {
       if (!cancelled) {
         setRecentMeetingDecisions(result);
       }
@@ -252,67 +260,71 @@ const HomePage = () => {
           </div>
         </div>
 
-        {recentMeetingDecisions && (() => {
-          const { call, decisions } = recentMeetingDecisions;
-          const callType = call.type as CallType;
-          const callBadgeColor = callTypeBadgeColors[callType];
-          const callName = callTypeNames[callType];
-          return (
-            <div className="mt-12">
-              <div className="flex items-center justify-between mb-4">
-                <h2 className="text-xl font-medium text-slate-900 dark:text-slate-100">
-                  Recent Decisions
-                </h2>
-                <Link
-                  to="/decisions"
-                  className="text-sm text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-200 transition-colors"
-                >
-                  View all decisions →
-                </Link>
-              </div>
-
-              <div className="bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg overflow-hidden">
-                <Link
-                  to={`/calls/${call.path}`}
-                  className="group flex items-center justify-between gap-3 px-4 py-3 border-b border-slate-100 dark:border-slate-700 hover:bg-slate-50 dark:hover:bg-slate-700/30 transition-colors"
-                >
-                  <div className="flex items-center gap-3 min-w-0">
-                    <span className={`inline-block text-xs font-medium px-2 py-0.5 rounded min-w-[3.5rem] text-center flex-shrink-0 ${callBadgeColor}`}>
-                      {call.type.toUpperCase()}
-                    </span>
-                    <span className="text-sm font-medium text-slate-900 dark:text-slate-100 truncate">
-                      {callName} #{call.number}
-                    </span>
-                  </div>
-                  <div className="flex items-center gap-3 flex-shrink-0">
-                    <span className="hidden sm:inline text-sm text-slate-600 dark:text-slate-400">
-                      {call.date}
-                    </span>
-                    <svg className="w-5 h-5 text-slate-400 group-hover:text-purple-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
-                    </svg>
-                  </div>
-                </Link>
-
-                <ul className="px-4 py-3 space-y-1.5 list-none">
-                  {decisions.map((decision, i) => {
-                    const isStructured = decision.type !== 'other';
-                    return (
-                      <li
-                        key={i}
-                        className="text-sm before:content-['→'] before:mr-2 before:text-slate-400 dark:before:text-slate-500 text-slate-600 dark:text-slate-400"
-                      >
-                        {isStructured
-                          ? <StructuredDecisionContent decision={decision} eipMap={eipById} />
-                          : <DecisionTextWithEipLinks decision={decision} eipMap={eipById} />}
-                      </li>
-                    );
-                  })}
-                </ul>
-              </div>
+        {recentMeetingDecisions.length > 0 && (
+          <div className="mt-12">
+            <div className="flex items-center justify-between mb-4">
+              <h2 className="text-xl font-medium text-slate-900 dark:text-slate-100">
+                Recent Decisions
+              </h2>
+              <Link
+                to="/decisions"
+                className="text-sm text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-200 transition-colors"
+              >
+                View all decisions →
+              </Link>
             </div>
-          );
-        })()}
+
+            <div className="space-y-3">
+              {recentMeetingDecisions.map(({ call, decisions }) => {
+                const callType = call.type as CallType;
+                const callBadgeColor = callTypeBadgeColors[callType];
+                const callName = callTypeNames[callType];
+
+                return (
+                  <div key={call.path} className="bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg overflow-hidden">
+                    <Link
+                      to={`/calls/${call.path}`}
+                      className="group flex items-center justify-between gap-3 px-4 py-3 border-b border-slate-100 dark:border-slate-700 hover:bg-slate-50 dark:hover:bg-slate-700/30 transition-colors"
+                    >
+                      <div className="flex items-center gap-3 min-w-0">
+                        <span className={`inline-block text-xs font-medium px-2 py-0.5 rounded min-w-[3.5rem] text-center flex-shrink-0 ${callBadgeColor}`}>
+                          {call.type.toUpperCase()}
+                        </span>
+                        <span className="text-sm font-medium text-slate-900 dark:text-slate-100 truncate">
+                          {callName} #{call.number}
+                        </span>
+                      </div>
+                      <div className="flex items-center gap-3 flex-shrink-0">
+                        <span className="hidden sm:inline text-sm text-slate-600 dark:text-slate-400">
+                          {call.date}
+                        </span>
+                        <svg className="w-5 h-5 text-slate-400 group-hover:text-purple-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                        </svg>
+                      </div>
+                    </Link>
+
+                    <ul className="px-4 py-3 space-y-1.5 list-none">
+                      {decisions.map((decision, i) => {
+                        const isStructured = decision.type !== 'other';
+                        return (
+                          <li
+                            key={i}
+                            className="text-sm before:content-['→'] before:mr-2 before:text-slate-400 dark:before:text-slate-500 text-slate-600 dark:text-slate-400"
+                          >
+                            {isStructured
+                              ? <StructuredDecisionContent decision={decision} eipMap={eipById} />
+                              : <DecisionTextWithEipLinks decision={decision} eipMap={eipById} />}
+                          </li>
+                        );
+                      })}
+                    </ul>
+                  </div>
+                );
+              })}
+            </div>
+          </div>
+        )}
 
         <div className="mt-12">
           <div className="flex items-center justify-between mb-4">

@@ -2,6 +2,26 @@
   "eipId": 8141,
   "commits": [
     {
+      "sha": "c6842c8115013524f5955d410c24e1748a615d07",
+      "date": "2026-07-17T13:34:27Z",
+      "message": "Update EIP-8141: allow EOA sponsor again",
+      "author": "lightclient",
+      "prNumber": null,
+      "patch": "@@ -436,7 +436,8 @@ Frame transactions can be used by accounts who do not have deployed code, nor an\n - If `mode` is `VERIFY`:\n   - Read the allowed approval scope from the flags field: `allowed_scope = frame.flags & APPROVE_SCOPE_MASK`.\n   - If `allowed_scope == APPROVE_SCOPE_NONE`, revert.\n-  - If there is not a `SECP256K1` signature `sig` at index `0` such that `resolved_signer == resolved_target` and `sig.msg == Bytes()`, revert.\n+  - Let `sig_index = 0` if `allowed_scope & APPROVE_EXECUTION != 0`, else `sig_index = 1`.\n+  - If there is not a `SECP256K1` signature `sig` at index `sig_index` such that `resolved_signer == resolved_target` and `sig.msg == Bytes()`, revert.\n   - Call `APPROVE(allowed_scope)`.\n - If `mode` is `SENDER` or `DEFAULT`:\n   - Return successfully as if calling empty code.",
+      "additions": 2,
+      "deletions": 1
+    },
+    {
+      "sha": "56ab20d9eb3b7b045f1a278eeb2fb823d6399ec6",
+      "date": "2026-07-17T13:30:33Z",
+      "message": "Update EIP-8141: use skipped receipt status code",
+      "author": "lightclient",
+      "prNumber": null,
+      "patch": "@@ -196,7 +196,7 @@ The `ReceiptPayload` is defined as:\n frame_receipt = [status, gas_used, logs]\n ```\n \n-`payer` is the address of the account that paid the fees for the transaction. `status` is the return code of the top-level call. A new code `0x3` is introduced for frames which are skipped due to failed atomic batch.\n+`payer` is the address of the account that paid the fees for the transaction. `status` is the return code of the top-level call. A new code `0x2` is introduced for frames which are skipped due to failed atomic batch.\n \n #### Signature Hash\n \n@@ -562,7 +562,7 @@ This instruction gives access to frame-scoped information. The gas cost of this\n \n Notes:\n \n-- The `status` field (0x05) returns `0` for failure or `1` for success.\n+- The `status` field (0x05) returns `0` for failure, `1` for success, or `2` for a frame skipped due to a failed atomic batch.\n - Undefined `param` values result in an exceptional halt.\n - Out-of-bounds access for `frameIndex` results in an exceptional halt.\n - Attempting to access the return `status` of the current frame or a subsequent frame results in an exceptional halt.",
+      "additions": 2,
+      "deletions": 2
+    },
+    {
       "sha": "b6dde8df84e92d24a788ad8ea5e2c7f5efbab98c",
       "date": "2026-07-07T19:26:06Z",
       "message": "Update EIP-8141: Spec cleanup and clarifications",
@@ -284,31 +304,31 @@
       "number": 11935,
       "title": "Update EIP-8141: bound the signatures list with MAX_SIGNATURES",
       "author": "svlachakis",
-      "updatedAt": "2026-07-16T13:56:43Z",
+      "updatedAt": "2026-07-17T15:51:31Z",
       "additions": 2,
       "deletions": 0
-    },
-    {
-      "number": 11938,
-      "title": "Update EIP-8141: specify stack operand order for FRAMEDATALOAD and FRAMEDATACOPY",
-      "author": "svlachakis",
-      "updatedAt": "2026-07-16T15:37:59Z",
-      "additions": 15,
-      "deletions": 5
     },
     {
       "number": 11940,
       "title": "Update EIP-8141: specify EIP-3529 storage refund accounting for frames",
       "author": "svlachakis",
-      "updatedAt": "2026-07-16T14:24:59Z",
+      "updatedAt": "2026-07-17T15:51:48Z",
       "additions": 1,
       "deletions": 1
+    },
+    {
+      "number": 11938,
+      "title": "Update EIP-8141: specify stack operand order for FRAMEDATALOAD and FRAMEDATACOPY",
+      "author": "svlachakis",
+      "updatedAt": "2026-07-17T15:51:38Z",
+      "additions": 15,
+      "deletions": 5
     },
     {
       "number": 11942,
       "title": "Update EIP-8141: define the Receipts message encoding for frame transaction receipts",
       "author": "svlachakis",
-      "updatedAt": "2026-07-16T14:58:22Z",
+      "updatedAt": "2026-07-17T15:51:57Z",
       "additions": 12,
       "deletions": 0
     },
@@ -316,7 +336,7 @@
       "number": 11939,
       "title": "Update EIP-8141: note that execution approval authorizes all subsequent sender frames",
       "author": "svlachakis",
-      "updatedAt": "2026-07-16T14:11:01Z",
+      "updatedAt": "2026-07-17T15:51:44Z",
       "additions": 8,
       "deletions": 0
     },
@@ -324,16 +344,32 @@
       "number": 11937,
       "title": "Update EIP-8141: pin the SECP256K1 signature encoding (recovery id and low-s)",
       "author": "svlachakis",
-      "updatedAt": "2026-07-16T13:56:35Z",
+      "updatedAt": "2026-07-17T15:51:34Z",
       "additions": 7,
       "deletions": 2
+    },
+    {
+      "number": 11956,
+      "title": "Update EIP-8141: note sponsor repayment reversibility and batch the repayment in Example 3",
+      "author": "AnkushinDaniil",
+      "updatedAt": "2026-07-17T14:44:24Z",
+      "additions": 9,
+      "deletions": 5
     },
     {
       "number": 11941,
       "title": "Update EIP-8141: apply the EIP-7623 calldata floor to frame and signature data",
       "author": "svlachakis",
-      "updatedAt": "2026-07-16T14:35:00Z",
+      "updatedAt": "2026-07-17T15:51:52Z",
       "additions": 26,
+      "deletions": 0
+    },
+    {
+      "number": 11955,
+      "title": "Update EIP-8141: approval effects are not reverted by frame revert or atomic-batch unroll",
+      "author": "AnkushinDaniil",
+      "updatedAt": "2026-07-17T15:27:29Z",
+      "additions": 2,
       "deletions": 0
     },
     {

@@ -2,6 +2,26 @@
   "eipId": 8272,
   "commits": [
     {
+      "sha": "91777ef8d25c0238b6b75c5d3b05e727ead20450",
+      "date": "2026-07-18T06:13:14Z",
+      "message": "Update EIP-8272: restore EIP-8141 signature costs in tx_gas_limit",
+      "author": "AnkushinDaniil",
+      "prNumber": null,
+      "patch": "@@ -261,6 +261,7 @@ tx_gas_limit =\n     FRAME_TX_INTRINSIC_COST\n     + len(tx.frames) * FRAME_TX_PER_FRAME_COST\n     + calldata_cost(recent_root_calldata)\n+    + signature_verification_cost\n     + recent_root_reference_intrinsic_gas\n     + sum(frame.gas_limit for all frames)\n ```\n@@ -279,11 +280,13 @@ recent_root_reference_intrinsic_gas =\n and:\n \n ```text\n-recent_root_calldata = rlp(tx.frames) || rlp(recent_root_references)\n+recent_root_calldata = rlp(tx.signatures) || rlp(tx.frames) || rlp(recent_root_references)\n ```\n \n The EIP-7623 calldata cost MUST be computed over `recent_root_calldata` as one byte string.\n \n+`signature_verification_cost` is defined by [EIP-8141](./eip-8141.md) and is unchanged by this EIP.\n+\n `RECENT_ROOT_REFERENCE_GAS` covers one declared storage key and the two Keccak computations used to derive `storage_key` and `entry_hash`.\n \n ### TXPARAM and RECENTROOTREFLOAD",
+      "additions": 4,
+      "deletions": 1
+    },
+    {
+      "sha": "b1d7691c725a5d4ef861110018126671c0ad9978",
+      "date": "2026-07-18T06:12:37Z",
+      "message": "Update EIP-8272: fix TXPARAM_RECENT_ROOT_REFERENCE_COUNT value inconsistency",
+      "author": "AnkushinDaniil",
+      "prNumber": null,
+      "patch": "@@ -292,7 +292,7 @@ One new `TXPARAM` index and one new opcode are added:\n \n | Name                                 |  Value | Return value                 |\n | ------------------------------------ | -----: | ---------------------------- |\n-| `TXPARAM_RECENT_ROOT_REFERENCE_COUNT` | `0x0D` | `len(recent_root_references)` |\n+| `TXPARAM_RECENT_ROOT_REFERENCE_COUNT` | `0x0F` | `len(recent_root_references)` |\n \n `TXPARAM(TXPARAM_RECENT_ROOT_REFERENCE_COUNT)` costs the standard `TXPARAM` gas.\n ",
+      "additions": 1,
+      "deletions": 1
+    },
+    {
       "sha": "3ba28fc245d0667a14bd2f580f15e689ff48d0c2",
       "date": "2026-06-05T23:30:42Z",
       "message": "Add EIP: Recent Roots for Frame Transactions",
@@ -16,31 +36,15 @@
       "number": 11961,
       "title": "Update EIP-8272: strengthen public-mempool handling of recent root references",
       "author": "AnkushinDaniil",
-      "updatedAt": "2026-07-17T15:34:06Z",
+      "updatedAt": "2026-07-18T06:35:27Z",
       "additions": 5,
-      "deletions": 1
-    },
-    {
-      "number": 11930,
-      "title": "Update EIP-8272: fix TXPARAM_RECENT_ROOT_REFERENCE_COUNT value inconsistency",
-      "author": "AnkushinDaniil",
-      "updatedAt": "2026-07-15T13:38:45Z",
-      "additions": 1,
-      "deletions": 1
-    },
-    {
-      "number": 11931,
-      "title": "Update EIP-8272: restore EIP-8141 signature costs in tx_gas_limit",
-      "author": "AnkushinDaniil",
-      "updatedAt": "2026-07-15T13:39:10Z",
-      "additions": 4,
       "deletions": 1
     },
     {
       "number": 11959,
       "title": "Update EIP-8272: restore signatures field in payload and elide signature bytes in compute_sig_hash",
       "author": "AnkushinDaniil",
-      "updatedAt": "2026-07-17T15:26:36Z",
+      "updatedAt": "2026-07-18T06:29:55Z",
       "additions": 8,
       "deletions": 5
     }

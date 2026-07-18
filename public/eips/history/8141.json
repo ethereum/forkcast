@@ -2,6 +2,46 @@
   "eipId": 8141,
   "commits": [
     {
+      "sha": "1e7a88e681f9ae572676a4c2aa3ec7b203c39d23",
+      "date": "2026-07-17T23:36:45Z",
+      "message": "Update EIP-8141: apply the EIP-7623 calldata floor to frame and signature data",
+      "author": "svlachakis",
+      "prNumber": null,
+      "patch": "@@ -415,6 +415,32 @@ tx_gas_limit = (\n \n Where `calldata_cost` is calculated per standard [EIP-7623](./eip-7623.md) rules.\n \n+The [EIP-7623](./eip-7623.md) calldata floor applies to a frame transaction's frame and signature data, so that it cannot carry large payloads while paying only the standard per-token cost. Let `calldata_tokens` be the EIP-7623 token count over that data:\n+\n+```python\n+calldata_tokens = (\n+    sum(tokens_in(frame.data) for frame in tx.frames)\n+    + sum(tokens_in(sig.signer) + tokens_in(sig.msg) + tokens_in(sig.signature)\n+          for sig in tx.signatures)\n+)\n+```\n+\n+where `tokens_in` counts tokens as in EIP-7623. Mirroring EIP-7623, mandatory costs are always charged and the calldata cost is floored against execution, so the gas charged to the payer is:\n+\n+```python\n+charged_gas = (\n+    FRAME_TX_INTRINSIC_COST\n+    + len(tx.frames) * FRAME_TX_PER_FRAME_COST\n+    + signature_verification_cost\n+    + max(\n+        frame_data_cost + signature_data_cost + total_gas_used,\n+        TOTAL_COST_FLOOR_PER_TOKEN * calldata_tokens,\n+    )\n+)\n+```\n+\n+where `TOTAL_COST_FLOOR_PER_TOKEN` is as defined in EIP-7623. A transaction whose `tx_gas_limit` is below `FRAME_TX_INTRINSIC_COST + len(tx.frames) * FRAME_TX_PER_FRAME_COST + signature_verification_cost + TOTAL_COST_FLOOR_PER_TOKEN * calldata_tokens` is invalid, so the floor is reserved independently of execution as required by EIP-7623.\n+\n The total fee is defined as:\n \n ```python",
+      "additions": 26,
+      "deletions": 0
+    },
+    {
+      "sha": "2dca20d3f59c7e3bab2b57575311e761a7d386eb",
+      "date": "2026-07-17T22:13:37Z",
+      "message": "Update EIP-8141: note that execution approval authorizes all subsequent sender frames",
+      "author": "svlachakis",
+      "prNumber": null,
+      "patch": "@@ -1118,6 +1118,14 @@ For deployment of the sender account in the first frame, the mempool enforces de\n \n In general, it can be assumed that handling of frame transactions imposes similar restrictions as EIP-7702 on mempool relay, i.e. only a single transaction can be pending for an account that uses frame transactions.\n \n+### Execution Approval Authorizes All Subsequent Sender Frames\n+\n+`sender_approved` is a single transaction-scoped flag. Once a frame grants `APPROVE_EXECUTION` (or `APPROVE_EXECUTION_AND_PAYMENT`), every subsequent `SENDER` frame executes with `caller` set to `tx.sender`, not only the frame the approving code inspected. The approval is not scoped to a particular frame or call target.\n+\n+Validation code must therefore bind its approval to the entire set of frames it is willing to authorize. A signature with an empty `msg` commits to this, because it is verified over `compute_sig_hash(tx)`, which covers the full frame list; the default validation code relies on exactly such a signature. A validator that instead approves on the basis of an explicit 32-byte `msg` signature, or any check that does not commit to the frames, authorizes an open-ended list. Because a frame transaction carries no outer signature over the whole envelope, an observer can then reuse that approval with a different set of `SENDER` frames, since those frames were never part of what the validator verified. This is the \"unchecked fields\" class of issue familiar from account-abstraction relaying, now expressed in-protocol.\n+\n+Custom validation contracts that grant `APPROVE_EXECUTION` should verify against the canonical signature hash, or otherwise constrain every subsequent `SENDER` frame, before approving.\n+\n ## Copyright\n \n Copyright and related rights waived via [CC0](../LICENSE.md).",
+      "additions": 8,
+      "deletions": 0
+    },
+    {
+      "sha": "7dca1b66e9a3e43498884f1caa585f8ba4f0bc7e",
+      "date": "2026-07-17T22:01:35Z",
+      "message": "Update EIP-8141: specify stack operand order for FRAMEDATALOAD and FRAMEDATACOPY",
+      "author": "svlachakis",
+      "prNumber": null,
+      "patch": "@@ -449,7 +449,7 @@ Frame transactions can be used by accounts who do not have deployed code, nor an\n \n ### `APPROVE` Instruction (`0xaa`)\n \n-The `APPROVE` instruction exits the current EVM call frame successfully and updates the transaction-scoped approval context based on the `scope` operand.\n+The `APPROVE` instruction exits the current EVM call frame successfully and updates the transaction-scoped approval context based on the `scope` operand. The `offset` and `length` operands designate a memory region that becomes the frame's return data, following `RETURN` semantics.\n \n #### Stack\n \n@@ -527,8 +527,12 @@ Undefined `param` values result in an exceptional halt.\n \n This opcode loads one 32-byte word of data from frame input. Gas cost: 3 (matches CALLDATALOAD).\n \n-It takes two values from the stack, an `offset` and `frameIndex`.\n-It places the retrieved data on the stack.\n+It takes two values from the stack and places the retrieved word on the stack:\n+\n+| Stack     | Value        |\n+| --------- | ------------ |\n+| `top - 0` | `offset`     |\n+| `top - 1` | `frameIndex` |\n \n When the `frameIndex` is out-of-bounds, an exceptional halt occurs.\n \n@@ -541,8 +545,14 @@ This opcode copies data frame input into the contract's memory. Its gas cost is\n exactly as for `CALLDATACOPY`, including the fixed cost of 3, the per-word copy cost, and\n the standard EVM memory expansion cost.\n \n-It takes four values from the stack: `memOffset`, `dataOffset`, `length` and `frameIndex`.\n-No stack output value is produced.\n+It takes four values from the stack and produces no output:\n+\n+| Stack     | Value        |\n+| --------- | ------------ |\n+| `top - 0` | `memOffset`  |\n+| `top - 1` | `dataOffset` |\n+| `top - 2` | `length`     |\n+| `top - 3` | `frameIndex` |\n \n When the `frameIndex` is out-of-bounds, an exceptional halt occurs.\n ",
+      "additions": 15,
+      "deletions": 5
+    },
+    {
+      "sha": "8e1a4d1d33238f216227c23b0de0ee764c34c311",
+      "date": "2026-07-17T21:49:07Z",
+      "message": "Update EIP-8141: pin the SECP256K1 signature encoding (recovery id and low-s)",
+      "author": "svlachakis",
+      "prNumber": null,
+      "patch": "@@ -40,6 +40,7 @@ Ultimately, frame transactions realize the original vision of account abstractio\n | `EXPIRY_VERIFIER`          | `address(0x8141)` |\n | `EXPIRY_DATA_LENGTH`       | `8`               |\n | `MAX_FRAMES`               | `64`              |\n+| `SECP256K1N`               | `0xfffffffffffffffffffffffffffffffebaaedce6af48a03bbfd25e8cd0364141` |\n \n ### Frame Transaction\n \n@@ -240,8 +241,12 @@ def validate_signature(sig, tx_sender, sig_hash) -> bool:\n         if len(sig.signature) != 65:\n             return False\n         v = sig.signature[0]\n-        r = sig.signature[1:33]\n-        s = sig.signature[33:65]\n+        r = int.from_bytes(sig.signature[1:33], \"big\")\n+        s = int.from_bytes(sig.signature[33:65], \"big\")\n+        # v is the recovery id (0 or 1), matching EIP-2718 typed transactions.\n+        # r and s must be canonical, with low-s per EIP-2, so each signature has one encoding.\n+        if v > 1 or not (0 < r < SECP256K1N) or not (0 < s <= SECP256K1N // 2):\n+            return False\n         return resolved_signer == ecrecover(msg, v, r, s)\n \n     elif sig.scheme == P256:",
+      "additions": 7,
+      "deletions": 2
+    },
+    {
       "sha": "c6842c8115013524f5955d410c24e1748a615d07",
       "date": "2026-07-17T13:34:27Z",
       "message": "Update EIP-8141: allow EOA sponsor again",
@@ -304,7 +344,7 @@
       "number": 11935,
       "title": "Update EIP-8141: bound the signatures list with MAX_SIGNATURES",
       "author": "svlachakis",
-      "updatedAt": "2026-07-17T15:51:31Z",
+      "updatedAt": "2026-07-17T21:38:39Z",
       "additions": 2,
       "deletions": 0
     },
@@ -312,41 +352,17 @@
       "number": 11940,
       "title": "Update EIP-8141: specify EIP-3529 storage refund accounting for frames",
       "author": "svlachakis",
-      "updatedAt": "2026-07-17T15:51:48Z",
+      "updatedAt": "2026-07-17T23:07:34Z",
       "additions": 1,
       "deletions": 1
-    },
-    {
-      "number": 11938,
-      "title": "Update EIP-8141: specify stack operand order for FRAMEDATALOAD and FRAMEDATACOPY",
-      "author": "svlachakis",
-      "updatedAt": "2026-07-17T15:51:38Z",
-      "additions": 15,
-      "deletions": 5
     },
     {
       "number": 11942,
       "title": "Update EIP-8141: define the Receipts message encoding for frame transaction receipts",
       "author": "svlachakis",
-      "updatedAt": "2026-07-17T15:51:57Z",
+      "updatedAt": "2026-07-17T23:39:22Z",
       "additions": 12,
       "deletions": 0
-    },
-    {
-      "number": 11939,
-      "title": "Update EIP-8141: note that execution approval authorizes all subsequent sender frames",
-      "author": "svlachakis",
-      "updatedAt": "2026-07-17T15:51:44Z",
-      "additions": 8,
-      "deletions": 0
-    },
-    {
-      "number": 11937,
-      "title": "Update EIP-8141: pin the SECP256K1 signature encoding (recovery id and low-s)",
-      "author": "svlachakis",
-      "updatedAt": "2026-07-17T15:51:34Z",
-      "additions": 7,
-      "deletions": 2
     },
     {
       "number": 11956,
@@ -355,14 +371,6 @@
       "updatedAt": "2026-07-17T14:44:24Z",
       "additions": 9,
       "deletions": 5
-    },
-    {
-      "number": 11941,
-      "title": "Update EIP-8141: apply the EIP-7623 calldata floor to frame and signature data",
-      "author": "svlachakis",
-      "updatedAt": "2026-07-17T15:51:52Z",
-      "additions": 26,
-      "deletions": 0
     },
     {
       "number": 11955,

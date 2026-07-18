@@ -2,6 +2,16 @@
   "eipId": 8250,
   "commits": [
     {
+      "sha": "c2eeb0cff56785496f9832ec3f16fde1f3a8e28a",
+      "date": "2026-07-18T06:11:51Z",
+      "message": "Update EIP-8250: align NONCE_MANAGER activation wording with EIP-8272",
+      "author": "AnkushinDaniil",
+      "prNumber": null,
+      "patch": "@@ -194,13 +194,13 @@ If `timestamp < FORK_TIMESTAMP`, clients MUST apply the pre-fork EIP-8141 `FRAME\n \n If `timestamp >= FORK_TIMESTAMP`, clients MUST apply the post-fork `FRAME_TX_TYPE` schema defined in this EIP.\n \n-At activation, on the first execution payload with `timestamp >= FORK_TIMESTAMP` and before any transaction in that payload runs, clients MUST initialize `NONCE_MANAGER` with `NONCE_MANAGER_CODE`, nonce `1`, and empty storage, preserving any pre-existing balance.\n+For every block `B` with `B.timestamp >= FORK_TIMESTAMP` whose parent has `parent.timestamp < FORK_TIMESTAMP`, and before any transaction in `B` runs, clients MUST initialize `NONCE_MANAGER` with `NONCE_MANAGER_CODE`, nonce `1`, and empty storage, preserving any pre-existing balance.\n \n If `NONCE_MANAGER` does not exist, clients MUST create it with balance `0`, nonce `1`, code `NONCE_MANAGER_CODE`, and empty storage.\n \n If `NONCE_MANAGER` already exists with empty code and empty storage, clients MUST set its code to `NONCE_MANAGER_CODE`, set its nonce to `max(existing_nonce, 1)`, preserve its balance, and leave storage empty.\n \n-This initialization runs exactly once at fork activation and MUST NOT be re-applied during normal chain progression after activation. Clients MUST handle reorgs across the fork boundary by applying or undoing this transition according to the canonical chain.\n+For all other blocks, clients MUST NOT run this initialization. Clients MUST handle reorgs across the fork boundary by applying or undoing this transition according to the canonical chain.\n \n Pre-fork frame transactions and authorizations bound to the pre-fork canonical signature hash do not survive the boundary and MUST be evicted from mempools and regenerated.\n ",
+      "additions": 2,
+      "deletions": 2
+    },
+    {
       "sha": "4de629be62b178712832a9d972c1cab7d19b9c2f",
       "date": "2026-06-01T07:12:36Z",
       "message": "Update EIP-8250: Update EIP-8250 to support nonce key sets",
@@ -22,18 +32,10 @@
   ],
   "openPrs": [
     {
-      "number": 11960,
-      "title": "Update EIP-8250: align NONCE_MANAGER activation wording with EIP-8272",
-      "author": "AnkushinDaniil",
-      "updatedAt": "2026-07-17T15:25:03Z",
-      "additions": 2,
-      "deletions": 2
-    },
-    {
       "number": 11958,
       "title": "Update EIP-8250: price nonce_keys and nonce_seq as transaction data",
       "author": "AnkushinDaniil",
-      "updatedAt": "2026-07-17T14:58:03Z",
+      "updatedAt": "2026-07-18T06:32:09Z",
       "additions": 8,
       "deletions": 0
     }

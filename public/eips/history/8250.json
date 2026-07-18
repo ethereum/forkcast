@@ -2,6 +2,16 @@
   "eipId": 8250,
   "commits": [
     {
+      "sha": "c0f23a03e5dd31ea37e38c6bda70b03eea06266c",
+      "date": "2026-07-18T10:20:12Z",
+      "message": "Update EIP-8250: restore signatures in payload and correct signature-hash description",
+      "author": "AnkushinDaniil",
+      "prNumber": null,
+      "patch": "@@ -55,12 +55,12 @@ This specification is a delta against [EIP-8141](./eip-8141.md).\n The frame-transaction payload becomes:\n \n ```text\n-[chain_id, nonce_keys, nonce_seq, sender, frames,\n+[chain_id, nonce_keys, nonce_seq, sender, frames, signatures,\n  max_priority_fee_per_gas, max_fee_per_gas,\n  max_fee_per_blob_gas, blob_versioned_hashes]\n-````\n+```\n \n-`nonce_keys` is a list of `uint256` values; `nonce_seq` is a `uint64`. Each nonce key and `nonce_seq` MUST be encoded as canonical minimal-length RLP integers. The frame layout, signature-hash procedure with `VERIFY`-frame `data` elided, and all other EIP-8141 transaction fields are unchanged.\n+`nonce_keys` is a list of `uint256` values; `nonce_seq` is a `uint64`. Each nonce key and `nonce_seq` MUST be encoded as canonical minimal-length RLP integers. The frame layout, signature-hash procedure, and all other EIP-8141 transaction fields are unchanged.\n \n Decoders MUST reject a post-fork `FRAME_TX_TYPE` transaction if any of the following is true:\n ",
+      "additions": 3,
+      "deletions": 3
+    },
+    {
       "sha": "c2eeb0cff56785496f9832ec3f16fde1f3a8e28a",
       "date": "2026-07-18T06:11:51Z",
       "message": "Update EIP-8250: align NONCE_MANAGER activation wording with EIP-8272",
@@ -35,9 +45,9 @@
       "number": 11958,
       "title": "Update EIP-8250: price nonce_keys and nonce_seq as transaction data",
       "author": "AnkushinDaniil",
-      "updatedAt": "2026-07-18T06:32:09Z",
-      "additions": 8,
-      "deletions": 0
+      "updatedAt": "2026-07-18T15:29:22Z",
+      "additions": 22,
+      "deletions": 8
     }
   ]
 }

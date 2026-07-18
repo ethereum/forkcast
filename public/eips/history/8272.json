@@ -2,6 +2,26 @@
   "eipId": 8272,
   "commits": [
     {
+      "sha": "7f502d371b03e7981ac6f7a8e9d06cc22625798f",
+      "date": "2026-07-18T08:50:31Z",
+      "message": "Update EIP-8272: strengthen public-mempool handling of recent root references",
+      "author": "AnkushinDaniil",
+      "prNumber": null,
+      "patch": "@@ -324,7 +324,11 @@ Recent root storage is not exposed to validation code through EVM execution. Dur\n \n Nodes SHOULD admit a transaction to the public mempool only if all declared recent root references are valid against the node's current head.\n \n-Nodes SHOULD NOT admit a transaction while any reference has `slot >= current_slot`. Nodes MAY evict a transaction with any reference where `current_slot - slot >= RECENT_ROOT_LENGTH`.\n+Nodes SHOULD NOT admit a transaction while any reference has `slot >= current_slot`. Nodes SHOULD evict a transaction with any reference where `current_slot - slot >= RECENT_ROOT_LENGTH`, so that expired transactions do not accumulate.\n+\n+To avoid admitting a transaction that expires almost immediately, nodes SHOULD NOT admit a transaction whose oldest reference is within a small margin of expiry, i.e. where `current_slot - slot >= RECENT_ROOT_LENGTH - m` for a node-chosen margin `m` of a few slots.\n+\n+To keep expiry and reorg eviction bounded without restricting application concurrency, public mempool nodes SHOULD index pending transactions by declared reference and by expiry slot, so that the transactions affected by a slot advance or a reorg can be found and evicted efficiently.\n \n Nodes SHOULD recheck pending transactions with recent root references when the head changes, when the node's current slot advances, or after any reorg that may affect referenced entries.\n ",
+      "additions": 5,
+      "deletions": 1
+    },
+    {
+      "sha": "ae80ed96698c325ee2716cab99ec8034f17fc46f",
+      "date": "2026-07-18T08:50:07Z",
+      "message": "Update EIP-8272: restore signatures field in payload and elide signature bytes in compute_sig_hash",
+      "author": "AnkushinDaniil",
+      "prNumber": null,
+      "patch": "@@ -162,18 +162,18 @@ Each `(source_id, S)` has at most one referenceable root on the canonical chain.\n \n ### Transaction payload\n \n-The pre-fork EIP-8141 frame-transaction payload has eight fields:\n+The pre-fork EIP-8141 frame-transaction payload has nine fields:\n \n ```text\n-[chain_id, nonce, sender, frames,\n+[chain_id, nonce, sender, frames, signatures,\n  max_priority_fee_per_gas, max_fee_per_gas,\n  max_fee_per_blob_gas, blob_versioned_hashes]\n ```\n \n The post-fork frame-transaction payload becomes:\n \n ```text\n-[chain_id, nonce, sender, frames,\n+[chain_id, nonce, sender, frames, signatures,\n  max_priority_fee_per_gas, max_fee_per_gas,\n  max_fee_per_blob_gas, blob_versioned_hashes,\n  recent_root_references]\n@@ -191,17 +191,17 @@ The `slot` field is a slot number, not a timestamp or block number.\n \n The frame layout and frame execution rules are otherwise unchanged. `recent_root_references` is a top-level transaction field and is included in `compute_sig_hash(tx)`.\n \n-The post-fork signature hash follows EIP-8141 over the nine-field payload:\n+The post-fork signature hash follows EIP-8141 over the ten-field payload, eliding the raw `signature` bytes of any signature with empty `msg`:\n \n ```python\n def compute_sig_hash(tx: FrameTx) -> Hash:\n-    for i, frame in enumerate(tx.frames):\n-        if frame.mode == VERIFY and frame.target != EXPIRY_VERIFIER:\n-            tx.frames[i].data = Bytes()\n+    for i, sig in enumerate(tx.signatures):\n+        if len(sig.msg) == 0:\n+            tx.signatures[i].signature = Bytes()\n     return keccak(bytes([FRAME_TX_TYPE]) + rlp(tx))\n ```\n \n-where `rlp(tx)` is the post-fork nine-field payload. `recent_root_references` is not elided by the VERIFY-frame data elision rule.\n+where `rlp(tx)` is the post-fork ten-field payload.\n \n Frame data, including VERIFY frame data, MUST NOT add, remove, or modify the transaction's recent root reference set.\n ",
+      "additions": 8,
+      "deletions": 8
+    },
+    {
       "sha": "91777ef8d25c0238b6b75c5d3b05e727ead20450",
       "date": "2026-07-18T06:13:14Z",
       "message": "Update EIP-8272: restore EIP-8141 signature costs in tx_gas_limit",
@@ -33,20 +53,12 @@
   ],
   "openPrs": [
     {
-      "number": 11961,
-      "title": "Update EIP-8272: strengthen public-mempool handling of recent root references",
-      "author": "AnkushinDaniil",
-      "updatedAt": "2026-07-18T06:35:27Z",
-      "additions": 5,
-      "deletions": 1
-    },
-    {
-      "number": 11959,
-      "title": "Update EIP-8272: restore signatures field in payload and elide signature bytes in compute_sig_hash",
-      "author": "AnkushinDaniil",
-      "updatedAt": "2026-07-18T06:29:55Z",
-      "additions": 8,
-      "deletions": 5
+      "number": 11964,
+      "title": "Update EIP-8272: pin source_id derivation",
+      "author": "soispoke",
+      "updatedAt": "2026-07-18T09:18:20Z",
+      "additions": 12,
+      "deletions": 3
     }
   ]
 }

@@ -2,6 +2,25 @@
   "eipId": 8250,
   "commits": [
     {
+      "sha": "66e475b052c038adc59397d119cc1c65b87f12fc",
+      "date": "2026-07-19T14:11:06Z",
+      "message": "Update EIP-8250: align transaction introspection assignments",
+      "author": "soispoke",
+      "prNumber": null,
+      "additions": 8,
+      "deletions": 8
+    },
+    {
+      "sha": "60449e5093e848938db144ee0fef873d90d0bede",
+      "date": "2026-07-19T13:57:48Z",
+      "message": "Update EIP-8250: price nonce_keys and nonce_seq as transaction data",
+      "author": "AnkushinDaniil",
+      "prNumber": null,
+      "patch": "@@ -8,7 +8,7 @@ status: Draft\n type: Standards Track\n category: Core\n created: 2026-04-16\n-requires: 8141\n+requires: 7623, 8141\n ---\n \n ## Abstract\n@@ -62,16 +62,44 @@ The frame-transaction payload becomes:\n \n `nonce_keys` is a list of `uint256` values; `nonce_seq` is a `uint64`. Each nonce key and `nonce_seq` MUST be encoded as canonical minimal-length RLP integers. The frame layout, signature-hash procedure, and all other EIP-8141 transaction fields are unchanged.\n \n+The bytes this EIP adds to the payload are priced as transaction data. Define:\n+\n+```python\n+nonce_calldata = rlp(nonce_keys) || rlp(nonce_seq)\n+```\n+\n+`nonce_calldata` is priced exactly as EIP-8141 prices frame and signature data under [EIP-7623](./eip-7623.md), by adding it to EIP-8141's three gas quantities:\n+\n+- `calldata_cost(nonce_calldata)` is added to `tx_gas_limit`;\n+- `calldata_cost(nonce_calldata)` is added to the non-floor argument of the `max` in `charged_gas`;\n+- `tokens_in(nonce_calldata)` is added to `calldata_tokens`, which feeds the EIP-7623 floor argument `TOTAL_COST_FLOOR_PER_TOKEN * calldata_tokens`.\n+\n+Explicitly, `charged_gas` becomes:\n+\n+```python\n+charged_gas = (\n+    FRAME_TX_INTRINSIC_COST\n+    + len(tx.frames) * FRAME_TX_PER_FRAME_COST\n+    + signature_verification_cost\n+    + max(\n+        frame_data_cost + signature_data_cost + calldata_cost(nonce_calldata) + total_gas_used,\n+        TOTAL_COST_FLOOR_PER_TOKEN * calldata_tokens,\n+    )\n+)\n+```\n+\n+This keeps `nonce_keys` and `nonce_seq` consistent with the pricing of EIP-8141's other transaction data, and keeps `tx_gas_limit` and `charged_gas` consistent.\n+\n Decoders MUST reject a post-fork `FRAME_TX_TYPE` transaction if any of the following is true:\n \n-* the payload does not match the post-fork schema;\n-* `nonce_keys` is not an RLP list;\n-* `len(nonce_keys) < 1` or `len(nonce_keys) > MAX_NONCE_KEYS`;\n-* any item in `nonce_keys`, or `nonce_seq`, is not encoded as a canonical RLP integer;\n-* any item in `nonce_keys` is greater than or equal to `2**256`;\n-* `nonce_seq >= 2**64`;\n-* `nonce_keys` is not strictly increasing by numeric value;\n-* any item in `nonce_keys` is `0` and `nonce_keys != [0]`.\n+- the payload does not match the post-fork schema;\n+- `nonce_keys` is not an RLP list;\n+- `len(nonce_keys) < 1` or `len(nonce_keys) > MAX_NONCE_KEYS`;\n+- any item in `nonce_keys`, or `nonce_seq`, is not encoded as a canonical RLP integer;\n+- any item in `nonce_keys` is greater than or equal to `2**256`;\n+- `nonce_seq >= 2**64`;\n+- `nonce_keys` is not strictly increasing by numeric value;\n+- any item in `nonce_keys` is `0` and `nonce_keys != [0]`.\n \n ### Nonce state\n ",
+      "additions": 37,
+      "deletions": 9
+    },
+    {
       "sha": "c0f23a03e5dd31ea37e38c6bda70b03eea06266c",
       "date": "2026-07-18T10:20:12Z",
       "message": "Update EIP-8250: restore signatures in payload and correct signature-hash description",
@@ -42,28 +61,20 @@
   ],
   "openPrs": [
     {
-      "number": 11968,
-      "title": "Update EIP-8250: define composed payload",
+      "number": 11971,
+      "title": "Update EIP-8141: clarify signing, decoding, and activation",
       "author": "soispoke",
-      "updatedAt": "2026-07-18T21:16:23Z",
+      "updatedAt": "2026-07-19T15:37:26Z",
+      "additions": 6,
+      "deletions": 0
+    },
+    {
+      "number": 11968,
+      "title": "Update EIPs 8250 and 8272: define the composed payload",
+      "author": "soispoke",
+      "updatedAt": "2026-07-19T07:23:15Z",
       "additions": 16,
       "deletions": 3
-    },
-    {
-      "number": 11966,
-      "title": "Update EIP-8250: align transaction introspection assignments",
-      "author": "soispoke",
-      "updatedAt": "2026-07-18T22:02:15Z",
-      "additions": 8,
-      "deletions": 8
-    },
-    {
-      "number": 11958,
-      "title": "Update EIP-8250: price nonce_keys and nonce_seq as transaction data",
-      "author": "AnkushinDaniil",
-      "updatedAt": "2026-07-18T15:29:22Z",
-      "additions": 22,
-      "deletions": 8
     }
   ]
 }

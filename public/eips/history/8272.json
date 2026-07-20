@@ -2,6 +2,16 @@
   "eipId": 8272,
   "commits": [
     {
+      "sha": "2c140450b07beb6076e4fb825579ecb14cc9acc0",
+      "date": "2026-07-20T10:09:17Z",
+      "message": "Update EIP-8272: resolve RECENTROOTREFLOAD opcode collision",
+      "author": "soispoke",
+      "prNumber": null,
+      "patch": "@@ -50,7 +50,7 @@ This specification is a delta against EIP-8141. Terms not defined here, includin\n | `RECENT_ROOT_REFERENCE_ADDRESS_GAS`   |                                                       `ACCESS_LIST_ADDRESS_COST` |\n | `RECENT_ROOT_REFERENCE_GAS`           | `ACCESS_LIST_STORAGE_KEY_COST + 2 * KECCAK256_BASE_GAS + 7 * KECCAK256_WORD_GAS` |\n | `TXPARAM_RECENT_ROOT_REFERENCE_COUNT` |                                                                           `0x0F` |\n-| `RECENTROOTREFLOAD`                   |                                                                           `0xB4` |\n+| `RECENTROOTREFLOAD`                   |                                                                           `0xB5` |\n | `RECENTROOTREFLOAD_GAS`               |                                                                              `3` |\n \n All concatenations below use fixed-length encodings. Domains are 32 bytes. Addresses are 20 bytes. Slots and indices are unsigned 64-bit big-endian integers. Roots, salts, source identifiers, entry hashes, and storage keys are 32 bytes.\n@@ -293,6 +293,8 @@ The EIP-7623 calldata cost MUST be computed over `recent_root_calldata` as one b\n \n One new `TXPARAM` index and one new opcode are added:\n \n+EIP-8141 assigns opcode `0xB4` to `SIGPARAM`. `RECENTROOTREFLOAD` uses `0xB5` to avoid that collision.\n+\n | Name                                 |  Value | Return value                 |\n | ------------------------------------ | -----: | ---------------------------- |\n | `TXPARAM_RECENT_ROOT_REFERENCE_COUNT` | `0x0F` | `len(recent_root_references)` |",
+      "additions": 3,
+      "deletions": 1
+    },
+    {
       "sha": "7f502d371b03e7981ac6f7a8e9d06cc22625798f",
       "date": "2026-07-18T08:50:31Z",
       "message": "Update EIP-8272: strengthen public-mempool handling of recent root references",
@@ -52,14 +62,6 @@
     }
   ],
   "openPrs": [
-    {
-      "number": 11967,
-      "title": "Update EIP-8272: resolve RECENTROOTREFLOAD opcode collision",
-      "author": "soispoke",
-      "updatedAt": "2026-07-19T21:42:19Z",
-      "additions": 3,
-      "deletions": 1
-    },
     {
       "number": 11970,
       "title": "Update EIP-8272: make recent root changes additive",

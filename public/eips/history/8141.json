@@ -2,6 +2,26 @@
   "eipId": 8141,
   "commits": [
     {
+      "sha": "c7a8c4242a56d8c1e0d75d65366020a24020da7e",
+      "date": "2026-07-20T18:12:54Z",
+      "message": "Update EIP-8141: define the Receipts message encoding for frame transaction receipts (#11942)",
+      "author": "svlachakis",
+      "prNumber": 11942,
+      "patch": "@@ -872,6 +872,14 @@ Do not apply the restriction put in place by [EIP-3607](./eip-3607.md) to frame\n Specifically, `SENDER` frames originate calls where `tx.sender` is a contract account.\n Validation logic for other transaction types remains unchanged, i.e. the transaction is only valid if the sender account's code is either empty or a valid delegation indicator.\n \n+### Networking\n+\n+In the `Receipts` message of the protocol version carrying this fork, a frame transaction receipt is encoded mirroring its consensus `ReceiptPayload`:\n+\n+```\n+receipt = [tx-type, cumulative-gas, payer, [[status, gas-used, logs], ...]]\n+```\n+\n ## Rationale\n \n ### Canonical signature hash",
+      "additions": 8,
+      "deletions": 0
+    },
+    {
+      "sha": "e1fd489dae28cb6a29b3931270efd1b198001872",
+      "date": "2026-07-20T18:12:47Z",
+      "message": "Update EIP-8141: charge for each arbitrary sig entry",
+      "author": "lightclient",
+      "prNumber": null,
+      "patch": "@@ -170,7 +170,7 @@ The `scheme` identifies how the raw `signature` bytes are interpreted.\n \n | `scheme`   | Name         | `signature` encoding                           | Gas cost |\n |------------|--------------|------------------------------------------------|----------|\n-| 0x0        | `ARBITRARY`  | arbitrary bytes                                | 0        |\n+| 0x0        | `ARBITRARY`  | arbitrary bytes                                | 100      |\n | 0x1        | `SECP256K1`  | `v (1 byte) || r (32 bytes) || s (32 bytes)`   | 2800     |\n | 0x2        | `P256`       | `r || s || qx || qy` (32 bytes each)           | 6700     |\n | 0x3..255   | reserved     | reserved                                       | reserved |\n@@ -392,7 +392,7 @@ def signature_gas(sig):\n     if sig.scheme == P256:\n         return 6700\n     if sig.scheme == ARBITRARY:\n-        return 0\n+        return 100\n     invalid_transaction()\n \n signature_verification_cost = sum(signature_gas(sig) for sig in tx.signatures)",
+      "additions": 2,
+      "deletions": 2
+    },
+    {
       "sha": "1e7a88e681f9ae572676a4c2aa3ec7b203c39d23",
       "date": "2026-07-17T23:36:45Z",
       "message": "Update EIP-8141: apply the EIP-7623 calldata floor to frame and signature data",
@@ -344,7 +364,7 @@
       "number": 11971,
       "title": "Update EIP-8141: clarify decoding, signing, and activation",
       "author": "soispoke",
-      "updatedAt": "2026-07-20T04:16:26Z",
+      "updatedAt": "2026-07-20T17:02:40Z",
       "additions": 38,
       "deletions": 5
     },
@@ -352,7 +372,7 @@
       "number": 11969,
       "title": "Update EIP-8141: apply charged_gas to fee settlement",
       "author": "soispoke",
-      "updatedAt": "2026-07-19T21:42:11Z",
+      "updatedAt": "2026-07-20T13:33:06Z",
       "additions": 23,
       "deletions": 10
     },
@@ -360,7 +380,7 @@
       "number": 11935,
       "title": "Update EIP-8141: bound the signatures list with MAX_SIGNATURES",
       "author": "svlachakis",
-      "updatedAt": "2026-07-18T11:54:53Z",
+      "updatedAt": "2026-07-20T17:52:49Z",
       "additions": 2,
       "deletions": 0
     },
@@ -373,18 +393,10 @@
       "deletions": 1
     },
     {
-      "number": 11942,
-      "title": "Update EIP-8141: define the Receipts message encoding for frame transaction receipts",
-      "author": "svlachakis",
-      "updatedAt": "2026-07-18T13:17:15Z",
-      "additions": 8,
-      "deletions": 0
-    },
-    {
       "number": 11956,
       "title": "Update EIP-8141: note sponsor repayment reversibility and batch the repayment in Example 3",
       "author": "AnkushinDaniil",
-      "updatedAt": "2026-07-19T20:21:24Z",
+      "updatedAt": "2026-07-20T09:42:25Z",
       "additions": 9,
       "deletions": 5
     },
@@ -392,9 +404,9 @@
       "number": 11955,
       "title": "Update EIP-8141: approval effects are not reverted by frame revert or atomic-batch unroll",
       "author": "AnkushinDaniil",
-      "updatedAt": "2026-07-19T21:23:34Z",
-      "additions": 8,
-      "deletions": 0
+      "updatedAt": "2026-07-20T18:40:32Z",
+      "additions": 11,
+      "deletions": 1
     },
     {
       "number": 11555,

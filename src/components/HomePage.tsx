@@ -4,11 +4,11 @@ import { networkUpgrades, NetworkUpgrade } from '../data/upgrades';
 import { getRecentCalls, isOneOffCall, callTypeNames, protocolCalls, type Call, type CallType } from '../data/calls';
 import { eipsData, eipById } from '../data/eips';
 import { useAnalytics } from '../hooks/useAnalytics';
-import { getProposalPrefix, getLaymanTitle, getInclusionStage } from '../utils/eip';
+import { getProposalPrefix, getLaymanTitle } from '../utils/eip';
+import { getInclusionStageColor } from '../utils/colors';
 import UpgradeCard from './ui/UpgradeCard';
-import { UpgradeStageBadge } from './ui';
 import { StructuredDecisionContent, DecisionTextWithEipLinks } from './call/KeyDecisionsSection';
-import { EIP, KeyDecision } from '../types/eip';
+import { EIP, InclusionStage, KeyDecision } from '../types/eip';
 
 const ACD_TYPES: CallType[] = ['acdc', 'acde', 'acdt'];
 
@@ -17,22 +17,27 @@ interface RecentMeetingDecisions {
   decisions: KeyDecision[];
 }
 
-const latestDatedStatusTimestamp = (eip: EIP): number | null => {
-  let latest: number | null = null;
-
-  for (const fork of eip.forkRelationships) {
-    for (const entry of fork.statusHistory) {
-      if (!entry.date) continue;
-
-      const timestamp = Date.parse(entry.date);
-      if (!Number.isFinite(timestamp)) continue;
-
-      latest = latest === null ? timestamp : Math.max(latest, timestamp);
-    }
-  }
-
-  return latest;
+/** Status values from statusHistory → abbreviation labels for display. */
+const STATUS_ABBREV: Record<string, string> = {
+  Proposed: 'PFI',
+  Considered: 'CFI',
+  Scheduled: 'SFI',
+  Declined: 'DFI',
+  Included: 'Included',
+  Withdrawn: 'Withdrawn',
+  Informational: 'Info',
 };
+
+interface StageTransition {
+  eip: EIP;
+  forkName: string;
+  fromLabel: string | null;
+  fromStage: InclusionStage | null;
+  toLabel: string;
+  toStage: InclusionStage;
+  changeDate: string; // YYYY-MM-DD
+  timestamp: number;
+}
 
 const fetchLatestMeetingDecisions = async (): Promise<RecentMeetingDecisions | null> => {
   const acdCalls = protocolCalls
@@ -66,13 +71,58 @@ const quickLinks: NetworkUpgrade[] = (() => {
   return [previous, current, future].filter((u): u is NetworkUpgrade => u !== undefined);
 })();
 
-const featuredEips: EIP[] = (() => {
-  return eipsData
-    .map((eip) => ({ eip, lastUpdate: latestDatedStatusTimestamp(eip) }))
-    .filter((item): item is { eip: EIP; lastUpdate: number } => item.lastUpdate !== null)
-    .sort((a, b) => b.lastUpdate - a.lastUpdate)
-    .slice(0, 4)
-    .map((item) => item.eip);
+/** Map raw statusHistory status to the full InclusionStage name. */
+const STATUS_TO_STAGE: Record<string, InclusionStage> = {
+  Proposed: 'Proposed for Inclusion',
+  Considered: 'Considered for Inclusion',
+  Scheduled: 'Scheduled for Inclusion',
+  Declined: 'Declined for Inclusion',
+  Included: 'Included',
+  Withdrawn: 'Withdrawn',
+  Informational: 'Informational',
+};
+
+const recentStageTransitions: StageTransition[] = (() => {
+  const transitions: StageTransition[] = [];
+
+  for (const eip of eipsData) {
+    for (const fork of eip.forkRelationships) {
+      // Find the most recent dated status entry in this fork
+      let latestIdx = -1;
+      let latestTimestamp = -1;
+
+      for (let i = 0; i < fork.statusHistory.length; i++) {
+        const entry = fork.statusHistory[i];
+        if (!entry.date) continue;
+        const ts = Date.parse(entry.date);
+        if (!Number.isFinite(ts)) continue;
+        if (ts > latestTimestamp) {
+          latestTimestamp = ts;
+          latestIdx = i;
+        }
+      }
+
+      if (latestIdx < 0) continue;
+
+      const current = fork.statusHistory[latestIdx];
+      const previous = latestIdx > 0 ? fork.statusHistory[latestIdx - 1] : null;
+
+      transitions.push({
+        eip,
+        forkName: fork.forkName,
+        fromLabel: previous ? (STATUS_ABBREV[previous.status] ?? previous.status) : null,
+        fromStage: previous ? (STATUS_TO_STAGE[previous.status] ?? null) : null,
+        toLabel: STATUS_ABBREV[current.status] ?? current.status,
+        toStage: STATUS_TO_STAGE[current.status] ?? 'Unknown',
+        changeDate: current.date!,
+        timestamp: latestTimestamp,
+      });
+    }
+  }
+
+  // Sort by most recent first, then by EIP id for stability
+  transitions.sort((a, b) => b.timestamp - a.timestamp || a.eip.id - b.eip.id);
+  return transitions.slice(0, 8);
 })();
 
 const HomePage = () => {
@@ -151,11 +201,11 @@ const HomePage = () => {
           </div>
         </div>
 
-        {/* Featured EIPs Section */}
+        {/* Recent Stage Changes Section */}
         <div className="mt-12">
           <div className="flex items-center justify-between mb-4">
             <h2 className="text-xl font-medium text-slate-900 dark:text-slate-100">
-              Recently Updated EIPs
+              Recent Stage Changes
             </h2>
             <Link
               to="/eips"
@@ -165,38 +215,46 @@ const HomePage = () => {
             </Link>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            {featuredEips.map((eip) => {
-              const upgradeBadges = eip.forkRelationships.map((rel) => ({
-                forkName: rel.forkName,
-                stage: getInclusionStage(eip, rel.forkName),
-              }));
+          <div className="space-y-2">
+            {recentStageTransitions.map(({ eip, forkName, fromLabel, fromStage, toLabel, toStage, changeDate }) => {
+              const dateLabel = new Date(changeDate + 'T00:00:00').toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
 
               return (
                 <Link
-                  key={eip.id}
+                  key={`${eip.id}-${forkName}`}
                   to={`/eips/${eip.id}`}
-                  className="group flex items-start justify-between gap-3 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg p-4 hover:shadow-md dark:hover:shadow-slate-700/20 hover:border-purple-300 dark:hover:border-purple-600"
+                  className="group flex items-center justify-between gap-3 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg px-4 py-3 hover:shadow-md dark:hover:shadow-slate-700/20 hover:border-purple-300 dark:hover:border-purple-600"
                 >
-                  <div className="flex-1 min-w-0">
-                    <div className="flex items-center gap-2 mb-2 flex-wrap">
-                      <span className="text-sm font-mono font-medium text-purple-600 dark:text-purple-400">
-                        {getProposalPrefix(eip)}-{eip.id}
-                      </span>
-                      {upgradeBadges.map(({ forkName, stage }) => (
-                        <UpgradeStageBadge key={forkName} forkName={forkName} stage={stage} />
-                      ))}
-                    </div>
-                    <h3 className="text-sm font-medium text-slate-900 dark:text-slate-100 mb-1 leading-snug">
+                  <div className="flex items-center gap-3 min-w-0">
+                    <span className="text-sm font-mono font-medium text-purple-600 dark:text-purple-400 flex-shrink-0">
+                      {getProposalPrefix(eip)}-{eip.id}
+                    </span>
+                    <span className="text-sm text-slate-900 dark:text-slate-100 truncate">
                       {getLaymanTitle(eip)}
-                    </h3>
-                    <p className="text-xs text-slate-600 dark:text-slate-400 line-clamp-2">
-                      {eip.laymanDescription || eip.description}
-                    </p>
+                    </span>
                   </div>
-                  <svg className="w-5 h-5 text-slate-400 group-hover:text-purple-500 flex-shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
-                  </svg>
+                  <div className="flex items-center gap-3 flex-shrink-0">
+                    <div className="flex items-center gap-1.5 text-xs">
+                      <span className="hidden sm:inline text-slate-500 dark:text-slate-400">{forkName}:</span>
+                      {fromLabel && fromStage && (
+                        <>
+                          <span className={`px-1.5 py-0.5 rounded opacity-50 ${getInclusionStageColor(fromStage)}`}>
+                            {fromLabel}
+                          </span>
+                          <span className="text-slate-400 dark:text-slate-400">→</span>
+                        </>
+                      )}
+                      <span className={`font-medium px-1.5 py-0.5 rounded ${getInclusionStageColor(toStage)}`}>
+                        {toLabel}
+                      </span>
+                    </div>
+                    <span className="text-sm text-slate-600 dark:text-slate-400">
+                      {dateLabel}
+                    </span>
+                    <svg className="w-5 h-5 text-slate-400 group-hover:text-purple-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                    </svg>
+                  </div>
                 </Link>
               );
             })}

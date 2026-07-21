@@ -2,6 +2,16 @@
   "eipId": 8141,
   "commits": [
     {
+      "sha": "6ebf991c17db76e6969cc36c3ae69ef8f459141d",
+      "date": "2026-07-21T14:21:01Z",
+      "message": "Update EIP-8141: approval effects are not reverted by frame revert or atomic-batch unroll (#11955)",
+      "author": "AnkushinDaniil",
+      "prNumber": 11955,
+      "patch": "@@ -364,9 +364,9 @@ Then for each frame:\n 1. If frame has mode `VERIFY` the following additional requirements are imposed:\n     - Execute the frame as a `STATICCALL`, disallowing state manipulation.\n         - Only `APPROVE` can modify the state or transaction context in `VERIFY`.\n-    - If the frame reverts, the transaction is invalid.\n+    - If the frame reverts, the transaction is invalid. This would unroll any effects of `APPROVE`.\n 1. If a frame is part of an atomic batch and it fails, unroll the associated atomic batch.\n-    - An **atomic batch** is a maximal contiguous sequence of frames `[i, j]` where `j > i`, frames `i` through `j - 1` have `ATOMIC_BATCH_FLAG` set, and frame `j` does not have `ATOMIC_BATCH_FLAG` set.\n+    - An **atomic batch** is a maximal contiguous sequence of frames `[i, j]` where `j > i`, non-`VERIFY` frames `i` through `j - 1` have `ATOMIC_BATCH_FLAG` set, and frame `j` does not have `ATOMIC_BATCH_FLAG` set.\n     - When a frame in the batch fails, the state must be rolled back to the condition it was immediately before the atomic batch began. All remaining frames in the atomic batch are skipped.\n     - Since skipped frames are not executed, the gas value allotted to them is refunded at the end of the transaction.\n     - If the frame does not have an associated atomic batch, further special handling is not needed, simple revert the individual frame.\n@@ -738,7 +738,7 @@ To be accepted into the public mempool, a frame transaction must satisfy the fol\n 4. `pay` must execute in `VERIFY` mode, have flags set to `APPROVE_PAYMENT`, and must successfully call `APPROVE(APPROVE_PAYMENT)`\n 5. No frame in the validation prefix may have the `ATOMIC_BATCH_FLAG` set.\n 6. The sum of `gas_limit` values across the validation prefix, plus the intrinsic cost of validating `tx.signatures`, must not exceed `MAX_VERIFY_GAS`.\n-7. Nodes should stop simulation immediately once `payer` has been set.\n+7. Nodes should stop simulation immediately once `payer` has been set and the associated `VERIFY` frame completes successfully.\n 8. There must not be `VERIFY` frame after validation prefix.\n \n #### Expiry Verifier Frame",
+      "additions": 3,
+      "deletions": 3
+    },
+    {
       "sha": "c7a8c4242a56d8c1e0d75d65366020a24020da7e",
       "date": "2026-07-20T18:12:54Z",
       "message": "Update EIP-8141: define the Receipts message encoding for frame transaction receipts (#11942)",
@@ -364,7 +374,7 @@
       "number": 11971,
       "title": "Update EIP-8141: clarify decoding, signing, and activation",
       "author": "soispoke",
-      "updatedAt": "2026-07-20T17:02:40Z",
+      "updatedAt": "2026-07-21T17:57:00Z",
       "additions": 38,
       "deletions": 5
     },
@@ -372,9 +382,17 @@
       "number": 11969,
       "title": "Update EIP-8141: apply charged_gas to fee settlement",
       "author": "soispoke",
-      "updatedAt": "2026-07-20T13:33:06Z",
+      "updatedAt": "2026-07-21T17:54:13Z",
       "additions": 23,
       "deletions": 10
+    },
+    {
+      "number": 11984,
+      "title": "Update EIP-8141: pin the P256 signature canonicality (low-s)",
+      "author": "svlachakis",
+      "updatedAt": "2026-07-21T17:17:17Z",
+      "additions": 6,
+      "deletions": 2
     },
     {
       "number": 11940,
@@ -385,20 +403,12 @@
       "deletions": 1
     },
     {
-      "number": 11956,
-      "title": "Update EIP-8141: note sponsor repayment reversibility and batch the repayment in Example 3",
-      "author": "AnkushinDaniil",
-      "updatedAt": "2026-07-20T09:42:25Z",
-      "additions": 9,
-      "deletions": 5
-    },
-    {
-      "number": 11955,
-      "title": "Update EIP-8141: approval effects are not reverted by frame revert or atomic-batch unroll",
-      "author": "AnkushinDaniil",
-      "updatedAt": "2026-07-21T06:46:40Z",
-      "additions": 11,
-      "deletions": 1
+      "number": 11985,
+      "title": "Update EIP-8141: forbid blob-carrying frame transactions until blob gas is specified",
+      "author": "svlachakis",
+      "updatedAt": "2026-07-21T17:18:17Z",
+      "additions": 3,
+      "deletions": 0
     },
     {
       "number": 11555,

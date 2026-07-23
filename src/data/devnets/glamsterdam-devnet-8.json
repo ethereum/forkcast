@@ -1,17 +1,18 @@
 {
-  "id": "glamsterdam-devnet-6",
-  "title": "glamsterdam-devnet-6",
-  "sourceUrl": "https://notes.ethereum.org/@ethpandaops/glamsterdam-devnet-6",
-  "scrapedAt": "2026-07-23T18:46:53.180Z",
+  "id": "glamsterdam-devnet-8",
+  "title": "glamsterdam-devnet-8",
+  "sourceUrl": "https://notes.ethereum.org/@ethpandaops/glamsterdam-devnet-8",
+  "scrapedAt": "2026-07-23T18:46:57.075Z",
   "announcements": [
-    "8282 introduces 2 new system contracts that can be found here:\n\n| Contract | Req | type | Address |\n|----------|---------|------|--------------------------------------------|\n| Builder | deposit | 0x03 | 0x0000884d2AA32eAa155F59A2f24eFa73D9008282 | \n| Builder | exit | 0x04 | 0x000014574A74c805590AFF9499fc7A690f008282 |",
-    "**What's necessary (EL).** devnet-6 adds the post-bal-devnet-7 EL work:\n- **New:** EIP-2780 · EIP-8038 (repricing), EIP-7997, EIP-8246, EIP-8070 (optional), EIP-8282\n- **Changed:** EIP-7954 → 64 KiB, EIP-8037 → source-based refunds, EIP-7928 (BAL × 7702 warming **still decided keeping status quo**)"
+    "glamsterdam-devnet-8 targets to launch in early August 2026.",
+    "**Scope.** Short-lived fork-transition devnet: all clients fork together from a big pre-fork state (config similar to devnet-7). EL discovery runs **discv5-only** (per-client flags under Networking); QUIC stays enabled on the CL. The new **builder API** flow (Beacon API / Keymanager / Builder Specs PRs below) is **best effort**. Benchmark-driven repricing updates (EIP-8037/8038 numbers) may still land before launch. Stress goals: SSZ/stable-container performance and builder lifecycle at scale (see Testing focus). devnet-9 (non-finality testing) follows within the month.",
+    "8282 system contracts are unchanged from devnet-7 (no sys-asm bytecode changes since):\n\n| Contract | Req | type | Address | \n|----------|---------|------|--------------------------------------------|\n| same as devnet-7 | deposit | 0x03 | 0x0000bff46984e3725691fa540a8c7589300d8282 | \n| same as devnet-7 | exit | 0x04 | 0x000064d678505ad48f8ccb093bc65613800e8282 |"
   ],
   "eips": [
     {
       "number": 2780,
-      "title": "Reduce intrinsic transaction gas",
-      "status": "new",
+      "title": "Reduce intrinsic transaction gas — transfer log cost folded into `TX_VALUE_COST` (create-with-value cost changes)",
+      "status": "updated",
       "url": "https://eips.ethereum.org/EIPS/eip-2780"
     },
     {
@@ -19,6 +20,12 @@
       "title": "Revert creation in case of non-empty storage",
       "status": null,
       "url": "https://eips.ethereum.org/EIPS/eip-7610"
+    },
+    {
+      "number": 7688,
+      "title": "Forward compatible consensus data structures",
+      "status": null,
+      "url": "https://eips.ethereum.org/EIPS/eip-7688"
     },
     {
       "number": 7708,
@@ -29,7 +36,7 @@
     {
       "number": 7732,
       "title": "Enshrined Proposer-Builder Separation",
-      "status": "updated",
+      "status": null,
       "url": "https://github.com/ethereum/EIPs/blob/master/EIPS/eip-7732.md"
     },
     {
@@ -45,15 +52,21 @@
       "url": "https://eips.ethereum.org/EIPS/eip-7843"
     },
     {
+      "number": 7904,
+      "title": "Compute Gas Cost Analysis (informational only)",
+      "status": null,
+      "url": "https://eips.ethereum.org/EIPS/eip-7904"
+    },
+    {
       "number": 7928,
-      "title": "Block-Level Access Lists",
+      "title": "Block-Level Access Lists — recipient excluded when a runtime halt precedes",
       "status": "updated",
       "url": "https://eips.ethereum.org/EIPS/eip-7928"
     },
     {
       "number": 7954,
       "title": "Increase Maximum Contract Size (→ 64 KiB)",
-      "status": "updated",
+      "status": null,
       "url": "https://eips.ethereum.org/EIPS/eip-7954"
     },
     {
@@ -76,8 +89,8 @@
     },
     {
       "number": 7997,
-      "title": "Deterministic Factory Predeploy",
-      "status": "new",
+      "title": "Deterministic Factory Predeploy — activation-block deployment + BAL recording specified",
+      "status": "updated",
       "url": "https://eips.ethereum.org/EIPS/eip-7997"
     },
     {
@@ -88,14 +101,14 @@
     },
     {
       "number": 8037,
-      "title": "State Creation Gas — CPSB=1530, source-based refunds",
+      "title": "State Creation Gas — CPSB=1530, source-based refunds; \"regular gas\" renamed to \"execution gas\" (terminology only)",
       "status": "updated",
       "url": "https://eips.ethereum.org/EIPS/eip-8037"
     },
     {
       "number": 8038,
       "title": "State-access gas cost update",
-      "status": "new",
+      "status": null,
       "url": "https://eips.ethereum.org/EIPS/eip-8038"
     },
     {
@@ -113,7 +126,7 @@
     {
       "number": 8070,
       "title": "eth/72 - Sparse Blobpool",
-      "status": "new_optional",
+      "status": null,
       "url": "https://eips.ethereum.org/EIPS/eip-8070"
     },
     {
@@ -125,13 +138,13 @@
     {
       "number": 8246,
       "title": "Remove SELFDESTRUCT Burn",
-      "status": "new",
+      "status": null,
       "url": "https://eips.ethereum.org/EIPS/eip-8246"
     },
     {
       "number": 8282,
       "title": "Add builder execution requests",
-      "status": "new",
+      "status": null,
       "url": "https://github.com/ethereum/EIPs/pull/11760"
     }
   ],
@@ -144,11 +157,7 @@
     "matrix": []
   },
   "specReferences": {
-    "consensusSpecs": {
-      "version": "v1.7.0-alpha.11",
-      "url": "https://github.com/ethereum/consensus-specs/releases/tag/v1.7.0-alpha.11"
-    },
+    "consensusSpecs": null,
     "executionSpecs": null
-  },
-  "genesisTime": 1782386940
+  }
 }

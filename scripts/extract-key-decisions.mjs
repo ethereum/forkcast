@@ -25,7 +25,7 @@ const ARTIFACTS_DIR = join(ROOT, 'public', 'artifacts');
 const EIPS_JSON = join(ROOT, 'src', 'data', 'eips.json');
 
 const ACD_CALL_TYPES = new Set(['acdc', 'acde', 'acdt']);
-const DEFAULT_MODEL = 'claude-sonnet-4-5-20250929';
+const DEFAULT_MODEL = 'claude-opus-4-6';
 
 const MODEL_PRICING = {
   'claude-opus-4-6': [15.0, 75.0],
@@ -37,7 +37,7 @@ const MODEL_PRICING = {
 
 const EXTRACTION_PROMPT = `Classify decisions from Ethereum governance meeting summaries into structured JSON.
 
-You receive the full TLDR (highlights, action items, decisions, targets). Classify only the items in the "decisions" array, but use the highlights and other context to inform your classification (e.g., to identify which workstream a devnet belongs to).
+You receive the full TLDR (highlights, action items, decisions, targets). Your primary source is the "decisions" array, but you MUST also scan ALL highlights for stage-change signals (PFI, CFI, SFI, DFI, Included, Withdrawn) that the decisions array may have missed. EIP proposal highlights (e.g., categories like "eip_proposals_*") frequently contain PFI/CFI decisions that were not captured in the decisions array. If a highlight mentions an EIP being "PFI'd", "CFI'd", "SFI'd", etc., include it as a key decision even if it does not appear in the decisions array.
 
 ## Types
 

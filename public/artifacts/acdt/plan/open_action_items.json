@@ -1,75 +1,67 @@
 {
   "series": "ACDT",
-  "generated": "2026-07-09",
+  "generated": "2026-07-23",
   "lookback_calls": [
-    "ACDT #82 - June 8, 2026",
-    "ACDT #83 - June 15, 2026",
-    "ACDT #84 - June 22, 2026",
-    "ACDT #85 - June 29, 2026",
-    "ACDT #86 - July 6, 2026"
+    "ACDT #84",
+    "ACDT #85",
+    "ACDT #86",
+    "ACDT #87",
+    "ACDT #88"
   ],
   "open_items": [
-    {
-      "action": "Additional CL client (beyond Prysm/Nimbus) to volunteer for SSZ Engine API implementation",
-      "owner": "CL teams",
-      "source_call": "ACDT #82",
-      "source_date": "2026-06-08",
-      "notes": "ACDT #83 noted 3+ client implementations exist and Prysm nearly ready, but no explicit confirmation of additional volunteers beyond original Prysm/Nimbus target"
-    },
-    {
-      "action": "EL teams review EIP-8282 system contract and confirm implementation scope before ACDE Thursday",
-      "owner": "EL teams",
-      "source_call": "ACDT #83",
-      "source_date": "2026-06-15",
-      "notes": "Target was ACDE June 18; EIP-8282 was decided for inclusion and is now in devnet-6/7, but no explicit confirmation of formal review completion was documented"
-    },
-    {
-      "action": "Review updated execution-apis PR #793 (SSZ Engine API) and align implementations to new spec",
-      "owner": "CL + EL teams",
-      "source_call": "ACDT #83",
-      "source_date": "2026-06-15",
-      "notes": "ACDT #86 scheduled SSZ Engine API breakout for Friday, suggesting ongoing work; no confirmation of completed alignment"
-    },
-    {
-      "action": "Resolve remaining EL spec changes (EIP-2780 floor gas input, EIP-8037, EIP-8282) in EL breakout; release updated execution-specs by Wednesday",
-      "owner": "EL teams (Spencer, Mario)",
-      "source_call": "ACDT #86",
-      "source_date": "2026-07-06",
-      "notes": "Target was today (July 9); devnet-7 launch is also targeted for today but no confirmation these specs were finalized"
-    }
-  ],
-  "resolved_items": [
-    {
-      "action": "Toni to align with Mario and frangio async on EIP-7997 vs. new EIP approach for enshrining Arachnid",
-      "owner": "Toni Wahrstätter / Mario Vega / frangio",
-      "source_call": "ACDT #82",
-      "source_date": "2026-06-08",
-      "resolved_in": "ACDT #82",
-      "resolution": "Decision made in same meeting at timestamp 00:38:20 to adopt Option 2 (enshrine Arachnid at known address in Genesis)"
-    },
     {
       "action": "Revisit EIP-7688 inclusion in devnet-7 and builder API testing scope at ACDC Thursday",
       "owner": "Client teams / ACDC participants",
       "source_call": "ACDT #84",
       "source_date": "2026-06-22",
-      "resolved_in": "ACDT #85",
-      "resolution": "ACDT #85 confirmed EIP-7688 (forward-compatible SSZ data structures) is in devnet-7 scope on CL side"
+      "notes": "ACDT #87 confirms devnet-7 launched with EIP-7688 (stable containers) included, but no explicit mention of builder API testing scope being revisited at ACDC. The action's ACDC discussion component remains unconfirmed."
     },
+    {
+      "action": "Draft EIP cleanup PRs (execution gas rename, log cost consolidation) for devnet-8",
+      "owner": "Maria Silva",
+      "source_call": "ACDT #87",
+      "source_date": "2026-07-13",
+      "notes": "Devnet-8 is discussed in ACDT #88 as upcoming (~1-2 weeks) with focus on repricing EIP cleanups, but no confirmation that Maria's PRs were drafted."
+    },
+    {
+      "action": "Align BAL-related JSON RPC methods across EL clients before devnet-8; review Toni's execution-apis PR",
+      "owner": "EL teams",
+      "source_call": "ACDT #88",
+      "source_date": "2026-07-20",
+      "notes": "Devnet-8 timeline is ~1-2 weeks from July 20. No later meeting confirms completion of this alignment work."
+    },
+    {
+      "action": "Formally move devnet-7 EIPs to SFI at next ACDE/ACDC call",
+      "owner": "ACD facilitators / EIP editors",
+      "source_call": "ACDT #88",
+      "source_date": "2026-07-20",
+      "notes": "Target was 'next ACDE/ACDC Thursday' which would be July 24/25, 2026. As of July 23 (today), this action is still pending the upcoming call."
+    }
+  ],
+  "resolved_items": [
     {
       "action": "Felix to add disable-switch to EIP-8282 deposit contract (easy, low-risk future-proofing)",
       "owner": "Felix (Geth)",
       "source_call": "ACDT #85",
       "source_date": "2026-06-29",
-      "resolved_in": "ACDT #86",
-      "resolution": "ACDT #86 lists EIP-8282 changes as part of devnet-7 spec, suggesting implementation work including this feature was completed"
+      "resolved_in": "ACDT #87",
+      "resolution": "ACDT #87 confirms devnet-7 launched with EIP-8282 contract deployed, indicating the finalized contract spec (including any disable-switch) was implemented."
     },
     {
       "action": "Revert Besu fix for Prysm FCU behavior; re-investigate if issues persist",
       "owner": "Besu (Karim)",
       "source_call": "ACDT #86",
       "source_date": "2026-07-06",
-      "resolved_in": "ACDT #86",
-      "resolution": "Decision made in same meeting that both Prysm will revert their behavior and Besu fix will likely be reverted"
+      "resolved_in": "ACDT #87",
+      "resolution": "ACDT #87 shows devnet-6 running at 80%+ participation with only minor Lodestar-related issues; the Besu/Prysm FCU issue appears resolved."
+    },
+    {
+      "action": "Resolve remaining EL spec changes (EIP-2780 floor gas input, EIP-8037, EIP-8282) in EL breakout; release updated execution-specs by Wednesday",
+      "owner": "EL teams (Spencer, Mario)",
+      "source_call": "ACDT #86",
+      "source_date": "2026-07-06",
+      "resolved_in": "ACDT #87",
+      "resolution": "ACDT #87 reports EL tests release 7.2 deployed with EIP-8037 fix included, and devnet-7 launched with all three EIPs, confirming spec updates were completed."
     }
   ]
 }

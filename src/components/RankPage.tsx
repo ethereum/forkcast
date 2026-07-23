@@ -5,11 +5,14 @@ import {
   getLaymanTitle,
   getProposalPrefix,
   getEipLayer,
-  wasHeadlinerCandidate,
+  isHeadliner,
+  isForkInclusionCandidate,
 } from "../utils/eip";
 import { useAnalytics } from "../hooks/useAnalytics";
 import { eipsData } from "../data/eips";
 import { getPendingProposalsForFork, PendingProposal } from "../data/pending-proposals";
+import { getUpgradeById } from "../data/upgrades";
+import { getTierMakerConfig } from "../utils/tierMaker";
 
 const ChampionDisplay: React.FC<{ champions?: Champion[] }> = ({ champions }) => {
   if (!champions || champions.length === 0 || !champions.some(c => c.name)) return null;
@@ -25,6 +28,8 @@ interface TierItem {
   id: string;
   eip?: EIP;
   pendingProposal?: PendingProposal;
+  /** True for the fork's selected headliner EIPs, toggled by the headliner checkbox. */
+  headliner: boolean;
   tier: string | null;
 }
 
@@ -139,7 +144,20 @@ const truncateText = (text: string, maxLength: number): string => {
   return text.slice(0, maxLength).trim() + '...';
 };
 
-const RankPage: React.FC = () => {
+interface RankPageProps {
+  /** Lowercase upgrade id whose proposals are ranked, e.g. 'hegota'. */
+  forkName: string;
+}
+
+const RankPage: React.FC<RankPageProps> = ({ forkName }) => {
+  const fork = forkName.toLowerCase();
+  const upgrade = getUpgradeById(fork);
+  // "Hegotá Upgrade" -> "Hegotá"; falls back to the id for unknown forks.
+  const displayName = (upgrade?.name ?? fork).replace(/\s+Upgrade$/, "");
+  const tierConfig = getTierMakerConfig(fork);
+  const storageKey = `${fork}-rankings`;
+  const rankPath = `/rank/${fork}`;
+
   const navigate = useNavigate();
   const { trackLinkClick, trackEvent } = useAnalytics();
   const [items, setItems] = useState<TierItem[]>([]);
@@ -153,35 +171,38 @@ const RankPage: React.FC = () => {
   );
   const [collectionOrder, setCollectionOrder] = useState<string[]>([]);
   const [isInstructionsExpanded, setIsInstructionsExpanded] = useState(false);
+  const [includeHeadliners, setIncludeHeadliners] = useState(true);
   const [hoveredItem, setHoveredItem] = useState<TierItem | null>(null);
   const [tooltipPosition, setTooltipPosition] = useState<{ x: number; y: number } | null>(null);
   const isTouchDevice =
     typeof window !== "undefined" &&
     ("ontouchstart" in window || navigator.maxTouchPoints > 0);
 
-  // Initialize with Hegota headliner EIPs and pending proposals
+  // Initialize with this fork's proposed EIPs and pending proposals
   useEffect(() => {
-    // Get EIPs that were headliner candidates for Hegota
-    const hegotaHeadlinerEips = eipsData
-      .filter((eip) => wasHeadlinerCandidate(eip, "hegota"))
+    // EIPs in the fork's inclusion funnel (proposed and beyond, not declined)
+    const proposalEips = eipsData
+      .filter((eip) => isForkInclusionCandidate(eip, fork))
       .map((eip) => ({
         id: `eip-${eip.id}`,
         eip,
+        headliner: isHeadliner(eip, fork),
         tier: null,
       }));
 
-    // Get pending proposals for Hegota
-    const hegotaPendingProposals = getPendingProposalsForFork("hegota")
+    // Get pending proposals for this fork (no EIP number yet)
+    const pendingItems = getPendingProposalsForFork(fork)
       .map((proposal) => ({
         id: `pending-${proposal.id}`,
         pendingProposal: proposal,
+        headliner: false,
         tier: null,
       }));
 
-    const allItems = [...hegotaHeadlinerEips, ...hegotaPendingProposals];
+    const allItems = [...proposalEips, ...pendingItems];
 
     // Try to load saved rankings from localStorage
-    const savedRankings = localStorage.getItem("hegota-rankings");
+    const savedRankings = localStorage.getItem(storageKey);
     if (savedRankings) {
       try {
         const parsed = JSON.parse(savedRankings);
@@ -198,14 +219,14 @@ const RankPage: React.FC = () => {
     } else {
       setItems(allItems);
     }
-  }, []);
+  }, [fork, storageKey]);
 
   // Save rankings to localStorage whenever they change
   useEffect(() => {
     if (items.length > 0) {
-      localStorage.setItem("hegota-rankings", JSON.stringify(items));
+      localStorage.setItem(storageKey, JSON.stringify(items));
     }
-  }, [items]);
+  }, [items, storageKey]);
 
   // Initialize expanded collections based on layers
   useEffect(() => {
@@ -213,13 +234,12 @@ const RankPage: React.FC = () => {
       const unassigned = items.filter((item) => item.tier === null);
       const layers = new Set<string>();
       unassigned.forEach((item) => {
-        const layer = getItemLayer(item);
-        if (layer) layers.add(layer);
+        layers.add(getItemLayer(item) || 'Other');
       });
       if (layers.size > 0) {
         setExpandedCollections(layers);
-        // Keep consistent order: EL first, then CL
-        setCollectionOrder(['EL', 'CL'].filter(l => layers.has(l)));
+        // Keep a consistent order: EL, then CL, then any layer-less proposals.
+        setCollectionOrder(['EL', 'CL', 'Other'].filter(l => layers.has(l)));
       }
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -287,12 +307,18 @@ const RankPage: React.FC = () => {
     );
   };
 
+  // The rankable set, with headliner EIPs filtered out when the checkbox is off.
+  // Hidden items keep their tier assignment in `items` and reappear when re-enabled.
+  const visibleItems = includeHeadliners
+    ? items
+    : items.filter((item) => !item.headliner);
+
   const getItemsInTier = (tierId: string) => {
-    return items.filter((item) => item.tier === tierId);
+    return visibleItems.filter((item) => item.tier === tierId);
   };
 
   const getUnassignedItems = () => {
-    return items.filter((item) => item.tier === null);
+    return visibleItems.filter((item) => item.tier === null);
   };
 
   const getUnassignedItemsByLayer = () => {
@@ -333,7 +359,7 @@ const RankPage: React.FC = () => {
   };
 
   const getTotalItemsCountByLayer = (layer: string): number => {
-    return items.filter((item) => getItemLayer(item) === layer).length;
+    return visibleItems.filter((item) => (getItemLayer(item) || 'Other') === layer).length;
   };
 
   const toggleCollection = (collection: string) => {
@@ -354,7 +380,7 @@ const RankPage: React.FC = () => {
   };
 
   const generateTierImage = () => {
-    const rankedItems = items.filter((item) => item.tier !== null);
+    const rankedItems = visibleItems.filter((item) => item.tier !== null);
     if (rankedItems.length === 0) {
       alert("Please rank at least one proposal before generating an image.");
       return;
@@ -488,7 +514,7 @@ const RankPage: React.FC = () => {
     ctx.textBaseline = "middle";
 
     // Title in the center with date
-    const titleText = "Hegota Headliner Rankings";
+    const titleText = `${displayName} Proposal Rankings`;
     const titleFont = `${13 * scale}px -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif`;
     const dateFont = `${13 * scale}px -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif`;
 
@@ -511,10 +537,10 @@ const RankPage: React.FC = () => {
     ctx.fillStyle = "#f1f5f9";
     ctx.fillText(` • ${dateStamp}`, titleStartX + titleWidth, footerY1);
 
-    // Line 2: 'Make your own at forkcast.org/rank'
+    // Line 2: 'Make your own at forkcast.org/rank/{fork}'
     const prefix = "Make your own at ";
     const logo = "forkcast";
-    const suffix = ".org/rank";
+    const suffix = `.org${rankPath}`;
     ctx.font = `${
       13 * scale
     }px -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif`;
@@ -540,7 +566,7 @@ const RankPage: React.FC = () => {
         const url = URL.createObjectURL(blob);
         const a = document.createElement("a");
         a.href = url;
-        a.download = "hegota-headliner-rankings.png";
+        a.download = `${fork}-proposal-rankings.png`;
         document.body.appendChild(a);
         a.click();
         document.body.removeChild(a);
@@ -665,7 +691,7 @@ const RankPage: React.FC = () => {
 
   const handleReset = () => {
     setItems((prev) => prev.map((item) => ({ ...item, tier: null })));
-    localStorage.removeItem("hegota-rankings");
+    localStorage.removeItem(storageKey);
   };
 
   const handleExternalLinkClick = (linkType: string, url: string) => {
@@ -679,13 +705,13 @@ const RankPage: React.FC = () => {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex flex-col items-center h-auto py-3 sm:flex-row sm:justify-center sm:items-center sm:h-16 sm:py-0 relative">
             <button
-              onClick={() => navigate("/upgrade/hegota")}
+              onClick={() => navigate(`/upgrade/${fork}`)}
               className="mb-2 sm:mb-0 sm:absolute sm:left-0 sm:top-1/2 sm:-translate-y-1/2 text-slate-600 hover:text-slate-900 dark:text-slate-300 dark:hover:text-slate-100 transition-colors"
             >
-              ← Back to Hegota
+              ← Back to {displayName}
             </button>
             <h1 className="font-semibold text-slate-900 dark:text-slate-100 text-center truncate max-w-full overflow-hidden text-base sm:text-xl">
-              Hegota Headliner Tier Maker
+              {displayName} Tier Maker
             </h1>
           </div>
         </div>
@@ -723,44 +749,46 @@ const RankPage: React.FC = () => {
                 <div className="px-4 pb-4">
                   <p className="text-xs text-slate-600 dark:text-slate-300 leading-relaxed mb-4">
                     Users, node operators, app developers, core developers, and any other stakeholders
-                    are invited to voice their support for their preferred headliner proposals for the Hegota upgrade.
+                    are invited to voice their support for their preferred proposals for the {displayName} upgrade.
                   </p>
                   <p className="text-xs text-slate-600 dark:text-slate-300 leading-relaxed mb-4">
-                    Drag and drop (desktop) or tap-to-assign (mobile) the headliner proposals
+                    Drag and drop (desktop) or tap-to-assign (mobile) the proposals
                     into tiers. S-tier represents your highest priority proposals,
                     while D-tier represents your lowest priority.
                   </p>
                   <p className="text-xs text-slate-600 dark:text-slate-300 leading-relaxed">
                     Download the image to share your rankings and start a conversation.{" "}
                     <a
-                      href="https://forkcast.org/upgrade/hegota"
+                      href={`/upgrade/${fork}`}
                       className="text-purple-600 hover:text-purple-700 dark:text-purple-400 dark:hover:text-purple-300"
                     >
-                      Learn more about Hegota
+                      Learn more about {displayName}
                     </a>
                     .
                   </p>
-                  <div className="mt-4 flex items-start gap-2.5 rounded-lg border border-slate-200 bg-slate-100 p-3 dark:border-slate-700 dark:bg-slate-800">
-                    <div className="flex-shrink-0 pt-0.5">
-                      <svg
-                        className="h-4 w-4 text-slate-500 dark:text-slate-400"
-                        xmlns="http://www.w3.org/2000/svg"
-                        fill="none"
-                        viewBox="0 0 24 24"
-                        strokeWidth={2}
-                        stroke="currentColor"
-                      >
-                        <path
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                          d="M11.25 11.25l.041-.02a.75.75 0 011.063.852l-.708 2.836a.75.75 0 001.063.852l.041-.021M21 12a9 9 0 11-18 0 9 9 0 0118 0zm-9-3.75h.008v.008H12v-.008z"
-                        />
-                      </svg>
+                  {tierConfig?.deadline && (
+                    <div className="mt-4 flex items-start gap-2.5 rounded-lg border border-slate-200 bg-slate-100 p-3 dark:border-slate-700 dark:bg-slate-800">
+                      <div className="flex-shrink-0 pt-0.5">
+                        <svg
+                          className="h-4 w-4 text-slate-500 dark:text-slate-400"
+                          xmlns="http://www.w3.org/2000/svg"
+                          fill="none"
+                          viewBox="0 0 24 24"
+                          strokeWidth={2}
+                          stroke="currentColor"
+                        >
+                          <path
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                            d="M11.25 11.25l.041-.02a.75.75 0 011.063.852l-.708 2.836a.75.75 0 001.063.852l.041-.021M21 12a9 9 0 11-18 0 9 9 0 0118 0zm-9-3.75h.008v.008H12v-.008z"
+                          />
+                        </svg>
+                      </div>
+                      <p className="text-xs leading-relaxed text-slate-600 dark:text-slate-300">
+                        The deadline for headliner proposal submissions was {tierConfig.deadline}.
+                      </p>
                     </div>
-                    <p className="text-xs leading-relaxed text-slate-600 dark:text-slate-300">
-                      The deadline for headliner proposal submissions was February 4th, 2025.
-                    </p>
-                  </div>
+                  )}
                 </div>
               )}
             </div>
@@ -769,7 +797,7 @@ const RankPage: React.FC = () => {
               <div className="bg-slate-800 px-4 py-3 flex items-center justify-between flex-shrink-0">
                 <h3 className="text-lg font-bold text-white">Your Rankings</h3>
                 <span className="text-sm font-mono text-slate-400">
-                  forkcast.org/rank
+                  forkcast.org{rankPath}
                 </span>
               </div>
               {/* Scrollable tier rows container */}
@@ -907,17 +935,30 @@ const RankPage: React.FC = () => {
 
           {/* Unassigned Items */}
           <div className="lg:sticky lg:top-4 lg:max-h-[calc(100vh-2rem)] lg:overflow-hidden lg:flex lg:flex-col">
-            <div className="flex items-center justify-between mb-4 flex-shrink-0">
-              <h3 className="text-lg font-medium text-slate-900 dark:text-slate-100">
-                Headliner Proposals
-                <span className="ml-2 text-sm text-slate-500 dark:text-slate-400">
-                  ({getUnassignedItems().length} unranked)
-                </span>
-              </h3>
-              {items.filter((item) => item.tier !== null).length > 0 && (
-                <div className="text-xs text-slate-500 dark:text-slate-400 bg-slate-100 dark:bg-slate-700 px-2 py-1 rounded">
-                  Ready to generate image
-                </div>
+            <div className="mb-4 flex-shrink-0">
+              <div className="flex items-center justify-between">
+                <h3 className="text-lg font-medium text-slate-900 dark:text-slate-100">
+                  Proposals
+                  <span className="ml-2 text-sm text-slate-500 dark:text-slate-400">
+                    ({getUnassignedItems().length} unranked)
+                  </span>
+                </h3>
+                {visibleItems.filter((item) => item.tier !== null).length > 0 && (
+                  <div className="text-xs text-slate-500 dark:text-slate-400 bg-slate-100 dark:bg-slate-700 px-2 py-1 rounded">
+                    Ready to generate image
+                  </div>
+                )}
+              </div>
+              {items.some((item) => item.headliner) && (
+                <label className="mt-2 flex items-center gap-2 text-xs text-slate-600 dark:text-slate-300 cursor-pointer w-fit">
+                  <input
+                    type="checkbox"
+                    checked={includeHeadliners}
+                    onChange={(e) => setIncludeHeadliners(e.target.checked)}
+                    className="rounded border-slate-300 text-purple-600 focus:ring-purple-500 dark:border-slate-600 dark:bg-slate-700"
+                  />
+                  Include headliner proposals
+                </label>
               )}
             </div>
             <div className="space-y-4 lg:overflow-y-auto lg:flex-1">
@@ -1127,7 +1168,7 @@ const RankPage: React.FC = () => {
 
             {hoveredItem.eip && (
               <ChampionDisplay
-                champions={hoveredItem.eip.forkRelationships.find(fork => fork.forkName.toLowerCase() === "hegota")?.champions}
+                champions={hoveredItem.eip.forkRelationships.find(fr => fr.forkName.toLowerCase() === fork)?.champions}
               />
             )}
             {hoveredItem.pendingProposal && hoveredItem.pendingProposal.champions.length > 0 && (

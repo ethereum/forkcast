@@ -1,0 +1,16 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import RankPage from '../../components/RankPage';
+import { staticPageMetadata } from '../../domain/routes/pageMetadata';
+import { getTierMakerForkIds } from '../../utils/tierMaker';
+
+export function getStaticPaths() {
+  return getTierMakerForkIds().map((fork) => ({ params: { fork } }));
+}
+
+const { fork } = Astro.params;
+---
+
+<Layout {...staticPageMetadata.rank}>
+  <RankPage client:only="react" forkName={fork!} />
+</Layout>

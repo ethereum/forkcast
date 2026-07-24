@@ -1,0 +1,34 @@
+{
+  "eipId": 8015,
+  "commits": [
+    {
+      "sha": "0ebff04bf89b696d51ebf2ff9d029940ef3ed693",
+      "date": "2026-07-22T16:53:09Z",
+      "message": "Update EIP-8015: Move to Draft",
+      "author": "etan-status",
+      "prNumber": null,
+      "additions": 94,
+      "deletions": 35
+    },
+    {
+      "sha": "b5a8b07bcb9654219aa01b58ff8448b969b91e54",
+      "date": "2026-04-05T00:38:34Z",
+      "message": "(bot 1272989785) moving EIPS/eip-8015.md to stagnant (#11411)",
+      "author": "eth-bot",
+      "prNumber": 11411,
+      "patch": "@@ -4,7 +4,7 @@ title: Remove `deposit` and `eth1data` fields\n description: Remove legacy `deposits` and `eth1_data` fields from `BeaconBlockBody` after EIP-6110 finalization\n author: Terence (@terencechain)\n discussions-to: https://ethereum-magicians.org/t/eip-8015-remove-legacy-deposit-and-eth1data-fields/25401\n-status: Draft\n+status: Stagnant\n type: Standards Track\n category: Core\n created: 2025-08-22",
+      "additions": 1,
+      "deletions": 1
+    },
+    {
+      "sha": "67537eb46be418defddd2da62286eb0a3672615a",
+      "date": "2025-09-09T16:50:05Z",
+      "message": "Add EIP: Remove legacy `deposit` and `eth1data` fields",
+      "author": "terencechain",
+      "prNumber": null,
+      "patch": "@@ -0,0 +1,119 @@\n+---\n+eip: 8015\n+title: Remove `deposit` and `eth1data` fields\n+description: Remove legacy `deposits` and `eth1_data` fields from `BeaconBlockBody` after EIP-6110 finalization\n+author: Terence (@terencechain)\n+discussions-to: https://ethereum-magicians.org/t/eip-8015-remove-legacy-deposit-and-eth1data-fields/25401\n+status: Draft\n+type: Standards Track\n+category: Core\n+created: 2025-08-22\n+requires: 6110, 7732\n+---\n+\n+## Abstract\n+\n+This EIP removes the legacy `deposits` and `eth1_data` fields from the `BeaconBlockBody` structure after [EIP-6110](./eip-6110.md) has been fully finalized. These fields become obsolete once all validators have transitioned to the new in-protocol deposit processing mechanism introduced in EIP-6110.\n+\n+## Motivation\n+\n+EIP-6110 introduced in-protocol deposit processing by moving validator deposits to the execution layer as part of the EIP-7685 request framework. This change eliminated the need for the consensus layer's proposer voting mechanism for deposits. However, during the transition period, both the legacy deposit mechanism (using `deposits` and `eth1_data` fields) and the new mechanism coexist to ensure smooth migration.\n+\n+Once EIP-6110 has been fully finalized and the transition period is complete (when `state.eth1_deposit_index == state.deposit_requests_start_index`), the legacy deposit fields become permanently unused and can be safely removed. This cleanup provides several benefits:\n+\n+- **Simplified validation**: Removes deprecated validation logic and code paths\n+- **Improved maintainability**: Eliminates technical debt from the transition period\n+\n+## Specification\n+\n+The key words \"MUST\", \"MUST NOT\", \"REQUIRED\", \"SHALL\", \"SHALL NOT\", \"SHOULD\", \"SHOULD NOT\", \"RECOMMENDED\", \"NOT RECOMMENDED\", \"MAY\", and \"OPTIONAL\" in this document are to be interpreted as described in [RFC 2119](https://www.rfc-editor.org/rfc/rfc2119) and [RFC 8174](https://www.rfc-editor.org/rfc/rfc8174).\n+\n+### Consensus Layer\n+\n+#### Activation Conditions\n+\n+This EIP SHALL only be activated when both of the following conditions are met:\n+\n+1. EIP-6110 has been fully finalized: `state.eth1_deposit_index == state.deposit_requests_start_index`\n+2. EIP-7732 is in effect\n+\n+#### BeaconBlockBody Modifications\n+\n+The `BeaconBlockBody` container is modified to remove the following fields:\n+\n+**Removed fields:**\n+- `deposits: List[Deposit, MAX_DEPOSITS]`\n+- `eth1_data: Eth1Data`\n+\n+The updated `BeaconBlockBody` structure becomes:\n+\n+```python\n+class BeaconBlockBody(Container):\n+    randao_reveal: BLSSignature\n+    graffiti: Bytes32\n+    proposer_slashings: List[ProposerSlashing, MAX_PROPOSER_SLASHINGS]\n+    attester_slashings: List[AttesterSlashing, MAX_ATTESTER_SLASHINGS_ELECTRA]\n+    attestations: List[Attestation, MAX_ATTESTATIONS_ELECTRA]\n+    voluntary_exits: List[SignedVoluntaryExit, MAX_VOLUNTARY_EXITS]\n+    sync_aggregate: SyncAggregate\n+    bls_to_execution_changes: List[SignedBLSToExecutionChange, MAX_BLS_TO_EXECUTION_CHANGES]\n+    # From EIP-7732\n+    signed_execution_payload_header: SignedExecutionPayloadHeader\n+    payload_attestations: List[PayloadAttestation, MAX_PAYLOAD_ATTESTATIONS]\n+```\n+\n+#### Validation Changes\n+\n+**Block processing modifications:**\n+\n+1. Remove `process_eth1_data()` function calls from block processing\n+2. Remove `process_deposits()` function calls from block processing  \n+3. Remove eth1_data voting validation logic\n+4. Remove legacy deposit validation logic\n+\n+**State transition modifications:**\n+\n+1. Remove eth1_data related fields from state transition functions\n+2. Remove legacy deposit processing from `process_operations()`\n+\n+#### BeaconState Cleanup\n+\n+The following fields become unused after activation and MAY be removed in future updates:\n+\n+- `eth1_data: Eth1Data`\n+- `eth1_data_votes: List[Eth1Data, EPOCHS_PER_ETH1_VOTING_PERIOD * SLOTS_PER_EPOCH]`\n+- `eth1_deposit_index: uint64`\n+\n+Note: These fields are kept for historical state root verification but are no longer actively used.\n+\n+## Rationale\n+\n+### Timing of Removal\n+\n+The fields are removed after EIP-6110 finalization to ensure:\n+\n+- All pending deposits from the legacy system have been processed\n+- No validator can be affected by the removal\n+- The transition is complete and irreversible\n+- State consistency is maintained across all honest nodes\n+\n+### Dependency on EIP-7732\n+\n+This EIP requires EIP-7732 because:\n+\n+- EIP-7732 already modified the `BeaconBlockBody` structure significantly\n+- It provides the architectural foundation for simplified block bodies\n+- The timing aligns with the broader consensus layer improvements\n+\n+## Backwards Compatibility\n+\n+## Security Considerations\n+\n+The removal of legacy fields poses minimal security risk because:\n+\n+- The fields are already unused after EIP-6110 finalization\n+- All deposits are processed through the new EIP-6110 mechanism\n+\n+## Copyright\n+\n+Copyright and related rights waived via [CC0](../LICENSE.md).",
+      "additions": 119,
+      "deletions": 0
+    }
+  ]
+}

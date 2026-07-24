@@ -2,6 +2,45 @@
   "eipId": 8141,
   "commits": [
     {
+      "sha": "c0c9f639a7132eb8ddc5cdccd4bf2e70ddd8b80d",
+      "date": "2026-07-23T20:50:15Z",
+      "message": "Update EIP-8141: bound the fee fields in the static constraints (#12005)",
+      "author": "svlachakis",
+      "prNumber": 12005,
+      "patch": "@@ -123,6 +123,9 @@ Some validity constraints can be determined statically. They are outlined below:\n ```python\n assert tx.chain_id < 2**256\n assert tx.nonce < 2**64\n+assert tx.max_priority_fee_per_gas < 2**256\n+assert tx.max_fee_per_gas < 2**256\n+assert tx.max_fee_per_blob_gas < 2**256\n assert len(tx.frames) > 0 and len(tx.frames) <= MAX_FRAMES\n assert len(tx.sender) == 20\n ",
+      "additions": 3,
+      "deletions": 0
+    },
+    {
+      "sha": "e3516b20020327ff38faf4d0917d204249200e7d",
+      "date": "2026-07-23T20:49:39Z",
+      "message": "Update EIP-8141: specify the APPROVE opcode gas cost (#12003)",
+      "author": "AnkushinDaniil",
+      "prNumber": 12003,
+      "patch": "@@ -547,6 +547,10 @@ The behavior of `APPROVE` is defined as follows:\n         - If `resolved_target` has insufficient balance, revert the frame.\n         - Set `sender_approved = true`, increment the sender's nonce, set `payer = resolved_target`, and collect the transaction's maximum cost (`TXPARAM(0x06)`) from `payer`.\n \n+#### Gas\n+\n+`APPROVE` charges only the memory expansion gas for the return-data region `[offset, offset + length)`, with no additional base cost, matching `RETURN`. Updating the transaction-scoped approval context has no gas cost: its once-per-transaction effects — the sender nonce increment, setting `payer`, and collecting the maximum cost — are already covered by the frame transaction's intrinsic cost, exactly as they are for a standard transaction, so charging nothing extra here is consistent pricing rather than a free state write.\n+\n ### Introspection\n \n The instructions in this section provide the needed introspection capabilities of the new frame transaction type and the frame objects themselves, including some runtime information like the execution result status.",
+      "additions": 4,
+      "deletions": 0
+    },
+    {
+      "sha": "f56de848216cfc1a56c39d0778a354ef1138277e",
+      "date": "2026-07-23T20:47:29Z",
+      "message": "Update EIP-8141: allow direct evaluation of protocol-defined validation prefixes (#12001)",
+      "author": "svlachakis",
+      "prNumber": 12001,
+      "patch": "@@ -779,6 +779,14 @@ A node MUST drop a frame transaction from the public mempool if it contains an `\n \n The generic validation trace and opcode rules below apply to all frames in the validation prefix except a `pay` frame whose target runtime code exactly matches the canonical paymaster implementation. The canonical paymaster implementation is explicitly designed to be safe for public mempool use and is therefore admitted by code match, successful `APPROVE(APPROVE_PAYMENT)`, and the paymaster accounting rules in this section, rather than by requiring it to satisfy each generic validation rule individually.\n \n+#### Direct Evaluation of Protocol-Defined Frames\n+\n+Three frame species in the validation prefix have fully protocol-defined semantics, leaving no deployed code whose behavior a node would need to discover by execution: a frame whose resolved target has the empty code hash (default code), an expiry verifier frame whose runtime code at `EXPIRY_VERIFIER` matches the canonical expiry verifier code, and a `pay` frame admitted by canonical paymaster code match per the previous section.\n+\n+When every frame in the validation prefix is one of these, direct evaluation of the protocol-defined semantics is equivalent to simulation, and a node MAY use it to satisfy the validation requirements below. Direct evaluation MUST apply the same limits as simulation: signature validation and the evaluated frames' work count against `MAX_VERIFY_GAS`, and the paymaster accounting rules in this section apply unchanged.\n+\n+The complete state dependency set of such a validation prefix is: the sender's code hash and nonce, the payer's code hash and balance (or the canonical paymaster's tracked state), the runtime code at `EXPIRY_VERIFIER` together with the frame's deadline when an expiry verifier frame is present, and the current block timestamp. Nodes SHOULD index pending transactions by this set so that head-of-chain changes are revalidated without re-execution.\n+\n #### Validation Trace Rules\n \n A public mempool node must simulate the validation prefix and reject the transaction if any of the following occurs before `payer` has been set:",
+      "additions": 8,
+      "deletions": 0
+    },
+    {
+      "sha": "7596e7a7bdfeacc7783bd587078afe667086f0f5",
+      "date": "2026-07-23T20:46:21Z",
+      "message": "Update EIP-8141: Specify blob support for frame transactions (#11985)",
+      "author": "svlachakis",
+      "prNumber": 11985,
+      "additions": 32,
+      "deletions": 2
+    },
+    {
       "sha": "a95ff54255d8dcaded6c92ff16e5e8f699defb01",
       "date": "2026-07-21T20:17:07Z",
       "message": "Update EIP-8141: statically exclude VERIFY frames from atomic batches",
@@ -401,20 +440,28 @@
   ],
   "openPrs": [
     {
+      "number": 12012,
+      "title": "Update EIP-8141: specify the canonical paymaster implementation",
+      "author": "svlachakis",
+      "updatedAt": "2026-07-24T11:15:13Z",
+      "additions": 85,
+      "deletions": 6
+    },
+    {
+      "number": 12011,
+      "title": "Update EIP-8141: formalize the signature scheme registry",
+      "author": "AnkushinDaniil",
+      "updatedAt": "2026-07-24T11:40:15Z",
+      "additions": 15,
+      "deletions": 0
+    },
+    {
       "number": 11971,
       "title": "Update EIP-8141: clarify decoding, signing, and activation",
       "author": "soispoke",
-      "updatedAt": "2026-07-22T09:20:36Z",
+      "updatedAt": "2026-07-24T04:56:21Z",
       "additions": 38,
       "deletions": 5
-    },
-    {
-      "number": 11985,
-      "title": "Update EIP-8141: Specify blob support for frame transactions",
-      "author": "svlachakis",
-      "updatedAt": "2026-07-22T15:28:48Z",
-      "additions": 31,
-      "deletions": 1
     },
     {
       "number": 11969,
@@ -423,6 +470,22 @@
       "updatedAt": "2026-07-22T08:59:45Z",
       "additions": 44,
       "deletions": 21
+    },
+    {
+      "number": 12008,
+      "title": "Update EIP-8141: define the transaction log set and unrolled-batch log semantics",
+      "author": "svlachakis",
+      "updatedAt": "2026-07-24T08:21:12Z",
+      "additions": 2,
+      "deletions": 1
+    },
+    {
+      "number": 12007,
+      "title": "Update EIP-8141: define replacement, eviction, and payer exposure for the public mempool",
+      "author": "svlachakis",
+      "updatedAt": "2026-07-24T08:21:06Z",
+      "additions": 13,
+      "deletions": 3
     },
     {
       "number": 11555,

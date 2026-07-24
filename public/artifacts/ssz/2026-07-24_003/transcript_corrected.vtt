@@ -1,0 +1,622 @@
+WEBVTT
+
+1
+00:03:58.540 --> 00:03:59.880
+Justin Traglia: Good morning.
+
+2
+00:04:13.290 --> 00:04:16.260
+Tamaghna Chourdhuri: GM, GM, how are you doing? How's it cold?
+
+3
+00:04:18.140 --> 00:04:24.540
+Justin Traglia: I'm doing fine. I think I'm getting, better. I don't think I'm as sick anymore. I was coughing a bunch.
+
+4
+00:04:24.990 --> 00:04:28.550
+Justin Traglia: Sneezing a bunch, yesterday. Or, sorry.
+
+5
+00:04:28.810 --> 00:04:32.849
+Justin Traglia: Two days ago, and yesterday was better. Today, I think I'll be fine.
+
+6
+00:04:34.050 --> 00:04:35.580
+Tamaghna Chourdhuri: Oh, that's right.
+
+7
+00:04:36.260 --> 00:04:36.990
+Justin Traglia: Yep.
+
+8
+00:07:36.330 --> 00:07:44.130
+Tamaghna Chourdhuri: I guess I'll stop then. Welcome to the Assisted Engine API Breakout Number 3. So…
+
+9
+00:07:44.290 --> 00:07:46.699
+Tamaghna Chourdhuri: The agenda is pretty light today.
+
+10
+00:07:49.100 --> 00:07:51.049
+Tamaghna Chourdhuri: I have dropped it in the…
+
+11
+00:07:52.320 --> 00:07:58.449
+Tamaghna Chourdhuri: So, I'll begin with my update. So, from the testing side, we… I have…
+
+12
+00:07:58.720 --> 00:08:02.390
+Tamaghna Chourdhuri: What have this PR, and it's currently in review.
+
+13
+00:08:18.870 --> 00:08:20.290
+Tamaghna Chourdhuri: Sold.
+
+14
+00:08:20.360 --> 00:08:37.289
+Tamaghna Chourdhuri: After this, the idea would be, like, I'd be adding the new SSZ model into all of the existing execution, let's say the fixtures, and then we can… we'll use the hasht to verify if anything changes in the existing fixtures, and then we can have
+
+15
+00:08:37.289 --> 00:08:45.370
+Tamaghna Chourdhuri: a release with them, maybe. The next item on the agenda would be,
+
+16
+00:08:46.220 --> 00:08:49.250
+Tamaghna Chourdhuri: about the pop-up sync, but, like, I…
+
+17
+00:08:50.100 --> 00:09:09.349
+Tamaghna Chourdhuri: does anyone have any updates or any views of the TopUpSync? Also, something that, came up was, how would we like to include top-up sync? Would that be made in EIP, and then we'd propose it for inclusion, or would we go the… just the route of adding the…
+
+18
+00:09:10.170 --> 00:09:16.089
+Tamaghna Chourdhuri: requested engine endpoint, and do that. So, that's the question.
+
+19
+00:09:20.380 --> 00:09:21.720
+Dustin: Right, I…
+
+20
+00:09:22.090 --> 00:09:30.010
+Dustin: I think that as long as it ended up being, sort of, in a meaningful way, part of the Engine API, per se, part of that.
+
+21
+00:09:31.260 --> 00:09:33.090
+Dustin: Package of functionality.
+
+22
+00:09:33.450 --> 00:09:36.049
+Dustin: And that, that's so that,
+
+23
+00:09:37.430 --> 00:09:46.180
+Dustin: a EL could simply assume an EL rest, Engine API, implementing EL
+
+24
+00:09:46.500 --> 00:09:49.339
+Dustin: supported it. I mean, it would be the same way
+
+25
+00:09:50.100 --> 00:09:52.949
+Dustin: Both choice updated, or any of the… any of the others.
+
+26
+00:09:53.430 --> 00:10:01.590
+Dustin: So, I mean, at that point, logistically, how to navigate that through the spec process, EIPs, or…
+
+27
+00:10:01.750 --> 00:10:06.430
+Dustin: Including it in this, I… I think, discussed.
+
+28
+00:10:09.570 --> 00:10:23.169
+Tamaghna Chourdhuri: And then I guess, like, maybe we can get started on adding the EIP, and, like, I'd also like to have, if any other clients have any, let's say, discussions regarding the top-of-sync or the engine
+
+29
+00:10:23.360 --> 00:10:36.269
+Tamaghna Chourdhuri: the new engine endpoint. Morris is not here today, but, like, if any other person has anything, maybe you can… you guys can bring it up. And also, a follow-up question to this would be,
+
+30
+00:10:36.270 --> 00:10:48.260
+Tamaghna Chourdhuri: like, in the previous call, we had asked, like, which exa- which non-engine methods would be exposed on the engine port, and Maurice had already asked it in yesterday's call, but, like.
+
+31
+00:10:48.760 --> 00:10:54.700
+Tamaghna Chourdhuri: I guess, Jun has already dropped their viewpoint,
+
+32
+00:10:55.190 --> 00:11:01.240
+Tamaghna Chourdhuri: Maybe if any other client… Lighthouse will also drop, if any other client has any use points on this.
+
+33
+00:11:12.620 --> 00:11:13.230
+Dustin: I mean…
+
+34
+00:11:14.990 --> 00:11:26.000
+Dustin: I'm not sure. So, Nimbus, it looks like, uses CHAINID and syncing at this point, and I can't tell that it uses anything else other than mine, aside from the chain namespace ones.
+
+35
+00:11:30.400 --> 00:11:31.979
+Tamaghna Chourdhuri: Oh, alright, then,
+
+36
+00:11:32.090 --> 00:11:44.849
+Tamaghna Chourdhuri: I guess this is the list that's coming up, like, the minimal list, let's say, common list that everybody uses, and then I guess maybe we can give it a couple more weeks and then finalize on this, and…
+
+37
+00:11:45.890 --> 00:11:52.360
+Tamaghna Chourdhuri: Other than that, anything else, like, the floor is open, like, I don't have much on the agenda, maybe it can be a…
+
+38
+00:11:52.510 --> 00:11:59.919
+Tamaghna Chourdhuri: Quick call, if any other person has any other questions or anything to discuss, maybe the floor is open.
+
+39
+00:12:11.330 --> 00:12:20.180
+Dustin: Yeah, so one, one, another, or, yeah, a question for the, the… HTTP,
+
+40
+00:12:20.730 --> 00:12:26.160
+Dustin: Point. So, so the, the, currently, it requires HTTP2,
+
+41
+00:12:26.470 --> 00:12:36.040
+Dustin: Which is… and it gives a reason for this, right? And it's in the rationale, head of wine blocking.
+
+42
+00:12:36.180 --> 00:12:37.330
+Dustin: Effectively.
+
+43
+00:12:38.100 --> 00:12:39.950
+Dustin: how… I mean…
+
+44
+00:12:43.050 --> 00:12:48.770
+Dustin: I guess I'd like to open that as a, as a sort of… as a potential… Hmm…
+
+45
+00:12:51.980 --> 00:12:59.740
+Dustin: I guess it's not that clear to me how much one… the head of line blocking… I guess, is there… maybe I'll phrase it this way. How… how empirically…
+
+46
+00:13:00.070 --> 00:13:08.130
+Dustin: confirmed, is it an issue that head of blind blocking matters in this particular context, where there's intrinsically a kind of
+
+47
+00:13:08.240 --> 00:13:15.559
+Dustin: A serialness to a lot of the… EPI, like, like…
+
+48
+00:13:16.130 --> 00:13:24.970
+Dustin: It will… and anything that changes the head, or introduces a new block and things like this can invalidate other responses along the way.
+
+49
+00:13:30.520 --> 00:13:35.520
+Tamaghna Chourdhuri: That's a good question, do the other coins have any views on this?
+
+50
+00:13:35.720 --> 00:13:41.439
+Tamaghna Chourdhuri: But, like, yeah, like, this is a good point to think about.
+
+51
+00:14:12.970 --> 00:14:17.519
+Tamaghna Chourdhuri: Hmm… June… Do you have anything to say, or…
+
+52
+00:14:17.730 --> 00:14:23.380
+Tamaghna Chourdhuri: Anyone else? Or I guess this will be a question is… People don't have an EV…
+
+53
+00:14:24.050 --> 00:14:27.869
+Tamaghna Chourdhuri: Answers to this, maybe we can carry forward it to the next call, or…
+
+54
+00:14:28.390 --> 00:14:30.229
+Tamaghna Chourdhuri: So that's what it seems like.
+
+55
+00:14:32.580 --> 00:14:36.609
+Jun Song: I think, Casey from Prysm, is…
+
+56
+00:14:36.840 --> 00:14:49.369
+Jun Song: Pro with the HTTP2, but I think I need to, talk with Casey to align, as a Prysm team, so, yeah, I can bring up at the next call.
+
+57
+00:14:53.650 --> 00:14:59.190
+Tamaghna Chourdhuri: What are the views from Lighthouse, or… Never mind.
+
+58
+00:15:18.140 --> 00:15:21.280
+Tamaghna Chourdhuri: Dustin, could you please repeat,
+
+59
+00:15:22.590 --> 00:15:27.920
+Dustin: Yeah, sure. The question is, given that, the…
+
+60
+00:15:28.490 --> 00:15:33.910
+Dustin: And I will just go copy-paste, or a little bit of… More fit? We'll find out.
+
+61
+00:15:34.020 --> 00:15:37.880
+Dustin: Okay, here's the snippet from the…
+
+62
+00:15:39.730 --> 00:15:46.750
+Dustin: from the PR. And, and sort of saying, why… why HTTP? It's ahead of YMBlock? So, the question is.
+
+63
+00:15:46.890 --> 00:15:51.889
+Dustin: given that a lot of the nature of the Engine API, I mean.
+
+64
+00:15:52.930 --> 00:16:01.269
+Dustin: RPC, SSE, conceptually, what it does is it's a stateful protocol which… which changes
+
+65
+00:16:01.560 --> 00:16:06.169
+Dustin: things, which sort of changes the EL state, each time
+
+66
+00:16:06.400 --> 00:16:08.570
+Dustin: Often, when it's invoked, let's say.
+
+67
+00:16:10.120 --> 00:16:19.430
+Dustin: is… how much value, I mean, has… or how empirical is the value, of… of the HTTP2, sort of.
+
+68
+00:16:19.890 --> 00:16:22.000
+Dustin: Avoidance of head of wine walking.
+
+69
+00:16:22.880 --> 00:16:23.610
+Dustin: Nimbus.
+
+70
+00:16:25.370 --> 00:16:28.769
+Dustin: Is this benchmarked? Are there specific…
+
+71
+00:16:29.700 --> 00:16:32.020
+Dustin: Scenarios people have in mind.
+
+72
+00:16:38.770 --> 00:16:45.100
+Jun Song: So I guess, Nimb doesn't support HTTP2 at this moment, so that's the…
+
+73
+00:16:45.440 --> 00:16:48.700
+Jun Song: reason you bring up, right?
+
+74
+00:16:49.760 --> 00:16:51.319
+Dustin: Well, ni- oh, okay.
+
+75
+00:16:52.070 --> 00:16:55.840
+Dustin: Sure, there's a motivation here, yeah, but also…
+
+76
+00:16:56.180 --> 00:17:11.089
+Dustin: I guess there's both a principled motivation and, yes, a practical one. Well, I mean, Nimb the language, I mean, I guess it's pedantic. Nimb the language supports whatever, so general language. The Nimb libraries we use, indeed, do not support HTTP2 right now.
+
+77
+00:17:11.250 --> 00:17:17.010
+Dustin: So… If it's necessary, it's necessary, and we can book it.
+
+78
+00:17:17.369 --> 00:17:30.879
+Dustin: implementing it, of course. But part of the kind of trying to hash out a spec is figuring out, I mean, what is a value add because it adds value, and what is a value add because people think it
+
+79
+00:17:31.510 --> 00:17:33.090
+Dustin: Looks nice, or something.
+
+80
+00:17:33.680 --> 00:17:45.540
+Dustin: And… because this is the… essentially, maybe I'll frame it this way. My concern is a little bit that this is a completely generic pick for HTTP2.
+
+81
+00:17:46.100 --> 00:17:53.910
+Dustin: the same thing, like, it works great on web browsers, because web browsers fetch a thousand different JavaScript and CSS files and…
+
+82
+00:17:54.250 --> 00:17:57.509
+Dustin: Images for… for a website.
+
+83
+00:17:57.720 --> 00:17:59.400
+Dustin: It's a perfect use case.
+
+84
+00:18:00.660 --> 00:18:04.360
+Dustin: This is not typically the use case that happens with the EnginePI.
+
+85
+00:18:04.620 --> 00:18:07.959
+Dustin: And I'm not super convinced that it carries over.
+
+86
+00:18:14.120 --> 00:18:26.070
+FLCL (Nethermind): It seems like, we, have a lot of benchmarks which is based on measuring HTTP responses. We could try easily to,
+
+87
+00:18:26.390 --> 00:18:30.970
+FLCL (Nethermind): Like… To, to compare bus transports.
+
+88
+00:18:31.080 --> 00:18:39.540
+FLCL (Nethermind): And I guess even in the case of Ethereum, it might be indeed useful to have HTTP, too.
+
+89
+00:18:41.430 --> 00:18:48.609
+Dustin: Yeah, and it might be useful, and I guess, ultimately, what I'm looking for is kind of a quantitative basis for this.
+
+90
+00:18:48.710 --> 00:18:51.529
+Dustin: Rather than the kind of hand-waviness that the…
+
+91
+00:18:51.640 --> 00:18:56.350
+Dustin: That the spec currently includes. But yeah, benchmarks would be… would be great.
+
+92
+00:18:57.580 --> 00:19:10.480
+FLCL (Nethermind): Would you please raise this question, in the chats? Maybe EL or maybe common networking channel, or somewhere else, because, as far as I remember, Marius mentioned that in the
+
+93
+00:19:11.480 --> 00:19:20.989
+FLCL (Nethermind): SSZ transport, like… Specification, and, maybe, he will bring very solid arguments.
+
+94
+00:19:24.470 --> 00:19:34.520
+Dustin: which channel… you mentioned 2 or 3 channels, or sorry, which, like, the networking channel, or EL networking, or which ones, or… yeah, sorry.
+
+95
+00:19:35.450 --> 00:19:41.909
+FLCL (Nethermind): Let me read in the chat, I will check. Maybe just the SS EVM channel.
+
+96
+00:19:42.580 --> 00:19:43.210
+Dustin: Okay.
+
+97
+00:19:47.290 --> 00:19:49.710
+Dustin: Right. There is an SS… like.
+
+98
+00:20:54.710 --> 00:21:09.450
+Jun Song: Yep, so, I believe a benchmark should be helpful. So, as far as I know, most of the other languages, can be natively, support HTTP2, so…
+
+99
+00:21:09.450 --> 00:21:23.860
+Jun Song: if there's, no good reason to, downgrade or choose HTTP one point, yeah, so I think the number matters, for here to decide.
+
+100
+00:21:31.870 --> 00:21:32.300
+Dustin: Yeah, sure.
+
+101
+00:21:32.300 --> 00:21:32.890
+Tamaghna Chourdhuri: It's helpful.
+
+102
+00:21:32.890 --> 00:21:35.140
+Dustin: is helpful. Oh, sorry, go ahead, sorry.
+
+103
+00:21:35.140 --> 00:21:36.359
+Tamaghna Chourdhuri: Yeah, Sugu, you can.
+
+104
+00:21:37.430 --> 00:21:44.350
+Dustin: I just think, if it's helpful, it's helpful. I mean, that's… I mean, if it has utility, it has utility, that's fine, but I…
+
+105
+00:21:45.130 --> 00:21:47.819
+Dustin: actually measuring it. Anyway, sorry, yeah, Tamaghna.
+
+106
+00:21:50.480 --> 00:22:06.379
+Tamaghna Chourdhuri: Yeah, I was going to say the exact same thing, like, it would be best to, let's say, measure it, and let's see… let's get the conversation started regarding the benchmarking. I… let me see who does it. If not, maybe I can pick this up.
+
+107
+00:22:06.720 --> 00:22:09.959
+Tamaghna Chourdhuri: Other than that, any other things maybe we'd like to discuss?
+
+108
+00:22:10.910 --> 00:22:19.000
+Tamaghna Chourdhuri: Anything else? Like, the benchmarking comes to mind. Benchmarking for the HTTP2, HTTP 1.1 comes to mind.
+
+109
+00:22:19.240 --> 00:22:28.850
+Tamaghna Chourdhuri: Anything other than that, I'd like to add to the next course agenda, maybe also reviewing the,
+
+110
+00:22:28.950 --> 00:22:33.609
+Tamaghna Chourdhuri: list that Marius wanted, and yeah, that seems all.
+
+111
+00:22:37.180 --> 00:22:44.209
+Jun Song: So I have just one small question about pop-up sync. So, I think the concept is so cool, and
+
+112
+00:22:44.210 --> 00:23:02.370
+Jun Song: From my understanding, we only, need to add one more endpoint that provides from the EL that, hey, my, latest BlockNumber is here, and, for that BlockNumber, I have state, or I don't have state. Am I understanding correctly?
+
+113
+00:23:05.210 --> 00:23:17.969
+Dustin: Approximately, yeah. I mean, I think one of the questions, and I've just tried… discussed this also with Yasek, who is, I know Tamaghna posted this somewhere else as well, I think, but, this is the pop-up saying.
+
+114
+00:23:18.400 --> 00:23:28.510
+Dustin: hack I'm DNS, or I'm sure you've seen it, okay. Anyway, but… and so, anyway, him as author, right? So when I mentioned, you know, his… the salience here, I've also…
+
+115
+00:23:28.720 --> 00:23:33.700
+Dustin: So anyway, approximately yes. The question, is it state, or is it block?
+
+116
+00:23:34.140 --> 00:23:43.639
+Dustin: And I think… and this is something I'm… one or… one or the other, at least, yes. That is… that… that is… The question is that the… that…
+
+117
+00:23:44.770 --> 00:23:52.699
+Dustin: are the ELs going to be in a position where they have blocks that can be synced from? Well, let's say they have the first 1,000 blocks in the chain.
+
+118
+00:23:53.210 --> 00:24:02.339
+Dustin: And, you know, notionally, like, chains are much bigger, I guess. But… and then… but they don't really have the state for any of those blocks, and they've never bothered to build it.
+
+119
+00:24:02.880 --> 00:24:05.509
+Dustin: In theory, for syncing that
+
+120
+00:24:05.800 --> 00:24:18.530
+Dustin: you can argue that isn't all that important, and yet I think, Marius, brought up, before, in the previous call, that there is some relevance here, because
+
+121
+00:24:18.640 --> 00:24:31.619
+Dustin: the ELs have to be able to know that there's some validity to the box, and if they don't have a state, then there has to be some other way to determine some minimum validity, and these ways exist, but
+
+122
+00:24:31.990 --> 00:24:40.600
+Dustin: it becomes a different sort of security model at some level. So, yeah, that… So, approx… yes, basically.
+
+123
+00:24:52.230 --> 00:25:05.219
+Dustin: I also want to actually highlight… I know this is at a… okay, this was the… the root cause was a Nimbus EL bug, and sort of not super relevant overall to this, but it wasn't getting peers in one of the dev nets.
+
+124
+00:25:05.220 --> 00:25:12.659
+Dustin: And DevNet 7. And the one EL, or sorry, the one CL which could sync it, actually, Teku turned out to be doing something
+
+125
+00:25:12.720 --> 00:25:25.450
+Dustin: Very, very similar. We didn't really look into exactly what the mechanics on the Teku side was, but, but it was able to work around this. So this was actually a really interesting, like, in-the-wild case of this happening, where
+
+126
+00:25:25.450 --> 00:25:36.169
+Dustin: Nimbus EL was, again, its own bug, not getting peers, and yet was able to participate in the network in the end, because Teku, fed it the blocks
+
+127
+00:25:36.550 --> 00:25:42.900
+Dustin: in the correct order. Like, it didn't just do optimistic sync like a lot of clients will do.
+
+128
+00:25:43.780 --> 00:26:02.330
+Dustin: So… and so it actually… that was an accidental demonstration of the EL as library approach. And in a context… I know I talked before about, oh, unified client, this or that. Obviously not… I mean, this is a pre-existing, separate CLs and ELs, and it's still useful.
+
+129
+00:26:36.620 --> 00:26:50.619
+Tamaghna Chourdhuri: Yeah, I actually think that, yeah, like, if this has something that has already happened, then this already does show that how valuable this can be, as its usefulness has already been demonstrated, and I guess adding it would just be,
+
+130
+00:26:50.870 --> 00:26:54.970
+Tamaghna Chourdhuri: Pretty good to, with there. Any other questions?
+
+131
+00:26:55.300 --> 00:26:59.849
+Tamaghna Chourdhuri: Or else then, I guess we can call it a close.
+
+132
+00:27:11.820 --> 00:27:17.359
+Tamaghna Chourdhuri: Maybe not, I'll leave the floor for a minute, and then we can call it a day.
+
+133
+00:28:45.170 --> 00:28:50.779
+Justin Traglia: So I have a question, actually. Do you guys… or, how do you guys feel about moving the call to an earlier time?
+
+134
+00:28:51.290 --> 00:28:54.540
+Justin Traglia: That works better for Asia and Europe.
+
+135
+00:28:59.180 --> 00:29:03.170
+Justin Traglia: I think… I think I'm the only one here that joins from the US, and…
+
+136
+00:29:03.640 --> 00:29:10.880
+Justin Traglia: I'm not, like, an important… person to join. I can always just follow up afterwards.
+
+137
+00:29:15.630 --> 00:29:20.619
+Tamaghna Chourdhuri: So I guess, how early do we want to move the call?
+
+138
+00:29:20.740 --> 00:29:23.670
+Tamaghna Chourdhuri: An hour or two from now, what's… what's the take?
+
+139
+00:29:24.700 --> 00:29:28.019
+Justin Traglia: I was… I was thinking, like, 4 hours or something, just,
+
+140
+00:29:28.560 --> 00:29:35.760
+Justin Traglia: maybe reach out to Marius and see what time works for him, because I would like for him to be able to join the call, too, and this time.
+
+141
+00:29:35.980 --> 00:29:38.510
+Justin Traglia: Well, sorry, this time slot, he has conflicts.
+
+142
+00:29:38.660 --> 00:29:40.799
+Justin Traglia: It's also just late for you guys.
+
+143
+00:29:42.760 --> 00:29:51.380
+Tamaghna Chourdhuri: Alright, alright, then I'll maybe reach out to Marius, and also I'll ask a general question in the chat, like, what would be the better timing? Sure.
+
+144
+00:29:51.500 --> 00:29:53.599
+Tamaghna Chourdhuri: That, that just seems good,
+
+145
+00:29:53.810 --> 00:29:58.030
+Tamaghna Chourdhuri: Moving it 4 hours does seem fine with me, and… Oh.
+
+146
+00:29:58.230 --> 00:29:59.040
+Tamaghna Chourdhuri: Sure.
+
+147
+00:30:00.280 --> 00:30:06.470
+Justin Traglia: Yeah, now it's just, like, a rough, like, suggestion, like… It could be…
+
+148
+00:30:06.870 --> 00:30:09.480
+Justin Traglia: Yeah, even more than that. Like, 6 hours.
+
+149
+00:30:09.760 --> 00:30:11.530
+Justin Traglia: Whatever you guys think is best.
+
+150
+00:30:14.620 --> 00:30:20.370
+Tamaghna Chourdhuri: Yep, all right, all that, then maybe we can take that offline, and sure, definitely we can move it to a…
+
+151
+00:30:20.840 --> 00:30:22.599
+Tamaghna Chourdhuri: previous time,
+
+152
+00:30:23.010 --> 00:30:28.459
+Tamaghna Chourdhuri: then I guess it's a day. Bye guys, thank you for coming, and see you on the next call.
+
+153
+00:30:29.670 --> 00:30:30.750
+Jun Song: Bye, cheers.
+
+154
+00:30:31.130 --> 00:30:31.670
+Justin Traglia: Hi, everyone.
+
+155
+00:30:31.670 --> 00:30:32.340
+Dustin: Bye.
+

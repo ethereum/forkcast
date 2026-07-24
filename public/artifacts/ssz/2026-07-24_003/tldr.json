@@ -1,0 +1,68 @@
+{
+  "meeting": "SSZ Engine API Breakout #3 - July 24, 2026",
+  "highlights": {
+    "ssz_engine_api_updates": [
+      {
+        "timestamp": "00:08:14",
+        "highlight": "SSZ model being added to existing execution fixtures; hash verification to confirm no regressions before release"
+      },
+      {
+        "timestamp": "00:10:36",
+        "highlight": "Minimal list of non-engine methods to expose on engine port emerging: eth_syncing, eth_getBlockByNumber, eth_getBlockByHash, eth_chainId (Prysm omits eth_syncing but not opposed; Lighthouse adds eth_syncing + eth_getBlockByNumber; Nimbus adds eth_chainId + eth_syncing)"
+      }
+    ],
+    "top_up_sync": [
+      {
+        "timestamp": "00:09:09",
+        "highlight": "Top-up sync direction discussed: whether to formalize as EIP + PFI, or simply add the engine endpoint; no decision reached"
+      },
+      {
+        "timestamp": "00:23:13",
+        "highlight": "Core question: endpoint should expose whether EL has state (not just blocks) at a given block number; security model differs without state"
+      },
+      {
+        "timestamp": "00:25:05",
+        "highlight": "Real-world validation: Nimbus EL bug on devnet 7 (no peers) resolved because Teku fed blocks in order \u2014 accidental demonstration of top-up sync value"
+      }
+    ],
+    "http2_vs_http1": [
+      {
+        "timestamp": "00:11:55",
+        "highlight": "HTTP/2 required in SSZ Engine API spec for head-of-line blocking avoidance; Nimbus libraries do not currently support HTTP/2"
+      },
+      {
+        "timestamp": "00:17:45",
+        "highlight": "Dustin questions whether HTTP/2 benefit is empirically validated for Engine API's inherently serial, stateful request pattern vs. web browser use case"
+      },
+      {
+        "timestamp": "00:18:26",
+        "highlight": "Consensus: benchmark HTTP/2 vs HTTP/1.1 for Engine API workload before mandating HTTP/2; raise in #ssz channel"
+      }
+    ],
+    "organizational": [
+      {
+        "timestamp": "00:28:51",
+        "highlight": "Call time proposed to move ~4\u20136 hours earlier to accommodate EU/Asia participants and allow Marius to join"
+      }
+    ]
+  },
+  "action_items": [
+    {
+      "timestamp": "00:19:15",
+      "action": "Run HTTP/2 vs HTTP/1.1 benchmarks for Engine API workload and post results to #ssz channel",
+      "owner": "All teams (Nethermind volunteered; Tamaghna to coordinate if no one picks it up)"
+    },
+    {
+      "timestamp": "00:29:43",
+      "action": "Poll Marius and attendees for better call time; move recurring slot ~4\u20136 hours earlier",
+      "owner": "Tamaghna Chourdhuri"
+    }
+  ],
+  "decisions": [
+    {
+      "timestamp": "00:11:32",
+      "decision": "Provisional minimal non-engine method list for engine port: eth_syncing, eth_getBlockByNumber, eth_getBlockByHash, eth_chainId \u2014 to be finalized in a future call after remaining client input"
+    }
+  ],
+  "targets": []
+}

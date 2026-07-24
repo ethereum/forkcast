@@ -1,0 +1,56 @@
+00:04:41	Jun Song:	gm
+00:04:47	Tamaghna Chourdhuri:	gmgm
+00:05:49	Tamaghna Chourdhuri:	Ig we can wait 2 more mins and then start
+00:07:01	Justin Traglia:	Reacted to "Ig we can wait 2 mor..." with 👍
+00:07:52	Tamaghna Chourdhuri:	https://github.com/ethereum/pm/issues/2168
+00:08:23	Tamaghna Chourdhuri:	https://github.com/ethereum/execution-specs/pull/3196
+00:10:51	Justin Traglia:	Can you tell them that I won't be able to make it pls. — Marius
+00:11:09	Tamaghna Chourdhuri:	Reacted to "Can you tell them th..." with 😃
+00:11:15	Justin Traglia:	Replying to "Can you tell them th..."
+
+To this call, that is.
+00:11:17	FLCL (Nethermind):	we need like 4 methods?
+00:11:40	Tamaghna Chourdhuri:	- eth_syncing
+- eth_getBlockByNumber
+- eth_getBlockByHash
+- eth_chainId
+00:12:06	Jun Song:	[Prysm]
+eth_getBlockByNumber
+eth_getBlockByHash
+eth_chainId
+00:12:39	FLCL (Nethermind):	it will not require jwt in ssz path, right?
+00:12:40	Jun Song:	Replying to "[Prysm]
+eth_getBlock..."
+
+But I’m not against for adding eth_syncing
+00:14:20	Sameer Agarwal:	Lighthouse 
+eth_syncing
+eth_getBlockByNumber
+00:15:13	FLCL (Nethermind):	what was the question?
+00:15:34	Dustin:	Protocol: both HTTP/2 and HTTP/1.1 MUST be supported, with HTTP/2 preferred. Both TCP and IPC transports use cleartext(h2c for HTTP/2); JWT-on-every-request provides authentication, so TLS termination is left to a reverse proxy if the operator wants it. Servers and CLs SHOULD negotiate HTTP/2 where available(ALPN over TLS, or the HTTP/2 prior-knowledge / h2c upgrade over cleartext) and fall back to HTTP/1.1 only when the peer does not speak h2. HTTP/2 multiplexing lets a single CL→EL connection carry the full request mix (forkchoice, payload submission, blob fetches, body fetches) without head-of-line blocking; on HTTP/1.1 that benefit is lost (requests serialise per connection, or the CL opens several connections), but the API is otherwise identical — same paths, headers, bodies, and status codes. CLs that fall back to HTTP/1.1 SHOULD use connection pooling to recover some concurrency.
+00:17:07	FLCL (Nethermind):	It might be cool to setup benchmarks, so we can measure it
+00:18:12	Jun Song:	Reacted to "It might be cool to setup benchmarks, so we can measure it" with 👍
+00:18:12	Sameer Agarwal:	Replying to "It might be cool to ..."
+
+Agreed
+00:18:16	Tamaghna Chourdhuri:	Reacted to "It might be cool to ..." with 👍
+00:19:15	Dustin:	Reacted to "It might be cool t..." with 👍
+00:19:52	Dustin:	#ssz ?
+00:20:10	Jun Song:	Replying to "It might be cool to ..."
+
++1
+00:20:26	Tamaghna Chourdhuri:	Replying to "#ssz ?"
+
+Yeah seems good for it to be in ssz and cross-posted to boost visibility
+00:20:36	Dustin:	Replying to "#ssz ?"
+
+ok
+00:21:04	FLCL (Nethermind):	Reacted to "#ssz ?" with 👍
+00:22:22	Jun Song:	Reacted to "#ssz ?" with 👍
+00:22:40	Dustin:	https://discord.com/channels/595666850260713488/1295427781722898505/1530202427104690327
+00:23:16	Dustin:	https://hackmd.io/siEIwl9QTlODSZ6DYH3iqg
+00:23:20	Jun Song:	Reacted to "https://hackmd.io/siEIwl9QTlODSZ6DYH3iqg" with 👍
+00:25:42	Jun Song:	that’s interesting
+00:26:32	Tamaghna Chourdhuri:	Yeah this does show why it would be good to have it as it already demonstrates that the idea is solid and useful
+00:29:04	Dustin:	works for me
+00:29:12	Jun Song:	sg

@@ -1,6 +1,7 @@
 import fs from 'fs';
 import path from 'path';
 import { fileURLToPath } from 'url';
+import { loadDecisions } from './lib/key-decisions.mjs';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -82,6 +83,44 @@ function audit(eips) {
   return issues;
 }
 
+// Check that each recorded stage-change decision is reflected in the EIP's
+// forkRelationships (a statusHistory entry with the same status + call ref).
+function auditDecisions(eips, decisions) {
+  const byId = new Map(eips.map(e => [e.id, e]));
+  const issues = [];
+
+  for (const d of decisions) {
+    const eip = byId.get(d.id);
+    if (!eip) {
+      issues.push({ ...d, reason: 'no EIP data file' });
+      continue;
+    }
+
+    const fr = (eip.forkRelationships || []).find(
+      r => r.forkName.toLowerCase() === d.fork.toLowerCase()
+    );
+    if (!fr) {
+      issues.push({ ...d, reason: `no "${d.fork}" fork relationship` });
+      continue;
+    }
+
+    const history = fr.statusHistory || [];
+    const exact = history.some(h => h.status === d.status && h.call === d.call);
+    if (exact) continue; // decision reflected
+
+    const statusPresent = history.some(h => h.status === d.status);
+    issues.push({
+      ...d,
+      reason: statusPresent
+        ? `status "${d.status}" present but not attributed to call ${d.call}`
+        : `status "${d.status}" not recorded`,
+    });
+  }
+
+  issues.sort((a, b) => a.id - b.id || a.call.localeCompare(b.call));
+  return issues;
+}
+
 function parseArgs() {
   const args = process.argv.slice(2);
   const options = { fork: null, help: false };
@@ -115,6 +154,9 @@ Checks for:
   - laymanDescription
   - stakeholderImpacts
   - benefits
+
+Also checks that stage-change decisions recorded in call
+key_decisions.json files are reflected in the EIP forkRelationships.
 `);
 }
 
@@ -127,10 +169,12 @@ function main() {
 
   const eips = loadEips();
   let results = audit(eips);
+  let decisionIssues = auditDecisions(eips, loadDecisions());
 
   if (options.fork) {
     const forkLower = options.fork.toLowerCase();
     results = results.filter(r => r.fork.toLowerCase() === forkLower);
+    decisionIssues = decisionIssues.filter(r => r.fork.toLowerCase() === forkLower);
   }
 
   console.log('EIP Audit');
@@ -140,35 +184,51 @@ function main() {
     console.log(`Fork filter: ${options.fork}\n`);
   }
 
-  if (results.length === 0) {
-    console.log('No issues found. All active EIPs have complete data.');
-    process.exit(0);
-  }
-
-  // Group by upgrade
-  const grouped = {};
-  for (const r of results) {
-    if (!grouped[r.fork]) grouped[r.fork] = [];
-    grouped[r.fork].push(r);
-  }
-
+  // --- Data completeness ---
+  console.log('Data completeness');
+  console.log('-'.repeat(40));
   let totalIssues = 0;
-  for (const fork of Object.keys(grouped).sort()) {
-    const group = grouped[fork];
-    console.log(`${fork} (${group.length})`);
-    console.log('-'.repeat(40));
-    for (const r of group) {
-      console.log(`  EIP-${r.id} (${r.status})`);
-      for (const issue of r.issues) {
-        console.log(`    - ${issue}`);
-        totalIssues++;
+  if (results.length === 0) {
+    console.log('  No issues. All active EIPs have complete data.\n');
+  } else {
+    const grouped = {};
+    for (const r of results) {
+      if (!grouped[r.fork]) grouped[r.fork] = [];
+      grouped[r.fork].push(r);
+    }
+    for (const fork of Object.keys(grouped).sort()) {
+      const group = grouped[fork];
+      console.log(`  ${fork} (${group.length})`);
+      for (const r of group) {
+        console.log(`    EIP-${r.id} (${r.status})`);
+        for (const issue of r.issues) {
+          console.log(`      - ${issue}`);
+          totalIssues++;
+        }
       }
     }
     console.log();
   }
 
-  console.log(`${results.length} EIP(s) with ${totalIssues} issue(s) total.`);
-  process.exit(1);
+  // --- Inclusion decisions reflected in EIP data ---
+  console.log('Inclusion decisions vs. EIP data');
+  console.log('-'.repeat(40));
+  if (decisionIssues.length === 0) {
+    console.log('  No issues. All recorded stage-change decisions are reflected.\n');
+  } else {
+    for (const d of decisionIssues) {
+      console.log(`  EIP-${d.id} — ${d.fork} → ${d.status} (${d.call}, ${d.date})`);
+      console.log(`    - ${d.reason}`);
+    }
+    console.log();
+  }
+
+  const hasIssues = results.length > 0 || decisionIssues.length > 0;
+  console.log(
+    `${results.length} EIP(s) with ${totalIssues} data issue(s); ` +
+    `${decisionIssues.length} unreflected decision(s).`
+  );
+  process.exit(hasIssues ? 1 : 0);
 }
 
 main();

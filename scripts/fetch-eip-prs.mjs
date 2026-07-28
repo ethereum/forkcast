@@ -8,6 +8,7 @@ import {
   pendingPullRequest,
   updateExistingEip,
 } from './eip-record-sync.mjs';
+import { loadDecisionEipIds } from './lib/key-decisions.mjs';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -172,7 +173,7 @@ async function fetchEipFromPrBranch(prNumber, eipNumber, headers) {
 /**
  * Process a single PR: fetch its EIP files, parse, and create/update JSON.
  */
-async function processPr(prNumber, headers, trackedEipIds, requiresFilter) {
+async function processPr(prNumber, headers, trackedEipIds, requiresFilter, decisionEipIds = new Set()) {
   const eipNumbers = await fetchPrEipFiles(prNumber, headers);
   if (eipNumbers.length === 0) return { eipNumbers: [] };
 
@@ -199,11 +200,14 @@ async function processPr(prNumber, headers, trackedEipIds, requiresFilter) {
 
     const mapped = mapOfficialToLocal(frontmatter);
 
-    // In auto-discovery mode, skip if requires doesn't reference any tracked EIP
+    // In auto-discovery mode, keep an EIP if its requires references a tracked
+    // EIP OR an ACD call has already acted on it (stage-change decision in a
+    // key_decisions.json). Otherwise skip it.
     if (requiresFilter) {
       const requires = mapped.requires || [];
       const referencesTracked = requires.some((id) => trackedEipIds.has(id));
-      if (!referencesTracked) continue;
+      const hasDecision = decisionEipIds.has(eipNumber);
+      if (!referencesTracked && !hasDecision) continue;
     }
 
     candidates.push({ eipNumber, mapped });
@@ -330,7 +334,10 @@ Environment:
 
   // Auto-discovery mode
   const trackedEipIds = getTrackedEipIds();
-  console.log(`Loaded ${trackedEipIds.size} tracked EIP IDs.`);
+  const decisionEipIds = loadDecisionEipIds();
+  console.log(
+    `Loaded ${trackedEipIds.size} tracked EIP IDs, ${decisionEipIds.size} decision EIP IDs.`,
+  );
 
   const manifest = loadPrManifest();
   console.log(
@@ -361,6 +368,7 @@ Environment:
             headers,
             trackedEipIds,
             true,
+            decisionEipIds,
           );
           return {
             prNumber: pr.number,

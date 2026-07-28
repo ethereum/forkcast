@@ -157,6 +157,35 @@ async function fetchPrEipFiles(prNumber, headers) {
 }
 
 /**
+ * Find the open ethereum/EIPs PR that adds EIPS/eip-{eipNumber}.md.
+ *
+ * Used by the decision sweep to reach PRs older than the incremental
+ * watermark. Search narrows candidates; fetchPrEipFiles confirms the PR
+ * actually adds the target EIP file.
+ */
+async function findOpenPrAddingEip(eipNumber, headers) {
+  const query = `repo:ethereum/EIPs is:pr is:open eip-${eipNumber}`;
+  const url = `https://api.github.com/search/issues?q=${encodeURIComponent(query)}&per_page=10`;
+  const response = await fetch(url, { headers });
+  if (!response.ok) {
+    throw new Error(
+      `Search failed for EIP-${eipNumber}: HTTP ${response.status}`,
+    );
+  }
+
+  const data = await response.json();
+  for (const item of data.items || []) {
+    const added = await fetchPrEipFiles(item.number, headers);
+    if (added.includes(eipNumber)) {
+      return { number: item.number, updatedAt: item.updated_at };
+    }
+    await sleep(200);
+  }
+
+  return null;
+}
+
+/**
  * Fetch raw EIP content from a PR branch.
  */
 async function fetchEipFromPrBranch(prNumber, eipNumber, headers) {
@@ -425,6 +454,53 @@ Environment:
     if (i + BATCH_SIZE < openPrs.length) {
       await sleep(BATCH_DELAY);
     }
+  }
+
+  // Decision sweep: the incremental crawl above only sees PRs updated since
+  // lastRun, so a decision EIP whose open PR predates the watermark is missed.
+  // Explicitly fetch any decision EIP that still has no local record.
+  const currentTracked = getTrackedEipIds();
+  const missingDecisionIds = [...decisionEipIds].filter(
+    (id) => !currentTracked.has(id),
+  );
+
+  if (missingDecisionIds.length > 0) {
+    console.log(
+      `\nDecision sweep: ${missingDecisionIds.length} decision EIP(s) without a record.`,
+    );
+  }
+
+  for (const eipNumber of missingDecisionIds) {
+    try {
+      const pr = await findOpenPrAddingEip(eipNumber, headers);
+      if (!pr) {
+        console.log(
+          `  EIP-${eipNumber}: has a decision but no open EIPs PR found; skipping`,
+        );
+        continue;
+      }
+      if (manifest.prs[pr.number]) continue; // already handled by the crawl
+
+      const result = await processPr(
+        pr.number,
+        headers,
+        currentTracked,
+        true,
+        decisionEipIds,
+      );
+      if (result.eipNumbers.length > 0) {
+        manifest.prs[pr.number] = {
+          updatedAt: pr.updatedAt,
+          eipNumbers: result.eipNumbers,
+        };
+        created += result.eipNumbers.length;
+      }
+    } catch (err) {
+      console.error(`  Error sweeping EIP-${eipNumber}: ${err.message}`);
+      processingErrors++;
+    }
+
+    await sleep(BATCH_DELAY);
   }
 
   if (processingErrors > 0) {

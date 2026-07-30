@@ -2,6 +2,16 @@
   "eipId": 8038,
   "commits": [
     {
+      "sha": "0a1d42b3c7a455cd812ce73b4b937c16d6f20bd6",
+      "date": "2026-07-30T12:54:28Z",
+      "message": "Update EIP-2780: Move to Review",
+      "author": "misilva73",
+      "prNumber": null,
+      "patch": "@@ -4,7 +4,7 @@ title: State-access gas cost update\n description: Increases the gas cost of state-access operations to reflect Ethereum’s larger state\n author: Maria Silva (@misilva73), Wei Han Ng (@weiihann), Ansgar Dietrichs (@adietrichs)\n discussions-to: https://ethereum-magicians.org/t/eip-8038-state-access-gas-cost-update/25693\n-status: Draft\n+status: Review\n type: Standards Track\n category: Core\n created: 2025-10-03\n@@ -232,17 +232,6 @@ CREATE_ACCESS                = ACCOUNT_WRITE + COLD_ACCOUNT_ACCESS\n \n Differently from other account read operations, `EXTCODESIZE` and `EXTCODECOPY` make two reads to the database. The first read is the same, where the object of the target account is loaded. This object includes the account's `nonce`, `balance`, `codeHash` and `storageRoot`. Then, these operations do another read to collect either the code size or the bytecode of the account. This second read is to an already warmed account, and thus we propose to price it as `WARM_ACCESS` for consistency.\n \n-### Interaction with [EIP-8032](./eip-8032.md)\n-\n-[EIP-8032](./eip-8032.md) proposes modifying the `SSTORE` cost formula to account for the storage size of a contract. This is a more accurate method for pricing storage writes. It allows writes to smaller contracts to be cheaper than writes to large contracts, which helps with scaling and is fairer to users. However, [EIP-8032](./eip-8032.md) is not yet scheduled for inclusion in a fork, and, as such, this proposal considers two cases for setting the values of `STORAGE_WRITE` and `COLD_STORAGE_ACCESS`:\n-\n-1. Before [EIP-8032](./eip-8032.md). In this case, we set the parameters assuming a worst-case contract size, which makes state-accessing operations more expensive, independently of the contract size.\n-2. After [EIP-8032](./eip-8032.md). In this case, we set the parameters assuming the worst-case until `ACTIVATION_THRESHOLD`, which is the parameter in [EIP-8032](./eip-8032.md) that triggers the depth-based cost. This means that contract sizes below the threshold have the same access costs, while contracts above the threshold get exponentially more expensive with increasing size.\n-\n-### Interaction with [EIP-2926](./eip-2926.md)\n-\n-[EIP-2926](./eip-2926.md) proposes to change how code is stored in the state trie. One of the changes of this proposal is to include the code size as a new field in the account object (`codeSize`). With this change, the code size can be directly accessed with a single read to the database and thus `EXTCODESIZE` should maintain its previous cost formula, without including the additional `WARM_ACCESS`.\n-\n ## Backwards Compatibility\n \n This is a backwards-incompatible gas repricing that requires a scheduled network upgrade.",
+      "additions": 1,
+      "deletions": 12
+    },
+    {
       "sha": "b7491982cec3657684e3047f9647b4c60fc23d4d",
       "date": "2026-07-29T16:10:57Z",
       "message": "Update EIP-8038: restate the gas schedule as an access/write/creation component model",

@@ -56,21 +56,29 @@ For each `(eip, forkName, status)`, open `src/data/eips/{eip}.json`:
 
 ### Step 4: Attempt a champion (presenter)
 
-For each EIP that just got a new/updated relationship, try to add **one** champion — the person who presented it on the call. Only add a champion if the relationship has no `champions` yet.
+For each EIP that just got a new/updated relationship, try to add **one** champion — the person who championed the proposal. Only add a champion if the relationship has no `champions` yet.
 
-1. Find the presentation timestamp: check the call's `tldr.json` highlights for the EIP number (e.g. the `eip_proposals_{fork}` section), falling back to the matching `key_decisions` entry's `timestamp`.
-2. Read `transcript_corrected.vtt` around that timestamp and identify the **presenter** — the dominant speaker introducing the EIP (skip one-line interjections from the host/others). The VTT speaker label is your candidate (labels are sometimes Discord handles like `soispoke`, sometimes full names like `Ansgar Dietrichs`).
-3. Cross-check the candidate against the EIP's `author` field. Authors look like `Thomas Thiery (@soispoke)`; the VTT label may be a full name (`Toni Wahrstätter`) or a handle (`soispoke`). Match the presenter to one of the authors by either the name or the `@handle`. Once matched:
-   - **`name`**: the champion's preferred display name. Default to the author's full name (e.g. `Toni Wahrstätter`, `Ben Adams`), but honor personal preferences — some authors prefer their handle (e.g. Thomas Thiery goes by `soispoke`). See the table.
+The champion is usually the person who **added the proposal to the call agenda** by commenting on the ACDE/ACDC GitHub issue (in `ethereum/pm`). This is the most reliable signal — more reliable than who spoke on the call, since presenters sometimes speak on behalf of the actual champion.
+
+1. **Primary signal — agenda comment**: Check the call's GitHub agenda issue in `ethereum/pm` for comments proposing each EIP. The commenter is the champion candidate. If the agenda issue is not readily available, fall back to the transcript.
+2. **Fallback — transcript**: Find the presentation timestamp from `tldr.json` highlights (e.g. `eip_proposals_{fork}` section), falling back to the `key_decisions` entry's `timestamp`. Read `transcript_corrected.vtt` around that timestamp and identify the **presenter** — the dominant speaker introducing the EIP (skip one-line interjections from the host/others). The VTT speaker label is your candidate (labels are sometimes Discord handles like `soispoke`, sometimes full names like `Ansgar Dietrichs`).
+3. Cross-check the candidate against the EIP's `author` field. Authors look like `Thomas Thiery (@soispoke)`; the VTT label may be a full name (`Toni Wahrstätter`) or a handle (`soispoke`). Match the presenter to one of the authors by either the name or the `@handle`. The champion need not be an author (e.g. someone else may champion an EIP on behalf of the original author), but author-match gives extra confidence. Once identified:
+   - **`name`**: use the person's full name as it appears in the `author` field or as they are commonly known.
    - **`discord`**: the person's **Discord** handle. This is **not** the GitHub handle in the `author` field — e.g. `@nerolation` → `nero_eth`, `@benaadams` → `ben_a_adams`. Never derive `discord` from the GitHub handle. Use the known-mappings table below or ask the user; **omit `discord`** if you can't confirm it rather than guessing.
 
-   Known author mappings (extend as you confirm more):
-   | Author | GitHub | Champion name | Discord |
-   |--------|--------|---------------|---------|
-   | Thomas Thiery | @soispoke | soispoke | soispoke |
-   | Toni Wahrstätter | @nerolation | Toni Wahrstätter | nero_eth |
-   | Ben Adams | @benaadams | Ben Adams | ben_a_adams |
-4. If the presenter is a facilitator speaking on someone's behalf (e.g. Ansgar, Pooja) or doesn't clearly map to an author, **do not guess** — leave `champions` off and flag that EIP so the user can supply the champion.
+   Known mappings (extend as you confirm more):
+   | Author | GitHub | Discord |
+   |--------|--------|---------|
+   | Thomas Thiery | @soispoke | soispoke |
+   | Toni Wahrstätter | @nerolation | nero_eth |
+   | Ben Adams | @benaadams | ben_a_adams |
+   | Etan Kissling | @etan-status | etan-status |
+   | Hadrien Croubois | @amxx | hadriencroubois |
+   | Jochem Brouwer | - | jochembrouwer |
+   | Kevaundray Wedderburn | @kevaundray | kevaundray |
+   | Alex Forshtat | @forshtat | alexf5200 |
+   | Derek Chiang | - | derekchiang |
+4. If the presenter is a facilitator speaking on someone's behalf (e.g. Ansgar, Pari, Nixo) or doesn't clearly map to an author or agenda commenter, **do not guess** — leave `champions` off and flag that EIP so the user can supply the champion.
 
 Add the champion to that fork's relationship only (max 2 per schema; this skill adds at most 1).
 

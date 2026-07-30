@@ -1,0 +1,107 @@
+{
+  "eipId": 8173,
+  "commits": [
+    {
+      "sha": "8fceedac5b83df9b6612bdbffc6b447da1ea02ce",
+      "date": "2026-07-29T23:41:11Z",
+      "message": "Update EIP-8173: Refine EVM control flow and static analysis explanations",
+      "author": "gcolvin",
+      "prNumber": null,
+      "additions": 60,
+      "deletions": 55
+    },
+    {
+      "sha": "ed90fa59a6a6d29d78e9c7da28f40a405b2255f1",
+      "date": "2026-07-22T04:59:03Z",
+      "message": "Update EIP-8173: clarity and coherence",
+      "author": "gcolvin",
+      "prNumber": null,
+      "additions": 10,
+      "deletions": 8
+    },
+    {
+      "sha": "9e5babb3b1b85281ce7e7b59dac5fa7b1a4908ae",
+      "date": "2026-07-21T04:44:31Z",
+      "message": "Update EIP-8173: Revise dynamic control flow and EVM sections",
+      "author": "gcolvin",
+      "prNumber": null,
+      "additions": 34,
+      "deletions": 25
+    },
+    {
+      "sha": "7d4215ebbf97e1c2ce59087cc1580c5f6487c8b6",
+      "date": "2026-07-16T17:51:02Z",
+      "message": "Update EIP-8173: Better formal analysis example",
+      "author": "gcolvin",
+      "prNumber": null,
+      "patch": "@@ -111,7 +111,33 @@ In Java, Wasm, and CLI it is simply impossible to have programs like these.\n \n The Ethereum Virtual Machine does _not_ provide explicit facilities for calls and returns. Instead, they _must_ be synthesized using the dynamic `JUMP` instruction, which takes its argument from the stack and stores return addresses on the stack. So control flow _must be_ dynamic, which creates the quadratic CFG problems explained above.\n \n-For Ethereum, this quadratic behavior is a _denial-of-service vulnerability_ for any online static analysis, including bytecode validation and AOT compilation at contract creation time, and JIT compilation at runtime.\n+The cost is easiest to see in the shape Solidity emits for internal function calls.  The EVM has no call instruction, so the compiler builds one: the return address is pushed as ordinary data, and the return is a jump.  And the helper is worth having — deployed bytes cost gas, and contracts are capped at 24576 of them, so shared code pays.  Here a helper squares a number for two callers:\n+\n+```\n+CALL_A: push RTN_A      ; return address, as ordinary data\n+        push 2\n+        push SQUARE\n+        jump\n+RTN_A:  jumpdest\n+        ...\n+CALL_B: push RTN_B\n+        push 3\n+        push SQUARE\n+        jump\n+RTN_B:  jumpdest\n+        ...\n+SQUARE: jumpdest\n+        dup1\n+        mul\n+        swap1\n+        jump            ; return — but to where?\n+```\n+\n+At run time the final `jump` goes wherever the pushed address says.  An analyzer must answer before the code runs, and the address is data — so it must follow both returns.  After one call it is in two places at once; after two calls, four; every call doubles the count.  Twenty calls is a million paths, one of them real.  To rule out the rest, the analyzer must track what the code keeps on the stack — the very bookkeeping an explicit call would have done for it.\n+\n+With explicit calls and returns there is nothing to answer: every return goes back to its call.  Twenty calls, one path.\n+\n+For Ethereum, these behaviors are a _denial-of-service vulnerability_ for any online static analysis, including bytecode validation and AOT compilation at contract creation time, and JIT compilation at runtime.\n \n Even offline, dynamic jumps (and the lack of calls and returns) can cause static analyses of many contracts to become quadratically impractical, exponentially intractable, or even mathematically impossible. For examples, consider these abstracts from a few recent papers on the problem.  The last paper resorts to neural nets to disassemble (most) Solidity programs.  There is an entire academic literature of complex, incomplete solutions to problems that static control flow renders trivial.\n ",
+      "additions": 27,
+      "deletions": 1
+    },
+    {
+      "sha": "2fff88cb7ef9d1a93bfc5493c655093e3940a525",
+      "date": "2026-07-14T02:21:39Z",
+      "message": "Update EIP-8173: Proofs, tests, edits for correctness, clarity, consistency",
+      "author": "gcolvin",
+      "prNumber": null,
+      "additions": 46,
+      "deletions": 48
+    },
+    {
+      "sha": "b8bfdfbeed089d3933702b4bad29d6ad98d73403",
+      "date": "2026-05-30T23:53:32Z",
+      "message": "Update EIP-8173: Revise for accuracy and clarity",
+      "author": "gcolvin",
+      "prNumber": null,
+      "additions": 35,
+      "deletions": 39
+    },
+    {
+      "sha": "af7f4bf170d1d3d45faf5370c618efe318da8a82",
+      "date": "2026-05-26T20:05:28Z",
+      "message": "Update EIP-8173: missing blank line in json",
+      "author": "gcolvin",
+      "prNumber": null,
+      "patch": "@@ -231,6 +231,7 @@ This Informational proposal itself specificies no changes to the protocol.  Ther\n       \"URL\": \"https://doi.org/10.1145/2809523.2809528\"\n     }\n     ```\n+\n [^2]:\n     ```csl-json\n     {",
+      "additions": 1,
+      "deletions": 0
+    },
+    {
+      "sha": "82c0765358304974ea3d48d119a3c8ca150fb349",
+      "date": "2026-05-26T18:54:20Z",
+      "message": "Update EIP-8173: clarity and accuracy",
+      "author": "gcolvin",
+      "prNumber": null,
+      "additions": 5,
+      "deletions": 5
+    },
+    {
+      "sha": "02c89e5faa1489a5483319708f6acc13846db43a",
+      "date": "2026-05-26T17:47:46Z",
+      "message": "Update EIP-8173: Update references and citations",
+      "author": "gcolvin",
+      "prNumber": null,
+      "additions": 43,
+      "deletions": 19
+    },
+    {
+      "sha": "2602e3651c4e0a2e95d6ea3c4b20ddc4de772166",
+      "date": "2026-05-15T21:40:24Z",
+      "message": "Update EIP-8173: examples of names and mechanisms",
+      "author": "gcolvin",
+      "prNumber": null,
+      "patch": "@@ -36,7 +36,7 @@ The ACE supported calls directly with a stack of mercury-filled memory crystals\n \n #### Industry Practice: 1945 to present\n \n-Call and return facilities of various names and levels of complexity have proven their worth across a long line of important machines over the last 80 years, including most of the machines I have programmed or implemented:  Physical machines including the Burroughs 5000, CDC 7600, IBM 360, PDP-11, VAX, Motorola 68000 and Intelx86, and virtual machines including those for Scheme, Forth, Pascal, Java, and WebAssembly.\n+Call and return facilities of various names — subroutines, procedures, functions, methods — and levels of complexity — from link registers to explicit return stacks — have proven their worth across a long line of important machines over the last 80 years, including most of the machines I have programmed or implemented:  Physical machines including the Burroughs 5000, CDC 7600, IBM 360, PDP-11, VAX, Motorola 68000 and Intelx86, and virtual machines including those for Scheme, Forth, Pascal, Java, and WebAssembly.\n \n Especially relevant to the EVM's design are the Java, WebAssembly (Wasm), and CLI (.NET) VMs. They share crucial common properties:\n ",
+      "additions": 1,
+      "deletions": 1
+    },
+    {
+      "sha": "2ae38c69160c1832e3734a9baf1838ee72dadecf",
+      "date": "2026-04-22T19:59:49Z",
+      "message": "Add EIP: Foundations of EVM Control Flow",
+      "author": "gcolvin",
+      "prNumber": null,
+      "additions": 368,
+      "deletions": 0
+    }
+  ]
+}

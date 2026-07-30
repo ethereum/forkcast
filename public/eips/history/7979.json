@@ -1,0 +1,501 @@
+{
+  "eipId": 7979,
+  "commits": [
+    {
+      "sha": "6cedfee47abdeb6567b7420a9b8f29cb92cf7081",
+      "date": "2026-07-25T09:32:12Z",
+      "message": "Update EIP-7979: Performance measurements, reference implementation",
+      "author": "gcolvin",
+      "prNumber": null,
+      "additions": 25,
+      "deletions": 22
+    },
+    {
+      "sha": "80012e139ff1d6616dc4f69c4b51024dbbc18dda",
+      "date": "2026-07-23T03:40:03Z",
+      "message": "Update EIP-7979: less jargon in terminology",
+      "author": "gcolvin",
+      "prNumber": null,
+      "additions": 3,
+      "deletions": 3
+    },
+    {
+      "sha": "8e1e8399134b9f41ce4fa69faa9520052450f6ec",
+      "date": "2026-07-22T04:46:10Z",
+      "message": "Update EIP-7979: Update note on AI assistance",
+      "author": "gcolvin",
+      "prNumber": null,
+      "patch": "@@ -22,7 +22,7 @@ This proposal introduces three new control-flow instructions to the EVM:\n \n These changes are backwards compatible: the instructions behave identically wherever they appear.\n \n-*Note: Significant assistance from AI is acknowledged, primarily for the reference implementation.*\n+*Note: Significant assistance from AI is acknowledged, primarily for the reference implementation and its tests.*\n \n ## Motivation\n ",
+      "additions": 1,
+      "deletions": 1
+    },
+    {
+      "sha": "04993315dd8684c1acd1b505b4ab01910e531a88",
+      "date": "2026-07-21T05:20:40Z",
+      "message": "Update EIP-7979: Validation completely gone, reference implementation",
+      "author": "gcolvin",
+      "prNumber": null,
+      "additions": 80,
+      "deletions": 19
+    },
+    {
+      "sha": "9d7f98361bd8d62c3f5630044343d945ad623099",
+      "date": "2026-07-14T02:54:21Z",
+      "message": "Update EIP-7979: Proofs, tests, edits for correctness, clarity, consistency",
+      "author": "gcolvin",
+      "prNumber": null,
+      "additions": 70,
+      "deletions": 1055
+    },
+    {
+      "sha": "de7bfe158296af3a9b131c8d746f83e0338e700a",
+      "date": "2026-07-07T05:50:39Z",
+      "message": "Update EIP-7979: Remove unhelpful Yellow Paper reference",
+      "author": "gcolvin",
+      "prNumber": null,
+      "patch": "@@ -44,7 +44,7 @@ For detailed historical context, technical foundations of static control flow, a\n \n *Conventions: backticks mark literal code — opcodes, bytecode, and identifiers from the reference implementation.  Italics mark technical terms defined in this Specification, most of them under Validity, below.*\n \n-The EVM's machine state includes a *data stack* of 256-bit words, at most 1024 deep, and the program counter, *PC*, whose value is a position in the code — the index of the next byte to execute.  This EIP adds a *return stack* of return addresses, pushed only by `CALLSUB`, popped only by `RETURNSUB`, and not otherwise accessible to EVM code.  (For readers of the Yellow Paper, and only here: the machine state is μ, the *data stack* μ_s, its depth |μ_s|, and the program counter μ_pc; the *return stack* is new, μ_r.)\n+The EVM's machine state includes a *data stack* of 256-bit words, at most 1024 deep, and the program counter, *PC*, whose value is a position in the code — the index of the next byte to execute.  This EIP adds a *return stack* of return addresses, pushed only by `CALLSUB`, popped only by `RETURNSUB`, and not otherwise accessible to EVM code.\n \n ### `CALLSUB (0x..)`\n ",
+      "additions": 1,
+      "deletions": 1
+    },
+    {
+      "sha": "4fd0ae5447c2048bf178a253659a186ff1fd1845",
+      "date": "2026-07-06T07:33:48Z",
+      "message": "Update EIP-7979: Support call elimination via JUMP to ENTERSUB",
+      "author": "gcolvin",
+      "prNumber": null,
+      "additions": 64,
+      "deletions": 45
+    },
+    {
+      "sha": "20f7f92394eba3541701b015437e7664a254cd43",
+      "date": "2026-07-06T06:16:19Z",
+      "message": "Update EIP-7979: Further work on correctness of validation algorithm and clarity of pr…",
+      "author": "gcolvin",
+      "prNumber": null,
+      "additions": 152,
+      "deletions": 210
+    },
+    {
+      "sha": "deab85cf6ca5c254c735e936783266afdea2c2ce",
+      "date": "2026-07-06T01:23:09Z",
+      "message": "Update EIP-7979: Rework of validation",
+      "author": "gcolvin",
+      "prNumber": null,
+      "additions": 849,
+      "deletions": 249
+    },
+    {
+      "sha": "23b1773f07c12b947e29e2df3b684f243ca0c715",
+      "date": "2026-07-05T08:35:42Z",
+      "message": "Update EIP-7979: Correctness and clarity",
+      "author": "gcolvin",
+      "prNumber": null,
+      "additions": 26,
+      "deletions": 21
+    },
+    {
+      "sha": "64a824f6767b97044c7ae43c92f5e2ee204ea848",
+      "date": "2026-07-02T00:40:00Z",
+      "message": "Update EIP-7979: Clarify Rationale in response to breakout comments.",
+      "author": "gcolvin",
+      "prNumber": null,
+      "additions": 10,
+      "deletions": 6
+    },
+    {
+      "sha": "843193ad6a3ca14fec26935d49e57835e2410491",
+      "date": "2026-06-21T04:00:36Z",
+      "message": "Update EIP-7979: MUST -> will",
+      "author": "gcolvin",
+      "prNumber": null,
+      "patch": "@@ -232,7 +232,7 @@ Static control flow enables the construction of simpler, more efficient circuits\n \n ## Backwards Compatibility\n \n-These changes are backwards compatible.  Opcode semantics _are not_ affected by whether the contract is `MAGIC`.  So `valid` code MUST execute identically in any contract.  Validation of `MAGIC` code is done before the interpreter runs, such that the interpreter never sees `MAGIC` code that is not `valid`.  There are _no changes_ to the semantics of existing EVM code.  (With the caveat that code with unspecified behavior might behave in different, unspecified ways.  Such code was always broken.)\n+These changes are backwards compatible.  Opcode semantics _are not_ affected by whether the contract is `MAGIC`, so `valid` code will execute identically in any contract.  Validation of `MAGIC` code is done before the interpreter runs, such that the interpreter never sees `MAGIC` code that is not `valid`.  There are _no changes_ to the semantics of existing EVM code.  (With the caveat that code with unspecified behavior might behave in different, unspecified ways.  Such code was always broken.)\n \n Therefore this proposal _does not_ require a client to maintain two interpreters.  _Neither does this proposal require a client to implement validation code_ — it will already be on the blockchain.  So the implementation can come down to a push and a jump to call, and a pop and another jump to return.\n ",
+      "additions": 1,
+      "deletions": 1
+    },
+    {
+      "sha": "2cdcd971fd5aa0de79891d7a3e77f57b10182b4c",
+      "date": "2026-06-17T03:09:22Z",
+      "message": "Update EIP-7979: Validation algorithm on blockchain, other editing. (#11744)",
+      "author": "gcolvin",
+      "prNumber": 11744,
+      "additions": 537,
+      "deletions": 209
+    },
+    {
+      "sha": "7008d3a00d8d883542738aecd0045ad0d821d456",
+      "date": "2026-05-26T03:45:39Z",
+      "message": "Update EIP-7979: Better validation spec and rationale, lots of picky stuff",
+      "author": "gcolvin",
+      "prNumber": null,
+      "additions": 96,
+      "deletions": 92
+    },
+    {
+      "sha": "b9d70b4a528fa0fb1b67584b6a11ab7053b5d468",
+      "date": "2026-05-16T18:38:00Z",
+      "message": "Update EIP-7979: Added section explaining optional validation for new opcodes.",
+      "author": "gcolvin",
+      "prNumber": null,
+      "patch": "@@ -150,9 +150,13 @@ With no syntactic constraints and minimal semantic constraints, we maximize oppo\n \n This proposal aims to be the smallest possible change to the EVM. We introduce only industry-standard instructions — `CALLSUB`, `ENTERSUB`, and `RETURNSUB` — sufficient to eliminate the need for dynamic jumps in synthesizing calls and returns.\n \n+### Why the optional validation?\n+\n+Contracts using these new opcodes are not required to be `valid` unless they are marked with the `MAGIG` prefix.  The mark tells tools that marked contracts meet the constraints on `valid` code above, and can be analysed and transformed on that basis; EIP-8173 explains the advantages of `valid` code for JIT compilers, proofs of correctness, ZK execution and more.  Validation is optional in the sense that clients are required to reject marked contracts that are not `valid`, but compilers are not (and as matter of Ethereum governance cannot be) required to emit `valid` code.\n+\n ### Why no immediate arguments or code sections?\n \n-Primarily **backwards compatability**.  Other reasons  include:\n+Primarily **backwards compatability**.  Other reasons include:\n \n * _Immediate arguments_ for jump destinations would improve performance but increase complexity. See [EIP-8013: Static relative jumps and calls for the EVM](./eip-8013) for a complementary proposal using immediate arguments.\n ",
+      "additions": 5,
+      "deletions": 1
+    },
+    {
+      "sha": "bc06b2b05400f35ac132ab2c803cd2db3cfb36a6",
+      "date": "2026-04-23T06:55:02Z",
+      "message": "Update EIP-7979: Clarity, consistency, grammar, markdown",
+      "author": "gcolvin",
+      "prNumber": null,
+      "additions": 14,
+      "deletions": 19
+    },
+    {
+      "sha": "44cdeabc6667c25c2a998158183fd6676a7b675e",
+      "date": "2026-04-23T00:53:30Z",
+      "message": "Update EIP-7979: Update reference to EIP-8173",
+      "author": "gcolvin",
+      "prNumber": null,
+      "patch": "@@ -34,7 +34,7 @@ The EVM currently lacks explicit call and return instructions. Instead, calls an\n * **Inefficiency**: Synthesizing calls and returns with jumps wastes bytecode space and gas.\n * **Complexity**: Even more important, dynamic jumps can cause quadratic \"path explosions\" during control-flow analysis, creating a denial-of-service vulnerability for things like runrime compilation to machine code. They can also trigger exponential \"state space explosions\" during formal analysis and ZK circuit construction.\n \n-For detailed historical context, technical foundations of static control flow, and their impact on Ethereum's scaling roadmap, see proposal 8173: \"Static Control Flow for the EVM.\"\n+For detailed historical context, technical foundations of static control flow, and their impact on Ethereum's scaling roadmap, see [EIP-8173](./eip-8173.md): \"Static Control Flow for the EVM.\"\n \n ## Specification\n ",
+      "additions": 1,
+      "deletions": 1
+    },
+    {
+      "sha": "bc8111e394e74dbc5f43db7f762390aaa77db0ad",
+      "date": "2026-03-19T02:52:28Z",
+      "message": "Update EIP-7979: nits",
+      "author": "gcolvin",
+      "prNumber": null,
+      "additions": 14,
+      "deletions": 16
+    },
+    {
+      "sha": "b090d686be05e63753b6e9ab216c22603560c1ee",
+      "date": "2026-03-19T02:04:52Z",
+      "message": "Update EIP-7979: Better constraint logic and validation code.  Other edits.",
+      "author": "gcolvin",
+      "prNumber": null,
+      "additions": 82,
+      "deletions": 44
+    },
+    {
+      "sha": "21a24a8742c3a558c14e2c299efd0273a411c16e",
+      "date": "2026-03-15T15:23:05Z",
+      "message": "Update EIP-7979: Change example code to use recursion",
+      "author": "gcolvin",
+      "prNumber": null,
+      "additions": 64,
+      "deletions": 127
+    },
+    {
+      "sha": "4629d6b6600c65bd25607e42f4158a26a9a7988d",
+      "date": "2026-03-05T01:51:34Z",
+      "message": "Update EIP-7979: EIP-xxxx -> EIP->8173",
+      "author": "gcolvin",
+      "prNumber": null,
+      "patch": "@@ -32,7 +32,7 @@ The EVM currently lacks explicit call and return instructions. Instead, calls an\n * **Inefficiency**: Synthesizing calls and returns with jumps wastes bytecode space and gas.\n * **Complexity**: Even more important, dynamic jumps can cause quadratic \"path explosions\" during control-flow analysis, creating a denial-of-service vulnerability for things like init-time compilation to RISC-V code. They can also trigger exponential \"state space explosions\" during formal analysis and ZK circuit construction.\n \n-For detailed historical context, technical foundations of static control flow, and their impact on Ethereum's scaling roadmap, see EIP xxxx: \"Static Control Flow for the EVM — Foundational Concepts & Context.\"\n+For detailed historical context, technical foundations of static control flow, and their impact on Ethereum's scaling roadmap, see proposal  8173: \"Static Control Flow for the EVM.\"\n \n ## Specification\n \n@@ -193,13 +193,13 @@ The EVM is a stack machine, but most real machines are register machines. Genera\n \n ### ZK and scaling performance\n \n-Static control flow enables the construction of simpler, more efficient circuits for ZK verification. See EIP  xxxx for details on how static control flow improves ZK-Rollup and optimistic rollup efficiency, and enables future migrations to other execution environments like RISC-V.\n+Static control flow enables the construction of simpler, more efficient circuits for ZK verification. See proposal 8173 for details on how static control flow improves ZK-Rollup and optimistic rollup efficiency, and enables future migrations to other extecution environments like RISC-V.\n \n ### How can dynamic jumps cause quadratic control flow?\n \n Static analysis of a program without executing it — such as recovering its control-flow graph — is a fundamental first step for many analyses. When all jumps are static, the number of analysis steps is linear in the number of instructions: a fixed number of paths must be explored for each jump. With dynamic jumps, every possible destination must be explored at every jump; at worst, the number of steps can be quadratic in the number of instructions.\n \n-For a detailed explanation and examples of pathological programs, see EIP  xxxx.\n+For a detailed explanation and examples of pathological programs, see the proposal to be  .\n \n The quadratic behavior is not merely a theoretical concern. For Ethereum, it represents a denial-of-service vulnerability for any online static analysis tool — including bytecode validation and AOT or JIT compilation at runtime.\n \n@@ -213,7 +213,7 @@ Opcode semantics _are not_ affected by whether the contract is `MAGIC`.  So `val\n \n This proposal _does not_ require maintaining two interpreters.\n \n-These changes do not foreclose EOF, RISC-V, or other changes. Neither do these changes preclude running the EVM in zero knowledge; as explained in EIP  xxxx they can instead be a big win.\n+These changes do not foreclose EOF, RISC-V, or other changes. Neither do these changes preclude running the EVM in zero knowledge; as explained in proposal 8173 they can instead be a big win.\n \n ## Test Cases\n ",
+      "additions": 4,
+      "deletions": 4
+    },
+    {
+      "sha": "4014d2c68532fa4e8f483b2f082f1bf379ac74e3",
+      "date": "2026-02-26T06:33:36Z",
+      "message": "Update EIP-7979: Refactor to move historical discussion to Informational EIP",
+      "author": "gcolvin",
+      "prNumber": null,
+      "additions": 197,
+      "deletions": 257
+    },
+    {
+      "sha": "97b0becc130d8ebe3059184068051af578924b1b",
+      "date": "2026-02-15T10:47:46Z",
+      "message": "Update EIP-7979: Better validation algorithm",
+      "author": "gcolvin",
+      "prNumber": null,
+      "additions": 54,
+      "deletions": 90
+    },
+    {
+      "sha": "765efcb416df6062e90b5572a9425b1cd2db692c",
+      "date": "2026-01-05T21:09:24Z",
+      "message": "Update EIP-7979:  'timestamp' to 'gas' example",
+      "author": "gcolvin",
+      "prNumber": null,
+      "additions": 18,
+      "deletions": 16
+    },
+    {
+      "sha": "9bc0995d6eb1dce4f81c93ab12137442df39e7ac",
+      "date": "2026-01-05T20:52:08Z",
+      "message": "Update EIP-7979: formatting",
+      "author": "gcolvin",
+      "prNumber": null,
+      "additions": 11,
+      "deletions": 13
+    },
+    {
+      "sha": "9d38261150b9cfbf9726ef6fc7786280cec47fbc",
+      "date": "2026-01-04T20:47:23Z",
+      "message": "Update EIP-7979: more editing",
+      "author": "gcolvin",
+      "prNumber": null,
+      "additions": 10,
+      "deletions": 7
+    },
+    {
+      "sha": "4b4633ffb0a64d0c39ed6cb618ad9c39ceb6c586",
+      "date": "2026-01-04T09:56:29Z",
+      "message": "Update EIP-7979: typos & stuff",
+      "author": "gcolvin",
+      "prNumber": null,
+      "additions": 8,
+      "deletions": 8
+    },
+    {
+      "sha": "11ab62ea8ac953c9501108c999776586671401d6",
+      "date": "2026-01-04T09:22:20Z",
+      "message": "Update EIP-7979: reformatting",
+      "author": "gcolvin",
+      "prNumber": null,
+      "patch": "@@ -43,21 +43,20 @@ The ACE supported calls directly with a stack of mercury-filled memory crystals\n \n #### Lovelace & Turing: An aside on machine intelligence\n \n-> In Lady Lovelace's notes we find her prescient recognition of the Analytic Engine's power:  _\"In enabling mechanism to combine together general symbols in successions of unlimited variety and extent, a uniting link is established between the operations of matter and the abstract mental processes of the most abstract branch of mathematical science.\"_[^1]\n-Here also we find her recognition of its limits:  _\"It can do whatever we know how to order it to perform. It can follow analysis; but it has no power of anticipating any analytical relations or truths. Its province is to assist us in making available what we are already acquainted with.\"_[^1]\n->\n-> In 1950 Alan Turing answered \"Lady Lovelace's Objection\" with a question of his own:  _\"The majority of minds seem to be 'subcritical' ... an idea presented to such a mind will on average give rise to less than one idea in reply. A smallish proportion are supercritical. An idea presented to such a mind that may give rise to a whole 'theory' consisting of secondary, tertiary and more remote ideas... we ask, 'Can a machine be made to be supercritical?'\"_[^2]\n+In Lady Lovelace's notes we find her prescient recognition of the Analytic Engine's power:  _\"In enabling mechanism to combine together general symbols in successions of unlimited variety and extent, a uniting link is established between the operations of matter and the abstract mental processes of the most abstract branch of mathematical science.\"_[^1]  Here also we find her recognition of its limits:  _\"It can do whatever we know how to order it to perform. It can follow analysis; but it has no power of anticipating any analytical relations or truths. Its province is to assist us in making available what we are already acquainted with.\"_[^1]  In 1950 Alan Turing answered \"Lady Lovelace's Objection\" with a question of his own:  _\"The majority of minds seem to be 'subcritical' ... an idea presented to such a mind will on average give rise to less than one idea in reply. A smallish proportion are supercritical. An idea presented to such a mind that may give rise to a whole 'theory' consisting of secondary, tertiary and more remote ideas... we ask, 'Can a machine be made to be supercritical?'\"_[^2]\n \n ### Industry practice: 1945 - 2025\n \n Call and return facilities of various levels of complexity have proven their worth across a long line of important machines over the last 80 years:  Burroughs' baroque ALGOL support, Intel's simple `CALL` and `RET`, RISC-V's subtly dynamic `JAL` and `JALR`, ARM's bare mimimum `BL`, and some such facility on most every other machine we have programmed or implemented: physical machines including the, CDC 7600, IBM 360, PDP-11, VAX, Motorola 68000, and others, as well as virtual machines for Scheme, Forth, Pascal, Java, Wasm, .NET and others.\n \n-Especially relevant to the EVM's design are the Java, Wasm, and .NET VMs.  They share some important features: Their programs are all represented with a portable bytecode\n+Especially relevant to the EVM's design are the Java, Wasm, and .NET VMs.  They share some important features: their programs are all\n \n-* that can be directly interpreted\n-* and can be validated before runtime\n-* to have static control flow that can be\n-* compiled to machine code with a one-pass JIT.\n+* represented with a portable bytecode that\n+* can be directly interpreted and\n+* can be validated before runtime\n+* to have static control flow that\n+* can compiled to machine code\n+* with a one-pass JIT.\n \n We propose that the EVM share these features.\n \n@@ -87,7 +86,7 @@ With so much at stake on the blockchain -- currently over $300,000,000,000 -- de\n \n ### Taming the EVM\n \n-To prevent control-flow traversal from \"going quadratic\" we must prevent the dynamic use of jumps.  On-chain, most uses of `JUMP` and `JUMPI` are preceded by a `PUSH` — that is, they are effectively static.  This proposal ensures that in `valid` code `JUMP` and `JUMPI` are always used statically.  Currently, the only places that jumps _have to be_ used dynamically are to support calls and returns.  For that purpose we propose `CALLSUB` and `RETURNSUB` opcodes as replacements.\n+To prevent control-flow traversal from \"going quadratic\" we must prevent the dynamic use of jumps.  On-chain, most uses of `JUMP` and `JUMPI` are preceded by a `PUSH` — that is, they are effectively static.  This proposal _requires_ that in `valid` code `JUMP` and `JUMPI` are _always_ used statically.  Currently, the only places that jumps _must_ be used dynamically are to support calls and returns.  For that purpose we propose `CALLSUB` and `RETURNSUB` opcodes as replacements.\n \n ## Specification\n ",
+      "additions": 9,
+      "deletions": 10
+    },
+    {
+      "sha": "a2ac45e1088dbe5e79d853c94233d717756859cd",
+      "date": "2026-01-04T07:39:43Z",
+      "message": "Update EIP-7979: more editing",
+      "author": "gcolvin",
+      "prNumber": null,
+      "additions": 19,
+      "deletions": 13
+    },
+    {
+      "sha": "570466d23f90ee28064fee08669c367a0cf72737",
+      "date": "2026-01-04T04:41:45Z",
+      "message": "Update EIP-7979: new exploit code",
+      "author": "gcolvin",
+      "prNumber": null,
+      "patch": "@@ -176,21 +176,21 @@ With no syntactic constraints and minimal semantic constraints we maximize oppor\n \n Static analysis amounts to most anything you can do with a program without actually running it.  And traversing the flow of control — in a way that follows every possible path only once — is a fundamental first step for many static analyses, especially for recovering control-flow graphs.  When all jumps are static the number of steps is linear in the number of instructions: a fixed number of paths must be explored for each jump.  But with dynamic jumps every possible destination must be explored at every jump: at worst, the number of steps can be quadratic in the number of instructions.\n \n-Consider these three programs.  They make for nice exploits -- is impossible to know where the jumps go.\n+Consider these three programs.  They make for nice exploits, especially as they get longer.  It's not important that at runtime `timestamp` isn't random or that the `jump` will most often fail -- what matters is that it is impossible to know at static analysis time where the jumps go, so every destination must be followed.\n \n ```\n \n    jumpdest           jumpdest          jumpdest\n-   prevrandao         prevrandao        prevrandao\n+   timestamp          timestamp         timestamp\n    jump               jump              jump\n    jumpdest           jumpdest          jumpdest\n-   sload              sload             sload\n+   timestamp          timestamp         timestamp\n    jump               jump              jump\n    jumpdest           jumpdest          jumpdest\n-   stop               sload             sload\n+   stop               timestamp         timestamp\n                       jump              jump\n                       jumpdest          jumpdest\n-                      stop              sload\n+                      stop              timestamp\n                                         jump\n                                         jumpdest\n                                         stop",
+      "additions": 5,
+      "deletions": 5
+    },
+    {
+      "sha": "72746ab52da97b81fbcfa8dfb7c46a30d961825a",
+      "date": "2026-01-04T01:00:51Z",
+      "message": "Update EIP-7979: readability",
+      "author": "gcolvin",
+      "prNumber": null,
+      "patch": "@@ -27,7 +27,7 @@ These changes are backwards-compatible: all instructions behave as specified whe\n \n ## Motivation\n \n-In 2016 the lead author set out to write a compiler from EVM code to register code for a better VM or to machine code.  The design was simple -- traverse the EVM stack code in one pass, emitting register code for the target machine.  I was immediately stymied by the presence of dynamic jumps. _Dynamic jumps must die._\n+In 2016 the lead author set out to write an EVM compiler to code for virtual or real machines.  The design was just that simple -- traverse the EVM stack code in one pass, emitting register code for the target machine.  I was immediately stymied by the presence of dynamic jumps. _Dynamic jumps must die._\n \n How to kill them?  First, some history.\n \n@@ -51,9 +51,9 @@ In 1950 Alan Turing answered \"Lady Lovelace's Objection\" with a question of his\n \n ### Industry practice: 1945 - 2025\n \n-Call and return facilities of various levels of complexity — from Burroughs' baroque ALGOL support to RISC-V's subtly dynamic `JAL` and  `JALR` — have proven their worth across a long line of important machines over the last 80 years.  This includes most all of the machines we have programmed or implemented: physical machines including the Burroughs 5000, CDC 7600, IBM 360, PDP-11, VAX, Motorola 68000, Sun SPARC, Intel x86s, and others, as well as virtual machines for Scheme, Forth, Pascal, Java, Wasm, .NET and others.\n+Call and return facilities of various levels of complexity have proven their worth across a long line of important machines over the last 80 years:  Burroughs' baroque ALGOL support; Intel's `CALL` and `RET`, RISC-V's subtly dynamic `JAL` and `JALR`; ARM's bare `BL`.  And most every other machine we have programmed or implemented: physical machines including the, CDC 7600, IBM 360, PDP-11, VAX, Motorola 68000, and others, as well as virtual machines for Scheme, Forth, Pascal, Java, Wasm, .NET and others.\n \n-Especially relevant to the EVM's design are the Jave, Wasm, and .NET VMs.  They share some important features:  their programs are all represented with a portable bytecode, the bytecode can be directly interpreted, and the bytecode can also be translated to machine code with a one-pass JIT.\n+Especially relevant to the EVM's design are the Java, Wasm, and .NET VMs.  They share some important features:  their programs are all represented with a portable bytecode, the bytecode can be validated at load time, can be directly interpreted, and can be translated to machine code with a one-pass JIT.  We propose that the EVM share these features.\n \n ### The EVM control-flow facility\n \n@@ -155,8 +155,8 @@ Code beginning with `MAGIC` MUST be `valid`.  Constraints on `valid` code MUST b\n * The `CALLSUB` instruction MUST NOT address immediate data, and MUST address an `ENTERSUB`.\n * The number of items on the `data stack` MUST always be positive and less than or equal to 1024.\n * The number of items on the `return stack` MUST always be positive and less than or equal to 1024.\n-* The `stack height` is the absolute difference between the current `stack pointer` and the `stack pointer` at the most recent `ENTERSUB`:\n-  * The `stack height` MUST be _the same_ for every `PC`.\n+* The `stack height` is the absolute difference between the current `stack pointer` and the `stack pointer` at the most recent `ENTERSUB`.\n+  * During execution the `stack height` MUST be _the same_ for every `PC`.\n \n The guarantee of constant stack height prevents stack underflow, breaks cycles in the control flow, ensures finite stack use for non-recursive programs, and allows virtual stack code to be directly serialized into virtual register code for faster interpretation and compilation to machine code.\n ",
+      "additions": 5,
+      "deletions": 5
+    },
+    {
+      "sha": "2d3a09ef0f3b09df95f5b4f43205ad3cddb1e7a5",
+      "date": "2025-12-26T16:46:44Z",
+      "message": "Update EIP-7979: Clarify motivation and stakes in EIP-7979",
+      "author": "gcolvin",
+      "prNumber": null,
+      "patch": "@@ -27,7 +27,7 @@ These changes are backwards-compatible: all instructions behave as specified whe\n \n ## Motivation\n \n-In 2016 the lead author set out to write a compiler from EVM code to machine code.  I was immediately stymied by the presence of dynamic jumps. _Dynamic jumps must die._\n+In 2016 the lead author set out to write a compiler from EVM code to register code for a better VM or to machine code.  The design was simple -- traverse the EVM stack code in one pass, emitting register code for the target machine.  I was immediately stymied by the presence of dynamic jumps. _Dynamic jumps must die._\n \n How to kill them?  First, some history.\n \n@@ -77,11 +77,11 @@ Even offline, dynamic jumps (and the lack of calls and returns) can cause static\n \n There is an entire academic literature of complex, incomplete solutions to problems that this proposal, others before it, and the design of other VMs render trivial.\n \n-With so much at stake on the blockchain deploying correct contracts is imperative — there is no reason for the EVM to make that job any more difficult than necessary.\n+With so much at stake on the blockchain -- currently over $300,000,000,000 -- deploying correct contracts is imperative — there is no reason for the EVM to make that job any more difficult than necessary.\n \n ### Taming the EVM\n \n-To prevent control-flow traversal from \"going quadratic\" we must prevent the dynamic use of jumps.  On-chain, most all uses of `JUMP` and `JUMPI` are preceded by a `PUSH` — that is, they are effectively static.  This proposal ensures that in `valid` code `JUMP` and `JUMPI` are always used statically.  Currently, the only places that jumps _have to be_ used dynamically are to support calls and returns.  For that purpose we propose `CALLSUB` and `RETURNSUB` opcodes as replacements.\n+To prevent control-flow traversal from \"going quadratic\" we must prevent the dynamic use of jumps.  On-chain, most uses of `JUMP` and `JUMPI` are preceded by a `PUSH` — that is, they are effectively static.  This proposal ensures that in `valid` code `JUMP` and `JUMPI` are always used statically.  Currently, the only places that jumps _have to be_ used dynamically are to support calls and returns.  For that purpose we propose `CALLSUB` and `RETURNSUB` opcodes as replacements.\n \n ## Specification\n \n@@ -117,7 +117,6 @@ _Notes:_\n \n * _Values popped off the `return stack` do not need to be validated, since they are alterable only by `CALLSUB` and `RETURNSUB`._\n * _The description above lays out the semantics of these instructions in terms of a `return stack`.  But the actual state of the `return stack` is not observable by EVM code or consensus-critical to the protocol.  (For example, a node implementer may code `CALLSUB` to unobservably push `PC` on the `return stack` rather than `PC + 1`, which is allowed so long as `RETURNSUB` observably returns control to the `PC + 1` location.)_\n-\n * _Opcode and `MAGIC` values are still to be determined._\n \n ### Costs",
+      "additions": 3,
+      "deletions": 4
+    },
+    {
+      "sha": "bbb81a73a78e545a1b3dee49541036535703853d",
+      "date": "2025-11-17T07:12:00Z",
+      "message": "Update EIP-7979: historical and technical updates",
+      "author": "gcolvin",
+      "prNumber": null,
+      "additions": 9,
+      "deletions": 7
+    },
+    {
+      "sha": "6520772a7183f9e2d13ad2c81e743e3d2441dd84",
+      "date": "2025-11-04T10:13:22Z",
+      "message": "Update EIP-7979: Fix example program for quadratic control flow.",
+      "author": "gcolvin",
+      "prNumber": null,
+      "patch": "@@ -177,21 +177,21 @@ With no syntactic constraints and minimal semantic constraints we maximize oppor\n \n Static analysis amounts to most anything you can do with a program without actually running it.  And traversing the flow of control — in a way that follows each possible path only once — is a fundamental first step for many static analyses, especially for recovering control-flow graphs.  When all jumps are static the number of steps is linear in the number of instructions: a fixed number of paths must be explored for each jump.  But with dynamic jumps every possible destination must be explored at every jump: at worst, the number of steps can be quadratic in the number of instructions.\n \n-Consider these three programs:\n+Consider these three programs.  It is impossible to know where the jumps go.\n \n ```\n \n    jumpdest           jumpdest          jumpdest\n-   load               load              load\n+   prevrandao         prevrandao        prevrandao\n    jump               jump              jump\n    jumpdest           jumpdest          jumpdest\n-   load               load              load\n+   sload              sload             sload\n    jump               jump              jump\n    jumpdest           jumpdest          jumpdest\n-   stop               load              load\n+   stop               sload             sload\n                       jump              jump\n                       jumpdest          jumpdest\n-                      stop              load\n+                      stop              sload\n                                         jump\n                                         jumpdest\n                                         stop\n@@ -536,5 +536,3 @@ These changes introduce new flow control instructions.  They do not introduce an\n    ```\n -->\n Copyright and related rights waived via [CC0](../LICENSE.md).\n-\n-",
+      "additions": 5,
+      "deletions": 7
+    },
+    {
+      "sha": "5def74066e89d308a46dcac8fd1c3d560bcacc2f",
+      "date": "2025-11-04T09:20:27Z",
+      "message": "Update EIP-7979: Revise EIP-7979 for clarity and correctness",
+      "author": "gcolvin",
+      "prNumber": null,
+      "additions": 120,
+      "deletions": 125
+    },
+    {
+      "sha": "a78a5027ed8083169e846e76b06b5402b8fb3716",
+      "date": "2025-10-04T03:00:49Z",
+      "message": "Update EIP-7979: Update eip-7979.md",
+      "author": "gcolvin",
+      "prNumber": null,
+      "additions": 20,
+      "deletions": 19
+    },
+    {
+      "sha": "63c465c7a55b982036130dbe0d1b91bc132bbb94",
+      "date": "2025-10-04T01:45:36Z",
+      "message": "Update EIP-7979: Update eip-7979.md",
+      "author": "gcolvin",
+      "prNumber": null,
+      "patch": "@@ -1,7 +1,7 @@\n ---\n eip: 7979\n title: Call and Return Opcodes for the EVM\n-description: Three new EVM opcodes to support calls and returns.  Optional validated conrol flow.\n+description: Three new instructions to support calls and returns, with optional validated control flow.\n author: Greg Colvin (@gcolvin), Martin Holst Swende (@holiman), Brooklyn Zelenka (@expede), John Max Skaller <skaller@internode.on.net>\n discussions-to: https://ethereum-magicians.org/t/eip-7951-call-and-return-opcodes-for-the-evm/24615\n status: Draft",
+      "additions": 1,
+      "deletions": 1
+    },
+    {
+      "sha": "9a126f50ccbbff7ea73e5a84634fd83759055681",
+      "date": "2025-10-04T00:41:03Z",
+      "message": "Update EIP-7979: Update eip-7979.md",
+      "author": "gcolvin",
+      "prNumber": null,
+      "additions": 39,
+      "deletions": 46
+    },
+    {
+      "sha": "3bf3bfd0053d018d3eab461eb99291c0a2d3ffc7",
+      "date": "2025-09-27T01:28:52Z",
+      "message": "Update EIP-7979: Update eip-7979.md",
+      "author": "gcolvin",
+      "prNumber": null,
+      "patch": "@@ -143,7 +143,7 @@ Execution is defined in the Yellow Paper as a sequence of changes to the EVM sta\n \n We would like to consider EVM code valid iff no execution of the program can lead to an exceptional halting state. In practice, we must test at runtime for the first three conditions.  We don't know whether we will be called statically.  We don't know how much gas there will be, and we don't know how deep a recursion may go.  (However, we can validate that non-recursive programs do not overflow stack.)  All of the remaining conditions MUST be validated statically.  To allow for efficient algorithms our validation does not consider the codes data and computations, only its control flow and stack use. This means we will reject programs with invalid code paths, even if those paths are not reachable. \n \n-### Constraints on `valid` code\n+#### Constraints on `valid` code\n \n Code beginning with `MAGIC` MUST be `valid`.  Constraints on `valid` code MUST be validated at `CREATE` time, in time and space linear in the size of the code.  The constraints on `valid` code are as follows.\n \n@@ -163,7 +163,7 @@ The guarantee of constant stack height prevents stack underflow, breaks cycles i\n \n _Note: .NET, the JVM, and Wasm enforce similar constraints for similar reasons._\n \n-### Validation\n+#### Validation\n \n The above is a purely semantic specification, placing no constraints on the syntax of bytecode beyond being an array of opcodes and immediate data.  \"Subsidiary operations\" here are not contiguous sequences of bytecode.  They are subgraphs of the bytecode's full control-flow graph.  The EVM is a simple state machine, where every instruction advances the state one more notch -- it has no syntactic structure.  We only promise that `valid` code will not, as it were, jam up the gears of the machine.\n ",
+      "additions": 2,
+      "deletions": 2
+    },
+    {
+      "sha": "24d0c7a3486bf8a17437e45bbf4199088bb1cc02",
+      "date": "2025-09-27T01:02:43Z",
+      "message": "Update EIP-7979: Update eip-7979.md",
+      "author": "gcolvin",
+      "prNumber": null,
+      "additions": 6,
+      "deletions": 6
+    },
+    {
+      "sha": "4aaaaaaf96fc597d821c781fa8347fc624d80aa9",
+      "date": "2025-09-26T04:14:59Z",
+      "message": "Update EIP-7979: Update eip-7979.md",
+      "author": "gcolvin",
+      "prNumber": null,
+      "additions": 57,
+      "deletions": 72
+    },
+    {
+      "sha": "16443719457462e9f6978ff2bf7afdc62f6a1d69",
+      "date": "2025-09-17T07:44:35Z",
+      "message": "Update EIP-7979: better explanation of control flow",
+      "author": "gcolvin",
+      "prNumber": null,
+      "additions": 56,
+      "deletions": 15
+    },
+    {
+      "sha": "c44b6c3a806dba6d3c34797ea8477f2ea6a581b2",
+      "date": "2025-08-19T05:22:00Z",
+      "message": "Update EIP-7979: simplify calling covention",
+      "author": "gcolvin",
+      "prNumber": null,
+      "patch": "@@ -17,7 +17,7 @@ This is the smallest possible change to the EVM to support calls and returns.\n \n This proposal introduces three new control-flow instructions to the EVM:\n \n-* `CALLSUB destination` transfers control to the `destination`.\n+* `CALLSUB` transfers control to the `destination` on the `stack`.\n * `ENTERSUB` marks a `CALLSUB` destination.\n * `RETURNSUB` returns to the `PC` after the most recent `CALLSUB`.\n \n@@ -95,11 +95,11 @@ To prevent control-flow traversal from \"going quadratic\" we must prevent the dyn\n \n > _The key words MUST and MUST NOT in this Specification are to be interpreted as described in RFC 2119 and RFC 8174._\n \n-### `CALLSUB destination (0x..)`\n+### `CALLSUB (0x..)`\n \n Transfers control to a subsidiary operation.\n \n-1. Decode the `destination` as a UTF8-encoded positive integer.\n+1. Pop the `destination` on top on the `stack`.\n 2. Push the current `PC + 1` to the `return stack`.\n 3. Set `PC` to `destination`.\n \n@@ -214,18 +214,18 @@ SQUARE:                           |       SQUARE:\n CALL_SQUARE:                      |       CALL_SQUARE:                 \n     jumpdest       ; 1 gas        |           entersub       ; 1 gas\n     push RTN_CALL  ; 3 gas        |           push 2         ; 3 gas          \n-    push 2         ; 3 gas        |           callsub SQUARE ; 8 gas\n-    push SQUARE    ; 3 gas        |           returnsub      ; 5 gas\n-    jump           ; 8 gas        |           \n+    push 2         ; 3 gas        |           push SQUARE    ; 3 gas\n+    push SQUARE    ; 3 gas        |           callsub        ; 8 gas\n+    jump           ; 8 gas        |           returnsub      ; 5 gas\n RTN_CALL:                         |                                 \n     swap1          ; 3 gas        |                                 \n     jump           ; 8 gas        |                                 \n                                   |                                 \n-Size in bytes; 18                 |      Size in bytes: 12\n-Consumed gas;  49                 |      Consumed gas:  35\n+Size in bytes; 18                 |      Size in bytes: 13\n+Consumed gas;  49                 |      Consumed gas:  38\n ```\n \n-That's 33% fewer bytes and 33% less gas using `CALLSUB` versus using `JUMP`.  So we can see that these instructions provide a simpler, more efficient mechanism. As code becomes larger and better optimized the gains become proportionally smaller, but code using `CALLSUB` always takes less space and gas than equivalent code without it.\n+That's 32% fewer bytes and 30% less gas using `CALLSUB` versus using `JUMP`.  So we can see that these instructions provide a simpler, more efficient mechanism. As code becomes larger and better optimized the gains become proportionally smaller, but code using `CALLSUB` always takes less space and gas than equivalent code without it.\n \n ### Do we improve real-time performance?\n ",
+      "additions": 9,
+      "deletions": 9
+    },
+    {
+      "sha": "71c10ee5b62bed7b6776a3c8b1213732f2997764",
+      "date": "2025-08-17T03:09:22Z",
+      "message": "Update EIP-7979: formatting, links, and nits",
+      "author": "gcolvin",
+      "prNumber": null,
+      "additions": 49,
+      "deletions": 46
+    },
+    {
+      "sha": "803ec7167da9ebb03a306e2c0d835c54ce712497",
+      "date": "2025-08-16T05:44:54Z",
+      "message": "Update EIP-7979: tweaks and typos",
+      "author": "gcolvin",
+      "prNumber": null,
+      "additions": 31,
+      "deletions": 28
+    },
+    {
+      "sha": "3d814ce43ef433b89f6c93b94b917887a3ab3e02",
+      "date": "2025-08-16T03:18:03Z",
+      "message": "Update EIP-7979: more list formatting, some spelling",
+      "author": "gcolvin",
+      "prNumber": null,
+      "additions": 36,
+      "deletions": 31
+    },
+    {
+      "sha": "9ed0fa3c0fee54ef499aa48796b9295fa4e5852b",
+      "date": "2025-08-15T23:50:16Z",
+      "message": "Update EIP-7979: mostly formatting",
+      "author": "gcolvin",
+      "prNumber": null,
+      "additions": 33,
+      "deletions": 32
+    },
+    {
+      "sha": "20c9d4202e119d9f75a9e3891f025d84c81826dc",
+      "date": "2025-08-14T12:53:47Z",
+      "message": "Add EIP: Call and Return Opcodes for the EVM",
+      "author": "gcolvin",
+      "prNumber": null,
+      "additions": 513,
+      "deletions": 0
+    }
+  ],
+  "openPrs": [
+    {
+      "number": 10485,
+      "title": "Update EIP-7979: fix typos",
+      "author": "Brian5561",
+      "updatedAt": "2025-10-07T07:23:51Z",
+      "additions": 2,
+      "deletions": 2
+    },
+    {
+      "number": 11230,
+      "title": "Update EIP-7979: Fix Python syntax errors in validate_code function",
+      "author": "alizfara112",
+      "updatedAt": "2026-06-20T01:26:09Z",
+      "additions": 11,
+      "deletions": 11
+    },
+    {
+      "number": 10190,
+      "title": "Update EIP-7979: journal name correction",
+      "author": "avorylli",
+      "updatedAt": "2025-08-19T12:44:43Z",
+      "additions": 1,
+      "deletions": 1
+    },
+    {
+      "number": 10993,
+      "title": "Update EIP-7979: fix typo and formatting errors",
+      "author": "jSqqrq1",
+      "updatedAt": "2026-01-05T05:22:22Z",
+      "additions": 4,
+      "deletions": 4
+    },
+    {
+      "number": 10890,
+      "title": "Update EIP-7979: fix test comments to use ENTERSUB",
+      "author": "yyhrnk",
+      "updatedAt": "2025-12-10T08:03:07Z",
+      "additions": 4,
+      "deletions": 4
+    },
+    {
+      "number": 11080,
+      "title": "Update EIP-7979: Fix typos in EIP-7979 and EIP-8012",
+      "author": "JayeTurn",
+      "updatedAt": "2026-01-14T14:03:45Z",
+      "additions": 1,
+      "deletions": 1
+    }
+  ]
+}

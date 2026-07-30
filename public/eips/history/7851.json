@@ -1,0 +1,97 @@
+{
+  "eipId": 7851,
+  "commits": [
+    {
+      "sha": "07f3bb3626d4db1f2ac501734fec5b3d32e185c5",
+      "date": "2026-05-14T19:02:53Z",
+      "message": "Update EIP-7851: tweak wording based on forum discussions",
+      "author": "colinlyguo",
+      "prNumber": null,
+      "patch": "@@ -38,7 +38,9 @@ Clients must treat `0xef0101 || delegate_address` identically to `0xef0100 || de\n \n ### SETSELFDELEGATE\n \n-`SETSELFDELEGATE(delegate_address)` takes one stack item. The low 160 bits of the stack item are interpreted as `delegate_address`.\n+`SETSELFDELEGATE(delegate_address)` is self-only. Define `authority` as the current execution-context address. The opcode updates only `authority`.\n+\n+The opcode takes one stack item. The low 160 bits of the stack item are interpreted as `delegate_address`.\n \n Before execution:\n \n@@ -58,31 +60,33 @@ The opcode costs `SETSELFDELEGATE_GAS` for each execution attempt.\n \n If executed in a static context, `SETSELFDELEGATE` must cause an exceptional halt.\n \n-Let `authority` be the current execution-context address. Let `code` be the raw account code stored in state for `authority`, not the resolved delegated code currently being executed. A successful update affects only future delegated-code resolution; it does not change the code executing in the current frame.\n-\n-`SETSELFDELEGATE` is self-only. It must not accept a target account and must not modify any account other than `authority`.\n-\n State changes made by `SETSELFDELEGATE` follow normal EVM revert semantics. If the frame or transaction reverts, the delegation update reverts.\n \n+The `code` checked by this opcode is the raw account code stored in state for `authority`, not the code obtained by following the delegation indicator for the current frame.\n+\n Execution proceeds as follows:\n \n 1. If `delegate_address == address(0)`, push `0` and make no state change.\n 2. If `code` is exactly 23 bytes long and starts with either `0xef0100` or `0xef0101`, set `code(authority) = 0xef0101 || delegate_address` and push `1`.\n 3. Otherwise, push `0` and make no state change.\n \n+After a successful update, later code-executing operations targeting `authority` follow the updated delegation indicator to obtain the code to execute.\n+\n+More specifically, the effect is frame-local. Frames that have already obtained code continue executing that code. A re-entrant call to `authority` later in the same transaction is a later code-executing operation and therefore loads code through the updated delegation indicator.\n+\n Calling `SETSELFDELEGATE` from an ECDSA-enabled delegation disables ECDSA authority and sets the delegate. Calling it from an ECDSA-disabled delegation redelegates while keeping ECDSA authority disabled.\n \n ### Validation\n \n During [EIP-7702](./eip-7702.md) authorization processing, if `authority` currently has code that is exactly 23 bytes long and starts with `0xef0101`, any authorization signed by `authority` must be considered invalid and skipped.\n \n-An ECDSA-authenticated transaction whose recovered sender has code that is exactly 23 bytes long and starts with `0xef0101` must not be included in a block. Transaction pools must reject such transactions.\n+An ECDSA-authenticated transaction whose recovered sender has code that is exactly 23 bytes long and starts with `0xef0101` in the current state is invalid and must not be included in a block. Transaction pools must reject such transactions.\n \n ## Rationale\n \n [EIP-7702](./eip-7702.md) bootstraps delegation with the original EOA key. After bootstrap, the account may be controlled through wallet code, passkeys, multisig, social recovery, or modules. The ECDSA-disabled lifecycle should therefore be available from the delegated account's execution path.\n \n-`SETSELFDELEGATE` moves this decision into wallet code. The first successful call permanently disables residual ECDSA authority. Later calls may update the delegate, but always remain ECDSA-disabled. The permanent property is not that the delegate target is frozen forever; the permanent property is that residual ECDSA authority is disabled forever.\n+`SETSELFDELEGATE` moves this decision into wallet code. The first successful call permanently disables residual ECDSA authority. Later calls may update the delegate, but ECDSA remains disabled.\n \n `SETSELFDELEGATE_GAS` is `9500`, equal to `PER_AUTH_BASE_COST` from [EIP-7702](./eip-7702.md) minus the `3000` gas attributed to recovering the authority address. The opcode writes one 23-byte delegation indicator for the current execution-context account after delegation has already resolved, and does not verify a signature, process an authorization tuple, increment the account nonce, or touch another account.\n ",
+      "additions": 11,
+      "deletions": 7
+    },
+    {
+      "sha": "43953c6d76475b9815e2c2103fc1119ef2c8c1a9",
+      "date": "2026-05-14T09:51:04Z",
+      "message": "Update EIP-7851: use code-controlled delegation",
+      "author": "colinlyguo",
+      "prNumber": null,
+      "additions": 55,
+      "deletions": 26
+    },
+    {
+      "sha": "3010b58ba1d15abb754a499aa87a52e580765031",
+      "date": "2026-05-13T15:27:27Z",
+      "message": "Update EIP-7851: Few tweaks to 7851 and 8151",
+      "author": "lightclient",
+      "prNumber": null,
+      "additions": 10,
+      "deletions": 12
+    },
+    {
+      "sha": "da73f7eb9e154c98405b1586e5028ac542945031",
+      "date": "2026-05-12T19:56:05Z",
+      "message": "Update EIP-7851: simplify ECDSA authority deactivation",
+      "author": "colinlyguo",
+      "prNumber": null,
+      "additions": 29,
+      "deletions": 150
+    },
+    {
+      "sha": "4ed30eec5816ec9c4e503e2a0f266b93f58d686d",
+      "date": "2026-02-28T09:39:38Z",
+      "message": "Update EIP-7851: Move to Draft",
+      "author": "colinlyguo",
+      "prNumber": null,
+      "additions": 130,
+      "deletions": 178
+    },
+    {
+      "sha": "12ba0c6566fb93c8fc06d2817a27e942797cddb3",
+      "date": "2025-09-21T00:24:35Z",
+      "message": "(bot 1272989785) moving EIPS/eip-7851.md to stagnant (#10245)",
+      "author": "eth-bot",
+      "prNumber": 10245,
+      "patch": "@@ -4,7 +4,7 @@ title: Deactivate/Reactivate a Delegated EOA's Key\n description: Introduce a new precompiled contract for EOAs with delegated code to deactivate or reactivate private keys.\n author: Liyi Guo (@colinlyguo)\n discussions-to: https://ethereum-magicians.org/t/eip-7851-deactivate-reactivate-a-delegated-eoas-key/22344\n-status: Draft\n+status: Stagnant\n type: Standards Track\n category: Core\n created: 2024-12-27",
+      "additions": 1,
+      "deletions": 1
+    },
+    {
+      "sha": "b512c0f437d5a41ea42b22e61dbfd7d54e1111d8",
+      "date": "2025-02-25T15:55:08Z",
+      "message": "Update EIP-7851: simplifies some descriptions",
+      "author": "colinlyguo",
+      "prNumber": null,
+      "additions": 7,
+      "deletions": 11
+    },
+    {
+      "sha": "dbbb62adba64e111eb07d495a8d997ee384ccf5d",
+      "date": "2025-02-10T21:15:00Z",
+      "message": "Update EIP-7851: multiple fixes and refinements",
+      "author": "colinlyguo",
+      "prNumber": null,
+      "additions": 86,
+      "deletions": 74
+    },
+    {
+      "sha": "05fadf7125f915ed9b6fbb9f037d11076bf8c5c3",
+      "date": "2025-01-12T22:16:20Z",
+      "message": "Update EIP-7851: multiple fixes and refinements",
+      "author": "colinlyguo",
+      "prNumber": null,
+      "additions": 31,
+      "deletions": 39
+    },
+    {
+      "sha": "d96625a4dcbbe2572fa006f062bd02b4582eefd5",
+      "date": "2025-01-05T15:58:03Z",
+      "message": "Add EIP: Deactivate/Reactivate a Delegated EOA's Key",
+      "author": "colinlyguo",
+      "prNumber": null,
+      "additions": 247,
+      "deletions": 0
+    }
+  ]
+}

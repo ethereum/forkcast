@@ -1,0 +1,42 @@
+{
+  "eipId": 8131,
+  "commits": [
+    {
+      "sha": "cf5b8d9c0fd80dfc9d737135902b149ea64f6061",
+      "date": "2026-06-17T09:18:21Z",
+      "message": "Update EIP-8131: Rewrite EIP-8131 as Unified Transaction Content Floor",
+      "author": "nerolation",
+      "prNumber": null,
+      "additions": 123,
+      "deletions": 128
+    },
+    {
+      "sha": "7ea4ed579a193cbc271662a55ad7d51924d2d81d",
+      "date": "2026-05-08T09:44:34Z",
+      "message": "Update EIP-8131: Add empirical impact report",
+      "author": "nerolation",
+      "prNumber": null,
+      "patch": "@@ -13,7 +13,7 @@ requires: 7623, 7702, 7976\n \n ## Abstract\n \n-This EIP includes [EIP-7702](./eip-7702.md) authorization data in the [EIP-7623](./eip-7623.md) floor calculation, preventing circumvention of floor pricing through authorization lists. This effectively reduces the worst-case block size by ~16%.\n+This EIP includes [EIP-7702](./eip-7702.md) authorization data in the [EIP-7623](./eip-7623.md) floor calculation, preventing circumvention of floor pricing through authorization lists. This effectively reduces the worst-case block size by ~16% with minimal user impact (~0.001% of mainnet transactions affected).\n \n ## Motivation\n \n@@ -87,6 +87,8 @@ At the floor under EIP-7976 every byte costs 64 gas regardless of value, so the\n # reduction: 1 − 0.894 / 1.067 ≈ 16%\n ```\n \n+Empirical analysis over the last 6 months (2025-11-08 to 2026-05-08) ([impact report](../assets/eip-8131/impact_report.md)) shows that only 0.124% of type-4 transactions (0.001% of all mainnet) and 0.330% of type-4 senders would be affected by this EIP.\n+\n ### Floor-Only Modification\n \n Authorization costs are added to the floor calculation only, not to intrinsic gas. This differs from [EIP-7981](./eip-7981.md) (access lists) because:",
+      "additions": 3,
+      "deletions": 1
+    },
+    {
+      "sha": "1707e6d11a9a56ab62b430e95bf83d0e8b2505ef",
+      "date": "2026-05-07T09:16:51Z",
+      "message": "Update EIP-8131: Clarify worst-case block size reduction, align 7976",
+      "author": "nerolation",
+      "prNumber": null,
+      "additions": 44,
+      "deletions": 22
+    },
+    {
+      "sha": "c1bb8ca997b2ce7419690da8c8ddfe55acb0a3b4",
+      "date": "2026-02-06T09:00:00Z",
+      "message": "Add EIP: Add Auth Data to EIP-7623 Floor",
+      "author": "nerolation",
+      "prNumber": null,
+      "additions": 163,
+      "deletions": 0
+    }
+  ]
+}

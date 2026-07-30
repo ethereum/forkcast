@@ -906,6 +906,7 @@ const SchedulePage: React.FC = () => {
                       });
 
                       const testnetGapTooltip: Record<string, string> = {
+                        'Plataberget': 'Plataberget is a short-lived testnet, spun up specifically for Glamsterdam.',
                         'Sepolia': '30 days is needed before the first testnet for a comprehensive security review of the code',
                         'Hoodi': 'A minimum of 14 days is needed between testnets to ensure the first testnet upgrade went smoothly',
                       };
@@ -921,16 +922,7 @@ const SchedulePage: React.FC = () => {
                         return (
                           <tr key={`testnet-${testnetName}`} className="hover:bg-slate-50 dark:hover:bg-slate-700/30 bg-slate-50/50 dark:bg-slate-800/50">
                             <td className="sticky left-0 bg-slate-50/50 dark:bg-slate-800/50 px-3 py-1.5 text-slate-700 dark:text-slate-300 border-r border-slate-200 dark:border-slate-600 pl-8 text-sm">
-                              {testnetName === 'Plataberget' ? (
-                                <Tooltip text="Plataberget is a short-lived testnet, spun up specifically for Glamsterdam.">
-                                  <span className="inline-flex items-center gap-0.5">
-                                    {testnetName}
-                                    <span className="text-slate-400 dark:text-slate-400 text-[10px]">ⓘ</span>
-                                  </span>
-                                </Tooltip>
-                              ) : (
-                                testnetName
-                              )}
+                              {testnetName}
                             </td>
                             <td className={`px-3 py-1.5 ${mobileFork === 'fusaka' ? '' : 'hidden'} md:table-cell`}>
                               {fusakaTestnet ? (() => {

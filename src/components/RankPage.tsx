@@ -312,7 +312,7 @@ const RankPage: React.FC = () => {
   };
 
   const getTotalItemsCountByLayer = (layer: string): number => {
-    return items.filter((item) => getItemLayer(item) === layer).length;
+    return items.filter((item) => (getItemLayer(item) || 'Other') === layer).length;
   };
 
   const toggleCollection = (collection: string) => {
@@ -875,7 +875,7 @@ const RankPage: React.FC = () => {
               )}
             </div>
             <div className="space-y-4 lg:overflow-y-auto lg:flex-1">
-              {getUnassignedItemsByLayer().map(([layer, layerItems]) => {
+              {getUnassignedItemsByLayer().filter(([, layerItems]) => layerItems.length > 0).map(([layer, layerItems]) => {
                 const isExpanded = expandedCollections.has(layer);
                 const layerLabel = layer === 'EL' ? 'Execution Layer' : layer === 'CL' ? 'Consensus Layer' : layer;
                 return (

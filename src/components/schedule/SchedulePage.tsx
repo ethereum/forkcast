@@ -159,7 +159,7 @@ const SchedulePage: React.FC = () => {
           ...phase,
           testnets: [
             ...phase.testnets.slice(0, insertAt),
-            { name: 'Plataberget', status: 'upcoming' as const, projectedDate: platabergetDate },
+            { name: 'Platåberget', status: 'upcoming' as const, projectedDate: platabergetDate },
             ...phase.testnets.slice(insertAt),
           ],
         };
@@ -906,7 +906,7 @@ const SchedulePage: React.FC = () => {
                       });
 
                       const testnetGapTooltip: Record<string, string> = {
-                        'Plataberget': 'Plataberget is a short-lived testnet, spun up specifically for Glamsterdam.',
+                        'Platåberget': 'Platåberget is a short-lived testnet, spun up specifically for Glamsterdam.',
                         'Sepolia': '30 days is needed before the first testnet for a comprehensive security review of the code',
                         'Hoodi': 'A minimum of 14 days is needed between testnets to ensure the first testnet upgrade went smoothly',
                       };

@@ -121,7 +121,7 @@ const EditableDateCell: React.FC<EditableDateCellProps> = ({
         <Tooltip text={gapTooltip} position="top">
           <span className="inline-flex items-center gap-0.5">
             {span}
-            <span className="hidden md:inline text-slate-400 dark:text-slate-500 text-[10px]">ⓘ</span>
+            <span className="hidden md:inline text-slate-400 dark:text-slate-400 text-[10px]">ⓘ</span>
           </span>
         </Tooltip>
       );

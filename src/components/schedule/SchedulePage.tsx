@@ -19,7 +19,7 @@ interface PlanningTableState {
 const DEFAULT_STATE: PlanningTableState = {
   glamsterdamMainnetDate: '2026-10-21',
   hegotaMainnetDate: '2027-05-01',
-  glamsterdamDevnetCount: 9,
+  glamsterdamDevnetCount: 8,
   hegotaDevnetCount: 6,
   lockedDates: {},
   phaseDurations: DEFAULT_PHASE_DURATIONS,
@@ -88,7 +88,7 @@ const SchedulePage: React.FC = () => {
       durations: phaseDurations,
     });
     // Use actual dates from GLAMSTERDAM_PROGRESS for completed milestones
-    return {
+    const withStatic = {
       ...generated,
       phases: generated.phases.map((phase, idx) => {
         const staticPhase = GLAMSTERDAM_PROGRESS.phases[idx];
@@ -137,6 +137,33 @@ const SchedulePage: React.FC = () => {
         }
         return merged;
       })
+    };
+
+    // Insert a Glamsterdam-only "Plataberget" public testnet before Sepolia,
+    // spaced DEVNET_TO_SEPOLIA (30 days) ahead of Sepolia.
+    return {
+      ...withStatic,
+      phases: withStatic.phases.map(phase => {
+        if (phase.phaseId !== 'public-testnets' || !phase.testnets) return phase;
+        const sepoliaIdx = phase.testnets.findIndex(t => t.name === 'Sepolia');
+        const sepolia = sepoliaIdx === -1 ? undefined : phase.testnets[sepoliaIdx];
+        const sepoliaDate = parseShortDate(sepolia?.date || sepolia?.projectedDate || '');
+        let platabergetDate = '';
+        if (sepoliaDate) {
+          const d = new Date(sepoliaDate);
+          d.setDate(d.getDate() - phaseDurations.DEVNET_TO_SEPOLIA);
+          platabergetDate = d.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
+        }
+        const insertAt = sepoliaIdx === -1 ? phase.testnets.length : sepoliaIdx;
+        return {
+          ...phase,
+          testnets: [
+            ...phase.testnets.slice(0, insertAt),
+            { name: 'Plataberget', status: 'upcoming' as const, projectedDate: platabergetDate },
+            ...phase.testnets.slice(insertAt),
+          ],
+        };
+      }),
     };
   }, [glamsterdamMainnetDate, glamsterdamDevnetCount, phaseDurations]);
 
@@ -559,7 +586,7 @@ const SchedulePage: React.FC = () => {
                               )}
                               {phase.id === 'development' && (
                                 <Tooltip text="The number of devnets varies per fork and depends on the complexity of the features being implemented">
-                                  <span className="text-slate-500 dark:text-slate-400 text-sm inline-flex items-center gap-0.5">6 devnets <span className="hidden md:inline text-slate-400 dark:text-slate-500 text-[10px]">ⓘ</span></span>
+                                  <span className="text-slate-500 dark:text-slate-400 text-sm inline-flex items-center gap-0.5">6 devnets <span className="hidden md:inline text-slate-400 dark:text-slate-400 text-[10px]">ⓘ</span></span>
                                 </Tooltip>
                               )}
                             </td>
@@ -581,7 +608,7 @@ const SchedulePage: React.FC = () => {
                               {phase.id === 'development' && (
                                 <div className="flex items-center gap-2">
                                   <Tooltip text="The number of devnets varies per fork and depends on the complexity of the features being implemented">
-                                    <span className="text-slate-500 dark:text-slate-400 text-sm inline-flex items-center gap-0.5">{glamsterdamDevnetCount} devnets <span className="hidden md:inline text-slate-400 dark:text-slate-500 text-[10px]">ⓘ</span></span>
+                                    <span className="text-slate-500 dark:text-slate-400 text-sm inline-flex items-center gap-0.5">{glamsterdamDevnetCount} devnets <span className="hidden md:inline text-slate-400 dark:text-slate-400 text-[10px]">ⓘ</span></span>
                                   </Tooltip>
                                   <div className="flex items-center">
                                     <button
@@ -620,7 +647,7 @@ const SchedulePage: React.FC = () => {
                               {phase.id === 'development' && (
                                 <div className="flex items-center gap-2">
                                   <Tooltip text="The number of devnets varies per fork and depends on the complexity of the features being implemented">
-                                    <span className="text-slate-500 dark:text-slate-400 text-sm inline-flex items-center gap-0.5">{hegotaDevnetCount} devnets <span className="hidden md:inline text-slate-400 dark:text-slate-500 text-[10px]">ⓘ</span></span>
+                                    <span className="text-slate-500 dark:text-slate-400 text-sm inline-flex items-center gap-0.5">{hegotaDevnetCount} devnets <span className="hidden md:inline text-slate-400 dark:text-slate-400 text-[10px]">ⓘ</span></span>
                                   </Tooltip>
                                   <div className="flex items-center">
                                     <button
@@ -860,109 +887,140 @@ const SchedulePage: React.FC = () => {
                     </tr>
 
                     {/* Testnet detail rows */}
-                    {FUSAKA_PROGRESS.phases.find(p => p.phaseId === 'public-testnets')?.testnets?.map((testnet, idx) => {
+                    {(() => {
                       const fusakaTestnetPhase = FUSAKA_PROGRESS.phases.find(p => p.phaseId === 'public-testnets');
                       const glamsterdamTestnetPhase = dynamicGlamsterdamProjection.phases.find(p => p.phaseId === 'public-testnets');
                       const hegotaTestnetPhase = dynamicHegotaProjection.phases.find(p => p.phaseId === 'public-testnets');
+
+                      // Build an ordered union of testnet names across forks. Glamsterdam
+                      // adds "Plataberget" before Sepolia, so rows can't be indexed off
+                      // Fusaka's list alone.
+                      const testnetOrder: string[] = [];
+                      [fusakaTestnetPhase?.testnets, glamsterdamTestnetPhase?.testnets, hegotaTestnetPhase?.testnets].forEach(list => {
+                        list?.forEach((t, i) => {
+                          if (testnetOrder.includes(t.name)) return;
+                          const prevName = i > 0 ? list[i - 1].name : null;
+                          const prevIdx = prevName ? testnetOrder.indexOf(prevName) : -1;
+                          testnetOrder.splice(prevIdx + 1, 0, t.name);
+                        });
+                      });
 
                       const testnetGapTooltip: Record<string, string> = {
                         'Sepolia': '30 days is needed before the first testnet for a comprehensive security review of the code',
                         'Hoodi': 'A minimum of 14 days is needed between testnets to ensure the first testnet upgrade went smoothly',
                       };
-                      const currentGapTooltip = testnetGapTooltip[testnet.name];
                       const testnetMinGap: Record<string, number> = { 'Sepolia': 30, 'Hoodi': 14 };
-                      const minGap = testnetMinGap[testnet.name];
 
-                      return (
-                        <tr key={`testnet-${idx}`} className="hover:bg-slate-50 dark:hover:bg-slate-700/30 bg-slate-50/50 dark:bg-slate-800/50">
-                          <td className="sticky left-0 bg-slate-50/50 dark:bg-slate-800/50 px-3 py-1.5 text-slate-700 dark:text-slate-300 border-r border-slate-200 dark:border-slate-600 pl-8 text-sm">
-                            {testnet.name}
-                          </td>
-                          <td className={`px-3 py-1.5 ${mobileFork === 'fusaka' ? '' : 'hidden'} md:table-cell`}>
-                            {fusakaTestnetPhase?.testnets?.[idx] && (() => {
-                              const fusakaTestnet = fusakaTestnetPhase.testnets[idx];
-                              const fusakaTestnetGap = calculateGap(fusakaTestnet.date || fusakaTestnet.projectedDate, 'fusaka');
-                              return (
-                                <EditableDateCell
-                                  fork="fusaka"
-                                  phaseId="public-testnets"
-                                  itemName={testnet.name}
-                                  calculatedDate={fusakaTestnet.date || fusakaTestnet.projectedDate || ''}
-                                  isCompleted={fusakaTestnet.status === 'completed'}
-                                  isEditable={false}
-                                  lockedDates={lockedDates}
-                                  onLock={lockDate}
-                                  onUnlock={unlockDate}
-                                  gapText={fusakaTestnetGap.text}
-                                  gapIsNegative={fusakaTestnetGap.isNegative}
-                                  gapType="fixed"
-                                />
-                              );
-                            })()}
-                          </td>
-                          <td className={`px-3 py-1.5 ${mobileFork === 'glamsterdam' ? '' : 'hidden'} md:table-cell`}>
-                            {glamsterdamTestnetPhase?.testnets?.[idx] && (
-                              glamsterdamTestnetPhase.testnets[idx].status === 'deprecated' ? (
-                                <div className="text-slate-400 dark:text-slate-400 text-sm italic">Deprecated</div>
-                              ) : (() => {
-                                const glamTestnet = glamsterdamTestnetPhase.testnets[idx];
-                                const glamTestnetDate = glamTestnet.date || glamTestnet.projectedDate || '';
-                                const effectiveGlamTestnetDate = getEffectiveDate('glamsterdam', 'public-testnets', testnet.name, glamTestnetDate);
-                                const glamTestnetGap = calculateGap(effectiveGlamTestnetDate, 'glamsterdam');
+                      return testnetOrder.map((testnetName) => {
+                        const currentGapTooltip = testnetGapTooltip[testnetName];
+                        const minGap = testnetMinGap[testnetName];
+                        const fusakaTestnet = fusakaTestnetPhase?.testnets?.find(t => t.name === testnetName);
+                        const glamTestnet = glamsterdamTestnetPhase?.testnets?.find(t => t.name === testnetName);
+                        const hegotaTestnet = hegotaTestnetPhase?.testnets?.find(t => t.name === testnetName);
+
+                        return (
+                          <tr key={`testnet-${testnetName}`} className="hover:bg-slate-50 dark:hover:bg-slate-700/30 bg-slate-50/50 dark:bg-slate-800/50">
+                            <td className="sticky left-0 bg-slate-50/50 dark:bg-slate-800/50 px-3 py-1.5 text-slate-700 dark:text-slate-300 border-r border-slate-200 dark:border-slate-600 pl-8 text-sm">
+                              {testnetName === 'Plataberget' ? (
+                                <Tooltip text="Plataberget is a short-lived testnet, spun up specifically for Glamsterdam.">
+                                  <span className="inline-flex items-center gap-0.5">
+                                    {testnetName}
+                                    <span className="text-slate-400 dark:text-slate-400 text-[10px]">ⓘ</span>
+                                  </span>
+                                </Tooltip>
+                              ) : (
+                                testnetName
+                              )}
+                            </td>
+                            <td className={`px-3 py-1.5 ${mobileFork === 'fusaka' ? '' : 'hidden'} md:table-cell`}>
+                              {fusakaTestnet ? (() => {
+                                const fusakaTestnetGap = calculateGap(fusakaTestnet.date || fusakaTestnet.projectedDate, 'fusaka');
                                 return (
                                   <EditableDateCell
-                                    fork="glamsterdam"
+                                    fork="fusaka"
                                     phaseId="public-testnets"
-                                    itemName={testnet.name}
-                                    calculatedDate={glamTestnetDate}
-                                    isCompleted={glamTestnet.status === 'completed'}
-                                    isEditable={true}
+                                    itemName={testnetName}
+                                    calculatedDate={fusakaTestnet.date || fusakaTestnet.projectedDate || ''}
+                                    isCompleted={fusakaTestnet.status === 'completed'}
+                                    isEditable={false}
                                     lockedDates={lockedDates}
                                     onLock={lockDate}
                                     onUnlock={unlockDate}
-                                    gapText={glamTestnetGap.text}
-                                    gapIsNegative={glamTestnetGap.isNegative}
-                                    gapIsWarning={minGap != null && glamTestnetGap.days != null && glamTestnetGap.days < minGap}
-                                    gapTooltip={currentGapTooltip}
+                                    gapText={fusakaTestnetGap.text}
+                                    gapIsNegative={fusakaTestnetGap.isNegative}
                                     gapType="fixed"
                                   />
                                 );
-                              })()
-                            )}
-                          </td>
-                          <td className={`px-3 py-1.5 ${mobileFork === 'hegota' ? '' : 'hidden'} md:table-cell`}>
-                            {hegotaTestnetPhase?.testnets?.[idx] && (
-                              hegotaTestnetPhase.testnets[idx].status === 'deprecated' ? (
-                                <div className="text-slate-400 dark:text-slate-400 text-sm italic">Deprecated</div>
-                              ) : (() => {
-                                const hegotaTestnet = hegotaTestnetPhase.testnets[idx];
-                                const hegotaTestnetDate = hegotaTestnet.date || hegotaTestnet.projectedDate || '';
-                                const effectiveHegotaTestnetDate = getEffectiveDate('hegota', 'public-testnets', testnet.name, hegotaTestnetDate);
-                                const hegotaTestnetGap = calculateGap(effectiveHegotaTestnetDate, 'hegota');
-                                return (
-                                  <EditableDateCell
-                                    fork="hegota"
-                                    phaseId="public-testnets"
-                                    itemName={testnet.name}
-                                    calculatedDate={hegotaTestnetDate}
-                                    isCompleted={hegotaTestnet.status === 'completed'}
-                                    isEditable={true}
-                                    lockedDates={lockedDates}
-                                    onLock={lockDate}
-                                    onUnlock={unlockDate}
-                                    gapText={hegotaTestnetGap.text}
-                                    gapIsNegative={hegotaTestnetGap.isNegative}
-                                    gapIsWarning={minGap != null && hegotaTestnetGap.days != null && hegotaTestnetGap.days < minGap}
-                                    gapTooltip={currentGapTooltip}
-                                    gapType="fixed"
-                                  />
-                                );
-                              })()
-                            )}
-                          </td>
-                        </tr>
-                      );
-                    })}
+                              })() : (
+                                <span title="Not scheduled for this fork" className="text-slate-300 dark:text-slate-600 text-sm">—</span>
+                              )}
+                            </td>
+                            <td className={`px-3 py-1.5 ${mobileFork === 'glamsterdam' ? '' : 'hidden'} md:table-cell`}>
+                              {glamTestnet ? (
+                                glamTestnet.status === 'deprecated' ? (
+                                  <div className="text-slate-400 dark:text-slate-400 text-sm italic">Deprecated</div>
+                                ) : (() => {
+                                  const glamTestnetDate = glamTestnet.date || glamTestnet.projectedDate || '';
+                                  const effectiveGlamTestnetDate = getEffectiveDate('glamsterdam', 'public-testnets', testnetName, glamTestnetDate);
+                                  const glamTestnetGap = calculateGap(effectiveGlamTestnetDate, 'glamsterdam');
+                                  return (
+                                    <EditableDateCell
+                                      fork="glamsterdam"
+                                      phaseId="public-testnets"
+                                      itemName={testnetName}
+                                      calculatedDate={glamTestnetDate}
+                                      isCompleted={glamTestnet.status === 'completed'}
+                                      isEditable={true}
+                                      lockedDates={lockedDates}
+                                      onLock={lockDate}
+                                      onUnlock={unlockDate}
+                                      gapText={glamTestnetGap.text}
+                                      gapIsNegative={glamTestnetGap.isNegative}
+                                      gapIsWarning={minGap != null && glamTestnetGap.days != null && glamTestnetGap.days < minGap}
+                                      gapTooltip={currentGapTooltip}
+                                      gapType="fixed"
+                                    />
+                                  );
+                                })()
+                              ) : (
+                                <span title="Not scheduled for this fork" className="text-slate-300 dark:text-slate-600 text-sm">—</span>
+                              )}
+                            </td>
+                            <td className={`px-3 py-1.5 ${mobileFork === 'hegota' ? '' : 'hidden'} md:table-cell`}>
+                              {hegotaTestnet ? (
+                                hegotaTestnet.status === 'deprecated' ? (
+                                  <div className="text-slate-400 dark:text-slate-400 text-sm italic">Deprecated</div>
+                                ) : (() => {
+                                  const hegotaTestnetDate = hegotaTestnet.date || hegotaTestnet.projectedDate || '';
+                                  const effectiveHegotaTestnetDate = getEffectiveDate('hegota', 'public-testnets', testnetName, hegotaTestnetDate);
+                                  const hegotaTestnetGap = calculateGap(effectiveHegotaTestnetDate, 'hegota');
+                                  return (
+                                    <EditableDateCell
+                                      fork="hegota"
+                                      phaseId="public-testnets"
+                                      itemName={testnetName}
+                                      calculatedDate={hegotaTestnetDate}
+                                      isCompleted={hegotaTestnet.status === 'completed'}
+                                      isEditable={true}
+                                      lockedDates={lockedDates}
+                                      onLock={lockDate}
+                                      onUnlock={unlockDate}
+                                      gapText={hegotaTestnetGap.text}
+                                      gapIsNegative={hegotaTestnetGap.isNegative}
+                                      gapIsWarning={minGap != null && hegotaTestnetGap.days != null && hegotaTestnetGap.days < minGap}
+                                      gapTooltip={currentGapTooltip}
+                                      gapType="fixed"
+                                    />
+                                  );
+                                })()
+                              ) : (
+                                <span title="Not scheduled for this fork" className="text-slate-300 dark:text-slate-600 text-sm">—</span>
+                              )}
+                            </td>
+                          </tr>
+                        );
+                      });
+                    })()}
                     <tr className="bg-slate-50 dark:bg-slate-700/50 font-semibold">
                       <td className="sticky left-0 bg-slate-50 dark:bg-slate-700/50 px-3 py-1.5 text-slate-900 dark:text-slate-100 border-r border-slate-200 dark:border-slate-600 text-sm">
                         Mainnet Target
@@ -978,7 +1036,7 @@ const SchedulePage: React.FC = () => {
                                   <span className={`text-xs ${gap.isNegative ? 'text-red-600 dark:text-red-400 font-semibold' : 'text-slate-400 dark:text-slate-400'}`}>
                                     {gap.text}
                                   </span>
-                                  <span className="hidden md:inline text-slate-400 dark:text-slate-500 text-[10px]">ⓘ</span>
+                                  <span className="hidden md:inline text-slate-400 dark:text-slate-400 text-[10px]">ⓘ</span>
                                 </span>
                               </Tooltip>
                             );
@@ -1007,7 +1065,7 @@ const SchedulePage: React.FC = () => {
                                   <span className={`text-xs ${gap.isNegative ? 'text-red-600 dark:text-red-400 font-semibold' : 'text-slate-400 dark:text-slate-400'}`}>
                                     {gap.text}
                                   </span>
-                                  <span className="hidden md:inline text-slate-400 dark:text-slate-500 text-[10px]">ⓘ</span>
+                                  <span className="hidden md:inline text-slate-400 dark:text-slate-400 text-[10px]">ⓘ</span>
                                 </span>
                               </Tooltip>
                             );
@@ -1036,7 +1094,7 @@ const SchedulePage: React.FC = () => {
                                   <span className={`text-xs ${gap.isNegative ? 'text-red-600 dark:text-red-400 font-semibold' : 'text-slate-400 dark:text-slate-400'}`}>
                                     {gap.text}
                                   </span>
-                                  <span className="hidden md:inline text-slate-400 dark:text-slate-500 text-[10px]">ⓘ</span>
+                                  <span className="hidden md:inline text-slate-400 dark:text-slate-400 text-[10px]">ⓘ</span>
                                 </span>
                               </Tooltip>
                             );

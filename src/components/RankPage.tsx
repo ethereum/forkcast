@@ -5,11 +5,10 @@ import {
   getLaymanTitle,
   getProposalPrefix,
   getEipLayer,
-  wasHeadlinerCandidate,
+  getForkRelationship,
 } from "../utils/eip";
 import { useAnalytics } from "../hooks/useAnalytics";
 import { eipsData } from "../data/eips";
-import { getPendingProposalsForFork, PendingProposal } from "../data/pending-proposals";
 
 const ChampionDisplay: React.FC<{ champions?: Champion[] }> = ({ champions }) => {
   if (!champions || champions.length === 0 || !champions.some(c => c.name)) return null;
@@ -24,7 +23,6 @@ const ChampionDisplay: React.FC<{ champions?: Champion[] }> = ({ champions }) =>
 interface TierItem {
   id: string;
   eip?: EIP;
-  pendingProposal?: PendingProposal;
   tier: string | null;
 }
 
@@ -79,9 +77,6 @@ const getItemLayer = (item: TierItem): 'EL' | 'CL' | null => {
   if (item.eip) {
     return getEipLayer(item.eip);
   }
-  if (item.pendingProposal) {
-    return item.pendingProposal.layer;
-  }
   return null;
 };
 
@@ -89,9 +84,6 @@ const getItemLayer = (item: TierItem): 'EL' | 'CL' | null => {
 const getItemTitle = (item: TierItem): string => {
   if (item.eip) {
     return getLaymanTitle(item.eip);
-  }
-  if (item.pendingProposal) {
-    return item.pendingProposal.title;
   }
   return '';
 };
@@ -101,9 +93,6 @@ const getItemDescription = (item: TierItem): string => {
   if (item.eip) {
     return item.eip.laymanDescription || item.eip.description;
   }
-  if (item.pendingProposal) {
-    return item.pendingProposal.description;
-  }
   return '';
 };
 
@@ -111,9 +100,6 @@ const getItemDescription = (item: TierItem): string => {
 const getItemDisplayId = (item: TierItem): string => {
   if (item.eip) {
     return `${getProposalPrefix(item.eip)}-${item.eip.id}`;
-  }
-  if (item.pendingProposal) {
-    return 'Pending';
   }
   return '';
 };
@@ -141,7 +127,7 @@ const truncateText = (text: string, maxLength: number): string => {
 
 const RankPage: React.FC = () => {
   const navigate = useNavigate();
-  const { trackLinkClick, trackEvent } = useAnalytics();
+  const { trackEvent } = useAnalytics();
   const [items, setItems] = useState<TierItem[]>([]);
   const [draggedItem, setDraggedItem] = useState<string | null>(null);
   const [isDragging, setIsDragging] = useState(false);
@@ -159,26 +145,19 @@ const RankPage: React.FC = () => {
     typeof window !== "undefined" &&
     ("ontouchstart" in window || navigator.maxTouchPoints > 0);
 
-  // Initialize with Hegota headliner EIPs and pending proposals
+  // Initialize with Hegota non-headliner EIPs
   useEffect(() => {
-    // Get EIPs that were headliner candidates for Hegota
-    const hegotaHeadlinerEips = eipsData
-      .filter((eip) => wasHeadlinerCandidate(eip, "hegota"))
+    // Get EIPs that belong to Hegota but are not headliners or headliner candidates
+    const allItems = eipsData
+      .filter((eip) => {
+        const rel = getForkRelationship(eip, "hegota");
+        return Boolean(rel) && !rel!.isHeadliner && !rel!.wasHeadlinerCandidate;
+      })
       .map((eip) => ({
         id: `eip-${eip.id}`,
         eip,
         tier: null,
       }));
-
-    // Get pending proposals for Hegota
-    const hegotaPendingProposals = getPendingProposalsForFork("hegota")
-      .map((proposal) => ({
-        id: `pending-${proposal.id}`,
-        pendingProposal: proposal,
-        tier: null,
-      }));
-
-    const allItems = [...hegotaHeadlinerEips, ...hegotaPendingProposals];
 
     // Try to load saved rankings from localStorage
     const savedRankings = localStorage.getItem("hegota-rankings");
@@ -488,7 +467,7 @@ const RankPage: React.FC = () => {
     ctx.textBaseline = "middle";
 
     // Title in the center with date
-    const titleText = "Hegota Headliner Rankings";
+    const titleText = "Hegota EIP Rankings";
     const titleFont = `${13 * scale}px -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif`;
     const dateFont = `${13 * scale}px -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif`;
 
@@ -540,7 +519,7 @@ const RankPage: React.FC = () => {
         const url = URL.createObjectURL(blob);
         const a = document.createElement("a");
         a.href = url;
-        a.download = "hegota-headliner-rankings.png";
+        a.download = "hegota-rankings.png";
         document.body.appendChild(a);
         a.click();
         document.body.removeChild(a);
@@ -668,10 +647,6 @@ const RankPage: React.FC = () => {
     localStorage.removeItem("hegota-rankings");
   };
 
-  const handleExternalLinkClick = (linkType: string, url: string) => {
-    trackLinkClick(linkType, url);
-  };
-
   return (
     <div className="min-h-screen bg-slate-50 dark:bg-slate-900">
       {/* Header */}
@@ -685,7 +660,7 @@ const RankPage: React.FC = () => {
               ← Back to Hegota
             </button>
             <h1 className="font-semibold text-slate-900 dark:text-slate-100 text-center truncate max-w-full overflow-hidden text-base sm:text-xl">
-              Hegota Headliner Tier Maker
+              Hegota Tier Maker
             </h1>
           </div>
         </div>
@@ -723,10 +698,10 @@ const RankPage: React.FC = () => {
                 <div className="px-4 pb-4">
                   <p className="text-xs text-slate-600 dark:text-slate-300 leading-relaxed mb-4">
                     Users, node operators, app developers, core developers, and any other stakeholders
-                    are invited to voice their support for their preferred headliner proposals for the Hegota upgrade.
+                    are invited to voice their support for their preferred non-headliner EIPs for the Hegota upgrade.
                   </p>
                   <p className="text-xs text-slate-600 dark:text-slate-300 leading-relaxed mb-4">
-                    Drag and drop (desktop) or tap-to-assign (mobile) the headliner proposals
+                    Drag and drop (desktop) or tap-to-assign (mobile) the EIPs
                     into tiers. S-tier represents your highest priority proposals,
                     while D-tier represents your lowest priority.
                   </p>
@@ -740,27 +715,6 @@ const RankPage: React.FC = () => {
                     </a>
                     .
                   </p>
-                  <div className="mt-4 flex items-start gap-2.5 rounded-lg border border-slate-200 bg-slate-100 p-3 dark:border-slate-700 dark:bg-slate-800">
-                    <div className="flex-shrink-0 pt-0.5">
-                      <svg
-                        className="h-4 w-4 text-slate-500 dark:text-slate-400"
-                        xmlns="http://www.w3.org/2000/svg"
-                        fill="none"
-                        viewBox="0 0 24 24"
-                        strokeWidth={2}
-                        stroke="currentColor"
-                      >
-                        <path
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                          d="M11.25 11.25l.041-.02a.75.75 0 011.063.852l-.708 2.836a.75.75 0 001.063.852l.041-.021M21 12a9 9 0 11-18 0 9 9 0 0118 0zm-9-3.75h.008v.008H12v-.008z"
-                        />
-                      </svg>
-                    </div>
-                    <p className="text-xs leading-relaxed text-slate-600 dark:text-slate-300">
-                      The deadline for headliner proposal submissions was February 4th, 2025.
-                    </p>
-                  </div>
                 </div>
               )}
             </div>
@@ -909,7 +863,7 @@ const RankPage: React.FC = () => {
           <div className="lg:sticky lg:top-4 lg:max-h-[calc(100vh-2rem)] lg:overflow-hidden lg:flex lg:flex-col">
             <div className="flex items-center justify-between mb-4 flex-shrink-0">
               <h3 className="text-lg font-medium text-slate-900 dark:text-slate-100">
-                Headliner Proposals
+                EIPs
                 <span className="ml-2 text-sm text-slate-500 dark:text-slate-400">
                   ({getUnassignedItems().length} unranked)
                 </span>
@@ -1130,11 +1084,6 @@ const RankPage: React.FC = () => {
                 champions={hoveredItem.eip.forkRelationships.find(fork => fork.forkName.toLowerCase() === "hegota")?.champions}
               />
             )}
-            {hoveredItem.pendingProposal && hoveredItem.pendingProposal.champions.length > 0 && (
-              <ChampionDisplay
-                champions={hoveredItem.pendingProposal.champions}
-              />
-            )}
           </div>
         </div>
       )}
@@ -1143,9 +1092,8 @@ const RankPage: React.FC = () => {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-8">
         <div className="text-center space-y-3">
           <p className="text-xs text-slate-500 dark:text-slate-400 max-w-2xl mx-auto">
-            This is an experimental tool for expressing preferences. Rankings
-            do not represent an official vote of any kind. To learn more about
-            Ethereum governance, visit{" "}
+            This is a tool for expressing preferences. Rankings do not represent an official
+            vote of any kind.<br />To learn more about Ethereum governance, visit{" "}
             <a
               target="_blank"
               href="https://ethereum.org/governance"
@@ -1155,37 +1103,6 @@ const RankPage: React.FC = () => {
             </a>
             .
           </p>
-          <div className="text-xs text-slate-400 dark:text-slate-400">
-            <span className="italic">Have feedback? Contact </span>
-            <a
-              href="mailto:nixo@ethereum.org"
-              onClick={() =>
-                handleExternalLinkClick(
-                  "email_contact",
-                  "mailto:nixo@ethereum.org"
-                )
-              }
-              className="text-slate-500 hover:text-slate-700 dark:text-slate-400 dark:hover:text-slate-200 underline decoration-1 underline-offset-2"
-            >
-              nixo
-            </a>
-            <span className="italic"> or </span>
-            <a
-              href="https://x.com/wolovim"
-              target="_blank"
-              rel="noopener noreferrer"
-              onClick={() =>
-                handleExternalLinkClick(
-                  "twitter_contact",
-                  "https://x.com/wolovim"
-                )
-              }
-              className="text-slate-500 hover:text-slate-700 dark:text-slate-400 dark:hover:text-slate-200 underline decoration-1 underline-offset-2"
-            >
-              @wolovim
-            </a>
-            <span className="italic">.</span>
-          </div>
         </div>
       </div>
     </div>

@@ -122,7 +122,7 @@ const recentStageTransitions: StageTransition[] = (() => {
 
   // Sort by most recent first, then by EIP id for stability
   transitions.sort((a, b) => b.timestamp - a.timestamp || a.eip.id - b.eip.id);
-  return transitions.slice(0, 8);
+  return transitions.slice(0, 5);
 })();
 
 const HomePage = () => {

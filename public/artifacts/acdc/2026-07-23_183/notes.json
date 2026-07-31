@@ -1,0 +1,71 @@
+{
+  "meeting": "ACDC #183 - 2026-07-23",
+  "sections": [
+    {
+      "heading": "Devnet 7 Status and Testing",
+      "summary": "Devnet 7 is live with active payload withholding and TISM testing; PTC blob vote handling and Beacon API performance bugs found across clients.",
+      "timestamp": "00:06:01",
+      "body": "- Devnet 7 launched late last week and has been undergoing payload withholding and TISM (chaos testing) scenarios.\n- The builder was patched to override the gas limit header, causing some issues.\n- PTC votes for blobs appear to not be considered when the payload is missing; PTC blob votes should always be treated as a liveness check independent of payload availability. Clients are investigating.\n- Prysm found a Beacon API performance issue: even when the builder released a payload on time, a 2-second propagation delay caused it to appear late. Only builder 0 (using a recent Beacon API implementation) exhibited this pattern; builders 1 and 2 were always on time.\n- PandaOps requested feedback on whether the bug reports are presented in a helpful format.\n- Prysm nodes fell out of sync due to a peering issue, exacerbated by invalid payloads floating around; a simple restart resolved it. Root cause of peer downscoring not yet identified.\n- Devnet 7 includes 500k exited validators injected into the genesis state to stress-test stable containers.\n- No SSZ/stable container performance degradation observed so far, but Terence noted only ~3,000 active validators may be insufficient to surface bottlenecks.\n  - Prysm has cron jobs actively capturing profiles; plans to let devnet 7 run longer and increase active validators on devnet 8."
+    },
+    {
+      "heading": "Beacon API and Builder API Changes",
+      "summary": "Beacon API PRs 625 and 630 are updated; soft deadline set for Monday (ACDT) to merge, enabling client implementations for devnet 8.",
+      "timestamp": "00:13:10",
+      "body": "- [PR #625](https://github.com/ethereum/beacon-APIs/pull/625) (ProduceBlock v4 auth/config) and related builder API PRs have been updated to remove proxy as a first-class concept, per discussion.\n- [PR #630](https://github.com/ethereum/beacon-APIs/pull/630) adds an ahead-of-time submit builder preferences Beacon endpoint, useful for DVT clusters to do threshold signing an epoch before the block proposal, keeping it off the hot path.\n  - SSV confirmed compatibility with PR #625; Lodestar and Prysm have reviewed PR #630, but more client team reviews are needed.\n- Remaining open discussion: timeouts, headers, and default values for clients.\n- Agreement: soft deadline is Monday (ACDT call) for merging all Beacon API changes, so clients can implement in time for devnet 8 the following week.\n- Obol (DVT provider) indicated they were OOO but will catch up."
+    },
+    {
+      "heading": "Circuit Breaker Implementation Status",
+      "summary": "Lodestar's circuit breaker is nearly final on devnet 7; Prysm, Teku have PRs merged; Nimbus, Grandine, and Lighthouse still need updated implementations.",
+      "timestamp": "00:16:58",
+      "body": "- Lodestar: implementation is nearly finalized and already on devnet 7; considers all branches (not just canonical) for tracking missed payloads.\n- Prysm: circuit breaker implementation expected to be done by devnet 8.\n- Teku: PR has been merged; specific details deferred to the implementer (Mehdi), who was not available.\n- Nimbus: has an earlier Fusaka-era version but not yet an updated Glamsterdam circuit breaker; noted as a priority.\n- Grandine: same situation as Nimbus — only has the previous Fusaka version; will work on an update soon.\n- Lighthouse: no representative on the call to provide status.\n- Agreement: circuit breaker implementation should be added to the devnet 8 spec sheet as a requirement."
+    },
+    {
+      "heading": "BAL JSON-RPC Alignment and Devnet 8 Planning",
+      "summary": "Devnet 8 spec sheet published; target launch early August with builder API and circuit breaker changes; first testnet potentially in September.",
+      "timestamp": "00:21:02",
+      "body": "- Toni flagged EL-side BAL (block-level access list) JSON-RPC divergences across clients on [Discord](https://discord.com/channels/595666850260713488/1364000387195076608/1527979143881429153); CL devs may not need to engage but should keep an eye out.\n- [Devnet 8 spec sheet](https://notes.ethereum.org/@ethpandaops/glamsterdam-devnet-8) published by Stefan and shared in chat.\n- Target timeline: devnet 8 launch early August, at least one public-ish devnet and a non-finality devnet both in August, with first testnet potentially in September."
+    },
+    {
+      "heading": "Glamsterdam SFI Ratification",
+      "summary": "No objections raised to moving all devnet 7 EIPs to SFI; PRs will be created to formalize the status change.",
+      "timestamp": "00:21:33",
+      "body": "- On ACDT Monday, the testing team expressed intent to SFI all EIPs included in devnet 7.\n- No objections were raised on this ACDC call.\n- Decision: PRs will be created to formally move the EIPs to SFI status.\n- Pooja requested EIP authors review and approve open PRs to move their proposals from Draft to Review status, noting cyclic dependency issues preventing merges.\n  - Link to the list of CFI EIPs shared: [comment on agenda](https://github.com/ethereum/pm/issues/2158#issuecomment-5059393845)\n- The meta EIP 7773 (Glamsterdam upgrade) is being kept up to date with SFI status changes."
+    },
+    {
+      "heading": "EIP-8334: Bundled Attestation Propagation",
+      "summary": "Sukun proposed EIP-8334 for Hegota PFI; backwards-compatible bandwidth optimization that deduplicates attestation data, with a draft Prysm implementation ready.",
+      "timestamp": "00:23:09",
+      "body": "- [EIP-8334](https://github.com/ethereum/EIPs/pull/11905) deduplicates attestation data on the network layer, saving up to 50% bandwidth, especially useful for future decoupled consensus.\n- Draft implementation exists in Prysm; [consensus-specs PR #5464](https://github.com/ethereum/consensus-specs/pull/5464) also filed.\n- The change is fully backwards compatible and does not require fork alignment — clients can ship it independently, similar to data columns.\n- Suggestion from Daniel Knopik: make it required for Hegota so all clients have it post-fork.\n  - Sukun and Pari agreed this makes sense.\n- Daniel asked whether this supersedes Raoul's earlier proposal for batching attestations at source; Sukun clarified the two are orthogonal — batching at source pre-aggregates, while this EIP makes network data structures more efficient. Whether both are needed requires simulation data.\n- No immediate objections from client teams; Sukun has ~2 weeks until the non-headliner submission deadline."
+    },
+    {
+      "heading": "EIP-8341: Partial Execution Payload Commitments",
+      "summary": "Toni presented EIP-8341 as a lighter alternative to EIP-7862 delayed state root; builder commits to all EL header fields except state root in the bid.",
+      "timestamp": "00:27:49",
+      "body": "- [EIP-8341](https://github.com/ethereum/EIPs/pull/11936) replaces the block hash in the EPBS bid with all EL block header fields except the state root, giving the builder extra time to compute the state root before payload reveal.\n- Compared to EIP-7862 (delayed state root): EIP-8341 does not provide an extra full slot for ZK state proof generation, but does remove state root from the bid computation path. It also avoids light client latency penalties.\n  - Francesco Risitano (Tau) noted in chat that the post-state root contributes only ~10% of proving workload, questioning whether EIP-7862's complexity is justified.\n- Potuz raised a key CL implementation concern: the block hash in the bid is currently used to determine whether a received block is built on a full or empty payload. Removing the block hash means this check needs a new mechanism.\n  - Suggested options: add a flag bit in the bid, use the parent block hash, or have the Engine API return the block hash on newPayload.\n  - Toni acknowledged the EIP already has a section addressing this but invited further review.\n- Etan noted that block hash spans over the state root, so removing state root necessarily removes block hash too.\n- Potuz noted that for blocks arriving without the parent envelope, validation is more complex.\n- Toni characterized this as a non-headliner proposal; the CL-side changes are small. The earlier EIP-7862 would subsume this one.\n- Decision: further async discussion needed on which delayed state root variant (if any) to pursue."
+    },
+    {
+      "heading": "EIP-8321: Hash-Chain RANDAO",
+      "summary": "Kevaundray proposed replacing BLS RANDAO with a hash-chain mechanism for post-quantum safety; consensus leaned toward iterative PQ approach but deemed this premature without a finalized PQ strategy.",
+      "timestamp": "00:41:06",
+      "body": "- [EIP-8321](https://github.com/ethereum/EIPs/pull/11861) replaces BLS-based RANDAO contributions with pre-images of a published hash chain, using a registration process similar to the BLS-to-execution-change message.\n- Adds ~32 bytes per validator to state (~32MB for 1M validators).\n- Enrico (Teku) raised concerns: the mechanism is single-purpose, introduces new cryptographic key management per validator, and each additional domain use case would add another ~32MB to state.\n  - Kevaundray acknowledged reuse is possible for one-time signatures but not clearly for other use cases.\n- Potuz argued the change is premature: RANDAO's primary use is shuffling, and if BLS validator keys remain quantum-vulnerable, protecting RANDAO alone doesn't help. He favors an approach using deterministic BLS key rotation authenticated by a PQ-safe committed key.\n  - Potuz's preferred approach: deterministically derive short-lived BLS keypairs from a PQ-safe secret, keeping attestation aggregation possible.\n  - Off-chain Labs cryptographers are researching a VRF-based system for this; research not yet public.\n- Strong sentiment across multiple participants (Potuz, Francesco D'Amato, Dustin, Enrico, Saulius) that iterative PQ changes are preferred over all-at-once, but enshrining an early iteration before the final approach is decided is risky.\n  - Potuz: \"It doesn't make sense to put us on a path enshrining the first iteration when the final approach is not decided.\"\n  - Etan noted the EIP still has value as documentation of current research even if it doesn't advance beyond PFI.\n- Open questions raised by Francesco D'Amato: Why do this now when everything else is still quantum vulnerable? Are we sure we'll be using RANDAO in 3-4 years? Why not wait until the validator set is smaller?\n- Gottfried Herold confirmed there is no good alternative to RANDAO currently (timelock encryption has questionable security; threshold encryption lacks dynamic availability).\n- T. Wambsgans noted an alternative: hash-based XMSS signatures with blake3 could serve both RANDAO and PQ attestations; Etan asked about statefulness, and T. Wambsgans explained Ethereum slots can serve as nonces.\n- Matthew Keil suggested formalizing a broader PQ straw-map/roadmap to guide iterative fork planning.\n- Kevaundray outlined a possible iterative PQ roadmap: hash-chain RANDAO in Hegota, public key registry in I-Star, PQ heartbeat in J-Star (if decoupled consensus), PQ attestations in K/L-Star.\n- Saulius (Grandine): preferred to finalize all PQ schemes (including hash function choices) before including anything in the protocol.\n- Further async discussion to happen in the Post Quantum channel on the R&D Discord."
+    },
+    {
+      "heading": "EIP-8015: Remove Deposit and ETH1 Data Fields",
+      "summary": "Etan proposed EIP-8015 for Hegota PFI to remove legacy deposit and ETH1 data fields from the beacon state, enabled by stable containers preserving generalized indices.",
+      "timestamp": "01:01:59",
+      "body": "- [EIP-8015](https://eips.ethereum.org/EIPS/eip-8015) (originally Terence's, rebased on Glamsterdam by Etan) removes remnants of the old ETH1 deposit monitoring mechanism: ETH1 data, deposit index, and related fields.\n- The old mechanism was replaced by the request bus in Electra; these fields are now dead code.\n- Removal is now feasible without breaking generalized indices thanks to progressive stable containers.\n- State size reduction is O(1) — fixed size, does not scale with validator count.\n- No objections or questions raised by client teams."
+    },
+    {
+      "heading": "Hegota Non-Headliner Submission Deadline",
+      "summary": "Non-headliner submission window for Hegota closes August 6, approximately 17 days away.",
+      "timestamp": "01:03:26",
+      "body": "- Pari reminded all teams that the non-headliner submission window closes on August 6.\n- Same process as prior forks; announced previously on ACDE + ACDC #182."
+    },
+    {
+      "heading": "Engine API REST/SSZ Refactoring",
+      "summary": "Marius asked CL teams to identify which JSON-RPC methods they still need over the Engine API port, as Geth is rebuilding the Engine API on REST/SSZ.",
+      "timestamp": "01:03:45",
+      "body": "- Geth is rebuilding the Engine API based on REST and wants to eliminate unnecessary JSON-RPC methods exposed on the Engine API port.\n- Methods still used by CL clients (per Lighthouse and Prysm chat comments): eth_syncing, eth_getBlockByNumber, eth_getBlockByHash, eth_chainId.\n- Methods used only in the legacy ETH1 deposit path (already dead code in Lighthouse and Prysm): eth_blockNumber, eth_call, eth_getLogs.\n- Methods apparently unused: eth_getCode, eth_sendRawTransaction.\n- Marius asked all CL teams to comment on which methods they rely on and which can be dropped.\n- The end-state API may rename methods or change behavior (e.g., richer syncing status from EL to CL).\n- Etan suggested also consulting Helios and Nimbus Verified Proxy teams; Marius clarified this is strictly about the Engine API (EL-CL communication), not the public JSON-RPC API.\n- This aligns with EIP-8015's goal of retiring the ETH1 deposit path.\n- Discussion to continue in the SSZ channel on the R&D Discord."
+    }
+  ]
+}

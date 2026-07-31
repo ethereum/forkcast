@@ -890,6 +890,7 @@ export const EipPage: React.FC<{ id: string }> = ({ id }) => {
                     prose-th:text-slate-900 dark:prose-th:text-slate-100
                     prose-a:text-purple-600 dark:prose-a:text-purple-400
                     prose-code:text-sm prose-code:text-slate-800 prose-code:bg-slate-100 dark:prose-code:text-slate-200 dark:prose-code:bg-slate-700 prose-code:px-1 prose-code:py-0.5 prose-code:rounded
+                    prose-code:before:content-none prose-code:after:content-none
                     prose-pre:bg-slate-100 dark:prose-pre:bg-slate-700/50 prose-pre:border prose-pre:border-slate-200 dark:prose-pre:border-slate-600
                     prose-blockquote:not-italic
                     prose-img:rounded-lg prose-img:border prose-img:border-slate-200 dark:prose-img:border-slate-600"

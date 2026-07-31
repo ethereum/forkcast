@@ -30,7 +30,11 @@ const proseClasses = `prose prose-sm max-w-none text-slate-800 dark:text-slate-2
   prose-p:text-slate-800 dark:prose-p:text-slate-200
   prose-strong:text-slate-900 dark:prose-strong:text-slate-100
   prose-li:text-slate-800 dark:prose-li:text-slate-200
-  prose-a:text-purple-600 dark:prose-a:text-purple-400`;
+  prose-a:text-purple-600 dark:prose-a:text-purple-400
+  prose-code:text-[0.8125em] prose-code:font-medium prose-code:rounded prose-code:px-1 prose-code:py-0.5
+  prose-code:text-slate-800 dark:prose-code:text-slate-200
+  prose-code:bg-slate-100 dark:prose-code:bg-slate-700
+  prose-code:before:content-none prose-code:after:content-none`;
 
 interface EipFaqProps {
   items: EipFaqItem[];

@@ -39,8 +39,10 @@ const NOTES_PROMPT = `You write detailed notes for Ethereum core developer calls
 
 ## Structure
 
-- Organize by topic, following the agenda order where the call followed the agenda. Merge scattered discussion of the same topic into one section.
+- Organize by topic. Merge scattered discussion of the same topic into one section, anchored at the timestamp where that topic was first taken up.
+- Order sections chronologically by that timestamp — NOT by agenda order. Calls often take agenda items out of order; follow the call, not the agenda.
 - Headings are short noun phrases (e.g. "Devnet 8 Planning", "Fork Transition Bugs and Performance"). No verbs like "Discussion of", no numbering.
+- Every section has a \`summary\`: one plain-text sentence, 25 words or fewer, giving the section's outcome or single most important point. It is shown while the body is collapsed, so it must stand alone. State the substance ("discv5 is ready for devnet 8; two clients still need the discv4-off flag"), never the activity ("The team discussed discv5"). No markdown, no links.
 - Bodies are markdown bullet lists, max 2 levels of nesting. Each top-level bullet is a complete, self-contained point; sub-bullets add supporting detail to the bullet above them.
 - Aim for 4-10 sections covering the whole call. Skip pure logistics (roll call, "can everyone hear me").
 
@@ -56,6 +58,7 @@ const NOTES_PROMPT = `You write detailed notes for Ethereum core developer calls
 
 - \`timestamp\` is the transcript timestamp where the section's discussion begins, in \`HH:MM:SS\` format (no milliseconds).
 - Copy from the VTT cue times in the transcript. Section timestamps must be strictly increasing across the sections array.
+- If a topic is revisited later in the call, fold that discussion back into the topic's existing section — do not emit a second section, and do not move the section to the later timestamp.
 
 ## Output
 
@@ -66,6 +69,7 @@ Return ONLY valid JSON, no markdown fences, no commentary:
   "sections": [
     {
       "heading": "Short Noun Phrase",
+      "summary": "One sentence stating the outcome or key point.",
       "timestamp": "00:03:12",
       "body": "- Top-level point\\n- Another point\\n  - Supporting detail\\n"
     }
@@ -114,12 +118,13 @@ function validateSchema(data) {
     return errors;
   }
 
-  let previousSeconds = -1;
+  const seen = new Map();
   for (let i = 0; i < data.sections.length; i++) {
     const section = data.sections[i];
     const prefix = `sections[${i}]`;
 
     if (!section.heading) errors.push(`${prefix}: missing or empty 'heading'`);
+    if (!section.summary) errors.push(`${prefix}: missing or empty 'summary'`);
     if (!section.body) errors.push(`${prefix}: missing or empty 'body'`);
 
     if (!TIMESTAMP_RE.test(section.timestamp || '')) {
@@ -127,11 +132,14 @@ function validateSchema(data) {
       continue;
     }
 
-    const seconds = timestampToSeconds(section.timestamp);
-    if (seconds <= previousSeconds) {
-      errors.push(`${prefix}: timestamp '${section.timestamp}' is not after the previous section`);
+    // Order is fixed by sorting, but two sections sharing a timestamp means the
+    // model failed to locate one of them and there's no way to disambiguate.
+    if (seen.has(section.timestamp)) {
+      errors.push(
+        `${prefix}: "${section.heading}" shares timestamp ${section.timestamp} with "${seen.get(section.timestamp)}"`,
+      );
     }
-    previousSeconds = seconds;
+    seen.set(section.timestamp, section.heading);
   }
 
   return errors;
@@ -233,7 +241,6 @@ async function generateNotesForFile(entry, meetingDir, transcriptFile, agenda, m
 
   const transcript = readFileSync(transcriptPath, 'utf-8');
   const chat = readOptional(join(meetingDir, `chat${suffix}.txt`));
-  const tldr = readOptional(join(meetingDir, `tldr${suffix}.json`));
   const styleExample = readFileSync(STYLE_EXAMPLE_FILE, 'utf-8');
   const title = meetingTitle(entry, suffix);
 
@@ -248,10 +255,6 @@ ${agenda ?? '(Agenda not available)'}
 ## Style Example (structure and depth to aim for — content is from a different call)
 
 ${styleExample}
-
-## Existing TLDR (validated topic breakdown and timestamps — anchor sections to these)
-
-${tldr ?? '(No TLDR available)'}
 
 ## Chat Messages (source for inline links)
 
@@ -288,6 +291,15 @@ ${transcript}`;
       console.log('  Schema validation errors:');
       for (const err of errors) console.log(`    - ${err}`);
       return 'failed';
+    }
+
+    // The UI derives each section's highlight window from the next section's
+    // timestamp, so chronological order is required. Enforce it here rather than
+    // relying on the model, which occasionally emits adjacent topics out of order.
+    const modelOrder = result.sections.map((s) => s.timestamp).join();
+    result.sections.sort((a, b) => timestampToSeconds(a.timestamp) - timestampToSeconds(b.timestamp));
+    if (result.sections.map((s) => s.timestamp).join() !== modelOrder) {
+      console.log('  Note: reordered sections chronologically');
     }
 
     const lastCue = lastCueSeconds(transcript);

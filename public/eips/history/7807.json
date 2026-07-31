@@ -1,0 +1,152 @@
+{
+  "eipId": 7807,
+  "commits": [
+    {
+      "sha": "75d7bc2c20a91ec017d147f400d6bbf767843e2c",
+      "date": "2026-06-06T14:59:15Z",
+      "message": "Update EIP-7807: Reduce scope to non-headliner core",
+      "author": "etan-status",
+      "prNumber": null,
+      "additions": 53,
+      "deletions": 55
+    },
+    {
+      "sha": "ba21094ca4da9843f0927117ec4e9aece129e786",
+      "date": "2026-02-03T15:15:28Z",
+      "message": "Update EIP-7807: Remove EIP-7706 from requires header",
+      "author": "esorense",
+      "prNumber": null,
+      "patch": "@@ -8,7 +8,7 @@ status: Draft\n type: Standards Track\n category: Core\n created: 2024-10-28\n-requires: 6404, 6465, 6466, 7495, 7706, 7799\n+requires: 6404, 6465, 6466, 7495, 7799\n ---\n \n ## Abstract",
+      "additions": 1,
+      "deletions": 1
+    },
+    {
+      "sha": "267ea31880ca38b4252c75588a928d3af29ed2ec",
+      "date": "2025-10-06T08:31:15Z",
+      "message": "Update EIP-7807: Fix ProgressiveContainer syntax in GasAmounts",
+      "author": "librazium",
+      "prNumber": null,
+      "patch": "@@ -40,7 +40,7 @@ The different kinds of gas amounts are combined into a single structure, mirrori\n | [`GasAmount`](./eip-6404.md#normalized-transactions) | `uint64` |\n \n ```python\n-class GasAmounts(ProgressiveContainer((active_fields=[1, 1]))):\n+class GasAmounts(ProgressiveContainer(active_fields=[1, 1])):\n     regular: GasAmount\n     blob: GasAmount\n ```",
+      "additions": 1,
+      "deletions": 1
+    },
+    {
+      "sha": "41f2d944e5f4e4f8e73fa6ffc9fb4d9cbc608d1a",
+      "date": "2025-09-29T10:59:27Z",
+      "message": "Update EIP-7807: align ExecutionPayload text to use requests_hash instead of requests_root",
+      "author": "Forostovec",
+      "prNumber": null,
+      "patch": "@@ -84,7 +84,7 @@ For new blocks, the execution block hash is changed to be based on `hash_tree_ro\n \n Usages of `ExecutionPayloadHeader` are replaced with `ExecutionBlockHeader`.\n \n-Usages of `ExecutionPayload` are updated to share `hash_tree_root` with `ExecutionBlockHeader`. `transactions_root`, `withdrawals_root` and `requests_root` are expanded to their full list contents.\n+Usages of `ExecutionPayload` are updated to share `hash_tree_root` with `ExecutionBlockHeader`. `transactions_root`, `withdrawals_root` and `requests_hash` are expanded to their full list contents.\n \n ```python\n class ExecutionPayload(",
+      "additions": 1,
+      "deletions": 1
+    },
+    {
+      "sha": "679f6ee2caf1bbe90b63a897102f13d5269388b7",
+      "date": "2025-09-01T17:41:23Z",
+      "message": "Update EIP-7807: fix/correct style issues",
+      "author": "pendrue",
+      "prNumber": null,
+      "patch": "@@ -17,7 +17,7 @@ This EIP defines a migration process of execution blocks to [Simple Serialize (S\n \n ## Motivation\n \n-With [EIP-6404](./eip-6404.md) SSZ transactions, [EIP-6466](./eip-6466.md) SSZ receipts, and [EIP-6465](./eip-6465.md) SSZ withdrawals, all Merkle-Patricia Trie (MPT) besides the state trie are converted to SSZ. This enables the surrounding data structure, the execution block itself, to also convert to SSZ, achieving a unified block representation across both Consensus Layer and Execution Layer.\n+With [EIP-6404](./eip-6404.md) SSZ transactions, [EIP-6466](./eip-6466.md) SSZ receipts, and [EIP-6465](./eip-6465.md) SSZ withdrawals, all Merkle-Patricia Tries (MPT) besides the state trie are converted to SSZ. This enables the surrounding data structure, the execution block itself, to also convert to SSZ, achieving a unified block representation across both Consensus Layer and Execution Layer.\n \n 1. **Normalized block hash:** The Consensus Layer can compute the block hash autonomously, enabling it to process all consistency checks that currently require asynchronous communication with the Execution Layer ([`verify_and_notify_new_payload`](https://github.com/ethereum/consensus-specs/blob/b5c3b619887c7850a8c1d3540b471092be73ad84/specs/electra/beacon-chain.md#modified-verify_and_notify_new_payload)). This allows early rejection of inconsistent blocks and dropping the requirement to wait for engine API interactions while syncing.\n \n@@ -111,15 +111,15 @@ class ExecutionPayload(\n \n ## Rationale\n \n-This transition completes the transition to SSZ for everything except the execution state trie.\n+This completes the transition to SSZ for everything except the execution state trie.\n \n ### Future\n \n - With SSZ `Log`, the withdrawals mechanism and validator requests could be redefined to be based on logs (similar to deposits, originally, but without the delay), possibly removing the need for `withdrawals_root` and `requests_hash`.\n   - The CL would insert the extra logs for minting ([EIP-7799](./eip-7799.md)) and could fetch the ones relevant for withdrawing (deposits, requests, consolidations). That mechanism would be more generic than [EIP-7685](./eip-7685.md) and would drop requiring the EL to special case requests, including `compute_requests_hash`.\n   - For client applications and smart contracts, it would streamline transaction history verification based on [EIP-7792](./eip-7792.md).\n \n-- Engine API should be updated with (1) possible withdrawals/requests refactoring as above, (2) dropping the `block_hash` field so that `ExecutionPayload` is replaced with `ExecutionBlockHeader`, (3) binary encoding based on `ForkDigest`-context (through HTTP header or interleaved, similar to beacon-API). This reduces encoding overhead and also simplifies sharing data structures in combined CL/EL in-process implementations.\n+- The Engine API should be updated with (1) possible withdrawals/requests refactoring as above, (2) dropping the `block_hash` field so that `ExecutionPayload` is replaced with `ExecutionBlockHeader`, (3) binary encoding based on `ForkDigest`-context (through HTTP header or interleaved, similar to beacon-API). This reduces encoding overhead and also simplifies sharing data structures in combined CL/EL in-process implementations.\n \n ## Backwards Compatibility\n ",
+      "additions": 3,
+      "deletions": 3
+    },
+    {
+      "sha": "51d6e0f58d858ba77946ce630452f1a5b2cbe1f0",
+      "date": "2025-08-20T02:59:11Z",
+      "message": "Update EIP-7807: correct grammar in Engine API section",
+      "author": "MozirDmitriy",
+      "prNumber": null,
+      "patch": "@@ -119,7 +119,7 @@ This transition completes the transition to SSZ for everything except the execut\n   - The CL would insert the extra logs for minting ([EIP-7799](./eip-7799.md)) and could fetch the ones relevant for withdrawing (deposits, requests, consolidations). That mechanism would be more generic than [EIP-7685](./eip-7685.md) and would drop requiring the EL to special case requests, including `compute_requests_hash`.\n   - For client applications and smart contracts, it would streamline transaction history verification based on [EIP-7792](./eip-7792.md).\n \n-- Engine API should be updated with (1) possible withdrawals/requests refactoring as above, (2) dropping the `block_hash` field so that `ExecutionPayload` is replaced with to `ExecutionBlockHeader`, (3) binary encoding based on `ForkDigest`-context (through HTTP header or interleaved, similar to beacon-API). This reduces encoding overhead and also simplifies sharing data structures in combined CL/EL in-process implementations.\n+- Engine API should be updated with (1) possible withdrawals/requests refactoring as above, (2) dropping the `block_hash` field so that `ExecutionPayload` is replaced with `ExecutionBlockHeader`, (3) binary encoding based on `ForkDigest`-context (through HTTP header or interleaved, similar to beacon-API). This reduces encoding overhead and also simplifies sharing data structures in combined CL/EL in-process implementations.\n \n ## Backwards Compatibility\n ",
+      "additions": 1,
+      "deletions": 1
+    },
+    {
+      "sha": "c8ce3f79ad43d6a50ad7f0507d6d2fb01e87dbbd",
+      "date": "2025-08-18T17:55:18Z",
+      "message": "Update EIP-7807: fix typo",
+      "author": "radik878",
+      "prNumber": null,
+      "patch": "@@ -84,7 +84,7 @@ For new blocks, the execution block hash is changed to be based on `hash_tree_ro\n \n Usages of `ExecutionPayloadHeader` are replaced with `ExecutionBlockHeader`.\n \n-Usages of `ExecutionPayload` are updated to share `hash_tree_root` with `ExxecutionBlockHeader`. `transactions_root`, `withdrawals_root` and `requests_root` are expanded to their full list contents.\n+Usages of `ExecutionPayload` are updated to share `hash_tree_root` with `ExecutionBlockHeader`. `transactions_root`, `withdrawals_root` and `requests_root` are expanded to their full list contents.\n \n ```python\n class ExecutionPayload(",
+      "additions": 1,
+      "deletions": 1
+    },
+    {
+      "sha": "de33cd5e3599cb09f8c8b8fcb08d80f48257cf28",
+      "date": "2025-08-04T13:38:45Z",
+      "message": "Update EIP-6404: Use correct Python syntax for active_fields",
+      "author": "etan-status",
+      "prNumber": null,
+      "patch": "@@ -40,7 +40,7 @@ The different kinds of gas amounts are combined into a single structure, mirrori\n | [`GasAmount`](./eip-6404.md#normalized-transactions) | `uint64` |\n \n ```python\n-class GasAmounts(ProgressiveContainer([active_fields=[1, 1]])):\n+class GasAmounts(ProgressiveContainer((active_fields=[1, 1]))):\n     regular: GasAmount\n     blob: GasAmount\n ```\n@@ -55,7 +55,7 @@ New execution block headers use a normalized SSZ representation.\n \n ```python\n class ExecutionBlockHeader(\n-    ProgressiveContainer[active_fields=[1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1]]\n+    ProgressiveContainer(active_fields=[1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1])\n ):\n     parent_hash: Root\n     miner: ExecutionAddress\n@@ -88,7 +88,7 @@ Usages of `ExecutionPayload` are updated to share `hash_tree_root` with `Exxecut\n \n ```python\n class ExecutionPayload(\n-    ProgressiveContainer[active_fields=[1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1]]\n+    ProgressiveContainer(active_fields=[1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1])\n ):\n     parent_hash: Root\n     miner: ExecutionAddress",
+      "additions": 3,
+      "deletions": 3
+    },
+    {
+      "sha": "9d3f1b167e52d4e9af5e1bc88152e0ec3c4c3f90",
+      "date": "2025-07-03T10:34:58Z",
+      "message": "Update EIP-7807: Adopt `ProgressiveContainer`",
+      "author": "etan-status",
+      "prNumber": null,
+      "additions": 57,
+      "deletions": 44
+    },
+    {
+      "sha": "22c2a07a6ee48693c1de8af0ae96fe91d4ce04eb",
+      "date": "2025-07-02T08:12:50Z",
+      "message": "Update EIP-6404: Use SSZ `ProgressiveContainer` / `Union`",
+      "author": "etan-status",
+      "prNumber": null,
+      "patch": "@@ -108,8 +108,6 @@ In the initial draft, only the requests hash and block hash are changed to be SS\n \n - Engine API should be updated with (1) possible withdrawals/requests refactoring as above, (2) dropping the `block_hash` field so that `ExecutionPayload` is replaced with to `ExecutionBlockHeader`, (3) binary encoding based on `ForkDigest`-context (through HTTP header or interleaved, similar to beacon-API). This reduces encoding overhead and also simplifies sharing data structures in combined CL/EL in-process implementations.\n \n-- Networking should be updated to be SSZ based, using similar format as [EIP-6404](./eip-6404.md#networking) with a type prefix followed by a potentially SSZ snappy compressed payload.\n-\n ## Backwards Compatibility\n \n This breaks compatibility of smart contracts that depend on the previous block header binary format, including for \"generic\" implementations that assume a common prefix and run the entire data through a linear keccak256 hash.",
+      "additions": 0,
+      "deletions": 2
+    },
+    {
+      "sha": "5d156b01b27b60a900e57104ece237fde5d77b25",
+      "date": "2025-03-25T10:21:23Z",
+      "message": "Update EIP-6404: fix typos",
+      "author": "wgyt",
+      "prNumber": null,
+      "patch": "@@ -19,7 +19,7 @@ This EIP defines a migration process of execution blocks to [Simple Serialize (S\n \n With [EIP-6404](./eip-6404.md) SSZ transactions, [EIP-6466](./eip-6466.md) SSZ receipts, and [EIP-6465](./eip-6465.md) SSZ withdrawals, all Merkle-Patricia Trie (MPT) besides the state trie are converted to SSZ. This enables the surrounding data structure, in this case, the execution block itself, to also convert to SSZ, achieving a unified block representation across both Consensus Layer and Execution Layer.\n \n-1. **Normalized block hash:** The Consensus Layer can compute the block hash autononomously, enabling it to process all consistency checks that currently require asynchronous communication with the Execution Layer ([`verify_and_notify_new_payload`](https://github.com/ethereum/consensus-specs/blob/b3e83f6691c61e5b35136000146015653b22ed38/specs/electra/beacon-chain.md#modified-verify_and_notify_new_payload)). This allows early rejection of inconsistent blocks and dropping the requirement to wait for engine API interactions while syncing.\n+1. **Normalized block hash:** The Consensus Layer can compute the block hash autonomously, enabling it to process all consistency checks that currently require asynchronous communication with the Execution Layer ([`verify_and_notify_new_payload`](https://github.com/ethereum/consensus-specs/blob/b3e83f6691c61e5b35136000146015653b22ed38/specs/electra/beacon-chain.md#modified-verify_and_notify_new_payload)). This allows early rejection of inconsistent blocks and dropping the requirement to wait for engine API interactions while syncing.\n \n 2. **Optimized engine API:** With all exchanged data supporting SSZ, the engine API can be changed from the textual JSON encoding to binary SSZ encoding, reducing exchanged data size by ~50% and significantly improving encoding/parsing efficiency.\n ",
+      "additions": 1,
+      "deletions": 1
+    },
+    {
+      "sha": "5ed0648fd2fd38693af9eee54624a1b3032e5847",
+      "date": "2025-03-04T11:36:18Z",
+      "message": "Update EIP-7807: release notes with latest changes",
+      "author": "zeevick10",
+      "prNumber": null,
+      "patch": "@@ -13,7 +13,7 @@ requires: 6404, 6465, 6466, 7706, 7799\n \n ## Abstract\n \n-This EIP defines a migration process of execution blocks to [Simple Serialize (SSZ)](https://github.com/ethereum/consensus-specs/blob/ef434e87165e9a4c82a99f54ffd4974ae113f732/ssz/simple-serialize.md).\n+This EIP defines a migration process of execution blocks to [Simple Serialize (SSZ)](https://github.com/ethereum/consensus-specs/blob/b3e83f6691c61e5b35136000146015653b22ed38/ssz/simple-serialize.md).\n \n ## Motivation\n ",
+      "additions": 1,
+      "deletions": 1
+    },
+    {
+      "sha": "167b4b57da0d050127cb93acf5858e8d3b028cc3",
+      "date": "2025-02-10T16:05:08Z",
+      "message": "Update EIP-6404: Bump links to tagged beta spec version",
+      "author": "etan-status",
+      "prNumber": null,
+      "patch": "@@ -19,7 +19,7 @@ This EIP defines a migration process of execution blocks to [Simple Serialize (S\n \n With [EIP-6404](./eip-6404.md) SSZ transactions, [EIP-6466](./eip-6466.md) SSZ receipts, and [EIP-6465](./eip-6465.md) SSZ withdrawals, all Merkle-Patricia Trie (MPT) besides the state trie are converted to SSZ. This enables the surrounding data structure, in this case, the execution block itself, to also convert to SSZ, achieving a unified block representation across both Consensus Layer and Execution Layer.\n \n-1. **Normalized block hash:** The Consensus Layer can compute the block hash autononomously, enabling it to process all consistency checks that currently require asynchronous communication with the Execution Layer ([`verify_and_notify_new_payload`](https://github.com/ethereum/consensus-specs/blob/9849fb39e75e6228ebd610ef0ad22f5b41543cd5/specs/electra/beacon-chain.md#modified-verify_and_notify_new_payload)). This allows early rejection of inconsistent blocks and dropping the requirement to wait for engine API interactions while syncing.\n+1. **Normalized block hash:** The Consensus Layer can compute the block hash autononomously, enabling it to process all consistency checks that currently require asynchronous communication with the Execution Layer ([`verify_and_notify_new_payload`](https://github.com/ethereum/consensus-specs/blob/b3e83f6691c61e5b35136000146015653b22ed38/specs/electra/beacon-chain.md#modified-verify_and_notify_new_payload)). This allows early rejection of inconsistent blocks and dropping the requirement to wait for engine API interactions while syncing.\n \n 2. **Optimized engine API:** With all exchanged data supporting SSZ, the engine API can be changed from the textual JSON encoding to binary SSZ encoding, reducing exchanged data size by ~50% and significantly improving encoding/parsing efficiency.\n ",
+      "additions": 1,
+      "deletions": 1
+    },
+    {
+      "sha": "385ce07f39982746201f7e3160d0d3d640d858fd",
+      "date": "2024-11-13T15:51:58Z",
+      "message": "Add EIP: SSZ execution blocks",
+      "author": "etan-status",
+      "prNumber": null,
+      "additions": 123,
+      "deletions": 0
+    }
+  ],
+  "openPrs": [
+    {
+      "number": 10544,
+      "title": "Update EIP-7807: type requests_hash as Root",
+      "author": "radik878",
+      "updatedAt": "2026-06-10T10:31:36Z",
+      "additions": 1,
+      "deletions": 1
+    }
+  ]
+}

@@ -1,0 +1,25 @@
+{
+  "eipId": 8116,
+  "commits": [
+    {
+      "sha": "efd69491b66da64f9bf6df6c83d11103e7188402",
+      "date": "2026-01-15T10:24:27Z",
+      "message": "Add EIP: Replace cumulative receipt fields",
+      "author": "etan-status",
+      "prNumber": null,
+      "patch": "@@ -0,0 +1,55 @@\n+---\n+eip: 8116\n+title: Replace cumulative receipt fields\n+description: Replace cumulativeGasUsed with gasUsed in on-chain receipt\n+author: Etan Kissling (@etan-status), Gajinder Singh (@g11tech)\n+discussions-to: https://ethereum-magicians.org/t/eip-8116-replace-cumulative-receipt-fields/27359\n+status: Draft\n+type: Standards Track\n+category: Core\n+created: 2025-12-30\n+---\n+\n+## Abstract\n+\n+This EIP describes how to change the on-chain receipt data to track gas per transaction instead of cumulatively.\n+\n+## Motivation\n+\n+Currently, on-chain receipts track a `cumulativeGasUsed` field which contains the running sum of all gas spent for all transactions in the block so far. This has a number of shortcomings:\n+\n+1. **Inefficient verification:** RPC clients that want to verify individual transaction `gasUsed` requires computation based on `cumulativeGasUsed` across consecutive receipts.\n+\n+2. **Limited parallelism:** Receipt contents are stateful, even for transactions accessing mutually exclusive state.\n+\n+The `logIndex` field exposed via JSON-RPC is currently also tracking an incremental block level index instead of a per-receipt index, with similar shortcomings.\n+\n+## Specification\n+\n+The key words \"MUST\", \"MUST NOT\", \"REQUIRED\", \"SHALL\", \"SHALL NOT\", \"SHOULD\", \"SHOULD NOT\", \"RECOMMENDED\", \"NOT RECOMMENDED\", \"MAY\", and \"OPTIONAL\" in this document are to be interpreted as described in [RFC 2119](https://www.rfc-editor.org/rfc/rfc2119) and [RFC 8174](https://www.rfc-editor.org/rfc/rfc8174).\n+\n+### `Receipt` construction\n+\n+All receipts emitted after this EIP activates track the individual transaction's `gasUsed` instead of the incremental `cumulativeGasUsed` value.\n+\n+### JSON-RPC API\n+\n+Within `logs`, the `logIndex` field is changed to indicate the log index position in the individual receipt, rather than in the entire block.\n+\n+## Rationale\n+\n+This EIP is a step towards aligning on-chain data with the RPC data actually being consumed by client applications. Stateful components of receipts (`cumulativeGasUsed` / `logIndex`) are replaced with per-transaction equivalents.\n+\n+## Backwards Compatibility\n+\n+Applications using verified `gasUsed` / `cumulativeGasUsed` values need to adapt to the new on-chain data semantics.\n+\n+Applications relying on the per block `logIndex` need adaptation, as `logIndex` now refers to an index per receipt. Note that this is solely an RPC change. Relative log ordering can be emulated by estimating `logIndex` as `transactionIndex * 4 + logIndex` (guaranteed to have same order as before, but absolute index values may be higher than before).\n+\n+## Security Considerations\n+\n+None\n+\n+## Copyright\n+\n+Copyright and related rights waived via [CC0](../LICENSE.md).",
+      "additions": 55,
+      "deletions": 0
+    }
+  ],
+  "openPrs": [
+    {
+      "number": 11108,
+      "title": "Update EIP-8116: correct logIndex reconstruction formula in EIP-8116",
+      "author": "forkfury",
+      "updatedAt": "2026-01-20T08:08:58Z",
+      "additions": 1,
+      "deletions": 1
+    }
+  ]
+}

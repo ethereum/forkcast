@@ -1,0 +1,160 @@
+{
+  "eipId": 7906,
+  "commits": [
+    {
+      "sha": "ab022ace2ad270a0e469aa317404461366b86436",
+      "date": "2026-07-29T18:44:05Z",
+      "message": "Update EIP-7906: Rephrase deploy frame side effects security consideration",
+      "author": "forshtat",
+      "prNumber": null,
+      "patch": "@@ -344,10 +344,12 @@ It is crucial that the transaction relying on a `POST_TX` frame to ensure the ou\n \n As it is not feasible to revert the entire transaction including the validation prefix without un-paying the block builder (which introduces a massive DoS vector), the validation prefix is **NOT** reverted by reverting `POST_TX` frames.\n \n-In a correctly constructed EIP-8141 transaction, the wallet software constructs the validation prefix, while untrusted dApp actions are placed strictly in the execution phase (`SENDER` frames). Because the wallet controls the validation prefix (e.g., ensuring the `deploy` frame points to a trusted factory), it is inherently safe to commit it to state. Malicious dApps cannot inject arbitrary state changes into the validation prefix.\n+In a correctly constructed EIP-8141 transaction, the wallet software constructs the validation prefix, while untrusted dApp actions are placed strictly in the execution phase (`SENDER` frames). This is inherently safe as far as the wallet's own validation-prefix logic — including any `deploy` frame — is itself trustworthy.\n \n Therefore, committing the validation prefix on a `POST_TX` revert is not a security flaw for the user (provided they use standard wallet software), but it is a strict necessity for protecting the network from DoS attacks.\n \n+The `deploy` frame's restriction to installing `tx.sender`'s code is a mempool-propagation rule ([Structural Rules](./eip-8141.md#structural-rules)), not a protocol invariant — nothing prevents it from producing other side effects, which `TXTRACE` will surface but which `POST_TX` cannot undo. A wallet must never use the `deploy` frame for anything beyond deploying `tx.sender`; they cannot rely on `POST_TX` to catch or reverse it.\n+\n ## Copyright\n \n Copyright and related rights waived via [CC0](../LICENSE.md).",
+      "additions": 3,
+      "deletions": 1
+    },
+    {
+      "sha": "0af4e0044d89419afb2a1ef960db9007218daecb",
+      "date": "2026-07-28T00:14:19Z",
+      "message": "Update EIP-7906: Add POST_TX enforcement to security considerations",
+      "author": "forshtat",
+      "prNumber": null,
+      "patch": "@@ -296,6 +296,34 @@ Wallets and dApps that build on `TXTRACE` must ensure their assertion logic cove\n \n The `POST_TX` frame mode requirement strengthens, but does not replace, this guarantee: it ensures a triggered assertion cleanly and unconditionally invalidates the entire transaction, including any gas payment already approved by an earlier frame, and that this cannot be partially bypassed via atomic-batch flags or frames ordered after the assertion. It does not, by itself, make any individual assertion more restrictive or correct.\n \n+### Enforcing `POST_TX` Frame Inclusion\n+\n+While `POST_TX` frames dictate how assertions are executed, there is no explicit protocol-level requirement that a transaction *must* include a `POST_TX` frame. Smart accounts aiming to use `POST_TX` frames must explicitly configure their `VERIFY` frame's validation logic to strictly require the presence of their specific `POST_TX` frame in every transaction they approve without any mechanist that could allow circumventing this requirement.\n+\n+Because a transaction can contain multiple `POST_TX` frames, and they are guaranteed to form a contiguous suffix at the end of the transaction, the smart account can iterate backwards to locate its required assertion frame. \n+\n+It is critical that the expected target of all `POST_TX` frames is an immutable, non-upgradeable contract. If the assertion contract were upgradeable, a malicious transaction could potentially upgrade it during execution to bypass the security checks. Only as long as the `VERIFY` frame executes *before* any state changes are made, checking the POST_TX` frame target during validation guarantees the transaction will be evaluated against the intended immutable policy.\n+\n+This can be enforced as follows in Solidity (pseudocode):\n+\n+```solidity\n+function requirePostTx() internal view {\n+    bool found = false;\n+    for (uint256 i = tx.frames.length; i > 0; i--) {\n+        Frame memory f = tx.frames[i - 1];\n+        if (f.mode != 3) {\n+            break; // POST_TX frames are a contiguous suffix; no more left to check\n+        }\n+        if (f.target == this.postTxEnforcer) {\n+            // (Optionally check f.data matches the expected POST_TX method selector)\n+            found = true;\n+            break;\n+        }\n+    }\n+    require(found, \"Missing required POST_TX frame for this account\");\n+}\n+```\n+\n ### Assertion Gas Exhaustion\n \n Assertion contracts that enumerate `TXTRACE` results may run out of gas.",
+      "additions": 28,
+      "deletions": 0
+    },
+    {
+      "sha": "4a027be6e7b27a5fa98431de6bed262be3204f9b",
+      "date": "2026-07-09T12:06:11Z",
+      "message": "Update EIP-7906: Add per-address TXDIFF views and account change flags",
+      "author": "forshtat",
+      "prNumber": null,
+      "additions": 64,
+      "deletions": 11
+    },
+    {
+      "sha": "6731edd0a327ba4e90fe8b3ef3212c96d70f335c",
+      "date": "2026-07-06T14:04:07Z",
+      "message": "Update EIP-7906: Stronger wording regarding POST_TX revert behaviour",
+      "author": "forshtat",
+      "prNumber": null,
+      "patch": "@@ -46,6 +46,8 @@ The following rules apply to EIP-8141 frame transactions wherever this EIP is ac\n - As with `DEFAULT` and `VERIFY` frames, the `caller` of a `POST_TX` frame is `ENTRY_POINT`.\n - A `POST_TX` frame is executed as a `STATICCALL`, disallowing all state manipulation. A `POST_TX` frame has no valid reason to call `APPROVE`, and its usage is forbidden.\n - If a `POST_TX` frame reverts, the entire execution body of a transaction is reverted unconditionally. This overrides the atomic-batch unrolling behavior that would otherwise apply: a `POST_TX` revert always validates or reverts the whole transaction execution, up to the \"validation prefix\", rather than merely unwinding an atomic batch.\n+- A `POST_TX` revert does **not** invalidate the transaction (unlike a `VERIFY` frame revert). The transaction remains valid, is included in the block, and generates a receipt with a failed status (`status = 0`).\n+- All state changes made within the validation prefix (such as gas payment via `APPROVE` and account creation in a `deploy` frame) are permanently committed to the state, and the payer is fully charged for the gas consumed up to the point of the revert.\n - Under EIP-8141's [default code](./eip-8141.md#default-code), a `POST_TX` frame is handled the same way as `SENDER` or `DEFAULT`.\n \n ### Transaction Trace Opcode \n@@ -183,6 +185,12 @@ A point lookup over storage needs both an `address` and a `slot` to be unambiguo\n \n Balance and codehash are keyed only by `address`.\n \n+### Receipt Representation and Anti-DoS\n+\n+If a `POST_TX` revert were to completely exclude the transaction from the block and roll back the gas payment, it would introduce a severe Denial-of-Service vector. Attackers could consume up to the block gas limit and then revert in the `POST_TX` frame for free.\n+\n+Keeping the transaction valid and committing the validation prefix is strictly required to ensure block builders are compensated for the execution work performed. A `POST_TX` revert operates as an application-level execution revert, not a protocol-level invalidation, and thus generates a standard `status = 0` receipt while keeping the gas payment intact.\n+\n ### The `POST_TX` Frame Mode Requirement\n \n The `TXTRACE` and `EVENTDATACOPY` opcodes provide significant introspection capabilities that may break code encapsulation.\n@@ -251,11 +259,13 @@ Any framework built on `TXTRACE` must ensure that assertion OOG is treated as an\n \n ### The `POST_TX` Frame Mode Not Reverting Validation Prefix\n \n-It is crucial that the transaction relying on a `POST_TX` frame to ensure the outcome validity does not contain any execution in its validation prefix.\n+It is crucial that the transaction relying on a `POST_TX` frame to ensure the outcome validity does not contain untrusted execution in its validation prefix.\n+\n+As it is not feasible to revert the entire transaction including the validation prefix without un-paying the block builder (which introduces a massive DoS vector), the validation prefix is **NOT** reverted by reverting `POST_TX` frames.\n \n-As it is not feasible to revert the entire transaction including the validation prefix in a mempool-compatible way, the validation prefix is NOT reverted by reverting `POST_TX` frames.\n+In a correctly constructed EIP-8141 transaction, the wallet software constructs the validation prefix, while untrusted dApp actions are placed strictly in the execution phase (`SENDER` frames). Because the wallet controls the validation prefix (e.g., ensuring the `deploy` frame points to a trusted factory), it is inherently safe to commit it to state. Malicious dApps cannot inject arbitrary state changes into the validation prefix.\n \n-This would allow a malicious contract to bypass the `POST_TX` frame and execute arbitrary state changes that would NOT be reverted by the `POST_TX` frame even if malicious outcoe was observed by it.\n+Therefore, committing the validation prefix on a `POST_TX` revert is not a security flaw for the user (provided they use standard wallet software), but it is a strict necessity for protecting the network from DoS attacks.\n \n ## Copyright\n ",
+      "additions": 13,
+      "deletions": 3
+    },
+    {
+      "sha": "97e1639c0022e19a1a5b3a4b9bb1c7477e41ade8",
+      "date": "2026-06-29T11:08:35Z",
+      "message": "Update EIP-7906: TXDIFF EIP-2929 gas pricing, remove duplicate paragraph",
+      "author": "forshtat",
+      "prNumber": null,
+      "patch": "@@ -8,7 +8,7 @@ status: Draft\n type: Standards Track\n category: Core\n created: 2025-02-21\n-requires: 8141\n+requires: 2929, 8141\n ---\n \n ## Abstract\n@@ -31,7 +31,6 @@ By providing the Wallets and dApps with the ability to observe and restrict the\n \n | Name                   | Value |\n |------------------------|-------|\n-| TXDIFF_GAS_COST        | TBD   |\n | TXTRACE_GAS_COST       | TBD   |\n | EVENTDATACOPY_GAS_COST | TBD   |\n | `POST_TX`              | `3`   |\n@@ -115,6 +114,15 @@ We introduce an additional `TXDIFF` opcode for this purpose, complementing `TXTR\n \n If the queried key `address`/`(address, slot)` was never modified during the transaction, `TXDIFF` returns the current live value for both the `before` and `after` variant of that param.\n \n+#### Gas Cost\n+\n+`TXDIFF` uses the [EIP-2929](./eip-2929.md) access list to determine its cost:\n+\n+- Storage slot params (`0x00`, `0x01`): `COLD_SLOAD_COST` (2100) if the `(address, slot)` pair is not in the accessed storage list; `WARM_STORAGE_READ_COST` (100) otherwise.\n+- Balance and codehash params (`0x02`–`0x05`): `COLD_ACCOUNT_ACCESS_COST` (2600) if the address is not in the accessed addresses set; `WARM_STORAGE_READ_COST` (100) otherwise.\n+\n+The accessed slot or address is added to the respective access list after the call.\n+\n `codehash_before` is equal to the empty-code hash for undeployed contracts.\n \n ### Results Ordering\n@@ -219,8 +227,6 @@ Events can use emission order because each event is a distinct, non-collapsed en\n \n This proposal has a hard dependency on [EIP-8141](./eip-8141.md) (`requires: 8141`): `TXTRACE`, `EVENTDATACOPY`, and `TXDIFF` can only execute inside an EIP-8141 `POST_TX` frame, as defined under [The `POST_TX` Frame Mode](#the-post_tx-frame-mode). Legacy transactions, [EIP-1559](./eip-1559.md) transactions, and any other EIP-8141 frame mode cannot use any of these opcodes.\n \n-This proposal has a hard dependency on [EIP-8141](./eip-8141.md) (`requires: 8141`): `TXTRACE` and `EVENTDATACOPY` can only execute inside an EIP-8141 `POST_TX` frame, as defined under [The `POST_TX` Frame Mode](#the-post_tx-frame-mode). Legacy transactions, [EIP-1559](./eip-1559.md) transactions, and any other EIP-8141 frame mode cannot use either opcode.\n-\n ## Security Considerations\n \n ### Insufficiently Restrictive Assertions",
+      "additions": 10,
+      "deletions": 4
+    },
+    {
+      "sha": "bd357146d0f53d4eedf0d48e1113ca980e883a77",
+      "date": "2026-06-24T14:51:34Z",
+      "message": "Update EIP-7906: Introduce additional TXDIFF opcode",
+      "author": "forshtat",
+      "prNumber": null,
+      "additions": 38,
+      "deletions": 37
+    },
+    {
+      "sha": "4e52545c230ab22283326eabe4f3ffa3632d4bef",
+      "date": "2026-06-24T13:56:55Z",
+      "message": "Update EIP-7906: Introduce 'POST_TX' frame mode as requirement for TXTRACE opcode",
+      "author": "forshtat",
+      "prNumber": null,
+      "additions": 43,
+      "deletions": 7
+    },
+    {
+      "sha": "8c077d8b461f4f55cd4734f08975f2e5e6c3872d",
+      "date": "2026-06-08T19:19:03Z",
+      "message": "Update EIP-7906: Fix result ordering",
+      "author": "forshtat",
+      "prNumber": null,
+      "additions": 119,
+      "deletions": 24
+    },
+    {
+      "sha": "82d0f2b318371f550cbebf122d0dc16e4e306a51",
+      "date": "2026-04-18T15:14:04Z",
+      "message": "Update EIP-7906: Missing 'slot_key' parameter and name 'FRAMEPARAM' as similar opcode",
+      "author": "forshtat",
+      "prNumber": null,
+      "additions": 27,
+      "deletions": 12
+    },
+    {
+      "sha": "a6a817ec1f1e1e4070d2068130313e14c159d8c3",
+      "date": "2026-03-13T17:21:30Z",
+      "message": "Update EIP-7906: Rationale",
+      "author": "forshtat",
+      "prNumber": null,
+      "patch": "@@ -84,45 +84,25 @@ The operation semantics match `CALLDATACOPY`, copying `length` bytes from the ev\n \n ## Rationale\n \n-### New Transaction Type and Assertion Frame\n+### Selection Parameter Design\n \n-One of the main advantages of a new Transaction Type for the Restricted Behaviour feature is the ability to protect all existing EOAs, and not just smart accounts. This makes it preferable to introduce a new Transaction Type instead of any other approach that would only work for smart contract accounts.\n+The `TXTRACE` opcode follows the same `(param, index)` pattern used by `TXPARAM` in [EIP-8141](./eip-8141.md). This keeps the interface consistent and avoids introducing a separate opcode for every piece of trace information.\n \n-### Transaction Trace Precompile Behaviour\n+### `EVENTDATACOPY` as a Companion Opcode\n \n-It is important for us to provide the same protection level to both EOAs and Smart Accounts. The Smart Accounts are not able to initiate a `RESTRICTED_EXECUTION_TX_TYPE` transaction themselves, and instead need to rely on checks performed during the regular execution frame of any transaction type.\n-\n-By exposing the `GET_TRACE_CALL_ADDRESS` precompile at all times, we allow any smart contract to perform the state change assertions it may need to ensure safety and security.\n-\n-### Deployable and One-Time Restrictions Code\n-\n-In some scenarios, the wallets are likely to want to apply the exact same transaction behaviour to all transactions they initiate.\n-\n-In this case, it is reasonalbe and more efficient to deploy the assertions on-chain as a smart contract module, and provide its address and the inputs it may need.\n-\n-However, it is possible that the wallet may want to prepare the restrictions for the transaction dynamically. In that case, there is no benefit in having the assertion code permanently deployed, and it is more efficient to provide such code as part of the transaction payload. Luckily, the EVM already has a very similar behaviour defined for the `init_code` field, and it appears to fit the task perfectly.\n+Event non-indexed data is variable-length and cannot be returned as a single 32-byte stack word. A memory-copy opcode with the same semantics as `CALLDATACOPY` is the idiomatic EVM approach for variable-length data access.\n \n ## Backwards Compatibility\n \n-This proposal describes a new transaction type that should not affect the functionality of existing systems.\n+`TXTRACE` and `EVENTDATACOPY` occupy previously unused opcode slots. No changes are made to existing opcodes, transaction types, or precompiles, so existing contracts and tooling are unaffected.\n \n ## Security Considerations\n \n-### Correct Wallet UI presentation\n-\n-Successfull use of the `RESTRICTED_EXECUTION_TX_TYPE` transaction type requires the wallets to be abile to correctly understand and present the restrictions imposed on the transaction to the users.\n-\n-Wallets will need to be able to understand the meaning of the state changes being permitted by the transaction. This requires wallets to be aware of all major ERC standards, such as [ERC-20](./eip-20.md) and [ERC-721](./eip-721.md). In many cases, this also requires the wallets to be able to fetch and analyze the source code of the executed contracts.\n-\n-However, the introduction of the Execution Restrictions feature significantly streamlines the process by removing the need for a deep understanding of the executed **code**. Instead, only high-level information about the stack traces' meaning is required for a clear and safe representation of possible transaction outcomes.\n-\n-### Insufficiently Restrictive Transactions\n-\n-The worst outcome of introducing a security feature is creating a false sense of security for its user.\n+### Insufficiently Restrictive Assertions\n \n-Wallets are expected to provide the behaviour restriction logic that protects their users' valuable assets.\n+The main risk is a false sense of security: an assertion contract that checks too little may mislead users into believing a transaction is safe when it is not.\n \n-It is critical that dApps, wallets, and users become educated about the consequences of not limiting their transactions' execution with sufficient strictness.\n+Wallets and dApps that build on `TXTRACE` must ensure their assertion logic covers all relevant state changes for the protected operation. It is critical that the ecosystem treats incomplete assertions as no better than no assertion at all.\n \n ## Copyright\n ",
+      "additions": 8,
+      "deletions": 28
+    },
+    {
+      "sha": "1408014183bda19fcf4fdd1d0e4c3ba4f07f80ae",
+      "date": "2026-03-13T15:12:42Z",
+      "message": "Update EIP-7906: use opcodes instead of transaction types or precompiles",
+      "author": "forshtat",
+      "prNumber": null,
+      "additions": 46,
+      "deletions": 109
+    },
+    {
+      "sha": "a59d3cd7d9326ec4f58dda694ce424e82e6818ae",
+      "date": "2025-12-09T15:59:13Z",
+      "message": "Add EIP: Restricted Behavior Transaction Type",
+      "author": "forshtat",
+      "prNumber": null,
+      "additions": 192,
+      "deletions": 0
+    }
+  ],
+  "openPrs": [
+    {
+      "number": 11267,
+      "title": "Update EIP-7906: fix typos",
+      "author": "thuricela",
+      "updatedAt": "2026-04-18T07:01:59Z",
+      "additions": 2,
+      "deletions": 2
+    },
+    {
+      "number": 11199,
+      "title": "Update EIP-7906: correct CALL opcode",
+      "author": "SashaMalysehko",
+      "updatedAt": "2026-01-28T22:28:13Z",
+      "additions": 1,
+      "deletions": 1
+    },
+    {
+      "number": 10899,
+      "title": "Update EIP-7906: correct CALL opcode",
+      "author": "Bashmunta",
+      "updatedAt": "2025-12-11T13:15:58Z",
+      "additions": 1,
+      "deletions": 1
+    },
+    {
+      "number": 11072,
+      "title": "Update EIP-7906: fix CALL opcode value",
+      "author": "radik878",
+      "updatedAt": "2026-01-13T20:54:32Z",
+      "additions": 1,
+      "deletions": 1
+    },
+    {
+      "number": 10972,
+      "title": "Update EIP-7906: correct CALL opcode value from 0xFA to 0xF1",
+      "author": "mattvaux",
+      "updatedAt": "2025-12-22T22:11:57Z",
+      "additions": 1,
+      "deletions": 1
+    }
+  ]
+}

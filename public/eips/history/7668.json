@@ -1,0 +1,35 @@
+{
+  "eipId": 7668,
+  "commits": [
+    {
+      "sha": "bdf8cfbedcba5162c93328f16bb0681227d7c366",
+      "date": "2024-11-03T00:22:23Z",
+      "message": "(bot 1272989785) moving EIPS/eip-7668.md to stagnant (#8961)",
+      "author": "eth-bot",
+      "prNumber": 8961,
+      "patch": "@@ -4,7 +4,7 @@ title: Remove bloom filters\n description: Remove bloom filters from the execution block\n author: Vitalik Buterin (@vbuterin)\n discussions-to: https://ethereum-magicians.org/t/eip-7653-remove-bloom-filters/19447\n-status: Draft\n+status: Stagnant\n type: Standards Track\n category: Core\n created: 2024-03-31",
+      "additions": 1,
+      "deletions": 1
+    },
+    {
+      "sha": "f646792bb8d13728b53430dbdd8378a182d459ef",
+      "date": "2024-04-01T16:02:39Z",
+      "message": "Add EIP: Remove bloom filters",
+      "author": "vbuterin",
+      "prNumber": null,
+      "patch": "@@ -0,0 +1,45 @@\n+---\n+eip: 7668\n+title: Remove bloom filters\n+description: Remove bloom filters from the execution block\n+author: Vitalik Buterin (@vbuterin)\n+discussions-to: https://ethereum-magicians.org/t/eip-7653-remove-bloom-filters/19447\n+status: Draft\n+type: Standards Track\n+category: Core\n+created: 2024-03-31\n+---\n+\n+## Abstract\n+\n+Require the bloom filters in an execution block, including at the top level and in the receipt object, to be empty.\n+\n+## Motivation\n+\n+Logs were originally introduced to give applications a way to record information about onchain events, which decentralized applications (dapps) would be able to easily query. Using bloom filters, dapps would be able to quickly go through the history, identify the few blocks that contained logs relative to their application, and then quickly identify which individual transactions have the logs that they need.\n+\n+In practice, this mechanism is far too slow. Almost all dapps that access history end up doing so not through RPC calls to an Ethereum node (even a remote-hosted one), but through centralized extra-protocol services.\n+\n+This EIP proposes recognizing that reality, and removing bloom filters from the protocol. Applications that need history querying would be encouraged to develop and use decentralized protocols that create provable log indexes using eg. ZK-SNARKs and incrementally-verifiable computation.\n+\n+## Specification\n+\n+The logs bloom of an execution block is now required to be empty (ie. 0 bytes long). The logs bloom of a transaction receipt is now required to be empty (ie. 0 bytes long).\n+\n+## Rationale\n+\n+This is a minimally disruptive way to remove the need to handle blooms from clients. A future EIP can later clean up by removing this field entirely, along with other fields that have been deprecated.\n+\n+Gas costs of LOG are not reduced, because while the externality of polluting the bloom filter no longer needs to be accounted for, the costs of hashing have increased due to the needs of ZK-SNARK EVM implementations.\n+\n+## Backwards Compatibility\n+\n+Applications that depend on bloom filters to read events will cease to work. Very few applications depend on this feature today, because at current gas limits the false positive rate is so high and processing the logs in a long history query is so slow, especially for light clients (whom this feature was primarily intended to benefit).\n+\n+## Security Considerations\n+\n+As no new features are introduced or made cheaper, no security concerns are raised.\n+\n+## Copyright\n+\n+Copyright and related rights waived via [CC0](../LICENSE.md).",
+      "additions": 45,
+      "deletions": 0
+    }
+  ],
+  "openPrs": [
+    {
+      "number": 9538,
+      "title": "Update EIP-7668: Move to Draft",
+      "author": "acolytec3",
+      "updatedAt": "2026-04-28T00:51:05Z",
+      "additions": 7,
+      "deletions": 7
+    }
+  ]
+}

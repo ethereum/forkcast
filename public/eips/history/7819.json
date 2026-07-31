@@ -1,0 +1,176 @@
+{
+  "eipId": 7819,
+  "commits": [
+    {
+      "sha": "d420fc4b289e298682006b2ea09355065cf50f99",
+      "date": "2026-04-09T17:35:00Z",
+      "message": "Update EIP-7819: Update EIP-7819",
+      "author": "Amxx",
+      "prNumber": null,
+      "additions": 59,
+      "deletions": 53
+    },
+    {
+      "sha": "65de264f92e3caa04e0328ae9da36fe1c59bdedf",
+      "date": "2025-12-04T14:55:26Z",
+      "message": "Update EIP-7819: Update EIP-7819",
+      "author": "Amxx",
+      "prNumber": null,
+      "patch": "@@ -55,27 +55,32 @@ Executing this instruction does the following:\n 1. deduct `EMPTY_ACCOUNT_COST` gas\n 2. halt if the current frame is in `static-mode`\n 3. pop `salt`, `target` from the operand stack\n-4. calculate `location` as `keccak256(MAGIC ++ address ++ salt)[12:]`\n+4. calculate `location` as `keccak256(DESIGNATOR ++ address ++ salt)[12:]`\n 5. add `location` to `accessed_addresses`, as defined in [EIP-2929](./eip-2929.md)\n 6. halt if the code at `location` is not empty and does not start with `0xEF0100` (no empty and not a delegation indicator)\n-7. add `EMPTY_ACCOUNT_COST - BASE_COST` gas to the global refund counter if `location` exists in the trie.\n-8. set the code of `location` to be `MAGIC ++ target`, matching the delegation process defined in EIP-7702.\n-    - Similarly to EIP-7702, if `target` is `0x0000000000000000000000000000000000000000` do not write the designation. Clear the code at `location` and reset the `location`'s code hash to the empty hash `0xc5d2460186f7233c927e7db2dcc703c0e500b653ca82273b7bfad8045d85a470`.\n-9. push `location` onto the stack\n+7. add `EMPTY_ACCOUNT_COST - BASE_COST` gas to the global refund counter if `location` exists in the trie\n+8. set the code of `location` to be `DESIGNATOR ++ target`, matching the delegation process defined in EIP-7702\n+    - Similarly to EIP-7702, if `target` is `0x0` do not write the designation. Clear the code at `location` and reset the `location`'s code hash to the empty hash `0xc5d2460186f7233c927e7db2dcc703c0e500b653ca82273b7bfad8045d85a470`.\n+9. if the nonce of the account at `location` is 0, increment it to 1\n+10. push `location` onto the stack\n+\n+On step 8, `target` MUST be exactly 20 bytes. If the value retrieved from the stack is smaller than 20 bytes, it MUST be left fill (big-endian notation) with zeros. If it is bigger than 20 bytes, it must be trimmed of the highest bytes. The code placed at `location` MUST be exactly 23 bytes long, following EIP-7702.\n \n The delegation indicator created at `location` behaves identically to those created by EIP-7702.\n \n Note: The delegation is effective immediately upon the completion of the operation. Calls to the address as soon as the next operation will execute the newly delegated code.\n \n-The delegation indicators created by the `SETDELEGATE` opcode are the same objects as the one created using EIP-7702. Therefore, all the behavior specificities documented in EIP-7702 (`CODESIZE`, `CODECOPY`, targeting precompile, or chaining delegation indicator) also apply here. Any future EIP that modify the behavior of EIP-7702 delegation indicators should also apply to the delegation indicators created using `SETDELEGATE`.\n+The delegation indicators created by the `SETDELEGATE` opcode are the same objects as the one created using EIP-7702. Therefore, all the behavior specificities documented in EIP-7702 (`CODESIZE`, `CODECOPY`, targeting precompile, or chaining delegation indicator) also apply here. Any future EIP that modify the behavior of EIP-7702 delegation indicators should also apply to the delegation indicators created using `SETDELEGATE`. They are not contracts, and cannot be deleted using `SELFDESTRUCT`, even if the `SELFDESTRUCT` appens in the same transaction that created the account at `location`. Destruction of the delegations SHOULD only be possible by the same caller (that created them) doing a new `SETDELEGATE` call with the same salt and a zero target.\n+\n+Step 9 ensures that an account that was created using `SETDELEGATE` never returns to an empty state (forbiden by [EIP-7523](./eip-7523.md)). Even if the balance is zero, no state was ever set, and the code is removed by a `SETDELEGATE` operation (with zero target), then the nonce being (at least) one would guarantee the account is not empty.\n \n ### Parameters\n \n-There parameters are the same ones as used in EIP-7702.\n+These parameters are the same ones as used in EIP-7702.\n \n | Constant                     | Value            |\n | ---------------------------- | ---------------- |\n-| `MAGIC`                      | 0xef0100         |\n+| `DESIGNATOR`                 | 0xef0100         |\n | `EMPTY_ACCOUNT_COST`         | 25000            |\n | `BASE_COST`                  | 12500            |\n ",
+      "additions": 13,
+      "deletions": 8
+    },
+    {
+      "sha": "8b19d001ff4244296a4eb6fc8a7c693756520e6f",
+      "date": "2025-10-15T16:32:02Z",
+      "message": "Update EIP-7819: fix spelling eip-7819.md (#9277)",
+      "author": "Pronoss",
+      "prNumber": 9277,
+      "patch": "@@ -115,7 +115,7 @@ Factories may want to protect against this risk by verifying that the `target` d\n \n ### Front running initialization\n \n-Unlike EIP-7702 signature, which can be included in any transaction, and can thus lead to initialization front-running if the implementation doesn't check the authenticity of the initialization parameters, `CREATE_DELEGATION` is executed by a smart contract that can execute the initialization logic atomically, just after the delegation is created. This process is well-known to developers that initialize clones and proxies just after creation.\n+Unlike EIP-7702 signature, which can be included in any transaction, and can thus lead to initialization front-running if the implementation doesn't check the authenticity of the initialization parameters, `CREATE_DELEGATE` is executed by a smart contract that can execute the initialization logic atomically, just after the delegation is created. This process is well-known to developers that initialize clones and proxies just after creation.\n \n ### Multiple delegation changes within a single transaction.\n ",
+      "additions": 1,
+      "deletions": 1
+    },
+    {
+      "sha": "e3c827719dd5deeea70557e62fa250f32f5485bc",
+      "date": "2025-09-25T15:39:38Z",
+      "message": "Update EIP-7819: Document Address collision in EIP-7819",
+      "author": "Amxx",
+      "prNumber": null,
+      "patch": "@@ -95,7 +95,11 @@ Therefore, the cost of executing this instruction could be lower than EIP-7702.\n \n ### Address collision\n \n-The derivation of the `location` is designed not to conflict with contracts created using the `CREATE` or `CREATE2` opcodes. In particular, the pre-images used to hash the produced address have different lengths, preventing any collision. If an unlikely hash collision were to happen, the code deployed by either `CREATE` or `CREATE2` cannot start with `0xef`, so step 6 of the behavior specifications will prevent `SETDELEGATE` from overwriting the existing code. Inversely, both `CREATE` and `CREATE2` will fail if they try to place code at a location where `SETDELEGATE` created a delegation.\n+The derivation of the `location` is designed not to conflict with contracts created using the `CREATE` or `CREATE2` opcodes. In particular, the pre-images used to hash the produced address have different lengths, preventing any collision:\n+\n+Contracts deployed using `CREATE2` have an address that is derived from a 85 bytes long pre-image, as opposed to 55 bytes for `SET_DELEGATE`. This observation alone remove the risk of pre-image collision.\n+\n+Contracts deployed using `CREATE` have an address that is derived from the `RLP([address, nonce])`. For this pre-image to have a length 55 (like `SET_DELEGATE`), `nonce` must be 32 bytes long. In that case, the `RLP([address, nonce])` would be `0xf694<address>a0<nonce>` and would thus not start with the magic value used by `SETDELEGATE`. A smaller nonce could lead to the pre-image starting with `0xef`, but in that case the pre-image would be smaller than 55 bytes. Even in that case, the pre-image would start with `0xef94`, `0x94` encoding the `address` object (that is 20 bytes long).\n \n ## Security Considerations\n ",
+      "additions": 5,
+      "deletions": 1
+    },
+    {
+      "sha": "33c16e1c1276e50b24a5f281a10ba8aadc606105",
+      "date": "2025-09-25T15:04:19Z",
+      "message": "Update EIP-7819: Document address collision risks in EIP-7819",
+      "author": "Amxx",
+      "prNumber": null,
+      "patch": "@@ -93,7 +93,9 @@ Therefore, the cost of executing this instruction could be lower than EIP-7702.\n \n ## Backwards Compatibility\n \n-TODO\n+### Address collision\n+\n+The derivation of the `location` is designed not to conflict with contracts created using the `CREATE` or `CREATE2` opcodes. In particular, the pre-images used to hash the produced address have different lengths, preventing any collision. If an unlikely hash collision were to happen, the code deployed by either `CREATE` or `CREATE2` cannot start with `0xef`, so step 6 of the behavior specifications will prevent `SETDELEGATE` from overwriting the existing code. Inversely, both `CREATE` and `CREATE2` will fail if they try to place code at a location where `SETDELEGATE` created a delegation.\n \n ## Security Considerations\n ",
+      "additions": 3,
+      "deletions": 1
+    },
+    {
+      "sha": "d0c5cf64630cde5cab48f33a20b507262a477365",
+      "date": "2025-07-23T07:18:45Z",
+      "message": "Update EIP-7819: Update EIP-7819",
+      "author": "Amxx",
+      "prNumber": null,
+      "patch": "@@ -2,7 +2,7 @@\n eip: 7819\n title: SETDELEGATE instruction\n description: Introduce a new instruction allowing contracts to create clones using EIP-7702 delegation designations\n-author: Hadrien Croubois (@amxx), Danno Ferrin (@shemnon)\n+author: Hadrien Croubois (@amxx)\n discussions-to: https://ethereum-magicians.org/t/eip-7819-create-delegate/21763\n status: Draft\n type: Standards Track\n@@ -115,7 +115,7 @@ Unlike EIP-7702 signature, which can be included in any transaction, and can thu\n \n If a contract performs multiple `SETDELEGATE` operations with the same salt but different targets within the same transaction, while doing calls corresponding address, this would have, in the same transaction without reverts, an address that has multiple different codes associated with it, two or more of which are executed. This include the delegation being removed/reset any number of time during the transaction.\n \n-This behavior, which is already mostly possible with more traditional upgradeable contracts.\n+This behavior, is already possible with more traditional upgradeable contracts, where change of target are caused by a specific storage slot being modified.\n \n ## Copyright\n ",
+      "additions": 2,
+      "deletions": 2
+    },
+    {
+      "sha": "4d2a00692bb131366ede1a16eced2b0e25b1bf99",
+      "date": "2025-07-18T13:37:37Z",
+      "message": "Update EIP-7819: Update EIP-7819",
+      "author": "Amxx",
+      "prNumber": null,
+      "patch": "@@ -28,7 +28,7 @@ In both cases delegating the received calls to an implementation using EVM code\n - Calldata must be copied to memory before performing the delegate call\n - If EOF is enabled, clones and proxy written in EOF do not support delegation to an implementation written in legacy EVM code, and are thus limited or possibly dangerous. This encourages the continued use of legacy EVM code.\n \n-EIP-7702 introduces a new type of object that has the expected behavior: designator. These objects are designed to be instantiated at the address of EOA's, but the same behavior could be re-used to implement clones at the protocol level. Using designators for this use-case provides upgradeability without the need for storage lookups if the contract calling the `SETDELEGATE` allows it. It also removes any issue related to code version incompatibilities.\n+EIP-7702 introduces a new type of object that has the expected behavior: delegation indicator. These objects are designed to be instantiated at the address of EOA's, but the same behavior could be re-used to implement clones at the protocol level. Using delegation indicators for this use-case provides upgradeability without the need for storage lookups if the contract calling the `SETDELEGATE` allows it. It also removes any issue related to code version incompatibilities.\n \n ### Account abstraction\n \n@@ -56,19 +56,23 @@ Executing this instruction does the following:\n 2. halt if the current frame is in `static-mode`\n 3. pop `salt`, `target` from the operand stack\n 4. calculate `location` as `keccak256(MAGIC ++ address ++ salt)[12:]`\n-5. Add `location` to `accessed_addresses`, as defined in [EIP-2929](./eip-2929.md).\n-6. halt if the code at `location` is not empty and does not start with `0xEF0100` (no empty and not a designator)\n+5. add `location` to `accessed_addresses`, as defined in [EIP-2929](./eip-2929.md)\n+6. halt if the code at `location` is not empty and does not start with `0xEF0100` (no empty and not a delegation indicator)\n 7. add `EMPTY_ACCOUNT_COST - BASE_COST` gas to the global refund counter if `location` exists in the trie.\n-8. set the code of `location` to be `MAGIC || target`, matching the delegation process defined in EIP-7702.\n+8. set the code of `location` to be `MAGIC ++ target`, matching the delegation process defined in EIP-7702.\n     - Similarly to EIP-7702, if `target` is `0x0000000000000000000000000000000000000000` do not write the designation. Clear the code at `location` and reset the `location`'s code hash to the empty hash `0xc5d2460186f7233c927e7db2dcc703c0e500b653ca82273b7bfad8045d85a470`.\n 9. push `location` onto the stack\n \n-The designator created at `location` behaves identically to those created by EIP-7702.\n+The delegation indicator created at `location` behaves identically to those created by EIP-7702.\n \n Note: The delegation is effective immediately upon the completion of the operation. Calls to the address as soon as the next operation will execute the newly delegated code.\n \n+The delegation indicators created by the `SETDELEGATE` opcode are the same objects as the one created using EIP-7702. Therefore, all the behavior specificities documented in EIP-7702 (`CODESIZE`, `CODECOPY`, targeting precompile, or chaining delegation indicator) also apply here. Any future EIP that modify the behavior of EIP-7702 delegation indicators should also apply to the delegation indicators created using `SETDELEGATE`.\n+\n ### Parameters\n \n+There parameters are the same ones as used in EIP-7702.\n+\n | Constant                     | Value            |\n | ---------------------------- | ---------------- |\n | `MAGIC`                      | 0xef0100         |",
+      "additions": 9,
+      "deletions": 5
+    },
+    {
+      "sha": "a814e130ae60c01a78bf5b579206fc6057dee790",
+      "date": "2025-07-17T17:35:58Z",
+      "message": "Update EIP-7819: Add location to accessed_addresses",
+      "author": "Amxx",
+      "prNumber": null,
+      "patch": "@@ -56,11 +56,12 @@ Executing this instruction does the following:\n 2. halt if the current frame is in `static-mode`\n 3. pop `salt`, `target` from the operand stack\n 4. calculate `location` as `keccak256(MAGIC ++ address ++ salt)[12:]`\n-5. halt if the code at `location` is not empty and does not start with `0xEF0100` (no empty and not a designator)\n-6. add `EMPTY_ACCOUNT_COST - BASE_COST` gas to the global refund counter if `location` exists in the trie.\n-7. set the code of `location` to be `MAGIC || target`, matching the delegation process defined in EIP-7702.\n+5. Add `location` to `accessed_addresses`, as defined in [EIP-2929](./eip-2929.md).\n+6. halt if the code at `location` is not empty and does not start with `0xEF0100` (no empty and not a designator)\n+7. add `EMPTY_ACCOUNT_COST - BASE_COST` gas to the global refund counter if `location` exists in the trie.\n+8. set the code of `location` to be `MAGIC || target`, matching the delegation process defined in EIP-7702.\n     - Similarly to EIP-7702, if `target` is `0x0000000000000000000000000000000000000000` do not write the designation. Clear the code at `location` and reset the `location`'s code hash to the empty hash `0xc5d2460186f7233c927e7db2dcc703c0e500b653ca82273b7bfad8045d85a470`.\n-8. push `location` onto the stack\n+9. push `location` onto the stack\n \n The designator created at `location` behaves identically to those created by EIP-7702.\n ",
+      "additions": 5,
+      "deletions": 4
+    },
+    {
+      "sha": "6a01dcc460b5de1c48c2711c2e5717579525c704",
+      "date": "2025-07-17T09:12:21Z",
+      "message": "Update EIP-7819: Update/eip 7819",
+      "author": "Amxx",
+      "prNumber": null,
+      "patch": "@@ -30,6 +30,20 @@ In both cases delegating the received calls to an implementation using EVM code\n \n EIP-7702 introduces a new type of object that has the expected behavior: designator. These objects are designed to be instantiated at the address of EOA's, but the same behavior could be re-used to implement clones at the protocol level. Using designators for this use-case provides upgradeability without the need for storage lookups if the contract calling the `SETDELEGATE` allows it. It also removes any issue related to code version incompatibilities.\n \n+### Account abstraction\n+\n+Smart accounts, as in contracts that are \"owned\" by one or multiple keys and are intended to replace EOAs, are often deployed using clones or proxies that point to a singleton implementation. This forces a choice between having an upgradeable or a non-upgradeable design. Both designs come with downsides. Non-upgradeable design can leave you stranded with a buggy (or limited) account code. Upgradeable design comes with costs associated with fetching the implementation address.\n+\n+The `SETDELEGATE` instruction would enable new factories to implement an upgradeable design without the added cost of the lookup. Factories could also deploy non-upgradeable variants, or even selectively disable the upgradeability of some accounts. Both the upgrade mechanism and the selective locking would be handled at the factory level, which removes the burden of implementing the upgrade logic into the account itself.\n+\n+Additionally, using EIP-7702 delegations instead of clones/proxies moves the call redirection logic from the userspace to the protocol. This means fewer EVM operations, and thus a reduced gas consumption of every operation that calls these contracts. This includes the verification of signatures and the execution of user operations, but also transfers of assets that include a callback, such as [ERC-721](./eip-721.md) and [ERC-1155](./eip-1155.md) tokens.\n+\n+### Scalability\n+\n+Clones and proxy contracts are present in large numbers in the blockchain state. OpenZeppelin's [ERC-1967](./eip-1967.md) proxies are ~708 bytes. Using EIP-7702 delegations that are only 23 bytes would reduce blockchain state usage.\n+\n+Additionally, clones and proxy contracts have to handle the redirection of the call in the userspace, which includes execution cost. Using EIP-7702 delegations, which would move the redirection to the protocol level, would reduce the gas cost of all operations that target. This means more gas / blockspace is available for the actual execution of the contracts.\n+\n ## Specification\n \n A new instruction (`SETDELEGATE`) is added at `0xf6`.",
+      "additions": 14,
+      "deletions": 0
+    },
+    {
+      "sha": "6ac7c8f8dbbc701f24aa3b69a910fab2bfdf7b23",
+      "date": "2025-05-01T12:23:55Z",
+      "message": "Update EIP-7819: Update EIP-7819",
+      "author": "Amxx",
+      "prNumber": null,
+      "additions": 10,
+      "deletions": 12
+    },
+    {
+      "sha": "c04c6e50e0d56387743c6a590eb66bf6749bc9fd",
+      "date": "2025-03-17T20:35:53Z",
+      "message": "Update EIP-7819: Clarify specifications",
+      "author": "Amxx",
+      "prNumber": null,
+      "patch": "@@ -52,6 +52,8 @@ Executing this instruction does the following:\n \n The designator created at `location` behaves identically to those created by EIP-7702.\n \n+Note: The delegation is effective immediately upon the completion of the operation. Calls to the address as soon as the next operation will execute the newly delegated code.\n+\n ### Parameters\n \n | Constant                     | Value            |\n@@ -92,6 +94,12 @@ Factories may want to protect against this risk by verifying that the `target` d\n \n Unlike EIP-7702 signature, which can be included in any transaction, and can thus lead to initialization front-running if the implementation doesn't check the authenticity of the initialization parameters, `CREATE_DELEGATION` is executed by a smart contract that can execute the initialization logic atomically, just after the delegation is created. This process is well-known to developers that initialize clones and proxies just after creation.\n \n+### Multiple delegation changes within a single transaction.\n+\n+If a contract performs multiple `CREATE_DELEGATE` operations with the same salt but different targets within the same transaction, while doing calls corresponding address, this would have, in the same transaction without reverts, an address that has multiple different codes associated with it, two or more of which are executed. This include the delegation being removed/reset any number of time during the transaction.\n+\n+This behavior, which is already mostly possible with more traditional upgradeable contracts.\n+\n ## Copyright\n \n Copyright and related rights waived via [CC0](../LICENSE.md).",
+      "additions": 8,
+      "deletions": 0
+    },
+    {
+      "sha": "693d7b0b8318a71e38a861e7dbd8cdcd9af928dc",
+      "date": "2025-02-26T15:23:59Z",
+      "message": "Update EIP-7819: fix typos",
+      "author": "chloefeal",
+      "prNumber": null,
+      "patch": "@@ -84,7 +84,7 @@ Reusing EIP-7702 behavior, including clearing the code if the target is 0, resul\n \n ### Delegator chaining\n \n-As documented in EIP-7702, designator chains or loops are not resolved. This means that, unlike clones, chaining is an issue. This is however something developpers are used to, as chaining proxy can result in strange behaviors, including infinite delegation loops.\n+As documented in EIP-7702, designator chains or loops are not resolved. This means that, unlike clones, chaining is an issue. This is however something developers are used to, as chaining proxy can result in strange behaviors, including infinite delegation loops.\n \n Factories may want to protect against this risk by verifying that the `target` doesn't contain a designator. This can be achieved using a legacy contract helper that has access to `EXTCODEHASH`. It could also be done using other forms of introspection such as an `ACCOUNT_TYPE` instruction.\n ",
+      "additions": 1,
+      "deletions": 1
+    },
+    {
+      "sha": "07126ad20d8daf2ea0da02958da4ba923cb029e4",
+      "date": "2025-02-20T14:31:23Z",
+      "message": "Update EIP-7819: clarify what is `authority`",
+      "author": "pdobacz",
+      "prNumber": null,
+      "patch": "@@ -46,7 +46,7 @@ Executing this instruction does the following:\n 4. calculate `location` as `keccak256(MAGIC ++ address ++ salt)[12:]`\n 5. halt if the code at `location` is not empty and does not start with `0xEF0100` (no empty and not a designator)\n 6. add `EMPTY_ACCOUNT_COST - BASE_COST` gas to the global refund counter if `location` exists in the trie.\n-7. set the code of `authority` to be `MAGIC || target`, matching the delegation process defined in EIP-7702.\n+7. set the code of `location` to be `MAGIC || target`, matching the delegation process defined in EIP-7702.\n     - Similarly to EIP-7702, if `target` is `0x0000000000000000000000000000000000000000` do not write the designation. Clear the code at `location` and reset the `location`'s code hash to the empty hash `0xc5d2460186f7233c927e7db2dcc703c0e500b653ca82273b7bfad8045d85a470`.\n 8. push `location` onto the stack\n ",
+      "additions": 1,
+      "deletions": 1
+    },
+    {
+      "sha": "cf5db5743301036ccea17227a3ed178d3c557ae2",
+      "date": "2024-11-21T17:19:24Z",
+      "message": "Add EIP: Create delegate",
+      "author": "Amxx",
+      "prNumber": null,
+      "additions": 97,
+      "deletions": 0
+    }
+  ],
+  "openPrs": [
+    {
+      "number": 12047,
+      "title": "Update EIP-7819: Update EIP-7819 - Add trailing data to the delegation designator",
+      "author": "shemnon",
+      "updatedAt": "2026-07-31T00:31:31Z",
+      "additions": 125,
+      "deletions": 21
+    },
+    {
+      "number": 10893,
+      "title": "Update EIP-7819: Fix typo",
+      "author": "changgesi",
+      "updatedAt": "2026-02-10T02:32:50Z",
+      "additions": 1,
+      "deletions": 1
+    },
+    {
+      "number": 11261,
+      "title": "Update EIP-7819: fix typos and grammatical errors ",
+      "author": "thuricela",
+      "updatedAt": "2026-02-05T11:47:01Z",
+      "additions": 2,
+      "deletions": 2
+    },
+    {
+      "number": 10922,
+      "title": "Update EIP-7819: fix inconsistent SETDELEGATE opcode naming",
+      "author": "lisenokdonbassenok",
+      "updatedAt": "2025-12-15T11:41:02Z",
+      "additions": 3,
+      "deletions": 3
+    }
+  ]
+}

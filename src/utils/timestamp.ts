@@ -17,3 +17,33 @@ export function secondsToTimestamp(totalSeconds: number): string {
   const seconds = Math.floor(totalSeconds % 60);
   return `${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
 }
+
+export interface SyncConfig {
+  transcriptStartTime: string | null;
+  videoStartTime: string | null;
+  description?: string;
+}
+
+/**
+ * Drop the milliseconds fraction from a VTT-style timestamp
+ */
+export const stripMillis = (timestamp: string): string => timestamp.split('.')[0];
+
+/**
+ * Convert a transcript timestamp to the corresponding position in the video,
+ * applying the call's transcript/video sync offset when one is configured.
+ */
+export function getAdjustedVideoTime(timestamp: string, sync?: SyncConfig): number {
+  const transcriptSeconds = timestampToSeconds(stripMillis(timestamp));
+  if (sync?.transcriptStartTime && sync?.videoStartTime) {
+    const offset = timestampToSeconds(sync.transcriptStartTime) - timestampToSeconds(sync.videoStartTime);
+    return transcriptSeconds - offset;
+  }
+  return transcriptSeconds;
+}
+
+/**
+ * Sync-adjusted timestamp formatted for display (HH:MM:SS)
+ */
+export const getDisplayTimestamp = (timestamp: string, sync?: SyncConfig): string =>
+  secondsToTimestamp(getAdjustedVideoTime(timestamp, sync));

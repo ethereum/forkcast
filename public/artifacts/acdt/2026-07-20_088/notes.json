@@ -1,0 +1,35 @@
+{
+  "meeting": "ACDT #88 - July 20, 2026",
+  "sections": [
+    {
+      "heading": "Glamsterdam Devnet 7 Status",
+      "timestamp": "00:05:52",
+      "body": "- Devnet 7 is stable; dust has settled and network performing well\n- Erigon onboarding in progress as the last client; Grandine was added before the weekend\n  - Both Erigon and Grandine will have fewer validators until more deposits come in, so they may propose less frequently\n- Prysm/Erigon combo missing slots on Dora; likely still syncing as full sync is being tested across all clients\n- Death Star (modified Lodestar that acts maliciously) added to devnet 7 for chaos testing\n- Malicious Prysm node updated by PandaOps; pending review from the \"Aussies\" before deployment\n  - Will introduce more degrees of freedom than Death Star this week\n- Plan is to increase chaos testing gradually on devnet 7 but not crash the network, since it was made available to a broader audience\n- QUIC confirmed enabled on devnet 7"
+    },
+    {
+      "heading": "Devnet 8 and Devnet 9 Planning",
+      "timestamp": "00:07:09",
+      "body": "- Devnet 8 targets spec cleanup changes (repricing EIPs Marius wants to do) and another fork transition test\n- Timeline: next week or the week after; no rush given holidays and pending changes\n  - Benchmarking still needs time before devnet 8 is ready\n- Goal for devnet 8: smooth fork transition with all clients\n- Devnet 9 envisioned as a non-finality/chaos-focused devnet, ideally within the next month\n- Decision: devnet 8 to run discv5 only for EL (no discv4)\n  - Besu confirmed support; Nimbus EL also supports and prefers this\n  - Csaba to do a small code test to confirm before the devnet launch\n- Suggestion to invite big application-level stakeholders (e.g., CowSwap, builders) to practice the fork transition on devnet 8"
+    },
+    {
+      "heading": "Fork Transition Bugs and Performance",
+      "timestamp": "00:11:43",
+      "body": "- Main EL issues on devnet 7: gas accounting inconsistencies; nothing out of the ordinary\n- CL surprise: SSZ stable containers at fork transition due to large validator set size (many exiting validators)\n- Lodestar bug: spread operator used to pass Merkle node arguments blew the stack on large SSZ trees (hundreds of thousands of nodes)\n  - Not caught in small-tree testing; only surfaced at devnet scale; now fixed\n- Stable containers ~10-20% slower across clients compared to non-progressive implementation\n  - Grandine confirmed significant slowdowns in some places; optimization needed\n  - Teku confirmed slower implementation across the board; manageable but needs an optimization round before mainnet\n  - Need to benchmark behavior with bigger data structures beyond basic benchmarking done so far"
+    },
+    {
+      "heading": "EIP Staging and SFI Status",
+      "timestamp": "00:18:25",
+      "body": "- All devnet 7 EIPs appear to satisfy SFI criteria per [EIP-7723](https://eips.ethereum.org/EIPS/eip-7723)\n- PandaOps team comfortable with SFI move from testing perspective; EELS perspective also confirmed comfortable\n- Agreement: SFI designation is an ACDE/ACDC decision; testing team and EL teams signal readiness on ACDT, formal ratification to happen at next ACD call Thursday\n- EIP-7773 (Meta EIP for Glamsterdam upgrade): proposed move to Review status\n  - No objections raised\n  - Authors asked to add PRs to EIP editing office hours tomorrow for merge before Thursday's ACD call"
+    },
+    {
+      "heading": "BAL JSON RPC Alignment",
+      "timestamp": "00:22:33",
+      "body": "- BAL-specific JSON RPC methods inconsistent across clients (error codes, empty lists vs. omitted fields, access list format)\n- Toni created a HackMD summarizing all divergence points; clients asked to review\n- Toni raised a PR against execution-APIs to clarify the points where clients diverge; target alignment by devnet 8\n- Chase already working on a JSON RPC test suite; coordinating to add BAL/access list tests there makes sense\n- Sub-call traces: question raised about adding gas reservoir and spilled gas fields to traces\n  - Acknowledged as separate from BAL-specific JSON RPC alignment\n  - Decision deferred to async discussion; clients to review and figure out approach"
+    },
+    {
+      "heading": "EIP-7997 Contracts Factory and EELS PR",
+      "timestamp": "00:26:10",
+      "body": "- Toni created [EELS PR](https://github.com/ethereum/execution-specs/pull/3198) to add EIP-7997 factory contract via irregular state transition\n- Context: checking contract existence at fork boundary adds an entry to the execution witness, causing client divergence\n  - Issue originally raised by Ignacio; [EIP PR](https://github.com/ethereum/EIPs/pull/11952/changes) (already merged) removed mention of irregular state transition from the EIP itself\n  - EIP now says: if gas schedule makes normal deployment impossible, rely on irregular state transition, but does not specify one\n- Toni discovered the issue while testing JSON RPCs: Erigon and Geth had different paths at the fork boundary because one deployed the factory and the other didn't\n- Geth team (Marius): internal discussion concluded the check is unnecessary since the factory is already deployed on all relevant chains; no strong argument for specifying it\n- Consensus: no need to specify irregular state transition; factory already exists in Genesis on mainnet and devnets\n  - Checking existence adds unwanted witness entries\n  - PR to be closed; no critical impact\n  - Some minor cross-client differences may persist but considered acceptable"
+    }
+  ]
+}

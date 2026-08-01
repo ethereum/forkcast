@@ -52,6 +52,7 @@ const legacyRedirects = {
 export default defineConfig({
   site: 'https://forkcast.org',
   output: 'static',
+  trailingSlash: 'never',
   prefetch: true,
   integrations: [react(), sitemap()],
   vite: {

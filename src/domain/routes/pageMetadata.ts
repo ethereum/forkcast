@@ -40,6 +40,11 @@ export const staticPageMetadata = {
     title: 'Headliner Rankings - Forkcast',
     description: 'Rank and compare headliner proposals for upcoming Ethereum network upgrades.',
   },
+  champions: {
+    title: 'EIP Champion Guide - Forkcast',
+    description:
+      'How EIP champions can write the Forkcast data for their proposal: benefits, tradeoffs, stakeholder impacts, and FAQ.',
+  },
   eipsIndex: {
     title: 'EIP Directory - Forkcast',
     description:

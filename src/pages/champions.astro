@@ -1,0 +1,661 @@
+---
+import Layout from '../layouts/Layout.astro';
+import { staticPageMetadata } from '../domain/routes/pageMetadata';
+
+const REPO = 'https://github.com/ethereum/forkcast';
+
+const surfaces = [
+  {
+    href: '/eips/8025',
+    label: 'EIP page, Analysis tab',
+    detail: 'Layman description, benefits, tradeoffs, north star alignment, and stakeholder impacts.',
+  },
+  {
+    href: '/eips/8025?tab=faq',
+    label: 'EIP page, FAQ tab',
+    detail: 'Each answer gets its own deep link, so people can cite a single answer in a thread.',
+  },
+  {
+    href: '/upgrade/glamsterdam',
+    label: 'Upgrade page cards',
+    detail:
+      'Expanding an EIP shows your benefits, tradeoffs, stakeholder impacts, and north star alignment.',
+  },
+  {
+    href: '/upgrade/glamsterdam/stakeholders',
+    label: 'Stakeholder view',
+    detail: 'Groups every EIP in a fork by who it affects, built entirely from your stakeholder impacts.',
+  },
+];
+
+const submitSteps = [
+  { code: null, text: 'Fork', link: { href: REPO, label: 'github.com/ethereum/forkcast' } },
+  {
+    code: 'src/data/eips/{EIP_NUMBER}.json',
+    text: 'Edit the file for your EIP, or create it if it does not exist yet.',
+  },
+  {
+    code: 'npm install && npm run compile-eips',
+    text: 'Validate that the file parses and matches the schema.',
+  },
+  {
+    code: 'npm run audit-eips -- --fork <ForkName>',
+    text: 'Confirm your EIP is no longer flagged as missing data.',
+  },
+  {
+    code: null,
+    text: 'Open a PR titled "Add EIP-{number}: {title}", or "Update EIP-{number}" for edits to an existing file.',
+  },
+];
+
+const stakeholders = [
+  { key: 'endUsers', audience: 'People transacting on Ethereum' },
+  { key: 'appDevs', audience: 'Smart contract and dapp developers' },
+  { key: 'walletDevs', audience: 'Wallet software maintainers' },
+  { key: 'toolingInfra', audience: 'Indexers, explorers, RPC providers, analytics' },
+  { key: 'layer2s', audience: 'Rollups and L2 teams' },
+  { key: 'stakersNodes', audience: 'Validators and node operators' },
+  { key: 'clClients', audience: 'Consensus layer client teams' },
+  { key: 'elClients', audience: 'Execution layer client teams' },
+];
+
+const checklist = [
+  'All eight stakeholder impacts are filled in, including the "No impact" ones.',
+  'tradeoffs is a real list, or deliberately null because there genuinely are none.',
+  'Every benefit and tradeoff is a single claim under about 16 words.',
+  'The layman description has no jargon, no acronyms, and is under about 60 words.',
+  'Each FAQ answer stands on its own, because it can be linked to in isolation.',
+  'npm run compile-eips passes.',
+  'npm run audit-eips reports no issues for your EIP.',
+];
+
+const jsonTemplate = `{
+  "id": 9999,
+  "layer": "EL",
+  "reviewer": "expert",
+  "discussionLink": "https://ethereum-magicians.org/t/your-thread/00000",
+
+  "laymanDescription": "Two or three plain sentences. What changes, for someone who does not read specs.",
+
+  "benefits": [
+    "One concrete, checkable claim under 16 words",
+    "Another one",
+    "Four to six of these total"
+  ],
+
+  "tradeoffs": [
+    "An honest cost, risk, or burden this introduces",
+    "Use null instead of an empty array only if there truly are none"
+  ],
+
+  "stakeholderImpacts": {
+    "endUsers": { "description": "About 20 words, or 'No impact.'" },
+    "appDevs": { "description": "About 20 words, or 'No impact.'" },
+    "walletDevs": { "description": "About 20 words, or 'No impact.'" },
+    "toolingInfra": { "description": "About 20 words, or 'No impact.'" },
+    "layer2s": { "description": "About 20 words, or 'No impact.'" },
+    "stakersNodes": { "description": "About 20 words, or 'No impact.'" },
+    "clClients": { "description": "Implementation complexity, not user benefit." },
+    "elClients": { "description": "Implementation complexity, not user benefit." }
+  },
+
+  "northStarAlignment": {
+    "improveUX": { "description": "One sentence. Omit any goal that is not genuinely relevant." }
+  },
+
+  "faq": [
+    { "question": "What's in EIP-9999?", "answer": "Markdown is supported, including **bold**, lists, links, and \\n\\n for paragraphs." },
+    { "question": "What problem does it solve?", "answer": "..." }
+  ],
+
+  "supportingDocuments": [
+    { "label": "Benchmark results", "url": "https://..." }
+  ],
+
+  "forkRelationships": [
+    {
+      "forkName": "Glamsterdam",
+      "statusHistory": [{ "status": "Proposed", "call": "acde/999", "date": "2026-01-01" }],
+      "champions": [{ "name": "Your Name", "discord": "@yourhandle" }]
+    }
+  ]
+}`;
+
+const cardClass =
+  'scroll-mt-20 rounded-xl border border-slate-200 bg-white p-6 dark:border-slate-800 dark:bg-slate-800/40';
+const fieldNameClass =
+  'font-mono text-base font-semibold text-purple-700 dark:text-purple-300';
+const bodyClass = 'mt-3 text-sm leading-relaxed text-slate-600 dark:text-slate-300';
+const listClass =
+  'mt-3 list-disc pl-5 space-y-2 text-sm leading-relaxed text-slate-600 dark:text-slate-300';
+const codeClass =
+  'rounded bg-slate-100 px-1.5 py-0.5 font-mono text-[0.8125rem] text-slate-800 dark:bg-slate-800 dark:text-slate-200';
+const linkClass =
+  'font-medium text-purple-700 underline decoration-purple-300 underline-offset-2 hover:text-purple-900 dark:text-purple-300 dark:decoration-purple-700 dark:hover:text-purple-200';
+const h2Class =
+  'scroll-mt-20 text-2xl font-light tracking-tight text-slate-900 dark:text-slate-100';
+const sectionClass = 'mt-16';
+// Self-link on every heading: the "#" stays invisible until hover or keyboard focus.
+const anchorClass = 'group inline-flex items-baseline gap-2 no-underline';
+const hashClass =
+  'font-mono text-slate-300 opacity-0 transition-opacity group-hover:opacity-100 group-focus-visible:opacity-100 dark:text-slate-600';
+---
+
+<Layout {...staticPageMetadata.champions}>
+  <div class="bg-slate-50 dark:bg-slate-900 px-6 py-16">
+    <div class="mx-auto max-w-3xl">
+      <!-- Header -->
+      <header>
+        <p
+          class="font-mono text-xs font-semibold uppercase tracking-[0.3em] text-purple-600 dark:text-purple-400"
+        >
+          For EIP champions
+        </p>
+        <h1 class="mt-4 text-4xl font-light tracking-tight text-slate-900 dark:text-slate-100">
+          Make your EIP legible
+        </h1>
+        <p class="mt-5 text-base leading-relaxed text-slate-600 dark:text-slate-300">
+          Most people deciding whether to back your EIP are not on the client teams. They are app
+          developers, rollup teams, wallet maintainers, stakers, and node operators, and what they
+          read is the Forkcast summary of your proposal, not the spec. You are the person best
+          placed to write that summary. This page explains each field, what a good answer looks
+          like, and how to open a PR with it.
+        </p>
+        <p class="mt-4 text-sm leading-relaxed text-slate-500 dark:text-slate-400">
+          This is a guide for writing data, not a governance requirement. Nothing here is a
+          prerequisite for proposing an EIP or getting it considered for a fork.
+        </p>
+      </header>
+
+      <!-- TL;DR -->
+      <section
+        id="tldr"
+        class="mt-10 scroll-mt-20 rounded-xl border-l-4 border-purple-500 bg-white p-6 dark:border-purple-500 dark:bg-slate-800/60"
+      >
+        <h2 class="font-mono text-xs font-semibold uppercase tracking-[0.2em] text-purple-700 dark:text-purple-300">
+          <a href="#tldr" class={anchorClass}
+            >TL;DR<span class={hashClass} aria-hidden="true">#</span></a
+          >
+        </h2>
+        <p class="mt-3 text-sm leading-relaxed text-slate-700 dark:text-slate-200">
+          Edit your EIP's file at
+          <code class={codeClass}>src/data/eips/&#123;your EIP number&#125;.json</code> and open a PR
+          to <a href={REPO} class={linkClass}>ethereum/forkcast</a>. Fill in
+          <code class={codeClass}>laymanDescription</code>, <code class={codeClass}>benefits</code>,
+          <code class={codeClass}>tradeoffs</code>, all eight
+          <code class={codeClass}>stakeholderImpacts</code> keys, and a
+          <code class={codeClass}>faq</code>, then set <code class={codeClass}>"reviewer"</code> to
+          <code class={codeClass}>"expert"</code>.
+        </p>
+        <p class="mt-3 text-sm leading-relaxed text-slate-700 dark:text-slate-200">
+          Reference
+          <a href={`${REPO}/blob/main/src/data/eips/8025.json`} class={linkClass}>8025.json</a> as a
+          starting point and see how it
+          <a href="/eips/8025" class={linkClass}>renders on the site</a>. Everything below is detail
+          on what makes each field good.
+        </p>
+      </section>
+
+      <!-- Where this shows up -->
+      <section class={sectionClass}>
+        <h2 id="where-this-data-shows-up" class={h2Class}>
+          <a href="#where-this-data-shows-up" class={anchorClass}
+            >Where this data shows up<span class={hashClass} aria-hidden="true">#</span></a
+          >
+        </h2>
+        <ul class="mt-5 space-y-4">
+          {
+            surfaces.map((surface) => (
+              <li class="border-l-2 border-slate-200 pl-4 dark:border-slate-700">
+                <a href={surface.href} class={linkClass}>
+                  {surface.label}
+                </a>
+                <p class="mt-1 text-sm leading-relaxed text-slate-600 dark:text-slate-300">
+                  {surface.detail}
+                </p>
+              </li>
+            ))
+          }
+        </ul>
+      </section>
+
+      <!-- How to submit -->
+      <section class={sectionClass}>
+        <h2 id="how-to-submit" class={h2Class}>
+          <a href="#how-to-submit" class={anchorClass}
+            >How to submit<span class={hashClass} aria-hidden="true">#</span></a
+          >
+        </h2>
+        <ol class="mt-5 space-y-4">
+          {
+            submitSteps.map((step, i) => (
+              <li class="flex gap-4">
+                <span class="mt-0.5 flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-slate-200 font-mono text-xs font-semibold text-slate-700 dark:bg-slate-700 dark:text-slate-200">
+                  {i + 1}
+                </span>
+                <div class="min-w-0">
+                  <p class="text-sm leading-relaxed text-slate-600 dark:text-slate-300">
+                    {step.text}
+                    {step.link && (
+                      <a href={step.link.href} class={linkClass}>
+                        {step.link.label}
+                      </a>
+                    )}
+                  </p>
+                  {step.code && (
+                    <pre class="mt-2 overflow-x-auto rounded-lg bg-slate-100 p-3 dark:bg-slate-800"><code class="font-mono text-[0.8125rem] text-slate-800 dark:text-slate-200">{step.code}</code></pre>
+                  )}
+                </div>
+              </li>
+            ))
+          }
+        </ol>
+
+        <div
+          class="mt-6 rounded-lg border border-slate-200 bg-white p-4 dark:border-slate-700 dark:bg-slate-800/40"
+        >
+          <p class="text-sm font-semibold text-slate-900 dark:text-slate-100">
+            Shortcut: skip the local checkout
+          </p>
+          <p class="mt-2 text-sm leading-relaxed text-slate-600 dark:text-slate-300">
+            You do not need to clone anything. Open your EIP's file in
+            <a href={`${REPO}/tree/main/src/data/eips`} class={linkClass}>src/data/eips</a>, hit the
+            edit button, and GitHub will fork the repo and open the PR for you.
+          </p>
+        </div>
+
+        <div
+          class="mt-4 rounded-lg border border-amber-200 bg-amber-50 p-4 dark:border-amber-900/60 dark:bg-amber-950/30"
+        >
+          <p class="text-sm font-semibold text-amber-900 dark:text-amber-200">
+            Two things to know before you edit
+          </p>
+          <ul class="mt-2 space-y-2 text-sm leading-relaxed text-amber-900/90 dark:text-amber-100/80">
+            <li>
+              Leave <code class={codeClass}>title</code>, <code class={codeClass}>description</code>,
+              <code class={codeClass}>author</code>, <code class={codeClass}>status</code>,
+              <code class={codeClass}>createdDate</code>, <code class={codeClass}>type</code>,
+              <code class={codeClass}>category</code>, and <code class={codeClass}>requires</code> alone.
+              A sync job pulls those from <code class={codeClass}>ethereum/EIPs</code> and will overwrite
+              hand edits.
+            </li>
+            <li>
+              Set <code class={codeClass}>"reviewer": "expert"</code> when you wrote the content yourself.
+              That marks it as champion-authored rather than bot-generated.
+            </li>
+          </ul>
+        </div>
+      </section>
+
+      <!-- Field guide -->
+      <section class={sectionClass}>
+        <h2 id="field-guide" class={h2Class}>
+          <a href="#field-guide" class={anchorClass}
+            >Field guide<span class={hashClass} aria-hidden="true">#</span></a
+          >
+        </h2>
+        <p class="mt-3 text-sm leading-relaxed text-slate-600 dark:text-slate-300">
+          Every field below is optional in the schema, but the first five are what the site
+          actually renders, and what the data audit checks for.
+        </p>
+
+        <div class="mt-8 space-y-8">
+          <!-- laymanDescription -->
+          <article id="laymanDescription" class={cardClass}>
+            <h3 class={fieldNameClass}>
+              <a href="#laymanDescription" class={anchorClass}
+                >laymanDescription<span class={hashClass} aria-hidden="true">#</span></a
+              >
+            </h3>
+            <p class={bodyClass}>
+              A short paragraph answering: what changes for someone who does not read specs? Around
+              60 words, plain language, no jargon and no unexpanded acronyms.
+            </p>
+            <div class="mt-4 grid gap-3 sm:grid-cols-2">
+              <div
+                class="rounded-lg border border-emerald-200 bg-emerald-50 p-3 dark:border-emerald-900/60 dark:bg-emerald-950/30"
+              >
+                <p
+                  class="text-xs font-semibold uppercase tracking-wider text-emerald-800 dark:text-emerald-300"
+                >
+                  Good
+                </p>
+                <p class="mt-2 text-sm leading-relaxed text-emerald-950 dark:text-emerald-100/90">
+                  "Normally every validator must replay each block's transactions against the full
+                  Ethereum state to check it is valid — costly work that grows with the gas limit.
+                  This lets volunteer nodes produce small cryptographic proofs that others can
+                  verify cheaply, without holding the state. It is fully opt-in and changes no
+                  consensus rules."
+                </p>
+              </div>
+              <div
+                class="rounded-lg border border-rose-200 bg-rose-50 p-3 dark:border-rose-900/60 dark:bg-rose-950/30"
+              >
+                <p
+                  class="text-xs font-semibold uppercase tracking-wider text-rose-800 dark:text-rose-300"
+                >
+                  Weak
+                </p>
+                <p class="mt-2 text-sm leading-relaxed text-rose-950 dark:text-rose-100/90">
+                  "Introduces a CL-side mechanism for stateless payload validity attestation via
+                  gossiped zkVM execution proofs over a guest program commitment."
+                </p>
+                <p class="mt-2 text-xs text-rose-800 dark:text-rose-300/80">
+                  This is the abstract restated. If a reader needs the spec to parse it, it is not
+                  a layman description.
+                </p>
+              </div>
+            </div>
+          </article>
+
+          <!-- benefits -->
+          <article id="benefits" class={cardClass}>
+            <h3 class={fieldNameClass}>
+              <a href="#benefits" class={anchorClass}
+                >benefits<span class={hashClass} aria-hidden="true">#</span></a
+              >
+            </h3>
+            <p class={bodyClass}>
+              An array of strings, roughly four to six items, each one claim under about 16 words.
+              Each item should be independently checkable by a skeptical reader. Facts, not
+              marketing.
+            </p>
+            <div class="mt-4 grid gap-3 sm:grid-cols-2">
+              <div
+                class="rounded-lg border border-emerald-200 bg-emerald-50 p-3 dark:border-emerald-900/60 dark:bg-emerald-950/30"
+              >
+                <p
+                  class="text-xs font-semibold uppercase tracking-wider text-emerald-800 dark:text-emerald-300"
+                >
+                  Good
+                </p>
+                <p class="mt-2 text-sm leading-relaxed text-emerald-950 dark:text-emerald-100/90">
+                  "Keeps pool rule changes under hard-fork governance rather than admin keys,
+                  proxies, or pause controls"
+                </p>
+              </div>
+              <div
+                class="rounded-lg border border-rose-200 bg-rose-50 p-3 dark:border-rose-900/60 dark:bg-rose-950/30"
+              >
+                <p
+                  class="text-xs font-semibold uppercase tracking-wider text-rose-800 dark:text-rose-300"
+                >
+                  Weak
+                </p>
+                <p class="mt-2 text-sm leading-relaxed text-rose-950 dark:text-rose-100/90">
+                  "Dramatically improves the Ethereum user experience"
+                </p>
+                <p class="mt-2 text-xs text-rose-800 dark:text-rose-300/80">
+                  Nothing here can be verified or disputed.
+                </p>
+              </div>
+            </div>
+            <p class="mt-4 text-sm text-slate-500 dark:text-slate-400">
+              Worked example: <a href="/eips/8182" class={linkClass}>EIP-8182</a>.
+            </p>
+          </article>
+
+          <!-- tradeoffs -->
+          <article id="tradeoffs" class={cardClass}>
+            <h3 class={fieldNameClass}>
+              <a href="#tradeoffs" class={anchorClass}
+                >tradeoffs<span class={hashClass} aria-hidden="true">#</span></a
+              >
+            </h3>
+            <p class={bodyClass}>
+              Same shape as <code class={codeClass}>benefits</code>: short, single-claim strings.
+              Use <code class={codeClass}>null</code> only if there genuinely are none.
+            </p>
+            <div
+              class="mt-4 rounded-lg border-l-4 border-purple-400 bg-purple-50 p-4 dark:border-purple-600 dark:bg-purple-950/30"
+            >
+              <p class="text-sm leading-relaxed text-purple-950 dark:text-purple-100/90">
+                An honest tradeoffs list buys you more credibility with client teams than an empty
+                one. Reviewers will find the costs anyway; naming them first shows you understand
+                your own proposal.
+              </p>
+            </div>
+            <p class="mt-4 text-sm text-slate-600 dark:text-slate-300">Things worth naming:</p>
+            <ul class={listClass}>
+              <li>New security surface, especially new cryptography or trusted setups.</li>
+              <li>State growth that cannot be pruned.</li>
+              <li>Implementation burden on client teams, tooling, or wallets.</li>
+              <li>Anything irreversible without a subsequent hard fork.</li>
+            </ul>
+          </article>
+
+          <!-- stakeholderImpacts -->
+          <article id="stakeholderImpacts" class={cardClass}>
+            <h3 class={fieldNameClass}>
+              <a href="#stakeholderImpacts" class={anchorClass}
+                >stakeholderImpacts<span class={hashClass} aria-hidden="true">#</span></a
+              >
+            </h3>
+            <p class={bodyClass}>
+              All eight keys are required, about 20 words each. This field powers the stakeholder
+              view, so an omitted key means your EIP silently disappears from that audience's list.
+            </p>
+
+            <div class="mt-5 overflow-hidden rounded-lg border border-slate-200 dark:border-slate-700">
+              {
+                stakeholders.map((s, i) => (
+                  <div
+                    class:list={[
+                      'flex flex-col gap-1 px-4 py-3 sm:flex-row sm:items-baseline sm:gap-4',
+                      i > 0 && 'border-t border-slate-200 dark:border-slate-700',
+                    ]}
+                  >
+                    <code class="shrink-0 font-mono text-[0.8125rem] font-medium text-slate-900 sm:w-40 dark:text-slate-100">
+                      {s.key}
+                    </code>
+                    <span class="text-sm text-slate-600 dark:text-slate-300">{s.audience}</span>
+                  </div>
+                ))
+              }
+            </div>
+
+            <ul class={listClass}>
+              <li>
+                Write <span class="italic">"No impact."</span> explicitly rather than omitting a key.
+                A missing key reads as an oversight; an explicit "no impact" reads as a decision.
+              </li>
+              <li>
+                For <code class={codeClass}>clClients</code> and <code class={codeClass}>elClients</code>,
+                describe <span class="italic">implementation complexity</span>, not user benefit. These
+                two entries are what client teams scan first.
+              </li>
+            </ul>
+
+            <div class="mt-4 grid gap-3 sm:grid-cols-2">
+              <div
+                class="rounded-lg border border-emerald-200 bg-emerald-50 p-3 dark:border-emerald-900/60 dark:bg-emerald-950/30"
+              >
+                <p
+                  class="text-xs font-semibold uppercase tracking-wider text-emerald-800 dark:text-emerald-300"
+                >
+                  Good (elClients)
+                </p>
+                <p class="mt-2 text-sm leading-relaxed text-emerald-950 dark:text-emerald-100/90">
+                  "Implement the shielded-pool system contract, Groth16 BN254 verification, and
+                  nullifier tracking"
+                </p>
+              </div>
+              <div
+                class="rounded-lg border border-rose-200 bg-rose-50 p-3 dark:border-rose-900/60 dark:bg-rose-950/30"
+              >
+                <p
+                  class="text-xs font-semibold uppercase tracking-wider text-rose-800 dark:text-rose-300"
+                >
+                  Weak (elClients)
+                </p>
+                <p class="mt-2 text-sm leading-relaxed text-rose-950 dark:text-rose-100/90">
+                  "Some work required"
+                </p>
+              </div>
+            </div>
+          </article>
+
+          <!-- northStarAlignment -->
+          <article id="northStarAlignment" class={cardClass}>
+            <h3 class={fieldNameClass}>
+              <a href="#northStarAlignment" class={anchorClass}
+                >northStarAlignment<span class={hashClass} aria-hidden="true">#</span></a
+              >
+            </h3>
+            <p class={bodyClass}>
+              Optional. Up to three keys — <code class={codeClass}>scaleL1</code>,
+              <code class={codeClass}>scaleBlobs</code>, <code class={codeClass}>improveUX</code> —
+              each with a one-sentence description. Include only the goals your EIP genuinely
+              advances.
+            </p>
+            <p class="mt-3 text-sm leading-relaxed text-slate-600 dark:text-slate-300">
+              Do not shoehorn. Claiming all three when one applies makes the one real claim less
+              believable.
+            </p>
+          </article>
+
+          <!-- faq -->
+          <article id="faq" class={cardClass}>
+            <h3 class={fieldNameClass}>
+              <a href="#faq" class={anchorClass}
+                >faq<span class={hashClass} aria-hidden="true">#</span></a
+              >
+            </h3>
+            <p class={bodyClass}>
+              An array of <code class={codeClass}>&#123;question, answer&#125;</code> pairs. Write
+              questions in the reader's voice, not yours: "Does this change gas costs?" rather than
+              "Gas cost considerations".
+            </p>
+            <ul class={listClass}>
+              <li>
+                Answers support markdown: bold, lists, links, code fences, and multiple
+                paragraphs via <code class={codeClass}>\n\n</code>.
+              </li>
+              <li>
+                Each answer is individually deep-linkable via
+                <code class={codeClass}>?tab=faq&amp;q=N</code>, so keep one question per item and
+                make each answer stand alone.
+              </li>
+            </ul>
+            <p class="mt-4 text-sm text-slate-600 dark:text-slate-300">A solid starter set:</p>
+            <ul class={listClass}>
+              <li>What's in EIP-N?</li>
+              <li>What problem does it solve?</li>
+              <li>Why now, and why this fork?</li>
+              <li>What does it explicitly <span class="italic">not</span> do?</li>
+              <li>What breaks, and for whom?</li>
+              <li>What is still open or unresolved?</li>
+            </ul>
+            <p class="mt-4 text-sm text-slate-500 dark:text-slate-400">
+              Worked example: <a href="/eips/8025?tab=faq" class={linkClass}>EIP-8025</a>.
+            </p>
+          </article>
+
+          <!-- Smaller fields -->
+          <article id="smaller-fields" class={cardClass}>
+            <h3 class="text-base font-semibold text-slate-900 dark:text-slate-100">
+              <a href="#smaller-fields" class={anchorClass}
+                >Smaller fields<span class={hashClass} aria-hidden="true">#</span></a
+              >
+            </h3>
+            <dl class="mt-4 space-y-4">
+              <div>
+                <dt class="font-mono text-sm font-semibold text-purple-700 dark:text-purple-300">
+                  layer
+                </dt>
+                <dd class="mt-1 text-sm leading-relaxed text-slate-600 dark:text-slate-300">
+                  <code class={codeClass}>"EL"</code> or <code class={codeClass}>"CL"</code>, chosen
+                  by the substance of the change. Not by which call it was presented on — the venue
+                  only reflects which working group shepherded the discussion.
+                </dd>
+              </div>
+              <div>
+                <dt class="font-mono text-sm font-semibold text-purple-700 dark:text-purple-300">
+                  supportingDocuments
+                </dt>
+                <dd class="mt-1 text-sm leading-relaxed text-slate-600 dark:text-slate-300">
+                  <code class={codeClass}>&#123;label, url&#125;</code> entries for benchmarks,
+                  analyses, and prototype writeups. This is where the evidence behind your benefits
+                  list belongs.
+                </dd>
+              </div>
+              <div>
+                <dt class="font-mono text-sm font-semibold text-purple-700 dark:text-purple-300">
+                  forkRelationships[].champions
+                </dt>
+                <dd class="mt-1 text-sm leading-relaxed text-slate-600 dark:text-slate-300">
+                  Maximum two per fork relationship. <code class={codeClass}>name</code> plus any of
+                  <code class={codeClass}>discord</code>, <code class={codeClass}>telegram</code>, or
+                  <code class={codeClass}>email</code>, so client teams have a way to reach you.
+                </dd>
+              </div>
+              <div>
+                <dt class="font-mono text-sm font-semibold text-purple-700 dark:text-purple-300">
+                  discussionLink and specificationUrl
+                </dt>
+                <dd class="mt-1 text-sm leading-relaxed text-slate-600 dark:text-slate-300">
+                  <code class={codeClass}>discussionLink</code> is the discussion thread, usually
+                  Eth Magicians. Set <code class={codeClass}>specificationUrl</code> only for
+                  unmerged EIPs, where the default <code class={codeClass}>eips.ethereum.org</code>
+                  URL would 404; point it at the GitHub PR instead.
+                </dd>
+              </div>
+            </dl>
+          </article>
+        </div>
+      </section>
+
+      <!-- Template -->
+      <section class={sectionClass}>
+        <h2 id="annotated-template" class={h2Class}>
+          <a href="#annotated-template" class={anchorClass}
+            >Annotated template<span class={hashClass} aria-hidden="true">#</span></a
+          >
+        </h2>
+        <p class="mt-3 text-sm leading-relaxed text-slate-600 dark:text-slate-300">
+          The champion-owned subset of the schema. Copy this into
+          <code class={codeClass}>src/data/eips/&#123;id&#125;.json</code>, replace the placeholders,
+          and delete any optional block you are not using.
+        </p>
+        <pre
+          class="mt-5 overflow-x-auto rounded-xl border border-slate-200 bg-white p-5 dark:border-slate-800 dark:bg-slate-800/40"><code
+            class="font-mono text-[0.8125rem] leading-relaxed text-slate-800 dark:text-slate-200"
+            >{jsonTemplate}</code
+          ></pre>
+      </section>
+
+      <!-- Checklist -->
+      <section class={sectionClass}>
+        <h2 id="before-you-open-the-pr" class={h2Class}>
+          <a href="#before-you-open-the-pr" class={anchorClass}
+            >Before you open the PR<span class={hashClass} aria-hidden="true">#</span></a
+          >
+        </h2>
+        <ul class="mt-5 space-y-3">
+          {
+            checklist.map((item) => (
+              <li class="flex gap-3 text-sm leading-relaxed text-slate-600 dark:text-slate-300">
+                <span class="mt-1.5 h-1.5 w-1.5 shrink-0 rounded-full bg-purple-500 dark:bg-purple-400" />
+                <span>{item}</span>
+              </li>
+            ))
+          }
+        </ul>
+      </section>
+
+      <!-- Footer -->
+      <footer class="mt-16 border-t border-slate-200 pt-8 dark:border-slate-800">
+        <p class="text-sm leading-relaxed text-slate-600 dark:text-slate-300">
+          The authoritative schema is
+          <a href={`${REPO}/blob/main/src/types/eip.ts`} class={linkClass}>src/types/eip.ts</a>. For a
+          worked example, read
+          <a href="/eips/8025" class={linkClass}>EIP-8025</a> end to end.
+        </p>
+        <p class="mt-4 text-sm leading-relaxed text-slate-500 dark:text-slate-400">
+          Need help? <a href={`${REPO}/issues`} class={linkClass}>Open an issue</a> or reach out to
+          <span class="font-medium text-slate-600 dark:text-slate-300">@wolovim</span> on X or Discord.
+        </p>
+      </footer>
+    </div>
+  </div>
+</Layout>

@@ -1,0 +1,47 @@
+{
+  "meeting": "ACDT #090 - 2026-08-03",
+  "sections": [
+    {
+      "heading": "Glamsterdam Devnet 7 Status",
+      "summary": "Devnet 7 is stable at over 90% participation after 20 days; Teku fixed builder bid bugs and pushed a new image.",
+      "timestamp": "00:03:28",
+      "body": "- Glamsterdam devnet 7 has been running for approximately 20 days and had a stable weekend with over 90% participation and no major forking.\n- Some nodes went offline due to disk space issues (not client-performance related); Reth/Prysm node being converted to a malicious Prysm node.\n- Lodestar/Besu and Grandine/Erigon are syncing back.\n- Teku had two bugs: it was always self-building instead of accepting remote bids, and it was not gossiping bids received from builders.\n  - Both bugs have been fixed; a new Docker image was published and pushed to the devnet 7 branch.\n  - Teku team will monitor throughout the day to confirm fixes."
+    },
+    {
+      "heading": "Devnet 8 Planning",
+      "summary": "Devnet 8 will be a named short-lived testnet targeting the new CSpec release and updated repricing values once finalized.",
+      "timestamp": "00:06:04",
+      "body": "- Devnet 8 is dependent on repricing decisions; a new CSpec release was done on Friday.\n- Plan is for devnet 8 to be a named, short-lived testnet as discussed at the previous Thursday call.\n- Scheduling will follow from today's repricing discussion, incorporating updated and frozen repricing values."
+    },
+    {
+      "heading": "Gas Repricing Update and Anchor Change",
+      "summary": "All EL clients approved freezing repricing numbers at a 75 Mgas/s anchor, keeping SLOAD at 2100 and raising account writes to 9K.",
+      "timestamp": "00:07:07",
+      "body": "- Three changes since the last repricing round: new worst-case account test cases (different max-size bytecodes, delegated accounts), switch from YohimNet to the synthetic State Actor snapshot (mainnet-sized but without warm-cache bias), and benchmarks now running on devnet 7 with client optimizations merged (Erigon still working on theirs).\n- Account access operations became more expensive under the new tests, and since ETH transfers are capped at 21K gas, the anchor must drop from 100 Mgas/s to 75 Mgas/s.\n- At 75 Mgas/s, SLOAD can stay at its current price of 2,100 (no increase to 3,000 needed), which removes backward-compatibility issues such as the Uniswap V2 breakage.\n- Account writes increase slightly from 8K to 9K; EIP-2780 ETH-transfer parameters remain unchanged; only EIP-7038/8038 state-access parameters change.\n- With a 6-second execution window, 75 Mgas/s theoretically allows up to 450M block gas limit; 300M is the practical comfortable target with buffer.\n- Benchmark results show most clients green at 75 Mgas/s; Erigon still red/yellow pending optimizations; ethrex has one parameter needing improvement; Besu has a PR for their benchmarking component expected to turn yellow results green; Geth is right at the edge on SLOAD.\n- Falling back to 50 Mgas/s would make nearly all clients green except Erigon and ethrex.\n- Explicit approval gathered from all EL clients: Geth, Nethermind, Besu, Reth, Erigon, and ethrex all support freezing these numbers.\n  - Besu noted a concern about State Actor vs. YohimNet performance differences and the assumption that State Actor is closer to worst case; the benchmarking team committed to running both snapshots in parallel once repricing suite can be retired.\n- Maria Silva will update the EIP with frozen numbers; an execution specs release will follow.\n- Broader context: 200M gas limit at Glamsterdam fork, then increase toward 300M if performance holds; further increase to 300M possible before Hegota.\n  - potuz emphasized that fixing relative costs now and deferring the block-limit decision is the right approach.\n- Keeping SLOAD cheaper increases worst-case block size (above 7.3 MB at 300M gas limit) but only via malicious construction, not public mempool traffic.\n- Access lists (EIP-2930) are already economically irrational to use thanks to EIP-7981's per-item constant, though they remain viable for their original purpose of unbreaking repriced contracts.\n- potuz noted that under ePBS a worst-case block becomes a viable reorg attack against the next proposer, reinforcing the need to price for worst case, not average."
+    },
+    {
+      "heading": "Attestation Deadline",
+      "summary": "Consensus to keep the attestation deadline at 3 seconds for the fork and gather mainnet data before considering a reduction to 2 seconds.",
+      "timestamp": "00:19:16",
+      "body": "- Nico Flaig and potuz raised the idea of reducing the attestation deadline from 3 seconds to 2 seconds, which would simplify several attack mitigations.\n- Carlos's analysis ([ethresear.ch post](https://ethresear.ch/t/is-the-slot-0-reorg-cost-fixable-epbs-attestation-deadline-study/25338)) suggests 2 seconds is not currently safe, primarily due to one large operator combining high min-bid settings with timing games, causing late local block production especially with blobs.\n- Prysm found and fixed a bug causing slow slot-0 proposals in Gloas; this was not a mainnet issue.\n- Teku (Enrico) noted that attestation packing heuristics and hard-stop timings in block production would need adjustment; Teku can reach ~500ms for block production, Lodestar reports worst cases of ~800ms.\n- Under ePBS, beacon blocks are much smaller (no payload attached), so current attestation propagation measurements may be overly conservative.\n- Agreement: keep 3 seconds at the fork; PandaOps to gather hard numbers on block propagation and validation per client post-fork on mainnet.\n  - If data supports it, a coordinated client release can lower to 2 seconds without a hard fork, since clients attesting at 3 seconds remain compatible with those at 2 seconds.\n- Testing on Hoodi was mentioned as valuable since devnets would trivially pass; pk910 cautioned against breaking Hoodi as a stable community testnet."
+    },
+    {
+      "heading": "Discv5-Only on Devnet 8",
+      "summary": "No objections to running devnet 8 with discv5 only; two clients still need a flag to disable discv4.",
+      "timestamp": "00:45:03",
+      "body": "- Csaba reported that all clients support discv5 on one branch or another; issues found so far were tooling-related, with a few Hive tests still pending.\n- No objections from any client team to running devnet 8 with discv5 only (discv4 disabled).\n- PandaOps (Stefan/Barnabas) confirmed that Ansible collection changes are already prepared and local testing looks good; stressed the importance of no fallback to discv4 to isolate discv5 behavior.\n- Two clients previously lacked a flag to disable discv4: Nimbus EL (promised to add it) and one other (not recalled).\n  - Csaba asked those clients to add the flags.\n- For mainnet timeline: goal is to have all clients with discv5 enabled on mainnet releases, then turn off discv4 by default in Glamsterdam.\n- Strong positive sentiment in chat for shipping discv5-only."
+    },
+    {
+      "heading": "Block Access List Data for Hot-Starting Synced Nodes",
+      "summary": "Block access lists can warm caches after snap sync for faster startup; this is a nice-to-have optimization, not critical for the fork.",
+      "timestamp": "00:49:34",
+      "body": "- Jochem-brouwer presented how [EIP-8189](https://eips.ethereum.org/EIPS/eip-8189) (GetBlockAccessList protocol message) and [EIP-8289](https://eips.ethereum.org/EIPS/eip-8289) enable using block access list data to pre-populate hot state caches after snap sync.\n  - ~79% of first-touch items in a block were also touched in the previous 256 blocks, making this data highly valuable for cache warming.\n- Marius (Geth) noted this aligns with Snap2 goals: replacing the healing phase by replaying block access lists accumulated since the pivot point, which is much faster than tree healing.\n- Karim (Besu/Nethermind) suggested also moving this data to L0 in LSM-tree databases after snap sync.\n- Łukasz (Nethermind) emphasized this is a happy-path optimization that won't affect worst-case benchmarking numbers; it can wait until post-release when more data is available.\n- No decision needed; raised as an awareness item for client teams to consider during or after Snap2 implementation.\n- FLCL (Nethermind) noted in chat that tx pool warmup may be more efficient and could evict such warm items."
+    },
+    {
+      "heading": "EIP-7702 Engine API Mandatory Support",
+      "summary": "Discussion on making EIP-7702 engine API endpoints mandatory deferred to ACDC after checking with potuz on spec concerns.",
+      "timestamp": "00:59:47",
+      "body": "- Spencer raised a last-minute item from potuz about making EIP-7702 engine API endpoints mandatory on ELs, continuing from the previous ACD call.\n  - A simulator to test this has been added; Geth and Nethermind are already passing.\n- Erigon expressed concern about putting blob-related data in FCU (forkchoiceUpdated), calling it architecturally awkward; suggested this needs CL client input.\n- Mario (testing) noted the spec hasn't changed since last week's presentation, so the same concerns likely remain; recommended reaching out to potuz to check if concerns were addressed.\n- Decision: agenda this for ACDC after confirming with potuz whether spec changes are needed."
+    }
+  ]
+}

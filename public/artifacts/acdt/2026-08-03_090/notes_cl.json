@@ -1,0 +1,35 @@
+{
+  "meeting": "ACDT #090 - 2026-08-03 (CL Breakout)",
+  "sections": [
+    {
+      "heading": "Direct Builder Specs and P2P Bid Configuration",
+      "summary": "Agreement to remove per-builder P2P bid boosting/min-bid config; PRs to be implemented by clients before merging.",
+      "timestamp": "00:00:37",
+      "body": "- Three open PRs cover the builder spec updates, Beacon API changes, and Key Manager API for Gloas direct builders.\n  - Key Manager API (PR #88) makes auction configuration programmatic, avoiding large error-prone configs.\n  - Beacon API (PR #630) sends enough info from the Validator client to the Beacon node to facilitate the auction.\n  - Builder spec PR (#165) mostly clarifies existing behavior and brings it up to standard after Brath's departure.\n- Current specs allow per-builder boost factor and min-bid for P2P bids, but this does not work deterministically because P2P gossip only propagates the highest bid by actual `bid.value`, not by any boosted factor.\n  - Nico Flaig (Lodestar) argued the per-builder P2P config produces random outcomes and is bad design.\n- Decision: remove per-builder P2P bid boosting and min-bid config from the specs.\n  - No client team wanted to keep per-builder P2P preferences.\n  - Prysm deferred to Nico and Terence but was fine with removal.\n  - Eitan (Lighthouse) explicitly did not want per-builder P2P config.\n- Global boost factor (e.g., 10% local payload boost) remains; only per-builder P2P configuration is removed.\n- Action item: Jason Vranek to update the PRs today to remove per-builder P2P bid config.\n- Agreement: PRs will not be merged yet; clients will implement first, test on devnet, and then merge.\n  - No client besides Lodestar currently runs spec tests on the API, so early merge provides little value.\n  - Prysm agreed to this approach as long as current state is signaled as the right direction."
+    },
+    {
+      "heading": "Gloas Compliance Testing Update",
+      "summary": "Mikhail Kalinin deferred the compliance testing update to the next call, noting there is no rush.",
+      "timestamp": "00:00:42",
+      "body": "- Mikhail Kalinin indicated in chat he wanted to give a quick update on Gloas compliance testing if time allowed.\n- The breakout ran out of time; Mikhail agreed to defer the update to the next call."
+    },
+    {
+      "heading": "Builder Bids with Insufficient Balance: Ignore vs. Reject",
+      "summary": "Agreement to keep the insufficient-balance check as IGNORE rather than changing it to REJECT, to avoid losing P2P bid functionality.",
+      "timestamp": "00:12:39",
+      "body": "- The [consensus spec](https://github.com/ethereum/consensus-specs/blob/6afc99391cbe7d01eb8a80e619b4168a052fd084/specs/gloas/p2p-interface.md?plain=1#L975-L977) currently marks bids from builders with insufficient balance as IGNORE.\n- Nico initially suggested changing this to REJECT since the check is not timing-dependent and the correct state can always be determined.\n- Prysm (potuz) disagreed: clients should not be forced to use a non-head state to validate gossip objects.\n  - If a peer forwards a bid built on a non-head parent, the receiving node may not have the correct state to validate the balance check.\n  - If changed to REJECT, Prysm would simply ignore all bids not built on head, effectively removing the multi-parent bid functionality that was specifically added.\n  - Risk of peer downscoring for a low-stakes gossip validation.\n- Nico accepted this rationale and agreed to keep the check as IGNORE.\n- No other client objected; decision is to leave the spec unchanged."
+    },
+    {
+      "heading": "Parent Bids at Epoch Boundaries",
+      "summary": "Lodestar will ignore parent bids at epoch boundaries to avoid double epoch transitions; spec PR from Prysm will formalize removing the shuffling-stability check.",
+      "timestamp": "00:16:28",
+      "body": "- Lodestar observed on devnet that bids for parent blocks at epoch boundaries cause two epoch transitions, effectively DOSing the node.\n  - [Lodestar PR #9756](https://github.com/ChainSafe/lodestar/pull/9756) ignores parent bids at epoch boundaries to prevent this.\n- Prysm (potuz) noted this is not contradictory with Lighthouse's epoch-boundary reorg feature or Prysm's own spec PR that allows such bids.\n  - Prysm will have the required state cached if the last block came late, so it can validate those bids.\n  - It is fine for Lodestar to ignore them if it doesn't have the data.\n- The spec-level change (potuz's PR) removes the `isShufflingStable` check, which is now unnecessary because the look-ahead already ensures shuffling stability.\n  - Both Lighthouse and Prysm are already doing this on mainnet.\n  - Action item: potuz to add a rationale paragraph to the PR explaining why the check is redundant."
+    },
+    {
+      "heading": "Per-Slot Pool Engine API for Devnet 8",
+      "summary": "Lighthouse raised concerns about the per-slot Pool Engine API at a prior call; no counter-proposal yet, so teams are asked to review and provide async feedback.",
+      "timestamp": "00:19:26",
+      "body": "- At the last ACD meeting, the per-slot Pool Engine API was discussed as mandatory for glamsterdam-devnet-8.\n- Lighthouse raised design concerns, and the group agreed to revisit the topic at this call.\n- No counter-proposal has been submitted; other client teams have already implemented the current proposal.\n- Bosul Mun asked all client teams to review the current proposal and share feedback asynchronously.\n  - General view is to proceed unless significant objections arise."
+    }
+  ]
+}

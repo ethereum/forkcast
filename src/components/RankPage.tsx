@@ -145,13 +145,15 @@ const RankPage: React.FC = () => {
     typeof window !== "undefined" &&
     ("ontouchstart" in window || navigator.maxTouchPoints > 0);
 
-  // Initialize with Hegota non-headliner EIPs
+  // Initialize with active Hegota EIPs (excluding selected headliners)
   useEffect(() => {
-    // Get EIPs that belong to Hegota but are not headliners or headliner candidates
+    const ACTIVE_STATUSES = new Set(['Proposed', 'Considered', 'Scheduled', 'Included']);
     const allItems = eipsData
       .filter((eip) => {
         const rel = getForkRelationship(eip, "hegota");
-        return Boolean(rel) && !rel!.isHeadliner && !rel!.wasHeadlinerCandidate;
+        if (!rel || rel.isHeadliner) return false;
+        const latest = rel.statusHistory[rel.statusHistory.length - 1]?.status;
+        return ACTIVE_STATUSES.has(latest);
       })
       .map((eip) => ({
         id: `eip-${eip.id}`,

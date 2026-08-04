@@ -2,6 +2,26 @@
   "eipId": 7975,
   "commits": [
     {
+      "sha": "d9e35f776d9b2b8434ba7dc2690c89aa22d80a71",
+      "date": "2026-08-04T18:27:40Z",
+      "message": "Update EIP-7975: Move to Review",
+      "author": "poojaranjan",
+      "prNumber": null,
+      "patch": "@@ -4,7 +4,7 @@ title: eth/70 - partial block receipt lists\n description: Adds a facility for paginating block receipts in the p2p protocol\n author: Felix Lange <fjl@ethereum.org>, Jochem Brouwer (@jochem-brouwer), Giulio Rebuffo (@Giulio2002)\n discussions-to: https://ethereum-magicians.org/t/eip-7975-eth-70-partial-block-receipt-lists/24658\n-status: Draft\n+status: Review\n type: Standards Track\n category: Networking\n created: 2025-06-16",
+      "additions": 1,
+      "deletions": 1
+    },
+    {
+      "sha": "ea3c80c4b91db6cefe1f404ecec0f108aa899dfb",
+      "date": "2026-08-04T16:46:31Z",
+      "message": "Update EIP-7975: clarify upper bound",
+      "author": "jochem-brouwer",
+      "prNumber": null,
+      "patch": "@@ -51,11 +51,9 @@ receipt lists cannot be verified against the block header, so in responses with\n   i.e. reject if it is larger than gaslimit/8.\n - Verify the total downloaded receipts size is no larger than allowed by the block gas limit.\n \n-<!-- Needs exact formula -->\n-\n ## Rationale\n \n-Since [EIP-7825] caps the gas limit of a single transaction to ~16.7M gas, a single\n+Since [EIP-7825](./eip-7825.md) caps the gas limit of a single transaction to ~16.7M gas, a single\n transaction receipt will always be limited in size. Specifically, a transaction can\n produce at most 16777216/8 = 2MiB of log data.\n \n@@ -87,5 +85,3 @@ None\n ## Copyright\n \n Copyright and related rights waived via [CC0](../LICENSE.md).\n-\n-[EIP-7825]: ./eip-7825.md",
+      "additions": 1,
+      "deletions": 5
+    },
+    {
       "sha": "1db46ea3dcdbede94d55754f3a78cc31dec75b0f",
       "date": "2026-03-03T16:21:21Z",
       "message": "Update EIP-7975: fix typo",
@@ -27,22 +47,6 @@
     }
   ],
   "openPrs": [
-    {
-      "number": 12045,
-      "title": "Update EIP-7975: clarify upper bound",
-      "author": "jochem-brouwer",
-      "updatedAt": "2026-07-30T15:56:17Z",
-      "additions": 1,
-      "deletions": 3
-    },
-    {
-      "number": 12033,
-      "title": "Update EIP-7975: Move to Review",
-      "author": "poojaranjan",
-      "updatedAt": "2026-07-30T16:07:41Z",
-      "additions": 1,
-      "deletions": 1
-    },
     {
       "number": 10123,
       "title": "Update EIP-7975: Remove redundant word",

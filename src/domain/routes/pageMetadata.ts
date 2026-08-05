@@ -23,6 +23,11 @@ export const staticPageMetadata = {
     title: 'Network Upgrades - Forkcast',
     description: 'Catalog of Ethereum network upgrades - in progress, live, and historical.',
   },
+  cadence: {
+    title: 'Upgrade Cadence - Forkcast',
+    description:
+      "How long since Ethereum's last network upgrade, and how the current wait compares to the pace of upgrades since The Merge.",
+  },
   schedule: {
     title: 'ACD Planning Sandbox - Forkcast',
     description: 'Internal planning tool for ACD participants. Explore hypothetical upgrade timelines.',

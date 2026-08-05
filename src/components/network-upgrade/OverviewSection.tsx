@@ -130,15 +130,15 @@ export const OverviewSection: React.FC<OverviewSectionProps> = ({
         </Link>
       )}
 
-      {/* Scoping notice for Glamsterdam */}
+      {/* Testnet notice for Glamsterdam */}
       {forkName.toLowerCase() === 'glamsterdam' && (
-        <div className="p-4 mb-6 bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-700 rounded">
+        <div className="p-4 mb-6 bg-purple-50 dark:bg-purple-900/20 border border-purple-200 dark:border-purple-700 rounded">
           <div className="flex items-start gap-3">
-            <svg className="w-5 h-5 text-blue-500 dark:text-blue-400 mt-0.5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+            <svg className="w-5 h-5 text-purple-600 dark:text-purple-400 mt-0.5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11 5.882V19.24a1.76 1.76 0 01-3.417.592l-2.147-6.15M18 13a3 3 0 100-6M5.436 13.683A4.001 4.001 0 017 6h1.832c4.1 0 7.625-1.234 9.168-3v14c-1.543-1.766-5.067-3-9.168-3H7a3.988 3.988 0 01-1.564-.317z" />
             </svg>
-            <p className="text-blue-800 dark:text-blue-200 text-xs leading-relaxed">
-              Candidate EIPs are being fine-tuned, implemented, and tested on closed devnets. This process will determine which EIPs get Scheduled for Inclusion.
+            <p className="text-purple-800 dark:text-purple-200 text-xs leading-relaxed">
+              Stay tuned! The first public testnet, <span className="font-semibold">Plataberget</span>, is expected in early August 2026.
             </p>
           </div>
         </div>

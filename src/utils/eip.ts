@@ -10,6 +10,7 @@ const INCLUSION_STAGE_BY_STATUS: Record<ForkStatus, InclusionStage> = {
   Included: 'Included',
   Withdrawn: 'Withdrawn',
   Informational: 'Informational',
+  Networking: 'Networking',
 };
 
 const INCLUSION_STAGE_LABELS: Record<InclusionStage, string> = {
@@ -19,6 +20,7 @@ const INCLUSION_STAGE_LABELS: Record<InclusionStage, string> = {
   'Proposed for Inclusion': 'PFI',
   'Declined for Inclusion': 'DFI',
   'Informational': 'Info',
+  'Networking': 'Net',
   'Withdrawn': 'Withdrawn',
   'Unknown': 'Unknown',
 };
@@ -28,6 +30,7 @@ const INCLUSION_STAGE_ORDER: InclusionStage[] = [
   'Scheduled for Inclusion',
   'Considered for Inclusion',
   'Proposed for Inclusion',
+  'Networking',
   'Informational',
   'Declined for Inclusion',
   'Withdrawn',

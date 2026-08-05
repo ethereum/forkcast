@@ -66,6 +66,10 @@ const statusColors: Record<string, { dot: string; text: string }> = {
     dot: 'bg-slate-400',
     text: 'text-slate-600 dark:text-slate-400',
   },
+  Networking: {
+    dot: 'bg-emerald-500',
+    text: 'text-emerald-700 dark:text-emerald-400',
+  },
   created: {
     dot: 'bg-indigo-500',
     text: 'text-indigo-700 dark:text-indigo-400',
@@ -79,6 +83,7 @@ const statusLabels: Record<string, string> = {
   Declined: 'Declined',
   Included: 'Included',
   Withdrawn: 'Withdrawn',
+  Networking: 'Scheduled for Inclusion (Networking)',
 };
 
 function formatDate(dateString: string): string {

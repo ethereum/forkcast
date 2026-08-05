@@ -8,7 +8,7 @@ export interface ClientTeamPerspective {
 export interface ForkRelationship {
   forkName: string;
   statusHistory: Array<{
-    status: 'Proposed' | 'Considered' | 'Scheduled' | 'Declined' | 'Included' | 'Withdrawn' | 'Informational';
+    status: 'Proposed' | 'Considered' | 'Scheduled' | 'Declined' | 'Included' | 'Withdrawn' | 'Informational' | 'Networking';
     call: `${'acdc' | 'acde' | 'acdt'}/${number}` | null;
     date: string | null;
     timestamp?: number; // Seconds into the call recording video
@@ -103,6 +103,7 @@ export type InclusionStage =
   | 'Included'
   | 'Withdrawn'
   | 'Informational'
+  | 'Networking'
   | 'Unknown';
 
 export type ProposalType = 'EIP' | 'RIP';

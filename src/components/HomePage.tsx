@@ -80,6 +80,7 @@ const STATUS_TO_STAGE: Record<string, InclusionStage> = {
   Included: 'Included',
   Withdrawn: 'Withdrawn',
   Informational: 'Informational',
+  Networking: 'Networking',
 };
 
 const recentStageTransitions: StageTransition[] = (() => {

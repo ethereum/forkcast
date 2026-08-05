@@ -139,6 +139,7 @@ const RankPage: React.FC = () => {
   );
   const [collectionOrder, setCollectionOrder] = useState<string[]>([]);
   const [isInstructionsExpanded, setIsInstructionsExpanded] = useState(false);
+  const [isDeadlineDismissed, setIsDeadlineDismissed] = useState(false);
   const [hoveredItem, setHoveredItem] = useState<TierItem | null>(null);
   const [tooltipPosition, setTooltipPosition] = useState<{ x: number; y: number } | null>(null);
   const isTouchDevice =
@@ -469,7 +470,7 @@ const RankPage: React.FC = () => {
     ctx.textBaseline = "middle";
 
     // Title in the center with date
-    const titleText = "Hegota EIP Rankings";
+    const titleText = "Hegot\u00e1 EIP Rankings";
     const titleFont = `${13 * scale}px -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif`;
     const dateFont = `${13 * scale}px -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif`;
 
@@ -659,10 +660,10 @@ const RankPage: React.FC = () => {
               onClick={() => navigate("/upgrade/hegota")}
               className="mb-2 sm:mb-0 sm:absolute sm:left-0 sm:top-1/2 sm:-translate-y-1/2 text-slate-600 hover:text-slate-900 dark:text-slate-300 dark:hover:text-slate-100 transition-colors"
             >
-              ← Back to Hegota
+              ← Back to Hegotá
             </button>
             <h1 className="font-semibold text-slate-900 dark:text-slate-100 text-center truncate max-w-full overflow-hidden text-base sm:text-xl">
-              Hegota Tier Maker
+              Hegotá Tier Maker
             </h1>
           </div>
         </div>
@@ -671,6 +672,23 @@ const RankPage: React.FC = () => {
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
           {/* Tiers */}
           <div className="flex flex-col gap-4">
+            {!isDeadlineDismissed && (
+              <div className="flex items-center gap-3 p-3 bg-amber-50 dark:bg-amber-900/20 border border-amber-200 dark:border-amber-700 rounded-lg text-xs text-amber-800 dark:text-amber-200">
+                <svg className="w-4 h-4 text-amber-600 dark:text-amber-400 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                </svg>
+                <span className="flex-1">Non-headliner EIP proposal deadline: <strong>August 6, 2026</strong></span>
+                <button
+                  onClick={() => setIsDeadlineDismissed(true)}
+                  className="text-amber-600 dark:text-amber-400 hover:text-amber-800 dark:hover:text-amber-200 transition-colors flex-shrink-0"
+                  aria-label="Dismiss deadline notice"
+                >
+                  <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                  </svg>
+                </button>
+              </div>
+            )}
             {/* Instructions */}
             <div className="bg-white rounded-lg border border-slate-200 dark:bg-slate-800 dark:border-slate-700 overflow-hidden">
               <button
@@ -700,7 +718,7 @@ const RankPage: React.FC = () => {
                 <div className="px-4 pb-4">
                   <p className="text-xs text-slate-600 dark:text-slate-300 leading-relaxed mb-4">
                     Users, node operators, app developers, core developers, and any other stakeholders
-                    are invited to voice their support for their preferred non-headliner EIPs for the Hegota upgrade.
+                    are invited to voice their support for their preferred non-headliner EIPs for the Hegotá upgrade.
                   </p>
                   <p className="text-xs text-slate-600 dark:text-slate-300 leading-relaxed mb-4">
                     Drag and drop (desktop) or tap-to-assign (mobile) the EIPs
@@ -713,7 +731,7 @@ const RankPage: React.FC = () => {
                       href="https://forkcast.org/upgrade/hegota"
                       className="text-purple-600 hover:text-purple-700 dark:text-purple-400 dark:hover:text-purple-300"
                     >
-                      Learn more about Hegota
+                      Learn more about Hegotá
                     </a>
                     .
                   </p>

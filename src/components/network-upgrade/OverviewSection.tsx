@@ -104,11 +104,30 @@ export const OverviewSection: React.FC<OverviewSectionProps> = ({
                 >
                   Ethereum Magicians meta thread
                 </a>
-                .
+.
               </p>
             </div>
           </div>
         </div>
+      )}
+
+      {/* EIP Rankings CTA for Hegota */}
+      {forkName.toLowerCase() === 'hegota' && (
+        <Link
+          to="/rank"
+          className="flex items-center gap-3 p-4 mb-6 bg-amber-50 dark:bg-amber-900/20 border border-amber-200 dark:border-amber-700 rounded hover:bg-amber-100 dark:hover:bg-amber-900/30 transition-colors group"
+        >
+          <svg className="w-5 h-5 text-amber-600 dark:text-amber-400 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 4h13M3 8h9m-9 4h6m4 0l4-4m0 0l4 4m-4-4v12" />
+          </svg>
+          <div className="flex-1">
+            <span className="text-sm font-medium text-amber-900 dark:text-amber-100">Rank EIP Proposals</span>
+            <p className="text-xs text-amber-800 dark:text-amber-200 leading-relaxed">Compare and prioritize EIPs for Hegotá using the interactive ranking tool.</p>
+          </div>
+          <svg className="w-5 h-5 text-amber-400 dark:text-amber-500 group-hover:text-amber-600 dark:group-hover:text-amber-300 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+          </svg>
+        </Link>
       )}
 
       {/* Scoping notice for Glamsterdam */}

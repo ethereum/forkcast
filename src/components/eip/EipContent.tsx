@@ -612,7 +612,7 @@ export const EipContent: React.FC<EipContentProps> = ({
               )}
 
               {/* Benefits */}
-              {eip.benefits && eip.benefits.length > 0 && (
+              {eip.benefits && eip.benefits.length > 0 ? (
                 <section className="bg-emerald-50/50 dark:bg-emerald-900/10 border-l-4 border-emerald-500 rounded-r-lg p-4">
                   <h3 className="text-sm font-semibold text-emerald-900 dark:text-emerald-100 mb-3 uppercase tracking-wide">
                     Key Benefits
@@ -626,7 +626,16 @@ export const EipContent: React.FC<EipContentProps> = ({
                     ))}
                   </ul>
                 </section>
-              )}
+              ) : hasAnalysis ? (
+                <section className="bg-slate-50 dark:bg-slate-700/30 border-l-4 border-slate-300 dark:border-slate-600 rounded-r-lg p-4">
+                  <h3 className="text-sm font-semibold text-slate-500 dark:text-slate-400 mb-2 uppercase tracking-wide">
+                    Key Benefits
+                  </h3>
+                  <p className="text-sm text-slate-500 dark:text-slate-400 italic">
+                    No benefits documented yet.
+                  </p>
+                </section>
+              ) : null}
 
               {/* Trade-offs */}
               {eip.tradeoffs && eip.tradeoffs.length > 0 ? (

@@ -114,6 +114,65 @@
   animation: fadeScale 0.2s ease-out;
 }
 
+/* Drawer: panel slide paired with a matching backdrop fade */
+@keyframes slideInRight {
+  from {
+    transform: translateX(100%);
+  }
+  to {
+    transform: translateX(0);
+  }
+}
+
+@keyframes slideOutRight {
+  from {
+    transform: translateX(0);
+  }
+  to {
+    transform: translateX(100%);
+  }
+}
+
+@keyframes fadeOut {
+  from {
+    opacity: 1;
+  }
+  to {
+    opacity: 0;
+  }
+}
+
+/* Decelerating curve: quick departure, gentle settle. `will-change` promotes the
+   panel to its own compositor layer so sliding its (large) subtree stays on the
+   GPU instead of repainting each frame. Exit runs faster than entry so dismissing
+   feels responsive. */
+.animate-slide-in-right {
+  animation: slideInRight 0.32s cubic-bezier(0.32, 0.72, 0, 1);
+  will-change: transform;
+}
+
+.animate-slide-out-right {
+  animation: slideOutRight 0.22s cubic-bezier(0.32, 0.72, 0, 1) forwards;
+  will-change: transform;
+}
+
+.animate-backdrop-in {
+  animation: fadeIn 0.32s ease-out;
+}
+
+.animate-backdrop-out {
+  animation: fadeOut 0.22s ease-out forwards;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .animate-slide-in-right,
+  .animate-slide-out-right,
+  .animate-backdrop-in,
+  .animate-backdrop-out {
+    animation-duration: 0.01ms;
+  }
+}
+
 /* Dark mode configuration */
 @layer base {
   :root {

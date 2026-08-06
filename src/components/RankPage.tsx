@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "./navigation";
-import { EIP, Champion } from "../types/eip";
+import { EIP } from "../types/eip";
 import {
   getLaymanTitle,
   getProposalPrefix,
@@ -9,16 +9,7 @@ import {
 } from "../utils/eip";
 import { useAnalytics } from "../hooks/useAnalytics";
 import { eipsData } from "../data/eips";
-
-const ChampionDisplay: React.FC<{ champions?: Champion[] }> = ({ champions }) => {
-  if (!champions || champions.length === 0 || !champions.some(c => c.name)) return null;
-  return (
-    <div className="text-xs text-slate-500 dark:text-slate-400">
-      <span className="font-medium">{champions.length > 1 ? 'Champions:' : 'Champion:'}</span>{" "}
-      {champions.map(c => c.name).join(' & ')}
-    </div>
-  );
-};
+import { EipDrawer } from "./eip/EipDrawer";
 
 interface TierItem {
   id: string;
@@ -88,41 +79,12 @@ const getItemTitle = (item: TierItem): string => {
   return '';
 };
 
-// Helper function to get description for a tier item
-const getItemDescription = (item: TierItem): string => {
-  if (item.eip) {
-    return item.eip.laymanDescription || item.eip.description;
-  }
-  return '';
-};
-
 // Helper function to get display ID for a tier item
 const getItemDisplayId = (item: TierItem): string => {
   if (item.eip) {
     return `${getProposalPrefix(item.eip)}-${item.eip.id}`;
   }
   return '';
-};
-
-// Helper function to clean author names - remove GitHub handles and emails
-const cleanAuthorName = (author: string): string => {
-  // Remove content in parentheses (e.g., GitHub handles)
-  let cleaned = author.replace(/\([^)]*\)/g, '');
-  // Remove content in angle brackets (e.g., email addresses)
-  cleaned = cleaned.replace(/<[^>]*>/g, '');
-  // Replace multiple spaces with single space
-  cleaned = cleaned.replace(/\s+/g, ' ');
-  // Clean up spaces around commas: remove space before comma, ensure single space after
-  cleaned = cleaned.replace(/\s*,\s*/g, ', ');
-  // Clean up extra commas and trailing commas
-  cleaned = cleaned.replace(/,\s*,/g, ',').replace(/,\s*$/g, '').trim();
-  return cleaned;
-};
-
-// Helper function to truncate long text with ellipsis
-const truncateText = (text: string, maxLength: number): string => {
-  if (text.length <= maxLength) return text;
-  return text.slice(0, maxLength).trim() + '...';
 };
 
 const RankPage: React.FC = () => {
@@ -140,8 +102,7 @@ const RankPage: React.FC = () => {
   const [collectionOrder, setCollectionOrder] = useState<string[]>([]);
   const [isInstructionsExpanded, setIsInstructionsExpanded] = useState(false);
   const [isDeadlineDismissed, setIsDeadlineDismissed] = useState(false);
-  const [hoveredItem, setHoveredItem] = useState<TierItem | null>(null);
-  const [tooltipPosition, setTooltipPosition] = useState<{ x: number; y: number } | null>(null);
+  const [drawerEipId, setDrawerEipId] = useState<number | null>(null);
   const isTouchDevice =
     typeof window !== "undefined" &&
     ("ontouchstart" in window || navigator.maxTouchPoints > 0);
@@ -981,51 +942,15 @@ const RankPage: React.FC = () => {
                           >
                             <div className="flex items-center gap-2 flex-nowrap">
                               <span
-                                className="text-xs font-mono text-slate-500 dark:text-slate-400 lg:cursor-help inline-flex items-center flex-shrink-0 whitespace-nowrap"
+                                className="text-xs font-mono text-purple-600 dark:text-purple-400 cursor-pointer inline-flex items-center flex-shrink-0 whitespace-nowrap hover:text-purple-800 dark:hover:text-purple-300 transition-colors"
                                 style={{
-                                  borderBottom: isTouchDevice ? 'none' : '1px dotted currentColor',
-                                  marginBottom: isTouchDevice ? '-1px' : '-2px'
+                                  borderBottom: '1px dotted currentColor',
+                                  marginBottom: '-2px'
                                 }}
-                                onMouseEnter={
-                                  !isTouchDevice
-                                    ? (e) => {
-                                        const rect = e.currentTarget.getBoundingClientRect();
-                                        const tooltipWidth = 400;
-                                        const tooltipHeight = 350; // estimated
-                                        const padding = 10;
-
-                                        // Try to position to the right first
-                                        let x = rect.right + padding;
-                                        let y = rect.top;
-
-                                        // If tooltip would go off right edge, position to the left
-                                        if (x + tooltipWidth > window.innerWidth - padding) {
-                                          x = rect.left - tooltipWidth - padding;
-                                        }
-
-                                        // If still off screen (left side), center it horizontally
-                                        if (x < padding) {
-                                          x = (window.innerWidth - tooltipWidth) / 2;
-                                        }
-
-                                        // Prevent tooltip from going off bottom
-                                        if (y + tooltipHeight > window.innerHeight - padding) {
-                                          y = Math.max(padding, window.innerHeight - tooltipHeight - padding);
-                                        }
-
-                                        setHoveredItem(item);
-                                        setTooltipPosition({ x, y });
-                                      }
-                                    : undefined
-                                }
-                                onMouseLeave={
-                                  !isTouchDevice
-                                    ? () => {
-                                        setHoveredItem(null);
-                                        setTooltipPosition(null);
-                                      }
-                                    : undefined
-                                }
+                                onClick={(e) => {
+                                  e.stopPropagation();
+                                  if (item.eip) setDrawerEipId(item.eip.id);
+                                }}
                               >
                                 {getItemDisplayId(item)}
                               </span>
@@ -1056,57 +981,7 @@ const RankPage: React.FC = () => {
         </div>
       </div>
 
-      {/* Hover Tooltip for Proposal Details (Desktop Only) */}
-      {hoveredItem && !isTouchDevice && tooltipPosition && (
-        <div
-          className="fixed z-50"
-          style={{
-            left: tooltipPosition.x,
-            top: tooltipPosition.y,
-            maxWidth: '400px',
-            width: 'auto'
-          }}
-        >
-          <div className="bg-white dark:bg-slate-800 border-2 border-purple-300 dark:border-purple-600 rounded-lg shadow-2xl p-4">
-            <div className="flex items-start gap-2 mb-3">
-              <span className="text-sm font-mono font-bold text-purple-600 dark:text-purple-400">
-                {getItemDisplayId(hoveredItem)}
-              </span>
-              {getItemLayer(hoveredItem) && (
-                <span
-                  className={`px-1.5 py-0.5 text-xs font-medium rounded ${
-                    getItemLayer(hoveredItem) === "EL"
-                      ? "bg-indigo-100 text-indigo-700 dark:bg-indigo-900/20 dark:text-indigo-300"
-                      : "bg-teal-100 text-teal-700 dark:bg-teal-900/20 dark:text-teal-300"
-                  }`}
-                >
-                  {getItemLayer(hoveredItem)}
-                </span>
-              )}
-            </div>
-
-            <h4 className="text-sm font-semibold text-slate-900 dark:text-slate-100 mb-2">
-              {getItemTitle(hoveredItem)}
-            </h4>
-
-            <p className="text-xs text-slate-600 dark:text-slate-300 leading-relaxed mb-3">
-              {truncateText(getItemDescription(hoveredItem), 300)}
-            </p>
-
-            {hoveredItem.eip?.author && (
-              <div className="text-xs text-slate-500 dark:text-slate-400 mb-2">
-                <span className="font-medium">Author:</span> {cleanAuthorName(hoveredItem.eip.author)}
-              </div>
-            )}
-
-            {hoveredItem.eip && (
-              <ChampionDisplay
-                champions={hoveredItem.eip.forkRelationships.find(fork => fork.forkName.toLowerCase() === "hegota")?.champions}
-              />
-            )}
-          </div>
-        </div>
-      )}
+      <EipDrawer eipId={drawerEipId} onClose={() => setDrawerEipId(null)} />
 
       {/* Experiment Disclaimer */}
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-8">

@@ -1,59 +1,51 @@
 {
   "series": "ACDT",
-  "generated": "2026-07-30",
+  "generated": "2026-08-06",
   "lookback_calls": [
-    "ACDT #85",
-    "ACDT #86",
-    "ACDT #87",
-    "ACDT #88",
-    "ACDT #89"
+    "ACDT #86 - July 6, 2026",
+    "ACDT #87 - July 13, 2026",
+    "ACDT #88 - July 20, 2026",
+    "ACDT #89 - July 27, 2026",
+    "ACDT #90 - August 3, 2026"
   ],
   "open_items": [
-    {
-      "action": "Draft EIP cleanup PRs (execution gas rename, log cost consolidation) for devnet-8",
-      "owner": "Maria Silva",
-      "source_call": "ACDT #87",
-      "source_date": "2026-07-13",
-      "notes": "Both cleanups (EIP-2780 log cost, EIP-8037 rename) were approved and merged in ACDT #89; action completed but not explicitly attributed back to Maria Silva's draft PRs"
-    },
     {
       "action": "CL clients: review bid-selection logic and add logging for accepted/rejected bids and circuit breaker activation",
       "owner": "CL teams",
       "source_call": "ACDT #89",
       "source_date": "2026-07-27",
-      "notes": "Assigned in latest meeting; no subsequent meeting to check resolution"
+      "notes": "Teku logging improvements mentioned as incoming, but no confirmation of completed work across all CL clients"
     },
     {
       "action": "Raise any Engine API implementation concerns for EIP-8070 promptly; revisit at next ACDT",
       "owner": "All EL/CL teams",
       "source_call": "ACDT #89",
       "source_date": "2026-07-27",
-      "notes": "Assigned in latest meeting; intended for follow-up at next ACDT call"
+      "notes": "ACDT #90 discussed EIP-8037 (different EIP) engine API issues but did not explicitly revisit EIP-8070 concerns"
     },
     {
-      "action": "Merge EIP-2780 and EIP-8037 into EL specs and include in devnet-8 spec release",
-      "owner": "Mario Vega / Spencer / Guru",
-      "source_call": "ACDT #89",
-      "source_date": "2026-07-27",
-      "notes": "Assigned in latest meeting; no subsequent meeting to confirm completion"
+      "action": "EthPandaOps: gather hard block-propagation and state-transition timing numbers at fork for 2s attestation deadline analysis",
+      "owner": "EthPandaOps",
+      "source_call": "ACDT #90",
+      "source_date": "2026-08-03",
+      "notes": "Assigned this call; requires mainnet fork to complete"
+    },
+    {
+      "action": "Confirm EIP-8037 engine API spec changes with potuz; bring to ACDC agenda",
+      "owner": "jochem-brouwer / Mario Vega",
+      "source_call": "ACDT #90",
+      "source_date": "2026-08-03",
+      "notes": "Assigned this call; no resolution yet"
     }
   ],
   "resolved_items": [
-    {
-      "action": "Felix to add disable-switch to EIP-8282 deposit contract (easy, low-risk future-proofing)",
-      "owner": "Felix (Geth)",
-      "source_call": "ACDT #85",
-      "source_date": "2026-06-29",
-      "resolved_in": "ACDT #85",
-      "resolution": "Decision made in same meeting to keep static constants with Felix adding disable-switch; no further blockers or follow-up items raised in subsequent meetings"
-    },
     {
       "action": "Revert Besu fix for Prysm FCU behavior; re-investigate if issues persist",
       "owner": "Besu (Karim)",
       "source_call": "ACDT #86",
       "source_date": "2026-07-06",
       "resolved_in": "ACDT #87",
-      "resolution": "ACDT #87 reported devnet-6 running at 80%+ participation with recovered nodes; no further mention of Besu FCU revert issues"
+      "resolution": "Devnet-6 stability issues resolved; Besu nodes recovered and participated at 80%+ in ACDT #87"
     },
     {
       "action": "Resolve remaining EL spec changes (EIP-2780 floor gas input, EIP-8037, EIP-8282) in EL breakout; release updated execution-specs by Wednesday",
@@ -61,7 +53,15 @@
       "source_call": "ACDT #86",
       "source_date": "2026-07-06",
       "resolved_in": "ACDT #87",
-      "resolution": "ACDT #87 confirmed spec release 7.2 with EIP-8037 fix merged and devnet-7 launched with all changes"
+      "resolution": "EIP-8037 fix merged in spec release 7.2 included in devnet-7; devnet-7 launched with all spec changes"
+    },
+    {
+      "action": "Draft EIP cleanup PRs (execution gas rename, log cost consolidation) for devnet-8",
+      "owner": "Maria Silva",
+      "source_call": "ACDT #87",
+      "source_date": "2026-07-13",
+      "resolved_in": "ACDT #89",
+      "resolution": "EIP-2780 and EIP-8037 cleanup changes approved and merged for devnet-8 at ACDT #89"
     },
     {
       "action": "Align BAL-related JSON RPC methods across EL clients before devnet-8; review Toni's execution-apis PR",
@@ -69,15 +69,31 @@
       "source_call": "ACDT #88",
       "source_date": "2026-07-20",
       "resolved_in": "ACDT #89",
-      "resolution": "ACDT #89 devnet-8 spec sheet and planning discussions proceeded without raising BAL JSON RPC alignment as a blocker; implicitly addressed"
+      "resolution": "Toni's execution-apis PR reviewed and devnet-8 spec sheet shared at ACDT #89 with no outstanding BAL RPC concerns raised"
     },
     {
       "action": "Formally move devnet-7 EIPs to SFI at next ACDE/ACDC call",
       "owner": "ACD facilitators / EIP editors",
       "source_call": "ACDT #88",
       "source_date": "2026-07-20",
-      "resolved_in": "Implicit - ACDE/ACDC",
-      "resolution": "Action was for the Thursday ACDE/ACDC call immediately following ACDT #88; subsequent meetings (ACDT #89) proceeded with devnet-8 planning assuming SFI ratification occurred"
+      "resolved_in": "Implicit resolution",
+      "resolution": "ACDT #88 noted Thursday ACDE/ACDC target; no mention of failure at ACDT #89 or #90, indicating likely completion"
+    },
+    {
+      "action": "Merge EIP-2780 and EIP-8037 into EL specs and include in devnet-8 spec release",
+      "owner": "Mario Vega / Spencer / Guru",
+      "source_call": "ACDT #89",
+      "source_date": "2026-07-27",
+      "resolved_in": "ACDT #90",
+      "resolution": "EIP-8038 repricing numbers published and new execution-specs release completed at ACDT #90"
+    },
+    {
+      "action": "Update EIP-8038 repricing numbers; publish new execution-specs release",
+      "owner": "Maria Silva / SEAL",
+      "source_call": "ACDT #90",
+      "source_date": "2026-08-03",
+      "resolved_in": "ACDT #90",
+      "resolution": "Repricing numbers frozen and approved during ACDT #90; execution-specs release assigned for publication"
     }
   ]
 }

@@ -1,54 +1,54 @@
 {
   "series": "ACDT",
-  "generated": "2026-07-30",
-  "for_call": "ACDT #90",
+  "generated": "2026-08-06",
+  "for_call": "ACDT #91",
   "suggestions": [
     {
-      "topic": "Glamsterdam devnet-8 launch date decision (pending repricing analysis)",
+      "topic": "Devnet-8 launch timeline and readiness",
       "priority": "high",
-      "rationale": "Explicitly deferred from ACDT #89 for revisit at this call. Repricing analysis started July 25; final numbers expected this week. Launch tentatively early August but dependent on these numbers.",
-      "related_eips": [],
-      "source": "deferred_decision"
-    },
-    {
-      "topic": "EIP-8070 Engine API implementation status and concerns",
-      "priority": "high",
-      "rationale": "Action item from ACDT #89 to raise implementation concerns promptly and revisit at next ACDT. GetBlobsV3/V4 and FCU custody_columns field are mandatory for devnet-8; all major clients confirmed but implementation alignment needs verification.",
-      "related_eips": [],
-      "source": "open_action_item"
-    },
-    {
-      "topic": "Glamsterdam devnet-7 status and builder bid selection issues",
-      "priority": "medium",
-      "rationale": "Geth and Nethermind builders not winning bids on devnet-7; Teku favoring local blocks ~90% of the time. CL teams assigned to review bid-selection logic and add logging for accepted/rejected bids and circuit breaker activation.",
+      "rationale": "Repricing finalized at ACDT #90; devnet-8 described as 'short-lived named testnet' dependent on spec release. Need to confirm CL alpha.13 publication status and set concrete launch date.",
       "related_eips": [],
       "source": "ongoing_discussion"
     },
     {
-      "topic": "Devnet-8 spec release and readiness (EL specs 7.x, CL alpha.13)",
-      "priority": "medium",
-      "rationale": "Action item to merge EIP-2780 and EIP-8037 into EL specs and include in devnet-8 release. CL alpha.13 targeted for end of week per ACDT #89. Need confirmation both spec releases are ready before finalizing launch date.",
+      "topic": "EIP-8070 Engine API FCU placement concerns and ACDC coordination",
+      "priority": "high",
+      "rationale": "ACDT #90 identified unresolved FCU placement concerns for EIP-8070 Engine API mandatory endpoints. Action item to confirm spec changes with potuz and agenda for ACDC discussion before devnet-8.",
       "related_eips": [],
       "source": "open_action_item"
     },
     {
-      "topic": "Glamsterdam devnet-7 chaos testing results and learnings",
-      "priority": "medium",
-      "rationale": "Devnet-7 held up over weekend per ACDT #89; ramping up load/chaos scenarios including Death Star and malicious Prysm node. Stable containers showing 10-20% performance degradation requiring optimization before testnet. Status update needed.",
+      "topic": "discv5-only implementation status and discv4 fallback flag",
+      "priority": "high",
+      "rationale": "ACDT #90 confirmed discv5-only for devnet-8 but identified two clients (including Nimbus EL) lacking a flag to disable discv4 fallback. Teams asked to add flag before devnet-8 — verify completion.",
       "related_eips": [],
-      "source": "devnet_update"
+      "source": "open_action_item"
     },
     {
-      "topic": "Devnet-9 planning (non-finality chaos devnet)",
-      "priority": "low",
-      "rationale": "Mentioned in ACDT #88 as targeting within ~1 month for non-finality chaos testing. With devnet-8 launch imminent, worth discussing timeline and scope for devnet-9.",
+      "topic": "Devnet-7 stability and builder bid-selection issues",
+      "priority": "medium",
+      "rationale": "Devnet-7 stable for 20+ days but Geth/Nethermind builders not winning bids (ACDT #89), and Teku favoring local blocks 90% of the time. CL teams asked to improve bid-selection logging — confirm progress.",
+      "related_eips": [],
+      "source": "open_action_item"
+    },
+    {
+      "topic": "Devnet-8 chaos testing and devnet-9 planning",
+      "priority": "medium",
+      "rationale": "ACDT #88 outlined devnet-8 for smooth fork transition and devnet-9 as non-finality chaos devnet within ~1 month. Confirm chaos scenario plans (Death Star, malicious nodes) and devnet-9 timeline.",
       "related_eips": [],
       "source": "ongoing_discussion"
     },
     {
-      "topic": "EIP-7997 BAL factory fork-boundary behavior resolution",
+      "topic": "Block Access Lists (EIP-8189) optimization status",
       "priority": "low",
-      "rationale": "Decision made in ACDT #89 to close both open PRs; spec is correct (no BAL read at fork boundary). However, noted that Geth uniquely reads/deploys contract at fork boundary, creating divergence on chains without pre-deployed factory. Confirm this is fully resolved or needs documentation.",
+      "rationale": "ACDT #90 discussed BAL hot-booting for SnapSync as a 'nice-to-have post-release optimization' not affecting worst-case benchmarks. Confirm if any teams are pursuing implementation or if deferred post-fork.",
+      "related_eips": [],
+      "source": "ongoing_discussion"
+    },
+    {
+      "topic": "Client performance updates at 75 Mgas/s anchor",
+      "priority": "low",
+      "rationale": "ACDT #90 noted Erigon still red/yellow pending optimizations, ethrex with one cold-access gap, Besu/Geth at edge but expected to improve. Brief status check on optimization progress.",
       "related_eips": [],
       "source": "ongoing_discussion"
     }

@@ -330,22 +330,28 @@ function SpecHeaderButton({
   label: string;
   pending?: boolean;
 }) {
+  const className = `inline-flex shrink-0 items-center gap-1.5 whitespace-nowrap text-xs font-medium rounded-md px-3 py-1.5 transition-colors ${
+    pending
+      ? 'border border-dashed border-slate-300 dark:border-slate-600 text-slate-500 dark:text-slate-400 cursor-not-allowed'
+      : 'bg-purple-600 hover:bg-purple-700 text-white'
+  }`;
+  const icon = (
+    <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
+    </svg>
+  );
+  if (pending) {
+    return (
+      <span title="coming soon" aria-disabled="true" className={className}>
+        {label}
+        {icon}
+      </span>
+    );
+  }
   return (
-    <a
-      href={href}
-      target="_blank"
-      rel="noopener noreferrer"
-      title={pending ? 'coming soon' : undefined}
-      className={`inline-flex shrink-0 items-center gap-1.5 whitespace-nowrap text-xs font-medium rounded-md px-3 py-1.5 transition-colors ${
-        pending
-          ? 'border border-dashed border-slate-300 dark:border-slate-600 text-slate-500 dark:text-slate-400 hover:border-purple-400 hover:text-purple-600 dark:hover:text-purple-300'
-          : 'bg-purple-600 hover:bg-purple-700 text-white'
-      }`}
-    >
+    <a href={href} target="_blank" rel="noopener noreferrer" className={className}>
       {label}
-      <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
-      </svg>
+      {icon}
     </a>
   );
 }

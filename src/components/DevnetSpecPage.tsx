@@ -321,6 +321,35 @@ function DevnetPageLayout({
   );
 }
 
+function SpecHeaderButton({
+  href,
+  label,
+  pending,
+}: {
+  href: string;
+  label: string;
+  pending?: boolean;
+}) {
+  return (
+    <a
+      href={href}
+      target="_blank"
+      rel="noopener noreferrer"
+      title={pending ? 'Goes live when the network launches' : undefined}
+      className={`inline-flex shrink-0 items-center gap-1.5 whitespace-nowrap text-xs font-medium rounded-md px-3 py-1.5 transition-colors ${
+        pending
+          ? 'border border-dashed border-slate-300 dark:border-slate-600 text-slate-500 dark:text-slate-400 hover:border-purple-400 hover:text-purple-600 dark:hover:text-purple-300'
+          : 'bg-purple-600 hover:bg-purple-700 text-white'
+      }`}
+    >
+      {label}
+      <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
+      </svg>
+    </a>
+  );
+}
+
 function DevnetSpecContent({ spec, networkEntry, metadata }: { spec: DevnetSpec; networkEntry: NetworkEntry | null; metadata: { links: NetworkMetadataLink[] | null; description: string } | null }) {
   return (
     <DevnetPageLayout id={spec.id}>
@@ -329,7 +358,7 @@ function DevnetSpecContent({ spec, networkEntry, metadata }: { spec: DevnetSpec;
           <h1 className="text-3xl font-bold text-slate-900 dark:text-slate-100">
             {spec.title}
           </h1>
-          <div className="mt-2 flex items-center gap-3 text-sm text-slate-500 dark:text-slate-400">
+          <div className="mt-2 flex flex-wrap items-center gap-3 text-sm text-slate-500 dark:text-slate-400">
             {networkEntry && (
               <>
                 <a
@@ -343,17 +372,24 @@ function DevnetSpecContent({ spec, networkEntry, metadata }: { spec: DevnetSpec;
                 <span>&middot;</span>
               </>
             )}
-            <a
-              href={spec.sourceUrl}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="hover:text-purple-600 dark:hover:text-purple-400 transition-colors underline decoration-1 underline-offset-2"
-            >
-              View Specification
-            </a>
-            <span>&middot;</span>
+            <SpecHeaderButton href={spec.sourceUrl} label="View Spec" />
+            {spec.pending && (
+              <>
+                <SpecHeaderButton
+                  href={`https://ethpandaops.io/networks/${spec.id}/`}
+                  label="Add Network"
+                  pending
+                />
+                <SpecHeaderButton
+                  href={`https://faucet.${spec.id}.ethpandaops.io/`}
+                  label="Faucet"
+                  pending
+                />
+              </>
+            )}
             {spec.genesisTime && (
               <>
+                <span>&middot;</span>
                 <span>
                   Launched{' '}
                   {new Date(spec.genesisTime * 1000).toLocaleDateString('en-US', {
@@ -362,9 +398,9 @@ function DevnetSpecContent({ spec, networkEntry, metadata }: { spec: DevnetSpec;
                     day: 'numeric',
                   })}
                 </span>
-                <span>&middot;</span>
               </>
             )}
+            <span>&middot;</span>
             <span>
               Scraped{' '}
               {new Date(spec.scrapedAt).toLocaleDateString('en-US', {

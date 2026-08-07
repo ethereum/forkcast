@@ -38,6 +38,8 @@ export interface DevnetSpec {
   sameSpecAs?: string;
   /** Unix timestamp (seconds) of the devnet genesis, from cartographoor. */
   genesisTime?: number;
+  /** Manually-set flag: network not launched yet; resource links are pending. */
+  pending?: boolean;
   announcements: string[];
   eips: DevnetSpecEip[];
   elClientSupport: ClientSupportMatrix;

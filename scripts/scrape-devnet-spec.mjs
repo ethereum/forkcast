@@ -83,13 +83,14 @@ function parseEipTable(md) {
   // Find the EIP list table - look for rows with [EIP-NNNN](url)
   // Supports two layouts:
   //   A) | [EIP-NNNN](url) | title | status |        (shortcodes after title)
+  //   A') | [EIP-NNNN](url) [`spec@commit`](url) | title | status |  (extra link column after EIP link)
   //   B) | status_emoji | [EIP-NNNN](url) | title |  (emoji before EIP link)
   const eips = [];
   const rowRegex =
-    /\|([^[\n]*?)\[EIP-(\d+)\]\((https?:\/\/[^\s)]+)\)\s*\|\s*([^|\n]+)[^\S\n]*(?:\|[^\S\n]*([^|\n]*))?/g;
+    /\|([^[\n]*?)\[EIP-(\d+)\]\((https?:\/\/[^\s)]+)\)([^|\n]*)\s*\|\s*([^|\n]+)[^\S\n]*(?:\|[^\S\n]*([^|\n]*))?/g;
   let match;
   while ((match = rowRegex.exec(md)) !== null) {
-    const [, preEip, numberStr, url, title, postTitle] = match;
+    const [, preEip, numberStr, url, , title, postTitle] = match;
     const status = parseStatusCell(preEip) || (postTitle ? parseStatusCell(postTitle) : null);
 
     eips.push({
@@ -299,6 +300,8 @@ async function main() {
   if (existsSync(outPath)) {
     const existing = JSON.parse(readFileSync(outPath, 'utf-8'));
     if (existing.canceled) spec.canceled = true;
+    if (!spec.genesisTime && existing.pending) spec.pending = true;
+    if (existing.description) spec.description = existing.description;
     if (!spec.genesisTime && existing.genesisTime) {
       spec.genesisTime = existing.genesisTime;
     }

@@ -40,6 +40,8 @@ export interface DevnetSpec {
   genesisTime?: number;
   /** Manually-set flag: network not launched yet; resource links are pending. */
   pending?: boolean;
+  /** Manually-curated short description shown in the page header. */
+  description?: string;
   announcements: string[];
   eips: DevnetSpecEip[];
   elClientSupport: ClientSupportMatrix;

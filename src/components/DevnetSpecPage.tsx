@@ -335,7 +335,7 @@ function SpecHeaderButton({
       href={href}
       target="_blank"
       rel="noopener noreferrer"
-      title={pending ? 'Goes live when the network launches' : undefined}
+      title={pending ? 'coming soon' : undefined}
       className={`inline-flex shrink-0 items-center gap-1.5 whitespace-nowrap text-xs font-medium rounded-md px-3 py-1.5 transition-colors ${
         pending
           ? 'border border-dashed border-slate-300 dark:border-slate-600 text-slate-500 dark:text-slate-400 hover:border-purple-400 hover:text-purple-600 dark:hover:text-purple-300'
@@ -400,16 +400,20 @@ function DevnetSpecContent({ spec, networkEntry, metadata }: { spec: DevnetSpec;
                 </span>
               </>
             )}
-            <span>&middot;</span>
-            <span>
-              Scraped{' '}
-              {new Date(spec.scrapedAt).toLocaleDateString('en-US', {
-                year: 'numeric',
-                month: 'short',
-                day: 'numeric',
-              })}
-            </span>
           </div>
+          {spec.description && (
+            <p className="mt-3 max-w-2xl text-sm text-slate-600 dark:text-slate-300">
+              {spec.description}
+            </p>
+          )}
+          <p className="mt-2 text-xs text-slate-400 dark:text-slate-500">
+            Scraped{' '}
+            {new Date(spec.scrapedAt).toLocaleDateString('en-US', {
+              year: 'numeric',
+              month: 'short',
+              day: 'numeric',
+            })}
+          </p>
         </div>
 
         {/* Same-spec notice */}

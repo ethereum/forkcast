@@ -300,6 +300,7 @@ async function main() {
     const existing = JSON.parse(readFileSync(outPath, 'utf-8'));
     if (existing.canceled) spec.canceled = true;
     if (!spec.genesisTime && existing.pending) spec.pending = true;
+    if (existing.description) spec.description = existing.description;
     if (!spec.genesisTime && existing.genesisTime) {
       spec.genesisTime = existing.genesisTime;
     }

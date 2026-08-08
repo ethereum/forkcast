@@ -2,6 +2,16 @@
   "eipId": 8250,
   "commits": [
     {
+      "sha": "c9d962f194b9b167e045b3b68a7a292cdc4cec7f",
+      "date": "2026-08-08T07:58:20Z",
+      "message": "Update EIP-8250: Highlight privacy benefit upfront",
+      "author": "nerolation",
+      "prNumber": null,
+      "patch": "@@ -13,7 +13,7 @@ requires: 7623, 8141\n \n ## Abstract\n \n-Replaces the single sender nonce of an [EIP-8141](./eip-8141.md) frame transaction with `(nonce_keys, nonce_seq)`: a bounded set of nonce keys sharing one sequence number. `nonce_keys == [0]` aliases the legacy account nonce; each non-zero key selects an independent protocol-managed nonce sequence stored in a `NONCE_MANAGER` system contract. Transactions whose non-zero key sets do not overlap are replay-independent.\n+Replaces the single sender nonce of an [EIP-8141](./eip-8141.md) frame transaction with `(nonce_keys, nonce_seq)`: a bounded set of nonce keys sharing one sequence number. `nonce_keys == [0]` aliases the legacy account nonce; each non-zero key selects an independent protocol-managed nonce sequence stored in a `NONCE_MANAGER` system contract. Transactions whose non-zero key sets do not overlap are replay-independent. This helps privacy applications use one shared sender for many users without forcing every transaction through the same nonce sequence.\n \n ## Motivation\n ",
+      "additions": 1,
+      "deletions": 1
+    },
+    {
       "sha": "81b976ac01591fed2eecb73fa574f27cd18db2e8",
       "date": "2026-08-03T06:30:36Z",
       "message": "Update EIP-8250: pin NONCE_MANAGER to 0x...8250",
@@ -79,14 +89,6 @@
     }
   ],
   "openPrs": [
-    {
-      "number": 12126,
-      "title": "Update EIP-8250: Highlight privacy benefit upfront",
-      "author": "nerolation",
-      "updatedAt": "2026-08-07T12:47:09Z",
-      "additions": 1,
-      "deletions": 1
-    },
     {
       "number": 12039,
       "title": "Update EIP-8250: Define keyed mempool concurrency",

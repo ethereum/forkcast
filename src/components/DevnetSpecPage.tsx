@@ -321,6 +321,22 @@ function DevnetPageLayout({
   );
 }
 
+function SpecHeaderLink({ href, label }: { href: string; label: string }) {
+  return (
+    <a
+      href={href}
+      target="_blank"
+      rel="noopener noreferrer"
+      className="inline-flex shrink-0 items-center gap-1.5 whitespace-nowrap px-2.5 py-1 text-xs font-medium rounded-md border border-slate-200 dark:border-slate-600 text-slate-600 dark:text-slate-300 hover:border-purple-400 dark:hover:border-purple-500 hover:text-purple-600 dark:hover:text-purple-400 transition-colors"
+    >
+      {label}
+      <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
+      </svg>
+    </a>
+  );
+}
+
 function DevnetSpecContent({ spec, networkEntry, metadata }: { spec: DevnetSpec; networkEntry: NetworkEntry | null; metadata: { links: NetworkMetadataLink[] | null; description: string } | null }) {
   return (
     <DevnetPageLayout id={spec.id}>
@@ -329,29 +345,14 @@ function DevnetSpecContent({ spec, networkEntry, metadata }: { spec: DevnetSpec;
           <h1 className="text-3xl font-bold text-slate-900 dark:text-slate-100">
             {spec.title}
           </h1>
-          <div className="mt-2 flex items-center gap-3 text-sm text-slate-500 dark:text-slate-400">
+          <div className="mt-2 flex flex-wrap items-center gap-x-3 gap-y-2 text-sm text-slate-500 dark:text-slate-400">
             {networkEntry && (
-              <>
-                <a
-                  href={`https://ethpandaops.io/networks/${spec.id}/`}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="hover:text-purple-600 dark:hover:text-purple-400 transition-colors underline decoration-1 underline-offset-2"
-                >
-                  ethPandaOps Dashboard
-                </a>
-                <span>&middot;</span>
-              </>
+              <SpecHeaderLink
+                href={`https://ethpandaops.io/networks/${spec.id}/`}
+                label="ethPandaOps Dashboard"
+              />
             )}
-            <a
-              href={spec.sourceUrl}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="hover:text-purple-600 dark:hover:text-purple-400 transition-colors underline decoration-1 underline-offset-2"
-            >
-              View Specification
-            </a>
-            <span>&middot;</span>
+            <SpecHeaderLink href={spec.sourceUrl} label="View Specification" />
             {spec.genesisTime && (
               <>
                 <span>

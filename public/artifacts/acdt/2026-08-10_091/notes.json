@@ -1,0 +1,59 @@
+{
+  "meeting": "ACDT #091 - 2026-08-10",
+  "sections": [
+    {
+      "heading": "Glamsterdam Devnet 7 Status",
+      "summary": "Devnet 7 is stable with no finality stalls; Prysm syncing issue was fixed; TISM testing nodes turned off.",
+      "timestamp": "00:08:10",
+      "body": "- Network performing well overall with no finality stalls in recent days\n- TISM nodes that were testing various scenarios have been turned off\n- Prysm nodes had a recent syncing stall that has been investigated and fixed\n- Another round of spamming may be done for a performance report, but most interesting work is expected on devnet 8"
+    },
+    {
+      "heading": "Toni's Payload Flooding Attack on Devnet 7",
+      "summary": "A builder-based attack spammed thousands of large signed payloads, causing missed slots; root cause is a missing gossip deduplication check in Lighthouse and Prysm.",
+      "timestamp": "00:09:33",
+      "body": "- Toni used a builder bid win to publish thousands of validly signed execution payload envelopes (9.5 MB each, ~95,000 transactions) referencing the correct beacon block and block hash\n- Lighthouse and Prysm re-propagated all envelopes and forwarded them to the EL, causing missed slots and delayed payload processing for one to two slots\n- Nimbus was affected indirectly: high volume of payloads to ELs delayed responses for other necessary Engine API traffic, causing envelope acceptance delays\n  - Nimbus also had recovery issues that are being fixed for other reasons\n- The spec already includes an `[IGNORE]` rule that clients should only propagate the first valid `SignedExecutionPayloadEnvelope` per builder per block root\n  - Lighthouse confirmed it was re-propagating envelopes it had already seen; a fix is expected to merge within a day or two\n  - Lodestar and Teku confirmed they already implement this deduplication correctly\n- No formal write-up exists yet; Toni started testing Friday and will produce one\n- Agreement: Toni will retest on devnet 8 after client fixes are in place, coordinating timing so all clients can capture live profiles\n- Suggestion raised to add this attack scenario to hive tests or CL benchmark infrastructure; no concrete action decided yet"
+    },
+    {
+      "heading": "EELS Release and Repricing Number Uncertainty",
+      "summary": "EELS v8.1.0 released with current repricing numbers, but the repricing team cannot yet confirm those numbers are final; update expected at ACDE Thursday.",
+      "timestamp": "00:22:06",
+      "body": "- Spencer confirmed EELS release `tests-glamsterdam-devnet@v8.1.0` was published Wednesday, matching the repricing numbers in the existing EIPs repo with additional test coverage\n- jochem-brouwer raised that the repricing team has new insights and cannot confirm the current numbers are final\n  - Benchmarks were run on a different state than originally intended, and results may not be representative of mainnet\n  - The team is re-running benchmarks on the original mainnet infrastructure to verify\n  - Binary outcome: either numbers match and can be signed off, or numbers differ and repricing must be updated\n- The numbers are not expected to change drastically, but the team is not comfortable signing off yet\n- Devnet 8 (a.k.a. Platåberget / \"PB\") is intended to be the final devnet before public testnet, so repricing numbers should be final before launch\n  - Barnabas confirmed: devnet 8 equals the public testnet\n- Marius noted the numbers haven't changed drastically between devnet 7 and devnet 8\n- jochem-brouwer will present an update at ACDE Thursday with either confirmation or proposed changes\n  - Barnabas asked about deferring repricing to Hegota; jochem-brouwer opposed this as it would require re-adding a repricing EIP to a future fork\n- No objections from clients to a slight delay of devnet 8 pending repricing finalization\n- Next steps: wait for ACDE update; if numbers are confirmed, another EELS release with final numbers will follow before devnet 8 launch"
+    },
+    {
+      "heading": "Devnet 8 Genesis State Size",
+      "summary": "Stefan proposes keeping ~70 MB genesis state for devnet 8 to retest SSZ encoding issues from devnet 7; no blocking objections raised.",
+      "timestamp": "00:32:41",
+      "body": "- Devnet 7 had SSZ encoding issues at the fork transition due to a large validator set with many exiting validators; Stefan wants to reproduce this test on devnet 8\n- Genesis SSZ for devnet 7 was ~70 MB; Hoodi genesis is 145 MB for comparison\n- Most CL clients do not embed genesis state in binaries; they fetch it from GitHub, S3, or PandaOps buckets\n  - Prysm provides an example command to fetch from GitHub\n  - Lodestar does not put any state in the binary\n  - Nimbus includes it in binaries by default for some networks but can use dynamic download; 70 MB would be large but workable\n  - Dustin noted Nimbus users occasionally time out downloading Hoodi's ~150 MB state, though this is likely a different user profile than devnet testers\n- Barnabas questioned whether the large genesis test could be done locally in Kurtosis instead of on the public devnet\n- Stefan's preference: keep it under 100 MB; 70 MB should be fine and avoids missing a valuable test vector\n- No blocking objections; Stefan to coordinate with Barnabas on final decision"
+    },
+    {
+      "heading": "200M Gas Limit Bump at Fork Boundary",
+      "summary": "No consensus reached on how to bump gas limit to 200M at the Gloas fork; Barnabas will draft a revised proposal.",
+      "timestamp": "00:42:13",
+      "body": "- Barnabas proposed that CL clients ship a 200M default gas target in their Glamsterdam release so the gas limit increases automatically at the fork boundary\n  - Under Gloas, the EL drives the gas limit, and CL clients communicate it via Engine API only after the fork\n  - Without a bump, state-heavy transactions that work today at 60M gas could fail post-fork due to repriced opcodes\n- Toni supported putting 200M into the CL fork release to avoid chasing node operators for upgrades\n- Dustin and Nico Flaig pushed back: implementing this requires two gas limit flags (pre-fork and post-fork), creating messy UX\n  - A new flag that only activates at Gloas would be structurally new and would disappear shortly after, which is bad UX\n  - Risk of the flag being used before Gloas and accidentally triggering a premature gas limit increase (affects builder via fBoost)\n- Dragan proposed a simpler approach: ship a higher default in the next client release after Glamsterdam goes live, letting the gas limit ramp up gradually as validators update\n  - Downside: with 51% adoption the limit would hover around ~130M; full 200M would take months\n- Ben Adams noted that asking operators to override defaults means future default changes won't apply to them\n- Barnabas warned that a late-December fork timing would mean few operators upgrade during holidays\n- Nico Flaig stated that gas limit is supposed to be controlled by operators, not client devs\n- Decision deferred: Barnabas will think of a revised proposal and try to get alignment without requiring two releases"
+    },
+    {
+      "heading": "EIP-8070 Mandatory for Devnet 8",
+      "summary": "No objections raised; [EIP-8070](https://eips.ethereum.org/EIPS/eip-8070) will be mandatory for devnet 8.",
+      "timestamp": "00:56:05",
+      "body": "- This was flagged as a \"last call\" item; the previous ACDC lacked consensus, so today was the deadline for objections\n- Barnabas supported making it mandatory, noting the extra week available for implementation\n- Marius confirmed it's fine for Geth/Reth\n- No objections from any EL or CL client\n- Decision: EIP-8070 (sparse MPT) is mandatory for devnet 8"
+    },
+    {
+      "heading": "Optional Snap2 and Cell-Level Deltas on Devnet 8",
+      "summary": "Barnabas asked clients to optionally include Snap2 and cell-level deltas implementations in devnet 8 branches.",
+      "timestamp": "00:59:02",
+      "body": "- Barnabas requested that clients with Snap2 or cell-level deltas implementations in their master branch rebase those onto their devnet 8 branch\n- Relevant EIPs shared in chat: [EIP-8136](https://eips.ethereum.org/EIPS/eip-8136) and [EIP-8189](https://eips.ethereum.org/EIPS/eip-8189)\n- These are optional for devnet 8, enabling ball-based state testing"
+    },
+    {
+      "heading": "Circuit Breaker Design Updates",
+      "summary": "Teku and Nimbus have circuit breaker implementations ready; Lighthouse status unknown; Parithosh will test triggering on devnet 7/8.",
+      "timestamp": "01:00:07",
+      "body": "- Parithosh requested status updates from all CL clients on circuit breaker designs; referenced Potuz's [writeup](https://www.potuz.net/posts/gloas-circuit-breaker/) for Prysm\n- Teku: circuit breaker already implemented in devnet 8 branch, enabled by default but with permissive thresholds unlikely to trigger\n  - Mehdi will share the flags needed to configure stricter values for testing\n- Nimbus: planning to port their existing Fusaka-era circuit breaker design to payloads; similar approach, will elaborate as useful\n- Prysm: first part (builder-related) has been approved but not merged; can be cherry-picked to devnet 7 for testing\n- Lighthouse: no representative available to provide an update; will follow up later\n- Parithosh plans to try triggering circuit breakers on devnet 7/8 once flags are provided"
+    },
+    {
+      "heading": "EIP Editor Approval Request",
+      "summary": "jochem-brouwer asked lightclient to approve EIP PR #12021 to unblock updates to EIP-8282.",
+      "timestamp": "01:03:27",
+      "body": "- An EIP editor approval is needed on [PR #12021](https://github.com/ethereum/EIPs/pull/12021) to allow shipping updates to EIP-8282\n- This is blocked by the approval of [EIPIP issue #411](https://github.com/ethcatherders/EIPIP/issues/411)\n- Also referenced: [ERC PR #1917](https://github.com/ethereum/ERCs/pull/1917)"
+    }
+  ]
+}

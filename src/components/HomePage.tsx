@@ -452,42 +452,49 @@ const HomePage = () => {
         {/* Footer */}
         <div className="mt-16 text-center text-sm text-slate-500 dark:text-slate-400">
           <div className="mb-6">
-            <a
-              href="https://ps.ethereum.foundation"
-              target="_blank"
-              rel="noopener noreferrer"
-              onClick={() => handleExternalLinkClick('team_website', 'https://ps.ethereum.foundation')}
-              className="w-16 h-16 mx-auto mb-3 flex items-center justify-center"
-            >
-              <img
-                src="/blobby-gradient-red.svg"
-                alt="Ethereum Foundation Protocol Support team logo"
-                className="w-16 h-16 hover:invert dark:invert dark:hover:invert-0 transition-all duration-500"
-              />
-            </a>
-            <div className="text-center">
-              <p className="text-sm italic text-slate-500 dark:text-slate-400">
-                Brought to you by
-              </p>
+            <div className="group inline-block">
               <a
-                href="https://ps.ethereum.foundation"
+                href="https://ethcoordinate.org"
                 target="_blank"
                 rel="noopener noreferrer"
-                onClick={() => handleExternalLinkClick('team_website', 'https://ps.ethereum.foundation')}
-                className="text-lg font-light text-slate-700 dark:text-slate-300 hover:text-slate-900 dark:hover:text-slate-100 transition-colors duration-200"
+                onClick={() => handleExternalLinkClick('team_website', 'https://ethcoordinate.org')}
+                className="w-16 h-16 mx-auto mb-3 flex items-center justify-center transition-transform duration-[1500ms] ease-out group-hover:rotate-[360deg]"
               >
-                EF Protocol Support
+                <img
+                  src="/ethcoordinate-dark.svg"
+                  alt="EthCoordinate logo"
+                  className="w-16 h-16 dark:hidden"
+                />
+                <img
+                  src="/ethcoordinate-light.svg"
+                  alt="EthCoordinate logo"
+                  className="w-16 h-16 hidden dark:block"
+                />
               </a>
+              <div className="text-center">
+                <p className="text-sm italic text-slate-500 dark:text-slate-400">
+                  Skies watched by
+                </p>
+                <a
+                  href="https://ethcoordinate.org"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  onClick={() => handleExternalLinkClick('team_website', 'https://ethcoordinate.org')}
+                  className="text-lg font-light text-slate-700 dark:text-slate-300 hover:text-slate-900 dark:hover:text-slate-100 transition-colors duration-200"
+                >
+                  EthCoordinate
+                </a>
+              </div>
             </div>
           </div>
           <div className="flex items-center justify-center gap-4">
             <a
-              href="https://ps.ethereum.foundation"
+              href="https://ethcoordinate.org"
               target="_blank"
               rel="noopener noreferrer"
-              onClick={() => handleExternalLinkClick('team_website', 'https://ps.ethereum.foundation')}
+              onClick={() => handleExternalLinkClick('team_website', 'https://ethcoordinate.org')}
               className="text-slate-500 hover:text-slate-700 dark:text-slate-400 dark:hover:text-slate-200 transition-colors duration-200"
-              aria-label="EF Protocol Support website"
+              aria-label="EthCoordinate website"
             >
               <svg className="w-5 h-5" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" d="M12 21a9 9 0 100-18 9 9 0 000 18z" />
@@ -508,12 +515,12 @@ const HomePage = () => {
               </svg>
             </a>
             <a
-              href="https://x.com/EFProtocol"
+              href="https://x.com/ethcoordinate"
               target="_blank"
               rel="noopener noreferrer"
-              onClick={() => handleExternalLinkClick('twitter', 'https://x.com/EFProtocol')}
+              onClick={() => handleExternalLinkClick('twitter', 'https://x.com/ethcoordinate')}
               className="text-slate-500 hover:text-slate-700 dark:text-slate-400 dark:hover:text-slate-200 transition-colors duration-200"
-              aria-label="EF Protocol Support on X"
+              aria-label="EthCoordinate on X"
             >
               <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
                 <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/>

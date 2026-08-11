@@ -1,0 +1,194 @@
+{
+  "eipId": 5920,
+  "commits": [
+    {
+      "sha": "3b3fb63e8a53a92c771fa0f923d312d87d1a321e",
+      "date": "2026-01-18T00:29:08Z",
+      "message": "(bot 1272989785) moving EIPS/eip-5920.md to stagnant (#10985)",
+      "author": "eth-bot",
+      "prNumber": 10985,
+      "patch": "@@ -4,7 +4,7 @@ title: PAY opcode\n description: Introduces a new opcode, PAY, to send ether to an address without calling any of its functions\n author: Gavin John (@Pandapip1), Zainan Victor Zhou (@xinbenlv), Sam Wilson (@SamWilsn), Jochem Brouwer (@jochem-brouwer), Charles Cooper (@charles-cooper)\n discussions-to: https://ethereum-magicians.org/t/eip-5920-pay-opcode/11717\n-status: Review\n+status: Stagnant\n type: Standards Track\n category: Core\n created: 2022-03-14",
+      "additions": 1,
+      "deletions": 1
+    },
+    {
+      "sha": "67115c533ee123e7388e94f5956ede55243f2077",
+      "date": "2025-06-24T13:34:19Z",
+      "message": "Update EIP-5920: Minor spelling corrections in EIP-5920 documentation",
+      "author": "zeevick10",
+      "prNumber": null,
+      "patch": "@@ -23,7 +23,7 @@ Currently, to send ether to an address requires you to call into that address, w\n   - In practice, when calling into another account and sending ether, 2300 gas (the \"gas stipend\") is always available \"for free\" in the newly created call frame. Although it is currently not possible to make storage state changes with the 2300 gas stipend (see the last minute rejection of [EIP-1283](./eip-1283.md) from Constantinople to be replaced with the \"gas stipend safe\" [EIP-2200](./eip-2200.md) version in Istanbul), it is possible to do this with transient storage ([EIP-1153](./eip-1153.md)). This is a security risk where potentially the transient storage gets changed unintentionally. The goal is to send ether, and not have to consider these potential unintuitive security problems.\n - Secondly, it opens a DoS vector. Contracts wanting to send ether must be cognizant of the possibility that the recipient will run out of gas or revert.\n - Future potential call-like opcodes may not provide a way to restrict the amount of gas being forwarded to the recipient, so the meager mitigation against unintended side effects in use today (gas limit) is not guaranteed to be available.\n-- The `CALL` and `EXTCALL` opcodes will execute code on the receipient, which is unintended when wanting to send ether and which could lead to unintentional operations. The code execution also has to be paid for in gas, even when the intention is to only send ether, which is thus an unnecessary waste of gas.\n+- The `CALL` and `EXTCALL` opcodes will execute code on the recipient, which is unintended when wanting to send ether and which could lead to unintentional operations. The code execution also has to be paid for in gas, even when the intention is to only send ether, which is thus an unnecessary waste of gas.\n - Finally, [EIP-7702](./eip-7702.md) allows to delegate externally owned accounts (EOAs) to other accounts, which breaks the invariant that EOAs cannot contain code. Therefore, calling such EOA with the intention to send ether will thus also execute code and cost unnecessary gas.\n \n Having a dedicated opcode for ether transfers solves all of these issues, and would be a useful addition to the EVM.\n@@ -52,7 +52,7 @@ A new opcode is introduced: `PAY` (`0xfc`), which:\n - Charges the gas cost detailed below.\n - Marks `addr` as warm (adding `addr` to `accessed_addresses`).\n - Transfers `val` wei from the current address to the address `addr`, only if the current address has a balance greater than or equal to `val`.\n-- Push `1` on the stack if the `PAY` operation was succesful, or `0` if it failed.\n+- Push `1` on the stack if the `PAY` operation was successful, or `0` if it failed.\n   - Currently only insufficient balance would produce a `0` return value.\n \n ### Gas Cost",
+      "additions": 2,
+      "deletions": 2
+    },
+    {
+      "sha": "cb98c19ceffdd28c6d3d639d15b37d74e5a75784",
+      "date": "2025-05-13T19:02:16Z",
+      "message": "Update EIP-5920: add status stack return item / improve gas schedule",
+      "author": "jochem-brouwer",
+      "prNumber": null,
+      "additions": 19,
+      "deletions": 12
+    },
+    {
+      "sha": "ef468b1a357f16d3fdf7aaefe42d250fc513db06",
+      "date": "2025-04-15T16:54:18Z",
+      "message": "Update EIP-5920: Move to Review",
+      "author": "shemnon",
+      "prNumber": null,
+      "patch": "@@ -4,7 +4,7 @@ title: PAY opcode\n description: Introduces a new opcode, PAY, to send ether to an address without calling any of its functions\n author: Gavin John (@Pandapip1), Zainan Victor Zhou (@xinbenlv), Sam Wilson (@SamWilsn)\n discussions-to: https://ethereum-magicians.org/t/eip-5920-pay-opcode/11717\n-status: Draft\n+status: Review\n type: Standards Track\n category: Core\n created: 2022-03-14",
+      "additions": 1,
+      "deletions": 1
+    },
+    {
+      "sha": "fc4c6226648249f3efdc554524b6ca0658c35669",
+      "date": "2025-02-28T14:25:14Z",
+      "message": "Update EIP-5920: PAY Opcode Recipient Address",
+      "author": "wjmelements",
+      "prNumber": null,
+      "patch": "@@ -43,8 +43,10 @@ Currently, to send ether to an address requires you to call into that address, w\n A new opcode is introduced: `PAY` (`0xfc`), which:\n \n - Pops two values from the stack: `addr` then `val`.\n+- Charges the gas cost detailed below.\n+- Exceptionally halts if `addr` has any of the high 12 bytes set to a non-zero value (i.e. it does not contain a 20-byte address).\n - Transfers `val` wei from the current target address to the address `addr`.\n-- Marks `addr` as warm (adding `addr` to `accessed_addresses`.)\n+- Marks `addr` as warm (adding `addr` to `accessed_addresses`).\n \n ### Gas Cost\n \n@@ -60,14 +62,22 @@ The gas cost for `PAY` is the sum of the following:\n     - If yes, zero;\n     - Otherwise, `GAS_CALL_VALUE`.\n \n-`PAY` cannot be implemented on networks with empty accounts (see [EIP-7523](./eip-7523.md).)\n+`PAY` cannot be implemented on networks with empty accounts (see [EIP-7523](./eip-7523.md)).\n \n ## Rationale\n \n ### Argument order\n \n The order of arguments mimics that of `CALL`, which pops `addr` before `val`. Beyond consistency, though, this ordering aids validators pattern-matching MEV opportunities, so `PAY` always appears immediately after `COINBASE`.\n \n+### Halting for invalid address\n+\n+The halting behavior is designed to allow for Address Space Extension.\n+If the high bytes were truncated, as in `CALL`, contracts could depend on the truncating behavior.\n+If the address space were extended beyond 20 bytes, `PAY` would either not be able to target those accounts, or code expecting truncation could send ether to the wrong address.\n+\n+Because this behavior may be changed, contracts should not rely on this halting behavior and use other methods to intentionally halt (like the cheaper `INVALID` opcode).\n+\n ## Backwards Compatibility\n \n This change requires a hard fork.",
+      "additions": 12,
+      "deletions": 2
+    },
+    {
+      "sha": "ec79df5d400b1669c69d5db13a75eaa17351c9e3",
+      "date": "2025-02-25T21:10:26Z",
+      "message": "Update EIP-5920: Move to Draft",
+      "author": "wjmelements",
+      "prNumber": null,
+      "patch": "@@ -4,7 +4,7 @@ title: PAY opcode\n description: Introduces a new opcode, PAY, to send ether to an address without calling any of its functions\n author: Gavin John (@Pandapip1), Zainan Victor Zhou (@xinbenlv), Sam Wilson (@SamWilsn)\n discussions-to: https://ethereum-magicians.org/t/eip-5920-pay-opcode/11717\n-status: Stagnant\n+status: Draft\n type: Standards Track\n category: Core\n created: 2022-03-14\n@@ -21,6 +21,7 @@ Currently, to send ether to an address requires you to call into that address, w\n \n - First of all, it opens a reentrancy attack vector, as the recipient can call back into the sender. More generally, the recipient can unilaterally execute arbitrary state changes, limited only by the gas stipend, which is not desirable from the point of view of the sender.\n - Secondly, it opens a DoS vector. Contracts which want to send ether must be cognizant of the possibility that the recipient will run out of gas or revert.\n+- The `EXTCALL` opcode does not provide a way to restrict gas.\n - Finally, the `CALL` opcode is needlessly expensive for simple ether transfers, as it requires the memory and stack to be expanded, the recipient's full data including code and memory to be loaded, and finally needs to execute a call, which might do other unintentional operations. Having a dedicated opcode for ether transfers solves all of these issues, and would be a useful addition to the EVM.\n \n ## Specification\n@@ -39,7 +40,7 @@ Currently, to send ether to an address requires you to call into that address, w\n \n ### Behavior\n \n-A new opcode is introduced: `PAY` (`0xf9`), which:\n+A new opcode is introduced: `PAY` (`0xfc`), which:\n \n - Pops two values from the stack: `addr` then `val`.\n - Transfers `val` wei from the current target address to the address `addr`.\n@@ -73,7 +74,9 @@ This change requires a hard fork.\n \n ## Security Considerations\n \n-Existing contracts should not rely on their balance being under their control, since it is already possible to send ether to an address without calling it, by creating a temporary contract and immediately `SELFDESTRUCT`ing it, sending the ether to an arbitrary address. However, this opcode does make this process cheaper for already-vulnerable contracts.\n+Existing contracts should not rely on their balance being under their control, since it is already possible to send ether to an address without calling it, by creating a temporary contract and immediately `SELFDESTRUCT`ing it, sending the ether to an arbitrary address.\n+It is also possible to involuntarily fund an account using priority fees.\n+However, this opcode does make this process cheaper and easier for already-vulnerable contracts.\n \n ## Copyright\n ",
+      "additions": 6,
+      "deletions": 3
+    },
+    {
+      "sha": "b149287a7447406b73ab2f8ab555d720c863d44b",
+      "date": "2024-09-08T00:21:12Z",
+      "message": "(bot 1272989785) moving EIPS/eip-5920.md to stagnant (#8825)",
+      "author": "eth-bot",
+      "prNumber": 8825,
+      "patch": "@@ -4,7 +4,7 @@ title: PAY opcode\n description: Introduces a new opcode, PAY, to send ether to an address without calling any of its functions\n author: Gavin John (@Pandapip1), Zainan Victor Zhou (@xinbenlv), Sam Wilson (@SamWilsn)\n discussions-to: https://ethereum-magicians.org/t/eip-5920-pay-opcode/11717\n-status: Review\n+status: Stagnant\n type: Standards Track\n category: Core\n created: 2022-03-14",
+      "additions": 1,
+      "deletions": 1
+    },
+    {
+      "sha": "2b49e2dda0ee53b7102c6a8a86d7f94d2c5faf9e",
+      "date": "2024-02-23T04:10:34Z",
+      "message": "Update EIP-5920: change gas costs",
+      "author": "SamWilsn",
+      "prNumber": null,
+      "patch": "@@ -2,13 +2,13 @@\n eip: 5920\n title: PAY opcode\n description: Introduces a new opcode, PAY, to send ether to an address without calling any of its functions\n-author: Gavin John (@Pandapip1), Zainan Victor Zhou (@xinbenlv)\n+author: Gavin John (@Pandapip1), Zainan Victor Zhou (@xinbenlv), Sam Wilson (@SamWilsn)\n discussions-to: https://ethereum-magicians.org/t/eip-5920-pay-opcode/11717\n status: Review\n type: Standards Track\n category: Core\n created: 2022-03-14\n-requires: 2929\n+requires: 2929, 7523\n ---\n \n ## Abstract\n@@ -25,26 +25,47 @@ Currently, to send ether to an address requires you to call into that address, w\n \n ## Specification\n \n-| Parameter           | Value   |\n-| ------------------- | ------- |\n-| `PAY_OPCODE`        | `0xf9`  |\n+### Constants\n \n-A new opcode is introduced: `PAY` (`PAY_OPCODE`), which:\n+| Constant                   | Definition                |\n+| -------------------------- | ------------------------- |\n+| `WARM_STORAGE_READ_COST`   | [EIP-2929](./eip-2929.md) |\n+| `COLD_ACCOUNT_ACCESS_COST` | [EIP-2929](./eip-2929.md) |\n+| `GAS_NEW_ACCOUNT`          | [EELS][gna]               |\n+| `GAS_CALL_VALUE`           | [EELS][gcv]               |\n+\n+[gna]: https://github.com/ethereum/execution-specs/blob/4d953035fb0cceda7cf21d71b2ab7a9a6f4632f0/src/ethereum/frontier/vm/gas.py#L52\n+[gcv]: https://github.com/ethereum/execution-specs/blob/4d953035fb0cceda7cf21d71b2ab7a9a6f4632f0/src/ethereum/frontier/vm/gas.py#L53\n+\n+### Behavior\n+\n+A new opcode is introduced: `PAY` (`0xf9`), which:\n \n - Pops two values from the stack: `addr` then `val`.\n-- Transfers `val` wei from the executing address to the address `addr`, even if `addr` is the zero address.\n+- Transfers `val` wei from the current target address to the address `addr`.\n+- Marks `addr` as warm (adding `addr` to `accessed_addresses`.)\n \n-The base cost of this opcode is the additional cost of having a nonzero `msg.value` in a `CALL` opcode (currently `9000`). If `addr` is not the zero address, the [EIP-2929](./eip-2929.md) account access costs for `addr` (but NOT the current account) are also incurred: 100 gas for a warm account, 2600 gas for a cold account, and 25000 gas for a new account. If any of these costs are changed, the pricing for the `PAY` opcode must also be changed.\n+### Gas Cost\n \n-## Rationale\n+The gas cost for `PAY` is the sum of the following:\n+\n+- Is `addr` in `accessed_addresses`?\n+    - If yes, `WARM_STORAGE_READ_COST`;\n+    - Otherwise, `COLD_ACCOUNT_ACCESS_COST`.\n+- Does `addr` exist or is `val` zero?\n+    - If yes to either, zero;\n+    - Otherwise, `GAS_NEW_ACCOUNT`.\n+- Is `val` zero?\n+    - If yes, zero;\n+    - Otherwise, `GAS_CALL_VALUE`.\n \n-### Gas pricing\n+`PAY` cannot be implemented on networks with empty accounts (see [EIP-7523](./eip-7523.md).)\n \n-The additional nonzero `msg.value` cost of the `CALL` should equal the cost of transferring ether. Therefore, that is the base cost of this opcode. Additionally, the access costs for the receiving account make sense, since the account needs to be accessed. However, it is reasonable to assume that optimized execution clients have the data for the executing contract cached.\n+## Rationale\n \n ### Argument order\n \n-The order of arguments mimicks that of `CALL`, which pops `addr` before `val`. Beyond consistency, though, this ordering aids validators pattern-matching MEV opportunities, so `PAY` always appears immediately after `COINBASE`.\n+The order of arguments mimics that of `CALL`, which pops `addr` before `val`. Beyond consistency, though, this ordering aids validators pattern-matching MEV opportunities, so `PAY` always appears immediately after `COINBASE`.\n \n ## Backwards Compatibility\n ",
+      "additions": 33,
+      "deletions": 12
+    },
+    {
+      "sha": "847b87d02f6792aaadb2384eb7a4c0a045cc744a",
+      "date": "2023-09-19T15:56:03Z",
+      "message": "Update EIP-5920: expand the motivation a bit",
+      "author": "charles-cooper",
+      "prNumber": null,
+      "patch": "@@ -17,7 +17,11 @@ This EIP introduces a new opcode, `PAY`, taking two stack parameters, `addr` and\n \n ## Motivation\n \n-Currently, to send ether to an address requires you to call a function of that address, which has a few issues. First of all, it opens a reentrancy attack vector, as the recipient can call back into the sender. Secondly, it opens a DoS vector, so parent functions must be cognizant of the possibility that the recipient will run out of gas or revert. Finally, the `CALL` opcode is needlessly expensive for simple ether transfers, as it requires the memory and stack to be expanded, the recipient's full data including code and memory to be loaded, and finally needs to execute a call, which might do other unintentional operations. Having a dedicated opcode for ether transfers solves all of these issues, and would be a useful addition to the EVM.\n+Currently, to send ether to an address requires you to call into that address, which transfers execution context to that address, which creates several issues:\n+\n+- First of all, it opens a reentrancy attack vector, as the recipient can call back into the sender. More generally, the recipient can unilaterally execute arbitrary state changes, limited only by the gas stipend, which is not desirable from the point of view of the sender.\n+- Secondly, it opens a DoS vector. Contracts which want to send ether must be cognizant of the possibility that the recipient will run out of gas or revert.\n+- Finally, the `CALL` opcode is needlessly expensive for simple ether transfers, as it requires the memory and stack to be expanded, the recipient's full data including code and memory to be loaded, and finally needs to execute a call, which might do other unintentional operations. Having a dedicated opcode for ether transfers solves all of these issues, and would be a useful addition to the EVM.\n \n ## Specification\n ",
+      "additions": 5,
+      "deletions": 1
+    },
+    {
+      "sha": "5adbc1f792bdce8519d3fe6fdbe0d384eedb37ef",
+      "date": "2023-05-27T15:44:49Z",
+      "message": "Update EIP-5920: Fix inconsistencies",
+      "author": "Pandapip1",
+      "prNumber": null,
+      "patch": "@@ -24,20 +24,19 @@ Currently, to send ether to an address requires you to call a function of that a\n | Parameter           | Value   |\n | ------------------- | ------- |\n | `PAY_OPCODE`        | `0xf9`  |\n-| `GAS_COST`          | `3000`  |\n \n A new opcode is introduced: `PAY` (`PAY_OPCODE`), which:\n \n - Pops two values from the stack: `addr` then `val`.\n-- Transfers `val` wei from the executing address to the address `addr`. If `addr` is the zero address, instead, `val` wei is burned from the executing address.\n+- Transfers `val` wei from the executing address to the address `addr`, even if `addr` is the zero address.\n \n-The cost of this opcode is `GAS_COST`. If `addr` is not the zero address, the [EIP-2929](./eip-2929.md) account access costs are also incurred (this includes the 25k gas cost for adding a new account to the state).\n+The base cost of this opcode is the additional cost of having a nonzero `msg.value` in a `CALL` opcode (currently `9000`). If `addr` is not the zero address, the [EIP-2929](./eip-2929.md) account access costs for `addr` (but NOT the current account) are also incurred: 100 gas for a warm account, 2600 gas for a cold account, and 25000 gas for a new account. If any of these costs are changed, the pricing for the `PAY` opcode must also be changed.\n \n ## Rationale\n \n ### Gas pricing\n \n-The gas pricing is that of a `CALL` with a positive `msg.value`, but without any memory expansion costs or \"gas sent with call\" costs, with a gas reduction of `500` to compensate for the reduced amount of computation.\n+The additional nonzero `msg.value` cost of the `CALL` should equal the cost of transferring ether. Therefore, that is the base cost of this opcode. Additionally, the access costs for the receiving account make sense, since the account needs to be accessed. However, it is reasonable to assume that optimized execution clients have the data for the executing contract cached.\n \n ### Argument order\n ",
+      "additions": 3,
+      "deletions": 4
+    },
+    {
+      "sha": "9ce1afef65d40446261dfde15c4c5a9f06e88862",
+      "date": "2023-03-09T02:04:18Z",
+      "message": "Update EIP-5920: Explicitly state account creation cost (#6659)",
+      "author": "Pandapip1",
+      "prNumber": 6659,
+      "patch": "@@ -31,7 +31,7 @@ A new opcode is introduced: `PAY` (`PAY_OPCODE`), which:\n - Pops two values from the stack: `addr` then `val`.\n - Transfers `val` wei from the executing address to the address `addr`. If `addr` is the zero address, instead, `val` wei is burned from the executing address.\n \n-The cost of this opcode is `GAS_COST`. If `addr` is not the zero address, the [EIP-2929](./eip-2929.md) account access costs are also incurred.\n+The cost of this opcode is `GAS_COST`. If `addr` is not the zero address, the [EIP-2929](./eip-2929.md) account access costs are also incurred (this includes the 25k gas cost for adding a new account to the state).\n \n ## Rationale\n ",
+      "additions": 1,
+      "deletions": 1
+    },
+    {
+      "sha": "e30180fb183004fabead800b5f2f42c84686d208",
+      "date": "2023-02-16T19:10:06Z",
+      "message": "Update EIPs: Use my real name in authors field (#6511)",
+      "author": "Pandapip1",
+      "prNumber": 6511,
+      "patch": "@@ -2,7 +2,7 @@\n eip: 5920\n title: PAY opcode\n description: Introduces a new opcode, PAY, to send ether to an address without calling any of its functions\n-author: Pandapip1 (@Pandapip1), Zainan Victor Zhou (@xinbenlv)\n+author: Gavin John (@Pandapip1), Zainan Victor Zhou (@xinbenlv)\n discussions-to: https://ethereum-magicians.org/t/eip-5920-pay-opcode/11717\n status: Review\n type: Standards Track",
+      "additions": 1,
+      "deletions": 1
+    },
+    {
+      "sha": "e6d47e7600b6d076e09ccdd8c0b9e7dcadc4c159",
+      "date": "2023-01-18T00:59:37Z",
+      "message": "Update EIP-5920: Reference eip-2929 and massively reduce pay opcode price (#6350)",
+      "author": "Pandapip1",
+      "prNumber": 6350,
+      "patch": "@@ -8,6 +8,7 @@ status: Review\n type: Standards Track\n category: Core\n created: 2022-03-14\n+requires: 2929\n ---\n \n ## Abstract\n@@ -23,17 +24,14 @@ Currently, to send ether to an address requires you to call a function of that a\n | Parameter           | Value   |\n | ------------------- | ------- |\n | `PAY_OPCODE`        | `0xf9`  |\n-| `BASE_GAS_COST`     | `8500`  |\n-| `WARM_GAS_COST`     | `100`   |\n-| `COLD_GAS_COST`     | `2500`  |\n-| `CREATION_GAS_COST` | `32000` |\n+| `GAS_COST`          | `3000`  |\n \n A new opcode is introduced: `PAY` (`PAY_OPCODE`), which:\n \n - Pops two values from the stack: `addr` then `val`.\n - Transfers `val` wei from the executing address to the address `addr`. If `addr` is the zero address, instead, `val` wei is burned from the executing address.\n \n-The cost of this opcode is `BASE_GAS_COST`. If `addr` is not the zero address, this opcode costs an additional `WARM_GAS_COST` if `addr` is a warm account, `COLD_GAS_COST` if `addr` is a cold account, or `CREATION_GAS_COST` if `addr` has not yet been created.\n+The cost of this opcode is `GAS_COST`. If `addr` is not the zero address, the [EIP-2929](./eip-2929.md) account access costs are also incurred.\n \n ## Rationale\n ",
+      "additions": 3,
+      "deletions": 5
+    },
+    {
+      "sha": "40ef70fd4b94c978de2e2e1a450407a8af20759a",
+      "date": "2023-01-18T00:30:05Z",
+      "message": "Update EIP-5920: Reduce account creation gas (#6349)",
+      "author": "Pandapip1",
+      "prNumber": 6349,
+      "patch": "@@ -26,7 +26,7 @@ Currently, to send ether to an address requires you to call a function of that a\n | `BASE_GAS_COST`     | `8500`  |\n | `WARM_GAS_COST`     | `100`   |\n | `COLD_GAS_COST`     | `2500`  |\n-| `CREATION_GAS_COST` | `32600` |\n+| `CREATION_GAS_COST` | `32000` |\n \n A new opcode is introduced: `PAY` (`PAY_OPCODE`), which:\n ",
+      "additions": 1,
+      "deletions": 1
+    },
+    {
+      "sha": "725c2da2fab4d576a264c485b873abf71904db7f",
+      "date": "2023-01-15T14:04:24Z",
+      "message": "Update EIP-5920: Gas cost update and burning via zero address (#6332)",
+      "author": "Pandapip1",
+      "prNumber": 6332,
+      "patch": "@@ -23,16 +23,17 @@ Currently, to send ether to an address requires you to call a function of that a\n | Parameter           | Value   |\n | ------------------- | ------- |\n | `PAY_OPCODE`        | `0xf9`  |\n-| `BASE_GAS_COST`     | `8600`  |\n-| `COLD_GAS_COST`     | `11100`  |\n+| `BASE_GAS_COST`     | `8500`  |\n+| `WARM_GAS_COST`     | `100`   |\n+| `COLD_GAS_COST`     | `2500`  |\n | `CREATION_GAS_COST` | `32600` |\n \n A new opcode is introduced: `PAY` (`PAY_OPCODE`), which:\n \n - Pops two values from the stack: `addr` then `val`.\n-- Transfers `val` wei to the address `addr`.\n+- Transfers `val` wei from the executing address to the address `addr`. If `addr` is the zero address, instead, `val` wei is burned from the executing address.\n \n-The cost of this opcode is `BASE_GAS_COST` if `addr` is a warm account, `COLD_GAS_COST` if `addr` is a cold account that is already in the state trie, or `BASE_GAS_COST+CREATION_GAS_COST` if `addr` has not yet been added to the state trie.\n+The cost of this opcode is `BASE_GAS_COST`. If `addr` is not the zero address, this opcode costs an additional `WARM_GAS_COST` if `addr` is a warm account, `COLD_GAS_COST` if `addr` is a cold account, or `CREATION_GAS_COST` if `addr` has not yet been created.\n \n ## Rationale\n ",
+      "additions": 5,
+      "deletions": 4
+    },
+    {
+      "sha": "914695888ca2ecd395bff92987b18312d61f62d5",
+      "date": "2023-01-10T15:16:08Z",
+      "message": "Update EIP-5920: Move to Review (#6295)",
+      "author": "Pandapip1",
+      "prNumber": 6295,
+      "patch": "@@ -4,7 +4,7 @@ title: PAY opcode\n description: Introduces a new opcode, PAY, to send ether to an address without calling any of its functions\n author: Pandapip1 (@Pandapip1), Zainan Victor Zhou (@xinbenlv)\n discussions-to: https://ethereum-magicians.org/t/eip-5920-pay-opcode/11717\n-status: Draft\n+status: Review\n type: Standards Track\n category: Core\n created: 2022-03-14",
+      "additions": 1,
+      "deletions": 1
+    },
+    {
+      "sha": "e7dd3fc058a9359895c5d5d7a6ddaf3da1e688e3",
+      "date": "2023-01-07T23:14:01Z",
+      "message": "Update EIP-5920: Update abstract (#6292)",
+      "author": "Pandapip1",
+      "prNumber": 6292,
+      "patch": "@@ -12,7 +12,7 @@ created: 2022-03-14\n \n ## Abstract\n \n-This EIP introduces a new opcode, `PAY(addr, val)`, that transfers `val` wei to the address `addr` without calling it.\n+This EIP introduces a new opcode, `PAY`, taking two stack parameters, `addr` and `val`, that transfers `val` wei to the address `addr` without calling any of its functions.\n \n ## Motivation\n ",
+      "additions": 1,
+      "deletions": 1
+    },
+    {
+      "sha": "f8a3cc25f903713a986c4614348b6fe56fb46f2f",
+      "date": "2023-01-07T20:58:15Z",
+      "message": "Update EIP-5920: Prepare for Review (#6289)",
+      "author": "Pandapip1",
+      "prNumber": 6289,
+      "patch": "@@ -12,7 +12,7 @@ created: 2022-03-14\n \n ## Abstract\n \n-This EIP introduces a new opcode, `PAY(addr, val)`, that transfers `val` wei to the address `addr` without calling it. After `FORK_BLKNUM`, this opcode is added to the EVM.\n+This EIP introduces a new opcode, `PAY(addr, val)`, that transfers `val` wei to the address `addr` without calling it.\n \n ## Motivation\n \n@@ -22,8 +22,7 @@ Currently, to send ether to an address requires you to call a function of that a\n \n | Parameter           | Value   |\n | ------------------- | ------- |\n-| `FORK_BLKNUM`       | TBD     |\n-| `PAY_OPCODE`        | TBD     |\n+| `PAY_OPCODE`        | `0xf9`  |\n | `BASE_GAS_COST`     | `8600`  |\n | `COLD_GAS_COST`     | `11100`  |\n | `CREATION_GAS_COST` | `32600` |\n@@ -47,7 +46,7 @@ The order of arguments mimicks that of `CALL`, which pops `addr` before `val`. B\n \n ## Backwards Compatibility\n \n-Needs discussion.\n+This change requires a hard fork.\n \n ## Security Considerations\n ",
+      "additions": 3,
+      "deletions": 4
+    },
+    {
+      "sha": "99a8c7e5ea624f2580c36c2a1d3a363067fc3850",
+      "date": "2022-11-23T16:25:38Z",
+      "message": "Add EIP-5920: PAY opcode (#5920)",
+      "author": "Pandapip1",
+      "prNumber": 5920,
+      "patch": "@@ -0,0 +1,58 @@\n+---\n+eip: 5920\n+title: PAY opcode\n+description: Introduces a new opcode, PAY, to send ether to an address without calling any of its functions\n+author: Pandapip1 (@Pandapip1), Zainan Victor Zhou (@xinbenlv)\n+discussions-to: https://ethereum-magicians.org/t/eip-5920-pay-opcode/11717\n+status: Draft\n+type: Standards Track\n+category: Core\n+created: 2022-03-14\n+---\n+\n+## Abstract\n+\n+This EIP introduces a new opcode, `PAY(addr, val)`, that transfers `val` wei to the address `addr` without calling it. After `FORK_BLKNUM`, this opcode is added to the EVM.\n+\n+## Motivation\n+\n+Currently, to send ether to an address requires you to call a function of that address, which has a few issues. First of all, it opens a reentrancy attack vector, as the recipient can call back into the sender. Secondly, it opens a DoS vector, so parent functions must be cognizant of the possibility that the recipient will run out of gas or revert. Finally, the `CALL` opcode is needlessly expensive for simple ether transfers, as it requires the memory and stack to be expanded, the recipient's full data including code and memory to be loaded, and finally needs to execute a call, which might do other unintentional operations. Having a dedicated opcode for ether transfers solves all of these issues, and would be a useful addition to the EVM.\n+\n+## Specification\n+\n+| Parameter           | Value   |\n+| ------------------- | ------- |\n+| `FORK_BLKNUM`       | TBD     |\n+| `PAY_OPCODE`        | TBD     |\n+| `BASE_GAS_COST`     | `8600`  |\n+| `COLD_GAS_COST`     | `11100`  |\n+| `CREATION_GAS_COST` | `32600` |\n+\n+A new opcode is introduced: `PAY` (`PAY_OPCODE`), which:\n+\n+- Pops two values from the stack: `addr` then `val`.\n+- Transfers `val` wei to the address `addr`.\n+\n+The cost of this opcode is `BASE_GAS_COST` if `addr` is a warm account, `COLD_GAS_COST` if `addr` is a cold account that is already in the state trie, or `BASE_GAS_COST+CREATION_GAS_COST` if `addr` has not yet been added to the state trie.\n+\n+## Rationale\n+\n+### Gas pricing\n+\n+The gas pricing is that of a `CALL` with a positive `msg.value`, but without any memory expansion costs or \"gas sent with call\" costs, with a gas reduction of `500` to compensate for the reduced amount of computation.\n+\n+### Argument order\n+\n+The order of arguments mimicks that of `CALL`, which pops `addr` before `val`. Beyond consistency, though, this ordering aids validators pattern-matching MEV opportunities, so `PAY` always appears immediately after `COINBASE`.\n+\n+## Backwards Compatibility\n+\n+Needs discussion.\n+\n+## Security Considerations\n+\n+Existing contracts should not rely on their balance being under their control, since it is already possible to send ether to an address without calling it, by creating a temporary contract and immediately `SELFDESTRUCT`ing it, sending the ether to an arbitrary address. However, this opcode does make this process cheaper for already-vulnerable contracts.\n+\n+## Copyright\n+\n+Copyright and related rights waived via [CC0](../LICENSE.md).",
+      "additions": 58,
+      "deletions": 0
+    }
+  ]
+}

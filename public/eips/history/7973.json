@@ -1,0 +1,62 @@
+{
+  "eipId": 7973,
+  "commits": [
+    {
+      "sha": "a7cd18880abe724f2c8960fb86a33538b0f1d1e2",
+      "date": "2026-02-18T08:26:29Z",
+      "message": "Update EIP-7973: fix typo in comment",
+      "author": "thuricela",
+      "prNumber": null,
+      "patch": "@@ -96,7 +96,7 @@ if current_value != new_value:\n             evm.refund_counter += int(\n                 GAS_COLD_STORAGE_WRITE - GAS_COLD_SLOAD - GAS_WARM_ACCESS\n                 )\n-        # Refund account writting cost (only if cold)\n+        # Refund account writing cost (only if cold)\n         if account == original_account:\n             evm.refund_counter += GAS_COLD_ACCOUNT_WRITE\n ",
+      "additions": 1,
+      "deletions": 1
+    },
+    {
+      "sha": "f8e8b8d135694153109c676d030bae31a7ad3a1d",
+      "date": "2025-12-26T21:46:49Z",
+      "message": "Update EIP-7973: fix constant name inconsistencies",
+      "author": "mo-melvin77",
+      "prNumber": null,
+      "patch": "@@ -37,8 +37,8 @@ The parameters `GAS_CALL_VALUE` and `GAS_STORAGE_UPDATE` are removed, and the fo\n \n On the account-updating opcodes `CREATE`, `CREATE2`, and `*CALL`, instead of charging `GAS_CALL_VALUE`:\n \n-- `GAS_COLD_ACCOUNT_WRITE_COST` is charged if the account fields **are equal** to the transaction start values (i.e., they have not yet been updated by the transaction), or\n-- `GAS_WARM_ACCOUNT_WRITE_COST` is charged if the account fields **are not equal** to the transaction start values (i.e., they have already been updated before by the transaction).\n+- `GAS_COLD_ACCOUNT_WRITE` is charged if the account fields **are equal** to the transaction start values (i.e., they have not yet been updated by the transaction), or\n+- `GAS_WARM_WRITE` is charged if the account fields **are not equal** to the transaction start values (i.e., they have already been updated before by the transaction).\n \n `SSTORE` is also subjected to warm account metering. That is, this EIP splits the cost of `SSTORE` into two components, the cost to update the account tuple, and the cost to update the state trie. Note that if the state trie has already been updated once in a transaction, the account tuple is already dirty, and so we can amortize the cost of updating the account tuple again. Thus, the gas cost of `SSTORE` and its refund logic is updated to:\n \n@@ -59,9 +59,9 @@ gas_cost = Uint(0)\n \n # Charge account write cost\n if account != original_account:\n-    gas_cost += GAS_WARM_ACCOUNT_WRITE_COST\n+    gas_cost += GAS_WARM_WRITE\n else:\n-    gas_cost += GAS_COLD_ACCOUNT_WRITE_COST\n+    gas_cost += GAS_COLD_ACCOUNT_WRITE\n \n # Charge slot-specific costs\n if (evm.message.current_target, key) not in evm.accessed_storage_keys:\n@@ -98,7 +98,7 @@ if current_value != new_value:\n                 )\n         # Refund account writting cost (only if cold)\n         if account == original_account:\n-            evm.refund_counter += GAS_COLD_ACCOUNT_WRITE_COST\n+            evm.refund_counter += GAS_COLD_ACCOUNT_WRITE\n \n ```\n ",
+      "additions": 5,
+      "deletions": 5
+    },
+    {
+      "sha": "e8269b7f2a499dd55380de3a3e96f9832f00e098",
+      "date": "2025-10-31T05:21:13Z",
+      "message": "Update EIP-7973: Add Ben Adams as co-author",
+      "author": "charles-cooper",
+      "prNumber": null,
+      "patch": "@@ -2,7 +2,7 @@\n eip: 7973\n title: Warm Account Write Metering\n description: Introduce warm account writes, decreasing the cost of writing to an account after the first write.\n-author: Charles Cooper (@charles-cooper), Maria Silva (@misilva73)\n+author: Charles Cooper (@charles-cooper), Maria Silva (@misilva73), Ben Adams (@benaadams)\n discussions-to: https://ethereum-magicians.org/t/eip-7973-warm-account-write-metering/25907\n status: Draft\n type: Standards Track",
+      "additions": 1,
+      "deletions": 1
+    },
+    {
+      "sha": "587a4af5899950061f7c52aac1ad66d14e5cd6b0",
+      "date": "2025-10-28T17:18:33Z",
+      "message": "Add EIP: Warm Account Write Metering",
+      "author": "charles-cooper",
+      "prNumber": null,
+      "additions": 140,
+      "deletions": 0
+    }
+  ],
+  "openPrs": [
+    {
+      "number": 11064,
+      "title": "Update EIP-7973: document access gas parameters",
+      "author": "Fibonacci747",
+      "updatedAt": "2026-01-12T20:19:31Z",
+      "additions": 3,
+      "deletions": 0
+    },
+    {
+      "number": 10683,
+      "title": "Update EIP-7973: Initialize key and new_value in SSTORE pseudocode",
+      "author": "Fibonacci747",
+      "updatedAt": "2025-11-03T07:49:06Z",
+      "additions": 4,
+      "deletions": 0
+    }
+  ]
+}

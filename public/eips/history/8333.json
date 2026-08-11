@@ -1,0 +1,44 @@
+{
+  "eipId": 8333,
+  "commits": [
+    {
+      "sha": "de9c9fd1c87c20ae439bdde4ad46fd7254d5f37e",
+      "date": "2026-08-04T18:04:39Z",
+      "message": "Update EIP-8333: Clarify EIP-8333 boundary rationale",
+      "author": "lodekeeper",
+      "prNumber": null,
+      "patch": "@@ -77,7 +77,9 @@ The boundary block, run through the state transition function, deterministically\n \n Keeping the checkpoint epoch and moving only the root confines the change to a single question, which block anchors an epoch. Slashing conditions, justification bits, and finalization rules are untouched, and no containers change, so serialization, gossip formats, and slashing-protection databases are unaffected.\n \n-`get_block_root(state, epoch)` already returns the boundary block when the epoch's first slot is empty. This proposal makes that resolution the rule rather than the fallback; behavior changes only when a block occupies the epoch's first slot. The genesis epoch, which has no block before it, resolves to the genesis block, as today.\n+When the first slot of epoch `N` is empty, `get_block_root(state, N)` already returns the boundary block. This proposal is therefore a no-op for such epochs. It makes that missed-slot fallback the rule rather than the exception; behavior changes only when a block occupies the epoch's first slot. The genesis epoch, which has no block before it, resolves to the genesis block, as today.\n+\n+The checkpoint root for epoch `N` also matches the epoch-boundary root used as the shuffling dependent root for a duty epoch whose lookahead points back to `N`: `get_block_root_at_slot(state, compute_start_slot_at_epoch(N) - 1)`. In fork-choice terms, this is the root selected by `get_shuffling_dependent_root(store, root, N + MIN_SEED_LOOKAHEAD)` for the same chain view. This gives FFG checkpoints the same boundary anchor used for shuffling-dependent duty checks.\n \n ## Backwards Compatibility\n ",
+      "additions": 3,
+      "deletions": 1
+    },
+    {
+      "sha": "2082aa90199230291ed7b7d1b0da459ddaae855e",
+      "date": "2026-07-31T02:34:01Z",
+      "message": "Update EIP-8333: add twoeths as author",
+      "author": "lodekeeper",
+      "prNumber": null,
+      "patch": "@@ -2,7 +2,7 @@\n eip: 8333\n title: Align Checkpoint with Epoch Boundary Block\n description: Resolve FFG checkpoints to the last block before the epoch instead of the first block of the epoch\n-author: Cayman (@wemeetagain), Nico Flaig (@nflaig), Lodekeeper (@lodekeeper)\n+author: Cayman (@wemeetagain), Nico Flaig (@nflaig), Lodekeeper (@lodekeeper), twoeths (@twoeths)\n discussions-to: https://ethereum-magicians.org/t/eip-8333-align-checkpoint-with-epoch-boundary-block/29003\n status: Draft\n type: Standards Track",
+      "additions": 1,
+      "deletions": 1
+    },
+    {
+      "sha": "cff8e93347c8f6c5f30d5ae7e8875406f71179de",
+      "date": "2026-07-29T18:39:39Z",
+      "message": "Update EIP-8333: use the attestation deadline, not a specific fraction of a slot",
+      "author": "jihoonsong",
+      "prNumber": null,
+      "patch": "@@ -16,9 +16,9 @@ Anchor the Casper Friendly Finality Gadget (FFG) checkpoint for epoch `N` to the\n \n ## Motivation\n \n-Every attestation carries an FFG target vote naming a checkpoint `(epoch, root)`. Today the root for epoch `N` is the block at the epoch's first slot, and every attestation in epoch `N` names this same target. Committees in later slots know the target by the time they vote, but the first slot's committee must vote one third of a slot after the target block itself is proposed. If the block arrives late, some of those attesters vote for it while others vote for the previous block. Only one of the two matches the checkpoint the chain settles on; the other votes are lost to justification, and their attesters forfeit target rewards. The effect is systematic and measurable: on the live network, target-vote misses concentrate in the first slot of each epoch, with roughly `1/SLOTS_PER_EPOCH` of FFG weight exposed every epoch.\n+Every attestation carries an FFG target vote naming a checkpoint `(epoch, root)`. Today the root for epoch `N` is the block at the epoch's first slot, and every attestation in epoch `N` names this same target. Committees in later slots know the target by the time they vote, but the first slot's committee must vote by the attestation deadline after the target block itself is proposed. If the block arrives late, some of those attesters vote for it while others vote for the previous block. Only one of the two matches the checkpoint the chain settles on; the other votes are lost to justification, and their attesters forfeit target rewards. The effect is systematic and measurable: on the live network, target-vote misses concentrate in the first slot of each epoch, with roughly `1/SLOTS_PER_EPOCH` of FFG weight exposed every epoch.\n \n-This EIP instead anchors the checkpoint for epoch `N` to the boundary block, the last block before epoch `N`. The target is then fixed before the epoch begins, so no block produced during epoch `N` can change it. The earliest committee gains more than a full slot of propagation margin, up from a third of a slot.\n+This EIP instead anchors the checkpoint for epoch `N` to the boundary block, the last block before epoch `N`. The target is then fixed before the epoch begins, so no block produced during epoch `N` can change it. The earliest committee gains a full slot of additional propagation time before the attestation deadline.\n \n The current anchoring is also a long-standing off-by-one rather than a deliberate design decision (`ethereum/consensus-specs` issues 2174 and 652), and it makes finalization semantics misleading. \"Epoch `N` finalized\" today means only that the first block of epoch `N` is finalized; the rest of the epoch's blocks can still be reorged. Under this proposal a checkpoint for epoch `N` names the chain through the end of epoch `N - 1`, so finalizing it finalizes whole epochs, nothing more and nothing less. Explorers and tooling that report finality per epoch become accurate.\n \n@@ -103,7 +103,7 @@ Testing for this EIP should cover the following:\n \n FFG safety is unaffected: justification, finalization, and slashing operate on checkpoint epochs, which do not change.\n \n-The remaining attack surface is a maliciously late boundary block, which can still split the next epoch's first-slot target votes. This is the same attack that late first-slot blocks enable today, made strictly harder: the propagation margin grows from a third of a slot to over a full slot. Withholding the boundary block outright achieves nothing, since the target falls back to an earlier, already-propagated block.\n+The remaining attack surface is a maliciously late boundary block, which can still split the next epoch's first-slot target votes. This is the same attack that late first-slot blocks enable today, made strictly harder: the propagation margin grows from the time until the attestation deadline to over a full slot. Withholding the boundary block outright achieves nothing, since the target falls back to an earlier, already-propagated block.\n \n ## Copyright\n ",
+      "additions": 3,
+      "deletions": 3
+    },
+    {
+      "sha": "5e82ef62895121027a6c5f0c23276e1b2bed3071",
+      "date": "2026-07-25T15:18:46Z",
+      "message": "Add EIP: Align Checkpoint with Epoch Boundary Block",
+      "author": "wemeetagain",
+      "prNumber": null,
+      "additions": 110,
+      "deletions": 0
+    }
+  ]
+}

@@ -1,0 +1,45 @@
+{
+  "eipId": 2488,
+  "commits": [
+    {
+      "sha": "9e393a79d9937f579acbdcb234a67869259d5a96",
+      "date": "2022-05-06T07:29:09Z",
+      "message": "Force usage of included LICENSE file (#5055)",
+      "author": "Pandapip1",
+      "prNumber": 5055,
+      "patch": "@@ -55,4 +55,4 @@ TBA\n \n ## Copyright\n \n-Copyright and related rights waived via [CC0](https://creativecommons.org/publicdomain/zero/1.0/).\n+Copyright and related rights waived via [CC0](../LICENSE.md).",
+      "additions": 1,
+      "deletions": 1
+    },
+    {
+      "sha": "745c57dbdc56222bb3ed4f7c17d7c3d828413c05",
+      "date": "2021-09-26T05:23:18Z",
+      "message": "(bot 1272989785) moving EIPS/eip-2488.md to stagnant (#3959)",
+      "author": "eth-bot",
+      "prNumber": 3959,
+      "patch": "@@ -3,7 +3,7 @@ eip: 2488\n title: Deprecate the CALLCODE opcode\n author: Alex Beregszaszi (@axic)\n discussions-to: https://ethereum-magicians.org/t/eip-2488-deprecate-the-callcode-opcode/3957\n-status: Draft\n+status: Stagnant\n type: Standards Track\n category: Core\n created: 2019-12-20",
+      "additions": 1,
+      "deletions": 1
+    },
+    {
+      "sha": "15f61ed0fda82ec86d8d6a872f6b874816f03d96",
+      "date": "2020-09-30T04:22:43Z",
+      "message": "Adds rule to EIP-1 that references to other EIPs must use relative path format and the first reference must be linked. (#2947)",
+      "author": "Micah Zoltu",
+      "prNumber": 2947,
+      "patch": "@@ -18,7 +18,7 @@ Deprecate `CALLCODE` in a *somewhat* backwards compatible way, by making it alwa\n \n `CALLCODE` was part of the Frontier release of Ethereum. In the first few weeks/months it became clear\n that it cannot accomplish its intended design goal. This was rectified with introducing `DELEGATECALL`\n-([EIP-7](https://eips.ethereum.org/EIPS/eip-7)) in the Homestead update (early 2016).\n+([EIP-7](./eip-7.md)) in the Homestead update (early 2016).\n \n `CALLCODE` became never utilized, but it still puts a burden on EVM implementations.\n ",
+      "additions": 1,
+      "deletions": 1
+    },
+    {
+      "sha": "b4656931cb7a5e92113c915bf3c3985e1d3cc38b",
+      "date": "2020-08-29T05:07:13Z",
+      "message": "Add deprecate CALLCODE EIP (#2488)",
+      "author": "axic",
+      "prNumber": 2488,
+      "patch": "@@ -0,0 +1,58 @@\n+---\n+eip: 2488\n+title: Deprecate the CALLCODE opcode\n+author: Alex Beregszaszi (@axic)\n+discussions-to: https://ethereum-magicians.org/t/eip-2488-deprecate-the-callcode-opcode/3957\n+status: Draft\n+type: Standards Track\n+category: Core\n+created: 2019-12-20\n+requires: 7\n+---\n+\n+## Abstract\n+\n+Deprecate `CALLCODE` in a *somewhat* backwards compatible way, by making it always return failure.\n+\n+## Motivation\n+\n+`CALLCODE` was part of the Frontier release of Ethereum. In the first few weeks/months it became clear\n+that it cannot accomplish its intended design goal. This was rectified with introducing `DELEGATECALL`\n+([EIP-7](https://eips.ethereum.org/EIPS/eip-7)) in the Homestead update (early 2016).\n+\n+`CALLCODE` became never utilized, but it still puts a burden on EVM implementations.\n+\n+Disabling it will not improve the situation for any client whose goal is to sync from genesis, but would\n+help light clients or clients planning to sync from a later point in time.\n+\n+## Specification\n+\n+If `block.number >= FORK_BLOCK`, the `CALLCODE` (`0xf2`) instruction always returns `0`, which signals failure.\n+\n+## Rationale\n+\n+It would be possible just to remove the opcode and exceptionally abort if it is encountered.\n+However, by returning failure, the contract has a chance to act on it and potentially recover.\n+\n+## Backwards Compatibility\n+\n+This is a breaking change and has a potential to break contracts. The author expects no contracts of any value\n+should be affected.\n+\n+TODO: validate this claim.\n+\n+## Security Considerations\n+\n+TBA\n+\n+## Test Cases\n+\n+TBA\n+\n+## Implementation\n+\n+TBA\n+\n+## Copyright\n+\n+Copyright and related rights waived via [CC0](https://creativecommons.org/publicdomain/zero/1.0/).",
+      "additions": 58,
+      "deletions": 0
+    }
+  ]
+}

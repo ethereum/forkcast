@@ -1,0 +1,25 @@
+{
+  "eipId": 7686,
+  "commits": [
+    {
+      "sha": "1d2e1c18f7cdecc8fa35a74a0040c61ed326a9c1",
+      "date": "2024-12-01T00:26:21Z",
+      "message": "(bot 1272989785) moving EIPS/eip-7686.md to stagnant (#9039)",
+      "author": "eth-bot",
+      "prNumber": 9039,
+      "patch": "@@ -4,7 +4,7 @@ title: Linear EVM memory limits\n description: Adjust memory limits and gas limits of sub-calls to create a clear linear bound on how much total memory an EVM execution can consume\n author: Vitalik Buterin (@vbuterin)\n discussions-to: https://ethereum-magicians.org/t/eip-7686-linear-evm-memory-limits/19448\n-status: Draft\n+status: Stagnant\n type: Standards Track\n category: Core\n created: 2024-04-15",
+      "additions": 1,
+      "deletions": 1
+    },
+    {
+      "sha": "45eb0c3020f00ebc79d4e2e7657bbec6fa4ce3ea",
+      "date": "2024-04-18T17:58:59Z",
+      "message": "Add EIP: Linear EVM memory limits",
+      "author": "vbuterin",
+      "prNumber": null,
+      "patch": "@@ -0,0 +1,75 @@\n+---\n+eip: 7686\n+title: Linear EVM memory limits\n+description: Adjust memory limits and gas limits of sub-calls to create a clear linear bound on how much total memory an EVM execution can consume\n+author: Vitalik Buterin (@vbuterin)\n+discussions-to: https://ethereum-magicians.org/t/eip-7686-linear-evm-memory-limits/19448\n+status: Draft\n+type: Standards Track\n+category: Core\n+created: 2024-04-15\n+---\n+\n+## Abstract\n+\n+Add a hard memory limit equal to the gas limit of the current context. Make the maximum gas cost of a sub-call depend on the memory used in the current context. The two rules together ensure that a transaction with N gas can use at most N bytes of memory.\n+\n+## Motivation\n+\n+Today, memory pricing rules are complicated: we have the quadratic cost for expanding memory as well as the 63/64 rule for how much gas can go into a child call. This also makes it extremely hard to calculate a maximum possible amount of memory required to process a given EVM execution.\n+\n+The rules in this post simplify these rules, and add a new hard limit: an EVM execution with N gas can require at most N total bytes of memory to process. This limit is tight: there are easy ways for an N-gas call to use `N - O(1)` bytes of memory.\n+\n+## Specification\n+\n+Change `memory_cost` from:\n+\n+```python\n+memory_size_word = (memory_byte_size + 31) / 32\n+memory_cost = (memory_size_word ** 2) / 512 + (3 * memory_size_word)\n+```\n+\n+To:\n+\n+```python\n+memory_size_word = (memory_byte_size + 31) / 32\n+memory_cost = 3 * memory_size_word\n+```\n+\n+Additionally, if a memory expansion would lead to `memory_byte_size` strictly exceeding the current call's initial gas limit, revert with an error.\n+\n+When making any type of call, change the maximum gas limit from the current [EIP-150](eip-150.md) definition:\n+\n+```python\n+def max_call_gas(gas):\n+    return gas - (gas // 64)\n+```\n+\n+To:\n+\n+```python\n+def max_call_gas(gas, memory_byte_size):\n+    return gas - max(gas // 64, memory_byte_size)\n+```\n+\n+## Rationale\n+\n+With this EIP, there is a simple EVM implementation that can process an N-gas call using an N-byte bytearray as memory: allocate all bytes to the current context, when doing a child call use the remaining memory starting from the position `memory_byte_size` for the child call's memory, and so on recursively.\n+\n+Having this clean invariant is useful for EVM implementations, especially EVM implementations in constrained environments (eg. ZK-SNARK provers).\n+\n+The 3 gas per word memory expansion cost is retained because it is equivalent to MCOPY, and so the operation of clearing memory at the end of a child call (cheap in regular machines, but more expensive in ZK-SNARKs and other unusual contexts) can be implemented with the same logic as that used to implement the MCOPY opcode itself.\n+\n+The 63/64 rule is maintained in order to maintain the current de-facto call stack depth limit of roughly `1 + log((gaslimit + 6300) / 6400) / log(64/63) = 537`.\n+\n+## Backwards Compatibility\n+\n+It is theoretically possible for EVM code that works today to fail to work under this new EIP, if that code accesses a high index in memory but is called with a low gas limit. However, almost all EVM execution consumes far more code than it uses bytes of memory. For example, for a call to cause even a single state change, it must have at least 5000 gas. This would allow it 5000 bytes of memory, which is greater than that used by almost all applications. More complex applications would have even higher limits.\n+\n+## Security Considerations\n+\n+No security concerns were raised.\n+\n+## Copyright\n+\n+Copyright and related rights waived via [CC0](../LICENSE.md).",
+      "additions": 75,
+      "deletions": 0
+    }
+  ]
+}

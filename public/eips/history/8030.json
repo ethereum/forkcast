@@ -1,0 +1,175 @@
+{
+  "eipId": 8030,
+  "commits": [
+    {
+      "sha": "7a2e7ad981cc2e996d4330aa550410d5c57684a8",
+      "date": "2026-04-11T13:00:06Z",
+      "message": "Update EIP-7932: Add support for public key / signature separation",
+      "author": "SirSpudlington",
+      "prNumber": null,
+      "patch": "@@ -1,7 +1,7 @@\n ---\n eip: 8030\n title: P256 algorithm support\n-description: Adds an EIP-7932 algorithm type for P256 support of type `0x0`\n+description: Adds an EIP-7932 algorithm type for P256 support of type `0x01`\n author: James Kempton (@SirSpudlington)\n discussions-to: https://ethereum-magicians.org/t/discussion-topic-for-eip-8030/25557\n status: Draft\n@@ -13,7 +13,7 @@ requires: 7932, 7951\n \n ## Abstract\n \n-This EIP adds a new [EIP-7932](./eip-7932.md) algorithm of type `0x0` for supporting P256 signatures.\n+This EIP adds a new [EIP-7932](./eip-7932.md) algorithm of type `0x01` for supporting P256 signatures.\n \n ## Motivation\n \n@@ -26,7 +26,7 @@ This EIP defines a new [EIP-7932](./eip-7932.md) algorithmic type with the follo\n \n | Constant | Value |\n | - | - |\n-| `ALG_TYPE` | `Bytes1(0x0)` |\n+| `ALG_TYPE` | `Bytes1(0x01)` |\n | `SIZE`| `129` |\n \n ```python\n@@ -63,10 +63,14 @@ def verify(signature: Bytes, signing_data: Bytes) -> Bytes | Error:\n \n     # This is defined in [P256Verify Function](#p256verify-function)\n     assert(P256Verify(signing_data, r, s, x, y) == Bytes(\"0x0000000000000000000000000000000000000000000000000000000000000001\"))\n-        \n-    return x.to_bytes(32, \"big\") + y.to_bytes(32, \"big\")\n-```\n+    \n+    # Return 64 byte public key\n+    return x || y\n \n+def merge_detached_signature(detached_signature: bytes, public_key: bytes) -> bytes:\n+    # Concatenate r,s || x,y\n+    return detached_signature + public_key\n+```\n \n ### `P256Verify` Function\n ",
+      "additions": 10,
+      "deletions": 6
+    },
+    {
+      "sha": "cf4293272113743090e703019d21b351a089a7ab",
+      "date": "2026-01-25T12:11:27Z",
+      "message": "Update EIP-8030: Add EIP-7951 to requires header",
+      "author": "jenniferzelo",
+      "prNumber": null,
+      "patch": "@@ -8,7 +8,7 @@ status: Draft\n type: Standards Track\n category: Core\n created: 2025-09-20\n-requires: 7932\n+requires: 7932, 7951\n ---\n \n ## Abstract",
+      "additions": 1,
+      "deletions": 1
+    },
+    {
+      "sha": "251ca7dd04c7dfac19ce22261ab119379d40b126",
+      "date": "2026-01-08T17:00:13Z",
+      "message": "Update EIP-7932: Polish grammar and spelling in EIP-7932, 8030",
+      "author": "lmorett1",
+      "prNumber": null,
+      "patch": "@@ -37,7 +37,7 @@ def gas_cost(signing_data: Bytes) -> Uint64:\n     # subtracted (the cost of the secp256k1 precompile)\n     BASE_GAS = Uint64(3900)\n \n-    # Calcuate extra overhead for keccak256 hashing\n+    # Calculate extra overhead for keccak256 hashing\n     if len(signing_data) == 32:\n         return BASE_GAS\n     else:",
+      "additions": 1,
+      "deletions": 1
+    },
+    {
+      "sha": "071392868ab7d7edc640c28b35d36f62d5bfa0af",
+      "date": "2025-12-25T10:52:50Z",
+      "message": "Update EIP-8030: correct Python function definition syntax",
+      "author": "mo-melvin77",
+      "prNumber": null,
+      "patch": "@@ -44,11 +44,11 @@ def gas_cost(signing_data: Bytes) -> Uint64:\n         minimum_word_size = (len(signing_data) + 31) // 32\n         return BASE_GAS + Uint64(30 + (6 * minimum_word_size))\n \n-def validate(signature: Bytes) -> None | Error;\n+def validate(signature: Bytes) -> None | Error:\n     # This function is a noop as there is no\n     # exposed function defined in [EIP-7951](./eip-7951.md)\n \n-def verify(signature: Bytes, signing_data: Bytes) -> Bytes | Error;\n+def verify(signature: Bytes, signing_data: Bytes) -> Bytes | Error:\n     if len(signing_data) != 32:\n         # Hash if non-standard size\n         signing_data = keccak256(signing_data)",
+      "additions": 2,
+      "deletions": 2
+    },
+    {
+      "sha": "49497729e94487cb52ce95022c3e070363963311",
+      "date": "2025-12-15T18:12:37Z",
+      "message": "Update EIP-7932: Migrate to new registry",
+      "author": "SirSpudlington",
+      "prNumber": null,
+      "patch": "@@ -1,6 +1,6 @@\n ---\n eip: 8030\n-title: P256 transaction support\n+title: P256 algorithm support\n description: Adds an EIP-7932 algorithm type for P256 support of type `0x0`\n author: James Kempton (@SirSpudlington)\n discussions-to: https://ethereum-magicians.org/t/discussion-topic-for-eip-8030/25557\n@@ -27,24 +27,42 @@ This EIP defines a new [EIP-7932](./eip-7932.md) algorithmic type with the follo\n | Constant | Value |\n | - | - |\n | `ALG_TYPE` | `Bytes1(0x0)` |\n-| `GAS_PENALTY`| `500` |\n+| `SIZE`| `129` |\n \n ```python\n N = 0xffffffff00000000ffffffffffffffffbce6faada7179e84f3b9cac2fc632551\n \n+def gas_cost(signing_data: Bytes) -> Uint64:\n+    # This is the precompile cost from [EIP-7951](./eip-7951.md) with 3000 gas\n+    # subtracted (the cost of the secp256k1 precompile)\n+    BASE_GAS = Uint64(3900)\n+\n+    # Calcuate extra overhead for keccak256 hashing\n+    if len(signing_data) == 32:\n+        return BASE_GAS\n+    else:\n+        minimum_word_size = (len(signing_data) + 31) // 32\n+        return BASE_GAS + Uint64(30 + (6 * minimum_word_size))\n+\n+def validate(signature: Bytes) -> None | Error;\n+    # This function is a noop as there is no\n+    # exposed function defined in [EIP-7951](./eip-7951.md)\n+\n+def verify(signature: Bytes, signing_data: Bytes) -> Bytes | Error;\n+    if len(signing_data) != 32:\n+        # Hash if non-standard size\n+        signing_data = keccak256(signing_data)\n \n-def verify(signature_info: bytes, payload_hash: Hash32) -> Bytes:\n     # Ignore initial alg_type byte\n-    signature_info = signature_info[1:]\n+    signature = signature[1:]\n \n-    assert(len(signature_info) == 128)\n-    (r, s, x, y) = (signature_info[0:32], signature_info[32:64], signature_info[64:96], signature_info[96:128])\n+    (r, s, x, y) = (signature[0:32], signature[32:64], signature[64:96], signature[96:128])\n \n     # This is similar to [EIP-2](./eip-2.md)'s malleability verification.\n     assert(s <= N/2)\n \n     # This is defined in [P256Verify Function](#p256verify-function)\n-    assert(P256Verify(payload_hash, r, s, x, y) == Bytes(\"0x0000000000000000000000000000000000000000000000000000000000000001\"))\n+    assert(P256Verify(signing_data, r, s, x, y) == Bytes(\"0x0000000000000000000000000000000000000000000000000000000000000001\"))\n         \n     return x.to_bytes(32, \"big\") + y.to_bytes(32, \"big\")\n ```\n@@ -56,10 +74,6 @@ The `P256Verify` function is the logic of the precompile defined in [EIP-7951](.\n \n ## Rationale\n \n-### Additional 500 gas penalty\n-\n-Much of this proposal is drawn from [EIP-7951](./eip-7951.md). Some of the test cases in [EIP-7951](./eip-7951.md) show that P256 is slower than secp256k1 and as such, a small penalty has been added to combat the slowdown of verification.\n-\n ### Why P256?\n \n P256 or secp256r1, is used globally but (more importantly) has an existing implementation in all execution clients. This allows easy implementation of a known-safe algorithm, which is perfect for a test algorithm.",
+      "additions": 25,
+      "deletions": 11
+    },
+    {
+      "sha": "1a17b5253ee9d614b4aeb0f4c9909fb40c0f7955",
+      "date": "2025-11-06T13:24:22Z",
+      "message": "Update EIP-8030: Fix grammar and formatting",
+      "author": "jenniferzelo",
+      "prNumber": null,
+      "patch": "@@ -52,7 +52,7 @@ def verify(signature_info: bytes, payload_hash: Hash32) -> Bytes:\n \n ### `P256Verify` Function\n \n-The `P256Verify` function is logic of the precompile defined in [EIP-7951](./eip-7951.md), the only exception is that this function MUST not charge any gas.\n+The `P256Verify` function is the logic of the precompile defined in [EIP-7951](./eip-7951.md), the only exception is that this function MUST NOT charge any gas.\n \n ## Rationale\n \n@@ -75,4 +75,4 @@ Needs discussion.\n \n ## Copyright\n \n-Copyright and related rights waived via [CC0](../../LICENSE.md).\n+Copyright and related rights waived via [CC0](../LICENSE.md).",
+      "additions": 2,
+      "deletions": 2
+    },
+    {
+      "sha": "2a2423ceffc00225c0046814a7ee2b1562a3c86a",
+      "date": "2025-11-05T18:28:41Z",
+      "message": "Update EIP-7932: Significant fixes to improve interoperability & strip out SSZ",
+      "author": "SirSpudlington",
+      "prNumber": null,
+      "patch": "@@ -28,13 +28,15 @@ This EIP defines a new [EIP-7932](./eip-7932.md) algorithmic type with the follo\n | - | - |\n | `ALG_TYPE` | `Bytes1(0x0)` |\n | `GAS_PENALTY`| `500` |\n-| `MAX_SIZE` | `128` |\n \n ```python\n N = 0xffffffff00000000ffffffffffffffffbce6faada7179e84f3b9cac2fc632551\n \n \n def verify(signature_info: bytes, payload_hash: Hash32) -> Bytes:\n+    # Ignore initial alg_type byte\n+    signature_info = signature_info[1:]\n+\n     assert(len(signature_info) == 128)\n     (r, s, x, y) = (signature_info[0:32], signature_info[32:64], signature_info[64:96], signature_info[96:128])\n \n@@ -50,7 +52,7 @@ def verify(signature_info: bytes, payload_hash: Hash32) -> Bytes:\n \n ### `P256Verify` Function\n \n-The `P256Verify` function is logic of the precompile defined in [EIP-7951](./eip-7951.md), the only exeception is that this function MUST not charge any gas.\n+The `P256Verify` function is logic of the precompile defined in [EIP-7951](./eip-7951.md), the only exception is that this function MUST not charge any gas.\n \n ## Rationale\n ",
+      "additions": 4,
+      "deletions": 2
+    },
+    {
+      "sha": "b70311561c87db333d49e9e3293be1dcada0eedc",
+      "date": "2025-10-20T19:24:05Z",
+      "message": "Update EIP-8030: Fix table rendering",
+      "author": "SirSpudlington",
+      "prNumber": null,
+      "patch": "@@ -23,6 +23,7 @@ cases against implementations of [EIP-7932](./eip-7932.md).\n ## Specification\n \n This EIP defines a new [EIP-7932](./eip-7932.md) algorithmic type with the following parameters:\n+\n | Constant | Value |\n | - | - |\n | `ALG_TYPE` | `Bytes1(0x0)` |",
+      "additions": 1,
+      "deletions": 0
+    },
+    {
+      "sha": "01cefec9d0c06512db3c4848788a2d684a2027b0",
+      "date": "2025-10-20T17:18:17Z",
+      "message": "Update EIP-8030: add reference to eip-7951 in comment",
+      "author": "VolodymyrBg",
+      "prNumber": null,
+      "patch": "@@ -40,8 +40,8 @@ def verify(signature_info: bytes, payload_hash: Hash32) -> Bytes:\n     # This is similar to [EIP-2](./eip-2.md)'s malleability verification.\n     assert(s <= N/2)\n \n-    # This is defined in []()\n-    assert(P256Verify(payload_hash, r, s, x, y) ==Bytes(\"0x0000000000000000000000000000000000000000000000000000000000000001\"))\n+    # This is defined in [P256Verify Function](#p256verify-function)\n+    assert(P256Verify(payload_hash, r, s, x, y) == Bytes(\"0x0000000000000000000000000000000000000000000000000000000000000001\"))\n         \n     return x.to_bytes(32, \"big\") + y.to_bytes(32, \"big\")\n ```",
+      "additions": 2,
+      "deletions": 2
+    },
+    {
+      "sha": "9bda52aecaabc437cace601b70a5240c6aa46c65",
+      "date": "2025-10-17T09:47:39Z",
+      "message": "Update EIP-8030: Rebase to use EIP-7951 instead of RIP-7212",
+      "author": "SirSpudlington",
+      "prNumber": null,
+      "patch": "@@ -22,7 +22,7 @@ cases against implementations of [EIP-7932](./eip-7932.md).\n \n ## Specification\n \n-This EIP defines a new [EIP-7932](../../EIPS/eip-7932.md) algorithmic type with the following parameters:\n+This EIP defines a new [EIP-7932](./eip-7932.md) algorithmic type with the following parameters:\n | Constant | Value |\n | - | - |\n | `ALG_TYPE` | `Bytes1(0x0)` |\n@@ -41,78 +41,21 @@ def verify(signature_info: bytes, payload_hash: Hash32) -> Bytes:\n     assert(s <= N/2)\n \n     # This is defined in []()\n-    assert(P256Verify(payload_hash, r, s, x, y))\n+    assert(P256Verify(payload_hash, r, s, x, y) ==Bytes(\"0x0000000000000000000000000000000000000000000000000000000000000001\"))\n         \n     return x.to_bytes(32, \"big\") + y.to_bytes(32, \"big\")\n ```\n \n \n ### `P256Verify` Function\n \n-The `P256Verify` function is identical to the precompile introduced by RIP-7212. However, due to EIP linking restrictions, the verification steps defined below MUST be used instead of any definitions in RIP-7212.\n-\n-#### Elliptic Curve Information\n-\n-“secp256r1” is a specific elliptic curve, also known as “P-256” and “prime256v1” curves. The curve is defined with the following equation and domain parameters:\n-\n-```\n-# curve: short weierstrass form\n-y^2 ≡ x^3 + ax + b\n-\n-# p: curve prime field modulus\n-0xffffffff00000001000000000000000000000000ffffffffffffffffffffffff\n-\n-# a: elliptic curve short weierstrass first coefficient\n-0xffffffff00000001000000000000000000000000fffffffffffffffffffffffc\n-\n-# b: elliptic curve short weierstrass second coefficient\n-0x5ac635d8aa3a93e7b3ebbd55769886bc651d06b0cc53b0f63bce3c3e27d2604b\n-\n-# G: base point of the subgroup\n-(0x6b17d1f2e12c4247f8bce6e563a440f277037d812deb33a0f4a13945d898c296,\n- 0x4fe342e2fe1a7f9b8ee7eb4a7c0f9e162bce33576b315ececbb6406837bf51f5)\n-\n-# n: subgroup order (number of points)\n-0xffffffff00000000ffffffffffffffffbce6faada7179e84f3b9cac2fc632551\n-\n-# h: cofactor of the subgroup\n-0x1\n-```\n-\n-#### Elliptic Curve Signature Verification Steps\n-\n-The signature verifying algorithm takes the signed message hash, the signature components provided by the “secp256r1” curve algorithm, and the public key derived from the signer private key. The verification can be done with the following steps:\n-\n-```\n-# h (message hash)\n-# pubKey = (public key of the signer private key)\n-\n-# Calculate the modular inverse of the signature proof:\n-s1 = s^(−1) (mod n)\n-\n-# Recover the random point used during the signing:\n-R' = (h * s1) * G + (r * s1) * pubKey\n-\n-# Take from R' its x-coordinate:\n-r' = R'.x\n-\n-# Calculate the signature validation result by comparing whether:\n-r' == r\n-```\n-\n-#### Required Checks in Verification\n-\n-The following requirements **MUST** be checked by the function to verify signature components are valid:\n-\n-- Verify that the `r` and `s` values are in `(0, n)` (exclusive) where `n` is the order of the subgroup.\n-- Verify that the point formed by `(x, y)` is on the curve and that both `x` and `y` are in `[0, p)` (inclusive 0, exclusive p) where `p` is the prime field modulus. Note that many implementations use `(0, 0)` as the reference point at infinity, which is not on the curve and should therefore be rejected.\n-\n+The `P256Verify` function is logic of the precompile defined in [EIP-7951](./eip-7951.md), the only exeception is that this function MUST not charge any gas.\n \n ## Rationale\n \n ### Additional 500 gas penalty\n \n-Much of this proposal is drawn from RIP-7212. Some of the test cases in RIP-7212 show that P256 is slower than secp256k1 and as such, a small penalty has been added to combat the slowdown of verification.\n+Much of this proposal is drawn from [EIP-7951](./eip-7951.md). Some of the test cases in [EIP-7951](./eip-7951.md) show that P256 is slower than secp256k1 and as such, a small penalty has been added to combat the slowdown of verification.\n \n ### Why P256?\n ",
+      "additions": 4,
+      "deletions": 61
+    },
+    {
+      "sha": "6981bb8ea654a440f679886fcb51cc94387016bf",
+      "date": "2025-10-09T16:22:48Z",
+      "message": "Update EIP-8030: Apply feedback from @SamWilsn",
+      "author": "SirSpudlington",
+      "prNumber": null,
+      "patch": "@@ -77,7 +77,6 @@ y^2 ≡ x^3 + ax + b\n \n # h: cofactor of the subgroup\n 0x1\n-\n ```\n \n #### Elliptic Curve Signature Verification Steps\n@@ -99,12 +98,11 @@ r' = R'.x\n \n # Calculate the signature validation result by comparing whether:\n r' == r\n-\n ```\n \n #### Required Checks in Verification\n \n-The following requirements **MUST** be checked by the precompiled contract to verify signature components are valid:\n+The following requirements **MUST** be checked by the function to verify signature components are valid:\n \n - Verify that the `r` and `s` values are in `(0, n)` (exclusive) where `n` is the order of the subgroup.\n - Verify that the point formed by `(x, y)` is on the curve and that both `x` and `y` are in `[0, p)` (inclusive 0, exclusive p) where `p` is the prime field modulus. Note that many implementations use `(0, 0)` as the reference point at infinity, which is not on the curve and should therefore be rejected.",
+      "additions": 1,
+      "deletions": 3
+    },
+    {
+      "sha": "9628e3e9409139bd3c3332ac5376e17f1fb32372",
+      "date": "2025-10-08T11:38:01Z",
+      "message": "Add EIP: P256 transaction support",
+      "author": "SirSpudlington",
+      "prNumber": null,
+      "patch": "@@ -0,0 +1,134 @@\n+---\n+eip: 8030\n+title: P256 transaction support\n+description: Adds an EIP-7932 algorithm type for P256 support of type `0x0`\n+author: James Kempton (@SirSpudlington)\n+discussions-to: https://ethereum-magicians.org/t/discussion-topic-for-eip-8030/25557\n+status: Draft\n+type: Standards Track\n+category: Core\n+created: 2025-09-20\n+requires: 7932\n+---\n+\n+## Abstract\n+\n+This EIP adds a new [EIP-7932](./eip-7932.md) algorithm of type `0x0` for supporting P256 signatures.\n+\n+## Motivation\n+\n+P256 (a.k.a secp256r1) is a widely-used NIST standardized algorithm that already has a presence within the Ethereum codebase. This makes it a great algorithm to write test\n+cases against implementations of [EIP-7932](./eip-7932.md).\n+\n+## Specification\n+\n+This EIP defines a new [EIP-7932](../../EIPS/eip-7932.md) algorithmic type with the following parameters:\n+| Constant | Value |\n+| - | - |\n+| `ALG_TYPE` | `Bytes1(0x0)` |\n+| `GAS_PENALTY`| `500` |\n+| `MAX_SIZE` | `128` |\n+\n+```python\n+N = 0xffffffff00000000ffffffffffffffffbce6faada7179e84f3b9cac2fc632551\n+\n+\n+def verify(signature_info: bytes, payload_hash: Hash32) -> Bytes:\n+    assert(len(signature_info) == 128)\n+    (r, s, x, y) = (signature_info[0:32], signature_info[32:64], signature_info[64:96], signature_info[96:128])\n+\n+    # This is similar to [EIP-2](./eip-2.md)'s malleability verification.\n+    assert(s <= N/2)\n+\n+    # This is defined in []()\n+    assert(P256Verify(payload_hash, r, s, x, y))\n+        \n+    return x.to_bytes(32, \"big\") + y.to_bytes(32, \"big\")\n+```\n+\n+\n+### `P256Verify` Function\n+\n+The `P256Verify` function is identical to the precompile introduced by RIP-7212. However, due to EIP linking restrictions, the verification steps defined below MUST be used instead of any definitions in RIP-7212.\n+\n+#### Elliptic Curve Information\n+\n+“secp256r1” is a specific elliptic curve, also known as “P-256” and “prime256v1” curves. The curve is defined with the following equation and domain parameters:\n+\n+```\n+# curve: short weierstrass form\n+y^2 ≡ x^3 + ax + b\n+\n+# p: curve prime field modulus\n+0xffffffff00000001000000000000000000000000ffffffffffffffffffffffff\n+\n+# a: elliptic curve short weierstrass first coefficient\n+0xffffffff00000001000000000000000000000000fffffffffffffffffffffffc\n+\n+# b: elliptic curve short weierstrass second coefficient\n+0x5ac635d8aa3a93e7b3ebbd55769886bc651d06b0cc53b0f63bce3c3e27d2604b\n+\n+# G: base point of the subgroup\n+(0x6b17d1f2e12c4247f8bce6e563a440f277037d812deb33a0f4a13945d898c296,\n+ 0x4fe342e2fe1a7f9b8ee7eb4a7c0f9e162bce33576b315ececbb6406837bf51f5)\n+\n+# n: subgroup order (number of points)\n+0xffffffff00000000ffffffffffffffffbce6faada7179e84f3b9cac2fc632551\n+\n+# h: cofactor of the subgroup\n+0x1\n+\n+```\n+\n+#### Elliptic Curve Signature Verification Steps\n+\n+The signature verifying algorithm takes the signed message hash, the signature components provided by the “secp256r1” curve algorithm, and the public key derived from the signer private key. The verification can be done with the following steps:\n+\n+```\n+# h (message hash)\n+# pubKey = (public key of the signer private key)\n+\n+# Calculate the modular inverse of the signature proof:\n+s1 = s^(−1) (mod n)\n+\n+# Recover the random point used during the signing:\n+R' = (h * s1) * G + (r * s1) * pubKey\n+\n+# Take from R' its x-coordinate:\n+r' = R'.x\n+\n+# Calculate the signature validation result by comparing whether:\n+r' == r\n+\n+```\n+\n+#### Required Checks in Verification\n+\n+The following requirements **MUST** be checked by the precompiled contract to verify signature components are valid:\n+\n+- Verify that the `r` and `s` values are in `(0, n)` (exclusive) where `n` is the order of the subgroup.\n+- Verify that the point formed by `(x, y)` is on the curve and that both `x` and `y` are in `[0, p)` (inclusive 0, exclusive p) where `p` is the prime field modulus. Note that many implementations use `(0, 0)` as the reference point at infinity, which is not on the curve and should therefore be rejected.\n+\n+\n+## Rationale\n+\n+### Additional 500 gas penalty\n+\n+Much of this proposal is drawn from RIP-7212. Some of the test cases in RIP-7212 show that P256 is slower than secp256k1 and as such, a small penalty has been added to combat the slowdown of verification.\n+\n+### Why P256?\n+\n+P256 or secp256r1, is used globally but (more importantly) has an existing implementation in all execution clients. This allows easy implementation of a known-safe algorithm, which is perfect for a test algorithm.\n+\n+## Backwards Compatibility\n+\n+No backward compatibility issues found.\n+\n+## Security Considerations\n+\n+Needs discussion.\n+<!-- TODO -->\n+\n+## Copyright\n+\n+Copyright and related rights waived via [CC0](../../LICENSE.md).",
+      "additions": 134,
+      "deletions": 0
+    }
+  ],
+  "openPrs": [
+    {
+      "number": 11571,
+      "title": "Update EIP-7932: Separate precompile & add Autonomous/Detached signature support",
+      "author": "SirSpudlington",
+      "updatedAt": "2026-04-27T03:20:17Z",
+      "additions": 2,
+      "deletions": 0
+    },
+    {
+      "number": 11050,
+      "title": "Update EIP-8030: fix Python type errors",
+      "author": "jSqqrq1",
+      "updatedAt": "2026-01-10T15:20:59Z",
+      "additions": 3,
+      "deletions": 3
+    },
+    {
+      "number": 11291,
+      "title": "Update EIP-8030: Complete security considerations for EIP-8030",
+      "author": "cmende",
+      "updatedAt": "2026-02-13T11:38:29Z",
+      "additions": 23,
+      "deletions": 2
+    },
+    {
+      "number": 10775,
+      "title": "Update EIP-8030: Remove stale TODO marker from EIP-8030",
+      "author": "0xLogicalx",
+      "updatedAt": "2025-11-23T00:53:59Z",
+      "additions": 0,
+      "deletions": 1
+    },
+    {
+      "number": 10846,
+      "title": "Update EIP-8030: Remove redundant .to_bytes() conversion in signature verification",
+      "author": "soniseth0",
+      "updatedAt": "2025-11-30T19:56:33Z",
+      "additions": 1,
+      "deletions": 1
+    },
+    {
+      "number": 10784,
+      "title": "Update EIP-8030: Remove invalid byte conversion in EIP-8030 verify example",
+      "author": "0xLogicalx",
+      "updatedAt": "2025-11-12T23:07:53Z",
+      "additions": 1,
+      "deletions": 1
+    }
+  ]
+}

@@ -1,0 +1,72 @@
+{
+  "eipId": 7923,
+  "commits": [
+    {
+      "sha": "5dec0faf808d8638b3db63afd55c57f60eef82f3",
+      "date": "2026-01-20T13:21:37Z",
+      "message": "Update EIP-7923: Move to Draft",
+      "author": "charles-cooper",
+      "prNumber": null,
+      "patch": "@@ -4,7 +4,7 @@ title: Linear, Page-Based Memory Costing\n description: Linearize Memory Costing and replace the current quadratic formula with a page-based cost model.\n author: Charles Cooper (@charles-cooper), Qi Zhou (@qizhou)\n discussions-to: https://ethereum-magicians.org/t/eip-linearize-memory-costing/23290\n-status: Stagnant\n+status: Draft\n type: Standards Track\n category: Core\n created: 2025-03-27\n@@ -48,7 +48,7 @@ MAXIMUM_MEMORY_SIZE = 64 * 1024 * 1024\n \n The memory costing algorithm is changed as follows:\n \n-1. For each page touched by an instruction, charge `ALLOCATE_PAGE_COST` gas if it has not been touched before in this message call.\n+1. For each page touched by an instruction, charge `ALLOCATE_PAGE_COST` gas if it has not been touched before in this message call, except for page 0 which is free.\n 2. The base gas cost for all memory instructions, e.g. `MLOAD` and `MSTORE`, remains the same, at 3.\n 3. The linear and quadratic terms in the memory expansion cost are removed.\n \n@@ -75,7 +75,7 @@ These suggest the following prices:\n \n - 100 gas to allocate a page\n \n-Note that the cost to execute `mmap` (~11 gas) is already well-paid for by the base cost of the CALL series of instructions (100 gas).\n+Note that the cost to execute `mmap` (~11 gas) is already well-paid for by the base cost of the CALL series of instructions (100 gas). For the same reason, page 0 is free, since the CALL overhead already pays for the initial page allocation. This also improves backwards compatibility, since it keeps the cost for any access within the first page either the same as or lower than current pricing.\n \n There is a desire among client implementations to be able to enforce global limits separately from the gas limit due to DoS reasons. For example, RPC providers may be designed to allow many concurrent `eth_call` computations with a much higher gas limit than on mainnet. Not implicitly tying the memory limit to the gas limit results in one less vector for misconfiguration. That is not to say that in the future, a clean formula cannot be created which allows the memory limit to scale with future hardware improvements (e.g., proportional to the sqrt of the gas limit), but to limit the scope of things that need to be reasoned about for this EIP, the hard limit is introduced.\n \n@@ -242,7 +242,7 @@ index 2ccfd090..9002b559 100644\n      def __init__(self) -> None:\n -        self._bytes = bytearray()\n +        self.memview = mmap.mmap(-1, 2**32, flags=mmap.MAP_PRIVATE | mmap.MAP_ANONYMOUS)\n-+        self.pages = {}\n++        self.pages = {0: True}  # page 0 is free (per spec)\n +        self.msize = 0\n \n      def extend(self, start_position: int, size: int) -> None:",
+      "additions": 4,
+      "deletions": 4
+    },
+    {
+      "sha": "96af1b817dce4765e54211f3b15628eb109a9308",
+      "date": "2025-11-09T00:25:43Z",
+      "message": "(bot 1272989785) moving EIPS/eip-7923.md to stagnant (#10570)",
+      "author": "eth-bot",
+      "prNumber": 10570,
+      "patch": "@@ -4,7 +4,7 @@ title: Linear, Page-Based Memory Costing\n description: Linearize Memory Costing and replace the current quadratic formula with a page-based cost model.\n author: Charles Cooper (@charles-cooper), Qi Zhou (@qizhou)\n discussions-to: https://ethereum-magicians.org/t/eip-linearize-memory-costing/23290\n-status: Draft\n+status: Stagnant\n type: Standards Track\n category: Core\n created: 2025-03-27",
+      "additions": 1,
+      "deletions": 1
+    },
+    {
+      "sha": "54e9a984f66cd7ce18cdd10e6879aee076a17fc2",
+      "date": "2025-11-07T11:42:54Z",
+      "message": "Update EIP-7923: remove LRU cache from specification",
+      "author": "charles-cooper",
+      "prNumber": null,
+      "additions": 12,
+      "deletions": 32
+    },
+    {
+      "sha": "ae81496840952849da7f905923f53bee5cdc7976",
+      "date": "2025-04-13T19:11:38Z",
+      "message": "Update EIP-7923: give more background on pages, thrashing and general setup of the EIP",
+      "author": "charles-cooper",
+      "prNumber": null,
+      "additions": 104,
+      "deletions": 29
+    },
+    {
+      "sha": "657dd369f2c24b3a89cda5ab6474b687ec6fc07b",
+      "date": "2025-04-12T21:58:58Z",
+      "message": "Update EIP-7923: update a typo in the gas schedule",
+      "author": "charles-cooper",
+      "prNumber": null,
+      "patch": "@@ -43,8 +43,8 @@ MAXIMUM_MEMORY_SIZE = 64 * 1024 * 1024\n The memory costing algorithm is changed as follows:\n \n 1. For each page touched by an instruction\n-    1. Charge 100 gas if it has not been touched before in this message call.\n-    2. Charge 3 gas if it is not in the 512 least-recently touched pages.\n+    1. Charge `ALLOCATE_PAGE_COST` gas if it has not been touched before in this message call.\n+    2. Charge `THRASH_PAGE_COST` gas if it is not in the `LRU_SIZE` least-recently touched pages.\n 2. The base gas cost for all memory instructions, e.g. `MLOAD` and `MSTORE`, remains the same, at 3.\n \n The behavior of `msize` remains the same. It returns the maximum byte touched by any memory instruction, rounded up by 32.",
+      "additions": 2,
+      "deletions": 2
+    },
+    {
+      "sha": "9d0400ec55978d28a5d4370a2b9fd75c8af76b19",
+      "date": "2025-04-10T14:01:46Z",
+      "message": "Update EIP-7923: add overview of the implementation strategies",
+      "author": "charles-cooper",
+      "prNumber": null,
+      "patch": "@@ -24,6 +24,10 @@ The EVM currently uses a quadratic pricing model for its memory. This was origin\n \n This EIP proposes a linear costing model which more closely reflects the hardware of today. It uses a virtual addressing scheme so that memory pages are not allocated until they are actually accessed. Notably, the data structures used for costing memory do not need to be part of the memory implementation itself, which suggests an elegant implementation using `mmap`.\n \n+The implementation can be approached in two ways. The first way is to implement the virtual addressing \"manually\". This is intended for systems without `mmap` or a virtual addressing capability. The implementation needs to maintain a map from `map[page_id -> char[4096]]`, where `page_id` is an integer, computed as `memory_address >> 12`. Additionally, for costing purposes, a set of 512 `page_id`s (`set[page_id]`) is maintained. This is only used for pricing the operation, it doesn't actually contain the data.\n+\n+The other implementation is easier, for systems with `mmap` or a similar facility. To hold the actual data of the memory, the implementation `mmap`s a `2**32` byte region of memory. Then, memory operations can be implemented simply as reads or writes against this buffer. (With an anonymous `mmap`, the operating system will allocate pages \"on demand\", as they are touched). The `pages` map is still necessary, but it doesn't hold any data, it is just to track which pages have been allocated, for pricing purposes. In this implementation, there are three data structures: `memory char[2**32]`, `allocated_pages set[page_id]`, `hot_pages set[page_id]`. The `memory` data structure is only used for memory reads and writes. The `allocated_pages` and `hot_pages` are only used for gas costing.\n+\n ## Specification\n \n Consider the following constants:",
+      "additions": 4,
+      "deletions": 0
+    },
+    {
+      "sha": "7fd8df59c0a99a617813f4598255d5b71fff8d7e",
+      "date": "2025-04-10T11:13:28Z",
+      "message": "Add EIP: Linear, Page-Based Memory Costing",
+      "author": "charles-cooper",
+      "prNumber": null,
+      "additions": 283,
+      "deletions": 0
+    }
+  ]
+}

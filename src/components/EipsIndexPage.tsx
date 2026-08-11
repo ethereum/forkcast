@@ -3,8 +3,7 @@ import { Link } from './navigation';
 import { eipsData } from '../data/eips';
 import { getProposalPrefix, getLaymanTitle, getInclusionStage, isHeadlinerInAnyFork, wasHeadlinerCandidateInAnyFork, getEipLayer, isPendingEip } from '../utils/eip';
 import { EipSearch } from './eip/EipSearch';
-import EipSearchModal from './eip/EipSearchModal';
-import { isSearchHotkey } from './search/searchShortcuts';
+import { openGlobalSearch } from '../domain/search/globalSearchBridge';
 import { Tooltip, UpgradeStageBadge } from './ui';
 import { networkUpgrades } from '../data/upgrades';
 
@@ -21,22 +20,8 @@ const EipsIndexPage: React.FC = () => {
   const [sortField, setSortField] = useState<SortField>('updated');
   const [sortDirection, setSortDirection] = useState<SortDirection>('desc');
   const [mobileFiltersOpen, setMobileFiltersOpen] = useState(false);
-  const [searchModalOpen, setSearchModalOpen] = useState(false);
   const [currentPage, setCurrentPage] = useState(1);
   const PAGE_SIZE = 50;
-
-  // Global keyboard shortcut for search (Cmd/Ctrl+K)
-  useEffect(() => {
-    const handleKeyDown = (e: KeyboardEvent) => {
-      if (isSearchHotkey(e)) {
-        e.preventDefault();
-        setSearchModalOpen(true);
-      }
-    };
-
-    window.addEventListener('keydown', handleKeyDown);
-    return () => window.removeEventListener('keydown', handleKeyDown);
-  }, []);
 
   // Extract unique values for filters
   const { statuses, forks, categories, stages, layers } = useMemo(() => {
@@ -360,7 +345,7 @@ const EipsIndexPage: React.FC = () => {
               EIP Directory
             </h1>
             <div className="flex items-center gap-3">
-              <EipSearch onOpen={() => setSearchModalOpen(true)} />
+              <EipSearch onOpen={() => openGlobalSearch({ scope: 'eips' })} />
               <button
                 onClick={() => setMobileFiltersOpen(true)}
                 className={`flex items-center gap-2 px-4 py-2.5 rounded-lg border text-sm font-medium transition-colors ${
@@ -891,12 +876,6 @@ const EipsIndexPage: React.FC = () => {
           </div>
         )}
       </div>
-
-      {/* Search Modal */}
-      <EipSearchModal
-        isOpen={searchModalOpen}
-        onClose={() => setSearchModalOpen(false)}
-      />
     </div>
   );
 };

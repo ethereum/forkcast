@@ -101,3 +101,30 @@ export const staticPageMetadata = {
     description: 'Analyze STEEL test complexity assessments for EIPs proposed for Glamsterdam.',
   },
 } satisfies Record<string, PageMetadata>;
+
+/**
+ * Where each entry above actually lives. Global search needs a href per page, and
+ * the `satisfies` constraint makes it impossible to add page metadata without
+ * also declaring the route it belongs to.
+ */
+export const staticPageRoutes = {
+  home: '/',
+  upgrades: '/upgrades',
+  schedule: '/schedule',
+  agenda: '/agenda',
+  decisions: '/decisions',
+  rank: '/rank',
+  champions: '/champions',
+  eipsIndex: '/eips',
+  callsIndex: '/calls',
+  devnetsIndex: '/devnets',
+  pectra: '/upgrade/pectra',
+  fusaka: '/upgrade/fusaka',
+  hegota: '/upgrade/hegota',
+  hegotaTestComplexity: '/upgrade/hegota/test-complexity',
+  glamsterdam: '/upgrade/glamsterdam',
+  glamsterdamStakeholders: '/upgrade/glamsterdam/stakeholders',
+  glamsterdamDevnetInclusion: '/upgrade/glamsterdam/devnet-inclusion',
+  glamsterdamClientPriority: '/upgrade/glamsterdam/client-priority',
+  glamsterdamTestComplexity: '/upgrade/glamsterdam/test-complexity',
+} satisfies Record<keyof typeof staticPageMetadata, string>;

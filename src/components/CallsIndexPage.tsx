@@ -7,9 +7,8 @@ import {
   upcomingCalls as upcomingCallsSnapshot,
   type UpcomingCall
 } from '../domain/calls/upcomingCalls';
-import GlobalCallSearch from './GlobalCallSearch';
 import { SearchTriggerButton } from './search/SearchUi';
-import { isSearchHotkey } from './search/searchShortcuts';
+import { openGlobalSearch } from '../domain/search/globalSearchBridge';
 import { buildTimelineDateSections } from '../domain/calls/timeline';
 import { getTodayDateString } from '../utils/localDate';
 import { CallsIndexFilters } from './calls-index/CallsIndexFilters';
@@ -41,7 +40,6 @@ const CallsIndexPage: React.FC<CallsIndexPageProps> = ({ scope }) => {
   const selectedBreakoutType = scope ? '' : (searchParams.get('breakoutType') || '');
   const [upcomingCalls, setUpcomingCalls] = useState<UpcomingCall[]>(upcomingCallsSnapshot);
   const [upcomingCallsLoading, setUpcomingCallsLoading] = useState(true);
-  const [searchOpen, setSearchOpen] = useState(false);
   const [breakoutDropdownOpen, setBreakoutDropdownOpen] = useState(false);
   const breakoutDropdownRef = useRef<HTMLDivElement>(null);
 
@@ -73,18 +71,6 @@ const CallsIndexPage: React.FC<CallsIndexPageProps> = ({ scope }) => {
     return () => {
       cancelled = true;
     };
-  }, []);
-
-  useEffect(() => {
-    const handleKeyDown = (e: KeyboardEvent) => {
-      if (isSearchHotkey(e)) {
-        e.preventDefault();
-        setSearchOpen(true);
-      }
-    };
-
-    window.addEventListener('keydown', handleKeyDown);
-    return () => window.removeEventListener('keydown', handleKeyDown);
   }, []);
 
   useEffect(() => {
@@ -167,7 +153,7 @@ const CallsIndexPage: React.FC<CallsIndexPageProps> = ({ scope }) => {
               </a>
             </div>
             <SearchTriggerButton
-              onOpen={() => setSearchOpen(true)}
+              onOpen={() => openGlobalSearch({ scope: 'calls' })}
               placeholder="Search calls..."
               ariaLabel="Search calls"
             />
@@ -192,11 +178,6 @@ const CallsIndexPage: React.FC<CallsIndexPageProps> = ({ scope }) => {
 
         <CallsIndexTimeline sections={dateSections} />
       </div>
-
-      <GlobalCallSearch
-        isOpen={searchOpen}
-        onClose={() => setSearchOpen(false)}
-      />
     </div>
   );
 };

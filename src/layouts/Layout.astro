@@ -1,6 +1,7 @@
 ---
 import '../index.css';
 import SiteNav from '../components/ui/SiteNav.astro';
+import GlobalSearchIsland from '../components/search/GlobalSearchIsland';
 
 interface Props {
   /** Full document title, e.g. "EIP Directory - Forkcast". */
@@ -100,6 +101,8 @@ const ogImage = image
     </noscript>
     <div class="scanlines" aria-hidden="true"></div>
     <SiteNav variant={navVariant} enableCallSearch={enableCallSearch} />
+    {/* `client:idle`, not `client:load`, so it doesn't contend with the page's own island. */}
+    <GlobalSearchIsland client:idle />
     <main>
       <slot />
     </main>

@@ -512,7 +512,13 @@ class SearchIndexService {
   // Search the index
   async search(query: string, options: {
     callType?: 'all' | 'ACDC' | 'ACDE' | 'ACDT';
-    contentType?: 'all' | 'transcript' | 'chat' | 'agenda' | 'action';
+    /**
+     * Restricts results to these document types. A set rather than one value so
+     * callers wanting "transcript or chat" are filtered here, before `limit` —
+     * filtering afterwards lets the score-boosted agenda/action docs consume the
+     * whole budget and starve what was actually asked for.
+     */
+    contentTypes?: IndexedContent['type'][];
     limit?: number;
   } = {}): Promise<IndexedContent[]> {
     // Ensure index is loaded
@@ -545,7 +551,7 @@ class SearchIndexService {
       if (options.callType && options.callType !== 'all' && doc.callType.toUpperCase() !== options.callType) {
         return;
       }
-      if (options.contentType && options.contentType !== 'all' && doc.type !== options.contentType) {
+      if (options.contentTypes && !options.contentTypes.includes(doc.type)) {
         return;
       }
 

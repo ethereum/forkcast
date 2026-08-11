@@ -7,8 +7,7 @@ import {
   buildDependentsMap,
 } from '../../utils';
 import { EipSearch } from './EipSearch';
-import EipSearchModal from './EipSearchModal';
-import { isSearchHotkey } from '../search/searchShortcuts';
+import { openGlobalSearch } from '../../domain/search/globalSearchBridge';
 import {
   eipCallTypes,
   callTypeNames,
@@ -23,7 +22,6 @@ export const EipPage: React.FC<{ id: string }> = ({ id }) => {
   const navigate = useNavigate();
   const { trackLinkClick } = useAnalytics();
   const [searchParams, setSearchParams] = useSearchParams();
-  const [searchModalOpen, setSearchModalOpen] = useState(false);
   const [upcomingCall, setUpcomingCall] = useState<UpcomingCall | null>(null);
 
   const eipId = parseInt(id || '', 10);
@@ -105,11 +103,6 @@ export const EipPage: React.FC<{ id: string }> = ({ id }) => {
 
   // Keyboard navigation
   const handleKeyDown = useCallback((e: KeyboardEvent) => {
-    if (isSearchHotkey(e)) {
-      e.preventDefault();
-      setSearchModalOpen(true);
-      return;
-    }
     if (e.target instanceof HTMLInputElement || e.target instanceof HTMLTextAreaElement) {
       return;
     }
@@ -145,7 +138,7 @@ export const EipPage: React.FC<{ id: string }> = ({ id }) => {
             </svg>
             <span>All EIPs</span>
           </Link>
-          <EipSearch onOpen={() => setSearchModalOpen(true)} />
+          <EipSearch onOpen={() => openGlobalSearch({ scope: 'eips' })} />
         </div>
 
         {/* Breakout Call Info (rendered above the card, outside EipContent) */}
@@ -233,12 +226,6 @@ export const EipPage: React.FC<{ id: string }> = ({ id }) => {
           )}
         </nav>
       </div>
-
-      {/* Search Modal */}
-      <EipSearchModal
-        isOpen={searchModalOpen}
-        onClose={() => setSearchModalOpen(false)}
-      />
     </div>
   );
 };

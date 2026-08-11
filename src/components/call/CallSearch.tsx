@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useRef, useMemo, useCallback } from 'react';
 import { SearchQueryProvider, SearchMatch } from '../search/SearchUi';
 import { getSearchTypeIcon, getSearchTypeColor } from '../search/searchShortcuts';
+import { openGlobalSearch } from '../../domain/search/globalSearchBridge';
 
 interface SearchResult {
   type: 'transcript' | 'chat' | 'agenda' | 'action';
@@ -447,6 +448,15 @@ const CallSearch: React.FC<CallSearchProps> = ({
     }
   };
 
+  // ⌘K and the nav button both mean "search this call" here, so this is the only
+  // route to global search from a call page. The query carries over.
+  const escapeToGlobalSearch = () => {
+    setIsOpen(false);
+    setSelectedIndex(0);
+    openGlobalSearch({ query });
+    setQuery('');
+  };
+
 
   if (!isOpen) {
     return null;
@@ -603,23 +613,32 @@ const CallSearch: React.FC<CallSearchProps> = ({
         </div>
 
         {/* Footer */}
-        {query && searchResults.length > 0 && (
-          <div className="border-t border-slate-200 dark:border-slate-700 px-3 sm:px-4 py-2 flex items-center justify-between text-xs text-slate-500 dark:text-slate-400">
-            <div className="flex items-center gap-2 sm:gap-4">
-              <span>{searchResults.length} result{searchResults.length !== 1 ? 's' : ''}</span>
-              <div className="hidden sm:flex items-center gap-4">
-                <span className="flex items-center gap-1">
-                  <kbd className="px-1 py-0.5 bg-slate-100 dark:bg-slate-700 border border-slate-200 dark:border-slate-600 rounded text-xs">↑↓</kbd>
-                  Navigate
-                </span>
-                <span className="flex items-center gap-1">
-                  <kbd className="px-1 py-0.5 bg-slate-100 dark:bg-slate-700 border border-slate-200 dark:border-slate-600 rounded text-xs">↵</kbd>
-                  Jump to
-                </span>
-              </div>
-            </div>
+        <div className="border-t border-slate-200 dark:border-slate-700 px-3 sm:px-4 py-2 flex items-center justify-between gap-3 text-xs text-slate-500 dark:text-slate-400">
+          <div className="flex items-center gap-2 sm:gap-4">
+            {query && searchResults.length > 0 && (
+              <>
+                <span>{searchResults.length} result{searchResults.length !== 1 ? 's' : ''}</span>
+                <div className="hidden sm:flex items-center gap-4">
+                  <span className="flex items-center gap-1">
+                    <kbd className="px-1 py-0.5 bg-slate-100 dark:bg-slate-700 border border-slate-200 dark:border-slate-600 rounded text-xs">↑↓</kbd>
+                    Navigate
+                  </span>
+                  <span className="flex items-center gap-1">
+                    <kbd className="px-1 py-0.5 bg-slate-100 dark:bg-slate-700 border border-slate-200 dark:border-slate-600 rounded text-xs">↵</kbd>
+                    Jump to
+                  </span>
+                </div>
+              </>
+            )}
           </div>
-        )}
+
+          <button
+            onClick={escapeToGlobalSearch}
+            className="flex-shrink-0 whitespace-nowrap rounded px-2 py-1 -mr-1 font-medium text-blue-600 hover:bg-blue-50 hover:text-blue-700 dark:text-blue-400 dark:hover:bg-blue-900/30 dark:hover:text-blue-300 touch-manipulation transition-colors"
+          >
+            Search all of Forkcast →
+          </button>
+        </div>
       </div>
     </div>
     </SearchQueryProvider>

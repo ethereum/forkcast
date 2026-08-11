@@ -66,6 +66,7 @@ const mobileLinkClass = (active: boolean, isIndexLink: boolean) =>
 ---
 
 <header
+  data-global-hotkey={enableCallSearch ? 'off' : 'on'}
   class="sticky top-0 z-30 bg-white/90 dark:bg-slate-900/90 backdrop-blur-sm border-b border-slate-200 dark:border-slate-700"
 >
   <div class={headerPadding}>
@@ -144,6 +145,24 @@ const mobileLinkClass = (active: boolean, isIndexLink: boolean) =>
       </div>
 
       <div class="flex items-center gap-2">
+        {/* Call pages swap this for the per-call button below — one magnifier in the
+            nav, with global search reached from inside the per-call modal. */}
+        {
+          !enableCallSearch && (
+            <button
+              type="button"
+              data-global-search
+              aria-label="Search Forkcast"
+              title="Search Forkcast"
+              class="p-2 rounded-lg bg-slate-100 hover:bg-slate-200 dark:bg-slate-700 dark:hover:bg-slate-600 transition-colors"
+            >
+              <svg class="w-5 h-5 text-slate-700 dark:text-slate-300" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+              </svg>
+            </button>
+          )
+        }
+
         {
           enableCallSearch && (
             <Fragment>
@@ -247,6 +266,8 @@ const mobileLinkClass = (active: boolean, isIndexLink: boolean) =>
 
 <script>
   import { openCallSearch } from '../../domain/calls/callSearch';
+  import { openGlobalSearch } from '../../domain/search/globalSearchBridge';
+  import { isSearchHotkey } from '../search/searchShortcuts';
 
   // Theme toggle: flip the `.dark` class that the layout's pre-paint script set,
   // persist the choice, and broadcast it so any other island can stay in sync. The
@@ -308,4 +329,20 @@ const mobileLinkClass = (active: boolean, isIndexLink: boolean) =>
 
   // The per-call search button asks the CallPage island to open search (window event).
   document.querySelector('[data-call-search]')?.addEventListener('click', () => openCallSearch());
+
+  // Global search. This script runs at parse time, whereas the island hydrates on
+  // idle — so the hotkey lives here, and `openGlobalSearch` stashes the request for
+  // an island that hasn't mounted yet.
+  // The button sits in the always-visible right-hand cluster, so the mobile panel
+  // doesn't need its own row.
+  document.querySelector('[data-global-search]')?.addEventListener('click', () => openGlobalSearch());
+
+  // On call pages ⌘K stays "search this call"; the nav button is the only way in.
+  if (document.querySelector('header[data-global-hotkey="on"]')) {
+    document.addEventListener('keydown', (event) => {
+      if (!isSearchHotkey(event)) return;
+      event.preventDefault();
+      openGlobalSearch();
+    });
+  }
 </script>

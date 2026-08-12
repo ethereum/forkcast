@@ -66,6 +66,41 @@ const TIERS: Tier[] = [
 
 const TIER_IDS = TIERS.map((tier) => tier.id);
 
+const STORAGE_KEY = "hegota-rankings";
+
+// The unranked starting board: active Hegota EIPs, minus selected headliners
+const buildTierItems = (): TierItem[] => {
+  const ACTIVE_STATUSES = new Set(['Proposed', 'Considered', 'Scheduled', 'Included']);
+  return eipsData
+    .filter((eip) => {
+      const rel = getForkRelationship(eip, "hegota");
+      if (!rel || rel.isHeadliner) return false;
+      const latest = rel.statusHistory[rel.statusHistory.length - 1]?.status;
+      return ACTIVE_STATUSES.has(latest);
+    })
+    .map((eip) => ({
+      id: `eip-${eip.id}`,
+      eip,
+      tier: null,
+    }));
+};
+
+// Merge the viewer's saved tier assignments onto the current board
+const applySavedRankings = (allItems: TierItem[]): TierItem[] => {
+  const savedRankings = localStorage.getItem(STORAGE_KEY);
+  if (!savedRankings) return allItems;
+  try {
+    const parsed = JSON.parse(savedRankings);
+    return allItems.map((item) => {
+      const saved = parsed.find((s: TierItem) => s.id === item.id);
+      return saved ? { ...item, tier: saved.tier } : item;
+    });
+  } catch {
+    // If parsing fails, just use default
+    return allItems;
+  }
+};
+
 // Helper function to get layer for a tier item
 const getItemLayer = (item: TierItem): 'EL' | 'CL' | null => {
   if (item.eip) {
@@ -104,37 +139,29 @@ const RankPage: React.FC = () => {
   );
   const [collectionOrder, setCollectionOrder] = useState<string[]>([]);
   const [isInstructionsExpanded, setIsInstructionsExpanded] = useState(false);
-  const [isDeadlineDismissed, setIsDeadlineDismissed] = useState(false);
   const [drawerEipId, setDrawerEipId] = useState<number | null>(null);
-  const [isLinkCopied, setIsLinkCopied] = useState(false);
-  // True while showing rankings from a shared link that the viewer has not
-  // edited yet, so opening someone else's link doesn't overwrite their own
-  // saved rankings.
-  const isViewingSharedLinkRef = useRef(false);
+  const [copyStatus, setCopyStatus] = useState<"idle" | "copied" | "error">(
+    "idle"
+  );
+  // True while showing rankings from a shared link. Nothing is written to
+  // localStorage in this mode, so opening someone else's link can never
+  // clobber the viewer's own saved rankings.
+  const [isViewingSharedLink, setIsViewingSharedLink] = useState(false);
+  // Whether the viewer has moved anything since load, which decides if we own
+  // the URL fragment or are still displaying the one we were handed.
+  const hasEditedRef = useRef(false);
   const isTouchDevice =
     typeof window !== "undefined" &&
     ("ontouchstart" in window || navigator.maxTouchPoints > 0);
 
   // Initialize with active Hegota EIPs (excluding selected headliners)
   useEffect(() => {
-    const ACTIVE_STATUSES = new Set(['Proposed', 'Considered', 'Scheduled', 'Included']);
-    const allItems = eipsData
-      .filter((eip) => {
-        const rel = getForkRelationship(eip, "hegota");
-        if (!rel || rel.isHeadliner) return false;
-        const latest = rel.statusHistory[rel.statusHistory.length - 1]?.status;
-        return ACTIVE_STATUSES.has(latest);
-      })
-      .map((eip) => ({
-        id: `eip-${eip.id}`,
-        eip,
-        tier: null,
-      }));
+    const allItems = buildTierItems();
 
     // A shared link's rankings take precedence over saved ones
     const sharedRankings = decodeRankingsHash(window.location.hash, TIER_IDS);
     if (sharedRankings) {
-      isViewingSharedLinkRef.current = true;
+      setIsViewingSharedLink(true);
       setItems(
         allItems.map((item) =>
           item.eip && sharedRankings.has(item.eip.id)
@@ -145,37 +172,24 @@ const RankPage: React.FC = () => {
       return;
     }
 
-    // Try to load saved rankings from localStorage
-    const savedRankings = localStorage.getItem("hegota-rankings");
-    if (savedRankings) {
-      try {
-        const parsed = JSON.parse(savedRankings);
-        // Merge saved tier assignments with current data
-        const merged = allItems.map((item) => {
-          const saved = parsed.find((s: TierItem) => s.id === item.id);
-          return saved ? { ...item, tier: saved.tier } : item;
-        });
-        setItems(merged);
-      } catch {
-        // If parsing fails, just use default
-        setItems(allItems);
-      }
-    } else {
-      setItems(allItems);
-    }
+    setItems(applySavedRankings(allItems));
   }, []);
 
   // Save rankings to localStorage whenever they change
   useEffect(() => {
-    if (items.length > 0 && !isViewingSharedLinkRef.current) {
-      localStorage.setItem("hegota-rankings", JSON.stringify(items));
+    if (items.length > 0 && !isViewingSharedLink) {
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(items));
     }
-  }, [items]);
+  }, [items, isViewingSharedLink]);
 
   // Keep the URL fragment in sync with the rankings, so the address bar is
   // always a shareable link to the current state
   useEffect(() => {
     if (items.length === 0) return;
+    // Until the viewer touches a shared link's rankings, leave the URL exactly
+    // as it arrived so forwarding it on is lossless — re-encoding here would
+    // silently drop any EIP this build doesn't know about.
+    if (isViewingSharedLink && !hasEditedRef.current) return;
     const rankings = new Map<number, string>();
     items.forEach((item) => {
       if (item.eip && item.tier !== null) {
@@ -189,14 +203,33 @@ const RankPage: React.FC = () => {
       "",
       hash || window.location.pathname + window.location.search
     );
-  }, [items]);
+  }, [items, isViewingSharedLink]);
 
-  // Route ranking edits through this so a shared link's rankings become the
-  // viewer's own (and persist) once they change something
+  // Route ranking edits through this so the URL starts tracking the board once
+  // the viewer changes something
   const editItems = (updater: (prev: TierItem[]) => TierItem[]) => {
-    isViewingSharedLinkRef.current = false;
+    hasEditedRef.current = true;
     setItems(updater);
   };
+
+  // Adopt the shared rankings as the viewer's own, replacing what they had
+  const handleKeepSharedRankings = () => {
+    setIsViewingSharedLink(false);
+  };
+
+  // Abandon the shared rankings and go back to the viewer's saved ones
+  const handleRestoreOwnRankings = () => {
+    hasEditedRef.current = false;
+    setItems(applySavedRankings(buildTierItems()));
+    setIsViewingSharedLink(false);
+  };
+
+  // Clear the "Copied!" / error hint after a moment
+  useEffect(() => {
+    if (copyStatus === "idle") return;
+    const timeout = window.setTimeout(() => setCopyStatus("idle"), 2500);
+    return () => window.clearTimeout(timeout);
+  }, [copyStatus]);
 
   // Initialize expanded collections based on layers
   useEffect(() => {
@@ -345,18 +378,12 @@ const RankPage: React.FC = () => {
   };
 
   const generateTierImage = () => {
-    const rankedItems = items.filter((item) => item.tier !== null);
-    if (rankedItems.length === 0) {
-      alert("Please rank at least one proposal before generating an image.");
-      return;
-    }
+    if (rankedCount === 0) return;
 
     const scale = 2;
 
     // Track the image download event
-    trackEvent("Tier Maker Download Image", {
-      rankedCount: rankedItems.length,
-    });
+    trackEvent("Tier Maker Download Image", { rankedCount });
 
     // Canvas dimensions - two column layout
     const canvasWidth = 720 * scale; // Wider canvas for more text
@@ -655,28 +682,23 @@ const RankPage: React.FC = () => {
   }
 
   const handleReset = () => {
+    // The cleared board is persisted by the save effect (and deliberately not
+    // persisted at all while viewing someone else's link)
     editItems((prev) => prev.map((item) => ({ ...item, tier: null })));
-    localStorage.removeItem("hegota-rankings");
   };
 
-  const handleCopyLink = async () => {
-    const rankedItems = items.filter((item) => item.tier !== null);
-    if (rankedItems.length === 0) {
-      alert("Please rank at least one proposal before sharing a link.");
-      return;
-    }
+  const rankedCount = items.filter((item) => item.tier !== null).length;
 
-    trackEvent("Tier Maker Copy Link", {
-      rankedCount: rankedItems.length,
-    });
+  const handleCopyLink = async () => {
+    if (rankedCount === 0) return;
 
     try {
       await navigator.clipboard.writeText(window.location.href);
-      setIsLinkCopied(true);
-      window.setTimeout(() => setIsLinkCopied(false), 2000);
+      trackEvent("Tier Maker Copy Link", { rankedCount });
+      setCopyStatus("copied");
     } catch {
-      // Clipboard access can be denied; the URL bar holds the same link
-      prompt("Copy this link to share your rankings:", window.location.href);
+      // Clipboard access can be denied or unavailable outside a secure context
+      setCopyStatus("error");
     }
   };
 
@@ -702,21 +724,26 @@ const RankPage: React.FC = () => {
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
           {/* Tiers */}
           <div className="flex flex-col gap-4">
-            {!isDeadlineDismissed && (
-              <div className="flex items-center gap-3 p-3 bg-amber-50 dark:bg-amber-900/20 border border-amber-200 dark:border-amber-700 rounded-lg text-xs text-amber-800 dark:text-amber-200">
-                <svg className="w-4 h-4 text-amber-600 dark:text-amber-400 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
-                </svg>
-                <span className="flex-1">Non-headliner EIP proposal deadline: <strong>August 6, 2026</strong></span>
-                <button
-                  onClick={() => setIsDeadlineDismissed(true)}
-                  className="text-amber-600 dark:text-amber-400 hover:text-amber-800 dark:hover:text-amber-200 transition-colors flex-shrink-0"
-                  aria-label="Dismiss deadline notice"
-                >
-                  <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
-                  </svg>
-                </button>
+            {isViewingSharedLink && (
+              <div className="flex flex-col gap-2 p-3 bg-purple-50 dark:bg-purple-900/20 border border-purple-200 dark:border-purple-700 rounded-lg text-xs text-purple-900 dark:text-purple-100 sm:flex-row sm:items-center sm:gap-3">
+                <span className="flex-1">
+                  You're viewing rankings from a shared link. Your own rankings
+                  are untouched.
+                </span>
+                <div className="flex items-center gap-2 flex-shrink-0">
+                  <button
+                    onClick={handleRestoreOwnRankings}
+                    className="px-2 py-1 font-medium rounded border border-purple-300 dark:border-purple-600 hover:bg-purple-100 dark:hover:bg-purple-900/40 transition-colors cursor-pointer"
+                  >
+                    Back to mine
+                  </button>
+                  <button
+                    onClick={handleKeepSharedRankings}
+                    className="px-2 py-1 font-medium rounded bg-purple-600 text-white hover:bg-purple-700 transition-colors cursor-pointer"
+                  >
+                    Save as mine
+                  </button>
+                </div>
               </div>
             )}
             {/* Instructions */}
@@ -749,6 +776,8 @@ const RankPage: React.FC = () => {
                   <p className="text-xs text-slate-600 dark:text-slate-300 leading-relaxed mb-4">
                     Users, node operators, app developers, core developers, and any other stakeholders
                     are invited to voice their support for their preferred non-headliner EIPs for the Hegotá upgrade.
+                    The deadline for proposing non-headliner EIPs was{" "}
+                    <strong>August 6, 2026</strong>.
                   </p>
                   <p className="text-xs text-slate-600 dark:text-slate-300 leading-relaxed mb-4">
                     Drag and drop (desktop) or tap-to-assign (mobile) the EIPs
@@ -893,6 +922,11 @@ const RankPage: React.FC = () => {
               {/* Footer */}
               <div className="bg-slate-800 px-4 py-3 flex-shrink-0">
                 <div className="flex items-center justify-end gap-3">
+                  {copyStatus === "error" && (
+                    <span className="text-xs text-amber-300 text-right">
+                      Couldn't copy — the link is in your address bar
+                    </span>
+                  )}
                   <button
                     onClick={handleReset}
                     className="px-3 py-1.5 text-xs font-medium text-slate-300 hover:text-white hover:bg-slate-700 transition-colors rounded cursor-pointer"
@@ -901,13 +935,25 @@ const RankPage: React.FC = () => {
                   </button>
                   <button
                     onClick={handleCopyLink}
-                    className="px-3 py-1.5 text-xs font-medium border border-slate-500 text-slate-200 rounded hover:bg-slate-700 transition-colors cursor-pointer"
+                    disabled={rankedCount === 0}
+                    title={
+                      rankedCount === 0
+                        ? "Rank at least one proposal to share a link"
+                        : undefined
+                    }
+                    className="px-3 py-1.5 text-xs font-medium border border-slate-500 text-slate-200 rounded hover:bg-slate-700 transition-colors cursor-pointer disabled:opacity-40 disabled:cursor-not-allowed disabled:hover:bg-transparent"
                   >
-                    {isLinkCopied ? "Copied!" : "Copy Link"}
+                    {copyStatus === "copied" ? "Copied!" : "Copy Link"}
                   </button>
                   <button
                     onClick={handleSave}
-                    className="px-3 py-1.5 text-xs font-medium bg-purple-600 text-white rounded hover:bg-purple-700 transition-colors cursor-pointer"
+                    disabled={rankedCount === 0}
+                    title={
+                      rankedCount === 0
+                        ? "Rank at least one proposal to download an image"
+                        : undefined
+                    }
+                    className="px-3 py-1.5 text-xs font-medium bg-purple-600 text-white rounded hover:bg-purple-700 transition-colors cursor-pointer disabled:opacity-40 disabled:cursor-not-allowed disabled:hover:bg-purple-600"
                   >
                     Download Image
                   </button>

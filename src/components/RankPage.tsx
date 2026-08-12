@@ -875,7 +875,17 @@ const RankPage: React.FC = () => {
                             className="flex items-center justify-between p-2 bg-white dark:bg-slate-700 border border-slate-200 dark:border-slate-600 rounded shadow-sm lg:min-w-max"
                           >
                             <div className="flex items-center gap-2 min-w-0 flex-1 flex-nowrap">
-                              <span className="text-xs font-mono text-slate-500 dark:text-slate-400 flex-shrink-0 whitespace-nowrap">
+                              <span
+                                className="text-xs font-mono text-purple-600 dark:text-purple-400 cursor-pointer inline-flex items-center flex-shrink-0 whitespace-nowrap hover:text-purple-800 dark:hover:text-purple-300 transition-colors"
+                                style={{
+                                  borderBottom: '1px dotted currentColor',
+                                  marginBottom: '-2px'
+                                }}
+                                onClick={(e) => {
+                                  e.stopPropagation();
+                                  if (item.eip) setDrawerEipId(item.eip.id);
+                                }}
+                              >
                                 {getItemDisplayId(item)}
                               </span>
                               {getItemLayer(item) && (

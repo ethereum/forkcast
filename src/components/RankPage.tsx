@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { useNavigate } from "./navigation";
 import { EIP } from "../types/eip";
 import {
@@ -10,6 +10,7 @@ import {
 import { useAnalytics } from "../hooks/useAnalytics";
 import { eipsData } from "../data/eips";
 import { EipDrawer } from "./eip/EipDrawer";
+import { decodeRankingsHash, encodeRankingsHash } from "../utils/rankShare";
 
 interface TierItem {
   id: string;
@@ -63,6 +64,8 @@ const TIERS: Tier[] = [
   },
 ];
 
+const TIER_IDS = TIERS.map((tier) => tier.id);
+
 // Helper function to get layer for a tier item
 const getItemLayer = (item: TierItem): 'EL' | 'CL' | null => {
   if (item.eip) {
@@ -103,6 +106,11 @@ const RankPage: React.FC = () => {
   const [isInstructionsExpanded, setIsInstructionsExpanded] = useState(false);
   const [isDeadlineDismissed, setIsDeadlineDismissed] = useState(false);
   const [drawerEipId, setDrawerEipId] = useState<number | null>(null);
+  const [isLinkCopied, setIsLinkCopied] = useState(false);
+  // True while showing rankings from a shared link that the viewer has not
+  // edited yet, so opening someone else's link doesn't overwrite their own
+  // saved rankings.
+  const isViewingSharedLinkRef = useRef(false);
   const isTouchDevice =
     typeof window !== "undefined" &&
     ("ontouchstart" in window || navigator.maxTouchPoints > 0);
@@ -122,6 +130,20 @@ const RankPage: React.FC = () => {
         eip,
         tier: null,
       }));
+
+    // A shared link's rankings take precedence over saved ones
+    const sharedRankings = decodeRankingsHash(window.location.hash, TIER_IDS);
+    if (sharedRankings) {
+      isViewingSharedLinkRef.current = true;
+      setItems(
+        allItems.map((item) =>
+          item.eip && sharedRankings.has(item.eip.id)
+            ? { ...item, tier: sharedRankings.get(item.eip.id)! }
+            : item
+        )
+      );
+      return;
+    }
 
     // Try to load saved rankings from localStorage
     const savedRankings = localStorage.getItem("hegota-rankings");
@@ -145,10 +167,36 @@ const RankPage: React.FC = () => {
 
   // Save rankings to localStorage whenever they change
   useEffect(() => {
-    if (items.length > 0) {
+    if (items.length > 0 && !isViewingSharedLinkRef.current) {
       localStorage.setItem("hegota-rankings", JSON.stringify(items));
     }
   }, [items]);
+
+  // Keep the URL fragment in sync with the rankings, so the address bar is
+  // always a shareable link to the current state
+  useEffect(() => {
+    if (items.length === 0) return;
+    const rankings = new Map<number, string>();
+    items.forEach((item) => {
+      if (item.eip && item.tier !== null) {
+        rankings.set(item.eip.id, item.tier);
+      }
+    });
+    const hash = encodeRankingsHash(rankings, TIER_IDS);
+    if (window.location.hash === hash) return;
+    history.replaceState(
+      null,
+      "",
+      hash || window.location.pathname + window.location.search
+    );
+  }, [items]);
+
+  // Route ranking edits through this so a shared link's rankings become the
+  // viewer's own (and persist) once they change something
+  const editItems = (updater: (prev: TierItem[]) => TierItem[]) => {
+    isViewingSharedLinkRef.current = false;
+    setItems(updater);
+  };
 
   // Initialize expanded collections based on layers
   useEffect(() => {
@@ -189,7 +237,7 @@ const RankPage: React.FC = () => {
   const handleDrop = (e: React.DragEvent, tierId: string) => {
     e.preventDefault();
     if (draggedItem) {
-      setItems((prev) =>
+      editItems((prev) =>
         prev.map((item) =>
           item.id === draggedItem ? { ...item, tier: tierId } : item
         )
@@ -215,7 +263,7 @@ const RankPage: React.FC = () => {
 
   const handleTierClick = (tierId: string) => {
     if (isTouchDevice && selectedMobileItem) {
-      setItems((prev) =>
+      editItems((prev) =>
         prev.map((item) =>
           item.id === selectedMobileItem ? { ...item, tier: tierId } : item
         )
@@ -225,7 +273,7 @@ const RankPage: React.FC = () => {
   };
 
   const handleRemoveFromTier = (itemId: string) => {
-    setItems((prev) =>
+    editItems((prev) =>
       prev.map((item) => (item.id === itemId ? { ...item, tier: null } : item))
     );
   };
@@ -607,8 +655,29 @@ const RankPage: React.FC = () => {
   }
 
   const handleReset = () => {
-    setItems((prev) => prev.map((item) => ({ ...item, tier: null })));
+    editItems((prev) => prev.map((item) => ({ ...item, tier: null })));
     localStorage.removeItem("hegota-rankings");
+  };
+
+  const handleCopyLink = async () => {
+    const rankedItems = items.filter((item) => item.tier !== null);
+    if (rankedItems.length === 0) {
+      alert("Please rank at least one proposal before sharing a link.");
+      return;
+    }
+
+    trackEvent("Tier Maker Copy Link", {
+      rankedCount: rankedItems.length,
+    });
+
+    try {
+      await navigator.clipboard.writeText(window.location.href);
+      setIsLinkCopied(true);
+      window.setTimeout(() => setIsLinkCopied(false), 2000);
+    } catch {
+      // Clipboard access can be denied; the URL bar holds the same link
+      prompt("Copy this link to share your rankings:", window.location.href);
+    }
   };
 
   return (
@@ -687,7 +756,8 @@ const RankPage: React.FC = () => {
                     while D-tier represents your lowest priority.
                   </p>
                   <p className="text-xs text-slate-600 dark:text-slate-300 leading-relaxed">
-                    Download the image to share your rankings and start a conversation.{" "}
+                    Copy a link or download the image to share your rankings
+                    and start a conversation.{" "}
                     <a
                       href="https://forkcast.org/upgrade/hegota"
                       className="text-purple-600 hover:text-purple-700 dark:text-purple-400 dark:hover:text-purple-300"
@@ -830,6 +900,12 @@ const RankPage: React.FC = () => {
                     Reset
                   </button>
                   <button
+                    onClick={handleCopyLink}
+                    className="px-3 py-1.5 text-xs font-medium border border-slate-500 text-slate-200 rounded hover:bg-slate-700 transition-colors cursor-pointer"
+                  >
+                    {isLinkCopied ? "Copied!" : "Copy Link"}
+                  </button>
+                  <button
                     onClick={handleSave}
                     className="px-3 py-1.5 text-xs font-medium bg-purple-600 text-white rounded hover:bg-purple-700 transition-colors cursor-pointer"
                   >
@@ -916,7 +992,7 @@ const RankPage: React.FC = () => {
                             onTouchEnd={
                               isTouchDevice
                                 ? () => {
-                                    setItems((prev) =>
+                                    editItems((prev) =>
                                       prev.map((item) =>
                                         item.id === selectedMobileItem
                                           ? { ...item, tier: dragOverTier || null }

@@ -2,6 +2,26 @@
   "eipId": 8141,
   "commits": [
     {
+      "sha": "064f49621d05ce25323def867a6a2ed9275d3570",
+      "date": "2026-08-11T21:04:54Z",
+      "message": "Update EIP-8141: link the first reference to each cited proposal",
+      "author": "AnkushinDaniil",
+      "prNumber": null,
+      "patch": "@@ -70,9 +70,9 @@ Below are high-level definitions of each field in the transaction definition. De\n - `sender` -- the address of the intended sender of the transaction.\n - `frames` -- list of frames to execute.\n - `signatures` -- list of validated signatures available to the transaction.\n-- `max_priority_fee_per_gas` -- the EIP-1559 priority fee per gas the transaction will pay.\n+- `max_priority_fee_per_gas` -- the [EIP-1559](./eip-1559.md) priority fee per gas the transaction will pay.\n - `max_fee_per_gas` -- the maximum EIP-1559 fee the transaction is willing to pay, per gas.\n-- `max_fee_per_blob_gas` -- the maximum EIP-4844 fee per blob gas the transaction is willing to pay. Must be `0` if `blob_versioned_hashes` is empty.\n+- `max_fee_per_blob_gas` -- the maximum [EIP-4844](./eip-4844.md) fee per blob gas the transaction is willing to pay. Must be `0` if `blob_versioned_hashes` is empty.\n - `blob_versioned_hashes` -- list of EIP-4844 blob versioned hashes.\n \n ##### Frame object\n@@ -464,7 +464,7 @@ tx_unused_gas = sum(\n )\n ```\n \n-Storage gas refunds ([EIP-3529](./eip-3529.md)) accumulate across frames into a single transaction-scoped `refund_counter`. Changes made to the counter by a reverted frame, or by frames unrolled as part of a failed atomic batch, are discarded together with that frame's state changes. At the end of the transaction, apply the storage refund and EIP-7623 rules to get the final `gas_used` value:\n+Storage gas refunds ([EIP-3529](./eip-3529.md)) accumulate across frames into a single transaction-scoped `refund_counter`. Changes made to the counter by a reverted frame, or by frames unrolled as part of a failed atomic batch, are discarded together with that frame's state changes. At the end of the transaction, apply the storage refund and [EIP-7623](./eip-7623.md) rules to get the final `gas_used` value:\n \n ```python\n gas_used_before_refund = standard_gas_limit - tx_unused_gas\n@@ -983,7 +983,7 @@ The EIP-7702 authorization list heavily relies on ECDSA cryptography to determin\n \n ### No access list\n \n-The access list was introduced to address a particular backwards compatibility issue that was caused by EIP-2929. The risk-reward of using an access list successfully is high. A single miss, paying to warm a storage slot that does not end up getting used, causes the overall transaction cost to be greater than had it not been included at all.\n+The access list was introduced to address a particular backwards compatibility issue that was caused by [EIP-2929](./eip-2929.md). The risk-reward of using an access list successfully is high. A single miss, paying to warm a storage slot that does not end up getting used, causes the overall transaction cost to be greater than had it not been included at all.\n \n Future optimizations based on pre-announcing state elements a transaction will touch will be covered by block level access lists.\n \n@@ -1021,7 +1021,7 @@ That extension could also define a `PUBLISHPK` instruction to validate a public\n \n While we expect EOA users to migrate to smart accounts eventually, we recognize that most Ethereum users today are using EOAs, so we want to improve UX for them where we can.\n \n-Thanks to the default code, EOAs today can use frame transactions to reap many benefits of account abstraction, including sending sponsored transactions, paying gas in ERC-20 tokens, batch transactions, and more.\n+Thanks to the default code, EOAs today can use frame transactions to reap many benefits of account abstraction, including sending sponsored transactions, paying gas in [ERC-20](./eip-20.md) tokens, batch transactions, and more.\n \n ### Non-canonical paymasters in the mempool\n \n@@ -1172,7 +1172,7 @@ Notes: Gas assumes cost < 2^24. Calldata assumes small proxy.\n \n Notes: Sponsor can read info from other fields. ERC-20 transfer call is 68 bytes.\n \n-There is some inefficiency in the sponsor case, because the same sponsor address must appear in three places (sponsor validation, send to sponsor inside ERC-20 calldata, post op frame), and the ABI is inefficient (~12 + 24 bytes wasted on zeroes). This is difficult to mitigate in a \"clean\" way, because one of the duplicates is inside the ERC-20 call, \"opaque\" to the protocol. However, it is much less inefficient than ERC-4337, because not all of the data takes the hit of the 32-byte-per-field ABI overhead.\n+There is some inefficiency in the sponsor case, because the same sponsor address must appear in three places (sponsor validation, send to sponsor inside ERC-20 calldata, post op frame), and the ABI is inefficient (~12 + 24 bytes wasted on zeroes). This is difficult to mitigate in a \"clean\" way, because one of the duplicates is inside the ERC-20 call, \"opaque\" to the protocol. However, it is much less inefficient than [ERC-4337](./eip-4337.md), because not all of the data takes the hit of the 32-byte-per-field ABI overhead.\n \n \n ### Blob support",
+      "additions": 6,
+      "deletions": 6
+    },
+    {
+      "sha": "5276aa8cbfca985b0d7c81a2e3476c1528f9df6c",
+      "date": "2026-08-11T21:02:22Z",
+      "message": "Update EIP-8141: ban SLOTNUM during validation-prefix execution (#12066)",
+      "author": "AnkushinDaniil",
+      "prNumber": 12066,
+      "patch": "@@ -832,6 +832,7 @@ For `VERIFY` frames, the usual `STATICCALL` restrictions apply except for the pr\n - BASEFEE (0x48)\n - BLOBHASH (0x49)\n - BLOBBASEFEE (0x4A)\n+- SLOTNUM (0x4B, [EIP-7843](./eip-7843.md))\n - GAS (0x5A)\n     - Except when followed immediately by a `*CALL` instruction. This is the standard method of passing gas to a child call and does not create an additional public mempool dependency.\n - CREATE (0xF0)",
+      "additions": 1,
+      "deletions": 0
+    },
+    {
       "sha": "4a9ad32cf2c851d16ab889d643342074ea3fab95",
       "date": "2026-07-30T19:03:07Z",
       "message": "Update EIP-8141: align SIGPARAM copy operand order with CALLDATACOPY",
@@ -486,28 +506,12 @@
       "deletions": 8
     },
     {
-      "number": 12066,
-      "title": "Update EIP-8141: ban SLOTNUM during validation-prefix execution",
-      "author": "AnkushinDaniil",
-      "updatedAt": "2026-08-04T10:31:44Z",
-      "additions": 1,
-      "deletions": 0
-    },
-    {
       "number": 12091,
       "title": "Update EIP-8141: specify block inclusion gating and payer solvency",
       "author": "AnkushinDaniil",
       "updatedAt": "2026-08-04T17:14:42Z",
       "additions": 6,
       "deletions": 0
-    },
-    {
-      "number": 12121,
-      "title": "Update EIP-8141: link the first reference to each cited proposal",
-      "author": "AnkushinDaniil",
-      "updatedAt": "2026-08-07T12:57:53Z",
-      "additions": 6,
-      "deletions": 6
     },
     {
       "number": 12109,
@@ -529,7 +533,7 @@
       "number": 12062,
       "title": "Update EIP-8141: Add explicit second dimension for state gas to frames",
       "author": "lightclient",
-      "updatedAt": "2026-08-01T07:15:22Z",
+      "updatedAt": "2026-08-11T21:16:50Z",
       "additions": 224,
       "deletions": 42
     },

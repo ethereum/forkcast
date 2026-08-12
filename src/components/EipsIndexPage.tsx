@@ -1,5 +1,5 @@
-import React, { useState, useMemo, useEffect } from 'react';
-import { Link } from './navigation';
+import React, { useState, useMemo, useCallback } from 'react';
+import { Link, useSearchParams } from './navigation';
 import { eipsData } from '../data/eips';
 import { getProposalPrefix, getLaymanTitle, getInclusionStage, isHeadlinerInAnyFork, wasHeadlinerCandidateInAnyFork, getEipLayer, isPendingEip } from '../utils/eip';
 import { EipSearch } from './eip/EipSearch';
@@ -10,17 +10,68 @@ import { networkUpgrades } from '../data/upgrades';
 type SortField = 'number' | 'date' | 'status' | 'updated' | 'headliner';
 type SortDirection = 'asc' | 'desc';
 
+// Stages that don't get their own filter chip and are folded into a broader one.
+// Networking and Informational are forms of scheduling; Withdrawn is a form of declining.
+const STAGE_FILTER_ALIASES: Record<string, string> = {
+  'Networking': 'Scheduled for Inclusion',
+  'Informational': 'Scheduled for Inclusion',
+  'Withdrawn': 'Declined for Inclusion',
+};
+
+const toStageFilter = (stage: string): string => STAGE_FILTER_ALIASES[stage] ?? stage;
+
+// Short names for the verbose inclusion stages, used for both the chip labels
+// and the `stage` query param (e.g. `stage=Scheduled`).
+const STAGE_SHORT_NAMES: Record<string, string> = {
+  'Proposed for Inclusion': 'Proposed',
+  'Considered for Inclusion': 'Considered',
+  'Scheduled for Inclusion': 'Scheduled',
+  'Included': 'Included',
+  'Declined for Inclusion': 'Declined',
+};
+
+const STAGE_BY_SHORT_NAME: Record<string, string> = Object.fromEntries(
+  Object.entries(STAGE_SHORT_NAMES).map(([stage, short]) => [short, stage])
+);
+
+// Filters live in the query string so a filtered view can be shared.
+const FILTER_PARAMS = ['upgrade', 'stage', 'status', 'type', 'layer', 'headliner'] as const;
+type FilterParam = (typeof FILTER_PARAMS)[number];
+
+const encodeFilterValue = (key: FilterParam, value: string): string =>
+  key === 'stage' ? STAGE_SHORT_NAMES[value] ?? value : value;
+
+const decodeFilterValue = (key: FilterParam, value: string): string =>
+  key === 'stage' ? STAGE_BY_SHORT_NAME[value] ?? value : value;
+
+const readParamValues = (params: URLSearchParams, key: FilterParam): string[] =>
+  (params.get(key) ?? '').split(',').filter(Boolean);
+
+const readFilter = (params: URLSearchParams, key: FilterParam): Set<string> =>
+  new Set(readParamValues(params, key).map(value => decodeFilterValue(key, value)));
+
+const SORT_FIELDS: SortField[] = ['number', 'date', 'status', 'updated', 'headliner'];
+const DEFAULT_SORT_FIELD: SortField = 'updated';
+
+/** Newest/highest first reads better for everything except the alphabetical status sort. */
+const defaultSortDirection = (field: SortField): SortDirection =>
+  field === 'status' ? 'asc' : 'desc';
+
 const EipsIndexPage: React.FC = () => {
-  const [statusFilters, setStatusFilters] = useState<Set<string>>(new Set());
-  const [forkFilters, setForkFilters] = useState<Set<string>>(new Set());
-  const [categoryFilters, setCategoryFilters] = useState<Set<string>>(new Set());
-  const [stageFilters, setStageFilters] = useState<Set<string>>(new Set());
-  const [layerFilters, setLayerFilters] = useState<Set<string>>(new Set());
-  const [headlinerFilters, setHeadlinerFilters] = useState<Set<string>>(new Set());
-  const [sortField, setSortField] = useState<SortField>('updated');
-  const [sortDirection, setSortDirection] = useState<SortDirection>('desc');
+  const [searchParams, setSearchParams] = useSearchParams();
+  const statusFilters = useMemo(() => readFilter(searchParams, 'status'), [searchParams]);
+  const forkFilters = useMemo(() => readFilter(searchParams, 'upgrade'), [searchParams]);
+  const categoryFilters = useMemo(() => readFilter(searchParams, 'type'), [searchParams]);
+  const stageFilters = useMemo(() => readFilter(searchParams, 'stage'), [searchParams]);
+  const layerFilters = useMemo(() => readFilter(searchParams, 'layer'), [searchParams]);
+  const headlinerFilters = useMemo(() => readFilter(searchParams, 'headliner'), [searchParams]);
+  const sortParam = searchParams.get('sort') as SortField | null;
+  const sortField = sortParam && SORT_FIELDS.includes(sortParam) ? sortParam : DEFAULT_SORT_FIELD;
+  const dirParam = searchParams.get('dir');
+  const sortDirection: SortDirection =
+    dirParam === 'asc' || dirParam === 'desc' ? dirParam : defaultSortDirection(sortField);
+  const requestedPage = Math.max(1, Math.trunc(Number(searchParams.get('page'))) || 1);
   const [mobileFiltersOpen, setMobileFiltersOpen] = useState(false);
-  const [currentPage, setCurrentPage] = useState(1);
   const PAGE_SIZE = 50;
 
   // Extract unique values for filters
@@ -45,7 +96,7 @@ const EipsIndexPage: React.FC = () => {
         // Get inclusion stage for this fork
         const stage = getInclusionStage(eip, fork.forkName);
         if (stage && stage !== 'Unknown') {
-          stageSet.add(stage);
+          stageSet.add(toStageFilter(stage));
         }
       });
     });
@@ -71,7 +122,6 @@ const EipsIndexPage: React.FC = () => {
       'Scheduled for Inclusion',
       'Included',
       'Declined for Inclusion',
-      'Withdrawn'
     ];
     const sortedStages = Array.from(stageSet).sort((a, b) => {
       const indexA = stageOrder.indexOf(a);
@@ -105,15 +155,19 @@ const EipsIndexPage: React.FC = () => {
       filtered = filtered.filter(eip => statusFilters.has(eip.status));
     }
 
-    // Apply fork filter
-    if (forkFilters.size > 0) {
+    // Apply fork + stage filters together: a single fork relationship must satisfy
+    // both, so an EIP declined from one upgrade isn't matched by a later upgrade's stage
+    if (forkFilters.size > 0 || stageFilters.size > 0) {
       filtered = filtered.filter(eip => {
-        if (forkFilters.has('No Fork')) {
-          // Include EIPs with no fork relationships
-          if (eip.forkRelationships.length === 0) return true;
+        if (forkFilters.has('No Fork') && eip.forkRelationships.length === 0) {
+          // EIPs with no fork relationships have no stage to match
+          return stageFilters.size === 0;
         }
-        // Check if EIP has any of the selected forks
-        return eip.forkRelationships.some(fork => forkFilters.has(fork.forkName));
+        return eip.forkRelationships.some(fork => {
+          if (forkFilters.size > 0 && !forkFilters.has(fork.forkName)) return false;
+          if (stageFilters.size === 0) return true;
+          return stageFilters.has(toStageFilter(getInclusionStage(eip, fork.forkName)));
+        });
       });
     }
 
@@ -122,17 +176,6 @@ const EipsIndexPage: React.FC = () => {
       filtered = filtered.filter(eip => {
         const typeValue = eip.category || eip.type;
         return typeValue && categoryFilters.has(typeValue);
-      });
-    }
-
-    // Apply stage filter
-    if (stageFilters.size > 0) {
-      filtered = filtered.filter(eip => {
-        // Check if EIP has any fork with the selected stage
-        return eip.forkRelationships.some(fork => {
-          const stage = getInclusionStage(eip, fork.forkName);
-          return stageFilters.has(stage);
-        });
       });
     }
 
@@ -198,40 +241,51 @@ const EipsIndexPage: React.FC = () => {
     return sorted;
   }, [statusFilters, forkFilters, categoryFilters, stageFilters, layerFilters, headlinerFilters, sortField, sortDirection]);
 
-  // Toggle filter
-  const toggleFilter = (filterSet: Set<string>, setFilterSet: React.Dispatch<React.SetStateAction<Set<string>>>, value: string) => {
-    const newSet = new Set(filterSet);
-    if (newSet.has(value)) {
-      newSet.delete(value);
-    } else {
-      newSet.add(value);
-    }
-    setFilterSet(newSet);
-  };
+  // Toggle a filter value in the query string. Changing the result set invalidates
+  // the current page, so `page` is dropped alongside every filter/sort change.
+  const toggleFilter = useCallback((key: FilterParam, value: string) => {
+    setSearchParams(prev => {
+      const next = new URLSearchParams(prev);
+      const encoded = encodeFilterValue(key, value);
+      const values = new Set(readParamValues(next, key));
+      if (values.has(encoded)) values.delete(encoded);
+      else values.add(encoded);
+      if (values.size > 0) next.set(key, [...values].join(','));
+      else next.delete(key);
+      next.delete('page');
+      return next;
+    }, { replace: true });
+  }, [setSearchParams]);
 
   // Clear all filters
   const clearAllFilters = () => {
-    setStatusFilters(new Set());
-    setForkFilters(new Set());
-    setCategoryFilters(new Set());
-    setStageFilters(new Set());
-    setLayerFilters(new Set());
-    setHeadlinerFilters(new Set());
+    setSearchParams(prev => {
+      const next = new URLSearchParams(prev);
+      FILTER_PARAMS.forEach(key => next.delete(key));
+      next.delete('page');
+      return next;
+    }, { replace: true });
   };
 
   const hasActiveFilters = statusFilters.size > 0 || forkFilters.size > 0 || categoryFilters.size > 0 || stageFilters.size > 0 || layerFilters.size > 0 || headlinerFilters.size > 0;
 
-  // Reset to page 1 when filters or sort changes
-  useEffect(() => {
-    setCurrentPage(1);
-  }, [statusFilters, forkFilters, categoryFilters, stageFilters, layerFilters, headlinerFilters, sortField, sortDirection]);
-
   // Pagination
   const totalPages = Math.max(1, Math.ceil(filteredAndSortedEips.length / PAGE_SIZE));
+  const currentPage = Math.min(requestedPage, totalPages);
   const paginatedEips = filteredAndSortedEips.slice(
     (currentPage - 1) * PAGE_SIZE,
     currentPage * PAGE_SIZE,
   );
+
+  // Paging is a navigation, so it pushes a history entry rather than replacing.
+  const goToPage = (page: number) => {
+    setSearchParams(prev => {
+      const next = new URLSearchParams(prev);
+      if (page <= 1) next.delete('page');
+      else next.set('page', String(page));
+      return next;
+    });
+  };
 
   // Lock body scroll when filters modal is open
   React.useEffect(() => {
@@ -284,13 +338,19 @@ const EipsIndexPage: React.FC = () => {
 
   // Sort handler
   const handleSort = (field: SortField) => {
-    if (sortField === field) {
-      setSortDirection(sortDirection === 'asc' ? 'desc' : 'asc');
-    } else {
-      setSortField(field);
-      // Default to descending for number, dates, updated, and headliner (headliners first); ascending for others
-      setSortDirection((field === 'number' || field === 'date' || field === 'updated' || field === 'headliner') ? 'desc' : 'asc');
-    }
+    const direction: SortDirection = sortField === field
+      ? (sortDirection === 'asc' ? 'desc' : 'asc')
+      : defaultSortDirection(field);
+
+    setSearchParams(prev => {
+      const next = new URLSearchParams(prev);
+      if (field === DEFAULT_SORT_FIELD) next.delete('sort');
+      else next.set('sort', field);
+      if (direction === defaultSortDirection(field)) next.delete('dir');
+      else next.set('dir', direction);
+      next.delete('page');
+      return next;
+    }, { replace: true });
   };
 
   // Helper to format date as YYYY-MM-DD
@@ -300,19 +360,6 @@ const EipsIndexPage: React.FC = () => {
     const month = String(date.getMonth() + 1).padStart(2, '0');
     const day = String(date.getDate()).padStart(2, '0');
     return `${year}-${month}-${day}`;
-  };
-
-  // Helper to get stage label
-  const getStageLabel = (stage: string) => {
-    switch (stage) {
-      case 'Considered for Inclusion': return 'Considered';
-      case 'Proposed for Inclusion': return 'Proposed';
-      case 'Scheduled for Inclusion': return 'Scheduled';
-      case 'Declined for Inclusion': return 'Declined';
-      case 'Included': return 'Included';
-      case 'Withdrawn': return 'Withdrawn';
-      default: return null;
-    }
   };
 
   // Stage color helper
@@ -328,8 +375,6 @@ const EipsIndexPage: React.FC = () => {
         return 'bg-emerald-100 text-emerald-800 dark:bg-emerald-900/30 dark:text-emerald-300 hover:bg-emerald-200 dark:hover:bg-emerald-900/50';
       case 'Declined for Inclusion':
         return 'bg-red-100 text-red-800 dark:bg-red-900/30 dark:text-red-300 hover:bg-red-200 dark:hover:bg-red-900/50';
-      case 'Withdrawn':
-        return 'bg-gray-100 text-gray-800 dark:bg-gray-700 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-600';
       default:
         return 'bg-slate-100 text-slate-700 dark:bg-slate-700 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-600';
     }
@@ -419,7 +464,7 @@ const EipsIndexPage: React.FC = () => {
                         return (
                           <button
                             key={fork}
-                            onClick={() => toggleFilter(forkFilters, setForkFilters, fork)}
+                            onClick={() => toggleFilter('upgrade', fork)}
                             className={`px-3 py-2 text-sm font-medium rounded-lg transition-colors ${
                               isSelected
                                 ? 'ring-2 ring-purple-500 ring-offset-1 dark:ring-offset-slate-800'
@@ -440,12 +485,12 @@ const EipsIndexPage: React.FC = () => {
                       <div className="flex flex-wrap gap-2">
                         {stages.map(stage => {
                           const isSelected = stageFilters.has(stage);
-                          const label = getStageLabel(stage);
+                          const label = STAGE_SHORT_NAMES[stage] ?? stage;
                           const stageColor = getStageColor(stage);
                           return (
                             <button
                               key={stage}
-                              onClick={() => toggleFilter(stageFilters, setStageFilters, stage)}
+                              onClick={() => toggleFilter('stage', stage)}
                               className={`px-3 py-2 text-sm font-medium rounded-lg transition-colors ${stageColor} ${
                                 isSelected
                                   ? 'ring-2 ring-purple-500 ring-offset-1 dark:ring-offset-slate-800'
@@ -469,7 +514,7 @@ const EipsIndexPage: React.FC = () => {
                         return (
                           <button
                             key={status}
-                            onClick={() => toggleFilter(statusFilters, setStatusFilters, status)}
+                            onClick={() => toggleFilter('status', status)}
                             className={`px-3 py-2 text-sm font-medium rounded-lg transition-colors ${
                               isSelected
                                 ? 'bg-purple-100 dark:bg-purple-900/30 text-purple-800 dark:text-purple-300 ring-2 ring-purple-500 ring-offset-1 dark:ring-offset-slate-800'
@@ -493,7 +538,7 @@ const EipsIndexPage: React.FC = () => {
                           return (
                             <button
                               key={category}
-                              onClick={() => toggleFilter(categoryFilters, setCategoryFilters, category)}
+                              onClick={() => toggleFilter('type', category)}
                               className={`px-3 py-2 text-sm font-medium rounded-lg transition-colors ${
                                 isSelected
                                   ? 'bg-purple-100 dark:bg-purple-900/30 text-purple-800 dark:text-purple-300 ring-2 ring-purple-500 ring-offset-1 dark:ring-offset-slate-800'
@@ -521,7 +566,7 @@ const EipsIndexPage: React.FC = () => {
                           return (
                             <button
                               key={layer}
-                              onClick={() => toggleFilter(layerFilters, setLayerFilters, layer)}
+                              onClick={() => toggleFilter('layer', layer)}
                               className={`px-3 py-2 text-sm font-medium rounded-lg transition-colors ${layerColor} ${
                                 isSelected
                                   ? 'ring-2 ring-purple-500 ring-offset-1 dark:ring-offset-slate-800'
@@ -542,7 +587,7 @@ const EipsIndexPage: React.FC = () => {
                     <div className="flex flex-wrap gap-2">
                       <Tooltip text="Selected headliner for an upgrade">
                         <button
-                          onClick={() => toggleFilter(headlinerFilters, setHeadlinerFilters, 'Selected')}
+                          onClick={() => toggleFilter('headliner', 'Selected')}
                           className={`px-3 py-2 text-sm font-medium rounded-lg transition-colors ${
                             headlinerFilters.has('Selected')
                               ? 'bg-purple-100 dark:bg-purple-900/30 text-purple-800 dark:text-purple-300 ring-2 ring-purple-500 ring-offset-1 dark:ring-offset-slate-800'
@@ -554,7 +599,7 @@ const EipsIndexPage: React.FC = () => {
                       </Tooltip>
                       <Tooltip text="Proposed headliner (not selected)">
                         <button
-                          onClick={() => toggleFilter(headlinerFilters, setHeadlinerFilters, 'Proposed')}
+                          onClick={() => toggleFilter('headliner', 'Proposed')}
                           className={`px-3 py-2 text-sm font-medium rounded-lg transition-colors ${
                             headlinerFilters.has('Proposed')
                               ? 'bg-purple-100 dark:bg-purple-900/30 text-purple-800 dark:text-purple-300 ring-2 ring-purple-500 ring-offset-1 dark:ring-offset-slate-800'
@@ -848,7 +893,7 @@ const EipsIndexPage: React.FC = () => {
         {totalPages > 1 && (
           <div className="flex items-center justify-between mt-4 px-2">
             <button
-              onClick={() => setCurrentPage(p => Math.max(1, p - 1))}
+              onClick={() => goToPage(currentPage - 1)}
               disabled={currentPage === 1}
               className="px-4 py-2 text-sm font-medium rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-700 dark:text-slate-300 disabled:opacity-40 disabled:cursor-not-allowed hover:bg-slate-50 dark:hover:bg-slate-700 transition-colors"
             >
@@ -858,7 +903,7 @@ const EipsIndexPage: React.FC = () => {
               Page {currentPage} of {totalPages}
             </span>
             <button
-              onClick={() => setCurrentPage(p => Math.min(totalPages, p + 1))}
+              onClick={() => goToPage(currentPage + 1)}
               disabled={currentPage === totalPages}
               className="px-4 py-2 text-sm font-medium rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-700 dark:text-slate-300 disabled:opacity-40 disabled:cursor-not-allowed hover:bg-slate-50 dark:hover:bg-slate-700 transition-colors"
             >

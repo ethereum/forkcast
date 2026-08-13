@@ -404,7 +404,7 @@ const HomePage = () => {
             </Link>
 
             <Link
-              to="/devnets"
+              to="/networks"
               className="group flex items-start gap-3 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg p-4 hover:shadow-md dark:hover:shadow-slate-700/20 hover:border-purple-300 dark:hover:border-purple-600"
             >
               <div className="flex-shrink-0 w-9 h-9 bg-emerald-100 dark:bg-emerald-900/40 rounded-lg flex items-center justify-center text-emerald-600 dark:text-emerald-400">

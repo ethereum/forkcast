@@ -458,7 +458,7 @@ const GlamsterdamPrioritizationSection: React.FC = () => {
                   {item.devnets.map((devnet) => (
                     <Link
                       key={devnet.id}
-                      to={`/devnets/${devnet.id}`}
+                      to={`/networks/${devnet.id}`}
                       className={`inline-block px-1.5 py-0.5 text-[10px] font-medium rounded hover:opacity-80 transition-opacity ${getDevnetColor(devnet.headliner)}`}
                     >
                       {devnet.id}
@@ -632,7 +632,7 @@ const GlamsterdamPrioritizationSection: React.FC = () => {
                               .map((devnet) => (
                                 <Link
                                   key={devnet.id}
-                                  to={`/devnets/${devnet.id}`}
+                                  to={`/networks/${devnet.id}`}
                                   className={`inline-block px-1.5 py-0.5 text-[10px] font-medium rounded hover:opacity-80 transition-opacity ${getDevnetColor(devnet.headliner)}`}
                                   title={devnet.id}
                                 >

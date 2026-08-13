@@ -19,7 +19,7 @@ const topSection = (query: string) => {
       ['eips', eipResults],
       ['calls', searchCallEntities(query, protocolCalls)],
       ['upgrades', site.filter((r) => r.entity.group === 'upgrades')],
-      ['devnets', site.filter((r) => r.entity.group === 'devnets')],
+      ['networks', site.filter((r) => r.entity.group === 'networks')],
       ['pages', site.filter((r) => r.entity.group === 'pages')],
     ] as Array<[SectionId, GlobalResult[]]>
   )
@@ -33,8 +33,8 @@ describe('ranking against real data', () => {
     ['7702', 'eips'],
     ['acde 242', 'calls'],
     ['glamsterdam', 'upgrades'],
-    ['bal-devnet-3', 'devnets'],
-    ['glamsterdam-devnet-7', 'devnets'],
+    ['bal-devnet-3', 'networks'],
+    ['glamsterdam-devnet-7', 'networks'],
   ])('%j puts %s first', (query, expected) => {
     expect(topSection(query)).toBe(expected);
   });

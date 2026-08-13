@@ -4,7 +4,7 @@
  * routes exist:
  *
  *   1. Upcoming calls   (GitHub `ethereum/pm` open issues)  -> upcoming-calls.json
- *   2. Active devnets   (ethPandaOps cartographoor networks) -> devnet-networks.json
+ *   2. Networks         (ethPandaOps cartographoor networks) -> networks.json
  *
  * Islands must never link to a route that the static build did not emit, so both
  * the route generator and the UI read these snapshots — not the live endpoints.
@@ -30,7 +30,7 @@ import {
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const GENERATED_DIR = path.join(__dirname, '../src/data/generated');
 const UPCOMING_CALLS_FILE = path.join(GENERATED_DIR, 'upcoming-calls.json');
-const NETWORKS_FILE = path.join(GENERATED_DIR, 'devnet-networks.json');
+const NETWORKS_FILE = path.join(GENERATED_DIR, 'networks.json');
 const PROTOCOL_CALLS_FILE = path.join(__dirname, '../src/data/protocol-calls.generated.json');
 
 const GITHUB_ISSUES_URL =
@@ -179,7 +179,7 @@ async function main() {
     ).length;
     writeJson(NETWORKS_FILE, networksSnapshot);
     console.log(
-      `  ✓ devnet-networks.json (${Object.keys(networksSnapshot.networks).length} networks, ${activeCount} active)`,
+      `  ✓ networks.json (${Object.keys(networksSnapshot.networks).length} networks, ${activeCount} active)`,
     );
   } catch (error) {
     // Nothing is written until both fetches succeed, so the committed snapshots are

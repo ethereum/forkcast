@@ -1,7 +1,9 @@
 import { useEffect, useCallback, type ReactNode } from 'react';
 import { Link, useNavigate } from './navigation';
 import { getDevnetSpec, getDevnetSeriesSiblings } from '../data/devnet-specs';
-import { getNetworkEntry, getNetworkMetadata } from '../domain/devnets/networks';
+import { getNetworkEntry, getNetworkMetadata, isPublicNetworkKey } from '../domain/networks/networks';
+import { getPromotedDevnet } from '../domain/networks/promotedDevnets';
+import { buildForkRows, type ForkRow } from '../domain/networks/forkSchedule';
 import { parseMarkdownLinks, parseMarkdownBold, containsMarkdownTable, parseMarkdownTable } from '../utils/markdown';
 import type {
   DevnetSpec,
@@ -9,7 +11,7 @@ import type {
   ClientSupportStatus,
   EipDevnetStatus,
 } from '../types';
-import type { NetworkEntry, NetworkMetadataLink } from '../types/devnet-networks';
+import type { BlobScheduleEntry, NetworkEntry, NetworkMetadataLink } from '../types/networks';
 
 /** Extract category key from a devnet id, e.g. "bal-devnet-3" → "bal" */
 function parseCategoryKey(id: string): string {
@@ -205,6 +207,8 @@ function ResourceLinks({ networkEntry, metadataLinks }: { networkEntry: NetworkE
   const genesisConfig = networkEntry?.genesisConfig;
 
   const links: Array<{ label: string; url: string; icon: string }> = [];
+  if (serviceUrls?.explorer) links.push({ label: 'Block Explorer', url: serviceUrls.explorer, icon: 'explorer' });
+  if (serviceUrls?.beaconExplorer) links.push({ label: 'Beacon Explorer', url: serviceUrls.beaconExplorer, icon: 'explorer' });
   if (serviceUrls?.dora) links.push({ label: 'Explorer (Dora)', url: serviceUrls.dora, icon: 'explorer' });
   if (serviceUrls?.faucet) links.push({ label: 'Faucet', url: serviceUrls.faucet, icon: 'faucet' });
   if (serviceUrls?.jsonRpc) links.push({ label: 'JSON-RPC', url: serviceUrls.jsonRpc, icon: 'code' });
@@ -212,7 +216,9 @@ function ResourceLinks({ networkEntry, metadataLinks }: { networkEntry: NetworkE
   if (serviceUrls?.forkmon) links.push({ label: 'Forkmon', url: serviceUrls.forkmon, icon: 'monitor' });
   if (serviceUrls?.assertoor) links.push({ label: 'Assertoor', url: serviceUrls.assertoor, icon: 'check' });
   if (serviceUrls?.checkpointSync) links.push({ label: 'Checkpoint Sync', url: serviceUrls.checkpointSync, icon: 'sync' });
-  const clConfig = genesisConfig?.consensusLayer?.find(f => f.path.endsWith('/config.yaml'));
+  const clConfig =
+    genesisConfig?.consensusLayer?.find(f => f.path.endsWith('/config.yaml')) ??
+    genesisConfig?.metadata?.find(f => f.path.endsWith('/config.yaml'));
   const elGenesis = genesisConfig?.executionLayer?.find(f => f.path.endsWith('/genesis.json'));
   if (clConfig) links.push({ label: 'CL Config', url: clConfig.url, icon: 'document' });
   if (elGenesis) links.push({ label: 'EL Genesis', url: elGenesis.url, icon: 'document' });
@@ -247,7 +253,7 @@ function ResourceLinks({ networkEntry, metadataLinks }: { networkEntry: NetworkE
   );
 }
 
-function DevnetPageLayout({
+function NetworkPageLayout({
   id,
   children,
 }: {
@@ -260,8 +266,8 @@ function DevnetPageLayout({
   const handleKeyDown = useCallback(
     (e: KeyboardEvent) => {
       if (e.target instanceof HTMLInputElement || e.target instanceof HTMLTextAreaElement) return;
-      if (e.key === 'ArrowLeft' && prev) navigate(`/devnets/${prev}`);
-      if (e.key === 'ArrowRight' && next) navigate(`/devnets/${next}`);
+      if (e.key === 'ArrowLeft' && prev) navigate(`/networks/${prev}`);
+      if (e.key === 'ArrowRight' && next) navigate(`/networks/${next}`);
     },
     [prev, next, navigate],
   );
@@ -276,17 +282,17 @@ function DevnetPageLayout({
       <div className="max-w-4xl mx-auto">
         <div className="mb-6 flex items-center justify-between gap-3">
           <Link
-            to="/devnets"
+            to="/networks"
             className="text-sm text-slate-500 hover:text-slate-700 dark:text-slate-400 dark:hover:text-slate-200 transition-colors"
           >
-            &larr; Back to Devnets
+            &larr; Back to Networks
           </Link>
           <div className="flex items-center gap-3">
             {(prev || next) && (
               <nav className="flex items-center gap-1 text-sm">
                 {prev ? (
                   <Link
-                    to={`/devnets/${prev}`}
+                    to={`/networks/${prev}`}
                     className="px-2 py-1 rounded text-slate-500 hover:text-slate-700 hover:bg-slate-100 dark:text-slate-400 dark:hover:text-slate-200 dark:hover:bg-slate-800 transition-colors"
                     title={prev}
                   >
@@ -300,7 +306,7 @@ function DevnetPageLayout({
                 <span className="text-slate-300 dark:text-slate-600">|</span>
                 {next ? (
                   <Link
-                    to={`/devnets/${next}`}
+                    to={`/networks/${next}`}
                     className="px-2 py-1 rounded text-slate-500 hover:text-slate-700 hover:bg-slate-100 dark:text-slate-400 dark:hover:text-slate-200 dark:hover:bg-slate-800 transition-colors"
                     title={next}
                   >
@@ -338,14 +344,31 @@ function SpecHeaderLink({ href, label }: { href: string; label: string }) {
 }
 
 function DevnetSpecContent({ spec, networkEntry, metadata }: { spec: DevnetSpec; networkEntry: NetworkEntry | null; metadata: { links: NetworkMetadataLink[] | null; description: string } | null }) {
+  // The scraped title is regenerated on every re-scrape, so a promoted devnet's
+  // public name is curated instead.
+  const promoted = getPromotedDevnet(spec.id);
   return (
-    <DevnetPageLayout id={spec.id}>
+    <NetworkPageLayout id={spec.id}>
         {/* Title */}
         <div className="mb-8">
           <h1 className="text-3xl font-bold text-slate-900 dark:text-slate-100">
-            {spec.title}
+            {promoted?.name ?? spec.title}
           </h1>
           <div className="mt-2 flex flex-wrap items-center gap-x-3 gap-y-2 text-sm text-slate-500 dark:text-slate-400">
+            {promoted && (
+              <>
+                <span>{promoted.label}</span>
+                <span>&middot;</span>
+                <span className="font-mono">{spec.id}</span>
+                <span>&middot;</span>
+                {networkEntry?.chainId !== undefined && (
+                  <>
+                    <span>Chain ID {networkEntry.chainId}</span>
+                    <span>&middot;</span>
+                  </>
+                )}
+              </>
+            )}
             {networkEntry && (
               <SpecHeaderLink
                 href={`https://ethpandaops.io/networks/${spec.id}/`}
@@ -382,7 +405,7 @@ function DevnetSpecContent({ spec, networkEntry, metadata }: { spec: DevnetSpec;
           <div className="mb-8 rounded-lg bg-slate-50 dark:bg-slate-800/50 border border-slate-200 dark:border-slate-700 px-4 py-3 text-sm text-slate-600 dark:text-slate-400">
             This devnet used the same spec as{' '}
             <Link
-              to={`/devnets/${spec.sameSpecAs}`}
+              to={`/networks/${spec.sameSpecAs}`}
               className="text-purple-600 hover:text-purple-800 dark:text-purple-400 dark:hover:text-purple-300 font-medium transition-colors"
             >
               {spec.sameSpecAs}
@@ -451,6 +474,16 @@ function DevnetSpecContent({ spec, networkEntry, metadata }: { spec: DevnetSpec;
           metadataLinks={metadata?.links ?? null}
         />
 
+        {/* A promoted devnet is run as a public testnet, so it gets the same
+            schedules a public network page shows. Ordinary devnets activate
+            everything at genesis, where the tables say nothing. */}
+        {promoted && networkEntry && (
+          <>
+            <ForkSchedule rows={buildForkRows(networkEntry.forks, Date.now())} />
+            <BlobSchedule schedule={networkEntry.blobSchedule ?? []} />
+          </>
+        )}
+
         {/* EIP List */}
         {spec.eips.length > 0 && (
           <section className="mt-8">
@@ -512,14 +545,14 @@ function DevnetSpecContent({ spec, networkEntry, metadata }: { spec: DevnetSpec;
           data={spec.clClientSupport}
         />
 
-    </DevnetPageLayout>
+    </NetworkPageLayout>
   );
 }
 
 function NetworkOnlyContent({ id, networkEntry, metadata }: { id: string; networkEntry: NetworkEntry | null; metadata: { links: NetworkMetadataLink[] | null; description: string } | null }) {
 
   return (
-    <DevnetPageLayout id={id}>
+    <NetworkPageLayout id={id}>
       <div className="mb-8">
         <h1 className="text-3xl font-bold text-slate-900 dark:text-slate-100">
           {id}
@@ -547,13 +580,180 @@ function NetworkOnlyContent({ id, networkEntry, metadata }: { id: string; networ
         networkEntry={networkEntry}
         metadataLinks={metadata?.links ?? null}
       />
-    </DevnetPageLayout>
+    </NetworkPageLayout>
   );
 }
 
-export default function DevnetSpecPage({ devnetId }: { devnetId: string }) {
-  const id = devnetId;
+const formatDate = (timestamp: number) =>
+  new Date(timestamp * 1000).toLocaleDateString('en-US', {
+    year: 'numeric',
+    month: 'short',
+    day: 'numeric',
+  });
 
+function ForkSchedule({ rows }: { rows: ForkRow[] }) {
+  if (rows.length === 0) return null;
+
+  return (
+    <section className="mb-8">
+      <h2 className="text-xl font-bold text-slate-900 dark:text-slate-100 mb-4">Fork Schedule</h2>
+      <div className="overflow-x-auto -mx-4 px-4">
+        <table className="w-full text-sm">
+          <thead>
+            <tr className="border-b border-slate-200 dark:border-slate-700">
+              <th className="text-left py-2 pr-4 font-medium text-slate-600 dark:text-slate-400">Upgrade</th>
+              <th className="text-left py-2 pr-4 font-medium text-slate-600 dark:text-slate-400">Consensus</th>
+              <th className="text-left py-2 pr-4 font-medium text-slate-600 dark:text-slate-400">Execution</th>
+              <th className="text-left py-2 font-medium text-slate-600 dark:text-slate-400">Date</th>
+            </tr>
+          </thead>
+          <tbody>
+            {rows.map((row) => (
+              <tr
+                key={row.timestamp}
+                className={`border-b border-slate-100 dark:border-slate-800 ${
+                  row.activated ? '' : 'bg-amber-50/60 dark:bg-amber-900/10'
+                }`}
+              >
+                <td className="py-2 pr-4 align-top">
+                  {row.upgradeName ? (
+                    row.upgradePath ? (
+                      <Link
+                        to={row.upgradePath}
+                        className="font-medium capitalize text-purple-600 hover:text-purple-800 dark:text-purple-400 dark:hover:text-purple-300 transition-colors"
+                      >
+                        {row.upgradeName}
+                      </Link>
+                    ) : (
+                      <span className="font-medium capitalize text-slate-700 dark:text-slate-300">
+                        {row.upgradeName}
+                      </span>
+                    )
+                  ) : (
+                    <span className="text-slate-400 dark:text-slate-600">&mdash;</span>
+                  )}
+                  {!row.activated && Object.keys(row.minClientVersions).length > 0 && (
+                    <div className="mt-1 text-xs text-slate-500 dark:text-slate-400">
+                      Minimum client versions:{' '}
+                      {Object.entries(row.minClientVersions)
+                        .map(([client, version]) => `${client} ${version}`)
+                        .join(', ')}
+                    </div>
+                  )}
+                </td>
+                <td className="py-2 pr-4 align-top text-slate-700 dark:text-slate-300 whitespace-nowrap">
+                  {row.consensus ? (
+                    <>
+                      <span className="capitalize">{row.consensus.name}</span>
+                      {row.consensus.epoch !== undefined && (
+                        <span className="ml-1.5 font-mono text-xs text-slate-400 dark:text-slate-500">
+                          epoch {row.consensus.epoch.toLocaleString()}
+                        </span>
+                      )}
+                    </>
+                  ) : (
+                    <span className="text-slate-400 dark:text-slate-600">&mdash;</span>
+                  )}
+                </td>
+                <td className="py-2 pr-4 align-top text-slate-700 dark:text-slate-300 whitespace-nowrap">
+                  {row.execution ? (
+                    <>
+                      <span className="capitalize">{row.execution.name.replace(/_/g, ' ')}</span>
+                      {row.execution.block !== undefined && (
+                        <span className="ml-1.5 font-mono text-xs text-slate-400 dark:text-slate-500">
+                          block {row.execution.block.toLocaleString()}
+                        </span>
+                      )}
+                    </>
+                  ) : (
+                    <span className="text-slate-400 dark:text-slate-600">&mdash;</span>
+                  )}
+                </td>
+                <td className="py-2 align-top text-slate-500 dark:text-slate-400 whitespace-nowrap">
+                  {formatDate(row.timestamp)}
+                  {!row.activated && (
+                    <span className="ml-2 px-1.5 py-0.5 text-[10px] font-medium rounded bg-amber-100 text-amber-800 dark:bg-amber-900/40 dark:text-amber-300">
+                      upcoming
+                    </span>
+                  )}
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+    </section>
+  );
+}
+
+function BlobSchedule({ schedule }: { schedule: BlobScheduleEntry[] }) {
+  if (!schedule || schedule.length === 0) return null;
+
+  return (
+    <section className="mb-8">
+      <h2 className="text-xl font-bold text-slate-900 dark:text-slate-100 mb-4">Blob Schedule</h2>
+      <div className="overflow-x-auto -mx-4 px-4">
+        <table className="w-full text-sm">
+          <thead>
+            <tr className="border-b border-slate-200 dark:border-slate-700">
+              <th className="text-left py-2 pr-4 font-medium text-slate-600 dark:text-slate-400">Epoch</th>
+              <th className="text-left py-2 pr-4 font-medium text-slate-600 dark:text-slate-400">Date</th>
+              <th className="text-left py-2 font-medium text-slate-600 dark:text-slate-400">Max blobs per block</th>
+            </tr>
+          </thead>
+          <tbody>
+            {schedule.map((step) => (
+              <tr key={step.epoch} className="border-b border-slate-100 dark:border-slate-800">
+                <td className="py-2 pr-4 font-mono text-slate-700 dark:text-slate-300">
+                  {step.epoch.toLocaleString()}
+                </td>
+                <td className="py-2 pr-4 text-slate-500 dark:text-slate-400 whitespace-nowrap">
+                  {formatDate(step.timestamp)}
+                </td>
+                <td className="py-2 font-mono text-slate-700 dark:text-slate-300">
+                  {step.maxBlobsPerBlock}
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+    </section>
+  );
+}
+
+function PublicNetworkContent({ id, networkEntry }: { id: string; networkEntry: NetworkEntry }) {
+  const forkRows = buildForkRows(networkEntry.forks, Date.now());
+
+  return (
+    <NetworkPageLayout id={id}>
+      <div className="mb-8">
+        <h1 className="text-3xl font-bold text-slate-900 dark:text-slate-100 capitalize">{id}</h1>
+        {networkEntry.description && (
+          <p className="mt-2 text-sm text-slate-600 dark:text-slate-400">{networkEntry.description}</p>
+        )}
+        <div className="mt-3 flex flex-wrap items-center gap-x-3 gap-y-2 text-sm text-slate-500 dark:text-slate-400">
+          <SpecHeaderLink href={`https://ethpandaops.io/networks/${id}/`} label="ethPandaOps Dashboard" />
+          {networkEntry.chainId !== undefined && <span>Chain ID {networkEntry.chainId}</span>}
+          {networkEntry.genesisConfig?.genesisTime && (
+            <>
+              <span>&middot;</span>
+              <span>Genesis {formatDate(networkEntry.genesisConfig.genesisTime)}</span>
+            </>
+          )}
+        </div>
+      </div>
+
+      <ResourceLinks networkEntry={networkEntry} metadataLinks={null} />
+
+      <ForkSchedule rows={forkRows} />
+
+      <BlobSchedule schedule={networkEntry.blobSchedule ?? []} />
+    </NetworkPageLayout>
+  );
+}
+
+export default function NetworkDetailPage({ id }: { id: string }) {
   const spec = id ? getDevnetSpec(id) : undefined;
   const networkEntry = id ? getNetworkEntry(id) : null;
   const categoryKey = id ? parseCategoryKey(id) : '';
@@ -562,6 +762,11 @@ export default function DevnetSpecPage({ devnetId }: { devnetId: string }) {
   // Has a scraped spec — render the full detail page
   if (spec) {
     return <DevnetSpecContent spec={spec} networkEntry={networkEntry} metadata={metadata} />;
+  }
+
+  // A public network (mainnet/sepolia/hoodi) — fork + blob schedule instead of a spec
+  if (networkEntry && isPublicNetworkKey(id)) {
+    return <PublicNetworkContent id={id} networkEntry={networkEntry} />;
   }
 
   // No spec, but check if there's network data for this ID

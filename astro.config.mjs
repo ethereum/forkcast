@@ -46,6 +46,8 @@ const legacyRedirects = {
   '/upgrade/glamsterdam/devnets': '/upgrade/glamsterdam/devnet-inclusion',
   '/upgrade/glamsterdam/devnets/priority': '/upgrade/glamsterdam/client-priority',
   '/upgrade/glamsterdam/devnets/complexity': '/upgrade/glamsterdam/test-complexity',
+  '/devnets': '/networks',
+  '/devnets/[id]': '/networks/[id]',
 };
 
 // https://astro.build/config

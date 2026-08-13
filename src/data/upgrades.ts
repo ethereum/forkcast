@@ -207,8 +207,40 @@ export const getUpgradeById = (id: string): NetworkUpgrade | undefined => {
 // than linking to a route the static build doesn't emit (which would 404).
 const FORKS_WITH_PUBLIC_PAGE = new Set(['pectra', 'fusaka', 'hegota', 'glamsterdam']);
 
+// Client-facing data (cartographoor fork schedules, client release notes) names
+// forks per layer. Forkcast talks in combined upgrade names, so each layer fork
+// maps to the upgrade it belongs to.
+const FORK_NAME_ALIASES: Record<string, string> = {
+  bellatrix: 'the-merge',
+  paris: 'the-merge',
+  capella: 'shapella',
+  shanghai: 'shapella',
+  deneb: 'dencun',
+  cancun: 'dencun',
+  electra: 'pectra',
+  prague: 'pectra',
+  fulu: 'fusaka',
+  osaka: 'fusaka',
+  gloas: 'glamsterdam',
+  amsterdam: 'glamsterdam',
+  heze: 'hegota',
+  bogota: 'hegota',
+};
+
+const COMBINED_UPGRADE_IDS = new Set(Object.values(FORK_NAME_ALIASES));
+
+/**
+ * The combined upgrade a layer fork belongs to ("fulu" -> "fusaka"), or null when
+ * the fork predates combined naming ("altair", "london").
+ */
+export const getCombinedUpgradeName = (forkName: string): string | null => {
+  const id = forkName.toLowerCase();
+  if (COMBINED_UPGRADE_IDS.has(id)) return id;
+  return FORK_NAME_ALIASES[id] ?? null;
+};
+
 /** Returns the `/upgrade/{id}` path for a fork, or null when it has no public page. */
 export const getUpgradePagePath = (forkName: string): string | null => {
-  const id = forkName.toLowerCase();
+  const id = getCombinedUpgradeName(forkName) ?? forkName.toLowerCase();
   return FORKS_WITH_PUBLIC_PAGE.has(id) ? `/upgrade/${id}` : null;
 };

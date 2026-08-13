@@ -53,7 +53,7 @@ const CORE_PAGES = [
   'calls/index.html',
   'decisions/index.html',
   'schedule/index.html',
-  'devnets/index.html',
+  'networks/index.html',
   'upgrades/index.html',
   'upgrade/glamsterdam/index.html',
   'upgrade/glamsterdam/client-priority/index.html',
@@ -75,6 +75,7 @@ const EXPECTED_REDIRECTS: Record<string, string> = {
   'priority/index.html': '/upgrade/glamsterdam/client-priority',
   'complexity/index.html': '/upgrade/glamsterdam/test-complexity',
   'feedback/index.html': 'ethereum-magicians.org',
+  'devnets/index.html': '/networks',
 };
 
 // ---------------------------------------------------------------------------

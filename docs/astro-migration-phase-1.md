@@ -29,7 +29,7 @@ Existing React page bodies should keep rendering client-side for this phase, so 
 ### 2. Make canonical public URLs real Astro routes
 
 - Add Astro pages for the canonical public routes.
-- Canonical static routes include `/`, `/upgrades`, `/schedule`, `/agenda`, `/decisions`, `/devnets`, `/rank`, `/eips`, `/calls`, `/upgrade/pectra`, `/upgrade/fusaka`, `/upgrade/hegota`, `/upgrade/glamsterdam`, `/upgrade/glamsterdam/stakeholders`, `/upgrade/glamsterdam/devnet-inclusion`, `/upgrade/glamsterdam/client-priority`, and `/upgrade/glamsterdam/test-complexity`.
+- Canonical static routes include `/`, `/upgrades`, `/schedule`, `/agenda`, `/decisions`, `/networks`, `/rank`, `/eips`, `/calls`, `/upgrade/pectra`, `/upgrade/fusaka`, `/upgrade/hegota`, `/upgrade/glamsterdam`, `/upgrade/glamsterdam/stakeholders`, `/upgrade/glamsterdam/devnet-inclusion`, `/upgrade/glamsterdam/client-priority`, and `/upgrade/glamsterdam/test-complexity`.
 - Use Astro dynamic routes with `getStaticPaths()` for:
   - Canonical EIP pages, excluding pending PR-only EIPs.
   - Protocol call pages, including completed calls and any upcoming call watch URLs linked from the call index.
@@ -37,7 +37,7 @@ Existing React page bodies should keep rendering client-side for this phase, so 
   - Canonical call index scope routes.
 - Treat pending PR-only EIPs as external PR records, not canonical Forkcast EIP pages. `/eips` should link them directly to their GitHub PRs, while `/eips/{pendingId}` should use Astro configured redirects to preserve existing shared URLs.
 - Use one build-time route/data snapshot for runtime-discovered routes. `getStaticPaths()` and hydrated React islands must share the same upcoming-call and active-network snapshots.
-  - Snapshots (`src/data/generated/{upcoming-calls,devnet-networks}.json`) are committed generated data, like the repo's other compiled artifacts. `dev`/`build` read them as-is; `build:fresh` (used by `predeploy` and the deploy workflow) re-runs `snapshot-routes` to refresh them from the live GitHub/cartographoor endpoints first. The script writes only on a successful fetch, so a failed refresh leaves the committed snapshot untouched and exits non-zero — if the deploy's refresh fails, the deploy fails; re-run it once the upstream is reachable.
+  - Snapshots (`src/data/generated/{upcoming-calls,networks}.json`) are committed generated data, like the repo's other compiled artifacts. `dev`/`build` read them as-is; `build:fresh` (used by `predeploy` and the deploy workflow) re-runs `snapshot-routes` to refresh them from the live GitHub/cartographoor endpoints first. The script writes only on a successful fetch, so a failed refresh leaves the committed snapshot untouched and exits non-zero — if the deploy's refresh fails, the deploy fails; re-run it once the upstream is reachable.
 - Hydrated islands must not create internal links to runtime-only routes that were not emitted in the static build.
 - Generate only canonical public URLs plus the new Astro-native call scope URLs.
 - Preserve simple legacy aliases with Astro configured redirects in `astro.config.mjs`. Static meta-refresh redirect output is acceptable; Phase 1 does not require HTTP 301/302 redirects.
@@ -114,7 +114,7 @@ Run:
 Use your built-in browser to carefully spot-check at least:
 
 - Every route in the canonical static route inventory.
-- Dynamic route reloads for EIPs, calls, devnets, and call index scopes.
+- Dynamic route reloads for EIPs, calls, networks, and call index scopes.
 - Pending PR-only EIP links and `/eips/{pendingId}` redirects.
 - Network-only devnet routes backed by active `networks.json` IDs.
 - Upcoming call watch routes linked from the call index.
@@ -166,6 +166,8 @@ Use [Astro configured redirects](https://docs.astro.build/en/reference/configura
 - `/upgrade/glamsterdam/devnets` -> `/upgrade/glamsterdam/devnet-inclusion`
 - `/upgrade/glamsterdam/devnets/priority` -> `/upgrade/glamsterdam/client-priority`
 - `/upgrade/glamsterdam/devnets/complexity` -> `/upgrade/glamsterdam/test-complexity`
+- `/devnets` -> `/networks`
+- `/devnets/{id}` -> `/networks/{id}` for every devnet spec, active devnet, and public network
 - `/calls/{github-issue-number}` -> `/calls/{series}/{number}` for every completed call. This replaces the SPA's in-React issue-number redirect; the alias map is derived from `src/data/protocol-calls.generated.json` at build time (see `src/domain/calls/callRoutes.ts`), so it stays in sync as calls are added rather than being a hand-maintained legacy artifact. One-off calls follow the same rule (e.g. `/calls/1954` -> `/calls/one-off-1954/001`).
 
 ### Removed Routes
@@ -186,7 +188,7 @@ Follow-up work for subsequent PRs, as routes move from React bodies into more id
 - Remove the React Router compatibility props from the temporary link helper, such as the ignored `state` / `replace`.
 - Continue narrowing the navigation helper (`src/components/navigation.tsx`) (and consider renaming) so it exposes only the browser URL state hydrated islands need, not router-shaped abstractions.
 - As more routes move from React bodies into Astro, move query/hash ownership into page-specific Astro or component primitives where that becomes natural.
-- Drop the now-vestigial `loading` / `error` / `refetch` fields from `useDevnetNetworks` (it derives synchronously from the committed snapshot, so they are permanently `false`/`null`/no-op) and remove the dead loading/error branches in `DevnetsIndexPage`. Kept in Phase 1 only for source-compatibility with the components that still destructure them.
+- Drop the now-vestigial `loading` / `error` / `refetch` fields from `useNetworks` (it derives synchronously from the committed snapshot, so they are permanently `false`/`null`/no-op) and remove the dead loading/error branches in `NetworksIndexPage`. Kept in Phase 1 only for source-compatibility with the components that still destructure them.
 - Refresh the route snapshots (`snapshot-routes`) from a scheduled workflow that commits — like `scrape-devnet-specs.yml` / `sync-call-assets.yml` already do for other generated data — instead of fetching them during the deploy build. Deploys then become plain `build` off committed data: deterministic and never blocked by a third-party outage.
 
 ## Astro Docs References

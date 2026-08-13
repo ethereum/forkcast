@@ -15,10 +15,10 @@ describe('orderSections', () => {
   it('promotes the section whose top result names the query target', () => {
     const ordered = orderSections([
       section('summaries', 0),
-      section('devnets', 100),
+      section('networks', 100),
       section('eips', 0),
     ]);
-    expect(ordered.map((s) => s.id)).toEqual(['devnets', 'eips', 'summaries']);
+    expect(ordered.map((s) => s.id)).toEqual(['networks', 'eips', 'summaries']);
   });
 
   it('is a stable partition — promoted sections keep their base order', () => {
@@ -26,9 +26,9 @@ describe('orderSections', () => {
       section('pages', 100),
       section('calls', 100),
       section('eips', 100),
-      section('devnets', 0),
+      section('networks', 0),
     ]);
-    expect(ordered.map((s) => s.id)).toEqual(['eips', 'pages', 'calls', 'devnets']);
+    expect(ordered.map((s) => s.id)).toEqual(['eips', 'pages', 'calls', 'networks']);
   });
 
   it('never promotes summaries or transcripts, whatever they score', () => {

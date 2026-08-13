@@ -1,9 +1,11 @@
 /**
- * Everything on the site that isn't an EIP or a call: network upgrades, devnet
- * specs, and the static pages.
+ * Everything on the site that isn't an EIP or a call: network upgrades, networks
+ * (public networks and devnet specs), and the static pages.
  */
 import { networkUpgrades } from '../../data/upgrades';
 import { getAllDevnetSpecIds, getDevnetSpec } from '../../data/devnet-specs';
+import { getNetworkEntry, publicNetworks } from '../networks/networks';
+import { getPromotedDevnet } from '../networks/promotedDevnets';
 import { staticPageMetadata, staticPageRoutes } from '../routes/pageMetadata';
 import type { SiteEntity, SiteResult } from './types';
 
@@ -56,17 +58,50 @@ function devnetEntities(): SiteEntity[] {
   return getAllDevnetSpecIds().flatMap((id) => {
     const spec = getDevnetSpec(id);
     if (!spec) return [];
+    // Search lowercases but doesn't fold diacritics, so a promoted devnet needs
+    // both its accented name and the ASCII spelling clients use as keywords.
+    const promoted = getPromotedDevnet(id);
     return [
       {
         id,
-        group: 'devnets' as const,
-        title: spec.title || id,
+        group: 'networks' as const,
+        title: promoted?.name ?? (spec.title || id),
         description: spec.eips.map((eip) => `EIP-${eip.number}`).join(', '),
-        href: `/devnets/${id}`,
+        href: `/networks/${id}`,
         // EIP numbers as keywords so "7928" surfaces the devnets shipping it.
-        keywords: [id, ...id.split('-'), ...spec.eips.map((eip) => String(eip.number))],
+        keywords: [
+          id,
+          ...id.split('-'),
+          ...spec.eips.map((eip) => String(eip.number)),
+          ...(promoted ? [promoted.name, ...promoted.searchAliases, 'testnet'] : []),
+        ],
       },
     ];
+  });
+}
+
+function publicNetworkEntities(): SiteEntity[] {
+  // Promoted devnets are already emitted by devnetEntities(); listing them here
+  // too would produce two Networks results for the same page.
+  return publicNetworks.filter((network) => network.promotedLabel === null).map((network) => {
+    const entry = getNetworkEntry(network.key);
+    const forkNames = [
+      ...Object.keys(entry?.forks?.consensus ?? {}),
+      ...Object.keys(entry?.forks?.execution ?? {}),
+    ];
+    return {
+      id: network.key,
+      group: 'networks' as const,
+      title: network.displayName,
+      description: network.description,
+      href: `/networks/${network.key}`,
+      keywords: [
+        network.key,
+        network.key === 'mainnet' ? 'mainnet' : 'testnet',
+        ...(network.chainId === null ? [] : [String(network.chainId)]),
+        ...forkNames,
+      ],
+    };
   });
 }
 
@@ -87,7 +122,7 @@ function pageEntities(): SiteEntity[] {
 }
 
 export function buildSiteEntities(): SiteEntity[] {
-  return [...upgradeEntities(), ...devnetEntities(), ...pageEntities()];
+  return [...upgradeEntities(), ...publicNetworkEntities(), ...devnetEntities(), ...pageEntities()];
 }
 
 export function searchSiteEntities(query: string, entities: SiteEntity[]): SiteResult[] {

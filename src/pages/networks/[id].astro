@@ -1,0 +1,53 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import NetworkDetailPage from '../../components/NetworkDetailPage';
+import { getAllDevnetSpecIds, getDevnetSpec } from '../../data/devnet-specs';
+import {
+  getActiveDevnetNetworkKeys,
+  getPublicNetworkKeys,
+} from '../../domain/networks/networks';
+import { getPromotedDevnet } from '../../domain/networks/promotedDevnets';
+
+// Local spec IDs, active devnet keys, and the public networks — all from the
+// build-time networks snapshot. Devnet keys without a local spec render
+// network-only pages. Both getStaticPaths and the island read the same snapshot,
+// so links never point to un-emitted routes.
+export function getStaticPaths() {
+  const publicKeys = new Set(getPublicNetworkKeys());
+  const ids = Array.from(
+    new Set([...getAllDevnetSpecIds(), ...getActiveDevnetNetworkKeys(), ...publicKeys]),
+  );
+
+  return ids.map((id) => {
+    const spec = getDevnetSpec(id);
+    if (publicKeys.has(id)) {
+      return {
+        params: { id },
+        props: {
+          title: `${id} - Forkcast`,
+          description: `${id} network: fork schedule, blob schedule, and resources.`,
+        },
+      };
+    }
+    // A promoted devnet's public name is curated, since the scraped spec title is
+    // regenerated on every re-scrape. Keep the head in sync with the rendered h1.
+    const promoted = getPromotedDevnet(id);
+    return {
+      params: { id },
+      props: {
+        title: `${promoted?.name ?? spec?.title ?? id} - Forkcast`,
+        description: spec
+          ? `Devnet spec for ${id}: EIP list, client implementation status, and spec references.`
+          : `Devnet network details for ${id}.`,
+      },
+    };
+  });
+}
+
+const id = Astro.params.id!;
+const { title, description } = Astro.props;
+---
+
+<Layout title={title} description={description}>
+  <NetworkDetailPage client:only="react" id={id} />
+</Layout>

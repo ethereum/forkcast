@@ -5,7 +5,7 @@
  * (`<Layout {...staticPageMetadata.pectra} />`) instead of inlining the title and
  * description, so the copy lives in one place and the `satisfies` check guarantees
  * every entry has the right shape. Per-item dynamic routes (eips/[id], calls/[type],
- * calls/[...path], devnets/[id]) compute their metadata from route data in
+ * calls/[...path], networks/[id]) compute their metadata from route data in
  * getStaticPaths() and intentionally stay out of this static registry.
  */
 export interface PageMetadata {
@@ -55,10 +55,10 @@ export const staticPageMetadata = {
     description:
       'Browse Ethereum protocol development calls including AllCoreDevs Consensus, Execution, and Testing meetings.',
   },
-  devnetsIndex: {
-    title: 'Devnet Prioritization - Forkcast',
+  networksIndex: {
+    title: 'Ethereum Networks - Forkcast',
     description:
-      'Track devnet inclusion status, test complexity, and client support for EIPs in upcoming network upgrades.',
+      "Track Ethereum's public networks and the ethPandaOps devnets: fork schedules, blob schedules, chain IDs, and per-devnet EIP coverage.",
   },
   pectra: {
     title: 'Pectra Upgrade - Forkcast',
@@ -117,7 +117,7 @@ export const staticPageRoutes = {
   champions: '/champions',
   eipsIndex: '/eips',
   callsIndex: '/calls',
-  devnetsIndex: '/devnets',
+  networksIndex: '/networks',
   pectra: '/upgrade/pectra',
   fusaka: '/upgrade/fusaka',
   hegota: '/upgrade/hegota',

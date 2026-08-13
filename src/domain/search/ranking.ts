@@ -13,7 +13,7 @@ const SECTION_BASE_ORDER: SectionId[] = [
   'eips',
   'summaries',
   'upgrades',
-  'devnets',
+  'networks',
   'pages',
   'transcripts',
   'calls',
@@ -24,7 +24,7 @@ const SECTION_LABELS: Record<SectionId, string> = {
   calls: 'Calls',
   summaries: 'Call summaries',
   upgrades: 'Network upgrades',
-  devnets: 'Devnets',
+  networks: 'Networks',
   pages: 'Pages',
   transcripts: 'Transcripts',
 };
@@ -35,7 +35,7 @@ const SECTION_CAPS: Record<SectionId, number> = {
   calls: 5,
   summaries: 6,
   upgrades: 3,
-  devnets: 3,
+  networks: 3,
   pages: 3,
   transcripts: 5,
 };
@@ -50,7 +50,7 @@ const SECTION_PROMOTE_AT: Record<SectionId, number> = {
   calls: 100,
   summaries: Infinity,
   upgrades: 100,
-  devnets: 100,
+  networks: 100,
   pages: 100,
   transcripts: Infinity,
 };
@@ -61,7 +61,7 @@ export const SECTION_SCOPE: Record<SectionId, Exclude<SearchScope, 'all'>> = {
   calls: 'calls',
   summaries: 'calls',
   upgrades: 'site',
-  devnets: 'site',
+  networks: 'site',
   pages: 'site',
   transcripts: 'transcripts',
 };

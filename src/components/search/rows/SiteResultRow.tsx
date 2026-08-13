@@ -3,7 +3,7 @@ import { SearchMatch } from '../SearchUi';
 
 const GROUP_ICON = {
   upgrades: '🍴',
-  devnets: '🧪',
+  networks: '🧪',
   pages: '📄',
 } as const;
 

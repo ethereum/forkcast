@@ -1,8 +1,13 @@
 import React, { useState } from 'react';
 import { Link } from './navigation';
-import { useDevnetNetworks } from '../hooks/useDevnetNetworks';
+import { useNetworks } from '../hooks/useNetworks';
 import { getAllDevnetSpecIds } from '../data/devnet-specs';
-import type { ActiveDevnetSeries, InactiveDevnetSeries } from '../types/devnet-networks';
+import { getPromotedDevnet } from '../domain/networks/promotedDevnets';
+import type {
+  ActiveDevnetSeries,
+  InactiveDevnetSeries,
+  PublicNetworkSummary,
+} from '../types/networks';
 
 const CATEGORY_TEXT_COLORS: Record<string, string> = {
   // Glamsterdam — active fork, unique colors per series
@@ -130,7 +135,7 @@ function SeriesCard({ item }: { item: DevnetCardItem }) {
         {item.upcomingSpecId && (
           <div className="flex items-center gap-1.5">
             <Link
-              to={`/devnets/${item.upcomingSpecId}`}
+              to={`/networks/${item.upcomingSpecId}`}
               className="text-xs font-mono font-medium text-purple-600 hover:text-purple-800 dark:text-purple-400 dark:hover:text-purple-300 transition-colors"
             >
               {item.upcomingSpecId}
@@ -140,18 +145,73 @@ function SeriesCard({ item }: { item: DevnetCardItem }) {
             </span>
           </div>
         )}
-        {item.activeKeys.map((key) => (
-          <div key={key}>
-            <Link
-              to={`/devnets/${key}`}
-              className="text-xs font-mono font-medium text-purple-600 hover:text-purple-800 dark:text-purple-400 dark:hover:text-purple-300 transition-colors"
-            >
-              {key}
-            </Link>
-          </div>
-        ))}
+        {item.activeKeys.map((key) => {
+          const promoted = getPromotedDevnet(key);
+          return (
+            <div key={key} className="flex items-center gap-1.5">
+              <Link
+                to={`/networks/${key}`}
+                className="text-xs font-mono font-medium text-purple-600 hover:text-purple-800 dark:text-purple-400 dark:hover:text-purple-300 transition-colors"
+              >
+                {key}
+              </Link>
+              {promoted && (
+                <span className="px-1.5 py-0.5 text-[10px] font-medium bg-purple-100 text-purple-700 dark:bg-purple-900/40 dark:text-purple-300 rounded">
+                  {promoted.name}
+                </span>
+              )}
+            </div>
+          );
+        })}
       </div>
     </div>
+  );
+}
+
+function PublicNetworkCard({ network }: { network: PublicNetworkSummary }) {
+  const forkLabel = network.nextFork
+    ? { text: `Next: ${network.nextFork}`, upcoming: true }
+    : network.latestFork
+      ? { text: `Latest: ${network.latestFork}`, upcoming: false }
+      : null;
+
+  return (
+    <Link
+      to={`/networks/${network.key}`}
+      className="bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg px-4 py-3 flex flex-col gap-2 hover:border-purple-400 dark:hover:border-purple-500 transition-colors"
+    >
+      <div className="flex items-baseline justify-between gap-2">
+        <h4 className="text-sm font-semibold uppercase tracking-wide text-purple-600 dark:text-purple-400">
+          {network.displayName}
+        </h4>
+        {network.chainId !== null && (
+          <span className="text-[10px] font-mono text-slate-400 dark:text-slate-500">
+            chain {network.chainId}
+          </span>
+        )}
+      </div>
+      {network.description && (
+        <p className="text-xs text-slate-500 dark:text-slate-400 line-clamp-3 leading-relaxed">
+          {network.description}
+        </p>
+      )}
+      {network.promotedLabel !== null && (
+        <span className="text-xs font-mono text-slate-400 dark:text-slate-500">{network.key}</span>
+      )}
+      {forkLabel && (
+        <div className="mt-auto pt-1 border-t border-slate-100 dark:border-slate-700/50">
+          <span
+            className={`text-xs font-mono ${
+              forkLabel.upcoming
+                ? 'text-amber-600 dark:text-amber-400'
+                : 'text-slate-500 dark:text-slate-400'
+            }`}
+          >
+            {forkLabel.text}
+          </span>
+        </div>
+      )}
+    </Link>
   );
 }
 
@@ -175,9 +235,9 @@ function InactiveCard({ item }: { item: InactiveDevnetSeries }) {
   );
 }
 
-const DevnetsIndexPage: React.FC = () => {
-  const { activeSeries, inactiveSeries, loading, error } = useDevnetNetworks();
-  const [showInactive, setShowInactive] = useState(false);
+const NetworksIndexPage: React.FC = () => {
+  const { publicNetworks, activeSeries, inactiveSeries, loading, error } = useNetworks();
+  const [showInactive, setShowInactive] = useState(true);
   const cardItems = buildCardItems(activeSeries, inactiveSeries);
   const isForkAffiliated = (key: string) =>
     GLAMSTERDAM_CATEGORIES.has(key) || FUSAKA_CATEGORIES.has(key) || PECTRA_CATEGORIES.has(key) || DENCUN_CATEGORIES.has(key);
@@ -201,13 +261,27 @@ const DevnetsIndexPage: React.FC = () => {
         <div className="mb-6">
           <div className="flex items-center gap-3 mb-2">
             <h1 className="text-xl font-semibold text-slate-900 dark:text-slate-100">
-              Devnet Tracker
+              Networks
             </h1>
           </div>
           <p className="text-sm text-slate-500 dark:text-slate-400">
-            Test networks managed by the <a href="https://ethpandaops.io/" target="_blank" rel="noopener noreferrer" className="text-purple-600 dark:text-purple-400 hover:underline">ethPandaOps</a> team.
+            Ethereum's public networks, plus the devnets run by the <a href="https://ethpandaops.io/" target="_blank" rel="noopener noreferrer" className="text-purple-600 dark:text-purple-400 hover:underline">ethPandaOps</a> team.
           </p>
         </div>
+
+        {/* Public Networks */}
+        {publicNetworks.length > 0 && (
+          <div className="mb-8">
+            <h2 className="text-lg font-semibold text-slate-900 dark:text-slate-100 mb-4">
+              Public Networks
+            </h2>
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
+              {publicNetworks.map((network) => (
+                <PublicNetworkCard key={network.key} network={network} />
+              ))}
+            </div>
+          </div>
+        )}
 
         {/* Devnet Series */}
         <div className="mb-8">
@@ -286,4 +360,4 @@ const DevnetsIndexPage: React.FC = () => {
   );
 };
 
-export default DevnetsIndexPage;
+export default NetworksIndexPage;

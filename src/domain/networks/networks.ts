@@ -4,16 +4,19 @@ import type {
   InactiveDevnetSeries,
   NetworkEntry,
   NetworkServiceUrls,
-} from '../../types/devnet-networks';
-import networksSnapshotRaw from '../../data/generated/devnet-networks.json';
+  PublicNetworkSummary,
+} from '../../types/networks';
+import networksSnapshotRaw from '../../data/generated/networks.json';
+import { buildForkRows, type ForkRow } from './forkSchedule';
+import { PROMOTED_DEVNETS } from './promotedDevnets';
 
 // The ethPandaOps cartographoor networks.json is runtime-discovered data. To keep
-// Astro's getStaticPaths() and the hydrated devnet islands in agreement about which
-// `/devnets/{id}` routes exist, both read this single build-time snapshot
-// (src/data/generated/devnet-networks.json, refreshed by snapshot-runtime-routes.mjs)
+// Astro's getStaticPaths() and the hydrated network islands in agreement about which
+// `/networks/{id}` routes exist, both read this single build-time snapshot
+// (src/data/generated/networks.json, refreshed by snapshot-runtime-routes.mjs)
 // instead of live-fetching. That guarantees the index never links to a network-only
 // route the static build didn't emit. This module is the one pure home for the
-// snapshot derivation; the React hook (useDevnetNetworks) is a thin wrapper over it.
+// snapshot derivation; the React hook (useNetworks) is a thin wrapper over it.
 const snapshot = networksSnapshotRaw as unknown as NetworksJsonResponse;
 
 /** Lookup a specific network entry by key (e.g. "bal-devnet-3"). */
@@ -127,4 +130,105 @@ export const { activeSeries, inactiveSeries } = buildDevnetSeries(snapshot);
  */
 export function getActiveDevnetNetworkKeys(): string[] {
   return activeSeries.flatMap((series) => series.activeKeys);
+}
+
+/** Every network key claimed by a devnet series, using the same matcher the series do. */
+function seriesClaimedKeys(source: NetworksJsonResponse): Set<string> {
+  const claimed = new Set<string>();
+  for (const categoryKey of Object.keys(source.networkMetadata)) {
+    const matcher = versionMatcher(categoryKey);
+    for (const key of Object.keys(source.networks)) {
+      if (matcher.test(key)) claimed.add(key);
+    }
+  }
+  return claimed;
+}
+
+/** Latest activated / next scheduled fork names for a network entry. */
+function forkSummary(entry: NetworkEntry, now: number): { latestFork: string | null; nextFork: string | null } {
+  const rows = buildForkRows(entry.forks, now);
+  const activated = rows.filter((row) => row.activated);
+  const forkLabel = (row: ForkRow | undefined) =>
+    row ? (row.upgradeName ?? row.consensus?.name ?? row.execution?.name ?? null) : null;
+
+  return {
+    latestFork: forkLabel(activated[activated.length - 1]),
+    nextFork: forkLabel(rows.find((row) => !row.activated)),
+  };
+}
+
+/**
+ * The active networks no devnet series claims — mainnet, sepolia, hoodi, and any
+ * public testnet that appears later. Derived rather than listed so a new testnet
+ * shows up on its own and a retired one (holesky) drops out, with no code change.
+ *
+ * Devnets that are really public testnets (PROMOTED_DEVNETS) are appended after
+ * those, since a series always claims their key and cartographoor carries no
+ * signal that they're public.
+ */
+export function buildPublicNetworks(
+  source: NetworksJsonResponse,
+  now: number = Date.now(),
+): PublicNetworkSummary[] {
+  const claimed = seriesClaimedKeys(source);
+  const summaries: PublicNetworkSummary[] = [];
+
+  for (const [key, entry] of Object.entries(source.networks)) {
+    if (entry.status !== 'active' || claimed.has(key)) continue;
+
+    summaries.push({
+      key,
+      displayName: key,
+      description: entry.description ?? '',
+      chainId: entry.chainId ?? null,
+      genesisTime: entry.genesisConfig?.genesisTime ?? null,
+      ...forkSummary(entry, now),
+      promotedLabel: null,
+    });
+  }
+
+  // Mainnet leads; the testnets follow alphabetically.
+  summaries.sort((a, b) => {
+    if (a.key === 'mainnet') return -1;
+    if (b.key === 'mainnet') return 1;
+    return a.key.localeCompare(b.key);
+  });
+
+  const promoted: PublicNetworkSummary[] = [];
+  for (const [key, info] of Object.entries(PROMOTED_DEVNETS)) {
+    const entry = source.networks[key];
+    if (!entry || entry.status !== 'active') continue;
+
+    promoted.push({
+      key,
+      displayName: info.name,
+      // Cartographoor carries no description for devnets, so the curated label doubles as one.
+      description: info.label,
+      chainId: entry.chainId ?? null,
+      genesisTime: entry.genesisConfig?.genesisTime ?? null,
+      ...forkSummary(entry, now),
+      promotedLabel: info.label,
+    });
+  }
+  promoted.sort((a, b) => a.key.localeCompare(b.key));
+
+  return [...summaries, ...promoted];
+}
+
+export const publicNetworks = buildPublicNetworks(snapshot);
+
+// Only the genuine cartographoor public networks — promoted devnets are index
+// cards, but their routes must stay on the devnet-spec branch (see the detail
+// page and getStaticPaths), and siteSearch already emits them as devnet entities.
+const publicNetworkKeys = new Set(
+  publicNetworks.filter((network) => network.promotedLabel === null).map((network) => network.key),
+);
+
+/** Route ids for the public-network detail pages. */
+export function getPublicNetworkKeys(): string[] {
+  return Array.from(publicNetworkKeys);
+}
+
+export function isPublicNetworkKey(id: string): boolean {
+  return publicNetworkKeys.has(id);
 }

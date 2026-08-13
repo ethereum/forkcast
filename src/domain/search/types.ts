@@ -12,7 +12,7 @@ export type SectionId =
   | 'calls'
   | 'summaries'
   | 'upgrades'
-  | 'devnets'
+  | 'networks'
   | 'pages'
   | 'transcripts';
 
@@ -84,7 +84,7 @@ export interface TranscriptResult extends GlobalResultBase {
 
 export interface SiteEntity {
   id: string;
-  group: Extract<SectionId, 'upgrades' | 'devnets' | 'pages'>;
+  group: Extract<SectionId, 'upgrades' | 'networks' | 'pages'>;
   title: string;
   description: string;
   href: string;

@@ -195,7 +195,7 @@ export default function GlobalSearchModal({ isOpen, initialScope, initialQuery =
 
   const sections = useMemo(() => {
     const siteResults = searchSiteEntities(debouncedQuery, siteEntities);
-    const byGroup = (group: 'upgrades' | 'devnets' | 'pages') =>
+    const byGroup = (group: 'upgrades' | 'networks' | 'pages') =>
       siteResults.filter((result) => result.entity.group === group);
 
     const all: SectionResults[] = [
@@ -203,7 +203,7 @@ export default function GlobalSearchModal({ isOpen, initialScope, initialQuery =
       section('calls', searchCallEntities(debouncedQuery, protocolCalls)),
       section('summaries', searchLightCorpus(debouncedQuery, entries ?? [], summaryFilters)),
       section('upgrades', byGroup('upgrades')),
-      section('devnets', byGroup('devnets')),
+      section('networks', byGroup('networks')),
       section('pages', byGroup('pages')),
       section('transcripts', transcripts),
     ];

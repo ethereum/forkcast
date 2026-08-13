@@ -4,7 +4,7 @@
 // Categories are declared in display order. The page groups by layer first, so a
 // category shows up under every layer its EIPs belong to. EIPs listed here that
 // are not up for ranking are ignored, and EIPs in no category at all fall into a
-// trailing "Other".
+// trailing "Uncategorized".
 
 export interface EipCategory {
   /** Slug, stable across renames of `name`. */
@@ -108,5 +108,7 @@ export const eipCategories: EipCategory[] = [
   }
 ];
 
+// Deliberately not "Other": the rank page already uses that name for the
+// section holding EIPs with no layer.
 /** Bucket for EIPs that have not been categorized yet. */
-export const UNCATEGORIZED = 'Other';
+export const UNCATEGORIZED = 'Uncategorized';

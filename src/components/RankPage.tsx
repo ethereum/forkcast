@@ -9,6 +9,7 @@ import {
 } from "../utils/eip";
 import { useAnalytics } from "../hooks/useAnalytics";
 import { eipsData } from "../data/eips";
+import { groupByCategory } from "../domain/eips/eipCategories";
 import { EipDrawer } from "./eip/EipDrawer";
 import { decodeRankingsHash, encodeRankingsHash } from "../utils/rankShare";
 
@@ -1029,80 +1030,88 @@ const RankPage: React.FC = () => {
                       </svg>
                     </button>
                     {isExpanded && (
-                      <div className="grid grid-cols-1 lg:grid-cols-2 gap-2 p-3">
-                        {layerItems.map((item) => (
-                          <div
-                            key={item.id}
-                            draggable={!isTouchDevice}
-                            onDragStart={
-                              !isTouchDevice
-                                ? (e) => handleDragStart(e, item.id)
-                                : undefined
-                            }
-                            onDragEnd={!isTouchDevice ? handleDragEnd : undefined}
-                            onTouchStart={
-                              isTouchDevice
-                                ? () => setSelectedMobileItem(item.id)
-                                : undefined
-                            }
-                            onTouchEnd={
-                              isTouchDevice
-                                ? () => {
-                                    editItems((prev) =>
-                                      prev.map((item) =>
-                                        item.id === selectedMobileItem
-                                          ? { ...item, tier: dragOverTier || null }
-                                          : item
-                                      )
-                                    );
-                                    setSelectedMobileItem(null);
-                                  }
-                                : undefined
-                            }
-                            onClick={
-                              isTouchDevice
-                                ? () => handleMobileItemClick(item.id)
-                                : undefined
-                            }
-                            className={`relative p-2 bg-white dark:bg-slate-700 border border-slate-200 dark:border-slate-600 rounded-lg cursor-move hover:shadow-md transition-all touch-manipulation ${
-                              draggedItem === item.id ? "opacity-50" : ""
-                            } ${
-                              selectedMobileItem === item.id
-                                ? "ring-2 ring-purple-400 bg-purple-50 dark:bg-purple-900/20"
-                                : ""
-                            }`}
-                          >
-                            <div className="flex items-center gap-2 flex-nowrap">
-                              <span
-                                className="text-xs font-mono text-purple-600 dark:text-purple-400 cursor-pointer inline-flex items-center flex-shrink-0 whitespace-nowrap hover:text-purple-800 dark:hover:text-purple-300 transition-colors"
-                                style={{
-                                  borderBottom: '1px dotted currentColor',
-                                  marginBottom: '-2px'
-                                }}
-                                onClick={(e) => {
-                                  e.stopPropagation();
-                                  if (item.eip) setDrawerEipId(item.eip.id);
-                                }}
-                              >
-                                {getItemDisplayId(item)}
-                              </span>
-                              {getItemLayer(item) && (
-                                <span
-                                  className={`px-1 py-0.5 text-xs font-medium rounded flex-shrink-0 ${
-                                    getItemLayer(item) === "EL"
-                                      ? "bg-indigo-100 text-indigo-700 dark:bg-indigo-900/20 dark:text-indigo-300"
-                                      : "bg-teal-100 text-teal-700 dark:bg-teal-900/20 dark:text-teal-300"
-                                  }`}
-                                >
-                                  {getItemLayer(item)}
+                      <div className="flex flex-col gap-4 p-3">
+                        {groupByCategory(layerItems, (item) => item.eip?.id).map(
+                          ({ name, items: categoryItems }) => (
+                            <div key={name} className="flex flex-col gap-2">
+                              <div className="flex items-center gap-2">
+                                <h5 className="text-[11px] font-semibold uppercase tracking-wide text-slate-500 dark:text-slate-400">
+                                  {name}
+                                </h5>
+                                <span className="text-[10px] font-medium text-slate-400 dark:text-slate-500">
+                                  {categoryItems.length}
                                 </span>
-                              )}
-                              <span className="font-medium text-xs text-slate-900 dark:text-slate-100 truncate">
-                                {getItemTitle(item)}
-                              </span>
+                                <span className="flex-1 h-px bg-slate-200 dark:bg-slate-700" />
+                              </div>
+                              <div className="grid grid-cols-1 lg:grid-cols-2 gap-2">
+                                {categoryItems.map((item) => (
+                                  <div
+                                    key={item.id}
+                                    draggable={!isTouchDevice}
+                                    onDragStart={
+                                      !isTouchDevice
+                                        ? (e) => handleDragStart(e, item.id)
+                                        : undefined
+                                    }
+                                    onDragEnd={
+                                      !isTouchDevice ? handleDragEnd : undefined
+                                    }
+                                    onTouchStart={
+                                      isTouchDevice
+                                        ? () => setSelectedMobileItem(item.id)
+                                        : undefined
+                                    }
+                                    onTouchEnd={
+                                      isTouchDevice
+                                        ? () => {
+                                            editItems((prev) =>
+                                              prev.map((item) =>
+                                                item.id === selectedMobileItem
+                                                  ? { ...item, tier: dragOverTier || null }
+                                                  : item
+                                              )
+                                            );
+                                            setSelectedMobileItem(null);
+                                          }
+                                        : undefined
+                                    }
+                                    onClick={
+                                      isTouchDevice
+                                        ? () => handleMobileItemClick(item.id)
+                                        : undefined
+                                    }
+                                    className={`relative p-2 bg-white dark:bg-slate-700 border border-slate-200 dark:border-slate-600 rounded-lg cursor-move hover:shadow-md transition-all touch-manipulation ${
+                                      draggedItem === item.id ? "opacity-50" : ""
+                                    } ${
+                                      selectedMobileItem === item.id
+                                        ? "ring-2 ring-purple-400 bg-purple-50 dark:bg-purple-900/20"
+                                        : ""
+                                    }`}
+                                  >
+                                    <div className="flex items-center gap-2 flex-nowrap">
+                                      <span
+                                        className="text-xs font-mono text-purple-600 dark:text-purple-400 cursor-pointer inline-flex items-center flex-shrink-0 whitespace-nowrap hover:text-purple-800 dark:hover:text-purple-300 transition-colors"
+                                        style={{
+                                          borderBottom: '1px dotted currentColor',
+                                          marginBottom: '-2px'
+                                        }}
+                                        onClick={(e) => {
+                                          e.stopPropagation();
+                                          if (item.eip) setDrawerEipId(item.eip.id);
+                                        }}
+                                      >
+                                        {getItemDisplayId(item)}
+                                      </span>
+                                      <span className="font-medium text-xs text-slate-900 dark:text-slate-100 truncate">
+                                        {getItemTitle(item)}
+                                      </span>
+                                    </div>
+                                  </div>
+                                ))}
+                              </div>
                             </div>
-                          </div>
-                        ))}
+                          )
+                        )}
                       </div>
                     )}
                   </div>

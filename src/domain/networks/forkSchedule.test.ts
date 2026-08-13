@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { buildForkRows } from './forkSchedule';
+import { buildForkRows, getExecutionGenesisTimestamp } from './forkSchedule';
 
 const NOW = 2_000;
 
@@ -90,5 +90,27 @@ describe('buildForkRows', () => {
 
   it('returns nothing when the network reports no forks', () => {
     expect(buildForkRows(undefined, NOW)).toEqual([]);
+  });
+});
+
+describe('getExecutionGenesisTimestamp', () => {
+  it('picks the earliest execution activation, whatever order they are listed in', () => {
+    // Cartographoor keys forks by name, so `frontier` is not necessarily first.
+    expect(
+      getExecutionGenesisTimestamp({
+        execution: {
+          london: { block: 12965000, timestamp: 1_628_166_822 },
+          frontier: { block: 0, timestamp: 1_438_269_988 },
+          homestead: { block: 1150000, timestamp: 1_457_981_393 },
+        },
+      }),
+    ).toBe(1_438_269_988);
+  });
+
+  it('reports nothing rather than guessing when there is no execution fork history', () => {
+    // Every network but mainnet — sepolia's real 2021 execution genesis is absent,
+    // and the beacon genesisTime must not be substituted for it.
+    expect(getExecutionGenesisTimestamp({ consensus: { altair: { epoch: 0, timestamp: 1 } } })).toBeNull();
+    expect(getExecutionGenesisTimestamp(undefined)).toBeNull();
   });
 });

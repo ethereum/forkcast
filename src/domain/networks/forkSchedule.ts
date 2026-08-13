@@ -57,6 +57,21 @@ function layerName(layer: Layer, upgradeName: string | null): string | null {
   );
 }
 
+/**
+ * When the execution chain itself started: the earliest execution activation
+ * cartographoor reports (mainnet's `frontier`, July 2015).
+ *
+ * The beacon `genesisConfig.genesisTime` is not a substitute — on mainnet that is
+ * the Beacon Chain genesis of December 2020, five years later. Null for every
+ * network but mainnet, since cartographoor carries no execution fork history for
+ * the testnets; sepolia's real 2021 execution genesis is simply absent, so this
+ * reports nothing rather than guessing.
+ */
+export function getExecutionGenesisTimestamp(forks: NetworkForks | undefined): number | null {
+  const timestamps = Object.values(forks?.execution ?? {}).map((fork) => fork.timestamp);
+  return timestamps.length === 0 ? null : Math.min(...timestamps);
+}
+
 export function buildForkRows(forks: NetworkForks | undefined, now: number): ForkRow[] {
   if (!forks) return [];
 

@@ -3,7 +3,7 @@ import { Link, useNavigate } from './navigation';
 import { getDevnetSpec, getDevnetSeriesSiblings } from '../data/devnet-specs';
 import { getNetworkEntry, getNetworkMetadata, isPublicNetworkKey } from '../domain/networks/networks';
 import { getPromotedDevnet } from '../domain/networks/promotedDevnets';
-import { buildForkRows, type ForkRow } from '../domain/networks/forkSchedule';
+import { buildForkRows, getExecutionGenesisTimestamp, type ForkRow } from '../domain/networks/forkSchedule';
 import { parseMarkdownLinks, parseMarkdownBold, containsMarkdownTable, parseMarkdownTable } from '../utils/markdown';
 import type {
   DevnetSpec,
@@ -724,6 +724,7 @@ function BlobSchedule({ schedule }: { schedule: BlobScheduleEntry[] }) {
 
 function PublicNetworkContent({ id, networkEntry }: { id: string; networkEntry: NetworkEntry }) {
   const forkRows = buildForkRows(networkEntry.forks, Date.now());
+  const executionGenesis = getExecutionGenesisTimestamp(networkEntry.forks);
 
   return (
     <NetworkPageLayout id={id}>
@@ -735,16 +736,24 @@ function PublicNetworkContent({ id, networkEntry }: { id: string; networkEntry: 
         <div className="mt-3 flex flex-wrap items-center gap-x-3 gap-y-2 text-sm text-slate-500 dark:text-slate-400">
           <SpecHeaderLink href={`https://ethpandaops.io/networks/${id}/`} label="ethPandaOps Dashboard" />
           {networkEntry.chainId !== undefined && <span>Chain ID {networkEntry.chainId}</span>}
+          {executionGenesis !== null && (
+            <>
+              <span>&middot;</span>
+              <span>Genesis {formatDate(executionGenesis)}</span>
+            </>
+          )}
+          {/* Labelled for the layer it belongs to: on mainnet this is the Beacon
+              Chain launch, which postdates the execution genesis above by 5 years. */}
           {networkEntry.genesisConfig?.genesisTime && (
             <>
               <span>&middot;</span>
-              <span>Genesis {formatDate(networkEntry.genesisConfig.genesisTime)}</span>
+              <span>Beacon genesis {formatDate(networkEntry.genesisConfig.genesisTime)}</span>
             </>
           )}
         </div>
       </div>
 
-      <ResourceLinks networkEntry={networkEntry} metadataLinks={null} />
+      {id !== 'mainnet' && <ResourceLinks networkEntry={networkEntry} metadataLinks={null} />}
 
       <ForkSchedule rows={forkRows} />
 

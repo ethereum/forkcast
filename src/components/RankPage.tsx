@@ -5,11 +5,10 @@ import {
   getLaymanTitle,
   getProposalPrefix,
   getEipLayer,
-  getForkRelationship,
 } from "../utils/eip";
 import { useAnalytics } from "../hooks/useAnalytics";
-import { eipsData } from "../data/eips";
 import { groupByCategory } from "../domain/eips/eipCategories";
+import { getRankableEips } from "../domain/eips/rankableEips";
 import { EipDrawer } from "./eip/EipDrawer";
 import { decodeRankingsHash, encodeRankingsHash } from "../utils/rankShare";
 
@@ -70,21 +69,12 @@ const TIER_IDS = TIERS.map((tier) => tier.id);
 const STORAGE_KEY = "hegota-rankings";
 
 // The unranked starting board: active Hegota EIPs, minus selected headliners
-const buildTierItems = (): TierItem[] => {
-  const ACTIVE_STATUSES = new Set(['Proposed', 'Considered', 'Scheduled', 'Included']);
-  return eipsData
-    .filter((eip) => {
-      const rel = getForkRelationship(eip, "hegota");
-      if (!rel || rel.isHeadliner) return false;
-      const latest = rel.statusHistory[rel.statusHistory.length - 1]?.status;
-      return ACTIVE_STATUSES.has(latest);
-    })
-    .map((eip) => ({
-      id: `eip-${eip.id}`,
-      eip,
-      tier: null,
-    }));
-};
+const buildTierItems = (): TierItem[] =>
+  getRankableEips().map((eip) => ({
+    id: `eip-${eip.id}`,
+    eip,
+    tier: null,
+  }));
 
 // Merge the viewer's saved tier assignments onto the current board
 const applySavedRankings = (allItems: TierItem[]): TierItem[] => {

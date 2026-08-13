@@ -23,19 +23,34 @@ const buildPlacements = (categories: EipCategory[]): Map<number, Placement> => {
   return placements;
 };
 
+// Grouping happens on every render, so keep the derived index around rather
+// than rebuilding it each time.
+const placementCache = new WeakMap<EipCategory[], Map<number, Placement>>();
+
+const placementsFor = (categories: EipCategory[]): Map<number, Placement> => {
+  const cached = placementCache.get(categories);
+  if (cached) return cached;
+  const placements = buildPlacements(categories);
+  placementCache.set(categories, placements);
+  return placements;
+};
+
 /**
  * Split items into their categories, in the order the categories are declared,
  * and within a category in the order it lists its EIPs. Empty categories are
- * dropped; anything uncategorized trails in a single "Other" group so newly
- * proposed EIPs still show up on the page.
+ * dropped; anything uncategorized trails in a single "Uncategorized" group so
+ * newly proposed EIPs still show up on the page.
  */
 export function groupByCategory<T>(
   items: T[],
   eipIdOf: (item: T) => number | null | undefined,
   categories: EipCategory[] = eipCategories
 ): CategoryGroup<T>[] {
-  const placements = buildPlacements(categories);
-  const placementOf = (item: T) => placements.get(eipIdOf(item) ?? -1);
+  const placements = placementsFor(categories);
+  const placementOf = (item: T) => {
+    const eipId = eipIdOf(item);
+    return eipId == null ? undefined : placements.get(eipId);
+  };
 
   const buckets = new Map<number, T[]>();
   const uncategorized: T[] = [];

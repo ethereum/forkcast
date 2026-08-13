@@ -1,56 +1,63 @@
 {
   "series": "ACDT",
-  "generated": "2026-08-06",
-  "for_call": "ACDT #91",
+  "generated": "2026-08-13",
+  "for_call": "ACDT #92",
   "suggestions": [
     {
-      "topic": "Devnet-8 launch timeline and readiness",
+      "topic": "Glamsterdam repricing numbers confirmation and devnet-8 launch readiness",
       "priority": "high",
-      "rationale": "Repricing finalized at ACDT #90; devnet-8 described as 'short-lived named testnet' dependent on spec release. Need to confirm CL alpha.13 publication status and set concrete launch date.",
+      "rationale": "Repricing numbers were deferred to ACDE (expected this week per ACDT #91). DevNet 8 (Platåberget) launch is blocked until numbers are final, and this is a public-facing testnet that cannot undergo a second repricing. Critical path item.",
       "related_eips": [],
-      "source": "ongoing_discussion"
+      "source": "deferred_decision"
     },
     {
-      "topic": "EIP-8070 Engine API FCU placement concerns and ACDC coordination",
+      "topic": "Gas limit bump proposal for Glamsterdam fork",
       "priority": "high",
-      "rationale": "ACDT #90 identified unresolved FCU placement concerns for EIP-8070 Engine API mandatory endpoints. Action item to confirm spec changes with potuz and agenda for ACDC discussion before devnet-8.",
+      "rationale": "Deferred from ACDT #91 with no resolution. Proposal to bump default gas limit to 200M at fork to prevent pre-fork transactions failing post-repricing, but CL teams raised concerns about dual-flag complexity. Barnabas was to draft alternative proposal.",
       "related_eips": [],
-      "source": "open_action_item"
+      "source": "deferred_decision"
     },
     {
-      "topic": "discv5-only implementation status and discv4 fallback flag",
-      "priority": "high",
-      "rationale": "ACDT #90 confirmed discv5-only for devnet-8 but identified two clients (including Nimbus EL) lacking a flag to disable discv4 fallback. Teams asked to add flag before devnet-8 — verify completion.",
-      "related_eips": [],
-      "source": "open_action_item"
-    },
-    {
-      "topic": "Devnet-7 stability and builder bid-selection issues",
+      "topic": "EIP-8070 Engine API spec alignment with potuz and ACDC discussion",
       "priority": "medium",
-      "rationale": "Devnet-7 stable for 20+ days but Geth/Nethermind builders not winning bids (ACDT #89), and Teku favoring local blocks 90% of the time. CL teams asked to improve bid-selection logging — confirm progress.",
+      "rationale": "Action from ACDT #90 to confirm spec changes with potuz and bring to ACDC agenda remains open. While EIP-8070 was confirmed mandatory for devnet-8 in ACDT #91, concerns about FCU placement were unresolved. Needs closure before devnet-8.",
       "related_eips": [],
       "source": "open_action_item"
     },
     {
-      "topic": "Devnet-8 chaos testing and devnet-9 planning",
+      "topic": "DevNet 7 stability and readiness for devnet-8 transition",
       "priority": "medium",
-      "rationale": "ACDT #88 outlined devnet-8 for smooth fork transition and devnet-9 as non-finality chaos devnet within ~1 month. Confirm chaos scenario plans (Death Star, malicious nodes) and devnet-9 timeline.",
+      "rationale": "DevNet 7 has been stable for weeks, but payload-flooding attack discovered in ACDT #91 showed missing IGNORE rules in some clients. Confirmation that all clients have implemented the duplicate envelope fix and are ready for devnet-8 testing.",
       "related_eips": [],
       "source": "ongoing_discussion"
     },
     {
-      "topic": "Block Access Lists (EIP-8189) optimization status",
-      "priority": "low",
-      "rationale": "ACDT #90 discussed BAL hot-booting for SnapSync as a 'nice-to-have post-release optimization' not affecting worst-case benchmarks. Confirm if any teams are pursuing implementation or if deferred post-fork.",
+      "topic": "Circuit breaker implementation status across CL clients",
+      "priority": "medium",
+      "rationale": "ACDT #91 showed Teku implemented for devnet-8, Nimbus porting Fusaka design, but Lighthouse update missing. Broader action from ACDT #89 for bid-selection logging improvements not fully confirmed. Status check needed before devnet-8.",
       "related_eips": [],
-      "source": "ongoing_discussion"
+      "source": "open_action_item"
     },
     {
-      "topic": "Client performance updates at 75 Mgas/s anchor",
-      "priority": "low",
-      "rationale": "ACDT #90 noted Erigon still red/yellow pending optimizations, ethrex with one cold-access gap, Besu/Geth at edge but expected to improve. Brief status check on optimization progress.",
+      "topic": "DevNet 8 (Platåberget) scope and optional testing (SNAP2, stateful deltas)",
+      "priority": "medium",
+      "rationale": "DevNet 8 spec includes 70 MB genesis SSZ state test and Barnabas requested optional SNAP2/stateful deltas testing (EIP-8136, EIP-8189). Confirm final scope and whether optional features are ready for inclusion.",
       "related_eips": [],
-      "source": "ongoing_discussion"
+      "source": "devnet_update"
+    },
+    {
+      "topic": "EIP-8282 updates approval status",
+      "priority": "low",
+      "rationale": "Action item from ACDT #91 for lightclient to approve EIPs/pull/12021 to unblock EIP-8282 updates for Glamsterdam. Recent action with unclear urgency; check if resolved or still blocking.",
+      "related_eips": [],
+      "source": "open_action_item"
+    },
+    {
+      "topic": "Formal SFI status ratification for devnet-7 EIPs",
+      "priority": "low",
+      "rationale": "Deferred from ACDT #88 to 'next ACDE/ACDC Thursday' (after July 20). No confirmation in subsequent ACDT calls. While this may have been handled on ACDE/ACDC, worth confirming closure or current status.",
+      "related_eips": [],
+      "source": "deferred_decision"
     }
   ]
 }

@@ -1,0 +1,24 @@
+{
+  "eipId": 8372,
+  "commits": [
+    {
+      "sha": "4742786332d1c2dfc7d725a95292f8bdf11ff9c7",
+      "date": "2026-08-13T14:30:39Z",
+      "message": "Update EIP-8372: Minor fix",
+      "author": "anderselowsson",
+      "prNumber": null,
+      "patch": "@@ -52,14 +52,13 @@ state_gas_available = state_gas_limit - block_output.block_state_gas_used\n \n ### Block-level gas accounting\n \n-The EIP-8037 block-level `gas_used` computation and validity condition are updated to:\n+The EIP-8037 block-level `gas_used` computation and validity conditions are updated to:\n \n ```python\n-state_gas_limit = block.gas_limit * STATE_GAS_LIMIT_SCALE // STATE_GAS_LIMIT_SCALE_DENOMINATOR\n normalized_block_state_gas_used = (block_output.block_state_gas_used * STATE_GAS_LIMIT_SCALE_DENOMINATOR) // STATE_GAS_LIMIT_SCALE\n gas_used = max(block_output.block_execution_gas_used, normalized_block_state_gas_used)\n-assert block_output.block_state_gas_used <= state_gas_limit, 'invalid block: too much state gas used'\n-assert gas_used <= block.gas_limit, 'invalid block: too much gas used'\n+assert block_output.block_state_gas_used <= state_gas_limit\n+assert gas_used <= block_env.block_gas_limit\n ```\n \n The `block_output.block_state_gas_used` counter remains denominated in raw state gas. No new block header field is introduced.",
+      "additions": 3,
+      "deletions": 4
+    },
+    {
+      "sha": "112318dcfe13191c5ddf759516841b1e8595a23e",
+      "date": "2026-08-07T09:07:56Z",
+      "message": "Add EIP: Normalized state gas limit",
+      "author": "anderselowsson",
+      "prNumber": null,
+      "additions": 110,
+      "deletions": 0
+    }
+  ]
+}

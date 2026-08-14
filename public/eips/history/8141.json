@@ -2,6 +2,26 @@
   "eipId": 8141,
   "commits": [
     {
+      "sha": "3aa076e336555abc91ff3c467b1d817685523e7c",
+      "date": "2026-08-14T13:17:30Z",
+      "message": "Update EIP-8141: note that a frame receipt carries no transaction-level status (#12061)",
+      "author": "AnkushinDaniil",
+      "prNumber": 12061,
+      "patch": "@@ -239,6 +239,8 @@ gas_used = [execution, state]\n \n `payer` is the address of the account that paid the fees for the transaction. `status` is the return code of the top-level call. A new code `0x2` is introduced for frames which are skipped due to failed atomic batch. `gas_used` is the list of gas used by the frame, mirroring the frame's `limits` list. `gas_used.execution` is the execution gas used by the frame, not accounting for refunds. `gas_used.state` is the final state gas attributed to the frame after all state-gas refills and rollbacks in the transaction have been applied (see [Gas Accounting](#gas-accounting)). A later frame may therefore reduce an earlier frame's `gas_used.state`. The sum of all frame `gas_used.state` values is the transaction's final state-gas usage. `cumulative_gas_used` is still computed by adding the total gas used by the transaction with the previous cumulative sum. The transaction's logs, for the purposes of the block header `logsBloom` and log indexing, are the concatenation of the `logs` fields of its frame receipts, in frame order.\n \n+The `ReceiptPayload` carries no transaction-level status: the only statuses it holds are the per-frame ones. An interface that has to present a single status for the transaction therefore derives it, rather than reading it from the receipt.\n+\n #### Signature Hash\n \n The canonical signature hash is defined such that any signature with empty `msg` will have its raw `signature` bytes elided.",
+      "additions": 2,
+      "deletions": 0
+    },
+    {
+      "sha": "eec839abba0fc30502fef27177c6024f1eb0f4d6",
+      "date": "2026-08-14T13:04:27Z",
+      "message": "Update EIP-8141: clarify floor repricing, signature validation, and frame.value gas (#12026)",
+      "author": "AnkushinDaniil",
+      "prNumber": 12026,
+      "patch": "@@ -311,6 +311,8 @@ def validate_signature(sig, tx_sender, sig_hash) -> bool:\n         return False\n ```\n \n+Note: since the signature validation does not happen in EVM execution, the related precompiles `ecrecover` and `P256VERIFY` must not be added to the block-level access list.\n+\n #### Expiry Verifier Frame\n \n A `VERIFY` frame whose `frame.target` equals `EXPIRY_VERIFIER` is an **expiry verifier frame**. It calls the expiry verifier contract deployed at `EXPIRY_VERIFIER` with `frame.data` as calldata. The calldata is interpreted as an 8-byte unsigned big-endian expiry timestamp. The call reverts unless `block.timestamp <= expiry_timestamp`.",
+      "additions": 2,
+      "deletions": 0
+    },
+    {
       "sha": "328527d97aabd5993402a57141f85e7cafd0138a",
       "date": "2026-08-13T22:01:37Z",
       "message": "Update EIP-8141: Add explicit second dimension for state gas to frames (#12062)",
@@ -507,20 +527,20 @@
   ],
   "openPrs": [
     {
+      "number": 12167,
+      "title": "Update EIP-8141: relax banned opcode list",
+      "author": "Marchhill",
+      "updatedAt": "2026-08-14T16:31:27Z",
+      "additions": 1,
+      "deletions": 4
+    },
+    {
       "number": 12041,
       "title": "Update EIP-8141: assembled canonical paymaster reference bytecode",
       "author": "Marchhill",
       "updatedAt": "2026-07-30T12:15:25Z",
       "additions": 95,
       "deletions": 8
-    },
-    {
-      "number": 12091,
-      "title": "Update EIP-8141: specify block inclusion gating and payer solvency",
-      "author": "AnkushinDaniil",
-      "updatedAt": "2026-08-13T22:06:19Z",
-      "additions": 6,
-      "deletions": 0
     },
     {
       "number": 12162,
@@ -550,9 +570,9 @@
       "number": 12157,
       "title": "Update EIP-8141: dispatch a precompile targeted by a SENDER or DEFAULT frame",
       "author": "Marchhill",
-      "updatedAt": "2026-08-13T14:03:13Z",
+      "updatedAt": "2026-08-14T14:45:42Z",
       "additions": 1,
-      "deletions": 1
+      "deletions": 3
     },
     {
       "number": 12113,
@@ -563,60 +583,12 @@
       "deletions": 5
     },
     {
-      "number": 12026,
-      "title": "Update EIP-8141: clarify floor repricing, signature validation, and frame.value gas",
-      "author": "AnkushinDaniil",
-      "updatedAt": "2026-07-30T10:13:48Z",
-      "additions": 10,
-      "deletions": 4
-    },
-    {
-      "number": 12061,
-      "title": "Update EIP-8141: note that a frame receipt carries no transaction-level status",
-      "author": "AnkushinDaniil",
-      "updatedAt": "2026-08-12T13:20:00Z",
-      "additions": 2,
-      "deletions": 0
-    },
-    {
       "number": 12160,
       "title": "Update EIP-8141: enumerate the validation-prefix state dependency set for revalidation without re-simulation",
       "author": "AnkushinDaniil",
       "updatedAt": "2026-08-13T16:26:58Z",
       "additions": 2,
       "deletions": 0
-    },
-    {
-      "number": 11555,
-      "title": "Update EIP-8141: add support for guarantors",
-      "author": "derekchiang",
-      "updatedAt": "2026-04-28T18:02:58Z",
-      "additions": 247,
-      "deletions": 104
-    },
-    {
-      "number": 11681,
-      "title": "Update EIP-8141: Extend with Guarantors, Flexible Nonces, and Signer Binding",
-      "author": "pedrouid",
-      "updatedAt": "2026-07-25T11:31:41Z",
-      "additions": 400,
-      "deletions": 60
-    },
-    {
-      "number": 11580,
-      "title": "Update EIP-8141: allow payer to approve before sender",
-      "author": "lightclient",
-      "updatedAt": "2026-05-15T14:37:33Z",
-      "additions": 136,
-      "deletions": 68
-    },
-    {
-      "number": 11482,
-      "title": "Update EIP-8141: Allow using precompiles for VERIFY frames",
-      "author": "derekchiang",
-      "updatedAt": "2026-04-04T16:01:47Z",
-      "additions": 163,
-      "deletions": 98
     }
   ]
 }

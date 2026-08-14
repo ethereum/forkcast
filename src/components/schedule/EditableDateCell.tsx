@@ -225,9 +225,14 @@ const EditableDateCell: React.FC<EditableDateCellProps> = ({
           </div>
         </Tooltip>
       ) : (
-        <div className="inline-flex items-center justify-center w-4 py-0.5 rounded text-xs font-medium bg-slate-100 text-slate-600 dark:bg-slate-700 dark:text-slate-300">
-          ○
-        </div>
+        /* A question mark, not a neutral circle: these dates are projections
+           calculated backwards from a target mainnet date, and readers routinely
+           quote them as if they were agreed. */
+        <Tooltip text="Projected, not agreed. Calculated from the target mainnet date." position="top">
+          <div className="inline-flex items-center justify-center w-4 py-0.5 rounded text-xs font-medium bg-slate-100 text-slate-600 dark:bg-slate-700 dark:text-slate-300">
+            ?
+          </div>
+        </Tooltip>
       )}
       <div
         className={`text-sm ${dateWidth} cursor-pointer ${isOverdue ? 'text-amber-700 dark:text-amber-400 font-medium hover:text-amber-800 dark:hover:text-amber-300' : 'text-slate-700 dark:text-slate-300 hover:text-purple-600 dark:hover:text-purple-400'}`}

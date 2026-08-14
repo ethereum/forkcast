@@ -39,9 +39,14 @@ export const GlamsterdamTimeline: React.FC = () => {
                         <div className={`absolute inset-0 rounded-full ${getPhaseStatusColor(phase.status).match(/(bg-\S+)|(dark:bg-\S+)/g)?.join(' ')}`} />
                         <div className="relative">{getPhaseStatusIcon(phase.status)}</div>
                       </div>
-                      <div className="flex-1">
-                        <h4 className="font-medium text-slate-900 dark:text-slate-100 text-sm mb-1">{phase.title}</h4>
-                        <p className="text-xs text-slate-600 dark:text-slate-300 mb-2">{phase.description}</p>
+                      <div className="flex-1 flex items-start justify-between gap-4">
+                        <div className="flex-1 min-w-0">
+                          <h4 className="font-medium text-slate-900 dark:text-slate-100 text-sm mb-1">{phase.title}</h4>
+                          <p className="text-xs text-slate-600 dark:text-slate-300 mb-2 leading-relaxed">{phase.description}</p>
+                        </div>
+                        <div className="flex-shrink-0">
+                          <span className="text-xs text-slate-500 dark:text-slate-400 font-medium">{phase.dateRange}</span>
+                        </div>
                       </div>
                     </div>
                   ))}
@@ -60,9 +65,14 @@ export const GlamsterdamTimeline: React.FC = () => {
                   <div className={`absolute inset-0 rounded-full ${getPhaseStatusColor(phase.status).match(/(bg-\S+)|(dark:bg-\S+)/g)?.join(' ')}`} />
                   <div className="relative">{getPhaseStatusIcon(phase.status)}</div>
                 </div>
-                <div className="flex-1">
-                  <h4 className="font-medium text-slate-900 dark:text-slate-100 text-sm mb-1">{phase.title}</h4>
-                  <p className="text-xs text-slate-600 dark:text-slate-300 mb-2">{phase.description}</p>
+                <div className="flex-1 flex items-start justify-between gap-4">
+                  <div className="flex-1 min-w-0">
+                    <h4 className="font-medium text-slate-900 dark:text-slate-100 text-sm mb-1">{phase.title}</h4>
+                    <p className="text-xs text-slate-600 dark:text-slate-300 mb-2 leading-relaxed">{phase.description}</p>
+                  </div>
+                  <div className="flex-shrink-0">
+                    <span className="text-xs text-slate-500 dark:text-slate-400 font-medium">{phase.dateRange}</span>
+                  </div>
                 </div>
               </div>
             );
@@ -80,9 +90,14 @@ export const GlamsterdamTimeline: React.FC = () => {
                         <div className={`absolute inset-0 rounded-full ${getPhaseStatusColor(phase.status).match(/(bg-\S+)|(dark:bg-\S+)/g)?.join(' ')}`} />
                         <div className="relative">{getPhaseStatusIcon(phase.status)}</div>
                       </div>
-                      <div className="flex-1">
-                        <h4 className="font-medium text-slate-900 dark:text-slate-100 text-sm mb-1">{phase.title}</h4>
-                        <p className="text-xs text-slate-600 dark:text-slate-300 mb-2">{phase.description}</p>
+                      <div className="flex-1 flex items-start justify-between gap-4">
+                        <div className="flex-1 min-w-0">
+                          <h4 className="font-medium text-slate-900 dark:text-slate-100 text-sm mb-1">{phase.title}</h4>
+                          <p className="text-xs text-slate-600 dark:text-slate-300 mb-2 leading-relaxed">{phase.description}</p>
+                        </div>
+                        <div className="flex-shrink-0">
+                          <span className="text-xs text-slate-500 dark:text-slate-400 font-medium">{phase.dateRange}</span>
+                        </div>
                       </div>
                     </div>
                   ))}

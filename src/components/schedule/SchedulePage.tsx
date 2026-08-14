@@ -17,8 +17,8 @@ interface PlanningTableState {
 }
 
 const DEFAULT_STATE: PlanningTableState = {
-  glamsterdamMainnetDate: '2026-10-21',
-  hegotaMainnetDate: '2027-05-01',
+  glamsterdamMainnetDate: '2026-11-18',
+  hegotaMainnetDate: '2027-06-09',
   glamsterdamDevnetCount: 8,
   hegotaDevnetCount: 6,
   lockedDates: {},
@@ -139,27 +139,25 @@ const SchedulePage: React.FC = () => {
       })
     };
 
-    // Insert a Glamsterdam-only "Plataberget" public testnet before Sepolia,
-    // spaced DEVNET_TO_SEPOLIA (30 days) ahead of Sepolia.
+    // Platåberget is a Glamsterdam-only public testnet standing in for the
+    // deprecated Holešky. It is already live, so it carries its actual date from
+    // GLAMSTERDAM_PROGRESS rather than a projection, and Sepolia's gap is measured
+    // against it.
+    const plataberget = GLAMSTERDAM_PROGRESS.phases
+      .find(phase => phase.phaseId === 'public-testnets')
+      ?.testnets?.find(testnet => testnet.name === 'Platåberget');
+
     return {
       ...withStatic,
       phases: withStatic.phases.map(phase => {
-        if (phase.phaseId !== 'public-testnets' || !phase.testnets) return phase;
+        if (phase.phaseId !== 'public-testnets' || !phase.testnets || !plataberget) return phase;
         const sepoliaIdx = phase.testnets.findIndex(t => t.name === 'Sepolia');
-        const sepolia = sepoliaIdx === -1 ? undefined : phase.testnets[sepoliaIdx];
-        const sepoliaDate = parseShortDate(sepolia?.date || sepolia?.projectedDate || '');
-        let platabergetDate = '';
-        if (sepoliaDate) {
-          const d = new Date(sepoliaDate);
-          d.setDate(d.getDate() - phaseDurations.DEVNET_TO_SEPOLIA);
-          platabergetDate = d.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
-        }
         const insertAt = sepoliaIdx === -1 ? phase.testnets.length : sepoliaIdx;
         return {
           ...phase,
           testnets: [
             ...phase.testnets.slice(0, insertAt),
-            { name: 'Platåberget', status: 'upcoming' as const, projectedDate: platabergetDate },
+            plataberget,
             ...phase.testnets.slice(insertAt),
           ],
         };
@@ -576,7 +574,7 @@ const SchedulePage: React.FC = () => {
                                     fusakaPhase.status === 'in-progress' ? 'bg-blue-100 text-blue-800 dark:bg-blue-900/20 dark:text-blue-300' :
                                     'bg-slate-100 text-slate-600 dark:bg-slate-700 dark:text-slate-300'
                                   }`}>
-                                    {fusakaPhase.status === 'completed' ? '✓' : fusakaPhase.status === 'in-progress' ? '→' : '○'}
+                                    {fusakaPhase.status === 'completed' ? '✓' : fusakaPhase.status === 'in-progress' ? '→' : '?'}
                                   </div>
                                   <div className="text-slate-700 dark:text-slate-300 text-sm">
                                     {fusakaPhase.actualEndDate ? fusakaPhase.actualEndDate :
@@ -598,7 +596,7 @@ const SchedulePage: React.FC = () => {
                                     glamsterdamPhase.status === 'in-progress' ? 'bg-blue-100 text-blue-800 dark:bg-blue-900/20 dark:text-blue-300' :
                                     'bg-slate-100 text-slate-600 dark:bg-slate-700 dark:text-slate-300'
                                   }`}>
-                                    {glamsterdamPhase.status === 'completed' ? '✓' : glamsterdamPhase.status === 'in-progress' ? '→' : '○'}
+                                    {glamsterdamPhase.status === 'completed' ? '✓' : glamsterdamPhase.status === 'in-progress' ? '→' : '?'}
                                   </div>
                                   <div className="text-slate-700 dark:text-slate-300 text-sm">
                                     {glamsterdamPhase.actualEndDate || glamsterdamPhase.projectedDate || glamsterdamPhase.actualStartDate}
@@ -637,7 +635,7 @@ const SchedulePage: React.FC = () => {
                                     hegotaPhase.status === 'in-progress' ? 'bg-blue-100 text-blue-800 dark:bg-blue-900/20 dark:text-blue-300' :
                                     'bg-slate-100 text-slate-600 dark:bg-slate-700 dark:text-slate-300'
                                   }`}>
-                                    {hegotaPhase.status === 'completed' ? '✓' : hegotaPhase.status === 'in-progress' ? '→' : '○'}
+                                    {hegotaPhase.status === 'completed' ? '✓' : hegotaPhase.status === 'in-progress' ? '→' : '?'}
                                   </div>
                                   <div className="text-slate-700 dark:text-slate-300 text-sm">
                                     {hegotaPhase.projectedDate}

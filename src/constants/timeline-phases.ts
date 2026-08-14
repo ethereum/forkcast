@@ -8,39 +8,39 @@ import devnetLaunches from '../data/generated/devnet-launches.json';
 
 export const GLAMSTERDAM_TIMELINE_PHASES: TimelinePhase[] = [
   {
-    id: 'fork-focus',
-    title: 'Fork Focus Discussion & Headliner Proposals',
-    dateRange: 'May 26 - June 20',
-    description: 'ACD calls focus on discussing Glamsterdam\'s high-level goals. Headliner champions present proposals.',
+    id: 'devnets',
+    title: 'Devnets',
+    dateRange: 'Complete',
+    description: 'Client teams implement and test Glamsterdam changes on internal development networks.',
     status: 'completed'
   },
   {
-    id: 'headliner-discussion',
-    title: 'Headliner Discussion & Finalization',
-    dateRange: 'June 23 - July 17',
-    description: 'ACD evaluates candidate headliners, solicits community feedback, and finalizes decisions.',
-    status: 'completed'
-  },
-  {
-    id: 'non-headliner-proposals',
-    title: 'Non-Headliner EIP Proposals',
-    dateRange: 'July 21 - Aug 21',
-    description: 'Non-headliner EIPs can now be proposed for inclusion in Glamsterdam.',
-    status: 'completed'
-  },
-  {
-    id: 'cfi-decisions',
-    title: 'Non-Headliner EIP CFI Decisions',
-    dateRange: 'Sep 4 & 11',
-    description: 'ACDC and ACDE calls select which Proposed for Inclusion EIPs advance to Considered for Inclusion.',
-    status: 'completed'
-  },
-  {
-    id: 'cfi-to-sfi',
-    title: 'CFI → SFI EIP Decisions',
-    dateRange: 'Date TBD',
-    description: 'As Glamsterdam devnets begin, final decisions on which CFI EIPs will be included in the upgrade\'s devnet.',
+    id: 'plataberget',
+    title: 'Platåberget Testnet Deployment',
+    dateRange: 'Aug 13',
+    description: 'Deploy Glamsterdam to a purpose-built public testnet for initial testing. The network launched Aug 13; Gloas activates Aug 20.',
     status: 'in-progress'
+  },
+  {
+    id: 'sepolia',
+    title: 'Sepolia Testnet Deployment',
+    dateRange: 'TBD',
+    description: 'Deploy Glamsterdam to the permissioned validator testnet.',
+    status: 'upcoming'
+  },
+  {
+    id: 'hoodi',
+    title: 'Hoodi Testnet Deployment',
+    dateRange: 'TBD',
+    description: 'Deploy Glamsterdam to the permissionless validator testnet for final testing.',
+    status: 'upcoming'
+  },
+  {
+    id: 'mainnet',
+    title: 'Mainnet Deployment',
+    dateRange: 'Q4 2026',
+    description: 'Final deployment of Glamsterdam to Ethereum mainnet after successful testnet validation.',
+    status: 'upcoming'
   }
 ];
 
@@ -133,14 +133,14 @@ export const HEGOTA_TIMELINE_PHASES: TimelinePhase[] = [
     title: 'Non-Headliner EIP Proposals',
     dateRange: 'Apr 9 - Aug 6',
     description: 'Non-headliner EIPs can be proposed for inclusion in Hegotá. Window opens April 9th, deadline August 6th.',
-    status: 'in-progress'
+    status: 'completed'
   },
   {
     id: 'cfi-decisions',
     title: 'Non-Headliner EIP CFI Decisions',
     dateRange: 'TBD',
     description: 'ACDC and ACDE calls select which Proposed for Inclusion EIPs advance to Considered for Inclusion.',
-    status: 'upcoming'
+    status: 'in-progress'
   },
   {
     id: 'cfi-to-sfi',
@@ -244,10 +244,10 @@ const RAW_GLAMSTERDAM_PROGRESS: ForkProgress = {
     },
     {
       phaseId: 'development',
-      status: 'in-progress',
+      status: 'completed',
       actualStartDate: 'Feb 2026',
-      projectedDate: 'Q2 2026',
-      progressNotes: 'Scoping complete, implemented EIPs are being tested on devnets',
+      actualEndDate: 'Jul 14, 2026',
+      progressNotes: 'Devnet series complete, testing moved to public testnets',
       devnets: [
         { name: 'Devnet-0', status: 'completed', date: 'Apr 24, 2026' },
         { name: 'Devnet-1', status: 'completed', date: 'Apr 29, 2026' },
@@ -261,11 +261,14 @@ const RAW_GLAMSTERDAM_PROGRESS: ForkProgress = {
     },
     {
       phaseId: 'public-testnets',
-      status: 'upcoming',
+      status: 'in-progress',
+      actualStartDate: 'Aug 13, 2026',
       projectedDate: 'Q3 2026',
-      progressNotes: 'Sequential testnet deployments',
+      progressNotes: 'Platåberget is live; Sepolia and Hoodi to follow',
+      // Holešky is deprecated, so Glamsterdam gets a purpose-built public testnet
+      // (glamsterdam-devnet-8) in its place.
       testnets: [
-        { name: 'Holešky', status: 'deprecated' },
+        { name: 'Platåberget', status: 'completed', date: 'Aug 13, 2026' },
         { name: 'Sepolia', status: 'upcoming', projectedDate: 'Q3 2026' },
         { name: 'Hoodi', status: 'upcoming', projectedDate: 'Q3 2026' }
       ]
@@ -309,7 +312,7 @@ const RAW_HEGOTA_PROGRESS: ForkProgress = {
       substeps: [
         {
           name: 'PFI Deadline',
-          status: 'upcoming',
+          status: 'completed',
           date: 'Aug 6, 2026'
         },
         {

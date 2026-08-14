@@ -89,13 +89,13 @@ export const OverviewSection: React.FC<OverviewSectionProps> = ({
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11 5.882V19.24a1.76 1.76 0 01-3.417.592l-2.147-6.15M18 13a3 3 0 100-6M5.436 13.683A4.001 4.001 0 017 6h1.832c4.1 0 7.625-1.234 9.168-3v14c-1.543-1.766-5.067-3-9.168-3H7a3.988 3.988 0 01-1.564-.317z" />
             </svg>
             <div>
-              <h4 className="font-medium text-purple-900 dark:text-purple-100 text-sm mb-1">Non-Headliner EIP Proposals Open</h4>
+              <h4 className="font-medium text-purple-900 dark:text-purple-100 text-sm mb-1">CFI Decisions Underway</h4>
               <p className="text-purple-800 dark:text-purple-200 text-xs leading-relaxed">
                 Headliner selection has concluded with{' '}
                 <a href="#eip-7805" className="text-purple-600 dark:text-purple-300 underline decoration-1 underline-offset-2 hover:text-purple-800 dark:hover:text-purple-100">FOCIL (EIP-7805)</a>
                 {' '}SFI'd and{' '}
                 <a href="#eip-8141" className="text-purple-600 dark:text-purple-300 underline decoration-1 underline-offset-2 hover:text-purple-800 dark:hover:text-purple-100">Frame Transaction (EIP-8141)</a>
-                {' '}CFI'd. The non-headliner EIP proposal window is now open (deadline August 6th). Follow updates on the{' '}
+                {' '}CFI'd. The non-headliner EIP proposal window closed August 6th, and ACDC and ACDE calls are now deciding which proposals advance to Considered for Inclusion. Follow updates on the{' '}
                 <a
                   href="https://ethereum-magicians.org/t/eip-8081-hegota-network-upgrade-meta-thread/26876"
                   target="_blank"
@@ -138,7 +138,14 @@ export const OverviewSection: React.FC<OverviewSectionProps> = ({
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11 5.882V19.24a1.76 1.76 0 01-3.417.592l-2.147-6.15M18 13a3 3 0 100-6M5.436 13.683A4.001 4.001 0 017 6h1.832c4.1 0 7.625-1.234 9.168-3v14c-1.543-1.766-5.067-3-9.168-3H7a3.988 3.988 0 01-1.564-.317z" />
             </svg>
             <p className="text-purple-800 dark:text-purple-200 text-xs leading-relaxed">
-              Stay tuned! The first public testnet, <span className="font-semibold">Platåberget</span>, is expected in early August 2026.
+              The first public testnet,{' '}
+              <Link
+                to="/networks/glamsterdam-devnet-8"
+                className="font-semibold underline decoration-1 underline-offset-2 hover:text-purple-900 dark:hover:text-purple-100"
+              >
+                Platåberget
+              </Link>
+              , went live on August 13, 2026.
             </p>
           </div>
         </div>

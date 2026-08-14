@@ -1,30 +1,42 @@
-{
-  "id": 8363,
-  "title": "EIP-8363: Tapered Issuance Burn",
-  "status": "Draft",
-  "description": "Burn a fraction of validator rewards that rises with the staking ratio, removing the issuance incentive to stake more than 50% of all ETH",
-  "author": "pintail (@pintail-xyz), Jérôme de Tychey (@jdetychey), dapplion (@dapplion), pa7x1 (@pa7x1), Ladislaus von Daniels (@ladidan), Justin Drake (@justindrake)",
-  "type": "Standards Track",
-  "category": "Core",
-  "createdDate": "2026-07-14",
-  "discussionLink": "https://ethereum-magicians.org/t/eip-8363-tapered-issuance-burn/29263",
-  "layer": "CL",
-  "forkRelationships": [
-    {
-      "forkName": "Hegota",
-      "statusHistory": [
-        {
-          "status": "Proposed",
-          "call": "acdc/184",
-          "date": "2026-08-06"
-        }
-      ],
-      "champions": [
-        {
-          "name": "Jérôme de Tychey"
-        }
-      ]
-    }
-  ],
-  "tradeoffs": null
-}
+  {
+    "id": 8363,
+    "title": "EIP-8363: Tapered Issuance Burn",
+    "status": "Draft",
+    "description": "Burn a fraction of validator rewards that rises with the staking ratio, removing the issuance incentive to stake more than 50% of all ETH",
+    "author": "pintail (@pintail-xyz), Jérôme de Tychey (@jdetychey), dapplion (@dapplion), pa7x1 (@pa7x1), Ladislaus von Daniels (@ladidan), Justin Drake (@justindrake)",
+    "type": "Standards Track",
+    "category": "Core",
+    "createdDate": "2026-07-14",
+    "discussionLink": "https://ethereum-magicians.org/t/eip-8363-tapered-issuance-burn/29263",
+    "layer": "CL",
+    "forkRelationships": [
+      {
+        "forkName": "Hegota",
+        "statusHistory": [
+          {
+            "status": "Proposed",
+            "call": "acdc/184",
+            "date": "2026-08-06"
+          }
+        ],
+        "champions": [
+          {
+            "name": "Pintail"
+          },
+          {
+            "name": "Jérôme de Tychey"
+          },
+          {
+            "name": "dapplion"
+          }
+        ]
+      }
+    ],
+    "tradeoffs": [
+      "At high staking ratio, MEV and priority fees become a considerable reward share.",
+      "Fixed operating costs weigh hardest on the smallest validators as net yields fall.",
+      "Net yield becomes more sensitive to the staking ratio than under the current curve.",
+      "Businesses priced off the staking rate must reprice to a structurally lower reference rate.",
+      "Validator downtime costs the same ETH but takes longer to earn back at lower yields."
+    ]
+  }

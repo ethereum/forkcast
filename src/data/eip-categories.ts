@@ -30,22 +30,27 @@ export const eipCategories: EipCategory[] = [
   {
     id: 'evm-features',
     name: 'EVM Features',
-    eips: [5920, 7979, 8163, 8173]
+    eips: [5920, 7979, 8163, 8173, 8219]
   },
   {
     id: 'repricing',
     name: 'Repricing',
-    eips: [7686, 7709, 7923, 7971, 7973, 8058, 8131, 8279]
+    eips: [3298, 7686, 7709, 7923, 7971, 7973, 8058, 8131, 8279, 8358, 8368, 8372, 8374]
   },
   {
     id: 'precompiles-cryptography',
     name: 'Precompiles & Cryptography',
-    eips: [7666, 8030, 8200]
+    eips: [7666, 8030, 8200, 8355]
   },
   {
     id: 'block-state-data',
     name: 'Block & State Data',
     eips: [7807, 8115, 8116, 8188, 8268, 8304]
+  },
+  {
+    id: 'mempool-propagation',
+    name: 'Mempool & Transaction Propagation',
+    eips: [8077, 8094]
   },
   {
     id: 'privacy',
@@ -82,7 +87,7 @@ export const eipCategories: EipCategory[] = [
   {
     id: 'rewards-penalties',
     name: 'Rewards & Penalties',
-    eips: [7716, 8363]
+    eips: [7716, 8363, 8375]
   },
   {
     id: 'data-availability',

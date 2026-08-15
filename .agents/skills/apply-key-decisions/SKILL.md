@@ -80,7 +80,7 @@ The champion is usually the person who **added the proposal to the call agenda**
    | Derek Chiang | - | derekchiang |
 4. If the presenter is a facilitator speaking on someone's behalf (e.g. Ansgar, Pari, Nixo) or doesn't clearly map to an author or agenda commenter, **do not guess** — leave `champions` off and flag that EIP so the user can supply the champion.
 
-Add the champion to that fork's relationship only (max 2 per schema; this skill adds at most 1).
+Add the champion to that fork's relationship only (max 3 per schema; this skill adds at most 1).
 
 ### Step 5: Validate
 

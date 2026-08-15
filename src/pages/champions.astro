@@ -1,6 +1,8 @@
 ---
 import Layout from '../layouts/Layout.astro';
 import { staticPageMetadata } from '../domain/routes/pageMetadata';
+import { stakeholders } from '../domain/eips/stakeholders';
+import EipDataBuilder from '../components/champions/EipDataBuilder';
 
 const REPO = 'https://github.com/ethereum/forkcast';
 
@@ -8,7 +10,8 @@ const surfaces = [
   {
     href: '/eips/8025',
     label: 'EIP page, Analysis tab',
-    detail: 'Layman description, benefits, tradeoffs, north star alignment, and stakeholder impacts.',
+    detail:
+      'Your layman description leads as the TL;DR, followed by benefits, tradeoffs, and stakeholder impacts.',
   },
   {
     href: '/eips/8025?tab=faq',
@@ -19,7 +22,7 @@ const surfaces = [
     href: '/upgrade/glamsterdam',
     label: 'Upgrade page cards',
     detail:
-      'Expanding an EIP shows your benefits, tradeoffs, stakeholder impacts, and north star alignment.',
+      'Expanding an EIP shows your benefits, tradeoffs, and stakeholder impacts.',
   },
   {
     href: '/upgrade/glamsterdam/stakeholders',
@@ -48,22 +51,11 @@ const submitSteps = [
   },
 ];
 
-const stakeholders = [
-  { key: 'endUsers', audience: 'People transacting on Ethereum' },
-  { key: 'appDevs', audience: 'Smart contract and dapp developers' },
-  { key: 'walletDevs', audience: 'Wallet software maintainers' },
-  { key: 'toolingInfra', audience: 'Indexers, explorers, RPC providers, analytics' },
-  { key: 'layer2s', audience: 'Rollups and L2 teams' },
-  { key: 'stakersNodes', audience: 'Validators and node operators' },
-  { key: 'clClients', audience: 'Consensus layer client teams' },
-  { key: 'elClients', audience: 'Execution layer client teams' },
-];
-
 const checklist = [
   'All eight stakeholder impacts are filled in, including the "No impact" ones.',
   'tradeoffs is a real list, or deliberately null because there genuinely are none.',
-  'Every benefit and tradeoff is a single claim under about 16 words.',
-  'The layman description has no jargon, no acronyms, and is under about 60 words.',
+  'Every benefit and tradeoff is a single claim, ideally under ~16 words.',
+  'The layman description has no jargon and no acronyms, ideally under ~60 words.',
   'Each FAQ answer stands on its own, because it can be linked to in isolation.',
   'npm run compile-eips passes.',
   'npm run audit-eips reports no issues for your EIP.',
@@ -78,9 +70,9 @@ const jsonTemplate = `{
   "laymanDescription": "Two or three plain sentences. What changes, for someone who does not read specs.",
 
   "benefits": [
-    "One concrete, checkable claim under 16 words",
+    "One concrete, checkable claim, ideally under ~16 words",
     "Another one",
-    "Four to six of these total"
+    "Aim for four to six of these total"
   ],
 
   "tradeoffs": [
@@ -97,10 +89,6 @@ const jsonTemplate = `{
     "stakersNodes": { "description": "About 20 words, or 'No impact.'" },
     "clClients": { "description": "Implementation complexity, not user benefit." },
     "elClients": { "description": "Implementation complexity, not user benefit." }
-  },
-
-  "northStarAlignment": {
-    "improveUX": { "description": "One sentence. Omit any goal that is not genuinely relevant." }
   },
 
   "faq": [
@@ -142,7 +130,8 @@ const hashClass =
 ---
 
 <Layout {...staticPageMetadata.champions}>
-  <div class="bg-slate-50 dark:bg-slate-900 px-6 py-16">
+  <!-- Extra pb at lg leaves room for the fixed builder launcher bar. -->
+  <div class="bg-slate-50 dark:bg-slate-900 px-6 pt-16 pb-16 lg:pb-32">
     <div class="mx-auto max-w-3xl">
       <!-- Header -->
       <header>
@@ -193,6 +182,11 @@ const hashClass =
           starting point and see how it
           <a href="/eips/8025" class={linkClass}>renders on the site</a>. Everything below is detail
           on what makes each field good.
+        </p>
+        <!-- Matches the launcher bar, which is desktop only. -->
+        <p class="mt-3 hidden text-sm leading-relaxed text-slate-700 lg:block dark:text-slate-200">
+          Rather not hand-author JSON? <a href="#builder" class={linkClass}>Build it in the browser</a>
+          — guided fields, a live preview, and a finished file to paste into GitHub.
         </p>
       </section>
 
@@ -356,8 +350,8 @@ const hashClass =
               >
             </h3>
             <p class={bodyClass}>
-              An array of strings, roughly four to six items, each one claim under about 16 words.
-              Each item should be independently checkable by a skeptical reader. Facts, not
+              An array of strings, roughly four to six items, each one claim, ideally under ~16
+              words. Each item should be independently checkable by a skeptical reader. Facts, not
               marketing.
             </p>
             <div class="mt-4 grid gap-3 sm:grid-cols-2">
@@ -495,25 +489,6 @@ const hashClass =
             </div>
           </article>
 
-          <!-- northStarAlignment -->
-          <article id="northStarAlignment" class={cardClass}>
-            <h3 class={fieldNameClass}>
-              <a href="#northStarAlignment" class={anchorClass}
-                >northStarAlignment<span class={hashClass} aria-hidden="true">#</span></a
-              >
-            </h3>
-            <p class={bodyClass}>
-              Optional. Up to three keys — <code class={codeClass}>scaleL1</code>,
-              <code class={codeClass}>scaleBlobs</code>, <code class={codeClass}>improveUX</code> —
-              each with a one-sentence description. Include only the goals your EIP genuinely
-              advances.
-            </p>
-            <p class="mt-3 text-sm leading-relaxed text-slate-600 dark:text-slate-300">
-              Do not shoehorn. Claiming all three when one applies makes the one real claim less
-              believable.
-            </p>
-          </article>
-
           <!-- faq -->
           <article id="faq" class={cardClass}>
             <h3 class={fieldNameClass}>
@@ -584,7 +559,7 @@ const hashClass =
                   forkRelationships[].champions
                 </dt>
                 <dd class="mt-1 text-sm leading-relaxed text-slate-600 dark:text-slate-300">
-                  Maximum two per fork relationship. <code class={codeClass}>name</code> plus any of
+                  Maximum three per fork relationship. <code class={codeClass}>name</code> plus any of
                   <code class={codeClass}>discord</code>, <code class={codeClass}>telegram</code>, or
                   <code class={codeClass}>email</code>, so client teams have a way to reach you.
                 </dd>
@@ -658,4 +633,7 @@ const hashClass =
       </footer>
     </div>
   </div>
+
+  <!-- Fixed launcher bar plus fullscreen overlay; positions itself, so no layout slot. -->
+  <EipDataBuilder client:idle />
 </Layout>

@@ -57,6 +57,11 @@ export const eipCategories: EipCategory[] = [
     name: 'Privacy',
     eips: [8182]
   },
+  {
+    id: 'state-transition',
+    name: 'State Transition',
+    eips: [8253, 7862]
+  },
 
   // --- Consensus layer ---
   {
@@ -100,12 +105,7 @@ export const eipCategories: EipCategory[] = [
     eips: [8369]
   },
 
-  // --- Spans both layers, so these are declared last and render last everywhere ---
-  {
-    id: 'state-transition',
-    name: 'State Transition',
-    eips: [8253, 7862]
-  },
+  // --- Spans both layers, so this is declared last and renders last everywhere ---
   {
     id: 'cleanup-deprecations',
     name: 'Cleanup & Deprecations',

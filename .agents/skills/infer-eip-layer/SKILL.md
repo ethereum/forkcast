@@ -25,7 +25,9 @@ Look for `- missing layer (EL or CL)` under the fork. Alternatively, list them d
 node scripts/audit-eips.mjs --fork Hegota   # same thing
 ```
 
-Confirm the list with the user (or take the ids they gave you). Only touch EIPs that are missing `layer` — never overwrite an existing one.
+Confirm the list with the user (or take the ids they gave you). Only touch EIPs that are missing `layer` — never overwrite an existing one *as part of a bulk pass*.
+
+The exception is a **reported mislabel**: if the user points at a specific EIP as wrongly classified, run Steps 3–4 on it and correct it. Existing labels are anchors for Signal A, so a wrong one propagates — fixing it is worth more than the one row.
 
 ### Step 2: Build the labeled reference map (for Signal A)
 
@@ -52,7 +54,13 @@ Notes:
 Read the EIP's `title`, `description`, and (if present) `laymanDescription`/`benefits`/`stakeholderImpacts` in `src/data/eips/{id}.json`. If those are thin, fetch the abstract from the source:
 
 ```bash
-gh api '/repos/ethereum/EIPs/contents/EIPS/eip-{id}.md' --jq '.content' | base64 -d | head -60
+gh api '/repos/ethereum/EIPs/contents/EIPS/eip-{id}.md' --jq '.content' | base64 -d
+```
+
+Read past the Abstract — the **Specification** section is what decides the layer (see the caveat below). For an EIP still in an unmerged PR, the file isn't on `master` yet; get it from the PR instead:
+
+```bash
+gh api /repos/ethereum/EIPs/pulls/{pr}/files --jq '.[0].patch'
 ```
 
 Classify by **what state/structures the change modifies**, not by keywords alone:
@@ -66,6 +74,15 @@ Classify by **what state/structures the change modifies**, not by keywords alone
 | execution-specs (`.py` under `eth1`/EELS) | consensus-specs, presets/configs, gossip topics |
 
 Watch for **execution payload** framing: the payload *container* is defined in the CL, but changes to payload *contents/metering* (BAL, gas, tx floor) are EL. A "Partial Execution Payload Commitment" (block-production/ePBS plumbing) is CL; a "Block Access List Byte Floor" (gas metering) is EL.
+
+**Motivation is not the implementation layer.** Read the Specification, not the Abstract/Motivation. An EIP is routinely *motivated* by CL problems (ePBS builder timing, attestation deadlines, validator revenue) while only *modifying* EL structures — and vice versa. Abstracts written for a CL audience are full of "validators", "attest", and "slot", which will drag a keyword-driven read the wrong way.
+
+- EIP-7862 (Delayed State Root) was mislabeled CL: its motivation is entirely ePBS/builder timing and its abstract says "validators can attest without waiting for state root computation" — but the spec only changes the EL header's `state_root` semantics and EELS `state_transition`. Its own Rationale states "The CL state root verification is unaffected." → **EL**.
+- Contrast EIP-8375 (eMBER), which really is cross-layer: its spec says outright "This specification changes both the execution layer and the consensus-layer ePBS mechanism."
+
+When an EIP explicitly says it changes **both** layers, don't force a single decisive read — set Signal B to `unclear` and let Signal A (or the user) break the tie.
+
+The most reliable tell is **which spec repo the pseudocode belongs to**: `Header`/`BlockChain`/`state_transition`/`apply_body`/`vm.*` are execution-specs (EL); `BeaconState`/`process_*`/`get_*` over epochs and committees are consensus-specs (CL). Prefer this over any prose signal.
 
 Output Signal B as `EL`, `CL`, or `unclear`, plus a one-line justification.
 

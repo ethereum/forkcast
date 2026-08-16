@@ -1,42 +1,127 @@
-  {
-    "id": 8363,
-    "title": "EIP-8363: Tapered Issuance Burn",
-    "status": "Draft",
-    "description": "Burn a fraction of validator rewards that rises with the staking ratio, removing the issuance incentive to stake more than 50% of all ETH",
-    "author": "pintail (@pintail-xyz), Jérôme de Tychey (@jdetychey), dapplion (@dapplion), pa7x1 (@pa7x1), Ladislaus von Daniels (@ladidan), Justin Drake (@justindrake)",
-    "type": "Standards Track",
-    "category": "Core",
-    "createdDate": "2026-07-14",
-    "discussionLink": "https://ethereum-magicians.org/t/eip-8363-tapered-issuance-burn/29263",
-    "layer": "CL",
-    "forkRelationships": [
-      {
-        "forkName": "Hegota",
-        "statusHistory": [
-          {
-            "status": "Proposed",
-            "call": "acdc/184",
-            "date": "2026-08-06"
-          }
-        ],
-        "champions": [
-          {
-            "name": "Pintail"
-          },
-          {
-            "name": "Jérôme de Tychey"
-          },
-          {
-            "name": "dapplion"
-          }
-        ]
-      }
-    ],
-    "tradeoffs": [
-      "At high staking ratio, MEV and priority fees become a considerable reward share.",
-      "Fixed operating costs weigh hardest on the smallest validators as net yields fall.",
-      "Net yield becomes more sensitive to the staking ratio than under the current curve.",
-      "Businesses priced off the staking rate must reprice to a structurally lower reference rate.",
-      "Validator downtime costs the same ETH but takes longer to earn back at lower yields."
-    ]
-  }
+{
+  "id": 8363,
+  "title": "EIP-8363: Tapered Issuance Burn",
+  "status": "Draft",
+  "description": "Burn a fraction of validator rewards that rises with the staking ratio, removing the issuance incentive to stake more than 50% of all ETH",
+  "author": "pintail (@pintail-xyz), Jérôme de Tychey (@jdetychey), dapplion (@dapplion), pa7x1 (@pa7x1), Ladislaus von Daniels (@ladidan), Justin Drake (@justindrake)",
+  "type": "Standards Track",
+  "category": "Core",
+  "createdDate": "2026-07-14",
+  "discussionLink": "https://ethereum-magicians.org/t/eip-8363-tapered-issuance-burn/29263",
+  "reviewer": "bot",
+  "layer": "CL",
+  "forkRelationships": [
+    {
+      "forkName": "Hegota",
+      "statusHistory": [
+        {
+          "status": "Proposed",
+          "call": "acdc/184",
+          "date": "2026-08-06"
+        }
+      ],
+      "champions": [
+        {
+          "name": "pintail"
+        },
+        {
+          "name": "Jérôme de Tychey"
+        },
+        {
+          "name": "dapplion"
+        }
+      ],
+      "presentationHistory": [
+        {
+          "type": "presentation",
+          "call": "acdc/184",
+          "date": "2026-08-06"
+        }
+      ]
+    }
+  ],
+  "laymanDescription": "Ethereum currently pays more total staking rewards as more ETH is staked, encouraging ever-higher staking. This proposal burns a rising fraction of validator rewards as the staking ratio grows, so net yields taper toward zero near 50% staked. Staking stays attractive when participation is low, while over-staking and dilution of ETH holders are curbed.",
+  "benefits": [
+    "Removes the issuance incentive to stake beyond 50% of all ETH",
+    "Reduces dilution of non-staking ETH holders as the staking ratio rises",
+    "Counters drift toward an equilibrium where most ETH sits in liquid staking tokens",
+    "Per-duty burn preserves penalties and duty incentives at low net issuance"
+  ],
+  "tradeoffs": [
+    "MEV and priority fees become a larger reward share, favoring large or sophisticated operators",
+    "Fixed operating costs weigh hardest on the smallest validators as net yields fall",
+    "Net yield becomes more sensitive to the staking ratio than under the current curve",
+    "Businesses priced off the staking rate must reprice to a structurally lower reference rate",
+    "Validator downtime costs the same ETH but takes longer to earn back"
+  ],
+  "stakeholderImpacts": {
+    "endUsers": {
+      "description": "No transaction, fee, or wallet changes; ETH holders who do not stake face less dilution as issuance falls."
+    },
+    "appDevs": {
+      "description": "DeFi protocols priced off the staking rate (LSTs, lending markets, yield products) must adapt to a structurally lower reference rate."
+    },
+    "walletDevs": {
+      "description": "No impact; no transaction format, signing, or RPC changes."
+    },
+    "toolingInfra": {
+      "description": "Explorers, reward APIs."
+    },
+    "layer2s": {
+      "description": "No impact; the change is confined to consensus-layer issuance and does not affect settlement, data availability, or fees."
+    },
+    "stakersNodes": {
+      "description": "Net validator yields fall as the staking ratio rises."
+    },
+    "clClients": {
+      "description": "Moderate: one new constant and a per-duty deduction applied after existing rewards and penalties, plus a time-varying base reward factor during the transition."
+    },
+    "elClients": {
+      "description": "No impact; the mechanism is confined to consensus-layer reward accounting."
+    }
+  },
+  "faq": [
+    {
+      "question": "Does reducing issuance weaken Ethereum's economic security?",
+      "answer": "A lower equilibrium staking ratio does mean less slashable ETH behind finality. The proposal argues the remaining margin is ample at any plausible equilibrium, since the stock an attacker would have to acquire and forfeit stays in the tens of millions of ETH, and that security scales with the value of ETH rather than the quantity staked. How much margin is enough remains a judgment call rather than a measured quantity, and it was among the most debated points in the discussion thread."
+    },
+    {
+      "question": "Will solo stakers be pushed out first?",
+      "answer": "Contested, and the research is split. Lower yields squeeze every validator, and fixed operating costs weigh hardest on the smallest operators. The counterargument is that a delegated position must also clear a provider fee plus the risk of trusting a third party, so which cost structure gives out first is disputed rather than settled. The proposal claims it removes pressures the current curve places on solo stakers and adds no mechanism that falls more heavily on small validators; it does not claim to preserve the solo-staker share of the validator set."
+    },
+    {
+      "question": "Doesn't this make MEV dominant in validator rewards?",
+      "answer": "As issuance tapers, execution-layer income (MEV and priority fees) becomes a larger share of total rewards. That income is more variable and more effectively captured by large or sophisticated operators. The proposal does not itself mitigate this shift; MEV burn is named as a complement but is not part of this EIP and is not scheduled in any fork."
+    },
+    {
+      "question": "What happens to DeFi products built on the staking rate?",
+      "answer": "Revenue charged as a percentage of staking rewards falls roughly in proportion, and leveraged positions built on the spread between staking yield and ETH borrowing cost shrink as that spread compresses. The rate that remains is set by the market rather than by an emissions schedule, but the repricing during the transition is real, and its size depends on whether the spread compresses proportionally or holds in absolute terms."
+    },
+    {
+      "question": "Why burn a fraction of rewards instead of lowering the reward curve directly?",
+      "answer": "The deduction is computed from the idealised reward for each duty and charged whether or not the duty was performed, so it does not enter the choice between performing and skipping a duty. Gross rewards and penalties stay at their current scale and the balance between them is preserved even as net issuance falls, which a uniformly scaled-down curve would not achieve. The design follows Anders Elowsson's work on issuance offsets under low, zero, and negative issuance policies."
+    },
+    {
+      "question": "Is changing the issuance curve a risk to Ethereum's monetary credibility?",
+      "answer": "Critics argue that reopening issuance weakens the predictability institutions price on. Proponents note that yield under the current curve already moves with the total amount staked, falling from double digits at beacon-chain genesis to under 3% today with no protocol change and no announcement, and that this proposal replaces that unbounded path with a published formula, a known terminal condition, and an 18-month phase-in. Every issuance change Ethereum has shipped has reduced issuance."
+    }
+  ],
+  "supportingDocuments": [
+    {
+      "label": "Prior work on issuance policy by pa7x1",
+      "url": "https://github.com/pa7x1/ethereum-issuance"
+    },
+    {
+      "label": "Elowsson: Properties of issuance offsets and increased penalties",
+      "url": "https://ethresear.ch/t/properties-of-issuance-offsets-and-increased-penalties-under-low-zero-negative-issuance-policies/25292"
+    },
+    {
+      "label": "Elowsson: FAQ on Ethereum issuance reduction",
+      "url": "https://ethresear.ch/t/faq-ethereum-issuance-reduction/19675"
+    },
+    {
+      "label": "issuance.wtf research index",
+      "url": "https://issuance.wtf"
+    }
+  ]
+}

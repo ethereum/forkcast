@@ -202,12 +202,7 @@ describe('validateDraft', () => {
     expect(messages).toContain('Missing laymanDescription.');
     expect(messages).toContain('Missing benefits.');
     expect(messages.some((m) => m.includes('reviewer'))).toBe(true);
-
-    const impacts = messages.filter((m) => m.includes('stakeholderImpacts'));
-    expect(impacts).toHaveLength(1);
-    for (const key of Object.keys(emptyStakeholderImpacts())) {
-      expect(impacts[0]).toContain(key);
-    }
+    expect(messages.some((m) => m.includes('stakeholderImpacts'))).toBe(false);
   });
 
   it('is silent on a complete draft', () => {

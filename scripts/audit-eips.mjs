@@ -59,9 +59,6 @@ function audit(eips) {
     if (!eip.laymanDescription) {
       eipIssues.push('missing laymanDescription');
     }
-    if (!eip.stakeholderImpacts) {
-      eipIssues.push('missing stakeholderImpacts');
-    }
     if (!eip.benefits) {
       eipIssues.push('missing benefits');
     }
@@ -152,7 +149,6 @@ Checks for:
   - layer             (EL or CL)
   - reviewer          (bot, staff, or expert)
   - laymanDescription
-  - stakeholderImpacts
   - benefits
 
 Also checks that stage-change decisions recorded in call

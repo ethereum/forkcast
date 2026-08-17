@@ -8,6 +8,7 @@
   "category": "Core",
   "createdDate": "2026-05-01",
   "discussionLink": "https://ethereum-magicians.org/t/eip-8246-remove-selfdestruct-burn/28416",
+  "reviewer": "bot",
   "layer": "EL",
   "forkRelationships": [
     {
@@ -33,7 +34,17 @@
       ]
     }
   ],
-  "tradeoffs": null,
+  "laymanDescription": "In a few rare cases a contract can still permanently destroy the ether it holds, the last remaining way ether can leave circulation through the virtual machine. This change keeps the balance instead, while still wiping the contract's code and storage, and removes a special case that every client, specification, and test suite has to carry.",
+  "benefits": [
+    "Removes the last mechanism by which the virtual machine can destroy ether, simplifying supply accounting",
+    "Drops special-case burn handling from client implementations, the specification, and the test suite",
+    "Affects almost nothing in practice: a full mainnet replay found only 2 such burns after Cancun"
+  ],
+  "tradeoffs": [
+    "Selfdestruct interacts combinatorially with call and create paths, so the change demands significant new test coverage",
+    "Contracts left with a nonzero balance now linger as balance-only dust accounts instead of being deleted",
+    "Optimism-based layer 2 chains use the burn regularly and will need a separate migration plan"
+  ],
   "requires": [
     161,
     6780

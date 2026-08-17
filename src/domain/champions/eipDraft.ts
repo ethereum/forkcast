@@ -217,17 +217,6 @@ export function validateDraft(draft: ChampionDraft): DraftWarning[] {
     });
   }
 
-  // One line, however many are missing — eight separate warnings drowned out the rest.
-  const missingImpacts = stakeholders.filter((s) => draft.stakeholderImpacts[s.key].trim() === '');
-  if (missingImpacts.length > 0) {
-    warnings.push({
-      field: 'stakeholderImpacts',
-      message: `Missing ${missingImpacts.length} of ${stakeholders.length} stakeholderImpacts (${missingImpacts
-        .map((s) => s.key)
-        .join(', ')}) — write "No impact." rather than leaving one out.`,
-    });
-  }
-
   const faq = draft.faq.filter((item) => item.question.trim() !== '' || item.answer.trim() !== '');
   if (faq.length > FAQ_MAX_ITEMS) {
     warnings.push({

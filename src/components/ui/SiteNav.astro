@@ -29,6 +29,8 @@ const navItems = [
   { to: '/decisions', label: 'Decisions' },
   { to: '/networks', label: 'Networks' },
   { to: '/schedule', label: 'Schedule' },
+  // Highlighted while headliner ranking is open; drop `highlight` once it closes.
+  { to: '/rank', label: 'Rank', highlight: true },
 ];
 
 const upgradeNavItems = [
@@ -39,11 +41,17 @@ const upgradeNavItems = [
 
 const upgradesActive = pathname === '/upgrades' || pathname.startsWith('/upgrade/');
 
-const navLinkClass = (active: boolean) =>
+const navLinkClass = (active: boolean, highlight = false) =>
   `px-3 py-1.5 rounded-md text-sm font-medium transition-colors ${
-    active
-      ? 'text-purple-700 dark:text-purple-300'
-      : 'text-slate-600 dark:text-slate-300 hover:text-slate-900 dark:hover:text-slate-100'
+    highlight
+      ? `text-purple-700 dark:text-purple-300 ${
+          active
+            ? 'bg-purple-100 dark:bg-purple-500/20'
+            : 'bg-purple-50 hover:bg-purple-100 dark:bg-purple-500/10 dark:hover:bg-purple-500/20'
+        }`
+      : active
+        ? 'text-purple-700 dark:text-purple-300'
+        : 'text-slate-600 dark:text-slate-300 hover:text-slate-900 dark:hover:text-slate-100'
   }`;
 
 const menuLinkClass = (active: boolean, itemVariant: string) =>
@@ -137,7 +145,11 @@ const mobileLinkClass = (active: boolean, isIndexLink: boolean) =>
 
         {
           navItems.map((item) => (
-            <a href={item.to} data-astro-prefetch class={navLinkClass(isPathActive(pathname, item.to))}>
+            <a
+              href={item.to}
+              data-astro-prefetch
+              class={navLinkClass(isPathActive(pathname, item.to), item.highlight)}
+            >
               {item.label}
             </a>
           ))
@@ -251,7 +263,7 @@ const mobileLinkClass = (active: boolean, isIndexLink: boolean) =>
             href={item.to}
             data-astro-prefetch
             class={`block px-1 py-2 text-sm ${
-              isPathActive(pathname, item.to)
+              item.highlight || isPathActive(pathname, item.to)
                 ? 'text-purple-700 dark:text-purple-300 font-medium'
                 : 'text-slate-700 dark:text-slate-200'
             }`}

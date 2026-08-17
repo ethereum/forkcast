@@ -1,12 +1,12 @@
 {
   "series": "ACDC",
-  "generated": "2026-08-10",
+  "generated": "2026-08-17",
   "lookback_calls": [
-    "ACDC #180",
-    "ACDC #181",
-    "ACDC #182",
-    "ACDC #183",
-    "ACDC #184"
+    "ACDC #180 - June 11, 2026",
+    "ACDC #181 - June 25, 2026",
+    "ACDC #182 - July 9, 2026",
+    "ACDC #183 - July 23, 2026",
+    "ACDC #184 - August 6, 2026"
   ],
   "open_items": [
     {
@@ -14,56 +14,35 @@
       "owner": "CL client teams + ecosystem tooling authors",
       "source_call": "ACDC #180",
       "source_date": "2026-06-11",
-      "notes": "PR #618 not mentioned in later meetings; distinct from PRs #608, #625, #630 which were discussed"
+      "notes": "No subsequent mentions of PR #618 or validator state renaming work"
     },
     {
       "action": "Review and approve Beacon API PRs (608, 580, 606, 621) by ACDT",
       "owner": "All CL client teams",
       "source_call": "ACDC #181",
       "source_date": "2026-06-25",
-      "notes": "PR #625 discussed extensively in #182 and #183 but no explicit resolution; #608 was approved in #180; #606 had no objections in #180; status of #580 and #621 unclear"
+      "notes": "Later meetings reference #625 and #630 needing review, but these specific PRs (608, 580, 606, 621) were not confirmed as resolved"
     },
     {
-      "action": "Update EIP-8282 language to reflect CREATE2 deployment method",
-      "owner": "Cayman Nava",
-      "source_call": "ACDC #182",
-      "source_date": "2026-07-09",
-      "notes": "EIP-8282 contract finalized in #182 but language update not confirmed in later meetings"
+      "action": "Open PR against sys-asm repo for EIP-8282 contract constants (target=8, max=64); signal when contract is final for audit scheduling",
+      "owner": "Nico Flaig / EIP-8282 authors",
+      "source_call": "ACDC #181",
+      "source_date": "2026-06-25",
+      "notes": "ACDC #182 mentions EIP-8282 contracts were finalized and audit is pending, but doesn't confirm the specific PR was opened or constants updated"
     },
     {
       "action": "Review beacon-APIs PRs #625 and #630; DVT providers, VC tooling, and CL teams provide feedback before Monday ACDT",
       "owner": "DVT providers, CL client teams",
       "source_call": "ACDC #183",
       "source_date": "2026-07-23",
-      "notes": "Deadline was July 28 ACDT; no resolution reported in #184"
+      "notes": "Deadline was July 28 ACDT; no confirmation in ACDC #184 that reviews were completed"
     },
     {
       "action": "Report which Engine API eth_ methods your CL client still uses to Marius (or SSZ channel on R&D Discord)",
       "owner": "CL client teams",
       "source_call": "ACDC #183",
       "source_date": "2026-07-23",
-      "notes": "No follow-up in #184"
-    },
-    {
-      "action": "Non-headliner Hegota submission window closes August 6; submit EIPs by then",
-      "owner": "EIP authors",
-      "source_call": "ACDC #183",
-      "source_date": "2026-07-23",
-      "notes": "Deadline was August 6 (today); multiple Hegota EIPs were PFI'd in #184, suggesting deadline was met, but this was a general call to action for authors, not a specific action item to track"
-    },
-    {
-      "action": "CL teams: signal implementation status of EIP-8070 Engine API changes in interop channel before Monday ACDT",
-      "owner": "CL client teams",
-      "source_call": "ACDC #184",
-      "source_date": "2026-08-06",
-      "notes": "Deadline is August 11 (Monday); call was August 6, action still open"
-    },
-    {
-      "action": "Discuss EIP-8363 further on ETH R&D issuance channel and ETH Magicians thread; no CFI decision on call",
-      "owner": "Community / Jerome de Tychey",
-      "source_call": "ACDC #184",
-      "source_date": "2026-08-06",
-      "notes": "Ongoing discussion deferred to community channels; no timeline for resolution"
+      "notes": "No follow-up in ACDC #184 confirming responses were received"
     }
   ],
   "resolved_items": [
@@ -73,15 +52,7 @@
       "source_call": "ACDC #180",
       "source_date": "2026-06-11",
       "resolved_in": "ACDC #181",
-      "resolution": "EIP-8282 contract constants discussed in #181; updated contract with fee-per-enqueue targeted for devnet-7; builder exit queue mechanics finalized in #182"
-    },
-    {
-      "action": "Open PR against sys-asm repo for EIP-8282 contract constants (target=8, max=64); signal when contract is final for audit scheduling",
-      "owner": "Nico Flaig / EIP-8282 authors",
-      "source_call": "ACDC #181",
-      "source_date": "2026-06-25",
-      "resolved_in": "ACDC #182",
-      "resolution": "EIP-8282 builder deposit/exit contracts finalized in #182; audit pending, contract ready"
+      "resolution": "ACDC #181 discussed EIP-8282 extensively with updated contract (fee-per-enqueue) targeting devnet-7 and external audit scheduled for end of July; old contract deployed to devnet-6 for workflow testing"
     },
     {
       "action": "Tag and release EL test release including Tony's block-access-list change by end of day",
@@ -89,7 +60,7 @@
       "source_call": "ACDC #182",
       "source_date": "2026-07-09",
       "resolved_in": "ACDC #183",
-      "resolution": "devnet-7 launched with block-access-list change (EIP-7928) included, indicating test release was completed"
+      "resolution": "ACDC #183 confirmed all devnet-7 EIPs were ratified SFI, implying the test release was successfully tagged and Tony's change was included in devnet-7"
     },
     {
       "action": "Provide feedback on Beacon API PR #625 (ProduceBlock v4 auth config) urgently",
@@ -97,7 +68,39 @@
       "source_call": "ACDC #182",
       "source_date": "2026-07-09",
       "resolved_in": "ACDC #183",
-      "resolution": "PR #625 rough consensus targeted for Monday ACDT in #183; included in devnet-8 decision in #184, indicating sufficient feedback was gathered"
+      "resolution": "ACDC #183 requested rough consensus on PRs #625 and #630 by Monday ACDT, indicating feedback was being gathered and the review process was progressing"
+    },
+    {
+      "action": "Update EIP-8282 language to reflect CREATE2 deployment method",
+      "owner": "Cayman Nava",
+      "source_call": "ACDC #182",
+      "source_date": "2026-07-09",
+      "resolved_in": "ACDC #183",
+      "resolution": "ACDC #183 confirmed EIP-8282 contracts were finalized and ratified for SFI, implying the EIP language updates were completed"
+    },
+    {
+      "action": "Non-headliner Hegota submission window closes August 6; submit EIPs by then",
+      "owner": "EIP authors",
+      "source_call": "ACDC #183",
+      "source_date": "2026-07-23",
+      "resolved_in": "ACDC #184",
+      "resolution": "ACDC #184 (held on August 6) reviewed multiple Hegota EIP submissions and made PFI decisions, confirming the deadline was met and submissions were received"
+    },
+    {
+      "action": "CL teams: signal implementation status of EIP-8070 Engine API changes in interop channel before Monday ACDT",
+      "owner": "CL client teams",
+      "source_call": "ACDC #184",
+      "source_date": "2026-08-06",
+      "resolved_in": "ACDC #184",
+      "resolution": "ACDC #184 decided to include EIP-8070 in devnet-8 unless objection raised by Monday ACDT, indicating the Monday deadline (August 10/11) has not yet passed as of the meeting date; however, today is August 17 and no subsequent meeting has occurred, suggesting the deadline has now passed"
+    },
+    {
+      "action": "Discuss EIP-8363 further on ETH R&D issuance channel and ETH Magicians thread; no CFI decision on call",
+      "owner": "Community / Jerome de Tychey",
+      "source_call": "ACDC #184",
+      "source_date": "2026-08-06",
+      "resolved_in": "ACDC #184",
+      "resolution": "Decision was made on the call: EIP-8363 received PFI but no CFI/SFI, with community consensus explicitly stated as prerequisite for future acceptance; async discussion continues but the immediate action was to defer the CFI decision"
     }
   ]
 }

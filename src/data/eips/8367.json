@@ -12,6 +12,7 @@
     "number": 12151,
     "url": "https://github.com/ethereum/EIPs/pull/12151"
   },
+  "reviewer": "bot",
   "layer": "CL",
   "forkRelationships": [
     {
@@ -30,5 +31,15 @@
       ]
     }
   ],
-  "tradeoffs": null
+  "laymanDescription": "Retiring the old genesis-era validators leaves thousands of frozen entries holding real ether that the network must carry forever. This proposal caps their balances at a ceiling that falls to zero over a published multi-year schedule, so the final cleanup deletes nothing anyone owns.",
+  "benefits": [
+    "A declining balance reaches owners through dashboards and alerts that announcements never did",
+    "Rotating credentials at any point during the window releases the entire remaining balance",
+    "Missing part of a gradual schedule costs a fraction; missing a one-time deadline costs everything"
+  ],
+  "tradeoffs": [
+    "Burns the balances of anyone who does not act, chiefly holders of lost withdrawal keys",
+    "Sets the precedent of the protocol reducing balances of a class defined by credential type",
+    "The schedule must be re-tuned at intermediate forks if the post-quantum timeline moves"
+  ]
 }

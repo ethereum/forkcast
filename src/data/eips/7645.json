@@ -8,6 +8,7 @@
   "category": "Core",
   "createdDate": "2024-03-03",
   "discussionLink": "https://ethereum-magicians.org/t/eip-7645-alias-origin-to-sender/19047",
+  "reviewer": "bot",
   "layer": "EL",
   "forkRelationships": [
     {
@@ -21,5 +22,15 @@
       ]
     }
   ],
-  "tradeoffs": null
+  "laymanDescription": "Two EVM instructions report who is calling a contract: one gives the immediate caller, the other gives whoever started the whole transaction. The second has been discouraged since 2016, because a contract that trusts it can be tricked into acting on someone else's behalf. This proposal makes both return the immediate caller.",
+  "benefits": [
+    "Closes phishing-style attacks that turn on the gap between initiator and immediate caller",
+    "Removes an obstacle that every account abstraction proposal must otherwise work around",
+    "Retires a feature deprecated since 2016, simplifying the EVM execution model"
+  ],
+  "tradeoffs": [
+    "Not backwards compatible: contracts relying on the distinction change behavior",
+    "The transaction initiator's address becomes unavailable to contracts entirely",
+    "The EIP names no concrete example of harmful breakage, so real impact is unmeasured"
+  ]
 }

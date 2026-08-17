@@ -12,6 +12,7 @@
     "number": 11905,
     "url": "https://github.com/ethereum/EIPs/pull/11905"
   },
+  "reviewer": "bot",
   "layer": "CL",
   "forkRelationships": [
     {
@@ -25,5 +26,15 @@
       ]
     }
   ],
-  "tradeoffs": null
+  "laymanDescription": "Every attestation is gossiped as its own message, and nearly all of them repeat the same vote data. This proposal sends them in bundles that state the shared data once, and has peers reconcile which ones they hold by validator index.",
+  "benefits": [
+    "Simulations show around 50% bandwidth savings and up to 30% lower latency",
+    "Lower bandwidth allows aggregating more attestations per committee, speeding finality",
+    "Negotiated per peer, so nodes without support keep exchanging single attestations"
+  ],
+  "tradeoffs": [
+    "A custom protocol could cut tail latency a further 10 to 20%, traded away for simplicity",
+    "Bitmaps would reconcile more efficiently than index lists, deferred to a later change",
+    "Unvalidated attestations must dedupe on data and signature, not validator index alone"
+  ]
 }

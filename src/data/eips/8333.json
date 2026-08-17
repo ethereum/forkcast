@@ -8,6 +8,7 @@
   "category": "Core",
   "createdDate": "2026-07-06",
   "discussionLink": "https://ethereum-magicians.org/t/eip-8333-align-checkpoint-with-epoch-boundary-block/29003",
+  "reviewer": "bot",
   "layer": "CL",
   "forkRelationships": [
     {
@@ -27,5 +28,15 @@
       ]
     }
   ],
-  "tradeoffs": null
+  "laymanDescription": "Each epoch's checkpoint is anchored to that epoch's first block, which the earliest committee must vote on almost the moment it appears. When the block is late those votes split, and the losing half earn nothing. This proposal anchors the checkpoint to the last block before the epoch instead.",
+  "benefits": [
+    "The first slot's committee gains over a full extra slot before its attestation deadline",
+    "Recovers target rewards for the roughly 1/32 of FFG weight exposed every epoch",
+    "Finalizing an epoch now finalizes whole epochs, making tooling's finality reports accurate"
+  ],
+  "tradeoffs": [
+    "Checkpoint sync providers and consumers assuming the old anchor must be updated",
+    "A maliciously late boundary block can still split the next epoch's first-slot votes",
+    "Pre-activation epochs must resolve under the old rule or block import breaks"
+  ]
 }

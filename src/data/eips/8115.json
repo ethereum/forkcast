@@ -8,6 +8,7 @@
   "category": "Core",
   "createdDate": "2025-12-30",
   "discussionLink": "https://ethereum-magicians.org/t/eip-8115-batch-priority-fees-at-end-of-block/27358",
+  "reviewer": "bot",
   "layer": "EL",
   "forkRelationships": [
     {
@@ -27,7 +28,16 @@
       ]
     }
   ],
-  "tradeoffs": null,
+  "laymanDescription": "Every transaction pays a tip to whoever produces the block, and each tip is credited the moment that transaction finishes. The producer's balance therefore changes hundreds of times per block. This proposal adds the tips up and pays them once, after all of the block's transactions have run.",
+  "benefits": [
+    "Removes a write to the fee recipient's balance from every transaction, aiding parallel execution",
+    "A sender can no longer become solvent only after earlier transactions in the block",
+    "One credit per block instead of hundreds of micropayments, simplifying accounting and transfer logs"
+  ],
+  "tradeoffs": [
+    "Fee recipients can only spend priority fees in the next block, not the current one",
+    "Block builder infrastructure and liquidity assumptions for MEV need updating"
+  ],
   "requires": [
     1559,
     4895

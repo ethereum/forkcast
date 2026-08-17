@@ -8,6 +8,7 @@
   "category": "Core",
   "createdDate": "2025-08-22",
   "discussionLink": "https://ethereum-magicians.org/t/eip-8015-remove-legacy-deposit-and-eth1data-fields/25401",
+  "reviewer": "bot",
   "layer": "CL",
   "forkRelationships": [
     {
@@ -27,7 +28,17 @@
       ]
     }
   ],
-  "tradeoffs": null,
+  "laymanDescription": "Staking deposits used to reach the beacon chain by having block proposers vote on what the execution chain contained. That job now happens directly in the protocol, but the old voting fields still sit in every block and in the chain's state. This proposal deletes them, along with the voting machinery proposers still run.",
+  "benefits": [
+    "Removes deposit voting logic and validation paths that no longer do anything",
+    "Drops two permanently unused fields from every block body and four from the state",
+    "Proposers stop polling the execution chain and voting on data nobody consumes"
+  ],
+  "tradeoffs": [
+    "Can only activate once legacy deposit processing has fully finalized on the network",
+    "Depends on progressive containers and on the preceding upgrade already being in effect",
+    "Historical blocks and states keep the old schemas, so clients still handle both"
+  ],
   "requires": [
     6110,
     7688,

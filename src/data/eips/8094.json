@@ -8,6 +8,7 @@
   "category": "Networking",
   "createdDate": "2025-11-29",
   "discussionLink": "https://ethereum-magicians.org/t/eip-8094-eth-vhash-blob-aware-mempool/26834",
+  "reviewer": "bot",
   "layer": "EL",
   "forkRelationships": [
     {
@@ -26,7 +27,17 @@
       ]
     }
   ],
-  "tradeoffs": null,
+  "laymanDescription": "Raising the fee on a pending blob transaction currently means resending its entire data payload across the network, even though that data has not changed. This proposal separates the two: blob transactions travel without their data, and a node fetches the data by content only when it does not already have it.",
+  "benefits": [
+    "A fee bump no longer resends blob data that peers already hold",
+    "Saves bandwidth exactly during fee volatility, when the network is already congested",
+    "Blob transactions can be broadcast directly again, since they no longer carry the payload"
+  ],
+  "tradeoffs": [
+    "Fetching data separately adds a round trip per hop to blob propagation",
+    "Peers may return only some requested blobs, so a fetch can come back incomplete",
+    "How this combines with the sparse blobpool proposal is left unresolved"
+  ],
   "requires": [
     7642
   ]

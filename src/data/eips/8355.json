@@ -12,6 +12,7 @@
     "number": 12048,
     "url": "https://github.com/ethereum/EIPs/pull/12048"
   },
+  "reviewer": "bot",
   "layer": "EL",
   "forkRelationships": [
     {
@@ -31,5 +32,15 @@
       ]
     }
   ],
-  "tradeoffs": null
+  "laymanDescription": "Contracts have no way to check a post-quantum signature. This proposal adds three precompiles for ML-DSA, the lattice scheme NIST has standardized, at its three security levels. They take the key, signature, and message exactly as the standard encodes them.",
+  "benefits": [
+    "Covers all three NIST security levels, not only the 128-bit tier",
+    "Accepts messages of any length instead of forcing callers to pre-hash to 32 bytes",
+    "Consumes FIPS 204 encodings unmodified, so keys never need exporting from an HSM"
+  ],
+  "tradeoffs": [
+    "Provides no domain separation, so applications must bind chain, contract, and intent themselves",
+    "A successful call says nothing about validity; the caller must also check the returned word",
+    "Callers ported from ecRecover cannot read empty returndata as a failed verification"
+  ]
 }

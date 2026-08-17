@@ -7,6 +7,10 @@ description: Convert an EIP proposed for the current fork into forkcast JSON for
 
 Convert an EIP proposed for the current fork (e.g., Glamsterdam, Hegota) into forkcast JSON format.
 
+**Scope note**: this is the whole-file workflow. If the EIP already exists in `src/data/eips/` and
+only needs its `laymanDescription`, `benefits`, and `tradeoffs` filled in, use the
+`draft-eip-narrative` skill instead — it is the reduced-scope version of the same field rules.
+
 ### Schema
 
 Get the current schema:

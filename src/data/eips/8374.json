@@ -15,6 +15,7 @@
     "number": 12128,
     "url": "https://github.com/ethereum/EIPs/pull/12128"
   },
+  "reviewer": "bot",
   "layer": "EL",
   "forkRelationships": [
     {
@@ -33,5 +34,14 @@
       ]
     }
   ],
-  "tradeoffs": null
+  "laymanDescription": "Reading state for the first time costs more than reading it again, because the client has to fetch it from disk. Today that discount is thrown away when a call reverts, even though the data is still in memory. This proposal keeps it for the rest of the transaction.",
+  "benefits": [
+    "Charges the second read what it actually costs the client, which is nearly nothing",
+    "No transaction becomes more expensive; costs either fall or stay the same",
+    "Access sets leave the state journal entirely, becoming append-only per transaction"
+  ],
+  "tradeoffs": [
+    "Contracts that measure exact gas costs of accesses after a revert will see different numbers",
+    "A transaction can warm state inside a frame it then reverts and read it cheaply after"
+  ]
 }

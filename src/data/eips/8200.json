@@ -8,6 +8,7 @@
   "category": "Core",
   "createdDate": "2026-03-21",
   "discussionLink": "https://ethereum-magicians.org/t/eip-8200-evmification/28036",
+  "reviewer": "bot",
   "layer": "EL",
   "forkRelationships": [
     {
@@ -27,7 +28,17 @@
       ]
     }
   ],
-  "tradeoffs": null,
+  "laymanDescription": "Three of Ethereum's built-in cryptographic helpers are hand-written into every client, and each one is a place where implementations can quietly disagree. This proposal replaces them with ordinary EVM bytecode deployed at the same addresses, so contracts calling them keep working unchanged.",
+  "benefits": [
+    "Removes three hand-written implementations every client must maintain and keep identical",
+    "Lowers the barrier for zkEVMs, which need a separate optimized version of each precompile",
+    "Contracts keep calling the same addresses, so nothing needs redeploying"
+  ],
+  "tradeoffs": [
+    "Gas costs change, and modular exponentiation is expected to cost more for large inputs",
+    "Contracts passing a fixed gas amount to these addresses may start reverting",
+    "The replacement bytecode must be audited to match the precompile on every input"
+  ],
   "requires": [
     152,
     7666,

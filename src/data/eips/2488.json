@@ -8,6 +8,7 @@
   "category": "Core",
   "createdDate": "2019-12-20",
   "discussionLink": "https://ethereum-magicians.org/t/eip-2488-deprecate-the-callcode-opcode/3957",
+  "reviewer": "bot",
   "layer": "EL",
   "forkRelationships": [
     {
@@ -21,7 +22,17 @@
       ]
     }
   ],
-  "tradeoffs": null,
+  "laymanDescription": "CALLCODE is an original Ethereum instruction that proved flawed within months of launch and was superseded by DELEGATECALL in early 2016. Almost nothing uses it, yet every client must still implement it. This proposal makes CALLCODE always report failure, so the behavior behind it no longer has to be carried forward.",
+  "benefits": [
+    "Retires an instruction superseded by DELEGATECALL in 2016 and effectively unused since",
+    "Removes logic that every EVM implementation currently has to carry and maintain",
+    "Helps light clients and clients syncing from a recent point rather than genesis"
+  ],
+  "tradeoffs": [
+    "Breaking change: any contract still using CALLCODE fails instead of executing",
+    "The claim that no contracts of value are affected is explicitly unvalidated",
+    "No benefit for clients that sync from genesis and must keep the old behavior"
+  ],
   "requires": [
     7
   ]

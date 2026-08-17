@@ -11,6 +11,7 @@
   "requires": [
     4788
   ],
+  "reviewer": "bot",
   "layer": "EL",
   "forkRelationships": [
     {
@@ -24,5 +25,15 @@
       ]
     }
   ],
-  "tradeoffs": null
+  "laymanDescription": "Looking up past events means asking a provider and trusting the answer, because the filter stored in block headers is long since saturated and effectively useless. This proposal has each block build a small searchable index and commit it in a system contract, so a provider's answer can be proven correct.",
+  "benefits": [
+    "Users can verify log query results rather than trusting whoever returned them",
+    "Contracts can consume proofs of events emitted on another chain running the same index",
+    "Far cheaper to update than the state tree, so logs keep their low gas cost"
+  ],
+  "tradeoffs": [
+    "Only about the last 262,144 blocks are indexed in protocol; older history needs external provers",
+    "A typical index query proof combines 30 to 50 individual table proofs",
+    "Every node takes on per-block index table construction and hashing work"
+  ]
 }

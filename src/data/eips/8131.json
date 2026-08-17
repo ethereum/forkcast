@@ -8,6 +8,7 @@
   "category": "Core",
   "createdDate": "2025-01-21",
   "discussionLink": "https://ethereum-magicians.org/t/eip-9999-add-auth-data-to-eip-7623-floor/12345",
+  "reviewer": "bot",
   "layer": "EL",
   "forkRelationships": [
     {
@@ -21,7 +22,17 @@
       ]
     }
   ],
-  "tradeoffs": null,
+  "laymanDescription": "Ethereum charges a minimum price per byte of content a transaction carries, so that a cheap block can never be an enormous one. That floor covers calldata and access lists, but newer authorization and blob fields pay nothing. This proposal charges every user-controlled byte the same flat rate, whichever field it sits in.",
+  "benefits": [
+    "One rule replaces three separate floor proposals and prices future fields automatically",
+    "Bounds attacker-controlled content per block at roughly 0.89 MB by arithmetic alone",
+    "Closes the gap where authorization tuples and blob hashes pay nothing at the floor"
+  ],
+  "tradeoffs": [
+    "Total network gas rises about 3.6%, with the floor binding on 3.3% of transactions",
+    "Delegation transactions are hit hardest, their bind rate rising from 0.04% to 20.6%",
+    "Wallets and gas estimation must compute the new floor or submissions are rejected"
+  ],
   "requires": [
     2028,
     4844,

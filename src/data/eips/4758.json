@@ -8,6 +8,7 @@
   "category": "Core",
   "createdDate": "2022-02-03",
   "discussionLink": "https://ethereum-magicians.org/t/eip-4758-deactivate-selfdestruct/8710",
+  "reviewer": "bot",
   "layer": "EL",
   "forkRelationships": [
     {
@@ -30,5 +31,15 @@
       ]
     }
   ],
-  "tradeoffs": null
+  "laymanDescription": "SELFDESTRUCT lets a contract erase its own code and storage in one step. Wiping an account that way will not be workable under the planned state layout, where an account's data is spread across many unconnected keys. This proposal keeps only the useful part: the instruction still sends the account's entire ETH balance to the caller, but deletes nothing.",
+  "benefits": [
+    "Removes the only operation that erases an account's code and storage wholesale",
+    "A prerequisite for statelessness and the planned Verkle tree state layout",
+    "Contracts that use the opcode only to recover funds keep working unchanged"
+  ],
+  "tradeoffs": [
+    "Redeploying a contract at the same address via CREATE2 no longer works",
+    "Contracts using self-destruction for upgradeability break and must switch to delegation",
+    "Any contract burning non-ETH token balances by self-destructing is no longer safe"
+  ]
 }

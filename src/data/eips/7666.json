@@ -33,7 +33,15 @@
     }
   ],
   "laymanDescription": "This removes the identity precompile (at address 0x04) and replaces it with actual EVM code that does the same thing - simply copying input data to output data. The identity precompile was originally needed because there was no direct way to copy memory, but since the MCOPY opcode was introduced, this precompile is no longer necessary. Removing it reduces maintenance burden and complexity for Ethereum clients, including ZK-EVMs. This serves as a template for potentially removing other underused precompiles in the future, like certain hash functions.",
-  "tradeoffs": null,
+  "benefits": [
+    "Reduces the precompile count, cutting ongoing maintenance cost and consensus bug risk",
+    "Lowers the implementation burden for new clients, ZK-EVMs, and formally verified implementations",
+    "Establishes a template for retiring other little-used precompiles such as MODEXP"
+  ],
+  "tradeoffs": [
+    "Gas costs change slightly for existing callers of the identity precompile",
+    "Requires a one-off state modification at the activation block"
+  ],
   "requires": [
     3855
   ]

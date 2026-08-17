@@ -15,6 +15,7 @@
     "number": 11936,
     "url": "https://github.com/ethereum/EIPs/pull/11936"
   },
+  "reviewer": "bot",
   "layer": "CL",
   "forkRelationships": [
     {
@@ -34,5 +35,15 @@
       ]
     }
   ],
-  "tradeoffs": null
+  "laymanDescription": "Under ePBS a builder's bid commits to the block hash, which contains the state root, so the builder must commit every state change to the trie for each bid it updates. This proposal leaves the state root out of the bid, so one computation per slot suffices.",
+  "benefits": [
+    "Builders compute one state root per slot instead of one per discarded candidate bid",
+    "The bid still fixes transactions, withdrawals, gas used, and every other payload field",
+    "The bid container keeps its shape, so light client paths and the execution layer are untouched"
+  ],
+  "tradeoffs": [
+    "A builder can sign several envelopes differing only in state root, delaying the valid one",
+    "A fabricated parent hash now passes the state transition and is caught only in fork choice",
+    "Builders take on a deadline: one state root before the reveal, or the slot counts as withheld"
+  ]
 }

@@ -8,6 +8,7 @@
   "category": "Core",
   "createdDate": "2024-12-23",
   "discussionLink": "https://ethereum-magicians.org/t/eip-7862-delayed-execution-layer-state-root/22559",
+  "reviewer": "bot",
   "layer": "EL",
   "forkRelationships": [
     {
@@ -27,5 +28,15 @@
       ]
     }
   ],
-  "tradeoffs": null
+  "laymanDescription": "Before a block can be accepted, someone has to compute a fingerprint summarizing all of Ethereum's data after that block runs, and this is one of the slowest steps in producing a block. This proposal shifts that fingerprint one block later, so each block carries the previous block's result and validators no longer wait on it.",
+  "benefits": [
+    "Takes state root computation off the critical path between block production and attestation",
+    "Builders compute one state root per slot instead of thousands during the auction window",
+    "Lets block access list data parallelize state root computation, which is impossible today"
+  ],
+  "tradeoffs": [
+    "State proofs for a block become available only one slot later, affecting light clients",
+    "Clients must track and recompute the last state root across reorgs",
+    "Reuses the existing header field with new meaning, so anything reading it must be updated"
+  ]
 }

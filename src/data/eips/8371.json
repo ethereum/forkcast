@@ -12,6 +12,7 @@
     7594,
     8136
   ],
+  "reviewer": "bot",
   "layer": "CL",
   "forkRelationships": [
     {
@@ -30,5 +31,15 @@
       ]
     }
   ],
-  "tradeoffs": null
+  "laymanDescription": "Under PeerDAS each node holds a slice of every blob, so rebuilding missing data falls to supernodes that hold everything, and they all redo the same work. This proposal adds per-blob channels so different nodes rebuild different blobs, and ordinary nodes can help.",
+  "benefits": [
+    "Supernode reconstruction load stops growing linearly with every added blob",
+    "A row's subnet members collectively cover enough columns to rebuild without any supernode",
+    "Makes blobs addressable by index, a prerequisite for rollups fetching only their own"
+  ],
+  "tradeoffs": [
+    "Adds gossip topics and bitmap signaling that need debouncing to avoid quadratic messages",
+    "Subnet assignment is a public function of node ID, so an attacker can grind IDs to eclipse one",
+    "Only peers whose libp2p supports cell-level deltas can participate"
+  ]
 }

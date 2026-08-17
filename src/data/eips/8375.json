@@ -15,6 +15,7 @@
     "number": 12130,
     "url": "https://github.com/ethereum/EIPs/pull/12130"
   },
+  "reviewer": "bot",
   "layer": "CL",
   "forkRelationships": [
     {
@@ -34,5 +35,17 @@
       ]
     }
   ],
-  "tradeoffs": null
+  "laymanDescription": "Only the base fee is burned today; priority fees and builder payments go to proposers, and rare jackpot slots make validator income wildly uneven. This proposal burns a fixed fraction of both, and has the payload timeliness committee publish the best public bids it saw so proposers cannot quietly accept a lowball one.",
+  "benefits": [
+    "Burns a fixed share, so proposers cannot prefer payment over an equivalent burn",
+    "Priority-fee burn credits the builder's target rather than being charged twice",
+    "The floor is built from signed, collateralized public bids, not a subjective MEV oracle",
+    "Self-build pays the priority-fee burn, so it is not a zero-burn escape"
+  ],
+  "tradeoffs": [
+    "Not coalition-proof; value competitors cannot observe or price stays unburned",
+    "Proposer-authorized outsourced self-build becomes the main remaining avoidance route",
+    "Disagreement over the floor can make honest proposers build competing branches",
+    "Builders must reserve the full target up front, favouring those with more capital"
+  ]
 }

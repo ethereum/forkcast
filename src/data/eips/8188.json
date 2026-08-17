@@ -8,6 +8,7 @@
   "category": "Core",
   "createdDate": "2026-03-10",
   "discussionLink": "https://ethereum-magicians.org/t/eip8188-state-tiering-by-write-age/28234",
+  "reviewer": "bot",
   "layer": "EL",
   "forkRelationships": [
     {
@@ -36,7 +37,17 @@
       ]
     }
   ],
-  "tradeoffs": null,
+  "laymanDescription": "Ethereum keeps no record of when each piece of its state was last changed, so clients guess with local caches that no two nodes agree on. This proposal records the block number of each account's and slot's last write, giving every client the same signal for which state is actively churning.",
+  "benefits": [
+    "Every client gets the same consensus-verified view of which state is actively written",
+    "Clients can split storage into a fast write tier and a dense, cheaper cold tier",
+    "A restarting node can prefetch the recent working set instead of relearning it"
+  ],
+  "tradeoffs": [
+    "Adds 5 bytes per account and 6 per storage slot, up to roughly 10.8 GB",
+    "EIP-8037's state creation prices must rise or new state becomes underpriced",
+    "Only writes update the field, so constantly read state still looks inactive"
+  ],
   "requires": [
     8037
   ]

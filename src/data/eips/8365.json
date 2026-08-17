@@ -17,6 +17,7 @@
     "number": 12097,
     "url": "https://github.com/ethereum/EIPs/pull/12097"
   },
+  "reviewer": "bot",
   "layer": "CL",
   "forkRelationships": [
     {
@@ -35,5 +36,15 @@
       ]
     }
   ],
-  "tradeoffs": null
+  "laymanDescription": "About 9,000 validators still use the original genesis-era withdrawal format, which has no execution address, so nobody can exit them if the key is lost. This proposal exits every one of them and stops new ones being created, while leaving the path to convert credentials open.",
+  "benefits": [
+    "Every future fork stops carrying the credential-change operation, its gossip topic, and pool",
+    "Balances stay recoverable in full at any time by rotating to execution credentials",
+    "Post-quantum key registry designs no longer need a path for validators with no execution address"
+  ],
+  "tradeoffs": [
+    "Holders of only a signing key can exit but cannot rotate, so they stay stranded",
+    "Retirement shares the exit queue with ordinary voluntary exits during the drain window",
+    "Deposits creating new validators of this type are silently skipped and the ether is unrecoverable"
+  ]
 }

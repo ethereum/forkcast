@@ -8,6 +8,7 @@
   "category": "Core",
   "createdDate": "2026-05-21",
   "discussionLink": "https://ethereum-magicians.org/t/eip-8268-storage-roots-in-block-access-lists/28585",
+  "reviewer": "bot",
   "layer": "EL",
   "forkRelationships": [
     {
@@ -28,7 +29,16 @@
       ]
     }
   ],
-  "tradeoffs": null,
+  "laymanDescription": "A block access list records which storage slots a block changed, but not the resulting fingerprint of each account's storage. A node that keeps only part of the state cannot rebuild that fingerprint, so it cannot check the block's state root. This proposal includes it for every changed account.",
+  "benefits": [
+    "Nodes holding only a slice of the state can still verify the post-block state root",
+    "Charges 32 bytes only for modified accounts; merely accessed ones add nothing",
+    "Empty storage tries encode as a single byte, sparing most accounts the full 32"
+  ],
+  "tradeoffs": [
+    "Adds up to 32 bytes per modified account to every block access list",
+    "The empty trie has one mandatory encoding, a consensus-critical detail clients must match"
+  ],
   "requires": [
     7928
   ]

@@ -8,6 +8,7 @@
   "category": "Core",
   "createdDate": "2026-03-17",
   "discussionLink": "https://ethereum-magicians.org/t/eip-8198-quick-slots/28057",
+  "reviewer": "bot",
   "layer": "CL",
   "forkRelationships": [
     {
@@ -26,7 +27,17 @@
       ]
     }
   ],
-  "tradeoffs": null,
+  "laymanDescription": "Ethereum's twelve-second slot time is hardcoded throughout consensus clients, so changing it means a client-wide refactor rather than flipping a setting. This proposal makes slot duration a runtime configuration and uses it to shorten slots, scaling gas and blob limits so throughput per second is unchanged.",
+  "benefits": [
+    "Faster transaction landings, exchange deposits, and payments at shorter slots",
+    "Slot duration becomes a configuration value, so later changes are parameter updates",
+    "Shorter slots tighten on-chain pricing, cutting arbitrage value extracted from users"
+  ],
+  "tradeoffs": [
+    "Shrinks the window for block propagation, validation, and attestation aggregation",
+    "Raises per-second computation and bandwidth demands on validator hardware",
+    "Applications and tooling that assume twelve-second blocks need updating"
+  ],
   "requires": [
     7892
   ]

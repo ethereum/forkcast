@@ -8,6 +8,7 @@
   "category": "Core",
   "createdDate": "2026-04-08",
   "discussionLink": "https://ethereum-magicians.org/t/eip-8219-checked-arithmetic-opcodes/27913",
+  "reviewer": "bot",
   "layer": "EL",
   "forkRelationships": [
     {
@@ -26,5 +27,15 @@
       ]
     }
   ],
-  "tradeoffs": null
+  "laymanDescription": "Solidity and Vyper guard every arithmetic operation against overflow by default, but the EVM has no instruction for it, so compilers wrap each one in a multi-instruction check. This proposal adds four opcodes that do the arithmetic and revert on overflow, underflow, or division by zero in a single step.",
+  "benefits": [
+    "Cuts a checked addition from roughly 79 gas to 5, and from 12 bytes to 1",
+    "Removes the gas incentive to reach for unchecked blocks where safety is unproven",
+    "Self-contained opcodes avoid the hidden flag state earlier proposals would have added"
+  ],
+  "tradeoffs": [
+    "Consumes four of the EVM's remaining unassigned opcode slots",
+    "Covers unsigned 256-bit arithmetic only; signed variants are deferred to a companion EIP",
+    "Reverts with empty returndata, so Solidity loses its Panic(0x11) error payload"
+  ]
 }

@@ -8,6 +8,7 @@
   "category": "Core",
   "createdDate": "2024-12-27",
   "discussionLink": "https://ethereum-magicians.org/t/eip-7851-code-controlled-eoa-delegation/22344",
+  "reviewer": "bot",
   "layer": "EL",
   "forkRelationships": [
     {
@@ -21,7 +22,17 @@
       ]
     }
   ],
-  "tradeoffs": null,
+  "laymanDescription": "An account upgraded to run wallet code still keeps its original private key, which can take control back or be stolen. This proposal adds an instruction that the wallet code itself can run to retire that key permanently, while leaving the code free to point the account at different wallet software later.",
+  "benefits": [
+    "Retires a leftover key as a theft, loss, or coercion target for upgraded accounts",
+    "The delegate can still be changed afterward, so the account is not locked to one wallet",
+    "Puts the decision in the account's own execution path, reachable by passkeys, multisig, or social recovery"
+  ],
+  "tradeoffs": [
+    "Irreversible: the original key's authority can never be restored once disabled",
+    "Adds a new opcode and a second delegation prefix for every client to handle",
+    "Contracts verifying signatures directly, such as token permits, still accept the retired key"
+  ],
   "requires": [
     7702
   ]

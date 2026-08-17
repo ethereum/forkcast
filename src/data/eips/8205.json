@@ -8,6 +8,7 @@
   "category": "Core",
   "createdDate": "2026-03-26",
   "discussionLink": "https://ethereum-magicians.org/t/eip-8205-withdrawal-credentials-preregistration/28084",
+  "reviewer": "bot",
   "layer": "CL",
   "forkRelationships": [
     {
@@ -30,7 +31,17 @@
       ]
     }
   ],
-  "tradeoffs": null,
+  "laymanDescription": "When one party funds a validator and another generates its key, the key holder can deposit first and permanently point the withdrawals at itself. Every staking provider has built its own defense against this. This proposal lets a key holder commit to withdrawal credentials before any deposit, and has the protocol enforce that commitment.",
+  "benefits": [
+    "Replaces each protocol's home-built front-running defense with one protocol-level guarantee",
+    "Fully optional, so deposits for keys without a preregistration behave exactly as today",
+    "Lets guardian-committee protocols drop depositRoot rotation and committee liveness risk"
+  ],
+  "tradeoffs": [
+    "A mismatched deposit is rejected and its ETH is stuck in the deposit contract forever",
+    "The signed commitment can be replayed after expiry, so signing is effectively irrevocable",
+    "Adds a system contract, a request type, and up to roughly 46 MB of beacon state"
+  ],
   "requires": [
     4788,
     6110,

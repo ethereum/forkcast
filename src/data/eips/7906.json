@@ -8,6 +8,7 @@
   "category": "Core",
   "createdDate": "2025-02-21",
   "discussionLink": "https://ethereum-magicians.org/t/eip-restricted-behavior-transaction-type/23130",
+  "reviewer": "bot",
   "layer": "EL",
   "forkRelationships": [
     {
@@ -27,7 +28,17 @@
       ]
     }
   ],
-  "tradeoffs": null,
+  "laymanDescription": "Signing a transaction today means trusting code most people cannot read, with no way to state what it must not do. This proposal adds instructions that let a check run at the end of a transaction, see everything that changed, and cancel the whole thing if the outcome is not what was expected.",
+  "benefits": [
+    "Lets users set enforceable limits on what a transaction may do, replacing blind signing",
+    "A failed check cancels the entire execution and cannot be bypassed by earlier frames",
+    "Multiple independent assertion providers can compose without coordinating with each other"
+  ],
+  "tradeoffs": [
+    "An assertion that checks too little gives users a false sense of security",
+    "A failed assertion still commits gas payment, so the user pays for a rejected transaction",
+    "Assertions scanning all events can be gas-exhausted by attacker-padded logs"
+  ],
   "requires": [
     2929,
     8141

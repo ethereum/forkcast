@@ -8,6 +8,7 @@
   "category": "Core",
   "createdDate": "2026-01-29",
   "discussionLink": "https://ethereum-magicians.org/t/eip-8142-block-in-blobs-bib/27621",
+  "reviewer": "bot",
   "layer": "CL",
   "forkRelationships": [
     {
@@ -26,7 +27,17 @@
       ]
     }
   ],
-  "tradeoffs": null,
+  "laymanDescription": "If validators check blocks with a proof instead of running the transactions themselves, nobody is forced to download what the block contains, and a producer could publish a valid proof while keeping the contents to itself. This proposal requires that data to be published as blobs in the same block, so it is always available.",
+  "benefits": [
+    "Keeps block contents available once validators verify by proof instead of re-execution",
+    "Stops a builder withholding data to become the only party able to build the next block",
+    "Preserves the data that RPC providers and indexers need, since they must still re-execute"
+  ],
+  "tradeoffs": [
+    "Payload data consumes blob gas, competing with transaction blobs under the same limits",
+    "Access lists must be published even though they could in principle be recomputed",
+    "Uses uncompressed data for now; adding compression later would be a breaking change"
+  ],
   "requires": [
     4844,
     7594,

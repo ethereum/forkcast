@@ -8,6 +8,7 @@
   "category": "Core",
   "createdDate": "2024-05-25",
   "discussionLink": "https://ethereum-magicians.org/t/eip-7716-anti-correlation-attestation-penalties/20137",
+  "reviewer": "bot",
   "layer": "CL",
   "forkRelationships": [
     {
@@ -30,5 +31,15 @@
       ]
     }
   ],
-  "tradeoffs": null
+  "laymanDescription": "A validator that misses its vote is penalized the same amount whether it failed alone or alongside thousands of others at the same moment. This proposal scales that penalty by how much of the network missed in the same slot, so isolated failures cost less and simultaneous ones cost more. Spreading a setup across different clients, machines, and providers becomes economically worthwhile.",
+  "benefits": [
+    "Creates a direct economic reward for diversifying clients, hosts, locations, and providers",
+    "Correlated failure across one operator's validators costs more than scattered misses",
+    "Penalties stay at today's level under stable participation, moving only with correlation"
+  ],
+  "tradeoffs": [
+    "Adds a new value to the beacon state that must be tracked and updated",
+    "A validator's penalty now depends on other participants' behavior, not only its own",
+    "Splitting validator views could inflate penalties for consecutive slots; the EIP leaves this unresolved"
+  ]
 }

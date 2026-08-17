@@ -8,6 +8,7 @@
   "category": "Core",
   "createdDate": "2026-02-03",
   "discussionLink": "https://ethereum-magicians.org/t/eip-8146-block-access-list-sidecars/27757",
+  "reviewer": "bot",
   "layer": "CL",
   "forkRelationships": [
     {
@@ -27,7 +28,17 @@
       ]
     }
   ],
-  "tradeoffs": null,
+  "laymanDescription": "A block access list summarizes everything a block touches. It is large, around 70 KB and sometimes far more, and today it travels bundled with the block on the most time-critical path of the slot. This proposal moves it to its own channel, published early, so clients can start preparing before the block arrives.",
+  "benefits": [
+    "Keeps a large object off the critical path, freeing slot time that gas limit increases need",
+    "Clients can prefetch state and begin the post-state root while the payload is in flight",
+    "Inclusion list builders can drop transactions the pending block already invalidates"
+  ],
+  "tradeoffs": [
+    "A builder can withhold the sidecar, and the payload cannot be validated without it",
+    "Adds a gossip topic, an engine API method, and a retention requirement for clients",
+    "The payload timeliness committee must track and vote on a third availability signal"
+  ],
   "requires": [
     7732,
     7928

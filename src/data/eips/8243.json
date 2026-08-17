@@ -8,6 +8,7 @@
   "category": "Core",
   "createdDate": "2026-05-01",
   "discussionLink": "https://ethereum-magicians.org/t/eip-8243-batching-attestations-at-source/28606",
+  "reviewer": "bot",
   "layer": "CL",
   "forkRelationships": [
     {
@@ -27,5 +28,15 @@
       ]
     }
   ],
-  "tradeoffs": null
+  "laymanDescription": "Every validator publishes its own attestation each slot, roughly 31,000 messages spread across 64 subnets. Operators running many validators send the same vote over and over. This proposal lets those validators authorize one of their number to publish a single combined attestation on their behalf.",
+  "benefits": [
+    "Large operators collapse many attestation messages into one, with no operator action needed",
+    "The freed bandwidth could support fewer subnets and shorter epochs, speeding finality",
+    "The on-chain attestation container is unchanged, so block validity rules stay as they are"
+  ],
+  "tradeoffs": [
+    "Batches reveal which validators sit under one operator, a privacy for efficiency trade",
+    "Every attester must sign an extra seal authorizing its batcher for each duty",
+    "A failed batcher needs pre-signed fallback seals or its members fall back to singles"
+  ]
 }

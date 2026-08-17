@@ -26,6 +26,7 @@
     "number": 12110,
     "url": "https://github.com/ethereum/EIPs/pull/12110"
   },
+  "reviewer": "bot",
   "layer": "CL",
   "forkRelationships": [
     {
@@ -45,5 +46,15 @@
       ]
     }
   ],
-  "tradeoffs": null
+  "laymanDescription": "Inclusion lists only work if every node can cheaply agree on whether a skipped transaction was genuinely invalid. Ordinary transactions are easy to check; account abstraction transactions can depend on almost any state. This document maps out which transactions are cheap enough to enforce, without setting any rules itself.",
+  "benefits": [
+    "One shared eligibility boundary stops nodes agreeing on a list but disagreeing on enforcement",
+    "Checking each omission at one claimed index replaces an append loop that was quadratic",
+    "Any includer can classify a candidate without first obtaining a witness"
+  ],
+  "tradeoffs": [
+    "The builder picks the index, so a transaction is protected only if valid at every choice",
+    "Transactions whose validity depends on a predecessor in the same block get the weaker guarantee",
+    "Every binding rule and constant must be restated in a future Standards Track EIP"
+  ]
 }

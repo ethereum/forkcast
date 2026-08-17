@@ -13,6 +13,7 @@
     7843,
     8141
   ],
+  "reviewer": "bot",
   "layer": "EL",
   "forkRelationships": [
     {
@@ -32,5 +33,15 @@
       ]
     }
   ],
-  "tradeoffs": null
+  "laymanDescription": "A transaction cannot read another application's storage while it is being validated, because one changing value could invalidate thousands of pending transactions at once. But privacy applications need to prove a spend against a recent tree root. This proposal lets a transaction name that root in its signed envelope instead.",
+  "benefits": [
+    "Privacy spends prove against a recent root without reading mutable application storage",
+    "Each reference names one system contract slot, keeping pre-execution checks bounded",
+    "Only earlier slots are referenceable, so current-slot writes cannot invalidate references"
+  ],
+  "tradeoffs": [
+    "Root writes have no inclusion guarantee, so applications need their own publication path",
+    "Every new root source creates permanent storage, priced only by the writes that create it",
+    "The same source id exists on every chain, so proofs must bind the chain domain themselves"
+  ]
 }

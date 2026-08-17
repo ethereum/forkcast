@@ -16,6 +16,7 @@
     7981,
     8131
   ],
+  "reviewer": "bot",
   "layer": "EL",
   "forkRelationships": [
     {
@@ -29,5 +30,15 @@
       ]
     }
   ],
-  "tradeoffs": null
+  "laymanDescription": "Ethereum charges a minimum price per byte a transaction adds to a block, so a cheap block can never be an enormous one. Block access lists are a new source of bytes that nothing prices, letting an attacker inflate a block to 1.55 MB using cold storage reads. This proposal meters them at the same rate.",
+  "benefits": [
+    "Caps worst-case block content near 0.89 MB, roughly 42% below the current 1.55 MB",
+    "Closes the calldata plus cold-SLOAD bypass that EIP-8131 alone leaves open",
+    "One flat per-byte rate, so the worst case no longer depends on the attacker's choice"
+  ],
+  "tradeoffs": [
+    "Adds 0.54 pp more transactions paying more and 0.77 pp more gas, on top of EIP-8131",
+    "Wallets and eth_estimateGas must simulate runtime metering, not just intrinsic gas",
+    "The meter deliberately over-counts, never rewinding bytes charged in reverted frames"
+  ]
 }

@@ -23,6 +23,7 @@
     "number": 12058,
     "url": "https://github.com/ethereum/EIPs/pull/12058"
   },
+  "reviewer": "bot",
   "layer": "EL",
   "forkRelationships": [
     {
@@ -41,5 +42,15 @@
       ]
     }
   ],
-  "tradeoffs": null
+  "laymanDescription": "Moving ether costs the same every time, even when the same accounts are touched over and over in one transaction, though the network only writes each account to disk once. This proposal charges the write once per account and refunds it when a balance ends where it started.",
+  "benefits": [
+    "A pass-through hop between already-touched accounts drops from 8000 to 4000 gas",
+    "Prices native ether the way contract token balances have been priced since EIP-2200",
+    "Callers never end a value call with less gas than under today's rules"
+  ],
+  "tradeoffs": [
+    "Gas estimation becomes order-dependent, so wallets must estimate against actual starting state",
+    "A callee given an explicit gas limit now receives up to 2300 less than before",
+    "Contracts relying on transfer cost as a rate limit find repetition roughly twice as cheap"
+  ]
 }

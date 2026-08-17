@@ -8,6 +8,7 @@
   "category": "Core",
   "createdDate": "2026-02-13",
   "discussionLink": "https://ethereum-magicians.org/t/eip-8163-reserve-0xae-extension-opcode/27756",
+  "reviewer": "bot",
   "layer": "EL",
   "forkRelationships": [
     {
@@ -21,7 +22,17 @@
       ]
     }
   ],
-  "tradeoffs": null,
+  "laymanDescription": "Other chains that run the EVM cannot add their own instructions without risking a clash with a future Ethereum instruction claiming the same byte. This proposal sets one byte aside, promising Ethereum mainnet will never give it meaning, so other chains can build extensions on it safely.",
+  "benefits": [
+    "Gives other EVM chains a byte to build instructions on with no risk of a future clash",
+    "Needs no execution client changes, since the opcode already behaves as invalid",
+    "Extensions can be proven on other chains and later ported back to mainnet"
+  ],
+  "tradeoffs": [
+    "Permanently spends one of the EVM's small supply of unused opcode bytes",
+    "Defines no encoding scheme, leaving chains to coordinate through the discussion thread",
+    "Jump destination analysis must stay identical, constraining what extensions can encode"
+  ],
   "requires": [
     141
   ]

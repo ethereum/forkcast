@@ -12,6 +12,7 @@
     "number": 12063,
     "url": "https://github.com/ethereum/EIPs/pull/12063"
   },
+  "reviewer": "bot",
   "layer": "CL",
   "forkRelationships": [
     {
@@ -30,5 +31,15 @@
       ]
     }
   ],
-  "tradeoffs": null
+  "laymanDescription": "Nobody knows which clients validators actually run. Today it is guessed from fingerprinting, crawlers, relays, or graffiti conventions, all of which are unreliable. This proposal adds a 32-byte field to the block where a proposer can state its consensus client, execution client, and setup type.",
+  "benefits": [
+    "Gives client diversity a purpose-built field instead of competing with custom graffiti",
+    "Encodes a client pair in one byte, so block size grows by 32 bytes",
+    "Records multinode and distributed validator setups, which graffiti watermarks cannot"
+  ],
+  "tradeoffs": [
+    "Reports are unverifiable, so the data cannot back rewards, penalties, or fork choice",
+    "Rare client and setup combinations become more identifiable to observers",
+    "Data only updates when a validator proposes, so aggregates lag reality"
+  ]
 }

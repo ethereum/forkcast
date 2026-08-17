@@ -8,6 +8,7 @@
   "category": "Core",
   "createdDate": "2025-12-30",
   "discussionLink": "https://ethereum-magicians.org/t/eip-8116-replace-cumulative-receipt-fields/27359",
+  "reviewer": "bot",
   "layer": "EL",
   "forkRelationships": [
     {
@@ -27,5 +28,14 @@
       ]
     }
   ],
-  "tradeoffs": null
+  "laymanDescription": "A transaction's receipt records gas as a running total for everything in the block so far, not what that transaction itself used, so working out one transaction's cost means fetching the receipt before it too. This proposal records each transaction's own gas directly, and numbers its logs the same way.",
+  "benefits": [
+    "Reading one transaction's gas no longer requires fetching the preceding receipt",
+    "Receipt contents stop depending on position in the block, allowing more parallelism",
+    "Aligns on-chain receipt data with what applications actually consume over RPC"
+  ],
+  "tradeoffs": [
+    "Applications reading gas from receipts must adapt to the new meaning of the field",
+    "Log indices become per-receipt, so block-wide ordering has to be reconstructed"
+  ]
 }

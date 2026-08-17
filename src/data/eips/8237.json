@@ -8,6 +8,7 @@
   "category": "Core",
   "createdDate": "2026-04-22",
   "discussionLink": "https://ethereum-magicians.org/t/eip-8237-independent-cl-el-sync/28331",
+  "reviewer": "bot",
   "layer": "CL",
   "forkRelationships": [
     {
@@ -27,7 +28,17 @@
       ]
     }
   ],
-  "tradeoffs": null,
+  "laymanDescription": "Once execution payloads travel separately from beacon blocks, a consensus client syncing a long range still has to download every payload just to confirm the two agree. This proposal replaces that check with a running hash chained across blocks, verifiable in one pass after the execution layer catches up.",
+  "benefits": [
+    "Consensus clients can range sync without downloading execution payloads at all",
+    "Removes execution engine round trips from sync, cutting both bandwidth and latency",
+    "Each layer verifies the same commitment chain independently, so either side catches drift"
+  ],
+  "tradeoffs": [
+    "Uses plain SHA256 rather than SSZ hashing, so the accumulator is not Merkle-provable",
+    "Payload verification is deferred, detected only once the execution layer catches up",
+    "The execution layer must maintain and check a commitment it has no other use for"
+  ],
   "requires": [
     7732
   ]

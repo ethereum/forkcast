@@ -8,6 +8,7 @@
   "category": "Core",
   "createdDate": "2026-04-16",
   "discussionLink": "https://ethereum-magicians.org/t/eip-8250-keyed-nonces-for-frame-transactions/28437",
+  "reviewer": "bot",
   "layer": "EL",
   "forkRelationships": [
     {
@@ -27,7 +28,17 @@
       ]
     }
   ],
-  "tradeoffs": null,
+  "laymanDescription": "A sender's transactions are processed in one strict order, so a single stuck transaction blocks every later one. Privacy protocols route many unrelated users through one shared sender, where that queue becomes a bottleneck. This proposal lets each transaction pick its own independent nonce sequence.",
+  "benefits": [
+    "Unrelated users sharing a sender stop invalidating each other's pending transactions",
+    "Gives single-use keys an atomic spent-once guarantee that survives later frame reverts",
+    "Keyed state lives in a system contract, leaving the account trie layout untouched"
+  ],
+  "tradeoffs": [
+    "Each first-use key permanently occupies a storage slot, surcharged 20,000 gas",
+    "Nonce keys are visible in the payload, so the choice of key domain is not private",
+    "Cancelling by resending at the same legacy nonce no longer works for keyed transactions"
+  ],
   "requires": [
     7623,
     8141

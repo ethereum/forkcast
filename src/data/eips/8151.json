@@ -8,6 +8,7 @@
   "category": "Core",
   "createdDate": "2026-02-09",
   "discussionLink": "https://ethereum-magicians.org/t/eip-8151-account-code-restricted-ecrecover/27690",
+  "reviewer": "bot",
   "layer": "EL",
   "forkRelationships": [
     {
@@ -21,7 +22,17 @@
       ]
     }
   ],
-  "tradeoffs": null,
+  "laymanDescription": "The signature-checking building block that contracts rely on ignores whether the account it identifies has since moved to a different security model. That lets an old key keep approving token transfers through contracts that can never be updated. This proposal makes it return nothing once the account's code shows it has moved on.",
+  "benefits": [
+    "Closes a path where a retired key still authorizes transfers through immutable contracts",
+    "Applies to every deployed contract at once, with no redeployment required",
+    "Returns zero rather than reverting, so contracts already checking for zero need no changes"
+  ],
+  "tradeoffs": [
+    "Every successful recovery costs 100 or 2600 more gas, so tight transactions may fail",
+    "Recovery stops being a pure function, which breaks layer 2 fault proofs assuming otherwise",
+    "Contracts doing signature recovery in their own code bypass the restriction entirely"
+  ],
   "requires": [
     2929,
     3607,

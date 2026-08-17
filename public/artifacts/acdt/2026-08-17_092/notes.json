@@ -1,0 +1,23 @@
+{
+  "meeting": "ACDT #092 - 2026-08-17",
+  "sections": [
+    {
+      "heading": "Glamsterdam Devnet 8 Status",
+      "summary": "Devnet 8 is live and approaching Gloas fork transition in ~2 days 17 hours; devnet 7 will be sunset after the transition.",
+      "timestamp": "00:04:28",
+      "body": "- A [blog post](https://blog.ethereum.org/2026/08/17/plataberget-testnet) and [tweet](https://x.com/ethPandaOps/status/2089333243946377624) were published announcing devnet 8.\n- Devnet 7 will be sunset once devnet 8 completes the Gloas transition.\n- Nimbus reported that if [consensus-specs PR #5543](https://github.com/ethereum/consensus-specs/pull/5543) lands quickly enough across CL clients, devnet 8 should be fine, as the change is consensus-breaking.\n- Builder deposits should be submitted a few epochs before the fork epoch; a builder deposits view is available on [Dora](https://dora.glamsterdam-devnet-8.ethpandaops.io/builders/deposits).\n- Testing focuses are documented in the [devnet 8 notes](https://notes.ethereum.org/@ethpandaops/glamsterdam-devnet-8); SSZ testing will be deferred to later T-NETs.\n- The validator set is smaller than devnet 7 because exited validators were not added this time.\n- Different client teams are encouraged to notify EthPandaOps about builder software they want tested.\n- Fallback clients are also on the testing list."
+    },
+    {
+      "heading": "Contributor Program Registration",
+      "summary": "Ahmad Wilson asked about re-enrolling in the contributor program after the Batsu-to-computer transition; EthPandaOps will follow up after vacation.",
+      "timestamp": "00:08:04",
+      "body": "- Ahmad Wilson noted that the previous contributor registration system (Batsu) appears deprecated and asked how to re-enroll.\n- Parithosh Jayanthi (EthPandaOps) said several team members were on vacation the past week and a half; Andrew or Sam will look at the request shortly."
+    },
+    {
+      "heading": "EIP-7610 Removal from Glamsterdam",
+      "summary": "Consensus reached to remove EIP-7610 from Glamsterdam since the edge case it guards is infeasible without breaking Ethereum's hash-collision security model; EIP-8253 nonce bump proposed for Hegota instead.",
+      "timestamp": "00:10:46",
+      "body": "- [EIP-7610](https://eips.ethereum.org/EIPS/eip-7610) requires checking storage-root emptiness before contract deployment to protect ~28 accounts with non-empty storage eligible for deployment via hash collision.\n- Gary argued the attack requires a hash collision (160-bit security), which would also allow deriving private keys for arbitrary addresses — a far larger break of Ethereum security — making the check unnecessary.\n- Dragan (Reth) supported removal, noting Reth already skips the EIP-7610 tests and receives recurring complaints from auditors/researchers about failing them; he described it as a recurring nuisance.\n  - Reth does not check the storage route; behavior under these tests is undefined and client-dependent.\n- Geth also currently skips the EIP-7610 tests due to hard-coded address handling.\n- Jochem-brouwer agreed, citing the expensive disk-level storage-root check the EIP's spec surface implies, and the testing friction it causes.\n- [EIP-8253](https://eips.ethereum.org/EIPS/eip-8253) was proposed for inclusion in Hegota instead; it bumps the nonce for only the specific 28 mainnet accounts, eliminating the edge case permanently.\n  - EIP-8253 avoids the general-purpose testing problem because it targets only the known accounts, not a general scenario.\n- Karim T. (Nethermind) noted that for PBT (Portal Bridge Tree) there will be no storage root, making EIP-7610's check impossible in that context as well.\n- Kevaundray Wedderburn confirmed bumping the nonce in Hegota makes sense and asked whether it was not in Glamsterdam simply because it was never CFI'd for it; Dragan affirmed the priority is shipping Glamsterdam quickly.\n- Jochem-brouwer will raise the removal at the next ACDC call for formal decision.\n  - Spencer asked whether this could be raised at ACDC this week to keep turnaround under a week.\n  - Jochem-brouwer confirmed he will place it at ACDC and reference this conversation.\n- Removing EIP-7610 means the related tests will be removed from EVM spec tests, allowing Geth, Reth, and other clients to pass the canonical test suite without skipping."
+    }
+  ]
+}

@@ -3,6 +3,10 @@ import { Link } from './navigation';
 import { useNetworks } from '../hooks/useNetworks';
 import { getAllDevnetSpecIds } from '../data/devnet-specs';
 import { getPromotedDevnet } from '../domain/networks/promotedDevnets';
+import {
+  RETIRED_PUBLIC_NETWORKS,
+  type RetiredPublicNetwork,
+} from '../domain/networks/retiredPublicNetworks';
 import type {
   ActiveDevnetSeries,
   InactiveDevnetSeries,
@@ -215,6 +219,29 @@ function PublicNetworkCard({ network }: { network: PublicNetworkSummary }) {
   );
 }
 
+function RetiredNetworkCard({ network }: { network: RetiredPublicNetwork }) {
+  return (
+    <div className="bg-white/60 dark:bg-slate-800/40 border border-slate-200 dark:border-slate-700 rounded-lg px-4 py-3 flex flex-col gap-2 opacity-60">
+      <div className="flex items-baseline justify-between gap-2">
+        <h4 className="text-sm font-semibold uppercase tracking-wide text-slate-500 dark:text-slate-400">
+          {network.displayName}
+        </h4>
+        <span className="text-[10px] font-mono text-slate-400 dark:text-slate-500">
+          chain {network.chainId}
+        </span>
+      </div>
+      <p className="text-xs text-slate-500 dark:text-slate-400 line-clamp-3 leading-relaxed">
+        {network.description}
+      </p>
+      <div className="mt-auto pt-1 border-t border-slate-100 dark:border-slate-700/50">
+        <span className="text-xs font-mono text-slate-400 dark:text-slate-500">
+          Retired {network.retired}
+        </span>
+      </div>
+    </div>
+  );
+}
+
 function InactiveCard({ item }: { item: InactiveDevnetSeries }) {
   return (
     <div className="bg-white/60 dark:bg-slate-800/40 border border-slate-200 dark:border-slate-700 rounded-lg px-4 py-3 flex flex-col gap-2 opacity-60">
@@ -238,6 +265,7 @@ function InactiveCard({ item }: { item: InactiveDevnetSeries }) {
 const NetworksIndexPage: React.FC = () => {
   const { publicNetworks, activeSeries, inactiveSeries, loading, error } = useNetworks();
   const [showInactive, setShowInactive] = useState(true);
+  const [showRetired, setShowRetired] = useState(true);
   const cardItems = buildCardItems(activeSeries, inactiveSeries);
   const isForkAffiliated = (key: string) =>
     GLAMSTERDAM_CATEGORIES.has(key) || FUSAKA_CATEGORIES.has(key) || PECTRA_CATEGORIES.has(key) || DENCUN_CATEGORIES.has(key);
@@ -272,12 +300,26 @@ const NetworksIndexPage: React.FC = () => {
         {/* Public Networks */}
         {publicNetworks.length > 0 && (
           <div className="mb-8">
-            <h2 className="text-lg font-semibold text-slate-900 dark:text-slate-100 mb-4">
-              Public Networks
-            </h2>
+            <div className="flex items-center justify-between mb-4">
+              <h2 className="text-lg font-semibold text-slate-900 dark:text-slate-100">
+                Public Networks
+              </h2>
+              <label className="flex items-center gap-2 cursor-pointer select-none">
+                <input
+                  type="checkbox"
+                  checked={!showRetired}
+                  onChange={(e) => setShowRetired(!e.target.checked)}
+                  className="w-4 h-4 rounded border-slate-300 dark:border-slate-600 text-purple-600 focus:ring-purple-500"
+                />
+                <span className="text-sm text-slate-600 dark:text-slate-300">Active only</span>
+              </label>
+            </div>
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
               {publicNetworks.map((network) => (
                 <PublicNetworkCard key={network.key} network={network} />
+              ))}
+              {showRetired && RETIRED_PUBLIC_NETWORKS.map((network) => (
+                <RetiredNetworkCard key={network.key} network={network} />
               ))}
             </div>
           </div>

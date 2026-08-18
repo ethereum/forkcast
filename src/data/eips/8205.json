@@ -2,7 +2,7 @@
   "id": 8205,
   "title": "EIP-8205: Withdrawal credentials preregistration",
   "status": "Draft",
-  "description": "Bind a validator public key to withdrawal credentials before deposit via an EL system contract enforced by the CL",
+  "description": "Bind validator keys to withdrawal credentials before deposit with minimal EL/CL changes using the EIP-7002 system-contract pattern",
   "author": "George Avsetsin (@avsetsin), Dmitry Gusakov (@dgusakov), Greg Koumoutsos (@gkoumout), Eugene Mamin (@TheDZhon)",
   "type": "Standards Track",
   "category": "Core",
@@ -28,19 +28,30 @@
           "date": "2026-04-16",
           "timestamp": 3853
         }
+      ],
+      "champions": [
+        {
+          "name": "George Avsetsin",
+          "discord": "george_avs"
+        },
+        {
+          "name": "Greg Koumoutsos",
+          "discord": "gkoumout"
+        }
       ]
     }
   ],
   "laymanDescription": "When one party funds a validator and another generates its key, the key holder can deposit first and permanently point the withdrawals at itself. Every staking provider has built its own defense against this. This proposal lets a key holder commit to withdrawal credentials before any deposit, and has the protocol enforce that commitment.",
   "benefits": [
-    "Replaces each protocol's home-built front-running defense with one protocol-level guarantee",
-    "Fully optional, so deposits for keys without a preregistration behave exactly as today",
-    "Lets guardian-committee protocols drop depositRoot rotation and committee liveness risk"
+    "Fixes a long-standing delegated staking gap with one shared Ethereum-level solution",
+    "Replaces custom protections across delegated staking, avoiding locked capital, delays, and off-chain trust",
+    "Optional and backwards-compatible: deposits without preregistration work as today",
+    "Reuses the system-contract pattern from EIPs 7002 and 7251"
   ],
   "tradeoffs": [
-    "A mismatched deposit is rejected and its ETH is stuck in the deposit contract forever",
-    "The signed commitment can be replayed after expiry, so signing is effectively irrevocable",
-    "Adds a system contract, a request type, and up to roughly 46 MB of beacon state"
+    "For protocols that opt in, adds a preregistration step before depositing",
+    "Once published, the commitment is effectively permanent and can be resubmitted after expiry",
+    "Adds a system contract, request type, and bounded beacon state; normally small, with a hard cap of about 46 MB"
   ],
   "requires": [
     4788,

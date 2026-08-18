@@ -57,7 +57,7 @@ const TIERS: Tier[] = [
   },
   {
     id: "D",
-    name: "D",
+    name: "DFI",
     color: "text-slate-900",
     bandColor: "bg-sky-300",
     rowBgColor: "bg-sky-100",
@@ -444,7 +444,7 @@ const RankPage: React.FC = () => {
       ctx.fillStyle = bandColors[tier.id] || "#e5e7eb";
       ctx.fillRect(0, y, bandWidth, tierHeight);
 
-      // Draw tier letter centered in band
+      // Draw tier label centered in band
       ctx.save();
       ctx.fillStyle = "#18181b";
       ctx.font = `${
@@ -452,7 +452,7 @@ const RankPage: React.FC = () => {
       }px -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif`;
       ctx.textAlign = "center";
       ctx.textBaseline = "middle";
-      ctx.fillText(tier.id, bandWidth / 2, y + tierHeight / 2);
+      ctx.fillText(tier.name, bandWidth / 2, y + tierHeight / 2);
       ctx.restore();
 
       // Draw cards in two columns
@@ -773,7 +773,7 @@ const RankPage: React.FC = () => {
                   <p className="text-xs text-slate-600 dark:text-slate-300 leading-relaxed mb-4">
                     Drag and drop (desktop) or tap-to-assign (mobile) the EIPs
                     into tiers. S-tier represents your highest priority proposals,
-                    while D-tier represents your lowest priority.
+                    while DFI represents proposals you explicitly reject.
                   </p>
                   <p className="text-xs text-slate-600 dark:text-slate-300 leading-relaxed">
                     Copy a link or download the image to share your rankings

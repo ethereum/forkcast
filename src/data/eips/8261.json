@@ -7,8 +7,43 @@
   "type": "Informational",
   "createdDate": "2026-05-11",
   "discussionLink": "https://ethereum-magicians.org/t/eip-8261-gas-limit-schedule/28494",
-  "forkRelationships": [],
-  "tradeoffs": null,
+  "reviewer": "bot",
+  "layer": "CL",
+  "forkRelationships": [
+    {
+      "forkName": "Glamsterdam",
+      "statusHistory": [
+        {
+          "status": "Considered",
+          "call": "acde/243",
+          "date": "2026-08-13"
+        },
+        {
+          "status": "Informational",
+          "call": null,
+          "date": null
+        }
+      ],
+      "champions": [
+        {
+          "name": "Barnabas Busa",
+          "discord": "barnabasbusa"
+        }
+      ]
+    }
+  ],
+  "laymanDescription": "Adds an optional list of gas limit changes by epoch to consensus client config. Validators who never set their own preference adopt the scheduled value at the right time, so raising the network's gas limit no longer depends on operators installing a new release first.",
+  "benefits": [
+    "Separates shipping a new gas limit default from activating it",
+    "Gives the network one machine-readable record of the intended gas limit",
+    "Nodes switch at the scheduled epoch with no restart or follow-up release",
+    "Optional and fork-free, so clients can adopt it independently"
+  ],
+  "tradeoffs": [
+    "Purely advisory; nothing stops a proposer from exceeding the scheduled value",
+    "Coordination benefit scales with adoption; non-adopting clients keep manual coordination",
+    "An error in a scheduled value would propagate widely across validators"
+  ],
   "requires": [
     1559,
     7732,

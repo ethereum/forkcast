@@ -8,8 +8,43 @@
   "category": "Networking",
   "createdDate": "2026-03-06",
   "discussionLink": "https://ethereum-magicians.org/t/eip-8189-snap-2-bal-based-state-healing/27953",
-  "forkRelationships": [],
-  "tradeoffs": null,
+  "reviewer": "bot",
+  "layer": "EL",
+  "forkRelationships": [
+    {
+      "forkName": "Glamsterdam",
+      "statusHistory": [
+        {
+          "status": "Considered",
+          "call": "acde/239",
+          "date": "2026-06-18"
+        },
+        {
+          "status": "Networking",
+          "call": null,
+          "date": null
+        }
+      ],
+      "champions": [
+        {
+          "name": "Toni Wahrstätter",
+          "discord": "nero_eth"
+        }
+      ]
+    }
+  ],
+  "laymanDescription": "Speeds up node syncing. Today a syncing node chases down missing pieces of state one request at a time. This lets it instead download the record of what each block changed and apply those changes in order, so the remaining work is known upfront.",
+  "benefits": [
+    "Replaces iterative trie node discovery with a known, upfront set of block diffs",
+    "Reduces round trips during the snap sync catch-up phase",
+    "Removes the need to maintain a separate trie healing mechanism",
+    "Allows recovery from reorgs past the pivot without restarting sync"
+  ],
+  "tradeoffs": [
+    "Requires rolling out a new protocol version; older peers stay on snap/1",
+    "Only usable for post-Glamsterdam blocks within the BAL retention period",
+    "Serving peers must retain orphaned block BALs to support reorg recovery"
+  ],
   "requires": [
     7928
   ]

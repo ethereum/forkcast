@@ -2,6 +2,16 @@
   "eipId": 8141,
   "commits": [
     {
+      "sha": "13d1b37672b8fb321c7e880b521cfe375683c9e4",
+      "date": "2026-08-17T20:27:34Z",
+      "message": "Update EIP-8141: pin the initial accessed_addresses set for frame transactions (#12113)",
+      "author": "Marchhill",
+      "prNumber": 12113,
+      "patch": "@@ -436,6 +436,7 @@ After executing all frames, verify that `payer` has been set (i.e. `payer != Non\n \n A few cross-frame interactions to note:\n \n+- When frame-transaction processing begins, `accessed_addresses` is initialized as in [EIP-2929](./eip-2929.md) and [EIP-3651](./eip-3651.md) (`tx.sender`, the coinbase, and precompiles warm), and `accessed_storage_keys` empty (there is no access list). Being a frame target does not warm an address: a `resolved_target`'s warm/cold access is charged within the frame's own `limits.execution`. The payer is added to `accessed_addresses` when an `APPROVE` with payment scope sets it and collects `max_cost`, as for any protocol-touched account. `ENTRY_POINT` is not pre-warmed, so `ORIGIN` is cold in `DEFAULT` and `VERIFY` frames (where it is `ENTRY_POINT`) and warm in a `SENDER` frame (where it is `tx.sender`).\n - For the purposes of gas accounting of warm / cold state status, the journal of such touches is shared across frames.\n - If a frame reverts, warm / cold status reverts to the state before the frame.\n - State-gas ownership records and changes to frame receipts' `gas_used.state` fields journaled alongside the state changes that produced them. Reverting a call, frame, or atomic batch restores all of them to the corresponding checkpoint.",
+      "additions": 1,
+      "deletions": 0
+    },
+    {
       "sha": "9c915ee494c05069945f4e1018fa0854e2d3fb38",
       "date": "2026-08-14T20:54:24Z",
       "message": "Update EIP-8141: statically disallow approval scope on atomic-batch frames (#12109)",
@@ -539,7 +549,7 @@
       "number": 12167,
       "title": "Update EIP-8141: relax banned opcode list",
       "author": "Marchhill",
-      "updatedAt": "2026-08-14T16:31:27Z",
+      "updatedAt": "2026-08-17T21:17:54Z",
       "additions": 1,
       "deletions": 4
     },
@@ -555,23 +565,15 @@
       "number": 12162,
       "title": "Update EIP-8141: relax the pending-transaction limit for validation-stable accounts",
       "author": "AnkushinDaniil",
-      "updatedAt": "2026-08-16T12:24:29Z",
+      "updatedAt": "2026-08-17T21:00:37Z",
       "additions": 8,
-      "deletions": 0
-    },
-    {
-      "number": 12113,
-      "title": "Update EIP-8141: pin the initial accessed_addresses set for frame transactions",
-      "author": "Marchhill",
-      "updatedAt": "2026-08-14T21:18:05Z",
-      "additions": 1,
       "deletions": 0
     },
     {
       "number": 12157,
       "title": "Update EIP-8141: dispatch a precompile targeted by a SENDER or DEFAULT frame",
       "author": "Marchhill",
-      "updatedAt": "2026-08-14T14:45:42Z",
+      "updatedAt": "2026-08-17T21:18:41Z",
       "additions": 1,
       "deletions": 3
     },
@@ -579,7 +581,7 @@
       "number": 12160,
       "title": "Update EIP-8141: enumerate the validation-prefix state dependency set for revalidation without re-simulation",
       "author": "AnkushinDaniil",
-      "updatedAt": "2026-08-16T11:36:39Z",
+      "updatedAt": "2026-08-17T20:59:13Z",
       "additions": 2,
       "deletions": 0
     }

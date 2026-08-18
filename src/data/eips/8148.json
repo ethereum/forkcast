@@ -28,19 +28,28 @@
           "date": "2026-05-28",
           "timestamp": 2068
         }
+      ],
+      "champions": [
+        {
+          "name": "Dmitry Gusakov",
+          "discord": "dgusakov"
+        },
+        {
+          "name": "Greg Koumoutsos",
+          "discord": "gkoumout"
+        }
       ]
     }
   ],
   "laymanDescription": "Validators that let their stake compound only get rewards paid out automatically once their balance passes 2,048 ETH. Below that they must request each withdrawal by hand and wait in a shared queue of unpredictable length. This proposal lets a validator choose its own payout level, above which rewards are swept automatically.",
   "benefits": [
-    "Rewards are swept automatically instead of requiring a manual request each time",
-    "Avoids the shared withdrawal queue, whose wait time is unpredictable under load",
-    "Removes a reason validators avoid compounding credentials, which have seen low uptake"
+    "Ethereum validators can now have configurable 'size'",
+    "Makes 0x02 validator withdrawal credentials available for any staker without compromises",
+    "Allows for the future MAX_EB changes or removal"
   ],
   "tradeoffs": [
-    "Adds a per-validator mapping to the beacon state and a new request type to process",
-    "A threshold can only be set above the current balance, so lowering it needs a withdrawal first",
-    "Thresholds cannot go below 33 ETH, so the feature does nothing for smaller validators"
+    "Adds a per-validator mapping to the beacon state",
+    "Adds new EL request type and corresponding system contract"
   ],
   "requires": [
     7251,

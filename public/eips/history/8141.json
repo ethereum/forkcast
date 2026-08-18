@@ -2,6 +2,25 @@
   "eipId": 8141,
   "commits": [
     {
+      "sha": "0603514569547869ae2531a4e5b2b62875888db3",
+      "date": "2026-08-18T11:59:19Z",
+      "message": "Update EIP-8141: relax banned opcode list (#12167)",
+      "author": "Marchhill",
+      "prNumber": 12167,
+      "patch": "@@ -993,7 +993,6 @@ A public mempool node must simulate the validation prefix and reject the transac\n \n For `VERIFY` frames, the usual `STATICCALL` restrictions apply except for the protocol-defined effects of `APPROVE`. In addition, the following opcodes are banned during the validation prefix, with a few caveats:\n \n-- ORIGIN (0x32)\n - GASPRICE (0x3A)\n - BLOCKHASH (0x40)\n - COINBASE (0x41)\n@@ -1003,7 +1002,6 @@ For `VERIFY` frames, the usual `STATICCALL` restrictions apply except for the pr\n - PREVRANDAO/DIFFICULTY (0x44)\n - GASLIMIT (0x45)\n - BASEFEE (0x48)\n-- BLOBHASH (0x49)\n - BLOBBASEFEE (0x4A)\n - SLOTNUM (0x4B, [EIP-7843](./eip-7843.md))\n - GAS (0x5A)\n@@ -1019,8 +1017,7 @@ For `VERIFY` frames, the usual `STATICCALL` restrictions apply except for the pr\n - BALANCE (0x31)\n - SELFBALANCE (0x47)\n - SSTORE (0x55)\n-- TLOAD (0x5C)\n-- TSTORE (0x5D)\n+    - Except `SSTORE`s to `tx.sender`'s storage inside the first `deploy` frame.\n \n `SLOAD` can be used only to access `tx.sender` storage, including when reached transitively via `CALL*` or `DELEGATECALL`.\n ",
+      "additions": 1,
+      "deletions": 4
+    },
+    {
+      "sha": "ead1a36035513d65d0443710670f0c79e30d5b62",
+      "date": "2026-08-18T11:58:54Z",
+      "message": "8141: add sigdatacopy so that stack requirement for sigparam is static (#12187)",
+      "author": "lightclient",
+      "prNumber": 12187,
+      "additions": 27,
+      "deletions": 15
+    },
+    {
       "sha": "13d1b37672b8fb321c7e880b521cfe375683c9e4",
       "date": "2026-08-17T20:27:34Z",
       "message": "Update EIP-8141: pin the initial accessed_addresses set for frame transactions (#12113)",
@@ -546,14 +565,6 @@
   ],
   "openPrs": [
     {
-      "number": 12167,
-      "title": "Update EIP-8141: relax banned opcode list",
-      "author": "Marchhill",
-      "updatedAt": "2026-08-17T21:17:54Z",
-      "additions": 1,
-      "deletions": 4
-    },
-    {
       "number": 12041,
       "title": "Update EIP-8141: assembled canonical paymaster reference bytecode",
       "author": "Marchhill",
@@ -562,20 +573,20 @@
       "deletions": 8
     },
     {
+      "number": 12157,
+      "title": "Update EIP-8141: dispatch a precompile targeted by a frame",
+      "author": "Marchhill",
+      "updatedAt": "2026-08-18T12:03:59Z",
+      "additions": 2,
+      "deletions": 1
+    },
+    {
       "number": 12162,
       "title": "Update EIP-8141: relax the pending-transaction limit for validation-stable accounts",
       "author": "AnkushinDaniil",
       "updatedAt": "2026-08-17T21:00:37Z",
       "additions": 8,
       "deletions": 0
-    },
-    {
-      "number": 12157,
-      "title": "Update EIP-8141: dispatch a precompile targeted by a SENDER or DEFAULT frame",
-      "author": "Marchhill",
-      "updatedAt": "2026-08-17T21:18:41Z",
-      "additions": 1,
-      "deletions": 3
     },
     {
       "number": 12160,

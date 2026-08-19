@@ -370,7 +370,7 @@ export default function GlobalSearchModal({ isOpen, initialScope, initialQuery =
       ) : (
         <SearchEmptyState
           description="Search across Forkcast"
-          items={['EIPs', 'Calls', 'Call summaries', 'Upgrades', 'Devnets', 'Pages']}
+          items={['EIPs', 'Calls', 'Call summaries', 'Upgrades', 'Networks', 'Pages']}
         />
       )}
 

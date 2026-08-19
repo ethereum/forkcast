@@ -414,10 +414,10 @@ const HomePage = () => {
               </div>
               <div className="flex-1 min-w-0">
                 <h3 className="text-sm font-medium text-slate-900 dark:text-slate-100 mb-1">
-                  Devnets
+                  Networks
                 </h3>
                 <p className="text-xs text-slate-600 dark:text-slate-400">
-                  Active devnet series and combined inclusion status
+                  Public networks and devnets, with fork activation status
                 </p>
               </div>
               <svg className="w-5 h-5 text-slate-400 group-hover:text-purple-500 flex-shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -440,6 +440,28 @@ const HomePage = () => {
                 </h3>
                 <p className="text-xs text-slate-600 dark:text-slate-400">
                   Rank and compare EIP proposals for upcoming upgrades
+                </p>
+              </div>
+              <svg className="w-5 h-5 text-slate-400 group-hover:text-purple-500 flex-shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+              </svg>
+            </Link>
+
+            <Link
+              to="/champions"
+              className="group flex items-start gap-3 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg p-4 hover:shadow-md dark:hover:shadow-slate-700/20 hover:border-purple-300 dark:hover:border-purple-600"
+            >
+              <div className="flex-shrink-0 w-9 h-9 bg-rose-100 dark:bg-rose-900/40 rounded-lg flex items-center justify-center text-rose-600 dark:text-rose-400">
+                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
+                </svg>
+              </div>
+              <div className="flex-1 min-w-0">
+                <h3 className="text-sm font-medium text-slate-900 dark:text-slate-100 mb-1">
+                  Champions Guide
+                </h3>
+                <p className="text-xs text-slate-600 dark:text-slate-400">
+                  Write and preview the EIP fields Forkcast displays
                 </p>
               </div>
               <svg className="w-5 h-5 text-slate-400 group-hover:text-purple-500 flex-shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">

@@ -41,7 +41,7 @@
       ]
     }
   ],
-  "laymanDescription": "When one party funds a validator and another generates its key, the key holder can deposit first and permanently point the withdrawals at itself. Every staking provider has built its own defense against this. This proposal lets a key holder commit to withdrawal credentials before any deposit, and has the protocol enforce that commitment.",
+  "laymanDescription": "In delegated staking, a dishonest node operator can make a small deposit first, set its own withdrawal address, and steal the much larger deposit made later by the staking protocol. Today, each protocol needs its own protection against this attack. EIP-8205 provides one simple shared solution: the operator commits to the expected withdrawal address before deposit, and Ethereum enforces it. Protocols can opt in; other deposits are unchanged.",
   "benefits": [
     "Fixes a long-standing delegated staking gap with one shared Ethereum-level solution",
     "Replaces custom protections across delegated staking, avoiding locked capital, delays, and off-chain trust",

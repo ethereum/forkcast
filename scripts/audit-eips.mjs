@@ -2,6 +2,12 @@ import fs from 'fs';
 import path from 'path';
 import { fileURLToPath } from 'url';
 import { loadDecisions } from './lib/key-decisions.mjs';
+import {
+  META_EIP_BY_FORK,
+  fetchMetaEip,
+  parseMetaEip,
+  reconcileMetaEip,
+} from './lib/meta-eip.mjs';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -118,12 +124,39 @@ function auditDecisions(eips, decisions) {
   return issues;
 }
 
+// Compare each fork's Hardfork Meta EIP against our data. The meta EIP is the
+// canonical record, so anything it lists that we do not know about is a gap.
+async function auditMetaEips(eips, forkFilter) {
+  const forks = Object.keys(META_EIP_BY_FORK).filter(
+    (f) => !forkFilter || f === forkFilter.toLowerCase()
+  );
+
+  const results = [];
+  for (const fork of forks) {
+    const metaEipNumber = META_EIP_BY_FORK[fork];
+    try {
+      const markdown = await fetchMetaEip(metaEipNumber);
+      const entries = parseMetaEip(markdown);
+      results.push({
+        fork,
+        metaEipNumber,
+        issues: reconcileMetaEip(entries, eips, fork),
+      });
+    } catch (error) {
+      results.push({ fork, metaEipNumber, error: error.message });
+    }
+  }
+  return results;
+}
+
 function parseArgs() {
   const args = process.argv.slice(2);
-  const options = { fork: null, help: false };
+  const options = { fork: null, help: false, skipMeta: false };
   for (let i = 0; i < args.length; i++) {
     if (args[i] === '--fork' || args[i] === '-f') {
       options.fork = args[++i];
+    } else if (args[i] === '--no-meta') {
+      options.skipMeta = true;
     } else if (args[i] === '--help' || args[i] === '-h') {
       options.help = true;
     }
@@ -143,6 +176,7 @@ Usage:
 
 Options:
   -f, --fork <name>   Only check EIPs active in this fork (e.g., Glamsterdam)
+      --no-meta       Skip the Hardfork Meta EIP reconciliation (avoids network)
   -h, --help          Show this help message
 
 Checks for:
@@ -152,11 +186,13 @@ Checks for:
   - benefits
 
 Also checks that stage-change decisions recorded in call
-key_decisions.json files are reflected in the EIP forkRelationships.
+key_decisions.json files are reflected in the EIP forkRelationships,
+and that every EIP listed in a fork's Hardfork Meta EIP is present in
+Forkcast at the same stage or further along.
 `);
 }
 
-function main() {
+async function main() {
   const options = parseArgs();
   if (options.help) {
     printHelp();
@@ -219,12 +255,36 @@ function main() {
     console.log();
   }
 
-  const hasIssues = results.length > 0 || decisionIssues.length > 0;
+  // --- Hardfork Meta EIP reconciliation ---
+  let metaIssueCount = 0;
+  if (!options.skipMeta) {
+    console.log('Hardfork Meta EIP vs. Forkcast data');
+    console.log('-'.repeat(40));
+    for (const { fork, metaEipNumber, issues, error } of await auditMetaEips(eips, options.fork)) {
+      if (error) {
+        console.log(`  ${fork} (EIP-${metaEipNumber}) — could not fetch: ${error}`);
+        continue;
+      }
+      if (issues.length === 0) continue;
+      console.log(`  ${fork} (EIP-${metaEipNumber})`);
+      for (const i of issues) {
+        console.log(`    EIP-${i.id} — ${i.reason}`);
+        metaIssueCount++;
+      }
+    }
+    if (metaIssueCount === 0) {
+      console.log('  No issues. Forkcast covers everything in the meta EIPs.');
+    }
+    console.log();
+  }
+
+  const hasIssues = results.length > 0 || decisionIssues.length > 0 || metaIssueCount > 0;
   console.log(
     `${results.length} EIP(s) with ${totalIssues} data issue(s); ` +
-    `${decisionIssues.length} unreflected decision(s).`
+    `${decisionIssues.length} unreflected decision(s); ` +
+    `${metaIssueCount} meta EIP gap(s).`
   );
   process.exit(hasIssues ? 1 : 0);
 }
 
-main();
+await main();

@@ -1,7 +1,9 @@
 import { describe, expect, it } from 'vitest';
 import {
   buildNewEipJson,
+  findOtherClaimingPr,
   getPendingPullRequestNumber,
+  hasCuratedContent,
   pendingPullRequest,
   updateExistingEip,
 } from './eip-record-sync.mjs';
@@ -102,5 +104,83 @@ describe('EIP sync transitions', () => {
 
     expect(changed).toBe(true);
     expect(updated).not.toHaveProperty('pendingPullRequest');
+  });
+});
+
+// Regression: EIP-8367 was tracked by both its canonical PR (#12099) and a
+// duplicate (#12178). Closing the duplicate deleted the file outright, taking
+// hand-authored narrative fields and a Hegota fork relationship with it.
+describe('pending EIP deletion guards', () => {
+  const stub = buildNewEipJson(
+    8367,
+    {
+      title: 'Balance sunset for retired BLS validators',
+      status: 'Draft',
+      description: 'Description',
+      author: 'NC (@ensi321)',
+      type: 'Standards Track',
+      category: 'Core',
+      createdDate: '2026-07-18',
+    },
+    { pendingPullRequest: pendingPullRequest(12178) },
+  );
+
+  it('treats a freshly scaffolded stub as disposable', () => {
+    expect(hasCuratedContent(stub)).toBe(false);
+  });
+
+  it('protects a record once it carries a fork relationship', () => {
+    const curated = {
+      ...stub,
+      forkRelationships: [
+        {
+          forkName: 'Hegota',
+          statusHistory: [
+            { status: 'Proposed', call: 'acdc/184', date: '2026-08-06' },
+          ],
+          champions: [{ name: 'NC' }],
+        },
+      ],
+    };
+
+    expect(hasCuratedContent(curated)).toBe(true);
+  });
+
+  it.each([
+    ['layer', 'CL'],
+    ['reviewer', 'bot'],
+    ['laymanDescription', 'Plain language summary'],
+    ['benefits', ['A benefit']],
+    ['tradeoffs', ['A tradeoff']],
+  ])('protects a record once %s is authored', (field, value) => {
+    expect(hasCuratedContent({ ...stub, [field]: value })).toBe(true);
+  });
+
+  it('does not mistake the null tradeoffs placeholder for authored content', () => {
+    expect(stub.tradeoffs).toBeNull();
+    expect(hasCuratedContent(stub)).toBe(false);
+  });
+
+  it('finds the canonical PR when a duplicate submission closes', () => {
+    const manifest = {
+      prs: {
+        12099: { eipNumbers: [8367] },
+        12178: { eipNumbers: [8367] },
+      },
+    };
+
+    expect(findOtherClaimingPr(manifest, 12178, 8367)).toBe(12099);
+  });
+
+  it('ignores the closing PR itself when looking for other claimants', () => {
+    const manifest = { prs: { 12178: { eipNumbers: [8367] } } };
+
+    expect(findOtherClaimingPr(manifest, 12178, 8367)).toBeNull();
+  });
+
+  it('tolerates manifest entries with no EIP numbers', () => {
+    const manifest = { prs: { 12099: {}, 12151: { eipNumbers: [] } } };
+
+    expect(findOtherClaimingPr(manifest, 12178, 8367)).toBeNull();
   });
 });

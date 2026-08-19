@@ -36,6 +36,36 @@ export function getPendingPullRequestNumber(eip) {
   return eip?.pendingPullRequest?.number ?? null;
 }
 
+// Fields the PR sync never writes itself. Their presence means a human (or a
+// curation skill) has invested work in the record, so it must not be deleted
+// just because the PR it was scaffolded from went away.
+const CURATED_FIELDS = [
+  'layer',
+  'reviewer',
+  'laymanDescription',
+  'benefits',
+  'tradeoffs',
+  'stakeholderImpacts',
+  'northStarAlignment',
+  'faq',
+  'supportingDocuments',
+];
+
+export function hasCuratedContent(eip) {
+  if (eip.forkRelationships?.length) return true;
+  return CURATED_FIELDS.some((field) => eip[field] != null);
+}
+
+// An EIP can be claimed by more than one PR (e.g. a duplicate submission).
+// Closing one of them must not orphan the record.
+export function findOtherClaimingPr(manifest, prNumber, eipNumber) {
+  for (const [other, entry] of Object.entries(manifest.prs)) {
+    if (Number(other) === Number(prNumber)) continue;
+    if ((entry.eipNumbers ?? []).includes(eipNumber)) return Number(other);
+  }
+  return null;
+}
+
 export function buildNewEipJson(eipNumber, mapped, options = {}) {
   return {
     id: eipNumber,

@@ -4,7 +4,9 @@ import { fileURLToPath } from 'url';
 import { parseFrontmatter, mapOfficialToLocal } from './lib/eip-parsing.mjs';
 import {
   buildNewEipJson,
+  findOtherClaimingPr,
   getPendingPullRequestNumber,
+  hasCuratedContent,
   pendingPullRequest,
   updateExistingEip,
 } from './eip-record-sync.mjs';
@@ -286,7 +288,7 @@ async function processPr(prNumber, headers, trackedEipIds, requiresFilter, decis
   return { eipNumbers: processed };
 }
 
-function removePendingEipFilesForPr(prNumber, eipNumbers, reason) {
+function removePendingEipFilesForPr(manifest, prNumber, eipNumbers, reason) {
   let removed = 0;
 
   for (const eipNumber of eipNumbers) {
@@ -297,6 +299,26 @@ function removePendingEipFilesForPr(prNumber, eipNumbers, reason) {
     if (getPendingPullRequestNumber(existing) !== Number(prNumber)) {
       console.log(
         `  Preserving EIP-${eipNumber}; it is no longer pending on PR #${prNumber}`,
+      );
+      continue;
+    }
+
+    const otherPr = findOtherClaimingPr(manifest, prNumber, eipNumber);
+    if (otherPr) {
+      existing.pendingPullRequest = pendingPullRequest(otherPr);
+      fs.writeFileSync(filePath, JSON.stringify(existing, null, 2) + '\n');
+      console.log(
+        `  Preserving EIP-${eipNumber}; repointed from PR #${prNumber} to #${otherPr}`,
+      );
+      continue;
+    }
+
+    if (hasCuratedContent(existing)) {
+      delete existing.pendingPullRequest;
+      fs.writeFileSync(filePath, JSON.stringify(existing, null, 2) + '\n');
+      console.warn(
+        `  WARNING: EIP-${eipNumber} has curated data but PR #${prNumber} is gone (${reason}). ` +
+        `Cleared pendingPullRequest and kept the record — needs human review.`,
       );
       continue;
     }
@@ -314,6 +336,7 @@ function removePendingEipsForPr(manifest, prNumber, reason) {
   if (!entry) return 0;
 
   const removed = removePendingEipFilesForPr(
+    manifest,
     prNumber,
     entry.eipNumbers,
     reason,
@@ -428,6 +451,7 @@ Environment:
             (eipNumber) => !currentEipNumbers.has(eipNumber),
           );
           removed += removePendingEipFilesForPr(
+            manifest,
             r.prNumber,
             staleEipNumbers,
             'no longer qualifies',

@@ -137,6 +137,10 @@ async function auditMetaEips(eips, forkFilter) {
     try {
       const markdown = await fetchMetaEip(metaEipNumber);
       const entries = parseMetaEip(markdown);
+      if (entries.size === 0) {
+        // Otherwise an upstream restructure reads as a clean audit.
+        throw new Error('parsed 0 EIPs; the meta EIP layout likely changed');
+      }
       results.push({
         fork,
         metaEipNumber,
@@ -257,12 +261,14 @@ async function main() {
 
   // --- Hardfork Meta EIP reconciliation ---
   let metaIssueCount = 0;
+  let metaErrorCount = 0;
   if (!options.skipMeta) {
     console.log('Hardfork Meta EIP vs. Forkcast data');
     console.log('-'.repeat(40));
     for (const { fork, metaEipNumber, issues, error } of await auditMetaEips(eips, options.fork)) {
       if (error) {
-        console.log(`  ${fork} (EIP-${metaEipNumber}) — could not fetch: ${error}`);
+        console.log(`  ${fork} (EIP-${metaEipNumber}) — could not check: ${error}`);
+        metaErrorCount++;
         continue;
       }
       if (issues.length === 0) continue;
@@ -272,17 +278,22 @@ async function main() {
         metaIssueCount++;
       }
     }
-    if (metaIssueCount === 0) {
+    if (metaIssueCount === 0 && metaErrorCount === 0) {
       console.log('  No issues. Forkcast covers everything in the meta EIPs.');
     }
     console.log();
   }
 
-  const hasIssues = results.length > 0 || decisionIssues.length > 0 || metaIssueCount > 0;
+  const hasIssues =
+    results.length > 0 ||
+    decisionIssues.length > 0 ||
+    metaIssueCount > 0 ||
+    metaErrorCount > 0;
   console.log(
     `${results.length} EIP(s) with ${totalIssues} data issue(s); ` +
     `${decisionIssues.length} unreflected decision(s); ` +
-    `${metaIssueCount} meta EIP gap(s).`
+    `${metaIssueCount} meta EIP gap(s)` +
+    `${metaErrorCount > 0 ? `; ${metaErrorCount} meta EIP(s) unchecked` : ''}.`
   );
   process.exit(hasIssues ? 1 : 0);
 }

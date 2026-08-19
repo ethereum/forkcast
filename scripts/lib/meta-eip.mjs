@@ -16,6 +16,8 @@ const SECTION_STATUSES = [
   ['declined for inclusion', 'Declined'],
   ['networking eip', 'Networking'],
   ['informational eip', 'Informational'],
+  // Shipped forks list everything under one "Included EIPs" section.
+  ['included eip', 'Included'],
 ];
 
 // Stages an EIP advances through. Forkcast is normally *ahead* of the meta EIP,
@@ -36,11 +38,23 @@ function sectionStatus(heading) {
 export function parseMetaEip(markdown) {
   const entries = new Map();
   let status = null;
+  let statusLevel = 0;
 
   for (const line of markdown.split('\n')) {
-    const heading = line.match(/^#{2,4}\s+(.*)$/);
+    const heading = line.match(/^(#{2,4})\s+(.*)$/);
     if (heading) {
-      status = sectionStatus(heading[1]);
+      const level = heading[1].length;
+      const matched = sectionStatus(heading[2]);
+      if (matched) {
+        status = matched;
+        statusLevel = level;
+      } else if (level <= statusLevel) {
+        // Only a sibling or ancestor heading ends the section. Deeper unmatched
+        // headings nest inside it: shipped forks split "Included EIPs" into
+        // "Core EIPs" / "Other EIPs" subsections.
+        status = null;
+        statusLevel = 0;
+      }
       continue;
     }
     const item = line.match(/^\s*[*-]\s*\[EIP-(\d+)\]/);

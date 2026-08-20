@@ -1,9 +1,9 @@
 {
   "id": 3298,
-  "title": "EIP-3298: Removal of refunds",
-  "status": "Stagnant",
-  "description": "",
-  "author": "Vitalik Buterin (@vbuterin), Martin Swende (@holiman)",
+  "title": "EIP-3298: Remove storage-clear refund and refund cap",
+  "status": "Draft",
+  "description": "Removes the SSTORE storage-clearing refund and the transaction refund cap, leaving only net-metered same-transaction write reversals",
+  "author": "Vitalik Buterin (@vbuterin), Martin Swende (@holiman), Jochem Brouwer (@jochem-brouwer)",
   "type": "Standards Track",
   "category": "Core",
   "createdDate": "2021-02-26",
@@ -38,5 +38,12 @@
     "Clearing storage becomes strictly a cost, removing any incentive to tidy up state",
     "Arbitrage bots relying on gas storage schemes must be rewritten to stay economical",
     "State growth is left entirely to a future statelessness or state expiry solution"
+  ],
+  "requires": [
+    2780,
+    3529,
+    7778,
+    8037,
+    8038
   ]
 }

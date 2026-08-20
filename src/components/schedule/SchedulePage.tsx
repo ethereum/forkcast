@@ -4,6 +4,7 @@ import { generateForkProgress, parseLocalDate, parseShortDate, daysBetween, DEFA
 import ForkGanttChart from './ForkGanttChart';
 import EditableDateCell from './EditableDateCell';
 import { Tooltip } from '../ui';
+import { getUpgradeById } from '../../data/upgrades';
 
 type MobileFork = 'fusaka' | 'glamsterdam' | 'hegota';
 
@@ -16,9 +17,14 @@ interface PlanningTableState {
   phaseDurations: PhaseDurations;
 }
 
+// Seeded from the shared upgrade data so this sandbox and /cadence can't
+// disagree about the working estimate.
+const projectedActivation = (id: string): string =>
+  getUpgradeById(id)?.projectedActivation ?? '';
+
 const DEFAULT_STATE: PlanningTableState = {
-  glamsterdamMainnetDate: '2026-11-18',
-  hegotaMainnetDate: '2027-06-09',
+  glamsterdamMainnetDate: projectedActivation('glamsterdam'),
+  hegotaMainnetDate: projectedActivation('hegota'),
   glamsterdamDevnetCount: 8,
   hegotaDevnetCount: 6,
   lockedDates: {},

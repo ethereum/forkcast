@@ -15,6 +15,13 @@ export interface NetworkUpgrade {
   tagline: string;
   status: 'Live' | 'Upcoming' | 'Planning' | 'Research';
   activationDate?: string;
+  /**
+   * Working estimate of mainnet activation, as 'YYYY-MM-DD'. A planning
+   * assumption, never an announced date — `/schedule` seeds its sandbox from it
+   * and `/cadence` plots it, so it lives here rather than in either page to stop
+   * the two drifting apart.
+   */
+  projectedActivation?: string;
   disabled: boolean;
   metaEipLink?: string;
   clientTeamPerspectives?: ClientTeamPerspective[];
@@ -113,6 +120,7 @@ export const networkUpgrades: NetworkUpgrade[] = [
     tagline: 'Devnet series complete, now testing on public testnets',
     status: 'Upcoming',
     activationDate: '2026',
+    projectedActivation: '2026-11-18',
     disabled: false,
     metaEipLink: 'https://ethereum-magicians.org/t/eip-7773-glamsterdam-network-upgrade-meta-thread/21195',
     clientTeamPerspectives: [
@@ -192,6 +200,7 @@ export const networkUpgrades: NetworkUpgrade[] = [
     tagline: 'Headliner selection concluded: FOCIL SFI\'d, Frame Tx CFI\'d',
     status: 'Planning',
     activationDate: '2027',
+    projectedActivation: '2027-06-09',
     disabled: false,
     macroPhaseOverride: 'scoping',
     metaEipLink: 'https://ethereum-magicians.org/t/eip-8081-hegota-network-upgrade-meta-thread/26876'

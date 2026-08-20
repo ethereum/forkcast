@@ -26,7 +26,7 @@ export const staticPageMetadata = {
   cadence: {
     title: 'Upgrade Cadence - Forkcast',
     description:
-      "How long since Ethereum's last network upgrade, and how the current wait compares to the pace of upgrades since The Merge.",
+      'Every mainnet upgrade since The Merge, charted by EIPs shipped, spec volume, and the gap between forks.',
   },
   schedule: {
     title: 'ACD Planning Sandbox - Forkcast',
@@ -115,6 +115,7 @@ export const staticPageMetadata = {
 export const staticPageRoutes = {
   home: '/',
   upgrades: '/upgrades',
+  cadence: '/cadence',
   schedule: '/schedule',
   agenda: '/agenda',
   decisions: '/decisions',

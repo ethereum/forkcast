@@ -67,7 +67,12 @@ export const eipCategories: EipCategory[] = [
   {
     id: 'beacon-block-data',
     name: 'Beacon Block Data',
-    eips: [8237, 8341, 8359]
+    eips: [8341, 8359]
+  },
+  {
+    id: 'sync-history-retention',
+    name: 'Sync & History Retention',
+    eips: [8237, 8379, 8383]
   },
   {
     id: 'block-propagation',

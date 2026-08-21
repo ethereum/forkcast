@@ -2,6 +2,34 @@
   "eipId": 8141,
   "commits": [
     {
+      "sha": "7d1f8857ad2483886827e01a7864684dbc34885f",
+      "date": "2026-08-20T20:51:03Z",
+      "message": "Update EIP-8141: dispatch a precompile targeted by a frame",
+      "author": "Marchhill",
+      "prNumber": null,
+      "patch": "@@ -416,7 +416,8 @@ Then for each frame:\n         - As with an ordinary `CALL`, if the caller does not have sufficient balance to transfer `frame.value`, the frame reverts, consuming the gas charged so far.\n         - If `frame.value > 0` and `resolved_target` does not exist, `STATE_BYTES_PER_NEW_ACCOUNT * CPSB` state gas is charged after the balance check and before the frame's code executes, as in [EIP-2780](./eip-2780.md). If `state_gas_left` cannot cover the charge, the frame halts exceptionally.\n         - A non-zero value transfer to an address other than `tx.sender` emits the transfer log specified by [EIP-7708](./eip-7708.md).\n-    - If `resolved_target` code hash is empty, i.e. `0xc5d2460186f7233c927e7db2dcc703c0e500b653ca82273b7bfad8045d85a470`, execute the logic described in [default code](#default-code).\n+    - If `resolved_target` is an active precompile at the current fork, the frame dispatches it as an ordinary call would.\n+    - Otherwise, if `resolved_target` code hash is empty, i.e. `0xc5d2460186f7233c927e7db2dcc703c0e500b653ca82273b7bfad8045d85a470`, execute the logic described in [default code](#default-code).\n         - Otherwise, if `resolved_target` uses an [EIP-7702](./eip-7702.md) delegation indicator, execute according to [EIP-7702](./eip-7702.md)'s delegated-code semantics.\n     - If a frame's execution reverts, its state changes and approval context (`payer`, `sender_approved`) are discarded. Additionally, if this frame has the atomic batch flag set, mark all subsequent frames in the same atomic group as skipped.\n 1. If frame has mode `VERIFY` the following additional requirements are imposed:",
+      "additions": 2,
+      "deletions": 1
+    },
+    {
+      "sha": "b6b6f1cea0085e357bc80fb553d41896ac2a7fd0",
+      "date": "2026-08-20T20:48:45Z",
+      "message": "Update EIP-8141: scope APPROVE failure modes to the current call frame",
+      "author": "gurukamath",
+      "prNumber": null,
+      "additions": 13,
+      "deletions": 13
+    },
+    {
+      "sha": "b3e8cad3790cfe6e2e4c8120020582345e7520a9",
+      "date": "2026-08-20T20:19:16Z",
+      "message": "Update EIP-8141: charge the resolved target's access at frame entry",
+      "author": "gurukamath",
+      "prNumber": null,
+      "additions": 9,
+      "deletions": 2
+    },
+    {
       "sha": "0603514569547869ae2531a4e5b2b62875888db3",
       "date": "2026-08-18T11:59:19Z",
       "message": "Update EIP-8141: relax banned opcode list (#12167)",
@@ -581,36 +609,12 @@
       "deletions": 8
     },
     {
-      "number": 12157,
-      "title": "Update EIP-8141: dispatch a precompile targeted by a frame",
-      "author": "Marchhill",
-      "updatedAt": "2026-08-20T11:04:00Z",
-      "additions": 2,
-      "deletions": 1
-    },
-    {
       "number": 12214,
       "title": "Update EIP-8141: Add co-signer-funded value legs to EIP-8141",
       "author": "AnkushinDaniil",
       "updatedAt": "2026-08-20T11:50:54Z",
       "additions": 54,
       "deletions": 1
-    },
-    {
-      "number": 12212,
-      "title": "Update EIP-8141: scope APPROVE failure modes to the current call frame",
-      "author": "gurukamath",
-      "updatedAt": "2026-08-20T14:00:00Z",
-      "additions": 13,
-      "deletions": 13
-    },
-    {
-      "number": 12211,
-      "title": "Update EIP-8141: charge the resolved target's access at frame entry",
-      "author": "gurukamath",
-      "updatedAt": "2026-08-20T09:16:15Z",
-      "additions": 9,
-      "deletions": 2
     },
     {
       "number": 12203,
@@ -632,7 +636,7 @@
       "number": 12213,
       "title": "Update EIP-8141: bound producer-side re-execution of an unapproving validation prefix",
       "author": "AnkushinDaniil",
-      "updatedAt": "2026-08-20T10:41:43Z",
+      "updatedAt": "2026-08-20T20:49:10Z",
       "additions": 2,
       "deletions": 0
     },

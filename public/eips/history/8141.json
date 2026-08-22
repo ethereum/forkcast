@@ -2,6 +2,16 @@
   "eipId": 8141,
   "commits": [
     {
+      "sha": "3ceef8d37092c5b13a614746dbce5b1fc3c2dfab",
+      "date": "2026-08-21T19:20:53Z",
+      "message": "Update EIP-8141: fix calldata floor to use EIP-7976 uniform token count",
+      "author": "ilitteri",
+      "prNumber": null,
+      "patch": "@@ -465,6 +465,9 @@ def tokens_in(data):\n     nonzero_bytes = len(data) - zero_bytes\n     return zero_bytes + nonzero_bytes * 4\n \n+def floor_tokens_in(data):\n+    return len(data) * 4\n+\n def calldata_cost(data):\n     return STANDARD_TOKEN_COST * tokens_in(data)\n \n@@ -497,23 +500,23 @@ standard_gas_limit = (\n     + sum(frame.limits.state for frame in tx.frames)\n )\n \n-calldata_tokens = (\n-    sum(tokens_in(frame.data) for frame in tx.frames)\n-    + sum(tokens_in(sig.signer) + tokens_in(sig.msg) + tokens_in(sig.signature) for sig in tx.signatures)\n+calldata_floor_tokens = (\n+    sum(floor_tokens_in(frame.data) for frame in tx.frames)\n+    + sum(floor_tokens_in(sig.signer) + floor_tokens_in(sig.msg) + floor_tokens_in(sig.signature) for sig in tx.signatures)\n )\n \n calldata_floor_gas = (\n     FRAME_TX_INTRINSIC_COST\n     + len(tx.frames) * FRAME_TX_PER_FRAME_COST\n     + signature_verification_cost\n     + value_transfer_cost\n-    + TOTAL_COST_FLOOR_PER_TOKEN * calldata_tokens\n+    + TOTAL_COST_FLOOR_PER_TOKEN * calldata_floor_tokens\n )\n \n max_gas = max(standard_gas_limit, calldata_floor_gas + sum(frame.limits.state for frame in tx.frames))\n ```\n \n-`frame_tx_intrinsic_gas` is the transaction's intrinsic cost in the sense of [EIP-2780](./eip-2780.md). It is derivable from the transaction fields alone, with no state access. It is charged entirely in the execution dimension and, together with the sum of the declared frame execution-gas limits, is limited by the [EIP-7825](./eip-7825.md) cap explained in [Constraints](#constraints). `value_transfer_cost` charges `TX_VALUE_COST` for each frame which carries value, covering the recipient balance write and transfer log exactly as EIP-2780 prices top-level value transfers. State dependent costs do not enter this calculation and are charged at runtime inside frame state-gas budgets, as described below.\n+`frame_tx_intrinsic_gas` is the transaction's intrinsic cost in the sense of [EIP-2780](./eip-2780.md). It is derivable from the transaction fields alone, with no state access. It is charged entirely in the execution dimension and, together with the sum of the declared frame execution-gas limits, is limited by the [EIP-7825](./eip-7825.md) cap explained in [Constraints](#constraints). `value_transfer_cost` charges `TX_VALUE_COST` for each frame which carries value, covering the recipient balance write and transfer log exactly as EIP-2780 prices top-level value transfers. State dependent costs do not enter this calculation and are charged at runtime inside frame state-gas budgets, as described below. The two token counts differ as in [EIP-7976](./eip-7976.md): the standard intrinsic prices the weighted count (`tokens_in`), while the floor prices every charged byte uniformly (`floor_tokens_in`).\n \n ###### Frame gas pools\n ",
+      "additions": 8,
+      "deletions": 5
+    },
+    {
       "sha": "7d1f8857ad2483886827e01a7864684dbc34885f",
       "date": "2026-08-20T20:51:03Z",
       "message": "Update EIP-8141: dispatch a precompile targeted by a frame",
@@ -596,7 +606,7 @@
       "number": 12223,
       "title": "Update EIP-8141: bound chain_id to 2**64",
       "author": "Marchhill",
-      "updatedAt": "2026-08-21T14:25:10Z",
+      "updatedAt": "2026-08-21T19:25:57Z",
       "additions": 1,
       "deletions": 1
     },
@@ -604,7 +614,7 @@
       "number": 12198,
       "title": "Update EIP-8141: make the expiry frame a new mode",
       "author": "nerolation",
-      "updatedAt": "2026-08-19T23:08:17Z",
+      "updatedAt": "2026-08-21T19:21:26Z",
       "additions": 35,
       "deletions": 73
     },
@@ -620,7 +630,7 @@
       "number": 12226,
       "title": "Update EIP-8141: account block execution gas before refund (EIP-7778)",
       "author": "AnkushinDaniil",
-      "updatedAt": "2026-08-21T18:11:29Z",
+      "updatedAt": "2026-08-21T18:11:58Z",
       "additions": 6,
       "deletions": 4
     },
@@ -636,7 +646,7 @@
       "number": 12203,
       "title": "Update EIP-8141: state that installing the expiry verifier leaves the nonce",
       "author": "Marchhill",
-      "updatedAt": "2026-08-19T23:10:46Z",
+      "updatedAt": "2026-08-21T19:23:15Z",
       "additions": 1,
       "deletions": 1
     },
@@ -649,18 +659,10 @@
       "deletions": 0
     },
     {
-      "number": 12209,
-      "title": "Update EIP-8141: fix calldata floor to use EIP-7976 uniform token count",
-      "author": "ilitteri",
-      "updatedAt": "2026-08-19T20:45:18Z",
-      "additions": 8,
-      "deletions": 5
-    },
-    {
       "number": 12162,
       "title": "Update EIP-8141: allow concurrent pending frame transactions on disjoint keyed-nonce sets",
       "author": "AnkushinDaniil",
-      "updatedAt": "2026-08-21T15:22:44Z",
+      "updatedAt": "2026-08-21T19:44:05Z",
       "additions": 10,
       "deletions": 0
     },

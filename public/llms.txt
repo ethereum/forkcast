@@ -6,28 +6,58 @@ Forkcast tracks EIPs, protocol calls, networks, and upgrade planning for Ethereu
 
 ## Important: page body content is client-rendered
 
-Forkcast is built with Astro, which serves a real HTML page per route with correct titles and metadata. Page *bodies* (the data tables, timelines, and EIP/call content) render client-side by React islands. Fetching route URLs like `/eips`, `/calls`, `/networks`, `/decisions`, and `/agenda` returns the document shell — title, description, and navigation — but not the rendered body content. For data, use the raw artifacts and source data below.
+Forkcast is built with Astro, which serves a real HTML page per route with correct titles and metadata. Page *bodies* (the data tables, timelines, and EIP/call content) render client-side by React islands. Fetching route URLs like `/eips`, `/calls`, `/networks`, `/decisions`, and `/agenda` returns the document shell — title, description, and navigation — but not the rendered body content. Use the JSON indexes and static artifacts below instead.
 
-## Static files you CAN fetch
+## Bulk indexes (start here)
+
+Everything the site renders is available as JSON. One fetch each, no auth, no pagination.
+
+### `/api/eips.json`
+The full EIP dataset — every EIP Forkcast tracks, unfiltered. Each record carries:
+- `id`, `title`, `status`, `description`, `author`, `type`, `category`, `layer` (`EL` | `CL`)
+- `forkRelationships[]` — per-upgrade `statusHistory` of `{ status, call, date }`, where `status` is the inclusion stage (`Proposed`, `Considered`, `Scheduled`, `Included`, `Declined`, ...). This is the answer to "is EIP X in upgrade Y".
+- `laymanDescription`, `benefits`, `tradeoffs`, `faq`, `stakeholderImpacts` — plain-language prose written for exactly this purpose. Quote it rather than paraphrasing the spec.
+- `reviewer` (`bot` | `expert` | `staff`) — provenance of that prose. `bot` means no human has vetted it yet.
+- `requires[]` — EIP dependencies. `champions[]` — who is driving it.
+
+### `/api/calls.json`
+Every protocol call, with `type`, `date`, `number`, and `path`. Append `path` to `/artifacts/` to reach that call's files. Includes a `series` map decoding the type slugs (`acde` → "AllCoreDevs - Execution").
+
+### `/api/upgrades.json`
+Network upgrades with `status`, activation details (block/epoch/slot, once shipped), meta-EIP links, and client team perspectives. Two things to note:
+- `projectedActivation` (`YYYY-MM-DD`) is Forkcast's working *estimate* of mainnet activation for upgrades that haven't shipped — a planning assumption, never an announced date. Say so when you quote it.
+- `activationDateLabel` is display text, not a parseable date (`"Sep 15, 2022"` for shipped upgrades, `"2027"` for future ones).
+
+### `/api/eip-stage-changes.json`
+Every EIP with a dated inclusion-stage change, newest first, one row each: `lastStageChange`, `lastStageChangeFork`, `currentStage`. `/api/eips.json` has the same history nested per EIP — this is the flat chronology, so use it to answer "what changed lately" or "what moved in this window" without walking 613 records.
+
+### `/search-light.json`
+The editorial corpus for every call in one file (~825 KB): TL;DRs, detailed notes, and key decisions, each with a timestamp into the recording. Use this for "what was decided about X" across all calls.
+
+Note this is the *summarized* tier. Raw transcripts are a separate, much larger tier (see below) — call summaries are edited, transcripts are people thinking out loud mid-sentence, so quoting transcripts as protocol fact is unreliable.
+
+## Static files
 
 ### EIP specs (Markdown)
-Individual EIP documents are served as static markdown:
+The raw EIP document, as published in the EIPs repo:
 - Pattern: `/eips/{number}.md`
 - Example: /eips/1153.md
 
 ### Call artifacts
-Call artifacts are served as static files organized by series and call number:
+Per-call files, organized by series and call number:
 - Pattern: `/artifacts/{series}/{date}_{number}/{file}`
 - Example: /artifacts/acde/2026-04-09_234/tldr.json
+- Discover valid paths from `/api/calls.json`.
 
-Available files per call vary but may include:
+Available files vary by call:
 - `tldr.json` - Structured highlights grouped by topic, with timestamps
-- `key_decisions.json` - Decisions made during the call, with EIP references
+- `notes.json` - Detailed topic-grouped notes
+- `key_decisions.json` - Decisions made during the call, each with structured `eips: number[]`
 - `transcript.vtt` / `transcript_corrected.vtt` - Full call transcript
 - `chat.txt` - Chat log
 - `config.json` - Call metadata
 
-Recent ACDE and ACDC calls (from ~Oct 2025 onward) include `tldr.json` and `key_decisions.json`. Older calls only have transcripts and chat logs.
+Recent ACDE and ACDC calls (from ~Oct 2025 onward) include `tldr.json` and `key_decisions.json`. Older calls only have transcripts and chat logs. Bundled breakouts suffix each artifact by kind (`tldr_cl.json`, `transcript_cl.vtt`).
 
 ### Call planning artifacts
 Each series has a `plan/` directory with upcoming agenda context:
@@ -35,39 +65,32 @@ Each series has a `plan/` directory with upcoming agenda context:
 - Example: /artifacts/acde/plan/open_action_items.json
 - Files: `agenda_suggestions.json`, `deferred_decisions.json`, `eip_threads.json`, `open_action_items.json`
 
-### Finding recent calls
-The call index (`protocol-calls.generated.json`) is only in the source repo, not served as a static file. To discover recent calls, either:
-1. Fetch from GitHub: `gh api repos/ethereum/forkcast/contents/src/data/protocol-calls.generated.json`
-2. Or construct artifact paths directly — the two main series are:
-   - **acde** (All Core Devs - Execution): biweekly, numbered 208+, e.g. `/artifacts/acde/2026-04-09_234/`
-   - **acdc** (All Core Devs - Consensus): biweekly, numbered 154+, e.g. `/artifacts/acdc/2026-03-19_176/`
+### Large, optional
+- `/eip-spec-index.json` (~4 MB) - Inverted word index over EIP spec text, for full-text spec search.
+- `/search-corpus.json` (~19 MB) - Full transcripts and chat logs for every call. Only fetch this if you genuinely need raw transcript text; prefer `/search-light.json`.
 
-Other series: acdt, awd, bal, epbs, etm, fcr, focil, pqi, pqts, price, rpc, tli, zkevm.
+## Still only in the source repo
 
-## Structured data (GitHub source)
+A few datasets have no served equivalent. Access via the GitHub API, e.g.
+`gh api repos/ethereum/forkcast/contents/src/data/events.ts`:
 
-The full structured dataset lives in the source repo under `src/data/`:
-
-- `upgrades.ts` - All network upgrades with statuses, dates, and client team perspectives
-- `events.ts` - Timeline of devnets, testnets, and mainnet activations
-- `pending-proposals.ts` - Proposals not yet assigned EIP numbers
-- `eips.ts` / `eips/` - EIP metadata as JSON (one file per EIP)
-- `calls.ts` - Protocol call series definitions
-- `protocol-calls.generated.json` - Full index of all protocol calls
-
-Access these via the GitHub API: `gh api repos/ethereum/forkcast/contents/src/data/upgrades.ts`
+- `src/data/events.ts` - Timeline of devnets, testnets, and mainnet activations
+- `src/data/pending-proposals.ts` - Proposals not yet assigned EIP numbers
+- `src/data/eips/` - The per-EIP JSON files that `/api/eips.json` is compiled from
 
 ## Quick reference
 
-| Want                     | How                                                          |
-| ------------------------ | ------------------------------------------------------------ |
-| Single EIP spec          | `GET /eips/{number}.md`                                      |
-| Recent call TLDR         | `GET /artifacts/acde/{date}_{number}/tldr.json`              |
-| Recent call decisions    | `GET /artifacts/acde/{date}_{number}/key_decisions.json`     |
-| Call transcript          | `GET /artifacts/{series}/{date}_{number}/transcript.vtt`     |
-| Upcoming agenda context  | `GET /artifacts/{series}/plan/open_action_items.json`        |
-| All upgrades + statuses  | GitHub: `src/data/upgrades.ts`                               |
-| Full call index          | GitHub: `src/data/protocol-calls.generated.json`             |
-| Full EIP index           | GitHub: `src/data/eips/`                                     |
-| Event timeline           | GitHub: `src/data/events.ts`                                 |
-| Pending proposals        | GitHub: `src/data/pending-proposals.ts`                      |
+| Want                       | How                                                       |
+| -------------------------- | --------------------------------------------------------- |
+| Is EIP X in upgrade Y?     | `GET /api/eips.json` → `forkRelationships[].statusHistory` |
+| What does EIP X do?        | `GET /api/eips.json` → `laymanDescription`, `benefits`     |
+| Raw EIP spec               | `GET /eips/{number}.md`                                    |
+| What changed recently?     | `GET /api/eip-stage-changes.json`                          |
+| All calls / artifact paths | `GET /api/calls.json`                                      |
+| What was decided about X?  | `GET /search-light.json`                                   |
+| One call's summary         | `GET /artifacts/{series}/{date}_{number}/tldr.json`        |
+| One call's transcript      | `GET /artifacts/{series}/{date}_{number}/transcript.vtt`   |
+| When might upgrade X ship? | `GET /api/upgrades.json` → `projectedActivation` (estimate) |
+| Upcoming agenda context    | `GET /artifacts/{series}/plan/open_action_items.json`      |
+| Event timeline             | GitHub: `src/data/events.ts`                               |
+| Pending proposals          | GitHub: `src/data/pending-proposals.ts`                    |

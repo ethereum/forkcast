@@ -19,6 +19,7 @@ export interface EipStageChange {
 
 export interface EipStageChangesPayload {
   generatedAt: string;
+  count: number;
   eips: EipStageChange[];
 }
 
@@ -26,12 +27,15 @@ const getProposalPrefix = (eip: EIP): 'EIP' | 'RIP' =>
   eip.title.startsWith('RIP-') ? 'RIP' : 'EIP';
 
 /**
- * Pure selection logic for the recent-stage-change feed. Finds the most recent
- * dated status across all fork relationships, then reports the current stage from
- * that fork's latest status entry. Shared by the Astro API endpoint that emits the
- * static JSON artifact.
+ * Pure selection logic for the stage-change feed. Finds the most recent dated
+ * status across all fork relationships, then reports the current stage from that
+ * fork's latest status entry. Ordered newest first. Used by the Astro API
+ * endpoint that emits the static JSON artifact.
+ *
+ * `count` is optional: unbounded by default, since the endpoint publishes the
+ * whole chronology.
  */
-export function getRecentStageChanges(eips: EIP[], count = 10): EipStageChange[] {
+export function getStageChanges(eips: EIP[], count?: number): EipStageChange[] {
   const eipsWithDates: Array<{
     eip: EIP;
     lastUpdate: Date;
@@ -65,9 +69,11 @@ export function getRecentStageChanges(eips: EIP[], count = 10): EipStageChange[]
     eipsWithDates.push({ eip, lastUpdate: mostRecentDate, forkName: mostRecentFork, currentStage });
   }
 
-  return eipsWithDates
-    .sort((a, b) => b.lastUpdate.getTime() - a.lastUpdate.getTime() || a.eip.id - b.eip.id)
-    .slice(0, count)
+  const ordered = eipsWithDates.sort(
+    (a, b) => b.lastUpdate.getTime() - a.lastUpdate.getTime() || a.eip.id - b.eip.id,
+  );
+
+  return (count === undefined ? ordered : ordered.slice(0, count))
     .map(({ eip, lastUpdate, forkName, currentStage }) => ({
       id: eip.id,
       title: eip.title.replace(/^(EIP|RIP)-\d+:\s*/, ''),
@@ -84,7 +90,8 @@ export function getRecentStageChanges(eips: EIP[], count = 10): EipStageChange[]
 export function buildEipStageChangesPayload(
   eips: EIP[],
   generatedAt: string,
-  count = 10,
+  count?: number,
 ): EipStageChangesPayload {
-  return { generatedAt, eips: getRecentStageChanges(eips, count) };
+  const changes = getStageChanges(eips, count);
+  return { generatedAt, count: changes.length, eips: changes };
 }

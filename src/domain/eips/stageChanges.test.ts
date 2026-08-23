@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import type { EIP, ForkRelationship } from '../../types/eip';
-import { buildEipStageChangesPayload, getRecentStageChanges } from './stageChanges';
+import { buildEipStageChangesPayload, getStageChanges } from './stageChanges';
 
 type StatusEntry = ForkRelationship['statusHistory'][number];
 
@@ -25,7 +25,7 @@ const makeEip = (overrides: Partial<EIP> & Pick<EIP, 'id' | 'title'>): EIP => ({
   ...overrides,
 });
 
-describe('getRecentStageChanges', () => {
+describe('getStageChanges', () => {
   it('reports lastStageChange from the most recent dated entry but currentStage from the fork\'s last entry', () => {
     // The most recent *dated* entry sets the date; the current stage is the last
     // entry of that fork even when a later entry carries no date.
@@ -37,7 +37,7 @@ describe('getRecentStageChanges', () => {
       ],
     });
 
-    const [change] = getRecentStageChanges([eip]);
+    const [change] = getStageChanges([eip]);
 
     expect(change.lastStageChange).toBe('2025-01-10');
     expect(change.currentStage).toBe('Scheduled');
@@ -58,7 +58,7 @@ describe('getRecentStageChanges', () => {
       ],
     });
 
-    const [change] = getRecentStageChanges([eip]);
+    const [change] = getStageChanges([eip]);
 
     expect(change.lastStageChange).toBe('2025-03-15');
     expect(change.lastStageChangeFork).toBe('Glamsterdam');
@@ -77,8 +77,8 @@ describe('getRecentStageChanges', () => {
       forkRelationships: [fork('Glamsterdam', [entry('Considered', '2025-03-15')])],
     });
 
-    expect(getRecentStageChanges([older, newer]).map((c) => c.id)).toEqual([2, 1]);
-    expect(getRecentStageChanges([older, newer], 1).map((c) => c.id)).toEqual([2]);
+    expect(getStageChanges([older, newer]).map((c) => c.id)).toEqual([2, 1]);
+    expect(getStageChanges([older, newer], 1).map((c) => c.id)).toEqual([2]);
   });
 
   it('orders same-date changes by EIP id for deterministic output', () => {
@@ -93,7 +93,7 @@ describe('getRecentStageChanges', () => {
       forkRelationships: [fork('Glamsterdam', [entry('Considered', '2025-03-15')])],
     });
 
-    expect(getRecentStageChanges([higherId, lowerId]).map((c) => c.id)).toEqual([1, 2]);
+    expect(getStageChanges([higherId, lowerId]).map((c) => c.id)).toEqual([1, 2]);
   });
 
   it('skips EIPs whose status history has no dated entry', () => {
@@ -103,7 +103,7 @@ describe('getRecentStageChanges', () => {
       forkRelationships: [fork('Glamsterdam', [entry('Proposed', null)])],
     });
 
-    expect(getRecentStageChanges([eip])).toEqual([]);
+    expect(getStageChanges([eip])).toEqual([]);
   });
 
   it('strips the prefix from the title, detects RIP, and prefers the layman description', () => {
@@ -115,7 +115,7 @@ describe('getRecentStageChanges', () => {
       forkRelationships: [fork('Fusaka', [entry('Included', '2025-02-01')])],
     });
 
-    const [change] = getRecentStageChanges([rip]);
+    const [change] = getStageChanges([rip]);
 
     expect(change.title).toBe('Precompile for secp256r1');
     expect(change.prefix).toBe('RIP');
@@ -135,5 +135,18 @@ describe('buildEipStageChangesPayload', () => {
 
     expect(payload.generatedAt).toBe('2025-03-01T00:00:00.000Z');
     expect(payload.eips.map((e) => e.id)).toEqual([2]);
+    expect(payload.count).toBe(1);
+  });
+
+  it('publishes the whole chronology when no count is given', () => {
+    const eips = [
+      makeEip({ id: 1, title: 'EIP-1: A', forkRelationships: [fork('Fusaka', [entry('Included', '2025-01-01')])] }),
+      makeEip({ id: 2, title: 'EIP-2: B', forkRelationships: [fork('Glamsterdam', [entry('Considered', '2025-02-01')])] }),
+    ];
+
+    const payload = buildEipStageChangesPayload(eips, '2025-03-01T00:00:00.000Z');
+
+    expect(payload.eips.map((e) => e.id)).toEqual([2, 1]);
+    expect(payload.count).toBe(2);
   });
 });

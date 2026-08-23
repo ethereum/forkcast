@@ -260,6 +260,84 @@ describe('build output', () => {
     });
   });
 
+  describe('JSON indexes', () => {
+    // Page bodies are client-rendered, so these artifacts are the only way an
+    // agent or crawler can read the data. `public/llms.txt` names every one of
+    // them; a rename here silently breaks that contract.
+    const indexes: Array<{ file: string; collection: string }> = [
+      { file: 'api/eips.json', collection: 'eips' },
+      { file: 'api/calls.json', collection: 'calls' },
+      { file: 'api/upgrades.json', collection: 'upgrades' },
+      { file: 'api/eip-stage-changes.json', collection: 'eips' },
+    ];
+
+    for (const { file, collection } of indexes) {
+      it(`${file} parses and is non-empty`, () => {
+        const raw = fs.readFileSync(path.join(DIST, file), 'utf-8');
+        const payload = JSON.parse(raw);
+        expect(payload.generatedAt).toMatch(/^\d{4}-\d{2}-\d{2}T/);
+        expect(Array.isArray(payload[collection])).toBe(true);
+        expect(payload[collection].length).toBeGreaterThan(0);
+      });
+    }
+
+    it('api/eips.json covers every EIP in src/data/eips/', () => {
+      const sourceCount = fs
+        .readdirSync(path.resolve(DIST, '..', 'src', 'data', 'eips'))
+        .filter((f) => f.endsWith('.json')).length;
+      const payload = JSON.parse(
+        fs.readFileSync(path.join(DIST, 'api/eips.json'), 'utf-8'),
+      );
+      expect(payload.count).toBe(sourceCount);
+      expect(payload.eips.length).toBe(sourceCount);
+    });
+
+    it('api/eips.json ships the prose the HTML lacks', () => {
+      // The point of the endpoint: /eips/7702 renders none of this server-side.
+      const payload = JSON.parse(
+        fs.readFileSync(path.join(DIST, 'api/eips.json'), 'utf-8'),
+      );
+      const eip = payload.eips.find((e: { id: number }) => e.id === 7702);
+      expect(eip?.laymanDescription).toBeTruthy();
+      expect(eip?.forkRelationships?.length).toBeGreaterThan(0);
+    });
+
+    it('api/upgrades.json leaks no UI-only fields', () => {
+      // `NetworkUpgrade` mixes protocol facts with render state. "The Merge:
+      // disabled" is meaningless outside the upgrades page, so the endpoint
+      // projects rather than serving the raw record.
+      const payload = JSON.parse(
+        fs.readFileSync(path.join(DIST, 'api/upgrades.json'), 'utf-8'),
+      );
+      const keys = new Set(payload.upgrades.flatMap((u: object) => Object.keys(u)));
+      for (const uiOnly of ['disabled', 'hideProgressBar', 'macroPhaseOverride', 'path']) {
+        expect(keys.has(uiOnly), `${uiOnly} should not be published`).toBe(false);
+      }
+      // ...but the substantive fields have to survive the projection.
+      const hegota = payload.upgrades.find((u: { id: string }) => u.id === 'hegota');
+      expect(hegota?.projectedActivation).toMatch(/^\d{4}-\d{2}-\d{2}$/);
+      expect(payload.upgrades.some((u: { id: string }) => u.id === 'previous-upgrades')).toBe(
+        false,
+      );
+    });
+
+    it('llms.txt only points at paths that exist', () => {
+      const txt = fs.readFileSync(path.join(DIST, 'llms.txt'), 'utf-8');
+      const referenced = new Set(
+        [...txt.matchAll(/`?(?:GET )?(\/(?:api|search|eip-spec)[\w./-]*\.json)`?/g)].map(
+          (m) => m[1],
+        ),
+      );
+      expect(referenced.size).toBeGreaterThan(0);
+      for (const ref of referenced) {
+        expect(
+          fs.existsSync(path.join(DIST, ref.slice(1))),
+          `llms.txt references missing ${ref}`,
+        ).toBe(true);
+      }
+    });
+  });
+
   describe('page title uniqueness', () => {
     it('not all pages share the same <title>', () => {
       const titles = new Set<string>();

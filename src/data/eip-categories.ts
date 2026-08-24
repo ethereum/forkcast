@@ -40,7 +40,7 @@ export const eipCategories: EipCategory[] = [
   {
     id: 'precompiles-cryptography',
     name: 'Precompiles & Cryptography',
-    eips: [7666, 8030, 8200, 8355]
+    eips: [7666, 8200, 8355]
   },
   {
     id: 'block-state-data',

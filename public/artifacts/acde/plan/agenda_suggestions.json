@@ -1,63 +1,63 @@
 {
   "series": "ACDE",
-  "generated": "2026-08-17",
+  "generated": "2026-08-24",
   "for_call": "ACDE #244",
   "suggestions": [
     {
       "topic": "Native AA implementation decision: Frames (EIP-8141) vs EIP-8130",
       "priority": "high",
-      "rationale": "Deferred decision from ACDE #243 with explicit expected revisit at this call (Aug 27). AA breakout on Aug 25 will surface concrete comparison and required modifications for final implementation decision.",
+      "rationale": "Decision explicitly deferred to ACDE #244 following AA breakout on Aug 25. L2 teams raised DoS/TPS concerns; static frames workstream proposed as resolution. This is a Hegota headliner decision with broad implementation impact.",
       "related_eips": [],
       "source": "deferred_decision"
     },
     {
-      "topic": "Platåberget (glamsterdam-devnet-8) Gloas fork readiness",
+      "topic": "Hegota headliner selection and CFI decisions",
       "priority": "high",
-      "rationale": "Gloas fork was scheduled for ~Aug 21 (Thursday 7:50 AM UTC, ~1 week after ACDE #243). This call is 6 days after activation — critical to review any issues encountered during fork transition and confirm testnet stability.",
-      "related_eips": [],
-      "source": "devnet_update"
-    },
-    {
-      "topic": "History expiry window convergence for Hegota",
-      "priority": "medium",
-      "rationale": "ACDE #243 flagged urgent need for history expiry at Hegota given 200M gas limit impacting 2TB node operators. Clients remain divergent (6 months to 1 year). Async discussion ongoing but requires synchronous decision on spec location and window.",
-      "related_eips": [],
-      "source": "open_action_item"
-    },
-    {
-      "topic": "EIP-7928 BAL disagreement in Hive chain tests (block 57)",
-      "priority": "medium",
-      "rationale": "Hive chain PR #1589 blocked since ACDE #242 on client disagreement over EIP-7928 BAL contents at block 57. No resolution documented in ACDE #243. Potentially blocking Glamsterdam testnet graduation if not resolved.",
-      "related_eips": [],
-      "source": "open_action_item"
-    },
-    {
-      "topic": "Hegota headliner selection process and timeline",
-      "priority": "medium",
-      "rationale": "FOCIL confirmed as headliner; native AA CFI'd pending convergence (now resolved via Aug 25 breakout). EL client preference lists due Sept 10 (ACDE #245). Should clarify next steps for CFI decisions and headliner scoping.",
+      "rationale": "EL client preference lists for Hegota PFIs are due by September 10 (ACDE #245). FOCIL confirmed as headliner; native AA is CFI pending implementation decision. Teams need to align on which PFIs move to CFI and establish implementation priorities.",
       "related_eips": [],
       "source": "ongoing_discussion"
     },
     {
-      "topic": "EIP-8268 (storage routes in block access lists) presentation",
+      "topic": "glamsterdam-devnet-8 (Platåberget) Gloas activation readiness check",
+      "priority": "high",
+      "rationale": "Gloas fork activated on Platåberget on August 21 (Thursday 7:50 AM UTC). This call should confirm activation success, participation rates, and any blockers discovered post-activation before testnet graduation planning.",
+      "related_eips": [],
+      "source": "devnet_update"
+    },
+    {
+      "topic": "Glamsterdam testnet graduation timeline and remaining blockers",
+      "priority": "high",
+      "rationale": "devnet-8 (Platåberget) is the last devnet before mainnet. Multiple EIPs still pending promotion to Review/SFI status. Hive chain PR #1589 blocked on EIP-7928 disagreement. Teams need clear path to testnet launches (Sepolia/Hoodi).",
+      "related_eips": [],
+      "source": "ongoing_discussion"
+    },
+    {
+      "topic": "History expiry window coordination for Hegota",
       "priority": "medium",
-      "rationale": "Deferred from ACDE #241 (July 16) with expected revisit 'next ACDE.' Author Carlos was absent then and presentation has not occurred in subsequent calls. PFI'd for Hegota but needs formal presentation.",
+      "rationale": "200M gas limit at Hegota makes history expiry critical for 2TB node operators. Clients currently misaligned (6 months to 1 year). Async discussion deferred to ETH R&D channel, but synchronous decision needed before Hegota spec freeze.",
       "related_eips": [],
       "source": "deferred_decision"
     },
     {
       "topic": "EIP-7923 (Linear Memory Costing) spec update and max-memory report",
-      "priority": "low",
-      "rationale": "Jochem committed to spec update and max-memory report within 2 weeks of ACDE #243 (Aug 13). This call is 14 days after — status update warranted to confirm PFI readiness for Hegota CFI consideration.",
+      "priority": "medium",
+      "rationale": "jochem committed to spec update and max-memory report in 2 weeks from ACDE #243 (due ~August 27). This is a PFI'd Hegota proposal replacing quadratic memory pricing with significant performance implications.",
       "related_eips": [],
       "source": "ongoing_discussion"
     },
     {
-      "topic": "Glamsterdam EIPs promotion to Review status and SFI milestone",
-      "priority": "low",
-      "rationale": "ACDE #241 and #242 noted 7 Glamsterdam EIPs pending promotion to Review and SFI milestone confirmation with testing team. With Platåberget now live and stable, should confirm whether EIPs have progressed and SFI criteria met.",
+      "topic": "discv5-only mode implementation status for Glamsterdam",
+      "priority": "medium",
+      "rationale": "discv5-only mode ready for devnet-8, but two clients still need flags to disable discv4 and no client has implemented ENR fields in admin_nodeInfo. Needed for full REST/SSZ migration and Glamsterdam mainnet readiness.",
       "related_eips": [],
       "source": "open_action_item"
+    },
+    {
+      "topic": "EIP-2488 (deprecate CALLCODE opcode) presentation",
+      "priority": "low",
+      "rationale": "Presentation deferred from ACDE #239 (June 18) due to presenter absence. Has not been revisited in subsequent calls. Should either present now or formally drop from Hegota consideration.",
+      "related_eips": [],
+      "source": "deferred_decision"
     }
   ]
 }

@@ -2,6 +2,16 @@
   "eipId": 8141,
   "commits": [
     {
+      "sha": "7d1c8bfb945cbb53479217df3bf1da67b3aa445b",
+      "date": "2026-08-24T02:03:23Z",
+      "message": "Update EIP-8141: account block execution gas before refund (EIP-7778)",
+      "author": "AnkushinDaniil",
+      "prNumber": null,
+      "patch": "@@ -8,7 +8,7 @@ status: Draft\n type: Standards Track\n category: Core\n created: 2026-01-29\n-requires: 1559, 2718, 2780, 3529, 3607, 4844, 7594, 7623, 7702, 7708, 7825, 8037\n+requires: 1559, 2718, 2780, 3529, 3607, 4844, 7594, 7623, 7702, 7708, 7778, 7825, 8037\n ---\n \n ## Abstract\n@@ -623,14 +623,16 @@ After execution, return `payer_refund` to the payer. This is the `resolved_targe\n \n ###### Block-level gas accounting\n \n-Blocks account for the two dimensions separately, per EIP-8037. A frame transaction contributes its settlement dimensions directly:\n+Blocks account for the two dimensions separately, per EIP-8037. Because this EIP requires [EIP-7778](./eip-7778.md), the storage refund does not reduce the gas counted toward the block gas limit, so the execution dimension is accounted before the refund. This is the EIP-8037 EIP-7778 integration applied to the frame transaction's explicit dimensions: the state dimension stays net, since a state-gas refill reverses a charge for state that was never durably created rather than rebating performed work.\n \n ```python\n-block_output.block_execution_gas_used += tx_execution_gas\n+block_execution_gas = max(gas_used_before_refund - tx_state_gas, calldata_floor_gas)\n+\n+block_output.block_execution_gas_used += block_execution_gas\n block_output.block_state_gas_used += tx_state_gas\n ```\n \n-All intrinsic costs are execution gas, so the execution dimension is the transaction total less its net state gas. Because `gas_used = tx_execution_gas + tx_state_gas`, the payer pays for exactly the capacity the transaction occupies across both dimensions, and receipt `cumulative_gas_used` deltas reconcile with the block counters. The block header `gas_used`, the block validity condition, and the base fee update rule follow EIP-8037 unchanged.\n+All intrinsic costs are execution gas, so the execution dimension is the transaction total less its net state gas. The payer is charged `gas_used = tx_execution_gas + tx_state_gas` (post-refund), while the block counts `block_execution_gas + tx_state_gas` (execution pre-refund): the refund lowers the payer's cost without freeing the block capacity the transaction occupied, exactly as EIP-7778 intends. The block header `gas_used`, the block validity condition, and the base fee update rule follow EIP-8037 unchanged.\n \n A frame transaction may be included in a block only if its worst case fits the remaining capacity of **each** dimension:\n ",
+      "additions": 6,
+      "deletions": 4
+    },
+    {
       "sha": "3ceef8d37092c5b13a614746dbce5b1fc3c2dfab",
       "date": "2026-08-21T19:20:53Z",
       "message": "Update EIP-8141: fix calldata floor to use EIP-7976 uniform token count",
@@ -625,14 +635,6 @@
       "updatedAt": "2026-07-30T12:15:25Z",
       "additions": 95,
       "deletions": 8
-    },
-    {
-      "number": 12226,
-      "title": "Update EIP-8141: account block execution gas before refund (EIP-7778)",
-      "author": "AnkushinDaniil",
-      "updatedAt": "2026-08-21T18:11:58Z",
-      "additions": 6,
-      "deletions": 4
     },
     {
       "number": 12214,

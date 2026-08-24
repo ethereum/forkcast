@@ -1,0 +1,41 @@
+{
+  "meeting": "ACDT #093 - 2026-08-24 (CL Breakout)",
+  "sections": [
+    {
+      "heading": "Builder-Specs and Beacon API PRs Merged",
+      "summary": "Builder-specs PR 165 and Beacon APIs PR 630 were both merged, completing the full set of builder-flow spec PRs.",
+      "timestamp": "00:01:00",
+      "body": "- [builder-specs PR 165](https://github.com/ethereum/builder-specs/pull/165) and [Beacon APIs PR 630](https://github.com/ethereum/beacon-APIs/pull/630) were merged, with only minor nit-level changes pushed before merge.\n- This completes all three spec PRs: Key Manager API was merged the previous week; Beacon API and builder-specs merged this week.\n- Final changes across both PRs involved renaming `signed_request_auth` to `signed_builder_request_auth` for clarity when used across client codebases.\n- Commit-boost confirmed working with Lodestar in Kurtosis.\n- Public builders are available on devnet 8 at https://buildoor.plataberget.ethpandaops.io/"
+    },
+    {
+      "heading": "Direct Bid Testing on Devnet 8",
+      "summary": "No client has tested direct bids on devnet 8 yet; Lighthouse found implementation bugs internally, and Prysm is still missing PRs.",
+      "timestamp": "00:01:58",
+      "body": "- Lodestar tested direct bids via Kurtosis with a builder but not yet on devnet 8.\n- Prysm confirmed they have not tested direct bids and are still missing a couple of PRs for the feature.\n- Lighthouse (via Jimmy) has been testing and uncovered a few small bugs, confirmed to be Lighthouse-side bugs, not spec issues."
+    },
+    {
+      "heading": "Beacon APIs PR 627: Separate vs. Integrated Endpoint",
+      "summary": "PR 627 will be updated after PR 630's merge; the group leaned toward keeping produceBlockV4WithBid as a separate endpoint with explicit fallback semantics.",
+      "timestamp": "00:04:16",
+      "body": "- [Beacon APIs PR 627](https://github.com/ethereum/beacon-APIs/pull/627) needs to be rebased now that PR 630 is merged; Luca (Vero) committed to updating it the same day.\n- The core question is whether `produceBlockV4WithBid` should remain a separate endpoint or be folded into the normal `produceBlock` endpoint.\n  - Luca's preference: keep it separate — simpler, more elegant.\n  - Nico noted that `builder-config` was already made required in `produceBlock`, which is an argument for separation.\n- **Boost factor and bid weighting**: Discussion on whether a boost factor should be passed when the validator client provides a bid, so the beacon node can compare it against the local payload.\n  - If the validator client brings its own bid, it generally expects that bid to be used; the local payload would only be returned if the circuit breaker fires or the bid is invalid.\n- **Trustless (P2P) bids vs. relay bids**: Chris Berry asked how the validator client differentiates between trustless bids (received over gossip) and MEV relay bids.\n  - Validator clients can subscribe to trustless bids via SSE events from the beacon node.\n  - Agreement: the spec should explicitly clarify whether the beacon node should also consider P2P bids when this endpoint is called, or whether the validator client is solely responsible for aggregating all bid sources.\n  - Luca agreed to add this clarification to the PR.\n- **Invalid bid fallback**: If the beacon node considers the submitted bid invalid (e.g., on a different head), it should disregard it and may return a block with a different payload (e.g., local).\n  - This works because signing happens after the beacon node returns the block — the validator has not yet committed.\n  - Agreement: the beacon node retains decision-making authority; the validator client's final step is to sign and submit whatever the beacon node returns.\n- **Timing concerns**: CL clients typically only start building the CL block (attestation packing, etc.) when the produce-block API is called.\n  - If the validator client delays the call (to gather bids), this could be problematic.\n  - Lodestar reported worst-case attestation packing times of ~800 ms.\n  - Chris Berry noted Vouch's current deadline is about 1.5 seconds into the slot.\n  - Consensus: this is an advanced API endpoint, so callers are responsible for calling it in time; no spec-level timer is needed."
+    },
+    {
+      "heading": "Circuit Breaker Status Across Clients",
+      "summary": "Most clients have a circuit breaker of some form, but clean devnet testing has not yet occurred; Lodestar's needs about two more weeks of polish.",
+      "timestamp": "00:17:17",
+      "body": "- Discussions about circuit breaker behavior took place on Discord the previous week during non-finality on devnet 8, but no clean test has been completed.\n- Client status:\n  - Nimbus: has a circuit breaker.\n  - Lodestar: has a global circuit breaker (not per-builder yet); Nico estimated ~2 weeks to polish it.\n  - Lighthouse: has one, per pk910.\n  - Grandine: status unclear; Pari initially mentioned Grandine might be pending.\n- Nico noted that the `should_override_builder` EL flag (for censorship detection) also plays a role in local payload fallback.\n- Nico offered to use the Death Star to trigger reorgs on devnet to help test circuit breaker behavior."
+    },
+    {
+      "heading": "Trustless Builder Implementation in Clients",
+      "summary": "Only Lodestar has a trustless builder in progress; Lighthouse plans to add one but hasn't started yet.",
+      "timestamp": "00:18:46",
+      "body": "- Justin asked which clients are implementing a trustless (non-Buildoor/pk910-style) builder that can operate without the relay trust model.\n- Lighthouse: has a closed-source trusted builder client tested on devnets but has not implemented a trustless builder yet; it is on their roadmap.\n- Lodestar: Nico has been working on trustless builder support.\n- No other clients indicated active work on trustless builder implementations."
+    },
+    {
+      "heading": "Bid Publishing Validation and Multi-Branch Bidding",
+      "summary": "Lodestar's gossip validation rules currently reject non-head-compatible bids on the API; multi-branch bidding is live on devnet 8 via Buildoor.",
+      "timestamp": "00:20:06",
+      "body": "- Nico discovered that Lodestar applies the same gossip validation rules to API-submitted bids as to P2P-received bids, which means bids that are not head-compatible (e.g., after reorgs) are silently dropped.\n  - Proposed fix: only apply reject-class rules on API submissions and skip ignore-class rules, then flood-publish the bids to cover non-head branches.\n- Buildoor (pk910) confirmed it already builds payloads for multiple branches: the immediate parent and the grandparent, plus variants with empty and full payloads.\n  - Bids for all four situations have been observed on devnet 8.\n  - Actual inclusion of non-head bids is hard to test without a real reorg occurring at the right time."
+    }
+  ]
+}

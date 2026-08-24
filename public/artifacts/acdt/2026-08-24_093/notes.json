@@ -1,0 +1,59 @@
+{
+  "meeting": "ACDT #093 - 2026-08-24",
+  "sections": [
+    {
+      "heading": "Glamsterdam Devnet 8 Status",
+      "summary": "Devnet 8 is near 100% participation but incorrect head votes are 65-80%, partly due to Grandine late attestations and malicious testing.",
+      "timestamp": "00:05:03",
+      "body": "- Devnet 8 has close to 100% participation, with all clients proposing and voting correctly.\n- Incorrect head votes have been poor in recent epochs, hovering between 65% and 80%.\n  - Barnabas suspects Grandine is pulling down the numbers because their attestations begin at the 4-second mark rather than before it, causing every attestation to arrive late.\n  - Saulius (Grandine) mentioned a flag that disables this late-voting behavior; agreed to discuss the fix offline.\n- Toni started testing more malicious strategies roughly an hour before the call.\n  - One Nethermind-Prysm node forked off, a Besu-Teku node missed a slot, and another node was affected.\n  - Details posted in the interrupt channel; clients asked to investigate.\n- Justin noted he performed bid-spamming tests the previous week, around 300-500 bids per slot for a few hours."
+    },
+    {
+      "heading": "RPC Interoperability and eth_estimateGas",
+      "summary": "Stefan shared an RPC interoperability report showing inconsistencies across clients, especially for eth_estimateGas which Barnabas flagged as critical post-Glamsterdam.",
+      "timestamp": "00:07:53",
+      "body": "- Stefan shared an [RPC interoperability report](https://panda-uploads-production.devops-539.workers.dev/panda/uploads/3ce444/devnet8-rpc-interoperability-20260824.html) showing several inconsistencies across EL clients on devnet 8.\n  - eth_estimateGas is a key area of divergence.\n- Barnabas emphasized eth_estimateGas will be heavily used post-Glamsterdam due to gas repricing, and urged all clients to ensure correct estimation.\n  - Many dApp developers will rely on eth_estimateGas rather than hard-coding gas values.\n- Detailed RPC items were deferred to the EL breakout for deeper discussion."
+    },
+    {
+      "heading": "Glamsterdam Meta EIP Review Status",
+      "summary": "Pooja asked EIP authors to approve PR 11855 to move the Glamsterdam meta EIP to Review status.",
+      "timestamp": "00:10:40",
+      "body": "- Pooja flagged that the Glamsterdam meta EIP (PR 11855 on the EIPs repository) is up-to-date with latest master and has editor approval.\n- Authors are asked to approve the PR so it can be moved to Review status.\n- Keeping meta EIPs current is important as they serve as the canonical source of upgrade information."
+    },
+    {
+      "heading": "Devnet 9 Planning",
+      "summary": "Devnet 9 will be a non-finality network with a fork transition; trunk branch readiness from all clients is targeted by Thursday (ACDE).",
+      "timestamp": "00:11:03",
+      "body": "- Toni asked whether there will be a devnet 9; consensus from chat and discussion was yes.\n- Chris Berry confirmed agreement from Thursday's call that another devnet would happen.\n- Barnabas proposed devnet 9 be a non-finality network; no objections raised.\n- Parithosh proposed batching the fork transition test with the non-finality chaos testing — fork transition first, then chaos.\n  - Devnet 8 is a named public network used for repricing tests by external parties (e.g., Lido); not suitable for non-finality chaos.\n- Main blocker: all clients need trunk branch support for Glamsterdam.\n  - Teku, Lodestar, and Nimbus are already trunk-ready.\n  - Lighthouse expects to be ready within a few days.\n  - No update from Prysm during the call.\n- Barnabas proposed a Thursday (ACDE) deadline for all clients to have trunk support.\n  - No objections; Mario confirmed Thursday as the target.\n  - Parithosh noted external teams (e.g., Lido) need a few days' notice to set up infrastructure.\n- Barnabas asked if devnet 9 needs to be long-lived; Parithosh indicated it does not.\n- Toni jokingly asked about devnet 10; general sentiment is to avoid further devnets."
+    },
+    {
+      "heading": "EL Breakout: BAL Getter Spec (execution-apis #851)",
+      "summary": "No objections to merging the BAL getter PR; most content is already merged and the remaining changes are minor.",
+      "timestamp": "00:16:16",
+      "body": "- Toni presented [execution-apis #851](https://github.com/ethereum/execution-apis/pull/851) standardizing Block Access List getter behavior for unknown, pending, pre-Amsterdam, and pruned blocks.\n  - Toni described its goal as fixing some inaccuracies; most clients have already implemented it.\n- Chase noted he has merge rights but hesitated because HiveChain hasn't been updated to support Amsterdam, so there are no tests to validate the spec.\n- Toni pointed out most of the content is already merged; the PR itself only changes small things.\n- No client objections were raised during the call.\n- Agreement: Toni will post the PR to the Block Access Discord and tag all clients for async sign-off; Chase will merge once clients confirm."
+    },
+    {
+      "heading": "EL Breakout: HiveChain Update Blocker",
+      "summary": "HiveChain cannot generate Amsterdam-era test chains because its GoEthereum dependency hasn't been updated; lightclient volunteered to review the blocking PRs.",
+      "timestamp": "00:19:04",
+      "body": "- HiveChain generates test chains through GoEthereum and must be updated to support Glamsterdam EIPs before any new RPC compatibility tests can be written or run.\n- Two key Hive PRs are pending:\n  - [hive #1589](https://github.com/ethereum/hive/pull/1589) — HiveChain Amsterdam support (draft, by Chase)\n  - [hive #1585](https://github.com/ethereum/hive/pull/1585) — fix for currently failing tests\n- Felix, who historically owns HiveChain, is out of office; Chase is filling in but unfamiliar with all moving pieces.\n- lightclient volunteered to review the PRs and look into unblocking the process.\n- A [GoEthereum PR #35397](https://github.com/ethereum/go-ethereum/pull/35397) also needs review to support the HiveChain update; Barnabas asked lightclient to review it.\n- Barnabas suggested running specific branches of Hive instead of forking all repos; Chase confirmed this could work if someone creates the branches on each repo.\n  - Barnabas said EF DevOps can create whatever branches are needed — declared a non-issue.\n- Spencer advocated for keeping the blocking-before-tests-pass process, and raised the longer-term question of removing GoEthereum as a HiveChain dependency.\n- Mario noted EELS currently has no RPC endpoint and cannot replace GoEthereum in HiveChain overnight, but the team will start prioritizing RPC support in EELS for future forks.\n  - lightclient agreed this won't change before the current fork ships."
+    },
+    {
+      "heading": "EL Breakout: callTracer Gas Fields Standardization (execution-apis #852 and #855)",
+      "summary": "Both callTracer PRs are blocked by the HiveChain update; Stefan's PR conflicts slightly with Chase's but the changes are small.",
+      "timestamp": "00:21:58",
+      "body": "- Stefan presented [execution-apis #852](https://github.com/ethereum/execution-apis/pull/852) standardizing callTracer 2D gas fields already implemented by Nethermind and ethrex.\n  - Clients have started implementing it even though it hasn't been merged.\n  - Minor rebase conflict with Chase's related work; needs coordination on who rebases.\n- Chase presented [execution-apis #855](https://github.com/ethereum/execution-apis/pull/855) completing the callTracer and debug_traceCall specification, compatible with #852.\n  - Same HiveChain blocker applies — no tests can be written or run until HiveChain is updated.\n- Both PRs deferred pending HiveChain resolution."
+    },
+    {
+      "heading": "EL Breakout: eth_createAccessList Fee Field Behavior (execution-apis #854)",
+      "summary": "GoEthereum uses a different default for omitted fee fields in eth_createAccessList than every other client; a GoEthereum PR is pending review.",
+      "timestamp": "00:29:29",
+      "body": "- Chase presented [execution-apis #854](https://github.com/ethereum/execution-apis/pull/854) defining affordability behavior when fee fields are omitted from access-list requests.\n- The issue: when gas price / max fee per gas fields are not passed, GoEthereum uses a different default value than all other clients, resulting in divergent gas-used responses.\n- Chase created [go-ethereum #35397](https://github.com/ethereum/go-ethereum/pull/35397) to fix GoEthereum's behavior; it needs review.\n  - This PR is also needed for the HiveChain update, creating a double dependency.\n- No GoEthereum representative responded during the call; lightclient indicated he would look at it."
+    },
+    {
+      "heading": "EL Breakout: Fuzzing-Discovered Client Bugs",
+      "summary": "Paweł's fuzzing of Glamsterdam specs found bugs in block access list and gas repricing areas; fixes and execution-spec-tests are in progress.",
+      "timestamp": "00:34:03",
+      "body": "- Paweł (chfast) shared a [list of devnet 8 client bugs and missing coverage](https://github.com/ethereum/pm/issues/2195#issuecomment-5395878309) discovered through fuzzing the Glamsterdam spec.\n- Strong candidates for issues: block access list and gas repricing logic.\n  - Some bugs have already been fixed; some execution-spec-tests have been merged.\n  - Remaining bugs are partly blocking the fuzzer from finding deeper issues.\n- Paweł is confident the bugs could be reproduced on the live devnet 8 network and could potentially split the network, though he did not attempt it.\n- jochem-brouwer raised concern in chat about parallelization-related bugs being \"rather scary.\"\n  - Toni clarified there are no race conditions in parallelization — transactions execute in a vacuum; invalid results in parallel must also be invalid sequentially.\n  - Csaba (Nethermind) agreed, adding that BAL helpers for parallel execution are motivation for gas limit increases, and serial re-execution would break that logic.\n- Spencer noted the remaining PR to merge is the EIP-8037 bug Paweł found, plus the EIP-7610 removal; a new execution-spec-tests release could happen within a day.\n- Mario committed to prioritizing these tests and running them against all clients."
+    }
+  ]
+}

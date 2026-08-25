@@ -2,6 +2,16 @@
   "eipId": 8037,
   "commits": [
     {
+      "sha": "187336f46c2b54ae295ced6e8cffd48bf5989ba6",
+      "date": "2026-08-25T11:44:53Z",
+      "message": "Update EIP-8037: decouple SYSTEM_MAX_SSTORES_PER_CALL from request bounds",
+      "author": "chfast",
+      "prNumber": null,
+      "patch": "@@ -257,7 +257,7 @@ SYSTEM_CALL_GAS_LIMIT = 30_000_000 + STATE_BYTES_PER_STORAGE_SET × CPSB × SYST\n \n This ensures preservation of the existing execution margin for system contracts under higher state creation costs.\n \n-Here, `SYSTEM_MAX_SSTORES_PER_CALL = 16` is the upper bound on the number of new storage slots a single system call is expected to write. This value matches `MAX_WITHDRAWAL_REQUESTS_PER_BLOCK` ([EIP-7002](./eip-7002.md)), the largest per-block bound across the existing system contracts.\n+Here, `SYSTEM_MAX_SSTORES_PER_CALL = 16` is the upper bound on the number of new storage slots a single system call is expected to write. It is a margin rather than a bound derived from any particular system contract, and must be re-derived if a system call can write more new slots.\n \n The additional `STATE_BYTES_PER_STORAGE_SET × CPSB × SYSTEM_MAX_SSTORES_PER_CALL` is placed in `state_gas_reservoir` while the rest of the system call's gas is placed in `gas_left`. System calls remain not subject to the [EIP-7825](./eip-7825.md) `TX_MAX_GAS_LIMIT` cap, do not count against the block gas limit, and do not contribute to either `block_execution_gas_used` or `block_state_gas_used`.\n ",
+      "additions": 1,
+      "deletions": 1
+    },
+    {
       "sha": "5a8c80897aeb0952322cd0dfff767c541002b8c3",
       "date": "2026-07-31T15:51:07Z",
       "message": "Update EIP-2780: variable rename + 8007 clean-ups",
@@ -284,14 +294,6 @@
     }
   ],
   "openPrs": [
-    {
-      "number": 12238,
-      "title": "Update EIP-8037: decouple SYSTEM_MAX_SSTORES_PER_CALL from request bounds",
-      "author": "chfast",
-      "updatedAt": "2026-08-24T19:38:35Z",
-      "additions": 1,
-      "deletions": 1
-    },
     {
       "number": 11570,
       "title": "Update EIP-8037: Proposal for Revising 8037",

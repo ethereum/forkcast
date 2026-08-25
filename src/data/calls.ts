@@ -29,7 +29,7 @@ export const callTypeNames: Record<CallType, string> = {
   awd: 'AllWalletDevs',
   pqi: 'PQ Interop',
   fcr: 'Fast Confirmation Rule',
-  aa: 'Native Account Abstraction',
+  aa: 'Frame Transaction Breakout',
   p2p: 'P2P Networking',
   ssz: 'SSZ Engine API',
 };

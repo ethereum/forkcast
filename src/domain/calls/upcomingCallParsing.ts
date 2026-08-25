@@ -37,7 +37,8 @@ const UPCOMING_CALL_SERIES_TO_TYPE: Record<string, CallType> = {
   'glamsterdam repricings': 'price',
   'trustless log index': 'tli',
   'encrypt the mempool': 'etm',
-  'native account abstraction': 'aa',
+  // Renamed upstream from "Native Account Abstraction"; same series, same type key.
+  'frame transaction breakout': 'aa',
   'p2p networking': 'p2p',
   'ssz engine api': 'ssz',
 };

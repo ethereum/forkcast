@@ -35,7 +35,7 @@ export const eipCategories: EipCategory[] = [
   {
     id: 'repricing',
     name: 'Repricing',
-    eips: [3298, 7686, 7709, 7923, 7971, 7973, 8058, 8131, 8279, 8358, 8368, 8372, 8374]
+    eips: [3298, 7709, 7923, 7973, 8058, 8131, 8279, 8358, 8368, 8372, 8374]
   },
   {
     id: 'precompiles-cryptography',

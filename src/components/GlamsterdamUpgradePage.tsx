@@ -39,7 +39,7 @@ function renderTab(tab: GlamsterdamTab) {
     case 'devnet-inclusion':
       return <EipCandidatesTab />;
     case 'client-priority':
-      return <ClientPriorityTab />;
+      return <ClientPriorityTab fork="glamsterdam" />;
     case 'test-complexity':
       return <TestComplexityTab />;
   }

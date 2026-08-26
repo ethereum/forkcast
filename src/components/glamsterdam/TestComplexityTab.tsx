@@ -8,7 +8,6 @@ import {
   getInclusionStageSortRank,
   getLaymanTitle,
   getProposalPrefix,
-  getSpecificationUrl,
   getStageAbbreviation,
 } from '../../utils';
 import { getInclusionStageColor } from '../../utils/colors';
@@ -575,14 +574,12 @@ const TestComplexityTab: React.FC<TestComplexityTabProps> = ({ fork = 'glamsterd
                   <tr className="hover:bg-slate-50 dark:hover:bg-slate-700/30">
                     <td className="px-4 py-3">
                       <div className="flex items-center gap-2">
-                        <a
-                          href={getSpecificationUrl(eip)}
-                          target="_blank"
-                          rel="noopener noreferrer"
+                        <Link
+                          to={`/eips/${eip.id}`}
                           className="font-mono text-sm text-purple-600 hover:text-purple-800 dark:text-purple-400 dark:hover:text-purple-300"
                         >
                           {getProposalPrefix(eip)}-{eip.id}
-                        </a>
+                        </Link>
                         {layer && (
                           <span className={`px-1.5 py-0.5 text-[10px] rounded ${
                             layer === 'EL'

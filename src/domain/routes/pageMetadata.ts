@@ -79,6 +79,10 @@ export const staticPageMetadata = {
     title: 'Hegotá Upgrade - Forkcast',
     description: 'Hegotá network upgrade: overview, EIP proposals, and test complexity.',
   },
+  hegotaClientPriority: {
+    title: 'Hegotá Client Priority - Forkcast',
+    description: 'Aggregate view of Ethereum client team stances on EIPs proposed for Hegotá.',
+  },
   hegotaTestComplexity: {
     title: 'Hegotá Test Complexity - Forkcast',
     description: 'Analyze STEEL test complexity assessments for EIPs proposed for Hegotá.',
@@ -127,6 +131,7 @@ export const staticPageRoutes = {
   pectra: '/upgrade/pectra',
   fusaka: '/upgrade/fusaka',
   hegota: '/upgrade/hegota',
+  hegotaClientPriority: '/upgrade/hegota/client-priority',
   hegotaTestComplexity: '/upgrade/hegota/test-complexity',
   glamsterdam: '/upgrade/glamsterdam',
   glamsterdamStakeholders: '/upgrade/glamsterdam/stakeholders',

@@ -61,6 +61,7 @@ const CORE_PAGES = [
   'upgrade/glamsterdam/stakeholders/index.html',
   'upgrade/glamsterdam/devnet-inclusion/index.html',
   'upgrade/hegota/index.html',
+  'upgrade/hegota/client-priority/index.html',
   'upgrade/pectra/index.html',
   'upgrade/fusaka/index.html',
   'rank/index.html',

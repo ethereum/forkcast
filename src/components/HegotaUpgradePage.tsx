@@ -1,12 +1,13 @@
 import React, { useLayoutEffect, useRef } from 'react';
 import { getUpgradeById } from '../data/upgrades';
 import { getUpgradeStatusColor } from '../utils/colors';
+import ClientPriorityTab from './glamsterdam/ClientPriorityTab';
 import TestComplexityTab from './glamsterdam/TestComplexityTab';
 import OverviewTab from './hegota/OverviewTab';
 
 const upgrade = getUpgradeById('hegota')!;
 
-export type HegotaTab = 'overview' | 'test-complexity';
+export type HegotaTab = 'overview' | 'client-priority' | 'test-complexity';
 
 interface TabItem {
   key: HegotaTab;
@@ -16,6 +17,7 @@ interface TabItem {
 
 const tabs: TabItem[] = [
   { key: 'overview', path: '/upgrade/hegota', label: 'Overview' },
+  { key: 'client-priority', path: '/upgrade/hegota/client-priority', label: 'Client Priority' },
   { key: 'test-complexity', path: '/upgrade/hegota/test-complexity', label: 'Test Complexity' },
 ];
 
@@ -23,6 +25,8 @@ function renderTab(tab: HegotaTab) {
   switch (tab) {
     case 'overview':
       return <OverviewTab />;
+    case 'client-priority':
+      return <ClientPriorityTab fork="hegota" />;
     case 'test-complexity':
       return <TestComplexityTab fork="hegota" />;
   }

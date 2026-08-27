@@ -5,7 +5,7 @@ import { getCallDisplayName, protocolCalls } from '../data/calls';
 import { eipsData } from '../data/eips';
 import { feedConfig } from '../data/feed';
 import { networkUpgrades } from '../data/upgrades';
-import { getRecentStageChanges } from '../domain/eips/stageChanges';
+import { getStageChanges } from '../domain/eips/stageChanges';
 import {
   buildFeedItems,
   buildRssXml,
@@ -96,7 +96,7 @@ export const GET: APIRoute = () => {
   const items = buildFeedItems(
     feedConfig,
     {
-      stageChanges: getRecentStageChanges(eipsData, feedConfig.eipStageChanges.count),
+      stageChanges: getStageChanges(eipsData, feedConfig.eipStageChanges.count),
       callSummaries: loadReviewedCallSummaries(),
       callDecisions: loadReviewedCallDecisions(),
       upgrades: networkUpgrades,

@@ -979,14 +979,21 @@ const RankPage: React.FC = () => {
               )}
             </div>
             <p className="text-xs text-slate-500 dark:text-slate-400 mb-4 flex-shrink-0">
-              Headliners excluded:{" "}
+              Excluded:{" "}
               <a
                 href="/eips/7805"
                 className="text-purple-600 hover:text-purple-700 dark:text-purple-400 dark:hover:text-purple-300"
               >
                 EIP-7805 (FOCIL)
               </a>{" "}
-              is already SFI.
+              and{" "}
+              <a
+                href="/eips/8141"
+                className="text-purple-600 hover:text-purple-700 dark:text-purple-400 dark:hover:text-purple-300"
+              >
+                EIP-8141 (Frames)
+              </a>{" "}
+              are already SFI.
             </p>
             <div className="space-y-4 lg:overflow-y-auto lg:flex-1">
               {getUnassignedItemsByLayer().filter(([, layerItems]) => layerItems.length > 0).map(([layer, layerItems]) => {

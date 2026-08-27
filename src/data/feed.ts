@@ -24,6 +24,12 @@ export interface FeedConfig {
    */
   callSummaries: { enabled: boolean; reviewedCalls: string[] };
   /**
+   * Individual decisions from a call's key_decisions.json, one feed item per
+   * decision. Gated by the same per-call review as summaries: only calls
+   * listed in callSummaries.reviewedCalls emit decisions.
+   */
+  callDecisions: { enabled: boolean };
+  /**
    * Upgrade status changes. upgrades.ts stores only the current status, so
    * each change is recorded here by hand when it happens.
    */
@@ -33,5 +39,6 @@ export interface FeedConfig {
 export const feedConfig: FeedConfig = {
   eipStageChanges: { enabled: true, count: 20 },
   callSummaries: { enabled: false, reviewedCalls: [] },
+  callDecisions: { enabled: false },
   upgradeStatusChanges: { enabled: false, entries: [] },
 };

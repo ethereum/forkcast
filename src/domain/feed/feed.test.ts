@@ -6,10 +6,12 @@ import type { EipStageChange } from '../eips/stageChanges';
 import {
   buildFeedItems,
   buildRssXml,
+  callDecisionToFeedItem,
   callSummaryToFeedItem,
   escapeXml,
   stageChangeToFeedItem,
   toRssDate,
+  type CallDecisionInput,
   type CallSummaryInput,
 } from './feed';
 
@@ -42,6 +44,14 @@ const makeCallSummary = (overrides: Partial<CallSummaryInput> = {}): CallSummary
   ...overrides,
 });
 
+const makeCallDecision = (overrides: Partial<CallDecisionInput> = {}): CallDecisionInput => ({
+  call: makeCall(),
+  displayName: 'AllCoreDevs - Consensus',
+  text: "EIP-8359 (Beacon Block Reporting) PFI'd for Hegota",
+  index: 4,
+  ...overrides,
+});
+
 const makeUpgrade = (overrides: Partial<NetworkUpgrade> = {}): NetworkUpgrade => ({
   id: 'glamsterdam',
   path: '/upgrade/glamsterdam',
@@ -56,6 +66,7 @@ const makeUpgrade = (overrides: Partial<NetworkUpgrade> = {}): NetworkUpgrade =>
 const config = (overrides: Partial<FeedConfig> = {}): FeedConfig => ({
   eipStageChanges: { enabled: true, count: 20 },
   callSummaries: { enabled: true, reviewedCalls: ['acdc/172'] },
+  callDecisions: { enabled: true },
   upgradeStatusChanges: { enabled: true, entries: [] },
   ...overrides,
 });
@@ -100,10 +111,32 @@ describe('callSummaryToFeedItem', () => {
   });
 });
 
+describe('callDecisionToFeedItem', () => {
+  it('titles the item with the decision text and attributes the call in the description', () => {
+    const item = callDecisionToFeedItem(makeCallDecision(), 'https://forkcast.org');
+    expect(item.title).toBe("Decision: EIP-8359 (Beacon Block Reporting) PFI'd for Hegota");
+    expect(item.link).toBe('https://forkcast.org/calls/acdc/172');
+    // The entry's file position disambiguates decisions sharing a timestamp.
+    expect(item.guid).toBe('decision-acdc-172-2026-01-08-4');
+    expect(item.description).toBe('From AllCoreDevs - Consensus #172 on 2026-01-08.');
+  });
+
+  it('appends the context field to the description when present', () => {
+    const item = callDecisionToFeedItem(
+      makeCallDecision({ context: 'Community consensus is a prerequisite.' }),
+      'https://forkcast.org',
+    );
+    expect(item.description).toBe(
+      'From AllCoreDevs - Consensus #172 on 2026-01-08. Community consensus is a prerequisite.',
+    );
+  });
+});
+
 describe('buildFeedItems', () => {
   const sources = {
     stageChanges: [makeStageChange()],
     callSummaries: [makeCallSummary()],
+    callDecisions: [makeCallDecision()],
     upgrades: [makeUpgrade()],
   };
 
@@ -112,6 +145,7 @@ describe('buildFeedItems', () => {
       config({
         eipStageChanges: { enabled: false, count: 20 },
         callSummaries: { enabled: false, reviewedCalls: ['acdc/172'] },
+        callDecisions: { enabled: false },
         upgradeStatusChanges: { enabled: false, entries: [] },
       }),
       sources,
@@ -126,11 +160,28 @@ describe('buildFeedItems', () => {
       config({
         eipStageChanges: { enabled: false, count: 20 },
         callSummaries: { enabled: true, reviewedCalls: ['acdc/172'] },
+        callDecisions: { enabled: false },
       }),
       { ...sources, callSummaries: [makeCallSummary(), unreviewed] },
       'https://forkcast.org',
     );
     expect(items.map((item) => item.guid)).toEqual(['call-acdc-172-2026-01-08']);
+  });
+
+  it('gates call decisions on the same reviewedCalls list as summaries', () => {
+    const unreviewed = makeCallDecision({
+      call: makeCall({ number: '173', path: 'acdc/173', date: '2026-01-22' }),
+      index: 0,
+    });
+    const items = buildFeedItems(
+      config({
+        eipStageChanges: { enabled: false, count: 20 },
+        callSummaries: { enabled: false, reviewedCalls: ['acdc/172'] },
+      }),
+      { ...sources, callDecisions: [makeCallDecision(), unreviewed] },
+      'https://forkcast.org',
+    );
+    expect(items.map((item) => item.guid)).toEqual(['decision-acdc-172-2026-01-08-4']);
   });
 
   it('builds upgrade items from hand-edited entries and sorts everything newest first', () => {
@@ -147,6 +198,7 @@ describe('buildFeedItems', () => {
     expect(items.map((item) => item.guid)).toEqual([
       'upgrade-glamsterdam-upcoming-2026-02-01',
       'call-acdc-172-2026-01-08',
+      'decision-acdc-172-2026-01-08-4',
       'eip-7732-scheduled-for-inclusion-2026-01-08',
     ]);
     expect(items[0].title).toBe('Glamsterdam Upgrade is now Upcoming');

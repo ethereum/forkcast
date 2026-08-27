@@ -23,6 +23,21 @@ export interface CallSummaryInput {
   highlights?: string[];
 }
 
+export interface CallDecisionInput {
+  call: Call;
+  displayName: string;
+  /** `original_text` of one entry in the call's key_decisions.json. */
+  text: string;
+  /**
+   * Position of the entry in key_decisions.json. Part of the GUID (timestamps
+   * are not unique within a call), so it relies on the file being written once
+   * by the bot and never reordered.
+   */
+  index: number;
+  /** The entry's optional `context` field. */
+  context?: string;
+}
+
 const slugify = (value: string): string =>
   value
     .toLowerCase()
@@ -54,6 +69,18 @@ export function callSummaryToFeedItem(input: CallSummaryInput, site: string): Fe
   };
 }
 
+export function callDecisionToFeedItem(input: CallDecisionInput, site: string): FeedItem {
+  const { call } = input;
+  const source = `From ${input.displayName} #${call.number} on ${call.date}.`;
+  return {
+    title: `Decision: ${input.text}`,
+    link: `${site}/calls/${call.path}`,
+    guid: `decision-${slugify(call.path)}-${call.date}-${input.index}`,
+    date: call.date,
+    description: input.context ? `${source} ${input.context}` : source,
+  };
+}
+
 export function upgradeStatusToFeedItem(
   entry: UpgradeStatusFeedEntry,
   upgrade: NetworkUpgrade | undefined,
@@ -69,31 +96,40 @@ export function upgradeStatusToFeedItem(
 }
 
 /**
- * Assembles feed items from the three content types, honoring the hand-edited
- * switches in src/data/feed.ts. Call summaries additionally require the call's
- * path to be listed in reviewedCalls.
+ * Assembles feed items from the four content types, honoring the hand-edited
+ * switches in src/data/feed.ts. Call summaries and call decisions additionally
+ * require the call's path to be listed in reviewedCalls.
  */
 export function buildFeedItems(
   config: FeedConfig,
   sources: {
     stageChanges: EipStageChange[];
     callSummaries: CallSummaryInput[];
+    callDecisions: CallDecisionInput[];
     upgrades: NetworkUpgrade[];
   },
   site: string,
 ): FeedItem[] {
   const items: FeedItem[] = [];
+  const reviewed = new Set(config.callSummaries.reviewedCalls);
 
   if (config.eipStageChanges.enabled) {
     items.push(...sources.stageChanges.map((change) => stageChangeToFeedItem(change, site)));
   }
 
   if (config.callSummaries.enabled) {
-    const reviewed = new Set(config.callSummaries.reviewedCalls);
     items.push(
       ...sources.callSummaries
         .filter((input) => reviewed.has(input.call.path))
         .map((input) => callSummaryToFeedItem(input, site)),
+    );
+  }
+
+  if (config.callDecisions.enabled) {
+    items.push(
+      ...sources.callDecisions
+        .filter((input) => reviewed.has(input.call.path))
+        .map((input) => callDecisionToFeedItem(input, site)),
     );
   }
 

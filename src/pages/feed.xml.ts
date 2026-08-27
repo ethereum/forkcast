@@ -6,7 +6,12 @@ import { eipsData } from '../data/eips';
 import { feedConfig } from '../data/feed';
 import { networkUpgrades } from '../data/upgrades';
 import { getRecentStageChanges } from '../domain/eips/stageChanges';
-import { buildFeedItems, buildRssXml, type CallSummaryInput } from '../domain/feed/feed';
+import {
+  buildFeedItems,
+  buildRssXml,
+  type CallDecisionInput,
+  type CallSummaryInput,
+} from '../domain/feed/feed';
 
 // Emitted as a static artifact during `astro build`, served at
 // https://forkcast.org/feed.xml. What it may contain is controlled by the
@@ -24,6 +29,13 @@ interface TldrJson {
   highlights?: Record<string, TldrHighlight[]>;
 }
 
+interface KeyDecisionsJson {
+  key_decisions?: { original_text: string; context?: string }[];
+}
+
+const artifactPath = (call: (typeof protocolCalls)[number], file: string): string =>
+  join(process.cwd(), 'public', 'artifacts', call.type, `${call.date}_${call.number}`, file);
+
 /** Loads tldr.json for the reviewed calls; a call without one is skipped. */
 function loadReviewedCallSummaries(): CallSummaryInput[] {
   if (!feedConfig.callSummaries.enabled) return [];
@@ -32,16 +44,8 @@ function loadReviewedCallSummaries(): CallSummaryInput[] {
 
   for (const call of protocolCalls) {
     if (!reviewed.has(call.path)) continue;
-    const tldrPath = join(
-      process.cwd(),
-      'public',
-      'artifacts',
-      call.type,
-      `${call.date}_${call.number}`,
-      'tldr.json',
-    );
     try {
-      const tldr = JSON.parse(readFileSync(tldrPath, 'utf-8')) as TldrJson;
+      const tldr = JSON.parse(readFileSync(artifactPath(call, 'tldr.json'), 'utf-8')) as TldrJson;
       summaries.push({
         call,
         displayName: getCallDisplayName(call),
@@ -59,12 +63,42 @@ function loadReviewedCallSummaries(): CallSummaryInput[] {
   return summaries;
 }
 
+/** Loads key_decisions.json for the reviewed calls; a call without one is skipped. */
+function loadReviewedCallDecisions(): CallDecisionInput[] {
+  if (!feedConfig.callDecisions.enabled) return [];
+  const reviewed = new Set(feedConfig.callSummaries.reviewedCalls);
+  const decisions: CallDecisionInput[] = [];
+
+  for (const call of protocolCalls) {
+    if (!reviewed.has(call.path)) continue;
+    try {
+      const parsed = JSON.parse(
+        readFileSync(artifactPath(call, 'key_decisions.json'), 'utf-8'),
+      ) as KeyDecisionsJson;
+      decisions.push(
+        ...(parsed.key_decisions ?? []).map((entry, index) => ({
+          call,
+          displayName: getCallDisplayName(call),
+          text: entry.original_text,
+          index,
+          context: entry.context,
+        })),
+      );
+    } catch {
+      console.warn(`feed.xml: no readable key_decisions.json for reviewed call ${call.path}, skipping`);
+    }
+  }
+
+  return decisions;
+}
+
 export const GET: APIRoute = () => {
   const items = buildFeedItems(
     feedConfig,
     {
       stageChanges: getRecentStageChanges(eipsData, feedConfig.eipStageChanges.count),
       callSummaries: loadReviewedCallSummaries(),
+      callDecisions: loadReviewedCallDecisions(),
       upgrades: networkUpgrades,
     },
     SITE,
@@ -74,7 +108,7 @@ export const GET: APIRoute = () => {
     {
       title: 'Forkcast',
       link: SITE,
-      description: 'Updates on Ethereum network upgrades: EIP stage changes, protocol call summaries, and upgrade status changes.',
+      description: 'Updates on Ethereum network upgrades: EIP stage changes, protocol call summaries and decisions, and upgrade status changes.',
     },
     items,
   );

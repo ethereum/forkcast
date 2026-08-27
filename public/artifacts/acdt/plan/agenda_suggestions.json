@@ -1,61 +1,61 @@
 {
   "series": "ACDT",
-  "generated": "2026-08-20",
-  "for_call": "ACDT #93",
+  "generated": "2026-08-27",
+  "for_call": "ACDT #94",
   "suggestions": [
     {
-      "topic": "EIP-7610 removal from Glamsterdam - ACDE decision outcome",
+      "topic": "devnet-9 launch readiness: CL trunk branch status",
       "priority": "high",
-      "rationale": "ACDT #92 reached consensus to remove EIP-7610 but deferred formal decision to ACDE (~1.5 weeks from Aug 17). Need to confirm ACDE outcome and update Glamsterdam scope.",
-      "related_eips": [],
-      "source": "deferred_decision"
-    },
-    {
-      "topic": "Devnet-8 → Gloas fork transition results and SSZ performance",
-      "priority": "high",
-      "rationale": "Devnet-8 fork transition was scheduled for ~2 days 17 hours after Aug 17. Critical to review transition success, SSZ encoding performance at fork boundary, and any issues encountered.",
-      "related_eips": [],
-      "source": "devnet_update"
-    },
-    {
-      "topic": "Payload-flooding attack retest on devnet-8",
-      "priority": "medium",
-      "rationale": "Toni Wahrstätter was tasked with rerunning the 9.5 MB payload flooding attack on devnet-8 after Lighthouse's duplicate envelope fix. Status update needed to confirm mitigation effectiveness.",
-      "related_eips": [],
-      "source": "open_action_item"
-    },
-    {
-      "topic": "Circuit breaker implementation status across CL clients",
-      "priority": "medium",
-      "rationale": "Teku implemented circuit breaker for devnet-8, Nimbus is porting Fusaka design, but Lighthouse status was unknown as of ACDT #91. Need comprehensive status update before testnet launch.",
+      "rationale": "Thursday deadline (ACDE week, ~3 days ago) set for all CL clients to merge trunk branches. Prysm and Lighthouse were pending as of ACDT #93. Launch targets early this week.",
       "related_eips": [],
       "source": "ongoing_discussion"
     },
     {
-      "topic": "Devnet-8 (Platåberget) public testnet launch readiness",
+      "topic": "HiveChain blocker resolution for RPC compat testing",
+      "priority": "high",
+      "rationale": "PRs #1589 and #1585 block all RPC compat test writing for Glamsterdam. Lightclient assigned to unblock; status needed before devnet-9 chaos testing begins.",
+      "related_eips": [],
+      "source": "open_action_item"
+    },
+    {
+      "topic": "execution-specs release with fuzzing bug fixes",
+      "priority": "high",
+      "rationale": "Pawel's fuzzing surfaced bugs in blob access list and EL gas repricings; some fixes merged but release not yet cut. Remaining issues are partial blockers to continued fuzzing.",
+      "related_eips": [],
+      "source": "open_action_item"
+    },
+    {
+      "topic": "devnet-8 status update: Grandine attestation timing and head vote correctness",
       "priority": "medium",
-      "rationale": "Devnet-8 is the first public-facing testnet with finalized repricing. Review stability, client participation, and any blockers before broader testnet announcements.",
+      "rationale": "Head vote correctness degraded to 65–80% on devnet-8 with suspected Grandine attestation timing issue. No resolution mentioned; warrants status check.",
       "related_eips": [],
       "source": "devnet_update"
     },
     {
-      "topic": "Gas limit bump proposal resolution",
+      "topic": "Payload-flooding attack retest protocol",
       "priority": "medium",
-      "rationale": "ACDT #91 discussed bumping default gas limit to 200M at Glamsterdam fork but hit dual-flag complexity concerns. Barnabas was to draft alternative proposal; status needed.",
+      "rationale": "Toni's malicious-strategy tests ran on devnet-8 but unclear if full retest protocol (write-up, client notification for profiling) was followed as planned in ACDT #91.",
+      "related_eips": [],
+      "source": "open_action_item"
+    },
+    {
+      "topic": "EIP-7610 removal from Glamsterdam: ACDE decision outcome",
+      "priority": "medium",
+      "rationale": "ACDT #92 reached consensus to remove EIP-7610; jochem-brouwer assigned to raise at ACDE ~1.5 weeks ago (likely occurred Aug 21). Formal decision outcome needed.",
       "related_eips": [],
       "source": "deferred_decision"
     },
     {
-      "topic": "Attestation deadline 2s lowering - post-fork data collection plan",
+      "topic": "Fork transition testing plan for devnet-9",
       "priority": "low",
-      "rationale": "Decision made to keep 3s for Glamsterdam, defer 2s lowering post-fork via client release. EthPandaOps was to gather block-propagation/state-transition timing data post-fork; establish timeline.",
+      "rationale": "devnet-9 will test fork transition before chaos phase begins. Details of transition scenario (e.g., Gloas → next fork) not discussed in recent calls.",
       "related_eips": [],
-      "source": "deferred_decision"
+      "source": "devnet_update"
     },
     {
-      "topic": "Devnet-9 chaos testing scope and timeline",
+      "topic": "Circuit breaker config flags for Teku on devnet-9",
       "priority": "low",
-      "rationale": "ACDT #88 mentioned devnet-9 as non-finality/chaos-focused devnet within ~1 month of late July. Update needed on whether this is still planned post-devnet-8 stabilization.",
+      "rationale": "Teku circuit breaker implemented but values too permissive; Mehdi to share tighter config flags. Status update needed before devnet-9 chaos testing.",
       "related_eips": [],
       "source": "ongoing_discussion"
     }

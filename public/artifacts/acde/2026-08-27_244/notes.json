@@ -1,0 +1,59 @@
+{
+  "meeting": "ACDE #244 - 2026-08-27",
+  "sections": [
+    {
+      "heading": "Glamsterdam Devnet 8 and Devnet 9 Planning",
+      "summary": "Devnet 8 is stable; devnet 9 will be a non-finality devnet launching once all clients have trunk branches ready, running about 4 days.",
+      "timestamp": "00:10:15",
+      "body": "- Devnet 8 is running smoothly with ~10 blobs and 100-150 transactions per slot and close to 100% participation; occasional missing payloads were traced to outdated client releases\n- All clients need to merge fixes into trunk branches; once deployed on the devnet, fuzzing will continue\n- Devnet 9 will be a non-finality devnet, expected to run at most 4 days\n  - Plan: one day on Fulu with 100% participation through fork transition, then Toni can start attack testing, followed by non-finality period and recovery attempt\n  - Will include 20-25,000 builder deposits (some invalid) and ~3-4 million validators (~600-700 MB state)\n- Toni raised concern about needing a separate devnet for attack testing distinct from non-finality stress, but Barnabas indicated devnet 9 can accommodate both sequentially"
+    },
+    {
+      "heading": "Glamsterdam Testnet and Mainnet Timeline",
+      "summary": "September 28 proposed for Sepolia fork, October 26 for Hoodi, with ~30-day security and ecosystem windows targeting early December mainnet.",
+      "timestamp": "00:15:28",
+      "body": "- September 28th proposed for Sepolia Glamsterdam fork, October 26th for Hoodi; these dates were floated on ACDC last week and will be confirmed on next ACDC\n- Approximately 30-day security audit window after testnet forks, then 30-day window for L2s and DAOs to prepare\n- This brings the mainnet fork to approximately end of November / early December\n- Lido was mentioned as potentially wanting a few more days for Sepolia, but no Lido representative spoke on the call; topic can be raised at next ACDC\n- No opposition voiced to the proposed timeline"
+    },
+    {
+      "heading": "History Expiry Retention Window Alignment",
+      "summary": "All clients agree to align on the CL block retention window of 33,000 epochs; Kev will update EIP-4444 and follow up with Geth.",
+      "timestamp": "00:17:02",
+      "body": "- Kevaundray proposed updating EIP-4444 to document the retention window rather than creating a new EIP\n- Client readiness: Nimbus has implemented it; Nethermind has implemented it; Reth says next release; Ethrex has a PR up and is testing; Erigon will look into it; Geth has agreed but no implementation update given (no Geth representative on call)\n- Currently 2TB nodes are near capacity at 1.5-1.8 TB; launching Glamsterdam without expiring history could exhaust storage\n- Kev will create a PR to update EIP-4444 to specify 33,000 epochs and will follow up with Geth async"
+    },
+    {
+      "heading": "Deposit Contract PQ Readiness",
+      "summary": "Multiple strategies discussed for upgrading the deposit contract for post-quantum; no decision reached, with Ben Adams preferring to bundle changes with PBT migration.",
+      "timestamp": "00:20:23",
+      "body": "- Kevaundray outlined strategies: deploy a new deposit contract, modify the old one via irregular state transition, use a precompile, or a deposit opcode\n- lightclient expressed light preference for an irregular state transition\n- Ben Adams opposed setting a precedent of modifying deployed contracts, but would accept it if bundled with a massive state reorganization like the binary tree (PBT) migration, since that is already an extraordinary irregular state transition\n- Discussion in chat about whether validators using BLS keys would need to exit/re-enter or could be migrated at fork time\n  - Two-fork approach suggested: first deploy new contract supporting both BLS and PQ, give ecosystem time to switch, then disable BLS at PQ fork\n  - potuz argued it's acceptable to let users lose money if the soak period is months/years, no need for irregular state transition\n- No concrete decision reached; Kev to continue async discussions"
+    },
+    {
+      "heading": "eth_simulateV1 Specification Gaps",
+      "summary": "eth_simulateV1 spec is not updated for simulated blocks, causing client disagreements; Chase asked clients to review and comment async.",
+      "timestamp": "00:25:22",
+      "body": "- Chase Wright reported that eth_simulate has not been updated to specify behavior for simulated blocks\n- All clients currently disagree on what to include in simulated block responses\n- Issue linked: [eth_simulateV1 issues](https://github.com/ethereum/execution-apis/issues/868)\n- Follow-up will happen asynchronously; clients asked to review and comment on the issue"
+    },
+    {
+      "heading": "EIP-8037 Self-Destruct Gas Refill Modification",
+      "summary": "Request to restore self-destruct gas refill in EIP-8037 was declined for Glamsterdam due to late timing; ephemeral contract solution deferred to Hegota.",
+      "timestamp": "00:26:34",
+      "body": "- Milos Costantini raised [EIP-8037 PR](https://github.com/ethereum/EIPs/pull/12249) requesting restoration of gas refill for self-destruct, arguing ephemeral contracts (used for intents, routing, bridging) would see ~7-10x gas cost increase without it\n- Maria Silva (8037 author) explained the refill was removed for simplicity in testing, reduced spec complexity, and alignment with the direction of deprecating self-destruct\n  - Noted current usage is ~1,500 accounts/day created and self-destructed in same transaction, accounting for ~62 MB state/year\n  - Stressed that while gas cost rises in relative terms, base fee decrease from gas limit increase means end-user fees won't rise proportionally\n- Milos argued this is an emerging paradigm for signerless addresses and intent protocols, and the overhead of ~200,000 gas per transaction is significant\n- Consensus: too late to change Glamsterdam spec; requires spec changes, client code changes, and additional testing\n- Decision: TCREATE opcode (EIP-8360) kept as a PFI placeholder for a Hegota solution; Milos, Helcomine (ABC), and 8037 authors urged to collaborate on a solution within the next 2-4 weeks\n- Ansgar warned that deferring to Hegota doesn't mean waiting months — EIP champions must advocate within the Hegota scoping window or the EIP won't be included\n- Danno Ferrin noted SELFDESTRUCT was deprecated in Shanghai (EIP-6049) almost 4 years ago and new uses should not be accommodated"
+    },
+    {
+      "heading": "Hegota Scoping Process and PFI Decisions",
+      "summary": "Client preferences due by September 9; EIP-7609 and EIP-8058 dropped from PFI; EIP-8360 (TCREATE) retained as placeholder.",
+      "timestamp": "00:38:35",
+      "body": "- EL client teams asked to submit Hegota non-headliner preferences to facilitators by September 9th (24 hours before next ACDE on September 10th)\n- EIP champions must attend the next 3-4 ACDE calls (Sep 10, 24, Oct 8, 22) for Hegota scoping; absence may result in EIP rejection\n- [EIP-7609](https://eips.ethereum.org/EIPS/eip-7609) (decrease base cost of TLOAD/TSTORE): no one spoke for it; dropped from PFI\n- [EIP-8058](https://eips.ethereum.org/EIPS/eip-8058) (contract bytecode deduplication discount): Ben Adams noted this is superseded by SETCODEFROM which achieves the same goal more generally; dropped from PFI\n- [EIP-8360](https://github.com/ethereum/EIPs/pull/12073) (TCREATE opcode): retained as PFI placeholder for the ephemeral contract / self-destruct gas refill problem discussed earlier\n- Pooja Ranjan raised open PRs for Glamsterdam and Hegota Meta EIPs (7773 and 8081) needing author approvals; urged Meta EIP authors to review and approve or comment on pending PRs to avoid CI conflicts and keep upgrade information current"
+    },
+    {
+      "heading": "EIP-8304 Trustless Log and Transaction Index Demo",
+      "summary": "Zsolt demonstrated a working REST API with proofs for EIP-8304's trustless log index, urging clients to evaluate it for Hegota inclusion.",
+      "timestamp": "00:42:20",
+      "body": "- Zsolt Felföldi presented progress on [EIP-8304](https://eips.ethereum.org/EIPS/eip-8304), a trustless log and transaction index, with a live demo against a mainnet node\n- Design is significantly simpler and more efficient than the previous EIP-7745 approach\n- API is REST-based (similar to Beacon API format) with JSON and binary encoding, supporting:\n  - Provable canonical block hashes from entire history\n  - Transaction hash inclusion/exclusion proofs\n  - Efficient log queries with AND/OR search patterns and cross-log pattern matching within transactions\n- Proofs are anchored in state via an index contract storing root hashes of binary tree index tables\n  - Simple queries (e.g., first occurrence of an address) produce proofs under 100 KB\n  - Query pagination and server-side limits protect against overload\n- Demo showed inclusion and exclusion proofs for the wrapped ETH contract address using a dummy index contract on mainnet\n- Zsolt argued this infrastructure could enable contracts to use logs more for state representation and improve cross-chain communication\n- Requested clients evaluate and rank it for Hegota; proof size and speed results described as better than initially expected"
+    },
+    {
+      "heading": "EIP-8141 Frames SFI Decision and 8130 Convergence",
+      "summary": "EIP-8141 (Frames) moved to SFI with broad client support; spec changes remain expected as collaboration with EIP-8130 (Base/L2s) continues weekly.",
+      "timestamp": "01:02:06",
+      "body": "- Derek Chiang (EIP-8141 co-author) provided update: 8130 and 8141 authors established a communication channel and spent significant time exploring convergence\n  - Best outcome: shared transaction type that is flexible like frames but supports opinionated systems like 8130\n  - Fallback outcome: two transaction types but same account at same address works across L1 and L2 chains\n  - Collaboration timeboxed to 2-4 weeks to avoid blocking either L1 or L2 timelines\n- Base timeline: 8130 scheduled for end of September launch, but can pull it from their fork late if needed\n- Vitalik outlined the design space dimensions where convergence is possible:\n  - Keystore in account header vs. contract (header is more efficient)\n  - Splitting authenticating code from non-authenticating code (core 8130 feature, could be added to 8141)\n  - Transaction type unification (one master type defining actions and dependencies)\n  - Precompiles vs. opcodes (precompiles enable cross-chain compatibility via contract wrapping)\n  - Suggested SFI-ing 8141 and continuing refinements afterward\n- On post-quantum readiness: Vitalik explained 8141 naturally supports Sphinx Minus (hash-based, no new precompiles needed) and a future Stark mempool aggregation approach for efficient PQ signature verification\n- Ethrex (Tomás Arjovsky) voiced concern about private side-channel discussions being presented as official outcomes; stated ethrex supports 8141 because it provides building blocks without enshrining a particular approach, unlike the more opinionated 8130\n- Nethermind (Stavros) also supported moving 8141 to SFI, arguing it provides certainty for both L1 and L2 teams\n- Besu confirmed support for 8141\n- Erigon said they haven't looked at the EIPs in detail and had no view\n- Decision: EIP-8141 (Frames) moved to SFI\n  - Ansgar's caveat accepted: SFI status must not be used as argument against making radical spec changes going forward\n  - AA breakout calls will move to weekly cadence (Tuesdays 14:00 UTC) for the next month to month and a half\n- Hegota scoping for AA headliner status targeted for completion by DEVCON (November 3rd)\n- Multiple chat participants urged all AA-related discussion to happen on ETH R&D rather than private channels"
+    }
+  ]
+}

@@ -46,7 +46,7 @@ export const FORK_SPEC_LINES: Record<string, number> = {
  * anything above; `timeline.test.ts` recomputes it too.
  */
 export const NEXT_FORK_SPEC_LINES: Record<string, number> = {
-  Glamsterdam: 4132,
+  Glamsterdam: 4135,
 };
 
 /**

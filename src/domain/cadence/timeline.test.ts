@@ -63,7 +63,7 @@ const SPEC_LINES: Record<string, number> = {
   Pectra: 3354,
   Fusaka: 1943,
 };
-const NEXT_SPEC_LINES: Record<string, number> = { Glamsterdam: 4132 };
+const NEXT_SPEC_LINES: Record<string, number> = { Glamsterdam: 4135 };
 
 const timelineAt = (now: Date, upgrades: NetworkUpgrade[] = UPGRADES) =>
   buildCadenceTimeline(now, upgrades, EIP_COUNTS, NEXT_EIP_COUNT);
@@ -309,8 +309,8 @@ describe('spec line tables', () => {
 
   it('projects the next fork onto both spec measures', () => {
     const stats = statsFor(timelineAt(NOW)!);
-    expect(stats.specProjection).toMatchObject({ name: 'Glamsterdam', lines: 4132 });
-    expect(stats.specProjection!.linesPerMonth).toBeCloseTo(359.3, 1);
+    expect(stats.specProjection).toMatchObject({ name: 'Glamsterdam', lines: 4135 });
+    expect(stats.specProjection!.linesPerMonth).toBeCloseTo(359.6, 1);
     // It outsizes every shipped fork on both, so the page must not let it take
     // the highlight that marks the leading *shipped* fork.
     expect(stats.spec.every((s) => s.lines < stats.specProjection!.lines)).toBe(true);

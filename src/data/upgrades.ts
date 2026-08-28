@@ -120,7 +120,7 @@ export const networkUpgrades: NetworkUpgrade[] = [
     tagline: 'Devnet series complete, now testing on public testnets',
     status: 'Upcoming',
     activationDate: '2026',
-    projectedActivation: '2026-11-18',
+    projectedActivation: '2026-12-02',
     disabled: false,
     metaEipLink: 'https://ethereum-magicians.org/t/eip-7773-glamsterdam-network-upgrade-meta-thread/21195',
     clientTeamPerspectives: [
@@ -200,7 +200,7 @@ export const networkUpgrades: NetworkUpgrade[] = [
     tagline: 'Headliner selection concluded: FOCIL SFI\'d, Frame Tx CFI\'d',
     status: 'Planning',
     activationDate: '2027',
-    projectedActivation: '2027-06-09',
+    projectedActivation: '2027-06-16',
     disabled: false,
     macroPhaseOverride: 'scoping',
     metaEipLink: 'https://ethereum-magicians.org/t/eip-8081-hegota-network-upgrade-meta-thread/26876'

@@ -264,13 +264,15 @@ const RAW_GLAMSTERDAM_PROGRESS: ForkProgress = {
       status: 'in-progress',
       actualStartDate: 'Aug 13, 2026',
       projectedDate: 'Q3 2026',
-      progressNotes: 'Platåberget is live; Sepolia and Hoodi to follow',
+      progressNotes: 'Platåberget is live; Sepolia and Hoodi fork slots proposed, not yet agreed',
       // Holešky is deprecated, so Glamsterdam gets a purpose-built public testnet
       // (glamsterdam-devnet-8) in its place.
       testnets: [
         { name: 'Platåberget', status: 'completed', date: 'Aug 13, 2026' },
-        { name: 'Sepolia', status: 'upcoming', projectedDate: 'Q3 2026' },
-        { name: 'Hoodi', status: 'upcoming', projectedDate: 'Q3 2026' }
+        // Fork slots put forward on ACD: Sepolia epoch 351232 (ts 1790606688),
+        // Hoodi epoch 132352 (ts 1793036568). Not yet agreed.
+        { name: 'Sepolia', status: 'upcoming', proposedDate: 'Sep 28, 2026' },
+        { name: 'Hoodi', status: 'upcoming', proposedDate: 'Oct 26, 2026' }
       ]
     },
     {
@@ -317,7 +319,11 @@ const RAW_HEGOTA_PROGRESS: ForkProgress = {
         },
         {
           name: 'CFI Deadline',
-          status: 'upcoming'
+          status: 'upcoming',
+          // No specific date was put forward — the stated goal is to CFI before
+          // Devcon (first week of November), and this is the last ACDC/ACDE call
+          // that fits.
+          proposedDate: 'Oct 29, 2026'
         }
       ]
     },

@@ -149,22 +149,29 @@ const SchedulePage: React.FC = () => {
     // deprecated Holešky. It is already live, so it carries its actual date from
     // GLAMSTERDAM_PROGRESS rather than a projection, and Sepolia's gap is measured
     // against it.
-    const plataberget = GLAMSTERDAM_PROGRESS.phases
+    const staticTestnets = GLAMSTERDAM_PROGRESS.phases
       .find(phase => phase.phaseId === 'public-testnets')
-      ?.testnets?.find(testnet => testnet.name === 'Platåberget');
+      ?.testnets;
+    const plataberget = staticTestnets?.find(testnet => testnet.name === 'Platåberget');
 
     return {
       ...withStatic,
       phases: withStatic.phases.map(phase => {
         if (phase.phaseId !== 'public-testnets' || !phase.testnets || !plataberget) return phase;
-        const sepoliaIdx = phase.testnets.findIndex(t => t.name === 'Sepolia');
-        const insertAt = sepoliaIdx === -1 ? phase.testnets.length : sepoliaIdx;
+        // A proposed fork slot beats the backwards-from-mainnet projection, but
+        // stays overridable in the sandbox.
+        const withProposals = phase.testnets.map(testnet => {
+          const proposedDate = staticTestnets?.find(t => t.name === testnet.name)?.proposedDate;
+          return proposedDate ? { ...testnet, proposedDate } : testnet;
+        });
+        const sepoliaIdx = withProposals.findIndex(t => t.name === 'Sepolia');
+        const insertAt = sepoliaIdx === -1 ? withProposals.length : sepoliaIdx;
         return {
           ...phase,
           testnets: [
-            ...phase.testnets.slice(0, insertAt),
+            ...withProposals.slice(0, insertAt),
             plataberget,
-            ...phase.testnets.slice(insertAt),
+            ...withProposals.slice(insertAt),
           ],
         };
       }),
@@ -201,6 +208,15 @@ const SchedulePage: React.FC = () => {
                   ...substep,
                   status: staticSubstep.status,
                   projectedDate: staticSubstep.projectedDate
+                };
+              }
+              // A proposed date beats the generated projection, but stays
+              // overridable in the sandbox.
+              if (staticSubstep?.proposedDate) {
+                return {
+                  ...substep,
+                  status: staticSubstep.status,
+                  proposedDate: staticSubstep.proposedDate
                 };
               }
               return substep;
@@ -763,7 +779,7 @@ const SchedulePage: React.FC = () => {
                                     fork="hegota"
                                     phaseId={phase.id}
                                     itemName={substep.name}
-                                    calculatedDate={hegotaSubstep.projectedDate || ''}
+                                    calculatedDate={hegotaSubstep.proposedDate || hegotaSubstep.projectedDate || ''}
                                     isCompleted={hegotaSubstep.status === 'completed'}
                                     isEditable={hegotaSubstep.status !== 'completed'}
                                     lockedDates={lockedDates}
@@ -774,6 +790,7 @@ const SchedulePage: React.FC = () => {
                                     gapIsWarning={hegotaDuration?.isUnderExpected && hegotaDuration.days >= 0}
                                     gapType="variable"
                                     isSourceLocked={hegotaSubstep.status !== 'completed' && !!hegotaSubstep.date}
+                                    isProposed={hegotaSubstep.status !== 'completed' && !hegotaSubstep.date && !!hegotaSubstep.proposedDate}
                                   />
                                 ) : null}
                               </td>
@@ -956,7 +973,7 @@ const SchedulePage: React.FC = () => {
                                 glamTestnet.status === 'deprecated' ? (
                                   <div className="text-slate-400 dark:text-slate-400 text-sm italic">Deprecated</div>
                                 ) : (() => {
-                                  const glamTestnetDate = glamTestnet.date || glamTestnet.projectedDate || '';
+                                  const glamTestnetDate = glamTestnet.date || glamTestnet.proposedDate || glamTestnet.projectedDate || '';
                                   const effectiveGlamTestnetDate = getEffectiveDate('glamsterdam', 'public-testnets', testnetName, glamTestnetDate);
                                   const glamTestnetGap = calculateGap(effectiveGlamTestnetDate, 'glamsterdam');
                                   return (
@@ -975,6 +992,7 @@ const SchedulePage: React.FC = () => {
                                       gapIsWarning={minGap != null && glamTestnetGap.days != null && glamTestnetGap.days < minGap}
                                       gapTooltip={currentGapTooltip}
                                       gapType="fixed"
+                                      isProposed={!glamTestnet.date && !!glamTestnet.proposedDate}
                                     />
                                   );
                                 })()

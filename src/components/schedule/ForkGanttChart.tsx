@@ -103,7 +103,7 @@ const ForkGanttChart: React.FC<ForkGanttChartProps> = ({
         // Add substeps if they exist
         if (phase.substeps) {
           phase.substeps.forEach((substep) => {
-            const substepDate = parseShortDate(substep.date || substep.projectedDate || '');
+            const substepDate = parseShortDate(substep.date || substep.proposedDate || substep.projectedDate || '');
             if (!substepDate) return;
             milestoneDates.push(substepDate);
             milestoneItems.push({
@@ -140,7 +140,7 @@ const ForkGanttChart: React.FC<ForkGanttChartProps> = ({
         if (phase.testnets) {
           phase.testnets.forEach((testnet) => {
             if (testnet.status === 'deprecated') return;
-            const testnetDate = parseShortDate(testnet.date || testnet.projectedDate || '');
+            const testnetDate = parseShortDate(testnet.date || testnet.proposedDate || testnet.projectedDate || '');
             if (!testnetDate) return;
             milestoneDates.push(testnetDate);
             milestoneItems.push({

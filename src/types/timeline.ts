@@ -28,6 +28,11 @@ export interface TestnetDetail {
   status: 'completed' | 'in-progress' | 'upcoming' | 'deprecated';
   date?: string;
   projectedDate?: string;
+  /**
+   * A specific fork slot put forward on ACD but not yet agreed. Ranks between
+   * `projectedDate` (derived from a target mainnet date) and `date` (settled).
+   */
+  proposedDate?: string;
 }
 
 export interface SubstepDetail {
@@ -35,6 +40,8 @@ export interface SubstepDetail {
   status: 'completed' | 'in-progress' | 'upcoming';
   date?: string;
   projectedDate?: string;
+  /** Put forward on ACD but not yet agreed. See TestnetDetail.proposedDate. */
+  proposedDate?: string;
 }
 
 export interface ForkPhaseProgress {

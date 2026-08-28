@@ -19,6 +19,8 @@ export interface EditableDateCellProps {
   gapTooltip?: string;
   gapType?: 'fixed' | 'variable';
   isSourceLocked?: boolean;
+  /** Date was put forward on ACD but not yet agreed. */
+  isProposed?: boolean;
 }
 
 const EditableDateCell: React.FC<EditableDateCellProps> = ({
@@ -37,6 +39,7 @@ const EditableDateCell: React.FC<EditableDateCellProps> = ({
   gapTooltip,
   gapType,
   isSourceLocked,
+  isProposed,
 }) => {
   const [isEditing, setIsEditing] = useState(false);
   const [editValue, setEditValue] = useState('');
@@ -222,6 +225,14 @@ const EditableDateCell: React.FC<EditableDateCellProps> = ({
         <Tooltip text="This date is in the past" position="top">
           <div className="inline-flex items-center justify-center w-4 py-0.5 rounded text-xs font-medium bg-amber-100 text-amber-700 dark:bg-amber-900/20 dark:text-amber-400">
             ⚠
+          </div>
+        </Tooltip>
+      ) : isProposed && displayDate === calculatedDate ? (
+        /* A specific date came out of ACD discussion. Firmer than a projection
+           off the mainnet estimate, but not agreed, so no 🔒. */
+        <Tooltip text="Proposed, not yet agreed." position="top">
+          <div className="inline-flex items-center justify-center w-4 py-0.5 rounded text-xs font-medium bg-blue-100 text-blue-700 dark:bg-blue-900/20 dark:text-blue-300">
+            ~
           </div>
         </Tooltip>
       ) : (

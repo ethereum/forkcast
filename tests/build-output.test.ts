@@ -338,6 +338,73 @@ describe('build output', () => {
     });
   });
 
+  describe('rss feed', () => {
+    const read = () => fs.readFileSync(path.join(DIST, 'feed.xml'), 'utf-8');
+
+    it('feed.xml is emitted with items', () => {
+      const xml = read();
+      expect(xml.startsWith('<?xml version="1.0" encoding="UTF-8"?>')).toBe(true);
+      expect(xml).toContain('<atom:link href="https://forkcast.org/feed.xml"');
+      expect([...xml.matchAll(/<item>/g)].length).toBeGreaterThan(0);
+    });
+
+    it('carries both enabled item types', () => {
+      // Each source is wired separately, so one can go silent while the feed
+      // still validates and looks healthy.
+      const guids = [...read().matchAll(/<guid isPermaLink="false">([^<]+)<\/guid>/g)].map(
+        (m) => m[1],
+      );
+      expect(guids.some((g) => g.startsWith('eip-'))).toBe(true);
+      expect(guids.some((g) => g.startsWith('event-'))).toBe(true);
+    });
+
+    it('every item has a unique guid', () => {
+      // Readers dedupe on guid. A collision hides an item; a guid that drifts
+      // between builds re-notifies every subscriber about something they read.
+      const guids = [...read().matchAll(/<guid isPermaLink="false">([^<]+)<\/guid>/g)].map(
+        (m) => m[1],
+      );
+      expect(guids.length).toBeGreaterThan(0);
+      expect(new Set(guids).size).toBe(guids.length);
+    });
+
+    it('every item has a parseable RFC 822 pubDate', () => {
+      const xml = read();
+      const dates = [...xml.matchAll(/<pubDate>([^<]+)<\/pubDate>/g)].map((m) => m[1]);
+      expect(dates.length).toBe([...xml.matchAll(/<item>/g)].length);
+      for (const date of dates) {
+        expect(Number.isNaN(new Date(date).getTime()), `unparseable ${date}`).toBe(false);
+      }
+    });
+
+    it('links to the canonical site rather than a relative or preview URL', () => {
+      const links = [...read().matchAll(/<link>([^<]+)<\/link>/g)].map((m) => m[1]);
+      for (const link of links) {
+        expect(link.startsWith('https://forkcast.org'), `bad link ${link}`).toBe(true);
+      }
+    });
+
+    it('every item links to a page that was actually built', () => {
+      // Network pages come from the Cartographoor snapshot, so a devnet that
+      // retires takes its route with it. A feed item is permanent once a reader
+      // has it, so a dead link here can never be recalled.
+      const links = [...read().matchAll(/<link>https:\/\/forkcast\.org([^<]*)<\/link>/g)].map(
+        (m) => m[1],
+      );
+      const missing = [...new Set(links)].filter((route) => {
+        const rel = route.replace(/^\/|\/$/g, '');
+        return !(
+          fs.existsSync(path.join(DIST, rel, 'index.html')) || fs.existsSync(path.join(DIST, rel))
+        );
+      });
+      expect(missing, `feed links with no page: ${missing.join(', ')}`).toEqual([]);
+    });
+
+    it('is discoverable from the page shell', () => {
+      expect(readHtml('index.html')).toContain('type="application/rss+xml"');
+    });
+  });
+
   describe('page title uniqueness', () => {
     it('not all pages share the same <title>', () => {
       const titles = new Set<string>();

@@ -1,18 +1,14 @@
 import { describe, expect, it } from 'vitest';
-import type { Call } from '../../data/calls';
+import type { TimelineEvent } from '../../data/events';
 import type { FeedConfig } from '../../data/feed';
-import type { NetworkUpgrade } from '../../data/upgrades';
 import type { EipStageChange } from '../eips/stageChanges';
 import {
   buildFeedItems,
   buildRssXml,
-  callDecisionToFeedItem,
-  callSummaryToFeedItem,
   escapeXml,
   stageChangeToFeedItem,
+  timelineEventToFeedItem,
   toRssDate,
-  type CallDecisionInput,
-  type CallSummaryInput,
 } from './feed';
 
 const makeStageChange = (overrides: Partial<EipStageChange> = {}): EipStageChange => ({
@@ -28,46 +24,17 @@ const makeStageChange = (overrides: Partial<EipStageChange> = {}): EipStageChang
   ...overrides,
 });
 
-const makeCall = (overrides: Partial<Call> = {}): Call => ({
-  type: 'acdc',
-  date: '2026-01-08',
-  number: '172',
-  path: 'acdc/172',
-  ...overrides,
-});
-
-const makeCallSummary = (overrides: Partial<CallSummaryInput> = {}): CallSummaryInput => ({
-  call: makeCall(),
-  displayName: 'AllCoreDevs - Consensus',
-  tldrMeeting: 'ACDC #172 - January 8, 2026',
-  highlights: ['BPO2 live Jan 7th', 'Glamsterdam scoping closed'],
-  ...overrides,
-});
-
-const makeCallDecision = (overrides: Partial<CallDecisionInput> = {}): CallDecisionInput => ({
-  call: makeCall(),
-  displayName: 'AllCoreDevs - Consensus',
-  text: "EIP-8359 (Beacon Block Reporting) PFI'd for Hegota",
-  index: 4,
-  ...overrides,
-});
-
-const makeUpgrade = (overrides: Partial<NetworkUpgrade> = {}): NetworkUpgrade => ({
-  id: 'glamsterdam',
-  path: '/upgrade/glamsterdam',
-  name: 'Glamsterdam Upgrade',
-  description: 'A network upgrade.',
-  tagline: 'ePBS and more.',
-  status: 'Upcoming',
-  disabled: false,
+const makeEvent = (overrides: Partial<TimelineEvent> = {}): TimelineEvent => ({
+  type: 'event',
+  date: '2025-12-03',
+  title: 'Fusaka Live on Mainnet',
+  category: 'mainnet',
   ...overrides,
 });
 
 const config = (overrides: Partial<FeedConfig> = {}): FeedConfig => ({
-  eipStageChanges: { enabled: true, count: 20 },
-  callSummaries: { enabled: true, reviewedCalls: ['acdc/172'] },
-  callDecisions: { enabled: true },
-  upgradeStatusChanges: { enabled: true, entries: [] },
+  eipStageChanges: { enabled: true },
+  networkActivations: { enabled: true },
   ...overrides,
 });
 
@@ -83,6 +50,17 @@ describe('stageChangeToFeedItem', () => {
     );
   });
 
+  it('titles Networking and Informational as forms of scheduling, without changing the guid', () => {
+    const item = stageChangeToFeedItem(
+      makeStageChange({ id: 8261, title: 'Gas Limit Schedule', currentStage: 'Informational' }),
+      'https://forkcast.org',
+    );
+    expect(item.title).toBe(
+      'EIP-8261 (Gas Limit Schedule) is now Scheduled (Informational) for Glamsterdam',
+    );
+    expect(item.guid).toBe('eip-8261-informational-2026-01-08');
+  });
+
   it('falls back to the EIP status when no current stage exists', () => {
     const item = stageChangeToFeedItem(
       makeStageChange({ currentStage: null, lastStageChangeFork: null }),
@@ -93,116 +71,90 @@ describe('stageChangeToFeedItem', () => {
   });
 });
 
-describe('callSummaryToFeedItem', () => {
-  it('uses the tldr meeting label and joins highlights into the description', () => {
-    const item = callSummaryToFeedItem(makeCallSummary(), 'https://forkcast.org');
-    expect(item.title).toBe('Call summary: ACDC #172 - January 8, 2026');
-    expect(item.guid).toBe('call-acdc-172-2026-01-08');
-    expect(item.description).toBe('BPO2 live Jan 7th. Glamsterdam scoping closed');
-  });
-
-  it('falls back to display name and omits the description without highlights', () => {
-    const item = callSummaryToFeedItem(
-      makeCallSummary({ tldrMeeting: undefined, highlights: [] }),
-      'https://forkcast.org',
-    );
-    expect(item.title).toBe('Call summary: AllCoreDevs - Consensus #172 - 2026-01-08');
+describe('timelineEventToFeedItem', () => {
+  it('publishes the event title verbatim, linked to the network it happened on', () => {
+    const item = timelineEventToFeedItem(makeEvent({ networkId: 'mainnet' }), 'https://forkcast.org');
+    expect(item.title).toBe('Fusaka Live on Mainnet');
+    expect(item.link).toBe('https://forkcast.org/networks/mainnet');
+    expect(item.guid).toBe('event-fusaka-live-on-mainnet-2025-12-03');
     expect(item.description).toBeUndefined();
   });
-});
 
-describe('callDecisionToFeedItem', () => {
-  it('titles the item with the decision text and attributes the call in the description', () => {
-    const item = callDecisionToFeedItem(makeCallDecision(), 'https://forkcast.org');
-    expect(item.title).toBe("Decision: EIP-8359 (Beacon Block Reporting) PFI'd for Hegota");
-    expect(item.link).toBe('https://forkcast.org/calls/acdc/172');
-    // The entry's file position disambiguates decisions sharing a timestamp.
-    expect(item.guid).toBe('decision-acdc-172-2026-01-08-4');
-    expect(item.description).toBe('From AllCoreDevs - Consensus #172 on 2026-01-08.');
-  });
-
-  it('appends the context field to the description when present', () => {
-    const item = callDecisionToFeedItem(
-      makeCallDecision({ context: 'Community consensus is a prerequisite.' }),
+  it('falls back to the network index for a network with no page', () => {
+    // Holešky and the Fusaka devnets are gone from the route set.
+    const item = timelineEventToFeedItem(
+      makeEvent({ title: 'Fusaka Live on Holešky Testnet', networkId: undefined }),
       'https://forkcast.org',
     );
-    expect(item.description).toBe(
-      'From AllCoreDevs - Consensus #172 on 2026-01-08. Community consensus is a prerequisite.',
+    expect(item.link).toBe('https://forkcast.org/networks');
+  });
+
+  it('slugifies a guid out of titles carrying punctuation and emoji', () => {
+    const item = timelineEventToFeedItem(
+      makeEvent({ title: 'Ethereum Turns 10! 🎉', date: '2025-07-30', category: 'milestone' }),
+      'https://forkcast.org',
     );
+    expect(item.guid).toBe('event-ethereum-turns-10-2025-07-30');
   });
 });
 
 describe('buildFeedItems', () => {
   const sources = {
     stageChanges: [makeStageChange()],
-    callSummaries: [makeCallSummary()],
-    callDecisions: [makeCallDecision()],
-    upgrades: [makeUpgrade()],
+    events: [makeEvent()],
   };
 
   it('emits nothing for a type whose switch is off', () => {
     const items = buildFeedItems(
-      config({
-        eipStageChanges: { enabled: false, count: 20 },
-        callSummaries: { enabled: false, reviewedCalls: ['acdc/172'] },
-        callDecisions: { enabled: false },
-        upgradeStatusChanges: { enabled: false, entries: [] },
-      }),
+      config({ eipStageChanges: { enabled: false }, networkActivations: { enabled: false } }),
       sources,
       'https://forkcast.org',
     );
     expect(items).toEqual([]);
   });
 
-  it('only emits call summaries whose path a human has marked reviewed', () => {
-    const unreviewed = makeCallSummary({ call: makeCall({ number: '173', path: 'acdc/173', date: '2026-01-22' }) });
+  it('emits only stage changes when network activations are off', () => {
     const items = buildFeedItems(
-      config({
-        eipStageChanges: { enabled: false, count: 20 },
-        callSummaries: { enabled: true, reviewedCalls: ['acdc/172'] },
-        callDecisions: { enabled: false },
-      }),
-      { ...sources, callSummaries: [makeCallSummary(), unreviewed] },
-      'https://forkcast.org',
-    );
-    expect(items.map((item) => item.guid)).toEqual(['call-acdc-172-2026-01-08']);
-  });
-
-  it('gates call decisions on the same reviewedCalls list as summaries', () => {
-    const unreviewed = makeCallDecision({
-      call: makeCall({ number: '173', path: 'acdc/173', date: '2026-01-22' }),
-      index: 0,
-    });
-    const items = buildFeedItems(
-      config({
-        eipStageChanges: { enabled: false, count: 20 },
-        callSummaries: { enabled: false, reviewedCalls: ['acdc/172'] },
-      }),
-      { ...sources, callDecisions: [makeCallDecision(), unreviewed] },
-      'https://forkcast.org',
-    );
-    expect(items.map((item) => item.guid)).toEqual(['decision-acdc-172-2026-01-08-4']);
-  });
-
-  it('builds upgrade items from hand-edited entries and sorts everything newest first', () => {
-    const items = buildFeedItems(
-      config({
-        upgradeStatusChanges: {
-          enabled: true,
-          entries: [{ upgradeId: 'glamsterdam', status: 'Upcoming', date: '2026-02-01' }],
-        },
-      }),
+      config({ networkActivations: { enabled: false } }),
       sources,
       'https://forkcast.org',
     );
     expect(items.map((item) => item.guid)).toEqual([
-      'upgrade-glamsterdam-upcoming-2026-02-01',
-      'call-acdc-172-2026-01-08',
-      'decision-acdc-172-2026-01-08-4',
       'eip-7732-scheduled-for-inclusion-2026-01-08',
     ]);
-    expect(items[0].title).toBe('Glamsterdam Upgrade is now Upcoming');
-    expect(items[0].link).toBe('https://forkcast.org/upgrade/glamsterdam');
+  });
+
+  it('skips milestones and announcements, which are not about a network', () => {
+    const items = buildFeedItems(
+      config(),
+      {
+        stageChanges: [],
+        events: [
+          makeEvent(),
+          makeEvent({ title: 'Ethereum Turns 10! 🎉', date: '2025-07-30', category: 'milestone' }),
+          makeEvent({ title: 'Something was announced', date: '2025-07-31', category: 'announcement' }),
+        ],
+      },
+      'https://forkcast.org',
+    );
+    expect(items.map((item) => item.title)).toEqual(['Fusaka Live on Mainnet']);
+  });
+
+  it('interleaves both types newest first', () => {
+    const items = buildFeedItems(
+      config(),
+      {
+        stageChanges: [makeStageChange(), makeStageChange({ id: 7702, lastStageChange: '2025-11-01' })],
+        events: [makeEvent(), makeEvent({ title: 'Fusaka Live on Hoodi Testnet', date: '2026-03-01' })],
+      },
+      'https://forkcast.org',
+    );
+    expect(items.map((item) => item.date)).toEqual([
+      '2026-03-01',
+      '2026-01-08',
+      '2025-12-03',
+      '2025-11-01',
+    ]);
   });
 });
 

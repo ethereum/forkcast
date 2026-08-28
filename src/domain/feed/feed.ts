@@ -1,6 +1,5 @@
-import type { Call } from '../../data/calls';
-import type { FeedConfig, UpgradeStatusFeedEntry } from '../../data/feed';
-import type { NetworkUpgrade } from '../../data/upgrades';
+import type { TimelineEvent } from '../../data/events';
+import type { FeedConfig } from '../../data/feed';
 import type { EipStageChange } from '../eips/stageChanges';
 
 export interface FeedItem {
@@ -14,41 +13,23 @@ export interface FeedItem {
   description?: string;
 }
 
-export interface CallSummaryInput {
-  call: Call;
-  displayName: string;
-  /** The `meeting` field of the call's tldr.json, when present. */
-  tldrMeeting?: string;
-  /** Flattened highlight strings from the call's tldr.json. */
-  highlights?: string[];
-}
-
-export interface CallDecisionInput {
-  call: Call;
-  displayName: string;
-  /** `original_text` of one entry in the call's key_decisions.json. */
-  text: string;
-  /**
-   * Position of the entry in key_decisions.json. Part of the GUID (timestamps
-   * are not unique within a call), so it relies on the file being written once
-   * by the bot and never reordered.
-   */
-  index: number;
-  /** The entry's optional `context` field. */
-  context?: string;
-}
-
 const slugify = (value: string): string =>
   value
     .toLowerCase()
     .replace(/[^a-z0-9]+/g, '-')
     .replace(/^-|-$/g, '');
 
+/** Title-only wording; the GUID uses the raw stage, so this is safe to reword. */
+const STAGE_TITLES: Record<string, string> = {
+  Networking: 'Scheduled (Networking)',
+  Informational: 'Scheduled (Informational)',
+};
+
 export function stageChangeToFeedItem(change: EipStageChange, site: string): FeedItem {
   const stage = change.currentStage ?? change.status;
   const fork = change.lastStageChangeFork ? ` for ${change.lastStageChangeFork}` : '';
   return {
-    title: `${change.prefix}-${change.id} (${change.title}) is now ${stage}${fork}`,
+    title: `${change.prefix}-${change.id} (${change.title}) is now ${STAGE_TITLES[stage] ?? stage}${fork}`,
     link: `${site}${change.url}`,
     guid: `${change.prefix.toLowerCase()}-${change.id}-${slugify(stage)}-${change.lastStageChange}`,
     date: change.lastStageChange,
@@ -56,92 +37,53 @@ export function stageChangeToFeedItem(change: EipStageChange, site: string): Fee
   };
 }
 
-export function callSummaryToFeedItem(input: CallSummaryInput, site: string): FeedItem {
-  const { call } = input;
-  const label = input.tldrMeeting ?? `${input.displayName} #${call.number} - ${call.date}`;
-  const highlights = input.highlights ?? [];
+/**
+ * The event titles are already self-describing ("Fusaka Live on Mainnet"), and
+ * `TimelineEvent` carries no prose to use as a description. Events on a network
+ * that still has a page link to it; the rest fall back to the network index.
+ */
+export function timelineEventToFeedItem(event: TimelineEvent, site: string): FeedItem {
   return {
-    title: `Call summary: ${label}`,
-    link: `${site}/calls/${call.path}`,
-    guid: `call-${slugify(call.path)}-${call.date}`,
-    date: call.date,
-    description: highlights.length > 0 ? highlights.join('. ') : undefined,
-  };
-}
-
-export function callDecisionToFeedItem(input: CallDecisionInput, site: string): FeedItem {
-  const { call } = input;
-  const source = `From ${input.displayName} #${call.number} on ${call.date}.`;
-  return {
-    title: `Decision: ${input.text}`,
-    link: `${site}/calls/${call.path}`,
-    guid: `decision-${slugify(call.path)}-${call.date}-${input.index}`,
-    date: call.date,
-    description: input.context ? `${source} ${input.context}` : source,
-  };
-}
-
-export function upgradeStatusToFeedItem(
-  entry: UpgradeStatusFeedEntry,
-  upgrade: NetworkUpgrade | undefined,
-  site: string,
-): FeedItem {
-  return {
-    title: `${upgrade?.name ?? entry.upgradeId} is now ${entry.status}`,
-    link: `${site}${upgrade?.path ?? '/upgrades'}`,
-    guid: `upgrade-${slugify(entry.upgradeId)}-${slugify(entry.status)}-${entry.date}`,
-    date: entry.date,
-    description: upgrade?.tagline,
+    title: event.title,
+    link: `${site}/networks${event.networkId ? `/${event.networkId}` : ''}`,
+    guid: `event-${slugify(event.title)}-${event.date}`,
+    date: event.date,
   };
 }
 
 /**
- * Assembles feed items from the four content types, honoring the hand-edited
- * switches in src/data/feed.ts. Call summaries and call decisions additionally
- * require the call's path to be listed in reviewedCalls.
+ * `timelineEvents` also carries community milestones and announcements, which
+ * are neither about a network nor something a reader can follow a link to.
+ */
+const ACTIVATION_CATEGORIES = new Set<TimelineEvent['category']>([
+  'mainnet',
+  'testnet',
+  'devnet',
+]);
+
+/**
+ * Assembles feed items from the enabled content types, honoring the hand-edited
+ * switches in src/data/feed.ts.
  */
 export function buildFeedItems(
   config: FeedConfig,
   sources: {
     stageChanges: EipStageChange[];
-    callSummaries: CallSummaryInput[];
-    callDecisions: CallDecisionInput[];
-    upgrades: NetworkUpgrade[];
+    events: TimelineEvent[];
   },
   site: string,
 ): FeedItem[] {
   const items: FeedItem[] = [];
-  const reviewed = new Set(config.callSummaries.reviewedCalls);
 
   if (config.eipStageChanges.enabled) {
     items.push(...sources.stageChanges.map((change) => stageChangeToFeedItem(change, site)));
   }
 
-  if (config.callSummaries.enabled) {
+  if (config.networkActivations.enabled) {
     items.push(
-      ...sources.callSummaries
-        .filter((input) => reviewed.has(input.call.path))
-        .map((input) => callSummaryToFeedItem(input, site)),
-    );
-  }
-
-  if (config.callDecisions.enabled) {
-    items.push(
-      ...sources.callDecisions
-        .filter((input) => reviewed.has(input.call.path))
-        .map((input) => callDecisionToFeedItem(input, site)),
-    );
-  }
-
-  if (config.upgradeStatusChanges.enabled) {
-    items.push(
-      ...config.upgradeStatusChanges.entries.map((entry) =>
-        upgradeStatusToFeedItem(
-          entry,
-          sources.upgrades.find((upgrade) => upgrade.id === entry.upgradeId),
-          site,
-        ),
-      ),
+      ...sources.events
+        .filter((event) => ACTIVATION_CATEGORIES.has(event.category))
+        .map((event) => timelineEventToFeedItem(event, site)),
     );
   }
 

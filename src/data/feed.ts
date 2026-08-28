@@ -14,9 +14,16 @@ export interface FeedConfig {
    * list are not published.
    */
   networkActivations: { enabled: boolean };
+  /**
+   * One item per published protocol call: its name, date, and page link only.
+   * None of the call's synced summary or decision text enters the feed, so
+   * the post-publish QA round never has anything here to retract.
+   */
+  callsPublished: { enabled: boolean };
 }
 
 export const feedConfig: FeedConfig = {
   eipStageChanges: { enabled: true },
   networkActivations: { enabled: true },
+  callsPublished: { enabled: true },
 };

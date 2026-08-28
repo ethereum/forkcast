@@ -349,7 +349,7 @@ describe('build output', () => {
       expect([...xml.matchAll(/<item>/g)].length).toBeGreaterThan(0);
     });
 
-    it('carries both enabled item types', () => {
+    it('carries every enabled item type', () => {
       // Each source is wired separately, so one can go silent while the feed
       // still validates and looks healthy.
       const guids = [...read().matchAll(/<guid isPermaLink="false">([^<]+)<\/guid>/g)].map(
@@ -357,6 +357,7 @@ describe('build output', () => {
       );
       expect(guids.some((g) => g.startsWith('eip-'))).toBe(true);
       expect(guids.some((g) => g.startsWith('event-'))).toBe(true);
+      expect(guids.some((g) => g.startsWith('call-'))).toBe(true);
     });
 
     it('every item has a unique guid', () => {

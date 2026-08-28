@@ -5,10 +5,12 @@ import type { EipStageChange } from '../eips/stageChanges';
 import {
   buildFeedItems,
   buildRssXml,
+  callPublishedToFeedItem,
   escapeXml,
   stageChangeToFeedItem,
   timelineEventToFeedItem,
   toRssDate,
+  type CallPublished,
 } from './feed';
 
 const makeStageChange = (overrides: Partial<EipStageChange> = {}): EipStageChange => ({
@@ -32,9 +34,18 @@ const makeEvent = (overrides: Partial<TimelineEvent> = {}): TimelineEvent => ({
   ...overrides,
 });
 
+const makeCallPublished = (overrides: Partial<CallPublished> = {}): CallPublished => ({
+  path: 'acdc/184',
+  displayName: 'AllCoreDevs - Consensus',
+  number: '184',
+  date: '2026-08-06',
+  ...overrides,
+});
+
 const config = (overrides: Partial<FeedConfig> = {}): FeedConfig => ({
   eipStageChanges: { enabled: true },
   networkActivations: { enabled: true },
+  callsPublished: { enabled: true },
   ...overrides,
 });
 
@@ -98,24 +109,48 @@ describe('timelineEventToFeedItem', () => {
   });
 });
 
+describe('callPublishedToFeedItem', () => {
+  it('carries only the call name, date, and page link, never synced text', () => {
+    const item = callPublishedToFeedItem(makeCallPublished(), 'https://forkcast.org');
+    expect(item.title).toBe('AllCoreDevs - Consensus #184 call published');
+    expect(item.link).toBe('https://forkcast.org/calls/acdc/184');
+    expect(item.guid).toBe('call-acdc-184-2026-08-06');
+    expect(item.description).toBeUndefined();
+  });
+
+  it('keeps the number exactly as displayed, leading zeros included', () => {
+    const item = callPublishedToFeedItem(
+      makeCallPublished({ path: 'aa/002', displayName: 'Frame Transaction Breakout', number: '002', date: '2026-08-25' }),
+      'https://forkcast.org',
+    );
+    expect(item.title).toBe('Frame Transaction Breakout #002 call published');
+    expect(item.guid).toBe('call-aa-002-2026-08-25');
+  });
+});
+
 describe('buildFeedItems', () => {
   const sources = {
     stageChanges: [makeStageChange()],
     events: [makeEvent()],
+    callsPublished: [makeCallPublished()],
   };
 
   it('emits nothing for a type whose switch is off', () => {
     const items = buildFeedItems(
-      config({ eipStageChanges: { enabled: false }, networkActivations: { enabled: false } }),
+      config({
+        eipStageChanges: { enabled: false },
+        networkActivations: { enabled: false },
+        callsPublished: { enabled: false },
+      }),
       sources,
       'https://forkcast.org',
     );
     expect(items).toEqual([]);
   });
 
-  it('emits only stage changes when network activations are off', () => {
+  it('emits only stage changes when the other switches are off', () => {
     const items = buildFeedItems(
-      config({ networkActivations: { enabled: false } }),
+      config({ networkActivations: { enabled: false }, callsPublished: { enabled: false } }),
       sources,
       'https://forkcast.org',
     );
@@ -134,22 +169,25 @@ describe('buildFeedItems', () => {
           makeEvent({ title: 'Ethereum Turns 10! 🎉', date: '2025-07-30', category: 'milestone' }),
           makeEvent({ title: 'Something was announced', date: '2025-07-31', category: 'announcement' }),
         ],
+        callsPublished: [],
       },
       'https://forkcast.org',
     );
     expect(items.map((item) => item.title)).toEqual(['Fusaka Live on Mainnet']);
   });
 
-  it('interleaves both types newest first', () => {
+  it('interleaves all types newest first', () => {
     const items = buildFeedItems(
       config(),
       {
         stageChanges: [makeStageChange(), makeStageChange({ id: 7702, lastStageChange: '2025-11-01' })],
         events: [makeEvent(), makeEvent({ title: 'Fusaka Live on Hoodi Testnet', date: '2026-03-01' })],
+        callsPublished: [makeCallPublished()],
       },
       'https://forkcast.org',
     );
     expect(items.map((item) => item.date)).toEqual([
+      '2026-08-06',
       '2026-03-01',
       '2026-01-08',
       '2025-12-03',

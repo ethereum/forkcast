@@ -106,7 +106,7 @@ describe('getStageChanges', () => {
     expect(getStageChanges([eip])).toEqual([]);
   });
 
-  it('strips the prefix from the title, detects RIP, and prefers the layman description', () => {
+  it('strips the prefix from the title, detects RIP, and keeps both descriptions apart', () => {
     const rip = makeEip({
       id: 7212,
       title: 'RIP-7212: Precompile for secp256r1',
@@ -120,6 +120,7 @@ describe('getStageChanges', () => {
     expect(change.title).toBe('Precompile for secp256r1');
     expect(change.prefix).toBe('RIP');
     expect(change.description).toBe('A friendly summary');
+    expect(change.specDescription).toBe('tech');
     expect(change.url).toBe('/eips/7212');
   });
 });

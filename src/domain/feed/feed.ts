@@ -13,6 +13,20 @@ export interface FeedItem {
   description?: string;
 }
 
+/** A protocol call whose page is live, reduced to fields no bot wrote. */
+export interface CallPublished {
+  /** `path` of an entry in `protocolCalls` ("acdc/184"). */
+  path: string;
+  /** The series' display name ("AllCoreDevs - Consensus"). */
+  seriesName: string;
+  /** A one-off call's hand-written name, which already reads as a full title. */
+  name?: string;
+  /** The call's number as displayed ("184", "002"). */
+  number: string;
+  /** YYYY-MM-DD, the call's date. */
+  date: string;
+}
+
 const slugify = (value: string): string =>
   value
     .toLowerCase()
@@ -33,7 +47,7 @@ export function stageChangeToFeedItem(change: EipStageChange, site: string): Fee
     link: `${site}${change.url}`,
     guid: `${change.prefix.toLowerCase()}-${change.id}-${slugify(stage)}-${change.lastStageChange}`,
     date: change.lastStageChange,
-    description: change.description || undefined,
+    description: change.specDescription || undefined,
   };
 }
 
@@ -48,6 +62,23 @@ export function timelineEventToFeedItem(event: TimelineEvent, site: string): Fee
     link: `${site}/networks${event.networkId ? `/${event.networkId}` : ''}`,
     guid: `event-${slugify(event.title)}-${event.date}`,
     date: event.date,
+  };
+}
+
+/**
+ * Title-only by design: the item says a call's page exists and links it,
+ * nothing more, so none of the synced summary or decision text (which gets a
+ * QA round after publish) can reach a reader's feed.
+ */
+export function callPublishedToFeedItem(call: CallPublished, site: string): FeedItem {
+  // A hand-written name carries its own numbering, so it takes no series
+  // number — the same rule the call's own page title uses.
+  const name = call.name ?? `${call.seriesName} #${call.number}`;
+  return {
+    title: `${name} call published`,
+    link: `${site}/calls/${call.path}`,
+    guid: `call-${slugify(call.path)}-${call.date}`,
+    date: call.date,
   };
 }
 
@@ -70,6 +101,7 @@ export function buildFeedItems(
   sources: {
     stageChanges: EipStageChange[];
     events: TimelineEvent[];
+    callsPublished: CallPublished[];
   },
   site: string,
 ): FeedItem[] {
@@ -85,6 +117,10 @@ export function buildFeedItems(
         .filter((event) => ACTIVATION_CATEGORIES.has(event.category))
         .map((event) => timelineEventToFeedItem(event, site)),
     );
+  }
+
+  if (config.callsPublished.enabled) {
+    items.push(...sources.callsPublished.map((call) => callPublishedToFeedItem(call, site)));
   }
 
   return items.sort((a, b) => b.date.localeCompare(a.date) || a.guid.localeCompare(b.guid));

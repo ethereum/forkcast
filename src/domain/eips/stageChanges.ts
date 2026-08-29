@@ -9,7 +9,14 @@ export interface EipStageChange {
   title: string;
   prefix: 'EIP' | 'RIP';
   status: string;
+  /** The plain-language rewrite when one has been written, else the spec one-liner. */
   description: string;
+  /**
+   * The EIP's own one-liner from its spec preamble, never the plain-language
+   * rewrite. Empty when the EIP has none. `/feed.xml` uses this: the rewrite is
+   * hand-authored prose that gets revised, and a feed item can't be recalled.
+   */
+  specDescription: string;
   /** YYYY-MM-DD of the most recent dated status entry. */
   lastStageChange: string;
   lastStageChangeFork: string | null;
@@ -80,6 +87,7 @@ export function getStageChanges(eips: EIP[], count?: number): EipStageChange[] {
       prefix: getProposalPrefix(eip),
       status: eip.status,
       description: eip.laymanDescription || eip.description,
+      specDescription: eip.description,
       lastStageChange: lastUpdate.toISOString().split('T')[0],
       lastStageChangeFork: forkName,
       currentStage,

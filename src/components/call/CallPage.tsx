@@ -12,6 +12,11 @@ import { onOpenCallSearch } from '../../domain/calls/callSearch';
 import { eipsData } from '../../data/eips';
 import { EIP, ForkRelationship, KeyDecision } from '../../types/eip';
 import { isSearchHotkey } from '../search/searchShortcuts';
+import {
+  GAP_SKIP_WAIT_SECONDS,
+  computeGapSkipIntervals,
+  findGapSkipTarget,
+} from '../../utils/gapSkip';
 
 // Mapping of breakout call types to their associated EIP IDs
 const BREAKOUT_EIP_MAP: Record<string, number> = {
@@ -341,6 +346,78 @@ const loadMainCallData = async (
   };
 };
 
+// Parses a VTT transcript into per-message entries. Cue lines carry
+// `start --> end` timecodes; endTimestamp powers the gap detection that
+// fast-forwards the video to the next message after long silences.
+const parseVTTTranscript = (text: string) => {
+  const lines = text.split('\n');
+  const entries: Array<{
+    timestamp: string;
+    endTimestamp?: string;
+    speaker: string;
+    text: string;
+  }> = [];
+  let currentEntry: Partial<{
+    timestamp: string;
+    endTimestamp: string;
+    speaker: string;
+    text: string;
+  }> = {};
+
+  for (let i = 0; i < lines.length; i++) {
+    const line = lines[i].trim();
+
+    // Skip WEBVTT header and empty lines
+    if (line === 'WEBVTT' || line === '' || /^\d+$/.test(line)) {
+      continue;
+    }
+
+    // Parse the "start --> end" timecode line
+    if (line.includes('-->')) {
+      const timeMatch = line.match(
+        /(\d{2}:\d{2}:\d{2}\.\d{3})\s*-->\s*(\d{2}:\d{2}:\d{2}\.\d{3})/,
+      );
+      if (timeMatch) {
+        currentEntry.timestamp = timeMatch[1];
+        currentEntry.endTimestamp = timeMatch[2];
+      }
+      continue;
+    }
+
+    // Parse text content (speaker and text are on the same line)
+    if (line && currentEntry.timestamp) {
+      // Look for speaker pattern like "Speaker: text" or "Speaker | Team: text"
+      const speakerMatch = line.match(/^([^:]+):\s*(.*)$/);
+      if (speakerMatch) {
+        currentEntry.speaker = speakerMatch[1].trim();
+        currentEntry.text = speakerMatch[2].trim();
+      } else {
+        // If no colon pattern, treat the whole line as text
+        currentEntry.speaker = 'Unknown';
+        currentEntry.text = line;
+      }
+
+      if (
+        currentEntry.timestamp &&
+        currentEntry.speaker &&
+        currentEntry.text
+      ) {
+        entries.push(
+          currentEntry as {
+            timestamp: string;
+            endTimestamp?: string;
+            speaker: string;
+            text: string;
+          },
+        );
+        currentEntry = {};
+      }
+    }
+  }
+
+  return entries;
+};
+
 interface CallPageProps {
   /** "series/number", e.g. "acdc/154". Supplied by the Astro route. */
   callPath: string;
@@ -405,6 +482,8 @@ const CallPage: React.FC<CallPageProps> = ({ callPath, upcoming }) => {
   const transcriptScrollTimeoutRef = useRef<ReturnType<typeof setTimeout> | undefined>(undefined);
   const isProgrammaticScrollRef = useRef(false);
   const lastHighlightedTimestampRef = useRef<string | null>(null);
+  const [isGapSkipEnabled, setIsGapSkipEnabled] = useState(false);
+  const lastGapSkipTargetRef = useRef<number | null>(null);
   // eslint-disable-next-line @typescript-eslint/no-explicit-any -- YouTube player API type is not exported
   const [player, setPlayer] = useState<any>(null);
   const [currentVideoTime, setCurrentVideoTime] = useState(0);
@@ -590,6 +669,7 @@ const CallPage: React.FC<CallPageProps> = ({ callPath, upcoming }) => {
     setCurrentVideoTime(0);
     setIsPlaying(false);
     lastHighlightedTimestampRef.current = null;
+    lastGapSkipTargetRef.current = null;
 
     const loadCallData = async (): Promise<{ result: LoadResult | null; active: ActiveBreakout | null; bundledKinds: string[] }> => {
       // The parent config lists bundled breakouts, needed for tabs on every view.
@@ -678,25 +758,62 @@ const CallPage: React.FC<CallPageProps> = ({ callPath, upcoming }) => {
     };
   }, [player, callConfig, getAdjustedVideoTime]);
 
+  // Video-time gaps between transcript messages that gap-skip fast-forwards.
+  const gapSkipIntervals = useMemo(() => {
+    const sync = callConfig?.sync;
+    if (!sync?.transcriptStartTime || !sync?.videoStartTime) return [];
+    if (!callData?.transcriptContent?.trim()) return [];
+    const entries = parseVTTTranscript(callData.transcriptContent).filter(
+      entry =>
+        timestampToSeconds(entry.timestamp) >=
+        timestampToSeconds(sync.transcriptStartTime),
+    );
+    return computeGapSkipIntervals(entries, sync);
+  }, [callData, callConfig]);
+
+  // Total video time that gap skipping fast-forwards, in seconds.
+  const gapSkipSeconds = useMemo(
+    () =>
+      gapSkipIntervals.reduce(
+        (sum, interval) => sum + interval.target - interval.start - GAP_SKIP_WAIT_SECONDS,
+        0,
+      ),
+    [gapSkipIntervals],
+  );
+
+  const handleGapSkipToggle = () => setIsGapSkipEnabled(!isGapSkipEnabled);
+
   // Poll for video time when playing
   useEffect(() => {
     if (isPlaying && player && callConfig?.sync?.transcriptStartTime && callConfig?.sync?.videoStartTime) {
       pollingIntervalRef.current = setInterval(() => {
         const time = player.getCurrentTime();
         setCurrentVideoTime(time);
+
+        // Fast-forward over silent gaps between transcript messages.
+        if (!isGapSkipEnabled) return;
+        const skipTarget = findGapSkipTarget(time, gapSkipIntervals);
+        if (skipTarget === null) {
+          lastGapSkipTargetRef.current = null;
+          return;
+        }
+        // While a seek is in flight, getCurrentTime lags behind the target;
+        // only re-issue it when the target actually changes.
+        if (lastGapSkipTargetRef.current !== skipTarget) {
+          lastGapSkipTargetRef.current = skipTarget;
+          player.seekTo(skipTarget);
+          player.playVideo();
+          setCurrentVideoTime(skipTarget);
+        }
       }, 100); // Poll every 100ms for smooth highlighting
     } else {
-      if (pollingIntervalRef.current) {
-        clearInterval(pollingIntervalRef.current);
-      }
+      clearInterval(pollingIntervalRef.current);
     }
 
     return () => {
-      if (pollingIntervalRef.current) {
-        clearInterval(pollingIntervalRef.current);
-      }
+      clearInterval(pollingIntervalRef.current);
     };
-  }, [isPlaying, player, callConfig]);
+  }, [isPlaying, player, callConfig, gapSkipIntervals, isGapSkipEnabled]);
 
   // Detect manual scrolling on transcript
   useEffect(() => {
@@ -1084,51 +1201,6 @@ const CallPage: React.FC<CallPageProps> = ({ callPath, upcoming }) => {
 
   const breakoutEipInfo = getBreakoutEipInfo();
 
-  const parseVTTTranscript = (text: string) => {
-    const lines = text.split('\n');
-    const entries: Array<{ timestamp: string; speaker: string; text: string }> = [];
-    let currentEntry: Partial<{ timestamp: string; speaker: string; text: string }> = {};
-
-    for (let i = 0; i < lines.length; i++) {
-      const line = lines[i].trim();
-
-      // Skip WEBVTT header and empty lines
-      if (line === 'WEBVTT' || line === '' || /^\d+$/.test(line)) {
-        continue;
-      }
-
-      // Parse timestamp line
-      if (line.includes('-->')) {
-        const timeMatch = line.match(/(\d{2}:\d{2}:\d{2}\.\d{3})/);
-        if (timeMatch) {
-          currentEntry.timestamp = timeMatch[1];
-        }
-        continue;
-      }
-
-      // Parse text content (speaker and text are on the same line)
-      if (line && currentEntry.timestamp) {
-        // Look for speaker pattern like "Speaker: text" or "Speaker | Team: text"
-        const speakerMatch = line.match(/^([^:]+):\s*(.*)$/);
-        if (speakerMatch) {
-          currentEntry.speaker = speakerMatch[1].trim();
-          currentEntry.text = speakerMatch[2].trim();
-        } else {
-          // If no colon pattern, treat the whole line as text
-          currentEntry.speaker = 'Unknown';
-          currentEntry.text = line;
-        }
-
-        if (currentEntry.timestamp && currentEntry.speaker && currentEntry.text) {
-          entries.push(currentEntry as { timestamp: string; speaker: string; text: string });
-          currentEntry = {};
-        }
-      }
-    }
-
-    return entries;
-  };
-
   const hasTldr = Boolean(callData.tldrData);
   const hasNotes = Boolean(callData.notesData?.sections?.length);
   const hasSummary = hasTldr || hasNotes;
@@ -1435,7 +1507,20 @@ const CallPage: React.FC<CallPageProps> = ({ callPath, upcoming }) => {
       className={`bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg p-4 shadow-sm hover:shadow-md transition-shadow ${isWorkspaceView ? 'flex min-h-0 flex-col' : ''}`}
       style={isWorkspaceView ? { height: effectiveSidebarHeight } : undefined}
     >
-      <h2 className="text-sm font-semibold text-slate-900 dark:text-slate-100 mb-3">Transcript</h2>
+      <div className="flex items-center justify-between gap-2 mb-3">
+        <h2 className="text-sm font-semibold text-slate-900 dark:text-slate-100">Transcript</h2>
+        {gapSkipIntervals.length > 0 && (
+          <label className="flex items-center gap-1.5 text-xs text-slate-500 dark:text-slate-400 cursor-pointer select-none">
+            <input
+              type="checkbox"
+              checked={isGapSkipEnabled}
+              onChange={handleGapSkipToggle}
+              className="w-4 h-4 rounded border-slate-300 dark:border-slate-600 text-purple-600 focus:ring-purple-500"
+            />
+            <span>Skip gaps ({(gapSkipSeconds / 60).toFixed(1)} min)</span>
+          </label>
+        )}
+      </div>
       {callData.transcriptContent?.trim() ? (
         <div
           ref={transcriptRef}

@@ -7,7 +7,7 @@ import {
 // Tuning for skipping the silent gaps between transcript messages, in video
 // seconds.
 export const GAP_SKIP_THRESHOLD_SECONDS = 2; // gap must be longer than this to skip
-export const GAP_SKIP_WAIT_SECONDS = 0.5; // let the video play this far into a gap before skipping
+export const GAP_SKIP_WAIT_SECONDS = 0.8; // let the video play this far into a gap before skipping
 export const GAP_SKIP_MIN_REMAINING_SECONDS = 1; // play out naturally once the next message is this close
 export const GAP_SKIP_LAND_LEAD_SECONDS = 0.3; // seek this far before the next message (YouTube lands late, not early)
 

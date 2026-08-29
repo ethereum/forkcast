@@ -18,7 +18,8 @@ const makeStageChange = (overrides: Partial<EipStageChange> = {}): EipStageChang
   title: 'Enshrined Proposer-Builder Separation',
   prefix: 'EIP',
   status: 'Draft',
-  description: 'Separates block proposal from block building.',
+  description: 'A friendly rewrite that must never reach the feed.',
+  specDescription: 'Separates block proposal from block building.',
   lastStageChange: '2026-01-08',
   lastStageChangeFork: 'Glamsterdam',
   currentStage: 'Scheduled for Inclusion',
@@ -36,7 +37,7 @@ const makeEvent = (overrides: Partial<TimelineEvent> = {}): TimelineEvent => ({
 
 const makeCallPublished = (overrides: Partial<CallPublished> = {}): CallPublished => ({
   path: 'acdc/184',
-  displayName: 'AllCoreDevs - Consensus',
+  seriesName: 'AllCoreDevs - Consensus',
   number: '184',
   date: '2026-08-06',
   ...overrides,
@@ -70,6 +71,20 @@ describe('stageChangeToFeedItem', () => {
       'EIP-8261 (Gas Limit Schedule) is now Scheduled (Informational) for Glamsterdam',
     );
     expect(item.guid).toBe('eip-8261-informational-2026-01-08');
+  });
+
+  it("carries the EIP's spec one-liner, never the hand-authored rewrite", () => {
+    // The rewrite is revised after publication; a feed item can't be recalled.
+    const item = stageChangeToFeedItem(makeStageChange(), 'https://forkcast.org');
+    expect(item.description).toBe('Separates block proposal from block building.');
+  });
+
+  it('omits the description for an EIP whose spec carries none', () => {
+    const item = stageChangeToFeedItem(
+      makeStageChange({ specDescription: '' }),
+      'https://forkcast.org',
+    );
+    expect(item.description).toBeUndefined();
   });
 
   it('falls back to the EIP status when no current stage exists', () => {
@@ -120,11 +135,31 @@ describe('callPublishedToFeedItem', () => {
 
   it('keeps the number exactly as displayed, leading zeros included', () => {
     const item = callPublishedToFeedItem(
-      makeCallPublished({ path: 'aa/002', displayName: 'Frame Transaction Breakout', number: '002', date: '2026-08-25' }),
+      makeCallPublished({
+        path: 'aa/002',
+        seriesName: 'Frame Transaction Breakout',
+        number: '002',
+        date: '2026-08-25',
+      }),
       'https://forkcast.org',
     );
     expect(item.title).toBe('Frame Transaction Breakout #002 call published');
     expect(item.guid).toBe('call-aa-002-2026-08-25');
+  });
+
+  it('drops the series number for a one-off, which names and numbers itself', () => {
+    const item = callPublishedToFeedItem(
+      makeCallPublished({
+        path: 'one-off-1971/001',
+        seriesName: 'one-off-1971',
+        name: 'ERC-8004 Launch Day, #1',
+        number: '001',
+        date: '2026-03-17',
+      }),
+      'https://forkcast.org',
+    );
+    expect(item.title).toBe('ERC-8004 Launch Day, #1 call published');
+    expect(item.guid).toBe('call-one-off-1971-001-2026-03-17');
   });
 });
 

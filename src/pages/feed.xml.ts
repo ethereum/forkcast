@@ -1,7 +1,5 @@
 import type { APIRoute } from 'astro';
-import { existsSync } from 'node:fs';
-import { join } from 'node:path';
-import { getCallDisplayName, protocolCalls } from '../data/calls';
+import { getCallTypeName, protocolCalls } from '../data/calls';
 import { eipsData } from '../data/eips';
 import { timelineEvents } from '../data/events';
 import { feedConfig } from '../data/feed';
@@ -16,21 +14,18 @@ export const prerender = true;
 const SITE = (import.meta.env.SITE ?? 'https://forkcast.org').replace(/\/$/, '');
 
 /**
- * A call is published once its synced artifact directory exists, which is
- * also what makes its page substantive. Scheduled future calls have no
- * directory yet and arrive in the feed on the rebuild after their sync.
+ * scripts/sync-call-assets.mjs appends to `protocolCalls` only once a call has
+ * a video and a transcript or tldr, so every entry is a published call. An
+ * upcoming call joins the feed on the rebuild after its sync.
  */
 const publishedCalls = (): CallPublished[] =>
-  protocolCalls
-    .filter((call) =>
-      existsSync(join(process.cwd(), 'public', 'artifacts', call.type, `${call.date}_${call.number}`)),
-    )
-    .map((call) => ({
-      path: call.path,
-      displayName: getCallDisplayName(call),
-      number: call.number,
-      date: call.date,
-    }));
+  protocolCalls.map((call) => ({
+    path: call.path,
+    seriesName: getCallTypeName(call.type),
+    name: call.name,
+    number: call.number,
+    date: call.date,
+  }));
 
 export const GET: APIRoute = () => {
   const items = buildFeedItems(

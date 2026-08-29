@@ -17,8 +17,10 @@ export interface FeedItem {
 export interface CallPublished {
   /** `path` of an entry in `protocolCalls` ("acdc/184"). */
   path: string;
-  /** The call's display name ("AllCoreDevs - Consensus"). */
-  displayName: string;
+  /** The series' display name ("AllCoreDevs - Consensus"). */
+  seriesName: string;
+  /** A one-off call's hand-written name, which already reads as a full title. */
+  name?: string;
   /** The call's number as displayed ("184", "002"). */
   number: string;
   /** YYYY-MM-DD, the call's date. */
@@ -45,7 +47,7 @@ export function stageChangeToFeedItem(change: EipStageChange, site: string): Fee
     link: `${site}${change.url}`,
     guid: `${change.prefix.toLowerCase()}-${change.id}-${slugify(stage)}-${change.lastStageChange}`,
     date: change.lastStageChange,
-    description: change.description || undefined,
+    description: change.specDescription || undefined,
   };
 }
 
@@ -69,8 +71,11 @@ export function timelineEventToFeedItem(event: TimelineEvent, site: string): Fee
  * QA round after publish) can reach a reader's feed.
  */
 export function callPublishedToFeedItem(call: CallPublished, site: string): FeedItem {
+  // A hand-written name carries its own numbering, so it takes no series
+  // number — the same rule the call's own page title uses.
+  const name = call.name ?? `${call.seriesName} #${call.number}`;
   return {
-    title: `${call.displayName} #${call.number} call published`,
+    title: `${name} call published`,
     link: `${site}/calls/${call.path}`,
     guid: `call-${slugify(call.path)}-${call.date}`,
     date: call.date,

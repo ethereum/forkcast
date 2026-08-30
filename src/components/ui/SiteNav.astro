@@ -1,5 +1,5 @@
 ---
-import { isPathActive, normalizePathname } from '../../utils/path';
+import { canonicalHref, isPathActive, normalizePathname } from '../../utils/path';
 
 interface Props {
   variant?: 'default' | 'wide';
@@ -130,7 +130,7 @@ const mobileLinkClass = (active: boolean, isIndexLink: boolean) =>
                     class={item.variant === 'index' ? 'border-t border-slate-200 pt-1 dark:border-slate-700' : undefined}
                   >
                     <a
-                      href={item.to}
+                      href={canonicalHref(item.to)}
                       data-astro-prefetch
                       class={menuLinkClass(isPathActive(pathname, item.to), item.variant)}
                     >
@@ -146,7 +146,7 @@ const mobileLinkClass = (active: boolean, isIndexLink: boolean) =>
         {
           navItems.map((item) => (
             <a
-              href={item.to}
+              href={canonicalHref(item.to)}
               data-astro-prefetch
               class={navLinkClass(isPathActive(pathname, item.to), item.highlight)}
             >
@@ -179,7 +179,7 @@ const mobileLinkClass = (active: boolean, isIndexLink: boolean) =>
           enableCallSearch && (
             <Fragment>
               <a
-                href="/calls"
+                href="/calls/"
                 data-astro-prefetch
                 class="text-sm text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-200 transition-colors whitespace-nowrap"
               >
@@ -247,7 +247,7 @@ const mobileLinkClass = (active: boolean, isIndexLink: boolean) =>
               class={item.variant === 'index' ? 'mt-2 border-t border-slate-200 pt-2 dark:border-slate-700' : undefined}
             >
               <a
-                href={item.to}
+                href={canonicalHref(item.to)}
                 data-astro-prefetch
                 class={mobileLinkClass(isPathActive(pathname, item.to), item.variant === 'index')}
               >
@@ -260,7 +260,7 @@ const mobileLinkClass = (active: boolean, isIndexLink: boolean) =>
       {
         navItems.map((item) => (
           <a
-            href={item.to}
+            href={canonicalHref(item.to)}
             data-astro-prefetch
             class={`block px-1 py-2 text-sm ${
               item.highlight || isPathActive(pathname, item.to)

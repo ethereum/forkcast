@@ -2,6 +2,7 @@
 import '../index.css';
 import SiteNav from '../components/ui/SiteNav.astro';
 import GlobalSearchIsland from '../components/search/GlobalSearchIsland';
+import { serializeJsonLd } from '../domain/seo/structuredData';
 
 interface Props {
   /** Full document title, e.g. "EIP Directory - Forkcast". */
@@ -14,6 +15,12 @@ interface Props {
   enableCallSearch?: boolean;
   /** Keep the page out of the index (e.g. the 404): emits robots noindex and drops the self-canonical. */
   noindex?: boolean;
+  /**
+   * schema.org graphs for this page. The body is a `client:only` island, so this
+   * is the only structured description of the page a crawler gets without
+   * running JS. Build them with `src/domain/seo/structuredData.ts`.
+   */
+  jsonLd?: ReadonlyArray<object | undefined>;
 }
 
 const {
@@ -23,7 +30,10 @@ const {
   navVariant = 'default',
   enableCallSearch = false,
   noindex = false,
+  jsonLd = [],
 } = Astro.props;
+
+const structuredData = serializeJsonLd(jsonLd);
 
 const site = Astro.site ?? new URL('https://forkcast.org');
 const canonical = new URL(Astro.url.pathname, site).href;
@@ -52,6 +62,11 @@ const ogImage = image
     <meta name="description" content={description} />
     {noindex ? <meta name="robots" content="noindex" /> : <link rel="canonical" href={canonical} />}
     <link rel="alternate" type="application/rss+xml" title="Forkcast" href="/feed.xml" />
+    {
+      structuredData && (
+        <script type="application/ld+json" is:inline set:html={structuredData} />
+      )
+    }
 
     <!-- Open Graph / Facebook -->
     <meta property="og:type" content="website" />

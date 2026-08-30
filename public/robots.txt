@@ -2,3 +2,21 @@ User-agent: *
 Allow: /
 
 Sitemap: https://forkcast.org/sitemap-index.xml
+
+# ~23 MB of bulk data that exists for agents and data consumers (see /llms.txt),
+# not as pages. Unlinked from any HTML and fetched only on explicit user action,
+# so blocking them removes nothing from a rendered page. Scoped to search engines
+# so `User-agent: *` keeps full access.
+#
+# `/artifacts/` belongs to neither list and must stay crawlable: the homepage,
+# call pages and /decisions fetch it while rendering, and a crawler does not
+# fetch disallowed subresources, so disallowing it would empty those pages.
+User-agent: Googlebot
+Disallow: /search-corpus.json
+Disallow: /search-corpus.meta.json
+Disallow: /eip-spec-index.json
+
+User-agent: Bingbot
+Disallow: /search-corpus.json
+Disallow: /search-corpus.meta.json
+Disallow: /eip-spec-index.json

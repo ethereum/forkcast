@@ -56,7 +56,7 @@ describe('stageChangeToFeedItem', () => {
     // Same data must always produce the same guid, so the multiple daily
     // bot-triggered rebuilds never re-date existing items.
     expect(item.guid).toBe('eip-7732-scheduled-for-inclusion-2026-01-08');
-    expect(item.link).toBe('https://forkcast.org/eips/7732');
+    expect(item.link).toBe('https://forkcast.org/eips/7732/');
     expect(item.title).toBe(
       'EIP-7732 (Enshrined Proposer-Builder Separation) is now Scheduled for Inclusion for Glamsterdam',
     );
@@ -101,7 +101,7 @@ describe('timelineEventToFeedItem', () => {
   it('publishes the event title verbatim, linked to the network it happened on', () => {
     const item = timelineEventToFeedItem(makeEvent({ networkId: 'mainnet' }), 'https://forkcast.org');
     expect(item.title).toBe('Fusaka Live on Mainnet');
-    expect(item.link).toBe('https://forkcast.org/networks/mainnet');
+    expect(item.link).toBe('https://forkcast.org/networks/mainnet/');
     expect(item.guid).toBe('event-fusaka-live-on-mainnet-2025-12-03');
     expect(item.description).toBeUndefined();
   });
@@ -112,7 +112,7 @@ describe('timelineEventToFeedItem', () => {
       makeEvent({ title: 'Fusaka Live on Holešky Testnet', networkId: undefined }),
       'https://forkcast.org',
     );
-    expect(item.link).toBe('https://forkcast.org/networks');
+    expect(item.link).toBe('https://forkcast.org/networks/');
   });
 
   it('slugifies a guid out of titles carrying punctuation and emoji', () => {
@@ -128,7 +128,7 @@ describe('callPublishedToFeedItem', () => {
   it('carries only the call name, date, and page link, never synced text', () => {
     const item = callPublishedToFeedItem(makeCallPublished(), 'https://forkcast.org');
     expect(item.title).toBe('AllCoreDevs - Consensus #184 call published');
-    expect(item.link).toBe('https://forkcast.org/calls/acdc/184');
+    expect(item.link).toBe('https://forkcast.org/calls/acdc/184/');
     expect(item.guid).toBe('call-acdc-184-2026-08-06');
     expect(item.description).toBeUndefined();
   });

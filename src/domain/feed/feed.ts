@@ -1,3 +1,4 @@
+import { canonicalHref } from '../../utils/path';
 import type { TimelineEvent } from '../../data/events';
 import type { FeedConfig } from '../../data/feed';
 import type { EipStageChange } from '../eips/stageChanges';
@@ -44,7 +45,7 @@ export function stageChangeToFeedItem(change: EipStageChange, site: string): Fee
   const fork = change.lastStageChangeFork ? ` for ${change.lastStageChangeFork}` : '';
   return {
     title: `${change.prefix}-${change.id} (${change.title}) is now ${STAGE_TITLES[stage] ?? stage}${fork}`,
-    link: `${site}${change.url}`,
+    link: `${site}${canonicalHref(change.url)}`,
     guid: `${change.prefix.toLowerCase()}-${change.id}-${slugify(stage)}-${change.lastStageChange}`,
     date: change.lastStageChange,
     description: change.specDescription || undefined,
@@ -59,7 +60,7 @@ export function stageChangeToFeedItem(change: EipStageChange, site: string): Fee
 export function timelineEventToFeedItem(event: TimelineEvent, site: string): FeedItem {
   return {
     title: event.title,
-    link: `${site}/networks${event.networkId ? `/${event.networkId}` : ''}`,
+    link: `${site}${canonicalHref(`/networks${event.networkId ? `/${event.networkId}` : ''}`)}`,
     guid: `event-${slugify(event.title)}-${event.date}`,
     date: event.date,
   };
@@ -76,7 +77,7 @@ export function callPublishedToFeedItem(call: CallPublished, site: string): Feed
   const name = call.name ?? `${call.seriesName} #${call.number}`;
   return {
     title: `${name} call published`,
-    link: `${site}/calls/${call.path}`,
+    link: `${site}${canonicalHref(`/calls/${call.path}`)}`,
     guid: `call-${slugify(call.path)}-${call.date}`,
     date: call.date,
   };

@@ -3,25 +3,50 @@ import Layout from '../../layouts/Layout.astro';
 import { EipPage } from '../../components/eip';
 import { eipsData } from '../../data/eips';
 import { getLaymanTitle, getProposalPrefix } from '../../utils/eip';
+import { getStageChanges } from '../../domain/eips/stageChanges';
+import { breadcrumbList, eipArticle } from '../../domain/seo/structuredData';
 
 export function getStaticPaths() {
+  const lastChangeById = new Map(
+    getStageChanges(eipsData).map((change) => [change.id, change.lastStageChange]),
+  );
+
   return eipsData
     .map((eip) => {
-      const label = `${getProposalPrefix(eip)}-${eip.id}`;
+      const prefix = getProposalPrefix(eip);
+      const laymanTitle = getLaymanTitle(eip);
+      const label = `${prefix}-${eip.id}`;
       return {
         params: { id: String(eip.id) },
         props: {
-          title: `${label}: ${getLaymanTitle(eip)} - Forkcast`,
-          description: `Description, timeline, and status of ${label}: ${getLaymanTitle(eip)}`,
+          title: `${label}: ${laymanTitle} - Forkcast`,
+          description: `Description, timeline, and status of ${label}: ${laymanTitle}`,
+          jsonLd: [
+            eipArticle({
+              id: eip.id,
+              prefix,
+              title: laymanTitle,
+              // The layman rewrite is what the page leads with; the spec's own
+              // one-liner is the fallback for EIPs that have no rewrite yet.
+              description: eip.laymanDescription || eip.description,
+              author: eip.author,
+              dateModified: lastChangeById.get(eip.id),
+            }),
+            breadcrumbList([
+              { name: 'Forkcast', url: 'https://forkcast.org/' },
+              { name: 'EIPs', url: 'https://forkcast.org/eips/' },
+              { name: label },
+            ]),
+          ],
         },
       };
     });
 }
 
 const id = Astro.params.id!;
-const { title, description } = Astro.props;
+const { title, description, jsonLd } = Astro.props;
 ---
 
-<Layout title={title} description={description}>
+<Layout title={title} description={description} jsonLd={jsonLd}>
   <EipPage client:only="react" id={id} />
 </Layout>

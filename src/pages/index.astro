@@ -2,8 +2,9 @@
 import Layout from '../layouts/Layout.astro';
 import HomePage from '../components/HomePage';
 import { staticPageMetadata } from '../domain/routes/pageMetadata';
+import { siteGraph } from '../domain/seo/structuredData';
 ---
 
-<Layout {...staticPageMetadata.home}>
+<Layout {...staticPageMetadata.home} jsonLd={[siteGraph()]}>
   <HomePage client:only="react" />
 </Layout>

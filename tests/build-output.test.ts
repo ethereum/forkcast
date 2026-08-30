@@ -135,9 +135,9 @@ describe('build output', () => {
       // survive the build rather than being painted by a hydrated island.
       const html = readHtml('index.html');
       const hasNav =
-        html.includes('href="/eips"') ||
-        html.includes('href="/calls"') ||
-        html.includes('href="/schedule"');
+        html.includes('href="/eips/"') ||
+        html.includes('href="/calls/"') ||
+        html.includes('href="/schedule/"');
       expect(hasNav).toBe(true);
     });
 
@@ -429,6 +429,101 @@ describe('build output', () => {
         fs.existsSync(path.join(DIST, 'sitemap.xml')) ||
         fs.existsSync(path.join(DIST, 'sitemap-index.xml'));
       expect(has).toBe(true);
+    });
+  });
+
+  describe('structured data', () => {
+    const parseJsonLd = (relPath: string) => {
+      const match = readHtml(relPath).match(
+        /<script type="application\/ld\+json">([\s\S]*?)<\/script>/,
+      );
+      return match ? JSON.parse(match[1]) : undefined;
+    };
+
+    it('the homepage identifies the site', () => {
+      const graph = parseJsonLd('index.html');
+      const types = graph['@graph'].map((n: { '@type': string }) => n['@type']);
+      expect(types).toContain('Organization');
+      expect(types).toContain('WebSite');
+    });
+
+    it('an EIP page describes the EIP and its breadcrumb trail', () => {
+      const graphs = parseJsonLd('eips/7702/index.html');
+      const types = graphs.map((g: { '@type': string }) => g['@type']);
+      expect(types).toEqual(['TechArticle', 'BreadcrumbList']);
+      expect(graphs[0].url).toBe('https://forkcast.org/eips/7702/');
+    });
+
+    it('a call page with a recording emits a VideoObject', () => {
+      const graphs = parseJsonLd('calls/acdc/165/index.html');
+      const video = graphs.find((g: { '@type': string }) => g['@type'] === 'VideoObject');
+      expect(video.embedUrl).toMatch(/^https:\/\/www\.youtube\.com\/embed\/[A-Za-z0-9_-]{11}$/);
+      expect(video.uploadDate).toMatch(/^\d{4}-\d{2}-\d{2}$/);
+    });
+
+    it('every emitted graph is parseable JSON', () => {
+      // `set:html` bypasses escaping, so a title carrying a quote or a `<` would
+      // otherwise ship as a silently broken script element.
+      const pages = collectFiles(DIST, '.html').filter((f) =>
+        fs.readFileSync(f, 'utf-8').includes('application/ld+json'),
+      );
+      expect(pages.length).toBeGreaterThan(0);
+      const broken = pages.filter((file) => {
+        const match = fs
+          .readFileSync(file, 'utf-8')
+          .match(/<script type="application\/ld\+json">([\s\S]*?)<\/script>/);
+        try {
+          JSON.parse(match![1]);
+          return false;
+        } catch {
+          return true;
+        }
+      });
+      expect(broken.map((f) => path.relative(DIST, f))).toEqual([]);
+    });
+  });
+
+  // GitHub Pages serves directory-format output at the trailing-slash URL and
+  // 301s the bare path to it. A published URL without the slash therefore costs
+  // a redirect hop and, for a canonical, disagrees with the redirect a crawler
+  // just followed. Everything the build publishes has to use the same form.
+  describe('canonical URL form', () => {
+    const isCanonical = (url: string) => new URL(url).pathname.endsWith('/');
+
+    it('every sitemap entry ends in a slash', () => {
+      const xml = fs.readFileSync(path.join(DIST, 'sitemap-0.xml'), 'utf-8');
+      const locs = [...xml.matchAll(/<loc>([^<]+)<\/loc>/g)].map((m) => m[1]);
+      expect(locs.length).toBeGreaterThan(0);
+      expect(locs.filter((l) => !isCanonical(l))).toEqual([]);
+    });
+
+    it('every feed item links to the slash form', () => {
+      const xml = fs.readFileSync(path.join(DIST, 'feed.xml'), 'utf-8');
+      const links = [...xml.matchAll(/<item>[\s\S]*?<link>([^<]+)<\/link>/g)].map((m) => m[1]);
+      expect(links.length).toBeGreaterThan(0);
+      expect(links.filter((l) => !isCanonical(l))).toEqual([]);
+    });
+
+    it('page canonical and og:url agree with the served URL', () => {
+      for (const page of CORE_PAGES.filter((p) => p !== '404.html')) {
+        const html = readHtml(page);
+        const canonical = html.match(/<link rel="canonical" href="([^"]+)"/)?.[1];
+        const ogUrl = html.match(/<meta property="og:url" content="([^"]+)"/)?.[1];
+        expect(canonical, `${page} canonical`).toBeDefined();
+        expect(isCanonical(canonical!), `${page} canonical ${canonical}`).toBe(true);
+        expect(ogUrl, `${page} og:url`).toBe(canonical);
+      }
+    });
+
+    it('nav links in the shipped HTML point straight at pages', () => {
+      // The nav is the only link graph in the pre-rendered HTML, so a slash-less
+      // href here makes every crawl hop a redirect.
+      const html = readHtml('eips/7702/index.html');
+      const hrefs = [...html.matchAll(/href="(\/[^"]*)"/g)]
+        .map((m) => m[1])
+        .filter((h) => !/\.[a-z0-9]+$/i.test(h) && !h.includes('?'));
+      expect(hrefs.length).toBeGreaterThan(0);
+      expect(hrefs.filter((h) => !h.endsWith('/'))).toEqual([]);
     });
   });
 });

@@ -981,14 +981,14 @@ const RankPage: React.FC = () => {
             <p className="text-xs text-slate-500 dark:text-slate-400 mb-4 flex-shrink-0">
               Excluded:{" "}
               <a
-                href="/eips/7805"
+                href="/eips/7805/"
                 className="text-purple-600 hover:text-purple-700 dark:text-purple-400 dark:hover:text-purple-300"
               >
                 EIP-7805 (FOCIL)
               </a>{" "}
               and{" "}
               <a
-                href="/eips/8141"
+                href="/eips/8141/"
                 className="text-purple-600 hover:text-purple-700 dark:text-purple-400 dark:hover:text-purple-300"
               >
                 EIP-8141 (Frames)

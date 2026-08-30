@@ -21,7 +21,7 @@ import {
   type AnchorHTMLAttributes,
   type ReactNode,
 } from 'react';
-import { normalizePathname } from '../utils/path';
+import { canonicalHref, normalizePathname } from '../utils/path';
 
 const LOCATION_EVENT = 'forkcast:locationchange';
 
@@ -43,13 +43,16 @@ const hasWindow = (): boolean => typeof window !== 'undefined';
 const ensureLeading = (value: string, char: string): string =>
   !value || value.startsWith(char) ? value : `${char}${value}`;
 
-/** Resolve a react-router-style `To` into an href string. */
+/**
+ * Resolve a react-router-style `To` into an href string, in the site's canonical
+ * trailing-slash form so a link resolves directly instead of via a redirect.
+ */
 export const toHref = (to: To): string => {
-  if (typeof to === 'string') return to;
+  if (typeof to === 'string') return canonicalHref(to);
   const pathname = to.pathname ?? (hasWindow() ? window.location.pathname : '/');
   const search = to.search ? ensureLeading(to.search, '?') : '';
   const hash = to.hash ? ensureLeading(to.hash, '#') : '';
-  return `${pathname}${search}${hash}`;
+  return `${canonicalHref(pathname)}${search}${hash}`;
 };
 
 const notifyLocationChange = () => {

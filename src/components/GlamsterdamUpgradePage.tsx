@@ -6,6 +6,7 @@ import ClientPriorityTab from './glamsterdam/ClientPriorityTab';
 import TestComplexityTab from './glamsterdam/TestComplexityTab';
 import { getUpgradeById } from '../data/upgrades';
 import { getUpgradeStatusColor } from '../utils/colors';
+import { canonicalHref } from '../utils/path';
 
 const upgrade = getUpgradeById('glamsterdam')!;
 
@@ -62,7 +63,7 @@ const GlamsterdamUpgradePage: React.FC<GlamsterdamUpgradePageProps> = ({ activeT
       <div className="max-w-4xl mx-auto">
         {/* Header */}
         <div className="mb-8">
-          <a href="/upgrades" className="text-slate-600 hover:text-slate-800 dark:text-slate-300 dark:hover:text-slate-100 mb-6 inline-block text-sm font-medium">
+          <a href="/upgrades/" className="text-slate-600 hover:text-slate-800 dark:text-slate-300 dark:hover:text-slate-100 mb-6 inline-block text-sm font-medium">
             ← All Network Upgrades
           </a>
 
@@ -111,7 +112,7 @@ const GlamsterdamUpgradePage: React.FC<GlamsterdamUpgradePageProps> = ({ activeT
                   return (
                     <a
                       key={tab.key}
-                      href={tab.path}
+                      href={canonicalHref(tab.path)}
                       ref={active ? activeTabRef : undefined}
                       className={`pb-2 text-sm font-medium transition-colors border-b-2 -mb-px whitespace-nowrap ${
                         active

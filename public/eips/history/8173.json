@@ -2,6 +2,16 @@
   "eipId": 8173,
   "commits": [
     {
+      "sha": "0b9221c7958ba4c5f2d11bfba355cafdbf2a3e1e",
+      "date": "2026-08-30T06:42:26Z",
+      "message": "Update EIP-7979: link to new assets",
+      "author": "gcolvin",
+      "prNumber": null,
+      "patch": "@@ -79,7 +79,7 @@ Dynamic jumps make dynamic control flow possible.  They also make quadratically\n \n #### EVM: Calls and Returns\n \n-The Ethereum Virtual Machine does _not_ provide explicit facilities for calls and returns.  Instead, compilers _must_ synthesize them with the dynamic `JUMP`: the return address is pushed as ordinary data, carried on the stack, and jumped to when the routine is done.  So dynamic jumps are not exotic — every internal function call in every deployed contract is one, and its destination is data.  A tool that must know where a return goes — to price it, to prove it safe, to decompile it — walks the code computing facts in place of values, _symbolic execution_, and must walk every return point the jump might reach.  Every routine shared by two callers doubles the walks: twenty calls is a million — what the literature calls a _path explosion_.  With explicit calls and returns there is nothing to guess: every return goes back to its call.  One walk, one answer.  A mechanical demonstration — a walker counting its walks over the same programs written both ways — accompanies this EIP in its assets (`walk-count/`).\n+The Ethereum Virtual Machine does _not_ provide explicit facilities for calls and returns.  Instead, compilers _must_ synthesize them with the dynamic `JUMP`: the return address is pushed as ordinary data, carried on the stack, and jumped to when the routine is done.  So dynamic jumps are not exotic — every internal function call in every deployed contract is one, and its destination is data.  A tool that must know where a return goes — to price it, to prove it safe, to decompile it — walks the code computing facts in place of values, _symbolic execution_, and must walk every return point the jump might reach.  Every routine shared by two callers doubles the walks: twenty calls is a million — what the literature calls a _path explosion_.  With explicit calls and returns there is nothing to guess: every return goes back to its call.  One walk, one answer.  A mechanical demonstration — a walker counting its walks over the same programs written both ways — accompanies this EIP in its [assets](../assets/eip-8173/walk-count/).\n \n #### EVM: Any Jump, Anywhere\n ",
+      "additions": 1,
+      "deletions": 1
+    },
+    {
       "sha": "111a73563c93160079f123aead27814cbbe9eb65",
       "date": "2026-08-28T23:51:46Z",
       "message": "Update EIP-8173: Updated terminology for clarity and consistency",
@@ -114,14 +124,6 @@
     }
   ],
   "openPrs": [
-    {
-      "number": 12270,
-      "title": "Update EIP-7979: link to new assets",
-      "author": "gcolvin",
-      "updatedAt": "2026-08-30T06:16:51Z",
-      "additions": 1,
-      "deletions": 1
-    },
     {
       "number": 12181,
       "title": "Update EIP-8173: blank line after footnote definitions",

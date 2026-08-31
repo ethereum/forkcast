@@ -104,11 +104,6 @@ export const eipCategories: EipCategory[] = [
     name: 'Data Availability & Proofs',
     eips: [8025, 8142, 8371]
   },
-  {
-    id: 'censorship-resistance',
-    name: 'Censorship Resistance',
-    eips: [8369]
-  },
 
   // --- Spans both layers, so this is declared last and renders last everywhere ---
   {

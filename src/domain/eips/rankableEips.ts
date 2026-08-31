@@ -14,10 +14,12 @@ const ACTIVE_STATUSES = new Set(['Proposed', 'Considered']);
 
 /**
  * The proposals that make up the rank page's board: EIPs still in play for the
- * fork, minus the headliners (which are chosen separately, not ranked).
+ * fork, minus the headliners (which are chosen separately, not ranked) and
+ * Informational EIPs (process/analysis docs that do not change the protocol).
  */
 export const getRankableEips = (eips: EIP[] = eipsData): EIP[] =>
   eips.filter(eip => {
+    if (eip.type === 'Informational') return false;
     const relationship = getForkRelationship(eip, RANK_FORK);
     if (!relationship || relationship.isHeadliner) return false;
     const history = relationship.statusHistory;

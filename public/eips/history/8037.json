@@ -2,6 +2,16 @@
   "eipId": 8037,
   "commits": [
     {
+      "sha": "aa02d9934056b252768d673eafd2b668725cb138",
+      "date": "2026-08-31T08:22:32Z",
+      "message": "Update EIP-8037: include non-zero balance to description of existent address",
+      "author": "awskii",
+      "prNumber": null,
+      "patch": "@@ -143,7 +143,7 @@ State-gas accounting for `CALL*` and `CREATE`/`CREATE2` operations is performed\n **`CREATE`/`CREATE2` family (conditional charge).** [EIP-7928](./eip-7928.md) defers reading the computed destination address until creation has passed the checks that precede any state access: sender balance for the endowment, nonce overflow, and the call-stack depth limit. A creation failing those checks never reads the destination, and no account-creation state-gas is charged. Once the checks pass, the destination is accessed — a single read that also performs the [EIP-7610](./eip-7610.md) collision check:\n \n - If the destination is non-existent (per the existence rule above), `STATE_BYTES_PER_NEW_ACCOUNT × CPSB` is charged in the creating frame, before 63/64 of the remaining gas is forwarded: a portion drawn from `gas_left` reduces the gas forwarded to the create frame, and a failed charge exceptionally halts the creating frame — exactly as for `CALL*`. If the destination pre-exists (e.g., it holds a balance), nothing is charged. The charge is decided by existence alone, independently of the collision outcome below.\n-- On an address collision ([EIP-7610](./eip-7610.md)) the creation fails as an exceptional halt of the create frame, consuming the forwarded gas. A colliding destination is usually existent (non-zero nonce or non-empty code) and therefore was not charged; the one exception is a destination that collides on storage alone while having zero nonce, zero balance, and empty code — it is non-existent, so it was charged, and the charge is refilled by the failure rule below.\n+- On an address collision ([EIP-7610](./eip-7610.md)) the creation fails as an exceptional halt of the create frame, consuming the forwarded gas. A colliding destination is usually existent (non-zero nonce, non-empty code, or a non-zero balance) and therefore was not charged; the one exception is a destination that collides on storage alone while having zero nonce, zero balance, and empty code — it is non-existent, so it was charged, and the charge is refilled by the failure rule below.\n - If the create frame reverts or halts exceptionally (including an address collision and a failed code deposit), the account creation is rolled back and any charged account-creation state-gas is refilled in LIFO order, decreasing `evm_state_gas_used` by the same amount — exactly as for `CALL*`.\n \n The code-deposit portion (`L × CPSB`) is unaffected by this rule and is charged at code-deposit time as usual.",
+      "additions": 1,
+      "deletions": 1
+    },
+    {
       "sha": "187336f46c2b54ae295ced6e8cffd48bf5989ba6",
       "date": "2026-08-25T11:44:53Z",
       "message": "Update EIP-8037: decouple SYSTEM_MAX_SSTORES_PER_CALL from request bounds",
@@ -306,23 +316,15 @@
       "number": 12256,
       "title": "Update EIP-8037: restore a frame's state-gas on rollback",
       "author": "chfast",
-      "updatedAt": "2026-08-28T08:13:56Z",
+      "updatedAt": "2026-08-31T14:39:52Z",
       "additions": 17,
       "deletions": 6
-    },
-    {
-      "number": 12246,
-      "title": "Update EIP-8037: include non-zero balance to description of existent address",
-      "author": "awskii",
-      "updatedAt": "2026-08-26T15:43:18Z",
-      "additions": 1,
-      "deletions": 1
     },
     {
       "number": 12265,
       "title": "Update EIP-8037: return state-gas to gas_left when a child merges",
       "author": "chfast",
-      "updatedAt": "2026-08-29T09:40:40Z",
+      "updatedAt": "2026-08-31T16:01:25Z",
       "additions": 29,
       "deletions": 3
     },

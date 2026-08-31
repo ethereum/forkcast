@@ -2,6 +2,16 @@
   "eipId": 8272,
   "commits": [
     {
+      "sha": "0231fb05f52c94ad9f104927567e6e67c7e53ea7",
+      "date": "2026-08-31T08:11:38Z",
+      "message": "Update EIP-8272: move RECENTROOTREFLOAD off 0xB5",
+      "author": "AnkushinDaniil",
+      "prNumber": null,
+      "patch": "@@ -49,8 +49,8 @@ This specification is a delta against [EIP-8141](./eip-8141.md). Terms not defin\n | `RECENT_ROOT_STORAGE_DOMAIN`          |                                                `keccak256(\"RECENT_ROOT_STORAGE\")` |\n | `RECENT_ROOT_REFERENCE_ADDRESS_GAS`   |                                                       `ACCESS_LIST_ADDRESS_COST` |\n | `RECENT_ROOT_REFERENCE_GAS`           | `ACCESS_LIST_STORAGE_KEY_COST + 2 * KECCAK256_BASE_GAS + 7 * KECCAK256_WORD_GAS` |\n-| `TXPARAM_RECENT_ROOT_REFERENCE_COUNT` |                                                                           `0x0F` |\n-| `RECENTROOTREFLOAD`                   |                                                                           `0xB5` |\n+| `TXPARAM_RECENT_ROOT_REFERENCE_COUNT` |                                                                           `0x11` |\n+| `RECENTROOTREFLOAD`                   |                                                                           `0xB6` |\n | `RECENTROOTREFLOAD_GAS`               |                                                                              `3` |\n \n All concatenations below use fixed-length encodings. Domains are 32 bytes. Addresses are 20 bytes. Slots and indices are unsigned 64-bit big-endian integers. Roots, salts, source identifiers, entry hashes, and storage keys are 32 bytes.\n@@ -269,11 +269,11 @@ The [EIP-8141](./eip-8141.md) definitions of `max_gas`, `gas_used`, and fee sett\n \n One new `TXPARAM` index and one new opcode are added:\n \n-[EIP-8141](./eip-8141.md) assigns opcode `0xB4` to `SIGPARAM`. `RECENTROOTREFLOAD` uses `0xB5` to avoid that collision.\n+[EIP-8141](./eip-8141.md) assigns opcodes `0xB4` to `SIGPARAM` and `0xB5` to `SIGDATACOPY`. `RECENTROOTREFLOAD` uses `0xB6` to avoid those collisions.\n \n | Name                                 |  Value | Return value                 |\n | ------------------------------------ | -----: | ---------------------------- |\n-| `TXPARAM_RECENT_ROOT_REFERENCE_COUNT` | `0x0F` | `len(recent_root_references)` |\n+| `TXPARAM_RECENT_ROOT_REFERENCE_COUNT` | `0x11` | `len(recent_root_references)` |\n \n `TXPARAM(TXPARAM_RECENT_ROOT_REFERENCE_COUNT)` costs the standard `TXPARAM` gas.\n ",
+      "additions": 4,
+      "deletions": 4
+    },
+    {
       "sha": "a96bfaebd23ab7b9d00c63108bc65a2129c42952",
       "date": "2026-08-08T07:57:35Z",
       "message": "Update EIP-8272: Highlight privacy benefit upfront",
@@ -91,18 +101,10 @@
   ],
   "openPrs": [
     {
-      "number": 12220,
-      "title": "Update EIP-8272: move RECENTROOTREFLOAD off 0xB5",
-      "author": "AnkushinDaniil",
-      "updatedAt": "2026-08-29T19:20:43Z",
-      "additions": 4,
-      "deletions": 4
-    },
-    {
       "number": 12131,
       "title": "Update EIP-8272: specify RECENT_ROOT_CODE",
       "author": "AnkushinDaniil",
-      "updatedAt": "2026-08-12T09:46:28Z",
+      "updatedAt": "2026-08-31T16:16:00Z",
       "additions": 113,
       "deletions": 4
     },

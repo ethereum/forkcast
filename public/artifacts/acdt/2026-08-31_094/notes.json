@@ -1,0 +1,59 @@
+{
+  "meeting": "ACDT #094 - 2026-08-31",
+  "sections": [
+    {
+      "heading": "Glamsterdam Devnet 8 Status",
+      "summary": "Devnet 8 is public, running well with minor orphan blocks; a few clients still need to move to trunk branches.",
+      "timestamp": "00:06:01",
+      "body": "- Devnet 8 is performing well with only a few minor issues (orphan blocks); several builders and validators have joined including external block builders\n- The network is public and teams are encouraged to join and do light chaos testing\n- Most clients have moved to trunk branches, but Nimbus EL, Reth, and Grandine (CL side) still need to do so\n  - This is a blocker for the upcoming non-finality test networks\n- An eth/72 issue was found on devnet 8; added as a separate agenda item for the EL breakout\n- No known direct block builders (e.g., relay-connected builders) are testing on devnet 8 yet; Justin Traglia to follow up"
+    },
+    {
+      "heading": "Devnet 9 (Non-Finality Network) Planning",
+      "summary": "Devnet 9 is a ~1,000-node non-finality network launching tomorrow morning European time after a smoke test.",
+      "timestamp": "00:07:45",
+      "body": "- Parithosh is running a smoke test with trunk branches from every client; clients asked to confirm their branch readiness on the Steel Discord server\n- Once the smoke test passes, roughly 1,000 nodes will be spun up\n- Blobs will be enabled approximately 10 hours into the network\n- Genesis is set to start tomorrow morning European time\n- The network is not public and will only run for a few days\n- Discussion on whether non-finality testing needs heavy EL state:\n  - Potuz argued that meaningful ePBS/CL testing requires large EL state and heavy block execution to reproduce split-view scenarios\n  - Parithosh noted that a mainnet shadow fork at 1,000-node scale is too expensive; heavy-state testing will happen on a smaller mainnet shadow fork separately\n  - Agreement: non-finality network will proceed with clean/small EL state; heavy-state testing deferred to mainnet shadow fork"
+    },
+    {
+      "heading": "Mainnet Shadow Fork for snap/2 Testing",
+      "summary": "A Sepolia shadow fork will come first for snap/2 testing, with mainnet shadow fork to follow; timeline is mid-to-end September.",
+      "timestamp": "00:09:10",
+      "body": "- Toni proposed a mainnet shadow fork to test snap/2 with more history, originating from discussion with Gary and Karim\n- Parithosh suggested starting with a Sepolia shadow fork first (already planned), then moving to mainnet shadow fork\n  - Sepolia shadow fork timing: after agreeing on testnet date, waiting for client releases, and batching with that\n- Besu has a first version of snap/2 ready for testing; ethrex reported ready; Nethermind needs one more PR (merging soon)\n- No clients reported being unready for snap/2 testing\n- Karim asked about reorg testing for block access list healing; Parithosh confirmed reorgs can be triggered easily using a modified Nethermind fork\n  - For deeper reorgs (past first pivot block), Hive is the better testing venue\n- Toni and clients confirmed mid-to-end September timeline is acceptable\n- Hive Glamsterdam readiness: some nits still to iron out per [hive dashboard](https://hive.ethpandaops.io/#/group/glamsterdam)"
+    },
+    {
+      "heading": "MAX_SIGNED_INCLUSION_LIST_SIZE Increase",
+      "summary": "Barnabas proposed raising the P2P message size limit from ~8 KiB to ~41 KiB; decision deferred to async PR review.",
+      "timestamp": "00:13:48",
+      "body": "- The current MAX_SIGNED_INCLUSION_LIST_SIZE (8,348 bytes) was calculated assuming a single transaction in the inclusion list\n- With Progressive SSZ, the actual upper bound for a list of minimum-size (1-byte) transactions is 41,112 bytes\n- Toni argued 8 KiB is fine since calldata is static and blobs don't contribute to IL transaction size; also noted larger limits double worst-case propagation in equivocation scenarios (currently 256 KiB total)\n- Jihoon clarified this is about the P2P object size, not the inclusion list content limit itself, which remains 8 KiB\n- A related proposal adds a new gossip rule checking whether any transaction in the IL is empty\n- No decision made; discussion deferred to the CL breakout and async PR review\n- Inclusion list equivocation is not slashable but can be ignored with proof; full ILs are needed to verify signatures"
+    },
+    {
+      "heading": "engine_getInclusionList Alignment with Consensus Specs",
+      "summary": "Minor Engine API change proposed to ensure getInclusionList does not return empty transactions; EL teams asked to review.",
+      "timestamp": "00:18:49",
+      "body": "- Barnabas proposed aligning the Engine API endpoint to check that it does not return empty transactions\n- Justin Traglia noted the language in the PR could be improved\n- EL teams asked to review the change"
+    },
+    {
+      "heading": "REST SSZ Engine API PR Merge",
+      "summary": "Teams asked to review execution-APIs PR 793 so it can be merged; Marius needed to move status from draft but is on vacation.",
+      "timestamp": "00:19:29",
+      "body": "- Tamaghna requested client teams review [execution-APIs PR #793](https://github.com/ethereum/execution-apis/pull/793) so it can be merged as a first version\n  - Follow-up PRs planned for Progressive SSZ transition, execution witness addition, and OpenAPI migration\n- Suggestion to merge into an SSZ branch first, then a single PR from SSZ branch to main\n- Łukasz (Nethermind) left review comments and supports merging soon\n- Marius is the maintainer needed to move the PR status from Draft; he is on vacation, returning September 1st\n- Mikhail volunteered to do a review this week\n- Other potential reviewers mentioned: Felix, Matt"
+    },
+    {
+      "heading": "EIP-8037 Self-Destruct State Gas Refill",
+      "summary": "Decision: no self-destruct state gas refill change for Glamsterdam; complexity and self-destruct deprecation path outweigh the benefit.",
+      "timestamp": "00:23:01",
+      "body": "- Two EIP-8037 issues were raised by Pawel from a partial review; the self-destruct refill issue and a cross-frame gas laundering bug\n- **Self-destruct refill issue**: Create-and-self-destruct-in-same-transaction pattern charges state gas for contract creation but does not refill it when the contract is destroyed\n  - Pawel argued the pattern is compatible with state gas intent (no net state increase) and is actively used on mainnet (~1,500 accounts/day)\n  - Maria countered that the refill was deliberately removed in April for simplicity and to avoid incentivizing continued self-destruct usage; a proper ephemeral state mechanism should be introduced in a future fork instead\n  - Implementation is \"not trivial\" — requires checking original account state at end of transaction, and edge cases exist (e.g., balance sent after self-destruct scheduling)\n- Client positions on the self-destruct refill:\n  - Geth (Gary): prefers not to do it given approaching fork; would need more time to evaluate complexity\n  - Nethermind: needs time, deferred\n  - Besu: needs time to consider\n  - Erigon (Milen): deferred to Pawel but noted poor deprecation process for self-destruct\n  - Reth (Dragan): too late to change for Glamsterdam; re-evaluate for Hegota\n  - ethrex: agrees with Reth and Geth, not worth solving now\n- Consensus: no support from client teams to implement the self-destruct refill change; decision is **no-go for Glamsterdam**\n- Broader discussion on self-destruct deprecation process:\n  - Self-destruct removal is PFI'd for Hegota ([EIP-3298](https://eips.ethereum.org/EIPS/eip-6049) referenced for deprecation history)\n  - Multiple participants noted the deprecation was handled in reverse — alternative should have been introduced before making the feature more expensive\n  - State savings from self-destruct measured as less than 200MB/year\n  - Two companies identified as using the create-self-destruct pattern for user deposit sweeping"
+    },
+    {
+      "heading": "Undecodeable BAL Clarification",
+      "summary": "Execution-APIs PR merged to specify behavior for one undecodeable BAL case; most clients already implementing or merged.",
+      "timestamp": "00:35:20",
+      "body": "- Toni raised [execution-APIs PR #869](https://github.com/ethereum/execution-apis/pull/869) as a heads-up: one case where a BAL was undecodeable was previously unspecified and is now specified\n- The PR is already merged; Geth and Reth had the correct response; other clients are implementing or have merged fixes\n- No objections or further discussion needed from clients"
+    },
+    {
+      "heading": "EIP-8037 Cross-Frame Gas Refill Bug",
+      "summary": "A spec bug allows gas laundering from gas-left to reservoir across frames; decision deferred to async discussion and ACDC Thursday.",
+      "timestamp": "01:01:44",
+      "body": "- Pawel identified that the state gas refill mechanism works correctly within a single frame but not across frames, allowing regular gas to be \"laundered\" into state gas (reservoir) at frame boundaries\n  - The EIP's stated invariant — that regular gas cannot be transmuted into state gas — is not fully enforced\n  - This was partially fixed in earlier spec revisions but only locally, not transaction-wide\n- The proposed fix ([EIP PR #12265](https://github.com/ethereum/EIPs/pull/12265)) would adjust post-frame gas accounting to refill to the correct counter (gas-left vs reservoir)\n- Maria clarified this is a consensus-breaking change: different execution outcomes are possible, meaning blocks could produce different state roots\n  - Parithosh noted this could break sync for nodes applying the change against historical blocks\n- Implementation impact described as small by Pawel but clients were not confident without deeper review\n- Client positions:\n  - Geth (Gary): semantically correct but needs to evaluate complexity and edge cases; prefers deferral to ACDC\n  - Nethermind (Łukasz): needs to consult with Ben, their EIP-8037 champion\n  - Besu (Luis): interested in security impact analysis; raised question about whether child frame should be beneficiary of refilled gas\n  - Reth (Dragan): does not fully understand it yet, will review before ACDC\n  - ethrex: also needs to review\n- Timeline concern: if the change is adopted, it could potentially delay Sepolia fork from end of September to end of October, jeopardizing a December mainnet target\n- Decision deferred to ACDC Thursday; Maria to post discussion threads on Discord (EL R&D channel) requesting client opinions within 1-2 days\n  - Goal: arrive at ACDC with decision already made, not rehash the discussion\n- Dragan requested a worked example with concrete gas numbers (similar to the Svalbard examples); Maria agreed to provide one\n- Spencer noted the 8037 R&D channel could be used for async discussion"
+    }
+  ]
+}

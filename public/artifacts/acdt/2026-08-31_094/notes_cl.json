@@ -1,0 +1,29 @@
+{
+  "meeting": "ACDT #094 - 2026-08-31 (CL Breakout)",
+  "sections": [
+    {
+      "heading": "Gossip Check for Bids to Prevent Missed Proposals",
+      "summary": "Agreement to add a gossip check that ignores bids from builders with an exit in the previous payload, without mutating state.",
+      "timestamp": "00:00:59",
+      "body": "- The issue: a builder who has a voluntary exit in the parent payload is still considered active at bid gossip time because `apply_parent_execution_payload_envelope` runs after gossip validation. A proposer selecting such a bid would produce an invalid block.\n  - Nico Flaig (Lodestar) noted the proposer would not actually miss a proposal — Lodestar runs the state transition on both builder and local blocks and falls back to local if the builder block is invalid.\n  - However, the invalid high-value bid still suppresses other legitimate bids from propagating.\n- Justin Traglia opened [consensus-specs PR #5580](https://github.com/ethereum/consensus-specs/pull/5580) with two possible approaches:\n  1. Apply builder exit requests to the state before the gossip `is_active_builder` check.\n  2. Simply ignore bids where a matching builder exit (same pubkey and source address) exists in the previous full payload.\n- Potuz argued against the first approach, saying it would reintroduce pre-5094-style caching complexity, and questioned whether a spec-level fix is necessary at all — clients could just keep a pool of bids and select at proposal time.\n  - Potuz acknowledged the second approach (maintaining a map of exited addresses from the previous payload) is acceptable and simple.\n- Agreement: Justin Traglia will update the PR to use the simpler approach — check the builder pubkey and execution address against exits in the previous payload and reject the bid at gossip validation, without mutating state.\n- Teku confirmed this is already in their devnet 0 branch.\n- No other client teams objected or raised concerns."
+    },
+    {
+      "heading": "Testing Payloads with More Than 8192 Deposits",
+      "summary": "PK910 confirmed tooling already exists to test >8192 deposits on devnet 8 using a batching contract; will send Justin ETH to run tests.",
+      "timestamp": "00:10:31",
+      "body": "- Justin Traglia raised the need to test a payload containing more than 8,192 deposits on devnet 8.\n- PK910 said existing playbook/tooling with a batching contract should already support this via tournet, though the gas schedule changes may affect the maximum achievable count.\n- Justin noted he would need more than 8,000 ETH to perform top-up deposits himself; PK910 offered to send funds."
+    },
+    {
+      "heading": "Inclusion List Gossip Checks and MAX_SIGNED_INCLUSION_LIST_SIZE",
+      "summary": "Jihoon will clean up the consensus-specs PR adding a non-empty transaction assertion and the 4112 size limit; changes target FOCIL devnet 0.",
+      "timestamp": "00:11:24",
+      "body": "- Jihoon explained that EL gossip rules currently check whether the list of transactions exceeds 8 kilobytes, and the team is considering adding an additional gossip check to reject inclusion lists containing empty transactions.\n  - Without this check, the EL already filters out empty transactions, so behavior is unchanged, but adding it makes the gossip rule explicit.\n- Jihoon noted that some gossip checks need to be duplicated for request-response paths because the same objects (e.g., execution payload envelopes) can arrive via gossip or request-response, and both paths feed into the same handler.\n- On the `MAX_SIGNED_INCLUSION_LIST_SIZE` update: Jihoon confirmed they will proceed with the 4112 limit.\n- Jihoon will clean up the consensus-specs PR and open a new engine API PR (lacking permissions on the existing one).\n  - These changes are not part of Alpha 14 but should be included by teams working on FOCIL devnet 0.\n- Justin asked whether a fork-choice assert for the non-empty check should be kept; Jihoon said it is correct to include it if the P2P rule is added, but needs more thought if removed.\n- Further discussion deferred to the breakout call scheduled for the next day."
+    },
+    {
+      "heading": "PTC Attestation Validation Performance",
+      "summary": "Potuz found PTC attestation BLS verification dominates CPU time due to lack of subnets; Teku will investigate their own performance.",
+      "timestamp": "00:17:24",
+      "body": "- Potuz reported that on his personal C++ client branch, KZG from data columns and PTC attestation validation are the two largest CPU consumers during gossip processing.\n  - PTC attestation validation is primarily BLS signature verification.\n  - Regular attestations are less costly because subnet subscriptions limit the volume; PTC attestations have no subnets, so all arrive on a single topic.\n- Potuz's design goal was single-threaded fork-choice processing (avoiding fork-choice locks), but PTC attestation volume forced him to move validation to a background thread.\n  - Lighthouse's behavior of banning peers that don't consume messages fast enough exacerbated the issue, requiring multi-threaded gossip handling.\n- On the devnet specifically, aggregated attestations are very efficient (most blocks have only one aggregate), which makes PTC the dominant BLS workload.\n- Enrico (Teku) said Teku does not have the same single-thread design constraints but agreed they should check their own PTC validation performance.\n- Justin Traglia shared [vkzg (Vulcan KZG)](https://github.com/jtraglia/vkzg), a side project that offloads KZG cell recovery and proof computations to the GPU, which he has been running on his home node for a few weeks."
+    }
+  ]
+}

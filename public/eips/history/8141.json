@@ -2,6 +2,16 @@
   "eipId": 8141,
   "commits": [
     {
+      "sha": "b75cbe61150f09a44c38843be916417283d5b7bf",
+      "date": "2026-09-01T17:33:51Z",
+      "message": "Update EIP-8141: Remove a redundant check for frame's state gas limit",
+      "author": "raxhvl",
+      "prNumber": null,
+      "patch": "@@ -172,12 +172,11 @@ for i, frame in enumerate(tx.frames):\n     assert frame.mode < 3\n     assert frame.flags < 8\n     assert frame.target is None or len(frame.target) == 20\n-    assert frame.limits.state <= 2**64 - 1\n     assert frame.value < 2**256\n     assert frame.mode == SENDER or frame.value == 0\n     total_frame_execution_gas += frame.limits.execution\n     total_frame_gas += frame.limits.execution + frame.limits.state\n-    assert total_frame_gas <= 2**64 - 1\n+    assert total_frame_gas < 2**64\n \n     # Approval of execution is allowed only when target equals to None or tx.sender.\n     if frame.flags & APPROVE_EXECUTION:",
+      "additions": 1,
+      "deletions": 2
+    },
+    {
       "sha": "7d1c8bfb945cbb53479217df3bf1da67b3aa445b",
       "date": "2026-08-24T02:03:23Z",
       "message": "Update EIP-8141: account block execution gas before refund (EIP-7778)",
@@ -669,18 +679,10 @@
       "deletions": 0
     },
     {
-      "number": 12162,
-      "title": "Update EIP-8141: allow concurrent pending frame transactions on disjoint keyed-nonce sets",
-      "author": "AnkushinDaniil",
-      "updatedAt": "2026-08-21T19:44:05Z",
-      "additions": 10,
-      "deletions": 0
-    },
-    {
       "number": 12160,
       "title": "Update EIP-8141: enumerate the validation-prefix state dependency set for revalidation without re-simulation",
       "author": "AnkushinDaniil",
-      "updatedAt": "2026-08-21T13:28:14Z",
+      "updatedAt": "2026-09-01T07:39:58Z",
       "additions": 2,
       "deletions": 0
     }

@@ -16,6 +16,10 @@ const EIPS_DIR = path.join(__dirname, '../src/data/eips');
 // Active statuses — EIPs that are part of a fork pipeline (not declined/withdrawn)
 const ACTIVE_STATUSES = new Set(['Proposed', 'Considered', 'Scheduled', 'Included']);
 
+// Mirrors src/domain/eips/rankableEips.ts, which the audit cannot import (TS).
+const RANK_FORK = 'hegota';
+const RANKABLE_STATUSES = new Set(['Proposed', 'Considered']);
+
 // Priority order for current fork status (higher index = more advanced)
 const STATUS_PRIORITY = ['Proposed', 'Considered', 'Scheduled', 'Included'];
 
@@ -84,6 +88,33 @@ function audit(eips) {
   issues.sort((a, b) => a.id - b.id);
 
   return issues;
+}
+
+// The proposals the rank page puts on its board: still-undecided EIPs for
+// RANK_FORK, minus headliners and Informational EIPs.
+function getRankableEips(eips) {
+  return eips
+    .filter(eip => {
+      if (eip.type === 'Informational') return false;
+      const fr = (eip.forkRelationships || []).find(
+        r => r.forkName.toLowerCase() === RANK_FORK
+      );
+      if (!fr || fr.isHeadliner) return false;
+      return RANKABLE_STATUSES.has(getCurrentStatus(fr));
+    })
+    .sort((a, b) => a.id - b.id);
+}
+
+// EIPs whose spec PR has not merged upstream yet, so their spec link points at
+// the PR rather than ethereum.org.
+function getPendingEips(eips) {
+  return eips
+    .flatMap(eip => {
+      if (!eip.pendingPullRequest) return [];
+      const active = getHighestActiveStatus(eip);
+      return active ? [{ id: eip.id, ...active }] : [];
+    })
+    .sort((a, b) => a.id - b.id);
 }
 
 // Check that each recorded stage-change decision is reflected in the EIP's
@@ -193,6 +224,9 @@ Also checks that stage-change decisions recorded in call
 key_decisions.json files are reflected in the EIP forkRelationships,
 and that every EIP listed in a fork's Hardfork Meta EIP is present in
 Forkcast at the same stage or further along.
+
+Reports how many EIPs make up the rank page's board, and how many
+active EIPs are awaiting an upstream spec PR merge.
 `);
 }
 
@@ -255,6 +289,39 @@ async function main() {
     for (const d of decisionIssues) {
       console.log(`  EIP-${d.id} — ${d.fork} → ${d.status} (${d.call}, ${d.date})`);
       console.log(`    - ${d.reason}`);
+    }
+    console.log();
+  }
+
+  // --- Rank page board size ---
+  if (!options.fork || options.fork.toLowerCase() === RANK_FORK) {
+    const rankable = getRankableEips(eips);
+    const byLayer = { EL: 0, CL: 0, none: 0 };
+    for (const eip of rankable) byLayer[eip.layer || 'none']++;
+    console.log('Rank page');
+    console.log('-'.repeat(40));
+    console.log(
+      `  ${rankable.length} EIP(s) on the board ` +
+      `(${byLayer.EL} EL, ${byLayer.CL} CL, ${byLayer.none} without a layer).\n`
+    );
+  }
+
+  // --- Pending spec PRs ---
+  let pending = getPendingEips(eips);
+  if (options.fork) {
+    const forkLower = options.fork.toLowerCase();
+    pending = pending.filter(p => p.forkName.toLowerCase() === forkLower);
+  }
+  console.log('Pending spec PRs (awaiting an upstream merge)');
+  console.log('-'.repeat(40));
+  if (pending.length === 0) {
+    console.log('  None.\n');
+  } else {
+    const byFork = {};
+    for (const p of pending) (byFork[p.forkName] ||= []).push(p);
+    for (const fork of Object.keys(byFork).sort()) {
+      const group = byFork[fork];
+      console.log(`  ${fork} (${group.length}): ${group.map(p => p.id).join(', ')}`);
     }
     console.log();
   }

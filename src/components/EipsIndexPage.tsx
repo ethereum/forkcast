@@ -82,7 +82,7 @@ const EipsIndexPage: React.FC = () => {
     const stageSet = new Set<string>();
     const layerSet = new Set<string>();
 
-    eipsData.filter(eip => !isPendingEip(eip)).forEach(eip => {
+    eipsData.forEach(eip => {
       if (eip.status) statusSet.add(eip.status);
       // Add category or type since we display category || type
       const typeValue = eip.category || eip.type;
@@ -148,7 +148,7 @@ const EipsIndexPage: React.FC = () => {
 
   // Filter and sort EIPs
   const filteredAndSortedEips = useMemo(() => {
-    let filtered = eipsData.filter(eip => !isPendingEip(eip));
+    let filtered = [...eipsData];
 
     // Apply status filter
     if (statusFilters.size > 0) {
@@ -740,9 +740,17 @@ const EipsIndexPage: React.FC = () => {
                         )}
                       </td>
                       <td className="px-4 py-3 whitespace-nowrap">
-                        <span className="px-2 py-0.5 text-xs font-medium rounded ring-1 ring-slate-200 dark:ring-slate-500 bg-slate-100 text-slate-700 dark:bg-slate-700 dark:text-slate-300">
-                          {eip.status}
-                        </span>
+                        {isPendingEip(eip) ? (
+                          <Tooltip text={`Spec PR #${eip.pendingPullRequest.number} is not merged yet`}>
+                            <span className="px-2 py-0.5 text-xs font-medium rounded ring-1 ring-amber-200 dark:ring-amber-700 bg-amber-100 text-amber-700 dark:bg-amber-900/30 dark:text-amber-400">
+                              PR
+                            </span>
+                          </Tooltip>
+                        ) : (
+                          <span className="px-2 py-0.5 text-xs font-medium rounded ring-1 ring-slate-200 dark:ring-slate-500 bg-slate-100 text-slate-700 dark:bg-slate-700 dark:text-slate-300">
+                            {eip.status}
+                          </span>
+                        )}
                       </td>
                     <td className="px-4 py-3">
                       <div className="flex flex-wrap gap-1.5">
@@ -849,6 +857,14 @@ const EipsIndexPage: React.FC = () => {
                     )}
                   </span>
                   <div className="flex items-center gap-1.5 flex-wrap justify-end">
+                    {isPendingEip(eip) && (
+                      <span
+                        className="px-2 py-0.5 text-xs font-medium rounded bg-amber-100 text-amber-700 dark:bg-amber-900/30 dark:text-amber-400 border border-amber-200 dark:border-amber-700"
+                        title={`Spec PR #${eip.pendingPullRequest.number} is not merged yet`}
+                      >
+                        PR
+                      </span>
+                    )}
                     {layer && (
                       <span
                         className={`px-2 py-0.5 text-xs font-medium rounded ${

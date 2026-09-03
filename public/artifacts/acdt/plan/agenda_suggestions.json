@@ -1,63 +1,63 @@
 {
   "series": "ACDT",
-  "generated": "2026-08-27",
-  "for_call": "ACDT #94",
+  "generated": "2026-09-03",
+  "for_call": "ACDT #95",
   "suggestions": [
     {
-      "topic": "devnet-9 launch readiness: CL trunk branch status",
+      "topic": "EIP-8037 cross-frame state gas bug resolution and devnet impact",
       "priority": "high",
-      "rationale": "Thursday deadline (ACDE week, ~3 days ago) set for all CL clients to merge trunk branches. Prysm and Lighthouse were pending as of ACDT #93. Launch targets early this week.",
-      "related_eips": [],
-      "source": "ongoing_discussion"
-    },
-    {
-      "topic": "HiveChain blocker resolution for RPC compat testing",
-      "priority": "high",
-      "rationale": "PRs #1589 and #1585 block all RPC compat test writing for Glamsterdam. Lightclient assigned to unblock; status needed before devnet-9 chaos testing begins.",
-      "related_eips": [],
-      "source": "open_action_item"
-    },
-    {
-      "topic": "execution-specs release with fuzzing bug fixes",
-      "priority": "high",
-      "rationale": "Pawel's fuzzing surfaced bugs in blob access list and EL gas repricings; some fixes merged but release not yet cut. Remaining issues are partial blockers to continued fuzzing.",
-      "related_eips": [],
-      "source": "open_action_item"
-    },
-    {
-      "topic": "devnet-8 status update: Grandine attestation timing and head vote correctness",
-      "priority": "medium",
-      "rationale": "Head vote correctness degraded to 65–80% on devnet-8 with suspected Grandine attestation timing issue. No resolution mentioned; warrants status check.",
-      "related_eips": [],
-      "source": "devnet_update"
-    },
-    {
-      "topic": "Payload-flooding attack retest protocol",
-      "priority": "medium",
-      "rationale": "Toni's malicious-strategy tests ran on devnet-8 but unclear if full retest protocol (write-up, client notification for profiling) was followed as planned in ACDT #91.",
-      "related_eips": [],
-      "source": "open_action_item"
-    },
-    {
-      "topic": "EIP-7610 removal from Glamsterdam: ACDE decision outcome",
-      "priority": "medium",
-      "rationale": "ACDT #92 reached consensus to remove EIP-7610; jochem-brouwer assigned to raise at ACDE ~1.5 weeks ago (likely occurred Aug 21). Formal decision outcome needed.",
+      "rationale": "ACDC decision expected yesterday (Sept 4) on consensus-breaking EIP-8037 PR #12265. If fix is adopted, could require ~1-month Sepolia delay and new devnet cycle. Critical path decision for fork timeline.",
       "related_eips": [],
       "source": "deferred_decision"
     },
     {
-      "topic": "Fork transition testing plan for devnet-9",
-      "priority": "low",
-      "rationale": "devnet-9 will test fork transition before chaos phase begins. Details of transition scenario (e.g., Gloas → next fork) not discussed in recent calls.",
+      "topic": "Devnet-9 non-finality testing status and readiness for Sepolia",
+      "priority": "high",
+      "rationale": "Devnet-9 launched Sept 1 as chaos network. Need status update on stability, client participation (Nimbus EL, Reth, Grandine trunk branches), and whether it unblocked Sepolia shadow fork targeting mid-to-end September.",
       "related_eips": [],
       "source": "devnet_update"
     },
     {
-      "topic": "Circuit breaker config flags for Teku on devnet-9",
-      "priority": "low",
-      "rationale": "Teku circuit breaker implemented but values too permissive; Mehdi to share tighter config flags. Status update needed before devnet-9 chaos testing.",
+      "topic": "Sepolia shadow fork launch decision and client release status",
+      "priority": "high",
+      "rationale": "ACDT #94 targeted Sepolia for mid-to-end September pending devnet-9 stability and client releases. With Sept 3 today, need go/no-go decision and confirmation all clients have stable releases ready.",
       "related_eips": [],
       "source": "ongoing_discussion"
+    },
+    {
+      "topic": "HiveChain RPC compatibility test blocker resolution",
+      "priority": "medium",
+      "rationale": "ACDT #93 identified HiveChain PRs (#1589, #1585) blocking all RPC compat test writing for Glamsterdam. No resolution in ACDT #94. Critical for test coverage before public testnets.",
+      "related_eips": [],
+      "source": "open_action_item"
+    },
+    {
+      "topic": "REST SSZ Engine API (execution-apis PR #793) review status",
+      "priority": "medium",
+      "rationale": "PR is spec-complete but stuck in Draft awaiting EL team reviews. Blocking merge into SSZ branch. Needs push to unblock before testnets.",
+      "related_eips": [],
+      "source": "open_action_item"
+    },
+    {
+      "topic": "FOCIL inclusion list P2P message size and empty transaction handling",
+      "priority": "medium",
+      "rationale": "ACDT #94 proposed raising signed inclusion list size from 8KB to 41KB and rejecting empty transaction lists. No decisions reached; needs CL breakout discussion before testnet deployment.",
+      "related_eips": [],
+      "source": "ongoing_discussion"
+    },
+    {
+      "topic": "Devnet-8 RPC interoperability issues and eth_estimateGas consistency",
+      "priority": "low",
+      "rationale": "Stefan's ACDT #93 report highlighted eth_estimateGas inconsistencies across clients on devnet-8. Client teams asked to review; no follow-up yet. Should be addressed before Sepolia.",
+      "related_eips": [],
+      "source": "ongoing_discussion"
+    },
+    {
+      "topic": "Post-fork attestation deadline analysis planning",
+      "priority": "low",
+      "rationale": "EthPandaOps action item from ACDT #90 to gather timing data post-fork for potential 2s attestation deadline. Fork approaching; should confirm data collection plan is in place.",
+      "related_eips": [],
+      "source": "open_action_item"
     }
   ]
 }

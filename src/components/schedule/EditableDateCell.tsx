@@ -21,6 +21,8 @@ export interface EditableDateCellProps {
   isSourceLocked?: boolean;
   /** Date was put forward on ACD but not yet agreed. */
   isProposed?: boolean;
+  /** Network launched on this date and is still running. */
+  isLive?: boolean;
 }
 
 const EditableDateCell: React.FC<EditableDateCellProps> = ({
@@ -40,6 +42,7 @@ const EditableDateCell: React.FC<EditableDateCellProps> = ({
   gapType,
   isSourceLocked,
   isProposed,
+  isLive,
 }) => {
   const [isEditing, setIsEditing] = useState(false);
   const [editValue, setEditValue] = useState('');
@@ -48,8 +51,9 @@ const EditableDateCell: React.FC<EditableDateCellProps> = ({
   const isLocked = dateKey in lockedDates;
   const displayDate = lockedDates[dateKey] ?? calculatedDate;
 
-  // Check if date is overdue (past today and not completed)
-  const isOverdue = !isCompleted && displayDate && (() => {
+  // Check if date is overdue (past today and the milestone hasn't happened).
+  // A live network's date is its launch, so it is in the past by definition.
+  const isOverdue = !isCompleted && !isLive && displayDate && (() => {
     const parsed = parseShortDate(displayDate);
     if (!parsed) return false;
     const today = new Date();
@@ -225,6 +229,12 @@ const EditableDateCell: React.FC<EditableDateCellProps> = ({
         <Tooltip text="This date is in the past" position="top">
           <div className="inline-flex items-center justify-center w-4 py-0.5 rounded text-xs font-medium bg-amber-100 text-amber-700 dark:bg-amber-900/20 dark:text-amber-400">
             ⚠
+          </div>
+        </Tooltip>
+      ) : isLive ? (
+        <Tooltip text="Launched on this date and still running." position="top">
+          <div className="inline-flex items-center justify-center w-4 py-0.5 rounded text-xs font-medium bg-green-100 text-green-800 dark:bg-green-900/20 dark:text-green-300">
+            ●
           </div>
         </Tooltip>
       ) : isProposed && displayDate === calculatedDate ? (

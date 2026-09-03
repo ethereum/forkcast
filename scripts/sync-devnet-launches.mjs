@@ -2,7 +2,8 @@
 /**
  * Generate devnet-launches.json from scraped devnet spec files.
  * Reads all {series}-devnet-*.json files and extracts launch dates
- * from the genesisTime field for devnets that have already launched.
+ * from the genesisTime field for devnets that have already launched,
+ * and marks which of them are still running, per cartographoor.
  *
  * Usage: node scripts/sync-devnet-launches.mjs
  */
@@ -19,6 +20,24 @@ const OUTPUT_PATH = join(OUTPUT_DIR, 'devnet-launches.json');
 // Series to track — add new fork names here as they start devnets
 const SERIES = ['glamsterdam', 'hegota'];
 
+const CARTOGRAPHOOR_URL =
+  'https://ethpandaops-platform-production-cartographoor.ams3.digitaloceanspaces.com/networks.json';
+
+// Live networks, by cartographoor key (e.g. "glamsterdam-devnet-9"). Cartographoor
+// is the only source for this: a scraped spec says when a devnet starts, never
+// when it is torn down. On failure this throws, leaving the last good file in
+// place for the next run.
+async function fetchActiveNetworkKeys() {
+  const res = await fetch(CARTOGRAPHOOR_URL);
+  if (!res.ok) throw new Error(`Cartographoor fetch failed: ${res.status} ${res.statusText}`);
+  const { networks = {} } = await res.json();
+  return new Set(
+    Object.entries(networks)
+      .filter(([, network]) => network.status === 'active')
+      .map(([key]) => key),
+  );
+}
+
 function formatDate(unixSeconds) {
   const d = new Date(unixSeconds * 1000);
   return d.toLocaleDateString('en-US', {
@@ -34,6 +53,7 @@ function formatDateISO(unixSeconds) {
   return d.toISOString().slice(0, 10);
 }
 
+const activeKeys = await fetchActiveNetworkKeys();
 const result = {};
 
 for (const series of SERIES) {
@@ -50,7 +70,12 @@ for (const series of SERIES) {
     if (spec.genesisTime * 1000 > Date.now()) continue;
 
     const version = parseInt(file.replace(prefix, '').replace('.json', ''), 10);
-    launches.push({ version, date: formatDate(spec.genesisTime), dateISO: formatDateISO(spec.genesisTime) });
+    launches.push({
+      version,
+      date: formatDate(spec.genesisTime),
+      dateISO: formatDateISO(spec.genesisTime),
+      active: activeKeys.has(`${prefix}${version}`),
+    });
   }
 
   launches.sort((a, b) => a.version - b.version);

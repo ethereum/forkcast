@@ -5,6 +5,7 @@ import ForkGanttChart from './ForkGanttChart';
 import EditableDateCell from './EditableDateCell';
 import { Tooltip } from '../ui';
 import { getUpgradeById } from '../../data/upgrades';
+import type { ForkProgress } from '../../types/timeline';
 
 type MobileFork = 'fusaka' | 'glamsterdam' | 'hegota';
 
@@ -22,11 +23,18 @@ interface PlanningTableState {
 const projectedActivation = (id: string): string =>
   getUpgradeById(id)?.projectedActivation ?? '';
 
+// The table renders one row per projected devnet and merges the known devnets in
+// by index, so a count below the number a fork has declared would silently drop
+// the tail of the list.
+const declaredDevnetCount = (progress: ForkProgress): number =>
+  progress.phases.find(phase => phase.phaseId === 'development')?.devnets?.length ??
+  DEFAULT_PHASE_DURATIONS.DEVNET_COUNT;
+
 const DEFAULT_STATE: PlanningTableState = {
   glamsterdamMainnetDate: projectedActivation('glamsterdam'),
   hegotaMainnetDate: projectedActivation('hegota'),
-  glamsterdamDevnetCount: 8,
-  hegotaDevnetCount: 6,
+  glamsterdamDevnetCount: declaredDevnetCount(GLAMSTERDAM_PROGRESS),
+  hegotaDevnetCount: declaredDevnetCount(HEGOTA_PROGRESS),
   lockedDates: {},
   phaseDurations: DEFAULT_PHASE_DURATIONS,
 };
@@ -858,6 +866,7 @@ const SchedulePage: React.FC = () => {
                                           gapText={glamDevnetGap.text}
                                           gapIsNegative={glamDevnetGap.isNegative}
                                           gapType="variable"
+                                          isLive={glamDevnet.status === 'in-progress'}
                                         />
                                       );
                                     })() : (
@@ -883,6 +892,7 @@ const SchedulePage: React.FC = () => {
                                           gapText={hegotaDevnetGap.text}
                                           gapIsNegative={hegotaDevnetGap.isNegative}
                                           gapType="variable"
+                                          isLive={hegotaDevnet.status === 'in-progress'}
                                         />
                                       );
                                     })() : (
@@ -933,6 +943,12 @@ const SchedulePage: React.FC = () => {
                       };
                       const testnetMinGap: Record<string, number> = { 'Sepolia': 30, 'Hoodi': 14 };
 
+                      // Once a fork's first public testnet is live, the minimum gaps have
+                      // served their purpose, and devnets keep running past it — so the row
+                      // above it can postdate it and its own gap measures nothing.
+                      const glamFirstTestnet = glamsterdamTestnetPhase?.testnets?.find(t => t.status !== 'deprecated');
+                      const glamFirstTestnetIsLive = !!glamFirstTestnet?.date;
+
                       return testnetOrder.map((testnetName) => {
                         const currentGapTooltip = testnetGapTooltip[testnetName];
                         const minGap = testnetMinGap[testnetName];
@@ -976,6 +992,7 @@ const SchedulePage: React.FC = () => {
                                   const glamTestnetDate = glamTestnet.date || glamTestnet.proposedDate || glamTestnet.projectedDate || '';
                                   const effectiveGlamTestnetDate = getEffectiveDate('glamsterdam', 'public-testnets', testnetName, glamTestnetDate);
                                   const glamTestnetGap = calculateGap(effectiveGlamTestnetDate, 'glamsterdam');
+                                  const showGap = !(glamFirstTestnetIsLive && testnetName === glamFirstTestnet?.name);
                                   return (
                                     <EditableDateCell
                                       fork="glamsterdam"
@@ -987,12 +1004,13 @@ const SchedulePage: React.FC = () => {
                                       lockedDates={lockedDates}
                                       onLock={lockDate}
                                       onUnlock={unlockDate}
-                                      gapText={glamTestnetGap.text}
-                                      gapIsNegative={glamTestnetGap.isNegative}
-                                      gapIsWarning={minGap != null && glamTestnetGap.days != null && glamTestnetGap.days < minGap}
-                                      gapTooltip={currentGapTooltip}
+                                      gapText={showGap ? glamTestnetGap.text : ''}
+                                      gapIsNegative={showGap && glamTestnetGap.isNegative}
+                                      gapIsWarning={!glamFirstTestnetIsLive && minGap != null && glamTestnetGap.days != null && glamTestnetGap.days < minGap}
+                                      gapTooltip={showGap ? currentGapTooltip : undefined}
                                       gapType="fixed"
                                       isProposed={!glamTestnet.date && !!glamTestnet.proposedDate}
+                                      isLive={glamTestnet.status === 'in-progress'}
                                     />
                                   );
                                 })()

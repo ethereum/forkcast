@@ -10,7 +10,9 @@ export const GlamsterdamTimeline: React.FC = () => {
   const [isExpanded, setIsExpanded] = useState(false);
   const { trackLinkClick } = useAnalytics();
   const { containerRef, lineRef, lastCircleRef } = useTimelineLine(isExpanded);
-  const activeIndex = phases.findIndex(p => p.status === 'in-progress');
+  // Devnets and Platåberget run in parallel, so highlight the furthest-along
+  // of the active phases.
+  const activeIndex = phases.reduce((last, p, i) => (p.status === 'in-progress' ? i : last), -1);
   const highlightIndex = activeIndex >= 0 ? activeIndex : phases.length - 1;
   const lastPhaseId = phases[phases.length - 1].id;
 

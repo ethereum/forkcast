@@ -10,9 +10,9 @@ export const GLAMSTERDAM_TIMELINE_PHASES: TimelinePhase[] = [
   {
     id: 'devnets',
     title: 'Devnets',
-    dateRange: 'Complete',
-    description: 'Client teams implement and test Glamsterdam changes on internal development networks.',
-    status: 'completed'
+    dateRange: 'Ongoing',
+    description: 'Client teams implement and test Glamsterdam changes on internal development networks. Devnet-8 and Devnet-9 are live alongside the public testnets, and Devnet-10 is still to come.',
+    status: 'in-progress'
   },
   {
     id: 'plataberget',
@@ -24,14 +24,14 @@ export const GLAMSTERDAM_TIMELINE_PHASES: TimelinePhase[] = [
   {
     id: 'sepolia',
     title: 'Sepolia Testnet Deployment',
-    dateRange: 'TBD',
+    dateRange: 'Oct 6 (proposed)',
     description: 'Deploy Glamsterdam to the permissioned validator testnet.',
     status: 'upcoming'
   },
   {
     id: 'hoodi',
     title: 'Hoodi Testnet Deployment',
-    dateRange: 'TBD',
+    dateRange: 'Oct 26 (proposed)',
     description: 'Deploy Glamsterdam to the permissionless validator testnet for final testing.',
     status: 'upcoming'
   },
@@ -244,19 +244,24 @@ const RAW_GLAMSTERDAM_PROGRESS: ForkProgress = {
     },
     {
       phaseId: 'development',
-      status: 'completed',
+      status: 'in-progress',
       actualStartDate: 'Feb 2026',
-      actualEndDate: 'Jul 14, 2026',
-      progressNotes: 'Devnet series complete, testing moved to public testnets',
+      progressNotes: 'Devnet-8 and Devnet-9 are live alongside the public testnets; Devnet-10 still to come',
+      // Only the planned devnets are declared here. Once one launches,
+      // enrichDevnetDates takes over its date and status from
+      // devnet-launches.json. Devnet-8 doubles as the Platåberget public testnet.
       devnets: [
-        { name: 'Devnet-0', status: 'completed', date: 'Apr 24, 2026' },
-        { name: 'Devnet-1', status: 'completed', date: 'Apr 29, 2026' },
-        { name: 'Devnet-2', status: 'completed', date: 'May 1, 2026' },
-        { name: 'Devnet-3', status: 'completed', date: 'May 6, 2026' },
-        { name: 'Devnet-4', status: 'upcoming', projectedDate: 'Q2 2026' },
-        { name: 'Devnet-5', status: 'upcoming', projectedDate: 'Q2 2026' },
-        { name: 'Devnet-6', status: 'upcoming', projectedDate: 'Q2 2026' },
-        { name: 'Devnet-7', status: 'upcoming', projectedDate: 'Jul 15, 2026' }
+        { name: 'Devnet-0', status: 'upcoming' },
+        { name: 'Devnet-1', status: 'upcoming' },
+        { name: 'Devnet-2', status: 'upcoming' },
+        { name: 'Devnet-3', status: 'upcoming' },
+        { name: 'Devnet-4', status: 'upcoming' },
+        { name: 'Devnet-5', status: 'upcoming' },
+        { name: 'Devnet-6', status: 'upcoming' },
+        { name: 'Devnet-7', status: 'upcoming' },
+        { name: 'Devnet-8', status: 'upcoming' },
+        { name: 'Devnet-9', status: 'upcoming' },
+        { name: 'Devnet-10', status: 'upcoming' }
       ]
     },
     {
@@ -269,9 +274,8 @@ const RAW_GLAMSTERDAM_PROGRESS: ForkProgress = {
       // (glamsterdam-devnet-8) in its place.
       testnets: [
         { name: 'Platåberget', status: 'completed', date: 'Aug 13, 2026' },
-        // Fork slots put forward on ACD: Sepolia epoch 351232 (ts 1790606688),
-        // Hoodi epoch 132352 (ts 1793036568). Not yet agreed.
-        { name: 'Sepolia', status: 'upcoming', proposedDate: 'Sep 28, 2026' },
+        // Fork slots put forward on ACD, not yet agreed.
+        { name: 'Sepolia', status: 'upcoming', proposedDate: 'Oct 6, 2026' },
         { name: 'Hoodi', status: 'upcoming', proposedDate: 'Oct 26, 2026' }
       ]
     },
@@ -361,8 +365,10 @@ const RAW_HEGOTA_PROGRESS: ForkProgress = {
   ]
 };
 
+type DevnetLaunch = { version: number; date: string; active: boolean };
+
 function enrichDevnetDates(progress: ForkProgress, forkKey: string): ForkProgress {
-  const launches = (devnetLaunches as Record<string, { version: number; date: string }[]>)[forkKey] ?? [];
+  const launches = (devnetLaunches as Record<string, DevnetLaunch[]>)[forkKey] ?? [];
   if (!launches.length) return progress;
 
   return {
@@ -374,10 +380,12 @@ function enrichDevnetDates(progress: ForkProgress, forkKey: string): ForkProgres
         devnets: phase.devnets.map(devnet => {
           const version = parseInt(devnet.name.replace('Devnet-', ''), 10);
           const launch = launches.find(l => l.version === version);
-          if (launch) {
-            return { ...devnet, status: 'completed' as const, date: launch.date };
-          }
-          return devnet;
+          if (!launch) return devnet;
+          return {
+            ...devnet,
+            status: launch.active ? 'in-progress' : 'completed',
+            date: launch.date,
+          };
         }),
       };
     }),

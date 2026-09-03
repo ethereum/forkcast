@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { Link } from '../navigation';
 import { KeyDecision, EIP } from '../../types/eip';
 import { getKeyDecisionTagColor } from '../../utils/colors';
+import { PRE_RECORDING_LABEL } from '../../utils/timestamp';
 import { eipById } from '../../data/eips';
 
 interface SyncConfig {
@@ -303,6 +304,7 @@ const KeyDecisionsSection: React.FC<KeyDecisionsSectionProps> = ({
       const offset = timestampToSeconds(syncConfig.transcriptStartTime) -
                      timestampToSeconds(syncConfig.videoStartTime);
       const adjustedSeconds = transcriptSeconds - offset;
+      if (adjustedSeconds < 0) return PRE_RECORDING_LABEL;
       const hours = Math.floor(adjustedSeconds / 3600);
       const minutes = Math.floor((adjustedSeconds % 3600) / 60);
       const seconds = Math.floor(adjustedSeconds % 60);

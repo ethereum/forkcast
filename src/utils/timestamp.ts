@@ -43,7 +43,16 @@ export function getAdjustedVideoTime(timestamp: string, sync?: SyncConfig): numb
 }
 
 /**
+ * Shown instead of a video position when a transcript moment falls before the
+ * start of the recording, which happens when a call's video misses its opening.
+ */
+export const PRE_RECORDING_LABEL = 'before recording';
+
+/**
  * Sync-adjusted timestamp formatted for display (HH:MM:SS)
  */
-export const getDisplayTimestamp = (timestamp: string, sync?: SyncConfig): string =>
-  secondsToTimestamp(getAdjustedVideoTime(timestamp, sync));
+export const getDisplayTimestamp = (timestamp: string, sync?: SyncConfig): string => {
+  const adjustedSeconds = getAdjustedVideoTime(timestamp, sync);
+  if (adjustedSeconds < 0) return PRE_RECORDING_LABEL;
+  return secondsToTimestamp(adjustedSeconds);
+};

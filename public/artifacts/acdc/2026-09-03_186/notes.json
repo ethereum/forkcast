@@ -1,0 +1,53 @@
+{
+  "meeting": "ACDC #186 - 2026-09-03",
+  "sections": [
+    {
+      "heading": "Non-Finality DevNet (DevNet 9) Fork Results",
+      "summary": "The 1,000-node non-finality DevNet forked yesterday but is not finalizing due to issues in Prysm, Grandine, and Teku.",
+      "timestamp": "00:06:09",
+      "body": "- The non-finality DevNet with 1,000 nodes forked yesterday; the network is currently not finalizing.\n- Prysm failed the Gloas state transition because it was running a develop branch that does not include the latest Alpha 14 spec changes; the DevNet 8 branch or Terrence's branch would have worked.\n  - Prysm noted they are not 33% of the network, so the network should finalize without them; a DevNet 8 image or waiting for the pending PR to merge into develop would fix the issue.\n- Grandine experienced a live lock and went out of memory.\n- Teku had memory starvation causing canonical blocks to be marked as bad, which led to subsequent attestation drops.\n- Builder nodes ran out of memory because they are subscribed to all DevNets; ethpandaops is looking at bumping resources or reducing subnet subscriptions.\n- Recovery strategy to be decided async — options include wiping nodes and restarting with DevNet 8 images or waiting for Prysm fixes to merge."
+    },
+    {
+      "heading": "DevNet 8 Block Hash Collision Bug and Spec Fix",
+      "summary": "A spec change adding a check that block hash does not equal parent hash is trivial for clients; beta.0 spec release planned today.",
+      "timestamp": "00:08:03",
+      "body": "- A bug was found on DevNet 8 where proposing a block with the same hash as its parent could halt the entire network.\n- Lodestar already fixed the issue; Lighthouse and other clients have related but not identical concerns to investigate.\n- A consensus spec PR ([consensus-specs #5594](https://github.com/ethereum/consensus-specs/pull/5594)) adds a simple check ensuring the block hash does not match the parent block hash.\n- All clients confirmed the implementation is trivial:\n  - Prysm: \"can't merge but it's already there; trivial to implement.\"\n  - Teku: already implemented, waiting for spec.\n  - Lodestar: PR coming today.\n- Justin Traglia plans to cut the beta.0 spec release today.\n- The EF spec team (sponcer) will tag release v8.1.4 ASAP; ethrex can have it between today and tomorrow; Geth can have it on master very soon."
+    },
+    {
+      "heading": "DevNet 10 Planning",
+      "summary": "A DevNet 10 is needed to demonstrate at least one stable fork transition with no client issues, targeted for next week.",
+      "timestamp": "00:12:21",
+      "body": "- Parithosh stated a DevNet 10 is probably needed because they want to see at least one stable transition without any client issues before proceeding to testnets.\n- Tentatively planned for the following week if client images are ready.\n- Optimism wanted to test on DevNet 9, but non-finality made those tests unusable; Lido also expected to join DevNet 10."
+    },
+    {
+      "heading": "EIP-8037 State Gas Cross-Frame Refill Fix",
+      "summary": "Consensus reached: the EIP-8037 bug fix will proceed — all EL clients support or will not oppose; spec change to be merged and deployed on DevNet 8.",
+      "timestamp": "00:13:19",
+      "body": "- Maria Silva summarized the EIP-8037 (state gas) bug found by Pavel and the question of whether to fix it before Glamsterdam.\n- Geth and Erigon implemented the fix; Stefan confirmed it was tested on DevNet 8 and clients could sync successfully.\n- Discord poll results: Erigon and Geth support the change; Reth and Nethermind will not oppose the majority; Besu is in support; ethrex can deliver between today and tomorrow.\n- No objections raised on the call.\n- Decision: proceed with the change. Next steps are merging the spec change and having all clients implement and deploy on DevNet 8.\n  - Rollout should be sequenced so all clients update within roughly the same epochs.\n  - Clients should wait for the formal spec release before cutting their implementations.\n- Nethermind (Ben Adams) asked about the deadline; Parithosh clarified it just needs to not break DevNet and can roll out as soon as every client has it."
+    },
+    {
+      "heading": "Engine API SSZ Migration",
+      "summary": "The SSZ Engine API spec was merged upstream yesterday; it is implementable by clients, and iteration can continue as needed.",
+      "timestamp": "00:16:46",
+      "body": "- Marius reported the SSZ Engine API specification was merged into the execution-APIs master branch yesterday.\n- The spec is now shared and implementable; smaller changes may still come through iteration.\n- Marius noted he did not see the urgency behind the push over the last couple of weeks but acknowledged the spec is in a good state.\n- Kevaundray asked in chat whether the SSZ specs are implementable; Marius confirmed they are, with possible minor changes ahead."
+    },
+    {
+      "heading": "Hegotá EIP Updates: EIP-8148 and EIP-8205",
+      "summary": "Lido presented implementation-ready status for EIP-8148 (custom sweep thresholds) and EIP-8205 (withdrawal credential pre-registration); client feedback requested within two weeks.",
+      "timestamp": "00:19:00",
+      "body": "- Greg K (Lido) provided a 2-minute update on two EIPs proposed for inclusion in Hegotá.\n- EIP-8148 (custom sweep thresholds for 0x02 validators): EIP updated, feature spec on a feature branch in the consensus-specs repo, system contract PR open, draft POC from Prysm ([Prysm #17338](https://github.com/OffchainLabs/prysm/pull/17338)), and tests ready (PR closed pending CFI status).\n- EIP-8205 (withdrawal credential pre-registration): EIP updated, feature spec in consensus-specs, system contract PR open, and a landing page at [eip8205.com](https://eip8205.com/).\n- Client teams are invited to review both EIPs, estimate complexity, and provide feedback within the next two weeks ahead of the first CFI/DFI discussion."
+    },
+    {
+      "heading": "Sepolia Glamsterdam Fork Date",
+      "summary": "Consensus: Sepolia Glamsterdam fork date set to October 6; Hoodi date deferred to a future call.",
+      "timestamp": "00:23:05",
+      "body": "- Parithosh opened discussion on testnet fork dates, noting he had hoped for a successful NFF DevNet first. Two candidate dates were proposed: September 28 or October 6 for Sepolia, with Hoodi tentatively October 26.\n- Teku (Enrico) suggested setting only Sepolia today and deferring Hoodi, given recent NFF issues; the call agreed to this approach.\n- Client positions on Sepolia date:\n  - Lighthouse: September 28 reasonable, October 6 also fine.\n  - Teku: September is reasonable but comfortable with either.\n  - Prysm (James in chat): prefers October.\n  - Grandine: the later the better.\n  - Lodestar: no preference, will go with majority.\n  - Nimbus: recommended pushing to at least October 6 to allow a successful DevNet fork transition first.\n- Dima (Lido) expressed concern about Hoodi on October 26 being right before Devcon and preferred at least one month between Sepolia and Hoodi; suggested November 11 for Hoodi.\n- Decision: October 6 for Sepolia Glamsterdam fork. Hoodi date to be decided in a future call.\n- Parithosh will update [PM PR #2205](https://github.com/ethereum/pm/pull/2205) with the October 6 date; client teams asked to comment/approve on the PR.\n- If DevNet 10 fails to transition smoothly, the date can be revisited on ACDT or ACDE before any client cuts a release.\n- The topic will also be brought up on ACDE next week for confirmation."
+    },
+    {
+      "heading": "Hegotá EIP Tier Rankings Deadline",
+      "summary": "All client teams must publish Hegotá EIP tier rankings with rationale by at least 24 hours before the next ACDC, targeting mid-September.",
+      "timestamp": "00:30:38",
+      "body": "- Tier rankings are due by September 10; ACDE next week plans to start discussing tier lists.\n- CL teams should have their tier lists ready by the week after at the latest.\n- Forecast tool recommended for organizing and sharing tier lists, but any format is acceptable.\n- Each tier list should include a rationale write-up explaining S/A/B/D rankings.\n- nixo (chat) requested lists be submitted at least 24 hours before ACDC to allow preparation time; Parithosh agreed.\n- Justin Florentine (Besu) asked whether teams must opine on all EIPs; Parithosh clarified it is not required, but having no opinion on an EL EIP effectively signals DFI (don't include)."
+    }
+  ]
+}

@@ -1,5 +1,6 @@
 import React, { useEffect, useRef } from 'react';
 import { KeyDecision } from '../../types/eip';
+import { PRE_RECORDING_LABEL } from '../../utils/timestamp';
 import KeyDecisionsSection from './KeyDecisionsSection';
 
 interface HighlightItem {
@@ -79,6 +80,7 @@ const TldrSummary: React.FC<TldrSummaryProps> = ({
   const getDisplayTimestamp = (timestamp: string): string => {
     if (syncConfig?.transcriptStartTime && syncConfig?.videoStartTime) {
       const adjustedSeconds = getAdjustedVideoTime(timestamp);
+      if (adjustedSeconds < 0) return PRE_RECORDING_LABEL;
       const hours = Math.floor(adjustedSeconds / 3600);
       const minutes = Math.floor((adjustedSeconds % 3600) / 60);
       const seconds = Math.floor(adjustedSeconds % 60);

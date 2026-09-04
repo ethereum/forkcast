@@ -14,8 +14,8 @@ Everything the site renders is available as JSON. One fetch each, no auth, no pa
 
 ### `/api/eips.json`
 The full EIP dataset — every EIP Forkcast tracks, unfiltered. Each record carries:
-- `id`, `title`, `status`, `description`, `author`, `type`
-- `forkRelationships[]` — one per tracked upgrade (empty array when the EIP is not tracked for any), each with `statusHistory[]` of `{ status, call, date }`, where `status` is the inclusion stage (`Proposed`, `Considered`, `Scheduled`, `Included`, `Declined`, `Informational`, `Networking`, `Withdrawn`), plus `champions[]` (who is driving it in that upgrade) and `isHeadliner`. This is the answer to "is EIP X in upgrade Y".
+- `id`, `title`, `status`, `description`, `author`, `type`, `createdDate`
+- `forkRelationships[]` — one per tracked upgrade (empty array when the EIP is not tracked for any), each with `forkName` and a `statusHistory[]` of `{ status, call, date }`, where `status` is the inclusion stage (`Proposed`, `Considered`, `Scheduled`, `Included`, `Declined`, `Informational`, `Networking`, `Withdrawn`). `champions[]` (who is driving it in that upgrade) and `isHeadliner` appear on the relationship when set. This is the answer to "is EIP X in upgrade Y" — match on `forkName`, which is unaccented (`Hegota`, not `Hegotá`).
 - `laymanDescription`, `benefits`, `tradeoffs`, `faq`, `stakeholderImpacts` — plain-language prose written for exactly this purpose. Quote it rather than paraphrasing the spec.
 - `reviewer` (`bot` | `expert` | `staff`) — provenance of that prose. `bot` means no human has vetted it yet.
 - `requires[]` — EIP dependencies. `category`, `layer` (`EL` | `CL`) — optional, present when available.
@@ -32,7 +32,7 @@ Network upgrades with `status`, activation details (block/epoch/slot, once shipp
 Every EIP with a dated inclusion-stage change, newest first, one row each: `lastStageChange`, `lastStageChangeFork`, `currentStage`. `/api/eips.json` has the same history nested per EIP — this is the flat chronology, so use it to answer "what changed lately" or "what moved in this window" without walking the whole dataset.
 
 ### `/search-light.json`
-The editorial corpus for every call in one file (~825 KB): TL;DRs, detailed notes, and key decisions, each with a timestamp into the recording. Use this for "what was decided about X" across all calls.
+The editorial corpus for every call in one file (~950 KB): TL;DRs, detailed notes, and key decisions, each with a timestamp into the recording. Use this for "what was decided about X" across all calls.
 
 Note this is the *summarized* tier. Raw transcripts are a separate, much larger tier (see below) — call summaries are edited, transcripts are people thinking out loud mid-sentence, so quoting transcripts as protocol fact is unreliable.
 

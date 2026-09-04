@@ -2,6 +2,54 @@
   "eipId": 8037,
   "commits": [
     {
+      "sha": "052029f3625328d6f51dec8e62a7090201e66f17",
+      "date": "2026-09-04T12:01:07Z",
+      "message": "Update EIP-8037: remove unused evm_execution_gas_used counter",
+      "author": "chfast",
+      "prNumber": null,
+      "patch": "@@ -99,14 +99,13 @@ Because [EIP-2780](./eip-2780.md) makes intrinsic gas state-independent, no stat\n \n This means that the `state_gas_reservoir` holds gas that exceeds [EIP-7825](./eip-7825.md)'s budget. Additionally, three new counters are introduced:\n \n-- `evm_execution_gas_used` encodes the total execution-gas used by the transaction, and it is initialized as `evm_execution_gas_used = 0`.\n - `evm_state_gas_used` encodes the total state-gas used by the transaction, and it is initialized as `evm_state_gas_used = 0`.\n - `state_gas_from_gas_left` encodes how much of the current frame's `gas_left` has been drawn for state-gas charges and not yet credited back (i.e., the state-gas not covered by the reservoir). Like `gas_left`, it is frame-local: it is initialized to `0` at the start of each call frame and is used to refill state-gas in last-in, first-out (LIFO) order.\n - `state_gas_baseline` records the value of `state_gas_reservoir` at the start of the state changes a frame's rollback undoes, which for a call frame is its entry. Like `gas_left`, it is frame-local.\n \n The gas counters operate as follows:\n \n-- Execution-gas charges deduct from `gas_left` only and increment `evm_execution_gas_used`.\n+- Execution-gas charges deduct from `gas_left` only.\n - State-gas charges deduct from `state_gas_reservoir` first. When the reservoir is exhausted, the remainder deducts from `gas_left` and increments `state_gas_from_gas_left` by that remainder. State-gas charges increment `evm_state_gas_used`.\n - If a state creation is undone during execution, the corresponding amount of state-gas is **refilled in last-in, first-out (LIFO) order**: because charges deduct from `state_gas_reservoir` first and from `gas_left` last, refills credit the pool charged last (`gas_left`) first. It is credited to `gas_left` first (decrementing `state_gas_from_gas_left` by the same amount) up to the current value of `state_gas_from_gas_left`, and any remainder is credited to `state_gas_reservoir`. State-gas refills decrement `evm_state_gas_used`. Throughout this specification, \"refilling state-gas\" refers to this LIFO operation.\n - `state_gas_reservoir` is passed to a child frame in full: the 63/64 rule applies to `gas_left` only. The parent keeps none of it while the child runs. On the child's exit it becomes the parent's again. Note: a refill in the child may have raised it above the amount passed in.\n@@ -189,11 +188,11 @@ This step is needed because a refill may happen in a different frame than the ma\n \n The step applies to successful children only. This requires that a frame that reverts or halts exceptionally returns no state-gas to its parent; the restore to the frame's baseline above provides that. Otherwise the parent receives state-gas for a slot the rollback restored, and a later merge moves it to `gas_left`.\n \n-When a child frame **reverts**, all of its state changes are rolled back, its state-gas is restored as above, and its resulting `gas_left` (including the credited `state_gas_from_gas_left`) is returned to the parent. `evm_execution_gas_used` is updated according to the execution gas consumed by the child frame before the revert.\n+When a child frame **reverts**, all of its state changes are rolled back, its state-gas is restored as above, and its resulting `gas_left` (including the credited `state_gas_from_gas_left`) is returned to the parent.\n \n When a child frame **halts exceptionally**, the same restore is applied, but the child's `gas_left` is consumed (set to zero) rather than returned, so the credited `state_gas_from_gas_left` is consumed with it.\n \n-The same rules apply when the top-level call frame reverts or halts, treating the frame as a child of the transaction boundary. In particular, for address collisions in contract-creation transactions, `gas_left` is consumed in full and `evm_execution_gas_used` is incremented by the initial `gas_left`; any account-creation state-gas charged for the destination (possible only for a storage-only collision, since a destination with nonce, code, or balance is existent) is undone by the frame's rollback, and the `state_gas_reservoir` is returned to the sender by the normal end-of-transaction settlement.\n+The same rules apply when the top-level call frame reverts or halts, treating the frame as a child of the transaction boundary. In particular, for address collisions in contract-creation transactions, `gas_left` is consumed in full; any account-creation state-gas charged for the destination (possible only for a storage-only collision, since a destination with nonce, code, or balance is existent) is undone by the frame's rollback, and the `state_gas_reservoir` is returned to the sender by the normal end-of-transaction settlement.\n \n ##### Gas accounting for [EIP-7702](./eip-7702.md) authorizations\n ",
+      "additions": 3,
+      "deletions": 4
+    },
+    {
+      "sha": "3ff5cff17a11ab31273ee14ebea0df8bbc4f4aef",
+      "date": "2026-09-04T11:46:11Z",
+      "message": "Update EIP-8037: return state-gas to gas_left when a child merges",
+      "author": "chfast",
+      "prNumber": null,
+      "additions": 29,
+      "deletions": 3
+    },
+    {
+      "sha": "c406bdb2ffbf2fbf9d85698e97b3b2e8b6e79112",
+      "date": "2026-09-04T11:22:38Z",
+      "message": "Update EIP-8037: correct the general state-gas charge timing",
+      "author": "chfast",
+      "prNumber": null,
+      "patch": "@@ -187,7 +187,7 @@ Gas charges for [EIP-7702](./eip-7702.md) authorizations follow the specificatio\n \n #### Pre-state and post-state gas validation\n \n-[EIP-7928](./eip-7928.md) defines two-phase gas validation for state-accessing opcodes: pre-state costs (determinable without state access) and post-state costs (requiring state access). Under this EIP, the execution-gas portion of these opcodes follows the [EIP-7928](./eip-7928.md) rules unchanged and is charged at opcode time against `gas_left`. The state-gas portion is also charged at the opcode level; it is computed and deducted at the end of the opcode execution, drawing first from `state_gas_reservoir` and then from `gas_left`.\n+[EIP-7928](./eip-7928.md) defines two-phase gas validation for state-accessing opcodes: pre-state costs (determinable without state access) and post-state costs (requiring state access). Under this EIP, the execution-gas portion of these opcodes follows the [EIP-7928](./eip-7928.md) rules unchanged and is charged at opcode time against `gas_left`. The state-gas portion is also charged at the opcode level, with the timing given for each opcode above.\n \n For `SSTORE`, the `GAS_CALL_STIPEND` pre-state check ([EIP-7928](./eip-7928.md)) applies to `gas_left` only, excluding the `state_gas_reservoir`.\n ",
+      "additions": 1,
+      "deletions": 1
+    },
+    {
+      "sha": "58596a9911b945fc855caa80a904c5b3f4c4f254",
+      "date": "2026-09-04T11:21:02Z",
+      "message": "Update EIP-8037: remove the duplicated calldata floor note",
+      "author": "chfast",
+      "prNumber": null,
+      "patch": "@@ -220,8 +220,6 @@ Since all state-gas charges are now applied as runtime or execution-time charges\n \n The [EIP-7623](./eip-7623.md) calldata floor participates in block accounting through the `max` term, applied to the execution-gas dimension: calldata is an execution-gas resource, and the floor's bound on worst-case block size holds only if a data-heavy transaction contributes at least the floor to the block's gas accounting. The floor is compared against the transaction's execution-gas portion alone — not the transaction total — so execution gas may absorb the floor exactly as under [EIP-7623](./eip-7623.md), while state-gas spending cannot (see [Calldata floor in block accounting](#calldata-floor-in-block-accounting)).\n \n-Note: `tx_gas_used` applies the [EIP-7623](./eip-7623.md) calldata floor after refunds, so the floor can effectively negate part of a refund when `calldata_floor_gas_cost > tx_gas_used_after_refund`. The receipt `cumulative_gas_used` uses this post-floor value.\n-\n The block header `gas_used` field is set to:\n \n ```python",
+      "additions": 0,
+      "deletions": 2
+    },
+    {
+      "sha": "65d177d431638639d35897d6e869301a5ea8a02c",
+      "date": "2026-09-04T11:16:08Z",
+      "message": "Update EIP-8037: restore a frame's state-gas on rollback",
+      "author": "chfast",
+      "prNumber": null,
+      "additions": 17,
+      "deletions": 6
+    },
+    {
       "sha": "aa02d9934056b252768d673eafd2b668725cb138",
       "date": "2026-08-31T08:22:32Z",
       "message": "Update EIP-8037: include non-zero balance to description of existent address",
@@ -305,59 +353,19 @@
   ],
   "openPrs": [
     {
-      "number": 12283,
-      "title": "Update EIP-8037: remove the duplicated calldata floor note",
-      "author": "chfast",
-      "updatedAt": "2026-09-02T08:00:56Z",
-      "additions": 0,
-      "deletions": 2
-    },
-    {
-      "number": 12284,
-      "title": "Update EIP-8037: correct the general state-gas charge timing",
-      "author": "chfast",
-      "updatedAt": "2026-09-02T08:04:21Z",
-      "additions": 1,
-      "deletions": 1
-    },
-    {
-      "number": 12282,
-      "title": "Update EIP-8037: remove unused evm_execution_gas_used counter",
-      "author": "chfast",
-      "updatedAt": "2026-09-02T07:22:03Z",
-      "additions": 4,
+      "number": 12296,
+      "title": "Update EIP-8037: remove stale EIP-7610 collision rules",
+      "author": "spencer-tb",
+      "updatedAt": "2026-09-04T13:59:23Z",
+      "additions": 5,
       "deletions": 5
     },
     {
       "number": 12249,
       "title": "Update EIP-8037: refill state-gas for a SELFDESTRUCTed account",
       "author": "chfast",
-      "updatedAt": "2026-08-27T18:29:20Z",
+      "updatedAt": "2026-09-04T12:24:32Z",
       "additions": 7,
-      "deletions": 3
-    },
-    {
-      "number": 12256,
-      "title": "Update EIP-8037: restore a frame's state-gas on rollback",
-      "author": "chfast",
-      "updatedAt": "2026-08-31T14:39:52Z",
-      "additions": 17,
-      "deletions": 6
-    },
-    {
-      "number": 12285,
-      "title": "Update EIP-8037: note that gas_left can increase within a frame",
-      "author": "spencer-tb",
-      "updatedAt": "2026-09-02T11:45:06Z",
-      "additions": 4,
-      "deletions": 0
-    },
-    {
-      "number": 12265,
-      "title": "Update EIP-8037: return state-gas to gas_left when a child merges",
-      "author": "chfast",
-      "updatedAt": "2026-08-31T16:01:25Z",
-      "additions": 29,
       "deletions": 3
     },
     {

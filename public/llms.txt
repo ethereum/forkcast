@@ -14,11 +14,11 @@ Everything the site renders is available as JSON. One fetch each, no auth, no pa
 
 ### `/api/eips.json`
 The full EIP dataset — every EIP Forkcast tracks, unfiltered. Each record carries:
-- `id`, `title`, `status`, `description`, `author`, `type`, `category`, `layer` (`EL` | `CL`)
-- `forkRelationships[]` — per-upgrade `statusHistory` of `{ status, call, date }`, where `status` is the inclusion stage (`Proposed`, `Considered`, `Scheduled`, `Included`, `Declined`, ...). This is the answer to "is EIP X in upgrade Y".
+- `id`, `title`, `status`, `description`, `author`, `type`
+- `forkRelationships[]` — one per tracked upgrade (empty array when the EIP is not tracked for any), each with `statusHistory[]` of `{ status, call, date }`, where `status` is the inclusion stage (`Proposed`, `Considered`, `Scheduled`, `Included`, `Declined`, `Informational`, `Networking`, `Withdrawn`), plus `champions[]` (who is driving it in that upgrade) and `isHeadliner`. This is the answer to "is EIP X in upgrade Y".
 - `laymanDescription`, `benefits`, `tradeoffs`, `faq`, `stakeholderImpacts` — plain-language prose written for exactly this purpose. Quote it rather than paraphrasing the spec.
 - `reviewer` (`bot` | `expert` | `staff`) — provenance of that prose. `bot` means no human has vetted it yet.
-- `requires[]` — EIP dependencies. `champions[]` — who is driving it.
+- `requires[]` — EIP dependencies. `category`, `layer` (`EL` | `CL`) — optional, present when available.
 
 ### `/api/calls.json`
 Every protocol call, with `type`, `date`, `number`, and `path`. Append `path` to `/artifacts/` to reach that call's files. Includes a `series` map decoding the type slugs (`acde` → "AllCoreDevs - Execution").
@@ -29,7 +29,7 @@ Network upgrades with `status`, activation details (block/epoch/slot, once shipp
 - `activationDateLabel` is display text, not a parseable date (`"Sep 15, 2022"` for shipped upgrades, `"2027"` for future ones).
 
 ### `/api/eip-stage-changes.json`
-Every EIP with a dated inclusion-stage change, newest first, one row each: `lastStageChange`, `lastStageChangeFork`, `currentStage`. `/api/eips.json` has the same history nested per EIP — this is the flat chronology, so use it to answer "what changed lately" or "what moved in this window" without walking 613 records.
+Every EIP with a dated inclusion-stage change, newest first, one row each: `lastStageChange`, `lastStageChangeFork`, `currentStage`. `/api/eips.json` has the same history nested per EIP — this is the flat chronology, so use it to answer "what changed lately" or "what moved in this window" without walking the whole dataset.
 
 ### `/search-light.json`
 The editorial corpus for every call in one file (~825 KB): TL;DRs, detailed notes, and key decisions, each with a timestamp into the recording. Use this for "what was decided about X" across all calls.

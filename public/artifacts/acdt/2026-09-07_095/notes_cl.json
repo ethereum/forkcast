@@ -1,0 +1,35 @@
+{
+  "meeting": "ACDT #095 - 2026-09-07 (CL Breakout)",
+  "sections": [
+    {
+      "heading": "Client Implementation Status for v1.7.0-beta.0",
+      "summary": "Only Lodestar and Nimbus are fully beta.0 compliant; Teku, Prysm, Grandine, and Lighthouse are still in progress.",
+      "timestamp": "00:00:42",
+      "body": "- Lodestar (Nico Flaig): running all beta.0 tests including fork choice compliance tests.\n- Nimbus (Caleb, via chat): beta.0 compliant and passing fork choice tests; earlier fork choice issues have been resolved.\n- Teku (Enrico Del Fante): still implementing delta spec changes; reference test running not yet enabled but expected soon. Fork choice compliance test integration is a work in progress; previously passing them but currently has integration issues with the latest version.\n- Prysm (James, via chat): implementation is only on a feature branch, not merged to trunk. Trunk needs significant review. Three PRs ([#17382](https://github.com/OffchainLabs/prysm/pull/17382), [#17440](https://github.com/OffchainLabs/prysm/pull/17440), [#17412](https://github.com/OffchainLabs/prysm/pull/17412)) are required as a minimum for trunk stability. Team was also backlogged on SSZ containers changes from alpha 13/14.\n- Grandine (Saulius): Wangleng has started work on beta.0 but implementation is not yet completed.\n- Lighthouse (Daniel Knopik): unsure of current status; pinged relevant team member for an update.\n- Nico emphasized that before another Death Star testing round on the devnet, all clients must at least pass the basic fork choice reference tests. Last Death Star run revealed incorrect attestation modes in Grandine and Nimbus due to missing PTC handling.\n- Gloas state transition compliance tests are also coming soon per [consensus-specs PR #5573](https://github.com/ethereum/consensus-specs/pull/5573)."
+    },
+    {
+      "heading": "Bid Gas Limit Check in process_execution_payload_bid",
+      "summary": "No support for adding a gas limit check to CL consensus rules; PR #5598 will be closed.",
+      "timestamp": "00:07:02",
+      "body": "- [Consensus-specs PR #5598](https://github.com/ethereum/consensus-specs/pull/5598) proposes bounding a bid's gas limit against the parent execution payload in the CL state transition.\n- Nico argued strongly against it: the original design intentionally left this out of consensus rules to avoid encoding EIP-1559 transition logic on the CL side.\n  - The issue originated from a test setup where the same node acted as both proposer and builder, causing self-submitted bids with invalid gas limits to be picked up via the API.\n  - Lodestar previously forwarded such bids to the pool for debugging, but that code path has since been removed.\n- Enrico (Teku) confirmed: a bid with an impossible gas limit would produce an invalid payload, guaranteeing the block is orphaned, but the beacon block itself remains valid and the CL can continue.\n- Adding such a check to consensus would risk missed beacon blocks due to implementation bugs, without meaningful benefit.\n  - Analogous impossible values (e.g., zero hash) can never be fully validated on-chain anyway.\n- No one on the call spoke in favor of the PR.\n- Decision: Justin Traglia will close the PR after the call."
+    },
+    {
+      "heading": "Serving Only Canonical Payload Envelopes by Range",
+      "summary": "Devnet 9 syncing surfaced non-canonical payloads being served; spec clarification PR #5608 needs review from more clients.",
+      "timestamp": "00:12:26",
+      "body": "- [Consensus-specs PR #5608](https://github.com/ethereum/consensus-specs/pull/5608) adds a spec note clarifying that only canonical payload envelopes should be served via the by-range request.\n- On Devnet 9, Lodestar encountered many invalid (orphaned) payloads being served during sync through the unfinalized period, even in the already-finalized portion of the chain.\n  - Nico suspects clients are not correctly filtering when they archive payloads.\n  - The invalid payloads appeared very early after the Gloas fork transition, just a few epochs in; the devnet was shut down before further investigation.\n- Enrico questioned whether the serving nodes might have been struggling or far from head themselves, noting Devnet 9 was generally unstable. Nico confirmed the data was from very old blocks (roughly one day old), so those nodes should have had canonical data.\n- Enrico agreed the clarification is worthwhile but suggested re-testing on a more stable network to confirm the issue.\n- Potus (not present) has expressed preference for removing the payload topic entirely via a future CL sync EIP, and declined to review the PR. Other clients are asked to review and approve so it can be merged.\n- Action: other client teams should review the PR."
+    },
+    {
+      "heading": "Data Column Gossip Size Limit",
+      "summary": "Current ~8 MB gossip limit for columns is excessive; Justin will draft a PR to derive it dynamically from the blob schedule.",
+      "timestamp": "00:16:01",
+      "body": "- Daniel Knopik (Lighthouse) raised that the gossip message size limit for data columns is approximately 8 MB, derived from the old cell limit multiplied by cell size assuming up to 4096 blobs.\n  - With the current blob count this is vastly oversized and could invite attacks or force clients to set their own ad-hoc limits.\n- Enrico suggested making the limit dynamic based on the current blob parameters (BPO) rather than a hardcoded theoretical maximum.\n- Daniel agreed, noting that if the max blob count changes per fork, adjusting this constant alongside is not burdensome.\n- Justin proposed setting the limit based on the largest value in the blob schedule, so it automatically adapts.\n  - Minor implementation concern: gossip topics have per-topic message size limits; changing the limit might require reinitializing the topic handler, but a fork-triggered node restart would cover this.\n- Agreement: Justin will draft a PR implementing a dynamic gossip size limit derived from the blob schedule. Client teams will review for technical feasibility."
+    },
+    {
+      "heading": "High-Volume Deposit Testing",
+      "summary": "A block with more than 8,192 deposits has not been achieved on devnets; testing on Kurtosis was suggested.",
+      "timestamp": "00:21:13",
+      "body": "- Justin asked whether a block with more than 8,192 deposits has ever been tested.\n- pk910 reported that current gas limits make it impossible to reach that threshold; the maximum achieved was somewhere below 7,900 deposits, using a batching contract via SpamR.\n- Nico suggested testing this on Kurtosis, where parameters can be adjusted more freely.\n- No firm action item set; to be revisited later."
+    }
+  ]
+}

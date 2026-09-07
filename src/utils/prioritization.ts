@@ -250,6 +250,9 @@ function calculateAverage(stances: ClientStance[]): number | null {
   return Math.round((sum / scoredStances.length) * 10) / 10;
 }
 
+/** Shared so callers that opt nobody in keep one reference across renders. */
+export const NO_COUNTED_TEAMS: ReadonlySet<string> = new Set();
+
 /**
  * Calculate aggregate statistics for an EIP based on client stances
  */
@@ -257,14 +260,20 @@ export function calculateEipAggregate(
   eipId: number,
   stances: ClientStance[],
   eipData: EIP | undefined,
-  forkName: string
+  forkName: string,
+  /** Non-client teams the reader has opted into the scores. */
+  countedOtherTeams: ReadonlySet<string> = NO_COUNTED_TEAMS
 ): EipAggregateStance {
   const elStances = stances.filter(s => s.clientType === 'EL');
   const clStances = stances.filter(s => s.clientType === 'CL');
 
-  // Non-client teams get their own column but stay out of every score.
-  const clientStances = [...elStances, ...clStances];
-  const scoredStances = clientStances.filter(s => s.normalizedScore !== null);
+  // Client teams always count; a non-client team counts only where the reader opted it in.
+  const countedStances = [
+    ...elStances,
+    ...clStances,
+    ...stances.filter(s => s.clientType === 'OTHER' && countedOtherTeams.has(s.clientName)),
+  ];
+  const scoredStances = countedStances.filter(s => s.normalizedScore !== null);
 
   // Thresholds are relative to the fork's scale: its top two tiers are support, the
   // bottom two are opposition. Hegotá's scale is one rung shorter than Glamsterdam's.
@@ -275,7 +284,8 @@ export function calculateEipAggregate(
     eipTitle: eipData ? getLaymanTitle(eipData) : `EIP-${eipId}`,
     layer: determineEipLayer(eipData),
     inclusionStage: eipData ? getInclusionStage(eipData, forkName) : 'Unknown',
-    averageScore: calculateAverage(clientStances),
+    averageScore: calculateAverage(countedStances),
+    // Per-layer columns stay layer-pure: a non-client team belongs to neither.
     elAverageScore: calculateAverage(elStances),
     clAverageScore: calculateAverage(clStances),
     stanceCount: scoredStances.length,
@@ -287,7 +297,7 @@ export function calculateEipAggregate(
       return score > 1 && score < supportFloor;
     }).length,
     opposeCount: scoredStances.filter(s => (s.normalizedScore ?? 0) <= 1).length,
-    rejectCount: clientStances.filter(s => isRejection(s.ratingSystem, s.rawRating)).length,
+    rejectCount: countedStances.filter(s => isRejection(s.ratingSystem, s.rawRating)).length,
     stances,
   };
 }

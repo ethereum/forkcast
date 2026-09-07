@@ -50,8 +50,8 @@ export interface EipAggregateStance {
   eipTitle: string;
   layer: 'EL' | 'CL' | null;
   inclusionStage: string;
-  // Scores and counts below cover client teams only; OTHER teams get a column but
-  // deliberately don't move the averages or raise the rejection flag.
+  // Scores and counts below cover client teams plus whichever OTHER teams the reader
+  // opted in; with none opted in they are client-only.
   averageScore: number | null;
   elAverageScore: number | null;
   clAverageScore: number | null;
@@ -61,7 +61,7 @@ export interface EipAggregateStance {
   supportCount: number; // top two tiers of the fork's scale
   neutralCount: number; // score 2-3
   opposeCount: number; // score <= 1
-  /** Explicit "reject this" requests from client teams. */
+  /** Explicit "reject this" requests from the counted teams. */
   rejectCount: number;
   stances: ClientStance[];
 }

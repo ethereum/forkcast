@@ -7,6 +7,7 @@ import {
   getRatingLabel,
   getScoreScale,
   getMaxScore,
+  NO_COUNTED_TEAMS,
   SortField,
   SortDirection,
 } from '../../utils/prioritization';
@@ -44,17 +45,20 @@ const ClientPriorityTab: React.FC<ClientPriorityTabProps> = ({ fork }) => {
   const [hideExcluded, setHideExcluded] = useState(true);
   const [expandedEip, setExpandedEip] = useState<number | null>(null);
   const [filtersModalOpen, setFiltersModalOpen] = useState(false);
+  const [avgModalOpen, setAvgModalOpen] = useState(false);
+  // A fresh Set only on toggle, so the aggregates aren't recomputed on every render.
+  const [countedOtherTeams, setCountedOtherTeams] = useState<ReadonlySet<string>>(NO_COUNTED_TEAMS);
 
-  const { aggregates, elTeams, clTeams, otherTeams } = usePrioritizationData(fork);
+  const { aggregates, elTeams, clTeams, otherTeams } = usePrioritizationData(fork, countedOtherTeams);
 
   // The fork's scale drives the legend, the badge colors and the "high support" cutoff.
   const scoreLegend = getScoreScale(fork);
   const maxScore = getMaxScore(fork);
   const supportFloor = maxScore - 1;
 
-  // Lock body scroll when filters modal is open
+  // Lock body scroll while a modal is open
   useEffect(() => {
-    if (filtersModalOpen) {
+    if (filtersModalOpen || avgModalOpen) {
       document.body.style.overflow = 'hidden';
     } else {
       document.body.style.overflow = '';
@@ -62,7 +66,7 @@ const ClientPriorityTab: React.FC<ClientPriorityTabProps> = ({ fork }) => {
     return () => {
       document.body.style.overflow = '';
     };
-  }, [filtersModalOpen]);
+  }, [filtersModalOpen, avgModalOpen]);
 
   // Apply filtering
   const filteredAggregates = useMemo(() => {
@@ -162,6 +166,18 @@ const ClientPriorityTab: React.FC<ClientPriorityTabProps> = ({ fork }) => {
   const showOtherTeams = otherTeams.length > 0;
   const columnCount = showOtherTeams ? 7 : 6;
 
+  // Roster order, so the wording matches the panel and the Other Teams column.
+  const countedTeamNames = otherTeams
+    .filter((team) => countedOtherTeams.has(team.name))
+    .map((team) => team.name);
+
+  const toggleCountedTeam = (name: string) =>
+    setCountedOtherTeams((prev) => {
+      const next = new Set(prev);
+      if (!next.delete(name)) next.add(name);
+      return next;
+    });
+
   const stanceFilterOptions: { value: FilterStance; label: string }[] = [
     { value: 'all', label: 'All Stances' },
     { value: 'support', label: 'High Support' },
@@ -188,6 +204,7 @@ const ClientPriorityTab: React.FC<ClientPriorityTabProps> = ({ fork }) => {
       <p className={`text-sm text-slate-500 dark:text-slate-400 ${VINTAGE_NOTE[fork] ? 'mb-1' : 'mb-6'}`}>
         Aggregate client team stances on proposed EIPs. Scores normalized to a{' '}
         {lowestScore}-{maxScore} scale.
+        {countedTeamNames.length > 0 && ` Avg also counts ${countedTeamNames.join(', ')}.`}
       </p>
       {VINTAGE_NOTE[fork] && (
         <p className="text-xs text-slate-500 dark:text-slate-400 mb-6">{VINTAGE_NOTE[fork]}</p>
@@ -215,6 +232,26 @@ const ClientPriorityTab: React.FC<ClientPriorityTabProps> = ({ fork }) => {
               </span>
             )}
           </button>
+
+          {/* Fold non-client teams into the scores */}
+          {showOtherTeams && (
+            <button
+              onClick={() => setAvgModalOpen(true)}
+              className={`flex items-center gap-2 px-4 py-2.5 rounded-lg border text-sm font-medium transition-colors ${
+                countedTeamNames.length > 0
+                  ? 'bg-fuchsia-50 dark:bg-fuchsia-900/20 border-fuchsia-300 dark:border-fuchsia-700 text-fuchsia-700 dark:text-fuchsia-300'
+                  : 'bg-white dark:bg-slate-800 border-slate-200 dark:border-slate-700 text-slate-700 dark:text-slate-300'
+              }`}
+            >
+              <span className="w-2 h-2 rounded-full bg-fuchsia-500"></span>
+              Add to avg
+              {countedTeamNames.length > 0 && (
+                <span className="px-1.5 py-0.5 text-xs bg-fuchsia-200 dark:bg-fuchsia-800 text-fuchsia-800 dark:text-fuchsia-200 rounded-full">
+                  {countedTeamNames.length}
+                </span>
+              )}
+            </button>
+          )}
 
           {/* Active only toggle */}
           <label className="flex items-center gap-2 cursor-pointer select-none">
@@ -260,121 +297,148 @@ const ClientPriorityTab: React.FC<ClientPriorityTabProps> = ({ fork }) => {
 
       {/* Filters Modal */}
       {filtersModalOpen && (
-        <div className="fixed inset-0 z-50 animate-fadeIn">
-          <div
-            className="absolute inset-0 bg-black/50"
-            onClick={() => setFiltersModalOpen(false)}
-          />
-          <div className="md:absolute md:inset-0 md:flex md:items-center md:justify-center absolute bottom-0 left-0 right-0">
-            <div className="bg-white dark:bg-slate-800 md:rounded-2xl rounded-t-2xl md:max-w-2xl md:w-full max-h-[85vh] md:max-h-[90vh] overflow-hidden flex flex-col animate-fade-scale md:shadow-2xl">
-              <div className="flex items-center justify-between px-4 py-3 border-b border-slate-200 dark:border-slate-700">
-                <h2 className="text-lg font-semibold text-slate-900 dark:text-slate-100">Filters</h2>
-                <div className="flex items-center gap-3">
-                  {activeFilterCount > 0 && (
+        <ModalShell
+          title="Filters"
+          onClose={() => setFiltersModalOpen(false)}
+          headerAction={
+            activeFilterCount > 0 && (
+              <button
+                onClick={clearFilters}
+                className="text-sm text-purple-600 dark:text-purple-400 font-medium"
+              >
+                Clear all
+              </button>
+            )
+          }
+          footer={
+            <button
+              onClick={() => setFiltersModalOpen(false)}
+              className="w-full py-3 bg-purple-600 hover:bg-purple-700 text-white font-medium rounded-lg transition-colors"
+            >
+              Show {sortedAggregates.length} {sortedAggregates.length === 1 ? 'result' : 'results'}
+            </button>
+          }
+        >
+          <div className="grid md:grid-cols-2 gap-6">
+            <div>
+              <h3 className="text-sm font-semibold text-slate-700 dark:text-slate-300 mb-3">Layer</h3>
+              <div className="flex flex-wrap gap-2">
+                {(['all', 'EL', 'CL'] as const).map((layer) => {
+                  const isSelected = filterLayer === layer;
+                  const label = layer === 'all' ? 'All Layers' : layer === 'EL' ? 'Execution Layer' : 'Consensus Layer';
+                  return (
                     <button
-                      onClick={clearFilters}
-                      className="text-sm text-purple-600 dark:text-purple-400 font-medium"
+                      key={layer}
+                      onClick={() => setFilterLayer(layer)}
+                      className={`px-3 py-2 text-sm font-medium rounded-lg transition-colors ${
+                        isSelected
+                          ? 'bg-purple-100 dark:bg-purple-900/30 text-purple-800 dark:text-purple-300 ring-2 ring-purple-500 ring-offset-1 dark:ring-offset-slate-800'
+                          : 'bg-slate-100 dark:bg-slate-700 text-slate-700 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-600'
+                      }`}
                     >
-                      Clear all
+                      {label}
                     </button>
-                  )}
-                  <button
-                    onClick={() => setFiltersModalOpen(false)}
-                    className="p-1 rounded-full hover:bg-slate-100 dark:hover:bg-slate-700 transition-colors"
-                  >
-                    <svg className="w-6 h-6 text-slate-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
-                    </svg>
-                  </button>
-                </div>
-              </div>
-
-              <div className="flex-1 overflow-y-auto p-4 md:p-6">
-                <div className="grid md:grid-cols-2 gap-6">
-                  <div>
-                    <h3 className="text-sm font-semibold text-slate-700 dark:text-slate-300 mb-3">Layer</h3>
-                    <div className="flex flex-wrap gap-2">
-                      {(['all', 'EL', 'CL'] as const).map((layer) => {
-                        const isSelected = filterLayer === layer;
-                        const label = layer === 'all' ? 'All Layers' : layer === 'EL' ? 'Execution Layer' : 'Consensus Layer';
-                        return (
-                          <button
-                            key={layer}
-                            onClick={() => setFilterLayer(layer)}
-                            className={`px-3 py-2 text-sm font-medium rounded-lg transition-colors ${
-                              isSelected
-                                ? 'bg-purple-100 dark:bg-purple-900/30 text-purple-800 dark:text-purple-300 ring-2 ring-purple-500 ring-offset-1 dark:ring-offset-slate-800'
-                                : 'bg-slate-100 dark:bg-slate-700 text-slate-700 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-600'
-                            }`}
-                          >
-                            {label}
-                          </button>
-                        );
-                      })}
-                    </div>
-                  </div>
-
-                  <div>
-                    <h3 className="text-sm font-semibold text-slate-700 dark:text-slate-300 mb-3">Stance</h3>
-                    <div className="flex flex-wrap gap-2">
-                      {stanceFilterOptions.map(({ value, label }) => {
-                        const isSelected = filterStance === value;
-                        return (
-                          <button
-                            key={value}
-                            onClick={() => setFilterStance(value)}
-                            className={`px-3 py-2 text-sm font-medium rounded-lg transition-colors ${
-                              isSelected
-                                ? 'bg-purple-100 dark:bg-purple-900/30 text-purple-800 dark:text-purple-300 ring-2 ring-purple-500 ring-offset-1 dark:ring-offset-slate-800'
-                                : 'bg-slate-100 dark:bg-slate-700 text-slate-700 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-600'
-                            }`}
-                          >
-                            {label}
-                          </button>
-                        );
-                      })}
-                    </div>
-                  </div>
-
-                  <TeamFilterGroup
-                    heading="EL Clients"
-                    teams={elTeams}
-                    accent="EL"
-                    filterClient={filterClient}
-                    onSelect={setFilterClient}
-                  />
-
-                  <TeamFilterGroup
-                    heading="CL Clients"
-                    teams={clTeams}
-                    accent="CL"
-                    filterClient={filterClient}
-                    onSelect={setFilterClient}
-                  />
-
-                  {showOtherTeams && (
-                    <TeamFilterGroup
-                      heading="Other Teams"
-                      teams={otherTeams}
-                      accent="OTHER"
-                      filterClient={filterClient}
-                      onSelect={setFilterClient}
-                    />
-                  )}
-                </div>
-              </div>
-
-              <div className="px-4 py-3 border-t border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-900/50">
-                <button
-                  onClick={() => setFiltersModalOpen(false)}
-                  className="w-full py-3 bg-purple-600 hover:bg-purple-700 text-white font-medium rounded-lg transition-colors"
-                >
-                  Show {sortedAggregates.length} {sortedAggregates.length === 1 ? 'result' : 'results'}
-                </button>
+                  );
+                })}
               </div>
             </div>
+
+            <div>
+              <h3 className="text-sm font-semibold text-slate-700 dark:text-slate-300 mb-3">Stance</h3>
+              <div className="flex flex-wrap gap-2">
+                {stanceFilterOptions.map(({ value, label }) => {
+                  const isSelected = filterStance === value;
+                  return (
+                    <button
+                      key={value}
+                      onClick={() => setFilterStance(value)}
+                      className={`px-3 py-2 text-sm font-medium rounded-lg transition-colors ${
+                        isSelected
+                          ? 'bg-purple-100 dark:bg-purple-900/30 text-purple-800 dark:text-purple-300 ring-2 ring-purple-500 ring-offset-1 dark:ring-offset-slate-800'
+                          : 'bg-slate-100 dark:bg-slate-700 text-slate-700 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-600'
+                      }`}
+                    >
+                      {label}
+                    </button>
+                  );
+                })}
+              </div>
+            </div>
+
+            <TeamFilterGroup
+              heading="EL Clients"
+              teams={elTeams}
+              accent="EL"
+              filterClient={filterClient}
+              onSelect={setFilterClient}
+            />
+
+            <TeamFilterGroup
+              heading="CL Clients"
+              teams={clTeams}
+              accent="CL"
+              filterClient={filterClient}
+              onSelect={setFilterClient}
+            />
+
+            {showOtherTeams && (
+              <TeamFilterGroup
+                heading="Other Teams"
+                teams={otherTeams}
+                accent="OTHER"
+                filterClient={filterClient}
+                onSelect={setFilterClient}
+              />
+            )}
           </div>
-        </div>
+        </ModalShell>
+      )}
+
+      {/* Add to average modal */}
+      {avgModalOpen && (
+        <ModalShell
+          title="Add to average score"
+          onClose={() => setAvgModalOpen(false)}
+          headerAction={
+            countedTeamNames.length > 0 && (
+              <button
+                onClick={() => setCountedOtherTeams(NO_COUNTED_TEAMS)}
+                className="text-sm text-purple-600 dark:text-purple-400 font-medium"
+              >
+                Clear
+              </button>
+            )
+          }
+          footer={
+            <button
+              onClick={() => setAvgModalOpen(false)}
+              className="w-full py-3 bg-purple-600 hover:bg-purple-700 text-white font-medium rounded-lg transition-colors"
+            >
+              Done
+            </button>
+          }
+        >
+          <p className="text-sm text-slate-500 dark:text-slate-400 mb-4">
+            Non-client teams are left out of the scores by default. Ticking one folds its ratings
+            into Avg, the stance counts and the rejection flag.
+          </p>
+          <div className="space-y-1">
+            {otherTeams.map((team) => (
+              <label
+                key={team.name}
+                className="flex items-center gap-3 px-2 py-2 rounded-lg cursor-pointer select-none hover:bg-slate-50 dark:hover:bg-slate-700/50"
+              >
+                <input
+                  type="checkbox"
+                  checked={countedOtherTeams.has(team.name)}
+                  onChange={() => toggleCountedTeam(team.name)}
+                  className="w-4 h-4 rounded border-slate-300 dark:border-slate-600 text-purple-600 focus:ring-purple-500"
+                />
+                <span className="text-sm text-slate-700 dark:text-slate-300">{team.name}</span>
+              </label>
+            ))}
+          </div>
+        </ModalShell>
       )}
 
       {/* Mobile Card List */}
@@ -508,8 +572,16 @@ const ClientPriorityTab: React.FC<ClientPriorityTabProps> = ({ fork }) => {
               <th
                 className="px-4 py-3 text-right text-sm font-medium text-slate-700 dark:text-slate-300 cursor-pointer hover:bg-slate-100 dark:hover:bg-slate-600/50"
                 onClick={() => handleSort('average')}
+                title={
+                  countedTeamNames.length > 0
+                    ? `Client teams plus ${countedTeamNames.join(', ')}`
+                    : undefined
+                }
               >
                 <div className="flex items-center justify-end gap-2">
+                  {countedTeamNames.length > 0 && (
+                    <span className="w-2 h-2 rounded-full bg-fuchsia-500"></span>
+                  )}
                   Avg
                   <SortIcon field="average" />
                 </div>
@@ -847,6 +919,47 @@ const ClientStancesGrid: React.FC<ClientStancesGridProps> = ({ stances, elTeams,
     </div>
   );
 };
+
+interface ModalShellProps {
+  title: string;
+  onClose: () => void;
+  /** Sits left of the close button, e.g. a reset action. */
+  headerAction?: React.ReactNode;
+  footer: React.ReactNode;
+  children: React.ReactNode;
+}
+
+/** Bottom sheet on mobile, centered dialog from md up. Body scrolls; header and footer don't. */
+const ModalShell: React.FC<ModalShellProps> = ({ title, onClose, headerAction, footer, children }) => (
+  <div className="fixed inset-0 z-50 animate-fadeIn">
+    <div className="absolute inset-0 bg-black/50" onClick={onClose} />
+    <div className="md:absolute md:inset-0 md:flex md:items-center md:justify-center absolute bottom-0 left-0 right-0">
+      <div className="bg-white dark:bg-slate-800 md:rounded-2xl rounded-t-2xl md:max-w-2xl md:w-full max-h-[85vh] md:max-h-[90vh] overflow-hidden flex flex-col animate-fade-scale md:shadow-2xl">
+        <div className="flex items-center justify-between px-4 py-3 border-b border-slate-200 dark:border-slate-700">
+          <h2 className="text-lg font-semibold text-slate-900 dark:text-slate-100">{title}</h2>
+          <div className="flex items-center gap-3">
+            {headerAction}
+            <button
+              onClick={onClose}
+              className="p-1 rounded-full hover:bg-slate-100 dark:hover:bg-slate-700 transition-colors"
+              aria-label="Close"
+            >
+              <svg className="w-6 h-6 text-slate-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+              </svg>
+            </button>
+          </div>
+        </div>
+
+        <div className="flex-1 overflow-y-auto p-4 md:p-6">{children}</div>
+
+        <div className="px-4 py-3 border-t border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-900/50">
+          {footer}
+        </div>
+      </div>
+    </div>
+  </div>
+);
 
 const FILTER_ACCENTS: Record<TeamEntry['type'], { dot: string; selected: string }> = {
   EL: {

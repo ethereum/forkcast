@@ -1,7 +1,7 @@
 import { useMemo } from 'react';
 import { PrioritizationData, EipAggregateStance, TeamEntry } from '../types/prioritization';
 import { eipsData } from '../data/eips';
-import { calculateEipAggregate } from '../utils/prioritization';
+import { calculateEipAggregate, NO_COUNTED_TEAMS } from '../utils/prioritization';
 import { formatISODate } from '../utils/date';
 
 // Import the JSON data directly
@@ -27,7 +27,11 @@ const FORK_DATA: Record<string, PrioritizationData> = {
  * Hook to load and process prioritization data for a fork
  * Includes ALL EIPs related to the fork, not just those with stances
  */
-export function usePrioritizationData(fork: string = 'glamsterdam'): UsePrioritizationDataResult {
+export function usePrioritizationData(
+  fork: string = 'glamsterdam',
+  /** Non-client teams to fold into the aggregate scores. Must be a stable reference. */
+  countedOtherTeams: ReadonlySet<string> = NO_COUNTED_TEAMS
+): UsePrioritizationDataResult {
   const data = useMemo(() => {
     return (
       FORK_DATA[fork.toLowerCase()] ?? {
@@ -55,9 +59,9 @@ export function usePrioritizationData(fork: string = 'glamsterdam'): UsePrioriti
     // Build aggregates for ALL fork EIPs, using empty stances array if no data
     return forkEips.map((eip) => {
       const stances = stancesMap.get(eip.id) || [];
-      return calculateEipAggregate(eip.id, stances, eip, fork);
+      return calculateEipAggregate(eip.id, stances, eip, fork, countedOtherTeams);
     });
-  }, [data, fork]);
+  }, [data, fork, countedOtherTeams]);
 
   return {
     data,

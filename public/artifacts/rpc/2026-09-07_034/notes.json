@@ -1,0 +1,95 @@
+{
+  "meeting": "RPC #034 - 2026-09-07",
+  "sections": [
+    {
+      "heading": "eth_simulateV1 and Amsterdam Spec Updates",
+      "summary": "Chase opened a new PR that morning to spec eth_simulateV1 block identity after Amsterdam; the Amsterdam test-chain PR stays blocked until it lands.",
+      "timestamp": "00:05:29",
+      "body": "- [PR 867](https://github.com/ethereum/execution-apis/pull/867) (update test chain to Amsterdam, regenerate fixtures) cannot move until the eth_simulateV1 spec is agreed; no progress possible on this call.\n- Chase opened [PR 881](https://github.com/ethereum/execution-apis/pull/881) that morning to specify eth_simulateV1 block identity after Amsterdam, based on client-dev input in [issue 868](https://github.com/ethereum/execution-apis/issues/868).\n  - The update adds slot number, fixes the BAL, and deprecates the transfer log for Amsterdam blocks.\n  - Multiple people responded to the issue and there is basic agreement on what eth_simulateV1 is missing.\n  - It will also need a go-ethereum PR to add slot number.\n- Chase discussed with Felix getting merge access to a separate branch (raised by Barnabas on the previous call); that is work in progress but is not the bottleneck. The blocker is spec agreement, not implementation.\n- [PR 862](https://github.com/ethereum/execution-apis/pull/862) (slotNumber and targetGasLimit on testing_buildBlockV1) is also Amsterdam work. Chase has already given it a thumbs up and considers it fine; it needs to be rebased once Amsterdam lands."
+    },
+    {
+      "heading": "Call Tracer Log Index Specification",
+      "summary": "Chase will update PR 855 to specify log index at the block level, matching go-ethereum; Erigon and Reth index per transaction and will need to change.",
+      "timestamp": "00:09:09",
+      "body": "- [PR 855](https://github.com/ethereum/execution-apis/pull/855) (specify callTracer output, add debug_traceCall) currently leaves log index as a spec-only check; Boma is the only person to have commented on it and Chase agrees with the feedback.\n- Chase will change the spec so log index follows go-ethereum's block-level indexing, then open client PRs and get agreement.\n  - Geth already matches and needs no fix; Nethermind does not emit log index in Call Tracer at all currently.\n  - Erigon and Reth index on a per-transaction level and will need to update.\n  - Rationale: the log index should match the log index on the block.\n- Łukasz (Nethermind) had no opinion on log index in Call Tracer.\n- The PR is not blocked on Amsterdam, but Amsterdam changes some fields, so it will have to be regenerated if the test updates land first."
+    },
+    {
+      "heading": "eth_createAccessList Clarification",
+      "summary": "PR 854 is a draft spec clarification waiting on a go-ethereum PR that Marius has already approved; the engine bitarray PR was skipped as out of scope.",
+      "timestamp": "00:12:47",
+      "body": "- [PR 856](https://github.com/ethereum/execution-apis/pull/856) (engine: bit ordering for the custody and cell bitarrays) was passed over as an engine change rather than an RPC standards item.\n- [PR 854](https://github.com/ethereum/execution-apis/pull/854) clarifies gas-fee affordability in eth_createAccessList when fee fields are omitted. It is in draft because it depends on a go-ethereum PR.\n- Marius reviewed and approved the go-ethereum side; once Geth merges, Chase can update the go-ethereum version reference and merge the spec PR.\n- Geth is the only client that differs; both Chase and Boma described the change as simple."
+    },
+    {
+      "heading": "Execution Witness Spec",
+      "summary": "The debug_executionWitness spec is stalled — clients all return different results and the ZKVM consumers are not engaging; it may be raised on a ZKVM call.",
+      "timestamp": "00:13:54",
+      "body": "- [PR 847](https://github.com/ethereum/execution-apis/pull/847) is Chase's attempt to spec debug_executionWitness, but every client returns something different.\n- Chase opened a PR to go-ethereum to align it with the spec draft, and it was closed. He does not know how to move the spec forward.\n- Marius questioned whether the endpoint is still needed after bells, since both consumer and producer are changing significantly.\n  - Geth implemented execution witness and forkchoiceUpdated with execution witness, but they were never really used.\n  - Too many things are in flux to specify it now.\n- Łukasz recalled ZK-related tests in a ZK test suite that touch JSON-RPC and witnesses, which might inform the spec; he will try to look up what exists. Chase noted that even with tests, clients returning different results makes it unclear what is being tested.\n- Boma proposed raising it on a ZKVM implementers call to get consumer input; Chase agreed that could help. Jason from the ZKVM implementers has already commented on the PR.\n- No decision; deferred pending consumer engagement."
+    },
+    {
+      "heading": "eth_getRawTransactionBy* Methods",
+      "summary": "PR 836 is blocked on an unreviewed go-ethereum PR from June; Marius asked that blocking PRs be flagged with a comment so the Geth team can prioritize them.",
+      "timestamp": "00:21:18",
+      "body": "- [PR 836](https://github.com/ethereum/execution-apis/pull/836) adds eth_getRawTransactionBy* methods to the spec. Its description links a go-ethereum PR for returning null for missing raw transactions.\n- That go-ethereum PR has been open since June 26; Felix assigned himself on June 30 and it has not been reviewed. Nothing can move until it is.\n- Marius asked that a comment be added saying the PR is blocking something:\n  - From the Geth team's side it is hard to distinguish PRs someone opened and forgot about from PRs someone is actually blocked on.\n  - A comment makes it resurface so they can prioritize it."
+    },
+    {
+      "heading": "Removing Error Code -39001",
+      "summary": "Geth and Nethermind verbally approved PR 879, which drops the merge-era -39001 rule; merging it unblocks the GetHeader PRs.",
+      "timestamp": "00:23:09",
+      "body": "- [PR 879](https://github.com/ethereum/execution-apis/pull/879) removes the unused error code -39001 from the block tag descriptions. Only Besu follows it; the other clients do not.\n- The error code was the blocker raised against the GetHeader work, so merging this unblocks eth_getHeaderByHash and eth_getHeaderByNumber.\n- Marius (Geth) approved verbally and will add a thumbs up when back at his laptop.\n- Stavros (Nethermind) confirmed they are fine with it.\n- Besu and Erigon already do not match the other four clients here. Chase noted no existing test would make them fail, and the error code is usually ignored anyway — clients should be told, but it likely does not affect them."
+    },
+    {
+      "heading": "eth_getHeaderByHash and eth_getHeaderByNumber",
+      "summary": "Nethermind backed speccing these already-implemented methods; Chase will undraft the client PRs once the spec has consensus.",
+      "timestamp": "00:27:00",
+      "body": "- [PR 877](https://github.com/ethereum/execution-apis/pull/877) specs eth_getHeaderByHash and eth_getHeaderByNumber, which already exist in most clients but are not formally specified.\n- It is in draft only pending agreement that these belong in the spec.\n  - Erigon has them under the Erigon namespace rather than eth; the fix is complicated for them but they seem willing.\n  - Besu needs to implement the methods; the other clients need small fixes.\n- Chase has opened draft PRs to every client and will undraft them once the spec gets a thumbs up.\n- Łukasz asked whether the methods were redundant; on hearing they already exist in clients, he dropped the objection. Stavros said to spec them."
+    },
+    {
+      "heading": "getLogs Error for Block Ranges Beyond Head",
+      "summary": "PR 875 was approved for merge — every client already implements the behavior it specifies.",
+      "timestamp": "00:30:15",
+      "body": "- [PR 875](https://github.com/ethereum/execution-apis/pull/875) specifies the eth_getLogs error for block ranges beyond head. All clients already do this; ethrex was the only one needing a fix and it is done.\n- Łukasz: \"If everyone already does this, don't even ask us, just enshrine it.\"\n- Chase agreed to merge it after the call."
+    },
+    {
+      "heading": "Fee Recipient Clarification in Block Overrides",
+      "summary": "PR 873 is a minor clarification to eth_simulate block overrides; approved for merge with no objections.",
+      "timestamp": "00:31:17",
+      "body": "- [PR 873](https://github.com/ethereum/execution-apis/pull/873) clarifies that feeRecipient in block overrides is not COINBASE — a clarification to the eth_simulate payload.\n- Marius called it correct but pretty unnecessary, and said he would just merge it.\n- No objections; Chase said he would merge it."
+    },
+    {
+      "heading": "Legacy data/input Alias in the Transaction Schema",
+      "summary": "PR 872, which adds the legacy 'data' field as an alias for 'input', was rejected and will be closed.",
+      "timestamp": "00:34:05",
+      "body": "- [PR 872](https://github.com/ethereum/execution-apis/pull/872) proposes adding the legacy `data` field as an alias for `input` on GenericTransaction. Some clients still accept either.\n- Marius: legacy behavior should not be added to the schema; the schema should be forward-looking.\n- Chase agreed — clients honoring the old `data` key is client-specific legacy behavior the spec should not encourage.\n- Łukasz agreed: specify one canonical field; clients supporting aliasing internally is fine, but it does not belong in the spec.\n- Decision: close the PR."
+    },
+    {
+      "heading": "getLogs Improvement Proposals",
+      "summary": "Łukasz walked through the five getLogs complaints; most need a new endpoint rather than changes to eth_getLogs, and he will comment on the issue.",
+      "timestamp": "00:36:15",
+      "body": "- [Issue 876](https://github.com/ethereum/execution-apis/issues/876) lists five shortcomings of eth_getLogs for indexing: no built-in reorg handling, no consistent error on exceeded ranges, no pagination, JSON-RPC inefficiency, and not knowing what `latest` was when fetching up to it.\n- Chase noted the `latest` clarification overlaps with the getLogs-beyond-head work, but the rest may not be solvable in RPC standards.\n- Łukasz's assessment:\n  - Reorg handling already exists via eth_subscribe for logs (the `removed` flag). A stateless endpoint cannot provide it, since you need state to know what was already sent.\n  - Inconsistent errors on exceeded ranges is fair — it is a matter of defining proper error codes.\n  - Pagination would need a new endpoint; it cannot be added to getLogs without breaking the contract. Nodes have data limits, so a way to re-request from the last returned point would help.\n  - On efficiency: both Nethermind and Geth have specialized indexes. Those help long-range scans more than narrow high-log queries, so getLogs is efficient much of the time.\n  - The `latest` ambiguity is fair criticism, but the answer is to not fetch up to `latest`.\n- Chase added that load-balanced setups make `latest` worse, since nodes sit at different blocks; the fix is to use an explicit block number.\n- Łukasz agreed to leave his analysis as a comment on the issue, and did so during the call.\n- No action beyond that; a new getLogs-like endpoint with pagination and a reported `latest` is the only way to address points 3 through 5."
+    },
+    {
+      "heading": "Hive Schema Validation for Named Tracers",
+      "summary": "Hive PR 1588 is blocked on review from LightClient or Felix; without it, named-tracer tests pass regardless of output.",
+      "timestamp": "00:43:14",
+      "body": "- [Hive PR 1588](https://github.com/ethereum/hive/pull/1588) adds tracer-aware schema selection so Hive knows which schema to validate a named tracer's result against.\n- Without it, named tracer tests fall through to a match-anything validator: every client gets a green checkmark no matter what it returns, when the test should have been deterministic rather than spec-only.\n- Call Tracer and other named tracers can still be specced without it, but Hive will report everything as passing.\n- LightClient is the only reviewer, is not on the call, and his comments are unresolved. Chase acknowledged it is a messy solution to a messy problem — RPC standards schema parsing is confusing.\n- Boma asked whether OpenRPC could handle it instead; Chase said it has to live in Hive, because that is where pass/fail is determined.\n- No client teams had input. Boma will try pinging LightClient or Felix."
+    },
+    {
+      "heading": "Carried-Over Test PRs",
+      "summary": "PRs 880 and 859 were approved for merge on the strength of the call's attendees; the Amsterdam test-chain PR remains blocked.",
+      "timestamp": "00:47:48",
+      "body": "- [PR 867](https://github.com/ethereum/execution-apis/pull/867) (Amsterdam test chain) was revisited and remains blocked until the Amsterdam work is finished.\n- [PR 880](https://github.com/ethereum/execution-apis/pull/880) adds two test fixtures for eth_gasPrice and eth_maxPriorityFeePerGas.\n  - Łukasz: \"If we're passing it, sure\" — zero action required from Nethermind. Approved for merge.\n- [PR 859](https://github.com/ethereum/execution-apis/pull/859) allows EIP-1898 block objects (blockHash plus requireCanonical) wherever a block number or tag is accepted, and adds tests. The behavior already exists in clients.\n  - LightClient reviewed it, asked a question, and then stopped responding — that is why it is still pending.\n  - Łukasz: \"If it exists, fine.\" Approved.\n- Boma pushed for explicit client thumbs-ups on PRs; Marius countered that nothing would ever merge that way, since clients are not looking at them, and Łukasz said he does not have enough time to review PRs in his own repo. Chase said he would take the call attendees' review as good enough."
+    },
+    {
+      "heading": "Amsterdam Call Tracer and BAL Fields",
+      "summary": "Stefan's PR 852 is done bar generating an Amsterdam chain, which needs the eth_simulateV1 spec first — and Stefan flagged that as important for Devnet 11.",
+      "timestamp": "00:51:14",
+      "body": "- [PR 852](https://github.com/ethereum/execution-apis/pull/852) (Stefan's) adds the BAL and other Amsterdam fields to callTracer, plus EIP-8037 two-dimensional gas in tracing.\n  - Call Tracer itself is not yet specced; Chase's [PR 855](https://github.com/ethereum/execution-apis/pull/855) does that for pre-Amsterdam and this builds on top.\n  - All the work is done except generating an Amsterdam chain, which is blocked on fixing the eth_simulateV1 spec.\n- Stefan said eth_simulateV1 and eth_estimateGas are especially important for Devnet 11, since Layer 2 teams have complained that these RPC calls do not work and they cannot test against them.\n- Chase noted eth_estimateGas PRs were submitted to multiple clients and mostly merged already; any remaining issues can be raised with him on Discord."
+    },
+    {
+      "heading": "v1.0.0-beta.8 Release Planning",
+      "summary": "The release stays deferred behind the Amsterdam spec work; Chase will create the meta-issue tracking what should be in it.",
+      "timestamp": "00:53:14",
+      "body": "- The last release was June 10. Boma raised cutting v1.0.0-beta.8, noting a release would help devnet testing.\n- Chase held his position: fix Amsterdam first, then do a release.\n- Boma reminded him he had previously promised a meta-issue listing what should be in the release. Chase acknowledged he forgot and committed to creating it."
+    }
+  ]
+}

@@ -58,9 +58,9 @@ export interface EipAggregateStance {
   stanceCount: number;
   elStanceCount: number;
   clStanceCount: number;
-  supportCount: number; // top two tiers of the fork's scale
-  neutralCount: number; // score 2-3
-  opposeCount: number; // score <= 1
+  supportCount: number; // the fork's two "Support" tiers
+  neutralCount: number; // everything between the support tiers and the bottom rung
+  opposeCount: number; // the fork's bottom rung: "Oppose" on a 1-5 scale, "DFI" on a 0-4 one
   /** Explicit "reject this" requests from the counted teams. */
   rejectCount: number;
   stances: ClientStance[];

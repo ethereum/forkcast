@@ -7,6 +7,7 @@ import {
   getRatingLabel,
   getScoreScale,
   getMaxScore,
+  getMinScore,
   NO_COUNTED_TEAMS,
   SortField,
   SortDirection,
@@ -141,29 +142,15 @@ const ClientPriorityTab: React.FC<ClientPriorityTabProps> = ({ fork }) => {
     return sortEipAggregates(filteredAggregates, sortField, sortDirection);
   }, [filteredAggregates, sortField, sortDirection]);
 
-  // Calculate summary stats
-  const stats = useMemo(() => {
-    const withStances = aggregates.filter((a) => a.stanceCount > 0);
-    const avgScores = withStances
-      .filter((a) => a.averageScore !== null)
-      .map((a) => a.averageScore!);
+  const rejectedCount = useMemo(
+    () => aggregates.filter((a) => a.rejectCount > 0).length,
+    [aggregates]
+  );
 
-    return {
-      total: aggregates.length,
-      withStances: withStances.length,
-      avgOfAvg: avgScores.length > 0
-        ? Math.round((avgScores.reduce((a, b) => a + b, 0) / avgScores.length) * 10) / 10
-        : null,
-      highSupport: aggregates.filter((a) => a.averageScore !== null && a.averageScore >= supportFloor).length,
-      contested: aggregates.filter((a) => a.supportCount > 0 && a.opposeCount > 0).length,
-      rejected: aggregates.filter((a) => a.rejectCount > 0).length,
-    };
-  }, [aggregates, supportFloor]);
+  // Gates the ⚑ flag, the toolbar count and the "Has Rejections" filter together.
+  const hasRejections = rejectedCount > 0;
 
-  // The flag, the stat and the filter track client rejections only.
-  const hasRejections = stats.rejected > 0;
-
-  const lowestScore = scoreLegend.length > 0 ? Math.min(...scoreLegend.map((s) => s.score)) : 1;
+  const lowestScore = getMinScore(fork);
 
   const handleSort = (field: SortField) => {
     const direction = sortField === field && sortDirection === 'desc' ? 'asc' : 'desc';
@@ -312,27 +299,11 @@ const ClientPriorityTab: React.FC<ClientPriorityTabProps> = ({ fork }) => {
             <span className="text-slate-500 dark:text-slate-400">
               {sortedAggregates.length} EIPs
             </span>
-            {(stats.withStances > 0 || hasRejections) && (
-              <div className="hidden md:flex items-center gap-3">
-                {stats.withStances > 0 && (
-                  <>
-                    <span className="flex items-center gap-1">
-                      <span className="w-2 h-2 rounded-full bg-emerald-500"></span>
-                      <span className="text-slate-600 dark:text-slate-300">{stats.highSupport} high</span>
-                    </span>
-                    <span className="flex items-center gap-1">
-                      <span className="w-2 h-2 rounded-full bg-amber-500"></span>
-                      <span className="text-slate-600 dark:text-slate-300">{stats.contested} contested</span>
-                    </span>
-                  </>
-                )}
-                {hasRejections && (
-                  <span className="flex items-center gap-1">
-                    <span className="w-2 h-2 rounded-full bg-red-500"></span>
-                    <span className="text-slate-600 dark:text-slate-300">{stats.rejected} with rejections</span>
-                  </span>
-                )}
-              </div>
+            {hasRejections && (
+              <span className="hidden md:flex items-center gap-1">
+                <span className="w-2 h-2 rounded-full bg-red-500"></span>
+                <span className="text-slate-600 dark:text-slate-300">{rejectedCount} with rejections</span>
+              </span>
             )}
           </div>
         </div>
@@ -677,6 +648,7 @@ const ClientPriorityTab: React.FC<ClientPriorityTabProps> = ({ fork }) => {
           <span className={`px-2 py-1 rounded ${getScoreColor(null, true)}`}>? = Uncertain</span>
           <span className={`px-2 py-1 rounded ${getScoreColor(null, false)}`}>- = Not Mentioned</span>
         </div>
+
       </div>
 
       {/* Footer */}

@@ -97,6 +97,7 @@ const FORK_SCORE_SCALE: Record<string, ScoreLevel[]> = {
 };
 
 const DEFAULT_MAX_SCORE = 5;
+const DEFAULT_MIN_SCORE = 1;
 
 export function getScoreScale(fork: string): ScoreLevel[] {
   return FORK_SCORE_SCALE[fork.toLowerCase()] ?? [];
@@ -106,6 +107,12 @@ export function getScoreScale(fork: string): ScoreLevel[] {
 export function getMaxScore(fork: string): number {
   const scale = getScoreScale(fork);
   return scale.length > 0 ? Math.max(...scale.map((level) => level.score)) : DEFAULT_MAX_SCORE;
+}
+
+/** The bottom of a fork's scale — the "drop this" rung, which anchors "opposition". */
+export function getMinScore(fork: string): number {
+  const scale = getScoreScale(fork);
+  return scale.length > 0 ? Math.min(...scale.map((level) => level.score)) : DEFAULT_MIN_SCORE;
 }
 
 /**
@@ -275,9 +282,11 @@ export function calculateEipAggregate(
   ];
   const scoredStances = countedStances.filter(s => s.normalizedScore !== null);
 
-  // Thresholds are relative to the fork's scale: its top two tiers are support, the
-  // bottom two are opposition. Hegotá's scale is one rung shorter than Glamsterdam's.
+  // Both thresholds are read off the fork's own legend, so one sentence describes them on
+  // every fork: support is the two tiers labelled Support, opposition is the bottom rung
+  // ("Oppose" on a 1-5 scale, "DFI" on a 0-4 one). Anything between is neither.
   const supportFloor = getMaxScore(forkName) - 1;
+  const opposeCeiling = getMinScore(forkName);
 
   return {
     eipId,
@@ -294,9 +303,9 @@ export function calculateEipAggregate(
     supportCount: scoredStances.filter(s => (s.normalizedScore ?? 0) >= supportFloor).length,
     neutralCount: scoredStances.filter(s => {
       const score = s.normalizedScore ?? 0;
-      return score > 1 && score < supportFloor;
+      return score > opposeCeiling && score < supportFloor;
     }).length,
-    opposeCount: scoredStances.filter(s => (s.normalizedScore ?? 0) <= 1).length,
+    opposeCount: scoredStances.filter(s => (s.normalizedScore ?? 0) <= opposeCeiling).length,
     rejectCount: countedStances.filter(s => isRejection(s.ratingSystem, s.rawRating)).length,
     stances,
   };

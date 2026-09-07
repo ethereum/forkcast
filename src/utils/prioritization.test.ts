@@ -70,3 +70,36 @@ describe('calculateEipAggregate', () => {
     expect(agg.clAverageScore).toBeNull();
   });
 });
+
+// Support is the fork's two "Support" tiers and opposition is its bottom rung, so the one
+// sentence behind the "contested" stat holds on a 0-4 and a 1-5 scale alike.
+describe('support and opposition read off the fork scale', () => {
+  it('treats a low priority as neither support nor opposition on the 0-4 scale', () => {
+    const agg = aggregate([stance('Geth', 'EL', 'A', 3), stance('Reth', 'EL', 'C', 1)]);
+
+    expect(agg.supportCount).toBe(1);
+    expect(agg.neutralCount).toBe(1);
+    expect(agg.opposeCount).toBe(0);
+  });
+
+  it('counts the bottom rung as opposition on the 0-4 scale', () => {
+    const agg = aggregate([stance('Geth', 'EL', 'A', 3), stance('Reth', 'EL', 'D', 0)]);
+
+    expect(agg.supportCount).toBe(1);
+    expect(agg.opposeCount).toBe(1);
+  });
+
+  it('counts Glamsterdam\'s bottom rung as opposition without dragging in its low priority', () => {
+    const glamsterdam = (stances: ClientStance[]) =>
+      calculateEipAggregate(1234, stances, undefined, 'glamsterdam');
+    const agg = glamsterdam([
+      stance('Geth', 'EL', 'A', 4),
+      stance('Reth', 'EL', 'C', 2),
+      stance('Besu', 'EL', 'D', 1),
+    ]);
+
+    expect(agg.supportCount).toBe(1);
+    expect(agg.neutralCount).toBe(1);
+    expect(agg.opposeCount).toBe(1);
+  });
+});

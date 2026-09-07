@@ -303,6 +303,21 @@ describe('build output', () => {
       expect(eip?.forkRelationships?.length).toBeGreaterThan(0);
     });
 
+    it('api/eips/{id}.json exists for every EIP and matches its source file', () => {
+      // llms.txt documents this path with a `{id}` placeholder, so the
+      // "points at paths that exist" check below cannot see it.
+      const dir = path.resolve(DIST, '..', 'src', 'data', 'eips');
+      const sources = fs.readdirSync(dir).filter((f) => f.endsWith('.json'));
+      expect(fs.readdirSync(path.join(DIST, 'api/eips')).length).toBe(sources.length);
+      for (const file of sources) {
+        const built = path.join(DIST, 'api/eips', file);
+        expect(fs.existsSync(built), `missing /api/eips/${file}`).toBe(true);
+        expect(JSON.parse(fs.readFileSync(built, 'utf-8'))).toEqual(
+          JSON.parse(fs.readFileSync(path.join(dir, file), 'utf-8')),
+        );
+      }
+    });
+
     it('api/upgrades.json leaks no UI-only fields', () => {
       // `NetworkUpgrade` mixes protocol facts with render state. "The Merge:
       // disabled" is meaningless outside the upgrades page, so the endpoint

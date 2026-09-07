@@ -20,6 +20,9 @@ The full EIP dataset — every EIP Forkcast tracks, unfiltered. Each record carr
 - `reviewer` (`bot` | `expert` | `staff`) — provenance of that prose. `bot` means no human has vetted it yet.
 - `requires[]` — EIP dependencies. `category`, `layer` (`EL` | `CL`) — optional, present when available.
 
+### `/api/eips/{id}.json`
+One EIP's full record — the same object as in `/api/eips.json`, but a single record (0.5–11 KB) instead of the whole dataset (~580 KB). Use this for single-EIP questions; use the bulk index only when you need many EIPs in one pass. Unknown ids 404.
+
 ### `/api/calls.json`
 Every protocol call, with `type`, `date`, `number`, and `path`. Append `path` to `/artifacts/` to reach that call's files. Includes a `series` map decoding the type slugs (`acde` → "AllCoreDevs - Execution").
 
@@ -90,18 +93,18 @@ A few datasets have no served equivalent. Access via the GitHub API, e.g.
 
 ## Quick reference
 
-| Want                       | How                                                       |
-| -------------------------- | --------------------------------------------------------- |
-| Is EIP X in upgrade Y?     | `GET /api/eips.json` → `forkRelationships[].statusHistory` |
-| What does EIP X do?        | `GET /api/eips.json` → `laymanDescription`, `benefits`     |
-| Raw EIP spec               | `GET /eips/{number}.md`                                    |
-| What changed recently?     | `GET /api/eip-stage-changes.json`                          |
-| Subscribe to changes       | `GET /feed.xml` (RSS; agents should use the JSON above)     |
-| All calls / artifact paths | `GET /api/calls.json`                                      |
-| What was decided about X?  | `GET /search-light.json`                                   |
-| One call's summary         | `GET /artifacts/{series}/{date}_{number}/tldr.json`        |
-| One call's transcript      | `GET /artifacts/{series}/{date}_{number}/transcript.vtt`   |
-| When might upgrade X ship? | `GET /api/upgrades.json` → `projectedActivation` (estimate) |
-| Upcoming agenda context    | `GET /artifacts/{series}/plan/open_action_items.json`      |
-| Event timeline             | GitHub: `src/data/events.ts`                               |
-| Pending proposals          | GitHub: `src/data/pending-proposals.ts`                    |
+| Want                       | How                                                             |
+| -------------------------- | --------------------------------------------------------------- |
+| Is EIP X in upgrade Y?     | `GET /api/eips/{id}.json` → `forkRelationships[].statusHistory` |
+| What does EIP X do?        | `GET /api/eips/{id}.json` → `laymanDescription`, `benefits`     |
+| Raw EIP spec               | `GET /eips/{number}.md`                                         |
+| What changed recently?     | `GET /api/eip-stage-changes.json`                               |
+| Subscribe to changes       | `GET /feed.xml` (RSS; agents should use the JSON above)         |
+| All calls / artifact paths | `GET /api/calls.json`                                           |
+| What was decided about X?  | `GET /search-light.json`                                        |
+| One call's summary         | `GET /artifacts/{series}/{date}_{number}/tldr.json`             |
+| One call's transcript      | `GET /artifacts/{series}/{date}_{number}/transcript.vtt`        |
+| When might upgrade X ship? | `GET /api/upgrades.json` → `projectedActivation` (estimate)     |
+| Upcoming agenda context    | `GET /artifacts/{series}/plan/open_action_items.json`           |
+| Event timeline             | GitHub: `src/data/events.ts`                                    |
+| Pending proposals          | GitHub: `src/data/pending-proposals.ts`                         |

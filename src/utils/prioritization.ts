@@ -92,7 +92,7 @@ const FORK_SCORE_SCALE: Record<string, ScoreLevel[]> = {
     { score: 3, label: 'Support' },
     { score: 2, label: 'Stretch Goal' },
     { score: 1, label: 'Low Priority' },
-    { score: 0, label: 'Reject' },
+    { score: 0, label: 'DFI' },
   ],
 };
 
@@ -146,7 +146,7 @@ export function getRatingLabel(
         case 'a': return 'A-Tier';
         case 'b': return 'B-Tier';
         case 'c': return 'C-Tier';
-        case 'd': return 'Reject';
+        case 'd': return 'DFI';
         default: return rawRating;
       }
 

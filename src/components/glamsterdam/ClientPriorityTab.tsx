@@ -1,5 +1,5 @@
-import React, { useState, useMemo, useEffect } from 'react';
-import { Link } from '../navigation';
+import React, { useState, useMemo, useEffect, useCallback } from 'react';
+import { Link, useSearchParams } from '../navigation';
 import { usePrioritizationData } from '../../hooks/usePrioritizationData';
 import {
   sortEipAggregates,
@@ -32,22 +32,52 @@ const VINTAGE_NOTE: Record<string, string> = {
  */
 const BREAKOUT = 'lg:relative lg:left-1/2 lg:-translate-x-1/2 lg:w-[72rem] lg:max-w-[calc(100vw-3rem)]';
 
+const SORT_FIELDS: SortField[] = ['eip', 'average', 'elAverage', 'clAverage', 'stanceCount', 'stage'];
+const FILTER_LAYERS: FilterLayer[] = ['EL', 'CL'];
+const FILTER_STANCES: FilterStance[] = ['support', 'mixed', 'oppose', 'rejected', 'none'];
+
+/** Query values are user input, so anything off the known list falls back to the default. */
+const readEnum = <T extends string>(value: string | null, allowed: readonly T[]): T | null =>
+  allowed.includes(value as T) ? (value as T) : null;
+
 interface ClientPriorityTabProps {
   fork: string;
 }
 
 const ClientPriorityTab: React.FC<ClientPriorityTabProps> = ({ fork }) => {
-  const [sortField, setSortField] = useState<SortField>('average');
-  const [sortDirection, setSortDirection] = useState<SortDirection>('desc');
-  const [filterLayer, setFilterLayer] = useState<FilterLayer>('all');
-  const [filterStance, setFilterStance] = useState<FilterStance>('all');
-  const [filterClient, setFilterClient] = useState<string>('all');
-  const [hideExcluded, setHideExcluded] = useState(true);
+  // Sort, filters and the average opt-in live in the query string so a view can be shared.
+  const [searchParams, setSearchParams] = useSearchParams();
+  const sortField = readEnum(searchParams.get('sort'), SORT_FIELDS) ?? 'average';
+  const sortDirection: SortDirection = searchParams.get('dir') === 'asc' ? 'asc' : 'desc';
+  const filterLayer = readEnum(searchParams.get('layer'), FILTER_LAYERS) ?? 'all';
+  const filterStance = readEnum(searchParams.get('stance'), FILTER_STANCES) ?? 'all';
+  const filterClient = searchParams.get('team') ?? 'all';
+  const hideExcluded = searchParams.get('excluded') !== 'show';
+  // Memoized on the params, so the aggregates aren't recomputed on every render.
+  const countedOtherTeams = useMemo<ReadonlySet<string>>(() => {
+    const names = (searchParams.get('avg') ?? '').split(',').filter(Boolean);
+    return names.length > 0 ? new Set(names) : NO_COUNTED_TEAMS;
+  }, [searchParams]);
+
   const [expandedEip, setExpandedEip] = useState<number | null>(null);
   const [filtersModalOpen, setFiltersModalOpen] = useState(false);
   const [avgModalOpen, setAvgModalOpen] = useState(false);
-  // A fresh Set only on toggle, so the aggregates aren't recomputed on every render.
-  const [countedOtherTeams, setCountedOtherTeams] = useState<ReadonlySet<string>>(NO_COUNTED_TEAMS);
+
+  /** A default value drops its param, so a pristine view has a clean URL. */
+  const setParam = useCallback(
+    (key: string, value: string | null) => {
+      setSearchParams(
+        (prev) => {
+          const next = new URLSearchParams(prev);
+          if (value === null) next.delete(key);
+          else next.set(key, value);
+          return next;
+        },
+        { replace: true }
+      );
+    },
+    [setSearchParams]
+  );
 
   const { aggregates, elTeams, clTeams, otherTeams } = usePrioritizationData(fork, countedOtherTeams);
 
@@ -136,12 +166,18 @@ const ClientPriorityTab: React.FC<ClientPriorityTabProps> = ({ fork }) => {
   const lowestScore = scoreLegend.length > 0 ? Math.min(...scoreLegend.map((s) => s.score)) : 1;
 
   const handleSort = (field: SortField) => {
-    if (sortField === field) {
-      setSortDirection((d) => (d === 'asc' ? 'desc' : 'asc'));
-    } else {
-      setSortField(field);
-      setSortDirection('desc');
-    }
+    const direction = sortField === field && sortDirection === 'desc' ? 'asc' : 'desc';
+    setSearchParams(
+      (prev) => {
+        const next = new URLSearchParams(prev);
+        if (field === 'average') next.delete('sort');
+        else next.set('sort', field);
+        if (direction === 'desc') next.delete('dir');
+        else next.set('dir', direction);
+        return next;
+      },
+      { replace: true }
+    );
   };
 
   const SortIcon = ({ field }: { field: SortField }) => {
@@ -171,12 +207,13 @@ const ClientPriorityTab: React.FC<ClientPriorityTabProps> = ({ fork }) => {
     .filter((team) => countedOtherTeams.has(team.name))
     .map((team) => team.name);
 
-  const toggleCountedTeam = (name: string) =>
-    setCountedOtherTeams((prev) => {
-      const next = new Set(prev);
-      if (!next.delete(name)) next.add(name);
-      return next;
-    });
+  const toggleCountedTeam = (name: string) => {
+    const next = new Set(countedOtherTeams);
+    if (!next.delete(name)) next.add(name);
+    // Roster order, so the same selection always produces the same URL.
+    const ordered = otherTeams.filter((team) => next.has(team.name)).map((team) => team.name);
+    setParam('avg', ordered.length > 0 ? ordered.join(',') : null);
+  };
 
   const stanceFilterOptions: { value: FilterStance; label: string }[] = [
     { value: 'all', label: 'All Stances' },
@@ -193,11 +230,17 @@ const ClientPriorityTab: React.FC<ClientPriorityTabProps> = ({ fork }) => {
     filterStance !== 'all',
   ].filter(Boolean).length;
 
-  const clearFilters = () => {
-    setFilterLayer('all');
-    setFilterClient('all');
-    setFilterStance('all');
-  };
+  const selectClient = (name: string) => setParam('team', name === 'all' ? null : name);
+
+  const clearFilters = () =>
+    setSearchParams(
+      (prev) => {
+        const next = new URLSearchParams(prev);
+        ['layer', 'team', 'stance'].forEach((key) => next.delete(key));
+        return next;
+      },
+      { replace: true }
+    );
 
   return (
     <>
@@ -258,7 +301,7 @@ const ClientPriorityTab: React.FC<ClientPriorityTabProps> = ({ fork }) => {
             <input
               type="checkbox"
               checked={hideExcluded}
-              onChange={(e) => setHideExcluded(e.target.checked)}
+              onChange={(e) => setParam('excluded', e.target.checked ? null : 'show')}
               className="w-4 h-4 rounded border-slate-300 dark:border-slate-600 text-purple-600 focus:ring-purple-500"
             />
             <span className="text-sm text-slate-600 dark:text-slate-300">Active only</span>
@@ -329,7 +372,7 @@ const ClientPriorityTab: React.FC<ClientPriorityTabProps> = ({ fork }) => {
                   return (
                     <button
                       key={layer}
-                      onClick={() => setFilterLayer(layer)}
+                      onClick={() => setParam('layer', layer === 'all' ? null : layer)}
                       className={`px-3 py-2 text-sm font-medium rounded-lg transition-colors ${
                         isSelected
                           ? 'bg-purple-100 dark:bg-purple-900/30 text-purple-800 dark:text-purple-300 ring-2 ring-purple-500 ring-offset-1 dark:ring-offset-slate-800'
@@ -351,7 +394,7 @@ const ClientPriorityTab: React.FC<ClientPriorityTabProps> = ({ fork }) => {
                   return (
                     <button
                       key={value}
-                      onClick={() => setFilterStance(value)}
+                      onClick={() => setParam('stance', value === 'all' ? null : value)}
                       className={`px-3 py-2 text-sm font-medium rounded-lg transition-colors ${
                         isSelected
                           ? 'bg-purple-100 dark:bg-purple-900/30 text-purple-800 dark:text-purple-300 ring-2 ring-purple-500 ring-offset-1 dark:ring-offset-slate-800'
@@ -370,7 +413,7 @@ const ClientPriorityTab: React.FC<ClientPriorityTabProps> = ({ fork }) => {
               teams={elTeams}
               accent="EL"
               filterClient={filterClient}
-              onSelect={setFilterClient}
+              onSelect={selectClient}
             />
 
             <TeamFilterGroup
@@ -378,7 +421,7 @@ const ClientPriorityTab: React.FC<ClientPriorityTabProps> = ({ fork }) => {
               teams={clTeams}
               accent="CL"
               filterClient={filterClient}
-              onSelect={setFilterClient}
+              onSelect={selectClient}
             />
 
             {showOtherTeams && (
@@ -387,7 +430,7 @@ const ClientPriorityTab: React.FC<ClientPriorityTabProps> = ({ fork }) => {
                 teams={otherTeams}
                 accent="OTHER"
                 filterClient={filterClient}
-                onSelect={setFilterClient}
+                onSelect={selectClient}
               />
             )}
           </div>
@@ -402,7 +445,7 @@ const ClientPriorityTab: React.FC<ClientPriorityTabProps> = ({ fork }) => {
           headerAction={
             countedTeamNames.length > 0 && (
               <button
-                onClick={() => setCountedOtherTeams(NO_COUNTED_TEAMS)}
+                onClick={() => setParam('avg', null)}
                 className="text-sm text-purple-600 dark:text-purple-400 font-medium"
               >
                 Clear
